@@ -14,7 +14,7 @@
 | --- | --- |
 | Notification | `NotificationSourceType`은 `SCHEDULE`, `DEAL`만 사용한다. 일정 시작 reminder와 딜 마감 reminder 중심이다. |
 | Google Calendar | `/api/schedules/google` connect/status/calendars/selection/sync/disconnect와 callback은 04 범위로 완료됐다. OAuth scope는 `calendar.readonly`이고 export/write/watch/reminders/attendee/multi-account/other provider API는 없다. |
-| DealActivity | `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`, `MEETING_NOTE_LINKED`, `FOLLOW_UP_SENT/FAILED` 같은 activity event가 있다. |
+| DealActivity | `GET/POST/PATCH /api/deals/:dealId/activities`와 자동 event, manual create/update, Deal list products/latestActivity, Contact dealCount가 06에서 완료됐다. manual delete API, automatic activity update/delete API, memo/private memo activity 통합, all-domain activity bus, advanced search/filter/score/AI 판단 API는 없다. |
 | MeetingNote AI | `AiProviderOperation`에 MeetingNote draft/STT/next action/follow-up draft operation이 있다. |
 | Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태이며, 예약 발송/sequence/campaign/unsubscribe/email sync API는 없다. |
 | ImportJob | `/api/imports` 계열 persistence/resume/confirm/cancel과 10MB/5,000 data row 제한은 01에서 완료됐다. 현재 import 대상은 회사, 담당자, 제품, 딜이다. |
@@ -37,6 +37,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - AI weekly report 자동 생성 또는 AI suggestion 자동 mutation API 추가
 - Follow-up delivery SMS 실제 provider/vendor API, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking API 추가
 - Company/Contact/Product list summary API field 추가
+- DealActivity manual delete/restore API, automatic activity update/delete API, retention/audit/trash API, memo/private memo activity 통합 API, all-domain activity bus, 고급 search/filter, deal score, AI activity 자동 판단 API 추가
 - MeetingNote list summary API field 추가
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 또는 조회 API 추가
@@ -67,6 +68,8 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API contract 확정 대상으로 올리지 않는다.
 
+06 재대조 기준으로 DealActivity timeline, manual create/update, 자동 event, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터, score, AI 자동 판단, summary cache API는 `PRE12-F39`로만 두고 06 미완성으로 재오픈하지 않는다.
+
 04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
 05 재대조 기준으로 AI weekly report API, snapshot-summary, follow-up delivery settings, Gmail/Microsoft connect/callback/disconnect, draft/send/retry/list API와 send adapter는 완료다. 운영 provider smoke는 새 API 없이 G05 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장은 `PRE12-F05`/`PRE12-F06` 후속 후보로 둔다.
@@ -88,6 +91,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | MeetingNote 자동 발송 | consent, retry, unsubscribe, send policy, provider cost policy 필요 | post-12-seed |
 | Notification 데이터 TTL/cleanup | `Notification`/delivery attempt/revoked subscription 삭제 기준, batch runner, Admin/provider failure 조회 보존 기간, 계정 삭제 실제 처리와의 충돌 기준 필요 | post-12-seed / `PRE12-F38` |
 | record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
+| DealActivity lifecycle/search/score 확장 | manual delete/restore, automatic activity update/delete, retention/audit/trash, memo/private memo 통합, all-domain activity bus, advanced search/filter, deal score, AI activity 자동 판단, summary cache API 계약 필요 | post-12-seed / `PRE12-F39` |
 | AI data cleanup | cleanup suggestion 생성/적용/rollback API, audit log, ownership/redaction 기준 필요 | post-12-seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | retention, 삭제권, raw access audit, redaction, Admin/User 노출 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | worker queue/status/cancel/retry, schedule/meeting-note source mapping, Admin 조회/cleanup API 기준 필요 | post-12-seed |

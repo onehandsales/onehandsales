@@ -17,6 +17,7 @@
 | 회의록 follow-up reminder | MeetingNote 기반 follow-up reminder 생성/취소/목록 | draft placeholder | 구현 금지 |
 | MeetingNote follow-up 자동 발송 | Follow-up delivery 예약/자동 발송/취소/재시도 | post-12-seed | 구현 금지 |
 | Company/Contact/Product latest summary | 기존 list response field 추가 또는 summary endpoint | defer | 12 전 계약화/구현 금지. 비고: 2026-08-06 A 결정, post-12 B2B/team CRM strategy seed. |
+| DealActivity lifecycle/search/score 확장 | manual activity delete/restore, retention/audit, memo/private memo activity 통합, all-domain activity bus, 고급 filter/search, deal score/AI activity 자동 판단, summary cache 계약 | post-12-seed / `PRE12-F39` | 구현 금지 |
 | MeetingNote list latest/next summary | `GET /api/meeting-notes` response field 추가 또는 별도 summary endpoint | post-12-seed | 12 전 구현 금지 |
 | AI data cleanup 제안 저장/적용 | MeetingNote/record cleanup suggestion 생성, 적용, 되돌리기 | post-12-seed / 별도 data quality 계획 | 구현 금지 |
 | MeetingNote transcript/raw/follow-up draft 저장/조회 | transcript, provider raw response, follow-up draft body 저장 또는 raw access API | defer / 정책 필요 | 구현 금지 |

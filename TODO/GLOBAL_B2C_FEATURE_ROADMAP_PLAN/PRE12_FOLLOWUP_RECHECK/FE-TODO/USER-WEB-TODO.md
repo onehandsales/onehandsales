@@ -16,7 +16,7 @@
 | Weekly report | `/app/schedules/week`와 Excel export는 03 범위로 완료됐다. |
 | Google Calendar | `/app/schedules`, `/app/settings`, schedule detail source badge/sync/status는 04 범위로 완료됐다. Google export/write/watch/reminders/attendee/multi-account/other provider UI는 없다. |
 | AI weekly report/follow-up | `/app/schedules/week` AI report section, `/app/settings` follow-up delivery settings, compose/send/retry/timeline UX는 05 범위로 구현됐다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/unsubscribe UI는 없다. |
-| DealActivity | deal list `latestActivity`, deal detail activity timeline은 06 범위다. |
+| DealActivity | deal list products/latestActivity, deal detail activity timeline, manual create/update UI는 06 범위로 완료됐다. manual delete/restore, memo/private memo 통합, all-domain activity bus, advanced search/filter, score, AI activity 자동 판단 UI는 없다. |
 | MeetingNote AI | meeting note detail AI next action/follow-up draft section은 07 범위다. STT transcript는 생성 흐름의 임시 확인용이고 저장/목록/상세 summary 대상이 아니다. |
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
 | Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
@@ -35,6 +35,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - Follow-up delivery SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking UI 추가
 - Notification TTL/cleanup 정책 확정 전 알림 이력 자동 삭제 안내, 보관 기간 설정 UI, Admin cleanup UI 추가
 - Company/Contact/Product latest summary를 API 없이 FE에서 조합 표시
+- DealActivity manual delete/restore UI, activity retention/audit/trash UX, memo/private memo activity 통합, all-domain activity bus, advanced search/filter, deal score, AI activity 자동 판단, summary cache fallback UI 추가
 - MeetingNote list latest/next summary를 API 없이 FE에서 조합 표시
 - AI data cleanup 제안 저장/적용 UI 추가
 - transcript 원문, follow-up draft 저장 상태, provider raw response를 User Web에 표시
@@ -65,6 +66,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 2026-08-06 A 결정에 따라 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web 작업으로 올리지 않는다. UX/UI 전체 polish는 별도 전면 유지보수 계획에서 다룬다.
 
+06 재대조 기준으로 deal detail timeline, manual create/update, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. activity 삭제/보존/감사, memo 통합, 공통 activity bus, 고급 검색/필터, score, AI 자동 판단, summary cache/fallback UI는 `PRE12-F39` 후속 후보로만 두고 06 미완성으로 재오픈하지 않는다.
+
 08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다.
 
 04 재대조 기준으로 User Web의 Google Calendar 범위는 read-only import/sync, calendar 선택, source badge/status, Trash restore, Google-origin reminder UX까지 완료다. Google export/write/양방향 sync, webhook/watch 상태 UI, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google 외 provider UX는 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
@@ -85,6 +88,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | 회의록 follow-up reminder | meeting note detail/list, notification settings, follow-up draft 상태 표시 | post-12-seed |
 | Notification 데이터 TTL/cleanup | `/app/notifications` 표시 기간, 삭제된 알림 안내, provider failure 이력 노출 여부, 설정 UI 필요 여부 | post-12-seed / `PRE12-F38` |
 | record summary | Company/Contact/Product/MeetingNote list item summary 위치와 empty fallback | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
+| DealActivity lifecycle/search/score 확장 | activity delete/restore UX, retention/audit 표시, memo/private memo timeline 통합, all-domain activity feed, advanced filter/search, deal score/AI 판단 표시, summary cache/fallback UX 기준 필요 | post-12-seed / `PRE12-F39` |
 | AI data cleanup | cleanup suggestion 확인/적용/되돌리기 UX, 적용 전 diff 표시 | post-12-seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 표시 | transcript 보관 상태, raw access 안내, draft 저장/발송 상태 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | 대용량 import progress, 일정/회의록 source mapping, Admin-only job cleanup/조회 화면 | post-12-seed |

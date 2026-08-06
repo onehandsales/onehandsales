@@ -17,7 +17,7 @@
 | 02 후속 후보 분리 | 다음 행동 알림, 회의록 후속 알림, Notification 데이터 TTL/cleanup 정책이 02 구현 범위가 아니었음을 고정한다. |
 | 04 후속 후보 분리 | Google read-only import/sync 완료 범위와 Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider 후보를 분리한다. |
 | 05 후속 후보 분리 | AI weekly report/follow-up delivery 완료 범위와 Gmail/Microsoft provider smoke, SMS 실제 provider, B2B/email growth, cost/legal deletion 후보를 분리한다. |
-| 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
+| 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder, record summary, activity lifecycle/search/score 확장 후보를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
 | 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보를 분리한다. |
@@ -30,7 +30,7 @@
 
 | 제외 항목 | 이유 |
 | --- | --- |
-| 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. 현재 작업이 있더라도 이 문서는 06 범위 확장을 지시하지 않는다. |
+| 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. manual create/update와 safe timeline/list summary 범위를 넘는 삭제/보존/감사/search/score/AI 확장은 `PRE12-F39`로만 둔다. |
 | 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. 목록 summary, 자동 발송, 알림은 별도 후보다. |
 | 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 post-12에서 재검토한다. |
 | 04 Google Calendar 구현 재개 | 04는 Google read-only import/sync, 선택 calendar, source badge, Trash restore, Google-origin reminder, provider smoke 기준으로 완료됐다. 고급 sync/provider 확장은 `PRE12-F10`으로만 둔다. |
@@ -114,6 +114,8 @@
 06에서 다뤄도 되는 범위:
 
 - DealActivity model, repository, timeline API, deal list `latestActivity`
+- manual activity create/update
+- Deal list products summary, Contact list `dealCount`, page size 15 contract
 - `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`
 - `SCHEDULE_LINKED`, `SCHEDULE_UNLINKED`
 - `MEETING_NOTE_LINKED`, `MEETING_NOTE_UNLINKED`
@@ -131,8 +133,25 @@
 - Company/Contact/Product latest summary response field 추가
 - MeetingNote list latest/next summary response field 추가
 - Company/Contact/Product summary 전용 endpoint 또는 record별 상세 activity timeline 추가
+- manual activity delete API/UI 추가
+- 자동 activity update/delete API 추가
+- DealActivity soft delete/trash/restore/retention/audit model 추가
+- memo/private memo timeline 통합
+- 모든 도메인 공통 activity bus 추가
+- DealActivity 고급 검색/필터, 딜 score, AI activity 자동 판단 추가
+- DealActivity summary cache 또는 denormalized latest table 추가
+- 06 UX/UI 전체 polish를 06 blocker로 취급
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 table 추가
+
+06 재대조에서 다시 발견됐지만 새 후보로 중복 생성하지 않거나 분리하는 항목:
+
+| 항목 | PRE12 후보 |
+| --- | --- |
+| Company/Contact/Product latest summary와 generic summary endpoint | `PRE12-F07` |
+| Notification 데이터 TTL/cleanup | `PRE12-F38` |
+| DealActivity delete/retention/audit, memo 통합, 공통 activity bus, 검색/filter, score, AI 자동 판단 | `PRE12-F39` |
+| backup/restore runbook/drill | `PRE12-F11` |
 
 ## 7. 08 Global Data I18N에 직접 영향을 주는 기준
 

@@ -12,7 +12,7 @@
 | 순서 | Goal | 상태 | 목적 | 구현 가능 여부 |
 | ---: | --- | --- | --- | --- |
 | G00 | `G00_SCOPE_CLASSIFICATION` | Ready | 후보 상태를 확정하고 완료 슬롯에 영향을 주는 경계를 다시 고정한다. | 문서/코드 검색만 가능 |
-| G01 | `G01_06_SCOPE_GUARD_AND_CODE_AUDIT` | Pending | 06 완료 결과가 Notification/MeetingNote/Follow-up 범위를 잘못 넓히지 않았는지 확인한다. | 문서 보정 가능, 기능 구현 금지 |
+| G01 | `G01_06_SCOPE_GUARD_AND_CODE_AUDIT` | Pending | 06 완료 결과가 Notification/MeetingNote/Follow-up/list summary/activity lifecycle 범위를 잘못 넓히지 않았는지 확인한다. | 문서 보정 가능, 기능 구현 금지 |
 | G02 | `G02_NEXT_ACTION_REMINDER_CONTRACT` | Question | 다음 행동 reminder를 12 전에 할지, post-12 seed로 남길지 결정하고 계약 초안을 만든다. | 사용자 결정과 confirmed API 전 구현 금지 |
 | G03 | `G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT` | Question | 회의록 follow-up reminder와 자동 발송 후보를 분리한다. | 사용자 결정과 confirmed API 전 구현 금지 |
 | G04 | `G04_RECORD_SUMMARY_CONTRACT` | defer | 2026-08-06 A 결정은 NBA-003 Company/Contact/Product/generic summary/timeline에만 적용한다. MeetingNote list summary는 기존 NBA-004 post-12-seed로 분리 유지한다. | pre-12 구현 금지 |

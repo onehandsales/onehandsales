@@ -19,6 +19,7 @@
 | `ExternalCalendarConnection`, `ExternalCalendarSource`, `Schedule` external fields | 04에서 Google read-only import/sync metadata로 완료됐다. provider는 `GOOGLE`만 있고 `ExternalCalendarConnection`은 `@@unique([userId, provider])`로 사용자당 Google 연결 1개 기준이다. recurrence/reminders/attendee/watch channel/other provider table은 없다. |
 | `DealActivityType` | next action, schedule, meeting note, follow-up event를 activity로 기록한다. |
 | `DealActivitySourceType` | `SYSTEM`, `USER`, `NEXT_ACTION`, `SCHEDULE`, `MEETING_NOTE`, `FOLLOW_UP`가 있다. |
+| `DealActivity` | 06에서 Deal timeline source-of-truth로 추가됐다. soft delete/trash/restore/retention/audit field, score field, summary cache table은 없다. |
 | `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/draft operation을 포함한다. |
 | `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog` | 05에서 저장형 weekly report, version/failed version, input snapshot, safe provider log, suggestion을 완료했다. 자동 생성 schedule/cursor나 AI suggestion 자동 mutation 적용 모델은 없다. |
 | `ExternalEmailConnection`, `ExternalEmailOAuthState`, `SmsSenderNumber`, `FollowUpConsentNotice` | 05에서 Gmail/Microsoft email connection과 SMS sender verification/consent foundation을 완료했다. B2B tenant sender, email sync, campaign/sequence, unsubscribe, external SMTP/SaaS provider 모델은 없다. |
@@ -49,6 +50,7 @@
 - SMS 실제 provider/vendor, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델
 - Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup 기준을 확정하지 않은 상태의 삭제 migration 또는 cleanup cursor table
 - Company/Contact/Product latest summary의 저장 방식
+- DealActivity soft delete/trash/restore/retention/audit, summary cache/denormalized latest, score/AI 판단, memo/private memo 통합, all-domain activity bus 저장 방식
 - MeetingNote list summary의 저장 방식
 - AI data cleanup suggestion의 저장/적용/rollback 방식
 - MeetingNote transcript/raw provider response/follow-up draft body의 retention, 삭제권, raw access audit 방식
@@ -78,6 +80,8 @@
 
 2026-08-06 A 결정으로 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 DB 설계 후보로 승격하지 않는다.
 
+06 재대조 기준으로 `DealActivity` schema와 migration은 timeline/manual create-update/자동 event 기록용으로 완료됐다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터/score/AI 판단, summary cache는 `PRE12-F39`로만 두고 06 미완성 migration으로 보지 않는다.
+
 04 재대조 기준으로 Google Calendar DB 영향은 Google read-only source metadata까지 완료다. `ExternalCalendarProvider=GOOGLE`, 사용자당 provider 1개 unique, `Schedule` external metadata 기준을 재오픈하지 않고 write/watch/recurrence/reminders/attendee/multi-account/other provider schema는 `PRE12-F10` 후속 후보로만 둔다.
 
 05 재대조 기준으로 AI weekly report와 follow-up delivery의 1차 schema는 완료다. Gmail/Microsoft provider smoke는 DB 변경 없이 운영 기록으로만 닫고, SMS 실제 provider, B2B/email growth 확장, 사용자-facing cost/paywall, 영구 로그 legal deletion 정책은 `PRE12-F05`/`PRE12-F06`/`PRE12-F12`/`PRE12-F26` 후속 후보로 둔다.
@@ -99,6 +103,7 @@
 | follow-up 자동 발송 | send schedule, consent, unsubscribe, retry policy table 검토 | post-12 seed |
 | Notification 데이터 TTL/cleanup | `Notification.createdAt`, `NotificationDeliveryAttempt.createdAt`, `BrowserPushSubscription.revokedAt` 기준 hard delete/보존 정책과 provider failure 운영 조회 영향 검토 | post-12 seed / `PRE12-F38` |
 | record summary | denormalized summary table 또는 runtime aggregation 여부 결정 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
+| DealActivity lifecycle/search/score 확장 | soft delete/trash/restore/retention/audit field/table, memo/private memo 통합 모델, all-domain activity bus, search index, score/AI 판단 결과, summary cache/denormalized latest 필요 여부 결정 | post-12 seed / `PRE12-F39` |
 | AI data cleanup | suggestion table, 적용 이력, rollback/audit table 필요 여부 결정 | post-12 seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | raw text 저장 table, TTL, 삭제권, sensitive access log 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | background job queue, source별 row snapshot, Admin cleanup/audit table 필요 여부 결정 | post-12 seed |

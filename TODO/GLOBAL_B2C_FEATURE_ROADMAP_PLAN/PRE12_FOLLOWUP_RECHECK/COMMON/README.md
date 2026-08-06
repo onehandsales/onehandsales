@@ -35,6 +35,7 @@
 - AI weekly report 자동 생성 또는 AI suggestion 자동 mutation
 - Follow-up delivery SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML email/첨부/tracking pixel
 - Company/Contact/Product latest summary response field 추가
+- DealActivity manual delete/restore, automatic activity update/delete, retention/audit/trash, memo/private memo 통합, 모든 도메인 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, summary cache/denormalized latest 추가
 - MeetingNote list latest/next summary response field 추가
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 table 또는 raw 조회 API 추가
@@ -64,6 +65,8 @@
 - 자동 민감정보 감지/DLP model 또는 processor 추가
 
 2026-08-06 A 결정 기준으로 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 pre-12 계약화 대상도 아니다. post-12 재검토 전에는 G04를 구현 계약 goal로 전환하지 않는다.
+
+06 재대조 기준으로 DealActivity model/repo/API, 자동 event, manual create/update, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터, score, AI 자동 판단, summary cache는 06 미완성이 아니라 `PRE12-F39` 후속 후보로 분리한다.
 
 05 재대조 기준으로 저장형 AI weekly report, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft send adapter는 완료다. Gmail/Microsoft provider smoke는 운영 closeout만 남고, SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 05 미완성이 아니라 PRE12 후속 후보로 분리한다.
 

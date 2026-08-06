@@ -1,7 +1,7 @@
 # G01 06 Scope Guard And Code Audit
 
 상태: Pending
-목표: 06 완료 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary 기능으로 확장되지 않았는지 확인한다.
+목표: 06 완료 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary, activity lifecycle/search/score 기능으로 확장되지 않았는지 확인한다.
 
 ## 1. 선행 조건
 
@@ -15,6 +15,7 @@
 - Notification module 변경 여부 확인
 - MeetingNote follow-up 자동 발송/알림 변경 여부 확인
 - Company/Contact/Product/MeetingNote list summary response field 추가 여부 확인
+- manual activity delete, automatic activity update/delete, DealActivity retention/audit/trash, memo/private memo 통합, 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단 추가 여부 확인
 - 필요한 경우 06 문서에 "범위 확장 금지" closeout 보강
 
 ## 3. 제외 범위
@@ -23,6 +24,7 @@
 - 알림 scheduler 구현
 - record summary API 구현
 - 자동 발송 구현
+- DealActivity 삭제/retention/audit/search/score/AI 확장 구현
 
 ## 4. 완료 기준
 

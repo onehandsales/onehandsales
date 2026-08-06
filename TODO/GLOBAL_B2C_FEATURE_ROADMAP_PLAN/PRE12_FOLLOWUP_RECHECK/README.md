@@ -19,7 +19,7 @@
 - 04에서 제외된 Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, Google reminders import, 참석자/contact auto-link, 여러 Google 계정, Google Calendar 외 provider
 - 05에서 남은 Gmail/Microsoft provider smoke
 - 05에서 제외된 SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책
-- 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary 후보
+- 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary, activity lifecycle/search/score 후보
 - 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장 후보
 - 08에서 닫은 Global Data I18N 범위와 08 밖으로 남은 시장/국가/통화/전화번호/auth/UX polish 후보
 - 09에서 닫은 Product Analytics foundation과 09 밖으로 남은 account deletion 실제 처리, 세부 analytics event, 외부 provider, attribution/experiment, PWA/native 후보
@@ -37,7 +37,7 @@
 | 03 Weekly Schedule Report | 완료 | PDF, generic ExportJob, recurrence는 03 재오픈 대상이 아니다. |
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/Google-origin reminder/provider smoke는 완료다. Google export/write/양방향 sync, webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider는 후속이다. |
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
-| 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. |
+| 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
 | 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. |
 | 08 Global Data I18N | 완료 이력 유지 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 | 09 Product Analytics | 완료 이력 유지 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, PWA/native install attribution은 09 완료 범위가 아니다. |
@@ -55,6 +55,7 @@
 - `FOLLOW_UP_SENT`, `FOLLOW_UP_FAILED`는 Deal target을 가진 follow-up delivery attempt의 safe summary로만 본다.
 - 다음 행동 reminder 생성, 회의록 follow-up reminder 생성, MeetingNote follow-up 자동 발송은 06 구현 범위에 넣지 않는다.
 - private memo, provider raw response, follow-up body 전체, meeting note raw text 전문을 timeline summary, list summary, log에 넣지 않는다.
+- 수동 activity 삭제, 자동 activity 수정/삭제, activity soft delete/trash/restore/retention/audit, memo/private memo timeline 통합, 모든 도메인 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, DealActivity summary cache/denormalized latest는 06 완료 범위가 아니다.
 
 ## 4. 후보 분류
 
@@ -68,6 +69,7 @@
 | SMS 실제 provider | post-12-seed | `PRE12-F05`로 유지한다. 현재 SMS sender verification UI/API foundation은 있으나 실제 vendor 연동은 없다. |
 | Follow-up delivery 고급 provider/growth 확장 | post-12-seed | `PRE12-F06`으로 유지한다. B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking은 05 완료 범위가 아니다. |
 | Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. |
+| DealActivity lifecycle/search/score 확장 | post-12-seed / trust-product policy | `PRE12-F39`로 둔다. 수동 삭제/retention/audit, memo 통합, 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단은 06 미완성이 아니다. |
 | MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
 | AI data cleanup 제안 저장/적용 | post-12-seed / 별도 data quality 계획 | 07에서는 제외한다. 09 또는 별도 data quality 계획에서 권한, 적용, 감사 로그, rollback 기준을 정한 뒤 판단한다. |
 | transcript/raw provider response/follow-up draft 저장 | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현하지 않는다. |
