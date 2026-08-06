@@ -15,7 +15,7 @@
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30), ProductAnalyticsEvent, route/server events, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31), 모바일 명함 촬영/OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
 - [x] `11_ADMIN_OPERATION`: Done (2026-08-01), Admin 운영 API/Web, audit/redaction, Trash/account request/provider/system gate, QA closeout 완료
-- [ ] 01~11 pre-12 후속 재대조: 2026-08-06 기준 01~05 진행/확인 완료, 06 병행 작업/검토 대상, 07~11 다음 대상. 상세 분류 작업공간은 `PRE12_FOLLOWUP_RECHECK`
+- [ ] 01~11 pre-12 후속 재대조: 2026-08-06 기준 01~06 진행/확인 완료, 06 후속 재검토 A 결정 반영 완료, 07~11 다음 대상. 상세 분류 작업공간은 `PRE12_FOLLOWUP_RECHECK`
 - [ ] `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 로드맵 기준
@@ -72,7 +72,7 @@ Product UX first-sale gate는 전체 시각 polish와 다르다. 핵심 `/app` �
 
 사용자 결정 기준으로 다음 큰 흐름은 12 착수 전에 01~11 완료 슬롯을 한 번 더 대조해 후속 조치가 필요한 항목을 먼저 정리하는 것이다. 12는 결제/구독/세금 정보와 직접 연결되므로, billing/paywall/churn/paid conversion/invoice/tax 판단은 12 전 임시 구현으로 처리하지 않는다.
 
-2026-08-06 기준 현재 01~05는 진행/확인 완료로 보고, 06은 병행 작업/검토 대상, 다음 대상은 07~11이다.
+2026-08-06 기준 현재 01~06은 진행/확인 완료로 보고, 06 후속 재검토 A 결정까지 반영 완료됐다. 다음 대상은 07~11이다.
 
 01~11 pre-12 후속 재대조에서는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`와 `PRE12_FOLLOWUP_RECHECK`를 기준으로 아래를 다시 확인한다.
 

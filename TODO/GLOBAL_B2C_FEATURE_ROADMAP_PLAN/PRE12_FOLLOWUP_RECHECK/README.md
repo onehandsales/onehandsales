@@ -9,10 +9,12 @@
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, 12 착수 전에 다시 확인해야 하는 후속 후보를 한곳에 묶는다.
 
-현재 사용자는 01~05 재대조를 마쳤고, 다른 터미널에서 06 관련 작업을 진행 중이다. 따라서 이 문서는 특히 02, 05, 06, 07 사이에서 오해하기 쉬운 다음 항목을 분리한다.
+현재 사용자는 01~06 재대조와 06 후속 재검토 A 결정을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
+- 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API
 - 02에서 제외된 다음 행동 알림
 - 02에서 제외된 회의록 후속 알림
+- 03에서 제외된 PDF, generic ExportJob, 반복 일정 정식 모델
 - 05에서 남은 Gmail/Microsoft provider smoke
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary 후보
 - 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림 후보
@@ -23,19 +25,19 @@
 
 | 영역 | 현재 판정 | 구현 판단 |
 | --- | --- | --- |
-| 01 ImportJob | 완료 | 대용량 worker, generic ExportJob, Admin 전용 화면/API는 01 미완성이 아니다. |
+| 01 ImportJob | 완료 | 대용량 worker, 일정/회의록 import, generic ExportJob, Admin 전용 화면/API는 01 미완성이 아니다. |
 | 02 Notification | 완료 | 일정/딜 reminder, in-app/email/browser push, provider smoke는 완료다. 다음 행동 알림과 회의록 후속 알림은 구현되지 않았다. |
 | 03 Weekly Schedule Report | 완료 | PDF, generic ExportJob, recurrence는 03 재오픈 대상이 아니다. |
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/provider smoke는 완료다. write, webhook, recurrence는 후속이다. |
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. |
-| 06 DealActivity | 완료 이력 유지 | 현재 06 작업은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않는다. |
+| 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. |
 | 07 MeetingNote AI | 완료 이력 유지 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림은 07 완료 범위가 아니다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
 
-## 3. 06 작업 시 바로 적용할 경계
+## 3. 06 완료 이후 적용할 경계
 
-다른 터미널에서 진행 중인 06 작업은 아래 경계를 지킨다.
+06 완료 범위와 이후 07~11 재대조는 아래 경계를 지킨다.
 
 - `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`는 DealActivity event로만 본다.
 - `MEETING_NOTE_LINKED`, `MEETING_NOTE_UNLINKED`는 DealActivity event로만 본다.
@@ -52,7 +54,8 @@
 | Gmail/Microsoft provider smoke | pre-12-follow-up-needed | G05에서 운영 credential/callback/allowlist 준비 후 실행 기록만 닫는다. 코드 구현 후보가 아니다. |
 | Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. 비고: post-12 B2B/team CRM strategy seed로 12 완료 후 Global B2C 지표와 B2B/team CRM 전략에서 재검토한다. |
 | MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
-| generic ExportJob/PDF/recurrence/Google write/watch | post-12-seed | 12 완료 후 최종 재검토에서 새 TODO로 승격할지 판단한다. |
+| Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. 12 완료 후 product scale/Admin ops/import source 전략에서 새 TODO 승격 여부를 판단한다. |
+| generic ExportJob/PDF/recurrence/Google write/watch | post-12-seed | 12 완료 후 최종 재검토에서 새 TODO로 승격할지 판단한다. 반복 일정은 03과 04 양쪽 제외 범위에 연결된다. |
 | billing/paywall/churn/paid conversion | billing-blocked | 12 전 임시 구현 금지. |
 
 ## 5. 문서 구조
@@ -78,6 +81,7 @@ PRE12_FOLLOWUP_RECHECK/
       G04_RECORD_SUMMARY_CONTRACT.md
       G05_PROVIDER_SMOKE_CLOSEOUT.md
       G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md
+      G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md
       G99_PRE12_CLOSEOUT.md
   BE-TODO/
     API-TODO.md

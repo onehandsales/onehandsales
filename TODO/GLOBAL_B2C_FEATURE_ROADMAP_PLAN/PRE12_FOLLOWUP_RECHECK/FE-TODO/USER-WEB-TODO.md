@@ -18,6 +18,7 @@
 | AI weekly report/follow-up | `/app/schedules/week` AI report section, `/app/settings` follow-up delivery settings, compose/send/retry UX는 05 범위로 구현됐다. |
 | DealActivity | deal list `latestActivity`, deal detail activity timeline은 06 범위다. |
 | MeetingNote AI | meeting note detail AI next action/follow-up draft section은 07 범위다. |
+| Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
 
 ## 3. 구현 금지
 
@@ -28,6 +29,9 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - follow-up 자동 발송 toggle 추가
 - Company/Contact/Product latest summary를 API 없이 FE에서 조합 표시
 - MeetingNote list latest/next summary를 API 없이 FE에서 조합 표시
+- 대용량 import worker UI 추가
+- 일정/회의록 import source UI 추가
+- ImportJob Admin 전용 화면 추가
 - generic ExportJob/PDF/export route 추가
 - billing/paywall/churn UI 추가
 
@@ -40,6 +44,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | 다음 행동 reminder | notification settings, next action form, deal detail 상태 표시 | Question |
 | 회의록 follow-up reminder | meeting note detail/list, notification settings, follow-up draft 상태 표시 | post-12-seed |
 | record summary | Company/Contact/Product/MeetingNote list item summary 위치와 empty fallback | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
+| Import scale/source/Admin 확장 | 대용량 import progress, 일정/회의록 source mapping, Admin-only job cleanup/조회 화면 | post-12-seed |
 | provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | pre-12-follow-up-needed |
 
 ## 5. UX 기준

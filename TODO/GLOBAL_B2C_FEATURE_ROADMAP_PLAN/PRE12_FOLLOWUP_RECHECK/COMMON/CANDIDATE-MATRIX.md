@@ -6,7 +6,7 @@
 
 ## 1. 목적
 
-이 문서는 01~05 재대조와 06/07 연결 과정에서 나온 후속 후보를 한 표로 관리한다. 이 표는 구현 지시가 아니라 분류 기준이다.
+이 문서는 01~06 재대조와 07 연결 과정에서 나온 후속 후보를 한 표로 관리한다. 이 표는 구현 지시가 아니라 분류 기준이다.
 
 ## 2. 후보 표
 
@@ -21,9 +21,10 @@
 | PRE12-F07 | Company/Contact/Product latest summary | NBA-003 잔여, 06 제외 | 06은 Deal list `latestActivity`만 완료했다. 2026-08-06 A 결정으로 06 완료 범위를 재오픈하지 않는다. | defer | pre-12 G04 계약화와 구현을 하지 않는다. 비고: post-12 B2B/team CRM strategy seed로 12 완료 후 Global B2C 지표와 B2B/team CRM 전략에서 재검토한다. |
 | PRE12-F08 | MeetingNote list latest/next summary | NBA-004 잔여, 07 제외 | 07은 상세 next action/follow-up draft만 완료했다. | post-12-seed | 12 전 구현하지 않는다. list response와 raw text 제외 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
 | PRE12-F09 | generic ExportJob/PDF | 03/11 후속 | 03은 sync Excel만 완료했고 generic ExportJob/PDF는 제외했다. | post-12-seed | Trust/policy, file TTL, audit, Admin queue와 함께 재검토. |
-| PRE12-F10 | Google Calendar write/watch/recurrence | 04 후속 | 04는 read-only import/sync다. write, webhook, recurrence는 제외했다. | post-12-seed | Calendar 정책과 conflict resolution 결정 필요. |
+| PRE12-F10 | Google Calendar write/watch/recurrence | 03/04 후속 | 03은 반복 일정 정식 모델을 제외했고, 04는 read-only import/sync만 완료했다. write, webhook, recurrence는 제외했다. | post-12-seed | Calendar 정책과 conflict resolution 결정 필요. |
 | PRE12-F11 | backup/restore runbook/drill | NBA-014/data reliability | 11 Admin system gate는 점검 결과 기록이지 shell 실행/운영 runbook이 아니다. | post-12-seed | 운영 절차 문서로 승격할지 재검토한다. 비고: ops follow-up 성격. |
 | PRE12-F12 | billing/paywall/churn/paid conversion | 09/11/12 연결 | 09는 reserved taxonomy만, 11은 Admin operation만 완료했다. | billing-blocked | 12 전 구현 금지. |
+| PRE12-F13 | Import scale/source/Admin 확장 | 01 제외 | 01은 회사/담당자/제품/딜 import와 10MB/5,000 data row 제한, 보관/삭제/복구 신뢰 기준으로 완료됐다. 대용량 import background worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 최종형 밖이다. | post-12-seed | 12 전 구현하지 않는다. post-12 product scale, Admin ops, import source 전략에서 새 TODO 승격 여부를 판단한다. |
 
 ## 3. 06과 직접 충돌하는 후보
 

@@ -12,7 +12,8 @@
 
 | 범위 | 설명 |
 | --- | --- |
-| 01~05 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
+| 01~06 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
+| 01 Import 확장 후보 분리 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API가 01 미완성이 아니라 별도 post-12 seed임을 고정한다. |
 | 02 후속 후보 분리 | 다음 행동 알림과 회의록 후속 알림이 02 구현 범위가 아니었음을 고정한다. |
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림을 분리한다. |
@@ -25,6 +26,7 @@
 | --- | --- |
 | 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. 현재 작업이 있더라도 이 문서는 06 범위 확장을 지시하지 않는다. |
 | 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. 목록 summary, 자동 발송, 알림은 별도 후보다. |
+| 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 post-12에서 재검토한다. |
 | 12 Billing 구현 | 결제, 구독, 세금, paywall, churn, paid conversion은 12 결정 없이는 기준을 확정할 수 없다. |
 | 새 API 즉시 구현 | 현재 `COMMON/API-SPEC`에는 confirmed API가 없다. |
 | 새 Prisma migration 즉시 작성 | 후보 계약이 확정되기 전에는 schema를 바꾸지 않는다. |

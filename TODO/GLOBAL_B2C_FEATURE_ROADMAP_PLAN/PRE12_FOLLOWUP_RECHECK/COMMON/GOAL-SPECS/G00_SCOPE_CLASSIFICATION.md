@@ -9,7 +9,8 @@ G00은 구현 goal이 아니다. 문서와 실제 코드 상태를 다시 대조
 
 ## 2. 포함 범위
 
-- 01~05 재대조 결과 확인
+- 01~06 재대조 결과 확인
+- 01 Import scale/source/Admin 확장 후보 상태 확인
 - 06, 07 문서와 현재 코드 상태 확인
 - `NotificationSourceType`, `DealActivityType`, `DealActivitySourceType`, `AiProviderOperation` 상태 확인
 - 후보 matrix 갱신
@@ -34,6 +35,5 @@ G00은 구현 goal이 아니다. 문서와 실제 코드 상태를 다시 대조
 ```powershell
 rg -n "enum NotificationSourceType|enum DealActivityType|enum DealActivitySourceType|enum AiProviderOperation" BE\prisma\schema.prisma
 rg -n "NotificationSourceType|sourceType: \"NEXT|sourceType: \"MEETING|sourceType: \"FOLLOW" BE\src -g "*.ts"
-rg -n "NEXT_ACTION|MEETING_NOTE|FOLLOW_UP|알림|reminder|자동 발송|latestActivity|Company/Contact/Product|MeetingNote 목록" TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\06_DEAL_ACTIVITY_TIMELINE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\07_MEETING_NOTE_AI_PROVIDER_LOG -g "*.md"
+rg -n "대용량 import|일정/회의록 import|ImportJob Admin|NEXT_ACTION|MEETING_NOTE|FOLLOW_UP|알림|reminder|자동 발송|latestActivity|Company/Contact/Product|MeetingNote 목록" TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\01_IMPORT_JOB_PERSISTENCE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\06_DEAL_ACTIVITY_TIMELINE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\07_MEETING_NOTE_AI_PROVIDER_LOG -g "*.md"
 ```
-

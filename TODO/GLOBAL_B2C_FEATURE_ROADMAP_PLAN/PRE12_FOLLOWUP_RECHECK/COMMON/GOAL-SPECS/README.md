@@ -14,6 +14,7 @@
 | G04 | `G04_RECORD_SUMMARY_CONTRACT.md` | NBA-003 record summary 보류 결정과 NBA-004 MeetingNote list summary 분리 |
 | G05 | `G05_PROVIDER_SMOKE_CLOSEOUT.md` | 05 G10 운영 provider smoke closeout |
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md` | 06/NBA-003 record summary defer 결정 closeout |
+| G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md` | 01 import scale/source/Admin 확장 후보 defer 결정 closeout |
 | G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 |
 
 ## 2. 공통 금지

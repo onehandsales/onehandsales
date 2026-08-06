@@ -16,6 +16,7 @@
 | DealActivity | `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`, `MEETING_NOTE_LINKED`, `FOLLOW_UP_SENT/FAILED` 같은 activity event가 있다. |
 | MeetingNote AI | `AiProviderOperation`에 MeetingNote draft/STT/next action/follow-up draft operation이 있다. |
 | Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태다. |
+| ImportJob | `/api/imports` 계열 persistence/resume/confirm/cancel과 10MB/5,000 data row 제한은 01에서 완료됐다. 현재 import 대상은 회사, 담당자, 제품, 딜이다. |
 
 ## 3. 구현 금지
 
@@ -28,6 +29,9 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - Follow-up 자동 발송 worker 추가
 - Company/Contact/Product list summary API field 추가
 - MeetingNote list summary API field 추가
+- 대용량 import worker API 추가
+- 일정/회의록 import API 추가
+- ImportJob Admin 전용 API 추가
 - generic ExportJob API 추가
 - billing/paywall/churn API 추가
 
@@ -41,6 +45,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | 회의록 follow-up reminder | MeetingNote source, follow-up draft/send 상태, notification rule 확정 필요 | post-12-seed |
 | MeetingNote 자동 발송 | consent, retry, unsubscribe, send policy, provider cost policy 필요 | post-12-seed |
 | record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
+| Import scale/source/Admin 확장 | worker queue/status/cancel/retry, schedule/meeting-note source mapping, Admin 조회/cleanup API 기준 필요 | post-12-seed |
 | provider smoke | 새 API 없음. 운영 환경과 runbook 기록만 필요 | pre-12-follow-up-needed |
 
 ## 5. 권장 검색 명령

@@ -12,7 +12,7 @@
 ## 2. 사용자 결정
 
 - 12 착수 전에 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 완료 슬롯을 순서대로 다시 대조한다.
-- 2026-08-06 기준 현재 pre-12 후속 재대조는 01~05까지 진행/확인 완료로 본다. 06은 병행 작업/검토 대상이며, 다음 대상은 07~11이다.
+- 2026-08-06 기준 현재 pre-12 후속 재대조는 01~06까지 진행/확인 완료로 본다. 06 후속 재검토 A 결정도 반영 완료됐으며, 다음 대상은 07~11이다.
 - 12 전 후속 후보 분류와 확정 전 작업 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용한다.
 - 각 슬롯은 해당 README, COMMON 문서, GOAL-SPECS, TODO_LOG/closeout, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 함께 대조한다.
 - 미구현, 부분 구현, 후속 조치, 의도적으로 제외한 항목을 다시 분류한다.
@@ -26,8 +26,8 @@
 ## 3. 01~11 Pre-12 후속 재대조 순서
 
 1. 현재 진행 상태를 확인한다.
-   - 01~05 진행/확인 완료 여부
-   - 06~11 남은 재대조 대상
+   - 01~06 진행/확인 완료 여부
+   - 07~11 남은 재대조 대상
    - 12로 보류해야 하는 billing-linked 항목
 2. `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11을 순서대로 다시 읽는다.
    - README
@@ -76,6 +76,7 @@
 3. `NEXT_BACKEND_API_BACKLOG_PLAN`을 다시 읽고 남은 후보를 분류한다.
    - `NBA-003` Company/Contact/Product latest summary
    - `NBA-004` MeetingNote list latest/next summary
+   - 01 Import scale/source/Admin 확장 후보
    - backup/restore 실행 runbook
    - 장애 대응 drill
    - billing-linked conversion/churn/ARPU가 12에서 어디까지 닫혔는지
@@ -120,6 +121,7 @@
 | PWA install/offline shell/native app | 10 후속 | Series A 또는 별도 제품화 후보 |
 | Google Calendar write/webhook/recurrence | 04 후속 | 후속 확장 후보 |
 | generic ExportJob | 03/11 후속 | 정책/대량 export 필요성 재판단 |
+| Import scale/source/Admin 확장 | 01 후속 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 화면/API 필요성 재판단 |
 | MeetingNote 자동 발송/알림 | 07 후속 | 오발송/정책 리스크 확인 후 재판단 |
 
 ## 5. 금지

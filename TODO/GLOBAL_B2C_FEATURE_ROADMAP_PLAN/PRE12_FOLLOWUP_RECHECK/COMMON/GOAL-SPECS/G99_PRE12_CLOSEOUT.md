@@ -9,6 +9,7 @@
 - 필요한 경우 G01, G05 완료
 - G02~G04 후보가 구현 대상인지 보류 대상인지 분류 완료
 - G06의 06/NBA-003 defer 결정 closeout 완료
+- G07의 01 import scale/source/Admin 확장 defer 결정 closeout 완료
 
 ## 2. 포함 범위
 

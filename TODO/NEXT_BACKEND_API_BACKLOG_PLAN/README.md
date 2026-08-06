@@ -64,7 +64,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - MeetingNote 상세 next action/follow-up draft와 AI/STT provider call log는 07에서 구현 완료됐다. MeetingNote 목록 latest/next summary는 product feature 후보로 남긴다.
 - `NBA-014`는 06 범위에서 DB target, migration/seed 금지, Prisma 검증 gate를 닫았고 11에서 Admin system operation gate도 구현했다. 남은 data reliability 범위는 실제 운영 DB 적용 절차, backup/restore 실행 runbook, 장애 대응 drill이다.
 - `NBA-006 ImportJob persistence/resume API`는 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE` G01~G09 구현 및 최종 QA closeout이 완료되어 active backlog 후보에서 제외한다.
-- 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE`는 terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 구현해 최종 서비스 형태로 완전 종료했다.
+- 2026-08-03 기준 `01_IMPORT_JOB_PERSISTENCE`는 terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 구현해 최종 서비스 형태로 완전 종료했다. 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니라 별도 post-12 scale/source/Admin ops 후보로 분리한다.
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다.
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료됐고, 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료되어 active backlog 후보에서 제외한다.

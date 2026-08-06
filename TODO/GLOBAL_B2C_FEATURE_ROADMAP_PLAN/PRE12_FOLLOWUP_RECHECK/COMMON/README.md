@@ -7,7 +7,7 @@
 
 `COMMON`은 12 전 후속 후보 재대조에서 Frontend와 Backend가 함께 봐야 하는 범위, 후보 상태, goal 순서, 구현 금지 조건을 관리한다.
 
-이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 먼저 01~05에서 나온 후속 후보가 06 작업에 들어가야 하는지, 07 또는 post-12 후보로 남겨야 하는지, 12 Billing과 충돌하는지 분류한다.
+이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 먼저 01~06에서 나온 후속 후보가 07 또는 post-12 후보로 남아야 하는지, 12 Billing과 충돌하는지 분류한다.
 
 ## 2. 문서 목록
 
@@ -29,6 +29,7 @@
 - MeetingNote follow-up 자동 발송
 - Company/Contact/Product latest summary response field 추가
 - MeetingNote list latest/next summary response field 추가
+- 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API 추가
 - generic ExportJob, PDF, recurrence, Google Calendar write/watch
 - billing/paywall/churn/paid conversion runtime flow
 
@@ -37,6 +38,7 @@
 ## 4. 관련 문서
 
 - `../README.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`

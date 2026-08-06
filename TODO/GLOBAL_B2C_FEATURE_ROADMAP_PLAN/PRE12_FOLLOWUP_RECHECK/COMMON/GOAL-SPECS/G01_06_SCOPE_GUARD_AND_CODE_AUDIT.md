@@ -1,12 +1,12 @@
 # G01 06 Scope Guard And Code Audit
 
 상태: Pending
-목표: 현재 06 작업 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary 기능으로 확장되지 않았는지 확인한다.
+목표: 06 완료 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary 기능으로 확장되지 않았는지 확인한다.
 
 ## 1. 선행 조건
 
 - G00 완료
-- 다른 터미널의 06 작업 변경분이 작업 트리에 반영되어 있어야 한다.
+- 06 완료 문서와 실제 코드 상태가 작업 트리에 반영되어 있어야 한다.
 
 ## 2. 포함 범위
 
@@ -37,4 +37,3 @@ git status --short
 rg -n "NotificationSourceType|schedule.*reminder|deal.*reminder|NEXT_ACTION.*reminder|MEETING_NOTE.*reminder|FOLLOW_UP.*reminder" BE\src BE\prisma\schema.prisma -g "*.ts" -g "*.prisma"
 rg -n "latestActivity|latestSummary|Company|Contact|Product|MeetingNote" BE\src\modules\deal BE\src\modules\meeting-note FE\user-web\src\features -g "*.ts" -g "*.tsx"
 ```
-
