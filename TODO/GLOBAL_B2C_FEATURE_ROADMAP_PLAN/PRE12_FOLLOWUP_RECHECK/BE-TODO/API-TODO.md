@@ -1,12 +1,14 @@
 # Backend API Todo
 
-상태: Draft / confirmed backend API 없음
+상태: Classification Complete / confirmed backend API 없음
 작성일: 2026-08-06
 최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
 이 문서는 `PRE12_FOLLOWUP_RECHECK` 후보가 Backend에 어떤 영향을 줄 수 있는지 기록한다. 현재 바로 구현할 Backend API 작업은 없다.
+
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 Backend API 구현은 없다. `PRE12-F04`도 새 API가 아니라 운영 Gmail/Microsoft provider smoke 기록이다.
 
 ## 2. 현재 코드 사실
 
@@ -94,7 +96,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 | 후보 | 예상 Backend 영향 | 현재 상태 |
 | --- | --- | --- |
-| 다음 행동 reminder | Notification source/setting/scheduler/dedupe/cancel rule 확정 필요 | Question |
+| 다음 행동 reminder | Notification source/setting/scheduler/dedupe/cancel rule 확정 필요 | post-12-seed / notification policy |
 | 회의록 follow-up reminder | MeetingNote source, follow-up draft/send 상태, notification rule 확정 필요 | post-12-seed |
 | MeetingNote 자동 발송 | consent, retry, unsubscribe, send policy, provider cost policy 필요 | post-12-seed |
 | MeetingNote AI 후보 자동 업무 mutation | 자동 적용 endpoint/worker, approval/audit/rollback, confidence threshold, idempotency/ownership 계약 필요 | post-12-seed / `PRE12-F40` |
@@ -112,7 +114,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | address/tax/terms/pricing policy | 청구 주소, 세금, 약관, 가격 정책과 API 경계 확정 필요 | billing-blocked |
 | auth strategy 확장 | password reset, email verification, provider linking, account recovery, abuse/rate limit 기준 필요 | defer / 정책 필요 |
 | app i18n/Settings/bundle polish | 새 Backend API 없음. 필요 시 FE 유지보수만 검토 | post-12-seed / UXUI quality |
-| account deletion 실제 처리 | 30일 유예 만료 request 조회, AI report full snapshot과 follow-up subject/body log retention/deletion, processing lock, session revoke/access block, hard delete/anonymization, audit/result API 기준 필요 | Question / 정책 필요 |
+| account deletion 실제 처리 | 30일 유예 만료 request 조회, AI report full snapshot과 follow-up subject/body log retention/deletion, processing lock, session revoke/access block, hard delete/anonymization, audit/result API 기준 필요 | billing-blocked / trust-policy |
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up domain event hook, event allowlist, payload privacy contract 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider port/adapter, retry/dead-letter, consent/DPA, redaction, failure isolation 기준 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public route event collector, attribution cookie/referrer policy, experiment assignment API 기준 필요 | post-12-seed / growth/marketing |
@@ -125,7 +127,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |
 | Google Calendar 고급 sync/provider 확장 | 현재 API는 read-only sync와 selected calendar 관리만 제공한다. write/export/watch/reminders/attendee/multi-account/other provider는 새 API contract 필요 | post-12-seed / `PRE12-F10` |
 | 11 Admin 문서 체크리스트 정합성 | 11 BE/API TODO와 goal index를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, payment recovery API, purge/hard delete API 기준 필요 | Question / 정책 및 billing 필요 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, payment recovery API, purge/hard delete API 기준 필요 | billing-blocked / recovery-policy |
 | User data export artifact/download | artifact 생성 processor, storage signed URL, download controller, file TTL/ownership/audit 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | PII/DLP detection 위치, 오탐/누락 처리, audit/redaction 기준 필요 | defer / 정책 필요 |
 | Admin direct domain data mutation and recovery action policy | 도메인별 Admin mutation, ownership, 사용자 통지, audit/result, rollback, redaction 기준 필요. 11 read-only records API를 재오픈하지 않는다 | defer / ops-policy / `PRE12-F44` |

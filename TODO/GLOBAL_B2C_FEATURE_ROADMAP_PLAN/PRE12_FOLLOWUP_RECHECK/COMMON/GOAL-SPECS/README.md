@@ -1,17 +1,17 @@
 # Goal Specs
 
-상태: Draft
+상태: Classification Complete
 작성일: 2026-08-06
 
 ## 1. Goal 목록
 
 | Goal | 문서 | 목적 |
 | --- | --- | --- |
-| G00 | `G00_SCOPE_CLASSIFICATION.md` | 후보 상태 확정과 완료 슬롯 경계 고정 |
-| G01 | `G01_06_SCOPE_GUARD_AND_CODE_AUDIT.md` | 06 작업 결과가 범위를 넓히지 않았는지 audit |
-| G02 | `G02_NEXT_ACTION_REMINDER_CONTRACT.md` | 다음 행동 reminder 계약 여부 결정 |
-| G03 | `G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT.md` | 회의록 follow-up reminder/자동 발송 후보 분리 |
-| G04 | `G04_RECORD_SUMMARY_CONTRACT.md` | NBA-003 record summary 보류 결정과 NBA-004 MeetingNote list summary 분리 |
+| G00 | `G00_SCOPE_CLASSIFICATION.md` | 후보 상태 확정과 완료 슬롯 경계 고정 완료 |
+| G01 | `G01_06_SCOPE_GUARD_AND_CODE_AUDIT.md` | 06 scope audit 후보. 최종 분류에서는 별도 12 전 작업으로 선택하지 않음 |
+| G02 | `G02_NEXT_ACTION_REMINDER_CONTRACT.md` | 다음 행동 reminder를 post-12 Notification policy 후보로 분리 |
+| G03 | `G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT.md` | 회의록 follow-up reminder/자동 발송 후보를 post-12로 분리 |
+| G04 | `G04_RECORD_SUMMARY_CONTRACT.md` | NBA-003 record summary 보류 결정과 NBA-004 MeetingNote list summary post-12 분리 |
 | G05 | `G05_PROVIDER_SMOKE_CLOSEOUT.md` | 05 G10 운영 provider smoke closeout |
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md` | 06/NBA-003 record summary defer 결정 closeout |
 | G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md` | 01 import scale/source/Admin 확장 후보 defer 결정 closeout |
@@ -25,6 +25,7 @@
 ## 2. 공통 금지
 
 - confirmed API 없이 구현 goal로 들어가지 않는다.
+- `COMMON/FINAL-CLASSIFICATION.md`에서 12 전에 할 것으로 분류한 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` 외에는 12 전 작업으로 착수하지 않는다.
 - DB schema 변경 없이도 될 것처럼 추정하지 않는다.
 - 06 완료 범위를 넓혀서 새 알림/summary 기능을 끼워 넣지 않는다.
 - 06 완료 범위를 넓혀서 DealActivity 삭제/retention/audit, memo 통합, 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, summary cache를 끼워 넣지 않는다.

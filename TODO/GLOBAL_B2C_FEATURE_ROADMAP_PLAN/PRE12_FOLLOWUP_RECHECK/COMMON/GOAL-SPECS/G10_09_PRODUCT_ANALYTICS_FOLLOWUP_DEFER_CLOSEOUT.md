@@ -46,7 +46,7 @@
 | 후보 | PRE12 ID | 분류 | 판단 |
 | --- | --- | --- | --- |
 | billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` | billing-blocked | 09는 reserved taxonomy와 Admin 참고용 AI usage summary만 완료했다. plan/payment/subscription/tax/refund/invoice/failed payment와 billing source-of-truth는 12에서 `AiUsageDaily` 또는 `UsageMeter` 등으로 결정해야 한다. |
-| account deletion 실제 hard delete/anonymization job | `PRE12-F26` | Question / 정책 필요 | 09/11은 삭제 기준과 queue를 만들었지만 실제 job은 없다. privacy/legal/session revoke/access block/billing 영향 결정 전 구현하지 않는다. |
+| account deletion 실제 hard delete/anonymization job | `PRE12-F26` | billing-blocked / trust-policy | 09/11은 삭제 기준과 queue를 만들었지만 실제 job은 없다. privacy/legal/session revoke/access block/billing 영향과 12 Billing의 subscription/refund/invoice/tax 보관 기준 결정 전 구현하지 않는다. |
 | Product analytics 세부 event 확장 | `PRE12-F27` | post-12-seed / 별도 analytics 계획 | Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 09 최소 taxonomy 밖이다. |
 | 외부 analytics provider forwarding | `PRE12-F28` | post-12-seed / growth/ops | 자체 DB 정본을 유지한다. Segment/PostHog/Mixpanel/GA류 provider port/adapter/runtime call은 09 대상이 아니다. |
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` | post-12-seed / growth/marketing | 09는 core `/app` route view만 수집했다. public route, UTM/referrer/ad attribution, `ExperimentAssignment`는 후속이다. |

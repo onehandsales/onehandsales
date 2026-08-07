@@ -1,7 +1,9 @@
 # G01 06 Scope Guard And Code Audit
 
-상태: Pending
-목표: 06 완료 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary, activity lifecycle/search/score 기능으로 확장되지 않았는지 확인한다.
+상태: Not selected / final classification에 흡수
+목표: 06 완료 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary, activity lifecycle/search/score 기능으로 확장되지 않았는지 확인하는 audit 후보였으나, 2026-08-07 최종 분류에서는 별도 12 전 작업으로 선택하지 않는다.
+
+최종 기준은 `../FINAL-CLASSIFICATION.md`다. 06 관련 남은 후보는 `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F07`, `PRE12-F08`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40` 등으로 분리됐고, 12 전 구현 대상으로 올리지 않는다.
 
 ## 1. 선행 조건
 

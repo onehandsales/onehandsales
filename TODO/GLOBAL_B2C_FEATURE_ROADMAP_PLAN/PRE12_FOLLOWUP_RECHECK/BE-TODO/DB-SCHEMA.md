@@ -1,12 +1,14 @@
 # DB Schema Todo
 
-상태: Draft / migration 없음
+상태: Classification Complete / migration 없음
 작성일: 2026-08-06
 최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
 이 문서는 후속 후보가 Prisma schema에 어떤 영향을 줄 수 있는지 기록한다. 현재 이 계획만으로 새 migration을 만들지 않는다.
+
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 모두 새 Prisma model, enum, index, migration이 필요 없다.
 
 ## 2. 현재 기준
 
@@ -111,7 +113,7 @@
 
 | 후보 | 가능한 DB 영향 | 현재 판단 |
 | --- | --- | --- |
-| 다음 행동 reminder | `NotificationSourceType` 확장, `UserNotificationSetting` 필드 추가, `DealFollowingActionLog` due field 검토 | 결정 필요 |
+| 다음 행동 reminder | `NotificationSourceType` 확장, `UserNotificationSetting` 필드 추가, `DealFollowingActionLog` due field 검토 | post-12 seed / notification policy |
 | 회의록 follow-up reminder | Notification source 확장 또는 별도 reminder table 검토 | post-12 seed |
 | follow-up 자동 발송 | send schedule, consent, unsubscribe, retry policy table 검토 | post-12 seed |
 | MeetingNote AI 후보 자동 업무 mutation | 자동 적용 승인 상태, mutation 이력, undo/rollback, audit, confidence threshold 저장 모델 필요 여부 결정 | post-12 seed / `PRE12-F40` |
@@ -130,7 +132,7 @@
 | Contact personal address | Contact address field 또는 address child table 필요 여부 결정 | post-12 seed / CRM 확장 |
 | auth strategy 확장 | password credential, reset token, provider linking 정책 table 필요 여부 결정 | defer / 정책 필요 |
 | app i18n/Settings/bundle polish | DB 변경 없음 | UXUI quality |
-| account deletion 실제 처리 | job lock/result table 또는 기존 `AccountDeletionRequest` status transition으로 충분한지 결정. `AiWeeklySalesReport.inputSnapshotJson`, `FollowUpMessage.subject/body`, `FollowUpDeliveryAttempt.detailJson`, `User` hard delete/anonymization 범위와 cascade 영향 검증 필요 | Question / 정책 필요 |
+| account deletion 실제 처리 | job lock/result table 또는 기존 `AccountDeletionRequest` status transition으로 충분한지 결정. `AiWeeklySalesReport.inputSnapshotJson`, `FollowUpMessage.subject/body`, `FollowUpDeliveryAttempt.detailJson`, `User` hard delete/anonymization 범위와 cascade 영향 검증 필요 | billing-blocked / trust-policy |
 | Product analytics 세부 event 확장 | 신규 table보다는 taxonomy/payload contract 확장이 우선. 필요 시 event version 또는 derived aggregate table 검토 | post-12 seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider delivery outbox, retry/dead-letter, consent snapshot 저장 필요 여부 결정 | post-12 seed / growth/ops |
 | public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | post-12 seed / growth/marketing |
@@ -143,7 +145,7 @@
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |
 | Google Calendar 고급 sync/provider 확장 | write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, provider abstraction table 필요 여부 결정 | post-12 seed / `PRE12-F10` |
 | 11 Admin 문서 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | Question / 정책 및 billing 필요 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | billing-blocked / recovery-policy |
 | User data export artifact/download | `ExportJob` 또는 `UserDataExportRequest` status transition으로 충분한지 결정. file TTL/storage/audit 기준 필요 | post-12 seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, override, audit, retention 저장 모델 필요 여부 결정 | defer / 정책 필요 |
 | Admin direct domain data mutation and recovery action policy | 도메인 mutation result, rollback snapshot, user notification, redaction/audit model 필요 여부 결정. 11 read-only records 완료 범위와 분리한다 | defer / ops-policy / `PRE12-F44` |

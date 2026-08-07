@@ -1,18 +1,26 @@
 # PRE12_FOLLOWUP_RECHECK Common
 
-상태: Draft
+상태: Classification Complete
 작성일: 2026-08-06
 
 ## 1. 목적
 
 `COMMON`은 12 전 후속 후보 재대조에서 Frontend와 Backend가 함께 봐야 하는 범위, 후보 상태, goal 순서, 구현 금지 조건을 관리한다.
 
-이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 먼저 01~11 완료 슬롯 재대조에서 나온 후속 후보가 pre-12 closeout, post-12 seed, defer, billing-blocked 중 어디에 남아야 하는지 분류한다.
+이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 2026-08-07 기준 `FINAL-CLASSIFICATION.md`에서 01~11 후속 후보를 12 전에 할 것, post-12, billing 충돌/12 종속으로 최종 분리했다.
+
+결론:
+
+- 12 전에 할 것: `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`
+- post-12: 제품 기능/정책/전략 후속 후보 대부분
+- billing 충돌 / 12 종속: `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41`
+- 분류 제외 완료 참조: `PRE12-F16`
 
 ## 2. 문서 목록
 
 - `SCOPE.md`: 포함 범위, 제외 범위, 05/06/07/10/11 작업 경계
 - `CANDIDATE-MATRIX.md`: 후보별 출처, 현재 구현 상태, 기본 분류, 다음 조치
+- `FINAL-CLASSIFICATION.md`: 12 전에 할 것 / post-12 / billing 충돌 최종 분류 정본
 - `06_RECORD_SUMMARY_DEFER_DECISION.md`: 2026-08-06 A 결정에 따른 `NBA-003` 잔여 record summary 보류 기준
 - `GOAL-WORK-ORDER.md`: `/goal` 실행 순서
 - `PLANNING-REVIEW.md`: 기획 검토 결과
@@ -26,7 +34,7 @@
 
 ## 3. 현재 구현 금지 기준
 
-아래는 G00과 API 계약 확정 전까지 구현하지 않는다.
+아래는 `FINAL-CLASSIFICATION.md`에서 12 전 처리 대상으로 남긴 운영 smoke/문서 정합성 외에는 구현하지 않는다.
 
 - `NotificationSourceType`에 `NEXT_ACTION`, `MEETING_NOTE`, `FOLLOW_UP` 추가
 - 다음 행동 reminder scheduling use case 추가

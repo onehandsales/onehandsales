@@ -1,12 +1,26 @@
 # Scope
 
-상태: Draft
+상태: Classification Complete
 작성일: 2026-08-06
 최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
 이 문서는 `PRE12_FOLLOWUP_RECHECK`가 어떤 후보를 다루고, 어떤 후보는 기존 완료 슬롯 또는 12 이후로 남기는지 고정한다.
+
+최종 3분류 정본은 `FINAL-CLASSIFICATION.md`다. 이 문서는 12 전 새 기능 구현을 열지 않는다.
+
+## 1A. 최종 분류 요약
+
+| 최종 분류 | 후보 |
+| --- | --- |
+| 12 전에 할 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
+| post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
+| billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
+
+12 전에 할 것은 운영 smoke와 문서 정합성뿐이다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA/native, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 12 전 구현으로 올리지 않는다.
+
+분류 제외 완료 참조: `PRE12-F16`
 
 ## 2. 포함 범위
 
@@ -23,7 +37,7 @@
 | 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA/native 후보를 분리한다. |
 | 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
 | 11 작업 경계 설정 | Admin Operation 완료 범위와 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin 후보를 분리한다. |
-| 후보 상태 분류 | `done`, `pre-12-follow-up-needed`, `pre-12-doc-cleanup`, `post-12-seed`, `billing-blocked`, `Question`, `defer` 중 하나로 분류한다. |
+| 후보 상태 분류 | `FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것, post-12, billing 충돌/12 종속으로 분리한다. 완료 참조는 작업 분류에서 제외한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
 
 ## 3. 제외 범위
@@ -347,6 +361,8 @@
 | ImportJob cleanup failure aggregate/system gate | `PRE12-F13` |
 
 ## 14. 상태 분류 기준
+
+최종 실행 분류는 `FINAL-CLASSIFICATION.md`의 12 전에 할 것 / post-12 / billing 충돌을 따른다. 완료 참조는 작업 분류에서 제외한다. 아래 상태값은 후보의 세부 성격을 설명하기 위한 보조 값이다.
 
 | 상태 | 의미 |
 | --- | --- |

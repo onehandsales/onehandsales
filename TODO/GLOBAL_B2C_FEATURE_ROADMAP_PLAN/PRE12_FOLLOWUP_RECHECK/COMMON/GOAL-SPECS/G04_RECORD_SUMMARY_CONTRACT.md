@@ -1,7 +1,9 @@
 # G04 Record Summary Contract
 
-상태: defer / 2026-08-06 A 결정 반영
+상태: Classified post-12 / 2026-08-06 A 결정 반영
 목표: NBA-003 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 A 결정에 따라 defer로 고정하고, NBA-004 MeetingNote list latest/next summary는 기존 post-12-seed로 분리 유지한다.
+
+2026-08-07 최종 분류 기준은 `../FINAL-CLASSIFICATION.md`다. Record summary 계열은 12 전에 할 것에 포함하지 않는다.
 
 ## 0. 2026-08-06 결정
 
@@ -40,6 +42,6 @@
 ## 4. 완료 기준
 
 - 2026-08-06 A 결정이 `README.md`, `CANDIDATE-MATRIX.md`, `BE-TODO`, `FE-TODO`, 상위 입력 문서에 일관되게 반영된다.
-- NBA-003 잔여 후보는 `defer`로 남긴다.
+- NBA-003 잔여 후보는 12 전 구현 대상이 아닌 post-12 B2B/team CRM strategy seed로 남긴다.
 - NBA-004 MeetingNote list summary는 기존처럼 `post-12-seed`로 남긴다.
 - 06 완료 의미를 바꾸지 않는다.

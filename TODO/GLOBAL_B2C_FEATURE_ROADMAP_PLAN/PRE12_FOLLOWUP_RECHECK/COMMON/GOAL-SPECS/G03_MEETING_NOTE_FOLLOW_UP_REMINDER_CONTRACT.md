@@ -1,7 +1,9 @@
 # G03 MeetingNote Follow-up Reminder Contract
 
-상태: Question
-목표: 회의록 follow-up reminder와 자동 발송 후보를 분리하고, 구현 전 필요한 정책 결정을 문서화한다.
+상태: Classified post-12 / pre-12 구현 금지
+목표: 회의록 follow-up reminder와 자동 발송 후보를 분리하고, post-12 재검토 때 필요한 정책 질문을 남긴다.
+
+2026-08-07 최종 분류 기준은 `../FINAL-CLASSIFICATION.md`다. 회의록 follow-up reminder와 자동 발송은 12 전에 할 것에 포함하지 않는다.
 
 ## 1. 현재 사실
 
@@ -19,7 +21,7 @@
 | follow-up automatic send | 사용자가 확인하지 않아도 이메일/SMS를 발송 | post-12-seed / 정책 결정 필요 |
 | follow-up delivery retry notification | 발송 실패나 재연결 필요 상태를 알림 | 05/11 safe failure와 연결해 재검토 |
 
-## 3. 결정해야 할 질문
+## 3. post-12 재검토 질문
 
 1. 알림 목적이 "초안 생성 유도"인지 "발송 누락 방지"인지 결정해야 한다.
 2. 사용자 명시 확인 없이 자동 발송을 허용할지 결정해야 한다.
@@ -30,5 +32,5 @@
 
 - 자동 발송은 별도 정책 결정 없이는 구현 금지로 유지한다.
 - reminder만 검토하더라도 API/DB/FE 계약이 confirmed가 되기 전까지 구현하지 않는다.
-- 후보 상태를 `CANDIDATE-MATRIX.md`에 반영한다.
-
+- `CANDIDATE-MATRIX.md`의 `PRE12-F02`, `PRE12-F03`은 post-12-seed로 남는다.
+- `COMMON/API-SPEC`에는 12 전 confirmed API를 만들지 않는다.

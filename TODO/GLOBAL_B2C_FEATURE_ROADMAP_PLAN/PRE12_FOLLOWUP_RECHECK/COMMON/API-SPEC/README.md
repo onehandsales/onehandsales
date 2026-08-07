@@ -1,6 +1,6 @@
 # API Spec
 
-상태: Draft / confirmed API 없음
+상태: Classification Complete / confirmed API 없음
 작성일: 2026-08-06
 
 ## 1. 목적
@@ -9,11 +9,13 @@
 
 현재 이 계획에는 바로 구현 가능한 confirmed API가 없다. 아래 후보는 모두 contract 작업 전용이다.
 
+2026-08-07 `../FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 모두 새 API가 필요 없는 운영 smoke 또는 문서 정합성 작업이다. 따라서 PRE12에서 12 전 confirmed API를 만들지 않는다.
+
 ## 2. 후보 API 계약 상태
 
 | 후보 | 예상 API 방향 | 상태 | 구현 가능 여부 |
 | --- | --- | --- | --- |
-| 다음 행동 reminder | Notification source 확장 또는 NextAction reminder 전용 endpoint/setting | draft placeholder | 구현 금지 |
+| 다음 행동 reminder | Notification source 확장 또는 NextAction reminder 전용 endpoint/setting | post-12-seed / notification policy | 12 전 구현 금지 |
 | 회의록 follow-up reminder | MeetingNote 기반 follow-up reminder 생성/취소/목록 | draft placeholder | 구현 금지 |
 | MeetingNote follow-up 자동 발송 | Follow-up delivery 예약/자동 발송/취소/재시도 | post-12-seed | 구현 금지 |
 | MeetingNote AI 후보 자동 업무 mutation | AI 후보를 Schedule/Deal/Contact/MeetingNote mutation으로 적용하는 approval/apply/rollback 계약 | post-12-seed / `PRE12-F40` | 구현 금지 |
@@ -33,7 +35,7 @@
 | Auth strategy 확장 | email/password, Microsoft, Kakao runtime, 신규 provider 계약 | defer / 정책 필요 | 구현 금지 |
 | `/app` locale route prefix | User API path 변경 없음. FE routing contract 이슈 | defer / guardrail | 새 라우팅 계약 없이 구현 금지 |
 | app i18n/Settings/bundle polish | 새 API 없음 | post-12-seed / UXUI quality | API 구현 대상 아님 |
-| account deletion 실제 hard delete/anonymization | 30일 유예 만료 request 처리, AI report full input snapshot과 follow-up subject/body log retention/deletion, session revoke/access block, hard delete/anonymization, audit/result contract | Question / 정책 필요 | 구현 금지 |
+| account deletion 실제 hard delete/anonymization | 30일 유예 만료 request 처리, AI report full input snapshot과 follow-up subject/body log retention/deletion, session revoke/access block, hard delete/anonymization, audit/result contract | billing-blocked / trust-policy | 12 전 구현 금지 |
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up delivery/click/reach/sync/detail event taxonomy와 payload allowlist | post-12-seed / 별도 analytics 계획 | 구현 금지 |
 | external analytics provider forwarding | Backend provider forwarding adapter/outbox/retry 또는 FE SDK 삽입 방식 결정 | post-12-seed / growth/ops | 구현 금지 |
 | public site/UTM/ad attribution/growth experiment | public route event, attribution cookie/referrer policy, experiment assignment API | post-12-seed / growth/marketing | 구현 금지 |
@@ -47,7 +49,7 @@
 | generic ExportJob/PDF | `/api/exports`, `ExportJob`, export file TTL/ownership/audit contract | post-12-seed | 12 전 구현 금지 |
 | 11 Admin 문서 체크리스트/goal index 정합성 | 새 API 없음. 완료 체크리스트와 goal index 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
 | Admin Web architecture/legacy route 정합성 | 새 API 없음. 실제 Admin route/API 기준 architecture 문서와 비활성 legacy route/API 잔여 코드 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, paid recovery payment, purge/hard delete API가 필요할 수 있으나 정책 미확정 | Question / 정책 및 billing 필요 | 구현 금지 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, paid recovery payment, purge/hard delete API가 필요할 수 있으나 정책 미확정 | billing-blocked / recovery-policy | 12 전 구현 금지 |
 | User data export artifact/download endpoint | artifact 생성 processor, signed URL, `GET /api/users/me/data-export-requests/:requestId/download` 또는 `/api/exports` 계약 필요 | post-12-seed / `PRE12-F09` 연결 | 12 전 구현 금지 |
 | 자동 민감정보 감지 | PII/DLP scan API/worker 또는 저장 시 detection hook 필요 여부 결정 | defer / 정책 필요 | 구현 금지 |
 | Admin direct domain data mutation and recovery action policy | Admin Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 수정/삭제/복구 mutation, audit/result/rollback contract 필요 | defer / ops-policy / `PRE12-F44` | 구현 금지 |

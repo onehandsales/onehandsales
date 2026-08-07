@@ -1,12 +1,14 @@
 # User Web Todo
 
-상태: Draft / confirmed User Web 작업 없음
+상태: Classification Complete / confirmed User Web 구현 작업 없음
 작성일: 2026-08-06
 최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
 이 문서는 후속 후보가 User Web에 어떤 영향을 줄 수 있는지 기록한다. 현재 이 계획만으로 새 화면, route, API client, state를 만들지 않는다.
+
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 User Web 관련 작업은 `PRE12-F32` 문서 정합성뿐이다. 새 User Web 기능, route, API client, state 추가는 12 전 작업에 포함하지 않는다.
 
 ## 2. 현재 기준
 
@@ -91,7 +93,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 | 후보 | 예상 FE 영향 | 현재 상태 |
 | --- | --- | --- |
-| 다음 행동 reminder | notification settings, next action form, deal detail 상태 표시 | Question |
+| 다음 행동 reminder | notification settings, next action form, deal detail 상태 표시 | post-12-seed / notification policy |
 | 회의록 follow-up reminder | meeting note detail/list, notification settings, follow-up draft 상태 표시 | post-12-seed |
 | MeetingNote AI 후보 자동 업무 mutation | 자동 적용 CTA/toggle, 적용 전 diff, 확인 modal, undo/rollback 표시 기준 필요 | post-12-seed / `PRE12-F40` |
 | Notification 데이터 TTL/cleanup | `/app/notifications` 표시 기간, 삭제된 알림 안내, provider failure 이력 노출 여부, 설정 UI 필요 여부 | post-12-seed / `PRE12-F38` |
@@ -111,7 +113,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | Auth strategy 확장 | email/password, Microsoft, Kakao runtime, 신규 provider 버튼과 오류 UX | defer / 정책 필요 |
 | `/app` locale route prefix | router, legacy redirect, auth callback, deep link 전체 변경 필요 | defer / guardrail |
 | i18n/Settings/bundle polish | legacy static fallback 직접 keying, Settings OAuth account `LINE/Apple` 라벨, Vite chunk split | post-12-seed / UXUI quality |
-| account deletion 실제 처리 | 삭제 예정 상태 표시, access block, session 종료, 처리 완료/실패 UX 기준 필요 | Question / 정책 필요 |
+| account deletion 실제 처리 | 삭제 예정 상태 표시, access block, session 종료, 처리 완료/실패 UX 기준 필요 | billing-blocked / trust-policy |
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up 화면의 click/reach/sync/detail tracking 위치와 payload privacy 기준 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | FE SDK를 직접 넣을지, Backend forwarding만 사용할지, consent/banner/DNT 기준 결정 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public/auth route attribution, campaign parameter 보존, experiment assignment 표시/노출 기준 필요 | post-12-seed / growth/marketing |
@@ -126,7 +128,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | Google Calendar 고급 sync/provider 확장 | write/export, webhook/watch status, recurrence, Google reminders, attendee/contact auto-link, multi-account/provider 선택 UX 기준 필요 | post-12-seed / `PRE12-F10` |
 | 11 Admin/User 영향 문서 정합성 | 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 맞추는 문서 정리 | pre-12-doc-cleanup |
 | User data export artifact/download | export request status UI 이후 실제 download 가능 상태, 만료, 실패 UX 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | User Web에서는 요청/안내 UX만 가능하다. 실행/결제/삭제 정책은 별도 결정 필요 | Question / 정책 및 billing 필요 |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | User Web에서는 요청/안내 UX만 가능하다. 실행/결제/삭제 정책은 별도 결정 필요 | billing-blocked / recovery-policy |
 | Admin direct domain data mutation and recovery action policy | User Web에서는 운영자 대행 mutation을 직접 노출하지 않는다. 필요한 경우 사용자 확인/통지/감사/rollback UX 정책이 먼저 필요 | defer / ops-policy / `PRE12-F44` |
 | Customer/B2B tenant admin and organization admin model | organization/member/role 관리 UI가 필요한지 B2B 전략, billing/support boundary, 권한 모델을 먼저 결정 | defer / B2B-strategy / `PRE12-F45` |
 

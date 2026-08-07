@@ -1,6 +1,6 @@
 # Pre-12 Follow-up Recheck
 
-상태: Draft / 12 전 후속 범위 정리 / 구현 시작 금지
+상태: Classification Complete / 12 전 후속 범위 분리 완료 / 구현 시작 금지
 작성일: 2026-08-06
 최종 업데이트: 2026-08-07
 성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 12 착수 전 결정에 연결하는 작업 폴더
@@ -8,6 +8,8 @@
 ## 1. 목적
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, 12 착수 전에 다시 확인해야 하는 후속 후보를 한곳에 묶는다.
+
+2026-08-07 기준 최종 3분류는 `COMMON/FINAL-CLASSIFICATION.md`를 정본으로 본다. 결론은 12 전 새 기능 구현 없음, 12 전 운영 smoke/문서 정합성만 closeout, 나머지는 post-12 또는 12 Billing 종속으로 분리다.
 
 현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 08 Global Data I18N 후속 후보 재대조, 09 Product Analytics 후속 후보 재대조, 10 Mobile Field Use 후속 후보 2차 재대조, 11 Admin Operation 후속 후보 closeout을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
@@ -29,6 +31,18 @@
 이 폴더는 13번 기능 폴더가 아니다. 12 전에 기존 완료 슬롯을 재대조하기 위한 보조 계획이며, 12 Billing 범위를 우회하는 구현 계획이 아니다.
 
 ## 2. 현재 결론
+
+최종 분류:
+
+| 최종 분류 | 후보 |
+| --- | --- |
+| 12 전에 할 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
+| post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
+| billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
+
+따라서 12 전에 할 일은 운영 provider smoke와 문서 정합성 정리뿐이다. 다음 행동 reminder, 회의록 follow-up reminder, record summary, mobile/PWA/native, ExportJob, Admin mutation, B2B tenant admin 같은 제품 기능은 12 전 구현 후보가 아니다.
+
+분류 제외 완료 참조: `PRE12-F16`
 
 | 영역 | 현재 판정 | 구현 판단 |
 | --- | --- | --- |
@@ -61,7 +75,7 @@
 
 | 후보 | 기본 상태 | 다음 처리 |
 | --- | --- | --- |
-| 다음 행동 reminder | Question / 계약 필요 | G00에서 12 전 처리 여부를 결정한다. 결정 전 구현 금지. |
+| 다음 행동 reminder | post-12-seed / notification policy | 12 전 구현하지 않는다. Notification source/setting/scheduler 정책은 post-12에서 재검토한다. |
 | 회의록 follow-up reminder | post-12-seed | G03에서 상태를 재확인한다. 자동 발송과 함께 정책 결정이 필요하다. |
 | MeetingNote follow-up 자동 발송 | post-12-seed | G03에서 reminder와 분리한다. 명시적 사용자 확인 없는 발송은 구현 금지다. |
 | MeetingNote AI 후보 자동 업무 mutation | post-12-seed / AI policy | 07은 후보/초안만 제공하고 사용자가 확인한 뒤 기존 API 또는 복사 흐름으로 처리한다. 자동 일정 생성, 자동 딜 변경, Contact/MeetingNote/Deal 자동 변경은 구현 금지다. |
@@ -86,7 +100,7 @@
 | Auth strategy 확장 | defer / 정책 필요 | 이메일/비밀번호, Microsoft login, Kakao runtime 복구, 신규 provider는 별도 auth strategy 결정 전 구현 금지. |
 | `/app` locale route prefix | defer / guardrail | 새 라우팅 계약 없이 `/app`에 locale prefix를 붙이지 않는다. |
 | app i18n/Settings/bundle polish | post-12-seed / UXUI quality | legacy static fallback 직접 keying, Settings OAuth 계정 라벨, Vite large chunk warning은 08 blocker가 아니다. |
-| account deletion 실제 hard delete/anonymization job | Question / 정책 필요 | 09는 30일 유예 후 user-linked analytics 삭제 기준을 세웠고 11은 요청/취소/Admin queue를 구현했다. 실제 삭제 job은 privacy/legal/session revoke/billing 영향을 확정하기 전 구현하지 않는다. |
+| account deletion 실제 hard delete/anonymization job | billing-blocked / trust-policy | 09는 30일 유예 후 user-linked analytics 삭제 기준을 세웠고 11은 요청/취소/Admin queue를 구현했다. 실제 삭제 job은 privacy/legal/session revoke/billing 영향을 12 Billing의 subscription/refund/invoice/tax 보관 기준과 함께 확정하기 전 구현하지 않는다. |
 | Product analytics 세부 event 확장 | post-12-seed / 별도 analytics 계획 | Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 09 최소 taxonomy에 넣지 않는다. |
 | 외부 analytics provider forwarding | post-12-seed / growth/ops | 자체 DB analytics 정본을 유지하고 Segment/PostHog/Mixpanel류 provider port/adapter/runtime call은 별도 계획에서 판단한다. |
 | public site/UTM/ad attribution/growth experiment | post-12-seed / growth/marketing | 09는 core `/app` route view만 수집했다. public route, UTM/referrer/ad attribution, experiment assignment API/model은 후속이다. |
@@ -98,7 +112,7 @@
 | User Web route/architecture 문서 정합성 | pre-12-doc-cleanup | 실제 `/app/notifications`는 활성이고 `/app/export`만 redirect다. FE architecture 문서의 stale route 설명을 실제 router 기준으로 정정한다. |
 | 11 문서 체크리스트/goal index 정합성 | pre-12-doc-cleanup | 11 README/G10 closeout/실제 코드 기준 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO`, `11/FE-TODO`의 planning/미체크 상태는 기능 미구현이 아니라 문서 정리 대상이다. |
 | Admin Web architecture/legacy route 정합성 | pre-12-doc-cleanup | 실제 Admin Web route와 API 연동은 11 범위로 활성화됐다. `FE/admin-web/ARCHITECTURE.md`의 stale 설명과 비활성 legacy `admin-query` 잔여 코드를 실제 router/API 기준으로 정리한다. |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Question / 정책 및 billing 필요 | 11은 User 복구 문의와 Admin queue까지만 완료했다. Admin mutation, 유료 복구 결제, hard delete/purge는 recovery policy와 12 Billing 이후 판단한다. |
+| Admin 직접 Trash 복구/유료 복구/hard delete/purge | billing-blocked / recovery-policy | 11은 User 복구 문의와 Admin queue까지만 완료했다. Admin mutation, 유료 복구 결제, hard delete/purge는 recovery policy와 12 Billing 이후 판단한다. |
 | User data export artifact/download endpoint | post-12-seed / `PRE12-F09` 연결 | 11은 request/Admin queue를 완료했고 실제 artifact 생성 processor, signed URL, download controller는 없다. ExportJob/file retention/audit 계약 전 구현하지 않는다. |
 | 자동 민감정보 감지 | defer / 정책 필요 | 11의 masking/raw access와 별개인 자동 탐지 기능이다. 보안/data governance 계약 전 구현하지 않는다. |
 | Admin direct domain data mutation and recovery action policy | defer / ops-policy | 11은 도메인 records를 read-only/masked 조회로 닫았다. Admin이 Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import를 직접 수정/삭제/복구하는 mutation은 ownership, 사용자 통지, audit/result, rollback, redaction 정책 전 구현하지 않는다. |
@@ -113,6 +127,7 @@ PRE12_FOLLOWUP_RECHECK/
     README.md
     SCOPE.md
     CANDIDATE-MATRIX.md
+    FINAL-CLASSIFICATION.md
     06_RECORD_SUMMARY_DEFER_DECISION.md
     GOAL-WORK-ORDER.md
     PLANNING-REVIEW.md
@@ -144,9 +159,9 @@ PRE12_FOLLOWUP_RECHECK/
 
 ## 6. 실행 원칙
 
-1. G00을 먼저 실행해 후보 상태를 확정한다.
-2. API/DB/FE 구현이 필요한 후보는 `COMMON/API-SPEC` 계약이 `confirmed`로 오른 뒤 별도 goal로 쪼갠다.
-3. `draft` 또는 `Question` 상태의 후보는 controller, service, repository, Prisma schema, FE route로 구현하지 않는다.
+1. G00 최종 분류 결과는 `COMMON/FINAL-CLASSIFICATION.md`를 따른다.
+2. 12 전 처리 대상은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이다.
+3. API/DB/FE 구현이 필요한 후보는 PRE12에서 바로 구현하지 않고, 12 이후 새 TODO 또는 12 Billing confirmed 계약으로만 다룬다.
 4. 06 작업 중 발견한 보정은 06 완료 범위를 넓히는 방식이 아니라 이 폴더의 후보 상태로 기록한다.
 5. billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn/paid conversion과 연결된 항목은 12 전 구현하지 않는다.
 6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약 대상으로 보지 않는다.
