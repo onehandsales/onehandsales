@@ -9,9 +9,9 @@
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, 12 착수 전에 다시 확인해야 하는 후속 후보를 한곳에 묶는다.
 
-현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 08 Global Data I18N 후속 후보 재대조, 09 Product Analytics 후속 후보 재대조, 10 Mobile Field Use 후속 후보 closeout, 11 Admin Operation 후속 후보 closeout을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
+현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 08 Global Data I18N 후속 후보 재대조, 09 Product Analytics 후속 후보 재대조, 10 Mobile Field Use 후속 후보 2차 재대조, 11 Admin Operation 후속 후보 closeout을 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
-- 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API
+- 01에서 제외된 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API, ImportJob cleanup 실패 전용 aggregate/system gate
 - 02에서 제외된 다음 행동 알림
 - 02에서 제외된 회의록 후속 알림
 - 02 문서에 보관 후보로 남은 Notification 데이터 TTL/cleanup 정책
@@ -22,9 +22,9 @@
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary, activity lifecycle/search/score 후보
 - 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장, AI 후보 자동 업무 mutation 후보
 - 08에서 닫은 Global Data I18N 범위와 08 밖으로 남은 시장/국가/통화/전화번호/auth/UX polish 후보
-- 09에서 닫은 Product Analytics foundation과 09 밖으로 남은 account deletion 실제 처리, 세부 analytics event, 외부 provider, attribution/experiment, PWA/native 후보
-- 10에서 닫은 mobile browser field-use 범위와 10 밖으로 남은 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보
-- 11에서 닫은 Admin 운영 범위와 11 밖으로 남은 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지 후보
+- 09에서 닫은 Product Analytics foundation과 09 밖으로 남은 account deletion 실제 처리, 세부 analytics event, 외부 provider, attribution/experiment, marketing opt-in, PWA/native 후보
+- 10에서 닫은 mobile browser field-use 범위와 10 밖으로 남은 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보
+- 11에서 닫은 Admin 운영 범위와 11 밖으로 남은 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin 후보
 
 이 폴더는 13번 기능 폴더가 아니다. 12 전에 기존 완료 슬롯을 재대조하기 위한 보조 계획이며, 12 Billing 범위를 우회하는 구현 계획이 아니다.
 
@@ -32,7 +32,7 @@
 
 | 영역 | 현재 판정 | 구현 판단 |
 | --- | --- | --- |
-| 01 ImportJob | 완료 | 대용량 worker, 일정/회의록 import, generic ExportJob, Admin 전용 화면/API는 01 미완성이 아니다. |
+| 01 ImportJob | 완료 | 대용량 worker, 일정/회의록 import, generic ExportJob, Admin 전용 화면/API, ImportJob cleanup 실패 전용 aggregate/system gate는 01 미완성이 아니다. |
 | 02 Notification | 완료 | 일정/딜 reminder, in-app/email/browser push, provider smoke는 완료다. 다음 행동 알림과 회의록 후속 알림은 구현되지 않았다. Notification 데이터 TTL/cleanup은 구현 완료 범위가 아니라 정책 후속 후보로 분리한다. |
 | 03 Weekly Schedule Report | 완료 | PDF, generic ExportJob, recurrence는 03 재오픈 대상이 아니다. |
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/Google-origin reminder/provider smoke는 완료다. Google export/write/양방향 sync, webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider는 후속이다. |
@@ -40,9 +40,9 @@
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
 | 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 저장/자동 일정 생성/자동 딜 변경은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
 | 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
-| 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, PWA/native install attribution은 09 완료 범위가 아니다. |
-| 10 Mobile PWA Field Use | 완료 이력 유지 / G11 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar는 후속이고, 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 문서 정리 후보다. 남는 후보는 `PRE12-F30`, `PRE12-F31`, `PRE12-F32`와 기존 `PRE12-F09`로 분리한다. |
-| 11 Admin Operation | 완료 이력 유지 / G12 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 일부는 stale이고, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위가 아니다. 남는 후보는 `PRE12-F33`~`PRE12-F37`과 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결로 분리한다. |
+| 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, marketing opt-in, PWA/native install attribution은 09 완료 범위가 아니다. |
+| 10 Mobile PWA Field Use | 완료 이력 유지 / G11 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar, advanced camera preview/crop, server draft/media raw storage는 후속이고, 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 문서 정리 후보다. 남는 후보는 `PRE12-F30`, `PRE12-F31`, `PRE12-F32`, `PRE12-F42`, `PRE12-F43`과 기존 `PRE12-F09`로 분리한다. |
+| 11 Admin Operation | 완료 이력 유지 / G12 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 일부는 stale이고, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin은 11 완료 범위가 아니다. 남는 후보는 `PRE12-F33`~`PRE12-F37`, `PRE12-F44`, `PRE12-F45`와 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결로 분리한다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
 
@@ -74,7 +74,7 @@
 | MeetingNote list latest/next summary | post-12-seed 또는 별도 MeetingNote list 후보 | 12 전 구현하지 않는다. 07 결과와 연결한 목록 summary 계약은 post-12 재검토에서 필요성이 확인될 때만 만든다. |
 | AI data cleanup 제안 저장/적용 | post-12-seed / 별도 data quality 계획 | 07에서는 제외한다. 09 또는 별도 data quality 계획에서 권한, 적용, 감사 로그, rollback 기준을 정한 뒤 판단한다. |
 | transcript/raw provider response/follow-up draft 저장 | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현하지 않는다. |
-| Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. |
+| Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API, ImportJob cleanup 실패 전용 aggregate/system gate는 01/11 미완성이 아니다. |
 | generic ExportJob/PDF 및 Google Calendar 고급 연동 | post-12-seed | `PRE12-F09`와 `PRE12-F10`으로 유지한다. Google export/write/양방향 sync, webhook/watch, 반복 일정, reminders/attendee, multi-account/provider 확장은 12 완료 후 새 TODO로 승격할지 판단한다. |
 | billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | billing-blocked | 08의 국가/통화/주소 모델과 05/09의 내부 cost/usage summary는 plan/payment/subscription/tax/refund/invoice/failed payment 또는 과금 정본이 아니다. 12 전 임시 구현 금지. |
 | `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | post-12-seed | 일본/대만 판매 준비 goal에서 다룬다. 08 완료 범위는 `ko-KR/en`이다. |
@@ -90,7 +90,10 @@
 | Product analytics 세부 event 확장 | post-12-seed / 별도 analytics 계획 | Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 09 최소 taxonomy에 넣지 않는다. |
 | 외부 analytics provider forwarding | post-12-seed / growth/ops | 자체 DB analytics 정본을 유지하고 Segment/PostHog/Mixpanel류 provider port/adapter/runtime call은 별도 계획에서 판단한다. |
 | public site/UTM/ad attribution/growth experiment | post-12-seed / growth/marketing | 09는 core `/app` route view만 수집했다. public route, UTM/referrer/ad attribution, experiment assignment API/model은 후속이다. |
+| Marketing opt-in/communication consent policy | billing-blocked / growth-compliance | 원천 문서의 Marketing opt-in은 09/10 완료 범위가 아니며 12 Billing/growth/privacy 정책 이후 판단한다. `FollowUpConsentNotice`나 public contact form `marketingAgreement`와 혼동하지 않는다. |
 | PWA/native packaging과 install attribution | post-12-seed / 별도 mobile roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 후속으로 유지한다. |
+| BusinessCard mobile advanced camera preview/crop | post-12-seed / mobile advanced capture | 10은 native file/camera picker 기반으로 완료했다. `getUserMedia`, custom camera preview/crop/canvas capture는 별도 usage/device QA/접근성 계약 전 구현하지 않는다. |
+| Server draft and media/raw storage policy | defer / trust-policy / post-12-seed | 10 local draft는 FE 24시간 TTL 저장으로 닫혔다. `UserDraft`, `/api/drafts/*`, audio/image binary, transcript 전문, provider raw response 저장은 retention/account deletion/raw access 정책 전 구현하지 않는다. |
 | 10 FE/BE TODO 체크리스트 정합성 | pre-12-doc-cleanup | 10 README/G07 closeout/실제 코드 기준 완료다. `10/FE-TODO`의 G03~G06, `10/BE-TODO`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. |
 | User Web route/architecture 문서 정합성 | pre-12-doc-cleanup | 실제 `/app/notifications`는 활성이고 `/app/export`만 redirect다. FE architecture 문서의 stale route 설명을 실제 router 기준으로 정정한다. |
 | 11 문서 체크리스트/goal index 정합성 | pre-12-doc-cleanup | 11 README/G10 closeout/실제 코드 기준 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO`, `11/FE-TODO`의 planning/미체크 상태는 기능 미구현이 아니라 문서 정리 대상이다. |
@@ -98,6 +101,8 @@
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | Question / 정책 및 billing 필요 | 11은 User 복구 문의와 Admin queue까지만 완료했다. Admin mutation, 유료 복구 결제, hard delete/purge는 recovery policy와 12 Billing 이후 판단한다. |
 | User data export artifact/download endpoint | post-12-seed / `PRE12-F09` 연결 | 11은 request/Admin queue를 완료했고 실제 artifact 생성 processor, signed URL, download controller는 없다. ExportJob/file retention/audit 계약 전 구현하지 않는다. |
 | 자동 민감정보 감지 | defer / 정책 필요 | 11의 masking/raw access와 별개인 자동 탐지 기능이다. 보안/data governance 계약 전 구현하지 않는다. |
+| Admin direct domain data mutation and recovery action policy | defer / ops-policy | 11은 도메인 records를 read-only/masked 조회로 닫았다. Admin이 Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import를 직접 수정/삭제/복구하는 mutation은 ownership, 사용자 통지, audit/result, rollback, redaction 정책 전 구현하지 않는다. |
+| Customer/B2B tenant admin and organization admin model | defer / B2B-strategy | 11 Admin은 내부 최종 관리자용이다. tenant/org/member/role/permission/billing 경계가 없으면 `/organizations` redirect나 내부 AdminGuard를 고객 관리자 기능으로 바꾸지 않는다. |
 
 ## 5. 문서 구조
 

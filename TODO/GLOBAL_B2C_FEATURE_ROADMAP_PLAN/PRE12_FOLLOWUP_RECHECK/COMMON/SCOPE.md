@@ -20,9 +20,9 @@
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder, record summary, activity lifecycle/search/score 확장 후보를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
-| 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보를 분리한다. |
-| 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
-| 11 작업 경계 설정 | Admin Operation 완료 범위와 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지 후보를 분리한다. |
+| 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA/native 후보를 분리한다. |
+| 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
+| 11 작업 경계 설정 | Admin Operation 완료 범위와 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin 후보를 분리한다. |
 | 후보 상태 분류 | `done`, `pre-12-follow-up-needed`, `pre-12-doc-cleanup`, `post-12-seed`, `billing-blocked`, `Question`, `defer` 중 하나로 분류한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
 
@@ -43,11 +43,14 @@
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
 | Company/Contact/Product latest summary pre-12 계약화 | 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 B2B/team CRM 성격이 강한 post-12 전략 후보로 둔다. |
 | 08 market/global expansion pre-12 구현 | `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, USD minor unit, 상세 주소 검증, 신규 auth provider는 08 완료 범위를 넓히지 않는다. |
-| 09 analytics/growth/trust 확장 pre-12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
-| 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
+| 09 analytics/growth/trust 확장 pre-12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, marketing opt-in, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
+| 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, advanced camera preview/crop, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
 | 10 mobile/PWA 확장 pre-12 구현 | PWA install/offline shell/full offline sync, native app, native push/contact/calendar, native install attribution은 10 완료 범위를 넓히지 않는다. |
 | 11 Admin Operation 구현 재개 | 11은 최소 Admin 운영 API/화면과 audit/redaction 기준으로 완료됐다. 문서 stale이나 후속 후보를 근거로 Admin 기능을 재구현하지 않는다. |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge pre-12 구현 | 11은 User 복구 문의와 Admin queue까지만 완료했다. 복구 실행/과금/삭제 정책은 recovery policy와 12 Billing 이후 판단한다. |
+| Admin 직접 도메인 데이터 수정 pre-12 구현 | 11은 사용자별 도메인 records를 read-only/masked 조회로 닫았다. Admin mutation은 ownership, 사용자 통지, audit/result, rollback, redaction 정책이 확정되기 전 구현하지 않는다. |
+| Customer/B2B tenant admin pre-12 구현 | 11 Admin은 내부 onehand.sales 관리자용이다. tenant/org/member/role/permission/billing/support 경계가 확정되기 전 `/organizations` redirect나 내부 AdminGuard를 고객 관리자 기능으로 바꾸지 않는다. |
+| ImportJob cleanup 실패 전용 Admin aggregate/system gate pre-12 구현 | 01 cleanup은 safe summary log 범위이고 11 system gate는 generic operation check 기록이다. ImportJob cleanup failure 전용 Admin 화면/API/집계는 `PRE12-F13` 전략 전 구현하지 않는다. |
 
 ## 4. 04 Google Calendar에 직접 영향을 주는 기준
 
@@ -246,6 +249,7 @@
 - Segment/PostHog/Mixpanel/GA 같은 외부 analytics provider forwarding port/adapter/runtime call 추가
 - public site route view, UTM/referrer/ad attribution, campaign attribution 추가
 - `ExperimentAssignment`, `/api/experiments/assignments` 같은 growth experiment model/API 추가
+- marketing opt-in/communication consent policy API/model/UI 추가
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`를 09/PRE12에서 생성
 - PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution을 09 완료 범위로 끼워 넣기
 
@@ -261,12 +265,14 @@
 | 외부 analytics provider forwarding | `PRE12-F28` |
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` |
 | PWA/native packaging과 install attribution | `PRE12-F30` |
+| Marketing opt-in/communication consent policy | `PRE12-F41` |
 
 ## 12. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
 
 10에서 완료로 보는 범위:
 
 - BusinessCard mobile capture와 OCR safe failure 계약
+- BusinessCard capture는 native file/camera picker 기반 `input type=file`, `accept="image/*"`, `capture="environment"`
 - MeetingNote mobile recording, audio file fallback, 기존 STT draft API 재사용
 - FE local draft 24시간 TTL, IndexedDB primary/localStorage fallback, restore/discard UX
 - Browser push permission UX와 기존 notification settings/subscription API 재사용
@@ -277,12 +283,24 @@
 
 - `UserDraft`, `/api/drafts/*`, server draft DB 추가
 - audio/image binary, transcript 전문, provider raw response 저장
+- BusinessCard 전용 `getUserMedia`, `ImageCapture`, camera preview/crop/canvas capture flow 추가
 - PWA manifest, offline shell, full offline sync, cache strategy, workbox/vite-plugin-pwa 추가
 - iOS/Android native app, native push/contact/calendar bridge 추가
 - `/app/export` route 활성화
 - `/api/exports`, `ExportJob`, export file retention API/model 추가
 - 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
+
+10 재대조에서 다시 발견됐지만 기존 후보와 연결하거나 10 전용 새 후보로 분리하는 항목:
+
+| 항목 | PRE12 후보 |
+| --- | --- |
+| PWA/native packaging과 install attribution | `PRE12-F30` |
+| BusinessCard mobile advanced camera preview/crop | `PRE12-F42` |
+| Server draft and media/raw storage policy | `PRE12-F43` |
+| generic ExportJob/PDF | `PRE12-F09` |
+| 10 FE/BE TODO 체크리스트 정합성 | `PRE12-F31` |
+| User Web route/architecture 문서 정합성 | `PRE12-F32` |
 
 ## 13. 11 Admin Operation에 직접 영향을 주는 기준
 
@@ -291,6 +309,7 @@
 - `/admin/api/*` AuthGuard/AdminGuard 분리
 - `INITIAL_ADMIN_EMAILS` 기반 Admin bootstrap과 `/admin/api/me`
 - Admin 사용자 목록/상세, 활동 timeline, 도메인 read-only records
+- 내부 onehand.sales AdminGuard/Admin Web. Customer/B2B tenant admin은 아님
 - Admin Trash summary/records와 Trash recovery request queue
 - provider failure safe summary/detail
 - Admin analytics overview
@@ -305,11 +324,27 @@
 - 11 문서 체크리스트/goal index 미체크를 근거로 기능을 재구현
 - stale Admin Web architecture 문서에 맞춰 실제 Admin route/API를 숨기거나 되돌리기
 - Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
+- Admin domain read-only records를 Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 직접 수정/삭제/복구 mutation으로 확장
 - Admin 직접 DB migrate/seed/backup/restore shell command 실행
+- `/organizations` redirect를 customer-facing tenant admin으로 활성화하거나 tenant/org/member role model 추가
+- ImportJob cleanup 실패 전용 Admin 화면/API/집계/gate 추가
 - 실제 account deletion hard delete/anonymization processor 추가
 - data export artifact 생성 processor, storage signed URL, download endpoint 추가
 - 자동 민감정보 감지/DLP model 또는 processor 추가
 - billing/subscription/plan/payment/invoice/refund/failed payment/tax/Admin Billing 화면/API 추가
+
+11 재대조에서 다시 발견됐지만 기존 후보와 연결하거나 11 전용 새 후보로 분리하는 항목:
+
+| 항목 | PRE12 후보 |
+| --- | --- |
+| Admin 문서 체크리스트/goal index 정합성 | `PRE12-F33` |
+| Admin Web architecture/legacy route 정합성 | `PRE12-F34` |
+| Admin 직접 Trash 복구/유료 복구/Trash hard delete/purge | `PRE12-F35` |
+| User data export artifact/download endpoint | `PRE12-F36` 및 `PRE12-F09` |
+| 자동 민감정보 감지 | `PRE12-F37` |
+| Admin direct domain data mutation and recovery action policy | `PRE12-F44` |
+| Customer/B2B tenant admin and organization admin model | `PRE12-F45` |
+| ImportJob cleanup failure aggregate/system gate | `PRE12-F13` |
 
 ## 14. 상태 분류 기준
 

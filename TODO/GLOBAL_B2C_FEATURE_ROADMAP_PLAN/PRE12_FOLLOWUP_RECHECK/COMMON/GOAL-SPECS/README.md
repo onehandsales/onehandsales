@@ -32,8 +32,9 @@
 - 2026-08-06 A 결정으로 `NBA-003` 잔여 record summary는 12 전 계약화하지 않는다.
 - 07 완료 범위를 넓혀서 MeetingNote list summary, follow-up 자동 발송/알림, AI data cleanup, transcript/raw 저장, AI 후보 자동 저장/자동 업무 mutation 기능을 끼워 넣지 않는다.
 - 08 완료 범위를 넓혀서 신규 locale/country/currency/phone/auth provider, minor unit, `/app` locale prefix를 끼워 넣지 않는다.
-- 09 완료 범위를 넓혀서 account deletion 실제 job, 세부 analytics event, 외부 provider, public/UTM attribution, growth experiment, billing runtime model, PWA/native attribution을 끼워 넣지 않는다.
-- 10 완료 범위를 넓혀서 PWA/offline/native app, `UserDraft`, server draft DB, media/raw 저장, `/app/export`, `/api/exports`를 끼워 넣지 않는다.
+- 09 완료 범위를 넓혀서 account deletion 실제 job, 세부 analytics event, 외부 provider, public/UTM attribution, growth experiment, marketing opt-in, billing runtime model, PWA/native attribution을 끼워 넣지 않는다.
+- 10 완료 범위를 넓혀서 PWA/offline/native app, BusinessCard custom camera preview/crop, `UserDraft`, server draft DB, media/raw 저장, `/app/export`, `/api/exports`를 끼워 넣지 않는다.
 - 10 문서 체크리스트나 FE architecture stale 문서를 기능 미구현 근거로 보지 않는다.
-- 11 완료 범위를 넓혀서 Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Billing Admin을 끼워 넣지 않는다.
+- 11 완료 범위를 넓혀서 Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin direct domain mutation, Customer/B2B tenant admin, Billing Admin을 끼워 넣지 않는다.
 - 11 문서 체크리스트나 Admin Web architecture stale 문서를 기능 미구현 근거로 보지 않는다.
+- ImportJob cleanup failure aggregate/system gate는 `PRE12-F13` 전략 전 11 system gate에 끼워 넣지 않는다.

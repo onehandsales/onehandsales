@@ -11,7 +11,7 @@
 
 ## 2. 문서 목록
 
-- `SCOPE.md`: 포함 범위, 제외 범위, 05/06/07/10 작업 경계
+- `SCOPE.md`: 포함 범위, 제외 범위, 05/06/07/10/11 작업 경계
 - `CANDIDATE-MATRIX.md`: 후보별 출처, 현재 구현 상태, 기본 분류, 다음 조치
 - `06_RECORD_SUMMARY_DEFER_DECISION.md`: 2026-08-06 A 결정에 따른 `NBA-003` 잔여 record summary 보류 기준
 - `GOAL-WORK-ORDER.md`: `/goal` 실행 순서
@@ -54,8 +54,10 @@
 - Notification/Calendar/follow-up 세부 analytics event를 runtime allowlist에 추가
 - 외부 analytics provider forwarding port/adapter/runtime call 추가
 - public site/UTM/ad attribution/growth experiment API/model 추가
+- marketing opt-in/communication consent policy API/model/UI 추가
 - PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution 추가
-- `UserDraft`, `/api/drafts/*`, server draft DB, media/raw 저장을 10 후속처럼 추가
+- BusinessCard 전용 `getUserMedia`, custom camera preview/crop/canvas capture flow를 `PRE12-F42` 계약 없이 추가
+- `UserDraft`, `/api/drafts/*`, server draft DB, media/raw 저장을 `PRE12-F43` 정책 없이 10 후속처럼 추가
 - `/app/export`, `/api/exports`, `ExportJob`을 10/PRE12 후속처럼 활성화
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
 - 11 문서 체크리스트/goal index 미체크를 근거로 Admin 기능 재구현
@@ -63,6 +65,9 @@
 - Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
 - data export artifact 생성 processor, storage signed URL, download endpoint 추가
 - 자동 민감정보 감지/DLP model 또는 processor 추가
+- Admin 도메인 read-only records를 직접 수정/삭제/복구 mutation으로 확장
+- `/organizations` redirect나 내부 AdminGuard를 Customer/B2B tenant admin으로 전환
+- ImportJob cleanup 실패 전용 Admin 화면/API/집계를 `PRE12-F13` 전략 없이 추가
 
 2026-08-06 A 결정 기준으로 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 pre-12 계약화 대상도 아니다. post-12 재검토 전에는 G04를 구현 계약 goal로 전환하지 않는다.
 
@@ -74,11 +79,11 @@
 
 08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 `PRE12-F17`~`PRE12-F25` 후속 후보 또는 post-12 seed로 분류했고 G09 closeout을 완료했다.
 
-09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, PWA/native install attribution은 09 미완성이 아니라 `PRE12-F26`~`PRE12-F30` 후속 후보 또는 post-12 seed로 분류했고 G10 closeout을 완료했다.
+09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, marketing opt-in, PWA/native install attribution은 09 미완성이 아니라 `PRE12-F26`~`PRE12-F30` 및 `PRE12-F41` 후속 후보 또는 post-12 seed로 분류했고 G10 closeout을 완료했다.
 
-10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G11 closeout을 완료했다. 남는 후보는 `PRE12-F30`, `PRE12-F31`, `PRE12-F32`와 기존 `PRE12-F09`로 본다.
+10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G11 closeout을 완료했다. PWA/native packaging은 `PRE12-F30`, advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`, 문서 정합성은 `PRE12-F31`/`PRE12-F32`, generic ExportJob은 기존 `PRE12-F09`로 본다.
 
-11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G12 closeout을 완료했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다.
+11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G12 closeout을 완료했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다. 2026-08-07 2차 재대조에서 Admin 직접 도메인 데이터 mutation은 `PRE12-F44`, Customer/B2B tenant admin은 `PRE12-F45`로 추가 분리했고, ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13`에 연결했다.
 
 ## 4. 관련 문서
 

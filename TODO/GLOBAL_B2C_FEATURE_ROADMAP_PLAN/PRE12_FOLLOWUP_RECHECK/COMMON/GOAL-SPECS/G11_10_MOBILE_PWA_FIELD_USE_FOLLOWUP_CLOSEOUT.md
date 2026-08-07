@@ -10,7 +10,9 @@
 
 이 goal은 구현 goal이 아니다. `BE`, `FE` 코드 변경, API 계약 확정, Prisma migration 생성, PWA/offline/native 구현, 신규 User Web route 활성화는 하지 않는다.
 
-2026-08-06 재검토 결과, `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 10/PRE12에 빠진 10 직접 후속 후보는 추가로 확인되지 않았다. 기능 구현은 재오픈하지 않고 `PRE12-F09`, `PRE12-F30`, `PRE12-F31`, `PRE12-F32` 분류를 유지한다.
+2026-08-06 재검토 결과, 기능 구현은 재오픈하지 않고 `PRE12-F09`, `PRE12-F30`, `PRE12-F31`, `PRE12-F32` 분류를 유지했다.
+
+2026-08-07 2차 재대조 결과, 10 원문의 제외 범위 중 custom `getUserMedia` 기반 BusinessCard camera preview/crop과 server draft/media raw storage가 후보 ID 없이 금지 기준에만 남아 있었다. 실제 BE/FE 코드에도 해당 구현은 없으므로 `PRE12-F42`, `PRE12-F43`으로 추가 분리한다.
 
 ## 2. 판단 근거
 
@@ -30,10 +32,10 @@
 | 범위 | 현재 사실 |
 | --- | --- |
 | 모바일 기본 방향 | 10은 native app이 아니라 mobile browser field-use를 완료 범위로 닫았다. |
-| BusinessCard capture | `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`에 `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라/앨범 선택 UX가 있다. |
+| BusinessCard capture | `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`에 `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라/앨범 선택 UX가 있다. BusinessCard 전용 `getUserMedia`, `ImageCapture`, preview/crop/canvas capture flow는 없다. |
 | BusinessCard OCR safe failure | `BE/prisma/migrations/20260731010000_add_business_card_safe_failure_fields/migration.sql`, `BE/prisma/schema.prisma`, `BE/src/modules/business-card`에 `BusinessCardScanLog` safe failure field와 `business_card_ocr_failed` server event가 있다. provider raw detail은 사용자 response/analytics/local draft에 넣지 않는다. |
 | MeetingNote recording/STT | `FE/user-web/src/features/meeting-note/hooks/use-meeting-note-audio-recorder.ts`에서 `MediaRecorder` 지원 감지와 사용자 클릭 후 microphone permission을 처리하고, `BE/src/modules/meeting-note/presentation/http/meeting-note.controller.ts`의 기존 `/api/meeting-notes/stt-draft`를 재사용한다. |
-| Local draft | `FE/user-web/src/features/mobile-local-draft`에 IndexedDB primary, localStorage fallback, 24시간 TTL, 복원/폐기 UX가 있다. server draft DB, `UserDraft`, audio/image binary 저장은 없다. |
+| Local draft | `FE/user-web/src/features/mobile-local-draft`에 IndexedDB primary, localStorage fallback, 24시간 TTL, 복원/폐기 UX가 있다. server draft DB, `UserDraft`, `MobileDraft`, `/api/drafts/*`, audio/image binary, transcript 전문, provider raw response 저장은 없다. |
 | Browser push permission UX | `/app/notifications`에서 사용자 클릭 후 `Notification.requestPermission()`을 호출하고 기존 notification settings/subscription API를 재사용한다. `FE/user-web/public/notification-sw.js`는 browser push용 service worker로만 본다. |
 | Mobile analytics | `BE/src/modules/analytics`와 `FE/user-web/src/features/analytics`에 mobile field-use client event allowlist와 PII/raw payload 금지 기준이 있다. |
 | PWA/offline/native | `FE/user-web`에서 `vite-plugin-pwa`, `workbox`, `manifest.webmanifest`, offline shell/full offline sync/native app 구현은 확인되지 않았다. |
@@ -46,6 +48,8 @@
 | FE generic ExportJob 잔여 코드 | `PRE12-F09` | `/app/export` route는 `/app`으로 redirect되고 BE `ExportJob`/`/api/exports` 구현은 없다. 다만 FE에 `ExportScreen`, `/api/exports` client/hook/type이 남아 있다. post-12 전에는 route/API를 열지 않는다. |
 | FE route architecture 문서 stale | `PRE12-F32` | 실제 router에는 `/app/notifications`가 활성이고 `/app/export`만 redirect다. `FE/ARCHITECTURE.md`, `FE/user-web/ARCHITECTURE.md`는 `/app/notifications`도 redirect라고 적고 있어 문서 정정 후보로 둔다. |
 | PWA/offline/native packaging | `PRE12-F30` | 10은 mobile browser field-use 완료다. PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 10 미완성이 아니라 별도 mobile roadmap 후보다. |
+| BusinessCard advanced camera preview/crop | `PRE12-F42` | 10 원문은 custom `getUserMedia` camera preview/crop을 mobile advanced capture 후속으로 제외했다. 실제 FE는 native file/camera picker 기준이므로 10 완료를 재오픈하지 않는다. |
+| Server draft/media raw storage | `PRE12-F43` | 10 원문은 server draft DB와 image/audio blob/transcript/provider raw 저장을 제외했다. 실제 BE/FE에도 `UserDraft`, `/api/drafts/*`, raw/blob 저장 API/table이 없으므로 trust/privacy 정책 후속으로 둔다. |
 
 ## 4. PRE12 후보 분류
 
@@ -53,6 +57,8 @@
 | --- | --- | --- | --- |
 | generic ExportJob/PDF | `PRE12-F09` | post-12-seed | 03/11 후속이다. FE 잔여 코드는 있어도 사용자 노출 route와 BE API/model은 없다. |
 | PWA/native packaging과 install attribution | `PRE12-F30` | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않는다. PWA/offline/full offline sync/native bridge/native attribution 계약은 post-12 또는 별도 mobile roadmap에서 만든다. |
+| BusinessCard mobile advanced camera preview/crop | `PRE12-F42` | post-12-seed / mobile advanced capture | 모바일 사용량, device QA, 접근성, fallback, image handling 기준이 확인될 때 별도 계약으로 판단한다. |
+| Server draft and media/raw storage policy | `PRE12-F43` | defer / trust-policy / post-12-seed | retention, 삭제권, account deletion 실제 처리, encryption, quota, raw access audit, redaction 정책 없이는 구현하지 않는다. |
 | 10 FE/BE TODO 체크리스트 정합성 | `PRE12-F31` | pre-12-doc-cleanup | 구현 누락이 아니라 문서 체크리스트 정리 대상이다. |
 | User Web route/architecture 문서 정합성 | `PRE12-F32` | pre-12-doc-cleanup | 실제 route를 기준으로 architecture 문서를 정정한다. route를 문서에 맞춰 되돌리지 않는다. |
 
@@ -63,7 +69,8 @@
 - `UserDraft`, `/api/drafts/*`, server draft DB 추가
 - audio/image binary, transcript 전문, provider raw response 저장 table/API 추가
 - `BusinessCardScanLog` safe failure 외 10 범위 신규 DB model 추가
-- `NotificationSourceType` 또는 notification marketing opt-in API 확장
+- BusinessCard 전용 `getUserMedia`, `ImageCapture`, camera preview/crop/canvas capture flow 추가
+- `NotificationSourceType` 또는 notification marketing opt-in API 확장(`PRE12-F41`)
 - mobile analytics runtime event를 payload 계약 없이 추가
 - PWA manifest, offline shell, full offline sync, cache strategy, workbox/vite-plugin-pwa 추가
 - iOS/Android native app, native push/contact/calendar bridge 추가
@@ -77,6 +84,7 @@
 
 ```powershell
 rg -n "safeErrorCode|safeErrorMessage|business_card_ocr_failed|OCR_FAILED" BE\prisma\schema.prisma BE\src\modules\business-card FE\user-web\src\features\business-card -g "*.ts" -g "*.tsx" -g "*.prisma"
+rg -n "capture=\"environment\"|getUserMedia|ImageCapture|Cropper|crop|canvas" FE\user-web\src\features\business-card -g "*.ts" -g "*.tsx"
 rg -n "stt-draft|MediaRecorder|getUserMedia|audioFile|transcriptLength" BE\src\modules\meeting-note FE\user-web\src\features\meeting-note -g "*.ts" -g "*.tsx"
 rg -n "MOBILE_LOCAL_DRAFT_TTL_MS|IndexedDB|localStorage|audioBase64|transcript|providerResponse" FE\user-web\src\features\mobile-local-draft -g "*.ts" -g "*.tsx"
 rg -n "Notification.requestPermission|browser-push|public-key|endpointHash|p256dhCiphertext|notification-sw" BE\src\modules\notification FE\user-web\src\features\notification FE\user-web\public\notification-sw.js -g "*.ts" -g "*.tsx" -g "*.js"
@@ -90,8 +98,10 @@ rg -n "path: \"notifications\"|path: \"export\"|notification-sw|serviceWorker|wo
 
 - [x] 10 완료 범위를 mobile browser field-use로 유지한다고 기록했다.
 - [x] PWA/offline/native는 `PRE12-F30`으로 유지하고 10 미완성으로 보지 않는다고 기록했다.
+- [x] 2026-08-07 2차 재대조에서 BusinessCard advanced camera preview/crop을 `PRE12-F42`로 분리했다.
+- [x] 2026-08-07 2차 재대조에서 server draft/media raw storage policy를 `PRE12-F43`으로 분리했다.
 - [x] generic ExportJob은 `PRE12-F09`이며 FE 잔여 코드가 있어도 post-12 전 route/API 활성화 대상이 아니라고 기록했다.
 - [x] 10 FE/BE TODO 체크리스트 정합성 이슈를 `PRE12-F31`로 분리했다.
 - [x] User Web route/architecture 문서 stale 이슈를 `PRE12-F32`로 분리했다.
-- [x] `UserDraft`, server draft DB, media/raw 저장, PWA/offline/native, `/app/export`, `/api/exports` 구현 금지를 명시했다.
-- [x] `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 10/PRE12에 빠진 10 직접 후속 후보가 추가로 없는지 재확인했다.
+- [x] `UserDraft`, server draft DB, media/raw 저장, custom camera preview/crop, PWA/offline/native, `/app/export`, `/api/exports` 구현 금지를 명시했다.
+- [x] `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 10 원문과 실제 BE/FE 코드 기준으로 10/PRE12에 빠진 직접 후속 후보를 2차 재확인했다.

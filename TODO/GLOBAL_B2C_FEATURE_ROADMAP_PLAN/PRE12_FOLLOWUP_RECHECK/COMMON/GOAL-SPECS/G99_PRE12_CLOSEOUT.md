@@ -39,6 +39,7 @@
 - 06 후속 재검토 A 결정과 07~11 재대조 대상이 분리되어 남는다.
 - 07 MeetingNote AI 완료 범위와 07 밖의 follow-up/list summary/AI data cleanup/raw storage/AI 후보 자동 업무 mutation 후보가 분리되어 남는다.
 - 08 Global Data I18N 완료 범위와 08 밖의 market locale/global data/money/address/auth polish 후보가 분리되어 남는다.
-- 09 Product Analytics 완료 범위와 09 밖의 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보가 분리되어 남는다.
-- 10 Mobile PWA Field Use 완료 범위와 10 밖의 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보가 분리되어 남는다.
-- 11 Admin Operation 완료 범위와 11 밖의 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지 후보가 분리되어 남는다.
+- 09 Product Analytics 완료 범위와 09 밖의 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA/native 후보가 분리되어 남는다.
+- 10 Mobile PWA Field Use 완료 범위와 10 밖의 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보가 분리되어 남는다.
+- 11 Admin Operation 완료 범위와 11 밖의 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin direct domain mutation, Customer/B2B tenant admin 후보가 분리되어 남는다.
+- ImportJob cleanup failure aggregate/system gate가 11 system gate 완료 범위가 아니라 `PRE12-F13` import/Admin ops 확장으로 남는다.

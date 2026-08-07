@@ -32,13 +32,16 @@
 | `Contact.phoneCountryCode`, `Contact.phoneNationalNumber`, `Contact.phoneE164` | 08에서 KR/US phone normalization과 legacy mobile fallback으로 완료됐다. |
 | `Company.address`, `CompanyRegion.countryCode`, `CompanyRegion.regionCode` | 08에서 Company free address와 KR/US region code로 완료됐다. Contact address는 없다. |
 | `OAuthProvider` | `KAKAO`, `GOOGLE`, `APPLE`, `LINE` enum이 있다. Runtime auth provider는 Google/LINE/Apple이고 Kakao는 legacy 호환이다. |
+| `UserRole` | 현재 `USER`, `ADMIN`만 있다. `TenantAdmin`, `CustomerAdmin` 같은 customer/B2B admin 역할은 없다. |
 | `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` | 09에서 analytics 정본, activation/retention snapshot, raw event retention 기준으로 완료됐다. |
 | `AccountDeletionRequest`, `UserDataExportRequest` | 11에서 계정 삭제 요청/취소/Admin queue와 데이터 export request workflow로 완료됐다. 실제 계정 hard delete/anonymization processor는 없다. |
 | `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, `ExperimentAssignment`, billing/payment/tax/refund/invoice 관련 모델 | 현재 schema에 없다. 09에서는 만들지 않았고 08도 결제 국가/세금/환불/인보이스를 다루지 않았으며 12 또는 12 이후 후보로 남긴다. |
 | `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable` | 10에서 BusinessCard OCR safe failure 계약으로 완료됐다. 10 범위 신규 DB model은 이것 외에 없다. |
+| BusinessCard advanced camera preview/crop model | 현재 schema에 없다. 10은 native file/camera picker와 safe failure field까지만 닫았고 custom camera/crop 상태 저장 model을 만들지 않았다. |
 | `UserDraft`, server draft DB, media/raw 저장 table | 현재 schema에 없다. 10 local draft는 FE storage 기준이며 audio/image binary, transcript 전문, provider raw response를 DB에 저장하지 않는다. |
 | `ExportJob` | 현재 schema에 없다. 03/11 후속 `PRE12-F09`로만 본다. FE 잔여 코드가 있어도 10 또는 PRE12에서 migration을 만들지 않는다. |
-| `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AdminOperationCheckRun` | 11 Admin Operation에서 운영 audit/redaction, Trash recovery queue, system gate record로 완료됐다. Admin 직접 restore/payment/purge 실행 model은 없다. |
+| `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AdminOperationCheckRun` | 11 Admin Operation에서 운영 audit/redaction, Trash recovery queue, system gate record로 완료됐다. Admin 직접 restore/payment/purge 실행 model, Admin domain mutation result/rollback model, ImportJob cleanup failure aggregate model은 없다. |
+| Tenant/organization 계열 model | 현재 `Tenant`, `Organization`, `OrgMember`, `TenantAdmin` model은 없다. 11 Admin Web `/organizations` redirect는 customer-facing tenant admin schema가 있다는 의미가 아니다. |
 
 ## 3. 새 migration 금지 기준
 
@@ -59,6 +62,7 @@
 - 대용량 import worker queue/status/retry 저장 방식
 - 일정/회의록 import source snapshot과 mapping 저장 방식
 - ImportJob Admin 운영 조회/cleanup 저장 방식
+- ImportJob cleanup 실패 전용 aggregate/system gate 저장 방식
 - ExportJob/file retention 정책
 - Google Calendar write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, Google 외 calendar provider 모델
 - billing entitlement/paywall/churn 모델
@@ -73,11 +77,15 @@
 - Notification/Calendar/follow-up 세부 analytics event 확장을 위한 새 enum/table
 - external analytics provider forwarding outbox/dead-letter table
 - public/UTM/ad attribution과 growth experiment assignment 저장 모델
+- marketing opt-in/communication consent preference, withdrawal, audit snapshot 저장 모델
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, subscription/payment/tax/refund/invoice model
 - PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution 저장 모델
-- `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table
+- BusinessCard advanced camera preview/crop 상태, image preprocessing, crop metadata 저장 model을 `PRE12-F42` 계약 없이 추가
+- `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table을 `PRE12-F43` 정책 없이 추가
 - `ExportJob`, export file retention, `/api/exports` 전용 저장 모델
 - Admin 직접 Trash 복구 실행, 유료 복구 결제, hard delete/purge 상태/결과 저장 모델
+- Admin domain mutation result/rollback/audit 저장 모델
+- Tenant/organization/member/role/permission 저장 모델 또는 customer/B2B admin role enum
 - data export artifact 생성/다운로드 worker 상태, storage object, signed URL audit 저장 모델
 - 자동 민감정보 감지/DLP scan result, false positive/override 저장 모델
 
@@ -93,11 +101,11 @@
 
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 post-12 또는 12 Billing 정책 이후의 별도 migration 후보로 둔다.
 
-09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
+09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, marketing opt-in, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
 
-10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. `UserDraft`, server draft DB, media/raw 저장 table, PWA/native attribution table, `ExportJob`은 10 미완성이 아니라 별도 후속 후보로만 둔다.
+10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, `UserDraft`, server draft DB, media/raw 저장 table은 `PRE12-F43`, PWA/native attribution table은 `PRE12-F30`, `ExportJob`은 `PRE12-F09` 후속 후보로만 둔다.
 
-11 재대조 기준으로 Admin Operation의 1차 DB 영향은 Admin audit/security, Trash recovery request, account/data request, system operation check run으로 닫혔다. 11 문서 체크리스트 미체크를 근거로 새 migration을 만들지 않는다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지는 별도 정책/운영 계약 전 migration 후보로 올리지 않는다.
+11 재대조 기준으로 Admin Operation의 1차 DB 영향은 Admin audit/security, Trash recovery request, account/data request, system operation check run으로 닫혔다. 11 문서 체크리스트 미체크를 근거로 새 migration을 만들지 않는다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지, Admin direct domain data mutation, Customer/B2B tenant admin은 별도 정책/운영/전략 계약 전 migration 후보로 올리지 않는다. ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13` import/Admin ops 확장으로만 본다.
 
 ## 4. 후보별 DB 영향
 
@@ -112,7 +120,7 @@
 | DealActivity lifecycle/search/score 확장 | soft delete/trash/restore/retention/audit field/table, memo/private memo 통합 모델, all-domain activity bus, search index, score/AI 판단 결과, summary cache/denormalized latest 필요 여부 결정 | post-12 seed / `PRE12-F39` |
 | AI data cleanup | suggestion table, 적용 이력, rollback/audit table 필요 여부 결정 | post-12 seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | raw text 저장 table, TTL, 삭제권, sensitive access log 기준 필요 | defer / 정책 필요 |
-| Import scale/source/Admin 확장 | background job queue, source별 row snapshot, Admin cleanup/audit table 필요 여부 결정 | post-12 seed |
+| Import scale/source/Admin 확장 | background job queue, source별 row snapshot, Admin cleanup/audit table, cleanup failure aggregate/system gate 저장 필요 여부 결정 | post-12 seed / `PRE12-F13` |
 | provider smoke | DB 변경 없음 | 운영 기록 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS vendor config/outbox, tenant sender, email sync/import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델 필요 여부 결정 | post-12 seed / `PRE12-F05`/`PRE12-F06` |
 | App locale 확장 | User locale enum/table 분리 여부, 기존 locale migration 필요 여부 | post-12 seed |
@@ -126,8 +134,11 @@
 | Product analytics 세부 event 확장 | 신규 table보다는 taxonomy/payload contract 확장이 우선. 필요 시 event version 또는 derived aggregate table 검토 | post-12 seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider delivery outbox, retry/dead-letter, consent snapshot 저장 필요 여부 결정 | post-12 seed / growth/ops |
 | public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | post-12 seed / growth/marketing |
+| Marketing opt-in/communication consent policy | account-level marketing consent preference, withdrawal history, campaign channel consent, audit snapshot 저장 모델 필요 여부 결정. `FollowUpConsentNotice`는 follow-up 발송 고지 확인이므로 대체 모델로 쓰지 않는다 | billing-blocked / growth-compliance / `PRE12-F41` |
 | Billing/subscription/tax/paywall runtime | `UserSubscription`, plan/payment/invoice/refund/failed payment/tax profile과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`와 `FollowUpDeliveryAttempt.estimatedCostAmount`는 내부 참고/운영용 기록일 뿐 billing source-of-truth가 아니다 | billing-blocked / `PRE12-F12` |
 | PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
+| BusinessCard mobile advanced camera preview/crop | crop metadata, preprocessing result, device capability 저장이 필요한지 검토하되 기본은 FE UX 후보로 둔다. 10 safe failure schema를 재오픈하지 않는다 | post-12 seed / mobile advanced capture / `PRE12-F42` |
+| Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, audio/image binary, transcript 전문, provider raw response 저장 model 필요 여부와 TTL/deletion/encryption/raw access audit 기준 필요 | defer / trust-policy / `PRE12-F43` |
 | 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |
 | Google Calendar 고급 sync/provider 확장 | write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, provider abstraction table 필요 여부 결정 | post-12 seed / `PRE12-F10` |
@@ -135,6 +146,8 @@
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | Question / 정책 및 billing 필요 |
 | User data export artifact/download | `ExportJob` 또는 `UserDataExportRequest` status transition으로 충분한지 결정. file TTL/storage/audit 기준 필요 | post-12 seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, override, audit, retention 저장 모델 필요 여부 결정 | defer / 정책 필요 |
+| Admin direct domain data mutation and recovery action policy | 도메인 mutation result, rollback snapshot, user notification, redaction/audit model 필요 여부 결정. 11 read-only records 완료 범위와 분리한다 | defer / ops-policy / `PRE12-F44` |
+| Customer/B2B tenant admin and organization admin model | `Tenant`/`Organization`/`OrgMember`, tenant role/permission, customer admin audit, billing/support boundary 저장 모델 필요 여부 결정 | defer / B2B-strategy / `PRE12-F45` |
 
 ## 5. DB/Prisma gate
 

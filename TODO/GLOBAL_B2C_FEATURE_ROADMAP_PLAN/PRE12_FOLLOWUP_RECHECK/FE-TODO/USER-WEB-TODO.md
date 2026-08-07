@@ -21,7 +21,7 @@
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
 | Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
 | Product Analytics | User Web analytics helper, `/app` route view hook, mobile field-use client event, `VITE_PRODUCT_ANALYTICS_ENABLED` gate가 있다. analytics 실패는 사용자-facing UI로 표시하지 않는다. |
-| Mobile Field Use | BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, FE local draft 24시간 TTL, `/app/notifications` browser push permission UX, mobile field analytics는 10 범위로 완료됐다. `/app/export`는 `/app`으로 redirect된다. |
+| Mobile Field Use | BusinessCard native file/camera picker capture/OCR safe failure, MeetingNote recording/STT fallback, FE local draft 24시간 TTL, `/app/notifications` browser push permission UX, mobile field analytics는 10 범위로 완료됐다. `/app/export`는 `/app`으로 redirect된다. |
 | Admin Operation 영향 | `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI는 11에서 완료됐다. User Web은 `/admin/api/*`를 호출하지 않는다. |
 
 ## 3. 구현 금지
@@ -56,12 +56,16 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - Notification/Calendar/follow-up 세부 analytics event를 화면별로 임의 추가
 - 외부 analytics provider SDK/script 삽입
 - public site/UTM/ad attribution, campaign attribution, experiment assignment UI 추가
+- marketing opt-in/communication consent policy UI 추가
 - billing/subscription/tax/refund/invoice/paywall/churn/AI quota 사용량 UI를 12 전 추가
 - PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution UI 추가
-- `UserDraft`, server draft DB, audio/image binary, transcript/provider raw 저장 UX 추가
+- BusinessCard 전용 `getUserMedia`, custom camera preview/crop/canvas capture flow를 `PRE12-F42` 계약 없이 추가
+- `UserDraft`, server draft DB, audio/image binary, transcript/provider raw 저장 UX를 `PRE12-F43` 정책 없이 추가
 - FE에 남은 `ExportScreen`/`/api/exports` 잔여 코드를 `/app/export` 활성 route로 연결
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications`를 redirect로 되돌림
 - Admin 직접 Trash 복구/유료 복구/hard delete/purge UI를 User Web에서 우회 표시
+- Admin 직접 도메인 데이터 수정/복구 action을 User Web에서 운영자 대행 기능처럼 우회 표시
+- Customer/B2B tenant admin, organization/member/role 관리 UI를 tenant 전략 없이 User Web에 추가
 - data export artifact 생성/download UI를 실제 file job/download contract 없이 활성화
 - 자동 민감정보 감지 결과나 raw access 상태를 User Web에 표시
 
@@ -77,11 +81,11 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 05 재대조 기준으로 `/app/schedules/week` AI report와 `/app/settings` follow-up delivery, compose/send/retry/timeline UX는 완료다. 운영 provider smoke는 화면 변경 없이 문서 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장, 사용자-facing cost/paywall, 자동 생성/자동 mutation은 05 미완성이 아니라 후속 후보로 둔다.
 
-09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
+09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, marketing opt-in, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
-10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이며, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 실제 router 기준으로 정정한다.
+10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이며, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 실제 router 기준으로 정정한다. 2차 재대조에서 `custom getUserMedia` 기반 BusinessCard preview/crop은 `PRE12-F42`, server draft/media raw storage는 `PRE12-F43`으로 분리한다.
 
-11 재대조 기준으로 User Web 영향 범위는 `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI까지 완료다. 실제 account deletion hard delete/anonymization, data export artifact/download, Admin 직접 Trash 복구/유료 복구/hard delete/purge, 자동 민감정보 감지는 11 미완성이 아니라 정책/ExportJob/Billing 이후 후속 후보로 둔다.
+11 재대조 기준으로 User Web 영향 범위는 `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI까지 완료다. 실제 account deletion hard delete/anonymization, data export artifact/download, Admin 직접 Trash 복구/유료 복구/hard delete/purge, Admin 직접 도메인 데이터 mutation, Customer/B2B tenant admin, 자동 민감정보 감지는 11 미완성이 아니라 정책/ExportJob/Billing/B2B 전략 이후 후속 후보로 둔다.
 
 ## 4. 후보별 FE 영향
 
@@ -111,8 +115,11 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up 화면의 click/reach/sync/detail tracking 위치와 payload privacy 기준 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | FE SDK를 직접 넣을지, Backend forwarding만 사용할지, consent/banner/DNT 기준 결정 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public/auth route attribution, campaign parameter 보존, experiment assignment 표시/노출 기준 필요 | post-12-seed / growth/marketing |
+| Marketing opt-in/communication consent policy | account-level opt-in/withdrawal UI, campaign channel consent, preference display, consent audit copy 기준 필요. public contact form `marketingAgreement`와 follow-up consent modal은 대체물이 아니다 | billing-blocked / growth-compliance / `PRE12-F41` |
 | Billing/subscription/tax/paywall UI | 05/09 내부 cost/usage 기록과 별개로 12의 plan/payment/subscription/tax/refund/invoice/failed payment, quota/paywall/upgrade contract와 API 필요 | billing-blocked / `PRE12-F12` |
 | PWA/native packaging과 attribution | install prompt, offline shell/full offline sync, native app deep link, native push/contact/calendar bridge, install attribution UX 기준 필요 | post-12-seed / 별도 mobile roadmap |
+| BusinessCard mobile advanced camera preview/crop | `getUserMedia`, camera preview, crop/retake, fallback, permission denial, accessibility/device QA 기준 필요. 10의 native file/camera picker를 임의 대체하지 않는다 | post-12-seed / mobile advanced capture / `PRE12-F42` |
+| Server draft and media/raw storage policy | server-backed draft restore, blob/raw transcript 보관 표시, 삭제/만료/계정 삭제 UX 기준 필요. 10 local draft TTL 완료 범위와 분리한다 | defer / trust-policy / `PRE12-F43` |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | pre-12-doc-cleanup |
 | User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | pre-12-doc-cleanup |
 | FE generic ExportJob 잔여 코드 | `ExportScreen`, `/api/exports` client/hook/type을 post-12 전 dead code로 둘지 정리/주석화/삭제할지 판단 | post-12-seed |
@@ -120,6 +127,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | 11 Admin/User 영향 문서 정합성 | 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 맞추는 문서 정리 | pre-12-doc-cleanup |
 | User data export artifact/download | export request status UI 이후 실제 download 가능 상태, 만료, 실패 UX 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | User Web에서는 요청/안내 UX만 가능하다. 실행/결제/삭제 정책은 별도 결정 필요 | Question / 정책 및 billing 필요 |
+| Admin direct domain data mutation and recovery action policy | User Web에서는 운영자 대행 mutation을 직접 노출하지 않는다. 필요한 경우 사용자 확인/통지/감사/rollback UX 정책이 먼저 필요 | defer / ops-policy / `PRE12-F44` |
+| Customer/B2B tenant admin and organization admin model | organization/member/role 관리 UI가 필요한지 B2B 전략, billing/support boundary, 권한 모델을 먼저 결정 | defer / B2B-strategy / `PRE12-F45` |
 
 ## 5. UX 기준
 
@@ -133,6 +142,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - analytics event는 payload allowlist와 privacy contract 없이 화면 컴포넌트에서 임의로 추가하지 않는다.
 - analytics 실패는 사용자 작업을 막거나 toast/modal/banner로 노출하지 않는다.
 - external analytics SDK/script는 consent/privacy/DPA 기준 없이 User Web에 삽입하지 않는다.
+- marketing opt-in/communication consent는 12/growth/privacy 정책 없이 settings, notification, follow-up consent UI에 끼워 넣지 않는다.
 - account deletion 실제 처리와 billing/paywall/churn은 12/정책 결정 전 표시하지 않는다.
 - `/app/notifications`는 실제 구현된 route로 보고, stale 문서에 맞춰 숨기지 않는다.
 - `/app/export`는 post-12 ExportJob 계약 전까지 활성화하지 않는다.

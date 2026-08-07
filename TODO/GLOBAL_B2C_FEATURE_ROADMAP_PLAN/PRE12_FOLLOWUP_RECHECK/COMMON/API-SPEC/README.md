@@ -22,7 +22,7 @@
 | MeetingNote list latest/next summary | `GET /api/meeting-notes` response field 추가 또는 별도 summary endpoint | post-12-seed | 12 전 구현 금지 |
 | AI data cleanup 제안 저장/적용 | MeetingNote/record cleanup suggestion 생성, 적용, 되돌리기 | post-12-seed / 별도 data quality 계획 | 구현 금지 |
 | MeetingNote transcript/raw/follow-up draft 저장/조회 | transcript, provider raw response, follow-up draft body 저장 또는 raw access API | defer / 정책 필요 | 구현 금지 |
-| Import scale/source/Admin 확장 | 대용량 import worker API, 일정/회의록 import source API, ImportJob Admin 전용 API | post-12-seed | 12 전 구현 금지 |
+| Import scale/source/Admin 확장 | 대용량 import worker API, 일정/회의록 import source API, ImportJob Admin 전용 API, ImportJob cleanup failure aggregate/system gate API | post-12-seed / `PRE12-F13` | 12 전 구현 금지 |
 | Google Calendar 고급 sync/provider 확장 | export/write/양방향 sync, webhook/watch, recurrence, reminders, attendee/contact auto-link, multi-account, Google 외 provider API 계약 | post-12-seed / `PRE12-F10` | 12 전 구현 금지 |
 | Gmail/Microsoft provider smoke closeout | 새 API 없음 | not applicable | 운영 smoke 기록만 가능 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS vendor adapter, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, SMTP/external email SaaS, HTML email/attachment/tracking contract | post-12-seed / `PRE12-F05`/`PRE12-F06` | 구현 금지 |
@@ -37,8 +37,11 @@
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up delivery/click/reach/sync/detail event taxonomy와 payload allowlist | post-12-seed / 별도 analytics 계획 | 구현 금지 |
 | external analytics provider forwarding | Backend provider forwarding adapter/outbox/retry 또는 FE SDK 삽입 방식 결정 | post-12-seed / growth/ops | 구현 금지 |
 | public site/UTM/ad attribution/growth experiment | public route event, attribution cookie/referrer policy, experiment assignment API | post-12-seed / growth/marketing | 구현 금지 |
+| Marketing opt-in/communication consent policy | account-level marketing opt-in, withdrawal, campaign channel consent, consent audit snapshot contract | billing-blocked / growth-compliance / `PRE12-F41` | 12 전 구현 금지 |
 | Billing/subscription/tax/paywall runtime | plan/payment/subscription, tax/refund/invoice/failed payment, `AiProviderCallLog`/`FollowUpDeliveryAttempt` 내부 cost 추정과 `AiUsageDaily` 또는 `UsageMeter`, plan/quota/paywall/upgrade event contract 연결 | billing-blocked / `PRE12-F12` | 12 전 구현 금지 |
 | PWA/native packaging과 install attribution | install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap | 구현 금지 |
+| BusinessCard mobile advanced camera preview/crop | FE 중심 camera capability/preview/crop/retake flow 계약. Backend는 필요 시 image preprocessing/upload 제약만 재검토 | post-12-seed / mobile advanced capture / `PRE12-F42` | 구현 금지 |
+| Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, `/api/drafts/*`, media blob upload, transcript/raw provider response 저장/조회 API 필요 여부 결정 | defer / trust-policy / `PRE12-F43` | 구현 금지 |
 | 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
 | User Web route/architecture 문서 정합성 | 새 API 없음. 실제 route 기준 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
 | generic ExportJob/PDF | `/api/exports`, `ExportJob`, export file TTL/ownership/audit contract | post-12-seed | 12 전 구현 금지 |
@@ -47,6 +50,8 @@
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, paid recovery payment, purge/hard delete API가 필요할 수 있으나 정책 미확정 | Question / 정책 및 billing 필요 | 구현 금지 |
 | User data export artifact/download endpoint | artifact 생성 processor, signed URL, `GET /api/users/me/data-export-requests/:requestId/download` 또는 `/api/exports` 계약 필요 | post-12-seed / `PRE12-F09` 연결 | 12 전 구현 금지 |
 | 자동 민감정보 감지 | PII/DLP scan API/worker 또는 저장 시 detection hook 필요 여부 결정 | defer / 정책 필요 | 구현 금지 |
+| Admin direct domain data mutation and recovery action policy | Admin Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 수정/삭제/복구 mutation, audit/result/rollback contract 필요 | defer / ops-policy / `PRE12-F44` | 구현 금지 |
+| Customer/B2B tenant admin and organization admin model | tenant/org/member/role/permission API, customer admin auth boundary, billing/support boundary 계약 필요 | defer / B2B-strategy / `PRE12-F45` | 구현 금지 |
 
 ## 3. API 계약을 만들 때 필수로 채울 항목
 
