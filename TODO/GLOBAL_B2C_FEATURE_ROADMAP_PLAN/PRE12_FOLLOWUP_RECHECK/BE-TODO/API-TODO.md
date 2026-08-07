@@ -2,7 +2,7 @@
 
 상태: Draft / confirmed backend API 없음
 작성일: 2026-08-06
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
@@ -47,7 +47,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - ImportJob Admin 전용 API 추가
 - generic ExportJob API 추가
 - Google Calendar export/write/양방향 sync/webhook/watch/reminders/attendee import/multi-account/other provider API 추가
-- billing/paywall/churn API 추가
+- billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn API 추가
 - User locale/country/currency 허용값 확장
 - Contact phone country 확장
 - Company region country 확장 또는 국가별 상세 주소 validation 추가
@@ -77,7 +77,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 05 재대조 기준으로 AI weekly report API, snapshot-summary, follow-up delivery settings, Gmail/Microsoft connect/callback/disconnect, draft/send/retry/list API와 send adapter는 완료다. 운영 provider smoke는 새 API 없이 G05 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장은 `PRE12-F05`/`PRE12-F06` 후속 후보로 둔다.
 
-08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing과 amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
+08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing, subscription/payment/refund/invoice/failed payment, amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
 
 09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, billing usage source-of-truth, PWA/native attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
@@ -111,7 +111,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up domain event hook, event allowlist, payload privacy contract 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider port/adapter, retry/dead-letter, consent/DPA, redaction, failure isolation 기준 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public route event collector, attribution cookie/referrer policy, experiment assignment API 기준 필요 | post-12-seed / growth/marketing |
-| AI usage billing source | `AiProviderCallLog` summary, `FollowUpDeliveryAttempt` cost 추정과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked |
+| Billing/subscription/tax/paywall runtime | plan/payment/subscription, tax/refund/invoice/failed payment, `AiProviderCallLog` summary, `FollowUpDeliveryAttempt` cost 추정과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked / `PRE12-F12` |
 | PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |

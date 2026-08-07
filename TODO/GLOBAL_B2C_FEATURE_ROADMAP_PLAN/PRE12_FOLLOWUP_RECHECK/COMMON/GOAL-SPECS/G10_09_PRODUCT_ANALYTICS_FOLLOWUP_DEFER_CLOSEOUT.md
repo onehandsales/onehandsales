@@ -43,7 +43,7 @@
 
 | 후보 | PRE12 ID | 분류 | 판단 |
 | --- | --- | --- | --- |
-| billing/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` | billing-blocked | 09는 reserved taxonomy와 Admin 참고용 AI usage summary만 완료했다. billing source-of-truth는 12에서 `AiUsageDaily` 또는 `UsageMeter` 등으로 결정해야 한다. |
+| billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` | billing-blocked | 09는 reserved taxonomy와 Admin 참고용 AI usage summary만 완료했다. plan/payment/subscription/tax/refund/invoice/failed payment와 billing source-of-truth는 12에서 `AiUsageDaily` 또는 `UsageMeter` 등으로 결정해야 한다. |
 | account deletion 실제 hard delete/anonymization job | `PRE12-F26` | Question / 정책 필요 | 09/11은 삭제 기준과 queue를 만들었지만 실제 job은 없다. privacy/legal/session revoke/access block/billing 영향 결정 전 구현하지 않는다. |
 | Product analytics 세부 event 확장 | `PRE12-F27` | post-12-seed / 별도 analytics 계획 | Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 09 최소 taxonomy 밖이다. |
 | 외부 analytics provider forwarding | `PRE12-F28` | post-12-seed / growth/ops | 자체 DB 정본을 유지한다. Segment/PostHog/Mixpanel/GA류 provider port/adapter/runtime call은 09 대상이 아니다. |
@@ -56,7 +56,7 @@
 
 | 항목 | 기존 후보 | 판단 |
 | --- | --- | --- |
-| billing/paywall/churn/paid conversion | `PRE12-F12` | 09 reserved taxonomy는 12 Billing 구현을 대신하지 않는다. |
+| billing/subscription/tax/paywall/churn/paid conversion | `PRE12-F12` | 09 reserved taxonomy는 12 Billing 구현을 대신하지 않는다. |
 | AI usage plan/quota/paywall source | `PRE12-F12` | 09 `AiProviderCallLog` summary는 Admin 참고용이다. 12에서 `AiUsageDaily`/`UsageMeter` 여부를 결정한다. |
 | Notification reminder 기능 자체 | `PRE12-F01`, `PRE12-F02` | 09에서 새 알림 기능을 만들지 않는다. 필요한 것은 별도 세부 analytics event 후보 `PRE12-F27`뿐이다. |
 | Google Calendar 고급 sync/provider 기능 자체 | `PRE12-F10` | 09는 Calendar sync detail event를 만들지 않는다. Calendar export/write/watch/recurrence/reminders/attendee/multi-account/provider 확장은 기존 후보를 따른다. |
@@ -104,6 +104,6 @@ rg -n "ExperimentAssignment|experiments/assignments|Segment|PostHog|Mixpanel|Goo
 
 - [x] 09 완료 범위를 재오픈하지 않는다고 기록했다.
 - [x] 09 후속 후보를 `PRE12-F26`~`PRE12-F30`으로 분류했다.
-- [x] `PRE12-F12`가 billing/paywall/churn뿐 아니라 AI usage billing source-of-truth 결정까지 포함한다고 보강했다.
+- [x] `PRE12-F12`가 billing/subscription/tax/paywall/churn뿐 아니라 AI usage billing source-of-truth 결정까지 포함한다고 보강했다.
 - [x] 10 mobile field-use와 11 Admin analytics는 완료 연결로 보고, PWA/native 및 account deletion 실제 job은 별도 후속으로 분리했다.
 - [x] external provider, public/UTM attribution, growth experiment, reserved billing runtime event는 09/PRE12 구현 금지로 고정했다.

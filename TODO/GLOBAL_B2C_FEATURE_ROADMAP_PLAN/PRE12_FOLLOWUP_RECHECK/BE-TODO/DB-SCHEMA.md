@@ -34,7 +34,7 @@
 | `OAuthProvider` | `KAKAO`, `GOOGLE`, `APPLE`, `LINE` enum이 있다. Runtime auth provider는 Google/LINE/Apple이고 Kakao는 legacy 호환이다. |
 | `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot` | 09에서 analytics 정본, activation/retention snapshot, raw event retention 기준으로 완료됐다. |
 | `AccountDeletionRequest`, `UserDataExportRequest` | 11에서 계정 삭제 요청/취소/Admin queue와 데이터 export request workflow로 완료됐다. 실제 계정 hard delete/anonymization processor는 없다. |
-| `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, `ExperimentAssignment` | 현재 schema에 없다. 09에서는 만들지 않았고 12 또는 12 이후 후보로 남긴다. |
+| `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, `ExperimentAssignment`, billing/payment/tax/refund/invoice 관련 모델 | 현재 schema에 없다. 09에서는 만들지 않았고 08도 결제 국가/세금/환불/인보이스를 다루지 않았으며 12 또는 12 이후 후보로 남긴다. |
 | `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable` | 10에서 BusinessCard OCR safe failure 계약으로 완료됐다. 10 범위 신규 DB model은 이것 외에 없다. |
 | `UserDraft`, server draft DB, media/raw 저장 table | 현재 schema에 없다. 10 local draft는 FE storage 기준이며 audio/image binary, transcript 전문, provider raw response를 DB에 저장하지 않는다. |
 | `ExportJob` | 현재 schema에 없다. 03/11 후속 `PRE12-F09`로만 본다. FE 잔여 코드가 있어도 10 또는 PRE12에서 migration을 만들지 않는다. |
@@ -62,6 +62,7 @@
 - ExportJob/file retention 정책
 - Google Calendar write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, Google 외 calendar provider 모델
 - billing entitlement/paywall/churn 모델
+- subscription/plan/payment/invoice/refund/failed payment/tax profile 저장 모델
 - `/app` 신규 locale 지원을 위한 User locale 확장
 - 신규 country/currency/phone dictionary 확장
 - Product/Deal minor unit 전환 또는 amount precision migration
@@ -72,7 +73,7 @@
 - Notification/Calendar/follow-up 세부 analytics event 확장을 위한 새 enum/table
 - external analytics provider forwarding outbox/dead-letter table
 - public/UTM/ad attribution과 growth experiment assignment 저장 모델
-- `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`
+- `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, subscription/payment/tax/refund/invoice model
 - PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution 저장 모델
 - `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table
 - `ExportJob`, export file retention, `/api/exports` 전용 저장 모델
@@ -125,7 +126,7 @@
 | Product analytics 세부 event 확장 | 신규 table보다는 taxonomy/payload contract 확장이 우선. 필요 시 event version 또는 derived aggregate table 검토 | post-12 seed / 별도 analytics 계획 |
 | external analytics provider forwarding | provider delivery outbox, retry/dead-letter, consent snapshot 저장 필요 여부 결정 | post-12 seed / growth/ops |
 | public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | post-12 seed / growth/marketing |
-| AI usage billing source | `AiUsageDaily`와 `UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`와 `FollowUpDeliveryAttempt.estimatedCostAmount`는 내부 참고/운영용 기록일 뿐 billing source-of-truth가 아니다 | billing-blocked |
+| Billing/subscription/tax/paywall runtime | `UserSubscription`, plan/payment/invoice/refund/failed payment/tax profile과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`와 `FollowUpDeliveryAttempt.estimatedCostAmount`는 내부 참고/운영용 기록일 뿐 billing source-of-truth가 아니다 | billing-blocked / `PRE12-F12` |
 | PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |

@@ -76,7 +76,7 @@
 | transcript/raw provider response/follow-up draft 저장 | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현하지 않는다. |
 | Import scale/source/Admin 확장 | post-12-seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니다. |
 | generic ExportJob/PDF 및 Google Calendar 고급 연동 | post-12-seed | `PRE12-F09`와 `PRE12-F10`으로 유지한다. Google export/write/양방향 sync, webhook/watch, 반복 일정, reminders/attendee, multi-account/provider 확장은 12 완료 후 새 TODO로 승격할지 판단한다. |
-| billing/paywall/churn/paid conversion/AI usage billing source | billing-blocked | 05/09의 내부 cost/usage summary는 과금 정본이 아니다. 12 전 임시 구현 금지. |
+| billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | billing-blocked | 08의 국가/통화/주소 모델과 05/09의 내부 cost/usage summary는 plan/payment/subscription/tax/refund/invoice/failed payment 또는 과금 정본이 아니다. 12 전 임시 구현 금지. |
 | `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | post-12-seed | 일본/대만 판매 준비 goal에서 다룬다. 08 완료 범위는 `ko-KR/en`이다. |
 | `zh-CN` 중국 본토 지원 | defer / 시장 진입 결정 필요 | 중국 본토 시장, 인프라, 정책, 결제/세금 기준이 없으면 구현하지 않는다. |
 | 전 세계 국가/통화/전화번호 확장 | post-12-seed | KR/US, KRW/USD 1차 검증 뒤 실제 판매 국가 기준으로 확장한다. |
@@ -143,7 +143,7 @@ PRE12_FOLLOWUP_RECHECK/
 2. API/DB/FE 구현이 필요한 후보는 `COMMON/API-SPEC` 계약이 `confirmed`로 오른 뒤 별도 goal로 쪼갠다.
 3. `draft` 또는 `Question` 상태의 후보는 controller, service, repository, Prisma schema, FE route로 구현하지 않는다.
 4. 06 작업 중 발견한 보정은 06 완료 범위를 넓히는 방식이 아니라 이 폴더의 후보 상태로 기록한다.
-5. billing/paywall/churn/paid conversion/invoice/tax와 연결된 항목은 12 전 구현하지 않는다.
+5. billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn/paid conversion과 연결된 항목은 12 전 구현하지 않는다.
 6. `NBA-003` 잔여 record summary는 2026-08-06 A 결정에 따라 12 전 API/DB/FE 계약 대상으로 보지 않는다.
 7. G06, G07, G08, G09, G10, G11, G12는 문서 closeout으로만 사용하고 구현 goal로 전환하지 않는다.
 8. G08은 07 후속 후보를 PRE12 후보로 닫은 closeout이며, 07 폴더에 새 구현 goal을 만들지 않는다.

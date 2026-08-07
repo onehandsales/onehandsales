@@ -37,7 +37,7 @@
 | 05 AI Weekly Sales Report 구현 재개 | 05는 저장형 AI weekly report, 사용자 확인 기반 follow-up delivery, Gmail/Microsoft send adapter 기준으로 완료됐다. provider smoke는 운영 closeout이고 SMS/B2B/email growth/cost/legal deletion은 별도 후속이다. |
 | 08 Global Data I18N 구현 재개 | 08은 `ko-KR/en`, KR/US, KRW/USD, Google/LINE/Apple 기준으로 완료됐다. 시장/국가/auth 확장은 별도 후속이다. |
 | 09 Product Analytics 구현 재개 | 09는 자체 DB analytics 정본, collector, core event, snapshot/retention, AI usage summary, billing reserved taxonomy로 완료됐다. 후속 event/provider/attribution/deletion job은 별도 후보다. |
-| 12 Billing 구현 | 결제, 구독, 세금, paywall, churn, paid conversion은 12 결정 없이는 기준을 확정할 수 없다. |
+| 12 Billing 구현 | 결제/구독/세금과 plan/payment/invoice/refund/failed payment/paywall/churn/paid conversion은 12 결정 없이는 기준을 확정할 수 없다. |
 | 새 API 즉시 구현 | 현재 `COMMON/API-SPEC`에는 confirmed API가 없다. |
 | 새 Prisma migration 즉시 작성 | 후보 계약이 확정되기 전에는 schema를 바꾸지 않는다. |
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
@@ -223,7 +223,7 @@
 | --- | --- |
 | generic ExportJob/PDF/bulk export | `PRE12-F09` |
 | backup/restore runbook/drill | `PRE12-F11` |
-| billing/paywall/churn/paid conversion | `PRE12-F12` |
+| billing/subscription/tax/paywall/churn/paid conversion | `PRE12-F12` |
 | Import scale/source/Admin 확장 | `PRE12-F13` |
 
 ## 10. 09 Product Analytics에 직접 영향을 주는 기준
@@ -255,7 +255,7 @@
 
 | 항목 | PRE12 후보 |
 | --- | --- |
-| billing/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` |
+| billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` |
 | account deletion 실제 hard delete/anonymization job | `PRE12-F26` |
 | Notification/Calendar/follow-up 세부 analytics event | `PRE12-F27` |
 | 외부 analytics provider forwarding | `PRE12-F28` |
@@ -309,7 +309,7 @@
 - 실제 account deletion hard delete/anonymization processor 추가
 - data export artifact 생성 processor, storage signed URL, download endpoint 추가
 - 자동 민감정보 감지/DLP model 또는 processor 추가
-- billing/subscription/plan/payment/invoice/refund/failed payment recovery/Admin Billing 화면/API 추가
+- billing/subscription/plan/payment/invoice/refund/failed payment/tax/Admin Billing 화면/API 추가
 
 ## 14. 상태 분류 기준
 

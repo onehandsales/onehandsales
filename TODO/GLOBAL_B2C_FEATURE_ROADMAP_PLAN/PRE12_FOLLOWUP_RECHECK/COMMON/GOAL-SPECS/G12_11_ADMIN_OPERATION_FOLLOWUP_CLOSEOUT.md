@@ -53,7 +53,7 @@
 
 | 항목 | 기존 PRE12 후보 | 처리 |
 | --- | --- | --- |
-| billing/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` | 12 전 구현 금지. 12 Billing에서 source-of-truth와 Admin Billing 연동을 결정한다. |
+| billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | `PRE12-F12` | 12 전 구현 금지. 12 Billing에서 plan/payment/subscription/tax/refund/invoice/failed payment, source-of-truth와 Admin Billing 연동을 결정한다. |
 | backup/restore runbook/drill | `PRE12-F11` | 11 system gate는 점검 결과 기록용이다. 실제 운영 절차와 장애 대응 drill은 별도 운영 절차 후보로 유지한다. |
 | ImportJob Admin 전용 화면/API | `PRE12-F13` | 01/11 미완성이 아니다. import scale/source/Admin ops 전략에서 post-12 재검토한다. |
 | account deletion 실제 hard delete/anonymization job | `PRE12-F26` | 11은 요청/취소/Admin queue까지만 닫았다. 실제 job은 privacy/legal/session revoke/access block/billing 영향 결정 전 구현하지 않는다. |
@@ -61,7 +61,7 @@
 
 ## 5. 11 완료 범위로 다루면 안 되는 것
 
-- 결제/구독/plan/payment/invoice/refund/failed payment recovery/Admin Billing 화면/API 추가
+- 결제/구독/plan/payment/invoice/refund/failed payment/tax/Admin Billing 화면/API 추가
 - Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
 - Admin system gate에서 migrate/seed/backup/restore shell command 실행
 - 실제 account deletion hard delete/anonymization processor 추가

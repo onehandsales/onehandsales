@@ -2,7 +2,7 @@
 
 상태: Draft / confirmed User Web 작업 없음
 작성일: 2026-08-06
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
@@ -45,7 +45,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - ImportJob Admin 전용 화면 추가
 - generic ExportJob/PDF/export route 추가
 - Google Calendar export/write/양방향 sync/watch/recurrence/reminders/attendee/multi-account/other provider UI 추가
-- billing/paywall/churn UI 추가
+- billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn UI 추가
 - `/app` `ja`, `zh-TW`, `zh-CN` translation 추가
 - `/app` locale route prefix 추가
 - 전 세계 country/currency/phone option 추가
@@ -56,7 +56,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - Notification/Calendar/follow-up 세부 analytics event를 화면별로 임의 추가
 - 외부 analytics provider SDK/script 삽입
 - public site/UTM/ad attribution, campaign attribution, experiment assignment UI 추가
-- billing/paywall/churn/AI quota 사용량 UI를 12 전 추가
+- billing/subscription/tax/refund/invoice/paywall/churn/AI quota 사용량 UI를 12 전 추가
 - PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution UI 추가
 - `UserDraft`, server draft DB, audio/image binary, transcript/provider raw 저장 UX 추가
 - FE에 남은 `ExportScreen`/`/api/exports` 잔여 코드를 `/app/export` 활성 route로 연결
@@ -71,7 +71,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 07 재대조 기준으로 meeting note detail AI 후속 작업 section, next action 후보 편집/저장 흐름, follow-up draft 수정/복사 UX는 완료다. MeetingNote list latest/next summary, follow-up reminder/자동 발송 UI, AI data cleanup 적용 UI, transcript/raw/follow-up draft 장기 보관 표시, AI 후보 자동 업무 mutation UI, Admin provider audit UI는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F16`/`PRE12-F40` 기준으로만 판단한다.
 
-08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다.
+08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다. 첫 판매용 subscription/payment/tax/refund/invoice UI도 08 미완성이 아니라 12 Billing 계약 후속이다.
 
 04 재대조 기준으로 User Web의 Google Calendar 범위는 read-only import/sync, calendar 선택, source badge/status, Trash restore, Google-origin reminder UX까지 완료다. Google export/write/양방향 sync, webhook/watch 상태 UI, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google 외 provider UX는 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
@@ -111,7 +111,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | Product analytics 세부 event 확장 | Notification/Calendar/follow-up 화면의 click/reach/sync/detail tracking 위치와 payload privacy 기준 필요 | post-12-seed / 별도 analytics 계획 |
 | external analytics provider forwarding | FE SDK를 직접 넣을지, Backend forwarding만 사용할지, consent/banner/DNT 기준 결정 필요 | post-12-seed / growth/ops |
 | public/UTM attribution/growth experiment | public/auth route attribution, campaign parameter 보존, experiment assignment 표시/노출 기준 필요 | post-12-seed / growth/marketing |
-| AI usage billing source/paywall UI | 05/09 내부 cost/usage 기록과 별개로 12의 plan/quota/paywall/upgrade contract와 API 필요 | billing-blocked |
+| Billing/subscription/tax/paywall UI | 05/09 내부 cost/usage 기록과 별개로 12의 plan/payment/subscription/tax/refund/invoice/failed payment, quota/paywall/upgrade contract와 API 필요 | billing-blocked / `PRE12-F12` |
 | PWA/native packaging과 attribution | install prompt, offline shell/full offline sync, native app deep link, native push/contact/calendar bridge, install attribution UX 기준 필요 | post-12-seed / 별도 mobile roadmap |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | pre-12-doc-cleanup |
 | User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | pre-12-doc-cleanup |

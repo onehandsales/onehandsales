@@ -12,6 +12,8 @@
 
 2026-08-06 재대조 결과, `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 08 또는 PRE12에 누락된 추가 후속 후보는 발견되지 않았다. 확인된 후속 후보는 `PRE12-F17`~`PRE12-F25` 또는 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`으로 이미 분류되어 있다.
 
+2026-08-07 2차 재대조 결과, 신규 후속 후보 ID는 추가하지 않고 source plan의 first sale country, billing, tax, subscription, payment, refund, invoice, failed payment gap을 기존 `PRE12-F12`/`PRE12-F21` 경계에 명시 보강했다.
+
 ## 2. 판단 근거
 
 대조 기준:
@@ -57,7 +59,7 @@
 | --- | --- | --- |
 | generic ExportJob/PDF/bulk export | `PRE12-F09` | 08 G07은 기존 domain export localization만 완료했고 Generic ExportJob은 만들지 않았다. |
 | backup/restore runbook/drill | `PRE12-F11` | 08 migration 최신 상태 확인은 완료다. 실제 backup/restore 운영 drill은 data reliability 후보로 둔다. |
-| billing/paywall/churn/paid conversion | `PRE12-F12` | country tax/terms/pricing과 paid conversion은 12 Billing 범위와 연결한다. |
+| billing/subscription/tax/paywall/churn/paid conversion | `PRE12-F12` | plan/payment/subscription/tax/refund/invoice/failed payment와 paid conversion은 12 Billing 범위와 연결한다. country tax/terms/pricing policy는 `PRE12-F21`과 함께 본다. |
 | Import scale/source/Admin 확장 | `PRE12-F13` | 01은 import persistence/retention/volume limit로 완료됐고, 08은 기존 import/export localization만 다뤘다. |
 
 ## 5. 구현 금지
@@ -71,7 +73,7 @@
 - Contact address field 추가
 - email/password, Microsoft, Kakao runtime login 구현
 - `/app` route에 locale prefix 추가
-- generic ExportJob, backup/restore, billing API를 08 후속으로 우회 구현
+- generic ExportJob, backup/restore, plan/payment/subscription/tax/refund/invoice/failed payment billing API를 08 후속으로 우회 구현
 
 ## 6. 코드 재대조 기준
 
@@ -98,4 +100,5 @@ rg -n "contact.*address|address.*contact|ContactAddress|personalAddress|minorUni
 - [x] 08 후속 후보를 `PRE12-F17`~`PRE12-F25`로 분류했다.
 - [x] `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`과 중복되는 항목을 cross-reference로 분리했다.
 - [x] 12 Billing 결정 없이는 money/tax/pricing/address policy를 구현하지 않는다고 기록했다.
+- [x] 2026-08-07 2차 재대조에서 source plan의 subscription/payment/tax/refund/invoice/failed payment gap을 `PRE12-F12` 경계로 보강했다.
 - [x] `/app` locale prefix와 신규 auth provider를 guardrail로 고정했다.

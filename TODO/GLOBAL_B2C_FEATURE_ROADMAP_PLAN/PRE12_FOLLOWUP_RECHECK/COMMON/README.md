@@ -42,7 +42,7 @@
 - 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API 추가
 - generic ExportJob, PDF, recurrence
 - Google Calendar export/write/양방향 sync/webhook/watch/reminders/attendees/multi-account/other provider
-- billing/paywall/churn/paid conversion runtime flow
+- billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn/paid conversion runtime flow
 - `/app` `ja`, `zh-TW`, `zh-CN` locale 추가
 - 전 세계 country/currency/phone dictionary 추가
 - USD cent/minor unit migration 또는 amount precision 변경
