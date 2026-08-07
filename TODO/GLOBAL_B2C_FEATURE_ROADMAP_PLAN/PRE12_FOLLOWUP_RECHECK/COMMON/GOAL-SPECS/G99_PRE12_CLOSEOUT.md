@@ -37,7 +37,7 @@
 - 12 착수 전 구현 금지 항목이 명확히 남는다.
 - 기존 01~11 완료 폴더의 closeout 의미가 깨지지 않는다.
 - 06 후속 재검토 A 결정과 07~11 재대조 대상이 분리되어 남는다.
-- 07 MeetingNote AI 완료 범위와 07 밖의 follow-up/list summary/AI data cleanup/raw storage 후보가 분리되어 남는다.
+- 07 MeetingNote AI 완료 범위와 07 밖의 follow-up/list summary/AI data cleanup/raw storage/AI 후보 자동 업무 mutation 후보가 분리되어 남는다.
 - 08 Global Data I18N 완료 범위와 08 밖의 market locale/global data/money/address/auth polish 후보가 분리되어 남는다.
 - 09 Product Analytics 완료 범위와 09 밖의 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, PWA/native 후보가 분리되어 남는다.
 - 10 Mobile PWA Field Use 완료 범위와 10 밖의 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보가 분리되어 남는다.

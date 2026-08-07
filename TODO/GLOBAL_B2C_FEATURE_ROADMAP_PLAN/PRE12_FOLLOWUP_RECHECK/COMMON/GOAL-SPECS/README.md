@@ -30,7 +30,7 @@
 - 06 완료 범위를 넓혀서 DealActivity 삭제/retention/audit, memo 통합, 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, summary cache를 끼워 넣지 않는다.
 - billing-linked 후보는 12 전 구현하지 않는다.
 - 2026-08-06 A 결정으로 `NBA-003` 잔여 record summary는 12 전 계약화하지 않는다.
-- 07 완료 범위를 넓혀서 MeetingNote list summary, follow-up 자동 발송/알림, AI data cleanup, transcript/raw 저장 기능을 끼워 넣지 않는다.
+- 07 완료 범위를 넓혀서 MeetingNote list summary, follow-up 자동 발송/알림, AI data cleanup, transcript/raw 저장, AI 후보 자동 저장/자동 업무 mutation 기능을 끼워 넣지 않는다.
 - 08 완료 범위를 넓혀서 신규 locale/country/currency/phone/auth provider, minor unit, `/app` locale prefix를 끼워 넣지 않는다.
 - 09 완료 범위를 넓혀서 account deletion 실제 job, 세부 analytics event, 외부 provider, public/UTM attribution, growth experiment, billing runtime model, PWA/native attribution을 끼워 넣지 않는다.
 - 10 완료 범위를 넓혀서 PWA/offline/native app, `UserDraft`, server draft DB, media/raw 저장, `/app/export`, `/api/exports`를 끼워 넣지 않는다.

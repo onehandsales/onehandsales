@@ -34,6 +34,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - MeetingNote follow-up reminder scheduling use case 추가
 - Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup runner 또는 Admin cleanup API 추가
 - Follow-up 자동 발송 worker 추가
+- MeetingNote AI 후보 자동 저장, 자동 일정 생성, 자동 딜 변경, 자동 Contact/MeetingNote/Deal mutation API 추가
 - AI weekly report 자동 생성 또는 AI suggestion 자동 mutation API 추가
 - Follow-up delivery SMS 실제 provider/vendor API, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking API 추가
 - Company/Contact/Product list summary API field 추가
@@ -70,7 +71,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 06 재대조 기준으로 DealActivity timeline, manual create/update, 자동 event, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터, score, AI 자동 판단, summary cache API는 `PRE12-F39`로만 두고 06 미완성으로 재오픈하지 않는다.
 
-07 재대조 기준으로 MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft API는 완료다. MeetingNote follow-up reminder/자동 발송, list latest/next summary, AI data cleanup 저장/적용, transcript/raw/follow-up draft 저장/조회 API는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15` 후속 후보로만 둔다. 11에서 닫힌 Admin provider audit/raw access는 07 또는 PRE12에서 재구현하지 않는다.
+07 재대조 기준으로 MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft API는 완료다. MeetingNote follow-up reminder/자동 발송, list latest/next summary, AI data cleanup 저장/적용, transcript/raw/follow-up draft 저장/조회 API, AI 후보 자동 업무 mutation API는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F40` 후속 후보로만 둔다. 11에서 닫힌 Admin provider audit/raw access는 07 또는 PRE12에서 재구현하지 않는다.
 
 04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
@@ -91,6 +92,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | 다음 행동 reminder | Notification source/setting/scheduler/dedupe/cancel rule 확정 필요 | Question |
 | 회의록 follow-up reminder | MeetingNote source, follow-up draft/send 상태, notification rule 확정 필요 | post-12-seed |
 | MeetingNote 자동 발송 | consent, retry, unsubscribe, send policy, provider cost policy 필요 | post-12-seed |
+| MeetingNote AI 후보 자동 업무 mutation | 자동 적용 endpoint/worker, approval/audit/rollback, confidence threshold, idempotency/ownership 계약 필요 | post-12-seed / `PRE12-F40` |
 | Notification 데이터 TTL/cleanup | `Notification`/delivery attempt/revoked subscription 삭제 기준, batch runner, Admin/provider failure 조회 보존 기간, 계정 삭제 실제 처리와의 충돌 기준 필요 | post-12-seed / `PRE12-F38` |
 | record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | DealActivity lifecycle/search/score 확장 | manual delete/restore, automatic activity update/delete, retention/audit/trash, memo/private memo 통합, all-domain activity bus, advanced search/filter, deal score, AI activity 자동 판단, summary cache API 계약 필요 | post-12-seed / `PRE12-F39` |

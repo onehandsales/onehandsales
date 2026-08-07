@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-08-06
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
@@ -51,6 +51,7 @@
 | PRE12-F37 | 자동 민감정보 감지 | NEXT_BACKEND 잔여, Global coverage | 11은 masking, raw access reason, audit/sensitive log를 완료했지만 자동 PII/sensitive detection은 구현하지 않았다. `GLOBAL` coverage에는 후속 별도 결정으로 남아 있다. | defer / 정책 필요 | 보안/data governance, 오탐/누락 처리, raw access audit, 사용자 권리와 retention 기준 확정 전 구현 금지. |
 | PRE12-F38 | Notification 데이터 TTL/cleanup | 02 `SCOPE.md` 보관 후보, 실제 notification module 재대조 | 02는 일정/딜 reminder, in-app/email/browser push, provider smoke까지 완료했다. 다만 `Notification` 90일, `NotificationDeliveryAttempt` 30일, revoked `BrowserPushSubscription` 90일 보관 후보는 cleanup runner/use case/API로 구현되어 있지 않다. | post-12-seed / trust-ops policy | 알림 이력 보존, 사용자 표시 기간, provider failure 운영 조회, 계정 삭제 실제 처리와 충돌하지 않도록 TTL/cleanup 계약을 먼저 만든다. 02 완료 의미를 재오픈하지 않고 정책 확정 전 구현 금지. |
 | PRE12-F39 | DealActivity lifecycle/search/score 확장 | 06 제외, NEXT/USER gap, 06 실제 코드 재대조 | 06은 `DealActivity` model/repo/API, 자동 event, manual create/update, Deal list products/latestActivity, Contact dealCount, page size 15를 완료했다. 수동 activity delete API/UI, 자동 activity update/delete, `DealActivity` soft delete/trash/restore/retention/audit, memo/private memo timeline 통합, 모든 도메인 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, summary cache/denormalized latest는 구현되어 있지 않다. | post-12-seed / trust-product policy | activity 삭제/보존/감사 정책, record별 activity ownership, search/filter contract, score/AI 판단 근거, 성능 cache 필요성을 post-12 전략에서 확정한다. 06 완료 의미를 재오픈하지 않고 정책/계약 전 구현 금지. |
+| PRE12-F40 | MeetingNote AI 후보 자동 업무 mutation | 07 제외, NEXT/USER gap, 05/07 guardrail | 07은 next action/follow-up draft 후보만 반환하고 사용자가 확인한 뒤 기존 Deal following-action API 또는 복사 흐름으로 처리한다. AI 후보 자동 저장, 자동 일정 생성, 자동 딜 변경, Contact/MeetingNote/Deal 자동 변경 API/worker는 없다. 05 AI weekly suggestion도 원본 record를 자동 변경하지 않는다. | post-12-seed / AI policy | 권한, 명시적 동의, confidence 기준, diff/undo/rollback, audit, notification/cost 정책 확정 전 구현 금지. |
 
 ## 3. 06과 직접 충돌하는 후보
 
@@ -75,6 +76,7 @@
 | AI data cleanup | provider log와 safe draft UX | cleanup suggestion 저장/적용 API 추가 |
 | transcript/raw storage | STT transcript 임시 표시, safe metadata log | transcript/raw provider response/follow-up draft table 추가 |
 | Admin provider audit | 11 Admin Operation에서 완료 | 07 또는 PRE12에서 Admin audit를 재구현 |
+| AI 후보 자동 업무 mutation | 후보 생성과 사용자 확인 후 기존 API/복사 흐름 | 자동 일정 생성, 자동 딜 변경, Contact/MeetingNote/Deal 자동 변경, AI suggestion 자동 적용 |
 
 ## 5. 08과 직접 충돌하는 후보
 

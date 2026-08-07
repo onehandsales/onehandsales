@@ -16,6 +16,7 @@
 | 다음 행동 reminder | Notification source 확장 또는 NextAction reminder 전용 endpoint/setting | draft placeholder | 구현 금지 |
 | 회의록 follow-up reminder | MeetingNote 기반 follow-up reminder 생성/취소/목록 | draft placeholder | 구현 금지 |
 | MeetingNote follow-up 자동 발송 | Follow-up delivery 예약/자동 발송/취소/재시도 | post-12-seed | 구현 금지 |
+| MeetingNote AI 후보 자동 업무 mutation | AI 후보를 Schedule/Deal/Contact/MeetingNote mutation으로 적용하는 approval/apply/rollback 계약 | post-12-seed / `PRE12-F40` | 구현 금지 |
 | Company/Contact/Product latest summary | 기존 list response field 추가 또는 summary endpoint | defer | 12 전 계약화/구현 금지. 비고: 2026-08-06 A 결정, post-12 B2B/team CRM strategy seed. |
 | DealActivity lifecycle/search/score 확장 | manual activity delete/restore, retention/audit, memo/private memo activity 통합, all-domain activity bus, 고급 filter/search, deal score/AI activity 자동 판단, summary cache 계약 | post-12-seed / `PRE12-F39` | 구현 금지 |
 | MeetingNote list latest/next summary | `GET /api/meeting-notes` response field 추가 또는 별도 summary endpoint | post-12-seed | 12 전 구현 금지 |

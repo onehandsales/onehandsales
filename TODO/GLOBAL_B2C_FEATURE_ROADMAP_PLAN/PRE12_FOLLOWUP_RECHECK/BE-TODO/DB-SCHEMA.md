@@ -2,7 +2,7 @@
 
 상태: Draft / migration 없음
 작성일: 2026-08-06
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
@@ -47,6 +47,7 @@
 - next action reminder의 source type과 due date model
 - MeetingNote follow-up reminder의 source type, source id, cancel rule
 - follow-up 자동 발송 정책과 저장 모델
+- MeetingNote AI 후보 자동 업무 mutation 이력/승인/rollback/audit 저장 모델
 - AI weekly report 자동 생성 scheduler/cursor 또는 AI suggestion 자동 mutation 이력 모델
 - SMS 실제 provider/vendor, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델
 - Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup 기준을 확정하지 않은 상태의 삭제 migration 또는 cleanup cursor table
@@ -83,7 +84,7 @@
 
 06 재대조 기준으로 `DealActivity` schema와 migration은 timeline/manual create-update/자동 event 기록용으로 완료됐다. 삭제/보존/감사, memo 통합, 공통 activity bus, 검색/필터/score/AI 판단, summary cache는 `PRE12-F39`로만 두고 06 미완성 migration으로 보지 않는다.
 
-07 재대조 기준으로 MeetingNote AI/STT provider log는 공통 `AiProviderCallLog` operation/target 확장으로 완료됐다. 별도 `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog`, `AiDataCleanupSuggestion` table은 없고, list summary 저장 방식이나 reminder/자동 발송 저장 모델은 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15` 후속 후보로만 둔다.
+07 재대조 기준으로 MeetingNote AI/STT provider log는 공통 `AiProviderCallLog` operation/target 확장으로 완료됐다. 별도 `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog`, `AiDataCleanupSuggestion` table은 없고, list summary 저장 방식이나 reminder/자동 발송 저장 모델, AI 후보 자동 업무 mutation 이력 모델은 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F40` 후속 후보로만 둔다.
 
 04 재대조 기준으로 Google Calendar DB 영향은 Google read-only source metadata까지 완료다. `ExternalCalendarProvider=GOOGLE`, 사용자당 provider 1개 unique, `Schedule` external metadata 기준을 재오픈하지 않고 write/watch/recurrence/reminders/attendee/multi-account/other provider schema는 `PRE12-F10` 후속 후보로만 둔다.
 
@@ -104,6 +105,7 @@
 | 다음 행동 reminder | `NotificationSourceType` 확장, `UserNotificationSetting` 필드 추가, `DealFollowingActionLog` due field 검토 | 결정 필요 |
 | 회의록 follow-up reminder | Notification source 확장 또는 별도 reminder table 검토 | post-12 seed |
 | follow-up 자동 발송 | send schedule, consent, unsubscribe, retry policy table 검토 | post-12 seed |
+| MeetingNote AI 후보 자동 업무 mutation | 자동 적용 승인 상태, mutation 이력, undo/rollback, audit, confidence threshold 저장 모델 필요 여부 결정 | post-12 seed / `PRE12-F40` |
 | Notification 데이터 TTL/cleanup | `Notification.createdAt`, `NotificationDeliveryAttempt.createdAt`, `BrowserPushSubscription.revokedAt` 기준 hard delete/보존 정책과 provider failure 운영 조회 영향 검토 | post-12 seed / `PRE12-F38` |
 | record summary | denormalized summary table 또는 runtime aggregation 여부 결정 | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | DealActivity lifecycle/search/score 확장 | soft delete/trash/restore/retention/audit field/table, memo/private memo 통합 모델, all-domain activity bus, search index, score/AI 판단 결과, summary cache/denormalized latest 필요 여부 결정 | post-12 seed / `PRE12-F39` |

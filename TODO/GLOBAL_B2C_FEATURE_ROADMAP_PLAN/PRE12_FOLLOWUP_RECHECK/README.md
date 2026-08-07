@@ -2,7 +2,7 @@
 
 상태: Draft / 12 전 후속 범위 정리 / 구현 시작 금지
 작성일: 2026-08-06
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-07
 성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 12 착수 전 결정에 연결하는 작업 폴더
 
 ## 1. 목적
@@ -20,7 +20,7 @@
 - 05에서 남은 Gmail/Microsoft provider smoke
 - 05에서 제외된 SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary, activity lifecycle/search/score 후보
-- 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장 후보
+- 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장, AI 후보 자동 업무 mutation 후보
 - 08에서 닫은 Global Data I18N 범위와 08 밖으로 남은 시장/국가/통화/전화번호/auth/UX polish 후보
 - 09에서 닫은 Product Analytics foundation과 09 밖으로 남은 account deletion 실제 처리, 세부 analytics event, 외부 provider, attribution/experiment, PWA/native 후보
 - 10에서 닫은 mobile browser field-use 범위와 10 밖으로 남은 PWA/offline/native, generic ExportJob, 문서 체크리스트/architecture 정합성 후보
@@ -38,7 +38,7 @@
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/Google-origin reminder/provider smoke는 완료다. Google export/write/양방향 sync, webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider는 후속이다. |
 | 05 AI Weekly Sales Report | 구현 완료 / provider smoke pending | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. 운영 credential/callback/allowlist 기반 실제 수신자 smoke는 남아 있다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
-| 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
+| 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 저장/자동 일정 생성/자동 딜 변경은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
 | 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 | 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, PWA/native install attribution은 09 완료 범위가 아니다. |
 | 10 Mobile PWA Field Use | 완료 이력 유지 / G11 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar는 후속이고, 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 문서 정리 후보다. 남는 후보는 `PRE12-F30`, `PRE12-F31`, `PRE12-F32`와 기존 `PRE12-F09`로 분리한다. |
@@ -64,6 +64,7 @@
 | 다음 행동 reminder | Question / 계약 필요 | G00에서 12 전 처리 여부를 결정한다. 결정 전 구현 금지. |
 | 회의록 follow-up reminder | post-12-seed | G03에서 상태를 재확인한다. 자동 발송과 함께 정책 결정이 필요하다. |
 | MeetingNote follow-up 자동 발송 | post-12-seed | G03에서 reminder와 분리한다. 명시적 사용자 확인 없는 발송은 구현 금지다. |
+| MeetingNote AI 후보 자동 업무 mutation | post-12-seed / AI policy | 07은 후보/초안만 제공하고 사용자가 확인한 뒤 기존 API 또는 복사 흐름으로 처리한다. 자동 일정 생성, 자동 딜 변경, Contact/MeetingNote/Deal 자동 변경은 구현 금지다. |
 | Notification 데이터 TTL/cleanup | post-12-seed / trust-ops policy | 02의 `Notification` 90일, `NotificationDeliveryAttempt` 30일, revoked `BrowserPushSubscription` 90일 보관 후보는 실제 cleanup 구현이 없다. 정책/운영 계약 전 구현하지 않는다. |
 | Gmail/Microsoft provider smoke | pre-12-follow-up-needed | G05에서 운영 credential/callback/allowlist 준비 후 실행 기록만 닫는다. 코드 구현 후보가 아니다. |
 | SMS 실제 provider | post-12-seed | `PRE12-F05`로 유지한다. 현재 SMS sender verification UI/API foundation은 있으나 실제 vendor 연동은 없다. |

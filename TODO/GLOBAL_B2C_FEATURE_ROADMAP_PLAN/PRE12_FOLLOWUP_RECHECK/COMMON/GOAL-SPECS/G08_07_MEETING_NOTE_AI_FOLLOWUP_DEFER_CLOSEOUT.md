@@ -2,6 +2,7 @@
 
 상태: Completed
 완료일: 2026-08-06
+검토 보강일: 2026-08-07
 목표: 07 완료 범위를 유지하면서 07에서 제외되었거나 후속으로 남은 MeetingNote AI 후보를 `PRE12_FOLLOWUP_RECHECK` 안에서 분류하고, 구현 금지 경계를 닫는다.
 
 ## 1. 판단 근거
@@ -38,6 +39,7 @@
 | AI data cleanup 제안 저장/적용 | `PRE12-F14` | post-12-seed / 별도 data quality 계획 | 09 Product Analytics 또는 별도 data quality TODO에서 필요성, 적용 권한, 감사 로그, rollback 기준 결정 |
 | transcript/raw provider response/follow-up draft 저장 table | `PRE12-F15` | defer / 정책 필요 | 명시적 retention, 삭제권, raw access audit, redaction 정책 없이는 구현 금지 |
 | MeetingNote Admin/internal provider audit 조회 | `PRE12-F16` | done | 11 Admin Operation 완료 범위를 참조한다. 07 또는 PRE12에서 재구현하지 않는다. |
+| MeetingNote AI 후보 자동 업무 mutation | `PRE12-F40` | post-12-seed / AI policy | 사용자 확인 없는 저장, 자동 일정 생성, 자동 딜 변경, Contact/MeetingNote/Deal mutation은 정책/감사/rollback 계약 전 구현 금지 |
 
 ## 4. 구현 금지
 
@@ -52,6 +54,8 @@
 - FE에서 API에 없는 MeetingNote list summary를 조합해 표시
 - FE에서 transcript 원문, follow-up body 전체, provider raw를 목록/상세/admin 화면에 노출
 - 11에서 닫힌 Admin provider audit/raw access 흐름 재구현
+- AI 후보를 사용자 확인 없이 Deal/Schedule/Contact/MeetingNote에 자동 저장/적용
+- AI 후보 기반 자동 일정 생성, 자동 딜 단계 변경, 자동 record mutation worker/API 추가
 
 ## 5. 확인 명령
 
@@ -73,6 +77,7 @@ rg -n "ai-draft|stt-draft|next-actions/draft|follow-up-draft" BE\src\modules\mee
 
 - 07 원문과 실제 BE/FE 코드를 재대조한 결과, MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft, User Web AI 후속 작업 section은 구현 완료 범위로 유지한다.
 - `PRE12-F02`, `PRE12-F03`, `PRE12-F08`, `PRE12-F14`, `PRE12-F15`, `PRE12-F16`이 07 후속 또는 11 완료 참조 후보로 이미 분리되어 있음을 확인했다.
+- 07 원문과 source plan에 명시된 자동 저장/자동 업무 mutation 금지를 `PRE12-F40`으로 보강했다.
 - `NotificationSourceType`은 `SCHEDULE`, `DEAL`만 유지된다. MeetingNote follow-up reminder source는 열려 있지 않다.
 - 별도 `MeetingNoteTranscript`, `MeetingNoteFollowUpDraft`, `MeetingNoteProviderCallLog`, `AiDataCleanupSuggestion` table은 없다.
 - `GET /api/meeting-notes` list summary field와 User Web list summary 조합은 07 범위로 구현하지 않는다.

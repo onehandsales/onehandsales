@@ -2,7 +2,7 @@
 
 상태: Draft
 작성일: 2026-08-06
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-07
 
 ## 1. 목적
 
@@ -31,7 +31,7 @@
 | 제외 항목 | 이유 |
 | --- | --- |
 | 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. manual create/update와 safe timeline/list summary 범위를 넘는 삭제/보존/감사/search/score/AI 확장은 `PRE12-F39`로만 둔다. |
-| 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. detail AI draft/provider log 범위를 넘는 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장은 별도 후보다. |
+| 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. detail AI draft/provider log 범위를 넘는 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 업무 mutation은 별도 후보다. |
 | 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 post-12에서 재검토한다. |
 | 04 Google Calendar 구현 재개 | 04는 Google read-only import/sync, 선택 calendar, source badge, Trash restore, Google-origin reminder, provider smoke 기준으로 완료됐다. 고급 sync/provider 확장은 `PRE12-F10`으로만 둔다. |
 | 05 AI Weekly Sales Report 구현 재개 | 05는 저장형 AI weekly report, 사용자 확인 기반 follow-up delivery, Gmail/Microsoft send adapter 기준으로 완료됐다. provider smoke는 운영 closeout이고 SMS/B2B/email growth/cost/legal deletion은 별도 후속이다. |
@@ -189,6 +189,7 @@
 | AI data cleanup 저장/적용 | `PRE12-F14` |
 | transcript/raw provider response/follow-up draft 저장 | `PRE12-F15` |
 | MeetingNote Admin/internal provider audit 조회 | `PRE12-F16` 및 11 완료 문서 |
+| MeetingNote AI 후보 자동 업무 mutation | `PRE12-F40` |
 
 ## 8. 08 Global Data I18N에 직접 영향을 주는 기준
 

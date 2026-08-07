@@ -31,6 +31,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - 다음 행동 reminder 설정 UI 추가
 - MeetingNote follow-up reminder UI 추가
 - follow-up 자동 발송 toggle 추가
+- MeetingNote AI 후보 자동 저장/자동 적용 toggle, 자동 일정 생성/딜 변경 UI 추가
 - AI weekly report 자동 생성/AI suggestion 자동 mutation UI 추가
 - Follow-up delivery SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking UI 추가
 - Notification TTL/cleanup 정책 확정 전 알림 이력 자동 삭제 안내, 보관 기간 설정 UI, Admin cleanup UI 추가
@@ -68,7 +69,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 06 재대조 기준으로 deal detail timeline, manual create/update, Deal list products/latestActivity, Contact dealCount, page size 15는 완료다. activity 삭제/보존/감사, memo 통합, 공통 activity bus, 고급 검색/필터, score, AI 자동 판단, summary cache/fallback UI는 `PRE12-F39` 후속 후보로만 두고 06 미완성으로 재오픈하지 않는다.
 
-07 재대조 기준으로 meeting note detail AI 후속 작업 section, next action 후보 편집/저장 흐름, follow-up draft 수정/복사 UX는 완료다. MeetingNote list latest/next summary, follow-up reminder/자동 발송 UI, AI data cleanup 적용 UI, transcript/raw/follow-up draft 장기 보관 표시, Admin provider audit UI는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F16` 기준으로만 판단한다.
+07 재대조 기준으로 meeting note detail AI 후속 작업 section, next action 후보 편집/저장 흐름, follow-up draft 수정/복사 UX는 완료다. MeetingNote list latest/next summary, follow-up reminder/자동 발송 UI, AI data cleanup 적용 UI, transcript/raw/follow-up draft 장기 보관 표시, AI 후보 자동 업무 mutation UI, Admin provider audit UI는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F16`/`PRE12-F40` 기준으로만 판단한다.
 
 08 재대조 기준으로 `/app` 기본 Global Data I18N은 완료다. market locale 확장, country/currency/phone 확장, auth strategy 확장, Settings OAuth 계정 라벨과 bundle 최적화는 08 blocker가 아니다.
 
@@ -88,6 +89,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | --- | --- | --- |
 | 다음 행동 reminder | notification settings, next action form, deal detail 상태 표시 | Question |
 | 회의록 follow-up reminder | meeting note detail/list, notification settings, follow-up draft 상태 표시 | post-12-seed |
+| MeetingNote AI 후보 자동 업무 mutation | 자동 적용 CTA/toggle, 적용 전 diff, 확인 modal, undo/rollback 표시 기준 필요 | post-12-seed / `PRE12-F40` |
 | Notification 데이터 TTL/cleanup | `/app/notifications` 표시 기간, 삭제된 알림 안내, provider failure 이력 노출 여부, 설정 UI 필요 여부 | post-12-seed / `PRE12-F38` |
 | record summary | Company/Contact/Product/MeetingNote list item summary 위치와 empty fallback | Company/Contact/Product는 defer. 비고: post-12 B2B/team CRM strategy seed. MeetingNote list summary는 post-12-seed. |
 | DealActivity lifecycle/search/score 확장 | activity delete/restore UX, retention/audit 표시, memo/private memo timeline 통합, all-domain activity feed, advanced filter/search, deal score/AI 판단 표시, summary cache/fallback UX 기준 필요 | post-12-seed / `PRE12-F39` |
