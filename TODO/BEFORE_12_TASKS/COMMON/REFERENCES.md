@@ -1,12 +1,26 @@
 # References
 
-상태: Draft / Skeleton
+상태: Ready For Goal
 
 ## 1. 목적
 
 이 문서는 `BEFORE_12_TASKS` 실행 전에 확인해야 하는 문서와 코드 경로를 모은다.
 
-## 2. PRE12 정본
+각 `/goal`은 아래 전체를 모두 읽을 필요는 없지만, 본인이 건드리는 영역의 문서와 실제 코드 경로는 반드시 확인한다.
+
+## 2. 문서 작성 구조 기준
+
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/README.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/SCOPE.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/REFERENCES.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/USER-FLOW.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/GOAL-WORK-ORDER.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/GOAL-SPECS/README.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/COMMON/API-SPEC/README.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/BE-TODO`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE/FE-TODO`
+
+## 3. PRE12 정본
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/FINAL-CLASSIFICATION.md`
@@ -15,39 +29,112 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/GOAL-SPECS/G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`
 
-## 3. 원본 계획
+## 4. 원본 계획
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`
 
-## 4. AGENT 기준
+## 5. UX/UI 기준
 
-- `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
-- `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
-- `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
+- `AGENT/UXUI_AGENT/README.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+
+적용 기준:
+
+- Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 따른다.
+- stale 문서에 맞추기 위해 현재 활성 route를 rollback하지 않는다.
+- 사용자 노출 문구를 바꾸는 경우 해요체와 짧은 행동 중심 문구를 사용한다.
+
+## 6. Software 기준
+
+Backend:
+
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+
+Frontend:
+
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+
+DB/환경/QA:
+
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
 
-## 5. 실제 코드 확인 경로
+## 7. 실제 Backend 확인 경로
 
+- `BE/README.md`
+- `BE/ARCHITECTURE.md`
+- `BE/package.json`
+- `BE/src/app.module.ts`
+- `BE/src/main.ts`
 - `BE/src/modules/follow-up`
 - `BE/src/modules/notification`
 - `BE/src/modules/admin-operation`
 - `BE/src/modules/account-request`
 - `BE/src/modules/trash`
 - `BE/prisma/schema.prisma`
+- `BE/prisma/migrations`
+- `BE/prisma/seed.ts`
+
+## 8. 실제 Frontend 확인 경로
+
+User Web:
+
+- `FE/README.md`
+- `FE/ARCHITECTURE.md`
+- `FE/user-web/README.md`
+- `FE/user-web/ARCHITECTURE.md`
+- `FE/user-web/package.json`
 - `FE/user-web/src/app/router/router.tsx`
 - `FE/user-web/src/features/notification`
 - `FE/user-web/src/features/import-export`
+- `FE/user-web/src/features/follow-up-delivery`
+- `FE/user-web/src/features/mobile-local-draft`
+
+Admin Web:
+
+- `FE/admin-web/README.md`
+- `FE/admin-web/ARCHITECTURE.md`
+- `FE/admin-web/package.json`
 - `FE/admin-web/src/app/router/router.tsx`
+- `FE/admin-web/src/components/layout/admin-shell.tsx`
 - `FE/admin-web/src/features`
+- `FE/admin-web/src/features/admin-query`
 - `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`
 
-## 6. 관련 문서
+## 9. Goal별 우선 참조
+
+| Goal | 우선 참조 |
+| --- | --- |
+| G01 | 05 G10 문서, follow-up API 계약, `BE/src/modules/follow-up`, `FE/user-web/src/features/follow-up-delivery`, `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` |
+| G02 | 10 Mobile 문서, User Web mobile/local draft/notification 코드, BE notification/analytics/schema |
+| G03 | User Web router, User Web architecture, UXUI user flow, Frontend User Web architecture |
+| G04 | 11 Admin Operation 문서, BE admin-operation/account-request/trash, Admin Web router/features |
+| G05 | Admin Web architecture, Admin router, `features/admin-query`, Admin Web E2E, Software/UXUI Admin docs |
+| G06 | PRE12 final classification, G01~G05 결과, 12 Billing scope |
+
+## 10. 관련 문서
 
 - `TODO/BEFORE_12_TASKS/COMMON/SCOPE.md`
+- `TODO/BEFORE_12_TASKS/COMMON/GOAL-WORK-ORDER.md`
+- `TODO/BEFORE_12_TASKS/COMMON/GOAL-SPECS/README.md`

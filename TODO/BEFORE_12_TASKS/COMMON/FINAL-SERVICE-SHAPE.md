@@ -1,6 +1,6 @@
 # Final Service Shape
 
-상태: Draft / Skeleton
+상태: Ready For Goal
 
 ## 1. 목적
 
@@ -13,6 +13,8 @@
 완료 후 상태는 아래와 같아야 한다.
 
 - Gmail/Microsoft provider smoke closeout 결과가 문서에 남아 있다.
+- Gmail과 Microsoft 365 모두 production-equivalent OAuth 연결과 allowlist 실제 발송이 성공했다.
+- allowlist 밖 수신자 차단이 provider 호출 없이 safe failed attempt로 기록됐다.
 - 10 Mobile Field Use 체크리스트가 실제 완료 상태와 맞는다.
 - User Web route/architecture 문서가 실제 route 상태와 맞는다.
 - 11 Admin Operation 체크리스트와 goal index가 실제 완료 상태와 맞는다.
@@ -27,6 +29,7 @@
 - User Web의 현재 활성 route는 유지한다.
 - Admin Web의 현재 활성 route는 유지한다.
 - `/app/notifications`는 활성 상태를 rollback하지 않는다.
+- `/app/schedules/week`는 활성 상태를 rollback하지 않는다.
 - `/app/export`는 redirect 상태를 유지한다.
 - Admin Web의 `/organizations`, `/subscriptions`, `/support`는 redirect 상태를 유지한다.
 
@@ -35,7 +38,8 @@
 - 새 API를 추가하지 않는다.
 - 새 Prisma migration을 만들지 않는다.
 - provider smoke는 기존 follow-up delivery email provider 흐름으로만 확인한다.
-- billing/subscription/tax/payment/invoice/refund 모델은 12 계획에서 정본화한다.
+- `ExternalEmailConnection`, `ExternalEmailOAuthState`, `FollowUpMessage`, `FollowUpDeliveryAttempt`의 기존 계약을 바꾸지 않는다.
+- billing plan/subscription/tax/payment/invoice/refund 모델은 12 계획에서 정본화한다.
 
 ## 5. Frontend 상태
 
@@ -43,20 +47,34 @@
 - 새 Admin Web route를 활성화하지 않는다.
 - stale 문서에 맞추기 위해 이미 활성화된 route를 되돌리지 않는다.
 - legacy `admin-query`를 현재 주력 route/API로 승격하지 않는다.
+- User Web은 `/api/*`만 호출한다.
+- Admin Web은 `/admin/api/*`만 호출한다.
 
 ## 6. 12 Billing 인계 조건
 
 아래 조건이 충족되면 12 Billing 착수 가능 상태로 본다.
 
-- G01~G06의 완료 기록이 있다.
+- G01~G05의 완료 기록이 있다.
+- G01 Gmail/Microsoft provider smoke가 모두 성공했다.
+- G06 handoff가 G01~G05 결과를 모아 12 착수 가능으로 판정했다.
 - `PRE12_FOLLOWUP_RECHECK`와 `BEFORE_12_TASKS` 상태가 충돌하지 않는다.
 - 12 전 closeout 항목, post-12 후보, billing 종속 후보가 문서상 분리되어 있다.
-- 12 Billing 문서에서 Stripe 기반 구독/세금/인보이스 정책을 별도로 결정할 수 있다.
+- 12 Billing 문서에서 Merchant of Record 우선, Stripe 직접 결제 fallback 방향을 별도로 확정할 수 있다.
 
-## 7. 관련 문서
+## 7. 12 착수 불가 조건
+
+아래 중 하나라도 있으면 G06은 12 착수 가능으로 닫지 않는다.
+
+- G01에서 Gmail 또는 Microsoft 365 실제 smoke가 실패했다.
+- G01에서 env/callback/account 미준비로 실제 smoke를 실행하지 못했다.
+- G02~G05에서 실제 코드 상태와 상위 문서 상태가 충돌한다.
+- 새 API/DB/route 구현이 필요해졌지만 별도 계획으로 분리되지 않았다.
+- post-12 후보 또는 billing 종속 후보가 BEFORE_12 범위에 섞였다.
+
+## 8. 관련 문서
 
 - `TODO/BEFORE_12_TASKS/COMMON/SCOPE.md`
 - `TODO/BEFORE_12_TASKS/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/BEFORE_12_TASKS/COMMON/RELEASE-SCOPE-CHECK.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/FINAL-CLASSIFICATION.md`
-
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX/README.md`

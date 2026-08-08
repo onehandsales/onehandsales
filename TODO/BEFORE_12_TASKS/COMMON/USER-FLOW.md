@@ -1,6 +1,6 @@
 # User Flow
 
-상태: Draft / Skeleton
+상태: Ready For Goal
 
 ## 1. 목적
 
@@ -9,42 +9,64 @@
 ## 2. 작업자 흐름
 
 ```text
-PRE12 정본 확인
--> 실제 BE/FE 코드 상태 재확인
--> 05 provider smoke 상태 기록
--> 10 문서 체크리스트 정합성 정리
--> User Web route/architecture 문서 정리
--> 11 문서 체크리스트/goal index 정리
--> Admin Web architecture/legacy route 문서 정리
--> 12 Billing 착수 가능 상태 handoff
+PRE12 최종 분류 확인
+-> 01 문서 구조와 현재 BEFORE_12 문서 구조 대조
+-> 실제 BE/FE/Prisma 코드 상태 확인
+-> G01 provider smoke closeout 실행
+-> G02 10 Mobile 문서 체크리스트 정합성 정리
+-> G03 User Web route/architecture 문서 정리
+-> G04 11 Admin checklist/goal index 정리
+-> G05 Admin Web architecture/legacy route 문서 정리
+-> G06 12 Billing 착수 가능 상태 handoff
 ```
 
 ## 3. 사용자가 보는 변화
 
-- 일반 사용자에게 새 기능이 노출되지 않는다.
+이 계획 자체로 일반 사용자에게 새 기능이 노출되지 않는다.
+
 - `/app/notifications`는 현재 활성 상태를 유지한다.
+- `/app/schedules/week`는 현재 활성 상태를 유지한다.
 - `/app/export`는 현재 redirect 상태를 유지한다.
-- Admin Web의 11 운영 route는 현재 활성 상태를 유지한다.
+- Admin Web의 현재 11 운영 route는 활성 상태를 유지한다.
+- Admin Web의 `/organizations`, `/subscriptions`, `/support`는 redirect 상태를 유지한다.
 - Billing, subscription, tax 기능은 이 계획에서 노출하지 않는다.
 
-## 4. 운영자 확인 흐름
+## 4. G01 운영자 smoke 흐름
 
-G01 provider smoke closeout에서만 외부 운영 확인이 필요할 수 있다.
+G01 provider smoke closeout은 외부 운영 확인이 필요한 유일한 goal이다.
 
 ```text
 provider env key 존재 확인
--> provider console callback URL 등록 여부 확인
--> Gmail OAuth 연결 smoke
--> Gmail allowlist 수신자 실제 발송 smoke
--> Microsoft OAuth 연결 smoke
--> Microsoft allowlist 수신자 실제 발송 smoke
--> allowlist 밖 수신자 차단 smoke
--> 결과와 미실행 사유 문서 기록
+-> provider console callback URL 등록 확인
+-> production-equivalent Backend 확인
+-> smoke allowlist 설정 확인
+-> Gmail OAuth 연결
+-> Gmail allowlist 수신자 실제 발송
+-> Gmail allowlist 밖 수신자 차단
+-> Microsoft OAuth 연결
+-> Microsoft allowlist 수신자 실제 발송
+-> Microsoft allowlist 밖 수신자 차단
+-> FollowUpDeliveryAttempt와 safe log/redaction 확인
+-> 05 G10 pending 문서와 BEFORE_12 결과 문서 갱신
 ```
 
-비밀값, access token, refresh token, 수신자 개인정보 원문은 문서에 기록하지 않는다.
+G01은 Gmail과 Microsoft 365가 모두 성공해야 완료다. env/callback/account가 없어서 실행하지 못한 경우에는 blocker로 기록하고 G06에서 12 착수 가능 판정을 내리지 않는다.
 
-## 5. 관련 문서
+## 5. 기록 금지
+
+아래 값은 문서, 로그, 이슈, 스크린샷 설명에 기록하지 않는다.
+
+- secret 값
+- access token
+- refresh token
+- OAuth code/state 원문
+- 수신자 이메일 원문
+- 발신자 이메일 원문
+- follow-up 제목/본문 원문
+- provider raw response body
+
+## 6. 관련 문서
 
 - `TODO/BEFORE_12_TASKS/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/BEFORE_12_TASKS/COMMON/GOAL-SPECS/G01_PROVIDER_SMOKE_CLOSEOUT.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/OPERATIONS_RUNBOOK_DRAFT.md`

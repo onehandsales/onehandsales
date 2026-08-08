@@ -1,6 +1,6 @@
 # Release Scope Check
 
-상태: Draft / Skeleton
+상태: Ready For Goal
 
 ## 1. 목적
 
@@ -23,6 +23,8 @@
 | `PRE12-F33` | Yes | G04 | 11 Admin Operation 문서 체크리스트/goal index 정합성 |
 | `PRE12-F34` | Yes | G05 | Admin Web architecture/legacy route 정합성 |
 
+12 전에 할 것으로 분류된 PRE12 후보는 위 5개가 전부다.
+
 ## 3. 12 전에 닫는 항목
 
 - provider smoke 결과 확인 및 기록
@@ -32,39 +34,72 @@
 - Admin Web architecture와 legacy route/API 상태 보정
 - 12 Billing 착수 전 handoff 기록
 
-## 4. 12 밖으로 유지하는 항목
+## 4. post-12로 유지하는 항목
 
-- Stripe 상품/가격/구독 구현
-- tax, invoice, refund, credit note 구현
-- entitlement, plan limit, paywall 구현
-- B2B tenant/customer admin 구현
-- usage-based 관리비 과금 구현
-- ExportJob, UserDraft, advanced admin operation 구현
+PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 않는다.
 
-## 5. 충돌 방지 체크
+- next action reminder 확장
+- MeetingNote follow-up reminder/자동 mutation
+- SMS 실제 provider
+- email sync, sequence, campaign, unsubscribe, scheduled send
+- record summary/detail/list summary 확장
+- generic ExportJob/PDF
+- Google Calendar write/sync/watch/recurrence
+- import scale/source/Admin 확장
+- app i18n polish와 growth attribution
+- PWA/native packaging
+- advanced mobile camera/draft/media raw storage
+- Admin direct domain mutation
+- Customer/B2B tenant admin
+
+## 5. billing 종속으로 유지하는 항목
+
+아래 항목은 12 Billing의 confirmed scope/API/DB가 먼저 정해져야 한다.
+
+- plan, subscription, entitlement, payment, invoice, refund, failed payment, tax, paywall, churn
+- money precision, currency minor unit, tax 표시
+- billing address, tax profile, terms, refund policy, invoice policy
+- account deletion hard delete/anonymization과 billing retention
+- paid recovery, paid Trash restore, hard delete/purge
+- marketing opt-in, billing lifecycle communication, consent audit
+
+## 6. 12 Billing provider 경계
+
+12 Billing의 현재 방향은 아래와 같다.
+
+- Merchant of Record 우선 검토
+- Stripe 직접 결제는 fallback
+- 결제/세금/환불/인보이스/chargeback 운영 범위는 12에서 확정
+
+따라서 `BEFORE_12_TASKS`에서는 Stripe 기반 결제/구독 작업을 선행하지 않는다.
+
+## 7. 충돌 방지 체크
 
 - [ ] `PRE12_FOLLOWUP_RECHECK`의 12 전 항목과 `BEFORE_12_TASKS` goal이 1:1로 연결된다.
 - [ ] post-12 후보가 이번 계획의 포함 범위에 들어오지 않는다.
 - [ ] billing 종속 후보가 이번 계획의 포함 범위에 들어오지 않는다.
 - [ ] `/app/notifications` 활성 상태를 rollback하지 않는다.
+- [ ] `/app/schedules/week` 활성 상태를 rollback하지 않는다.
 - [ ] `/app/export` redirect 상태를 변경하지 않는다.
 - [ ] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
 - [ ] 새 API와 새 DB migration이 없다.
+- [ ] G01 Gmail/Microsoft smoke 미완료를 완료로 처리하지 않는다.
 
-## 6. 완료 판정
+## 8. 완료 판정
 
 아래가 모두 만족되면 `BEFORE_12_TASKS`는 12 Billing 착수 전 closeout 완료로 처리한다.
 
 - G01~G06 완료
+- G01 Gmail/Microsoft production-equivalent smoke 모두 성공
 - `COMMON/PLANNING-REVIEW.md` 갱신
 - `COMMON/FINAL-SERVICE-SHAPE.md` 갱신
 - `COMMON/RELEASE-SCOPE-CHECK.md` 갱신
 - `PRE12_FOLLOWUP_RECHECK`와 상태 충돌 없음
 
-## 7. 관련 문서
+## 9. 관련 문서
 
 - `TODO/BEFORE_12_TASKS/COMMON/FINAL-SERVICE-SHAPE.md`
 - `TODO/BEFORE_12_TASKS/COMMON/GOAL-WORK-ORDER.md`
 - `TODO/BEFORE_12_TASKS/COMMON/GOAL-SPECS/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/FINAL-CLASSIFICATION.md`
-
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX/COMMON/SCOPE.md`
