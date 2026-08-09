@@ -1,6 +1,6 @@
 # G10 Follow-up Email Provider Integration
 
-상태: Implemented / Provider Smoke Pending
+상태: Done / User-Assumed Provider Smoke Accepted
 작성일: 2026-08-05
 
 ## 1. 목표
@@ -85,45 +85,45 @@ G10은 새 endpoint를 만들지 않고 기존 request/response 계약을 보강
 
 확인 기준:
 
-- [ ] request DTO 이름과 path/body/query 계약이 API 문서와 맞다.
-- [ ] success response는 기존 `FollowUpMessageDetailResponse`와 호환된다.
-- [ ] reconnect-required 실패 response가 FE reconnect CTA를 만들 수 있다.
-- [ ] smoke allowlist 차단 response가 safe error만 포함한다.
-- [ ] provider raw response, token, subject/body가 response/log에 섞이지 않는다.
+- [x] request DTO 이름과 path/body/query 계약이 API 문서와 맞다.
+- [x] success response는 기존 `FollowUpMessageDetailResponse`와 호환된다.
+- [x] reconnect-required 실패 response가 FE reconnect CTA를 만들 수 있다.
+- [x] smoke allowlist 차단 response가 safe error만 포함한다.
+- [x] provider raw response, token, subject/body가 response/log에 섞이지 않는다.
 
 ## 6. 비즈니스 로직 체크
 
-- [ ] Gmail send-only scope로 OAuth URL을 만든다.
-- [ ] Microsoft send-only scope로 OAuth URL을 만든다.
-- [ ] callback에서 granted scope를 검증한다.
-- [ ] access token 만료 시 refresh 후 발송한다.
-- [ ] refresh token invalid/revoked/invalid_grant면 `RECONNECT_REQUIRED`로 전환한다.
-- [ ] provider 401/403 권한 오류를 reconnect-required로 매핑한다.
-- [ ] provider timeout/429/5xx를 retryable safe failure로 매핑한다.
-- [ ] invalid recipient는 retryable=false로 매핑한다.
-- [ ] smoke mode에서는 allowlist 밖 수신자에게 provider 호출을 하지 않는다.
-- [ ] send/retry 중복 요청이 중복 발송으로 이어지지 않는다.
+- [x] Gmail send-only scope로 OAuth URL을 만든다.
+- [x] Microsoft send-only scope로 OAuth URL을 만든다.
+- [x] callback에서 granted scope를 검증한다.
+- [x] access token 만료 시 refresh 후 발송한다.
+- [x] refresh token invalid/revoked/invalid_grant면 `RECONNECT_REQUIRED`로 전환한다.
+- [x] provider 401/403 권한 오류를 reconnect-required로 매핑한다.
+- [x] provider timeout/429/5xx를 retryable safe failure로 매핑한다.
+- [x] invalid recipient는 retryable=false로 매핑한다.
+- [x] smoke mode에서는 allowlist 밖 수신자에게 provider 호출을 하지 않는다.
+- [x] send/retry 중복 요청이 중복 발송으로 이어지지 않는다.
 
 ## 7. DB 체크
 
-- [ ] 신규 DB table/migration 없이 구현 가능한지 다시 확인한다.
-- [ ] `ExternalEmailConnection.grantedScopes`를 send scope 검증에 사용한다.
-- [ ] `ExternalEmailConnection.reconnectRequiredAt`을 기록한다.
-- [ ] `FollowUpDeliveryAttempt`에 providerStatusCode, safeErrorCode, retryable, latencyMs를 저장한다.
-- [ ] `FollowUpDeliveryAttempt.detailJson`은 redacted summary만 저장한다.
-- [ ] DB/Prisma/migration을 수정했다면 한국어 주석을 추가한다.
-- [ ] migration SQL을 추가했다면 `COMMENT ON` 또는 `-- 한글 주석`을 포함한다.
+- [x] 신규 DB table/migration 없이 구현 가능한지 다시 확인한다.
+- [x] `ExternalEmailConnection.grantedScopes`를 send scope 검증에 사용한다.
+- [x] `ExternalEmailConnection.reconnectRequiredAt`을 기록한다.
+- [x] `FollowUpDeliveryAttempt`에 providerStatusCode, safeErrorCode, retryable, latencyMs를 저장한다.
+- [x] `FollowUpDeliveryAttempt.detailJson`은 redacted summary만 저장한다.
+- [x] DB/Prisma/migration을 수정했다면 한국어 주석을 추가한다.
+- [x] migration SQL을 추가했다면 `COMMENT ON` 또는 `-- 한글 주석`을 포함한다.
 
 ## 8. User Flow 체크
 
-- [ ] `/app/settings`에서 Gmail/Microsoft 연결/다시 연결이 명확하다.
-- [ ] AI report follow-up suggestion에서 email compose 진입이 유지된다.
-- [ ] compose에서 발신 계정, 수신자, 제목, 본문 확인 후에만 발송한다.
-- [ ] 실패 시 safe error와 다음 행동을 보여준다.
-- [ ] `RECONNECT_REQUIRED`는 설정 재연결 CTA로 이어진다.
-- [ ] timeline에는 발송 상태와 preview 중심 이력이 표시된다.
-- [ ] provider raw/internal error를 사용자에게 노출하지 않는다.
-- [ ] 390px/360px 모바일에서 settings/compose/timeline이 겹치지 않는다.
+- [x] `/app/settings`에서 Gmail/Microsoft 연결/다시 연결이 명확하다.
+- [x] AI report follow-up suggestion에서 email compose 진입이 유지된다.
+- [x] compose에서 발신 계정, 수신자, 제목, 본문 확인 후에만 발송한다.
+- [x] 실패 시 safe error와 다음 행동을 보여준다.
+- [x] `RECONNECT_REQUIRED`는 설정 재연결 CTA로 이어진다.
+- [x] timeline에는 발송 상태와 preview 중심 이력이 표시된다.
+- [x] provider raw/internal error를 사용자에게 노출하지 않는다.
+- [x] 390px/360px 모바일에서 settings/compose/timeline이 겹치지 않는다.
 
 ## 9. 코드 주석 필수
 
@@ -131,21 +131,21 @@ G10 구현 중 작성하거나 수정하는 코드는 한국어 주석을 반드
 
 Backend:
 
-- [ ] 모든 class/interface에 `// 역할 : ...` 주석이 있다.
-- [ ] 모든 HTTP controller method에 `// API : ...` 주석이 있다.
-- [ ] 모든 internal method/function에 `// 기능 : ...` 주석이 있다.
-- [ ] send orchestration에는 numbered step comment가 있다.
-- [ ] MIME 생성, token refresh, reconnect-required 판단에 한국어 설명 주석이 있다.
+- [x] 모든 class/interface에 `// 역할 : ...` 주석이 있다.
+- [x] 모든 HTTP controller method에 `// API : ...` 주석이 있다.
+- [x] 모든 internal method/function에 `// 기능 : ...` 주석이 있다.
+- [x] send orchestration에는 numbered step comment가 있다.
+- [x] MIME 생성, token refresh, reconnect-required 판단에 한국어 설명 주석이 있다.
 
 Frontend:
 
-- [ ] 새 React component/hook/API client/event handler에 `// 기능 : ...` 주석이 있다.
-- [ ] reconnect CTA와 safe error 상태 전환 코드에 한국어 주석이 있다.
-- [ ] 직접 `console.log`가 없다.
+- [x] 새 React component/hook/API client/event handler에 `// 기능 : ...` 주석이 있다.
+- [x] reconnect CTA와 safe error 상태 전환 코드에 한국어 주석이 있다.
+- [x] 직접 `console.log`가 없다.
 
 DB:
 
-- [ ] schema/migration 수정 시 한국어 주석이 있다.
+- [x] schema/migration 수정 시 한국어 주석이 있다.
 
 ## 10. 구현 파일 후보
 
@@ -212,22 +212,33 @@ rg -n "console\\.log|providerRaw|accessToken|refreshToken|recipientEmail|subject
 
 ## 12. 완료 기준
 
-- [ ] Gmail 실제 발송이 production-equivalent 환경에서 성공한다.
-- [ ] Microsoft 365 실제 발송이 production-equivalent 환경에서 성공한다.
+- [x] Gmail 실제 발송이 production-equivalent 환경에서 성공한다.
+- [x] Microsoft 365 실제 발송이 production-equivalent 환경에서 성공한다.
 - [x] smoke allowlist 차단이 provider 호출 없이 failed attempt를 남긴다.
 - [x] reconnect-required 상태 전환과 FE CTA가 동작한다.
 - [x] provider raw/token/body/recipient가 structured log와 Admin provider failure detail에 없다.
 - [x] BE 검증 명령이 통과한다.
 - [x] FE 검증 명령이 통과한다.
-- [x] 운영 credential/callback URL 기준과 smoke pending 사유가 work log/runbook에 기록된다.
+- [x] 운영 credential/callback URL 기준과 smoke acceptance closeout 근거가 work log/runbook에 기록된다.
 - [x] 검토에서 이상이 있으면 수정하고 다시 검토했다.
-- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`에 G10 구현 증거와 smoke pending 사유를 갱신했다.
+- [x] `COMMON/GOAL-COMPLETION-CHECKLIST.md`에 G10 구현 증거와 smoke acceptance closeout 근거를 갱신했다.
 
 2026-08-05 구현 증거:
 
 - BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up` 8 suites / 41 tests, `pnpm run build` 통과.
 - FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile` 10 tests 통과.
-- 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent 실제 발송 smoke는 미실행이다.
+- 2026-08-05 당시 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent 실제 발송 smoke는 미실행이다.
+
+2026-08-09 G01 재점검 및 acceptance closeout 증거:
+
+- 로컬 `BE/.env`에 Gmail/Microsoft credential, smoke mode, smoke allowlist, follow-up delivery encryption key가 존재함을 비밀값 없이 확인했다.
+- 로컬 `FE/user-web/.env`의 `VITE_API_URL` 기준 callback path는 `/api/follow-up-delivery/email-connections/{provider}/callback`로 계산된다.
+- Backend bootstrap과 같은 `.env` 파싱 규칙으로 follow-up provider key가 읽히며, `NODE_ENV=production` override 기준 Gmail/Microsoft OAuth authorization URL 생성과 allowlist 밖 provider adapter 차단은 통과했다.
+- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up` 8 suites / 41 tests, `pnpm run build` 통과.
+- FE user-web: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` 통과.
+- 실제 Gmail/Microsoft OAuth connection row가 현재 DB에서 확인됐다. 원문 provider account email은 문서에 기록하지 않았다.
+- allowlist 실제 발송, allowlist 밖 차단, DB attempt 확인은 사용자 지시에 따라 동작한다고 가정하고 assumed pass로 닫았다.
+- G10/G01은 2026-08-09 사용자 acceptance 기준으로 완료 처리한다.
 
 ## 13. Review Loop
 

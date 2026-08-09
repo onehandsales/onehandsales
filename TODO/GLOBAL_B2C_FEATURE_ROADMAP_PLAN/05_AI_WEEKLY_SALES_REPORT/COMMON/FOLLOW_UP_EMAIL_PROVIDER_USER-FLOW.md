@@ -200,12 +200,12 @@ G10에서 만들지 않는다.
 
 ## 9. 검토 체크리스트
 
-- [ ] `/app/settings`에서 Gmail/Microsoft 연결 상태와 다시 연결 CTA가 명확하다.
-- [ ] compose에서 발신 계정, 수신자, 제목, 본문을 발송 전에 확인한다.
-- [ ] 첫 발송 주의 안내가 유지된다.
-- [ ] `RECONNECT_REQUIRED`가 사용자에게 다음 행동으로 이어진다.
-- [ ] smoke allowlist 차단은 운영 검증 문구로만 짧게 표시된다.
-- [ ] provider raw/token/internal error가 화면에 노출되지 않는다.
-- [ ] Notion식 page/section 구조와 Attio식 record activity 흐름을 유지한다.
-- [ ] 모바일 390px/360px에서 UI 요소가 겹치지 않는다.
-- [ ] 새 FE 코드에는 한국어 `// 기능 : ...` 주석이 있다.
+- [x] `/app/settings`에서 Gmail/Microsoft 연결 상태와 다시 연결 CTA가 명확하다.
+- [x] compose에서 발신 계정, 수신자, 제목, 본문을 발송 전에 확인한다.
+- [x] 첫 발송 주의 안내가 유지된다.
+- [x] `RECONNECT_REQUIRED`가 사용자에게 다음 행동으로 이어진다.
+- [x] smoke allowlist 차단은 운영 검증 문구로만 짧게 표시된다.
+- [x] provider raw/token/internal error가 화면에 노출되지 않는다.
+- [x] Notion식 page/section 구조와 Attio식 record activity 흐름을 유지한다.
+- [x] 모바일 390px/360px에서 UI 요소가 겹치지 않는다.
+- [x] 새 FE 코드에는 한국어 `// 기능 : ...` 주석이 있다.

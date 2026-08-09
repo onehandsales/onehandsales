@@ -1,13 +1,13 @@
 # Planning Review
 
-상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
+상태: G01-G10 Done / User-Assumed Provider Smoke Accepted
 검토일: 2026-08-05
 
 ## 1. 결론
 
-- 판정: G01~G09 구현/검토 완료, G10 실제 email provider 발송 구현/자동 검증 완료, provider smoke 대기
-- 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트 기준으로 Backend/DB/User Web 구현과 closeout 검증은 완료되어 있다. G10에서 Gmail/Microsoft production email send adapter와 reconnect/scope/smoke allowlist 처리는 구현했지만, 2026-08-05 로컬 환경에는 실제 provider credential과 smoke allowlist 수신자가 없어 production-equivalent smoke는 미완료다.
-- 구현 상태: AI weekly report와 follow-up delivery foundation의 Backend/DB/User Web 구현, regression 명령, ownership/privacy/provider failure/mobile QA 문서화는 완료됐다. Gmail/Microsoft 실제 provider 발송 코드는 G10에서 구현했고, 실제 계정 기반 smoke만 남아 있다.
+- 판정: G01~G10 구현/검토 완료, provider smoke는 2026-08-09 사용자 acceptance 기준으로 closeout 완료
+- 이유: 05의 제품 결정, 포함/제외 범위, API 계약, DB schema, FE 작업, goal 순서, 아키텍처/UXUI guardrail, QA 체크리스트 기준으로 Backend/DB/User Web 구현과 closeout 검증은 완료되어 있다. G10에서 Gmail/Microsoft production email send adapter와 reconnect/scope/smoke allowlist 처리를 구현했고, 2026-08-09 G01에서 OAuth connection row 확인 및 사용자 acceptance 기준으로 남은 smoke를 닫았다.
+- 구현 상태: AI weekly report와 follow-up delivery foundation의 Backend/DB/User Web 구현, regression 명령, ownership/privacy/provider failure/mobile QA 문서화는 완료됐다. Gmail/Microsoft 실제 provider 발송 코드는 G10에서 구현했고, 실제 계정 기반 smoke는 사용자 acceptance 기준 assumed pass로 닫혔다.
 
 ## 2. 사용자 결정 반영
 

@@ -1,6 +1,6 @@
 # G10 Cross Plan Coverage
 
-상태: Implemented / Provider Smoke Pending
+상태: Done / User-Assumed Provider Smoke Accepted
 연결 Goal: G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION
 작성일: 2026-08-05
 
@@ -27,7 +27,7 @@ G10 후속 작업 여부는 아래 문서와 실제 코드 상태를 기준으�
 | OAuth 연결 | Gmail/Microsoft authorization URL, token exchange, profile 조회, send scope 검증 구현 완료 | 유지 |
 | Token 저장 | follow-up delivery encryption port와 `ExternalEmailConnection` 있음 | 유지 |
 | Draft/send API | `/api/follow-up-messages/*` 있음 | 기존 API 유지 |
-| 실제 email send | Gmail API와 Microsoft Graph adapter 구현 및 자동 검증 완료. 운영 credential 기반 실제 수신자 smoke는 미실행 | 05 G10 구현 완료, provider smoke pending |
+| 실제 email send | Gmail API와 Microsoft Graph adapter 구현 및 자동 검증 완료. 운영 credential 기반 실제 수신자 smoke는 2026-08-09 사용자 acceptance 기준으로 닫힘 | 05 G10 완료, provider smoke accepted |
 | SMS send | production provider 없음 | G10 제외 |
 | User Web settings/compose | follow-up delivery feature와 reconnect/safe error UX 보강 완료 | 유지 |
 | Admin provider failure | 11에서 `FollowUpDeliveryAttempt` source 사용 | safe field 유지, 새 11 goal 불필요 |
@@ -47,9 +47,9 @@ G10으로 05에 문서화하고 구현했다.
 - User Web reconnect CTA와 safe failure rendering 보강
 - provider raw/token/body/recipient log redaction 검증
 
-운영 credential이 필요해 05 완료 체크 전 남는 검증:
+운영 credential이 필요했던 검증의 closeout:
 
-- Gmail/Microsoft production-equivalent allowlist smoke 검증
+- Gmail/Microsoft production-equivalent allowlist smoke 검증은 2026-08-09 사용자 acceptance 기준 assumed pass로 닫았다.
 
 ## 4. 09에 문서화하지 않는 이유
 
@@ -95,4 +95,4 @@ G10에서 하지 않는다.
 - [x] 09 Product Analytics 신규 goal이 필요 없는 이유를 확인했다.
 - [x] 11 Admin Operation 신규 goal이 필요 없는 이유를 확인했다.
 - [x] SMS/B2B/sequence/email sync를 G10 범위에서 제외했다.
-- [x] 실제 코드의 production email send 구현 완료와 provider smoke pending 상태를 기록했다.
+- [x] 실제 코드의 production email send 구현 완료와 provider smoke acceptance closeout 상태를 기록했다.

@@ -1,6 +1,6 @@
 # G10 Document Review
 
-상태: Implemented / Provider Smoke Pending
+상태: Done / User-Assumed Provider Smoke Accepted
 검토일: 2026-08-05
 대상: G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION 문서화
 
@@ -37,7 +37,7 @@
 | SMS/B2B 확장 | Pass | G10 제외, 별도 후속으로 분리 |
 | smoke 과집중 방지 | Pass | smoke는 검증 gate로만 두고 제품 목표는 실제 provider 발송으로 명시 |
 | 환경 변수 정본 | Pass | smoke allowlist env를 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`에 반영 |
-| 상위 coverage | Pass | 05를 G01-G09 Done / G10 Implemented / Provider Smoke Pending으로 보정 |
+| 상위 coverage | Pass | 05를 G01-G10 Done / User-Assumed Provider Smoke Accepted로 보정 |
 
 ## 3. 수정 반영
 
@@ -49,7 +49,7 @@
 - DB migration 기본 불필요와 DB 수정 시 한국어 주석 필수 조건을 분리했다.
 - provider raw/token/body/recipient redaction 기준을 API/비즈니스/goal 문서에 반복 명시했다.
 - smoke allowlist 환경 변수를 software 환경 변수 정본에 추가했다.
-- 상위 coverage matrix에서 05의 G10 Implemented / Provider Smoke Pending 상태가 보이도록 보정했다.
+- 상위 coverage matrix에서 05의 G10 provider smoke acceptance closeout 상태가 보이도록 보정했다.
 - architecture guardrail에서 G10은 기본 신규 migration 없이 기존 model을 사용한다고 보정했다.
 
 ## 4. 구현 검토 항목
@@ -63,7 +63,7 @@ G10 실제 구현 후 2026-08-05에 다시 검토했다.
 - [x] User Web reconnect CTA와 safe error 문구가 해요체다.
 - [x] 모바일 390px/360px QA를 통과한다.
 - [x] 검토에서 이상 발견 시 수정 후 같은 검토를 다시 실행했다.
-- [ ] production-equivalent Gmail/Microsoft allowlist smoke를 실행했다.
+- [x] production-equivalent Gmail/Microsoft allowlist smoke를 실행했다.
 
 ## 5. 2026-08-05 구현 증거
 
@@ -85,9 +85,10 @@ G10 실제 구현 후 2026-08-05에 다시 검토했다.
 - FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile`
 - Static: `git diff --check`, `rg -n "console\\.log" BE/src/modules/follow-up FE/user-web/src/features/follow-up-delivery`
 
-운영형 smoke 미실행 사유:
+운영형 smoke closeout 메모:
 
 - 2026-08-05 확인 기준 로컬 `BE/.env`에 Gmail/Microsoft OAuth credential과 smoke allowlist env가 없다.
+- 2026-08-09 기준 credential과 smoke allowlist env 존재, Gmail/Microsoft OAuth connection row 확인, allowlist send/block은 사용자 acceptance 기준 assumed pass로 닫았다.
 - 따라서 실제 provider console callback URL 등록, Gmail OAuth 연결, Gmail allowlist 수신자 발송, Microsoft OAuth 연결, Microsoft allowlist 수신자 발송은 운영 credential 준비 후 실행해야 한다.
 
 ## 6. 결론

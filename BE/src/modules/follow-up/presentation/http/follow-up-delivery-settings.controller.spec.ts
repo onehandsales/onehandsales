@@ -4,12 +4,17 @@ import {
   type INestApplication,
   ValidationPipe,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 import type { Request } from "express";
 import * as request from "supertest";
 import { FollowUpSettingsApplicationService } from "@/modules/follow-up/application/services/follow-up-settings-application.service";
-import { SmsSenderVerificationExpiredError } from "@/modules/follow-up/domain/follow-up-delivery.errors";
+import {
+  FollowUpProviderRequestFailedError,
+  SmsSenderVerificationExpiredError,
+} from "@/modules/follow-up/domain/follow-up-delivery.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { HttpExceptionFilter } from "@/shared/presentation/filters/http-exception.filter";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import {
@@ -28,6 +33,7 @@ const CURRENT_USER: CurrentUserContext = {
 };
 const CONNECTION_ID = "00000000-0000-4000-8000-000000000301";
 const SENDER_NUMBER_ID = "00000000-0000-4000-8000-000000000401";
+const USER_WEB_ORIGIN = "http://localhost:5173";
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
@@ -58,9 +64,19 @@ class FakeAuthGuard implements CanActivate {
 describe("FollowUpDeliverySettingsController", () => {
   let app: INestApplication;
   let service: jest.Mocked<FollowUpSettingsServiceFake>;
+  let configService: { get: jest.Mock<string | undefined, [string]> };
+  let logger: Pick<AppLogger, "warn">;
 
   beforeEach(async () => {
     service = createServiceFake();
+    configService = {
+      get: jest.fn((key: string) =>
+        key === "USER_WEB_ORIGIN" ? USER_WEB_ORIGIN : undefined
+      ),
+    };
+    logger = {
+      warn: jest.fn(),
+    };
 
     const moduleRef = await Test.createTestingModule({
       controllers: [
@@ -69,6 +85,8 @@ describe("FollowUpDeliverySettingsController", () => {
       ],
       providers: [
         { provide: FollowUpSettingsApplicationService, useValue: service },
+        { provide: ConfigService, useValue: configService },
+        { provide: AppLogger, useValue: logger },
       ],
     })
       .overrideGuard(AuthGuard)
@@ -157,11 +175,71 @@ describe("FollowUpDeliverySettingsController", () => {
       .get(
         "/api/follow-up-delivery/email-connections/google/callback?code=code-1&state=state-1"
       )
-      .expect(200);
+      .expect(302)
+      .expect(
+        "Location",
+        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=google&status=connected`
+      );
 
     expect(service.handleEmailConnectionCallback).toHaveBeenCalledWith(
       "google",
       { code: "code-1", state: "state-1" }
+    );
+  });
+
+  it("ignores provider-added OAuth callback query parameters", async () => {
+    await request(app.getHttpServer())
+      .get(
+        "/api/follow-up-delivery/email-connections/google/callback?code=code-1&state=state-1&scope=openid%20email&authuser=0&prompt=consent&iss=https%3A%2F%2Faccounts.google.com"
+      )
+      .expect(302)
+      .expect(
+        "Location",
+        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=google&status=connected`
+      );
+
+    expect(service.handleEmailConnectionCallback).toHaveBeenCalledWith(
+      "google",
+      { code: "code-1", state: "state-1" }
+    );
+  });
+
+  it("redirects provider-denied OAuth callbacks without exchanging a code", async () => {
+    await request(app.getHttpServer())
+      .get(
+        "/api/follow-up-delivery/email-connections/microsoft/callback?error=access_denied&state=state-1"
+      )
+      .expect(302)
+      .expect(
+        "Location",
+        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=microsoft&status=denied`
+      );
+
+    expect(service.handleEmailConnectionCallback).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('"providerError":"access_denied"'),
+      "FollowUpEmailConnectionCallbackController"
+    );
+  });
+
+  it("redirects callback failures with safe diagnostic logging", async () => {
+    service.handleEmailConnectionCallback.mockRejectedValueOnce(
+      new FollowUpProviderRequestFailedError()
+    );
+
+    await request(app.getHttpServer())
+      .get(
+        "/api/follow-up-delivery/email-connections/microsoft/callback?code=code-1&state=state-1"
+      )
+      .expect(302)
+      .expect(
+        "Location",
+        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=microsoft&status=failed`
+      );
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.stringContaining('"safeErrorCode":"FollowUpProviderRequestFailed"'),
+      "FollowUpEmailConnectionCallbackController"
     );
   });
 

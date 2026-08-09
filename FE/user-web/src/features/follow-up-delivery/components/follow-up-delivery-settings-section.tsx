@@ -8,7 +8,8 @@ import {
   Smartphone,
   Unlink,
 } from "lucide-react";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
@@ -45,12 +46,45 @@ const E164_PATTERN = /^\+[1-9]\d{7,14}$/;
 export function FollowUpDeliverySettingsSection({
   onNotice,
 }: FollowUpDeliverySettingsSectionProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [callbackError, setCallbackError] = useState<string | null>(null);
   const settingsQuery = useFollowUpDeliverySettings();
+  const refetchSettings = settingsQuery.refetch;
+
+  useEffect(() => {
+    const provider = searchParams.get("followUpEmailConnection");
+    const status = searchParams.get("status");
+
+    if (!provider || !status) {
+      return;
+    }
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.delete("followUpEmailConnection");
+    nextSearchParams.delete("status");
+    setSearchParams(nextSearchParams, { replace: true });
+
+    const providerLabel = toSearchParamProviderLabel(provider);
+
+    if (status === "connected") {
+      setCallbackError(null);
+      onNotice(`${providerLabel} 연결이 완료됐어요.`);
+      void refetchSettings();
+      return;
+    }
+
+    setCallbackError(
+      status === "denied"
+        ? `${providerLabel} 연결 권한이 거절됐어요.`
+        : `${providerLabel}와 연결하지 못했어요. 다시 시도해 주세요.`
+    );
+  }, [onNotice, refetchSettings, searchParams, setSearchParams]);
 
   return (
     <section className="grid gap-3">
       <SettingsHeader />
       <div className="grid gap-5 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
+        {callbackError ? <InlineAlert message={callbackError} /> : null}
         {settingsQuery.isLoading ? (
           <SettingsSkeleton rows={5} />
         ) : settingsQuery.isError ? (
@@ -616,6 +650,20 @@ function toSmsStatusLabel(senderNumber: FollowUpSmsSenderNumber) {
 
 function toProviderLabel(provider: FollowUpEmailProvider) {
   return provider === "GOOGLE" ? "Gmail" : "Microsoft 365";
+}
+
+function toSearchParamProviderLabel(provider: string) {
+  const normalized = provider.trim().toLowerCase();
+
+  if (normalized === "google") {
+    return "Gmail";
+  }
+
+  if (normalized === "microsoft") {
+    return "Microsoft 365";
+  }
+
+  return "이메일";
 }
 
 function buildEmailRedirectUri(provider: FollowUpEmailProvider) {

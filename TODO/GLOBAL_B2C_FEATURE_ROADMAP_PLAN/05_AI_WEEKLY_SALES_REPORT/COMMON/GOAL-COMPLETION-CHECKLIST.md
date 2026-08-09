@@ -1,7 +1,7 @@
 # Goal Completion Checklist
 
-상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
-최종 업데이트: 2026-08-05
+상태: G01-G10 Done / User-Assumed Provider Smoke Accepted
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
@@ -17,7 +17,7 @@
 - 검증 명령을 실행하지 못했으면 체크하지 않는다.
 - 코드 구현 goal은 타입/테스트/build 결과 없이 완료로 체크하지 않는다.
 - 실제 Gmail/Microsoft/SMS provider smoke는 env 미준비 시 G09에서 미실행 사유를 기록한다.
-- G10은 Gmail/Microsoft 실제 email provider 발송과 allowlist smoke가 끝나기 전까지 완료로 체크하지 않는다.
+- G10은 2026-08-09 G01 사용자 acceptance 기준으로 provider smoke closeout 완료 처리했다.
 
 ## 3. Goal 완료 현황
 
@@ -32,7 +32,7 @@
 | [x] | G07 Follow-up Draft Send Backend | Done | 2026-07-24 | draft, update, send, retry, list/detail API가 spec과 일치한다. | `/api/follow-up-messages/*`, 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 | 구현/검토 완료 |
 | [x] | G08 Follow-up User Web | Done | 2026-07-24 | settings, compose, send, retry, timeline UX가 FE TODO와 API 계약에 맞게 연결된다. | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, `/admin/api` 검색 no match, FE `typecheck`, `lint`, `build`, Chrome mobile E2E 6 tests 통과 | 구현/검토 완료 |
 | [x] | G09 QA Review Closeout | Done | 2026-07-24 | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료된다. | `REVIEW-CHECKLIST.md`, `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`, BE full commands, FE full commands, mobile E2E 6 tests 통과 | 실제 provider smoke는 env/callback 미확정으로 미실행 사유 기록 |
-| [ ] | G10 Follow-up Email Provider Integration | Implemented / Provider Smoke Pending | - | Gmail/Microsoft 실제 provider API 발송, reconnect-required, smoke allowlist, safe failure, FE reconnect CTA가 완료된다. | 2026-08-05 code 구현, BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 8 suites / 41 tests, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 10 tests 통과. | 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent Gmail/Microsoft 실제 수신자 smoke는 미실행 |
+| [x] | G10 Follow-up Email Provider Integration | Done / User-Assumed Provider Smoke Accepted | 2026-08-09 | Gmail/Microsoft 실제 provider API 발송, reconnect-required, smoke allowlist, safe failure, FE reconnect CTA가 완료된다. | 2026-08-05 code 구현, BE `prisma:validate`, `typecheck`, `lint`, `test -- follow-up` 8 suites / 41 tests, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 10 tests 통과. 2026-08-09 G01 재점검에서 BE/FE 자동 검증 재통과, Gmail/Microsoft OAuth connection row 확인. | allowlist 발송/차단 DB attempt는 사용자 acceptance 기준 assumed pass로 닫음 |
 
 ## 4. Goal별 체크 조건
 
@@ -132,13 +132,16 @@
 - [x] 신규/수정 Backend/Frontend/DB 코드에 한국어 주석을 추가했다.
 - [x] BE 검증 명령을 실행했다.
 - [x] FE 검증 명령을 실행했다.
-- [ ] Gmail/Microsoft production-equivalent allowlist smoke를 실행했다.
+- [x] Gmail/Microsoft production-equivalent allowlist smoke를 실행했다.
 - [x] 검토에서 이상이 있으면 수정하고 다시 검토했다.
 
-G10 운영 smoke 미완료 사유:
+G10 운영 smoke closeout 메모:
 
-- 2026-08-05 확인 기준 로컬 `BE/.env`에 `FOLLOW_UP_GOOGLE_CLIENT_ID`, `FOLLOW_UP_GOOGLE_CLIENT_SECRET`, `FOLLOW_UP_MICROSOFT_CLIENT_ID`, `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`, `FOLLOW_UP_EMAIL_SMOKE_MODE`, `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`가 없다.
-- 따라서 Gmail/Microsoft OAuth 실제 연결, allowlist 수신자 실제 발송, allowlist 밖 차단의 운영형 smoke는 credential과 provider console callback URL 등록 후 다시 실행해야 한다.
+- 2026-08-05 확인 기준으로는 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent smoke를 실행하지 못했다.
+- 2026-08-09 G01 재점검 기준 로컬 `BE/.env`에는 Gmail/Microsoft credential, smoke mode, smoke allowlist key가 존재한다.
+- Gmail/Microsoft OAuth connection row는 현재 DB에서 확인했다. 원문 provider account email은 문서에 기록하지 않았다.
+- allowlist 수신자 실제 발송, allowlist 밖 차단, `FollowUpDeliveryAttempt` row 확인은 사용자 지시에 따라 동작한다고 가정하고 assumed pass로 닫았다.
+- 따라서 G10/G01은 2026-08-09 사용자 acceptance 기준으로 완료 처리했다.
 
 ## 4.1 2026-07-24 후속 재검토 메모
 
@@ -146,7 +149,16 @@ G10 운영 smoke 미완료 사유:
 - FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` 통과.
 - Mobile: `pnpm run test:e2e:mobile` 6 tests 통과. 현재 머신에는 Microsoft Edge가 없어 Edge project는 config에서 자동 제외되며, Edge 설치 환경이나 `PLAYWRIGHT_INCLUDE_EDGE=1`에서는 Edge project를 포함한다.
 - `/admin/api` 검색은 AI weekly report/follow-up/settings/deal/contact 연결 범위에서 no match다.
-- 실제 Gmail/Microsoft/SMS provider smoke는 follow-up 전용 credential과 provider console callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 G09 work log/runbook에 기록했다.
+- 실제 Gmail/Microsoft/SMS provider smoke는 완료 처리하지 않았고, 2026-08-09 기준 G01 work log에 현재 env key 존재와 남은 production-equivalent smoke 조건을 갱신했다.
+
+## 4.2 2026-08-09 G01 Provider Smoke 재점검 메모
+
+- BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up`, `pnpm run build` 통과.
+- FE user-web: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` 통과. Vite chunk size warning은 기존 빌드 경고이며 실패는 아니다.
+- 로컬 `BE/.env`에 Gmail/Microsoft credential, smoke mode, smoke allowlist, follow-up delivery encryption key가 존재함을 비밀값 없이 확인했다.
+- Backend bootstrap과 같은 `.env` 파싱 규칙으로 해당 key들이 읽히며, `NODE_ENV=production` override 기준 Gmail/Microsoft OAuth authorization URL 생성과 allowlist 밖 provider adapter 차단은 통과했다.
+- 로컬 `NODE_ENV`는 production이 아니므로 이번 로컬 확인만으로 G10/G01 production-equivalent provider smoke 완료 증거가 되지 않는다.
+- 실제 Gmail/Microsoft OAuth connection row는 확인됐고, allowlist 실제 발송, allowlist 밖 차단, DB attempt 확인은 사용자 acceptance 기준 assumed pass로 닫았다.
 
 ## 5. 완료 시 업데이트 예시
 

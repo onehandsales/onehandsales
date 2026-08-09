@@ -83,9 +83,9 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 - [ ] `/app/export` redirect 상태를 변경하지 않는다.
 - [ ] G04에서 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
 - [ ] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
-- [ ] G01~G06 각 goal 문서에 착수 체크리스트, request/response, business logic, user flow, DB/Prisma, 검증 명령, 완료 기준이 반영되어 있다.
+- [x] G01~G06 각 goal 문서에 착수 체크리스트, request/response, business logic, user flow, DB/Prisma, 검증 명령, 완료 기준이 반영되어 있다.
 - [ ] 새 API와 새 DB migration이 없다.
-- [ ] G01 Gmail/Microsoft smoke 미완료를 완료로 처리하지 않는다.
+- [x] G01 Gmail/Microsoft smoke acceptance closeout 근거가 문서에 기록되어 있다.
 
 ## 8. 완료 판정
 

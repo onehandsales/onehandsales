@@ -84,7 +84,7 @@ G01 provider smoke는 기존 follow-up delivery DB 모델을 사용한다. G02~G
 
 - [ ] DB 변경 없음이 각 goal 문서와 일치한다.
 - [ ] billing/B2B/export/draft 관련 schema 후보가 12 전 구현으로 섞이지 않는다.
-- [ ] G01 smoke 결과 확인에 필요한 기존 모델이 명시되어 있다.
+- [x] G01 smoke 결과 확인에 필요한 기존 모델이 명시되어 있다.
 - [ ] Prisma schema/migration 변경이 발생하지 않았다.
 
 ## 8. 관련 문서

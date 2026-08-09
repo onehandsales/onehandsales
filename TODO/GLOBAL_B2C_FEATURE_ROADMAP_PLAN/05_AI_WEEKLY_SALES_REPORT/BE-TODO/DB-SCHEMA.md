@@ -1,6 +1,6 @@
 # 05 DB Schema TODO
 
-상태: G02/G05 Done / G10 Implemented / Provider Smoke Pending
+상태: G02/G05/G10 Done / User-Assumed Provider Smoke Accepted
 
 ## 1. Source of truth
 

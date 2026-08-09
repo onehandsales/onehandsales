@@ -12,7 +12,7 @@
 
 | Goal | PRE12 ID | 상태 | 문서 | 목적 |
 | --- | --- | --- | --- | --- |
-| G01 | `PRE12-F04` | Ready For Goal | `G01_PROVIDER_SMOKE_CLOSEOUT.md` | Gmail/Microsoft provider smoke closeout |
+| G01 | `PRE12-F04` | Done / User-Assumed Provider Smoke Accepted | `G01_PROVIDER_SMOKE_CLOSEOUT.md` | Gmail/Microsoft provider smoke closeout |
 | G02 | `PRE12-F31` | Ready For Goal | `G02_10_MOBILE_CHECKLIST_CLOSEOUT.md` | 10 Mobile 문서 체크리스트 정합성 |
 | G03 | `PRE12-F32` | Ready For Goal | `G03_USER_WEB_ROUTE_ARCHITECTURE_CLOSEOUT.md` | User Web route/architecture 정합성 |
 | G04 | `PRE12-F33` | Ready For Goal | `G04_11_ADMIN_CHECKLIST_CLOSEOUT.md` | 11 Admin 문서 checklist/goal index 정합성 |

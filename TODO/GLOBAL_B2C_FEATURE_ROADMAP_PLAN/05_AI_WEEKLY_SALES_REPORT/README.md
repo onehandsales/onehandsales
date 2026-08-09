@@ -1,9 +1,9 @@
 # 05 AI Weekly Sales Report
 
-상태: G01-G09 Done / G10 Implemented / Provider Smoke Pending
+상태: G01-G10 Done / User-Assumed Provider Smoke Accepted
 순서: 05
 성격: 저장형 AI 주간 영업 리포트 + follow-up email/SMS 실행 + 실제 email provider 발송 후속
-결정 상태: 2026-07-24 G01~G09 구현/검토 완료, 2026-08-05 G10 코드 구현/자동 검증 완료, 운영 provider smoke pending
+결정 상태: 2026-07-24 G01~G09 구현/검토 완료, 2026-08-05 G10 코드 구현/자동 검증 완료, 2026-08-09 사용자 acceptance 기준 provider smoke closeout 완료
 구현 기준: `COMMON/GOAL-WORK-ORDER.md`
 
 ## 1. 목적
@@ -21,10 +21,11 @@
 - 신규 DB SQL 초안에는 enum/table/index/FK와 `COMMENT ON` 주석을 포함했다.
 - UXUI 기준은 `AGENT/UXUI_AGENT`, software 기준은 `AGENT/SOFTWARE_AGENT`를 따른다.
 - G01~G09 구현과 QA Review Closeout이 완료됐다.
-- 실제 Gmail/Microsoft/SMS provider smoke는 운영 credential/callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유와 운영 설정 기준은 G09 work log/runbook에 기록했다.
-- 2026-08-05 기준 실제 Gmail/Microsoft production email 발송 adapter는 G10에서 구현했고, 로컬 credential 미설정으로 production-equivalent 실제 수신자 smoke만 남았다.
+- 실제 Gmail/Microsoft/SMS provider smoke의 최초 미실행 사유와 운영 설정 기준은 G09 work log/runbook에 기록했다.
+- 2026-08-05 기준 실제 Gmail/Microsoft production email 발송 adapter는 G10에서 구현했고, 당시 로컬 credential 미설정으로 production-equivalent 실제 수신자 smoke만 남았다.
+- 2026-08-09 G01 재점검 기준 로컬 `BE/.env`에는 Gmail/Microsoft credential, smoke mode, smoke allowlist key가 존재한다. Gmail/Microsoft OAuth connection row는 현재 DB에서 확인했고, allowlist 발송/차단 증거는 사용자 acceptance 기준 assumed pass로 닫았다.
 - G10 문서에는 request, response, business logic, user flow, DB 영향, 코드 한글 주석 필수, goal별 체크리스트, 검토 기준을 포함했다.
-- 2026-08-05 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 05 구현 완료 이력과 provider smoke pending 조건을 반영했다.
+- 2026-08-05 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 당시 05 구현 완료 이력과 provider smoke 후속 조건을 반영했다.
 
 ## 3. 확정 범위
 

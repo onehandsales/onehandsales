@@ -1,6 +1,6 @@
 # Before 12 Tasks
 
-상태: Ready For Goal
+상태: G01 Done / G02-G06 Ready For Goal
 작성일: 2026-08-07
 고도화일: 2026-08-08
 성격: 12 Billing 착수 전 closeout 실행 계획
@@ -31,7 +31,7 @@ PRE12 최종 분류에서 12 전에 할 것으로 확정된 항목은 5개뿐이
 
 | 순서 | PRE12 ID | Goal | 작업 성격 | 실행 상태 |
 | --- | --- | --- | --- | --- |
-| G01 | `PRE12-F04` | Provider Smoke Closeout | Gmail/Microsoft production-equivalent provider smoke closeout | Ready For Goal |
+| G01 | `PRE12-F04` | Provider Smoke Closeout | Gmail/Microsoft production-equivalent provider smoke closeout | Done / User-Assumed Provider Smoke Accepted |
 | G02 | `PRE12-F31` | 10 Mobile Checklist Closeout | 10 Mobile Field Use 문서 체크리스트 정합성 | Ready For Goal |
 | G03 | `PRE12-F32` | User Web Route Architecture Closeout | User Web route/architecture 문서 정합성 | Ready For Goal |
 | G04 | `PRE12-F33` | 11 Admin Checklist Closeout | 11 Admin Operation checklist/goal index 정합성 | Ready For Goal |
@@ -89,12 +89,12 @@ G01 Provider Smoke Closeout
 -> G06 Before 12 Closeout And Handoff
 ```
 
-G06은 G01~G05가 모두 완료되기 전에는 완료할 수 없다. 특히 G01은 Gmail과 Microsoft 365 production-equivalent smoke가 모두 성공해야 완료다.
+G06은 G01~G05가 모두 완료되기 전에는 완료할 수 없다. G01은 2026-08-09 사용자 acceptance 기준으로 완료 처리됐다.
 
 ## 7. 완료 판정
 
 - `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`가 각각 결과 문서로 닫힌다.
-- G01은 Gmail과 Microsoft 365 모두 OAuth 연결, allowlist 실제 발송, allowlist 밖 차단이 성공해야 한다.
+- G01은 Gmail과 Microsoft 365 모두 OAuth 연결, allowlist 실제 발송, allowlist 밖 차단이 성공해야 하며, 2026-08-09 사용자 acceptance 기준으로 닫혔다.
 - 변경된 문서가 실제 BE/FE 코드 상태와 충돌하지 않는다.
 - 12 Billing 착수 전 새 API/DB/route 구현이 발생하지 않는다.
 - `PRE12_FOLLOWUP_RECHECK`와 이 폴더의 상태가 서로 맞는다.

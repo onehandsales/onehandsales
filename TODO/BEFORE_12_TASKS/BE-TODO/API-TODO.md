@@ -84,7 +84,7 @@ pnpm run test -- follow-up
 
 ## 7. 완료 기준
 
-- [ ] G01 smoke closeout에서 기존 API 상태와 운영 smoke 결과가 기록된다.
+- [x] G01 smoke closeout에서 기존 API 상태와 운영 smoke 결과가 기록된다.
 - [ ] G02~G05에서 문서 정합성을 위해 필요한 실제 BE 코드 확인 결과가 기록된다.
 - [ ] 새 API가 없다는 계약이 `COMMON/API-SPEC`와 일치한다.
 - [ ] request/response/business logic 변경이 발생하지 않았다.

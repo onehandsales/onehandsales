@@ -155,8 +155,8 @@ Body:
 - 인증: Bearer 없음 가능. OAuth state로 user를 식별한다.
 - 권한: `ExternalEmailOAuthState.userId`
 - Request 이름: `EmailConnectionCallbackQuery`
-- Response 이름: `EmailConnectionCallbackResponse`
-- Status: `200 OK`
+- Response 이름: `EmailConnectionCallbackRedirect`
+- Status: `302 Found`
 
 ### Request
 
@@ -164,26 +164,25 @@ Query:
 
 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---:|---|---|
-| `code` | string | 예 | non-empty | provider authorization code |
-| `state` | string | 예 | non-empty | 연결 시작 시 생성한 state 원문 |
+| `code` | string | 성공 시 예 | non-empty | provider authorization code |
+| `state` | string | 성공 시 예 | non-empty | 연결 시작 시 생성한 state 원문 |
+| `error` | string | 아니오 | provider string | provider가 연결을 거절하거나 실패했을 때 전달하는 safe 분기 값 |
 
 ### Response
 
-```json
-{
-  "connection": {
-    "id": "connection-id",
-    "provider": "GOOGLE",
-    "providerAccountEmail": "user@example.com",
-    "status": "CONNECTED",
-    "grantedScopes": [
-      "openid",
-      "email",
-      "https://www.googleapis.com/auth/gmail.send"
-    ]
-  }
-}
+Provider console redirect URI는 계속 Backend callback URL이다.
+
+```text
+https://<api-host>/api/follow-up-delivery/email-connections/<provider>/callback
 ```
+
+callback 처리 후 Backend는 User Web 설정 화면으로 redirect한다.
+
+```text
+<USER_WEB_ORIGIN>/app/settings?followUpEmailConnection=<google|microsoft|email>&status=<connected|denied|failed>
+```
+
+연결 결과 데이터는 callback response body가 아니라 `GET /api/follow-up-delivery/settings`에서 masked/safe field로 확인한다.
 
 ### 비즈니스 로직 흐름
 
@@ -194,7 +193,9 @@ Query:
 5. `grantedScopes`에 send 권한이 있는지 확인한다.
 6. transaction 안에서 token을 암호화해 `ExternalEmailConnection`을 upsert한다.
 7. 같은 transaction에서 `ExternalEmailOAuthState.consumedAt`을 기록한다.
-8. response에는 token, raw provider response, provider raw error를 포함하지 않는다.
+8. 성공 시 `status=connected`로 User Web 설정 화면에 redirect한다.
+9. provider가 `error=access_denied`를 반환하면 token exchange 없이 `status=denied`로 redirect한다.
+10. 실패 시 raw error 없이 `status=failed`로 User Web 설정 화면에 redirect한다.
 
 ### 연결된 DB 스키마
 
@@ -225,10 +226,11 @@ Query:
 
 | 상황 | error code | HTTP | FE 처리 | log level |
 |---|---|---:|---|---|
-| state 만료 또는 재사용 | `FollowUpEmailOAuthStateInvalid` | 400 | 다시 연결 안내 | warn |
-| token exchange 실패 | `FollowUpProviderRequestFailed` | 502 | 다시 시도 안내 | warn |
-| send scope 누락 | `FollowUpEmailScopeInsufficient` | 409 | 다시 연결 안내 | warn |
-| provider account email 없음 | `FollowUpProviderRequestFailed` | 502 | 다시 시도 안내 | warn |
+| provider 권한 거절 | `status=denied` redirect | 302 | 설정 화면에서 연결 권한 거절 안내 | warn |
+| state 만료 또는 재사용 | `status=failed` redirect | 302 | 설정 화면에서 다시 연결 안내 | warn |
+| token exchange 실패 | `status=failed` redirect | 302 | 설정 화면에서 다시 시도 안내 | warn |
+| send scope 누락 | `status=failed` redirect | 302 | 설정 화면에서 다시 연결 안내 | warn |
+| provider account email 없음 | `status=failed` redirect | 302 | 설정 화면에서 다시 시도 안내 | warn |
 
 ## 7. Provider 발송 adapter 계약
 

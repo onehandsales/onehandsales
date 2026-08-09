@@ -1,6 +1,6 @@
 # 05-B User Web TODO
 
-상태: Implemented / G10 Provider Smoke Pending
+상태: Done / User-Assumed Provider Smoke Accepted
 
 ## 1. 신규 feature 후보
 

@@ -1,6 +1,6 @@
 # 05 Backend API TODO
 
-상태: G03/G06/G07/G09 Done / G10 Implemented / Provider Smoke Pending
+상태: G03/G06/G07/G09/G10 Done / User-Assumed Provider Smoke Accepted
 
 ## 1. Source of truth
 

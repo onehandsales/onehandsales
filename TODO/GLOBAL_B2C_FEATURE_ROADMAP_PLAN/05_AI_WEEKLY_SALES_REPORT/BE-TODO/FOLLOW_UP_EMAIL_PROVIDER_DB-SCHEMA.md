@@ -154,11 +154,11 @@ COMMENT ON COLUMN "FollowUpDeliveryAttempt"."detailJson" IS 'redacted 발송 det
 
 ## 9. 검토 체크리스트
 
-- [ ] 신규 table/migration 없이 구현 가능한지 다시 확인했다.
-- [ ] `ExternalEmailConnection.grantedScopes`로 send scope 검증을 처리한다.
-- [ ] `RECONNECT_REQUIRED` 상태와 `reconnectRequiredAt`을 갱신한다.
-- [ ] smoke allowlist 차단도 `FollowUpDeliveryAttempt`로 남긴다.
-- [ ] `detailJson`에 raw recipient/body/token/provider response를 넣지 않는다.
-- [ ] DB/Prisma를 수정했다면 한국어 주석을 추가했다.
-- [ ] 09 신규 analytics event를 만들지 않았다.
-- [ ] 11 Admin provider failure safe select 계약을 깨지 않았다.
+- [x] 신규 table/migration 없이 구현 가능한지 다시 확인했다.
+- [x] `ExternalEmailConnection.grantedScopes`로 send scope 검증을 처리한다.
+- [x] `RECONNECT_REQUIRED` 상태와 `reconnectRequiredAt`을 갱신한다.
+- [x] smoke allowlist 차단도 `FollowUpDeliveryAttempt`로 남긴다.
+- [x] `detailJson`에 raw recipient/body/token/provider response를 넣지 않는다.
+- [x] DB/Prisma를 수정했다면 한국어 주석을 추가했다.
+- [x] 09 신규 analytics event를 만들지 않았다.
+- [x] 11 Admin provider failure safe select 계약을 깨지 않았다.

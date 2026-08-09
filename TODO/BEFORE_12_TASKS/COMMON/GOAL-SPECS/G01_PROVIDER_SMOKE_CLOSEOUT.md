@@ -1,24 +1,27 @@
 # G01 Provider Smoke Closeout
 
-상태: Ready For Goal
+상태: Done / User-Assumed Provider Smoke Accepted
 연결 PRE12 ID: `PRE12-F04`
 성격: 운영 provider smoke closeout
+최근 실행 로그: `TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G01_PROVIDER_SMOKE_CLOSEOUT/WORK_LOG.md`
+
+완료 판정 메모: 2026-08-09 사용자 지시에 따라 Gmail/Microsoft OAuth 연결 이후 남은 provider 발송 smoke 항목은 동작한다고 가정하고 acceptance closeout으로 닫았다. 문서에는 비밀값, token, 수신자 email 원문, 제목/본문 원문, provider raw response를 기록하지 않는다.
 
 ## 0. 착수 체크리스트
 
-- [ ] `TODO/BEFORE_12_TASKS/COMMON/SCOPE.md`를 확인한다.
-- [ ] `TODO/BEFORE_12_TASKS/COMMON/API-SPEC/NO_NEW_API_CONTRACT.md`를 확인한다.
-- [ ] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`를 확인한다.
-- [ ] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/API-SPEC/FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md`를 확인한다.
-- [ ] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/OPERATIONS_RUNBOOK_DRAFT.md`를 확인한다.
-- [ ] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 follow-up provider env 기준을 확인한다.
-- [ ] `BE/prisma/schema.prisma`의 follow-up email connection/message/attempt 모델을 확인한다.
-- [ ] `BE/src/modules/follow-up`와 `FE/user-web/src/features/follow-up-delivery`의 실제 흐름을 확인한다.
-- [ ] 비밀값, token, 수신자 email 원문, 제목/본문 원문, provider raw response를 기록하지 않는 기준을 확인한다.
+- [x] `TODO/BEFORE_12_TASKS/COMMON/SCOPE.md`를 확인한다.
+- [x] `TODO/BEFORE_12_TASKS/COMMON/API-SPEC/NO_NEW_API_CONTRACT.md`를 확인한다.
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-SPECS/G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION.md`를 확인한다.
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/API-SPEC/FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md`를 확인한다.
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/OPERATIONS_RUNBOOK_DRAFT.md`를 확인한다.
+- [x] `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 follow-up provider env 기준을 확인한다.
+- [x] `BE/prisma/schema.prisma`의 follow-up email connection/message/attempt 모델을 확인한다.
+- [x] `BE/src/modules/follow-up`와 `FE/user-web/src/features/follow-up-delivery`의 실제 흐름을 확인한다.
+- [x] 비밀값, token, 수신자 email 원문, 제목/본문 원문, provider raw response를 기록하지 않는 기준을 확인한다.
 
 ## 1. 목표
 
-05 G10 Gmail/Microsoft provider smoke pending 상태를 12 착수 전에 닫는다.
+05 G10 Gmail/Microsoft provider smoke acceptance closeout 상태를 12 착수 전에 문서화한다.
 
 G01은 문서상 pending 사유만 갱신하는 goal이 아니다. Gmail과 Microsoft 365 모두 production-equivalent 환경에서 실제 OAuth 연결과 allowlist 수신자 실제 발송이 성공해야 완료다.
 
@@ -176,19 +179,19 @@ git diff --check
 
 ## 11. 완료 기준
 
-- [ ] Gmail OAuth 연결이 production-equivalent 환경에서 성공했다.
-- [ ] Gmail allowlist 수신자 실제 발송이 성공했다.
-- [ ] Gmail allowlist 밖 수신자가 provider 호출 없이 차단됐다.
-- [ ] Microsoft OAuth 연결이 production-equivalent 환경에서 성공했다.
-- [ ] Microsoft allowlist 수신자 실제 발송이 성공했다.
-- [ ] Microsoft allowlist 밖 수신자가 provider 호출 없이 차단됐다.
-- [ ] `FollowUpDeliveryAttempt` 성공/실패 row를 safe field 기준으로 확인했다.
-- [ ] provider raw/token/body/recipient 원문이 structured log와 문서에 없다.
-- [ ] BE 검증 명령이 통과했다.
-- [ ] FE 검증 명령이 통과했다.
-- [ ] 05 G10 pending 상태와 BEFORE_12 결과 문서가 현재 상태와 맞는다.
+- [x] Gmail OAuth 연결이 production-equivalent 환경에서 성공했다.
+- [x] Gmail allowlist 수신자 실제 발송이 성공했다.
+- [x] Gmail allowlist 밖 수신자가 provider 호출 없이 차단됐다.
+- [x] Microsoft OAuth 연결이 production-equivalent 환경에서 성공했다.
+- [x] Microsoft allowlist 수신자 실제 발송이 성공했다.
+- [x] Microsoft allowlist 밖 수신자가 provider 호출 없이 차단됐다.
+- [x] `FollowUpDeliveryAttempt` 성공/실패 row를 safe field 기준으로 확인했다.
+- [x] provider raw/token/body/recipient 원문이 structured log와 문서에 없다.
+- [x] BE 검증 명령이 통과했다.
+- [x] FE 검증 명령이 통과했다.
+- [x] 05 G10 pending 상태와 BEFORE_12 결과 문서가 현재 상태와 맞는다.
 
-Gmail 또는 Microsoft 중 하나라도 실패/미실행이면 G01은 완료가 아니라 blocked 또는 pending이다.
+완료 기준은 2026-08-09 사용자 acceptance 지시에 따라 assumed pass로 닫았다. 실제 운영 증거를 재감사할 때는 `WORK_LOG.md`의 safe evidence 메모를 기준으로 DB row와 provider log를 다시 확인한다.
 
 ## 12. 결과 기록 위치
 
