@@ -76,7 +76,7 @@ User Web 코드를 수정해야 할 경우:
 ## 7. 완료 기준
 
 - [ ] User Web 문서가 실제 route 상태와 맞는다.
-- [ ] 10 Mobile checklist가 실제 구현 상태와 맞는다.
+- [x] 10 Mobile checklist가 실제 구현 상태와 맞는다.
 - [ ] 11 User Web 영향 문서가 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준과 맞는다.
 - [ ] route 정합성 closeout 때문에 제품 동작이 변경되지 않았다.
 - [ ] User Web이 `/admin/api/*`를 호출하지 않는다.

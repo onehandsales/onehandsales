@@ -1,6 +1,7 @@
 # User Web TODO
 
 상태: Confirmed
+BEFORE_12 G02 정합성 확인: 2026-08-09 G07 QA closeout, G03~G06 goal 문서, 2026-07-31 work log, 실제 User Web 코드를 대조해 완료된 G03~G06 항목을 체크했다. 완료 불가 조건은 위반 조건이므로 발견되지 않은 상태를 `[ ]`로 유지한다.
 
 ## 1. 목적
 
@@ -30,41 +31,41 @@
 
 ## 4. G03 MeetingNote UI TODO
 
-- [ ] `MediaRecorder` 지원 여부를 감지한다.
-- [ ] 녹음 시작/정지/취소/초안 만들기 상태를 제공한다.
-- [ ] microphone permission prompt는 사용자 클릭 이후에만 호출한다.
-- [ ] permission denied/unsupported 상태에서 audio file upload fallback을 제공한다.
-- [ ] STT draft 성공 후 사용자가 저장하기 전까지 자동 저장하지 않는다.
-- [ ] audio blob/base64를 local draft에 저장하지 않는다.
+- [x] `MediaRecorder` 지원 여부를 감지한다.
+- [x] 녹음 시작/정지/취소/초안 만들기 상태를 제공한다.
+- [x] microphone permission prompt는 사용자 클릭 이후에만 호출한다.
+- [x] permission denied/unsupported 상태에서 audio file upload fallback을 제공한다.
+- [x] STT draft 성공 후 사용자가 저장하기 전까지 자동 저장하지 않는다.
+- [x] audio blob/base64를 local draft에 저장하지 않는다.
 
 ## 5. G04 Local Draft UI TODO
 
-- [ ] IndexedDB primary local draft utility를 만든다.
-- [ ] IndexedDB unavailable fallback을 제공한다.
-- [ ] TTL은 저장 시점 기준 24시간이다.
-- [ ] restore prompt copy는 `작성 중이던 내용을 불러올까요?`다.
-- [ ] 버튼은 `불러오기`, `버리기`다.
-- [ ] 저장 성공/버리기/만료/schema mismatch 시 draft를 삭제한다.
-- [ ] BusinessCard confirm form과 MeetingNote create form에 연동한다.
-- [ ] image/audio blob/base64, transcript 전문, provider raw response를 저장하지 않는다.
+- [x] IndexedDB primary local draft utility를 만든다.
+- [x] IndexedDB unavailable fallback을 제공한다.
+- [x] TTL은 저장 시점 기준 24시간이다.
+- [x] restore prompt copy는 `작성 중이던 내용을 불러올까요?`다.
+- [x] 버튼은 `불러오기`, `버리기`다.
+- [x] 저장 성공/버리기/만료/schema mismatch 시 draft를 삭제한다.
+- [x] BusinessCard confirm form과 MeetingNote create form에 연동한다.
+- [x] image/audio blob/base64, transcript 전문, provider raw response를 저장하지 않는다.
 
 ## 6. G05 Notification UI TODO
 
-- [ ] 서비스성 알림과 마케팅성 알림 copy를 분리한다.
-- [ ] browser push CTA는 `푸시 알림 켜기`를 사용한다.
-- [ ] `Notification.requestPermission()`은 사용자 클릭 이후에만 호출한다.
-- [ ] `granted`, `denied`, `default`, unsupported 상태별 UI를 제공한다.
-- [ ] denied 상태에서는 브라우저/OS 설정 안내를 제공한다.
-- [ ] 회원가입/약관 동의로 browser push 자동 허용 처리했다는 copy를 쓰지 않는다.
+- [x] 서비스성 알림과 마케팅성 알림 copy를 분리한다.
+- [x] browser push CTA는 `푸시 알림 켜기`를 사용한다.
+- [x] `Notification.requestPermission()`은 사용자 클릭 이후에만 호출한다.
+- [x] `granted`, `denied`, `default`, unsupported 상태별 UI를 제공한다.
+- [x] denied 상태에서는 브라우저/OS 설정 안내를 제공한다.
+- [x] 회원가입/약관 동의로 browser push 자동 허용 처리했다는 copy를 쓰지 않는다.
 
 ## 7. G06 Analytics UI TODO
 
-- [ ] 명함 촬영 시작/재시도 event를 보낸다.
-- [ ] 회의 녹음 시작/종료/실패 event를 보낸다.
-- [ ] local draft 저장/복구/폐기 event를 보낸다.
-- [ ] push permission 안내/결과 event를 보낸다.
-- [ ] analytics 실패가 사용자 작업을 막지 않는다.
-- [ ] payload에 이름/전화/email/company/memo/details/transcript/audio/image/token을 넣지 않는다.
+- [x] 명함 촬영 시작/재시도 event를 보낸다.
+- [x] 회의 녹음 시작/종료/실패 event를 보낸다.
+- [x] local draft 저장/복구/폐기 event를 보낸다.
+- [x] push permission 안내/결과 event를 보낸다.
+- [x] analytics 실패가 사용자 작업을 막지 않는다.
+- [x] payload에 이름/전화/email/company/memo/details/transcript/audio/image/token을 넣지 않는다.
 
 ## 8. UX/UI 기준
 

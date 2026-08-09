@@ -1,18 +1,19 @@
 # G02 10 Mobile Checklist Closeout
 
-상태: Ready For Goal
+상태: Done
 연결 PRE12 ID: `PRE12-F31`
 성격: 문서 정합성 closeout
+최근 실행 로그: `TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G02_10_MOBILE_CHECKLIST_CLOSEOUT/WORK_LOG.md`
 
 ## 0. 착수 체크리스트
 
-- [ ] `TODO/BEFORE_12_TASKS/COMMON/SCOPE.md`를 확인한다.
-- [ ] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE` 전체 상태를 확인한다.
-- [ ] 10 G07 QA/document closeout 결과를 확인한다.
-- [ ] 실제 `FE/user-web`와 `BE` 관련 코드 상태를 확인한다.
-- [ ] `BE/prisma/schema.prisma`에서 10 관련 DB 상태를 확인한다.
-- [ ] 새 API/DB/route를 만들지 않는 기준을 확인한다.
-- [ ] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
+- [x] `TODO/BEFORE_12_TASKS/COMMON/SCOPE.md`를 확인한다.
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE` 전체 상태를 확인한다.
+- [x] 10 G07 QA/document closeout 결과를 확인한다.
+- [x] 실제 `FE/user-web`와 `BE` 관련 코드 상태를 확인한다.
+- [x] `BE/prisma/schema.prisma`에서 10 관련 DB 상태를 확인한다.
+- [x] 새 API/DB/route를 만들지 않는 기준을 확인한다.
+- [x] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
 
 ## 1. 목표
 
@@ -121,13 +122,13 @@ rg -n "UserDraft|/api/drafts|ExportJob|/api/exports" TODO/GLOBAL_B2C_FEATURE_ROA
 
 ## 10. 완료 기준
 
-- [ ] 10 FE TODO의 완료된 G03~G06 항목이 실제 상태에 맞게 정리됐다.
-- [ ] 10 BE TODO의 완료된 G03/G05/G06 항목이 실제 상태에 맞게 정리됐다.
-- [ ] 10 README와 goal completion checklist가 G07 closeout 상태와 맞는다.
-- [ ] 10 완료 범위와 post-12 후보가 섞이지 않는다.
-- [ ] PWA/native/server draft/export를 10 미완성으로 재오픈하지 않는다.
-- [ ] BE typecheck/lint가 통과했다.
-- [ ] FE user-web typecheck/lint가 통과했다.
+- [x] 10 FE TODO의 완료된 G03~G06 항목이 실제 상태에 맞게 정리됐다.
+- [x] 10 BE TODO의 완료된 G03/G05/G06 항목이 실제 상태에 맞게 정리됐다.
+- [x] 10 README와 goal completion checklist가 G07 closeout 상태와 맞는다.
+- [x] 10 완료 범위와 post-12 후보가 섞이지 않는다.
+- [x] PWA/native/server draft/export를 10 미완성으로 재오픈하지 않는다.
+- [x] BE typecheck/lint가 통과했다.
+- [x] FE user-web typecheck/lint가 통과했다.
 
 ## 11. 결과 기록 위치
 
