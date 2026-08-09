@@ -1,18 +1,19 @@
 # G03 User Web Route Architecture Closeout
 
-상태: Ready For Goal
+상태: Done
 연결 PRE12 ID: `PRE12-F32`
 성격: User Web route/architecture 문서 정합성 closeout
+최근 실행 로그: `TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G03_USER_WEB_ROUTE_ARCHITECTURE_CLOSEOUT/WORK_LOG.md`
 
 ## 0. 착수 체크리스트
 
-- [ ] `FE/user-web/src/app/router/router.tsx`를 확인한다.
-- [ ] `FE/user-web/ARCHITECTURE.md`와 `FE/ARCHITECTURE.md`를 확인한다.
-- [ ] `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`를 확인한다.
-- [ ] `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`를 확인한다.
-- [ ] User Web은 `/api/*`만 호출해야 한다는 기준을 확인한다.
-- [ ] 새 route/API를 만들지 않는 기준을 확인한다.
-- [ ] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
+- [x] `FE/user-web/src/app/router/router.tsx`를 확인한다.
+- [x] `FE/user-web/ARCHITECTURE.md`와 `FE/ARCHITECTURE.md`를 확인한다.
+- [x] `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`를 확인한다.
+- [x] `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`를 확인한다.
+- [x] User Web은 `/api/*`만 호출해야 한다는 기준을 확인한다.
+- [x] 새 route/API를 만들지 않는 기준을 확인한다.
+- [x] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
 
 ## 1. 목표
 
@@ -127,14 +128,14 @@ git diff --check
 
 ## 12. 완료 기준
 
-- [ ] User Web architecture 문서가 `/app/notifications` 활성 상태를 반영한다.
-- [ ] User Web architecture 문서가 `/app/schedules/week` 활성 상태를 반영한다.
-- [ ] User Web architecture 문서가 `/app/export` redirect 상태를 반영한다.
-- [ ] AGENT 문서의 stale route 설명이 실제 코드와 충돌하지 않게 정리됐다.
-- [ ] route 정합성을 위해 코드를 되돌리거나 새 route를 열지 않았다.
-- [ ] User Web에서 `/admin/api/*` 호출이 없다.
-- [ ] 새 request/response, business logic, user flow, DB/Prisma 변경을 만들지 않았다.
-- [ ] FE user-web typecheck/lint가 통과했다.
+- [x] User Web architecture 문서가 `/app/notifications` 활성 상태를 반영한다.
+- [x] User Web architecture 문서가 `/app/schedules/week` 활성 상태를 반영한다.
+- [x] User Web architecture 문서가 `/app/export` redirect 상태를 반영한다.
+- [x] AGENT 문서의 stale route 설명이 실제 코드와 충돌하지 않게 정리됐다.
+- [x] route 정합성을 위해 코드를 되돌리거나 새 route를 열지 않았다.
+- [x] User Web에서 `/admin/api/*` 호출이 없다.
+- [x] 새 request/response, business logic, user flow, DB/Prisma 변경을 만들지 않았다.
+- [x] FE user-web typecheck/lint가 통과했다.
 
 ## 13. 결과 기록 위치
 

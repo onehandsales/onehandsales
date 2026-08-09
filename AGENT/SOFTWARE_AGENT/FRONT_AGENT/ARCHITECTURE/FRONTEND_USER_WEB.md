@@ -53,7 +53,7 @@ legacy redirect 라우트:
 - `/deals`, `/deals/new`, `/deals/:dealId` -> `/app/deals...`
 - `/deals/new/full` -> `/app/deals/new/full`
 - `/schedules`, `/schedules/:scheduleId` -> `/app/schedules...`
-- `/schedules/week` -> `/app/schedules`
+- `/schedules/week`는 `/app/schedules/week`로 이동한다.
 - `/meeting-notes`, `/meeting-notes/:meetingNoteId` -> `/app/meeting-notes...`
 - `/meeting-notes/new` -> `/app/meeting-notes?create=1`
 - `/meeting-notes/new/full` -> `/app/meeting-notes/new/full`
@@ -63,7 +63,7 @@ legacy redirect 라우트:
 
 보호 앱 라우트:
 
-- `/app`: Home dashboard
+- `/app`은 Home dashboard를 표시한다.
 - `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`
 - `/app/companies/new/full`
 - `/app/contacts`, `/app/contacts/:contactId`
@@ -73,21 +73,21 @@ legacy redirect 라우트:
 - `/app/products/new/full`
 - `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`
 - `/app/deals/new/full`
-- `/app/schedules`, `/app/schedules/:scheduleId`
-- `/app/schedules/week` -> `/app/schedules`. 별도 주간 보고서 화면은 후속 범위다.
+- `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`는 보호 앱 route다.
+- `/app/schedules/week`는 `ScheduleWeekPage`와 `ScheduleWeekReportScreen`을 통해 주간 보고서 화면을 활성 제공한다.
 - `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`
 - `/app/meeting-notes/new` -> `/app/meeting-notes?create=1`
 - `/app/meeting-notes/new/full`
 - `/app/business-cards`
-- `/app/import`, `/app/import/:importUserLogId`
+- `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`는 보호 앱 route다.
 - `/app/trash`, `/app/settings`, `/app/more`
-- `/app/notifications` -> `/app`. Notification Backend 구현 전까지 숨김
-- `/app/export` -> `/app`. Generic Export는 현재 정본 흐름이 아니므로 숨김
+- `/app/notifications`는 `NotificationsPage`를 통해 활성 제공한다.
+- `/app/export`는 `/app`으로 이동한다. Generic Export는 현재 정본 흐름이 아니므로 숨긴다.
 
 08 Global Data I18N에서도 보호 앱 라우트는 `/app/*` 형태를 유지한다. `/ko/app` 또는 `/en/app` 같은 locale prefix route를 만들지 않는다.
 
-`import-export` feature 중 `/app/import`는 실제 Backend API와 연결되어 있고, `/app/export` route는 `/app`으로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
-현재 사이드바는 `/app/import`를 `데이터 업로드` 메뉴로 노출한다. `/app/export`와 `/app/notifications`는 route가 있어도 navigation에서 숨긴다.
+`import-export` feature 중 `/app/import`와 `/app/import/review/:importJobId`는 실제 Backend API와 연결되어 있고, `/app/export` route는 `/app`으로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
+현재 사이드바는 `/app/import`를 `데이터 업로드` 메뉴로 노출한다. `/app/export`는 route가 있어도 navigation에서 숨기고, `/app/notifications`는 AppShell의 알림 bell 진입점으로 노출한다.
 
 ## 4. 현재 Feature 폴더
 
@@ -115,19 +115,20 @@ legacy redirect 라우트:
 
 실제 Backend API 연동 완료:
 
-- Auth/User: Supabase OAuth callback, Backend token exchange, refresh/logout, current user/profile/devices
-- Home dashboard: 일정/딜/회의록 조합 조회
-- Company: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export
-- Contact: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
-- BusinessCard OCR: `/app/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장
-- Product: 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export
-- Deal: 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export
-- Schedule: 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options
-- MeetingNote: 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가 연동
-- Search: 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동
+- Auth/User는 Supabase OAuth callback, Backend token exchange, refresh/logout, current user/profile/devices를 연동한다.
+- Home dashboard는 일정/딜/회의록 조합 조회를 연동한다.
+- Company는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export를 연동한다.
+- Contact는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
+- BusinessCard OCR은 `/app/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장을 연동한다.
+- Product는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
+- Deal은 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export를 연동한다.
+- Schedule은 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options, 주간 보고서 조회와 xlsx 다운로드를 연동한다.
+- MeetingNote는 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가를 연동한다.
+- Search는 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동을 연동한다.
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 - Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
-- DataImport: `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
+- Notification은 `/app/notifications` 화면에서 `GET /api/notifications`, `PATCH /api/notifications/:notificationId/read`, `GET/PATCH /api/notifications/settings`, browser push public key/subscription API를 연동한다. 알림 bell은 `/app/notifications`로 이동한다.
+- DataImport는 `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/review/:importJobId`는 확정 전 review 화면이며, `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
 
 회사 생성 UX 기준:
 
@@ -156,8 +157,8 @@ Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
-- `/api/exports` 기반 generic Export job. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 route를 숨기고 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
-- Notification. FE feature는 있으나 route와 진입 버튼은 Backend module/API 구현 전까지 숨긴다.
+- `/api/exports` 기반 generic Export job은 현재 정본 Export 흐름이 아니다. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 `/app/export` route는 `/app`으로 redirect하고, 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
+- Notification source/TTL/cleanup 정책 확장은 현재 G03 범위가 아니다. 기존 Notification route/API 상태만 문서에 반영하고 새 정책이나 DB schema는 만들지 않는다.
 
 ## 5A. Auth Runtime Frontend 기준
 

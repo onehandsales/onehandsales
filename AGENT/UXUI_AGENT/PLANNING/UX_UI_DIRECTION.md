@@ -33,14 +33,14 @@ Current implementation note as of 2026-07-10:
 - Contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
-Current priority note as of 2026-07-18:
+현재 우선순위 메모 기준일: 2026-08-09 G03 route architecture closeout
 
 - 지금은 새 기능을 추가하기보다 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 진행한다.
 - 핵심 업무 기능은 이미 실제 API와 연결되어 있으므로, 다음 위험은 기능 부재보다 사용 품질이다.
 - 1440px, 1280px, 768px, 390px, 360px, 125% 확대에서 주요 화면이 깨지지 않는지 확인한다.
 - 긴 회사명/담당자명/제품명/딜이름, 긴 이메일/전화번호/URL이 layout을 깨지 않는지 확인한다.
 - loading, empty, error, success, destructive action 상태가 UX writing 기준과 맞는지 확인한다.
-- 이 QA가 끝나기 전에는 Notification, 결제/구독, Admin 운영, Series A급 AI 기능을 화면에 노출하지 않는다.
+- Notification route/API는 현재 활성 상태로 문서화한다. 다만 Notification source/TTL/cleanup 정책 확장, 결제/구독, Admin 운영, Series A급 AI 기능은 별도 goal 전까지 새로 노출하지 않는다.
 - 자세한 제품 우선순위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
 Primary focus:
@@ -366,14 +366,15 @@ Primary navigation should make these areas easy to reach:
 - 명함 스캔
 - 설정
 
-Current visibility rule:
+현재 노출 기준:
 
-- `Import` is exposed as `데이터 업로드` because DataImport is connected to real Backend APIs.
-- Generic `Export` route/features may remain in code, but they are hidden from the main sidebar because current export is domain-level xlsx download.
-- Export for the current product is handled by domain-level actions. The visible User Web label is the common `엑셀 다운로드`; the current list screen and API determine whether it exports companies, contacts, products, or deals.
-- `휴지통` is exposed in the management section because delete and restore are now active user workflows. It should use a full-width list layout, row-click detail modal, and modal-only restore action.
-- `명함 스캔` is exposed in primary navigation with a simple camera icon. The page header should only show `명함 스캔`; do not add a duplicate app name/header label above it.
-- Do not surface deferred features in primary navigation just because a route exists.
+- `Import`는 실제 Backend API와 연결되어 있으므로 `데이터 업로드`로 노출한다.
+- Generic `Export` route/feature는 코드에 남아 있을 수 있지만, 현재 export 정본이 domain별 xlsx 다운로드이므로 main sidebar에서 숨긴다.
+- 현재 제품의 Export는 domain별 action으로 처리한다. User Web에 보이는 공통 label은 `엑셀 다운로드`이며, 사용자가 보고 있는 목록 화면과 API가 회사/담당자/제품/딜 중 무엇을 export하는지 결정한다.
+- `휴지통`은 삭제와 복구가 활성 사용자 workflow이므로 관리 섹션에 노출한다. 전체 폭 목록 layout, row-click detail modal, modal-only restore action을 사용한다.
+- `명함 스캔`은 simple camera icon과 함께 primary navigation에 노출한다. Page header에는 `명함 스캔`만 표시하고 중복 app name/header label을 추가하지 않는다.
+- `알림`은 AppShell의 알림 bell 진입점으로 `/app/notifications`에 연결한다.
+- deferred feature는 route가 존재한다는 이유만으로 primary navigation에 노출하지 않는다.
 
 Even though the first screen is deal-centered, company/contact/product registration must remain easy because deals require those entities.
 

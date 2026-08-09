@@ -93,19 +93,18 @@ src/pages/companies/index.tsx
 
 `/`는 공개 랜딩/진입 화면이고, 실제 로그인 후 앱 홈은 `/app`이다.
 
-- Public/auth canonical routes use URL locale prefixes: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`.
-- Supported URL locale slugs: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
-- Compatibility redirects: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy` redirect to the preferred locale URL.
-- OAuth callback remains shared and unlocalized: `/auth/callback`.
-- 보호 앱: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/scan`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/import`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
+- Public/auth canonical route는 URL locale prefix를 사용하며, 정본 경로는 `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`다.
+- 지원하는 URL locale slug는 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`다.
+- Compatibility redirect는 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`를 선호 locale URL로 이동시킨다.
+- OAuth callback은 공용 경로인 `/auth/callback`으로 유지하고 locale prefix를 붙이지 않는다.
+- 보호 앱 활성 route는 `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`다.
 - 생성 route 기준: `/app/companies/new`, `/app/contacts/new`, `/app/products/new`, `/app/deals/new`은 각 목록 위 오른쪽 생성 패널을 초기 open 상태로 연다. `/app/companies/new/full`, `/app/contacts/new/full`, `/app/products/new/full`, `/app/deals/new/full`, `/app/meeting-notes/new/full`은 패널에서 확대한 page-mode 생성 route다. `/app/meeting-notes/new`는 `/app/meeting-notes?create=1`로 redirect한다.
-- legacy redirect: 기존 `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more`와 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다.
-- 숨김/후속: `/app/notifications`와 `/app/export`는 `/app`으로 redirect한다. `/app/schedules/week`는 `/app/schedules`로 redirect한다.
-- legacy app redirect: `/app/contacts/scan`은 `/app/business-cards`로 redirect한다.
+- legacy redirect는 기존 `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more`와 각 상세/생성/`new/full` 경로를 대응되는 `/app/*`로 이동시킨다. `/schedules/week`는 `/app/schedules/week`로 이동하고, `/import/review/:importJobId`는 `/app/import/review/:importJobId`로 이동한다.
+- redirect/future 경계는 `/contacts/scan`과 `/app/contacts/scan`이 `/app/business-cards`로 이동하고, `/app/export`가 `/app`으로 이동하는 것이다.
 
 ## 5. 현재 인증 기준
 
-- `/{locale}/login` and `/{locale}/signup` use the same Supabase OAuth provider login flow. Existing `/login` and `/signup` redirect to the preferred locale URL.
+- `/{locale}/login`과 `/{locale}/signup`은 같은 Supabase OAuth provider login flow를 사용한다. 기존 `/login`과 `/signup`은 선호 locale URL로 redirect한다.
 - 로그인/회원가입 provider 버튼은 가능한 경우 Supabase OAuth URL을 browser popup으로 열고, popup이 차단되면 기존 full-page redirect를 사용한다.
 - OAuth callback은 `/auth/callback`에서 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
 - popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.

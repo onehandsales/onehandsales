@@ -34,7 +34,7 @@
 | --- | --- | --- | --- | --- |
 | G01 | Provider Smoke Closeout | `PRE12-F04` | Done / User-Assumed Provider Smoke Accepted | Gmail/Microsoft provider smoke 상태를 닫는다. |
 | G02 | 10 Mobile Checklist Closeout | `PRE12-F31` | Done | 10 Mobile Field Use 문서 체크리스트를 실제 완료 상태와 맞춘다. |
-| G03 | User Web Route Architecture Closeout | `PRE12-F32` | Ready For Goal | User Web route/architecture 문서를 실제 route와 맞춘다. |
+| G03 | User Web Route Architecture Closeout | `PRE12-F32` | Done | User Web route/architecture 문서를 실제 route와 맞춘다. |
 | G04 | 11 Admin Checklist Closeout | `PRE12-F33` | Ready For Goal | 11 Admin Operation checklist, goal index, User Web 영향 문서를 실제 완료 상태와 맞춘다. |
 | G05 | Admin Web Architecture Legacy Closeout | `PRE12-F34` | Ready For Goal | Admin Web architecture와 legacy route 설명을 실제 route/API와 맞춘다. |
 | G06 | Before 12 Closeout And Handoff | closeout | Ready For Goal | 12 Billing 착수 전 상태를 정리하고 handoff한다. |

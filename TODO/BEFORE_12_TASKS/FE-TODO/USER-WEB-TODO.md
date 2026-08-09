@@ -75,13 +75,13 @@ User Web 코드를 수정해야 할 경우:
 
 ## 7. 완료 기준
 
-- [ ] User Web 문서가 실제 route 상태와 맞는다.
+- [x] User Web 문서가 실제 route 상태와 맞는다.
 - [x] 10 Mobile checklist가 실제 구현 상태와 맞는다.
 - [ ] 11 User Web 영향 문서가 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준과 맞는다.
-- [ ] route 정합성 closeout 때문에 제품 동작이 변경되지 않았다.
-- [ ] User Web이 `/admin/api/*`를 호출하지 않는다.
+- [x] route 정합성 closeout 때문에 제품 동작이 변경되지 않았다.
+- [x] User Web이 `/admin/api/*`를 호출하지 않는다.
 - [ ] Trash/account request 후속 후보를 12 전 기능 구현으로 열지 않았다.
-- [ ] 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.
+- [x] 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.
 
 ## 8. 관련 문서
 

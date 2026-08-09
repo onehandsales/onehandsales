@@ -141,7 +141,7 @@
 | `/app/deals/new/full` | 딜 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
 | `/app/deals/:id` | 딜 상세 | 포함 |
 | `/app/schedules` | 일정 목록/캘린더 | 포함 |
-| `/app/schedules/week` | 주간 일정 보고서 | 후속. 현재 `/app/schedules`로 redirect |
+| `/app/schedules/week` | 주간 일정 보고서 | 포함. `ScheduleWeekPage`와 `ScheduleWeekReportScreen`으로 활성 제공 |
 | `/app/schedules/:scheduleId` | 일정 상세 | 포함 |
 | `/app/meeting-notes` | 회의록 목록 | 포함 |
 | `/app/meeting-notes/new` | 회의록 작성 | `/app/meeting-notes?create=1`로 redirect |
@@ -153,7 +153,7 @@
 | `/app/settings` | 설정 | 포함 |
 | `/app/more` | 더보기 | 포함 |
 | `/app/business-cards` | 명함 스캔 내역/명함스캔 | 포함 |
-| `/app/notifications` | 알림 | 보류. 현재 `/app`으로 redirect |
+| `/app/notifications` | 알림 | 포함. 알림 bell 진입점과 `NotificationsPage`로 활성 제공 |
 | `/app/trash` | 휴지통 | 포함 |
 | `/search` | 통합검색 결과 | 전용 라우트 없음 |
 
@@ -182,8 +182,8 @@
 - legacy public/auth redirect: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 이동한다.
 - OAuth callback: `/auth/callback`은 locale prefix 없이 유지한다.
 - legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` 및 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다.
-- 보호 앱: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/scan`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/import`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
-- hidden/future redirect: `/app/schedules/week` -> `/app/schedules`, `/app/notifications` -> `/app`, `/app/export` -> `/app`
+- 보호 앱 활성 route: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
+- redirect/future 경계: `/contacts/scan`과 `/app/contacts/scan`은 `/app/business-cards`로 이동하고, `/app/export`는 `/app`으로 이동한다.
 
 pen 디자인 반영 완료/정리 도메인:
 - `/app` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
@@ -200,9 +200,12 @@ pen 디자인 반영 완료/정리 도메인:
 
 현재 의도적으로 보류된 화면:
 - `/app/export` — FE feature는 남아 있지만 현재 export 정본 흐름이 아니다. route를 숨기고 `/app`으로 redirect하며, 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
-- `/app/notifications` — FE feature/page는 있으나 Backend 모듈이 없어 route와 메뉴를 숨기고 `/app`으로 redirect한다.
 - `/contacts/scan`, `/app/contacts/scan` — 명함 스캔 legacy route이며 `/app/business-cards`로 redirect한다.
 - MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
+
+현재 활성화된 후속 보정 화면:
+- `/app/schedules/week` — 주간 일정 보고서 화면이며 일정 화면의 `주간 보고서` link에서 진입한다.
+- `/app/notifications` — 알림 화면이며 AppShell의 알림 bell에서 진입한다. Notification source/TTL/cleanup 확장은 이 문서에서 새로 정의하지 않는다.
 
 pen 디자인 반영 대기 도메인:
 - `/app/products/:productId`

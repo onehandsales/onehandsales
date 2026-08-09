@@ -59,15 +59,13 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
 사용자 요청에 따라 아래 기능은 이번 QA에서 제외합니다.
 
 - 관리자 페이지 운영 기능
-- 알림 기능
+- Notification source/TTL/cleanup 정책 확장은 이번 QA에서 제외한다.
 - 과금 및 구독 결제
 - iOS/Android 네이티브 앱
 
 현재 구현 상태 기준으로 아래 항목도 실패로 처리하지 않고 `N/A` 또는 `후속 범위`로 기록합니다.
 
-- `/app/notifications`: 현재 `/app`으로 리다이렉트
 - `/app/export`: generic export 화면은 현재 제품 방향에서 제외, `/app`으로 리다이렉트
-- `/app/schedules/week`: 주간 리포트 미구현, `/app/schedules`로 리다이렉트
 - Admin 운영 화면: 라우터에서 대부분 `/`로 리다이렉트
 - 확정 전 ImportJob DB 영속화: 현재 인메모리 구조, 알려진 한계
 - iOS/Android 네이티브 앱: 현재 QA 범위가 아니며 모바일 브라우저 Web만 확인
@@ -619,8 +617,8 @@ pnpm build
 
 ### 주간 경로
 
-- [x] `/app/schedules/week` 접근 시 `/app/schedules`로 리다이렉트됨
-- [x] 이 동작은 현재 구현 기준상 `PASS` 또는 `N/A`로 기록
+- [x] `/app/schedules/week` 접근 시 주간 일정 보고서 화면이 활성 표시되는 것을 확인했다.
+- [x] 일정 화면의 `주간 보고서` link가 `/app/schedules/week`로 이동하는 것을 확인했다.
 
 ### 2026-07-09 일정 기능 QA 결과
 
@@ -1054,8 +1052,6 @@ pnpm build
 아래는 현재 실패로 보지 않고, QA 결과에 `N/A` 또는 `Known limitation`으로 기록합니다.
 
 - [ ] 확정 전 ImportJob은 서버 메모리에 저장되며 재시작 시 사라질 수 있음
-- [ ] `/app/schedules/week`는 `/app/schedules`로 리다이렉트됨
-- [ ] `/app/notifications`는 `/app`으로 리다이렉트됨
 - [ ] `/app/export`는 `/app`으로 리다이렉트됨
 - [ ] Admin 운영 화면은 현재 제품 QA 범위에서 제외
 - [ ] 과금/구독 결제는 현재 제품 QA 범위에서 제외
