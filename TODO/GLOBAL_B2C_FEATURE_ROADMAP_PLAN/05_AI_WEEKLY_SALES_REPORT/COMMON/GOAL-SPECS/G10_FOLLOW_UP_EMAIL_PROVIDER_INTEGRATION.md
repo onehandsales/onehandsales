@@ -227,7 +227,7 @@ rg -n "console\\.log|providerRaw|accessToken|refreshToken|recipientEmail|subject
 
 - BE: `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test -- follow-up` 8 suites / 41 tests, `pnpm run build` 통과.
 - FE: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile` 10 tests 통과.
-- 2026-08-05 당시 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent 실제 발송 smoke는 미실행이다.
+- 2026-08-05 당시 로컬 `BE/.env`에 Gmail/Microsoft credential과 smoke allowlist env가 없어 production-equivalent 실제 발송 smoke는 미실행이었다. 이후 2026-08-09 사용자 acceptance 기준으로 closeout 완료 처리했다.
 
 2026-08-09 G01 재점검 및 acceptance closeout 증거:
 

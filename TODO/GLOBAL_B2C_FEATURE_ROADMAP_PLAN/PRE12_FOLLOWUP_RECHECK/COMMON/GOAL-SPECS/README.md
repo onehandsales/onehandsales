@@ -1,7 +1,8 @@
 # Goal Specs
 
-상태: Classification Complete
+상태: Pre-12 Closeout Complete / BEFORE_12 반영 완료
 작성일: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 1. Goal 목록
 
@@ -12,7 +13,7 @@
 | G02 | `G02_NEXT_ACTION_REMINDER_CONTRACT.md` | 다음 행동 reminder를 post-12 Notification policy 후보로 분리 |
 | G03 | `G03_MEETING_NOTE_FOLLOW_UP_REMINDER_CONTRACT.md` | 회의록 follow-up reminder/자동 발송 후보를 post-12로 분리 |
 | G04 | `G04_RECORD_SUMMARY_CONTRACT.md` | NBA-003 record summary 보류 결정과 NBA-004 MeetingNote list summary post-12 분리 |
-| G05 | `G05_PROVIDER_SMOKE_CLOSEOUT.md` | 05 G10 운영 provider smoke closeout |
+| G05 | `G05_PROVIDER_SMOKE_CLOSEOUT.md` | 05 G10 운영 provider smoke closeout 완료 |
 | G06 | `G06_06_RECORD_SUMMARY_DEFER_CLOSEOUT.md` | 06/NBA-003 record summary defer 결정 closeout |
 | G07 | `G07_01_IMPORT_EXPANSION_DEFER_CLOSEOUT.md` | 01 import scale/source/Admin 확장 후보 defer 결정 closeout |
 | G08 | `G08_07_MEETING_NOTE_AI_FOLLOWUP_DEFER_CLOSEOUT.md` | 07 MeetingNote AI 후속 후보 defer/closeout |
@@ -20,12 +21,12 @@
 | G10 | `G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md` | 09 Product Analytics 후속 후보 defer/closeout 완료 |
 | G11 | `G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md` | 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout 완료 |
 | G12 | `G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md` | 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout 완료 |
-| G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 |
+| G99 | `G99_PRE12_CLOSEOUT.md` | pre-12 재대조 closeout과 상위 문서 반영 완료 |
 
 ## 2. 공통 금지
 
 - confirmed API 없이 구현 goal로 들어가지 않는다.
-- `COMMON/FINAL-CLASSIFICATION.md`에서 12 전에 할 것으로 분류한 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` 외에는 12 전 작업으로 착수하지 않는다.
+- `COMMON/FINAL-CLASSIFICATION.md`에서 12 전에 할 것으로 분류한 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 2026-08-09 BEFORE_12에서 모두 닫혔으므로 새 pre-12 작업으로 재착수하지 않는다.
 - DB schema 변경 없이도 될 것처럼 추정하지 않는다.
 - 06 완료 범위를 넓혀서 새 알림/summary 기능을 끼워 넣지 않는다.
 - 06 완료 범위를 넓혀서 DealActivity 삭제/retention/audit, memo 통합, 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, summary cache를 끼워 넣지 않는다.

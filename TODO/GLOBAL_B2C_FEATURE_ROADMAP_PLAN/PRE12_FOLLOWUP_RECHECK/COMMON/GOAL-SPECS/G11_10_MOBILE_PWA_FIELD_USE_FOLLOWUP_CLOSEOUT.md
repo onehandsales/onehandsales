@@ -3,6 +3,7 @@
 상태: Completed / 문서 closeout 완료 / 구현 금지
 작성일: 2026-08-06
 검토일: 2026-08-06
+최종 반영일: 2026-08-09
 
 ## 1. 목표
 
@@ -13,6 +14,8 @@
 2026-08-06 재검토 결과, 기능 구현은 재오픈하지 않고 `PRE12-F09`, `PRE12-F30`, `PRE12-F31`, `PRE12-F32` 분류를 유지했다.
 
 2026-08-07 2차 재대조 결과, 10 원문의 제외 범위 중 custom `getUserMedia` 기반 BusinessCard camera preview/crop과 server draft/media raw storage가 후보 ID 없이 금지 기준에만 남아 있었다. 실제 BE/FE 코드에도 해당 구현은 없으므로 `PRE12-F42`, `PRE12-F43`으로 추가 분리한다.
+
+2026-08-09 BEFORE_12 G02/G03에서 `PRE12-F31`, `PRE12-F32` 문서 정합성 closeout을 완료했다. 따라서 10 관련 PRE12 문서 정합성 잔여는 없다.
 
 ## 2. 판단 근거
 
@@ -44,9 +47,9 @@
 
 | 발견 사항 | PRE12 연결 | 판단 |
 | --- | --- | --- |
-| 10 FE/BE TODO 체크리스트 미체크 | `PRE12-F31` | `README`, `GOAL-COMPLETION-CHECKLIST`, G07 closeout, 실제 코드 기준으로 10은 완료다. 다만 `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06, `10/BE-TODO/API-TODO.md`의 G03/G05/G06 체크박스가 미완료로 남아 후속 작업자가 오해할 수 있다. |
+| 10 FE/BE TODO 체크리스트 미체크 | `PRE12-F31` | `README`, `GOAL-COMPLETION-CHECKLIST`, G07 closeout, 실제 코드 기준으로 10은 완료다. 체크박스 정합성은 BEFORE_12 G02에서 완료 상태로 정리했다. |
 | FE generic ExportJob 잔여 코드 | `PRE12-F09` | `/app/export` route는 `/app`으로 redirect되고 BE `ExportJob`/`/api/exports` 구현은 없다. 다만 FE에 `ExportScreen`, `/api/exports` client/hook/type이 남아 있다. post-12 전에는 route/API를 열지 않는다. |
-| FE route architecture 문서 stale | `PRE12-F32` | 실제 router에는 `/app/notifications`가 활성이고 `/app/export`만 redirect다. `FE/ARCHITECTURE.md`, `FE/user-web/ARCHITECTURE.md`는 `/app/notifications`도 redirect라고 적고 있어 문서 정정 후보로 둔다. |
+| FE route architecture 문서 stale | `PRE12-F32` | 실제 router에는 `/app/notifications`가 활성이고 `/app/export`만 redirect다. Stale architecture 설명은 BEFORE_12 G03에서 실제 router 기준으로 정리했다. |
 | PWA/offline/native packaging | `PRE12-F30` | 10은 mobile browser field-use 완료다. PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 10 미완성이 아니라 별도 mobile roadmap 후보다. |
 | BusinessCard advanced camera preview/crop | `PRE12-F42` | 10 원문은 custom `getUserMedia` camera preview/crop을 mobile advanced capture 후속으로 제외했다. 실제 FE는 native file/camera picker 기준이므로 10 완료를 재오픈하지 않는다. |
 | Server draft/media raw storage | `PRE12-F43` | 10 원문은 server draft DB와 image/audio blob/transcript/provider raw 저장을 제외했다. 실제 BE/FE에도 `UserDraft`, `/api/drafts/*`, raw/blob 저장 API/table이 없으므로 trust/privacy 정책 후속으로 둔다. |
@@ -59,8 +62,8 @@
 | PWA/native packaging과 install attribution | `PRE12-F30` | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않는다. PWA/offline/full offline sync/native bridge/native attribution 계약은 post-12 또는 별도 mobile roadmap에서 만든다. |
 | BusinessCard mobile advanced camera preview/crop | `PRE12-F42` | post-12-seed / mobile advanced capture | 모바일 사용량, device QA, 접근성, fallback, image handling 기준이 확인될 때 별도 계약으로 판단한다. |
 | Server draft and media/raw storage policy | `PRE12-F43` | defer / trust-policy / post-12-seed | retention, 삭제권, account deletion 실제 처리, encryption, quota, raw access audit, redaction 정책 없이는 구현하지 않는다. |
-| 10 FE/BE TODO 체크리스트 정합성 | `PRE12-F31` | pre-12-doc-cleanup | 구현 누락이 아니라 문서 체크리스트 정리 대상이다. |
-| User Web route/architecture 문서 정합성 | `PRE12-F32` | pre-12-doc-cleanup | 실제 route를 기준으로 architecture 문서를 정정한다. route를 문서에 맞춰 되돌리지 않는다. |
+| 10 FE/BE TODO 체크리스트 정합성 | `PRE12-F31` | closed-by-BEFORE_12 | 구현 누락이 아니라 문서 체크리스트 정리 대상이었고 BEFORE_12 G02에서 닫았다. |
+| User Web route/architecture 문서 정합성 | `PRE12-F32` | closed-by-BEFORE_12 | 실제 route 기준 architecture 문서 정합성은 BEFORE_12 G03에서 닫았다. route를 문서에 맞춰 되돌리지 않는다. |
 
 ## 5. 구현 금지
 
@@ -103,5 +106,6 @@ rg -n "path: \"notifications\"|path: \"export\"|notification-sw|serviceWorker|wo
 - [x] generic ExportJob은 `PRE12-F09`이며 FE 잔여 코드가 있어도 post-12 전 route/API 활성화 대상이 아니라고 기록했다.
 - [x] 10 FE/BE TODO 체크리스트 정합성 이슈를 `PRE12-F31`로 분리했다.
 - [x] User Web route/architecture 문서 stale 이슈를 `PRE12-F32`로 분리했다.
+- [x] 2026-08-09 BEFORE_12 G02/G03에서 `PRE12-F31`, `PRE12-F32` closeout 완료를 반영했다.
 - [x] `UserDraft`, server draft DB, media/raw 저장, custom camera preview/crop, PWA/offline/native, `/app/export`, `/api/exports` 구현 금지를 명시했다.
 - [x] `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 10 원문과 실제 BE/FE 코드 기준으로 10/PRE12에 빠진 직접 후속 후보를 2차 재확인했다.

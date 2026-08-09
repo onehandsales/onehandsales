@@ -4,7 +4,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 0. 완료 반영
 
@@ -12,7 +12,7 @@
 - [x] `NBA-009 Schedule week report`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`
 - [x] `NBA-010 Notification`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
 - [x] `NBA-015 Google Calendar Integration`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
-- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report/follow-up delivery API implemented, G10 Gmail/Microsoft provider code implemented, provider smoke pending
+- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report/follow-up delivery API implemented, G10 Gmail/Microsoft provider code implemented, provider smoke closeout completed by PRE12/BEFORE_12 (2026-08-09)
 - [x] `NBA-001 Deal list products summary`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - [x] `NBA-002 Contact list dealCount`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
 - [x] `NBA-003 Deal latest activity subset`: implemented in `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
@@ -35,9 +35,9 @@
 
 완료 이력으로 승격된 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-004` MeetingNote detail subset, `NBA-005`, `NBA-006`, `NBA-007`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-011`, `NBA-012`, `NBA-013`, `NBA-014`, `NBA-015`, `05_AI_WEEKLY_SALES_REPORT`, `08_GLOBAL_DATA_I18N`, `09_PRODUCT_ANALYTICS`, `10_MOBILE_PWA_FIELD_USE`, `11_ADMIN_OPERATION` 외에는 `confirmed`, `implemented` 상태의 새 API 계약을 만들지 않는다. 실제 구현 전에 각 후보는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`와 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md` 기준으로 별도 계약 문서를 가져야 한다.
 
-사용자 결정 기준으로 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-06 기준 06 후속 재검토 A 결정까지 반영됐으며, `NBA-003` 잔여 record summary는 12 전 계약화하지 않는다. 01~11 재대조 후 12를 진행하고, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`를 따라 남은 API 후보를 다시 분류한다.
+2026-08-09 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다. `NBA-003` 잔여 record summary는 12 전 계약화하지 않는다. 다음 작업은 12이며, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`를 따라 남은 API 후보를 다시 분류한다.
 
-예외: `NBA-006`은 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`로 승격되어 2026-08-03 G01~G09 구현 및 최종 QA closeout이 완료됐고, `NBA-009`는 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`로 승격되어 2026-07-22 구현 완료됐으며, `NBA-010`은 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`로 승격되어 2026-07-22 구현 완료됐고, `NBA-015`는 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`으로 승격되어 2026-07-23 구현 완료됐다. `05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 구현/QA closeout과 2026-08-05 G10 Gmail/Microsoft provider code/automatic validation 완료 상태이며 provider smoke만 pending이다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`으로 승격되어 2026-07-26 구현 완료됐다. `NBA-004` MeetingNote detail subset과 `NBA-011` provider log subset은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`로 승격되어 2026-07-26 구현 완료됐다. `08_GLOBAL_DATA_I18N`은 2026-07-28 구현 및 QA closeout이 완료됐다. `09_PRODUCT_ANALYTICS`는 2026-07-30 구현 및 QA closeout이 완료됐다. `NBA-005`와 `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 구현 및 QA closeout이 완료됐다. `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`, `11_ADMIN_OPERATION`은 2026-08-01 구현 및 QA closeout이 완료됐다. 이 문서에서는 완료 추적용으로만 남긴다.
+예외: `NBA-006`은 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`로 승격되어 2026-08-03 G01~G09 구현 및 최종 QA closeout이 완료됐고, `NBA-009`는 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`로 승격되어 2026-07-22 구현 완료됐으며, `NBA-010`은 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`로 승격되어 2026-07-22 구현 완료됐고, `NBA-015`는 별도 계획 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`으로 승격되어 2026-07-23 구현 완료됐다. `05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 구현/QA closeout, 2026-08-05 G10 Gmail/Microsoft provider code/automatic validation, 2026-08-09 PRE12/BEFORE_12 provider smoke closeout 완료 상태다. `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`으로 승격되어 2026-07-26 구현 완료됐다. `NBA-004` MeetingNote detail subset과 `NBA-011` provider log subset은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`로 승격되어 2026-07-26 구현 완료됐다. `08_GLOBAL_DATA_I18N`은 2026-07-28 구현 및 QA closeout이 완료됐다. `09_PRODUCT_ANALYTICS`는 2026-07-30 구현 및 QA closeout이 완료됐다. `NBA-005`와 `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 구현 및 QA closeout이 완료됐다. `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`, `11_ADMIN_OPERATION`은 2026-08-01 구현 및 QA closeout이 완료됐다. 이 문서에서는 완료 추적용으로만 남긴다.
 
 ## 2. API 후보와 완료 이력
 
@@ -54,7 +54,7 @@
 | NBA-009 | implemented | Schedule week report API | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT/COMMON/API-SPEC/WEEKLY_SCHEDULE_REPORT_API.md` 기준 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx` 구현. 새 DB/migration 없음. |
 | NBA-010 | implemented | Notification API | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER/COMMON/API-SPEC/NOTIFICATION_API.md` 기준 notification list/read/settings/browser-push API와 일정/딜 reminder 생성/발송 처리 구현. |
 | NBA-015 | implemented | Google Calendar Integration API | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md` 기준 Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, Schedule Google fields, Trash restore 확장 구현. |
-| 05_AI_WEEKLY_SALES_REPORT | implemented / provider-smoke-pending | AI weekly report API, follow-up delivery API, Gmail/Microsoft provider adapter | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/API-SPEC` 기준 sales report 생성/조회/snapshot, follow-up settings/draft/send/retry/history, Gmail/Microsoft actual send adapter 구현. 운영 credential/callback/allowlist smoke는 pending. |
+| 05_AI_WEEKLY_SALES_REPORT | implemented / provider-smoke-closeout-complete | AI weekly report API, follow-up delivery API, Gmail/Microsoft provider adapter | User Web | 완료: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/API-SPEC` 기준 sales report 생성/조회/snapshot, follow-up settings/draft/send/retry/history, Gmail/Microsoft actual send adapter 구현. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료. |
 | NBA-011 | implemented | MeetingNote provider log와 Admin/internal audit API 후보 | Backend internal, Admin Web | 완료: 07 기준 공통 `AiProviderCallLog` enum/target 확장과 provider call log 기록 구현, 11 기준 Admin provider failure 조회와 raw access reason/audit/sensitive log 구현. |
 | NBA-012 | implemented | Trash retention/restore status contract | User Web, Backend internal, Admin Web | 완료: 11 기준 만료 Trash row, restore disabled, `POST /api/trash/recovery-requests`, Admin recovery request list 구현. purge/hard delete와 유료 복구 결제는 제외. |
 | NBA-013 | implemented | Admin operation API | Admin Web | 완료: 11 기준 `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API와 Admin Web 화면 구현. |

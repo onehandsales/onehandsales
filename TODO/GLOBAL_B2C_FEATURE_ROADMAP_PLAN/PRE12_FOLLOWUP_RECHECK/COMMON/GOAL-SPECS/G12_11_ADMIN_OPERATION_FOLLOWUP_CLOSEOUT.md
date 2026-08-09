@@ -3,6 +3,7 @@
 상태: Completed
 작성일: 2026-08-06
 검토일: 2026-08-07
+최종 반영일: 2026-08-09
 목표: 11 Admin Operation의 완료 범위와 남은 후속 후보를 재대조하고, 11 미완성으로 오해하지 않도록 PRE12 후보로 분리한다.
 
 ## 1. 판단 근거
@@ -43,12 +44,14 @@
 
 2026-08-07 2차 재검토 결과, 기존 PRE12에는 11 원문에서 제외한 Admin 직접 도메인 데이터 수정과 Customer/B2B tenant admin이 명시 후보로 빠져 있었다. 따라서 `PRE12-F44`, `PRE12-F45`로 추가 분리한다. 또한 ImportJob cleanup 실패 전용 Admin aggregate/system gate는 11 system gate 완료 범위가 아니라 기존 `PRE12-F13` import/Admin ops 확장에 연결한다.
 
+2026-08-09 BEFORE_12 G04/G05에서 `PRE12-F33`, `PRE12-F34` 문서 정합성 closeout을 완료했다. 따라서 11 관련 PRE12 문서 정합성 잔여는 없다.
+
 ## 3. 새 PRE12 후보
 
 | 후보 | PRE12 ID | 분류 | 판단 |
 | --- | --- | --- | --- |
-| 11 문서 체크리스트/goal index 정합성 | `PRE12-F33` | pre-12-doc-cleanup | `README`와 G10 closeout 및 실제 코드는 완료를 가리키지만, `GOAL-COMPLETION-CHECKLIST`, `GOAL-SPECS/README`, `BE-TODO`, `FE-TODO` 일부가 planning 또는 미체크 상태로 남아 있다. 기능 누락이 아니라 문서 정리 대상이다. |
-| Admin Web architecture/legacy route 정합성 | `PRE12-F34` | pre-12-doc-cleanup | 실제 Admin Web route는 운영 화면이 활성화되어 있으나 `FE/admin-web/ARCHITECTURE.md`는 대부분 redirect와 `/admin/api/me`만 연동으로 설명한다. 또한 `features/admin-query`, `pages/dashboard`, `pages/organizations`에는 현재 router/API 계약과 맞지 않는 legacy 잔여 코드가 일부 있다. 실제 route/API 기준으로 문서와 비활성 잔여 코드를 정리한다. |
+| 11 문서 체크리스트/goal index 정합성 | `PRE12-F33` | closed-by-BEFORE_12 | `README`와 G10 closeout 및 실제 코드 기준 완료 상태와 문서 checklist/goal index 정합성은 BEFORE_12 G04에서 닫았다. |
+| Admin Web architecture/legacy route 정합성 | `PRE12-F34` | closed-by-BEFORE_12 | 실제 Admin Web route/API와 비활성 legacy route 기준은 BEFORE_12 G05에서 정리 완료됐다. |
 | Admin 직접 Trash 복구 실행/유료 복구/Trash hard delete/purge | `PRE12-F35` | billing-blocked / recovery-policy | 11은 User self-restore, 만료 row 유지, User 복구 문의, Admin recovery queue까지 완료했다. Admin mutation, 유료 복구 결제, hard delete/purge는 11 범위가 아니며 recovery policy와 12 Billing 이후 판단한다. |
 | User data export artifact 생성/download endpoint | `PRE12-F36` | post-12-seed / `PRE12-F09` 연결 | 11은 data export request와 Admin queue를 구현했다. 실제 export artifact 생성 processor, storage signed URL, download controller는 없다. `downloadUrl` 계약은 artifact가 준비된 경우를 표현하지만 post-12 ExportJob/file retention 계약 전에는 endpoint를 열지 않는다. |
 | 자동 민감정보 감지 | `PRE12-F37` | defer / 정책 필요 | 11의 masking/raw access/audit와 별개로 자동 PII/sensitive detection은 구현되지 않았다. `GLOBAL` coverage에는 후속 별도 결정으로 남아 있으므로 보안/data governance 계획 전 구현하지 않는다. |
@@ -95,6 +98,7 @@ rg -n "@Post|@Patch|@Put|@Delete|domain-records|UserRole|TenantAdmin|CustomerAdm
 - [x] 11 README/G10 closeout과 실제 BE/FE 구현 상태를 대조했다.
 - [x] 11 완료 범위는 유지하고 재구현 goal로 열지 않는다고 기록했다.
 - [x] `PRE12-F33`~`PRE12-F37` 후보를 분류했다.
+- [x] 2026-08-09 BEFORE_12 G04/G05에서 `PRE12-F33`, `PRE12-F34` closeout 완료를 반영했다.
 - [x] 2026-08-07 2차 재대조에서 Admin direct domain mutation을 `PRE12-F44`로 분리했다.
 - [x] 2026-08-07 2차 재대조에서 Customer/B2B tenant admin을 `PRE12-F45`로 분리했다.
 - [x] 2026-08-07 2차 재대조에서 ImportJob cleanup failure aggregate/system gate를 `PRE12-F13`으로 연결했다.

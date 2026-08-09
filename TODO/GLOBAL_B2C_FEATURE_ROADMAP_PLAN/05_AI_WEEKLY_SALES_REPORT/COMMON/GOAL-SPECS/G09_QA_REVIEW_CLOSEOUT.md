@@ -82,6 +82,6 @@ pnpm run test:e2e:mobile
 - BE 필수 명령 `pnpm run prisma:validate`, `pnpm run typecheck`, `pnpm run lint`, `pnpm run test`, `pnpm run build`가 통과했다.
 - FE 필수 명령 `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e:mobile`이 통과했다.
 - `pnpm run test:e2e:mobile`은 현재 머신에 Microsoft Edge가 없으면 Chrome 390px/360px project만 실행하고, Edge가 있거나 `PLAYWRIGHT_INCLUDE_EDGE=1`이면 Edge project를 포함하도록 보정했다.
-- 실제 Gmail/Microsoft/SMS provider smoke는 follow-up 전용 credential과 provider console callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 work log와 runbook에 기록했다.
+- 실제 Gmail/Microsoft/SMS provider smoke는 G09 당시 follow-up 전용 credential과 provider console callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 work log와 runbook에 기록했다. 이후 Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했으며, SMS 실제 provider는 05 완료 범위 밖 후속 후보로 유지한다.
 - Release note draft와 operations runbook draft를 `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT`에 추가했다.
 - README, planning review, goal completion checklist, 상위 roadmap 상태를 G01-G09 Done 기준으로 맞췄다.

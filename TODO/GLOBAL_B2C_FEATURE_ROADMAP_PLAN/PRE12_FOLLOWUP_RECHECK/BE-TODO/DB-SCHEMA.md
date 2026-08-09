@@ -1,14 +1,14 @@
 # DB Schema Todo
 
-상태: Classification Complete / migration 없음
+상태: Final / migration 없음 / BEFORE_12 반영 완료
 작성일: 2026-08-06
-최종 업데이트: 2026-08-07
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
 이 문서는 후속 후보가 Prisma schema에 어떤 영향을 줄 수 있는지 기록한다. 현재 이 계획만으로 새 migration을 만들지 않는다.
 
-2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 모두 새 Prisma model, enum, index, migration이 필요 없다.
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 모두 새 Prisma model, enum, index, migration이 필요 없다. 2026-08-09 기준 해당 5개는 BEFORE_12에서 모두 닫혔다.
 
 ## 2. 현재 기준
 
@@ -99,7 +99,7 @@
 
 04 재대조 기준으로 Google Calendar DB 영향은 Google read-only source metadata까지 완료다. `ExternalCalendarProvider=GOOGLE`, 사용자당 provider 1개 unique, `Schedule` external metadata 기준을 재오픈하지 않고 write/watch/recurrence/reminders/attendee/multi-account/other provider schema는 `PRE12-F10` 후속 후보로만 둔다.
 
-05 재대조 기준으로 AI weekly report와 follow-up delivery의 1차 schema는 완료다. Gmail/Microsoft provider smoke는 DB 변경 없이 운영 기록으로만 닫고, SMS 실제 provider, B2B/email growth 확장, 사용자-facing cost/paywall, 영구 로그 legal deletion 정책은 `PRE12-F05`/`PRE12-F06`/`PRE12-F12`/`PRE12-F26` 후속 후보로 둔다.
+05 재대조 기준으로 AI weekly report와 follow-up delivery의 1차 schema는 완료다. Gmail/Microsoft provider smoke는 DB 변경 없이 BEFORE_12 G01 운영 기록으로 닫혔고, SMS 실제 provider, B2B/email growth 확장, 사용자-facing cost/paywall, 영구 로그 legal deletion 정책은 `PRE12-F05`/`PRE12-F06`/`PRE12-F12`/`PRE12-F26` 후속 후보로 둔다.
 
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 post-12 또는 12 Billing 정책 이후의 별도 migration 후보로 둔다.
 
@@ -123,7 +123,7 @@
 | AI data cleanup | suggestion table, 적용 이력, rollback/audit table 필요 여부 결정 | post-12 seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | raw text 저장 table, TTL, 삭제권, sensitive access log 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | background job queue, source별 row snapshot, Admin cleanup/audit table, cleanup failure aggregate/system gate 저장 필요 여부 결정 | post-12 seed / `PRE12-F13` |
-| provider smoke | DB 변경 없음 | 운영 기록 |
+| provider smoke | DB 변경 없음 | closed-by-BEFORE_12 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS vendor config/outbox, tenant sender, email sync/import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델 필요 여부 결정 | post-12 seed / `PRE12-F05`/`PRE12-F06` |
 | App locale 확장 | User locale enum/table 분리 여부, 기존 locale migration 필요 여부 | post-12 seed |
 | Global country/currency/phone 확장 | country/currency/phone/region dictionary table 또는 code enum 확장 여부 결정 | post-12 seed |
@@ -141,10 +141,10 @@
 | PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | post-12 seed / 별도 mobile roadmap |
 | BusinessCard mobile advanced camera preview/crop | crop metadata, preprocessing result, device capability 저장이 필요한지 검토하되 기본은 FE UX 후보로 둔다. 10 safe failure schema를 재오픈하지 않는다 | post-12 seed / mobile advanced capture / `PRE12-F42` |
 | Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, audio/image binary, transcript 전문, provider raw response 저장 model 필요 여부와 TTL/deletion/encryption/raw access audit 기준 필요 | defer / trust-policy / `PRE12-F43` |
-| 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
+| 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | closed-by-BEFORE_12 |
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 post-12 전 migration 금지 | post-12 seed |
 | Google Calendar 고급 sync/provider 확장 | write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, provider abstraction table 필요 여부 결정 | post-12 seed / `PRE12-F10` |
-| 11 Admin 문서 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | pre-12-doc-cleanup |
+| 11 Admin 문서 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | closed-by-BEFORE_12 |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | billing-blocked / recovery-policy |
 | User data export artifact/download | `ExportJob` 또는 `UserDataExportRequest` status transition으로 충분한지 결정. file TTL/storage/audit 기준 필요 | post-12 seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, override, audit, retention 저장 모델 필요 여부 결정 | defer / 정책 필요 |

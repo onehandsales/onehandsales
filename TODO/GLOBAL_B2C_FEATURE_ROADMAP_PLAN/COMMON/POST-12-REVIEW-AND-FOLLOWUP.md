@@ -1,7 +1,7 @@
 # Pre-12 Follow-up And Post-12 Review Rule
 
 상태: Decision Baseline
-기준일: 2026-08-06
+기준일: 2026-08-09
 
 ## 1. 목적
 
@@ -12,14 +12,14 @@
 ## 2. 사용자 결정
 
 - 12 착수 전에 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 완료 슬롯을 순서대로 다시 대조한다.
-- 2026-08-06 기준 현재 pre-12 후속 재대조는 01~06까지 진행/확인 완료로 본다. 06 후속 재검토 A 결정도 반영 완료됐으며, 다음 대상은 07~11이다.
-- 12 전 후속 후보 분류와 확정 전 작업 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용한다.
+- 2026-08-09 기준 pre-12 후속 재대조와 BEFORE_12 closeout은 완료됐다.
+- 12 전 후속 후보 분류와 확정 전 작업 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용했다.
 - 각 슬롯은 해당 README, COMMON 문서, GOAL-SPECS, TODO_LOG/closeout, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 상태를 함께 대조한다.
 - 미구현, 부분 구현, 후속 조치, 의도적으로 제외한 항목을 다시 분류한다.
 - 문서 stale 정리, 완료 근거 보강, audit 기록은 기존 완료 폴더에 남길 수 있다.
 - 기존 closeout 의미를 깨는 추가 기능 구현은 새 TODO 폴더 또는 명시적 새 goal로 분리한다.
 - billing/paywall/churn/paid conversion/invoice/tax에 직접 연결되는 항목은 12 전 임시 구현으로 처리하지 않고 12 또는 post-12 seed로 보류한다.
-- 01~11 pre-12 후속 재대조가 끝나면 `12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+- 01~11 pre-12 후속 재대조가 끝났으므로 다음 작업은 `12_BILLING_SUBSCRIPTION_TAX`다.
 - 12가 완료되면 01~12 전체와 입력 계획 2개를 다시 읽고 최종 후속 TODO로 재배치한다.
 - UX/UI 디자인 유지보수는 01~11 pre-12 후속 재대조, 12, post-12 최종 재검토 이후에 별도 계획으로 진행한다.
 
@@ -46,7 +46,8 @@
 5. 후속 항목을 아래 상태로 재분류한다.
    - `done`: 실제 구현과 QA가 이미 닫힌 항목
    - `pre-12-follow-up-done`: 12 전 재대조에서 추가 확인 또는 문서 closeout까지 닫힌 항목
-   - `pre-12-follow-up-needed`: 12 전 별도 TODO/goal로 먼저 처리할 수 있는 항목
+   - `closed-by-BEFORE_12`: 2026-08-09 BEFORE_12에서 닫힌 12 전 운영 smoke 또는 문서 정합성 항목
+   - `pre-12-follow-up-needed`: 12 전 별도 TODO/goal로 먼저 처리할 수 있는 항목. 2026-08-09 현재 PRE12에는 이 상태로 남은 후보가 없다.
    - `billing-blocked`: 12 결정 없이는 구현 기준을 확정할 수 없는 항목
    - `post-12-seed`: 12 이후 최종 재검토에서 다시 판단할 항목
    - `series-a-later`: 첫 판매 이후 지표를 보고 확장할 항목
@@ -55,7 +56,7 @@
    - 기존 01~11 완료 폴더의 closeout 의미를 깨지 않는다.
    - 새 TODO는 `COMMON`, `FE-TODO`, `BE-TODO` 구조를 가진다.
    - API/DB 변경이 있으면 계약 상태를 최소 `confirmed`로 올린 뒤 `/goal`로 쪼갠다.
-   - 12 전 01~11 후속 후보는 먼저 `PRE12_FOLLOWUP_RECHECK`에서 `Question`, `pre-12-follow-up-needed`, `post-12-seed`, `billing-blocked` 등으로 분류한다.
+   - 12 전 01~11 후속 후보는 먼저 `PRE12_FOLLOWUP_RECHECK`에서 `Question`, `pre-12-follow-up-needed`, `post-12-seed`, `billing-blocked` 등으로 분류했다. 2026-08-09 기준 선택된 pre-12 후보는 `closed-by-BEFORE_12`로 닫혔다.
 7. 01~11 재대조가 끝나면 12 착수 전 남은 보류 항목 목록을 확정한다.
 
 ## 3A. Post-12 최종 재검토 순서

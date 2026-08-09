@@ -1,14 +1,14 @@
 # Backend API Todo
 
-상태: Classification Complete / confirmed backend API 없음
+상태: Final / confirmed backend API 없음 / BEFORE_12 반영 완료
 작성일: 2026-08-06
-최종 업데이트: 2026-08-07
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
 이 문서는 `PRE12_FOLLOWUP_RECHECK` 후보가 Backend에 어떤 영향을 줄 수 있는지 기록한다. 현재 바로 구현할 Backend API 작업은 없다.
 
-2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 Backend API 구현은 없다. `PRE12-F04`도 새 API가 아니라 운영 Gmail/Microsoft provider smoke 기록이다.
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 Backend API 구현은 없다. 2026-08-09 기준 해당 5개는 BEFORE_12에서 모두 닫혔다. `PRE12-F04`도 새 API가 아니라 운영 Gmail/Microsoft provider smoke closeout 기록이다.
 
 ## 2. 현재 코드 사실
 
@@ -82,7 +82,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
-05 재대조 기준으로 AI weekly report API, snapshot-summary, follow-up delivery settings, Gmail/Microsoft connect/callback/disconnect, draft/send/retry/list API와 send adapter는 완료다. 운영 provider smoke는 새 API 없이 G05 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장은 `PRE12-F05`/`PRE12-F06` 후속 후보로 둔다.
+05 재대조 기준으로 AI weekly report API, snapshot-summary, follow-up delivery settings, Gmail/Microsoft connect/callback/disconnect, draft/send/retry/list API와 send adapter는 완료다. 운영 provider smoke는 새 API 없이 BEFORE_12 G01 기록으로 닫혔고, SMS 실제 provider와 B2B/email growth 확장은 `PRE12-F05`/`PRE12-F06` 후속 후보로 둔다.
 
 08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing, subscription/payment/refund/invoice/failed payment, amount precision은 12 Billing 결정 전 Backend API 작업으로 올리지 않는다.
 
@@ -90,7 +90,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 10 재대조 기준으로 Mobile Field Use Backend/API 범위는 완료다. `10/BE-TODO/API-TODO.md`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. `/api/exports`와 `ExportJob`은 03/11 후속 `PRE12-F09`로만 본다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`으로 분리한다.
 
-11 재대조 기준으로 Admin Operation Backend/API 범위는 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO/API-TODO.md`의 planning/미체크 상태는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 mutation, Customer/B2B tenant admin은 11 밖의 후속 후보로만 본다. ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13` import/Admin ops 확장으로 연결한다.
+11 재대조 기준으로 Admin Operation Backend/API 범위는 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO/API-TODO.md`의 정합성은 BEFORE_12 G04에서 닫았다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 mutation, Customer/B2B tenant admin은 11 밖의 후속 후보로만 본다. ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13` import/Admin ops 확장으로 연결한다.
 
 ## 4. 후보별 Backend 영향
 
@@ -106,7 +106,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | AI data cleanup | cleanup suggestion 생성/적용/rollback API, audit log, ownership/redaction 기준 필요 | post-12-seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | retention, 삭제권, raw access audit, redaction, Admin/User 노출 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | worker queue/status/cancel/retry, schedule/meeting-note source mapping, Admin 조회/cleanup API, cleanup failure aggregate/system gate 기준 필요 | post-12-seed / `PRE12-F13` |
-| provider smoke | 새 API 없음. 운영 환경과 runbook 기록만 필요 | pre-12-follow-up-needed |
+| provider smoke | 새 API 없음. 운영 환경과 runbook 기록만 필요 | closed-by-BEFORE_12 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS vendor adapter, B2B tenant sender, email sync/import, sequence/campaign/bulk, unsubscribe, scheduled send, SMTP/external SaaS/HTML/attachment/tracking API contract 필요 | post-12-seed / `PRE12-F05`/`PRE12-F06` |
 | App locale 확장 | `preferredLocale` 허용값, validation error, app translation delivery 기준 확정 필요 | post-12-seed |
 | Global country/currency/phone 확장 | User/Contact/Company/Product/Deal validation과 import/export/report 변환 기준 필요 | post-12-seed |
@@ -123,10 +123,10 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap |
 | BusinessCard mobile advanced camera preview/crop | 기본은 FE camera UX 후보이며, image preprocessing/upload 제약이 필요할 때만 API 계약을 재검토한다. 10 safe failure API를 재오픈하지 않는다 | post-12-seed / mobile advanced capture / `PRE12-F42` |
 | Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, `/api/drafts/*`, blob/raw upload, transcript/provider raw 저장/조회 API 필요 여부와 retention/delete/raw access 기준 필요 | defer / trust-policy / `PRE12-F43` |
-| 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
+| 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | closed-by-BEFORE_12 |
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 post-12 전 API를 열지 않음 | post-12-seed |
 | Google Calendar 고급 sync/provider 확장 | 현재 API는 read-only sync와 selected calendar 관리만 제공한다. write/export/watch/reminders/attendee/multi-account/other provider는 새 API contract 필요 | post-12-seed / `PRE12-F10` |
-| 11 Admin 문서 체크리스트 정합성 | 11 BE/API TODO와 goal index를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | pre-12-doc-cleanup |
+| 11 Admin 문서 체크리스트 정합성 | 11 BE/API TODO와 goal index를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | closed-by-BEFORE_12 |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, payment recovery API, purge/hard delete API 기준 필요 | billing-blocked / recovery-policy |
 | User data export artifact/download | artifact 생성 processor, storage signed URL, download controller, file TTL/ownership/audit 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | PII/DLP detection 위치, 오탐/누락 처리, audit/redaction 기준 필요 | defer / 정책 필요 |

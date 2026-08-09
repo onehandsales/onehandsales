@@ -4,7 +4,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-09
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -24,6 +24,7 @@
 - [x] AI Weekly Sales Report / Follow-up Delivery (`05_AI_WEEKLY_SALES_REPORT`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` G01~G09 구현 및 QA closeout
 - [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
+- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS` 기준 2026-08-09 완료 처리
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
@@ -109,16 +110,15 @@
 
 진행 순서 결정:
 
-- 12 착수 전에 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~11 pre-12 재대조를 진행한다.
-- 2026-08-06 기준 06 후속 재검토 A 결정까지 문서 반영이 완료됐고, 다음 대상은 07~11이다.
-- 01~11 pre-12 재대조가 끝나면 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+- 2026-08-09 기준 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다.
+- 다음 작업은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`다.
 - 12 완료 후 이 제품화 gap 문서와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, 01~12 전체를 다시 학습한다.
 - 미구현/후속/보류 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
 - UX/UI 디자인 유지보수는 01~11 pre-12 재대조, 12 완료, post-12 재검토 이후 별도 계획으로 진행한다.
 
 ## 3.1 `05_AI_WEEKLY_SALES_REPORT` 반영 기준
 
-`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 이 제품화 gap 문서에서는 저장형 AI weekly report와 follow-up delivery를 더 이상 미구현 gap으로 보지 않는다.
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 2026-08-09 기준 Gmail/Microsoft provider smoke closeout도 `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS`에서 완료 처리했다. 이 제품화 gap 문서에서는 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft provider smoke를 더 이상 미구현 gap으로 보지 않는다.
 
 완료로 반영할 User Web/제품 흐름:
 
@@ -132,7 +132,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- Gmail/Microsoft production-equivalent provider smoke는 운영 credential, provider console callback URL, allowlist 수신자 준비 후 확인한다.
+- Gmail/Microsoft production-equivalent provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했으며 User Web 제품화 gap으로 남기지 않는다.
 - SMS 실제 provider, B2B tenant sender, email sync, sequence/campaign/bulk, unsubscribe 관리는 05 완료 범위가 아니다.
 - 회의록 follow-up 자동 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 2026-08-06 A 결정에 따라 12 전 제품화 gap으로 승격하지 않는다.
 - AI usage plan/overage, paywall, entitlement는 12 Billing 범위다.

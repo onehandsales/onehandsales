@@ -1,8 +1,8 @@
 # Global B2C Feature Roadmap Plan
 
-상태: Draft Roadmap / 01~11 Implemented / Pre-12 Follow-up Workspace Created / 05 Provider Smoke Pending / 12 Next
+상태: Draft Roadmap / 01~11 Implemented / Pre-12 Closeout Complete / 12 Next
 작성일: 2026-07-20
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-09
 성격: 기능 선구현 로드맵 슬롯 + Global B2C first-sale gate 추적
 
 ## 0. 완료 현황
@@ -11,14 +11,14 @@
 - [x] 02 `02_NOTIFICATION_REMINDER`: Done (2026-07-22)
 - [x] 03 `03_WEEKLY_SCHEDULE_REPORT`: Done (2026-07-22)
 - [x] 04 `04_GOOGLE_CALENDAR_INTEGRATION`: Done (2026-07-23)
-- [x] 05 `05_AI_WEEKLY_SALES_REPORT`: G01-G09 Done (2026-07-24), G10 code/automatic validation done (2026-08-05), provider smoke pending
+- [x] 05 `05_AI_WEEKLY_SALES_REPORT`: G01-G09 Done (2026-07-24), G10 code/automatic validation done (2026-08-05), provider smoke closeout completed by PRE12/BEFORE_12 (2026-08-09)
 - [x] 06 `06_DEAL_ACTIVITY_TIMELINE`: Done (2026-07-26)
 - [x] 07 `07_MEETING_NOTE_AI_PROVIDER_LOG`: Done (2026-07-26)
 - [x] 08 `08_GLOBAL_DATA_I18N`: Done (2026-07-28, DB 최신 상태 2026-07-29 재확인)
 - [x] 09 `09_PRODUCT_ANALYTICS`: Done (2026-07-30)
 - [x] 10 `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31)
 - [x] 11 `11_ADMIN_OPERATION`: Done (2026-08-01)
-- [ ] PRE12 `PRE12_FOLLOWUP_RECHECK`: Draft workspace (2026-08-06). 12 착수 전 01~11 후속 후보 재분류 전용이며, 13번 기능 슬롯이 아니다.
+- [x] PRE12 `PRE12_FOLLOWUP_RECHECK`: Done (2026-08-09). 12 착수 전 01~11 후속 후보 재분류와 BEFORE_12 closeout 완료. 13번 기능 슬롯이 아니다.
 - [ ] 12 `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 목적
@@ -52,10 +52,10 @@
 - Admin 운영은 11에서 완료했고, 구독/결제/세금 상세 구현은 12로 둔다.
 - 단, `NBA-014` DB/Prisma 운영 gate와 Trust/policy first-sale gate는 11~12까지 미루지 않고 관련 goal마다 선행/병행 확인한다.
 - 01 작업을 시작할 때는 01 폴더 안에 추가 문서를 작성하고 검수/검토한 뒤 진행한다.
-- 01~11까지는 순차 실행이 완료됐고, 12 착수 전 01~11 pre-12 재대조를 진행한다.
-- 2026-08-06 기준 01~06은 진행/확인 완료로 보고, 06 후속 재검토 A 결정까지 반영 완료됐다. 다음 재대조 대상은 07~11이다.
-- 12 전 후속 후보 분류와 작업 후보 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용한다.
-- 01~11 pre-12 재대조가 끝나면 `12_BILLING_SUBSCRIPTION_TAX`를 진행한다.
+- 01~11까지는 순차 실행이 완료됐고, 2026-08-09 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout도 완료됐다.
+- 2026-08-09 기준 01~11 재대조 결과는 `PRE12_FOLLOWUP_RECHECK`에 반영 완료됐다.
+- 12 전 후속 후보 분류와 작업 후보 문서화는 `PRE12_FOLLOWUP_RECHECK`를 정본 작업공간으로 사용했다.
+- 다음 작업은 `12_BILLING_SUBSCRIPTION_TAX`다.
 - 12 완료 후 01~12 전체와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 학습하고 미구현/후속 항목을 새 TODO 폴더로 재배치한다.
 - UX/UI 디자인 유지보수는 01~11 pre-12 재대조, 12, post-12 후속 항목 재분류 이후 별도 계획으로 진행한다.
 - 12개 슬롯의 추천 의사결정은 `COMMON/DECISION-LOG.md`를 기본값으로 삼는다.
@@ -69,7 +69,7 @@
 | 02 | `02_NOTIFICATION_REMINDER` | 알림/리마인더 | Done: 일정/딜 reminder 기반 retention loop 완료 |
 | 03 | `03_WEEKLY_SCHEDULE_REPORT` | 주간 일정 보고서 | Done: 화면 보고서와 동기식 Excel 다운로드 완료 |
 | 04 | `04_GOOGLE_CALENDAR_INTEGRATION` | Google Calendar 연동 | Done: Google read-only import, calendar 선택, sync, source badge, Schedule soft delete/Trash 구현 및 QA closeout 완료 |
-| 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | Implemented: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현 및 자동 검증 완료. 운영 credential/callback/allowlist 기반 provider smoke는 pending |
+| 05 | `05_AI_WEEKLY_SALES_REPORT` | AI 주간 영업 리포트 | Done: 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter 구현 및 자동 검증 완료. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12에서 완료 처리 |
 | 06 | `06_DEAL_ACTIVITY_TIMELINE` | DealActivity 타임라인 | Done: 딜 활동 정본, 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약 구현 및 QA closeout 완료 |
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | Done: MeetingNote AI/STT provider log, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료 |
 | 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Done: `/app` i18n, 글로벌 데이터 모델, Import/Export localization, Google/LINE/Apple auth 구현 완료. 현재 DB 최신 상태 확인 완료. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작도 완료 |
@@ -87,7 +87,7 @@
 - `COMMON/DECISION-LOG.md`: 이 로드맵에서 확정한 결정 기록
 - `COMMON/FIRST-SALE-GATE-MAP.md`: `NBA-014`, Product UX, Trust/policy, `NBA-007`의 first-sale gate 반영 기준
 - `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`: 12 완료 후 01~12 전체 재검토와 후속 TODO 승격 규칙
-- `PRE12_FOLLOWUP_RECHECK`: 12 착수 전 01~11 후속 후보 재분류와 확정 전 goal 후보 문서화
+- `PRE12_FOLLOWUP_RECHECK`: 12 착수 전 01~11 후속 후보 재분류와 BEFORE_12 closeout 완료 문서
 - `01_*` ~ `12_*`: 각 기능 슬롯별 착수 전 검토 문서
 
 각 번호 폴더는 다음 구조를 가진다.
@@ -117,7 +117,7 @@
 8. FE 작업이 있으면 `FE-TODO/USER-WEB-TODO.md`에 화면, route, 상태, client, 검증 기준을 적는다.
 9. 검수/검토가 끝나면 별도 `/goal` 문서로 쪼개 실행한다.
 10. UX/UI 전체 polish는 01~11의 주요 기능 흐름 closeout을 기준으로 별도 계획에서 잡되, Product UX first-sale gate는 첫 판매 전 별도 closeout으로 닫는다.
-11. 12 착수 전 01~11 후속 후보는 `PRE12_FOLLOWUP_RECHECK`에서 먼저 분류하고, API/DB/FE 계약이 확정된 항목만 별도 goal로 쪼갠다.
+11. 12 착수 전 01~11 후속 후보는 `PRE12_FOLLOWUP_RECHECK`에서 분류했고, 선택된 pre-12 항목은 BEFORE_12에서 닫았다. 이후 새 API/DB/FE 계약이 필요한 후보는 12 이후 새 TODO 또는 12 Billing confirmed 계약으로만 다룬다.
 12. 12 완료 후에는 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`, 실제 BE/FE/Prisma 구현을 다시 대조한다.
 13. post-12 재검토에서 미구현/후속/보류로 남은 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
 14. UX/UI 디자인 유지보수는 post-12 재검토와 후속 작업 재분류 이후 별도 계획으로 진행한다.

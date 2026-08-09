@@ -1,7 +1,8 @@
 # Final Classification
 
-상태: Final / 12 착수 전 분류 완료
+상태: Final / 12 전 closeout 완료 / 12 Billing 착수 가능
 작성일: 2026-08-07
+최종 업데이트: 2026-08-09
 기준 문서: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 목적
@@ -22,15 +23,28 @@
 
 | 최종 분류 | 후보 ID |
 | --- | --- |
-| 12 전에 할 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
+| 12 전에 닫힌 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
 | post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-따라서 12 전에 새 기능으로 착수할 후보는 없다. 12 전에는 provider smoke와 문서 정합성만 닫고, 제품 기능 후보는 12 이후 또는 12 Billing 안에서 다시 다룬다.
+따라서 12 전에 새 기능으로 착수할 후보는 없다. Provider smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔고, 제품 기능 후보는 12 이후 또는 12 Billing 안에서 다시 다룬다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
-## 3. 12 전에 할 것
+## 2A. 2026-08-09 Closeout 반영
+
+| 후보 | closeout 반영 |
+| --- | --- |
+| `PRE12-F04` | BEFORE_12 G01에서 provider smoke closeout 완료로 처리했다. |
+| `PRE12-F31` | BEFORE_12 G02에서 10 FE/BE TODO 체크리스트 정합성을 닫았다. |
+| `PRE12-F32` | BEFORE_12 G03에서 User Web route/architecture 정합성을 닫았다. |
+| `PRE12-F33` | BEFORE_12 G04에서 11 Admin 문서 체크리스트/goal index 정합성을 닫았다. |
+| `PRE12-F34` | BEFORE_12 G05에서 Admin Web architecture/legacy route 정합성을 닫았다. |
+| G99 | BEFORE_12 G06와 이 문서 갱신으로 PRE12 closeout 및 상위 문서 반영을 닫았다. |
+
+PRE12에는 새 API, Prisma migration, User Web route, Admin Web route, post-12 TODO 생성 작업이 남아 있지 않다.
+
+## 3. 12 전에 닫힌 것
 
 | 후보 | 작업 | 허용 범위 | 금지 |
 | --- | --- | --- | --- |
@@ -105,6 +119,6 @@
 - PRE12에서 confirmed API는 만들지 않는다.
 - PRE12에서 migration은 만들지 않는다.
 - PRE12에서 User Web/Admin Web 신규 route를 열지 않는다.
-- 12 전 실제로 닫을 작업은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이다.
-- G99는 선택된 pre-12 후보 closeout 이후 상위 문서 반영 여부를 점검하는 메타 closeout이며, 후속 후보 분류에 넣지 않는다.
+- 12 전 실제로 닫을 작업 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 모두 closeout 완료됐다.
+- G99는 선택된 pre-12 후보 closeout 이후 상위 문서 반영 여부를 점검하는 메타 closeout이며, 2026-08-09 완료됐다. 후속 후보 분류에 넣지 않는다.
 - 12 완료 후에는 PRE12가 아니라 `POST12_*` 재검토 문서나 새 TODO 폴더에서 01~12 전체를 다시 정리한다.

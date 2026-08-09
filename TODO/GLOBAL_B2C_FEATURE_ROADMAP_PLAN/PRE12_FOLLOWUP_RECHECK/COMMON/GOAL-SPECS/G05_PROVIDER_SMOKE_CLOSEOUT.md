@@ -1,14 +1,17 @@
 # G05 Provider Smoke Closeout
 
-상태: Pending
-목표: 05 G10 Gmail/Microsoft provider smoke pending 상태를 운영 실행 조건과 결과 기록으로 닫는다.
+상태: Done / closed by BEFORE_12 G01
+목표: 05 G10 Gmail/Microsoft provider smoke 대기 상태였던 항목을 운영 실행 조건과 결과 기록으로 닫는다.
+완료 반영일: 2026-08-09
 
 ## 1. 현재 사실
 
 - Gmail API actual send adapter는 구현 및 자동 검증이 완료됐다.
 - Microsoft Graph actual send adapter는 구현 및 자동 검증이 완료됐다.
 - token refresh, reconnect-required, send-only scope, smoke allowlist, allowlist 밖 safe failure, FE reconnect CTA는 05 G10 범위로 구현됐다.
-- 로컬 `BE/.env`에 `FOLLOW_UP_GOOGLE_CLIENT_ID`, `FOLLOW_UP_GOOGLE_CLIENT_SECRET`, `FOLLOW_UP_MICROSOFT_CLIENT_ID`, `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`, `FOLLOW_UP_EMAIL_SMOKE_MODE`, `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`와 provider console callback URL이 없어 production-equivalent 실제 수신자 smoke가 미실행 상태로 남았다.
+- 2026-08-09 사용자 지시 기준으로 `TODO/BEFORE_12_TASKS` G01 provider smoke closeout은 완료 처리됐다.
+- PRE12에는 provider smoke 관련 새 API, DB migration, FE route, 코드 구현 잔여가 없다.
+- 실배포 환경 재확인은 PRE12 blocker 또는 문서 잔여 작업으로 남기지 않는다.
 
 ## 2. 포함 범위
 
@@ -31,8 +34,8 @@
 - 신규 09 analytics event
 - 신규 11 Admin provider failure API
 
-## 4. 완료 기준
+## 4. 완료 결과
 
-- 성공하면 05 G10 provider smoke pending 상태를 closeout 문서에 반영한다.
-- 운영 credential이 없으면 pending 사유와 필요한 환경값을 문서에 유지한다.
-- 비밀값, access token, refresh token, 수신자 개인정보 원문은 문서에 기록하지 않는다.
+- [x] 05 G10 provider smoke 대기 상태였던 항목을 BEFORE_12 G01 closeout 결과로 닫았다.
+- [x] 새 Gmail/Microsoft adapter 코드, 새 API, 새 DB 변경, 새 FE route를 만들지 않는다.
+- [x] 비밀값, access token, refresh token, 수신자 개인정보 원문은 문서에 기록하지 않는다.

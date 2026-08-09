@@ -1,7 +1,8 @@
 # API Spec
 
-상태: Classification Complete / confirmed API 없음
+상태: Final / confirmed API 없음 / BEFORE_12 반영 완료
 작성일: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
@@ -9,7 +10,7 @@
 
 현재 이 계획에는 바로 구현 가능한 confirmed API가 없다. 아래 후보는 모두 contract 작업 전용이다.
 
-2026-08-07 `../FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 모두 새 API가 필요 없는 운영 smoke 또는 문서 정합성 작업이다. 따라서 PRE12에서 12 전 confirmed API를 만들지 않는다.
+2026-08-07 `../FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 모두 새 API가 필요 없는 운영 smoke 또는 문서 정합성 작업이다. 2026-08-09 기준 해당 5개는 BEFORE_12에서 모두 닫혔다. 따라서 PRE12에서 12 전 confirmed API를 만들지 않는다.
 
 ## 2. 후보 API 계약 상태
 
@@ -26,7 +27,7 @@
 | MeetingNote transcript/raw/follow-up draft 저장/조회 | transcript, provider raw response, follow-up draft body 저장 또는 raw access API | defer / 정책 필요 | 구현 금지 |
 | Import scale/source/Admin 확장 | 대용량 import worker API, 일정/회의록 import source API, ImportJob Admin 전용 API, ImportJob cleanup failure aggregate/system gate API | post-12-seed / `PRE12-F13` | 12 전 구현 금지 |
 | Google Calendar 고급 sync/provider 확장 | export/write/양방향 sync, webhook/watch, recurrence, reminders, attendee/contact auto-link, multi-account, Google 외 provider API 계약 | post-12-seed / `PRE12-F10` | 12 전 구현 금지 |
-| Gmail/Microsoft provider smoke closeout | 새 API 없음 | not applicable | 운영 smoke 기록만 가능 |
+| Gmail/Microsoft provider smoke closeout | 새 API 없음 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS vendor adapter, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, SMTP/external email SaaS, HTML email/attachment/tracking contract | post-12-seed / `PRE12-F05`/`PRE12-F06` | 구현 금지 |
 | App locale 확장 | User profile locale 허용값, app translation resource delivery 방식 검토 | post-12-seed | `ja`, `zh-TW`, `zh-CN` 구현 금지 |
 | Global country/currency/phone 확장 | User country/default currency, Contact phone, Company region dictionary 확장 계약 | post-12-seed | 12 전 구현 금지 |
@@ -44,11 +45,11 @@
 | PWA/native packaging과 install attribution | install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | post-12-seed / 별도 mobile roadmap | 구현 금지 |
 | BusinessCard mobile advanced camera preview/crop | FE 중심 camera capability/preview/crop/retake flow 계약. Backend는 필요 시 image preprocessing/upload 제약만 재검토 | post-12-seed / mobile advanced capture / `PRE12-F42` | 구현 금지 |
 | Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, `/api/drafts/*`, media blob upload, transcript/raw provider response 저장/조회 API 필요 여부 결정 | defer / trust-policy / `PRE12-F43` | 구현 금지 |
-| 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
-| User Web route/architecture 문서 정합성 | 새 API 없음. 실제 route 기준 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
+| 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
+| User Web route/architecture 문서 정합성 | 새 API 없음. 실제 route 기준 문서 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
 | generic ExportJob/PDF | `/api/exports`, `ExportJob`, export file TTL/ownership/audit contract | post-12-seed | 12 전 구현 금지 |
-| 11 Admin 문서 체크리스트/goal index 정합성 | 새 API 없음. 완료 체크리스트와 goal index 문서 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
-| Admin Web architecture/legacy route 정합성 | 새 API 없음. 실제 Admin route/API 기준 architecture 문서와 비활성 legacy route/API 잔여 코드 정리만 대상 | pre-12-doc-cleanup | API 구현 대상 아님 |
+| 11 Admin 문서 체크리스트/goal index 정합성 | 새 API 없음. 완료 체크리스트와 goal index 문서 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
+| Admin Web architecture/legacy route 정합성 | 새 API 없음. 실제 Admin route/API 기준 architecture 문서와 비활성 legacy route/API 잔여 코드 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, paid recovery payment, purge/hard delete API가 필요할 수 있으나 정책 미확정 | billing-blocked / recovery-policy | 12 전 구현 금지 |
 | User data export artifact/download endpoint | artifact 생성 processor, signed URL, `GET /api/users/me/data-export-requests/:requestId/download` 또는 `/api/exports` 계약 필요 | post-12-seed / `PRE12-F09` 연결 | 12 전 구현 금지 |
 | 자동 민감정보 감지 | PII/DLP scan API/worker 또는 저장 시 detection hook 필요 여부 결정 | defer / 정책 필요 | 구현 금지 |

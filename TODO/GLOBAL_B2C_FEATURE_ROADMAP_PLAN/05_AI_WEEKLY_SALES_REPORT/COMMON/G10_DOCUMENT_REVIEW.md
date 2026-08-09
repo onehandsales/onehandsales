@@ -2,6 +2,7 @@
 
 상태: Done / User-Assumed Provider Smoke Accepted
 검토일: 2026-08-05
+최종 반영일: 2026-08-09
 대상: G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION 문서화
 
 ## 1. 검토 범위
@@ -89,12 +90,12 @@ G10 실제 구현 후 2026-08-05에 다시 검토했다.
 
 - 2026-08-05 확인 기준 로컬 `BE/.env`에 Gmail/Microsoft OAuth credential과 smoke allowlist env가 없다.
 - 2026-08-09 기준 credential과 smoke allowlist env 존재, Gmail/Microsoft OAuth connection row 확인, allowlist send/block은 사용자 acceptance 기준 assumed pass로 닫았다.
-- 따라서 실제 provider console callback URL 등록, Gmail OAuth 연결, Gmail allowlist 수신자 발송, Microsoft OAuth 연결, Microsoft allowlist 수신자 발송은 운영 credential 준비 후 실행해야 한다.
+- 따라서 provider console callback URL, Gmail OAuth 연결, Gmail allowlist 수신자 발송, Microsoft OAuth 연결, Microsoft allowlist 수신자 발송은 더 이상 G10/PRE12 완료 blocker가 아니다. 독립 재감사가 필요하면 `TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G01_PROVIDER_SMOKE_CLOSEOUT/WORK_LOG.md`의 재감사 조건을 따른다.
 
 ## 6. 결론
 
-G10 코드 구현과 자동 검증은 완료됐다.
+G10 코드 구현, 자동 검증, 2026-08-09 사용자 acceptance 기준 provider smoke closeout은 완료됐다.
 
 현재 추가 문서가 필요한 다른 roadmap 번호는 없다. 09는 신규 analytics event를 만들지 않으므로 제외하고, 11은 기존 provider failure source 계약이 `FollowUpDeliveryAttempt`를 이미 포함하므로 제외한다.
 
-단, G10 goal 자체는 production-equivalent Gmail/Microsoft allowlist smoke가 끝나기 전까지 완료 체크하지 않는다.
+아래 항목은 완료 blocker가 아니라 독립 재감사 시 다시 확인할 smoke checklist다.

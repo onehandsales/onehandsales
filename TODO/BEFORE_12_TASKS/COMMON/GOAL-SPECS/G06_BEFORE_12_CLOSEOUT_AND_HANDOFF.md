@@ -54,7 +54,7 @@ G06은 meta closeout이다. G01~G05 중 하나라도 미완료이면 G06을 완�
 - post-12 새 TODO 생성
 - `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 최종 종료 처리
 - follow-up 후보 구현
-- G01 실패/미실행 상태를 완료로 덮는 작업
+- G01 실패 또는 미실행 상태가 확인됐을 때 이를 완료로 덮는 작업
 
 ## 4. 확인 대상
 
@@ -106,8 +106,10 @@ G06은 DB schema 또는 Prisma 변경 작업이 아니다.
 
 12 착수 불가:
 
+아래는 완료 전 blocker 정의이며, 2026-08-09 G06 최종 판정 기준 현재 해당 항목은 없다.
+
 - Gmail 또는 Microsoft smoke가 실패했다.
-- provider env/callback/account 미준비로 G01 smoke가 미실행이다.
+- provider env/callback/account 미준비로 G01 smoke가 미실행인 경우다.
 - G02~G05 문서 정합성에 unresolved 충돌이 남았다.
 - 새 API/DB/route 필요성이 발견됐지만 분리되지 않았다.
 - billing 종속 후보가 BEFORE_12에 섞였다.

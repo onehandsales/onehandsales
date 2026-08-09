@@ -70,7 +70,7 @@ AGENT 기준:
 
 | 등급 | 영역 | 발견 | 조치 |
 | --- | --- | --- | --- |
-| Resolved | 문서 구조 | 초기 `BEFORE_12_TASKS`는 실행 전 초안 상태였고 01번 수준의 실행 체크리스트가 부족했다. | 문서 상태를 `Ready For Goal`로 올리고 공통 gate와 goal별 체크리스트를 보강한다. |
+| Resolved | 문서 구조 | 초기 `BEFORE_12_TASKS`는 실행 전 초안 상태였고 01번 수준의 실행 체크리스트가 부족했다. | 실행 체크리스트와 공통 gate를 보강한 뒤 G01~G06 완료 상태로 닫았다. |
 | Resolved | Goal 분리 | PRE12 12 전 후보는 5개뿐이며, meta closeout이 필요하다. | G01~G05 + G06 handoff 구조로 고정한다. |
 | Closed | G01 완료 기준 | 기존 문서에는 실행 불가 사유 기록만으로도 closeout처럼 읽히는 문구가 있었다. | Gmail/Microsoft smoke를 사용자 acceptance 기준으로 닫고, 증거 성격과 재감사 조건을 G01/G06 로그에 남긴다. |
 | Resolved | API 범위 | G01은 기존 follow-up API를 쓰지만 새 API는 필요 없다. | `NO_NEW_API_CONTRACT.md`를 confirmed 상태로 고정한다. |

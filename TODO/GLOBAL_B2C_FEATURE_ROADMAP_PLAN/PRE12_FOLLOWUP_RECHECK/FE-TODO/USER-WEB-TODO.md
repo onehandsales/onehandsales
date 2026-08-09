@@ -1,14 +1,14 @@
 # User Web Todo
 
-상태: Classification Complete / confirmed User Web 구현 작업 없음
+상태: Final / confirmed User Web 구현 작업 없음 / BEFORE_12 반영 완료
 작성일: 2026-08-06
-최종 업데이트: 2026-08-07
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
 이 문서는 후속 후보가 User Web에 어떤 영향을 줄 수 있는지 기록한다. 현재 이 계획만으로 새 화면, route, API client, state를 만들지 않는다.
 
-2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 User Web 관련 작업은 `PRE12-F32` 문서 정합성뿐이다. 새 User Web 기능, route, API client, state 추가는 12 전 작업에 포함하지 않는다.
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 User Web 관련 작업은 `PRE12-F32` 문서 정합성뿐이었다. 2026-08-09 기준 해당 문서 정합성은 BEFORE_12 G03에서 닫혔다. 새 User Web 기능, route, API client, state 추가는 12 전 작업에 포함하지 않는다.
 
 ## 2. 현재 기준
 
@@ -81,11 +81,11 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 04 재대조 기준으로 User Web의 Google Calendar 범위는 read-only import/sync, calendar 선택, source badge/status, Trash restore, Google-origin reminder UX까지 완료다. Google export/write/양방향 sync, webhook/watch 상태 UI, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google 외 provider UX는 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
-05 재대조 기준으로 `/app/schedules/week` AI report와 `/app/settings` follow-up delivery, compose/send/retry/timeline UX는 완료다. 운영 provider smoke는 화면 변경 없이 문서 기록으로만 닫고, SMS 실제 provider와 B2B/email growth 확장, 사용자-facing cost/paywall, 자동 생성/자동 mutation은 05 미완성이 아니라 후속 후보로 둔다.
+05 재대조 기준으로 `/app/schedules/week` AI report와 `/app/settings` follow-up delivery, compose/send/retry/timeline UX는 완료다. 운영 provider smoke는 화면 변경 없이 BEFORE_12 G01 문서 기록으로 닫혔고, SMS 실제 provider와 B2B/email growth 확장, 사용자-facing cost/paywall, 자동 생성/자동 mutation은 05 미완성이 아니라 후속 후보로 둔다.
 
 09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, marketing opt-in, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 12 이후 계획으로 둔다.
 
-10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이며, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 실제 router 기준으로 정정한다. 2차 재대조에서 `custom getUserMedia` 기반 BusinessCard preview/crop은 `PRE12-F42`, server draft/media raw storage는 `PRE12-F43`으로 분리한다.
+10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 정합성은 BEFORE_12 G02에서 닫았고, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 BEFORE_12 G03에서 실제 router 기준으로 정리했다. 2차 재대조에서 `custom getUserMedia` 기반 BusinessCard preview/crop은 `PRE12-F42`, server draft/media raw storage는 `PRE12-F43`으로 분리한다.
 
 11 재대조 기준으로 User Web 영향 범위는 `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI까지 완료다. 실제 account deletion hard delete/anonymization, data export artifact/download, Admin 직접 Trash 복구/유료 복구/hard delete/purge, Admin 직접 도메인 데이터 mutation, Customer/B2B tenant admin, 자동 민감정보 감지는 11 미완성이 아니라 정책/ExportJob/Billing/B2B 전략 이후 후속 후보로 둔다.
 
@@ -102,7 +102,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | AI data cleanup | cleanup suggestion 확인/적용/되돌리기 UX, 적용 전 diff 표시 | post-12-seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 표시 | transcript 보관 상태, raw access 안내, draft 저장/발송 상태 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | 대용량 import progress, 일정/회의록 source mapping, Admin-only job cleanup/조회 화면 | post-12-seed |
-| provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | pre-12-follow-up-needed |
+| provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | closed-by-BEFORE_12 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS actual provider 상태, B2B sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external SaaS, HTML/첨부/tracking UX 기준 필요 | post-12-seed / `PRE12-F05`/`PRE12-F06` |
 | App locale/market UX 확장 | `/app` `ja`, `zh-TW` resource, validation/empty/toast copy, market UX writing QA | post-12-seed |
 | `zh-CN` 지원 | public/auth/app locale, market routing, policy copy, 결제/세금/인프라 요구 확인 | defer / 시장 진입 결정 필요 |
@@ -122,11 +122,11 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | PWA/native packaging과 attribution | install prompt, offline shell/full offline sync, native app deep link, native push/contact/calendar bridge, install attribution UX 기준 필요 | post-12-seed / 별도 mobile roadmap |
 | BusinessCard mobile advanced camera preview/crop | `getUserMedia`, camera preview, crop/retake, fallback, permission denial, accessibility/device QA 기준 필요. 10의 native file/camera picker를 임의 대체하지 않는다 | post-12-seed / mobile advanced capture / `PRE12-F42` |
 | Server draft and media/raw storage policy | server-backed draft restore, blob/raw transcript 보관 표시, 삭제/만료/계정 삭제 UX 기준 필요. 10 local draft TTL 완료 범위와 분리한다 | defer / trust-policy / `PRE12-F43` |
-| 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | pre-12-doc-cleanup |
-| User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | pre-12-doc-cleanup |
+| 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | closed-by-BEFORE_12 |
+| User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | closed-by-BEFORE_12 |
 | FE generic ExportJob 잔여 코드 | `ExportScreen`, `/api/exports` client/hook/type을 post-12 전 dead code로 둘지 정리/주석화/삭제할지 판단 | post-12-seed |
 | Google Calendar 고급 sync/provider 확장 | write/export, webhook/watch status, recurrence, Google reminders, attendee/contact auto-link, multi-account/provider 선택 UX 기준 필요 | post-12-seed / `PRE12-F10` |
-| 11 Admin/User 영향 문서 정합성 | 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 맞추는 문서 정리 | pre-12-doc-cleanup |
+| 11 Admin/User 영향 문서 정합성 | 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 맞추는 문서 정리 | closed-by-BEFORE_12 |
 | User data export artifact/download | export request status UI 이후 실제 download 가능 상태, 만료, 실패 UX 기준 필요 | post-12-seed / `PRE12-F09` 연결 |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | User Web에서는 요청/안내 UX만 가능하다. 실행/결제/삭제 정책은 별도 결정 필요 | billing-blocked / recovery-policy |
 | Admin direct domain data mutation and recovery action policy | User Web에서는 운영자 대행 mutation을 직접 노출하지 않는다. 필요한 경우 사용자 확인/통지/감사/rollback UX 정책이 먼저 필요 | defer / ops-policy / `PRE12-F44` |

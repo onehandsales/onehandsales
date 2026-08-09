@@ -4,7 +4,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 0. 완료 반영
 
@@ -25,11 +25,11 @@
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/TODO_LOG/2026-07-23/G05_QA_REVIEW_CLOSEOUT/WORK_LOG.md`
   - 현재 의미: active backlog 후보가 아니라 완료 이력으로만 남긴다.
-- [x] `05_AI_WEEKLY_SALES_REPORT`: Implemented / Provider Smoke Pending (2026-08-05)
+- [x] `05_AI_WEEKLY_SALES_REPORT`: Done / Provider Smoke Closeout Complete (2026-08-09)
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/GOAL-COMPLETION-CHECKLIST.md`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT/COMMON/G10_DOCUMENT_REVIEW.md`
-  - 현재 의미: AI weekly report/follow-up delivery/Gmail-Microsoft email provider code는 active backlog 후보가 아니라 완료 이력으로 남긴다. 운영 provider smoke만 pending이다.
+  - 현재 의미: AI weekly report/follow-up delivery/Gmail-Microsoft email provider code와 provider smoke closeout은 active backlog 후보가 아니라 완료 이력으로 남긴다.
 - [x] `NBA-001 Deal list products summary`: Done (2026-07-26)
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE/COMMON/GOAL-SPECS/G07_QA_REVIEW_CLOSEOUT.md`
@@ -116,7 +116,7 @@
 | NBA-009 | Schedule week report | AGENT 문서, `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` | product feature | Yes | 완료. 일정과 딜을 주간 영업 판단으로 연결한다. | Done: `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx` 구현 | Done: 새 DB/migration 없음. 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation 사용 | Done: `/app/schedules/week` route, 주간 보고서 화면, Excel 다운로드 구현 | timezone/weekStart, cross-user ownership, private note/raw memo redaction QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT` | 완료. Active backlog에서 제외한다. AI weekly report는 05에서 구현 완료됐고, PDF/범용 ExportJob과 반복 일정은 별도 후속 범위다. |
 | NBA-010 | Notification | AGENT 문서 | product feature | Yes | reminder 기반 retention loop를 만들 수 있다. | Done: notification list/read/settings/browser-push API 구현 | Done: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription schema 및 migration 구현 | Done: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 | provider raw response, push endpoint/key, email 원문 redaction QA 완료. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` | 완료. Active backlog에서 제외한다. |
 | NBA-015 | Google Calendar Integration | AGENT 문서, `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` | product feature | Yes | 완료. Google Calendar read-only import를 한손 일정/딜/알림/Trash 흐름에 연결한다. | Done: Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, Schedule list/detail/update/delete, Trash restore 계약 확장 구현 | Done: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status migration 구현 | Done: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX, source badge, sync, calendar 선택, Schedule restore 구현 | OAuth state, token encryption/redaction, ownership, Schedule soft delete/restore, reminder QA 완료. 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` | 완료. Active backlog에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결은 별도 후속 범위다. |
-| 05_AI_WEEKLY_SALES_REPORT | AI weekly report and follow-up delivery | Productization gap, `05_AI_WEEKLY_SALES_REPORT` | product feature | Yes | 완료. 주간 영업 흐름을 저장형 AI report로 만들고 follow-up draft/send/timeline으로 이어진다. | Done: sales report 생성/조회/snapshot API, follow-up settings/draft/send/retry/list/detail API, Gmail/Microsoft actual send adapter 구현 | Done: AI report/job/suggestion/provider log와 follow-up delivery schema 구현. G10 신규 migration 없음 | Done: `/app/schedules/week` AI report section, `/app/settings` provider settings, compose/send/retry/timeline UX 구현 | provider raw/token/body/recipient redaction, safe error/reconnect, smoke allowlist 자동 검증 완료. 운영 provider smoke는 pending | Implemented: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` | 구현 완료. Active backlog에서 제외한다. SMS 실제 provider/B2B/sequence/email sync는 별도 후속이다. |
+| 05_AI_WEEKLY_SALES_REPORT | AI weekly report and follow-up delivery | Productization gap, `05_AI_WEEKLY_SALES_REPORT` | product feature | Yes | 완료. 주간 영업 흐름을 저장형 AI report로 만들고 follow-up draft/send/timeline으로 이어진다. | Done: sales report 생성/조회/snapshot API, follow-up settings/draft/send/retry/list/detail API, Gmail/Microsoft actual send adapter 구현 | Done: AI report/job/suggestion/provider log와 follow-up delivery schema 구현. G10 신규 migration 없음 | Done: `/app/schedules/week` AI report section, `/app/settings` provider settings, compose/send/retry/timeline UX 구현 | provider raw/token/body/recipient redaction, safe error/reconnect, smoke allowlist 자동 검증 완료. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` | 구현 완료. Active backlog에서 제외한다. SMS 실제 provider/B2B/sequence/email sync는 별도 후속이다. |
 | NBA-011 | MeetingNote provider call log and Admin audit | AGENT 문서, `07_MEETING_NOTE_AI_PROVIDER_LOG`, `11_ADMIN_OPERATION` | ops/security | No | 완료. User provider log subset과 Admin/internal 운영 조회/audit 기준이 원문 없이 연결됐다. | Done: 07 User API provider log write, 11 Admin provider failure/sensitive raw access/audit API 구현 | Done: 07 `AiProviderCallLog` target 확장, 11 `AdminAuditLog`/`AdminSensitiveAccessLog` 구현. 별도 transcript/raw table은 만들지 않음 | Done: User Web safe failure, Admin Web provider/audit 화면 구현 | raw request/response, prompt, 회의 원문, transcript, follow-up body, contact 원문, provider token/quota detail 저장/노출 금지 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. |
 | NBA-012 | Trash 7일 이후 복구 정책 | AGENT 문서, `11_ADMIN_OPERATION` | ops/security | Yes | 완료. 복구 가능 기한 이후 동작과 운영 책임을 hard delete 없이 명확히 했다. | Done: 만료 Trash response status와 `POST /api/trash/recovery-requests`, Admin recovery request list 구현 | Done: `TrashRecoveryRequest`와 열린 요청 unique index 구현. purge/hard delete table 없음 | Done: `/app/trash` 만료 row copy, restore disabled, 복구 문의 UX | private memo 원문 미노출, 유료 복구 결제/paywall 제외, hard delete/purge 미구현 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. |
 | NBA-013 | Admin 운영 UX/API | AGENT 문서, `11_ADMIN_OPERATION` | ops/security | No | 완료. 고객 지원, 민감정보 마스킹, 감사 로그 기반 최소 운영이 가능해졌다. | Done: `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API 구현 | Done: Admin audit/sensitive log, recovery/account/data/system operation check tables 구현 | Done: Admin Web `/users`, `/provider-failures`, `/analytics`, `/account-requests`, `/trash/recovery-requests`, `/audit-logs`, `/system` | AuthGuard/AdminGuard, masking, raw access reason, audit log, 결제/구독 제외 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. Billing Admin 연동은 12에서 다룬다. |
@@ -127,8 +127,8 @@
 
 ## 3. 다음 실행 순서 제안
 
-1. 12 착수 전 01~11 pre-12 재대조를 진행한다. 2026-08-06 기준 06 후속 재검토 A 결정까지 반영 완료됐고, 다음 대상은 07~11이다.
-2. 01~11 pre-12 재대조 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 계약화하고 구현한다.
+1. 2026-08-09 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다.
+2. 다음 작업은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 계약화하고 구현하는 것이다.
 3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 matrix를 다시 읽는다.
 4. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위는 2026-08-06 A 결정에 따라 12 전 계약화하지 않고 post-12 B2C/B2B record activity 전략 재검토 seed로 유지한다. `NBA-004` MeetingNote 목록 summary도 post-12 재검토 seed로 유지한다.
 5. Backup/restore 실행 runbook, 장애 대응 drill은 11 system gate 기록과 별개로 post-12 운영 신뢰 후보로 다시 판단한다.

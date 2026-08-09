@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 User Web gap으로 승격하지 않는다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 0. 완료 반영
 
@@ -18,7 +18,7 @@
 - [x] `NBA-015` User Web productization gap 종료
 - [x] `/app/schedules/week` AI weekly report UX 구현 완료
 - [x] `/app/settings` Gmail/Microsoft follow-up provider settings와 compose/send/retry/timeline UX 구현 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT` User Web productization gap 종료. 운영 provider smoke는 credential/callback/allowlist 준비 후 확인
+- [x] `05_AI_WEEKLY_SALES_REPORT` User Web productization gap 종료. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리
 - [x] `/app/deals/:dealId` 딜 활동 timeline 구현 완료
 - [x] `/app/deals` products/latest activity summary 구현 완료
 - [x] `/app/contacts` dealCount 구현 완료
@@ -70,12 +70,12 @@
 | `/app/contacts` | 목록/상세/생성/export, dealCount, KR/US phone 표시 구현 | 연결 딜 수와 회사 맥락이 충분한가 | `NBA-002`와 08 phone 완료. `NBA-003` latest summary는 2026-08-06 A 결정에 따라 12 전 FE gap으로 승격하지 않음 |
 | `/app/products` | 목록/상세/생성/export, currencyCode 구현 | 제품이 어느 딜에서 쓰이는지 빠르게 보이는가 | 08 currency 완료. `NBA-003` latest summary는 2026-08-06 A 결정에 따라 12 전 FE gap으로 승격하지 않음 |
 | `/app/schedules` | 목록/월간/상세, Google Calendar status/source badge/manual sync/calendar hidden handling 구현 | 일정과 딜, Google에서 가져온 일정이 하루/주 단위 영업 판단으로 연결되는가 | 기본 일정 및 `NBA-015` 완료 |
-| `/app/schedules/week` | 주간 보고서, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error, AI weekly report section 구현 | 주간 일정 보고서와 AI weekly report는 구현 완료. PDF/범용 ExportJob, 반복 일정은 별도 후속 확장. Gmail/Microsoft provider smoke는 운영 credential/callback/allowlist 준비 후 확인 | `NBA-009`, `05_AI_WEEKLY_SALES_REPORT` 완료 |
+| `/app/schedules/week` | 주간 보고서, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error, AI weekly report section 구현 | 주간 일정 보고서와 AI weekly report는 구현 완료. PDF/범용 ExportJob, 반복 일정은 별도 후속 확장. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리 | `NBA-009`, `05_AI_WEEKLY_SALES_REPORT` 완료 |
 | `/app/meeting-notes` | 수동/AI/STT draft/딜 연결, 모바일 녹음/fallback, local draft, 상세 AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현 | 회의록 목록에서도 최신/다음 행동 맥락이 충분히 보이는가. 상세 AI 후보는 자동 저장/자동 발송하지 않는가 | `NBA-004` detail subset, `NBA-011` provider log subset, 10 mobile recording/local draft 완료. Admin audit는 11 완료. 목록 summary, 자동 발송/알림은 후속 |
 | `/app/business-cards` | OCR/upload/confirm, 모바일 촬영/앨범 선택, OCR safe failure, local draft, KR/US phone validation 구현 | advanced crop/preview가 필요한지 | `NBA-005`, 08 phone, 10 mobile capture 완료. Admin 운영 추적은 11 완료 |
 | `/app/import` | template language selector, upload/mapping/row edit/validation/resume/confirm/cancel/log, row detail 만료 안내, 10MB/5,000행 제한 초과 안내 구현 | 새로고침/탭 이동/배포 중 유실 복구와 template localization, row detail 만료 안내, upload 제한 안내까지 완료되어 01 Import UX는 최종 서비스 형태 기준으로 완전 종료 | `NBA-006`, 08, 01 G07/G08 완료 |
 | `/app/trash` | list/detail/restore, Schedule restore, 만료 row restore disabled, 복구 문의 구현 | private memo 원문 없이 7일 이후 정책이 안전하게 읽히는가. Admin 직접 복구/유료 복구는 11 제외 범위다 | `NBA-007`, `NBA-012`, `NBA-015`, `11_ADMIN_OPERATION` 완료 |
-| `/app/settings` | profile/devices, 국가/앱 언어/기본 통화, Google Calendar 연결/캘린더 선택/연결 해제, Gmail/Microsoft follow-up provider 연결/재연결/해제, SMS 발신번호 인증 UX 구현 | 첫 판매 전 계정 삭제/데이터 삭제/구독 상태 UX가 충분한가. Gmail/Microsoft actual send smoke는 운영 환경에서 확인됐는가 | global settings는 08 완료. Account/data request는 11 완료. Payment subscription UX는 12와 연결. Google Calendar 설정은 `NBA-015` 완료. Follow-up provider settings는 05 완료 |
+| `/app/settings` | profile/devices, 국가/앱 언어/기본 통화, Google Calendar 연결/캘린더 선택/연결 해제, Gmail/Microsoft follow-up provider 연결/재연결/해제, SMS 발신번호 인증 UX 구현 | 첫 판매 전 계정 삭제/데이터 삭제/구독 상태 UX가 충분한가. Gmail/Microsoft actual send smoke closeout은 완료 상태인가 | global settings는 08 완료. Account/data request는 11 완료. Payment subscription UX는 12와 연결. Google Calendar 설정은 `NBA-015` 완료. Follow-up provider settings와 provider smoke closeout은 05/PRE12 완료 |
 | `/app/more` | 보조 메뉴 구현 | 숨긴 기능이 잘못 노출되지 않는가 | 낮음 |
 | `/app/notifications` | list/read/settings/browser push explicit permission/fallback 구현 | 일정/딜 reminder가 사용자가 놓치지 않게 표시되는지 운영 env에서 최종 smoke 필요 | `NBA-010`, 10 permission UX 완료 |
 | `/app/export` | `/app` redirect | 범용 export가 정말 필요한지 정책 결정 필요 | 낮음 |

@@ -1,8 +1,8 @@
 # Scope
 
-상태: Classification Complete
+상태: Final / BEFORE_12 closeout reflected
 작성일: 2026-08-06
-최종 업데이트: 2026-08-07
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
@@ -14,11 +14,11 @@
 
 | 최종 분류 | 후보 |
 | --- | --- |
-| 12 전에 할 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
+| 12 전에 닫힌 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
 | post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-12 전에 할 것은 운영 smoke와 문서 정합성뿐이다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA/native, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 12 전 구현으로 올리지 않는다.
+12 전에 할 것으로 분류했던 운영 smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA/native, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 12 전 구현으로 올리지 않는다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
@@ -26,7 +26,7 @@
 
 | 범위 | 설명 |
 | --- | --- |
-| 01~06 재대조 결과 정리 | 01~04 완료, 05 provider smoke pending 상태와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
+| 01~06 재대조 결과 정리 | 01~04 완료, 05 provider smoke closeout 완료와 06 후속 재검토 A 결정을 07~11 재대조에서 참고할 수 있게 정리한다. |
 | 01 Import 확장 후보 분리 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API가 01 미완성이 아니라 별도 post-12 seed임을 고정한다. |
 | 02 후속 후보 분리 | 다음 행동 알림, 회의록 후속 알림, Notification 데이터 TTL/cleanup 정책이 02 구현 범위가 아니었음을 고정한다. |
 | 04 후속 후보 분리 | Google read-only import/sync 완료 범위와 Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider 후보를 분리한다. |
@@ -103,7 +103,7 @@
 05 완료 범위로 다루면 안 되는 범위:
 
 - AI weekly report 자동 생성 또는 AI suggestion 자동 Deal/Schedule/Contact/MeetingNote mutation
-- Gmail/Microsoft provider smoke pending을 새 코드 구현 후보로 전환
+- Gmail/Microsoft provider smoke closeout을 새 코드 구현 후보로 전환
 - SMS 실제 provider/vendor 연동
 - B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe
 - scheduled send, SMTP 직접 설정, external email SaaS provider, HTML email, attachments, tracking pixel
@@ -116,7 +116,7 @@
 
 | 항목 | PRE12 후보 |
 | --- | --- |
-| Gmail/Microsoft 운영 provider smoke | `PRE12-F04` |
+| Gmail/Microsoft 운영 provider smoke | `PRE12-F04` / BEFORE_12 G01에서 closeout 완료 |
 | SMS 실제 provider/vendor 연동 | `PRE12-F05` |
 | B2B sender/email sync/sequence/campaign/bulk/unsubscribe/예약 발송/SMTP/HTML/첨부/tracking | `PRE12-F06` |
 | MeetingNote follow-up reminder/자동 발송 | `PRE12-F02`/`PRE12-F03` |
@@ -367,8 +367,9 @@
 | 상태 | 의미 |
 | --- | --- |
 | `done` | 실제 구현과 QA가 이미 닫힌 항목 |
-| `pre-12-follow-up-needed` | 12 전 별도 goal로 처리할 수 있고, billing 결정과 직접 충돌하지 않는 항목 |
-| `pre-12-doc-cleanup` | 실제 기능 구현은 닫혔지만 문서 체크리스트, architecture 설명, dead-code 메모 같은 정합성 정리가 필요한 항목 |
+| `closed-by-BEFORE_12` | `TODO/BEFORE_12_TASKS`에서 2026-08-09 기준 닫힌 12 전 운영 smoke 또는 문서 정합성 항목 |
+| `pre-12-follow-up-needed` | 12 전 별도 goal로 처리할 수 있고, billing 결정과 직접 충돌하지 않는 항목. 2026-08-09 현재 이 상태로 남은 후보는 없다. |
+| `pre-12-doc-cleanup` | 실제 기능 구현은 닫혔지만 문서 체크리스트, architecture 설명, dead-code 메모 같은 정합성 정리가 필요한 항목. 2026-08-09 현재 이 상태로 남은 후보는 없다. |
 | `post-12-seed` | 12 이후 최종 재검토에서 새 TODO로 승격할지 판단할 항목 |
 | `billing-blocked` | 12 결정 없이는 구현 기준을 확정할 수 없는 항목 |
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |

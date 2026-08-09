@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 DB 설계/migration 후보로 승격하지 않는다.
 
 상태: Draft
-최종 업데이트: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 0. 완료 반영
 
@@ -11,7 +11,7 @@
 - [x] `NBA-009 Schedule week report`: 새 DB/migration 없이 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation으로 구현 완료
 - [x] `NBA-010 Notification`: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription DB persistence 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status DB persistence 구현 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report/job/suggestion/provider log와 follow-up delivery DB persistence 구현 완료. G10 신규 migration 없음
+- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report/job/suggestion/provider log와 follow-up delivery DB persistence 구현 완료. G10 신규 migration 없음. Provider smoke closeout은 DB 변경 없이 2026-08-09 PRE12/BEFORE_12 기준 완료 처리
 - [x] `NBA-001 Deal list products summary`: 기존 `DealProduct` 관계 aggregation으로 구현 완료
 - [x] `NBA-002 Contact list dealCount`: 기존 `DealContact` 관계 aggregation으로 구현 완료
 - [x] `NBA-003 Deal latest activity subset`: `DealActivity` 정본 model/migration 기반으로 구현 완료

@@ -1,14 +1,14 @@
 # Admin Web Todo
 
-상태: Classification Complete / confirmed Admin Web 구현 작업 없음
+상태: Final / confirmed Admin Web 구현 작업 없음 / BEFORE_12 반영 완료
 작성일: 2026-08-06
-최종 업데이트: 2026-08-07
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
 이 문서는 11 Admin Operation 재검토에서 나온 Admin Web 후속 후보를 기록한다. 현재 이 계획만으로 새 Admin Web 화면, route, API client, mutation을 만들지 않는다.
 
-2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 Admin Web 관련 작업은 `PRE12-F34` 문서/legacy route 정합성뿐이다. `/subscriptions`, `/organizations`, `/support`를 12 전 화면으로 열지 않는다.
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 Admin Web 관련 작업은 `PRE12-F34` 문서/legacy route 정합성뿐이었다. 2026-08-09 기준 해당 정합성은 BEFORE_12 G05에서 닫혔다. `/subscriptions`, `/organizations`, `/support`를 12 전 화면으로 열지 않는다.
 
 ## 2. 현재 기준
 
@@ -43,8 +43,8 @@ G12 closeout과 별도 Admin Web contract 확정 전에는 아래 변경을 하�
 
 | 후보 | 예상 FE 영향 | 현재 상태 |
 | --- | --- | --- |
-| 11 Admin 문서 체크리스트 정합성 | 11 `FE-TODO/ADMIN-WEB-TODO.md`와 goal checklist를 실제 route/API 완료 상태와 맞추는 문서 정리. 새 화면 없음 | pre-12-doc-cleanup |
-| Admin Web architecture/legacy route 정합성 | `FE/admin-web/ARCHITECTURE.md`의 route/API 설명과 비활성 legacy `admin-query` 잔여 코드를 실제 router와 feature-first 구조 기준으로 정리 | pre-12-doc-cleanup |
+| 11 Admin 문서 체크리스트 정합성 | 11 `FE-TODO/ADMIN-WEB-TODO.md`와 goal checklist를 실제 route/API 완료 상태와 맞추는 문서 정리. 새 화면 없음 | closed-by-BEFORE_12 |
+| Admin Web architecture/legacy route 정합성 | `FE/admin-web/ARCHITECTURE.md`의 route/API 설명과 비활성 legacy `admin-query` 잔여 코드를 실제 router와 feature-first 구조 기준으로 정리 | closed-by-BEFORE_12 |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge | recovery request detail, 실행 confirmation, billing/payment 연결, audit/result 표시 기준 필요 | billing-blocked / recovery-policy |
 | User data export artifact/download | Admin queue에서 artifact 상태, 만료, failed reason, download 가능 여부 표시 기준 필요. 실제 download는 User/export contract와 연결 | post-12-seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, confidence, override, audit trail 화면 필요 여부 결정 | defer / 정책 필요 |

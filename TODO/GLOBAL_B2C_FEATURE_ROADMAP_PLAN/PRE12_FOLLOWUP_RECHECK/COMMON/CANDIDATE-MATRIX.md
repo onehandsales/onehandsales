@@ -1,8 +1,8 @@
 # Candidate Matrix
 
-상태: Classification Complete
+상태: Final / BEFORE_12 closeout reflected
 작성일: 2026-08-06
-최종 업데이트: 2026-08-07
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
@@ -14,11 +14,11 @@
 
 | 최종 분류 | 후보 ID |
 | --- | --- |
-| 12 전에 할 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
+| 12 전에 닫힌 것 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` |
 | post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-12 전에 새 API, DB migration, User Web/Admin Web 기능 구현으로 올릴 후보는 없다.
+12 전에 새 API, DB migration, User Web/Admin Web 기능 구현으로 올릴 후보는 없고, 선택된 12 전 closeout 5개는 BEFORE_12에서 모두 닫혔다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
@@ -29,7 +29,7 @@
 | PRE12-F01 | 다음 행동 reminder | 02 제외, 06에서 재설계 언급 | Notification source는 `SCHEDULE`, `DEAL`만 있다. 06의 다음 행동 범위는 Notification reminder가 아니라 DealActivity `NEXT_ACTION_CREATED/COMPLETION_CHANGED` 기록이다. | post-12-seed / notification policy | 12 전 구현하지 않는다. Notification source/setting/scheduler 정책은 post-12에서 재검토한다. |
 | PRE12-F02 | 회의록 follow-up reminder | 02 제외, 07에서 후속 언급 | 07은 follow-up draft만 만들고 자동 발송/알림/DB 저장을 제외했다. | post-12-seed | G03에서 계약 후보만 정리. 구현 금지. |
 | PRE12-F03 | MeetingNote follow-up 자동 발송 | 05/07 후속 | 05는 사용자가 확인/수정한 뒤 즉시 발송하는 follow-up delivery를 제공한다. 07은 초안만 반환한다. | post-12-seed | 자동 발송 정책, 수신 동의, retry, 취소, 알림 정책 필요. |
-| PRE12-F04 | Gmail/Microsoft provider smoke | 05 G10 | Gmail/Microsoft API adapter, token refresh, reconnect-required, send-only scope, smoke allowlist, safe failure, FE reconnect CTA는 구현 및 자동 검증이 완료됐다. 운영 credential/callback/allowlist 실제 수신자 smoke는 미실행 상태다. | pre-12-follow-up-needed | G05에서 운영 smoke 실행 조건과 결과 기록. 코드 구현 후보가 아니다. |
+| PRE12-F04 | Gmail/Microsoft provider smoke | 05 G10 | Gmail/Microsoft API adapter, token refresh, reconnect-required, send-only scope, smoke allowlist, safe failure, FE reconnect CTA는 구현 및 자동 검증이 완료됐다. Provider smoke closeout은 2026-08-09 사용자 지시 기준 BEFORE_12 G01에서 완료 처리됐다. | closed-by-BEFORE_12 | 코드 구현 후보가 아니며 PRE12 잔여 작업으로 남기지 않는다. |
 | PRE12-F05 | SMS 실제 provider | 05 G10 제외 | SMS sender verification UI/API foundation과 `SmsSenderNumber`는 있으나 `ConfigurableFollowUpSmsDeliveryProvider`는 test-sms/non-configured 상태다. 실제 SMS vendor 연동은 제외됐다. | post-12-seed | SMS 비용, 국가, 발신자 정책 결정 후 별도 계획. |
 | PRE12-F06 | Follow-up delivery 고급 provider/growth 확장 | 05 G10 제외, NEXT/USER gap | G10은 Gmail/Microsoft plain text send adapter만 닫는다. B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP 직접 설정, external email SaaS provider, HTML email, 첨부파일, tracking pixel은 없다. | post-12-seed | Growth/B2B/compliance/privacy/cost 정책 후 별도 계획. |
 | PRE12-F07 | Company/Contact/Product latest summary | NBA-003 잔여, 06 제외 | 06은 Deal list `latestActivity`만 완료했다. 2026-08-06 A 결정으로 06 완료 범위를 재오픈하지 않는다. | defer | 12 전 G04 계약화와 구현은 하지 않는다. post-12 B2B/team CRM strategy seed로 재검토한다. |
@@ -56,10 +56,10 @@
 | PRE12-F28 | 외부 analytics provider forwarding | 09 Scope/Decision | 현재 source-of-truth는 자체 DB `ProductAnalyticsEvent`다. Segment/PostHog/Mixpanel/GA forwarding port, adapter, runtime call은 구현돼 있지 않다. | post-12-seed / growth/ops | 12 이후 growth/ops 요구와 privacy/DPA 기준이 확인될 때 provider adapter 계획으로 승격한다. 자체 DB 정본은 유지한다. |
 | PRE12-F29 | public site/UTM/ad attribution/growth experiment | 09/10/NEXT/USER_WEB gap | 09는 core `/app` route view만 수집하고 public site, UTM, ad attribution을 제외했다. `ExperimentAssignment`와 `/api/experiments/assignments`도 만들지 않았다. | post-12-seed / growth/marketing | marketing attribution, experiment assignment model/API, public route analytics는 별도 growth 계획에서 다룬다. |
 | PRE12-F30 | PWA/native packaging과 install attribution | 09 후속, 10 완료/제외 | 10은 모바일 브라우저 field-use event와 UX를 완료했지만 PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 완료 범위가 아니었다. | post-12-seed / 별도 mobile roadmap | 10을 재오픈하지 않고 mobile roadmap에서 PWA/offline/native packaging, native bridge, install attribution 계약을 만든다. |
-| PRE12-F31 | 10 Mobile Field Use 문서 체크리스트 정합성 | 10 재대조 | 10 `README`, `GOAL-COMPLETION-CHECKLIST`, G07 closeout과 실제 BE/FE 코드는 완료를 가리킨다. 하지만 `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06과 `10/BE-TODO/API-TODO.md`의 G03/G05/G06 구현 체크박스가 미완료로 남아 있다. | pre-12-doc-cleanup | 10을 기능 미완성으로 재오픈하지 않는다. 문서 체크리스트만 실제 완료 상태와 맞춘다. |
-| PRE12-F32 | User Web route/architecture 문서 정합성 | 10 재대조, 실제 FE router | 실제 `FE/user-web/src/app/router/router.tsx`에는 `/app/notifications` route가 활성이고 `/app/export`만 `/app`으로 redirect된다. `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`는 `/app/notifications`도 redirect라고 적고 있어 stale이다. | pre-12-doc-cleanup | 실제 route 기준으로 architecture 문서를 정정한다. 문서에 맞추기 위해 `/app/notifications`를 숨기지 않는다. |
-| PRE12-F33 | 11 Admin Operation 문서 체크리스트/goal index 정합성 | 11 재대조 | 11 `README`, G10 closeout, 개별 goal spec, 실제 BE/FE 코드는 완료를 가리킨다. 하지만 `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO`, `11/FE-TODO`는 planning/미체크 상태가 일부 남아 있다. | pre-12-doc-cleanup | 11을 기능 미완성으로 재오픈하지 않는다. 문서 체크리스트와 goal index를 실제 완료 상태와 맞춘다. |
-| PRE12-F34 | Admin Web architecture/legacy route 정합성 | 11 재대조, 실제 Admin Web router/code | 실제 `FE/admin-web/src/app/router/router.tsx`에는 11 Admin 운영 route가 활성화되어 있다. `/subscriptions`, `/organizations`, `/support`는 redirect이고 메뉴에 billing/subscription은 없다. `FE/admin-web/ARCHITECTURE.md`는 대부분 redirect와 `/admin/api/me`만 연동이라고 적고 있어 stale이다. 또한 `features/admin-query`, `pages/dashboard`, `pages/organizations`에는 현재 router/API 계약과 맞지 않는 legacy 잔여 코드가 일부 있다. | pre-12-doc-cleanup | 실제 Admin route/API 기준으로 architecture 문서와 비활성 legacy 잔여 코드를 정리한다. 문서에 맞추기 위해 Admin route를 숨기거나 legacy API path를 활성화하지 않는다. |
+| PRE12-F31 | 10 Mobile Field Use 문서 체크리스트 정합성 | 10 재대조 | 10 `README`, `GOAL-COMPLETION-CHECKLIST`, G07 closeout과 실제 BE/FE 코드는 완료를 가리킨다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06과 `10/BE-TODO/API-TODO.md`의 G03/G05/G06 구현 체크박스 정합성은 BEFORE_12 G02에서 정리 완료됐다. | closed-by-BEFORE_12 | 10을 기능 미완성으로 재오픈하지 않는다. |
+| PRE12-F32 | User Web route/architecture 문서 정합성 | 10 재대조, 실제 FE router | 실제 `FE/user-web/src/app/router/router.tsx`에는 `/app/notifications` route가 활성이고 `/app/export`만 `/app`으로 redirect된다. Stale architecture 설명은 BEFORE_12 G03에서 실제 route 기준으로 정정 완료됐다. | closed-by-BEFORE_12 | 문서에 맞추기 위해 `/app/notifications`를 숨기지 않는다. |
+| PRE12-F33 | 11 Admin Operation 문서 체크리스트/goal index 정합성 | 11 재대조 | 11 `README`, G10 closeout, 개별 goal spec, 실제 BE/FE 코드는 완료를 가리킨다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO`, `11/FE-TODO`의 정합성은 BEFORE_12 G04에서 정리 완료됐다. | closed-by-BEFORE_12 | 11을 기능 미완성으로 재오픈하지 않는다. |
+| PRE12-F34 | Admin Web architecture/legacy route 정합성 | 11 재대조, 실제 Admin Web router/code | 실제 `FE/admin-web/src/app/router/router.tsx`에는 11 Admin 운영 route가 활성화되어 있다. `/subscriptions`, `/organizations`, `/support`는 redirect이고 메뉴에 billing/subscription은 없다. Admin Web architecture와 비활성 legacy route 기준은 BEFORE_12 G05에서 정리 완료됐다. | closed-by-BEFORE_12 | 문서에 맞추기 위해 Admin route를 숨기거나 legacy API path를 활성화하지 않는다. |
 | PRE12-F35 | Admin 직접 Trash 복구 실행/유료 복구/Trash hard delete/purge | NEXT/USER gap, 11 제외 | 11은 User self-restore, 만료 row 유지, User 복구 문의, Admin recovery queue까지 완료했다. Admin restore mutation, paid recovery 결제, Trash hard delete/purge는 없다. | billing-blocked / recovery-policy | recovery policy, 결제/환불 영향, private memo/redaction, audit, rollback 기준이 확정되기 전 구현 금지. 12 Billing 이후 별도 recovery/ops goal로 판단한다. |
 | PRE12-F36 | User data export artifact 생성/download endpoint | 11 G08, USER_WEB export gap, `PRE12-F09` 연결 | 11은 `UserDataExportRequest` 요청/상태 조회와 Admin queue를 구현했다. 실제 artifact 생성 processor, storage signed URL provider, download controller는 없다. 응답 mapper는 artifact가 준비된 경우의 `downloadUrl`만 표현한다. | post-12-seed / `PRE12-F09` 연결 | ExportJob/file TTL/ownership/audit/Admin queue 계약과 함께 재검토한다. post-12 전에는 download endpoint나 artifact processor를 열지 않는다. |
 | PRE12-F37 | 자동 민감정보 감지 | NEXT_BACKEND 잔여, Global coverage | 11은 masking, raw access reason, audit/sensitive log를 완료했지만 자동 PII/sensitive detection은 구현하지 않았다. `GLOBAL` coverage에는 후속 별도 결정으로 남아 있다. | defer / 정책 필요 | 보안/data governance, 오탐/누락 처리, raw access audit, 사용자 권리와 retention 기준 확정 전 구현 금지. |

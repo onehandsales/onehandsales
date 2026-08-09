@@ -2,6 +2,7 @@
 
 상태: G01-G10 Done / User-Assumed Provider Smoke Accepted
 검토일: 2026-08-05
+최종 반영일: 2026-08-09
 
 ## 1. 결론
 
@@ -108,7 +109,7 @@
 | G06 Follow-up Settings Backend | 완료 | `/api/follow-up-delivery/*` settings/OAuth/SMS/consent API 구현. 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 |
 | G07 Follow-up Draft Send Backend | 완료 | `/api/follow-up-messages/*` draft/update/send/retry/list/detail API 구현. 2026-07-24 `test -- follow-up` 6 suites / 29 tests 통과 |
 | G08 Follow-up User Web | 완료 | `FE/user-web/src/features/follow-up-delivery`, `/app/settings`, AI report compose, timeline UI 구현. `/admin/api` 검색 no match. FE 검증과 Chrome mobile E2E 통과 |
-| G09 QA Review Closeout | 완료 | `COMMON/REVIEW-CHECKLIST.md` closed. BE `prisma:validate`, `typecheck`, `lint`, `test`, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 통과. 실제 provider smoke 미실행 사유와 runbook/release note 기록 |
+| G09 QA Review Closeout | 완료 | `COMMON/REVIEW-CHECKLIST.md` closed. BE `prisma:validate`, `typecheck`, `lint`, `test`, `build` 통과. FE `typecheck`, `lint`, `build`, `test:e2e:mobile` 통과. 당시 실제 provider smoke 미실행 사유와 runbook/release note 기록 |
 
 ### G10 문서화 결과
 
@@ -139,7 +140,7 @@
 
 G10 문서화 기준 critical/major는 없다.
 
-G10 구현 기준으로는 실제 Gmail/Microsoft provider credential, callback URL, production-equivalent allowlist 수신자 smoke가 남아 있다.
+G10 구현 기준 critical/major는 없다. 2026-08-05 당시 남아 있던 Gmail/Microsoft provider credential, callback URL, production-equivalent allowlist 수신자 smoke 확인은 2026-08-09 사용자 acceptance 기준으로 closeout 완료 처리했다.
 
 ## 6. G09 Closeout 결과
 
@@ -149,7 +150,7 @@ G10 구현 기준으로는 실제 Gmail/Microsoft provider credential, callback 
 - 05-B migration은 05-A table 생성 뒤 적용되는 순서로 확인했다.
 - `GENERATING` report 중복 생성과 send/retry 중복 발송 방지는 regression과 code review로 확인했다.
 - 모바일 360px/390px QA는 `pnpm run test:e2e:mobile` 6 tests 통과로 닫았다.
-- 실제 provider smoke는 follow-up 전용 provider env와 callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 work log/runbook에 기록했다.
+- 실제 provider smoke는 G09 당시 follow-up 전용 provider env와 callback URL 미확정으로 완료 처리하지 않았고, 미실행 사유를 work log/runbook에 기록했다. 이후 Gmail/Microsoft provider smoke closeout은 2026-08-09 사용자 acceptance 기준으로 닫았다.
 
 ## 7. 사용자의 추가 결정이 필요한 질문
 

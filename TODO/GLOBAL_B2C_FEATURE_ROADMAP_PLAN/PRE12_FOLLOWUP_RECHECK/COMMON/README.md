@@ -1,20 +1,22 @@
 # PRE12_FOLLOWUP_RECHECK Common
 
-상태: Classification Complete
+상태: Pre-12 Closeout Complete / BEFORE_12 반영 완료
 작성일: 2026-08-06
+최종 업데이트: 2026-08-09
 
 ## 1. 목적
 
 `COMMON`은 12 전 후속 후보 재대조에서 Frontend와 Backend가 함께 봐야 하는 범위, 후보 상태, goal 순서, 구현 금지 조건을 관리한다.
 
-이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 2026-08-07 기준 `FINAL-CLASSIFICATION.md`에서 01~11 후속 후보를 12 전에 할 것, post-12, billing 충돌/12 종속으로 최종 분리했다.
+이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 2026-08-07 기준 `FINAL-CLASSIFICATION.md`에서 01~11 후속 후보를 12 전에 할 것, post-12, billing 충돌/12 종속으로 최종 분리했다. 2026-08-09 기준 선택된 12 전 처리 대상 5개는 `TODO/BEFORE_12_TASKS`에서 모두 closeout 완료로 반영됐다.
 
 결론:
 
-- 12 전에 할 것: `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`
+- 12 전에 닫힌 것: `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`
 - post-12: 제품 기능/정책/전략 후속 후보 대부분
 - billing 충돌 / 12 종속: `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41`
 - 분류 제외 완료 참조: `PRE12-F16`
+- PRE12 잔여 구현/API/DB/FE/문서 closeout: 없음
 
 ## 2. 문서 목록
 
@@ -31,6 +33,7 @@
 - `GOAL-SPECS/G10_09_PRODUCT_ANALYTICS_FOLLOWUP_DEFER_CLOSEOUT.md`: 09 Product Analytics 후속 후보 closeout 완료
 - `GOAL-SPECS/G11_10_MOBILE_PWA_FIELD_USE_FOLLOWUP_CLOSEOUT.md`: 10 Mobile PWA Field Use 후속 후보와 문서/코드 정합성 closeout 완료
 - `GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`: 11 Admin Operation 후속 후보와 문서/코드 정합성 closeout 완료
+- `GOAL-SPECS/G99_PRE12_CLOSEOUT.md`: BEFORE_12 완료와 상위 문서 반영 closeout 완료
 
 ## 3. 현재 구현 금지 기준
 
@@ -83,15 +86,15 @@
 
 07 재대조 기준으로 MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft, User Web AI 후속 작업 section은 완료다. MeetingNote 목록 latest/next summary, follow-up reminder/자동 발송, AI data cleanup 저장/적용, transcript/raw/follow-up draft 저장, AI 후보 자동 업무 mutation은 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F40` 후속 후보로 분리하고, Admin provider audit/raw access는 11 완료 범위를 참조한다.
 
-05 재대조 기준으로 저장형 AI weekly report, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft send adapter는 완료다. Gmail/Microsoft provider smoke는 운영 closeout만 남고, SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 05 미완성이 아니라 PRE12 후속 후보로 분리한다.
+05 재대조 기준으로 저장형 AI weekly report, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft send adapter는 완료다. Gmail/Microsoft provider smoke closeout은 2026-08-09 사용자 지시 기준 BEFORE_12 G01에서 닫혔고, SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 05 미완성이 아니라 PRE12 후속 후보로 분리한다.
 
 08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 `PRE12-F17`~`PRE12-F25` 후속 후보 또는 post-12 seed로 분류했고 G09 closeout을 완료했다.
 
 09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, marketing opt-in, PWA/native install attribution은 09 미완성이 아니라 `PRE12-F26`~`PRE12-F30` 및 `PRE12-F41` 후속 후보 또는 post-12 seed로 분류했고 G10 closeout을 완료했다.
 
-10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트 미체크와 FE route architecture stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G11 closeout을 완료했다. PWA/native packaging은 `PRE12-F30`, advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`, 문서 정합성은 `PRE12-F31`/`PRE12-F32`, generic ExportJob은 기존 `PRE12-F09`로 본다.
+10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트와 FE route architecture 정합성은 `PRE12-F31`/`PRE12-F32`로 분류했고 BEFORE_12 G02/G03에서 닫았다. PWA/native packaging은 `PRE12-F30`, advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`, generic ExportJob은 기존 `PRE12-F09`로 본다.
 
-11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route stale은 기능 미완성이 아니라 `pre-12-doc-cleanup` 후보로 분류했고 G12 closeout을 완료했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다. 2026-08-07 2차 재대조에서 Admin 직접 도메인 데이터 mutation은 `PRE12-F44`, Customer/B2B tenant admin은 `PRE12-F45`로 추가 분리했고, ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13`에 연결했다.
+11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분류했고 BEFORE_12 G04/G05에서 닫았다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다. 2026-08-07 2차 재대조에서 Admin 직접 도메인 데이터 mutation은 `PRE12-F44`, Customer/B2B tenant admin은 `PRE12-F45`로 추가 분리했고, ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13`에 연결했다.
 
 ## 4. 관련 문서
 

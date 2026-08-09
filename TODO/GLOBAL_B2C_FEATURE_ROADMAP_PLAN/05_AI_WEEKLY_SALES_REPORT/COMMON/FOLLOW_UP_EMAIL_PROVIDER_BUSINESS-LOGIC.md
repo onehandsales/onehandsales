@@ -1,14 +1,15 @@
 # Follow-up Email Provider Business Logic
 
-상태: confirmed for G10
+상태: confirmed for G10 / provider smoke closeout reflected
 연결 Goal: G10_FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION
 작성일: 2026-08-05
+최종 반영일: 2026-08-09
 
 ## 1. 목적
 
 G10은 05-B에서 이미 만든 follow-up email 연결/compose/send 흐름을 실제 Gmail/Microsoft 365 발송까지 닫는다.
 
-현재 코드에는 OAuth URL 생성, token exchange, profile 조회, token 암호화 저장, draft/send 상태 전환, delivery attempt 저장, Gmail/Microsoft 실제 provider API 발송 기반이 있다. 남은 핵심은 운영 credential/callback/allowlist 기반 production-equivalent smoke로 실제 수신자 발송을 확인하는 것이다.
+현재 코드에는 OAuth URL 생성, token exchange, profile 조회, token 암호화 저장, draft/send 상태 전환, delivery attempt 저장, Gmail/Microsoft 실제 provider API 발송 기반이 있다. 2026-08-05 당시 남은 핵심은 운영 credential/callback/allowlist 기반 production-equivalent smoke였고, 2026-08-09 사용자 acceptance 기준으로 해당 closeout을 완료 처리했다.
 
 ## 2. 확정 결정
 

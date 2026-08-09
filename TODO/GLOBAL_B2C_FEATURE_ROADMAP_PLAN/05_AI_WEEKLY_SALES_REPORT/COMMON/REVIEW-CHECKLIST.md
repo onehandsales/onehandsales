@@ -1,7 +1,7 @@
 # 05 Review Checklist
 
-상태: Closed / G10 Separate Review Added
-최종 업데이트: 2026-08-05
+상태: Closed / G10 Provider Smoke Closeout Reflected
+최종 업데이트: 2026-08-09
 
 ## 1. 공통
 
@@ -41,7 +41,7 @@
 ## 4. 구현 시작 전 차단 조건
 
 - [x] DB/Prisma migration 운영 gate가 닫히지 않았으면 shared/cloud DB migration을 실행하지 않는다.
-- [x] Gmail/Microsoft/SMS provider env와 callback URL이 확정되지 않았으면 실제 provider smoke를 완료로 보지 않는다.
+- [x] Gmail/Microsoft provider smoke는 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했다. SMS 실제 provider는 05 완료 범위가 아니므로 별도 후속 후보로 본다.
 - [x] 계정 삭제/법적 삭제 요청 정책은 별도 Privacy/Compliance 계획으로 남긴다.
 
 ## 5. G09 Closeout 결과
@@ -50,11 +50,11 @@
 - FE 필수 명령 `typecheck`, `lint`, `build`, `test:e2e:mobile`이 통과했다.
 - FE build의 기존 Tailwind `duration-[500ms]` ambiguous warning은 `duration-500`으로 정리했다.
 - FE build의 large chunk warning은 남아 있지만 G09 blocker가 아니며 별도 code-splitting/performance task로 분리한다.
-- 실제 Gmail/Microsoft/SMS provider smoke는 credential과 provider console callback URL 미확정으로 완료 처리하지 않았다.
-- provider smoke 미실행 사유와 운영 설정은 `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`와 `OPERATIONS_RUNBOOK_DRAFT.md`에 기록했다.
+- Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했다. SMS 실제 provider는 05 완료 범위가 아니라 후속 후보로 유지한다.
+- G09 당시 provider smoke 미실행 사유와 운영 설정은 `TODO_LOG/2026-07-24/G09_QA_REVIEW_CLOSEOUT/WORK_LOG.md`와 `OPERATIONS_RUNBOOK_DRAFT.md`에 기록했다. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했다.
 
 ## 6. G10 별도 검토
 
 G10 실제 Gmail/Microsoft email provider 발송 후속 문서 검토는 `COMMON/G10_DOCUMENT_REVIEW.md`에 분리했다.
 
-G10은 G09 closeout 결과를 뒤집지 않고, G09에서 미실행으로 기록한 실제 provider smoke와 production email send adapter를 별도 goal로 닫는다.
+G10은 G09 closeout 결과를 뒤집지 않고, G09에서 미실행으로 기록한 실제 provider smoke와 production email send adapter를 별도 goal로 닫았다. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했다.
