@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Confirmed Planning
+상태: Implemented / G04 Closeout Confirmed
 
 ## 1. 공통 규칙
 
@@ -12,7 +12,9 @@
 - request/response 계약은 `COMMON/API-SPEC` 문서를 기준으로 구현한다.
 - 신규/수정 코드에는 `AGENT/SOFTWARE_AGENT`의 한글 주석 규칙을 적용한다.
 
-## 2. API 작업 목록
+## 2. 구현된 API 목록
+
+2026-08-09 G04 closeout 기준 아래 API는 실제 Backend controller와 `COMMON/API-SPEC` 계약을 대조했다.
 
 | Goal | Method | Path | 목적 | 계약 문서 |
 |---|---|---|---|---|
@@ -49,7 +51,7 @@
 - account deletion은 일반 Trash와 별개로 30일 유예 후 실제 삭제/익명화 job 후보를 둔다.
 - analytics admin summary는 09 read model과 10 mobile field-use event만 사용하고 billing/subscription source를 조회하지 않는다.
 
-## 4. 검증 후보
+## 4. 검증 기준
 
 ```powershell
 cd BE
@@ -61,3 +63,5 @@ pnpm run test -- admin
 pnpm run test -- trash
 pnpm run test -- product-analytics
 ```
+
+G10 QA closeout에서 Backend 전체 검증이 통과했고, BEFORE_12 G04에서는 `pnpm run typecheck`와 `pnpm run lint`를 재실행한다.

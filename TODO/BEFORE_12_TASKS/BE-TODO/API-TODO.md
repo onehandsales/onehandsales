@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Ready For Goal
+상태: G01-G04 Done / No New API Confirmed
 계약 상태: confirmed / No new API
 
 ## 1. 목적
@@ -85,10 +85,10 @@ pnpm run test -- follow-up
 ## 7. 완료 기준
 
 - [x] G01 smoke closeout에서 기존 API 상태와 운영 smoke 결과가 기록된다.
-- [ ] G02~G05에서 문서 정합성을 위해 필요한 실제 BE 코드 확인 결과가 기록된다.
-- [ ] 새 API가 없다는 계약이 `COMMON/API-SPEC`와 일치한다.
-- [ ] request/response/business logic 변경이 발생하지 않았다.
-- [ ] Backend 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.
+- [x] G02~G04에서 문서 정합성을 위해 필요한 실제 BE 코드 확인 결과가 기록된다.
+- [x] 새 API가 없다는 계약이 `COMMON/API-SPEC`와 일치한다.
+- [x] request/response/business logic 변경이 발생하지 않았다.
+- [x] Backend 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.
 
 ## 8. 관련 문서
 

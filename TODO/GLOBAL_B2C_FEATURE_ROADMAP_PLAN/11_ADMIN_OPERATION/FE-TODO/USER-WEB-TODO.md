@@ -1,10 +1,10 @@
 # Admin Web / User Web TODO
 
-상태: Confirmed Planning
+상태: Implemented / G04 Closeout Confirmed
 
 주의: 이 파일명은 기존 구조 때문에 `USER-WEB-TODO.md`로 남아 있지만, 11의 주 작업 대상은 `FE/admin-web`이다. User Web은 Trash 복구 문의와 계정/데이터 요청 goal에서만 수정한다.
 
-## 1. Admin Web 작업
+## 1. Admin Web 구현 route
 
 | Goal | Route | 화면 | 핵심 UI |
 |---|---|---|---|
@@ -41,7 +41,7 @@
 - Zod 또는 명시 타입으로 reason form을 검증한다.
 - 신규/수정 코드에는 필요한 위치에 `// 기능 : ...` 주석을 추가한다.
 
-## 4. User Web 영향
+## 4. User Web 영향 구현 상태
 
 | Goal | Route | 변경 |
 |---|---|---|

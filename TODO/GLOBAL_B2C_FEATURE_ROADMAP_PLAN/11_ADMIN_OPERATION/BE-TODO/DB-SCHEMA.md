@@ -1,6 +1,6 @@
 # DB Schema TODO
 
-상태: Confirmed Planning
+상태: Implemented / G04 Closeout Confirmed
 
 ## 1. 현재 DB 기반
 
@@ -13,18 +13,18 @@
 - `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot`이 09에서 구현됐다.
 - `UserNotificationSetting`, `BrowserPushSubscription`은 10번 browser push permission UX의 운영 상태 요약에 사용할 수 있다. Admin response에는 endpoint/key/ciphertext/hash와 userAgent 원문을 노출하지 않는다.
 
-## 2. 신규 model 후보
+## 2. 구현된 11 Admin model
 
-| Goal | Model | 목적 | 필수 여부 |
+| Goal | Model | 목적 | 구현 상태 |
 |---|---|---|---|
-| G02 | `AdminAuditLog` | Admin 주요 조회/action append-only 감사 | 필수 |
-| G02 | `AdminSensitiveAccessLog` | 민감 원문 조회 사유와 결과 추적 | 필수 |
-| G05 | `TrashRecoveryRequest` | 7일 이후 복구 문의 queue | 추천 |
-| G08 | `AccountDeletionRequest` | 계정 삭제 30일 유예 workflow | 필수 |
-| G08 | `UserDataExportRequest` | 사용자 데이터 export 요청 workflow | 필수 |
-| G09 | `AdminOperationCheckRun` | DB/migration/backup/provider smoke 운영 점검 기록 | 추천 |
+| G02 | `AdminAuditLog` | Admin 주요 조회/action append-only 감사 | 구현됨 |
+| G02 | `AdminSensitiveAccessLog` | 민감 원문 조회 사유와 결과 추적 | 구현됨 |
+| G05 | `TrashRecoveryRequest` | 7일 이후 복구 문의 queue | 구현됨 |
+| G08 | `AccountDeletionRequest` | 계정 삭제 30일 유예 workflow | 구현됨 |
+| G08 | `UserDataExportRequest` | 사용자 데이터 export 요청 workflow | 구현됨 |
+| G09 | `AdminOperationCheckRun` | DB/migration/backup/provider smoke 운영 점검 기록 | 구현됨 |
 
-## 3. 신규 enum 후보
+## 3. 구현된 11 Admin enum
 
 ```prisma
 enum AdminAuditAction {
@@ -111,7 +111,7 @@ enum AdminOperationCheckRunStatus {
 }
 ```
 
-## 4. 신규 model 초안
+## 4. Prisma schema 구현 snapshot
 
 ```prisma
 model AdminAuditLog {
@@ -415,10 +415,10 @@ model User {
 }
 ```
 
-구현 주의:
+구현 기준:
 
-- `AdminAuditLog.targetUserId`와 `AdminSensitiveAccessLog.targetUserId`는 감사 대상 사용자 ID snapshot이다. User FK로 묶으면 계정 실제 삭제를 막을 수 있으므로 11 1차 초안에서는 FK를 만들지 않는다.
-- 사용자 소유 요청 table은 계정 실제 삭제 시 함께 제거될 수 있도록 `onDelete: Cascade` 후보로 둔다.
+- `AdminAuditLog.targetUserId`와 `AdminSensitiveAccessLog.targetUserId`는 감사 대상 사용자 ID snapshot이다. User FK로 묶으면 계정 실제 삭제를 막을 수 있으므로 11 구현 기준에서는 FK를 만들지 않는다.
+- 사용자 소유 요청 table은 계정 실제 삭제 시 함께 제거될 수 있도록 `onDelete: Cascade` 기준을 둔다.
 - `AdminAuditLog.adminUserId`와 `AdminSensitiveAccessLog.adminUserId`는 내부 관리자 행위자 추적을 위해 `User` FK를 유지한다.
 
 ## 5. DB 변경 금지/주의

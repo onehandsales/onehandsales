@@ -1,6 +1,6 @@
 # Goal Specs
 
-상태: Ready For Goal
+상태: G01-G04 Done / G05-G06 Ready For Goal
 
 ## 1. 목적
 
@@ -15,7 +15,7 @@
 | G01 | `PRE12-F04` | Done / User-Assumed Provider Smoke Accepted | `G01_PROVIDER_SMOKE_CLOSEOUT.md` | Gmail/Microsoft provider smoke closeout |
 | G02 | `PRE12-F31` | Done | `G02_10_MOBILE_CHECKLIST_CLOSEOUT.md` | 10 Mobile 문서 체크리스트 정합성 |
 | G03 | `PRE12-F32` | Done | `G03_USER_WEB_ROUTE_ARCHITECTURE_CLOSEOUT.md` | User Web route/architecture 정합성 |
-| G04 | `PRE12-F33` | Ready For Goal | `G04_11_ADMIN_CHECKLIST_CLOSEOUT.md` | 11 Admin 문서 checklist/goal index 정합성 |
+| G04 | `PRE12-F33` | Done | `G04_11_ADMIN_CHECKLIST_CLOSEOUT.md` | 11 Admin 문서 checklist/goal index 정합성 |
 | G05 | `PRE12-F34` | Ready For Goal | `G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT.md` | Admin Web architecture/legacy route 정합성 |
 | G06 | closeout | Ready For Goal | `G06_BEFORE_12_CLOSEOUT_AND_HANDOFF.md` | 12 Billing 착수 전 handoff |
 

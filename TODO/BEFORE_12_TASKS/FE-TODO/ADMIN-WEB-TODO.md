@@ -1,6 +1,6 @@
 # Admin Web TODO
 
-상태: Ready For Goal
+상태: G04 Closeout Done / G05 Ready For Goal
 계약 상태: Documentation closeout only
 
 ## 1. 목적
@@ -69,11 +69,11 @@ Admin Web 코드를 수정해야 할 경우:
 ## 7. 완료 기준
 
 - [ ] Admin Web 문서가 실제 route/API 상태와 맞는다.
-- [ ] 11 Admin checklist가 실제 구현 상태와 맞는다.
+- [x] 11 Admin checklist가 실제 구현 상태와 맞는다.
 - [ ] legacy code가 현재 활성 계약으로 오해되지 않는다.
-- [ ] Billing/B2B/customer admin 기능이 추가되지 않았다.
-- [ ] Admin Web이 User Web API/client를 import하지 않는다.
-- [ ] 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.
+- [x] Billing/B2B/customer admin 기능이 추가되지 않았다.
+- [x] Admin Web이 User Web API/client를 import하지 않는다.
+- [x] 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.
 
 ## 8. 관련 문서
 

@@ -1,19 +1,19 @@
 # G04 11 Admin Checklist Closeout
 
-상태: Ready For Goal
+상태: Done
 연결 PRE12 ID: `PRE12-F33`
 성격: 11 Admin Operation 문서 정합성 closeout
 
 ## 0. 착수 체크리스트
 
-- [ ] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` 전체 상태를 확인한다.
-- [ ] 11 G10 QA/document closeout 결과를 확인한다.
-- [ ] 실제 `BE/src/modules/admin-operation`, `account-request`, `trash` 상태를 확인한다.
-- [ ] 실제 `FE/admin-web/src/app/router/router.tsx`와 Admin Web features 상태를 확인한다.
-- [ ] 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 상태를 확인한다.
-- [ ] `BE/prisma/schema.prisma`에서 11 Admin 관련 DB 상태를 확인한다.
-- [ ] 새 API/DB/route를 만들지 않는 기준을 확인한다.
-- [ ] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
+- [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` 전체 상태를 확인한다.
+- [x] 11 G10 QA/document closeout 결과를 확인한다.
+- [x] 실제 `BE/src/modules/admin-operation`, `account-request`, `trash` 상태를 확인한다.
+- [x] 실제 `FE/admin-web/src/app/router/router.tsx`와 Admin Web features 상태를 확인한다.
+- [x] 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 상태를 확인한다.
+- [x] `BE/prisma/schema.prisma`에서 11 Admin 관련 DB 상태를 확인한다.
+- [x] 새 API/DB/route를 만들지 않는 기준을 확인한다.
+- [x] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
 
 ## 1. 목표
 
@@ -89,7 +89,7 @@ G04는 새 API를 만들지 않는다.
 
 ## 7. DB/Prisma 체크
 
-- `AdminAuditLog`, `AdminOperationCheckRun`, `TrashRecoveryRequest`, `AccountDataRequest` 등 11 관련 모델 상태를 확인한다.
+- `AdminAuditLog`, `AdminOperationCheckRun`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest` 등 11 관련 모델 상태를 확인한다.
 - billing/subscription/customer admin 모델을 추가하지 않는다.
 - DB 변경이 필요하면 현재 goal에서 구현하지 않는다.
 
@@ -140,15 +140,15 @@ rg -n "/app/trash|/app/settings|account deletion|data export" TODO/GLOBAL_B2C_FE
 
 ## 10. 완료 기준
 
-- [ ] 11 상위 checklist가 G10 closeout 및 실제 코드 상태와 맞는다.
-- [ ] 11 goal index가 G01~G10 완료/구현 상태와 맞는다.
-- [ ] BE/FE TODO가 planning 상태로 오해되지 않게 정리됐다.
-- [ ] 11 `FE-TODO/USER-WEB-TODO.md`의 `/app/trash`, `/app/settings`, `/admin/api/*` 경계가 실제 User Web 상태와 맞는다.
-- [ ] User Web 영향 항목을 11 미완성이나 새 기능 구현으로 재오픈하지 않았다.
-- [ ] Billing/B2B/Admin mutation 후속 후보가 11 미완성처럼 표시되지 않는다.
-- [ ] BE typecheck/lint가 통과했다.
-- [ ] FE admin-web typecheck/lint가 통과했다.
-- [ ] User Web 코드 변경이 발생했다면 FE user-web typecheck/lint가 통과했다.
+- [x] 11 상위 checklist가 G10 closeout 및 실제 코드 상태와 맞는다.
+- [x] 11 goal index가 G01~G10 완료/구현 상태와 맞는다.
+- [x] BE/FE TODO가 planning 상태로 오해되지 않게 정리됐다.
+- [x] 11 `FE-TODO/USER-WEB-TODO.md`의 `/app/trash`, `/app/settings`, `/admin/api/*` 경계가 실제 User Web 상태와 맞는다.
+- [x] User Web 영향 항목을 11 미완성이나 새 기능 구현으로 재오픈하지 않았다.
+- [x] Billing/B2B/Admin mutation 후속 후보가 11 미완성처럼 표시되지 않는다.
+- [x] BE typecheck/lint가 통과했다.
+- [x] FE admin-web typecheck/lint가 통과했다.
+- [x] User Web 코드 변경은 없었고, User Web 영향 문서 수정에 따라 FE user-web typecheck/lint가 통과했다.
 
 ## 11. 결과 기록 위치
 
@@ -156,6 +156,12 @@ rg -n "/app/trash|/app/settings|account deletion|data export" TODO/GLOBAL_B2C_FE
 
 ```text
 TODO/BEFORE_12_TASKS/TODO_LOG/<YYYY-MM-DD>/G04_11_ADMIN_CHECKLIST_CLOSEOUT/WORK_LOG.md
+```
+
+실제 결과 기록:
+
+```text
+TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G04_11_ADMIN_CHECKLIST_CLOSEOUT/WORK_LOG.md
 ```
 
 ## 12. 권장 실행 문구

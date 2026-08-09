@@ -81,7 +81,7 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 - [ ] `/app/notifications` 활성 상태를 rollback하지 않는다.
 - [ ] `/app/schedules/week` 활성 상태를 rollback하지 않는다.
 - [ ] `/app/export` redirect 상태를 변경하지 않는다.
-- [ ] G04에서 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
+- [x] G04에서 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
 - [ ] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
 - [x] G01~G06 각 goal 문서에 착수 체크리스트, request/response, business logic, user flow, DB/Prisma, 검증 명령, 완료 기준이 반영되어 있다.
 - [ ] 새 API와 새 DB migration이 없다.

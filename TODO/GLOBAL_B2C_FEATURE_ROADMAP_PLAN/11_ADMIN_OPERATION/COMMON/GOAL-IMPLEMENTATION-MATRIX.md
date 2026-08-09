@@ -1,6 +1,6 @@
 # Goal Implementation Matrix
 
-상태: Confirmed
+상태: Implemented / G04 Closeout Confirmed
 
 | Goal | Backend | DB | Admin Web | User Web | API Spec |
 |---|---|---|---|---|---|

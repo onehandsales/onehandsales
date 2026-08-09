@@ -24,6 +24,7 @@
 - 10번 Mobile/PWA와 충돌하지 않도록 BusinessCard OCR safe failure field는 현재 schema의 `BusinessCardScanLog.safeErrorCode`, `safeErrorMessage`, `retryable`를 사용한다.
 - 10번 완료 후 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`, `ProductAnalyticsEvent`의 mobile field-use event는 Admin에서 safe summary/aggregate로 조회할 수 있는 기반이 됐다. 단 push endpoint/key/userAgent 원문과 analytics raw payload는 노출하지 않는다.
 - `G10_QA_DOCUMENT_CLOSEOUT` 기준 최종 검증, 문서 정합성 점검, 보안/개인정보 redaction 리뷰가 완료됐다.
+- 2026-08-09 `BEFORE_12_TASKS` G04 closeout에서 checklist, goal index, BE/FE TODO 상태를 실제 구현 상태와 맞췄다.
 
 ## 3. 확정 결정 요약
 
