@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: G02-G04 Done
+상태: G02-G06 Done / Documentation Closeout Complete
 계약 상태: Documentation closeout only
 
 ## 1. 목적

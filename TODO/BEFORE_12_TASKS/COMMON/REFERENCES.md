@@ -1,6 +1,6 @@
 # References
 
-상태: Ready For Goal
+상태: Final
 
 ## 1. 목적
 

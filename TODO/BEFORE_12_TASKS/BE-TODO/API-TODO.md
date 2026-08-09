@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: G01-G04 Done / No New API Confirmed
+상태: G01-G06 Done / No New API Confirmed
 계약 상태: confirmed / No new API
 
 ## 1. 목적
@@ -11,7 +11,7 @@
 
 이번 계획에서는 새 Backend API를 만들지 않는다.
 
-`PRE12-F04`는 기존 follow-up delivery email provider 연결/발송 흐름의 운영 smoke 기록이고, `PRE12-F31`~`PRE12-F34`는 문서 정합성 closeout이다.
+`PRE12-F04`는 기존 follow-up delivery email provider 연결/발송 흐름의 운영 smoke 기록이고, `PRE12-F31`~`PRE12-F34`는 문서 정합성 closeout이다. G06 handoff에서도 12 Billing 착수 전 새 API blocker는 발견되지 않았다.
 
 ## 3. 기존 API 확인 대상
 
@@ -85,7 +85,7 @@ pnpm run test -- follow-up
 ## 7. 완료 기준
 
 - [x] G01 smoke closeout에서 기존 API 상태와 운영 smoke 결과가 기록된다.
-- [x] G02~G04에서 문서 정합성을 위해 필요한 실제 BE 코드 확인 결과가 기록된다.
+- [x] G02~G05에서 문서 정합성을 위해 필요한 실제 BE/FE 코드 확인 결과가 기록된다.
 - [x] 새 API가 없다는 계약이 `COMMON/API-SPEC`와 일치한다.
 - [x] request/response/business logic 변경이 발생하지 않았다.
 - [x] Backend 코드 변경이 발생했다면 typecheck/lint가 통과했고 한글 주석 기준을 지켰다.

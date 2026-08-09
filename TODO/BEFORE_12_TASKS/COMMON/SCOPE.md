@@ -1,6 +1,6 @@
 # Scope
 
-상태: Ready For Goal
+상태: Final / 12 Billing Handoff Ready
 
 ## 1. 목적
 

@@ -1,6 +1,6 @@
 # DB Schema
 
-상태: Ready For Goal
+상태: G01-G06 Done / No New Migration Confirmed
 계약 상태: confirmed / No new migration
 
 ## 1. 목적
@@ -11,7 +11,7 @@
 
 이번 계획에서는 Prisma schema와 migration을 추가하지 않는다.
 
-G01 provider smoke는 기존 follow-up delivery DB 모델을 사용한다. G02~G05는 문서 정합성 closeout이므로 DB 변경이 없다.
+G01 provider smoke는 기존 follow-up delivery DB 모델을 사용한다. G02~G06은 문서 정합성 closeout과 handoff이므로 DB 변경이 없다.
 
 ## 3. 현재 DB 기준
 
@@ -82,10 +82,10 @@ G01 provider smoke는 기존 follow-up delivery DB 모델을 사용한다. G02~G
 
 ## 7. 완료 기준
 
-- [ ] DB 변경 없음이 각 goal 문서와 일치한다.
-- [ ] billing/B2B/export/draft 관련 schema 후보가 12 전 구현으로 섞이지 않는다.
+- [x] DB 변경 없음이 각 goal 문서와 일치한다.
+- [x] billing/B2B/export/draft 관련 schema 후보가 12 전 구현으로 섞이지 않는다.
 - [x] G01 smoke 결과 확인에 필요한 기존 모델이 명시되어 있다.
-- [ ] Prisma schema/migration 변경이 발생하지 않았다.
+- [x] Prisma schema/migration 변경이 발생하지 않았다.
 
 ## 8. 관련 문서
 

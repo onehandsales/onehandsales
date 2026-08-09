@@ -1,13 +1,13 @@
 # API Spec
 
-상태: Ready For Goal
+상태: Confirmed / No New API
 계약 상태: No new API
 
 ## 1. 목적
 
 이 폴더는 `BEFORE_12_TASKS`의 API 영향 여부를 기록한다.
 
-이번 계획은 새 API를 만들지 않는다. G01은 기존 follow-up delivery API를 운영 smoke에 사용하고, G02~G05는 문서 정합성 closeout만 수행한다.
+이번 계획은 새 API를 만들지 않는다. G01은 기존 follow-up delivery API를 운영 smoke에 사용했고, G02~G06은 문서 정합성 closeout과 handoff만 수행했다.
 
 ## 2. 계약 문서
 

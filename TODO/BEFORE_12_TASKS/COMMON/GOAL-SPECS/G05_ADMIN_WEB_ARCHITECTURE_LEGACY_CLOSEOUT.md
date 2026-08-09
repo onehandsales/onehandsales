@@ -1,18 +1,18 @@
 # G05 Admin Web Architecture Legacy Closeout
 
-상태: Ready For Goal
+상태: Done
 연결 PRE12 ID: `PRE12-F34`
 성격: Admin Web architecture/legacy route 문서 정합성 closeout
 
 ## 0. 착수 체크리스트
 
-- [ ] `FE/admin-web/src/app/router/router.tsx`를 확인한다.
-- [ ] `FE/admin-web/ARCHITECTURE.md`를 확인한다.
-- [ ] `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 확인한다.
-- [ ] `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`의 Admin 관련 설명을 확인한다.
-- [ ] `features/admin-query`와 inactive page 상태를 확인한다.
-- [ ] Admin Web은 `/admin/api/*`만 호출해야 한다는 기준을 확인한다.
-- [ ] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
+- [x] `FE/admin-web/src/app/router/router.tsx`를 확인한다.
+- [x] `FE/admin-web/ARCHITECTURE.md`를 확인한다.
+- [x] `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 확인한다.
+- [x] `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`의 Admin 관련 설명을 확인한다.
+- [x] `features/admin-query`와 inactive page 상태를 확인한다.
+- [x] Admin Web은 `/admin/api/*`만 호출해야 한다는 기준을 확인한다.
+- [x] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
 
 ## 1. 목표
 
@@ -145,13 +145,13 @@ git diff --check
 
 ## 13. 완료 기준
 
-- [ ] 활성 route와 redirect route가 문서에서 분리됐다.
-- [ ] legacy `admin-query`가 현재 주력 route/API 계약이 아님을 명시했다.
-- [ ] Admin Web E2E 설명이 현재 test 상태와 충돌하지 않는다.
-- [ ] Billing Admin/customer tenant admin을 추가하지 않았다.
-- [ ] Admin Web에서 User API/client를 사용하지 않는다.
-- [ ] 새 request/response, business logic, user flow, DB/Prisma 변경을 만들지 않았다.
-- [ ] FE admin-web typecheck/lint가 통과했다.
+- [x] 활성 route와 redirect route가 문서에서 분리됐다.
+- [x] legacy `admin-query`가 현재 주력 route/API 계약이 아님을 명시했다.
+- [x] Admin Web E2E 설명이 현재 test 상태와 충돌하지 않는다.
+- [x] Billing Admin/customer tenant admin을 추가하지 않았다.
+- [x] Admin Web에서 User API/client를 사용하지 않는다.
+- [x] 새 request/response, business logic, user flow, DB/Prisma 변경을 만들지 않았다.
+- [x] FE admin-web typecheck/lint가 통과했다.
 
 ## 14. 결과 기록 위치
 
@@ -159,6 +159,12 @@ git diff --check
 
 ```text
 TODO/BEFORE_12_TASKS/TODO_LOG/<YYYY-MM-DD>/G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT/WORK_LOG.md
+```
+
+실제 결과 기록:
+
+```text
+TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT/WORK_LOG.md
 ```
 
 ## 15. 권장 실행 문구

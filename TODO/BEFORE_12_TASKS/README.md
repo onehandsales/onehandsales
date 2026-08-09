@@ -1,6 +1,6 @@
 # Before 12 Tasks
 
-상태: G01-G04 Done / G05-G06 Ready For Goal
+상태: G01-G06 Done / 12 Billing Handoff Ready
 작성일: 2026-08-07
 고도화일: 2026-08-08
 성격: 12 Billing 착수 전 closeout 실행 계획
@@ -35,8 +35,8 @@ PRE12 최종 분류에서 12 전에 할 것으로 확정된 항목은 5개뿐이
 | G02 | `PRE12-F31` | 10 Mobile Checklist Closeout | 10 Mobile Field Use 문서 체크리스트 정합성 | Done |
 | G03 | `PRE12-F32` | User Web Route Architecture Closeout | User Web route/architecture 문서 정합성 | Done |
 | G04 | `PRE12-F33` | 11 Admin Checklist Closeout | 11 Admin Operation checklist/goal index 정합성 | Done |
-| G05 | `PRE12-F34` | Admin Web Architecture Legacy Closeout | Admin Web architecture/legacy route 정합성 | Ready For Goal |
-| G06 | closeout | Before 12 Closeout And Handoff | G01~G05 완료 후 12 착수 가능 상태 판정 | Ready For Goal |
+| G05 | `PRE12-F34` | Admin Web Architecture Legacy Closeout | Admin Web architecture/legacy route 정합성 | Done |
+| G06 | closeout | Before 12 Closeout And Handoff | G01~G05 완료 후 12 착수 가능 상태 판정 | Done / 12 Billing Handoff Ready |
 
 ## 3. 포함 범위
 
@@ -89,7 +89,7 @@ G01 Provider Smoke Closeout
 -> G06 Before 12 Closeout And Handoff
 ```
 
-G06은 G01~G05가 모두 완료되기 전에는 완료할 수 없다. G01은 2026-08-09 사용자 acceptance 기준으로 완료 처리됐고, G02는 2026-08-09 10 Mobile 체크리스트 정합성 closeout으로 완료 처리됐으며, G03은 2026-08-09 User Web route/architecture 문서 정합성 closeout으로 완료 처리됐고, G04는 2026-08-09 11 Admin checklist/goal index 문서 정합성 closeout으로 완료 처리됐다.
+G06은 G01~G05가 모두 완료되기 전에는 완료할 수 없다. G01은 2026-08-09 사용자 acceptance 기준으로 완료 처리됐고, G02는 2026-08-09 10 Mobile 체크리스트 정합성 closeout으로 완료 처리됐으며, G03은 2026-08-09 User Web route/architecture 문서 정합성 closeout으로 완료 처리됐고, G04는 2026-08-09 11 Admin checklist/goal index 문서 정합성 closeout으로 완료 처리됐으며, G05는 2026-08-09 Admin Web architecture/legacy route 문서 정합성 closeout으로 완료 처리됐다. G06은 2026-08-09 G01~G05 결과와 PRE12 최종 분류, 12 Billing scope를 대조해 12 Billing 문서 작성/상세화 착수 가능 상태로 handoff했다.
 
 ## 7. 완료 판정
 

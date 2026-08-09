@@ -163,13 +163,18 @@
 |---|---|---|
 | `/login` | Admin 로그인 | 포함 |
 | `/` | Admin root placeholder | 부분 포함 |
-| `/users`, `/users/:userId` | 사용자 목록/상세 | 후속. 현재 `/`로 redirect |
-| `/organizations` | 조직 관리 | 후속. 현재 `/`로 redirect |
-| `/subscriptions` | 구독 관리 | 후속. 현재 `/`로 redirect |
-| `/analytics` | 사용량 분석 | 후속. 현재 `/`로 redirect |
-| `/audit-logs` | 감사 로그 | 후속. 현재 `/`로 redirect |
-| `/system` | 시스템 설정 | 후속. 현재 `/`로 redirect |
-| `/support` | 운영 지원 | 후속. 현재 `/`로 redirect |
+| `/users`, `/users/:userId` | 사용자 목록/상세 | 포함 |
+| `/users/:userId/domain` | 사용자 도메인 read-only 탭 | 포함 |
+| `/users/:userId/trash` | 사용자 Trash | 포함 |
+| `/provider-failures` | Provider failure 운영 | 포함 |
+| `/account-requests` | 계정/데이터 요청 queue | 포함 |
+| `/trash/recovery-requests` | Trash 복구 요청 queue | 포함 |
+| `/analytics` | 사용량 분석 | 포함 |
+| `/audit-logs` | 감사 로그 | 포함 |
+| `/system` | 운영 gate | 포함 |
+| `/organizations` | 조직 관리 | 보류. 현재 `/`로 redirect |
+| `/subscriptions` | 구독 관리 | 보류. 현재 `/`로 redirect |
+| `/support` | 운영 지원 | 보류. 현재 `/`로 redirect |
 
 ## 4. 현재 코드 라우트 상태
 
@@ -223,11 +228,19 @@ pen 디자인 반영 대기 도메인:
 - `/`
 - `/users`
 - `/users/:userId`
-- `/organizations`
-- `/subscriptions`
+- `/users/:userId/domain`
+- `/users/:userId/trash`
+- `/provider-failures`
+- `/account-requests`
+- `/trash/recovery-requests`
 - `/analytics`
 - `/audit-logs`
 - `/system`
+
+현재 Admin Web redirect/future 경계:
+
+- `/organizations`
+- `/subscriptions`
 - `/support`
 
 현재 화면 목록과 코드의 차이:
@@ -237,9 +250,10 @@ pen 디자인 반영 대기 도메인:
 - 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 방식으로 구현되어 있다.
 - 현재 `/`는 공개 진입면이고 `/app`이 홈 대시보드다. 딜 파이프라인은 `/app/deals`에서 운영한다.
 - `/app/import`는 현재 사이드바 업무 섹션의 `데이터 업로드`로 노출한다. 범용 `/app/export`는 현재 정본 흐름이 아니므로 route를 `/app`으로 redirect하고 navigation에서 숨긴다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
-- 기획 목록의 Admin 상세 데이터 라우트와 전체 딜/회사/담당자/제품 라우트는 현재 Admin Web router에 없다. Admin router의 운영 route는 `/`로 redirect한다.
-- Admin Web `admin-query` feature에는 dashboard/users/domain/audit/sensitive raw 준비 화면과 API client가 있지만 현재 router/menu에서 노출하지 않는다.
-- Backend에는 현재 Admin Web 운영 조회 API가 `GET /admin/api/me` 외에는 구현되어 있지 않다. 관리자 페이지는 후속 단계에서 만든다.
+- 기획 목록의 전체 딜/회사/담당자/제품 전역 Admin route는 현재 Admin Web router에 없다. 사용자별 도메인 조회는 `/users/:userId/domain`에서 read-only 탭으로 제공한다.
+- Admin Web `admin-query` feature에는 dashboard, 전역 domain list/detail, legacy raw access 준비 화면과 API client가 있지만 현재 router/menu에서 노출하지 않는 legacy boundary다.
+- Backend에는 11 Admin Operation 기준 사용자, 도메인, Trash, provider failure, analytics, account request, audit, system gate Admin API가 구현되어 있다.
+- `/organizations`, `/subscriptions`, `/support`는 redirect/future 경계이며 Billing Admin, Customer/B2B tenant admin, 운영 지원 화면을 현재 열지 않는다.
 
 라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다.
 

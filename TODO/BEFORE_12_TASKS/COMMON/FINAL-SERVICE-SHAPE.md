@@ -1,6 +1,6 @@
 # Final Service Shape
 
-상태: Ready For Goal
+상태: Final / 12 Billing Handoff Ready
 
 ## 1. 목적
 
@@ -10,11 +10,11 @@
 
 ## 2. 최종 상태
 
-완료 후 상태는 아래와 같아야 한다.
+2026-08-09 G06 완료 후 상태는 아래와 같다.
 
 - Gmail/Microsoft provider smoke closeout 결과가 문서에 남아 있다.
-- Gmail과 Microsoft 365 모두 production-equivalent OAuth 연결과 allowlist 실제 발송이 성공했다.
-- allowlist 밖 수신자 차단이 provider 호출 없이 safe failed attempt로 기록됐다.
+- Gmail과 Microsoft 365 모두 production-equivalent OAuth 연결과 allowlist 실제 발송이 사용자 acceptance 기준으로 성공 처리됐다.
+- allowlist 밖 수신자 차단이 provider 호출 없이 safe failed attempt로 기록됐다는 acceptance matrix가 남아 있다.
 - 10 Mobile Field Use 체크리스트가 실제 완료 상태와 맞는다.
 - User Web route/architecture 문서가 실제 route 상태와 맞는다.
 - 11 Admin Operation 체크리스트와 goal index가 실제 완료 상태와 맞는다.
@@ -55,11 +55,17 @@
 아래 조건이 충족되면 12 Billing 착수 가능 상태로 본다.
 
 - G01~G05의 완료 기록이 있다.
-- G01 Gmail/Microsoft provider smoke가 모두 성공했다.
+- G01 Gmail/Microsoft provider smoke가 사용자 acceptance 기준으로 모두 성공 처리됐다.
 - G06 handoff가 G01~G05 결과를 모아 12 착수 가능으로 판정했다.
 - `PRE12_FOLLOWUP_RECHECK`와 `BEFORE_12_TASKS` 상태가 충돌하지 않는다.
 - 12 전 closeout 항목, post-12 후보, billing 종속 후보가 문서상 분리되어 있다.
 - 12 Billing 문서에서 Merchant of Record 우선, Stripe 직접 결제 fallback 방향을 별도로 확정할 수 있다.
+
+G06 판정:
+
+- 위 조건은 2026-08-09 G06 handoff에서 충족된 것으로 기록됐다.
+- G01의 실제 발송/차단 DB attempt row는 독립 재확인이 아니라 사용자 acceptance 기준이다.
+- 따라서 다음 단계는 12 Billing 구현이 아니라 `12_BILLING_SUBSCRIPTION_TAX`의 Draft Slot을 confirmed scope/API/DB 문서로 상세화하는 일이다.
 
 ## 7. 12 착수 불가 조건
 

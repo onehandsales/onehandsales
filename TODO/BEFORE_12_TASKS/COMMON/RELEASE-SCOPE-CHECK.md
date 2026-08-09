@@ -1,6 +1,6 @@
 # Release Scope Check
 
-상태: Ready For Goal
+상태: Done / 12 Billing Handoff Ready
 
 ## 1. 목적
 
@@ -75,16 +75,16 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 
 ## 7. 충돌 방지 체크
 
-- [ ] `PRE12_FOLLOWUP_RECHECK`의 12 전 항목과 `BEFORE_12_TASKS` goal이 1:1로 연결된다.
-- [ ] post-12 후보가 이번 계획의 포함 범위에 들어오지 않는다.
-- [ ] billing 종속 후보가 이번 계획의 포함 범위에 들어오지 않는다.
-- [ ] `/app/notifications` 활성 상태를 rollback하지 않는다.
-- [ ] `/app/schedules/week` 활성 상태를 rollback하지 않는다.
-- [ ] `/app/export` redirect 상태를 변경하지 않는다.
+- [x] `PRE12_FOLLOWUP_RECHECK`의 12 전 항목과 `BEFORE_12_TASKS` goal이 1:1로 연결된다.
+- [x] post-12 후보가 이번 계획의 포함 범위에 들어오지 않는다.
+- [x] billing 종속 후보가 이번 계획의 포함 범위에 들어오지 않는다.
+- [x] `/app/notifications` 활성 상태를 rollback하지 않는다.
+- [x] `/app/schedules/week` 활성 상태를 rollback하지 않는다.
+- [x] `/app/export` redirect 상태를 변경하지 않는다.
 - [x] G04에서 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
-- [ ] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
+- [x] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
 - [x] G01~G06 각 goal 문서에 착수 체크리스트, request/response, business logic, user flow, DB/Prisma, 검증 명령, 완료 기준이 반영되어 있다.
-- [ ] 새 API와 새 DB migration이 없다.
+- [x] 새 API와 새 DB migration이 없다.
 - [x] G01 Gmail/Microsoft smoke acceptance closeout 근거가 문서에 기록되어 있다.
 
 ## 8. 완료 판정
@@ -92,11 +92,18 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 아래가 모두 만족되면 `BEFORE_12_TASKS`는 12 Billing 착수 전 closeout 완료로 처리한다.
 
 - G01~G06 완료
-- G01 Gmail/Microsoft production-equivalent smoke 모두 성공
+- G01 Gmail/Microsoft production-equivalent smoke 사용자 acceptance 기준 성공 처리
 - `COMMON/PLANNING-REVIEW.md` 갱신
 - `COMMON/FINAL-SERVICE-SHAPE.md` 갱신
 - `COMMON/RELEASE-SCOPE-CHECK.md` 갱신
 - `PRE12_FOLLOWUP_RECHECK`와 상태 충돌 없음
+
+최종 판정:
+
+- 2026-08-09 기준 `BEFORE_12_TASKS`는 G01~G06 완료 상태다.
+- 12 전 blocker는 남아 있지 않다.
+- G01 provider smoke는 `User-Assumed Provider Smoke Accepted` 성격으로 닫혔다.
+- 12 Billing은 구현이 아니라 confirmed scope/API/DB 문서 상세화부터 착수한다.
 
 ## 9. 관련 문서
 

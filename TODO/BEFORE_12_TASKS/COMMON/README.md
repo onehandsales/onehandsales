@@ -1,6 +1,6 @@
 # Common
 
-상태: Ready For Goal
+상태: Done / 12 Billing Handoff Ready
 
 ## 1. 목적
 
@@ -12,16 +12,16 @@
 
 | 문서 | 상태 | 목적 |
 | --- | --- | --- |
-| `SCOPE.md` | Ready For Goal | 포함/제외 범위와 구현 금지선 |
-| `REFERENCES.md` | Ready For Goal | 선행 확인 문서와 실제 코드 확인 경로 |
-| `USER-FLOW.md` | Ready For Goal | 운영자/작업자의 closeout 흐름 |
-| `GOAL-WORK-ORDER.md` | Ready For Goal | `/goal` 실행 순서와 검증 gate |
-| `PLANNING-REVIEW.md` | Ready For Goal | 구현 전 기획 검토 결과 |
-| `FINAL-SERVICE-SHAPE.md` | Ready For Goal | 12 착수 전 최종 서비스/문서 상태 |
-| `RELEASE-SCOPE-CHECK.md` | Ready For Goal | 12 착수 가능 여부와 제외 범위 검수 |
-| `API-SPEC/README.md` | Ready For Goal | API 변경 여부와 계약 상태 |
-| `API-SPEC/NO_NEW_API_CONTRACT.md` | Ready For Goal | 이번 계획의 API non-change 계약 |
-| `GOAL-SPECS/README.md` | Ready For Goal | goal 상세 명세 index |
+| `SCOPE.md` | Final / 12 Billing Handoff Ready | 포함/제외 범위와 구현 금지선 |
+| `REFERENCES.md` | Final | 선행 확인 문서와 실제 코드 확인 경로 |
+| `USER-FLOW.md` | Done / Handoff Complete | 운영자/작업자의 closeout 흐름 |
+| `GOAL-WORK-ORDER.md` | G01-G06 Done / 12 Billing Handoff Ready | `/goal` 실행 순서와 검증 gate |
+| `PLANNING-REVIEW.md` | Done / 12 Billing Handoff Ready | 구현 전 기획 검토 결과 |
+| `FINAL-SERVICE-SHAPE.md` | Final / 12 Billing Handoff Ready | 12 착수 전 최종 서비스/문서 상태 |
+| `RELEASE-SCOPE-CHECK.md` | Done / 12 Billing Handoff Ready | 12 착수 가능 여부와 제외 범위 검수 |
+| `API-SPEC/README.md` | Confirmed / No New API | API 변경 여부와 계약 상태 |
+| `API-SPEC/NO_NEW_API_CONTRACT.md` | Confirmed / No New API | 이번 계획의 API non-change 계약 |
+| `GOAL-SPECS/README.md` | G01-G06 Done / 12 Billing Handoff Ready | goal 상세 명세 index |
 
 ## 3. 공통 원칙
 
@@ -44,7 +44,7 @@
 - G03: `PRE12-F32` User Web route architecture closeout
 - G04: `PRE12-F33` 11 Admin checklist closeout
 - G05: `PRE12-F34` Admin Web architecture legacy closeout
-- G06: G01~G05 결과 handoff
+- G06: G01~G05 결과 handoff 완료
 
 ## 5. 관련 문서
 

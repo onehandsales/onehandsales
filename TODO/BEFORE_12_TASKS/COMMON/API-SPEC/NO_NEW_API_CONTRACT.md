@@ -1,6 +1,6 @@
 # No New API Contract
 
-상태: Ready For Goal
+상태: Confirmed / G06 Done
 계약 상태: confirmed / No new API
 소비자: Backend, User Web, Admin Web
 
@@ -8,7 +8,7 @@
 
 이 문서는 `BEFORE_12_TASKS`에서 새 API를 추가하지 않는다는 계약을 명시한다.
 
-`BEFORE_12_TASKS`는 12 Billing 착수 전 closeout 계획이다. 기능 구현 계획이 아니므로 새 HTTP endpoint, request/response 변경, transaction 변경, audit log 정책 변경을 만들지 않는다.
+`BEFORE_12_TASKS`는 12 Billing 착수 전 closeout 계획이다. 기능 구현 계획이 아니므로 새 HTTP endpoint, request/response 변경, transaction 변경, audit log 정책 변경을 만들지 않았고, G06 handoff에서도 새 API blocker는 발견되지 않았다.
 
 ## 2. API 변경 없음
 

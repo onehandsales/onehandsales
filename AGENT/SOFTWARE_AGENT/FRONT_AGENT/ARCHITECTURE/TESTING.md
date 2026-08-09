@@ -2,7 +2,7 @@
 
 ## 1. 목적
 
-MVP Frontend 테스트 자동화는 User Web 핵심 업무 흐름을 우선한다. Admin Web은 관리자 페이지 본 구현 전까지 권한 확인 smoke 범위로만 유지한다.
+MVP Frontend 테스트 자동화는 User Web 핵심 업무 흐름을 우선한다. Admin Web은 11 Admin Operation 기준 현재 운영 route smoke를 별도 Playwright 파일로 유지한다.
 
 - `FE/user-web`
 - `FE/admin-web`
@@ -43,22 +43,23 @@ Auth E2E 기준:
 
 ## 3. Admin Web E2E Scope
 
-Admin Web은 현재 `typecheck`, `lint`, `build`와 admin/non-admin 수동 smoke를 우선 release gate로 본다. `FE/admin-web`의 Playwright 파일은 남아 있지만 과거 dashboard/users/data/audit 화면 기대값을 포함하므로, 현재 라우터 기준으로 갱신하기 전까지 release gate로 쓰지 않는다.
+Admin Web은 현재 `typecheck`, `lint`, `build`와 현재 route smoke E2E를 검증 후보로 둔다. `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 현재 Admin router 기준으로 non-admin 차단, 사용자 overview, 도메인 탭 reason modal, provider failure, analytics, account request, Trash recovery request, system gate를 확인한다.
 
-E2E를 다시 gate로 올릴 때의 최소 범위는 login, role guard, `/admin/api/me` 기반 보호 라우트 검증이다. 운영 안전성과 전체 데이터 조회 흐름은 관리자 페이지 본 구현 후 추가한다.
+G05 문서 closeout의 필수 gate는 `typecheck`, `lint`, Admin Web `/api/*` 정적 검색, `git diff --check`다. Playwright E2E는 현재 route 상태와 충돌하지 않는 smoke test로 유지한다.
 
 현재 우선순위:
 
 - admin login and role guard
-
-후속 우선순위:
-
-- user list and user detail
-- global company/contact/product/deal lists
-- per-user company/contact/product/deal view
+- current active Admin route smoke
 - sensitive field masking by default
 - raw sensitive data view requires reason
 - audit log record appears after audited action
+- provider failure, analytics, account request, Trash recovery request, system gate smoke
+
+후속 우선순위:
+
+- global company/contact/product/deal lists
+- Billing Admin and customer tenant admin route smoke
 - manual payment status management when the payment admin feature is added
 
 ## 4. External Services
@@ -77,16 +78,16 @@ Mock 또는 stub 대상:
 CI가 도입되면 다음 위치에서 테스트를 실행한다.
 
 - User Web Playwright: `FE/user-web`
-- Admin Web Playwright: `FE/admin-web`. 현재 라우터 기준으로 갱신한 뒤 gate로 사용한다.
+- Admin Web Playwright: `FE/admin-web`. 현재 11 Admin route smoke 파일을 유지한다.
 
 CI timing:
 
-- Pull request: User Web smoke E2E. Admin auth smoke E2E는 현재 라우터 기준 갱신 후 추가한다.
+- Pull request: User Web smoke E2E. Admin Web은 route 변경 또는 Admin 운영 화면 변경이 있을 때 current route smoke E2E를 실행한다.
 - After merge to `main`: User Web full E2E
 - Before deployment: User Web full E2E
-- Admin full E2E is added after Admin pages and Backend operation query APIs are implemented.
+- Admin full E2E is expanded after Billing Admin, customer tenant admin, or direct mutation flows are implemented.
 
-## 5A. 2026-07-10 검증 상태
+## 5A. 검증 상태 기록
 
 2026-07-10 기준 Frontend 검증 상태는 다음이다.
 
@@ -95,7 +96,11 @@ CI timing:
 - URL locale smoke 통과: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
 - 핵심 업무 happy path 수동 QA 통과: 로그인, 회사, 담당자, 제품, 딜, 일정, 회의록, 명함 OCR, Import, Search, Trash, Domain XLSX Export, 설정/더보기.
 - FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 통과.
-- Admin 운영 화면 E2E는 관리자 페이지 본 구현 전까지 release gate로 보지 않는다.
+
+2026-08-09 G05 closeout 기준 FE/admin-web 검증 상태는 다음이다.
+
+- FE/admin-web `typecheck`, `lint`, `test:e2e` 통과.
+- FE/admin-web E2E는 현재 11 Admin route smoke 기준으로 유지한다.
 
 남은 출시 전 Front QA는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA다.
 
