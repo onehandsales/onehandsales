@@ -10,6 +10,7 @@
 - [ ] 11 G10 QA/document closeout 결과를 확인한다.
 - [ ] 실제 `BE/src/modules/admin-operation`, `account-request`, `trash` 상태를 확인한다.
 - [ ] 실제 `FE/admin-web/src/app/router/router.tsx`와 Admin Web features 상태를 확인한다.
+- [ ] 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 상태를 확인한다.
 - [ ] `BE/prisma/schema.prisma`에서 11 Admin 관련 DB 상태를 확인한다.
 - [ ] 새 API/DB/route를 만들지 않는 기준을 확인한다.
 - [ ] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
@@ -27,6 +28,7 @@
 - `11_ADMIN_OPERATION/BE-TODO/API-TODO.md` 정합성
 - `11_ADMIN_OPERATION/BE-TODO/DB-SCHEMA.md` 정합성
 - `11_ADMIN_OPERATION/FE-TODO/ADMIN-WEB-TODO.md` 정합성
+- `11_ADMIN_OPERATION/FE-TODO/USER-WEB-TODO.md` 정합성
 - G01~G10 개별 goal 상태와 상위 문서 상태 비교
 - 완료된 항목의 `[x]` 보정과 closeout 근거 기록
 
@@ -52,6 +54,7 @@
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/BE-TODO/API-TODO.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/BE-TODO/DB-SCHEMA.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/FE-TODO/ADMIN-WEB-TODO.md`
+- `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/FE-TODO/USER-WEB-TODO.md`
 
 코드:
 
@@ -59,6 +62,9 @@
 - `BE/src/modules/account-request`
 - `BE/src/modules/trash`
 - `BE/prisma/schema.prisma`
+- `FE/user-web/src/app/router/router.tsx`
+- `FE/user-web/src/features/trash`
+- `FE/user-web/src/features/account-request`
 - `FE/admin-web/src/app/router/router.tsx`
 - `FE/admin-web/src/features`
 - `FE/admin-web/src/components/layout/admin-shell.tsx`
@@ -75,6 +81,8 @@ G04는 새 API를 만들지 않는다.
 ## 6. Business Logic / User Flow 체크
 
 - Admin Web의 현재 활성 route와 API 계약이 11 문서와 맞는지 확인한다.
+- User Web의 `/app/trash` 만료 row/복구 문의와 `/app/settings` 계정/데이터 요청 문서가 실제 완료 상태와 맞는지 확인한다.
+- User Web이 `/admin/api/*`를 호출하지 않는다는 11 경계가 문서와 코드에서 유지되는지 확인한다.
 - Admin direct mutation, B2B tenant admin, Billing Admin은 11 완료 범위가 아니다.
 - Admin 운영 화면은 desktop-first, 표/필터/상태 중심의 실무형 구조를 유지한다.
 - 사용자 데이터 원문/민감정보 접근은 11의 audit/security 계약을 유지한다.
@@ -90,9 +98,10 @@ G04는 새 API를 만들지 않는다.
 1. 11 상위 README와 G10 closeout을 읽는다.
 2. 11 goal completion checklist와 goal specs README를 실제 완료 상태와 비교한다.
 3. BE/FE TODO의 planning/stale 문구를 실제 완료 상태와 비교한다.
-4. 실제 BE/FE 코드 경로와 Prisma schema를 확인한다.
-5. 완료된 항목은 `[x]`로 보정하고 근거를 남긴다.
-6. Billing/B2B/Admin mutation 후보는 후속 또는 12 종속으로 유지한다.
+4. 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 실제 상태와 비교한다.
+5. 실제 BE/FE 코드 경로와 Prisma schema를 확인한다.
+6. 완료된 항목은 `[x]`로 보정하고 근거를 남긴다.
+7. Billing/B2B/Admin mutation 후보는 후속 또는 12 종속으로 유지한다.
 
 ## 9. 검증 명령
 
@@ -112,11 +121,21 @@ pnpm run typecheck
 pnpm run lint
 ```
 
+User Web 영향 문서나 코드를 수정한 경우:
+
+```bash
+cd FE/user-web
+pnpm run typecheck
+pnpm run lint
+```
+
 문서/정적 확인:
 
 ```bash
 git diff --check
 rg -n "Subscription|Billing Admin|CustomerAdmin|direct mutation|hard delete|paid recovery" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION TODO/BEFORE_12_TASKS
+rg -n "/admin/api" FE/user-web/src
+rg -n "/app/trash|/app/settings|account deletion|data export" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/FE-TODO/USER-WEB-TODO.md TODO/BEFORE_12_TASKS
 ```
 
 ## 10. 완료 기준
@@ -124,9 +143,12 @@ rg -n "Subscription|Billing Admin|CustomerAdmin|direct mutation|hard delete|paid
 - [ ] 11 상위 checklist가 G10 closeout 및 실제 코드 상태와 맞는다.
 - [ ] 11 goal index가 G01~G10 완료/구현 상태와 맞는다.
 - [ ] BE/FE TODO가 planning 상태로 오해되지 않게 정리됐다.
+- [ ] 11 `FE-TODO/USER-WEB-TODO.md`의 `/app/trash`, `/app/settings`, `/admin/api/*` 경계가 실제 User Web 상태와 맞는다.
+- [ ] User Web 영향 항목을 11 미완성이나 새 기능 구현으로 재오픈하지 않았다.
 - [ ] Billing/B2B/Admin mutation 후속 후보가 11 미완성처럼 표시되지 않는다.
 - [ ] BE typecheck/lint가 통과했다.
 - [ ] FE admin-web typecheck/lint가 통과했다.
+- [ ] User Web 코드 변경이 발생했다면 FE user-web typecheck/lint가 통과했다.
 
 ## 11. 결과 기록 위치
 
@@ -146,4 +168,5 @@ TODO/BEFORE_12_TASKS/TODO_LOG/<YYYY-MM-DD>/G04_11_ADMIN_CHECKLIST_CLOSEOUT/WORK_
 
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/GOAL-SPECS/G12_11_ADMIN_OPERATION_FOLLOWUP_CLOSEOUT.md`
 - `TODO/BEFORE_12_TASKS/FE-TODO/ADMIN-WEB-TODO.md`
+- `TODO/BEFORE_12_TASKS/FE-TODO/USER-WEB-TODO.md`
 - `TODO/BEFORE_12_TASKS/BE-TODO/API-TODO.md`

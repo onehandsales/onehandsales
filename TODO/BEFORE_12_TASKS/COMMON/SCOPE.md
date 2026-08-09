@@ -15,7 +15,7 @@
 | G01 | `PRE12-F04` | Gmail/Microsoft provider smoke closeout 기록 |
 | G02 | `PRE12-F31` | 10 Mobile Field Use 문서 체크리스트 정합성 정리 |
 | G03 | `PRE12-F32` | User Web route/architecture 문서 정합성 정리 |
-| G04 | `PRE12-F33` | 11 Admin Operation 문서 체크리스트와 goal index 정합성 정리 |
+| G04 | `PRE12-F33` | 11 Admin Operation 문서 체크리스트, goal index, User Web 영향 문서 정합성 정리 |
 | G05 | `PRE12-F34` | Admin Web architecture와 legacy route 설명 정리 |
 | G06 | closeout | 12 Billing 착수 전 handoff 문서 정리 |
 

@@ -81,14 +81,33 @@ G05는 API 변경 작업이 아니다.
 - User API인 `/api/*`를 Admin Web에서 호출하지 않는다.
 - request/response 변경 필요가 보이면 12 또는 post-12 후보로 기록한다.
 
-## 7. UX/UI 체크
+## 7. Business Logic / User Flow 체크
+
+G05는 Admin Web business logic 또는 운영자 flow 변경 작업이 아니다.
+
+- active Admin route는 현재 활성 상태로 문서화하되 새 운영 action을 만들지 않는다.
+- redirect route인 `/organizations`, `/subscriptions`, `/support`를 활성 user flow로 열지 않는다.
+- `/subscriptions`는 12 Billing 전 Admin Billing flow로 구현하지 않는다.
+- legacy `admin-query`를 현재 주력 운영 flow로 되살리지 않는다.
+- business logic 또는 user flow 변경 필요가 보이면 12 또는 post-12 후보로 기록한다.
+
+## 8. DB/Prisma 체크
+
+G05는 DB schema 또는 Prisma 변경 작업이 아니다.
+
+- Prisma model, migration, seed를 추가하지 않는다.
+- Billing/Admin customer 기능을 위해 `Subscription`, `BillingEvent`, `Tenant`, `Organization`류 모델을 만들지 않는다.
+- legacy cleanup 과정에서 DB contract를 새로 만들지 않는다.
+- DB 변경 필요가 보이면 12 또는 post-12 후보로 기록한다.
+
+## 9. UX/UI 체크
 
 - Admin Web은 데스크톱 우선 운영 도구다.
 - 카드 중심의 장식적 화면보다 표, 필터, 상세 패널 중심의 실무형 레이아웃을 유지한다.
 - Billing/Admin customer 기능이 아직 없는데 메뉴나 route로 노출하지 않는다.
 - 사용자 노출 문구를 바꾸면 해요체와 운영자에게 명확한 짧은 문구를 사용한다.
 
-## 8. Legacy 처리 기준
+## 10. Legacy 처리 기준
 
 legacy `admin-query` 또는 inactive page는 아래 기준으로 처리한다.
 
@@ -97,7 +116,7 @@ legacy `admin-query` 또는 inactive page는 아래 기준으로 처리한다.
 - 삭제/격리해도 새 route나 API를 활성화하지 않는다.
 - 코드 변경이 발생하면 `// 기능 : ...` 한글 주석 규칙을 지킨다.
 
-## 9. 작업 순서
+## 11. 작업 순서
 
 1. Admin router의 active/redirect route를 표로 정리한다.
 2. Admin Web architecture 문서와 Software/UXUI Admin 문서를 실제 상태와 비교한다.
@@ -106,7 +125,7 @@ legacy `admin-query` 또는 inactive page는 아래 기준으로 처리한다.
 5. 필요한 문서만 수정한다.
 6. code cleanup이 필요하면 case-by-case로 삭제 또는 격리하고 검증한다.
 
-## 10. 검증 명령
+## 12. 검증 명령
 
 Frontend:
 
@@ -124,16 +143,17 @@ rg -n "organizations|subscriptions|support|admin-query" FE/admin-web/ARCHITECTUR
 git diff --check
 ```
 
-## 11. 완료 기준
+## 13. 완료 기준
 
 - [ ] 활성 route와 redirect route가 문서에서 분리됐다.
 - [ ] legacy `admin-query`가 현재 주력 route/API 계약이 아님을 명시했다.
 - [ ] Admin Web E2E 설명이 현재 test 상태와 충돌하지 않는다.
 - [ ] Billing Admin/customer tenant admin을 추가하지 않았다.
 - [ ] Admin Web에서 User API/client를 사용하지 않는다.
+- [ ] 새 request/response, business logic, user flow, DB/Prisma 변경을 만들지 않았다.
 - [ ] FE admin-web typecheck/lint가 통과했다.
 
-## 12. 결과 기록 위치
+## 14. 결과 기록 위치
 
 권장 결과 기록:
 
@@ -141,13 +161,13 @@ git diff --check
 TODO/BEFORE_12_TASKS/TODO_LOG/<YYYY-MM-DD>/G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT/WORK_LOG.md
 ```
 
-## 13. 권장 실행 문구
+## 15. 권장 실행 문구
 
 ```text
 /goal TODO/BEFORE_12_TASKS/COMMON/GOAL-SPECS/G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT.md 기준으로 G05를 진행해줘.
 ```
 
-## 14. 관련 문서
+## 16. 관련 문서
 
 - `TODO/BEFORE_12_TASKS/FE-TODO/ADMIN-WEB-TODO.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`

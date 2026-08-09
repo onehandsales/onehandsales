@@ -35,7 +35,7 @@
 | G01 | Provider Smoke Closeout | `PRE12-F04` | Ready For Goal | Gmail/Microsoft provider smoke 상태를 닫는다. |
 | G02 | 10 Mobile Checklist Closeout | `PRE12-F31` | Ready For Goal | 10 Mobile Field Use 문서 체크리스트를 실제 완료 상태와 맞춘다. |
 | G03 | User Web Route Architecture Closeout | `PRE12-F32` | Ready For Goal | User Web route/architecture 문서를 실제 route와 맞춘다. |
-| G04 | 11 Admin Checklist Closeout | `PRE12-F33` | Ready For Goal | 11 Admin Operation checklist와 goal index를 실제 완료 상태와 맞춘다. |
+| G04 | 11 Admin Checklist Closeout | `PRE12-F33` | Ready For Goal | 11 Admin Operation checklist, goal index, User Web 영향 문서를 실제 완료 상태와 맞춘다. |
 | G05 | Admin Web Architecture Legacy Closeout | `PRE12-F34` | Ready For Goal | Admin Web architecture와 legacy route 설명을 실제 route/API와 맞춘다. |
 | G06 | Before 12 Closeout And Handoff | closeout | Ready For Goal | 12 Billing 착수 전 상태를 정리하고 handoff한다. |
 
@@ -190,8 +190,9 @@ git diff --check
 1. 11 README, G10 closeout, GOAL-COMPLETION-CHECKLIST, GOAL-SPECS README를 확인한다.
 2. 실제 `BE/src/modules/admin-operation`, `account-request`, `trash` 상태를 확인한다.
 3. 실제 `FE/admin-web/src/app/router/router.tsx`와 Admin features 상태를 확인한다.
-4. 완료된 checklist는 `[x]`로 보정하고 closeout 근거를 남긴다.
-5. Billing/Admin mutation/B2B tenant admin 후속 후보는 11 미완성으로 표시하지 않는다.
+4. 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
+5. 완료된 checklist는 `[x]`로 보정하고 closeout 근거를 남긴다.
+6. Billing/Admin mutation/B2B tenant admin 후속 후보는 11 미완성으로 표시하지 않는다.
 
 검증:
 
@@ -211,6 +212,7 @@ pnpm run lint
 
 - 11 상위 checklist가 G10 closeout 및 실제 코드 상태와 맞는다.
 - 11 goal index가 G01~G10 완료/구현 상태와 맞는다.
+- 11 User Web 영향 문서가 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준과 맞는다.
 - BE/FE TODO가 planning 상태로 오해되지 않는다.
 - Billing/B2B/Admin mutation 후속 후보가 11 완료 범위에 섞이지 않는다.
 

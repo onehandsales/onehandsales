@@ -53,7 +53,31 @@ G06은 meta closeout이다. G01~G05 중 하나라도 미완료이면 G06을 완�
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/PRE12_FOLLOWUP_RECHECK/COMMON/FINAL-CLASSIFICATION.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`
 
-## 5. 판정 기준
+## 5. Request/Response 체크
+
+G06은 handoff closeout이며 API 계약 변경 작업이 아니다.
+
+- 새 request/response/status/error 계약을 만들지 않는다.
+- G01~G05 결과에서 API 변경 필요성이 발견되면 G06에서 처리하지 않고 12 또는 post-12 후보로 분리한다.
+- 12 Billing 착수 전 필요한 API blocker가 남으면 G06을 완료로 닫지 않는다.
+
+## 6. Business Logic / User Flow 체크
+
+G06은 사용자/운영자 business logic 또는 user flow 변경 작업이 아니다.
+
+- G01~G05 결과 요약과 handoff 상태만 정리한다.
+- provider smoke, 모바일 문서, User Web route 문서, Admin 문서 정합성 결과를 제품 기능 변경으로 포장하지 않는다.
+- user flow 변경 필요성이 발견되면 G06에서 구현하지 않고 12 또는 post-12 후보로 분리한다.
+
+## 7. DB/Prisma 체크
+
+G06은 DB schema 또는 Prisma 변경 작업이 아니다.
+
+- Prisma model, migration, seed를 추가하지 않는다.
+- 12 Billing 관련 DB 후보를 BEFORE_12 완료 조건에 섞지 않는다.
+- DB 변경 필요성이 발견되면 G06을 완료로 닫지 않고 12 또는 post-12 후보로 분리한다.
+
+## 8. 판정 기준
 
 12 착수 가능:
 
@@ -71,7 +95,7 @@ G06은 meta closeout이다. G01~G05 중 하나라도 미완료이면 G06을 완�
 - 새 API/DB/route 필요성이 발견됐지만 분리되지 않았다.
 - billing 종속 후보가 BEFORE_12에 섞였다.
 
-## 6. 작업 순서
+## 9. 작업 순서
 
 1. G01~G05 결과 문서와 검증 명령 결과를 수집한다.
 2. G01의 provider별 smoke 성공 여부를 별도 표로 정리한다.
@@ -80,7 +104,7 @@ G06은 meta closeout이다. G01~G05 중 하나라도 미완료이면 G06을 완�
 5. `PLANNING-REVIEW`, `FINAL-SERVICE-SHAPE`, `RELEASE-SCOPE-CHECK`를 최종 상태로 갱신한다.
 6. 12 Billing 착수 가능 여부를 명확히 기록한다.
 
-## 7. 검증 명령
+## 10. 검증 명령
 
 문서/정적 확인:
 
@@ -110,7 +134,7 @@ pnpm run typecheck
 pnpm run lint
 ```
 
-## 8. 완료 기준
+## 11. 완료 기준
 
 - [ ] G01~G05 결과가 모두 문서화됐다.
 - [ ] G01 Gmail/Microsoft production-equivalent smoke가 모두 성공했다.
@@ -118,9 +142,10 @@ pnpm run lint
 - [ ] 12 Billing 착수 가능 여부가 기록됐다.
 - [ ] 12 이후 다시 볼 후보가 post-12 또는 billing 종속으로 분리되어 있다.
 - [ ] `PLANNING-REVIEW`, `FINAL-SERVICE-SHAPE`, `RELEASE-SCOPE-CHECK`가 최종 상태와 맞는다.
+- [ ] G06에서 새 request/response, business logic, user flow, DB/Prisma 변경을 만들지 않았다.
 - [ ] 초안 또는 추가 작성 대기 상태가 남아 있지 않다.
 
-## 9. 결과 기록 위치
+## 12. 결과 기록 위치
 
 권장 결과 기록:
 
@@ -128,13 +153,13 @@ pnpm run lint
 TODO/BEFORE_12_TASKS/TODO_LOG/<YYYY-MM-DD>/G06_BEFORE_12_CLOSEOUT_AND_HANDOFF/WORK_LOG.md
 ```
 
-## 10. 권장 실행 문구
+## 13. 권장 실행 문구
 
 ```text
 /goal TODO/BEFORE_12_TASKS/COMMON/GOAL-SPECS/G06_BEFORE_12_CLOSEOUT_AND_HANDOFF.md 기준으로 G06을 진행해줘.
 ```
 
-## 11. 관련 문서
+## 14. 관련 문서
 
 - `TODO/BEFORE_12_TASKS/README.md`
 - `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`

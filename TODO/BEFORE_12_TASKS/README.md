@@ -44,7 +44,7 @@ PRE12 최종 분류에서 12 전에 할 것으로 확정된 항목은 5개뿐이
 - allowlist 밖 수신자 차단 smoke 결과 closeout
 - 10 Mobile Field Use 완료 문서, checklist, FE/BE TODO 상태 정합성
 - User Web route/architecture 문서와 실제 router 상태 정합성
-- 11 Admin Operation 완료 문서, checklist, goal index, BE/FE TODO 상태 정합성
+- 11 Admin Operation 완료 문서, checklist, goal index, BE/FE TODO와 User Web 영향 문서 상태 정합성
 - Admin Web architecture, active route, redirect route, legacy/inactive 코드 설명 정합성
 - 12 Billing 착수 전 blocker, post-12 후보, billing 종속 후보 분리 상태 확인
 
