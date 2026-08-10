@@ -27,7 +27,7 @@
 | post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-따라서 12 전에 새 기능으로 착수할 후보는 없다. Provider smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔고, 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding도 11 품질 보정으로 해결했다. 제품 기능 후보는 12 이후 또는 12 Billing 안에서 다시 다룬다.
+따라서 12 전에 새 기능으로 착수할 후보는 없다. Provider smoke와 문서 정합성은 BEFORE_12에서 모두 닫혔고, PRE12-F04는 2026-08-10 배포 환경 smoke verified 기준으로 승격됐다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding도 11 품질 보정으로 해결했다. 제품 기능 후보는 12 이후 또는 12 Billing 안에서 다시 다룬다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
@@ -35,7 +35,7 @@
 
 | 후보 | closeout 반영 |
 | --- | --- |
-| `PRE12-F04` | BEFORE_12 G01에서 provider smoke closeout 완료로 처리했다. |
+| `PRE12-F04` | BEFORE_12 G01에서 provider smoke closeout을 2026-08-10 배포 환경 verified 기준으로 완료 처리했다. |
 | `PRE12-F31` | BEFORE_12 G02에서 10 FE/BE TODO 체크리스트 정합성을 닫았다. |
 | `PRE12-F32` | BEFORE_12 G03에서 User Web route/architecture 정합성을 닫았다. |
 | `PRE12-F33` | BEFORE_12 G04에서 11 Admin 문서 체크리스트/goal index 정합성을 닫았다. |

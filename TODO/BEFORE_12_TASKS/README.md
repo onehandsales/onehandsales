@@ -31,7 +31,7 @@ PRE12 최종 분류에서 12 전에 할 것으로 확정된 항목은 5개뿐이
 
 | 순서 | PRE12 ID | Goal | 작업 성격 | 실행 상태 |
 | --- | --- | --- | --- | --- |
-| G01 | `PRE12-F04` | Provider Smoke Closeout | Gmail/Microsoft production-equivalent provider smoke closeout | Done / User-Assumed Provider Smoke Accepted |
+| G01 | `PRE12-F04` | Provider Smoke Closeout | Gmail/Microsoft production-equivalent provider smoke closeout | Done / Production Provider Smoke Verified |
 | G02 | `PRE12-F31` | 10 Mobile Checklist Closeout | 10 Mobile Field Use 문서 체크리스트 정합성 | Done |
 | G03 | `PRE12-F32` | User Web Route Architecture Closeout | User Web route/architecture 문서 정합성 | Done |
 | G04 | `PRE12-F33` | 11 Admin Checklist Closeout | 11 Admin Operation checklist/goal index 정합성 | Done |
@@ -89,12 +89,12 @@ G01 Provider Smoke Closeout
 -> G06 Before 12 Closeout And Handoff
 ```
 
-G06은 G01~G05가 모두 완료되기 전에는 완료할 수 없다. G01은 2026-08-09 사용자 acceptance 기준으로 완료 처리됐고, G02는 2026-08-09 10 Mobile 체크리스트 정합성 closeout으로 완료 처리됐으며, G03은 2026-08-09 User Web route/architecture 문서 정합성 closeout으로 완료 처리됐고, G04는 2026-08-09 11 Admin checklist/goal index 문서 정합성 closeout으로 완료 처리됐으며, G05는 2026-08-09 Admin Web architecture/legacy route 문서 정합성 closeout으로 완료 처리됐다. G06은 2026-08-09 G01~G05 결과와 PRE12 최종 분류, 12 Billing scope를 대조해 12 Billing 문서 작성/상세화 착수 가능 상태로 handoff했다.
+G06은 G01~G05가 모두 완료되기 전에는 완료할 수 없다. G01은 2026-08-10 배포 환경 실제 provider smoke verified 기준으로 완료 처리됐고, G02는 2026-08-09 10 Mobile 체크리스트 정합성 closeout으로 완료 처리됐으며, G03은 2026-08-09 User Web route/architecture 문서 정합성 closeout으로 완료 처리됐고, G04는 2026-08-09 11 Admin checklist/goal index 문서 정합성 closeout으로 완료 처리됐으며, G05는 2026-08-09 Admin Web architecture/legacy route 문서 정합성 closeout으로 완료 처리됐다. G06은 G01~G05 결과와 PRE12 최종 분류, 12 Billing scope를 대조해 12 Billing 문서 작성/상세화 착수 가능 상태로 handoff했다.
 
 ## 7. 완료 판정
 
 - `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`가 각각 결과 문서로 닫힌다.
-- G01은 Gmail과 Microsoft 365 모두 OAuth 연결, allowlist 실제 발송, allowlist 밖 차단이 성공해야 하며, 2026-08-09 사용자 acceptance 기준으로 닫혔다.
+- G01은 Gmail과 Microsoft 365 모두 OAuth 연결, allowlist 실제 발송, allowlist 밖 차단이 성공해야 하며, 2026-08-10 배포 환경 실제 provider smoke verified 기준으로 닫혔다.
 - 변경된 문서가 실제 BE/FE 코드 상태와 충돌하지 않는다.
 - 12 Billing 착수 전 새 API/DB/route 구현이 발생하지 않는다.
 - `PRE12_FOLLOWUP_RECHECK`와 이 폴더의 상태가 서로 맞는다.

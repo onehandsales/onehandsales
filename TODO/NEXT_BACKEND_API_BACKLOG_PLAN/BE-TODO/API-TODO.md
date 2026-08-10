@@ -11,7 +11,7 @@
 - [x] `NBA-009 Schedule week report`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`에서 구현 및 QA closeout 완료
 - [x] `NBA-010 Notification`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`에서 구현 및 QA closeout 완료
 - [x] `NBA-015 Google Calendar Integration`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 구현 및 QA closeout 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report API, follow-up delivery API, Gmail/Microsoft provider adapter 구현 및 자동 검증 완료. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리
+- [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report API, follow-up delivery API, Gmail/Microsoft provider adapter 구현 및 자동 검증 완료. Provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리
 - [x] `NBA-001 Deal list products summary`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-002 Contact list dealCount`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
@@ -80,7 +80,7 @@
   - provider raw response, token, subject/body, recipient 원문은 structured log와 Admin provider failure detail에 남기지 않는다.
   - smoke mode에서는 allowlist 밖 수신자를 provider 호출 없이 차단하고 safe failed attempt만 저장한다.
 - 05 밖으로 남는 범위:
-  - Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했으며 새 API 후보로 남기지 않는다.
+  - Gmail/Microsoft provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준으로 완료 처리했으며 새 API 후보로 남기지 않는다.
   - SMS 실제 provider, B2B sender, email sync, sequence/campaign, unsubscribe
   - MeetingNote follow-up 자동 발송/알림과 신규 analytics/Admin API 확장
 

@@ -32,7 +32,7 @@
 
 | 순서 | Goal | PRE12 ID | 상태 | 목적 |
 | --- | --- | --- | --- | --- |
-| G01 | Provider Smoke Closeout | `PRE12-F04` | Done / User-Assumed Provider Smoke Accepted | Gmail/Microsoft provider smoke 상태를 닫는다. |
+| G01 | Provider Smoke Closeout | `PRE12-F04` | Done / Production Provider Smoke Verified | Gmail/Microsoft provider smoke 상태를 닫는다. |
 | G02 | 10 Mobile Checklist Closeout | `PRE12-F31` | Done | 10 Mobile Field Use 문서 체크리스트를 실제 완료 상태와 맞춘다. |
 | G03 | User Web Route Architecture Closeout | `PRE12-F32` | Done | User Web route/architecture 문서를 실제 route와 맞춘다. |
 | G04 | 11 Admin Checklist Closeout | `PRE12-F33` | Done | 11 Admin Operation checklist, goal index, User Web 영향 문서를 실제 완료 상태와 맞춘다. |
@@ -45,7 +45,7 @@
 
 목표:
 
-- 05 G10 Gmail/Microsoft provider smoke acceptance closeout 상태를 문서화한다.
+- 05 G10 Gmail/Microsoft provider smoke verified closeout 상태를 문서화한다.
 
 작업:
 
@@ -292,14 +292,14 @@ rg -n "^(상태: Draft|판정: .*필요)" TODO/BEFORE_12_TASKS
 완료 기준:
 
 - G01~G05가 모두 완료됐다.
-- G01 Gmail/Microsoft production-equivalent smoke가 사용자 acceptance 기준으로 모두 성공 처리됐다.
+- G01 Gmail/Microsoft production-equivalent smoke가 배포 환경 verified 기준으로 모두 성공 처리됐다.
 - 12 전 blocker가 없다.
 - 12 Billing 착수 가능 판정과 근거가 기록됐다.
 
 실행 결과:
 
-- 2026-08-09 G06에서 G01~G05 결과 문서와 work log를 확인했다.
-- G01은 `User-Assumed Provider Smoke Accepted` 성격을 유지한 채 12 전 provider smoke closeout으로 닫았다.
+- 2026-08-09 G06에서 G01~G05 결과 문서와 work log를 확인했고, 2026-08-10 G01 배포 provider smoke verified 결과를 반영했다.
+- G01은 `Production Provider Smoke Verified` 성격으로 12 전 provider smoke closeout을 닫았다.
 - PRE12 final classification의 12 전 항목 5개는 G01~G05와 1:1로 연결되어 있고, post-12 후보와 billing 종속 후보는 BEFORE_12 완료 범위에 섞이지 않았다.
 - `12_BILLING_SUBSCRIPTION_TAX`는 아직 Draft Slot이므로, G06은 Billing 구현이 아니라 문서 작성/상세화 착수 가능 상태만 handoff한다.
 

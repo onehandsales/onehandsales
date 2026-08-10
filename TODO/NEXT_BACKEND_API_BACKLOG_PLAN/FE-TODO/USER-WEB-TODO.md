@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 FE 작업으로 올리지 않는다.
 
 상태: Draft
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 0. 완료 반영
 
@@ -11,7 +11,7 @@
 - [x] `NBA-009 Schedule week report`: `/app/schedules/week` 주간 보고서 UX와 Excel 다운로드 구현 완료
 - [x] `NBA-010 Notification`: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 완료
 - [x] `NBA-015 Google Calendar Integration`: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX 구현 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT`: `/app/schedules/week` AI report, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현 완료. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리
+- [x] `05_AI_WEEKLY_SALES_REPORT`: `/app/schedules/week` AI report, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현 완료. Provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리
 - [x] `NBA-001 Deal list products summary`: `/app/deals` desktop/mobile 목록 표시 구현 완료
 - [x] `NBA-002 Contact list dealCount`: `/app/contacts` desktop/mobile 목록 표시 구현 완료
 - [x] `NBA-003 Deal latest activity subset`: `/app/deals` 최신 활동 summary 표시 구현 완료
@@ -72,7 +72,7 @@
 - `/app/settings`에서 Gmail/Microsoft 연결, reconnect/disconnect, SMS sender verification 화면을 제공한다.
 - compose/timeline에서 safe failure, retry, reconnect CTA를 표시한다.
 - User Web은 follow-up 설정/발송 흐름에서 provider raw response, token, subject/body 원문을 log/analytics로 보내지 않는다.
-- G10 FE `typecheck`, `lint`, `build`, mobile e2e 검증이 통과했다. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했다.
+- G10 FE `typecheck`, `lint`, `build`, mobile e2e 검증이 통과했다. Gmail/Microsoft provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리했다.
 
 ## 2. Release follow-up 영향 후보
 
@@ -88,7 +88,7 @@
 |---|---|---|
 | NBA-003 잔여 | 회사/담당자/제품 목록 summary 표시 | Deal list `latestActivity`는 완료됐다. 2026-08-06 A 결정으로 남은 summary, generic summary endpoint, record별 상세 timeline은 12 전 FE 작업으로 올리지 않는다. B2B/team CRM 성격의 post-12 전략 후보로 둔다. |
 | NBA-004 | 부분 완료: 회의록 상세 AI 후속 작업 section, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현. 회의록 목록 summary 표시는 후속 | 목록에는 AI/STT raw text나 민감 원문을 노출하지 않는다. 상세 AI 후보도 자동 저장/자동 발송하지 않는다. |
-| 05_AI_WEEKLY_SALES_REPORT | 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현. Gmail/Microsoft reconnect CTA와 safe error rendering 보강. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리 | Active FE TODO에서 제외한다. SMS 실제 provider/B2B/sequence/email sync는 후속 |
+| 05_AI_WEEKLY_SALES_REPORT | 완료: `/app/schedules/week` AI report section, `/app/settings` follow-up provider settings, compose/send/retry/timeline UX 구현. Gmail/Microsoft reconnect CTA와 safe error rendering 보강. Provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리 | Active FE TODO에서 제외한다. SMS 실제 provider/B2B/sequence/email sync는 후속 |
 | NBA-006 | 완료: Import resume 화면, client state, row detail 만료 안내, upload 제한 초과 안내 | Active FE TODO에서 제외한다. 새로고침/탭 이동 복구 UX, 만료/실패 상태, confirm/cancel 흐름, 성공 이력 row detail 만료 상태, 10MB/5,000행 제한 초과 안내까지 구현 및 G09 closeout 완료 |
 | NBA-009 | 완료: `/app/schedules/week` route, 주간 보고서 화면, 이전/다음/이번 주 이동, Excel 다운로드, loading/empty/error/export error 처리 | Active FE TODO에서 제외한다. AI weekly report는 05에서 구현 완료됐고, PDF/범용 ExportJob과 반복 일정은 별도 backlog에서 다룬다. |
 | NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |

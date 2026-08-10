@@ -24,7 +24,7 @@ G06은 meta closeout이다. G01~G05 중 하나라도 미완료이면 G06을 완�
 
 | Goal | PRE12 ID | G06 확인 결과 | 근거 |
 | --- | --- | --- | --- |
-| G01 | `PRE12-F04` | Done / User-Assumed Provider Smoke Accepted | Gmail/Microsoft OAuth 연결과 allowlist 발송/차단 smoke가 사용자 acceptance 기준으로 닫혔고, raw token/provider response/수신자 원문은 문서에 기록하지 않았다. |
+| G01 | `PRE12-F04` | Done / Production Provider Smoke Verified | Gmail/Microsoft OAuth 연결과 allowlist 발송/차단 smoke가 2026-08-10 배포 환경 verified 기준으로 닫혔고, raw token/provider response/수신자 원문은 문서에 기록하지 않았다. |
 | G02 | `PRE12-F31` | Done | 10 Mobile Field Use 문서 checklist와 BE/FE TODO를 실제 완료 상태 기준으로 보정했고 BE, User Web 검증이 통과했다. |
 | G03 | `PRE12-F32` | Done | User Web route/architecture 문서를 실제 `/app/notifications`, `/app/schedules/week`, `/app/export` 상태와 맞췄고 User Web 검증이 통과했다. |
 | G04 | `PRE12-F33` | Done | 11 Admin Operation checklist, goal index, BE/FE TODO와 User Web 영향 문서를 실제 구현 상태와 맞췄고 BE, Admin Web, User Web 검증이 통과했다. |
@@ -34,7 +34,7 @@ G06은 meta closeout이다. G01~G05 중 하나라도 미완료이면 G06을 완�
 
 - 12 Billing 문서 작성/상세화 착수 가능 상태다.
 - `12_BILLING_SUBSCRIPTION_TAX`는 아직 Draft Slot이므로 G06에서 Billing API/DB/FE route를 확정하지 않는다.
-- G01의 증거 성격은 `User-Assumed Provider Smoke Accepted`다. 독립 재감사가 필요하면 G01 work log의 재감사 조건을 따른다.
+- G01의 증거 성격은 `Production Provider Smoke Verified`다. 추가 재검증이 필요하면 G01 work log의 재검증 조건을 따른다.
 - G06에서 새 request/response, business logic, user flow, DB/Prisma 변경은 만들지 않았다.
 
 ## 2. 포함 범위
@@ -99,7 +99,7 @@ G06은 DB schema 또는 Prisma 변경 작업이 아니다.
 12 착수 가능:
 
 - G01~G05가 모두 완료됐다.
-- G01 Gmail/Microsoft production-equivalent smoke가 사용자 acceptance 기준으로 모두 성공 처리됐다.
+- G01 Gmail/Microsoft production-equivalent smoke가 배포 환경 verified 기준으로 모두 성공 처리됐다.
 - 새 API/DB/route 구현이 발생하지 않았다.
 - PRE12 final classification과 BEFORE_12 상태가 충돌하지 않는다.
 - post-12 후보와 billing 종속 후보가 분리되어 있다.
@@ -156,7 +156,7 @@ pnpm run lint
 ## 11. 완료 기준
 
 - [x] G01~G05 결과가 모두 문서화됐다.
-- [x] G01 Gmail/Microsoft production-equivalent smoke가 사용자 acceptance 기준으로 모두 성공 처리됐다.
+- [x] G01 Gmail/Microsoft production-equivalent smoke가 배포 환경 verified 기준으로 모두 성공 처리됐다.
 - [x] 남은 12 전 blocker가 없다.
 - [x] 12 Billing 착수 가능 여부가 기록됐다.
 - [x] 12 이후 다시 볼 후보가 post-12 또는 billing 종속으로 분리되어 있다.

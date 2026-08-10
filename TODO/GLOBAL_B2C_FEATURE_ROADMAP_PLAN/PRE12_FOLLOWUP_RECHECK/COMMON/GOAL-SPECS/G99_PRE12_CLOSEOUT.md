@@ -9,7 +9,7 @@
 | 항목 | 결과 |
 | --- | --- |
 | 선택된 12 전 처리 대상 | `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34` 모두 BEFORE_12에서 닫힘 |
-| G01 provider smoke | 사용자 지시 기준 BEFORE_12 G01 완료 처리. PRE12 잔여 blocker로 남기지 않음 |
+| G01 provider smoke | 2026-08-10 배포 환경 smoke verified 기준 BEFORE_12 G01 완료 처리. PRE12 잔여 blocker로 남기지 않음 |
 | G02~G05 문서 정합성 | 10/11 체크리스트, User Web/Admin Web architecture 정합성 closeout 완료 |
 | G06 handoff | BEFORE_12 전체 완료와 12 Billing handoff 확인 |
 | API/DB/FE 구현 | PRE12 confirmed API, migration, 신규 route, 화면 구현 없음 |

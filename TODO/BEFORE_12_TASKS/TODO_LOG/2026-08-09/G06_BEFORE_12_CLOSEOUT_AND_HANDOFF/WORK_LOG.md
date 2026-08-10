@@ -8,22 +8,22 @@
 
 | Goal | PRE12 ID | 상태 | 확인한 근거 |
 | --- | --- | --- | --- |
-| G01 | `PRE12-F04` | Done / User-Assumed Provider Smoke Accepted | `G01_PROVIDER_SMOKE_CLOSEOUT.md`, G01 work log |
+| G01 | `PRE12-F04` | Done / Production Provider Smoke Verified | `G01_PROVIDER_SMOKE_CLOSEOUT.md`, G01 work log |
 | G02 | `PRE12-F31` | Done | `G02_10_MOBILE_CHECKLIST_CLOSEOUT.md`, G02 work log |
 | G03 | `PRE12-F32` | Done | `G03_USER_WEB_ROUTE_ARCHITECTURE_CLOSEOUT.md`, G03 work log |
 | G04 | `PRE12-F33` | Done | `G04_11_ADMIN_CHECKLIST_CLOSEOUT.md`, G04 work log |
 | G05 | `PRE12-F34` | Done | `G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT.md`, G05 work log |
 
-G01은 실제 provider smoke의 증거 성격을 `User-Assumed Provider Smoke Accepted`로 유지한다. Gmail/Microsoft OAuth 연결과 allowlist 발송/차단은 acceptance matrix에서 성공 처리됐고, 실제 수신자 email, token, OAuth code/state, provider raw response, follow-up 제목/본문 원문은 기록하지 않았다.
+G01은 실제 provider smoke의 증거 성격을 `Production Provider Smoke Verified`로 갱신했다. Gmail/Microsoft OAuth 연결과 allowlist 발송/차단은 2026-08-10 배포 환경 smoke에서 성공 확인됐고, 실제 수신자 email, token, OAuth code/state, provider raw response, follow-up 제목/본문 원문은 기록하지 않았다.
 
 ## 2. G01 provider smoke handoff 표
 
 | Provider | OAuth 연결 | allowlist 실제 발송 | allowlist 밖 차단 | G06 판정 |
 | --- | --- | --- | --- | --- |
-| Gmail | Accepted / Assumed Pass | Accepted / Assumed Pass | Accepted / Assumed Pass | 12 전 blocker 없음 |
-| Microsoft 365 | Accepted / Assumed Pass | Accepted / Assumed Pass | Accepted / Assumed Pass | 12 전 blocker 없음 |
+| Gmail | Verified Pass | Verified Pass | Verified Pass | 12 전 blocker 없음 |
+| Microsoft 365 | Verified Pass | Verified Pass | Verified Pass | 12 전 blocker 없음 |
 
-독립 재감사가 필요하면 G01 work log의 재감사 조건을 따른다.
+추가 재검증이 필요하면 G01 work log의 재검증 조건을 따른다.
 
 ## 3. G02~G05 정합성 결과
 
@@ -54,7 +54,7 @@ G01은 실제 provider smoke의 증거 성격을 `User-Assumed Provider Smoke Ac
 ## 6. 최종 handoff 판정
 
 - G01~G05는 모두 완료 문서와 work log가 있다.
-- G01 provider smoke는 사용자 acceptance 기준으로 닫혔다.
+- G01 provider smoke는 배포 환경 verified 기준으로 닫혔다.
 - 12 전 blocker는 남아 있지 않다.
 - 12 이후 다시 볼 후보는 post-12 또는 billing 종속 후보로 분리되어 있다.
 - `12_BILLING_SUBSCRIPTION_TAX`는 구현이 아니라 confirmed scope/API/DB 문서 상세화부터 착수한다.
@@ -69,8 +69,8 @@ G01은 실제 provider smoke의 증거 성격을 `User-Assumed Provider Smoke Ac
 
 1차 검토 후 수정:
 
-- G01을 단순 성공으로만 읽을 수 있는 문구를 `사용자 acceptance 기준 성공 처리`로 보정했다.
-- G01의 증거 성격이 `User-Assumed Provider Smoke Accepted`라는 점을 G06 spec, final service shape, release scope check, work order에 유지했다.
+- G01의 2026-08-09 임시 handoff 문구를 2026-08-10 배포 환경 verified 결과 기준으로 갱신했다.
+- G01의 증거 성격을 `Production Provider Smoke Verified`로 G06 spec, final service shape, release scope check, work order에 반영했다.
 
 2차 검토:
 

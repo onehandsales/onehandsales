@@ -9,7 +9,7 @@
 - 판정: `BEFORE_12_TASKS`는 G01~G06 완료 상태로 닫혔다.
 - 이유: PRE12 최종 분류의 12 전 항목 5개가 G01~G05로 1:1 연결됐고, G06 handoff에서 12 Billing 문서 작성/상세화 착수 가능 상태를 기록했다.
 - 구현 상태: 이번 계획은 구현 계획이 아니라 closeout 실행 계획이다. 새 API/DB/route 구현은 발생하지 않았다.
-- G01 증거 성격: Gmail과 Microsoft 365 smoke는 `User-Assumed Provider Smoke Accepted`로 닫혔다. 독립 재감사가 필요하면 G01 work log의 재감사 조건을 따른다.
+- G01 증거 성격: Gmail과 Microsoft 365 smoke는 `Production Provider Smoke Verified`로 닫혔다. 추가 재검증이 필요하면 G01 work log의 재검증 조건을 따른다.
 
 ## 2. 검토 대상
 
@@ -72,7 +72,7 @@ AGENT 기준:
 | --- | --- | --- | --- |
 | Resolved | 문서 구조 | 초기 `BEFORE_12_TASKS`는 실행 전 초안 상태였고 01번 수준의 실행 체크리스트가 부족했다. | 실행 체크리스트와 공통 gate를 보강한 뒤 G01~G06 완료 상태로 닫았다. |
 | Resolved | Goal 분리 | PRE12 12 전 후보는 5개뿐이며, meta closeout이 필요하다. | G01~G05 + G06 handoff 구조로 고정한다. |
-| Closed | G01 완료 기준 | 기존 문서에는 실행 불가 사유 기록만으로도 closeout처럼 읽히는 문구가 있었다. | Gmail/Microsoft smoke를 사용자 acceptance 기준으로 닫고, 증거 성격과 재감사 조건을 G01/G06 로그에 남긴다. |
+| Closed | G01 완료 기준 | 기존 문서에는 실행 불가 사유 기록만으로도 closeout처럼 읽히는 문구가 있었다. | Gmail/Microsoft smoke를 2026-08-10 배포 환경 verified 기준으로 닫고, 증거 성격과 재검증 조건을 G01/G06 로그에 남긴다. |
 | Resolved | API 범위 | G01은 기존 follow-up API를 쓰지만 새 API는 필요 없다. | `NO_NEW_API_CONTRACT.md`를 confirmed 상태로 고정한다. |
 | Resolved | DB 범위 | follow-up email connection/message/attempt 모델은 이미 있고 billing 모델은 없다. | 새 migration 없음, billing 모델은 12에서 결정한다고 명시한다. |
 | Resolved | User Web route | `/app/notifications`와 `/app/schedules/week`는 실제 route로 활성이고 `/app/export`는 redirect다. | G03에서 문서만 실제 route 상태에 맞추도록 한다. |
@@ -130,19 +130,19 @@ DB/운영:
 
 현재 goal 분리 기준의 누락은 없다.
 
-G01 독립 재감사가 필요하면 사용자가 준비한 `.env`, provider console callback URL, dedicated smoke allowlist 수신자, production-equivalent Backend 또는 `NODE_ENV=production` 실행 환경을 다시 확인한다.
+G01 추가 재검증이 필요하면 사용자가 준비한 `.env`, provider console callback URL, dedicated smoke allowlist 수신자, production-equivalent Backend 또는 `NODE_ENV=production` 실행 환경을 다시 확인한다.
 
 ## 7. 충돌 사항
 
 현재 문서 구조 기준의 unresolved 충돌은 없다.
 
-G01은 사용자 acceptance 기준으로 닫혔고, G06은 이 증거 성격을 숨기지 않은 상태로 12 Billing 문서 작성/상세화 착수 가능 판정을 남겼다.
+G01은 2026-08-10 배포 환경 verified 기준으로 닫혔고, G06은 이 증거 성격을 반영한 상태로 12 Billing 문서 작성/상세화 착수 가능 판정을 남겼다.
 
 ## 8. 추가 사용자 결정 필요 여부
 
 현재 G06 handoff 완료에는 추가 질문이 필요 없다.
 
-G01 독립 재감사 준비물:
+G01 추가 재검증 준비물:
 
 - `BE/.env` 또는 실행 환경의 follow-up provider env key
 - provider console callback URL 등록

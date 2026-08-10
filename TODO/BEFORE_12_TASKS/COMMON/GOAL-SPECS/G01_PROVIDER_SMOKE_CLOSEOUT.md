@@ -1,11 +1,11 @@
 # G01 Provider Smoke Closeout
 
-상태: Done / User-Assumed Provider Smoke Accepted
+상태: Done / Production Provider Smoke Verified
 연결 PRE12 ID: `PRE12-F04`
 성격: 운영 provider smoke closeout
 최근 실행 로그: `TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G01_PROVIDER_SMOKE_CLOSEOUT/WORK_LOG.md`
 
-완료 판정 메모: 2026-08-09 사용자 지시에 따라 Gmail/Microsoft OAuth 연결 이후 남은 provider 발송 smoke 항목은 동작한다고 가정하고 acceptance closeout으로 닫았다. 문서에는 비밀값, token, 수신자 email 원문, 제목/본문 원문, provider raw response를 기록하지 않는다.
+완료 판정 메모: 2026-08-10 배포 환경 사용자 실행 기준으로 Gmail/Microsoft OAuth 연결, allowlist 실제 발송, allowlist 밖 차단, DB safe attempt 확인이 모두 성공해 production provider smoke verified 상태로 닫았다. 문서에는 비밀값, token, 수신자 email 원문, 제목/본문 원문, provider raw response를 기록하지 않는다.
 
 ## 0. 착수 체크리스트
 
@@ -21,7 +21,7 @@
 
 ## 1. 목표
 
-05 G10 Gmail/Microsoft provider smoke acceptance closeout 상태를 12 착수 전에 문서화한다.
+05 G10 Gmail/Microsoft provider smoke verified closeout 상태를 12 착수 전에 문서화한다.
 
 G01은 문서상 pending 사유만 갱신하는 goal이 아니다. Gmail과 Microsoft 365 모두 production-equivalent 환경에서 실제 OAuth 연결과 allowlist 수신자 실제 발송이 성공해야 완료다.
 
@@ -191,7 +191,7 @@ git diff --check
 - [x] FE 검증 명령이 통과했다.
 - [x] 05 G10 pending 상태와 BEFORE_12 결과 문서가 현재 상태와 맞는다.
 
-완료 기준은 2026-08-09 사용자 acceptance 지시에 따라 assumed pass로 닫았다. 실제 운영 증거를 재감사할 때는 `WORK_LOG.md`의 safe evidence 메모를 기준으로 DB row와 provider log를 다시 확인한다.
+완료 기준은 2026-08-10 배포 환경 사용자 실행 smoke 증거로 충족됐다. 재검증이 필요하면 `WORK_LOG.md`의 safe evidence 메모를 기준으로 DB row와 provider log를 다시 확인한다.
 
 ## 12. 결과 기록 위치
 

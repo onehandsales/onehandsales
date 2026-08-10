@@ -82,7 +82,7 @@
 | 딜 목록에서 제품/최근 활동/다음 행동을 얼마나 1급 정보로 볼지 | 제품 summary, Deal latest activity, page size 15는 06에서 완료. 다음 행동 강조와 UX polish는 별도 UX/UI 전면 유지보수에서 판단하고, Company/Contact/Product latest summary는 2026-08-06 A 결정에 따라 12 전 구현하지 않는 post-12 B2B/team CRM 전략 후보로 둔다. |
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE` G01~G09에서 구현 및 최종 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증은 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다. 회의록 follow-up 알림/발송만 후속 범위로 남는다. |
-| 05 follow-up email provider smoke를 언제 닫을지 | 2026-08-09 PRE12/BEFORE_12 기준 Gmail/Microsoft provider smoke closeout 완료 처리. 더 이상 12 전 User Web 제품화 gap으로 남기지 않는다. |
+| 05 follow-up email provider smoke를 언제 닫을지 | 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 Gmail/Microsoft provider smoke closeout 완료 처리. 더 이상 12 전 User Web 제품화 gap으로 남기지 않는다. |
 | PWA install/offline shell과 native app을 언제 다룰지 | 10에서 모바일 웹 현장 입력성은 완료됐다. PWA packaging, full offline sync, iOS/Android native app은 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 다룬다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
 | LINE/Apple 실제 provider smoke 실행 여부 | 08 구현과 자동 QA, DB migration 최신 상태 재확인은 완료됐다. LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다. |

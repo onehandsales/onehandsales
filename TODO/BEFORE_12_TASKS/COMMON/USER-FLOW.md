@@ -52,7 +52,7 @@ provider env key 존재 확인
 
 G01은 Gmail과 Microsoft 365가 모두 성공해야 완료다. env/callback/account가 없어서 실행하지 못한 경우에는 blocker로 기록하고 G06에서 12 착수 가능 판정을 내리지 않는다.
 
-2026-08-09 G06에서는 G01을 `User-Assumed Provider Smoke Accepted`로 닫은 상태를 확인했고, 해당 증거 성격을 handoff 문서와 work log에 남겼다.
+2026-08-10에는 G01을 `Production Provider Smoke Verified`로 갱신했고, 해당 증거 성격을 handoff 문서와 work log에 남겼다.
 
 ## 5. 기록 금지
 

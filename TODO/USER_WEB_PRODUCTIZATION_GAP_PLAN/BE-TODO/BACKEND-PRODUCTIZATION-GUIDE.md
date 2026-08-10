@@ -17,7 +17,7 @@
 - [x] Google Calendar Integration backend/API/DB 구현 완료
 - [x] `NBA-015` active backend gap 종료
 - [x] AI Weekly Sales Report / Follow-up Delivery backend/API/DB 구현 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT` active backend gap 종료. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리
+- [x] `05_AI_WEEKLY_SALES_REPORT` active backend gap 종료. Gmail/Microsoft provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리
 - [x] Deal Activity Timeline backend/API/DB 구현 완료
 - [x] `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위 active backend gap 종료
 - [x] MeetingNote AI Provider Log backend/API/DB 구현 완료
@@ -75,7 +75,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Schedule week report | 구현 완료 | `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation, timezone/weekStart/ownership/redaction QA 완료. AI weekly report는 05에서 구현 완료됐고, PDF/범용 ExportJob과 반복 일정은 별도 후속 범위 | 완료 |
 | Notification | 구현 완료 | Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription, redaction/ownership/provider failure QA 완료. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | 완료 |
 | Google Calendar Integration | 구현 완료 | Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, token encryption/redaction, Schedule Google metadata, soft delete/Trash restore, reminder QA 완료. 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 별도 후속 범위 | 완료 |
-| AI Weekly Report / Follow-up Delivery | 구현 완료 | sales report API, async job/version/suggestion, follow-up delivery settings/draft/send/retry/history, Gmail/Microsoft actual email provider adapter, reconnect, safe failure, smoke allowlist 구현/자동 검증 완료. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리. SMS 실제 provider/B2B/sequence/email sync는 후속 | 구현 완료 |
+| AI Weekly Report / Follow-up Delivery | 구현 완료 | sales report API, async job/version/suggestion, follow-up delivery settings/draft/send/retry/history, Gmail/Microsoft actual email provider adapter, reconnect, safe failure, smoke allowlist 구현/자동 검증 완료. Gmail/Microsoft provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리. SMS 실제 provider/B2B/sequence/email sync는 후속 | 구현 완료 |
 | MeetingNote AI follow-up draft | 구현 완료 | next action/follow-up draft API, provider log, safe failure, ownership/redaction QA 완료. 자동 저장/자동 발송은 하지 않음 | 완료 |
 | Global Data I18N | 구현 완료 | User country/locale/default currency, app i18n API 기반 설정, Product/Deal currency, Contact KR/US phone, Company country/region/address, import/export localization, Google/LINE/Apple auth 구현 완료. 현재 `BE/.env` 연결 DB는 2026-07-29 최신 상태 재확인 완료, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료 | 완료 |
 | MeetingNote provider audit 잔여 | 공통 `AiProviderCallLog` 기반 provider log subset 구현 완료. 별도 raw/transcript table 없음. 11에서 Admin provider failure 조회와 raw access audit 구현 | 회의록 목록 summary, 자동 발송/알림은 후속. provider raw/prompt/token/quota detail 저장은 계속 금지 | Admin audit 완료, 제품 후속 |

@@ -24,7 +24,7 @@
 - [x] AI Weekly Sales Report / Follow-up Delivery (`05_AI_WEEKLY_SALES_REPORT`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` G01~G09 구현 및 QA closeout
 - [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS` 기준 2026-08-09 완료 처리
+- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS` 기준 2026-08-10 배포 환경 smoke verified
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
@@ -134,7 +134,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- Gmail/Microsoft production-equivalent provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 처리했으며 User Web 제품화 gap으로 남기지 않는다.
+- Gmail/Microsoft production-equivalent provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준으로 완료 처리했으며 User Web 제품화 gap으로 남기지 않는다.
 - SMS 실제 provider, B2B tenant sender, email sync, sequence/campaign/bulk, unsubscribe 관리는 05 완료 범위가 아니다.
 - 회의록 follow-up 자동 발송/알림, Company/Contact/Product latest summary, MeetingNote 목록 summary, generic ExportJob, Google/Microsoft calendar write/watch는 post-12 재검토 후보로 유지한다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 2026-08-06 A 결정에 따라 12 전 제품화 gap으로 승격하지 않는다.
 - AI usage plan/overage, paywall, entitlement는 12 Billing 범위다.

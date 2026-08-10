@@ -11,7 +11,7 @@
 
 2026-08-07 기준 최종 3분류는 `COMMON/FINAL-CLASSIFICATION.md`를 정본으로 본다. 결론은 12 전 새 기능 구현 없음, 12 전 운영 smoke/문서 정합성만 closeout, 나머지는 post-12 또는 12 Billing 종속으로 분리다.
 
-2026-08-09 기준 선택된 12 전 처리 대상 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 모두 `TODO/BEFORE_12_TASKS`에서 closeout 완료로 반영됐다. `PRE12-F04` provider smoke는 사용자 지시 기준으로 BEFORE_12 G01에서 완료 처리하며, 실배포 환경 재확인은 PRE12 잔여 작업으로 남기지 않는다.
+2026-08-09 기준 선택된 12 전 처리 대상 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 모두 `TODO/BEFORE_12_TASKS`에서 closeout 완료로 반영됐다. `PRE12-F04` provider smoke는 2026-08-10 배포 환경 smoke verified 기준으로 BEFORE_12 G01에서 완료 처리했으며, 실배포 환경 재확인은 PRE12 잔여 작업으로 남기지 않는다.
 
 2026-08-10 재검토에서 11 Admin Operation의 Admin provider failure 목록 cursor pagination 편중 누락 Finding은 `PrismaAdminProviderFailureRepository` batch 조회와 회귀 테스트로 해결했다. 이 보정은 기존 11 완료 범위의 품질 수정이며, PRE12 잔여 작업 또는 12 Billing 선행 blocker로 남기지 않는다.
 
@@ -54,7 +54,7 @@
 | 02 Notification | 완료 | 일정/딜 reminder, in-app/email/browser push, provider smoke는 완료다. 다음 행동 알림과 회의록 후속 알림은 구현되지 않았다. Notification 데이터 TTL/cleanup은 구현 완료 범위가 아니라 정책 후속 후보로 분리한다. |
 | 03 Weekly Schedule Report | 완료 | PDF, generic ExportJob, recurrence는 03 재오픈 대상이 아니다. |
 | 04 Google Calendar | 완료 | read-only import/sync/source badge/Trash restore/Google-origin reminder/provider smoke는 완료다. Google export/write/양방향 sync, webhook/watch, 반복 일정 정식 모델, reminders/attendee import, 여러 Google 계정, Google Calendar 외 provider는 후속이다. |
-| 05 AI Weekly Sales Report | 완료 / provider smoke closeout 완료 | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. Gmail/Microsoft provider smoke closeout은 2026-08-09 사용자 지시 기준 BEFORE_12 G01에서 닫혔다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
+| 05 AI Weekly Sales Report | 완료 / provider smoke closeout 완료 | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. Gmail/Microsoft provider smoke closeout은 2026-08-10 배포 환경 verified 기준 BEFORE_12 G01에서 닫혔다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
 | 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 저장/자동 일정 생성/자동 딜 변경은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
 | 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
@@ -84,7 +84,7 @@
 | MeetingNote follow-up 자동 발송 | post-12-seed | G03에서 reminder와 분리한다. 명시적 사용자 확인 없는 발송은 구현 금지다. |
 | MeetingNote AI 후보 자동 업무 mutation | post-12-seed / AI policy | 07은 후보/초안만 제공하고 사용자가 확인한 뒤 기존 API 또는 복사 흐름으로 처리한다. 자동 일정 생성, 자동 딜 변경, Contact/MeetingNote/Deal 자동 변경은 구현 금지다. |
 | Notification 데이터 TTL/cleanup | post-12-seed / trust-ops policy | 02의 `Notification` 90일, `NotificationDeliveryAttempt` 30일, revoked `BrowserPushSubscription` 90일 보관 후보는 실제 cleanup 구현이 없다. 정책/운영 계약 전 구현하지 않는다. |
-| Gmail/Microsoft provider smoke | closed-by-BEFORE_12 | BEFORE_12 G01에서 closeout 완료로 처리했다. 코드 구현 후보가 아니다. |
+| Gmail/Microsoft provider smoke | closed-by-BEFORE_12 | BEFORE_12 G01에서 2026-08-10 배포 환경 verified 기준 closeout 완료로 처리했다. 코드 구현 후보가 아니다. |
 | SMS 실제 provider | post-12-seed | `PRE12-F05`로 유지한다. 현재 SMS sender verification UI/API foundation은 있으나 실제 vendor 연동은 없다. |
 | Follow-up delivery 고급 provider/growth 확장 | post-12-seed | `PRE12-F06`으로 유지한다. B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking은 05 완료 범위가 아니다. |
 | Company/Contact/Product latest summary | defer | 2026-08-06 A 결정으로 12 전 G04 계약화와 구현을 하지 않는다. |

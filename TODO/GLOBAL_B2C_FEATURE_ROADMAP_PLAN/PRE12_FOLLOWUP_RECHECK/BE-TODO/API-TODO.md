@@ -8,7 +8,7 @@
 
 이 문서는 `PRE12_FOLLOWUP_RECHECK` 후보가 Backend에 어떤 영향을 줄 수 있는지 기록한다. 현재 바로 구현할 Backend API 작업은 없다.
 
-2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 Backend API 구현은 없다. 2026-08-09 기준 해당 5개는 BEFORE_12에서 모두 닫혔다. `PRE12-F04`도 새 API가 아니라 운영 Gmail/Microsoft provider smoke closeout 기록이다.
+2026-08-07 `../COMMON/FINAL-CLASSIFICATION.md` 기준으로 12 전에 할 것은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`뿐이며 Backend API 구현은 없다. 2026-08-10 기준 해당 5개는 BEFORE_12에서 모두 닫혔다. `PRE12-F04`도 새 API가 아니라 운영 Gmail/Microsoft provider smoke verified closeout 기록이다.
 
 ## 2. 현재 코드 사실
 

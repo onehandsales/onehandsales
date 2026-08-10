@@ -85,14 +85,14 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 - [x] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
 - [x] G01~G06 각 goal 문서에 착수 체크리스트, request/response, business logic, user flow, DB/Prisma, 검증 명령, 완료 기준이 반영되어 있다.
 - [x] 새 API와 새 DB migration이 없다.
-- [x] G01 Gmail/Microsoft smoke acceptance closeout 근거가 문서에 기록되어 있다.
+- [x] G01 Gmail/Microsoft smoke verified closeout 근거가 문서에 기록되어 있다.
 
 ## 8. 완료 판정
 
 아래가 모두 만족되면 `BEFORE_12_TASKS`는 12 Billing 착수 전 closeout 완료로 처리한다.
 
 - G01~G06 완료
-- G01 Gmail/Microsoft production-equivalent smoke 사용자 acceptance 기준 성공 처리
+- G01 Gmail/Microsoft production-equivalent smoke 배포 환경 verified 기준 성공 처리
 - `COMMON/PLANNING-REVIEW.md` 갱신
 - `COMMON/FINAL-SERVICE-SHAPE.md` 갱신
 - `COMMON/RELEASE-SCOPE-CHECK.md` 갱신
@@ -100,9 +100,9 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 
 최종 판정:
 
-- 2026-08-09 기준 `BEFORE_12_TASKS`는 G01~G06 완료 상태다.
+- 2026-08-10 기준 `BEFORE_12_TASKS`는 G01~G06 완료 상태다.
 - 12 전 blocker는 남아 있지 않다.
-- G01 provider smoke는 `User-Assumed Provider Smoke Accepted` 성격으로 닫혔다.
+- G01 provider smoke는 `Production Provider Smoke Verified` 성격으로 닫혔다.
 - 12 Billing은 구현이 아니라 confirmed scope/API/DB 문서 상세화부터 착수한다.
 
 ## 9. 관련 문서
