@@ -21,7 +21,7 @@
 - [x] 11 `Admin Operation`: Done (2026-08-01)
 - [x] `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`: `11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
 - [x] First-sale gate 반영: `NBA-014`, Product UX gate, Trust/policy gate, `NBA-007`은 `COMMON/FIRST-SALE-GATE-MAP.md`에 선행/횡단 기준으로 고정
-- [x] Pre-12 후속 후보 재분류: `PRE12_FOLLOWUP_RECHECK`와 `TODO/BEFORE_12_TASKS` closeout 완료. 12 착수 전 01~11 제외/후속/보류 후보를 구현 없이 분류했고 선택된 5개만 닫았다.
+- [x] Pre-12 후속 후보 재분류: `PRE12_FOLLOWUP_RECHECK`와 `TODO/DONE/BEFORE_12_TASKS` closeout 완료. 12 착수 전 01~11 제외/후속/보류 후보를 구현 없이 분류했고 선택된 5개만 닫았다.
 - [ ] Post-12 전체 재검토: 12 완료 후 `COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12와 입력 계획 2개를 다시 대조하고 새 TODO 후보를 확정
 
 ## 1. 목적

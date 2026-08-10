@@ -18,7 +18,7 @@
 - [x] `NBA-015 Google Calendar Integration` 배포 환경 실제 Google provider smoke QA 완료 (2026-08-04 사용자 확인)
 - [x] `05_AI_WEEKLY_SALES_REPORT`: AI weekly report API/DB/User Web, follow-up delivery API/DB/User Web 구현 및 G01~G09 QA closeout 완료
 - [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft email provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS` 기준 2026-08-10 배포 환경 smoke verified
+- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `TODO/DONE/BEFORE_12_TASKS` 기준 2026-08-10 배포 환경 smoke verified
 - [x] `NBA-001 Deal list products summary`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-002 Contact list dealCount`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout 완료
 - [x] `NBA-003 Deal latest activity subset`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 부분 구현 및 QA closeout 완료
@@ -70,7 +70,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-009 Schedule week report`는 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-010 Notification`은 2026-07-22 기준 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다.
 - `NBA-015 Google Calendar Integration`은 2026-07-23 기준 구현 및 QA closeout이 완료됐고, 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료되어 active backlog 후보에서 제외한다.
-- `05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report와 follow-up delivery foundation 구현/QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. Gmail/Microsoft provider smoke closeout은 2026-08-10 `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS` 배포 환경 smoke verified 기준 완료 처리했다.
+- `05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report와 follow-up delivery foundation 구현/QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. Gmail/Microsoft provider smoke closeout은 2026-08-10 `PRE12_FOLLOWUP_RECHECK` / `TODO/DONE/BEFORE_12_TASKS` 배포 환경 smoke verified 기준 완료 처리했다.
 - `NBA-001`, `NBA-002`, `NBA-008`, `NBA-003`의 Deal latest activity subset은 2026-07-26 기준 `06_DEAL_ACTIVITY_TIMELINE`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
@@ -104,7 +104,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 ## 2.2 `05_AI_WEEKLY_SALES_REPORT` 반영 기준
 
-`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 2026-08-09 기준 Gmail/Microsoft provider smoke closeout도 `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS`에서 완료 처리했다. 이 백로그에서는 active Backend/API/DB 후보가 아니라 완료 이력으로만 유지한다.
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 2026-08-09 기준 Gmail/Microsoft provider smoke closeout도 `PRE12_FOLLOWUP_RECHECK` / `TODO/DONE/BEFORE_12_TASKS`에서 완료 처리했다. 이 백로그에서는 active Backend/API/DB 후보가 아니라 완료 이력으로만 유지한다.
 
 완료로 반영할 Backend/API/DB/User Web 영향:
 

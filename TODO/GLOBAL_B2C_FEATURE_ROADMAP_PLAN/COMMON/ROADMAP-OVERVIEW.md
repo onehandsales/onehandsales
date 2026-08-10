@@ -15,7 +15,7 @@
 - [x] `09_PRODUCT_ANALYTICS`: Done (2026-07-30), ProductAnalyticsEvent, route/server events, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: Done (2026-07-31), 모바일 명함 촬영/OCR safe failure, 회의 녹음, local draft, push permission UX, mobile analytics 구현 및 QA closeout 완료
 - [x] `11_ADMIN_OPERATION`: Done (2026-08-01), Admin 운영 API/Web, audit/redaction, Trash/account request/provider/system gate, QA closeout 완료
-- [x] 01~11 pre-12 후속 재대조: 2026-08-09 기준 `PRE12_FOLLOWUP_RECHECK`와 `TODO/BEFORE_12_TASKS` closeout 완료
+- [x] 01~11 pre-12 후속 재대조: 2026-08-09 기준 `PRE12_FOLLOWUP_RECHECK`와 `TODO/DONE/BEFORE_12_TASKS` closeout 완료
 - [ ] `12_BILLING_SUBSCRIPTION_TAX`
 
 ## 1. 로드맵 기준

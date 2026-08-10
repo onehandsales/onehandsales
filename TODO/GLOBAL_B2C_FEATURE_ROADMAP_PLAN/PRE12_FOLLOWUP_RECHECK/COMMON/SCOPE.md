@@ -367,7 +367,7 @@
 | 상태 | 의미 |
 | --- | --- |
 | `done` | 실제 구현과 QA가 이미 닫힌 항목 |
-| `closed-by-BEFORE_12` | `TODO/BEFORE_12_TASKS`에서 2026-08-09 기준 닫힌 12 전 운영 smoke 또는 문서 정합성 항목 |
+| `closed-by-BEFORE_12` | `TODO/DONE/BEFORE_12_TASKS`에서 2026-08-09 기준 닫힌 12 전 운영 smoke 또는 문서 정합성 항목 |
 | `pre-12-follow-up-needed` | 12 전 별도 goal로 처리할 수 있고, billing 결정과 직접 충돌하지 않는 항목. 2026-08-10 현재 이 상태로 남은 후보는 없다. |
 | `pre-12-doc-cleanup` | 실제 기능 구현은 닫혔지만 문서 체크리스트, architecture 설명, dead-code 메모 같은 정합성 정리가 필요한 항목. 2026-08-10 현재 이 상태로 남은 후보는 없다. |
 | `post-12-seed` | 12 이후 최종 재검토에서 새 TODO로 승격할지 판단할 항목 |

@@ -24,7 +24,7 @@
 - [x] AI Weekly Sales Report / Follow-up Delivery (`05_AI_WEEKLY_SALES_REPORT`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` G01~G09 구현 및 QA closeout
 - [x] `05_AI_WEEKLY_SALES_REPORT` G10 Gmail/Microsoft provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료
-- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS` 기준 2026-08-10 배포 환경 smoke verified
+- [x] `05_AI_WEEKLY_SALES_REPORT` Gmail/Microsoft provider smoke closeout 완료: `PRE12_FOLLOWUP_RECHECK` / `TODO/DONE/BEFORE_12_TASKS` 기준 2026-08-10 배포 환경 smoke verified
 - [x] Deal Activity Timeline (`NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-008`, `NBA-014` 06 범위)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE` 구현 및 QA closeout
 - [x] MeetingNote AI Provider Log (`NBA-004` detail subset, `NBA-011` provider log subset)
@@ -120,7 +120,7 @@
 
 ## 3.1 `05_AI_WEEKLY_SALES_REPORT` 반영 기준
 
-`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 2026-08-09 기준 Gmail/Microsoft provider smoke closeout도 `PRE12_FOLLOWUP_RECHECK` / `BEFORE_12_TASKS`에서 완료 처리했다. 이 제품화 gap 문서에서는 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft provider smoke를 더 이상 미구현 gap으로 보지 않는다.
+`TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`는 2026-07-24 G01~G09 기준 AI weekly report/follow-up delivery 구현 및 QA closeout이 완료됐고, 2026-08-05 G10 기준 Gmail/Microsoft 실제 email provider adapter 구현과 자동 검증이 완료됐다. 2026-08-09 기준 Gmail/Microsoft provider smoke closeout도 `PRE12_FOLLOWUP_RECHECK` / `TODO/DONE/BEFORE_12_TASKS`에서 완료 처리했다. 이 제품화 gap 문서에서는 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft provider smoke를 더 이상 미구현 gap으로 보지 않는다.
 
 완료로 반영할 User Web/제품 흐름:
 

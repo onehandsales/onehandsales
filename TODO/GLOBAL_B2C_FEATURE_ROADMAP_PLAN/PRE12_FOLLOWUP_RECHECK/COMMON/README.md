@@ -8,7 +8,7 @@
 
 `COMMON`은 12 전 후속 후보 재대조에서 Frontend와 Backend가 함께 봐야 하는 범위, 후보 상태, goal 순서, 구현 금지 조건을 관리한다.
 
-이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 2026-08-07 기준 `FINAL-CLASSIFICATION.md`에서 01~11 후속 후보를 12 전에 할 것, post-12, billing 충돌/12 종속으로 최종 분리했다. 2026-08-09 기준 선택된 12 전 처리 대상 5개는 `TODO/BEFORE_12_TASKS`에서 모두 closeout 완료로 반영됐다.
+이 계획은 곧바로 기능 구현을 시작하기 위한 문서가 아니다. 2026-08-07 기준 `FINAL-CLASSIFICATION.md`에서 01~11 후속 후보를 12 전에 할 것, post-12, billing 충돌/12 종속으로 최종 분리했다. 2026-08-09 기준 선택된 12 전 처리 대상 5개는 `TODO/DONE/BEFORE_12_TASKS`에서 모두 closeout 완료로 반영됐다.
 
 결론:
 

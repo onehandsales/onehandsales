@@ -9,7 +9,7 @@
 - Gmail API actual send adapter는 구현 및 자동 검증이 완료됐다.
 - Microsoft Graph actual send adapter는 구현 및 자동 검증이 완료됐다.
 - token refresh, reconnect-required, send-only scope, smoke allowlist, allowlist 밖 safe failure, FE reconnect CTA는 05 G10 범위로 구현됐다.
-- 2026-08-10 배포 환경 사용자 실행 기준으로 `TODO/BEFORE_12_TASKS` G01 provider smoke closeout은 production provider smoke verified 상태로 완료 처리됐다.
+- 2026-08-10 배포 환경 사용자 실행 기준으로 `TODO/DONE/BEFORE_12_TASKS` G01 provider smoke closeout은 production provider smoke verified 상태로 완료 처리됐다.
 - PRE12에는 provider smoke 관련 새 API, DB migration, FE route, 코드 구현 잔여가 없다.
 - 실배포 환경 재확인은 PRE12 blocker 또는 문서 잔여 작업으로 남기지 않는다.
 

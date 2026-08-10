@@ -11,7 +11,7 @@
 
 2026-08-07 기준 최종 3분류는 `COMMON/FINAL-CLASSIFICATION.md`를 정본으로 본다. 결론은 12 전 새 기능 구현 없음, 12 전 운영 smoke/문서 정합성만 closeout, 나머지는 post-12 또는 12 Billing 종속으로 분리다.
 
-2026-08-09 기준 선택된 12 전 처리 대상 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 모두 `TODO/BEFORE_12_TASKS`에서 closeout 완료로 반영됐다. `PRE12-F04` provider smoke는 2026-08-10 배포 환경 smoke verified 기준으로 BEFORE_12 G01에서 완료 처리했으며, 실배포 환경 재확인은 PRE12 잔여 작업으로 남기지 않는다.
+2026-08-09 기준 선택된 12 전 처리 대상 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 모두 `TODO/DONE/BEFORE_12_TASKS`에서 closeout 완료로 반영됐다. `PRE12-F04` provider smoke는 2026-08-10 배포 환경 smoke verified 기준으로 BEFORE_12 G01에서 완료 처리했으며, 실배포 환경 재확인은 PRE12 잔여 작업으로 남기지 않는다.
 
 2026-08-10 재검토에서 11 Admin Operation의 Admin provider failure 목록 cursor pagination 편중 누락 Finding은 `PrismaAdminProviderFailureRepository` batch 조회와 회귀 테스트로 해결했다. 이 보정은 기존 11 완료 범위의 품질 수정이며, PRE12 잔여 작업 또는 12 Billing 선행 blocker로 남기지 않는다.
 

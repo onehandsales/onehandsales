@@ -90,7 +90,7 @@ G10 실제 구현 후 2026-08-05에 다시 검토했다.
 
 - 2026-08-05 확인 기준 로컬 `BE/.env`에 Gmail/Microsoft OAuth credential과 smoke allowlist env가 없다.
 - 2026-08-09 기준 credential과 smoke allowlist env 존재, Gmail/Microsoft OAuth connection row 확인, allowlist send/block은 사용자 acceptance 기준 assumed pass로 닫았다.
-- 따라서 provider console callback URL, Gmail OAuth 연결, Gmail allowlist 수신자 발송, Microsoft OAuth 연결, Microsoft allowlist 수신자 발송은 더 이상 G10/PRE12 완료 blocker가 아니다. 독립 재감사가 필요하면 `TODO/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G01_PROVIDER_SMOKE_CLOSEOUT/WORK_LOG.md`의 재감사 조건을 따른다.
+- 따라서 provider console callback URL, Gmail OAuth 연결, Gmail allowlist 수신자 발송, Microsoft OAuth 연결, Microsoft allowlist 수신자 발송은 더 이상 G10/PRE12 완료 blocker가 아니다. 독립 재감사가 필요하면 `TODO/DONE/BEFORE_12_TASKS/TODO_LOG/2026-08-09/G01_PROVIDER_SMOKE_CLOSEOUT/WORK_LOG.md`의 재감사 조건을 따른다.
 
 ## 6. 결론
 
