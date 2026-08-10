@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 API 계약화/구현 대상이 아니다.
 
 상태: Draft
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 0. 완료 반영
 
@@ -28,6 +28,7 @@
 - [x] `NBA-012 Trash 7일 이후 복구 정책`: `11_ADMIN_OPERATION`에서 User 만료 row/복구 문의와 Admin recovery queue 구현 완료
 - [x] `NBA-013 Admin 운영 UX/API`: `11_ADMIN_OPERATION`에서 `/admin/api/*`와 Admin Web 운영 화면 구현 완료
 - [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
+- [x] Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 
 ## 1. 목적
 
@@ -144,6 +145,7 @@
   - Admin API는 AuthGuard와 AdminGuard를 모두 통과한다.
   - User API와 Admin API를 같은 endpoint의 role 분기로 합치지 않는다.
   - provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump, private memo 원문은 response/log에 노출하지 않는다.
+  - Admin provider failure 목록 cursor pagination은 source별 batch 조회와 305건 편중 회귀 테스트로 보강되어 한 source에 실패 row가 몰려도 next cursor가 끊기지 않는다.
   - Admin system gate는 migration/seed/backup/restore/provider smoke 점검 결과를 기록하지만 shell command를 직접 실행하지 않는다.
 - 11 밖으로 남는 범위:
   - 결제/구독/plan/payment/invoice/refund/failed payment recovery와 billing-linked conversion/churn event

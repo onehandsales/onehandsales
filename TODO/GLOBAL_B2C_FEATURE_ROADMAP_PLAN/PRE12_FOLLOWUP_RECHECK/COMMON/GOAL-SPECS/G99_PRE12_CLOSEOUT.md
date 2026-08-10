@@ -2,7 +2,7 @@
 
 상태: Done / BEFORE_12 및 상위 문서 반영 완료
 목표: 선택된 pre-12 후속 작업을 닫고, 12 착수 전 보류 목록을 상위 문서에 반영한다.
-완료 반영일: 2026-08-09
+완료 반영일: 2026-08-10
 
 ## 0. Closeout 결과
 
@@ -13,6 +13,7 @@
 | G02~G05 문서 정합성 | 10/11 체크리스트, User Web/Admin Web architecture 정합성 closeout 완료 |
 | G06 handoff | BEFORE_12 전체 완료와 12 Billing handoff 확인 |
 | API/DB/FE 구현 | PRE12 confirmed API, migration, 신규 route, 화면 구현 없음 |
+| 2026-08-10 추가 QA | Admin provider failure 목록 source 편중 cursor pagination Finding 해결. 기존 11 완료 범위의 품질 보정이며 PRE12 잔여 blocker로 남기지 않음 |
 | 다음 작업 | `12_BILLING_SUBSCRIPTION_TAX`의 confirmed scope/API/DB/FE 문서화 |
 
 ## 1. 선행 조건
@@ -58,3 +59,4 @@
 - [x] 10 Mobile PWA Field Use 완료 범위와 10 밖의 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob 후보가 분리되어 남고 문서 정합성 후보는 BEFORE_12에서 닫혔다.
 - [x] 11 Admin Operation 완료 범위와 11 밖의 Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin direct domain mutation, Customer/B2B tenant admin 후보가 분리되어 남고 문서 정합성 후보는 BEFORE_12에서 닫혔다.
 - [x] ImportJob cleanup failure aggregate/system gate가 11 system gate 완료 범위가 아니라 `PRE12-F13` import/Admin ops 확장으로 남는다.
+- [x] Admin provider failure 목록 cursor pagination 편중 누락 Finding은 2026-08-10 코드/테스트 보정으로 닫혔고 12 Billing 선행 blocker가 아니다.

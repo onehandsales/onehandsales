@@ -4,7 +4,7 @@
 
 상태: Draft Guide
 작성일: 2026-07-20
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 성격: 제품화 gap 판단 가이드
 
 ## 0. 완료 반영 체크리스트
@@ -37,6 +37,7 @@
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE` 구현 및 QA closeout
 - [x] Admin 운영 API/화면 (`11_ADMIN_OPERATION`)
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` 구현 및 QA closeout
+- [x] `11_ADMIN_OPERATION` Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 - [ ] 결제/구독/세금
 
 ## 1. 목적
@@ -110,7 +111,8 @@
 
 진행 순서 결정:
 
-- 2026-08-09 기준 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다.
+- 2026-08-10 기준 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준 01~11 pre-12 재대조, BEFORE_12 closeout, Admin provider failure pagination 보정은 완료됐다.
+- 2026-08-10 기준 Admin provider failure 목록 source 편중 cursor pagination Finding은 11 품질 보정으로 해결됐고, 12 Billing 선행 blocker로 남기지 않는다.
 - 다음 작업은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`다.
 - 12 완료 후 이 제품화 gap 문서와 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`, 01~12 전체를 다시 학습한다.
 - 미구현/후속/보류 항목은 기존 완료 폴더를 재개하지 않고 새 TODO 폴더로 승격한다.
@@ -275,6 +277,7 @@
 - 민감 원문 접근은 reason 필수와 append-only audit/sensitive log를 사용한다.
 - User Web `/app/trash`는 만료 row를 유지하고 restore disabled와 복구 문의 흐름을 제공한다.
 - provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload, private memo 원문은 Admin/User response/log에 노출하지 않는다.
+- Admin provider failure 목록은 2026-08-10 source 편중 cursor pagination 회귀 테스트로 보강되어 한 provider source에 실패 row가 몰려도 목록 cursor가 조기 종료되지 않는다.
 
 남은 제품화 gap으로 분리할 범위:
 

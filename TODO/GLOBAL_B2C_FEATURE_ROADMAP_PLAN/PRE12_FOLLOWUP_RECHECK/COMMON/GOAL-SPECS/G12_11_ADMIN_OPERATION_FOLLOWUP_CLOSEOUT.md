@@ -3,7 +3,7 @@
 상태: Completed
 작성일: 2026-08-06
 검토일: 2026-08-07
-최종 반영일: 2026-08-09
+최종 반영일: 2026-08-10
 목표: 11 Admin Operation의 완료 범위와 남은 후속 후보를 재대조하고, 11 미완성으로 오해하지 않도록 PRE12 후보로 분리한다.
 
 ## 1. 판단 근거
@@ -45,6 +45,8 @@
 2026-08-07 2차 재검토 결과, 기존 PRE12에는 11 원문에서 제외한 Admin 직접 도메인 데이터 수정과 Customer/B2B tenant admin이 명시 후보로 빠져 있었다. 따라서 `PRE12-F44`, `PRE12-F45`로 추가 분리한다. 또한 ImportJob cleanup 실패 전용 Admin aggregate/system gate는 11 system gate 완료 범위가 아니라 기존 `PRE12-F13` import/Admin ops 확장에 연결한다.
 
 2026-08-09 BEFORE_12 G04/G05에서 `PRE12-F33`, `PRE12-F34` 문서 정합성 closeout을 완료했다. 따라서 11 관련 PRE12 문서 정합성 잔여는 없다.
+
+2026-08-10 추가 QA 재검토에서 Admin provider failure 목록이 한 source에 편중될 때 cursor pagination이 조기 종료될 수 있는 Finding을 확인했고, `BE/src/modules/admin-operation/infrastructure/persistence/prisma-admin-provider-failure.repository.ts`에서 source별 batch 조회로 끝까지 후보를 모은 뒤 기존 global cursor를 적용하도록 수정했다. `prisma-admin-provider-failure.repository.spec.ts`에는 305건 편중 회귀 테스트를 추가했으며, 이 Finding은 11 완료 범위의 품질 보정으로 닫는다.
 
 ## 3. 새 PRE12 후보
 
@@ -106,3 +108,4 @@ rg -n "@Post|@Patch|@Put|@Delete|domain-records|UserRole|TenantAdmin|CustomerAdm
 - [x] 11 관련 후속이 06 작업 범위를 넓히지 않도록 구현 금지 기준을 남겼다.
 - [x] Admin Web legacy `admin-query` 잔여 코드는 기능 누락이 아니라 `PRE12-F34` 정합성 정리 범위라고 기록했다.
 - [x] `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에는 있으나 11/PRE12에 빠진 11 직접 후속 후보를 2차 재확인하고 누락분을 보강했다.
+- [x] 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding을 코드와 회귀 테스트로 해결하고 11 품질 보정으로 기록했다.

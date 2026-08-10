@@ -25,6 +25,46 @@ const followUpAttemptId = "00000000-0000-4000-8000-000000000050";
 const calendarConnectionId = "00000000-0000-4000-8000-000000000060";
 const createdAt = new Date("2026-08-01T00:00:00.000Z");
 
+// 역할 : SourceFindManyQuery 테스트 mock이 처리하는 Prisma paging 인자를 정의합니다.
+type SourceFindManyQuery = {
+  readonly select?: unknown;
+  readonly where?: unknown;
+  readonly orderBy?: unknown;
+  readonly skip?: number;
+  readonly take?: number;
+};
+
+// 역할 : AiProviderCallLogRowFixture Admin provider failure 테스트용 AI row 구조를 정의합니다.
+type AiProviderCallLogRowFixture = {
+  readonly id: string;
+  readonly userId: string;
+  readonly operation: AiProviderOperation;
+  readonly status: AiProviderCallStatus;
+  readonly reportId: string | null;
+  readonly jobId: string | null;
+  readonly targetType: string | null;
+  readonly targetId: string | null;
+  readonly provider: string;
+  readonly model: string;
+  readonly requestId: string | null;
+  readonly latencyMs: number | null;
+  readonly safeErrorCode: string | null;
+  readonly safeErrorMessage: string | null;
+  readonly retryable: boolean;
+  readonly startedAt: Date;
+  readonly completedAt: Date | null;
+  readonly failedAt: Date | null;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly user: { readonly email: string };
+};
+
+// 역할 : CreateClientMockOptions provider failure repository mock source 구성을 정의합니다.
+type CreateClientMockOptions = {
+  readonly aiRows?: readonly AiProviderCallLogRowFixture[];
+  readonly emptyOtherSources?: boolean;
+};
+
 // 기능 : PrismaAdminProviderFailureRepository의 provider 실패 safe select 정책을 테스트합니다.
 describe("PrismaAdminProviderFailureRepository", () => {
   // 기능 : provider failure 목록 조회가 raw/prompt/token/quota/browser push secret 필드를 select하지 않는지 검증합니다.
@@ -149,39 +189,93 @@ describe("PrismaAdminProviderFailureRepository", () => {
 
     expect(detail).toBeNull();
   });
+
+  // 기능 : 한 source에 실패 로그가 몰려도 cursor pagination이 끝까지 이어지는지 검증합니다.
+  it("keeps cursor pagination open when one source has more rows than the old fetch window", async () => {
+    const client = createClientMock({
+      aiRows: createManyAiProviderCallLogRows(305),
+      emptyOtherSources: true,
+    });
+    const repository = new PrismaAdminProviderFailureRepository(
+      client as unknown as PrismaService
+    );
+    const pageSizes: number[] = [];
+    const seenIds: string[] = [];
+    let cursor: string | undefined;
+
+    for (let pageIndex = 0; pageIndex < 10; pageIndex += 1) {
+      const response = await repository.listProviderFailures({
+        status: "ALL",
+        limit: 50,
+        ...(cursor ? { cursor } : {}),
+      });
+
+      pageSizes.push(response.items.length);
+      seenIds.push(...response.items.map((item) => item.id));
+      cursor = response.nextCursor ?? undefined;
+
+      if (!cursor) {
+        break;
+      }
+    }
+
+    expect(pageSizes).toEqual([50, 50, 50, 50, 50, 50, 5]);
+    expect(new Set(seenIds).size).toBe(305);
+    expect(client.aiProviderCallLog.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 300,
+        take: 300,
+      })
+    );
+  });
 });
 
 // 기능 : PrismaAdminProviderFailureRepository 테스트용 Prisma client mock을 생성합니다.
-function createClientMock() {
+function createClientMock(options: CreateClientMockOptions = {}) {
+  const aiRows = options.aiRows ?? [createAiProviderCallLogRow()];
+  const businessCardRows = options.emptyOtherSources
+    ? []
+    : [createBusinessCardScanLogRow()];
+  const notificationRows = options.emptyOtherSources
+    ? []
+    : [createNotificationDeliveryAttemptRow()];
+  const followUpRows = options.emptyOtherSources
+    ? []
+    : [createFollowUpDeliveryAttemptRow()];
+  const calendarConnectionRows = options.emptyOtherSources
+    ? []
+    : [createCalendarConnectionRow()];
+  const calendarSourceRows = options.emptyOtherSources
+    ? []
+    : [createCalendarSourceRow()];
+
   return {
     aiProviderCallLog: {
-      findMany: jest.fn().mockResolvedValue([createAiProviderCallLogRow()]),
-      findUnique: jest.fn().mockResolvedValue(createAiProviderCallLogRow()),
+      findMany: createPaginatedFindManyMock(aiRows),
+      findUnique: jest.fn().mockResolvedValue(
+        aiRows[0] ?? createAiProviderCallLogRow()
+      ),
     },
     businessCardScanLog: {
-      findMany: jest.fn().mockResolvedValue([createBusinessCardScanLogRow()]),
+      findMany: createPaginatedFindManyMock(businessCardRows),
       findUnique: jest.fn().mockResolvedValue(createBusinessCardScanLogRow()),
     },
     notificationDeliveryAttempt: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([createNotificationDeliveryAttemptRow()]),
+      findMany: createPaginatedFindManyMock(notificationRows),
       findUnique: jest
         .fn()
         .mockResolvedValue(createNotificationDeliveryAttemptRow()),
     },
     followUpDeliveryAttempt: {
-      findMany: jest.fn().mockResolvedValue([createFollowUpDeliveryAttemptRow()]),
+      findMany: createPaginatedFindManyMock(followUpRows),
       findUnique: jest.fn().mockResolvedValue(createFollowUpDeliveryAttemptRow()),
     },
     externalCalendarConnection: {
-      findMany: jest
-        .fn()
-        .mockResolvedValue([createCalendarConnectionRow()]),
+      findMany: createPaginatedFindManyMock(calendarConnectionRows),
       findUnique: jest.fn().mockResolvedValue(createCalendarConnectionRow()),
     },
     externalCalendarSource: {
-      findMany: jest.fn().mockResolvedValue([createCalendarSourceRow()]),
+      findMany: createPaginatedFindManyMock(calendarSourceRows),
       findUnique: jest.fn().mockResolvedValue(createCalendarSourceRow()),
     },
     browserPushSubscription: {
@@ -193,8 +287,20 @@ function createClientMock() {
   };
 }
 
+// 기능 : Prisma findMany mock이 skip/take paging을 실제 배열 slice로 반영하게 만듭니다.
+function createPaginatedFindManyMock<TRow>(rows: readonly TRow[]) {
+  return jest.fn((query: SourceFindManyQuery = {}) => {
+    const skip = query.skip ?? 0;
+    const take = query.take ?? rows.length;
+
+    return Promise.resolve(rows.slice(skip, skip + take));
+  });
+}
+
 // 기능 : 테스트용 AiProviderCallLog row를 생성합니다.
-function createAiProviderCallLogRow() {
+function createAiProviderCallLogRow(
+  overrides: Partial<AiProviderCallLogRowFixture> = {}
+): AiProviderCallLogRowFixture {
   return {
     id: aiLogId,
     userId: targetUserId,
@@ -217,7 +323,32 @@ function createAiProviderCallLogRow() {
     createdAt,
     updatedAt: createdAt,
     user: { email: "local.user@example.com" },
+    ...overrides,
   };
+}
+
+// 기능 : 한 source 편중 pagination 검증용 AI provider 실패 row 목록을 생성합니다.
+function createManyAiProviderCallLogRows(
+  count: number
+): AiProviderCallLogRowFixture[] {
+  const startTime = new Date("2026-08-01T00:10:00.000Z").getTime();
+
+  return Array.from({ length: count }, (_, index) => {
+    const occurredAt = new Date(startTime - index * 1000);
+
+    return createAiProviderCallLogRow({
+      id: createUuidFromNumber(1_000 + index),
+      startedAt: occurredAt,
+      failedAt: occurredAt,
+      createdAt: occurredAt,
+      updatedAt: occurredAt,
+    });
+  });
+}
+
+// 기능 : 테스트 row마다 충돌 없는 UUID 문자열을 생성합니다.
+function createUuidFromNumber(value: number): string {
+  return `00000000-0000-4000-8000-${String(value).padStart(12, "0")}`;
 }
 
 // 기능 : 테스트용 BusinessCardScanLog row를 생성합니다.

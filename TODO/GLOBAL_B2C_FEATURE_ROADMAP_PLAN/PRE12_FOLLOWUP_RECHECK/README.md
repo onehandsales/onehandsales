@@ -2,7 +2,7 @@
 
 상태: Pre-12 Closeout Complete / BEFORE_12 반영 완료 / 12 Billing 착수 가능
 작성일: 2026-08-06
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 12 착수 전 결정에 연결하는 작업 폴더
 
 ## 1. 목적
@@ -12,6 +12,8 @@
 2026-08-07 기준 최종 3분류는 `COMMON/FINAL-CLASSIFICATION.md`를 정본으로 본다. 결론은 12 전 새 기능 구현 없음, 12 전 운영 smoke/문서 정합성만 closeout, 나머지는 post-12 또는 12 Billing 종속으로 분리다.
 
 2026-08-09 기준 선택된 12 전 처리 대상 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`는 모두 `TODO/BEFORE_12_TASKS`에서 closeout 완료로 반영됐다. `PRE12-F04` provider smoke는 사용자 지시 기준으로 BEFORE_12 G01에서 완료 처리하며, 실배포 환경 재확인은 PRE12 잔여 작업으로 남기지 않는다.
+
+2026-08-10 재검토에서 11 Admin Operation의 Admin provider failure 목록 cursor pagination 편중 누락 Finding은 `PrismaAdminProviderFailureRepository` batch 조회와 회귀 테스트로 해결했다. 이 보정은 기존 11 완료 범위의 품질 수정이며, PRE12 잔여 작업 또는 12 Billing 선행 blocker로 남기지 않는다.
 
 현재 문서는 01~11 재대조와 06 후속 재검토 A 결정, 07 MeetingNote AI 후속 후보 재대조, 08 Global Data I18N 후속 후보 재대조, 09 Product Analytics 후속 후보 재대조, 10 Mobile Field Use 후속 후보 2차 재대조, 11 Admin Operation 후속 후보 closeout, BEFORE_12 G01~G06 완료 결과를 반영했다. 따라서 이 문서는 특히 01, 02, 03, 05, 06, 07, 08, 09, 10, 11 사이에서 오해하기 쉬운 다음 항목을 분리한다.
 
@@ -58,7 +60,7 @@
 | 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 | 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, marketing opt-in, PWA/native install attribution은 09 완료 범위가 아니다. |
 | 10 Mobile PWA Field Use | 완료 이력 유지 / G11 및 BEFORE_12 G02~G03 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar, advanced camera preview/crop, server draft/media raw storage는 후속이고, 10 FE/BE TODO 체크리스트와 FE route architecture 문서 정합성은 `PRE12-F31`/`PRE12-F32`로 분리한 뒤 BEFORE_12에서 닫았다. 남는 기능 후보는 `PRE12-F30`, `PRE12-F42`, `PRE12-F43`과 기존 `PRE12-F09`다. |
-| 11 Admin Operation | 완료 이력 유지 / G12 및 BEFORE_12 G04~G05 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분리한 뒤 BEFORE_12에서 닫았다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin은 11 완료 범위가 아니다. 남는 후보는 `PRE12-F35`~`PRE12-F37`, `PRE12-F44`, `PRE12-F45`와 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결이다. |
+| 11 Admin Operation | 완료 이력 유지 / G12 및 BEFORE_12 G04~G05 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분리한 뒤 BEFORE_12에서 닫았다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding은 batch 조회와 회귀 테스트로 해결했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin은 11 완료 범위가 아니다. 남는 후보는 `PRE12-F35`~`PRE12-F37`, `PRE12-F44`, `PRE12-F45`와 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결이다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 post-12 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
 

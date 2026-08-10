@@ -2,7 +2,7 @@
 
 상태: Final / BEFORE_12 closeout reflected
 작성일: 2026-08-06
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 1. 목적
 
@@ -18,7 +18,7 @@
 | post-12 | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / 12 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-12 전에 할 것으로 분류했던 운영 smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA/native, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 12 전 구현으로 올리지 않는다.
+12 전에 할 것으로 분류했던 운영 smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding도 11 품질 보정으로 해결했다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA/native, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 12 전 구현으로 올리지 않는다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
@@ -368,8 +368,8 @@
 | --- | --- |
 | `done` | 실제 구현과 QA가 이미 닫힌 항목 |
 | `closed-by-BEFORE_12` | `TODO/BEFORE_12_TASKS`에서 2026-08-09 기준 닫힌 12 전 운영 smoke 또는 문서 정합성 항목 |
-| `pre-12-follow-up-needed` | 12 전 별도 goal로 처리할 수 있고, billing 결정과 직접 충돌하지 않는 항목. 2026-08-09 현재 이 상태로 남은 후보는 없다. |
-| `pre-12-doc-cleanup` | 실제 기능 구현은 닫혔지만 문서 체크리스트, architecture 설명, dead-code 메모 같은 정합성 정리가 필요한 항목. 2026-08-09 현재 이 상태로 남은 후보는 없다. |
+| `pre-12-follow-up-needed` | 12 전 별도 goal로 처리할 수 있고, billing 결정과 직접 충돌하지 않는 항목. 2026-08-10 현재 이 상태로 남은 후보는 없다. |
+| `pre-12-doc-cleanup` | 실제 기능 구현은 닫혔지만 문서 체크리스트, architecture 설명, dead-code 메모 같은 정합성 정리가 필요한 항목. 2026-08-10 현재 이 상태로 남은 후보는 없다. |
 | `post-12-seed` | 12 이후 최종 재검토에서 새 TODO로 승격할지 판단할 항목 |
 | `billing-blocked` | 12 결정 없이는 구현 기준을 확정할 수 없는 항목 |
 | `Question` | 사용자의 제품 판단 또는 정책 결정이 필요한 항목 |

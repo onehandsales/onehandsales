@@ -4,7 +4,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 0. 완료 반영
 
@@ -78,10 +78,10 @@
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
   - 현재 의미: User/Admin Trash response의 private memo 원문 미노출 기준은 완료다.
-- [x] `NBA-011` Admin/internal provider audit 범위: Done (2026-08-01)
+- [x] `NBA-011` Admin/internal provider audit 범위: Done (2026-08-01), source-skew pagination QA 보정 완료 (2026-08-10)
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
-  - 현재 의미: provider failure 운영 조회, raw access reason, audit/sensitive log 기준은 완료다. provider raw/prompt/token/quota detail은 계속 금지한다.
+  - 현재 의미: provider failure 운영 조회, raw access reason, audit/sensitive log 기준은 완료다. provider raw/prompt/token/quota detail은 계속 금지한다. Admin provider failure 목록 source 편중 cursor pagination Finding은 2026-08-10 회귀 테스트로 닫혔다.
 - [x] `NBA-012 Trash 7일 이후 복구 정책`: Done (2026-08-01)
   - 구현 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
   - 완료 기록: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/GOAL-SPECS/G10_QA_DOCUMENT_CLOSEOUT.md`
@@ -117,7 +117,7 @@
 | NBA-010 | Notification | AGENT 문서 | product feature | Yes | reminder 기반 retention loop를 만들 수 있다. | Done: notification list/read/settings/browser-push API 구현 | Done: Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription schema 및 migration 구현 | Done: `/app/notifications`, unread badge, settings, browser push fallback UX 구현 | provider raw response, push endpoint/key, email 원문 redaction QA 완료. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER` | 완료. Active backlog에서 제외한다. |
 | NBA-015 | Google Calendar Integration | AGENT 문서, `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` | product feature | Yes | 완료. Google Calendar read-only import를 한손 일정/딜/알림/Trash 흐름에 연결한다. | Done: Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, Schedule list/detail/update/delete, Trash restore 계약 확장 구현 | Done: ExternalCalendarConnection/ExternalCalendarSource, Schedule Google metadata, soft delete/trash fields, sync lock/status migration 구현 | Done: `/app/schedules`, `/app/settings`, `/app/trash` Google Calendar UX, source badge, sync, calendar 선택, Schedule restore 구현 | OAuth state, token encryption/redaction, ownership, Schedule soft delete/restore, reminder QA 완료. 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION` | 완료. Active backlog에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정, 여러 Google 계정 동시 연결은 별도 후속 범위다. |
 | 05_AI_WEEKLY_SALES_REPORT | AI weekly report and follow-up delivery | Productization gap, `05_AI_WEEKLY_SALES_REPORT` | product feature | Yes | 완료. 주간 영업 흐름을 저장형 AI report로 만들고 follow-up draft/send/timeline으로 이어진다. | Done: sales report 생성/조회/snapshot API, follow-up settings/draft/send/retry/list/detail API, Gmail/Microsoft actual send adapter 구현 | Done: AI report/job/suggestion/provider log와 follow-up delivery schema 구현. G10 신규 migration 없음 | Done: `/app/schedules/week` AI report section, `/app/settings` provider settings, compose/send/retry/timeline UX 구현 | provider raw/token/body/recipient redaction, safe error/reconnect, smoke allowlist 자동 검증 완료. Provider smoke closeout은 2026-08-09 PRE12/BEFORE_12 기준 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT` | 구현 완료. Active backlog에서 제외한다. SMS 실제 provider/B2B/sequence/email sync는 별도 후속이다. |
-| NBA-011 | MeetingNote provider call log and Admin audit | AGENT 문서, `07_MEETING_NOTE_AI_PROVIDER_LOG`, `11_ADMIN_OPERATION` | ops/security | No | 완료. User provider log subset과 Admin/internal 운영 조회/audit 기준이 원문 없이 연결됐다. | Done: 07 User API provider log write, 11 Admin provider failure/sensitive raw access/audit API 구현 | Done: 07 `AiProviderCallLog` target 확장, 11 `AdminAuditLog`/`AdminSensitiveAccessLog` 구현. 별도 transcript/raw table은 만들지 않음 | Done: User Web safe failure, Admin Web provider/audit 화면 구현 | raw request/response, prompt, 회의 원문, transcript, follow-up body, contact 원문, provider token/quota detail 저장/노출 금지 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. |
+| NBA-011 | MeetingNote provider call log and Admin audit | AGENT 문서, `07_MEETING_NOTE_AI_PROVIDER_LOG`, `11_ADMIN_OPERATION` | ops/security | No | 완료. User provider log subset과 Admin/internal 운영 조회/audit 기준이 원문 없이 연결됐다. 2026-08-10 source 편중 pagination 보정도 완료됐다. | Done: 07 User API provider log write, 11 Admin provider failure/sensitive raw access/audit API 구현. provider failure 목록은 source별 batch 조회와 회귀 테스트로 next cursor 조기 종료를 방지한다. | Done: 07 `AiProviderCallLog` target 확장, 11 `AdminAuditLog`/`AdminSensitiveAccessLog` 구현. 별도 transcript/raw table은 만들지 않음 | Done: User Web safe failure, Admin Web provider/audit 화면 구현 | raw request/response, prompt, 회의 원문, transcript, follow-up body, contact 원문, provider token/quota detail 저장/노출 금지 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. |
 | NBA-012 | Trash 7일 이후 복구 정책 | AGENT 문서, `11_ADMIN_OPERATION` | ops/security | Yes | 완료. 복구 가능 기한 이후 동작과 운영 책임을 hard delete 없이 명확히 했다. | Done: 만료 Trash response status와 `POST /api/trash/recovery-requests`, Admin recovery request list 구현 | Done: `TrashRecoveryRequest`와 열린 요청 unique index 구현. purge/hard delete table 없음 | Done: `/app/trash` 만료 row copy, restore disabled, 복구 문의 UX | private memo 원문 미노출, 유료 복구 결제/paywall 제외, hard delete/purge 미구현 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. |
 | NBA-013 | Admin 운영 UX/API | AGENT 문서, `11_ADMIN_OPERATION` | ops/security | No | 완료. 고객 지원, 민감정보 마스킹, 감사 로그 기반 최소 운영이 가능해졌다. | Done: `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API 구현 | Done: Admin audit/sensitive log, recovery/account/data/system operation check tables 구현 | Done: Admin Web `/users`, `/provider-failures`, `/analytics`, `/account-requests`, `/trash/recovery-requests`, `/audit-logs`, `/system` | AuthGuard/AdminGuard, masking, raw access reason, audit log, 결제/구독 제외 QA 완료 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. Active backlog에서 제외한다. Billing Admin 연동은 12에서 다룬다. |
 | NBA-014 | DB/Prisma migration 운영 gate closeout | G02~G06, `06_DEAL_ACTIVITY_TIMELINE`, `11_ADMIN_OPERATION` | release blocker | No | 06 범위와 11 범위 완료. DB 대상, Prisma 검증, migration/seed 금지 기준과 Admin system gate를 확인했다. | Done: 11 Admin system operation check API 구현 | Done for 06/11: 신규 migration 작성, 기존 migration 미수정, 무단 migrate/seed 미실행, `AdminOperationCheckRun` 구현 | Done: Admin Web `/system` 운영 gate 화면 | DB URL/secret/token 저장 차단, Admin API가 migrate/seed/backup/restore 직접 실행하지 않음 | Done: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` | 완료. 이후 migration goal마다 선행 gate로 계속 적용한다. |
@@ -127,7 +127,7 @@
 
 ## 3. 다음 실행 순서 제안
 
-1. 2026-08-09 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다.
+1. 2026-08-10 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐고, Admin provider failure pagination 보정도 11 품질 수정으로 닫혔다.
 2. 다음 작업은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`를 계약화하고 구현하는 것이다.
 3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 이 matrix를 다시 읽는다.
 4. `NBA-003`의 Company/Contact/Product latest summary 잔여 범위는 2026-08-06 A 결정에 따라 12 전 계약화하지 않고 post-12 B2C/B2B record activity 전략 재검토 seed로 유지한다. `NBA-004` MeetingNote 목록 summary도 post-12 재검토 seed로 유지한다.

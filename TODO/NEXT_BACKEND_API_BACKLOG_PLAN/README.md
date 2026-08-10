@@ -4,7 +4,7 @@
 
 상태: Draft
 작성일: 2026-07-20
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 출처: `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` G07, `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
 ## 0. 완료 반영 체크리스트
@@ -36,6 +36,7 @@
 - [x] `NBA-013 Admin 운영 UX/API`: `11_ADMIN_OPERATION`에서 `/admin/api/*`와 Admin Web 운영 화면 구현 및 QA closeout 완료
 - [x] 11 범위 `NBA-014` DB/Prisma/system operation gate closeout 완료
 - [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
+- [x] `11_ADMIN_OPERATION` Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
 - [x] 완료 기록: `TODO_LOG/2026-08-03/G09_IMPORT_JOB_FINAL_SERVICE_QA_CLOSEOUT/WORK_LOG.md`
@@ -76,8 +77,9 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11에서 완료됐고, billing/paywall/churn runtime conversion source는 12에서 다룬다.
 - `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
 - `11_ADMIN_OPERATION`은 2026-08-01 기준 구현 및 QA closeout이 완료되어 Admin 운영 API/DB/Admin Web gap에서 제외한다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 12에서 다룬다.
+- 2026-08-10 기준 Admin provider failure 목록 source 편중 cursor pagination Finding은 `PrismaAdminProviderFailureRepository` batch 조회와 회귀 테스트로 해결했다. 신규 API/DB 후보가 아니라 11 완료 범위의 품질 보정으로 본다.
 - MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 남은 후보다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 12 전 구현 후보가 아니다.
-- 2026-08-09 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다. 다음 작업은 12이며, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
+- 2026-08-10 기준 12 착수 전 01~11 pre-12 재대조, BEFORE_12 closeout, Admin provider failure pagination 보정은 완료됐다. 다음 작업은 12이며, 12 완료 뒤 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md`에 따라 이 백로그를 다시 읽고 잔여 후보를 새 TODO 폴더로 승격할지 결정한다.
 - 12 완료 전에는 `NBA-003`, `NBA-004`, backup/restore runbook, 장애 대응 drill을 무작위로 구현하지 않는다. 특히 `NBA-003` 잔여는 A 결정에 따라 12 전 계약 초안도 만들지 않고 post-12 전략 재검토 seed로 유지한다.
 
 ## 2.1 `NBA-015` 반영 기준
@@ -240,6 +242,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - User Trash 만료 row는 hard delete/purge하지 않고 복구 버튼 disabled와 복구 문의 흐름을 제공한다.
 - Admin provider failure, analytics overview, account deletion/data export request queue, trash recovery request queue, system operation gate 화면/API를 구현했다.
 - provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump, private memo 원문 노출 금지 조건을 QA closeout에서 확인했다.
+- Admin provider failure 목록 source 편중 cursor pagination은 2026-08-10 회귀 테스트로 보강되어 한 source에 실패 row가 몰려도 다음 cursor가 조기 종료되지 않는다.
 
 남은 백로그로 오해하지 않을 범위:
 

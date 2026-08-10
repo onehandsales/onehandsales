@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 gap으로 승격하지 않고 post-12 B2B/team CRM 전략 후보로 둔다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 0. 완료 반영
 
@@ -30,6 +30,7 @@
 - [x] 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics 구현 및 QA closeout 완료
 - [x] `11_ADMIN_OPERATION`: Done (2026-08-01)
 - [x] Admin 운영 API/Web, audit/redaction, provider failure, analytics overview, Trash/account request/system gate 구현 및 QA closeout 완료
+- [x] Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 
 ## 1. Gap 분류 기준
 
@@ -61,7 +62,7 @@
 | Trash | 7일 이내 복구와 만료 후 정책이 명확하다. | 7일 이내 복구, Schedule soft delete/restore, 만료 row restore disabled, 복구 문의, Admin recovery queue 구현 | Trash 만료/복구 문의/private memo backend restriction gap은 11에서 닫힘. Admin 직접 복구 실행, 유료 복구, hard delete/purge는 제외 | Closed for 11 / Ops follow-up | 완료, 제외 범위 별도 |
 | Export | 도메인별 export와 민감 export 정책이 안전하다. | 도메인별 xlsx와 `ko-KR`/`en` header/date-time/currency localization, data export request 운영 queue 구현 | 기본 현지화 gap은 08에서 닫힘. 데이터 export 요청 운영은 11에서 닫힘. 대량/비동기 ExportJob 파일 생성은 후속 | Ops/security follow-up | 후속 |
 | Notification | 다음 행동/일정/딜 지연 reminder가 온다. | 일정/딜/Google-origin schedule reminder, 앱 안 알림, email/browser push delivery attempt, `/app/notifications` 구현. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | 회의록 follow-up 알림은 후속 기능 | Closed for NBA-010/NBA-015 | 완료 |
-| Admin 운영 | 사용자/민감정보/감사/provider/Trash/account/system gate를 운영하고, 결제/구독 운영은 Billing 도메인과 연결한다. | 11 기준 `/admin/api/*`와 Admin Web 운영 화면 구현. 결제/구독/plan/payment/invoice/refund는 제외 | 최소 Admin 운영 gap은 11에서 닫힘. Billing Admin 연동은 12 결제 도메인 후속 | Closed for 11 / Billing 12 gap | 운영 완료, Billing 후속 |
+| Admin 운영 | 사용자/민감정보/감사/provider/Trash/account/system gate를 운영하고, 결제/구독 운영은 Billing 도메인과 연결한다. | 11 기준 `/admin/api/*`와 Admin Web 운영 화면 구현. 2026-08-10 provider failure 목록 source 편중 cursor pagination 보정 완료. 결제/구독/plan/payment/invoice/refund는 제외 | 최소 Admin 운영 gap은 11에서 닫힘. Billing Admin 연동은 12 결제 도메인 후속 | Closed for 11 / Billing 12 gap | 운영 완료, Billing 후속 |
 | 결제/구독 | trial, 월/연 구독, 환불, 영수증, failed payment recovery | 구현 없음 | 결제 provider/MoR, plan, entitlement 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
 | `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. legacy static fallback 직접 keying 축소와 시장별 UX writing polish는 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
@@ -89,7 +90,7 @@
 
 ## 4. 권장 다음 큰 방향
 
-1. 2026-08-09 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐다.
+1. 2026-08-10 기준 12 착수 전 01~11 pre-12 재대조와 BEFORE_12 closeout은 완료됐고, Admin provider failure 목록 pagination 보정도 11 품질 수정으로 닫혔다.
 2. 다음 작업은 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/12_BILLING_SUBSCRIPTION_TAX`다.
 3. 12에서 결제, 정책/운영 신뢰, 세금/컴플라이언스, billing-linked conversion/churn source를 계약화하고 구현한다.
 4. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 User Web 화면별 제품화 gap을 실제 화면과 API/DB 기준으로 다시 확인한다.

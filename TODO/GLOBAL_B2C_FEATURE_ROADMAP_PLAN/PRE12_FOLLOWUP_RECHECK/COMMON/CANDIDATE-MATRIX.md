@@ -2,7 +2,7 @@
 
 상태: Final / BEFORE_12 closeout reflected
 작성일: 2026-08-06
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 1. 목적
 
@@ -41,7 +41,7 @@
 | PRE12-F13 | Import scale/source/Admin 확장 | 01 제외, 11 재대조 | 01은 회사/담당자/제품/딜 import와 10MB/5,000 data row 제한, 보관/삭제/복구 기준으로 완료됐다. 대용량 worker, 일정/회의록 import, ImportJob Admin 전용 화면/API, ImportJob cleanup 실패 전용 aggregate/system gate는 01/11 최종형 밖이다. 11 system gate는 generic operation check 기록이고 ImportJob cleanup failure 전용 화면/API/집계가 아니다. | post-12-seed | 12 전 구현하지 않는다. post-12 product scale/Admin ops/import source 전략에서 새 TODO 승격 여부를 판단한다. |
 | PRE12-F14 | AI data cleanup 제안 저장/적용 | 07 제외, USER_WEB productization gap | 07은 data cleanup suggestion을 1차 제외했다. 05 AI weekly report에는 저장형 report suggestion이 있으나 MeetingNote cleanup 적용 흐름은 없다. | post-12-seed / 별도 data quality 계획 | 09 Product Analytics 또는 별도 data quality TODO에서 권한, 적용, 감사 로그, rollback 기준을 먼저 정한다. |
 | PRE12-F15 | MeetingNote transcript/raw provider response/follow-up draft 저장 | NBA-011 원본 후보, 07 명시 제외 | 07은 전용 transcript/follow-up draft/raw provider response table을 만들지 않고 공통 `AiProviderCallLog` safe metadata만 남긴다. | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현 금지. |
-| PRE12-F16 | MeetingNote Admin/internal provider audit 조회 | NBA-011, USER_WEB gap | Admin provider failure 조회와 raw access audit 기준은 11 Admin Operation에서 완료됐다. | done | 07 또는 PRE12에서 재구현하지 않는다. 11 완료 문서를 참조한다. |
+| PRE12-F16 | MeetingNote Admin/internal provider audit 조회 | NBA-011, USER_WEB gap | Admin provider failure 조회와 raw access audit 기준은 11 Admin Operation에서 완료됐다. 2026-08-10 source 편중 cursor pagination Finding도 11 품질 보정으로 해결했다. | done | 07 또는 PRE12에서 재구현하지 않는다. 11 완료 문서를 참조한다. |
 | PRE12-F17 | `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | 08 제외, USER_WEB productization gap | public/auth는 `ja`, `zh-TW` locale URL/copy가 있지만 `/app` i18n은 `ko-KR`, `en`만 지원한다. | post-12-seed | 일본/대만 판매 준비 goal에서 시장, 용어, QA 범위를 확정한 뒤 진행한다. |
 | PRE12-F18 | `zh-CN` 중국 본토 지원 | 08 결정 로그 | 08은 `zh-CN`을 현재 글로벌 후보로 보지 않았다. 코드도 `/app` locale에 `zh-CN`을 포함하지 않는다. | defer / 시장 진입 결정 필요 | 중국 본토 시장, 인프라, 정책, 결제/세금 기준이 정해지기 전 구현 금지. |
 | PRE12-F19 | 전 세계 국가/통화/전화번호 확장 | 08 제외, USER_WEB/NEXT backlog | 현재 Backend/Frontend는 `KR/US`, `KRW/USD`, `ko-KR/en`으로 좁혀져 있다. | post-12-seed | 실제 판매 국가와 운영 지원 국가를 확정한 뒤 country/currency/phone dictionary와 migration 전략을 새 TODO로 만든다. |

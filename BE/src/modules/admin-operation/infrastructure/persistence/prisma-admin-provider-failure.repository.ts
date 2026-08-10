@@ -32,6 +32,12 @@ type ProviderFailureCursor = {
   readonly occurredAt: Date;
 };
 
+// 역할 : ProviderFailureSourcePage source별 provider 실패 조회 batch 범위를 정의합니다.
+type ProviderFailureSourcePage = {
+  readonly skip: number;
+  readonly take: number;
+};
+
 type ProviderFailureSourcePrefix =
   | "AI"
   | "STT"
@@ -193,6 +199,8 @@ const FOLLOW_UP_DELIVERY_FAILURE_STATUSES = [
   FollowUpDeliveryAttemptStatus.FAILED,
   FollowUpDeliveryAttemptStatus.CANCELED,
 ];
+// 기능 : source별 실패 로그를 안전하게 끝까지 읽기 위한 기본 batch 크기입니다.
+const SOURCE_FETCH_BATCH_SIZE = 300;
 
 // 역할 : PrismaAdminProviderFailureRepository Admin provider 실패 safe read model을 Prisma 조회로 구현합니다.
 export class PrismaAdminProviderFailureRepository
@@ -221,6 +229,8 @@ export class PrismaAdminProviderFailureRepository
   async listProviderFailures(
     input: ListAdminProviderFailuresInput
   ): Promise<AdminProviderFailureListPageRecord> {
+    const cursor = this.parseCursor(input.cursor);
+    // 1. source별 고정 fetch window가 다음 페이지를 끊지 않도록 각 source를 batch 단위로 모두 읽습니다.
     const sourceGroups = await Promise.all([
       this.shouldReadAiProviderFailures(input)
         ? this.listAiProviderFailures(input)
@@ -241,7 +251,7 @@ export class PrismaAdminProviderFailureRepository
         ? this.listCalendarSourceFailures(input)
         : Promise.resolve([]),
     ]);
-    const cursor = this.parseCursor(input.cursor);
+    // 2. source별 row를 공통 filter와 global cursor 기준으로 다시 정렬해 Admin 목록 계약을 유지합니다.
     const sortedRecords = sourceGroups
       .flat()
       .filter((record) => this.matchesCommonFilters(record, input))
@@ -251,6 +261,7 @@ export class PrismaAdminProviderFailureRepository
           (record) => this.compareRecordToCursor(record, cursor) > 0
         )
       : sortedRecords;
+    // 3. limit보다 많은 후보가 있을 때만 다음 cursor를 반환합니다.
     const pageItems = cursorFilteredRecords.slice(0, input.limit);
     const lastItem = pageItems[pageItems.length - 1] ?? null;
 
@@ -319,79 +330,91 @@ export class PrismaAdminProviderFailureRepository
   private async listAiProviderFailures(
     input: ListAdminProviderFailuresInput
   ): Promise<AdminProviderFailureDetailRecord[]> {
-    const rows = await this.client.aiProviderCallLog.findMany({
-      where: {
-        ...this.createUserWhere(input),
-        ...this.createCreatedAtWhere(input),
-        ...this.createAiProviderStatusWhere(input),
-      },
-      select: aiProviderFailureSelect,
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: this.getSourceFetchTake(input.limit),
-    });
-
-    return rows.map((row) => this.toAiProviderFailureRecord(row));
+    return this.collectSourceFailures(
+      (page) =>
+        this.client.aiProviderCallLog.findMany({
+          where: {
+            ...this.createUserWhere(input),
+            ...this.createCreatedAtWhere(input),
+            ...this.createAiProviderStatusWhere(input),
+          },
+          select: aiProviderFailureSelect,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          skip: page.skip,
+          take: page.take,
+        }),
+      (row) => this.toAiProviderFailureRecord(row)
+    );
   }
 
   // 기능 : BusinessCardScanLog OCR 실패 row를 safe error 필드만 select해 조회합니다.
   private async listOcrProviderFailures(
     input: ListAdminProviderFailuresInput
   ): Promise<AdminProviderFailureDetailRecord[]> {
-    const rows = await this.client.businessCardScanLog.findMany({
-      where: {
-        ...this.createUserWhere(input),
-        ...this.createCreatedAtWhere(input),
-        ...this.createRetryableWhere(input),
-        OR: [
-          { status: BusinessCardScanStatus.OCR_FAILED },
-          { safeErrorCode: { not: null } },
-        ],
-      },
-      select: businessCardFailureSelect,
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: this.getSourceFetchTake(input.limit),
-    });
-
-    return rows.map((row) => this.toBusinessCardFailureRecord(row));
+    return this.collectSourceFailures(
+      (page) =>
+        this.client.businessCardScanLog.findMany({
+          where: {
+            ...this.createUserWhere(input),
+            ...this.createCreatedAtWhere(input),
+            ...this.createRetryableWhere(input),
+            OR: [
+              { status: BusinessCardScanStatus.OCR_FAILED },
+              { safeErrorCode: { not: null } },
+            ],
+          },
+          select: businessCardFailureSelect,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          skip: page.skip,
+          take: page.take,
+        }),
+      (row) => this.toBusinessCardFailureRecord(row)
+    );
   }
 
   // 기능 : NotificationDeliveryAttempt browser push 실패를 secret 없는 select로 조회합니다.
   private async listPushProviderFailures(
     input: ListAdminProviderFailuresInput
   ): Promise<AdminProviderFailureDetailRecord[]> {
-    const rows = await this.client.notificationDeliveryAttempt.findMany({
-      where: {
-        ...this.createUserWhere(input),
-        ...this.createCreatedAtWhere(input),
-        ...this.createNotificationDeliveryStatusWhere(input),
-        ...this.createRetryableWhere(input),
-        channel: NotificationDeliveryChannel.BROWSER_PUSH,
-      },
-      select: notificationDeliveryFailureSelect,
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: this.getSourceFetchTake(input.limit),
-    });
-
-    return rows.map((row) => this.toNotificationDeliveryFailureRecord(row));
+    return this.collectSourceFailures(
+      (page) =>
+        this.client.notificationDeliveryAttempt.findMany({
+          where: {
+            ...this.createUserWhere(input),
+            ...this.createCreatedAtWhere(input),
+            ...this.createNotificationDeliveryStatusWhere(input),
+            ...this.createRetryableWhere(input),
+            channel: NotificationDeliveryChannel.BROWSER_PUSH,
+          },
+          select: notificationDeliveryFailureSelect,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          skip: page.skip,
+          take: page.take,
+        }),
+      (row) => this.toNotificationDeliveryFailureRecord(row)
+    );
   }
 
   // 기능 : FollowUpDeliveryAttempt email/SMS 실패를 safe delivery 필드만 select해 조회합니다.
   private async listFollowUpProviderFailures(
     input: ListAdminProviderFailuresInput
   ): Promise<AdminProviderFailureDetailRecord[]> {
-    const rows = await this.client.followUpDeliveryAttempt.findMany({
-      where: {
-        ...this.createUserWhere(input),
-        ...this.createCreatedAtWhere(input),
-        ...this.createFollowUpDeliveryStatusWhere(input),
-        ...this.createRetryableWhere(input),
-      },
-      select: followUpDeliveryFailureSelect,
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: this.getSourceFetchTake(input.limit),
-    });
-
-    return rows.map((row) => this.toFollowUpDeliveryFailureRecord(row));
+    return this.collectSourceFailures(
+      (page) =>
+        this.client.followUpDeliveryAttempt.findMany({
+          where: {
+            ...this.createUserWhere(input),
+            ...this.createCreatedAtWhere(input),
+            ...this.createFollowUpDeliveryStatusWhere(input),
+            ...this.createRetryableWhere(input),
+          },
+          select: followUpDeliveryFailureSelect,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          skip: page.skip,
+          take: page.take,
+        }),
+      (row) => this.toFollowUpDeliveryFailureRecord(row)
+    );
   }
 
   // 기능 : ExternalCalendarConnection 연결 실패를 token 없는 select로 조회합니다.
@@ -402,21 +425,24 @@ export class PrismaAdminProviderFailureRepository
       return [];
     }
 
-    const rows = await this.client.externalCalendarConnection.findMany({
-      where: {
-        ...this.createUserWhere(input),
-        ...this.createUpdatedAtWhere(input),
-        OR: [
-          { lastSyncErrorCode: { not: null } },
-          { status: ExternalCalendarConnectionStatus.RECONNECT_REQUIRED },
-        ],
-      },
-      select: calendarConnectionFailureSelect,
-      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
-      take: this.getSourceFetchTake(input.limit),
-    });
-
-    return rows.map((row) => this.toCalendarConnectionFailureRecord(row));
+    return this.collectSourceFailures(
+      (page) =>
+        this.client.externalCalendarConnection.findMany({
+          where: {
+            ...this.createUserWhere(input),
+            ...this.createUpdatedAtWhere(input),
+            OR: [
+              { lastSyncErrorCode: { not: null } },
+              { status: ExternalCalendarConnectionStatus.RECONNECT_REQUIRED },
+            ],
+          },
+          select: calendarConnectionFailureSelect,
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+          skip: page.skip,
+          take: page.take,
+        }),
+      (row) => this.toCalendarConnectionFailureRecord(row)
+    );
   }
 
   // 기능 : ExternalCalendarSource 동기화 실패를 calendarId/syncToken 없는 select로 조회합니다.
@@ -427,18 +453,47 @@ export class PrismaAdminProviderFailureRepository
       return [];
     }
 
-    const rows = await this.client.externalCalendarSource.findMany({
-      where: {
-        ...this.createUserWhere(input),
-        ...this.createUpdatedAtWhere(input),
-        lastSyncErrorCode: { not: null },
-      },
-      select: calendarSourceFailureSelect,
-      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
-      take: this.getSourceFetchTake(input.limit),
-    });
+    return this.collectSourceFailures(
+      (page) =>
+        this.client.externalCalendarSource.findMany({
+          where: {
+            ...this.createUserWhere(input),
+            ...this.createUpdatedAtWhere(input),
+            lastSyncErrorCode: { not: null },
+          },
+          select: calendarSourceFailureSelect,
+          orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+          skip: page.skip,
+          take: page.take,
+        }),
+      (row) => this.toCalendarSourceFailureRecord(row)
+    );
+  }
 
-    return rows.map((row) => this.toCalendarSourceFailureRecord(row));
+  // 기능 : source별 provider 실패 row를 batch로 모두 읽어 pagination 후보 누락을 막습니다.
+  private async collectSourceFailures<TRow>(
+    fetchRows: (page: ProviderFailureSourcePage) => Promise<readonly TRow[]>,
+    mapRow: (row: TRow) => AdminProviderFailureDetailRecord
+  ): Promise<AdminProviderFailureDetailRecord[]> {
+    const records: AdminProviderFailureDetailRecord[] = [];
+    let skip = 0;
+
+    for (;;) {
+      // 1. Prisma source별 정렬 순서에 맞춰 다음 batch를 읽습니다.
+      const rows = await fetchRows({
+        skip,
+        take: SOURCE_FETCH_BATCH_SIZE,
+      });
+
+      // 2. 안전 필드만 가진 row를 Admin 공통 failure record로 변환합니다.
+      records.push(...rows.map((row) => mapRow(row)));
+
+      if (rows.length < SOURCE_FETCH_BATCH_SIZE) {
+        return records;
+      }
+
+      skip += SOURCE_FETCH_BATCH_SIZE;
+    }
   }
 
   // 기능 : AiProviderCallLog 상세를 safe select로 조회하고 opaque ID와 일치하는지 확인합니다.
@@ -956,11 +1011,6 @@ export class PrismaAdminProviderFailureRepository
     return {
       status: { in: statuses },
     };
-  }
-
-  // 기능 : source별 조회량을 global cursor merge에 필요한 범위로 제한합니다.
-  private getSourceFetchTake(limit: number): number {
-    return Math.min(limit * 3 + 10, 300);
   }
 
   // 기능 : provider failure 목록 정렬 순서를 비교합니다.

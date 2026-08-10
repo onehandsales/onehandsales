@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 Backend/API/DB gap으로 승격하지 않는다.
 
 상태: Draft Guide
-최종 업데이트: 2026-08-09
+최종 업데이트: 2026-08-10
 
 ## 0. 완료 반영
 
@@ -30,6 +30,7 @@
 - [x] `NBA-005`, `10_MOBILE_PWA_FIELD_USE` active backend gap 종료
 - [x] Admin Operation backend/API/DB 구현 완료
 - [x] `NBA-007`, `NBA-011` Admin/internal 범위, `NBA-012`, `NBA-013`, 11 범위 `NBA-014`, `11_ADMIN_OPERATION` active backend gap 종료
+- [x] Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 
 ## 1. 목적
 
@@ -78,7 +79,7 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | MeetingNote AI follow-up draft | 구현 완료 | next action/follow-up draft API, provider log, safe failure, ownership/redaction QA 완료. 자동 저장/자동 발송은 하지 않음 | 완료 |
 | Global Data I18N | 구현 완료 | User country/locale/default currency, app i18n API 기반 설정, Product/Deal currency, Contact KR/US phone, Company country/region/address, import/export localization, Google/LINE/Apple auth 구현 완료. 현재 `BE/.env` 연결 DB는 2026-07-29 최신 상태 재확인 완료, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료 | 완료 |
 | MeetingNote provider audit 잔여 | 공통 `AiProviderCallLog` 기반 provider log subset 구현 완료. 별도 raw/transcript table 없음. 11에서 Admin provider failure 조회와 raw access audit 구현 | 회의록 목록 summary, 자동 발송/알림은 후속. provider raw/prompt/token/quota detail 저장은 계속 금지 | Admin audit 완료, 제품 후속 |
-| Admin operation | 11에서 구현 완료 | 사용자/도메인/Trash/provider/analytics/account/system/audit, masking, raw access reason, audit log, support flow | 완료 |
+| Admin operation | 11에서 구현 완료. 2026-08-10 provider failure 목록 source 편중 cursor pagination Finding 보정 완료 | 사용자/도메인/Trash/provider/analytics/account/system/audit, masking, raw access reason, audit log, support flow. provider failure 목록은 한 source에 실패 row가 몰려도 cursor가 조기 종료되지 않도록 회귀 테스트로 보강 | 완료 |
 | Payment/subscription | 없음 | plan, entitlement, payment provider, admin ops | 첫 판매 전 별도 큰 계획 필요 |
 | Product analytics | 09 foundation과 10 mobile field-use event, 11 Admin analytics 구현 완료 | billing/paywall/churn runtime source 연결 | Admin 분석 완료, 12 전 billing 확장 금지 |
 
@@ -109,4 +110,4 @@ Backend/API 구현이 필요하면 아래를 먼저 만족해야 한다.
 3. 12 완료 후 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/COMMON/POST-12-REVIEW-AND-FOLLOWUP.md` 기준으로 01~12 전체, `NEXT_BACKEND_API_BACKLOG_PLAN`, 이 제품화 guide, 실제 BE/FE/Prisma 상태를 다시 대조한다.
 4. 제품화 UX에서 실제 필요한 API gap인지 확인한다.
 5. 개인정보/보안/운영 정책이 얽힌 후보를 먼저 정책으로 확정한다.
-6. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, AI Weekly Sales Report/Follow-up Delivery, Gmail/Microsoft provider smoke closeout, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Payment/Billing, Billing-linked analytics source는 12에서 먼저 다룬다. 실제 backup/restore 실행 runbook, SMS 실제 provider, 잔여 summary 후보는 post-12 재검토 후 새 TODO 또는 운영 절차로 승격할지 결정한다. `NBA-003` 잔여 record summary는 2026-08-06 A 결정상 12 전 Backend 계약화 대상이 아니다.
+6. ImportJob, Weekly Schedule Report, Notification, Google Calendar Integration, AI Weekly Sales Report/Follow-up Delivery, Gmail/Microsoft provider smoke closeout, Deal Activity Timeline, MeetingNote AI Provider Log, Global Data I18N, Product Analytics foundation, Mobile Field Use, Admin Operation은 완료됐고, Admin provider failure pagination 보정도 2026-08-10 닫혔다. Payment/Billing, Billing-linked analytics source는 12에서 먼저 다룬다. 실제 backup/restore 실행 runbook, SMS 실제 provider, 잔여 summary 후보는 post-12 재검토 후 새 TODO 또는 운영 절차로 승격할지 결정한다. `NBA-003` 잔여 record summary는 2026-08-06 A 결정상 12 전 Backend 계약화 대상이 아니다.

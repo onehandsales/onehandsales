@@ -3,7 +3,7 @@
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태를 유지하고, `NBA-003` 잔여 record summary는 12 전 구현하지 않는 post-12 B2B/team CRM 전략 후보로 둔다.
 
 상태: Draft Guide
-기준: 2026-08-09 현재 코드와 AGENT 구현 상태 문서
+기준: 2026-08-10 현재 코드와 AGENT 구현 상태 문서
 
 ## 0. 완료 반영 체크리스트
 
@@ -44,6 +44,7 @@
 - [x] Browser push permission explicit click UX
 - [x] Mobile field analytics event allowlist와 privacy QA
 - [x] Admin operation API/Web, audit/redaction, provider failure, analytics overview, Trash/account request/system gate
+- [x] Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가
 
 ## 1. 구현 완료/부분 완료 표
 
@@ -67,7 +68,7 @@
 | Domain export | Company/Contact/Product/Deal localized xlsx endpoint, weekly schedule report localized xlsx export | 각 목록 `엑셀 다운로드`, `/app/schedules/week` Excel 다운로드, header/date-time/currency localization | N/A | 완료 |
 | Notification | notification list/read/settings/browser-push API, 일정/딜/Google-origin schedule reminder 생성, due processor, email/browser push delivery attempt | `/app/notifications`, unread badge, settings, browser push 권한 explicit click, granted/denied/default/unsupported fallback | N/A | 완료. Google-origin schedule reminder와 10 permission UX 포함. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 |
 | Generic ExportJob | 없음. 현재 제품 정본 아님 | `/app/export`는 `/app` redirect | N/A | 제외/후속 결정 필요 |
-| Admin operation | `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API, raw access reason, audit/sensitive log | N/A | `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/analytics`, `/account-requests`, `/trash/recovery-requests`, `/audit-logs`, `/system` | 11 완료. 결제/구독 Admin 연동은 12 후속 |
+| Admin operation | `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API, raw access reason, audit/sensitive log. provider failure 목록 source 편중 cursor pagination 보정 완료 | N/A | `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/analytics`, `/account-requests`, `/trash/recovery-requests`, `/audit-logs`, `/system` | 11 완료. 결제/구독 Admin 연동은 12 후속 |
 | Payment/subscription | 없음 | pricing public page는 있음 | Admin subscription route redirect | 후속 |
 | Product analytics | `POST /api/analytics/events`, `ProductAnalyticsEvent`, server event recorder, activation/retention snapshot, AI usage summary, mobile field-use event allowlist, Admin analytics overview API | `/app` route analytics wrapper와 routeKey mapper, mobile field-use analytics helper. 사용자-facing analytics UI 없음 | `/analytics` overview | 09 foundation, 10 mobile field event, 11 Admin analytics 완료. billing conversion/churn source는 12 후속 |
 | Mobile field use | BusinessCard safe failure, existing MeetingNote STT draft/Notification/Product Analytics API 재사용, G02 safe failure migration | 모바일 명함 촬영, 회의 녹음/fallback, local draft 복원/폐기, push permission UX, 360px/390px QA | N/A | 10 완료. PWA install/offline shell/native app은 후속 |
@@ -124,7 +125,7 @@
 - MeetingNote AI/STT provider log, 회의록 상세 next action/follow-up draft, User Web AI 후속 작업 UX는 구현 및 QA closeout 완료됐다. Admin provider audit/raw access 운영은 11에서 완료됐고, 회의록 목록 summary와 자동 발송/알림은 후속 범위다.
 - BusinessCard 모바일 촬영/OCR safe failure, MeetingNote 모바일 녹음/fallback, local draft, browser push permission UX, mobile field analytics는 10에서 구현 및 QA closeout 완료됐다.
 - `/app` i18n, user global settings, Product/Deal currency, Contact global phone, Company region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 구현 및 QA closeout 완료됐다. 08 DB migration은 2026-07-29 최신 상태로 재확인됐고, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다.
-- `11_ADMIN_OPERATION`은 완료됐고, 12 결제/구독/세금 로드맵 슬롯은 아직 작업 필요 상태다. PWA install/offline shell/native app은 10 완료 범위 밖 후속이다.
+- `11_ADMIN_OPERATION`은 완료됐고, 2026-08-10 Admin provider failure 목록 source 편중 cursor pagination Finding도 코드/테스트 보정으로 닫혔다. 12 결제/구독/세금 로드맵 슬롯은 아직 작업 필요 상태다. PWA install/offline shell/native app은 10 완료 범위 밖 후속이다.
 - 제품화 gap은 "API가 없어서 화면을 못 만든다"보다 "현재 핵심 루프를 Global B2C 첫 판매 gate까지 어떤 순서로 끌어올릴지"에 가깝다.
 - 따라서 다음 계획은 MVP 기능 추가 목록이 아니라 Global B2C 첫 판매 기준 대비 gap을 먼저 정리해야 한다.
 - 현재 결정된 순서는 12 결제/구독/세금 구현을 먼저 진행한 뒤, `GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 01~12 전체와 `NEXT_BACKEND_API_BACKLOG_PLAN`, `USER_WEB_PRODUCTIZATION_GAP_PLAN`을 다시 대조하는 것이다. 재검토에서 남은 미구현/후속 항목은 새 TODO 폴더로 승격하고, UX/UI 디자인 유지보수는 그 이후 별도 계획으로 진행한다.
