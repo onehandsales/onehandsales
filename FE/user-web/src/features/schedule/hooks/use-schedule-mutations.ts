@@ -19,6 +19,7 @@ import type {
 } from "@/features/schedule/types/schedule";
 import { trashQueryKeys } from "@/features/trash/query-keys";
 
+// 기능 : 일정 생성 mutation 훅을 제공합니다.
 export function useCreateScheduleMutation() {
   const queryClient = useQueryClient();
 
@@ -30,6 +31,7 @@ export function useCreateScheduleMutation() {
   });
 }
 
+// 기능 : 일정 수정 mutation 훅을 제공합니다.
 export function useUpdateScheduleMutation() {
   const queryClient = useQueryClient();
 
@@ -41,6 +43,7 @@ export function useUpdateScheduleMutation() {
   });
 }
 
+// 기능 : 일정 삭제 mutation 훅을 제공합니다.
 export function useDeleteScheduleMutation() {
   const queryClient = useQueryClient();
 
@@ -52,6 +55,7 @@ export function useDeleteScheduleMutation() {
   });
 }
 
+// 기능 : Google Calendar 연결 시작 mutation 훅을 제공합니다.
 export function useStartGoogleCalendarConnectMutation() {
   return useMutation({
     mutationFn: (input: StartGoogleCalendarConnectInput) =>
@@ -59,6 +63,7 @@ export function useStartGoogleCalendarConnectMutation() {
   });
 }
 
+// 기능 : 일정 수정 mutation 훅을 제공합니다.
 export function useUpdateGoogleCalendarSelectionMutation() {
   const queryClient = useQueryClient();
 
@@ -71,6 +76,7 @@ export function useUpdateGoogleCalendarSelectionMutation() {
   });
 }
 
+// 기능 : Google Calendar 동기화 mutation 훅을 제공합니다.
 export function useSyncGoogleCalendarMutation() {
   const queryClient = useQueryClient();
 
@@ -82,6 +88,7 @@ export function useSyncGoogleCalendarMutation() {
   });
 }
 
+// 기능 : Google Calendar 연결 해제 mutation 훅을 제공합니다.
 export function useDisconnectGoogleCalendarMutation() {
   const queryClient = useQueryClient();
 
@@ -95,6 +102,7 @@ export function useDisconnectGoogleCalendarMutation() {
   });
 }
 
+// 기능 : 일정 관련 쿼리 캐시를 무효화합니다.
 function invalidateScheduleQueries(
   queryClient: ReturnType<typeof useQueryClient>,
   scheduleId: string
@@ -114,6 +122,7 @@ function invalidateScheduleQueries(
   });
 }
 
+// 기능 : Google Calendar 관련 쿼리 캐시를 무효화합니다.
 function invalidateGoogleCalendarQueries(
   queryClient: ReturnType<typeof useQueryClient>
 ) {

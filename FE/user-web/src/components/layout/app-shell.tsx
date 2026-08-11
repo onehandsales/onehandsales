@@ -62,6 +62,7 @@ export type AppShellOutletContext = {
 };
 
 // ── 딜 상세 TopBar ──────────────────────────────────────────
+// 기능 : 딜 상세 헤더를 렌더링합니다.
 function DealDetailHeader({ dealId }: { readonly dealId: string }) {
   const navigate = useNavigate();
   const { t } = useAppI18n();
@@ -71,6 +72,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const dealName = dealQuery.data?.dealName ?? "...";
 
+  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   const onDelete = async () => {
     setDeleteError(null);
     try {
@@ -126,6 +128,7 @@ function DealDetailHeader({ dealId }: { readonly dealId: string }) {
 }
 
 // ── 제품 상세 TopBar ─────────────────────────────────────────
+// 기능 : 제품 상세 헤더를 렌더링합니다.
 function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const navigate = useNavigate();
   const { search: locationSearch } = useLocation();
@@ -137,6 +140,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
   const productName = productQuery.data?.productName ?? "...";
   const isEditing = new URLSearchParams(locationSearch).get("edit") === "1";
 
+  // 기능 : 프론트엔드 화면의 열림 또는 선택 상태를 전환합니다.
   const toggleEdit = () => {
     void navigate(
       isEditing ? `/app/products/${productId}` : `/app/products/${productId}?edit=1`,
@@ -144,6 +148,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
     );
   };
 
+  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   const onDelete = async () => {
     setDeleteError(null);
     try {
@@ -203,6 +208,7 @@ function ProductDetailHeader({ productId }: { readonly productId: string }) {
   );
 }
 
+// 기능 : 앱 셸 영역을 렌더링합니다.
 export function AppShell() {
   const { pathname } = useLocation();
   useAppRouteAnalytics();
@@ -236,6 +242,7 @@ export function AppShell() {
     [],
   );
 
+  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   const handleLogout = async () => {
     await logout();
     void navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
@@ -243,6 +250,7 @@ export function AppShell() {
 
   // ⌘K / Ctrl+K 단축키로 검색 모달 열기
   useEffect(() => {
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (e: globalThis.KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
@@ -272,6 +280,7 @@ export function AppShell() {
       return;
     }
 
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         accountMenuRef.current &&
@@ -280,6 +289,7 @@ export function AppShell() {
         setAccountMenuOpen(false);
       }
     };
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setAccountMenuOpen(false);
@@ -684,6 +694,7 @@ export function AppShell() {
   );
 }
 
+// 기능 : 계정 메뉴 항목을 렌더링합니다.
 function AccountMenuItem({
   endIcon: EndIcon,
   icon: Icon,
@@ -711,6 +722,7 @@ function AccountMenuItem({
   );
 }
 
+// 기능 : 로그아웃 확인 모달을 렌더링합니다.
 function LogoutConfirmModal({
   onCancel,
   onConfirm,
@@ -733,6 +745,7 @@ function LogoutConfirmModal({
       return;
     }
 
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCancel();
@@ -799,6 +812,7 @@ function LogoutConfirmModal({
 
 type AccountModalSection = "profile" | "settings" | "terms" | "privacy";
 
+// 기능 : 계정 모달을 렌더링합니다.
 function AccountModal({
   children,
   onClose,
@@ -807,6 +821,7 @@ function AccountModal({
   readonly onClose: () => void;
 }) {
   useEffect(() => {
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
@@ -834,6 +849,7 @@ function AccountModal({
   );
 }
 
+// 기능 : 계정 모달 콘텐츠 영역을 렌더링합니다.
 function AccountModalContent({
   onClose,
   profileLabel,
@@ -890,6 +906,7 @@ function AccountModalContent({
   );
 }
 
+// 기능 : 계정 모달 사이드바 항목을 렌더링합니다.
 function AccountModalSidebarItem({
   active,
   icon: Icon,
@@ -917,6 +934,7 @@ function AccountModalSidebarItem({
   );
 }
 
+// 기능 : 계정 모달 섹션 콘텐츠 영역을 렌더링합니다.
 function AccountModalSectionContent({
   section,
 }: {
@@ -937,6 +955,7 @@ function AccountModalSectionContent({
   return <AccountSettingsModalContent />;
 }
 
+// 기능 : 프로필 모달에서 프로필/기기 조회 상태별 콘텐츠를 렌더링합니다.
 function ProfileModalQueryContent() {
   const profileQuery = useMyProfile();
   const devicesQuery = useMyDevices();
@@ -984,6 +1003,7 @@ const accountTimeZoneOptions = [
   "UTC",
 ] as const;
 
+// 기능 : 계정 설정 모달 콘텐츠 영역을 렌더링합니다.
 function AccountSettingsModalContent() {
   const { t } = useAppI18n();
   const profileQuery = useMyProfile();
@@ -1007,6 +1027,7 @@ function AccountSettingsModalContent() {
     setDefaultCurrencyCode(profile.defaultCurrencyCode);
   }, [profile]);
 
+  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormError(null);
@@ -1160,6 +1181,7 @@ function AccountSettingsModalContent() {
   );
 }
 
+// 기능 : 계정 설정 시간대 옵션을 계산합니다.
 function getAccountTimeZoneOptions(currentTimeZone: string) {
   const browserTimeZone =
     Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";
@@ -1402,6 +1424,7 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
   ],
 };
 
+// 기능 : 법적 문서 모달 콘텐츠를 렌더링합니다.
 function LegalDocumentModalContent({
   document,
 }: {
@@ -1492,6 +1515,7 @@ type ProfileModalContentProps = {
   readonly profileError: unknown;
 };
 
+// 기능 : 프로필 모달 콘텐츠 영역을 렌더링합니다.
 function ProfileModalContent({
   devices,
   devicesError,
@@ -1632,6 +1656,7 @@ function ProfileModalContent({
   );
 }
 
+// 기능 : 프로필 섹션을 렌더링합니다.
 function ProfileSection({
   children,
   title,
@@ -1649,6 +1674,7 @@ function ProfileSection({
   );
 }
 
+// 기능 : 프로필 정보 행을 렌더링합니다.
 function ProfileInfoRow({
   label,
   value,
@@ -1666,6 +1692,7 @@ function ProfileInfoRow({
   );
 }
 
+// 기능 : 프로필 기기 테이블을 렌더링합니다.
 function ProfileDeviceTable({
   devices,
 }: {
@@ -1688,6 +1715,7 @@ function ProfileDeviceTable({
   );
 }
 
+// 기능 : 프로필 기기 행을 렌더링합니다.
 function ProfileDeviceRow({
   device,
 }: {
@@ -1719,6 +1747,7 @@ function ProfileDeviceRow({
   );
 }
 
+// 기능 : 프로필 로딩 상태를 렌더링합니다.
 function ProfileLoadingState() {
   const { t } = useAppI18n();
 
@@ -1730,6 +1759,7 @@ function ProfileLoadingState() {
   );
 }
 
+// 기능 : 프로필 인라인 로딩 상태를 렌더링합니다.
 function ProfileInlineLoading() {
   const { t } = useAppI18n();
 
@@ -1741,6 +1771,7 @@ function ProfileInlineLoading() {
   );
 }
 
+// 기능 : 프로필 오류 상태 영역을 렌더링합니다.
 function ProfileErrorState({
   error,
   onRetry,
@@ -1766,6 +1797,7 @@ function ProfileErrorState({
   );
 }
 
+// 기능 : 프로필 빈 상태 문구를 렌더링합니다.
 function ProfileEmptyText({ children }: { readonly children: ReactNode }) {
   return (
     <p className="py-4 text-[13px] text-[#64748B]">
@@ -1774,6 +1806,7 @@ function ProfileEmptyText({ children }: { readonly children: ReactNode }) {
   );
 }
 
+// 기능 : 제공자 라벨 표시 문구를 생성합니다.
 function formatProviderLabel(provider: string) {
   const normalized = provider.toLowerCase();
   if (normalized === "google") return "Google";
@@ -1781,6 +1814,7 @@ function formatProviderLabel(provider: string) {
   return provider;
 }
 
+// 기능 : 언어 라벨 표시 문구를 생성합니다.
 function formatLocaleLabel(locale: string, t: (key: AppI18nKey) => string) {
   if (locale === "ko-KR") return t("settings.korean");
   if (locale === "en") return "English";
@@ -1794,12 +1828,14 @@ function formatCountryLabel(countryCode: string, t: (key: AppI18nKey) => string)
   return countryCode;
 }
 
+// 기능 : 역할 라벨 표시 문구를 생성합니다.
 function formatRoleLabel(role: string, t: (key: AppI18nKey) => string) {
   if (role === "ADMIN") return t("settings.admin");
   if (role === "USER") return t("settings.user");
   return role;
 }
 
+// 기능 : 상태 라벨 표시 문구를 생성합니다.
 function formatStatusLabel(status: string, t: (key: AppI18nKey) => string) {
   if (status === "ACTIVE") return t("settings.active");
   if (status === "SUSPENDED") return t("settings.suspended");
@@ -1807,6 +1843,7 @@ function formatStatusLabel(status: string, t: (key: AppI18nKey) => string) {
   return status;
 }
 
+// 기능 : 기기 슬롯 라벨 표시 문구를 생성합니다.
 function formatDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
   if (slot === "mobile") return t("settings.mobileSlot");
   if (slot === "personal_laptop") return t("settings.personalLaptopSlot");
@@ -1814,6 +1851,7 @@ function formatDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
   return t("settings.device");
 }
 
+// 기능 : 사용자 이니셜 값을 계산합니다.
 function getUserInitial(name: string) {
   const trimmed = name.trim();
 

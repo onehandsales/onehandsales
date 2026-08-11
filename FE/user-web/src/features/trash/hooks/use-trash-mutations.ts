@@ -15,6 +15,7 @@ import type {
   RestoreTrashItemInput,
 } from "@/features/trash/types/trash";
 
+// 기능 : 휴지통 복원 mutation 훅을 제공합니다.
 export function useRestoreTrashItemMutation() {
   const queryClient = useQueryClient();
 

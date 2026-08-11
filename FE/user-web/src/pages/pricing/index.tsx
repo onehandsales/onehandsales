@@ -4,6 +4,7 @@ import { PublicSitePageShell } from "@/features/public-site";
 import { publicSiteImages } from "@/features/public-site/constants/public-site-assets";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
+// 기능 : 가격 페이지를 렌더링합니다.
 export function PricingPage() {
   const { copy } = usePublicSiteLanguage();
   const pricing = copy.pricing;

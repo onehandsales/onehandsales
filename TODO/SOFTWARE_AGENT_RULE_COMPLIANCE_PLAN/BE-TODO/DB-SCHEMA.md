@@ -1,6 +1,6 @@
 # DB Schema
 
-상태: Draft
+상태: No DB Change / Verified
 
 ## 1. 현재 DB 변경 계획
 
@@ -24,4 +24,3 @@ G04에서 transaction boundary 정리 중 DB model 변경이 꼭 필요하다고
 - `COMMON/API-SPEC`
 - `BE-TODO/DB-SCHEMA.md`
 - `COMMON/GOAL-SPECS/G04-BE-CROSS-MODULE-REPOSITORY-BOUNDARY.goal.md`
-

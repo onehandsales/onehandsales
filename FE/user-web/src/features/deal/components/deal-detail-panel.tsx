@@ -85,6 +85,7 @@ type DealDetailPanelProps = {
   readonly variant?: "panel" | "page";
 };
 
+// 기능 : 딜 상세 패널을 렌더링합니다.
 export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
@@ -127,6 +128,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
     followingLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onDeleteDeal = async () => {
     if (!detail) return;
 
@@ -204,6 +206,7 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
   );
 }
 
+// 기능 : 딜 상세 사이드 패널을 렌더링합니다.
 function DealDetailSidePanel({
   detail,
   followingLogs,
@@ -295,6 +298,7 @@ function DealDetailSidePanel({
   );
 }
 
+// 기능 : 딜 인라인 수정 폼 영역을 렌더링합니다.
 function DealInlineEditForm({
   detail,
   onSaved,
@@ -314,6 +318,7 @@ function DealInlineEditForm({
     detail.expectedEndDate ? detail.expectedEndDate.slice(0, 10) : ""
   );
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await updateMutation.mutateAsync({
@@ -403,6 +408,7 @@ function DealInlineEditForm({
   );
 }
 
+// 기능 : 딜 상세 페이지 레이아웃 영역을 렌더링합니다.
 function DealDetailPageLayout({
   actionError,
   deletePending,
@@ -599,6 +605,7 @@ function DealDetailPageLayout({
   );
 }
 
+// 기능 : 딜 상세 상단 바를 헤더 영역으로 렌더링합니다.
 function DealDetailTopBar({
   deletePending,
   dealName,
@@ -644,6 +651,7 @@ function DealDetailTopBar({
   );
 }
 
+// 기능 : 딜 요약 헤더를 렌더링합니다.
 function DealSummaryHeader({
   companyName,
   contactDepartmentName,
@@ -711,6 +719,7 @@ function DealSummaryHeader({
   );
 }
 
+// 기능 : 딜 요약 칩을 렌더링합니다.
 function DealSummaryChip({
   label,
   value,
@@ -726,6 +735,7 @@ function DealSummaryChip({
   );
 }
 
+// 기능 : 딜 연결 회사 테이블을 렌더링합니다.
 function DealLinkedCompaniesTable({
   companies,
 }: {
@@ -779,6 +789,7 @@ function DealLinkedCompaniesTable({
   );
 }
 
+// 기능 : 딜 연결 담당자 테이블을 렌더링합니다.
 function DealLinkedContactsTable({
   contacts,
 }: {
@@ -840,6 +851,7 @@ function DealLinkedContactsTable({
   );
 }
 
+// 기능 : 딜 연결 제품 테이블을 렌더링합니다.
 function DealLinkedProductsTable({
   products,
 }: {
@@ -898,6 +910,7 @@ function DealLinkedProductsTable({
   );
 }
 
+// 기능 : 딜 연결 테이블 프레임 영역을 렌더링합니다.
 function DealLinkedTableFrame({
   children,
   count,
@@ -918,6 +931,7 @@ function DealLinkedTableFrame({
   );
 }
 
+// 기능 : 딜 타임라인 마커 영역을 렌더링합니다.
 function DealTimelineMarker({
   isFirst,
   isLast,
@@ -938,6 +952,7 @@ function DealTimelineMarker({
   );
 }
 
+// 기능 : 딜 패널 셸 영역을 렌더링합니다.
 function DealPanelShell({
   children,
   count,
@@ -971,6 +986,7 @@ function DealPanelShell({
   );
 }
 
+// 기능 : 딜 후속 액션 패널을 렌더링합니다.
 function DealFollowingActionsPanel({
   dealId,
   hasNext,
@@ -1025,6 +1041,7 @@ function DealFollowingActionsPanel({
     setIsCreateOpen(false);
   });
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onStartEdit = (log: DealFollowingActionLog) => {
     setEditingLog(log);
     resetEdit({ followingAction: log.followingAction });
@@ -1040,6 +1057,7 @@ function DealFollowingActionsPanel({
     setEditingLog(null);
   });
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onConfirmDelete = async () => {
     if (!deletingLog) return;
     setDeleteError(null);
@@ -1211,6 +1229,7 @@ function DealFollowingActionsPanel({
   );
 }
 
+// 기능 : 딜 후속 액션 행을 렌더링합니다.
 function DealFollowingActionRow({
   dealId,
   isFirst,
@@ -1228,6 +1247,7 @@ function DealFollowingActionRow({
 }) {
   const updateMutation = useUpdateFollowingActionLogMutation();
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onToggleComplete = async () => {
     await updateMutation.mutateAsync({
       dealId,
@@ -1286,6 +1306,7 @@ function DealFollowingActionRow({
   );
 }
 
+// 기능 : 딜 메모 로그 패널을 렌더링합니다.
 function DealMemoLogsPanel({
   dealId,
   hasNext,
@@ -1341,6 +1362,7 @@ function DealMemoLogsPanel({
     setIsCreateOpen(false);
   });
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onStartEdit = (log: DealMemoLog) => {
     setEditingLog(log);
     resetEdit({ memoType: log.memoType, memo: log.memo });
@@ -1357,6 +1379,7 @@ function DealMemoLogsPanel({
     setEditingLog(null);
   });
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onConfirmDelete = async () => {
     if (!deletingLog) return;
     setDeleteError(null);
@@ -1551,6 +1574,7 @@ function DealMemoLogsPanel({
   );
 }
 
+// 기능 : 딜 메모 로그 행을 렌더링합니다.
 function DealMemoLogRow({
   isFirst,
   isLast,
@@ -1611,6 +1635,7 @@ function DealMemoLogRow({
   );
 }
 
+// 기능 : 딜 정보 패널을 렌더링합니다.
 export function DealInfoPanel({
   detail,
   productCount,
@@ -1631,6 +1656,7 @@ export function DealInfoPanel({
   );
 }
 
+// 기능 : 딜 상태 셸 영역을 렌더링합니다.
 function DealStateShell({
   children,
   variant,
@@ -1649,6 +1675,7 @@ function DealStateShell({
   return <div className="grid gap-5 p-5">{children}</div>;
 }
 
+// 기능 : 딜 회사 요약 표시 문구를 생성합니다.
 function formatDealCompanySummary(detail: DealDetail): string {
   return (
     detail.companies
@@ -1657,6 +1684,7 @@ function formatDealCompanySummary(detail: DealDetail): string {
   );
 }
 
+// 기능 : 딜 담당자 요약 표시 문구를 생성합니다.
 function formatDealContactSummary(detail: DealDetail): string {
   return (
     detail.contacts
@@ -1665,6 +1693,7 @@ function formatDealContactSummary(detail: DealDetail): string {
   );
 }
 
+// 기능 : 딜 담당자 부서 요약 표시 문구를 생성합니다.
 function formatDealContactDepartmentSummary(detail: DealDetail): string {
   return (
     detail.contacts
@@ -1674,10 +1703,12 @@ function formatDealContactDepartmentSummary(detail: DealDetail): string {
   );
 }
 
+// 기능 : 삭제된 연결 항목의 표시 라벨을 생성합니다.
 function formatDeletedLabel(label: string, isDeleted: boolean): string {
   return isDeleted ? `${label} (삭제됨)` : label;
 }
 
+// 기능 : 상태 배지를 렌더링합니다.
 function StatusBadge({ status }: { readonly status: DealStatus }) {
   return (
     <span
@@ -1691,6 +1722,7 @@ function StatusBadge({ status }: { readonly status: DealStatus }) {
   );
 }
 
+// 기능 : 지표 카드 항목을 렌더링합니다.
 function MetricCard({
   icon: Icon,
   label,
@@ -1714,6 +1746,7 @@ function MetricCard({
   );
 }
 
+// 기능 : 상세 행을 렌더링합니다.
 function DetailRow({ label, value }: { readonly label: string; readonly value: string }) {
   return (
     <div className="flex items-start gap-3">
@@ -1725,10 +1758,12 @@ function DetailRow({ label, value }: { readonly label: string; readonly value: s
   );
 }
 
+// 기능 : 패널 구분선 영역을 렌더링합니다.
 function PanelDivider() {
   return <div className="h-px bg-[#E5EAF0]" />;
 }
 
+// 기능 : 다음 액션 요약 영역을 렌더링합니다.
 function NextActionSummary({
   log,
   isLoading,
@@ -1784,6 +1819,7 @@ function NextActionSummary({
   );
 }
 
+// 기능 : 딜 제품 섹션을 렌더링합니다.
 function DealProductsSection({
   products,
 }: {
@@ -1815,6 +1851,7 @@ function DealProductsSection({
   );
 }
 
+// 기능 : 단계 진행 섹션을 렌더링합니다.
 export function StageProgressSection({ activeStatus }: { readonly activeStatus: DealStatus }) {
   return (
     <section>
@@ -1844,6 +1881,7 @@ export function StageProgressSection({ activeStatus }: { readonly activeStatus: 
 
 // ── 다음 행동 로그 ──
 
+// 기능 : 후속 액션 로그 섹션을 렌더링합니다.
 function FollowingActionLogsSection({
   dealId,
   hasNext,
@@ -1883,6 +1921,7 @@ function FollowingActionLogsSection({
     setIsAdding(false);
   });
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onConfirmDelete = async () => {
     if (!deletingLog) return;
     setDeleteError(null);
@@ -2007,6 +2046,7 @@ function FollowingActionLogsSection({
   );
 }
 
+// 기능 : 후속 액션 로그 항목을 렌더링합니다.
 function FollowingActionLogItem({
   dealId,
   log,
@@ -2036,6 +2076,7 @@ function FollowingActionLogItem({
     setIsEditing(false);
   });
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onToggleComplete = async () => {
     await updateMutation.mutateAsync({
       dealId,
@@ -2126,6 +2167,7 @@ function FollowingActionLogItem({
 
 // ── 메모 로그 ──
 
+// 기능 : 메모 로그 섹션을 렌더링합니다.
 export function MemoLogsSection({
   dealId,
   hasNext,
@@ -2251,6 +2293,7 @@ export function MemoLogsSection({
   );
 }
 
+// 기능 : 메모 로그 항목을 렌더링합니다.
 function MemoLogItem({
   dealId,
   log,
@@ -2358,6 +2401,7 @@ function MemoLogItem({
   );
 }
 
+// 기능 : 패널 빈 상태를 렌더링합니다.
 function EmptyPanelState() {
   return (
     <div className="flex min-h-[240px] flex-col items-center justify-center rounded-lg border border-dashed border-[#CBD5E1] bg-white py-12 text-center">
@@ -2366,6 +2410,7 @@ function EmptyPanelState() {
   );
 }
 
+// 기능 : 딜 상세 로딩 스켈레톤을 렌더링합니다.
 function DealDetailSkeleton({ variant }: { readonly variant: "panel" | "page" }) {
   if (variant === "page") {
     return (
@@ -2388,6 +2433,7 @@ function DealDetailSkeleton({ variant }: { readonly variant: "panel" | "page" })
   );
 }
 
+// 기능 : 딜 상세 오류 상태를 렌더링합니다.
 function DealDetailError({
   error,
   onRetry,
@@ -2409,6 +2455,7 @@ function DealDetailError({
   );
 }
 
+// 기능 : 딜 상태 class 값을 계산해 반환합니다.
 function getDealStatusClass(status: DealStatus): string {
   switch (status) {
     case "INITIAL_CONTACT":
@@ -2426,6 +2473,7 @@ function getDealStatusClass(status: DealStatus): string {
   }
 }
 
+// 기능 : 마감 라벨 값을 계산해 반환합니다.
 function getDeadlineLabel(date: string): string {
   if (!date) return "마감일 없음";
 

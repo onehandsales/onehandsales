@@ -7,10 +7,12 @@ import {
   type PublicSiteLocalizedPath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
 
+// 기능 : 공개 사이트 라우트 영역을 렌더링합니다.
 export function PublicSiteRoute({ children }: { readonly children: ReactNode }) {
   return <PublicSiteLocaleSync>{children}</PublicSiteLocaleSync>;
 }
 
+// 기능 : 레거시 공개 사이트 리다이렉트 영역을 렌더링합니다.
 export function LegacyPublicSiteRedirect({
   to,
 }: {
@@ -28,6 +30,7 @@ export function LegacyPublicSiteRedirect({
   );
 }
 
+// 기능 : 레거시 앱 리다이렉트 영역을 렌더링합니다.
 export function LegacyAppRedirect({
   paramName,
   to,

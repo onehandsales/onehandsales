@@ -1,6 +1,6 @@
 # Common
 
-상태: Draft
+상태: Implemented / Verified
 
 ## 1. 목적
 

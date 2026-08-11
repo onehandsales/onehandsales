@@ -106,6 +106,7 @@ type DealCreateDialogProps = {
   readonly onResizeStart?: () => void;
 };
 
+// 기능 : 딜 생성 모달을 렌더링합니다.
 export function DealCreateDialog({
   open,
   initialValues,
@@ -181,6 +182,7 @@ export function DealCreateDialog({
       return;
     }
 
+    // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !createDealMutation.isPending) {
         onOpenChange(false);
@@ -238,6 +240,7 @@ export function DealCreateDialog({
     setValue,
   ]);
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onCompanyToggle = (companyId: string) => {
     const next = selectedCompanyIds.includes(companyId)
       ? selectedCompanyIds.filter((id) => id !== companyId)
@@ -258,6 +261,7 @@ export function DealCreateDialog({
     });
   };
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onContactToggle = (contactId: string) => {
     const next = selectedContactIds.includes(contactId)
       ? selectedContactIds.filter((id) => id !== contactId)
@@ -267,6 +271,7 @@ export function DealCreateDialog({
     setValue("contactIds", next, { shouldDirty: true, shouldValidate: true });
   };
 
+  // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
   const onProductToggle = (productId: string) => {
     const next = selectedProductIds.includes(productId)
       ? selectedProductIds.filter((id) => id !== productId)
@@ -834,6 +839,7 @@ export function DealCreateDialog({
   );
 }
 
+// 기능 : 메모 입력창 높이를 입력 내용에 맞춰 조정합니다.
 function resizeMemoTextarea(element: HTMLTextAreaElement | null) {
   if (!element) {
     return;
@@ -850,6 +856,7 @@ type DealCreatePanelPropertyProps = {
   readonly label: string;
 };
 
+// 기능 : 딜 생성 패널 속성 영역을 렌더링합니다.
 function DealCreatePanelProperty({
   children,
   error,
@@ -1554,6 +1561,7 @@ export function SearchSelectField<TItem extends { readonly id: string }>({
       return;
     }
 
+    // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -1676,6 +1684,7 @@ type SelectedOptionChipsProps<TItem extends { readonly id: string }> = {
   readonly onRemove: (id: string) => void;
 };
 
+// 기능 : 선택된 옵션 칩 영역을 렌더링합니다.
 export function SelectedOptionChips<TItem extends { readonly id: string }>({
   items,
   getLabel,
@@ -1709,6 +1718,7 @@ type DealStatusDropdownProps = {
   readonly onChange: (status: DealStatus) => void;
 };
 
+// 기능 : 딜 상태 드롭다운 영역을 렌더링합니다.
 export function DealStatusDropdown({
   id,
   value,
@@ -1724,6 +1734,7 @@ export function DealStatusDropdown({
       return;
     }
 
+    // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -1795,6 +1806,7 @@ export function DealStatusDropdown({
   );
 }
 
+// 기능 : 제품 다중 선택 드롭다운 영역을 렌더링합니다.
 export function ProductMultiSelectDropdown({
   id,
   items,
@@ -1830,6 +1842,7 @@ export function ProductMultiSelectDropdown({
       return;
     }
 
+    // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -1848,6 +1861,7 @@ export function ProductMultiSelectDropdown({
       return;
     }
 
+    // 기능 : 딜 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -1989,6 +2003,7 @@ export function ProductMultiSelectDropdown({
   );
 }
 
+// 기능 : 검색 비교에 사용할 텍스트를 정규화합니다.
 function normalizeText(value: string) {
   return value.trim().toLocaleLowerCase("ko-KR");
 }
@@ -2001,6 +2016,7 @@ function getDealStatusLabel(
   return t(`dealStatus.${status}` as AppI18nKey);
 }
 
+// 기능 : 회사 이름 기준으로 옵션을 검색합니다.
 function findCompanyOptionByName(
   options: readonly DealCompanyOption[],
   companyName: string,
@@ -2009,6 +2025,7 @@ function findCompanyOptionByName(
   return options.find((option) => normalizeText(option.companyName) === target);
 }
 
+// 기능 : 담당자 이름 기준으로 옵션을 검색합니다.
 function findContactOptionByName(
   options: readonly DealContactOption[],
   username: string,
@@ -2017,6 +2034,7 @@ function findContactOptionByName(
   return options.find((option) => normalizeText(option.username) === target);
 }
 
+// 기능 : 제품명 기준으로 옵션을 검색합니다.
 function findProductOptionByName(
   options: readonly DealProductOption[],
   productName: string,

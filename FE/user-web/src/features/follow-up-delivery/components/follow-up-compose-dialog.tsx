@@ -53,6 +53,7 @@ const languageOptions = [
   { value: "zh-TW", label: "繁體中文" },
 ] as const;
 
+// 기능 : 후속 액션 작성 모달을 렌더링합니다.
 export function FollowUpComposeDialog({
   initialChannel,
   onCompleted,
@@ -152,6 +153,7 @@ export function FollowUpComposeDialog({
     setActionError(null);
   };
 
+  // 기능 : 후속 액션 초안 생성을 처리합니다.
   const createDraft = async () => {
     if (!suggestion || !sourceSuggestionId || !recipientContactId) {
       setActionError("후속 연락 초안을 만들 제안과 수신자를 확인해 주세요.");
@@ -212,6 +214,7 @@ export function FollowUpComposeDialog({
     void sendDraft();
   };
 
+  // 기능 : 동의 확인 후 후속 액션 전송을 처리합니다.
   const confirmConsentAndSend = async () => {
     try {
       await acknowledgeConsentMutation.mutateAsync({ channel });
@@ -257,6 +260,7 @@ export function FollowUpComposeDialog({
     }
   };
 
+  // 기능 : 후속 액션 전달 화면에서 현재 패널이나 모달을 닫습니다.
   const close = () => {
     if (!isBusy) {
       onOpenChange(false);
@@ -507,6 +511,7 @@ function ReconnectGuidance() {
   );
 }
 
+// 기능 : 제안 요약 영역을 렌더링합니다.
 function SuggestionSummary({
   suggestion,
 }: {
@@ -534,6 +539,7 @@ function SuggestionSummary({
   );
 }
 
+// 기능 : 필드 입력 영역을 렌더링합니다.
 function Field({
   children,
   label,
@@ -549,6 +555,7 @@ function Field({
   );
 }
 
+// 기능 : 채널 버튼 영역을 렌더링합니다.
 function ChannelButton({
   active,
   disabled,
@@ -578,6 +585,7 @@ function ChannelButton({
   );
 }
 
+// 기능 : 초안 편집기 영역을 렌더링합니다.
 function DraftEditor({
   body,
   bodyConfirmed,
@@ -656,6 +664,7 @@ function DraftEditor({
   );
 }
 
+// 기능 : 설정 가이드 영역을 렌더링합니다.
 function SettingsGuidance({
   channel,
 }: {
@@ -675,6 +684,7 @@ function SettingsGuidance({
   );
 }
 
+// 기능 : 상태 배지를 렌더링합니다.
 function StatusBadge({ status }: { readonly status: FollowUpMessage["status"] }) {
   const className = {
     DRAFT: "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]",
@@ -692,6 +702,7 @@ function StatusBadge({ status }: { readonly status: FollowUpMessage["status"] })
   );
 }
 
+// 기능 : 인라인 알림 영역을 렌더링합니다.
 function InlineAlert({ message }: { readonly message: string }) {
   return (
     <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-[13px] font-medium text-red-700">
@@ -703,6 +714,7 @@ function InlineAlert({ message }: { readonly message: string }) {
   );
 }
 
+// 기능 : 성공 알림 영역을 렌더링합니다.
 function SuccessNotice({ message }: { readonly message: string }) {
   return (
     <div className="rounded-md border border-[#BBF7D0] bg-[#F0FDF4] px-3 py-2 text-[13px] font-medium text-[#047857]">
@@ -720,6 +732,7 @@ type SmsSegmentInfo = {
   readonly overLimit: boolean;
 };
 
+// 기능 : 문자 메시지 분할 정보를 계산해 반환합니다.
 function getSmsSegmentInfo(body: string): SmsSegmentInfo {
   const ascii = [...body].every((character) => character.charCodeAt(0) <= 127);
   const singleSegmentLength = ascii ? 160 : 70;
@@ -734,6 +747,7 @@ function getSmsSegmentInfo(body: string): SmsSegmentInfo {
   };
 }
 
+// 기능 : 수신자 옵션을 계산해 반환합니다.
 function getRecipientOptions(
   contacts: readonly DealContactOption[],
   channel: FollowUpDeliveryChannel,
@@ -767,6 +781,7 @@ function getRecipientOptions(
   });
 }
 
+// 기능 : 담당자 옵션 표시 문구를 생성합니다.
 function formatContactOption(
   contact: DealContactOption,
   channel: FollowUpDeliveryChannel
@@ -777,12 +792,14 @@ function formatContactOption(
   return [contact.username, companyName, destination].filter(Boolean).join(" · ");
 }
 
+// 기능 : 누락된 발신자 안내 문구를 반환합니다.
 function getMissingSenderMessage(channel: FollowUpDeliveryChannel) {
   return channel === "EMAIL"
     ? "연결된 이메일 발신 계정이 필요해요."
     : "인증된 문자 발신번호가 필요해요.";
 }
 
+// 기능 : 기본 언어 태그를 반환합니다.
 function getDefaultLanguageTag() {
   const browserLanguage =
     navigator.languages[0] ?? navigator.language ?? "ko-KR";
@@ -792,6 +809,7 @@ function getDefaultLanguageTag() {
     : "ko-KR";
 }
 
+// 기능 : 우선순위 라벨 값으로 변환합니다.
 function toPriorityLabel(priority: AiWeeklyReportSuggestion["priority"]) {
   const labels = {
     HIGH: "높음",
@@ -802,6 +820,7 @@ function toPriorityLabel(priority: AiWeeklyReportSuggestion["priority"]) {
   return labels[priority];
 }
 
+// 기능 : 상태 라벨 값으로 변환합니다.
 function toStatusLabel(status: FollowUpMessage["status"]) {
   const labels = {
     DRAFT: "초안",
@@ -813,6 +832,7 @@ function toStatusLabel(status: FollowUpMessage["status"]) {
   return labels[status];
 }
 
+// 기능 : 동의가 필요한 오류인지 확인합니다.
 function isConsentRequiredError(error: unknown) {
   return (
     error instanceof ApiClientError &&

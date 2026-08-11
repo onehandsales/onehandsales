@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: Draft
+상태: Implemented / Verified
 
 ## 1. G06 User Web feature public API boundary
 
@@ -41,6 +41,8 @@ pnpm.cmd run lint
 
 ## 2. G07 User Web 주석 보완
 
+상태: 완료 / 검증 완료
+
 우선 대상:
 
 - `FE/user-web/src/app/router/route-elements.tsx`
@@ -62,3 +64,19 @@ pnpm.cmd run lint
 - commented-out code 추가
 - UI copy 변경
 - client log 추가
+
+검증:
+
+```powershell
+cd D:\workspace_repository\onehandsales\FE\user-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+```
+
+검증 결과:
+
+- 2026-08-11 `pnpm run typecheck` 통과
+- 2026-08-11 `pnpm run lint` 통과
+- G06 수정 파일, G07 수정 파일, `route-elements.tsx`, `app-shell.tsx` 포함 대상 파일의 component/function/hook/handler 주석 감사 결과 누락 0건
+- `console.*` client logging 추가 없음
+- TypeScript/TSX 변경은 `// 기능 : ...` 주석 추가로만 제한

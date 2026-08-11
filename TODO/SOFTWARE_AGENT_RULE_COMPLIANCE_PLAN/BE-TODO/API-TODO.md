@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Draft
+상태: No API Change / Verified
 
 ## 1. 현재 API 변경 계획
 
@@ -34,4 +34,3 @@ G02-G05에서는 기본적으로 다음을 변경하지 않는다.
 - application result type은 application 계층에 둔다.
 - Prisma type과 Prisma enum은 infrastructure mapper에서 application type으로 변환한다.
 - cross-module write는 transaction boundary를 먼저 문서화하고 정리한다.
-

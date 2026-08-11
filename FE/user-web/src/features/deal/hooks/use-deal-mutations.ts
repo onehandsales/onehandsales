@@ -34,6 +34,7 @@ import type {
   UpdateMemoLogInput,
 } from "@/features/deal/types/deal";
 
+// 기능 : 딜 생성 mutation 훅을 제공합니다.
 export function useCreateDealMutation() {
   const queryClient = useQueryClient();
 
@@ -47,6 +48,7 @@ export function useCreateDealMutation() {
   });
 }
 
+// 기능 : 딜 수정 mutation 훅을 제공합니다.
 export function useUpdateDealMutation() {
   const queryClient = useQueryClient();
 
@@ -60,6 +62,7 @@ export function useUpdateDealMutation() {
   });
 }
 
+// 기능 : 딜 삭제 mutation 훅을 제공합니다.
 export function useDeleteDealMutation() {
   const queryClient = useQueryClient();
 
@@ -84,6 +87,7 @@ export function useDeleteDealMutation() {
   });
 }
 
+// 기능 : 딜 생성 mutation 훅을 제공합니다.
 export function useCreateManualDealActivityMutation() {
   const queryClient = useQueryClient();
 
@@ -99,6 +103,7 @@ export function useCreateManualDealActivityMutation() {
   });
 }
 
+// 기능 : 딜 수정 mutation 훅을 제공합니다.
 export function useUpdateManualDealActivityMutation() {
   const queryClient = useQueryClient();
 
@@ -114,6 +119,7 @@ export function useUpdateManualDealActivityMutation() {
   });
 }
 
+// 기능 : 딜 생성 mutation 훅을 제공합니다.
 export function useCreateFollowingActionLogMutation() {
   const queryClient = useQueryClient();
 
@@ -130,6 +136,7 @@ export function useCreateFollowingActionLogMutation() {
   });
 }
 
+// 기능 : 딜 수정 mutation 훅을 제공합니다.
 export function useUpdateFollowingActionLogMutation() {
   const queryClient = useQueryClient();
 
@@ -145,6 +152,7 @@ export function useUpdateFollowingActionLogMutation() {
   });
 }
 
+// 기능 : 딜 삭제 mutation 훅을 제공합니다.
 export function useDeleteFollowingActionLogMutation() {
   const queryClient = useQueryClient();
 
@@ -160,6 +168,7 @@ export function useDeleteFollowingActionLogMutation() {
   });
 }
 
+// 기능 : 딜 생성 mutation 훅을 제공합니다.
 export function useCreateMemoLogMutation() {
   const queryClient = useQueryClient();
 
@@ -173,6 +182,7 @@ export function useCreateMemoLogMutation() {
   });
 }
 
+// 기능 : 딜 수정 mutation 훅을 제공합니다.
 export function useUpdateMemoLogMutation() {
   const queryClient = useQueryClient();
 
@@ -186,6 +196,7 @@ export function useUpdateMemoLogMutation() {
   });
 }
 
+// 기능 : 딜 삭제 mutation 훅을 제공합니다.
 export function useDeleteMemoLogMutation() {
   const queryClient = useQueryClient();
 
@@ -199,6 +210,7 @@ export function useDeleteMemoLogMutation() {
   });
 }
 
+// 기능 : 딜 내보내기 mutation 훅을 제공합니다.
 export function useExportDealsMutation() {
   return useMutation({
     mutationFn: (params: DealExportParams) => exportDealsXlsx(params),

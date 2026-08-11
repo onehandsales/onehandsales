@@ -107,6 +107,7 @@ export function MeetingNoteDetailScreen({
     void navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, navigate, notice]);
 
+  // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
   const onDeleteMeetingNote = async () => {
     setActionError(null);
 
@@ -216,6 +217,7 @@ export function MeetingNoteDetailScreen({
   );
 }
 
+// 기능 : 미팅 회의록 상세 상단 바를 헤더 영역으로 렌더링합니다.
 function MeetingNoteDetailTopBar({
   deletePending,
   meetingNoteTitle,
@@ -313,6 +315,7 @@ function MeetingNoteEditDialog({
   );
 }
 
+// 기능 : 미팅 회의록 상세 본문 영역을 렌더링합니다.
 function MeetingNoteDetailBody({ detail }: { readonly detail: MeetingNote }) {
   return (
     <>
@@ -338,6 +341,7 @@ function MeetingNoteDetailBody({ detail }: { readonly detail: MeetingNote }) {
   );
 }
 
+// 기능 : 미팅 회의록 요약 헤더를 렌더링합니다.
 function MeetingNoteSummaryHeader({ detail }: { readonly detail: MeetingNote }) {
   return (
     <div className="flex min-h-[74px] flex-wrap items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-5 py-4">
@@ -374,6 +378,7 @@ function MeetingNoteSummaryHeader({ detail }: { readonly detail: MeetingNote }) 
   );
 }
 
+// 기능 : 미팅 회의록 출처 배지 상태 표시를 렌더링합니다.
 function MeetingNoteSourceBadge({
   sourceType,
 }: {
@@ -391,6 +396,7 @@ function MeetingNoteSourceBadge({
   );
 }
 
+// 기능 : 미팅 회의록 요약 칩을 렌더링합니다.
 function MeetingNoteSummaryChip({
   label,
   value,
@@ -406,6 +412,7 @@ function MeetingNoteSummaryChip({
   );
 }
 
+// 기능 : 미팅 회의록 연결 회사 테이블을 렌더링합니다.
 function MeetingNoteLinkedCompaniesTable({
   companies,
 }: {
@@ -454,6 +461,7 @@ function MeetingNoteLinkedCompaniesTable({
   );
 }
 
+// 기능 : 미팅 회의록 연결 담당자 테이블을 렌더링합니다.
 function MeetingNoteLinkedContactsTable({
   contacts,
 }: {
@@ -506,6 +514,7 @@ function MeetingNoteLinkedContactsTable({
   );
 }
 
+// 기능 : 미팅 회의록 연결 제품 테이블을 렌더링합니다.
 function MeetingNoteLinkedProductsTable({
   products,
 }: {
@@ -559,6 +568,7 @@ function MeetingNoteLinkedProductsTable({
   );
 }
 
+// 기능 : 미팅 회의록 연결 딜 테이블을 렌더링합니다.
 function MeetingNoteLinkedDealsTable({
   deals,
 }: {
@@ -589,6 +599,7 @@ function MeetingNoteLinkedDealsTable({
   );
 }
 
+// 기능 : 미팅 회의록 연결 테이블 프레임 영역을 렌더링합니다.
 function MeetingNoteLinkedTableFrame({
   children,
   count,
@@ -609,6 +620,7 @@ function MeetingNoteLinkedTableFrame({
   );
 }
 
+// 기능 : 미팅 회의록 연결 행을 렌더링합니다.
 function MeetingNoteLinkedRow({
   icon,
   iconClassName,
@@ -660,10 +672,12 @@ function MeetingNoteLinkedRow({
   );
 }
 
+// 기능 : 미팅 회의록 연결 빈 상태를 렌더링합니다.
 function MeetingNoteLinkedEmpty({ text }: { readonly text: string }) {
   return <p className="px-4 py-4 text-[13px] text-[#9CA3AF]">{text}</p>;
 }
 
+// 기능 : 미팅 회의록 텍스트 패널을 렌더링합니다.
 function MeetingNoteTextPanel({
   title,
   value,
@@ -681,6 +695,7 @@ function MeetingNoteTextPanel({
   );
 }
 
+// 기능 : 회의록 수정 패널을 렌더링합니다.
 function MeetingNoteEditPanel({
   detail,
   formId,
@@ -789,6 +804,7 @@ function MeetingNoteEditPanel({
     onPendingChange?.(updateMutation.isPending);
   }, [onPendingChange, updateMutation.isPending]);
 
+  // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
   const onCompanyIdsChange = (ids: string[]) => {
     const nextCompanyIdSet = new Set(ids);
     const nextContactIds = contactIds.filter((contactId) => {
@@ -944,6 +960,7 @@ function MeetingNoteEditPanel({
   );
 }
 
+// 기능 : 회의록 수정 필드 입력 영역을 렌더링합니다.
 function MeetingNoteEditField({
   errorMessage,
   id,
@@ -977,6 +994,7 @@ function MeetingNoteEditField({
   );
 }
 
+// 기능 : 회의록 수정 여러 줄 입력 영역을 렌더링합니다.
 function MeetingNoteEditTextArea({
   errorMessage,
   id,
@@ -1010,6 +1028,7 @@ function MeetingNoteEditTextArea({
   );
 }
 
+// 기능 : 미팅 회의록 상태 셸 영역을 렌더링합니다.
 function MeetingNoteStateShell({ children }: { readonly children: ReactNode }) {
   return (
     <main className="min-h-[calc(100vh-var(--topbar-height))] bg-[#F9FAFB] px-4 py-6 md:px-6">
@@ -1018,6 +1037,7 @@ function MeetingNoteStateShell({ children }: { readonly children: ReactNode }) {
   );
 }
 
+// 기능 : 미팅 회의록 상세 로딩 스켈레톤을 렌더링합니다.
 function MeetingNoteDetailSkeleton() {
   return (
     <div className="grid gap-5">
@@ -1033,6 +1053,7 @@ function MeetingNoteDetailSkeleton() {
   );
 }
 
+// 기능 : 미팅 회의록 상세 오류 상태를 렌더링합니다.
 function MeetingNoteDetailError({
   error,
   onRetry,
@@ -1056,6 +1077,7 @@ function MeetingNoteDetailError({
   );
 }
 
+// 기능 : 회의록 상세 수정 form 값으로 변환합니다.
 function toMeetingNoteDetailEditFormValues(
   meetingNote: MeetingNote,
 ): MeetingNoteDetailEditFormValues {
@@ -1072,6 +1094,7 @@ function toMeetingNoteDetailEditFormValues(
   };
 }
 
+// 기능 : 회의록 상세 수정 API 입력 값으로 변환합니다.
 function toMeetingNoteDetailUpdateInput(
   meetingNoteId: string,
   values: MeetingNoteDetailEditFormValues,
@@ -1217,16 +1240,19 @@ function toDealEntityOptions(
     }));
 }
 
+// 기능 : 선택 입력 텍스트 값으로 변환합니다.
 function toOptionalText(value: string | undefined) {
   const trimmed = value?.trim() ?? "";
 
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+// 기능 : 미팅 날짜 표시 문구를 생성합니다.
 function formatMeetingDate(value: string | null) {
   return getMeetingDateParts(value).full;
 }
 
+// 기능 : 미팅 회의록 회사 요약 표시 문구를 생성합니다.
 function formatMeetingNoteCompanySummary(detail: MeetingNote) {
   return (
     detail.companies
@@ -1238,6 +1264,7 @@ function formatMeetingNoteCompanySummary(detail: MeetingNote) {
   );
 }
 
+// 기능 : 미팅 회의록 담당자 요약 표시 문구를 생성합니다.
 function formatMeetingNoteContactSummary(detail: MeetingNote) {
   return (
     detail.contacts
@@ -1248,6 +1275,7 @@ function formatMeetingNoteContactSummary(detail: MeetingNote) {
   );
 }
 
+// 기능 : 미팅 회의록 딜 요약 표시 문구를 생성합니다.
 function formatMeetingNoteDealSummary(detail: MeetingNote) {
   return (
     detail.deals
@@ -1256,14 +1284,17 @@ function formatMeetingNoteDealSummary(detail: MeetingNote) {
   );
 }
 
+// 기능 : 삭제된 연결 항목의 표시 라벨을 생성합니다.
 function formatDeletedLabel(label: string, isDeleted: boolean): string {
   return isDeleted ? `${label} (삭제됨)` : label;
 }
 
+// 기능 : 미팅 회의록 연결 목록 class를 계산합니다.
 function getMeetingNoteLinkedListClass(count: number) {
   return count > 2 ? MEETING_NOTE_LINKED_LIST_SCROLL_CLASS : "";
 }
 
+// 기능 : 미팅 회의록 출처 class를 계산합니다.
 function getMeetingNoteSourceClass(sourceType: MeetingNoteSourceType) {
   switch (sourceType) {
     case "MANUAL":

@@ -110,12 +110,14 @@ export function isMeetingNoteCreateLocalDraftEmpty(
   );
 }
 
+// 기능 : 선택 초안 텍스트 값으로 변환합니다.
 function toOptionalDraftText(value: string | undefined) {
   const trimmed = value?.trim() ?? "";
 
   return trimmed ? trimmed : undefined;
 }
 
+// 기능 : 선택 초안 배열 값으로 변환합니다.
 function toOptionalDraftArray(values: readonly string[] | undefined) {
   return values && values.length > 0 ? [...values] : undefined;
 }

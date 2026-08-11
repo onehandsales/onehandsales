@@ -20,6 +20,7 @@ const fallbackProviders: AuthProviderOption[] = [
 ];
 const minimumLoginLoadingMs = 1500;
 
+// 기능 : 로그인 페이지를 렌더링합니다.
 export function LoginPage() {
   const {
     error: authError,
@@ -179,6 +180,7 @@ export function LoginPage() {
     redirectTo,
   ]);
 
+  // 기능 : 로그인 화면의 사용자 이벤트를 처리합니다.
   const onProviderLogin = (provider: AuthProviderId) => {
     setPendingProvider(provider);
     void startProviderLogin(provider, { mode: "popup" }).catch(() => {
@@ -213,6 +215,7 @@ export function LoginPage() {
   );
 }
 
+// 기능 : 로그인 전환 화면의 최소 표시 시간을 보장합니다.
 async function waitForMinimumDuration(startedAt: number, minimumMs: number) {
   const elapsed = performance.now() - startedAt;
   const remaining = Math.max(0, minimumMs - elapsed);
@@ -222,12 +225,14 @@ async function waitForMinimumDuration(startedAt: number, minimumMs: number) {
   }
 }
 
+// 기능 : 인증 팝업 callback 창을 닫습니다.
 function closeAuthPopupCallbackWindow() {
   window.setTimeout(() => {
     window.close();
   }, 100);
 }
 
+// 기능 : 인증 완료 후 이동할 안전한 redirect 경로를 계산합니다.
 function getRedirectPath(state: unknown) {
   if (!state || typeof state !== "object" || Array.isArray(state)) {
     return "/app";

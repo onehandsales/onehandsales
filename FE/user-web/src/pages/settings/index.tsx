@@ -146,6 +146,7 @@ function ProfileSection({
     profile?.timeZone,
   ]);
 
+  // 기능 : 설정 화면의 사용자 이벤트를 처리합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -375,6 +376,7 @@ function ProfileSection({
   );
 }
 
+// 기능 : 기기 섹션을 렌더링합니다.
 function DeviceSection({
   devices,
   isLoading,
@@ -508,6 +510,7 @@ function OAuthAccountList({
   );
 }
 
+// 기능 : 읽기 전용 필드 입력 영역을 렌더링합니다.
 function ReadOnlyField({
   icon: Icon,
   label,
@@ -538,6 +541,7 @@ type SettingsNotice =
       readonly type: "text";
     };
 
+// 기능 : 시간대 옵션을 계산해 반환합니다.
 function getTimeZoneOptions(currentTimeZone: string) {
   const browserTimeZone =
     Intl.DateTimeFormat().resolvedOptions().timeZone || DEFAULT_TIME_ZONE;
@@ -547,6 +551,7 @@ function getTimeZoneOptions(currentTimeZone: string) {
   ).filter(Boolean);
 }
 
+// 기능 : 설정 카드 헤더를 렌더링합니다.
 function SettingsCardHeader({
   description,
   icon: Icon,
@@ -569,6 +574,7 @@ function SettingsCardHeader({
   );
 }
 
+// 기능 : 인라인 오류 상태를 렌더링합니다.
 function InlineError({
   error,
   onRetry,
@@ -588,6 +594,7 @@ function InlineError({
   );
 }
 
+// 기능 : 설정 로딩 스켈레톤을 렌더링합니다.
 function SettingsSkeleton({ rows }: { readonly rows: number }) {
   return (
     <div className="grid gap-3">
@@ -598,6 +605,7 @@ function SettingsSkeleton({ rows }: { readonly rows: number }) {
   );
 }
 
+// 기능 : 제공자 라벨 값으로 변환합니다.
 function toProviderLabel(provider: string) {
   const labels: Record<string, string> = {
     google: "Google",
@@ -607,6 +615,7 @@ function toProviderLabel(provider: string) {
   return labels[provider] ?? provider;
 }
 
+// 기능 : 기기 슬롯 라벨 값으로 변환합니다.
 function toDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
   const labels: Record<string, AppI18nKey> = {
     mobile: "settings.mobileSlot",
@@ -618,6 +627,7 @@ function toDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
   return labelKey ? t(labelKey) : slot;
 }
 
+// 기능 : 역할 라벨 값으로 변환합니다.
 function toRoleLabel(role: string, t: (key: AppI18nKey) => string) {
   return role === "ADMIN" ? t("settings.admin") : t("settings.user");
 }
@@ -633,6 +643,7 @@ function toCountryLabel(countryCode: string, t: (key: AppI18nKey) => string) {
   return labelKey ? t(labelKey) : countryCode;
 }
 
+// 기능 : 상태 라벨 값으로 변환합니다.
 function toStatusLabel(status: string, t: (key: AppI18nKey) => string) {
   const labels: Record<string, AppI18nKey> = {
     ACTIVE: "settings.active",

@@ -1528,6 +1528,7 @@ const togetherCardVisuals: readonly {
   { icon: FolderKanban, accent: "text-[#b0744c]", panel: "bg-[#f1d8c5]" },
 ];
 
+// 기능 : 인증 랜딩 페이지를 렌더링합니다.
 export function AuthLandingPage({
   children,
   isModalOpen,
@@ -1558,6 +1559,7 @@ export function AuthLandingPage({
   );
 }
 
+// 기능 : 인증 목록 조회 훅을 제공합니다.
 function useLandingScrollProgress() {
   const [progress, setProgress] = useState(0);
 
@@ -1565,6 +1567,7 @@ function useLandingScrollProgress() {
     document.documentElement.classList.add("landing-scrollbar-hidden");
     document.body.classList.add("landing-scrollbar-hidden");
 
+    // 기능 : 랜딩 페이지 스크롤 진행률을 갱신합니다.
     const updateProgress = () => {
       const scrollableHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -1591,6 +1594,7 @@ function useLandingScrollProgress() {
   return progress;
 }
 
+// 기능 : 랜딩 스크롤 스타일 영역을 렌더링합니다.
 function LandingScrollStyles() {
   return (
     <style>
@@ -1640,6 +1644,7 @@ function LandingScrollStyles() {
   );
 }
 
+// 기능 : 랜딩 스크롤 진행률 바 영역을 렌더링합니다.
 function LandingScrollProgressBar({
   progress,
 }: {
@@ -1660,6 +1665,7 @@ function LandingScrollProgressBar({
   );
 }
 
+// 기능 : 히어로 섹션을 렌더링합니다.
 function HeroSection({ copy }: { readonly copy: LandingCopy }) {
   const publicSitePath = usePublicSitePath();
   const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
@@ -1756,6 +1762,7 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 제품 워크스페이스 목업 영역을 렌더링합니다.
 function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
   return (
     <div className="mx-auto flex h-full min-h-[360px] max-w-[1060px] items-end">
@@ -1880,6 +1887,7 @@ function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 파트너 스트립 영역을 렌더링합니다.
 function PartnerStrip({ copy }: { readonly copy: LandingCopy }) {
   return (
     <div className="border-t border-[#e8e8e4] bg-white">
@@ -1898,6 +1906,7 @@ function PartnerStrip({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 업무 섹션을 렌더링합니다.
 function WorkSection({ copy }: { readonly copy: LandingCopy }) {
   const publicSitePath = usePublicSitePath();
   const defaultVisual = {
@@ -1987,6 +1996,7 @@ function WorkSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 자동화 미리보기 영역을 렌더링합니다.
 function AutomationPreview({ copy }: { readonly copy: LandingCopy }) {
   return (
     <div className="relative min-h-[520px] overflow-hidden border-t border-[#eeeeec] bg-[#fff1e6] p-5 sm:p-7 lg:border-l lg:border-t-0">
@@ -2062,6 +2072,7 @@ function AutomationPreview({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 어시스턴트 섹션을 렌더링합니다.
 function AssistantsSection({
   copy,
 }: {
@@ -2097,6 +2108,7 @@ function AssistantsSection({
   );
 }
 
+// 기능 : 어시스턴트 기능 카드 항목을 렌더링합니다.
 function AssistantFeatureCard({
   card,
   index,
@@ -2138,6 +2150,7 @@ function AssistantFeatureCard({
   );
 }
 
+// 기능 : 어시스턴트 미리보기 영역을 렌더링합니다.
 function AssistantPreview({
   card,
   index,
@@ -2232,6 +2245,7 @@ function AssistantPreview({
   );
 }
 
+// 기능 : 협업 섹션을 렌더링합니다.
 function TogetherSection({
   copy,
 }: {
@@ -2262,6 +2276,7 @@ function TogetherSection({
   );
 }
 
+// 기능 : 협업 카드 항목을 렌더링합니다.
 function TogetherCard({
   card,
   index,
@@ -2318,6 +2333,7 @@ function TogetherCard({
   );
 }
 
+// 기능 : 신뢰 섹션을 렌더링합니다.
 function TrustSection({
   copy,
 }: {
@@ -2367,6 +2383,7 @@ function TrustSection({
   );
 }
 
+// 기능 : 워크스페이스 섹션을 렌더링합니다.
 function WorkspaceSection({ copy }: { readonly copy: LandingCopy }) {
   const defaultVisual = {
     icon: Database,
@@ -2422,6 +2439,7 @@ function WorkspaceSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 워크스페이스 미리보기 영역을 렌더링합니다.
 function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
   return (
     <div className="overflow-hidden rounded-[8px] border border-[#dededa] bg-[#f7f7f5] shadow-[0_28px_90px_rgba(15,15,15,0.11)]">
@@ -2526,6 +2544,7 @@ function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : 지표 필 영역을 렌더링합니다.
 function MetricPill({
   icon: Icon,
   label,
@@ -2546,6 +2565,7 @@ function MetricPill({
   );
 }
 
+// 기능 : 마지막 섹션을 렌더링합니다.
 function FinalSection({ copy }: { readonly copy: LandingCopy }) {
   const publicSitePath = usePublicSitePath();
 

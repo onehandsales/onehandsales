@@ -1,6 +1,6 @@
 # Goal Specs
 
-상태: Draft
+상태: Implemented / Verified
 
 ## 1. 목적
 
@@ -18,4 +18,4 @@
 | `G04-BE-CROSS-MODULE-REPOSITORY-BOUNDARY.goal.md` | Implemented / Verified | Backend module 간 repository 직접 import 정리 |
 | `G05-BE-COMMENT-COVERAGE.goal.md` | Implemented / Verified | Backend 주석 규칙 커버리지 보완 |
 | `G06-FE-FEATURE-PUBLIC-API-BOUNDARY.goal.md` | Implemented / Verified | Frontend feature deep import 정리 |
-| `G07-FE-COMMENT-COVERAGE.goal.md` | Draft | Frontend 주석 규칙 커버리지 보완 |
+| `G07-FE-COMMENT-COVERAGE.goal.md` | Implemented / Verified | Frontend 주석 규칙 커버리지 보완 |

@@ -1,6 +1,6 @@
 # G07 FE Comment Coverage
 
-상태: Draft
+상태: Implemented / Verified
 영역: FE User Web / FE Admin Web
 우선순위: Medium
 
@@ -54,3 +54,13 @@ cd D:\workspace_repository\onehandsales\FE\admin-web
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
+
+검증 결과:
+
+- 2026-08-11 G06 수정 파일, G07 수정 파일, `FE/admin-web/src/features/auth/*`, `route-elements.tsx`, `app-shell.tsx` 포함 64개 대상 파일의 component/function/hook/handler 주석 AST 감사 결과 누락 0건
+- 2026-08-11 `FE/user-web`: `pnpm run typecheck` 통과
+- 2026-08-11 `FE/user-web`: `pnpm run lint` 통과
+- 2026-08-11 `FE/admin-web`: `pnpm run typecheck` 통과
+- 2026-08-11 `FE/admin-web`: `pnpm run lint` 통과
+- `console.*` client logging 추가 없음
+- TypeScript/TSX 변경은 `// 기능 : ...` 주석 추가로만 제한했고 UI copy, business logic, API 동작은 변경하지 않았다.

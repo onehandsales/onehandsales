@@ -26,6 +26,7 @@ import type {
   UpdateProductInput,
 } from "@/features/product/types/product";
 
+// 기능 : 제품 생성 mutation 훅을 제공합니다.
 export function useCreateProductMutation() {
   const queryClient = useQueryClient();
 
@@ -37,6 +38,7 @@ export function useCreateProductMutation() {
   });
 }
 
+// 기능 : 제품 수정 mutation 훅을 제공합니다.
 export function useUpdateProductMutation() {
   const queryClient = useQueryClient();
 
@@ -51,6 +53,7 @@ export function useUpdateProductMutation() {
   });
 }
 
+// 기능 : 제품 삭제 mutation 훅을 제공합니다.
 export function useDeleteProductMutation() {
   const queryClient = useQueryClient();
 
@@ -76,6 +79,7 @@ export function useDeleteProductMutation() {
   });
 }
 
+// 기능 : 제품 생성 mutation 훅을 제공합니다.
 export function useCreateCategoryMutation() {
   const queryClient = useQueryClient();
 
@@ -87,6 +91,7 @@ export function useCreateCategoryMutation() {
   });
 }
 
+// 기능 : 제품 생성 mutation 훅을 제공합니다.
 export function useCreateStatusMutation() {
   const queryClient = useQueryClient();
 
@@ -98,6 +103,7 @@ export function useCreateStatusMutation() {
   });
 }
 
+// 기능 : 제품 삭제 mutation 훅을 제공합니다.
 export function useDeleteCategoryMutation() {
   const queryClient = useQueryClient();
 
@@ -109,6 +115,7 @@ export function useDeleteCategoryMutation() {
   });
 }
 
+// 기능 : 제품 삭제 mutation 훅을 제공합니다.
 export function useDeleteStatusMutation() {
   const queryClient = useQueryClient();
 
@@ -120,6 +127,7 @@ export function useDeleteStatusMutation() {
   });
 }
 
+// 기능 : 제품 생성 mutation 훅을 제공합니다.
 export function useCreateMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 
@@ -134,6 +142,7 @@ export function useCreateMemoLogMutation(productId: string) {
   });
 }
 
+// 기능 : 제품 수정 mutation 훅을 제공합니다.
 export function useUpdateMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 
@@ -154,6 +163,7 @@ export function useUpdateMemoLogMutation(productId: string) {
   });
 }
 
+// 기능 : 제품 삭제 mutation 훅을 제공합니다.
 export function useDeleteMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 
@@ -168,6 +178,7 @@ export function useDeleteMemoLogMutation(productId: string) {
   });
 }
 
+// 기능 : 제품 생성 mutation 훅을 제공합니다.
 export function useCreatePrivateMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 
@@ -182,6 +193,7 @@ export function useCreatePrivateMemoLogMutation(productId: string) {
   });
 }
 
+// 기능 : 제품 수정 mutation 훅을 제공합니다.
 export function useUpdatePrivateMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 
@@ -201,6 +213,7 @@ export function useUpdatePrivateMemoLogMutation(productId: string) {
   });
 }
 
+// 기능 : 제품 삭제 mutation 훅을 제공합니다.
 export function useDeletePrivateMemoLogMutation(productId: string) {
   const queryClient = useQueryClient();
 

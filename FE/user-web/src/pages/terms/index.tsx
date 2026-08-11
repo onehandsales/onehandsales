@@ -53,6 +53,7 @@ const policyIcons: readonly LucideIcon[] = [
   Users,
 ];
 
+// 기능 : 약관 본문에서 참조하는 정책 링크 목록을 생성합니다.
 function makePolicyLinks(copy: {
   readonly terms: string;
   readonly termsDescription: string;
@@ -612,6 +613,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   },
 };
 
+// 기능 : 약관 페이지를 렌더링합니다.
 export function TermsPage() {
   const { language } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
@@ -720,6 +722,7 @@ export function TermsPage() {
   );
 }
 
+// 기능 : 정책 카드 항목을 렌더링합니다.
 function PolicyCard({
   item,
   openLabel,

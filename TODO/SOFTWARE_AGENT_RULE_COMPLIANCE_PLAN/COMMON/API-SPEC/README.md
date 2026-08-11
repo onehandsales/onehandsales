@@ -1,6 +1,6 @@
 # API Spec
 
-상태: Draft
+상태: No API Change / Verified
 
 ## 1. 현재 API 변경 여부
 
@@ -35,4 +35,3 @@ API 계약 문서는 다음을 포함해야 한다.
 - FE consumer
 - BE 구현 위치
 - 호환성 영향
-

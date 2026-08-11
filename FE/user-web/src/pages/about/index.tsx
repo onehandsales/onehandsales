@@ -361,6 +361,7 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
   },
 };
 
+// 기능 : 서비스 소개 페이지를 렌더링합니다.
 export function AboutPage() {
   const { language } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
@@ -451,6 +452,7 @@ export function AboutPage() {
   );
 }
 
+// 기능 : 스토리 섹션을 렌더링합니다.
 function StorySection({
   block,
   chapterLabel,
@@ -503,6 +505,7 @@ function StorySection({
   );
 }
 
+// 기능 : 라인 장면 영역을 렌더링합니다.
 function LineScene({
   labels,
 }: {

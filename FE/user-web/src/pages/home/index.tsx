@@ -339,6 +339,7 @@ export function HomePage() {
   );
 }
 
+// 기능 : 요약 카드 항목을 렌더링합니다.
 function SummaryCard({
   icon: Icon,
   label,
@@ -373,6 +374,7 @@ function SummaryCard({
   );
 }
 
+// 기능 : 대시보드 섹션을 렌더링합니다.
 function DashboardSection({
   actionHref,
   actionLabel,
@@ -408,6 +410,7 @@ function DashboardSection({
   );
 }
 
+// 기능 : 할 일 패널을 렌더링합니다.
 function TaskPanel({
   children,
   emptyText,
@@ -439,6 +442,7 @@ function TaskPanel({
   );
 }
 
+// 기능 : 일정 할 일 항목을 렌더링합니다.
 function ScheduleTaskItem({
   schedule,
   timeZone,
@@ -468,6 +472,7 @@ function ScheduleTaskItem({
   );
 }
 
+// 기능 : 후속 액션 할 일 항목을 렌더링합니다.
 function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
   const { t } = useAppI18n();
 
@@ -491,6 +496,7 @@ function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
   );
 }
 
+// 기능 : 미니 지표 영역을 렌더링합니다.
 function MiniMetric({
   label,
   value,
@@ -506,6 +512,7 @@ function MiniMetric({
   );
 }
 
+// 기능 : 딜 단계 분포 영역을 렌더링합니다.
 function StageBreakdown({
   counts,
   isLoading,
@@ -557,6 +564,7 @@ function StageBreakdown({
   );
 }
 
+// 기능 : 마감 딜 항목을 렌더링합니다.
 function DeadlineDealItem({
   deal,
   formatCurrency,
@@ -598,6 +606,7 @@ function DeadlineDealItem({
 }
 
 
+// 기능 : 빠른 액션 패널을 렌더링합니다.
 function QuickActionPanel() {
   const { t } = useAppI18n();
 
@@ -618,6 +627,7 @@ function QuickActionPanel() {
   );
 }
 
+// 기능 : 빠른 액션 링크 영역을 렌더링합니다.
 function QuickActionLink({ action }: { readonly action: QuickAction }) {
   const Icon = action.icon;
   const { t } = useAppI18n();
@@ -647,6 +657,7 @@ function QuickActionLink({ action }: { readonly action: QuickAction }) {
   );
 }
 
+// 기능 : 예정 일정 항목을 렌더링합니다.
 function UpcomingScheduleItem({
   schedule,
   timeZone,
@@ -681,6 +692,7 @@ function UpcomingScheduleItem({
   );
 }
 
+// 기능 : 활동 항목 행을 렌더링합니다.
 function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
   const isDeal = activity.type === "deal";
 
@@ -713,6 +725,7 @@ function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
   );
 }
 
+// 기능 : 목록 상태 영역을 렌더링합니다.
 function ListState({
   children,
   emptyText,
@@ -735,6 +748,7 @@ function ListState({
   return <div className="divide-y divide-[#EEF2F7]">{children}</div>;
 }
 
+// 기능 : 목록 로딩 행을 렌더링합니다.
 function LoadingRows({ count }: { readonly count: number }) {
   return (
     <div className="grid gap-2">
@@ -745,6 +759,7 @@ function LoadingRows({ count }: { readonly count: number }) {
   );
 }
 
+// 기능 : 빈 상태 문구를 렌더링합니다.
 function EmptyLine({ text }: { readonly text: string }) {
   return (
     <div className="flex min-h-20 items-center justify-center rounded-md bg-[#FAFBFC] px-4 py-5 text-center text-[13px] text-[#94A3B8]">
@@ -753,6 +768,7 @@ function EmptyLine({ text }: { readonly text: string }) {
   );
 }
 
+// 기능 : 진행 중인 딜 수를 계산합니다.
 function getActiveDealCount(counts: readonly DealStageCount[]) {
   return counts
     .filter((item) => ACTIVE_DEAL_STATUSES.includes(item.dealStatus))
@@ -764,6 +780,7 @@ type HomeTranslate = (
   options?: { readonly values?: Record<string, string | number> }
 ) => string;
 
+// 기능 : 딜 회사 라벨 값을 계산해 반환합니다.
 function getDealCompanyLabel(deal: DealListItem, t: HomeTranslate) {
   return (
     deal.companies
@@ -772,10 +789,12 @@ function getDealCompanyLabel(deal: DealListItem, t: HomeTranslate) {
   );
 }
 
+// 기능 : 삭제된 연결 항목의 표시 라벨을 생성합니다.
 function formatDeletedLabel(label: string, isDeleted: boolean, t: HomeTranslate): string {
   return isDeleted ? `${label} (${t("home.deleted")})` : label;
 }
 
+// 기능 : 최근 활동 데이터를 조합합니다.
 function buildRecentActivity({
   deals,
   formatCurrency,
@@ -809,6 +828,7 @@ function buildRecentActivity({
     .slice(0, 6);
 }
 
+// 기능 : 회의록 제목을 계산해 반환합니다.
 function getMeetingNoteTitle(meetingNote: MeetingNoteListItem, t: HomeTranslate) {
   if (meetingNote.companies.label && meetingNote.contacts.label) {
     return `${meetingNote.companies.label} · ${meetingNote.contacts.label}`;
@@ -817,6 +837,7 @@ function getMeetingNoteTitle(meetingNote: MeetingNoteListItem, t: HomeTranslate)
   return meetingNote.companies.label || meetingNote.contacts.label || t("home.meetingNote");
 }
 
+// 기능 : 회의록 보조 문구를 계산합니다.
 function getMeetingNoteSubtitle(
   meetingNote: MeetingNoteListItem,
   formatDateTime: (value: string | null | undefined) => string
@@ -826,10 +847,12 @@ function getMeetingNoteSubtitle(
     .join(" · ");
 }
 
+// 기능 : 일정 딜 라벨 값을 계산해 반환합니다.
 function getScheduleDealLabel(schedule: Schedule, t: HomeTranslate) {
   return schedule.deals.map((deal) => deal.dealName).join(" · ") || t("home.connectedDealMissing");
 }
 
+// 기능 : 기한 라벨 표시 문구를 생성합니다.
 function formatDueLabel(daysUntil: number, t: HomeTranslate) {
   if (daysUntil < 0) {
     return t("home.daysOverdue", { values: { days: Math.abs(daysUntil) } });
@@ -839,6 +862,7 @@ function formatDueLabel(daysUntil: number, t: HomeTranslate) {
   return `D-${daysUntil}`;
 }
 
+// 기능 : 남은 일수를 계산합니다.
 function getDaysUntil(value: string, today: Date) {
   const target = startOfDay(new Date(value));
   const base = startOfDay(today);
@@ -850,6 +874,7 @@ function getDaysUntil(value: string, today: Date) {
   return Math.ceil((target.getTime() - base.getTime()) / 86_400_000);
 }
 
+// 기능 : 날짜 비교를 위해 하루 시작 시각을 계산합니다.
 function startOfDay(date: Date) {
   const next = new Date(date);
   next.setHours(0, 0, 0, 0);
@@ -857,6 +882,7 @@ function startOfDay(date: Date) {
   return next;
 }
 
+// 기능 : 시간대 기준 날짜 key로 변환합니다.
 function toDateKeyInTimeZone(value: string, timeZone: string) {
   const date = new Date(value);
 
@@ -880,10 +906,12 @@ function toDateKeyInTimeZone(value: string, timeZone: string) {
   return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
 }
 
+// 기능 : nullable 배열의 항목 수를 안전하게 계산합니다.
 function toArrayLength(children: React.ReactNode) {
   return Array.isArray(children) ? children.filter(Boolean).length : children ? 1 : 0;
 }
 
+// 기능 : 브라우저 locale을 Intl formatting에 사용할 값으로 정규화합니다.
 function getIntlLocale(locale: string) {
   return locale === "en" ? "en-US" : locale;
 }

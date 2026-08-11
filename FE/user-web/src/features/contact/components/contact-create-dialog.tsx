@@ -147,6 +147,7 @@ export function ContactCreateDialog({
       return;
     }
 
+    // 기능 : 담당자 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (
         event.key === "Escape" &&
@@ -236,6 +237,7 @@ export function ContactCreateDialog({
     onOpenChange(false);
   });
 
+  // 기능 : 부서 생성 요청을 처리합니다.
   const createDepartment = async (name: string) => {
     await createDepartmentMutation.mutateAsync({ departmentName: name });
     const updated = await departmentsQuery.refetch();
@@ -254,6 +256,7 @@ export function ContactCreateDialog({
     setPendingDepartmentName(name);
   };
 
+  // 기능 : 직급 생성 요청을 처리합니다.
   const createJobGrade = async (name: string) => {
     await createJobGradeMutation.mutateAsync({ jobGradeName: name });
     const updated = await jobGradesQuery.refetch();
@@ -272,6 +275,7 @@ export function ContactCreateDialog({
     setPendingJobGradeName(name);
   };
 
+  // 기능 : 담당자 화면의 사용자 이벤트를 처리합니다.
   const onCompanyCreated = async (companyName: string) => {
     const updated = await companyOptionsQuery.refetch();
     const created = updated.data?.items.find(
@@ -287,6 +291,7 @@ export function ContactCreateDialog({
     }
   };
 
+  // 기능 : 부서 삭제 요청을 처리합니다.
   const deleteDepartment = async (department: ContactDepartment) => {
     await deleteDepartmentMutation.mutateAsync(department.id);
 
@@ -298,6 +303,7 @@ export function ContactCreateDialog({
     }
   };
 
+  // 기능 : 직급 삭제 요청을 처리합니다.
   const deleteJobGrade = async (jobGrade: ContactJobGrade) => {
     await deleteJobGradeMutation.mutateAsync(jobGrade.id);
 
@@ -676,6 +682,7 @@ export function ContactCreateDialog({
   );
 }
 
+// 기능 : 메모 입력창 높이를 입력 내용에 맞춰 조정합니다.
 function resizeMemoTextarea(element: HTMLTextAreaElement | null) {
   if (!element) {
     return;
@@ -692,6 +699,7 @@ type ContactCreatePanelPropertyProps = {
   readonly label: string;
 };
 
+// 기능 : 담당자 생성 패널 속성 영역을 렌더링합니다.
 function ContactCreatePanelProperty({
   children,
   error,

@@ -13,10 +13,12 @@ export function DealNewFullPage() {
     [location.state],
   );
 
+  // 기능 : 프론트엔드 화면에서 현재 패널이나 모달을 닫습니다.
   const closeToList = () => {
     void navigate("/app/deals", { replace: true });
   };
 
+  // 기능 : 프론트엔드 생성 완료 후 후속 이동을 처리합니다.
   const navigateAfterCreated = () => {
     void navigate("/app/deals", {
       replace: true,
@@ -39,6 +41,7 @@ export function DealNewFullPage() {
   );
 }
 
+// 기능 : route state에서 딜 생성 draft 값을 복원합니다.
 function readDealCreateDraft(
   state: unknown,
 ): Partial<DealCreateFormValues> | undefined {
@@ -64,24 +67,29 @@ function readDealCreateDraft(
   };
 }
 
+// 기능 : unknown 값을 key-value 항목로 안전하게 좁힙니다.
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+// 기능 : route state draft에서 문자열 값을 안전하게 읽습니다.
 function readString(value: unknown) {
   return typeof value === "string" ? value : "";
 }
 
+// 기능 : route state draft에서 문자열 배열 값을 안전하게 읽습니다.
 function readStringArray(value: unknown) {
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string")
     : [];
 }
 
+// 기능 : 딜 생성 draft에서 딜 상태 값을 안전하게 읽습니다.
 function readDealStatus(value: unknown): DealCreateFormValues["dealStatus"] {
   return isDealStatus(value) ? value : "INITIAL_CONTACT";
 }
 
+// 기능 : 문자열 값이 지원하는 딜 상태인지 확인합니다.
 function isDealStatus(
   value: unknown,
 ): value is DealCreateFormValues["dealStatus"] {

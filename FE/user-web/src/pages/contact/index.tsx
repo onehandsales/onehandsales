@@ -9,6 +9,7 @@ const testimonialImages = [
   publicSiteImages.salesConversation,
 ];
 
+// 기능 : 담당자 페이지를 렌더링합니다.
 export function ContactPage() {
   const { copy } = usePublicSiteLanguage();
   const contact = copy.contact;
@@ -86,6 +87,7 @@ export function ContactPage() {
   );
 }
 
+// 기능 : 담당자 폼 영역을 렌더링합니다.
 function ContactForm() {
   const { copy } = usePublicSiteLanguage();
   const contact = copy.contact;
@@ -144,6 +146,7 @@ function ContactForm() {
   );
 }
 
+// 기능 : 폼 필드 입력 영역을 렌더링합니다.
 function FormField({
   label,
   placeholder,
@@ -162,6 +165,7 @@ function FormField({
   );
 }
 
+// 기능 : 선택 필드 입력 영역을 렌더링합니다.
 function SelectField({
   label,
   placeholder,

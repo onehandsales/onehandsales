@@ -1,6 +1,6 @@
 # Admin Web TODO
 
-상태: Draft
+상태: Implemented / Verified
 
 ## 1. G01 Admin Web mock 로그인 제거
 
@@ -67,6 +67,8 @@ pnpm.cmd run lint
 
 ## 3. G07 Admin Web 주석 보완
 
+상태: 완료 / 검증 완료
+
 대상:
 
 - auth provider/context/protected route/login page
@@ -77,3 +79,18 @@ pnpm.cmd run lint
 
 - component/function/hook/API client/handler에 `// 기능 : ...` 추가
 - client log에 token, reason text, PII를 남기지 않는다.
+
+검증:
+
+```powershell
+cd D:\workspace_repository\onehandsales\FE\admin-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+```
+
+검증 결과:
+
+- 2026-08-11 `pnpm run typecheck` 통과
+- 2026-08-11 `pnpm run lint` 통과
+- `FE/admin-web/src/features/auth/*` component/function/hook/handler 주석 감사 결과 누락 0건
+- `console.*` client logging 추가 없음

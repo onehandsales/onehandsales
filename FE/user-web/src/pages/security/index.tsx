@@ -720,6 +720,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   },
 };
 
+// 기능 : 보안 페이지를 렌더링합니다.
 export function SecurityPage() {
   const { language } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
@@ -800,6 +801,7 @@ export function SecurityPage() {
   );
 }
 
+// 기능 : 보안 섹션 블록 영역을 렌더링합니다.
 function SecuritySectionBlock({
   icon: Icon,
   section,

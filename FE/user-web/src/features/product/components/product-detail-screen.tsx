@@ -90,6 +90,7 @@ const productSummaryEditSchema = z.object({
 
 type ProductSummaryEditFormValues = z.infer<typeof productSummaryEditSchema>;
 
+// 기능 : 제품 상세 화면을 렌더링합니다.
 export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
@@ -138,6 +139,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
     setNoticeDescription(null);
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onDeleteProduct = async () => {
     setActionError(null);
 
@@ -377,6 +379,7 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
 
 // ── Product Summary Header ──────────────────────────────────────────
 
+// 기능 : 제품 요약 헤더를 렌더링합니다.
 function ProductSummaryHeader({
   product,
   dealCount,
@@ -601,6 +604,7 @@ function ProductSummaryHeader({
   );
 }
 
+// 기능 : 제품 인라인 텍스트 입력 영역을 렌더링합니다.
 function ProductInlineTextInput({
   id,
   inputMode,
@@ -629,6 +633,7 @@ function ProductInlineTextInput({
   );
 }
 
+// 기능 : 제품 요약 수정 form 값으로 변환합니다.
 function toProductSummaryEditFormValues(
   product: ProductDetail
 ): ProductSummaryEditFormValues {
@@ -641,6 +646,7 @@ function toProductSummaryEditFormValues(
   };
 }
 
+// 기능 : 제품 카테고리 옵션 목록을 병합합니다.
 function mergeProductCategories(
   categories: ProductCategory[],
   current: ProductCategory
@@ -650,6 +656,7 @@ function mergeProductCategories(
     : [current, ...categories];
 }
 
+// 기능 : 제품 상태 옵션 목록을 병합합니다.
 function mergeProductStatuses(statuses: ProductStatus[], current: ProductStatus) {
   return statuses.some((status) => status.id === current.id)
     ? statuses
@@ -658,6 +665,7 @@ function mergeProductStatuses(statuses: ProductStatus[], current: ProductStatus)
 
 // ── Connected Deals Table ───────────────────────────────────────────
 
+// 기능 : 연결된 딜 테이블을 렌더링합니다.
 function ConnectedDealsTable({
   deals,
   isLoading,
@@ -719,12 +727,14 @@ function ConnectedDealsTable({
   );
 }
 
+// 기능 : 딜 상태 라벨 값으로 변환합니다.
 function toDealStatusLabel(status: string) {
   return DEAL_STATUS_LABEL[status as DealStatus] ?? status;
 }
 
 // ── Product Memo Panel ──────────────────────────────────────────────
 
+// 기능 : 타임라인 마커 영역을 렌더링합니다.
 function TimelineMarker({
   isFirst,
   isLast,
@@ -745,6 +755,7 @@ function TimelineMarker({
   );
 }
 
+// 기능 : 제품 메모 패널을 렌더링합니다.
 function ProductMemoPanel({
   productId,
   memoLogs,
@@ -777,6 +788,7 @@ function ProductMemoPanel({
   const [editMemoType, setEditMemoType] = useState("");
   const [editMemo, setEditMemo] = useState("");
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onSubmitCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!createMemo.trim()) return;
@@ -790,12 +802,14 @@ function ProductMemoPanel({
     onChanged("제품 로그를 추가했어요.");
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onStartEdit = (log: ProductMemoLog) => {
     setEditingId(log.id);
     setEditMemoType(log.memoType);
     setEditMemo(log.memo);
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingId || !editMemo.trim()) return;
@@ -808,6 +822,7 @@ function ProductMemoPanel({
     onChanged("제품 로그를 수정했어요.");
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onConfirmDelete = async () => {
     if (!deletingLog) return;
     setDeleteError(null);
@@ -1035,6 +1050,7 @@ function ProductMemoPanel({
 
 // ── Product Activity Log Panel ──────────────────────────────────────
 
+// 기능 : 제품 활동 로그 패널을 렌더링합니다.
 function ProductActivityLogPanel({
   productId,
   privateMemoLogs,
@@ -1064,6 +1080,7 @@ function ProductActivityLogPanel({
   const [createMemo, setCreateMemo] = useState("");
   const [editMemo, setEditMemo] = useState("");
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onSubmitCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!createMemo.trim()) return;
@@ -1073,11 +1090,13 @@ function ProductActivityLogPanel({
     onChanged("비밀 메모를 추가했어요.");
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onStartEdit = (log: ProductPrivateMemoLog) => {
     setEditingId(log.id);
     setEditMemo(log.memo);
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingId || !editMemo.trim()) return;
@@ -1089,6 +1108,7 @@ function ProductActivityLogPanel({
     onChanged("비밀 메모를 수정했어요.");
   };
 
+  // 기능 : 제품 화면의 사용자 이벤트를 처리합니다.
   const onConfirmDelete = async () => {
     if (!deletingLog) return;
     setDeleteError(null);
@@ -1310,6 +1330,7 @@ function ProductActivityLogPanel({
 
 // ── Skeleton / Error ────────────────────────────────────────────────
 
+// 기능 : 제품 상세 오류 상태를 렌더링합니다.
 function ProductDetailError({
   error,
   onRetry,
@@ -1335,6 +1356,7 @@ function ProductDetailError({
   );
 }
 
+// 기능 : 제품 상세 로딩 스켈레톤을 렌더링합니다.
 function ProductDetailSkeleton() {
   return (
     <div className="min-h-full bg-white">

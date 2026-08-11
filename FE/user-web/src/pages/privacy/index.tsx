@@ -958,6 +958,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   },
 };
 
+// 기능 : 개인정보 페이지를 렌더링합니다.
 export function PrivacyPage() {
   const { language } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
@@ -1056,6 +1057,7 @@ export function PrivacyPage() {
   );
 }
 
+// 기능 : 개인정보 섹션 블록 영역을 렌더링합니다.
 function PrivacySectionBlock({
   copy,
   section,

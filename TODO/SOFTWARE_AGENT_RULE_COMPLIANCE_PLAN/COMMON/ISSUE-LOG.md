@@ -1,6 +1,6 @@
 # Issue Log
 
-상태: Draft
+상태: Implemented / Verified
 검토일: 2026-08-11
 
 ## 1. Critical
@@ -195,6 +195,15 @@
 처리 goal:
 
 - `G07-FE-COMMENT-COVERAGE`
+
+처리 상태:
+
+- 2026-08-11 구현 및 검증 완료
+- User Web G06/G07 수정 파일과 `route-elements.tsx`, `app-shell.tsx`의 React component/function/hook/event handler `// 기능 : ...` 주석 보강 완료
+- Admin Web auth 우선 범위의 주석 규칙 재검증 완료
+- 64개 대상 파일 기준 AST 주석 감사 결과 누락 0건
+- `FE/user-web`와 `FE/admin-web`의 `typecheck`, `lint`가 통과했다.
+- `console.*` client logging 추가 없음
 
 ## 4. 현재 통과한 정적 검증
 

@@ -1,6 +1,6 @@
 # Planning Review
 
-상태: Draft
+상태: Reviewed
 검토일: 2026-08-11
 
 ## 1. 결론
@@ -30,4 +30,3 @@
 - 신규 API 계약 작성
 - UI/UX 전면 개선
 - lint custom rule 추가
-

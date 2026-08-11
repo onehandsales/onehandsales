@@ -92,6 +92,7 @@ const textareaClassName =
 const actionButtonClassName =
   "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#D8E0EA] bg-white px-3 text-[13px] font-semibold text-[#1F2937] transition-colors hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-60";
 
+// 기능 : 회의록 생성 모달을 렌더링합니다.
 export function MeetingNoteCreateDialog({
   open,
   initialValues,
@@ -262,6 +263,7 @@ export function MeetingNoteCreateDialog({
       return;
     }
 
+    // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !createMeetingNoteMutation.isPending) {
         onOpenChange(false);
@@ -334,6 +336,7 @@ export function MeetingNoteCreateDialog({
     setDraftClientError(null);
   };
 
+  // 기능 : AI 초안 요청 컨텍스트를 계산합니다.
   const getDraftContext = (): MeetingNoteAiDraftContextInput | null => {
     if (
       !meetingLocalDateTime.trim() ||
@@ -353,6 +356,7 @@ export function MeetingNoteCreateDialog({
     };
   };
 
+  // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
   const onCreateTextAiDraft = async () => {
     const text = rawDraftText.trim();
 
@@ -383,6 +387,7 @@ export function MeetingNoteCreateDialog({
     }
   };
 
+  // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
   const onCreateSttAiDraft = async () => {
     if (!audioFile) {
       setDraftClientError(t("meetingNoteCreate.audioRequired"));
@@ -411,6 +416,7 @@ export function MeetingNoteCreateDialog({
     }
   };
 
+  // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
   const onStartAudioRecording = async () => {
     setAudioFile(null);
     setDraftClientError(null);
@@ -419,6 +425,7 @@ export function MeetingNoteCreateDialog({
     await startRecording();
   };
 
+  // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
   const onSelectAudioFile = (selectedFile: File | null) => {
     clearAudioRecording();
 
@@ -983,6 +990,7 @@ type MeetingNoteCreatePanelPropertyProps = {
   readonly label: string;
 };
 
+// 기능 : 회의록 생성 패널 속성 영역을 렌더링합니다.
 function MeetingNoteCreatePanelProperty({
   children,
   error,
@@ -1008,6 +1016,7 @@ function MeetingNoteCreatePanelProperty({
   );
 }
 
+// 기능 : 회의 일시 입력 필드를 렌더링합니다.
 function MeetingDateTimeField({
   id,
   label,
@@ -1052,6 +1061,7 @@ function MeetingDateTimeField({
       return;
     }
 
+    // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -1065,10 +1075,12 @@ function MeetingDateTimeField({
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, [isOpen]);
 
+  // 기능 : 날짜 선택 변경을 처리합니다.
   const updateDate = (year: number, month: number, day: number) => {
     onChange(toDateTimeValue({ ...parts, year, month, day }));
   };
 
+  // 기능 : 시간 선택 변경을 처리합니다.
   const updateTime = (next: Partial<Pick<DateTimeParts, "hour" | "minute">>) => {
     onChange(toDateTimeValue({ ...parts, ...next }));
   };
@@ -1228,6 +1240,7 @@ function MeetingDateTimeField({
   );
 }
 
+// 기능 : 여러 줄 텍스트 입력 필드를 렌더링합니다.
 function TextAreaField({
   id,
   label,
@@ -1293,6 +1306,7 @@ function TextAreaField({
   );
 }
 
+// 기능 : 연결 엔티티 다중 선택 필드를 렌더링합니다.
 export function EntityMultiSelectField({
   id,
   label,
@@ -1349,6 +1363,7 @@ export function EntityMultiSelectField({
       return;
     }
 
+    // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -1367,6 +1382,7 @@ export function EntityMultiSelectField({
       return;
     }
 
+    // 기능 : 회의록 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -1377,6 +1393,7 @@ export function EntityMultiSelectField({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen]);
 
+  // 기능 : 회의록 화면의 열림 또는 선택 상태를 전환합니다.
   const toggleOption = (optionId: string) => {
     if (selectedIdSet.has(optionId)) {
       onChange(selectedIds.filter((selectedId) => selectedId !== optionId));
@@ -1501,6 +1518,7 @@ type DateTimeParts = {
   readonly minute: number;
 };
 
+// 기능 : 날짜 시간 입력값을 파싱합니다.
 function parseDateTimeValue(value: string): DateTimeParts {
   const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value);
 
@@ -1525,6 +1543,7 @@ function parseDateTimeValue(value: string): DateTimeParts {
   };
 }
 
+// 기능 : 날짜 시간 입력값으로 변환합니다.
 function toDateTimeValue(parts: DateTimeParts): string {
   return [
     `${parts.year}-${padTwo(parts.month)}-${padTwo(parts.day)}`,
@@ -1532,6 +1551,7 @@ function toDateTimeValue(parts: DateTimeParts): string {
   ].join("T");
 }
 
+// 기능 : 날짜 시간 라벨 표시 문구를 생성합니다.
 function formatDateTimeLabel(parts: DateTimeParts, locale: AppLocale): string {
   const date = new Date(
     parts.year,
@@ -1550,6 +1570,7 @@ function formatDateTimeLabel(parts: DateTimeParts, locale: AppLocale): string {
   }).format(date);
 }
 
+// 기능 : 캘린더 날짜 목록을 생성합니다.
 function createCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month - 1, 1);
   const startOffset = firstDay.getDay();
@@ -1588,10 +1609,12 @@ function getWeekdayLabels(locale: AppLocale) {
   );
 }
 
+// 기능 : 브라우저 locale을 Intl formatting에 사용할 값으로 정규화합니다.
 function getIntlLocale(locale: AppLocale) {
   return locale === "ko-KR" ? "ko-KR" : "en-US";
 }
 
+// 기능 : 시간 입력 단위를 허용 범위 안으로 제한합니다.
 function clampTimeUnit(value: string, max: number): number {
   const digits = value.replace(/\D/g, "").slice(0, 2);
 
@@ -1602,6 +1625,7 @@ function clampTimeUnit(value: string, max: number): number {
   return Math.min(max, Number(digits));
 }
 
+// 기능 : 숫자 값을 두 자리 문자열로 맞춥니다.
 function padTwo(value: number): string {
   return String(value).padStart(2, "0");
 }
