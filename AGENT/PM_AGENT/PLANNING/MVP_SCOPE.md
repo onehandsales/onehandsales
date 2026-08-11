@@ -1,15 +1,15 @@
 # MVP 기능 범위
 
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
-> 구현 스냅샷 기준: `BE/src/modules`, `BE/prisma/schema.prisma`, 활성 `TODO/*_PLAN`, `TODO/DONE/ADDITIONAL_WORK_PLAN`
+> 구현 스냅샷 기준: `BE/src/modules`, `BE/prisma/schema.prisma`, `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`, `TODO/PADDLE_PLAN`
 
 ---
 
 ## 현재 BE/TODO 구현 상태
 
-기준일: 2026-07-10
+기준일: 2026-08-11
 
-- Backend 구현 완료: Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, DataImport, MeetingNote AI/STT draft API와 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
+- Backend 구현 완료: Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation과 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
 - Company: 목록/상세/생성/수정, 분야/지역 옵션, 일반 메모, 개인 비밀 메모, `contactCount`, `dealCount`, 연결 Contact/Deal 목록, xlsx export.
 - Contact: 목록/상세/생성/수정, 회사 옵션, 직급/부서 옵션, 일반 메모, 개인 비밀 메모, 연결 Deal 목록, xlsx export.
@@ -20,46 +20,44 @@
 - MeetingNote: 수동 회의록 목록/상세/생성/수정/삭제, 회사/담당자 필터, 회사/담당자/제품/딜 N:N snapshot 연결, 텍스트 AI 초안 생성, STT+AI 초안 생성, 저장 후 딜 추가 연동과 딜 활동 로그 생성, 휴지통 복구.
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - Trash: 회사/담당자/제품/딜/회의록 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
-- DataImport: `ImportTemplate`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, `ImportUserLog` 목록/상세 조회. 확정 전 임시 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 BE confirm 경로에 연결되어 있다.
-- 현재 Backend 미구현 또는 후속 범위: persistent ImportJob, Notification, Admin 운영 조회/감사/민감 원문 API, MeetingNote Admin, 범용 DealActivity table, 7일 이후 유료 복구 API.
+- DataImport: `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, `ImportUserLog` 목록/상세 조회. 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 BE confirm 경로에 연결되어 있다.
+- 현재 Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, native/PWA packaging, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
-- Admin Backend는 현재 `/admin/api/me`만 구현되어 있으며, 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
+- Admin Operation은 11번 로드맵 기준 user/domain readonly operation, audit/security, provider failure, trash/account request, admin analytics, system operation gate foundation까지 구현 완료다. Billing Admin은 `TODO/PADDLE_PLAN` 이후 범위다.
 - User Web은 URL locale 공개/인증 진입면과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
 - 공개/인증 URL locale은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`를 지원한다. 초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 08_GLOBAL_DATA_I18N 완료 기준 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en`을 1차 지원한다.
 - 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, URL locale smoke 통과, 로그인/회원가입 provider 버튼의 browser popup OAuth 시작 E2E 통과, 로그아웃 후 선호 locale의 login URL 이동 적용 및 확인 완료. 현재 활성 provider는 Google, LINE, Apple이며 LINE/Apple 실제 smoke는 Supabase/provider 운영 설정 후 별도 기록한다.
-- 2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
+- 2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 베타 전 checkout/webhook/API/DB migration을 만들지 않는다.
 
 ## 1. 개발 우선순위
 
-1. UX/UI 공통 QA와 모바일 브라우저 QA
-2. Chrome/Edge 브라우저 QA
-3. 다중 계정 보안 QA
-4. DB/Prisma/migration 운영 정합성 정리
-5. S0/S1/S2 버그 수정
-6. DataImport 후속: 확정 전 job 영속화와 서버 재시작 후 이어받기
-7. Notification
-8. 7일 이후 유료 복구 정책과 API
-9. 범용 DealActivity table
-10. Admin 페이지와 운영 조회/감사/민감 원문 API
+1. 기존 01~11 기능 유지보수와 S0/S1/S2 버그 수정
+2. UX/UI 상품성 개선
+3. 결제창 없는 100명 베타 테스트 준비
+4. 베타 피드백 반영
+5. 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책 확정
+6. `TODO/PADDLE_PLAN`을 confirmed Paddle Billing 구현 계획으로 승격할지 결정
+7. 7일 이후 유료 복구 정책과 API
+8. B2B tenant/team admin 또는 native/PWA packaging 같은 별도 전략 후보 검토
 
 ### 1A. 지금 UX/UI인가 기능 추가인가
 
-현재는 UX/UI와 출시 전 품질을 먼저 볼 타이밍이다.
+현재는 유지보수와 UX/UI 상품성 개선을 먼저 볼 타이밍이다.
 
 판단 기준:
 
-- 핵심 MVP 업무 기능은 이미 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, BusinessCard OCR, Search, Trash, DataImport, Domain export까지 구현되어 있다.
-- 아직 확인하지 않은 위험은 기능 부재보다 실제 사용 품질, 모바일 브라우저 사용성, 다중 계정 데이터 격리, DB/Prisma 운영 정합성에 있다.
-- 따라서 새 기능을 추가하기 전에 `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md` 기준으로 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 끝낸다.
-- QA에서 발견한 S0/S1/S2는 DataImport 영속화, Notification, Admin, 결제/구독보다 먼저 처리한다.
+- 핵심 MVP 업무 기능과 Global B2C 01~11 foundation은 구현 완료 archive다.
+- 아직 확인해야 할 위험은 기능 부재보다 실제 사용 품질, 반복 사용성, 모바일 브라우저 사용성, 베타 피드백, 가격/플랜 가치 차이에 있다.
+- 따라서 새 기능이나 결제창을 추가하기 전에 UX/UI 상품성 개선과 100명 베타 준비를 먼저 끝낸다.
+- QA/베타에서 발견한 S0/S1/S2는 Paddle/Billing보다 먼저 처리한다.
 
 기능 추가는 아래 조건을 만족한 뒤 시작한다.
 
-1. UX/UI 공통 QA 결과가 기록된다.
-2. 390px/360px 모바일 브라우저 핵심 흐름이 확인된다.
-3. Chrome/Edge 핵심 시나리오가 확인된다.
-4. 다중 계정 보안 QA가 완료된다.
-5. DB/Prisma/migration 운영 정합성이 정리된다.
+1. 기존 01~11 기능 유지보수 결과가 기록된다.
+2. UX/UI 상품성 개선 범위가 닫힌다.
+3. 100명 베타를 결제창 없이 제공할 수 있다.
+4. 베타 피드백에서 유료 플랜 가치 차이와 반복 사용 후보가 확인된다.
+5. 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책이 confirmed 상태가 된다.
 6. S0/S1 버그가 없고, S2는 수정 또는 보류 판단이 문서화된다.
 
 ## 2. 인증
@@ -237,12 +235,9 @@
 
 ### 후속 MVP 포함
 
-- 주간 일정 보고서 PDF
-- 주간 일정 보고서 Excel
-- 이메일 알림
-- 브라우저 푸시 알림
-- 알림 기본값 + 사용자 수정
-- 구글 캘린더 일정 가져오기
+- 주간 일정 보고서 고도화
+- email/browser push 운영 고도화
+- Google Calendar write/watch/export 고도화
 
 ### 제외
 
@@ -274,7 +269,7 @@
 
 ### 후속 MVP 포함
 
-- 범용 `DealActivity` table 전환 또는 activity type 확장
+- `DealActivity` activity type 확장과 B2B/team CRM식 record별 timeline 고도화
 - 딜 연결 시 회사/담당자 상속
 
 ### 고정 결과 항목
@@ -312,7 +307,7 @@
 - 확정 저장: `POST /api/imports/:importJobId/confirm`
 - 성공 내역 목록/상세: `GET /api/import-user-logs`, `GET /api/import-user-logs/:importUserLogId`
 - 지원 대상: 회사, 담당자, 제품, 딜
-- 확정 전 임시 job은 in-memory store를 사용한다.
+- 확정 전 job은 DB에 저장하며 resume/cancel/expire/confirm 상태를 추적한다.
 - 딜 import 누락 회사/담당자/제품 보정 배열은 FE API 함수, BE DTO, controller confirm, application service, repository 경로에 연결되어 있다.
 
 ### 현재 구현된 도메인별 Export
@@ -327,7 +322,6 @@
 
 ### 제외 또는 후속
 
-- 확정 전 ImportJob DB 영속화와 서버 재시작 후 이어받기
 - `/api/exports` 기반 범용 Export job
 - `ExportJob` table
 - 일정/회의록 export
@@ -336,9 +330,9 @@
 
 ## 11. Admin
 
-관리자 페이지는 후속 단계에서 만든다. 현재 Backend Admin API는 `GET /admin/api/me`만 구현되어 있으며, Admin Web은 login/protected route/mock token 검증만 노출한다. Admin Web의 대시보드/목록/감사/민감 원문 조회 화면은 Backend 운영 조회 API가 구현되기 전까지 route를 root로 redirect하고 메뉴에서 숨긴다.
+Admin Operation foundation은 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` 기준 구현 완료 상태다. 단, Billing Admin과 B2B tenant/team admin은 포함하지 않는다.
 
-### 후속 포함
+### 현재 포함
 
 - 사용자 목록/상세
 - 전체 딜 조회
@@ -348,37 +342,46 @@
 - 특정 사용자별 딜/회사/담당자/제품 조회
 - 민감 데이터 기본 마스킹
 - 민감 원문 조회 시 사유 입력 + 감사 로그
+- Trash retention/recovery operation
+- Provider failure operation
+- Admin analytics overview
+- Account data request
+- System operation gate
 
 ### 후속 운영 기능
 
-- 계좌이체 입금 확인
-- 유료 상태/권한 관리
+- Billing Admin: subscription, payment, invoice, refund, failed payment, entitlement 운영
+- B2B tenant/team admin
+- 운영 mutation 확대
+- 유료 복구/영구 삭제 정책과 연결된 고위험 action
 
 ## 12. 글로벌 B2C 유료 판매와 Series A급 후속 범위
 
-현재 MVP 범위는 개인 영업자의 핵심 업무 루프를 구현하는 데 초점이 있다. 글로벌 B2C 유료 판매와 Series A급 사업화는 MVP 이후 별도 범위로 본다.
+현재 MVP와 Global B2C 01~11 foundation은 개인 영업자의 핵심 업무 루프를 구현하는 데 초점이 있다. 2026-08-11 기준 01~11은 완료 archive이며, 결제/구독/세금/Paddle은 `TODO/PADDLE_PLAN`으로 분리된 Deferred / Draft 범위다.
 
 글로벌 B2C 유료 판매 전 필요한 후속 범위:
 
-- 무료체험, 월간/연간 구독, AI 사용량 포함/초과 정책
-- 결제 provider 또는 Merchant of Record 연동
+- 기능 유지보수와 UX/UI 상품성 개선
+- 결제창 없는 100명 베타 테스트
+- 무료체험, 월간/연간 구독, AI 사용량 포함/초과 정책 확정
+- Paddle Billing 또는 다른 결제 provider / Merchant of Record 연동
 - VAT/GST/판매세, 환불, chargeback, invoice, receipt
-- `/app` 내부 다국어와 국가별 UX writing
-- 다국가 전화번호, 날짜/시간, 통화, 주소/지역 표시
-- Admin 고객 지원, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그
+- 추가 판매 시장의 `/app` 내부 다국어와 국가별 UX writing
+- 추가 국가 전화번호, 날짜/시간, 통화, 주소/지역 표시
+- Billing Admin 고객 지원, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그
 - 개인정보 처리, 계정 삭제, 데이터 export, 환불/약관/보안 문서
-- activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user 분석
+- paid conversion, churn, ARPU, LTV/CAC, billing funnel, AI cost/user 분석
 
 Series A급 후속 범위:
 
-- Notification/Reminder 기반 리텐션 루프
-- AI next action/follow-up/딜 리스크/주간 영업 리포트
-- 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder
-- 범용 DealActivity timeline
-- Google Calendar 가져오기/내보내기
+- Notification/Reminder 기반 리텐션 루프 고도화
+- AI next action/follow-up/딜 리스크/주간 영업 리포트 고도화
+- 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder 고도화
+- DealActivity timeline 고도화
+- Google Calendar write/watch/export 고도화
 - 결제/paywall 실험과 국가별 가격
-- 제품 분석과 unit economics
-- Admin 운영과 보안/감사 신뢰 체계
+- 제품 분석과 unit economics 고도화
+- Admin 운영과 보안/감사 신뢰 체계 고도화
 
 자세한 정본은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
@@ -391,3 +394,6 @@ Series A급 후속 범위:
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
+- `TODO/PADDLE_PLAN/README.md`

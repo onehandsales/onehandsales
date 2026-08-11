@@ -144,26 +144,23 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 - 우리 서비스 일정의 구글 캘린더 내보내기
 - 카카오 알림톡
 - 사용자 커스텀 필드 UI
-- 다중 통화
+- 추가 국가/통화 rollout
 - 자동 민감정보 키워드 감지
 - 팀 공유/협업
 - 회의 STT transcript 영구 저장
-- AI/STT provider 호출 이력 테이블
-- Admin 페이지와 운영 조회 API 전체 구현
-- 확정 전 ImportJob 영속화와 서버 재시작 후 이어받기
-- Notification 전체 구현
+- Billing Admin과 B2B tenant/team admin
 - 범용 ExportJob 구현
 - 휴지통 7일 이후 유료 복구 정책과 API
 
 ## 10. 현재 구현 관점의 요약
 
-2026-07-10 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport, MeetingNote AI/STT draft API, 회의록 저장 후 딜 연동 API를 구현한 상태다.
+2026-08-11 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation을 구현한 상태다.
 
-User Web은 URL locale 기반 공개/인증 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구가 실제 API와 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다. Import preview validation은 누락된 셀에만 메시지를 표시한다.
+User Web은 URL locale 기반 공개/인증 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구와 Global B2C 01~11 foundation 화면/API가 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다. Import preview validation은 누락된 셀에만 메시지를 표시한다.
 
-Admin Backend는 현재 `GET /admin/api/me`만 구현되어 있으므로, Admin 페이지와 운영 조회 화면은 후속 구현 범위로 본다.
+Admin Operation foundation은 11번 로드맵 기준 구현 완료다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 구현 범위로 본다.
 
-2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
+2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 현재 다음 작업은 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
 ## 11. 이 서비스를 이해할 때 중요한 기준
 

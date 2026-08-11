@@ -178,7 +178,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-07-10
+> 최종 업데이트: 2026-08-11
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -200,7 +200,12 @@ pen 디자인 반영 완료/정리 도메인:
 - `/app/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
 - `/app/trash` — 회의록 목록형 밀도를 따른 휴지통 목록, row 클릭 상세 모달, 모달 내부 복구 액션 반영 완료
 - `/app/business-cards` — 명함 스캔 내역, 상태 다중 필터, 카메라 아이콘 내비게이션, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름 구현 완료
-- `/app/import` — 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회 구현 완료. 확정 전 job 이어받기는 후속이고, 딜 누락 참조 보정값 전달은 현재 FE/BE confirm 경로에 연결되어 있음
+- `/app/import` — 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 전 job 이어받기, confirm/cancel/expire, 확정 저장, 성공 내역 목록/상세 조회 구현 완료. 딜 누락 참조 보정값 전달은 현재 FE/BE confirm 경로에 연결되어 있음
+- `/app/schedules` — 주간 일정 보고서, Google Calendar 연결/status/calendar 선택/read-only sync foundation 구현 완료
+- `/app/deals/:dealId` — `DealActivity` timeline 생성/수정/조회 foundation 구현 완료
+- `/app/meeting-notes/:meetingNoteId` — AI next action draft와 follow-up draft 보조 액션 구현 완료
+- `/app/settings` — Google Calendar 설정, follow-up delivery 설정, account/data request 진입 흐름 구현 완료
+- `/app` — AI weekly sales report 섹션과 제품 분석 route/mobile event foundation 구현 완료
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
@@ -208,7 +213,10 @@ pen 디자인 반영 완료/정리 도메인:
 - `/contacts/scan`, `/app/contacts/scan` — 명함 스캔 legacy route이며 `/app/business-cards`로 redirect한다.
 - MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
 
-현재 활성화된 후속 보정 화면:
+현재 활성화된 01~11 확장 화면/진입점:
+
+01~11 기능별 완료 범위와 제외 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`를 우선한다. 이 문단은 UX/UI 화면 진입점만 요약한다.
+
 - `/app/schedules/week` — 주간 일정 보고서 화면이며 일정 화면의 `주간 보고서` link에서 진입한다.
 - `/app/notifications` — 알림 화면이며 AppShell의 알림 bell에서 진입한다. Notification source/TTL/cleanup 확장은 이 문서에서 새로 정의하지 않는다.
 
@@ -216,7 +224,7 @@ pen 디자인 반영 대기 도메인:
 - `/app/products/:productId`
 - `/app/schedules`, `/app/schedules/week`
 - `/app/notifications`
-- `/app/import` — 확정 전 job 이어받기는 후속. 기본 업로드/매핑/검증/확정 저장은 구현 완료.
+- `/app/import` — 확정 전 job 이어받기, cancel/expire, 기본 업로드/매핑/검증/확정 저장은 구현 완료.
 - `/app/export`
 - `/app/business-cards` — Backend 연동 완료. pen 시각 고도화는 후속.
 - `/app/contacts/:contactId` (부분 반영)

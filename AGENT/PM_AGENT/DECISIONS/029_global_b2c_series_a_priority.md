@@ -2,9 +2,11 @@
 
 Date: 2026-07-18
 
+Status: Superseded by `030_global_b2c_closeout_and_paddle_defer.md` on 2026-08-11.
+
 ## Decision
 
-현재 `onehand.sales`의 바로 다음 우선순위는 새 기능 추가가 아니라 출시 전 품질 라운드다.
+2026-07-18 당시 `onehand.sales`의 바로 다음 우선순위는 새 기능 추가가 아니라 출시 전 품질 라운드였다.
 
 우선순위는 다음 순서로 고정한다.
 
@@ -15,7 +17,7 @@ Date: 2026-07-18
 5. DB/Prisma/migration 운영 정합성 정리
 6. S0/S1/S2 버그 수정
 
-이 순서가 끝나기 전에는 DataImport 영속화, Notification, Admin 운영 API, 결제/구독, Series A급 AI/리텐션 기능을 새로 시작하지 않는다.
+2026-08-11 기준 DataImport 영속화, Notification, Admin Operation foundation은 Global B2C 01~11 archive에서 완료됐다. 현재는 `030_global_b2c_closeout_and_paddle_defer.md`에 따라 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타를 먼저 진행하고 Paddle/Billing은 `TODO/PADDLE_PLAN`에 보류한다.
 
 ## Reason
 
@@ -60,6 +62,7 @@ Series A급으로 가려면 기능 완성이 아니라 반복 매출과 리텐�
 
 ## Related Documents
 
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`

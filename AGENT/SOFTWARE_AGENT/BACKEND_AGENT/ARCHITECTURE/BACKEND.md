@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-07-30
+Snapshot date: 2026-08-11
 
 Current source of truth:
 
@@ -51,6 +51,8 @@ Currently imported modules in `AppModule`:
 
 - `health`
 - `analytics`
+- `account-request`
+- `admin-operation`
 - `auth`
 - `user`
 - `company`
@@ -58,8 +60,11 @@ Currently imported modules in `AppModule`:
 - `business-card`
 - `product`
 - `deal`
+- `follow-up`
 - `schedule`
+- `sales-report`
 - `meeting-note`
+- `notification`
 - `search`
 - `trash`
 - `data-import`
@@ -67,16 +72,21 @@ Currently imported modules in `AppModule`:
 Currently implemented API surface:
 
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`, user timezone/locale/region metadata
+- Account Request: user-facing account deletion/data export request endpoints under `/api/users/me`
 - Company: list/detail/create/update/delete, field/region options, memo/private memo logs, linked contacts/deals, xlsx export
 - Contact: list/detail/create/update/delete, company options, department/job grade options, memo/private memo logs, linked deals, xlsx export
 - BusinessCard OCR: `POST /api/business-card-scans`, `GET /api/business-card-scans`, `GET /api/business-card-scans/:scanLogId`, `POST /api/business-card-scans/:scanLogId/confirm`
 - Product: list/detail/create/update/delete, category/status options, memo/private memo logs, linked deals, xlsx export
-- Deal: stage counts, list/detail/create/update/delete, company/contact/product options, following action logs, memo logs, xlsx export
-- Schedule: deal options, month/week list, detail/create/update/delete, schedule-deal N:M link
-- MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, saved-note deal linking
+- Deal: stage counts, list/detail/create/update/delete, company/contact/product options, `DealActivity`, following action logs, memo logs, xlsx export
+- Schedule: deal options, month/week list, weekly report/xlsx export, detail/create/update/delete, schedule-deal N:M link, Google Calendar connect/status/calendar selection/read-only sync/callback
+- Sales Report: AI weekly sales report generate/list/detail/suggestion foundation under `/api/sales-reports/weekly`
+- MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, next action draft, follow-up draft, saved-note deal linking, AI provider call log persistence
+- Follow-up: follow-up message draft/send/retry/history and email provider delivery settings
+- Notification: notification list/unread/read, user notification settings, browser push public key/subscription management, reminder delivery foundation
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
 - DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, cell-scoped validation messages, confirm import, import user logs
+- Admin Operation: admin user/domain readonly operation, trash/account request/provider failure queues, audit/security logs, analytics overview, system operation check endpoints under `/admin/api/*`
 - Health: `GET /api/health`
 - Analytics: `POST /api/analytics/events`
 
@@ -94,6 +104,17 @@ Implemented Backend TODO references:
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
 - `TODO/DONE/IMPORT_TEMPLATE_PLAN`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 
 Current response notes:
 
@@ -114,7 +135,7 @@ Current response notes:
 - BusinessCard OCR does not store the uploaded image. The log stores extracted/corrected fields, provider model, token/cost metrics, `costCurrency`, `pendingTimeMs`, and linked company/contact IDs after confirmation.
 - `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
 - MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
-- MeetingNote AI/STT writes no transcript table, provider log table, or raw-text storage in the current scope.
+- MeetingNote AI/STT writes `AiProviderCallLog` for provider observability. Raw transcript table and raw-text storage remain deferred.
 - `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
 - `DELETE /api/companies/:companyId`, `DELETE /api/contacts/:contactId`, `DELETE /api/products/:productId`, and `DELETE /api/deals/:dealId` are soft delete APIs. They set `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and return `204 No Content`.
 - `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`. Default `pageSize` is 15.
@@ -157,13 +178,15 @@ Auth/session runtime notes:
 
 Current backend gaps and intentional deferrals:
 
-- Admin pages and Admin Web query APIs such as `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, and `/admin/api/deals` are deferred.
-- DataImport ImportJob persistence/recovery is implemented. Remaining backend gaps are tracked in the later roadmap documents rather than inside the DataImport persistence slot.
+- Global B2C 01~11 Backend foundation is complete as of the `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` archive.
+- Billing/Paddle, subscription, payment, tax, invoice, refund, entitlement, paywall, and Billing Admin are deferred to `TODO/PADDLE_PLAN`.
+- B2B tenant/team admin, organization management, and subscription management routes are deferred.
+- DataImport ImportJob persistence/recovery is implemented. Remaining import work is product refinement, edge-case hardening, and UX/UI quality.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
-- MeetingNote Admin, rawText encryption/raw access, and generic DealActivity table are future scope.
+- Admin Operation foundation and `DealActivity` are implemented. RawText/STT transcript persistence and B2B/team CRM activity expansion remain future scope.
 - Kakao OAuth provider setup is no longer a release blocker because Kakao login has been removed. Apple and LINE are active runtime providers together with Google; actual provider smoke still depends on Supabase/provider operational configuration.
 - Country code fields may remain null in local/dev environments that do not provide proxy geo headers.
-- Prisma generate/migration/seed operating-state consistency still needs a dedicated release-readiness pass before production DB changes.
+- Prisma generate/migration/seed operating-state consistency still needs release-readiness validation before production DB changes.
 
 ## 4. Target Module List
 
@@ -171,6 +194,8 @@ Implemented MVP modules:
 
 - `health`
 - `analytics`
+- `account-request`
+- `admin-operation`
 - `auth`
 - `user`
 - `company`
@@ -178,17 +203,22 @@ Implemented MVP modules:
 - `business-card`
 - `product`
 - `deal`
+- `follow-up`
 - `schedule`
+- `sales-report`
 - `meeting-note`
+- `notification`
 - `search`
 - `trash`
 - `data-import`
 
-Planned or partially represented modules:
+Deferred modules/features:
 
-- `notification`
-- `audit-log`
-- `admin`
+- `billing`
+- `subscription`
+- `payment`
+- `billing-admin`
+- `organization` / B2B tenant-team admin
 
 `export` is not planned as a generic Backend module in the current direction. Domain xlsx export lives inside `company`, `contact`, `product`, and `deal`.
 

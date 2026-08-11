@@ -102,7 +102,9 @@ CI timing:
 - FE/admin-web `typecheck`, `lint`, `test:e2e` 통과.
 - FE/admin-web E2E는 현재 11 Admin route smoke 기준으로 유지한다.
 
-남은 출시 전 Front QA는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA다.
+2026-08-11 기준 Global B2C 01~11 Frontend foundation은 완료 archive다. 남은 출시 전 Front QA는 기존 기능 유지보수, UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA, 결제창 없는 100명 베타 준비다.
+
+Paddle checkout, Billing Admin, B2B tenant/team admin route smoke는 `TODO/PADDLE_PLAN` 또는 B2B 계획이 confirmed 된 이후에 추가한다.
 
 ## 6. 관련 문서
 

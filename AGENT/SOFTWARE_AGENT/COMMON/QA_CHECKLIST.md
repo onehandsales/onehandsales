@@ -1,13 +1,13 @@
 # onehand.sales QA 체크리스트
 
 작성일: 2026-07-06
-전략 보강: 2026-07-18 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+전략 보강: 2026-08-11 `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 
 이 문서는 `BE`, `FE`, `AGENT` 문서를 기준으로 만든 QA 체크리스트입니다. QA를 처음 진행하는 사람이 그대로 따라가며 확인할 수 있도록 기능 QA와 UX/UI QA를 함께 정리합니다.
 
 현재 QA 대상 제품은 `Web + 반응형 Web + 모바일 브라우저 Web`입니다. iOS/Android 네이티브 앱은 현재 구현/QA 범위가 아니며, 모바일 QA는 모바일 브라우저에서 현재 Web 제품의 핵심 업무가 사용 가능한지 확인하는 기준으로 진행합니다.
 
-2026-07-18 PM 전략 기준으로, 지금 바로 해야 할 일은 새 기능 추가가 아니라 이 문서 기준의 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성 확인입니다.
+2026-08-11 PM 전략 기준으로, Global B2C 01~11 foundation은 완료 archive입니다. 지금 바로 해야 할 일은 Paddle checkout 구현이 아니라 기존 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비입니다. 이 체크리스트는 그 과정에서 핵심 흐름과 반응형/접근성/보안 품질을 확인하는 기준으로 사용합니다.
 
 ## 1. QA 목적
 
@@ -35,6 +35,14 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - 검색
   - 휴지통
   - 도메인별 XLSX export
+  - ImportJob persistence
+  - Notification/Reminder
+  - Weekly Schedule Report
+  - Google Calendar Integration
+  - AI Weekly Sales Report/Follow-up
+  - DealActivity
+  - Product Analytics
+  - Admin Operation foundation
 
 - `FE/user-web`
   - 로그인
@@ -51,23 +59,22 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - UX/UI, 반응형, 모바일 브라우저, 접근성 기본
 
 - `FE/admin-web`
-  - 이번 QA에서는 관리자 페이지 기능을 제외합니다.
-  - 필요하면 빌드/typecheck 또는 관리자 인증 smoke 정도만 선택 확인합니다.
+  - 11 Admin Operation foundation 범위를 확인합니다.
+  - Billing Admin과 B2B tenant/team admin은 제외합니다.
 
 ### 제외
 
 사용자 요청에 따라 아래 기능은 이번 QA에서 제외합니다.
 
-- 관리자 페이지 운영 기능
-- Notification source/TTL/cleanup 정책 확장은 이번 QA에서 제외한다.
+- Billing Admin과 B2B tenant/team admin
+- Notification source/TTL/cleanup 고도화
 - 과금 및 구독 결제
 - iOS/Android 네이티브 앱
 
 현재 구현 상태 기준으로 아래 항목도 실패로 처리하지 않고 `N/A` 또는 `후속 범위`로 기록합니다.
 
 - `/app/export`: generic export 화면은 현재 제품 방향에서 제외, `/app`으로 리다이렉트
-- Admin 운영 화면: 라우터에서 대부분 `/`로 리다이렉트
-- 확정 전 ImportJob DB 영속화: 현재 인메모리 구조, 알려진 한계
+- Billing Admin: Paddle/Billing 이후 구현
 - iOS/Android 네이티브 앱: 현재 QA 범위가 아니며 모바일 브라우저 Web만 확인
 
 ## 3. 참고 기준 문서
@@ -79,6 +86,7 @@ QA 판단 기준은 아래 파일을 우선합니다.
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
@@ -611,9 +619,9 @@ pnpm build
 ### 삭제
 
 - [x] 일정 삭제 가능
-- [x] 일정은 휴지통 대상이 아니라 hard delete임을 확인
+- [x] 2026-07-09 QA 당시에는 hard delete로 확인했으나, 04 Google Calendar Integration 이후 현재 정본은 Schedule soft delete/Trash 대상이다.
 - [x] 삭제 후 목록에서 사라짐
-- [x] 삭제한 일정이 휴지통에 보이지 않음
+- [x] 현재 기준 삭제한 일정은 Trash 정책과 Google Calendar sync 정책에 맞게 복구 가능성을 확인해야 한다.
 
 ### 주간 경로
 
@@ -622,7 +630,7 @@ pnpm build
 
 ### 2026-07-09 일정 기능 QA 결과
 
-- 배포 사이트 기준 일정 목록, 생성, 상세, 수정, 시간 표시, 딜 연결, 새로고침 후 유지, 삭제, hard delete, 주간 경로 redirect 동작 확인 완료.
+- 배포 사이트 기준 일정 목록, 생성, 상세, 수정, 시간 표시, 딜 연결, 새로고침 후 유지, 삭제, 주간 경로 redirect 동작 확인 완료. 단, 삭제 정책은 이후 04 Google Calendar Integration에서 soft delete/Trash로 변경됐다.
 - 현재는 기능 QA 기준 통과로 기록한다. 세부 UX/UI와 모바일 레이아웃 평가는 별도 UX/UI QA에서 확인한다.
 
 ## 16. 회의록 QA

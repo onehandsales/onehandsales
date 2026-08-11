@@ -45,22 +45,28 @@ Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 
 현재 `BE/src/app.module.ts`에 등록된 구현 모듈:
 
 - `HealthModule`
+- `AnalyticsModule`
+- `AccountRequestModule`
+- `AdminOperationModule`
 - `AuthModule`
 - `UserModule`
 - `CompanyModule`
 - `ContactModule`
+- `DataImportModule`
 - `BusinessCardModule`
 - `ProductModule`
 - `DealModule`
+- `FollowUpModule`
 - `ScheduleModule`
+- `SalesReportModule`
 - `MeetingNoteModule`
+- `NotificationModule`
 - `SearchModule`
 - `TrashModule`
-- `DataImportModule`
 
-Admin API는 현재 `GET /admin/api/me`만 구현되어 있다. 관리자 페이지와 Admin Web이 호출하는 대시보드, 사용자 목록, 회사/담당자/제품/딜 조회, 감사 로그, 민감 원문 조회 API는 후속 범위다.
+Admin API는 11 Admin Operation 기준으로 사용자/domain readonly operation, Trash/account request/provider failure queue, audit/security log, analytics overview, system operation check foundation까지 구현되어 있다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 범위다.
 
-Company/Contact/Product/Deal xlsx export는 각 도메인 모듈 안에서 처리한다. 범용 `ExportJob` Backend 모듈은 현재 제품 방향에서 사용하지 않는다. DataImport는 회사/담당자/제품/딜 CSV/XLSX 불러오기, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장, 성공 내역 조회를 담당한다. 확정 전 임시 job 영속화와 서버 재시작 후 이어받기는 후속 범위다.
+Company/Contact/Product/Deal xlsx export는 각 도메인 모듈 안에서 처리한다. 범용 `ExportJob` Backend 모듈은 현재 제품 방향에서 사용하지 않는다. DataImport는 `ImportJob` persistence 기반으로 회사/담당자/제품/딜 CSV/XLSX 불러오기, AI 컬럼 매핑, 사용자 보정/검증, 서버 재시작 후 이어받기, 확정 저장, 성공 내역 조회를 담당한다.
 
 ## 4. 계층 구조
 
@@ -89,8 +95,10 @@ OpenAI, Google Calendar, email, browser push, file parser 같은 외부 Provider
 
 - MeetingNote text AI draft API 구현. AI 초안 생성은 `MeetingNoteAiDraftProvider` port 뒤에 두고 현재 adapter는 OpenAI다.
 - MeetingNote STT+AI draft API 구현. STT는 `MeetingNoteSttProvider` port로 AI provider와 분리되어 있으며 현재 adapter는 OpenAI transcription이다.
+- MeetingNote next action/follow-up draft와 `AiProviderCallLog` provider observability foundation이 구현되어 있다.
 - BusinessCard OCR은 `BusinessCardOcrProvider` port 뒤에 두고 현재 adapter는 OpenAI vision 기반 Responses API다. prompt와 strict JSON schema 응답 계약은 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에서 관리한다.
 - Import AI mapping은 `ImportMappingProvider` port 뒤에 두고 현재 adapter는 OpenAI Responses API다. provider 실패 시 규칙 기반 매핑으로 fallback한다.
+- AI weekly sales report는 `SalesReportModule`에서 provider port 뒤에 두고 저장형 보고서와 suggestion foundation을 제공한다.
 
 Provider-specific prompt, response parsing, SDK 호출은 infrastructure adapter에서만 처리한다.
 

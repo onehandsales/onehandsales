@@ -1,6 +1,6 @@
 # Global B2C And Series A Roadmap
 
-> 기준일: 2026-07-18  
+> 기준일: 2026-08-11
 > 상태: PM 전략 정본  
 > 구현 상태 기준: `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`  
 > 제품 범위 기준: `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
@@ -13,7 +13,7 @@
 
 ## 2. 현재 판단 요약
 
-현재 제품은 핵심 MVP 업무 기능이 상당히 구현된 상태다.
+현재 제품은 핵심 MVP 업무 기능과 Global B2C 01~11 foundation이 구현 완료된 상태다.
 
 완료된 핵심 축:
 
@@ -31,41 +31,50 @@
 - Trash
 - DataImport
 - Company/Contact/Product/Deal 도메인별 XLSX export
+- ImportJob persistence
+- Notification/Reminder
+- Weekly Schedule Report
+- Google Calendar Integration
+- AI Weekly Sales Report / Follow-up
+- DealActivity Timeline
+- MeetingNote AI provider log
+- Global Data / I18N foundation
+- Product Analytics
+- Mobile Field Use foundation
+- Admin Operation foundation
 
-하지만 글로벌 B2C 유료 제품으로 판매하기에는 아직 제품화, 운영, 결제, 로컬라이제이션, 리텐션 계층이 부족하다.
+하지만 글로벌 B2C 유료 제품으로 판매하기에는 아직 제품 유지보수, UX/UI 상품성, 베타 검증, 결제/구독/세금 정책 확정이 남아 있다.
 
-현재 바로 해야 할 일은 새 기능 추가가 아니라 출시 전 품질 라운드다.
+현재 바로 해야 할 일은 Paddle checkout 구현이 아니라 유지보수와 UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
 우선순위 결론:
 
-1. 지금은 UX/UI와 모바일 브라우저 QA를 신경써야 하는 타이밍이다.
-2. 기능 추가는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma 운영 정합성 확인 이후에 시작한다.
-3. QA 중 S0/S1/S2 버그가 발견되면 새 기능보다 먼저 수정한다.
-4. QA 이후 첫 기능 후보는 DataImport Job 영속화, Notification/Reminder, 결제/구독 기반, Admin 운영 도구 순으로 본다.
+1. 지금은 기존 01~11 기능 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
+2. 결제는 100명 베타를 결제창 없이 진행한 뒤 가격/플랜/entitlement/AI 사용량 제한 정책이 확정되면 시작한다.
+3. QA나 베타 중 S0/S1/S2 버그가 발견되면 Paddle/Billing보다 먼저 수정한다.
+4. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 분리된 Deferred / Draft 계획이다.
 
 ## 3. 현재 미완성 영역
 
 | 영역 | 현재 상태 | 미완성 내용 | 우선순위 판단 |
 |---|---|---|---|
-| 출시 전 UX/UI 품질 | 핵심 기능 happy path는 통과 | 1440/1280/768/390/360px, 125% 확대, 긴 텍스트, 모달/토스트, 접근성, UX writing QA | 최우선 |
-| 모바일 브라우저 | 반응형 Web 범위 | 모바일 로그인, 홈, 딜 단계 탭, 일정 form, 회의록 긴 입력, Import table, 휴지통 복구, 키보드 상태 QA | 최우선 |
-| 브라우저 호환 | User Web E2E는 Chromium 중심 | Chrome/Edge 최신 버전, 새로고침, 뒤로/앞으로, 다중 탭, 느린 네트워크 QA | 최우선 |
-| 다중 계정 보안 | 기본 smoke는 통과 | 다른 사용자 데이터 UUID 접근, Search/Trash/Export 격리, Admin/API 권한 침투성 확인 | 최우선 |
-| DB/운영 정합성 | 기능 QA는 통과 | Prisma generate DLL lock 이력, migration 상태, seed/QA/production 데이터 분리, 배포 DB 정합성 | 최우선 |
-| 결제/구독 | MVP 제외 | 요금제, 무료체험, 월/연 결제, 환불, 쿠폰, 구독 상태, 결제 실패 복구, 영수증/인보이스 | 글로벌 유료 판매 전 필요 |
+| 기능 유지보수 | 01~11 foundation 완료 | 베타 전 S0/S1/S2 버그, edge case, 문서/코드 drift 정리 | 최우선 |
+| UX/UI 상품성 | 핵심 기능 happy path는 있음 | 반복 사용 흐름, 모바일/데스크톱 polish, 긴 텍스트, 모달/토스트, 접근성, UX writing | 최우선 |
+| 베타 검증 | 아직 결제창 없는 100명 베타 전 | 반복 사용, 이탈 지점, 유료 전환 후보 기능, plan별 가치 차이 검증 | 최우선 |
+| 결제/구독 | `TODO/PADDLE_PLAN` Deferred / Draft | 요금제, 무료체험, 월/연 결제, 환불, 쿠폰, 구독 상태, 결제 실패 복구, 영수증/인보이스 | 베타 이후 필요 |
 | 글로벌 세금/컴플라이언스 | 미구현 | VAT/GST/판매세 계산/징수/신고, 환불/차지백, 국가별 약관/환불 정책 | 글로벌 유료 판매 전 필요 |
 | 앱 내부 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | `ja`, `zh-TW`, `zh-CN` 등 실제 판매 시장별 앱 내부 locale과 UX writing | 글로벌 확장 전 필요 |
 | 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | 지원 국가/통화/전화번호/주소 체계 확장 | 글로벌 확장 전 필요 |
-| Admin 운영 | `/admin/api/me`만 완료 | 사용자/도메인 조회, 결제 상태, 감사 로그, 민감 원문 조회, 고객 지원 도구 | 유료 운영 전 필요 |
-| Notification | Backend 없음, route 숨김 | 알림 목록, 읽음 처리, unread count, 설정, email/browser push | 리텐션 강화 전 필요 |
-| DataImport | pre-confirm job in-memory | ImportJob DB 영속화, 서버 재시작 후 이어받기, 배포 중 유실 방지 | QA 이후 우선 |
+| Admin 운영 | 11 Admin Operation foundation 완료. Billing Admin 제외 | 구독/결제/환불/인보이스 운영은 Paddle 이후 연결 | 유료 운영 전 필요 |
+| Notification | 02 Notification/Reminder foundation 완료 | email/browser push 운영 고도화와 리텐션 실험 | 리텐션 강화 |
+| DataImport | ImportJob persistence 완료 | 대용량 worker와 source 확장 | scale 후보 |
 | Schedule 고도화 | CRUD와 월간 화면 완료 | 주간 보고서, PDF/Excel, 반복 일정, Google Calendar 가져오기/내보내기 | 리텐션 강화 |
 | Deal 활동 | FollowingAction/Memo 중심 | 범용 DealActivity, 활동 타입, 단계 변경 자동 로그, 일정/회의록 통합 타임라인 | 제품 완성도 강화 |
 | MeetingNote AI/STT | draft 기능 완료 | transcript 저장 여부, provider call log, 품질 분석, 템플릿, 개인정보 정책 | AI 운영 고도화 |
 | BusinessCard OCR | 업로드 OCR 완료 | 모바일 카메라 촬영 UX, 다국가 전화번호 검증, provider error observability | 모바일/글로벌 강화 |
 | 민감정보/보안 | 기본 보호 | 자동 민감정보 감지, Admin 원문 조회 사유/감사, 민감 export 마스킹 | 유료 운영 신뢰 |
 | 모바일 앱 | 없음 | iOS/Android, push, 카메라, 음성 기록, 오프라인 임시 저장 | Series A급 확장 후보 |
-| 제품 분석 | 정본 없음 | activation, retention, churn, CAC, LTV, cohort, paywall funnel, AI cost/user | Series A 전 필수 |
+| 제품 분석 | 09 Product Analytics와 11 Admin analytics foundation 완료 | paid conversion, churn, CAC, LTV, paywall funnel, AI cost/user | Paddle 이후 필수 |
 
 ## 4. 최종 완성 형태
 
@@ -144,47 +153,47 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 
 ## 6. 지금 당장 해야 하는 우선순위
 
-지금은 UX/UI를 신경써야 하는 타이밍이다.
+지금은 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
 
-기능을 더 붙이기 전에 현재 구현된 핵심 기능이 실제 유료 사용자에게 팔 수 있는 수준으로 보이는지, 모바일 브라우저에서 사용 가능한지, 데이터 격리가 안전한지, 운영 DB 상태가 배포 가능한지를 먼저 확인해야 한다.
+기능을 더 붙이기 전에 현재 구현된 01~11 기능이 실제 베타 사용자에게 반복 사용 가능한 수준인지, 모바일/데스크톱에서 사용성이 자연스러운지, 어떤 기능이 유료 플랜의 가치가 되는지 먼저 확인해야 한다.
 
-### P0. 출시 전 품질 라운드
+### P0. 유지보수와 UX/UI 상품성 개선
 
-1. UX/UI 공통 QA
-2. 모바일 브라우저 390px/360px QA
-3. Chrome/Edge QA
-4. 다중 계정 보안 QA
-5. DB/Prisma/migration 운영 정합성 정리
+1. 기존 01~11 기능 S0/S1/S2 버그 정리
+2. 핵심 반복 업무 흐름 UX/UI polish
+3. 모바일 브라우저 390px/360px 사용성 확인
+4. Chrome/Edge 핵심 시나리오 확인
+5. 다중 계정 보안과 DB/Prisma/migration 운영 정합성 재확인
 
 완료 기준:
 
-- `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md` 기준으로 결과가 기록된다.
 - S0/S1/S2 버그가 분류된다.
 - S0/S1은 모두 수정된다.
 - S2는 수정 또는 출시 보류 판단이 문서화된다.
+- 베타 사용자에게 결제창 없이 제공할 수 있는 사용 품질이 된다.
 
-### P1. 외부 진입면과 신뢰 문구 점검
+### P1. 100명 베타 준비
 
-1. 공개/인증 화면의 가치 제안이 개인 영업자 B2C와 맞는지 확인한다.
-2. pricing/contact/security/terms/privacy 문구가 실제 제품 범위와 맞는지 점검한다.
-3. 앱 내부 문구가 `UX_WRITING_GUIDE.md`의 해요체, 행동형 기준을 따르는지 확인한다.
+1. 베타 대상 사용자와 제공 범위를 정한다.
+2. 결제창 없이 사용할 수 있는 onboarding과 지원 흐름을 준비한다.
+3. 반복 사용, 이탈 지점, 유료 전환 후보 기능을 기록할 feedback 루프를 만든다.
 
-### P2. QA 이후 첫 기능
+### P2. Paddle/Billing 의사결정
 
-QA 이후 첫 기능은 아래 순서로 본다.
+베타 이후 아래 항목을 confirmed 상태로 바꾼 뒤 `TODO/PADDLE_PLAN`을 구현 계획으로 승격한다.
 
-1. DataImport Job 영속화
-2. Notification/Reminder
-3. 결제/구독 기반 설계
-4. Admin 운영 조회/구독 상태 관리
-5. 다국가 전화번호와 `/app` 내부 다국어
+1. 무료/유료, 월간/연간, trial, 가격, 국가/통화 rollout
+2. plan별 entitlement와 AI 사용량 제한
+3. Paddle Billing/Checkout/customer portal/webhook 방식
+4. 환불, 해지, failed payment, invoice, tax, chargeback 정책
+5. Billing Admin과 paid conversion/churn analytics 범위
 
 ### P3. 리텐션/Series A 기반 기능
 
-1. 주간 영업 리포트
-2. 범용 DealActivity timeline
-3. Google Calendar 가져오기/내보내기
-4. AI follow-up/next action 추천
+1. 주간 영업 리포트 고도화
+2. DealActivity timeline 고도화
+3. Google Calendar write/watch/export
+4. AI follow-up/next action 추천 고도화
 5. 모바일 앱 또는 강한 PWA
 6. 제품 분석과 paywall 실험
 
@@ -278,6 +287,9 @@ Series A는 기능 수가 아니라 성장성과 반복 매출의 질로 판단�
 - `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
+- `TODO/PADDLE_PLAN/README.md`
 
 ## 10. 외부 참고 자료
 

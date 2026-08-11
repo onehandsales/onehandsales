@@ -3,8 +3,8 @@
 > 제품명: 한손에 영업 / onehand.sales  
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
-> 현재 구현 스냅샷: 2026-07-10 `BE`, `FE/user-web`, `FE/admin-web`
-> 글로벌/Series A 전략 보강: 2026-07-18 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+> 현재 구현 스냅샷: 2026-08-11 `BE`, `FE/user-web`, `FE/admin-web`, `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`
+> 글로벌/Series A 전략 보강: 2026-08-11 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 
 ---
 
@@ -57,12 +57,11 @@
 - 구현 완료: URL locale 공개/인증 진입면, Auth/User, `/app` 홈 대시보드, 회사, 담당자, 제품, 딜, 일정, 회의록 직접 작성/저장, 회의록 AI/STT draft UI, 회의록 저장 후 딜 연동/활동 로그 생성, 회의록 삭제/휴지통 복구, 통합검색 Backend API와 User Web GlobalSearch, 휴지통 목록/상세/7일 이내 복구.
 - 구현 완료: Company/Contact/Product/Deal 도메인별 xlsx export. 범용 ExportJob은 현재 제품 방향에서 사용하지 않는다.
 - 구현 완료: 명함 OCR은 `/app/business-cards` 화면과 `/api/business-card-scans` API로 제공한다. 이미지를 업로드하면 `명함스캔` 진행 표시 후 추출값을 확인/수정하고, 저장 시 회사/담당자를 재사용하거나 생성한다.
-- FE code는 남아 있으나 화면에서 숨김: 알림, 범용 `/app/export` route.
-- 구현 완료: DataImport는 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다. 확정 전 job은 in-memory store를 사용한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
-- Backend 미구현 또는 후속 범위: persistent ImportJob, Notification, Admin 페이지/운영 조회/감사/민감 원문 API, MeetingNote Admin API, 범용 DealActivity table, 7일 이후 유료 복구 API.
-- Admin Backend는 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지는 후속 단계에서 만든다.
-- 2026-07-10 기준 핵심 업무 happy path, URL locale smoke, API/security smoke, BE/FE/admin-web 자동 점검은 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
-- 2026-07-18 전략 판단 기준으로, 지금은 새 기능 추가보다 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 진행한다. 기능 추가는 출시 전 품질 라운드와 S0/S1/S2 정리 이후 시작한다.
+- 구현 완료: DataImport는 `ImportJob` 기반으로 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, 성공 내역 조회를 제공한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
+- 구현 완료: Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity Timeline, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation.
+- Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, native/PWA packaging, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
+- 2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 베타 전 checkout/webhook/API/DB migration은 만들지 않는다.
+- 현재 다음 작업은 새 기능 추가나 결제창 구현이 아니라 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
 ## 6. MVP 포함 기능
 
@@ -90,31 +89,28 @@
 - 결제/구독 자동화
 - 모바일 앱
 - STT transcript 영구 저장과 고도화된 브라우저 녹음 UX
-- 구글 캘린더 양방향 동기화
-- 구글 캘린더 일정 가져오기
-- 주간 일정 보고서 화면/PDF/Excel 출력
-- 알림: 이메일, 브라우저 푸시
-- 확정 전 ImportJob DB 영속화와 서버 재시작 후 이어받기
+- 구글 캘린더 write/watch/export 고도화
+- 주간 일정 보고서 고도화
+- 알림 email/browser push 운영 고도화
 - 범용 ExportJob과 `/api/exports`
-- Admin 페이지와 운영 조회 API
-- 우리 서비스 일정의 구글 캘린더 내보내기
+- Billing Admin과 B2B tenant/team admin
 - 카카오 알림톡
 - 사용자 커스텀 필드 UI
-- 다중 통화
+- 추가 국가/통화 rollout
 - 자동 민감정보 키워드/패턴 감지
 - 팀 공유/협업
 
 ## 8. 결제 전략
 
-MVP에는 결제를 붙이지 않는다.
+MVP와 100명 베타 전에는 결제를 붙이지 않는다.
 
-MVP 이후 초기 유료 운영은 계좌이체 수동 처리로 시작한다. 약 1~2개월 동안 유지보수와 고객 니즈를 반영한 뒤 웹과 앱 모두에 구독형 결제를 도입한다.
+기존 12 Billing/Subscription/Tax 작업은 `TODO/PADDLE_PLAN`으로 이관했다. Paddle은 Merchant of Record 후보로 유지하되, plan, 가격, trial, entitlement, AI 사용량 제한, 환불/해지/failed payment 정책이 확정되기 전에는 checkout-only 구현도 하지 않는다.
 
-글로벌 B2C 유료 판매 단계에서는 수동 계좌이체만으로는 부족하다. 무료체험, 월간/연간 구독, 국가별 가격, 환불, 결제 실패 복구, 영수증/인보이스, VAT/GST/판매세 또는 Merchant of Record 처리를 함께 설계한다.
+100명 베타 이후 반복 사용, 이탈 지점, 유료 전환 후보 기능, 플랜별 가치 차이를 확인한 뒤 무료체험, 월간/연간 구독, 국가별 가격, 환불, 결제 실패 복구, 영수증/인보이스, VAT/GST/판매세 또는 Merchant of Record 처리를 함께 설계한다.
 
 ## 9. 글로벌 B2C와 Series A 전략
 
-글로벌 B2C 유료 판매 가능형은 핵심 기능 완성만으로 정의하지 않는다. 결제/구독, 세금/컴플라이언스, `/app` 내부 다국어, 국가별 전화번호/날짜/통화/문구, Admin 운영, 고객 지원, 제품 분석이 함께 있어야 한다.
+글로벌 B2C 유료 판매 가능형은 핵심 기능 완성만으로 정의하지 않는다. 결제/구독, 세금/컴플라이언스, 추가 `/app` 내부 다국어, 국가별 전화번호/날짜/통화/문구, Billing Admin, 고객 지원, paid conversion/churn 분석이 함께 있어야 한다.
 
 Series A급으로 가려면 기능 수보다 반복 매출과 리텐션의 질이 중요하다. `한손에 영업 / onehand.sales`는 단순히 AI 기능이 붙은 CRM이 아니라, 개인 영업자의 다음 행동과 기록 정리를 AI가 실질적으로 돕는 도구로 진화해야 한다.
 
@@ -125,7 +121,7 @@ Series A급 제품 방향:
 - 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder
 - free trial, annual plan, 국가별 가격, paywall 실험
 - activation, D7/D30 retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user 분석
-- Admin 운영, 민감정보 마스킹, 원문 조회 사유, 감사 로그, 결제/구독 상태 관리
+- Admin 운영 고도화, 민감정보 마스킹, 원문 조회 사유, 감사 로그, 결제/구독 상태 관리
 
 자세한 정본은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
@@ -137,7 +133,7 @@ Series A급 제품 방향:
 - 명함 OCR 결과를 확인/수정 후 회사/담당자로 저장할 수 있다.
 - 회의록을 직접 저장하거나 AI/STT 정리 후 저장하고, 딜 활동 로그로 연결할 수 있다.
 - 민감 데이터는 기본적으로 보호된다. 민감 데이터 포함 export와 Admin 원문 조회는 후속으로 마스킹/사유/감사 로그 정책을 함께 구현한다.
-- 글로벌 유료 판매 단계에서는 구독 결제, 세금/컴플라이언스, 다국어, Admin 운영, 제품 분석이 함께 준비되어야 한다.
+- 글로벌 유료 판매 단계에서는 구독 결제, 세금/컴플라이언스, 추가 다국어, Billing Admin, paid conversion/churn 분석이 함께 준비되어야 한다.
 - Series A급 판단은 기능 완성이 아니라 리텐션, 유료 전환, 반복 매출, 성장 효율, AI 차별화가 지표로 증명되는지로 본다.
 
 ## 11. 관련 문서
@@ -149,3 +145,6 @@ Series A급 제품 방향:
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
+- `TODO/PADDLE_PLAN/README.md`

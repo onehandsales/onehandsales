@@ -22,9 +22,9 @@
 
 ## 3. 현재 DB 범위
 
-Snapshot date: 2026-07-10
+Snapshot date: 2026-08-11
 
-현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, DataImport, Product Analytics 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
+현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, DealActivity, Schedule, MeetingNote, DataImport/ImportJob, Notification/BrowserPush, Google Calendar integration, AI Weekly Sales Report/Follow-up, AI provider call log, Product Analytics, Admin Operation 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/Schedule/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
 Auth/User 기준:
 
@@ -75,12 +75,40 @@ Auth/User 기준:
 - `ImportTemplate`
 - `ImportUserLog`
 - `ImportUserLogRow`
+- `ImportJob`
+- `ImportJobRow`
+- `ImportJobError`
+- `ImportUploadedFile`
 - `ProductAnalyticsEventSource`
 - `UserActivationStatus`
 - `ProductAnalyticsTargetType`
 - `ProductAnalyticsEvent`
 - `UserActivationSnapshot`
 - `RetentionCohortSnapshot`
+- `AdminAuditLog`
+- `AdminSensitiveAccessLog`
+- `TrashRecoveryRequest`
+- `AccountDeletionRequest`
+- `UserDataExportRequest`
+- `AdminOperationCheckRun`
+- `DealActivity`
+- `ExternalCalendarConnection`
+- `ExternalCalendarSource`
+- `AiWeeklySalesReport`
+- `AiWeeklySalesReportSuggestion`
+- `AiJob`
+- `AiProviderCallLog`
+- `ExternalEmailConnection`
+- `ExternalEmailOAuthState`
+- `SmsSenderNumber`
+- `FollowUpConsentNotice`
+- `FollowUpMessage`
+- `FollowUpMessageTarget`
+- `FollowUpDeliveryAttempt`
+- `UserNotificationSetting`
+- `Notification`
+- `NotificationDeliveryAttempt`
+- `BrowserPushSubscription`
 
 현재 반영된 주요 migration:
 
@@ -108,9 +136,9 @@ Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이
 
 MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. AI 초안 provider와 STT provider는 application port로 분리되어 있으며, transcript, raw text, provider call log table은 후속 범위다.
 
-DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 임시 import job은 현재 in-memory store에 있으며 DB table로 저장하지 않는다. 확정 성공 시에만 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
+DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 import job은 DB에 저장하며 resume/cancel/expire/confirm 상태를 추적한다. 확정 성공 시에는 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
 
-2026-07-10 기준 Backend `typecheck`, `lint`, `test`, `build`는 통과했고, BE test는 17 suites / 82 tests passed 상태다. 다만 Prisma generate DLL lock 이력, migration 기록 정합성, seed 실행 기준은 운영 배포 전 별도 정리해야 한다.
+2026-08-11 기준 Global B2C 01~11 DB foundation은 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 완료 archive를 따른다. Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment 관련 table은 아직 만들지 않았고 `TODO/PADDLE_PLAN`에서 베타 이후 confirmed scope로 확정한다.
 
 ## 4. 현재 DB 기준 구현 완료/참조 Backend TODO
 
@@ -125,19 +153,26 @@ DataImport는 `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`를 사용한
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
 - `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
 - `TODO/DONE/IMPORT_TEMPLATE_PLAN`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 
 ## 5. 아직 포함되지 않은 DB 범위
 
 - `UserSetting`
 - 계정 영구 삭제 예약 column/table
-- DealActivity 통합 영업 활동 table
 - 유료 영구 삭제 복구 예약 column/table
-- Admin 감사/조회 도메인 table
-- MeetingNote AI/STT transcript/raw text/provider call log table
-- persistent ImportJob table. 현재 확정 전 job은 in-memory store를 사용한다.
+- MeetingNote AI/STT transcript/raw text 영구 저장 table
 - generic ExportJob table은 현재 범용 export를 쓰지 않는 정책으로 제외한다. Company/Contact/Product/Deal export는 각 도메인 API가 xlsx 파일을 직접 생성한다.
-- Notification table
-- Billing/paywall/churn final event table과 `UsageMeter`는 12 Billing Subscription Tax에서 확정한다.
+- Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment table은 `TODO/PADDLE_PLAN`에서 베타 이후 확정한다.
 
 ## 6. 관리 규칙
 

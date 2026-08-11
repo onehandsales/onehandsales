@@ -1,18 +1,18 @@
 # Next Feature Priorities
 
-기준일: 2026-07-10
-전략 보강: 2026-07-18 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+기준일: 2026-08-11
+전략 보강: 2026-08-11 `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 
-이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발보다 출시 전 품질 라운드가 우선이다. 핵심 기능 happy path와 주요 smoke QA는 통과했고, 남은 일은 UX/UI, 모바일 브라우저, 브라우저 호환, 다중 계정 보안, 운영/DB 정합성 확인이다.
+이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발이나 Paddle checkout 구현보다 기존 01~11 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비가 우선이다.
 
-2026-07-18 PM 전략 보강 기준으로도 이 판단은 유지한다. 지금은 기능을 추가할 타이밍이 아니라 UX/UI와 출시 전 품질을 먼저 확인할 타이밍이다.
+2026-08-11 기준 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고 Deferred / Draft 상태로 둔다.
 
 현재 결론:
 
-- UX/UI 공통 QA와 모바일 브라우저 QA를 가장 먼저 한다.
-- 그 다음 Chrome/Edge, 다중 계정 보안, DB/Prisma/migration 정합성을 확인한다.
-- S0/S1/S2가 나오면 기능 추가보다 먼저 수정한다.
-- DataImport Job 영속화, Notification, Admin 운영 API, 결제/구독, Series A급 AI/리텐션 기능은 QA 라운드 이후에 시작한다.
+- 기존 01~11 기능 유지보수와 S0/S1/S2 버그 수정을 가장 먼저 한다.
+- 그 다음 UX/UI 상품성 개선과 결제창 없는 100명 베타 준비를 진행한다.
+- 베타 전에는 Paddle checkout, 결제 webhook/API/DB migration, AI 사용량 제한 billing source-of-truth 연결을 하지 않는다.
+- Paddle/Billing은 베타 피드백과 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격할 때 시작한다.
 - 글로벌 B2C 유료 판매와 Series A급 제품 방향은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
 ## 1. 현재 제품 범위
@@ -190,12 +190,9 @@
 
 현재 실패로 처리하지 않고 `N/A` 또는 `Known limitation`으로 기록하는 항목은 다음이다.
 
-- 확정 전 ImportJob은 서버 메모리에 저장되어 재시작 시 사라질 수 있음
-- `/app/notifications`는 `/app`으로 redirect됨
 - `/app/export`는 `/app`으로 redirect됨
-- `/app/schedules/week`는 `/app/schedules`로 redirect됨
-- Admin 운영 화면은 현재 QA 범위에서 제외
-- 알림, 결제, 구독은 현재 제품 범위에서 제외
+- Billing Admin과 B2B tenant/team admin은 현재 범위에서 제외
+- 결제, 구독, 세금, invoice, refund, entitlement, paywall은 `TODO/PADDLE_PLAN` Deferred / Draft 범위
 - iOS/Android 네이티브 앱은 현재 제품 범위가 아님
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
@@ -205,65 +202,58 @@
 
 | 순서 | 작업 | 목적 | 완료 기준 |
 | --- | --- | --- | --- |
-| 1 | UX/UI 공통 QA | 기능은 동작하지만 실제 사용 품질 확인 | 주요 화면의 레이아웃/문구/상태/접근성 이슈 정리 |
-| 2 | 모바일 브라우저 QA | 현재 Web 제품의 모바일 사용성 확인 | 390px/360px에서 핵심 흐름 사용 가능 |
-| 3 | Chrome/Edge 브라우저 QA | 주요 브라우저 호환 확인 | Chrome/Edge 핵심 시나리오 통과 |
-| 4 | 다중 계정 보안 QA | 사용자 데이터 격리 확인 | 다른 사용자 데이터 접근/검색/export 미노출 확인 |
-| 5 | DB/운영 환경 정합성 정리 | 배포와 운영 리스크 제거 | Prisma generate/migration/seed 상태 정리 |
-| 6 | S0/S1/S2 버그 수정 | 출시 판단을 막는 문제 제거 | Blocker/Critical/Major 버그가 수정 또는 명확히 보류 판단됨 |
-| 7 | 외부 진입면/정책 문구 점검 | 신뢰도와 제품 진입 경로 정리 | 랜딩/푸터/약관/개인정보 문구 최소 점검 |
-| 8 | DataImport Job 영속화 | 서버 재시작/배포 중 업로드 작업 유실 방지 | 확정 전 job DB 영속화 설계/구현 |
-| 9 | 검색/필터 고도화 | 데이터 증가 시 탐색 효율 개선 | 고급 필터/정렬/검색 기준 확정 |
-| 10 | 주간 일정/영업 리포트 | 일정, 딜, 회의록 데이터를 영업 판단으로 연결 | 주간 보고서 화면/export 요구사항 확정 |
+| 1 | 기능 유지보수 | 01~11 foundation을 베타 제공 가능한 상태로 안정화 | S0/S1/S2가 수정 또는 명확히 보류 판단됨 |
+| 2 | UX/UI 상품성 개선 | 반복 사용자가 보기 좋은 업무 도구 품질 확보 | 핵심 화면의 레이아웃/문구/상태/접근성 이슈 정리 |
+| 3 | 모바일/브라우저 확인 | 현재 Web 제품의 실제 사용성 확인 | 390px/360px, Chrome/Edge 핵심 흐름 사용 가능 |
+| 4 | 베타 준비 | 결제창 없는 100명 베타 운영 준비 | onboarding, feedback loop, 지원 흐름 정리 |
+| 5 | Paddle 의사결정 | 결제 구현 전 정책 확정 | 가격/플랜/entitlement/AI usage/refund/tax/invoice confirmed |
+| 6 | `TODO/PADDLE_PLAN` 승격 | 결제 구현 착수 조건 충족 | API/DB/User Web/Admin 범위가 confirmed 문서로 작성됨 |
 
 기능 추가 판단 기준:
 
-- 위 1~7번이 끝나기 전에는 새 영업 기능을 시작하지 않는다.
-- 글로벌 B2C 유료 판매 기능은 1~7번 이후 결제/구독, 세금/컴플라이언스, Admin 운영, `/app` 추가 언어 확장을 한 계획으로 묶어 설계한다.
-- Series A급 기능은 Notification/Reminder, AI next action, 주간 영업 리포트, 모바일 현장 사용성, 제품 분석이 함께 움직일 때 의미가 있다.
+- 위 1~4번이 끝나기 전에는 Paddle/Billing 구현을 시작하지 않는다.
+- 글로벌 B2C 유료 판매 기능은 베타 이후 결제/구독, 세금/컴플라이언스, Billing Admin, `/app` 추가 언어 확장을 한 계획으로 묶어 설계한다.
+- Series A급 기능은 이미 구현된 Notification/Reminder, AI report/follow-up, mobile field-use, Product Analytics foundation을 실제 리텐션/매출 지표로 고도화할 때 의미가 있다.
 
-## 6. QA 이후 기능 우선순위
+## 6. 베타 이후 기능 우선순위
 
-아래 항목은 출시 전 품질 라운드와 S0/S1/S2 정리가 끝난 뒤 검토한다.
+아래 항목은 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 이후 검토한다.
 
 | 순서 | 작업 | 이유 |
 | --- | --- | --- |
-| 1 | DataImport Job 영속화 | 서버 재시작/배포 시 업로드, 매핑, 검증 중인 작업 유실 방지 |
-| 2 | 다국가 전화번호 모델 | 한국/일본/대만/영미권 번호를 안정적으로 저장/검증하기 위함 |
-| 3 | 검색/필터 고도화 | 데이터가 쌓일수록 탐색 효율이 중요해짐 |
-| 4 | 주간 일정/영업 리포트 | 일정, 딜, 회의록 데이터를 영업 판단으로 연결 |
-| 5 | 휴지통/삭제 정책 고도화 | 복구 기한, 만료, 장기 보관 정책 명확화 |
-| 6 | 딜 가능성/확률 | 파이프라인 우선순위 판단 강화 |
-| 7 | 범용 활동 타임라인 | 딜 중심 활동을 한 화면에서 추적 |
-| 8 | 회의록 AI/STT 이력 고도화 | AI/STT 품질 분석, 실패 추적, 개인정보 정책 정리 |
-| 9 | 반복 일정 / 외부 캘린더 가져오기 | 일정 도메인 확장 |
-| 10 | 대용량/비동기 Export | 동기 XLSX 다운로드 한계 대응 |
+| 1 | Paddle/Billing | 유료 판매를 위해 subscription/payment/tax/invoice/refund/entitlement가 필요 |
+| 2 | Billing Admin | 구독 상태, 결제 이슈, invoice/refund/failed payment 운영 필요 |
+| 3 | paid conversion/churn analytics | 결제 이후 전환/해지/ARPU/LTV/CAC 판단 필요 |
+| 4 | 추가 국가/언어 rollout | 베타 결과에 따라 일본/대만/영어권 확장 |
+| 5 | native/PWA packaging | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토 |
+| 6 | B2B tenant/team admin | 개인 B2C보다 팀/seat 기반 ARPU가 더 강하다고 확인될 때 검토 |
 
 ## 7. 지금 바로 할 일
 
 바로 다음 행동은 새 기능 개발이 아니다.
 
-1. `QA_CHECKLIST.md` 기준으로 UX/UI 공통 QA를 진행한다.
-2. 모바일 브라우저 390px/360px에서 핵심 흐름을 확인한다.
-3. Chrome/Edge 브라우저 QA를 기록한다.
-4. 다중 계정 보안 QA를 별도 계정으로 확인한다.
-5. DB/운영 환경 정합성을 정리한다.
-6. 발견 버그를 S0/S1/S2/S3/S4로 분류한다.
-7. S0/S1/S2만 먼저 수정한다.
+1. 01~11 기능 유지보수 범위를 정리한다.
+2. UX/UI 상품성 개선 범위를 정리한다.
+3. 발견 버그를 S0/S1/S2/S3/S4로 분류한다.
+4. S0/S1/S2를 Paddle/Billing보다 먼저 수정한다.
+5. 결제창 없는 100명 베타 운영 방식과 feedback loop를 정한다.
+6. 베타 이후 `TODO/PADDLE_PLAN` gate를 confirmed로 바꿀지 판단한다.
 
-이 순서가 끝나기 전에는 새 영업 기능을 시작하지 않는다.
+이 순서가 끝나기 전에는 Paddle checkout을 구현하지 않는다.
 
 특히 지금 질문에 대한 PM 판단은 다음과 같다.
 
-- 지금은 UX/UI를 신경써야 하는 타이밍이다.
-- 기능 추가는 아직 이르다.
-- 이미 구현된 핵심 기능이 유료 사용자가 쓰기에 충분히 안정적이고 읽기 쉬운지 먼저 확인해야 한다.
-- QA 이후 첫 기능은 DataImport Job 영속화와 Notification/Reminder를 우선 후보로 둔다.
+- 지금은 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
+- 결제창만 붙이는 작업은 아직 이르다.
+- 이미 구현된 01~11 기능이 베타 사용자가 반복해서 쓰기에 충분히 안정적이고 읽기 쉬운지 먼저 확인해야 한다.
+- Paddle/Billing은 100명 베타 이후 가격/플랜/권한 정책이 확정되면 시작한다.
 
 ## 8. 관련 정본 문서
 
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 - `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
+- `TODO/PADDLE_PLAN/README.md`

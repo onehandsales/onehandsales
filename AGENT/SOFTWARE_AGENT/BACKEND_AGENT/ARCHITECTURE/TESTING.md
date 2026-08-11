@@ -71,6 +71,12 @@ Backend 테스트는 `BE`에서 실행한다.
 
 남은 Backend/운영 품질 확인은 다중 계정 데이터 격리 QA, 삭제된 리소스 직접 접근 정책 확인, 동시 저장 중복 방지, Prisma generate/migration/seed 운영 정합성 정리다.
 
+## 5B. 2026-08-11 Closeout 기준
+
+`TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 기준 Global B2C 01~11 Backend foundation은 완료 archive다. 세부 검증 이력은 각 goal closeout 문서를 따른다.
+
+현재 다음 Backend QA 목적은 Paddle/Billing 구현 전 새 결제 API를 여는 것이 아니라, 기존 01~11 기능의 유지보수, edge case hardening, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비를 지원하는 것이다.
+
 ## 6. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

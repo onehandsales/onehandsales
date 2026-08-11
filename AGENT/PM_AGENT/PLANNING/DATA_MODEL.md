@@ -89,7 +89,14 @@ User
   │   └─ MeetingNoteDeal
   ├─ ImportUserLog
   │   └─ ImportUserLogRow
-  └─ AuditLog / Notification / persistent ImportJob
+  ├─ ImportJob
+  │   ├─ ImportJobRow
+  │   ├─ ImportJobError
+  │   └─ ImportUploadedFile
+  ├─ Notification / NotificationDeliveryAttempt / BrowserPushSubscription
+  ├─ ProductAnalyticsEvent / UserActivationSnapshot / RetentionCohortSnapshot
+  ├─ AdminAuditLog / AdminSensitiveAccessLog / AdminOperationCheckRun
+  └─ Billing / Subscription / Payment models are deferred to TODO/PADDLE_PLAN
 ```
 
 ## 2. 공통 필드 원칙
@@ -639,7 +646,7 @@ User
 - 저장 후 딜 추가 연동 API는 기존 `MeetingNoteDeal`에 snapshot row를 추가하고 `DealFollowingActionLog`에 회의록 링크/요약 로그를 생성한다.
 - request에서는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 받지 않는다.
 - 회의록 삭제는 `MeetingNote.deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기록하는 soft delete이며, 공통 Trash API에서 복구한다.
-- Admin 조회, 범용 DealActivity table 전환은 후속 범위다.
+- Admin 조회 foundation과 DealActivity table은 Global B2C 01~11 closeout 기준 구현 완료다. B2B/team CRM식 record별 timeline 고도화는 후속 범위다.
 
 ## 16. PersonalMemo
 
@@ -697,6 +704,10 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 현재 구현된 DataImport DB 모델:
 
 - `ImportTemplate`
+- `ImportJob`
+- `ImportJobRow`
+- `ImportJobError`
+- `ImportUploadedFile`
 - `ImportUserLog`
 - `ImportUserLogRow`
 
@@ -718,17 +729,16 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 
 정책:
 
-- 확정 전 임시 job은 현재 DB table이 아니라 in-memory store에 저장한다.
+- 확정 전 job은 DB table에 저장하며 resume/cancel/expire/confirm 상태를 추적한다.
 - 회사/담당자/제품/딜 불러오기는 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장을 지원한다.
 - 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다.
 - 딜 불러오기 누락 회사/담당자/제품 보정값은 FE API 함수, BE DTO, HTTP controller confirm, application service, repository 경로에 연결되어 있다.
-- persistent `ImportJob` table, 서버 재시작 후 이어받기는 후속 범위다.
 
 ## 20. Global Paid / Growth 후속 데이터 범위
 
-글로벌 B2C 유료 판매와 Series A급 제품/사업으로 가기 위한 아래 데이터 모델은 현재 Prisma schema에 구현되어 있지 않다.
+글로벌 B2C 01~11 foundation에서 Product Analytics, Admin audit/security, Notification, ImportJob은 구현 완료됐다. 결제/구독/세금/Paddle 관련 모델은 아직 Prisma schema에 구현하지 않았고 `TODO/PADDLE_PLAN`에서 베타 이후 confirmed scope로 확정한다.
 
-후속 후보:
+Paddle/Billing 후속 후보:
 
 - `SubscriptionPlan`
 - `UserSubscription`
@@ -738,23 +748,15 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - `PaymentProviderEvent`
 - `UsageMeter`
 - `AiUsageLog`
-- `ProductAnalyticsEvent`
-- `UserActivationSnapshot`
-- `RetentionCohortSnapshot`
 - `ChurnSurveyResponse`
 - `PaywallExperiment`
-- `NotificationPreference`
-- `NotificationDelivery`
-- `AdminAuditLog`
-- `SensitiveRawAccessLog`
 
 정책:
 
-- 결제/구독 모델은 글로벌 세금/컴플라이언스 또는 Merchant of Record 전략과 함께 설계한다.
-- 제품 분석 이벤트는 PII를 직접 저장하지 않고, activation, retention, conversion, churn, AI cost/user를 볼 수 있는 최소 이벤트로 시작한다.
+- 결제/구독 모델은 Paddle Billing 또는 Merchant of Record 전략과 함께 설계한다.
+- 기존 제품 분석 이벤트는 PII를 직접 저장하지 않고, activation/retention foundation을 제공한다. paid conversion, churn, AI cost/user는 Paddle/Billing 이후 확장한다.
 - AI 사용량 로그는 provider prompt/raw response 전문을 저장하지 않는다.
-- Admin audit와 sensitive raw access는 사용자 데이터 변경 또는 민감 원문 조회와 같은 transaction 안에서 기록하는 것을 우선 검토한다.
-- 이 범위는 현재 MVP DB 범위가 아니며, 실제 구현 전 `TODO/{PLAN_NAME}/COMMON/API-SPEC`와 Software DB schema 문서를 먼저 작성한다.
+- Billing 관련 모델은 베타 전 만들지 않는다. 실제 구현 전 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격하고 `COMMON/API-SPEC`, `BE-TODO/DB-SCHEMA.md`, Software DB schema 문서를 함께 작성한다.
 
 자세한 제품 전략은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 

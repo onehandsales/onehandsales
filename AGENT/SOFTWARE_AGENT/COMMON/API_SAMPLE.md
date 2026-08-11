@@ -1,4 +1,6 @@
-아래는 2026-07-10 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-08-11 현재 BE 구현 기준 API별 한 줄 설명입니다.
+
+Global B2C 01~11 foundation 이후 추가된 주요 API surface까지 포함합니다. 01~11 기능별 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`, 세부 DTO와 validation은 각 controller/spec, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`를 함께 봅니다.
 
 Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal 각 도메인의 xlsx 다운로드 API로 처리합니다.
 
@@ -14,6 +16,70 @@ Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal �
 | `GET /api/users/me/profile` | 내 프로필과 연결된 OAuth 계정 정보를 조회합니다. |
 | `PATCH /api/users/me/profile` | 내 이름, 타임존, 기본 locale, 기본 국가, 기본 통화 등 프로필 정보를 수정합니다. |
 | `GET /api/users/me/devices` | 내 로그인 기기 목록과 현재 기기 여부를 조회합니다. |
+| `POST /api/users/me/data-export-requests` | 내 데이터 export 요청을 생성합니다. |
+| `GET /api/users/me/data-export-requests/{requestId}` | 내 데이터 export 요청 상태를 조회합니다. |
+| `POST /api/users/me/account-deletion-requests` | 내 계정 삭제 요청을 생성합니다. |
+| `POST /api/users/me/account-deletion-requests/{requestId}/cancel` | 내 계정 삭제 요청을 취소합니다. |
+
+**Global B2C 01~11 추가 API 요약**
+| API | 설명 |
+|---|---|
+| `GET /api/notifications` | 내 알림 목록을 조회합니다. |
+| `GET /api/notifications/unread-count` | 읽지 않은 알림 수를 조회합니다. |
+| `GET /api/notifications/settings` | 알림 설정을 조회합니다. |
+| `PATCH /api/notifications/settings` | 알림 설정을 수정합니다. |
+| `GET /api/notifications/browser-push/public-key` | 브라우저 푸시 등록용 public key를 조회합니다. |
+| `POST /api/notifications/browser-subscriptions` | 브라우저 푸시 구독을 등록합니다. |
+| `DELETE /api/notifications/browser-subscriptions/{subscriptionId}` | 브라우저 푸시 구독을 해지합니다. |
+| `PATCH /api/notifications/{notificationId}/read` | 알림을 읽음 처리합니다. |
+| `GET /api/schedules/week` | 주간 일정 보고서 데이터를 조회합니다. |
+| `GET /api/schedules/week/export/xlsx` | 주간 일정 보고서를 xlsx로 다운로드합니다. |
+| `POST /api/schedules/google/connect` | Google Calendar 연결을 시작합니다. |
+| `GET /api/schedules/google/status` | Google Calendar 연결 상태를 조회합니다. |
+| `POST /api/schedules/google/disconnect` | Google Calendar 연결을 해제합니다. |
+| `GET /api/schedules/google/calendars` | 연결된 Google calendar 목록을 조회합니다. |
+| `PATCH /api/schedules/google/calendars` | 가져올 Google calendar source를 선택합니다. |
+| `POST /api/schedules/google/sync` | Google Calendar read-only sync를 실행합니다. |
+| `GET /api/schedules/google/callback` | Google Calendar OAuth callback을 처리합니다. |
+| `POST /api/sales-reports/weekly` | AI 주간 영업 보고서 생성을 요청합니다. |
+| `GET /api/sales-reports/weekly` | 주간 영업 보고서를 조회합니다. |
+| `GET /api/sales-reports/weekly/{reportId}` | AI 주간 영업 보고서 상세를 조회합니다. |
+| `GET /api/sales-reports/weekly/{reportId}/snapshot-summary` | 보고서 snapshot 요약을 조회합니다. |
+| `GET /api/deals/{dealId}/activities` | 딜 활동 timeline을 조회합니다. |
+| `POST /api/deals/{dealId}/activities` | 딜 활동을 생성합니다. |
+| `PATCH /api/deals/{dealId}/activities/{activityId}` | 딜 활동을 수정합니다. |
+| `POST /api/meeting-notes/{meetingNoteId}/next-actions/draft` | 회의록 기반 next action 초안을 생성합니다. |
+| `POST /api/meeting-notes/{meetingNoteId}/follow-up-draft` | 회의록 기반 follow-up 초안을 생성합니다. |
+| `POST /api/follow-up-messages/drafts` | Follow-up 메시지 초안을 생성합니다. |
+| `GET /api/follow-up-messages` | Follow-up 메시지 목록을 조회합니다. |
+| `GET /api/follow-up-messages/{messageId}` | Follow-up 메시지 상세를 조회합니다. |
+| `PATCH /api/follow-up-messages/{messageId}` | Follow-up 초안을 수정합니다. |
+| `POST /api/follow-up-messages/{messageId}/send` | Follow-up 메시지 발송을 요청합니다. |
+| `POST /api/follow-up-messages/{messageId}/retry` | Follow-up 메시지 재발송을 요청합니다. |
+| `GET /api/follow-up-delivery/settings` | Follow-up 발송 설정을 조회합니다. |
+| `POST /api/follow-up-delivery/email-connections/{provider}/connect` | 이메일 provider 연결을 시작합니다. |
+| `GET /api/follow-up-delivery/email-connections/{provider}/callback` | 이메일 provider OAuth callback을 처리합니다. |
+| `POST /api/follow-up-delivery/email-connections/{connectionId}/disconnect` | 이메일 provider 연결을 해제합니다. |
+| `POST /api/follow-up-delivery/sms-sender-numbers` | SMS 발신번호 인증을 요청합니다. |
+| `POST /api/follow-up-delivery/sms-sender-numbers/{senderNumberId}/verify` | SMS 발신번호 인증을 완료합니다. |
+| `POST /api/follow-up-delivery/sms-sender-numbers/{senderNumberId}/revoke` | SMS 발신번호를 해지합니다. |
+| `POST /api/follow-up-delivery/consent-notices/{channel}/acknowledge` | Follow-up 채널 동의 안내 확인을 기록합니다. |
+| `GET /admin/api/users` | Admin 사용자 목록을 조회합니다. |
+| `GET /admin/api/users/{userId}` | Admin 사용자 상세 overview를 조회합니다. |
+| `GET /admin/api/users/{userId}/activity-timeline` | Admin 사용자 활동 timeline을 조회합니다. |
+| `GET /admin/api/users/{userId}/domain-records` | Admin 사용자별 도메인 record를 조회합니다. |
+| `GET /admin/api/users/{userId}/trash-summary` | Admin 사용자 Trash summary를 조회합니다. |
+| `GET /admin/api/users/{userId}/trash-records` | Admin 사용자 Trash row 목록을 조회합니다. |
+| `GET /admin/api/audit-logs` | Admin 감사 로그를 조회합니다. |
+| `POST /admin/api/sensitive/raw-access` | Admin 민감 raw access 요청을 감사 로그와 함께 처리합니다. |
+| `GET /admin/api/provider-failures` | Provider failure queue를 조회합니다. |
+| `GET /admin/api/provider-failures/{failureId}` | Provider failure 상세를 조회합니다. |
+| `GET /admin/api/analytics/overview` | Admin 운영 분석 overview를 조회합니다. |
+| `GET /admin/api/account-deletion-requests` | 계정 삭제 요청 queue를 조회합니다. |
+| `GET /admin/api/data-export-requests` | 데이터 export 요청 queue를 조회합니다. |
+| `GET /admin/api/trash/recovery-requests` | Trash 복구 요청 queue를 조회합니다. |
+| `GET /admin/api/system/operation-checks/latest` | 최신 운영 gate 점검 결과를 조회합니다. |
+| `POST /admin/api/system/operation-checks` | 운영 gate 점검을 실행합니다. |
 
 **Company**
 | API | 설명 |

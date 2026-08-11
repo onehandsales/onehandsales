@@ -94,14 +94,19 @@ legacy redirect 라우트:
 현재 `FE/user-web/src/features` 기준:
 
 - `auth`
+- `account-request`
+- `ai-weekly-report`
+- `analytics`
 - `app-i18n`
 - `business-card`
 - `company`
 - `contact`
 - `deal`
 - `deal-redesign`
+- `follow-up-delivery`
 - `import-export`
 - `meeting-note`
+- `mobile-local-draft`
 - `notification`
 - `product`
 - `public-site`
@@ -121,14 +126,19 @@ legacy redirect 라우트:
 - Contact는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
 - BusinessCard OCR은 `/app/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장을 연동한다.
 - Product는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
-- Deal은 목록/상세/생성/수정/삭제, stage counts, 옵션, 다음 행동 로그, 메모 로그, xlsx export를 연동한다.
-- Schedule은 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options, 주간 보고서 조회와 xlsx 다운로드를 연동한다.
-- MeetingNote는 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, 저장 후 딜 추가를 연동한다.
+- Deal은 목록/상세/생성/수정/삭제, stage counts, 옵션, `DealActivity` timeline 생성/수정/조회, 다음 행동 로그, 메모 로그, xlsx export를 연동한다.
+- Schedule은 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options, 주간 보고서 조회와 xlsx 다운로드, Google Calendar 연결/status/calendar 선택/read-only sync를 연동한다.
+- AI Weekly Report는 `/api/sales-reports/weekly` 생성 요청, 주간 조회, 상세, snapshot summary를 홈/보고서 섹션에서 연동한다.
+- MeetingNote는 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, next action draft, follow-up draft, 저장 후 딜 추가를 연동한다.
+- Follow-up delivery는 설정 화면과 관련 패널에서 email provider 연결, SMS sender number, consent notice, follow-up draft/send/retry/timeline을 연동한다.
 - Search는 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동을 연동한다.
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 - Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
 - Notification은 `/app/notifications` 화면에서 `GET /api/notifications`, `PATCH /api/notifications/:notificationId/read`, `GET/PATCH /api/notifications/settings`, browser push public key/subscription API를 연동한다. 알림 bell은 `/app/notifications`로 이동한다.
-- DataImport는 `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/review/:importJobId`는 확정 전 review 화면이며, `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
+- DataImport는 `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/review/:importJobId`는 확정 전 review 화면이며, `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
+- Account request는 설정/계정 관리 흐름에서 data export request와 account deletion request/cancel API를 연동한다.
+- Product Analytics는 app route, activation/retention 후보, mobile field/local draft 이벤트를 `POST /api/analytics/events`로 전송한다.
+- Mobile Field Use는 모바일 녹음/local draft, push permission UX, mobile analytics event foundation을 연동한다.
 
 회사 생성 UX 기준:
 

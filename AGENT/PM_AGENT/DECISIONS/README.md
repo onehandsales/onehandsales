@@ -25,6 +25,7 @@
 - `027_auth_session_and_provider_qa_policy.md`
 - `028_auth_provider_google_only_and_future_local_providers.md`
 - `029_global_b2c_series_a_priority.md`
+- `030_global_b2c_closeout_and_paddle_defer.md`
 
 ## 3. 관련 문서
 

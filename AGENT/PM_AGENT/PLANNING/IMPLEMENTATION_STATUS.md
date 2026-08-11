@@ -4,7 +4,17 @@
 
 외부 보조 문서나 `UX Design` 아래 현황 문서가 이 문서와 충돌하면 이 문서를 우선한다. 구현 상태가 바뀌면 이 문서를 먼저 갱신하고, 필요한 경우 `MVP_SCOPE.md`, `PRD.md`, Software/UXUI 문서를 함께 갱신한다.
 
-기준일: 2026-07-10
+기준일: 2026-08-11
+
+## 0. 2026-08-11 Closeout 기준
+
+`TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive로 닫았다. `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`과 `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`도 완료/이관 archive다.
+
+01~11 각 완료 기능의 세부 범위, API/DB/FE 경계, 제외 범위는 `GLOBAL_B2C_01_11_FEATURE_CATALOG.md`를 따른다.
+
+기존 12 Billing/Subscription/Tax는 즉시 구현하지 않고 `TODO/PADDLE_PLAN`으로 분리했다. Paddle/Billing은 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타, 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책 확정 이후 다시 착수한다.
+
+현재 다음 작업은 Paddle checkout 구현이 아니라 제품 유지보수와 UX/UI 상품성 개선이다.
 
 ## 1. 완료 기준
 
@@ -19,7 +29,7 @@
 | 기능 | Backend | Frontend | 현재 상태 |
 | --- | --- | --- | --- |
 | Auth/User | 완료 | 완료 | 로그인 provider, token exchange/refresh/logout, `/api/me`, 내 프로필, 기기 목록, settings 흐름 |
-| Admin auth | 완료 | 부분 완료 | `GET /admin/api/me`, AdminGuard, Admin Web admin/non-admin 보호 route. 운영 route는 현재 root redirect |
+| Admin auth | 완료 | 완료 | `GET /admin/api/me`, AdminGuard, Admin Web admin/non-admin 보호 route. 운영 화면 foundation은 Admin Operation 범위에서 완료 |
 | Public site | 해당 없음 | 완료 | URL locale canonical 공개/인증 진입면. `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy` |
 | Home | 완료 API 조합 | 완료 | Schedule/Deal/MeetingNote 데이터를 조합한 `/app` 대시보드 |
 | Company | 완료 | 완료 | 목록/검색/필터/정렬/page, 생성/상세/수정/삭제, 분야/지역 taxonomy, 메모/개인 메모, Trash 복구, xlsx export |
@@ -27,12 +37,22 @@
 | BusinessCard OCR | 완료 | 완료 | `BusinessCardScanLog`, `/api/business-card-scans`, OpenAI strict JSON schema OCR, OCR 성공/실패/확정 로그, 상태 다중 필터, `명함스캔` 진행 표시, 확인/수정 후 회사/담당자 확정 저장, `/app/business-cards` 명함 스캔 화면 |
 | Product | 완료 | 완료 | 목록/검색/필터/정렬/page, 생성/상세/수정/삭제, 카테고리/상태 taxonomy, Trash 복구, xlsx export |
 | Deal | 완료 | 완료 | 파이프라인/목록/상세, 생성/수정/삭제, 6단계 stage, 회사/담당자/제품 연결, stage counts, 활동 로그, Trash 복구, xlsx export |
-| Schedule | 완료 | 완료 | 일정 목록/캘린더, 생성/상세/수정/삭제. Schedule은 Trash 대상이 아니며 hard delete |
+| Schedule | 완료 | 완료 | 일정 목록/캘린더, 생성/상세/수정/삭제, Google Calendar read-only sync, soft delete/Trash 복구 |
 | MeetingNote | 완료 | 완료 | 수동 CRUD, AI draft, STT draft, 저장 후 딜 연동, 삭제/Trash 복구 |
 | Search | 완료 | 완료 | Backend `GET /api/search`와 User Web GlobalSearch 연결 |
-| Trash | 완료 | 완료 | `/api/trash` 목록, 상세, 복구. Company/Contact/Product/Deal/MeetingNote와 지원 로그의 7일 이내 복구 |
-| DataImport | 완료 | 완료 | `ImportTemplate`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 셀 단위 validation 메시지, 확정 저장, `ImportUserLog` 목록/상세 |
+| Trash | 완료 | 완료 | `/api/trash` 목록, 상세, 복구. Company/Contact/Product/Deal/Schedule/MeetingNote와 지원 로그의 7일 이내 복구 |
+| DataImport / ImportJob | 완료 | 완료 | `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, `ImportUserLog` 목록/상세 |
 | Domain export | 완료 | 완료 | Company/Contact/Product/Deal 각 도메인별 xlsx 다운로드 |
+| Notification / Reminder | 완료 | 완료 | 알림 설정, 알림 목록/읽음, 일정 시작 reminder, 딜 마감 reminder, browser push subscription foundation, delivery attempt 기록 |
+| Weekly Schedule Report | 완료 | 완료 | 주간 일정 보고서 API/User Web 및 XLSX export foundation |
+| Google Calendar Integration | 완료 | 완료 | Google Calendar 연결, calendar source 선택, read-only import/sync foundation |
+| AI Weekly Sales Report / Follow-up | 완료 | 완료 | 저장형 AI weekly report, suggestion, follow-up draft/send/retry/timeline, Gmail/Microsoft email provider adapter와 provider smoke closeout |
+| Deal Activity Timeline | 완료 | 완료 | `DealActivity` 기반 deal activity timeline, record summary subset, 기존 next action/memo log와 연결 |
+| MeetingNote AI Provider Log | 완료 | 완료 | `AiProviderCallLog`, 회의록 AI provider log, next action/follow-up draft 고도화 |
+| Global Data / I18N | 완료 | 완료 | 사용자 global settings, `/app` i18n foundation, currency/phone/region/address, import/export localization, Google/LINE/Apple auth foundation |
+| Product Analytics | 완료 | 완료 | `ProductAnalyticsEvent`, activation snapshot, retention cohort snapshot, server/client event foundation, Admin analytics overview |
+| Mobile Field Use | 완료 | 완료 | 모바일 브라우저 현장 입력성, business card mobile capture/failure contract, meeting note mobile recording, local draft, push permission UX, mobile analytics event foundation |
+| Admin Operation | 완료 | 완료 | Admin audit/security foundation, user/domain readonly operation, trash/account data request, provider failure operation, admin analytics overview, system operation gate. Billing Admin은 제외 |
 
 ## 2A. 2026-07-10 QA 및 라우팅 상태
 
@@ -68,30 +88,26 @@ Export는 범용 `/api/exports` job이나 `ExportJob` table로 처리하지 않�
 
 | 기능 | 현재 상태 | 판단 |
 | --- | --- | --- |
-| Admin Web | Backend는 `/admin/api/me`만 제공한다. Admin Web `admin-query` 준비 코드는 있으나 운영 조회 route는 현재 root로 redirect하고 메뉴에서 숨긴다 | 관리자 페이지와 운영 조회 API는 후속 |
+| Admin Billing | 11 Admin Operation은 완료됐지만 subscription/payment/refund/invoice/Billing Admin은 포함하지 않았다 | `TODO/PADDLE_PLAN`에서 Paddle confirmed scope 이후 구현 |
 | Generic Export route | `features/import-export` 코드는 남아 있으나 User Web `/app/export`는 `/app`으로 redirect한다 | 현재 제품 정본이 아니며 신규 확장 금지 |
-| DataImport 제한 | 회사/담당자/제품/딜 불러오기는 구현되어 있다. 확정 전 임시 job은 in-memory store를 사용한다. preview validation 메시지는 누락된 셀에만 표시한다 | 서버 재시작 후 job 복구는 후속 |
-| DataImport 딜 보정값 | 딜 import 누락 회사/담당자/제품 보정 배열은 FE API 함수와 BE controller/application/repository confirm 경로에 연결되어 있고 controller spec으로 확인한다 | 구현 완료, 수동 QA에서 확인 |
-| `/app/schedules/week` | route는 현재 `/app/schedules`로 redirect | 별도 주간 보고서 화면은 후속 |
+| PWA/native | 10 Mobile Field Use는 모바일 브라우저와 field-use foundation 완료 범위다 | install/offline shell, native app, native push/contact/calendar는 후속 |
+| B2B tenant admin | 11 Admin Operation은 Global B2C 개인 사용자 운영 기준이다 | team/B2B 조직 관리와 seat billing은 후속 전략 후보 |
 
 ## 5. 미완성 또는 후속 기능
 
 | 기능 | 현재 상태 | 후속 작업 |
 | --- | --- | --- |
-| Notification | FE feature/page는 남아 있으나 `/app/notifications`는 `/app`으로 redirect하고 알림 진입 버튼은 숨긴다. Backend notification module/API 없음 | 알림 목록, 읽음 처리, unread count, 설정 API 설계 및 구현 |
-| Admin pages | dashboard, users, companies, contacts, products, deals, audit logs, sensitive raw access API 없음 | Admin query API, 마스킹, 원문 조회 사유, 감사 로그와 함께 구현 |
-| MeetingNote Admin | 관리자용 회의록 조회/감사/민감 원문 API 없음 | Admin API 범위 확정 후 구현 |
+| Billing/Paddle | 구현 보류 | `TODO/PADDLE_PLAN` gate 충족 후 Paddle Billing/Checkout, subscription, tax, invoice, refund, entitlement, paywall 구현 |
+| Billing Admin | 11 Admin 완료 범위에서 제외 | Paddle/Billing scope 확정 후 subscription/payment/refund/invoice 운영 화면/API 구현 |
 | Generic ExportJob | 현재 제품 방향에서 제외 | 신규 구현하지 않음. 필요 시 별도 결정 필요 |
-| Generic DealActivity table | 현재는 도메인별 로그/활동 흐름 중심 | 범용 activity table과 activity type 관리는 후속 |
+| Advanced DealActivity / B2B activity | Global B2C 개인 사용자 기준 DealActivity foundation은 완료 | Company/Contact/Product 전체 latest summary, team CRM식 timeline은 후속 전략 후보 |
 | 7일 이후 복구 | 7일 이내 Trash 복구는 완료. 7일 이후 복구 없음 | 유료 복구/운영 복구 정책 확정 후 구현 |
 | Permanent delete 운영 API | 사용자/Admin 즉시 완전 삭제 API 없음 | 보존 정책, 감사 로그, 권한 정책 확정 후 구현 |
-| Weekly report | 주간 일정 보고서 PDF/Excel 없음 | 주간 보고서 화면과 export 요구사항 확정 후 구현 |
 | Sensitive export | 민감 데이터 포함 export 없음 | 마스킹, 경고, 감사 로그, 권한 정책과 함께 구현 |
-| Payment/operation | 계좌이체 입금 확인, 유료 상태/권한 관리 없음 | Admin 운영 기능으로 후속 구현 |
 
 ## 5A. 글로벌 B2C 유료 판매/Series A 관점의 미완성 영역
 
-2026-07-18 전략 보강 기준으로, 현재 구현 완료 기능만으로는 글로벌 B2C 유료 판매나 Series A급 제품/사업 상태로 보지 않는다.
+2026-08-11 Global B2C closeout 기준으로, 01~11 기능 foundation은 완료됐지만 결제/구독/세금과 베타 검증 전이므로 아직 글로벌 B2C 유료 판매나 Series A급 제품/사업 상태로 보지 않는다.
 
 글로벌 B2C 유료 판매 전 미완성 영역:
 
@@ -101,49 +117,49 @@ Export는 범용 `/api/exports` job이나 `ExportJob` table로 처리하지 않�
 | 세금/컴플라이언스 | 구현 없음 | VAT/GST/판매세 또는 Merchant of Record 처리, chargeback 대응 |
 | `/app` 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | 실제 판매 시장별 추가 앱 내부 locale, 국가별 UX writing |
 | 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | 지원 국가/통화/전화번호/주소 체계 확장 |
-| Admin 운영 | `/admin/api/me`만 완료 | 고객 지원, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그 |
-| 제품 분석 | 정본 없음 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user |
+| Admin 운영 | 11 Admin Operation 완료. Billing Admin 제외 | 고객 지원 운영을 실제 베타/유료 운영 흐름에 맞게 다듬고, 구독/결제 운영은 Paddle 이후 연결 |
+| 제품 분석 | 09 Product Analytics와 11 Admin analytics foundation 완료 | paid conversion, churn, ARPU, LTV/CAC, billing funnel, AI cost/user는 Paddle/Billing 이후 확정 |
 | 정책/신뢰 문서 | 기본 문서 있음 | 계정 삭제, 데이터 export, 환불, 개인정보, 보안 문구의 실제 판매 범위 정합성 |
 
 Series A급으로 가기 위한 미완성 영역:
 
-- Notification/Reminder 기반 리텐션 루프
-- 주간 영업 리포트
-- AI next action/follow-up/딜 리스크 추천
+- Notification/Reminder 리텐션 루프 고도화
+- 주간 영업 리포트 고도화
+- AI next action/follow-up/딜 리스크 추천 고도화
 - 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder
-- 범용 DealActivity timeline
-- Google Calendar 가져오기/내보내기
+- DealActivity timeline 고도화
+- Google Calendar write/watch/export 고도화
 - 결제/paywall 실험
-- 제품 분석과 unit economics
-- Admin 운영과 보안/감사 신뢰 체계
+- 제품 분석과 unit economics 고도화
+- Admin 운영과 보안/감사 신뢰 체계 고도화
 
-현재 바로 다음 작업은 위 후속 기능 추가가 아니라 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성 확인이다.
+현재 바로 다음 작업은 Paddle 구현이 아니라 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
 ## 6. Admin 정본 상태
 
-관리자 페이지는 후속 단계에서 만든다.
+관리자 페이지와 운영 API foundation은 11 Admin Operation에서 완료했다. 단, Billing Admin은 포함하지 않는다.
 
 현재 완료된 Admin 범위:
 
 - Backend `GET /admin/api/me`
 - AdminGuard 기반 관리자 권한 확인
-- `FE/admin-web` login/protected route/mock token 검증
-- `FE/admin-web/src/features/admin-query` 준비 코드 존재. dashboard/users/domain/audit/sensitive raw 화면/API/hook/type은 현재 미노출
-- 미구현 Admin 운영 route root redirect와 메뉴 숨김 처리
-- 기존 Admin Playwright E2E는 과거 운영 화면 기대값이 남아 있어 현재 라우터 기준 갱신 전까지 release gate로 보지 않는다.
+- Admin audit/security foundation
+- Admin user overview
+- Admin domain readonly tabs
+- Trash retention/recovery operation
+- Provider failure operation
+- Admin analytics overview
+- Account data requests
+- System operation gate
+- Admin provider failure pagination 보정
 
 후속 Admin 범위:
 
-- Dashboard
-- User list/detail
-- Company/Contact/Product/Deal 운영 조회
-- 사용자별 도메인 데이터 조회
-- Audit log
-- Sensitive raw access
-- 민감정보 기본 마스킹
-- 원문 조회 사유 입력과 감사 로그
-- 계좌이체 입금 확인
-- 유료 상태/권한 관리
+- Billing Admin: subscription, payment, invoice, refund, failed payment, entitlement 운영
+- B2B tenant/team admin
+- 운영 mutation 확대
+- 유료 복구/영구 삭제 정책과 연결된 고위험 action
+- Paddle/Billing 이후 구독 상태와 결제 이슈 고객 지원
 
 ## 7. 관련 정본 문서
 
@@ -151,8 +167,12 @@ Series A급으로 가기 위한 미완성 영역:
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
+- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
+- `TODO/PADDLE_PLAN/README.md`
