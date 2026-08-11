@@ -1,0 +1,80 @@
+# Goal Work Order
+
+상태: Completed
+확정일: 2026-07-29
+최종 업데이트: 2026-07-30
+
+## 1. 원칙
+
+09는 전체 목표를 문서화하지만 구현은 한 번에 하지 않는다. 각 `/goal`은 `COMMON/GOAL-SPECS`의 상세 명세 하나만 기준으로 실행한다.
+
+모든 goal은 구현 전에 아래 문서를 먼저 읽는다.
+
+- `COMMON/SCOPE.md`
+- `COMMON/DECISION-LOG.md`
+- `COMMON/EVENT-TAXONOMY.md`
+- `COMMON/BUSINESS-LOGIC.md`
+- `COMMON/USER-FLOW.md`
+- `COMMON/PRISMA-MIGRATION-SPEC.md`
+- `COMMON/SOURCE-PLAN-COVERAGE.md`
+- `COMMON/ARCHITECTURE-GUARDRAILS.md`
+- `COMMON/IMPLEMENTATION-CONTRACT-RULES.md`
+- `COMMON/GOAL-IMPLEMENTATION-MATRIX.md`
+- `COMMON/API-SPEC/README.md`
+- `COMMON/REVIEW-CHECKLIST.md`
+- `COMMON/GOAL-REVIEW-CHECKLIST.md`
+- `COMMON/SOFTWARE-AGENT-REVIEW.md`
+- `AGENT/UXUI_AGENT/README.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/005_backend_api_function_comment_rule.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
+
+DB를 바꾸는 goal은 추가로 아래를 반드시 확인한다.
+
+- `BE/prisma/schema.prisma`
+- `BE/prisma/migrations`
+- `BE/prisma/seed.ts`
+- 관련 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/*.md`
+- 신규 table/column/enum/index의 Prisma schema 한글 주석과 migration SQL COMMENT 기준
+
+## 2. 실행 순서
+
+```text
+G01_DOCUMENT_CONTRACT_SYNC
+-> G02_DB_SCHEMA_EVENT_FOUNDATION
+-> G03_ANALYTICS_COLLECTOR_API
+-> G04_SERVER_EVENT_LOGGING
+-> G05_USER_WEB_CLIENT_EVENTS
+-> G06_SNAPSHOT_RETENTION_BATCH
+-> G07_AI_USAGE_AND_BILLING_RESERVED
+-> G08_QA_DOCUMENT_CLOSEOUT
+```
+
+## 3. Goal 요약
+
+| Goal | 상세 명세 | 목표 |
+|---|---|---|
+| G01 | `COMMON/GOAL-SPECS/G01_DOCUMENT_CONTRACT_SYNC.md` | 현재 코드/문서 계약 대조와 blocking 해소 |
+| G02 | `COMMON/GOAL-SPECS/G02_DB_SCHEMA_EVENT_FOUNDATION.md` | Prisma event/snapshot schema와 migration 작성 |
+| G03 | `COMMON/GOAL-SPECS/G03_ANALYTICS_COLLECTOR_API.md` | `POST /api/analytics/events` 수집 API 구현 |
+| G04 | `COMMON/GOAL-SPECS/G04_SERVER_EVENT_LOGGING.md` | 핵심 server event 기록 지점 연결 |
+| G05 | `COMMON/GOAL-SPECS/G05_USER_WEB_CLIENT_EVENTS.md` | User Web core route view event wrapper 구현 |
+| G06 | `COMMON/GOAL-SPECS/G06_SNAPSHOT_RETENTION_BATCH.md` | activation/retention snapshot batch와 raw event purge 구현 |
+| G07 | `COMMON/GOAL-SPECS/G07_AI_USAGE_AND_BILLING_RESERVED.md` | `AiProviderCallLog` 기반 AI usage 요약과 billing reserved 정리 |
+| G08 | `COMMON/GOAL-SPECS/G08_QA_DOCUMENT_CLOSEOUT.md` | QA, 검증, 문서 closeout |
+
+## 4. 현재 상태
+
+```text
+G01~G08 완료.
+09_PRODUCT_ANALYTICS 구현, 검증, 문서 closeout 완료.
+후속 작업은 10 Mobile/PWA, 11 Admin Operation, `TODO/PADDLE_PLAN` 또는 별도 분석 후속 계획에서 진행한다.
+```

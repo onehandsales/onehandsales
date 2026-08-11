@@ -11,31 +11,11 @@
 ```text
 TODO/
   README.md
-  NEXT_BACKEND_API_BACKLOG_PLAN/
+  PADDLE_PLAN/
     README.md
     COMMON/
     FE-TODO/
     BE-TODO/
-  USER_WEB_PRODUCTIZATION_GAP_PLAN/
-    README.md
-    COMMON/
-    FE-TODO/
-    BE-TODO/
-  GLOBAL_B2C_FEATURE_ROADMAP_PLAN/
-    README.md
-    COMMON/
-    01_IMPORT_JOB_PERSISTENCE/
-    02_NOTIFICATION_REMINDER/
-    03_WEEKLY_SCHEDULE_REPORT/
-    04_GOOGLE_CALENDAR_INTEGRATION/
-    05_AI_WEEKLY_SALES_REPORT/
-    06_DEAL_ACTIVITY_TIMELINE/
-    07_MEETING_NOTE_AI_PROVIDER_LOG/
-    08_GLOBAL_DATA_I18N/
-    09_PRODUCT_ANALYTICS/
-    10_MOBILE_PWA_FIELD_USE/
-    11_ADMIN_OPERATION/
-    12_BILLING_SUBSCRIPTION_TAX/
   DONE/
     README.md
     ADDITIONAL_WORK_PLAN/
@@ -49,6 +29,9 @@ TODO/
     BUSINESS_CARD_OCR_PLAN/
     USER_WEB_UXUI_COMMON_QA_PLAN/
     USER_WEB_RELEASE_QA_FOLLOWUP_PLAN/
+    NEXT_BACKEND_API_BACKLOG_PLAN/
+    USER_WEB_PRODUCTIZATION_GAP_PLAN/
+    GLOBAL_B2C_FEATURE_ROADMAP_PLAN/
     SCHEDULE_DOMAIN_PLAN/
     MEETING_NOTE_MANUAL_PLAN/
     MVP-STARTER_PLAN/
@@ -117,21 +100,20 @@ TODO/
 
 현재 활성/다음 계획 상태:
 
-- 2026-07-20 기준 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 G01~G07 완료 상태다.
-- 2026-07-20 기준 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`은 G07에서 생성한 다음 Backend/API backlog 후보 초안이다.
-- 2026-07-20 기준 `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`은 MVP를 비판매 내부 기준으로 보고, Global B2C를 첫 판매 기준으로 삼아 현재 구현 상태의 제품화 gap을 정리하는 가이드다. `/goal` 실행 계획이 아니다.
-- 2026-07-20 기준 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`은 기능 선구현 방식을 전제로 01~12 기능 슬롯을 미리 나눈 로드맵이다. 2026-07-21 기준 01 `01_IMPORT_JOB_PERSISTENCE`는 Done이며, 02~12는 착수 전 검토 슬롯이다.
+- 2026-08-11 기준 `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`, `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`은 완료/이관 처리된 archive다.
+- 2026-08-11 기준 `TODO/PADDLE_PLAN`은 다음 즉시 구현 계획이 아니라 Deferred / Draft 상태의 결제 전용 계획이다.
+- Paddle/Billing 구현은 기능 유지보수, UX/UI 상품성 개선, 100명 베타 테스트, 가격/플랜/권한 정책 확정 이후 다시 착수한다.
+- 지금 활성 구현 계획은 없다. 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만들거나, `TODO/PADDLE_PLAN`의 gate가 충족된 뒤 해당 문서를 confirmed 계획으로 승격한다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
-- `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 완료했다.
+- `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 완료했다.
 - `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 진행 중인 계획:
 
-- `NEXT_BACKEND_API_BACKLOG_PLAN`: G07에서 생성한 다음 Backend/API backlog 후보 초안. `NBA-006`은 완료 반영됐고, 사용자 선택 전에는 나머지 후보의 구현 계획 확정본이 아니다.
-- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: MVP는 비판매 내부 기준, Global B2C는 첫 판매 기준으로 두고 현재 구현 기능과 제품화 gap을 판단하는 가이드. DataImport persistence gap은 완료 반영됐고, 이 문서 자체는 `/goal` 실행 계획이 아니다.
-- `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`: ImportJob 영속화부터 Admin/결제까지 01~12 기능 슬롯을 순차 착수하기 위한 로드맵. 01은 Done으로 남기고, 02~12는 `COMMON/COVERAGE-MATRIX.md` 기준으로 추가 문서 작성과 검수 후 별도 `/goal`로 전환한다.
+- 없음.
+- `PADDLE_PLAN`: Deferred / Draft. 결제, 구독, 세금, entitlement, paywall, AI 사용량 제한 정책을 베타 이후 다시 확정하기 위한 보류 계획이다.
 
 완료된 계획:
 
@@ -152,6 +134,9 @@ TODO/
 - `DEAL_DOMAIN_PLAN`: `TODO/DONE/DEAL_DOMAIN_PLAN`
 - `ADDITIONAL_WORK_PLAN`: `TODO/DONE/ADDITIONAL_WORK_PLAN`
 - `USER_WEB_UXUI_COMMON_QA_PLAN`: `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`
+- `NEXT_BACKEND_API_BACKLOG_PLAN`: `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`
+- `USER_WEB_PRODUCTIZATION_GAP_PLAN`: `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`
+- `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`: `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`
 
 완료된 계획의 구현 결과를 참조해야 할 때는 `TODO/DONE/<PLAN_NAME>`을 본다. 새 작업을 시작할 때는 완료된 계획을 직접 수정하지 않고, 활성 계획 폴더를 새로 만들거나 현재 활성 계획을 실행 가능한 `/goal` 문서로 확장한다.
 

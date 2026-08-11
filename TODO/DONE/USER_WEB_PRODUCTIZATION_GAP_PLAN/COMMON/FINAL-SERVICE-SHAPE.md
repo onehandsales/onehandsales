@@ -1,0 +1,71 @@
+# Final Service Shape
+
+2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태이며 `NBA-003` 잔여 record summary/generic summary/record별 timeline은 PRE12 구현 대상이 아닌 후속 B2B/team CRM 전략 후보로 둔다.
+
+상태: DONE / Source Gap Archived / Billing moved to `TODO/PADDLE_PLAN`
+최종 업데이트: 2026-08-11
+
+## 1. 최종 서비스는 3단계로 보되 판매 기준은 Global B2C다
+
+| 단계 | 이름 | 의미 |
+|---|---|---|
+| 1 | 비판매 MVP / 내부 품질 기준 | 현재 핵심 영업 업무 기능이 실제 사용자 환경에서 안정적으로 동작하는지 확인하는 상태. 이 단계에서는 판매하지 않는다. |
+| 2 | Global B2C 첫 판매 가능형 | 돈을 받고 운영할 수 있는 결제/운영/현지화/신뢰 계층이 갖춰진 첫 판매 제품 상태. 상세 기준은 `GLOBAL-B2C-FIRST-SALE-GATE.md`를 따른다. |
+| 3 | Series A급 제품/사업형 | 리텐션, 반복 매출, AI 차별화, 운영 신뢰가 지표로 증명되는 상태 |
+
+## 2. 비판매 MVP / 내부 품질 기준
+
+MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 핵심 업무 루프가 깨지지 않고 작동하는지 검증하고, Global B2C 첫 판매 gate에 들어갈 gap을 선명하게 분리하는 것이다.
+
+| 영역 | 최종적으로 필요한 상태 |
+|---|---|
+| 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 회의록 AI 후속 작업, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
+| UX/UI | Notion식 workspace/page/database/detail 문법과 Attio식 CRM linked record 맥락이 살아 있다. |
+| 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. |
+| 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. Company/Contact/Product latest summary는 PRE12 구현 대상이 아닌 후속 전략 재검토로 남긴다. |
+| 목록 | desktop은 업무용 record table 밀도, mobile은 card/list로 핵심 정보를 잃지 않는다. |
+| 상세 | 속성, linked record, 메모, 일정/회의록, 활동 맥락이 분명하다. 딜 상세 `DealActivity` timeline은 06에서 구현 완료됐다. |
+| 모바일 브라우저 | 390px/360px에서 핵심 생성/수정/조회/복구/업로드 흐름이 깨지지 않는다. 10에서 모바일 명함 촬영, 회의 음성 기록, local draft, push permission UX를 구현하고 mobile QA를 완료했다. |
+| 브라우저 | Chrome/Edge에서 reload, history, multi-tab, slow network 상태가 안정적이다. |
+| 보안 | 다른 사용자 데이터가 Search, Trash, Export, 직접 API 접근에서 섞이지 않는다. |
+| DB/운영 | Prisma generate, migration status, seed 정책, DB target이 배포 전 판단 가능하다. |
+
+## 3. Global B2C 첫 판매 가능형
+
+이 단계가 실제 판매 기준선이다. 가격을 공개하고 결제를 받으려면 아래 계층이 최소한으로 연결되어야 한다.
+
+| 영역 | 최종적으로 필요한 상태 |
+|---|---|
+| 가격/플랜 | 판매 국가, 가격표, trial 여부, 무료/유료 제한, paywall 기준이 명확하다. |
+| 결제/구독 | 무료체험, 월간/연간 구독, 국가별 가격, 환불, 결제 실패 복구, 영수증/인보이스가 있다. |
+| 세금/컴플라이언스 | VAT/GST/판매세 또는 Merchant of Record 처리가 가능하다. |
+| 앱 내부 다국어 | 실제 판매 국가 기준으로 `/app` 내부 locale과 UX writing이 준비된다. 기본 `ko-KR`/`en` app i18n은 08에서 구현 완료됐다. |
+| 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐다. |
+| Admin 운영 | 사용자, 도메인 데이터, 민감정보 마스킹, 감사 로그, provider 실패, Trash/account/data request, system gate를 운영할 수 있다. 11에서 최소 운영 범위는 완료됐고, 구독/결제 이슈 운영은 `TODO/PADDLE_PLAN` Billing 도메인과 연결한다. |
+| 고객 신뢰 | 약관, 개인정보, 보안, 계정 삭제, 데이터 export, 환불 정책이 실제 판매 범위와 맞는다. |
+| 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 `TODO/PADDLE_PLAN` Billing source 연결 후 완성된다. |
+| 지원/운영 | 로그인 문제, OCR/STT/Calendar/Push provider 실패, 데이터 복구 요청은 11 Admin 운영으로 처리할 수 있다. 결제 실패와 구독 문제는 `TODO/PADDLE_PLAN` Billing 운영 범위다. |
+
+## 4. Series A급 제품/사업형
+
+| 영역 | 최종적으로 필요한 상태 |
+|---|---|
+| 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI report가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 05 AI weekly report/follow-up delivery, Gmail/Microsoft provider smoke closeout, 회의록 follow-up draft는 구현 완료 상태로 본다. 회의록 follow-up 알림/자동 발송과 SMS 실제 provider/B2B email growth는 후속 정책/운영 범위다. |
+| AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 05 저장형 AI weekly report/follow-up delivery와 07 회의록 상세 next action/follow-up draft는 구현 완료됐고, 딜 리스크 고도화와 자동화는 후속이다. |
+| 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell과 native app은 후속이다. |
+| Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합, 범용 activity bus, Company/Contact/Product별 상세 timeline은 후속 정책 결정 범위다. |
+| 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
+| 운영 신뢰 | 11 Admin 운영으로 감사 로그, 민감정보 원문 조회 사유, provider 상태 기록, system gate 기록을 갖췄다. 실제 장애 대응 drill과 Billing 운영 신뢰는 후속으로 검증한다. |
+
+## 5. 최종 형태 판단 원칙
+
+- MVP 완료를 판매 가능으로 해석하지 않는다. 판매 기준은 Global B2C 첫 판매 gate다.
+- 새 기능을 추가하는 것보다 먼저, 현재 핵심 루프가 Global B2C 유료 사용자에게 충분히 읽히고 안정적인지 본다.
+- Backend/API 후보는 화면에서 필요한 정보 구조와 Global B2C 운영 필요성이 확정된 뒤 계약화한다.
+- Series A급 기능은 기능 단독으로 만들지 않고 retention, revenue, analytics와 같이 판단한다.
+- Admin/결제/분석/정책/현지화는 후순위 장식이 아니라 첫 판매 gate의 일부로 본다. 분석 foundation은 09에서 닫혔고 mobile field-use event는 10에서 닫혔으며, Admin dashboard는 11에서 닫혔다. billing-linked 지표는 `TODO/PADDLE_PLAN`에서 연결한다.
+- 08에서 닫힌 현지화/글로벌 데이터 기본 범위와 DB migration 최신 상태 재확인은 완료로 보며, LINE/Apple 실제 auth provider smoke도 2026-07-29 사용자 확인 기준 운영 완료로 반영한다.
+- `01_IMPORT_JOB_PERSISTENCE`는 G01~G09로 ImportJob persistence/resume, terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 닫았으므로 Import 범위는 최종 서비스 형태 기준으로 완전 종료됐다.
+- `05_AI_WEEKLY_SALES_REPORT`는 저장형 AI weekly report와 follow-up delivery, Gmail/Microsoft actual email provider adapter 구현/자동 검증, 2026-08-09 PRE12/BEFORE_12 provider smoke closeout 완료 상태로 본다. SMS 실제 provider/B2B/sequence/email sync/자동 follow-up 알림은 후속이다.
+- 2026-08-06 A 결정에 따라 `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 구현 대상이 아닌 후속 B2B/team CRM 전략 후보로 둔다.
+- 현재 진행 순서는 기능/UXUI 유지보수와 100명 베타 테스트를 먼저 진행한 뒤, 결제/구독/세금은 `TODO/PADDLE_PLAN`에서 확정하는 것이다. 미완성/후속 항목은 필요성이 확인될 때 새 TODO 폴더로 승격한다.
