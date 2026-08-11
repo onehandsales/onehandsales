@@ -112,7 +112,7 @@ TODO/
 
 진행 중인 계획:
 
-- 없음.
+- `SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN`: `BE`와 `FE`가 `AGENT/SOFTWARE_AGENT` 규칙을 따르도록 아키텍처 경계, Admin Web mock 로그인, 한글 주석, Frontend feature import 경계를 정리하기 위한 신규 Draft 계획이다.
 - `PADDLE_PLAN`: Deferred / Draft. 결제, 구독, 세금, entitlement, paywall, AI 사용량 제한 정책을 베타 이후 다시 확정하기 위한 보류 계획이다.
 
 완료된 계획:
