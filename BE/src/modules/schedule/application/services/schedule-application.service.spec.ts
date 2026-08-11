@@ -77,11 +77,12 @@ class FakeScheduleRepository implements ScheduleRepository {
     return work(this);
   }
 
-  // 기능 : fake 딜 옵션 전체 목록을 반환합니다.
+  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
   async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
     return null;
   }
 
+  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
   async cancelPendingNotificationsBySource(
     _input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -89,6 +90,7 @@ class FakeScheduleRepository implements ScheduleRepository {
     return 0;
   }
 
+  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
@@ -115,6 +117,7 @@ class FakeScheduleRepository implements ScheduleRepository {
     };
   }
 
+  // 기능 : fake 딜 옵션 전체 목록을 반환합니다.
   async listDealOptions(): Promise<ScheduleDealOptionRecord[]> {
     return this.deals;
   }
@@ -325,6 +328,7 @@ class FakeScheduleRepository implements ScheduleRepository {
   }
 }
 
+// 기능 : ScheduleApplicationService와 fake 의존성을 테스트용으로 조립합니다.
 function createService() {
   const repository = new FakeScheduleRepository();
   const logger = {
@@ -367,6 +371,7 @@ function createService() {
   };
 }
 
+// 기능 : 주간 리포트 테스트에 사용할 기본 일정 projection을 생성합니다.
 function createWeeklySchedule(
   overrides: Partial<WeeklyReportScheduleRecord> = {}
 ): WeeklyReportScheduleRecord {

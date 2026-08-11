@@ -16,6 +16,6 @@
 | `G02-BE-APPLICATION-PRESENTATION-BOUNDARY.goal.md` | Implemented / Verified | Backend application -> presentation 의존 제거 |
 | `G03-BE-ADMIN-PRISMA-TYPE-BOUNDARY.goal.md` | Implemented / Verified | Admin Operation application/port의 Prisma type 제거 |
 | `G04-BE-CROSS-MODULE-REPOSITORY-BOUNDARY.goal.md` | Implemented / Verified | Backend module 간 repository 직접 import 정리 |
-| `G05-BE-COMMENT-COVERAGE.goal.md` | Draft | Backend 주석 규칙 커버리지 보완 |
+| `G05-BE-COMMENT-COVERAGE.goal.md` | Implemented / Verified | Backend 주석 규칙 커버리지 보완 |
 | `G06-FE-FEATURE-PUBLIC-API-BOUNDARY.goal.md` | Draft | Frontend feature deep import 정리 |
 | `G07-FE-COMMENT-COVERAGE.goal.md` | Draft | Frontend 주석 규칙 커버리지 보완 |

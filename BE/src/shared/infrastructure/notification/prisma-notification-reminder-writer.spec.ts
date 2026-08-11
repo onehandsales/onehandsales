@@ -101,6 +101,7 @@ describe("PrismaNotificationReminderWriter", () => {
   });
 });
 
+// 기능 : notification reminder writer 테스트에 필요한 Prisma client mock을 생성합니다.
 function createMockClient() {
   return {
     userNotificationSetting: {
@@ -115,6 +116,7 @@ function createMockClient() {
   };
 }
 
+// 기능 : 기본 알림 row fixture에 테스트별 override를 합성합니다.
 function createNotificationRow(
   input: Partial<ReturnType<typeof createBaseNotificationRow>> = {}
 ) {
@@ -124,6 +126,7 @@ function createNotificationRow(
   };
 }
 
+// 기능 : reminder writer 테스트에 사용할 기본 알림 Prisma row fixture를 생성합니다.
 function createBaseNotificationRow() {
   return {
     id: NOTIFICATION_ID,

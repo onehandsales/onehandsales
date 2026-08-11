@@ -178,13 +178,14 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 일정 연결용 딜 옵션 전체 목록을 조회합니다.
+  // 기능 : 현재 사용자의 알림 설정을 reminder writer에 위임해 조회합니다.
   async findSettingsForUser(
     userId: string
   ): Promise<NotificationSettingsRecord | null> {
     return this.createNotificationReminderWriter().findSettingsForUser(userId);
   }
 
+  // 기능 : 현재 일정 저장소 경계에서 source 기준 pending 알림을 취소합니다.
   async cancelPendingNotificationsBySource(
     input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -193,12 +194,14 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     );
   }
 
+  // 기능 : 현재 일정 저장소 경계에서 reminder 알림을 생성하거나 갱신합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
     return this.createNotificationReminderWriter().upsertReminderNotification(input);
   }
 
+  // 기능 : 현재 사용자의 일정 연결용 딜 옵션 전체 목록을 조회합니다.
   async listDealOptions(userId: string): Promise<ScheduleDealOptionRecord[]> {
     return this.createDealBoundary().listDealOptions(userId);
   }
@@ -234,8 +237,8 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     return schedules.map((schedule) => this.mapScheduleRecord(schedule));
   }
 
-  // 기능 : 주간 리포트용 일정 projection을 조회합니다.
   // DB : Schedule 기간 overlap, 사용자 소유권, 삭제되지 않은 연결 Deal, 미완료/미삭제 후속 액션을 함께 조회합니다.
+  // 기능 : 주간 리포트용 일정 projection을 조회합니다.
   async listSchedulesForWeeklyReport(
     input: ListSchedulesForWeeklyReportInput
   ): Promise<WeeklyReportScheduleRecord[]> {
@@ -565,6 +568,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     } satisfies Prisma.ScheduleSelect;
   }
 
+  // 기능 : 삭제되지 않았고 사용자에게 표시할 수 있는 활성 일정 조건을 생성합니다.
   private createActiveScheduleVisibilityWhere(): Prisma.ScheduleWhereInput {
     return {
       deletedAt: null,
@@ -595,6 +599,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     };
   }
 
+  // 기능 : 일정 목록 조회 조건을 기간, 표시 범위, source filter에 맞게 조합합니다.
   private createScheduleListWhere(
     input: ListSchedulesInput
   ): Prisma.ScheduleWhereInput {
@@ -614,6 +619,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     };
   }
 
+  // 기능 : 일정 목록의 표시 범위별 Prisma where 조건을 생성합니다.
   private createScheduleListVisibilityWhere(
     visibility: NonNullable<ListSchedulesInput["visibility"]>
   ): Prisma.ScheduleWhereInput {
@@ -765,6 +771,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     throw new Error(`Invalid schedule source type in database: ${sourceType}`);
   }
 
+  // 기능 : Prisma 외부 동기화 상태 값을 application enum 값으로 검증해 변환합니다.
   private mapScheduleExternalSyncStatus(
     syncStatus: string | null
   ): ScheduleExternalSyncStatus | null {
@@ -783,6 +790,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     );
   }
 
+  // 기능 : Google source 일정 row에서 화면 배지와 숨김 상태를 포함한 record를 생성합니다.
   private mapGoogleCalendarRecord(schedule: {
     readonly sourceType: string;
     readonly externalSyncStatus: string | null;
@@ -818,6 +826,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     };
   }
 
+  // 기능 : Google 연결 상태와 sync 상태를 사용자 배지 label로 변환합니다.
   private createGoogleBadgeLabel(
     connectionStatus: string,
     syncStatus: ScheduleExternalSyncStatus | null
@@ -837,6 +846,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     return "Google";
   }
 
+  // 기능 : Prisma 일정 row를 application 계층 일정 record로 변환합니다.
   private mapScheduleRecord(schedule: ScheduleRow): ScheduleRecord {
     return {
       id: schedule.id,

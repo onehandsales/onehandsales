@@ -71,6 +71,7 @@ const CURRENT_USER: CurrentUserContext = {
   defaultCurrencyCode: "USD",
 };
 
+// 역할 : FakeDealRepository가 테스트 중 보관하는 딜 상태 구조를 정의합니다.
 interface StoredDeal {
   readonly id: string;
   readonly userId: string;
@@ -181,11 +182,12 @@ class FakeDealRepository implements DealRepository {
     return work(this);
   }
 
-  // 기능 : fake 딜 상태별 개수를 반환합니다.
+  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
   async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
     return null;
   }
 
+  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
   async cancelPendingNotificationsBySource(
     _input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -193,6 +195,7 @@ class FakeDealRepository implements DealRepository {
     return 0;
   }
 
+  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
@@ -219,6 +222,7 @@ class FakeDealRepository implements DealRepository {
     };
   }
 
+  // 기능 : fake 딜 목록을 상태별로 집계해 반환합니다.
   async countDealsByStatus(
     input: CountDealsByStatusInput
   ): Promise<ReadonlyMap<DealStatusCode, number>> {
@@ -324,18 +328,22 @@ class FakeDealRepository implements DealRepository {
     return true;
   }
 
+  // 기능 : fake 딜에 회사 연결 상태를 저장합니다.
   async createDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
     this.replaceStoredDeal(input.dealId, { companyIds: [...input.companyIds] });
   }
 
+  // 기능 : fake 딜의 회사 연결 상태를 새 목록으로 교체합니다.
   async replaceDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
     this.replaceStoredDeal(input.dealId, { companyIds: [...input.companyIds] });
   }
 
+  // 기능 : fake 딜에 담당자 연결 상태를 저장합니다.
   async createDealContacts(input: CreateDealContactsInput): Promise<void> {
     this.replaceStoredDeal(input.dealId, { contactIds: [...input.contactIds] });
   }
 
+  // 기능 : fake 딜의 담당자 연결 상태를 새 목록으로 교체합니다.
   async replaceDealContacts(input: CreateDealContactsInput): Promise<void> {
     this.replaceStoredDeal(input.dealId, { contactIds: [...input.contactIds] });
   }
@@ -475,7 +483,6 @@ class FakeDealRepository implements DealRepository {
     return updated;
   }
 
-  // 기능 : fake 메모 로그를 생성합니다.
   // 기능 : fake 다음 행동 로그를 삭제 상태로 처리합니다.
   async deleteFollowingActionLog(
     input: DeleteDealFollowingActionLogInput
@@ -488,6 +495,7 @@ class FakeDealRepository implements DealRepository {
     return this.followingActionLogs.length < beforeCount;
   }
 
+  // 기능 : fake 메모 로그를 생성하고 메모 로그 목록에 보관합니다.
   async createMemoLog(input: CreateDealMemoLogInput): Promise<DealMemoLogRecord> {
     const createdAt = new Date("2026-06-12T10:02:00.000Z");
     const log: DealMemoLogRecord = {
@@ -657,6 +665,7 @@ class FakeDealRepository implements DealRepository {
     return updated;
   }
 
+  // 기능 : fake 딜 목록에 사용자, 검색어, 연결 대상, 상태 filter를 적용합니다.
   private filterDeals(
     input: {
       readonly userId: string;
@@ -811,7 +820,7 @@ class FakeDealRepository implements DealRepository {
       : null;
   }
 
-  // 기능 : fake 로그를 최신순으로 정렬합니다.
+  // 기능 : fake 딜의 회사 또는 담당자 연결 ID 목록을 갱신합니다.
   private replaceStoredDeal(
     dealId: string,
     fields: Pick<StoredDeal, "companyIds"> | Pick<StoredDeal, "contactIds">
@@ -821,6 +830,7 @@ class FakeDealRepository implements DealRepository {
     );
   }
 
+  // 기능 : fake 로그를 최신순으로 정렬합니다.
   private sortLogs<T extends { readonly createdAt: Date; readonly id: string }>(
     records: T[]
   ): T[] {
@@ -946,6 +956,7 @@ function createServiceHarness(
   };
 }
 
+// 기능 : FakeDealRepository와 writer로 DealApplicationService 인스턴스만 생성합니다.
 function createService(
   repository: FakeDealRepository,
   writer: XlsxWorkbookWriter = new FakeXlsxWorkbookWriter()

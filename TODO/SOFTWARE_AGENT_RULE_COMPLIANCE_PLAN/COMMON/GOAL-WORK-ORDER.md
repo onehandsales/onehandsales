@@ -32,7 +32,9 @@
 - G03 완료 로그는 `TODO_LOG/2026-08-11/G03_BE_ADMIN_PRISMA_TYPE_BOUNDARY/WORK_LOG.md`다.
 - G04 Backend cross-module repository boundary는 2026-08-11 구현 및 검증을 완료했다.
 - G04 완료 로그는 `TODO_LOG/2026-08-11/G04_BE_CROSS_MODULE_REPOSITORY_BOUNDARY/WORK_LOG.md`다.
-- 현재 다음 순서는 G05 Backend comment coverage다.
+- G05 Backend comment coverage는 2026-08-11 구현 및 검증을 완료했다.
+- G05 완료 로그는 `TODO_LOG/2026-08-11/G05_BE_COMMENT_COVERAGE/WORK_LOG.md`다.
+- 현재 다음 순서는 G06 Frontend feature public API boundary다.
 
 ## 3. Goal별 최소 검증
 
@@ -99,6 +101,18 @@ cd D:\workspace_repository\onehandsales\BE
 pnpm.cmd test -- prisma-notification-reminder-writer.spec.ts prisma-deal-boundary.adapter.spec.ts prisma-schedule.repository.spec.ts prisma-google-calendar-sync.repository.spec.ts prisma-google-calendar-connection.repository.spec.ts prisma-meeting-note.repository.spec.ts prisma-follow-up-message.repository.spec.ts notification-reminder-scheduling.use-cases.spec.ts deal-application.service.spec.ts schedule-application.service.spec.ts google-calendar-sync.service.spec.ts google-calendar-connection.service.spec.ts
 pnpm.cmd test
 ```
+
+G05 추가 검증 완료:
+
+```powershell
+cd D:\workspace_repository\onehandsales
+git diff --check
+
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd test
+```
+
+추가로 우선 대상 controller와 G02-G04 변경 Backend source 66개 파일의 class/interface/function/method/API 주석 누락이 0개임을 AST 기반 수동 감사로 확인했다.
 
 ### G06-G07
 

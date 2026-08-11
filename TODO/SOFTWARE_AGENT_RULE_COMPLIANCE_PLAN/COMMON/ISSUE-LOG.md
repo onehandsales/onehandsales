@@ -145,6 +145,14 @@
 
 - `G05-BE-COMMENT-COVERAGE`
 
+처리 상태:
+
+- 2026-08-11 구현 및 검증 완료
+- 우선 대상 controller 5개의 class 역할 주석, route decorator 직전 `// API : ...`, controller numbered step comment 보강 완료
+- G02-G04에서 수정한 Backend class/interface/function/method 범위의 `// 역할 :`, `// 기능 :` 누락 보강 완료
+- 우선 대상 controller와 G02-G04 변경 Backend source 66개 파일 기준 AST 주석 감사 결과 누락 0개
+- Backend `typecheck`, `lint`, 전체 Jest 98개 suite / 524개 test 통과
+
 ### M02. Frontend feature deep import
 
 근거:

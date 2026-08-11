@@ -113,7 +113,9 @@ TODO/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/
 - G03 완료 로그: `TODO_LOG/2026-08-11/G03_BE_ADMIN_PRISMA_TYPE_BOUNDARY/WORK_LOG.md`
 - G04 Backend cross-module repository boundary 정리: 2026-08-11 구현 및 검증 완료
 - G04 완료 로그: `TODO_LOG/2026-08-11/G04_BE_CROSS_MODULE_REPOSITORY_BOUNDARY/WORK_LOG.md`
-- 다음 권장 작업: G05 Backend 주석 커버리지 보완
+- G05 Backend 주석 커버리지 보완: 2026-08-11 구현 및 검증 완료
+- G05 완료 로그: `TODO_LOG/2026-08-11/G05_BE_COMMENT_COVERAGE/WORK_LOG.md`
+- 다음 권장 작업: G06 Frontend feature public API boundary 정리
 
 ## 7. 공통 검증
 

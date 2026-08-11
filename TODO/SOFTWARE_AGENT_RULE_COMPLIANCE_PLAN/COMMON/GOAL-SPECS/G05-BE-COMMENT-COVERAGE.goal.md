@@ -1,6 +1,6 @@
 # G05 BE Comment Coverage
 
-상태: Draft
+상태: Implemented / Verified
 영역: BE
 우선순위: Medium
 
@@ -49,3 +49,29 @@ cd D:\workspace_repository\onehandsales\BE
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
+
+## 7. 구현 결과
+
+- 2026-08-11 구현 및 검증 완료.
+- 우선 대상 controller 5개의 class 역할 주석, HTTP route decorator 직전 `// API : ...`, controller 처리 흐름 numbered step comment를 보강했다.
+- G02-G04에서 수정한 Backend class/interface/function/method 범위의 누락 주석을 보강했다.
+- 변경은 주석 보강과 TODO 문서 기록에 한정했고 API shape, DB schema, 비즈니스 로직은 변경하지 않았다.
+- 추가 주석 감사 결과: 우선 대상 controller와 G02-G04 변경 Backend source 66개 파일 기준 class/interface/function/method/API 주석 누락 0개.
+
+## 8. 검증 결과
+
+2026-08-11 수동 실행:
+
+```powershell
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd test
+```
+
+통과 결과:
+
+- `pnpm run typecheck` 통과
+- `pnpm run lint` 통과
+- `pnpm test` 통과: 98개 suite / 524개 test
+- `git diff --check` 통과

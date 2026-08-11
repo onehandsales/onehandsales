@@ -76,6 +76,7 @@ const SELECTED_SOURCE: GoogleCalendarSourceRecord = {
   lastSyncErrorCode: null,
 };
 
+// 역할 : Google Calendar 동기화 서비스 테스트용 저장소를 메모리에서 구현합니다.
 class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
   connection: GoogleCalendarSyncConnectionRecord | null = CONNECTION;
   sources: GoogleCalendarSourceRecord[] = [SELECTED_SOURCE];
@@ -88,16 +89,19 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
   sourceSyncFailedErrorCode: string | null = null;
   private nextSourceSequence = 2;
 
+  // 기능 : fake transaction을 현재 저장소에서 즉시 실행합니다.
   async runInTransaction<T>(
     work: (repository: GoogleCalendarSyncRepository) => Promise<T>
   ): Promise<T> {
     return work(this);
   }
 
+  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
   async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
     return null;
   }
 
+  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
   async cancelPendingNotificationsBySource(
     _input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -105,6 +109,7 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
     return 0;
   }
 
+  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
@@ -131,33 +136,40 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
     };
   }
 
+  // 기능 : fake Google Calendar 동기화 연결 record를 반환합니다.
   async findConnectionForUser(): Promise<GoogleCalendarSyncConnectionRecord | null> {
     return this.connection;
   }
 
+  // 기능 : fake access token 갱신은 관찰값 없이 성공 처리합니다.
   async updateConnectionAccessToken(): Promise<void> {}
 
+  // 기능 : 재연결 필요 오류 코드를 테스트 관찰값으로 기록합니다.
   async markConnectionReconnectRequired(input: {
     readonly errorCode: string;
   }): Promise<void> {
     this.reconnectRequiredErrorCode = input.errorCode;
   }
 
+  // 기능 : sync lock 획득 호출 수를 기록하고 성공으로 응답합니다.
   async markConnectionSyncStarted(): Promise<boolean> {
     this.syncStartedCount += 1;
     return true;
   }
 
+  // 기능 : connection 동기화 성공 호출 수를 기록합니다.
   async markConnectionSyncSucceeded(): Promise<void> {
     this.syncSucceededCount += 1;
   }
 
+  // 기능 : connection 동기화 실패 오류 코드를 테스트 관찰값으로 기록합니다.
   async markConnectionSyncFailed(input: {
     readonly errorCode: string;
   }): Promise<void> {
     this.syncFailedErrorCode = input.errorCode;
   }
 
+  // 기능 : provider calendar 목록을 fake source 목록에 반영합니다.
   async upsertCalendarSources(input: {
     readonly sources: readonly {
       readonly calendarId: string;
@@ -227,10 +239,12 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
       );
   }
 
+  // 기능 : fake Google Calendar source 전체 목록을 반환합니다.
   async listCalendarSources(): Promise<readonly GoogleCalendarSourceRecord[]> {
     return this.sources;
   }
 
+  // 기능 : fake calendar 선택 변경 결과를 현재 source 목록 기준으로 반환합니다.
   async updateCalendarSelection() {
     return {
       sources: this.sources,
@@ -238,20 +252,24 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
     };
   }
 
+  // 기능 : 선택된 fake Google Calendar source 목록만 반환합니다.
   async listSelectedSources(): Promise<readonly GoogleCalendarSourceRecord[]> {
     return this.sources.filter((source) => source.status === "SELECTED");
   }
 
+  // 기능 : sync token 초기화 대상 source ID를 테스트 관찰값으로 기록합니다.
   async clearSourceSyncToken(input: {
     readonly sourceId: string;
   }): Promise<void> {
     this.clearSourceSyncTokenCalls.push(input.sourceId);
   }
 
+  // 기능 : source 동기화 실패 오류 코드를 테스트 관찰값으로 기록합니다.
   async markSourceSyncFailed(input: { readonly errorCode: string }): Promise<void> {
     this.sourceSyncFailedErrorCode = input.errorCode;
   }
 
+  // 기능 : 동기화 적용 event를 테스트 관찰값으로 보관하고 적용 결과를 반환합니다.
   async applySyncedEvents(input: {
     readonly events: readonly GoogleCalendarSyncedEventInput[];
   }): Promise<ApplyGoogleCalendarEventsResult> {
@@ -269,6 +287,7 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
   }
 }
 
+// 기능 : Google Calendar read provider mock과 page 응답 큐를 생성합니다.
 function createReadProvider(
   pages: Array<GoogleCalendarProviderEventListPage | Error>
 ) {
@@ -319,6 +338,7 @@ function createReadProvider(
   };
 }
 
+// 기능 : Google Calendar 동기화 서비스와 fake 의존성을 테스트용으로 조립합니다.
 function createService(
   pages: Array<GoogleCalendarProviderEventListPage | Error>
 ) {

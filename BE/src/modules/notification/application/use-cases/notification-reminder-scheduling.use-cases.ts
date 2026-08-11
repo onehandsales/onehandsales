@@ -76,8 +76,8 @@ type DateTimeParts = CalendarDate & {
   readonly millisecond: number;
 };
 
-@Injectable()
 // 역할 : 일정 시작 30분 전 기본 reminder를 생성하거나 최신 상태로 갱신합니다.
+@Injectable()
 export class ScheduleNotificationReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -85,25 +85,28 @@ export class ScheduleNotificationReminderUseCase {
     private readonly logger: AppLogger
   ) {}
 
+  // 기능 : 알림 저장소 transaction에서 일정 시작 reminder 예약을 실행합니다.
   async execute(
     input: ScheduleNotificationReminderCommand
   ): Promise<ReminderSchedulingResult> {
-    // 기능 : 단독 실행 시 알림 저장소 자체 transaction 안에서 reminder 쓰기를 처리합니다.
+    // 1. 단독 실행 시 알림 저장소 자체 transaction 안에서 reminder 쓰기를 처리한다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
   }
 
+  // 기능 : 전달받은 저장소 경계 안에서 일정 시작 reminder 예약과 기존 예약 정리를 처리합니다.
   async executeWithRepository(
     input: ScheduleNotificationReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<ReminderSchedulingResult> {
-    // 기능 : 일정 저장소 transaction 안에서도 같은 reminder 쓰기 로직을 재사용합니다.
+    // 1. 사용자 알림 설정과 현재 시각을 확인한다.
     const now = input.now ?? new Date();
     const settings = await repository.findSettingsForUser(input.userId);
     const enabled =
       settings?.scheduleReminderEnabled ?? DEFAULT_SCHEDULE_REMINDER_ENABLED;
 
+    // 2. reminder 대상이 아니면 기존 pending reminder를 취소하고 예약하지 않는다.
     if (!enabled || input.startAt.getTime() <= now.getTime()) {
       const canceledCount = await this.cancelPending(
         repository,
@@ -123,7 +126,7 @@ export class ScheduleNotificationReminderUseCase {
       return { scheduled: false, notification: null, canceledCount };
     }
 
-    // 기능 : reminder 예정 시각이 이미 지났지만 일정은 미래이면 즉시 처리 가능하도록 현재 시각에 예약합니다.
+    // 3. reminder 예정 시각과 dedupe key를 계산한다.
     const reminderMinutes = normalizePositiveInteger(
       settings?.scheduleReminderMinutes,
       DEFAULT_SCHEDULE_REMINDER_MINUTES
@@ -141,7 +144,7 @@ export class ScheduleNotificationReminderUseCase {
       `m${reminderMinutes}`,
     ].join(":");
 
-    // 기능 : 같은 일정의 이전 pending reminder를 취소하고 현재 dedupe key만 유지합니다.
+    // 4. 같은 일정의 이전 pending reminder를 취소하고 현재 reminder를 upsert한다.
     const canceledCount = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
       sourceType: "SCHEDULE",
@@ -169,6 +172,7 @@ export class ScheduleNotificationReminderUseCase {
     });
     const result = { scheduled: true, notification, canceledCount };
 
+    // 5. 예약 결과를 구조화된 로그로 남긴다.
     this.logEvent("notification.reminder.schedule.scheduled", {
       userId: input.userId,
       scheduleId: input.scheduleId,
@@ -180,6 +184,7 @@ export class ScheduleNotificationReminderUseCase {
     return result;
   }
 
+  // 기능 : 특정 일정 source의 pending reminder를 지정한 사유로 취소합니다.
   private async cancelPending(
     repository: NotificationReminderWriteRepository,
     userId: string,
@@ -196,13 +201,14 @@ export class ScheduleNotificationReminderUseCase {
     });
   }
 
+  // 기능 : reminder 처리 결과를 구조화된 application 로그로 남깁니다.
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(JSON.stringify({ event, ...fields }), this.constructor.name);
   }
 }
 
-@Injectable()
 // 역할 : 일정 삭제 또는 reminder 비활성화 시 pending 일정 reminder를 취소합니다.
+@Injectable()
 export class CancelScheduleNotificationReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -210,20 +216,22 @@ export class CancelScheduleNotificationReminderUseCase {
     private readonly logger: AppLogger
   ) {}
 
+  // 기능 : 알림 저장소 transaction에서 일정 reminder 취소를 실행합니다.
   async execute(
     input: CancelScheduleNotificationReminderCommand
   ): Promise<number> {
-    // 기능 : 단독 취소 요청을 알림 저장소 transaction 안에서 처리합니다.
+    // 1. 단독 취소 요청을 알림 저장소 transaction 안에서 처리한다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
   }
 
+  // 기능 : 전달받은 저장소 경계 안에서 일정 source의 pending reminder를 취소합니다.
   async executeWithRepository(
     input: CancelScheduleNotificationReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<number> {
-    // 기능 : 원본 일정 변경 transaction 안에서도 pending reminder 취소를 재사용합니다.
+    // 1. 원본 일정 변경 transaction 안에서 pending reminder를 취소한다.
     const canceledAt = input.now ?? new Date();
     const count = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
@@ -233,6 +241,7 @@ export class CancelScheduleNotificationReminderUseCase {
       canceledAt,
     });
 
+    // 2. 취소 결과를 구조화된 로그로 남긴다.
     this.logger.log(
       JSON.stringify({
         event: "notification.reminder.schedule.canceled",
@@ -247,8 +256,8 @@ export class CancelScheduleNotificationReminderUseCase {
   }
 }
 
-@Injectable()
 // 역할 : 딜 expectedEndDate 기준 사용자 timezone의 마감 reminder를 생성하거나 갱신합니다.
+@Injectable()
 export class ScheduleDealDueReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -256,20 +265,22 @@ export class ScheduleDealDueReminderUseCase {
     private readonly logger: AppLogger
   ) {}
 
+  // 기능 : 알림 저장소 transaction에서 딜 마감 reminder 예약을 실행합니다.
   async execute(
     input: ScheduleDealDueReminderCommand
   ): Promise<ReminderSchedulingResult> {
-    // 기능 : 단독 실행 시 알림 저장소 자체 transaction 안에서 reminder 쓰기를 처리합니다.
+    // 1. 단독 실행 시 알림 저장소 자체 transaction 안에서 reminder 쓰기를 처리한다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
   }
 
+  // 기능 : 전달받은 저장소 경계 안에서 딜 마감 reminder 예약과 기존 예약 정리를 처리합니다.
   async executeWithRepository(
     input: ScheduleDealDueReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<ReminderSchedulingResult> {
-    // 기능 : 딜 저장소 transaction 안에서도 같은 reminder 쓰기 로직을 재사용합니다.
+    // 1. 사용자 알림 설정, timezone, 기준 날짜를 확인한다.
     const now = input.now ?? new Date();
     const settings = await repository.findSettingsForUser(input.userId);
     const enabled =
@@ -277,6 +288,7 @@ export class ScheduleDealDueReminderUseCase {
     const timeZone = normalizeTimeZone(input.userTimeZone);
     const expectedDate = getDateOnlyParts(input.expectedEndDate);
 
+    // 2. reminder 대상이 아니면 기존 pending reminder를 취소하고 예약하지 않는다.
     if (!enabled || compareCalendarDate(expectedDate, getLocalDate(now, timeZone)) < 0) {
       const canceledCount = await this.cancelPending(
         repository,
@@ -296,7 +308,7 @@ export class ScheduleDealDueReminderUseCase {
       return { scheduled: false, notification: null, canceledCount };
     }
 
-    // 기능 : 사용자 timezone의 날짜/시각 설정을 UTC scheduledAt으로 변환합니다.
+    // 3. 사용자 timezone의 날짜/시각 설정을 UTC 예약 시각과 dedupe key로 변환한다.
     const daysBefore = normalizeNonNegativeInteger(
       settings?.dealDueReminderDaysBefore,
       DEFAULT_DEAL_DUE_REMINDER_DAYS_BEFORE
@@ -330,7 +342,7 @@ export class ScheduleDealDueReminderUseCase {
       timeZone,
     ].join(":");
 
-    // 기능 : 같은 딜의 이전 pending reminder를 취소하고 현재 dedupe key만 유지합니다.
+    // 4. 같은 딜의 이전 pending reminder를 취소하고 현재 reminder를 upsert한다.
     const canceledCount = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
       sourceType: "DEAL",
@@ -360,6 +372,7 @@ export class ScheduleDealDueReminderUseCase {
     });
     const result = { scheduled: true, notification, canceledCount };
 
+    // 5. 예약 결과를 구조화된 로그로 남긴다.
     this.logEvent("notification.reminder.deal.scheduled", {
       userId: input.userId,
       dealId: input.dealId,
@@ -371,6 +384,7 @@ export class ScheduleDealDueReminderUseCase {
     return result;
   }
 
+  // 기능 : 특정 딜 source의 pending reminder를 지정한 사유로 취소합니다.
   private async cancelPending(
     repository: NotificationReminderWriteRepository,
     userId: string,
@@ -387,13 +401,14 @@ export class ScheduleDealDueReminderUseCase {
     });
   }
 
+  // 기능 : 딜 reminder 처리 결과를 구조화된 application 로그로 남깁니다.
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(JSON.stringify({ event, ...fields }), this.constructor.name);
   }
 }
 
-@Injectable()
 // 역할 : 딜 삭제 또는 reminder 비활성화 시 pending 딜 마감 reminder를 취소합니다.
+@Injectable()
 export class CancelDealDueReminderUseCase {
   constructor(
     @Inject(NOTIFICATION_REPOSITORY)
@@ -401,18 +416,20 @@ export class CancelDealDueReminderUseCase {
     private readonly logger: AppLogger
   ) {}
 
+  // 기능 : 알림 저장소 transaction에서 딜 마감 reminder 취소를 실행합니다.
   async execute(input: CancelDealDueReminderCommand): Promise<number> {
-    // 기능 : 단독 취소 요청을 알림 저장소 transaction 안에서 처리합니다.
+    // 1. 단독 취소 요청을 알림 저장소 transaction 안에서 처리한다.
     return this.notificationRepository.runInTransaction((repository) =>
       this.executeWithRepository(input, repository)
     );
   }
 
+  // 기능 : 전달받은 저장소 경계 안에서 딜 source의 pending reminder를 취소합니다.
   async executeWithRepository(
     input: CancelDealDueReminderCommand,
     repository: NotificationReminderWriteRepository
   ): Promise<number> {
-    // 기능 : 원본 딜 변경 transaction 안에서도 pending reminder 취소를 재사용합니다.
+    // 1. 원본 딜 변경 transaction 안에서 pending reminder를 취소한다.
     const canceledAt = input.now ?? new Date();
     const count = await repository.cancelPendingNotificationsBySource({
       userId: input.userId,
@@ -422,6 +439,7 @@ export class CancelDealDueReminderUseCase {
       canceledAt,
     });
 
+    // 2. 취소 결과를 구조화된 로그로 남긴다.
     this.logger.log(
       JSON.stringify({
         event: "notification.reminder.deal.canceled",

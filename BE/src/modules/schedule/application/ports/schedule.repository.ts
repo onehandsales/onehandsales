@@ -42,6 +42,7 @@ export interface ScheduleGoogleCalendarRecord {
   readonly canEditLocalFields: boolean;
 }
 
+// 역할 : ScheduleRecord 일정 목록과 상세 화면에 전달되는 일정 projection 구조를 정의합니다.
 export interface ScheduleRecord {
   readonly id: string;
   readonly scheduleTitle: string;
@@ -154,6 +155,7 @@ export interface UpdateScheduleInput {
   readonly externalSyncStatus?: ScheduleExternalSyncStatus;
 }
 
+// 역할 : SoftDeleteScheduleInput 현재 사용자 일정 휴지통 이동 값을 정의합니다.
 export interface SoftDeleteScheduleInput {
   readonly userId: string;
   readonly scheduleId: string;

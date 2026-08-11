@@ -435,6 +435,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     return deleted.count > 0;
   }
 
+  // 기능 : 회의록의 회사, 담당자, 제품, 딜 연결을 요청에 포함된 항목만 교체합니다.
   async replaceMeetingNoteRelations(
     input: ReplaceMeetingNoteRelationsInput
   ): Promise<void> {

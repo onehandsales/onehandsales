@@ -59,6 +59,7 @@ type ExistingScheduleRow = {
   readonly externalSyncStatus: string | null;
 };
 
+// 역할 : Prisma로 Google Calendar source와 event 동기화 상태를 영속화합니다.
 export class PrismaGoogleCalendarSyncRepository
   implements GoogleCalendarSyncRepository
 {
@@ -67,6 +68,7 @@ export class PrismaGoogleCalendarSyncRepository
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
+  // 기능 : Google Calendar 동기화 저장소 작업을 Prisma transaction으로 실행합니다.
   async runInTransaction<T>(
     work: (repository: GoogleCalendarSyncRepository) => Promise<T>
   ): Promise<T> {
@@ -79,12 +81,14 @@ export class PrismaGoogleCalendarSyncRepository
     );
   }
 
+  // 기능 : 현재 사용자의 알림 설정을 reminder writer에 위임해 조회합니다.
   async findSettingsForUser(
     userId: string
   ): Promise<NotificationSettingsRecord | null> {
     return this.createNotificationReminderWriter().findSettingsForUser(userId);
   }
 
+  // 기능 : 현재 동기화 저장소 경계에서 source 기준 pending 알림을 취소합니다.
   async cancelPendingNotificationsBySource(
     input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -93,12 +97,14 @@ export class PrismaGoogleCalendarSyncRepository
     );
   }
 
+  // 기능 : 현재 동기화 저장소 경계에서 reminder 알림을 생성하거나 갱신합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
     return this.createNotificationReminderWriter().upsertReminderNotification(input);
   }
 
+  // 기능 : 현재 사용자의 동기화 가능한 Google Calendar 연결 record를 조회합니다.
   async findConnectionForUser(
     userId: string
   ): Promise<GoogleCalendarSyncConnectionRecord | null> {
@@ -115,6 +121,7 @@ export class PrismaGoogleCalendarSyncRepository
     return connection ? this.mapConnection(connection) : null;
   }
 
+  // 기능 : refresh된 access token과 scope를 Google Calendar 연결 record에 반영합니다.
   async updateConnectionAccessToken(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -136,6 +143,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : 인증 실패한 연결을 재인증 필요 상태로 바꾸고 안전한 오류 코드를 저장합니다.
   async markConnectionReconnectRequired(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -160,6 +168,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : 동시 동기화를 막기 위한 connection lock을 획득하고 시작 시각을 저장합니다.
   async markConnectionSyncStarted(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -186,6 +195,7 @@ export class PrismaGoogleCalendarSyncRepository
     return updated.count > 0;
   }
 
+  // 기능 : connection 단위 동기화 성공 시각을 저장하고 실패/lock 상태를 초기화합니다.
   async markConnectionSyncSucceeded(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -206,6 +216,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : connection 단위 동기화 실패 시각과 안전한 오류 코드를 저장합니다.
   async markConnectionSyncFailed(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -226,6 +237,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : provider calendar 목록을 source table에 반영하고 최신 source 목록을 반환합니다.
   async upsertCalendarSources(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -308,6 +320,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : 현재 사용자의 Google Calendar source 목록을 정렬된 projection으로 조회합니다.
   async listCalendarSources(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -325,6 +338,7 @@ export class PrismaGoogleCalendarSyncRepository
     return sources.map((source) => this.mapSource(source));
   }
 
+  // 기능 : calendar ID 목록에 해당하는 source만 정렬된 projection으로 다시 조회합니다.
   private async listCalendarSourcesByCalendarIds(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -350,6 +364,7 @@ export class PrismaGoogleCalendarSyncRepository
     return sources.map((source) => this.mapSource(source));
   }
 
+  // 기능 : 사용자가 선택한 calendar source 상태를 반영하고 새로 숨겨질 일정 ID를 반환합니다.
   async updateCalendarSelection(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -441,6 +456,7 @@ export class PrismaGoogleCalendarSyncRepository
     };
   }
 
+  // 기능 : 동기화 대상으로 선택된 Google Calendar source 목록을 조회합니다.
   async listSelectedSources(input: {
     readonly userId: string;
     readonly connectionId: string;
@@ -459,6 +475,7 @@ export class PrismaGoogleCalendarSyncRepository
     return sources.map((source) => this.mapSource(source));
   }
 
+  // 기능 : 특정 source의 incremental sync token을 초기화합니다.
   async clearSourceSyncToken(input: {
     readonly userId: string;
     readonly sourceId: string;
@@ -475,6 +492,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : source 단위 동기화 실패 시각과 안전한 오류 코드를 저장합니다.
   async markSourceSyncFailed(input: {
     readonly userId: string;
     readonly sourceId: string;
@@ -494,6 +512,7 @@ export class PrismaGoogleCalendarSyncRepository
     });
   }
 
+  // 기능 : provider event 목록을 로컬 일정으로 반영하고 알림 예약/취소 후속 작업을 계산합니다.
   async applySyncedEvents(input: {
     readonly userId: string;
     readonly source: GoogleCalendarSourceRecord;
@@ -681,6 +700,7 @@ export class PrismaGoogleCalendarSyncRepository
     };
   }
 
+  // 기능 : provider event 식별자로 기존 로컬 일정을 조회합니다.
   private async findScheduleByExternalEvent(input: {
     readonly userId: string;
     readonly sourceId: string;
@@ -707,6 +727,7 @@ export class PrismaGoogleCalendarSyncRepository
     return new PrismaNotificationReminderWriter(this.client);
   }
 
+  // 기능 : Google Calendar 연결 projection에 필요한 Prisma select 조건을 생성합니다.
   private createConnectionSelect() {
     return {
       id: true,
@@ -726,6 +747,7 @@ export class PrismaGoogleCalendarSyncRepository
     } satisfies Prisma.ExternalCalendarConnectionSelect;
   }
 
+  // 기능 : Google Calendar source projection에 필요한 Prisma select 조건을 생성합니다.
   private createSourceSelect() {
     return {
       id: true,
@@ -742,6 +764,7 @@ export class PrismaGoogleCalendarSyncRepository
     } satisfies Prisma.ExternalCalendarSourceSelect;
   }
 
+  // 기능 : Prisma 연결 row를 application 계층의 동기화 연결 record로 변환합니다.
   private mapConnection(
     connection: ConnectionRow
   ): GoogleCalendarSyncConnectionRecord {
@@ -773,6 +796,7 @@ export class PrismaGoogleCalendarSyncRepository
     };
   }
 
+  // 기능 : Prisma source row를 application 계층의 Google Calendar source record로 변환합니다.
   private mapSource(source: SourceRow): GoogleCalendarSourceRecord {
     if (source.status !== "SELECTED" && source.status !== "UNSELECTED") {
       throw new Error(

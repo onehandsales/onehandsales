@@ -92,6 +92,7 @@ describe("PrismaDealBoundaryAdapter", () => {
   });
 });
 
+// 기능 : 딜 boundary adapter 테스트에 필요한 Prisma client mock을 생성합니다.
 function createMockClient() {
   return {
     deal: {
@@ -107,6 +108,7 @@ function createMockClient() {
   };
 }
 
+// 기능 : 다음 행동 로그 테스트에 사용할 Prisma row fixture를 생성합니다.
 function createLogRow() {
   return {
     id: LOG_ID,
@@ -122,6 +124,7 @@ function createLogRow() {
   };
 }
 
+// 기능 : 딜 활동 테스트에 사용할 Prisma row fixture를 생성합니다.
 function createActivityRow() {
   return {
     id: ACTIVITY_ID,

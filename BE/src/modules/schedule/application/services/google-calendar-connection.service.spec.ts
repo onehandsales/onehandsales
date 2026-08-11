@@ -47,6 +47,7 @@ const CONNECTED_CONNECTION: GoogleCalendarConnectionRecord = {
   hasRefreshToken: true,
 };
 
+// 역할 : Google Calendar 연결 서비스 테스트용 저장소를 메모리에서 구현합니다.
 class FakeGoogleCalendarConnectionRepository
   implements GoogleCalendarConnectionRepository
 {
@@ -58,6 +59,7 @@ class FakeGoogleCalendarConnectionRepository
   disconnectResult: DisconnectGoogleCalendarConnectionResult | null = null;
   transactionCount = 0;
 
+  // 기능 : fake transaction을 현재 저장소에서 즉시 실행합니다.
   async runInTransaction<T>(
     work: (repository: GoogleCalendarConnectionRepository) => Promise<T>
   ): Promise<T> {
@@ -65,10 +67,12 @@ class FakeGoogleCalendarConnectionRepository
     return work(this);
   }
 
+  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
   async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
     return null;
   }
 
+  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
   async cancelPendingNotificationsBySource(
     _input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -76,6 +80,7 @@ class FakeGoogleCalendarConnectionRepository
     return 0;
   }
 
+  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
@@ -102,10 +107,12 @@ class FakeGoogleCalendarConnectionRepository
     };
   }
 
+  // 기능 : fake Google Calendar 연결 record를 반환합니다.
   async findConnection(): Promise<GoogleCalendarConnectionRecord | null> {
     return this.connection;
   }
 
+  // 기능 : fake 연결 상태와 calendar source 수 집계를 반환합니다.
   async getStatusAggregate(): Promise<GoogleCalendarConnectionStatusAggregate> {
     return {
       connection: this.connection,
@@ -114,6 +121,7 @@ class FakeGoogleCalendarConnectionRepository
     };
   }
 
+  // 기능 : OAuth 성공 입력을 저장하고 연결된 fake connection을 갱신합니다.
   async upsertConnectedConnection(
     input: UpsertConnectedGoogleCalendarConnectionInput
   ): Promise<GoogleCalendarConnectionRecord> {
@@ -128,6 +136,7 @@ class FakeGoogleCalendarConnectionRepository
     return this.connection;
   }
 
+  // 기능 : 연결 해제 입력을 기록하고 미리 준비한 fake 결과를 반환합니다.
   async disconnectConnection(
     input: DisconnectGoogleCalendarConnectionInput
   ): Promise<DisconnectGoogleCalendarConnectionResult | null> {
@@ -136,6 +145,7 @@ class FakeGoogleCalendarConnectionRepository
   }
 }
 
+// 기능 : Google Calendar 연결 서비스와 fake 의존성을 테스트용으로 조립합니다.
 function createService(options: { readonly userWebOrigin?: string | null } = {}) {
   const repository = new FakeGoogleCalendarConnectionRepository();
   const oauthProvider: GoogleCalendarOAuthProvider = {

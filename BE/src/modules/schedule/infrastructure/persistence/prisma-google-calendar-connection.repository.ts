@@ -34,6 +34,7 @@ type GoogleCalendarConnectionRow = {
   readonly syncLockExpiresAt: Date | null;
 };
 
+// 역할 : Prisma로 Google Calendar 연결 상태와 연결 해제 정책을 영속화합니다.
 export class PrismaGoogleCalendarConnectionRepository
   implements GoogleCalendarConnectionRepository
 {
@@ -42,6 +43,7 @@ export class PrismaGoogleCalendarConnectionRepository
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
+  // 기능 : Google Calendar 연결 저장소 작업을 Prisma transaction으로 실행합니다.
   async runInTransaction<T>(
     work: (repository: GoogleCalendarConnectionRepository) => Promise<T>
   ): Promise<T> {
@@ -54,12 +56,14 @@ export class PrismaGoogleCalendarConnectionRepository
     );
   }
 
+  // 기능 : 현재 사용자의 알림 설정을 reminder writer에 위임해 조회합니다.
   async findSettingsForUser(
     userId: string
   ): Promise<NotificationSettingsRecord | null> {
     return this.createNotificationReminderWriter().findSettingsForUser(userId);
   }
 
+  // 기능 : 현재 연결 저장소 경계에서 source 기준 pending 알림을 취소합니다.
   async cancelPendingNotificationsBySource(
     input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -68,12 +72,14 @@ export class PrismaGoogleCalendarConnectionRepository
     );
   }
 
+  // 기능 : 현재 연결 저장소 경계에서 reminder 알림을 생성하거나 갱신합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
     return this.createNotificationReminderWriter().upsertReminderNotification(input);
   }
 
+  // 기능 : 현재 사용자의 Google Calendar 연결 record를 조회합니다.
   async findConnection(
     userId: string
   ): Promise<GoogleCalendarConnectionRecord | null> {
@@ -90,6 +96,7 @@ export class PrismaGoogleCalendarConnectionRepository
     return connection ? this.mapConnection(connection) : null;
   }
 
+  // 기능 : 연결 record와 선택/사용 가능 calendar source 수를 함께 조회합니다.
   async getStatusAggregate(
     userId: string
   ): Promise<GoogleCalendarConnectionStatusAggregate> {
@@ -133,6 +140,7 @@ export class PrismaGoogleCalendarConnectionRepository
     };
   }
 
+  // 기능 : OAuth 성공 결과로 Google Calendar 연결 record를 생성하거나 갱신합니다.
   async upsertConnectedConnection(
     input: UpsertConnectedGoogleCalendarConnectionInput
   ): Promise<GoogleCalendarConnectionRecord> {
@@ -178,6 +186,7 @@ export class PrismaGoogleCalendarConnectionRepository
     return this.mapConnection(connection);
   }
 
+  // 기능 : 연결 해제 정책에 맞춰 Google 일정과 source 상태를 정리한 뒤 token을 제거합니다.
   async disconnectConnection(
     input: DisconnectGoogleCalendarConnectionInput
   ): Promise<DisconnectGoogleCalendarConnectionResult | null> {
@@ -283,6 +292,7 @@ export class PrismaGoogleCalendarConnectionRepository
     return new PrismaNotificationReminderWriter(this.client);
   }
 
+  // 기능 : Google Calendar 연결 projection에 필요한 Prisma select 조건을 생성합니다.
   private createConnectionSelect() {
     return {
       id: true,
@@ -301,6 +311,7 @@ export class PrismaGoogleCalendarConnectionRepository
     } satisfies Prisma.ExternalCalendarConnectionSelect;
   }
 
+  // 기능 : Prisma 연결 row를 application 계층의 Google Calendar 연결 record로 변환합니다.
   private mapConnection(
     connection: GoogleCalendarConnectionRow
   ): GoogleCalendarConnectionRecord {

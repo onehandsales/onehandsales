@@ -65,6 +65,7 @@ export class PrismaFollowUpMessageRepository
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
+  // 기능 : follow-up message 저장소 작업을 Prisma transaction으로 실행합니다.
   async runInTransaction<T>(
     work: (repository: FollowUpMessageRepository) => Promise<T>
   ): Promise<T> {
@@ -656,6 +657,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : 담당자가 특정 딜의 활성 연결 담당자인지 확인합니다.
   private existsDealContact(
     userId: string,
     dealId: string,
@@ -675,6 +677,7 @@ export class PrismaFollowUpMessageRepository
       .then(Boolean);
   }
 
+  // 기능 : 담당자가 특정 회의록의 활성 연결 담당자인지 확인합니다.
   private existsMeetingNoteContact(
     userId: string,
     meetingNoteId: string,
@@ -694,6 +697,7 @@ export class PrismaFollowUpMessageRepository
       .then(Boolean);
   }
 
+  // 기능 : 담당자가 특정 일정에 연결된 딜의 활성 담당자인지 확인합니다.
   private existsScheduleDealContact(
     userId: string,
     scheduleId: string,
@@ -721,6 +725,7 @@ export class PrismaFollowUpMessageRepository
       .then(Boolean);
   }
 
+  // 기능 : AI 주간 리포트 입력 snapshot에 담당자가 포함되어 있는지 확인합니다.
   private async isRecipientMentionedInReportSnapshot(
     userId: string,
     reportId: string,
@@ -741,6 +746,7 @@ export class PrismaFollowUpMessageRepository
       : false;
   }
 
+  // 기능 : 상태 변경 직후 message channel을 조회하고 없으면 저장소 오류로 중단합니다.
   private async findRequiredMessageChannel(
     messageId: string
   ): Promise<"EMAIL" | "SMS"> {
@@ -756,6 +762,7 @@ export class PrismaFollowUpMessageRepository
     return message.channel;
   }
 
+  // 기능 : 발송 성공 후 이메일 연결 또는 SMS 발신번호의 마지막 발송 상태를 갱신합니다.
   private async markSenderSuccess(
     message: FollowUpMessageRow,
     sentAt: Date
@@ -787,6 +794,7 @@ export class PrismaFollowUpMessageRepository
     }
   }
 
+  // 기능 : 발송 실패 후 sender별 안전한 오류 코드와 재연결 필요 상태를 저장합니다.
   private async markSenderFailure(
     message: FollowUpMessageRow,
     safeErrorCode: string,
@@ -831,6 +839,7 @@ export class PrismaFollowUpMessageRepository
     );
   }
 
+  // 기능 : 초안 수정 요청에서 전달된 필드만 Prisma update data로 변환합니다.
   private createDraftUpdateData(
     input: UpdateFollowUpMessageDraftInput
   ): Prisma.FollowUpMessageUpdateManyMutationInput {
@@ -859,6 +868,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : follow-up message 목록 조회의 source와 target filter 조건을 생성합니다.
   private createListWhere(
     input: ListFollowUpMessagesInput
   ): Prisma.FollowUpMessageWhereInput {
@@ -880,6 +890,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : follow-up message 상세 조회에 필요한 target과 delivery attempt include 조건을 생성합니다.
   private createMessageDetailInclude() {
     return {
       targets: {
@@ -943,6 +954,7 @@ export class PrismaFollowUpMessageRepository
     }
   }
 
+  // 기능 : 이메일 발송 연결 조회에 필요한 Prisma select 조건을 생성합니다.
   private createEmailConnectionSelect() {
     return {
       id: true,
@@ -962,6 +974,7 @@ export class PrismaFollowUpMessageRepository
     } satisfies Prisma.ExternalEmailConnectionSelect;
   }
 
+  // 기능 : SMS 발신번호 조회에 필요한 Prisma select 조건을 생성합니다.
   private createSmsSenderNumberSelect() {
     return {
       id: true,
@@ -975,6 +988,7 @@ export class PrismaFollowUpMessageRepository
     } satisfies Prisma.SmsSenderNumberSelect;
   }
 
+  // 기능 : AI suggestion row를 follow-up 초안 source record로 변환합니다.
   private mapDraftSource(
     row: FollowUpDraftSourceRow
   ): FollowUpDraftSourceRecord {
@@ -1004,18 +1018,21 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : 이메일 연결 projection row를 application record로 전달합니다.
   private mapEmailConnection(
     row: FollowUpEmailConnectionRecord
   ): FollowUpEmailConnectionRecord {
     return row;
   }
 
+  // 기능 : SMS 발신번호 projection row를 application record로 전달합니다.
   private mapSmsSenderNumber(
     row: FollowUpSmsSenderNumberRecord
   ): FollowUpSmsSenderNumberRecord {
     return row;
   }
 
+  // 기능 : follow-up message row와 relation row를 상세 record로 변환합니다.
   private mapMessageDetail(
     row: FollowUpMessageDetailRow
   ): FollowUpMessageDetailRecord {
@@ -1028,6 +1045,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : Prisma follow-up message row를 application message record로 변환합니다.
   private mapMessage(row: FollowUpMessageRow): FollowUpMessageRecord {
     return {
       id: row.id,
@@ -1062,6 +1080,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : Prisma follow-up target row를 application target record로 변환합니다.
   private mapTarget(
     row: FollowUpMessageTargetRow
   ): FollowUpMessageTargetRecord {
@@ -1077,6 +1096,7 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : Prisma delivery attempt row를 application 발송 시도 record로 변환합니다.
   private mapDeliveryAttempt(
     row: FollowUpDeliveryAttemptRow
   ): FollowUpDeliveryAttemptRecord {
@@ -1105,10 +1125,12 @@ export class PrismaFollowUpMessageRepository
     };
   }
 
+  // 기능 : 실패 시각을 기준으로 다음 재시도 예약 시각을 계산합니다.
   private toNextRetryAt(failedAt: Date): Date {
     return new Date(failedAt.getTime() + 5 * 60 * 1000);
   }
 
+  // 기능 : Prisma JSON 값을 object record 형태로 안전하게 좁힙니다.
   private toRecordJson(value: unknown): Record<string, unknown> {
     if (value && typeof value === "object" && !Array.isArray(value)) {
       return value as Record<string, unknown>;
@@ -1117,6 +1139,7 @@ export class PrismaFollowUpMessageRepository
     return {};
   }
 
+  // 기능 : 저장 가능한 Prisma JSON 입력 타입으로 값을 전달합니다.
   private toInputJson(value: unknown): Prisma.InputJsonValue {
     return value as Prisma.InputJsonValue;
   }

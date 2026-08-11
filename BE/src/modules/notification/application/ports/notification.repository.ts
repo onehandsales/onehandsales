@@ -67,12 +67,14 @@ export interface BrowserPushSubscriptionRecord {
   readonly updatedAt: Date;
 }
 
+// 역할 : NotificationUserRecord 알림 발송 대상 사용자 projection 구조를 정의합니다.
 export interface NotificationUserRecord {
   readonly id: string;
   readonly email: string | null;
   readonly timeZone: string;
 }
 
+// 역할 : NotificationDeliveryWorkItemRecord 재시도 발송 작업 단위를 정의합니다.
 export interface NotificationDeliveryWorkItemRecord {
   readonly attempt: NotificationDeliveryAttemptRecord;
   readonly notification: NotificationRecord;
@@ -157,6 +159,7 @@ export interface CreateNotificationDeliveryAttemptInput {
   readonly detailJson?: Record<string, unknown>;
 }
 
+// 역할 : MarkDeliveryAttemptSentInput 외부 발송 성공 처리 값을 정의합니다.
 export interface MarkDeliveryAttemptSentInput {
   readonly deliveryAttemptId: string;
   readonly sentAt: Date;
@@ -165,6 +168,7 @@ export interface MarkDeliveryAttemptSentInput {
   readonly providerStatusCode?: string | null;
 }
 
+// 역할 : MarkDeliveryAttemptFailedInput 외부 발송 실패 처리 값을 정의합니다.
 export interface MarkDeliveryAttemptFailedInput {
   readonly deliveryAttemptId: string;
   readonly failedAt: Date;
@@ -176,6 +180,7 @@ export interface MarkDeliveryAttemptFailedInput {
   readonly nextRetryAt?: Date | null;
 }
 
+// 역할 : ListRetryableDeliveryAttemptsInput 재시도 가능한 발송 시도 조회 조건을 정의합니다.
 export interface ListRetryableDeliveryAttemptsInput {
   readonly now: Date;
   readonly limit: number;
@@ -243,16 +248,21 @@ export interface NotificationRepository extends NotificationReminderWriteReposit
   createDeliveryAttempt(
     input: CreateNotificationDeliveryAttemptInput
   ): Promise<NotificationDeliveryAttemptRecord>;
+  // 기능 : 외부 발송 시도를 성공 상태와 provider 응답 정보로 갱신합니다.
   markDeliveryAttemptSent(
     input: MarkDeliveryAttemptSentInput
   ): Promise<NotificationDeliveryAttemptRecord | null>;
+  // 기능 : 외부 발송 시도를 실패 상태와 안전한 오류 정보로 갱신합니다.
   markDeliveryAttemptFailed(
     input: MarkDeliveryAttemptFailedInput
   ): Promise<NotificationDeliveryAttemptRecord | null>;
+  // 기능 : 재시도 대상으로 가져간 발송 시도의 retry 예약을 소비 처리합니다.
   markDeliveryAttemptRetryConsumed(deliveryAttemptId: string): Promise<boolean>;
+  // 기능 : 다음 재시도 시간이 도래한 발송 작업을 조회합니다.
   listRetryableDeliveryAttempts(
     input: ListRetryableDeliveryAttemptsInput
   ): Promise<NotificationDeliveryWorkItemRecord[]>;
+  // 기능 : 알림 발송에 필요한 사용자 연락처와 시간대 정보를 조회합니다.
   findUserForNotification(userId: string): Promise<NotificationUserRecord | null>;
   // 기능 : 암호화된 browser push subscription을 생성하거나 갱신합니다.
   upsertBrowserPushSubscription(

@@ -190,13 +190,14 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
-  // 기능 : 현재 사용자의 딜 단계별 개수를 조회합니다.
+  // 기능 : 현재 사용자의 알림 설정을 reminder writer에 위임해 조회합니다.
   async findSettingsForUser(
     userId: string
   ): Promise<NotificationSettingsRecord | null> {
     return this.createNotificationReminderWriter().findSettingsForUser(userId);
   }
 
+  // 기능 : 현재 딜 저장소 경계에서 source 기준 pending 알림을 취소합니다.
   async cancelPendingNotificationsBySource(
     input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
@@ -205,12 +206,14 @@ export class PrismaDealRepository implements DealRepository {
     );
   }
 
+  // 기능 : 현재 딜 저장소 경계에서 reminder 알림을 생성하거나 갱신합니다.
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
     return this.createNotificationReminderWriter().upsertReminderNotification(input);
   }
 
+  // 기능 : 현재 사용자의 딜 단계별 개수를 조회합니다.
   async countDealsByStatus(
     input: CountDealsByStatusInput
   ): Promise<ReadonlyMap<DealStatusCode, number>> {
@@ -363,7 +366,7 @@ export class PrismaDealRepository implements DealRepository {
     });
   }
 
-  // 기능 : 딜에 연결할 제품 매핑을 생성합니다.
+  // 기능 : 딜에 연결할 회사 매핑을 생성합니다.
   async createDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
     await Promise.all(
       input.companyIds.map((companyId) =>
@@ -381,6 +384,7 @@ export class PrismaDealRepository implements DealRepository {
     );
   }
 
+  // 기능 : 딜에 연결된 회사 매핑을 새 목록으로 교체합니다.
   async replaceDealCompanies(input: CreateDealCompaniesInput): Promise<void> {
     await this.client.dealCompany.deleteMany({
       where: {
@@ -392,6 +396,7 @@ export class PrismaDealRepository implements DealRepository {
     await this.createDealCompanies(input);
   }
 
+  // 기능 : 딜에 연결할 담당자 매핑을 생성합니다.
   async createDealContacts(input: CreateDealContactsInput): Promise<void> {
     await Promise.all(
       input.contactIds.map((contactId) =>
@@ -409,6 +414,7 @@ export class PrismaDealRepository implements DealRepository {
     );
   }
 
+  // 기능 : 딜에 연결된 담당자 매핑을 새 목록으로 교체합니다.
   async replaceDealContacts(input: CreateDealContactsInput): Promise<void> {
     await this.client.dealContact.deleteMany({
       where: {
@@ -420,6 +426,7 @@ export class PrismaDealRepository implements DealRepository {
     await this.createDealContacts(input);
   }
 
+  // 기능 : 딜에 연결할 제품 매핑을 생성합니다.
   async createDealProducts(input: CreateDealProductsInput): Promise<void> {
     await Promise.all(
       input.productIds.map((productId) =>
@@ -831,6 +838,7 @@ export class PrismaDealRepository implements DealRepository {
     return new PrismaDealActivityRepository(this.client, null);
   }
 
+  // 기능 : 딜 목록과 집계 조회에 공통 적용할 사용자/검색/filter 조건을 생성합니다.
   private createDealWhere(
     input: Pick<
       ExportDealsInput,
@@ -980,7 +988,7 @@ export class PrismaDealRepository implements DealRepository {
     } satisfies Prisma.ContactSelect;
   }
 
-  // 기능 : 다음 행동 로그 조회에 필요한 select 조건을 생성합니다.
+  // 기능 : 제품 상세 조회에 필요한 select 조건을 생성합니다.
   private createProductSelect() {
     return {
       id: true,
@@ -1024,6 +1032,7 @@ export class PrismaDealRepository implements DealRepository {
     } satisfies Prisma.ProductSelect;
   }
 
+  // 기능 : 딜 목록에 표시할 다음 행동 로그 select 조건을 생성합니다.
   private createFollowingActionLogSelect() {
     return {
       id: true,
@@ -1368,6 +1377,7 @@ export class PrismaDealRepository implements DealRepository {
     };
   }
 
+  // 기능 : DB 문자열 값을 딜 상태 코드로 검증해 변환합니다.
   private mapDealStatus(status: string): DealStatusCode {
     if (!isDealStatusCode(status)) {
       throw new Error(`Invalid deal status in database: ${status}`);
