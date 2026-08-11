@@ -112,7 +112,7 @@ TODO/
 
 진행 중인 계획:
 
-- `SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN`: `BE`와 `FE`가 `AGENT/SOFTWARE_AGENT` 규칙을 따르도록 아키텍처 경계, Admin Web mock 로그인, 한글 주석, Frontend feature import 경계를 정리하기 위한 활성 계획이다. 2026-08-11 기준 G01 Admin Web mock 로그인 제거는 구현/검증 완료했고, 완료 로그는 `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`다. 다음 권장 작업은 G02 Backend application -> presentation 의존 제거다.
+- `SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN`: `BE`와 `FE`가 `AGENT/SOFTWARE_AGENT` 규칙을 따르도록 아키텍처 경계, Admin Web mock 로그인, 한글 주석, Frontend feature import 경계를 정리하기 위한 활성 계획이다. 2026-08-11 기준 G01 Admin Web mock 로그인 제거와 G02 Backend application -> presentation 의존 제거는 구현/검증 완료했다. 완료 로그는 `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`, `TODO_LOG/2026-08-11/G02_BE_APPLICATION_PRESENTATION_BOUNDARY/WORK_LOG.md`다. 다음 권장 작업은 G03 Backend Admin Operation Prisma type boundary 정리다.
 - `PADDLE_PLAN`: Deferred / Draft. 결제, 구독, 세금, entitlement, paywall, AI 사용량 제한 정책을 베타 이후 다시 확정하기 위한 보류 계획이다.
 
 완료된 계획:

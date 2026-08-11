@@ -59,6 +59,14 @@
 
 - `G02-BE-APPLICATION-PRESENTATION-BOUNDARY`
 
+처리 상태:
+
+- 2026-08-11 구현 및 검증 완료
+- Backend application service 9곳의 `presentation/http/*response.mapper` 의존 제거 완료
+- HTTP response mapper 호출은 Account Request와 Admin Operation controller로 이동 완료
+- application source의 presentation 의존 검색 결과 없음
+- Backend `typecheck`, `lint`, 전체 Jest 96개 suite / 518개 test 통과
+
 ### H02. Backend application/port의 Prisma type 침투
 
 근거:

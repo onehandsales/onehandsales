@@ -8,8 +8,11 @@ import {
 import {
   ADMIN_TRASH_REPOSITORY,
   AdminTrashDomain,
+  type AdminTrashRecordsPageRecord,
+  type AdminTrashRecoveryRequestsPageRecord,
   type AdminTrashRepository,
   type AdminTrashRestoreWindowFilter,
+  type AdminTrashSummaryRecord,
   type ListAdminTrashRecoveryRequestsInput,
   type ListAdminTrashRecordsInput,
 } from "@/modules/admin-operation/application/ports/admin-trash.repository";
@@ -20,14 +23,6 @@ import {
 } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
-import {
-  toAdminTrashRecoveryRequestsResponse,
-  toAdminTrashRecordsResponse,
-  toAdminTrashSummaryResponse,
-  type AdminTrashRecoveryRequestsResponse,
-  type AdminTrashRecordsResponse,
-  type AdminTrashSummaryResponse,
-} from "../../presentation/http/admin-trash-response.mapper";
 
 const DEFAULT_ADMIN_TRASH_LIMIT = 30;
 const MAX_ADMIN_TRASH_LIMIT = 100;
@@ -76,7 +71,7 @@ export class AdminTrashApplicationService {
     currentUser: CurrentUserContext,
     userId: string,
     metadata: AdminTrashRequestMetadata
-  ): Promise<AdminTrashSummaryResponse> {
+  ): Promise<AdminTrashSummaryRecord> {
     this.assertAdmin(currentUser);
     const now = new Date();
 
@@ -103,7 +98,7 @@ export class AdminTrashApplicationService {
       }
     );
 
-    return toAdminTrashSummaryResponse(summary);
+    return summary;
   }
 
   // 기능 : Admin 사용자 Trash row 목록을 조회하고 감사 로그를 남깁니다.
@@ -112,7 +107,7 @@ export class AdminTrashApplicationService {
     userId: string,
     query: ListAdminTrashRecordsQueryInput,
     metadata: AdminTrashRequestMetadata
-  ): Promise<AdminTrashRecordsResponse> {
+  ): Promise<AdminTrashRecordsPageRecord> {
     this.assertAdmin(currentUser);
     const input = this.toListUserTrashRecordsInput(userId, query, new Date());
 
@@ -142,7 +137,7 @@ export class AdminTrashApplicationService {
       }
     );
 
-    return toAdminTrashRecordsResponse(page);
+    return page;
   }
 
   // 기능 : Admin 전역 Trash 복구 요청 queue를 조회하고 감사 로그를 남깁니다.
@@ -150,7 +145,7 @@ export class AdminTrashApplicationService {
     currentUser: CurrentUserContext,
     query: ListAdminTrashRecoveryRequestsQueryInput,
     metadata: AdminTrashRequestMetadata
-  ): Promise<AdminTrashRecoveryRequestsResponse> {
+  ): Promise<AdminTrashRecoveryRequestsPageRecord> {
     this.assertAdmin(currentUser);
     const input = this.toListRecoveryRequestsInput(query);
 
@@ -179,7 +174,7 @@ export class AdminTrashApplicationService {
       }
     );
 
-    return toAdminTrashRecoveryRequestsResponse(page);
+    return page;
   }
 
   // 기능 : application 계층에서도 관리자 권한을 확인합니다.

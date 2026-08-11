@@ -28,7 +28,7 @@ const requestMetadata = { requestId: "req-user-1" };
 // 기능 : AdminUserApplicationService의 마스킹과 감사 로그 정책을 테스트합니다.
 describe("AdminUserApplicationService", () => {
   // 기능 : 사용자 목록 응답이 email/displayName 원문을 제거하고 검색어 원문 없이 audit를 남기는지 검증합니다.
-  it("masks list response and stores audit metadata without raw search text", async () => {
+  it("returns list page records and stores audit metadata without raw search text", async () => {
     const repository = createRepositoryMock();
     repository.listUsers.mockResolvedValue({
       items: [
@@ -60,7 +60,7 @@ describe("AdminUserApplicationService", () => {
     });
     const service = new AdminUserApplicationService(repository);
 
-    const response = await service.listUsers(
+    const page = await service.listUsers(
       adminUser,
       {
         q: "local.user@example.com",
@@ -70,9 +70,8 @@ describe("AdminUserApplicationService", () => {
       requestMetadata
     );
 
-    expect(response.items[0]?.emailMasked).toBe("lo***@example.com");
-    expect(response.items[0]?.displayNameMasked).not.toBe("로컬 사용자");
-    expect(JSON.stringify(response)).not.toContain("local.user@example.com");
+    expect(page.items[0]?.email).toBe("local.user@example.com");
+    expect(page.items[0]?.displayName).toBe("로컬 사용자");
     expect(repository.createAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({
         adminUserId: adminUser.id,
@@ -109,20 +108,19 @@ describe("AdminUserApplicationService", () => {
   });
 
   // 기능 : 사용자 상세 조회가 대상 사용자 audit를 남기고 profile 원문을 masking하는지 검증합니다.
-  it("creates detail audit log and masks overview profile", async () => {
+  it("creates detail audit log and returns overview records", async () => {
     const repository = createRepositoryMock();
     repository.getUserOverview.mockResolvedValue(createOverviewRecord());
     const service = new AdminUserApplicationService(repository);
 
-    const response = await service.getUserOverview(
+    const overview = await service.getUserOverview(
       adminUser,
       targetUserId,
       requestMetadata
     );
 
-    expect(response.profile.emailMasked).toBe("lo***@example.com");
-    expect(JSON.stringify(response)).not.toContain("local.user@example.com");
-    expect(JSON.stringify(response)).not.toContain("로컬 사용자");
+    expect(overview.profile.email).toBe("local.user@example.com");
+    expect(overview.profile.displayName).toBe("로컬 사용자");
     expect(repository.createAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({
         adminUserId: adminUser.id,

@@ -8,6 +8,7 @@ import {
   ADMIN_DOMAIN_RECORD_REPOSITORY,
   AdminDomainRecordDomain,
   AdminDomainRecordSort,
+  type AdminDomainRecordsPageRecord,
   type AdminDomainRecordRepository,
   type ListAdminDomainRecordsInput,
 } from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
@@ -18,10 +19,6 @@ import {
 } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
-import {
-  toAdminDomainRecordsResponse,
-  type AdminDomainRecordsResponse,
-} from "../../presentation/http/admin-domain-record-response.mapper";
 
 const DEFAULT_DOMAIN_RECORD_LIMIT = 30;
 const MAX_DOMAIN_RECORD_LIMIT = 100;
@@ -68,7 +65,7 @@ export class AdminDomainRecordApplicationService {
     userId: string,
     query: ListAdminDomainRecordsQueryInput,
     metadata: AdminDomainRecordRequestMetadata
-  ): Promise<AdminDomainRecordsResponse> {
+  ): Promise<AdminDomainRecordsPageRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -108,8 +105,8 @@ export class AdminDomainRecordApplicationService {
       }
     );
 
-    // 4. raw 원문 없이 안전 summary 응답으로 변환합니다.
-    return toAdminDomainRecordsResponse(page);
+    // 4. raw 원문 없이 안전 summary application page를 반환합니다.
+    return page;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.

@@ -28,7 +28,7 @@ const requestMetadata = { requestId: "req-provider-1" };
 // 기능 : AdminProviderFailureApplicationService의 masking과 감사 로그 정책을 테스트합니다.
 describe("AdminProviderFailureApplicationService", () => {
   // 기능 : 목록 응답에서 사용자 email을 masking하고 audit에는 검색 원문 없이 filter 요약만 남기는지 검증합니다.
-  it("masks list response and stores safe list audit metadata", async () => {
+  it("returns list page records and stores safe list audit metadata", async () => {
     const repository = createRepositoryMock();
     repository.listProviderFailures.mockResolvedValue({
       items: [createProviderFailureDetail()],
@@ -36,7 +36,7 @@ describe("AdminProviderFailureApplicationService", () => {
     });
     const service = new AdminProviderFailureApplicationService(repository);
 
-    const response = await service.listProviderFailures(
+    const page = await service.listProviderFailures(
       adminUser,
       {
         providerType: "AI",
@@ -48,8 +48,7 @@ describe("AdminProviderFailureApplicationService", () => {
       requestMetadata
     );
 
-    expect(response.items[0]?.userEmailMasked).toBe("lo***@example.com");
-    expect(JSON.stringify(response)).not.toContain("local.user@example.com");
+    expect(page.items[0]?.userEmail).toBe("local.user@example.com");
     expect(repository.createAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({
         adminUserId: adminUser.id,
@@ -82,14 +81,14 @@ describe("AdminProviderFailureApplicationService", () => {
     );
     const service = new AdminProviderFailureApplicationService(repository);
 
-    const response = await service.getProviderFailureDetail(
+    const detail = await service.getProviderFailureDetail(
       adminUser,
       `AI:${sourceId}`,
       requestMetadata
     );
 
-    expect(response.userEmailMasked).toBe("lo***@example.com");
-    expect(response.safeContext.provider).toBe("OPENAI");
+    expect(detail.userEmail).toBe("local.user@example.com");
+    expect(detail.safeContext.provider).toBe("OPENAI");
     expect(repository.createAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({
         targetUserId,

@@ -49,22 +49,22 @@ describe("AdminAccountRequestApplicationService", () => {
     });
     const service = new AdminAccountRequestApplicationService(repository);
 
-    const response = await service.listAccountDeletionRequests(
+    const page = await service.listAccountDeletionRequests(
       adminUser,
       { status: "requested", limit: 10 },
       requestMetadata
     );
 
-    expect(response.items[0]).toEqual({
+    expect(page.items[0]).toEqual({
       id: "00000000-0000-4000-8000-000000000010",
       userId: "00000000-0000-4000-8000-000000000020",
       userEmailMasked: "u***@example.com",
       status: "REQUESTED",
-      requestedAt: "2026-08-01T00:00:00.000Z",
-      scheduledDeletionAt: "2026-08-31T00:00:00.000Z",
+      requestedAt: new Date("2026-08-01T00:00:00.000Z"),
+      scheduledDeletionAt: new Date("2026-08-31T00:00:00.000Z"),
       reasonCode: "NO_LONGER_NEEDED",
     });
-    expect(JSON.stringify(response)).not.toContain("reasonMessage");
+    expect(JSON.stringify(page)).not.toContain("reasonMessage");
     expect(repository.createAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({
         adminUserId: adminUser.id,

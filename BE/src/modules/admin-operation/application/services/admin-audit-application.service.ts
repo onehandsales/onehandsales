@@ -8,6 +8,7 @@ import {
 } from "@prisma/client";
 import {
   ADMIN_AUDIT_REPOSITORY,
+  type AdminAuditLogPageRecord,
   type AdminAuditRepository,
   type AdminSensitiveAccessRecord,
   type AdminSensitiveRawDataRecord,
@@ -22,12 +23,6 @@ import {
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
-import {
-  toAdminAuditLogListResponse,
-  toAdminSensitiveRawAccessResponse,
-  type AdminAuditLogListResponse,
-  type AdminSensitiveRawAccessResponse,
-} from "../../presentation/http/admin-audit-response.mapper";
 
 const DEFAULT_AUDIT_LOG_LIMIT = 50;
 const MAX_AUDIT_LOG_LIMIT = 100;
@@ -62,8 +57,8 @@ export interface AdminRequestMetadata {
   readonly userAgent?: string | null;
 }
 
-// 역할 : AdminSensitiveAccessTransactionResult 민감 원문 조회 transaction 결과를 정의합니다.
-interface AdminSensitiveAccessTransactionResult {
+// 역할 : AdminSensitiveRawAccessApplicationResult 민감 원문 조회 application 결과를 정의합니다.
+export interface AdminSensitiveRawAccessApplicationResult {
   readonly rawData: AdminSensitiveRawDataRecord;
   readonly accessLog: AdminSensitiveAccessRecord;
 }
@@ -78,11 +73,11 @@ export class AdminAuditApplicationService {
     private readonly logger: AppLogger
   ) {}
 
-  // 기능 : Admin 감사 로그 목록을 조회하고 응답 계약으로 변환합니다.
+  // 기능 : Admin 감사 로그 목록을 조회하고 application page로 반환합니다.
   async listAuditLogs(
     currentUser: CurrentUserContext,
     query: ListAdminAuditLogsQueryInput
-  ): Promise<AdminAuditLogListResponse> {
+  ): Promise<AdminAuditLogPageRecord> {
     // 1. application 계층에서도 관리자 권한을 한 번 더 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -92,10 +87,10 @@ export class AdminAuditApplicationService {
     // 3. 날짜 범위가 뒤집힌 경우 안전한 검증 오류로 처리합니다.
     this.assertDateRange(repositoryInput.from, repositoryInput.to);
 
-    // 4. email 원문을 masking한 Admin Web 응답으로 반환합니다.
+    // 4. 감사 로그 application page를 반환합니다.
     const page = await this.adminAuditRepository.listAuditLogs(repositoryInput);
 
-    return toAdminAuditLogListResponse(page);
+    return page;
   }
 
   // 기능 : 민감 원문 조회 사유를 검증하고 감사 로그를 같은 transaction에서 생성합니다.
@@ -103,7 +98,7 @@ export class AdminAuditApplicationService {
     currentUser: CurrentUserContext,
     command: AdminSensitiveRawAccessCommand,
     metadata: AdminRequestMetadata
-  ): Promise<AdminSensitiveRawAccessResponse> {
+  ): Promise<AdminSensitiveRawAccessApplicationResult> {
     // 1. application 계층에서도 관리자 권한을 한 번 더 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -139,11 +134,8 @@ export class AdminAuditApplicationService {
     // 4. 원문 값 없이 구조화 운영 이벤트만 남깁니다.
     this.logSensitiveRawAccess(currentUser, command, metadata, transactionResult);
 
-    // 5. 감사 기록 생성 이후 허용 필드 원문을 응답합니다.
-    return toAdminSensitiveRawAccessResponse(
-      transactionResult.accessLog,
-      transactionResult.rawData
-    );
+    // 5. 감사 기록 생성 이후 허용 필드 원문과 access log를 application 결과로 반환합니다.
+    return transactionResult;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.
@@ -297,7 +289,7 @@ export class AdminAuditApplicationService {
     currentUser: CurrentUserContext,
     command: AdminSensitiveRawAccessCommand,
     metadata: AdminRequestMetadata,
-    result: AdminSensitiveAccessTransactionResult
+    result: AdminSensitiveRawAccessApplicationResult
   ): void {
     this.logger.log(
       JSON.stringify({

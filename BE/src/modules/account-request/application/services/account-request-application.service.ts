@@ -1,8 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ACCOUNT_REQUEST_REPOSITORY,
+  type AccountDeletionRequestRecord,
   type AccountRequestRepository,
   type UserDataExportFormat,
+  type UserDataExportRequestRecord,
 } from "@/modules/account-request/application/ports/account-request.repository";
 import {
   AccountDeletionConfirmTextInvalidError,
@@ -15,15 +17,6 @@ import {
   DataExportRequestNotFoundError,
 } from "@/modules/account-request/domain/account-request.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import {
-  toAccountDeletionRequestResponse,
-  toCancelAccountDeletionRequestResponse,
-  toUserDataExportRequestResponse,
-  type AccountDeletionRequestResponse,
-  type CancelAccountDeletionRequestResponse,
-  type UserDataExportRequestResponse,
-} from "../../presentation/http/account-request-response.mapper";
-
 const ACCOUNT_DELETION_CONFIRM_TEXT = "DELETE MY ACCOUNT";
 const ACCOUNT_DELETION_GRACE_PERIOD_DAYS = 30;
 const UUID_PATTERN =
@@ -48,6 +41,12 @@ export interface CreateMyAccountDeletionRequestCommand {
   readonly reasonMessage?: string;
 }
 
+// 역할 : UserDataExportRequestApplicationResult 데이터 export 요청과 응답 기준 시각을 application 결과로 정의합니다.
+export interface UserDataExportRequestApplicationResult {
+  readonly request: UserDataExportRequestRecord;
+  readonly now: Date;
+}
+
 // 역할 : AccountRequestApplicationService 계정 삭제와 데이터 export 요청 유스케이스를 제공합니다.
 @Injectable()
 export class AccountRequestApplicationService {
@@ -61,7 +60,7 @@ export class AccountRequestApplicationService {
   async createMyDataExportRequest(
     currentUser: CurrentUserContext,
     command: CreateMyDataExportRequestCommand
-  ): Promise<UserDataExportRequestResponse> {
+  ): Promise<UserDataExportRequestApplicationResult> {
     // 1. G08에서 허용하는 export 옵션인지 검증합니다.
     const now = new Date();
     const includeSensitive = command.includeSensitive ?? false;
@@ -93,15 +92,15 @@ export class AccountRequestApplicationService {
       }
     );
 
-    // 3. provider raw/token/admin audit/internal note는 export 대상에서 제외되는 queue 응답만 반환합니다.
-    return toUserDataExportRequestResponse(request, now);
+    // 3. presentation mapper가 상태와 downloadUrl을 계산할 수 있도록 요청과 기준 시각을 반환합니다.
+    return { request, now };
   }
 
   // 기능 : 현재 사용자 소유 데이터 export 요청 상태를 조회합니다.
   async getMyDataExportRequest(
     currentUser: CurrentUserContext,
     requestId: string
-  ): Promise<UserDataExportRequestResponse> {
+  ): Promise<UserDataExportRequestApplicationResult> {
     // 1. path param UUID 형식을 검증합니다.
     this.assertRequestId(requestId, "dataExport");
     const now = new Date();
@@ -117,15 +116,15 @@ export class AccountRequestApplicationService {
       throw new DataExportRequestNotFoundError();
     }
 
-    // 3. READY 만료 여부를 응답 상태와 downloadUrl 계산에 반영합니다.
-    return toUserDataExportRequestResponse(request, now);
+    // 3. presentation mapper가 READY 만료 여부를 계산할 수 있도록 요청과 기준 시각을 반환합니다.
+    return { request, now };
   }
 
   // 기능 : 계정 삭제 요청의 30일 유예 만료 시각을 계산합니다.
   async createMyAccountDeletionRequest(
     currentUser: CurrentUserContext,
     command: CreateMyAccountDeletionRequestCommand
-  ): Promise<AccountDeletionRequestResponse> {
+  ): Promise<AccountDeletionRequestRecord> {
     // 1. 위험 요청 확인 문구를 정확히 검증합니다.
     if (command.confirmText !== ACCOUNT_DELETION_CONFIRM_TEXT) {
       throw new AccountDeletionConfirmTextInvalidError();
@@ -160,14 +159,14 @@ export class AccountRequestApplicationService {
     // 3. 실제 삭제 job은 ProductAnalyticsEvent/UserActivationSnapshot 삭제 대상을 참고하도록 남깁니다.
     void ACCOUNT_DELETION_ANALYTICS_PURGE_TARGETS;
 
-    return toAccountDeletionRequestResponse(request);
+    return request;
   }
 
   // 기능 : 현재 사용자 소유 계정 삭제 요청을 유예 기간 안에서 취소합니다.
   async cancelMyAccountDeletionRequest(
     currentUser: CurrentUserContext,
     requestId: string
-  ): Promise<CancelAccountDeletionRequestResponse> {
+  ): Promise<AccountDeletionRequestRecord> {
     // 1. path param UUID 형식을 검증합니다.
     this.assertRequestId(requestId, "accountDeletion");
     const now = new Date();
@@ -199,7 +198,7 @@ export class AccountRequestApplicationService {
       }
     );
 
-    return toCancelAccountDeletionRequestResponse(request);
+    return request;
   }
 
   // 기능 : data export format을 G08 allowlist 기준으로 정규화합니다.

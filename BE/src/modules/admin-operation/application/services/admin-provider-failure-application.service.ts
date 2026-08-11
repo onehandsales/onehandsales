@@ -8,6 +8,8 @@ import {
   ADMIN_PROVIDER_FAILURE_REPOSITORY,
   AdminProviderFailureFeatureArea,
   AdminProviderFailureType,
+  type AdminProviderFailureDetailRecord,
+  type AdminProviderFailureListPageRecord,
   type AdminProviderFailureRepository,
   type AdminProviderFailureStatusFilter,
   type ListAdminProviderFailuresInput,
@@ -18,12 +20,6 @@ import {
 } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
-import {
-  toAdminProviderFailureDetailResponse,
-  toAdminProviderFailureListResponse,
-  type AdminProviderFailureDetailResponse,
-  type AdminProviderFailureListResponse,
-} from "../../presentation/http/admin-provider-failure-response.mapper";
 
 const DEFAULT_PROVIDER_FAILURE_LIMIT = 50;
 const MAX_PROVIDER_FAILURE_LIMIT = 100;
@@ -65,7 +61,7 @@ export class AdminProviderFailureApplicationService {
     currentUser: CurrentUserContext,
     query: ListAdminProviderFailuresQueryInput,
     metadata: AdminProviderFailureRequestMetadata
-  ): Promise<AdminProviderFailureListResponse> {
+  ): Promise<AdminProviderFailureListPageRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -102,8 +98,8 @@ export class AdminProviderFailureApplicationService {
       }
     );
 
-    // 4. 사용자 email 원문을 masking한 목록 응답으로 반환합니다.
-    return toAdminProviderFailureListResponse(page);
+    // 4. 사용자 email 안전 값이 포함된 application page를 반환합니다.
+    return page;
   }
 
   // 기능 : Admin provider 실패 상세를 조회하고 상세 조회 감사 로그를 남깁니다.
@@ -111,7 +107,7 @@ export class AdminProviderFailureApplicationService {
     currentUser: CurrentUserContext,
     failureId: string,
     metadata: AdminProviderFailureRequestMetadata
-  ): Promise<AdminProviderFailureDetailResponse> {
+  ): Promise<AdminProviderFailureDetailRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -150,8 +146,8 @@ export class AdminProviderFailureApplicationService {
       }
     );
 
-    // 3. 사용자 email 원문을 masking하고 safeContext만 포함한 상세 응답으로 반환합니다.
-    return toAdminProviderFailureDetailResponse(detail);
+    // 3. safeContext만 포함한 application detail을 반환합니다.
+    return detail;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.

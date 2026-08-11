@@ -26,7 +26,9 @@
 
 - G01 Admin Web mock 로그인 제거는 2026-08-11 구현 및 검증을 완료했다.
 - G01 완료 로그는 `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`다.
-- 현재 다음 순서는 G02 Backend application -> presentation 의존 제거다.
+- G02 Backend application -> presentation 의존 제거는 2026-08-11 구현 및 검증을 완료했다.
+- G02 완료 로그는 `TODO_LOG/2026-08-11/G02_BE_APPLICATION_PRESENTATION_BOUNDARY/WORK_LOG.md`다.
+- 현재 다음 순서는 G03 Backend Admin Operation Prisma type boundary다.
 
 ## 3. Goal별 최소 검증
 
@@ -57,6 +59,18 @@ pnpm.cmd run lint
 ```
 
 필요 시 영향 모듈 테스트를 추가한다.
+
+G02 추가 검증 완료:
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "presentation/http|\\.\\./\\.\\./presentation|@/modules/.*/presentation" BE/src/modules --glob "**/application/**/*.ts" --glob "!**/*.spec.ts"
+git diff --check
+
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd test -- account-request-application.service.spec.ts admin-audit-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-user-application.service.spec.ts admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts
+pnpm.cmd test
+```
 
 ### G06-G07
 

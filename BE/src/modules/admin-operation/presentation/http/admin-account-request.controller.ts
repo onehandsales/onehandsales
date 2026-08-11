@@ -9,6 +9,10 @@ import {
   ListAdminAccountDeletionRequestsQueryDto,
   ListAdminDataExportRequestsQueryDto,
 } from "./dto/admin-account-request.dto";
+import {
+  toAdminAccountDeletionRequestsResponse,
+  toAdminDataExportRequestsResponse,
+} from "./admin-account-request-response.mapper";
 
 // 역할 : AdminAccountRequestController 계정 삭제와 데이터 export 운영 queue HTTP 요청을 처리합니다.
 @UseGuards(AuthGuard, AdminGuard)
@@ -21,35 +25,42 @@ export class AdminAccountRequestController {
 
   // API : Admin, 계정 삭제 요청 queue 조회
   @Get("account-deletion-requests")
-  listAccountDeletionRequests(
+  async listAccountDeletionRequests(
     @CurrentUser() currentUser: CurrentUserContext,
     @Query() query: ListAdminAccountDeletionRequestsQueryDto,
     @Req() request: RequestWithRequestId
   ) {
     // 1. 현재 관리자와 query 조건, request id를 application 계층으로 전달합니다.
-    return this.accountRequestService.listAccountDeletionRequests(
-      currentUser,
-      query,
-      {
-        requestId: request.requestId,
-      }
-    );
+    const page =
+      await this.accountRequestService.listAccountDeletionRequests(
+        currentUser,
+        query,
+        {
+          requestId: request.requestId,
+        }
+      );
+
+    // 2. application page를 Admin API 응답 계약으로 변환합니다.
+    return toAdminAccountDeletionRequestsResponse(page);
   }
 
   // API : Admin, 데이터 export 요청 queue 조회
   @Get("data-export-requests")
-  listDataExportRequests(
+  async listDataExportRequests(
     @CurrentUser() currentUser: CurrentUserContext,
     @Query() query: ListAdminDataExportRequestsQueryDto,
     @Req() request: RequestWithRequestId
   ) {
     // 1. 현재 관리자와 query 조건, request id를 application 계층으로 전달합니다.
-    return this.accountRequestService.listDataExportRequests(
+    const page = await this.accountRequestService.listDataExportRequests(
       currentUser,
       query,
       {
         requestId: request.requestId,
       }
     );
+
+    // 2. application page를 Admin API 응답 계약으로 변환합니다.
+    return toAdminDataExportRequestsResponse(page);
   }
 }

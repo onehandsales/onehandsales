@@ -6,6 +6,10 @@ import { AdminGuard } from "@/shared/presentation/guards/admin.guard";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import { ListAdminProviderFailuresQueryDto } from "./dto/admin-provider-failure-request.dto";
+import {
+  toAdminProviderFailureDetailResponse,
+  toAdminProviderFailureListResponse,
+} from "./admin-provider-failure-response.mapper";
 
 // 역할 : AdminProviderFailureController Admin provider 실패 운영 조회 HTTP 요청을 처리합니다.
 @UseGuards(AuthGuard, AdminGuard)
@@ -18,35 +22,41 @@ export class AdminProviderFailureController {
 
   // API : Admin provider 실패 목록 조회
   @Get()
-  listProviderFailures(
+  async listProviderFailures(
     @CurrentUser() currentUser: CurrentUserContext,
     @Query() query: ListAdminProviderFailuresQueryDto,
     @Req() request: RequestWithRequestId
   ) {
     // 1. 현재 관리자와 query 조건, request id를 application 계층으로 전달합니다.
-    return this.providerFailureService.listProviderFailures(
+    const page = await this.providerFailureService.listProviderFailures(
       currentUser,
       query,
       {
         requestId: request.requestId,
       }
     );
+
+    // 2. application page를 Admin API 응답 계약으로 변환합니다.
+    return toAdminProviderFailureListResponse(page);
   }
 
   // API : Admin provider 실패 safe 상세 조회
   @Get(":failureId")
-  getProviderFailureDetail(
+  async getProviderFailureDetail(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("failureId") failureId: string,
     @Req() request: RequestWithRequestId
   ) {
     // 1. 현재 관리자와 opaque failure ID, request id를 application 계층으로 전달합니다.
-    return this.providerFailureService.getProviderFailureDetail(
+    const detail = await this.providerFailureService.getProviderFailureDetail(
       currentUser,
       failureId,
       {
         requestId: request.requestId,
       }
     );
+
+    // 2. application detail을 Admin API 응답 계약으로 변환합니다.
+    return toAdminProviderFailureDetailResponse(detail);
   }
 }

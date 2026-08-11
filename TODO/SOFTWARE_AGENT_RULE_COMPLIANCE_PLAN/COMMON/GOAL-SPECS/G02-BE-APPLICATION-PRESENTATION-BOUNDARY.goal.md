@@ -1,6 +1,6 @@
 # G02 BE Application Presentation Boundary
 
-상태: Draft
+상태: Implemented / Verified
 영역: BE
 우선순위: High
 
@@ -60,3 +60,39 @@ pnpm.cmd run lint
 ```
 
 영향 모듈의 spec이 있으면 함께 실행한다.
+
+## 7. 구현 결과
+
+- Backend application service 9곳에서 `../../presentation/http/*response.mapper` import와 `*Response` 반환 타입을 제거했다.
+- `AccountRequestApplicationService`는 `UserDataExportRequestApplicationResult`와 repository record를 반환하도록 분리했다.
+- Admin Operation application service는 기존 application port의 page/detail/record 타입을 반환하도록 정리했다.
+- `AdminAuditApplicationService`는 민감 원문 조회 결과를 `AdminSensitiveRawAccessApplicationResult`로 반환하고, HTTP response mapper 호출은 controller로 이동했다.
+- Account Request와 Admin Operation controller가 application result/page/detail/record를 받은 뒤 같은 presentation 폴더의 response mapper로 API 응답 계약을 생성하도록 변경했다.
+- application service spec은 HTTP response shape가 아니라 application record/result 기준으로 갱신했다.
+- API route, status code, response mapper shape, DB query는 변경하지 않았다.
+
+## 8. 검증 결과
+
+검증일: 2026-08-11
+완료 로그: `TODO_LOG/2026-08-11/G02_BE_APPLICATION_PRESENTATION_BOUNDARY/WORK_LOG.md`
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "presentation/http|\\.\\./\\.\\./presentation|@/modules/.*/presentation" BE/src/modules --glob "**/application/**/*.ts" --glob "!**/*.spec.ts"
+git diff --check
+
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd test -- account-request-application.service.spec.ts admin-audit-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-user-application.service.spec.ts admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts
+pnpm.cmd test
+```
+
+결과:
+
+- application source의 presentation 의존 검색 결과 없음
+- `git diff --check` 통과
+- Backend `typecheck` 통과
+- Backend `lint` 통과
+- 영향 application service spec 9개 suite / 38개 test 통과
+- Backend 전체 Jest 96개 suite / 518개 test 통과

@@ -8,19 +8,15 @@ import {
 } from "@prisma/client";
 import {
   ADMIN_ACCOUNT_REQUEST_REPOSITORY,
+  type AdminAccountDeletionRequestsPageRecord,
   type AdminAccountRequestRepository,
+  type AdminDataExportRequestsPageRecord,
   type ListAdminAccountDeletionRequestsInput,
   type ListAdminDataExportRequestsInput,
 } from "@/modules/admin-operation/application/ports/admin-account-request.repository";
 import { AdminForbiddenError } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
-import {
-  toAdminAccountDeletionRequestsResponse,
-  toAdminDataExportRequestsResponse,
-  type AdminAccountDeletionRequestsResponse,
-  type AdminDataExportRequestsResponse,
-} from "../../presentation/http/admin-account-request-response.mapper";
 
 const DEFAULT_ADMIN_ACCOUNT_REQUEST_LIMIT = 30;
 const MAX_ADMIN_ACCOUNT_REQUEST_LIMIT = 100;
@@ -62,7 +58,7 @@ export class AdminAccountRequestApplicationService {
     currentUser: CurrentUserContext,
     query: ListAdminAccountDeletionRequestsQueryInput,
     metadata: AdminAccountRequestMetadata
-  ): Promise<AdminAccountDeletionRequestsResponse> {
+  ): Promise<AdminAccountDeletionRequestsPageRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -95,8 +91,8 @@ export class AdminAccountRequestApplicationService {
       }
     );
 
-    // 4. 사용자 email masking과 reasonMessage 제외가 적용된 응답으로 변환합니다.
-    return toAdminAccountDeletionRequestsResponse(page);
+    // 4. 사용자 email masking과 reasonMessage 제외가 적용된 application page를 반환합니다.
+    return page;
   }
 
   // 기능 : Admin 데이터 export 요청 queue를 조회하고 audit를 남깁니다.
@@ -104,7 +100,7 @@ export class AdminAccountRequestApplicationService {
     currentUser: CurrentUserContext,
     query: ListAdminDataExportRequestsQueryInput,
     metadata: AdminAccountRequestMetadata
-  ): Promise<AdminDataExportRequestsResponse> {
+  ): Promise<AdminDataExportRequestsPageRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -136,8 +132,8 @@ export class AdminAccountRequestApplicationService {
       }
     );
 
-    // 4. export artifact/internal storage 정보 없이 queue 응답으로 변환합니다.
-    return toAdminDataExportRequestsResponse(page);
+    // 4. export artifact/internal storage 정보 없이 queue application page를 반환합니다.
+    return page;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.

@@ -9,6 +9,7 @@ import {
   ADMIN_SYSTEM_OPERATION_REPOSITORY,
   type AdminOperationCheckEnvironment,
   type AdminOperationCheckItemsRecord,
+  type AdminOperationCheckRunRecord,
   type AdminSystemOperationRepository,
 } from "@/modules/admin-operation/application/ports/admin-system-operation.repository";
 import {
@@ -18,10 +19,6 @@ import {
   AdminSystemSecretInNoteBlockedError,
 } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import {
-  toAdminOperationCheckRunResponse,
-  type AdminOperationCheckRunResponse,
-} from "../../presentation/http/admin-system-operation-response.mapper";
 
 const OPERATION_CHECK_ENVIRONMENTS: readonly AdminOperationCheckEnvironment[] = [
   "local",
@@ -73,7 +70,7 @@ export class AdminSystemOperationApplicationService {
   async getLatestOperationCheckRun(
     currentUser: CurrentUserContext,
     metadata: AdminSystemOperationMetadata
-  ): Promise<AdminOperationCheckRunResponse | null> {
+  ): Promise<AdminOperationCheckRunRecord | null> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -100,8 +97,8 @@ export class AdminSystemOperationApplicationService {
       }
     );
 
-    // 3. secret 없는 최신 점검 응답 또는 null을 반환합니다.
-    return run ? toAdminOperationCheckRunResponse(run) : null;
+    // 3. secret 없는 최신 점검 application record 또는 null을 반환합니다.
+    return run;
   }
 
   // 기능 : 운영 DB gate 점검 결과를 secret 없이 기록합니다.
@@ -109,7 +106,7 @@ export class AdminSystemOperationApplicationService {
     currentUser: CurrentUserContext,
     command: CreateAdminOperationCheckRunCommand,
     metadata: AdminSystemOperationMetadata
-  ): Promise<AdminOperationCheckRunResponse> {
+  ): Promise<AdminOperationCheckRunRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -152,8 +149,8 @@ export class AdminSystemOperationApplicationService {
       }
     );
 
-    // 4. 저장된 점검 기록을 API 응답으로 변환합니다.
-    return toAdminOperationCheckRunResponse(run);
+    // 4. 저장된 점검 기록을 application record로 반환합니다.
+    return run;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.

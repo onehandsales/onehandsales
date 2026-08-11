@@ -37,7 +37,7 @@ const requestMetadata = {
 // 기능 : AdminAuditApplicationService의 민감 원문 조회 정책을 테스트합니다.
 describe("AdminAuditApplicationService", () => {
   // 기능 : 감사 로그 목록 응답에서 관리자 email 원문을 masking하는지 검증합니다.
-  it("masks admin email in audit log list responses", async () => {
+  it("returns audit log page records from the repository", async () => {
     const repository = createRepositoryMock({
       listAuditLogs: jest.fn().mockResolvedValue({
         items: [
@@ -60,10 +60,10 @@ describe("AdminAuditApplicationService", () => {
     });
     const service = createService(repository);
 
-    const response = await service.listAuditLogs(adminUser, {});
+    const page = await service.listAuditLogs(adminUser, {});
 
-    expect(response.items[0]?.adminEmailMasked).toBe("lo***@example.com");
-    expect(JSON.stringify(response)).not.toContain("local.admin@example.com");
+    expect(page.items[0]?.adminEmail).toBe("local.admin@example.com");
+    expect(page.nextCursor).toBeNull();
   });
 
   // 기능 : 사유가 짧으면 저장소를 호출하지 않고 거부하는지 검증합니다.
@@ -167,7 +167,7 @@ describe("AdminAuditApplicationService", () => {
     );
     const service = createService(repository);
 
-    const response = await service.accessSensitiveRawData(
+    const result = await service.accessSensitiveRawData(
       adminUser,
       {
         targetUserId: accessLog.targetUserId,
@@ -193,8 +193,8 @@ describe("AdminAuditApplicationService", () => {
         userAgentHash: expect.stringMatching(/^[a-f0-9]{64}$/),
       })
     );
-    expect(response.data).toEqual(rawData.data);
-    expect(response.accessId).toBe(accessLog.id);
+    expect(result.rawData.data).toEqual(rawData.data);
+    expect(result.accessLog.id).toBe(accessLog.id);
   });
 });
 

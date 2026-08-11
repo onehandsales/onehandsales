@@ -6,6 +6,7 @@ import {
 } from "@prisma/client";
 import {
   ADMIN_ANALYTICS_REPOSITORY,
+  type AdminAnalyticsOverviewRecord,
   type AdminAnalyticsRepository,
   type GetAdminAnalyticsOverviewInput,
 } from "@/modules/admin-operation/application/ports/admin-analytics.repository";
@@ -16,10 +17,6 @@ import {
   AdminTimezoneInvalidError,
 } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import {
-  toAdminAnalyticsOverviewResponse,
-  type AdminAnalyticsOverviewResponse,
-} from "../../presentation/http/admin-analytics-response.mapper";
 
 const DEFAULT_ADMIN_ANALYTICS_TIME_ZONE = "Asia/Seoul";
 const MAX_ADMIN_ANALYTICS_RANGE_DAYS = 366;
@@ -54,7 +51,7 @@ export class AdminAnalyticsApplicationService {
     currentUser: CurrentUserContext,
     query: GetAdminAnalyticsOverviewQueryInput,
     metadata: AdminAnalyticsRequestMetadata
-  ): Promise<AdminAnalyticsOverviewResponse> {
+  ): Promise<AdminAnalyticsOverviewRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -83,8 +80,8 @@ export class AdminAnalyticsApplicationService {
       },
     });
 
-    // 4. mobile payload 원문 없이 집계값만 담긴 응답으로 변환합니다.
-    return toAdminAnalyticsOverviewResponse(overview);
+    // 4. mobile payload 원문 없이 집계값만 담긴 application overview를 반환합니다.
+    return overview;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.

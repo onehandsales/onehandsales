@@ -7,7 +7,10 @@ import {
 } from "@prisma/client";
 import {
   ADMIN_USER_REPOSITORY,
+  type AdminUserActivityTimelinePageRecord,
+  type AdminUserListPageRecord,
   AdminUserListSort,
+  type AdminUserOverviewRecord,
   type AdminUserRepository,
   type ListAdminUserActivityTimelineInput,
   type ListAdminUsersInput,
@@ -18,14 +21,6 @@ import {
 } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
-import {
-  toAdminUserActivityTimelineResponse,
-  toAdminUserListResponse,
-  toAdminUserOverviewResponse,
-  type AdminUserActivityTimelineResponse,
-  type AdminUserListResponse,
-  type AdminUserOverviewResponse,
-} from "../../presentation/http/admin-user-response.mapper";
 
 const DEFAULT_USER_LIST_LIMIT = 50;
 const DEFAULT_TIMELINE_LIMIT = 30;
@@ -101,7 +96,7 @@ export class AdminUserApplicationService {
     currentUser: CurrentUserContext,
     query: ListAdminUsersQueryInput,
     metadata: AdminUserRequestMetadata
-  ): Promise<AdminUserListResponse> {
+  ): Promise<AdminUserListPageRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -134,8 +129,8 @@ export class AdminUserApplicationService {
       }
     );
 
-    // 4. email/displayName 원문을 masking한 응답으로 반환합니다.
-    return toAdminUserListResponse(page);
+    // 4. email/displayName 원문을 포함한 application page를 반환합니다.
+    return page;
   }
 
   // 기능 : Admin 사용자 상세 overview를 조회하고 상세 조회 감사 로그를 남깁니다.
@@ -143,7 +138,7 @@ export class AdminUserApplicationService {
     currentUser: CurrentUserContext,
     userId: string,
     metadata: AdminUserRequestMetadata
-  ): Promise<AdminUserOverviewResponse> {
+  ): Promise<AdminUserOverviewRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -179,8 +174,8 @@ export class AdminUserApplicationService {
       }
     );
 
-    // 3. profile 원문을 masking한 상세 overview 응답으로 반환합니다.
-    return toAdminUserOverviewResponse(overview);
+    // 3. profile 원문을 포함한 application overview를 반환합니다.
+    return overview;
   }
 
   // 기능 : Admin 사용자 활동 timeline을 안전한 event summary로 조회합니다.
@@ -188,7 +183,7 @@ export class AdminUserApplicationService {
     currentUser: CurrentUserContext,
     userId: string,
     query: ListAdminUserActivityTimelineQueryInput
-  ): Promise<AdminUserActivityTimelineResponse> {
+  ): Promise<AdminUserActivityTimelinePageRecord> {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
@@ -210,7 +205,7 @@ export class AdminUserApplicationService {
       }
     }
 
-    return toAdminUserActivityTimelineResponse(page);
+    return page;
   }
 
   // 기능 : 관리자 권한이 아닌 application 호출을 거부합니다.

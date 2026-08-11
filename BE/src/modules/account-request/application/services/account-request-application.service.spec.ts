@@ -41,7 +41,7 @@ describe("AccountRequestApplicationService", () => {
     repository.createDataExportRequest.mockResolvedValue(createdRequest);
     const service = new AccountRequestApplicationService(repository);
 
-    const response = await service.createMyDataExportRequest(currentUser, {
+    const result = await service.createMyDataExportRequest(currentUser, {
       includeSensitive: false,
       format: "ZIP_JSON_XLSX",
     });
@@ -56,16 +56,10 @@ describe("AccountRequestApplicationService", () => {
       format: "ZIP_JSON_XLSX",
       requestedAt: exportRequestedAt,
     });
-    expect(response).toEqual({
-      id: createdRequest.id,
-      status: "REQUESTED",
-      includeSensitive: false,
-      format: "ZIP_JSON_XLSX",
-      requestedAt: exportRequestedAt.toISOString(),
-      expiresAt: null,
-      downloadUrl: null,
+    expect(result).toEqual({
+      request: createdRequest,
+      now: exportRequestedAt,
     });
-    expect(JSON.stringify(response)).not.toContain("artifactPath");
   });
 
   it("returns the existing open data export request instead of creating another row", async () => {
@@ -76,10 +70,10 @@ describe("AccountRequestApplicationService", () => {
     repository.findOpenDataExportRequest.mockResolvedValue(existingRequest);
     const service = new AccountRequestApplicationService(repository);
 
-    const response = await service.createMyDataExportRequest(currentUser, {});
+    const result = await service.createMyDataExportRequest(currentUser, {});
 
     expect(repository.createDataExportRequest).not.toHaveBeenCalled();
-    expect(response.id).toBe(existingRequest.id);
+    expect(result.request.id).toBe(existingRequest.id);
   });
 
   it("rejects includeSensitive export until the separate confirmation flow exists", async () => {
@@ -107,7 +101,7 @@ describe("AccountRequestApplicationService", () => {
     repository.createAccountDeletionRequest.mockResolvedValue(createdRequest);
     const service = new AccountRequestApplicationService(repository);
 
-    const response = await service.createMyAccountDeletionRequest(currentUser, {
+    const request = await service.createMyAccountDeletionRequest(currentUser, {
       confirmText: "DELETE MY ACCOUNT",
       reasonCode: "NO_LONGER_NEEDED",
       reasonMessage: " 더 이상 사용하지 않아요 ",
@@ -121,13 +115,7 @@ describe("AccountRequestApplicationService", () => {
       scheduledDeletionAt: new Date("2026-08-31T03:00:00.000Z"),
       canCancelUntil: new Date("2026-08-31T03:00:00.000Z"),
     });
-    expect(response).toEqual({
-      id: createdRequest.id,
-      status: "REQUESTED",
-      requestedAt: deletionRequestedAt.toISOString(),
-      scheduledDeletionAt: "2026-08-31T03:00:00.000Z",
-      canCancelUntil: "2026-08-31T03:00:00.000Z",
-    });
+    expect(request).toEqual(createdRequest);
   });
 
   it("rejects account deletion unless the dangerous confirm text matches exactly", async () => {
@@ -153,7 +141,7 @@ describe("AccountRequestApplicationService", () => {
     repository.cancelAccountDeletionRequest.mockResolvedValue(cancelledRequest);
     const service = new AccountRequestApplicationService(repository);
 
-    const response = await service.cancelMyAccountDeletionRequest(
+    const request = await service.cancelMyAccountDeletionRequest(
       currentUser,
       existingRequest.id
     );
@@ -163,11 +151,7 @@ describe("AccountRequestApplicationService", () => {
       requestId: existingRequest.id,
       cancelledAt: exportRequestedAt,
     });
-    expect(response).toEqual({
-      id: existingRequest.id,
-      status: "CANCELLED",
-      cancelledAt: exportRequestedAt.toISOString(),
-    });
+    expect(request).toEqual(cancelledRequest);
   });
 
   it("maps repository cancel miss to a not cancelable account deletion error", async () => {
