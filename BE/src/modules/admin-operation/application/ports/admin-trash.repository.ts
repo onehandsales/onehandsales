@@ -3,7 +3,7 @@ import type {
   AdminAuditResult,
   AdminTargetType,
   TrashRecoveryRequestStatus,
-} from "@prisma/client";
+} from "./admin-operation.types";
 
 export const ADMIN_TRASH_REPOSITORY = Symbol("ADMIN_TRASH_REPOSITORY");
 

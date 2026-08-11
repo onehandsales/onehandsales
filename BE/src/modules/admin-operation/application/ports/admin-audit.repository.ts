@@ -3,7 +3,7 @@ import type {
   AdminAuditResult,
   AdminSensitiveFieldSet,
   AdminTargetType,
-} from "@prisma/client";
+} from "./admin-operation.types";
 
 export const ADMIN_AUDIT_REPOSITORY = Symbol("ADMIN_AUDIT_REPOSITORY");
 

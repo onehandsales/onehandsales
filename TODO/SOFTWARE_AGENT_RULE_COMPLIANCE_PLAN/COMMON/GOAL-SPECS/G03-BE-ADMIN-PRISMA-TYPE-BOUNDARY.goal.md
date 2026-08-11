@@ -1,6 +1,6 @@
 # G03 BE Admin Prisma Type Boundary
 
-상태: Draft
+상태: Implemented / Verified
 영역: BE
 우선순위: High
 
@@ -50,3 +50,37 @@ cd D:\workspace_repository\onehandsales\BE
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
+
+## 7. 구현 결과
+
+- `BE/src/modules/admin-operation/application/ports/admin-operation.types.ts`를 추가해 Admin Operation application 전용 enum-like const object와 union type을 정의했다.
+- Admin Operation application repository port 8곳에서 `@prisma/client` enum/type import를 제거하고 application 전용 타입을 사용하도록 변경했다.
+- Admin Operation application service 8곳에서 `@prisma/client` import를 제거하고 application 전용 타입/값을 사용하도록 변경했다.
+- application service spec 8곳의 Prisma enum fixture 의존을 application 전용 타입 fixture로 정리했다.
+- Prisma schema, migration, Admin API response field는 변경하지 않았다.
+- Prisma repository와 presentation DTO/response mapper는 기존 DB/API edge 역할을 유지한다.
+
+## 8. 검증 결과
+
+검증일: 2026-08-11
+완료 로그: `TODO_LOG/2026-08-11/G03_BE_ADMIN_PRISMA_TYPE_BOUNDARY/WORK_LOG.md`
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "@prisma/client" BE/src/modules/admin-operation/application --glob "!**/*.spec.ts"
+
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd test -- admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-audit-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts admin-user-application.service.spec.ts prisma-admin-account-request.repository.spec.ts prisma-admin-analytics.repository.spec.ts prisma-admin-audit.repository.spec.ts prisma-admin-domain-record.repository.spec.ts prisma-admin-provider-failure.repository.spec.ts prisma-admin-system-operation.repository.spec.ts prisma-admin-trash.repository.spec.ts prisma-admin-user.repository.spec.ts
+pnpm.cmd test
+```
+
+결과:
+
+- application source의 `@prisma/client` 검색 결과 없음
+- Backend `typecheck` 통과
+- Backend `lint` 통과
+- Admin Operation application/infrastructure 관련 spec 15개 suite / 52개 test 통과
+- Backend 전체 Jest 96개 suite / 518개 test 통과
+- 추가 재검토에서 spec 포함 Admin Operation application 영역의 `@prisma/client` 검색 결과도 없음

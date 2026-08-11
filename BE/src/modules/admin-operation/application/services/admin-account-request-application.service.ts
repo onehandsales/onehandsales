@@ -1,12 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  AccountDeletionRequestStatus,
-  AdminAuditAction,
-  AdminAuditResult,
-  AdminTargetType,
-  UserDataExportRequestStatus,
-} from "@prisma/client";
-import {
   ADMIN_ACCOUNT_REQUEST_REPOSITORY,
   type AdminAccountDeletionRequestsPageRecord,
   type AdminAccountRequestRepository,
@@ -14,6 +7,13 @@ import {
   type ListAdminAccountDeletionRequestsInput,
   type ListAdminDataExportRequestsInput,
 } from "@/modules/admin-operation/application/ports/admin-account-request.repository";
+import {
+  AccountDeletionRequestStatus,
+  AdminAuditAction,
+  AdminAuditResult,
+  AdminTargetType,
+  UserDataExportRequestStatus,
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import { AdminForbiddenError } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";

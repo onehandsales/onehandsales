@@ -28,7 +28,9 @@
 - G01 완료 로그는 `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`다.
 - G02 Backend application -> presentation 의존 제거는 2026-08-11 구현 및 검증을 완료했다.
 - G02 완료 로그는 `TODO_LOG/2026-08-11/G02_BE_APPLICATION_PRESENTATION_BOUNDARY/WORK_LOG.md`다.
-- 현재 다음 순서는 G03 Backend Admin Operation Prisma type boundary다.
+- G03 Backend Admin Operation Prisma type boundary는 2026-08-11 구현 및 검증을 완료했다.
+- G03 완료 로그는 `TODO_LOG/2026-08-11/G03_BE_ADMIN_PRISMA_TYPE_BOUNDARY/WORK_LOG.md`다.
+- 현재 다음 순서는 G04 Backend cross-module repository boundary다.
 
 ## 3. Goal별 최소 검증
 
@@ -69,6 +71,17 @@ git diff --check
 
 cd D:\workspace_repository\onehandsales\BE
 pnpm.cmd test -- account-request-application.service.spec.ts admin-audit-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-user-application.service.spec.ts admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts
+pnpm.cmd test
+```
+
+G03 추가 검증 완료:
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "@prisma/client" BE/src/modules/admin-operation/application --glob "!**/*.spec.ts"
+
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd test -- admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-audit-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts admin-user-application.service.spec.ts prisma-admin-account-request.repository.spec.ts prisma-admin-analytics.repository.spec.ts prisma-admin-audit.repository.spec.ts prisma-admin-domain-record.repository.spec.ts prisma-admin-provider-failure.repository.spec.ts prisma-admin-system-operation.repository.spec.ts prisma-admin-trash.repository.spec.ts prisma-admin-user.repository.spec.ts
 pnpm.cmd test
 ```
 

@@ -4,7 +4,7 @@ import {
   AdminAuditResult,
   AdminTargetType,
   UserDataExportRequestStatus,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import type {
   AdminAccountRequestRepository,
   AdminDataExportRequestsPageRecord,

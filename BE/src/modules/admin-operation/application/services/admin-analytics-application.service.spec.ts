@@ -2,7 +2,7 @@ import {
   AdminAuditAction,
   AdminAuditResult,
   AdminTargetType,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import type {
   AdminAnalyticsOverviewRecord,
   AdminAnalyticsRepository,

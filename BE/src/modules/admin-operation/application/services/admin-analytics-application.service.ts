@@ -1,15 +1,15 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  AdminAuditAction,
-  AdminAuditResult,
-  AdminTargetType,
-} from "@prisma/client";
-import {
   ADMIN_ANALYTICS_REPOSITORY,
   type AdminAnalyticsOverviewRecord,
   type AdminAnalyticsRepository,
   type GetAdminAnalyticsOverviewInput,
 } from "@/modules/admin-operation/application/ports/admin-analytics.repository";
+import {
+  AdminAuditAction,
+  AdminAuditResult,
+  AdminTargetType,
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminAnalyticsRangeRequiredError,
   AdminAnalyticsRangeTooLargeError,

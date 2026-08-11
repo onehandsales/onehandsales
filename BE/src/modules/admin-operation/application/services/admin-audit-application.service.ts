@@ -5,7 +5,7 @@ import {
   AdminSensitiveFieldSet,
   AdminTargetType,
   type AdminAuditAction,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   ADMIN_AUDIT_REPOSITORY,
   type AdminAuditLogPageRecord,

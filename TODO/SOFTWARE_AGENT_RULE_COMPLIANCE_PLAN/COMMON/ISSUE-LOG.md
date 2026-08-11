@@ -83,6 +83,14 @@
 
 - `G03-BE-ADMIN-PRISMA-TYPE-BOUNDARY`
 
+처리 상태:
+
+- 2026-08-11 구현 및 검증 완료
+- Admin Operation application 전용 enum-like const object와 union type을 `admin-operation.types.ts`에 정의 완료
+- Admin Operation application/port의 `@prisma/client` enum/type import 제거 완료
+- application service spec의 Prisma enum fixture 직접 의존 제거 완료
+- Backend `typecheck`, `lint`, 전체 Jest 96개 suite / 518개 test 통과
+
 ### H03. Backend module 간 repository 경계 위반 후보
 
 근거:

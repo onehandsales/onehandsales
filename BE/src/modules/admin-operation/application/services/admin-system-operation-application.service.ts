@@ -1,17 +1,17 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  AdminAuditAction,
-  AdminAuditResult,
-  AdminOperationCheckRunStatus,
-  AdminTargetType,
-} from "@prisma/client";
-import {
   ADMIN_SYSTEM_OPERATION_REPOSITORY,
   type AdminOperationCheckEnvironment,
   type AdminOperationCheckItemsRecord,
   type AdminOperationCheckRunRecord,
   type AdminSystemOperationRepository,
 } from "@/modules/admin-operation/application/ports/admin-system-operation.repository";
+import {
+  AdminAuditAction,
+  AdminAuditResult,
+  AdminOperationCheckRunStatus,
+  AdminTargetType,
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminForbiddenError,
   AdminSystemCheckStatusInvalidError,

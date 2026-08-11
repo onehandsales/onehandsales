@@ -3,7 +3,7 @@ import {
   AdminAuditResult,
   AdminTargetType,
   UserStatus,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminUserListSort,
   type AdminUserOverviewRecord,

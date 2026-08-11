@@ -3,7 +3,7 @@ import {
   AdminAuditResult,
   AdminTargetType,
   TrashRecoveryRequestStatus,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminTrashDomain,
   type AdminTrashRepository,

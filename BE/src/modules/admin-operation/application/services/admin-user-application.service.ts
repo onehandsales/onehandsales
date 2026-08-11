@@ -1,11 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  AdminAuditAction,
-  AdminAuditResult,
-  AdminTargetType,
-  UserStatus,
-} from "@prisma/client";
-import {
   ADMIN_USER_REPOSITORY,
   type AdminUserActivityTimelinePageRecord,
   type AdminUserListPageRecord,
@@ -15,6 +9,12 @@ import {
   type ListAdminUserActivityTimelineInput,
   type ListAdminUsersInput,
 } from "@/modules/admin-operation/application/ports/admin-user.repository";
+import {
+  AdminAuditAction,
+  AdminAuditResult,
+  AdminTargetType,
+  type UserStatus,
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminForbiddenError,
   AdminUserNotFoundError,

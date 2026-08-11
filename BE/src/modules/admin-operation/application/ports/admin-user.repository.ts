@@ -6,7 +6,7 @@ import type {
   UserActivationStatus,
   UserRole,
   UserStatus,
-} from "@prisma/client";
+} from "./admin-operation.types";
 
 export const ADMIN_USER_REPOSITORY = Symbol("ADMIN_USER_REPOSITORY");
 

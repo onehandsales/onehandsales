@@ -3,7 +3,7 @@ import type {
   AdminAuditResult,
   AdminOperationCheckRunStatus,
   AdminTargetType,
-} from "@prisma/client";
+} from "./admin-operation.types";
 
 export const ADMIN_SYSTEM_OPERATION_REPOSITORY = Symbol(
   "ADMIN_SYSTEM_OPERATION_REPOSITORY"

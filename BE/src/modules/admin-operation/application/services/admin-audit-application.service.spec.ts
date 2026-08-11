@@ -3,7 +3,7 @@ import {
   AdminAuditResult,
   AdminSensitiveFieldSet,
   AdminTargetType,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import type {
   AdminAuditRepository,
   AdminSensitiveAccessRecord,

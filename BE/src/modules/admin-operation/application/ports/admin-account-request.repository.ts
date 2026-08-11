@@ -4,7 +4,7 @@ import type {
   AdminAuditResult,
   AdminTargetType,
   UserDataExportRequestStatus,
-} from "@prisma/client";
+} from "./admin-operation.types";
 
 export const ADMIN_ACCOUNT_REQUEST_REPOSITORY = Symbol(
   "ADMIN_ACCOUNT_REQUEST_REPOSITORY"

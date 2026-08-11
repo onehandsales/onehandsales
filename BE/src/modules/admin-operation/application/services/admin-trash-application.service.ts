@@ -1,11 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  AdminAuditAction,
-  AdminAuditResult,
-  AdminTargetType,
-  TrashRecoveryRequestStatus,
-} from "@prisma/client";
-import {
   ADMIN_TRASH_REPOSITORY,
   AdminTrashDomain,
   type AdminTrashRecordsPageRecord,
@@ -16,6 +10,12 @@ import {
   type ListAdminTrashRecoveryRequestsInput,
   type ListAdminTrashRecordsInput,
 } from "@/modules/admin-operation/application/ports/admin-trash.repository";
+import {
+  AdminAuditAction,
+  AdminAuditResult,
+  AdminTargetType,
+  TrashRecoveryRequestStatus,
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminDomainUnsupportedError,
   AdminForbiddenError,

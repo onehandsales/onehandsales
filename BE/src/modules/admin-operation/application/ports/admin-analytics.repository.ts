@@ -2,7 +2,7 @@ import type {
   AdminAuditAction,
   AdminAuditResult,
   AdminTargetType,
-} from "@prisma/client";
+} from "./admin-operation.types";
 
 export const ADMIN_ANALYTICS_REPOSITORY = Symbol("ADMIN_ANALYTICS_REPOSITORY");
 

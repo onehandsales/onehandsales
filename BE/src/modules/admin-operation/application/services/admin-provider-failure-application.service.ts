@@ -1,10 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  AdminAuditAction,
-  AdminAuditResult,
-  AdminTargetType,
-} from "@prisma/client";
-import {
   ADMIN_PROVIDER_FAILURE_REPOSITORY,
   AdminProviderFailureFeatureArea,
   AdminProviderFailureType,
@@ -14,6 +9,11 @@ import {
   type AdminProviderFailureStatusFilter,
   type ListAdminProviderFailuresInput,
 } from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+import {
+  AdminAuditAction,
+  AdminAuditResult,
+  AdminTargetType,
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   AdminForbiddenError,
   AdminTargetNotFoundError,
