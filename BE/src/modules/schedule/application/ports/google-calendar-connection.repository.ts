@@ -1,4 +1,4 @@
-import type { NotificationReminderWriteRepository } from "@/modules/notification/application/ports/notification-reminder-writer.port";
+import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
 
 export const GOOGLE_CALENDAR_CONNECTION_REPOSITORY = Symbol(
   "GOOGLE_CALENDAR_CONNECTION_REPOSITORY"

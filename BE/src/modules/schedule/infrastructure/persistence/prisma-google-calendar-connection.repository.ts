@@ -1,10 +1,9 @@
-import {
-  type CancelPendingNotificationsBySourceInput,
-  type NotificationRecord,
-  type NotificationSettingsRecord,
-  type UpsertReminderNotificationInput,
-} from "@/modules/notification/application/ports/notification.repository";
-import { PrismaNotificationRepository } from "@/modules/notification/infrastructure/persistence/prisma-notification.repository";
+import type {
+  CancelPendingNotificationsBySourceInput,
+  NotificationRecord,
+  NotificationSettingsRecord,
+  UpsertReminderNotificationInput,
+} from "@/shared/application/notification/notification-reminder-writer.port";
 import {
   type DisconnectGoogleCalendarConnectionInput,
   type DisconnectGoogleCalendarConnectionResult,
@@ -14,6 +13,7 @@ import {
   type UpsertConnectedGoogleCalendarConnectionInput,
 } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaNotificationReminderWriter } from "@/shared/infrastructure/notification/prisma-notification-reminder-writer";
 import { Prisma } from "@prisma/client";
 
 type GoogleCalendarPrismaClient = PrismaService | Prisma.TransactionClient;
@@ -57,13 +57,13 @@ export class PrismaGoogleCalendarConnectionRepository
   async findSettingsForUser(
     userId: string
   ): Promise<NotificationSettingsRecord | null> {
-    return this.createNotificationRepository().findSettingsForUser(userId);
+    return this.createNotificationReminderWriter().findSettingsForUser(userId);
   }
 
   async cancelPendingNotificationsBySource(
     input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
-    return this.createNotificationRepository().cancelPendingNotificationsBySource(
+    return this.createNotificationReminderWriter().cancelPendingNotificationsBySource(
       input
     );
   }
@@ -71,7 +71,7 @@ export class PrismaGoogleCalendarConnectionRepository
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
-    return this.createNotificationRepository().upsertReminderNotification(input);
+    return this.createNotificationReminderWriter().upsertReminderNotification(input);
   }
 
   async findConnection(
@@ -278,8 +278,9 @@ export class PrismaGoogleCalendarConnectionRepository
     };
   }
 
-  private createNotificationRepository(): PrismaNotificationRepository {
-    return new PrismaNotificationRepository(this.client, null);
+  // 기능 : 현재 client 범위에서 reminder writer를 생성합니다.
+  private createNotificationReminderWriter(): PrismaNotificationReminderWriter {
+    return new PrismaNotificationReminderWriter(this.client);
   }
 
   private createConnectionSelect() {

@@ -1,18 +1,16 @@
 import { Prisma } from "@prisma/client";
 import {
-  type CancelPendingNotificationsBySourceInput,
-  type NotificationRecord,
-  type NotificationSettingsRecord,
-  type UpsertReminderNotificationInput,
-} from "@/modules/notification/application/ports/notification.repository";
-import { PrismaNotificationRepository } from "@/modules/notification/infrastructure/persistence/prisma-notification.repository";
-import {
   createDealActivityIfAbsent,
   createDealActivityLinkedRecord,
   createDealLinkedRecord,
   createSafeActivitySummary,
-} from "@/modules/deal/application/services/deal-activity-helper";
-import { PrismaDealActivityRepository } from "@/modules/deal/infrastructure/persistence/prisma-deal-activity.repository";
+} from "@/shared/application/deal/deal-activity-writer.port";
+import type {
+  CancelPendingNotificationsBySourceInput,
+  NotificationRecord,
+  NotificationSettingsRecord,
+  UpsertReminderNotificationInput,
+} from "@/shared/application/notification/notification-reminder-writer.port";
 import {
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
@@ -35,6 +33,8 @@ import {
   isDealStatusCode,
 } from "@/modules/deal/domain/deal-status";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaDealBoundaryAdapter } from "@/shared/infrastructure/deal/prisma-deal-boundary.adapter";
+import { PrismaNotificationReminderWriter } from "@/shared/infrastructure/notification/prisma-notification-reminder-writer";
 
 type SchedulePrismaClient = PrismaService | Prisma.TransactionClient;
 
@@ -182,13 +182,13 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   async findSettingsForUser(
     userId: string
   ): Promise<NotificationSettingsRecord | null> {
-    return this.createNotificationRepository().findSettingsForUser(userId);
+    return this.createNotificationReminderWriter().findSettingsForUser(userId);
   }
 
   async cancelPendingNotificationsBySource(
     input: CancelPendingNotificationsBySourceInput
   ): Promise<number> {
-    return this.createNotificationRepository().cancelPendingNotificationsBySource(
+    return this.createNotificationReminderWriter().cancelPendingNotificationsBySource(
       input
     );
   }
@@ -196,25 +196,11 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   async upsertReminderNotification(
     input: UpsertReminderNotificationInput
   ): Promise<NotificationRecord> {
-    return this.createNotificationRepository().upsertReminderNotification(input);
+    return this.createNotificationReminderWriter().upsertReminderNotification(input);
   }
 
   async listDealOptions(userId: string): Promise<ScheduleDealOptionRecord[]> {
-    const deals = await this.client.deal.findMany({
-      where: { userId, deletedAt: null },
-      select: {
-        id: true,
-        dealName: true,
-        createdAt: true,
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    });
-
-    return deals.map((deal) => ({
-      id: deal.id,
-      dealName: deal.dealName,
-      createdAt: deal.createdAt,
-    }));
+    return this.createDealBoundary().listDealOptions(userId);
   }
 
   // 기능 : 현재 사용자의 딜 ID 목록을 조회합니다.
@@ -226,17 +212,10 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       return [];
     }
 
-    const deals = await this.client.deal.findMany({
-      where: {
-        id: { in: [...dealIds] },
-        userId,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        dealName: true,
-      },
-    });
+    const deals = await this.createDealBoundary().findDealLabelsByIds(
+      userId,
+      dealIds
+    );
 
     return deals.map((deal) => ({
       id: deal.id,
@@ -658,13 +637,14 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     return this.createActiveScheduleVisibilityWhere();
   }
 
-  private createNotificationRepository(): PrismaNotificationRepository {
-    return new PrismaNotificationRepository(this.client, null);
+  // 기능 : 현재 client 범위에서 reminder writer를 생성합니다.
+  private createNotificationReminderWriter(): PrismaNotificationReminderWriter {
+    return new PrismaNotificationReminderWriter(this.client);
   }
 
-  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
-  private createDealActivityRepository(): PrismaDealActivityRepository {
-    return new PrismaDealActivityRepository(this.client, null);
+  // 기능 : 현재 client 범위에서 딜 module shared boundary adapter를 생성합니다.
+  private createDealBoundary(): PrismaDealBoundaryAdapter {
+    return new PrismaDealBoundaryAdapter(this.client);
   }
 
   // 기능 : 일정 activity summary에 필요한 일정 snapshot을 조회합니다.
@@ -697,17 +677,10 @@ export class PrismaScheduleRepository implements ScheduleRepository {
       return new Map();
     }
 
-    const deals = await this.client.deal.findMany({
-      where: {
-        id: { in: [...dealIds] },
-        userId,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        dealName: true,
-      },
-    });
+    const deals = await this.createDealBoundary().findDealLabelsByIds(
+      userId,
+      dealIds
+    );
 
     return new Map(deals.map((deal) => [deal.id, deal]));
   }
@@ -754,7 +727,7 @@ export class PrismaScheduleRepository implements ScheduleRepository {
     readonly title: string;
     readonly occurredAt: Date;
   }): Promise<void> {
-    await createDealActivityIfAbsent(this.createDealActivityRepository(), {
+    await createDealActivityIfAbsent(this.createDealBoundary(), {
       userId: input.userId,
       dealId: input.dealId,
       activityType: input.activityType,

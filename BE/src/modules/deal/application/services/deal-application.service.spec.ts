@@ -50,7 +50,7 @@ import type {
   NotificationRecord,
   NotificationSettingsRecord,
   UpsertReminderNotificationInput,
-} from "@/modules/notification/application/ports/notification.repository";
+} from "@/shared/application/notification/notification-reminder-writer.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type {
   XlsxWorkbookWriter,

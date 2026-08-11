@@ -27,7 +27,7 @@ import type {
   NotificationRecord,
   NotificationSettingsRecord,
   UpsertReminderNotificationInput,
-} from "@/modules/notification/application/ports/notification.repository";
+} from "@/shared/application/notification/notification-reminder-writer.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { XLSX_CONTENT_TYPE } from "@/shared/application/export/xlsx-export-file";
 import type { XlsxWorkbookWriter } from "@/shared/application/ports/xlsx-workbook.writer";

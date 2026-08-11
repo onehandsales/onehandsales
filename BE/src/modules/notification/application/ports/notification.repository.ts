@@ -1,10 +1,23 @@
+import type {
+  CreateNotificationInput,
+  NotificationRecord,
+  NotificationReminderWriteRepository,
+  NotificationSettingsRecord,
+} from "@/shared/application/notification/notification-reminder-writer.port";
+
+export type {
+  CancelPendingNotificationsBySourceInput,
+  CreateNotificationInput,
+  NotificationRecord,
+  NotificationSettingsRecord,
+  NotificationSourceType,
+  NotificationStatus,
+  NotificationType,
+  UpsertReminderNotificationInput,
+} from "@/shared/application/notification/notification-reminder-writer.port";
+
 export const NOTIFICATION_REPOSITORY = Symbol("NOTIFICATION_REPOSITORY");
 
-export type NotificationType =
-  | "SCHEDULE_START_REMINDER"
-  | "DEAL_DUE_REMINDER";
-export type NotificationStatus = "PENDING" | "SENT" | "FAILED" | "CANCELED";
-export type NotificationSourceType = "SCHEDULE" | "DEAL";
 export type NotificationDeliveryChannel = "EMAIL" | "BROWSER_PUSH";
 export type NotificationDeliveryStatus =
   | "PENDING"
@@ -13,44 +26,6 @@ export type NotificationDeliveryStatus =
   | "CANCELED";
 export type BrowserPushSubscriptionStatus = "ACTIVE" | "REVOKED";
 export type NotificationReadFilter = "ALL" | "READ" | "UNREAD";
-
-// 역할 : NotificationSettingsRecord 사용자 알림 설정 DB record를 전달합니다.
-export interface NotificationSettingsRecord {
-  readonly id: string;
-  readonly userId: string;
-  readonly scheduleReminderEnabled: boolean;
-  readonly dealDueReminderEnabled: boolean;
-  readonly emailNotificationEnabled: boolean;
-  readonly browserPushEnabled: boolean;
-  readonly scheduleReminderMinutes: number;
-  readonly dealDueReminderDaysBefore: number;
-  readonly dealDueReminderLocalTime: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-}
-
-// 역할 : NotificationRecord 앱 안 알림 정본 DB record를 전달합니다.
-export interface NotificationRecord {
-  readonly id: string;
-  readonly userId: string;
-  readonly type: NotificationType;
-  readonly sourceType: NotificationSourceType;
-  readonly sourceId: string;
-  readonly dedupeKey: string;
-  readonly targetPath: string;
-  readonly title: string;
-  readonly body: string | null;
-  readonly targetLabel: string | null;
-  readonly status: NotificationStatus;
-  readonly scheduledAt: Date;
-  readonly sentAt: Date | null;
-  readonly readAt: Date | null;
-  readonly canceledAt: Date | null;
-  readonly cancelReason: string | null;
-  readonly metadataJson: Record<string, unknown>;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-}
 
 // 역할 : NotificationDeliveryAttemptRecord 외부 발송 시도 DB record를 전달합니다.
 export interface NotificationDeliveryAttemptRecord {
@@ -144,36 +119,6 @@ export interface UpsertNotificationSettingsInput {
   readonly dealDueReminderLocalTime?: string;
 }
 
-// 역할 : CreateNotificationInput 알림 생성 값을 정의합니다.
-export interface CreateNotificationInput {
-  readonly id?: string;
-  readonly userId: string;
-  readonly type: NotificationType;
-  readonly sourceType: NotificationSourceType;
-  readonly sourceId: string;
-  readonly dedupeKey: string;
-  readonly targetPath: string;
-  readonly title: string;
-  readonly body?: string | null;
-  readonly targetLabel?: string | null;
-  readonly scheduledAt: Date;
-  readonly metadataJson?: Record<string, unknown>;
-}
-
-export interface UpsertReminderNotificationInput extends CreateNotificationInput {
-  readonly now: Date;
-}
-
-// 역할 : CancelPendingNotificationsBySourceInput 원본 일정/딜 기준 pending 알림 취소 조건을 정의합니다.
-export interface CancelPendingNotificationsBySourceInput {
-  readonly userId: string;
-  readonly sourceType: NotificationSourceType;
-  readonly sourceId: string;
-  readonly excludeDedupeKey?: string;
-  readonly cancelReason: string;
-  readonly canceledAt: Date;
-}
-
 // 역할 : ListDueNotificationsInput due processor용 알림 조회 조건을 정의합니다.
 export interface ListDueNotificationsInput {
   readonly now: Date;
@@ -263,24 +208,17 @@ export interface RevokeBrowserPushSubscriptionForUserInput
 }
 
 // 역할 : NotificationRepository 알림 DB persistence 계약을 정의합니다.
-export interface NotificationRepository {
+export interface NotificationRepository extends NotificationReminderWriteRepository {
   // 기능 : 알림 저장소 작업을 하나의 DB transaction으로 실행합니다.
   runInTransaction<T>(
     work: (repository: NotificationRepository) => Promise<T>
   ): Promise<T>;
-  // 기능 : 현재 사용자의 알림 설정을 조회합니다.
-  findSettingsForUser(
-    userId: string
-  ): Promise<NotificationSettingsRecord | null>;
   // 기능 : 현재 사용자의 알림 설정을 생성하거나 갱신합니다.
   upsertSettings(
     input: UpsertNotificationSettingsInput
   ): Promise<NotificationSettingsRecord>;
   // 기능 : 앱 안 알림 정본 row를 생성합니다.
   createNotification(input: CreateNotificationInput): Promise<NotificationRecord>;
-  upsertReminderNotification(
-    input: UpsertReminderNotificationInput
-  ): Promise<NotificationRecord>;
   // 기능 : 현재 사용자 소유 알림을 ID 기준으로 조회합니다.
   findNotificationByIdForUser(
     input: FindNotificationForUserInput
@@ -297,10 +235,6 @@ export interface NotificationRepository {
   markNotificationReadForUser(
     input: MarkNotificationReadInput
   ): Promise<NotificationRecord | null>;
-  // 기능 : 원본 일정/딜 기준 pending 알림을 취소합니다.
-  cancelPendingNotificationsBySource(
-    input: CancelPendingNotificationsBySourceInput
-  ): Promise<number>;
   // 기능 : due processor가 처리할 pending 알림을 조회합니다.
   listDueNotifications(input: ListDueNotificationsInput): Promise<NotificationRecord[]>;
   // 기능 : due 처리된 알림을 SENT 상태로 변경합니다.

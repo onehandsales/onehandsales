@@ -34,8 +34,8 @@ import {
   createDealActivityLinkedRecord,
   createDealLinkedRecord,
   createSafeActivitySummary,
-} from "@/modules/deal/application/services/deal-activity-helper";
-import { PrismaDealActivityRepository } from "@/modules/deal/infrastructure/persistence/prisma-deal-activity.repository";
+} from "@/shared/application/deal/deal-activity-writer.port";
+import { PrismaDealBoundaryAdapter } from "@/shared/infrastructure/deal/prisma-deal-boundary.adapter";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type MeetingNotePrismaClient = PrismaService | Prisma.TransactionClient;
@@ -290,20 +290,10 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
       return [];
     }
 
-    const deals = await this.client.deal.findMany({
-      where: {
-        id: { in: [...dealIds] },
-        userId,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        dealName: true,
-        dealStatus: true,
-        dealCost: true,
-        expectedEndDate: true,
-      },
-    });
+    const deals = await this.createDealBoundary().findDealSnapshotsByIds(
+      userId,
+      dealIds
+    );
 
     return deals.map((deal) => ({
       id: deal.id,
@@ -487,12 +477,10 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
           id: true,
         },
       });
-      await this.client.dealFollowingActionLog.create({
-        data: {
-          userId: input.userId,
-          dealId: deal.dealId,
-          followingAction: input.activityLogText,
-        },
+      await this.createDealBoundary().createFollowingActionLog({
+        userId: input.userId,
+        dealId: deal.dealId,
+        followingAction: input.activityLogText,
       });
 
       if (meetingNote) {
@@ -732,9 +720,9 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     }
   }
 
-  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
-  private createDealActivityRepository(): PrismaDealActivityRepository {
-    return new PrismaDealActivityRepository(this.client, null);
+  // 기능 : 현재 client 범위에서 딜 module shared boundary adapter를 생성합니다.
+  private createDealBoundary(): PrismaDealBoundaryAdapter {
+    return new PrismaDealBoundaryAdapter(this.client);
   }
 
   // 기능 : 회의록 activity summary에 필요한 회의록 snapshot을 조회합니다.
@@ -795,7 +783,7 @@ export class PrismaMeetingNoteRepository implements MeetingNoteRepository {
     readonly title: string;
     readonly occurredAt: Date;
   }): Promise<void> {
-    await createDealActivityIfAbsent(this.createDealActivityRepository(), {
+    await createDealActivityIfAbsent(this.createDealBoundary(), {
       userId: input.userId,
       dealId: input.dealId,
       activityType: input.activityType,

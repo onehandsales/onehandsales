@@ -116,6 +116,14 @@
 
 - `G04-BE-CROSS-MODULE-REPOSITORY-BOUNDARY`
 
+처리 결과:
+
+- 2026-08-11 구현 및 검증 완료
+- notification reminder 쓰기 계약을 shared narrow port/adapter로 분리해 Deal/Schedule/Google Calendar repository 구현체의 `PrismaNotificationRepository` 직접 import를 제거했다.
+- deal activity 쓰기와 일부 딜 참조/부수 쓰기 계약을 shared narrow port/adapter로 분리해 Schedule/MeetingNote/Follow-up repository 구현체의 Deal activity helper/repository 구현체 직접 import를 제거했다.
+- 목표 후보 외 추가로 확인된 `prisma-google-calendar-connection.repository.ts`의 notification repository 구현체 직접 import도 함께 제거했다.
+- Backend `typecheck`, `lint`, G04 관련 spec 12개 suite / 74개 test, 전체 Jest 98개 suite / 524개 test 통과
+
 ## 3. Medium
 
 ### M01. Backend 주석 누락

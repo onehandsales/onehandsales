@@ -35,8 +35,8 @@ import {
   createDealActivityIfAbsent,
   createDealActivityLinkedRecord,
   createSafeActivitySummary,
-} from "@/modules/deal/application/services/deal-activity-helper";
-import { PrismaDealActivityRepository } from "@/modules/deal/infrastructure/persistence/prisma-deal-activity.repository";
+} from "@/shared/application/deal/deal-activity-writer.port";
+import { PrismaDealBoundaryAdapter } from "@/shared/infrastructure/deal/prisma-deal-boundary.adapter";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type FollowUpPrismaClient = PrismaService | Prisma.TransactionClient;
@@ -891,9 +891,9 @@ export class PrismaFollowUpMessageRepository
     } satisfies Prisma.FollowUpMessageInclude;
   }
 
-  // 기능 : 현재 client 범위에서 딜 활동 저장소를 생성합니다.
-  private createDealActivityRepository(): PrismaDealActivityRepository {
-    return new PrismaDealActivityRepository(this.client, null);
+  // 기능 : 현재 client 범위에서 딜 module shared boundary adapter를 생성합니다.
+  private createDealBoundary(): PrismaDealBoundaryAdapter {
+    return new PrismaDealBoundaryAdapter(this.client);
   }
 
   // 기능 : follow-up 전송 결과를 DEAL target별 딜 활동으로 기록합니다.
@@ -907,7 +907,7 @@ export class PrismaFollowUpMessageRepository
     readonly safeErrorCode: string | null;
     readonly safeErrorMessage: string | null;
   }): Promise<void> {
-    const activityRepository = this.createDealActivityRepository();
+    const activityRepository = this.createDealBoundary();
     const dealTargets = input.message.targets.filter(
       (target) => target.targetType === "DEAL"
     );

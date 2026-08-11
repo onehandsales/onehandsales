@@ -4,7 +4,7 @@ import {
   type NotificationRecord,
   type NotificationRepository,
 } from "@/modules/notification/application/ports/notification.repository";
-import type { NotificationReminderWriteRepository } from "@/modules/notification/application/ports/notification-reminder-writer.port";
+import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
 import {
   DEFAULT_USER_TIME_ZONE,
   isValidIanaTimeZone,

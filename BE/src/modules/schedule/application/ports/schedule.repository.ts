@@ -1,4 +1,4 @@
-import type { NotificationReminderWriteRepository } from "@/modules/notification/application/ports/notification-reminder-writer.port";
+import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
 import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
 
 export const SCHEDULE_REPOSITORY = Symbol("SCHEDULE_REPOSITORY");

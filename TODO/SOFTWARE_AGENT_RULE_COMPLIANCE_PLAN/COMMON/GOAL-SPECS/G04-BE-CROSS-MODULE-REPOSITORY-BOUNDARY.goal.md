@@ -1,6 +1,6 @@
 # G04 BE Cross Module Repository Boundary
 
-상태: Draft
+상태: Implemented / Verified
 영역: BE
 우선순위: High
 
@@ -19,6 +19,7 @@ Backend module 간 repository 직접 import를 줄이고, SOFTWARE_AGENT의 modu
 - `BE/src/modules/deal/infrastructure/persistence/prisma-deal.repository.ts`
 - `BE/src/modules/schedule/infrastructure/persistence/prisma-schedule.repository.ts`
 - `BE/src/modules/schedule/infrastructure/persistence/prisma-google-calendar-sync.repository.ts`
+- 추가 확인 대상: `BE/src/modules/schedule/infrastructure/persistence/prisma-google-calendar-connection.repository.ts`
 - `BE/src/modules/meeting-note/infrastructure/persistence/prisma-meeting-note.repository.ts`
 - `BE/src/modules/follow-up/infrastructure/persistence/prisma-follow-up-message.repository.ts`
 
@@ -63,3 +64,45 @@ pnpm.cmd run lint
 - schedule application/repository/google calendar sync 관련 spec
 - meeting-note repository 관련 spec
 - follow-up message repository 관련 spec
+
+## 8. 구현 결과
+
+- reminder 쓰기 최소 계약을 `shared/application/notification/notification-reminder-writer.port.ts`로 분리하고, 같은 Prisma client/transaction client로 동작하는 `PrismaNotificationReminderWriter`를 추가했다.
+- Deal/Schedule/Google Calendar repository 구현체에서 `PrismaNotificationRepository` 직접 import와 notification repository port 직접 import를 제거했다.
+- deal activity 자동 생성 helper와 최소 writer 계약을 `shared/application/deal/deal-activity-writer.port.ts`로 분리했다.
+- Schedule/MeetingNote/Follow-up repository 구현체에서 Deal activity helper와 `PrismaDealActivityRepository` 직접 import를 제거했다.
+- Schedule/MeetingNote/Follow-up repository에서 직접 `this.client.deal`, `this.client.dealActivity`, `this.client.dealFollowingActionLog`를 호출하던 대상 흐름을 shared `PrismaDealBoundaryAdapter`로 옮겼다.
+- reminder/activity 쓰기는 기존처럼 원본 repository transaction callback 안에서 동일 transaction client로 실행된다.
+- 다른 module repository port 직접 import 예외는 남기지 않았다.
+- Prisma schema, migration, API 응답 계약은 변경하지 않았다.
+
+## 9. 검증 결과
+
+검증일: 2026-08-11
+완료 로그: `TODO_LOG/2026-08-11/G04_BE_CROSS_MODULE_REPOSITORY_BOUNDARY/WORK_LOG.md`
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "PrismaNotificationRepository|modules/notification/application/ports/notification.repository" BE/src/modules/deal BE/src/modules/schedule --glob "*.ts" --glob "!**/*.spec.ts"
+rg -n "PrismaDealActivityRepository|modules/deal/application/services/deal-activity-helper|modules/deal/infrastructure/persistence/prisma-deal-activity.repository" BE/src/modules/schedule BE/src/modules/meeting-note BE/src/modules/follow-up --glob "*.ts" --glob "!**/*.spec.ts"
+rg -n "this\\.client\\.(deal|dealActivity|dealFollowingActionLog|notification)\\b" BE/src/modules/schedule BE/src/modules/meeting-note BE/src/modules/follow-up --glob "*.ts" --glob "!**/*.spec.ts"
+
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd test -- prisma-notification-reminder-writer.spec.ts prisma-deal-boundary.adapter.spec.ts prisma-schedule.repository.spec.ts prisma-google-calendar-sync.repository.spec.ts prisma-google-calendar-connection.repository.spec.ts prisma-meeting-note.repository.spec.ts prisma-follow-up-message.repository.spec.ts notification-reminder-scheduling.use-cases.spec.ts deal-application.service.spec.ts schedule-application.service.spec.ts google-calendar-sync.service.spec.ts google-calendar-connection.service.spec.ts
+pnpm.cmd test
+```
+
+결과:
+
+- 위 3개 boundary 검색에서 G04 대상 cross-module repository 구현체 직접 import와 대상 흐름의 직접 `this.client.*` 호출 결과 없음
+- Backend `typecheck` 통과
+- Backend `lint` 통과
+- G04 관련 spec 12개 suite / 74개 test 통과
+- Backend 전체 Jest 98개 suite / 524개 test 통과
+
+추가 검토:
+
+- 2026-08-11 추가 재검토에서 위 3개 boundary 검색 결과가 모두 없음으로 유지됨을 확인했다.
+- Backend `typecheck`, `lint`, 전체 Jest 98개 suite / 524개 test를 재실행해 모두 통과했다.
