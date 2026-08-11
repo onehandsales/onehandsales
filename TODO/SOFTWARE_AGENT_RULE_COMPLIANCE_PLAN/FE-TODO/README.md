@@ -14,9 +14,14 @@ Frontend 쪽 SOFTWARE_AGENT 규칙 정합성 작업을 관리한다.
 
 ## 3. 우선순위
 
-1. Admin Web mock 로그인 제거
+1. Admin Web mock 로그인 제거 - 완료 / 검증 완료
 2. feature public API boundary 정리
 3. 주석 보완
+
+## 3.1 진행 현황
+
+- G01 Admin Web mock 로그인 제거는 2026-08-11 완료했다.
+- G01에서 수정한 Admin Web auth 파일은 주석 규칙을 보강했고, typecheck/lint/Admin Web smoke E2E를 통과했다.
 
 ## 4. 공통 검증
 
@@ -29,4 +34,3 @@ cd D:\workspace_repository\onehandsales\FE\admin-web
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
-

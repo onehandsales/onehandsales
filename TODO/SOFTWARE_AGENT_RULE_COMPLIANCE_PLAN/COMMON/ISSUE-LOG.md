@@ -28,6 +28,12 @@
 
 - `G01-ADMIN-WEB-AUTH-MOCK-REMOVAL`
 
+처리 상태:
+
+- 2026-08-11 구현 및 검증 완료
+- Admin Web production source에서 mock token, fallback role, `loginAsAdmin`, `loginAsUser` 제거 완료
+- `/admin/api/me` 서버 검증 결과의 `ADMIN` role만 Admin Web 접근 기준으로 사용
+
 ## 2. High
 
 ### H01. Backend application -> presentation 의존

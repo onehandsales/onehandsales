@@ -22,6 +22,12 @@
 | 6 | G06 FE feature public API boundary | FE User/Admin | deep import 정리로 파일 이동/공개 API 경계를 안정화한다. |
 | 7 | G07 FE comment coverage | FE User/Admin | FE 파일 구조가 안정된 뒤 대량 주석 보완을 한다. |
 
+## 2.1 진행 현황
+
+- G01 Admin Web mock 로그인 제거는 2026-08-11 구현 및 검증을 완료했다.
+- G01 완료 로그는 `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`다.
+- 현재 다음 순서는 G02 Backend application -> presentation 의존 제거다.
+
 ## 3. Goal별 최소 검증
 
 ### G01
@@ -30,6 +36,16 @@
 cd D:\workspace_repository\onehandsales\FE\admin-web
 pnpm.cmd run typecheck
 pnpm.cmd run lint
+```
+
+G01 추가 검증 완료:
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "mock-.*token|loginAsAdmin|loginAsUser|fallbackRole|관리자로 계속|일반 사용자로 계속" FE/admin-web/src
+
+cd D:\workspace_repository\onehandsales\FE\admin-web
+pnpm.cmd run test:e2e -- admin-web-smoke.spec.ts
 ```
 
 ### G02-G05

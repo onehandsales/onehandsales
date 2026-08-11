@@ -1,6 +1,6 @@
 # G01 Admin Web Auth Mock Removal
 
-상태: Draft
+상태: Implemented / Verified
 영역: FE Admin
 우선순위: Critical
 
@@ -61,3 +61,33 @@ cd D:\workspace_repository\onehandsales\FE\admin-web
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
+
+## 7. 구현 결과
+
+- `FE/admin-web/src/features/auth/auth-provider.tsx`에서 mock access token 상수와 fallback role 처리를 제거했다.
+- `FE/admin-web/src/features/auth/auth-context.ts`에서 `loginAsAdmin`, `loginAsUser` 계약을 제거했다.
+- `FE/admin-web/src/pages/login/index.tsx`에서 mock login 버튼과 관련 handler를 제거하고 token 입력 기반 검증만 유지했다.
+- `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`를 token 입력 흐름 기준으로 갱신했다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`의 Admin Web 인증 설명을 mock token 기준에서 `/admin/api/me` 서버 검증 기준으로 갱신했다.
+
+## 8. 검증 결과
+
+검증일: 2026-08-11
+완료 로그: `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`
+
+```powershell
+cd D:\workspace_repository\onehandsales
+rg -n "mock-.*token|loginAsAdmin|loginAsUser|fallbackRole|관리자로 계속|일반 사용자로 계속" FE/admin-web/src
+
+cd D:\workspace_repository\onehandsales\FE\admin-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run test:e2e -- admin-web-smoke.spec.ts
+```
+
+결과:
+
+- 금지 문자열 검색 결과 없음
+- `typecheck` 통과
+- `lint` 통과
+- Admin Web smoke E2E 1 test 통과

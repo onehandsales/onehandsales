@@ -144,4 +144,4 @@ VITE_SUPABASE_REDIRECT_URL
 - `VITE_API_URL`: `http://localhost:3000`
 - `VITE_SUPABASE_REDIRECT_URL`: `http://localhost:5174/auth/callback`
 
-현재 Admin Web은 local mock admin/user token과 `GET /admin/api/me` smoke를 중심으로 검증한다.
+현재 Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 호출해 관리자 권한을 확인한다. Admin Web 운영 코드는 로컬 가짜 관리자/일반 사용자 토큰이나 역할 대체값을 사용하지 않는다.

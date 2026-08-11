@@ -6,6 +6,7 @@ type ProtectedAdminRouteProps = {
   readonly children: ReactNode;
 };
 
+// 기능 : 서버 검증을 통과한 관리자에게만 보호된 Admin route를 렌더링합니다.
 export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   const { isAuthenticated, isInitializing, role } = useAdminAuthSession();
   const location = useLocation();
@@ -37,11 +38,13 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   return children;
 }
 
+// 기능 : 관리자 권한이 없는 인증 상태에서 로그인 화면으로 돌아가는 안내를 렌더링합니다.
 function AdminAccessDenied() {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAdminAuthSession();
 
+  // 기능 : 현재 인증 상태를 초기화하고 로그인 화면으로 이동합니다.
   const onBackToLogin = () => {
     navigate("/login", {
       replace: true,

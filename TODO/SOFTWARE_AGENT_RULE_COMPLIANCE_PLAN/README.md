@@ -103,6 +103,12 @@ TODO/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/
 6. G06 Frontend feature public API 경계 정리
 7. G07 Frontend 주석 커버리지 보완
 
+## 6.1 진행 현황
+
+- G01 Admin Web mock 로그인 제거: 2026-08-11 구현 및 검증 완료
+- G01 완료 로그: `TODO_LOG/2026-08-11/G01_ADMIN_WEB_AUTH_MOCK_REMOVAL/WORK_LOG.md`
+- 다음 권장 작업: G02 Backend application -> presentation 의존 제거
+
 ## 7. 공통 검증
 
 각 goal 완료 시 영향 범위에 맞춰 아래 명령을 실행한다.

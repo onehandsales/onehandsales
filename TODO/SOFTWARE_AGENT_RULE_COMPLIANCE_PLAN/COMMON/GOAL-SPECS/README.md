@@ -10,12 +10,12 @@
 
 ## 2. Goal 목록
 
-| Goal | 목적 |
-| --- | --- |
-| `G01-ADMIN-WEB-AUTH-MOCK-REMOVAL.goal.md` | Admin Web mock token/fallback role 제거 |
-| `G02-BE-APPLICATION-PRESENTATION-BOUNDARY.goal.md` | Backend application -> presentation 의존 제거 |
-| `G03-BE-ADMIN-PRISMA-TYPE-BOUNDARY.goal.md` | Admin Operation application/port의 Prisma type 제거 |
-| `G04-BE-CROSS-MODULE-REPOSITORY-BOUNDARY.goal.md` | Backend module 간 repository 직접 import 정리 |
-| `G05-BE-COMMENT-COVERAGE.goal.md` | Backend 주석 규칙 커버리지 보완 |
-| `G06-FE-FEATURE-PUBLIC-API-BOUNDARY.goal.md` | Frontend feature deep import 정리 |
-| `G07-FE-COMMENT-COVERAGE.goal.md` | Frontend 주석 규칙 커버리지 보완 |
+| Goal | 상태 | 목적 |
+| --- | --- | --- |
+| `G01-ADMIN-WEB-AUTH-MOCK-REMOVAL.goal.md` | Implemented / Verified | Admin Web mock token/fallback role 제거 |
+| `G02-BE-APPLICATION-PRESENTATION-BOUNDARY.goal.md` | Draft | Backend application -> presentation 의존 제거 |
+| `G03-BE-ADMIN-PRISMA-TYPE-BOUNDARY.goal.md` | Draft | Admin Operation application/port의 Prisma type 제거 |
+| `G04-BE-CROSS-MODULE-REPOSITORY-BOUNDARY.goal.md` | Draft | Backend module 간 repository 직접 import 정리 |
+| `G05-BE-COMMENT-COVERAGE.goal.md` | Draft | Backend 주석 규칙 커버리지 보완 |
+| `G06-FE-FEATURE-PUBLIC-API-BOUNDARY.goal.md` | Draft | Frontend feature deep import 정리 |
+| `G07-FE-COMMENT-COVERAGE.goal.md` | Draft | Frontend 주석 규칙 커버리지 보완 |

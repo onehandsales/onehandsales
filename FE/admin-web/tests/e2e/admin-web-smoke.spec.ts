@@ -1,7 +1,9 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
 
-const ADMIN_TOKEN = "Bearer mock-admin-web-access-token";
-const USER_TOKEN = "Bearer mock-non-admin-web-access-token";
+const ADMIN_ACCESS_TOKEN = "admin-e2e-access-token";
+const USER_ACCESS_TOKEN = "non-admin-e2e-access-token";
+const ADMIN_AUTHORIZATION_HEADER = `Bearer ${ADMIN_ACCESS_TOKEN}`;
+const USER_AUTHORIZATION_HEADER = `Bearer ${USER_ACCESS_TOKEN}`;
 const ADMIN_NAME = "운영 관리자";
 const ADMIN_EMAIL = "admin@example.com";
 const USER_ID = "user-1";
@@ -73,16 +75,24 @@ test.describe("Admin Web smoke E2E", () => {
     await test.step("non-admin 접근 차단", async () => {
       await page.goto("/users");
       await expect(page).toHaveURL(/\/login$/);
-      await page.getByRole("button", { name: "일반 사용자로 계속" }).click();
+      await expect(
+        page.getByRole("button", { name: "관리자로 계속" })
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: "일반 사용자로 계속" })
+      ).toHaveCount(0);
+      await submitAccessToken(page, USER_ACCESS_TOKEN);
+      await expect(page).toHaveURL(/\/login$/);
+      await expect(
+        page.getByText("Admin API request failed: 403")
+      ).toBeVisible();
       await expect(
         page.getByRole("heading", { name: "관리자 권한이 필요합니다" })
-      ).toBeVisible();
-      await page.getByRole("button", { name: "로그인으로 돌아가기" }).click();
-      await expect(page).toHaveURL(/\/login$/);
+      ).toHaveCount(0);
     });
 
     await test.step("Admin 로그인과 사용자 overview route", async () => {
-      await page.getByRole("button", { name: "관리자로 계속" }).click();
+      await submitAccessToken(page, ADMIN_ACCESS_TOKEN);
       await expect(page).toHaveURL(/\/users$/);
       await expect(
         page.getByRole("heading", { name: "사용자 운영" })
@@ -171,6 +181,12 @@ test.describe("Admin Web smoke E2E", () => {
   });
 });
 
+// 기능 : Admin 로그인 화면에서 access token을 제출합니다.
+async function submitAccessToken(page: Page, accessToken: string) {
+  await page.getByLabel("App access token").fill(accessToken);
+  await page.getByRole("button", { name: "토큰으로 관리자 확인" }).click();
+}
+
 // 기능 : Admin Web이 호출하는 현재 Admin API 계약을 Playwright route mock으로 제공합니다.
 async function setupAdminApiMocks(page: Page) {
   const store = createStore();
@@ -197,7 +213,7 @@ async function setupAdminApiMocks(page: Page) {
       return;
     }
 
-    if (authorization !== ADMIN_TOKEN) {
+    if (authorization !== ADMIN_AUTHORIZATION_HEADER) {
       await fulfillJson(route, { code: "ADMIN_FORBIDDEN" }, 403);
       return;
     }
@@ -222,19 +238,19 @@ async function setupAdminApiMocks(page: Page) {
       store.requests.filter(
         (request) =>
           request.path !== "/admin/api/me" &&
-          request.authorization !== ADMIN_TOKEN
+          request.authorization !== ADMIN_AUTHORIZATION_HEADER
       ),
   };
 }
 
 // 기능 : `/admin/api/me` mock 응답에서 non-admin token을 거부합니다.
 async function handleAdminMe(route: Route, authorization: string | null) {
-  if (authorization === USER_TOKEN) {
+  if (authorization === USER_AUTHORIZATION_HEADER) {
     await fulfillJson(route, { code: "ADMIN_FORBIDDEN" }, 403);
     return;
   }
 
-  if (authorization !== ADMIN_TOKEN) {
+  if (authorization !== ADMIN_AUTHORIZATION_HEADER) {
     await fulfillJson(route, { code: "AUTH_UNAUTHORIZED" }, 401);
     return;
   }

@@ -4,6 +4,8 @@
 
 ## 1. G01 Admin Web mock 로그인 제거
 
+상태: 완료 / 검증 완료
+
 대상:
 
 - `FE/admin-web/src/features/auth/auth-provider.tsx`
