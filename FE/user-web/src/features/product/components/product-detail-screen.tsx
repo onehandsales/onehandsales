@@ -56,7 +56,7 @@ import type {
   ProductPrivateMemoLog,
   ProductStatus,
 } from "@/features/product/types/product";
-import { DEAL_STATUS_LABEL, type DealStatus } from "@/features/deal/types/deal";
+import { DEAL_STATUS_LABEL, type DealStatus } from "@/features/deal/status";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
 import {

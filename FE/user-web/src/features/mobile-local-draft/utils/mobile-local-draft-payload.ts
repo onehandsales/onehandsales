@@ -1,5 +1,5 @@
-import type { BusinessCardConfirmFormValues } from "@/features/business-card/schemas/business-card-schema";
-import type { MeetingNoteCreateFormValues } from "@/features/meeting-note/schemas/meeting-note-schema";
+import type { BusinessCardConfirmFormValues } from "@/features/business-card";
+import type { MeetingNoteCreateFormValues } from "@/features/meeting-note";
 import type {
   BusinessCardConfirmLocalDraftPayload,
   MeetingNoteCreateLocalDraftPayload,

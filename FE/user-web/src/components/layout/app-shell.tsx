@@ -27,7 +27,12 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAppRouteAnalytics } from "@/features/analytics";
-import { useAuthSession } from "@/features/auth";
+import {
+  useAuthSession,
+  useMyDevices,
+  useMyProfile,
+  useUpdateMyProfileMutation,
+} from "@/features/auth";
 import {
   resolvePublicSiteLanguage,
   toPublicSitePath,
@@ -41,16 +46,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDealDetail } from "@/features/deal/hooks/use-deal-detail";
-import { useDeleteDealMutation } from "@/features/deal/hooks/use-deal-mutations";
-import { NotificationBellButton } from "@/features/notification/components/notification-bell-button";
-import { useProductDetail } from "@/features/product/hooks/use-product-detail";
-import { useDeleteProductMutation } from "@/features/product/hooks/use-product-mutations";
-import {
-  useMyDevices,
-  useMyProfile,
-  useUpdateMyProfileMutation,
-} from "@/features/auth/hooks/use-user-settings";
+import { useDealDetail, useDeleteDealMutation } from "@/features/deal";
+import { NotificationBellButton } from "@/features/notification";
+import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";

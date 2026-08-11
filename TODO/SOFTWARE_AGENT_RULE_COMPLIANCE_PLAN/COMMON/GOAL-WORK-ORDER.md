@@ -34,7 +34,9 @@
 - G04 완료 로그는 `TODO_LOG/2026-08-11/G04_BE_CROSS_MODULE_REPOSITORY_BOUNDARY/WORK_LOG.md`다.
 - G05 Backend comment coverage는 2026-08-11 구현 및 검증을 완료했다.
 - G05 완료 로그는 `TODO_LOG/2026-08-11/G05_BE_COMMENT_COVERAGE/WORK_LOG.md`다.
-- 현재 다음 순서는 G06 Frontend feature public API boundary다.
+- G06 Frontend feature public API boundary는 2026-08-11 구현 및 검증을 완료했다.
+- G06 완료 로그는 `TODO_LOG/2026-08-11/G06_FE_FEATURE_PUBLIC_API_BOUNDARY/WORK_LOG.md`다.
+- 현재 다음 순서는 G07 Frontend comment coverage다.
 
 ## 3. Goal별 최소 검증
 
@@ -125,6 +127,16 @@ cd D:\workspace_repository\onehandsales\FE\admin-web
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
+
+G06 추가 검증 완료:
+
+- `FE/user-web/src/features`와 `FE/admin-web/src/features`의 cross-feature deep import 감사 결과: 0건
+- `FE/user-web/src/pages`와 `FE/user-web/src/components/layout`까지 포함한 외부 feature deep import 감사 결과: 0건
+- feature 내부에서 자기 feature public `index.ts`를 import하는 순환 위험 후보 감사 결과: 0건
+- public `index.ts` export 파일의 runtime broad import 순환 후보 감사 결과: 0건
+- 반복 참조되는 query key와 딜 선택/상태/후속 액션 API는 top-level public sub-entry로 분리해 넓은 barrel import를 줄였다.
+- `FE/user-web`: `pnpm run typecheck`, `pnpm run lint` 통과
+- `FE/admin-web`: `pnpm run typecheck`, `pnpm run lint` 통과
 
 ## 4. Closeout 검증
 

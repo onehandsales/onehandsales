@@ -1,6 +1,6 @@
 # G06 FE Feature Public API Boundary
 
-상태: Draft
+상태: Implemented / Verified
 영역: FE User Web / FE Admin Web
 우선순위: Medium
 
@@ -44,6 +44,14 @@ Frontend feature 내부에서 다른 feature의 깊은 내부 경로를 직접 i
 - 남겨야 하는 예외는 이유를 기록한다.
 - typecheck/lint 통과
 
+## 5.1 완료 결과
+
+- 2026-08-11 기준 `FE/user-web/src/features`와 `FE/admin-web/src/features`에서 다른 feature의 `components/hooks/api/schemas/types/utils` 깊은 경로를 직접 import하는 사례를 0건으로 정리했다.
+- `FE/user-web/src/pages`와 `FE/user-web/src/components/layout`의 외부 feature 내부 경로 import도 public `@/features/<feature>` import로 정리했다.
+- query key, 딜 선택지, 딜 상태, 딜 후속 액션처럼 교차 feature에서 반복 참조되는 값은 `@/features/<feature>/query-keys`와 같은 top-level public sub-entry로 분리해 넓은 barrel 순환 위험을 낮췄다.
+- feature 내부에서 자기 feature의 public `index.ts`를 다시 import하는 순환 위험 후보도 0건으로 확인했다.
+- 유지해야 하는 예외 deep import는 없다.
+
 ## 6. 검증
 
 ```powershell
@@ -55,3 +63,13 @@ cd D:\workspace_repository\onehandsales\FE\admin-web
 pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
+
+2026-08-11 실행 결과:
+
+- `FE/user-web`: `pnpm run typecheck`, `pnpm run lint` 통과
+- `FE/admin-web`: `pnpm run typecheck`, `pnpm run lint` 통과
+- import boundary 정적 감사 결과:
+  - `cross_feature_deep_imports=0`
+  - `external_or_cross_feature_deep_imports=0`
+  - `self_feature_public_index_imports=0`
+  - `feature_public_index_runtime_cycles=0`

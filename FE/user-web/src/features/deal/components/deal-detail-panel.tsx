@@ -70,7 +70,7 @@ import {
   type DealMemoLog,
   type DealStatus,
 } from "@/features/deal/types/deal";
-import { formatCompanyRegionLabel } from "@/features/company/utils/company-region-options";
+import { formatCompanyRegionLabel } from "@/features/company";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate, formatDateTime } from "@/utils/format";

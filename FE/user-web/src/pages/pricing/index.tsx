@@ -1,6 +1,6 @@
 import { Check, CircleHelp, Sparkles } from "lucide-react";
 import { Fragment } from "react";
-import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
+import { PublicSitePageShell } from "@/features/public-site";
 import { publicSiteImages } from "@/features/public-site/constants/public-site-assets";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 

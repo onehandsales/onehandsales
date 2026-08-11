@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { BusinessCardConfirmFormValues } from "@/features/business-card/schemas/business-card-schema";
-import type { MeetingNoteCreateFormValues } from "@/features/meeting-note/schemas/meeting-note-schema";
+import type { BusinessCardConfirmFormValues } from "@/features/business-card";
+import type { MeetingNoteCreateFormValues } from "@/features/meeting-note";
 import {
   toBusinessCardConfirmLocalDraftPayload,
   toMeetingNoteCreateLocalDraftPayload,

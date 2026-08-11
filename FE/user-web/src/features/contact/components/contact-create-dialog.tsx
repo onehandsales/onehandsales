@@ -12,11 +12,11 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import { ErrorState } from "@/components/ui/state";
-import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import {
+  CompanyCreateDialog,
   useCompanyFields,
   useCompanyRegions,
-} from "@/features/company/hooks/use-company-list";
+} from "@/features/company";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
 import { ContactPhoneInputControl } from "@/features/contact/components/contact-phone-field";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";

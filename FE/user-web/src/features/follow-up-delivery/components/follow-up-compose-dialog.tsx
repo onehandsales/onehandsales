@@ -13,8 +13,10 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ModalShell } from "@/components/ui/modal-shell";
 import type { AiWeeklyReportSuggestion } from "@/features/ai-weekly-report";
-import { useDealContactOptions } from "@/features/deal/hooks/use-deal-entity-options";
-import type { DealContactOption } from "@/features/deal/types/deal";
+import {
+  useDealContactOptions,
+  type DealContactOption,
+} from "@/features/deal/entity-options";
 import {
   useAcknowledgeFollowUpConsentNoticeMutation,
   useCreateFollowUpDraftMutation,

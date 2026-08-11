@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
-import { ImportDetailScreen } from "@/features/import-export/components/import-detail-screen";
+import { ImportDetailScreen } from "@/features/import-export";
 
 export function ImportDetailPage() {
   const { importUserLogId } = useParams();

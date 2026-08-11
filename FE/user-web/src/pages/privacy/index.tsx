@@ -1,6 +1,6 @@
 import { ArrowRight, LockKeyhole } from "lucide-react";
 import { Link } from "react-router-dom";
-import { PublicSitePageShell } from "@/features/public-site/components/public-site-page-shell";
+import { PublicSitePageShell } from "@/features/public-site";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,

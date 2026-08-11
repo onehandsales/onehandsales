@@ -28,8 +28,8 @@ import {
   useDealCompanyOptions,
   useDealContactOptions,
   useDealProductOptions,
-} from "@/features/deal/hooks/use-deal-entity-options";
-import { useDealList } from "@/features/deal/hooks/use-deal-list";
+  useDealList,
+} from "@/features/deal/entity-options";
 import { MeetingNoteAiFollowUpSection } from "@/features/meeting-note/components/meeting-note-ai-follow-up-section";
 import {
   EntityMultiSelectField,

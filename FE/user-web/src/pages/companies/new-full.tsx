@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppI18n } from "@/features/app-i18n";
-import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import {
+  CompanyCreateDialog,
+  type CompanyCreateFormValues,
   useCompanyFields,
   useCompanyRegions,
-} from "@/features/company/hooks/use-company-list";
-import type { CompanyCreateFormValues } from "@/features/company/schemas/company-schema";
+} from "@/features/company";
 
 // 기능 : 패널에서 확대한 회사 생성 전용 페이지를 렌더링합니다.
 export function CompanyNewFullPage() {

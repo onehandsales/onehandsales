@@ -15,18 +15,20 @@ import {
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
-import { useDealList, useDealStageCounts } from "@/features/deal/hooks/use-deal-list";
 import {
   DEAL_STATUS_LABEL,
   DEAL_STATUS_LIST,
   type DealListItem,
   type DealStageCount,
   type DealStatus,
-} from "@/features/deal/types/deal";
-import { useMeetingNoteList } from "@/features/meeting-note/hooks/use-meeting-note-queries";
-import type { MeetingNoteListItem } from "@/features/meeting-note/types/meeting-note";
-import { useScheduleList } from "@/features/schedule/hooks/use-schedule-queries";
-import type { Schedule } from "@/features/schedule/types/schedule";
+  useDealList,
+  useDealStageCounts,
+} from "@/features/deal";
+import {
+  useMeetingNoteList,
+  type MeetingNoteListItem,
+} from "@/features/meeting-note";
+import { useScheduleList, type Schedule } from "@/features/schedule";
 import { cn } from "@/utils/cn";
 
 const ACTIVE_DEAL_STATUSES: DealStatus[] = [

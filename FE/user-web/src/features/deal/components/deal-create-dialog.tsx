@@ -47,40 +47,40 @@ import {
   type AppI18nKey,
 } from "@/features/app-i18n";
 import {
-  useCompanyFields,
-  useCompanyRegions,
-} from "@/features/company/hooks/use-company-list";
-import { useCreateCompanyMutation } from "@/features/company/hooks/use-company-mutations";
-import {
+  CompanyTaxonomyCreateDialog,
   companyCreateFormSchema,
   emptyCompanyCreateFormValues,
   toCreateCompanyInput,
+  useCompanyFields,
+  useCompanyRegions,
   type CompanyCreateFormValues,
-} from "@/features/company/schemas/company-schema";
+  useCreateCompanyMutation,
+} from "@/features/company";
 import {
-  useContactDepartments,
-  useContactJobGrades,
-} from "@/features/contact/hooks/use-contact-list";
-import { useCreateContactMutation } from "@/features/contact/hooks/use-contact-mutations";
-import { ContactTaxonomyManageDialog } from "@/features/contact/components/contact-taxonomy-manage-dialog";
-import {
+  ContactTaxonomyManageDialog,
   contactCreateFormSchema,
   emptyContactCreateFormValues,
   toCreateContactInput,
+  useContactDepartments,
+  useContactJobGrades,
   type ContactCreateFormValues,
-} from "@/features/contact/schemas/contact-schema";
+  useCreateContactMutation,
+} from "@/features/contact";
+import { ProductCreateDialog } from "@/features/product";
+import { getApiErrorMessage } from "@/lib/api-client";
+import { cn } from "@/utils/cn";
 import {
   useDealCompanyOptions,
   useDealContactOptions,
   useDealProductOptions,
-} from "@/features/deal/hooks/use-deal-entity-options";
-import { useCreateDealMutation } from "@/features/deal/hooks/use-deal-mutations";
+} from "../hooks/use-deal-entity-options";
+import { useCreateDealMutation } from "../hooks/use-deal-mutations";
 import {
   dealCreateFormSchema,
   emptyDealCreateFormValues,
   toCreateDealInput,
   type DealCreateFormValues,
-} from "@/features/deal/schemas/deal-schema";
+} from "../schemas/deal-schema";
 import {
   DEAL_STATUS_LIST,
   type DealCompanyOption,
@@ -88,16 +88,12 @@ import {
   type DealDetail,
   type DealProductOption,
   type DealStatus,
-} from "@/features/deal/types/deal";
+} from "../types/deal";
 import {
   formatCurrencyInput,
   normalizeCurrencyInput,
   normalizeDateInput,
-} from "@/features/deal/utils/deal-form-input";
-import { CompanyTaxonomyCreateDialog } from "@/features/company/components/company-taxonomy-create-dialog";
-import { ProductCreateDialog } from "@/features/product/components/product-create-dialog";
-import { getApiErrorMessage } from "@/lib/api-client";
-import { cn } from "@/utils/cn";
+} from "../utils/deal-form-input";
 
 type DealCreateDialogProps = {
   readonly open: boolean;

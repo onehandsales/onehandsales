@@ -4,7 +4,7 @@ import { useAppI18n } from "@/features/app-i18n";
 import {
   ProductCreateDialog,
   type ProductCreateFormValues,
-} from "@/features/product/components/product-create-dialog";
+} from "@/features/product";
 
 // 기능 : 패널에서 확대한 제품 생성 전용 페이지를 렌더링합니다.
 export function ProductNewFullPage() {

@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { companyQueryKeys } from "@/features/company/api/company-query-keys";
-import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
-import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
-import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
-import { productQueryKeys } from "@/features/product/api/product-query-keys";
-import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
+import { companyQueryKeys } from "@/features/company/query-keys";
+import { contactQueryKeys } from "@/features/contact/query-keys";
+import { dealQueryKeys } from "@/features/deal/query-keys";
+import { meetingNoteQueryKeys } from "@/features/meeting-note/query-keys";
+import { productQueryKeys } from "@/features/product/query-keys";
+import { scheduleQueryKeys } from "@/features/schedule/query-keys";
 import {
   createTrashRecoveryRequest,
   restoreTrashItem,

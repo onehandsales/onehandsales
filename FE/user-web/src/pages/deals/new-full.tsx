@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppI18n } from "@/features/app-i18n";
-import { DealCreateDialog } from "@/features/deal/components/deal-create-dialog";
-import type { DealCreateFormValues } from "@/features/deal/schemas/deal-schema";
+import { DealCreateDialog, type DealCreateFormValues } from "@/features/deal";
 
 // 기능 : 패널에서 확대한 딜 생성 전용 페이지를 렌더링합니다.
 export function DealNewFullPage() {

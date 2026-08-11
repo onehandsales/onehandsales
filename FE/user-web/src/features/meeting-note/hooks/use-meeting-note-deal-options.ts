@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { listDeals } from "@/features/deal/api/deal-api";
+import { listDeals } from "@/features/deal/entity-options";
 
 export type MeetingNoteDealOption = {
   readonly id: string;

@@ -21,8 +21,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { PublicSiteFooter } from "@/features/public-site/components/public-site-footer";
-import { PublicSiteHeader } from "@/features/public-site/components/public-site-header";
+import { PublicSiteFooter, PublicSiteHeader } from "@/features/public-site";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,

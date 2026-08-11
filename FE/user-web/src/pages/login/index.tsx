@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuthSession } from "@/features/auth";
 import {
   authService,
+  AuthLandingPage,
+  AuthLoginPage,
+  type AuthProviderId,
+  type AuthProviderOption,
   isAuthPopupCallbackWindow,
-} from "@/features/auth/auth-service";
-import { AuthLandingPage } from "@/features/auth/components/auth-landing-page";
-import { AuthLoginPage } from "@/features/auth/components/auth-login-page";
+  useAuthSession,
+} from "@/features/auth";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import { stripPublicSiteLocaleFromPathname } from "@/features/public-site/i18n/public-site-locale-routes";
-import type {
-  AuthProviderId,
-  AuthProviderOption,
-} from "@/features/auth/types/auth";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const fallbackProviders: AuthProviderOption[] = [

@@ -4,6 +4,8 @@
 
 ## 1. G06 User Web feature public API boundary
 
+상태: 완료 / 검증 완료
+
 대상 후보:
 
 - `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
@@ -29,6 +31,14 @@ pnpm.cmd run typecheck
 pnpm.cmd run lint
 ```
 
+검증 결과:
+
+- 2026-08-11 `pnpm run typecheck` 통과
+- 2026-08-11 `pnpm run lint` 통과
+- cross-feature deep import 감사 결과 0건
+- page/layout 포함 외부 feature deep import 감사 결과 0건
+- public index runtime broad import 순환 후보 0건
+
 ## 2. G07 User Web 주석 보완
 
 우선 대상:
@@ -52,4 +62,3 @@ pnpm.cmd run lint
 - commented-out code 추가
 - UI copy 변경
 - client log 추가
-

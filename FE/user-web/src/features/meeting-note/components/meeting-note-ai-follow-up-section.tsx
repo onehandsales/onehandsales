@@ -12,7 +12,7 @@ import {
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ErrorState } from "@/components/ui/state";
 import { useToast } from "@/components/ui/use-toast";
-import { useCreateFollowingActionLogMutation } from "@/features/deal/hooks/use-deal-mutations";
+import { useCreateFollowingActionLogMutation } from "@/features/deal/follow-up-actions";
 import {
   useCreateMeetingNoteFollowUpDraftMutation,
   useCreateMeetingNoteNextActionDraftMutation,

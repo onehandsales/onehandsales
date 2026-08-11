@@ -169,6 +169,16 @@
 
 - `G06-FE-FEATURE-PUBLIC-API-BOUNDARY`
 
+처리 상태:
+
+- 2026-08-11 구현 및 검증 완료
+- User Web의 company/contact/deal/meeting-note/product/schedule/trash/auth/notification/public-site public export를 필요한 범위로 보강했다.
+- User Web feature 내부의 cross-feature `components/hooks/api/schemas/types/utils` deep import를 public `@/features/<feature>` import로 정리했다.
+- 반복 참조되는 query key와 딜 선택/상태/후속 액션 API는 top-level public sub-entry로 분리해 넓은 barrel 순환 위험을 낮췄다.
+- page/layout 외부 consumer의 feature 내부 경로 import도 public index import로 정리했다.
+- cross-feature deep import, 외부 feature deep import, 자기 feature public index import 순환 위험 후보, public index runtime broad import 순환 후보 감사 결과 모두 0건이다.
+- `FE/user-web`와 `FE/admin-web`의 `typecheck`, `lint`가 통과했다.
+
 ### M03. Frontend 주석 누락
 
 근거:

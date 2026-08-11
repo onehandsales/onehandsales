@@ -5,6 +5,7 @@ export {
   scanBusinessCard,
 } from "./api/business-card-api";
 export { BusinessCardScanScreen } from "./components/business-card-scan-screen";
+export type { BusinessCardConfirmFormValues } from "./schemas/business-card-schema";
 export type {
   BusinessCardConfirmResponse,
   BusinessCardExtractedFields,

@@ -36,6 +36,8 @@ rg -n "mock-.*token|loginAsAdmin|loginAsUser|fallbackRole|관리자로 계속|�
 
 ## 2. G06 Admin Web feature boundary
 
+상태: 완료 / 검증 완료
+
 대상:
 
 - `FE/admin-web/src/features/admin-query/*`
@@ -47,6 +49,21 @@ rg -n "mock-.*token|loginAsAdmin|loginAsUser|fallbackRole|관리자로 계속|�
 - legacy/inactive `admin-query` 사용 여부 확인
 - 활성 route에서 쓰지 않는 내부 feature는 새 작업에서 확장하지 않는다.
 - 필요한 공개 API는 feature `index.ts`로 노출한다.
+
+검증:
+
+```powershell
+cd D:\workspace_repository\onehandsales\FE\admin-web
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+```
+
+검증 결과:
+
+- 2026-08-11 `pnpm run typecheck` 통과
+- 2026-08-11 `pnpm run lint` 통과
+- cross-feature deep import 감사 결과 0건
+- public index runtime broad import 순환 후보 0건
 
 ## 3. G07 Admin Web 주석 보완
 

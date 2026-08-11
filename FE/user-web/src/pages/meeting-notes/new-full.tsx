@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppI18n } from "@/features/app-i18n";
-import { MeetingNoteCreateDialog } from "@/features/meeting-note/components/meeting-note-create-dialog";
-import type { MeetingNoteCreateFormValues } from "@/features/meeting-note/schemas/meeting-note-schema";
+import {
+  MeetingNoteCreateDialog,
+  type MeetingNoteCreateFormValues,
+} from "@/features/meeting-note";
 
 // 기능 : 패널에서 확대한 회의록 생성 전용 페이지를 렌더링합니다.
 export function MeetingNoteNewFullPage() {

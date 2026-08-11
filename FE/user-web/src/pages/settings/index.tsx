@@ -15,17 +15,15 @@ import { AccountDataRequestsSettingsSection } from "@/features/account-request";
 import { Toast } from "@/components/ui/toast";
 import { type AppI18nKey, useAppI18n } from "@/features/app-i18n";
 import {
+  type MyDevice,
+  type UserProfileOAuthAccount,
+  type UserProfileResponse,
   useMyDevices,
   useMyProfile,
   useUpdateMyProfileMutation,
-} from "@/features/auth/hooks/use-user-settings";
+} from "@/features/auth";
 import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
-import { GoogleCalendarSettingsSection } from "@/features/schedule/components/google-calendar-settings-section";
-import type {
-  MyDevice,
-  UserProfileOAuthAccount,
-  UserProfileResponse,
-} from "@/features/auth/types/auth";
+import { GoogleCalendarSettingsSection } from "@/features/schedule";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const DEFAULT_TIME_ZONE = "Asia/Seoul";

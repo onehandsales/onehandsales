@@ -17,7 +17,7 @@ import type {
   UpdateScheduleInput,
   UpdateGoogleCalendarSelectionInput,
 } from "@/features/schedule/types/schedule";
-import { trashQueryKeys } from "@/features/trash/api/trash-query-keys";
+import { trashQueryKeys } from "@/features/trash/query-keys";
 
 export function useCreateScheduleMutation() {
   const queryClient = useQueryClient();

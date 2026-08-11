@@ -32,8 +32,8 @@ import {
   useDealCompanyOptions,
   useDealContactOptions,
   useDealProductOptions,
-} from "@/features/deal/hooks/use-deal-entity-options";
-import { useDealList } from "@/features/deal/hooks/use-deal-list";
+  useDealList,
+} from "@/features/deal/entity-options";
 import {
   useCreateMeetingNoteMutation,
   useCreateMeetingNoteSttAiDraftMutation,

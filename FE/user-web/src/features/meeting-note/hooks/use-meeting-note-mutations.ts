@@ -9,7 +9,7 @@ import {
   linkMeetingNoteDeals,
   updateMeetingNote,
 } from "@/features/meeting-note/api/meeting-note-api";
-import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
+import { dealQueryKeys } from "@/features/deal/query-keys";
 import { meetingNoteQueryKeys } from "@/features/meeting-note/api/meeting-note-query-keys";
 import type {
   CreateMeetingNoteFollowUpDraftInput,

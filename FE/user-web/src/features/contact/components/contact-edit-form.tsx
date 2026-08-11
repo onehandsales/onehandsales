@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
-import { CompanyCreateDialog } from "@/features/company/components/company-create-dialog";
 import {
+  CompanyCreateDialog,
   useCompanyFields,
   useCompanyRegions,
-} from "@/features/company/hooks/use-company-list";
+} from "@/features/company";
 import { ContactCompanyField } from "@/features/contact/components/contact-company-field";
 import { ContactPhoneInputControl } from "@/features/contact/components/contact-phone-field";
 import { useCompanyOptions } from "@/features/contact/hooks/use-company-options";

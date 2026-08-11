@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { normalizeAppPhoneCountryCode, useAppI18n } from "@/features/app-i18n";
-import { ContactCreateDialog } from "@/features/contact/components/contact-create-dialog";
-import type { ContactCreateFormValues } from "@/features/contact/schemas/contact-schema";
+import {
+  ContactCreateDialog,
+  type ContactCreateFormValues,
+} from "@/features/contact";
 
 // 기능 : 패널에서 확대한 담당자 생성 전용 페이지를 렌더링합니다.
 export function ContactNewFullPage() {
