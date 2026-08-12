@@ -11,6 +11,11 @@
 ```text
 TODO/
   README.md
+  SERVICE_QA_PLAN/
+    README.md
+    COMMON/
+    FE-TODO/
+    BE-TODO/
   PADDLE_PLAN/
     README.md
     COMMON/
@@ -103,7 +108,8 @@ TODO/
 - 2026-08-11 기준 `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`, `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`, `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`은 완료/이관 처리된 archive다.
 - 2026-08-11 기준 `TODO/PADDLE_PLAN`은 다음 즉시 구현 계획이 아니라 Deferred / Draft 상태의 결제 전용 계획이다.
 - Paddle/Billing 구현은 기능 유지보수, UX/UI 상품성 개선, 100명 베타 테스트, 가격/플랜/권한 정책 확정 이후 다시 착수한다.
-- 지금 활성 구현 계획은 없다. 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만들거나, `TODO/PADDLE_PLAN`의 gate가 충족된 뒤 해당 문서를 confirmed 계획으로 승격한다.
+- 2026-08-12 기준 `TODO/SERVICE_QA_PLAN`은 실제 서비스 QA 실행을 위한 활성 문서 계획이다. 순수 문서 계획이며, QA 실행 결과는 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록한다.
+- 지금 활성 구현 계획은 없다. QA에서 발견된 S0/S1/S2 결함이나 새 요구사항은 `TODO` 바로 아래에 새 계획 폴더를 만들거나, `TODO/SERVICE_QA_PLAN`의 이슈 로그에서 후속 구현 계획으로 승격한다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 완료했다.
@@ -113,6 +119,7 @@ TODO/
 
 보류/진행 중인 계획:
 
+- `SERVICE_QA_PLAN`: Active / Ready. 실제 서비스 QA를 위한 자동 검증, Playwright, 실제 BE 통합, 수동 UX/보안 QA 실행 계획이다.
 - `PADDLE_PLAN`: Deferred / Draft. 결제, 구독, 세금, entitlement, paywall, AI 사용량 제한 정책을 베타 이후 다시 확정하기 위한 보류 계획이다.
 
 완료된 계획:
