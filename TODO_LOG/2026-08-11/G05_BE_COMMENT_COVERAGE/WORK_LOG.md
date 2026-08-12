@@ -1,11 +1,12 @@
-# G05 BE Comment Coverage Work Log
+﻿# G05 BE Comment Coverage Work Log
 
 날짜: 2026-08-11
-상태: Implemented / Verified
+상태: Implemented / Verified / 2026-08-12 Re-review Follow-up Recorded
+재검토일: 2026-08-12
 
 ## 1. 범위
 
-- `TODO/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/COMMON/GOAL-SPECS/G05-BE-COMMENT-COVERAGE.goal.md`
+- `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/COMMON/GOAL-SPECS/G05-BE-COMMENT-COVERAGE.goal.md`
 - 우선 대상 Backend controller 5개
 - G02-G04에서 수정한 Backend class/interface/function/method
 
@@ -37,3 +38,17 @@ pnpm.cmd test
 - `pnpm run lint` 통과
 - `pnpm test` 통과: 98개 suite / 524개 test
 - `git diff --check` 통과
+
+## 5. 2026-08-12 재검토 결과
+
+- 우선 대상 controller 5개는 HTTP method별 `// API : ...`와 controller 흐름 numbered step comment를 충족한다.
+- G02-G04 변경 Backend source와 G05 우선 대상의 class/interface/function/method 주석은 기존 완료 기준을 유지한다.
+- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 public application orchestration method 3개는 `// 기능 : ...`은 있으나 numbered step comment가 없어 후속 보완으로 기록한다.
+
+## 6. 남은 후속 보완
+
+- `getUserTrashSummary`
+- `listUserTrashRecords`
+- `listRecoveryRequests`
+
+위 3개 method는 G05의 "controller와 application orchestration의 주요 흐름 numbered step comment" 기준에 맞춰 후속 보완이 필요하다.

@@ -1,11 +1,12 @@
-# G06 FE Feature Public API Boundary Work Log
+﻿# G06 FE Feature Public API Boundary Work Log
 
 날짜: 2026-08-11
-상태: Implemented / Verified
+상태: Implemented / Verified / 2026-08-12 Re-review Verified
+재검토일: 2026-08-12
 
 ## 1. 범위
 
-- `TODO/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/COMMON/GOAL-SPECS/G06-FE-FEATURE-PUBLIC-API-BOUNDARY.goal.md`
+- `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/COMMON/GOAL-SPECS/G06-FE-FEATURE-PUBLIC-API-BOUNDARY.goal.md`
 - `FE/user-web/src/features`
 - `FE/user-web/src/pages`
 - `FE/user-web/src/components/layout`
@@ -47,3 +48,13 @@ pnpm.cmd run lint
 - `FE/user-web`: `pnpm run lint` 통과
 - `FE/admin-web`: `pnpm run typecheck` 통과
 - `FE/admin-web`: `pnpm run lint` 통과
+
+## 5. 2026-08-12 재검토 결과
+
+- `FE/user-web/src` 335개 TS/TSX 파일, feature file 248개 기준 `cross_feature_deep_imports=0`, `external_or_cross_feature_deep_imports=0`, `self_feature_public_index_imports=0`, `feature_public_index_runtime_cycles=0`이다.
+- `FE/admin-web/src` 93개 TS/TSX 파일 기준 feature deep import boundary 위반은 0건이다.
+- G06 완료 로그와 상위 TODO 문서 참조는 `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN` 기준으로 정합성을 맞췄다.
+
+## 6. 남은 후속 보완
+
+- 2026-08-12 재검토 기준 G06 코드 후속 보완 항목은 없다.

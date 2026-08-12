@@ -1,11 +1,12 @@
-# G07 FE Comment Coverage Work Log
+﻿# G07 FE Comment Coverage Work Log
 
 날짜: 2026-08-11
-상태: Implemented / Verified
+상태: Implemented / Verified / 2026-08-12 Re-review Follow-up Recorded
+재검토일: 2026-08-12
 
 ## 1. 범위
 
-- `TODO/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/COMMON/GOAL-SPECS/G07-FE-COMMENT-COVERAGE.goal.md`
+- `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/COMMON/GOAL-SPECS/G07-FE-COMMENT-COVERAGE.goal.md`
 - `FE/user-web/src/app/router/route-elements.tsx`
 - `FE/user-web/src/components/layout/app-shell.tsx`
 - User Web 주요 list/detail/create/detail/settings/public page 및 관련 feature hook/helper
@@ -46,3 +47,13 @@ pnpm.cmd run lint
 - `FE/user-web`: `pnpm run lint` 통과
 - `FE/admin-web`: `pnpm run typecheck` 통과
 - `FE/admin-web`: `pnpm run lint` 통과
+
+## 5. 2026-08-12 재검토 결과
+
+- G07 원래 완료 기준인 64개 대상 파일의 component/function/hook/handler 주석 감사 결과는 기존 완료 상태를 유지한다.
+- `FE/user-web/src/features/follow-up-delivery/components/follow-up-compose-dialog.tsx`의 `requestSend` 1건은 `onClick`에 연결된 named event handler이고, 바로 위 `// 기능 : ...` 주석이 없어 후속 보완으로 기록한다.
+- FE 전체 source에 같은 주석 규칙을 엄격 적용하면 User Web 335개 파일의 주석 감사 대상 1,867개 중 996건, Admin Web 93개 파일의 주석 감사 대상 300개 중 67건이 누락으로 잡힌다. 이는 기존 G07 완료 기준의 64개 대상 파일 범위를 넘는 source-wide 적용 리스크로 별도 관리한다.
+
+## 6. 남은 후속 보완
+
+- `FE/user-web/src/features/follow-up-delivery/components/follow-up-compose-dialog.tsx`의 `requestSend`는 G07의 event handler function 주석 기준에 맞춰 `// 기능 : ...` 주석 보완이 필요하다.
