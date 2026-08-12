@@ -32,13 +32,13 @@
 - G03 완료 로그는 `TODO_LOG/2026-08-11/G03_BE_ADMIN_PRISMA_TYPE_BOUNDARY/WORK_LOG.md`다.
 - G04 Backend cross-module repository boundary는 2026-08-11 구현 및 검증을 완료했다.
 - G04 완료 로그는 `TODO_LOG/2026-08-11/G04_BE_CROSS_MODULE_REPOSITORY_BOUNDARY/WORK_LOG.md`다.
-- G05 Backend comment coverage는 2026-08-11 구현 및 검증을 완료했다.
+- G05 Backend comment coverage는 2026-08-11 구현 및 검증을 완료했고, 2026-08-12 재검토에서 후속 보완 3건을 기록했다.
 - G05 완료 로그는 `TODO_LOG/2026-08-11/G05_BE_COMMENT_COVERAGE/WORK_LOG.md`다.
 - G06 Frontend feature public API boundary는 2026-08-11 구현 및 검증을 완료했다.
 - G06 완료 로그는 `TODO_LOG/2026-08-11/G06_FE_FEATURE_PUBLIC_API_BOUNDARY/WORK_LOG.md`다.
 - G07 Frontend comment coverage는 2026-08-11 구현 및 검증을 완료했다.
 - G07 완료 로그는 `TODO_LOG/2026-08-11/G07_FE_COMMENT_COVERAGE/WORK_LOG.md`다.
-- 현재 모든 goal 구현과 goal별 검증을 완료했다.
+- 현재 모든 goal 구현과 goal별 검증을 완료했다. 2026-08-12 재검토에서 확인한 G05 후속 보완 항목은 G05 완료 로그에 기록했다.
 
 ## 3. Goal별 최소 검증
 

@@ -1,6 +1,6 @@
 # G05 BE Comment Coverage
 
-상태: Implemented / Verified
+상태: Implemented / Verified / Re-review Follow-up Recorded
 영역: BE
 우선순위: Medium
 
@@ -75,3 +75,34 @@ pnpm.cmd test
 - `pnpm run lint` 통과
 - `pnpm test` 통과: 98개 suite / 524개 test
 - `git diff --check` 통과
+
+## 9. 2026-08-12 재검토 결과
+
+재검토 범위:
+
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`의 Backend 주석 규칙을 다시 확인했다.
+- 우선 대상 controller 5개와 G02-G04 변경 Backend source 66개 파일을 기준으로 class/interface/function/method/API 주석 prefix를 AST 기반으로 재감사했다.
+- BE/FE 정적 검증과 Backend 전체 Jest를 재실행했다.
+- G05 완료 로그 문서 존재 여부와 상위 TODO 문서의 완료 로그 참조를 확인했다.
+
+통과 결과:
+
+- 우선 대상 controller 5개의 HTTP method는 route decorator 직전 `// API : ...` 규칙을 충족한다.
+- 우선 대상 controller와 G02-G04 변경 Backend source 66개 파일 기준 class/interface/function/method/API 주석 prefix 누락은 0개다.
+- Backend source에서 `console.log` 검색 결과는 없다.
+- FE는 G05와 직접 연결되는 API 계약 변경 흔적이 없고, Admin Web 직접 `"/api/"` 사용은 없다.
+- User Web의 `/admin/api` 검색 결과는 API client의 차단 guard에 한정된다.
+- `BE` `pnpm.cmd run typecheck` 통과
+- `BE` `pnpm.cmd run lint` 통과
+- `BE` `pnpm.cmd test -- --runInBand` 통과: 98개 suite / 524개 test
+- `FE/admin-web` `pnpm.cmd run typecheck` 통과
+- `FE/admin-web` `pnpm.cmd run lint` 통과
+- `FE/user-web` `pnpm.cmd run typecheck` 통과
+- `FE/user-web` `pnpm.cmd run lint` 통과
+- `git diff --check` 통과
+
+후속 보완 기록:
+
+- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `getUserTrashSummary`, `listUserTrashRecords`, `listRecoveryRequests`는 public application orchestration method이고 `// 기능 : ...`은 있으나 numbered step comment가 없다.
+- 위 3개 method는 G05의 "controller와 application orchestration의 주요 흐름 numbered step comment" 기준에 맞춰 후속 보완이 필요하다.
+- 누락되어 있던 G05 완료 로그는 `TODO_LOG/2026-08-11/G05_BE_COMMENT_COVERAGE/WORK_LOG.md`에 보강했다.
