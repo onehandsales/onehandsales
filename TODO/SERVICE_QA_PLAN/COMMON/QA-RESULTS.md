@@ -88,3 +88,28 @@
 
 - Pending
 
+## 7. 기능 선별 QA 요약
+
+| 영역 | 화면/API | 판단 | 이유 | 조치 | 우선순위 |
+|---|---|---|---|---|---|
+| 로그인 | `/login`, `/auth/callback`, `/api/auth/*` | Pending | - | - | - |
+| 회사 | `/app/companies`, `/api/companies/*` | Pending | - | - | - |
+| 담당자 | `/app/contacts`, `/api/contacts/*` | Pending | - | - | - |
+| 제품 | `/app/products`, `/api/products/*` | Pending | - | - | - |
+| 딜 | `/app/deals`, `/api/deals/*` | Pending | - | - | - |
+| 일정 | `/app/schedules`, `/api/schedules/*` | Pending | - | - | - |
+| 회의록 | `/app/meeting-notes`, `/api/meeting-notes/*` | Pending | - | - | - |
+| Search | `/app`, search modal, `/api/search` | Pending | - | - | - |
+| Trash | `/app/trash`, `/api/trash/*` | Pending | - | - | - |
+| Import | `/app/import`, `/api/imports/*` | Pending | - | - | - |
+| Notification | `/app/notifications`, `/api/notifications/*` | Pending | - | - | - |
+| AI report/follow-up | `/app/schedules/week`, follow-up APIs | Pending | - | - | - |
+| Admin Web | `/users`, `/analytics`, `/audit-logs`, `/system` | Pending | - | - | - |
+
+판단 값은 `KEEP`, `FIX`, `IMPROVE`, `REMOVE`, `HIDE`, `DEFER`, `RETHINK` 중 하나를 사용한다.
+
+## 8. 일일 QA 마감 기록
+
+| 일자 | 오늘 확인한 영역 | 즉시 수정한 항목 | 내일 바로 볼 항목 | 보류/재검토 항목 |
+|---|---|---|---|---|
+| 2026-08-13 | Pending | Pending | Pending | Pending |

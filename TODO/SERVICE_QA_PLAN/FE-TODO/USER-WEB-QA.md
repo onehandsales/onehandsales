@@ -4,6 +4,8 @@
 
 `FE/user-web`에서 실제 사용자가 핵심 CRM 업무를 끝까지 수행할 수 있는지 확인한다.
 
+페이지별 API 확인 항목은 `PAGE-API-QA-MATRIX.md`의 User Web 섹션을 기준으로 한다.
+
 ## 2. 자동 검증
 
 ```powershell

@@ -24,6 +24,22 @@ Severity:
 - `S4 Polish`
 - `QA Infra`
 
+Triage:
+
+- `KEEP`
+- `FIX`
+- `IMPROVE`
+- `REMOVE`
+- `HIDE`
+- `DEFER`
+- `RETHINK`
+
+처리 방식:
+
+- `Fix Now`: QA 흐름을 크게 끊지 않는 작고 명확한 수정
+- `Batch Later`: 기능별 QA 한 바퀴 이후 묶어서 처리
+- `Backlog`: 베타 이후 또는 별도 계획으로 이동
+
 ## 2. Issue Template
 
 ```markdown
@@ -31,6 +47,8 @@ Severity:
 
 - 상태: Open
 - Severity: S2 Major
+- Triage: FIX
+- 처리 방식: Fix Now
 - 영역: FE/user-web > 예: 딜 생성
 - 발견일: 2026-08-12
 - 환경: Chrome / Windows / localhost
@@ -65,7 +83,33 @@ Severity:
 - 재검증 명령:
 ```
 
-## 3. Open Issues
+## 3. Feature Triage Template
+
+```markdown
+## FT-001 영역/기능명
+
+- 상태: Open
+- Triage: IMPROVE
+- 우선순위: S3 Minor
+- 영역: FE/user-web > 예: Import
+- 발견일: 2026-08-13
+- 처리 방식: Batch Later
+
+### 현재 동작
+
+현재 사용자가 경험하는 흐름을 적는다.
+
+### 판단
+
+KEEP/FIX/IMPROVE/REMOVE/HIDE/DEFER/RETHINK 중 하나와 이유를 적는다.
+
+### 조치
+
+- 즉시 수정:
+- 묶어서 처리:
+- 후속 문서:
+```
+
+## 4. Open Issues
 
 현재 기록된 Open issue 없음.
-

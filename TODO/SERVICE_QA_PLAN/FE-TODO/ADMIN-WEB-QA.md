@@ -4,6 +4,8 @@
 
 `FE/admin-web`에서 운영자가 안전하게 사용자/도메인/민감 데이터 상태를 확인할 수 있는지 검증한다.
 
+페이지별 API 확인 항목은 `PAGE-API-QA-MATRIX.md`의 Admin Web 섹션을 기준으로 한다.
+
 ## 2. 자동 검증
 
 ```powershell
@@ -77,4 +79,3 @@ pnpm.cmd run test:e2e
 - 긴 masked email, request id, safe error code가 셀을 깨지 않는다.
 - 위험 액션은 확인 UI 또는 사유 입력을 요구한다.
 - 빈 목록, 오류, loading 상태가 운영자가 다음 행동을 판단할 수 있게 표시된다.
-
