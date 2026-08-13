@@ -2,7 +2,7 @@
 
 `FE/admin-web`은 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`의 feature-first 구조를 따른다.
 
-스냅샷 기준일: 2026-08-09 G05 Admin Web architecture legacy closeout
+스냅샷 기준일: 2026-08-13 FE/BE 문서 동기화
 
 ## 1. 현재 구조
 

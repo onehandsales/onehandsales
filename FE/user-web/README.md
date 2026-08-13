@@ -53,7 +53,7 @@ Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`
 - 개발용 mock login flow는 제거되어 있다.
 - Google OAuth signup/login은 QA 통과 상태다.
 - Kakao OAuth는 로그인 기능에서 제거되어 있다.
-- Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 구현한다.
+- LINE/Apple OAuth도 runtime provider로 노출한다. 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 상태에 따라 별도 확인하거나 환경 `N/A`로 기록한다.
 - 로그인 전 `/app/*` 보호 라우트 접근은 로그인 화면으로 이동한다.
 - 로그아웃 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`.
 - 현재 device slot은 화면 폭 기준 `mobile` 또는 `personal_laptop`으로 전송한다. 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.
@@ -71,20 +71,29 @@ Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`
 - Product
 - Deal
 - Schedule
+- Weekly Schedule Report
+- Google Calendar Integration
 - MeetingNote manual CRUD
 - MeetingNote AI/STT draft
+- MeetingNote next action/follow-up draft
 - MeetingNote deal link
+- AI Weekly Sales Report/Follow-up
 - Search
 - Trash
+- Notification/Reminder
 - Company/Contact/Product/Deal soft delete UX/API
-- DataImport
+- DataImport/ImportJob
+- Product Analytics
+- Account request
 - Company/Contact/Product/Deal xlsx export
 - Public site: `/{locale}`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`
 
 mock/placeholder 경계:
 
 - generic Export job
-- Notification
+- Billing/Paddle
+- Billing Admin
+- B2B tenant/team admin
 
 BusinessCard OCR/명함 스캔은 `/app/business-cards`에서 실제 API와 연결된다. `/business-cards`와 `/contacts/scan`은 legacy redirect다. 목록은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`를 제공한다. `명함스캔` 모달은 최초에는 이미지 업로드만 보여주고, 요청 중에는 진행 표시를 띄우며, 성공 후 추출 결과 확인/수정 폼을 보여준다.
 
@@ -92,7 +101,9 @@ BusinessCard OCR/명함 스캔은 `/app/business-cards`에서 실제 API와 연�
 
 패널에서 확대한 생성 전용 route도 있다. `/app/companies/new/full`, `/app/contacts/new/full`, `/app/products/new/full`, `/app/deals/new/full`, `/app/meeting-notes/new/full`은 각 생성 dialog를 `mode="page"`로 렌더링하고, route state의 draft 값을 초기값으로 복원한 뒤 생성 성공 시 목록으로 돌아간다. `/app/contacts/new`, `/app/products/new`, `/app/deals/new`은 목록 위 생성 패널을 초기 open 상태로 여는 route다. `/app/meeting-notes/new`는 `/app/meeting-notes?create=1`로 redirect한다.
 
-데이터 불러오기는 `/app/import`와 `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 FE API 함수가 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
+데이터 불러오기는 `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`에서 실제 API와 연결된다. `/import`는 legacy redirect다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 전 job 재개, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 현재 코드 기준 딜 import의 누락 회사/담당자/제품 보정값은 FE API 함수가 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
+
+알림은 `/app/notifications`와 AppShell 알림 bell에서 실제 Notification API와 연결된다. 알림 목록/읽음, unread count, 알림 설정, browser push public key/subscription 흐름을 제공한다.
 
 ## 검증
 

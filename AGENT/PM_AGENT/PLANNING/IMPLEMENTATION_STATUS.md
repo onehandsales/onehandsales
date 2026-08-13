@@ -67,7 +67,7 @@
 - 회사/담당자/제품/딜 생성은 목록 맥락의 `/app/<domain>/new`와 page-mode 확장 route `/app/<domain>/new/full`을 함께 지원한다. 회의록은 `/app/meeting-notes/new`가 `?create=1`로 redirect하고 `/app/meeting-notes/new/full`이 page-mode 작성 route다.
 - Backend `typecheck`, `lint`, `test`, `build` 통과. BE test는 17 suites / 82 tests passed.
 - FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 통과.
-- FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 통과.
+- FE/admin-web `typecheck`, `lint`, `build` 선택 점검 통과. 2026-08-09 G05 closeout 기준 현재 Admin route smoke E2E도 통과 상태로 기록되어 있다.
 
 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성 확인이다.
 

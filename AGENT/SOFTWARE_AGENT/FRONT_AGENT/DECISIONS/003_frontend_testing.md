@@ -2,10 +2,10 @@
 
 ## 1. 결정
 
-MVP 테스트 자동화는 User Web 핵심 업무 흐름을 우선한다. Admin Web은 관리자 페이지 본 구현 전까지 인증/권한 smoke 범위로 유지하되, 현재 Playwright 파일은 과거 운영 화면 기대값을 포함하므로 현재 router 기준으로 갱신하기 전까지 release gate로 쓰지 않는다.
+MVP 테스트 자동화는 User Web 핵심 업무 흐름을 우선한다. Admin Web은 11 Admin Operation foundation 이후 현재 라우터 기준 smoke E2E를 유지한다. Billing Admin과 B2B tenant/team admin은 아직 테스트 gate에 포함하지 않는다.
 
 - User Web: `FE/user-web`에서 Playwright E2E 관리
-- Admin Web: `FE/admin-web`에서 Playwright E2E 관리하되, 현재 router 기준으로 갱신한 뒤 `/admin/api/me` 보호 라우트 검증 중심으로 제한
+- Admin Web: `FE/admin-web`에서 Playwright E2E 관리. `/admin/api/me` 보호 라우트, non-admin 차단, 현재 Admin Operation route smoke, 민감 원문 조회 사유 validation, 감사 로그/운영 queue/gate 흐름을 mock API로 검증한다.
 
 공용 테스트 패키지는 만들지 않는다.
 
@@ -17,10 +17,10 @@ User Web과 Admin Web은 별도 앱이며 package/workspace를 공유하지 않�
 
 ## 3. CI 실행 타이밍
 
-- PR마다 User Web 핵심 smoke E2E를 실행한다. Admin auth smoke E2E는 현재 router 기준으로 갱신한 뒤 PR gate에 추가한다.
+- PR마다 User Web 핵심 smoke E2E를 실행한다. Admin Web은 현재 route smoke E2E를 별도 gate로 실행할 수 있다.
 - `main` merge 후 User Web 전체 E2E를 실행한다.
 - 배포 직전 User Web 전체 E2E를 한 번 더 실행한다.
-- Admin 전체 E2E는 Admin 페이지와 Backend 운영 조회 API 구현 후 CI 범위에 추가한다.
+- Admin Web 전체 E2E 확장은 Billing Admin, B2B tenant/team admin, 운영 mutation 범위가 열릴 때 별도 추가한다.
 
 ## 4. 관련 문서
 

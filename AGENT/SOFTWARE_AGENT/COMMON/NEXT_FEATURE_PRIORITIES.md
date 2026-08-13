@@ -89,7 +89,7 @@
 - BE test: 17 suites / 82 tests passed
 - FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 통과
 - FE/user-web E2E: 핵심 업무 smoke 1 passed
-- FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 통과
+- FE/admin-web `typecheck`, `lint`, `build` 선택 점검 통과. 이후 2026-08-09 G05 closeout에서 현재 Admin route smoke E2E도 통과 상태로 기록됨
 
 ### 2.3 진입/인증/라우팅 smoke 완료
 

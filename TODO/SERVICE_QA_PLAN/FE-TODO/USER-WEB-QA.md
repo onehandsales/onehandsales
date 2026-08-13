@@ -19,7 +19,7 @@ pnpm.cmd run test:e2e:analytics
 
 ## 3. Playwright 확인 항목
 
-- Google provider login popup
+- Google/LINE/Apple provider button exposure, popup/redirect fallback, and provider smoke result or environment N/A 기록
 - protected route redirect
 - 회사/담당자/제품/딜/일정/회의록 smoke flow
 - API authorization header 누락 없음
@@ -147,4 +147,3 @@ Viewport:
 - table/list가 모바일에서 읽을 수 있는 card/list로 전환된다.
 - 긴 회사명, email, phone, URL이 부모 영역을 깨지 않는다.
 - icon-only button에 label 또는 tooltip이 있다.
-

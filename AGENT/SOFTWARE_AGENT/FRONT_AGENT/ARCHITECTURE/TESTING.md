@@ -95,7 +95,7 @@ CI timing:
 - FE/user-web E2E는 핵심 업무 smoke 1건 통과.
 - URL locale smoke 통과: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
 - 핵심 업무 happy path 수동 QA 통과: 로그인, 회사, 담당자, 제품, 딜, 일정, 회의록, 명함 OCR, Import, Search, Trash, Domain XLSX Export, 설정/더보기.
-- FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 통과.
+- FE/admin-web `typecheck`, `lint`, `build` 선택 점검 통과. 이후 2026-08-09 G05 closeout에서 현재 Admin route smoke E2E도 통과 상태로 기록됨.
 
 2026-08-09 G05 closeout 기준 FE/admin-web 검증 상태는 다음이다.
 

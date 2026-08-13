@@ -144,7 +144,7 @@ git status --short
 
 ### 13.3 Backend/Admin API 확인 결과
 
-- 현재 Admin API controller는 `BE/src/modules/auth/presentation/http/me.controller.ts`의 `GET /admin/api/me`만 확인됐다.
+- G01 착수 당시 Admin API controller는 `BE/src/modules/auth/presentation/http/me.controller.ts`의 `GET /admin/api/me`만 확인됐다. 이후 11 Admin Operation foundation에서 `BE/src/modules/admin-operation`의 `/admin/api/*` 운영 조회, 민감 원문 조회, 감사 로그, provider failure, analytics, account/trash/system queue API가 구현됐다.
 - `GET /admin/api/me`는 `@UseGuards(AuthGuard, AdminGuard)`를 사용한다.
 - `BE/src/shared/presentation/guards/admin.guard.ts`는 `request.currentUser.role !== "ADMIN"`이면 `ForbiddenException`을 던진다.
 - `AuthGuard`, `AdminGuard`, `AdminMeController`에는 현재 Backend 주석 규칙의 `// 역할 :`, `// 기능 :`, `// API :`, numbered step comment가 있다.

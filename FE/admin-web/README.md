@@ -18,10 +18,10 @@
 | 표/대시보드 | TanStack Table, 필요 시 Recharts |
 | 폼 검증 | React Hook Form, Zod |
 
-## 초기 범위
+## 현재 범위
 
-- 현재 노출 범위: 관리자 로그인, non-admin 접근 차단, `/admin/api/me` 보호 라우트 확인, root placeholder
-- 후속 범위: 사용자 관리, 조직 관리, 구독 관리, 사용량 분석, 감사 로그, 시스템 설정, 운영 지원
+- 현재 노출 범위: 관리자 로그인, non-admin 차단, 사용자 목록/상세, 사용자 도메인 read-only, 사용자 Trash, provider failure, account/data request queue, Trash recovery request queue, analytics overview, audit logs, system operation gate
+- 후속 범위: Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin, 운영 mutation 확대, 유료 복구/영구 삭제 정책
 
 Admin API는 `/admin/api/*`를 사용한다.
 
@@ -50,34 +50,50 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5174/auth/callback"
 
 ## Auth
 
-현재 local에서는 memory 기반 mock admin/user token을 사용한다.
+Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 호출해 관리자 권한을 확인한다. 운영 코드는 로컬 가짜 관리자/일반 사용자 token이나 역할 대체값을 사용하지 않는다.
 
-- `관리자로 계속`: Admin role로 운영 콘솔 진입
-- `일반 사용자로 계속`: non-admin 접근 차단 화면 확인
-
-Backend는 현재 `GET /admin/api/me`만 구현되어 있다.
+관리자 보호 route는 `ProtectedAdminRoute`와 `AdminShell` 아래에서 렌더링된다. 일반 사용자 token은 Backend AdminGuard에서 403 또는 접근 차단으로 처리되어야 한다.
 
 ## 현재 구현 상태
 
 실제 Backend API 연동 완료:
 
 - `GET /admin/api/me`
+- `GET /admin/api/users`
+- `GET /admin/api/users/:userId`
+- `GET /admin/api/users/:userId/activity-timeline`
+- `GET /admin/api/users/:userId/domain-records`
+- `GET /admin/api/users/:userId/trash-summary`
+- `GET /admin/api/users/:userId/trash-records`
+- `GET /admin/api/audit-logs`
+- `POST /admin/api/sensitive/raw-access`
+- `GET /admin/api/provider-failures`
+- `GET /admin/api/provider-failures/:failureId`
+- `GET /admin/api/analytics/overview`
+- `GET /admin/api/account-deletion-requests`
+- `GET /admin/api/data-export-requests`
+- `GET /admin/api/trash/recovery-requests`
+- `GET /admin/api/system/operation-checks/latest`
+- `POST /admin/api/system/operation-checks`
 
-코드에 존재하지만 현재 노출하지 않는 준비 범위:
+현재 active route:
 
-- `src/features/admin-query`: dashboard, users, domain data, audit logs, sensitive raw dialog 화면/API/hook/type 준비 코드
-- 현재 `src/app/router/router.tsx`는 `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`를 모두 `/`로 redirect한다.
+- `/users`
+- `/users/:userId`
+- `/users/:userId/domain`
+- `/users/:userId/trash`
+- `/provider-failures`
+- `/account-requests`
+- `/trash/recovery-requests`
+- `/analytics`
+- `/audit-logs`
+- `/system`
 
-Backend 미구현 경계:
+코드에 존재하지만 현재 노출하지 않는 준비/비활성 범위:
 
-- `/admin/api/dashboard`
-- `/admin/api/users`
-- `/admin/api/companies`
-- `/admin/api/contacts`
-- `/admin/api/products`
-- `/admin/api/deals`
-- 감사 로그 조회 API
-- 민감 원문 조회 API
+- `src/features/admin-query`: legacy dashboard/global domain/raw access path 기대 코드. 현재 active route/menu 계약이 아니므로 연결하지 않는다.
+- `/organizations`, `/subscriptions`, `/support` route는 `/`로 redirect한다.
+- `organization-management`, `subscription-management`, `support` feature는 scaffold이며 현재 열지 않는다.
 
 ## 검증
 
@@ -85,17 +101,20 @@ Backend 미구현 경계:
 pnpm run typecheck
 pnpm run lint
 pnpm run build
+pnpm run test:e2e
 ```
 
-`pnpm run test:e2e` 파일은 남아 있지만, 현재 라우터가 운영 화면을 root로 redirect하는 상태와 달리 과거 dashboard/users/data/audit 화면 기대값을 포함한다. 현재 Admin Web 품질 게이트는 우선 `typecheck`, `lint`, `build`와 관리자 인증 수동 smoke로 본다. E2E를 릴리즈 게이트로 쓰려면 현재 라우터 기준으로 먼저 갱신한다.
+`pnpm run test:e2e`는 현재 Admin Operation route smoke를 기준으로 유지한다. Backend와 외부 Provider는 Playwright mock으로 대체한다.
 
 현재 수동 smoke 범위:
 
 - Admin login
 - non-admin 접근 차단
 - `/admin/api/me` 보호 라우트 검증
-- Backend 미구현 운영 화면의 route 숨김/redirect 경계 확인
+- 사용자 overview, 도메인 탭, 민감 원문 조회 사유 validation
+- provider failure, analytics, account request, Trash recovery request, system gate smoke
+- `/organizations`, `/subscriptions`, `/support` redirect 경계 확인
 
-2026-07-10 기준 `typecheck`, `lint`, `build` 선택 점검은 통과했다. Admin 운영 화면 E2E는 현재 라우터 기준으로 갱신하기 전까지 release gate로 보지 않는다.
+2026-08-09 G05 closeout 기준 `typecheck`, `lint`, `test:e2e` 통과 상태로 기록되어 있다. 최신 실행 결과는 `TODO/SERVICE_QA_PLAN/COMMON/QA-RESULTS.md`에 별도 기록한다.
 
 Vercel project root: `FE/admin-web`

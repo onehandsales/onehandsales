@@ -233,26 +233,27 @@ pnpm test:e2e
 - [x] E2E 실패 없음. 스크린샷/trace 기록 불필요
 - [x] E2E가 현재 로그인 UI와 실제 구현 범위 기준으로 통과함
 
-### FE/admin-web 선택 점검
+### FE/admin-web 자동 점검
 
-관리자 페이지는 이번 QA 제외 범위입니다. 다만 전체 repo 품질 확인을 위해 아래는 선택적으로 실행합니다.
+관리자 페이지는 11 Admin Operation foundation 범위에서 현재 QA 포함 대상입니다. Billing Admin과 B2B tenant/team admin만 제외합니다.
 
 ```powershell
 cd FE/admin-web
 pnpm typecheck
 pnpm lint
 pnpm build
+pnpm test:e2e
 ```
 
 - [x] `pnpm typecheck` 성공 또는 제외 사유 기록
 - [x] `pnpm lint` 성공 또는 제외 사유 기록
 - [x] `pnpm build` 성공 또는 제외 사유 기록
-- [N/A] Admin 운영 화면 E2E는 현재 stale 가능성이 있으므로 실패해도 이번 QA 기능 실패로 보지 않음
+- [x] `pnpm test:e2e` 성공 또는 환경/fixture 이슈를 별도 기록
 
-### 2026-07-10 FE/admin-web 선택 자동 점검 결과
+### FE/admin-web 자동 점검 결과 기록 기준
 
-- `pnpm typecheck`, `pnpm lint`, `pnpm build` 성공을 확인했다.
-- Admin 운영 화면 E2E는 이번 기능 QA 범위에서 제외한다.
+- 최신 실행 결과는 `TODO/SERVICE_QA_PLAN/COMMON/QA-RESULTS.md`에 기록한다.
+- `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 현재 11 Admin Operation route smoke 기준이어야 한다.
 
 ## 8. 수동 QA 기본 시나리오
 
@@ -785,7 +786,7 @@ pnpm build
 - 회사/담당자/제품/딜 import 템플릿, 파일 업로드, 미리보기, 행 검증, 셀 수정, 확정, import log 흐름이 동작함을 확인했다.
 - 필수값 누락, 이메일 형식, 휴대폰 형식, 숫자 필드 오류 표시가 동작함을 확인했다.
 - 미리보기 validation 메시지는 오류가 있는 해당 셀에만 표시됨을 확인했다.
-- 확정 전 ImportJob은 서버 메모리에 저장되며 재시작 시 사라질 수 있는 현재 한계를 확인하고 Known limitation으로 유지한다.
+- 확정 전 ImportJob은 DB에 저장되며 새로고침, 탭 이동, 서버 재시작 후 이어받을 수 있다.
 
 ## 19. 검색 QA
 
@@ -876,7 +877,7 @@ pnpm build
 - [x] 가입 국가/마지막 로그인 국가는 geo header가 없는 환경에서 `기록 없음`으로 표시될 수 있음을 기록
 - [x] `/app/more` 진입 가능
 - [x] 더보기에서 현재 노출해야 하는 기능만 보임
-- [x] 알림, generic export, 관리자 기능이 잘못 노출되지 않음
+- [x] generic export와 관리자 기능이 User Web에 잘못 노출되지 않음. 알림은 AppShell bell과 `/app/notifications`에서 노출될 수 있음
 - [x] 로그아웃 진입점이 명확함
 - [x] 로그아웃 후 선호 locale의 login URL로 이동함
 
@@ -1059,9 +1060,9 @@ pnpm build
 
 아래는 현재 실패로 보지 않고, QA 결과에 `N/A` 또는 `Known limitation`으로 기록합니다.
 
-- [ ] 확정 전 ImportJob은 서버 메모리에 저장되며 재시작 시 사라질 수 있음
+- [ ] 확정 전 ImportJob은 DB에 저장되며 재시작 후 이어받을 수 있음
 - [ ] `/app/export`는 `/app`으로 리다이렉트됨
-- [ ] Admin 운영 화면은 현재 제품 QA 범위에서 제외
+- [ ] Admin 운영 화면은 11 Admin Operation foundation 범위에서 QA 대상. Billing Admin과 B2B tenant/team admin은 제외
 - [ ] 과금/구독 결제는 현재 제품 QA 범위에서 제외
 - [ ] MeetingNote raw text/admin raw access는 미래 범위
 - [ ] Google/LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 provider 설정/QA 필요
@@ -1117,7 +1118,7 @@ pnpm build
 
 - [x] BE `typecheck`, `lint`, `test`, `build` 결과 기록 완료
 - [x] FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 결과 기록 완료
-- [x] FE/admin-web 선택 점검 `typecheck`, `lint`, `build` 결과 기록 완료
+- [x] FE/admin-web 점검 `typecheck`, `lint`, `build` 결과 기록 완료. 현재 Admin Web route smoke E2E 결과는 최신 QA 실행 시 `SERVICE_QA_PLAN`에 기록
 - [x] 핵심 수동 시나리오 1회 이상 완료
 - [x] 회사/담당자/제품/딜/일정/회의록 CRUD 확인 완료
 - [x] Import/Export/Search/Trash 확인 완료

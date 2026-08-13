@@ -55,7 +55,7 @@ Backend Schedule 도메인 DB와 User API를 구현한다.
 - 같은 일정에 같은 딜이 DB에서 중복 연결되지 않는다.
 - 일정 생성은 `Schedule`, `ScheduleDeal`을 같은 transaction에서 생성한다.
 - 일정 수정은 요청 `dealIds`를 최종 연결 목록으로 보고 diff 처리한다.
-- 일정 삭제는 soft delete가 아니라 hard delete다.
+- 일정 삭제는 당시 G01 완료 기준에서는 hard delete였으나, 이후 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`에서 Schedule soft delete/Trash 정책으로 변경되었다. 현재 정본은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SCHEDULE_SCHEMA.md`를 따른다.
 - 일정 목록 범위 계산은 요청 `timeZone` 또는 사용자 `timeZone` 기준이다.
 - response 시간 필드는 ISO 8601 UTC string이다.
 

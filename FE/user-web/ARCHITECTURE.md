@@ -15,14 +15,20 @@ src/
     layout/
     ui/
   features/
+    account-request/
+    ai-weekly-report/
+    analytics/
+    app-i18n/
     auth/
     business-card/
     company/
     contact/
     deal/
     deal-redesign/
+    follow-up-delivery/
     import-export/
     meeting-note/
+    mobile-local-draft/
     notification/
     product/
     public-site/
@@ -109,8 +115,8 @@ src/pages/companies/index.tsx
 - OAuth callback은 `/auth/callback`에서 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
 - popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.
 - 개발용 mock login은 User Web에서 제거되어 있다.
-- 현재 로그인 화면 노출 provider는 Google 하나다. Google 가입/로그인은 QA 통과 상태다.
-- Kakao는 로그인 기능에서 제거했다. Apple login은 iOS 대응 시, LINE login은 일본/대만 확장 시 별도 구현한다.
+- 현재 로그인 화면 노출 provider는 Google, LINE, Apple이다. Google 가입/로그인은 QA 통과 상태이며, LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 상태에 따라 별도 확인하거나 환경 `N/A`로 기록한다.
+- Kakao는 로그인 기능에서 제거했으며 runtime provider로 노출하지 않는다. Prisma enum의 `KAKAO` 값은 legacy 호환용으로만 남긴다.
 - Logout redirects to the preferred locale login URL such as `/ko/login` or `/en-us/login`.
 - User Web은 화면 폭 `767px 이하`를 `mobile`, 그 외를 `personal_laptop` device slot으로 보낸다. `work_laptop` slot은 Backend에는 있지만 현재 User Web에서 사용하지 않는다.
 - 같은 slot의 다른 브라우저/기기로 로그인하면 기존 slot의 active device/session을 교체한다. 같은 브라우저 재로그인은 기존 session의 refresh token을 회전한다.

@@ -26,16 +26,22 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
 - `business-card`: 명함 이미지 OCR, 성공/실패 로그, 확인/수정 후 회사/담당자 저장
 - `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
-- `deal`: 사용자 소유 딜, 회사/담당자/제품 연결, 다음 행동 로그, 메모 로그, xlsx export
-- `schedule`: 사용자 소유 일정, 월간/주간 조회, 일정-딜 연결, hard delete
-- `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, 저장 후 딜 연결
+- `deal`: 사용자 소유 딜, 회사/담당자/제품 연결, `DealActivity`, 다음 행동 로그, 메모 로그, Trash 복구, xlsx export
+- `schedule`: 사용자 소유 일정, 월간/주간 조회, 주간 보고서/xlsx export, 일정-딜 연결, Google Calendar read-only sync, Trash 복구
+- `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, next action/follow-up draft, 저장 후 딜 연결, Trash 복구
+- `follow-up`: AI 주간 보고서/회의록 기반 follow-up draft, send/retry/history, email provider 연결, SMS 발신번호/동의 안내
+- `sales-report`: AI 주간 영업 리포트 생성/조회/상세/snapshot summary
+- `notification`: 알림 목록/읽음, 알림 설정, browser push subscription, 일정/딜 reminder delivery foundation
+- `analytics`: 제품 분석 client event 수집, activation/retention snapshot, AI usage summary foundation
+- `account-request`: 사용자 data export request, account deletion request/cancel
+- `admin-operation`: Admin user/domain read-only 운영, 민감 원문 조회/audit, provider failure, analytics, account/trash/system operation gate
 - `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
-- `trash`: 회사/담당자/제품/딜/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구
-- `data-import`: 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회
+- `trash`: 회사/담당자/제품/딜/일정/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구, 복구 요청
+- `data-import`: 회사/담당자/제품/딜 CSV/XLSX 업로드, DB-backed ImportJob, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회
 - `health`: health check
 
 범용 ExportJob Backend는 현재 사용하지 않는다. Export는 회사/담당자/제품/딜 각 도메인의 `GET /api/*/export/xlsx`로 처리한다.
-데이터 불러오기 확정 전 임시 job은 현재 in-memory store를 사용하므로 서버 재시작 후 이어받기는 후속 범위다. 현재 HTTP confirm 경로는 연락처 import의 회사 보정값, 딜 import의 회사/담당자/제품 보정값, row override를 모두 전달한다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
+데이터 불러오기 확정 전 job은 `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`에 저장되어 새로고침, 탭 이동, 서버 재시작 후 이어받을 수 있다. 현재 HTTP confirm 경로는 연락처 import의 회사 보정값, 딜 import의 회사/담당자/제품 보정값, row override를 모두 전달한다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
 
 ## 로컬 실행
 
@@ -105,7 +111,9 @@ local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, token s
 Auth runtime 기준:
 
 - Frontend는 Supabase OAuth로 provider login을 수행하고, Backend `POST /api/auth/exchange`는 Supabase access token을 검증해 내부 `User`, `UserOAuthAccount`, `AuthDevice`, `AuthSession`을 생성/갱신한다.
-- 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다. 판단 기준은 이메일이 아니라 `provider + providerUserId`다.
+- 현재 runtime provider는 Google, LINE, Apple이다. Kakao는 Prisma enum legacy 값으로만 남고 runtime provider로 노출하지 않는다.
+- 신규/기존 provider 계정 판단은 `provider + providerUserId`를 먼저 사용한다. provider 계정이 없고 같은 verified email의 기존 `User`가 있으면 새 provider 계정을 기존 사용자에 연결한다.
+- provider verified email은 exchange에 필요하며, provider 원문 오류나 token은 응답/로그에 노출하지 않는다.
 - 앱 refresh token 원문은 httpOnly cookie로만 내려가며 DB에는 hash만 저장한다.
 - 같은 auth device의 재로그인은 새 session row를 만들지 않고 refresh token을 rotation한다.
 - User Web은 현재 `mobile`, `personal_laptop` slot을 사용하고, 같은 slot의 다른 기기가 로그인하면 기존 active device/session을 교체한다.

@@ -43,10 +43,9 @@ pnpm run build
 ## Provider Notes
 
 - Google OAuth signup/login has passed manual QA.
-- Google is the only active Supabase OAuth provider.
+- Current runtime OAuth providers are Google, LINE, and Apple. Backend exposes them through `GET /api/auth/providers` and accepts them through the Supabase token exchange path when the provider configuration is valid.
 - Kakao OAuth has been removed from runtime exposure and exchange. Existing Prisma `OAuthProvider.KAKAO` values are legacy data only.
-- Apple login is a future candidate for iOS/platform policy needs.
-- LINE login is a future candidate for Japan/Taiwan market expansion.
+- Provider smoke for Google/LINE/Apple depends on Supabase/provider operational settings and secrets. If a provider is not configured in the target environment, record that QA item as environment `N/A` or `BLOCKED` rather than changing the runtime provider contract.
 
 ## Locale And Country Metadata
 
@@ -57,6 +56,7 @@ pnpm run build
 ## Current Code Links
 
 - Auth verifier port: `src/shared/application/ports/external-auth-verifier.port.ts`
+- Auth provider list: `src/modules/auth/application/use-cases/list-auth-providers.use-case.ts`
 - Supabase JWT adapter: `src/shared/infrastructure/supabase/supabase-jwt-verifier.adapter.ts`
 
 Business domain tables and migrations should be added later only when requested.

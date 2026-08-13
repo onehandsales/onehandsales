@@ -111,7 +111,7 @@
 
 상단 통합검색은 회사, 담당자, 제품, 딜, 일정, 회의록을 한 번에 찾는 기능이다. 각 화면의 검색/필터는 현재 화면 목록만 좁혀보는 역할을 한다.
 
-Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다. 구현 시 데이터 테이블, 필터, 서버 페이지네이션, 민감정보 마스킹, 감사 로그를 중심으로 한다.
+Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전용 운영 콘솔이다. 현재 사용자 목록/상세, 사용자별 도메인 read-only 조회, 사용자 Trash, provider failure, account/data request queue, Trash recovery request queue, analytics overview, audit logs, system operation gate를 제공한다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 범위다.
 
 ## 8. MVP에 포함되는 것
 
@@ -154,7 +154,7 @@ Admin Web은 후속 단계에서 만들 데스크톱 전용 운영 콘솔이다.
 
 ## 10. 현재 구현 관점의 요약
 
-2026-08-11 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation을 구현한 상태다.
+2026-08-13 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation을 구현한 상태다.
 
 User Web은 URL locale 기반 공개/인증 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구와 Global B2C 01~11 foundation 화면/API가 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다. Import preview validation은 누락된 셀에만 메시지를 표시한다.
 

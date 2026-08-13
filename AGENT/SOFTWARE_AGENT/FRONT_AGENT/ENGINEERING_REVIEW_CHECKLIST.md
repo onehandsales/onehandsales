@@ -26,7 +26,7 @@
 - Admin Web은 `/admin/api/*`만 호출하는가?
 - query key가 `admin` namespace로 시작하는가?
 - Admin Web에서 호출하는 `/admin/api/*`가 현재 Backend에 구현되어 있는가?
-- Backend에 없는 admin query API를 사용하는 화면은 mock/placeholder 상태가 명확히 드러나는가?
+- Backend에 없는 legacy `admin-query` API를 사용하는 화면은 active route/menu에 연결하지 않았는가?
 - 글로벌 목록은 서버 페이지네이션을 사용하는가?
 - 민감 데이터가 기본 마스킹되는가?
 - 원문 조회 사유가 client log에 남지 않는가?
@@ -36,7 +36,7 @@
 ## 4. 테스트 체크리스트
 
 - User Web 핵심 smoke E2E가 있는가?
-- Admin Web auth/role smoke는 현재 라우터 기준 수동 QA로 확인했는가? E2E를 gate로 쓰려면 과거 운영 화면 기대값을 제거하고 현재 router 기준으로 갱신했는가?
+- Admin Web auth/role smoke와 현재 11 Admin Operation route smoke E2E가 변경된 라우터 기준과 맞는가?
 - 외부 Provider는 E2E에서 mock/stub 처리되는가?
 - Admin 페이지 본 구현 범위라면 민감정보 마스킹과 원문 조회 사유 입력 흐름을 Admin Web에서 검증하는가?
 
@@ -44,7 +44,7 @@
 
 - User Web과 Admin Web은 Vercel에서 별도 프로젝트로 배포되는가?
 - production secret이 Frontend `.env`에 들어가지 않는가?
-- 배포 전 User Web 전체 E2E와 Admin auth/role 수동 smoke를 실행할 수 있는가? Admin auth smoke E2E는 현재 router 기준으로 갱신한 뒤 gate에 올리는가?
+- 배포 전 User Web 전체 E2E와 Admin Web 현재 route smoke E2E를 실행할 수 있는가?
 
 ## 6. 관련 문서
 

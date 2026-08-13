@@ -60,7 +60,7 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-스냅샷 기준일: 2026-08-09 G03 route architecture closeout
+스냅샷 기준일: 2026-08-13 FE/BE 문서 동기화
 
 User Web 기준:
 
@@ -70,9 +70,9 @@ User Web 기준:
 - 보호 앱 활성 route는 `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`다.
 - legacy redirect는 `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` 같은 기존 domain route를 대응되는 `/app/*` route로 이동시킨다. 회사/담당자/제품/딜/회의록의 legacy `/new/full` route도 대응되는 `/app/*/new/full` route로 이동하고, `/schedules/week`는 `/app/schedules/week`로, `/import/review/:importJobId`는 `/app/import/review/:importJobId`로 이동한다.
 - redirect 또는 future 경계는 `/contacts/scan`과 `/app/contacts/scan`이 `/app/business-cards`로 이동하고, `/app/export`가 `/app`으로 이동하는 것이다.
-- 구현된 API 연동은 Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, Weekly Schedule Report, MeetingNote 수동 CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Notification, DataImport, Company/Contact/Product/Deal domain xlsx export다.
-- mock/placeholder 경계는 generic Export route/API다. Notification source/TTL/cleanup 확장은 이후 goal에서 API 계약이 바뀌기 전까지 post-12 범위로 남긴다.
-- auth runtime은 Supabase OAuth provider login -> `/auth/callback` -> Backend `POST /api/auth/exchange` -> app access token/localStorage + httpOnly refresh cookie 흐름이다. User Web login/signup provider button은 가능하면 OAuth를 browser popup으로 열고, popup이 차단되면 기존 full-page redirect로 fallback한다. 개발용 mock login은 제거되었고, 로그아웃 후 선호 locale의 login URL로 이동한다. 현재 활성 provider는 Google만이며, Apple은 iOS 대응 시, LINE은 일본/대만 확장 시 별도 구현한다.
+- 구현된 API 연동은 Auth/User, Home, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, Weekly Schedule Report, Google Calendar Integration, MeetingNote 수동 CRUD, MeetingNote AI/STT draft, MeetingNote next action/follow-up draft, MeetingNote deal link, AI Weekly Sales Report/Follow-up, Search, Trash, Notification/Reminder, DataImport/ImportJob, Product Analytics, Account request, Company/Contact/Product/Deal domain xlsx export다.
+- mock/placeholder 경계는 generic Export route/API, Billing/Paddle, Billing Admin, B2B tenant/team admin이다. Notification source/TTL/cleanup 고도화는 새 API 계약이 생기기 전까지 후속 범위로 남긴다.
+- auth runtime은 Supabase OAuth provider login -> `/auth/callback` -> Backend `POST /api/auth/exchange` -> app access token/localStorage + httpOnly refresh cookie 흐름이다. User Web login/signup provider button은 가능하면 OAuth를 browser popup으로 열고, popup이 차단되면 기존 full-page redirect로 fallback한다. 개발용 mock login은 제거되었고, 로그아웃 후 선호 locale의 login URL로 이동한다. 현재 runtime provider는 Google, LINE, Apple이며, Kakao는 runtime provider로 노출하지 않는다.
 - `/app/companies/new`, `/app/contacts/new`, `/app/products/new`, `/app/deals/new`는 full page create form이 아니라 각 목록 화면을 유지하고 오른쪽 문서형 생성 패널을 초기 open 상태로 연다. `/app/*/new/full`은 패널에서 확대한 page-mode 생성 route이며 route state draft를 초기값으로 복원한 뒤 생성 성공 시 목록으로 돌아간다.
 - `/app/business-cards`: 명함 스캔 내역은 등록일 최신순 고정이며, 상태 다중 필터와 `상태 초기화`, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름을 제공한다.
 - `/app/import`: 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 목록/상세 조회를 제공한다. 딜 import 누락 회사/담당자/제품 보정값은 FE API에서 `dealCompanyResolutions`, `dealContactResolutions`, `dealProductResolutions`로 BE confirm 경로에 전달한다.
@@ -80,10 +80,10 @@ User Web 기준:
 
 Admin Web:
 
-- routes: `/login`, `/`. `/users`, `/users/:userId`, `/organizations`, `/subscriptions`, `/analytics`, `/audit-logs`, `/system`, `/support`는 현재 `/`로 redirect한다.
-- implemented Backend integration: `/admin/api/me`
-- dormant prepared code: `src/features/admin-query` has dashboard/users/domain/audit/sensitive raw screens, hooks, types, and API client functions, but current router/menu do not expose them.
-- expected but Backend-pending APIs: `/admin/api/dashboard`, `/admin/api/users`, `/admin/api/companies`, `/admin/api/contacts`, `/admin/api/products`, `/admin/api/deals`, audit log APIs, sensitive raw APIs
+- active routes: `/login`, `/`, `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/account-requests`, `/trash/recovery-requests`, `/analytics`, `/audit-logs`, `/system`.
+- redirects: `/organizations`, `/subscriptions`, `/support`는 `/`로 이동한다. B2B tenant, Billing Admin, support console route를 열지 않는다.
+- implemented Backend integration: current 11 Admin Operation APIs under `/admin/api/*`, including `/me`, users, user activity timeline, user domain records, user trash, audit logs, sensitive raw access, provider failures, analytics overview, account deletion/data export queues, trash recovery request queue, and system operation checks.
+- dormant prepared code: `src/features/admin-query` still has legacy dashboard/global-domain/raw-access expectations, but current router/menu do not expose it.
 
 ## Rules
 
