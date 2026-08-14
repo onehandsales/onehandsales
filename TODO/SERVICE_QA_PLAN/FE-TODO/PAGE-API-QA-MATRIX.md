@@ -47,6 +47,10 @@
 API:
 
 - `/api/me`
+- `/api/schedules?view=...&baseDate=...`
+- `/api/deals/stage-counts`
+- `/api/deals?sort=...`
+- `/api/meeting-notes?sort=...`
 - `/api/sales-reports/weekly`
 - `/api/sales-reports/weekly?weekStart=...`
 - `/api/sales-reports/weekly/:reportId`
@@ -60,6 +64,7 @@ API:
 QA:
 
 - 로그인 직후 홈이 로드되고 사용자 기본 locale/timeZone이 반영된다.
+- 오늘 일정, 최근/마감 임박 딜, 최근 회의록, stage count가 대시보드 카드와 목록에 일관되게 반영된다.
 - 주간 리포트 생성은 idempotency key 중복 클릭에도 중복 생성되지 않아야 한다.
 - 생성 중/실패/완료 상태가 분리되어 보인다.
 - snapshot summary와 후속 메시지 목록이 같은 report 기준으로 연결된다.
@@ -182,6 +187,7 @@ API:
 - `/api/schedules/:scheduleId`
 - `/api/schedules/deal-options`
 - `/api/schedules/google/connect`
+- `/api/schedules/google/callback`
 - `/api/schedules/google/status`
 - `/api/schedules/google/calendars`
 - `/api/schedules/google/sync`
@@ -215,7 +221,7 @@ QA:
 
 - 목록 필터, 검색, create query `?create=1`, 전체 작성 화면 진입을 확인한다.
 - 회사/담당자/제품/딜 연결을 포함한 수동 회의록 생성/수정이 저장된다.
-- AI draft, STT draft, next action draft, follow-up draft는 성공/실패/재시도 상태가 분리된다.
+- AI draft, STT draft, STT 파일 형식/용량 제한, next action draft, follow-up draft는 성공/실패/재시도 상태가 분리된다.
 - follow-up draft 결과가 follow-up 메시지 작성/전송 흐름과 연결된다.
 - meeting note body가 console이나 admin 기본 목록에 원문 노출되지 않는다.
 - 삭제/복구 후 목록, 검색, 딜 활동 반영을 확인한다.
@@ -278,7 +284,7 @@ API:
 QA:
 
 - 템플릿 목록과 언어별 템플릿 다운로드가 정상 동작한다.
-- 파일 업로드 후 active job 표시, mapping 자동 생성, mapping 수동 수정, row 수정, validation error 표시를 확인한다.
+- 파일 업로드 후 active job 표시, 잘못된 파일 형식/용량 제한, mapping 자동 생성, mapping 수동 수정, row 수정, validation error 표시를 확인한다.
 - confirm은 idempotency 기준으로 중복 저장되지 않아야 한다.
 - cancel 후 active job에서 사라지고 review route 재접근 시 안전한 상태가 표시된다.
 - import 결과가 회사/담당자/제품/딜 목록에 실제로 생성된다.
@@ -318,6 +324,7 @@ API:
 - `/api/schedules/google/disconnect`
 - `/api/follow-up-delivery/settings`
 - `/api/follow-up-delivery/email-connections/:provider/connect`
+- `/api/follow-up-delivery/email-connections/:provider/callback`
 - `/api/follow-up-delivery/email-connections/:connectionId/disconnect`
 - `/api/follow-up-delivery/sms-sender-numbers`
 - `/api/follow-up-delivery/sms-sender-numbers/:senderNumberId/verify`
@@ -528,7 +535,7 @@ QA:
 | `/subscriptions`, `pages/subscriptions/index.tsx` | `/`로 redirect, page file은 router 미연결 | billing/subscription Admin API는 현재 `N/A`로 기록한다. |
 | `/support`, `pages/support/index.tsx` | `/`로 redirect, page file은 router 미연결 | support 전용 API를 호출하지 않는다. |
 | `pages/dashboard/index.tsx` | router 미연결 | `/dashboard` route와 `/admin/api/dashboard`는 현재 페이지 QA 대상이 아니다. 다시 화면에 연결할 때 별도 QA를 만든다. |
-| `features/admin-query` legacy API | router에 직접 연결되지 않음 | `/dashboard`, `/companies`, `/contacts`, `/products`, `/deals`, `/sensitive/raw` 등 legacy helper는 현재 페이지 QA 대상이 아니다. 다시 화면에 연결할 때 별도 QA를 만든다. |
+| `features/admin-query` legacy API | router에 직접 연결되지 않음 | `/dashboard`, `/users`, `/users/:userId`, `/users/:userId/:domain`, `/:domain/:targetId`, `/audit-logs`, `/audit-logs/:auditLogId`, `/companies`, `/contacts`, `/products`, `/deals`, `/deals/:targetId/sensitive/raw`, `/meeting-notes/:targetId/sensitive/raw`, `/sensitive/raw` 등 legacy helper는 현재 페이지 QA 대상이 아니다. 다시 화면에 연결할 때 별도 QA를 만든다. |
 
 ## 9. 페이지별 QA 기록 방식
 
