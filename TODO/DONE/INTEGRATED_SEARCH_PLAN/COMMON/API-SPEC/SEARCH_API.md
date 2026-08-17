@@ -46,9 +46,10 @@ Body 없음.
 7. `limit`는 기본 `5`, 최대 `20`으로 정규화한다.
 8. 각 도메인 repository query는 반드시 `userId` 조건을 포함한다.
 9. soft delete 대상 도메인은 `deletedAt: null` 조건으로 휴지통 데이터를 제외한다.
-10. 조회 결과를 도메인별 `SearchGroup`으로 변환한다.
-11. 결과에는 상세 이동에 필요한 `/app/*` `targetPath`를 포함한다.
-12. `search.executed` 구조화 로그를 남기되 검색어 원문은 남기지 않는다.
+10. 검색 필드는 편의성을 우선해 넓게 검색한다. 일정 `memo`, 회의록 `details`, `nextPlan`, `requiredAction`처럼 본문성 필드도 검색 대상에 포함한다.
+11. 조회 결과를 도메인별 `SearchGroup`으로 변환한다.
+12. 결과에는 상세 이동에 필요한 `/app/*` `targetPath`를 포함한다.
+13. `search.executed` 구조화 로그를 남기되 검색어 원문은 남기지 않는다.
 
 ## 5. Response
 

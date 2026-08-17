@@ -136,7 +136,7 @@ Current response notes:
 - `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
 - MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
 - MeetingNote AI/STT writes `AiProviderCallLog` for provider observability. Raw transcript table and raw-text storage remain deferred.
-- `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata.
+- `GET /api/search` reads Company, Contact, Product, Deal, Schedule, and MeetingNote data owned by the current user and returns navigation target metadata. Search uses the broad-field policy and includes contact email/phone, schedule memo, and meeting note details/nextPlan/requiredAction while keeping raw query text out of logs.
 - `DELETE /api/companies/:companyId`, `DELETE /api/contacts/:contactId`, `DELETE /api/products/:productId`, and `DELETE /api/deals/:dealId` are soft delete APIs. They set `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and return `204 No Content`.
 - `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`. Default `pageSize` is 15.
 - `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.

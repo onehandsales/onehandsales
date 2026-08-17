@@ -217,6 +217,7 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 요청 query: `q`, optional `types`, optional `limit`.
 - 응답은 도메인별 group과 item을 반환한다.
 - item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `targetPath`를 포함한다.
+- 검색 필드 정책은 Backend 계약의 넓게 검색을 따른다. 일정 메모와 회의록 상세내용/필요 행동에만 있는 키워드도 결과로 표시될 수 있다.
 - 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
 - User Web GlobalSearch는 `GET /api/search`와 연결되어 있으며 loading, empty, error 상태를 처리한다.
 - Backend `targetPath`와 FE fallback은 `/app/companies/:id`, `/app/deals/:id`, `/app/schedules/:scheduleId` 같은 `/app/*` 보호 route를 직접 반환한다.

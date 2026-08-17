@@ -17,13 +17,15 @@
 
 soft delete 대상 모델은 검색 시 `deletedAt: null` 조건으로 휴지통 데이터를 제외한다.
 
+제품 정책은 넓게 검색이다. 통합검색은 record 제목/이름뿐 아니라 업무 본문성 필드인 일정 `memo`, 회의록 `details`, `nextPlan`, `requiredAction`까지 조회 조건에 포함한다.
+
 ## 3. 인덱스 기준
 
 기존 schema에 `userId`와 주요 목록 정렬 필드 인덱스가 있다. MVP 통합검색은 `contains` 기반 부분 검색으로 시작하고, 성능 문제가 확인되면 후속 계획에서 PostgreSQL full-text index 또는 별도 search engine을 검토한다.
 
 ## 4. 민감정보 기준
 
-- 검색 query는 이메일, 휴대폰, 회의록 본문 일부와 매칭될 수 있다.
+- 검색 query는 이메일, 휴대폰, 일정 메모, 회의록 본문 일부와 매칭될 수 있다.
 - 응답 subtitle은 화면 식별에 필요한 짧은 요약만 반환한다.
 - 로그에는 검색어 원문과 결과 subtitle 원문을 남기지 않는다.
 
