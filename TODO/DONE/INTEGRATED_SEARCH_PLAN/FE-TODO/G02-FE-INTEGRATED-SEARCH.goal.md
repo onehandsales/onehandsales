@@ -16,7 +16,7 @@ User Web 통합검색 UI를 Backend `GET /api/search` 계약과 최종 연결한
 ## 3. 작업 체크리스트
 
 - [x] `features/search` API client가 `SearchAllResponse` 계약과 맞는지 확인한다.
-- [x] `/schedules/:scheduleId` route를 추가한다.
+- [x] `/app/schedules/:scheduleId` route를 확인한다.
 - [x] 일정 상세 화면이 `GET /api/schedules/{scheduleId}`를 사용한다.
 - [x] User Web typecheck를 통과한다.
 - [x] 상단 검색 UI가 실제 Backend `GET /api/search`를 호출하는지 코드와 타입 기준으로 검수한다.

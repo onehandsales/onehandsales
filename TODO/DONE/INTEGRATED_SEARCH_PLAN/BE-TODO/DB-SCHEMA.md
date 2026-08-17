@@ -13,7 +13,9 @@
 | `PRODUCT` | `Product`, `ProductCategory`, `ProductStatus` | `productName`, `categoryName`, `statusName` | `Product.userId` |
 | `DEAL` | `Deal`, `Company`, `Contact` | `dealName`, `dealStatus`, `companyName`, `username` | `Deal.userId` |
 | `SCHEDULE` | `Schedule`, `ScheduleDeal`, `Deal` | `scheduleTitle`, `location`, `memo`, `dealName` | `Schedule.userId` |
-| `MEETING_NOTE` | `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal` | `details`, `nextPlan`, `requiredAction`, snapshot fields | `MeetingNote.userId` |
+| `MEETING_NOTE` | `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal` | `title`, `details`, `nextPlan`, `requiredAction`, snapshot fields | `MeetingNote.userId` |
+
+soft delete 대상 모델은 검색 시 `deletedAt: null` 조건으로 휴지통 데이터를 제외한다.
 
 ## 3. 인덱스 기준
 

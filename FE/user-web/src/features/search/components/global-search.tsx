@@ -25,6 +25,7 @@ import type {
   SearchItem,
   SearchTargetType,
 } from "@/features/search/types/search";
+import { getSearchFallbackTargetPath } from "@/features/search/utils/search-target-path";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const SEARCH_LIMIT = 5;
@@ -42,6 +43,7 @@ const targetMeta: Record<
   MEETING_NOTE: { label: "회의록", icon: NotebookPen },
 };
 
+// 기능 : 데스크톱과 모바일 상단 통합검색 UI를 렌더링합니다.
 export function GlobalSearch() {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -61,15 +63,18 @@ export function GlobalSearch() {
     [groups]
   );
 
+  // 기능 : 데스크톱 입력 변경 시 검색어와 결과 패널 열림 상태를 갱신합니다.
   const onDesktopInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setDesktopOpen(true);
   };
 
+  // 기능 : 모바일 검색 입력 값을 갱신합니다.
   const onMobileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
+  // 기능 : Escape 키로 열려 있는 검색 패널을 닫습니다.
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Escape") {
       setDesktopOpen(false);
@@ -78,8 +83,10 @@ export function GlobalSearch() {
     }
   };
 
+  // 기능 : 검색 결과 선택 시 상세 route로 이동하고 검색 패널을 닫습니다.
   const onSelect = (group: SearchGroup, item: SearchItem) => {
-    const targetPath = item.targetPath ?? getFallbackTargetPath(group.type, item);
+    const targetPath =
+      item.targetPath ?? getSearchFallbackTargetPath(group.type, item);
 
     if (targetPath) {
       navigate(targetPath);
@@ -89,6 +96,7 @@ export function GlobalSearch() {
     setMobileOpen(false);
   };
 
+  // 기능 : 모바일 검색 패널을 열고 입력칸에 포커스합니다.
   const onOpenMobile = () => {
     setMobileOpen(true);
     window.setTimeout(() => inputRef.current?.focus(), 0);
@@ -175,6 +183,7 @@ type SearchInputProps = {
   readonly onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
 };
 
+// 기능 : 통합검색 검색어 입력 필드를 렌더링합니다.
 function SearchInput({
   inputRef,
   query,
@@ -208,6 +217,7 @@ type SearchResultsPanelProps = {
   readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
+// 기능 : 검색 가능 상태에 맞는 결과, 빈값, 오류 패널을 렌더링합니다.
 function SearchResultsPanel({
   canSearch,
   error,
@@ -221,8 +231,8 @@ function SearchResultsPanel({
     return (
       <PanelShell onClose={onClose}>
         <EmptyPanel
-        title="검색어를 입력해 주세요"
-        description="두 글자 이상 입력하면 주요 데이터에서 검색해요."
+          title="검색어를 입력해 주세요"
+          description="두 글자 이상 입력하면 주요 데이터에서 검색해요."
         />
       </PanelShell>
     );
@@ -245,11 +255,11 @@ function SearchResultsPanel({
       {isFetching && groups.length === 0 ? (
         <div className="flex min-h-40 items-center justify-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-              <span>검색하고 있어요.</span>
+          <span>검색하고 있어요.</span>
         </div>
       ) : totalCount === 0 ? (
         <EmptyPanel
-              title="검색어를 바꾸면 결과를 찾을 수 있어요"
+          title="검색어를 바꾸면 결과를 찾을 수 있어요"
           description="다른 키워드로 다시 검색해 보세요."
         />
       ) : (
@@ -276,6 +286,7 @@ type PanelShellProps = {
   readonly onClose: () => void;
 };
 
+// 기능 : 검색 결과 패널의 헤더와 스크롤 영역을 제공합니다.
 function PanelShell({
   children,
   isFetching = false,
@@ -316,6 +327,7 @@ type SearchGroupSectionProps = {
   readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
+// 기능 : 검색 대상 그룹의 결과 목록을 렌더링합니다.
 function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
   const meta = targetMeta[group.type];
   const Icon = meta.icon;
@@ -351,29 +363,13 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
   );
 }
 
-function getFallbackTargetPath(type: SearchTargetType, item: SearchItem) {
-  switch (type) {
-    case "COMPANY":
-      return `/companies/${item.targetId}`;
-    case "CONTACT":
-      return `/contacts/${item.targetId}`;
-    case "PRODUCT":
-      return `/products/${item.targetId}`;
-    case "DEAL":
-      return `/deals/${item.targetId}`;
-    case "SCHEDULE":
-      return `/schedules/${item.targetId}`;
-    case "MEETING_NOTE":
-      return `/meeting-notes/${item.targetId}`;
-  }
-}
-
 type EmptyPanelProps = {
   readonly title: string;
   readonly description: string;
   readonly tone?: "default" | "error";
 };
 
+// 기능 : 검색 빈값 또는 오류 안내 상태를 렌더링합니다.
 function EmptyPanel({ title, description, tone = "default" }: EmptyPanelProps) {
   return (
     <div

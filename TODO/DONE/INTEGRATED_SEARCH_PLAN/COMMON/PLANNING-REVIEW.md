@@ -32,7 +32,7 @@
 
 | 등급 | 문서 | 문제 | 영향 | 조치 |
 |---|---|---|---|---|
-| Minor | User Web router | 일정 단건 route가 필요하다. | Backend가 `/schedules/{id}`를 반환해도 FE 이동이 불완전할 수 있다. | G02 Frontend goal에 포함한다. |
+| Minor | User Web router | 일정 단건 route가 필요하다. | 검색 결과가 `/app/schedules/{id}`로 직접 이동하려면 보호 앱 route가 필요하다. | G02 Frontend goal에 포함한다. |
 
 ## 5. 누락 사항
 

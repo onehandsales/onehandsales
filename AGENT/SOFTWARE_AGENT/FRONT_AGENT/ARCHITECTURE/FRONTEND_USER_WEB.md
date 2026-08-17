@@ -219,8 +219,8 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `targetPath`를 포함한다.
 - 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
 - User Web GlobalSearch는 `GET /api/search`와 연결되어 있으며 loading, empty, error 상태를 처리한다.
-- 현재 Backend `targetPath`와 FE fallback은 `/companies/:id`, `/deals/:id`, `/schedules/:id` 같은 legacy path를 반환할 수 있다. User Web router가 해당 path를 대응되는 `/app/*` 상세 화면으로 redirect한다.
-- 일정 검색 결과는 legacy `/schedules/:scheduleId` targetPath를 거쳐 `/app/schedules/:scheduleId`로 이동하고, 일정 상세 화면에서 `GET /api/schedules/{scheduleId}`를 호출한다.
+- Backend `targetPath`와 FE fallback은 `/app/companies/:id`, `/app/deals/:id`, `/app/schedules/:scheduleId` 같은 `/app/*` 보호 route를 직접 반환한다.
+- 일정 검색 결과는 `/app/schedules/:scheduleId`로 이동하고, 일정 상세 화면에서 `GET /api/schedules/{scheduleId}`를 호출한다.
 
 ## 7. MeetingNote AI/STT Frontend 기준
 

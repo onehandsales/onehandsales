@@ -26,12 +26,12 @@
 
 ## 4. 화면 이동 기준
 
-- 회사: `/companies/{companyId}`
-- 담당자: `/contacts/{contactId}`
-- 제품: `/products/{productId}`
-- 딜: `/deals/{dealId}`
-- 일정: `/schedules/{scheduleId}`
-- 회의록: `/meeting-notes/{meetingNoteId}`
+- 회사: `/app/companies/{companyId}`
+- 담당자: `/app/contacts/{contactId}`
+- 제품: `/app/products/{productId}`
+- 딜: `/app/deals/{dealId}`
+- 일정: `/app/schedules/{scheduleId}`
+- 회의록: `/app/meeting-notes/{meetingNoteId}`
 
 ## 5. 예외 흐름
 

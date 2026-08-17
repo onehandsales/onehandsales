@@ -13,19 +13,21 @@ import {
 import {
   type ChangeEvent,
   type KeyboardEvent,
+  type MouseEvent,
+  useDeferredValue,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDeferredValue } from "react";
 import { useSearchAll } from "@/features/search/hooks/use-search-queries";
 import type {
   SearchGroup,
   SearchItem,
   SearchTargetType,
 } from "@/features/search/types/search";
+import { getSearchFallbackTargetPath } from "@/features/search/utils/search-target-path";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const SEARCH_LIMIT = 5;
@@ -48,6 +50,7 @@ type SearchModalProps = {
   readonly onClose: () => void;
 };
 
+// 기능 : 전체 화면 통합검색 모달을 렌더링합니다.
 export function SearchModal({ open, onClose }: SearchModalProps) {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -65,7 +68,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     [groups]
   );
 
-  // 모달 열릴 때 input 포커스, 닫힐 때 쿼리 초기화
+  // 기능 : 모달이 열릴 때 검색어를 초기화하고 입력칸에 포커스합니다.
   useEffect(() => {
     if (open) {
       setQuery("");
@@ -73,15 +76,17 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     }
   }, [open]);
 
-  // Escape 키로 닫기
+  // 기능 : Escape 키 입력 시 검색 모달을 닫습니다.
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Escape") {
       onClose();
     }
   };
 
+  // 기능 : 검색 결과 선택 시 대상 상세 route로 이동하고 모달을 닫습니다.
   const onSelect = (group: SearchGroup, item: SearchItem) => {
-    const targetPath = item.targetPath ?? getFallbackTargetPath(group.type, item);
+    const targetPath =
+      item.targetPath ?? getSearchFallbackTargetPath(group.type, item);
 
     if (targetPath) {
       navigate(targetPath);
@@ -89,15 +94,29 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     onClose();
   };
 
+  // 기능 : 모달 바깥 영역 클릭 시 검색 모달을 닫습니다.
+  const onBackdropMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  // 기능 : 검색어 입력 값을 갱신합니다.
+  const onQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  };
+
+  // 기능 : 검색어 지우기 버튼 클릭 시 입력 값을 초기화합니다.
+  const onClearQuery = () => {
+    setQuery("");
+  };
+
   if (!open) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh]"
-      onMouseDown={(e) => {
-        // 배경 클릭 시 닫기
-        if (e.target === e.currentTarget) onClose();
-      }}
+      onMouseDown={onBackdropMouseDown}
     >
       {/* 배경 오버레이 */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" onClick={onClose} />
@@ -112,14 +131,14 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             className="flex-1 bg-transparent text-[15px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
             placeholder="회사, 담당자, 제품, 딜, 일정, 회의록 검색..."
             value={query}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+            onChange={onQueryChange}
             onKeyDown={onKeyDown}
           />
           {query.length > 0 ? (
             <button
               type="button"
               className="shrink-0 text-[#9CA3AF] hover:text-[#374151]"
-              onClick={() => setQuery("")}
+              onClick={onClearQuery}
               aria-label="검색어 지우기"
             >
               <X className="h-4 w-4" />
@@ -156,6 +175,7 @@ type SearchResultsBodyProps = {
   readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
+// 기능 : 검색 모달 안에서 검색 상태별 결과 본문을 렌더링합니다.
 function SearchResultsBody({
   canSearch,
   error,
@@ -192,7 +212,9 @@ function SearchResultsBody({
   if (totalCount === 0) {
     return (
       <div className="px-4 py-8 text-center">
-          <p className="text-[13px] font-medium text-[#374151]">검색어를 바꾸면 결과를 찾을 수 있어요</p>
+        <p className="text-[13px] font-medium text-[#374151]">
+          검색어를 바꾸면 결과를 찾을 수 있어요
+        </p>
         <p className="mt-1 text-[12px] text-[#9CA3AF]">다른 키워드로 다시 검색해 보세요</p>
       </div>
     );
@@ -217,6 +239,7 @@ type SearchGroupSectionProps = {
   readonly onSelect: (group: SearchGroup, item: SearchItem) => void;
 };
 
+// 기능 : 검색 모달 안에서 대상 그룹별 검색 결과 목록을 렌더링합니다.
 function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
   const meta = targetMeta[group.type];
   const Icon = meta.icon;
@@ -250,21 +273,4 @@ function SearchGroupSection({ group, onSelect }: SearchGroupSectionProps) {
       </div>
     </div>
   );
-}
-
-function getFallbackTargetPath(type: SearchTargetType, item: SearchItem) {
-  switch (type) {
-    case "COMPANY":
-      return `/companies/${item.targetId}`;
-    case "CONTACT":
-      return `/contacts/${item.targetId}`;
-    case "PRODUCT":
-      return `/products/${item.targetId}`;
-    case "DEAL":
-      return `/deals/${item.targetId}`;
-    case "SCHEDULE":
-      return `/schedules/${item.targetId}`;
-    case "MEETING_NOTE":
-      return `/meeting-notes/${item.targetId}`;
-  }
 }

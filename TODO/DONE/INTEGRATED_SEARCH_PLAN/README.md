@@ -14,7 +14,7 @@ User Web 상단 통합검색에서 회사, 담당자, 제품, 딜, 일정, 회�
 - Backend: `q`, `types`, `limit` query validation과 `userId` ownership 필터 적용.
 - Frontend: User Web `features/search` API client와 상단/모바일 GlobalSearch UI가 `GET /api/search`에 연결되어 있다.
 - Frontend: 검색 결과 선택 시 Backend 응답의 `targetPath`로 이동한다.
-- Frontend: 일정 검색 결과 이동을 위해 `/schedules/:scheduleId` route와 schedule detail 화면이 추가되어 있고 `GET /api/schedules/{scheduleId}`를 사용한다.
+- Frontend: 일정 검색 결과 이동은 `/app/schedules/:scheduleId` route와 schedule detail 화면에서 처리하고 `GET /api/schedules/{scheduleId}`를 사용한다.
 - Frontend: loading, empty, error 상태 처리가 구현되어 있다.
 
 ## 3. 범위

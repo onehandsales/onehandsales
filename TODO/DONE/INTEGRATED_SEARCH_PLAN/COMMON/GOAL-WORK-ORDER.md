@@ -27,7 +27,7 @@
 목적:
 
 - 기존 User Web search feature를 실제 Backend API와 최종 연결한다.
-- 일정 검색 결과 이동을 위해 `/schedules/:scheduleId` 상세 route를 추가한다.
+- 일정 검색 결과 이동을 위해 `/app/schedules/:scheduleId` 상세 route를 사용한다.
 
 완료 조건:
 
@@ -40,4 +40,4 @@
 
 ## 4. 이번 작업 상태
 
-Backend goal과 Frontend goal은 completed다. User Web GlobalSearch는 `GET /api/search`를 호출하고, 결과 선택 시 `targetPath`로 이동하며, 일정 결과는 `/schedules/:scheduleId` 상세 화면에서 `GET /api/schedules/{scheduleId}`로 다시 조회한다.
+Backend goal과 Frontend goal은 completed다. User Web GlobalSearch는 `GET /api/search`를 호출하고, 결과 선택 시 `targetPath`로 이동하며, 일정 결과는 `/app/schedules/:scheduleId` 상세 화면에서 `GET /api/schedules/{scheduleId}`로 다시 조회한다.

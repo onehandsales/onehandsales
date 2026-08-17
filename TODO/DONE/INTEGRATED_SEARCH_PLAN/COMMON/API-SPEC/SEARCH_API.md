@@ -45,9 +45,10 @@ Body 없음.
 6. 허용하지 않는 type이 있으면 validation error를 반환한다.
 7. `limit`는 기본 `5`, 최대 `20`으로 정규화한다.
 8. 각 도메인 repository query는 반드시 `userId` 조건을 포함한다.
-9. 조회 결과를 도메인별 `SearchGroup`으로 변환한다.
-10. 결과에는 상세 이동에 필요한 `targetPath`를 포함한다.
-11. `search.executed` 구조화 로그를 남기되 검색어 원문은 남기지 않는다.
+9. soft delete 대상 도메인은 `deletedAt: null` 조건으로 휴지통 데이터를 제외한다.
+10. 조회 결과를 도메인별 `SearchGroup`으로 변환한다.
+11. 결과에는 상세 이동에 필요한 `/app/*` `targetPath`를 포함한다.
+12. `search.executed` 구조화 로그를 남기되 검색어 원문은 남기지 않는다.
 
 ## 5. Response
 
@@ -65,7 +66,7 @@ Status: `200 OK`
           "title": "세손상사",
           "subtitle": "제조 · 서울",
           "targetId": "00000000-0000-4000-8000-000000000001",
-          "targetPath": "/companies/00000000-0000-4000-8000-000000000001"
+          "targetPath": "/app/companies/00000000-0000-4000-8000-000000000001"
         }
       ]
     },
@@ -76,7 +77,7 @@ Status: `200 OK`
           "title": "세손상사 미팅",
           "subtitle": "2026. 06. 18. 14:00 · 세손상사 본사 · 세손상사 신규 공급 계약",
           "targetId": "00000000-0000-4000-8000-000000000002",
-          "targetPath": "/schedules/00000000-0000-4000-8000-000000000002"
+          "targetPath": "/app/schedules/00000000-0000-4000-8000-000000000002"
         }
       ]
     }
@@ -94,7 +95,7 @@ Status: `200 OK`
 | `items[].title` | string | 불가 | 결과 제목 |
 | `items[].subtitle` | string | 가능 | 결과 보조 설명. 민감 원문 전체를 넣지 않는다. |
 | `items[].targetId` | string | 불가 | 상세 조회 대상 ID |
-| `items[].targetPath` | string | 가능 | User Web 이동 경로 |
+| `items[].targetPath` | string | 가능 | User Web `/app/*` 이동 경로 |
 
 ## 6. 연결 DB 스키마
 
@@ -128,7 +129,7 @@ Status: `200 OK`
 
 - FE: `q` 두 글자 이상에서만 호출한다.
 - FE: 결과 선택 시 `targetPath`로 이동한다.
-- FE: 일정 결과는 `/schedules/:scheduleId` route에서 `GET /api/schedules/{scheduleId}`로 다시 조회한다.
+- FE: 일정 결과는 `/app/schedules/:scheduleId` route에서 `GET /api/schedules/{scheduleId}`로 다시 조회한다.
 - FE: 상단/모바일 통합검색의 실제 화면 연결과 상태 UX 처리는 `G02-FE-INTEGRATED-SEARCH`에서 완료했다.
 - BE: controller는 request를 application service에 위임한다.
 - BE: application service는 query 정규화, type validation, log event를 담당한다.

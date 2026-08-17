@@ -62,6 +62,7 @@ type ScheduleSearchRow = {
 
 type MeetingNoteSearchRow = {
   readonly id: string;
+  readonly title: string;
   readonly meetingAt: Date;
   readonly timeZone: string;
   readonly nextPlan: string | null;
@@ -274,13 +275,14 @@ export class PrismaSearchRepository implements SearchRepository {
     return deals.map((deal) => this.toDealItem(deal));
   }
 
-  // 기능 : 일정 제목, 장소, 메모, 연결 딜이름으로 일정을 검색합니다.
+  // 기능 : 일정 제목, 장소, 메모, 연결 딜이름으로 휴지통 제외 일정을 검색합니다.
   private async searchSchedules(
     input: SearchRepositoryInput
   ): Promise<SearchItemRecord[]> {
     const schedules = await this.prismaService.schedule.findMany({
       where: {
         userId: input.userId,
+        deletedAt: null,
         OR: [
           { scheduleTitle: { contains: input.query } },
           { location: { contains: input.query } },
@@ -318,7 +320,7 @@ export class PrismaSearchRepository implements SearchRepository {
     return schedules.map((schedule) => this.toScheduleItem(schedule));
   }
 
-  // 기능 : 회의록 본문 요약 필드와 연결 스냅샷으로 회의록을 검색합니다.
+  // 기능 : 회의록 제목, 본문 요약 필드와 연결 스냅샷으로 회의록을 검색합니다.
   private async searchMeetingNotes(
     input: SearchRepositoryInput
   ): Promise<SearchItemRecord[]> {
@@ -367,6 +369,7 @@ export class PrismaSearchRepository implements SearchRepository {
       },
       select: {
         id: true,
+        title: true,
         meetingAt: true,
         timeZone: true,
         nextPlan: true,
@@ -402,7 +405,7 @@ export class PrismaSearchRepository implements SearchRepository {
         company.companyRegion.region,
       ]),
       targetId: company.id,
-      targetPath: `/companies/${company.id}`,
+      targetPath: `/app/companies/${company.id}`,
     };
   }
 
@@ -424,7 +427,7 @@ export class PrismaSearchRepository implements SearchRepository {
         contact.contactJobGrade.jobGradeName,
       ]),
       targetId: contact.id,
-      targetPath: `/contacts/${contact.id}`,
+      targetPath: `/app/contacts/${contact.id}`,
     };
   }
 
@@ -438,7 +441,7 @@ export class PrismaSearchRepository implements SearchRepository {
         this.formatMoney(product.productPrice),
       ]),
       targetId: product.id,
-      targetPath: `/products/${product.id}`,
+      targetPath: `/app/products/${product.id}`,
     };
   }
 
@@ -459,7 +462,7 @@ export class PrismaSearchRepository implements SearchRepository {
         this.formatMoney(deal.dealCost),
       ]),
       targetId: deal.id,
-      targetPath: `/deals/${deal.id}`,
+      targetPath: `/app/deals/${deal.id}`,
     };
   }
 
@@ -477,27 +480,30 @@ export class PrismaSearchRepository implements SearchRepository {
         this.joinParts(dealNames),
       ]),
       targetId: schedule.id,
-      targetPath: `/schedules/${schedule.id}`,
+      targetPath: `/app/schedules/${schedule.id}`,
     };
   }
 
-  // 기능 : Prisma 회의록 행을 통합검색 결과 항목으로 변환합니다.
+  // 기능 : Prisma 회의록 행을 제목 우선 통합검색 결과 항목으로 변환합니다.
   private toMeetingNoteItem(meetingNote: MeetingNoteSearchRow): SearchItemRecord {
     const firstCompany = meetingNote.companies[0]?.companyNameSnapshot;
     const firstContact = meetingNote.contacts[0]?.contactUsernameSnapshot;
     const firstDeal = meetingNote.deals[0]?.dealNameSnapshot;
-    const title = this.joinParts([firstCompany, firstContact]) ?? "회의록";
+    const fallbackTitle = this.joinParts([firstCompany, firstContact]) ?? "회의록";
+    const title = meetingNote.title.trim() || fallbackTitle;
 
     return {
       title,
       subtitle: this.joinParts([
         this.formatDateTime(meetingNote.meetingAt, meetingNote.timeZone),
+        firstCompany,
+        firstContact,
         firstDeal,
         this.truncateText(meetingNote.nextPlan),
         this.truncateText(meetingNote.requiredAction),
       ]),
       targetId: meetingNote.id,
-      targetPath: `/meeting-notes/${meetingNote.id}`,
+      targetPath: `/app/meeting-notes/${meetingNote.id}`,
     };
   }
 

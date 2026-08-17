@@ -9,7 +9,7 @@ Frontend가 Backend 통합검색 API를 실제 사용자 흐름에 맞게 사용
 - 기존 `features/search` API client와 Backend 응답 계약 확인
 - 검색 결과 label, loading, empty, error 상태 확인
 - `targetPath` navigation 확인
-- 일정 결과 이동을 위한 `/schedules/:scheduleId` route와 일정 상세 화면 추가
+- 일정 결과 이동을 위한 `/app/schedules/:scheduleId` route와 일정 상세 화면
 
 ## 3. 제외 범위
 
@@ -36,7 +36,7 @@ completed
 
 완료된 작업:
 
-- `/schedules/:scheduleId` route와 일정 상세 화면은 추가되어 있다.
+- `/app/schedules/:scheduleId` route와 일정 상세 화면은 추가되어 있다.
 - 일정 상세 화면은 `GET /api/schedules/{scheduleId}`를 사용한다.
 - 상단 GlobalSearch는 `GET /api/search`를 호출한다.
 - 도메인별 결과 label/group 표시와 `targetPath` 이동 처리가 구현되어 있다.
