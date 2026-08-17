@@ -21,7 +21,7 @@
 - 모든 조회/생성/수정/삭제는 현재 로그인한 `userId` ownership을 검증한다.
 - response body 없는 성공 응답은 FE가 status code만 보고 성공 처리한다.
 - 날짜는 ISO 8601 string으로 반환한다.
-- 회사 목록 page size는 10개 고정이다.
+- 회사 목록 page size는 15개 고정이다.
 - 회사 메모 로그와 개인 비밀 메모 로그 page size는 10개 고정이다.
 - 회사 개인 비밀 메모는 API에서는 `memo`를 사용하지만 DB에는 평문으로 저장하지 않는다.
 
@@ -107,7 +107,7 @@
 5. 회사 분야 필터 ID가 있으면 모든 ID가 같은 userId의 `CompanyField`인지 확인한 뒤 `IN` 필터를 적용한다.
 6. 회사 지역 필터 ID가 있으면 모든 ID가 같은 userId의 `CompanyRegion`인지 확인한 뒤 `IN` 필터를 적용한다.
 7. `sort`가 없으면 `createdAt DESC, id DESC`로 정렬한다. 담당자 수/딜 수 정렬은 각 count ASC/DESC 뒤에 `createdAt DESC`, `id DESC`를 적용한다.
-8. page size 10으로 `items`, `totalCount`를 조회한다.
+8. page size 15로 `items`, `totalCount`를 조회한다.
 9. 각 회사에 연결된 `Contact` 개수를 계산해 `contactCount`로 넣는다.
 10. 각 회사에 연결된 `Deal` 개수를 계산해 `dealCount`로 넣는다.
 11. `CompanyField`, `CompanyRegion` relation을 포함해 list item DTO로 변환한다.
@@ -132,7 +132,7 @@
 | `items[].dealCount` | number | 아니오 | 해당 회사에 연결된 딜 수 |
 | `items[].createdAt` | string | 아니오 | 회사 등록일 |
 | `page` | number | 아니오 | 현재 페이지 |
-| `pageSize` | number | 아니오 | 10 |
+| `pageSize` | number | 아니오 | 15 |
 | `totalCount` | number | 아니오 | 전체 개수 |
 | `totalPages` | number | 아니오 | 전체 페이지 수 |
 

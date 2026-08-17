@@ -10,7 +10,7 @@
 - 인증: `Authorization: Bearer <backend_app_access_token>`
 - 권한: 로그인한 사용자 본인 데이터만 접근 가능
 - 날짜 형식: ISO 8601 string
-- 회사 목록 페이지 크기: 10개 고정
+- 회사 목록 페이지 크기: 15개 고정
 - 회사 메모 로그 페이지 크기: 10개 고정
 - 회사 개인 비밀 메모 로그 페이지 크기: 10개 고정
 - 회사 목록 정렬: `createdAtDesc`, `contactCountDesc`, `contactCountAsc`, `dealCountDesc`, `dealCountAsc`
@@ -76,7 +76,7 @@
 
 ### 목적
 
-회사 목록 화면에서 회사 이름 검색, 회사 분야 다중 필터, 회사 지역 다중 필터, 10개 단위 페이지네이션을 제공한다.
+회사 목록 화면에서 회사 이름 검색, 회사 분야 다중 필터, 회사 지역 다중 필터, 15개 단위 페이지네이션을 제공한다.
 
 ### Request
 
@@ -91,7 +91,7 @@
 | `companyFieldId` | string | 선택 | 단일 회사 분야 필터 ID. 기존 클라이언트 호환용 |
 | `companyRegionId` | string | 선택 | 단일 회사 지역 필터 ID. 기존 클라이언트 호환용 |
 
-서버는 `pageSize`를 10으로 고정한다. FE는 `pageSize` query를 보내지 않는다.
+서버는 `pageSize`를 15로 고정한다. FE는 `pageSize` query를 보내지 않는다.
 `companyFieldId`와 `companyFieldIds`가 함께 오면 중복을 제거해 하나의 분야 ID 목록으로 처리한다. `companyRegionId`와 `companyRegionIds`도 동일하게 처리한다.
 
 ### 비즈니스 로직 흐름
@@ -102,7 +102,7 @@
 4. `companyName`이 있으면 회사 이름 부분 검색 조건을 적용한다.
 5. 회사 분야 필터 ID가 있으면 모든 ID가 같은 사용자의 회사 분야 ID인지 확인한 뒤 `IN` 필터를 적용한다.
 6. 회사 지역 필터 ID가 있으면 모든 ID가 같은 사용자의 회사 지역 ID인지 확인한 뒤 `IN` 필터를 적용한다.
-7. `createdAt DESC, id DESC`로 정렬하고 10개 단위로 조회한다.
+7. `createdAt DESC, id DESC`로 정렬하고 15개 단위로 조회한다.
 8. 각 회사에 연결된 `Contact` 개수를 계산해 `contactCount`로 넣는다.
 9. 각 회사에 연결된 `Deal` 개수를 계산해 `dealCount`로 넣는다.
 10. 목록 응답으로 변환할 때 `updatedAt`은 넣지 않는다.
@@ -115,7 +115,7 @@
 |---|---|---|
 | `items` | `CompanyListItemResponse[]` | 회사 목록 |
 | `page` | number | 현재 페이지 |
-| `pageSize` | number | 10 |
+| `pageSize` | number | 15 |
 | `totalCount` | number | 조건에 맞는 전체 회사 수 |
 | `totalPages` | number | 전체 페이지 수 |
 
@@ -1002,7 +1002,7 @@ Response body 없음.
 
 | API | FE 처리 기준 | BE 처리 기준 | 검증 기준 |
 |---|---|---|---|
-| `GET /api/companies` | 검색어, 분야/지역 다중 필터, page 변경 시 목록 query를 재조회한다. 목록에는 `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 분야/지역 필터는 `IN` 조건, `createdAt DESC`, 10개 페이지네이션을 적용한다. | 검색, 다중 필터, 페이지 이동, 본인 데이터만 조회를 확인한다. |
+| `GET /api/companies` | 검색어, 분야/지역 다중 필터, page 변경 시 목록 query를 재조회한다. 목록에는 `updatedAt`을 표시하지 않는다. | userId ownership을 기본 조건으로 두고 분야/지역 필터는 `IN` 조건, `createdAt DESC`, 15개 페이지네이션을 적용한다. | 검색, 다중 필터, 페이지 이동, 본인 데이터만 조회를 확인한다. |
 | `GET /api/companies/:companyId/contacts` | 회사 단건 화면에서 연결된 담당자 목록을 한 줄 요약으로 표시한다. 페이지네이션을 기대하지 않는다. | company ownership 확인 후 `Contact.createdAt DESC, id DESC`로 전체 목록을 반환한다. | 타 사용자 회사 404, 부서/직급/이메일/휴대폰 응답, 정렬을 확인한다. |
 | `GET /api/companies/export/xlsx` | 회사 목록의 현재 검색어와 분야/지역 다중 필터, 정렬을 전달하되 `page`는 전달하지 않는다. | 동일 검색/다중 필터/정렬 조건으로 전체 회사를 조회하고 xlsx 파일을 반환한다. | 검색/다중 필터/정렬 반영, 담당자 수와 딜 수 컬럼, ID 제외, 다운로드 헤더를 확인한다. |
 | `GET /api/company-fields` | 회사 목록 필터와 생성/수정 form 옵션으로 사용한다. `createdAt`을 기대하지 않는다. | 현재 userId의 `CompanyField`만 반환한다. | 다른 사용자의 분야가 섞이지 않는지 확인한다. |
