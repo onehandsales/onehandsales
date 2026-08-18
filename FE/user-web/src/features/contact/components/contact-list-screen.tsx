@@ -157,7 +157,8 @@ export function ContactListScreen({
       page,
       username: username || undefined,
       companyIds: companyIds.length > 0 ? companyIds : undefined,
-      contactDepartmentId: contactDepartmentIds[0] ?? undefined,
+      contactDepartmentIds:
+        contactDepartmentIds.length > 0 ? contactDepartmentIds : undefined,
       sort,
     }),
     [companyIds, contactDepartmentIds, page, sort, username],
@@ -166,7 +167,8 @@ export function ContactListScreen({
     () => ({
       username: username || undefined,
       companyIds: companyIds.length > 0 ? companyIds : undefined,
-      contactDepartmentId: contactDepartmentIds[0] ?? undefined,
+      contactDepartmentIds:
+        contactDepartmentIds.length > 0 ? contactDepartmentIds : undefined,
       sort,
     }),
     [companyIds, contactDepartmentIds, sort, username],

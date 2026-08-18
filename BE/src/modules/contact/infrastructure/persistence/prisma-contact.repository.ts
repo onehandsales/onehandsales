@@ -712,9 +712,11 @@ export class PrismaContactRepository implements ContactRepository {
         : input.companyId
           ? { companyId: input.companyId }
           : {}),
-      ...(input.contactDepartmentId
-        ? { contactDepartmentId: input.contactDepartmentId }
-        : {}),
+      ...(input.contactDepartmentIds && input.contactDepartmentIds.length > 0
+        ? { contactDepartmentId: { in: [...input.contactDepartmentIds] } }
+        : input.contactDepartmentId
+          ? { contactDepartmentId: input.contactDepartmentId }
+          : {}),
       ...(input.contactJobGradeId
         ? { contactJobGradeId: input.contactJobGradeId }
         : {}),

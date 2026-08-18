@@ -28,6 +28,10 @@ const CURRENT_USER: CurrentUserContext = {
 class FakeContactRepository implements Partial<ContactRepository> {
   readonly listContactsInputs: ListContactsInput[] = [];
   readonly listContactsForExportInputs: ExportContactsInput[] = [];
+  readonly findDepartmentInputs: Array<{
+    readonly userId: string;
+    readonly departmentId: string;
+  }> = [];
 
   // 기능 : fake 담당자 목록 조회 입력을 기록하고 dealCount 포함 결과를 반환합니다.
   async listContacts(input: ListContactsInput): Promise<ContactPageRecord> {
@@ -45,6 +49,16 @@ class FakeContactRepository implements Partial<ContactRepository> {
   ): Promise<ContactRecord[]> {
     this.listContactsForExportInputs.push(input);
     return [createContactRecord()];
+  }
+
+  // 기능 : fake 담당자 부서 조회 입력을 기록하고 테스트용 부서를 반환합니다.
+  async findDepartment(userId: string, departmentId: string) {
+    this.findDepartmentInputs.push({ userId, departmentId });
+
+    return {
+      id: departmentId,
+      departmentName: "영업",
+    };
   }
 }
 
@@ -99,6 +113,56 @@ describe("ContactApplicationService", () => {
       totalPages: 1,
     });
     expect(result.items[0]?.dealCount).toBe(2);
+  });
+
+  it("normalizes multiple department filters for contact lists", async () => {
+    const repository = new FakeContactRepository();
+    const writer = createXlsxWriter();
+    const service = new ContactApplicationService(
+      repository as unknown as ContactRepository,
+      privateMemoEncryption,
+      writer,
+      new FakeAppLogger()
+    );
+
+    await service.listContacts(CURRENT_USER, {
+      contactDepartmentId: "department-1",
+      contactDepartmentIds: ["department-2", "department-1", " "],
+    });
+
+    expect(repository.findDepartmentInputs).toEqual([
+      { userId: CURRENT_USER.id, departmentId: "department-1" },
+      { userId: CURRENT_USER.id, departmentId: "department-2" },
+    ]);
+    expect(repository.listContactsInputs[0]).toEqual(
+      expect.objectContaining({
+        contactDepartmentIds: ["department-1", "department-2"],
+      })
+    );
+    expect(repository.listContactsInputs[0]).not.toHaveProperty(
+      "contactDepartmentId"
+    );
+  });
+
+  it("normalizes multiple department filters for contact exports", async () => {
+    const repository = new FakeContactRepository();
+    const writer = createXlsxWriter();
+    const service = new ContactApplicationService(
+      repository as unknown as ContactRepository,
+      privateMemoEncryption,
+      writer,
+      new FakeAppLogger()
+    );
+
+    await service.exportContactsXlsx(CURRENT_USER, {
+      contactDepartmentIds: ["department-1", "department-2"],
+    });
+
+    expect(repository.listContactsForExportInputs[0]).toEqual(
+      expect.objectContaining({
+        contactDepartmentIds: ["department-1", "department-2"],
+      })
+    );
   });
 
   it("exports localized phone columns and user timezone dates", async () => {

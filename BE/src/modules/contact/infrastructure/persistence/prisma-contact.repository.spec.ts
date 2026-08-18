@@ -17,6 +17,8 @@ type MockPrismaClient = {
 
 const USER_ID = "00000000-0000-4000-8000-000000000101";
 const CONTACT_ID = "00000000-0000-4000-8000-000000000201";
+const DEPARTMENT_ID_A = "00000000-0000-4000-8000-000000000302";
+const DEPARTMENT_ID_B = "00000000-0000-4000-8000-000000000304";
 const CREATED_AT = new Date("2026-07-26T01:00:00.000Z");
 
 describe("PrismaContactRepository", () => {
@@ -69,6 +71,39 @@ describe("PrismaContactRepository", () => {
       },
     });
     expect(result.items[0]?.dealCount).toBe(2);
+  });
+
+  it("uses in query for multiple contact department filters", async () => {
+    const client = createMockClient();
+    client.contact.findMany.mockResolvedValue([]);
+    client.contact.count.mockResolvedValue(0);
+    const repository = new PrismaContactRepository(
+      client as unknown as PrismaService
+    );
+
+    await repository.listContacts({
+      userId: USER_ID,
+      page: 1,
+      pageSize: 15,
+      contactDepartmentIds: [DEPARTMENT_ID_A, DEPARTMENT_ID_B],
+    });
+
+    expect(client.contact.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          contactDepartmentId: {
+            in: [DEPARTMENT_ID_A, DEPARTMENT_ID_B],
+          },
+        }),
+      })
+    );
+    expect(client.contact.count).toHaveBeenCalledWith({
+      where: expect.objectContaining({
+        contactDepartmentId: {
+          in: [DEPARTMENT_ID_A, DEPARTMENT_ID_B],
+        },
+      }),
+    });
   });
 });
 

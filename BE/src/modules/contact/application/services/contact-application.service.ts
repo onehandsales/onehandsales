@@ -99,6 +99,7 @@ export interface ContactListQueryInput {
   readonly companyId?: string;
   readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
+  readonly contactDepartmentIds?: readonly string[];
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;
 }
@@ -109,6 +110,7 @@ export interface ContactExportQueryInput {
   readonly companyId?: string;
   readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
+  readonly contactDepartmentIds?: readonly string[];
   readonly contactJobGradeId?: string;
   readonly sort?: ContactListSort;
   readonly locale?: string;
@@ -267,16 +269,14 @@ export class ContactApplicationService {
     const page = query.page ?? 1;
     const username = this.normalizeOptionalText(query.username);
     const companyIds = this.normalizeFilterIds(query.companyId, query.companyIds);
+    const contactDepartmentIds = this.normalizeFilterIds(
+      query.contactDepartmentId,
+      query.contactDepartmentIds
+    );
 
     // 2. 필터로 받은 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
     await this.assertCompaniesExist(currentUser.id, companyIds);
-
-    if (query.contactDepartmentId) {
-      await this.assertDepartmentExists(
-        currentUser.id,
-        query.contactDepartmentId
-      );
-    }
+    await this.assertDepartmentsExist(currentUser.id, contactDepartmentIds);
 
     if (query.contactJobGradeId) {
       await this.assertJobGradeExists(currentUser.id, query.contactJobGradeId);
@@ -289,8 +289,8 @@ export class ContactApplicationService {
       pageSize: CONTACT_PAGE_SIZE,
       ...(username ? { username } : {}),
       ...(companyIds.length > 0 ? { companyIds } : {}),
-      ...(query.contactDepartmentId
-        ? { contactDepartmentId: query.contactDepartmentId }
+      ...(contactDepartmentIds.length > 0
+        ? { contactDepartmentIds }
         : {}),
       ...(query.contactJobGradeId
         ? { contactJobGradeId: query.contactJobGradeId }
@@ -320,16 +320,14 @@ export class ContactApplicationService {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const username = this.normalizeOptionalText(query.username);
     const companyIds = this.normalizeFilterIds(query.companyId, query.companyIds);
+    const contactDepartmentIds = this.normalizeFilterIds(
+      query.contactDepartmentId,
+      query.contactDepartmentIds
+    );
 
     // 2. 필터로 받은 회사, 담당자 부서, 담당자 직급이 현재 사용자 소유인지 검증한다.
     await this.assertCompaniesExist(currentUser.id, companyIds);
-
-    if (query.contactDepartmentId) {
-      await this.assertDepartmentExists(
-        currentUser.id,
-        query.contactDepartmentId
-      );
-    }
+    await this.assertDepartmentsExist(currentUser.id, contactDepartmentIds);
 
     if (query.contactJobGradeId) {
       await this.assertJobGradeExists(currentUser.id, query.contactJobGradeId);
@@ -340,8 +338,8 @@ export class ContactApplicationService {
       userId: currentUser.id,
       ...(username ? { username } : {}),
       ...(companyIds.length > 0 ? { companyIds } : {}),
-      ...(query.contactDepartmentId
-        ? { contactDepartmentId: query.contactDepartmentId }
+      ...(contactDepartmentIds.length > 0
+        ? { contactDepartmentIds }
         : {}),
       ...(query.contactJobGradeId
         ? { contactJobGradeId: query.contactJobGradeId }
@@ -1014,6 +1012,19 @@ export class ContactApplicationService {
     );
   }
 
+  // 기능 : 필터로 받은 담당자 부서들이 현재 사용자의 소유인지 확인합니다.
+  private async assertDepartmentsExist(
+    userId: string,
+    departmentIds: readonly string[]
+  ): Promise<void> {
+    await Promise.all(
+      departmentIds.map((departmentId) =>
+        this.assertDepartmentExists(userId, departmentId)
+      )
+    );
+  }
+
+  // 기능 : 담당자 부서가 현재 사용자의 소유인지 확인합니다.
   private async assertDepartmentExists(
     userId: string,
     departmentId: string,

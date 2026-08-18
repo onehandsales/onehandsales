@@ -53,6 +53,12 @@ export class ListContactsQueryDto {
   contactDepartmentId?: string;
 
   @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  contactDepartmentIds?: string[];
+
+  @IsOptional()
   @IsUUID()
   contactJobGradeId?: string;
 
@@ -88,6 +94,12 @@ export class ExportContactsQueryDto {
   @IsOptional()
   @IsUUID()
   contactDepartmentId?: string;
+
+  @IsOptional()
+  @Transform(toOptionalStringArray)
+  @IsArray()
+  @IsUUID("all", { each: true })
+  contactDepartmentIds?: string[];
 
   @IsOptional()
   @IsUUID()

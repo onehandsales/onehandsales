@@ -103,6 +103,7 @@
 | query | `username` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 담당자 이름 부분 검색어 |
 | query | `companyId` | string | 아니오 | UUID | 회사 필터 ID |
 | query | `contactDepartmentId` | string | 아니오 | UUID | 담당자 부서 필터 ID |
+| query | `contactDepartmentIds` | string[] | 아니오 | UUID 배열, 반복 query 또는 comma-separated | 담당자 부서 다중 필터 ID 목록 |
 | query | `contactJobGradeId` | string | 아니오 | UUID | 담당자 직급 필터 ID |
 | query | `sort` | string | 아니오 | `createdAtDesc`, `usernameAsc` | 정렬 조건. 기본값 `createdAtDesc` |
 
@@ -114,7 +115,7 @@
 2. query를 validation한다.
 3. `username`을 trim하고 값이 있으면 이름 부분 검색 조건을 적용한다.
 4. `companyId`가 있으면 현재 사용자의 회사인지 검증한다.
-5. `contactDepartmentId`가 있으면 현재 사용자의 담당자 부서인지 검증한다.
+5. `contactDepartmentId` 또는 `contactDepartmentIds`가 있으면 중복 제거 후 현재 사용자의 담당자 부서인지 검증한다.
 6. `contactJobGradeId`가 있으면 현재 사용자의 담당자 직급인지 검증한다.
 7. `userId` 조건을 기본으로 적용한다.
 8. `sort=usernameAsc`이면 `username ASC`, `createdAt DESC`, `id DESC` 순서로 정렬하고, 그 외에는 `createdAt DESC`, `id DESC`로 정렬한다.
@@ -1478,6 +1479,7 @@
 | query | `username` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 담당자 이름 부분 검색어 |
 | query | `companyId` | string | 아니오 | UUID | 회사 필터 ID |
 | query | `contactDepartmentId` | string | 아니오 | UUID | 담당자 부서 필터 ID |
+| query | `contactDepartmentIds` | string[] | 아니오 | UUID 배열, 반복 query 또는 comma-separated | 담당자 부서 다중 필터 ID 목록 |
 | query | `contactJobGradeId` | string | 아니오 | UUID | 담당자 직급 필터 ID |
 | query | `sort` | string | 아니오 | `createdAtDesc`, `usernameAsc` | 담당자 목록 정렬 조건. 기본값 `createdAtDesc` |
 
@@ -1488,7 +1490,7 @@
 1. AuthGuard로 현재 사용자를 확인한다.
 2. query를 validation한다.
 3. `username`을 trim하고 값이 있으면 이름 부분 검색 조건을 적용한다.
-4. `companyId`, `contactDepartmentId`, `contactJobGradeId`가 있으면 현재 사용자 소유인지 확인한다.
+4. `companyId`, `contactDepartmentId`, `contactDepartmentIds`, `contactJobGradeId`가 있으면 현재 사용자 소유인지 확인한다.
 5. `Contact.userId = currentUserId`와 검색/필터 조건을 적용한다.
 6. 담당자 목록 API와 같은 정렬 조건을 적용한다.
 7. `Company`, `ContactDepartment`, `ContactJobGrade` relation을 포함해 조회한다.

@@ -272,6 +272,12 @@ function toContactExportSearchParams(params: ContactExportParams) {
     searchParams.set("contactDepartmentId", params.contactDepartmentId);
   }
 
+  appendSearchParamValues(
+    searchParams,
+    "contactDepartmentIds",
+    params.contactDepartmentIds
+  );
+
   if (params.contactJobGradeId) {
     searchParams.set("contactJobGradeId", params.contactJobGradeId);
   }

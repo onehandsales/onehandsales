@@ -90,6 +90,7 @@ export type ContactListParams = {
   readonly companyId?: string;
   readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
+  readonly contactDepartmentIds?: readonly string[];
   readonly contactJobGradeId?: string;
   readonly sort?: ContactSort;
 };
@@ -160,6 +161,7 @@ export type ContactExportParams = {
   readonly companyId?: string;
   readonly companyIds?: readonly string[];
   readonly contactDepartmentId?: string;
+  readonly contactDepartmentIds?: readonly string[];
   readonly contactJobGradeId?: string;
   readonly sort?: ContactSort;
 };

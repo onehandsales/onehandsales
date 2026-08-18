@@ -31,7 +31,7 @@
 - 페이지네이션 없음
 - `page` query는 사용하지 않는다.
 - `username` 검색어는 export에도 적용한다.
-- `companyId`, `contactDepartmentId`, `contactJobGradeId` 필터는 export에도 적용한다.
+- `companyId`, `contactDepartmentId`, `contactDepartmentIds`, `contactJobGradeId` 필터는 export에도 적용한다.
 - 검색어와 필터가 동시에 있으면 모든 조건을 만족하는 담당자 전체를 내보낸다.
 - 필터가 있으면 필터링된 전체 담당자 데이터를 내보낸다.
 - 필터가 없으면 현재 사용자의 전체 담당자 데이터를 내보낸다.
@@ -52,6 +52,7 @@
 | query | `username` | string | 아니오 | trim 후 빈 문자열이면 미적용 | 담당자 이름 부분 검색어 |
 | query | `companyId` | string | 아니오 | UUID | 회사 필터 ID |
 | query | `contactDepartmentId` | string | 아니오 | UUID | 담당자 부서 필터 ID |
+| query | `contactDepartmentIds` | string[] | 아니오 | UUID 배열, 반복 query 또는 comma-separated | 담당자 부서 다중 필터 ID 목록 |
 | query | `contactJobGradeId` | string | 아니오 | UUID | 담당자 직급 필터 ID |
 | query | `page` | 없음 | 아니오 | 전송하지 않음 | 내보내기는 페이지네이션을 적용하지 않음 |
 | body | 없음 | 없음 | 아니오 | 없음 | body 없음 |
@@ -105,13 +106,13 @@ FE는 담당자 목록 화면의 현재 검색어와 필터 query를 전달하�
 담당자 목록 API:
 
 ```http
-GET /api/contacts?page=1&username=홍&companyId=company-1&contactDepartmentId=dept-1&contactJobGradeId=grade-1
+GET /api/contacts?page=1&username=홍&companyId=company-1&contactDepartmentIds=dept-1&contactDepartmentIds=dept-2&contactJobGradeId=grade-1
 ```
 
 내보내기 API:
 
 ```http
-GET /api/contacts/export/xlsx?username=홍&companyId=company-1&contactDepartmentId=dept-1&contactJobGradeId=grade-1
+GET /api/contacts/export/xlsx?username=홍&companyId=company-1&contactDepartmentIds=dept-1&contactDepartmentIds=dept-2&contactJobGradeId=grade-1
 ```
 
 이때 `page=1`은 export에 적용하지 않는다. xlsx에는 담당자명에 `홍`이 포함되고, 회사/부서/직급 필터를 모두 만족하는 담당자 전체가 들어간다.
@@ -149,7 +150,7 @@ GET /api/contacts/export/xlsx
 1. AuthGuard로 현재 사용자를 확인한다.
 2. export query를 validation한다.
 3. `companyId`가 있으면 현재 사용자 소유 회사인지 검증한다.
-4. `contactDepartmentId`가 있으면 현재 사용자 소유 부서인지 검증한다.
+4. `contactDepartmentId` 또는 `contactDepartmentIds`가 있으면 중복 제거 후 현재 사용자 소유 부서인지 검증한다.
 5. `contactJobGradeId`가 있으면 현재 사용자 소유 직급인지 검증한다.
 6. 기존 담당자 목록과 같은 검색어와 필터 조건을 구성한다.
 7. `Contact.userId = currentUserId` ownership 조건을 기본으로 적용한다.
@@ -221,8 +222,8 @@ BE:
 
 - 필터가 없으면 현재 사용자의 전체 담당자가 xlsx에 포함된다.
 - `username` 필터가 있으면 해당 검색어 조건에 맞는 담당자만 포함된다.
-- `companyId`, `contactDepartmentId`, `contactJobGradeId` 필터가 있으면 해당 조건에 맞는 담당자만 포함된다.
-- `username`, `companyId`, `contactDepartmentId`, `contactJobGradeId`가 함께 있으면 네 조건을 모두 만족하는 담당자만 포함된다.
+- `companyId`, `contactDepartmentId`, `contactDepartmentIds`, `contactJobGradeId` 필터가 있으면 해당 조건에 맞는 담당자만 포함된다.
+- `username`, `companyId`, `contactDepartmentId` 또는 `contactDepartmentIds`, `contactJobGradeId`가 함께 있으면 모든 조건을 만족하는 담당자만 포함된다.
 - xlsx 컬럼명은 `회사명`, `담당자명`, `핸드폰번호`, `이메일`, `부서`, `직급`, `등록일`이다.
 - id 계열 값은 xlsx에 포함되지 않는다.
 - 정렬은 `createdAt DESC`, `id DESC` 기준이다.
