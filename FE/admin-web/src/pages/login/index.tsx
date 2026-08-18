@@ -83,10 +83,10 @@ export function LoginPage() {
 // 기능 : 로그인 완료 후 이동할 내부 Admin route 경로를 location state에서 복원합니다.
 function getRedirectPath(state: unknown) {
   if (!state || typeof state !== "object" || Array.isArray(state)) {
-    return "/";
+    return "/users";
   }
 
   const from = (state as Record<string, unknown>).from;
 
-  return typeof from === "string" && from.startsWith("/") ? from : "/";
+  return typeof from === "string" && from.startsWith("/") ? from : "/users";
 }

@@ -62,6 +62,21 @@ type AdminMockStore = {
 };
 
 test.describe("Admin Web smoke E2E", () => {
+  test("로그인 페이지 직접 진입 후 사용자 운영 화면으로 이동한다", async ({
+    page,
+  }) => {
+    await setupAdminApiMocks(page);
+
+    await page.goto("/login");
+    await submitAccessToken(page, ADMIN_ACCESS_TOKEN);
+
+    await expect(page).toHaveURL(/\/users$/);
+    await expect(
+      page.getByRole("heading", { name: "사용자 운영" })
+    ).toBeVisible();
+    await expect(page.getByText(USER_NAME_MASKED)).toBeVisible();
+  });
+
   test("현재 Admin route, 권한 차단, 원문 사유 검증, 운영 gate를 확인한다", async ({
     page,
   }) => {
