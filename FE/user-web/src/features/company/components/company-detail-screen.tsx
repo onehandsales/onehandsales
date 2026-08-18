@@ -1,5 +1,5 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  AlertCircle,
   BriefcaseBusiness,
   Building2,
   Check,
@@ -13,8 +13,11 @@ import {
   UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Link, useNavigate, type NavigateFunction } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import { Toast } from "@/components/ui/toast";
 import {
   ModalFieldGroup,
@@ -67,16 +70,17 @@ import {
   type CompanyMemoLogFormValues,
   type CompanyPrivateMemoLogFormValues,
 } from "@/features/company/schemas/company-schema";
-import { PageHeader } from "@/components/layout/page-header";
-import { ApiClientError, getApiErrorMessage } from "@/lib/api-client";
+import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
+import {
+  isInvalidDetailPathError,
+  navigateFromInvalidDetailPath,
+} from "@/utils/invalid-detail-path";
 import {
   LOG_DELETE_CONFIRM_MESSAGE,
   LOG_DELETE_SUCCESS_DESCRIPTION,
   LOG_DELETE_SUCCESS_MESSAGE,
 } from "@/utils/log-delete-feedback";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 type CompanyDetailScreenProps = {
   readonly companyId: string;
@@ -136,8 +140,10 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   );
   const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const privateMemoLogs = privateMemoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  // 기능 : 삭제/미존재 회사 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
   const isInvalidCompanyDetailPath =
-    companyQuery.isError && isInvalidCompanyDetailPathError(companyQuery.error);
+    companyQuery.isError &&
+    isInvalidDetailPathError(companyQuery.error, ["CompanyNotFound"]);
 
   useEffect(() => {
     window.localStorage.setItem(
@@ -183,8 +189,10 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
     return (
       <>
         <CompanyDetailSkeleton />
-        <InvalidCompanyDetailPathDialog
-          onConfirm={() => navigateFromInvalidCompanyDetailPath(navigate)}
+        <InvalidDetailPathDialog
+          onConfirm={() =>
+            navigateFromInvalidDetailPath(navigate, "/app/companies")
+          }
         />
       </>
     );
@@ -1526,37 +1534,6 @@ function CompanyDetailError({
   );
 }
 
-// 기능 : 삭제되었거나 존재하지 않는 회사 상세 URL 접근을 안내합니다.
-function InvalidCompanyDetailPathDialog({
-  onConfirm,
-}: {
-  readonly onConfirm: () => void;
-}) {
-  return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-4">
-      <div
-        aria-modal="true"
-        className="w-full max-w-[288px] rounded-lg border border-[#E5E7EB] bg-white p-5 text-center shadow-xl"
-        role="dialog"
-      >
-        <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-600">
-          <AlertCircle className="h-5 w-5" />
-        </span>
-        <p className="mt-3 text-sm font-semibold text-[#111827]">
-          올바르지 않은 경로입니다.
-        </p>
-        <button
-          className="mt-5 h-11 rounded-md bg-[#2563EB] px-5 text-sm font-semibold text-white hover:bg-[#1D4ED8]"
-          onClick={onConfirm}
-          type="button"
-        >
-          확인
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function CompanyDetailSkeleton() {
   return (
     <div className="flex min-h-full flex-col bg-white">
@@ -1590,32 +1567,6 @@ function mergeCompanyField(fields: CompanyField[], current: CompanyField) {
 
 function mergeCompanyRegion(regions: CompanyRegion[], current: CompanyRegion) {
   return regions.some((r) => r.id === current.id) ? regions : [current, ...regions];
-}
-
-// 기능 : 삭제/미존재 회사처럼 사용자가 잘못된 상세 URL로 접근한 오류만 분리합니다.
-function isInvalidCompanyDetailPathError(error: unknown) {
-  if (!(error instanceof ApiClientError)) {
-    return false;
-  }
-
-  return (
-    error.statusCode === 404 ||
-    error.code === "CompanyNotFound" ||
-    (error.statusCode === 410 && error.isDeletedResource)
-  );
-}
-
-// 기능 : 앱 내부 이동 이력이 있으면 이전 화면으로, 직접 접근이면 회사 목록으로 이동합니다.
-function navigateFromInvalidCompanyDetailPath(navigate: NavigateFunction) {
-  const historyState = window.history.state as { readonly idx?: unknown } | null;
-
-  // 브라우저 히스토리가 없는 직접 접근은 회사 목록으로 보내 빈 뒤로가기를 방지합니다.
-  if (typeof historyState?.idx === "number" && historyState.idx > 0) {
-    void navigate(-1);
-    return;
-  }
-
-  void navigate("/app/companies", { replace: true });
 }
 
 function readStoredBoolean(key: string, fallback: boolean) {

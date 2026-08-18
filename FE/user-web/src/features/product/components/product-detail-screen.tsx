@@ -15,6 +15,7 @@ import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { z } from "zod";
 import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import { Toast } from "@/components/ui/toast";
 import {
   ModalFieldGroup,
@@ -59,6 +60,10 @@ import type {
 import { DEAL_STATUS_LABEL, type DealStatus } from "@/features/deal/status";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
+import {
+  isInvalidDetailPathError,
+  navigateFromInvalidDetailPath,
+} from "@/utils/invalid-detail-path";
 import {
   LOG_DELETE_CONFIRM_MESSAGE,
   LOG_DELETE_SUCCESS_DESCRIPTION,
@@ -108,9 +113,26 @@ export function ProductDetailScreen({ productId }: ProductDetailScreenProps) {
   const memoLogs = memoLogsQuery.data?.pages.flatMap((p) => p.items) ?? [];
   const privateMemoLogs =
     privateMemoLogsQuery.data?.pages.flatMap((p) => p.items) ?? [];
+  // 기능 : 삭제/미존재 제품 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
+  const isInvalidProductDetailPath =
+    productQuery.isError &&
+    isInvalidDetailPathError(productQuery.error, ["ProductNotFound"]);
 
   if (productQuery.isLoading) {
     return <ProductDetailSkeleton />;
+  }
+
+  if (isInvalidProductDetailPath) {
+    return (
+      <>
+        <ProductDetailSkeleton />
+        <InvalidDetailPathDialog
+          onConfirm={() =>
+            navigateFromInvalidDetailPath(navigate, "/app/products")
+          }
+        />
+      </>
+    );
   }
 
   if (productQuery.isError) {

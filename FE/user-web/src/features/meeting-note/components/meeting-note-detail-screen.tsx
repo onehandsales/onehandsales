@@ -18,6 +18,7 @@ import { useForm, useWatch, type UseFormRegisterReturn } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import {
   ModalFooterActions,
   ModalFormRow,
@@ -53,6 +54,10 @@ import { getMeetingDateParts } from "@/features/meeting-note/utils/meeting-note-
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate, formatDateTime, formatMoney } from "@/utils/format";
+import {
+  isInvalidDetailPathError,
+  navigateFromInvalidDetailPath,
+} from "@/utils/invalid-detail-path";
 import { readLocationNotice } from "@/utils/location-state";
 
 type MeetingNoteDetailScreenProps = {
@@ -98,6 +103,10 @@ export function MeetingNoteDetailScreen({
   const detailQuery = useMeetingNoteDetail(meetingNoteId, Boolean(meetingNoteId));
   const deleteMutation = useDeleteMeetingNoteMutation();
   const detail = savedMeetingNote ?? detailQuery.data ?? null;
+  // 기능 : 삭제/미존재 회의록 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
+  const isInvalidMeetingNoteDetailPath =
+    detailQuery.isError &&
+    isInvalidDetailPathError(detailQuery.error, ["MeetingNoteNotFound"]);
 
   useEffect(() => {
     if (!notice) {
@@ -138,6 +147,19 @@ export function MeetingNoteDetailScreen({
     return (
       <MeetingNoteStateShell>
         <MeetingNoteDetailSkeleton />
+      </MeetingNoteStateShell>
+    );
+  }
+
+  if (isInvalidMeetingNoteDetailPath) {
+    return (
+      <MeetingNoteStateShell>
+        <MeetingNoteDetailSkeleton />
+        <InvalidDetailPathDialog
+          onConfirm={() =>
+            navigateFromInvalidDetailPath(navigate, "/app/meeting-notes")
+          }
+        />
       </MeetingNoteStateShell>
     );
   }

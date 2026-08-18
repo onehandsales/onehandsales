@@ -9,8 +9,9 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
+import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import { useAuthSession } from "@/features/auth";
 import { ScheduleFormDialog } from "@/features/schedule/components/schedule-form-dialog";
 import { useScheduleDetail } from "@/features/schedule/hooks/use-schedule-queries";
@@ -23,18 +24,28 @@ import {
   getUrlDomainLabel,
 } from "@/features/schedule/utils/google-calendar-display";
 import { getApiErrorMessage } from "@/lib/api-client";
+import {
+  isInvalidDetailPathError,
+  navigateFromInvalidDetailPath,
+} from "@/utils/invalid-detail-path";
 
 type ScheduleDetailScreenProps = {
   readonly scheduleId: string;
 };
 
+// 기능 : 일정 상세 화면을 렌더링합니다.
 export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) {
+  const navigate = useNavigate();
   const { user } = useAuthSession();
   const defaultTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const scheduleQuery = useScheduleDetail(scheduleId, scheduleId.length > 0);
   const schedule = scheduleQuery.data;
+  // 기능 : 삭제/미존재 일정 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
+  const isInvalidScheduleDetailPath =
+    scheduleQuery.isError &&
+    isInvalidDetailPathError(scheduleQuery.error, ["ScheduleNotFound"]);
 
   return (
     <section className="flex min-h-full flex-col bg-white">
@@ -63,6 +74,15 @@ export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) 
 
         {scheduleQuery.isLoading ? (
           <ScheduleDetailSkeleton />
+        ) : isInvalidScheduleDetailPath ? (
+          <>
+            <ScheduleDetailSkeleton />
+            <InvalidDetailPathDialog
+              onConfirm={() =>
+                navigateFromInvalidDetailPath(navigate, "/app/schedules")
+              }
+            />
+          </>
         ) : scheduleQuery.isError || !schedule ? (
           <ScheduleDetailError
             message={getApiErrorMessage(scheduleQuery.error)}
@@ -88,6 +108,7 @@ export function ScheduleDetailScreen({ scheduleId }: ScheduleDetailScreenProps) 
   );
 }
 
+// 기능 : 일정 상세 본문 정보를 렌더링합니다.
 function ScheduleDetailContent({
   defaultTimeZone,
   schedule,
@@ -208,6 +229,7 @@ function ScheduleDetailContent({
   );
 }
 
+// 기능 : 일정 상세의 일반 속성 행을 렌더링합니다.
 function InfoRow({
   icon: Icon,
   label,
@@ -230,6 +252,7 @@ function InfoRow({
   );
 }
 
+// 기능 : 일정 상세의 외부 캘린더 속성 행을 렌더링합니다.
 function ExternalInfoRow({
   icon: Icon,
   label,
@@ -260,6 +283,7 @@ function ExternalInfoRow({
   );
 }
 
+// 기능 : 일정 상세 로딩 상태를 렌더링합니다.
 function ScheduleDetailSkeleton() {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -269,6 +293,7 @@ function ScheduleDetailSkeleton() {
   );
 }
 
+// 기능 : 일정 상세 오류 상태를 렌더링합니다.
 function ScheduleDetailError({
   message,
   onRetry,
@@ -291,6 +316,7 @@ function ScheduleDetailError({
   );
 }
 
+// 기능 : 일정 기간을 사용자 기준 시간대로 표시합니다.
 function formatScheduleDateRange(schedule: Schedule, defaultTimeZone: string) {
   return formatGoogleScheduleDateRange(schedule, defaultTimeZone);
 }

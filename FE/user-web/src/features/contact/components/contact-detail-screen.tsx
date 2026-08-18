@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   BriefcaseBusiness,
   ChevronLeft,
@@ -11,8 +12,10 @@ import {
   UserRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import { SummaryTaxonomySelect } from "@/components/ui/summary-taxonomy-select";
 import { Toast } from "@/components/ui/toast";
 import {
@@ -74,12 +77,14 @@ import type {
 import { getApiErrorMessage } from "@/lib/api-client";
 import { formatDate, formatDateTime } from "@/utils/format";
 import {
+  isInvalidDetailPathError,
+  navigateFromInvalidDetailPath,
+} from "@/utils/invalid-detail-path";
+import {
   LOG_DELETE_CONFIRM_MESSAGE,
   LOG_DELETE_SUCCESS_DESCRIPTION,
   LOG_DELETE_SUCCESS_MESSAGE,
 } from "@/utils/log-delete-feedback";
-import { useForm, type UseFormRegisterReturn } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 type ContactDetailScreenProps = {
   readonly contactId: string;
@@ -104,9 +109,26 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
     memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   const privateMemoLogs: ContactPrivateMemoLog[] =
     privateMemoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
+  // 기능 : 삭제/미존재 담당자 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
+  const isInvalidContactDetailPath =
+    contactQuery.isError &&
+    isInvalidDetailPathError(contactQuery.error, ["ContactNotFound"]);
 
   if (contactQuery.isLoading) {
     return <ContactDetailSkeleton />;
+  }
+
+  if (isInvalidContactDetailPath) {
+    return (
+      <>
+        <ContactDetailSkeleton />
+        <InvalidDetailPathDialog
+          onConfirm={() =>
+            navigateFromInvalidDetailPath(navigate, "/app/contacts")
+          }
+        />
+      </>
+    );
   }
 
   if (contactQuery.isError) {

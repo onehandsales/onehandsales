@@ -29,6 +29,7 @@ import {
   ModalForm,
   ModalFormSection,
 } from "@/components/ui/modal-form";
+import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import { ModalShell } from "@/components/ui/modal-shell";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Toast } from "@/components/ui/toast";
@@ -75,6 +76,10 @@ import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { formatDate, formatDateTime } from "@/utils/format";
 import {
+  isInvalidDetailPathError,
+  navigateFromInvalidDetailPath,
+} from "@/utils/invalid-detail-path";
+import {
   LOG_DELETE_CONFIRM_MESSAGE,
   LOG_DELETE_SUCCESS_DESCRIPTION,
   LOG_DELETE_SUCCESS_MESSAGE,
@@ -96,6 +101,10 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
   const memoLogsQuery = useDealMemoLogs(dealId);
   const deleteDealMutation = useDeleteDealMutation();
   const detail = dealQuery.data;
+  // 기능 : 삭제/미존재 딜 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
+  const isInvalidDealDetailPath =
+    dealQuery.isError &&
+    isInvalidDetailPathError(dealQuery.error, ["DealNotFound"]);
 
   if (!dealId) {
     return (
@@ -109,6 +118,17 @@ export function DealDetailPanel({ dealId, variant = "panel" }: DealDetailPanelPr
     return (
       <DealStateShell variant={variant}>
         <DealDetailSkeleton variant={variant} />
+      </DealStateShell>
+    );
+  }
+
+  if (isInvalidDealDetailPath) {
+    return (
+      <DealStateShell variant={variant}>
+        <DealDetailSkeleton variant={variant} />
+        <InvalidDetailPathDialog
+          onConfirm={() => navigateFromInvalidDetailPath(navigate, "/app/deals")}
+        />
       </DealStateShell>
     );
   }
