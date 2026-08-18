@@ -104,32 +104,27 @@ export class AdminUserApplicationService {
     const input = this.toListUsersInput(query);
     const now = new Date();
 
-    // 3. 목록 조회와 감사 로그 생성을 같은 transaction에서 실행합니다.
-    const page = await this.adminUserRepository.runInTransaction(
-      async (repository) => {
-        const listPage = await repository.listUsers(input, now);
+    // 3. 목록 조회는 운영 집계 query가 많으므로 interactive transaction 밖에서 실행합니다.
+    const page = await this.adminUserRepository.listUsers(input, now);
 
-        await repository.createAuditLog({
-          adminUserId: currentUser.id,
-          targetUserId: null,
-          targetType: AdminTargetType.USER,
-          targetId: null,
-          action: AdminAuditAction.ADMIN_USER_LIST_VIEW,
-          result: AdminAuditResult.SUCCESS,
-          requestId: metadata.requestId,
-          metadataJson: {
-            filterKeys: this.getActiveFilterKeys(input),
-            qLength: input.q?.length ?? 0,
-            limit: input.limit,
-            sort: input.sort,
-          },
-        });
+    // 4. 검색어 원문 없이 목록 조회 감사 로그를 append-only로 남깁니다.
+    await this.adminUserRepository.createAuditLog({
+      adminUserId: currentUser.id,
+      targetUserId: null,
+      targetType: AdminTargetType.USER,
+      targetId: null,
+      action: AdminAuditAction.ADMIN_USER_LIST_VIEW,
+      result: AdminAuditResult.SUCCESS,
+      requestId: metadata.requestId,
+      metadataJson: {
+        filterKeys: this.getActiveFilterKeys(input),
+        qLength: input.q?.length ?? 0,
+        limit: input.limit,
+        sort: input.sort,
+      },
+    });
 
-        return listPage;
-      }
-    );
-
-    // 4. email/displayName 원문을 포함한 application page를 반환합니다.
+    // 5. email/displayName 원문을 포함한 application page를 반환합니다.
     return page;
   }
 
@@ -142,39 +137,37 @@ export class AdminUserApplicationService {
     // 1. application 계층에서도 관리자 권한을 확인합니다.
     this.assertAdmin(currentUser);
 
-    // 2. 사용자 상세 조회와 감사 로그 생성을 같은 transaction에서 실행합니다.
-    const overview = await this.adminUserRepository.runInTransaction(
-      async (repository) => {
-        const userOverview = await repository.getUserOverview(userId, new Date());
-
-        if (!userOverview) {
-          throw new AdminUserNotFoundError();
-        }
-
-        await repository.createAuditLog({
-          adminUserId: currentUser.id,
-          targetUserId: userId,
-          targetType: AdminTargetType.USER,
-          targetId: userId,
-          action: AdminAuditAction.ADMIN_USER_DETAIL_VIEW,
-          result: AdminAuditResult.SUCCESS,
-          requestId: metadata.requestId,
-          metadataJson: {
-            viewedSections: [
-              "profile",
-              "domainCounts",
-              "trashSummary",
-              "analyticsSummary",
-              "notificationSummary",
-            ],
-          },
-        });
-
-        return userOverview;
-      }
+    // 2. 사용자 상세 조회는 여러 summary query를 포함하므로 transaction 밖에서 실행합니다.
+    const overview = await this.adminUserRepository.getUserOverview(
+      userId,
+      new Date()
     );
 
-    // 3. profile 원문을 포함한 application overview를 반환합니다.
+    if (!overview) {
+      throw new AdminUserNotFoundError();
+    }
+
+    // 3. 대상 사용자 상세 조회 감사 로그를 append-only로 남깁니다.
+    await this.adminUserRepository.createAuditLog({
+      adminUserId: currentUser.id,
+      targetUserId: userId,
+      targetType: AdminTargetType.USER,
+      targetId: userId,
+      action: AdminAuditAction.ADMIN_USER_DETAIL_VIEW,
+      result: AdminAuditResult.SUCCESS,
+      requestId: metadata.requestId,
+      metadataJson: {
+        viewedSections: [
+          "profile",
+          "domainCounts",
+          "trashSummary",
+          "analyticsSummary",
+          "notificationSummary",
+        ],
+      },
+    });
+
+    // 4. profile 원문을 포함한 application overview를 반환합니다.
     return overview;
   }
 
