@@ -81,9 +81,13 @@
 - 기본 UI 폰트는 Notion-like 다국어 스택을 기준으로 한다: `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`.
 - 이 폰트 기준은 한국어, 일본어, 대만 번체 중국어, 영어 US/UK/Singapore/Australia/Canada 전체에 적용한다.
 - 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 대만 번체 중국어/일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
-- 서비스의 주된 디자인 색상은 `#1F4EF5`, `#4880EE`, `#83B4F9`를 기준으로 한다.
-- 주요 CTA, 선택 상태, 활성 탭, 포커스, 핵심 피드백은 위 blue palette 안에서 먼저 해결하고 임의의 다른 blue/purple 계열을 추가하지 않는다.
-- blue 계열의 채움형 UI는 테두리도 채움색과 동일한 단색으로 맞춘다. 예: `bg-[#1F4EF5] border-[#1F4EF5]`, `bg-[#4880EE] border-[#4880EE]`.
+- 서비스의 주된 디자인 색상은 white/near-white + neutral gray를 기준으로 한다.
+- 기본 surface는 `#FFFFFF`, `#FAFAF8`/`#F7F7F5`, hover/pressed/selected surface는 `#F1F2F0`, `#E4E2DC`, `#D3D1CB` 계열을 우선한다.
+- 기본 텍스트와 아이콘은 `#111827`, `#374151`, `#6B7280`, `#9CA3AF` 계열을 우선한다.
+- 선택 navigation, active tab, hover 상태는 기본적으로 neutral gray 배경과 명확한 텍스트 대비로 표현한다.
+- blue는 전역 active identity로 사용하지 않는다. 필요한 경우 최상위 CTA 또는 접근성 focus ring에만 제한적으로 사용한다.
+- 도메인/메뉴 아이콘에는 인식 보조용 컬러를 사용할 수 있으나, 의미 없는 다색 아이콘이나 rainbow sidebar처럼 보이는 조합은 피한다.
+- 컬러 채움형 UI는 상태/액션 의미가 분명할 때만 사용하고, 테두리는 채움색과 같은 단색 또는 neutral border로 맞춘다.
 - 확인/완료처럼 단색 배지를 쓰는 경우 내부에 별도 원형 레이어를 넣지 말고 단색 배경과 아이콘만 사용한다.
 - 삭제 버튼은 수정 버튼 바로 옆에 빨간 휴지통 아이콘으로 배치한다.
 - 삭제 클릭 시 브라우저 `window.confirm`을 사용하지 않고 중앙 `ConfirmDialog`를 사용한다.

@@ -51,6 +51,8 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - 회사/담당자/제품/딜/일정/회의록의 DB/API validation, ownership, soft delete, transaction 기준을 약화하지 않는다.
 - 목록은 Notion database처럼 조용하고 조밀하게 보이되, Attio처럼 record 관계와 업무 상태를 분명히 보여준다.
 - 상세는 Notion page처럼 읽히되, Attio record page처럼 속성, 관계, 활동, 메모, 일정/회의록 맥락이 먼저 보인다.
+- 시각 톤은 Notion처럼 화이트/중립 그레이를 기본으로 한다. 선택 navigation/active tab은 회색 중심이며, 파랑은 전역 active identity로 쓰지 않는다.
+- 아이콘 컬러는 도메인/메뉴 인식 또는 상태 의미를 보조할 때만 제한적으로 사용한다.
 - 딜은 핵심 workflow record다. 딜 목록과 상세에서 단계, 금액, 다음 행동, 마감일, 연결 회사/담당자/제품이 즉시 보여야 한다.
 - Memo 기록은 Activity/Log와 구분하고, 민감 가능 입력으로 다룬다.
 - 생성은 목록 맥락이 중요하면 오른쪽 문서형 패널을 우선한다. 짧은 보조 입력, 삭제 확인, 위험 액션 확인은 modal/dialog를 사용할 수 있다.

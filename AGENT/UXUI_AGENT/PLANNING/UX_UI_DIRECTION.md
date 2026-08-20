@@ -258,38 +258,46 @@ Record list density direction:
 
 ## 7. Color Direction
 
-Use a Toss-like blue-centered palette.
+Use a Notion-like gray-centered workspace palette.
 
 Purpose:
 
-- create trust
-- keep the product clean
-- make primary actions obvious
-- avoid a heavy enterprise look
+- keep long-running work screens quiet and readable
+- make the product feel like a practical workspace, not a marketing surface
+- keep navigation, tables, panels, hover states, and selected states neutral by default
+- let color help recognition only where it carries clear meaning
 
 Direction:
 
-- base: white and neutral gray
-- primary: service blue palette
-- primary usage: main CTA, selected navigation, active tab, focused input, important link
+- base: white, near-white, and neutral gray
+- navigation hover/selected: neutral gray backgrounds and high-contrast text
+- primary action: one restrained action color may be used for the highest-emphasis CTA only
+- focus: must remain visible; use a high-contrast neutral ring or restrained blue only when accessibility needs it
 - status colors: restrained secondary use only
+- domain/icon accents: allowed for quick recognition, but sparse and consistent
 - success/positive: green
 - warning/follow-up needed: amber
 - danger/failure/overdue: red
 - sensitive/private: distinct but not loud
 
-Core service blue palette:
+Core neutral palette:
 
-- `#1F4EF5`: strong primary, high-emphasis CTA, active navigation, selected tab
-- `#4880EE`: default primary action, focused state, important link, confirmation feedback
-- `#83B4F9`: supporting blue, hover/subtle emphasis, low-emphasis accent
+- `#FFFFFF`: page/canvas surface
+- `#FAFAF8` / `#F7F7F5`: app and sidebar surfaces
+- `#F1F2F0`: subtle hover/surface
+- `#E4E2DC`: stronger hover or pressed surface
+- `#D3D1CB`: selected/active neutral surface when more contrast is needed
+- `#111827`, `#374151`, `#6B7280`, `#9CA3AF`: primary, secondary, muted, and icon text
+- `#E5E7EB`, `#E6EAF0`: borders and dividers
 
-Blue component rule:
+Accent rule:
 
-- when a blue component has both fill and border, use the same solid color for both
-- examples: fill `#1F4EF5` with border `#1F4EF5`, fill `#4880EE` with border `#4880EE`
-- do not mix a strong blue fill with a pale blue border for primary UI
-- do not introduce another primary blue or purple family unless this direction is updated first
+- blue is not the global brand, active navigation, or active tab identity
+- colored icons may mark domain groups or help users recognize menus faster
+- colored accents are for icons, badges, status, or one top-priority CTA; they should not dominate whole navigation surfaces
+- every icon color needs a stable domain reason
+- when a filled accent component has both fill and border, use the same solid color or a neutral border
+- do not introduce a palette that makes blue, purple, or cyan feel like the new primary color family
 
 Avoid:
 
@@ -297,7 +305,9 @@ Avoid:
 - dark navy-dominant UI
 - excessive gradients
 - too many competing accent colors
-- using blue for every status so that hierarchy disappears
+- using blue as the default selected navigation, active tab, or focus identity everywhere
+- using color without domain, status, or action meaning
+- creating a rainbow sidebar where every icon competes for attention
 
 ## 8. Typography And Readability
 

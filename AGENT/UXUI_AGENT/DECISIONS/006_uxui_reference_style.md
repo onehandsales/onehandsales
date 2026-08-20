@@ -55,25 +55,38 @@ Admin Web은 `Airtable식 table/filter/detail panel 운영 콘솔`을 참고하�
 
 ## 색상 방향
 
-화이트/그레이 기반에 블루 중심으로 간다.
+화이트/중립 그레이 중심의 Notion식 작업공간 톤으로 간다.
+
+블루는 서비스의 중심 색이 아니다.
 
 이유:
 
-- 신뢰감을 주기 위해서다.
-- 주요 액션을 명확하게 만들기 위해서다.
-- 토스식 심플함과 잘 맞는다.
+- 반복해서 보는 업무 화면에서 시각 피로를 줄이기 위해서다.
+- 노트북과 모바일에서 탐색 상태를 차분하게 읽히게 하기 위해서다.
+- 색을 브랜드 장식보다 인식, 상태, 행동 우선순위 보조에 쓰기 위해서다.
+- Notion식 quiet workspace와 더 잘 맞기 때문이다.
 
 사용 원칙:
 
-- 서비스 주 색상: `#1F4EF5`, `#4880EE`, `#83B4F9`
-- `#1F4EF5`: 강한 primary, 주요 CTA, 선택 상태, 활성 탭
-- `#4880EE`: 기본 primary action, 포커스, 중요 링크, 확인/완료 피드백
-- `#83B4F9`: 보조 blue, hover, 낮은 강조 accent
-- 블루 계열 채움형 UI는 테두리도 채움색과 동일한 단색으로 맞춘다.
+- 기본 바탕: white/near-white + neutral gray
+- hover, selected, sidebar active, active tab의 기본값은 neutral gray로 둔다.
+- 주요 CTA는 필요할 때만 하나의 restrained action color를 사용한다.
+- 포커스는 접근성을 위해 충분히 보여야 하며, neutral high-contrast ring 또는 절제된 blue ring을 사용할 수 있다.
+- 아이콘 컬러는 메뉴/도메인 인식 보조로 허용한다. 모든 아이콘을 무작위로 컬러화하지 않고 도메인별 안정 규칙을 둔다.
 - 그린: 긍정/성사/완료
 - 앰버: 주의/후속 필요
 - 레드: 실패/지연/위험
 - Memo 기록: Log/활동 로그와 구분하되 과하게 튀지 않게 표시
+
+중립 팔레트:
+
+- `#FFFFFF`: page/canvas surface
+- `#FAFAF8` / `#F7F7F5`: app/sidebar surface
+- `#F1F2F0`: subtle hover/surface
+- `#E4E2DC`: stronger hover 또는 pressed surface
+- `#D3D1CB`: 더 강한 대비가 필요한 selected/active neutral surface
+- `#111827`, `#374151`, `#6B7280`, `#9CA3AF`: primary, secondary, muted, icon text
+- `#E5E7EB`, `#E6EAF0`: border/divider
 
 피할 것:
 
@@ -81,8 +94,10 @@ Admin Web은 `Airtable식 table/filter/detail panel 운영 콘솔`을 참고하�
 - 다크 네이비 지배
 - 과한 그라데이션
 - 너무 많은 accent color
-- 임의의 다른 primary blue/purple 계열 추가
-- primary UI에서 강한 blue 채움색과 옅은 blue 테두리를 섞는 방식
+- 파랑/보라/시안 계열이 사실상 새 primary가 되는 것
+- 선택 navigation, active tab, focus를 전부 blue로 처리하는 방식
+- 아이콘 컬러를 의미 없이 많이 섞어 rainbow sidebar처럼 보이는 것
+- 강한 색 채움과 옅은 색 border를 섞어 component 상태를 흐리는 방식
 
 ## 글자 크기와 가독성
 
