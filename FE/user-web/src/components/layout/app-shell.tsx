@@ -3,6 +3,7 @@ import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
+  Bell,
   BriefcaseBusiness,
   CalendarDays,
   ChevronsLeft,
@@ -47,7 +48,10 @@ import {
   useState,
 } from "react";
 import { useDealDetail, useDeleteDealMutation } from "@/features/deal";
-import { NotificationBellButton } from "@/features/notification";
+import {
+  NotificationBellButton,
+  ServiceNotificationSettingsSection,
+} from "@/features/notification";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { PageHeader } from "@/components/layout/page-header";
@@ -223,7 +227,7 @@ export function AppShell() {
   const [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] =
     useState(false);
   const [accountModal, setAccountModal] = useState<
-    "profile" | "settings" | "terms" | "privacy" | null
+    "profile" | "settings" | "notifications" | "terms" | "privacy" | null
   >(
     null,
   );
@@ -798,7 +802,12 @@ function LogoutConfirmModal({
   );
 }
 
-type AccountModalSection = "profile" | "settings" | "terms" | "privacy";
+type AccountModalSection =
+  | "profile"
+  | "settings"
+  | "notifications"
+  | "terms"
+  | "privacy";
 
 // 기능 : 계정 모달을 렌더링합니다.
 function AccountModal({
@@ -857,6 +866,7 @@ function AccountModalContent({
   }> = [
     { icon: UserRound, label: profileLabel, section: "profile" },
     { icon: Settings, label: t("navigation.settings"), section: "settings" },
+    { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
     { icon: FileText, label: t("shell.terms"), section: "terms" },
     { icon: ShieldCheck, label: t("shell.privacy"), section: "privacy" },
   ];
@@ -943,6 +953,10 @@ function AccountModalSectionContent({
 
   if (section === "privacy") {
     return <LegalDocumentModalContent document={privacyPolicyModalDocument} />;
+  }
+
+  if (section === "notifications") {
+    return <ServiceNotificationSettingsSection />;
   }
 
   return <AccountSettingsModalContent />;

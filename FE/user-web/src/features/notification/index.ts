@@ -10,6 +10,7 @@ export {
 } from "./api/notification-api";
 export { NotificationBellButton } from "./components/notification-bell-button";
 export { NotificationScreen } from "./components/notification-screen";
+export { ServiceNotificationSettingsSection } from "./components/service-notification-settings-section";
 export type {
   BrowserPushPublicKeyResponse,
   BrowserPushPermissionRequest,
