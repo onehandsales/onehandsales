@@ -474,7 +474,7 @@ export function AppShell() {
       <button
         aria-expanded={accountMenuOpen}
         aria-haspopup="menu"
-        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#F1F2F5] data-[open=true]:bg-[#EEF4FF]"
+        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] data-[open=true]:bg-[#EEF4FF]"
         data-open={accountMenuOpen}
         onClick={() => setAccountMenuOpen((open) => !open)}
         type="button"
@@ -493,7 +493,7 @@ export function AppShell() {
       </button>
       <button
         aria-label={t("shell.sidebarClose")}
-        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#F1F2F5] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#E4E2DC] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           event.stopPropagation();
           setAccountMenuOpen(false);
@@ -513,7 +513,7 @@ export function AppShell() {
     <div className="mt-3">
       <button
         aria-expanded={onehandAppOpen}
-        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#F1F2F5] hover:text-[#6B7280]"
+        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280]"
         onClick={() => setOnehandAppOpen((open) => !open)}
         type="button"
       >
@@ -532,7 +532,7 @@ export function AppShell() {
             className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[13px] font-medium transition-colors ${
               isTrashPage
                 ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-                : "text-[#4B5563] hover:bg-[#F1F2F5] hover:text-[#111827]"
+                : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827]"
             }`}
             onClick={() => void navigate("/app/trash")}
             type="button"
@@ -574,7 +574,7 @@ export function AppShell() {
               className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
                 isHome
                   ? "bg-[#EFF6FF] text-[#4880EE]"
-                  : "text-[#9CA3AF] hover:bg-[#F1F2F5] hover:text-[#374151]"
+                  : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151]"
               }`}
               onClick={() => void navigate(HOME_PATH)}
               type="button"
@@ -587,7 +587,7 @@ export function AppShell() {
             </button>
             <button
               type="button"
-              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#F1F2F5] hover:text-[#374151]"
+              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
@@ -708,7 +708,7 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#F3F6FB]"
+      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#E4E2DC]"
       onClick={onClick}
       role="menuitem"
       type="button"
