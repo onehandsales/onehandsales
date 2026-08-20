@@ -36,12 +36,7 @@ const groups: Array<{
         to: "/app/companies",
         icon: Building2,
       },
-      {
-        labelKey: "navigation.contacts",
-        to: "/app/contacts",
-        icon: IdCard,
-        iconClassName: "text-[#12CAE7] group-hover:text-[#12CAE7]",
-      },
+      { labelKey: "navigation.contacts", to: "/app/contacts", icon: IdCard },
       { labelKey: "navigation.products", to: "/app/products", icon: Package },
     ],
   },
