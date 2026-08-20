@@ -493,7 +493,7 @@ export function AppShell() {
       </button>
       <button
         aria-label={t("shell.sidebarClose")}
-        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           event.stopPropagation();
           setAccountMenuOpen(false);
@@ -571,7 +571,7 @@ export function AppShell() {
           <div className="flex gap-1 px-2 pb-1">
             <button
               aria-label={t("shell.homeAria")}
-              className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
+              className={`group flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
                 isHome
                   ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
@@ -580,24 +580,23 @@ export function AppShell() {
               type="button"
             >
               <House
-                className="h-5 w-5 shrink-0"
+                className={`h-5 w-5 shrink-0 ${
+                  isHome ? "text-[#6B7280]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+                }`}
                 strokeWidth={2}
               />
               <span>{t("navigation.home")}</span>
             </button>
             <button
+              aria-label={t("shell.integratedSearch")}
               type="button"
-              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[14px] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
                 className="h-5 w-5 shrink-0"
                 strokeWidth={2}
               />
-              <span>{t("shell.integratedSearch")}</span>
-              <kbd className="ml-auto hidden rounded border border-[#ECEEF3] bg-[#F6F7F8] px-1 py-0.5 text-[14px] font-medium leading-none sm:block">
-                ⌘K
-              </kbd>
             </button>
             <NotificationBellButton className="h-8 w-8 shrink-0" />
           </div>
@@ -609,7 +608,7 @@ export function AppShell() {
         </aside>
         <button
           aria-label={t("shell.sidebarOpen")}
-          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-500 hover:bg-[#FAFAFB] active:bg-[#D3D1CB] ${
+          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-[#9CA3AF] transition-opacity duration-500 hover:bg-[#FAFAFB] hover:text-[#6B7280] active:bg-[#D3D1CB] ${
             isSidebarOpenButtonVisible
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0"
@@ -708,15 +707,15 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+      className="group flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
       onClick={onClick}
       role="menuitem"
       type="button"
     >
-      <Icon className="h-5 w-5 shrink-0 text-[#64748B]" strokeWidth={2} />
+      <Icon className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]" strokeWidth={2} />
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {EndIcon ? (
-        <EndIcon className="h-5 w-5 shrink-0 text-[#9CA3AF]" strokeWidth={2} />
+        <EndIcon className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]" strokeWidth={2} />
       ) : null}
     </button>
   );
