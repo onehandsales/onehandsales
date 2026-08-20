@@ -71,7 +71,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
           <div key={group.id}>
             <button
               aria-expanded={isOpen}
-              className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280]"
+              className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               onClick={() =>
                 setOpenGroups((current) => ({
                   ...current,
@@ -95,9 +95,9 @@ export function SidebarNav({ className }: SidebarNavProps) {
                   <NavLink
                     className={({ isActive }) =>
                       cn(
-                        "group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] font-medium transition-colors",
+                        "group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] font-medium transition-colors active:bg-[#D3D1CB]",
                         isActive
-                          ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
+                          ? "bg-[#E4E2DC] font-semibold text-[#111827]"
                           : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827]"
                       )
                     }
@@ -112,7 +112,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
                             "h-5 w-5 shrink-0",
                             item.iconClassName ??
                               (isActive
-                                ? "text-[#4880EE]"
+                                ? "text-[#6B7280]"
                                 : "text-[#9CA3AF] group-hover:text-[#6B7280]")
                           )}
                           strokeWidth={2}

@@ -24,7 +24,7 @@ export function NotificationBellButton({
         unreadCount > 0 ? `알림, 안읽음 ${unreadCount}개` : "알림"
       }
       className={cn(
-        "relative inline-flex items-center justify-center gap-2 rounded-md text-[#6B7280] transition hover:bg-[#E4E2DC] hover:text-[#111827]",
+        "relative inline-flex items-center justify-center gap-2 rounded-md text-[#6B7280] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]",
         className
       )}
       to="/app/notifications"

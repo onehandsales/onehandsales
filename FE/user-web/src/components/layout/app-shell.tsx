@@ -474,7 +474,7 @@ export function AppShell() {
       <button
         aria-expanded={accountMenuOpen}
         aria-haspopup="menu"
-        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] data-[open=true]:bg-[#EEF4FF]"
+        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] data-[open=true]:bg-[#E4E2DC] data-[open=true]:active:bg-[#D3D1CB]"
         data-open={accountMenuOpen}
         onClick={() => setAccountMenuOpen((open) => !open)}
         type="button"
@@ -493,7 +493,7 @@ export function AppShell() {
       </button>
       <button
         aria-label={t("shell.sidebarClose")}
-        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#E4E2DC] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#111827] opacity-0 transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           event.stopPropagation();
           setAccountMenuOpen(false);
@@ -513,7 +513,7 @@ export function AppShell() {
     <div className="mt-3">
       <button
         aria-expanded={onehandAppOpen}
-        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280]"
+        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
         onClick={() => setOnehandAppOpen((open) => !open)}
         type="button"
       >
@@ -531,15 +531,15 @@ export function AppShell() {
             aria-current={isTrashPage ? "page" : undefined}
             className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[13px] font-medium transition-colors ${
               isTrashPage
-                ? "bg-[#EFF6FF] font-semibold text-[#1D4ED8]"
-                : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827]"
+                ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
+                : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
             }`}
             onClick={() => void navigate("/app/trash")}
             type="button"
           >
             <Trash2
               className={`h-5 w-5 shrink-0 ${
-                isTrashPage ? "text-[#4880EE]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+                isTrashPage ? "text-[#6B7280]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
               }`}
               strokeWidth={2}
             />
@@ -573,8 +573,8 @@ export function AppShell() {
               aria-label={t("shell.homeAria")}
               className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
                 isHome
-                  ? "bg-[#EFF6FF] text-[#4880EE]"
-                  : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151]"
+                  ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
+                  : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
               }`}
               onClick={() => void navigate(HOME_PATH)}
               type="button"
@@ -587,7 +587,7 @@ export function AppShell() {
             </button>
             <button
               type="button"
-              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151]"
+              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
@@ -609,7 +609,7 @@ export function AppShell() {
         </aside>
         <button
           aria-label={t("shell.sidebarOpen")}
-          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-500 hover:bg-[#FAFAFB] ${
+          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-black transition-opacity duration-500 hover:bg-[#FAFAFB] active:bg-[#D3D1CB] ${
             isSidebarOpenButtonVisible
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0"
@@ -708,7 +708,7 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#E4E2DC]"
+      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
       onClick={onClick}
       role="menuitem"
       type="button"
@@ -892,7 +892,7 @@ function AccountModalContent({
       <div className="relative min-h-0 bg-white">
         <button
           aria-label={t("common.close")}
-          className="absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827]"
+          className="absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]"
           onClick={onClose}
           type="button"
         >
@@ -922,8 +922,8 @@ function AccountModalSidebarItem({
     <button
       className={`flex h-10 items-center gap-2 rounded-lg px-3 text-left text-[13px] font-medium transition ${
         active
-          ? "bg-[#EAF2FF] text-[#1D4ED8]"
-          : "text-[#64748B] hover:bg-[#F3F6FB] hover:text-[#111827]"
+          ? "bg-[#F3F6FB] text-[#111827] active:bg-[#E4E8F0]"
+          : "text-[#64748B] hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]"
       }`}
       onClick={onClick}
       type="button"
