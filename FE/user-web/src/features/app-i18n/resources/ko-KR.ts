@@ -43,7 +43,7 @@ export const koKRResource = {
     trash: "휴지통",
   },
   navigation: {
-    appName: "Onehand 앱",
+    appName: "기타",
     businessCards: "명함 스캔",
     companies: "회사",
     contacts: "담당자",
@@ -60,7 +60,7 @@ export const koKRResource = {
     workGroup: "업무",
   },
   shell: {
-    accountProfile: "계정",
+    accountProfile: "설정",
     adminPlan: "Admin",
     appFallbackTitle: "한손에 영업",
     freePlan: "무료 요금제",

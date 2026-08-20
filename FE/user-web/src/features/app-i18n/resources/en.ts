@@ -43,7 +43,7 @@ export const enResource = {
     trash: "Trash",
   },
   navigation: {
-    appName: "Onehand App",
+    appName: "Other",
     businessCards: "Business Cards",
     companies: "Companies",
     contacts: "Contacts",
@@ -60,7 +60,7 @@ export const enResource = {
     workGroup: "Work",
   },
   shell: {
-    accountProfile: "Account",
+    accountProfile: "Setting",
     adminPlan: "Admin",
     appFallbackTitle: "Onehand Sales",
     freePlan: "Free Plan",
