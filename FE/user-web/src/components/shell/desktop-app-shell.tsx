@@ -56,7 +56,7 @@ export function DesktopAppShell({
             <p className="truncate text-[14px] font-semibold leading-tight tracking-[-0.02em] text-sidebar-foreground">
               한손에 영업
             </p>
-            <p className="text-[11px] text-sidebar-foreground/45">
+            <p className="text-[14px] text-sidebar-foreground/45">
               Onehand
             </p>
           </div>
@@ -75,14 +75,14 @@ export function DesktopAppShell({
 
         {/* User profile */}
         <div className="flex items-center gap-3 px-4 py-4">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-[12px] font-semibold text-primary">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-[14px] font-semibold text-primary">
             강
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[13px] font-medium text-sidebar-foreground">
+            <p className="truncate text-[14px] font-medium text-sidebar-foreground">
               강변범
             </p>
-            <p className="text-[11px] text-sidebar-foreground/45">
+            <p className="text-[14px] text-sidebar-foreground/45">
               Store Manager
             </p>
           </div>

@@ -437,14 +437,14 @@ export function AppShell() {
             role="menu"
           >
             <div className="flex items-center gap-2.5 px-1 py-1.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F6C445] text-[13px] font-semibold text-white">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F6C445] text-[14px] font-semibold text-white">
                 {userInitial}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-[#111827]">
+                <p className="truncate text-[14px] font-semibold text-[#111827]">
                   {userName}
                 </p>
-                <p className="truncate text-[11px] text-[#6B7280]">
+                <p className="truncate text-[14px] text-[#6B7280]">
                   {userEmail}
                 </p>
               </div>
@@ -479,14 +479,14 @@ export function AppShell() {
         onClick={() => setAccountMenuOpen((open) => !open)}
         type="button"
       >
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[11px] font-semibold text-white">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[14px] font-semibold text-white">
           {userInitial}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13px] font-medium text-[#111827]">
+          <p className="truncate text-[14px] font-medium text-[#111827]">
             {userName}
           </p>
-          <p className="truncate text-[11px] text-[#9CA3AF]">
+          <p className="truncate text-[14px] text-[#9CA3AF]">
             {accountSubtitle}
           </p>
         </div>
@@ -502,7 +502,7 @@ export function AppShell() {
         type="button"
       >
         <ChevronsLeft className="h-5 w-5" strokeWidth={2} />
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
+        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
           {t("shell.sidebarClose")}
         </span>
       </button>
@@ -513,7 +513,7 @@ export function AppShell() {
     <div className="mt-3">
       <button
         aria-expanded={onehandAppOpen}
-        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[11px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
         onClick={() => setOnehandAppOpen((open) => !open)}
         type="button"
       >
@@ -529,7 +529,7 @@ export function AppShell() {
         <div className="flex flex-col gap-px">
           <button
             aria-current={isTrashPage ? "page" : undefined}
-            className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[13px] font-medium transition-colors ${
+            className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
               isTrashPage
                 ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
                 : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
@@ -571,7 +571,7 @@ export function AppShell() {
           <div className="flex gap-1 px-2 pb-1">
             <button
               aria-label={t("shell.homeAria")}
-              className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[13px] transition ${
+              className={`flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
                 isHome
                   ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
@@ -587,7 +587,7 @@ export function AppShell() {
             </button>
             <button
               type="button"
-              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[13px] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
+              className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md px-2 text-[14px] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
@@ -595,7 +595,7 @@ export function AppShell() {
                 strokeWidth={2}
               />
               <span>{t("shell.integratedSearch")}</span>
-              <kbd className="ml-auto hidden rounded border border-[#ECEEF3] bg-[#F6F7F8] px-1 py-0.5 text-[10px] font-medium leading-none sm:block">
+              <kbd className="ml-auto hidden rounded border border-[#ECEEF3] bg-[#F6F7F8] px-1 py-0.5 text-[14px] font-medium leading-none sm:block">
                 ⌘K
               </kbd>
             </button>
@@ -708,7 +708,7 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[13px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+      className="flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
       onClick={onClick}
       role="menuitem"
       type="button"
@@ -920,7 +920,7 @@ function AccountModalSidebarItem({
 }) {
   return (
     <button
-      className={`flex h-10 items-center gap-2 rounded-lg px-3 text-left text-[13px] font-medium transition ${
+      className={`flex h-10 items-center gap-2 rounded-lg px-3 text-left text-[14px] font-medium transition ${
         active
           ? "bg-[#F3F6FB] text-[#111827] active:bg-[#E4E8F0]"
           : "text-[#64748B] hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]"
