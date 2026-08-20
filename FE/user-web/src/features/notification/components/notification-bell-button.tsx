@@ -29,7 +29,7 @@ export function NotificationBellButton({
       )}
       to="/app/notifications"
     >
-      <Bell className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+      <Bell className="h-5 w-5 shrink-0" strokeWidth={1.8} />
       {showLabel ? (
         <span className={cn("truncate", labelClassName)}>알림</span>
       ) : null}

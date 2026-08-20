@@ -22,6 +22,7 @@ const groups: Array<{
     readonly labelKey: AppI18nKey;
     readonly to: string;
     readonly icon: LucideIcon;
+    readonly iconClassName?: string;
     readonly end?: boolean;
   }>;
 }> = [
@@ -30,7 +31,12 @@ const groups: Array<{
     labelKey: "navigation.mainGroup",
     items: [
       { labelKey: "navigation.deals", to: "/app/deals", icon: BriefcaseBusiness },
-      { labelKey: "navigation.companies", to: "/app/companies", icon: Building2 },
+      {
+        labelKey: "navigation.companies",
+        to: "/app/companies",
+        icon: Building2,
+        iconClassName: "text-[#111827] group-hover:text-[#111827]",
+      },
       { labelKey: "navigation.contacts", to: "/app/contacts", icon: IdCard },
       { labelKey: "navigation.products", to: "/app/products", icon: Package },
     ],
@@ -77,7 +83,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
             >
               <ChevronRight
                 className={cn(
-                  "h-3 w-3 shrink-0 transition-transform",
+                  "h-5 w-5 shrink-0 transition-transform",
                   isOpen ? "rotate-90" : "rotate-0"
                 )}
                 strokeWidth={2}
@@ -104,10 +110,11 @@ export function SidebarNav({ className }: SidebarNavProps) {
                       <>
                         <item.icon
                           className={cn(
-                            "h-[15px] w-[15px] shrink-0",
-                            isActive
-                              ? "text-[#4880EE]"
-                              : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+                            "h-5 w-5 shrink-0",
+                            item.iconClassName ??
+                              (isActive
+                                ? "text-[#4880EE]"
+                                : "text-[#9CA3AF] group-hover:text-[#6B7280]")
                           )}
                           strokeWidth={1.75}
                         />

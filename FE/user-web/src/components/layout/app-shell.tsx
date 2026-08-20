@@ -501,7 +501,7 @@ export function AppShell() {
         }}
         type="button"
       >
-        <ChevronsLeft className="h-4 w-4" strokeWidth={1.9} />
+        <ChevronsLeft className="h-5 w-5" strokeWidth={1.9} />
         <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[11px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
           {t("shell.sidebarClose")}
         </span>
@@ -518,7 +518,7 @@ export function AppShell() {
         type="button"
       >
         <ChevronRight
-          className={`h-3 w-3 shrink-0 transition-transform ${
+          className={`h-5 w-5 shrink-0 transition-transform ${
             onehandAppOpen ? "rotate-90" : "rotate-0"
           }`}
           strokeWidth={2}
@@ -538,7 +538,7 @@ export function AppShell() {
             type="button"
           >
             <Trash2
-              className={`h-[15px] w-[15px] shrink-0 ${
+              className={`h-5 w-5 shrink-0 ${
                 isTrashPage ? "text-[#4880EE]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
               }`}
               strokeWidth={1.75}
@@ -580,7 +580,7 @@ export function AppShell() {
               type="button"
             >
               <House
-                className="h-[15px] w-[15px] shrink-0"
+                className="h-5 w-5 shrink-0"
                 strokeWidth={1.75}
               />
               <span>{t("navigation.home")}</span>
@@ -591,7 +591,7 @@ export function AppShell() {
               onClick={() => setSearchOpen(true)}
             >
               <Search
-                className="h-[15px] w-[15px] shrink-0"
+                className="h-5 w-5 shrink-0"
                 strokeWidth={1.75}
               />
               <span>{t("shell.integratedSearch")}</span>
@@ -713,10 +713,10 @@ function AccountMenuItem({
       role="menuitem"
       type="button"
     >
-      <Icon className="h-4 w-4 shrink-0 text-[#64748B]" strokeWidth={1.75} />
+      <Icon className="h-5 w-5 shrink-0 text-[#64748B]" strokeWidth={1.75} />
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {EndIcon ? (
-        <EndIcon className="h-4 w-4 shrink-0 text-[#9CA3AF]" strokeWidth={1.75} />
+        <EndIcon className="h-5 w-5 shrink-0 text-[#9CA3AF]" strokeWidth={1.75} />
       ) : null}
     </button>
   );
