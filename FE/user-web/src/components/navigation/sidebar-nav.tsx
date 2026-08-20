@@ -35,9 +35,13 @@ const groups: Array<{
         labelKey: "navigation.companies",
         to: "/app/companies",
         icon: Building2,
-        iconClassName: "text-[#111827] group-hover:text-[#111827]",
       },
-      { labelKey: "navigation.contacts", to: "/app/contacts", icon: IdCard },
+      {
+        labelKey: "navigation.contacts",
+        to: "/app/contacts",
+        icon: IdCard,
+        iconClassName: "text-[#12CAE7] group-hover:text-[#12CAE7]",
+      },
       { labelKey: "navigation.products", to: "/app/products", icon: Package },
     ],
   },
@@ -116,7 +120,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
                                 ? "text-[#4880EE]"
                                 : "text-[#9CA3AF] group-hover:text-[#6B7280]")
                           )}
-                          strokeWidth={1.75}
+                          strokeWidth={2}
                         />
                         <span>{t(item.labelKey)}</span>
                       </>
