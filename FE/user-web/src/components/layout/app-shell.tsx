@@ -430,38 +430,43 @@ export function AppShell() {
 
   const accountProfile = (
     <div className="relative px-2 pb-1 pt-2" ref={accountMenuRef}>
-      {accountMenuOpen ? (
-        <div className="absolute left-2 right-2 top-[calc(100%+4px)] z-50">
-          <div
-            className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
-            role="menu"
-          >
-            <div className="flex items-center gap-2.5 px-1 py-1.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F6C445] text-[14px] font-semibold text-white">
-                {userInitial}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[14px] font-semibold text-[#111827]">
-                  {userName}
-                </p>
-                <p className="truncate text-[14px] text-[#6B7280]">
-                  {userEmail}
-                </p>
-              </div>
+      <div
+        aria-hidden={!accountMenuOpen}
+        className={`absolute left-2 right-2 top-[calc(100%+4px)] z-50 origin-top transition-all duration-150 ease-out ${
+          accountMenuOpen
+            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
+        }`}
+      >
+        <div
+          className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
+          role="menu"
+        >
+          <div className="flex items-center gap-2.5 px-1 py-2">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F6C445] text-[14px] font-semibold text-white">
+              {userInitial}
             </div>
-            <div className="mx-1 my-1.5 h-px bg-[#F0F2F6]" />
+            <p className="min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 text-[#111827]">
+              {userName}
+            </p>
+          </div>
+          <div className="mt-1 grid gap-px">
+            <div className="flex h-9 w-full items-center rounded-lg px-2 text-[14px] font-medium text-[#6B7280]">
+              <span className="min-w-0 flex-1 truncate">{userEmail}</span>
+            </div>
             <AccountMenuItem
               icon={Settings}
               label={t("shell.accountProfile")}
+              tabIndex={accountMenuOpen ? undefined : -1}
               onClick={() => {
                 setAccountMenuOpen(false);
                 setAccountModal("profile");
               }}
             />
-            <div className="mx-1 my-1.5 h-px bg-[#F0F2F6]" />
             <AccountMenuItem
               icon={LogOut}
               label={t("shell.logout")}
+              tabIndex={accountMenuOpen ? undefined : -1}
               onClick={() => {
                 setAccountMenuOpen(false);
                 setLogoutConfirmOpen(true);
@@ -469,7 +474,7 @@ export function AppShell() {
             />
           </div>
         </div>
-      ) : null}
+      </div>
 
       <button
         aria-expanded={accountMenuOpen}
@@ -485,9 +490,6 @@ export function AppShell() {
         <div className="min-w-0 flex-1">
           <p className="truncate text-[14px] font-medium text-[#111827]">
             {userName}
-          </p>
-          <p className="truncate text-[14px] text-[#9CA3AF]">
-            {accountSubtitle}
           </p>
         </div>
       </button>
@@ -699,17 +701,20 @@ function AccountMenuItem({
   icon: Icon,
   label,
   onClick,
+  tabIndex,
 }: {
   readonly endIcon?: LucideIcon;
   readonly icon: LucideIcon;
   readonly label: string;
   readonly onClick: () => void;
+  readonly tabIndex?: number;
 }) {
   return (
     <button
       className="group flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
       onClick={onClick}
       role="menuitem"
+      tabIndex={tabIndex}
       type="button"
     >
       <Icon className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]" strokeWidth={2} />
@@ -875,7 +880,7 @@ function AccountModalContent({
   return (
     <div className="grid h-[min(76vh,720px)] overflow-hidden bg-white md:grid-cols-[176px_minmax(0,1fr)]">
       <aside className="bg-sidebar p-2 pt-4">
-        <nav className="grid gap-1">
+        <nav className="grid gap-px">
           {accountModalItems.map((item) => (
             <AccountModalSidebarItem
               active={section === item.section}
@@ -919,15 +924,20 @@ function AccountModalSidebarItem({
 }) {
   return (
     <button
-      className={`flex h-10 items-center gap-2 rounded-lg px-3 text-left text-[14px] font-medium transition ${
+      className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
         active
-          ? "bg-[#F3F6FB] text-[#111827] active:bg-[#E4E8F0]"
-          : "text-[#64748B] hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]"
+          ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
+          : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
       }`}
       onClick={onClick}
       type="button"
     >
-      <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+      <Icon
+        className={`h-5 w-5 shrink-0 ${
+          active ? "text-[#6B7280]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+        }`}
+        strokeWidth={2}
+      />
       <span className="min-w-0 flex-1 truncate">{label}</span>
     </button>
   );
