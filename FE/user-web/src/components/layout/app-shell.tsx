@@ -233,7 +233,6 @@ export function AppShell() {
   const isHome = pathname === HOME_PATH;
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
   const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
-  const accountSubtitle = user?.role === "ADMIN" ? t("shell.adminPlan") : t("shell.freePlan");
   const userInitial = getUserInitial(userName);
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
@@ -673,9 +672,6 @@ export function AppShell() {
           void handleLogout();
         }}
         open={logoutConfirmOpen}
-        userInitial={userInitial}
-        userMeta={accountSubtitle}
-        userName={userName}
       />
 
       {/* ── Mobile Shell ── */}
@@ -731,16 +727,10 @@ function LogoutConfirmModal({
   onCancel,
   onConfirm,
   open,
-  userInitial,
-  userMeta,
-  userName,
 }: {
   readonly onCancel: () => void;
   readonly onConfirm: () => void;
   readonly open: boolean;
-  readonly userInitial: string;
-  readonly userMeta: string;
-  readonly userName: string;
 }) {
   const { t } = useAppI18n();
 
@@ -771,38 +761,32 @@ function LogoutConfirmModal({
     >
       <section
         aria-modal="true"
-        className="w-full max-w-[360px] rounded-xl bg-white px-6 py-6 shadow-2xl"
+        className="w-full max-w-[320px] rounded-md bg-white px-[18px] py-[18px] shadow-2xl"
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
-        <h2 className="text-[22px] font-bold leading-tight text-[#111827]">
+        <div className="mx-auto flex h-5 w-5 items-center justify-center text-[#111827]">
+          <UserRound className="h-5 w-5" strokeWidth={2} />
+        </div>
+
+        <h2 className="mt-2 text-center text-[19px] font-medium leading-7 text-[#333333]">
           {t("shell.logoutQuestion")}
         </h2>
 
-        <div className="mt-5 flex items-center gap-3 rounded-xl bg-[#F8FAFC] px-4 py-3 shadow-[inset_0_0_0_1px_#E2E8F0]">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[12px] font-semibold text-white">
-            {userInitial}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[14px] font-semibold text-[#111827]">
-              {userName}
-            </p>
-            <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-              {userMeta}
-            </p>
-          </div>
-        </div>
+        <p className="mt-2 whitespace-pre-line text-center text-[16px] leading-6 text-[#888888]">
+          {t("shell.logoutDescription")}
+        </p>
 
-        <div className="mt-5 grid gap-2">
+        <div className="mt-4 grid gap-2">
           <button
-            className="h-11 rounded-full bg-[#4880EE] px-4 text-[13px] font-semibold text-white transition hover:bg-[#3268D6]"
+            className="h-8 rounded-md bg-[#EB5750] px-4 text-[14px] font-medium text-white transition hover:bg-[#E04F49] active:bg-[#D94741]"
             onClick={onConfirm}
             type="button"
           >
             {t("shell.logoutConfirm")}
           </button>
           <button
-            className="h-11 rounded-full bg-[#F8FAFC] px-4 text-[13px] font-semibold text-[#374151] shadow-[inset_0_0_0_1px_#E2E8F0] transition hover:bg-[#F1F5F9]"
+            className="h-8 rounded-md bg-white px-4 text-[14px] font-medium text-[#444444] shadow-[inset_0_0_0_1px_#DDDDDD] transition hover:bg-[#F8F8F8] active:bg-[#EFEFEF]"
             onClick={onCancel}
             type="button"
           >
