@@ -4,7 +4,7 @@
 
 ## 1. 목적
 
-계정 모달 안에서 `Profile`과 `Settings`의 역할을 명확히 분리하고, `/app/settings`의 기능성 section을 하나씩 이관할 수 있는 기반을 만든다.
+계정 모달 안에서 `Profile`과 `Settings`의 역할을 명확히 분리하고, 기존 settings page의 기능성 section을 하나씩 이관할 수 있는 기반을 만든다.
 
 이 goal은 이관 기반을 담당했고, 첫 실제 이관 대상인 account data request section은 G02에서 완료됐다.
 
@@ -25,8 +25,8 @@
 | 파일 또는 폴더 | 작업 |
 | --- | --- |
 | `FE/user-web/src/components/layout/app-shell.tsx` | `Profile`/`Settings` 역할 분리 기준 반영, Settings modal section 추가 준비 |
-| `FE/user-web/src/app/router/router.tsx` | `/app/settings` bridge와 modal-open contract 확인 완료 |
-| `FE/user-web/src/pages/settings/index.tsx` | 이관 원본으로 참고하되 이 goal에서는 대량 이동하지 않음 |
+| `FE/user-web/src/app/router/router.tsx` | modal-open contract 확인 완료. settings route 삭제는 G03에서 완료 |
+| `FE/user-web/src/pages/settings/index.tsx` | 이관 완료 후 삭제됨 |
 | `FE/user-web/src/features/account-request` | G02 첫 이관 대상 확인용 참조 |
 
 ## 4. 구현 규칙
@@ -47,9 +47,8 @@
 ## 5. 제외 범위
 
 - account data request 실제 이관은 G02에서 완료
-- follow-up delivery 이관은 후속 작업에서 완료
-- Google Calendar settings 이관은 남은 결정
-- `/app/settings` hard delete
+- Google Calendar와 follow-up delivery 이관은 후속 작업에서 완료
+- `/app/settings` route 삭제는 G03에서 완료
 - API client 변경
 - Backend/DB 변경
 
@@ -58,7 +57,7 @@
 - 계정 모달 `Profile`에 있는 read-only 정보와 `Settings`에 둘 기능성 설정의 경계가 코드에서 명확하다.
 - Settings modal에 account data request와 follow-up delivery section을 추가할 위치와 notice 처리 방식이 준비되어 있다.
 - Settings modal 이관 기준이 기존 account modal 탭들의 section 구조와 일치한다.
-- `/app/settings` link를 modal-open으로 바꿀 단일 contract가 결정되어 있다.
+- settings link를 modal-open으로 바꿀 단일 contract가 결정되어 있다.
 - 기존 app defaults 저장이 깨지지 않는다.
 - TypeScript compile error가 없다.
 

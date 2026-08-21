@@ -27,6 +27,9 @@ import {
 } from "./dto/follow-up-delivery-settings-request.dto";
 
 const DEFAULT_USER_WEB_ORIGIN = "http://localhost:5173";
+const ACCOUNT_SETTINGS_MODAL_PATH = "/app";
+const ACCOUNT_MODAL_QUERY_KEY = "account";
+const ACCOUNT_MODAL_SETTINGS_QUERY_VALUE = "settings";
 
 type EmailConnectionRedirectProvider = "google" | "microsoft" | "email";
 type EmailConnectionRedirectStatus = "connected" | "denied" | "failed";
@@ -203,8 +206,12 @@ export class FollowUpEmailConnectionCallbackController {
       this.configService.get<string>("USER_WEB_ORIGIN") ??
       DEFAULT_USER_WEB_ORIGIN
     ).replace(/\/+$/, "");
-    const url = new URL("/app/settings", origin);
+    const url = new URL(ACCOUNT_SETTINGS_MODAL_PATH, origin);
 
+    url.searchParams.set(
+      ACCOUNT_MODAL_QUERY_KEY,
+      ACCOUNT_MODAL_SETTINGS_QUERY_VALUE
+    );
     url.searchParams.set("followUpEmailConnection", provider);
     url.searchParams.set("status", status);
 

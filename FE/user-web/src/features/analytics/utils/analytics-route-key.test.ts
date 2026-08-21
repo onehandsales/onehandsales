@@ -78,10 +78,6 @@ describe("resolveProductAnalyticsRouteKey", () => {
     expect(resolveProductAnalyticsRouteKey("/app/contacts/scan")).toBeNull();
     expect(resolveProductAnalyticsRouteKey("/app/meeting-notes/new")).toBeNull();
     expect(resolveProductAnalyticsRouteKey("/app/export")).toBeNull();
-    expect(resolveProductAnalyticsRouteKey("/app/settings")).toBeNull();
-    expect(
-      resolveProductAnalyticsRouteKey("/app/settings?googleCalendar=connected")
-    ).toBeNull();
   });
 
   it("does not expose query strings or UUID path params as payload values", () => {

@@ -1,12 +1,12 @@
 # G02 Account Settings Section Migration
 
-상태: Completed / Account data and follow-up migrated
+상태: Completed / Account data, Google Calendar, and follow-up migrated
 
 ## 1. 목적
 
-계정 드롭다운의 `Settings`를 누르면 계정 모달 안에서 `/app/settings`에서 이관된 설정/요청/연동 section을 사용할 수 있게 한다.
+계정 드롭다운의 `Settings`를 누르면 계정 모달 안에서 기존 settings page에서 이관된 설정/요청/연동 section을 사용할 수 있게 한다.
 
-이 goal은 section 단위 이관을 담당한다. `AccountDataRequestsSettingsSection`과 `FollowUpDeliverySettingsSection`은 Settings modal 이관이 완료됐다. `GoogleCalendarSettingsSection`은 아직 남은 결정이다.
+이 goal은 section 단위 이관을 담당한다. `AccountDataRequestsSettingsSection`, `GoogleCalendarSettingsSection`, `FollowUpDeliverySettingsSection`은 Settings modal 이관이 완료됐다.
 
 ## 2. 반드시 먼저 읽을 문서
 
@@ -24,16 +24,19 @@
 
 | 파일 또는 폴더 | 작업 |
 | --- | --- |
-| `FE/user-web/src/components/layout/app-shell.tsx` | `AccountSettingsModalContent` 안에 account data request와 follow-up delivery section, notice 처리 추가 |
+| `FE/user-web/src/components/layout/app-shell.tsx` | `AccountSettingsModalContent` 안에 account data request, Google Calendar, follow-up delivery section, notice 처리 추가 |
 | `FE/user-web/src/features/account-request/components/account-data-requests-settings-section.tsx` | modal 안에서 재사용 가능한지 확인하고 필요한 최소 style/prop만 조정 |
+| `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | modal 안에서 재사용 가능한 presentation과 OAuth callback query 처리 추가 |
 | `FE/user-web/src/features/follow-up-delivery/components/follow-up-delivery-settings-section.tsx` | modal 안에서 재사용 가능한 presentation과 OAuth callback query 처리 추가 |
-| `FE/user-web/src/pages/settings/index.tsx` | 이관 후 중복 표시 제거 또는 후속 route 제거 작업 대상 표시 |
+| `FE/user-web/src/pages/settings/index.tsx` | 이관 완료 후 중복 원본 page 파일 삭제 |
 
 ## 4. 구현 규칙
 
 - `AccountModalSectionContent`에서 `section === "settings"`일 때 기존 Settings modal content를 유지하되, 이관된 section을 함께 렌더링한다.
 - 계정 모달 `Notifications`는 계속 `ServiceNotificationSettingsSection`을 반환한다.
 - `AccountDataRequestsSettingsSection`의 `onNotice` callback은 modal 안에서 보이는 notice로 연결한다.
+- `GoogleCalendarSettingsSection`의 `onNotice` callback은 modal 안에서 보이는 notice로 연결한다.
+- Google Calendar OAuth callback query는 Settings modal 내부에서 처리하고 query를 정리한다.
 - `FollowUpDeliverySettingsSection`의 `onNotice` callback은 modal 안에서 보이는 notice로 연결한다.
 - follow-up OAuth callback query는 Settings modal 내부에서 처리하고 query를 정리한다.
 - account data request UI는 `/app/settings` page card를 그대로 붙이지 않고, 기존 account modal의 heading/section/divider/spacing 패턴에 맞게 배치한다.
@@ -51,18 +54,18 @@
 - `/app/notifications` 알림 목록 이동
 - 계정 모달 `Profile`, `Terms`, `Privacy` 섹션 삭제
 - Profile tab의 read-only account/status/provider/devices/user id 정보를 Settings tab에 복제
-- Google Calendar settings 이관
-- Google Calendar OAuth callback 후 Settings modal 내부 section 자동 열기
-- `/app/settings` hard delete
-- Backend/DB 변경
+- `/app/settings` route 삭제는 G03에서 완료
+- Backend/DB 변경. 단, OAuth callback URL 정리는 G03에서 완료
 
 ## 6. 완료 기준
 
 - 계정 드롭다운에서 `Settings`를 누르면 modal이 열리고 `Settings` sidebar item이 선택된다.
 - modal Settings 안에서 app defaults와 account data request section을 볼 수 있다.
+- modal Settings 안에서 Google Calendar section을 볼 수 있다.
 - modal Settings 안에서 follow-up delivery section을 볼 수 있다.
 - app defaults 저장이 modal 안에서 가능하다.
 - account data request 생성, refresh, account deletion request/cancel 동작과 notice가 modal 안에서 가능하다.
+- Google Calendar settings 조회와 callback notice가 modal 안에서 가능하다.
 - follow-up delivery settings 조회와 callback notice가 modal 안에서 가능하다.
 - account data request section이 Settings/Notifications/Terms/Privacy와 같은 modal density와 scroll 규칙을 따른다.
 - account data request section의 title/description/button/status 문구가 정상적으로 읽힌다.
@@ -88,6 +91,7 @@ pnpm run build
 - modal sidebar selected 상태 확인
 - app defaults 저장
 - account data request section 표시와 요청/취소 동작
+- Google Calendar section 표시와 callback query 처리
 - follow-up delivery section 표시와 callback query 처리
 - 기존 modal 탭과의 heading/spacing/divider 일관성 확인
 - account data request 문구, request id/status overflow, 위험 액션 안내 확인

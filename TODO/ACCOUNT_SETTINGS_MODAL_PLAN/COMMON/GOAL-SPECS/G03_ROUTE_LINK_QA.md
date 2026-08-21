@@ -6,7 +6,7 @@
 
 계정 모달 Settings 이관 후 기존 `/app/settings` 사용자-facing page 의존이 남아 있지 않은지 확인한다.
 
-이 goal은 새 기능 추가가 아니라 link 재배선, compatibility bridge, 회귀 검증을 담당한다.
+이 goal은 새 기능 추가가 아니라 link 재배선, settings route 삭제, OAuth callback 회귀 검증을 담당한다.
 
 ## 2. 반드시 먼저 읽을 문서
 
@@ -25,22 +25,22 @@
 
 | 경로 또는 파일 | 확인 내용 |
 | --- | --- |
-| `/app/settings` | 사용자-facing 설정 page를 렌더링하지 않고 modal-open bridge 또는 safe redirect로 동작한다. |
-| legacy `/settings` | 사용자-facing settings page가 아니라 Settings modal-open 흐름으로 연결된다. |
+| `/app/settings` | router에서 제거되어 사용자-facing page나 bridge로 동작하지 않는다. |
+| legacy `/settings` | router에서 제거되어 legacy settings bridge로 동작하지 않는다. |
 | `FE/user-web/src/pages/more/index.tsx` | mobile more의 settings 진입이 page link가 아니라 Settings modal-open 흐름이다. |
-| `FE/user-web/src/features/follow-up-delivery` | follow-up 관련 settings CTA와 OAuth callback query가 Settings modal-open 흐름이다. |
+| `FE/user-web/src/features/follow-up-delivery` | follow-up 관련 settings CTA와 OAuth callback query가 `/app?account=settings` Settings modal-open 흐름이다. |
 | `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | `returnTo` 변경 여부가 BE allowlist와 함께 검증된다. |
-| `FE/user-web/src/features/analytics` | `/app/settings` route analytics key가 제거 또는 bridge 기준으로 정리된다. |
+| `FE/user-web/src/features/analytics` | `/app/settings` route analytics 예외가 제거된다. |
 | `FE/user-web/src/features/notification` | `/app/notifications` 알림 목록과 modal notification settings 역할이 분리된다. |
 
 ## 4. 검증 기준
 
-- `/app/settings` direct link는 독립 설정 page로 열리지 않는다.
+- `/app/settings` direct route는 앱 router에서 제거된다.
 - account menu `Settings`는 modal로 열린다.
 - mobile more, follow-up, schedule CTA는 같은 modal-open contract를 사용한다.
-- follow-up OAuth callback `/app/settings?followUpEmailConnection=...&status=...`는 Settings modal에서 처리되고 query가 정리된다.
+- follow-up OAuth callback `/app?account=settings&followUpEmailConnection=...&status=...`는 Settings modal에서 처리되고 query가 정리된다.
 - modal close 후 query가 정리되고 원래 업무 화면 맥락이 유지된다.
-- Google Calendar OAuth return path는 BE allowlist 제약을 깨지 않는다.
+- Google Calendar OAuth return path는 `/app?account=settings`로 BE allowlist 제약을 깨지 않는다.
 - 알림 bell은 계속 `/app/notifications`로 이동한다.
 - 계정 모달 `Notifications`는 서비스 알림과 브라우저 푸시 설정을 보여준다.
 - `FE/user-web` typecheck, lint, build가 통과한다.
@@ -58,7 +58,7 @@ pnpm run build
 필요 시 route 참조 확인:
 
 ```powershell
-rg -n "/app/settings|/settings|/app/notifications" src -g "*.tsx" -g "*.ts"
+rg -n "/app/settings|AccountSettingsModalBridge" src -g "*.tsx" -g "*.ts"
 ```
 
 follow-up callback 검증:

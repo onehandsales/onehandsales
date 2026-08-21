@@ -132,7 +132,7 @@ describe("useAppRouteAnalytics", () => {
     expect(trackEvent).not.toHaveBeenCalled();
 
     await act(async () => {
-      controller.navigate("/app/settings");
+      controller.navigate("/app/contacts/scan");
     });
 
     expect(trackEvent).not.toHaveBeenCalled();

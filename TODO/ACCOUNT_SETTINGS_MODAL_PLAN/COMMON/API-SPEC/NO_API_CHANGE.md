@@ -1,12 +1,12 @@
 # No API Change Contract
 
-상태: Confirmed / No backend change / Verified after FE implementation
+상태: Confirmed / No new backend API / OAuth callback URL updated
 
 ## 1. 목적
 
 이 문서는 `ACCOUNT_SETTINGS_MODAL_PLAN`에서 새 Backend API, 새 DB schema, 새 transaction을 만들지 않는다는 계약을 고정한다.
 
-이번 작업은 설정 화면의 위치와 Frontend 구조를 바꾸는 UX/UI 개선이다. 저장되는 데이터와 서버 비즈니스 로직은 바뀌지 않는다.
+이번 작업은 설정 화면의 위치와 Frontend 구조를 바꾸는 UX/UI 개선이다. 저장되는 데이터와 서버 비즈니스 로직은 바뀌지 않는다. `/app/settings` route 삭제를 위해 기존 OAuth callback/return URL 생성만 `/app?account=settings` modal-open contract로 정리한다.
 
 ## 2. API 계약 상태
 
@@ -19,7 +19,7 @@
 | 새 response DTO | 없음 |
 | 새 error code | 없음 |
 | transaction 변경 | 없음 |
-| observability 변경 | 없음 |
+| observability 변경 | 없음. Google Calendar 연결 시작 log의 `returnTo` 값은 새 modal URL이 될 수 있음 |
 | DB schema 변경 | 없음 |
 
 ## 3. 기존 API 소비 범위
@@ -38,8 +38,8 @@
 구현 후 확인:
 
 - account data request와 follow-up delivery는 기존 hook/API path를 그대로 사용한다.
-- follow-up callback query 처리는 FE modal/route layer에서 처리한다.
-- Google Calendar callback은 기존 schedule 화면 handler를 유지하는 bridge로 처리한다.
+- follow-up callback query 처리는 `/app?account=settings&followUpEmailConnection=...&status=...` modal URL과 FE Settings section에서 처리한다.
+- Google Calendar callback은 `/app?account=settings&googleCalendar=...` modal URL과 `GoogleCalendarSettingsSection` query handler로 처리한다.
 - 새 User API, Admin API, DTO, error code, transaction, observability event는 추가하지 않았다.
 
 ## 4. FE 처리 기준
@@ -55,7 +55,7 @@
 - 새 controller, service, repository, Prisma model을 만들지 않는다.
 - User API와 Admin API 경계를 새로 만들거나 변경하지 않는다.
 - transaction, audit log, observability event key를 추가하지 않는다.
-- 기존 API 동작을 바꿔야 하는 요구가 발견되면 이 계획의 구현을 멈추고 별도 API 계획 문서로 분리한다.
+- 기존 API 계약을 바꿔야 하는 요구가 발견되면 이 계획의 구현을 멈추고 별도 API 계획 문서로 분리한다.
 
 ## 6. 관련 문서
 

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { createAccountSettingsModalPath } from "@/components/layout/account-modal-route";
 import { Button } from "@/components/ui/button";
 import { ModalShell } from "@/components/ui/modal-shell";
 import {
@@ -29,7 +30,12 @@ import { formatDateTime } from "@/utils/format";
 
 type GoogleCalendarSettingsSectionProps = {
   readonly onNotice: (message: string) => void;
+  readonly presentation?: GoogleCalendarSettingsPresentation;
 };
+
+type GoogleCalendarSettingsPresentation = "page" | "modal";
+
+const ACCOUNT_SETTINGS_RETURN_TO = createAccountSettingsModalPath("/app");
 
 const disconnectActions: ReadonlyArray<{
   readonly value: GoogleCalendarDisconnectScheduleAction;
@@ -53,8 +59,10 @@ const disconnectActions: ReadonlyArray<{
   },
 ];
 
+// 기능 : Google Calendar 연결 상태와 callback query 처리를 설정 화면 또는 계정 모달에 렌더링합니다.
 export function GoogleCalendarSettingsSection({
   onNotice,
+  presentation = "page",
 }: GoogleCalendarSettingsSectionProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const statusQuery = useGoogleCalendarStatus();
@@ -79,6 +87,10 @@ export function GoogleCalendarSettingsSection({
     [calendarsQuery.data?.calendars],
   );
   const refetchStatus = statusQuery.refetch;
+  const contentClassName =
+    presentation === "page"
+      ? "grid gap-4 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm"
+      : "grid min-w-0 gap-4";
 
   useEffect(() => {
     const result = searchParams.get("googleCalendar");
@@ -129,6 +141,7 @@ export function GoogleCalendarSettingsSection({
     });
   }, [calendarModalOpen, calendars]);
 
+  // 기능 : 캘린더 선택 모달을 열기 전에 선택/오류 상태를 초기화합니다.
   const openCalendarModal = () => {
     setActionError(null);
     setSelectionError(null);
@@ -136,18 +149,20 @@ export function GoogleCalendarSettingsSection({
     setCalendarModalOpen(true);
   };
 
+  // 기능 : Google Calendar 연결 해제 확인 모달을 엽니다.
   const openDisconnectModal = () => {
     setActionError(null);
     setDisconnectAction("KEEP");
     setDisconnectModalOpen(true);
   };
 
+  // 기능 : Google Calendar OAuth 연결 시작 URL을 요청하고 외부 승인 화면으로 이동합니다.
   const connectGoogleCalendar = async () => {
     setActionError(null);
 
     try {
       const response = await startConnectMutation.mutateAsync({
-        returnTo: "/app/settings",
+        returnTo: ACCOUNT_SETTINGS_RETURN_TO,
       });
       window.location.assign(response.connectUrl);
     } catch (error) {
@@ -155,6 +170,7 @@ export function GoogleCalendarSettingsSection({
     }
   };
 
+  // 기능 : 선택한 Google Calendar 목록을 저장하고 상태를 갱신합니다.
   const saveCalendarSelection = async () => {
     const nextCalendarIds = Array.from(new Set(selectedCalendarIds));
 
@@ -177,6 +193,7 @@ export function GoogleCalendarSettingsSection({
     }
   };
 
+  // 기능 : Google Calendar 연결 해제와 가져온 일정 처리 방식을 요청합니다.
   const disconnectGoogleCalendar = async () => {
     setActionError(null);
 
@@ -196,6 +213,7 @@ export function GoogleCalendarSettingsSection({
     }
   };
 
+  // 기능 : 캘린더 선택 목록에서 지정한 calendar id를 토글합니다.
   const toggleCalendar = (calendarId: string) => {
     setSelectedCalendarIds((current) =>
       current.includes(calendarId)
@@ -204,34 +222,36 @@ export function GoogleCalendarSettingsSection({
     );
   };
 
-  return (
-    <section className="grid gap-3">
-      <SettingsHeader />
-      <div className="grid gap-4 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
-        {statusQuery.isLoading ? (
-          <GoogleCalendarSettingsSkeleton />
-        ) : statusQuery.isError ? (
-          <InlineError
-            error={statusQuery.error}
-            onRetry={() => void statusQuery.refetch()}
-          />
-        ) : (
-          <GoogleCalendarStatusPanel
-            onCalendarModalOpen={openCalendarModal}
-            onConnect={() => void connectGoogleCalendar()}
-            onDisconnectModalOpen={openDisconnectModal}
-            isConnectPending={startConnectMutation.isPending}
-            status={status}
-          />
-        )}
+  const content = (
+    <div className={contentClassName}>
+      {statusQuery.isLoading ? (
+        <GoogleCalendarSettingsSkeleton />
+      ) : statusQuery.isError ? (
+        <InlineError
+          error={statusQuery.error}
+          onRetry={() => void statusQuery.refetch()}
+        />
+      ) : (
+        <GoogleCalendarStatusPanel
+          isConnectPending={startConnectMutation.isPending}
+          onCalendarModalOpen={openCalendarModal}
+          onConnect={() => void connectGoogleCalendar()}
+          onDisconnectModalOpen={openDisconnectModal}
+          presentation={presentation}
+          status={status}
+        />
+      )}
 
-        {actionError ? (
-          <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
-            {actionError}
-          </p>
-        ) : null}
-      </div>
+      {actionError ? (
+        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          {actionError}
+        </p>
+      ) : null}
+    </div>
+  );
 
+  const modals = (
+    <>
       <CalendarSelectionModal
         calendars={calendars}
         errorMessage={selectionError}
@@ -241,6 +261,7 @@ export function GoogleCalendarSettingsSection({
         onSave={() => void saveCalendarSelection()}
         onToggle={toggleCalendar}
         open={calendarModalOpen}
+        presentation={presentation}
         selectedCalendarIds={selectedCalendarIds}
       />
       <DisconnectGoogleCalendarModal
@@ -251,11 +272,33 @@ export function GoogleCalendarSettingsSection({
         onClose={() => setDisconnectModalOpen(false)}
         onConfirm={() => void disconnectGoogleCalendar()}
         open={disconnectModalOpen}
+        presentation={presentation}
       />
+    </>
+  );
+
+  if (presentation === "modal") {
+    return (
+      <section className="grid min-w-0 gap-4">
+        <p className="text-[13px] leading-6 text-[#64748B]">
+          Google 계정 연결, 가져올 캘린더 선택, 연결 해제를 관리합니다.
+        </p>
+        {content}
+        {modals}
+      </section>
+    );
+  }
+
+  return (
+    <section className="grid gap-3">
+      <SettingsHeader />
+      {content}
+      {modals}
     </section>
   );
 }
 
+// 기능 : settings page에서 Google Calendar 섹션 헤더를 렌더링합니다.
 function SettingsHeader() {
   return (
     <div className="flex items-start gap-3">
@@ -274,22 +317,29 @@ function SettingsHeader() {
   );
 }
 
+// 기능 : Google Calendar 연결 요약과 연결/선택/해제 액션을 렌더링합니다.
 function GoogleCalendarStatusPanel({
   status,
   isConnectPending,
   onConnect,
   onCalendarModalOpen,
   onDisconnectModalOpen,
+  presentation,
 }: {
   readonly status: GoogleCalendarStatusResponse | undefined;
   readonly isConnectPending: boolean;
   readonly onConnect: () => void;
   readonly onCalendarModalOpen: () => void;
   readonly onDisconnectModalOpen: () => void;
+  readonly presentation: GoogleCalendarSettingsPresentation;
 }) {
   const connection = status?.connection ?? null;
   const connected = connection?.status === "CONNECTED";
   const reconnectRequired = connection?.status === "RECONNECT_REQUIRED";
+  const neutralPrimaryButtonClassName =
+    presentation === "modal"
+      ? "border-[#111827] bg-[#111827] text-white hover:bg-[#374151]"
+      : undefined;
 
   return (
     <div className="grid gap-4">
@@ -345,11 +395,12 @@ function GoogleCalendarStatusPanel({
           </>
         ) : (
           <Button
+            className={neutralPrimaryButtonClassName}
             isPending={isConnectPending}
             onClick={onConnect}
             size="sm"
             type="button"
-            variant="primary"
+            variant={presentation === "modal" ? "secondary" : "primary"}
           >
             <ExternalLink className="h-3.5 w-3.5" />
             {reconnectRequired ? "재연결" : "연결"}
@@ -360,6 +411,7 @@ function GoogleCalendarStatusPanel({
   );
 }
 
+// 기능 : Google Calendar 연결 상태의 단일 메타 값을 표시합니다.
 function StatusField({
   icon: Icon,
   label,
@@ -382,6 +434,7 @@ function StatusField({
   );
 }
 
+// 기능 : 가져올 Google Calendar 목록을 선택하는 하단 모달을 렌더링합니다.
 function CalendarSelectionModal({
   open,
   calendars,
@@ -389,6 +442,7 @@ function CalendarSelectionModal({
   isLoading,
   isPending,
   errorMessage,
+  presentation,
   onClose,
   onToggle,
   onSave,
@@ -399,6 +453,7 @@ function CalendarSelectionModal({
   readonly isLoading: boolean;
   readonly isPending: boolean;
   readonly errorMessage: string | null;
+  readonly presentation: GoogleCalendarSettingsPresentation;
   readonly onClose: () => void;
   readonly onToggle: (calendarId: string) => void;
   readonly onSave: () => void;
@@ -407,6 +462,10 @@ function CalendarSelectionModal({
     () => new Set(selectedCalendarIds),
     [selectedCalendarIds],
   );
+  const neutralPrimaryButtonClassName =
+    presentation === "modal"
+      ? "border-[#111827] bg-[#111827] text-white hover:bg-[#374151]"
+      : undefined;
 
   return (
     <ModalShell
@@ -417,11 +476,12 @@ function CalendarSelectionModal({
             닫기
           </Button>
           <Button
+            className={neutralPrimaryButtonClassName}
             disabled={isPending}
             isPending={isPending}
             onClick={onSave}
             type="button"
-            variant="primary"
+            variant={presentation === "modal" ? "secondary" : "primary"}
           >
             저장
           </Button>
@@ -508,11 +568,13 @@ function CalendarLabel({ children }: { readonly children: string }) {
   );
 }
 
+// 기능 : Google Calendar 연결 해제 방식 선택 모달을 렌더링합니다.
 function DisconnectGoogleCalendarModal({
   open,
   action,
   isPending,
   errorMessage,
+  presentation,
   onActionChange,
   onClose,
   onConfirm,
@@ -521,10 +583,16 @@ function DisconnectGoogleCalendarModal({
   readonly action: GoogleCalendarDisconnectScheduleAction;
   readonly isPending: boolean;
   readonly errorMessage: string | null;
+  readonly presentation: GoogleCalendarSettingsPresentation;
   readonly onActionChange: (action: GoogleCalendarDisconnectScheduleAction) => void;
   readonly onClose: () => void;
   readonly onConfirm: () => void;
 }) {
+  const selectedOptionClassName =
+    presentation === "modal"
+      ? "border-[#111827] bg-[#F9FAFB]"
+      : "border-[#93C5FD] bg-[#EFF6FF]";
+
   return (
     <ModalShell
       footer={
@@ -554,7 +622,7 @@ function DisconnectGoogleCalendarModal({
           <label
             className={`flex cursor-pointer items-start gap-3 rounded-md border px-3 py-3 transition ${
               action === option.value
-                ? "border-[#93C5FD] bg-[#EFF6FF]"
+                ? selectedOptionClassName
                 : "border-[#E2E5EC] bg-white hover:bg-[#F8FAFC]"
             }`}
             key={option.value}

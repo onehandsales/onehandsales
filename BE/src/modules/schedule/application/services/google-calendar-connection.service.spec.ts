@@ -221,17 +221,27 @@ describe("GoogleCalendarConnectionService", () => {
     const { oauthProvider, service, tokenEncryption } = createService();
 
     const response = service.startConnect(CURRENT_USER, {
-      returnTo: "/app/settings",
+      returnTo: "/app?account=settings",
     });
     const url = new URL(response.connectUrl);
 
-    expect(response.returnTo).toBe("/app/settings");
+    expect(response.returnTo).toBe("/app?account=settings");
     expect(url.searchParams.get("scope")).toContain(
       "https://www.googleapis.com/auth/calendar.readonly"
     );
     expect(url.searchParams.get("state")).toBeTruthy();
     expect(tokenEncryption.assertReady).toHaveBeenCalled();
     expect(oauthProvider.createAuthorizationUrl).toHaveBeenCalled();
+  });
+
+  it("falls back to schedules when an unapproved return path is requested", () => {
+    const { service } = createService();
+
+    const response = service.startConnect(CURRENT_USER, {
+      returnTo: "/app/not-allowed",
+    });
+
+    expect(response.returnTo).toBe("/app/schedules");
   });
 
   it("handles callback by exchanging code, verifying identity, and storing encrypted tokens", async () => {

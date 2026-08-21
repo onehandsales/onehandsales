@@ -31,7 +31,11 @@ const GOOGLE_CALENDAR_SCOPES = [
   "email",
   "https://www.googleapis.com/auth/calendar.readonly",
 ] as const;
-const RETURN_TO_ALLOWLIST = new Set(["/app/schedules", "/app/settings"]);
+const ACCOUNT_SETTINGS_RETURN_TO = "/app?account=settings";
+const RETURN_TO_ALLOWLIST = new Set([
+  "/app/schedules",
+  ACCOUNT_SETTINGS_RETURN_TO,
+]);
 const DEFAULT_RETURN_TO = "/app/schedules";
 const STATE_TTL_MS = 10 * 60 * 1000;
 const AUTO_SYNC_FRESHNESS_MINUTES = 10;

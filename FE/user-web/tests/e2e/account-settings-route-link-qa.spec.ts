@@ -5,17 +5,13 @@ import {
 } from "./support/user-web-api-mocks";
 
 test.describe("G03 account settings route link QA", () => {
-  test("bridges direct and legacy settings routes to the account settings modal", async ({
+  test("handles account settings modal callback URLs without legacy settings routes", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);
     await seedAuthenticatedSession(page);
 
-    await page.goto("/app/settings");
-    await expect(page).toHaveURL(/\/app\?account=settings$/);
-    await expect(page.getByRole("dialog").first()).toBeVisible();
-
-    await page.goto("/settings");
+    await page.goto("/app?account=settings");
     await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();
 
@@ -28,14 +24,26 @@ test.describe("G03 account settings route link QA", () => {
         responseUrl.pathname === "/api/follow-up-delivery/settings"
       );
     });
-    await page.goto("/app/settings?followUpEmailConnection=google&status=connected");
+    await page.goto(
+      "/app?account=settings&followUpEmailConnection=google&status=connected"
+    );
     await followUpSettingsResponse;
     await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();
     await expect(page.locator("body")).toContainText("Gmail");
 
-    await page.goto("/app/settings?googleCalendar=connected");
-    await expect(page).toHaveURL(/\/app\/schedules\?account=settings$/);
+    // 기능 : Google Calendar OAuth callback이 Settings 모달 내부 section 조회까지 연결되는지 검증합니다.
+    const googleCalendarStatusResponse = page.waitForResponse((response) => {
+      const responseUrl = new URL(response.url());
+
+      return (
+        response.request().method() === "GET" &&
+        responseUrl.pathname === "/api/schedules/google/status"
+      );
+    });
+    await page.goto("/app?account=settings&googleCalendar=connected");
+    await googleCalendarStatusResponse;
+    await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();
     await expect(page.locator("body")).toContainText("Google Calendar");
 

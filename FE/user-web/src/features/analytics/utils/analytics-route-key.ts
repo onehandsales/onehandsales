@@ -29,7 +29,6 @@ const REDIRECT_ONLY_APP_PATHS = new Set([
   "/app/contacts/scan",
   "/app/meeting-notes/new",
   "/app/export",
-  "/app/settings",
 ]);
 
 type DynamicRouteMatcher = {

@@ -1,10 +1,10 @@
 # User Web TODO
 
-상태: Implemented / Follow-up migration complete / Google Calendar remaining
+상태: Implemented / Settings modal migration and settings route removal complete
 
 ## 1. 원칙
 
-이번 작업은 `FE/user-web` 전용 UX/UI 개선이다. `/app/settings`에 있던 설정/요청/연동 기능을 계정 모달 `Settings`로 단계별 이관하고, Profile 탭과 중복되는 읽기 전용 계정 정보는 Settings에 복제하지 않는다.
+이번 작업은 `FE/user-web` UX/UI 개선과 OAuth callback URL 정리다. 기존 `/app/settings`에 있던 설정/요청/연동 기능을 계정 모달 `Settings`로 단계별 이관하고, Profile 탭과 중복되는 읽기 전용 계정 정보는 Settings에 복제하지 않는다.
 
 `FE/admin-web`은 보지 않고 수정하지 않는다.
 
@@ -26,14 +26,15 @@
 
 | 파일 또는 폴더 | 작업 |
 | --- | --- |
-| `FE/user-web/src/components/layout/app-shell.tsx` | 계정 모달 `Settings`에 account data request와 follow-up delivery section 이관 완료 |
+| `FE/user-web/src/components/layout/app-shell.tsx` | 계정 모달 `Settings`에 account data request, Google Calendar, follow-up delivery section 이관 완료 |
 | `FE/user-web/src/features/account-request/components/account-data-requests-settings-section.tsx` | modal presentation 재사용성 반영 완료 |
+| `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | modal presentation과 Google Calendar OAuth callback query 처리 완료 |
 | `FE/user-web/src/features/follow-up-delivery/components/follow-up-delivery-settings-section.tsx` | modal presentation과 follow-up OAuth callback query 처리 완료 |
-| `FE/user-web/src/pages/settings/index.tsx` | 현재 사용자-facing route에서 제외됨. 파일은 legacy/reference 상태로 남아 있음 |
-| `FE/user-web/src/app/router/router.tsx` | `/app/settings`와 legacy `/settings` bridge 처리 완료 |
+| `FE/user-web/src/pages/settings/index.tsx` | 중복 원본 page 파일 삭제 완료 |
+| `FE/user-web/src/app/router/router.tsx` | `/app/settings`와 legacy `/settings` route 삭제 완료 |
 | `FE/user-web/src/pages/more/index.tsx` | settings link를 modal-open 흐름으로 변경 완료 |
 | `FE/user-web/src/features/follow-up-delivery` | settings CTA를 modal-open 흐름으로 변경 완료 |
-| `FE/user-web/src/features/schedule` | settings CTA는 modal-open 흐름, Google Calendar callback은 schedules bridge 유지 |
+| `FE/user-web/src/features/schedule` | settings CTA와 Google Calendar callback을 `/app?account=settings` Settings modal 흐름으로 정리 |
 | `FE/user-web/src/features/notification/components/service-notification-settings-section.tsx` | 변경 없이 유지. 서비스 알림과 브라우저 푸시 설정 담당 |
 | `FE/user-web/src/features/notification/components/notification-screen.tsx` | 변경 없이 유지. `/app/notifications` 알림 목록 담당 |
 
@@ -49,17 +50,18 @@
 - [x] account data request 생성/refresh/account deletion request/cancel notice가 modal 안에서 보이게 한다.
 - [x] account data request section의 title/description/button/status 문구가 깨지지 않는지 확인한다.
 - [x] account deletion request 위험 액션의 확인 문구, disabled 상태, 취소 동작을 확인한다.
-- [ ] `GoogleCalendarSettingsSection`을 Settings modal로 이관할지, schedules 화면 소유 callback bridge를 유지할지 결정한다.
+- [x] `GoogleCalendarSettingsSection`을 Settings modal 안에 렌더링한다.
+- [x] Google Calendar OAuth callback `/app?account=settings&googleCalendar=...`를 Settings modal에서 처리한다.
 - [x] `FollowUpDeliverySettingsSection`을 Settings modal 안에 렌더링한다.
 - [x] follow-up delivery settings CTA를 modal-open 흐름으로 바꾼다.
-- [x] follow-up OAuth callback `/app/settings?followUpEmailConnection=...&status=...`를 Settings modal에서 처리한다.
+- [x] follow-up OAuth callback `/app?account=settings&followUpEmailConnection=...&status=...`를 Settings modal에서 처리한다.
 - [x] `/app/settings` page의 사용자-facing 의존을 단계적으로 줄인다.
-- [x] `pages/settings/index.tsx`는 사용자-facing route에서 제외하고 bridge route를 사용한다.
+- [x] `pages/settings/index.tsx`, `/app/settings`, legacy `/settings` route를 삭제한다.
 - [x] 계정 모달 `Notifications`는 `ServiceNotificationSettingsSection`을 유지한다.
-- [x] `/app/settings` link와 route 참조를 modal-open 또는 bridge 흐름으로 바꾼다.
+- [x] `/app/settings` link와 route 참조를 modal-open 흐름으로 바꾼 뒤 route를 삭제한다.
 - [x] repo 기준 frontend typecheck/lint/build 명령을 실행한다.
 - [x] `git diff --check`와 `git diff --stat`로 공백 오류와 변경 범위를 확인한다.
-- [x] `FE/admin-web`, `BE`, `BE/prisma` 변경이 없는지 확인한다.
+- [x] `FE/admin-web`, `BE/prisma` 변경이 없는지 확인한다. BE는 OAuth callback/return URL 정리만 포함한다.
 
 ## 4. UI 기준
 
@@ -110,9 +112,12 @@ pnpm run build
 - account data request section 표시
 - account data request 생성/취소/새로고침 notice
 - account data request 문구, request id/status overflow, 위험 액션 안내 확인
+- Google Calendar section 표시
+- Google Calendar callback query 처리와 URL 정리
 - follow-up delivery section 표시
 - follow-up delivery callback query 처리와 URL 정리
 - modal-open query 추가/제거와 원래 업무 화면 맥락 유지
+- `/app/settings`와 legacy `/settings` route 삭제 확인
 - `/app/notifications` 알림 목록 유지
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md` 기준 자체 리뷰
 

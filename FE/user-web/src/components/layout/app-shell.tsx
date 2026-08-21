@@ -64,6 +64,7 @@ import {
 import { AccountDataRequestsSettingsSection } from "@/features/account-request";
 import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
+import { GoogleCalendarSettingsSection } from "@/features/schedule";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
   createAccountModalSearchParams,
@@ -1416,6 +1417,13 @@ function AccountSettingsModalContent() {
 
             <ProfileSection title="계정 데이터 요청">
               <AccountDataRequestsSettingsSection
+                onNotice={onSettingsSectionNotice}
+                presentation="modal"
+              />
+            </ProfileSection>
+
+            <ProfileSection title="Google Calendar">
+              <GoogleCalendarSettingsSection
                 onNotice={onSettingsSectionNotice}
                 presentation="modal"
               />

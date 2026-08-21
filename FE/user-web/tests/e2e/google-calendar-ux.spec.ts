@@ -55,17 +55,29 @@ test.describe("G04 Google Calendar UX", () => {
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 
-  test("bridges legacy settings callback to schedules with the settings modal", async ({
+  test("handles settings modal callback in the account settings modal", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);
     await seedAuthenticatedSession(page);
 
-    await page.goto("/app/settings?googleCalendar=connected");
+    // 기능 : Settings 모달 callback이 schedules 우회 없이 Settings 모달에서 처리되는지 검증합니다.
+    const googleCalendarStatusResponse = page.waitForResponse((response) => {
+      const url = new URL(response.url());
+      return (
+        response.request().method() === "GET" &&
+        url.pathname === "/api/schedules/google/status"
+      );
+    });
+    await page.goto("/app?account=settings&googleCalendar=connected");
+    await googleCalendarStatusResponse;
 
-    await expect(page).toHaveURL(/\/app\/schedules\?account=settings$/);
+    await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();
     await expect(page.locator("body")).toContainText("Google Calendar");
+    await expect(
+      page.getByText("Google Calendar가 연결됐어요.").first(),
+    ).toBeVisible();
 
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
@@ -91,7 +103,7 @@ test.describe("G04 Google Calendar UX", () => {
       await scheduleStatusResponse;
       await expectNoDocumentHorizontalOverflow(page);
 
-      await page.goto("/app/settings");
+      await page.goto("/app?account=settings");
       await expect(page).toHaveURL(/\/app\?account=settings$/);
       await expect(page.getByRole("dialog").first()).toBeVisible();
       await expectNoDocumentHorizontalOverflow(page);

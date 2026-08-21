@@ -178,7 +178,7 @@ describe("FollowUpDeliverySettingsController", () => {
       .expect(302)
       .expect(
         "Location",
-        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=google&status=connected`
+        `${USER_WEB_ORIGIN}/app?account=settings&followUpEmailConnection=google&status=connected`
       );
 
     expect(service.handleEmailConnectionCallback).toHaveBeenCalledWith(
@@ -195,7 +195,7 @@ describe("FollowUpDeliverySettingsController", () => {
       .expect(302)
       .expect(
         "Location",
-        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=google&status=connected`
+        `${USER_WEB_ORIGIN}/app?account=settings&followUpEmailConnection=google&status=connected`
       );
 
     expect(service.handleEmailConnectionCallback).toHaveBeenCalledWith(
@@ -212,7 +212,7 @@ describe("FollowUpDeliverySettingsController", () => {
       .expect(302)
       .expect(
         "Location",
-        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=microsoft&status=denied`
+        `${USER_WEB_ORIGIN}/app?account=settings&followUpEmailConnection=microsoft&status=denied`
       );
 
     expect(service.handleEmailConnectionCallback).not.toHaveBeenCalled();
@@ -234,7 +234,7 @@ describe("FollowUpDeliverySettingsController", () => {
       .expect(302)
       .expect(
         "Location",
-        `${USER_WEB_ORIGIN}/app/settings?followUpEmailConnection=microsoft&status=failed`
+        `${USER_WEB_ORIGIN}/app?account=settings&followUpEmailConnection=microsoft&status=failed`
       );
 
     expect(logger.warn).toHaveBeenCalledWith(

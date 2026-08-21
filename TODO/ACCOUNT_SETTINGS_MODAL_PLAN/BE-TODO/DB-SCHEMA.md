@@ -36,7 +36,7 @@ Prisma schema와 migration은 수정하지 않는다.
 ## 3.1. 구현 후 확인
 
 - account data request와 follow-up delivery 이관은 기존 저장 모델과 상태값을 그대로 사용했다.
-- `/app/settings` route bridge와 modal-open query는 persistence 정책을 바꾸지 않는다.
+- `/app?account=settings` modal-open query와 `/app/settings` route 삭제는 persistence 정책을 바꾸지 않는다.
 - Prisma schema와 migration 변경은 없다.
 
 ## 4. 관련 문서

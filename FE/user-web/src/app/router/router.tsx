@@ -1,7 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import {
-  AccountSettingsModalBridge,
   LegacyAppRedirect,
   LegacyPublicSiteRedirect,
   PublicSiteRoute,
@@ -164,7 +163,6 @@ export const router = createBrowserRouter([
     element: <LegacyAppRedirect paramName="importUserLogId" to="/app/import" />,
   },
   { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
-  { path: "/settings", element: <AccountSettingsModalBridge /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
     path: "/app",
@@ -209,12 +207,12 @@ export const router = createBrowserRouter([
       { path: "import/:importUserLogId", element: <ImportDetailPage /> },
       { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },
-      { path: "settings", element: <AccountSettingsModalBridge /> },
       { path: "more", element: <MorePage /> },
     ],
   },
 ]);
 
+// 기능 : 공개 사이트 locale route가 렌더링할 page element를 선택합니다.
 function getPublicSiteElement(path: PublicSiteLocalizedPath) {
   if (path === "/pricing") {
     return <PricingPage />;
