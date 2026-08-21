@@ -1,6 +1,6 @@
 # User Flow
 
-상태: Draft / Active UXUI improvement
+상태: Implemented / Follow-up callback covered
 
 ## 1. 목적
 
@@ -32,9 +32,9 @@ Settings modal은 기존 account modal 탭의 구성 방식을 따른다.
 | 섹션 | 사용자 행동 | 성공 기준 |
 | --- | --- | --- |
 | App defaults | 앱 언어, timezone, 기본 국가, 기본 통화를 수정하고 저장한다. | 저장 성공 notice가 보이고 profile query가 일관된 값으로 갱신된다. |
-| Account data requests | 데이터 export 요청, 계정 삭제 요청 또는 취소를 진행한다. | 기존 `AccountDataRequestsSettingsSection`의 success/error 안내가 modal 안에서도 보인다. |
-| Google Calendar | 연결 상태 확인, calendar 선택, 연결 또는 해제를 진행한다. | 이관 시 기존 Google Calendar settings 동작이 modal 안에서 유지된다. |
-| Follow-up delivery | email provider, SMS sender, consent notice 설정을 확인하고 수정한다. | 이관 시 기존 follow-up delivery settings 동작이 modal 안에서 유지된다. |
+| Account data requests | 데이터 export 요청, 계정 삭제 요청 또는 취소를 진행한다. | 기존 `AccountDataRequestsSettingsSection`의 success/error 안내가 modal 안에서도 보인다. 이관 완료. |
+| Google Calendar | 연결 상태 확인, calendar 선택, 연결 또는 해제를 진행한다. | 아직 Settings modal 내부로 이관하지 않았다. `/app/settings?googleCalendar=connected`는 schedules 화면으로 bridge해 기존 callback handler를 유지한다. |
+| Follow-up delivery | email provider, SMS sender, consent notice 설정을 확인하고 수정한다. | 기존 follow-up delivery settings 동작과 `/app/settings?followUpEmailConnection=...&status=...` callback 처리가 modal 안에서 유지된다. 이관 완료. |
 
 ## 4. Profile 탭 분리 기준
 
@@ -64,6 +64,7 @@ Settings modal은 기존 account modal 탭의 구성 방식을 따른다.
 - legacy `/settings` redirect
 - mobile more page의 settings link
 - follow-up delivery 화면의 settings link
+- follow-up delivery OAuth callback query
 - Google Calendar OAuth `returnTo`
 - analytics route key 정리
 
@@ -80,7 +81,8 @@ Settings modal은 기존 account modal 탭의 구성 방식을 따른다.
 
 - profile 조회 실패 시 모달 안에서 다시 시도 버튼을 보여준다.
 - 저장 실패 시 form 주변에 사용자가 이해할 수 있는 오류 메시지를 보여준다.
-- account data request, Google Calendar, follow-up delivery의 기존 error/notice callback은 modal에서 동작해야 한다.
+- account data request와 follow-up delivery의 기존 error/notice callback은 modal에서 동작해야 한다.
+- Google Calendar callback은 현재 schedules 화면의 기존 handler에서 처리하며, Settings modal 내부 이관 여부는 별도 결정으로 남긴다.
 - modal 안에서 긴 이메일, OAuth provider email, user id, timezone 값은 부모 영역을 넘치지 않아야 한다.
 - 작은 viewport에서는 modal content가 세로 scroll로 처리되어 sidebar와 본문이 겹치지 않아야 한다.
 

@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: Draft / Ready for implementation review
+상태: Implemented / G01-G03 complete / Google Calendar remaining decision
 
 ## 1. 목적
 
@@ -12,9 +12,10 @@
 
 | 순서 | Goal | 목적 | 선행 조건 |
 | --- | --- | --- | --- |
-| G01 | Settings modal baseline | 계정 모달 Profile/Settings 역할을 분리하고 Settings modal 이관 기반을 정리한다. | 문서 검토 통과 |
-| G02 | Section migration | `/app/settings`의 기능성 section을 계정 모달 `Settings`로 하나씩 이관한다. 첫 대상은 account data request다. | G01 완료 |
-| G03 | Route/link removal QA | `/app/settings` 사용자-facing page 의존을 제거하고 link, legacy route, OAuth return path, build를 검증한다. | G02 완료 |
+| G01 | Settings modal baseline | 계정 모달 Profile/Settings 역할을 분리하고 Settings modal 이관 기반을 정리한다. | 완료 |
+| G02 | Section migration | `/app/settings`의 기능성 section을 계정 모달 `Settings`로 이관한다. account data request와 follow-up delivery는 완료됐다. | 완료 |
+| G03 | Route/link removal QA | `/app/settings` 사용자-facing page 의존을 제거하고 link, legacy route, OAuth callback, build를 검증한다. | 완료 |
+| Remaining | Google Calendar settings decision | `GoogleCalendarSettingsSection`을 Settings modal로 이관할지, schedules 화면 소유 callback bridge를 유지할지 결정한다. | 미결정 |
 
 ## 2.1. 구현 전 필수 참조
 
@@ -57,6 +58,7 @@
 
 - `/app/settings` 전체 제거
 - account data request 이관
+- follow-up delivery 이관
 - API 변경
 
 완료 기준:
@@ -80,7 +82,8 @@
 포함 범위:
 
 - 첫 이관 대상: `AccountDataRequestsSettingsSection`
-- 이후 이관 대상: Google Calendar settings, follow-up delivery settings
+- 완료된 추가 이관 대상: follow-up delivery settings
+- 남은 결정 대상: Google Calendar settings
 - modal content width, padding, scroll, notice 표시 조정
 - account data request UI를 기존 account modal section 패턴에 맞게 배치
 - account data request 문구, 위험 액션 안내, 긴 request id/status 표시 QA
@@ -101,6 +104,8 @@
 - 계정 메뉴에서 `Notifications`를 누르면 서비스 알림과 브라우저 푸시 설정이 그대로 보인다.
 - account data request 생성/취소/새로고침과 notice가 modal 안에서 동작한다.
 - account data request section에 깨진 문구나 과도한 overflow가 없다.
+- follow-up delivery settings가 modal 안에서 동작한다.
+- follow-up OAuth callback query가 modal 안에서 처리되고 정리된다.
 
 상세 명세:
 
@@ -116,6 +121,7 @@
 
 - `/app/settings` 참조 위치 검색
 - mobile more, follow-up delivery, schedule settings link가 page 이동 대신 Settings modal-open으로 동작하는지 확인
+- follow-up delivery OAuth callback query가 Settings modal에서 처리되는지 확인
 - legacy `/settings` 처리 확인
 - Google Calendar `returnTo`와 BE allowlist 제약 확인
 - analytics route key 제거 또는 bridge 기준 정리 확인
@@ -130,6 +136,7 @@
 
 - 기존 `/app/settings` link가 사용자-facing page로 이동하지 않는다.
 - 필요한 경우 `/app/settings`는 OAuth/legacy bridge로만 동작한다.
+- follow-up callback `/app/settings?followUpEmailConnection=...&status=...`가 Settings modal에서 처리된다.
 - `FE/user-web` typecheck/lint/build 검증이 통과한다.
 
 상세 명세:

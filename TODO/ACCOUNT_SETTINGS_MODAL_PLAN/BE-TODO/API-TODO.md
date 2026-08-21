@@ -1,6 +1,6 @@
 # Backend API TODO
 
-상태: Confirmed / No backend work
+상태: Confirmed / No backend work / Verified after FE implementation
 
 ## 1. 원칙
 
@@ -42,6 +42,14 @@ Frontend 구현 중 아래 요구가 발견되면 이 계획에서 처리하지 
 - account data request 정책이나 상태값이 바뀐다.
 - follow-up delivery provider 계약이 바뀐다.
 - browser push subscription 저장 정책이 바뀐다.
+
+## 4.1. 구현 후 확인
+
+- `AccountDataRequestsSettingsSection` 이관은 기존 account request API를 그대로 사용했다.
+- `FollowUpDeliverySettingsSection` 이관은 기존 follow-up delivery API를 그대로 사용했다.
+- `/app/settings` route bridge와 follow-up callback 처리는 FE route/query 처리로 해결했다.
+- Google Calendar callback은 기존 schedule 화면 handler를 유지하는 bridge로 처리했다.
+- Backend controller/service/repository/API DTO 변경은 없다.
 
 ## 5. 관련 문서
 

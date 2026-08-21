@@ -1,6 +1,6 @@
 # DB Schema
 
-상태: Confirmed / No DB change
+상태: Confirmed / No DB change / Verified after FE implementation
 
 ## 1. 원칙
 
@@ -32,6 +32,12 @@ Prisma schema와 migration은 수정하지 않는다.
 | Google Calendar | 기존 calendar 연결과 선택 calendar 상태를 사용한다. |
 | follow-up delivery | 기존 email/SMS 발송 설정을 사용한다. |
 | notification settings/browser push | 기존 알림 설정과 push subscription 상태를 사용한다. |
+
+## 3.1. 구현 후 확인
+
+- account data request와 follow-up delivery 이관은 기존 저장 모델과 상태값을 그대로 사용했다.
+- `/app/settings` route bridge와 modal-open query는 persistence 정책을 바꾸지 않는다.
+- Prisma schema와 migration 변경은 없다.
 
 ## 4. 관련 문서
 

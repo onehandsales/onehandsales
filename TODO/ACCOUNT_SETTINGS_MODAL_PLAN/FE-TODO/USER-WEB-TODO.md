@@ -1,6 +1,6 @@
 # User Web TODO
 
-상태: Draft / Active implementation candidate
+상태: Implemented / Follow-up migration complete / Google Calendar remaining
 
 ## 1. 원칙
 
@@ -26,37 +26,40 @@
 
 | 파일 또는 폴더 | 작업 |
 | --- | --- |
-| `FE/user-web/src/components/layout/app-shell.tsx` | 계정 모달 `Settings`에 section 단위 이관, notice/scroll 처리 |
-| `FE/user-web/src/features/account-request/components/account-data-requests-settings-section.tsx` | 첫 이관 대상. modal 재사용성 확인 |
-| `FE/user-web/src/pages/settings/index.tsx` | 이관된 section 중복 제거 및 최종 page 제거/bridge 정리 대상 |
-| `FE/user-web/src/app/router/router.tsx` | `/app/settings` 사용자-facing page 제거 또는 bridge 처리 |
-| `FE/user-web/src/pages/more/index.tsx` | settings link를 modal-open 흐름으로 변경 |
-| `FE/user-web/src/features/follow-up-delivery` | settings CTA를 modal-open 흐름으로 변경 |
-| `FE/user-web/src/features/schedule` | settings CTA와 Google Calendar `returnTo` 제약 확인 |
+| `FE/user-web/src/components/layout/app-shell.tsx` | 계정 모달 `Settings`에 account data request와 follow-up delivery section 이관 완료 |
+| `FE/user-web/src/features/account-request/components/account-data-requests-settings-section.tsx` | modal presentation 재사용성 반영 완료 |
+| `FE/user-web/src/features/follow-up-delivery/components/follow-up-delivery-settings-section.tsx` | modal presentation과 follow-up OAuth callback query 처리 완료 |
+| `FE/user-web/src/pages/settings/index.tsx` | 현재 사용자-facing route에서 제외됨. 파일은 legacy/reference 상태로 남아 있음 |
+| `FE/user-web/src/app/router/router.tsx` | `/app/settings`와 legacy `/settings` bridge 처리 완료 |
+| `FE/user-web/src/pages/more/index.tsx` | settings link를 modal-open 흐름으로 변경 완료 |
+| `FE/user-web/src/features/follow-up-delivery` | settings CTA를 modal-open 흐름으로 변경 완료 |
+| `FE/user-web/src/features/schedule` | settings CTA는 modal-open 흐름, Google Calendar callback은 schedules bridge 유지 |
 | `FE/user-web/src/features/notification/components/service-notification-settings-section.tsx` | 변경 없이 유지. 서비스 알림과 브라우저 푸시 설정 담당 |
 | `FE/user-web/src/features/notification/components/notification-screen.tsx` | 변경 없이 유지. `/app/notifications` 알림 목록 담당 |
 
 ## 3. 구현 체크리스트
 
-- [ ] Profile tab에 이미 있는 account/status/provider/devices/user id는 Settings tab 이관 대상에서 제외한다.
-- [ ] 현재 Settings modal의 app defaults form을 유지한다.
-- [ ] Settings modal 안에서 공통 success/error notice를 표시할 수 있게 한다.
-- [ ] Settings modal을 여는 단일 modal-open contract를 정한다. 기본안은 URL query 기반이다.
-- [ ] 기존 account modal의 Settings/Notifications/Terms/Privacy content 구조를 기준으로 이관 section을 배치한다.
-- [ ] `/app/settings`의 page column/card layout을 modal 안에 그대로 복사하지 않는다.
-- [ ] `AccountDataRequestsSettingsSection`을 Settings modal 안에 렌더링한다.
-- [ ] account data request 생성/refresh/account deletion request/cancel notice가 modal 안에서 보이게 한다.
-- [ ] account data request section의 title/description/button/status 문구가 깨지지 않는지 확인한다.
-- [ ] account deletion request 위험 액션의 확인 문구, disabled 상태, 취소 동작을 확인한다.
-- [ ] 다음 이관 대상으로 `GoogleCalendarSettingsSection`을 검토한다.
-- [ ] 다음 이관 대상으로 `FollowUpDeliverySettingsSection`을 검토한다.
-- [ ] `/app/settings` page의 사용자-facing 의존을 단계적으로 줄인다.
-- [ ] `pages/settings/index.tsx`는 최종적으로 제거 또는 bridge entry로 축소한다.
-- [ ] 계정 모달 `Notifications`는 `ServiceNotificationSettingsSection`을 유지한다.
-- [ ] `/app/settings` link와 route 참조를 modal-open 또는 bridge 흐름으로 바꾼다.
-- [ ] repo 기준 frontend typecheck/lint/build 명령을 실행한다.
-- [ ] `git diff --check`와 `git diff --stat`로 공백 오류와 변경 범위를 확인한다.
-- [ ] `FE/admin-web`, `BE`, `BE/prisma` 변경이 없는지 확인한다.
+- [x] Profile tab에 이미 있는 account/status/provider/devices/user id는 Settings tab 이관 대상에서 제외한다.
+- [x] 현재 Settings modal의 app defaults form을 유지한다.
+- [x] Settings modal 안에서 공통 success/error notice를 표시할 수 있게 한다.
+- [x] Settings modal을 여는 단일 modal-open contract를 정한다. 기본안은 URL query 기반이다.
+- [x] 기존 account modal의 Settings/Notifications/Terms/Privacy content 구조를 기준으로 이관 section을 배치한다.
+- [x] `/app/settings`의 page column/card layout을 modal 안에 그대로 복사하지 않는다.
+- [x] `AccountDataRequestsSettingsSection`을 Settings modal 안에 렌더링한다.
+- [x] account data request 생성/refresh/account deletion request/cancel notice가 modal 안에서 보이게 한다.
+- [x] account data request section의 title/description/button/status 문구가 깨지지 않는지 확인한다.
+- [x] account deletion request 위험 액션의 확인 문구, disabled 상태, 취소 동작을 확인한다.
+- [ ] `GoogleCalendarSettingsSection`을 Settings modal로 이관할지, schedules 화면 소유 callback bridge를 유지할지 결정한다.
+- [x] `FollowUpDeliverySettingsSection`을 Settings modal 안에 렌더링한다.
+- [x] follow-up delivery settings CTA를 modal-open 흐름으로 바꾼다.
+- [x] follow-up OAuth callback `/app/settings?followUpEmailConnection=...&status=...`를 Settings modal에서 처리한다.
+- [x] `/app/settings` page의 사용자-facing 의존을 단계적으로 줄인다.
+- [x] `pages/settings/index.tsx`는 사용자-facing route에서 제외하고 bridge route를 사용한다.
+- [x] 계정 모달 `Notifications`는 `ServiceNotificationSettingsSection`을 유지한다.
+- [x] `/app/settings` link와 route 참조를 modal-open 또는 bridge 흐름으로 바꾼다.
+- [x] repo 기준 frontend typecheck/lint/build 명령을 실행한다.
+- [x] `git diff --check`와 `git diff --stat`로 공백 오류와 변경 범위를 확인한다.
+- [x] `FE/admin-web`, `BE`, `BE/prisma` 변경이 없는지 확인한다.
 
 ## 4. UI 기준
 
@@ -107,6 +110,8 @@ pnpm run build
 - account data request section 표시
 - account data request 생성/취소/새로고침 notice
 - account data request 문구, request id/status overflow, 위험 액션 안내 확인
+- follow-up delivery section 표시
+- follow-up delivery callback query 처리와 URL 정리
 - modal-open query 추가/제거와 원래 업무 화면 맥락 유지
 - `/app/notifications` 알림 목록 유지
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md` 기준 자체 리뷰

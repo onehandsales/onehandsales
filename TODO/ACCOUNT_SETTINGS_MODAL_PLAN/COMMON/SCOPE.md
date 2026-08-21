@@ -1,6 +1,6 @@
 # Scope
 
-상태: Draft / Active UXUI improvement
+상태: Implemented / Account data and follow-up migrated
 
 ## 1. 범위 원칙
 
@@ -18,12 +18,13 @@
 
 | 영역 | 현재 상태 | 계획 반영 |
 | --- | --- | --- |
-| `/app/settings` | `FE/user-web/src/pages/settings/index.tsx`가 profile form, account information, account data request, Google Calendar, follow-up delivery, devices를 직접 렌더링한다. | Profile과 중복되는 read-only 정보는 이관 대상에서 제외하고, 기능성 section을 Settings modal로 단계별 이관한다. |
+| `/app/settings` | router에서 `AccountSettingsModalBridge`로 연결된다. `FE/user-web/src/pages/settings/index.tsx` 파일은 남아 있지만 현재 사용자-facing route가 아니다. | 사용자-facing settings page 의존은 제거했고, 기존 진입점은 Settings modal-open 또는 callback bridge 흐름으로 정리했다. |
 | 계정 모달 `Profile` | `FE/user-web/src/components/layout/app-shell.tsx`의 `ProfileModalContent`가 account, status, linked providers, devices, user id를 읽기 전용으로 렌더링한다. | 유지한다. 이 정보는 Settings tab에 중복 표시하지 않는다. |
-| 계정 모달 `Settings` | `FE/user-web/src/components/layout/app-shell.tsx`의 `AccountSettingsModalContent`가 locale, timezone, country, currency만 별도로 렌더링한다. | 현재 form을 기반으로 설정 액션 section을 순차 추가한다. 첫 대상은 `AccountDataRequestsSettingsSection`이다. |
+| 계정 모달 `Settings` | `FE/user-web/src/components/layout/app-shell.tsx`의 `AccountSettingsModalContent`가 app defaults form, `AccountDataRequestsSettingsSection`, `FollowUpDeliverySettingsSection`을 렌더링한다. | Profile 중복 정보는 제외했고, account data request와 follow-up delivery는 modal presentation으로 재구성했다. |
 | 계정 모달 `Notifications` | `ServiceNotificationSettingsSection`이 서비스 알림과 브라우저 푸시 설정을 렌더링한다. | 유지한다. `/app/notifications`의 알림 목록은 옮기지 않는다. |
-| `/app/settings` 참조 | router, mobile more, follow-up delivery, Google Calendar `returnTo`, analytics가 `/app/settings`를 참조한다. | page 이동 참조는 modal-open 흐름으로 바꾸고, OAuth 제약은 bridge 또는 별도 BE 변경으로 처리한다. |
-| modal-open contract | 현재는 `AppShell` local state로만 account modal을 연다. 외부 page/component에서 Settings modal을 여는 공통 계약이 없다. | query 기반 단일 contract를 추가해 mobile more, follow-up, schedule CTA, legacy route가 같은 방식으로 Settings modal을 열게 한다. |
+| `/app/settings` 참조 | router와 legacy `/settings`는 bridge로 동작한다. mobile more, follow-up delivery, schedule CTA는 modal-open path를 사용한다. Google Calendar callback은 schedules bridge를 사용한다. | page 이동 참조는 modal-open 흐름으로 바뀌었고, OAuth 제약은 bridge로 처리한다. |
+| modal-open contract | `createAccountSettingsModalPath`와 `AppShell` query 감지로 외부 page/component에서 같은 방식으로 Settings modal을 연다. | query 기반 단일 contract를 사용한다. |
+| Google Calendar settings | `GoogleCalendarSettingsSection`은 아직 Settings modal 내부로 이관되지 않았다. `/app/settings?googleCalendar=connected`는 `/app/schedules?account=settings`로 bridge한다. | callback 안정성을 우선해 schedule 화면의 기존 handler를 유지한다. modal 이관 여부는 남은 결정이다. |
 | Backend/API | profile, devices, account request, Google Calendar, follow-up delivery, notification settings API가 이미 존재한다. | 새 API 없이 기존 API를 소비한다. |
 
 ## 3. 포함 범위
@@ -31,11 +32,11 @@
 | 항목 | 내용 |
 | --- | --- |
 | Settings modal 기능 이관 | `/app/settings`의 기능성 section을 계정 모달 `Settings`로 하나씩 옮긴다. |
-| 첫 이관 대상 | `AccountDataRequestsSettingsSection`을 Settings modal 안에 배치하고 success/error notice가 modal 안에서 보이게 한다. |
+| 완료된 이관 대상 | `AccountDataRequestsSettingsSection`과 `FollowUpDeliverySettingsSection`을 Settings modal 안에 배치하고 success/error notice가 modal 안에서 보이게 한다. |
 | modal-open contract | `AppShell`에서 URL query를 감지해 `Settings` modal을 열고, 닫을 때 query를 제거한다. `/app/settings` bridge와 기존 CTA는 이 contract를 사용한다. |
 | Modal 내부 구성 반영 | `/app/settings`의 page layout/card를 그대로 가져오지 않고, 기존 account modal의 Settings/Notifications/Terms/Privacy content 패턴에 맞게 section을 재구성한다. |
 | 설정 form 정리 | 현재 Settings modal의 locale, timezone, country, currency form은 유지하되, Profile tab의 read-only 표시와 역할을 분리한다. |
-| `/app/settings` page 축소/제거 | 이관이 끝난 기능은 `/app/settings` page의 사용자-facing 화면에서 제거한다. 최종적으로는 modal-open bridge 또는 route 제거 상태로 정리한다. |
+| `/app/settings` page 축소/제거 | `/app/settings`는 현재 modal-open bridge다. hard delete는 Google Calendar/BE allowlist 결정을 분리한 뒤 진행한다. |
 | UI 톤 정리 | 모달 안쪽 설정은 sidebar hover/selected 기준과 같은 neutral gray 계열을 따른다. |
 | 상태 처리 | loading, error, empty, success notice, pending 상태를 modal 안에서 유지한다. |
 | 검증 | TypeScript typecheck, lint, build, modal/route smoke, engineering review checklist를 확인한다. |
@@ -56,15 +57,17 @@
 ## 5. 완료 기준
 
 - 계정 드롭다운에서 `Settings`를 누르면 modal 안에서 Profile과 중복되지 않는 설정/요청/연동 기능을 사용할 수 있다.
-- 첫 이관 단위인 account data request가 Settings modal 안에서 동작한다.
+- account data request와 follow-up delivery가 Settings modal 안에서 동작한다.
+- follow-up OAuth callback `/app/settings?followUpEmailConnection=...&status=...`가 Settings modal에서 처리되고 query가 정리된다.
 - 이관된 section이 기존 account modal 탭들과 같은 heading, description, section divider, spacing, scroll 패턴을 따른다.
-- `/app/settings`의 사용자-facing page 의존은 줄어들고, 기존 link는 modal-open 또는 compatibility bridge로 정리된다.
+- `/app/settings`의 사용자-facing page 의존은 제거되고, 기존 link는 modal-open 또는 compatibility bridge로 정리된다.
 - 서비스 알림과 브라우저 푸시 설정은 계정 모달 `Notifications`에 유지된다.
 - `/app/notifications`는 알림 목록 page로 유지된다.
 - 새 backend route, Prisma migration, admin-web 변경이 없다.
 - `FE/user-web`의 typecheck, lint, build가 통과한다.
 - Front engineering review checklist 기준으로 주석, import, API 경계, no `any`, no direct `console.log`를 확인한다.
-- 첫 이관 대상 화면에 깨진 문구, 잘못된 위험 액션 안내, 부모 영역을 넘는 request id/status가 없는지 확인한다.
+- 이관 대상 화면에 깨진 문구, 잘못된 위험 액션 안내, 부모 영역을 넘는 request id/status가 없는지 확인한다.
+- Google Calendar settings의 최종 위치는 남은 결정으로 분리한다.
 
 ## 6. 관련 문서
 

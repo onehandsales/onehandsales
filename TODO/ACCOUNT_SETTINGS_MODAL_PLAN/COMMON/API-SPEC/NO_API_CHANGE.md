@@ -1,6 +1,6 @@
 # No API Change Contract
 
-상태: Confirmed / No backend change
+상태: Confirmed / No backend change / Verified after FE implementation
 
 ## 1. 목적
 
@@ -34,6 +34,13 @@
 | Google Calendar 설정 | `features/schedule` | 연결 상태, calendar 선택, read-only sync 설정 |
 | follow-up delivery 설정 | `features/follow-up-delivery` | email provider, SMS sender, consent notice |
 | notification settings | `features/notification` | 서비스 알림과 브라우저 푸시 설정, G02에서 유지 |
+
+구현 후 확인:
+
+- account data request와 follow-up delivery는 기존 hook/API path를 그대로 사용한다.
+- follow-up callback query 처리는 FE modal/route layer에서 처리한다.
+- Google Calendar callback은 기존 schedule 화면 handler를 유지하는 bridge로 처리한다.
+- 새 User API, Admin API, DTO, error code, transaction, observability event는 추가하지 않았다.
 
 ## 4. FE 처리 기준
 

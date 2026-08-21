@@ -1,6 +1,6 @@
 # G03 Route Link Removal QA
 
-상태: Draft / Verification goal
+상태: Completed / Route and callback QA covered
 
 ## 1. 목적
 
@@ -28,7 +28,7 @@
 | `/app/settings` | 사용자-facing 설정 page를 렌더링하지 않고 modal-open bridge 또는 safe redirect로 동작한다. |
 | legacy `/settings` | 사용자-facing settings page가 아니라 Settings modal-open 흐름으로 연결된다. |
 | `FE/user-web/src/pages/more/index.tsx` | mobile more의 settings 진입이 page link가 아니라 Settings modal-open 흐름이다. |
-| `FE/user-web/src/features/follow-up-delivery` | follow-up 관련 settings CTA가 page link가 아니라 Settings modal-open 흐름이다. |
+| `FE/user-web/src/features/follow-up-delivery` | follow-up 관련 settings CTA와 OAuth callback query가 Settings modal-open 흐름이다. |
 | `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | `returnTo` 변경 여부가 BE allowlist와 함께 검증된다. |
 | `FE/user-web/src/features/analytics` | `/app/settings` route analytics key가 제거 또는 bridge 기준으로 정리된다. |
 | `FE/user-web/src/features/notification` | `/app/notifications` 알림 목록과 modal notification settings 역할이 분리된다. |
@@ -38,6 +38,7 @@
 - `/app/settings` direct link는 독립 설정 page로 열리지 않는다.
 - account menu `Settings`는 modal로 열린다.
 - mobile more, follow-up, schedule CTA는 같은 modal-open contract를 사용한다.
+- follow-up OAuth callback `/app/settings?followUpEmailConnection=...&status=...`는 Settings modal에서 처리되고 query가 정리된다.
 - modal close 후 query가 정리되고 원래 업무 화면 맥락이 유지된다.
 - Google Calendar OAuth return path는 BE allowlist 제약을 깨지 않는다.
 - 알림 bell은 계속 `/app/notifications`로 이동한다.
@@ -60,11 +61,17 @@ pnpm run build
 rg -n "/app/settings|/settings|/app/notifications" src -g "*.tsx" -g "*.ts"
 ```
 
+follow-up callback 검증:
+
+```powershell
+pnpm exec playwright test tests/e2e/account-settings-route-link-qa.spec.ts
+```
+
 ## 6. 완료 기준
 
 - build 검증 결과가 통과 또는 명확한 외부 원인으로 기록된다.
 - typecheck/lint 검증 결과가 통과 또는 명확한 외부 원인으로 기록된다.
-- route/link 확인 결과가 완료 보고에 포함된다.
+- route/link/callback 확인 결과가 완료 보고에 포함된다.
 - 새 API, DB migration, admin-web 변경이 없음을 `git diff --stat`로 확인한다.
 
 ## 7. 관련 문서

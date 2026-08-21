@@ -2,8 +2,16 @@
 
 ## 1. 결론
 
-- 판정: 통과
+- 판정: 통과 / 구현 후 문서 갱신 완료
 - 이유: 사용자의 요청은 `/app/settings`의 기존 설정/요청/연동 기능을 계정 모달 `Settings`로 단계별 이관하는 UX/UI 구조 변경이며, 새 API나 DB 변경 없이 `FE/user-web` 내부 modal 연결로 처리할 수 있다. 다만 `/app/settings`를 사용자-facing page로 유지하는 기존 전제는 폐기하고, link는 modal-open 흐름으로 정리해야 한다. Google Calendar OAuth는 BE allowlist 제약 때문에 bridge 또는 별도 BE 계획이 필요하다.
+
+2026-08-21 구현 후 재검토:
+
+- G01/G02/G03는 완료됐다.
+- `AccountDataRequestsSettingsSection`과 `FollowUpDeliverySettingsSection`은 계정 모달 `Settings`로 이관됐다.
+- `/app/settings`와 legacy `/settings`는 사용자-facing page가 아니라 account settings modal bridge로 동작한다.
+- follow-up OAuth callback query는 Settings modal 안에서 처리된다.
+- Google Calendar settings는 아직 Settings modal 내부로 이관하지 않았다. 현재는 `/app/settings?googleCalendar=connected`를 schedules 화면으로 bridge해 기존 callback handler를 유지한다.
 
 ## 2. 검토 대상
 
@@ -44,6 +52,7 @@
 
 - Critical 누락 없음
 - Major 누락 없음
+- 구현 후 남은 결정: Google Calendar settings의 최종 위치와 `/app/settings` hard delete 여부
 
 ## 5. 충돌 사항
 
@@ -61,7 +70,8 @@
 
 - 바로 구현 가능 여부: 가능
 - 구현 전 반드시 수정할 항목: 없음
-- 첫 번째로 실행할 goal: `G01 Settings modal baseline`
+- 첫 번째로 실행한 goal: `G01 Settings modal baseline`
+- 현재 남은 작업: `GoogleCalendarSettingsSection`을 Settings modal로 이관할지 또는 schedules bridge를 유지할지 결정
 
 ## 8. 검토 체크리스트
 
@@ -75,4 +85,4 @@
 - Frontend 주석/로깅 규칙 반영: 통과
 - Frontend engineering review gate 반영: 통과
 - UX/UI neutral gray, workspace modal 흐름 반영: 통과
-- `/goal` 단위 분리: 재정리 필요. G01/G02/G03는 section 단위 이관 흐름으로 업데이트한다.
+- `/goal` 단위 분리: 반영 완료. G01/G02/G03는 완료 상태로 업데이트했고, Google Calendar는 remaining decision으로 분리했다.

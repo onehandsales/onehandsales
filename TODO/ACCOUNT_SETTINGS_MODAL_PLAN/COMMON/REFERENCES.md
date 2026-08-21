@@ -32,11 +32,14 @@
 
 | 위치 | 이유 |
 | --- | --- |
-| `FE/user-web/src/pages/settings/index.tsx` | `/app/settings` 현재 구현 위치 |
+| `FE/user-web/src/pages/settings/index.tsx` | 기존 settings page 구현 원본. 현재 사용자-facing route에서는 bridge가 사용됨 |
 | `FE/user-web/src/components/layout/app-shell.tsx` | 계정 드롭다운, account modal, modal sidebar, `AccountSettingsModalContent` 위치 |
+| `FE/user-web/src/components/layout/account-modal-route.ts` | account settings modal-open query contract helper |
+| `FE/user-web/src/app/router/route-elements.tsx` | `/app/settings`와 legacy `/settings` bridge 구현 위치 |
 | `FE/user-web/src/features/account-request` | account data request 설정 section |
 | `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | Google Calendar 설정과 OAuth `returnTo` |
 | `FE/user-web/src/features/follow-up-delivery` | follow-up delivery 설정과 `/app/settings` link |
+| `FE/user-web/tests/e2e/account-settings-route-link-qa.spec.ts` | `/app/settings`, legacy `/settings`, Google Calendar bridge, follow-up callback QA |
 | `FE/user-web/src/features/notification/components/service-notification-settings-section.tsx` | 계정 모달 `Notifications`에서 쓰는 서비스 알림과 브라우저 푸시 설정 |
 | `FE/user-web/src/features/notification/components/notification-screen.tsx` | `/app/notifications` 알림 목록 page |
 | `FE/user-web/src/app/router/router.tsx` | `/app/settings`, `/app/notifications`, legacy `/settings` route |
@@ -49,4 +52,6 @@
 - `/app/notifications`는 알림 목록 page로 남아 있다.
 - 이번 계획은 `/app/settings`의 설정/요청/연동 기능을 계정 모달 `Settings`로 단계별 이관하는 작업이다.
 - 계정 모달 `Profile`에 이미 있는 account/status/linked providers/devices/user id는 Settings에 복제하지 않는다.
-- `/app/settings`는 사용자-facing page로 유지하지 않고, 기존 link와 OAuth 제약은 modal-open 또는 compatibility bridge로 정리한다.
+- `/app/settings`는 사용자-facing page로 유지하지 않고, 기존 link와 OAuth 제약은 modal-open 또는 compatibility bridge로 정리했다.
+- `AccountDataRequestsSettingsSection`과 `FollowUpDeliverySettingsSection`은 Settings modal로 이관됐다.
+- Google Calendar settings는 아직 Settings modal 내부로 이관하지 않았고 schedules bridge로 callback 안정성을 유지한다.
