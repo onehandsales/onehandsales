@@ -8,8 +8,13 @@
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 
 ## 2. TODO 내부 참조
@@ -42,4 +47,6 @@
 
 - 계정 모달 `Notifications`에는 서비스 알림 설정과 브라우저 푸시 설정이 이미 분리되어 있다.
 - `/app/notifications`는 알림 목록 page로 남아 있다.
-- 이번 계획은 `/app/settings`의 나머지 설정 내용을 계정 모달 `Settings`로 옮기는 작업이다.
+- 이번 계획은 `/app/settings`의 설정/요청/연동 기능을 계정 모달 `Settings`로 단계별 이관하는 작업이다.
+- 계정 모달 `Profile`에 이미 있는 account/status/linked providers/devices/user id는 Settings에 복제하지 않는다.
+- `/app/settings`는 사용자-facing page로 유지하지 않고, 기존 link와 OAuth 제약은 modal-open 또는 compatibility bridge로 정리한다.

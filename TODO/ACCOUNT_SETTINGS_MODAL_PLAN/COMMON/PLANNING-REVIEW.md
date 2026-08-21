@@ -3,7 +3,7 @@
 ## 1. 결론
 
 - 판정: 통과
-- 이유: 사용자의 요청은 `/app/settings`의 기존 설정 기능을 계정 모달 `Settings`로 옮기는 UX/UI 구조 변경이며, 새 API나 DB 변경 없이 `FE/user-web` 내부 구조 분리와 modal 연결로 처리할 수 있다. 기존 `/app/settings` route를 fallback으로 유지하면 link와 OAuth return path 호환성도 지킬 수 있다.
+- 이유: 사용자의 요청은 `/app/settings`의 기존 설정/요청/연동 기능을 계정 모달 `Settings`로 단계별 이관하는 UX/UI 구조 변경이며, 새 API나 DB 변경 없이 `FE/user-web` 내부 modal 연결로 처리할 수 있다. 다만 `/app/settings`를 사용자-facing page로 유지하는 기존 전제는 폐기하고, link는 modal-open 흐름으로 정리해야 한다. Google Calendar OAuth는 BE allowlist 제약 때문에 bridge 또는 별도 BE 계획이 필요하다.
 
 ## 2. 검토 대상
 
@@ -24,15 +24,21 @@
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 
 ## 3. 핵심 발견 사항
 
 | 등급 | 문서 또는 코드 | 문제 | 영향 | 권장 조치 |
 | --- | --- | --- | --- | --- |
-| Minor | `FE/user-web/src/components/layout/app-shell.tsx` | 계정 모달 `Profile`과 `/app/settings`의 account information 일부가 겹친다. | Settings tab에 전체 설정을 넣으면 정보가 중복으로 보일 수 있다. | 이번 goal에서는 Profile tab을 유지하고, Settings tab에는 `/app/settings` 전체를 옮긴다. 중복 축소는 별도 UX 결정으로 분리한다. |
-| Minor | `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | Google Calendar OAuth `returnTo`가 `/app/settings`에 고정되어 있다. | route를 삭제하면 callback 후 복귀가 깨진다. | `/app/settings` route를 유지하고 같은 `SettingsScreen`을 렌더링한다. |
+| Major | `FE/user-web/src/components/layout/app-shell.tsx` | 계정 모달 `Profile`에 account, status, linked providers, devices, user id가 이미 있다. | `/app/settings` 전체를 Settings tab에 넣으면 같은 정보가 중복된다. | Profile은 read-only 계정 정보로 유지하고, Settings에는 설정 변경/요청/연동 기능만 이관한다. |
+| Major | `FE/user-web/src/features/schedule/components/google-calendar-settings-section.tsx` | Google Calendar OAuth `returnTo`가 `/app/settings`에 고정되어 있고 BE allowlist도 `/app/settings`를 허용한다. | route를 바로 삭제하면 callback 후 복귀가 깨질 수 있다. | 기본안은 `/app/settings`를 사용자-facing page가 아닌 compatibility bridge로만 남긴다. route hard delete는 별도 BE allowlist 변경 계획으로 분리한다. |
 
 ## 4. 누락 사항
 
@@ -47,15 +53,15 @@
 
 ## 6. 사용자의 결정이 필요한 질문
 
-- 현재 구현 시작을 막는 질문 없음
+- `/app/settings` route를 완전 삭제할지, BE 변경 없이 bridge로 남길지 최종 결정이 필요하다. 기본 구현은 bridge를 전제로 한다.
 
-`Profile` tab과 `Settings` tab의 중복 정보를 줄일지 여부는 구현 후 실제 화면 밀도를 보고 별도 UX 판단으로 처리한다.
+`Profile` tab과 `Settings` tab의 중복 정보는 이번 문서 업데이트로 제거 기준을 확정했다.
 
 ## 7. 구현 가능 여부
 
 - 바로 구현 가능 여부: 가능
 - 구현 전 반드시 수정할 항목: 없음
-- 첫 번째로 실행할 goal: `G01 Settings screen extraction`
+- 첫 번째로 실행할 goal: `G01 Settings modal baseline`
 
 ## 8. 검토 체크리스트
 
@@ -66,5 +72,7 @@
 - TODO 폴더 구조 `COMMON`, `FE-TODO`, `BE-TODO`: 통과
 - API/DB 변경 없음 계약: 통과
 - Frontend 구조 원칙 반영: 통과
+- Frontend 주석/로깅 규칙 반영: 통과
+- Frontend engineering review gate 반영: 통과
 - UX/UI neutral gray, workspace modal 흐름 반영: 통과
-- `/goal` 단위 분리: 통과
+- `/goal` 단위 분리: 재정리 필요. G01/G02/G03는 section 단위 이관 흐름으로 업데이트한다.

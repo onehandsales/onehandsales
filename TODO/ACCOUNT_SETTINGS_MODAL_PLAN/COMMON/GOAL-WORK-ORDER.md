@@ -12,95 +12,125 @@
 
 | 순서 | Goal | 목적 | 선행 조건 |
 | --- | --- | --- | --- |
-| G01 | Settings screen extraction | `/app/settings`의 실제 설정 UI를 `features/settings` reusable screen으로 분리한다. | 문서 검토 통과 |
-| G02 | Account modal integration | 계정 모달 `Settings` 섹션이 G01의 `SettingsScreen`을 렌더링하게 연결한다. | G01 완료 |
-| G03 | Route/link QA | 기존 `/app/settings` route, legacy redirect, link, OAuth return path, build를 검증한다. | G02 완료 |
+| G01 | Settings modal baseline | 계정 모달 Profile/Settings 역할을 분리하고 Settings modal 이관 기반을 정리한다. | 문서 검토 통과 |
+| G02 | Section migration | `/app/settings`의 기능성 section을 계정 모달 `Settings`로 하나씩 이관한다. 첫 대상은 account data request다. | G01 완료 |
+| G03 | Route/link removal QA | `/app/settings` 사용자-facing page 의존을 제거하고 link, legacy route, OAuth return path, build를 검증한다. | G02 완료 |
 
-## 3. G01 Settings screen extraction
+## 2.1. 구현 전 필수 참조
+
+모든 FE 코드 수정 goal은 구현 전에 다음 문서를 먼저 확인한다.
+
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+
+## 2.2. 구현 후 필수 리뷰
+
+모든 FE 코드 수정 goal은 완료 전에 다음을 확인한다.
+
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`
+- `git diff --check`
+- `git diff --stat`로 `FE/admin-web`, `BE`, `BE/prisma` 변경 없음 확인
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md` 기준 자체 리뷰
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md` 기준 `// 기능 : ...` 주석 확인
+- 직접 `console.log`, PII client logging, `any`, User Web의 `/admin/api/*` 호출 없음 확인
+
+## 3. G01 Settings modal baseline
 
 목적:
 
-- 설정 기능의 실제 구현 위치를 `pages/settings`에서 `features/settings`로 옮긴다.
+- 계정 모달 안에서 `Profile`과 `Settings`의 역할을 분리하고, section 단위 이관을 받을 수 있는 기반을 만든다.
 
 포함 범위:
 
-- `FE/user-web/src/features/settings` 생성
-- `SettingsScreen` component 생성
-- 기존 `SettingsPage` 내부 section, helper, type을 feature로 이동
-- `SettingsScreen`에 `variant: "page" | "modal"` 같은 화면 컨테이너 차이를 처리할 수 있는 prop 추가
-- `FE/user-web/src/pages/settings/index.tsx`는 `SettingsScreen variant="page"`만 렌더링
+- `Profile` tab은 account/status/linked providers/devices/user id 확인 영역으로 유지
+- `Settings` tab은 설정 변경, 데이터 요청, 연동 설정 영역으로 정의
+- 현재 `AccountSettingsModalContent`의 app defaults form을 유지하면서 이후 section을 붙일 수 있게 정리
+- Settings modal 안의 success/error notice 위치와 scroll 구조 확인
+- Settings/Notifications/Terms/Privacy가 공유하는 modal content wrapper, heading, section divider, spacing 기준 확인
+- URL query 기반 modal-open contract 설계
 
 제외 범위:
 
-- 계정 모달 연결
-- route 삭제
+- `/app/settings` 전체 제거
+- account data request 이관
 - API 변경
 
 완료 기준:
 
-- `/app/settings`에서 기존 설정 기능이 유지된다.
+- 계정 모달 `Profile`과 `Settings`의 중복 기준이 코드와 문서에서 일치한다.
+- Settings modal에 section을 추가해도 modal scroll과 notice가 깨지지 않는 구조가 된다.
+- 이관 기준이 page layout 복사가 아니라 account modal 내부 구성 패턴으로 정의된다.
+- 기존 link를 modal-open으로 바꿀 단일 contract가 정리된다.
 - TypeScript import/export가 정리된다.
-- 기존 `/app/settings` UI의 loading, error, success notice, form 저장이 깨지지 않는다.
 
 상세 명세:
 
 - `TODO/ACCOUNT_SETTINGS_MODAL_PLAN/COMMON/GOAL-SPECS/G01_SETTINGS_SCREEN_EXTRACTION.md`
 
-## 4. G02 Account modal integration
+## 4. G02 Section migration
 
 목적:
 
-- 계정 드롭다운 `Settings` 클릭 후 열리는 모달 안에서 전체 설정 내용을 사용할 수 있게 한다.
+- `/app/settings`에 있던 기능성 section을 계정 모달 `Settings`로 단계별 이관한다.
 
 포함 범위:
 
-- `AppShell`의 `AccountSettingsModalContent` 중복 form 제거
-- `SettingsScreen variant="modal"` 연결
+- 첫 이관 대상: `AccountDataRequestsSettingsSection`
+- 이후 이관 대상: Google Calendar settings, follow-up delivery settings
 - modal content width, padding, scroll, notice 표시 조정
+- account data request UI를 기존 account modal section 패턴에 맞게 배치
+- account data request 문구, 위험 액션 안내, 긴 request id/status 표시 QA
 - 계정 모달 왼쪽 sidebar의 selected/hover/active interaction 유지
 - `Notifications` section의 `ServiceNotificationSettingsSection` 유지
 
 제외 범위:
 
 - `/app/notifications` 알림 목록 이동
-- Profile tab 폐지
-- OAuth callback 후 modal 자동 열기
+- Profile tab 제거
+- Profile tab의 read-only account/status/provider/devices/user id 정보를 Settings tab에 복제
+- Google Calendar OAuth return path 변경
+- `/app/settings` hard delete
 
 완료 기준:
 
-- 계정 메뉴에서 `Settings`를 누르면 모달 안에서 전체 설정이 보인다.
+- 계정 메뉴에서 `Settings`를 누르면 이관된 section이 모달 안에서 보인다.
 - 계정 메뉴에서 `Notifications`를 누르면 서비스 알림과 브라우저 푸시 설정이 그대로 보인다.
-- 저장, 다시 시도, 연동 설정 notice가 modal 안에서 동작한다.
+- account data request 생성/취소/새로고침과 notice가 modal 안에서 동작한다.
+- account data request section에 깨진 문구나 과도한 overflow가 없다.
 
 상세 명세:
 
 - `TODO/ACCOUNT_SETTINGS_MODAL_PLAN/COMMON/GOAL-SPECS/G02_ACCOUNT_MODAL_INTEGRATION.md`
 
-## 5. G03 Route/link QA
+## 5. G03 Route/link removal QA
 
 목적:
 
-- 기존 route와 link 호환성을 깨지 않았는지 확인한다.
+- `/app/settings` 사용자-facing page 의존을 제거하고, 기존 진입점이 Settings modal-open 흐름으로 정리됐는지 확인한다.
 
 포함 범위:
 
-- `/app/settings` 직접 진입 smoke
-- legacy `/settings` redirect 확인
-- `/app/settings` 참조 위치 검토
-- Google Calendar `returnTo: "/app/settings"` 유지 확인
-- analytics route key 유지 확인
-- `npm run build` 또는 repo 기준 frontend 검증 명령 실행
+- `/app/settings` 참조 위치 검색
+- mobile more, follow-up delivery, schedule settings link가 page 이동 대신 Settings modal-open으로 동작하는지 확인
+- legacy `/settings` 처리 확인
+- Google Calendar `returnTo`와 BE allowlist 제약 확인
+- analytics route key 제거 또는 bridge 기준 정리 확인
+- `pnpm run typecheck`, `pnpm run lint`, `pnpm run build` 또는 repo 기준 frontend 검증 명령 실행
 
 제외 범위:
 
-- link를 modal deep-link로 바꾸는 설계
 - 새 E2E suite 대량 추가
+- BE allowlist 변경이 필요한 hard delete 구현
 
 완료 기준:
 
-- 기존 `/app/settings` link가 모두 동작한다.
-- 계정 모달 settings와 `/app/settings` page가 같은 feature screen을 사용한다.
-- `FE/user-web` build 검증이 통과한다.
+- 기존 `/app/settings` link가 사용자-facing page로 이동하지 않는다.
+- 필요한 경우 `/app/settings`는 OAuth/legacy bridge로만 동작한다.
+- `FE/user-web` typecheck/lint/build 검증이 통과한다.
 
 상세 명세:
 
