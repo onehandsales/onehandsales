@@ -31,7 +31,8 @@ import { getSearchFallbackTargetPath } from "@/features/search/utils/search-targ
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const SEARCH_LIMIT = 5;
-const SEARCH_MODAL_TRANSITION_MS = 180;
+const SEARCH_MODAL_TRANSITION_MS = 300;
+const SEARCH_MODAL_FOCUS_DELAY_MS = 180;
 const EMPTY_SEARCH_GROUPS: readonly SearchGroup[] = [];
 
 const targetMeta: Record<
@@ -75,7 +76,10 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
   useEffect(() => {
     if (open) {
       setQuery("");
-      const focusTimerId = window.setTimeout(() => inputRef.current?.focus(), 80);
+      const focusTimerId = window.setTimeout(
+        () => inputRef.current?.focus(),
+        SEARCH_MODAL_FOCUS_DELAY_MS
+      );
 
       return () => window.clearTimeout(focusTimerId);
     }
@@ -83,12 +87,13 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
   // 기능 : 검색 모달을 닫을 때 exit transition이 끝날 때까지 DOM 렌더를 유지합니다.
   useEffect(() => {
-    let animationFrameId: number | null = null;
+    let openTimerId: number | null = null;
     let closeTimerId: number | null = null;
 
     if (open) {
       setShouldRender(true);
-      animationFrameId = window.requestAnimationFrame(() => setIsVisible(true));
+      setIsVisible(false);
+      openTimerId = window.setTimeout(() => setIsVisible(true), 20);
     } else {
       setIsVisible(false);
       closeTimerId = window.setTimeout(
@@ -98,8 +103,8 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     }
 
     return () => {
-      if (animationFrameId !== null) {
-        window.cancelAnimationFrame(animationFrameId);
+      if (openTimerId !== null) {
+        window.clearTimeout(openTimerId);
       }
 
       if (closeTimerId !== null) {
@@ -152,7 +157,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     >
       {/* 배경 오버레이 */}
       <div
-        className={`absolute inset-0 bg-black/30 backdrop-blur-[2px] transition-opacity duration-[180ms] ease-out ${
+        className={`absolute inset-0 bg-black/30 backdrop-blur-[2px] transition-opacity duration-[300ms] ease-out ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
@@ -160,10 +165,10 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
       {/* 모달 패널 */}
       <div
-        className={`relative z-10 mx-4 flex w-full max-w-[560px] flex-col overflow-hidden rounded-xl border border-[#E2E5EC] bg-white shadow-2xl transition-all duration-[180ms] ease-out ${
+        className={`relative z-10 mx-4 flex w-full max-w-[560px] origin-top flex-col overflow-hidden rounded-xl border border-[#E2E5EC] bg-white shadow-2xl transition-all duration-[300ms] ease-out ${
           isVisible
             ? "translate-y-0 scale-100 opacity-100"
-            : "-translate-y-2 scale-[0.98] opacity-0"
+            : "-translate-y-4 scale-[0.96] opacity-0"
         }`}
       >
         {/* 검색 입력 */}
