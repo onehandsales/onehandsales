@@ -549,7 +549,7 @@ export function AppShell() {
       <button
         aria-expanded={accountMenuOpen}
         aria-haspopup="menu"
-        className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] data-[open=true]:bg-[#E4E2DC] data-[open=true]:active:bg-[#D3D1CB]"
+        className="group/sidebar-tooltip relative flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] data-[open=true]:bg-[#E4E2DC] data-[open=true]:active:bg-[#D3D1CB]"
         data-open={accountMenuOpen}
         onClick={() => setAccountMenuOpen((open) => !open)}
         type="button"
@@ -562,6 +562,11 @@ export function AppShell() {
             {userName}
           </p>
         </div>
+        {!accountMenuOpen ? (
+          <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+            {t("shell.accountMenuTooltip")}
+          </span>
+        ) : null}
       </button>
       <button
         aria-label={t("shell.sidebarClose")}

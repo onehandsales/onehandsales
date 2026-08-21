@@ -67,6 +67,7 @@ export const koKRResource = {
     workGroupOpen: "업무 열기",
   },
   shell: {
+    accountMenuTooltip: "계정 메뉴 열기",
     accountProfile: "설정",
     adminPlan: "Admin",
     appFallbackTitle: "한손에 영업",

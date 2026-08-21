@@ -67,6 +67,7 @@ export const enResource = {
     workGroupOpen: "Open work",
   },
   shell: {
+    accountMenuTooltip: "Open account menu",
     accountProfile: "Setting",
     adminPlan: "Admin",
     appFallbackTitle: "Onehand Sales",
