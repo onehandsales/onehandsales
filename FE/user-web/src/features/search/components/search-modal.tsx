@@ -31,6 +31,7 @@ import { getSearchFallbackTargetPath } from "@/features/search/utils/search-targ
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const SEARCH_LIMIT = 5;
+const SEARCH_MODAL_TRANSITION_MS = 180;
 const EMPTY_SEARCH_GROUPS: readonly SearchGroup[] = [];
 
 const targetMeta: Record<
@@ -55,6 +56,8 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [query, setQuery] = useState("");
+  const [shouldRender, setShouldRender] = useState(open);
+  const [isVisible, setIsVisible] = useState(false);
   const normalizedQuery = query.trim();
   const deferredQuery = useDeferredValue(normalizedQuery);
   const canSearch = deferredQuery.length >= 2;
@@ -72,8 +75,37 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
   useEffect(() => {
     if (open) {
       setQuery("");
-      window.setTimeout(() => inputRef.current?.focus(), 50);
+      const focusTimerId = window.setTimeout(() => inputRef.current?.focus(), 80);
+
+      return () => window.clearTimeout(focusTimerId);
     }
+  }, [open]);
+
+  // 기능 : 검색 모달을 닫을 때 exit transition이 끝날 때까지 DOM 렌더를 유지합니다.
+  useEffect(() => {
+    let animationFrameId: number | null = null;
+    let closeTimerId: number | null = null;
+
+    if (open) {
+      setShouldRender(true);
+      animationFrameId = window.requestAnimationFrame(() => setIsVisible(true));
+    } else {
+      setIsVisible(false);
+      closeTimerId = window.setTimeout(
+        () => setShouldRender(false),
+        SEARCH_MODAL_TRANSITION_MS
+      );
+    }
+
+    return () => {
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      if (closeTimerId !== null) {
+        window.clearTimeout(closeTimerId);
+      }
+    };
   }, [open]);
 
   // 기능 : Escape 키 입력 시 검색 모달을 닫습니다.
@@ -111,7 +143,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     setQuery("");
   };
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     <div
@@ -119,10 +151,21 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       onMouseDown={onBackdropMouseDown}
     >
       {/* 배경 오버레이 */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" onClick={onClose} />
+      <div
+        className={`absolute inset-0 bg-black/30 backdrop-blur-[2px] transition-opacity duration-[180ms] ease-out ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={onClose}
+      />
 
       {/* 모달 패널 */}
-      <div className="relative z-10 flex w-full max-w-[560px] flex-col overflow-hidden rounded-xl border border-[#E2E5EC] bg-white shadow-2xl mx-4">
+      <div
+        className={`relative z-10 mx-4 flex w-full max-w-[560px] flex-col overflow-hidden rounded-xl border border-[#E2E5EC] bg-white shadow-2xl transition-all duration-[180ms] ease-out ${
+          isVisible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "-translate-y-2 scale-[0.98] opacity-0"
+        }`}
+      >
         {/* 검색 입력 */}
         <div className="flex items-center gap-3 border-b border-[#F0F1F3] px-4 py-3.5">
           <Search className="h-[18px] w-[18px] shrink-0 text-[#9CA3AF]" strokeWidth={2} />

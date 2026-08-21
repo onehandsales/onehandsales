@@ -507,7 +507,7 @@ export function AppShell() {
         type="button"
       >
         <ChevronsLeft className="h-5 w-5" strokeWidth={2} />
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
+        <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
           {t("shell.sidebarClose")}
         </span>
       </button>
@@ -532,7 +532,7 @@ export function AppShell() {
           strokeWidth={2}
         />
         <span>{t("navigation.appName")}</span>
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+        <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
           {t(
             onehandAppOpen
               ? "navigation.appNameClose"
@@ -601,7 +601,7 @@ export function AppShell() {
                 strokeWidth={2}
               />
               <span>{t("navigation.home")}</span>
-              <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+              <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
                 {t("shell.homeTooltip")}
               </span>
             </button>
@@ -619,13 +619,13 @@ export function AppShell() {
                 className="h-5 w-5 shrink-0"
                 strokeWidth={2}
               />
-              <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+              <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
                 {t("shell.searchTooltip")}
               </span>
             </button>
           </div>
           {/* Nav */}
-          <div className="flex-1 overflow-y-auto px-2 py-1">
+          <div className="flex-1 px-2 py-1">
             <SidebarNav />
             {sidebarAppLinks}
           </div>
