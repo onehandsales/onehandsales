@@ -931,6 +931,12 @@ function AccountModal({
   );
 }
 
+type AccountModalSidebarItemConfig = {
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly section: AccountModalSection;
+};
+
 // 기능 : 계정 모달 콘텐츠 영역을 렌더링합니다.
 function AccountModalContent({
   onClose,
@@ -944,23 +950,32 @@ function AccountModalContent({
   readonly section: AccountModalSection;
 }) {
   const { t } = useAppI18n();
-  const accountModalItems: Array<{
-    readonly icon: LucideIcon;
-    readonly label: string;
-    readonly section: AccountModalSection;
-  }> = [
+  const accountModalItems: AccountModalSidebarItemConfig[] = [
     { icon: UserRound, label: profileLabel, section: "profile" },
     { icon: Settings, label: t("navigation.settings"), section: "settings" },
     { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
+  ];
+  const accountModalFooterItems: AccountModalSidebarItemConfig[] = [
     { icon: FileText, label: t("shell.terms"), section: "terms" },
     { icon: ShieldCheck, label: t("shell.privacy"), section: "privacy" },
   ];
 
   return (
     <div className="grid h-[min(76vh,720px)] overflow-hidden bg-white md:grid-cols-[176px_minmax(0,1fr)]">
-      <aside className="bg-sidebar p-2 pt-4">
+      <aside className="flex h-full min-h-0 flex-col bg-sidebar p-2 pt-4">
         <nav className="grid gap-px">
           {accountModalItems.map((item) => (
+            <AccountModalSidebarItem
+              active={section === item.section}
+              icon={item.icon}
+              key={item.section}
+              label={item.label}
+              onClick={() => onSectionChange(item.section)}
+            />
+          ))}
+        </nav>
+        <nav className="mt-auto grid gap-px pt-2">
+          {accountModalFooterItems.map((item) => (
             <AccountModalSidebarItem
               active={section === item.section}
               icon={item.icon}
