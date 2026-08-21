@@ -57,6 +57,7 @@ import {
   NotificationBellButton,
   ServiceNotificationSettingsSection,
 } from "@/features/notification";
+import { AccountDataRequestsSettingsSection } from "@/features/account-request";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
@@ -1106,6 +1107,11 @@ function AccountSettingsModalContent() {
   const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
   const [notice, setNotice] = useState<AccountSettingsNotice | null>(null);
 
+  // 기능 : Settings 모달 안의 이관 섹션 성공 안내를 공통 notice에 연결합니다.
+  const onSettingsSectionNotice = useCallback((message: string) => {
+    setNotice({ message, variant: "success" });
+  }, []);
+
   // 기능 : 조회된 프로필 값을 앱 기본값 form 상태에 반영합니다.
   useEffect(() => {
     if (!profile) {
@@ -1242,6 +1248,13 @@ function AccountSettingsModalContent() {
                 </div>
               </ProfileSection>
             </form>
+
+            <ProfileSection title="계정 데이터 요청">
+              <AccountDataRequestsSettingsSection
+                onNotice={onSettingsSectionNotice}
+                presentation="modal"
+              />
+            </ProfileSection>
           </div>
         ) : null}
       </div>

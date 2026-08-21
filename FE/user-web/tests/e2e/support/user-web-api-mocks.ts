@@ -47,6 +47,8 @@ export type UserWebApiMockStore = {
   readonly googleCalendars: MutableRecord[];
   readonly meetingNotes: MutableRecord[];
   readonly aiWeeklyReports: MutableRecord[];
+  readonly dataExportRequests: MutableRecord[];
+  readonly accountDeletionRequests: MutableRecord[];
   readonly businessCardScans: MutableRecord[];
   readonly importJobs: MutableRecord[];
   readonly importTemplates: MutableRecord[];
@@ -199,6 +201,36 @@ async function handleApiRequest(
 
   if (pathname === "/api/users/me/settings" && method === "GET") {
     return json(createUserSettings());
+  }
+
+  if (pathname === "/api/users/me/data-export-requests" && method === "POST") {
+    return json(createDataExportRequest(store, await readJsonBody(route)), 201);
+  }
+
+  const dataExportRequestMatch = pathname.match(
+    /^\/api\/users\/me\/data-export-requests\/([^/]+)$/,
+  );
+
+  if (dataExportRequestMatch && method === "GET") {
+    return getDataExportRequestResponse(store, dataExportRequestMatch[1]);
+  }
+
+  if (pathname === "/api/users/me/account-deletion-requests" && method === "POST") {
+    return json(
+      createAccountDeletionRequest(store, await readJsonBody(route)),
+      201,
+    );
+  }
+
+  const accountDeletionCancelMatch = pathname.match(
+    /^\/api\/users\/me\/account-deletion-requests\/([^/]+)\/cancel$/,
+  );
+
+  if (accountDeletionCancelMatch && method === "POST") {
+    return cancelAccountDeletionRequestResponse(
+      store,
+      accountDeletionCancelMatch[1],
+    );
   }
 
   if (pathname === "/api/notifications/unread-count" && method === "GET") {
@@ -1136,6 +1168,7 @@ function createStore(): UserWebApiMockStore {
   const dealActivities = createDealActivityFixtures(deal, schedule, meetingNote);
 
   return {
+    accountDeletionRequests: [],
     aiWeeklyReports,
     businessCardScans: [createBusinessCardScan()],
     companyField,
@@ -1145,8 +1178,10 @@ function createStore(): UserWebApiMockStore {
     contactJobGrade,
     contacts: [contact],
     counters: {
+      "account-deletion-request": 0,
       "business-card": 1,
       company: 1,
+      "data-export-request": 0,
       contact: 1,
       deal: 1,
       "import-job": 1,
@@ -1156,6 +1191,7 @@ function createStore(): UserWebApiMockStore {
       schedule: 1,
       "deal-activity": 3,
     },
+    dataExportRequests: [],
     dealActivities,
     deals: [deal],
     googleCalendarConnection,
@@ -1242,6 +1278,88 @@ function createUserSettings() {
     emailNotificationEnabled: true,
     sensitiveWarningEnabled: true,
   };
+}
+
+// 기능 : 사용자 데이터 export 요청 mock 응답을 생성하고 store에 저장합니다.
+function createDataExportRequest(store: UserWebApiMockStore, body: unknown) {
+  const request = {
+    downloadUrl: null,
+    expiresAt: NEXT_WEEK,
+    format:
+      stringField(body, "format") === "ZIP_JSON_XLSX"
+        ? "ZIP_JSON_XLSX"
+        : "ZIP_JSON_XLSX",
+    id: `${nextId(store, "data-export-request")}-modal-overflow-check-abcdefghijklmnopqrstuvwxyz-0123456789`,
+    includeSensitive: isRecord(body) && body.includeSensitive === true,
+    requestedAt: now(),
+    status: "REQUESTED",
+  };
+
+  store.dataExportRequests.unshift(request);
+  return request;
+}
+
+// 기능 : 사용자 데이터 export 요청 상세 mock 응답을 반환합니다.
+function getDataExportRequestResponse(
+  store: UserWebApiMockStore,
+  encodedRequestId: string | undefined,
+): MockApiResponse {
+  const requestId = decodeURIComponent(encodedRequestId ?? "");
+  const request = store.dataExportRequests.find((item) => item.id === requestId);
+
+  if (!request) {
+    return json({ message: "데이터 export 요청을 찾지 못했어요." }, 404);
+  }
+
+  if (request.status === "REQUESTED") {
+    request.status = "PROCESSING";
+  }
+
+  return json(request);
+}
+
+// 기능 : 사용자 계정 삭제 요청 mock 응답을 생성하고 store에 저장합니다.
+function createAccountDeletionRequest(
+  store: UserWebApiMockStore,
+  body: unknown,
+) {
+  const request = {
+    canCancelUntil: NEXT_WEEK,
+    confirmText: stringField(body, "confirmText") ?? "",
+    id: `${nextId(store, "account-deletion-request")}-modal-overflow-check-abcdefghijklmnopqrstuvwxyz-0123456789`,
+    reasonCode: stringField(body, "reasonCode"),
+    reasonMessage: stringField(body, "reasonMessage"),
+    requestedAt: now(),
+    scheduledDeletionAt: "2026-08-19T09:00:00.000Z",
+    status: "REQUESTED",
+  };
+
+  store.accountDeletionRequests.unshift(request);
+  return request;
+}
+
+// 기능 : 사용자 계정 삭제 요청 취소 mock 응답을 반환합니다.
+function cancelAccountDeletionRequestResponse(
+  store: UserWebApiMockStore,
+  encodedRequestId: string | undefined,
+): MockApiResponse {
+  const requestId = decodeURIComponent(encodedRequestId ?? "");
+  const request = store.accountDeletionRequests.find(
+    (item) => item.id === requestId,
+  );
+
+  if (!request) {
+    return json({ message: "계정 삭제 요청을 찾지 못했어요." }, 404);
+  }
+
+  request.status = "CANCELLED";
+  request.cancelledAt = now();
+
+  return json({
+    cancelledAt: request.cancelledAt,
+    id: request.id,
+    status: request.status,
+  });
 }
 
 function createGoogleCalendarConnection() {
