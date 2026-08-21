@@ -173,11 +173,11 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       >
         {/* 검색 입력 */}
         <div className="flex items-center gap-3 border-b border-[#F0F1F3] px-4 py-3.5">
-          <Search className="h-[18px] w-[18px] shrink-0 text-[#9CA3AF]" strokeWidth={2} />
+          <Search className="h-5 w-5 shrink-0 text-[#9CA3AF]" strokeWidth={2} />
           <input
             ref={inputRef}
             className="flex-1 bg-transparent text-[15px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            placeholder="회사, 담당자, 제품, 딜, 일정, 회의록 검색..."
+            placeholder="찾고 싶은 것을 검색하세요."
             value={query}
             onChange={onQueryChange}
             onKeyDown={onKeyDown}
@@ -191,11 +191,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             >
               <X className="h-4 w-4" />
             </button>
-          ) : (
-            <kbd className="hidden shrink-0 rounded border border-[#E2E5EC] bg-white px-1.5 py-0.5 text-[11px] font-medium text-[#9CA3AF] sm:block">
-              ESC
-            </kbd>
-          )}
+          ) : null}
         </div>
 
         {/* 결과 영역 */}
@@ -235,7 +231,9 @@ function SearchResultsBody({
   if (!canSearch) {
     return (
       <div className="px-4 py-8 text-center">
-        <p className="text-[13px] text-[#9CA3AF]">두 글자 이상 입력하면 검색해요</p>
+        <p className="text-[13px] text-[#9CA3AF]">
+          필요한 기록을 빠르게 찾을 수 있어요.
+        </p>
       </div>
     );
   }
@@ -250,9 +248,8 @@ function SearchResultsBody({
 
   if (isFetching && groups.length === 0) {
     return (
-      <div className="flex items-center justify-center gap-2 px-4 py-10">
-        <Loader2 className="h-4 w-4 animate-spin text-[#9CA3AF]" />
-        <span className="text-[13px] text-[#9CA3AF]">검색 중...</span>
+      <div className="flex items-center justify-center px-4 py-10">
+        <Loader2 className="h-8 w-8 animate-spin text-[#9CA3AF]" />
       </div>
     );
   }
