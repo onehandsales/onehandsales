@@ -529,7 +529,6 @@ export function AppShell() {
       "/app/deals/new": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
       "/app/schedules": { labelKey: "navigation.schedules", icon: CalendarDays },
       "/app/trash": { labelKey: "navigation.trash", icon: Trash2 },
-      "/app/settings": { labelKey: "navigation.settings", icon: Settings },
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
     const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };

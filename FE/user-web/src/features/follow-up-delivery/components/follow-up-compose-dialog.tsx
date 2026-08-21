@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { createAccountSettingsModalPath } from "@/components/layout/account-modal-route";
 import { Button } from "@/components/ui/button";
 import { ModalShell } from "@/components/ui/modal-shell";
 import type { AiWeeklyReportSuggestion } from "@/features/ai-weekly-report";
@@ -497,12 +498,15 @@ export function FollowUpComposeDialog({
 
 // 기능 : 이메일 재연결이 필요한 발송 실패에서 설정 이동 CTA를 표시합니다.
 function ReconnectGuidance() {
+  const { pathname, search } = useLocation();
+  const settingsModalPath = createAccountSettingsModalPath(pathname, search);
+
   return (
     <div className="flex flex-col gap-3 rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-3 text-[13px] text-[#92400E] sm:flex-row sm:items-center sm:justify-between">
       <span>설정에서 이메일 계정을 다시 연결한 뒤 재시도해 주세요.</span>
       <Link
         className="inline-flex h-8 w-fit items-center gap-1.5 rounded-md border border-[#F59E0B] bg-white px-3 text-[12px] font-semibold text-[#92400E] transition hover:bg-[#FFF7ED]"
-        to="/app/settings"
+        to={settingsModalPath}
       >
         <Settings className="h-3.5 w-3.5" />
         설정 열기
@@ -670,12 +674,15 @@ function SettingsGuidance({
 }: {
   readonly channel: FollowUpDeliveryChannel;
 }) {
+  const { pathname, search } = useLocation();
+  const settingsModalPath = createAccountSettingsModalPath(pathname, search);
+
   return (
     <div className="flex flex-col gap-3 rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-3 py-3 text-[13px] text-[#92400E] sm:flex-row sm:items-center sm:justify-between">
       <span>{getMissingSenderMessage(channel)}</span>
       <Link
         className="inline-flex h-8 w-fit items-center gap-1.5 rounded-md border border-[#F59E0B] bg-white px-3 text-[12px] font-semibold text-[#92400E] transition hover:bg-[#FFF7ED]"
-        to="/app/settings"
+        to={settingsModalPath}
       >
         <Settings className="h-3.5 w-3.5" />
         설정 열기

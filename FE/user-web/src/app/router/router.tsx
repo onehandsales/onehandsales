@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
 import {
+  AccountSettingsModalBridge,
   LegacyAppRedirect,
   LegacyPublicSiteRedirect,
   PublicSiteRoute,
@@ -45,7 +46,6 @@ import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
 import { SecurityPage } from "@/pages/security";
 import { ScheduleWeekPage } from "@/pages/schedules/week";
-import { SettingsPage } from "@/pages/settings";
 import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 import { TermsPage } from "@/pages/terms";
@@ -164,7 +164,7 @@ export const router = createBrowserRouter([
     element: <LegacyAppRedirect paramName="importUserLogId" to="/app/import" />,
   },
   { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
-  { path: "/settings", element: <LegacyAppRedirect to="/app/settings" /> },
+  { path: "/settings", element: <AccountSettingsModalBridge /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
     path: "/app",
@@ -209,7 +209,7 @@ export const router = createBrowserRouter([
       { path: "import/:importUserLogId", element: <ImportDetailPage /> },
       { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },
-      { path: "settings", element: <SettingsPage /> },
+      { path: "settings", element: <AccountSettingsModalBridge /> },
       { path: "more", element: <MorePage /> },
     ],
   },

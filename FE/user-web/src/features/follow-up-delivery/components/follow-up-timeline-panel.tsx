@@ -7,7 +7,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { createAccountSettingsModalPath } from "@/components/layout/account-modal-route";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import { useRetryFollowUpMessageMutation } from "@/features/follow-up-delivery/hooks/use-follow-up-delivery-mutations";
@@ -37,6 +38,7 @@ type FollowUpTimelinePanelProps = {
   readonly className?: string;
 };
 
+// 기능 : 후속 연락 이력 패널과 Settings 모달 진입 CTA를 렌더링합니다.
 export function FollowUpTimelinePanel({
   className,
   sourceReportId,
@@ -114,6 +116,7 @@ export function FollowUpTimelinePanel({
   );
 }
 
+// 기능 : 후속 연락 이력 항목과 재연결 안내 CTA를 렌더링합니다.
 function FollowUpTimelineItem({
   isFirst,
   isLast,
@@ -123,10 +126,12 @@ function FollowUpTimelineItem({
   readonly isLast: boolean;
   readonly message: FollowUpMessageListItem;
 }) {
+  const { pathname, search } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [retryError, setRetryError] = useState<string | null>(null);
   const detailQuery = useFollowUpMessageDetail(message.id, { enabled: isOpen });
   const retryMutation = useRetryFollowUpMessageMutation();
+  const settingsModalPath = createAccountSettingsModalPath(pathname, search);
 
   const retry = async () => {
     setRetryError(null);
@@ -190,7 +195,7 @@ function FollowUpTimelineItem({
             {isFollowUpEmailReconnectSafeError(message.safeErrorCode) ? (
               <Link
                 className="inline-flex h-8 w-fit items-center rounded-md border border-[#F59E0B] bg-[#FFFBEB] px-3 text-[12px] font-semibold text-[#92400E] transition hover:bg-[#FFF7ED]"
-                to="/app/settings"
+                to={settingsModalPath}
               >
                 이메일 다시 연결
               </Link>

@@ -9,6 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { createAccountSettingsModalPath } from "@/components/layout/account-modal-route";
 import { useAuthSession } from "@/features/auth";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 
@@ -109,6 +110,8 @@ const salesRows: ReadonlyArray<{
   },
 ];
 
+const MORE_SETTINGS_MODAL_PATH = createAccountSettingsModalPath("/app/more");
+
 const managementRows: ReadonlyArray<{
   readonly labelKey: AppI18nKey;
   readonly to: string;
@@ -125,13 +128,14 @@ const managementRows: ReadonlyArray<{
   },
   {
     labelKey: "navigation.settings",
-    to: "/app/settings",
+    to: MORE_SETTINGS_MODAL_PATH,
     iconBg: "#6B728018",
     iconColor: "#6B7280",
     icon: Settings,
   },
 ];
 
+// 기능 : 모바일 더보기 메뉴와 계정 Settings 모달 진입점을 렌더링합니다.
 export function MorePage() {
   const { user } = useAuthSession();
   const { t } = useAppI18n();
@@ -144,7 +148,7 @@ export function MorePage() {
       <div className="mx-auto w-full max-w-[760px] overflow-hidden bg-white lg:rounded-lg lg:border lg:border-[#E5E7EB]">
         {/* 기능 : 사용자 프로필 진입 row는 계정 데이터와 locale 문구를 함께 표시합니다. */}
         <Link
-          to="/app/settings"
+          to={MORE_SETTINGS_MODAL_PATH}
           className="flex items-center gap-3 bg-white px-4 py-4"
           style={{ borderBottom: "1px solid #E5E7EB" }}
         >

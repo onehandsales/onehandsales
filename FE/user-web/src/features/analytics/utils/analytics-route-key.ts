@@ -22,7 +22,6 @@ const STATIC_APP_ROUTE_KEYS = new Map<string, ProductAnalyticsAppRouteKey>([
   ["/app/notifications", "notifications"],
   ["/app/import", "import"],
   ["/app/trash", "trash"],
-  ["/app/settings", "settings"],
   ["/app/more", "more"],
 ]);
 
@@ -30,6 +29,7 @@ const REDIRECT_ONLY_APP_PATHS = new Set([
   "/app/contacts/scan",
   "/app/meeting-notes/new",
   "/app/export",
+  "/app/settings",
 ]);
 
 type DynamicRouteMatcher = {

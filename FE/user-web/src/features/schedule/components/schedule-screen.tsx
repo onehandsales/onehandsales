@@ -21,7 +21,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { createAccountSettingsModalPath } from "@/components/layout/account-modal-route";
 import { useAuthSession } from "@/features/auth";
 import { syncGoogleCalendar as syncGoogleCalendarApi } from "@/features/schedule/api/schedule-api";
 import { scheduleQueryKeys } from "@/features/schedule/api/schedule-query-keys";
@@ -69,10 +70,13 @@ const visibilityOptions: ReadonlyArray<{
   { value: "ALL", label: "전체" },
 ];
 
+// 기능 : 일정 화면과 Google Calendar Settings 모달 진입점을 렌더링합니다.
 export function ScheduleScreen() {
   const { user } = useAuthSession();
+  const { pathname, search } = useLocation();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
+  const settingsModalPath = createAccountSettingsModalPath(pathname, search);
   const screenTimeZone = user?.timeZone ?? getDefaultScheduleTimeZone();
   const [viewMode, setViewMode] = useState<ScheduleViewMode>("month");
   const [visibility, setVisibility] = useState<ScheduleVisibility>("ACTIVE");
@@ -367,6 +371,7 @@ export function ScheduleScreen() {
           isSyncPending={manualSyncPending}
           onConnect={() => void connectGoogleCalendar()}
           onSync={() => void syncGoogleCalendar()}
+          settingsModalPath={settingsModalPath}
           status={googleStatusQuery.data}
           statusError={googleStatusQuery.error}
           statusLoading={googleStatusQuery.isLoading}
@@ -514,6 +519,7 @@ function ScheduleViewModeSelect({
   );
 }
 
+// 기능 : Google Calendar 연결 상태와 Settings 모달 진입 컨트롤을 렌더링합니다.
 function GoogleCalendarStatusRow({
   status,
   statusLoading,
@@ -526,6 +532,7 @@ function GoogleCalendarStatusRow({
   onConnect,
   onSync,
   onVisibilityChange,
+  settingsModalPath,
 }: {
   readonly status: GoogleCalendarStatusResponse | undefined;
   readonly statusLoading: boolean;
@@ -538,6 +545,7 @@ function GoogleCalendarStatusRow({
   readonly onConnect: () => void;
   readonly onSync: () => void;
   readonly onVisibilityChange: (value: ScheduleVisibility) => void;
+  readonly settingsModalPath: string;
 }) {
   const connection = status?.connection ?? null;
   const isConnected = Boolean(
@@ -628,7 +636,7 @@ function GoogleCalendarStatusRow({
             <Link
               className="grid h-9 w-9 place-items-center rounded-md border border-[#D7DCE5] bg-white text-[#475569] transition hover:bg-[#F1F5F9]"
               title="Google Calendar 설정"
-              to="/app/settings"
+              to={settingsModalPath}
             >
               <Settings2 className="h-3.5 w-3.5" />
             </Link>

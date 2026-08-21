@@ -135,12 +135,18 @@ describe("useAppRouteAnalytics", () => {
       controller.navigate("/app/settings");
     });
 
+    expect(trackEvent).not.toHaveBeenCalled();
+
+    await act(async () => {
+      controller.navigate("/app?account=settings");
+    });
+
     expect(trackEvent).toHaveBeenCalledTimes(1);
     expect(trackEvent).toHaveBeenLastCalledWith({
       eventName: "app_route_viewed",
       eventVersion: 1,
       payload: {
-        routeKey: "settings",
+        routeKey: "home",
       },
     });
   });

@@ -28,7 +28,6 @@ export const PRODUCT_ANALYTICS_APP_ROUTE_KEYS = [
   "import_review",
   "import_detail",
   "trash",
-  "settings",
   "more",
 ] as const;
 

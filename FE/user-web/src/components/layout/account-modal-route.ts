@@ -28,3 +28,21 @@ export function createAccountModalSearchParams(
 
   return nextSearchParams;
 }
+
+// 기능 : 지정한 app path 위에 Settings 계정 모달 query를 얹은 URL을 만듭니다.
+export function createAccountSettingsModalPath(
+  pathname: string,
+  currentSearch: string | URLSearchParams = ""
+): string {
+  const currentSearchParams =
+    typeof currentSearch === "string"
+      ? new URLSearchParams(currentSearch)
+      : currentSearch;
+  const nextSearchParams = createAccountModalSearchParams(
+    currentSearchParams,
+    ACCOUNT_MODAL_SETTINGS_QUERY_VALUE
+  );
+  const nextSearch = nextSearchParams.toString();
+
+  return nextSearch ? `${pathname}?${nextSearch}` : pathname;
+}

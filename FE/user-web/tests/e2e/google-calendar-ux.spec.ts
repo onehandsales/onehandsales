@@ -55,7 +55,7 @@ test.describe("G04 Google Calendar UX", () => {
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 
-  test("manages calendar selection and disconnect action on settings", async ({
+  test("bridges legacy settings callback to schedules with the settings modal", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);
@@ -63,66 +63,9 @@ test.describe("G04 Google Calendar UX", () => {
 
     await page.goto("/app/settings?googleCalendar=connected");
 
-    await expect(
-      page.getByText("Google Calendar가 연결됐어요.").first(),
-    ).toBeVisible();
-    const connectedNotice = page.getByRole("dialog").filter({
-      hasText: "Google Calendar가 연결됐어요.",
-    });
-    await connectedNotice.getByRole("button", { exact: true, name: "닫기" }).click();
-    await expect(connectedNotice).toBeHidden();
-    await expect(page.getByText("mobile-qa@example.test").first()).toBeVisible();
-    await expect(page.getByText("1/2개").first()).toBeVisible();
-
-    await page.getByRole("button", { name: "캘린더 선택" }).click();
-    const calendarDialog = page.getByRole("dialog", { name: "캘린더 선택" });
-    await expect(calendarDialog).toBeVisible();
-    await expect(calendarDialog.getByText("기본", { exact: true })).toBeVisible();
-    await expect(
-      calendarDialog.getByText("시스템", { exact: true }),
-    ).toBeVisible();
-    await expect(
-      calendarDialog.getByRole("checkbox").first(),
-    ).toBeChecked();
-
-    const selectionRequest = page.waitForRequest((request) => {
-      const url = new URL(request.url());
-      return (
-        request.method() === "PATCH" &&
-        url.pathname === "/api/schedules/google/calendars"
-      );
-    });
-    await calendarDialog.getByRole("button", { name: "저장" }).click();
-    const request = await selectionRequest;
-    expect(request.postDataJSON()).toEqual({
-      selectedCalendarIds: ["primary"],
-    });
-    await expect(calendarDialog).toBeHidden();
-    const selectionSavedNotice = page.getByRole("dialog").filter({
-      hasText: "캘린더 선택을 저장했어요.",
-    });
-    await selectionSavedNotice
-      .getByRole("button", { exact: true, name: "닫기" })
-      .click();
-    await expect(selectionSavedNotice).toBeHidden();
-
-    await page.getByRole("button", { name: "연결 해제" }).click();
-    const disconnectDialog = page.getByRole("dialog", { name: "연결 해제" });
-    await expect(disconnectDialog).toBeVisible();
-    await expect(disconnectDialog.getByLabel("일정 유지")).toBeChecked();
-
-    const disconnectRequest = page.waitForRequest((request) => {
-      const url = new URL(request.url());
-      return (
-        request.method() === "POST" &&
-        url.pathname === "/api/schedules/google/disconnect"
-      );
-    });
-    await disconnectDialog
-      .getByRole("button", { name: "연결 해제" })
-      .click();
-    const disconnectPayload = (await disconnectRequest).postDataJSON();
-    expect(disconnectPayload).toEqual({ scheduleAction: "KEEP" });
+    await expect(page).toHaveURL(/\/app\/schedules\?account=settings$/);
+    await expect(page.getByRole("dialog").first()).toBeVisible();
+    await expect(page.locator("body")).toContainText("Google Calendar");
 
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
@@ -148,18 +91,9 @@ test.describe("G04 Google Calendar UX", () => {
       await scheduleStatusResponse;
       await expectNoDocumentHorizontalOverflow(page);
 
-      const settingsStatusResponse = page.waitForResponse((response) => {
-        const url = new URL(response.url());
-        return url.pathname === "/api/schedules/google/status";
-      });
       await page.goto("/app/settings");
-      await settingsStatusResponse;
-      await expectNoDocumentHorizontalOverflow(page);
-
-      await page.getByRole("button", { name: "캘린더 선택" }).last().click();
-      await expect(
-        page.getByRole("dialog", { name: "캘린더 선택" }),
-      ).toBeVisible();
+      await expect(page).toHaveURL(/\/app\?account=settings$/);
+      await expect(page.getByRole("dialog").first()).toBeVisible();
       await expectNoDocumentHorizontalOverflow(page);
     });
   });
