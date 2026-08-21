@@ -1,4 +1,9 @@
-import { Outlet, useLocation } from "react-router-dom";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
@@ -26,7 +31,6 @@ import {
   type LucideIcon,
   X,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useAppRouteAnalytics } from "@/features/analytics";
 import {
   useAuthSession,
@@ -42,6 +46,7 @@ import { SearchModal } from "@/features/search";
 import {
   type FormEvent,
   type ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -54,12 +59,29 @@ import {
 } from "@/features/notification";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
+import {
+  createAccountModalSearchParams,
+  getAccountModalSectionFromSearchParams,
+  type AccountModalQuerySection,
+} from "@/components/layout/account-modal-route";
 import { PageHeader } from "@/components/layout/page-header";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/app";
 const SIDEBAR_COLLAPSE_TRANSITION_MS = 500;
+
+type AccountModalSection =
+  | AccountModalQuerySection
+  | "profile"
+  | "notifications"
+  | "terms"
+  | "privacy";
+
+type AccountSettingsNotice = {
+  readonly message: string;
+  readonly variant: "error" | "success";
+};
 
 export type AppShellOutletContext = {
   readonly setAutoSidebarCollapsed: (collapsed: boolean) => void;
@@ -217,6 +239,7 @@ export function AppShell() {
   const { pathname } = useLocation();
   useAppRouteAnalytics();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { logout, user } = useAuthSession();
   const { t } = useAppI18n();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -226,14 +249,14 @@ export function AppShell() {
   const [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] = useState(false);
   const [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] =
     useState(false);
-  const [accountModal, setAccountModal] = useState<
-    "profile" | "settings" | "notifications" | "terms" | "privacy" | null
-  >(
+  const [accountModal, setAccountModal] = useState<AccountModalSection | null>(
     null,
   );
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [onehandAppOpen, setOnehandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  const accountModalFromSearchParams =
+    getAccountModalSectionFromSearchParams(searchParams);
   const isHome = pathname === HOME_PATH;
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
   const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
@@ -244,6 +267,38 @@ export function AppShell() {
     () => ({ setAutoSidebarCollapsed: setIsSidebarAutoCollapsed }),
     [],
   );
+
+  // 기능 : 계정 Settings 모달 URL query를 현재 route 위에서 동기화합니다.
+  const syncAccountModalSearchParams = useCallback(
+    (section: AccountModalSection | null) => {
+      const querySection: AccountModalQuerySection | null =
+        section === "settings" ? section : null;
+
+      setSearchParams(
+        (currentSearchParams) =>
+          createAccountModalSearchParams(currentSearchParams, querySection),
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
+  // 기능 : 계정 모달을 열고 Settings 탭이면 URL query contract를 함께 반영합니다.
+  const openAccountModal = useCallback(
+    (section: AccountModalSection) => {
+      setAccountMenuOpen(false);
+      setLogoutConfirmOpen(false);
+      setAccountModal(section);
+      syncAccountModalSearchParams(section);
+    },
+    [syncAccountModalSearchParams],
+  );
+
+  // 기능 : 계정 모달을 닫고 URL query contract를 정리합니다.
+  const closeAccountModal = useCallback(() => {
+    setAccountModal(null);
+    syncAccountModalSearchParams(null);
+  }, [syncAccountModalSearchParams]);
 
   // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   const handleLogout = async () => {
@@ -308,11 +363,26 @@ export function AppShell() {
     };
   }, [accountMenuOpen]);
 
+  // 기능 : route 이동 시 계정 메뉴와 local 모달 상태를 닫습니다.
   useEffect(() => {
     setAccountMenuOpen(false);
     setAccountModal(null);
     setLogoutConfirmOpen(false);
   }, [pathname]);
+
+  // 기능 : URL query contract로 계정 Settings 모달을 열거나 닫습니다.
+  useEffect(() => {
+    if (accountModalFromSearchParams) {
+      setAccountMenuOpen(false);
+      setLogoutConfirmOpen(false);
+      setAccountModal(accountModalFromSearchParams);
+      return;
+    }
+
+    setAccountModal((currentSection) =>
+      currentSection === "settings" ? null : currentSection,
+    );
+  }, [accountModalFromSearchParams, pathname]);
 
   // /app/products/:id 패턴 감지
   const productDetailMatch = /^\/app\/products\/([^/]+)$/.exec(pathname);
@@ -461,10 +531,7 @@ export function AppShell() {
               icon={Settings}
               label={t("shell.accountProfile")}
               tabIndex={accountMenuOpen ? undefined : -1}
-              onClick={() => {
-                setAccountMenuOpen(false);
-                setAccountModal("profile");
-              }}
+              onClick={() => openAccountModal("settings")}
             />
             <AccountMenuItem
               icon={LogOut}
@@ -678,12 +745,12 @@ export function AppShell() {
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {accountModal ? (
-        <AccountModal onClose={() => setAccountModal(null)}>
+        <AccountModal onClose={closeAccountModal}>
           <AccountModalContent
-            onClose={() => setAccountModal(null)}
+            onClose={closeAccountModal}
             profileLabel={userName}
             section={accountModal}
-            onSectionChange={setAccountModal}
+            onSectionChange={openAccountModal}
           />
         </AccountModal>
       ) : null}
@@ -820,13 +887,6 @@ function LogoutConfirmModal({
     </div>
   );
 }
-
-type AccountModalSection =
-  | "profile"
-  | "settings"
-  | "notifications"
-  | "terms"
-  | "privacy";
 
 // 기능 : 계정 모달을 렌더링합니다.
 function AccountModal({
@@ -1039,9 +1099,9 @@ function AccountSettingsModalContent() {
   const [timeZone, setTimeZone] = useState("Asia/Seoul");
   const [countryCode, setCountryCode] = useState("KR");
   const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
-  const [formError, setFormError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
+  const [notice, setNotice] = useState<AccountSettingsNotice | null>(null);
 
+  // 기능 : 조회된 프로필 값을 앱 기본값 form 상태에 반영합니다.
   useEffect(() => {
     if (!profile) {
       return;
@@ -1053,11 +1113,10 @@ function AccountSettingsModalContent() {
     setDefaultCurrencyCode(profile.defaultCurrencyCode);
   }, [profile]);
 
-  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+  // 기능 : 계정 Settings 모달에서 앱 기본값 저장 요청을 처리합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setFormError(null);
-    setSaved(false);
+    setNotice(null);
 
     try {
       await updateProfileMutation.mutateAsync({
@@ -1066,9 +1125,9 @@ function AccountSettingsModalContent() {
         countryCode,
         defaultCurrencyCode,
       });
-      setSaved(true);
+      setNotice({ message: t("settings.profileSaved"), variant: "success" });
     } catch (error) {
-      setFormError(getApiErrorMessage(error));
+      setNotice({ message: getApiErrorMessage(error), variant: "error" });
     }
   };
 
@@ -1084,6 +1143,8 @@ function AccountSettingsModalContent() {
           </p>
         </div>
 
+        {notice ? <AccountSettingsNoticeBanner notice={notice} /> : null}
+
         {profileQuery.isLoading ? (
           <ProfileLoadingState />
         ) : profileQuery.error ? (
@@ -1092,118 +1153,115 @@ function AccountSettingsModalContent() {
             onRetry={() => void profileQuery.refetch()}
           />
         ) : profile ? (
-          <form className="mt-10 grid gap-10" onSubmit={onSubmit}>
-            <ProfileSection title={t("settings.regionSettings")}>
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="grid gap-1.5">
-                  <span className="text-[13px] font-medium text-[#111827]">
-                    {t("settings.displayLanguage")}
-                  </span>
-                  <select
-                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
-                    onChange={(event) => setPreferredLocale(event.target.value)}
-                    value={preferredLocale}
-                  >
-                    {accountLocaleOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {t(option.labelKey)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="grid gap-1.5">
-                  <span className="text-[13px] font-medium text-[#111827]">
-                    {t("settings.timeZone")}
-                  </span>
-                  <select
-                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
-                    onChange={(event) => setTimeZone(event.target.value)}
-                    value={timeZone}
-                  >
-                    {getAccountTimeZoneOptions(timeZone).map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {/* 기능 : 앱 전역 입력 기본값에 사용할 국가를 선택합니다. */}
-                <label className="grid gap-1.5">
-                  <span className="text-[13px] font-medium text-[#111827]">
-                    {t("settings.defaultCountry")}
-                  </span>
-                  <select
-                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
-                    onChange={(event) => setCountryCode(event.target.value)}
-                    value={countryCode}
-                  >
-                    {accountCountryOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {t(option.labelKey)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {/* 기능 : 금액 입력 기본값에 사용할 통화를 선택합니다. */}
-                <label className="grid gap-1.5">
-                  <span className="text-[13px] font-medium text-[#111827]">
-                    {t("settings.defaultCurrency")}
-                  </span>
-                  <select
-                    className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
-                    onChange={(event) => setDefaultCurrencyCode(event.target.value)}
-                    value={defaultCurrencyCode}
-                  >
-                    {accountCurrencyOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="mt-5 flex items-center justify-between gap-3">
-                <div>
-                  {formError ? (
-                    <p className="text-[13px] text-destructive">{formError}</p>
-                  ) : saved ? (
-                    <p className="text-[13px] text-[#0075DE]">{t("settings.profileSaved")}</p>
-                  ) : null}
+          <div className="mt-10 grid gap-10">
+            <form onSubmit={onSubmit}>
+              <ProfileSection title={t("settings.regionSettings")}>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <label className="grid gap-1.5">
+                    <span className="text-[13px] font-medium text-[#111827]">
+                      {t("settings.displayLanguage")}
+                    </span>
+                    <select
+                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      onChange={(event) => setPreferredLocale(event.target.value)}
+                      value={preferredLocale}
+                    >
+                      {accountLocaleOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {t(option.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="grid gap-1.5">
+                    <span className="text-[13px] font-medium text-[#111827]">
+                      {t("settings.timeZone")}
+                    </span>
+                    <select
+                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      onChange={(event) => setTimeZone(event.target.value)}
+                      value={timeZone}
+                    >
+                      {getAccountTimeZoneOptions(timeZone).map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {/* 기능 : 앱 전역 입력 기본값에 사용할 국가를 선택합니다. */}
+                  <label className="grid gap-1.5">
+                    <span className="text-[13px] font-medium text-[#111827]">
+                      {t("settings.defaultCountry")}
+                    </span>
+                    <select
+                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      onChange={(event) => setCountryCode(event.target.value)}
+                      value={countryCode}
+                    >
+                      {accountCountryOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {t(option.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {/* 기능 : 금액 입력 기본값에 사용할 통화를 선택합니다. */}
+                  <label className="grid gap-1.5">
+                    <span className="text-[13px] font-medium text-[#111827]">
+                      {t("settings.defaultCurrency")}
+                    </span>
+                    <select
+                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      onChange={(event) =>
+                        setDefaultCurrencyCode(event.target.value)
+                      }
+                      value={defaultCurrencyCode}
+                    >
+                      {accountCurrencyOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
-                <button
-                  className="h-9 rounded-md bg-[#0075DE] px-4 text-[13px] font-semibold text-white transition hover:bg-[#0068C8] disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled={updateProfileMutation.isPending}
-                  type="submit"
-                >
-                  {t("settings.saveProfile")}
-                </button>
-              </div>
-            </ProfileSection>
-
-            <ProfileSection title={t("settings.loginMetadata")}>
-              <div className="grid gap-1">
-                <ProfileInfoRow
-                  label={t("settings.defaultCountryJoined")}
-                  value={profile.signupCountryCode ?? t("common.noRecord")}
-                />
-                <ProfileInfoRow
-                  label={t("settings.joinedTimeZone")}
-                  value={profile.signupTimeZone ?? t("common.noRecord")}
-                />
-                <ProfileInfoRow
-                  label={t("settings.defaultCountryLastLogin")}
-                  value={profile.lastLoginCountryCode ?? t("common.noRecord")}
-                />
-                <ProfileInfoRow
-                  label={t("settings.lastLoginTimeZone")}
-                  value={profile.lastLoginTimeZone ?? t("common.noRecord")}
-                />
-              </div>
-            </ProfileSection>
-          </form>
+                <div className="mt-5 flex justify-end">
+                  <button
+                    className="h-9 rounded-md bg-[#111827] px-4 text-[13px] font-semibold text-white transition hover:bg-[#374151] disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={updateProfileMutation.isPending}
+                    type="submit"
+                  >
+                    {t("settings.saveProfile")}
+                  </button>
+                </div>
+              </ProfileSection>
+            </form>
+          </div>
         ) : null}
       </div>
     </section>
+  );
+}
+
+// 기능 : 계정 Settings 모달의 section 공통 성공/오류 안내를 표시합니다.
+function AccountSettingsNoticeBanner({
+  notice,
+}: {
+  readonly notice: AccountSettingsNotice;
+}) {
+  const className =
+    notice.variant === "success"
+      ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#047857]"
+      : "border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]";
+
+  return (
+    <div
+      aria-live={notice.variant === "error" ? "assertive" : "polite"}
+      className={`mt-6 rounded-md border px-3 py-2 text-[13px] font-medium ${className}`}
+    >
+      {notice.message}
+    </div>
   );
 }
 

@@ -1203,9 +1203,12 @@ function createAuthUser() {
   };
 }
 
+// 기능 : 인증된 사용자 profile API의 기본 응답과 수정 응답을 생성합니다.
 function createUserProfile(body: unknown) {
   return {
     createdAt: NOW,
+    countryCode: stringField(body, "countryCode") ?? "KR",
+    defaultCurrencyCode: stringField(body, "defaultCurrencyCode") ?? "KRW",
     email: "mobile-qa@example.test",
     id: "user-mobile-qa-001",
     lastLoginAt: NOW,
