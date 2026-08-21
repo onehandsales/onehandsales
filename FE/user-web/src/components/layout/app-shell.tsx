@@ -592,10 +592,11 @@ export function AppShell() {
               />
               <span>{t("navigation.home")}</span>
             </button>
+            <NotificationBellButton className="h-8 w-8 shrink-0" />
             <button
               aria-label={t("shell.integratedSearch")}
               type="button"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+              className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
@@ -603,7 +604,6 @@ export function AppShell() {
                 strokeWidth={2}
               />
             </button>
-            <NotificationBellButton className="h-8 w-8 shrink-0" />
           </div>
           {/* Nav */}
           <div className="flex-1 overflow-y-auto px-2 py-1">
