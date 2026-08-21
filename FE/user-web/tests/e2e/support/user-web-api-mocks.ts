@@ -54,6 +54,7 @@ export type UserWebApiMockStore = {
   readonly importTemplates: MutableRecord[];
   readonly importUserLogs: MutableRecord[];
   readonly notificationSettings: MutableRecord;
+  readonly followUpDeliverySettings: MutableRecord;
   readonly notifications: MutableRecord[];
   readonly trashItems: MutableRecord[];
   readonly counters: Record<string, number>;
@@ -246,6 +247,11 @@ async function handleApiRequest(
   if (pathname === "/api/notifications/settings" && method === "PATCH") {
     Object.assign(store.notificationSettings, await readJsonBody(route));
     return json(store.notificationSettings);
+  }
+
+  // 기능 : account settings modal의 follow-up delivery 설정 조회 응답을 제공합니다.
+  if (pathname === "/api/follow-up-delivery/settings" && method === "GET") {
+    return json(store.followUpDeliverySettings);
   }
 
   if (pathname === "/api/notifications/browser-push/public-key" && method === "GET") {
@@ -1201,6 +1207,7 @@ function createStore(): UserWebApiMockStore {
     importUserLogs: [createImportUserLog()],
     meetingNotes: [meetingNote],
     notificationSettings: createNotificationSettings(),
+    followUpDeliverySettings: createFollowUpDeliverySettings(),
     notifications,
     productCategory,
     productStatus,
@@ -1448,6 +1455,52 @@ function createNotificationSettings() {
     emailNotificationEnabled: true,
     scheduleReminderEnabled: true,
     scheduleReminderMinutes: 30,
+  };
+}
+
+// 기능 : account settings modal follow-up delivery 섹션에 필요한 연결 설정 fixture를 만듭니다.
+function createFollowUpDeliverySettings() {
+  return {
+    consentNotices: [
+      {
+        acknowledgedAt: NOW,
+        channel: "EMAIL",
+      },
+      {
+        acknowledgedAt: NOW,
+        channel: "SMS",
+      },
+    ],
+    emailConnections: [
+      {
+        connectedAt: NOW,
+        disconnectedAt: null,
+        id: "follow-up-email-google-001",
+        provider: "GOOGLE",
+        providerAccountEmail: "mobile-qa@example.test",
+        reconnectRequiredAt: null,
+        status: "CONNECTED",
+      },
+      {
+        connectedAt: null,
+        disconnectedAt: NOW,
+        id: "follow-up-email-microsoft-001",
+        provider: "MICROSOFT",
+        providerAccountEmail: "sales@example.test",
+        reconnectRequiredAt: null,
+        status: "DISCONNECTED",
+      },
+    ],
+    smsSenderNumbers: [
+      {
+        id: "follow-up-sms-001",
+        phoneE164Masked: "+82******5678",
+        revokedAt: null,
+        status: "VERIFIED",
+        verificationExpiresAt: NEXT_WEEK,
+        verifiedAt: NOW,
+      },
+    ],
   };
 }
 

@@ -19,6 +19,21 @@ test.describe("G03 account settings route link QA", () => {
     await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();
 
+    // 기능 : follow-up OAuth callback이 account settings modal 내부 설정 조회까지 연결되는지 검증합니다.
+    const followUpSettingsResponse = page.waitForResponse((response) => {
+      const responseUrl = new URL(response.url());
+
+      return (
+        response.request().method() === "GET" &&
+        responseUrl.pathname === "/api/follow-up-delivery/settings"
+      );
+    });
+    await page.goto("/app/settings?followUpEmailConnection=google&status=connected");
+    await followUpSettingsResponse;
+    await expect(page).toHaveURL(/\/app\?account=settings$/);
+    await expect(page.getByRole("dialog").first()).toBeVisible();
+    await expect(page.locator("body")).toContainText("Gmail");
+
     await page.goto("/app/settings?googleCalendar=connected");
     await expect(page).toHaveURL(/\/app\/schedules\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();

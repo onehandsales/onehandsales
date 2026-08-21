@@ -62,6 +62,7 @@ import {
   ServiceNotificationSettingsSection,
 } from "@/features/notification";
 import { AccountDataRequestsSettingsSection } from "@/features/account-request";
+import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
@@ -1415,6 +1416,13 @@ function AccountSettingsModalContent() {
 
             <ProfileSection title="계정 데이터 요청">
               <AccountDataRequestsSettingsSection
+                onNotice={onSettingsSectionNotice}
+                presentation="modal"
+              />
+            </ProfileSection>
+
+            <ProfileSection title="후속 연락">
+              <FollowUpDeliverySettingsSection
                 onNotice={onSettingsSectionNotice}
                 presentation="modal"
               />

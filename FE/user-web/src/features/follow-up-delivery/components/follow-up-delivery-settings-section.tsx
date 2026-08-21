@@ -31,7 +31,10 @@ import { formatDateTime } from "@/utils/format";
 
 type FollowUpDeliverySettingsSectionProps = {
   readonly onNotice: (message: string) => void;
+  readonly presentation?: FollowUpDeliverySettingsPresentation;
 };
+
+type FollowUpDeliverySettingsPresentation = "page" | "modal";
 
 const emailProviders: readonly {
   readonly provider: FollowUpEmailProvider;
@@ -43,13 +46,19 @@ const emailProviders: readonly {
 
 const E164_PATTERN = /^\+[1-9]\d{7,14}$/;
 
+// 기능 : follow-up delivery 설정 섹션과 OAuth callback query 처리를 렌더링합니다.
 export function FollowUpDeliverySettingsSection({
   onNotice,
+  presentation = "page",
 }: FollowUpDeliverySettingsSectionProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [callbackError, setCallbackError] = useState<string | null>(null);
   const settingsQuery = useFollowUpDeliverySettings();
   const refetchSettings = settingsQuery.refetch;
+  const contentClassName =
+    presentation === "page"
+      ? "grid gap-5 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm"
+      : "grid min-w-0 gap-5";
 
   useEffect(() => {
     const provider = searchParams.get("followUpEmailConnection");
@@ -80,37 +89,55 @@ export function FollowUpDeliverySettingsSection({
     );
   }, [onNotice, refetchSettings, searchParams, setSearchParams]);
 
+  const content = (
+    <div className={contentClassName}>
+      {callbackError ? <InlineAlert message={callbackError} /> : null}
+      {settingsQuery.isLoading ? (
+        <SettingsSkeleton rows={5} />
+      ) : settingsQuery.isError ? (
+        <InlineError
+          error={settingsQuery.error}
+          onRetry={() => void settingsQuery.refetch()}
+        />
+      ) : (
+        <>
+          <EmailConnectionSettings
+            connections={settingsQuery.data?.emailConnections ?? []}
+            onChanged={() => void settingsQuery.refetch()}
+            onNotice={onNotice}
+            presentation={presentation}
+          />
+          <SmsSenderSettings
+            onChanged={() => void settingsQuery.refetch()}
+            onNotice={onNotice}
+            presentation={presentation}
+            senderNumbers={settingsQuery.data?.smsSenderNumbers ?? []}
+          />
+        </>
+      )}
+    </div>
+  );
+
+  if (presentation === "modal") {
+    return (
+      <section className="grid min-w-0 gap-4">
+        <p className="text-[13px] leading-6 text-[#64748B]">
+          AI 리포트 후속 연락에 사용할 이메일과 문자 발신 수단을 관리합니다.
+        </p>
+        {content}
+      </section>
+    );
+  }
+
   return (
     <section className="grid gap-3">
       <SettingsHeader />
-      <div className="grid gap-5 rounded-lg border border-[#E2E5EC] bg-white p-5 shadow-sm">
-        {callbackError ? <InlineAlert message={callbackError} /> : null}
-        {settingsQuery.isLoading ? (
-          <SettingsSkeleton rows={5} />
-        ) : settingsQuery.isError ? (
-          <InlineError
-            error={settingsQuery.error}
-            onRetry={() => void settingsQuery.refetch()}
-          />
-        ) : (
-          <>
-            <EmailConnectionSettings
-              connections={settingsQuery.data?.emailConnections ?? []}
-              onChanged={() => void settingsQuery.refetch()}
-              onNotice={onNotice}
-            />
-            <SmsSenderSettings
-              onChanged={() => void settingsQuery.refetch()}
-              onNotice={onNotice}
-              senderNumbers={settingsQuery.data?.smsSenderNumbers ?? []}
-            />
-          </>
-        )}
-      </div>
+      {content}
     </section>
   );
 }
 
+// 기능 : settings page에서 follow-up delivery 섹션 헤더를 렌더링합니다.
 function SettingsHeader() {
   return (
     <div className="flex items-start gap-3">
@@ -129,14 +156,17 @@ function SettingsHeader() {
   );
 }
 
+// 기능 : follow-up 이메일 provider 연결 상태와 연결/해제 동작을 렌더링합니다.
 function EmailConnectionSettings({
   connections,
   onChanged,
   onNotice,
+  presentation,
 }: {
   readonly connections: readonly FollowUpEmailConnection[];
   readonly onChanged: () => void;
   readonly onNotice: (message: string) => void;
+  readonly presentation: FollowUpDeliverySettingsPresentation;
 }) {
   const startConnectMutation = useStartFollowUpEmailConnectionMutation();
   const disconnectMutation = useDisconnectFollowUpEmailConnectionMutation();
@@ -153,7 +183,14 @@ function EmailConnectionSettings({
       ),
     [connections]
   );
+  const iconClassName =
+    presentation === "modal" ? "text-[#64748B]" : "text-[#4880EE]";
+  const neutralPrimaryButtonClassName =
+    presentation === "modal"
+      ? "border-[#111827] bg-[#111827] text-white hover:bg-[#374151]"
+      : undefined;
 
+  // 기능 : provider 연결 시작 요청 후 외부 OAuth 승인 화면으로 이동합니다.
   const connect = async (provider: FollowUpEmailProvider) => {
     setActionError(null);
 
@@ -168,6 +205,7 @@ function EmailConnectionSettings({
     }
   };
 
+  // 기능 : 선택한 provider 연결 해제 요청을 처리하고 설정 상태를 갱신합니다.
   const disconnect = async () => {
     if (!disconnectTarget) {
       return;
@@ -190,7 +228,7 @@ function EmailConnectionSettings({
   return (
     <section className="grid gap-3">
       <div className="flex min-w-0 items-center gap-2">
-        <Mail className="h-4 w-4 shrink-0 text-[#4880EE]" />
+        <Mail className={`h-4 w-4 shrink-0 ${iconClassName}`} />
         <h3 className="text-sm font-semibold text-[#111827]">이메일 발신</h3>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
@@ -248,6 +286,9 @@ function EmailConnectionSettings({
                   </Button>
                 ) : null}
                 <Button
+                  className={
+                    !isConnected ? neutralPrimaryButtonClassName : undefined
+                  }
                   disabled={startConnectMutation.isPending}
                   isPending={
                     startConnectMutation.isPending && !disconnectMutation.isPending
@@ -255,7 +296,13 @@ function EmailConnectionSettings({
                   onClick={() => void connect(provider)}
                   size="sm"
                   type="button"
-                  variant={isConnected ? "secondary" : "primary"}
+                  variant={
+                    isConnected
+                      ? "secondary"
+                      : presentation === "modal"
+                        ? "secondary"
+                        : "primary"
+                  }
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                   {isConnected ? "다시 연결" : reconnectRequired ? "재연결" : "연결"}
@@ -285,14 +332,17 @@ function EmailConnectionSettings({
   );
 }
 
+// 기능 : follow-up 문자 발신번호 등록/인증/회수 동작을 렌더링합니다.
 function SmsSenderSettings({
   senderNumbers,
   onChanged,
   onNotice,
+  presentation,
 }: {
   readonly senderNumbers: readonly FollowUpSmsSenderNumber[];
   readonly onChanged: () => void;
   readonly onNotice: (message: string) => void;
+  readonly presentation: FollowUpDeliverySettingsPresentation;
 }) {
   const requestMutation =
     useRequestFollowUpSmsSenderNumberVerificationMutation();
@@ -303,7 +353,18 @@ function SmsSenderSettings({
     Record<string, string>
   >({});
   const [actionError, setActionError] = useState<string | null>(null);
+  const iconClassName =
+    presentation === "modal" ? "text-[#64748B]" : "text-[#4880EE]";
+  const formClassName =
+    presentation === "page"
+      ? "grid gap-2 rounded-md border border-[#E2E5EC] bg-[#F8FAFC] px-3 py-3 sm:grid-cols-[minmax(0,1fr)_auto]"
+      : "grid gap-2 rounded-md border border-[#E2E5EC] bg-white px-3 py-3 sm:grid-cols-[minmax(0,1fr)_auto]";
+  const neutralPrimaryButtonClassName =
+    presentation === "modal"
+      ? "border-[#111827] bg-[#111827] text-white hover:bg-[#374151]"
+      : undefined;
 
+  // 기능 : 입력된 E.164 번호로 문자 발신번호 인증 요청을 시작합니다.
   const requestVerification = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const normalizedPhone = phoneE164.trim();
@@ -325,6 +386,7 @@ function SmsSenderSettings({
     }
   };
 
+  // 기능 : 발신번호별 인증 코드를 검증하고 설정 상태를 갱신합니다.
   const verify = async (senderNumberId: string) => {
     const code = verificationCodes[senderNumberId]?.trim() ?? "";
 
@@ -348,6 +410,7 @@ function SmsSenderSettings({
     }
   };
 
+  // 기능 : 등록된 문자 발신번호 회수 요청을 처리합니다.
   const revoke = async (senderNumberId: string) => {
     setActionError(null);
 
@@ -363,11 +426,11 @@ function SmsSenderSettings({
   return (
     <section className="grid gap-3 border-t border-[#E2E5EC] pt-4">
       <div className="flex min-w-0 items-center gap-2">
-        <Smartphone className="h-4 w-4 shrink-0 text-[#4880EE]" />
+        <Smartphone className={`h-4 w-4 shrink-0 ${iconClassName}`} />
         <h3 className="text-sm font-semibold text-[#111827]">문자 발신번호</h3>
       </div>
       <form
-        className="grid gap-2 rounded-md border border-[#E2E5EC] bg-[#F8FAFC] px-3 py-3 sm:grid-cols-[minmax(0,1fr)_auto]"
+        className={formClassName}
         onSubmit={(event) => void requestVerification(event)}
       >
         <label className="grid min-w-0 gap-1.5">
@@ -383,11 +446,12 @@ function SmsSenderSettings({
         </label>
         <div className="flex items-end">
           <Button
+            className={neutralPrimaryButtonClassName}
             disabled={requestMutation.isPending}
             isPending={requestMutation.isPending}
             size="sm"
             type="submit"
-            variant="primary"
+            variant={presentation === "modal" ? "secondary" : "primary"}
           >
             <ShieldCheck className="h-3.5 w-3.5" />
             인증 요청
