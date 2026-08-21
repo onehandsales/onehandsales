@@ -19,7 +19,6 @@ import {
   FileText,
   House,
   Laptop,
-  LifeBuoy,
   Loader2,
   LogOut,
   Menu,
@@ -27,6 +26,7 @@ import {
   Package,
   Pencil,
   Plus,
+  ScreenShare,
   Search,
   Settings,
   ShieldCheck,
@@ -644,10 +644,28 @@ export function AppShell() {
   const helpMenuItems: Array<{
     readonly icon: LucideIcon;
     readonly label: string;
+    readonly onClick: () => void;
   }> = [
-    { icon: BookOpen, label: t("shell.helpGuide") },
-    { icon: LifeBuoy, label: t("shell.helpSupportRequest") },
-    { icon: Bug, label: t("shell.helpErrorReport") },
+    {
+      icon: BookOpen,
+      label: t("shell.helpGuide"),
+      onClick: () => setHelpMenuOpen(false),
+    },
+    {
+      icon: ScreenShare,
+      label: t("shell.helpSupportRequest"),
+      onClick: () => setHelpMenuOpen(false),
+    },
+    {
+      icon: Bug,
+      label: t("shell.helpErrorReport"),
+      onClick: () => setHelpMenuOpen(false),
+    },
+    {
+      icon: FileText,
+      label: `${t("shell.terms")} / ${t("shell.privacy")}`,
+      onClick: () => openAccountModal("terms"),
+    },
   ];
 
   const sidebarHelpMenu = (
@@ -671,7 +689,7 @@ export function AppShell() {
                 key={item.label}
                 label={item.label}
                 tabIndex={helpMenuOpen ? undefined : -1}
-                onClick={() => setHelpMenuOpen(false)}
+                onClick={item.onClick}
               />
             ))}
           </div>
