@@ -517,8 +517,11 @@ export function AppShell() {
   const sidebarAppLinks = (
     <div className="mt-3">
       <button
+        aria-label={t(
+          onehandAppOpen ? "navigation.appNameClose" : "navigation.appNameOpen",
+        )}
         aria-expanded={onehandAppOpen}
-        className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+        className="group/sidebar-tooltip relative mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
         onClick={() => setOnehandAppOpen((open) => !open)}
         type="button"
       >
@@ -529,6 +532,13 @@ export function AppShell() {
           strokeWidth={2}
         />
         <span>{t("navigation.appName")}</span>
+        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+          {t(
+            onehandAppOpen
+              ? "navigation.appNameClose"
+              : "navigation.appNameOpen",
+          )}
+        </span>
       </button>
       {onehandAppOpen ? (
         <div className="flex flex-col gap-px">
@@ -576,7 +586,7 @@ export function AppShell() {
           <div className="flex gap-1 px-2 pb-1">
             <button
               aria-label={t("shell.homeAria")}
-              className={`group flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
+              className={`group/sidebar-tooltip relative flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
                 isHome
                   ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
@@ -591,18 +601,27 @@ export function AppShell() {
                 strokeWidth={2}
               />
               <span>{t("navigation.home")}</span>
+              <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+                {t("shell.homeTooltip")}
+              </span>
             </button>
-            <NotificationBellButton className="h-8 w-8 shrink-0" />
+            <NotificationBellButton
+              className="h-8 w-8 shrink-0"
+              tooltipLabel={t("shell.notificationsTooltip")}
+            />
             <button
               aria-label={t("shell.integratedSearch")}
               type="button"
-              className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+              className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               onClick={() => setSearchOpen(true)}
             >
               <Search
                 className="h-5 w-5 shrink-0"
                 strokeWidth={2}
               />
+              <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+                {t("shell.searchTooltip")}
+              </span>
             </button>
           </div>
           {/* Nav */}

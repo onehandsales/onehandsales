@@ -18,6 +18,8 @@ import { cn } from "@/utils/cn";
 const groups: Array<{
   readonly id: string;
   readonly labelKey: AppI18nKey;
+  readonly closeTooltipKey: AppI18nKey;
+  readonly openTooltipKey: AppI18nKey;
   readonly items: ReadonlyArray<{
     readonly labelKey: AppI18nKey;
     readonly to: string;
@@ -29,6 +31,8 @@ const groups: Array<{
   {
     id: "main",
     labelKey: "navigation.mainGroup",
+    closeTooltipKey: "navigation.mainGroupClose",
+    openTooltipKey: "navigation.mainGroupOpen",
     items: [
       { labelKey: "navigation.deals", to: "/app/deals", icon: BriefcaseBusiness },
       {
@@ -43,6 +47,8 @@ const groups: Array<{
   {
     id: "work",
     labelKey: "navigation.workGroup",
+    closeTooltipKey: "navigation.workGroupClose",
+    openTooltipKey: "navigation.workGroupOpen",
     items: [
       { labelKey: "navigation.schedules", to: "/app/schedules", icon: CalendarDays },
       { labelKey: "navigation.meetingNotes", to: "/app/meeting-notes", icon: NotebookPen },
@@ -70,8 +76,9 @@ export function SidebarNav({ className }: SidebarNavProps) {
         return (
           <div key={group.id}>
             <button
+              aria-label={t(isOpen ? group.closeTooltipKey : group.openTooltipKey)}
               aria-expanded={isOpen}
-              className="mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+              className="group/sidebar-tooltip relative mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               onClick={() =>
                 setOpenGroups((current) => ({
                   ...current,
@@ -88,6 +95,9 @@ export function SidebarNav({ className }: SidebarNavProps) {
                 strokeWidth={2}
               />
               <span>{t(group.labelKey)}</span>
+              <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+                {t(isOpen ? group.closeTooltipKey : group.openTooltipKey)}
+              </span>
             </button>
             {isOpen ? (
               <div className="flex flex-col gap-px">
