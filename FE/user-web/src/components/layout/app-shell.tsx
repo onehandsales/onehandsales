@@ -9,13 +9,17 @@ import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
   Bell,
+  BookOpen,
   BriefcaseBusiness,
+  Bug,
   CalendarDays,
   ChevronsLeft,
   ChevronRight,
+  CircleHelp,
   FileText,
   House,
   Laptop,
+  LifeBuoy,
   Loader2,
   LogOut,
   Menu,
@@ -245,6 +249,7 @@ export function AppShell() {
   const { t } = useAppI18n();
   const [searchOpen, setSearchOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [helpMenuOpen, setHelpMenuOpen] = useState(false);
   const [isSidebarManuallyCollapsed, setIsSidebarManuallyCollapsed] =
     useState(false);
   const [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] = useState(false);
@@ -256,6 +261,7 @@ export function AppShell() {
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [onehandAppOpen, setOnehandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  const helpMenuRef = useRef<HTMLDivElement | null>(null);
   const accountModalFromSearchParams =
     getAccountModalSectionFromSearchParams(searchParams);
   const isHome = pathname === HOME_PATH;
@@ -288,6 +294,7 @@ export function AppShell() {
   const openAccountModal = useCallback(
     (section: AccountModalSection) => {
       setAccountMenuOpen(false);
+      setHelpMenuOpen(false);
       setLogoutConfirmOpen(false);
       setAccountModal(section);
       syncAccountModalSearchParams(section);
@@ -313,6 +320,8 @@ export function AppShell() {
     const onKeyDown = (e: globalThis.KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
+        setAccountMenuOpen(false);
+        setHelpMenuOpen(false);
         setSearchOpen((prev) => !prev);
       }
     };
@@ -332,6 +341,15 @@ export function AppShell() {
     }, SIDEBAR_COLLAPSE_TRANSITION_MS);
 
     return () => window.clearTimeout(timerId);
+  }, [isSidebarCollapsed]);
+
+  useEffect(() => {
+    if (!isSidebarCollapsed) {
+      return;
+    }
+
+    setAccountMenuOpen(false);
+    setHelpMenuOpen(false);
   }, [isSidebarCollapsed]);
 
   useEffect(() => {
@@ -364,9 +382,40 @@ export function AppShell() {
     };
   }, [accountMenuOpen]);
 
+  useEffect(() => {
+    if (!helpMenuOpen) {
+      return;
+    }
+
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    const onMouseDown = (event: MouseEvent) => {
+      if (
+        helpMenuRef.current &&
+        !helpMenuRef.current.contains(event.target as Node)
+      ) {
+        setHelpMenuOpen(false);
+      }
+    };
+    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setHelpMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [helpMenuOpen]);
+
   // 기능 : route 이동 시 계정 메뉴와 local 모달 상태를 닫습니다.
   useEffect(() => {
     setAccountMenuOpen(false);
+    setHelpMenuOpen(false);
     setAccountModal(null);
     setLogoutConfirmOpen(false);
   }, [pathname]);
@@ -375,6 +424,7 @@ export function AppShell() {
   useEffect(() => {
     if (accountModalFromSearchParams) {
       setAccountMenuOpen(false);
+      setHelpMenuOpen(false);
       setLogoutConfirmOpen(false);
       setAccountModal(accountModalFromSearchParams);
       return;
@@ -552,7 +602,10 @@ export function AppShell() {
         aria-haspopup="menu"
         className="group/sidebar-tooltip relative flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] data-[open=true]:bg-[#E4E2DC] data-[open=true]:active:bg-[#D3D1CB]"
         data-open={accountMenuOpen}
-        onClick={() => setAccountMenuOpen((open) => !open)}
+        onClick={() => {
+          setHelpMenuOpen(false);
+          setAccountMenuOpen((open) => !open);
+        }}
         type="button"
       >
         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[14px] font-semibold text-white">
@@ -575,6 +628,7 @@ export function AppShell() {
         onClick={(event) => {
           event.stopPropagation();
           setAccountMenuOpen(false);
+          setHelpMenuOpen(false);
           setIsSidebarManuallyCollapsed(true);
         }}
         type="button"
@@ -583,6 +637,77 @@ export function AppShell() {
         <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
           {t("shell.sidebarClose")}
         </span>
+      </button>
+    </div>
+  );
+
+  const helpMenuItems: Array<{
+    readonly icon: LucideIcon;
+    readonly label: string;
+  }> = [
+    { icon: BookOpen, label: t("shell.helpGuide") },
+    { icon: LifeBuoy, label: t("shell.helpSupportRequest") },
+    { icon: Bug, label: t("shell.helpErrorReport") },
+  ];
+
+  const sidebarHelpMenu = (
+    <div className="relative px-2 pb-3 pt-2" ref={helpMenuRef}>
+      <div
+        aria-hidden={!helpMenuOpen}
+        className={`absolute bottom-[calc(100%+4px)] left-2 right-2 z-50 origin-bottom transition-all duration-150 ease-out ${
+          helpMenuOpen
+            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none translate-y-1 scale-[0.98] opacity-0"
+        }`}
+      >
+        <div
+          className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
+          role="menu"
+        >
+          <div className="grid gap-px">
+            {helpMenuItems.map((item) => (
+              <AccountMenuItem
+                icon={item.icon}
+                key={item.label}
+                label={item.label}
+                tabIndex={helpMenuOpen ? undefined : -1}
+                onClick={() => setHelpMenuOpen(false)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        aria-expanded={helpMenuOpen}
+        aria-haspopup="menu"
+        aria-label={t("shell.help")}
+        className={`group/sidebar-tooltip relative flex h-8 w-full items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
+          helpMenuOpen
+            ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
+            : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+        }`}
+        data-open={helpMenuOpen}
+        onClick={() => {
+          setAccountMenuOpen(false);
+          setHelpMenuOpen((open) => !open);
+        }}
+        type="button"
+      >
+        <CircleHelp
+          className={`h-5 w-5 shrink-0 ${
+            helpMenuOpen
+              ? "text-[#6B7280]"
+              : "text-[#9CA3AF] group-hover/sidebar-tooltip:text-[#6B7280]"
+          }`}
+          strokeWidth={2}
+        />
+        <span className="min-w-0 flex-1 truncate">{t("shell.help")}</span>
+        {!helpMenuOpen ? (
+          <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+            {t("shell.help")}
+          </span>
+        ) : null}
       </button>
     </div>
   );
@@ -664,7 +789,10 @@ export function AppShell() {
                   ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
               }`}
-              onClick={() => void navigate(HOME_PATH)}
+              onClick={() => {
+                setHelpMenuOpen(false);
+                void navigate(HOME_PATH);
+              }}
               type="button"
             >
               <House
@@ -686,7 +814,10 @@ export function AppShell() {
               aria-label={t("shell.integratedSearch")}
               type="button"
               className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-              onClick={() => setSearchOpen(true)}
+              onClick={() => {
+                setHelpMenuOpen(false);
+                setSearchOpen(true);
+              }}
             >
               <Search
                 className="h-5 w-5 shrink-0"
@@ -702,6 +833,7 @@ export function AppShell() {
             <SidebarNav />
             {sidebarAppLinks}
           </div>
+          {sidebarHelpMenu}
         </aside>
         <button
           aria-label={t("shell.sidebarOpen")}
