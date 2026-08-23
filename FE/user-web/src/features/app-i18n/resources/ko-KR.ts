@@ -101,12 +101,28 @@ export const koKRResource = {
     userFallback: "사용자",
   },
   helpModal: {
-    errorAction: "이메일로 에러 신고",
+    errorAction: "에러 신고하기",
     errorBodyDescription:
-      "브라우저, 기기, 재현 순서, 가능하면 스크린샷을 함께 보내 주세요.",
+      "현재 화면 스크린샷을 자동으로 준비하고, 포함 여부를 선택한 뒤 내용을 남겨 주세요.",
     errorBodyTitle: "에러 확인 정보",
+    errorCaptureFailed:
+      "스크린샷을 만들지 못했어요. 내용만 신고할 수 있어요.",
+    errorCaptureReady: "현재 화면 스크린샷이 준비됐어요.",
+    errorCapturing: "화면 캡처 중",
     errorDescription:
       "반복되는 오류나 화면 깨짐을 발견하면 현재 화면 주소와 발생 상황을 알려 주세요.",
+    errorDescriptionHint: "최소 10자 이상 입력해 주세요.",
+    errorDescriptionLabel: "에러 내용",
+    errorDescriptionPlaceholder: "어떤 에러가 발생했는지 적어 주세요.",
+    errorNoScreenshot: "스크린샷 없이 신고할 수 있어요.",
+    errorRetryCapture: "다시 캡처",
+    errorScreenshotAlt: "에러 신고 화면 스크린샷 미리보기",
+    errorScreenshotExcluded: "스크린샷 없이 내용만 신고됩니다.",
+    errorScreenshotIncluded: "스크린샷이 함께 신고됩니다.",
+    errorScreenshotToggleLabel: "스크린샷 포함 여부",
+    errorStartAction: "에러 신고하기",
+    errorSubmitAction: "신고하기",
+    errorSubmitting: "신고 중",
     errorTitle: "에러신고",
     guideDealDescription:
       "딜 목록에서 단계, 다음 행동, 마감일을 먼저 확인하고 필요한 기록으로 이동해요.",

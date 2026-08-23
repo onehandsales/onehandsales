@@ -58,6 +58,7 @@ import {
   useState,
 } from "react";
 import { useDealDetail, useDeleteDealMutation } from "@/features/deal";
+import { ErrorReportHelpContent } from "@/features/error-report";
 import {
   NotificationBellButton,
   ServiceNotificationSettingsSection,
@@ -1211,6 +1212,7 @@ function AccountModal({
       className={`fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6 transition-opacity duration-300 ease-out ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
+      data-error-report-capture-ignore="true"
       onMouseDown={onBackdropMouseDown}
     >
       <section
@@ -1480,7 +1482,10 @@ function HelpModal({
             <X className="h-4 w-4" strokeWidth={1.8} />
           </button>
           <div className="h-full min-h-0 overflow-y-auto">
-            <HelpModalSectionContent section={renderedSection} />
+            <HelpModalSectionContent
+              onClose={onClose}
+              section={renderedSection}
+            />
           </div>
         </div>
       </section>
@@ -1524,8 +1529,10 @@ function HelpModalSidebarItem({
 
 // 기능 : 도움말 모달에서 선택된 사이드바 섹션의 본문을 렌더링합니다.
 function HelpModalSectionContent({
+  onClose,
   section,
 }: {
+  readonly onClose: () => void;
   readonly section: HelpModalSection;
 }) {
   const { t } = useAppI18n();
@@ -1566,20 +1573,7 @@ function HelpModalSectionContent({
   }
 
   if (section === "error") {
-    return (
-      <HelpModalStaticContent
-        actionHref="mailto:team@onehandsales.com?subject=Onehand%20%EC%97%90%EB%9F%AC%EC%8B%A0%EA%B3%A0"
-        actionLabel={t("helpModal.errorAction")}
-        cards={[
-          {
-            title: t("helpModal.errorBodyTitle"),
-            description: t("helpModal.errorBodyDescription"),
-          },
-        ]}
-        description={t("helpModal.errorDescription")}
-        title={t("helpModal.errorTitle")}
-      />
-    );
+    return <ErrorReportHelpContent onSubmitted={onClose} />;
   }
 
   return (

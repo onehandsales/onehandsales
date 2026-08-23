@@ -414,6 +414,11 @@ enum AdminOperationCheckRunStatus {
   FAIL
 }
 
+/// 기능 : 사용자 에러 신고 처리 상태를 구분합니다.
+enum ErrorReportStatus {
+  OPEN
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -547,10 +552,41 @@ model User {
   dataExportRequests          UserDataExportRequest[]
   /// 기능 : 이 관리자가 기록한 운영 gate 점검 기록 목록입니다.
   adminOperationCheckRuns     AdminOperationCheckRun[]
+  /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
+  errorReports                ErrorReport[]
 
   @@index([role])
   @@index([status])
   @@index([createdAt])
+}
+
+/// 기능 : User Web 도움말 모달에서 접수된 에러 신고를 저장합니다.
+model ErrorReport {
+  id                        String            @id @default(uuid()) @db.Uuid
+  userId                    String            @db.Uuid
+  userEmail                 String?
+  userDisplayName           String?
+  userRole                  UserRole
+  description               String
+  pageUrl                   String
+  userAgent                 String?
+  requestId                 String?
+  screenshotStorageProvider String?
+  screenshotStorageBucket   String?
+  screenshotStorageKey      String?
+  screenshotFileName        String?
+  screenshotMimeType        String?
+  screenshotSizeBytes       Int?
+  screenshotChecksum        String?
+  status                    ErrorReportStatus @default(OPEN)
+  createdAt                 DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt                 DateTime          @updatedAt @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@map("error_reports")
 }
 
 model UserOAuthAccount {

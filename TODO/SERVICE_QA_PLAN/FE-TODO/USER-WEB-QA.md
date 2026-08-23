@@ -132,6 +132,15 @@ pnpm.cmd run test:e2e:analytics
 - locale/timeZone 표시
 - 로그아웃
 
+### Help / Error Report
+
+- 도움말 모달 `에러신고` 탭에서 `에러 신고하기` 진입
+- 현재 화면 screenshot 자동 생성
+- screenshot 포함 ON/OFF 동작
+- description 10자 미만에서 `신고하기` 비활성화
+- description 10자 이상에서 `POST /api/error-reports` 전송
+- 성공 메시지 표시 후 1초 뒤 모달 종료
+
 ## 5. 모바일/UX 확인 항목
 
 Viewport:

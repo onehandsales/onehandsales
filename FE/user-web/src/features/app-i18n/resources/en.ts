@@ -101,12 +101,28 @@ export const enResource = {
     userFallback: "User",
   },
   helpModal: {
-    errorAction: "Report by email",
+    errorAction: "Report error",
     errorBodyDescription:
-      "Send the browser, device, reproduction steps, and a screenshot if available.",
+      "We prepare a screenshot of the current screen, and you can choose whether to include it.",
     errorBodyTitle: "What helps us check it",
+    errorCaptureFailed:
+      "We could not create a screenshot. You can still send the report with text only.",
+    errorCaptureReady: "Current screen screenshot is ready.",
+    errorCapturing: "Capturing screen",
     errorDescription:
       "If an error repeats or a screen breaks, send the current page URL and what happened.",
+    errorDescriptionHint: "Enter at least 10 characters.",
+    errorDescriptionLabel: "Error details",
+    errorDescriptionPlaceholder: "Describe what error happened.",
+    errorNoScreenshot: "You can report without a screenshot.",
+    errorRetryCapture: "Capture again",
+    errorScreenshotAlt: "Error report screenshot preview",
+    errorScreenshotExcluded: "Only the text report will be sent.",
+    errorScreenshotIncluded: "The screenshot will be sent with the report.",
+    errorScreenshotToggleLabel: "Include screenshot",
+    errorStartAction: "Report error",
+    errorSubmitAction: "Submit report",
+    errorSubmitting: "Submitting",
     errorTitle: "Report an error",
     guideDealDescription:
       "Start from deal stage, next action, and due date, then move into the record that needs attention.",

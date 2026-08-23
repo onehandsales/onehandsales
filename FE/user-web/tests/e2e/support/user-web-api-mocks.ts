@@ -788,6 +788,16 @@ async function handleApiRequest(
     return json(scan, 201);
   }
 
+  if (pathname === "/api/error-reports" && method === "POST") {
+    return json(
+      {
+        id: nextId(store, "error-report"),
+        message: "신고가 접수되었어요. 문제를 빠르게 해결할게요.",
+      },
+      201,
+    );
+  }
+
   const businessCardConfirmMatch = pathname.match(/^\/api\/business-card-scans\/([^/]+)\/confirm$/);
   if (businessCardConfirmMatch && method === "POST") {
     const scan = requireItem(store.businessCardScans, businessCardConfirmMatch[1]);

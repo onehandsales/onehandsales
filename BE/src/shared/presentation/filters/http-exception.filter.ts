@@ -168,8 +168,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ADMIN_SYSTEM_ENVIRONMENT_UNSUPPORTED":
       case "ADMIN_SYSTEM_SECRET_IN_NOTE_BLOCKED":
       case "ADMIN_SYSTEM_CHECK_STATUS_INVALID":
+      case "ERROR_REPORT_DESCRIPTION_REQUIRED":
+      case "ERROR_REPORT_DESCRIPTION_TOO_SHORT":
+      case "ERROR_REPORT_DESCRIPTION_TOO_LONG":
+      case "ERROR_REPORT_PAGE_URL_REQUIRED":
+      case "ERROR_REPORT_PAGE_URL_TOO_LONG":
+      case "ERROR_REPORT_SCREENSHOT_TYPE_UNSUPPORTED":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
+      case "ERROR_REPORT_SCREENSHOT_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;
       case "ImportJobExpired":
       case "SmsSenderVerificationExpired":
@@ -196,6 +203,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "AiWeeklySalesReportProviderUnavailable":
       case "FollowUpProviderUnavailable":
       case "FollowUpDeliverySecretEncryptionKeyMissing":
+      case "ERROR_REPORT_SCREENSHOT_STORAGE_FAILED":
         return HttpStatus.SERVICE_UNAVAILABLE;
       case "GoogleCalendarProviderUnavailable":
       case "AUTH_PROVIDER_EXCHANGE_FAILED":
@@ -211,6 +219,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "TRASH_RECORD_NOT_FOUND":
       case "DATA_EXPORT_REQUEST_NOT_FOUND":
       case "ACCOUNT_DELETION_REQUEST_NOT_FOUND":
+      case "ERROR_REPORT_USER_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
       case "TRASH_RECOVERY_REQUEST_NOT_ALLOWED_BEFORE_EXPIRY":
       case "ACCOUNT_DELETION_REQUEST_NOT_CANCELABLE":

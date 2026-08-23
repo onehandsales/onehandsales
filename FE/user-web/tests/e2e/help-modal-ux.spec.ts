@@ -62,8 +62,33 @@ test.describe("help modal UX", () => {
       helpDialog.getByRole("link", { exact: true, name: "이메일로 지원 요청" }),
     ).toHaveAttribute("href", /mailto:team@onehandsales\.com/);
 
-    await helpDialog.getByRole("button", { exact: true, name: "닫기" }).click();
-    await expect(helpDialog).toBeHidden();
+    await helpDialog.getByRole("button", { exact: true, name: "에러신고" }).click();
+    await expect(
+      helpDialog.getByRole("heading", { exact: true, name: "에러신고" }),
+    ).toBeVisible();
+    await helpDialog
+      .getByRole("button", { exact: true, name: "에러 신고하기" })
+      .click();
+
+    const errorDescription = helpDialog.getByLabel("에러 내용");
+    const submitButton = helpDialog.getByRole("button", {
+      exact: true,
+      name: "신고하기",
+    });
+    await expect(errorDescription).toBeVisible({ timeout: 10000 });
+    await expect(submitButton).toBeDisabled();
+    await errorDescription.fill("짧아요");
+    await expect(submitButton).toBeDisabled();
+    await errorDescription.fill(
+      "홈 화면에서 카드가 겹쳐 보이고 버튼이 눌리지 않아요.",
+    );
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
+    await expect(
+      helpDialog.getByText("신고가 접수되었어요. 문제를 빠르게 해결할게요."),
+    ).toBeVisible();
+    await expect(helpDialog).toBeHidden({ timeout: 3000 });
+
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 });

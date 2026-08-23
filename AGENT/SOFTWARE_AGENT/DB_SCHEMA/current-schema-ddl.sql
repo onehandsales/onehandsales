@@ -160,6 +160,9 @@ CREATE TYPE "UserDataExportRequestStatus" AS ENUM ('REQUESTED', 'PROCESSING', 'R
 -- CreateEnum
 CREATE TYPE "AdminOperationCheckRunStatus" AS ENUM ('PASS', 'WARN', 'FAIL');
 
+-- CreateEnum
+CREATE TYPE "ErrorReportStatus" AS ENUM ('OPEN');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -338,6 +341,31 @@ CREATE TABLE "AdminOperationCheckRun" (
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "AdminOperationCheckRun_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "error_reports" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "userEmail" TEXT,
+    "userDisplayName" TEXT,
+    "userRole" "UserRole" NOT NULL,
+    "description" TEXT NOT NULL,
+    "pageUrl" TEXT NOT NULL,
+    "userAgent" TEXT,
+    "requestId" TEXT,
+    "screenshotStorageProvider" TEXT,
+    "screenshotStorageBucket" TEXT,
+    "screenshotStorageKey" TEXT,
+    "screenshotFileName" TEXT,
+    "screenshotMimeType" TEXT,
+    "screenshotSizeBytes" INTEGER,
+    "screenshotChecksum" TEXT,
+    "status" "ErrorReportStatus" NOT NULL DEFAULT 'OPEN',
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "error_reports_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1510,6 +1538,12 @@ CREATE INDEX "AdminOperationCheckRun_status_checkedAt_idx" ON "AdminOperationChe
 CREATE INDEX "AdminOperationCheckRun_adminUserId_checkedAt_idx" ON "AdminOperationCheckRun"("adminUserId", "checkedAt");
 
 -- CreateIndex
+CREATE INDEX "error_reports_userId_createdAt_idx" ON "error_reports"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "error_reports_status_createdAt_idx" ON "error_reports"("status", "createdAt");
+
+-- CreateIndex
 CREATE INDEX "ProductAnalyticsEvent_userId_eventName_occurredAt_idx" ON "ProductAnalyticsEvent"("userId", "eventName", "occurredAt");
 
 -- CreateIndex
@@ -2140,6 +2174,9 @@ ALTER TABLE "UserDataExportRequest" ADD CONSTRAINT "UserDataExportRequest_userId
 ALTER TABLE "AdminOperationCheckRun" ADD CONSTRAINT "AdminOperationCheckRun_adminUserId_fkey" FOREIGN KEY ("adminUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "error_reports" ADD CONSTRAINT "error_reports_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "ProductAnalyticsEvent" ADD CONSTRAINT "ProductAnalyticsEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -2471,4 +2508,3 @@ ALTER TABLE "CompanyUserPrivateMemoLog" ADD CONSTRAINT "CompanyUserPrivateMemoLo
 
 -- AddForeignKey
 ALTER TABLE "CompanyUserPrivateMemoLog" ADD CONSTRAINT "CompanyUserPrivateMemoLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-

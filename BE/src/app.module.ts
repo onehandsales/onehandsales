@@ -13,6 +13,7 @@ import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ContactModule } from "./modules/contact/infrastructure/contact.module";
 import { DataImportModule } from "./modules/data-import/infrastructure/data-import.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
+import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { FollowUpModule } from "./modules/follow-up/infrastructure/follow-up.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting-note.module";
@@ -44,6 +45,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     DataImportModule,
     ProductModule,
     DealModule,
+    ErrorReportModule,
     FollowUpModule,
     ScheduleModule,
     SalesReportModule,
