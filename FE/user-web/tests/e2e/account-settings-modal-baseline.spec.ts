@@ -20,6 +20,14 @@ test.describe("G01 account settings modal baseline", () => {
     await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(accountDialog.getByText("지역 설정")).toBeVisible();
     await expect(accountDialog.getByText("로그인 메타데이터")).toHaveCount(0);
+    await expect(
+      accountDialog.getByRole("button", { exact: true, name: "이용약관" }),
+    ).toHaveCount(0);
+    await expect(
+      accountDialog.getByRole("button", { exact: true, name: "개인정보" }),
+    ).toHaveCount(0);
+    await expect(accountDialog).toHaveClass(/transition-all/);
+    await expect(accountDialog).toHaveClass(/duration-300/);
 
     await accountDialog.getByLabel("기본 국가").selectOption("US");
     await accountDialog.getByLabel("기본 통화").selectOption("USD");

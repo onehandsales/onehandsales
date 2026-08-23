@@ -74,7 +74,7 @@ export const koKRResource = {
     freePlan: "무료 요금제",
     help: "도움말",
     helpErrorReport: "에러신고",
-    helpGuide: "가이드",
+    helpGuide: "사용 가이드",
     helpSupportRequest: "지원요청",
     homeAria: "홈",
     homeTooltip: "홈 이동하기",
@@ -99,6 +99,34 @@ export const koKRResource = {
     searchTooltip: "통합검색하기",
     terms: "이용약관",
     userFallback: "사용자",
+  },
+  helpModal: {
+    errorAction: "이메일로 에러 신고",
+    errorBodyDescription:
+      "브라우저, 기기, 재현 순서, 가능하면 스크린샷을 함께 보내 주세요.",
+    errorBodyTitle: "에러 확인 정보",
+    errorDescription:
+      "반복되는 오류나 화면 깨짐을 발견하면 현재 화면 주소와 발생 상황을 알려 주세요.",
+    errorTitle: "에러신고",
+    guideDealDescription:
+      "딜 목록에서 단계, 다음 행동, 마감일을 먼저 확인하고 필요한 기록으로 이동해요.",
+    guideDealTitle: "딜 흐름",
+    guideDescription:
+      "딜, 고객 기록, 일정, 회의록을 한 화면 흐름 안에서 확인하는 기준을 모았어요.",
+    guideRecordDescription:
+      "회사, 담당자, 제품은 검색과 필터로 좁힌 뒤 상세 화면에서 연결 기록을 확인해요.",
+    guideRecordTitle: "고객 기록",
+    guideTitle: "사용 가이드",
+    guideWorkDescription:
+      "일정과 회의록은 연결된 딜 맥락을 기준으로 남겨 후속 행동을 이어가요.",
+    guideWorkTitle: "일정과 회의록",
+    supportAction: "이메일로 지원 요청",
+    supportBodyDescription:
+      "문제가 발생한 화면, 기대한 동작, 실제 결과를 함께 적어주면 확인이 빨라요.",
+    supportBodyTitle: "보내주면 좋은 내용",
+    supportDescription:
+      "계정, 데이터, 연동 문제는 Onehand 팀에 요청해 주세요.",
+    supportTitle: "지원요청",
   },
   home: {
     activitiesTitle: "최근 활동",

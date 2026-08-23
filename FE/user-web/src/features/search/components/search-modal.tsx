@@ -157,7 +157,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     >
       {/* 배경 오버레이 */}
       <div
-        className={`absolute inset-0 bg-black/30 backdrop-blur-[2px] transition-opacity duration-[300ms] ease-out ${
+        className={`absolute inset-0 bg-black/30 backdrop-blur-[2px] transition-opacity duration-300 ease-out ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
@@ -165,7 +165,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
       {/* 모달 패널 */}
       <div
-        className={`relative z-10 mx-4 flex w-full max-w-[560px] origin-top flex-col overflow-hidden rounded-xl border border-[#E2E5EC] bg-white shadow-2xl transition-all duration-[300ms] ease-out ${
+        className={`relative z-10 mx-4 flex w-full max-w-[560px] origin-top flex-col overflow-hidden rounded-xl border border-[#E2E5EC] bg-white shadow-2xl transition-all duration-300 ease-out ${
           isVisible
             ? "translate-y-0 scale-100 opacity-100"
             : "-translate-y-4 scale-[0.96] opacity-0"

@@ -74,7 +74,7 @@ export const enResource = {
     freePlan: "Free Plan",
     help: "Help",
     helpErrorReport: "Report an error",
-    helpGuide: "Guide",
+    helpGuide: "User Guide",
     helpSupportRequest: "Support request",
     homeAria: "Home",
     homeTooltip: "Go home",
@@ -99,6 +99,34 @@ export const enResource = {
     searchTooltip: "Search",
     terms: "Terms",
     userFallback: "User",
+  },
+  helpModal: {
+    errorAction: "Report by email",
+    errorBodyDescription:
+      "Send the browser, device, reproduction steps, and a screenshot if available.",
+    errorBodyTitle: "What helps us check it",
+    errorDescription:
+      "If an error repeats or a screen breaks, send the current page URL and what happened.",
+    errorTitle: "Report an error",
+    guideDealDescription:
+      "Start from deal stage, next action, and due date, then move into the record that needs attention.",
+    guideDealTitle: "Deal flow",
+    guideDescription:
+      "Use these checkpoints to review deals, customer records, schedules, and meeting notes in one workspace.",
+    guideRecordDescription:
+      "Narrow companies, contacts, and products with search and filters, then review linked records on the detail screen.",
+    guideRecordTitle: "Customer records",
+    guideTitle: "User Guide",
+    guideWorkDescription:
+      "Keep schedules and meeting notes tied to deal context so follow-up stays visible.",
+    guideWorkTitle: "Schedule and notes",
+    supportAction: "Request support by email",
+    supportBodyDescription:
+      "Include the screen, what you expected, and what actually happened so we can check it faster.",
+    supportBodyTitle: "What to include",
+    supportDescription:
+      "Send account, data, or integration issues to the Onehand team.",
+    supportTitle: "Support request",
   },
   home: {
     activitiesTitle: "Recent Activity",

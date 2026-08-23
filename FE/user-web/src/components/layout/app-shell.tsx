@@ -49,6 +49,7 @@ import {
 import { SearchModal } from "@/features/search";
 import {
   type FormEvent,
+  type MouseEvent as ReactMouseEvent,
   type ReactNode,
   useCallback,
   useEffect,
@@ -77,13 +78,19 @@ import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/app";
 const SIDEBAR_COLLAPSE_TRANSITION_MS = 500;
+const ACCOUNT_MODAL_TRANSITION_MS = 300;
+const ACCOUNT_MODAL_OPEN_DELAY_MS = 20;
+const HELP_MODAL_TRANSITION_MS = 300;
+const HELP_MODAL_OPEN_DELAY_MS = 20;
+const LOGOUT_MODAL_TRANSITION_MS = 300;
+const LOGOUT_MODAL_OPEN_DELAY_MS = 20;
 
 type AccountModalSection =
   | AccountModalQuerySection
   | "profile"
-  | "notifications"
-  | "terms"
-  | "privacy";
+  | "notifications";
+
+type HelpModalSection = "guide" | "support" | "error" | "terms" | "privacy";
 
 type AccountSettingsNotice = {
   readonly message: string;
@@ -260,6 +267,9 @@ export function AppShell() {
   const [accountModal, setAccountModal] = useState<AccountModalSection | null>(
     null,
   );
+  const [lastAccountModalSection, setLastAccountModalSection] =
+    useState<AccountModalSection>("settings");
+  const [helpModal, setHelpModal] = useState<HelpModalSection | null>(null);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const [onehandAppOpen, setOnehandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
@@ -297,6 +307,7 @@ export function AppShell() {
     (section: AccountModalSection) => {
       setAccountMenuOpen(false);
       setHelpMenuOpen(false);
+      setHelpModal(null);
       setLogoutConfirmOpen(false);
       setAccountModal(section);
       syncAccountModalSearchParams(section);
@@ -309,6 +320,20 @@ export function AppShell() {
     setAccountModal(null);
     syncAccountModalSearchParams(null);
   }, [syncAccountModalSearchParams]);
+
+  // 기능 : 도움말 메뉴에서 선택한 섹션을 중앙 도움말 모달로 엽니다.
+  const openHelpModal = useCallback((section: HelpModalSection) => {
+    setAccountMenuOpen(false);
+    setHelpMenuOpen(false);
+    setSearchOpen(false);
+    setLogoutConfirmOpen(false);
+    setHelpModal(section);
+  }, []);
+
+  // 기능 : 도움말 모달을 닫고 선택 상태를 초기화합니다.
+  const closeHelpModal = useCallback(() => {
+    setHelpModal(null);
+  }, []);
 
   // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   const handleLogout = async () => {
@@ -324,6 +349,7 @@ export function AppShell() {
         e.preventDefault();
         setAccountMenuOpen(false);
         setHelpMenuOpen(false);
+        setHelpModal(null);
         setSearchOpen((prev) => !prev);
       }
     };
@@ -418,6 +444,7 @@ export function AppShell() {
   useEffect(() => {
     setAccountMenuOpen(false);
     setHelpMenuOpen(false);
+    setHelpModal(null);
     setAccountModal(null);
     setLogoutConfirmOpen(false);
   }, [pathname]);
@@ -427,6 +454,7 @@ export function AppShell() {
     if (accountModalFromSearchParams) {
       setAccountMenuOpen(false);
       setHelpMenuOpen(false);
+      setHelpModal(null);
       setLogoutConfirmOpen(false);
       setAccountModal(accountModalFromSearchParams);
       return;
@@ -436,6 +464,12 @@ export function AppShell() {
       currentSection === "settings" ? null : currentSection,
     );
   }, [accountModalFromSearchParams, pathname]);
+
+  useEffect(() => {
+    if (accountModal) {
+      setLastAccountModalSection(accountModal);
+    }
+  }, [accountModal]);
 
   // /app/products/:id 패턴 감지
   const productDetailMatch = /^\/app\/products\/([^/]+)$/.exec(pathname);
@@ -650,22 +684,27 @@ export function AppShell() {
     {
       icon: BookOpen,
       label: t("shell.helpGuide"),
-      onClick: () => setHelpMenuOpen(false),
+      onClick: () => openHelpModal("guide"),
     },
     {
       icon: ScreenShare,
       label: t("shell.helpSupportRequest"),
-      onClick: () => setHelpMenuOpen(false),
+      onClick: () => openHelpModal("support"),
     },
     {
       icon: Bug,
       label: t("shell.helpErrorReport"),
-      onClick: () => setHelpMenuOpen(false),
+      onClick: () => openHelpModal("error"),
     },
     {
       icon: FileText,
-      label: `${t("shell.terms")} / ${t("shell.privacy")}`,
-      onClick: () => openAccountModal("terms"),
+      label: t("shell.terms"),
+      onClick: () => openHelpModal("terms"),
+    },
+    {
+      icon: ShieldCheck,
+      label: t("shell.privacy"),
+      onClick: () => openHelpModal("privacy"),
     },
   ];
 
@@ -835,6 +874,7 @@ export function AppShell() {
               className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               onClick={() => {
                 setHelpMenuOpen(false);
+                setHelpModal(null);
                 setSearchOpen(true);
               }}
             >
@@ -900,17 +940,21 @@ export function AppShell() {
 
       {/* Search Modal */}
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <HelpModal
+        open={helpModal !== null}
+        section={helpModal ?? "guide"}
+        onClose={closeHelpModal}
+        onSectionChange={(nextSection) => setHelpModal(nextSection)}
+      />
 
-      {accountModal ? (
-        <AccountModal onClose={closeAccountModal}>
-          <AccountModalContent
-            onClose={closeAccountModal}
-            profileLabel={userName}
-            section={accountModal}
-            onSectionChange={openAccountModal}
-          />
-        </AccountModal>
-      ) : null}
+      <AccountModal open={accountModal !== null} onClose={closeAccountModal}>
+        <AccountModalContent
+          onClose={closeAccountModal}
+          profileLabel={userName}
+          section={accountModal ?? lastAccountModalSection}
+          onSectionChange={openAccountModal}
+        />
+      </AccountModal>
 
       <LogoutConfirmModal
         onCancel={() => setLogoutConfirmOpen(false)}
@@ -980,9 +1024,42 @@ function LogoutConfirmModal({
   readonly open: boolean;
 }) {
   const { t } = useAppI18n();
+  const [shouldRender, setShouldRender] = useState(open);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // 기능 : 로그아웃 모달을 닫을 때 exit transition이 끝날 때까지 DOM 렌더를 유지합니다.
+  useEffect(() => {
+    let openTimerId: number | null = null;
+    let closeTimerId: number | null = null;
+
+    if (open) {
+      setShouldRender(true);
+      setIsVisible(false);
+      openTimerId = window.setTimeout(
+        () => setIsVisible(true),
+        LOGOUT_MODAL_OPEN_DELAY_MS,
+      );
+    } else {
+      setIsVisible(false);
+      closeTimerId = window.setTimeout(
+        () => setShouldRender(false),
+        LOGOUT_MODAL_TRANSITION_MS,
+      );
+    }
+
+    return () => {
+      if (openTimerId !== null) {
+        window.clearTimeout(openTimerId);
+      }
+
+      if (closeTimerId !== null) {
+        window.clearTimeout(closeTimerId);
+      }
+    };
+  }, [open]);
 
   useEffect(() => {
-    if (!open) {
+    if (!shouldRender) {
       return;
     }
 
@@ -995,20 +1072,33 @@ function LogoutConfirmModal({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onCancel, open]);
+  }, [onCancel, shouldRender]);
 
-  if (!open) {
+  // 기능 : 로그아웃 모달 바깥 영역 클릭 시 모달을 닫습니다.
+  const onBackdropMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onCancel();
+    }
+  };
+
+  if (!shouldRender) {
     return null;
   }
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/20 px-4 py-6"
-      onMouseDown={onCancel}
+      className={`fixed inset-0 z-[80] flex items-center justify-center bg-black/20 px-4 py-6 transition-opacity duration-300 ease-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
+      onMouseDown={onBackdropMouseDown}
     >
       <section
         aria-modal="true"
-        className="w-full max-w-[320px] rounded-md bg-white px-[18px] py-[18px] shadow-2xl"
+        className={`w-full max-w-[320px] origin-center rounded-md bg-white px-[18px] py-[18px] shadow-2xl transition-all duration-300 ease-out ${
+          isVisible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "-translate-y-3 scale-[0.97] opacity-0"
+        }`}
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
@@ -1049,11 +1139,51 @@ function LogoutConfirmModal({
 function AccountModal({
   children,
   onClose,
+  open,
 }: {
   readonly children: ReactNode;
   readonly onClose: () => void;
+  readonly open: boolean;
 }) {
+  const [shouldRender, setShouldRender] = useState(open);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // 기능 : 설정 모달을 닫을 때 exit transition이 끝날 때까지 DOM 렌더를 유지합니다.
   useEffect(() => {
+    let openTimerId: number | null = null;
+    let closeTimerId: number | null = null;
+
+    if (open) {
+      setShouldRender(true);
+      setIsVisible(false);
+      openTimerId = window.setTimeout(
+        () => setIsVisible(true),
+        ACCOUNT_MODAL_OPEN_DELAY_MS,
+      );
+    } else {
+      setIsVisible(false);
+      closeTimerId = window.setTimeout(
+        () => setShouldRender(false),
+        ACCOUNT_MODAL_TRANSITION_MS,
+      );
+    }
+
+    return () => {
+      if (openTimerId !== null) {
+        window.clearTimeout(openTimerId);
+      }
+
+      if (closeTimerId !== null) {
+        window.clearTimeout(closeTimerId);
+      }
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!shouldRender) {
+      return;
+    }
+
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -1063,16 +1193,33 @@ function AccountModal({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onClose]);
+  }, [onClose, shouldRender]);
+
+  // 기능 : 설정 모달 바깥 영역 클릭 시 모달을 닫습니다.
+  const onBackdropMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (!shouldRender) {
+    return null;
+  }
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6"
-      onMouseDown={onClose}
+      className={`fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6 transition-opacity duration-300 ease-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
+      onMouseDown={onBackdropMouseDown}
     >
       <section
         aria-modal="true"
-        className="max-h-full w-full max-w-4xl overflow-hidden rounded-xl bg-white shadow-2xl"
+        className={`max-h-full w-full max-w-4xl origin-center overflow-hidden rounded-xl bg-white shadow-2xl transition-all duration-300 ease-out ${
+          isVisible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "-translate-y-3 scale-[0.97] opacity-0"
+        }`}
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
@@ -1106,27 +1253,12 @@ function AccountModalContent({
     { icon: Settings, label: t("navigation.settings"), section: "settings" },
     { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
   ];
-  const accountModalFooterItems: AccountModalSidebarItemConfig[] = [
-    { icon: FileText, label: t("shell.terms"), section: "terms" },
-    { icon: ShieldCheck, label: t("shell.privacy"), section: "privacy" },
-  ];
 
   return (
     <div className="grid h-[min(76vh,720px)] overflow-hidden bg-white md:grid-cols-[176px_minmax(0,1fr)]">
       <aside className="flex h-full min-h-0 flex-col bg-sidebar p-2 pt-4">
         <nav className="grid gap-px">
           {accountModalItems.map((item) => (
-            <AccountModalSidebarItem
-              active={section === item.section}
-              icon={item.icon}
-              key={item.section}
-              label={item.label}
-              onClick={() => onSectionChange(item.section)}
-            />
-          ))}
-        </nav>
-        <nav className="mt-auto grid gap-px pt-2">
-          {accountModalFooterItems.map((item) => (
             <AccountModalSidebarItem
               active={section === item.section}
               icon={item.icon}
@@ -1198,19 +1330,346 @@ function AccountModalSectionContent({
     return <ProfileModalQueryContent />;
   }
 
-  if (section === "terms") {
-    return <LegalDocumentModalContent document={termsOfUseModalDocument} />;
-  }
-
-  if (section === "privacy") {
-    return <LegalDocumentModalContent document={privacyPolicyModalDocument} />;
-  }
-
   if (section === "notifications") {
     return <ServiceNotificationSettingsSection />;
   }
 
   return <AccountSettingsModalContent />;
+}
+
+type HelpModalSidebarItemConfig = {
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly section: HelpModalSection;
+};
+
+type HelpModalContentCard = {
+  readonly description: string;
+  readonly title: string;
+};
+
+// 기능 : 도움말 드롭다운에서 열린 중앙 도움말 모달을 렌더링합니다.
+function HelpModal({
+  onClose,
+  onSectionChange,
+  open,
+  section,
+}: {
+  readonly onClose: () => void;
+  readonly onSectionChange: (section: HelpModalSection) => void;
+  readonly open: boolean;
+  readonly section: HelpModalSection;
+}) {
+  const { t } = useAppI18n();
+  const [shouldRender, setShouldRender] = useState(open);
+  const [isVisible, setIsVisible] = useState(false);
+  const [renderedSection, setRenderedSection] = useState(section);
+  const helpModalItems: HelpModalSidebarItemConfig[] = [
+    { icon: BookOpen, label: t("shell.helpGuide"), section: "guide" },
+    { icon: ScreenShare, label: t("shell.helpSupportRequest"), section: "support" },
+    { icon: Bug, label: t("shell.helpErrorReport"), section: "error" },
+    { icon: FileText, label: t("shell.terms"), section: "terms" },
+    { icon: ShieldCheck, label: t("shell.privacy"), section: "privacy" },
+  ];
+
+  useEffect(() => {
+    if (open) {
+      setRenderedSection(section);
+    }
+  }, [open, section]);
+
+  useEffect(() => {
+    let openTimerId: number | null = null;
+    let closeTimerId: number | null = null;
+
+    if (open) {
+      setShouldRender(true);
+      setIsVisible(false);
+      openTimerId = window.setTimeout(
+        () => setIsVisible(true),
+        HELP_MODAL_OPEN_DELAY_MS,
+      );
+    } else {
+      setIsVisible(false);
+      closeTimerId = window.setTimeout(
+        () => setShouldRender(false),
+        HELP_MODAL_TRANSITION_MS,
+      );
+    }
+
+    return () => {
+      if (openTimerId !== null) {
+        window.clearTimeout(openTimerId);
+      }
+
+      if (closeTimerId !== null) {
+        window.clearTimeout(closeTimerId);
+      }
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!shouldRender) {
+      return;
+    }
+
+    // 기능 : 도움말 모달이 열려 있을 때 Escape 입력으로 닫습니다.
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose, shouldRender]);
+
+  // 기능 : 도움말 모달 바깥 영역 클릭 시 모달을 닫습니다.
+  const onBackdropMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  if (!shouldRender) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6 transition-opacity duration-300 ease-out ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
+      onMouseDown={onBackdropMouseDown}
+    >
+      <section
+        aria-labelledby="help-modal-title"
+        aria-modal="true"
+        className={`grid h-[min(72vh,560px)] w-full max-w-[520px] origin-center grid-cols-[136px_minmax(0,1fr)] overflow-hidden rounded-xl bg-white shadow-2xl transition-all duration-300 ease-out ${
+          isVisible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "-translate-y-3 scale-[0.97] opacity-0"
+        }`}
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
+      >
+        <h2 className="sr-only" id="help-modal-title">
+          {t("shell.help")}
+        </h2>
+        <aside className="flex h-full min-h-0 flex-col bg-sidebar p-2 pt-4">
+          <nav className="grid gap-px">
+            {helpModalItems.map((item) => (
+              <HelpModalSidebarItem
+                active={renderedSection === item.section}
+                icon={item.icon}
+                key={item.section}
+                label={item.label}
+                onClick={() => onSectionChange(item.section)}
+              />
+            ))}
+          </nav>
+        </aside>
+
+        <div className="relative min-h-0 bg-white">
+          <button
+            aria-label={t("common.close")}
+            className="absolute right-3 top-3 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]"
+            onClick={onClose}
+            type="button"
+          >
+            <X className="h-4 w-4" strokeWidth={1.8} />
+          </button>
+          <div className="h-full min-h-0 overflow-y-auto">
+            <HelpModalSectionContent section={renderedSection} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// 기능 : 도움말 모달 사이드바 항목을 렌더링합니다.
+function HelpModalSidebarItem({
+  active,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  readonly active: boolean;
+  readonly icon: LucideIcon;
+  readonly label: string;
+  readonly onClick: () => void;
+}) {
+  return (
+    <button
+      aria-current={active ? "page" : undefined}
+      className={`group flex h-8 items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
+        active
+          ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
+          : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+      }`}
+      onClick={onClick}
+      type="button"
+    >
+      <Icon
+        className={`h-5 w-5 shrink-0 ${
+          active ? "text-[#6B7280]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+        }`}
+        strokeWidth={2}
+      />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+    </button>
+  );
+}
+
+// 기능 : 도움말 모달에서 선택된 사이드바 섹션의 본문을 렌더링합니다.
+function HelpModalSectionContent({
+  section,
+}: {
+  readonly section: HelpModalSection;
+}) {
+  const { t } = useAppI18n();
+
+  if (section === "terms") {
+    return (
+      <LegalDocumentModalContent
+        document={termsOfUseModalDocument}
+        presentation="help"
+      />
+    );
+  }
+
+  if (section === "privacy") {
+    return (
+      <LegalDocumentModalContent
+        document={privacyPolicyModalDocument}
+        presentation="help"
+      />
+    );
+  }
+
+  if (section === "support") {
+    return (
+      <HelpModalStaticContent
+        actionHref="mailto:team@onehandsales.com?subject=Onehand%20%EC%A7%80%EC%9B%90%EC%9A%94%EC%B2%AD"
+        actionLabel={t("helpModal.supportAction")}
+        cards={[
+          {
+            title: t("helpModal.supportBodyTitle"),
+            description: t("helpModal.supportBodyDescription"),
+          },
+        ]}
+        description={t("helpModal.supportDescription")}
+        title={t("helpModal.supportTitle")}
+      />
+    );
+  }
+
+  if (section === "error") {
+    return (
+      <HelpModalStaticContent
+        actionHref="mailto:team@onehandsales.com?subject=Onehand%20%EC%97%90%EB%9F%AC%EC%8B%A0%EA%B3%A0"
+        actionLabel={t("helpModal.errorAction")}
+        cards={[
+          {
+            title: t("helpModal.errorBodyTitle"),
+            description: t("helpModal.errorBodyDescription"),
+          },
+        ]}
+        description={t("helpModal.errorDescription")}
+        title={t("helpModal.errorTitle")}
+      />
+    );
+  }
+
+  return (
+    <HelpModalStaticContent
+      cards={[
+        {
+          title: t("helpModal.guideDealTitle"),
+          description: t("helpModal.guideDealDescription"),
+        },
+        {
+          title: t("helpModal.guideRecordTitle"),
+          description: t("helpModal.guideRecordDescription"),
+        },
+        {
+          title: t("helpModal.guideWorkTitle"),
+          description: t("helpModal.guideWorkDescription"),
+        },
+      ]}
+      description={t("helpModal.guideDescription")}
+      title={t("helpModal.guideTitle")}
+    />
+  );
+}
+
+// 기능 : 도움말 모달의 짧은 안내와 문의 액션 본문을 렌더링합니다.
+function HelpModalStaticContent({
+  actionHref,
+  actionLabel,
+  cards,
+  description,
+  title,
+}: {
+  readonly actionHref?: string;
+  readonly actionLabel?: string;
+  readonly cards: readonly HelpModalContentCard[];
+  readonly description: string;
+  readonly title: string;
+}) {
+  return (
+    <section className="min-h-full bg-white px-5 py-6 pr-11">
+      <div>
+        <h3 className="text-[20px] font-bold leading-tight text-[#111827]">
+          {title}
+        </h3>
+        <p className="mt-2 text-[13px] leading-6 text-[#64748B]">
+          {description}
+        </p>
+      </div>
+
+      <div className="mt-6 grid gap-3">
+        {cards.map((card) => (
+          <HelpModalInfoCard
+            description={card.description}
+            key={card.title}
+            title={card.title}
+          />
+        ))}
+      </div>
+
+      {actionHref && actionLabel ? (
+        <div className="mt-6">
+          <a
+            className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[#111827] px-3 text-[13px] font-semibold text-white transition hover:bg-[#374151] active:bg-[#030712]"
+            href={actionHref}
+          >
+            {actionLabel}
+            <ChevronRight className="h-4 w-4" strokeWidth={2} />
+          </a>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+// 기능 : 도움말 모달 안에서 짧은 안내 묶음을 표시합니다.
+function HelpModalInfoCard({
+  description,
+  title,
+}: {
+  readonly description: string;
+  readonly title: string;
+}) {
+  return (
+    <article className="rounded-lg bg-[#F8FAFC] px-4 py-3">
+      <h4 className="text-[13px] font-semibold text-[#111827]">{title}</h4>
+      <p className="mt-1.5 text-[13px] leading-6 text-[#64748B]">
+        {description}
+      </p>
+    </article>
+  );
 }
 
 // 기능 : 프로필 모달에서 프로필/기기 조회 상태별 콘텐츠를 렌더링합니다.
@@ -1485,6 +1944,8 @@ type LegalDocumentModal = {
   readonly title: string;
 };
 
+type LegalDocumentModalPresentation = "account" | "help";
+
 const termsOfUseModalDocument: LegalDocumentModal = {
   title: "이용약관",
   description: "Onehand 사용 조건, 계정 기준, 데이터 처리, AI 기능과 결제 정책을 안내합니다.",
@@ -1709,25 +2170,61 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
 // 기능 : 법적 문서 모달 콘텐츠를 렌더링합니다.
 function LegalDocumentModalContent({
   document,
+  presentation = "account",
 }: {
   readonly document: LegalDocumentModal;
+  readonly presentation?: LegalDocumentModalPresentation;
 }) {
+  const isHelpPresentation = presentation === "help";
+
   return (
-    <section className="min-h-full bg-white px-8 py-10 md:px-12">
-      <div className="mx-auto w-full max-w-[800px]">
+    <section
+      className={
+        isHelpPresentation
+          ? "min-h-full bg-white px-5 py-6 pr-11"
+          : "min-h-full bg-white px-8 py-10 md:px-12"
+      }
+    >
+      <div
+        className={
+          isHelpPresentation ? "w-full" : "mx-auto w-full max-w-[800px]"
+        }
+      >
         <div>
-          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h3
+            className={
+              isHelpPresentation
+                ? "text-[20px] font-bold leading-tight text-[#111827]"
+                : "text-[28px] font-bold leading-tight text-[#111827]"
+            }
+          >
             {document.title}
           </h3>
-          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
+          <p
+            className={
+              isHelpPresentation
+                ? "mt-2 text-[13px] leading-6 text-[#64748B]"
+                : "mt-3 text-[14px] leading-6 text-[#64748B]"
+            }
+          >
             {document.description}
           </p>
         </div>
 
-        <div className="mt-10 grid gap-10">
+        <div
+          className={
+            isHelpPresentation ? "mt-6 grid gap-6" : "mt-10 grid gap-10"
+          }
+        >
           {document.sections.map((section) => (
-            <ProfileSection key={section.title} title={section.title}>
-              <div className="grid gap-3">
+            <LegalDocumentSection
+              compact={isHelpPresentation}
+              key={section.title}
+              title={section.title}
+            >
+              <div
+                className={isHelpPresentation ? "grid gap-2.5" : "grid gap-3"}
+              >
                 {section.paragraphs?.map((paragraph) => (
                   <p
                     className="text-[13px] leading-6 text-[#475569]"
@@ -1744,12 +2241,36 @@ function LegalDocumentModalContent({
                   </ul>
                 ) : null}
               </div>
-            </ProfileSection>
+            </LegalDocumentSection>
           ))}
         </div>
       </div>
     </section>
   );
+}
+
+// 기능 : 법적 문서 본문의 섹션 제목과 구분선을 표시합니다.
+function LegalDocumentSection({
+  children,
+  compact,
+  title,
+}: {
+  readonly children: ReactNode;
+  readonly compact: boolean;
+  readonly title: string;
+}) {
+  if (compact) {
+    return (
+      <section>
+        <h4 className="text-[14px] font-semibold text-[#111827]">
+          {title}
+        </h4>
+        <div className="mt-3 border-t border-[#F0F2F6] pt-3">{children}</div>
+      </section>
+    );
+  }
+
+  return <ProfileSection title={title}>{children}</ProfileSection>;
 }
 
 type ProfileModalContentProps = {
