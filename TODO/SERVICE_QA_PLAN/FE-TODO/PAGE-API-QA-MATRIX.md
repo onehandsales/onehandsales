@@ -38,7 +38,7 @@
 |---|---|---|
 | `/app/*` 전체 | `/api/me`, `/api/auth/refresh`, `/api/analytics/events`, `/api/notifications/unread-count` | access token 없는 접근은 login으로 이동한다. 만료 token은 refresh 후 재시도한다. analytics 실패가 화면을 막지 않는다. 알림 count 실패가 전체 shell을 깨지 않는다. |
 | `/app/*` 전역 검색 | `/api/search?query=...` | 회사/담당자/제품/딜/회의록 검색 결과가 표시되고 결과 클릭 시 상세로 이동한다. 삭제된 데이터와 타 사용자 데이터가 일반 검색에 노출되지 않아야 한다. |
-| `/app/*` legacy redirect 진입 | legacy `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` | legacy URL이 대응하는 `/app/*`로 이동하고 id param이 유지된다. redirect 자체는 API QA가 아니라 route QA로 기록한다. |
+| `/app/*` legacy redirect 진입 | legacy `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/more` | legacy URL이 대응하는 `/app/*`로 이동하고 id param이 유지된다. redirect 자체는 API QA가 아니라 route QA로 기록한다. `/settings`는 계정 설정 모달 이관 후 제거된 route로 본다. |
 
 ## 5. User Web App Pages
 
@@ -308,7 +308,7 @@ QA:
 - 복구 불가능/만료/관계 충돌은 안전한 오류 메시지로 표시된다.
 - 복구 요청 생성 후 관리자 `trash/recovery-requests` queue에 표시되는지 확인한다.
 
-### `/app/settings`
+### `/app?account=settings`
 
 API:
 
@@ -363,7 +363,7 @@ QA:
 | `/app/contacts/scan`, `/contacts/scan` | `/app/business-cards`로 redirect | 명함 OCR로 이동하고 contacts scan 전용 API를 호출하지 않는다. |
 | `/app/meeting-notes/new`, `/meeting-notes/new` | `/app/meeting-notes?create=1`로 redirect | 회의록 생성 dialog 또는 생성 진입 상태가 열린다. |
 | `/app/export`, `pages/export/index.tsx` | `/app`로 redirect, page file은 router 미연결 | generic `/api/exports*` 호출이 발생하지 않아야 한다. export 기능을 다시 열 때만 별도 QA를 만든다. |
-| legacy `/companies/*`, `/contacts/*`, `/products/*`, `/deals/*`, `/schedules/*`, `/meeting-notes/*`, `/business-cards`, `/import/*`, `/trash`, `/settings`, `/more` | 대응하는 `/app/*`로 redirect | id param 유지, query 처리, 보호 route guard를 확인한다. |
+| legacy `/companies/*`, `/contacts/*`, `/products/*`, `/deals/*`, `/schedules/*`, `/meeting-notes/*`, `/business-cards`, `/import/*`, `/trash`, `/more` | 대응하는 `/app/*`로 redirect | id param 유지, query 처리, 보호 route guard를 확인한다. `/settings`는 계정 설정 모달 이관 후 제거된 route로 본다. |
 
 ## 7. Admin Web Pages
 

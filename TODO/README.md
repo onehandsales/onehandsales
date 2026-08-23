@@ -23,6 +23,7 @@ TODO/
     BE-TODO/
   DONE/
     README.md
+    ACCOUNT_SETTINGS_MODAL_PLAN/
     ADDITIONAL_WORK_PLAN/
     AUTH_FE_INTEGRATION_PLAN/
     COMPANY_DOMAIN_PLAN/
@@ -109,7 +110,9 @@ TODO/
 - 2026-08-11 기준 `TODO/PADDLE_PLAN`은 다음 즉시 구현 계획이 아니라 Deferred / Draft 상태의 결제 전용 계획이다.
 - Paddle/Billing 구현은 기능 유지보수, UX/UI 상품성 개선, 100명 베타 테스트, 가격/플랜/권한 정책 확정 이후 다시 착수한다.
 - 2026-08-12 기준 `TODO/SERVICE_QA_PLAN`은 실제 서비스 QA 실행을 위한 활성 문서 계획이다. 순수 문서 계획이며, QA 실행 결과는 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록한다.
-- 지금 활성 구현 계획은 없다. QA에서 발견된 S0/S1/S2 결함이나 새 요구사항은 `TODO` 바로 아래에 새 계획 폴더를 만들거나, `TODO/SERVICE_QA_PLAN`의 이슈 로그에서 후속 구현 계획으로 승격한다.
+- 2026-08-23 기준 `TODO/SERVICE_QA_PLAN/SERVICE-QA-CHECKLIST.csv`의 P0 기능 QA는 완료됐고, 현재는 P0 범위에서 발견된 UX/UI 개선을 진행 중이다.
+- 지금 별도 활성 구현 계획은 없다. QA에서 발견된 S0/S1/S2 결함이나 새 요구사항은 `TODO` 바로 아래에 새 계획 폴더를 만들거나, `TODO/SERVICE_QA_PLAN`의 이슈 로그에서 후속 구현 계획으로 승격한다.
+- `ACCOUNT_SETTINGS_MODAL_PLAN`은 계정 설정 모달 이관과 `/app/settings` route 제거가 완료되어 `TODO/DONE/ACCOUNT_SETTINGS_MODAL_PLAN`에 보관한다. 후속 QA와 UX/UI 개선에서 설정 진입점은 `/app?account=settings` 계정 모달 흐름을 기준으로 본다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`은 UX/UI 공통 QA 이후 남은 출시 전 품질 작업인 모바일 브라우저 390px/360px QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/Prisma/migration 운영 정합성, S0/S1/S2 closeout, deferred BE/API backlog split을 완료했다.
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 완료했다.
@@ -145,6 +148,7 @@ TODO/
 - `NEXT_BACKEND_API_BACKLOG_PLAN`: `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`
 - `USER_WEB_PRODUCTIZATION_GAP_PLAN`: `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 - `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`: `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`
+- `ACCOUNT_SETTINGS_MODAL_PLAN`: `TODO/DONE/ACCOUNT_SETTINGS_MODAL_PLAN`
 
 완료된 계획의 구현 결과를 참조해야 할 때는 `TODO/DONE/<PLAN_NAME>`을 본다. 새 작업을 시작할 때는 완료된 계획을 직접 수정하지 않고, 활성 계획 폴더를 새로 만들거나 현재 활성 계획을 실행 가능한 `/goal` 문서로 확장한다.
 

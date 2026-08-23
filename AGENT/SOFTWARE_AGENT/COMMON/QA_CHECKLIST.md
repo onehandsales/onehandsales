@@ -868,13 +868,15 @@ pnpm test:e2e
 
 ## 22. 설정/더보기 QA
 
-- [x] `/app/settings` 진입 가능
+- [x] 계정 메뉴 또는 `/app?account=settings` query로 계정 설정 모달 진입 가능
 - [x] 내 프로필 조회 가능
 - [x] 프로필 수정 가능
 - [x] 수정 후 새로고침해도 유지됨
 - [x] 내 기기 목록 조회 가능
 - [x] 가입 locale/timezone과 마지막 로그인 locale/timezone이 표시됨
 - [x] 가입 국가/마지막 로그인 국가는 geo header가 없는 환경에서 `기록 없음`으로 표시될 수 있음을 기록
+- [x] Google Calendar 설정, follow-up delivery 설정, account/data request가 계정 모달 `Settings` 안에서 동작함
+- [x] `/app/settings`와 legacy `/settings` route는 사용자-facing route로 유지하지 않음
 - [x] `/app/more` 진입 가능
 - [x] 더보기에서 현재 노출해야 하는 기능만 보임
 - [x] generic export와 관리자 기능이 User Web에 잘못 노출되지 않음. 알림은 AppShell bell과 `/app/notifications`에서 노출될 수 있음
@@ -886,6 +888,11 @@ pnpm test:e2e
 - 설정 화면 진입, 프로필 조회/수정, 새로고침 후 유지, 내 기기 목록, locale/timezone 표시가 동작함을 확인했다.
 - geo header가 없는 환경에서는 가입 국가/마지막 로그인 국가가 `기록 없음`으로 표시될 수 있음을 확인했다.
 - 더보기 화면 진입, 현재 노출해야 하는 기능만 표시, 알림/generic export/admin 기능 미노출, 로그아웃 흐름이 동작함을 확인했다.
+
+### 2026-08-23 계정 설정 모달 이관 결과
+
+- `TODO/DONE/ACCOUNT_SETTINGS_MODAL_PLAN` 기준으로 `/app/settings` 사용자-facing route는 제거됐고, 계정 설정 진입은 `/app?account=settings` modal-open 흐름을 기준으로 확인한다.
+- Google Calendar callback과 follow-up email callback은 Settings modal 안에서 처리한다.
 
 ## 23. API 공통 QA
 

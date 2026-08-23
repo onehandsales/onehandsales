@@ -16,6 +16,7 @@
 
 ## 3. 현재 보관 목록
 
+- `ACCOUNT_SETTINGS_MODAL_PLAN`: 계정 설정 모달 이관, `/app/settings` 사용자-facing route 제거, `/app?account=settings` modal-open 흐름 정리
 - `MVP-STARTER_PLAN`: G00-G36 MVP starter 계획과 공통 계약 문서
 - `AUTH_FE_INTEGRATION_PLAN`: Auth/User Backend API와 User/Admin Web 인증/설정 FE 연동
 - `COMPANY_DOMAIN_PLAN`: Company Backend API와 User Web 회사 목록/상세/메모/export 화면

@@ -150,7 +150,7 @@
 | `/app/import` | 데이터 업로드/불러오기 | 포함 |
 | `/app/import/:importUserLogId` | 데이터 업로드 성공 내역 상세 | 포함 |
 | `/app/export` | 범용 Export 작업 | 보류. 현재 `/app`으로 redirect하며 export는 각 도메인 목록의 엑셀 다운로드로 처리 |
-| `/app/settings` | 설정 | 포함 |
+| `/app?account=settings` | 계정 설정 모달 | 포함. `/app/settings` 사용자-facing route는 제거됨 |
 | `/app/more` | 더보기 | 포함 |
 | `/app/business-cards` | 명함 스캔 내역/명함스캔 | 포함 |
 | `/app/notifications` | 알림 | 포함. 알림 bell 진입점과 `NotificationsPage`로 활성 제공 |
@@ -178,7 +178,7 @@
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-08-11
+> 최종 업데이트: 2026-08-23
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -186,8 +186,9 @@
 - 지원 locale slug: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
 - legacy public/auth redirect: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 이동한다.
 - OAuth callback: `/auth/callback`은 locale prefix 없이 유지한다.
-- legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/settings`, `/more` 및 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다.
-- 보호 앱 활성 route: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`
+- legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/more` 및 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다. `/settings` legacy route는 계정 설정 모달 이관 후 제거됐다.
+- 보호 앱 활성 route: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/more`
+- 계정 설정 진입점: `/app?account=settings` query contract를 사용해 현재 업무 화면 위에서 계정 모달 `Settings`를 연다.
 - redirect/future 경계: `/contacts/scan`과 `/app/contacts/scan`은 `/app/business-cards`로 이동하고, `/app/export`는 `/app`으로 이동한다.
 
 pen 디자인 반영 완료/정리 도메인:
@@ -204,7 +205,7 @@ pen 디자인 반영 완료/정리 도메인:
 - `/app/schedules` — 주간 일정 보고서, Google Calendar 연결/status/calendar 선택/read-only sync foundation 구현 완료
 - `/app/deals/:dealId` — `DealActivity` timeline 생성/수정/조회 foundation 구현 완료
 - `/app/meeting-notes/:meetingNoteId` — AI next action draft와 follow-up draft 보조 액션 구현 완료
-- `/app/settings` — Google Calendar 설정, follow-up delivery 설정, account/data request 진입 흐름 구현 완료
+- `/app?account=settings` — 계정 모달 `Settings` 안에서 Google Calendar 설정, follow-up delivery 설정, account/data request 진입 흐름 구현 완료. `/app/settings` route는 제거됨
 - `/app` — AI weekly sales report 섹션과 제품 분석 route/mobile event foundation 구현 완료
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
