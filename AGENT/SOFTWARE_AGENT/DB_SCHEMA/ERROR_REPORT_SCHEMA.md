@@ -27,7 +27,7 @@ DB table:
 | `userEmail` | yes | 신고 당시 사용자 email snapshot |
 | `userDisplayName` | yes | 신고 당시 사용자 이름 snapshot |
 | `userRole` | no | 신고 당시 사용자 role snapshot |
-| `description` | no | 사용자가 입력한 에러 내용. trim 후 10자 이상 |
+| `description` | no | 사용자가 입력한 에러 내용. trim 후 비어 있지 않아야 함 |
 | `pageUrl` | no | User Web 현재 주소 |
 | `userAgent` | yes | 요청 user-agent |
 | `requestId` | yes | Backend request id |

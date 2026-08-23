@@ -2,8 +2,6 @@ import { DomainError } from "@/shared/domain/errors/domain-error";
 
 export type ErrorReportValidationErrorCode =
   | "ERROR_REPORT_DESCRIPTION_REQUIRED"
-  | "ERROR_REPORT_DESCRIPTION_TOO_SHORT"
-  | "ERROR_REPORT_DESCRIPTION_TOO_LONG"
   | "ERROR_REPORT_PAGE_URL_REQUIRED"
   | "ERROR_REPORT_PAGE_URL_TOO_LONG"
   | "ERROR_REPORT_SCREENSHOT_TYPE_UNSUPPORTED"

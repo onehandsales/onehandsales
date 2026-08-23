@@ -65,23 +65,42 @@ function createFixture() {
 
 // 기능 : 에러 신고 접수 use case 검증을 수행합니다.
 describe("ErrorReportApplicationService", () => {
-  it("rejects descriptions shorter than 10 characters", async () => {
+  it("rejects blank descriptions after trimming whitespace", async () => {
     const fixture = createFixture();
 
     await expect(
       fixture.service.createErrorReport({
         currentUser: CURRENT_USER,
-        description: "짧아요",
+        description: "   ",
         pageUrl: "http://localhost:5173/app",
         requestId: "request-1",
         screenshotFile: null,
         userAgent: "playwright",
       })
     ).rejects.toMatchObject({
-      code: "ERROR_REPORT_DESCRIPTION_TOO_SHORT",
+      code: "ERROR_REPORT_DESCRIPTION_REQUIRED",
     } satisfies Partial<ErrorReportValidationError>);
 
     expect(fixture.repository.createErrorReport).not.toHaveBeenCalled();
+  });
+
+  it("accepts a one-character description", async () => {
+    const fixture = createFixture();
+
+    await fixture.service.createErrorReport({
+      currentUser: CURRENT_USER,
+      description: "앗",
+      pageUrl: "http://localhost:5173/app",
+      requestId: "request-short-1",
+      screenshotFile: null,
+      userAgent: "playwright",
+    });
+
+    expect(fixture.repository.createErrorReport).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description: "앗",
+      })
+    );
   });
 
   it("creates an error report without screenshot", async () => {

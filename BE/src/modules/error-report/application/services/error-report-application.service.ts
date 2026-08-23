@@ -18,8 +18,6 @@ import {
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
-const MIN_ERROR_REPORT_DESCRIPTION_LENGTH = 10;
-const MAX_ERROR_REPORT_DESCRIPTION_LENGTH = 2000;
 const MAX_ERROR_REPORT_PAGE_URL_LENGTH = 2000;
 const MAX_ERROR_REPORT_SCREENSHOT_SIZE_BYTES = 10 * 1024 * 1024;
 const ERROR_REPORT_SCREENSHOT_MIME_TYPE = "image/png";
@@ -113,29 +111,11 @@ export class ErrorReportApplicationService {
   // 기능 : 에러 신고 내용을 trim하고 필수/길이 조건을 검증합니다.
   private normalizeDescription(value: string | undefined): string {
     const normalized = value?.trim() ?? "";
-    const length = Array.from(normalized).length;
-
-    if (length === 0) {
+    if (normalized.length === 0) {
       throw new ErrorReportValidationError(
         "ERROR_REPORT_DESCRIPTION_REQUIRED",
         "description",
-        "에러 내용을 10자 이상 입력해 주세요."
-      );
-    }
-
-    if (length < MIN_ERROR_REPORT_DESCRIPTION_LENGTH) {
-      throw new ErrorReportValidationError(
-        "ERROR_REPORT_DESCRIPTION_TOO_SHORT",
-        "description",
-        "에러 내용을 10자 이상 입력해 주세요."
-      );
-    }
-
-    if (length > MAX_ERROR_REPORT_DESCRIPTION_LENGTH) {
-      throw new ErrorReportValidationError(
-        "ERROR_REPORT_DESCRIPTION_TOO_LONG",
-        "description",
-        "에러 내용은 2000자 이하로 입력해 주세요."
+        "에러 내용을 입력해 주세요."
       );
     }
 

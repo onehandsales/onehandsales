@@ -6,11 +6,11 @@ import {
   X,
 } from "lucide-react";
 import {
+  type ChangeEvent,
   type FormEvent,
   type MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -18,9 +18,9 @@ import { useAppI18n } from "@/features/app-i18n";
 import { useCreateErrorReportMutation } from "@/features/error-report/hooks/use-error-report-mutations";
 import { getApiErrorMessage } from "@/lib/api-client";
 
-const ERROR_REPORT_MIN_DESCRIPTION_LENGTH = 10;
 const ERROR_REPORT_CAPTURE_IGNORE_SELECTOR =
   "[data-error-report-capture-ignore='true']";
+const ERROR_REPORT_DESCRIPTION_MAX_LENGTH = 500;
 
 // 기능 : 도움말 모달 안에서 에러 신고 작성과 제출 흐름을 렌더링합니다.
 export function ErrorReportHelpContent({
@@ -31,7 +31,7 @@ export function ErrorReportHelpContent({
   const { t } = useAppI18n();
   const createErrorReportMutation = useCreateErrorReportMutation();
   const [description, setDescription] = useState("");
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(true);
   const [screenshotBlob, setScreenshotBlob] = useState<Blob | null>(null);
   const [screenshotPreviewUrl, setScreenshotPreviewUrl] = useState<string | null>(
     null
@@ -42,13 +42,9 @@ export function ErrorReportHelpContent({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const closeTimerRef = useRef<number | null>(null);
+  const descriptionLength = Array.from(description).length;
   const trimmedDescription = description.trim();
-  const descriptionLength = useMemo(
-    () => Array.from(trimmedDescription).length,
-    [trimmedDescription]
-  );
-  const isDescriptionValid =
-    descriptionLength >= ERROR_REPORT_MIN_DESCRIPTION_LENGTH;
+  const isDescriptionValid = trimmedDescription.length > 0;
   const canSubmit =
     isDescriptionValid &&
     !isCapturing &&
@@ -126,7 +122,25 @@ export function ErrorReportHelpContent({
   }, [clearScreenshotPreviewUrl, t]);
 
   useEffect(() => {
-    void captureScreenshotForReport();
+    let firstFrameId: number | null = null;
+    let secondFrameId: number | null = null;
+
+    // 1. 에러신고 모달을 먼저 paint한 뒤 screenshot 캡처를 시작한다.
+    firstFrameId = window.requestAnimationFrame(() => {
+      secondFrameId = window.requestAnimationFrame(() => {
+        void captureScreenshotForReport();
+      });
+    });
+
+    return () => {
+      if (firstFrameId !== null) {
+        window.cancelAnimationFrame(firstFrameId);
+      }
+
+      if (secondFrameId !== null) {
+        window.cancelAnimationFrame(secondFrameId);
+      }
+    };
   }, [captureScreenshotForReport]);
 
   // 기능 : screenshot 포함 스위치를 변경하고 OFF일 때 큰 미리보기를 닫습니다.
@@ -147,6 +161,15 @@ export function ErrorReportHelpContent({
     if (event.target === event.currentTarget) {
       setIsScreenshotPreviewOpen(false);
     }
+  };
+
+  // 기능 : 에러 내용 입력값을 500자까지 화면 상태에 반영합니다.
+  const onDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const nextDescription = Array.from(event.target.value)
+      .slice(0, ERROR_REPORT_DESCRIPTION_MAX_LENGTH)
+      .join("");
+
+    setDescription(nextDescription);
   };
 
   // 기능 : 에러 내용과 선택 screenshot을 Backend API로 제출합니다.
@@ -188,32 +211,45 @@ export function ErrorReportHelpContent({
         <label className="grid gap-2">
           <span className="text-[13px] font-semibold text-[#111827]">
             {t("helpModal.errorDescriptionLabel")}
-            <span className="ml-1 font-normal text-[#64748B]">
-              ({t("helpModal.errorDescriptionHint")})
-            </span>
           </span>
           <textarea
-            className="min-h-[116px] resize-none rounded-lg border border-[#D8DEE8] bg-white px-3 py-2 text-[13px] leading-6 text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#111827] focus:ring-2 focus:ring-[#111827]/10"
-            maxLength={2000}
-            onChange={(event) => setDescription(event.target.value)}
+            className="min-h-[140px] resize-none rounded-lg border border-[#D8DEE8] bg-white px-3 py-2 text-[13px] leading-6 text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#111827] focus:ring-2 focus:ring-[#111827]/10"
+            maxLength={ERROR_REPORT_DESCRIPTION_MAX_LENGTH}
+            onChange={onDescriptionChange}
             placeholder={t("helpModal.errorDescriptionPlaceholder")}
             value={description}
           />
-          <span className="text-[12px] leading-5 text-[#64748B]">
-            {t("helpModal.errorConsentNotice")}
-          </span>
+          <div className="flex items-start justify-between gap-3 text-[12px] leading-5 text-[#64748B]">
+            <span className="min-w-0 flex-1">
+              {t("helpModal.errorConsentNotice")}
+            </span>
+            <span aria-live="polite" className="shrink-0 tabular-nums">
+              {descriptionLength}/{ERROR_REPORT_DESCRIPTION_MAX_LENGTH}
+            </span>
+          </div>
         </label>
 
         <div className="rounded-lg border border-[#E5E7EB] bg-[#F8FAFC] p-3">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-[#111827]">
-                {isCapturing
-                  ? t("helpModal.errorCapturing")
-                  : screenshotBlob && includeScreenshot
+              {isCapturing ? (
+                <div className="flex h-5 items-center">
+                  <Loader2
+                    aria-hidden="true"
+                    className="h-4 w-4 animate-spin text-[#64748B]"
+                    strokeWidth={2}
+                  />
+                  <span className="sr-only">
+                    {t("helpModal.errorScreenshotCapturingLabel")}
+                  </span>
+                </div>
+              ) : (
+                <p className="text-[13px] font-semibold text-[#111827]">
+                  {screenshotBlob && includeScreenshot
                     ? t("helpModal.errorCaptureReady")
                     : t("helpModal.errorNoScreenshot")}
-              </p>
+                </p>
+              )}
               {captureError ? (
                 <p className="mt-1 text-[12px] leading-5 text-[#B45309]">
                   {captureError}
@@ -224,7 +260,7 @@ export function ErrorReportHelpContent({
               aria-checked={includeScreenshot}
               aria-label={t("helpModal.errorScreenshotToggleLabel")}
               className={`relative h-6 w-11 shrink-0 rounded-full transition ${
-                includeScreenshot ? "bg-[#111827]" : "bg-[#CBD5E1]"
+                includeScreenshot ? "bg-[#3A83F7]" : "bg-[#CBD5E1]"
               } disabled:cursor-not-allowed disabled:opacity-50`}
               disabled={!screenshotBlob}
               onClick={onToggleScreenshot}
@@ -262,18 +298,20 @@ export function ErrorReportHelpContent({
           </div>
         ) : null}
 
-        <button
-          className="inline-flex h-9 w-fit items-center gap-1.5 rounded-md bg-[#111827] px-3 text-[13px] font-semibold text-white transition hover:bg-[#374151] active:bg-[#030712] disabled:cursor-not-allowed disabled:bg-[#94A3B8]"
-          disabled={!canSubmit}
-          type="submit"
-        >
-          {createErrorReportMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-          ) : null}
-          {createErrorReportMutation.isPending
-            ? t("helpModal.errorSubmitting")
-            : t("helpModal.errorSubmitAction")}
-        </button>
+        <div className="mt-1 flex justify-end pt-2">
+          <button
+            className="inline-flex h-9 min-w-[76px] items-center justify-center gap-1.5 rounded-md bg-[#3A83F7] px-4 text-[13px] font-semibold text-white transition hover:bg-[#256FE6] active:bg-[#1D5FD0] disabled:cursor-not-allowed disabled:bg-[#94A3B8]"
+            disabled={!canSubmit}
+            type="submit"
+          >
+            {createErrorReportMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
+            ) : null}
+            {createErrorReportMutation.isPending
+              ? t("helpModal.errorSubmitting")
+              : t("helpModal.errorSubmitAction")}
+          </button>
+        </div>
       </form>
 
       {isScreenshotPreviewOpen && screenshotPreviewUrl ? (

@@ -12,7 +12,13 @@ test.describe("help modal UX", () => {
     await seedAuthenticatedSession(page);
 
     await page.goto("/app");
-    await page.getByRole("button", { exact: true, name: "도움말" }).click();
+    const helpButton = page.getByRole("button", { exact: true, name: "도움말" });
+    await helpButton.hover();
+    await expect(page.getByText("도움말 보기", { exact: true })).toHaveCSS(
+      "opacity",
+      "1",
+    );
+    await helpButton.click();
 
     await expect(
       page.getByRole("menuitem", { exact: true, name: "사용 가이드" }),
@@ -73,11 +79,21 @@ test.describe("help modal UX", () => {
       name: "보내기",
     });
     await expect(errorDescription).toBeVisible({ timeout: 10000 });
+    await expectErrorDescriptionHeight(errorDescription);
+    await expect(helpDialog.getByText("0/500")).toBeVisible();
     const screenshotPreviewButton = helpDialog.getByRole("button", {
       exact: true,
       name: "스크린샷 크게 보기",
     });
+    const screenshotSwitch = helpDialog.getByRole("switch", {
+      exact: true,
+      name: "스크린샷 포함 여부",
+    });
     await expect(screenshotPreviewButton).toBeVisible({ timeout: 10000 });
+    await expect(screenshotSwitch).toHaveCSS(
+      "background-color",
+      "rgb(58, 131, 247)",
+    );
     await screenshotPreviewButton.click();
     const screenshotPreviewDialog = page.getByRole("dialog", {
       exact: true,
@@ -89,17 +105,25 @@ test.describe("help modal UX", () => {
       .click();
     await expect(screenshotPreviewDialog).toBeHidden();
 
-    await helpDialog
-      .getByRole("switch", { exact: true, name: "스크린샷 포함 여부" })
-      .click();
+    await screenshotSwitch.click();
     await expect(screenshotPreviewButton).toBeHidden();
 
     await expect(submitButton).toBeDisabled();
-    await errorDescription.fill("짧아요");
+    await expectSubmitButtonRightAligned(submitButton);
+    await errorDescription.fill(" ");
+    await expect(helpDialog.getByText("1/500")).toBeVisible();
     await expect(submitButton).toBeDisabled();
-    await errorDescription.fill(
-      "홈 화면에서 카드가 겹쳐 보이고 버튼이 눌리지 않아요.",
+    const maximumDescription = "가".repeat(500);
+    await errorDescription.fill(`${maximumDescription}초과`);
+    await expect(errorDescription).toHaveValue(maximumDescription);
+    await expect(helpDialog.getByText("500/500")).toBeVisible();
+    await expect(submitButton).toBeEnabled();
+    await expect(submitButton).toHaveCSS(
+      "background-color",
+      "rgb(58, 131, 247)",
     );
+    await errorDescription.fill("앗");
+    await expect(helpDialog.getByText("1/500")).toBeVisible();
     await expect(submitButton).toBeEnabled();
     await submitButton.click();
     await expect(
@@ -133,4 +157,34 @@ async function expectHelpSidebarIconSize(button: Locator) {
   });
 
   expect(size).toEqual({ height: 20, width: 20 });
+}
+
+// 기능 : 에러 내용 입력창이 140px 기준 높이로 렌더링되는지 확인합니다.
+async function expectErrorDescriptionHeight(textarea: Locator) {
+  const height = await textarea.evaluate((node) =>
+    Math.round(node.getBoundingClientRect().height),
+  );
+
+  expect(height).toBeGreaterThanOrEqual(140);
+}
+
+// 기능 : 에러 신고 제출 버튼이 도움말 모달 본문 우측 하단에 배치되는지 확인합니다.
+async function expectSubmitButtonRightAligned(button: Locator) {
+  const alignment = await button.evaluate((buttonNode) => {
+    const dialogNode = buttonNode.closest('[role="dialog"]');
+
+    if (dialogNode === null) {
+      throw new Error("도움말 모달 dialog를 찾지 못했습니다.");
+    }
+
+    const dialogRect = dialogNode.getBoundingClientRect();
+    const buttonRect = buttonNode.getBoundingClientRect();
+
+    return {
+      buttonRight: Math.round(buttonRect.right),
+      dialogRight: Math.round(dialogRect.right),
+    };
+  });
+
+  expect(alignment.dialogRight - alignment.buttonRight).toBeLessThanOrEqual(60);
 }

@@ -134,11 +134,15 @@ pnpm.cmd run test:e2e:analytics
 
 ### Help / Error Report
 
-- 도움말 모달 `에러신고` 탭에서 `에러 신고하기` 진입
-- 현재 화면 screenshot 자동 생성
+- 도움말 모달 `에러신고` 탭 진입 시 입력 화면 우선 표시
+- 현재 화면 screenshot 자동 생성 및 캡처 중 spinner 표시
 - screenshot 포함 ON/OFF 동작
-- description 10자 미만에서 `신고하기` 비활성화
-- description 10자 이상에서 `POST /api/error-reports` 전송
+- screenshot ON 상태 색상 `#3A83F7`
+- screenshot ON일 때만 미리보기 표시, 클릭 시 크게 보기
+- description 공백만 입력 시 `보내기` 비활성화
+- description 500자 입력 제한 및 `0/500` 글자 수 표시
+- `보내기` 버튼 하단 우측 정렬 및 활성 색상 `#3A83F7`
+- description 1글자 이상에서 `POST /api/error-reports` 전송
 - 성공 메시지 표시 후 1초 뒤 모달 종료
 
 ## 5. 모바일/UX 확인 항목

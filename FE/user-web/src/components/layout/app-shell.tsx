@@ -764,7 +764,7 @@ export function AppShell() {
         <span className="min-w-0 flex-1 truncate">{t("shell.help")}</span>
         {!helpMenuOpen ? (
           <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
-            {t("shell.help")}
+            {t("shell.helpTooltip")}
           </span>
         ) : null}
       </button>

@@ -32,7 +32,7 @@ Request fields:
 
 | field | type | required | rule |
 | --- | --- | --- | --- |
-| `description` | string | yes | trim 후 최소 10자, 최대 2000자 |
+| `description` | string | yes | trim 후 1자 이상. 공백만 입력한 값은 허용하지 않고, 일반 스페이스는 내용 안에서 허용 |
 | `pageUrl` | string | yes | User Web 브라우저 현재 주소를 그대로 전달. `window.location.href` |
 | `screenshot` | file | no | PNG만 허용. 최대 10MB |
 
@@ -47,13 +47,14 @@ Response `201`:
 
 ## 4. Frontend 흐름
 
-1. 사용자가 도움말 모달의 `에러신고` 탭에서 `에러 신고하기` 버튼을 누른다.
-2. FE는 현재 화면을 PNG로 캡처한다.
+1. 사용자가 도움말 모달의 `에러신고` 탭에 진입한다.
+2. FE는 에러 내용 입력 화면을 먼저 열고 현재 화면을 PNG로 캡처한다.
 3. 도움말 모달 자체는 캡처에서 제외한다.
 4. 사용자는 스크린샷 포함 여부를 ON/OFF로 선택한다.
-5. `description`은 trim 후 10자 이상일 때만 `신고하기` 버튼을 활성화한다.
-6. 제출 성공 시 작은 성공 모달을 표시한다.
-7. 1초 후 성공 모달과 도움말 모달을 닫는다.
+5. `description`은 FE에서 500자까지만 입력받고 `0/500` 글자 수를 표시한다.
+6. `description`은 trim 후 비어 있지 않을 때만 `보내기` 버튼을 활성화한다.
+7. 제출 성공 시 작은 성공 모달을 표시한다.
+8. 1초 후 성공 모달과 도움말 모달을 닫는다.
 
 ## 5. Backend 처리
 
@@ -127,8 +128,6 @@ DB에는 public URL을 저장하지 않고 bucket과 storage key를 저장한다
 | code | status | 상황 |
 | --- | --- | --- |
 | `ERROR_REPORT_DESCRIPTION_REQUIRED` | 400 | 내용이 비어 있음 |
-| `ERROR_REPORT_DESCRIPTION_TOO_SHORT` | 400 | trim 후 10자 미만 |
-| `ERROR_REPORT_DESCRIPTION_TOO_LONG` | 400 | 2000자 초과 |
 | `ERROR_REPORT_PAGE_URL_REQUIRED` | 400 | 현재 페이지 주소 누락 |
 | `ERROR_REPORT_PAGE_URL_TOO_LONG` | 400 | 페이지 주소 2000자 초과 |
 | `ERROR_REPORT_SCREENSHOT_TYPE_UNSUPPORTED` | 400 | PNG가 아닌 파일 |
