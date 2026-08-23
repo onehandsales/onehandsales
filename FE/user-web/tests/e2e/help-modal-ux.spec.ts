@@ -66,16 +66,34 @@ test.describe("help modal UX", () => {
     await expect(
       helpDialog.getByRole("heading", { exact: true, name: "에러신고" }),
     ).toBeVisible();
-    await helpDialog
-      .getByRole("button", { exact: true, name: "에러 신고하기" })
-      .click();
 
     const errorDescription = helpDialog.getByLabel("에러 내용");
     const submitButton = helpDialog.getByRole("button", {
       exact: true,
-      name: "신고하기",
+      name: "보내기",
     });
     await expect(errorDescription).toBeVisible({ timeout: 10000 });
+    const screenshotPreviewButton = helpDialog.getByRole("button", {
+      exact: true,
+      name: "스크린샷 크게 보기",
+    });
+    await expect(screenshotPreviewButton).toBeVisible({ timeout: 10000 });
+    await screenshotPreviewButton.click();
+    const screenshotPreviewDialog = page.getByRole("dialog", {
+      exact: true,
+      name: "스크린샷 미리보기",
+    });
+    await expect(screenshotPreviewDialog).toBeVisible();
+    await screenshotPreviewDialog
+      .getByRole("button", { exact: true, name: "닫기" })
+      .click();
+    await expect(screenshotPreviewDialog).toBeHidden();
+
+    await helpDialog
+      .getByRole("switch", { exact: true, name: "스크린샷 포함 여부" })
+      .click();
+    await expect(screenshotPreviewButton).toBeHidden();
+
     await expect(submitButton).toBeDisabled();
     await errorDescription.fill("짧아요");
     await expect(submitButton).toBeDisabled();
