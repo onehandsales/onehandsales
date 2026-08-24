@@ -90,6 +90,7 @@ const LOGOUT_MODAL_OPEN_DELAY_MS = 20;
 type AccountModalSection =
   | AccountModalQuerySection
   | "profile"
+  | "devices"
   | "notifications";
 
 type HelpModalSection = "guide" | "support" | "error" | "terms" | "privacy";
@@ -1254,6 +1255,7 @@ function AccountModalContent({
   const accountModalItems: AccountModalSidebarItemConfig[] = [
     { icon: UserRound, label: profileLabel, section: "profile" },
     { icon: Settings, label: t("navigation.settings"), section: "settings" },
+    { icon: Laptop, label: t("settings.devicesTab"), section: "devices" },
     { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
   ];
 
@@ -1335,6 +1337,10 @@ function AccountModalSectionContent({
 
   if (section === "notifications") {
     return <ServiceNotificationSettingsSection />;
+  }
+
+  if (section === "devices") {
+    return <DevicesModalQueryContent />;
   }
 
   return <AccountSettingsModalContent />;
@@ -1654,21 +1660,48 @@ function HelpModalInfoCard({
   );
 }
 
-// 기능 : 프로필 모달에서 프로필/기기 조회 상태별 콘텐츠를 렌더링합니다.
+type ProfileDevice = {
+  readonly id: string;
+  readonly slot: string;
+  readonly label: string | null;
+  readonly status: string;
+  readonly lastSeenAt: string | null;
+  readonly createdAt: string;
+  readonly activeSessionCount: number;
+  readonly isCurrentDevice: boolean;
+};
+
+type DevicesModalContentProps = {
+  readonly devices: ReadonlyArray<ProfileDevice>;
+  readonly devicesError: unknown;
+  readonly isDevicesLoading: boolean;
+  readonly onRetryDevices: () => void;
+};
+
+// 기능 : 프로필 모달에서 프로필 조회 상태별 콘텐츠를 렌더링합니다.
 function ProfileModalQueryContent() {
   const profileQuery = useMyProfile();
-  const devicesQuery = useMyDevices();
 
   return (
     <ProfileModalContent
-      devices={devicesQuery.data?.devices ?? []}
-      devicesError={devicesQuery.error}
-      isDevicesLoading={devicesQuery.isLoading}
       isProfileLoading={profileQuery.isLoading}
-      onRetryDevices={() => void devicesQuery.refetch()}
       onRetryProfile={() => void profileQuery.refetch()}
       profile={profileQuery.data ?? null}
       profileError={profileQuery.error}
+    />
+  );
+}
+
+// 기능 : 전자기기 모달에서 기기 조회 상태별 콘텐츠를 렌더링합니다.
+function DevicesModalQueryContent() {
+  const devicesQuery = useMyDevices();
+
+  return (
+    <DevicesModalContent
+      devices={devicesQuery.data?.devices ?? []}
+      devicesError={devicesQuery.error}
+      isDevicesLoading={devicesQuery.isLoading}
+      onRetryDevices={() => void devicesQuery.refetch()}
     />
   );
 }
@@ -1921,7 +1954,7 @@ type LegalDocumentModalSection = {
 };
 
 type LegalDocumentModal = {
-  readonly description: string;
+  readonly description?: string;
   readonly sections: readonly LegalDocumentModalSection[];
   readonly title: string;
 };
@@ -1930,7 +1963,6 @@ type LegalDocumentModalPresentation = "account" | "help";
 
 const termsOfUseModalDocument: LegalDocumentModal = {
   title: "이용약관",
-  description: "Onehand 사용 조건, 계정 기준, 데이터 처리, AI 기능과 결제 정책을 안내합니다.",
   sections: [
     {
       title: "1. Onehand 사용",
@@ -2008,7 +2040,6 @@ const termsOfUseModalDocument: LegalDocumentModal = {
 
 const privacyPolicyModalDocument: LegalDocumentModal = {
   title: "개인정보 처리방침",
-  description: "Onehand가 개인정보를 수집, 이용, 공개, 보관하고 사용자의 권리를 처리하는 방식을 설명합니다.",
   sections: [
     {
       title: "1. 수집하는 정보",
@@ -2182,15 +2213,17 @@ function LegalDocumentModalContent({
           >
             {document.title}
           </h3>
-          <p
-            className={
-              isHelpPresentation
-                ? "mt-2 text-[13px] leading-6 text-[#64748B]"
-                : "mt-3 text-[14px] leading-6 text-[#64748B]"
-            }
-          >
-            {document.description}
-          </p>
+          {document.description ? (
+            <p
+              className={
+                isHelpPresentation
+                  ? "mt-2 text-[13px] leading-6 text-[#64748B]"
+                  : "mt-3 text-[14px] leading-6 text-[#64748B]"
+              }
+            >
+              {document.description}
+            </p>
+          ) : null}
         </div>
 
         <div
@@ -2256,20 +2289,7 @@ function LegalDocumentSection({
 }
 
 type ProfileModalContentProps = {
-  readonly devices: ReadonlyArray<{
-    readonly id: string;
-    readonly slot: string;
-    readonly label: string | null;
-    readonly status: string;
-    readonly lastSeenAt: string | null;
-    readonly createdAt: string;
-    readonly activeSessionCount: number;
-    readonly isCurrentDevice: boolean;
-  }>;
-  readonly devicesError: unknown;
-  readonly isDevicesLoading: boolean;
   readonly isProfileLoading: boolean;
-  readonly onRetryDevices: () => void;
   readonly onRetryProfile: () => void;
   readonly profile: {
     readonly id: string;
@@ -2300,13 +2320,59 @@ type ProfileModalContentProps = {
   readonly profileError: unknown;
 };
 
-// 기능 : 프로필 모달 콘텐츠 영역을 렌더링합니다.
-function ProfileModalContent({
+// 기능 : 전자기기 모달 콘텐츠 영역을 렌더링합니다.
+function DevicesModalContent({
   devices,
   devicesError,
   isDevicesLoading,
-  isProfileLoading,
   onRetryDevices,
+}: DevicesModalContentProps) {
+  const { t } = useAppI18n();
+
+  return (
+    <section className="min-h-full bg-white px-8 py-10 md:px-12">
+      <div className="mx-auto w-full max-w-[800px]">
+        <div>
+          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+            {t("settings.devicesTab")}
+          </h3>
+          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
+            {t("settings.devicesDescription")}
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-10">
+          <ProfileSection title={t("settings.devicesTitle")}>
+            {isDevicesLoading ? (
+              <ProfileInlineLoading />
+            ) : devicesError ? (
+              <div className="rounded-lg bg-[#F8FAFC] px-4 py-3 text-center">
+                <p className="text-[13px] text-[#64748B]">
+                  {getApiErrorMessage(devicesError)}
+                </p>
+                <button
+                  className="mt-2 text-[13px] font-semibold text-[#1D4ED8] hover:underline"
+                  onClick={onRetryDevices}
+                  type="button"
+                >
+                  {t("common.retry")}
+                </button>
+              </div>
+            ) : devices.length > 0 ? (
+              <ProfileDeviceTable devices={devices} />
+            ) : (
+              <ProfileEmptyText>{t("settings.devicesEmpty")}</ProfileEmptyText>
+            )}
+          </ProfileSection>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// 기능 : 프로필 모달 콘텐츠 영역을 렌더링합니다.
+function ProfileModalContent({
+  isProfileLoading,
   onRetryProfile,
   profile,
   profileError,
@@ -2404,29 +2470,6 @@ function ProfileModalContent({
               )}
             </ProfileSection>
 
-            <ProfileSection title={t("settings.devicesTitle")}>
-              {isDevicesLoading ? (
-                <ProfileInlineLoading />
-              ) : devicesError ? (
-                <div className="rounded-lg bg-[#F8FAFC] px-4 py-3 text-center">
-                  <p className="text-[13px] text-[#64748B]">
-                    {getApiErrorMessage(devicesError)}
-                  </p>
-                  <button
-                    className="mt-2 text-[13px] font-semibold text-[#1D4ED8] hover:underline"
-                    onClick={onRetryDevices}
-                    type="button"
-                  >
-                    {t("common.retry")}
-                  </button>
-                </div>
-              ) : devices.length > 0 ? (
-                <ProfileDeviceTable devices={devices} />
-              ) : (
-                <ProfileEmptyText>{t("settings.devicesEmpty")}</ProfileEmptyText>
-              )}
-            </ProfileSection>
-
             <ProfileSection title={t("settings.userId")}>
               <div className="py-3">
                 <p className="break-all text-[13px] font-medium text-[#475569]">
@@ -2481,7 +2524,7 @@ function ProfileInfoRow({
 function ProfileDeviceTable({
   devices,
 }: {
-  readonly devices: ProfileModalContentProps["devices"];
+  readonly devices: ReadonlyArray<ProfileDevice>;
 }) {
   const { t } = useAppI18n();
 
@@ -2504,7 +2547,7 @@ function ProfileDeviceTable({
 function ProfileDeviceRow({
   device,
 }: {
-  readonly device: ProfileModalContentProps["devices"][number];
+  readonly device: ProfileDevice;
 }) {
   const { formatDateTime, t } = useAppI18n();
   const label = device.label ?? formatDeviceSlotLabel(device.slot, t);
