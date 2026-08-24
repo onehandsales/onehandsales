@@ -1815,13 +1815,10 @@ function AccountSettingsModalContent() {
           <div className="mt-10 grid gap-10">
             <form onSubmit={onSubmit}>
               <ProfileSection title={t("settings.regionSettings")}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <label className="grid gap-1.5">
-                    <span className="text-[13px] font-medium text-[#111827]">
-                      {t("settings.displayLanguage")}
-                    </span>
+                <div className="grid gap-1">
+                  <AccountSettingsSelectRow label={t("settings.displayLanguage")}>
                     <select
-                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
                       onChange={(event) => setPreferredLocale(event.target.value)}
                       value={preferredLocale}
                     >
@@ -1831,13 +1828,10 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </label>
-                  <label className="grid gap-1.5">
-                    <span className="text-[13px] font-medium text-[#111827]">
-                      {t("settings.timeZone")}
-                    </span>
+                  </AccountSettingsSelectRow>
+                  <AccountSettingsSelectRow label={t("settings.timeZone")}>
                     <select
-                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
                       onChange={(event) => setTimeZone(event.target.value)}
                       value={timeZone}
                     >
@@ -1847,14 +1841,10 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </label>
-                  {/* 기능 : 앱 전역 입력 기본값에 사용할 국가를 선택합니다. */}
-                  <label className="grid gap-1.5">
-                    <span className="text-[13px] font-medium text-[#111827]">
-                      {t("settings.defaultCountry")}
-                    </span>
+                  </AccountSettingsSelectRow>
+                  <AccountSettingsSelectRow label={t("settings.defaultCountry")}>
                     <select
-                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
                       onChange={(event) => setCountryCode(event.target.value)}
                       value={countryCode}
                     >
@@ -1864,14 +1854,10 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </label>
-                  {/* 기능 : 금액 입력 기본값에 사용할 통화를 선택합니다. */}
-                  <label className="grid gap-1.5">
-                    <span className="text-[13px] font-medium text-[#111827]">
-                      {t("settings.defaultCurrency")}
-                    </span>
+                  </AccountSettingsSelectRow>
+                  <AccountSettingsSelectRow label={t("settings.defaultCurrency")}>
                     <select
-                      className="h-9 rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
                       onChange={(event) =>
                         setDefaultCurrencyCode(event.target.value)
                       }
@@ -1883,7 +1869,7 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </label>
+                  </AccountSettingsSelectRow>
                 </div>
                 <div className="mt-5 flex justify-end">
                   <button
@@ -1928,6 +1914,22 @@ function AccountModalNoticeBanner({
     >
       {notice.message}
     </div>
+  );
+}
+
+// 기능 : 계정 설정 form 항목을 좌우 선택 행으로 렌더링합니다.
+function AccountSettingsSelectRow({
+  children,
+  label,
+}: {
+  readonly children: ReactNode;
+  readonly label: string;
+}) {
+  return (
+    <label className="grid gap-2 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-center md:gap-6">
+      <span className="text-[13px] font-medium text-[#111827]">{label}</span>
+      <span className="min-w-0 md:justify-self-end">{children}</span>
+    </label>
   );
 }
 
