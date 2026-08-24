@@ -163,6 +163,12 @@ CREATE TYPE "AdminOperationCheckRunStatus" AS ENUM ('PASS', 'WARN', 'FAIL');
 -- CreateEnum
 CREATE TYPE "ErrorReportStatus" AS ENUM ('OPEN');
 
+-- CreateEnum
+CREATE TYPE "SupportRequestType" AS ENUM ('FEATURE_QUESTION', 'PRICING_QUESTION', 'PHONE_CONSULTATION', 'FEATURE_SUGGESTION', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "SupportRequestStatus" AS ENUM ('OPEN');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -366,6 +372,25 @@ CREATE TABLE "error_reports" (
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "error_reports_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "support_requests" (
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "userEmail" TEXT,
+    "userDisplayName" TEXT,
+    "userRole" "UserRole" NOT NULL,
+    "type" "SupportRequestType" NOT NULL,
+    "description" TEXT NOT NULL,
+    "pageUrl" TEXT NOT NULL,
+    "userAgent" TEXT,
+    "requestId" TEXT,
+    "status" "SupportRequestStatus" NOT NULL DEFAULT 'OPEN',
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "support_requests_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1544,6 +1569,15 @@ CREATE INDEX "error_reports_userId_createdAt_idx" ON "error_reports"("userId", "
 CREATE INDEX "error_reports_status_createdAt_idx" ON "error_reports"("status", "createdAt");
 
 -- CreateIndex
+CREATE INDEX "support_requests_userId_createdAt_idx" ON "support_requests"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "support_requests_status_createdAt_idx" ON "support_requests"("status", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "support_requests_type_createdAt_idx" ON "support_requests"("type", "createdAt");
+
+-- CreateIndex
 CREATE INDEX "ProductAnalyticsEvent_userId_eventName_occurredAt_idx" ON "ProductAnalyticsEvent"("userId", "eventName", "occurredAt");
 
 -- CreateIndex
@@ -2175,6 +2209,9 @@ ALTER TABLE "AdminOperationCheckRun" ADD CONSTRAINT "AdminOperationCheckRun_admi
 
 -- AddForeignKey
 ALTER TABLE "error_reports" ADD CONSTRAINT "error_reports_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "support_requests" ADD CONSTRAINT "support_requests_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProductAnalyticsEvent" ADD CONSTRAINT "ProductAnalyticsEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

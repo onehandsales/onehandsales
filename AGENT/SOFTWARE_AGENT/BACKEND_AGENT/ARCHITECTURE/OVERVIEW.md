@@ -56,12 +56,14 @@ Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 
 - `BusinessCardModule`
 - `ProductModule`
 - `DealModule`
+- `ErrorReportModule`
 - `FollowUpModule`
 - `ScheduleModule`
 - `SalesReportModule`
 - `MeetingNoteModule`
 - `NotificationModule`
 - `SearchModule`
+- `SupportRequestModule`
 - `TrashModule`
 
 Admin API는 11 Admin Operation 기준으로 사용자/domain readonly operation, Trash/account request/provider failure queue, audit/security log, analytics overview, system operation check foundation까지 구현되어 있다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 범위다.

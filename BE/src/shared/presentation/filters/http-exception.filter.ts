@@ -172,6 +172,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ERROR_REPORT_PAGE_URL_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_TOO_LONG":
       case "ERROR_REPORT_SCREENSHOT_TYPE_UNSUPPORTED":
+      case "SUPPORT_REQUEST_TYPE_REQUIRED":
+      case "SUPPORT_REQUEST_TYPE_INVALID":
+      case "SUPPORT_REQUEST_DESCRIPTION_REQUIRED":
+      case "SUPPORT_REQUEST_DESCRIPTION_TOO_LONG":
+      case "SUPPORT_REQUEST_PAGE_URL_REQUIRED":
+      case "SUPPORT_REQUEST_PAGE_URL_TOO_LONG":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
       case "ERROR_REPORT_SCREENSHOT_TOO_LARGE":
@@ -218,6 +224,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DATA_EXPORT_REQUEST_NOT_FOUND":
       case "ACCOUNT_DELETION_REQUEST_NOT_FOUND":
       case "ERROR_REPORT_USER_NOT_FOUND":
+      case "SUPPORT_REQUEST_USER_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
       case "TRASH_RECOVERY_REQUEST_NOT_ALLOWED_BEFORE_EXPIRY":
       case "ACCOUNT_DELETION_REQUEST_NOT_CANCELABLE":

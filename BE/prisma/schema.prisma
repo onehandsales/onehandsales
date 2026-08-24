@@ -419,6 +419,20 @@ enum ErrorReportStatus {
   OPEN
 }
 
+/// 기능 : 사용자 지원 요청 문의 유형을 구분합니다.
+enum SupportRequestType {
+  FEATURE_QUESTION
+  PRICING_QUESTION
+  PHONE_CONSULTATION
+  FEATURE_SUGGESTION
+  OTHER
+}
+
+/// 기능 : 사용자 지원 요청 처리 상태를 구분합니다.
+enum SupportRequestStatus {
+  OPEN
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -554,6 +568,8 @@ model User {
   adminOperationCheckRuns     AdminOperationCheckRun[]
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
   errorReports                ErrorReport[]
+  /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
+  supportRequests             SupportRequest[]
 
   @@index([role])
   @@index([status])
@@ -587,6 +603,30 @@ model ErrorReport {
   @@index([userId, createdAt])
   @@index([status, createdAt])
   @@map("error_reports")
+}
+
+/// 기능 : User Web 도움말 모달에서 접수된 지원 요청을 저장합니다.
+model SupportRequest {
+  id              String               @id @default(uuid()) @db.Uuid
+  userId          String               @db.Uuid
+  userEmail       String?
+  userDisplayName String?
+  userRole        UserRole
+  type            SupportRequestType
+  description     String
+  pageUrl         String
+  userAgent       String?
+  requestId       String?
+  status          SupportRequestStatus @default(OPEN)
+  createdAt       DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@index([type, createdAt])
+  @@map("support_requests")
 }
 
 model UserOAuthAccount {

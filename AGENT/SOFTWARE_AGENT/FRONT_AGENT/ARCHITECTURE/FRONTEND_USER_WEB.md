@@ -103,6 +103,7 @@ legacy redirect 라우트:
 - `contact`
 - `deal`
 - `deal-redesign`
+- `error-report`
 - `follow-up-delivery`
 - `import-export`
 - `meeting-note`
@@ -112,6 +113,7 @@ legacy redirect 라우트:
 - `public-site`
 - `schedule`
 - `search`
+- `support-request`
 - `trash`
 
 08 G03에서는 public-site i18n을 확장하지 않고, `/app` 내부 문구/formatter용 app i18n feature를 `FE/user-web/src/features/app-i18n`에 둔다. `AppI18nProvider`는 `AuthProvider` 내부에서 `User.preferredLocale`을 우선 사용하고, profile 로딩 전에는 browser locale과 `ko-KR` 순서로 fallback한다.
@@ -137,6 +139,8 @@ legacy redirect 라우트:
 - Notification은 `/app/notifications` 화면에서 `GET /api/notifications`, `PATCH /api/notifications/:notificationId/read`, `GET/PATCH /api/notifications/settings`, browser push public key/subscription API를 연동한다. 알림 bell은 `/app/notifications`로 이동한다.
 - DataImport는 `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/review/:importJobId`는 확정 전 review 화면이며, `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
 - Account request는 설정/계정 관리 흐름에서 data export request와 account deletion request/cancel API를 연동한다.
+- Help Error Report는 도움말 모달에서 `POST /api/error-reports`를 호출해 에러 신고와 선택 스크린샷을 접수한다.
+- Help Support Request는 도움말 모달에서 `POST /api/support-requests`를 호출해 문의 유형과 1000자 이하 문의 내용을 접수한다.
 - Product Analytics는 app route, activation/retention 후보, mobile field/local draft 이벤트를 `POST /api/analytics/events`로 전송한다.
 - Mobile Field Use는 모바일 녹음/local draft, push permission UX, mobile analytics event foundation을 연동한다.
 

@@ -54,11 +54,11 @@ FRONT_AGENT/
 
 ## 6. 현재 구현 스냅샷
 
-Snapshot date: 2026-08-11
+Snapshot date: 2026-08-24
 
 User Web:
 
-- 실제 API 연동 완료: URL locale Public/Auth site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, Product Analytics, Account request, Company/Contact/Product/Deal domain xlsx export.
+- 실제 API 연동 완료: URL locale Public/Auth site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, Product Analytics, Account request, Help Error Report, Help Support Request, Company/Contact/Product/Deal domain xlsx export.
 - mock/placeholder 경계: generic Export route/API, Billing/Paddle, Billing Admin, B2B tenant/team admin.
 - Auth/User: 개발용 mock login은 제거되었고, Supabase OAuth provider login과 Backend token exchange가 정본이다. Public/auth canonical URL은 `/{locale}` 계열을 사용하고 기존 `/login` 등은 선호 locale URL로 redirect한다. 로그인/회원가입 provider 버튼은 Google/LINE/Apple 카드형 버튼이며 가능한 경우 browser popup으로 OAuth를 시작하고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - 08 G03 App I18N foundation은 public/auth URL locale i18n과 `/app` 내부 i18n을 분리한다. public-site i18n은 `FE/user-web/src/features/public-site/i18n`에 유지하고, `/app` 문구/formatter 기반은 `FE/user-web/src/features/app-i18n`에서 `User.preferredLocale`, `User.timeZone`, `User.countryCode`, `User.defaultCurrencyCode` 기준으로 처리한다. `/app` route에는 locale prefix를 붙이지 않는다.

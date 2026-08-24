@@ -8,6 +8,7 @@ Backend와 DB의 실제 통합 QA 항목을 관리한다. 이 문서는 신규 A
 
 - `INTEGRATION-QA.md`
 - `../COMMON/API-SPEC/ERROR_REPORT_API.md`
+- `../COMMON/API-SPEC/SUPPORT_REQUEST_API.md`
 
 ## 3. BE 공통 기준
 
@@ -21,6 +22,8 @@ Backend와 DB의 실제 통합 QA 항목을 관리한다. 이 문서는 신규 A
 ## 4. 신규 구현 범위
 
 - User Web 도움말 모달 에러신고 접수를 위해 `POST /api/error-reports`를 추가한다.
+- User Web 도움말 모달 지원요청 접수를 위해 `POST /api/support-requests`를 추가한다.
 - 요청 사용자는 FE body가 아니라 `AuthGuard`와 `CurrentUserContext`로 식별한다.
 - screenshot은 선택 첨부이며 Supabase Storage에 저장하고 DB에는 metadata만 남긴다.
+- 지원요청은 문의 유형과 본문을 저장하며 screenshot이나 첨부 파일은 받지 않는다.
 - Admin 조회/처리 API는 이번 범위에서 제외한다.

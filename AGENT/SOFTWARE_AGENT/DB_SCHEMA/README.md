@@ -17,15 +17,16 @@
 - `MEETING_NOTE_SCHEMA.md`: MeetingNote DB 구조
 - `BUSINESS_CARD_SCHEMA.md`: BusinessCardScanLog DB 구조
 - `ERROR_REPORT_SCHEMA.md`: User Web 에러 신고 DB 구조
+- `SUPPORT_REQUEST_SCHEMA.md`: User Web 지원 요청 DB 구조
 - `DATA_IMPORT_SCHEMA.md`: DataImport 양식/성공 로그 DB 구조
 - `PRODUCT_ANALYTICS_SCHEMA.md`: Product Analytics raw event/snapshot DB 구조
 - `TIME_AND_TIMEZONE_POLICY.md`: DB/API/Frontend 시간과 timezone 처리 기준
 
 ## 3. 현재 DB 범위
 
-Snapshot date: 2026-08-11
+Snapshot date: 2026-08-24
 
-현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Error Report, Product, Deal, DealActivity, Schedule, MeetingNote, DataImport/ImportJob, Notification/BrowserPush, Google Calendar integration, AI Weekly Sales Report/Follow-up, AI provider call log, Product Analytics, Admin Operation 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/Schedule/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
+현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Error Report, Support Request, Product, Deal, DealActivity, Schedule, MeetingNote, DataImport/ImportJob, Notification/BrowserPush, Google Calendar integration, AI Weekly Sales Report/Follow-up, AI provider call log, Product Analytics, Admin Operation 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/Schedule/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
 Auth/User 기준:
 
@@ -55,6 +56,9 @@ Auth/User 기준:
 - `BusinessCardScanLog`
 - `ErrorReportStatus`
 - `ErrorReport`
+- `SupportRequestType`
+- `SupportRequestStatus`
+- `SupportRequest`
 - `Product`
 - `ProductCategory`
 - `ProductStatus`
@@ -134,6 +138,8 @@ Auth/User 기준:
 - `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
 - `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
 - `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`
+- `BE/prisma/migrations/20260823010000_add_error_reports/migration.sql`
+- `BE/prisma/migrations/20260824010000_add_support_requests/migration.sql`
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 
@@ -198,6 +204,7 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/MEETING_NOTE_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/BUSINESS_CARD_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/ERROR_REPORT_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SUPPORT_REQUEST_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DATA_IMPORT_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`

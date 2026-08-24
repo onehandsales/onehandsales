@@ -37,7 +37,7 @@ Canonical domain:
 
 ## 3. Current Implementation Snapshot
 
-Snapshot date: 2026-08-11
+Snapshot date: 2026-08-24
 
 Current source of truth:
 
@@ -60,12 +60,14 @@ Currently imported modules in `AppModule`:
 - `business-card`
 - `product`
 - `deal`
+- `error-report`
 - `follow-up`
 - `schedule`
 - `sales-report`
 - `meeting-note`
 - `notification`
 - `search`
+- `support-request`
 - `trash`
 - `data-import`
 
@@ -86,6 +88,7 @@ Currently implemented API surface:
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
 - DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, cell-scoped validation messages, confirm import, import user logs
+- Help: `POST /api/error-reports`, `POST /api/support-requests`
 - Admin Operation: admin user/domain readonly operation, trash/account request/provider failure queues, audit/security logs, analytics overview, system operation check endpoints under `/admin/api/*`
 - Health: `GET /api/health`
 - Analytics: `POST /api/analytics/events`
@@ -203,12 +206,14 @@ Implemented MVP modules:
 - `business-card`
 - `product`
 - `deal`
+- `error-report`
 - `follow-up`
 - `schedule`
 - `sales-report`
 - `meeting-note`
 - `notification`
 - `search`
+- `support-request`
 - `trash`
 - `data-import`
 

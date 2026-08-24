@@ -1,4 +1,4 @@
-아래는 2026-08-11 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-08-24 현재 BE 구현 기준 API별 한 줄 설명입니다.
 
 Global B2C 01~11 foundation 이후 추가된 주요 API surface까지 포함합니다. 01~11 기능별 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`, 세부 DTO와 validation은 각 controller/spec, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`를 함께 봅니다.
 
@@ -241,6 +241,12 @@ Deal relation payload:
 | `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품/딜 데이터로 확정 저장하고 성공 내역을 남깁니다. 현재 HTTP 경로는 연락처 회사 보정값, 딜 회사/담당자/제품 보정값, row override를 전달합니다. |
 | `GET /api/import-user-logs` | 확정 저장된 데이터 불러오기 성공 내역 목록을 조회합니다. |
 | `GET /api/import-user-logs/{importUserLogId}` | 데이터 불러오기 성공 내역 상세와 row snapshot을 조회합니다. |
+
+**Help**
+| API | 설명 |
+|---|---|
+| `POST /api/error-reports` | User Web 도움말 모달에서 에러 신고를 접수합니다. 선택 PNG 스크린샷은 storage metadata만 DB에 저장합니다. |
+| `POST /api/support-requests` | User Web 도움말 모달에서 문의 유형과 1000자 이하 문의 내용으로 지원 요청을 접수합니다. |
 
 **기타**
 | API | 설명 |
