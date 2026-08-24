@@ -489,7 +489,7 @@ function SettingsCardHeader({
         <Icon className="h-4 w-4" strokeWidth={1.8} />
       </span>
       <div className="min-w-0">
-        <h2 className="text-[15px] font-semibold text-[#111827]">{title}</h2>
+        <h2 className="text-[20px] font-semibold text-[#111827]">{title}</h2>
         <p className="mt-0.5 text-[12px] text-[#64748B]">{description}</p>
       </div>
     </div>

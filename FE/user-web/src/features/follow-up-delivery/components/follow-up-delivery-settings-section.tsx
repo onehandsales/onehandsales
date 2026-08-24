@@ -145,9 +145,9 @@ function SettingsHeader() {
         <MessageSquareText className="h-4 w-4" strokeWidth={1.8} />
       </span>
       <div className="min-w-0">
-        <h3 className="text-[15px] font-semibold text-[#111827]">
+        <h2 className="text-[20px] font-semibold text-[#111827]">
           후속 연락
-        </h3>
+        </h2>
         <p className="mt-0.5 text-[12px] text-[#64748B]">
           AI 리포트에서 이메일과 문자 후속 연락을 보낼 발신 수단을 관리해요.
         </p>
@@ -229,7 +229,7 @@ function EmailConnectionSettings({
     <section className="grid gap-3">
       <div className="flex min-w-0 items-center gap-2">
         <Mail className={`h-4 w-4 shrink-0 ${iconClassName}`} />
-        <h3 className="text-sm font-semibold text-[#111827]">이메일 발신</h3>
+        <h2 className="text-[20px] font-semibold text-[#111827]">이메일 발신</h2>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
         {emailProviders.map(({ provider, label }) => {
@@ -427,7 +427,7 @@ function SmsSenderSettings({
     <section className="grid gap-3 border-t border-[#E2E5EC] pt-4">
       <div className="flex min-w-0 items-center gap-2">
         <Smartphone className={`h-4 w-4 shrink-0 ${iconClassName}`} />
-        <h3 className="text-sm font-semibold text-[#111827]">문자 발신번호</h3>
+        <h2 className="text-[20px] font-semibold text-[#111827]">문자 발신번호</h2>
       </div>
       <form
         className={formClassName}

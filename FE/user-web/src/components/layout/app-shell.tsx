@@ -1809,9 +1809,9 @@ function AccountSettingsModalContent() {
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h1 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.preferencesTab")}
-          </h2>
+          </h1>
         </div>
 
         {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
@@ -2011,9 +2011,9 @@ function ExternalIntegrationsModalContent() {
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h1 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.externalIntegrationsTab")}
-          </h2>
+          </h1>
         </div>
 
         {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
@@ -2389,7 +2389,11 @@ function LegalDocumentSection({
     );
   }
 
-  return <ProfileSection title={title}>{children}</ProfileSection>;
+  return (
+    <ProfileSection headingLevel="h3" title={title}>
+      {children}
+    </ProfileSection>
+  );
 }
 
 type ProfileModalContentProps = {
@@ -2437,9 +2441,9 @@ function DevicesModalContent({
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h1 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.devicesTab")}
-          </h2>
+          </h1>
         </div>
 
         <div className="mt-10 grid gap-10">
@@ -2484,9 +2488,9 @@ function ProfileModalContent({
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h1 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.profileTitle")}
-          </h2>
+          </h1>
         </div>
 
         {isProfileLoading ? (
@@ -2578,25 +2582,39 @@ function ProfileModalContent({
 // 기능 : 프로필 섹션을 렌더링합니다.
 function ProfileSection({
   children,
+  headingLevel = "h2",
   icon: Icon,
   title,
 }: {
   readonly children: ReactNode;
+  readonly headingLevel?: "h2" | "h3";
   readonly icon?: LucideIcon;
   readonly title: string;
 }) {
+  const headingClassName =
+    headingLevel === "h2"
+      ? "flex min-w-0 items-center gap-2 text-[20px] font-semibold text-[#111827]"
+      : "flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[#111827]";
+  const headingContent = (
+    <>
+      {Icon ? (
+        <Icon
+          aria-hidden="true"
+          className="h-4 w-4 shrink-0 text-[#6B7280]"
+          strokeWidth={1.8}
+        />
+      ) : null}
+      {title}
+    </>
+  );
+
   return (
     <section>
-      <h3 className="flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[#111827]">
-        {Icon ? (
-          <Icon
-            aria-hidden="true"
-            className="h-4 w-4 shrink-0 text-[#6B7280]"
-            strokeWidth={1.8}
-          />
-        ) : null}
-        {title}
-      </h3>
+      {headingLevel === "h2" ? (
+        <h2 className={headingClassName}>{headingContent}</h2>
+      ) : (
+        <h3 className={headingClassName}>{headingContent}</h3>
+      )}
       <div className="mt-4 border-t border-[#F0F2F6] pt-3">{children}</div>
     </section>
   );
