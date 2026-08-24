@@ -302,7 +302,7 @@ export function ErrorReportHelpContent({
 
         <div className="mt-1 flex justify-end pt-2">
           <button
-            className="inline-flex h-9 min-w-[76px] items-center justify-center gap-1.5 rounded-md bg-[#3A83F7] px-4 text-[13px] font-semibold text-white transition hover:bg-[#256FE6] active:bg-[#1D5FD0] disabled:cursor-not-allowed disabled:bg-[#94A3B8]"
+            className="inline-flex h-9 min-w-[76px] items-center justify-center gap-1.5 rounded-md bg-[#3A83F7] px-4 text-[13px] font-semibold text-white transition hover:bg-[#256FE6] active:bg-[#1D5FD0] disabled:cursor-not-allowed disabled:bg-[#3A83F7] disabled:opacity-60 disabled:hover:bg-[#3A83F7] disabled:active:bg-[#3A83F7]"
             disabled={!canSubmit}
             type="submit"
           >
