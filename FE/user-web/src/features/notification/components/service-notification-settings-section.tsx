@@ -258,9 +258,6 @@ export function ServiceNotificationSettingsSection() {
           <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("navigation.notifications")}
           </h3>
-          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            {t("settings.notificationsDescription")}
-          </p>
         </div>
 
         <div className="mt-8 grid gap-4">

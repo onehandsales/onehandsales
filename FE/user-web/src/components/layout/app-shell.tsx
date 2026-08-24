@@ -1254,7 +1254,7 @@ function AccountModalContent({
   const { t } = useAppI18n();
   const accountModalItems: AccountModalSidebarItemConfig[] = [
     { icon: UserRound, label: profileLabel, section: "profile" },
-    { icon: Settings, label: t("navigation.settings"), section: "settings" },
+    { icon: Settings, label: t("settings.preferencesTab"), section: "settings" },
     { icon: Laptop, label: t("settings.devicesTab"), section: "devices" },
     { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
   ];
@@ -1787,11 +1787,8 @@ function AccountSettingsModalContent() {
       <div className="mx-auto w-full max-w-[800px]">
         <div>
           <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
-            {t("navigation.settings")}
+            {t("settings.preferencesTab")}
           </h3>
-          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            {t("settings.profileDescription")}
-          </p>
         </div>
 
         {notice ? <AccountSettingsNoticeBanner notice={notice} /> : null}
@@ -2336,9 +2333,6 @@ function DevicesModalContent({
           <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.devicesTab")}
           </h3>
-          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            {t("settings.devicesDescription")}
-          </p>
         </div>
 
         <div className="mt-10 grid gap-10">
@@ -2386,9 +2380,6 @@ function ProfileModalContent({
           <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.profileTitle")}
           </h3>
-          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            {t("settings.profileModalDescription")}
-          </p>
         </div>
 
         {isProfileLoading ? (
