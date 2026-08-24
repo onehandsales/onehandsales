@@ -2601,7 +2601,7 @@ function ProfileSection({
       {Icon ? (
         <Icon
           aria-hidden="true"
-          className="h-4 w-4 shrink-0 text-[#6B7280]"
+          className="h-5 w-5 shrink-0 text-[#6B7280]"
           strokeWidth={1.8}
         />
       ) : null}

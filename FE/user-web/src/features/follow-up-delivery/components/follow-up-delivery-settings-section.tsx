@@ -142,7 +142,7 @@ function SettingsHeader() {
   return (
     <div className="flex items-start gap-3">
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#EAF2FF] text-[#1D4ED8]">
-        <MessageSquareText className="h-4 w-4" strokeWidth={1.8} />
+        <MessageSquareText className="h-5 w-5" strokeWidth={1.8} />
       </span>
       <div className="min-w-0">
         <h2 className="text-[20px] font-semibold text-[#111827]">
@@ -228,7 +228,7 @@ function EmailConnectionSettings({
   return (
     <section className="grid gap-3">
       <div className="flex min-w-0 items-center gap-2">
-        <Mail className={`h-4 w-4 shrink-0 ${iconClassName}`} />
+        <Mail className={`h-5 w-5 shrink-0 ${iconClassName}`} />
         <h2 className="text-[20px] font-semibold text-[#111827]">이메일 발신</h2>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
@@ -426,7 +426,7 @@ function SmsSenderSettings({
   return (
     <section className="grid gap-3 border-t border-[#E2E5EC] pt-4">
       <div className="flex min-w-0 items-center gap-2">
-        <Smartphone className={`h-4 w-4 shrink-0 ${iconClassName}`} />
+        <Smartphone className={`h-5 w-5 shrink-0 ${iconClassName}`} />
         <h2 className="text-[20px] font-semibold text-[#111827]">문자 발신번호</h2>
       </div>
       <form

@@ -303,7 +303,7 @@ function SettingsHeader() {
   return (
     <div className="flex items-start gap-3">
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#EAF2FF] text-[#1D4ED8]">
-        <CalendarDays className="h-4 w-4" strokeWidth={1.8} />
+        <CalendarDays className="h-5 w-5" strokeWidth={1.8} />
       </span>
       <div className="min-w-0">
         <h2 className="text-[20px] font-semibold text-[#111827]">
