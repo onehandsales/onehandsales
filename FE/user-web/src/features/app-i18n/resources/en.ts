@@ -485,7 +485,7 @@ export const enResource = {
     profileLoading: "Loading profile.",
     profileSaved: "Profile saved.",
     profileTitle: "Profile Settings",
-    providerAccounts: "Linked Providers",
+    providerAccounts: "Login Methods",
     role: "Role",
     regionSettings: "Region Settings",
     saveProfile: "Save",

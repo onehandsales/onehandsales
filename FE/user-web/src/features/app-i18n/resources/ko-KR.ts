@@ -483,7 +483,7 @@ export const koKRResource = {
     profileLoading: "프로필을 불러오고 있어요.",
     profileSaved: "개인 정보를 저장했어요.",
     profileTitle: "프로필",
-    providerAccounts: "연결 provider",
+    providerAccounts: "로그인 방식",
     role: "권한",
     regionSettings: "지역 설정",
     saveProfile: "저장",

@@ -2543,7 +2543,7 @@ function ProfileModalContent({
                       value={[
                         account.providerEmail ?? t("settings.emailMissing"),
                         formatDateTime(account.createdAt, { fallback: t("common.noRecord") }),
-                      ].join(" · ")}
+                      ].join(" / ")}
                     />
                   ))}
                 </div>
