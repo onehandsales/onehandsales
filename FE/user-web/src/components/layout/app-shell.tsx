@@ -1817,7 +1817,7 @@ function AccountSettingsModalContent() {
             <form onSubmit={onSubmit}>
               <ProfileSection title={t("settings.regionSettings")}>
                 <div className="grid gap-1">
-                  <AccountSettingsSelectRow label={t("settings.displayLanguage")}>
+                  <AccountModalSettingRow interactive label={t("settings.displayLanguage")}>
                     <select
                       className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) => setPreferredLocale(event.target.value)}
@@ -1830,8 +1830,8 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </AccountSettingsSelectRow>
-                  <AccountSettingsSelectRow label={t("settings.timeZone")}>
+                  </AccountModalSettingRow>
+                  <AccountModalSettingRow interactive label={t("settings.timeZone")}>
                     <select
                       className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) => setTimeZone(event.target.value)}
@@ -1844,8 +1844,8 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </AccountSettingsSelectRow>
-                  <AccountSettingsSelectRow label={t("settings.defaultCountry")}>
+                  </AccountModalSettingRow>
+                  <AccountModalSettingRow interactive label={t("settings.defaultCountry")}>
                     <select
                       className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) => setCountryCode(event.target.value)}
@@ -1858,8 +1858,8 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </AccountSettingsSelectRow>
-                  <AccountSettingsSelectRow label={t("settings.defaultCurrency")}>
+                  </AccountModalSettingRow>
+                  <AccountModalSettingRow interactive label={t("settings.defaultCurrency")}>
                     <select
                       className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) =>
@@ -1874,7 +1874,7 @@ function AccountSettingsModalContent() {
                         </option>
                       ))}
                     </select>
-                  </AccountSettingsSelectRow>
+                  </AccountModalSettingRow>
                 </div>
                 <div className="mt-5 flex justify-end">
                   <button
@@ -1922,19 +1922,48 @@ function AccountModalNoticeBanner({
   );
 }
 
-// 기능 : 계정 설정 form 항목을 좌우 선택 행으로 렌더링합니다.
-function AccountSettingsSelectRow({
+// 기능 : 계정 모달 설정 항목을 공통 좌우 행으로 렌더링합니다.
+function AccountModalSettingRow({
   children,
+  interactive = false,
   label,
 }: {
   readonly children: ReactNode;
+  readonly interactive?: boolean;
   readonly label: string;
 }) {
-  return (
-    <label className="grid gap-2 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-center md:gap-6">
+  const className =
+    "grid min-h-[52px] gap-2 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-center md:gap-6";
+  const content = (
+    <>
       <span className="text-[13px] font-medium text-[#111827]">{label}</span>
-      <span className="min-w-0 md:justify-self-end">{children}</span>
-    </label>
+      <span className="min-w-0 md:justify-self-end md:text-right">
+        {children}
+      </span>
+    </>
+  );
+
+  if (interactive) {
+    return <label className={className}>{content}</label>;
+  }
+
+  return <div className={className}>{content}</div>;
+}
+
+// 기능 : 프로필 정보 행을 렌더링합니다.
+function ProfileInfoRow({
+  label,
+  value,
+}: {
+  readonly label: string;
+  readonly value: string;
+}) {
+  return (
+    <AccountModalSettingRow label={label}>
+      <span className="block min-w-0 break-words text-[13px] leading-6 text-[#64748B]">
+        {value}
+      </span>
+    </AccountModalSettingRow>
   );
 }
 
@@ -2451,6 +2480,7 @@ function ProfileModalContent({
           <div className="mt-10 grid gap-10">
             <ProfileSection title={t("settings.accountTitle")}>
               <div className="grid gap-1">
+                <ProfileInfoRow label={t("settings.userId")} value={profile.id} />
                 <ProfileInfoRow
                   label={t("settings.name")}
                   value={profile.name ?? t("settings.noName")}
@@ -2521,10 +2551,6 @@ function ProfileModalContent({
                 <ProfileEmptyText>{t("settings.noOAuthAccounts")}</ProfileEmptyText>
               )}
             </ProfileSection>
-
-            <div className="border-t border-[#F0F2F6] pt-3">
-              <ProfileInfoRow label={t("settings.userId")} value={profile.id} />
-            </div>
           </div>
         ) : null}
       </div>
@@ -2547,24 +2573,6 @@ function ProfileSection({
       </h4>
       <div className="mt-4 border-t border-[#F0F2F6] pt-3">{children}</div>
     </section>
-  );
-}
-
-// 기능 : 프로필 정보 행을 렌더링합니다.
-function ProfileInfoRow({
-  label,
-  value,
-}: {
-  readonly label: string;
-  readonly value: string;
-}) {
-  return (
-    <div className="grid gap-1 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-start md:gap-6">
-      <p className="text-[13px] font-medium text-[#111827]">{label}</p>
-      <p className="min-w-0 break-words text-[13px] leading-6 text-[#64748B] md:text-right">
-        {value}
-      </p>
-    </div>
   );
 }
 
