@@ -23,6 +23,7 @@ import {
   Loader2,
   LogOut,
   Menu,
+  MessageSquareText,
   MoreHorizontal,
   Package,
   Pencil,
@@ -1798,9 +1799,9 @@ function AccountSettingsModalContent() {
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.preferencesTab")}
-          </h3>
+          </h2>
         </div>
 
         {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
@@ -1815,7 +1816,7 @@ function AccountSettingsModalContent() {
         ) : profile ? (
           <div className="mt-10 grid gap-10">
             <form onSubmit={onSubmit}>
-              <ProfileSection title={t("settings.regionSettings")}>
+              <ProfileSection icon={Settings} title={t("settings.regionSettings")}>
                 <div className="grid gap-1">
                   <AccountModalSettingRow interactive label={t("settings.displayLanguage")}>
                     <select
@@ -1888,7 +1889,10 @@ function AccountSettingsModalContent() {
               </ProfileSection>
             </form>
 
-            <ProfileSection title={t("settings.accountDataRequestsTitle")}>
+            <ProfileSection
+              icon={FileText}
+              title={t("settings.accountDataRequestsTitle")}
+            >
               <AccountDataRequestsSettingsSection
                 onNotice={onSettingsSectionNotice}
                 presentation="modal"
@@ -1997,22 +2001,25 @@ function ExternalIntegrationsModalContent() {
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.externalIntegrationsTab")}
-          </h3>
+          </h2>
         </div>
 
         {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
 
         <div className="mt-10 grid gap-10">
-          <ProfileSection title={t("settings.googleCalendarTitle")}>
+          <ProfileSection icon={CalendarDays} title={t("settings.googleCalendarTitle")}>
             <GoogleCalendarSettingsSection
               onNotice={onExternalIntegrationsNotice}
               presentation="modal"
             />
           </ProfileSection>
 
-          <ProfileSection title={t("settings.followUpDeliveryTitle")}>
+          <ProfileSection
+            icon={MessageSquareText}
+            title={t("settings.followUpDeliveryTitle")}
+          >
             <FollowUpDeliverySettingsSection
               onNotice={onExternalIntegrationsNotice}
               presentation="modal"
@@ -2420,13 +2427,13 @@ function DevicesModalContent({
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.devicesTab")}
-          </h3>
+          </h2>
         </div>
 
         <div className="mt-10 grid gap-10">
-          <ProfileSection title={t("settings.devicesTitle")}>
+          <ProfileSection icon={Laptop} title={t("settings.devicesTitle")}>
             {isDevicesLoading ? (
               <ProfileInlineLoading />
             ) : devicesError ? (
@@ -2467,9 +2474,9 @@ function ProfileModalContent({
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
         <div>
-          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("settings.profileTitle")}
-          </h3>
+          </h2>
         </div>
 
         {isProfileLoading ? (
@@ -2478,7 +2485,7 @@ function ProfileModalContent({
           <ProfileErrorState error={profileError} onRetry={onRetryProfile} />
         ) : profile ? (
           <div className="mt-10 grid gap-10">
-            <ProfileSection title={t("settings.accountTitle")}>
+            <ProfileSection icon={UserRound} title={t("settings.accountTitle")}>
               <div className="grid gap-1">
                 <ProfileInfoRow label={t("settings.userId")} value={profile.id} />
                 <ProfileInfoRow
@@ -2502,7 +2509,7 @@ function ProfileModalContent({
               </div>
             </ProfileSection>
 
-            <ProfileSection title={t("settings.accountStatus")}>
+            <ProfileSection icon={ShieldCheck} title={t("settings.accountStatus")}>
               <div className="grid gap-1">
                 <ProfileInfoRow label={t("settings.role")} value={formatRoleLabel(profile.role, t)} />
                 <ProfileInfoRow label={t("settings.accountStatus")} value={formatStatusLabel(profile.status, t)} />
@@ -2533,7 +2540,7 @@ function ProfileModalContent({
               </div>
             </ProfileSection>
 
-            <ProfileSection title={t("settings.providerAccounts")}>
+            <ProfileSection icon={Link} title={t("settings.providerAccounts")}>
               {profile.oauthAccounts.length > 0 ? (
                 <div className="grid gap-1">
                   {profile.oauthAccounts.map((account) => (
@@ -2561,16 +2568,25 @@ function ProfileModalContent({
 // 기능 : 프로필 섹션을 렌더링합니다.
 function ProfileSection({
   children,
+  icon: Icon,
   title,
 }: {
   readonly children: ReactNode;
+  readonly icon?: LucideIcon;
   readonly title: string;
 }) {
   return (
     <section>
-      <h4 className="text-[15px] font-semibold text-[#111827]">
+      <h3 className="flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[#111827]">
+        {Icon ? (
+          <Icon
+            aria-hidden="true"
+            className="h-4 w-4 shrink-0 text-[#6B7280]"
+            strokeWidth={1.8}
+          />
+        ) : null}
         {title}
-      </h4>
+      </h3>
       <div className="mt-4 border-t border-[#F0F2F6] pt-3">{children}</div>
     </section>
   );

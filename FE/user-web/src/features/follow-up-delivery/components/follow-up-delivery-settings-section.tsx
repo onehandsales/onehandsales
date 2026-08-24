@@ -145,9 +145,9 @@ function SettingsHeader() {
         <MessageSquareText className="h-4 w-4" strokeWidth={1.8} />
       </span>
       <div className="min-w-0">
-        <h2 className="text-[15px] font-semibold text-[#111827]">
+        <h3 className="text-[15px] font-semibold text-[#111827]">
           후속 연락
-        </h2>
+        </h3>
         <p className="mt-0.5 text-[12px] text-[#64748B]">
           AI 리포트에서 이메일과 문자 후속 연락을 보낼 발신 수단을 관리해요.
         </p>

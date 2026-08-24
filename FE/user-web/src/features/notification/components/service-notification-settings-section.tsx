@@ -255,9 +255,9 @@ export function ServiceNotificationSettingsSection() {
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[760px]">
         <div>
-          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+          <h2 className="text-[28px] font-bold leading-tight text-[#111827]">
             {t("navigation.notifications")}
-          </h3>
+          </h2>
         </div>
 
         <div className="mt-8 grid gap-4">

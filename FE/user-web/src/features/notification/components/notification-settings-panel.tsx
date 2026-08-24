@@ -30,7 +30,7 @@ export function NotificationSettingsPanel({
     <div className="grid gap-4">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-[#6B7280]" aria-hidden="true" />
-        <h2 className="text-[16px] font-semibold text-[#111827]">서비스 알림</h2>
+        <h3 className="text-[16px] font-semibold text-[#111827]">서비스 알림</h3>
       </div>
 
       <div className="grid gap-2 rounded-md border border-[#E5E7EB] bg-[#FAFAF8] p-3 text-[14px]">

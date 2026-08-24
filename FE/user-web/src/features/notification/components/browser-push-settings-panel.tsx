@@ -39,7 +39,7 @@ export function BrowserPushSettingsPanel({
           className="h-5 w-5 text-[#6B7280]"
           aria-hidden="true"
         />
-        <h2 className="text-[16px] font-semibold text-[#111827]">브라우저 푸시</h2>
+        <h3 className="text-[16px] font-semibold text-[#111827]">브라우저 푸시</h3>
       </div>
 
       <div className="grid gap-2 text-[14px] sm:grid-cols-2">
