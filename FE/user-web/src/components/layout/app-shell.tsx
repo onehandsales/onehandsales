@@ -13,6 +13,7 @@ import {
   BriefcaseBusiness,
   Bug,
   CalendarDays,
+  Check,
   ChevronsLeft,
   ChevronRight,
   CircleHelp,
@@ -2660,14 +2661,20 @@ function ProfileDeviceRow({
       <div className="flex min-w-0 items-start gap-2.5">
         <Laptop className="mt-0.5 h-4 w-4 shrink-0 text-[#A1A1AA]" strokeWidth={1.7} />
         <div className="min-w-0">
-          <p className="truncate text-[13px] font-medium text-[#374151]">
-            {label}
-          </p>
-          {device.isCurrentDevice ? (
-            <p className="mt-0.5 text-[12px] font-medium text-[#0075DE]">
-              {t("settings.currentDevice")}
+          <div className="flex min-w-0 items-center gap-1.5">
+            <p className="truncate text-[13px] font-medium text-[#374151]">
+              {label}
             </p>
-          ) : null}
+            {device.isCurrentDevice ? (
+              <span
+                aria-label={t("settings.currentDevice")}
+                className="inline-grid h-5 w-5 shrink-0 place-items-center text-[#3A83F7]"
+                title={t("settings.currentDevice")}
+              >
+                <Check aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2.4} />
+              </span>
+            ) : null}
+          </div>
         </div>
       </div>
       <p className="text-[12px] leading-5 text-[#6B7280]">{lastActive}</p>
