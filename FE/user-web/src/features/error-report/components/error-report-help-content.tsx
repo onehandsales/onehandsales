@@ -21,6 +21,7 @@ import { getApiErrorMessage } from "@/lib/api-client";
 const ERROR_REPORT_CAPTURE_IGNORE_SELECTOR =
   "[data-error-report-capture-ignore='true']";
 const ERROR_REPORT_DESCRIPTION_MAX_LENGTH = 500;
+const ERROR_REPORT_CLOSE_DELAY_MS = 2000;
 
 // 기능 : 도움말 모달 안에서 에러 신고 작성과 제출 흐름을 렌더링합니다.
 export function ErrorReportHelpContent({
@@ -190,7 +191,10 @@ export function ErrorReportHelpContent({
           includeScreenshot && screenshotBlob !== null ? screenshotBlob : null,
       });
       setSuccessMessage(response.message);
-      closeTimerRef.current = window.setTimeout(onSubmitted, 1000);
+      closeTimerRef.current = window.setTimeout(
+        onSubmitted,
+        ERROR_REPORT_CLOSE_DELAY_MS
+      );
     } catch (error) {
       setSubmitError(getApiErrorMessage(error));
     }

@@ -133,8 +133,34 @@ export const koKRResource = {
     supportBodyDescription:
       "문제가 발생한 화면, 기대한 동작, 실제 결과를 함께 적어주면 확인이 빨라요.",
     supportBodyTitle: "보내주면 좋은 내용",
+    supportConsentNotice: "공유하는 정보는 서비스 개선에 사용되요.",
     supportDescription:
       "계정, 데이터, 연동 문제는 Onehand 팀에 요청해 주세요.",
+    supportDescriptionLabel: "문의 내용",
+    supportDescriptionPlaceholder: "문의 내용을 적어 주세요.",
+    supportDescriptionRequired: "문의 내용을 입력해 주세요.",
+    supportFeatureQuestionLabel: "기능 문의",
+    supportFeatureQuestionTemplate:
+      "문의하고 싶은 기능:\n궁금한 점:",
+    supportFeatureSuggestionLabel: "기능 제안",
+    supportFeatureSuggestionTemplate:
+      "제안하고 싶은 기능:\n필요한 이유:\n기대하는 사용 방식:",
+    supportOtherLabel: "기타 문의",
+    supportOtherTemplate: "문의 내용:\n문의 이유:",
+    supportPhoneConsultationLabel: "전화 상담 요청",
+    supportPhoneConsultationTemplate:
+      "연락 가능한 전화번호:\n희망 연락 시간:\n상담받고 싶은 내용:",
+    supportPricingQuestionLabel: "요금제 문의",
+    supportPricingQuestionTemplate:
+      "궁금한 요금제:\n사용 예정 방식:\n문의 내용:",
+    supportSubmitAction: "보내기",
+    supportSubmitting: "보내는 중",
+    supportSubmitted: "지원 요청을 보냈어요.",
+    supportTemplateLabel: "문의 유형",
+    supportTemplateReplaceConfirm: "바꾸기",
+    supportTemplateReplaceDescription:
+      "작성 중인 내용이 템플릿으로 바뀌어요. 계속할까요?",
+    supportTemplateReplaceTitle: "템플릿을 바꿀까요?",
     supportTitle: "지원요청",
   },
   home: {

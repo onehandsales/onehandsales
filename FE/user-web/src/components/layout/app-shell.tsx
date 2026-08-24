@@ -63,6 +63,7 @@ import {
   NotificationBellButton,
   ServiceNotificationSettingsSection,
 } from "@/features/notification";
+import { SupportRequestHelpContent } from "@/features/support-request";
 import { AccountDataRequestsSettingsSection } from "@/features/account-request";
 import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
@@ -1556,20 +1557,7 @@ function HelpModalSectionContent({
   }
 
   if (section === "support") {
-    return (
-      <HelpModalStaticContent
-        actionHref="mailto:team@onehandsales.com?subject=Onehand%20%EC%A7%80%EC%9B%90%EC%9A%94%EC%B2%AD"
-        actionLabel={t("helpModal.supportAction")}
-        cards={[
-          {
-            title: t("helpModal.supportBodyTitle"),
-            description: t("helpModal.supportBodyDescription"),
-          },
-        ]}
-        description={t("helpModal.supportDescription")}
-        title={t("helpModal.supportTitle")}
-      />
-    );
+    return <SupportRequestHelpContent onSubmitted={onClose} />;
   }
 
   if (section === "error") {

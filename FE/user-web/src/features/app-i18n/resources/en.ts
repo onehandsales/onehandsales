@@ -134,8 +134,35 @@ export const enResource = {
     supportBodyDescription:
       "Include the screen, what you expected, and what actually happened so we can check it faster.",
     supportBodyTitle: "What to include",
+    supportConsentNotice:
+      "Shared information may be reviewed to handle your support request.",
     supportDescription:
       "Send account, data, or integration issues to the Onehand team.",
+    supportDescriptionLabel: "Message",
+    supportDescriptionPlaceholder: "Describe what you need help with.",
+    supportDescriptionRequired: "Enter your message.",
+    supportFeatureQuestionLabel: "Feature question",
+    supportFeatureQuestionTemplate:
+      "Feature I want to ask about:\nQuestion:",
+    supportFeatureSuggestionLabel: "Feature suggestion",
+    supportFeatureSuggestionTemplate:
+      "Feature I want to suggest:\nWhy it is needed:\nExpected workflow:",
+    supportOtherLabel: "Other",
+    supportOtherTemplate: "Message:\nReason for the request:",
+    supportPhoneConsultationLabel: "Phone consultation",
+    supportPhoneConsultationTemplate:
+      "Phone number:\nPreferred contact time:\nWhat I want to discuss:",
+    supportPricingQuestionLabel: "Plan question",
+    supportPricingQuestionTemplate:
+      "Plan I want to ask about:\nExpected usage:\nQuestion:",
+    supportSubmitAction: "Send",
+    supportSubmitting: "Sending",
+    supportSubmitted: "Support request sent.",
+    supportTemplateLabel: "Request type",
+    supportTemplateReplaceConfirm: "Replace",
+    supportTemplateReplaceDescription:
+      "Your current message will be replaced by the template. Continue?",
+    supportTemplateReplaceTitle: "Change template?",
     supportTitle: "Support request",
   },
   home: {
