@@ -165,13 +165,14 @@ export const publicSiteLanguageOptions: readonly {
   readonly htmlLang: string;
 }[] = [
   { value: "ko", label: "한국어", htmlLang: "ko" },
-  { value: "ja", label: "日本語", htmlLang: "ja" },
-  { value: "zh-TW", label: "繁體中文", htmlLang: "zh-TW" },
   { value: "en-US", label: "English (US)", htmlLang: "en-US" },
-  { value: "en-GB", label: "English (UK)", htmlLang: "en-GB" },
-  { value: "en-SG", label: "English (Singapore)", htmlLang: "en-SG" },
-  { value: "en-AU", label: "English (Australia)", htmlLang: "en-AU" },
   { value: "en-CA", label: "English (Canada)", htmlLang: "en-CA" },
+  // Future expansion:
+  // { value: "ja", label: "日本語", htmlLang: "ja" },
+  // { value: "zh-TW", label: "繁體中文", htmlLang: "zh-TW" },
+  // { value: "en-GB", label: "English (UK)", htmlLang: "en-GB" },
+  // { value: "en-SG", label: "English (Singapore)", htmlLang: "en-SG" },
+  // { value: "en-AU", label: "English (Australia)", htmlLang: "en-AU" },
 ];
 
 const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
