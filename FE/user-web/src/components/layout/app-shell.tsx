@@ -19,6 +19,7 @@ import {
   FileText,
   House,
   Laptop,
+  Link,
   Loader2,
   LogOut,
   Menu,
@@ -91,11 +92,12 @@ type AccountModalSection =
   | AccountModalQuerySection
   | "profile"
   | "devices"
+  | "externalIntegrations"
   | "notifications";
 
 type HelpModalSection = "guide" | "support" | "error" | "terms" | "privacy";
 
-type AccountSettingsNotice = {
+type AccountModalNotice = {
   readonly message: string;
   readonly variant: "error" | "success";
 };
@@ -1256,6 +1258,11 @@ function AccountModalContent({
     { icon: UserRound, label: profileLabel, section: "profile" },
     { icon: Settings, label: t("settings.preferencesTab"), section: "settings" },
     { icon: Laptop, label: t("settings.devicesTab"), section: "devices" },
+    {
+      icon: Link,
+      label: t("settings.externalIntegrationsTab"),
+      section: "externalIntegrations",
+    },
     { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
   ];
 
@@ -1341,6 +1348,10 @@ function AccountModalSectionContent({
 
   if (section === "devices") {
     return <DevicesModalQueryContent />;
+  }
+
+  if (section === "externalIntegrations") {
+    return <ExternalIntegrationsModalContent />;
   }
 
   return <AccountSettingsModalContent />;
@@ -1745,9 +1756,9 @@ function AccountSettingsModalContent() {
   const [timeZone, setTimeZone] = useState("Asia/Seoul");
   const [countryCode, setCountryCode] = useState("KR");
   const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
-  const [notice, setNotice] = useState<AccountSettingsNotice | null>(null);
+  const [notice, setNotice] = useState<AccountModalNotice | null>(null);
 
-  // 기능 : Settings 모달 안의 이관 섹션 성공 안내를 공통 notice에 연결합니다.
+  // 기능 : Settings 모달 안의 요청 섹션 성공 안내를 공통 notice에 연결합니다.
   const onSettingsSectionNotice = useCallback((message: string) => {
     setNotice({ message, variant: "success" });
   }, []);
@@ -1791,7 +1802,7 @@ function AccountSettingsModalContent() {
           </h3>
         </div>
 
-        {notice ? <AccountSettingsNoticeBanner notice={notice} /> : null}
+        {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
 
         {profileQuery.isLoading ? (
           <ProfileLoadingState />
@@ -1886,22 +1897,8 @@ function AccountSettingsModalContent() {
               </ProfileSection>
             </form>
 
-            <ProfileSection title="계정 데이터 요청">
+            <ProfileSection title={t("settings.accountDataRequestsTitle")}>
               <AccountDataRequestsSettingsSection
-                onNotice={onSettingsSectionNotice}
-                presentation="modal"
-              />
-            </ProfileSection>
-
-            <ProfileSection title="Google Calendar">
-              <GoogleCalendarSettingsSection
-                onNotice={onSettingsSectionNotice}
-                presentation="modal"
-              />
-            </ProfileSection>
-
-            <ProfileSection title="후속 연락">
-              <FollowUpDeliverySettingsSection
                 onNotice={onSettingsSectionNotice}
                 presentation="modal"
               />
@@ -1913,11 +1910,11 @@ function AccountSettingsModalContent() {
   );
 }
 
-// 기능 : 계정 Settings 모달의 section 공통 성공/오류 안내를 표시합니다.
-function AccountSettingsNoticeBanner({
+// 기능 : 계정 모달의 section 공통 성공/오류 안내를 표시합니다.
+function AccountModalNoticeBanner({
   notice,
 }: {
-  readonly notice: AccountSettingsNotice;
+  readonly notice: AccountModalNotice;
 }) {
   const className =
     notice.variant === "success"
@@ -1931,6 +1928,47 @@ function AccountSettingsNoticeBanner({
     >
       {notice.message}
     </div>
+  );
+}
+
+// 기능 : 외부 연동 모달 콘텐츠 영역을 렌더링합니다.
+function ExternalIntegrationsModalContent() {
+  const { t } = useAppI18n();
+  const [notice, setNotice] = useState<AccountModalNotice | null>(null);
+
+  // 기능 : 외부 연동 섹션 성공 안내를 공통 notice에 연결합니다.
+  const onExternalIntegrationsNotice = useCallback((message: string) => {
+    setNotice({ message, variant: "success" });
+  }, []);
+
+  return (
+    <section className="min-h-full bg-white px-8 py-10 md:px-12">
+      <div className="mx-auto w-full max-w-[800px]">
+        <div>
+          <h3 className="text-[28px] font-bold leading-tight text-[#111827]">
+            {t("settings.externalIntegrationsTab")}
+          </h3>
+        </div>
+
+        {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
+
+        <div className="mt-10 grid gap-10">
+          <ProfileSection title={t("settings.googleCalendarTitle")}>
+            <GoogleCalendarSettingsSection
+              onNotice={onExternalIntegrationsNotice}
+              presentation="modal"
+            />
+          </ProfileSection>
+
+          <ProfileSection title={t("settings.followUpDeliveryTitle")}>
+            <FollowUpDeliverySettingsSection
+              onNotice={onExternalIntegrationsNotice}
+              presentation="modal"
+            />
+          </ProfileSection>
+        </div>
+      </div>
+    </section>
   );
 }
 
