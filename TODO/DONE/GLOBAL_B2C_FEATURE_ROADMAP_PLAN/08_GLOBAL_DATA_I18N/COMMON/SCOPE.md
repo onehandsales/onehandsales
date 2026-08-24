@@ -27,12 +27,12 @@
 | 결제 국가/세금 | `TODO/PADDLE_PLAN`에서 다룬다. |
 | 마케팅 사이트 전체 rewrite | public/auth locale은 기존 흐름을 유지한다. |
 | `/app` locale URL prefix | 로그인 후 앱은 사용자 설정 기반 locale로 처리한다. |
-| `ja`, `zh-TW` 앱 내부 번역 | 1차 MVP는 `ko-KR`, `en`만 지원한다. |
+| 보류 locale 앱 내부 번역 | 1차 MVP는 `ko-KR`, `en`만 지원한다. KR/US/CA 이후 시장 확장 시 별도 판단한다. |
 | 중국 본토 `zh-CN` | 현재 글로벌 후보가 아니다. |
 | 국가별 상세 주소 검증 | 08 MVP에서는 국가/지역 코드와 자유 입력 주소까지만 다룬다. |
 | Contact 개인 주소 | Contact는 Company 소속으로 지역 맥락을 간접 사용한다. |
 | USD cent/minor unit | 1차는 기존 정수 금액을 유지한다. |
-| 전 세계 국가/통화/전화번호 | 1차는 KR/US, KRW/USD로 제한한다. |
+| 전 세계 국가/통화/전화번호 | 1차 구현은 KR/US, KRW/USD로 제한한다. KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호는 후속 범위다. |
 | 이메일/비밀번호 로그인 | 기존 소셜 OAuth 흐름만 유지한다. |
 | Microsoft login | 08 provider 대상이 아니다. |
 | Kakao runtime 복구 | Kakao는 legacy enum/데이터 호환만 유지한다. |

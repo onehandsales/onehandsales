@@ -5,6 +5,8 @@
 최종 업데이트: 2026-08-11
 성격: 01~11 완료 슬롯 재대조에서 나온 후속 후보를 분류하고, billing 종속 후보를 `TODO/PADDLE_PLAN`으로 이관한 완료 이력 폴더
 
+> 2026-08-24 전략 업데이트: 현재 우선 타겟 국가는 한국, 미국, 캐나다다. 이 archive 안의 과거 글로벌 rollout 후보는 당시 분류 이력으로 보존하며, 새 시장 기준은 `AGENT/PM_AGENT/DECISIONS/031_kr_us_ca_priority_market.md`와 `TODO/PADDLE_PLAN`을 따른다.
+
 ## 1. 목적
 
 이 폴더는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 기존 01~11 완료 의미를 깨지 않으면서, Paddle 이관 전에 다시 확인해야 했던 후속 후보를 한곳에 묶은 완료 이력이다.
@@ -57,7 +59,7 @@
 | 05 AI Weekly Sales Report | 완료 / provider smoke closeout 완료 | AI weekly report 저장/버전/스냅샷, 사용자 확인 기반 follow-up draft/send/retry/timeline, Gmail/Microsoft email adapter와 자동 검증은 완료됐다. Gmail/Microsoft provider smoke closeout은 2026-08-10 배포 환경 verified 기준 BEFORE_12 G01에서 닫혔다. SMS 실제 provider, B2B sender/email sync/sequence/campaign/bulk/unsubscribe, 예약 발송/SMTP/HTML/첨부/tracking, 사용자 비용 노출, 영구 로그 legal deletion 정책은 후속이다. |
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
 | 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 저장/자동 일정 생성/자동 딜 변경은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
-| 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
+| 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호/지역은 새 후속 범위이며, `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
 | 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, marketing opt-in, PWA/native install attribution은 09 완료 범위가 아니다. |
 | 10 Mobile PWA Field Use | 완료 이력 유지 / G11 및 BEFORE_12 G02~G03 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar, advanced camera preview/crop, server draft/media raw storage는 후속이고, 10 FE/BE TODO 체크리스트와 FE route architecture 문서 정합성은 `PRE12-F31`/`PRE12-F32`로 분리한 뒤 BEFORE_12에서 닫았다. 남는 기능 후보는 `PRE12-F30`, `PRE12-F42`, `PRE12-F43`과 기존 `PRE12-F09`다. |
 | 11 Admin Operation | 완료 이력 유지 / G12 및 BEFORE_12 G04~G05 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분리한 뒤 BEFORE_12에서 닫았다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding은 batch 조회와 회귀 테스트로 해결했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin은 11 완료 범위가 아니다. 남는 후보는 `PRE12-F35`~`PRE12-F37`, `PRE12-F44`, `PRE12-F45`와 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결이다. |
@@ -95,9 +97,9 @@
 | Import scale/source/Admin 확장 | 후속 seed | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API, ImportJob cleanup 실패 전용 aggregate/system gate는 01/11 미완성이 아니다. |
 | generic ExportJob/PDF 및 Google Calendar 고급 연동 | 후속 seed | `PRE12-F09`와 `PRE12-F10`으로 유지한다. Google export/write/양방향 sync, webhook/watch, 반복 일정, reminders/attendee, multi-account/provider 확장은 필요성이 확인될 때 새 TODO로 승격할지 판단한다. |
 | billing/subscription/tax/paywall/churn/paid conversion/AI usage billing source | billing-blocked | 08의 국가/통화/주소 모델과 05/09의 내부 cost/usage summary는 plan/payment/subscription/tax/refund/invoice/failed payment 또는 과금 정본이 아니다. Paddle 확정 전 임시 구현 금지. |
-| `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | 후속 seed | 일본/대만 판매 준비 goal에서 다룬다. 08 완료 범위는 `ko-KR/en`이다. |
+| `/app` 보류 locale 번역과 시장별 UX writing | 후속 seed | KR/US/CA 우선 전략 이후 일본/대만 등 보류 시장 판매 준비 goal에서 다룬다. 08 완료 범위는 `ko-KR/en`이다. |
 | `zh-CN` 중국 본토 지원 | defer / 시장 진입 결정 필요 | 중국 본토 시장, 인프라, 정책, 결제/세금 기준이 없으면 구현하지 않는다. |
-| 전 세계 국가/통화/전화번호 확장 | 후속 seed | KR/US, KRW/USD 1차 검증 뒤 실제 판매 국가 기준으로 확장한다. |
+| 전 세계 국가/통화/전화번호 확장 | 후속 seed | KR/US, KRW/USD 1차 구현을 보존하고 KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호를 먼저 판단한 뒤 실제 판매 국가 기준으로 확장한다. |
 | USD cent/minor unit | billing-blocked | Paddle money model과 기존 금액 migration 기준 없이 구현하지 않는다. |
 | 국가별 상세 주소 검증/세금/약관/가격 정책 | billing-blocked | `TODO/PADDLE_PLAN` Payment/Tax/Policy 범위와 연결한다. |
 | Contact 개인 주소 | 후속 seed | CRM 확장 요구가 명확해질 때 별도 Contact data expansion으로 판단한다. |

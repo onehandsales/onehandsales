@@ -73,9 +73,9 @@ PRE12에는 새 API, Prisma migration, User Web route, Admin Web route, 후속 T
 | `PRE12-F13` | import scale/source/Admin 확장은 대용량 worker, source strategy, Admin ops 전략이 필요하다. |
 | `PRE12-F14` | AI data cleanup 저장/적용은 data quality, audit, rollback 정책이 필요하다. |
 | `PRE12-F15` | transcript/raw/follow-up draft 저장은 retention, 삭제권, raw access audit 정책이 필요하다. |
-| `PRE12-F17` | `/app` `ja`, `zh-TW`는 일본/대만 판매 준비 goal에서 다시 판단한다. |
+| `PRE12-F17` | `/app` 보류 locale 번역은 KR/US/CA 우선 검증 이후 보류 시장 판매 준비 goal에서 다시 판단한다. |
 | `PRE12-F18` | `zh-CN`은 중국 본토 시장, 인프라, 정책 결정이 필요하다. |
-| `PRE12-F19` | 전 세계 country/currency/phone 확장은 실제 판매 국가와 운영 지원 국가 확정 뒤 다룬다. |
+| `PRE12-F19` | 전 세계 country/currency/phone 확장은 KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호를 먼저 판단한 뒤 다룬다. |
 | `PRE12-F22` | Contact 개인 주소는 CRM 확장 요구가 확인될 때 다룬다. |
 | `PRE12-F23` | auth strategy 확장은 보안, 복구, abuse/rate limit 정책이 필요하다. |
 | `PRE12-F24` | `/app` locale route prefix는 현재 guardrail상 유지하고, 새 routing contract 전에는 바꾸지 않는다. |

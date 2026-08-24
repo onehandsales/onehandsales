@@ -59,7 +59,7 @@
 2026-07-10 기준 현재 완료된 품질 확인은 다음이다.
 
 - 핵심 업무 happy path 1회 재검증 완료: 로그인, 회사, 담당자, 제품, 딜, 일정, 회의록, 명함 OCR, Import, Search, Trash, Domain XLSX Export, 설정/더보기.
-- URL locale smoke 완료: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`.
+- 현재 노출 언어 기준 URL locale smoke 대상: `ko`, `en-us`, `en-ca`. `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로 보류한다.
 - 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
 - `/auth/callback`은 locale prefix 없이 유지한다.
 - 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback한다.
@@ -116,7 +116,7 @@ Export는 범용 `/api/exports` job이나 `ExportJob` table로 처리하지 않�
 | 결제/구독 | 구현 없음 | 무료체험, 월간/연간 구독, 국가별 가격, 환불, 결제 실패 복구, 영수증/인보이스 |
 | 세금/컴플라이언스 | 구현 없음 | VAT/GST/판매세 또는 Merchant of Record 처리, chargeback 대응 |
 | `/app` 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | 실제 판매 시장별 추가 앱 내부 locale, 국가별 UX writing |
-| 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | 지원 국가/통화/전화번호/주소 체계 확장 |
+| 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | KR/US/CA 전략에 맞춘 CA/CAD/캐나다 전화번호/회사 지역 확장 및 이후 국가 확장 |
 | Admin 운영 | 11 Admin Operation 완료. Billing Admin 제외 | 고객 지원 운영을 실제 베타/유료 운영 흐름에 맞게 다듬고, 구독/결제 운영은 Paddle 이후 연결 |
 | 제품 분석 | 09 Product Analytics와 11 Admin analytics foundation 완료 | paid conversion, churn, ARPU, LTV/CAC, billing funnel, AI cost/user는 Paddle/Billing 이후 확정 |
 | 정책/신뢰 문서 | 기본 문서 있음 | 계정 삭제, 데이터 export, 환불, 개인정보, 보안 문구의 실제 판매 범위 정합성 |

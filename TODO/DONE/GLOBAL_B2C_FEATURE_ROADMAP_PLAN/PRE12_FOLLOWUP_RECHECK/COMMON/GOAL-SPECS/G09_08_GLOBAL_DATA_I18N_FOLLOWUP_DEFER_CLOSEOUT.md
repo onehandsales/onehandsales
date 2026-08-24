@@ -41,9 +41,9 @@
 
 | 후보 | PRE12 ID | 분류 | 판단 |
 | --- | --- | --- | --- |
-| `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | `PRE12-F17` | 후속 seed | public/auth locale과 다르다. `/app`은 `ko-KR/en`만 완료다. |
+| `/app` 보류 locale 번역과 시장별 UX writing | `PRE12-F17` | 후속 seed | public/auth locale과 다르다. `/app`은 `ko-KR/en`만 완료다. KR/US/CA 이후 보류 시장 확장 시 별도 판단한다. |
 | `zh-CN` 중국 본토 지원 | `PRE12-F18` | defer / 시장 진입 결정 필요 | 08 결정 로그에서 현재 후보가 아니라고 분리했다. |
-| 전 세계 국가/통화/전화번호 확장 | `PRE12-F19` | 후속 seed | 현재 구현은 KR/US, KRW/USD로 제한되어 있다. |
+| 전 세계 국가/통화/전화번호 확장 | `PRE12-F19` | 후속 seed | 현재 구현은 KR/US, KRW/USD로 제한되어 있다. KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호가 먼저 후속 범위다. |
 | USD cent/minor unit과 금액 정밀도 | `PRE12-F20` | billing-blocked / amount-precision 후속 | Product/Deal amount model과 Paddle Billing money model을 함께 정해야 한다. |
 | 국가별 상세 주소 검증 | `PRE12-F21` | billing-blocked / 후속 seed | Company address는 자유 입력이다. 세금/청구/약관 정책이 먼저 필요하다. |
 | Contact 개인 주소 | `PRE12-F22` | 후속 seed / CRM 확장 | 08은 Contact address를 명시적으로 제외했다. |
@@ -66,8 +66,8 @@
 
 이 goal에서는 아래를 하지 않는다.
 
-- `APP_SUPPORTED_LOCALES`에 `ja`, `zh-TW`, `zh-CN` 추가
-- `SUPPORTED_COUNTRY_CODES`, phone country, company region, currency list 확장
+- `APP_SUPPORTED_LOCALES`에 보류 locale 또는 `zh-CN` 추가
+- CA/CAD/캐나다 전화번호 판단 없이 `SUPPORTED_COUNTRY_CODES`, phone country, company region, currency list 확장
 - Product/Deal amount schema 또는 DTO를 minor unit으로 변경
 - 국가별 tax/terms/pricing/address validation API 추가
 - Contact address field 추가
@@ -83,7 +83,7 @@
 - `BE/src/modules/user`와 `BE/src/shared/application`은 profile locale/country/currency와 xlsx locale을 `ko-KR/en`, `KR/US`, `KRW/USD` 기준으로 제한한다.
 - `BE/src/modules/contact`와 `BE/src/modules/company`는 Contact phone과 Company region/address를 KR/US 1차 범위로 정규화한다.
 - `FE/user-web/src/features/app-i18n/constants.ts`는 `/app` locale을 `ko-KR/en`, 통화를 `KRW/USD`로 제한한다.
-- `FE/user-web/src/features/public-site`에는 public/auth용 `ja`, `zh-TW`가 있지만 `/app` i18n 지원 locale은 아니다.
+- `FE/user-web/src/features/public-site`에는 public/auth용 보류 locale 리소스가 일부 남아 있지만 `/app` i18n 지원 locale은 아니다.
 - `BE/src/modules/auth`와 `FE/user-web/src/features/auth`는 runtime login provider를 Google, LINE, Apple로 노출한다. Kakao는 legacy enum/data 호환이고 email/password, Microsoft runtime login은 08 범위가 아니다.
 - Contact personal address, Product/Deal minor unit 또는 amount precision schema/API/UX 구현은 확인되지 않았다. `addressbook#contacts@group.v.calendar.google.com` 검색 결과는 Google Calendar contacts group 상수이며 Contact address 구현 근거가 아니다.
 

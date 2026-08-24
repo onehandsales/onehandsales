@@ -39,7 +39,7 @@ User Web 결제 UX는 베타 피드백과 유료 플랜 가치가 확정된 뒤 
 - coupon 입력/검증 상태 후보
 - referral link/code 표시 후보
 - cancel/downgrade 시 churn survey 후보
-- 한국/KRW 또는 글로벌 통화/locale 문구 정리
+- KR/US/CA 우선 기준의 KRW/USD/CAD 통화와 `ko`/`en-us`/`en-ca` locale 문구 정리
 - Paddle Merchant of Record, 세금/영수증/환불 안내 문구 정리
 - first-sale gate에 맞는 가격/플랜/trial/free limit/paywall copy 정리
 - billing status가 account deletion, data export/delete, retention 안내와 충돌하지 않도록 settings copy 정리

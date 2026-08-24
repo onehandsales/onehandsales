@@ -25,27 +25,25 @@
 - 공개/인증 화면의 URL locale 지원
 - 앱 내부 관리 화면은 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원
 
-초기 판매/검토 대상 국가는 다음으로 본다.
+우선 판매/검토 대상 국가는 다음으로 본다.
 
 - 한국
-- 일본
-- 대만
 - 미국
-- 영국
-- 싱가포르
-- 호주
 - 캐나다
 
-현재 public/auth canonical locale slug는 다음이다.
+현재 public/auth 언어 선택 UI에 노출하는 locale slug는 다음이다.
 
 - `ko`
+- `en-us`
+- `en-ca`
+
+추후 확장 후보 locale slug는 다음이다.
+
 - `ja`
 - `zh-tw`
-- `en-us`
 - `en-gb`
 - `en-sg`
 - `en-au`
-- `en-ca`
 
 현재 범위가 아닌 항목은 다음과 같다.
 
@@ -196,7 +194,7 @@
 - iOS/Android 네이티브 앱은 현재 제품 범위가 아님
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
-- 현재 전화번호 입력/검증은 KR/US를 1차 지원하며, 그 외 국가 확장은 후속 검토
+- 현재 전화번호 입력/검증은 KR/US를 1차 지원한다. KR/US/CA 우선 전략에 맞춘 CA 전화번호, CAD, 캐나다 회사 지역은 후속 구현 대상이다.
 
 ## 5. 실행 우선순위
 
@@ -224,7 +222,7 @@
 | 1 | Paddle/Billing | 유료 판매를 위해 subscription/payment/tax/invoice/refund/entitlement가 필요 |
 | 2 | Billing Admin | 구독 상태, 결제 이슈, invoice/refund/failed payment 운영 필요 |
 | 3 | paid conversion/churn analytics | 결제 이후 전환/해지/ARPU/LTV/CAC 판단 필요 |
-| 4 | 추가 국가/언어 rollout | 베타 결과에 따라 일본/대만/영어권 확장 |
+| 4 | 캐나다 데이터 정합성 및 추가 국가/언어 rollout | KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호/지역을 정리하고, 이후 일본/대만/호주 등 보류 시장 확장 |
 | 5 | native/PWA packaging | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토 |
 | 6 | B2B tenant/team admin | 개인 B2C보다 팀/seat 기반 ARPU가 더 강하다고 확인될 때 검토 |
 

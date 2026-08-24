@@ -56,7 +56,7 @@
 | 새 Prisma migration 즉시 작성 | 후보 계약이 확정되기 전에는 schema를 바꾸지 않는다. |
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
 | Company/Contact/Product latest summary PRE12 계약화 | 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 B2B/team CRM 성격이 강한 후속 전략 후보로 둔다. |
-| 08 market/global expansion PRE12 구현 | `ja/zh-TW`, `zh-CN`, 전 세계 국가/통화/전화번호, USD minor unit, 상세 주소 검증, 신규 auth provider는 08 완료 범위를 넓히지 않는다. |
+| 08 market/global expansion PRE12 구현 | 보류 locale 앱 번역, `zh-CN`, 전 세계 국가/통화/전화번호, USD minor unit, 상세 주소 검증, 신규 auth provider는 08 완료 범위를 넓히지 않는다. KR/US/CA 전략에 필요한 CA/CAD/캐나다 전화번호도 새 후속 범위로 다룬다. |
 | 09 analytics/growth/trust 확장 PRE12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, marketing opt-in, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
 | 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, advanced camera preview/crop, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
 | 10 mobile/PWA 확장 PRE12 구현 | PWA install/offline shell/full offline sync, native app, native push/contact/calendar, native install attribution은 10 완료 범위를 넓히지 않는다. |
@@ -223,8 +223,8 @@
 
 08 완료 범위로 다루면 안 되는 범위:
 
-- `/app` `ja`, `zh-TW`, `zh-CN` translation 추가
-- 전 세계 country/currency/phone dictionary 추가
+- `/app` 보류 locale 또는 `zh-CN` translation 추가
+- CA/CAD/캐나다 전화번호 판단 없이 전 세계 country/currency/phone dictionary 추가
 - Product/Deal amount를 minor unit으로 migration
 - 국가별 상세 주소 validation, 국가별 tax/terms/pricing policy
 - Contact personal address 추가

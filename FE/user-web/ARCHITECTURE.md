@@ -100,7 +100,7 @@ src/pages/companies/index.tsx
 `/`는 공개 랜딩/진입 화면이고, 실제 로그인 후 앱 홈은 `/app`이다.
 
 - Public/auth canonical route는 URL locale prefix를 사용하며, 정본 경로는 `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`다.
-- 지원하는 URL locale slug는 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`다.
+- 현재 언어 선택 UI에 노출하는 URL locale slug는 `ko`, `en-us`, `en-ca`다. `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로 보류한다.
 - Compatibility redirect는 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`를 선호 locale URL로 이동시킨다.
 - OAuth callback은 공용 경로인 `/auth/callback`으로 유지하고 locale prefix를 붙이지 않는다.
 - 보호 앱 활성 route는 `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/settings`, `/app/more`다.

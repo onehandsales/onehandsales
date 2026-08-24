@@ -30,9 +30,9 @@
 | Product Analytics | 09 Product Analytics 범위 |
 | Backup/Restore | 별도 안정성/운영 goal |
 | Trust/Privacy policy 확장 | 별도 정책/운영 문서 |
-| `ja`, `zh-TW` 앱 내부 번역 | 일본/대만 판매 준비 goal |
+| 보류 locale 앱 내부 번역 | KR/US/CA 우선 검증 이후 일본/대만 등 보류 시장 판매 준비 goal |
 | 중국 본토 `zh-CN` | 현재 후보 아님 |
-| 전 세계 국가/통화/전화번호 | KR/US 검증 후 확장 |
+| 전 세계 국가/통화/전화번호 | KR/US 구현을 보존하고 CA/CAD/캐나다 전화번호를 우선 후속으로 판단한 뒤 확장 |
 | USD cent/minor unit | 금액 정밀도 후속 |
 | 국가별 상세 주소 검증 | 주소 품질 필요 시 후속 |
 | 이메일/비밀번호 로그인 | Auth strategy 후속 |

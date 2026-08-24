@@ -55,7 +55,7 @@
 - generic ExportJob, PDF, recurrence
 - Google Calendar export/write/양방향 sync/webhook/watch/reminders/attendees/multi-account/other provider
 - billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn/paid conversion runtime flow
-- `/app` `ja`, `zh-TW`, `zh-CN` locale 추가
+- `/app` 보류 locale 또는 `zh-CN` locale 추가
 - 전 세계 country/currency/phone dictionary 추가
 - USD cent/minor unit migration 또는 amount precision 변경
 - 국가별 tax/terms/pricing/address validation 추가

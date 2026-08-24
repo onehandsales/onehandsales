@@ -48,9 +48,9 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - generic ExportJob/PDF/export route 추가
 - Google Calendar export/write/양방향 sync/watch/recurrence/reminders/attendee/multi-account/other provider UI 추가
 - billing/subscription/plan/payment/invoice/refund/failed payment/tax/paywall/churn UI 추가
-- `/app` `ja`, `zh-TW`, `zh-CN` translation 추가
+- `/app` 보류 locale 또는 `zh-CN` translation 추가
 - `/app` locale route prefix 추가
-- 전 세계 country/currency/phone option 추가
+- CA/CAD/캐나다 전화번호 판단 없이 전 세계 country/currency/phone option 추가
 - Product/Deal amount minor unit 입력 전환
 - 국가별 상세 주소 validation UI 또는 Contact 개인 주소 UI 추가
 - email/password, Microsoft, Kakao runtime, 신규 auth provider 버튼 추가
@@ -104,9 +104,9 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | Import scale/source/Admin 확장 | 대용량 import progress, 일정/회의록 source mapping, Admin-only job cleanup/조회 화면 | 후속 seed |
 | provider smoke | 화면 변경 없음. 운영 smoke 결과 문서 반영 | closed-by-BEFORE_12 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS actual provider 상태, B2B sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external SaaS, HTML/첨부/tracking UX 기준 필요 | 후속 seed / `PRE12-F05`/`PRE12-F06` |
-| App locale/market UX 확장 | `/app` `ja`, `zh-TW` resource, validation/empty/toast copy, market UX writing QA | 후속 seed |
+| App locale/market UX 확장 | `/app` 보류 locale resource, validation/empty/toast copy, market UX writing QA | 후속 seed |
 | `zh-CN` 지원 | public/auth/app locale, market routing, policy copy, 결제/세금/인프라 요구 확인 | defer / 시장 진입 결정 필요 |
-| Global country/currency/phone 확장 | Settings option, Contact phone UI, Company region selector, Product/Deal currency selector 확장 | 후속 seed |
+| Global country/currency/phone 확장 | CA/CAD/캐나다 전화번호 우선 판단 후 Settings option, Contact phone UI, Company region selector, Product/Deal currency selector 확장 | 후속 seed |
 | amount precision/minor unit | 금액 입력/표시/import/export/report 호환 UX 변경 | billing-blocked |
 | address/tax/terms/pricing policy | 청구 주소, 세금/약관/가격 표시 UX | billing-blocked |
 | Contact personal address | Contact create/edit/detail/list/export UX 확장 | 후속 seed / CRM 확장 |

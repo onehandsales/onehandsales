@@ -36,7 +36,7 @@
 
 - User: `countryCode`, `defaultCurrencyCode` 추가. 기존 signup/last-login country metadata와 별도 사용자 기본 설정이다.
 - Auth: `OAuthProvider.LINE` 추가, Google/LINE/Apple runtime provider 허용, verified email 기반 provider account linking 추가.
-- Product/Deal: `currencyCode` 추가, 1차 허용 통화는 `KRW`, `USD`다.
+- Product/Deal: `currencyCode` 추가, 현재 구현된 1차 허용 통화는 `KRW`, `USD`다. KR/US/CA 우선 전략에 맞춘 `CAD`는 후속 구현 범위다.
 - Contact: 기존 `mobile` 유지, `phoneCountryCode`, `phoneNationalNumber`, `phoneE164` 추가.
 - Company/CompanyRegion: Company 자유 입력 주소와 CompanyRegion `countryCode`, `regionCode` 추가. Contact에는 주소/지역을 추가하지 않는다.
 - DataImport/Export: 사용자 locale/timezone/currency 기준 현지화. generic `ExportJob` table은 계속 제외한다.

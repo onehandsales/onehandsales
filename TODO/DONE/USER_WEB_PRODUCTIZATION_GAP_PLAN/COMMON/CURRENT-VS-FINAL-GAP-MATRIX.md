@@ -65,8 +65,8 @@
 | Admin 운영 | 사용자/민감정보/감사/provider/Trash/account/system gate를 운영하고, 결제/구독 운영은 Billing 도메인과 연결한다. | 11 기준 `/admin/api/*`와 Admin Web 운영 화면 구현. 2026-08-10 provider failure 목록 source 편중 cursor pagination 보정 완료. 결제/구독/plan/payment/invoice/refund는 제외 | 최소 Admin 운영 gap은 11에서 닫힘. Billing Admin 연동은 `TODO/PADDLE_PLAN` 후속 | Closed for 11 / Billing moved | 운영 완료, Billing 후속 |
 | 결제/구독 | trial, 월/연 구독, 환불, 영수증, failed payment recovery | 구현 없음 | 결제 provider/MoR, plan, entitlement 필요 | First-sale global gap | 첫 판매 전 필요 |
 | 세금/컴플라이언스 | VAT/GST, 환불, chargeback, 국가별 약관 | 구현 없음 | 글로벌 판매 운영 계층 필요 | First-sale global gap | 첫 판매 전 필요 |
-| `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. legacy static fallback 직접 keying 축소와 시장별 UX writing polish는 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
-| 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. 추가 국가/통화/전화번호 포맷과 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
+| `/app` 다국어 | 판매 시장 기준 앱 내부 언어/문구 지원 | `/app` i18n provider/resource/formatter와 핵심 화면 `ko-KR`/`en` 번역 구현 | 기본 app 다국어 gap은 08에서 닫힘. KR/US/CA 우선 UX writing polish와 이후 보류 시장 locale은 후속 | Closed for 08 / UX/UI productization | 완료, polish 후속 |
+| 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호와 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
 | 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 09 foundation, 10 mobile field event, 11 Admin analytics overview 구현 완료 | paid conversion/churn/ARPU는 `TODO/PADDLE_PLAN` source event 연결 후 완성 | Closed for 09/10/11 / First-sale Billing gap | Admin 분석 완료, Billing 후속 |
 | AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 05 AI weekly report suggestion/follow-up delivery와 07 회의록 상세 next action/follow-up draft 구현 | 저장형 AI report와 사용자가 확인하는 follow-up 실행은 닫힘. Series A급 딜 리스크 고도화, 자동 mutation, 자동 follow-up 발송은 후속 | Closed for 05/07 / Series A gap | 기본 AI 후속 완료, 고도화 후속 |
 | 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 10 기준 모바일 브라우저 명함 촬영, 회의 음성 기록, local draft, push permission UX, mobile analytics 구현 완료 | PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 후속 | Closed for 10 / Series A native gap | 모바일 웹 완료, native/PWA 후속 |
@@ -75,7 +75,7 @@
 
 | 질문 | 답을 정해야 하는 이유 |
 |---|---|
-| Global B2C 첫 판매 국가를 어디로 볼지 | 언어, 결제, 세금, 약관, 전화번호/통화/날짜 기준이 달라진다. |
+| KR/US/CA 우선 판매 기준을 어떻게 닫을지 | 언어, 결제, 세금, 약관, 전화번호/통화/날짜 기준을 한국, 미국, 캐나다 우선으로 맞춰야 한다. |
 | 첫 판매를 Stripe 직접 결제로 할지, Merchant of Record로 할지 | 세금/환불/인보이스/Admin 범위가 크게 달라진다. |
 | MVP를 내부 검증으로만 둘 때 어떤 품질 gate를 통과해야 Global B2C 계획으로 넘어갈지 | 화면 QA와 Backend 운영 gate의 범위가 달라진다. |
 | User Web의 최우선 화면이 `/app` 홈인지 `/app/deals`인지 | UX polish와 API summary 우선순위가 달라진다. |

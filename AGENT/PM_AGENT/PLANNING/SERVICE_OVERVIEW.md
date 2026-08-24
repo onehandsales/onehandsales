@@ -22,7 +22,7 @@
 
 초기 가격 가설은 월 5,900~6,900원 구독이다. MVP에는 결제를 붙이지 않고, MVP 이후 초기 유료 운영은 계좌이체 수동 처리로 시작한다.
 
-초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다로 본다. 공개/인증 화면은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca` URL locale을 지원한다. 08_GLOBAL_DATA_I18N 완료 기준 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en`을 1차 지원하고, 추가 앱 내부 언어는 후속 시장 확장으로 진행한다.
+우선 판매/검토 국가는 한국, 미국, 캐나다로 본다. 공개/인증 화면의 언어 선택 UI는 `ko`, `en-us`, `en-ca` URL locale만 노출한다. 기존 `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로 보류한다. 08_GLOBAL_DATA_I18N 완료 기준 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en`을 1차 지원하고, 추가 앱 내부 언어는 후속 시장 확장으로 진행한다.
 
 ## 3. 해결하려는 문제
 
@@ -101,7 +101,7 @@
 
 ## 7. 화면 방향
 
-공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko`, `/ko/login`, `/ja/signup`, `/en-us/pricing`. 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다. 로그인 후 `/app`은 오늘의 업무를 보여주는 홈 대시보드이며, `/app/*`에는 locale prefix를 붙이지 않는다.
+공개/인증 canonical URL은 locale prefix를 사용한다. 예: `/ko`, `/ko/login`, `/en-us/pricing`, `/en-ca/contact`. 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다. 로그인 후 `/app`은 오늘의 업무를 보여주는 홈 대시보드이며, `/app/*`에는 locale prefix를 붙이지 않는다.
 
 홈에서는 오늘 일정, 진행 딜, 마감 임박 딜, 최근 회의록, 빠른 실행을 보여준다. 고밀도 딜 비교와 수정은 `/app/deals`에서 처리한다.
 
@@ -118,7 +118,7 @@ Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전�
 현재 MVP 방향에는 다음이 포함된다.
 
 - 소셜 인증: 08_GLOBAL_DATA_I18N 완료 기준 Google, LINE, Apple을 runtime provider로 사용한다. Kakao는 legacy enum/과거 데이터 호환으로만 유지한다.
-- 공개/인증 화면 URL locale: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
+- 공개/인증 화면 URL locale 노출: `ko`, `en-us`, `en-ca`
 - 회사, 담당자, 제품 관리
 - 딜 관리와 다음 행동/메모 로그
 - 일정 관리와 딜 연결
@@ -144,7 +144,7 @@ Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전�
 - 우리 서비스 일정의 구글 캘린더 내보내기
 - 카카오 알림톡
 - 사용자 커스텀 필드 UI
-- 추가 국가/통화 rollout
+- 캐나다 국가/통화 rollout 및 추가 국가/통화 rollout
 - 자동 민감정보 키워드 감지
 - 팀 공유/협업
 - 회의 STT transcript 영구 저장

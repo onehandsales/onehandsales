@@ -32,7 +32,7 @@ Paddle 구현은 UX/UI 유지보수와 100명 베타 테스트 이후, 가격/�
 | 원천 맥락 | Paddle Plan 반영 |
 | --- | --- |
 | 첫 판매는 기능 수가 아니라 결제, 운영, 신뢰, 현지화, 분석이 연결된 상태로 판단한다. | Paddle 구현 gate에 Product maintenance, Beta validation, Pricing, Entitlement, Policy를 둔다. |
-| 08은 글로벌 데이터 기본값을 닫았지만 국가별 tax/terms/pricing/address validation은 닫지 않았다. | Paddle 구현 전 billing address, tax profile, 국가/통화/가격 rollout을 다시 결정한다. |
+| 08은 글로벌 데이터 기본값을 닫았지만 국가별 tax/terms/pricing/address validation은 닫지 않았다. | Paddle 구현 전 KR/US/CA 우선 기준으로 billing address, tax profile, 국가/통화/가격 rollout을 다시 결정한다. |
 | 09는 Product Analytics foundation을 닫았지만 billing/paywall/churn runtime event는 reserved taxonomy로만 남겼다. | paid conversion/churn/ARPU/ProfitWell 연결은 Paddle source event 이후로 둔다. |
 | 11은 Admin 운영을 닫았지만 Billing Admin, 구독/결제 운영, Admin 직접 유료 복구는 제외했다. | Admin subscription, billing event, refund/chargeback, paid recovery는 Paddle confirmed scope에서 다시 판단한다. |
 | Trust/policy first-sale gate는 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, retention과 연결된다. | Paddle 정책 gate에서 invoice/tax 보관, account deletion/anonymization, refund/chargeback 충돌을 먼저 해결한다. |
@@ -54,7 +54,7 @@ Paddle 구현은 UX/UI 유지보수와 100명 베타 테스트 이후, 가격/�
 - 무료 베타 종료 후 free plan을 유지할 것인가, trial만 둘 것인가?
 - trial은 결제 정보 선입력 방식인가, 미입력 방식인가?
 - 월간/연간 가격과 할인율은 어떻게 둘 것인가?
-- 한국/KRW부터 시작할 것인가, 처음부터 글로벌 통화와 현지화를 열 것인가?
+- KRW/USD/CAD를 어떤 순서로 열 것인가? 캐나다는 CAD를 정식 지원할 것인가, 초기에는 USD로 판매할 것인가?
 - AI 사용량은 어떤 단위로 제한할 것인가?
 - AI 사용량 reset은 월 단위인가, 결제 주기 기준인가?
 - Paddle을 source-of-truth로 두고 내부 DB는 snapshot/cache로 둘 것인가?

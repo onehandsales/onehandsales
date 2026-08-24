@@ -63,8 +63,8 @@
 | 베타 검증 | 아직 결제창 없는 100명 베타 전 | 반복 사용, 이탈 지점, 유료 전환 후보 기능, plan별 가치 차이 검증 | 최우선 |
 | 결제/구독 | `TODO/PADDLE_PLAN` Deferred / Draft | 요금제, 무료체험, 월/연 결제, 환불, 쿠폰, 구독 상태, 결제 실패 복구, 영수증/인보이스 | 베타 이후 필요 |
 | 글로벌 세금/컴플라이언스 | 미구현 | VAT/GST/판매세 계산/징수/신고, 환불/차지백, 국가별 약관/환불 정책 | 글로벌 유료 판매 전 필요 |
-| 앱 내부 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | `ja`, `zh-TW`, `zh-CN` 등 실제 판매 시장별 앱 내부 locale과 UX writing | 글로벌 확장 전 필요 |
-| 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | 지원 국가/통화/전화번호/주소 체계 확장 | 글로벌 확장 전 필요 |
+| 앱 내부 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | KR/US/CA 우선 UX writing 정리 후 `ja`, `zh-TW` 등 보류 시장별 앱 내부 locale 확장 | 글로벌 확장 전 필요 |
+| 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | KR/US/CA 전략에 맞춘 CA/CAD/캐나다 전화번호/회사 지역 확장 및 이후 국가 확장 | 글로벌 확장 전 필요 |
 | Admin 운영 | 11 Admin Operation foundation 완료. Billing Admin 제외 | 구독/결제/환불/인보이스 운영은 Paddle 이후 연결 | 유료 운영 전 필요 |
 | Notification | 02 Notification/Reminder foundation 완료 | email/browser push 운영 고도화와 리텐션 실험 | 리텐션 강화 |
 | DataImport | ImportJob persistence 완료 | 대용량 worker와 source 확장 | scale 후보 |
@@ -105,7 +105,7 @@
 - 무료체험, 월간/연간 구독, AI 사용량 포함/초과 정책이 정의된다.
 - 결제 provider 또는 Merchant of Record를 붙여 카드, Apple Pay/Google Pay, 국가별 결제 수단을 지원한다.
 - VAT/GST/판매세, 환불, chargeback, invoice, receipt 처리가 가능하다.
-- `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca` 중 실제 판매 대상 시장의 `/app` 내부 다국어가 준비된다.
+- `ko`, `en-us`, `en-ca` 우선 시장의 공개/앱 UX writing이 정리되고, 보류 locale(`ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`)은 확장 결정 후 `/app` 내부 다국어로 승격한다.
 - 국가별 날짜/시간/전화번호/통화/주소 표시가 자연스럽다.
 - Admin에서 사용자, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그, 고객 지원 흐름을 운영할 수 있다.
 - 개인정보 처리, 계정 삭제, 데이터 export, 환불/약관/보안 문서가 실제 판매 국가 기준으로 준비된다.
@@ -132,7 +132,7 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 
 최종 유료 판매 가능형까지 갖추면 세계 대상 B2C 판매는 가능하다.
 
-단, 전 세계 동시 공략은 기본 전략으로 보지 않는다. 초기에는 한국에서 유료 전환과 리텐션을 검증하고, 이후 일본/대만, 그 다음 영어권으로 넓히는 단계적 확장을 우선한다.
+단, 전 세계 동시 공략은 기본 전략으로 보지 않는다. 초기에는 한국, 미국, 캐나다에서 유료 전환과 리텐션을 검증하고, 이후 일본/대만/호주 등 보류 시장으로 넓히는 단계적 확장을 우선한다.
 
 이유:
 

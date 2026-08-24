@@ -44,9 +44,9 @@ PRE12에서 새 API, DB migration, User Web/Admin Web 기능 구현으로 올릴
 | PRE12-F14 | AI data cleanup 제안 저장/적용 | 07 제외, USER_WEB productization gap | 07은 data cleanup suggestion을 1차 제외했다. 05 AI weekly report에는 저장형 report suggestion이 있으나 MeetingNote cleanup 적용 흐름은 없다. | 후속 seed / 별도 data quality 계획 | 09 Product Analytics 또는 별도 data quality TODO에서 권한, 적용, 감사 로그, rollback 기준을 먼저 정한다. |
 | PRE12-F15 | MeetingNote transcript/raw provider response/follow-up draft 저장 | NBA-011 원본 후보, 07 명시 제외 | 07은 전용 transcript/follow-up draft/raw provider response table을 만들지 않고 공통 `AiProviderCallLog` safe metadata만 남긴다. | defer / 정책 필요 | retention, 삭제권, raw access audit, redaction 정책 없이는 구현 금지. |
 | PRE12-F16 | MeetingNote Admin/internal provider audit 조회 | NBA-011, USER_WEB gap | Admin provider failure 조회와 raw access audit 기준은 11 Admin Operation에서 완료됐다. 2026-08-10 source 편중 cursor pagination Finding도 11 품질 보정으로 해결했다. | done | 07 또는 PRE12에서 재구현하지 않는다. 11 완료 문서를 참조한다. |
-| PRE12-F17 | `/app` `ja`, `zh-TW` 번역과 시장별 UX writing | 08 제외, USER_WEB productization gap | public/auth는 `ja`, `zh-TW` locale URL/copy가 있지만 `/app` i18n은 `ko-KR`, `en`만 지원한다. | 후속 seed | 일본/대만 판매 준비 goal에서 시장, 용어, QA 범위를 확정한 뒤 진행한다. |
+| PRE12-F17 | `/app` 보류 locale 번역과 시장별 UX writing | 08 제외, USER_WEB productization gap | public/auth에는 보류 locale URL/copy가 일부 남아 있지만 `/app` i18n은 `ko-KR`, `en`만 지원한다. | 후속 seed | KR/US/CA 우선 검증 이후 보류 시장 판매 준비 goal에서 시장, 용어, QA 범위를 확정한 뒤 진행한다. |
 | PRE12-F18 | `zh-CN` 중국 본토 지원 | 08 결정 로그 | 08은 `zh-CN`을 현재 글로벌 후보로 보지 않았다. 코드도 `/app` locale에 `zh-CN`을 포함하지 않는다. | defer / 시장 진입 결정 필요 | 중국 본토 시장, 인프라, 정책, 결제/세금 기준이 정해지기 전 구현 금지. |
-| PRE12-F19 | 전 세계 국가/통화/전화번호 확장 | 08 제외, USER_WEB/NEXT backlog | 현재 Backend/Frontend는 `KR/US`, `KRW/USD`, `ko-KR/en`으로 좁혀져 있다. | 후속 seed | 실제 판매 국가와 운영 지원 국가를 확정한 뒤 country/currency/phone dictionary와 migration 전략을 새 TODO로 만든다. |
+| PRE12-F19 | 전 세계 국가/통화/전화번호 확장 | 08 제외, USER_WEB/NEXT backlog | 현재 Backend/Frontend는 `KR/US`, `KRW/USD`, `ko-KR/en`으로 좁혀져 있다. | 후속 seed | KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호를 먼저 판단한 뒤 country/currency/phone dictionary와 migration 전략을 새 TODO로 만든다. |
 | PRE12-F20 | USD cent/minor unit과 금액 정밀도 | 08 제외 | Product/Deal 금액은 `Int` 정수와 `currencyCode`를 사용한다. export/report도 정수 금액 정책을 따른다. | billing-blocked / amount-precision 후속 | Paddle money model, invoice/tax 표시, 기존 금액 migration 기준이 정해지기 전 구현 금지. |
 | PRE12-F21 | 국가별 상세 주소 검증 | 08 제외, USER_WEB productization gap | Company는 free address와 KR/US region code만 사용한다. Contact 주소는 없다. | billing-blocked / 후속 seed | 세금/약관/청구 주소 또는 주소 품질 요구가 확정될 때 validation과 UX를 설계한다. |
 | PRE12-F22 | Contact 개인 주소 | 08 결정 로그 | 08은 Company에만 주소/지역을 적용했고 Contact에는 주소 필드를 추가하지 않았다. | 후속 seed / CRM 확장 | 개인 주소가 실제 CRM workflow 요구로 확정될 때 별도 Contact data expansion으로 판단한다. |
@@ -105,8 +105,8 @@ PRE12에서 새 API, DB migration, User Web/Admin Web 기능 구현으로 올릴
 
 | 후보 | 08에서 완료된 것 | 08/PRE12에서 금지 |
 | --- | --- | --- |
-| app locale 확장 | `/app` `ko-KR`, `en` i18n foundation/resource/formatter와 legacy static fallback | `ja`, `zh-TW`, `zh-CN`을 08 완료 범위로 끼워 넣기 |
-| 글로벌 데이터 확장 | User global settings, KR/US phone/region, KRW/USD currency | 전 세계 country/currency/phone dictionary를 계약 없이 추가 |
+| app locale 확장 | `/app` `ko-KR`, `en` i18n foundation/resource/formatter와 legacy static fallback | 보류 locale 또는 `zh-CN`을 08 완료 범위로 끼워 넣기 |
+| 글로벌 데이터 확장 | User global settings, KR/US phone/region, KRW/USD currency | CA/CAD/캐나다 전화번호 판단 없이 전 세계 country/currency/phone dictionary를 계약 없이 추가 |
 | 금액 정밀도 | Product/Deal `Int` 금액과 `currencyCode` | Paddle money model 없이 USD cent/minor unit migration 추가 |
 | 주소/세금/가격 정책 | Company free address와 KR/US region code | 국가별 tax/terms/pricing/address validation을 08 후속으로 우회 구현 |
 | auth provider | Google/LINE/Apple runtime provider와 Kakao legacy 호환 | 이메일/비밀번호, Microsoft, Kakao runtime 복구, 신규 provider 추가 |

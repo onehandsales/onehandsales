@@ -42,9 +42,9 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 
 ## Auth
 
-Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`, `/ko/pricing`, `/ko/contact`, `/ko/about`, `/ko/security`, `/ko/terms`, `/ko/privacy`. The same pattern is supported for `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, and `en-ca`. Existing `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` URLs redirect to the preferred locale URL. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
+Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`, `/ko/pricing`, `/ko/contact`, `/ko/about`, `/ko/security`, `/ko/terms`, `/ko/privacy`. Current KR/US/CA market focus exposes `ko`, `en-us`, and `en-ca` in the public language selector. `ja`, `zh-tw`, `en-gb`, `en-sg`, and `en-au` remain future expansion candidates. Existing `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` URLs redirect to the preferred locale URL. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
 
-초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 로그인 이후 `/app` 관리 화면은 한국어 우선으로 운영한다.
+우선 타겟 국가는 한국, 미국, 캐나다다. 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en` 1차 지원으로 운영한다.
 
 - Supabase OAuth 성공 후 `/auth/callback`으로 돌아온다.
 - 로그인/회원가입 provider 버튼은 가능한 경우 브라우저 popup으로 OAuth를 시작한다. popup이 차단되면 기존 전체 페이지 redirect 흐름으로 fallback한다.

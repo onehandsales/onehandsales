@@ -22,7 +22,7 @@
 
 ## 3. Global B2C 질문
 
-- [ ] timezone 기준이 미국/한국/일본/유럽 사용자 모두에서 자연스러운가?
+- [ ] timezone 기준이 한국/미국/캐나다 사용자 모두에서 자연스러운가?
 - [ ] DB 원본 UTC와 사용자 local `eventDate`가 함께 보존되는가?
 - [ ] activation/retention 계산이 현재 timezone 변경이 아니라 event row의 `eventDate`를 기준으로 하는가?
 - [ ] public/auth/광고 attribution과 `/app` product usage를 혼동하지 않는가?

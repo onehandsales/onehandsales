@@ -311,7 +311,7 @@ Operation:
 - DB는 UTC, API는 ISO, FE는 `User.preferredLocale + User.timeZone` 기준으로 표시한다.
 - 1차 app locale: `ko-KR`, `en`.
 - Product/Deal 금액은 정수 amount와 `currencyCode`를 함께 사용한다.
-- 1차 currency: `KRW`, `USD`.
+- 현재 구현된 1차 currency: `KRW`, `USD`. KR/US/CA 우선 전략에 맞춘 `CAD`는 후속 구현 범위다.
 - Contact phone global fields: `phoneCountryCode`, `phoneNationalNumber`, `phoneE164`.
 - Company region/address는 1차로 Company에만 적용하고 Contact 개인 주소는 추가하지 않는다.
 - 1차 region/country support: `KR`, `US`.

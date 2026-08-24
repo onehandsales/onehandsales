@@ -123,8 +123,8 @@ AuthDevice 1 ─ N AuthSession
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
 | `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone ID. 일정 range 계산 기본값으로 사용한다. |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
-| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. |
-| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 금액 입력 기본값과 Product/Deal currency fallback에 사용한다. |
+| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이며, KR/US/CA 우선 전략에 맞춘 `CA` 지원은 후속 구현 범위다. |
+| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 금액 입력 기본값과 Product/Deal currency fallback에 사용한다. 현재 구현은 `KRW/USD` 중심이며, `CAD` 지원은 후속 구현 범위다. |
 | `signupLocale` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 locale. |
 | `signupCountryCode` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 국가 코드. |
 | `signupTimeZone` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 timezone. |

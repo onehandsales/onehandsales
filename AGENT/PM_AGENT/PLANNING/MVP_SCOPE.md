@@ -25,7 +25,7 @@
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
 - Admin Operation은 11번 로드맵 기준 user/domain readonly operation, audit/security, provider failure, trash/account request, admin analytics, system operation gate foundation까지 구현 완료다. Billing Admin은 `TODO/PADDLE_PLAN` 이후 범위다.
 - User Web은 URL locale 공개/인증 진입면과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
-- 공개/인증 URL locale은 `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`를 지원한다. 초기 판매/검토 국가는 한국, 일본, 대만, 미국, 영국, 싱가포르, 호주, 캐나다다. 08_GLOBAL_DATA_I18N 완료 기준 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en`을 1차 지원한다.
+- 공개/인증 URL locale 중 언어 선택 UI에 노출하는 값은 `ko`, `en-us`, `en-ca`다. 우선 판매/검토 국가는 한국, 미국, 캐나다다. `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`와 일본/대만/영국/싱가포르/호주 시장은 추후 확장 후보로 보류한다. 08_GLOBAL_DATA_I18N 완료 기준 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en`을 1차 지원한다.
 - 인증 QA 상태: Supabase 테스트 데이터 초기화 완료, Google OAuth 신규 가입/로그인 QA 통과, URL locale smoke 통과, 로그인/회원가입 provider 버튼의 browser popup OAuth 시작 E2E 통과, 로그아웃 후 선호 locale의 login URL 이동 적용 및 확인 완료. 현재 활성 provider는 Google, LINE, Apple이며 LINE/Apple 실제 smoke는 Supabase/provider 운영 설정 후 별도 기록한다.
 - 2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 베타 전 checkout/webhook/API/DB migration을 만들지 않는다.
 

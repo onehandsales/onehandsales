@@ -19,7 +19,7 @@ Target direction: `/` is the public entry surface, `/app` is the authenticated w
 
 Current implementation note as of 2026-07-10:
 
-- Public/auth canonical routes use URL locale prefixes such as `/ko`, `/ko/login`, `/ja/signup`, and `/en-us/pricing`.
+- Public/auth canonical routes use URL locale prefixes such as `/ko`, `/ko/login`, `/en-us/pricing`, and `/en-ca/contact`.
 - Legacy `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` redirect to the preferred locale URL.
 - `/app` home is an implemented dashboard that combines Schedule, Deal, Deal stage count, and MeetingNote API data.
 - The active deal pipeline experience is served from `/app/deals`.
@@ -324,7 +324,7 @@ Direction:
 
 - default UI font stack is Notion-like and multilingual:
   `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`
-- this font direction applies to Korean, Japanese, Traditional Chinese for Taiwan, and English US/UK/Singapore/Australia/Canada
+- this font direction applies first to Korean, English US, and English Canada, and remains ready for future Japanese, Traditional Chinese for Taiwan, and English UK/Singapore/Australia expansion
 - use `Inter` first for Latin/English UI text
 - keep `Pretendard` as the Korean fallback
 - let Traditional Chinese and Japanese text fall back to OS CJK system fonts

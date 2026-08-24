@@ -29,7 +29,7 @@
 | Google Calendar 고급 sync/provider 확장 | export/write/양방향 sync, webhook/watch, recurrence, reminders, attendee/contact auto-link, multi-account, Google 외 provider API 계약 | 후속 seed / `PRE12-F10` | PRE12 구현 금지 |
 | Gmail/Microsoft provider smoke closeout | 새 API 없음 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
 | Follow-up delivery 고급 provider/growth 확장 | SMS vendor adapter, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, SMTP/external email SaaS, HTML email/attachment/tracking contract | 후속 seed / `PRE12-F05`/`PRE12-F06` | 구현 금지 |
-| App locale 확장 | User profile locale 허용값, app translation resource delivery 방식 검토 | 후속 seed | `ja`, `zh-TW`, `zh-CN` 구현 금지 |
+| App locale 확장 | User profile locale 허용값, app translation resource delivery 방식 검토 | 후속 seed | 보류 locale과 `zh-CN` 구현 금지 |
 | Global country/currency/phone 확장 | User country/default currency, Contact phone, Company region dictionary 확장 계약 | 후속 seed | PRE12 구현 금지 |
 | Amount precision/minor unit | Product/Deal amount 저장 단위, import/export/report 변환 계약 | billing-blocked | Paddle money model 전 구현 금지 |
 | Country address/tax/terms/pricing policy | billing/tax/policy API 또는 address validation API | billing-blocked | PRE12 구현 금지 |

@@ -183,7 +183,8 @@
 현재 User Web router 기준 실제 구현 경로:
 
 - 공개/인증 canonical: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`
-- 지원 locale slug: `ko`, `ja`, `zh-tw`, `en-us`, `en-gb`, `en-sg`, `en-au`, `en-ca`
+- 현재 언어 선택 UI 노출 locale slug: `ko`, `en-us`, `en-ca`
+- 추후 확장 후보 locale slug: `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`
 - legacy public/auth redirect: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 이동한다.
 - OAuth callback: `/auth/callback`은 locale prefix 없이 유지한다.
 - legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/more` 및 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다. `/settings` legacy route는 계정 설정 모달 이관 후 제거됐다.

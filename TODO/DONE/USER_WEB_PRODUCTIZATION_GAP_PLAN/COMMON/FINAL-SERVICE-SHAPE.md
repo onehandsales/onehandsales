@@ -36,11 +36,11 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 
 | 영역 | 최종적으로 필요한 상태 |
 |---|---|
-| 가격/플랜 | 판매 국가, 가격표, trial 여부, 무료/유료 제한, paywall 기준이 명확하다. |
+| 가격/플랜 | KR/US/CA 우선 판매 국가, 가격표, trial 여부, 무료/유료 제한, paywall 기준이 명확하다. |
 | 결제/구독 | 무료체험, 월간/연간 구독, 국가별 가격, 환불, 결제 실패 복구, 영수증/인보이스가 있다. |
 | 세금/컴플라이언스 | VAT/GST/판매세 또는 Merchant of Record 처리가 가능하다. |
-| 앱 내부 다국어 | 실제 판매 국가 기준으로 `/app` 내부 locale과 UX writing이 준비된다. 기본 `ko-KR`/`en` app i18n은 08에서 구현 완료됐다. |
-| 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐다. |
+| 앱 내부 다국어 | KR/US/CA 우선 판매 기준으로 `/app` 내부 locale과 UX writing이 준비된다. 기본 `ko-KR`/`en` app i18n은 08에서 구현 완료됐다. |
+| 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐고, CA/CAD/캐나다 전화번호는 후속 구현 범위다. |
 | Admin 운영 | 사용자, 도메인 데이터, 민감정보 마스킹, 감사 로그, provider 실패, Trash/account/data request, system gate를 운영할 수 있다. 11에서 최소 운영 범위는 완료됐고, 구독/결제 이슈 운영은 `TODO/PADDLE_PLAN` Billing 도메인과 연결한다. |
 | 고객 신뢰 | 약관, 개인정보, 보안, 계정 삭제, 데이터 export, 환불 정책이 실제 판매 범위와 맞는다. |
 | 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 `TODO/PADDLE_PLAN` Billing source 연결 후 완성된다. |

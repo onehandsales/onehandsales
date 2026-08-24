@@ -21,7 +21,7 @@
 ## 2. 제외 범위
 
 - public-site 전체 rewrite
-- `ja`, `zh-TW` 앱 번역
+- KR/US/CA 이후 보류 locale 앱 번역
 - Admin Web 번역
 - 화면 구조 대개편
 

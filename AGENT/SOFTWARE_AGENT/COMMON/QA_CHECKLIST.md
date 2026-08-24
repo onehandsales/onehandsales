@@ -289,7 +289,7 @@ pnpm test:e2e
 
 ### 로그인
 
-- [x] URL locale smoke: `/ko`, `/ja/login`, `/zh-tw/signup`, `/en-us/pricing`, `/en-gb/contact`, `/en-sg/about`, `/en-au/security`, `/en-ca/privacy`가 public/auth 화면으로 진입함
+- [x] 현재 노출 언어 URL locale smoke: `/ko`, `/en-us/pricing`, `/en-ca/privacy`가 public/auth 화면으로 진입함
 - [x] Compatibility redirect smoke: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`가 선호 locale URL로 redirect됨
 - [x] OAuth callback smoke: `/auth/callback`은 locale prefix 없이 유지되고 Supabase session exchange를 시도함
 - [x] `/app/*`는 locale prefix 없이 유지되고, 비로그인 접근 시 선호 locale의 login URL로 이동함
@@ -311,9 +311,10 @@ pnpm test:e2e
 
 ### 2026-07-10 URL locale smoke 결과
 
-- Playwright 기준 `/ko`, `/ja/login`, `/zh-tw/signup`, `/en-us/pricing`, `/en-gb/contact`, `/en-sg/about`, `/en-au/security`, `/en-ca/privacy` 진입을 확인했다.
+- 현재 노출 언어 기준 Playwright smoke 대상은 `/ko`, `/en-us/pricing`, `/en-ca/privacy`다.
+- 2026-07-10 당시 전체 route smoke 기록에는 `/ja/login`, `/zh-tw/signup`, `/en-gb/contact`, `/en-sg/about`, `/en-au/security`도 포함됐지만, 이 locale들은 현재 언어 선택 UI에서 보류 상태다.
 - fresh `ko-KR` context 기준 legacy public URL이 `/ko` 계열로 redirect됨을 확인했다.
-- 저장된 선호 언어가 `en-GB`일 때 legacy `/login`과 비로그인 `/app/deals`가 `/en-gb/login`으로 이동함을 확인했다.
+- 저장된 선호 언어가 `en-CA`일 때 legacy `/login`과 비로그인 `/app/deals`가 `/en-ca/login`으로 이동하는지를 현재 KR/US/CA smoke 기준으로 확인한다.
 - `/auth/callback`은 locale prefix 없이 `/auth/callback`에 유지됨을 확인했다.
 
 ### Provider 상태
@@ -1077,7 +1078,7 @@ pnpm test:e2e
 - [ ] Google/LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 provider 설정/QA 필요
 - [ ] 가입 국가/마지막 로그인 국가는 proxy geo header가 없는 환경에서 `기록 없음`일 수 있음
 - [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
-- [ ] 현재 전화번호 입력/검증은 KR/US 1차 지원이며, 그 외 국가 전화번호 모델은 후속 검토
+- [ ] 현재 전화번호 입력/검증은 KR/US 1차 지원이며, KR/US/CA 우선 전략에 맞춘 CA 전화번호 모델은 후속 구현 대상
 
 ## 29. 버그 리포트 템플릿
 

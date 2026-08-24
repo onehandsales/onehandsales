@@ -7,6 +7,8 @@
 최종 업데이트: 2026-08-11
 성격: 제품화 gap 판단 가이드
 
+> 2026-08-24 전략 업데이트: 현재 우선 타겟 국가는 한국, 미국, 캐나다다. 이 archive의 과거 글로벌 시장/locale 후보는 당시 gap 판단 이력으로 보존하며, 새 작업 기준은 `AGENT/PM_AGENT/DECISIONS/031_kr_us_ca_priority_market.md`와 `TODO/PADDLE_PLAN`을 따른다.
+
 ## 0. 완료 반영 체크리스트
 
 - [x] DataImport 기본 흐름
@@ -207,8 +209,8 @@
 
 - `/app/settings`에서 국가, 앱 언어, 기본 통화 설정을 저장하고 저장 직후 문구와 formatter가 반영된다.
 - `/app` 핵심 화면은 `ko-KR`/`en` app i18n resource와 legacy static fallback으로 동작한다.
-- Product/Deal 금액은 `currencyCode`와 KRW/USD 표시 정책을 따른다.
-- Contact 전화번호는 KR/US 국가 코드, national number, E.164 기준으로 생성/수정/import/business-card/search/export 흐름에 반영된다.
+- Product/Deal 금액은 `currencyCode`와 KRW/USD 표시 정책을 따른다. KR/US/CA 우선 전략에 맞춘 CAD는 후속 구현 범위다.
+- Contact 전화번호는 KR/US 국가 코드, national number, E.164 기준으로 생성/수정/import/business-card/search/export 흐름에 반영된다. CA 전화번호는 후속 구현 범위다.
 - Company는 country/region/address 구조와 region option을 사용한다.
 - Import template과 domain export는 `ko-KR`/`en` header/date-time/currency 현지화를 지원한다.
 - 로그인/회원가입은 Google, LINE, Apple provider를 동일한 UI 패턴으로 제공한다.

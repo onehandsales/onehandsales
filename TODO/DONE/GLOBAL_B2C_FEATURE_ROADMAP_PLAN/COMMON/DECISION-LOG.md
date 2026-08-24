@@ -3,6 +3,8 @@
 상태: Decision Baseline / Roadmap DONE / Billing moved to `TODO/PADDLE_PLAN`
 기준일: 2026-08-11
 
+> 2026-08-24 전략 업데이트: 현재 우선 타겟 국가는 한국, 미국, 캐나다다. 이 완료 결정 로그의 과거 시장/locale 문구는 당시 이력으로 보존하며, 새 기준은 `AGENT/PM_AGENT/DECISIONS/031_kr_us_ca_priority_market.md`를 따른다.
+
 ## 0. 완료 반영
 
 - [x] 01 ImportJob Persistence: Done (2026-07-21)
