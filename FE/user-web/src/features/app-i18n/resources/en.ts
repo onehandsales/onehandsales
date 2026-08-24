@@ -73,9 +73,9 @@ export const enResource = {
     appFallbackTitle: "Onehand Sales",
     freePlan: "Free Plan",
     help: "Help",
-    helpErrorReport: "Report an error",
+    helpErrorReport: "Error",
     helpGuide: "User Guide",
-    helpSupportRequest: "Support request",
+    helpSupportRequest: "Support",
     helpTooltip: "View help",
     homeAria: "Home",
     homeTooltip: "Go home",
@@ -117,7 +117,7 @@ export const enResource = {
     errorScreenshotToggleLabel: "Include screenshot",
     errorSubmitAction: "Send",
     errorSubmitting: "Submitting",
-    errorTitle: "Report an error",
+    errorTitle: "Error",
     guideDealDescription:
       "Start from deal stage, next action, and due date, then move into the record that needs attention.",
     guideDealTitle: "Deal flow",
@@ -163,7 +163,7 @@ export const enResource = {
     supportTemplateReplaceDescription:
       "Your current message will be replaced by the template. Continue?",
     supportTemplateReplaceTitle: "Change template?",
-    supportTitle: "Support request",
+    supportTitle: "Support",
   },
   home: {
     activitiesTitle: "Recent Activity",
