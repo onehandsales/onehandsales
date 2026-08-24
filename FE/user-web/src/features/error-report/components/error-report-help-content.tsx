@@ -245,9 +245,7 @@ export function ErrorReportHelpContent({
                 </div>
               ) : (
                 <p className="text-[13px] font-semibold text-[#111827]">
-                  {screenshotBlob && includeScreenshot
-                    ? t("helpModal.errorCaptureReady")
-                    : t("helpModal.errorNoScreenshot")}
+                  {t("helpModal.errorCaptureReady")}
                 </p>
               )}
               {captureError ? (
