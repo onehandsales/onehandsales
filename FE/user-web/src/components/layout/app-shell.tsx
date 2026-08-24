@@ -49,6 +49,7 @@ import {
 } from "@/features/public-site/i18n/public-site-locale-routes";
 import { SearchModal } from "@/features/search";
 import {
+  type CSSProperties,
   type FormEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
@@ -1818,8 +1819,9 @@ function AccountSettingsModalContent() {
                 <div className="grid gap-1">
                   <AccountSettingsSelectRow label={t("settings.displayLanguage")}>
                     <select
-                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) => setPreferredLocale(event.target.value)}
+                      style={getAccountSelectWidthStyle(formatLocaleLabel(preferredLocale, t))}
                       value={preferredLocale}
                     >
                       {accountLocaleOptions.map((option) => (
@@ -1831,8 +1833,9 @@ function AccountSettingsModalContent() {
                   </AccountSettingsSelectRow>
                   <AccountSettingsSelectRow label={t("settings.timeZone")}>
                     <select
-                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) => setTimeZone(event.target.value)}
+                      style={getAccountSelectWidthStyle(timeZone)}
                       value={timeZone}
                     >
                       {getAccountTimeZoneOptions(timeZone).map((option) => (
@@ -1844,8 +1847,9 @@ function AccountSettingsModalContent() {
                   </AccountSettingsSelectRow>
                   <AccountSettingsSelectRow label={t("settings.defaultCountry")}>
                     <select
-                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) => setCountryCode(event.target.value)}
+                      style={getAccountSelectWidthStyle(formatCountryLabel(countryCode, t))}
                       value={countryCode}
                     >
                       {accountCountryOptions.map((option) => (
@@ -1857,10 +1861,11 @@ function AccountSettingsModalContent() {
                   </AccountSettingsSelectRow>
                   <AccountSettingsSelectRow label={t("settings.defaultCurrency")}>
                     <select
-                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[240px]"
+                      className="h-9 w-full rounded-md border border-[#E2E5EC] bg-white px-3 text-[13px] text-[#374151] outline-none focus:border-[#93C5FD] md:w-[var(--account-select-width)]"
                       onChange={(event) =>
                         setDefaultCurrencyCode(event.target.value)
                       }
+                      style={getAccountSelectWidthStyle(defaultCurrencyCode)}
                       value={defaultCurrencyCode}
                     >
                       {accountCurrencyOptions.map((option) => (
@@ -1931,6 +1936,22 @@ function AccountSettingsSelectRow({
       <span className="min-w-0 md:justify-self-end">{children}</span>
     </label>
   );
+}
+
+// 기능 : 계정 설정 select의 현재 선택 문구에 맞춘 데스크톱 너비를 계산합니다.
+function getAccountSelectWidthStyle(label: string): CSSProperties {
+  const widthCh = Math.ceil(Math.max(10, getAccountSelectTextLength(label) + 5));
+
+  return { "--account-select-width": `${widthCh}ch` } as CSSProperties;
+}
+
+// 기능 : 계정 설정 select 옵션 문구의 표시 길이를 계산합니다.
+function getAccountSelectTextLength(label: string) {
+  return Array.from(label).reduce((length, character) => {
+    const isWideCharacter = character.charCodeAt(0) > 127;
+
+    return length + (isWideCharacter ? 1.8 : 1);
+  }, 0);
 }
 
 // 기능 : 외부 연동 모달 콘텐츠 영역을 렌더링합니다.
