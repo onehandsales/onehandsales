@@ -1745,7 +1745,6 @@ const accountTimeZoneOptions = [
   "America/Vancouver",
   "Europe/London",
   "Australia/Sydney",
-  "UTC",
 ] as const;
 
 // 기능 : 계정 설정 모달 콘텐츠 영역을 렌더링합니다.
@@ -1759,6 +1758,12 @@ function AccountSettingsModalContent() {
   const [countryCode, setCountryCode] = useState("KR");
   const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
   const [notice, setNotice] = useState<AccountModalNotice | null>(null);
+  const hasProfileChanges = profile
+    ? preferredLocale !== profile.preferredLocale ||
+      timeZone !== profile.timeZone ||
+      countryCode !== profile.countryCode ||
+      defaultCurrencyCode !== profile.defaultCurrencyCode
+    : false;
 
   // 기능 : Settings 모달 안의 요청 섹션 성공 안내를 공통 notice에 연결합니다.
   const onSettingsSectionNotice = useCallback((message: string) => {
@@ -1780,6 +1785,11 @@ function AccountSettingsModalContent() {
   // 기능 : 계정 Settings 모달에서 앱 기본값 저장 요청을 처리합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!profile || !hasProfileChanges || updateProfileMutation.isPending) {
+      return;
+    }
+
     setNotice(null);
 
     try {
@@ -1879,8 +1889,8 @@ function AccountSettingsModalContent() {
                 </div>
                 <div className="mt-5 flex justify-end">
                   <button
-                    className="h-9 rounded-md bg-[#111827] px-4 text-[13px] font-semibold text-white transition hover:bg-[#374151] disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={updateProfileMutation.isPending}
+                    className="h-9 rounded-md bg-[#3A83F7] px-4 text-[13px] font-semibold text-white transition hover:bg-[#256FE6] active:bg-[#1D5FD0] disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={updateProfileMutation.isPending || !hasProfileChanges}
                     type="submit"
                   >
                     {t("settings.saveProfile")}
@@ -2038,7 +2048,7 @@ function getAccountTimeZoneOptions(currentTimeZone: string) {
 
   return Array.from(
     new Set([currentTimeZone, browserTimeZone, ...accountTimeZoneOptions])
-  ).filter(Boolean);
+  ).filter((option) => Boolean(option) && option !== "UTC");
 }
 
 type LegalDocumentModalSection = {
