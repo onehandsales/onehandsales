@@ -129,7 +129,7 @@ describe("ErrorReportApplicationService", () => {
     });
     expect(response).toEqual({
       id: "00000000-0000-4000-8000-000000000301",
-      message: "신고가 접수되었어요. 문제를 빠르게 해결할게요.",
+      message: "문제를 빠르게 해결할게요.",
     });
   });
 

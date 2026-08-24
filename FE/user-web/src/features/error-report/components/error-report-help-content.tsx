@@ -1,7 +1,6 @@
 import html2canvas from "html2canvas";
 import {
   AlertCircle,
-  CheckCircle2,
   Loader2,
   X,
 } from "lucide-react";
@@ -17,6 +16,7 @@ import {
 import { useAppI18n } from "@/features/app-i18n";
 import { useCreateErrorReportMutation } from "@/features/error-report/hooks/use-error-report-mutations";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { SuccessStatusOverlay } from "@/components/ui/success-status-overlay";
 
 const ERROR_REPORT_CAPTURE_IGNORE_SELECTOR =
   "[data-error-report-capture-ignore='true']";
@@ -344,18 +344,7 @@ export function ErrorReportHelpContent({
       ) : null}
 
       {successMessage ? (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/70 px-5 backdrop-blur-[1px]">
-          <div
-            aria-live="polite"
-            className="grid max-w-[280px] justify-items-center gap-2 rounded-xl bg-white px-5 py-4 text-center shadow-2xl ring-1 ring-[#E5E7EB]"
-            role="status"
-          >
-            <CheckCircle2 className="h-7 w-7 text-[#16A34A]" strokeWidth={2} />
-            <p className="text-[13px] font-semibold leading-6 text-[#111827]">
-              {successMessage}
-            </p>
-          </div>
-        </div>
+        <SuccessStatusOverlay message={successMessage} />
       ) : null}
     </section>
   );

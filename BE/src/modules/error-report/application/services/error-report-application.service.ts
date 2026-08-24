@@ -21,8 +21,7 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 const MAX_ERROR_REPORT_PAGE_URL_LENGTH = 2000;
 const MAX_ERROR_REPORT_SCREENSHOT_SIZE_BYTES = 10 * 1024 * 1024;
 const ERROR_REPORT_SCREENSHOT_MIME_TYPE = "image/png";
-const ERROR_REPORT_RECEIVED_MESSAGE =
-  "신고가 접수되었어요. 문제를 빠르게 해결할게요.";
+const ERROR_REPORT_RECEIVED_MESSAGE = "문제를 빠르게 해결할게요.";
 
 // 역할 : UploadedErrorReportScreenshotFile HTTP 업로드 screenshot 파일 정보를 정의합니다.
 export interface UploadedErrorReportScreenshotFile {

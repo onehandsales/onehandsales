@@ -13,7 +13,7 @@ describe("createErrorReport", () => {
   it("sends description, pageUrl, and optional screenshot as FormData", async () => {
     apiClientMock.mockResolvedValue({
       id: "error-report-1",
-      message: "신고가 접수되었어요. 문제를 빠르게 해결할게요.",
+      message: "문제를 빠르게 해결할게요.",
     });
     const screenshot = new Blob(["png"], { type: "image/png" });
 

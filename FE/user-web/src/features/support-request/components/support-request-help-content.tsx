@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, ChevronDown, Loader2 } from "lucide-react";
+import { AlertCircle, ChevronDown, Loader2 } from "lucide-react";
 import {
   type ChangeEvent,
   type FormEvent,
@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import type { SupportRequestType } from "@/features/support-request/types/support-request";
+import { SuccessStatusOverlay } from "@/components/ui/success-status-overlay";
 
 const SUPPORT_REQUEST_DESCRIPTION_MAX_LENGTH = 1000;
 const SUPPORT_REQUEST_MOCK_SUBMIT_DELAY_MS = 350;
@@ -241,18 +242,7 @@ export function SupportRequestHelpContent({
       />
 
       {successMessage ? (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/70 px-5 backdrop-blur-[1px]">
-          <div
-            aria-live="polite"
-            className="grid max-w-[280px] justify-items-center gap-2 rounded-xl bg-white px-5 py-4 text-center shadow-2xl ring-1 ring-[#E5E7EB]"
-            role="status"
-          >
-            <CheckCircle2 className="h-7 w-7 text-[#16A34A]" strokeWidth={2} />
-            <p className="text-[13px] font-semibold leading-6 text-[#111827]">
-              {successMessage}
-            </p>
-          </div>
-        </div>
+        <SuccessStatusOverlay message={successMessage} />
       ) : null}
     </section>
   );
