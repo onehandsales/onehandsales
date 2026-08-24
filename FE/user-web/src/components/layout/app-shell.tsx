@@ -2522,13 +2522,9 @@ function ProfileModalContent({
               )}
             </ProfileSection>
 
-            <ProfileSection title={t("settings.userId")}>
-              <div className="py-3">
-                <p className="break-all text-[13px] font-medium text-[#475569]">
-                  {profile.id}
-                </p>
-              </div>
-            </ProfileSection>
+            <div className="border-t border-[#F0F2F6] pt-3">
+              <ProfileInfoRow label={t("settings.userId")} value={profile.id} />
+            </div>
           </div>
         ) : null}
       </div>
@@ -2565,7 +2561,7 @@ function ProfileInfoRow({
   return (
     <div className="grid gap-1 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-start md:gap-6">
       <p className="text-[13px] font-medium text-[#111827]">{label}</p>
-      <p className="break-words text-[13px] leading-6 text-[#64748B]">
+      <p className="min-w-0 break-words text-[13px] leading-6 text-[#64748B] md:text-right">
         {value}
       </p>
     </div>
