@@ -65,6 +65,21 @@ pnpm run start:dev
 
 환경 변수 정본은 `BE/.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 현재 Backend bootstrap은 로컬 편의를 위해 `BE/.env` 다음 `BE/.env.local`을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 변수명만 기준으로 한다. 실제 secret 값은 문서나 로그에 기록하지 않는다.
 
+## 운영 배포
+
+현재 production API origin은 `https://onehandsales-production.up.railway.app`이다. User Web custom domain `https://www.onehandsales.com`은 Frontend Vercel project에 연결된 domain이며, Backend hosting이나 Supabase database region을 자동으로 바꾸지 않는다.
+
+production 공개 origin 기준:
+
+```text
+APP_ALLOWED_ORIGINS="https://www.onehandsales.com,https://onehandsales.com,https://onehandsales.vercel.app,https://onehandsales-admin.vercel.app"
+USER_WEB_ORIGIN="https://www.onehandsales.com"
+ADMIN_WEB_ORIGIN="https://onehandsales-admin.vercel.app"
+API_PUBLIC_ORIGIN="https://onehandsales-production.up.railway.app"
+```
+
+`APP_REFRESH_COOKIE_DOMAIN`은 API가 Railway 기본 domain에 있는 동안 비워둔다. `https://api.onehandsales.com`으로 이전한 뒤에만 `.onehandsales.com` 설정을 검토한다.
+
 ## API 호출 예제
 
 - 회사 도메인: `restdoc/company-domain.http`

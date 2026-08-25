@@ -29,9 +29,28 @@ Local Backend API 기본 origin:
 
 Backend API는 Frontend Vercel hosting과 분리된 별도 hosting을 사용한다.
 
-권장 production domain:
+현재 production API origin:
 
-- `https://api.<service-domain>`
+- `https://onehandsales-production.up.railway.app`
+
+향후 권장 custom API domain:
+
+- `https://api.onehandsales.com`
+
+현재 `onehandsales.com` 도메인은 Vercel에서 구매/관리하며 User Web에 연결되어 있다. 도메인 구매나 Frontend domain 연결은 Backend hosting, Railway region, Supabase project/database region을 자동으로 변경하지 않는다. 현재 API가 Railway 기본 domain에 있으므로 Frontend `VITE_API_URL`, Backend `API_PUBLIC_ORIGIN`, Google OAuth callback은 Railway URL을 기준으로 둔다.
+
+`api.onehandsales.com`을 연결할 때 함께 바꿔야 하는 값:
+
+- Backend `API_PUBLIC_ORIGIN`
+- Frontend `VITE_API_URL`
+- Google Calendar OAuth redirect URI
+- Follow-up Gmail OAuth redirect URI
+- Supabase/Auth 관련 provider allowlist 중 Backend callback을 참조하는 항목
+- `APP_REFRESH_COOKIE_DOMAIN`
+
+`APP_REFRESH_COOKIE_DOMAIN`은 API가 `onehandsales-production.up.railway.app`에 있는 동안 비워둔다. Railway 기본 domain에서 내려주는 cookie를 `.onehandsales.com`으로 scope 지정할 수 없기 때문이다. API를 `api.onehandsales.com`으로 전환한 뒤에만 `.onehandsales.com` 설정을 검토한다.
+
+현재 Supabase project/database region은 Seoul 계열로 운영 중이다. DB region 이전은 domain/DNS 변경과 별개의 migration/운영 작업으로 다룬다.
 
 운영 규칙:
 

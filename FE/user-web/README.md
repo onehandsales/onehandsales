@@ -40,6 +40,29 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5173/auth/callback"
 
 환경 변수 정본은 `FE/user-web/.env`와 `../../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. Vite는 로컬 override 파일을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 `VITE_*` 변수명만 기준으로 한다.
 
+## 운영 배포
+
+Vercel project root: `FE/user-web`
+
+현재 production URL:
+
+- Canonical: `https://www.onehandsales.com`
+- Apex: `https://onehandsales.com`
+- Vercel default/legacy: `https://onehandsales.vercel.app`
+
+사용자에게 공유하거나 QA 기준으로 삼는 URL은 `https://www.onehandsales.com`이다. `https://onehandsales.com`은 동작해야 하며 가능하면 `www`로 redirect한다. `https://onehandsales.vercel.app`은 Vercel 기본 domain 호환용으로 남길 수 있지만 기준 URL로 쓰지 않는다.
+
+production `.env` 공개 origin 기준:
+
+```text
+VITE_API_URL="https://onehandsales-production.up.railway.app"
+VITE_SUPABASE_URL=""
+VITE_SUPABASE_ANON_KEY=""
+VITE_SUPABASE_REDIRECT_URL="https://www.onehandsales.com/auth/callback"
+```
+
+`VITE_API_URL`은 Backend가 `api.onehandsales.com`으로 이전되기 전까지 Railway production API URL을 사용한다. Supabase Auth와 Google Cloud OAuth allowlist는 `BE/SUPABASE_SETUP.md` 기준으로 맞춘다.
+
 ## Auth
 
 Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`, `/ko/pricing`, `/ko/contact`, `/ko/about`, `/ko/security`, `/ko/terms`, `/ko/privacy`. Current KR/US/CA market focus exposes `ko`, `en-us`, and `en-ca` in the public language selector. `ja`, `zh-tw`, `en-gb`, `en-sg`, and `en-au` remain future expansion candidates. Existing `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` URLs redirect to the preferred locale URL. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
@@ -131,5 +154,3 @@ Smoke 범위:
 - 상단 통합검색 API mock handler는 존재한다. 검색 UI 조작 E2E 케이스는 별도 후속 범위다.
 
 `/app` 라우팅 전환 이후 smoke의 legacy path 기대값은 릴리즈 게이트로 쓰기 전에 현재 라우터 기준으로 재검토한다.
-
-Vercel project root: `FE/user-web`

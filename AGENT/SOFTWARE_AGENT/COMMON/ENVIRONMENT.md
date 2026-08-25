@@ -118,6 +118,24 @@ PRODUCT_ANALYTICS_RETENTION_PURGE_BATCH_SIZE
 - product analytics raw event purge는 `PRODUCT_ANALYTICS_RETENTION_PURGE_ENABLED=true`일 때만 365일보다 오래된 `ProductAnalyticsEvent`를 batch 삭제한다. `PRODUCT_ANALYTICS_RETENTION_PURGE_BATCH_SIZE` 기본값은 500이며, snapshot과 AI provider call log는 삭제하지 않는다.
 - 로그인 국가 코드는 환경 변수가 아니라 배포 프록시 header(`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`)에서 온다.
 
+### Backend production origin 기준
+
+2026-08-25 기준 production domain/origin 정책:
+
+```text
+APP_ALLOWED_ORIGINS="https://www.onehandsales.com,https://onehandsales.com,https://onehandsales.vercel.app,https://onehandsales-admin.vercel.app"
+USER_WEB_ORIGIN="https://www.onehandsales.com"
+ADMIN_WEB_ORIGIN="https://onehandsales-admin.vercel.app"
+API_PUBLIC_ORIGIN="https://onehandsales-production.up.railway.app"
+```
+
+- User Web canonical origin은 `https://www.onehandsales.com`이다.
+- `https://onehandsales.com`은 apex domain으로 동작해야 하며 가능하면 `www`로 redirect한다. redirect 전 요청이나 OAuth return 경계를 위해 Backend CORS allowlist에는 유지한다.
+- `https://onehandsales.vercel.app`은 Vercel default/legacy origin이다. 전환 기간 호환용으로 allowlist에 둘 수 있지만 사용자 공유 URL과 QA 기준 URL은 아니다.
+- Admin Web은 현재 `https://onehandsales-admin.vercel.app`을 production origin으로 사용한다.
+- `API_PUBLIC_ORIGIN`은 현재 Railway production API URL이다. `api.onehandsales.com`을 연결하기 전까지 `https://onehandsales-production.up.railway.app`을 유지한다.
+- `APP_REFRESH_COOKIE_DOMAIN`은 API가 Railway 기본 domain에 있는 동안 비워둔다. API를 `https://api.onehandsales.com`으로 이전한 뒤에만 `.onehandsales.com` 설정을 검토한다.
+
 ## User Web
 
 ```text
@@ -134,6 +152,13 @@ VITE_PRODUCT_ANALYTICS_ENABLED
 - `VITE_SUPABASE_REDIRECT_URL`: `http://localhost:5173/auth/callback`
 - `VITE_PRODUCT_ANALYTICS_ENABLED`: 기본 비활성. 운영 배포에서 User Web route 분석을 보낼 때만 `true`로 둔다.
 
+production 기준:
+
+- `VITE_API_URL`: `https://onehandsales-production.up.railway.app`
+- `VITE_SUPABASE_REDIRECT_URL`: `https://www.onehandsales.com/auth/callback`
+- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`: Supabase project 값. secret이 아닌 anon key라도 문서에는 실제 값을 기록하지 않는다.
+- Supabase Auth redirect allowlist에는 `https://www.onehandsales.com/auth/callback`, `https://onehandsales.com/auth/callback`, 전환 기간의 `https://onehandsales.vercel.app/auth/callback`을 함께 둔다.
+
 ## Admin Web
 
 ```text
@@ -147,5 +172,11 @@ VITE_SUPABASE_REDIRECT_URL
 
 - `VITE_API_URL`: `http://localhost:3000`
 - `VITE_SUPABASE_REDIRECT_URL`: `http://localhost:5174/auth/callback`
+
+production 기준:
+
+- `VITE_API_URL`: `https://onehandsales-production.up.railway.app`
+- `VITE_SUPABASE_REDIRECT_URL`: `https://onehandsales-admin.vercel.app/auth/callback`
+- Admin custom domain `https://admin.onehandsales.com`은 아직 활성 기준이 아니다. 연결 후에만 Admin Web Vercel domain, Backend `ADMIN_WEB_ORIGIN`, `APP_ALLOWED_ORIGINS`, Supabase redirect URL, Google Cloud OAuth origin을 함께 갱신한다.
 
 현재 Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 호출해 관리자 권한을 확인한다. Admin Web 운영 코드는 로컬 가짜 관리자/일반 사용자 토큰이나 역할 대체값을 사용하지 않는다.

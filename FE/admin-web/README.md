@@ -48,6 +48,23 @@ VITE_SUPABASE_REDIRECT_URL="http://localhost:5174/auth/callback"
 
 환경 변수 정본은 `FE/admin-web/.env`와 `../../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. Vite는 로컬 override 파일을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 `VITE_*` 변수명만 기준으로 한다.
 
+## 운영 배포
+
+Vercel project root: `FE/admin-web`
+
+현재 Admin Web production URL은 `https://onehandsales-admin.vercel.app`이다. `https://admin.onehandsales.com`은 아직 활성 domain이 아니므로 운영/QA 기준으로 쓰지 않는다.
+
+production `.env` 공개 origin 기준:
+
+```text
+VITE_API_URL="https://onehandsales-production.up.railway.app"
+VITE_SUPABASE_URL=""
+VITE_SUPABASE_ANON_KEY=""
+VITE_SUPABASE_REDIRECT_URL="https://onehandsales-admin.vercel.app/auth/callback"
+```
+
+Admin custom domain을 연결할 때는 Vercel domain 연결만으로 끝내지 않고 Backend `ADMIN_WEB_ORIGIN`, `APP_ALLOWED_ORIGINS`, Supabase redirect URL, Google Cloud OAuth origin을 함께 갱신한다.
+
 ## Auth
 
 Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 호출해 관리자 권한을 확인한다. 운영 코드는 로컬 가짜 관리자/일반 사용자 token이나 역할 대체값을 사용하지 않는다.
@@ -116,5 +133,3 @@ pnpm run test:e2e
 - `/organizations`, `/subscriptions`, `/support` redirect 경계 확인
 
 2026-08-09 G05 closeout 기준 `typecheck`, `lint`, `test:e2e` 통과 상태로 기록되어 있다. 최신 실행 결과는 `TODO/SERVICE_QA_PLAN/COMMON/QA-RESULTS.md`에 별도 기록한다.
-
-Vercel project root: `FE/admin-web`

@@ -6,6 +6,18 @@
 
 2026-08-24 기준 우선 타겟 국가는 한국, 미국, 캐나다다. 공개/인증 화면의 언어 선택 UI는 `ko`, `en-us`, `en-ca`만 노출한다. 기존 `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au` locale과 일본/대만/영국/싱가포르/호주 시장은 추후 확장 후보로 보류한다. 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en` 1차 지원으로 운영한다.
 
+## Production Origins
+
+2026-08-25 기준 production 공개 URL:
+
+- User Web canonical: `https://www.onehandsales.com`
+- User Web apex: `https://onehandsales.com`
+- User Web Vercel default/legacy: `https://onehandsales.vercel.app`
+- Admin Web: `https://onehandsales-admin.vercel.app`
+- Backend API: `https://onehandsales-production.up.railway.app`
+
+`onehandsales.com`은 Vercel에서 구매/관리하며 User Web에 연결되어 있다. Frontend domain 변경은 Railway Backend, Supabase project/database region, provider secret을 자동으로 바꾸지 않는다. 상세 환경 변수 기준은 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, Supabase/Auth provider 설정은 `BE/SUPABASE_SETUP.md`를 따른다.
+
 ## Structure
 
 ```text

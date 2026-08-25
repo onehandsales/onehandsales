@@ -30,16 +30,30 @@ Local Frontend 개발 서버 기본 origin:
 
 User Web과 Admin Web은 Vercel에서 별도 프로젝트로 배포한다.
 
-| Surface | Provider | Project root | Domain |
+| Surface | Provider | Project root | Production domain |
 |---|---|---|---|
-| User Web | Vercel | `FE/user-web` | `https://app.<service-domain>` |
-| Admin Web | Vercel | `FE/admin-web` | `https://admin.<service-domain>` |
+| User Web | Vercel | `FE/user-web` | Primary: `https://www.onehandsales.com` |
+| Admin Web | Vercel | `FE/admin-web` | Current: `https://onehandsales-admin.vercel.app` |
+
+User Web domain policy:
+
+- `https://www.onehandsales.com`을 production canonical domain으로 사용한다.
+- `https://onehandsales.com`은 동작해야 하며, 가능하면 canonical `www` domain으로 redirect한다.
+- `https://onehandsales.vercel.app`은 Vercel default/legacy URL로 유지할 수 있지만 QA 기준 URL이나 사용자 공유 URL로 쓰지 않는다.
+- `onehandsales.com`은 Vercel에서 구매했고 Vercel nameserver와 CDN을 사용한다.
+
+Admin Web domain policy:
+
+- 현재 Admin Web은 `https://onehandsales-admin.vercel.app`을 production URL로 사용한다.
+- `https://admin.onehandsales.com`은 아직 활성 domain이 아니다. 연결할 때는 Vercel domain, Backend CORS, Supabase redirect URL, Google Cloud OAuth origin을 함께 갱신한다.
 
 Vercel 기준:
 
 - build command: `pnpm install && pnpm run build`
 - output directory: `dist`
 - `vercel.json`은 SPA fallback을 위해 모든 경로를 `/index.html`로 rewrite한다.
+
+Frontend domain 변경은 Backend hosting, Supabase project/database region, Railway API origin을 자동으로 변경하지 않는다. User Web production 환경 변수와 외부 provider allowlist는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, Supabase/Auth provider 설정은 `BE/SUPABASE_SETUP.md`를 따른다.
 
 ## 4. Release Gate
 

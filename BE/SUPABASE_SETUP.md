@@ -47,6 +47,66 @@ pnpm run build
 - Kakao OAuth has been removed from runtime exposure and exchange. Existing Prisma `OAuthProvider.KAKAO` values are legacy data only.
 - Provider smoke for Google/LINE/Apple depends on Supabase/provider operational settings and secrets. If a provider is not configured in the target environment, record that QA item as environment `N/A` or `BLOCKED` rather than changing the runtime provider contract.
 
+## Production URL Configuration
+
+2026-08-25 기준 User Web production canonical domain은 `https://www.onehandsales.com`이다. Supabase Auth URL 설정은 다음 기준을 사용한다.
+
+Site URL:
+
+```text
+https://www.onehandsales.com
+```
+
+Redirect URLs:
+
+```text
+http://localhost:5173/auth/callback
+http://localhost:5174/auth/callback
+http://127.0.0.1:5173/auth/callback
+http://127.0.0.1:5175/auth/callback
+https://www.onehandsales.com/auth/callback
+https://onehandsales.com/auth/callback
+https://onehandsales.vercel.app/auth/callback
+https://onehandsales-admin.vercel.app/auth/callback
+```
+
+- `https://www.onehandsales.com/auth/callback` is the production User Web callback.
+- `https://onehandsales.com/auth/callback` is kept because the apex domain can be entered directly before redirecting to `www`.
+- `https://onehandsales.vercel.app/auth/callback` is transition/legacy compatibility for the Vercel default domain.
+- Admin Web currently uses `https://onehandsales-admin.vercel.app`; add `https://admin.onehandsales.com/auth/callback` only after that custom domain is actually connected.
+
+Google Cloud OAuth authorized JavaScript origins:
+
+```text
+http://localhost:5173
+http://localhost:5174
+http://127.0.0.1:5173
+http://127.0.0.1:5175
+https://www.onehandsales.com
+https://onehandsales.com
+https://onehandsales.vercel.app
+https://onehandsales-admin.vercel.app
+```
+
+Google Cloud OAuth authorized redirect URIs:
+
+```text
+https://<project-ref>.supabase.co/auth/v1/callback
+http://localhost:3000/api/schedules/google/callback
+http://localhost:3000/api/follow-up-delivery/email-connections/google/callback
+https://onehandsales-production.up.railway.app/api/schedules/google/callback
+https://onehandsales-production.up.railway.app/api/follow-up-delivery/email-connections/google/callback
+```
+
+If Backend later moves to `https://api.onehandsales.com`, add these redirect URIs before switching production traffic:
+
+```text
+https://api.onehandsales.com/api/schedules/google/callback
+https://api.onehandsales.com/api/follow-up-delivery/email-connections/google/callback
+```
+
+When separate Google OAuth clients are used for Supabase login, Google Calendar, and follow-up email delivery, put only the relevant origins/redirect URIs into each client. Do not remove the Supabase callback or Railway callbacks until the production smoke for the replacement domain has passed.
+
 ## Locale And Country Metadata
 
 - Frontend sends `locale` and IANA `timeZone` during exchange.
