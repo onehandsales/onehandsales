@@ -620,12 +620,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "OneHand", suffix: "는 간단해요." },
-        { label: "세일즈", suffix: "는 간단해요." },
-        { label: "AI", suffix: "는 간단해요." },
-        { label: "CRM", suffix: "은 간단해요." },
-        { label: "B2C", suffix: "는 간단해요." },
-        { label: "B2B", suffix: "는 간단해요." },
+        { label: "OneHand", suffix: "가 간단해요." },
+        { label: "세일즈", suffix: "가 간단해요." },
+        { label: "AI", suffix: "가 간단해요." },
+        { label: "B2C", suffix: "가 간단해요." },
+        { label: "B2B", suffix: "가 간단해요." },
+        { label: "CRM", suffix: "이 간단해요." },
         { label: "모든 것", suffix: "이 간단해요." },
       ],
     },
@@ -751,9 +751,9 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "OneHand", suffix: "はシンプルです。" },
         { label: "営業", suffix: "はシンプルです。" },
         { label: "AI", suffix: "はシンプルです。" },
-        { label: "CRM", suffix: "はシンプルです。" },
         { label: "B2C", suffix: "はシンプルです。" },
         { label: "B2B", suffix: "はシンプルです。" },
+        { label: "CRM", suffix: "はシンプルです。" },
         { label: "すべて", suffix: "はシンプルです。" },
       ],
     },
@@ -879,9 +879,9 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "OneHand", suffix: "很簡單。" },
         { label: "銷售", suffix: "很簡單。" },
         { label: "AI", suffix: "很簡單。" },
-        { label: "CRM", suffix: "很簡單。" },
         { label: "B2C", suffix: "很簡單。" },
         { label: "B2B", suffix: "很簡單。" },
+        { label: "CRM", suffix: "很簡單。" },
         { label: "一切", suffix: "都很簡單。" },
       ],
     },
@@ -1007,9 +1007,9 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "OneHand", suffix: "is Simple." },
         { label: "Sales", suffix: "is Simple." },
         { label: "AI", suffix: "is Simple." },
-        { label: "CRM", suffix: "is Simple." },
         { label: "B2C", suffix: "is Simple." },
         { label: "B2B", suffix: "is Simple." },
+        { label: "CRM", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
     },
@@ -1135,9 +1135,9 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "OneHand", suffix: "is Simple." },
         { label: "Sales", suffix: "is Simple." },
         { label: "AI", suffix: "is Simple." },
-        { label: "CRM", suffix: "is Simple." },
         { label: "B2C", suffix: "is Simple." },
         { label: "B2B", suffix: "is Simple." },
+        { label: "CRM", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
     },
@@ -1452,7 +1452,7 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
       setActiveHeroWordIndex((currentIndex) =>
         (currentIndex + 1) % rotatingItemsCount
       );
-    }, 3000);
+    }, 2500);
 
     return () => {
       window.clearInterval(intervalId);
