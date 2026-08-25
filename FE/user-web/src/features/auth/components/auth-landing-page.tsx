@@ -1,9 +1,7 @@
 import {
   ArrowRight,
   Bell,
-  BriefcaseBusiness,
   Building2,
-  CalendarDays,
   CheckCircle2,
   CircleDollarSign,
   Clock3,
@@ -35,7 +33,7 @@ type AuthLandingPageProps = {
   readonly onOpenLogin: () => void;
 };
 
-type IconType = typeof BriefcaseBusiness;
+type IconType = typeof MessageCircle;
 
 type FeatureCopy = {
   readonly title: string;
@@ -56,25 +54,6 @@ type LandingCopy = {
   readonly hero: {
     readonly eyebrow: string;
     readonly rotatingItems: readonly [HeroRotatingItem, ...HeroRotatingItem[]];
-    readonly description: string;
-    readonly primaryCta: string;
-    readonly secondaryCta: string;
-  };
-  readonly partnerLabel: string;
-  readonly partnerItems: readonly string[];
-  readonly mock: {
-    readonly workspaceName: string;
-    readonly sidebar: readonly string[];
-    readonly queueLabel: string;
-    readonly sectionLabel: string;
-    readonly shareAction: string;
-    readonly newAction: string;
-    readonly boardTitle: string;
-    readonly columns: readonly {
-      readonly label: string;
-      readonly count: string;
-      readonly cards: readonly string[];
-    }[];
   };
   readonly work: {
     readonly eyebrow: string;
@@ -97,6 +76,7 @@ type LandingCopy = {
     readonly description: string;
     readonly previewTitle: string;
     readonly previewEyebrow: string;
+    readonly previewBoardTitle: string;
     readonly agentLabel: string;
     readonly metricLabels: readonly [string, string, string];
     readonly views: readonly FeatureCopy[];
@@ -640,42 +620,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "는 간단합니다." },
         { label: "모든 것", suffix: "이 간단합니다." },
       ],
-      description: "",
-      primaryCta: "Onehand 시작",
-      secondaryCta: "데모 요청",
-    },
-    partnerLabel: "반복 업무를 줄이고 기록을 살리는 팀을 위해",
-    partnerItems: ["CRM", "이메일", "캘린더", "메신저", "문서", "시트"],
-    mock: {
-      workspaceName: "Onehand HQ",
-      sidebar: ["홈", "딜", "회사", "업무", "회의"],
-      queueLabel: "에이전트 대기열",
-      sectionLabel: "워크스페이스",
-      shareAction: "공유",
-      newAction: "새로 만들기",
-      boardTitle: "매출 파이프라인",
-      columns: [
-        {
-          label: "신규",
-          count: "12",
-          cards: ["리드 우선순위 정리", "인바운드 문의 배정"],
-        },
-        {
-          label: "진행",
-          count: "8",
-          cards: ["견적서 검토", "데모 일정 확정"],
-        },
-        {
-          label: "후속",
-          count: "5",
-          cards: ["회의록 요약", "다음 액션 전송"],
-        },
-        {
-          label: "성사",
-          count: "21",
-          cards: ["계약 체크리스트", "온보딩 준비"],
-        },
-      ],
     },
     work: {
       eyebrow: "맞춤 에이전트",
@@ -728,6 +672,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         "영업 활동의 흩어진 단서를 하나의 워크스페이스로 연결해 팀이 같은 화면에서 판단하게 합니다.",
       previewTitle: "계정",
       previewEyebrow: "연결된 기록",
+      previewBoardTitle: "매출 파이프라인",
       agentLabel: "에이전트",
       metricLabels: ["딜", "응답", "업무"],
       views: [
@@ -801,43 +746,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "はシンプルです。" },
         { label: "すべて", suffix: "はシンプルです。" },
       ],
-      description:
-        "顧客との会話、予定、提案書、フォローアップを一か所に集め、反復的な営業業務を自動化します。",
-      primaryCta: "Onehandを始める",
-      secondaryCta: "デモを依頼",
-    },
-    partnerLabel: "記録を活かし、反復作業を減らすチームのために",
-    partnerItems: ["CRM", "メール", "カレンダー", "メッセンジャー", "ドキュメント", "シート"],
-    mock: {
-      workspaceName: "Onehand HQ",
-      sidebar: ["ホーム", "商談", "会社", "タスク", "会議"],
-      queueLabel: "エージェントキュー",
-      sectionLabel: "ワークスペース",
-      shareAction: "共有",
-      newAction: "新規",
-      boardTitle: "売上パイプライン",
-      columns: [
-        {
-          label: "新規",
-          count: "12",
-          cards: ["リード優先度を整理", "問い合わせを割り当て"],
-        },
-        {
-          label: "進行中",
-          count: "8",
-          cards: ["見積もりを確認", "デモ日程を確定"],
-        },
-        {
-          label: "フォロー",
-          count: "5",
-          cards: ["議事録を要約", "次のアクションを送信"],
-        },
-        {
-          label: "成立",
-          count: "21",
-          cards: ["契約チェックリスト", "オンボーディング準備"],
-        },
-      ],
     },
     work: {
       eyebrow: "カスタムエージェント",
@@ -890,6 +798,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         "営業活動に散らばる手がかりを一つのワークスペースにつなぎ、チームが同じ画面で判断できます。",
       previewTitle: "アカウント",
       previewEyebrow: "接続された記録",
+      previewBoardTitle: "売上パイプライン",
       agentLabel: "エージェント",
       metricLabels: ["商談", "返信", "タスク"],
       views: [
@@ -963,43 +872,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "很簡單。" },
         { label: "一切", suffix: "都很簡單。" },
       ],
-      description:
-        "把客戶對話、行程、提案與跟進任務集中到一處，並自動化重複的銷售營運。",
-      primaryCta: "開始使用 Onehand",
-      secondaryCta: "預約 Demo",
-    },
-    partnerLabel: "為減少重複工作、活用銷售紀錄的團隊而建",
-    partnerItems: ["CRM", "信箱", "行事曆", "訊息", "文件", "試算表"],
-    mock: {
-      workspaceName: "Onehand HQ",
-      sidebar: ["首頁", "商機", "公司", "任務", "會議"],
-      queueLabel: "代理佇列",
-      sectionLabel: "工作區",
-      shareAction: "共享",
-      newAction: "新增",
-      boardTitle: "營收管線",
-      columns: [
-        {
-          label: "新線索",
-          count: "12",
-          cards: ["整理線索優先順序", "分派入站諮詢"],
-        },
-        {
-          label: "進行中",
-          count: "8",
-          cards: ["審核報價", "確認 Demo 行程"],
-        },
-        {
-          label: "跟進",
-          count: "5",
-          cards: ["彙整會議紀錄", "寄送下一步行動"],
-        },
-        {
-          label: "成交",
-          count: "21",
-          cards: ["合約檢查清單", "準備客戶啟用"],
-        },
-      ],
     },
     work: {
       eyebrow: "自訂代理",
@@ -1052,6 +924,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         "把銷售活動中分散的線索連結到同一個工作區，讓團隊在同一畫面中判斷。",
       previewTitle: "帳戶",
       previewEyebrow: "已連結紀錄",
+      previewBoardTitle: "營收管線",
       agentLabel: "代理",
       metricLabels: ["商機", "回覆", "任務"],
       views: [
@@ -1125,42 +998,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
-      description: "",
-      primaryCta: "Get Onehand",
-      secondaryCta: "Request a demo",
-    },
-    partnerLabel: "Built for teams that turn records into revenue",
-    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
-    mock: {
-      workspaceName: "Onehand HQ",
-      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
-      queueLabel: "Agent queue",
-      sectionLabel: "Workspace",
-      shareAction: "Share",
-      newAction: "New",
-      boardTitle: "Revenue pipeline",
-      columns: [
-        {
-          label: "New",
-          count: "12",
-          cards: ["Prioritize inbound leads", "Assign website requests"],
-        },
-        {
-          label: "In progress",
-          count: "8",
-          cards: ["Review quote", "Confirm demo slot"],
-        },
-        {
-          label: "Follow-up",
-          count: "5",
-          cards: ["Summarize call notes", "Send next steps"],
-        },
-        {
-          label: "Closed",
-          count: "21",
-          cards: ["Contract checklist", "Prepare onboarding"],
-        },
-      ],
     },
     work: {
       eyebrow: "Custom Agents",
@@ -1213,6 +1050,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         "Connect the scattered clues of sales activity into one workspace, so teams can make decisions from the same screen.",
       previewTitle: "Accounts",
       previewEyebrow: "Connected records",
+      previewBoardTitle: "Revenue pipeline",
       agentLabel: "Agent",
       metricLabels: ["Deals", "Replies", "Tasks"],
       views: [
@@ -1286,42 +1124,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
-      description: "",
-      primaryCta: "Get Onehand",
-      secondaryCta: "Request a demo",
-    },
-    partnerLabel: "Built for teams that turn records into revenue",
-    partnerItems: ["CRM", "Email", "Calendar", "Messenger", "Docs", "Sheets"],
-    mock: {
-      workspaceName: "Onehand HQ",
-      sidebar: ["Home", "Deals", "Companies", "Tasks", "Meetings"],
-      queueLabel: "Agent queue",
-      sectionLabel: "Workspace",
-      shareAction: "Share",
-      newAction: "New",
-      boardTitle: "Revenue pipeline",
-      columns: [
-        {
-          label: "New",
-          count: "12",
-          cards: ["Prioritise inbound leads", "Assign website requests"],
-        },
-        {
-          label: "In progress",
-          count: "8",
-          cards: ["Review quote", "Confirm demo slot"],
-        },
-        {
-          label: "Follow-up",
-          count: "5",
-          cards: ["Summarise call notes", "Send next steps"],
-        },
-        {
-          label: "Closed",
-          count: "21",
-          cards: ["Contract checklist", "Prepare onboarding"],
-        },
-      ],
     },
     work: {
       eyebrow: "Custom Agents",
@@ -1374,6 +1176,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         "Connect the scattered clues of sales activity into one workspace, so teams can make decisions from the same screen.",
       previewTitle: "Accounts",
       previewEyebrow: "Connected records",
+      previewBoardTitle: "Revenue pipeline",
       agentLabel: "Agent",
       metricLabels: ["Deals", "Replies", "Tasks"],
       views: [
@@ -1438,14 +1241,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
   },
 };
-
-const sidebarIcons: readonly IconType[] = [
-  Search,
-  FolderKanban,
-  Building2,
-  Users,
-  CalendarDays,
-];
 
 const workTabVisuals: readonly {
   readonly icon: IconType;
@@ -1627,7 +1422,6 @@ function LandingScrollProgressBar({
 
 // 기능 : 히어로 섹션을 렌더링합니다.
 function HeroSection({ copy }: { readonly copy: LandingCopy }) {
-  const publicSitePath = usePublicSitePath();
   const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
   const rotatingItemsCount = copy.hero.rotatingItems.length;
   const activeHeroItem =
@@ -1650,14 +1444,20 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
   }, [rotatingItemsCount]);
 
   return (
-    <section className="flex min-h-[calc(100vh-56px)] flex-col overflow-hidden bg-white">
-      <div className="mx-auto flex w-full max-w-[1320px] flex-1 flex-col items-center px-4 pb-0 pt-14 text-center sm:px-6 md:pt-20 lg:px-8">
+    <section className="relative flex min-h-[calc(100vh-56px)] items-center justify-center overflow-hidden bg-white px-4 py-12 text-center sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-[1320px] flex-col items-center justify-center">
         {copy.hero.eyebrow ? (
-          <p className="mt-7 text-[12px] font-black uppercase text-[#0075DE]">
+          <p className="text-[12px] font-black uppercase text-[#0075DE]">
             {copy.hero.eyebrow}
           </p>
         ) : null}
-        <h1 className="mt-4 max-w-[1060px] break-keep text-[44px] font-normal leading-[0.98] text-[#0f0f0f] sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]">
+        <h1
+          className={[
+            "max-w-[1060px] break-keep text-[44px] font-normal leading-[0.98] text-[#0f0f0f]",
+            "sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]",
+            copy.hero.eyebrow ? "mt-4" : "",
+          ].join(" ")}
+        >
           <span className="inline-flex flex-wrap items-center justify-center gap-x-[0.16em] gap-y-2 align-middle leading-none">
             <span
               className={[
@@ -1679,180 +1479,9 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
             </span>
           </span>
         </h1>
-
-        {copy.hero.description ? (
-          <p className="mt-6 max-w-[760px] break-keep text-[17px] font-semibold leading-8 text-[#333330] md:text-[20px]">
-            {copy.hero.description}
-          </p>
-        ) : null}
-
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link
-            className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#0075DE] px-5 text-[15px] font-black text-white hover:bg-[#006AC8]"
-            to={publicSitePath("/signup")}
-          >
-            {copy.hero.primaryCta}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#e7f2fc] px-5 text-[15px] font-black text-[#005aa8] hover:bg-[#d8ebfb]"
-            to={publicSitePath("/contact")}
-          >
-            {copy.hero.secondaryCta}
-          </Link>
-        </div>
-
-        <div className="mt-10 w-full flex-1">
-          <ProductWorkspaceMock copy={copy} />
-        </div>
       </div>
 
-      <PartnerStrip copy={copy} />
     </section>
-  );
-}
-
-// 기능 : 제품 워크스페이스 목업 영역을 렌더링합니다.
-function ProductWorkspaceMock({ copy }: { readonly copy: LandingCopy }) {
-  return (
-    <div className="mx-auto flex h-full min-h-[360px] max-w-[1060px] items-end">
-      <div className="w-full overflow-hidden rounded-t-[8px] border border-[#dededa] bg-white shadow-[0_34px_110px_rgba(15,15,15,0.13)]">
-        <div className="flex h-10 items-center gap-2 border-b border-[#eeeeec] bg-[#fafaf8] px-4">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#d8d8d3]" />
-          <span className="ml-3 text-[12px] font-black text-[#555550]">
-            {copy.mock.workspaceName}
-          </span>
-        </div>
-
-        <div className="grid min-h-[320px] sm:grid-cols-[170px_1fr] md:grid-cols-[210px_1fr]">
-          <aside className="hidden border-r border-[#eeeeec] bg-[#f7f7f5] p-4 sm:block">
-            <div className="grid gap-1.5">
-              {copy.mock.sidebar.map((item, index) => {
-                const Icon = sidebarIcons[index] ?? Search;
-
-                return (
-                  <span
-                    className={[
-                      "flex h-8 items-center gap-2 rounded-[6px] px-2 text-[12px] font-bold",
-                      index === 0
-                        ? "bg-white text-[#111111] shadow-sm"
-                        : "text-[#62625c]",
-                    ].join(" ")}
-                    key={item}
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {item}
-                  </span>
-                );
-              })}
-            </div>
-
-            <div className="mt-8 rounded-[8px] border border-[#e4e4df] bg-white p-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#0075DE]" />
-                <span className="text-[12px] font-black">
-                  {copy.mock.queueLabel}
-                </span>
-              </div>
-              <div className="mt-3 space-y-2">
-                <span className="block h-2 rounded-full bg-[#e7e7e2]" />
-                <span className="block h-2 w-3/4 rounded-full bg-[#e7e7e2]" />
-                <span className="block h-2 w-5/6 rounded-full bg-[#e7e7e2]" />
-              </div>
-            </div>
-          </aside>
-
-          <div className="min-w-0 p-4 sm:p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div className="flex items-center gap-3">
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-[#eef6ff]">
-                    <BriefcaseBusiness className="h-6 w-6 text-[#0075DE]" />
-                  </span>
-                  <div>
-                    <p className="text-[12px] font-black uppercase text-[#777770]">
-                      {copy.mock.sectionLabel}
-                    </p>
-                    <h2 className="text-[24px] font-black text-[#222220] sm:text-[30px]">
-                      {copy.mock.boardTitle}
-                    </h2>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="hidden h-8 items-center rounded-[6px] bg-[#f1f1ef] px-3 text-[12px] font-bold text-[#555550] sm:inline-flex">
-                  {copy.mock.shareAction}
-                </span>
-                <span className="inline-flex h-8 items-center rounded-[6px] bg-[#0075DE] px-3 text-[12px] font-black text-white">
-                  {copy.mock.newAction}
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-3 md:grid-cols-4">
-              {copy.mock.columns.map((column, index) => (
-                <div
-                  className="min-h-[154px] rounded-[8px] border border-[#eeeeec] bg-[#fbfbfa] p-3"
-                  key={column.label}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-[12px] font-black text-[#333330]">
-                      <span
-                        className={[
-                          "h-2.5 w-2.5 rounded-full",
-                          index === 0
-                            ? "bg-[#ad7bd9]"
-                            : index === 1
-                              ? "bg-[#f0b13b]"
-                              : index === 2
-                                ? "bg-[#58a4e8]"
-                                : "bg-[#5cbf86]",
-                        ].join(" ")}
-                      />
-                      {column.label}
-                    </span>
-                    <span className="text-[11px] font-black text-[#777770]">
-                      {column.count}
-                    </span>
-                  </div>
-                  <div className="mt-3 space-y-2">
-                    {column.cards.map((card) => (
-                      <div
-                        className="min-h-[42px] rounded-[6px] border border-[#eeeeec] bg-white p-2 text-left text-[12px] font-bold leading-5 text-[#333330]"
-                        key={card}
-                      >
-                        {card}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// 기능 : 파트너 스트립 영역을 렌더링합니다.
-function PartnerStrip({ copy }: { readonly copy: LandingCopy }) {
-  return (
-    <div className="border-t border-[#e8e8e4] bg-white">
-      <div className="mx-auto flex min-h-14 w-full max-w-[1320px] flex-col items-center gap-3 px-4 py-4 sm:px-6 md:flex-row md:justify-center lg:px-8">
-        <span className="text-center text-[12px] font-bold uppercase text-[#777770]">
-          {copy.partnerLabel}
-        </span>
-        <span className="hidden text-[#b6b6b0] md:inline">/</span>
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[15px] font-black text-[#444440]">
-          {copy.partnerItems.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -2410,7 +2039,7 @@ function WorkspacePreview({ copy }: { readonly copy: LandingCopy }) {
                 {copy.workspace.previewEyebrow}
               </p>
               <h3 className="mt-1 text-[26px] font-black text-[#111111]">
-                {copy.mock.boardTitle}
+                {copy.workspace.previewBoardTitle}
               </h3>
             </div>
             <span className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-3 text-[12px] font-black text-white">
