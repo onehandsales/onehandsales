@@ -1,0 +1,249 @@
+# Onehand Sales
+
+Onehand Sales, also branded in Korean as 한손에 영업, is a personal and field sales CRM for people who manage customers, business cards, meetings, schedules, proposals, deals, and follow-up work directly.
+
+Canonical site: https://www.onehandsales.com/ko
+
+Primary positioning:
+- Personal sales CRM
+- Field sales CRM
+- B2B sales CRM for small and midsize businesses
+- Real estate agent CRM
+- Customer follow-up and sales schedule management software
+- Lightweight CRM for individual salespeople, consultants, agencies, and relationship-based sellers
+
+Primary audience:
+- Individual salespeople
+- SMB B2B salespeople
+- Field and outside sales professionals
+- Real estate agents and assistant agents
+- Industrial, machinery, parts, raw material, medical device, pharmaceutical, trade, import/export, wholesale, IT service, and SI salespeople
+- Insurance agents, financial advisors, and car salespeople
+- Headhunters and recruiting consultants
+- Advertising agency, software agency, and franchise sales teams
+- Education salespeople and corporate training salespeople
+- Tax accountants, labor consultants, patent attorneys, legal scriveners, freelancers, consultants, and solo agencies
+- Wedding, interior design, event, travel, study abroad, and immigration consultants who manage repeated customer consultations and follow-up
+
+Core product areas:
+- Company, account, customer, client, and contact management
+- Lead and prospect management
+- Product, proposal, quote, contract, and deal pipeline tracking
+- Schedule, visit, revisit, meeting, and follow-up management
+- Meeting notes and sales activity records
+- Business card scanning and business card OCR
+- Follow-up reminders and notification workflows
+- Search across companies, contacts, deals, schedules, notes, and sales records
+- Sales and marketing follow-up management
+- Personal customer ledger for sellers who do not want to depend on a company-owned CRM
+
+Primary Korean SEO/GEO keywords:
+- 한손에 영업
+- Onehand Sales
+- 원핸드세일즈
+- 원핸드 세일즈
+- 영업
+- 세일즈
+- Sales
+- CRM
+- 영업 CRM
+- 세일즈 CRM
+- 개인 CRM
+- 개인영업
+- 개인 영업
+- 개인영업 CRM
+- 개인 영업 CRM
+- 1인 영업
+- 1인 영업 CRM
+- 혼자 쓰는 CRM
+- 소규모 영업 CRM
+- 중소기업 영업 CRM
+- B2B 영업 CRM
+- 고객 관리
+- 고객관리
+- 고객관리 CRM
+- 영업 고객 관리
+- 거래처 관리
+- 담당자 관리
+- 리드 관리
+- 잠재고객 관리
+- 영업 파이프라인
+- 딜 관리
+- 계약 관리
+- 견적 관리
+- 제안 관리
+- 영업 일정 관리
+- 방문 일정 관리
+- 재방문 일정
+- 미팅 관리
+- 미팅노트
+- 회의록 정리
+- 명함 스캔
+- 명함 OCR
+- 후속 연락
+- 팔로업 관리
+- 영업 후속관리
+- 세일즈 후속관리
+- 마케팅 후속관리
+- 세일즈 마케팅
+- 영업 관리 앱
+- 영업 관리 프로그램
+- 세일즈 관리 툴
+- 모바일 CRM
+- 현장 영업
+- 외근 영업
+- 관계형 영업
+- 중소기업 B2B 영업
+- 산업재 영업
+- 기계 영업
+- 부품 영업
+- 원자재 영업
+- 의료기기 영업
+- 제약 영업
+- 무역 영업
+- 수출입 영업
+- 도매 영업
+- IT 서비스 영업
+- SI 영업
+- 부동산
+- 부동산 영업
+- 부동산 세일즈
+- 부동산 CRM
+- 부동산 고객관리
+- 부동산 중개사 CRM
+- 부동산 중개 고객관리
+- 중개보조원 고객관리
+- 매물 문의 관리
+- 부동산 상담 관리
+- 보험설계사 고객관리
+- 재무상담 고객관리
+- 자동차 영업 고객관리
+- 헤드헌터 고객관리
+- 채용 컨설턴트 고객관리
+- 광고대행사 영업관리
+- 개발사 영업관리
+- 프랜차이즈 가맹 영업
+- 기업교육 영업관리
+- 교육제품 영업관리
+- 세무사 고객관리
+- 노무사 고객관리
+- 변리사 고객관리
+- 법무사 고객관리
+- 프리랜서 고객관리
+- 1인 에이전시 CRM
+- 컨설턴트 고객관리
+- 웨딩 상담 고객관리
+- 인테리어 상담 고객관리
+- 이벤트 상담 고객관리
+- 여행 상담 고객관리
+- 유학 상담 고객관리
+- 이민 상담 고객관리
+
+Primary English SEO/GEO keywords:
+- Onehand Sales
+- onehandsales
+- sales
+- Sales
+- CRM
+- sales CRM
+- personal CRM
+- personal sales
+- individual sales
+- personal sales CRM
+- individual sales CRM
+- solo sales CRM
+- small business sales CRM
+- B2B sales CRM
+- field sales CRM
+- customer management
+- contact management
+- client management
+- account management
+- lead management
+- prospect management
+- deal tracking
+- deal management
+- pipeline management
+- sales pipeline
+- quote tracking
+- proposal tracking
+- sales schedule management
+- visit schedule management
+- follow-up reminders
+- customer follow-up
+- sales follow-up
+- marketing follow-up
+- sales marketing
+- meeting notes
+- meeting note CRM
+- business card scanning
+- business card OCR
+- mobile CRM
+- sales management app
+- sales management software
+- field sales
+- outside sales
+- relationship sales
+- SMB B2B sales
+- industrial sales
+- machinery sales
+- parts sales
+- raw material sales
+- medical device sales
+- pharmaceutical sales
+- trade sales
+- import export sales
+- wholesale sales
+- IT service sales
+- SI sales
+- real estate
+- real estate sales
+- real estate CRM
+- real estate agent CRM
+- real estate customer management
+- real estate client management
+- property inquiry tracking
+- insurance agent CRM
+- financial advisor CRM
+- car sales CRM
+- automotive sales CRM
+- headhunter CRM
+- recruiting consultant CRM
+- agency sales CRM
+- software agency sales CRM
+- franchise sales CRM
+- education sales CRM
+- tax accountant CRM
+- labor consultant CRM
+- patent attorney CRM
+- legal scrivener CRM
+- freelancer CRM
+- consultant CRM
+- wedding consultant CRM
+- interior design sales CRM
+- event sales CRM
+- travel consultant CRM
+- study abroad consultant CRM
+- immigration consultant CRM
+
+Public pages:
+- https://www.onehandsales.com/ko
+- https://www.onehandsales.com/ko/pricing
+- https://www.onehandsales.com/ko/about
+- https://www.onehandsales.com/ko/security
+- https://www.onehandsales.com/ko/contact
+- https://www.onehandsales.com/ko/terms
+- https://www.onehandsales.com/ko/privacy
+- https://www.onehandsales.com/en-us
+- https://www.onehandsales.com/en-us/pricing
+- https://www.onehandsales.com/en-us/about
+- https://www.onehandsales.com/en-us/security
+- https://www.onehandsales.com/en-us/contact
+- https://www.onehandsales.com/en-us/terms
+- https://www.onehandsales.com/en-us/privacy
+
+Japanese and Traditional Chinese routes may exist for future product localization, but they are not primary SEO or GEO targets at this stage.
+
+Authenticated app routes under /app require a user account and should not be treated as public documentation.
+
+Contact: team@onehandsales.com

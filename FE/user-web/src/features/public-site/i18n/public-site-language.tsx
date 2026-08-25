@@ -164,16 +164,27 @@ export const publicSiteLanguageOptions: readonly {
   readonly label: string;
   readonly htmlLang: string;
 }[] = [
-  { value: "ko", label: "한국어", htmlLang: "ko" },
+  { value: "ko", label: "한국어", htmlLang: "ko-KR" },
   { value: "en-US", label: "English (US)", htmlLang: "en-US" },
   { value: "en-CA", label: "English (Canada)", htmlLang: "en-CA" },
   // Future expansion:
-  // { value: "ja", label: "日本語", htmlLang: "ja" },
+  // { value: "ja", label: "日本語", htmlLang: "ja-JP" },
   // { value: "zh-TW", label: "繁體中文", htmlLang: "zh-TW" },
   // { value: "en-GB", label: "English (UK)", htmlLang: "en-GB" },
   // { value: "en-SG", label: "English (Singapore)", htmlLang: "en-SG" },
   // { value: "en-AU", label: "English (Australia)", htmlLang: "en-AU" },
 ];
+
+const publicSiteHtmlLangByLanguage: Record<PublicSiteLanguage, string> = {
+  ko: "ko-KR",
+  ja: "ja-JP",
+  "zh-TW": "zh-TW",
+  "en-US": "en-US",
+  "en-GB": "en-GB",
+  "en-SG": "en-SG",
+  "en-AU": "en-AU",
+  "en-CA": "en-CA",
+};
 
 const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
   ko: {
@@ -220,24 +231,24 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       copyright: "© 2026 Onehand Labs, Inc.",
     },
     landing: {
-      heroTitle: ["영업팀과 고객이", "함께 움직이는 곳"],
+      heroTitle: ["현장 영업자가", "고객을 놓치지 않는 곳"],
       heroDescription:
-        "딜, 담당자, 일정, 회의록을 한 화면에서 연결하고 오늘 해야 할 일을 바로 확인하세요.",
+        "개인영업, 부동산 중개, B2B 외근, 보험·자동차 영업의 고객, 명함, 미팅, 일정, 딜, 팔로업을 한 화면에서 연결하세요.",
       primaryCta: "Onehand 시작",
       secondaryCta: "흐름 보기",
-      customerStrip: "반복 영업 업무가 많은 팀을 위해 설계한 CRM",
-      sectionWork: "영업 흐름을 하루 종일 놓치지 마세요.",
+      customerStrip: "개인영업, 부동산 중개, B2B 현장 영업을 위해 설계한 CRM",
+      sectionWork: "고객 미팅과 후속 연락을 하루 종일 놓치지 마세요.",
       sectionAssistants: "필요할 때 언제든지 요청하세요.",
-      sectionWorkspace: "모든 영업 작업을 한곳에서 관리하세요.",
+      sectionWorkspace: "고객, 일정, 미팅노트, 딜을 한곳에서 관리하세요.",
       quote: "“AI보다 먼저, 영업의 흐름이 정리됩니다.”",
-      trustedTitle: "결과로 말하는 영업팀을 위해.",
+      trustedTitle: "혼자서도 영업 흐름을 놓치지 않는 사람들을 위해.",
       finalCta: "지금 시작하세요.",
       finalPrimary: "Onehand 시작",
     },
     pricing: {
       title: "영업 운영에 필요한 하나의 도구.",
       description:
-        "개인 영업부터 작은 팀의 파이프라인까지, 필요한 기능을 단계별로 선택하세요.",
+        "1인 영업자, 부동산 중개사, 현장 B2B 영업자와 작은 팀의 파이프라인까지 필요한 기능을 단계별로 선택하세요.",
       tags: ["딜", "고객", "일정", "회의록", "검색", "AI"],
       mediaCaptions: ["고객 상담", "업무 설계", "팀 운영"],
       mediaAlts: ["고객 상담 장면", "화이트보드 업무 설계", "팀 발표와 회의"],
@@ -256,7 +267,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       aiAvatarLabels: ["딜", "회", "일"],
       setupTitle: "도입 지원 포함",
       setupDescription:
-        "데이터 가져오기, 영업 단계 정리, 팀 온보딩을 함께 설계합니다.",
+        "고객 데이터 가져오기, 영업 단계 정리, 개인과 작은 팀의 온보딩을 함께 설계합니다.",
       featuresTitle: "요금제와 기능",
       featureColumn: "기능",
       faqTitle: "자주 묻는 질문",
@@ -277,7 +288,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         },
         {
           name: "비즈니스",
-          description: "반복 영업 흐름을 자동화하는 팀에게",
+          description: "반복 영업 흐름을 자동화하는 개인과 작은 팀에게",
           cta: "시작하기",
           features: ["AI 회의록 요약", "우선순위 추천", "팀 공유 보기", "민감 메모 보호"],
         },
@@ -335,16 +346,16 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         "팀 단위 권한 관리는 언제 제공되나요?",
         "기존 고객 데이터를 가져올 수 있나요?",
         "월간 결제와 연간 결제를 모두 지원하나요?",
-        "영업팀 도입 상담을 받을 수 있나요?",
+        "개인영업이나 부동산 CRM 도입 상담을 받을 수 있나요?",
         "모바일 앱 없이 모바일 브라우저에서 사용할 수 있나요?",
         "데이터 삭제와 복구 정책은 어떻게 되나요?",
       ],
     },
     contact: {
-      title: ["Onehand", "영업팀 문의하기"],
+      title: ["Onehand", "도입 문의하기"],
       description:
-        "가격 및 요금제 상담부터 데모 예약과 팀에 맞는 활용 사례 안내까지, 필요한 지원을 받아보실 수 있습니다.",
-      trustedLabel: "반복 영업 업무가 많은 팀이 사용하는 Onehand",
+        "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업에 맞는 요금제 상담, 데모 예약, 활용 사례 안내를 받아보세요.",
+      trustedLabel: "반복 고객 상담과 팔로업이 많은 영업자가 사용하는 Onehand",
       companies: ["LG AI Research", "Sendbird", "HYOSUNG"],
       quoteCompany: "OpenAI",
       quote:
@@ -367,7 +378,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         firstName: "길동",
         lastName: "홍",
         email: "you@company.com",
-        title: "영업 리더",
+        title: "부동산 중개사",
         company: "가나다 주식회사",
         companySize: "선택 항목",
         region: "대한민국",
@@ -376,7 +387,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         detail: "Onehand를 어떻게 사용하고 싶은지 적어주세요.",
       },
       marketingAgreement: "Onehand의 마케팅 메시지를 수신하는 데 동의합니다.",
-      submit: "영업팀에 문의하기",
+      submit: "도입 문의하기",
       finePrint:
         "언제든지 마케팅 메시지 수신을 거부할 수 있습니다. 제출된 정보는 문의 응대와 제품 도입 안내 목적으로 사용됩니다.",
       supportPrefix: "기술이나 제품 지원이 필요하면",
@@ -691,11 +702,8 @@ export function PublicSiteLanguageProvider({
   );
 
   useEffect(() => {
-    const option = publicSiteLanguageOptions.find(
-      (item) => item.value === language
-    );
-
-    document.documentElement.lang = option?.htmlLang ?? "ko";
+    document.documentElement.lang =
+      publicSiteHtmlLangByLanguage[language] ?? "ko-KR";
     window.localStorage.setItem(publicSiteLanguageStorageKey, language);
   }, [language]);
 
@@ -1113,24 +1121,24 @@ function makeEnglishCopy(copy: {
   return {
     common,
     landing: {
-      heroTitle: ["Where sales teams", "move with customers"],
+      heroTitle: ["Where field sales", "keeps follow-up moving"],
       heroDescription:
-        "Connect deals, contacts, calendar, and meeting notes in one place and see today's next actions immediately.",
+        "Connect customers, contacts, business cards, meetings, schedules, deals, and follow-up for real estate, B2B, insurance, and car sales.",
       primaryCta: "Get Onehand",
       secondaryCta: "See the flow",
-      customerStrip: `A CRM designed for teams ${copy.organizing} repeat sales work`,
-      sectionWork: "Keep your sales flow moving all day.",
+      customerStrip: "A CRM designed for individual and field sales workflows",
+      sectionWork: "Keep customer follow-up moving all day.",
       sectionAssistants: "Ask whenever you need help.",
-      sectionWorkspace: "Manage all sales work in one place.",
+      sectionWorkspace: "Manage customers, schedules, meeting notes, and deals in one place.",
       quote: "“Before AI, the sales flow gets organized.”",
-      trustedTitle: "For sales teams that ship results.",
+      trustedTitle: "For sellers who manage relationships directly.",
       finalCta: "Get started today.",
       finalPrimary: "Get Onehand",
     },
     pricing: makeTranslatedPricing({
       title: copy.title,
       description:
-        "Choose the right set of features for solo selling, small teams, and pipeline operations.",
+        "Choose the right features for solo sellers, real estate agents, field salespeople, B2B salespeople, and small teams.",
       tags: ["Deals", "Customers", "Calendar", "Notes", "Search", "AI"],
       captions: ["Customer call", "Workflow design", "Team operations"],
       monthly: "Monthly billing",
@@ -1144,7 +1152,7 @@ function makeEnglishCopy(copy: {
       aiCta: "Explore AI features",
       setupTitle: "Onboarding included",
       setupDescription:
-        "We help design data import, sales stages, and team onboarding.",
+        "We help design data import, sales stages, and onboarding around your sales workflow.",
       featuresTitle: "Plans and features",
       featureColumn: "Feature",
       faqTitle: "Frequently asked questions",
@@ -1152,8 +1160,8 @@ function makeEnglishCopy(copy: {
     contact: makeTranslatedContact({
       title: ["Onehand", copy.contactTitle],
       description:
-        "Get help with pricing, demo scheduling, and use cases that fit your team.",
-      trustedLabel: "Used by teams with repeat sales work",
+        "Get help with pricing, demos, and use cases for personal, real estate, field, B2B, insurance, and car sales.",
+      trustedLabel: "Used by sellers with repeat customer follow-up",
       labels: {
         firstName: "First name *",
         lastName: "Last name *",

@@ -102,7 +102,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
           className="flex h-9 w-9 items-center justify-center text-[#111111]"
           to={publicSitePath("/")}
         >
-          <OnehandLogoMark className="h-8 w-8" />
+          <OnehandLogoMark className="h-9 w-9" />
         </Link>
 
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-semibold text-[#4b4b48] md:flex">

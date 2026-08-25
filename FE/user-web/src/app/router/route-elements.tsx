@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Navigate, useLocation, useParams } from "react-router-dom";
+import { PublicSiteSeo } from "@/features/public-site/seo/public-site-seo";
 import { PublicSiteLocaleSync } from "@/features/public-site/i18n/public-site-locale-sync";
 import {
   resolvePublicSiteLanguage,
@@ -9,7 +10,12 @@ import {
 
 // 기능 : 공개 사이트 라우트 영역을 렌더링합니다.
 export function PublicSiteRoute({ children }: { readonly children: ReactNode }) {
-  return <PublicSiteLocaleSync>{children}</PublicSiteLocaleSync>;
+  return (
+    <PublicSiteLocaleSync>
+      <PublicSiteSeo />
+      {children}
+    </PublicSiteLocaleSync>
+  );
 }
 
 // 기능 : 레거시 공개 사이트 리다이렉트 영역을 렌더링합니다.

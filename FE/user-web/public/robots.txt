@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /auth
+Disallow: /ja
+Disallow: /ja/
+Disallow: /zh-tw
+Disallow: /zh-tw/
+Disallow: /ko/login
+Disallow: /ko/signup
+Disallow: /en-us/login
+Disallow: /en-us/signup
+Disallow: /en-gb/login
+Disallow: /en-gb/signup
+Disallow: /en-sg/login
+Disallow: /en-sg/signup
+Disallow: /en-au/login
+Disallow: /en-au/signup
+Disallow: /en-ca/login
+Disallow: /en-ca/signup
+
+Sitemap: https://www.onehandsales.com/sitemap.xml
