@@ -763,8 +763,8 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     final: {
-      title: "오늘 Onehand를 시작하세요.",
-      description: "작게 시작해도 팀의 기록과 자동화 방식은 처음부터 같은 기준으로 쌓입니다.",
+      title: "오늘 시작하세요.",
+      description: "",
       primaryCta: "Onehand 시작",
       secondaryCta: "데모 요청",
     },
