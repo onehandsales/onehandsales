@@ -640,8 +640,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "는 간단합니다." },
         { label: "모든 것", suffix: "이 간단합니다." },
       ],
-      description:
-        "고객 대화, 일정, 제안서, 후속 업무를 한 곳에서 정리하고 반복되는 세일즈 운영을 자동화하세요.",
+      description: "",
       primaryCta: "Onehand 시작",
       secondaryCta: "데모 요청",
     },
@@ -1126,8 +1125,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
-      description:
-        "Organize customer conversations, schedules, proposals, and follow-ups in one place while agents automate repeated sales work.",
+      description: "",
       primaryCta: "Get Onehand",
       secondaryCta: "Request a demo",
     },
@@ -1288,8 +1286,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
         { label: "AI", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
-      description:
-        "Organise customer conversations, schedules, proposals, and follow-ups in one place while agents automate repeated sales work.",
+      description: "",
       primaryCta: "Get Onehand",
       secondaryCta: "Request a demo",
     },
@@ -1441,43 +1438,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
   },
 };
-
-const heroPersonas: readonly {
-  readonly icon: IconType;
-  readonly tone: string;
-  readonly label: string;
-}[] = [
-  {
-    icon: Users,
-    tone: "border-[#0075DE] bg-[#e8f3ff] text-[#0075DE]",
-    label: "team",
-  },
-  {
-    icon: BriefcaseBusiness,
-    tone: "border-[#111111] bg-white text-[#111111]",
-    label: "sales",
-  },
-  {
-    icon: MessageSquareText,
-    tone: "border-[#ff5a45] bg-[#ffe9e4] text-[#d83b28]",
-    label: "conversation",
-  },
-  {
-    icon: CalendarDays,
-    tone: "border-[#f3b321] bg-[#fff3ce] text-[#9d6a00]",
-    label: "calendar",
-  },
-  {
-    icon: CircleDollarSign,
-    tone: "border-[#2f9f9a] bg-[#e6f7f6] text-[#0f7f7a]",
-    label: "revenue",
-  },
-  {
-    icon: Sparkles,
-    tone: "border-[#a96bff] bg-[#f2eaff] text-[#7b37d7]",
-    label: "agent",
-  },
-];
 
 const sidebarIcons: readonly IconType[] = [
   Search,
@@ -1692,18 +1652,6 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className="flex min-h-[calc(100vh-56px)] flex-col overflow-hidden bg-white">
       <div className="mx-auto flex w-full max-w-[1320px] flex-1 flex-col items-center px-4 pb-0 pt-14 text-center sm:px-6 md:pt-20 lg:px-8">
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {heroPersonas.map(({ icon: Icon, label, tone }) => (
-            <span
-              aria-label={label}
-              className={`grid h-12 w-12 place-items-center rounded-full border-[3px] ${tone} sm:h-16 sm:w-16`}
-              key={label}
-            >
-              <Icon className="h-5 w-5 sm:h-7 sm:w-7" />
-            </span>
-          ))}
-        </div>
-
         {copy.hero.eyebrow ? (
           <p className="mt-7 text-[12px] font-black uppercase text-[#0075DE]">
             {copy.hero.eyebrow}
@@ -1732,9 +1680,11 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
           </span>
         </h1>
 
-        <p className="mt-6 max-w-[760px] break-keep text-[17px] font-semibold leading-8 text-[#333330] md:text-[20px]">
-          {copy.hero.description}
-        </p>
+        {copy.hero.description ? (
+          <p className="mt-6 max-w-[760px] break-keep text-[17px] font-semibold leading-8 text-[#333330] md:text-[20px]">
+            {copy.hero.description}
+          </p>
+        ) : null}
 
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link
