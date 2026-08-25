@@ -303,7 +303,7 @@ export function AuthLoginPage({
               className="grid h-9 w-9 place-items-center text-[#111111]"
               to={publicSitePath("/")}
             >
-              <OneHandLogoMark className="h-8 w-8" />
+              <OneHandLogoMark className="h-9 w-9" />
             </Link>
 
             <h1
