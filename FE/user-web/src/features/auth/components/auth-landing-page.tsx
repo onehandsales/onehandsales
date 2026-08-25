@@ -716,7 +716,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     final: {
-      title: "오늘 시작하세요.",
+      title: "오늘 바로 시작하세요.",
       description: "",
       primaryCta: "Onehand 시작",
       secondaryCta: "데모 요청",
