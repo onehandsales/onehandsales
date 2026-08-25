@@ -249,7 +249,7 @@ function openAuthPopupWindow() {
   }
 
   try {
-    popup.document.title = "Onehand sign-in";
+    popup.document.title = "OneHand sign-in";
     popup.focus();
   } catch {
     // The popup can become cross-origin as soon as navigation starts.

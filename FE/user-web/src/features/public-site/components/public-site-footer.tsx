@@ -7,7 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
@@ -53,8 +53,8 @@ export function PublicSiteFooter({
             className="inline-flex items-center gap-3 text-[#111111]"
             to={publicSitePath("/")}
           >
-            <OnehandLogoMark className="h-9 w-9" />
-            <span className="text-[26px] font-black leading-none">Onehand</span>
+            <OneHandLogoMark className="h-9 w-9" />
+            <span className="text-[26px] font-black leading-none">OneHand</span>
           </Link>
 
           <div

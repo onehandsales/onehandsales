@@ -189,12 +189,12 @@ const publicSiteHtmlLangByLanguage: Record<PublicSiteLanguage, string> = {
 const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
   ko: {
     common: {
-      logoAria: "Onehand 홈",
+      logoAria: "OneHand 홈",
       nav: {
         product: "제품",
         pricing: "요금제",
         contact: "문의",
-        freeCta: "Onehand 시작",
+        freeCta: "OneHand 시작",
         login: "로그인",
       },
       productMenuGroups: [
@@ -217,24 +217,24 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           { title: "리포트", description: "성과와 리스크를 확인" },
         ],
       ],
-      productTour: "Onehand 1.0 둘러보기",
+      productTour: "OneHand 1.0 둘러보기",
       productApp: "앱으로 이동",
       footerColumns: [
-        ["회사 소개", "Onehand 소개", "보안", "약관 및 개인정보", "개인정보 권리"],
+        ["회사 소개", "OneHand 소개", "보안", "약관 및 개인정보", "개인정보 권리"],
         ["다운로드", "iOS & Android"],
         ["리소스", "요금제"],
         ["용도별", "엔터프라이즈", "스몰비즈니스", "개인"],
       ],
       cookieSettings: "쿠키 설정",
       languageAria: "언어 선택",
-      footerSocialAria: "Onehand 소셜 링크",
-      copyright: "© 2026 Onehand Labs, Inc.",
+      footerSocialAria: "OneHand 소셜 링크",
+      copyright: "© 2026 OneHand Labs, Inc.",
     },
     landing: {
       heroTitle: ["현장 영업자가", "고객을 놓치지 않는 곳"],
       heroDescription:
         "개인영업, 부동산 중개, B2B 외근, 보험·자동차 영업의 고객, 명함, 미팅, 일정, 딜, 팔로업을 한 화면에서 연결하세요.",
-      primaryCta: "Onehand 시작",
+      primaryCta: "OneHand 시작",
       secondaryCta: "흐름 보기",
       customerStrip: "개인영업, 부동산 중개, B2B 현장 영업을 위해 설계한 CRM",
       sectionWork: "고객 미팅과 후속 연락을 하루 종일 놓치지 마세요.",
@@ -243,7 +243,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "“AI보다 먼저, 영업의 흐름이 정리됩니다.”",
       trustedTitle: "혼자서도 영업 흐름을 놓치지 않는 사람들을 위해.",
       finalCta: "지금 시작하세요.",
-      finalPrimary: "Onehand 시작",
+      finalPrimary: "OneHand 시작",
     },
     pricing: {
       title: "영업 운영에 필요한 하나의 도구.",
@@ -352,14 +352,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
     },
     contact: {
-      title: ["Onehand", "도입 문의하기"],
+      title: ["OneHand", "도입 문의하기"],
       description:
         "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업에 맞는 요금제 상담, 데모 예약, 활용 사례 안내를 받아보세요.",
-      trustedLabel: "반복 고객 상담과 팔로업이 많은 영업자가 사용하는 Onehand",
+      trustedLabel: "반복 고객 상담과 팔로업이 많은 영업자가 사용하는 OneHand",
       companies: ["LG AI Research", "Sendbird", "HYOSUNG"],
       quoteCompany: "OpenAI",
       quote:
-        "직원들은 같은 딜 목표와 고객 정보를 공유할 수 있는 단일 업무 공간이 필요합니다. Onehand는 영업 흐름을 한곳에서 처리할 수 있게 합니다.",
+        "직원들은 같은 딜 목표와 고객 정보를 공유할 수 있는 단일 업무 공간이 필요합니다. OneHand는 영업 흐름을 한곳에서 처리할 수 있게 합니다.",
       quotePerson: "Nick Erdenberger",
       quoteRole: "GTM, OpenAI",
       labels: {
@@ -384,9 +384,9 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         region: "대한민국",
         phone: "(010) 1234-5678",
         reason: "선택 항목",
-        detail: "Onehand를 어떻게 사용하고 싶은지 적어주세요.",
+        detail: "OneHand를 어떻게 사용하고 싶은지 적어주세요.",
       },
-      marketingAgreement: "Onehand의 마케팅 메시지를 수신하는 데 동의합니다.",
+      marketingAgreement: "OneHand의 마케팅 메시지를 수신하는 데 동의합니다.",
       submit: "도입 문의하기",
       finePrint:
         "언제든지 마케팅 메시지 수신을 거부할 수 있습니다. 제출된 정보는 문의 응대와 제품 도입 안내 목적으로 사용됩니다.",
@@ -416,12 +416,12 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
   },
   ja: {
     common: {
-      logoAria: "Onehand ホーム",
+      logoAria: "OneHand ホーム",
       nav: {
         product: "製品",
         pricing: "料金",
         contact: "お問い合わせ",
-        freeCta: "Onehandを始める",
+        freeCta: "OneHandを始める",
         login: "ログイン",
       },
       productMenuGroups: [
@@ -444,24 +444,24 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           { title: "レポート", description: "成果とリスクを確認" },
         ],
       ],
-      productTour: "Onehand 1.0 を見る",
+      productTour: "OneHand 1.0 を見る",
       productApp: "アプリへ移動",
       footerColumns: [
-        ["会社紹介", "Onehandについて", "セキュリティ", "規約とプライバシー", "プライバシー権利"],
+        ["会社紹介", "OneHandについて", "セキュリティ", "規約とプライバシー", "プライバシー権利"],
         ["ダウンロード", "iOS & Android"],
         ["リソース", "料金"],
         ["用途別", "エンタープライズ", "スモールビジネス", "個人"],
       ],
       cookieSettings: "Cookie設定",
       languageAria: "言語を選択",
-      footerSocialAria: "Onehand ソーシャルリンク",
-      copyright: "© 2026 Onehand Labs, Inc.",
+      footerSocialAria: "OneHand ソーシャルリンク",
+      copyright: "© 2026 OneHand Labs, Inc.",
     },
     landing: {
       heroTitle: ["営業チームと顧客が", "一緒に動く場所"],
       heroDescription:
         "商談、担当者、予定、議事録を一つの画面でつなぎ、今日やるべきことをすぐ確認できます。",
-      primaryCta: "Onehandを始める",
+      primaryCta: "OneHandを始める",
       secondaryCta: "流れを見る",
       customerStrip: "反復営業が多いチームのためのCRM",
       sectionWork: "営業の流れを一日中見失わない。",
@@ -470,7 +470,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "“AIの前に、営業の流れが整います。”",
       trustedTitle: "成果で語る営業チームのために。",
       finalCta: "今すぐ始めましょう。",
-      finalPrimary: "Onehandを始める",
+      finalPrimary: "OneHandを始める",
     },
     pricing: makeTranslatedPricing({
       title: "営業運営に必要な一つのツール。",
@@ -493,10 +493,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       faqTitle: "よくある質問",
     }),
     contact: makeTranslatedContact({
-      title: ["Onehand", "営業チームに問い合わせる"],
+      title: ["OneHand", "営業チームに問い合わせる"],
       description:
         "料金相談、デモ予約、チームに合った活用方法まで、必要な支援を受けられます。",
-      trustedLabel: "反復営業が多いチームが使う Onehand",
+      trustedLabel: "反復営業が多いチームが使う OneHand",
       labels: {
         firstName: "名 *",
         lastName: "姓 *",
@@ -519,10 +519,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         region: "日本",
         phone: "(090) 1234-5678",
         reason: "選択してください",
-        detail: "Onehandをどのように使いたいかご記入ください。",
+        detail: "OneHandをどのように使いたいかご記入ください。",
       },
       submit: "営業チームに問い合わせる",
-      agreement: "Onehandからのマーケティングメッセージを受け取ることに同意します。",
+      agreement: "OneHandからのマーケティングメッセージを受け取ることに同意します。",
       finePrint:
         "マーケティングメッセージはいつでも配信停止できます。送信された情報はお問い合わせ対応と導入案内に使用されます。",
       supportPrefix: "技術または製品サポートが必要な場合は",
@@ -531,12 +531,12 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
   },
   "zh-TW": {
     common: {
-      logoAria: "Onehand 首頁",
+      logoAria: "OneHand 首頁",
       nav: {
         product: "產品",
         pricing: "價格",
         contact: "諮詢",
-        freeCta: "開始使用 Onehand",
+        freeCta: "開始使用 OneHand",
         login: "登入",
       },
       productMenuGroups: [
@@ -559,24 +559,24 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           { title: "報表", description: "查看成果與風險" },
         ],
       ],
-      productTour: "查看 Onehand 1.0",
+      productTour: "查看 OneHand 1.0",
       productApp: "進入應用程式",
       footerColumns: [
-        ["公司介紹", "關於 Onehand", "安全", "條款與隱私", "隱私權利"],
+        ["公司介紹", "關於 OneHand", "安全", "條款與隱私", "隱私權利"],
         ["下載", "iOS & Android"],
         ["資源", "價格"],
         ["適用對象", "企業", "小型企業", "個人"],
       ],
       cookieSettings: "Cookie 設定",
       languageAria: "選擇語言",
-      footerSocialAria: "Onehand 社群連結",
-      copyright: "© 2026 Onehand Labs, Inc.",
+      footerSocialAria: "OneHand 社群連結",
+      copyright: "© 2026 OneHand Labs, Inc.",
     },
     landing: {
       heroTitle: ["銷售團隊與客戶", "協同工作的地方"],
       heroDescription:
         "在同一個介面串連商機、聯絡人、行程與會議紀錄，立即查看今天該完成的工作。",
-      primaryCta: "開始使用 Onehand",
+      primaryCta: "開始使用 OneHand",
       secondaryCta: "查看流程",
       customerStrip: "為重複銷售工作較多的團隊設計的 CRM",
       sectionWork: "全天掌握銷售流程。",
@@ -585,7 +585,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "「在導入 AI 之前，先把銷售流程整理清楚。」",
       trustedTitle: "為重視成果的銷售團隊而設計。",
       finalCta: "現在開始。",
-      finalPrimary: "開始使用 Onehand",
+      finalPrimary: "開始使用 OneHand",
     },
     pricing: makeTranslatedPricing({
       title: "營運銷售所需的一體化工具。",
@@ -607,9 +607,9 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       faqTitle: "常見問題",
     }),
     contact: makeTranslatedContact({
-      title: ["Onehand", "聯繫銷售團隊"],
+      title: ["OneHand", "聯繫銷售團隊"],
       description: "從價格諮詢、Demo 預約到適合團隊的使用方案，我們會提供所需支援。",
-      trustedLabel: "重複銷售工作較多的團隊正在使用 Onehand",
+      trustedLabel: "重複銷售工作較多的團隊正在使用 OneHand",
       labels: {
         firstName: "名 *",
         lastName: "姓 *",
@@ -632,10 +632,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         region: "台灣",
         phone: "0912 345 678",
         reason: "請選擇",
-        detail: "請寫下您希望如何使用 Onehand。",
+        detail: "請寫下您希望如何使用 OneHand。",
       },
       submit: "聯繫銷售團隊",
-      agreement: "我同意接收 Onehand 的行銷訊息。",
+      agreement: "我同意接收 OneHand 的行銷訊息。",
       finePrint:
         "您可以隨時取消接收行銷訊息。提交的資訊將用於回覆諮詢與產品導入說明。",
       supportPrefix: "如果需要技術或產品支援，請寄送電子郵件至",
@@ -995,10 +995,10 @@ function makeTranslatedContact(copy: {
     quoteCompany: "OpenAI",
     quote:
       copy.title[1].includes("問い合わせ")
-        ? "社員は同じ商談目標と顧客情報を共有できる一つの業務空間を必要としています。Onehandは営業の流れを一か所で処理できるようにします。"
+        ? "社員は同じ商談目標と顧客情報を共有できる一つの業務空間を必要としています。OneHandは営業の流れを一か所で処理できるようにします。"
         : copy.title[1].includes("聯繫")
-          ? "團隊需要一個能共享同一銷售目標與客戶資訊的工作空間。Onehand 讓銷售流程集中處理。"
-          : "Teams need one workspace where deal goals and customer context stay together. Onehand keeps the sales flow in one place.",
+          ? "團隊需要一個能共享同一銷售目標與客戶資訊的工作空間。OneHand 讓銷售流程集中處理。"
+          : "Teams need one workspace where deal goals and customer context stay together. OneHand keeps the sales flow in one place.",
     quotePerson: "Nick Erdenberger",
     quoteRole: "GTM, OpenAI",
     labels: copy.labels,
@@ -1076,12 +1076,12 @@ function makeEnglishCopy(copy: {
   readonly languageRegion: "US" | "UK" | "SG" | "AU" | "CA";
 }): PublicSiteCopy {
   const common: PublicSiteCopy["common"] = {
-    logoAria: "Onehand home",
+    logoAria: "OneHand home",
     nav: {
       product: "Product",
       pricing: copy.pricing,
       contact: copy.contact,
-      freeCta: "Get Onehand",
+      freeCta: "Get OneHand",
       login: copy.languageRegion === "US" || copy.languageRegion === "CA" ? "Log in" : "Sign in",
     },
     productMenuGroups: [
@@ -1104,18 +1104,18 @@ function makeEnglishCopy(copy: {
         { title: "Reports", description: "Review performance and risk" },
       ],
     ],
-    productTour: "Explore Onehand 1.0",
+    productTour: "Explore OneHand 1.0",
     productApp: "Go to app",
     footerColumns: [
       ["Company", "About us", "Security", "Terms and privacy", "Your privacy rights"],
       ["Download", "iOS & Android"],
       ["Resources", "Pricing"],
-      ["Onehand for", "Enterprise", "Small business", "Personal"],
+      ["OneHand for", "Enterprise", "Small business", "Personal"],
     ],
     cookieSettings: "Cookie settings",
     languageAria: "Select language",
-    footerSocialAria: "Onehand social links",
-    copyright: "© 2026 Onehand Labs, Inc.",
+    footerSocialAria: "OneHand social links",
+    copyright: "© 2026 OneHand Labs, Inc.",
   };
 
   return {
@@ -1124,7 +1124,7 @@ function makeEnglishCopy(copy: {
       heroTitle: ["Where field sales", "keeps follow-up moving"],
       heroDescription:
         "Connect customers, contacts, business cards, meetings, schedules, deals, and follow-up for real estate, B2B, insurance, and car sales.",
-      primaryCta: "Get Onehand",
+      primaryCta: "Get OneHand",
       secondaryCta: "See the flow",
       customerStrip: "A CRM designed for individual and field sales workflows",
       sectionWork: "Keep customer follow-up moving all day.",
@@ -1133,7 +1133,7 @@ function makeEnglishCopy(copy: {
       quote: "“Before AI, the sales flow gets organized.”",
       trustedTitle: "For sellers who manage relationships directly.",
       finalCta: "Get started today.",
-      finalPrimary: "Get Onehand",
+      finalPrimary: "Get OneHand",
     },
     pricing: makeTranslatedPricing({
       title: copy.title,
@@ -1158,7 +1158,7 @@ function makeEnglishCopy(copy: {
       faqTitle: "Frequently asked questions",
     }),
     contact: makeTranslatedContact({
-      title: ["Onehand", copy.contactTitle],
+      title: ["OneHand", copy.contactTitle],
       description:
         "Get help with pricing, demos, and use cases for personal, real estate, field, B2B, insurance, and car sales.",
       trustedLabel: "Used by sellers with repeat customer follow-up",
@@ -1184,10 +1184,10 @@ function makeEnglishCopy(copy: {
         region: getEnglishContactRegion(copy.languageRegion),
         phone: "(123) 456-7891",
         reason: "Select an option",
-        detail: "Tell us how you want to use Onehand.",
+        detail: "Tell us how you want to use OneHand.",
       },
       submit: "Contact sales",
-      agreement: "I agree to receive marketing messages from Onehand.",
+      agreement: "I agree to receive marketing messages from OneHand.",
       finePrint:
         "You can opt out of marketing messages at any time. Submitted information is used to respond to your request and guide product onboarding.",
       supportPrefix: "For technical or product support, email",

@@ -5,7 +5,7 @@ Updated: 2026-07-28
 
 ## Decision
 
-Onehand Sales의 현재 활성 로그인 provider는 Google, LINE, Apple이다.
+OneHand Sales의 현재 활성 로그인 provider는 Google, LINE, Apple이다.
 
 Kakao 로그인은 제품 로그인 기능에서 제거한다. User Web 로그인/회원가입 화면, provider 목록 API, Supabase JWT exchange, QA 기준에서 Kakao를 노출하거나 허용하지 않는다.
 

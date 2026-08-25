@@ -46,7 +46,7 @@ Company create/update 요청은 Company 주소와 region 선택을 포함한다.
 
 ```json
 {
-  "companyName": "Onehand",
+  "companyName": "OneHand",
   "companyRegionId": "region-id",
   "address": "강남구 테헤란로 123"
 }

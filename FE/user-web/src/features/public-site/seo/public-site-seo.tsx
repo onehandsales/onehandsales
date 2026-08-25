@@ -66,7 +66,7 @@ const ogLocaleByLanguage: Record<PublicSiteLanguage, string> = {
 
 const coreKoreanSeoKeywords = [
   "한손에 영업",
-  "Onehand Sales",
+  "OneHand Sales",
   "원핸드세일즈",
   "원핸드 세일즈",
   "영업",
@@ -174,7 +174,7 @@ const personaKoreanSeoKeywords = [
 ] as const;
 
 const coreEnglishSeoKeywords = [
-  "Onehand Sales",
+  "OneHand Sales",
   "onehandsales",
   "sales",
   "Sales",
@@ -283,7 +283,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/": {
     title: {
       ko: "한손에 영업 | 개인·현장 영업 CRM",
-      en: "Onehand Sales | Personal Field Sales CRM",
+      en: "OneHand Sales | Personal Field Sales CRM",
     },
     description: {
       ko: "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업의 고객관리, 미팅, 일정, 딜, 후속 연락을 한곳에서 관리하는 영업 CRM.",
@@ -297,11 +297,11 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/pricing": {
     title: {
       ko: "가격 | 한손에 영업",
-      en: "Pricing | Onehand Sales",
+      en: "Pricing | OneHand Sales",
     },
     description: {
       ko: "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업에 맞는 한손에 영업 CRM 요금제와 기능을 확인하세요.",
-      en: "Compare Onehand Sales plans for personal sales, field sales, real estate agents, B2B salespeople, and customer follow-up workflows.",
+      en: "Compare OneHand Sales plans for personal sales, field sales, real estate agents, B2B salespeople, and customer follow-up workflows.",
     },
     keywords: {
       ko: [
@@ -336,11 +336,11 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/contact": {
     title: {
       ko: "문의 | 한손에 영업",
-      en: "Contact | Onehand Sales",
+      en: "Contact | OneHand Sales",
     },
     description: {
       ko: "개인영업, 부동산, B2B 현장 영업, 보험·자동차 영업, 마케팅 후속관리 업무에 맞는 CRM 도입과 제품 문의를 남겨주세요.",
-      en: "Contact Onehand Sales about CRM adoption for personal sales, real estate, field sales, B2B sales, and marketing follow-up workflows.",
+      en: "Contact OneHand Sales about CRM adoption for personal sales, real estate, field sales, B2B sales, and marketing follow-up workflows.",
     },
     keywords: {
       ko: [
@@ -358,7 +358,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "CRM 도입 문의",
       ],
       en: [
-        "Onehand Sales contact",
+        "OneHand Sales contact",
         "sales CRM contact",
         "personal sales CRM inquiry",
         "real estate CRM contact",
@@ -373,11 +373,11 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/about": {
     title: {
       ko: "소개 | 한손에 영업",
-      en: "About | Onehand Sales",
+      en: "About | OneHand Sales",
     },
     description: {
       ko: "한손에 영업이 1인 영업자, 중소기업 B2B 영업, 부동산 중개사, 보험·자동차 영업자의 고객 관리와 후속 업무를 돕는 방식.",
-      en: "Learn how Onehand Sales helps solo sellers, B2B salespeople, real estate agents, insurance agents, and car salespeople manage customers and follow-ups.",
+      en: "Learn how OneHand Sales helps solo sellers, B2B salespeople, real estate agents, insurance agents, and car salespeople manage customers and follow-ups.",
     },
     keywords: {
       ko: [
@@ -396,7 +396,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "고객 업무 관리",
       ],
       en: [
-        "about Onehand Sales",
+        "about OneHand Sales",
         "personal sales management",
         "field sales management",
         "B2B sales management",
@@ -412,7 +412,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/security": {
     title: {
       ko: "보안 | 한손에 영업",
-      en: "Security | Onehand Sales",
+      en: "Security | OneHand Sales",
     },
     description: {
       ko: "개인영업, 부동산, B2B 현장 영업의 고객 데이터, 미팅 메모, 개인정보, 접근 권한을 보호하기 위한 한손에 영업의 보안 기준.",
@@ -444,25 +444,25 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/terms": {
     title: {
       ko: "이용약관 | 한손에 영업",
-      en: "Terms | Onehand Sales",
+      en: "Terms | OneHand Sales",
     },
     description: {
       ko: "한손에 영업 서비스 이용 조건과 사용자 책임을 확인하세요.",
-      en: "Review the Onehand Sales terms of service and user responsibilities.",
+      en: "Review the OneHand Sales terms of service and user responsibilities.",
     },
     keywords: {
-      ko: ["한손에 영업 이용약관", "Onehand Sales terms"],
-      en: ["Onehand Sales terms", "sales CRM terms"],
+      ko: ["한손에 영업 이용약관", "OneHand Sales terms"],
+      en: ["OneHand Sales terms", "sales CRM terms"],
     },
   },
   "/privacy": {
     title: {
       ko: "개인정보 처리방침 | 한손에 영업",
-      en: "Privacy Policy | Onehand Sales",
+      en: "Privacy Policy | OneHand Sales",
     },
     description: {
       ko: "한손에 영업의 개인정보 수집, 이용, 보관, 보호 기준을 확인하세요.",
-      en: "Review how Onehand Sales collects, uses, stores, and protects personal information.",
+      en: "Review how OneHand Sales collects, uses, stores, and protects personal information.",
     },
     keywords: {
       ko: [
@@ -476,7 +476,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "고객 정보 개인정보",
       ],
       en: [
-        "Onehand Sales privacy",
+        "OneHand Sales privacy",
         "CRM privacy",
         "sales CRM privacy",
         "personal sales CRM privacy",
@@ -489,30 +489,30 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/login": {
     title: {
       ko: "로그인 | 한손에 영업",
-      en: "Log in | Onehand Sales",
+      en: "Log in | OneHand Sales",
     },
     description: {
       ko: "한손에 영업 워크스페이스에 로그인하세요.",
-      en: "Log in to your Onehand Sales workspace.",
+      en: "Log in to your OneHand Sales workspace.",
     },
     keywords: {
       ko: ["한손에 영업 로그인"],
-      en: ["Onehand Sales login"],
+      en: ["OneHand Sales login"],
     },
     noindex: true,
   },
   "/signup": {
     title: {
       ko: "회원가입 | 한손에 영업",
-      en: "Sign up | Onehand Sales",
+      en: "Sign up | OneHand Sales",
     },
     description: {
       ko: "한손에 영업 계정을 만들고 개인 영업 워크스페이스를 시작하세요.",
-      en: "Create a Onehand Sales account and start your sales workspace.",
+      en: "Create a OneHand Sales account and start your sales workspace.",
     },
     keywords: {
       ko: ["한손에 영업 회원가입"],
-      en: ["Onehand Sales sign up"],
+      en: ["OneHand Sales sign up"],
     },
     noindex: true,
   },
@@ -561,7 +561,7 @@ function getLocalizedSeoValue(
   values: Partial<Record<PublicSiteLanguage | "en", string>>,
   language: PublicSiteLanguage
 ) {
-  return values[language] ?? values.en ?? values.ko ?? "Onehand Sales";
+  return values[language] ?? values.en ?? values.ko ?? "OneHand Sales";
 }
 
 function getLocalizedSeoKeywords(
@@ -772,14 +772,14 @@ function getJsonLd(metadata: PublicSiteSeoMetadata) {
           email: "team@onehandsales.com",
         },
         logo: publicSiteLogoUrl,
-        name: "Onehand Sales",
+        name: "OneHand Sales",
         url: publicSiteOrigin,
       },
       {
         "@id": `${publicSiteOrigin}/#website`,
         "@type": "WebSite",
         inLanguage: metadata.htmlLang,
-        name: "Onehand Sales",
+        name: "OneHand Sales",
         publisher: { "@id": `${publicSiteOrigin}/#organization` },
         url: publicSiteOrigin,
       },
@@ -798,7 +798,7 @@ function getJsonLd(metadata: PublicSiteSeoMetadata) {
             : "A personal field sales CRM for real estate agents, B2B salespeople, insurance agents, car salespeople, schedules, meeting notes, deals, and follow-up.",
         featureList: getSoftwareFeatureList(metadata.language),
         keywords: getSoftwareSeoKeywords(metadata.language),
-        name: "Onehand Sales",
+        name: "OneHand Sales",
         offers: {
           "@type": "Offer",
           category: "SaaS",

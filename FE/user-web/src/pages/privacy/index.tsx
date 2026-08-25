@@ -44,17 +44,17 @@ type PrivacyCopy = {
 
 const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   ko: {
-    eyebrow: "Onehand 개인정보",
+    eyebrow: "OneHand 개인정보",
     title: "개인정보 처리방침",
     intro: [
-      "Onehand는 2026년 7월 8일자로 이 개인정보 처리방침을 업데이트했습니다. 이전 버전은 Onehand 팀에 문의해 요청할 수 있습니다.",
-      "이 방침은 Onehand가 정보를 수집, 사용, 공개하는 방법과 사용자가 특정 사용에 반대하거나 정보 접근 및 업데이트를 요청할 수 있는 선택권을 설명합니다.",
+      "OneHand는 2026년 7월 8일자로 이 개인정보 처리방침을 업데이트했습니다. 이전 버전은 OneHand 팀에 문의해 요청할 수 있습니다.",
+      "이 방침은 OneHand가 정보를 수집, 사용, 공개하는 방법과 사용자가 특정 사용에 반대하거나 정보 접근 및 업데이트를 요청할 수 있는 선택권을 설명합니다.",
     ],
     definitionsTitle: "이 방침에서 사용하는 정의",
     definitions: [
       {
-        term: "Onehand",
-        description: "Onehand Labs, Inc. 및 관련 계열사를 의미합니다.",
+        term: "OneHand",
+        description: "OneHand Labs, Inc. 및 관련 계열사를 의미합니다.",
       },
       {
         term: "웹사이트",
@@ -63,7 +63,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
       {
         term: "서비스",
         description:
-          "Onehand SaaS 플랫폼, 관련 API, 웹·모바일·데스크톱 애플리케이션을 의미합니다.",
+          "OneHand SaaS 플랫폼, 관련 API, 웹·모바일·데스크톱 애플리케이션을 의미합니다.",
       },
       {
         term: "워크스페이스",
@@ -73,8 +73,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
     contactTitle: "문의하기",
     contactDescription:
-      "이 개인정보 처리방침 또는 개인정보 처리 관행에 대한 질문이 있으면 Onehand 팀에 문의하세요.",
-    contactCta: "Onehand 문의",
+      "이 개인정보 처리방침 또는 개인정보 처리 관행에 대한 질문이 있으면 OneHand 팀에 문의하세요.",
+    contactCta: "OneHand 문의",
     lastUpdated: "최종 업데이트: 2026년 7월 8일",
     tableHeaders: ["범주", "비즈니스 목적 공개", "적용 시 판매/공유"],
     californiaRows: [
@@ -123,7 +123,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. 정보를 사용하는 방법",
         paragraphs: [
-          "우리는 Onehand 제공, 보호, 지원, 개선과 관련된 비즈니스 및 운영 목적을 위해 정보를 사용합니다.",
+          "우리는 OneHand 제공, 보호, 지원, 개선과 관련된 비즈니스 및 운영 목적을 위해 정보를 사용합니다.",
         ],
         bullets: [
           "계정과 워크스페이스 생성, 인증, 관리.",
@@ -144,7 +144,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "international-transfers",
         title: "4. 국제 데이터 이전",
         paragraphs: [
-          "Onehand에서 처리되는 정보는 사용자가 거주하는 국가 외의 국가로 이전, 처리, 저장될 수 있습니다.",
+          "OneHand에서 처리되는 정보는 사용자가 거주하는 국가 외의 국가로 이전, 처리, 저장될 수 있습니다.",
           "국제 이전 시 적용 법률이 요구하는 계약상 보호 또는 인정된 이전 메커니즘을 사용하려고 노력합니다.",
         ],
       },
@@ -215,7 +215,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         title: "13. 데이터 개인정보 프레임워크",
         paragraphs: [
           "고객 계약, 이전 메커니즘, 개인정보 인증이 적용되는 경우 해당 계약 또는 인증 자료의 조건이 우선합니다.",
-          "Onehand가 별도로 게시하거나 합의하지 않는 한 이 페이지는 특정 데이터 이전 인증을 주장하지 않습니다.",
+          "OneHand가 별도로 게시하거나 합의하지 않는 한 이 페이지는 특정 데이터 이전 인증을 주장하지 않습니다.",
         ],
       },
       {
@@ -229,20 +229,20 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
   },
   ja: {
-    eyebrow: "Onehand プライバシー",
+    eyebrow: "OneHand プライバシー",
     title: "プライバシーポリシー",
     intro: [
-      "Onehandは2026年7月8日付でこのプライバシーポリシーを更新しました。以前のバージョンはOnehandチームに連絡して請求できます。",
-      "このポリシーは、Onehandが情報を収集、利用、開示する方法と、特定の利用への異議、情報へのアクセス、更新要求などの選択肢を説明します。",
+      "OneHandは2026年7月8日付でこのプライバシーポリシーを更新しました。以前のバージョンはOneHandチームに連絡して請求できます。",
+      "このポリシーは、OneHandが情報を収集、利用、開示する方法と、特定の利用への異議、情報へのアクセス、更新要求などの選択肢を説明します。",
     ],
     definitionsTitle: "このポリシーで使う定義",
     definitions: [
-      { term: "Onehand", description: "Onehand Labs, Inc.および関連会社を指します。" },
+      { term: "OneHand", description: "OneHand Labs, Inc.および関連会社を指します。" },
       { term: "ウェブサイト", description: "公開ウェブサイトと公開製品ページを指します。" },
       {
         term: "サービス",
         description:
-          "OnehandのSaaSプラットフォーム、関連API、Web、モバイル、デスクトップアプリを指します。",
+          "OneHandのSaaSプラットフォーム、関連API、Web、モバイル、デスクトップアプリを指します。",
       },
       {
         term: "ワークスペース",
@@ -252,8 +252,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
     contactTitle: "お問い合わせ",
     contactDescription:
-      "このプライバシーポリシーまたは当社のプライバシー慣行について質問がある場合は、Onehandチームにお問い合わせください。",
-    contactCta: "Onehandに問い合わせる",
+      "このプライバシーポリシーまたは当社のプライバシー慣行について質問がある場合は、OneHandチームにお問い合わせください。",
+    contactCta: "OneHandに問い合わせる",
     lastUpdated: "最終更新日: 2026年7月8日",
     tableHeaders: ["カテゴリ", "事業目的での開示", "適用される場合の販売/共有"],
     californiaRows: [
@@ -302,7 +302,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. 情報の利用方法",
         paragraphs: [
-          "当社は、Onehandの提供、保護、支援、改善に関連する事業上および運用上の目的で情報を利用します。",
+          "当社は、OneHandの提供、保護、支援、改善に関連する事業上および運用上の目的で情報を利用します。",
         ],
         bullets: [
           "アカウントとワークスペースの作成、認証、管理。",
@@ -323,7 +323,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "international-transfers",
         title: "4. 国際データ移転",
         paragraphs: [
-          "Onehandで処理される情報は、ユーザーの居住国以外の国に移転、処理、保存される場合があります。",
+          "OneHandで処理される情報は、ユーザーの居住国以外の国に移転、処理、保存される場合があります。",
           "国際移転では、適用法が求める契約上の保護または認められた移転メカニズムの利用に努めます。",
         ],
       },
@@ -394,7 +394,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         title: "13. データプライバシーフレームワーク",
         paragraphs: [
           "顧客契約、移転メカニズム、プライバシー認証が適用される場合、その契約または認証資料の条件が優先されます。",
-          "Onehandが別途公開または合意していない限り、このページは特定のデータ移転認証を主張するものではありません。",
+          "OneHandが別途公開または合意していない限り、このページは特定のデータ移転認証を主張するものではありません。",
         ],
       },
       {
@@ -408,20 +408,20 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
   },
   "zh-TW": {
-    eyebrow: "Onehand 隱私權",
+    eyebrow: "OneHand 隱私權",
     title: "隱私權政策",
     intro: [
-      "Onehand 已於 2026年7月8日更新本隱私權政策。你可以聯繫 Onehand 團隊請求以前版本。",
-      "本隱私權政策說明 Onehand 如何蒐集、使用與揭露你的資訊，也說明你可如何反對某些使用、存取資訊或請求更新。",
+      "OneHand 已於 2026年7月8日更新本隱私權政策。你可以聯繫 OneHand 團隊請求以前版本。",
+      "本隱私權政策說明 OneHand 如何蒐集、使用與揭露你的資訊，也說明你可如何反對某些使用、存取資訊或請求更新。",
     ],
     definitionsTitle: "本政策使用的定義",
     definitions: [
-      { term: "Onehand", description: "指 Onehand Labs, Inc. 及相關關係企業。" },
+      { term: "OneHand", description: "指 OneHand Labs, Inc. 及相關關係企業。" },
       { term: "網站", description: "指我們的公開網站與公開產品頁面。" },
       {
         term: "服務",
         description:
-          "指 Onehand 軟體即服務平台、相關 API 以及相關網頁、行動或桌面應用程式。",
+          "指 OneHand 軟體即服務平台、相關 API 以及相關網頁、行動或桌面應用程式。",
       },
       {
         term: "工作區",
@@ -431,8 +431,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
     contactTitle: "聯繫我們",
     contactDescription:
-      "如果你對本隱私權政策或我們的隱私權實務有疑問，請聯繫 Onehand 團隊。",
-    contactCta: "聯繫 Onehand",
+      "如果你對本隱私權政策或我們的隱私權實務有疑問，請聯繫 OneHand 團隊。",
+    contactCta: "聯繫 OneHand",
     lastUpdated: "最後更新：2026年7月8日",
     tableHeaders: ["類別", "為業務目的揭露", "適用時出售/共享"],
     californiaRows: [
@@ -481,7 +481,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. 我們如何使用資訊",
         paragraphs: [
-          "我們將資訊用於與提供、保護、支援與改進 Onehand 相關的業務與營運目的。",
+          "我們將資訊用於與提供、保護、支援與改進 OneHand 相關的業務與營運目的。",
         ],
         bullets: [
           "建立、驗證與管理帳戶和工作區。",
@@ -502,7 +502,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "international-transfers",
         title: "4. 國際資料傳輸",
         paragraphs: [
-          "Onehand 處理的資訊可能被傳輸、處理並儲存在你居住國家以外的國家。",
+          "OneHand 處理的資訊可能被傳輸、處理並儲存在你居住國家以外的國家。",
           "進行國際傳輸時，我們會努力使用適用法律要求的合約保護或其他認可的傳輸機制。",
         ],
       },
@@ -543,7 +543,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "third-party-websites",
         title: "9. 第三方網站和應用程式",
         paragraphs: [
-          "網站或服務可能包含指向第三方網站、應用程式、整合或服務的連結。這些第三方不受 Onehand 控制，其隱私權實務由其自身政策管理。",
+          "網站或服務可能包含指向第三方網站、應用程式、整合或服務的連結。這些第三方不受 OneHand 控制，其隱私權實務由其自身政策管理。",
         ],
       },
       {
@@ -572,8 +572,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "data-privacy-framework",
         title: "13. 資料隱私框架",
         paragraphs: [
-          "如果客戶協議、傳輸機制或隱私認證適用於你使用 Onehand，則該協議或相關認證資料中的控制條款適用。",
-          "除非 Onehand 另行發布或同意，本政策頁面不聲明特定的資料傳輸認證。",
+          "如果客戶協議、傳輸機制或隱私認證適用於你使用 OneHand，則該協議或相關認證資料中的控制條款適用。",
+          "除非 OneHand 另行發布或同意，本政策頁面不聲明特定的資料傳輸認證。",
         ],
       },
       {
@@ -587,17 +587,17 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
   },
   "en-US": {
-    eyebrow: "Onehand privacy",
+    eyebrow: "OneHand privacy",
     title: "Privacy policy",
     intro: [
-      "Onehand has updated this Privacy Policy effective July 8, 2026. Previous versions may be requested by contacting the Onehand team.",
-      "This Privacy Policy describes how Onehand collects, uses, and discloses your information. It also explains choices surrounding how we use personal information, including how you can object to certain uses, access information, or request updates.",
+      "OneHand has updated this Privacy Policy effective July 8, 2026. Previous versions may be requested by contacting the OneHand team.",
+      "This Privacy Policy describes how OneHand collects, uses, and discloses your information. It also explains choices surrounding how we use personal information, including how you can object to certain uses, access information, or request updates.",
     ],
     definitionsTitle: "Definitions used in this policy",
     definitions: [
       {
-        term: "Onehand",
-        description: "refers to Onehand Labs, Inc. and relevant affiliates.",
+        term: "OneHand",
+        description: "refers to OneHand Labs, Inc. and relevant affiliates.",
       },
       {
         term: "Website",
@@ -606,7 +606,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
       {
         term: "Services",
         description:
-          "refers to the Onehand software-as-a-service platform, related APIs, and related web, mobile, or desktop applications.",
+          "refers to the OneHand software-as-a-service platform, related APIs, and related web, mobile, or desktop applications.",
       },
       {
         term: "Workspaces",
@@ -616,8 +616,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
     contactTitle: "Contact us",
     contactDescription:
-      "If you have questions about this Privacy Policy or our privacy practices, contact the Onehand team.",
-    contactCta: "Contact Onehand",
+      "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand team.",
+    contactCta: "Contact OneHand",
     lastUpdated: "Last updated: July 8, 2026",
     tableHeaders: ["Category", "Disclosed for business purposes", "Sold/shared where applicable"],
     californiaRows: [
@@ -666,7 +666,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. How we use your information",
         paragraphs: [
-          "We use information for business and operational purposes related to providing, securing, supporting, and improving Onehand.",
+          "We use information for business and operational purposes related to providing, securing, supporting, and improving OneHand.",
         ],
         bullets: [
           "Create, authenticate, and manage accounts and workspaces.",
@@ -680,14 +680,14 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "disclosing",
         title: "3. Disclosing your information",
         paragraphs: [
-          "Depending on how you use Onehand and the choices you make, we may disclose information to service providers, business partners, affiliates, advertising and analytics partners, workspace users, organizations that manage workspaces, legal recipients, or transaction parties.",
+          "Depending on how you use OneHand and the choices you make, we may disclose information to service providers, business partners, affiliates, advertising and analytics partners, workspace users, organizations that manage workspaces, legal recipients, or transaction parties.",
         ],
       },
       {
         id: "international-transfers",
         title: "4. International data transfers",
         paragraphs: [
-          "Information processed by Onehand may be transferred to, processed in, and stored in countries other than where you live.",
+          "Information processed by OneHand may be transferred to, processed in, and stored in countries other than where you live.",
           "When we transfer information internationally, we endeavor to use safeguards required by applicable law, such as contractual protections or other recognized transfer mechanisms.",
         ],
       },
@@ -728,7 +728,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "third-party-websites",
         title: "9. Third-party websites/applications",
         paragraphs: [
-          "The Website or Services may contain links to third-party websites, applications, integrations, or services. These third parties are not controlled by Onehand, and their privacy practices are governed by their own policies.",
+          "The Website or Services may contain links to third-party websites, applications, integrations, or services. These third parties are not controlled by OneHand, and their privacy practices are governed by their own policies.",
         ],
       },
       {
@@ -757,8 +757,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "data-privacy-framework",
         title: "13. Data privacy framework",
         paragraphs: [
-          "Where a customer agreement, transfer mechanism, or privacy certification applies to your use of Onehand, the controlling terms will be stated in that agreement or the related certification materials.",
-          "This policy page does not claim a specific data transfer certification unless Onehand has separately published or agreed to that certification.",
+          "Where a customer agreement, transfer mechanism, or privacy certification applies to your use of OneHand, the controlling terms will be stated in that agreement or the related certification materials.",
+          "This policy page does not claim a specific data transfer certification unless OneHand has separately published or agreed to that certification.",
         ],
       },
       {
@@ -772,17 +772,17 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
   },
   "en-GB": {
-    eyebrow: "Onehand privacy",
+    eyebrow: "OneHand privacy",
     title: "Privacy policy",
     intro: [
-      "Onehand has updated this Privacy Policy effective 8 July 2026. Previous versions may be requested by contacting the Onehand team.",
-      "This Privacy Policy describes how Onehand collects, uses, and discloses your information. It also explains choices surrounding how we use personal information, including how you can object to certain uses, access information, or request updates.",
+      "OneHand has updated this Privacy Policy effective 8 July 2026. Previous versions may be requested by contacting the OneHand team.",
+      "This Privacy Policy describes how OneHand collects, uses, and discloses your information. It also explains choices surrounding how we use personal information, including how you can object to certain uses, access information, or request updates.",
     ],
     definitionsTitle: "Definitions used in this policy",
     definitions: [
       {
-        term: "Onehand",
-        description: "refers to Onehand Labs, Inc. and relevant affiliates.",
+        term: "OneHand",
+        description: "refers to OneHand Labs, Inc. and relevant affiliates.",
       },
       {
         term: "Website",
@@ -791,7 +791,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
       {
         term: "Services",
         description:
-          "refers to the Onehand software-as-a-service platform, related APIs, and related web, mobile, or desktop applications.",
+          "refers to the OneHand software-as-a-service platform, related APIs, and related web, mobile, or desktop applications.",
       },
       {
         term: "Workspaces",
@@ -801,8 +801,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
     contactTitle: "Contact us",
     contactDescription:
-      "If you have questions about this Privacy Policy or our privacy practices, contact the Onehand team.",
-    contactCta: "Contact Onehand",
+      "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand team.",
+    contactCta: "Contact OneHand",
     lastUpdated: "Last updated: 8 July 2026",
     tableHeaders: ["Category", "Disclosed for business purposes", "Sold/shared where applicable"],
     californiaRows: [
@@ -851,7 +851,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. How we use your information",
         paragraphs: [
-          "We use information for business and operational purposes related to providing, securing, supporting, and improving Onehand.",
+          "We use information for business and operational purposes related to providing, securing, supporting, and improving OneHand.",
         ],
         bullets: [
           "Create, authenticate, and manage accounts and workspaces.",
@@ -865,14 +865,14 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "disclosing",
         title: "3. Disclosing your information",
         paragraphs: [
-          "Depending on how you use Onehand and the choices you make, we may disclose information to service providers, business partners, affiliates, advertising and analytics partners, workspace users, organisations that manage workspaces, legal recipients, or transaction parties.",
+          "Depending on how you use OneHand and the choices you make, we may disclose information to service providers, business partners, affiliates, advertising and analytics partners, workspace users, organisations that manage workspaces, legal recipients, or transaction parties.",
         ],
       },
       {
         id: "international-transfers",
         title: "4. International data transfers",
         paragraphs: [
-          "Information processed by Onehand may be transferred to, processed in, and stored in countries other than where you live.",
+          "Information processed by OneHand may be transferred to, processed in, and stored in countries other than where you live.",
           "When we transfer information internationally, we endeavour to use safeguards required by applicable law, such as contractual protections or other recognised transfer mechanisms.",
         ],
       },
@@ -913,7 +913,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "third-party-websites",
         title: "9. Third-party websites/applications",
         paragraphs: [
-          "The Website or Services may contain links to third-party websites, applications, integrations, or services. These third parties are not controlled by Onehand, and their privacy practices are governed by their own policies.",
+          "The Website or Services may contain links to third-party websites, applications, integrations, or services. These third parties are not controlled by OneHand, and their privacy practices are governed by their own policies.",
         ],
       },
       {
@@ -942,8 +942,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "data-privacy-framework",
         title: "13. Data privacy framework",
         paragraphs: [
-          "Where a customer agreement, transfer mechanism, or privacy certification applies to your use of Onehand, the controlling terms will be stated in that agreement or the related certification materials.",
-          "This policy page does not claim a specific data transfer certification unless Onehand has separately published or agreed to that certification.",
+          "Where a customer agreement, transfer mechanism, or privacy certification applies to your use of OneHand, the controlling terms will be stated in that agreement or the related certification materials.",
+          "This policy page does not claim a specific data transfer certification unless OneHand has separately published or agreed to that certification.",
         ],
       },
       {

@@ -58,7 +58,7 @@ Date: 2026-07-24
 - Admin cost screen.
 - Scheduled send.
 - Campaign or bulk sending.
-- Onehand.sales branding insertion.
+- OneHand.sales branding insertion.
 - Real provider UX beyond the existing G06/G07 backend provider boundaries.
 - Playwright mobile E2E run; static type/lint/build checks were used for this goal.
 

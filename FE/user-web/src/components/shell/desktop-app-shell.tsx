@@ -1,7 +1,7 @@
 import { LogOut, Plus } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { useAuthSession } from "@/features/auth";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { GlobalSearch } from "@/features/search";
@@ -49,14 +49,14 @@ export function DesktopAppShell({
         {/* Brand */}
         <div className="flex items-center gap-3 px-5 py-5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center text-primary">
-            <OnehandLogoMark className="h-8 w-8" />
+            <OneHandLogoMark className="h-8 w-8" />
           </div>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold leading-tight tracking-[-0.02em] text-sidebar-foreground">
               한손에 영업
             </p>
             <p className="text-[14px] text-sidebar-foreground/45">
-              Onehand
+              OneHand
             </p>
           </div>
         </div>

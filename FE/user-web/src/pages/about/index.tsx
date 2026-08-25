@@ -54,10 +54,10 @@ const storyVisuals: readonly {
 
 const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
   ko: {
-    eyebrow: "Onehand 소개",
+    eyebrow: "OneHand 소개",
     title: "고객 업무의 맥락을 더 쉽게 붙잡는 이야기.",
     intro: [
-      "통화를 끝낸 뒤 다음 액션은 다른 도구에 적고, 계정 정보는 또 다른 곳에 업데이트하고, 일주일 뒤 약속 내용을 다시 찾느라 시간을 쓴 적이 있다면 Onehand가 왜 필요한지 이미 알고 있습니다.",
+      "통화를 끝낸 뒤 다음 액션은 다른 도구에 적고, 계정 정보는 또 다른 곳에 업데이트하고, 일주일 뒤 약속 내용을 다시 찾느라 시간을 쓴 적이 있다면 OneHand가 왜 필요한지 이미 알고 있습니다.",
       "우리는 기록, 업무, 제품 정보, AI 지원이 한곳에 있는 세일즈 워크스페이스를 만들고 있습니다. 팀이 맥락을 다시 조립하는 시간보다 고객과 보내는 시간을 늘리기 위해서입니다.",
     ],
     chapterLabel: "챕터",
@@ -79,30 +79,30 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
         description:
           "이미 일어난 업무에서 요약, 초안, 알림, 답변을 만들 수 있게 됐습니다.",
         detail:
-          "Onehand는 빈 프롬프트가 아니라 세일즈 기록을 이해하는 어시스턴트를 중심으로 설계됩니다.",
+          "OneHand는 빈 프롬프트가 아니라 세일즈 기록을 이해하는 어시스턴트를 중심으로 설계됩니다.",
       },
       {
         title: "워크스페이스는 더 단순해져야 했습니다.",
         description:
           "작은 팀이 어떤 계정이 바뀌었는지, 무엇을 약속했는지, 다음 일이 무엇인지 알기 위해 복잡한 스택을 가질 필요는 없습니다.",
         detail:
-          "Onehand는 계정 업무, 고객 메모, 제품 정보, 다음 액션을 조용한 하나의 운영 공간에 모읍니다.",
+          "OneHand는 계정 업무, 고객 메모, 제품 정보, 다음 액션을 조용한 하나의 운영 공간에 모읍니다.",
       },
       {
         title: "우리의 목표는 고객 순간 사이의 관리 업무를 줄이는 것입니다.",
         description:
           "좋은 세일즈 도구는 고객 관계를 지키고 그 주변의 반복 업무를 덜어야 합니다.",
         detail:
-          "그래서 Onehand는 깔끔한 기록, 빠른 캡처, 실제 업무 흐름에 가까운 AI 지원에 집중합니다.",
+          "그래서 OneHand는 깔끔한 기록, 빠른 캡처, 실제 업무 흐름에 가까운 AI 지원에 집중합니다.",
       },
     ],
     joinTitle: "함께 만들기",
     joinDescription:
-      "Onehand는 실용적인 소프트웨어, 세심한 제품 설계, 고객 업무를 가볍게 만드는 작은 디테일을 중요하게 여기는 사람들이 만듭니다.",
+      "OneHand는 실용적인 소프트웨어, 세심한 제품 설계, 고객 업무를 가볍게 만드는 작은 디테일을 중요하게 여기는 사람들이 만듭니다.",
     joinCardTitle: "세일즈 팀을 위한 집중된 도구를 함께 만들고 싶으신가요?",
-    joinCta: "Onehand에 문의",
+    joinCta: "OneHand에 문의",
     newsTitle: "새 소식",
-    newsDescription: "Onehand를 실제 팀과 함께 만들며 계속 공유하는 주제들입니다.",
+    newsDescription: "OneHand를 실제 팀과 함께 만들며 계속 공유하는 주제들입니다.",
     newsItems: [
       "반복 고객 업무에 맞춘 AI 워크스페이스를 소개합니다.",
       "작은 세일즈 팀이 후속 업무, 메모, 딜 맥락을 맞추는 방법.",
@@ -114,10 +114,10 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
     sceneLabels: ["고객", "맥락", "어시스턴트"],
   },
   ja: {
-    eyebrow: "Onehandについて",
+    eyebrow: "OneHandについて",
     title: "顧客業務の文脈を、もっと扱いやすくする物語。",
     intro: [
-      "通話を終えた後、次のアクションを別のツールに書き、アカウントを別の場所で更新し、翌週に約束内容を探した経験があるなら、Onehandが必要な理由はすでに分かるはずです。",
+      "通話を終えた後、次のアクションを別のツールに書き、アカウントを別の場所で更新し、翌週に約束内容を探した経験があるなら、OneHandが必要な理由はすでに分かるはずです。",
       "私たちは、記録、タスク、製品情報、AI支援が一緒にある営業ワークスペースを作っています。チームが文脈を組み直す時間を減らし、顧客と向き合う時間を増やすためです。",
     ],
     chapterLabel: "チャプター",
@@ -139,30 +139,30 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
         description:
           "すでに起きた仕事から、要約、下書き、リマインダー、回答を作れるようになりました。",
         detail:
-          "Onehandは空のプロンプトではなく、営業記録を理解するアシスタントを中心に設計されています。",
+          "OneHandは空のプロンプトではなく、営業記録を理解するアシスタントを中心に設計されています。",
       },
       {
         title: "ワークスペースはもっとシンプルであるべきでした。",
         description:
           "小さなチームが、どのアカウントが変わり、何を約束し、次に何をすべきか知るために複雑なツール群は必要ありません。",
         detail:
-          "Onehandはアカウント業務、顧客メモ、製品情報、次のアクションを一つの静かな作業空間にまとめます。",
+          "OneHandはアカウント業務、顧客メモ、製品情報、次のアクションを一つの静かな作業空間にまとめます。",
       },
       {
         title: "私たちの目標は、顧客接点の間にある管理作業を減らすことです。",
         description:
           "優れた営業ツールは顧客関係を守り、その周辺の反復作業を取り除くべきです。",
         detail:
-          "だからOnehandは、きれいな記録、素早い入力、実際の業務フローに近いAI支援に集中しています。",
+          "だからOneHandは、きれいな記録、素早い入力、実際の業務フローに近いAI支援に集中しています。",
       },
     ],
     joinTitle: "一緒に作る",
     joinDescription:
-      "Onehandは、実用的なソフトウェア、丁寧なプロダクト設計、顧客業務を軽くする日々の細部を大切にする人たちが作っています。",
+      "OneHandは、実用的なソフトウェア、丁寧なプロダクト設計、顧客業務を軽くする日々の細部を大切にする人たちが作っています。",
     joinCardTitle: "営業チームのための集中したツール作りに興味がありますか？",
-    joinCta: "Onehandに相談",
+    joinCta: "OneHandに相談",
     newsTitle: "ニュース",
-    newsDescription: "Onehandを実際のチームと作りながら共有しているテーマです。",
+    newsDescription: "OneHandを実際のチームと作りながら共有しているテーマです。",
     newsItems: [
       "反復的な顧客業務に合わせたAIワークスペースを紹介します。",
       "小さな営業チームがフォローアップ、メモ、商談文脈を同期する方法。",
@@ -174,10 +174,10 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
     sceneLabels: ["顧客", "文脈", "アシスタント"],
   },
   "zh-TW": {
-    eyebrow: "關於 Onehand",
+    eyebrow: "關於 OneHand",
     title: "讓客戶工作的脈絡更容易被掌握。",
     intro: [
-      "如果你曾在通話後把下一步寫進一個工具，在另一個地方更新帳戶，然後一週後再尋找當時承諾的內容，你已經知道 Onehand 為什麼存在。",
+      "如果你曾在通話後把下一步寫進一個工具，在另一個地方更新帳戶，然後一週後再尋找當時承諾的內容，你已經知道 OneHand 為什麼存在。",
       "我們正在打造一個銷售工作區，讓紀錄、任務、產品資訊與 AI 協助放在一起，讓團隊少花時間重建脈絡，多花時間面對客戶。",
     ],
     chapterLabel: "章節",
@@ -199,32 +199,32 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
         description:
           "現在可以從已經發生的工作中產生摘要、草稿、提醒與答案。",
         detail:
-          "Onehand 是圍繞能理解銷售紀錄的助理打造，而不是圍繞空白提示詞打造。",
+          "OneHand 是圍繞能理解銷售紀錄的助理打造，而不是圍繞空白提示詞打造。",
       },
       {
         title: "工作區需要變得更簡單。",
         description:
           "小型團隊不應該為了知道哪個帳戶發生變化、承諾了什麼、下一步是什麼，而維護複雜工具堆疊。",
         detail:
-          "Onehand 將帳戶工作、客戶筆記、產品資訊與下一步行動放進一個安靜的營運空間。",
+          "OneHand 將帳戶工作、客戶筆記、產品資訊與下一步行動放進一個安靜的營運空間。",
       },
       {
         title: "我們的目標是減少每個客戶時刻之間的管理工作。",
         description:
           "最好的銷售工具應該保護客戶關係，並移除圍繞它的重複工作。",
         detail:
-          "因此 Onehand 專注於清楚紀錄、快速捕捉，以及貼近工作流程的 AI 協助。",
+          "因此 OneHand 專注於清楚紀錄、快速捕捉，以及貼近工作流程的 AI 協助。",
       },
     ],
     joinTitle: "加入我們",
     joinDescription:
-      "Onehand 由重視實用軟體、細緻產品設計，以及讓客戶工作更輕鬆的日常細節的人共同打造。",
+      "OneHand 由重視實用軟體、細緻產品設計，以及讓客戶工作更輕鬆的日常細節的人共同打造。",
     joinCardTitle: "想一起為銷售團隊打造專注的工具嗎？",
-    joinCta: "聯繫 Onehand",
+    joinCta: "聯繫 OneHand",
     newsTitle: "最新消息",
-    newsDescription: "這些是我們與實際團隊一起打造 Onehand 時持續分享的主題。",
+    newsDescription: "這些是我們與實際團隊一起打造 OneHand 時持續分享的主題。",
     newsItems: [
-      "Onehand 推出為重複客戶工作打造的 AI 工作區。",
+      "OneHand 推出為重複客戶工作打造的 AI 工作區。",
       "小型銷售團隊如何同步跟進、筆記與交易脈絡。",
       "設計實用 AI 代理，讓它協助工作而不是接管工作。",
       "為什麼客戶記憶應該與任務、產品和會議放在一起。",
@@ -234,10 +234,10 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
     sceneLabels: ["客戶", "脈絡", "助理"],
   },
   "en-US": {
-    eyebrow: "About Onehand",
+    eyebrow: "About OneHand",
     title: "A story of customer work becoming easier to hold.",
     intro: [
-      "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why Onehand exists.",
+      "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why OneHand exists.",
       "We are building a sales workspace where records, tasks, product information, and AI assistance live together so teams can spend more time with customers and less time rebuilding context.",
     ],
     chapterLabel: "Chapter",
@@ -261,33 +261,33 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
         description:
           "Summaries, drafts, reminders, and answers can now be generated from the work that already happened.",
         detail:
-          "Onehand is built around that shift: assistants that understand the sales record, not a blank prompt.",
+          "OneHand is built around that shift: assistants that understand the sales record, not a blank prompt.",
       },
       {
         title: "The workspace needed to become simpler.",
         description:
           "A small team should not need a complex stack just to know which account changed, what was promised, and what comes next.",
         detail:
-          "Onehand keeps account work, customer notes, product details, and next steps in one quiet operating space.",
+          "OneHand keeps account work, customer notes, product details, and next steps in one quiet operating space.",
       },
       {
         title: "Our goal is less admin between every customer moment.",
         description:
           "The best sales tools should protect the customer relationship and remove repetitive work around it.",
         detail:
-          "That is why Onehand focuses on clean records, fast capture, and AI help that stays close to the workflow.",
+          "That is why OneHand focuses on clean records, fast capture, and AI help that stays close to the workflow.",
       },
     ],
     joinTitle: "Join us",
     joinDescription:
-      "Onehand is made by people who care about practical software, careful product design, and the day-to-day details that make customer work feel lighter.",
+      "OneHand is made by people who care about practical software, careful product design, and the day-to-day details that make customer work feel lighter.",
     joinCardTitle: "Interested in building focused tools for sales teams?",
-    joinCta: "Talk to Onehand",
+    joinCta: "Talk to OneHand",
     newsTitle: "In the news",
     newsDescription:
-      "A few themes we keep sharing as we build Onehand with working teams.",
+      "A few themes we keep sharing as we build OneHand with working teams.",
     newsItems: [
-      "Onehand introduces an AI workspace shaped for recurring customer work.",
+      "OneHand introduces an AI workspace shaped for recurring customer work.",
       "How small sales teams keep follow-ups, notes, and deal context in sync.",
       "Designing practical AI agents that help without taking over the workflow.",
       "Why customer memory should live beside tasks, products, and meetings.",
@@ -297,10 +297,10 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
     sceneLabels: ["Customers", "Context", "Assistants"],
   },
   "en-GB": {
-    eyebrow: "About Onehand",
+    eyebrow: "About OneHand",
     title: "A story of customer work becoming easier to hold.",
     intro: [
-      "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why Onehand exists.",
+      "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why OneHand exists.",
       "We are building a sales workspace where records, tasks, product information, and AI assistance live together so teams can spend more time with customers and less time rebuilding context.",
     ],
     chapterLabel: "Chapter",
@@ -324,33 +324,33 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
         description:
           "Summaries, drafts, reminders, and answers can now be generated from the work that already happened.",
         detail:
-          "Onehand is built around that shift: assistants that understand the sales record, not a blank prompt.",
+          "OneHand is built around that shift: assistants that understand the sales record, not a blank prompt.",
       },
       {
         title: "The workspace needed to become simpler.",
         description:
           "A small team should not need a complex stack just to know which account changed, what was promised, and what comes next.",
         detail:
-          "Onehand keeps account work, customer notes, product details, and next steps in one quiet operating space.",
+          "OneHand keeps account work, customer notes, product details, and next steps in one quiet operating space.",
       },
       {
         title: "Our goal is less admin between every customer moment.",
         description:
           "The best sales tools should protect the customer relationship and remove repetitive work around it.",
         detail:
-          "That is why Onehand focuses on clean records, fast capture, and AI help that stays close to the workflow.",
+          "That is why OneHand focuses on clean records, fast capture, and AI help that stays close to the workflow.",
       },
     ],
     joinTitle: "Join us",
     joinDescription:
-      "Onehand is made by people who care about practical software, careful product design, and the day-to-day details that make customer work feel lighter.",
+      "OneHand is made by people who care about practical software, careful product design, and the day-to-day details that make customer work feel lighter.",
     joinCardTitle: "Interested in building focused tools for sales teams?",
-    joinCta: "Talk to Onehand",
+    joinCta: "Talk to OneHand",
     newsTitle: "In the news",
     newsDescription:
-      "A few themes we keep sharing as we build Onehand with working teams.",
+      "A few themes we keep sharing as we build OneHand with working teams.",
     newsItems: [
-      "Onehand introduces an AI workspace shaped for recurring customer work.",
+      "OneHand introduces an AI workspace shaped for recurring customer work.",
       "How small sales teams keep follow-ups, notes, and deal context in sync.",
       "Designing practical AI agents that help without taking over the workflow.",
       "Why customer memory should live beside tasks, products, and meetings.",

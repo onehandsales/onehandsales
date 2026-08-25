@@ -1,6 +1,6 @@
 import { Globe2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import type {
   AuthProviderId,
   AuthProviderOption,
@@ -70,8 +70,8 @@ const loginCopy: Record<
     homeAria: "홈으로 이동",
     title: "나만의 AI 워크스페이스",
     subtitles: {
-      login: "Onehand 계정에 로그인",
-      signup: "Onehand 계정 만들기",
+      login: "OneHand 계정에 로그인",
+      signup: "OneHand 계정 만들기",
     },
     providerLead: {
       login: "다음으로 계속하기",
@@ -106,8 +106,8 @@ const loginCopy: Record<
     homeAria: "ホームへ移動",
     title: "自分だけのAIワークスペース",
     subtitles: {
-      login: "Onehand アカウントにログイン",
-      signup: "Onehand アカウントを作成",
+      login: "OneHand アカウントにログイン",
+      signup: "OneHand アカウントを作成",
     },
     providerLead: {
       login: "次の方法で続行",
@@ -142,8 +142,8 @@ const loginCopy: Record<
     homeAria: "前往首頁",
     title: "我的 AI 工作空間",
     subtitles: {
-      login: "登入 Onehand 帳戶",
-      signup: "建立 Onehand 帳戶",
+      login: "登入 OneHand 帳戶",
+      signup: "建立 OneHand 帳戶",
     },
     providerLead: {
       login: "使用以下方式繼續",
@@ -178,8 +178,8 @@ const loginCopy: Record<
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
-      login: "Log in to Onehand",
-      signup: "Create your Onehand account",
+      login: "Log in to OneHand",
+      signup: "Create your OneHand account",
     },
     providerLead: {
       login: "Continue with",
@@ -214,8 +214,8 @@ const loginCopy: Record<
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
-      login: "Sign in to Onehand",
-      signup: "Create your Onehand account",
+      login: "Sign in to OneHand",
+      signup: "Create your OneHand account",
     },
     providerLead: {
       login: "Continue with",
@@ -303,7 +303,7 @@ export function AuthLoginPage({
               className="grid h-9 w-9 place-items-center text-[#111111]"
               to={publicSitePath("/")}
             >
-              <OnehandLogoMark className="h-8 w-8" />
+              <OneHandLogoMark className="h-8 w-8" />
             </Link>
 
             <h1

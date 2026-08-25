@@ -1,8 +1,8 @@
-type OnehandLogoMarkProps = {
+type OneHandLogoMarkProps = {
   readonly className?: string;
 };
 
-export function OnehandLogoMark({ className }: OnehandLogoMarkProps) {
+export function OneHandLogoMark({ className }: OneHandLogoMarkProps) {
   return (
     <img
       alt=""

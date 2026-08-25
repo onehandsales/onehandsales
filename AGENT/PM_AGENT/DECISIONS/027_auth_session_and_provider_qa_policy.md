@@ -5,7 +5,7 @@ Updated: 2026-07-28
 
 ## Decision
 
-Onehand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 사용하고, 실제 앱 사용자/기기/session은 Backend가 별도로 관리한다.
+OneHand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 사용하고, 실제 앱 사용자/기기/session은 Backend가 별도로 관리한다.
 
 ## Current Product State
 

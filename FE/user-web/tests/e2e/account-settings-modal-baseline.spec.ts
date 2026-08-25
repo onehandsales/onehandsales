@@ -76,7 +76,7 @@ test.describe("G01 account settings modal baseline", () => {
       reopenedDialog.getByRole("heading", { exact: true, name: "알림" }),
     ).toBeVisible();
     await expect(
-      reopenedDialog.getByText("Onehand가 생성하고 발송할 서비스 reminder를 선택해요."),
+      reopenedDialog.getByText("OneHand가 생성하고 발송할 서비스 reminder를 선택해요."),
     ).toBeVisible();
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });

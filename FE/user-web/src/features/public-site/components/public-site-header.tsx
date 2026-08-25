@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { OnehandLogoMark } from "@/components/brand/onehand-logo-mark";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
@@ -102,7 +102,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
           className="flex h-9 w-9 items-center justify-center text-[#111111]"
           to={publicSitePath("/")}
         >
-          <OnehandLogoMark className="h-9 w-9" />
+          <OneHandLogoMark className="h-9 w-9" />
         </Link>
 
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-semibold text-[#4b4b48] md:flex">

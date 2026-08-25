@@ -182,7 +182,7 @@ Company 후보:
 
 ```json
 {
-  "companyName": "Onehand",
+  "companyName": "OneHand",
   "companyRegionId": "region-id",
   "address": "강남구 테헤란로 123"
 }

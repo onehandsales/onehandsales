@@ -138,7 +138,7 @@ function ContactForm() {
       <p className="max-w-[560px] text-[13px] leading-6 text-[#777770]">
         {contact.supportPrefix}{" "}
         <a className="font-bold text-[#0077e6]" href="mailto:team@onehandsales.com">
-          Onehand team
+          OneHand team
         </a>
         {contact.supportSuffix}
       </p>

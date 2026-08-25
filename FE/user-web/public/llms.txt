@@ -1,6 +1,6 @@
-# Onehand Sales
+# OneHand Sales
 
-Onehand Sales, also branded in Korean as 한손에 영업, is a personal and field sales CRM for people who manage customers, business cards, meetings, schedules, proposals, deals, and follow-up work directly.
+OneHand Sales, also branded in Korean as 한손에 영업, is a personal and field sales CRM for people who manage customers, business cards, meetings, schedules, proposals, deals, and follow-up work directly.
 
 Canonical site: https://www.onehandsales.com/ko
 
@@ -39,7 +39,7 @@ Core product areas:
 
 Primary Korean SEO/GEO keywords:
 - 한손에 영업
-- Onehand Sales
+- OneHand Sales
 - 원핸드세일즈
 - 원핸드 세일즈
 - 영업
@@ -140,7 +140,7 @@ Primary Korean SEO/GEO keywords:
 - 이민 상담 고객관리
 
 Primary English SEO/GEO keywords:
-- Onehand Sales
+- OneHand Sales
 - onehandsales
 - sales
 - Sales

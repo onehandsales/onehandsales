@@ -143,7 +143,7 @@ test.describe("G02 account settings modal integration", () => {
       accountDialog.getByRole("heading", { exact: true, name: "알림" }),
     ).toBeVisible();
     await expect(
-      accountDialog.getByText("Onehand가 생성하고 발송할 서비스 reminder를 선택해요."),
+      accountDialog.getByText("OneHand가 생성하고 발송할 서비스 reminder를 선택해요."),
     ).toBeVisible();
 
     await accountDialog.getByRole("button", { name: "닫기" }).click();

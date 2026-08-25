@@ -28,7 +28,7 @@ test.describe("G03 import resume UX", () => {
     await page
       .getByTestId("import-row-import-job-row-mobile-001-field-companyName-desktop")
       .first()
-      .fill("Onehand Resume Company");
+      .fill("OneHand Resume Company");
     await expect(primaryAction).toHaveAttribute("data-import-action", "save");
 
     const saveResponsePromise = page.waitForResponse(
@@ -132,7 +132,7 @@ test.describe("G03 import resume UX", () => {
 
     await page.goto("/app/import");
     await page.getByTestId("import-file-input").first().setInputFiles({
-      buffer: Buffer.from("companyName,email\nOnehand,onehand@example.com\n"),
+      buffer: Buffer.from("companyName,email\nOneHand,onehand@example.com\n"),
       mimeType: "text/csv",
       name: "companies.csv",
     });
@@ -193,12 +193,12 @@ function setFirstImportJobReady(store: UserWebApiMockStore) {
     return {
       ...nestedRecord(row),
       data: {
-        companyName: "Onehand Ready Company",
+        companyName: "OneHand Ready Company",
         email: "ready@example.com",
       },
       errors: [],
       status: "VALID",
-      targetLabel: "Onehand Ready Company",
+      targetLabel: "OneHand Ready Company",
     };
   });
 }

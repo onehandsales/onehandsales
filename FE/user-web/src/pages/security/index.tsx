@@ -55,10 +55,10 @@ const trustIcons: readonly LucideIcon[] = [Database, Globe2, CheckCircle2];
 
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
-    eyebrow: "Onehand 보안",
+    eyebrow: "OneHand 보안",
     title: "고객 업무를 위한 보안과 개인정보 보호.",
     description:
-      "Onehand는 고객 기록, 세일즈 활동, AI 지원을 하나의 워크스페이스에서 관리하도록 돕습니다. 보안과 개인정보 보호는 그 맥락을 지키는 방식으로 설계됩니다.",
+      "OneHand는 고객 기록, 세일즈 활동, AI 지원을 하나의 워크스페이스에서 관리하도록 돕습니다. 보안과 개인정보 보호는 그 맥락을 지키는 방식으로 설계됩니다.",
     trustItems: [
       "서비스 제공을 위한 데이터 처리",
       "적용 가능한 개인정보 권리 지원",
@@ -69,7 +69,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "보안",
         title: "캡처부터 후속 업무까지 고객 맥락을 보호합니다.",
         description:
-          "Onehand는 계정 기록, 고객 대화, 세일즈 워크플로가 올바른 사람에게만 제공되어야 한다는 전제에서 설계됩니다.",
+          "OneHand는 계정 기록, 고객 대화, 세일즈 워크플로가 올바른 사람에게만 제공되어야 한다는 전제에서 설계됩니다.",
         cards: [
           {
             title: "워크스페이스 접근 제어",
@@ -92,7 +92,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "개인정보 보호",
         title: "개인정보 보호 제어는 페이지가 아니라 데이터를 따라갑니다.",
         description:
-          "고객 기록, 업로드 파일, 회의 노트에는 개인정보가 포함될 수 있습니다. Onehand는 제품 수명주기 전반에서 개인정보 기대치를 명확히 유지합니다.",
+          "고객 기록, 업로드 파일, 회의 노트에는 개인정보가 포함될 수 있습니다. OneHand는 제품 수명주기 전반에서 개인정보 기대치를 명확히 유지합니다.",
         cards: [
           {
             title: "목적 기반 처리",
@@ -115,7 +115,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "컴플라이언스",
         title: "신뢰할 수 있는 시스템이 필요한 팀을 위한 통제.",
         description:
-          "Onehand의 컴플라이언스 프로그램은 가용성, 접근 제어, 공급업체 관리, 데이터 처리 같은 실제 고객 요구를 중심으로 발전합니다.",
+          "OneHand의 컴플라이언스 프로그램은 가용성, 접근 제어, 공급업체 관리, 데이터 처리 같은 실제 고객 요구를 중심으로 발전합니다.",
         cards: [
           {
             title: "정책 거버넌스",
@@ -138,7 +138,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AI 거버넌스",
         title: "AI 지원은 책임 가능한 방식으로 남아야 합니다.",
         description:
-          "Onehand 에이전트는 승인된 워크스페이스 맥락에서 요약, 초안 작성, 라우팅, 검색을 돕습니다. 팀이 사람의 검토를 유지할 수 있도록 설계됩니다.",
+          "OneHand 에이전트는 승인된 워크스페이스 맥락에서 요약, 초안 작성, 라우팅, 검색을 돕습니다. 팀이 사람의 검토를 유지할 수 있도록 설계됩니다.",
         cards: [
           {
             title: "고객이 제어하는 맥락",
@@ -176,22 +176,22 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "지원 준비",
             description:
-              "고객은 공개 문의 흐름을 통해 계정, 개인정보, 보안 질문을 Onehand 팀에 전달할 수 있습니다.",
+              "고객은 공개 문의 흐름을 통해 계정, 개인정보, 보안 질문을 OneHand 팀에 전달할 수 있습니다.",
           },
         ],
       },
     ],
-    ctaTitle: "팀에서 Onehand를 사용하는 방법을 알아보세요.",
+    ctaTitle: "팀에서 OneHand를 사용하는 방법을 알아보세요.",
     ctaDescription:
-      "워크스페이스 접근, 개인정보 질문, 조직의 보안 검토 요청을 Onehand가 어떻게 처리하는지 공유할 수 있습니다.",
+      "워크스페이스 접근, 개인정보 질문, 조직의 보안 검토 요청을 OneHand가 어떻게 처리하는지 공유할 수 있습니다.",
     contactCta: "문의하기",
     privacyCta: "개인정보 처리방침 보기",
   },
   ja: {
-    eyebrow: "Onehand セキュリティ",
+    eyebrow: "OneHand セキュリティ",
     title: "顧客業務のためのセキュリティとプライバシー。",
     description:
-      "Onehandは顧客記録、営業活動、AI支援を一つのワークスペースで管理できるようにします。セキュリティとプライバシーは、その文脈を守るために設計されています。",
+      "OneHandは顧客記録、営業活動、AI支援を一つのワークスペースで管理できるようにします。セキュリティとプライバシーは、その文脈を守るために設計されています。",
     trustItems: [
       "サービス提供のためのデータ処理",
       "適用されるプライバシー権利を支援",
@@ -202,7 +202,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "セキュリティ",
         title: "取得からフォローアップまで顧客文脈を保護します。",
         description:
-          "Onehandはアカウント記録、顧客会話、営業ワークフローが適切な人だけに利用可能であるべきという考えで設計されています。",
+          "OneHandはアカウント記録、顧客会話、営業ワークフローが適切な人だけに利用可能であるべきという考えで設計されています。",
         cards: [
           {
             title: "ワークスペースアクセス制御",
@@ -225,7 +225,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "プライバシー",
         title: "プライバシー制御はページではなくデータに沿って働きます。",
         description:
-          "顧客記録、アップロードファイル、会議ノートには個人情報が含まれることがあります。Onehandは製品ライフサイクル全体でプライバシー期待値を明確に保ちます。",
+          "顧客記録、アップロードファイル、会議ノートには個人情報が含まれることがあります。OneHandは製品ライフサイクル全体でプライバシー期待値を明確に保ちます。",
         cards: [
           {
             title: "目的に基づく処理",
@@ -248,7 +248,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "コンプライアンス",
         title: "信頼できるシステムを必要とするチームのための統制。",
         description:
-          "Onehandのコンプライアンスプログラムは、可用性、アクセス制御、ベンダー管理、データ処理といった実務的な顧客要件を中心に形作られています。",
+          "OneHandのコンプライアンスプログラムは、可用性、アクセス制御、ベンダー管理、データ処理といった実務的な顧客要件を中心に形作られています。",
         cards: [
           {
             title: "ポリシーガバナンス",
@@ -271,7 +271,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AIガバナンス",
         title: "AI支援は説明責任を持つべきです。",
         description:
-          "Onehandエージェントは承認されたワークスペース文脈を使って要約、下書き、ルーティング、検索を支援します。人間がワークフローに残れるように設計されています。",
+          "OneHandエージェントは承認されたワークスペース文脈を使って要約、下書き、ルーティング、検索を支援します。人間がワークフローに残れるように設計されています。",
         cards: [
           {
             title: "顧客が制御する文脈",
@@ -309,22 +309,22 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "サポート準備",
             description:
-              "顧客は公開問い合わせフローを通じて、アカウント、プライバシー、セキュリティの質問をOnehandチームに連絡できます。",
+              "顧客は公開問い合わせフローを通じて、アカウント、プライバシー、セキュリティの質問をOneHandチームに連絡できます。",
           },
         ],
       },
     ],
-    ctaTitle: "チームでOnehandを使う方法を知る。",
+    ctaTitle: "チームでOneHandを使う方法を知る。",
     ctaDescription:
       "ワークスペースアクセス、プライバシーに関する質問、組織のセキュリティレビュー依頼への対応方法を共有できます。",
     contactCta: "問い合わせる",
     privacyCta: "プライバシーポリシーを読む",
   },
   "zh-TW": {
-    eyebrow: "Onehand 安全",
+    eyebrow: "OneHand 安全",
     title: "為客戶工作打造的安全與隱私權。",
     description:
-      "Onehand 協助團隊在同一個工作區管理客戶紀錄、銷售活動與 AI 協助。我們的安全與隱私權工作圍繞保護這些脈絡而設計。",
+      "OneHand 協助團隊在同一個工作區管理客戶紀錄、銷售活動與 AI 協助。我們的安全與隱私權工作圍繞保護這些脈絡而設計。",
     trustItems: [
       "為交付服務處理資料",
       "支援適用的隱私權利",
@@ -335,7 +335,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "安全",
         title: "從捕捉到跟進，保護客戶脈絡。",
         description:
-          "Onehand 圍繞帳戶紀錄、客戶對話與銷售工作流程設計，這些資訊只應提供給合適的人。",
+          "OneHand 圍繞帳戶紀錄、客戶對話與銷售工作流程設計，這些資訊只應提供給合適的人。",
         cards: [
           {
             title: "工作區存取控制",
@@ -358,7 +358,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "隱私權",
         title: "隱私權控制跟隨資料，而不只是跟隨頁面。",
         description:
-          "客戶紀錄、上傳檔案與會議紀錄可能包含個人資訊。Onehand 在產品生命週期中讓隱私權預期保持清楚可見。",
+          "客戶紀錄、上傳檔案與會議紀錄可能包含個人資訊。OneHand 在產品生命週期中讓隱私權預期保持清楚可見。",
         cards: [
           {
             title: "基於目的的處理",
@@ -381,7 +381,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "合規",
         title: "為需要可靠系統的團隊建立控制。",
         description:
-          "隨著 Onehand 成長，我們的合規計畫圍繞實際客戶需求形成：可用性、存取控制、供應商管理與資料處理。",
+          "隨著 OneHand 成長，我們的合規計畫圍繞實際客戶需求形成：可用性、存取控制、供應商管理與資料處理。",
         cards: [
           {
             title: "政策治理",
@@ -404,7 +404,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AI 治理",
         title: "AI 協助應保持可問責。",
         description:
-          "Onehand 代理協助在已核准的工作區脈絡中摘要、起草、分派與搜尋。產品設計保留人在工作流程中的判斷。",
+          "OneHand 代理協助在已核准的工作區脈絡中摘要、起草、分派與搜尋。產品設計保留人在工作流程中的判斷。",
         cards: [
           {
             title: "客戶控制的脈絡",
@@ -441,22 +441,22 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "支援準備",
             description:
-              "客戶可以透過公開聯繫流程向 Onehand 團隊提出帳戶、隱私權與安全問題。",
+              "客戶可以透過公開聯繫流程向 OneHand 團隊提出帳戶、隱私權與安全問題。",
           },
         ],
       },
     ],
-    ctaTitle: "了解如何在團隊中使用 Onehand。",
+    ctaTitle: "了解如何在團隊中使用 OneHand。",
     ctaDescription:
-      "我們可以說明 Onehand 如何處理工作區存取、隱私權問題，以及貴組織的安全審查請求。",
+      "我們可以說明 OneHand 如何處理工作區存取、隱私權問題，以及貴組織的安全審查請求。",
     contactCta: "聯繫我們",
     privacyCta: "閱讀隱私權政策",
   },
   "en-US": {
-    eyebrow: "Onehand security",
+    eyebrow: "OneHand security",
     title: "Security & privacy for customer work.",
     description:
-      "Onehand helps teams manage customer records, sales activity, and AI assistance in one workspace. Our security and privacy work is built around protecting that context.",
+      "OneHand helps teams manage customer records, sales activity, and AI assistance in one workspace. Our security and privacy work is built around protecting that context.",
     trustItems: [
       "Data handled for service delivery",
       "Privacy rights supported where applicable",
@@ -467,7 +467,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Security",
         title: "Protect customer context from capture to follow-up.",
         description:
-          "Onehand is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
+          "OneHand is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
         cards: [
           {
             title: "Workspace access controls",
@@ -490,7 +490,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Privacy",
         title: "Privacy controls follow the data, not just the page.",
         description:
-          "Customer records, uploaded files, and meeting notes can include personal information. Onehand keeps privacy expectations visible across the product lifecycle.",
+          "Customer records, uploaded files, and meeting notes can include personal information. OneHand keeps privacy expectations visible across the product lifecycle.",
         cards: [
           {
             title: "Purpose-based processing",
@@ -513,7 +513,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Compliance",
         title: "Controls built for teams that need a dependable system.",
         description:
-          "As Onehand grows, our compliance program is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
+          "As OneHand grows, our compliance program is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
         cards: [
           {
             title: "Policy governance",
@@ -536,7 +536,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AI governance",
         title: "AI assistance should stay accountable.",
         description:
-          "Onehand agents help summarize, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
+          "OneHand agents help summarize, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
         cards: [
           {
             title: "Customer controlled context",
@@ -574,22 +574,22 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "Support readiness",
             description:
-              "Customers can contact the Onehand team for account, privacy, and security questions through the public contact flow.",
+              "Customers can contact the OneHand team for account, privacy, and security questions through the public contact flow.",
           },
         ],
       },
     ],
-    ctaTitle: "Learn about using Onehand with your team.",
+    ctaTitle: "Learn about using OneHand with your team.",
     ctaDescription:
-      "We can share how Onehand handles workspace access, privacy questions, and security review requests for your organization.",
+      "We can share how OneHand handles workspace access, privacy questions, and security review requests for your organization.",
     contactCta: "Contact us",
     privacyCta: "Read privacy policy",
   },
   "en-GB": {
-    eyebrow: "Onehand security",
+    eyebrow: "OneHand security",
     title: "Security & privacy for customer work.",
     description:
-      "Onehand helps teams manage customer records, sales activity, and AI assistance in one workspace. Our security and privacy work is built around protecting that context.",
+      "OneHand helps teams manage customer records, sales activity, and AI assistance in one workspace. Our security and privacy work is built around protecting that context.",
     trustItems: [
       "Data handled for service delivery",
       "Privacy rights supported where applicable",
@@ -600,7 +600,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Security",
         title: "Protect customer context from capture to follow-up.",
         description:
-          "Onehand is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
+          "OneHand is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
         cards: [
           {
             title: "Workspace access controls",
@@ -623,7 +623,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Privacy",
         title: "Privacy controls follow the data, not just the page.",
         description:
-          "Customer records, uploaded files, and meeting notes can include personal information. Onehand keeps privacy expectations visible across the product lifecycle.",
+          "Customer records, uploaded files, and meeting notes can include personal information. OneHand keeps privacy expectations visible across the product lifecycle.",
         cards: [
           {
             title: "Purpose-based processing",
@@ -646,7 +646,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Compliance",
         title: "Controls built for teams that need a dependable system.",
         description:
-          "As Onehand grows, our compliance programme is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
+          "As OneHand grows, our compliance programme is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
         cards: [
           {
             title: "Policy governance",
@@ -669,7 +669,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AI governance",
         title: "AI assistance should stay accountable.",
         description:
-          "Onehand agents help summarise, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
+          "OneHand agents help summarise, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
         cards: [
           {
             title: "Customer controlled context",
@@ -707,14 +707,14 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "Support readiness",
             description:
-              "Customers can contact the Onehand team for account, privacy, and security questions through the public contact flow.",
+              "Customers can contact the OneHand team for account, privacy, and security questions through the public contact flow.",
           },
         ],
       },
     ],
-    ctaTitle: "Learn about using Onehand with your team.",
+    ctaTitle: "Learn about using OneHand with your team.",
     ctaDescription:
-      "We can share how Onehand handles workspace access, privacy questions, and security review requests for your organisation.",
+      "We can share how OneHand handles workspace access, privacy questions, and security review requests for your organisation.",
     contactCta: "Contact us",
     privacyCta: "Read privacy policy",
   },

@@ -211,7 +211,7 @@ export function MorePage() {
         className="py-6 text-center text-[11px]"
         style={{ color: "#D1D5DB" }}
       >
-        Onehand v1.0.0
+        OneHand v1.0.0
       </p>
     </div>
   );

@@ -172,11 +172,11 @@ const expandedLandingCopyByLanguage: Record<
       previewSearchQuery: "이번 분기 고객 요청",
       previewMeetingTitle: "주간 고객 동기화",
       previewNotesLabel: "노트",
-      previewAgentName: "Onehand 에이전트",
+      previewAgentName: "OneHand 에이전트",
       cards: [
         {
           eyebrow: "세일즈 에이전트",
-          title: "해야 할 일을 물으면 Onehand가 초안을 만듭니다.",
+          title: "해야 할 일을 물으면 OneHand가 초안을 만듭니다.",
           description: "딜 상태와 고객 기록을 읽고 이메일, 다음 액션, 체크리스트를 제안합니다.",
           items: ["후속 이메일 작성", "담당자에게 업무 배정", "거래 위험 신호 표시"],
         },
@@ -204,7 +204,7 @@ const expandedLandingCopyByLanguage: Record<
       eyebrow: "업무 통합",
       title: "흩어진 업무를 한 흐름으로 모으세요.",
       description:
-        "문서, 지식, 프로젝트, 고객 기록이 분리되지 않도록 Onehand 안에서 같은 구조로 쌓습니다.",
+        "문서, 지식, 프로젝트, 고객 기록이 분리되지 않도록 OneHand 안에서 같은 구조로 쌓습니다.",
       cards: [
         {
           eyebrow: "문서",
@@ -229,7 +229,7 @@ const expandedLandingCopyByLanguage: Record<
     trust: {
       title: "거래를 움직이는 팀이 신뢰합니다.",
       description:
-        "Onehand는 고객 기록을 잃지 않고 반복 업무를 줄이려는 팀을 위해 설계되었습니다.",
+        "OneHand는 고객 기록을 잃지 않고 반복 업무를 줄이려는 팀을 위해 설계되었습니다.",
       testimonials: [
         {
           company: "Cursor-style sales team",
@@ -262,11 +262,11 @@ const expandedLandingCopyByLanguage: Record<
       previewSearchQuery: "今四半期の顧客リクエスト",
       previewMeetingTitle: "週次顧客同期",
       previewNotesLabel: "ノート",
-      previewAgentName: "Onehand エージェント",
+      previewAgentName: "OneHand エージェント",
       cards: [
         {
           eyebrow: "セールスエージェント",
-          title: "やるべきことを聞くと Onehand が下書きを作ります。",
+          title: "やるべきことを聞くと OneHand が下書きを作ります。",
           description: "商談状況と顧客記録を読み、メール、次のアクション、チェックリストを提案します。",
           items: ["フォローアップ作成", "担当者へ割り当て", "リスク表示"],
         },
@@ -294,7 +294,7 @@ const expandedLandingCopyByLanguage: Record<
       eyebrow: "仕事を一つに",
       title: "散らばった仕事を一つの流れにまとめます。",
       description:
-        "文書、ナレッジ、プロジェクト、顧客記録を Onehand 内で同じ構造にそろえます。",
+        "文書、ナレッジ、プロジェクト、顧客記録を OneHand 内で同じ構造にそろえます。",
       cards: [
         {
           eyebrow: "ドキュメント",
@@ -319,7 +319,7 @@ const expandedLandingCopyByLanguage: Record<
     trust: {
       title: "商談を動かすチームに信頼されています。",
       description:
-        "Onehand は顧客記録を失わず、反復作業を減らしたいチームのために設計されています。",
+        "OneHand は顧客記録を失わず、反復作業を減らしたいチームのために設計されています。",
       testimonials: [
         {
           company: "Cursor-style sales team",
@@ -352,11 +352,11 @@ const expandedLandingCopyByLanguage: Record<
       previewSearchQuery: "本季客戶需求",
       previewMeetingTitle: "每週客戶同步",
       previewNotesLabel: "筆記",
-      previewAgentName: "Onehand 代理",
+      previewAgentName: "OneHand 代理",
       cards: [
         {
           eyebrow: "銷售代理",
-          title: "提出要做的事，Onehand 會產生草稿。",
+          title: "提出要做的事，OneHand 會產生草稿。",
           description: "讀取交易狀態與客戶紀錄，建議郵件、下一步行動與檢查清單。",
           items: ["跟進郵件", "分派負責人", "標記交易風險"],
         },
@@ -384,7 +384,7 @@ const expandedLandingCopyByLanguage: Record<
       eyebrow: "整合工作",
       title: "把分散的工作整合成一條流程。",
       description:
-        "文件、知識、專案與客戶紀錄在 Onehand 中以同一套結構沉澱。",
+        "文件、知識、專案與客戶紀錄在 OneHand 中以同一套結構沉澱。",
       cards: [
         {
           eyebrow: "文件",
@@ -409,7 +409,7 @@ const expandedLandingCopyByLanguage: Record<
     trust: {
       title: "受到推進交易的團隊信任。",
       description:
-        "Onehand 為希望保留客戶紀錄並減少重複工作的團隊而設計。",
+        "OneHand 為希望保留客戶紀錄並減少重複工作的團隊而設計。",
       testimonials: [
         {
           company: "Cursor-style sales team",
@@ -442,11 +442,11 @@ const expandedLandingCopyByLanguage: Record<
       previewSearchQuery: "customer request this quarter",
       previewMeetingTitle: "Weekly customer sync",
       previewNotesLabel: "Notes",
-      previewAgentName: "Onehand agent",
+      previewAgentName: "OneHand agent",
       cards: [
         {
           eyebrow: "Sales agent",
-          title: "You ask the tasks. Onehand drafts the work.",
+          title: "You ask the tasks. OneHand drafts the work.",
           description: "Read deal status and customer context to suggest emails, next steps, and checklists.",
           items: ["Draft follow-ups", "Assign owners", "Flag deal risk"],
         },
@@ -474,7 +474,7 @@ const expandedLandingCopyByLanguage: Record<
       eyebrow: "Bring work together",
       title: "Bring every sales motion together.",
       description:
-        "Docs, knowledge, projects, and customer records build on the same structure inside Onehand.",
+        "Docs, knowledge, projects, and customer records build on the same structure inside OneHand.",
       cards: [
         {
           eyebrow: "Docs",
@@ -499,7 +499,7 @@ const expandedLandingCopyByLanguage: Record<
     trust: {
       title: "Trusted by teams that move deals.",
       description:
-        "Onehand is built for teams that need customer memory and repeated work to stay under control.",
+        "OneHand is built for teams that need customer memory and repeated work to stay under control.",
       testimonials: [
         {
           company: "Cursor-style sales team",
@@ -532,11 +532,11 @@ const expandedLandingCopyByLanguage: Record<
       previewSearchQuery: "customer request this quarter",
       previewMeetingTitle: "Weekly customer sync",
       previewNotesLabel: "Notes",
-      previewAgentName: "Onehand agent",
+      previewAgentName: "OneHand agent",
       cards: [
         {
           eyebrow: "Sales agent",
-          title: "You ask the tasks. Onehand drafts the work.",
+          title: "You ask the tasks. OneHand drafts the work.",
           description: "Read deal status and customer context to suggest emails, next steps, and checklists.",
           items: ["Draft follow-ups", "Assign owners", "Flag deal risk"],
         },
@@ -564,7 +564,7 @@ const expandedLandingCopyByLanguage: Record<
       eyebrow: "Bring work together",
       title: "Bring every sales motion together.",
       description:
-        "Docs, knowledge, projects, and customer records build on the same structure inside Onehand.",
+        "Docs, knowledge, projects, and customer records build on the same structure inside OneHand.",
       cards: [
         {
           eyebrow: "Docs",
@@ -589,7 +589,7 @@ const expandedLandingCopyByLanguage: Record<
     trust: {
       title: "Trusted by teams that move deals.",
       description:
-        "Onehand is built for teams that need customer memory and repeated work to stay under control.",
+        "OneHand is built for teams that need customer memory and repeated work to stay under control.",
       testimonials: [
         {
           company: "Cursor-style sales team",
@@ -661,7 +661,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       previewTableHeaders: ["질문", "담당자", "답변"],
       previewRequester: "지수",
       previewQuestion: "이번 주 재계약 고객 중 위험 신호가 있는 곳은?",
-      previewAnswerTitle: "Onehand 에이전트",
+      previewAnswerTitle: "OneHand 에이전트",
       previewAnswer:
         "3개 계정에서 응답 지연이 보입니다. 담당자에게 후속 이메일 초안과 미팅 제안을 만들었습니다.",
       cardsLabel: "맞춤 에이전트가 처리할 수 있는 일",
@@ -718,12 +718,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     final: {
       title: "오늘 바로 시작하세요.",
       description: "",
-      primaryCta: "Onehand 시작",
+      primaryCta: "OneHand 시작",
       secondaryCta: "데모 요청",
     },
     footer: {
       tagline: "세일즈 팀을 위한 AI 워크스페이스",
-      socialLabel: "Onehand 채널",
+      socialLabel: "OneHand 채널",
       columns: [
         {
           title: "Product",
@@ -738,7 +738,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
           links: ["Help center", "Pricing", "Blog", "Templates"],
         },
         {
-          title: "Onehand for",
+          title: "OneHand for",
           links: ["Enterprise", "Sales teams", "Startups", "Partners"],
         },
       ],
@@ -789,7 +789,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       previewTableHeaders: ["質問", "担当", "回答"],
       previewRequester: "田中",
       previewQuestion: "今週更新予定の顧客でリスクがあるものは？",
-      previewAnswerTitle: "Onehand エージェント",
+      previewAnswerTitle: "OneHand エージェント",
       previewAnswer:
         "3 件のアカウントで返信遅延があります。担当者向けにフォローアップメール案と面談候補を作成しました。",
       cardsLabel: "カスタムエージェントが処理できること",
@@ -844,14 +844,14 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     final: {
-      title: "今日から Onehand を始めましょう。",
+      title: "今日から OneHand を始めましょう。",
       description: "小さく始めても、記録と自動化の基準は最初からチーム全体でそろいます。",
-      primaryCta: "Onehandを始める",
+      primaryCta: "OneHandを始める",
       secondaryCta: "デモを依頼",
     },
     footer: {
       tagline: "営業チームのための AI ワークスペース",
-      socialLabel: "Onehand チャンネル",
+      socialLabel: "OneHand チャンネル",
       columns: [
         {
           title: "Product",
@@ -866,7 +866,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
           links: ["Help center", "Pricing", "Blog", "Templates"],
         },
         {
-          title: "Onehand for",
+          title: "OneHand for",
           links: ["Enterprise", "Sales teams", "Startups", "Partners"],
         },
       ],
@@ -917,7 +917,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       previewTableHeaders: ["問題", "負責人", "答案"],
       previewRequester: "陳偉",
       previewQuestion: "本週續約客戶中有哪些風險訊號？",
-      previewAnswerTitle: "Onehand 代理",
+      previewAnswerTitle: "OneHand 代理",
       previewAnswer:
         "3 個帳戶出現回覆延遲。我已為負責人產生跟進郵件草稿與建議會議時間。",
       cardsLabel: "自訂代理可以處理",
@@ -972,14 +972,14 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     final: {
-      title: "今天開始使用 Onehand。",
+      title: "今天開始使用 OneHand。",
       description: "即使從小範圍開始，團隊的紀錄與自動化標準也能從第一天保持一致。",
-      primaryCta: "開始使用 Onehand",
+      primaryCta: "開始使用 OneHand",
       secondaryCta: "預約 Demo",
     },
     footer: {
       tagline: "為銷售團隊打造的 AI 工作區",
-      socialLabel: "Onehand 頻道",
+      socialLabel: "OneHand 頻道",
       columns: [
         {
           title: "Product",
@@ -994,7 +994,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
           links: ["Help center", "Pricing", "Blog", "Templates"],
         },
         {
-          title: "Onehand for",
+          title: "OneHand for",
           links: ["Enterprise", "Sales teams", "Startups", "Partners"],
         },
       ],
@@ -1045,7 +1045,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       previewTableHeaders: ["Question", "Owner", "Answer"],
       previewRequester: "Jason",
       previewQuestion: "Which renewal accounts show risk this week?",
-      previewAnswerTitle: "Onehand agent",
+      previewAnswerTitle: "OneHand agent",
       previewAnswer:
         "Three accounts have response delays. I drafted follow-up emails and suggested meeting times for each owner.",
       cardsLabel: "What Custom Agents can do",
@@ -1102,12 +1102,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     final: {
       title: "Get started today.",
       description: "",
-      primaryCta: "Get Onehand",
+      primaryCta: "Get OneHand",
       secondaryCta: "Request a demo",
     },
     footer: {
       tagline: "",
-      socialLabel: "Onehand channels",
+      socialLabel: "OneHand channels",
       columns: [
         {
           title: "Product",
@@ -1122,7 +1122,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
           links: ["Help center", "Pricing", "Blog", "Templates"],
         },
         {
-          title: "Onehand for",
+          title: "OneHand for",
           links: ["Enterprise", "Sales teams", "Startups", "Partners"],
         },
       ],
@@ -1173,7 +1173,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       previewTableHeaders: ["Question", "Owner", "Answer"],
       previewRequester: "Oliver",
       previewQuestion: "Which renewal accounts show risk this week?",
-      previewAnswerTitle: "Onehand agent",
+      previewAnswerTitle: "OneHand agent",
       previewAnswer:
         "Three accounts have response delays. I drafted follow-up emails and suggested meeting times for each owner.",
       cardsLabel: "What Custom Agents can do",
@@ -1230,12 +1230,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     final: {
       title: "Get started today.",
       description: "",
-      primaryCta: "Get Onehand",
+      primaryCta: "Get OneHand",
       secondaryCta: "Request a demo",
     },
     footer: {
       tagline: "",
-      socialLabel: "Onehand channels",
+      socialLabel: "OneHand channels",
       columns: [
         {
           title: "Product",
@@ -1250,7 +1250,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
           links: ["Help centre", "Pricing", "Blog", "Templates"],
         },
         {
-          title: "Onehand for",
+          title: "OneHand for",
           links: ["Enterprise", "Sales teams", "Startups", "Partners"],
         },
       ],

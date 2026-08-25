@@ -380,7 +380,7 @@ test.describe("User Web smoke E2E", () => {
       await expect(
         page.getByRole("heading", { name: "Your AI workspace" })
       ).toBeVisible();
-      await expect(page.getByText("Log in to Onehand")).toBeVisible();
+      await expect(page.getByText("Log in to OneHand")).toBeVisible();
       await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
 
       await seedAuthenticatedSession(page);
