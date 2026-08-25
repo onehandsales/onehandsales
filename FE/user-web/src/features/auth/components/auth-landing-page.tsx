@@ -137,19 +137,25 @@ type ExpandedLandingCopy = {
 
 const heroRotatingWordStyles = [
   {
-    className: "bg-[#c9edeb] text-[#0f0f0f]",
+    className: "bg-[#fee2e2] text-[#b91c1c]",
+  },
+  {
+    className: "bg-[#ffedd5] text-[#c2410c]",
+  },
+  {
+    className: "bg-[#fef3c7] text-[#92400e]",
+  },
+  {
+    className: "bg-[#dcfce7] text-[#166534]",
   },
   {
     className: "bg-[#dbeafe] text-[#1d4ed8]",
   },
   {
-    className: "bg-[#fee2e2] text-[#b91c1c]",
+    className: "bg-[#e0e7ff] text-[#4338ca]",
   },
   {
     className: "bg-[#ede9fe] text-[#6d28d9]",
-  },
-  {
-    className: "bg-[#fef3c7] text-[#92400e]",
   },
 ] as const;
 
@@ -614,11 +620,13 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "세일즈", suffix: "는 간단합니다." },
-        { label: "모바일", suffix: "은 간단합니다." },
-        { label: "Onehand", suffix: "는 간단합니다." },
-        { label: "AI", suffix: "는 간단합니다." },
-        { label: "모든 것", suffix: "이 간단합니다." },
+        { label: "OneHand", suffix: "는 간단해요." },
+        { label: "세일즈", suffix: "는 간단해요." },
+        { label: "AI", suffix: "는 간단해요." },
+        { label: "CRM", suffix: "은 간단해요." },
+        { label: "B2C", suffix: "는 간단해요." },
+        { label: "B2B", suffix: "는 간단해요." },
+        { label: "모든 것", suffix: "이 간단해요." },
       ],
     },
     work: {
@@ -740,10 +748,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
+        { label: "OneHand", suffix: "はシンプルです。" },
         { label: "営業", suffix: "はシンプルです。" },
-        { label: "モバイル", suffix: "はシンプルです。" },
-        { label: "Onehand", suffix: "はシンプルです。" },
         { label: "AI", suffix: "はシンプルです。" },
+        { label: "CRM", suffix: "はシンプルです。" },
+        { label: "B2C", suffix: "はシンプルです。" },
+        { label: "B2B", suffix: "はシンプルです。" },
         { label: "すべて", suffix: "はシンプルです。" },
       ],
     },
@@ -866,10 +876,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
+        { label: "OneHand", suffix: "很簡單。" },
         { label: "銷售", suffix: "很簡單。" },
-        { label: "行動端", suffix: "很簡單。" },
-        { label: "Onehand", suffix: "很簡單。" },
         { label: "AI", suffix: "很簡單。" },
+        { label: "CRM", suffix: "很簡單。" },
+        { label: "B2C", suffix: "很簡單。" },
+        { label: "B2B", suffix: "很簡單。" },
         { label: "一切", suffix: "都很簡單。" },
       ],
     },
@@ -992,10 +1004,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
+        { label: "OneHand", suffix: "is Simple." },
         { label: "Sales", suffix: "is Simple." },
-        { label: "Mobile", suffix: "is Simple." },
-        { label: "Onehand", suffix: "is Simple." },
         { label: "AI", suffix: "is Simple." },
+        { label: "CRM", suffix: "is Simple." },
+        { label: "B2C", suffix: "is Simple." },
+        { label: "B2B", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
     },
@@ -1118,10 +1132,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
+        { label: "OneHand", suffix: "is Simple." },
         { label: "Sales", suffix: "is Simple." },
-        { label: "Mobile", suffix: "is Simple." },
-        { label: "Onehand", suffix: "is Simple." },
         { label: "AI", suffix: "is Simple." },
+        { label: "CRM", suffix: "is Simple." },
+        { label: "B2C", suffix: "is Simple." },
+        { label: "B2B", suffix: "is Simple." },
         { label: "Everything", suffix: "is Simple." },
       ],
     },
