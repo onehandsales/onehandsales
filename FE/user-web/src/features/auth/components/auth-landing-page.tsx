@@ -6,7 +6,6 @@ import {
   Clock3,
   Database,
   FileText,
-  FolderKanban,
   Handshake,
   Mail,
   MessageCircle,
@@ -58,8 +57,8 @@ type LandingCopy = {
     readonly description: string;
     readonly inputs: readonly [string, string, string, string];
     readonly recordLabel: string;
-    readonly dealLabel: string;
-    readonly actionLabel: string;
+    readonly followUpLabel: string;
+    readonly resultLabel: string;
   };
   readonly persona: {
     readonly eyebrow: string;
@@ -166,13 +165,13 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
     flow: {
       eyebrow: "한 흐름",
-      title: "흩어진 기록이 다음 행동으로 이어져요.",
+      title: "흩어진 기록이 거래 성사까지 이어져요.",
       description:
-        "명함, 메모, 엑셀, 일정이 고객 기록과 딜로 모이고 오늘 해야 할 일로 이어집니다.",
+        "명함, 메모, 엑셀, 일정이 고객 흐름으로 모이고 후속 연락과 거래 성사로 이어집니다.",
       inputs: ["명함", "메모", "엑셀", "일정"],
-      recordLabel: "고객 기록",
-      dealLabel: "딜",
-      actionLabel: "다음 행동",
+      recordLabel: "고객 흐름",
+      followUpLabel: "후속 연락",
+      resultLabel: "거래 성사",
     },
     persona: {
       eyebrow: "누구에게 맞나요",
@@ -250,13 +249,13 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
     flow: {
       eyebrow: "One flow",
-      title: "Scattered records become your next move.",
+      title: "Scattered records become closed deals.",
       description:
-        "Cards, notes, Excel, and calendar moments come together as customer records, deals, and next actions.",
+        "Cards, notes, Excel, and calendar moments become customer flow, follow-up, and closed deals.",
       inputs: ["Cards", "Notes", "Excel", "Calendar"],
-      recordLabel: "Customer record",
-      dealLabel: "Deal",
-      actionLabel: "Next action",
+      recordLabel: "Customer flow",
+      followUpLabel: "Follow-up",
+      resultLabel: "Closed deal",
     },
     persona: {
       eyebrow: "Who it is for",
@@ -426,7 +425,7 @@ function LandingScrollStyles() {
         }
 
         .landing-flow-input-cluster {
-          max-width: 360px;
+          max-width: 240px;
         }
 
         .landing-hero-heading {
@@ -464,7 +463,7 @@ function LandingScrollStyles() {
           }
 
           .landing-flow-input-cluster {
-            max-width: 420px;
+            max-width: 240px;
           }
         }
 
@@ -689,23 +688,27 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
   const compactFlowItems = [
     ...copy.flow.inputs.map((label, index) => ({
       icon: flowInputVisuals[index] ?? FileText,
+      isResult: false,
       label,
       tone: "bg-[#FAFAF8]",
     })),
     {
       icon: Users,
+      isResult: false,
       label: copy.flow.recordLabel,
       tone: "bg-white",
     },
     {
-      icon: FolderKanban,
-      label: copy.flow.dealLabel,
+      icon: Mail,
+      isResult: false,
+      label: copy.flow.followUpLabel,
       tone: "bg-white",
     },
     {
-      icon: CheckCircle2,
-      label: copy.flow.actionLabel,
-      tone: "bg-white",
+      icon: CircleDollarSign,
+      isResult: true,
+      label: copy.flow.resultLabel,
+      tone: "bg-[#111827]",
     },
   ];
 
@@ -727,6 +730,7 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
             <FlowCompactItem
               icon={item.icon}
               index={index}
+              isResult={item.isResult}
               key={item.label}
               label={item.label}
               tone={item.tone}
@@ -734,26 +738,26 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
           ))}
         </div>
 
-        <div className="landing-flow-stage mt-12 hidden items-center justify-center gap-6 lg:flex">
-          <FlowInputCluster copy={copy} />
-          <FlowArrow delayClassName="" />
-          <FlowNode
-            delayClassName="landing-flow-delay-1"
-            icon={Users}
-            label={copy.flow.recordLabel}
-          />
-          <FlowArrow delayClassName="landing-flow-delay-1" />
-          <FlowNode
-            delayClassName="landing-flow-delay-2"
-            icon={FolderKanban}
-            label={copy.flow.dealLabel}
-          />
-          <FlowArrow delayClassName="landing-flow-delay-2" />
-          <FlowNode
-            delayClassName="landing-flow-delay-3"
-            icon={CheckCircle2}
-            label={copy.flow.actionLabel}
-          />
+        <div className="landing-flow-stage mt-12 hidden lg:block">
+          <div className="grid items-center justify-center gap-4 lg:grid-cols-[240px_48px_300px_48px_300px]">
+            <FlowInputCluster copy={copy} />
+            <FlowArrow delayClassName="" />
+            <FlowCustomerCard copy={copy} />
+            <FlowArrow delayClassName="landing-flow-delay-1" />
+            <div className="grid gap-3">
+              <FlowOutcomeCard
+                delayClassName="landing-flow-delay-2"
+                icon={Mail}
+                label={copy.flow.followUpLabel}
+              />
+              <FlowOutcomeCard
+                delayClassName="landing-flow-delay-3"
+                icon={CircleDollarSign}
+                isResult
+                label={copy.flow.resultLabel}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -763,22 +767,34 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
 function FlowCompactItem({
   icon: Icon,
   index,
+  isResult = false,
   label,
   tone,
 }: {
   readonly icon: IconType;
   readonly index: number;
+  readonly isResult?: boolean;
   readonly label: string;
   readonly tone: string;
 }) {
   return (
     <div
-      className={`landing-flow-float landing-flow-delay-${index} flex min-h-[72px] items-center gap-3 rounded-[8px] border border-[#E5E7EB] ${tone} p-3 text-left shadow-[0_12px_32px_rgba(17,24,39,0.05)]`}
+      className={[
+        `landing-flow-float landing-flow-delay-${index % 4} flex min-h-[72px] items-center gap-3 rounded-[8px] border p-3 text-left shadow-[0_12px_32px_rgba(17,24,39,0.05)]`,
+        isResult
+          ? "col-span-2 border-[#111827] bg-[#111827] text-white"
+          : `border-[#E5E7EB] ${tone} text-[#111827]`,
+      ].join(" ")}
     >
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] bg-white text-[#374151]">
+      <span
+        className={[
+          "grid h-9 w-9 shrink-0 place-items-center rounded-[8px]",
+          isResult ? "bg-white/12 text-white" : "bg-white text-[#374151]",
+        ].join(" ")}
+      >
         <Icon className="h-[18px] w-[18px]" />
       </span>
-      <span className="break-keep text-[13px] font-black leading-5 text-[#111827]">
+      <span className="break-keep text-[13px] font-black leading-5">
         {label}
       </span>
     </div>
@@ -787,7 +803,7 @@ function FlowCompactItem({
 
 function FlowInputCluster({ copy }: { readonly copy: LandingCopy }) {
   return (
-    <div className="landing-flow-input-cluster grid w-full grid-cols-2 gap-3">
+    <div className="landing-flow-input-cluster grid w-full grid-cols-1 gap-3">
       {copy.flow.inputs.map((input, index) => {
         const Icon = flowInputVisuals[index] ?? FileText;
 
@@ -813,7 +829,7 @@ function FlowArrow({ delayClassName }: { readonly delayClassName: string }) {
   return (
     <span
       aria-hidden="true"
-      className="inline-flex rotate-90 items-center justify-center lg:rotate-0"
+      className="flex w-full rotate-90 items-center justify-center lg:rotate-0"
     >
       <ArrowRight
         className={`landing-flow-line ${delayClassName} h-6 w-6 text-[#9CA3AF]`}
@@ -822,25 +838,73 @@ function FlowArrow({ delayClassName }: { readonly delayClassName: string }) {
   );
 }
 
-function FlowNode({
+function FlowCustomerCard({ copy }: { readonly copy: LandingCopy }) {
+  return (
+    <div className="landing-flow-float landing-flow-delay-1 rounded-[8px] border border-[#D3D1CB] bg-white p-5 text-left shadow-[0_18px_55px_rgba(17,24,39,0.08)]">
+      <div className="flex items-center gap-3">
+        <span className="grid h-12 w-12 place-items-center rounded-[8px] bg-[#111827] text-white">
+          <Users className="h-6 w-6" />
+        </span>
+        <div>
+          <h3 className="break-keep text-[18px] font-black leading-6 text-[#111827]">
+            {copy.flow.recordLabel}
+          </h3>
+          <div className="mt-1 h-2 w-24 rounded-full bg-[#E5E7EB]" />
+        </div>
+      </div>
+      <div className="mt-5 grid grid-cols-2 gap-2">
+        {copy.flow.inputs.map((input) => (
+          <span
+            className="rounded-[6px] border border-[#E5E7EB] bg-[#FAFAF8] px-3 py-2 text-[12px] font-black text-[#4B5563]"
+            key={input}
+          >
+            {input}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FlowOutcomeCard({
   delayClassName,
   icon: Icon,
+  isResult = false,
   label,
 }: {
   readonly delayClassName: string;
   readonly icon: IconType;
+  readonly isResult?: boolean;
   readonly label: string;
 }) {
   return (
     <div
-      className={`landing-flow-float ${delayClassName} flex min-h-[116px] w-full max-w-[240px] flex-col items-center justify-center rounded-[8px] border border-[#D3D1CB] bg-white px-5 shadow-[0_18px_55px_rgba(17,24,39,0.08)]`}
+      className={[
+        `landing-flow-float ${delayClassName} flex min-h-[94px] items-center gap-4 rounded-[8px] border px-5 text-left shadow-[0_18px_55px_rgba(17,24,39,0.08)]`,
+        isResult
+          ? "border-[#111827] bg-[#111827] text-white"
+          : "border-[#D3D1CB] bg-white text-[#111827]",
+      ].join(" ")}
     >
-      <span className="grid h-12 w-12 place-items-center rounded-[8px] bg-[#111827] text-white">
+      <span
+        className={[
+          "grid h-12 w-12 shrink-0 place-items-center rounded-[8px]",
+          isResult ? "bg-white/12 text-white" : "bg-[#FAFAF8] text-[#111827]",
+        ].join(" ")}
+      >
         <Icon className="h-6 w-6" />
       </span>
-      <span className="mt-4 break-keep text-[18px] font-black text-[#111827]">
-        {label}
-      </span>
+      <div>
+        <span className="break-keep text-[18px] font-black leading-6">
+          {label}
+        </span>
+        <div
+          className={[
+            "mt-2 h-2 w-20 rounded-full",
+            isResult ? "bg-white/20" : "bg-[#E5E7EB]",
+          ].join(" ")}
+        />
+      </div>
     </div>
   );
 }
