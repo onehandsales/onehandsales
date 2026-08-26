@@ -30,9 +30,9 @@ const footerSocialLinks: readonly {
 
 const footerColumnRoutes: readonly (readonly string[])[] = [
   ["/about", "/security", "/terms", "/privacy"],
-  ["/login"],
+  ["/"],
   ["/pricing"],
-  ["/contact", "/contact", "/contact"],
+  ["/", "/", "/"],
 ];
 
 export function PublicSiteFooter({
