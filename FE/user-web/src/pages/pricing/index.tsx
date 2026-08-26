@@ -1,6 +1,9 @@
 import { Check, CircleHelp, Sparkles } from "lucide-react";
 import { Fragment } from "react";
-import { PublicSitePageShell } from "@/features/public-site";
+import {
+  PublicContentContainer,
+  PublicSitePageShell,
+} from "@/features/public-site";
 import { publicSiteImages } from "@/features/public-site/constants/public-site-assets";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
@@ -12,7 +15,7 @@ export function PricingPage() {
   return (
     <PublicSitePageShell>
       <section className="bg-white pb-16 pt-16 md:pb-24 md:pt-20">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <PublicContentContainer>
           <div className="text-center">
             <h1 className="text-[38px] font-black leading-[1.05] tracking-normal md:text-[58px]">
               {pricing.title}
@@ -169,11 +172,11 @@ export function PricingPage() {
               </div>
             </aside>
           </div>
-        </div>
+        </PublicContentContainer>
       </section>
 
       <section className="bg-white pb-16 md:pb-24">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <PublicContentContainer>
           <h2 className="text-[34px] font-black md:text-[46px]">{pricing.featuresTitle}</h2>
           <div className="mt-8 overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left text-[13px]">
@@ -219,11 +222,11 @@ export function PricingPage() {
               </tbody>
             </table>
           </div>
-        </div>
+        </PublicContentContainer>
       </section>
 
       <section className="bg-white pb-20 md:pb-28">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <PublicContentContainer>
           <h2 className="text-[34px] font-black md:text-[46px]">{pricing.faqTitle}</h2>
           <div className="mt-8 divide-y divide-[#eeeeec] border-y border-[#eeeeec]">
             {pricing.faqs.map((faq) => (
@@ -237,7 +240,7 @@ export function PricingPage() {
               </button>
             ))}
           </div>
-        </div>
+        </PublicContentContainer>
       </section>
     </PublicSitePageShell>
   );

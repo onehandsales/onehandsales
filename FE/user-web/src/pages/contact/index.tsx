@@ -1,5 +1,8 @@
 import { Check, ChevronDown, Quote } from "lucide-react";
-import { PublicSitePageShell } from "@/features/public-site";
+import {
+  PublicContentContainer,
+  PublicSitePageShell,
+} from "@/features/public-site";
 import { publicSiteImages } from "@/features/public-site/constants/public-site-assets";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
@@ -17,7 +20,7 @@ export function ContactPage() {
   return (
     <PublicSitePageShell>
       <section className="bg-white pb-16 pt-16 md:pb-24 md:pt-20">
-        <div className="mx-auto grid w-full max-w-[1320px] gap-12 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
+        <PublicContentContainer className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
           <div>
             <h1 className="break-keep text-[42px] font-black leading-[0.98] tracking-normal md:text-[56px]">
               <span className="block">{contact.title[0]}</span>
@@ -58,11 +61,11 @@ export function ContactPage() {
           </div>
 
           <ContactForm />
-        </div>
+        </PublicContentContainer>
       </section>
 
       <section className="bg-white pb-20 md:pb-28">
-        <div className="mx-auto grid w-full max-w-[1320px] gap-6 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
+        <PublicContentContainer className="grid gap-6 md:grid-cols-3">
           {contact.testimonials.map((item, index) => (
             <article className="overflow-hidden rounded-[12px] bg-[#FAFAF8]" key={item.company}>
               <img
@@ -81,7 +84,7 @@ export function ContactPage() {
               </div>
             </article>
           ))}
-        </div>
+        </PublicContentContainer>
       </section>
     </PublicSitePageShell>
   );
