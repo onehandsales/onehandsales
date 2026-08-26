@@ -262,7 +262,7 @@ function DataExportStatusCard({
     >
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <StatusBadge presentation={presentation} status={request.status} />
-        <span className="min-w-0 break-all font-mono text-xs text-[#64748B]">
+        <span className="min-w-0 break-all text-xs text-[#64748B]">
           {request.id}
         </span>
       </div>
@@ -392,7 +392,7 @@ function AccountDeletionPanel({
           />
           <p className="text-[12px] leading-5 text-[#6B7280]">
             삭제 요청을 보내려면{" "}
-            <span className="break-all font-mono font-semibold text-[#111827]">
+            <span className="break-all font-semibold text-[#111827]">
               {confirmText}
             </span>
             를 정확히 입력해 주세요. 진행 중인 요청이 있으면 새 요청은
@@ -454,7 +454,7 @@ function DeletionStatusCard({
     <div className="grid min-w-0 gap-2 rounded-md border border-[#FECACA] bg-[#FEF2F2] px-3 py-3 text-sm">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
         <StatusBadge presentation={presentation} status={request.status} />
-        <span className="min-w-0 break-all font-mono text-xs text-[#7F1D1D]">
+        <span className="min-w-0 break-all text-xs text-[#7F1D1D]">
           {request.id}
         </span>
       </div>
@@ -591,9 +591,7 @@ function getFieldClassName(
     presentation === "modal"
       ? "focus:border-[#9CA3AF] focus:ring-2 focus:ring-[#F3F4F6]"
       : "focus:border-[#93C5FD]";
-  const fontClassName = fieldType === "input" ? "font-mono" : "";
-
-  return `${baseClassName} ${fieldClassName} ${focusClassName} ${fontClassName}`.trim();
+  return `${baseClassName} ${fieldClassName} ${focusClassName}`.trim();
 }
 
 // 기능 : 읽기 전용 metric label/value를 표시합니다.
