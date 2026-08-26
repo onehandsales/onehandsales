@@ -91,9 +91,10 @@ type LandingCopy = {
   };
 };
 
+const landingHeroSectionHeightClassName = "landing-hero-section-height";
 const landingSectionHeightClassName = "landing-section-height";
 const landingCenteredSectionClassName =
-  `${landingSectionHeightClassName} flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 lg:py-20`;
+  `${landingSectionHeightClassName} flex items-center justify-center`;
 const realMomentImageUrl =
   "https://images.pexels.com/photos/13801454/pexels-photo-13801454.jpeg?auto=compress&cs=tinysrgb&w=2400";
 
@@ -392,13 +393,87 @@ function LandingScrollStyles() {
           height: 0;
         }
 
+        .landing-container {
+          width: calc(100% - 32px);
+          max-width: 1200px;
+          margin-inline: auto;
+        }
+
+        .landing-heading {
+          max-width: 900px;
+          margin-inline: auto;
+        }
+
+        .landing-copy {
+          max-width: 680px;
+          margin-inline: auto;
+        }
+
+        .landing-grid {
+          max-width: 1040px;
+          margin-inline: auto;
+        }
+
+        .landing-flow-stage {
+          max-width: 1080px;
+          margin-inline: auto;
+        }
+
+        .landing-flow-compact-grid {
+          max-width: 360px;
+          margin-inline: auto;
+        }
+
+        .landing-flow-input-cluster {
+          max-width: 360px;
+        }
+
+        .landing-hero-heading {
+          max-width: 1060px;
+        }
+
+        .landing-real-copy {
+          max-width: 680px;
+        }
+
+        .landing-real-description {
+          max-width: 560px;
+        }
+
+        .landing-final-copy {
+          max-width: 620px;
+          margin-inline: auto;
+        }
+
+        .landing-hero-section-height {
+          min-height: calc(100svh - 56px);
+        }
+
         .landing-section-height {
-          min-height: 100svh;
+          min-height: calc(100svh + 56px);
+        }
+
+        @media (min-width: 640px) {
+          .landing-container {
+            width: calc(100% - 48px);
+          }
+
+          .landing-flow-input-cluster {
+            max-width: 420px;
+          }
         }
 
         @media (min-width: 1024px) {
+          .landing-container {
+            width: calc(100% - 64px);
+          }
+
+          .landing-hero-section-height {
+            min-height: calc(100vh - 56px);
+          }
+
           .landing-section-height {
-            min-height: 100vh;
+            min-height: calc(100vh + 56px);
           }
         }
 
@@ -526,9 +601,9 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
 
   return (
     <section
-      className={`${landingCenteredSectionClassName} overflow-hidden bg-white text-center`}
+      className={`${landingHeroSectionHeightClassName} flex items-center justify-center overflow-hidden bg-white text-center`}
     >
-      <div className="mx-auto flex w-full max-w-[1320px] flex-col items-center justify-center">
+      <div className="landing-container flex flex-col items-center justify-center">
         {copy.hero.eyebrow ? (
           <p className="text-[12px] font-black uppercase text-[#0075DE]">
             {copy.hero.eyebrow}
@@ -536,7 +611,7 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
         ) : null}
         <h1
           className={[
-            "max-w-[1060px] break-keep text-[44px] font-normal leading-[0.98] text-[#0f0f0f]",
+            "landing-hero-heading break-keep text-[44px] font-normal leading-[0.98] text-[#0f0f0f]",
             "sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]",
             copy.hero.eyebrow ? "mt-4" : "",
           ].join(" ")}
@@ -584,14 +659,14 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
         className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.68)_0%,rgba(0,0,0,0.36)_43%,rgba(0,0,0,0.08)_100%)]"
       />
       <div
-        className={`relative z-10 flex ${landingSectionHeightClassName} items-center px-4 py-12 sm:px-6 lg:px-8 lg:py-20`}
+        className={`relative z-10 flex ${landingSectionHeightClassName} items-center`}
       >
-        <div className="mx-auto w-full max-w-[1320px]">
-          <div className="max-w-[680px] text-white">
+        <div className="landing-container">
+          <div className="landing-real-copy text-white">
             <h2 className="break-keep text-[42px] font-black leading-[1.04] sm:text-[58px] lg:text-[72px]">
               {copy.realMoment.title}
             </h2>
-            <p className="mt-5 max-w-[560px] break-keep text-[16px] font-semibold leading-7 text-white/82 sm:text-[18px] sm:leading-8">
+            <p className="landing-real-description mt-5 break-keep text-[16px] font-semibold leading-7 text-white/82 sm:text-[18px] sm:leading-8">
               {copy.realMoment.description}
             </p>
           </div>
@@ -627,18 +702,18 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
 
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
-      <div className="mx-auto w-full max-w-[1320px] text-center">
+      <div className="landing-container text-center">
         <p className="text-[12px] font-black uppercase text-[#6B7280]">
           {copy.flow.eyebrow}
         </p>
-        <h2 className="mx-auto mt-3 max-w-[880px] break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
           {copy.flow.title}
         </h2>
-        <p className="mx-auto mt-5 max-w-[680px] break-keep text-[16px] font-semibold leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
+        <p className="landing-copy mt-5 break-keep text-[16px] font-semibold leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
           {copy.flow.description}
         </p>
 
-        <div className="mx-auto mt-8 grid max-w-[360px] grid-cols-2 gap-3 lg:hidden">
+        <div className="landing-flow-compact-grid mt-8 grid grid-cols-2 gap-3 lg:hidden">
           {compactFlowItems.map((item, index) => (
             <FlowCompactItem
               icon={item.icon}
@@ -650,7 +725,7 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
           ))}
         </div>
 
-        <div className="mx-auto mt-12 hidden max-w-[1080px] items-center justify-center gap-6 lg:flex">
+        <div className="landing-flow-stage mt-12 hidden items-center justify-center gap-6 lg:flex">
           <FlowInputCluster copy={copy} />
           <FlowArrow delayClassName="" />
           <FlowNode
@@ -703,7 +778,7 @@ function FlowCompactItem({
 
 function FlowInputCluster({ copy }: { readonly copy: LandingCopy }) {
   return (
-    <div className="grid w-full max-w-[360px] grid-cols-2 gap-3 sm:max-w-[420px]">
+    <div className="landing-flow-input-cluster grid w-full grid-cols-2 gap-3">
       {copy.flow.inputs.map((input, index) => {
         const Icon = flowInputVisuals[index] ?? FileText;
 
@@ -764,18 +839,18 @@ function FlowNode({
 function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-[#FAFAF8]`}>
-      <div className="mx-auto w-full max-w-[1120px] text-center">
+      <div className="landing-container text-center">
         <p className="text-[12px] font-black uppercase text-[#6B7280]">
           {copy.persona.eyebrow}
         </p>
-        <h2 className="mx-auto mt-3 max-w-[900px] break-keep text-[34px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[34px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
           {copy.persona.title}
         </h2>
-        <p className="mx-auto mt-4 max-w-[680px] break-keep text-[15px] font-semibold leading-6 text-[#555550] sm:mt-5 sm:text-[18px] sm:leading-8">
+        <p className="landing-copy mt-4 break-keep text-[15px] font-semibold leading-6 text-[#555550] sm:mt-5 sm:text-[18px] sm:leading-8">
           {copy.persona.description}
         </p>
 
-        <div className="mx-auto mt-8 grid max-w-[980px] grid-cols-2 gap-3 sm:mt-10">
+        <div className="landing-grid mt-8 grid grid-cols-2 gap-3 sm:mt-10">
           {copy.persona.personas.map((persona, index) => {
             const Icon = personaVisuals[index] ?? Users;
 
@@ -807,18 +882,18 @@ function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
 function TrustSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
-      <div className="mx-auto w-full max-w-[1120px] text-center">
+      <div className="landing-container text-center">
         <p className="text-[12px] font-black uppercase text-[#6B7280]">
           {copy.trustProof.eyebrow}
         </p>
-        <h2 className="mx-auto mt-3 max-w-[820px] break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
           {copy.trustProof.title}
         </h2>
-        <p className="mx-auto mt-5 max-w-[680px] break-keep text-[16px] font-semibold leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
+        <p className="landing-copy mt-5 break-keep text-[16px] font-semibold leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
           {copy.trustProof.description}
         </p>
 
-        <div className="mx-auto mt-10 grid max-w-[980px] grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="landing-grid mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {copy.trustProof.proofs.map((proof, index) => {
             const Icon = trustProofVisuals[index] ?? ShieldCheck;
 
@@ -852,13 +927,13 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
     <section
       className={`${landingSectionHeightClassName} flex flex-col bg-[#FAFAF8]`}
     >
-      <div className="flex flex-1 items-center justify-center px-4 py-14 text-center sm:px-6 lg:px-8 lg:py-20">
-        <div>
+      <div className="flex flex-1 items-center justify-center text-center">
+        <div className="landing-container">
           <h2 className="break-keep text-[38px] font-black leading-tight text-[#0f0f0f] sm:text-[42px]">
             {copy.final.title}
           </h2>
           {copy.final.description ? (
-            <p className="mx-auto mt-4 max-w-[620px] break-keep text-[16px] font-semibold leading-7 text-[#555550]">
+            <p className="landing-final-copy mt-4 break-keep text-[16px] font-semibold leading-7 text-[#555550]">
               {copy.final.description}
             </p>
           ) : null}
