@@ -310,7 +310,7 @@ export function TermsPage() {
   return (
     <PublicSitePageShell>
       <section className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-[820px]">
             <p className="text-[13px] font-semibold text-[#777770]">
               {copy.eyebrow}
