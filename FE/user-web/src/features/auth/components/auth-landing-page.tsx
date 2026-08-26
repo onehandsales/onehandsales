@@ -330,7 +330,7 @@ export function AuthLandingPage({
       <LandingScrollStyles />
       <PublicSiteHeader onLogin={onOpenLogin} />
       <LandingScrollProgressBar progress={scrollProgress} />
-      <main className="pt-14">
+      <main className="landing-snap-main pt-14">
         <HeroSection copy={copy} />
         <RealMomentSection copy={copy} />
         <FlowMotionSection copy={copy} />
@@ -349,6 +349,7 @@ function useLandingScrollProgress() {
 
   useEffect(() => {
     document.documentElement.classList.add("landing-scrollbar-hidden");
+    document.documentElement.classList.add("landing-scroll-snap");
     document.body.classList.add("landing-scrollbar-hidden");
 
     const updateProgress = () => {
@@ -370,6 +371,7 @@ function useLandingScrollProgress() {
       window.removeEventListener("scroll", updateProgress);
       window.removeEventListener("resize", updateProgress);
       document.documentElement.classList.remove("landing-scrollbar-hidden");
+      document.documentElement.classList.remove("landing-scroll-snap");
       document.body.classList.remove("landing-scrollbar-hidden");
     };
   }, []);
@@ -390,6 +392,16 @@ function LandingScrollStyles() {
           display: none;
           width: 0;
           height: 0;
+        }
+
+        .landing-scroll-snap {
+          scroll-padding-top: 56px;
+          scroll-snap-type: y proximity;
+        }
+
+        .landing-snap-main > section {
+          scroll-snap-align: start;
+          scroll-snap-stop: normal;
         }
 
         .landing-section-height {
