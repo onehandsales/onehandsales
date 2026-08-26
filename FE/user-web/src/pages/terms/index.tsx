@@ -1,5 +1,4 @@
 import {
-  ArrowRight,
   CheckCircle2,
   LockKeyhole,
   Scale,
@@ -8,9 +7,16 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { PublicSitePageShell } from "@/features/public-site";
-import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
+import {
+  PublicContentContainer,
+  PublicCtaPanel,
+  PublicDocumentHero,
+  PublicDocumentSection,
+  PublicInfoCard,
+  PublicPageSection,
+  PublicSitePageShell,
+  PublicTableOfContents,
+} from "@/features/public-site";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -304,139 +310,70 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
 // 기능 : 약관 페이지를 렌더링합니다.
 export function TermsPage() {
   const { language } = usePublicSiteLanguage();
-  const publicSitePath = usePublicSitePath();
   const copy = termsCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
     <PublicSitePageShell>
-      <section className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto w-full max-w-[1100px] px-4 sm:px-6 lg:px-8">
-          <div className="max-w-[820px]">
-            <p className="text-[13px] font-semibold text-[#777770]">
-              {copy.eyebrow}
-            </p>
-            <h1 className="mt-3 break-keep text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]">
-              {copy.title}
-            </h1>
-            <p className="mt-4 max-w-[720px] break-keep text-[15px] leading-7 text-[#555550]">
-              {copy.description}
-            </p>
-            <p className="mt-4 text-[12px] font-bold text-[#888880]">
-              {copy.lastUpdated}
-            </p>
-          </div>
+      <PublicPageSection>
+        <PublicContentContainer>
+          <PublicDocumentHero
+            description={copy.description}
+            eyebrow={copy.eyebrow}
+            lastUpdated={copy.lastUpdated}
+            title={copy.title}
+          />
 
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             {copy.policyLinks.map((item) => (
-              <PolicyCard item={item} key={item.title} openLabel={copy.openLabel} />
+              <PublicInfoCard
+                actionLabel={copy.openLabel}
+                description={item.description}
+                icon={item.icon}
+                key={item.title}
+                title={item.title}
+                titleAs="h2"
+                to={item.to}
+              />
             ))}
           </div>
 
           <div className="mt-16">
-            <nav className="rounded-[8px] bg-[#f7f7f5] p-4">
-              <p className="text-[12px] font-black uppercase tracking-[0.08em] text-[#888880]">
-                {copy.contentsLabel}
-              </p>
-              <div className="mt-4 grid gap-2 text-[13px] font-semibold text-[#555550] sm:grid-cols-2">
-                {copy.sections.map((section) => (
-                  <a
-                    className="rounded-[6px] px-2 py-1.5 hover:bg-white hover:text-[#111111]"
-                    href={`#${section.id}`}
-                    key={section.id}
-                  >
-                    {section.title}
-                  </a>
-                ))}
-              </div>
-            </nav>
+            <PublicTableOfContents
+              items={copy.sections}
+              label={copy.contentsLabel}
+            />
 
             <article className="mt-10">
-              <div className="rounded-[8px] bg-[#f7f7f5] p-6">
-                <div className="flex items-start gap-4">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-white text-[#0075DE]">
-                    <Sparkles className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <h2 className="break-keep text-[18px] font-black">
-                      {copy.shortTitle}
-                    </h2>
-                    <p className="mt-2 break-keep text-[13px] leading-6 text-[#555550]">
-                      {copy.shortDescription}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <PublicInfoCard
+                className="p-6"
+                description={copy.shortDescription}
+                icon={Sparkles}
+                title={copy.shortTitle}
+                titleAs="h2"
+              />
 
               <div className="mt-10 grid gap-12">
                 {copy.sections.map((section) => (
-                  <section id={section.id} key={section.id}>
-                    <h2 className="break-keep text-[26px] font-black leading-tight">
-                      {section.title}
-                    </h2>
-                    <div className="mt-4 grid gap-4 break-keep text-[14px] leading-7 text-[#444440]">
-                      {section.body.map((paragraph) => (
-                        <p key={paragraph}>{paragraph}</p>
-                      ))}
-                    </div>
-                  </section>
+                  <PublicDocumentSection
+                    id={section.id}
+                    key={section.id}
+                    paragraphs={section.body}
+                    title={section.title}
+                  />
                 ))}
               </div>
 
-              <div className="mt-14 rounded-[8px] bg-[#eef6ff] p-6">
-                <div className="flex items-start gap-4">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#0075DE]" />
-                  <div>
-                    <h2 className="break-keep text-[18px] font-black">
-                      {copy.reviewTitle}
-                    </h2>
-                    <p className="mt-2 break-keep text-[13px] leading-6 text-[#555550]">
-                      {copy.reviewDescription}
-                    </p>
-                    <Link
-                      className="mt-4 inline-flex items-center gap-2 text-[13px] font-black text-[#0075DE] underline-offset-2 hover:underline"
-                      to={publicSitePath("/contact")}
-                    >
-                      {copy.reviewCta}
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <PublicCtaPanel
+                className="mt-14"
+                description={copy.reviewDescription}
+                icon={CheckCircle2}
+                primaryAction={{ label: copy.reviewCta, to: "/contact" }}
+                title={copy.reviewTitle}
+              />
             </article>
           </div>
-        </div>
-      </section>
+        </PublicContentContainer>
+      </PublicPageSection>
     </PublicSitePageShell>
-  );
-}
-
-// 기능 : 정책 카드 항목을 렌더링합니다.
-function PolicyCard({
-  item,
-  openLabel,
-}: {
-  readonly item: PolicyLink;
-  readonly openLabel: string;
-}) {
-  const Icon = item.icon;
-  const publicSitePath = usePublicSitePath();
-
-  return (
-    <Link
-      className="group rounded-[8px] bg-[#f7f7f5] p-5 transition-colors hover:bg-[#eeeeec]"
-      to={publicSitePath(item.to)}
-    >
-      <span className="grid h-10 w-10 place-items-center rounded-[8px] bg-white text-[#0075DE]">
-        <Icon className="h-5 w-5" />
-      </span>
-      <h2 className="mt-5 break-keep text-[18px] font-black">{item.title}</h2>
-      <p className="mt-2 break-keep text-[13px] leading-6 text-[#555550]">
-        {item.description}
-      </p>
-      <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-black text-[#0075DE]">
-        {openLabel}
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </span>
-    </Link>
   );
 }

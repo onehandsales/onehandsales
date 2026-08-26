@@ -11,7 +11,13 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { PublicSitePageShell } from "@/features/public-site";
+import {
+  PublicContentContainer,
+  PublicDocumentHero,
+  PublicInfoCard,
+  PublicPageSection,
+  PublicSitePageShell,
+} from "@/features/public-site";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
   getPublicSiteCopyLanguage,
@@ -184,14 +190,9 @@ export function AboutPage() {
 
   return (
     <PublicSitePageShell>
-      <section className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
-          <p className="text-[13px] font-semibold text-[#777770]">
-            {copy.eyebrow}
-          </p>
-          <h1 className="mt-3 max-w-[760px] break-keep text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]">
-            {copy.title}
-          </h1>
+      <PublicPageSection>
+        <PublicContentContainer>
+          <PublicDocumentHero eyebrow={copy.eyebrow} title={copy.title} />
 
           <div className="mt-14 grid gap-10 md:grid-cols-[1fr_0.88fr] md:items-center">
             <LineScene labels={copy.sceneLabels} />
@@ -225,10 +226,7 @@ export function AboutPage() {
                   {copy.joinDescription}
                 </p>
               </div>
-              <div className="rounded-[8px] bg-[#f7f7f5] p-6">
-                <p className="break-keep text-[15px] font-black">
-                  {copy.joinCardTitle}
-                </p>
+              <PublicInfoCard className="p-6" title={copy.joinCardTitle}>
                 <Link
                   className="mt-4 inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-bold text-white hover:bg-[#006AC8]"
                   to={publicSitePath("/contact")}
@@ -236,7 +234,7 @@ export function AboutPage() {
                   {copy.joinCta}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-              </div>
+              </PublicInfoCard>
             </div>
           </section>
 
@@ -249,20 +247,18 @@ export function AboutPage() {
             </p>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {copy.newsItems.map((item) => (
-                <article
-                  className="min-h-[132px] rounded-[8px] bg-[#f7f7f5] p-5"
+                <PublicInfoCard
+                  className="min-h-[132px] rounded-[8px] bg-[#FAFAF8] p-5"
+                  icon={FileText}
                   key={item}
-                >
-                  <FileText className="h-5 w-5 text-[#777770]" />
-                  <p className="mt-5 break-keep text-[14px] font-bold leading-6 text-[#222220]">
-                    {item}
-                  </p>
-                </article>
+                  title={item}
+                  titleClassName="text-[14px] leading-6"
+                />
               ))}
             </div>
           </section>
-        </div>
-      </section>
+        </PublicContentContainer>
+      </PublicPageSection>
     </PublicSitePageShell>
   );
 }
@@ -284,7 +280,7 @@ function StorySection({
     <section className="grid gap-8 md:grid-cols-[0.9fr_1fr] md:items-center">
       <div
         className={[
-          "relative min-h-[220px] overflow-hidden rounded-[8px] bg-[#f7f7f5] p-8",
+          "relative min-h-[220px] overflow-hidden rounded-[8px] bg-[#FAFAF8] p-8",
           index % 2 === 1 ? "md:order-2" : "",
         ].join(" ")}
       >
@@ -327,7 +323,7 @@ function LineScene({
   readonly labels: readonly [string, string, string];
 }) {
   return (
-    <div className="relative min-h-[280px] overflow-hidden rounded-[8px] bg-[#f7f7f5] p-8">
+    <div className="relative min-h-[280px] overflow-hidden rounded-[8px] bg-[#FAFAF8] p-8">
       <div className="absolute left-8 right-8 top-[184px] h-px bg-[#222220]" />
       <div className="relative mx-auto grid max-w-[420px] grid-cols-3 gap-5">
         {[Users, MessageSquareText, Sparkles].map((Icon, index) => (

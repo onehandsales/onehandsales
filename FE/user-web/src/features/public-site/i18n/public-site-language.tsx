@@ -42,6 +42,7 @@ type PublicSiteCopy = {
     readonly logoAria: string;
     readonly nav: {
       readonly product: string;
+      readonly features: string;
       readonly pricing: string;
       readonly contact: string;
       readonly freeCta: string;
@@ -181,6 +182,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       logoAria: "OneHand 홈",
       nav: {
         product: "제품",
+        features: "기능",
         pricing: "요금제",
         contact: "문의",
         freeCta: "OneHand 시작",
@@ -424,6 +426,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
 const PublicSiteLanguageContext =
   createContext<PublicSiteLanguageContextValue | null>(null);
 
+// 기능 : 공개 사이트 언어 상태와 번역 copy를 하위 컴포넌트에 제공합니다.
 export function PublicSiteLanguageProvider({
   children,
 }: {
@@ -455,6 +458,7 @@ export function PublicSiteLanguageProvider({
   );
 }
 
+// 기능 : 공개 사이트 언어 context를 조회합니다.
 export function usePublicSiteLanguage() {
   const context = useContext(PublicSiteLanguageContext);
 
@@ -467,6 +471,7 @@ export function usePublicSiteLanguage() {
   return context;
 }
 
+// 기능 : copy가 같은 언어권을 공통 번역 언어로 정규화합니다.
 export function getPublicSiteCopyLanguage(
   language: PublicSiteLanguage
 ): PublicSiteCopyLanguage {
@@ -477,10 +482,12 @@ export function getPublicSiteCopyLanguage(
   return language;
 }
 
+// 기능 : 공개 사이트 언어 provider의 초기 언어를 결정합니다.
 function getInitialLanguage(): PublicSiteLanguage {
   return resolvePublicSiteLanguage();
 }
 
+// 기능 : 영어권 가격 페이지 copy를 공통 구조로 생성합니다.
 function makeTranslatedPricing(copy: {
   readonly title: string;
   readonly description: string;
@@ -571,6 +578,7 @@ function makeTranslatedPricing(copy: {
   };
 }
 
+// 기능 : 영어권 문의 페이지 copy를 공통 구조로 생성합니다.
 function makeTranslatedContact(copy: {
   readonly title: readonly [string, string];
   readonly description: string;
@@ -622,16 +630,19 @@ function makeTranslatedContact(copy: {
   };
 }
 
+// 기능 : 영어권 지역에 맞는 가격 통화 안내 문구를 반환합니다.
 function getEnglishPricingCurrency(languageRegion: "US" | "CA") {
   if (languageRegion === "CA") return "CAD reference";
   return "USD reference";
 }
 
+// 기능 : 영어권 지역에 맞는 문의 국가 기본 문구를 반환합니다.
 function getEnglishContactRegion(languageRegion: "US" | "CA") {
   if (languageRegion === "CA") return "Canada";
   return "United States";
 }
 
+// 기능 : 영어권 공개 사이트 전체 copy를 생성합니다.
 function makeEnglishCopy(copy: {
   readonly organise: string;
   readonly organizing: string;
@@ -645,6 +656,7 @@ function makeEnglishCopy(copy: {
     logoAria: "OneHand home",
     nav: {
       product: "Product",
+      features: "Features",
       pricing: copy.pricing,
       contact: copy.contact,
       freeCta: "Get OneHand",
@@ -762,6 +774,7 @@ function makeEnglishCopy(copy: {
   };
 }
 
+// 기능 : 영어 문구의 첫 글자를 대문자로 변환합니다.
 function capitalize(value: string) {
   return `${value.slice(0, 1).toUpperCase()}${value.slice(1)}`;
 }

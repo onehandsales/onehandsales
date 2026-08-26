@@ -30,11 +30,12 @@ const footerSocialLinks: readonly {
 
 const footerColumnRoutes: readonly (readonly string[])[] = [
   ["/about", "/security", "/terms", "/privacy"],
-  ["/"],
+  ["/download"],
   ["/pricing"],
-  ["/", "/", "/"],
+  ["/solutions#enterprise", "/solutions#small-business", "/solutions#personal"],
 ];
 
+// 기능 : 공개 사이트 하단 푸터와 locale 기반 링크 목록을 렌더링합니다.
 export function PublicSiteFooter({
   compactDesktop = false,
   showTopDivider = false,

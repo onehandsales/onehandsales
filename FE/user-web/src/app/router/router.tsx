@@ -22,10 +22,13 @@ import { ContactsPage } from "@/pages/contacts";
 import { ContactNewFullPage } from "@/pages/contacts/new-full";
 import { ContactNewPage } from "@/pages/contacts/new";
 import { ContactPage } from "@/pages/contact";
+import { DownloadPage } from "@/pages/download";
 import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
 import { DealNewFullPage } from "@/pages/deals/new-full";
 import { DealNewPage } from "@/pages/deals/new";
+import { FeaturesPage } from "@/pages/features";
+import { HelpPage } from "@/pages/help";
 import { HomePage } from "@/pages/home";
 import { ImportDetailPage } from "@/pages/import/detail";
 import { ImportPage } from "@/pages/import";
@@ -45,6 +48,7 @@ import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
 import { SecurityPage } from "@/pages/security";
 import { ScheduleWeekPage } from "@/pages/schedules/week";
+import { SolutionsPage } from "@/pages/solutions";
 import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 import { TermsPage } from "@/pages/terms";
@@ -62,7 +66,11 @@ export const router = createBrowserRouter([
   { path: "/", element: <LegacyPublicSiteRedirect to="/" /> },
   { path: "/login", element: <LegacyPublicSiteRedirect to="/login" /> },
   { path: "/signup", element: <LegacyPublicSiteRedirect to="/signup" /> },
+  { path: "/features", element: <LegacyPublicSiteRedirect to="/features" /> },
   { path: "/pricing", element: <LegacyPublicSiteRedirect to="/pricing" /> },
+  { path: "/solutions", element: <LegacyPublicSiteRedirect to="/solutions" /> },
+  { path: "/download", element: <LegacyPublicSiteRedirect to="/download" /> },
+  { path: "/help", element: <LegacyPublicSiteRedirect to="/help" /> },
   { path: "/contact", element: <LegacyPublicSiteRedirect to="/contact" /> },
   { path: "/about", element: <LegacyPublicSiteRedirect to="/about" /> },
   { path: "/security", element: <LegacyPublicSiteRedirect to="/security" /> },
@@ -216,6 +224,22 @@ export const router = createBrowserRouter([
 function getPublicSiteElement(path: PublicSiteLocalizedPath) {
   if (path === "/pricing") {
     return <PricingPage />;
+  }
+
+  if (path === "/features") {
+    return <FeaturesPage />;
+  }
+
+  if (path === "/solutions") {
+    return <SolutionsPage />;
+  }
+
+  if (path === "/download") {
+    return <DownloadPage />;
+  }
+
+  if (path === "/help") {
+    return <HelpPage />;
   }
 
   if (path === "/contact") {

@@ -7,6 +7,7 @@ import {
   type PublicSiteLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
+// 기능 : 공개 사이트 언어 선택 드롭다운을 렌더링합니다.
 export function PublicSiteLanguageSelect() {
   const { copy, language } = usePublicSiteLanguage();
   const switchLocale = usePublicSiteLocaleSwitcher();
@@ -15,15 +16,18 @@ export function PublicSiteLanguageSelect() {
     (option) => option.value === language
   );
 
+  // 기능 : 사용자가 선택한 언어로 공개 사이트 locale을 전환합니다.
   const onSelectLanguage = (nextLanguage: PublicSiteLanguage) => {
     switchLocale(nextLanguage);
   };
 
   useEffect(() => {
+    // 기능 : 언어 선택 details 메뉴를 닫습니다.
     const closeLanguageMenu = () => {
       detailsRef.current?.removeAttribute("open");
     };
 
+    // 기능 : 언어 선택 메뉴 바깥 클릭을 감지해 메뉴를 닫습니다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
 
@@ -67,7 +71,7 @@ export function PublicSiteLanguageSelect() {
               "block w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-bold",
               option.value === language
                 ? "bg-[#0000000D] text-[#111111]"
-                : "text-[#333330] hover:bg-[#f7f7f5]",
+                : "text-[#333330] hover:bg-[#FAFAF8]",
             ].join(" ")}
             data-language-option={option.value}
             key={option.value}

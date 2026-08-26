@@ -1,7 +1,14 @@
-import { ArrowRight, LockKeyhole } from "lucide-react";
-import { Link } from "react-router-dom";
-import { PublicSitePageShell } from "@/features/public-site";
-import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
+import { LockKeyhole } from "lucide-react";
+import {
+  PublicContentContainer,
+  PublicCtaPanel,
+  PublicDocumentHero,
+  PublicDocumentSection,
+  PublicInfoCard,
+  PublicPageSection,
+  PublicSitePageShell,
+  PublicTableOfContents,
+} from "@/features/public-site";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -416,66 +423,51 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
 // 기능 : 개인정보 페이지를 렌더링합니다.
 export function PrivacyPage() {
   const { language } = usePublicSiteLanguage();
-  const publicSitePath = usePublicSitePath();
   const copyLanguage = getPublicSiteCopyLanguage(language);
   const copy = privacyCopyByLanguage[copyLanguage];
 
   return (
     <PublicSitePageShell>
-      <section className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
+      <PublicPageSection>
+        <PublicContentContainer>
           <article>
-            <div className="max-w-[820px]">
-              <p className="text-[13px] font-semibold text-[#777770]">
-                {copy.eyebrow}
-              </p>
-              <h1 className="mt-3 break-keep text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]">
-                {copy.title}
-              </h1>
-              <div className="mt-5 grid max-w-[760px] gap-4 break-keep text-[14px] leading-7 text-[#444440]">
-                {copy.intro.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
+            <PublicDocumentHero
+              description={
+                <>
+                  {copy.intro.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </>
+              }
+              descriptionClassName="mt-5 grid max-w-[760px] gap-4 text-[14px] text-[#444440]"
+              eyebrow={copy.eyebrow}
+              title={copy.title}
+            />
+
+            <PublicInfoCard
+              className="mt-8 p-6"
+              icon={LockKeyhole}
+              title={copy.definitionsTitle}
+              titleAs="h2"
+            >
+              <ul className="mt-4 grid gap-3 break-keep text-[13px] leading-6 text-[#555550]">
+                {copy.definitions.map((definition) => (
+                  <li key={definition.term}>
+                    <strong className="text-[#222220]">
+                      {definition.term}
+                    </strong>
+                    {copyLanguage === "en-US" ? " " : ": "}
+                    {definition.description}
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </PublicInfoCard>
 
-            <div className="mt-8 rounded-[8px] bg-[#f7f7f5] p-6">
-              <div className="flex items-start gap-4">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-white text-[#0075DE]">
-                  <LockKeyhole className="h-5 w-5" />
-                </span>
-                <div>
-                  <h2 className="break-keep text-[18px] font-black">
-                    {copy.definitionsTitle}
-                  </h2>
-                  <ul className="mt-4 grid gap-3 break-keep text-[13px] leading-6 text-[#555550]">
-                    {copy.definitions.map((definition) => (
-                      <li key={definition.term}>
-                        <strong className="text-[#222220]">
-                          {definition.term}
-                        </strong>
-                        {copyLanguage === "en-US"
-                          ? " "
-                          : ": "}
-                        {definition.description}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <nav className="mt-10 grid gap-2 rounded-[8px] bg-[#f7f7f5] p-4 text-[13px] font-bold text-[#333330] sm:grid-cols-2">
-              {copy.sections.map((section, index) => (
-                <a
-                  className="rounded-[6px] px-2 py-1.5 hover:bg-white"
-                  href={`#${section.id}`}
-                  key={section.id}
-                >
-                  {index + 1}. {section.title.replace(/^\d+\.\s*/, "")}
-                </a>
-              ))}
-            </nav>
+            <PublicTableOfContents
+              className="mt-10"
+              items={copy.sections}
+              numbered
+            />
 
             <div className="mt-12 grid gap-12">
               {copy.sections.map((section) => (
@@ -487,27 +479,19 @@ export function PrivacyPage() {
               ))}
             </div>
 
-            <section className="mt-14 rounded-[8px] bg-[#eef6ff] p-6">
-              <h2 className="break-keep text-[20px] font-black">
-                {copy.contactTitle}
-              </h2>
-              <p className="mt-3 break-keep text-[14px] leading-7 text-[#444440]">
-                {copy.contactDescription}
-              </p>
-              <Link
-                className="mt-4 inline-flex items-center gap-2 text-[13px] font-black text-[#0075DE] underline-offset-2 hover:underline"
-                to={publicSitePath("/contact")}
-              >
-                {copy.contactCta}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+            <PublicCtaPanel
+              className="mt-14"
+              description={copy.contactDescription}
+              primaryAction={{ label: copy.contactCta, to: "/contact" }}
+              title={copy.contactTitle}
+            >
               <p className="mt-5 text-[12px] font-bold text-[#888880]">
                 {copy.lastUpdated}
               </p>
-            </section>
+            </PublicCtaPanel>
           </article>
-        </div>
-      </section>
+        </PublicContentContainer>
+      </PublicPageSection>
     </PublicSitePageShell>
   );
 }
@@ -521,27 +505,12 @@ function PrivacySectionBlock({
   readonly section: PrivacySection;
 }) {
   return (
-    <section id={section.id}>
-      <h2 className="break-keep text-[28px] font-black leading-tight">
-        {section.title}
-      </h2>
-      {section.paragraphs ? (
-        <div className="mt-4 grid gap-4 break-keep text-[14px] leading-7 text-[#444440]">
-          {section.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
-      ) : null}
-      {section.bullets ? (
-        <ul className="mt-4 grid gap-2 break-keep text-[14px] leading-7 text-[#444440]">
-          {section.bullets.map((bullet) => (
-            <li className="flex gap-3" key={bullet}>
-              <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#111111]" />
-              <span>{bullet}</span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+    <PublicDocumentSection
+      bullets={section.bullets}
+      id={section.id}
+      paragraphs={section.paragraphs}
+      title={section.title}
+    >
       {section.subsections ? (
         <div className="mt-6 grid gap-7">
           {section.subsections.map((subsection) => (
@@ -572,7 +541,7 @@ function PrivacySectionBlock({
       ) : null}
       {section.id === "california" ? (
         <div className="mt-6 overflow-hidden rounded-[8px] border border-[#eeeeec]">
-          <div className="grid grid-cols-[1fr_1.1fr_1.1fr] bg-[#f7f7f5] text-[12px] font-black text-[#333330]">
+          <div className="grid grid-cols-[1fr_1.1fr_1.1fr] bg-[#FAFAF8] text-[12px] font-black text-[#333330]">
             {copy.tableHeaders.map((header) => (
               <div className="p-3" key={header}>
                 {header}
@@ -593,6 +562,6 @@ function PrivacySectionBlock({
           ))}
         </div>
       ) : null}
-    </section>
+    </PublicDocumentSection>
   );
 }

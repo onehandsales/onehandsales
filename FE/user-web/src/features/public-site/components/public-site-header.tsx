@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   Bell,
   BookOpen,
   BriefcaseBusiness,
@@ -80,11 +81,34 @@ const productMenuIconGroups = [
   ],
 ];
 
+const productMenuTargets: readonly (readonly string[])[] = [
+  [
+    "/features#ai",
+    "/features#deals",
+    "/features#meeting-notes",
+    "/features#search",
+  ],
+  [
+    "/features#customers",
+    "/features#import-export",
+    "/features#deals",
+    "/features#schedules",
+  ],
+  [
+    "/features#customers",
+    "/features#security",
+    "/features#ai",
+    "/features#deals",
+  ],
+];
+
+// 기능 : 공개 사이트 상단 고정 헤더와 주요 내비게이션을 렌더링합니다.
 export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
   const navigate = useNavigate();
   const { copy } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
 
+  // 기능 : 로그인 버튼 클릭 시 지정된 핸들러 또는 locale 로그인 페이지 이동을 실행합니다.
   const handleLogin = () => {
     if (onLogin) {
       onLogin();
@@ -122,25 +146,28 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
                     {items.map(({ icon: Icon, tone }, itemIndex) => {
                       const itemCopy =
                         copy.common.productMenuGroups[groupIndex]?.[itemIndex];
+                      const targetPath =
+                        productMenuTargets[groupIndex]?.[itemIndex] ??
+                        "/features";
 
                       return (
-                      <Link
-                        className="flex items-start gap-3 rounded-[8px] p-2 hover:bg-[#f7f7f5]"
-                        key={itemCopy?.title}
-                        to={publicSitePath("/")}
-                      >
-                        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-[8px] ${tone}`}>
-                          <Icon className="h-5 w-5" />
-                        </span>
-                        <span>
-                          <span className="block text-[14px] font-black text-[#222220]">
-                            {itemCopy?.title}
+                        <Link
+                          className="flex items-start gap-3 rounded-[8px] p-2 hover:bg-[#FAFAF8]"
+                          key={itemCopy?.title}
+                          to={publicSitePath(targetPath)}
+                        >
+                          <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-[8px] ${tone}`}>
+                            <Icon className="h-5 w-5" />
                           </span>
-                          <span className="mt-0.5 block text-[12px] font-medium leading-5 text-[#777770]">
-                            {itemCopy?.description}
+                          <span>
+                            <span className="block text-[14px] font-black text-[#222220]">
+                              {itemCopy?.title}
+                            </span>
+                            <span className="mt-0.5 block text-[12px] font-medium leading-5 text-[#777770]">
+                              {itemCopy?.description}
+                            </span>
                           </span>
-                        </span>
-                      </Link>
+                        </Link>
                       );
                     })}
                   </div>
@@ -149,25 +176,28 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
               <div className="mt-5 grid border-t border-[#eeeeec] pt-4 md:grid-cols-2">
                 <Link
-                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#f7f7f5]"
-                  to={publicSitePath("/")}
+                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#FAFAF8]"
+                  to={publicSitePath("/features")}
                 >
                   <Sparkles className="h-4 w-4 text-[#777770]" />
                   {copy.common.productTour}
-                  <span className="text-[#0077e6]">→</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-[#0077e6]" />
                 </Link>
                 <Link
-                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#f7f7f5] md:justify-end"
+                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#FAFAF8] md:justify-end"
                   to={publicSitePath("/login")}
                 >
                   <BriefcaseBusiness className="h-4 w-4 text-[#777770]" />
                   {copy.common.productApp}
-                  <span className="text-[#0077e6]">→</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-[#0077e6]" />
                 </Link>
               </div>
             </div>
           </div>
 
+          <Link className="hover:text-[#111111]" to={publicSitePath("/features")}>
+            {copy.common.nav.features}
+          </Link>
           <Link className="hover:text-[#111111]" to={publicSitePath("/pricing")}>
             {copy.common.nav.pricing}
           </Link>

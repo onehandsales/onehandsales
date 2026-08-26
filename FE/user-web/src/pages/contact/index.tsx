@@ -38,7 +38,7 @@ export function ContactPage() {
               </div>
             </div>
 
-            <div className="mt-10 max-w-[560px] rounded-[12px] bg-[#f7f7f5] p-8">
+            <div className="mt-10 max-w-[560px] rounded-[12px] bg-[#FAFAF8] p-8">
               <img
                 alt="고객과 노트북으로 영업 자료를 확인하는 모습"
                 className="-mx-2 mb-6 h-40 w-[calc(100%+16px)] rounded-[8px] object-cover"
@@ -64,7 +64,7 @@ export function ContactPage() {
       <section className="bg-white pb-20 md:pb-28">
         <div className="mx-auto grid w-full max-w-[1320px] gap-6 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
           {contact.testimonials.map((item, index) => (
-            <article className="overflow-hidden rounded-[12px] bg-[#f7f7f5]" key={item.company}>
+            <article className="overflow-hidden rounded-[12px] bg-[#FAFAF8]" key={item.company}>
               <img
                 alt={`${item.company} 업무 이미지`}
                 className="h-36 w-full object-cover"

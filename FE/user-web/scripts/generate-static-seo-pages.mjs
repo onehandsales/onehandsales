@@ -251,6 +251,62 @@ const routeSeo = {
     changefreq: "weekly",
     schemaType: "WebPage",
   },
+  "/features": {
+    title: { ko: "기능 | OneHand Sales", en: "Features | OneHand Sales" },
+    description: {
+      ko: "고객/회사 관리, 딜, 일정, 회의록, 명함 스캔, 엑셀 가져오기/내보내기, AI 초안, 통합 검색, 보안 기능을 확인하세요.",
+      en: "Explore OneHand Sales features for customers, deals, schedules, meeting notes, business cards, Excel, AI drafts, search, and security.",
+    },
+    keywords: {
+      ko: ["OneHand Sales 기능", "영업 CRM 기능", "고객 관리 기능", "딜 관리 기능", "명함 스캔 CRM", "엑셀 가져오기 CRM", "AI 영업 도우미"],
+      en: ["OneHand Sales features", "sales CRM features", "customer management features", "deal management features", "business card scanning CRM", "Excel import CRM", "AI sales assistant"],
+    },
+    priority: "0.8",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/solutions": {
+    title: { ko: "솔루션 | OneHand Sales", en: "Solutions | OneHand Sales" },
+    description: {
+      ko: "개인 영업자, 작은 팀, 엔터프라이즈 조직에 맞는 OneHand Sales 사용 방식을 확인하세요.",
+      en: "See how OneHand Sales fits personal sellers, small businesses, and enterprise teams.",
+    },
+    keywords: {
+      ko: ["OneHand Sales 솔루션", "개인 영업 CRM", "스몰비즈니스 CRM", "엔터프라이즈 영업 CRM", "B2B 영업 CRM"],
+      en: ["OneHand Sales solutions", "personal sales CRM", "small business sales CRM", "enterprise sales CRM", "B2B sales CRM"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/download": {
+    title: { ko: "다운로드 | OneHand Sales", en: "Download | OneHand Sales" },
+    description: {
+      ko: "iOS와 Android에서 OneHand Sales를 열고 모바일 영업 흐름을 확인하세요.",
+      en: "Download OneHand Sales for iOS and Android and keep sales work moving on mobile.",
+    },
+    keywords: {
+      ko: ["OneHand Sales 다운로드", "영업 CRM 앱", "모바일 CRM 앱", "iOS 영업 앱", "Android 영업 앱"],
+      en: ["OneHand Sales download", "sales CRM app", "mobile CRM app", "iOS sales app", "Android sales app"],
+    },
+    priority: "0.6",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/help": {
+    title: { ko: "도움말 | OneHand Sales", en: "Help | OneHand Sales" },
+    description: {
+      ko: "OneHand Sales의 무료 사용, 모바일, AI, 엑셀 다운로드, 휴지통 복구, 로그인, 팀 사용 FAQ를 확인하세요.",
+      en: "Find answers about OneHand Sales pricing, mobile use, AI, Excel export, trash restore, sign-in, and team usage.",
+    },
+    keywords: {
+      ko: ["OneHand Sales 도움말", "영업 CRM FAQ", "CRM 엑셀 다운로드", "CRM 휴지통 복구", "AI CRM 도움말"],
+      en: ["OneHand Sales help", "sales CRM FAQ", "CRM Excel export", "CRM trash restore", "AI CRM help"],
+    },
+    priority: "0.6",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
   "/pricing": {
     title: { ko: "가격 | 한손에 영업", en: "Pricing | OneHand Sales" },
     description: {
@@ -473,6 +529,7 @@ for (const language of languages) {
 
 await fs.writeFile(path.join(distDir, "sitemap.xml"), renderSitemap());
 
+// 기능 : 정적 SEO HTML에 route와 언어별 메타데이터를 렌더링합니다.
 function renderHtml(html, language, routePath) {
   const route = routeSeo[routePath];
   const title = localized(route.title, language);
@@ -512,6 +569,7 @@ function renderHtml(html, language, routePath) {
   return nextHtml;
 }
 
+// 기능 : 정적 HTML 안의 meta 태그를 생성하거나 값을 교체합니다.
 function upsertMeta(html, attribute, key, content) {
   const pattern = new RegExp(`<meta(?=[^>]*\\s${attribute}="${escapeRegExp(key)}")[^>]*>`, "i");
   const tag = `<meta ${attribute}="${escapeAttribute(key)}" content="${escapeAttribute(content)}" />`;
@@ -521,6 +579,7 @@ function upsertMeta(html, attribute, key, content) {
     : html.replace("</head>", `    ${tag}\n  </head>`);
 }
 
+// 기능 : 정적 HTML 안의 canonical link 태그를 생성하거나 값을 교체합니다.
 function upsertCanonical(html, href) {
   const tag = `<link rel="canonical" href="${escapeAttribute(href)}" />`;
   const pattern = /<link(?=[^>]*rel="canonical")[^>]*>/i;
@@ -530,18 +589,21 @@ function upsertCanonical(html, href) {
     : html.replace("</head>", `    ${tag}\n  </head>`);
 }
 
+// 기능 : 정적 HTML의 생성 메타 영역을 지정한 내용으로 교체합니다.
 function replaceGeneratedMeta(html, marker, replacement) {
   return html
     .replace(new RegExp(`\\n?\\s*<meta(?=[^>]*data-onehand-seo="${marker}")[^>]*>`, "gi"), "")
     .replace(/(<meta\s+property="og:locale"[^>]*>)/i, `$1\n${replacement}`);
 }
 
+// 기능 : 정적 HTML의 생성 링크 영역을 지정한 내용으로 교체합니다.
 function replaceGeneratedLinks(html, marker, replacement) {
   return html
     .replace(new RegExp(`\\n?\\s*<link(?=[^>]*data-onehand-seo="${marker}")[^>]*>`, "gi"), "")
     .replace(/(<link\s+rel="canonical"[^>]*>)/i, `$1\n${replacement}`);
 }
 
+// 기능 : 정적 HTML에 넣을 Open Graph locale alternate meta 문자열을 생성합니다.
 function renderOgLocaleAlternates(currentLanguage) {
   return languages
     .filter((language) => language.value !== currentLanguage.value)
@@ -549,6 +611,7 @@ function renderOgLocaleAlternates(currentLanguage) {
     .join("\n");
 }
 
+// 기능 : 정적 HTML에 넣을 hreflang alternate link 문자열을 생성합니다.
 function renderAlternateLinks(routePath) {
   const alternateLinks = languages.map(
     (language) =>
@@ -562,6 +625,7 @@ function renderAlternateLinks(routePath) {
   return alternateLinks.join("\n");
 }
 
+// 기능 : 공개 사이트 색인 대상 route로 sitemap XML을 생성합니다.
 function renderSitemap() {
   const urls = [];
 
@@ -577,10 +641,12 @@ function renderSitemap() {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`;
 }
 
+// 기능 : 정적 JSON-LD에 사용할 언어별 키워드 목록을 반환합니다.
 function getSoftwareSeoKeywords(language) {
   return language.value === "ko" ? homeKoreanSeoKeywords : homeEnglishSeoKeywords;
 }
 
+// 기능 : 정적 JSON-LD에 사용할 언어별 대상 고객 목록을 반환합니다.
 function getSoftwareSeoAudience(language) {
   return language.value === "ko"
     ? [
@@ -605,6 +671,7 @@ function getSoftwareSeoAudience(language) {
       ];
 }
 
+// 기능 : 정적 JSON-LD에 사용할 언어별 기능 목록을 반환합니다.
 function getSoftwareFeatureList(language) {
   return language.value === "ko"
     ? [
@@ -629,6 +696,7 @@ function getSoftwareFeatureList(language) {
       ];
 }
 
+// 기능 : 정적 SEO 페이지에 삽입할 JSON-LD 객체를 생성합니다.
 function getJsonLd({ canonicalUrl, description, language, route, title }) {
   const keywords = localizedList(route.keywords, language);
 
@@ -694,22 +762,27 @@ function getJsonLd({ canonicalUrl, description, language, route, title }) {
   };
 }
 
+// 기능 : 언어와 공개 route를 locale prefix가 있는 정적 경로로 변환합니다.
 function toLocalizedPath(language, routePath) {
   return routePath === "/" ? `/${language.slug}` : `/${language.slug}${routePath}`;
 }
 
+// 기능 : 언어별 문자열 map에서 현재 언어의 값을 선택합니다.
 function localized(values, language) {
   return values[language.value] ?? values.en ?? values.ko;
 }
 
+// 기능 : 언어별 문자열 배열 map에서 현재 언어의 값을 선택합니다.
 function localizedList(values, language) {
   return values[language.value] ?? values.en ?? values.ko ?? [];
 }
 
+// 기능 : sitemap alternate route에 사용할 우선순위 값을 한 단계 낮춥니다.
 function lowerPriority(priority) {
   return Math.max(0.3, Number(priority) - 0.1).toFixed(1);
 }
 
+// 기능 : HTML attribute 값으로 안전하게 사용할 문자열로 이스케이프합니다.
 function escapeAttribute(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -718,10 +791,12 @@ function escapeAttribute(value) {
     .replaceAll(">", "&gt;");
 }
 
+// 기능 : HTML 본문에 안전하게 넣을 수 있는 문자열로 이스케이프합니다.
 function escapeHtml(value) {
   return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
+// 기능 : 정규식 문자열 조합에 안전한 패턴으로 이스케이프합니다.
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

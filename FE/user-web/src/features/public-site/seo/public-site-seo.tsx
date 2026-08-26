@@ -284,6 +284,114 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
       en: homeEnglishSeoKeywords,
     },
   },
+  "/features": {
+    title: {
+      ko: "기능 | OneHand Sales",
+      en: "Features | OneHand Sales",
+    },
+    description: {
+      ko: "고객/회사 관리, 딜, 일정, 회의록, 명함 스캔, 엑셀 가져오기/내보내기, AI 초안, 통합 검색, 보안 기능을 확인하세요.",
+      en: "Explore OneHand Sales features for customers, deals, schedules, meeting notes, business cards, Excel, AI drafts, search, and security.",
+    },
+    keywords: {
+      ko: [
+        "OneHand Sales 기능",
+        "영업 CRM 기능",
+        "고객 관리 기능",
+        "딜 관리 기능",
+        "명함 스캔 CRM",
+        "엑셀 가져오기 CRM",
+        "AI 영업 도우미",
+      ],
+      en: [
+        "OneHand Sales features",
+        "sales CRM features",
+        "customer management features",
+        "deal management features",
+        "business card scanning CRM",
+        "Excel import CRM",
+        "AI sales assistant",
+      ],
+    },
+  },
+  "/solutions": {
+    title: {
+      ko: "솔루션 | OneHand Sales",
+      en: "Solutions | OneHand Sales",
+    },
+    description: {
+      ko: "개인 영업자, 작은 팀, 엔터프라이즈 조직에 맞는 OneHand Sales 사용 방식을 확인하세요.",
+      en: "See how OneHand Sales fits personal sellers, small businesses, and enterprise teams.",
+    },
+    keywords: {
+      ko: [
+        "OneHand Sales 솔루션",
+        "개인 영업 CRM",
+        "스몰비즈니스 CRM",
+        "엔터프라이즈 영업 CRM",
+        "B2B 영업 CRM",
+      ],
+      en: [
+        "OneHand Sales solutions",
+        "personal sales CRM",
+        "small business sales CRM",
+        "enterprise sales CRM",
+        "B2B sales CRM",
+      ],
+    },
+  },
+  "/download": {
+    title: {
+      ko: "다운로드 | OneHand Sales",
+      en: "Download | OneHand Sales",
+    },
+    description: {
+      ko: "iOS와 Android에서 OneHand Sales를 열고 모바일 영업 흐름을 확인하세요.",
+      en: "Download OneHand Sales for iOS and Android and keep sales work moving on mobile.",
+    },
+    keywords: {
+      ko: [
+        "OneHand Sales 다운로드",
+        "영업 CRM 앱",
+        "모바일 CRM 앱",
+        "iOS 영업 앱",
+        "Android 영업 앱",
+      ],
+      en: [
+        "OneHand Sales download",
+        "sales CRM app",
+        "mobile CRM app",
+        "iOS sales app",
+        "Android sales app",
+      ],
+    },
+  },
+  "/help": {
+    title: {
+      ko: "도움말 | OneHand Sales",
+      en: "Help | OneHand Sales",
+    },
+    description: {
+      ko: "OneHand Sales의 무료 사용, 모바일, AI, 엑셀 다운로드, 휴지통 복구, 로그인, 팀 사용 FAQ를 확인하세요.",
+      en: "Find answers about OneHand Sales pricing, mobile use, AI, Excel export, trash restore, sign-in, and team usage.",
+    },
+    keywords: {
+      ko: [
+        "OneHand Sales 도움말",
+        "영업 CRM FAQ",
+        "CRM 엑셀 다운로드",
+        "CRM 휴지통 복구",
+        "AI CRM 도움말",
+      ],
+      en: [
+        "OneHand Sales help",
+        "sales CRM FAQ",
+        "CRM Excel export",
+        "CRM trash restore",
+        "AI CRM help",
+      ],
+    },
+  },
   "/pricing": {
     title: {
       ko: "가격 | 한손에 영업",
@@ -508,6 +616,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   },
 };
 
+// 기능 : 현재 공개 사이트 route에 맞는 브라우저 SEO 메타데이터를 적용합니다.
 export function PublicSiteSeo() {
   const location = useLocation();
   const metadata = useMemo(
@@ -522,6 +631,7 @@ export function PublicSiteSeo() {
   return null;
 }
 
+// 기능 : 공개 사이트 pathname에서 SEO 메타데이터 입력값을 계산합니다.
 function getPublicSiteSeoMetadata(pathname: string): PublicSiteSeoMetadata {
   const language = getPublicSiteLanguageFromPathname(pathname) ?? "ko";
   const publicPath = stripPublicSiteLocaleFromPathname(pathname);
@@ -543,10 +653,12 @@ function getPublicSiteSeoMetadata(pathname: string): PublicSiteSeoMetadata {
   };
 }
 
+// 기능 : 공개 사이트 SEO 색인 대상 언어인지 확인합니다.
 function isPublicSiteSeoLanguage(language: PublicSiteLanguage) {
   return publicSiteSeoLanguageValues.some((value) => value === language);
 }
 
+// 기능 : 언어별 SEO 문자열에서 현재 언어에 맞는 값을 선택합니다.
 function getLocalizedSeoValue(
   values: Partial<Record<PublicSiteLanguage | "en", string>>,
   language: PublicSiteLanguage
@@ -554,6 +666,7 @@ function getLocalizedSeoValue(
   return values[language] ?? values.en ?? values.ko ?? "OneHand Sales";
 }
 
+// 기능 : 언어별 SEO 키워드 목록에서 현재 언어에 맞는 값을 선택합니다.
 function getLocalizedSeoKeywords(
   values: Partial<Record<PublicSiteLanguage | "en", readonly string[]>>,
   language: PublicSiteLanguage
@@ -561,10 +674,12 @@ function getLocalizedSeoKeywords(
   return values[language] ?? values.en ?? values.ko ?? [];
 }
 
+// 기능 : 소프트웨어 스키마에 사용할 언어별 키워드 목록을 반환합니다.
 function getSoftwareSeoKeywords(language: PublicSiteLanguage) {
   return language === "ko" ? homeKoreanSeoKeywords : homeEnglishSeoKeywords;
 }
 
+// 기능 : 소프트웨어 스키마에 사용할 언어별 대상 고객 목록을 반환합니다.
 function getSoftwareSeoAudience(language: PublicSiteLanguage) {
   return language === "ko"
     ? [
@@ -589,6 +704,7 @@ function getSoftwareSeoAudience(language: PublicSiteLanguage) {
       ];
 }
 
+// 기능 : 소프트웨어 스키마에 사용할 언어별 기능 목록을 반환합니다.
 function getSoftwareFeatureList(language: PublicSiteLanguage) {
   return language === "ko"
     ? [
@@ -613,6 +729,7 @@ function getSoftwareFeatureList(language: PublicSiteLanguage) {
       ];
 }
 
+// 기능 : 계산된 SEO 메타데이터를 document head에 반영합니다.
 function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
   document.documentElement.lang = metadata.htmlLang;
   document.title = metadata.title;
@@ -655,6 +772,7 @@ function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
   replaceJsonLd(metadata);
 }
 
+// 기능 : Open Graph locale alternate meta 태그를 현재 언어 기준으로 교체합니다.
 function replaceOgLocaleAlternates(currentLanguage: PublicSiteLanguage) {
   document.head
     .querySelectorAll<HTMLMetaElement>('meta[data-onehand-seo="og-locale-alternate"]')
@@ -671,6 +789,7 @@ function replaceOgLocaleAlternates(currentLanguage: PublicSiteLanguage) {
     });
 }
 
+// 기능 : head meta 태그를 생성하거나 기존 값을 갱신합니다.
 function upsertMeta(
   attribute: "name" | "property",
   key: string,
@@ -689,6 +808,7 @@ function upsertMeta(
   meta.content = content;
 }
 
+// 기능 : canonical link 태그를 하나만 유지하며 갱신합니다.
 function upsertCanonical(href: string) {
   let canonical = document.head.querySelector<HTMLLinkElement>(
     'link[rel="canonical"]'
@@ -709,6 +829,7 @@ function upsertCanonical(href: string) {
   extraCanonicals.forEach((link) => link.remove());
 }
 
+// 기능 : 현재 공개 사이트 route의 hreflang alternate link 태그를 교체합니다.
 function replaceAlternateLinks(routePath: PublicSiteLocalizedPath) {
   document.head
     .querySelectorAll<HTMLLinkElement>('link[data-onehand-seo="alternate"]')
@@ -731,6 +852,7 @@ function replaceAlternateLinks(routePath: PublicSiteLocalizedPath) {
   document.head.appendChild(defaultLink);
 }
 
+// 기능 : 현재 route의 JSON-LD 구조화 데이터를 교체합니다.
 function replaceJsonLd(metadata: PublicSiteSeoMetadata) {
   document.head
     .querySelectorAll<HTMLScriptElement>('script[data-onehand-seo="json-ld"]')
@@ -743,6 +865,7 @@ function replaceJsonLd(metadata: PublicSiteSeoMetadata) {
   document.head.appendChild(script);
 }
 
+// 기능 : 현재 route와 언어에 맞는 JSON-LD 객체를 생성합니다.
 function getJsonLd(metadata: PublicSiteSeoMetadata) {
   const keywords = getLocalizedSeoKeywords(
     routeSeoCopy[metadata.routePath].keywords,

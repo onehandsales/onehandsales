@@ -1,5 +1,4 @@
 import {
-  ArrowRight,
   Bot,
   CheckCircle2,
   Database,
@@ -10,9 +9,14 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { PublicSitePageShell } from "@/features/public-site";
-import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
+import {
+  PublicContentContainer,
+  PublicCtaPanel,
+  PublicDocumentHero,
+  PublicInfoCard,
+  PublicPageSection,
+  PublicSitePageShell,
+} from "@/features/public-site";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -323,24 +327,19 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
 // 기능 : 보안 페이지를 렌더링합니다.
 export function SecurityPage() {
   const { language } = usePublicSiteLanguage();
-  const publicSitePath = usePublicSitePath();
   const copy = securityCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
     <PublicSitePageShell>
-      <section className="bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-[13px] font-semibold text-[#777770]">
-              {copy.eyebrow}
-            </p>
-            <h1 className="mx-auto mt-3 max-w-[760px] text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]">
-              {copy.title}
-            </h1>
-            <p className="mx-auto mt-4 max-w-[680px] text-[15px] leading-7 text-[#555550]">
-              {copy.description}
-            </p>
-          </div>
+      <PublicPageSection>
+        <PublicContentContainer>
+          <PublicDocumentHero
+            align="center"
+            description={copy.description}
+            descriptionClassName="max-w-[680px]"
+            eyebrow={copy.eyebrow}
+            title={copy.title}
+          />
 
           <div className="mx-auto mt-10 grid max-w-[860px] gap-3 md:grid-cols-3">
             {copy.trustItems.map((label, index) => {
@@ -348,7 +347,7 @@ export function SecurityPage() {
 
               return (
                 <div
-                  className="flex items-center gap-3 rounded-[8px] bg-[#f7f7f5] px-4 py-3"
+                  className="flex items-center gap-3 rounded-[8px] bg-[#FAFAF8] px-4 py-3"
                   key={label}
                 >
                   <Icon className="h-4 w-4 text-[#0075DE]" />
@@ -369,34 +368,22 @@ export function SecurityPage() {
               />
             ))}
           </div>
-        </div>
-      </section>
+        </PublicContentContainer>
+      </PublicPageSection>
 
-      <section className="bg-[#f7f7f5] py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto w-full max-w-[1320px] px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-[34px] font-black leading-tight md:text-[46px]">
-            {copy.ctaTitle}
-          </h2>
-          <p className="mx-auto mt-4 max-w-[660px] text-[14px] leading-7 text-[#555550]">
-            {copy.ctaDescription}
-          </p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-bold text-white hover:bg-[#006AC8]"
-              to={publicSitePath("/contact")}
-            >
-              {copy.contactCta}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              className="inline-flex h-9 items-center rounded-[6px] bg-white px-4 text-[13px] font-bold text-[#0075DE] hover:bg-[#eeeeec]"
-              to={publicSitePath("/privacy")}
-            >
-              {copy.privacyCta}
-            </Link>
-          </div>
-        </div>
-      </section>
+      <PublicPageSection tone="muted">
+        <PublicContentContainer>
+          <PublicCtaPanel
+            align="center"
+            className="mx-auto max-w-[760px] bg-white"
+            description={copy.ctaDescription}
+            primaryAction={{ label: copy.contactCta, to: "/contact" }}
+            secondaryAction={{ label: copy.privacyCta, to: "/privacy" }}
+            title={copy.ctaTitle}
+            tone="neutral"
+          />
+        </PublicContentContainer>
+      </PublicPageSection>
     </PublicSitePageShell>
   );
 }
@@ -429,14 +416,12 @@ function SecuritySectionBlock({
 
         <div className="grid min-w-0 gap-3">
           {section.cards.map((card) => (
-            <article className="rounded-[8px] bg-[#f7f7f5] p-5" key={card.title}>
-              <h3 className="text-[15px] font-black">
-                {card.title}
-              </h3>
-              <p className="mt-2 text-[13px] leading-6 text-[#555550]">
-                {card.description}
-              </p>
-            </article>
+            <PublicInfoCard
+              description={card.description}
+              key={card.title}
+              title={card.title}
+              titleClassName="text-[15px]"
+            />
           ))}
         </div>
       </div>
