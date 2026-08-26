@@ -13,6 +13,7 @@ import { usePublicSitePath } from "@/features/public-site/i18n/public-site-local
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
 type PublicSiteFooterProps = {
+  readonly compactDesktop?: boolean;
   readonly showTopDivider?: boolean;
 };
 
@@ -35,6 +36,7 @@ const footerColumnRoutes: readonly (readonly string[])[] = [
 ];
 
 export function PublicSiteFooter({
+  compactDesktop = false,
   showTopDivider = false,
 }: PublicSiteFooterProps) {
   const { copy } = usePublicSiteLanguage();
@@ -43,7 +45,9 @@ export function PublicSiteFooter({
   return (
     <footer
       className={[
-        "min-h-[418px] bg-white py-14",
+        compactDesktop
+          ? "min-h-[418px] bg-white py-14 lg:min-h-[400px]"
+          : "min-h-[418px] bg-white py-14",
         showTopDivider ? "border-t border-[#e3e3de]" : "",
       ].join(" ")}
     >

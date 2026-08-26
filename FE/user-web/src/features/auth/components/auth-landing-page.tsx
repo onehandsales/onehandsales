@@ -93,6 +93,7 @@ type LandingCopy = {
 
 const landingHeroSectionHeightClassName = "landing-hero-section-height";
 const landingSectionHeightClassName = "landing-section-height";
+const landingFinalSectionHeightClassName = "landing-final-section-height";
 const landingCenteredSectionClassName =
   `${landingSectionHeightClassName} flex items-center justify-center`;
 const realMomentImageUrl =
@@ -339,7 +340,7 @@ export function AuthLandingPage({
         <TrustSection copy={copy} />
         <FinalSection copy={copy} />
       </main>
-      <PublicSiteFooter />
+      <PublicSiteFooter compactDesktop />
       {isModalOpen ? children : null}
     </div>
   );
@@ -453,6 +454,10 @@ function LandingScrollStyles() {
           min-height: calc(100svh + 56px);
         }
 
+        .landing-final-section-height {
+          min-height: calc(100svh + 56px);
+        }
+
         @media (min-width: 640px) {
           .landing-container {
             width: calc(100% - 48px);
@@ -474,6 +479,10 @@ function LandingScrollStyles() {
 
           .landing-section-height {
             min-height: calc(100vh + 56px);
+          }
+
+          .landing-final-section-height {
+            min-height: calc(100vh + 56px - 400px);
           }
         }
 
@@ -925,7 +934,7 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
 
   return (
     <section
-      className={`${landingSectionHeightClassName} flex flex-col bg-[#FAFAF8]`}
+      className={`${landingFinalSectionHeightClassName} flex flex-col bg-[#FAFAF8]`}
     >
       <div className="flex flex-1 items-center justify-center text-center">
         <div className="landing-container">
