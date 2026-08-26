@@ -65,7 +65,7 @@ VITE_SUPABASE_REDIRECT_URL="https://www.onehandsales.com/auth/callback"
 
 ## Auth
 
-Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`, `/ko/pricing`, `/ko/contact`, `/ko/about`, `/ko/security`, `/ko/terms`, `/ko/privacy`. Current KR/US/CA market focus exposes `ko`, `en-us`, and `en-ca` in the public language selector. `ja`, `zh-tw`, `en-gb`, `en-sg`, and `en-au` remain future expansion candidates. Existing `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` URLs redirect to the preferred locale URL. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
+Public/auth canonical URLs use locale prefixes: `/ko`, `/ko/login`, `/ko/signup`, `/ko/pricing`, `/ko/contact`, `/ko/about`, `/ko/security`, `/ko/terms`, `/ko/privacy`. Current KR/US/CA market focus exposes `ko`, `en-us`, and `en-ca` in the public language selector. `ja`, `en-gb`, `en-sg`, and `en-au` remain future expansion candidates only. Existing `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, and `/privacy` URLs redirect to the preferred locale URL. 로그인 후 실제 앱은 `/app` 아래에서 동작한다.
 
 우선 타겟 국가는 한국, 미국, 캐나다다. 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en` 1차 지원으로 운영한다.
 

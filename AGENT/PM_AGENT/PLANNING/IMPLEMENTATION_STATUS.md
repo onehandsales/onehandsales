@@ -59,7 +59,7 @@
 2026-07-10 기준 현재 완료된 품질 확인은 다음이다.
 
 - 핵심 업무 happy path 1회 재검증 완료: 로그인, 회사, 담당자, 제품, 딜, 일정, 회의록, 명함 OCR, Import, Search, Trash, Domain XLSX Export, 설정/더보기.
-- 현재 노출 언어 기준 URL locale smoke 대상: `ko`, `en-us`, `en-ca`. `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로 보류한다.
+- 현재 노출 언어 기준 URL locale smoke 대상: `ko`, `en-us`, `en-ca`. `ja`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로만 보류한다.
 - 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
 - `/auth/callback`은 locale prefix 없이 유지한다.
 - 로그인/회원가입 provider 버튼은 가능한 경우 browser popup으로 Supabase OAuth authorize URL을 열고, popup이 차단되면 기존 full-page redirect로 fallback한다.

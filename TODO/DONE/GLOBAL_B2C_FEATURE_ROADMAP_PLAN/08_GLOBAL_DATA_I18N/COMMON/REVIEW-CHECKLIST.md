@@ -7,7 +7,7 @@
 
 - [x] `/app` URL에 locale prefix가 붙지 않았다.
 - [x] 1차 앱 언어가 `ko-KR`, `en`으로 제한됐다.
-- [x] `ja`, `zh-TW`, `zh-CN`이 08 범위에 섞이지 않았다.
+- [x] `ja`, `zh-CN`이 08 범위에 섞이지 않았다.
 - [x] KR/US, KRW/USD 범위를 넘는 국가/통화/전화번호가 과하게 열리지 않았다.
 - [x] 결제/세금, Admin 운영, Analytics, Backup/Restore가 08에 섞이지 않았다.
 - [x] 기존 한국 사용자 데이터가 깨지지 않았다.

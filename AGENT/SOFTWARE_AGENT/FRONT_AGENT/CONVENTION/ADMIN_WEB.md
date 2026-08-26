@@ -65,8 +65,8 @@
 
 - Tailwind CSS를 기본 스타일링 도구로 사용한다.
 - 기본 UI 폰트는 Notion-like 다국어 스택을 기준으로 한다: `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`.
-- 이 폰트 기준은 현재 노출 언어인 한국어, 영어 US, 영어 Canada에 적용하고, 추후 확장 후보인 일본어, 대만 번체 중국어, 영어 UK/Singapore/Australia에도 재사용한다.
-- 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 대만 번체 중국어/일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
+- 이 폰트 기준은 현재 노출 언어인 한국어, 영어 US, 영어 Canada에 적용하고, 추후 확장 후보인 일본어, 영어 UK/Singapore/Australia에도 재사용한다.
+- 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
 - 아이콘은 가능한 한 `lucide-react`를 사용한다.
 - 운영 화면은 데스크톱 뷰를 우선한다.
 - 카드 중심의 장식적 화면보다 표, 필터, 상세 패널 중심의 실무형 레이아웃을 우선한다.

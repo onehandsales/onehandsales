@@ -16,17 +16,12 @@ export { publicSiteLanguageStorageKey } from "@/features/public-site/i18n/public
 
 export type PublicSiteLanguage =
   | "ko"
-  | "ja"
-  | "zh-TW"
   | "en-US"
-  | "en-GB"
-  | "en-SG"
-  | "en-AU"
   | "en-CA";
 
 export type PublicSiteCopyLanguage = Exclude<
   PublicSiteLanguage,
-  "en-SG" | "en-AU" | "en-CA"
+  "en-CA"
 >;
 
 type PublicSiteLanguageContextValue = {
@@ -169,7 +164,6 @@ export const publicSiteLanguageOptions: readonly {
   { value: "en-CA", label: "English (Canada)", htmlLang: "en-CA" },
   // Future expansion:
   // { value: "ja", label: "日本語", htmlLang: "ja-JP" },
-  // { value: "zh-TW", label: "繁體中文", htmlLang: "zh-TW" },
   // { value: "en-GB", label: "English (UK)", htmlLang: "en-GB" },
   // { value: "en-SG", label: "English (Singapore)", htmlLang: "en-SG" },
   // { value: "en-AU", label: "English (Australia)", htmlLang: "en-AU" },
@@ -177,12 +171,7 @@ export const publicSiteLanguageOptions: readonly {
 
 const publicSiteHtmlLangByLanguage: Record<PublicSiteLanguage, string> = {
   ko: "ko-KR",
-  ja: "ja-JP",
-  "zh-TW": "zh-TW",
   "en-US": "en-US",
-  "en-GB": "en-GB",
-  "en-SG": "en-SG",
-  "en-AU": "en-AU",
   "en-CA": "en-CA",
 };
 
@@ -413,236 +402,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         },
       ],
     },
-  },
-  ja: {
-    common: {
-      logoAria: "OneHand ホーム",
-      nav: {
-        product: "製品",
-        pricing: "料金",
-        contact: "お問い合わせ",
-        freeCta: "OneHandを始める",
-        login: "ログイン",
-      },
-      productMenuGroups: [
-        [
-          { title: "AI 商談アシスタント", description: "次のアクションと優先順位を整理" },
-          { title: "自動フォローアップ", description: "抜け漏れた連絡と予定を通知" },
-          { title: "議事録整理", description: "メモを要約して商談に接続" },
-          { title: "横断検索", description: "会社、担当者、商談を一度に検索" },
-        ],
-        [
-          { title: "顧客データベース", description: "会社と担当者を一か所に集約" },
-          { title: "ドキュメント", description: "提案書と資料を整理" },
-          { title: "プロジェクト", description: "商談と実行タスクを同時に管理" },
-          { title: "カレンダー", description: "ミーティングと後続タスクを追跡" },
-        ],
-        [
-          { title: "連携", description: "営業記録を相互に接続" },
-          { title: "セキュリティ", description: "機密メモと権限を分離" },
-          { title: "テンプレート", description: "反復業務の構造を保存" },
-          { title: "レポート", description: "成果とリスクを確認" },
-        ],
-      ],
-      productTour: "OneHand 1.0 を見る",
-      productApp: "アプリへ移動",
-      footerColumns: [
-        ["会社紹介", "OneHandについて", "セキュリティ", "規約とプライバシー", "プライバシー権利"],
-        ["ダウンロード", "iOS & Android"],
-        ["リソース", "料金"],
-        ["用途別", "エンタープライズ", "スモールビジネス", "個人"],
-      ],
-      cookieSettings: "Cookie設定",
-      languageAria: "言語を選択",
-      footerSocialAria: "OneHand ソーシャルリンク",
-      copyright: "© 2026 OneHand Labs, Inc.",
-    },
-    landing: {
-      heroTitle: ["営業チームと顧客が", "一緒に動く場所"],
-      heroDescription:
-        "商談、担当者、予定、議事録を一つの画面でつなぎ、今日やるべきことをすぐ確認できます。",
-      primaryCta: "OneHandを始める",
-      secondaryCta: "流れを見る",
-      customerStrip: "反復営業が多いチームのためのCRM",
-      sectionWork: "営業の流れを一日中見失わない。",
-      sectionAssistants: "必要なときにいつでも依頼。",
-      sectionWorkspace: "すべての営業作業を一か所で管理。",
-      quote: "“AIの前に、営業の流れが整います。”",
-      trustedTitle: "成果で語る営業チームのために。",
-      finalCta: "今すぐ始めましょう。",
-      finalPrimary: "OneHandを始める",
-    },
-    pricing: makeTranslatedPricing({
-      title: "営業運営に必要な一つのツール。",
-      description:
-        "個人営業から小規模チームのパイプラインまで、必要な機能を段階的に選べます。",
-      tags: ["商談", "顧客", "予定", "議事録", "検索", "AI"],
-      captions: ["顧客相談", "業務設計", "チーム運営"],
-      monthly: "月払い",
-      annual: "年払いで20%節約",
-      currency: "JPY基準",
-      recommended: "おすすめ",
-      aiLabel: "AIオプション",
-      aiTitle: "重要な業務のためのAI営業アシスタント。",
-      aiDescription: "議事録要約、次の行動、フォローアップ通知をパイプラインに接続します。",
-      aiCta: "AI機能を見る",
-      setupTitle: "導入支援込み",
-      setupDescription: "データ移行、営業ステージ整理、チームオンボーディングを一緒に設計します。",
-      featuresTitle: "料金と機能",
-      featureColumn: "機能",
-      faqTitle: "よくある質問",
-    }),
-    contact: makeTranslatedContact({
-      title: ["OneHand", "営業チームに問い合わせる"],
-      description:
-        "料金相談、デモ予約、チームに合った活用方法まで、必要な支援を受けられます。",
-      trustedLabel: "反復営業が多いチームが使う OneHand",
-      labels: {
-        firstName: "名 *",
-        lastName: "姓 *",
-        email: "仕事用メール *",
-        title: "役職 *",
-        company: "会社名 *",
-        companySize: "会社規模 *",
-        region: "国または地域 *",
-        phone: "電話番号 *",
-        reason: "お問い合わせ理由 *",
-        detail: "詳細をご記入ください。*",
-      },
-      placeholders: {
-        firstName: "太郎",
-        lastName: "山田",
-        email: "you@company.com",
-        title: "営業リーダー",
-        company: "株式会社サンプル",
-        companySize: "選択してください",
-        region: "日本",
-        phone: "(090) 1234-5678",
-        reason: "選択してください",
-        detail: "OneHandをどのように使いたいかご記入ください。",
-      },
-      submit: "営業チームに問い合わせる",
-      agreement: "OneHandからのマーケティングメッセージを受け取ることに同意します。",
-      finePrint:
-        "マーケティングメッセージはいつでも配信停止できます。送信された情報はお問い合わせ対応と導入案内に使用されます。",
-      supportPrefix: "技術または製品サポートが必要な場合は",
-      supportSuffix: "までメールをお送りください。",
-    }),
-  },
-  "zh-TW": {
-    common: {
-      logoAria: "OneHand 首頁",
-      nav: {
-        product: "產品",
-        pricing: "價格",
-        contact: "諮詢",
-        freeCta: "開始使用 OneHand",
-        login: "登入",
-      },
-      productMenuGroups: [
-        [
-          { title: "AI 銷售助理", description: "整理下一步行動與優先順序" },
-          { title: "自動跟進", description: "提醒遺漏的聯繫與行程" },
-          { title: "會議紀錄整理", description: "彙整筆記並連結到商機" },
-          { title: "全站搜尋", description: "一次搜尋公司、聯絡人與商機" },
-        ],
-        [
-          { title: "客戶資料庫", description: "集中管理公司與聯絡人" },
-          { title: "文件", description: "整理提案書與資料" },
-          { title: "專案", description: "同時管理商機與執行任務" },
-          { title: "行程", description: "追蹤會議與後續工作" },
-        ],
-        [
-          { title: "連結", description: "串連所有銷售紀錄" },
-          { title: "安全", description: "區隔敏感筆記與權限" },
-          { title: "範本", description: "保存重複工作的結構" },
-          { title: "報表", description: "查看成果與風險" },
-        ],
-      ],
-      productTour: "查看 OneHand 1.0",
-      productApp: "進入應用程式",
-      footerColumns: [
-        ["公司介紹", "關於 OneHand", "安全", "條款與隱私", "隱私權利"],
-        ["下載", "iOS & Android"],
-        ["資源", "價格"],
-        ["適用對象", "企業", "小型企業", "個人"],
-      ],
-      cookieSettings: "Cookie 設定",
-      languageAria: "選擇語言",
-      footerSocialAria: "OneHand 社群連結",
-      copyright: "© 2026 OneHand Labs, Inc.",
-    },
-    landing: {
-      heroTitle: ["銷售團隊與客戶", "協同工作的地方"],
-      heroDescription:
-        "在同一個介面串連商機、聯絡人、行程與會議紀錄，立即查看今天該完成的工作。",
-      primaryCta: "開始使用 OneHand",
-      secondaryCta: "查看流程",
-      customerStrip: "為重複銷售工作較多的團隊設計的 CRM",
-      sectionWork: "全天掌握銷售流程。",
-      sectionAssistants: "需要時隨時請求協助。",
-      sectionWorkspace: "在同一處管理所有銷售工作。",
-      quote: "「在導入 AI 之前，先把銷售流程整理清楚。」",
-      trustedTitle: "為重視成果的銷售團隊而設計。",
-      finalCta: "現在開始。",
-      finalPrimary: "開始使用 OneHand",
-    },
-    pricing: makeTranslatedPricing({
-      title: "營運銷售所需的一體化工具。",
-      description: "從個人銷售到小型團隊管線，依階段選擇需要的功能。",
-      tags: ["商機", "客戶", "行程", "會議紀錄", "搜尋", "AI"],
-      captions: ["客戶諮詢", "流程設計", "團隊營運"],
-      monthly: "月付",
-      annual: "年付節省 20%",
-      currency: "TWD 參考",
-      recommended: "推薦",
-      aiLabel: "AI 選項",
-      aiTitle: "為重要工作打造的 AI 銷售助理。",
-      aiDescription: "將會議摘要、下一步行動與跟進提醒連結到銷售管線。",
-      aiCta: "了解 AI 功能",
-      setupTitle: "包含匯入支援",
-      setupDescription: "一起設計資料匯入、銷售階段與團隊導入流程。",
-      featuresTitle: "價格與功能",
-      featureColumn: "功能",
-      faqTitle: "常見問題",
-    }),
-    contact: makeTranslatedContact({
-      title: ["OneHand", "聯繫銷售團隊"],
-      description: "從價格諮詢、Demo 預約到適合團隊的使用方案，我們會提供所需支援。",
-      trustedLabel: "重複銷售工作較多的團隊正在使用 OneHand",
-      labels: {
-        firstName: "名 *",
-        lastName: "姓 *",
-        email: "工作信箱 *",
-        title: "職稱 *",
-        company: "公司名稱 *",
-        companySize: "公司規模 *",
-        region: "國家或地區 *",
-        phone: "電話號碼 *",
-        reason: "諮詢原因 *",
-        detail: "請提供詳細資訊。*",
-      },
-      placeholders: {
-        firstName: "明",
-        lastName: "王",
-        email: "you@company.com",
-        title: "銷售負責人",
-        company: "範例有限公司",
-        companySize: "請選擇",
-        region: "台灣",
-        phone: "0912 345 678",
-        reason: "請選擇",
-        detail: "請寫下您希望如何使用 OneHand。",
-      },
-      submit: "聯繫銷售團隊",
-      agreement: "我同意接收 OneHand 的行銷訊息。",
-      finePrint:
-        "您可以隨時取消接收行銷訊息。提交的資訊將用於回覆諮詢與產品導入說明。",
-      supportPrefix: "如果需要技術或產品支援，請寄送電子郵件至",
-      supportSuffix: "。",
-    }),
-  },
-  "en-US": makeEnglishCopy({
+  },  "en-US": makeEnglishCopy({
     organise: "organize",
     organizing: "organizing",
     title: "One tool for running sales.",
@@ -650,35 +410,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
     pricing: "Pricing",
     contact: "Contact",
     languageRegion: "US",
-  }),
-  "en-GB": makeEnglishCopy({
-    organise: "organise",
-    organizing: "organising",
-    title: "One tool for running sales.",
-    contactTitle: "Contact sales",
-    pricing: "Pricing",
-    contact: "Contact",
-    languageRegion: "UK",
-  }),
-  "en-SG": makeEnglishCopy({
-    organise: "organise",
-    organizing: "organising",
-    title: "One tool for running sales.",
-    contactTitle: "Contact sales",
-    pricing: "Pricing",
-    contact: "Contact",
-    languageRegion: "SG",
-  }),
-  "en-AU": makeEnglishCopy({
-    organise: "organise",
-    organizing: "organising",
-    title: "One tool for running sales.",
-    contactTitle: "Contact sales",
-    pricing: "Pricing",
-    contact: "Contact",
-    languageRegion: "AU",
-  }),
-  "en-CA": makeEnglishCopy({
+  }),  "en-CA": makeEnglishCopy({
     organise: "organize",
     organizing: "organizing",
     title: "One tool for running sales.",
@@ -738,11 +470,7 @@ export function usePublicSiteLanguage() {
 export function getPublicSiteCopyLanguage(
   language: PublicSiteLanguage
 ): PublicSiteCopyLanguage {
-  if (language === "en-AU") {
-    return "en-GB";
-  }
-
-  if (language === "en-SG" || language === "en-CA") {
+  if (language === "en-CA") {
     return "en-US";
   }
 
@@ -772,206 +500,74 @@ function makeTranslatedPricing(copy: {
   readonly featureColumn: string;
   readonly faqTitle: string;
 }): PublicSiteCopy["pricing"] {
-  const isJapanese = copy.title.includes("営業");
-  const isTraditionalChinese = copy.title.includes("銷售");
-  const isEnglish = !isJapanese && !isTraditionalChinese;
-  const isGbp = copy.currency.includes("GBP");
-  const isSgd = copy.currency.includes("SGD");
-  const isAud = copy.currency.includes("AUD");
   const isCad = copy.currency.includes("CAD");
 
   return {
     ...copy,
     mediaCaptions: copy.captions,
-    mediaAlts: isTraditionalChinese
-      ? ["客戶諮詢情境", "白板工作設計", "團隊簡報與會議"]
-      : isJapanese
-        ? ["顧客相談の場面", "ホワイトボードでの業務設計", "チーム発表と会議"]
-        : ["Customer call scene", "Whiteboard workflow planning", "Team presentation and meeting"],
+    mediaAlts: ["Customer call scene", "Whiteboard workflow planning", "Team presentation and meeting"],
     billingMonthly: copy.monthly,
     billingAnnual: copy.annual,
-    priceLabels: isTraditionalChinese
-      ? ["NT$0", "NT$299", "NT$699", ""]
-      : isJapanese
-        ? ["¥0", "¥1,500", "¥3,200", ""]
-        : isGbp
-          ? ["£0", "£9", "£20", ""]
-          : isSgd
-            ? ["S$0", "S$14", "S$30", ""]
-            : isAud
-              ? ["A$0", "A$15", "A$33", ""]
-              : isCad
-                ? ["C$0", "C$14", "C$30", ""]
-                : ["$0", "$10", "$22", ""],
-    pricePeriod: isEnglish ? "/mo" : "/月",
-    aiImageAlt: isTraditionalChinese
-      ? "團隊在會議室分享銷售計畫"
-      : isJapanese
-        ? "会議室でチームが営業計画を共有する様子"
-        : "Team sharing a sales plan in a meeting room",
-    aiAvatarLabels: isTraditionalChinese
-      ? ["商機", "會", "任"]
-      : isJapanese
-        ? ["商談", "会", "タ"]
-        : ["Deal", "Meet", "Task"],
-    includedValues: isTraditionalChinese ? ["包含"] : isJapanese ? ["含む"] : ["Included"],
+    priceLabels: isCad ? ["C$0", "C$14", "C$30", ""] : ["$0", "$10", "$22", ""],
+    pricePeriod: "/mo",
+    aiImageAlt: "Team sharing a sales plan in a meeting room",
+    aiAvatarLabels: ["Deal", "Meet", "Task"],
+    includedValues: ["Included"],
     emptyCell: "—",
     plans: [
       {
-        name: isJapanese ? "無料" : isTraditionalChinese ? "免費" : "Free",
-        description:
-          isJapanese
-            ? "最初の営業記録を整理する個人向け"
-            : isTraditionalChinese
-              ? "適合剛開始整理銷售紀錄的個人"
-              : "For individuals getting their sales records in order",
-        cta: isTraditionalChinese ? "開始使用" : isJapanese ? "始める" : "Get started",
-        features:
-          isTraditionalChinese
-            ? ["公司/聯絡人基礎管理", "30 個商機", "行程與會議紀錄", "行動瀏覽器支援"]
-            : isJapanese
-              ? ["会社/担当者の基本管理", "商談30件", "予定と議事録", "モバイルブラウザ対応"]
-              : ["Basic company/contact management", "30 deals", "Calendar and notes", "Mobile browser support"],
+        name: "Free",
+        description: "For individuals getting their sales records in order",
+        cta: "Get started",
+        features: ["Basic company/contact management", "30 deals", "Calendar and notes", "Mobile browser support"],
       },
       {
-        name: isJapanese ? "プラス" : isTraditionalChinese ? "Plus" : "Plus",
-        description:
-          isJapanese
-            ? "パイプラインを継続的に管理するユーザー向け"
-            : isTraditionalChinese
-              ? "適合持續管理銷售管線的使用者"
-              : "For people actively managing a sales pipeline",
-        cta: isTraditionalChinese ? "免費試用" : isJapanese ? "無料で試す" : "Free trial",
-        features:
-          isTraditionalChinese
-            ? ["商機無限制", "XLSX 下載", "垃圾桶還原", "進階篩選與排序"]
-            : isJapanese
-              ? ["商談無制限", "XLSXダウンロード", "ゴミ箱復元", "高度なフィルターと並び替え"]
-              : ["Unlimited deals", "XLSX export", "Trash restore", "Advanced filters and sorting"],
+        name: "Plus",
+        description: "For people actively managing a sales pipeline",
+        cta: "Free trial",
+        features: ["Unlimited deals", "XLSX export", "Trash restore", "Advanced filters and sorting"],
       },
       {
-        name: isJapanese ? "ビジネス" : isTraditionalChinese ? "商務" : "Business",
-        description:
-          isJapanese
-            ? "反復営業フローを自動化するチーム向け"
-            : isTraditionalChinese
-              ? "適合自動化重複銷售流程的團隊"
-              : "For teams automating repeat sales workflows",
-        cta: isTraditionalChinese ? "開始使用" : isJapanese ? "始める" : "Get started",
-        features:
-          isTraditionalChinese
-            ? ["AI 會議摘要", "優先順序推薦", "團隊共享檢視", "敏感筆記保護"]
-            : isJapanese
-              ? ["AI議事録要約", "優先順位の提案", "チーム共有ビュー", "機密メモ保護"]
-              : ["AI meeting summaries", "Priority suggestions", "Shared team views", "Sensitive note protection"],
+        name: "Business",
+        description: "For teams automating repeat sales workflows",
+        cta: "Get started",
+        features: ["AI meeting summaries", "Priority suggestions", "Shared team views", "Sensitive note protection"],
       },
       {
-        name: isJapanese ? "エンタープライズ" : isTraditionalChinese ? "企業" : "Enterprise",
-        description:
-          isJapanese
-            ? "セキュリティ、権限、運用ポリシーが必要な組織向け"
-            : isTraditionalChinese
-              ? "適合需要安全、權限與營運政策的組織"
-              : "For organizations with security, access, and policy needs",
-        cta: isTraditionalChinese ? "聯繫我們" : isJapanese ? "問い合わせる" : "Contact us",
-        features:
-          isTraditionalChinese
-            ? ["專屬導入支援", "稽核記錄", "權限策略", "安全審查支援"]
-            : isJapanese
-              ? ["専任導入支援", "監査ログ", "権限ポリシー", "セキュリティレビュー支援"]
-              : ["Dedicated onboarding", "Audit logs", "Access policies", "Security review support"],
+        name: "Enterprise",
+        description: "For organizations with security, access, and policy needs",
+        cta: "Contact us",
+        features: ["Dedicated onboarding", "Audit logs", "Access policies", "Security review support"],
       },
     ],
-    comparisonGroups:
-      copy.title.includes("銷售")
-        ? [
-            {
-              title: "工作區",
-              rows: [
-                ["公司/聯絡人管理", "基礎", "無限制", "無限制", "無限制"],
-                ["產品管理", "基礎", "無限制", "無限制", "無限制"],
-                ["銷售管線", "30個", "無限制", "無限制", "無限制"],
-                ["行程/會議紀錄", "基礎", "進階", "進階", "進階"],
-                ["搜尋", "基礎", "進階", "進階", "進階"],
-              ],
-            },
-            {
-              title: "AI 與自動化",
-              rows: [
-                ["會議摘要", "", "", "包含", "包含"],
-                ["下一步推薦", "", "", "包含", "包含"],
-                ["跟進提醒", "基礎", "進階", "進階", "進階"],
-                ["銷售報表", "", "基礎", "進階", "客製"],
-                ["重複任務範本", "", "包含", "包含", "客製"],
-              ],
-            },
-          ]
-        : copy.title.includes("営業")
-          ? [
-              {
-                title: "ワークスペース",
-                rows: [
-                  ["会社/担当者管理", "基本", "無制限", "無制限", "無制限"],
-                  ["製品管理", "基本", "無制限", "無制限", "無制限"],
-                  ["商談パイプライン", "30件", "無制限", "無制限", "無制限"],
-                  ["予定/議事録", "基本", "高度", "高度", "高度"],
-                  ["検索", "基本", "高度", "高度", "高度"],
-                ],
-              },
-              {
-                title: "AIと自動化",
-                rows: [
-                  ["議事録要約", "", "", "含む", "含む"],
-                  ["次の行動提案", "", "", "含む", "含む"],
-                  ["フォローアップ通知", "基本", "高度", "高度", "高度"],
-                  ["営業レポート", "", "基本", "高度", "カスタム"],
-                  ["反復タスクテンプレート", "", "含む", "含む", "カスタム"],
-                ],
-              },
-            ]
-          : [
-              {
-                title: "Workspace",
-                rows: [
-                  ["Company/contact management", "Basic", "Unlimited", "Unlimited", "Unlimited"],
-                  ["Product management", "Basic", "Unlimited", "Unlimited", "Unlimited"],
-                  ["Deal pipeline", "30", "Unlimited", "Unlimited", "Unlimited"],
-                  ["Calendar/meeting notes", "Basic", "Advanced", "Advanced", "Advanced"],
-                  ["Search", "Basic", "Advanced", "Advanced", "Advanced"],
-                ],
-              },
-              {
-                title: "AI and automation",
-                rows: [
-                  ["Meeting summaries", "", "", "Included", "Included"],
-                  ["Next action suggestions", "", "", "Included", "Included"],
-                  ["Follow-up reminders", "Basic", "Advanced", "Advanced", "Advanced"],
-                  ["Sales reports", "", "Basic", "Advanced", "Custom"],
-                  ["Repeat task templates", "", "Included", "Included", "Custom"],
-                ],
-              },
-            ],
-    faqs:
-      copy.title.includes("銷售")
-        ? [
-            "免費方案可以使用多久？",
-            "商務方案的 AI 功能會使用哪些資料？",
-            "團隊權限管理何時提供？",
-            "可以匯入現有客戶資料嗎？",
-          ]
-        : copy.title.includes("営業")
-          ? [
-              "無料プランはいつまで使えますか？",
-              "ビジネスプランのAI機能はどのデータを使いますか？",
-              "チーム権限管理はいつ提供されますか？",
-              "既存の顧客データを取り込めますか？",
-            ]
-          : [
-              "How long can I use the free plan?",
-              "What data does the Business AI use?",
-              "When will team permissions be available?",
-              "Can I import existing customer data?",
-            ],
+    comparisonGroups: [
+      {
+        title: "Workspace",
+        rows: [
+          ["Company/contact management", "Basic", "Unlimited", "Unlimited", "Unlimited"],
+          ["Product management", "Basic", "Unlimited", "Unlimited", "Unlimited"],
+          ["Deal pipeline", "30", "Unlimited", "Unlimited", "Unlimited"],
+          ["Calendar/meeting notes", "Basic", "Advanced", "Advanced", "Advanced"],
+          ["Search", "Basic", "Advanced", "Advanced", "Advanced"],
+        ],
+      },
+      {
+        title: "AI and automation",
+        rows: [
+          ["Meeting summaries", "", "", "Included", "Included"],
+          ["Next action suggestions", "", "", "Included", "Included"],
+          ["Follow-up reminders", "Basic", "Advanced", "Advanced", "Advanced"],
+          ["Sales reports", "", "Basic", "Advanced", "Custom"],
+          ["Repeat task templates", "", "Included", "Included", "Custom"],
+        ],
+      },
+    ],
+    faqs: [
+      "How long can I use the free plan?",
+      "What data does the Business AI use?",
+      "When will team permissions be available?",
+      "Can I import existing customer data?",
+    ],
   };
 }
 
@@ -993,12 +589,7 @@ function makeTranslatedContact(copy: {
     trustedLabel: copy.trustedLabel,
     companies: ["LG AI Research", "Sendbird", "HYOSUNG"],
     quoteCompany: "OpenAI",
-    quote:
-      copy.title[1].includes("問い合わせ")
-        ? "社員は同じ商談目標と顧客情報を共有できる一つの業務空間を必要としています。OneHandは営業の流れを一か所で処理できるようにします。"
-        : copy.title[1].includes("聯繫")
-          ? "團隊需要一個能共享同一銷售目標與客戶資訊的工作空間。OneHand 讓銷售流程集中處理。"
-          : "Teams need one workspace where deal goals and customer context stay together. OneHand keeps the sales flow in one place.",
+    quote: "Teams need one workspace where deal goals and customer context stay together. OneHand keeps the sales flow in one place.",
     quotePerson: "Nick Erdenberger",
     quoteRole: "GTM, OpenAI",
     labels: copy.labels,
@@ -1011,57 +602,32 @@ function makeTranslatedContact(copy: {
     testimonials: [
       {
         company: "MatchGroup",
-        quote:
-          copy.title[1].includes("聯繫")
-            ? "我們能更有效率地簡化銷售工作流程。"
-            : copy.title[1].includes("問い合わせ")
-              ? "営業ワークフローをより効率的に単純化できました。"
-              : "We simplified our sales workflow more efficiently.",
+        quote: "We simplified our sales workflow more efficiently.",
         person: "Rahim Makani",
-        role: copy.title[1].includes("聯繫") ? "產品負責人" : copy.title[1].includes("問い合わせ") ? "プロダクト責任者" : "Product Lead",
+        role: "Product Lead",
       },
       {
         company: "TOYOTA",
-        quote:
-          copy.title[1].includes("聯繫")
-            ? "我們可以掌握全球市場進展，不再遺漏脈絡。"
-            : copy.title[1].includes("問い合わせ")
-              ? "世界中の市場進捗を把握し、見落としを減らせました。"
-              : "We can follow market progress without missing context.",
+        quote: "We can follow market progress without missing context.",
         person: "Taku Wakasugi",
         role: "Research Center",
       },
       {
         company: "ramp",
-        quote:
-          copy.title[1].includes("聯繫")
-            ? "重複工作減少後，我們能專注於客戶與合約流程。"
-            : copy.title[1].includes("問い合わせ")
-              ? "反復業務が減り、顧客と契約の流れに集中できました。"
-              : "With repeat work reduced, we can focus on customers and contracts.",
+        quote: "With repeat work reduced, we can focus on customers and contracts.",
         person: "Geoff Charles",
-        role: copy.title[1].includes("聯繫") ? "營運負責人" : copy.title[1].includes("問い合わせ") ? "運用責任者" : "Operations Lead",
+        role: "Operations Lead",
       },
     ],
   };
 }
 
-function getEnglishPricingCurrency(
-  languageRegion: "US" | "UK" | "SG" | "AU" | "CA"
-) {
-  if (languageRegion === "UK") return "GBP reference";
-  if (languageRegion === "SG") return "SGD reference";
-  if (languageRegion === "AU") return "AUD reference";
+function getEnglishPricingCurrency(languageRegion: "US" | "CA") {
   if (languageRegion === "CA") return "CAD reference";
   return "USD reference";
 }
 
-function getEnglishContactRegion(
-  languageRegion: "US" | "UK" | "SG" | "AU" | "CA"
-) {
-  if (languageRegion === "UK") return "United Kingdom";
-  if (languageRegion === "SG") return "Singapore";
-  if (languageRegion === "AU") return "Australia";
+function getEnglishContactRegion(languageRegion: "US" | "CA") {
   if (languageRegion === "CA") return "Canada";
   return "United States";
 }
@@ -1073,7 +639,7 @@ function makeEnglishCopy(copy: {
   readonly contactTitle: string;
   readonly pricing: string;
   readonly contact: string;
-  readonly languageRegion: "US" | "UK" | "SG" | "AU" | "CA";
+  readonly languageRegion: "US" | "CA";
 }): PublicSiteCopy {
   const common: PublicSiteCopy["common"] = {
     logoAria: "OneHand home",
@@ -1082,7 +648,7 @@ function makeEnglishCopy(copy: {
       pricing: copy.pricing,
       contact: copy.contact,
       freeCta: "Get OneHand",
-      login: copy.languageRegion === "US" || copy.languageRegion === "CA" ? "Log in" : "Sign in",
+      login: "Log in",
     },
     productMenuGroups: [
       [

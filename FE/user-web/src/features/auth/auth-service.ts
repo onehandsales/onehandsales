@@ -405,14 +405,7 @@ function getPreferredLocaleForExchange() {
   const publicLanguage = window.localStorage.getItem(publicSiteLanguageStorageKey);
 
   if (publicLanguage === "ko" || publicLanguage === "ko-KR") return "ko-KR";
-  if (
-    publicLanguage === "en" ||
-    publicLanguage === "en-US" ||
-    publicLanguage === "en-GB" ||
-    publicLanguage === "en-SG" ||
-    publicLanguage === "en-AU" ||
-    publicLanguage === "en-CA"
-  ) {
+  if (publicLanguage === "en" || publicLanguage?.startsWith("en-")) {
     return "en";
   }
 

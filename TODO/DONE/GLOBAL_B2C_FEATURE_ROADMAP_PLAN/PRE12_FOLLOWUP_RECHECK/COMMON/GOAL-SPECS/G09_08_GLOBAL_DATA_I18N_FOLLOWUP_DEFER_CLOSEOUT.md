@@ -88,7 +88,7 @@
 - Contact personal address, Product/Deal minor unit 또는 amount precision schema/API/UX 구현은 확인되지 않았다. `addressbook#contacts@group.v.calendar.google.com` 검색 결과는 Google Calendar contacts group 상수이며 Contact address 구현 근거가 아니다.
 
 ```powershell
-rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPORTED_CONTACT_PHONE_COUNTRY_CODES|COMPANY_REGION_COUNTRY_CODES|KRW|USD|ko-KR|zh-CN|zh-TW|ja" BE\src FE\user-web\src -g "*.ts" -g "*.tsx"
+rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPORTED_CONTACT_PHONE_COUNTRY_CODES|COMPANY_REGION_COUNTRY_CODES|KRW|USD|ko-KR|zh-CN|ja" BE\src FE\user-web\src -g "*.ts" -g "*.tsx"
 rg -n "OAuthProvider|normalizeProvider|GOOGLE|LINE|APPLE|MICROSOFT|KAKAO|password|email/password|auth/providers|auth/exchange" BE\src\modules\auth FE\user-web\src -g "*.ts" -g "*.tsx"
 rg -n "phoneCountryCode|phoneNationalNumber|phoneE164|currencyCode|CompanyRegion" BE\prisma\schema.prisma
 rg -n "contact.*address|address.*contact|ContactAddress|personalAddress|minorUnit|amountPrecision|cents|Decimal.*amount" BE\src FE\user-web\src BE\prisma\schema.prisma -g "*.ts" -g "*.tsx" -g "*.prisma"

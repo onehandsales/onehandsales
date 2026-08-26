@@ -12,7 +12,7 @@ describe("UpdateMyProfileUseCase", () => {
     ["ko", "ko-KR"],
     ["ko_KR", "ko-KR"],
     ["en-US", "en"],
-    ["en-SG", "en"],
+    ["en-x-test", "en"],
   ])("normalizes preferredLocale %s to %s", async (inputLocale, expectedLocale) => {
     const repository = new FakeUserRepository();
     const useCase = new UpdateMyProfileUseCase(repository);
@@ -54,7 +54,7 @@ describe("UpdateMyProfileUseCase", () => {
 
     await expect(
       useCase.execute(makeCurrentUser(), {
-        preferredLocale: "ja-JP",
+        preferredLocale: "unsupported-locale",
       })
     ).rejects.toMatchObject({
       code: "USER_LOCALE_UNSUPPORTED",

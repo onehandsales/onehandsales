@@ -12,11 +12,11 @@ const logoUrl = `${origin}/brand/seo-icon-white-square.svg`;
 const languages = [
   { value: "ko", slug: "ko", htmlLang: "ko-KR", ogLocale: "ko_KR" },
   { value: "en-US", slug: "en-us", htmlLang: "en-US", ogLocale: "en_US" },
-  { value: "en-GB", slug: "en-gb", htmlLang: "en-GB", ogLocale: "en_GB" },
-  { value: "en-SG", slug: "en-sg", htmlLang: "en-SG", ogLocale: "en_SG" },
-  { value: "en-AU", slug: "en-au", htmlLang: "en-AU", ogLocale: "en_AU" },
   { value: "en-CA", slug: "en-ca", htmlLang: "en-CA", ogLocale: "en_CA" },
 ];
+
+// Future static SEO locale candidates: ja, en-gb, en-sg, en-au.
+// Keep them out of generated pages until copy, legal, pricing, support, SEO, and QA are confirmed.
 
 const coreKoreanSeoKeywords = [
   "한손에 영업",

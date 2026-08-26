@@ -2,12 +2,7 @@ import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site
 
 export type PublicSiteLocaleSlug =
   | "ko"
-  | "ja"
-  | "zh-tw"
   | "en-us"
-  | "en-gb"
-  | "en-sg"
-  | "en-au"
   | "en-ca";
 
 export type PublicSiteLocalizedPath =
@@ -27,25 +22,18 @@ export const publicSiteLanguageStorageKey = "onehand.sales.publicLanguage";
 
 export const publicSiteLanguageValues = [
   "ko",
-  "ja",
-  "zh-TW",
   "en-US",
-  "en-GB",
-  "en-SG",
-  "en-AU",
   "en-CA",
 ] as const satisfies readonly PublicSiteLanguage[];
 
 export const publicSiteLocaleSlugs = [
   "ko",
-  "ja",
-  "zh-tw",
   "en-us",
-  "en-gb",
-  "en-sg",
-  "en-au",
   "en-ca",
 ] as const satisfies readonly PublicSiteLocaleSlug[];
+
+// Future public-site locale candidates: ja, en-gb, en-sg, en-au.
+// Keep them inactive until copy, legal, pricing, support, SEO, and QA are confirmed.
 
 export const publicSiteLocalizedPaths = [
   "/",
@@ -64,12 +52,7 @@ export const publicSiteLanguageSlugByLanguage: Record<
   PublicSiteLocaleSlug
 > = {
   ko: "ko",
-  ja: "ja",
-  "zh-TW": "zh-tw",
   "en-US": "en-us",
-  "en-GB": "en-gb",
-  "en-SG": "en-sg",
-  "en-AU": "en-au",
   "en-CA": "en-ca",
 };
 
@@ -78,12 +61,7 @@ export const publicSiteLanguageBySlug: Record<
   PublicSiteLanguage
 > = {
   ko: "ko",
-  ja: "ja",
-  "zh-tw": "zh-TW",
   "en-us": "en-US",
-  "en-gb": "en-GB",
-  "en-sg": "en-SG",
-  "en-au": "en-AU",
   "en-ca": "en-CA",
 };
 
@@ -202,10 +180,6 @@ function getStoredPublicSiteLanguage(): PublicSiteLanguage | null {
     publicSiteLanguageStorageKey
   );
 
-  if (storedLanguage === "zh") {
-    return "zh-TW";
-  }
-
   return isPublicSiteLanguage(storedLanguage) ? storedLanguage : null;
 }
 
@@ -215,26 +189,6 @@ function getBrowserPublicSiteLanguage(): PublicSiteLanguage | null {
   }
 
   const browserLanguage = window.navigator.language.toLowerCase();
-
-  if (browserLanguage.startsWith("ja")) {
-    return "ja";
-  }
-
-  if (browserLanguage.startsWith("zh")) {
-    return "zh-TW";
-  }
-
-  if (browserLanguage === "en-gb") {
-    return "en-GB";
-  }
-
-  if (browserLanguage === "en-sg") {
-    return "en-SG";
-  }
-
-  if (browserLanguage === "en-au") {
-    return "en-AU";
-  }
 
   if (browserLanguage === "en-ca") {
     return "en-CA";

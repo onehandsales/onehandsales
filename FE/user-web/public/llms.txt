@@ -242,7 +242,7 @@ Public pages:
 - https://www.onehandsales.com/en-us/terms
 - https://www.onehandsales.com/en-us/privacy
 
-Japanese and Traditional Chinese routes may exist for future product localization, but they are not primary SEO or GEO targets at this stage.
+Only Korean, US English, and Canadian English public locale routes are primary at this stage. Japanese and UK/Singapore/Australia English localization remain future candidates.
 
 Authenticated app routes under /app require a user account and should not be treated as public documentation.
 

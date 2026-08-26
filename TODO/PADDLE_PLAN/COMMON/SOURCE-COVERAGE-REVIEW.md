@@ -28,7 +28,7 @@
 - UX/UI 유지보수와 기능 유지보수 후 100명 베타 테스트를 먼저 진행한다.
 - 베타 후 가격/플랜/entitlement/AI 사용량 제한/trial/refund/failed payment/tax/invoice 정책을 확정한다.
 - 기존 PRD의 월 5,900~6,900원은 확정 가격이 아니라 post-beta pricing 출발 가설로만 유지한다.
-- 판매 rollout은 KR/US/CA 우선 시장 결정에 따라 한국/KRW, 미국/USD, 캐나다/CAD 또는 USD 순서를 후보로 두되 post-beta에 다시 확정한다. 일본/대만/영국/싱가포르/호주는 보류 확장 후보로 유지한다.
+- 판매 rollout은 KR/US/CA 우선 시장 결정에 따라 한국/KRW, 미국/USD, 캐나다/CAD 또는 USD 순서를 후보로 두되 post-beta에 다시 확정한다. 일본/영국/싱가포르/호주는 보류 확장 후보로 유지한다.
 - Paddle은 Merchant of Record 우선 후보이며 Stripe 직접 결제는 fallback이다.
 - Paddle Billing은 결제/구독 구현 콘솔이고 ProfitWell Metrics는 revenue analytics다.
 - checkout-only 구현은 금지한다.

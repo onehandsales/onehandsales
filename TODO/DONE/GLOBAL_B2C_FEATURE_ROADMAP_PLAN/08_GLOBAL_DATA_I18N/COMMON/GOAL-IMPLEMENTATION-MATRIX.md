@@ -97,8 +97,8 @@ API 계약:
 - `GET /api/users/me/profile` response에 `countryCode`, `defaultCurrencyCode`를 추가한다.
 - `PATCH /api/users/me/profile` body에 `countryCode`, `defaultCurrencyCode`를 허용한다.
 - 허용값은 `preferredLocale: ko-KR | en`, `countryCode: KR | US`, `defaultCurrencyCode: KRW | USD`, `timeZone: IANA timezone`.
-- 당시 Settings 화면의 `en-US`, `en-GB`, `ja-JP`, `zh-TW` 옵션은 08 1차 범위와 충돌하므로 G02/G03에서 `ko-KR`, `en`만 남긴다.
-- 당시 `UpdateMyProfileUseCase.normalizePreferredLocale`는 `en-*`, `ja-JP`, `zh-TW`까지 저장할 수 있었으므로 08 1차 범위에 맞게 `ko-KR | en`만 반환하도록 좁힌다.
+- 당시 Settings 화면의 `en-US`, `en-GB`, `ja-JP` 옵션은 08 1차 범위와 충돌하므로 G02/G03에서 `ko-KR`, `en`만 남긴다.
+- 당시 `UpdateMyProfileUseCase.normalizePreferredLocale`는 `en-*`, `ja-JP`까지 저장할 수 있었으므로 08 1차 범위에 맞게 `ko-KR | en`만 반환하도록 좁힌다.
 - `ExchangeExternalAuthTokenUseCase.normalizeTimeZone`은 현재 fallback이 `UTC`다. 신규 signup 기본값은 `Asia/Seoul`이어야 하므로 fallback을 08 정책에 맞춘다.
 - `ExchangeExternalAuthTokenUseCase.normalizeCountryCode`는 현재 국가가 없으면 `null`을 반환한다. 신규 signup 기본값은 `KR`이어야 하므로 signup/default setting에는 `KR` fallback을 적용한다.
 

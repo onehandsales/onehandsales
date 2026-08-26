@@ -513,8 +513,8 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     ["ko", "ko-KR"],
     ["ko_KR", "ko-KR"],
     ["en-US", "en"],
-    ["en-SG", "en"],
-    ["zh-TW", "ko-KR"],
+    ["en-x-test", "en"],
+    ["unsupported-locale", "ko-KR"],
   ])("normalizes login locale %s to %s", async (inputLocale, expectedLocale) => {
     const repository = new FakeAuthRepository();
     const useCase = createUseCase(repository, {

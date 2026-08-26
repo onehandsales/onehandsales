@@ -38,7 +38,7 @@
 - `/{locale}/login`, `/{locale}/signup`: 로그인/가입 진입 화면
 - `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`: 공개 정보 페이지
 - 현재 언어 선택 UI 노출 locale slug: `ko`, `en-us`, `en-ca`
-- 추후 확장 후보 locale slug: `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au`
+- 추후 확장 후보 locale slug: `ja`, `en-gb`, `en-sg`, `en-au`
 - legacy `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
 - `/auth/callback`: Supabase OAuth callback. locale prefix 없이 유지한다.
 

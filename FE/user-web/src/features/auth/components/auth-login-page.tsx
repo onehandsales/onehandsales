@@ -101,80 +101,7 @@ const loginCopy: Record<
     privacy: "개인정보 처리방침",
     termsSuffix: "에 동의한 것으로 간주됩니다.",
     languagePrefix: "언어:",
-  },
-  ja: {
-    homeAria: "ホームへ移動",
-    title: "自分だけのAIワークスペース",
-    subtitles: {
-      login: "OneHand アカウントにログイン",
-      signup: "OneHand アカウントを作成",
-    },
-    providerLead: {
-      login: "次の方法で続行",
-      signup: "または次の方法で続行",
-    },
-    providers: {
-      google: "Google",
-      line: "LINE",
-      apple: "Apple",
-    },
-    loading: "ログイン方法を読み込んでいます。",
-    callbackLoading: "ログインしています。",
-    noProviders: "利用できるログイン方法がありません。",
-    providersErrorPrefix: "ログイン方法を読み込めませんでした。",
-    providerFailure: "ログインを完了できませんでした。しばらくしてからお試しください。",
-    switchLead: {
-      login: "初めてご利用ですか？",
-      signup: "既にアカウントをお持ちですか？",
-    },
-    switchAction: {
-      login: "登録",
-      signup: "ログイン",
-    },
-    termsPrefix: "続行すると、",
-    terms: "利用規約",
-    termsConnector: "および",
-    privacy: "プライバシーポリシー",
-    termsSuffix: "に同意したものとみなされます。",
-    languagePrefix: "言語:",
-  },
-  "zh-TW": {
-    homeAria: "前往首頁",
-    title: "我的 AI 工作空間",
-    subtitles: {
-      login: "登入 OneHand 帳戶",
-      signup: "建立 OneHand 帳戶",
-    },
-    providerLead: {
-      login: "使用以下方式繼續",
-      signup: "或使用以下方式繼續",
-    },
-    providers: {
-      google: "Google",
-      line: "LINE",
-      apple: "Apple",
-    },
-    loading: "正在載入登入方式。",
-    callbackLoading: "正在登入。",
-    noProviders: "目前沒有可用的登入方式。",
-    providersErrorPrefix: "無法載入登入方式。",
-    providerFailure: "無法完成登入。請稍後再試。",
-    switchLead: {
-      login: "新使用者？",
-      signup: "已有帳戶？",
-    },
-    switchAction: {
-      login: "註冊",
-      signup: "登入",
-    },
-    termsPrefix: "繼續即表示您同意",
-    terms: "服務條款",
-    termsConnector: "與",
-    privacy: "隱私權政策",
-    termsSuffix: "。",
-    languagePrefix: "語言:",
-  },
-  "en-US": {
+  },  "en-US": {
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
@@ -209,44 +136,7 @@ const loginCopy: Record<
     privacy: "Privacy Policy",
     termsSuffix: ".",
     languagePrefix: "Language:",
-  },
-  "en-GB": {
-    homeAria: "Go home",
-    title: "Your AI workspace",
-    subtitles: {
-      login: "Sign in to OneHand",
-      signup: "Create your OneHand account",
-    },
-    providerLead: {
-      login: "Continue with",
-      signup: "Continue with",
-    },
-    providers: {
-      google: "Google",
-      line: "LINE",
-      apple: "Apple",
-    },
-    loading: "Loading sign-in options.",
-    callbackLoading: "Signing you in.",
-    noProviders: "No sign-in options are available.",
-    providersErrorPrefix: "Could not load sign-in options.",
-    providerFailure: "We could not complete sign-in. Please try again shortly.",
-    switchLead: {
-      login: "New here?",
-      signup: "Already have an account?",
-    },
-    switchAction: {
-      login: "Sign up",
-      signup: "Sign in",
-    },
-    termsPrefix: "By continuing, you agree to the ",
-    terms: "Terms of Use",
-    termsConnector: " and the ",
-    privacy: "Privacy Policy",
-    termsSuffix: ".",
-    languagePrefix: "Language:",
-  },
-};
+  },};
 
 const providerLogos: Record<AuthProviderId, string> = {
   google: "/auth/google-logo.png",

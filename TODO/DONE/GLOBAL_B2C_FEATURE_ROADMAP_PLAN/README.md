@@ -5,7 +5,7 @@
 최종 업데이트: 2026-08-11
 성격: Global B2C 01~11 기능 선구현 로드맵 완료 이력
 
-> 2026-08-24 전략 업데이트: 현재 우선 타겟 국가는 한국, 미국, 캐나다다. 이 archive 안의 일본/대만/영국/싱가포르/호주 우선순위 또는 전체 locale smoke 문구는 당시 완료 이력으로 보존하며, 새 작업 기준은 `AGENT/PM_AGENT/DECISIONS/031_kr_us_ca_priority_market.md`와 `TODO/PADDLE_PLAN`을 따른다.
+> 2026-08-24 전략 업데이트: 현재 우선 타겟 국가는 한국, 미국, 캐나다다. 이 archive 안의 일본/영국/싱가포르/호주 우선순위 또는 전체 locale smoke 문구는 당시 완료 이력으로 보존하며, 새 작업 기준은 `AGENT/PM_AGENT/DECISIONS/031_kr_us_ca_priority_market.md`와 `TODO/PADDLE_PLAN`을 따른다.
 
 ## 0. Closeout 결론
 

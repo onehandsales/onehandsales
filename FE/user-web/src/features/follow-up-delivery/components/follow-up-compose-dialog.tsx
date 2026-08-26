@@ -50,8 +50,6 @@ type FollowUpComposeDialogProps = {
 const languageOptions = [
   { value: "ko-KR", label: "한국어" },
   { value: "en-US", label: "English" },
-  { value: "ja-JP", label: "日本語" },
-  { value: "zh-TW", label: "繁體中文" },
 ] as const;
 
 // 기능 : 후속 액션 작성 모달을 렌더링합니다.

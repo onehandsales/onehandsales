@@ -16,11 +16,11 @@ const publicSiteLogoUrl = `${publicSiteOrigin}/brand/seo-icon-white-square.svg`;
 const publicSiteSeoLanguageValues = [
   "ko",
   "en-US",
-  "en-GB",
-  "en-SG",
-  "en-AU",
   "en-CA",
 ] as const satisfies readonly PublicSiteLanguage[];
+
+// Future SEO locale candidates: ja, en-GB, en-SG, en-AU.
+// Do not add them to alternates or sitemap output until launch readiness is confirmed.
 
 type PublicSiteSeoRouteCopy = {
   readonly title: Partial<Record<PublicSiteLanguage | "en", string>>;
@@ -44,23 +44,13 @@ type PublicSiteSeoMetadata = {
 
 const htmlLangByLanguage: Record<PublicSiteLanguage, string> = {
   ko: "ko-KR",
-  ja: "ja-JP",
-  "zh-TW": "zh-TW",
   "en-US": "en-US",
-  "en-GB": "en-GB",
-  "en-SG": "en-SG",
-  "en-AU": "en-AU",
   "en-CA": "en-CA",
 };
 
 const ogLocaleByLanguage: Record<PublicSiteLanguage, string> = {
   ko: "ko_KR",
-  ja: "ja_JP",
-  "zh-TW": "zh_TW",
   "en-US": "en_US",
-  "en-GB": "en_GB",
-  "en-SG": "en_SG",
-  "en-AU": "en_AU",
   "en-CA": "en_CA",
 };
 

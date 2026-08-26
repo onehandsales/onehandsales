@@ -4,7 +4,7 @@
 
 루트에는 package manager workspace를 두지 않는다. Frontend와 Backend는 각각 독립적으로 설치, 실행, 검증한다.
 
-2026-08-24 기준 우선 타겟 국가는 한국, 미국, 캐나다다. 공개/인증 화면의 언어 선택 UI는 `ko`, `en-us`, `en-ca`만 노출한다. 기존 `ja`, `zh-tw`, `en-gb`, `en-sg`, `en-au` locale과 일본/대만/영국/싱가포르/호주 시장은 추후 확장 후보로 보류한다. 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en` 1차 지원으로 운영한다.
+2026-08-24 기준 우선 타겟 국가는 한국, 미국, 캐나다다. 공개/인증 화면의 언어 선택 UI는 `ko`, `en-us`, `en-ca`만 노출한다. `ja`, `en-gb`, `en-sg`, `en-au` locale과 일본/영국/싱가포르/호주 시장은 추후 확장 후보로만 보류한다. 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en` 1차 지원으로 운영한다.
 
 ## Production Origins
 

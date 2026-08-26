@@ -40,7 +40,6 @@
 추후 확장 후보 locale slug는 다음이다.
 
 - `ja`
-- `zh-tw`
 - `en-gb`
 - `en-sg`
 - `en-au`
@@ -54,7 +53,7 @@
 - 앱스토어/플레이스토어 배포
 - 결제/구독 자동화
 - 글로벌 세금/컴플라이언스 자동화
-- `/app` 내부 `ja`, `zh-TW`, `zh-CN` 추가 번역
+- `/app` 내부 `ja` 등 후속 시장 언어 추가 번역
 - Admin 결제/구독 운영 도구
 
 따라서 모바일 QA는 네이티브 앱 QA가 아니라, 현재 Web 제품이 모바일 브라우저에서도 핵심 업무를 수행할 수 있는지 확인하는 QA다.
@@ -222,7 +221,7 @@
 | 1 | Paddle/Billing | 유료 판매를 위해 subscription/payment/tax/invoice/refund/entitlement가 필요 |
 | 2 | Billing Admin | 구독 상태, 결제 이슈, invoice/refund/failed payment 운영 필요 |
 | 3 | paid conversion/churn analytics | 결제 이후 전환/해지/ARPU/LTV/CAC 판단 필요 |
-| 4 | 캐나다 데이터 정합성 및 추가 국가/언어 rollout | KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호/지역을 정리하고, 이후 일본/대만/호주 등 보류 시장 확장 |
+| 4 | 캐나다 데이터 정합성 및 추가 국가/언어 rollout | KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호/지역을 정리하고, 이후 일본/호주 등 보류 시장 확장 |
 | 5 | native/PWA packaging | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토 |
 | 6 | B2B tenant/team admin | 개인 B2C보다 팀/seat 기반 ARPU가 더 강하다고 확인될 때 검토 |
 

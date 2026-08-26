@@ -39,43 +39,7 @@ export const authProviderModalCopy: Record<
       line: "LINE으로 계속하기",
       apple: "Apple로 계속하기",
     },
-  },
-  ja: {
-    closeLabel: "ログインモーダルを閉じる",
-    loadingLabel: "ログイン中",
-    brandGlyph: "O",
-    brandName: "OneHand",
-    tagline: "営業をもっとスマートに",
-    providerLead: "ソーシャルアカウントで簡単に始めましょう",
-    providerLoading: "ログイン方法を読み込んでいます。",
-    noProviders: "利用できるログイン方法がありません。",
-    providersErrorPrefix:
-      "ログイン方法を読み込めないため、既定のボタンを表示しています。",
-    providerFailure: "ログインを完了できませんでした。しばらくしてからお試しください。",
-    providerLabels: {
-      google: "Googleで続行",
-      line: "LINEで続行",
-      apple: "Appleで続行",
-    },
-  },
-  "zh-TW": {
-    closeLabel: "關閉登入視窗",
-    loadingLabel: "正在登入",
-    brandGlyph: "O",
-    brandName: "OneHand",
-    tagline: "讓銷售更聰明",
-    providerLead: "使用社群帳號快速開始",
-    providerLoading: "正在載入登入方式。",
-    noProviders: "目前沒有可用的登入方式。",
-    providersErrorPrefix: "無法載入登入方式，正在顯示預設按鈕。",
-    providerFailure: "無法完成登入。請稍後再試。",
-    providerLabels: {
-      google: "使用 Google 繼續",
-      line: "使用 LINE 繼續",
-      apple: "使用 Apple 繼續",
-    },
-  },
-  "en-US": {
+  },  "en-US": {
     closeLabel: "Close sign-in modal",
     loadingLabel: "Signing in",
     brandGlyph: "O",
@@ -92,26 +56,7 @@ export const authProviderModalCopy: Record<
       line: "Continue with LINE",
       apple: "Continue with Apple",
     },
-  },
-  "en-GB": {
-    closeLabel: "Close sign-in modal",
-    loadingLabel: "Signing in",
-    brandGlyph: "O",
-    brandName: "OneHand",
-    tagline: "Smarter sales, faster",
-    providerLead: "Start quickly with a social account",
-    providerLoading: "Loading sign-in options.",
-    noProviders: "No sign-in options are available.",
-    providersErrorPrefix:
-      "Could not load sign-in options, so default buttons are shown.",
-    providerFailure: "We could not complete sign-in. Please try again shortly.",
-    providerLabels: {
-      google: "Continue with Google",
-      line: "Continue with LINE",
-      apple: "Continue with Apple",
-    },
-  },
-};
+  },};
 
 export function getAuthProviderContinueLabel({
   language,
@@ -133,14 +78,6 @@ export function getAuthProviderContinueLabel({
 
   if (language === "ko") {
     return `${providerLabel}로 계속하기`;
-  }
-
-  if (language === "ja") {
-    return `${providerLabel}で続行`;
-  }
-
-  if (language === "zh-TW") {
-    return `使用 ${providerLabel} 繼續`;
   }
 
   return `Continue with ${providerLabel}`;

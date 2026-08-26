@@ -312,7 +312,7 @@ pnpm test:e2e
 ### 2026-07-10 URL locale smoke 결과
 
 - 현재 노출 언어 기준 Playwright smoke 대상은 `/ko`, `/en-us/pricing`, `/en-ca/privacy`다.
-- 2026-07-10 당시 전체 route smoke 기록에는 `/ja/login`, `/zh-tw/signup`, `/en-gb/contact`, `/en-sg/about`, `/en-au/security`도 포함됐지만, 이 locale들은 현재 언어 선택 UI에서 보류 상태다.
+- 2026-07-10 당시 전체 route smoke 기록에는 `/ja/login`, `/en-gb/contact`, `/en-sg/about`, `/en-au/security`도 포함됐지만, 이 locale들은 현재 언어 선택 UI에서 보류 상태다.
 - fresh `ko-KR` context 기준 legacy public URL이 `/ko` 계열로 redirect됨을 확인했다.
 - 저장된 선호 언어가 `en-CA`일 때 legacy `/login`과 비로그인 `/app/deals`가 `/en-ca/login`으로 이동하는지를 현재 KR/US/CA smoke 기준으로 확인한다.
 - `/auth/callback`은 locale prefix 없이 `/auth/callback`에 유지됨을 확인했다.
