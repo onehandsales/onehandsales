@@ -506,6 +506,10 @@ function LandingScrollStyles() {
           min-height: 100svh;
           min-height: 100dvh;
           min-height: var(--landing-viewport-height, 100dvh);
+        }
+
+        .landing-section-height,
+        .landing-final-section-height {
           padding-top: 56px;
         }
 
