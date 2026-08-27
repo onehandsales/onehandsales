@@ -675,8 +675,8 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
         ) : null}
         <h1
           className={[
-            "landing-hero-heading break-keep text-[44px] font-normal leading-[0.98] text-[#0f0f0f]",
-            "sm:text-[64px] md:text-[78px] lg:text-[94px] xl:text-[96px]",
+            "landing-hero-heading break-keep text-[36px] font-normal leading-[0.98] text-[#0f0f0f]",
+            "sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]",
             copy.hero.eyebrow ? "mt-4" : "",
           ].join(" ")}
         >
