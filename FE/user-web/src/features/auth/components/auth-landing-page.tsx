@@ -382,7 +382,30 @@ function useLandingScrollProgress() {
 function useLandingViewportHeightVariable() {
   useEffect(() => {
     const updateViewportHeight = () => {
-      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const userAgent = window.navigator.userAgent;
+      const viewportHeightCandidates = [
+        window.innerHeight,
+        document.documentElement.clientHeight,
+        window.visualViewport?.height ?? 0,
+      ];
+      const isIos =
+        /iPad|iPhone|iPod/.test(userAgent) ||
+        (window.navigator.platform === "MacIntel" &&
+          window.navigator.maxTouchPoints > 1);
+      const isSafari =
+        /Safari/.test(userAgent) &&
+        !/(CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|GSA)/.test(userAgent);
+      const isNarrowTouchViewport =
+        window.matchMedia("(max-width: 767px)").matches &&
+        window.matchMedia("(pointer: coarse)").matches;
+      const shouldUseScreenHeight =
+        isIos && isSafari && isNarrowTouchViewport;
+
+      if (shouldUseScreenHeight) {
+        viewportHeightCandidates.push(window.screen.height);
+      }
+
+      const viewportHeight = Math.ceil(Math.max(...viewportHeightCandidates));
 
       document.documentElement.style.setProperty(
         "--landing-viewport-height",
