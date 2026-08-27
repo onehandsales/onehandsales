@@ -310,7 +310,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       title: "Get started today.",
       description: "",
       primaryCta: "Get OneHand",
-      secondaryCta: "Request a demo",
+      secondaryCta: "Request Demo",
     },
   },
 };
@@ -1041,14 +1041,14 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
           ) : null}
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Link
-              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#0075DE] px-5 text-[15px] font-black text-white hover:bg-[#006AC8]"
+              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-black text-white hover:bg-[#1D4ED8]"
               to={publicSitePath("/signup")}
             >
               {copy.final.primaryCta}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-black text-[#005aa8] hover:bg-[#eef6ff]"
+              className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-black text-[#4880EE] hover:bg-[#EFF6FF]"
               to={publicSitePath("/contact")}
             >
               {copy.final.secondaryCta}
