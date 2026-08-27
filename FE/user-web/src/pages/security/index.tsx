@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import {
   PublicContentContainer,
-  PublicCtaPanel,
   PublicDocumentHero,
   PublicInfoCard,
   PublicPageSection,
@@ -41,10 +40,6 @@ type SecurityCopy = {
   readonly description: string;
   readonly trustItems: readonly string[];
   readonly sections: readonly SecuritySectionCopy[];
-  readonly ctaTitle: string;
-  readonly ctaDescription: string;
-  readonly contactCta: string;
-  readonly privacyCta: string;
 };
 
 const sectionIcons: readonly LucideIcon[] = [
@@ -185,12 +180,8 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         ],
       },
     ],
-    ctaTitle: "팀에서 OneHand를 사용하는 방법을 알아보세요.",
-    ctaDescription:
-      "워크스페이스 접근, 개인정보 질문, 조직의 보안 검토 요청을 OneHand가 어떻게 처리하는지 공유할 수 있습니다.",
-    contactCta: "문의하기",
-    privacyCta: "개인정보 처리방침 보기",
-  },  "en-US": {
+  },
+  "en-US": {
     eyebrow: "OneHand security",
     title: "Security & privacy for customer work.",
     description:
@@ -317,12 +308,8 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         ],
       },
     ],
-    ctaTitle: "Learn about using OneHand with your team.",
-    ctaDescription:
-      "We can share how OneHand handles workspace access, privacy questions, and security review requests for your organization.",
-    contactCta: "Contact us",
-    privacyCta: "Read privacy policy",
-  },};
+  },
+};
 
 // 기능 : 보안 페이지를 렌더링합니다.
 export function SecurityPage() {
@@ -371,19 +358,6 @@ export function SecurityPage() {
         </PublicContentContainer>
       </PublicPageSection>
 
-      <PublicPageSection tone="muted">
-        <PublicContentContainer>
-          <PublicCtaPanel
-            align="center"
-            className="mx-auto max-w-[760px] bg-white"
-            description={copy.ctaDescription}
-            primaryAction={{ label: copy.contactCta, to: "/contact" }}
-            secondaryAction={{ label: copy.privacyCta, to: "/privacy" }}
-            title={copy.ctaTitle}
-            tone="neutral"
-          />
-        </PublicContentContainer>
-      </PublicPageSection>
     </PublicSitePageShell>
   );
 }
