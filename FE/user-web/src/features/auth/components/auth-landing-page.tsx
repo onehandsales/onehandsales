@@ -1064,7 +1064,7 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
           ) : null}
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Link
-              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-black text-white hover:bg-[#1D4ED8]"
+              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-black text-white hover:bg-[#336FE0]"
               to={publicSitePath("/signup")}
             >
               {copy.final.primaryCta}

@@ -208,7 +208,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
         <div className="flex items-center gap-2">
           <Link
-            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-bold text-white hover:bg-[#1D4ED8] sm:inline-flex"
+            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-bold text-white hover:bg-[#336FE0] sm:inline-flex"
             to={publicSitePath("/signup")}
           >
             {copy.common.nav.freeCta}
