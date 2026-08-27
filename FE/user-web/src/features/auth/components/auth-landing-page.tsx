@@ -339,7 +339,7 @@ export function AuthLandingPage({
         <TrustSection copy={copy} />
         <FinalSection copy={copy} />
       </main>
-      <PublicSiteFooter compactDesktop />
+      <PublicSiteFooter compactDesktop showTopDivider />
       {isModalOpen ? children : null}
     </div>
   );
@@ -653,7 +653,7 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
 function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section
-      className={`relative ${landingSectionHeightClassName} overflow-hidden bg-[#111111]`}
+      className={`relative ${landingSectionHeightClassName} overflow-hidden bg-white`}
     >
       <img
         alt={copy.realMoment.imageAlt}
@@ -911,7 +911,7 @@ function FlowOutcomeCard({
 
 function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
   return (
-    <section className={`${landingCenteredSectionClassName} bg-[#FAFAF8]`}>
+    <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
         <p className="text-[12px] font-black uppercase text-[#6B7280]">
           {copy.persona.eyebrow}
@@ -998,7 +998,7 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
 
   return (
     <section
-      className={`${landingFinalSectionHeightClassName} flex flex-col bg-[#FAFAF8]`}
+      className={`${landingFinalSectionHeightClassName} flex flex-col bg-white`}
     >
       <div className="flex flex-1 items-center justify-center text-center">
         <div className="landing-container">
