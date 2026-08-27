@@ -48,7 +48,6 @@ type LandingCopy = {
   };
   readonly realMoment: {
     readonly title: string;
-    readonly description: string;
     readonly imageAlt: string;
   };
   readonly flow: {
@@ -159,8 +158,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
     realMoment: {
       title: "언제 어디서든 영업 흐름을 바로 확인하세요.",
-      description:
-        "고객을 만나러 가는 길에도, 미팅 직후에도 다음 할 일을 바로 확인할 수 있어요.",
       imageAlt: "도심에서 스마트폰으로 업무를 확인하는 영업자",
     },
     flow: {
@@ -243,8 +240,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
     realMoment: {
       title: "Check your sales work anytime, anywhere.",
-      description:
-        "On the way to a client, right after a meeting, or between calls, OneHand keeps the next step close.",
       imageAlt: "A salesperson checking work on a smartphone in the city",
     },
     flow: {
@@ -489,10 +484,6 @@ function LandingScrollStyles() {
           max-width: 680px;
         }
 
-        .landing-real-description {
-          max-width: 560px;
-        }
-
         .landing-final-copy {
           max-width: 620px;
           margin-inline: auto;
@@ -727,12 +718,9 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
       >
         <div className="landing-container">
           <div className="landing-real-copy text-white">
-            <h2 className="break-keep text-[42px] font-normal leading-[1.04] sm:text-[58px] lg:text-[72px]">
+            <h2 className="break-keep text-[36px] font-normal leading-[1.04] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
               {copy.realMoment.title}
             </h2>
-            <p className="landing-real-description mt-5 break-keep text-[16px] font-normal leading-7 text-white/82 sm:text-[18px] sm:leading-8">
-              {copy.realMoment.description}
-            </p>
           </div>
         </div>
       </div>
@@ -774,7 +762,7 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
         <p className="text-[12px] font-normal uppercase text-[#6B7280]">
           {copy.flow.eyebrow}
         </p>
-        <h2 className="landing-heading mt-3 break-keep text-[40px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
           {copy.flow.title}
         </h2>
         <p className="landing-copy mt-5 break-keep text-[16px] font-normal leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
@@ -972,7 +960,7 @@ function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
         <p className="text-[12px] font-normal uppercase text-[#6B7280]">
           {copy.persona.eyebrow}
         </p>
-        <h2 className="landing-heading mt-3 break-keep text-[34px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
           {copy.persona.title}
         </h2>
         <p className="landing-copy mt-4 break-keep text-[15px] font-normal leading-6 text-[#555550] sm:mt-5 sm:text-[18px] sm:leading-8">
@@ -1015,7 +1003,7 @@ function TrustSection({ copy }: { readonly copy: LandingCopy }) {
         <p className="text-[12px] font-normal uppercase text-[#6B7280]">
           {copy.trustProof.eyebrow}
         </p>
-        <h2 className="landing-heading mt-3 break-keep text-[40px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
           {copy.trustProof.title}
         </h2>
         <p className="landing-copy mt-5 break-keep text-[16px] font-normal leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
@@ -1058,7 +1046,7 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
     >
       <div className="flex flex-1 items-center justify-center text-center">
         <div className="landing-container">
-          <h2 className="break-keep text-[38px] font-normal leading-tight text-[#0f0f0f] sm:text-[42px]">
+          <h2 className="break-keep text-[36px] font-normal leading-tight text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
             {copy.final.title}
           </h2>
           {copy.final.description ? (
