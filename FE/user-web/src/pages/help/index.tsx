@@ -205,7 +205,7 @@ export function HelpPage() {
                 className="group rounded-[8px] bg-[#FAFAF8] p-5 open:bg-[#eeeeec]"
                 key={faq.question}
               >
-                <summary className="cursor-pointer list-none break-keep text-[15px] font-black text-[#222220]">
+                <summary className="cursor-pointer list-none break-keep text-[15px] font-normal text-[#222220]">
                   <span className="inline-flex items-start gap-3">
                     <CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-[#0075DE]" />
                     {faq.question}

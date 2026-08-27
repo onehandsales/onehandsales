@@ -351,7 +351,7 @@ export function SecurityPage() {
                   key={label}
                 >
                   <Icon className="h-4 w-4 text-[#0075DE]" />
-                  <span className="min-w-0 text-[12px] font-bold text-[#333330]">
+                  <span className="min-w-0 text-[12px] font-normal text-[#333330]">
                     {label}
                   </span>
                 </div>
@@ -403,10 +403,10 @@ function SecuritySectionBlock({
           <div className="mb-5 grid h-16 w-16 place-items-center rounded-[8px] bg-[#edf7ff] text-[#0075DE]">
             <Icon className="h-8 w-8" />
           </div>
-          <p className="text-[13px] font-semibold text-[#777770]">
+          <p className="text-[13px] font-normal text-[#777770]">
             {section.eyebrow}
           </p>
-          <h2 className="mt-2 text-[30px] font-black leading-tight md:text-[42px]">
+          <h2 className="mt-2 text-[30px] font-normal leading-tight md:text-[42px]">
             {section.title}
           </h2>
           <p className="mt-4 text-[14px] leading-7 text-[#555550]">

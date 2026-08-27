@@ -17,13 +17,13 @@ export function PricingPage() {
       <section className="bg-white pb-16 pt-16 md:pb-24 md:pt-20">
         <PublicContentContainer>
           <div className="text-center">
-            <h1 className="text-[38px] font-black leading-[1.05] tracking-normal md:text-[58px]">
+            <h1 className="text-[38px] font-normal leading-[1.05] tracking-normal md:text-[58px]">
               {pricing.title}
             </h1>
             <p className="mx-auto mt-4 max-w-[620px] text-[15px] leading-7 text-[#666661]">
               {pricing.description}
             </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-5 text-[13px] font-bold text-[#555550]">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-5 text-[13px] font-normal text-[#555550]">
               {pricing.tags.map((item) => (
                 <span className="inline-flex items-center gap-2" key={item}>
                   <span className="h-1 w-1 rounded-full bg-[#c8c8c2]" />
@@ -58,7 +58,7 @@ export function PricingPage() {
                     referrerPolicy="no-referrer"
                     src={image.src}
                   />
-                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-8 text-left text-[12px] font-black text-white">
+                  <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-3 pb-2 pt-8 text-left text-[12px] font-normal text-white">
                     {image.title}
                   </figcaption>
                 </figure>
@@ -69,11 +69,11 @@ export function PricingPage() {
           <div className="mt-10 grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
             <div className="rounded-[10px] border border-[#eeeeec] bg-white p-4 shadow-sm">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[#eeeeec] pb-4">
-                <div className="inline-flex rounded-full bg-[#f1f1ef] p-1 text-[12px] font-bold">
+                <div className="inline-flex rounded-full bg-[#f1f1ef] p-1 text-[12px] font-normal">
                   <span className="rounded-full bg-white px-3 py-1 shadow-sm">{pricing.billingMonthly}</span>
                   <span className="px-3 py-1 text-[#777770]">{pricing.billingAnnual}</span>
                 </div>
-                <span className="text-[12px] font-bold text-[#777770]">{pricing.currency}</span>
+                <span className="text-[12px] font-normal text-[#777770]">{pricing.currency}</span>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -87,28 +87,28 @@ export function PricingPage() {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h2 className="text-[18px] font-black">{plan.name}</h2>
+                        <h2 className="text-[18px] font-normal">{plan.name}</h2>
                         <p className="mt-1 min-h-[40px] text-[12px] leading-5 text-[#666661]">
                           {plan.description}
                         </p>
                       </div>
                       {planIndex === 2 ? (
-                        <span className="rounded-full bg-[#0077e6] px-2 py-1 text-[11px] font-bold text-white">
+                        <span className="rounded-full bg-[#0077e6] px-2 py-1 text-[11px] font-normal text-white">
                           {pricing.recommended}
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-5 text-[26px] font-black">
+                    <p className="mt-5 text-[26px] font-normal">
                       {pricing.priceLabels[planIndex]}
                       {pricing.priceLabels[planIndex] ? (
-                        <span className="ml-1 text-[12px] font-bold text-[#777770]">
+                        <span className="ml-1 text-[12px] font-normal text-[#777770]">
                           {pricing.pricePeriod}
                         </span>
                       ) : null}
                     </p>
                     <button
                       className={[
-                        "mt-4 h-9 w-full rounded-[6px] text-[13px] font-bold",
+                        "mt-4 h-9 w-full rounded-[6px] text-[13px] font-normal",
                         planIndex === 2
                           ? "bg-[#0077e6] text-white hover:bg-[#006bd1]"
                           : "bg-[#f1f1ef] text-[#222220] hover:bg-[#e8e8e4]",
@@ -141,15 +141,15 @@ export function PricingPage() {
               />
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[12px] font-bold text-[#0077e6]">{pricing.aiLabel}</p>
-                  <h2 className="mt-2 text-[28px] font-black leading-tight">
+                  <p className="text-[12px] font-normal text-[#0077e6]">{pricing.aiLabel}</p>
+                  <h2 className="mt-2 text-[28px] font-normal leading-tight">
                     {pricing.aiTitle}
                   </h2>
                 </div>
                 <div className="flex -space-x-2">
                   {pricing.aiAvatarLabels.map((item) => (
                     <span
-                      className="grid h-10 w-10 place-items-center rounded-full border-2 border-white bg-[#111111] text-[11px] font-black text-white"
+                      className="grid h-10 w-10 place-items-center rounded-full border-2 border-white bg-[#111111] text-[11px] font-normal text-white"
                       key={item}
                     >
                       {item}
@@ -160,12 +160,12 @@ export function PricingPage() {
               <p className="mt-4 text-[13px] leading-6 text-[#555550]">
                 {pricing.aiDescription}
               </p>
-              <button className="mt-5 h-9 rounded-[6px] bg-[#0077e6] px-4 text-[13px] font-bold text-white" type="button">
+              <button className="mt-5 h-9 rounded-[6px] bg-[#0077e6] px-4 text-[13px] font-normal text-white" type="button">
                 {pricing.aiCta}
               </button>
               <div className="mt-8 rounded-[8px] bg-white p-4">
                 <Sparkles className="h-5 w-5 text-[#0077e6]" />
-                <p className="mt-3 text-[13px] font-black">{pricing.setupTitle}</p>
+                <p className="mt-3 text-[13px] font-normal">{pricing.setupTitle}</p>
                 <p className="mt-2 text-[12px] leading-5 text-[#666661]">
                   {pricing.setupDescription}
                 </p>
@@ -177,14 +177,14 @@ export function PricingPage() {
 
       <section className="bg-white pb-16 md:pb-24">
         <PublicContentContainer>
-          <h2 className="text-[34px] font-black md:text-[46px]">{pricing.featuresTitle}</h2>
+          <h2 className="text-[34px] font-normal md:text-[46px]">{pricing.featuresTitle}</h2>
           <div className="mt-8 overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left text-[13px]">
               <thead>
                 <tr className="border-b border-[#dededa]">
                   <th className="w-[32%] py-3 text-[12px] text-[#777770]">{pricing.featureColumn}</th>
                   {pricing.plans.map((plan) => (
-                    <th className="py-3 text-center text-[12px] font-black" key={plan.name}>
+                    <th className="py-3 text-center text-[12px] font-normal" key={plan.name}>
                       {plan.name}
                     </th>
                   ))}
@@ -194,7 +194,7 @@ export function PricingPage() {
                 {pricing.comparisonGroups.map((group) => (
                   <Fragment key={group.title}>
                     <tr>
-                      <td className="pb-2 pt-10 text-[12px] font-black text-[#777770]" colSpan={5}>
+                      <td className="pb-2 pt-10 text-[12px] font-normal text-[#777770]" colSpan={5}>
                         {group.title}
                       </td>
                     </tr>
@@ -204,7 +204,7 @@ export function PricingPage() {
                           <td
                             className={[
                               "py-3",
-                              index === 0 ? "font-semibold text-[#333330]" : "text-center text-[#555550]",
+                              index === 0 ? "font-normal text-[#333330]" : "text-center text-[#555550]",
                             ].join(" ")}
                             key={`${row[0]}-${index}`}
                           >
@@ -227,11 +227,11 @@ export function PricingPage() {
 
       <section className="bg-white pb-20 md:pb-28">
         <PublicContentContainer>
-          <h2 className="text-[34px] font-black md:text-[46px]">{pricing.faqTitle}</h2>
+          <h2 className="text-[34px] font-normal md:text-[46px]">{pricing.faqTitle}</h2>
           <div className="mt-8 divide-y divide-[#eeeeec] border-y border-[#eeeeec]">
             {pricing.faqs.map((faq) => (
               <button
-                className="flex w-full items-center justify-between gap-6 py-4 text-left text-[14px] font-bold"
+                className="flex w-full items-center justify-between gap-6 py-4 text-left text-[14px] font-normal"
                 key={faq}
                 type="button"
               >

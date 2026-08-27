@@ -453,7 +453,7 @@ export function PrivacyPage() {
               <ul className="mt-4 grid gap-3 break-keep text-[13px] leading-6 text-[#555550]">
                 {copy.definitions.map((definition) => (
                   <li key={definition.term}>
-                    <strong className="text-[#222220]">
+                    <strong className="font-normal text-[#222220]">
                       {definition.term}
                     </strong>
                     {copyLanguage === "en-US" ? " " : ": "}
@@ -485,7 +485,7 @@ export function PrivacyPage() {
               primaryAction={{ label: copy.contactCta, to: "/contact" }}
               title={copy.contactTitle}
             >
-              <p className="mt-5 text-[12px] font-bold text-[#888880]">
+              <p className="mt-5 text-[12px] font-normal text-[#888880]">
                 {copy.lastUpdated}
               </p>
             </PublicCtaPanel>
@@ -515,7 +515,7 @@ function PrivacySectionBlock({
         <div className="mt-6 grid gap-7">
           {section.subsections.map((subsection) => (
             <div key={subsection.title}>
-              <h3 className="break-keep text-[18px] font-black">
+              <h3 className="break-keep text-[18px] font-normal">
                 {subsection.title}
               </h3>
               {subsection.paragraphs ? (
@@ -541,7 +541,7 @@ function PrivacySectionBlock({
       ) : null}
       {section.id === "california" ? (
         <div className="mt-6 overflow-hidden rounded-[8px] border border-[#eeeeec]">
-          <div className="grid grid-cols-[1fr_1.1fr_1.1fr] bg-[#FAFAF8] text-[12px] font-black text-[#333330]">
+          <div className="grid grid-cols-[1fr_1.1fr_1.1fr] bg-[#FAFAF8] text-[12px] font-normal text-[#333330]">
             {copy.tableHeaders.map((header) => (
               <div className="p-3" key={header}>
                 {header}

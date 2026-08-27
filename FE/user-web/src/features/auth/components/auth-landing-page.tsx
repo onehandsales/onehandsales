@@ -665,7 +665,7 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
     >
       <div className="landing-container flex flex-col items-center justify-center">
         {copy.hero.eyebrow ? (
-          <p className="text-[12px] font-black uppercase text-[#0075DE]">
+          <p className="text-[12px] font-normal uppercase text-[#0075DE]">
             {copy.hero.eyebrow}
           </p>
         ) : null}
@@ -723,10 +723,10 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
       >
         <div className="landing-container">
           <div className="landing-real-copy text-white">
-            <h2 className="break-keep text-[42px] font-black leading-[1.04] sm:text-[58px] lg:text-[72px]">
+            <h2 className="break-keep text-[42px] font-normal leading-[1.04] sm:text-[58px] lg:text-[72px]">
               {copy.realMoment.title}
             </h2>
-            <p className="landing-real-description mt-5 break-keep text-[16px] font-semibold leading-7 text-white/82 sm:text-[18px] sm:leading-8">
+            <p className="landing-real-description mt-5 break-keep text-[16px] font-normal leading-7 text-white/82 sm:text-[18px] sm:leading-8">
               {copy.realMoment.description}
             </p>
           </div>
@@ -767,13 +767,13 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
-        <p className="text-[12px] font-black uppercase text-[#6B7280]">
+        <p className="text-[12px] font-normal uppercase text-[#6B7280]">
           {copy.flow.eyebrow}
         </p>
-        <h2 className="landing-heading mt-3 break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[40px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
           {copy.flow.title}
         </h2>
-        <p className="landing-copy mt-5 break-keep text-[16px] font-semibold leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
+        <p className="landing-copy mt-5 break-keep text-[16px] font-normal leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
           {copy.flow.description}
         </p>
 
@@ -846,7 +846,7 @@ function FlowCompactItem({
       >
         <Icon className="h-[18px] w-[18px]" />
       </span>
-      <span className="break-keep text-[13px] font-black leading-5">
+      <span className="break-keep text-[13px] font-normal leading-5">
         {label}
       </span>
     </div>
@@ -867,7 +867,7 @@ function FlowInputCluster({ copy }: { readonly copy: LandingCopy }) {
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-white text-[#374151]">
               <Icon className="h-5 w-5" />
             </span>
-            <span className="text-[15px] font-black text-[#111827]">
+            <span className="text-[15px] font-normal text-[#111827]">
               {input}
             </span>
           </div>
@@ -898,7 +898,7 @@ function FlowCustomerCard({ copy }: { readonly copy: LandingCopy }) {
           <Users className="h-6 w-6" />
         </span>
         <div>
-          <h3 className="break-keep text-[18px] font-black leading-6 text-[#111827]">
+          <h3 className="break-keep text-[18px] font-normal leading-6 text-[#111827]">
             {copy.flow.recordLabel}
           </h3>
           <div className="mt-1 h-2 w-24 rounded-full bg-[#E5E7EB]" />
@@ -907,7 +907,7 @@ function FlowCustomerCard({ copy }: { readonly copy: LandingCopy }) {
       <div className="mt-5 grid grid-cols-2 gap-2">
         {copy.flow.inputs.map((input) => (
           <span
-            className="rounded-[6px] border border-[#E5E7EB] bg-[#FAFAF8] px-3 py-2 text-[12px] font-black text-[#4B5563]"
+            className="rounded-[6px] border border-[#E5E7EB] bg-[#FAFAF8] px-3 py-2 text-[12px] font-normal text-[#4B5563]"
             key={input}
           >
             {input}
@@ -947,7 +947,7 @@ function FlowOutcomeCard({
         <Icon className="h-6 w-6" />
       </span>
       <div>
-        <span className="break-keep text-[18px] font-black leading-6">
+        <span className="break-keep text-[18px] font-normal leading-6">
           {label}
         </span>
         <div
@@ -965,13 +965,13 @@ function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
-        <p className="text-[12px] font-black uppercase text-[#6B7280]">
+        <p className="text-[12px] font-normal uppercase text-[#6B7280]">
           {copy.persona.eyebrow}
         </p>
-        <h2 className="landing-heading mt-3 break-keep text-[34px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[34px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
           {copy.persona.title}
         </h2>
-        <p className="landing-copy mt-4 break-keep text-[15px] font-semibold leading-6 text-[#555550] sm:mt-5 sm:text-[18px] sm:leading-8">
+        <p className="landing-copy mt-4 break-keep text-[15px] font-normal leading-6 text-[#555550] sm:mt-5 sm:text-[18px] sm:leading-8">
           {copy.persona.description}
         </p>
 
@@ -988,10 +988,10 @@ function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
                   <Icon className="h-5 w-5" />
                 </span>
                 <div>
-                  <h3 className="mt-3 break-keep text-[15px] font-black leading-5 text-[#111827] sm:mt-0 sm:text-[19px] sm:leading-normal">
+                  <h3 className="mt-3 break-keep text-[15px] font-normal leading-5 text-[#111827] sm:mt-0 sm:text-[19px] sm:leading-normal">
                     {persona.title}
                   </h3>
-                  <p className="mt-1.5 break-keep text-[12px] font-semibold leading-5 text-[#6B7280] sm:mt-2 sm:text-[14px] sm:leading-6">
+                  <p className="mt-1.5 break-keep text-[12px] font-normal leading-5 text-[#6B7280] sm:mt-2 sm:text-[14px] sm:leading-6">
                     {persona.description}
                   </p>
                 </div>
@@ -1008,13 +1008,13 @@ function TrustSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
-        <p className="text-[12px] font-black uppercase text-[#6B7280]">
+        <p className="text-[12px] font-normal uppercase text-[#6B7280]">
           {copy.trustProof.eyebrow}
         </p>
-        <h2 className="landing-heading mt-3 break-keep text-[40px] font-black leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
+        <h2 className="landing-heading mt-3 break-keep text-[40px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[56px] lg:text-[68px]">
           {copy.trustProof.title}
         </h2>
-        <p className="landing-copy mt-5 break-keep text-[16px] font-semibold leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
+        <p className="landing-copy mt-5 break-keep text-[16px] font-normal leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
           {copy.trustProof.description}
         </p>
 
@@ -1030,10 +1030,10 @@ function TrustSection({ copy }: { readonly copy: LandingCopy }) {
                 <span className="grid h-10 w-10 place-items-center rounded-[8px] bg-white text-[#111827]">
                   <Icon className="h-5 w-5" />
                 </span>
-                <h3 className="mt-4 break-keep text-[15px] font-black leading-5 text-[#111827] sm:mt-5 sm:text-[17px] sm:leading-normal">
+                <h3 className="mt-4 break-keep text-[15px] font-normal leading-5 text-[#111827] sm:mt-5 sm:text-[17px] sm:leading-normal">
                   {proof.title}
                 </h3>
-                <p className="mt-2 break-keep text-[12px] font-semibold leading-5 text-[#6B7280] sm:text-[13px] sm:leading-6">
+                <p className="mt-2 break-keep text-[12px] font-normal leading-5 text-[#6B7280] sm:text-[13px] sm:leading-6">
                   {proof.description}
                 </p>
               </article>
@@ -1054,24 +1054,24 @@ function FinalSection({ copy }: { readonly copy: LandingCopy }) {
     >
       <div className="flex flex-1 items-center justify-center text-center">
         <div className="landing-container">
-          <h2 className="break-keep text-[38px] font-black leading-tight text-[#0f0f0f] sm:text-[42px]">
+          <h2 className="break-keep text-[38px] font-normal leading-tight text-[#0f0f0f] sm:text-[42px]">
             {copy.final.title}
           </h2>
           {copy.final.description ? (
-            <p className="landing-final-copy mt-4 break-keep text-[16px] font-semibold leading-7 text-[#555550]">
+            <p className="landing-final-copy mt-4 break-keep text-[16px] font-normal leading-7 text-[#555550]">
               {copy.final.description}
             </p>
           ) : null}
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Link
-              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-black text-white hover:bg-[#336FE0]"
+              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white hover:bg-[#336FE0]"
               to={publicSitePath("/signup")}
             >
               {copy.final.primaryCta}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-black text-[#4880EE] hover:bg-[#EFF6FF]"
+              className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-normal text-[#4880EE] hover:bg-[#EFF6FF]"
               to={publicSitePath("/contact")}
             >
               {copy.final.secondaryCta}

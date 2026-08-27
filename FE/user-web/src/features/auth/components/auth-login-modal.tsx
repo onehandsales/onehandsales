@@ -108,12 +108,12 @@ export function AuthLoginModal({
       <div className="grid justify-items-center gap-2.5">
         <div className="flex items-center gap-2">
           <div className="grid h-9 w-9 place-items-center rounded-[9px] bg-[#4880EE]">
-            <span className="text-[15px] font-extrabold text-white">
+            <span className="text-[15px] font-normal text-white">
               {copy.brandGlyph}
             </span>
           </div>
           <h2
-            className="text-[20px] font-bold text-[#111827]"
+            className="text-[20px] font-normal text-[#111827]"
             id="login-modal-title"
           >
             {copy.brandName}

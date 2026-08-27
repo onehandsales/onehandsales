@@ -141,11 +141,11 @@ export function AuthSocialLoginModal({
       <div className="grid justify-items-center gap-2.5">
         <div className="flex items-center gap-2">
           <div className="grid h-9 w-9 place-items-center rounded-[9px] bg-[#4880EE]">
-            <span className="text-[15px] font-extrabold text-white">
+            <span className="text-[15px] font-normal text-white">
               {copy.brandGlyph}
             </span>
           </div>
-          <h2 className="text-[20px] font-bold text-[#111827]">
+          <h2 className="text-[20px] font-normal text-[#111827]">
             {copy.brandName}
           </h2>
         </div>
@@ -177,7 +177,7 @@ export function AuthSocialLoginModal({
           <button
             aria-label={copy.providerLabels[provider.provider] ?? provider.label}
             className={[
-              "relative grid h-[72px] min-w-0 place-items-center gap-1 rounded-[10px] border px-1.5 py-2 text-[12px] font-semibold disabled:cursor-not-allowed disabled:opacity-60",
+              "relative grid h-[72px] min-w-0 place-items-center gap-1 rounded-[10px] border px-1.5 py-2 text-[12px] font-normal disabled:cursor-not-allowed disabled:opacity-60",
               providerStyles[provider.provider],
             ].join(" ")}
             disabled={isPending}

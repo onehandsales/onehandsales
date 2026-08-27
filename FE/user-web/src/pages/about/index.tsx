@@ -219,7 +219,7 @@ export function AboutPage() {
           <section className="mt-24 border-t border-[#eeeeec] pt-12">
             <div className="grid gap-8 md:grid-cols-[0.8fr_1fr] md:items-start">
               <div>
-                <h2 className="break-keep text-[28px] font-black leading-tight md:text-[36px]">
+                <h2 className="break-keep text-[28px] font-normal leading-tight md:text-[36px]">
                   {copy.joinTitle}
                 </h2>
                 <p className="mt-4 break-keep text-[14px] leading-7 text-[#555550]">
@@ -228,7 +228,7 @@ export function AboutPage() {
               </div>
               <PublicInfoCard className="p-6" title={copy.joinCardTitle}>
                 <Link
-                  className="mt-4 inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-bold text-white hover:bg-[#006AC8]"
+                  className="mt-4 inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-normal text-white hover:bg-[#006AC8]"
                   to={publicSitePath("/contact")}
                 >
                   {copy.joinCta}
@@ -239,7 +239,7 @@ export function AboutPage() {
           </section>
 
           <section className="mt-20 border-t border-[#eeeeec] pt-12">
-            <h2 className="break-keep text-[28px] font-black leading-tight md:text-[36px]">
+            <h2 className="break-keep text-[28px] font-normal leading-tight md:text-[36px]">
               {copy.newsTitle}
             </h2>
             <p className="mt-3 max-w-[620px] break-keep text-[14px] leading-7 text-[#555550]">
@@ -299,10 +299,10 @@ function StorySection({
       </div>
 
       <div>
-        <p className="text-[12px] font-black uppercase tracking-[0.08em] text-[#888880]">
+        <p className="text-[12px] font-normal uppercase tracking-[0.08em] text-[#888880]">
           {chapterLabel} {index + 1}
         </p>
-        <h2 className="mt-3 break-keep text-[26px] font-black leading-tight md:text-[34px]">
+        <h2 className="mt-3 break-keep text-[26px] font-normal leading-tight md:text-[34px]">
           {block.title}
         </h2>
         <p className="mt-4 break-keep text-[14px] leading-7 text-[#444440]">
@@ -335,7 +335,7 @@ function LineScene({
           </div>
         ))}
       </div>
-      <div className="absolute bottom-8 left-8 right-8 grid grid-cols-3 gap-4 text-[12px] font-bold text-[#777770]">
+      <div className="absolute bottom-8 left-8 right-8 grid grid-cols-3 gap-4 text-[12px] font-normal text-[#777770]">
         {labels.map((label) => (
           <span key={label}>{label}</span>
         ))}

@@ -132,11 +132,11 @@ export function PublicDocumentHero({
   return (
     <div className={cn(isCentered ? "text-center" : "", className)}>
       {eyebrow ? (
-        <p className="text-[13px] font-semibold text-[#777770]">{eyebrow}</p>
+        <p className="text-[13px] font-normal text-[#777770]">{eyebrow}</p>
       ) : null}
       <h1
         className={cn(
-          "mt-3 max-w-[760px] break-keep text-[40px] font-black leading-[1.05] tracking-normal md:text-[58px]",
+          "mt-3 max-w-[760px] break-keep text-[40px] font-normal leading-[1.05] tracking-normal md:text-[58px]",
           isCentered ? "mx-auto" : "",
           titleClassName,
         )}
@@ -155,7 +155,7 @@ export function PublicDocumentHero({
         </div>
       ) : null}
       {lastUpdated ? (
-        <p className="mt-4 text-[12px] font-bold text-[#888880]">
+        <p className="mt-4 text-[12px] font-normal text-[#888880]">
           {lastUpdated}
         </p>
       ) : null}
@@ -196,7 +196,7 @@ export function PublicInfoCard({
         <TitleTag
           className={cn(
             Icon ? "mt-5" : "",
-            "break-keep text-[18px] font-black text-[#222220]",
+            "break-keep text-[18px] font-normal text-[#222220]",
             titleClassName,
           )}
         >
@@ -210,7 +210,7 @@ export function PublicInfoCard({
       ) : null}
       {children}
       {actionLabel ? (
-        <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-black text-[#0075DE]">
+        <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-normal text-[#0075DE]">
           {actionLabel}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </span>
@@ -244,13 +244,13 @@ export function PublicTableOfContents({
   return (
     <nav className={cn("rounded-[8px] bg-[#FAFAF8] p-4", className)}>
       {label ? (
-        <p className="text-[12px] font-black uppercase tracking-[0.08em] text-[#888880]">
+        <p className="text-[12px] font-normal uppercase tracking-[0.08em] text-[#888880]">
           {label}
         </p>
       ) : null}
       <div
         className={cn(
-          "grid gap-2 text-[13px] font-semibold text-[#555550] sm:grid-cols-2",
+          "grid gap-2 text-[13px] font-normal text-[#555550] sm:grid-cols-2",
           label ? "mt-4" : "",
         )}
       >
@@ -279,7 +279,7 @@ export function PublicDocumentSection({
 }: PublicDocumentSectionProps) {
   return (
     <section className={className} id={id}>
-      <h2 className="break-keep text-[26px] font-black leading-tight md:text-[28px]">
+      <h2 className="break-keep text-[26px] font-normal leading-tight md:text-[28px]">
         {title}
       </h2>
       {paragraphs ? (
@@ -345,7 +345,7 @@ export function PublicCtaPanel({
           </span>
         ) : null}
         <div className={cn("min-w-0", isCentered ? "mx-auto max-w-[720px]" : "")}>
-          <h2 className="break-keep text-[20px] font-black leading-tight md:text-[24px]">
+          <h2 className="break-keep text-[20px] font-normal leading-tight md:text-[24px]">
             {title}
           </h2>
           {description ? (
@@ -362,7 +362,7 @@ export function PublicCtaPanel({
             >
               {primaryAction ? (
                 <Link
-                  className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-bold text-white hover:bg-[#006AC8]"
+                  className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-normal text-white hover:bg-[#006AC8]"
                   to={publicSitePath(primaryAction.to)}
                 >
                   {primaryAction.label}
@@ -371,7 +371,7 @@ export function PublicCtaPanel({
               ) : null}
               {secondaryAction ? (
                 <Link
-                  className="inline-flex h-9 items-center rounded-[6px] bg-white px-4 text-[13px] font-bold text-[#0075DE] hover:bg-[#eeeeec]"
+                  className="inline-flex h-9 items-center rounded-[6px] bg-white px-4 text-[13px] font-normal text-[#0075DE] hover:bg-[#eeeeec]"
                   to={publicSitePath(secondaryAction.to)}
                 >
                   {secondaryAction.label}

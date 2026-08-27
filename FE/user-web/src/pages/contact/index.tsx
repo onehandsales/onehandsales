@@ -22,7 +22,7 @@ export function ContactPage() {
       <section className="bg-white pb-16 pt-16 md:pb-24 md:pt-20">
         <PublicContentContainer className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
           <div>
-            <h1 className="break-keep text-[42px] font-black leading-[0.98] tracking-normal md:text-[56px]">
+            <h1 className="break-keep text-[42px] font-normal leading-[0.98] tracking-normal md:text-[56px]">
               <span className="block">{contact.title[0]}</span>
               <span className="block">{contact.title[1]}</span>
             </h1>
@@ -31,10 +31,10 @@ export function ContactPage() {
             </p>
 
             <div className="mt-10">
-              <p className="text-[13px] font-bold text-[#777770]">
+              <p className="text-[13px] font-normal text-[#777770]">
                 {contact.trustedLabel}
               </p>
-              <div className="mt-4 flex flex-wrap items-center gap-6 text-[22px] font-black text-[#555550]">
+              <div className="mt-4 flex flex-wrap items-center gap-6 text-[22px] font-normal text-[#555550]">
                 {contact.companies.map((name) => (
                   <span key={name}>{name}</span>
                 ))}
@@ -50,12 +50,12 @@ export function ContactPage() {
                 referrerPolicy="no-referrer"
                 src={publicSiteImages.salesConversation}
               />
-              <p className="text-[32px] font-black">{contact.quoteCompany}</p>
+              <p className="text-[32px] font-normal">{contact.quoteCompany}</p>
               <Quote className="mt-6 h-6 w-6 text-[#777770]" />
               <p className="mt-4 text-[18px] leading-8 text-[#222220]">
                 “{contact.quote}”
               </p>
-              <p className="mt-8 text-[13px] font-black">{contact.quotePerson}</p>
+              <p className="mt-8 text-[13px] font-normal">{contact.quotePerson}</p>
               <p className="mt-1 text-[12px] text-[#777770]">{contact.quoteRole}</p>
             </div>
           </div>
@@ -77,9 +77,9 @@ export function ContactPage() {
                 src={testimonialImages[index] ?? publicSiteImages.salesConversation}
               />
               <div className="p-8">
-                <p className="text-[24px] font-black">{item.company}</p>
+                <p className="text-[24px] font-normal">{item.company}</p>
                 <p className="mt-8 text-[18px] leading-8 text-[#222220]">“{item.quote}”</p>
-                <p className="mt-10 text-[13px] font-black">{item.person}</p>
+                <p className="mt-10 text-[13px] font-normal">{item.person}</p>
                 <p className="mt-1 text-[12px] text-[#777770]">{item.role}</p>
               </div>
             </article>
@@ -110,10 +110,10 @@ function ContactForm() {
 
       <SelectField label={contact.labels.reason} placeholder={contact.placeholders.reason} />
 
-      <label className="grid gap-2 text-[13px] font-bold text-[#333330]">
+      <label className="grid gap-2 text-[13px] font-normal text-[#333330]">
         {contact.labels.detail}
         <textarea
-          className="min-h-[112px] resize-y rounded-[6px] border border-[#dededa] bg-white px-3 py-3 text-[14px] font-medium outline-none placeholder:text-[#aaa9a3] focus:border-[#111111]"
+          className="min-h-[112px] resize-y rounded-[6px] border border-[#dededa] bg-white px-3 py-3 text-[14px] font-normal outline-none placeholder:text-[#aaa9a3] focus:border-[#111111]"
           placeholder={contact.placeholders.detail}
         />
       </label>
@@ -127,7 +127,7 @@ function ContactForm() {
 
       <div>
         <button
-          className="h-10 rounded-[6px] bg-[#111111] px-5 text-[14px] font-bold text-white hover:bg-[#333330]"
+          className="h-10 rounded-[6px] bg-[#111111] px-5 text-[14px] font-normal text-white hover:bg-[#333330]"
           type="button"
         >
           {contact.submit}
@@ -140,7 +140,7 @@ function ContactForm() {
 
       <p className="max-w-[560px] text-[13px] leading-6 text-[#777770]">
         {contact.supportPrefix}{" "}
-        <a className="font-bold text-[#0077e6]" href="mailto:team@onehandsales.com">
+        <a className="font-normal text-[#0077e6]" href="mailto:team@onehandsales.com">
           OneHand team
         </a>
         {contact.supportSuffix}
@@ -158,10 +158,10 @@ function FormField({
   readonly placeholder: string;
 }) {
   return (
-    <label className="grid gap-2 text-[13px] font-bold text-[#333330]">
+    <label className="grid gap-2 text-[13px] font-normal text-[#333330]">
       {label}
       <input
-        className="h-10 rounded-[6px] border border-[#dededa] bg-white px-3 text-[14px] font-medium outline-none placeholder:text-[#aaa9a3] focus:border-[#111111]"
+        className="h-10 rounded-[6px] border border-[#dededa] bg-white px-3 text-[14px] font-normal outline-none placeholder:text-[#aaa9a3] focus:border-[#111111]"
         placeholder={placeholder}
       />
     </label>
@@ -177,9 +177,9 @@ function SelectField({
   readonly placeholder: string;
 }) {
   return (
-    <label className="grid gap-2 text-[13px] font-bold text-[#333330]">
+    <label className="grid gap-2 text-[13px] font-normal text-[#333330]">
       {label}
-      <span className="flex h-10 items-center rounded-[6px] border border-[#dededa] bg-white px-3 text-[14px] font-medium text-[#777770]">
+      <span className="flex h-10 items-center rounded-[6px] border border-[#dededa] bg-white px-3 text-[14px] font-normal text-[#777770]">
         {placeholder}
         <ChevronDown className="ml-auto h-4 w-4 text-[#999993]" />
       </span>

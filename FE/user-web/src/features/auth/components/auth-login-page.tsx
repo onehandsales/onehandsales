@@ -197,12 +197,12 @@ export function AuthLoginPage({
             </Link>
 
             <h1
-              className="mt-6 text-[24px] font-black leading-[1.12] tracking-normal text-[#050505]"
+              className="mt-6 text-[24px] font-normal leading-[1.12] tracking-normal text-[#050505]"
               id="login-title"
             >
               {copy.title}
             </h1>
-            <p className="mt-1 text-[23px] font-bold leading-[1.18] tracking-normal text-[#8f8f8b]">
+            <p className="mt-1 text-[23px] font-normal leading-[1.18] tracking-normal text-[#8f8f8b]">
               {copy.subtitles[mode]}
             </p>
           </div>
@@ -210,7 +210,7 @@ export function AuthLoginPage({
           <div className="mt-8">
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
-                <span className="text-[14px] font-medium text-[#8f8f8b]">
+                <span className="text-[14px] font-normal text-[#8f8f8b]">
                   {copy.providerLead[mode]}
                 </span>
                 <div className="h-px flex-1 bg-[#e9e9e7]" />
@@ -219,14 +219,14 @@ export function AuthLoginPage({
               {/* 기능 : OAuth provider 버튼을 3열로 고정해 로그인/회원가입 선택지를 한 줄에 보여줍니다. */}
               <div className="mt-8 grid grid-cols-3 gap-2.5">
                 {isProvidersLoading ? (
-                  <div className="col-span-3 flex h-[74px] items-center justify-center gap-2 rounded-[7px] border border-[#dededa] bg-white text-[13px] font-semibold text-[#777770]">
+                  <div className="col-span-3 flex h-[74px] items-center justify-center gap-2 rounded-[7px] border border-[#dededa] bg-white text-[13px] font-normal text-[#777770]">
                     <Loader2 className="h-4 w-4 animate-spin text-[#2383e2]" />
                     {copy.loading}
                   </div>
                 ) : null}
 
                 {!isProvidersLoading && visibleProviders.length === 0 ? (
-                  <div className="col-span-3 rounded-[7px] border border-dashed border-[#dededa] bg-white px-4 py-5 text-center text-[13px] font-semibold text-[#777770]">
+                  <div className="col-span-3 rounded-[7px] border border-dashed border-[#dededa] bg-white px-4 py-5 text-center text-[13px] font-normal text-[#777770]">
                     {copy.noProviders}
                   </div>
                 ) : null}
@@ -234,7 +234,7 @@ export function AuthLoginPage({
                 {visibleProviders.map((provider) => (
                   <button
                     className={[
-                      "relative grid h-[74px] min-w-0 place-items-center gap-1 rounded-[7px] border px-2 py-2 text-[13px] font-semibold shadow-[0_1px_1px_rgba(15,15,15,0.02)] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+                      "relative grid h-[74px] min-w-0 place-items-center gap-1 rounded-[7px] border px-2 py-2 text-[13px] font-normal shadow-[0_1px_1px_rgba(15,15,15,0.02)] transition-colors disabled:cursor-not-allowed disabled:opacity-60",
                       providerStyles[provider.provider],
                     ].join(" ")}
                     disabled={isPending}
@@ -265,18 +265,18 @@ export function AuthLoginPage({
           </div>
 
           {providersError && visibleProviders.length === 0 ? (
-            <p className="mt-5 rounded-[7px] border border-[#f0d9a5] bg-[#fff8e5] px-3 py-2 text-center text-[12px] font-medium leading-5 text-[#8a5d00]">
+            <p className="mt-5 rounded-[7px] border border-[#f0d9a5] bg-[#fff8e5] px-3 py-2 text-center text-[12px] font-normal leading-5 text-[#8a5d00]">
               {copy.providersErrorPrefix} {providersError}
             </p>
           ) : null}
 
           {authError ? (
-            <p className="mt-5 rounded-[7px] border border-[#f1b6b6] bg-[#fff4f4] px-3 py-2 text-center text-[12px] font-medium leading-5 text-[#a12b2b]">
+            <p className="mt-5 rounded-[7px] border border-[#f1b6b6] bg-[#fff4f4] px-3 py-2 text-center text-[12px] font-normal leading-5 text-[#a12b2b]">
               {copy.providerFailure}
             </p>
           ) : null}
 
-          <p className="mt-8 text-center text-[15px] font-medium text-[#777770]">
+          <p className="mt-8 text-center text-[15px] font-normal text-[#777770]">
             {copy.switchLead[mode]}{" "}
             <Link
               className="text-[#4f4f4b] underline decoration-[#c9c9c5] underline-offset-4 hover:text-[#191919]"
@@ -286,7 +286,7 @@ export function AuthLoginPage({
             </Link>
           </p>
 
-          <p className="mx-auto mt-7 max-w-[300px] text-center text-[12px] font-medium leading-5 text-[#8f8f8b]">
+          <p className="mx-auto mt-7 max-w-[300px] text-center text-[12px] font-normal leading-5 text-[#8f8f8b]">
             {copy.termsPrefix}
             <Link
               className="underline decoration-[#c9c9c5] underline-offset-3 hover:text-[#191919]"
@@ -329,7 +329,7 @@ function LoginLanguageSelect({
   return (
     <details className="group relative">
       <summary
-        className="inline-flex h-8 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[14px] font-medium text-[#777770] hover:bg-[#f7f7f5] [&::-webkit-details-marker]:hidden"
+        className="inline-flex h-8 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[14px] font-normal text-[#777770] hover:bg-[#f7f7f5] [&::-webkit-details-marker]:hidden"
         aria-label={copy.languagePrefix}
       >
         <Globe2 className="h-4 w-4" />
@@ -342,7 +342,7 @@ function LoginLanguageSelect({
         {publicSiteLanguageOptions.map((option) => (
           <button
             className={[
-              "block w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-bold",
+              "block w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-normal",
               option.value === language
                 ? "bg-[#111111] text-white"
                 : "text-[#333330] hover:bg-[#f7f7f5]",

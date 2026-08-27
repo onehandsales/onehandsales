@@ -59,7 +59,7 @@ export function PublicSiteFooter({
             to={publicSitePath("/")}
           >
             <OneHandLogoMark className="h-9 w-9" />
-            <span className="text-[26px] font-black leading-none">OneHand</span>
+            <span className="text-[26px] font-normal leading-none">OneHand</span>
           </Link>
 
           <div
@@ -80,7 +80,7 @@ export function PublicSiteFooter({
 
           <PublicSiteLanguageSelect />
 
-          <p className="mt-5 text-[12px] font-semibold text-[#888880]">
+          <p className="mt-5 text-[12px] font-normal text-[#888880]">
             {copy.common.copyright}
           </p>
         </div>
@@ -95,14 +95,14 @@ export function PublicSiteFooter({
 
             return (
               <div key={title}>
-                <h3 className="text-[12px] font-medium text-[#777770]">
+                <h3 className="text-[12px] font-normal text-[#777770]">
                   {title}
                 </h3>
                 <ul className="mt-3 grid gap-2.5">
                   {links.map((label, linkIndex) => (
                     <li key={label}>
                       <Link
-                        className="text-[13px] font-medium text-[#111111] underline-offset-2 hover:underline"
+                        className="text-[13px] font-normal text-[#111111] underline-offset-2 hover:underline"
                         to={publicSitePath(routes[linkIndex] ?? "/")}
                       >
                         {label}

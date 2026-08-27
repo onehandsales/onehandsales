@@ -129,7 +129,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
           <OneHandLogoMark className="h-9 w-9" />
         </Link>
 
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-semibold text-[#4b4b48] md:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-normal text-[#4b4b48] md:flex">
           <div className="group">
             <button
               className="inline-flex h-9 items-center gap-1 rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
@@ -160,10 +160,10 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
                             <Icon className="h-5 w-5" />
                           </span>
                           <span>
-                            <span className="block text-[14px] font-black text-[#222220]">
+                            <span className="block text-[14px] font-normal text-[#222220]">
                               {itemCopy?.title}
                             </span>
-                            <span className="mt-0.5 block text-[12px] font-medium leading-5 text-[#777770]">
+                            <span className="mt-0.5 block text-[12px] font-normal leading-5 text-[#777770]">
                               {itemCopy?.description}
                             </span>
                           </span>
@@ -176,7 +176,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
               <div className="mt-5 grid border-t border-[#eeeeec] pt-4 md:grid-cols-2">
                 <Link
-                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#FAFAF8]"
+                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-normal text-[#555550] hover:bg-[#FAFAF8]"
                   to={publicSitePath("/features")}
                 >
                   <Sparkles className="h-4 w-4 text-[#777770]" />
@@ -184,7 +184,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
                   <ArrowRight className="h-3.5 w-3.5 text-[#0077e6]" />
                 </Link>
                 <Link
-                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-bold text-[#555550] hover:bg-[#FAFAF8] md:justify-end"
+                  className="flex items-center gap-3 rounded-[8px] px-2 py-2 text-[13px] font-normal text-[#555550] hover:bg-[#FAFAF8] md:justify-end"
                   to={publicSitePath("/login")}
                 >
                   <BriefcaseBusiness className="h-4 w-4 text-[#777770]" />
@@ -208,13 +208,13 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
         <div className="flex items-center gap-2">
           <Link
-            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-bold text-white hover:bg-[#336FE0] sm:inline-flex"
+            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0] sm:inline-flex"
             to={publicSitePath("/signup")}
           >
             {copy.common.nav.freeCta}
           </Link>
           <button
-            className="h-8 rounded-[6px] px-2 text-[13px] font-semibold text-[#4b4b48] hover:bg-[#f2f2ef] md:px-3"
+            className="h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] md:px-3"
             onClick={handleLogin}
             type="button"
           >

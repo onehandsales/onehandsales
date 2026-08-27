@@ -154,7 +154,7 @@ function DownloadLink({
 }) {
   return (
     <a
-      className="inline-flex h-11 items-center justify-center gap-2 rounded-[6px] bg-[#111111] px-4 text-[13px] font-bold text-white transition hover:bg-[#2f2f2b]"
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-[6px] bg-[#111111] px-4 text-[13px] font-normal text-white transition hover:bg-[#2f2f2b]"
       href={href}
       rel="noreferrer"
       target="_blank"
