@@ -325,6 +325,7 @@ export function AuthLandingPage({
   const copyLanguage = getPublicSiteCopyLanguage(language);
   const scrollProgress = useLandingScrollProgress();
   const copy = landingCopyByLanguage[copyLanguage];
+  useLandingViewportHeightVariable();
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] text-[#111111]">
@@ -376,6 +377,35 @@ function useLandingScrollProgress() {
   }, []);
 
   return progress;
+}
+
+function useLandingViewportHeightVariable() {
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+
+      document.documentElement.style.setProperty(
+        "--landing-viewport-height",
+        `${viewportHeight}px`,
+      );
+    };
+
+    updateViewportHeight();
+    window.addEventListener("orientationchange", updateViewportHeight);
+    window.addEventListener("resize", updateViewportHeight);
+    window.visualViewport?.addEventListener("resize", updateViewportHeight);
+    window.visualViewport?.addEventListener("scroll", updateViewportHeight);
+
+    return () => {
+      window.removeEventListener("orientationchange", updateViewportHeight);
+      window.removeEventListener("resize", updateViewportHeight);
+      window.visualViewport?.removeEventListener("resize", updateViewportHeight);
+      window.visualViewport?.removeEventListener("scroll", updateViewportHeight);
+      document.documentElement.style.removeProperty(
+        "--landing-viewport-height",
+      );
+    };
+  }, []);
 }
 
 function LandingScrollStyles() {
@@ -445,16 +475,15 @@ function LandingScrollStyles() {
           margin-inline: auto;
         }
 
-        .landing-hero-section-height {
-          min-height: calc(100svh + 56px);
-        }
-
-        .landing-section-height {
-          min-height: calc(100svh + 56px);
-        }
-
+        .landing-hero-section-height,
+        .landing-section-height,
         .landing-final-section-height {
-          min-height: calc(100svh + 56px);
+          box-sizing: border-box;
+          min-height: 100vh;
+          min-height: 100svh;
+          min-height: 100dvh;
+          min-height: var(--landing-viewport-height, 100dvh);
+          padding-top: 56px;
         }
 
         @media (min-width: 640px) {
@@ -473,15 +502,15 @@ function LandingScrollStyles() {
           }
 
           .landing-hero-section-height {
-            min-height: calc(100vh + 56px);
+            min-height: 100vh;
           }
 
           .landing-section-height {
-            min-height: calc(100vh + 56px);
+            min-height: 100vh;
           }
 
           .landing-final-section-height {
-            min-height: calc(100vh + 56px - 400px);
+            min-height: calc(100vh - 400px);
           }
         }
 
