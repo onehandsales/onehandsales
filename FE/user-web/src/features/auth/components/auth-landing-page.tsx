@@ -331,7 +331,7 @@ export function AuthLandingPage({
       <LandingScrollStyles />
       <PublicSiteHeader onLogin={onOpenLogin} />
       <LandingScrollProgressBar progress={scrollProgress} />
-      <main className="pt-14">
+      <main>
         <HeroSection copy={copy} />
         <RealMomentSection copy={copy} />
         <FlowMotionSection copy={copy} />
@@ -446,7 +446,7 @@ function LandingScrollStyles() {
         }
 
         .landing-hero-section-height {
-          min-height: calc(100svh - 56px);
+          min-height: calc(100svh + 56px);
         }
 
         .landing-section-height {
@@ -473,7 +473,7 @@ function LandingScrollStyles() {
           }
 
           .landing-hero-section-height {
-            min-height: calc(100vh - 56px);
+            min-height: calc(100vh + 56px);
           }
 
           .landing-section-height {
