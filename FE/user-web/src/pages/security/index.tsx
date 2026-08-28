@@ -53,7 +53,7 @@ const trustIcons: readonly LucideIcon[] = [Database, Globe2, CheckCircle2];
 
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
-    title: "고객 업무를 위한 보안과 개인정보 보호.",
+    title: "보안",
     trustItems: [
       "서비스 제공을 위한 데이터 처리",
       "적용 가능한 개인정보 권리 지원",
@@ -178,7 +178,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
     ],
   },
   "en-US": {
-    title: "Security & privacy for customer work.",
+    title: "Security",
     trustItems: [
       "Data handled for service delivery",
       "Privacy rights supported where applicable",
