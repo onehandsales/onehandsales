@@ -1,19 +1,20 @@
 # Current Risk Summary
 
-상태: In Progress / G01 resolved on 2026-08-28
+상태: In Progress / G01-G02 resolved on 2026-08-28
 
 ## 1. 결론
 
 기존 BE 검증에서 typecheck, lint, prisma validate, test는 통과했지만 Backend Agent 규칙 기준으로 아래 수정 또는 감사 항목이 남아 있다.
 
 G01은 2026-08-28 완료되었고, `admin-operation/presentation`의 `@prisma/client` import는 0건으로 확인되었다.
+G02는 2026-08-28 완료되었고, `sales-report/application`의 schedule repository 직접 의존과 `ScheduleModule` repository token export는 0건으로 확인되었으며 `1e86c06c`로 구현/로그 커밋이 완료되었다.
 
 ## 2. P1
 
 | 항목 | 리스크 | Goal | 상태 |
 | --- | --- | --- | --- |
 | admin-operation presentation Prisma enum | presentation DTO/mapper가 `@prisma/client` enum에 직접 의존했다. | G01 | 해결 완료 |
-| sales-report schedule repository import | sales-report application service가 schedule repository port를 직접 import/inject한다. | G02 | 미해결 |
+| sales-report schedule repository import | sales-report application service가 schedule repository port를 직접 import/inject했다. | G02 | 해결 완료 |
 
 ## 3. P2
 
@@ -60,12 +61,11 @@ pnpm.cmd test -- --runInBand
 - Missing API comments: 0
 - `console.*` matches: 0
 - production `any` keyword matches: 0
-- Cross-module repository/import persistence violations: 1
+- Cross-module repository/import persistence violations: 0
 
 ## 6. 다음 Goal에서 다시 확인해야 하는 현재 위치
 
 - `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
-- `BE\src\modules\schedule\infrastructure\schedule.module.ts`
 - `BE\src\modules\schedule\presentation\http\dto\schedule-request.dto.ts`
 - `BE\src\modules\schedule\application\ports\schedule.repository.ts`
 - `FE\user-web\src\features\ai-weekly-report\types\ai-weekly-report.ts`
@@ -76,3 +76,11 @@ pnpm.cmd test -- --runInBand
 - G01: `BE\src\modules\admin-operation\presentation\http\dto\admin-audit-request.dto.ts`
 - G01: `BE\src\modules\admin-operation\presentation\http\dto\admin-user-request.dto.ts`
 - 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G01_ADMIN_OPERATION_PRESENTATION_PRISMA_ENUM\WORK_LOG.md`
+- G02: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
+- G02: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.spec.ts`
+- G02: `BE\src\modules\schedule\application\ports\schedule-weekly-report-query.port.ts`
+- G02: `BE\src\modules\schedule\application\ports\schedule.repository.ts`
+- G02: `BE\src\modules\schedule\application\services\schedule-application.service.ts`
+- G02: `BE\src\modules\schedule\application\services\schedule-application.service.spec.ts`
+- G02: `BE\src\modules\schedule\infrastructure\schedule.module.ts`
+- 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G02_SALES_REPORT_SCHEDULE_REPOSITORY_BOUNDARY\WORK_LOG.md`

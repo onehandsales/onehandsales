@@ -60,6 +60,7 @@
 - `rg -n "schedule\.repository|SCHEDULE_REPOSITORY|ScheduleRepository" src\modules\sales-report\application`: 출력 없음, 0건
 - `rg -n "exports:\s*\[[^\]]*SCHEDULE_REPOSITORY" src\modules\schedule\infrastructure\schedule.module.ts`: 출력 없음, 0건
 - `git diff --check`: 통과
+- 구현/로그 커밋: `1e86c06c refactor(sales-report): remove schedule repository dependency`
 
 ## 7. 자체 검토 결과
 

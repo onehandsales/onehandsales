@@ -1,8 +1,11 @@
 # G02 sales-report의 schedule repository 직접 의존 제거
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 코드 수정
 우선순위: P1
+완료일: 2026-08-28
+완료 커밋: `1e86c06c`
+TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G02_SALES_REPORT_SCHEDULE_REPOSITORY_BOUNDARY\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -47,7 +50,9 @@ cd D:\workspace_repository\onehandsales
 rg --files BE\src\modules\sales-report BE\src\modules\schedule | rg "\.spec\.ts$"
 ```
 
-## 6. 현재 확인된 문제 위치
+## 6. 작업 전 확인된 문제 위치
+
+2026-08-28 G02 완료 후 `sales-report/application`의 schedule repository 직접 의존과 `ScheduleModule` repository token export는 제거되었다.
 
 - `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
   - 3-8행 근처에서 schedule repository port import
