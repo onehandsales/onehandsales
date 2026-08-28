@@ -1,4 +1,5 @@
-import { Globe2, Loader2 } from "lucide-react";
+import { ChevronDown, Globe2, Loader2 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import type {
@@ -7,6 +8,7 @@ import type {
 } from "@/features/auth/types/auth";
 import {
   getPublicSiteCopyLanguage,
+  getPublicSiteLanguageOptionLabel,
   publicSiteLanguageOptions,
   usePublicSiteLanguage,
   type PublicSiteCopyLanguage,
@@ -95,12 +97,12 @@ const loginCopy: Record<
       login: "가입하기",
       signup: "로그인하기",
     },
-    termsPrefix: "계속 진행하면 ",
+    termsPrefix: "계속 진행시 ",
     terms: "이용약관",
-    termsConnector: " 및 ",
+    termsConnector: "과 ",
     privacy: "개인정보 처리방침",
-    termsSuffix: "에 동의한 것으로 간주됩니다.",
-    languagePrefix: "언어:",
+    termsSuffix: "에 동의한 것으로 간주해요.",
+    languagePrefix: "지역:",
   },  "en-US": {
     homeAria: "Go home",
     title: "Your AI workspace",
@@ -135,7 +137,7 @@ const loginCopy: Record<
     termsConnector: " and the ",
     privacy: "Privacy Policy",
     termsSuffix: ".",
-    languagePrefix: "Language:",
+    languagePrefix: "Region:",
   },};
 
 const providerLogos: Record<AuthProviderId, string> = {
@@ -322,30 +324,67 @@ function LoginLanguageSelect({
   readonly language: PublicSiteLanguage;
 }) {
   const switchLocale = usePublicSiteLocaleSwitcher();
+  const detailsRef = useRef<HTMLDetailsElement>(null);
   const selectedOption = publicSiteLanguageOptions.find(
     (option) => option.value === language
   );
+  const selectedLabel = getPublicSiteLanguageOptionLabel(
+    selectedOption,
+    language
+  );
+
+  useEffect(() => {
+    const closeLanguageMenu = () => {
+      detailsRef.current?.removeAttribute("open");
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (
+        target instanceof Node &&
+        !detailsRef.current?.contains(target)
+      ) {
+        closeLanguageMenu();
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeLanguageMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
 
   return (
-    <details className="group relative">
+    <details className="group relative" ref={detailsRef}>
       <summary
-        className="inline-flex h-8 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[14px] font-normal text-[#777770] hover:bg-[#f7f7f5] [&::-webkit-details-marker]:hidden"
+        className="inline-flex h-8 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[14px] font-normal text-[#777770] transition-colors hover:bg-[#f2f2ef] hover:text-[#111111] [&::-webkit-details-marker]:hidden"
         aria-label={copy.languagePrefix}
       >
         <Globe2 className="h-4 w-4" />
         <span>
-          {copy.languagePrefix} {selectedOption?.label ?? "한국어"}
+          {copy.languagePrefix} {selectedLabel}
         </span>
+        <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
       </summary>
 
-      <div className="absolute bottom-10 left-1/2 z-50 w-44 -translate-x-1/2 overflow-hidden rounded-[8px] border border-[#dededa] bg-white p-1 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
+      <div className="absolute bottom-10 left-1/2 z-50 grid w-44 -translate-x-1/2 gap-1 overflow-hidden rounded-[8px] border border-[#dededa] bg-white p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
         {publicSiteLanguageOptions.map((option) => (
           <button
             className={[
-              "block w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-normal",
+              "block min-h-8 w-full rounded-[6px] px-3 py-1.5 text-left text-[12px] font-normal transition-colors hover:bg-[#f2f2ef] hover:text-[#111111]",
               option.value === language
-                ? "bg-[#111111] text-white"
-                : "text-[#333330] hover:bg-[#f7f7f5]",
+                ? "bg-[#0000000D] text-[#111111]"
+                : "text-[#333330]",
             ].join(" ")}
             data-login-language-option={option.value}
             key={option.value}
@@ -355,7 +394,7 @@ function LoginLanguageSelect({
             }}
             type="button"
           >
-            {option.label}
+            {getPublicSiteLanguageOptionLabel(option, language)}
           </button>
         ))}
       </div>

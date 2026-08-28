@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { usePublicSiteLocaleSwitcher } from "@/features/public-site/i18n/public-site-locale-hooks";
 import {
+  getPublicSiteLanguageOptionLabel,
   publicSiteLanguageOptions,
   usePublicSiteLanguage,
   type PublicSiteLanguage,
@@ -14,6 +15,10 @@ export function PublicSiteLanguageSelect() {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const selectedOption = publicSiteLanguageOptions.find(
     (option) => option.value === language
+  );
+  const selectedLabel = getPublicSiteLanguageOptionLabel(
+    selectedOption,
+    language
   );
 
   // 기능 : 사용자가 선택한 언어로 공개 사이트 locale을 전환합니다.
@@ -60,7 +65,7 @@ export function PublicSiteLanguageSelect() {
         aria-label={copy.common.languageAria}
         className="inline-flex h-7 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[12px] font-normal transition-colors hover:bg-[#f2f2ef] hover:text-[#111111] [&::-webkit-details-marker]:hidden"
       >
-        {selectedOption?.label ?? "한국어"}
+        {selectedLabel}
         <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
       </summary>
 
@@ -81,7 +86,7 @@ export function PublicSiteLanguageSelect() {
             }}
             type="button"
           >
-            {option.label}
+            {getPublicSiteLanguageOptionLabel(option, language)}
           </button>
         ))}
       </div>

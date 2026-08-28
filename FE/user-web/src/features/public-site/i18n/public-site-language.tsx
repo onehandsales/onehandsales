@@ -157,12 +157,24 @@ type PublicSiteCopy = {
 
 export const publicSiteLanguageOptions: readonly {
   readonly value: PublicSiteLanguage;
-  readonly label: string;
+  readonly labels: Record<PublicSiteCopyLanguage, string>;
   readonly htmlLang: string;
 }[] = [
-  { value: "ko", label: "한국어", htmlLang: "ko-KR" },
-  { value: "en-US", label: "English (US)", htmlLang: "en-US" },
-  { value: "en-CA", label: "English (Canada)", htmlLang: "en-CA" },
+  {
+    value: "ko",
+    labels: { ko: "한국", "en-US": "Korea" },
+    htmlLang: "ko-KR",
+  },
+  {
+    value: "en-US",
+    labels: { ko: "미국", "en-US": "United States" },
+    htmlLang: "en-US",
+  },
+  {
+    value: "en-CA",
+    labels: { ko: "캐나다", "en-US": "Canada" },
+    htmlLang: "en-CA",
+  },
   // Future expansion:
   // { value: "ja", label: "日本語", htmlLang: "ja-JP" },
   // { value: "en-GB", label: "English (UK)", htmlLang: "en-GB" },
@@ -217,7 +229,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         ["용도별", "엔터프라이즈", "스몰비즈니스", "개인"],
       ],
       cookieSettings: "쿠키 설정",
-      languageAria: "언어 선택",
+      languageAria: "지역 선택",
       footerSocialAria: "OneHand 소셜 링크",
       copyright: "© 2026 OneHand Labs, Inc.",
     },
@@ -482,6 +494,18 @@ export function getPublicSiteCopyLanguage(
   return language;
 }
 
+// 기능 : 현재 공개 사이트 언어에 맞는 지역 선택 옵션 라벨을 반환합니다.
+export function getPublicSiteLanguageOptionLabel(
+  option: (typeof publicSiteLanguageOptions)[number] | undefined,
+  language: PublicSiteLanguage
+) {
+  const copyLanguage = getPublicSiteCopyLanguage(language);
+
+  return (
+    option?.labels[copyLanguage] ?? (copyLanguage === "ko" ? "한국" : "Korea")
+  );
+}
+
 // 기능 : 공개 사이트 언어 provider의 초기 언어를 결정합니다.
 function getInitialLanguage(): PublicSiteLanguage {
   return resolvePublicSiteLanguage();
@@ -691,7 +715,7 @@ function makeEnglishCopy(copy: {
       ["OneHand for", "Enterprise", "Small business", "Personal"],
     ],
     cookieSettings: "Cookie settings",
-    languageAria: "Select language",
+    languageAria: "Select region",
     footerSocialAria: "OneHand social links",
     copyright: "© 2026 OneHand Labs, Inc.",
   };
