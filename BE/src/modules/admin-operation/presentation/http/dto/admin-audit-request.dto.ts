@@ -14,7 +14,7 @@ import {
   AdminAuditResult,
   AdminSensitiveFieldSet,
   AdminTargetType,
-} from "@prisma/client";
+} from "@/modules/admin-operation/application/ports/admin-operation.types";
 
 // 역할 : ListAdminAuditLogsQueryDto Admin 감사 로그 목록 query 요청 값을 검증합니다.
 export class ListAdminAuditLogsQueryDto {
