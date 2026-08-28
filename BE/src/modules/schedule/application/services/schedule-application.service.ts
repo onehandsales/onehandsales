@@ -414,11 +414,13 @@ export class ScheduleApplicationService {
     currentUser: CurrentUserContext,
     query: GetWeeklyScheduleReportQueryInput
   ): Promise<WeeklyScheduleReportResponse> {
+    // 1. query 기준 주간 리포트 데이터를 생성한다.
     const response = await this.createWeeklyScheduleReport(
       currentUser,
       query
     );
 
+    // 2. 원문 일정/memo 없이 리포트 조회 이벤트를 기록한다.
     this.logEvent("schedule.week_report.viewed", {
       userId: currentUser.id,
       weekStart: response.weekStart,
@@ -430,6 +432,7 @@ export class ScheduleApplicationService {
       distinctLinkedDealCount: response.summary.distinctLinkedDealCount,
     });
 
+    // 3. 주간 일정 리포트 응답을 반환한다.
     return response;
   }
 
@@ -438,10 +441,14 @@ export class ScheduleApplicationService {
     currentUser: CurrentUserContext,
     query: ExportWeeklyScheduleReportXlsxQueryInput
   ): Promise<ExportedXlsxFileResponse> {
+    // 1. query 기준 주간 리포트 데이터를 생성한다.
     const report = await this.createWeeklyScheduleReport(currentUser, query);
+
+    // 2. 리포트 응답을 xlsx 행과 파일 Buffer로 변환한다.
     const rows = this.toWeeklyReportXlsxRows(report);
     const content = await this.writeWeeklyReportXlsx(rows);
 
+    // 3. 파일 내용 없이 export 이벤트를 기록한다.
     this.logEvent("schedule.week_report.exported", {
       userId: currentUser.id,
       weekStart: report.weekStart,
@@ -452,6 +459,7 @@ export class ScheduleApplicationService {
       rowCount: rows.length,
     });
 
+    // 4. xlsx 다운로드 응답 metadata와 파일 내용을 반환한다.
     return {
       fileName: createTimestampedXlsxFileName(
         WEEKLY_REPORT_XLSX_FILE_NAME_PREFIX
@@ -1171,6 +1179,7 @@ export class ScheduleApplicationService {
     currentUser: CurrentUserContext,
     query: GetWeeklyScheduleReportQueryInput
   ): Promise<WeeklyScheduleReportResponse> {
+    // 1. query timezone과 weekStart를 주간 리포트 계약에 맞게 검증한다.
     const timeZone = this.normalizeWeeklyReportTimeZone(
       query.timeZone,
       currentUser.timeZone
@@ -1178,6 +1187,7 @@ export class ScheduleApplicationService {
     const weekStart = this.parseDateOnly(query.weekStart, "weekStart");
     this.assertWeekStartIsMonday(weekStart);
 
+    // 2. 요청 주차를 UTC 조회 범위로 변환하고 현재 사용자 일정을 조회한다.
     const range = this.createWeeklyReportRange(weekStart, timeZone);
     const schedules = await this.scheduleRepository.listSchedulesForWeeklyReport(
       {
@@ -1187,6 +1197,7 @@ export class ScheduleApplicationService {
       }
     );
 
+    // 3. repository projection을 주간 리포트 응답으로 조립한다.
     return this.buildWeeklyScheduleReportResponse(schedules, range, timeZone);
   }
 

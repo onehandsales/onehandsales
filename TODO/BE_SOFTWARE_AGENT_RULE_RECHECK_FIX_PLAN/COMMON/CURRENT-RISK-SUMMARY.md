@@ -1,6 +1,6 @@
 # Current Risk Summary
 
-상태: In Progress / G01-G04 resolved on 2026-08-28
+상태: In Progress / G01-G05 resolved on 2026-08-28
 
 ## 1. 결론
 
@@ -10,6 +10,7 @@ G01은 2026-08-28 완료되었고, `admin-operation/presentation`의 `@prisma/cl
 G02는 2026-08-28 완료되었고, `sales-report/application`의 schedule repository 직접 의존과 `ScheduleModule` repository token export는 0건으로 확인되었으며 `1e86c06c`로 구현/로그 커밋이 완료되었다.
 G03은 2026-08-28 완료되었고, AI Weekly Report 조회 이벤트 `weekViewed`, `detailViewed`, `snapshotSummaryViewed`가 실제 코드와 테스트에 반영되었으며 `c915111f`로 구현/로그 커밋이 완료되었다.
 G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 summary safe error가 API-SPEC, BE summary response/mapper, FE User Web 타입/mock에 동일한 nullable 계약으로 반영되었으며 `21841c62`로 구현/로그 커밋이 완료되었다.
+G05는 2026-08-28 완료되었고, 대상 Backend 파일의 class/interface/type/port token/method/helper 한글 역할/기능/단계 주석 누락을 보강했다. 추가 재검토에서 G05 관련 진행 문서가 G06 다음 실행 상태로 정리되어 있고, 주석 누락 정적 감사와 BE typecheck/lint가 통과했음을 확인했다. 현재 변경은 미커밋 상태다.
 
 ## 2. P1
 
@@ -24,7 +25,7 @@ G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 s
 | --- | --- | --- | --- |
 | AI Weekly Report observability | API-SPEC의 조회 이벤트가 실제 코드에 일부 없다. | G03 | 해결 완료 |
 | AI Weekly Report `summaryPreview` | API-SPEC과 FE 타입에는 있으나 BE response에는 없다. | G04 | 해결 완료 |
-| 한글 주석 규칙 | 일부 class/interface/type/method/helper에 한글 역할/기능 주석이 누락되어 있다. | G05 | 남음 |
+| 한글 주석 규칙 | 일부 class/interface/type/method/helper에 한글 역할/기능 주석이 누락되어 있다. | G05 | 해결 완료 |
 
 ## 4. P3
 
@@ -67,10 +68,12 @@ pnpm.cmd test -- --runInBand
 
 ## 6. 다음 Goal에서 다시 확인해야 하는 현재 위치
 
-- `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
-- `BE\src\modules\schedule\presentation\http\dto\schedule-request.dto.ts`
-- `BE\src\modules\schedule\application\ports\schedule.repository.ts`
-- `FE\user-web\src\features\ai-weekly-report\types\ai-weekly-report.ts`
+- G06: `BE\src\main.ts`
+- G06: `BE\src\app.module.ts`
+- G06: `AGENT\SOFTWARE_AGENT\COMMON\ENVIRONMENT.md`
+- G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\BACKEND.md`
+- G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\DECISIONS\004_backend_deployment_environment.md`
+- G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ARCHITECTURE\DEPLOYMENT.md`
 
 ## 7. 해결 완료 위치
 
@@ -96,3 +99,12 @@ pnpm.cmd test -- --runInBand
 - G04: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\FE-TODO\USER-WEB-CONTRACT-CHECK.md`
 - G04: `TODO\DONE\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\05_AI_WEEKLY_SALES_REPORT\COMMON\API-SPEC\AI_WEEKLY_REPORT_API.md`
 - 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G04_AI_WEEKLY_REPORT_SUMMARY_PREVIEW_CONTRACT\WORK_LOG.md`
+- G05: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
+- G05: `BE\src\modules\schedule\application\services\schedule-application.service.ts`
+- G05: `BE\src\modules\schedule\application\ports\schedule.repository.ts`
+- G05: `BE\src\modules\follow-up\application\ports\follow-up-draft.provider.ts`
+- G05: `BE\src\modules\follow-up\application\ports\follow-up-delivery-secret-encryption.port.ts`
+- G05: `BE\src\modules\follow-up\presentation\http\dto\follow-up-delivery-settings-request.dto.ts`
+- G05: `BE\src\main.ts`
+- G05: `BE\src\modules\sales-report\infrastructure\sales-report.module.ts`
+- 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G05_BACKEND_KOREAN_COMMENT_RULE\WORK_LOG.md`

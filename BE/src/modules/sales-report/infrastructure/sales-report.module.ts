@@ -15,6 +15,7 @@ import { AiWeeklySalesReportProcessorRunner } from "./processor/ai-weekly-sales-
 import { DeterministicAiWeeklySalesReportProvider } from "./providers/deterministic-ai-weekly-sales-report.provider";
 import { OpenAiWeeklySalesReportProvider } from "./providers/openai-ai-weekly-sales-report.provider";
 
+// 역할 : AI 주간 영업 리포트의 controller, use case, repository, provider 구성을 묶는 Nest module입니다.
 @Module({
   imports: [AuthModule, ConfigModule, PrismaInfrastructureModule, ScheduleModule],
   controllers: [AiWeeklySalesReportController],

@@ -8,6 +8,7 @@ import type {
   ScheduleWeeklyReportScheduleRecord,
 } from "./schedule-weekly-report-query.port";
 
+// 역할 : 일정 repository 구현체를 주입하기 위한 토큰입니다.
 export const SCHEDULE_REPOSITORY = Symbol("SCHEDULE_REPOSITORY");
 
 // 역할 : ScheduleViewMode 일정 목록 조회 화면 단위를 정의합니다.
@@ -43,7 +44,7 @@ export interface ScheduleDealOptionRecord extends ScheduleDealRecord {
   readonly createdAt: Date;
 }
 
-// 역할 : ScheduleRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+// 역할 : Google Calendar에서 동기화된 일정 metadata 구조를 정의합니다.
 export interface ScheduleGoogleCalendarRecord {
   readonly sourceId: string;
   readonly calendarId: string;
@@ -187,6 +188,6 @@ export interface ScheduleRepository extends NotificationReminderWriteRepository 
   createScheduleDeals(input: CreateScheduleDealsInput): Promise<void>;
   // 기능 : 일정에서 딜 연결 목록을 삭제합니다.
   deleteScheduleDeals(input: DeleteScheduleDealsInput): Promise<void>;
-  // 기능 : 현재 사용자의 일정과 연결 정보를 실제 삭제합니다.
+  // 기능 : 현재 사용자의 일정을 휴지통 상태로 변경합니다.
   softDeleteSchedule(input: SoftDeleteScheduleInput): Promise<boolean>;
 }

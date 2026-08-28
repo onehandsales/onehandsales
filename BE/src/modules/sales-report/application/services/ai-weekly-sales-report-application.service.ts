@@ -160,11 +160,13 @@ export class AiWeeklySalesReportApplicationService {
     private readonly processJobs?: ProcessAiWeeklySalesReportJobsUseCase
   ) {}
 
+  // 기능 : AI 주간 영업 리포트 생성 요청을 검증하고 저장형 생성 job을 등록합니다.
   async requestGeneration(
     currentUser: CurrentUserContext,
     input: RequestAiWeeklySalesReportGenerationCommand,
     idempotencyKeyHeader?: string
   ): Promise<RequestAiWeeklySalesReportGenerationResponse> {
+    // 1. 요청 기준 시각과 사용자 선호를 바탕으로 주차, timezone, locale, idempotency key를 정규화한다.
     const now = new Date();
     const preferences = await this.salesReportRepository.findUserPreferences(
       currentUser.id
@@ -184,6 +186,7 @@ export class AiWeeklySalesReportApplicationService {
     const weekEndDate = this.toDateOnly(range.weekEnd);
     const idempotencyKey = this.normalizeIdempotencyKey(idempotencyKeyHeader);
 
+    // 2. 동일 idempotency key 요청이면 기존 요청 조건을 확인하고 기존 결과를 반환한다.
     if (idempotencyKey) {
       const existing =
         await this.salesReportRepository.findGenerationRequestByIdempotencyKey(
@@ -204,6 +207,7 @@ export class AiWeeklySalesReportApplicationService {
       }
     }
 
+    // 3. 같은 사용자, 주차, timezone에서 이미 생성 중인 리포트가 있는지 확인한다.
     const existingGenerating =
       await this.salesReportRepository.findGeneratingReport(
         currentUser.id,
@@ -215,6 +219,7 @@ export class AiWeeklySalesReportApplicationService {
       throw new AiWeeklySalesReportAlreadyGeneratingError();
     }
 
+    // 4. provider 입력용 snapshot과 coverage metadata를 생성한다.
     const snapshot = await this.buildInputSnapshot({
       userId: currentUser.id,
       weekStart: range.weekStart,
@@ -227,6 +232,8 @@ export class AiWeeklySalesReportApplicationService {
       locale,
       capturedAt: now,
     });
+
+    // 5. 생성 중 report와 job을 저장소에 함께 생성한다.
     const result = await this.salesReportRepository.createGeneratingReportWithJob({
       userId: currentUser.id,
       weekStart: weekStartDate,
@@ -240,6 +247,7 @@ export class AiWeeklySalesReportApplicationService {
       now,
     });
 
+    // 6. 원문 snapshot 없이 생성 요청 이벤트를 기록하고 job 처리를 시작한다.
     this.logEvent("ai.weeklyReport.generationRequested", {
       userId: currentUser.id,
       reportId: result.report.id,
@@ -252,6 +260,7 @@ export class AiWeeklySalesReportApplicationService {
     });
     this.dispatchGenerationJob(result.job);
 
+    // 7. 생성 접수 응답을 반환한다.
     return this.toGenerationResponse(result.report, result.job);
   }
 
@@ -408,6 +417,7 @@ export class AiWeeklySalesReportApplicationService {
     readonly inputMetadata: Record<string, unknown>;
     readonly dataCoverage: Record<string, unknown>;
   }> {
+    // 1. schedule application과 repository에서 provider 입력에 필요한 현재 사용자 데이터를 병렬 조회한다.
     const [schedules, deals, meetingNotes] = await Promise.all([
       this.scheduleApplicationService.listSchedulesForWeeklyReportSnapshot({
         userId: input.userId,
@@ -427,6 +437,8 @@ export class AiWeeklySalesReportApplicationService {
         limit: MAX_SNAPSHOT_MEETING_NOTES,
       }),
     ]);
+
+    // 2. 조회 결과를 provider 입력에 안전한 snapshot 구조로 변환한다.
     const scheduleSnapshot = schedules
       .slice(0, MAX_SNAPSHOT_SCHEDULES)
       .map((schedule) => this.toScheduleSnapshot(schedule));
@@ -434,11 +446,15 @@ export class AiWeeklySalesReportApplicationService {
     const meetingNoteSnapshot = meetingNotes.map((meetingNote) =>
       this.toMeetingNoteSnapshot(meetingNote)
     );
+
+    // 3. snapshot 품질과 누락 신호를 계산한다.
     const dataCoverage = this.createDataCoverage(
       scheduleSnapshot,
       dealSnapshot,
       meetingNoteSnapshot
     );
+
+    // 4. provider prompt에 들어갈 수 없는 민감/원문 범위를 제외 목록으로 명시한다.
     const inputSnapshot = {
       schemaVersion: SNAPSHOT_SCHEMA_VERSION,
       capturedAt: input.capturedAt.toISOString(),
@@ -471,6 +487,8 @@ export class AiWeeklySalesReportApplicationService {
         "crossUserRecords",
       ],
     };
+
+    // 5. snapshot 변경 추적용 hash와 metadata를 생성한다.
     const inputHash = createHash("sha256")
       .update(JSON.stringify(inputSnapshot))
       .digest("hex");
@@ -548,6 +566,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : 딜 repository projection을 AI 입력 snapshot 항목으로 변환합니다.
   private toDealSnapshot(
     deal: AiWeeklySnapshotDealRecord
   ): Record<string, unknown> {
@@ -571,6 +590,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : 회의록 repository projection을 AI 입력 snapshot 항목으로 변환합니다.
   private toMeetingNoteSnapshot(
     meetingNote: AiWeeklySnapshotMeetingNoteRecord
   ): Record<string, unknown> {
@@ -598,6 +618,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : AI 입력 snapshot 데이터의 개수와 부족 신호를 계산합니다.
   private createDataCoverage(
     schedules: readonly Record<string, unknown>[],
     deals: readonly Record<string, unknown>[],
@@ -642,6 +663,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : 생성 접수 report와 job을 API 응답 형식으로 변환합니다.
   private toGenerationResponse(
     report: AiWeeklySalesReportRecord,
     job: AiJobRecord
@@ -655,6 +677,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : 상세 output에 저장된 suggestion ID를 연결해 화면 section을 생성합니다.
   private async createDetailSections(
     report: AiWeeklySalesReportRecord
   ): Promise<Record<string, unknown> | null> {
@@ -675,6 +698,7 @@ export class AiWeeklySalesReportApplicationService {
     return this.attachSuggestionIds(report.outputJson, suggestions);
   }
 
+  // 기능 : AI output section 항목에 저장된 suggestion 식별자를 매칭해 붙입니다.
   private attachSuggestionIds(
     sections: Record<string, unknown>,
     suggestions: readonly AiWeeklySalesReportSuggestionRecord[]
@@ -723,6 +747,7 @@ export class AiWeeklySalesReportApplicationService {
     return nextSections;
   }
 
+  // 기능 : suggestion type, key, index를 저장소 matching key로 정규화합니다.
   private createSuggestionKey(
     type: AiWeeklySalesReportSuggestionTypeValue,
     key: string,
@@ -813,6 +838,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : provider output coverage가 있으면 우선 사용하고 없으면 snapshot coverage를 반환합니다.
   private extractDataCoverage(
     report: AiWeeklySalesReportRecord
   ): Record<string, unknown> {
@@ -829,6 +855,7 @@ export class AiWeeklySalesReportApplicationService {
     return report.dataCoverageJson;
   }
 
+  // 기능 : 입력 snapshot 원문에서 화면 노출 가능한 요약 정보만 추출합니다.
   private toSnapshotSummary(
     report: AiWeeklySalesReportRecord
   ): AiWeeklySalesReportSnapshotSummaryResponse {
@@ -888,6 +915,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : 요청/사용자/선호 timezone을 IANA 기준으로 정규화합니다.
   private normalizeTimeZone(
     requestedTimeZone: string | undefined,
     currentUserTimeZone: string | undefined,
@@ -910,6 +938,7 @@ export class AiWeeklySalesReportApplicationService {
     return fallback;
   }
 
+  // 기능 : locale 문자열을 API와 provider에서 사용할 language tag로 정규화합니다.
   private normalizeLocale(locale: string): string {
     const normalized = locale.trim().replace("_", "-");
 
@@ -920,6 +949,7 @@ export class AiWeeklySalesReportApplicationService {
     return normalized;
   }
 
+  // 기능 : Idempotency-Key header를 저장 가능한 nullable key로 정규화합니다.
   private normalizeIdempotencyKey(value: string | undefined): string | null {
     if (value === undefined) {
       return null;
@@ -938,6 +968,7 @@ export class AiWeeklySalesReportApplicationService {
     return normalized;
   }
 
+  // 기능 : 실패 리포트 포함 query 값을 boolean 정책으로 정규화합니다.
   private normalizeIncludeFailed(value: boolean | string | undefined): boolean {
     if (value === undefined) {
       return true;
@@ -950,6 +981,7 @@ export class AiWeeklySalesReportApplicationService {
     return value.trim().toLowerCase() !== "false";
   }
 
+  // 기능 : 동일 idempotency key 요청이 기존 생성 조건과 같은지 검증합니다.
   private assertSameIdempotentRequest(
     report: AiWeeklySalesReportRecord,
     input: {
@@ -969,6 +1001,7 @@ export class AiWeeklySalesReportApplicationService {
     }
   }
 
+  // 기능 : YYYY-MM-DD 입력을 calendar date로 검증 변환합니다.
   private parseDateOnly(value: string, fieldName: string): CalendarDate {
     if (!DATE_ONLY_PATTERN.test(value)) {
       throw new ValidationDomainError(`${fieldName} must be YYYY-MM-DD`);
@@ -991,6 +1024,7 @@ export class AiWeeklySalesReportApplicationService {
     return { year, month, day };
   }
 
+  // 기능 : 리포트 시작일이 월요일인지 검증합니다.
   private assertMonday(weekStart: CalendarDate): void {
     const date = new Date(
       Date.UTC(weekStart.year, weekStart.month - 1, weekStart.day)
@@ -1001,6 +1035,7 @@ export class AiWeeklySalesReportApplicationService {
     }
   }
 
+  // 기능 : 주차 시작일과 timezone 기준으로 local 주간과 UTC 조회 범위를 계산합니다.
   private createWeeklyRange(
     weekStart: CalendarDate,
     timeZone: string
@@ -1022,6 +1057,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : calendar date에 지정 날짜 수를 더한 date-only 값을 반환합니다.
   private addCalendarDays(date: CalendarDate, days: number): CalendarDate {
     const utcDate = new Date(Date.UTC(date.year, date.month - 1, date.day));
     utcDate.setUTCDate(utcDate.getUTCDate() + days);
@@ -1033,10 +1069,12 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : calendar date를 UTC 자정 Date 값으로 변환합니다.
   private toDateOnly(date: CalendarDate): Date {
     return new Date(Date.UTC(date.year, date.month - 1, date.day));
   }
 
+  // 기능 : timezone 기준 local date-time을 UTC instant로 변환합니다.
   private zonedTimeToUtc(parts: DateTimeParts, timeZone: string): Date {
     const utcGuess = new Date(
       Date.UTC(
@@ -1063,6 +1101,7 @@ export class AiWeeklySalesReportApplicationService {
     return new Date(utcGuess.getTime() - (asUtc - utcGuess.getTime()));
   }
 
+  // 기능 : UTC instant를 지정 timezone의 local 구성요소로 분해합니다.
   private getTimeZoneParts(date: Date, timeZone: string): DateTimeParts {
     const formatter = new Intl.DateTimeFormat("en-US", {
       calendar: "iso8601",
@@ -1093,6 +1132,7 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : calendar date를 YYYY-MM-DD 문자열로 포맷합니다.
   private formatCalendarDate(date: CalendarDate): string {
     return [
       String(date.year).padStart(4, "0"),
@@ -1101,10 +1141,12 @@ export class AiWeeklySalesReportApplicationService {
     ].join("-");
   }
 
+  // 기능 : DB date-only 값을 YYYY-MM-DD 문자열로 포맷합니다.
   private formatDateOnly(date: Date): string {
     return date.toISOString().slice(0, 10);
   }
 
+  // 기능 : unknown record 필드에서 object 배열만 안전하게 추출합니다.
   private getObjectArray(
     value: Record<string, unknown>,
     key: string
@@ -1121,6 +1163,7 @@ export class AiWeeklySalesReportApplicationService {
     );
   }
 
+  // 기능 : unknown record 필드에서 비어 있지 않은 문자열만 추출합니다.
   private getString(value: Record<string, unknown>, key: string): string | null {
     const item = value[key];
 
@@ -1129,12 +1172,14 @@ export class AiWeeklySalesReportApplicationService {
       : null;
   }
 
+  // 기능 : unknown record 필드에서 유효한 숫자만 추출하고 없으면 0을 반환합니다.
   private getNumber(value: Record<string, unknown>, key: string): number {
     const item = value[key];
 
     return typeof item === "number" && Number.isFinite(item) ? item : 0;
   }
 
+  // 기능 : unknown record 필드에서 비어 있지 않은 문자열 배열만 추출합니다.
   private getStringArray(
     value: Record<string, unknown>,
     key: string
@@ -1151,6 +1196,7 @@ export class AiWeeklySalesReportApplicationService {
     );
   }
 
+  // 기능 : unknown 값을 숫자 값만 가진 record로 좁힙니다.
   private toNumberRecord(value: unknown): Record<string, number> {
     if (!value || typeof value !== "object" || Array.isArray(value)) {
       return {};
@@ -1175,6 +1221,7 @@ export class AiWeeklySalesReportApplicationService {
     );
   }
 
+  // 기능 : 대기 중인 생성 job을 후속 processor로 비동기 전달합니다.
   private dispatchGenerationJob(job: AiJobRecord): void {
     if (job.status !== "PENDING" || !this.processJobs) {
       return;

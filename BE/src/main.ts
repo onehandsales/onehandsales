@@ -36,6 +36,7 @@ async function bootstrap() {
 
 void bootstrap();
 
+// 기능 : Backend 로컬 실행에 필요한 .env 파일을 우선순위에 맞게 로드합니다.
 function loadLocalEnvironment() {
   const predefinedKeys = new Set(Object.keys(process.env));
 
@@ -43,6 +44,7 @@ function loadLocalEnvironment() {
   loadEnvFile(".env.local", predefinedKeys, true);
 }
 
+// 기능 : 지정한 env 파일의 유효한 key/value를 현재 process 환경에 반영합니다.
 function loadEnvFile(
   fileName: string,
   predefinedKeys: ReadonlySet<string>,
@@ -69,6 +71,7 @@ function loadEnvFile(
   }
 }
 
+// 기능 : dotenv 한 줄을 환경 변수 key/value 또는 무시 대상 null로 해석합니다.
 function parseEnvLine(line: string): { key: string; value: string } | null {
   const trimmed = line.trim();
 
@@ -95,6 +98,7 @@ function parseEnvLine(line: string): { key: string; value: string } | null {
   };
 }
 
+// 기능 : 따옴표로 감싼 env 값을 실제 환경 변수 값으로 정규화합니다.
 function unquoteEnvValue(value: string) {
   if (
     (value.startsWith("\"") && value.endsWith("\"")) ||

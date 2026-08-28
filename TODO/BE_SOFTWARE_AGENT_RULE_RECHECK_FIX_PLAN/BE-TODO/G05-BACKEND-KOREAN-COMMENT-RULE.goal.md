@@ -1,8 +1,11 @@
 # G05 백엔드 한글 주석 규칙 누락 보강
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 코드 주석 수정
 우선순위: P2
+완료일: 2026-08-28
+완료 커밋: 미커밋
+TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G05_BACKEND_KOREAN_COMMENT_RULE\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -59,6 +62,22 @@ Backend Agent의 유지보수 규칙에 맞게 누락된 한글 역할/기능 �
 - `sales-report.module.ts`
   - module class 역할 주석 누락 구간 존재
 
+2026-08-28 완료 결과:
+
+- 대상 8개 파일의 class/interface/type/port token/method/helper 주석 누락을 보강했다.
+- `ai-weekly-sales-report-application.service.ts`와 `schedule-application.service.ts`의 긴 application 흐름에는 필요한 한글 단계 주석을 보강했다.
+- `schedule.repository.ts`의 부정확한 `ScheduleGoogleCalendarRecord`, `softDeleteSchedule` 주석을 실제 코드 의미에 맞게 정정했다.
+- 정적 주석 감사에서 대상 선언과 method/helper의 누락 후보가 0건임을 확인했다.
+- `pnpm.cmd run typecheck`, `pnpm.cmd run lint`, `git diff --check`가 통과했다.
+- `git diff --unified=0` 기준 comment/blank 외 code line 변경은 없다.
+
+2026-08-28 추가 재검토 결과:
+
+- 관련 진행 문서에서 G05가 `Next`로 남은 흔적은 확인되지 않는다.
+- G05 대상 파일의 역할/기능/API 주석 누락 정적 감사 결과는 출력 없음이다.
+- BE `typecheck`, `lint`를 재실행했고 모두 통과했다.
+- G05 범위에서 추가 수정이 필요한 누락 항목은 확인되지 않는다.
+
 ## 7. 구현 지시
 
 1. 동작을 바꾸지 않고 주석만 보강한다.
@@ -88,4 +107,3 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - 대상 파일의 수정 범위에 class/interface/type/method/helper 한글 주석 누락이 없다.
 - typecheck, lint가 통과한다.
 - 비즈니스 로직 diff가 없다.
-
