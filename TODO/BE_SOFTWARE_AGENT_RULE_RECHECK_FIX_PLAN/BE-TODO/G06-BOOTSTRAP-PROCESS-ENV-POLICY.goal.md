@@ -4,7 +4,7 @@
 성격: 문서/소폭 코드 수정
 우선순위: P3
 완료일: 2026-08-28
-완료 커밋: 커밋 예정
+완료 커밋: `0d0530d3 docs(backend): document bootstrap env policy`
 
 ## 1. 목적
 

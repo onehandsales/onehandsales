@@ -11,7 +11,7 @@ G02는 2026-08-28 완료되었고, `sales-report/application`의 schedule reposi
 G03은 2026-08-28 완료되었고, AI Weekly Report 조회 이벤트 `weekViewed`, `detailViewed`, `snapshotSummaryViewed`가 실제 코드와 테스트에 반영되었으며 `c915111f`로 구현/로그 커밋이 완료되었다.
 G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 summary safe error가 API-SPEC, BE summary response/mapper, FE User Web 타입/mock에 동일한 nullable 계약으로 반영되었으며 `21841c62`로 구현/로그 커밋이 완료되었다.
 G05는 2026-08-28 완료되었고, 대상 Backend 파일의 class/interface/type/port token/method/helper 한글 역할/기능/단계 주석 누락을 보강했다. 추가 재검토에서 G05 관련 진행 문서가 G06 다음 실행 상태로 정리되어 있고, 주석 누락 정적 감사와 BE typecheck/lint가 통과했음을 확인했다. 구현/로그 커밋은 `dca1a22c`다.
-G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 direct `process.env` 접근을 제한 예외로 문서화했다. `BE/src/main.ts`와 `BE/src/app.module.ts`에는 한글 단계 주석을 보강했고, 공통 환경/Backend convention/배포 문서의 정책 충돌을 정리했다. BE typecheck/lint/test와 `process.env` 정적 확인이 통과했다.
+G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 direct `process.env` 접근을 제한 예외로 문서화했다. `BE/src/main.ts`와 `BE/src/app.module.ts`에는 한글 단계 주석을 보강했고, 공통 환경/Backend convention/배포 문서의 정책 충돌을 정리했다. BE typecheck/lint/test와 `process.env` 정적 확인이 통과했으며 `0d0530d3`로 구현/로그 커밋이 완료되었다.
 
 ## 2. P1
 

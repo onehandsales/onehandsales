@@ -1,8 +1,9 @@
 # G06 Bootstrap Process Env Policy Work Log
 
-상태: Completed / Commit Pending
+상태: Completed
 작업일: 2026-08-28
 Goal 문서: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md`
+구현/로그 커밋: `0d0530d3 docs(backend): document bootstrap env policy`
 
 ## 1. 수행 범위
 
