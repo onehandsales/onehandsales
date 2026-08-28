@@ -3,7 +3,12 @@ import {
   Check,
   ChevronDown,
 } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { Link } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import {
@@ -16,6 +21,14 @@ import { usePublicSitePath } from "@/features/public-site/i18n/public-site-local
 const contactStepIds = ["email", "size", "profile", "context"] as const;
 
 type ContactStepId = (typeof contactStepIds)[number];
+
+const contactIllustrationByStep: Record<ContactStepId | "done", string> = {
+  email: "/public-site/contact/request-email.svg",
+  size: "/public-site/contact/request-team-size.svg",
+  profile: "/public-site/contact/request-document.svg",
+  context: "/public-site/contact/request-document.svg",
+  done: "/public-site/contact/request-waiting.svg",
+};
 
 type ContactFormValues = {
   readonly email: string;
@@ -939,134 +952,20 @@ function ContactIllustration({
 }: {
   readonly step: ContactStepId | "done";
 }) {
-  const isSize = step === "size";
-  const isContext = step === "context" || step === "done";
+  const imageSrc = contactIllustrationByStep[step];
 
   return (
     <div
       aria-hidden="true"
       className="hidden min-h-[360px] items-center justify-center lg:flex"
     >
-      <svg
-        className="h-auto w-full max-w-[430px]"
-        fill="none"
-        viewBox="0 0 430 330"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M102 228c34 31 140 36 220 8"
-          stroke="#050505"
-          strokeLinecap="round"
-          strokeWidth="18"
-        />
-        <path
-          d="M112 103c35-38 100-48 154-18 58 33 81 101 50 145-32 45-119 50-174 15-49-31-61-94-30-142Z"
-          fill="#2383e2"
-          stroke="#050505"
-          strokeWidth="7"
-        />
-        <path
-          d="M130 134h128M118 169h172M142 204h120"
-          stroke="#ffffff"
-          strokeLinecap="round"
-          strokeWidth="7"
-        />
-
-        {isSize ? (
-          <>
-            <path
-              d="M183 72h60v60h-60z"
-              fill="#fff"
-              stroke="#050505"
-              strokeWidth="7"
-            />
-            <path
-              d="M243 72c24 0 43 19 43 43h-43V72Z"
-              fill="#2383e2"
-              stroke="#050505"
-              strokeWidth="7"
-            />
-            <path
-              d="M183 132c-24 0-43-19-43-43h43v43Z"
-              fill="#2383e2"
-              stroke="#050505"
-              strokeWidth="7"
-            />
-            <path
-              d="M241 132c0 23-19 42-42 42v-42h42Z"
-              fill="#fff"
-              stroke="#050505"
-              strokeWidth="7"
-            />
-          </>
-        ) : isContext ? (
-          <>
-            <path
-              d="M150 224V123l38-24 35 24v101"
-              fill="#ffffff"
-              stroke="#050505"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-            <path
-              d="M223 224V91l44-43 45 43v133"
-              fill="#2383e2"
-              stroke="#050505"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-            <path
-              d="M130 224V144l20-13v93M312 224V117l38 22v85"
-              stroke="#050505"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-            <path
-              d="M245 111h19M245 139h19M245 167h19M337 151v49"
-              stroke="#ffffff"
-              strokeLinecap="round"
-              strokeWidth="6"
-            />
-            <path
-              d="M292 68 345 16M330 18l15-2-2 16"
-              stroke="#050505"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-          </>
-        ) : (
-          <>
-            <path
-              d="M153 86 226 51l74 35v85l-74 37-73-37V86Z"
-              fill="#fff"
-              stroke="#050505"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-            <path
-              d="m153 88 73 35 74-35M226 123v84"
-              stroke="#050505"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-            <path
-              d="M184 132h84v55h-84z"
-              fill="#2383e2"
-              stroke="#050505"
-              strokeLinejoin="round"
-              strokeWidth="7"
-            />
-            <path
-              d="M206 160h40"
-              stroke="#fff"
-              strokeLinecap="round"
-              strokeWidth="7"
-            />
-          </>
-        )}
-      </svg>
+      <img
+        alt=""
+        className="h-auto w-full max-w-[430px] object-contain"
+        decoding="async"
+        loading="eager"
+        src={imageSrc}
+      />
     </div>
   );
 }
