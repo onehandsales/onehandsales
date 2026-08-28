@@ -4,7 +4,7 @@
 
 ## 1. 결론
 
-기존 BE 검증에서 typecheck, lint, prisma validate, test는 통과했지만 Backend Agent 규칙 기준으로 아래 수정 또는 감사 항목이 남아 있다.
+기존 BE 검증에서 typecheck, lint, prisma validate, test는 통과했지만 Backend Agent 규칙 기준으로 아래 감사 항목이 남아 있다.
 
 G01은 2026-08-28 완료되었고, `admin-operation/presentation`의 `@prisma/client` import는 0건으로 확인되었다.
 G02는 2026-08-28 완료되었고, `sales-report/application`의 schedule repository 직접 의존과 `ScheduleModule` repository token export는 0건으로 확인되었으며 `1e86c06c`로 구현/로그 커밋이 완료되었다.
@@ -54,6 +54,14 @@ pnpm.cmd test -- --runInBand
 - `lint`: 통과
 - `prisma:validate`: 통과
 - `test`: 103 suites / 545 tests 통과
+
+G06 추가 검증 결과:
+
+- `typecheck`: 통과
+- `lint`: 통과
+- `test`: 103 suites / 548 tests 통과
+- `rg -n "process\.env" src`: `BE\src\main.ts` bootstrap env loader 예외 범위만 출력
+- `git diff --check`: 통과
 
 추가 정적 확인 결과:
 

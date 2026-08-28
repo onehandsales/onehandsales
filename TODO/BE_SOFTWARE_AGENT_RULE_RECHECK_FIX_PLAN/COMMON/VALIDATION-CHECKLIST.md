@@ -61,6 +61,12 @@ rg -n "process\.env" src -g "*.ts" -g "!*.spec.ts"
 rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modules -g "*.ts" -g "!*.spec.ts" | rg "\\presentation\\"
 ```
 
+`process.env` 판정 기준:
+
+- `BE/src/main.ts`의 bootstrap env loader에서 `AppModule`, `ConfigModule`, `ConfigService` 생성 전 local env file loading 목적으로 읽고 쓰는 경우만 허용한다.
+- 허용된 출력도 `TODO_LOG`에 `bootstrap 예외`로 기록한다.
+- controller, service, module, provider, repository, helper 계층의 direct `process.env` 출력은 위반으로 본다.
+
 ## 4. 최종 리뷰 기준
 
 - presentation 계층에서 Prisma 직접 의존이 없다.
@@ -68,6 +74,7 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - controller에서 repository, Prisma, transaction을 직접 사용하지 않는다.
 - application 계층의 트랜잭션 경계가 규칙과 일치한다.
 - 수정된 class/interface/type/method/helper에 한글 주석이 있다.
+- direct `process.env`는 `BE/src/main.ts` bootstrap env loader 예외 밖에 없다.
 - AI Weekly Report observability 이벤트가 API-SPEC과 일치한다.
 - API-SPEC, DTO, mapper, FE API client/type이 서로 모순되지 않는다.
 - presentation의 repository port import 감사 결과가 기록되어 있다.
