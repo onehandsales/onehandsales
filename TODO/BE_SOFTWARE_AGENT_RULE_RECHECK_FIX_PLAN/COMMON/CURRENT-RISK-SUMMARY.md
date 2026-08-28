@@ -1,6 +1,6 @@
 # Current Risk Summary
 
-상태: In Progress / G01-G03 resolved on 2026-08-28
+상태: In Progress / G01-G04 resolved on 2026-08-28
 
 ## 1. 결론
 
@@ -9,6 +9,7 @@
 G01은 2026-08-28 완료되었고, `admin-operation/presentation`의 `@prisma/client` import는 0건으로 확인되었다.
 G02는 2026-08-28 완료되었고, `sales-report/application`의 schedule repository 직접 의존과 `ScheduleModule` repository token export는 0건으로 확인되었으며 `1e86c06c`로 구현/로그 커밋이 완료되었다.
 G03은 2026-08-28 완료되었고, AI Weekly Report 조회 이벤트 `weekViewed`, `detailViewed`, `snapshotSummaryViewed`가 실제 코드와 테스트에 반영되었으며 `c915111f`로 구현/로그 커밋이 완료되었다.
+G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 summary safe error가 API-SPEC, BE summary response/mapper, FE User Web 타입/mock에 동일한 nullable 계약으로 반영되었다. 현재 변경은 미커밋 상태다.
 
 ## 2. P1
 
@@ -22,7 +23,7 @@ G03은 2026-08-28 완료되었고, AI Weekly Report 조회 이벤트 `weekViewed
 | 항목 | 리스크 | Goal | 상태 |
 | --- | --- | --- | --- |
 | AI Weekly Report observability | API-SPEC의 조회 이벤트가 실제 코드에 일부 없다. | G03 | 해결 완료 |
-| AI Weekly Report `summaryPreview` | API-SPEC과 FE 타입에는 있으나 BE response에는 없다. | G04 | 남음 |
+| AI Weekly Report `summaryPreview` | API-SPEC과 FE 타입에는 있으나 BE response에는 없다. | G04 | 해결 완료 / 미커밋 |
 | 한글 주석 규칙 | 일부 class/interface/type/method/helper에 한글 역할/기능 주석이 누락되어 있다. | G05 | 남음 |
 
 ## 4. P3
@@ -88,3 +89,10 @@ pnpm.cmd test -- --runInBand
 - G03: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
 - G03: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.spec.ts`
 - 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G03_AI_WEEKLY_REPORT_OBSERVABILITY\WORK_LOG.md`
+- G04: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
+- G04: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.spec.ts`
+- G04: `FE\user-web\src\features\ai-weekly-report\types\ai-weekly-report.ts`
+- G04: `FE\user-web\tests\e2e\support\user-web-api-mocks.ts`
+- G04: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\FE-TODO\USER-WEB-CONTRACT-CHECK.md`
+- G04: `TODO\DONE\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\05_AI_WEEKLY_SALES_REPORT\COMMON\API-SPEC\AI_WEEKLY_REPORT_API.md`
+- 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G04_AI_WEEKLY_REPORT_SUMMARY_PREVIEW_CONTRACT\WORK_LOG.md`

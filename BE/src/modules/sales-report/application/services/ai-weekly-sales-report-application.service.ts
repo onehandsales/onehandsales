@@ -37,6 +37,8 @@ const MAX_SNAPSHOT_SCHEDULES = 200;
 const MAX_SNAPSHOT_DEALS = 200;
 const MAX_SNAPSHOT_MEETING_NOTES = 100;
 const MAX_IDEMPOTENCY_KEY_LENGTH = 128;
+const MAX_SUMMARY_PREVIEW_LENGTH = 160;
+const SUMMARY_PREVIEW_SUFFIX = "...";
 const SUGGESTION_SECTIONS = [
   { key: "riskSignals", type: "RISK" },
   { key: "nextWeekActions", type: "NEXT_ACTION" },
@@ -96,6 +98,9 @@ export interface AiWeeklySalesReportSummaryResponse {
   readonly requestedAt: string;
   readonly generatedAt: string | null;
   readonly failedAt: string | null;
+  readonly summaryPreview: string | null;
+  readonly safeErrorCode: string | null;
+  readonly safeErrorMessage: string | null;
 }
 
 // 역할 : RequestAiWeeklySalesReportGenerationResponse AI 주간 영업 리포트 생성 접수 응답을 정의합니다.
@@ -733,6 +738,7 @@ export class AiWeeklySalesReportApplicationService {
     return `${type.toLowerCase()}-${normalizedKey || index + 1}`;
   }
 
+  // 기능 : AI 주간 영업 리포트 목록/상세 공통 요약 응답을 생성합니다.
   private toReportSummary(
     report: AiWeeklySalesReportRecord
   ): AiWeeklySalesReportSummaryResponse {
@@ -747,7 +753,50 @@ export class AiWeeklySalesReportApplicationService {
       requestedAt: report.requestedAt.toISOString(),
       generatedAt: report.generatedAt?.toISOString() ?? null,
       failedAt: report.failedAt?.toISOString() ?? null,
+      summaryPreview:
+        report.status === "READY"
+          ? this.createSummaryPreview(report.outputJson)
+          : null,
+      safeErrorCode: report.safeErrorCode,
+      safeErrorMessage: report.safeErrorMessage,
     };
+  }
+
+  // 기능 : AI output에서 목록에 노출할 짧은 요약 문구를 안전하게 추출합니다.
+  private createSummaryPreview(
+    output: Record<string, unknown> | null
+  ): string | null {
+    if (!output) {
+      return null;
+    }
+
+    const executiveSummary = output.executiveSummary;
+
+    if (
+      !executiveSummary ||
+      typeof executiveSummary !== "object" ||
+      Array.isArray(executiveSummary)
+    ) {
+      return null;
+    }
+
+    const summaryRecord = executiveSummary as Record<string, unknown>;
+    const summaryPreview =
+      this.getString(summaryRecord, "narrative") ??
+      this.getString(summaryRecord, "headline");
+
+    if (!summaryPreview) {
+      return null;
+    }
+
+    if (summaryPreview.length <= MAX_SUMMARY_PREVIEW_LENGTH) {
+      return summaryPreview;
+    }
+
+    return `${summaryPreview.slice(
+      0,
+      MAX_SUMMARY_PREVIEW_LENGTH - SUMMARY_PREVIEW_SUFFIX.length
+    )}${SUMMARY_PREVIEW_SUFFIX}`;
   }
 
   // 기능 : 조회 이벤트 로그에 필요한 report 식별값만 원문 payload 없이 추출합니다.

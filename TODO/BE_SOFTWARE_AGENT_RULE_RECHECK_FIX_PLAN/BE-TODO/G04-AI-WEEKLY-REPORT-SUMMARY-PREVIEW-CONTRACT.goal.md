@@ -1,8 +1,11 @@
 # G04 AI Weekly Report summaryPreview 응답 계약 정합화
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 코드 또는 문서 수정
 우선순위: P2
+완료일: 2026-08-28
+완료 커밋: 미커밋
+TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G04_AI_WEEKLY_REPORT_SUMMARY_PREVIEW_CONTRACT\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -42,11 +45,18 @@ API-SPEC과 FE 타입에 있는 `summaryPreview`와 실제 BE 응답 DTO/mapper�
 - `FE\user-web\src\features\ai-weekly-report\components\ai-weekly-report-section.tsx`
 - `TODO\DONE\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\05_AI_WEEKLY_SALES_REPORT\COMMON\API-SPEC\AI_WEEKLY_REPORT_API.md`
 
-## 6. 현재 확인된 문제
+## 6. 작업 전 확인된 문제
 
 - API-SPEC 예시에는 `summaryPreview`가 있다.
 - FE User Web 타입 `AiWeeklyReportSummary`에도 `summaryPreview?: string | null`가 있다.
 - 실제 `AiWeeklySalesReportSummaryResponse`와 `toReportSummary`에는 `summaryPreview`가 없다.
+
+2026-08-28 완료 결과:
+
+- `summaryPreview`는 `status=READY` 리포트에서만 `outputJson.executiveSummary.narrative`를 우선 사용하고, 값이 없으면 `headline`을 사용한다.
+- 생성 중, 실패, output 없음, executive summary 없음의 경우 `summaryPreview`는 `null`이다.
+- FE 화면 직접 표시 위치는 없고 타입과 E2E API mock 계약만 정합화했다.
+- 재검토에서 주차 조회 실패 summary의 `safeErrorCode`, `safeErrorMessage`도 BE/FE/API-SPEC required nullable 계약으로 정합화했다.
 
 ## 7. 구현 지시
 
@@ -101,4 +111,3 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - FE 타입 수정 시 FE typecheck가 통과하거나 실행 불가 사유가 기록되어 있다.
 - 문서 수정 시 `summaryPreview` 잔존 위치와 의도가 TODO_LOG에 기록되어 있다.
 - 수정한 코드가 있다면 한글 주석 규칙이 반영되어 있다.
-

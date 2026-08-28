@@ -5,6 +5,8 @@ const E2E_ACCESS_TOKEN_EXPIRES_AT = "2026-12-31T23:59:59.000Z";
 const E2E_AUTHORIZATION = `Bearer ${E2E_ACCESS_TOKEN}`;
 const NOW = "2026-07-20T09:00:00.000Z";
 const NEXT_WEEK = "2026-07-27T10:00:00.000Z";
+const AI_WEEKLY_REPORT_SUMMARY_PREVIEW_MAX_LENGTH = 160;
+const AI_WEEKLY_REPORT_SUMMARY_PREVIEW_SUFFIX = "...";
 
 export const MOBILE_LONG_FIXTURE = {
   companyName:
@@ -2314,11 +2316,39 @@ function toAiWeeklyReportSummary(report: MutableRecord) {
     safeErrorCode: stringField(report, "safeErrorCode"),
     safeErrorMessage: stringField(report, "safeErrorMessage"),
     status: stringField(report, "status") ?? "READY",
+    summaryPreview: getAiWeeklyReportSummaryPreview(report),
     timeZone: stringField(report, "timeZone") ?? "Asia/Seoul",
     version: numberField(report, "version") ?? 1,
     weekEnd: stringField(report, "weekEnd") ?? "2026-07-26",
     weekStart: stringField(report, "weekStart") ?? "2026-07-20",
   };
+}
+
+// 기능 : E2E mock AI output에서 목록/상세 응답용 요약 미리보기를 추출합니다.
+function getAiWeeklyReportSummaryPreview(report: MutableRecord) {
+  if ((stringField(report, "status") ?? "READY") !== "READY") {
+    return null;
+  }
+
+  const output = nestedRecord(report.outputJson);
+  const executiveSummary = nestedRecord(output.executiveSummary);
+  const summaryPreview =
+    stringField(executiveSummary, "narrative") ??
+    stringField(executiveSummary, "headline");
+
+  if (!summaryPreview) {
+    return null;
+  }
+
+  if (summaryPreview.length <= AI_WEEKLY_REPORT_SUMMARY_PREVIEW_MAX_LENGTH) {
+    return summaryPreview;
+  }
+
+  return `${summaryPreview.slice(
+    0,
+    AI_WEEKLY_REPORT_SUMMARY_PREVIEW_MAX_LENGTH -
+      AI_WEEKLY_REPORT_SUMMARY_PREVIEW_SUFFIX.length,
+  )}${AI_WEEKLY_REPORT_SUMMARY_PREVIEW_SUFFIX}`;
 }
 
 function createAiWeeklyReportSections(

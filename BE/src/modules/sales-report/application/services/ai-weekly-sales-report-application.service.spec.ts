@@ -68,6 +68,9 @@ describe("AiWeeklySalesReportApplicationService", () => {
 
     expect(response.report.status).toBe("GENERATING");
     expect(response.report.locale).toBe("en-US");
+    expect(response.report.summaryPreview).toBeNull();
+    expect(response.report.safeErrorCode).toBeNull();
+    expect(response.report.safeErrorMessage).toBeNull();
     expect(response.job.status).toBe("PENDING");
     expect(processJobs.processJob).toHaveBeenCalledWith(JOB_ID);
     expect(createdInputs).toHaveLength(1);
@@ -145,6 +148,8 @@ describe("AiWeeklySalesReportApplicationService", () => {
           version: 2,
           outputJson: {
             executiveSummary: {
+              headline: "Weekly summary headline",
+              narrative: "Sensitive weekly summary preview",
               body: "Sensitive AI section body",
             },
           },
@@ -171,6 +176,12 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
 
     expect(response.versions).toHaveLength(1);
+    expect(response.latestSuccessfulReport?.summaryPreview).toBe(
+      "Sensitive weekly summary preview"
+    );
+    expect(response.versions[0]?.summaryPreview).toBe(
+      "Sensitive weekly summary preview"
+    );
     expect(response.failedVersionCount).toBe(1);
     expect(response.failedVersions).toEqual([]);
     const weekViewedEvent = getLoggedEvent(
@@ -193,6 +204,72 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
     expect(JSON.stringify(weekViewedEvent)).not.toContain(
       "Sensitive AI section body"
+    );
+    expect(JSON.stringify(weekViewedEvent)).not.toContain(
+      "Sensitive weekly summary preview"
+    );
+  });
+
+  it("maps summary preview fallback only for ready reports", async () => {
+    const repository = createRepository({
+      listReportsForWeek: jest.fn().mockResolvedValue([
+        createReport({
+          id: "headline-ready-report-id",
+          status: "READY",
+          version: 3,
+          outputJson: {
+            executiveSummary: {
+              headline: "Headline fallback preview",
+            },
+          },
+        }),
+        createReport({
+          id: "generating-report-id",
+          status: "GENERATING",
+          version: 2,
+          outputJson: {
+            executiveSummary: {
+              narrative: "Generating report preview",
+            },
+          },
+        }),
+        createReport({
+          id: "failed-report-id",
+          status: "FAILED",
+          version: 1,
+          outputJson: {
+            executiveSummary: {
+              narrative: "Failed report preview",
+            },
+          },
+          failedAt: new Date("2026-07-20T01:00:00.000Z"),
+          safeErrorCode: "AI_PROVIDER_TIMEOUT",
+          safeErrorMessage: "Safe failed message",
+        }),
+      ]),
+    });
+    const service = new AiWeeklySalesReportApplicationService(
+      repository,
+      createScheduleApplicationService(),
+      createLogger()
+    );
+
+    const response = await service.getWeek(CURRENT_USER, {
+      weekStart: "2026-07-20",
+      timeZone: "Asia/Seoul",
+      includeFailed: true,
+    });
+
+    expect(response.latestSuccessfulReport?.summaryPreview).toBe(
+      "Headline fallback preview"
+    );
+    expect(response.generatingReport?.summaryPreview).toBeNull();
+    expect(response.failedVersions[0]?.summaryPreview).toBeNull();
+    expect(response.failedVersions[0]?.safeErrorCode).toBe(
+      "AI_PROVIDER_TIMEOUT"
+    );
+    expect(response.failedVersions[0]?.safeErrorMessage).toBe(
+      "Safe failed message"
     );
   });
 
@@ -275,6 +352,10 @@ describe("AiWeeklySalesReportApplicationService", () => {
         createReport({
           status: "READY",
           outputJson: {
+            executiveSummary: {
+              headline: "Detail summary headline",
+              narrative: "Sensitive detail summary preview",
+            },
             followUpDrafts: [
               {
                 key: "follow-up-note-1",
@@ -316,6 +397,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
       readonly followUpDrafts?: readonly Record<string, unknown>[];
     };
 
+    expect(detail.summaryPreview).toBe("Sensitive detail summary preview");
     expect(sections.followUpDrafts?.[0]).toMatchObject({
       id: SUGGESTION_ID,
       sourceSuggestionId: SUGGESTION_ID,
@@ -337,6 +419,9 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
     expect(JSON.stringify(detailViewedEvent)).not.toContain(
       "Send the next step."
+    );
+    expect(JSON.stringify(detailViewedEvent)).not.toContain(
+      "Sensitive detail summary preview"
     );
   });
 });

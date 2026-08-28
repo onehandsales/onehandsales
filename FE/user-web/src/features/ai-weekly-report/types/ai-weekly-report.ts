@@ -40,9 +40,9 @@ export type AiWeeklyReportSummary = {
   readonly requestedAt: string;
   readonly generatedAt: string | null;
   readonly failedAt: string | null;
-  readonly summaryPreview?: string | null;
-  readonly safeErrorCode?: string | null;
-  readonly safeErrorMessage?: string | null;
+  readonly summaryPreview: string | null;
+  readonly safeErrorCode: string | null;
+  readonly safeErrorMessage: string | null;
 };
 
 export type AiWeeklyReportGenerationResponse = {

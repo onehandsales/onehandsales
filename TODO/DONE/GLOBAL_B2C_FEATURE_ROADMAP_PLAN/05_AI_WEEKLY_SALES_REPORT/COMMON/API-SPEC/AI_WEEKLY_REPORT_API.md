@@ -86,7 +86,10 @@ Body:
     "status": "GENERATING",
     "requestedAt": "2026-07-24T05:10:00.000Z",
     "generatedAt": null,
-    "failedAt": null
+    "failedAt": null,
+    "summaryPreview": null,
+    "safeErrorCode": null,
+    "safeErrorMessage": null
   },
   "job": {
     "id": "a0c5b06a-2222-4444-9999-222222222222",
@@ -157,29 +160,51 @@ Query:
   "timeZone": "Asia/Seoul",
   "latestSuccessfulReport": {
     "id": "report-id",
+    "weekStart": "2026-07-20",
+    "weekEnd": "2026-07-26",
+    "timeZone": "Asia/Seoul",
+    "locale": "ko-KR",
     "version": 3,
     "status": "READY",
+    "requestedAt": "2026-07-24T05:10:00.000Z",
     "generatedAt": "2026-07-24T05:15:00.000Z",
-    "summaryPreview": "이번 주에는 제안 단계 딜이 늘었어요."
+    "failedAt": null,
+    "summaryPreview": "이번 주에는 제안 단계 딜이 늘었어요.",
+    "safeErrorCode": null,
+    "safeErrorMessage": null
   },
   "generatingReport": null,
   "versions": [
     {
       "id": "report-id",
+      "weekStart": "2026-07-20",
+      "weekEnd": "2026-07-26",
+      "timeZone": "Asia/Seoul",
+      "locale": "ko-KR",
       "version": 3,
       "status": "READY",
+      "requestedAt": "2026-07-24T05:10:00.000Z",
       "generatedAt": "2026-07-24T05:15:00.000Z",
-      "failedAt": null
+      "failedAt": null,
+      "summaryPreview": "이번 주에는 제안 단계 딜이 늘었어요.",
+      "safeErrorCode": null,
+      "safeErrorMessage": null
     }
   ],
   "failedVersionCount": 1,
   "failedVersions": [
     {
       "id": "failed-report-id",
+      "weekStart": "2026-07-20",
+      "weekEnd": "2026-07-26",
+      "timeZone": "Asia/Seoul",
+      "locale": "ko-KR",
       "version": 2,
       "status": "FAILED",
+      "requestedAt": "2026-07-24T04:25:00.000Z",
       "generatedAt": null,
       "failedAt": "2026-07-24T04:30:00.000Z",
+      "summaryPreview": null,
       "safeErrorCode": "AI_PROVIDER_TIMEOUT",
       "safeErrorMessage": "리포트를 만들지 못했어요. 다시 시도해 주세요."
     }
@@ -194,8 +219,10 @@ Query:
 3. current user의 해당 주 report만 조회한다.
 4. 최신 성공 version은 `status=READY`, `version DESC` 기준이다.
 5. 생성 중 version은 `status=GENERATING` 기준이다.
-6. 실패 version은 count와 접은 목록 표시용 summary를 반환한다.
+6. 실패 version은 count와 접은 목록 표시용 summary를 반환하며 `safeErrorCode`, `safeErrorMessage`를 포함한다.
 7. FE는 `failedVersions`를 기본 접힘 상태로 보여준다.
+
+`summaryPreview`는 `status=READY` 리포트에서만 노출한다. `outputJson.executiveSummary.narrative`를 우선 사용하고, 값이 없으면 `outputJson.executiveSummary.headline`을 사용한다. 생성 중, 실패, output 없음, executive summary 없음의 경우 `null`이다.
 
 ### Transaction
 
@@ -207,7 +234,7 @@ Query:
 - log event key: `ai.weeklyReport.weekViewed`
 - audit log: 없음
 - request id: 사용
-- redaction: output summary preview 외 snapshot/log 원문 logging 금지
+- redaction: response에는 `summaryPreview`를 반환할 수 있지만 log payload에는 AI output 원문, snapshot 원문, summary preview 문자열을 포함하지 않는다.
 
 ## 4. GET /api/sales-reports/weekly/:reportId
 
@@ -241,6 +268,7 @@ Path param:
   "requestedAt": "2026-07-24T05:10:00.000Z",
   "generatedAt": "2026-07-24T05:15:00.000Z",
   "failedAt": null,
+  "summaryPreview": "이번 주에는 제안 단계 딜이 늘었어요.",
   "safeErrorCode": null,
   "safeErrorMessage": null,
   "sections": {
@@ -289,7 +317,7 @@ Path param:
 - log event key: `ai.weeklyReport.detailViewed`
 - audit log: 없음
 - request id: 사용
-- redaction: snapshot 원문, provider prompt/raw response logging 금지
+- redaction: log payload에는 snapshot 원문, provider prompt/raw response, summary preview 문자열을 포함하지 않는다.
 
 ### 에러 응답
 
