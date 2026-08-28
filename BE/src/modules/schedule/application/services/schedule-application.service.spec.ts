@@ -623,6 +623,27 @@ describe("ScheduleApplicationService", () => {
     ).rejects.toBeInstanceOf(ValidationDomainError);
   });
 
+  it("weekly report snapshot query exposes schedules through application boundary", async () => {
+    const { repository, service } = createService();
+    repository.weeklySchedules = [createWeeklySchedule()];
+    const rangeStartAt = new Date("2026-06-14T15:00:00.000Z");
+    const rangeEndAt = new Date("2026-06-21T15:00:00.000Z");
+
+    const schedules = await service.listSchedulesForWeeklyReportSnapshot({
+      userId: CURRENT_USER.id,
+      rangeStartAt,
+      rangeEndAt,
+    });
+
+    expect(schedules).toHaveLength(1);
+    expect(schedules[0]?.id).toBe("weekly-schedule-1");
+    expect(repository.lastWeeklyReportInput).toEqual({
+      userId: CURRENT_USER.id,
+      rangeStartAt,
+      rangeEndAt,
+    });
+  });
+
   it("weekly report returns seven days even when no schedules exist", async () => {
     const { repository, service } = createService();
 

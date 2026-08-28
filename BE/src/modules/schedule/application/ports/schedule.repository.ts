@@ -1,16 +1,31 @@
 import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
-import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
+import type {
+  ListScheduleWeeklyReportSchedulesInput,
+  ScheduleWeeklyReportCompanyRecord,
+  ScheduleWeeklyReportContactRecord,
+  ScheduleWeeklyReportDealRecord,
+  ScheduleWeeklyReportNextFollowingActionRecord,
+  ScheduleWeeklyReportScheduleRecord,
+} from "./schedule-weekly-report-query.port";
 
 export const SCHEDULE_REPOSITORY = Symbol("SCHEDULE_REPOSITORY");
 
+// 역할 : ScheduleViewMode 일정 목록 조회 화면 단위를 정의합니다.
 export enum ScheduleViewMode {
   MONTH = "month",
   WEEK = "week",
 }
 
+// 역할 : ScheduleSourceType 일정 생성 출처 값을 정의합니다.
 export type ScheduleSourceType = "INTERNAL" | "GOOGLE";
+
+// 역할 : ScheduleSourceTypeFilter 일정 목록에서 조회할 출처 필터 값을 정의합니다.
 export type ScheduleSourceTypeFilter = "ALL" | ScheduleSourceType;
+
+// 역할 : ScheduleVisibility 일정 목록에서 노출할 일정 범위를 정의합니다.
 export type ScheduleVisibility = "ACTIVE" | "HIDDEN_GOOGLE" | "ALL";
+
+// 역할 : ScheduleExternalSyncStatus 외부 Calendar와 로컬 일정의 동기화 상태를 정의합니다.
 export type ScheduleExternalSyncStatus =
   | "SYNCED"
   | "LOCAL_MODIFIED"
@@ -62,57 +77,21 @@ export interface ScheduleRecord {
   readonly updatedAt: Date;
 }
 
-// 역할 : 주간 리포트에 필요한 연결 회사 projection 구조를 정의합니다.
-export interface WeeklyReportCompanyRecord {
-  readonly id: string;
-  readonly companyName: string;
-}
+// 역할 : WeeklyReportCompanyRecord repository 내부 호환용 주간 리포트 회사 projection 타입을 재노출합니다.
+export type WeeklyReportCompanyRecord = ScheduleWeeklyReportCompanyRecord;
 
-// 역할 : 주간 리포트에 필요한 연결 담당자 projection 구조를 정의합니다.
-export interface WeeklyReportContactRecord {
-  readonly id: string;
-  readonly username: string;
-  readonly companyId: string;
-  readonly companyName: string;
-}
+// 역할 : WeeklyReportContactRecord repository 내부 호환용 주간 리포트 담당자 projection 타입을 재노출합니다.
+export type WeeklyReportContactRecord = ScheduleWeeklyReportContactRecord;
 
-// 역할 : 주간 리포트에 표시할 다음 후속 액션 projection 구조를 정의합니다.
-export interface WeeklyReportNextFollowingActionRecord {
-  readonly id: string;
-  readonly followingAction: string;
-  readonly checkComplete: boolean;
-  readonly createdAt: Date;
-  readonly remainingCount: number;
-}
+// 역할 : WeeklyReportNextFollowingActionRecord repository 내부 호환용 주간 리포트 다음 후속 액션 타입을 재노출합니다.
+export type WeeklyReportNextFollowingActionRecord =
+  ScheduleWeeklyReportNextFollowingActionRecord;
 
-// 역할 : 주간 리포트에 필요한 활성 연결 딜 projection 구조를 정의합니다.
-export interface WeeklyReportDealRecord {
-  readonly id: string;
-  readonly dealName: string;
-  readonly dealCost: number;
-  readonly currencyCode: string;
-  readonly dealStatus: DealStatusCode;
-  readonly expectedEndDate: Date;
-  readonly companies: WeeklyReportCompanyRecord[];
-  readonly contacts: WeeklyReportContactRecord[];
-  readonly nextFollowingAction: WeeklyReportNextFollowingActionRecord | null;
-}
+// 역할 : WeeklyReportDealRecord repository 내부 호환용 주간 리포트 딜 projection 타입을 재노출합니다.
+export type WeeklyReportDealRecord = ScheduleWeeklyReportDealRecord;
 
-// 역할 : 주간 리포트에 필요한 일정 projection 구조를 정의합니다.
-export interface WeeklyReportScheduleRecord {
-  readonly id: string;
-  readonly scheduleTitle: string;
-  readonly startAt: Date;
-  readonly endAt: Date;
-  readonly timeZone: string;
-  readonly location: string | null;
-  readonly meetingUrl: string | null;
-  readonly memo: string | null;
-  readonly isAllDay: boolean;
-  readonly sourceType: ScheduleSourceType;
-  readonly googleCalendar: ScheduleGoogleCalendarRecord | null;
-  readonly deals: WeeklyReportDealRecord[];
-}
+// 역할 : WeeklyReportScheduleRecord repository 내부 호환용 주간 리포트 일정 projection 타입을 재노출합니다.
+export type WeeklyReportScheduleRecord = ScheduleWeeklyReportScheduleRecord;
 
 // 역할 : ListSchedulesInput 일정 목록 조회 조건을 정의합니다.
 export interface ListSchedulesInput {
@@ -123,12 +102,9 @@ export interface ListSchedulesInput {
   readonly sourceType?: ScheduleSourceTypeFilter;
 }
 
-// 역할 : 주간 리포트 일정 조회 조건을 정의합니다.
-export interface ListSchedulesForWeeklyReportInput {
-  readonly userId: string;
-  readonly rangeStartAt: Date;
-  readonly rangeEndAt: Date;
-}
+// 역할 : ListSchedulesForWeeklyReportInput repository 내부 호환용 주간 리포트 일정 조회 조건을 재노출합니다.
+export type ListSchedulesForWeeklyReportInput =
+  ListScheduleWeeklyReportSchedulesInput;
 
 // 역할 : CreateScheduleInput 일정 생성 저장 값을 정의합니다.
 export interface CreateScheduleInput {

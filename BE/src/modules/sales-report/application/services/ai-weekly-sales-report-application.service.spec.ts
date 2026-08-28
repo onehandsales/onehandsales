@@ -1,4 +1,4 @@
-import type { ScheduleRepository } from "@/modules/schedule/application/ports/schedule.repository";
+import type { ScheduleApplicationService } from "@/modules/schedule/application/services/schedule-application.service";
 import {
   type AiJobRecord,
   type AiWeeklySalesReportRecord,
@@ -51,7 +51,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     const processJobs = createProcessJobs();
     const service = new AiWeeklySalesReportApplicationService(
       repository,
-      createScheduleRepository(),
+      createScheduleApplicationService(),
       createLogger(),
       processJobs
     );
@@ -104,7 +104,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
     const service = new AiWeeklySalesReportApplicationService(
       repository,
-      createScheduleRepository(),
+      createScheduleApplicationService(),
       createLogger()
     );
 
@@ -149,7 +149,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
     const service = new AiWeeklySalesReportApplicationService(
       repository,
-      createScheduleRepository(),
+      createScheduleApplicationService(),
       createLogger()
     );
 
@@ -204,7 +204,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
     const service = new AiWeeklySalesReportApplicationService(
       repository,
-      createScheduleRepository(),
+      createScheduleApplicationService(),
       createLogger()
     );
 
@@ -289,9 +289,10 @@ function createRepository(
   };
 }
 
-function createScheduleRepository(): ScheduleRepository {
+// 기능 : sales-report 테스트에서 사용할 schedule application service mock을 생성합니다.
+function createScheduleApplicationService(): ScheduleApplicationService {
   return {
-    listSchedulesForWeeklyReport: jest.fn().mockResolvedValue([
+    listSchedulesForWeeklyReportSnapshot: jest.fn().mockResolvedValue([
       {
         id: "schedule-1",
         scheduleTitle: "Renewal meeting",
@@ -319,7 +320,7 @@ function createScheduleRepository(): ScheduleRepository {
         ],
       },
     ]),
-  } as unknown as ScheduleRepository;
+  } as unknown as ScheduleApplicationService;
 }
 
 function createReport(

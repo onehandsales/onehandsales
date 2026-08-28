@@ -13,6 +13,10 @@ import {
   type WeeklyReportDealRecord,
   type WeeklyReportScheduleRecord,
 } from "@/modules/schedule/application/ports/schedule.repository";
+import type {
+  ListScheduleWeeklyReportSchedulesInput,
+  ScheduleWeeklyReportScheduleRecord,
+} from "@/modules/schedule/application/ports/schedule-weekly-report-query.port";
 import {
   DEAL_STATUS_CODES,
   getDealStatusLabel,
@@ -74,7 +78,10 @@ const WEEKDAY_CODES = [
   "SUNDAY",
 ] as const;
 
+// 역할 : WeekdayCode 주간 리포트 day bucket의 요일 코드를 정의합니다.
 type WeekdayCode = (typeof WEEKDAY_CODES)[number];
+
+// 역할 : MutableUpdateScheduleInput 일정 수정 정규화 중 readonly 입력을 조립 가능한 형태로 정의합니다.
 type MutableUpdateScheduleInput = {
   -readonly [Key in keyof UpdateScheduleInput]: UpdateScheduleInput[Key];
 };
@@ -272,6 +279,7 @@ export interface ScheduleResponse {
   readonly updatedAt: string;
 }
 
+// 역할 : ScheduleGoogleCalendarResponse 일정 응답의 Google Calendar 요약을 정의합니다.
 export interface ScheduleGoogleCalendarResponse {
   readonly sourceId: string;
   readonly calendarId: string;
@@ -291,12 +299,14 @@ export interface ScheduleDealResponse {
   readonly dealName: string;
 }
 
+// 역할 : CalendarDate timezone 계산에 사용하는 날짜 전용 값을 정의합니다.
 type CalendarDate = {
   readonly year: number;
   readonly month: number;
   readonly day: number;
 };
 
+// 역할 : DateTimeParts timezone 계산에 사용하는 local date-time 구성요소를 정의합니다.
 type DateTimeParts = CalendarDate & {
   readonly hour: number;
   readonly minute: number;
@@ -304,6 +314,7 @@ type DateTimeParts = CalendarDate & {
   readonly millisecond: number;
 };
 
+// 역할 : WeeklyReportRange 주간 리포트의 local 날짜와 UTC 조회 범위를 정의합니다.
 type WeeklyReportRange = {
   readonly weekStart: CalendarDate;
   readonly weekEnd: CalendarDate;
@@ -388,6 +399,14 @@ export class ScheduleApplicationService {
     return {
       items: schedules.map((schedule) => this.toScheduleResponse(schedule)),
     };
+  }
+
+  // 기능 : 다른 application이 주간 리포트 snapshot에 사용할 일정 projection을 조회합니다.
+  async listSchedulesForWeeklyReportSnapshot(
+    input: ListScheduleWeeklyReportSchedulesInput
+  ): Promise<ScheduleWeeklyReportScheduleRecord[]> {
+    // 1. schedule 모듈 내부 repository를 통해 현재 사용자 소유 일정만 조회한다.
+    return this.scheduleRepository.listSchedulesForWeeklyReport(input);
   }
 
   // 기능 : 현재 사용자의 주간 일정 리포트 데이터를 조회합니다.
@@ -999,6 +1018,7 @@ export class ScheduleApplicationService {
     return normalized;
   }
 
+  // 기능 : 필수 timezone 입력을 IANA timezone ID로 정규화합니다.
   private normalizeRequiredTimeZone(timeZone: string): string {
     const normalized = normalizeOptionalIanaTimeZone(timeZone);
 
@@ -1690,13 +1710,14 @@ export class ScheduleApplicationService {
     };
   }
 
-  // 기능 : 주간 리포트 xlsx 행의 시간 범위를 요청 timezone 기준 HH:mm 문자열로 변환합니다.
+  // 기능 : 일정 출처를 xlsx 표시용 label로 변환합니다.
   private getScheduleSourceLabel(
     schedule: WeeklyScheduleReportScheduleResponse
   ): string {
     return schedule.googleCalendar?.badgeLabel ?? schedule.sourceType;
   }
 
+  // 기능 : 주간 리포트 xlsx 행의 시간 범위를 요청 timezone 기준 HH:mm 문자열로 변환합니다.
   private formatWeeklyReportTimeRange(
     schedule: WeeklyScheduleReportScheduleResponse,
     timeZone: string
@@ -1782,6 +1803,7 @@ export class ScheduleApplicationService {
     };
   }
 
+  // 기능 : Google Calendar projection을 일정 API 응답 형식으로 변환합니다.
   private toGoogleCalendarResponse(
     googleCalendar: ScheduleRecord["googleCalendar"]
   ): ScheduleGoogleCalendarResponse | null {

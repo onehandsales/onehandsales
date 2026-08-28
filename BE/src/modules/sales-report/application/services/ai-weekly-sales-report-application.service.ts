@@ -1,11 +1,10 @@
 import { createHash } from "node:crypto";
 import { Inject, Injectable, Optional } from "@nestjs/common";
-import {
-  SCHEDULE_REPOSITORY,
-  type ScheduleRepository,
-  type WeeklyReportDealRecord,
-  type WeeklyReportScheduleRecord,
-} from "@/modules/schedule/application/ports/schedule.repository";
+import type {
+  ScheduleWeeklyReportDealRecord,
+  ScheduleWeeklyReportScheduleRecord,
+} from "@/modules/schedule/application/ports/schedule-weekly-report-query.port";
+import { ScheduleApplicationService } from "@/modules/schedule/application/services/schedule-application.service";
 import {
   AI_WEEKLY_SALES_REPORT_REPOSITORY,
   type AiJobRecord,
@@ -48,12 +47,14 @@ const SUGGESTION_SECTIONS = [
   readonly type: AiWeeklySalesReportSuggestionTypeValue;
 }[];
 
+// 역할 : CalendarDate AI 주간 영업 리포트의 날짜 전용 값을 정의합니다.
 interface CalendarDate {
   readonly year: number;
   readonly month: number;
   readonly day: number;
 }
 
+// 역할 : DateTimeParts timezone 변환에 사용하는 local date-time 구성요소를 정의합니다.
 interface DateTimeParts extends CalendarDate {
   readonly hour: number;
   readonly minute: number;
@@ -61,6 +62,7 @@ interface DateTimeParts extends CalendarDate {
   readonly millisecond: number;
 }
 
+// 역할 : WeeklyRange AI 주간 영업 리포트의 local 날짜와 UTC 조회 범위를 정의합니다.
 interface WeeklyRange {
   readonly weekStart: CalendarDate;
   readonly weekEnd: CalendarDate;
@@ -68,18 +70,21 @@ interface WeeklyRange {
   readonly rangeEndAt: Date;
 }
 
+// 역할 : RequestAiWeeklySalesReportGenerationCommand AI 주간 영업 리포트 생성 요청 값을 정의합니다.
 export interface RequestAiWeeklySalesReportGenerationCommand {
   readonly weekStart: string;
   readonly timeZone?: string;
   readonly locale?: string;
 }
 
+// 역할 : GetAiWeeklySalesReportWeekQuery AI 주간 영업 리포트 주차 조회 조건을 정의합니다.
 export interface GetAiWeeklySalesReportWeekQuery {
   readonly weekStart: string;
   readonly timeZone?: string;
   readonly includeFailed?: boolean | string;
 }
 
+// 역할 : AiWeeklySalesReportSummaryResponse AI 주간 영업 리포트 요약 응답을 정의합니다.
 export interface AiWeeklySalesReportSummaryResponse {
   readonly id: string;
   readonly weekStart: string;
@@ -93,6 +98,7 @@ export interface AiWeeklySalesReportSummaryResponse {
   readonly failedAt: string | null;
 }
 
+// 역할 : RequestAiWeeklySalesReportGenerationResponse AI 주간 영업 리포트 생성 접수 응답을 정의합니다.
 export interface RequestAiWeeklySalesReportGenerationResponse {
   readonly report: AiWeeklySalesReportSummaryResponse;
   readonly job: {
@@ -101,6 +107,7 @@ export interface RequestAiWeeklySalesReportGenerationResponse {
   };
 }
 
+// 역할 : AiWeeklySalesReportWeekResponse AI 주간 영업 리포트 주차별 버전 목록 응답을 정의합니다.
 export interface AiWeeklySalesReportWeekResponse {
   readonly weekStart: string;
   readonly weekEnd: string;
@@ -112,6 +119,7 @@ export interface AiWeeklySalesReportWeekResponse {
   readonly failedVersions: readonly AiWeeklySalesReportSummaryResponse[];
 }
 
+// 역할 : AiWeeklySalesReportDetailResponse AI 주간 영업 리포트 상세 응답을 정의합니다.
 export interface AiWeeklySalesReportDetailResponse
   extends AiWeeklySalesReportSummaryResponse {
   readonly safeErrorCode: string | null;
@@ -120,6 +128,7 @@ export interface AiWeeklySalesReportDetailResponse
   readonly dataCoverage: Record<string, unknown>;
 }
 
+// 역할 : AiWeeklySalesReportSnapshotSummaryResponse AI 주간 영업 리포트 입력 snapshot 요약 응답을 정의합니다.
 export interface AiWeeklySalesReportSnapshotSummaryResponse {
   readonly reportId: string;
   readonly snapshotSchemaVersion: string;
@@ -133,13 +142,14 @@ export interface AiWeeklySalesReportSnapshotSummaryResponse {
   readonly excluded: readonly string[];
 }
 
+// 역할 : AiWeeklySalesReportApplicationService AI 주간 영업 리포트 생성과 조회 유스케이스를 제공합니다.
 @Injectable()
 export class AiWeeklySalesReportApplicationService {
+  // 기능 : AI 주간 영업 리포트 저장소, schedule application service, logger, job processor를 주입받습니다.
   constructor(
     @Inject(AI_WEEKLY_SALES_REPORT_REPOSITORY)
     private readonly salesReportRepository: AiWeeklySalesReportRepository,
-    @Inject(SCHEDULE_REPOSITORY)
-    private readonly scheduleRepository: ScheduleRepository,
+    private readonly scheduleApplicationService: ScheduleApplicationService,
     private readonly logger: AppLogger,
     @Optional()
     private readonly processJobs?: ProcessAiWeeklySalesReportJobsUseCase
@@ -330,6 +340,7 @@ export class AiWeeklySalesReportApplicationService {
     return this.toSnapshotSummary(report);
   }
 
+  // 기능 : AI Provider 입력에 사용할 주간 영업 snapshot과 metadata를 생성합니다.
   private async buildInputSnapshot(input: {
     readonly userId: string;
     readonly weekStart: CalendarDate;
@@ -347,7 +358,7 @@ export class AiWeeklySalesReportApplicationService {
     readonly dataCoverage: Record<string, unknown>;
   }> {
     const [schedules, deals, meetingNotes] = await Promise.all([
-      this.scheduleRepository.listSchedulesForWeeklyReport({
+      this.scheduleApplicationService.listSchedulesForWeeklyReportSnapshot({
         userId: input.userId,
         rangeStartAt: input.rangeStartAt,
         rangeEndAt: input.rangeEndAt,
@@ -425,8 +436,9 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : schedule application contract의 일정 projection을 AI 입력 snapshot 항목으로 변환합니다.
   private toScheduleSnapshot(
-    schedule: WeeklyReportScheduleRecord
+    schedule: ScheduleWeeklyReportScheduleRecord
   ): Record<string, unknown> {
     return {
       id: schedule.id,
@@ -452,8 +464,9 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : schedule application contract의 연결 딜 projection을 AI 입력 snapshot 항목으로 변환합니다.
   private toScheduleDealSnapshot(
-    deal: WeeklyReportDealRecord
+    deal: ScheduleWeeklyReportDealRecord
   ): Record<string, unknown> {
     return {
       id: deal.id,
