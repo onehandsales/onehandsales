@@ -29,7 +29,7 @@ NEXT Backend와 User Web Productization 문서에 남아 있는 결제/구독/�
 | 항목 | 현재 상태 | Paddle Plan 반영 |
 | --- | --- | --- |
 | Public pricing | public pricing page는 있음 | 실제 가격/플랜/trial/paywall 결정 후 post-beta에 재작성 |
-| Payment/subscription UX | 없음 | `/app/settings/billing`, checkout, portal, subscription status 후보로 보존 |
+| Payment/subscription UX | 없음 | 계정 모달 Settings 안의 Billing 후보, checkout, portal, subscription status 후보로 보존 |
 | Settings/account/data | global settings, account deletion request, data export request는 구현됨 | billing status와 invoice/tax retention이 충돌하지 않도록 policy gate에서 확인 |
 | Admin subscription route | redirect 상태 | Billing Admin 화면 후보 또는 Paddle portal/support 운영 기준으로 판단 |
 | Product analytics | 09/10/11 foundation 완료 | paid conversion/churn/ARPU는 Paddle source event 연결 후 완성 |

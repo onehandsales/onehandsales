@@ -60,7 +60,8 @@ legacy redirect 라우트:
 - `/meeting-notes/new/full` -> `/app/meeting-notes/new/full`
 - `/business-cards` -> `/app/business-cards`
 - `/import`, `/import/:importUserLogId` -> `/app/import...`
-- `/trash`, `/settings`, `/more` -> `/app/...`
+- `/trash`, `/more` -> `/app/...`
+- `/settings` legacy route는 현재 router에 없으며, 설정 진입은 현재 업무 route 위의 `?account=settings` 또는 `/app?account=settings` 계정 모달 흐름을 사용한다.
 
 보호 앱 라우트:
 
@@ -81,7 +82,8 @@ legacy redirect 라우트:
 - `/app/meeting-notes/new/full`
 - `/app/business-cards`
 - `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`는 보호 앱 route다.
-- `/app/trash`, `/app/settings`, `/app/more`
+- `/app/trash`, `/app/more`
+- `/app/settings` 사용자-facing route는 현재 router에 없으며, 계정 설정은 `/app?account=settings` 또는 현재 보호 앱 route 위의 `?account=settings` query로 여는 계정 모달에서 제공한다.
 - `/app/notifications`는 `NotificationsPage`를 통해 활성 제공한다.
 - `/app/export`는 `/app`으로 이동한다. Generic Export는 현재 정본 흐름이 아니므로 숨긴다.
 

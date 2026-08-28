@@ -137,7 +137,7 @@ DB/보안:
 
 - Google Calendar OAuth connect/callback/status/calendar selection/manual sync/disconnect.
 - readonly scope: `openid email calendar.readonly`.
-- OAuth state TTL 10분, `returnTo` allowlist `/app/schedules`, `/app/settings`.
+- OAuth state TTL 10분, `returnTo` allowlist `/app/schedules`, `/app?account=settings`.
 - token은 calendar key 또는 master key로 암호화한다.
 - sync range: 사용자 timezone 기준 오늘 local 00:00에서 과거 1개월, 미래 3개월.
 - `/app/schedules` 진입 시 freshness 10분 이상이면 auto sync 후보, manual sync 제공.
@@ -306,7 +306,7 @@ Operation:
 구현된 기능:
 
 - `/app` route에는 locale prefix를 붙이지 않는다.
-- `/app/settings`에서 Language, Time zone, Country, Default currency를 수정하고 즉시 반영한다.
+- `/app?account=settings` 계정 모달에서 Language, Time zone, Country, Default currency를 수정하고 즉시 반영한다. `/app/settings` 사용자-facing route는 제거된 상태다.
 - 신규 가입 기본값은 browser locale, proxy geo country, browser timezone을 사용하고 없으면 `ko-KR`, `KR`, `Asia/Seoul`, `KRW`로 fallback한다.
 - DB는 UTC, API는 ISO, FE는 `User.preferredLocale + User.timeZone` 기준으로 표시한다.
 - 1차 app locale: `ko-KR`, `en`.
