@@ -4,7 +4,7 @@
 성격: 코드 주석 수정
 우선순위: P2
 완료일: 2026-08-28
-완료 커밋: 미커밋
+완료 커밋: `dca1a22c`
 TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G05_BACKEND_KOREAN_COMMENT_RULE\WORK_LOG.md`
 
 ## 1. 목적
