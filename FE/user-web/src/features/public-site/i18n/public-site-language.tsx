@@ -196,7 +196,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         product: "제품",
         features: "기능",
         pricing: "요금제",
-        contact: "영업 문의하기",
+        contact: "문의하기",
         freeCta: "OneHand 시작",
         login: "로그인",
       },

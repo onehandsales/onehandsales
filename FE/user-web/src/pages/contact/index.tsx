@@ -1,12 +1,11 @@
 import {
-  ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
-  RotateCcw,
 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -33,10 +32,8 @@ type ContactFormValues = {
 };
 
 type ContactFlowCopy = {
-  readonly back: string;
   readonly next: string;
   readonly submit: string;
-  readonly restart: string;
   readonly home: string;
   readonly required: string;
   readonly emailInvalid: string;
@@ -85,7 +82,6 @@ type ContactFlowCopy = {
   readonly done: {
     readonly title: string;
     readonly description: string;
-    readonly summaryTitle: string;
     readonly emailLabel: string;
     readonly sizeLabel: string;
   };
@@ -110,12 +106,31 @@ const emptyContactFormValues: ContactFormValues = {
   marketingAgreement: true,
 };
 
+const contactRegionOptionsByLanguage: Record<
+  PublicSiteCopyLanguage,
+  readonly ContactOption[]
+> = {
+  ko: [
+    { value: "KR", label: "대한민국" },
+    { value: "US", label: "미국" },
+    { value: "CA", label: "캐나다" },
+  ],
+  "en-US": [
+    { value: "KR", label: "South Korea" },
+    { value: "US", label: "United States" },
+    { value: "CA", label: "Canada" },
+  ],
+};
+
+const contactRegionPlaceholderByLanguage: Record<PublicSiteCopyLanguage, string> = {
+  ko: "선택...",
+  "en-US": "Select...",
+};
+
 const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy> = {
   ko: {
-    back: "이전",
     next: "다음",
     submit: "제출하기",
-    restart: "다시 작성하기",
     home: "OneHand로 돌아가기",
     required: "필수 입력 항목이에요.",
     emailInvalid: "업무용 이메일 주소를 정확히 입력해 주세요.",
@@ -183,16 +198,13 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
       title: "문의가 접수됐어요.",
       description:
         "남겨주신 내용을 확인한 뒤 OneHand 팀이 업무용 이메일로 연락드릴게요.",
-      summaryTitle: "접수 내용",
       emailLabel: "이메일",
       sizeLabel: "규모",
     },
   },
   "en-US": {
-    back: "Back",
     next: "Next",
     submit: "Submit",
-    restart: "Start over",
     home: "Back to OneHand",
     required: "This field is required.",
     emailInvalid: "Enter a valid work email address.",
@@ -262,7 +274,6 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
       title: "Your request was received.",
       description:
         "The OneHand team will review your details and contact you by work email.",
-      summaryTitle: "Request summary",
       emailLabel: "Email",
       sizeLabel: "Team size",
     },
@@ -271,14 +282,16 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
 
 // 기능 : 도입 문의를 단계형 Request Demo 흐름으로 렌더링합니다.
 export function ContactPage() {
-  const { language } = usePublicSiteLanguage();
+  const { copy: publicSiteCopy, language } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
-  const copy = contactFlowCopyByLanguage[getPublicSiteCopyLanguage(language)];
+  const copyLanguage = getPublicSiteCopyLanguage(language);
+  const copy = contactFlowCopyByLanguage[copyLanguage];
+  const regionOptions = contactRegionOptionsByLanguage[copyLanguage];
+  const regionPlaceholder = contactRegionPlaceholderByLanguage[copyLanguage];
   const [stepIndex, setStepIndex] = useState(0);
-  const [values, setValues] = useState<ContactFormValues>(() => ({
-    ...emptyContactFormValues,
-    region: copy.profile.placeholders.region,
-  }));
+  const [values, setValues] = useState<ContactFormValues>(
+    emptyContactFormValues
+  );
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const currentStep = contactStepIds[stepIndex] ?? "email";
@@ -294,11 +307,6 @@ export function ContactPage() {
     setErrorMessage("");
   };
 
-  const goBack = () => {
-    setErrorMessage("");
-    setStepIndex((current) => Math.max(0, current - 1));
-  };
-
   const goNext = () => {
     setErrorMessage("");
     setStepIndex((current) => Math.min(contactStepIds.length - 1, current + 1));
@@ -308,7 +316,7 @@ export function ContactPage() {
     event.preventDefault();
 
     if (!values.email.trim()) {
-      setErrorMessage(copy.required);
+      setErrorMessage("");
       return;
     }
 
@@ -328,15 +336,8 @@ export function ContactPage() {
   const handleProfileNext = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (
-      !values.firstName.trim() ||
-      !values.lastName.trim() ||
-      !values.company.trim() ||
-      !values.title.trim() ||
-      !values.region.trim() ||
-      !values.phone.trim()
-    ) {
-      setErrorMessage(copy.required);
+    if (!isProfileComplete(values)) {
+      setErrorMessage("");
       return;
     }
 
@@ -357,6 +358,18 @@ export function ContactPage() {
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-white text-[#050505]">
+      <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
+        <div className="flex h-14 w-full items-center px-4 md:px-5">
+          <Link
+            aria-label={publicSiteCopy.common.logoAria}
+            className="flex h-9 w-9 items-center justify-center text-[#111111]"
+            to={publicSitePath("/")}
+          >
+            <OneHandLogoMark className="h-9 w-9" />
+          </Link>
+        </div>
+      </header>
+
       <section className="mx-auto grid min-h-dvh w-full max-w-[1100px] items-center gap-10 px-4 py-24 sm:px-6 lg:grid-cols-[minmax(0,520px)_minmax(300px,1fr)] lg:px-8">
         <div className="min-w-0 w-full">
           {isSubmitted ? (
@@ -364,15 +377,6 @@ export function ContactPage() {
               copy={copy}
               email={values.email}
               homePath={publicSitePath("/")}
-              onRestart={() => {
-                setValues({
-                  ...emptyContactFormValues,
-                  region: copy.profile.placeholders.region,
-                });
-                setStepIndex(0);
-                setErrorMessage("");
-                setIsSubmitted(false);
-              }}
               sizeLabel={selectedSize?.label ?? values.companySize}
             />
           ) : (
@@ -394,7 +398,6 @@ export function ContactPage() {
               {currentStep === "size" ? (
                 <SizeStep
                   copy={copy}
-                  onBack={goBack}
                   onSelect={handleSizeSelect}
                   selectedValue={values.companySize}
                 />
@@ -404,7 +407,8 @@ export function ContactPage() {
                 <ProfileStep
                   copy={copy}
                   errorMessage={errorMessage}
-                  onBack={goBack}
+                  regionOptions={regionOptions}
+                  regionPlaceholder={regionPlaceholder}
                   onSubmit={handleProfileNext}
                   onUpdate={updateValue}
                   values={values}
@@ -416,7 +420,6 @@ export function ContactPage() {
                   copy={copy}
                   email={values.email}
                   errorMessage={errorMessage}
-                  onBack={goBack}
                   onSubmit={handleSubmit}
                   onUpdate={updateValue}
                   values={values}
@@ -445,9 +448,11 @@ function EmailStep({
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   readonly onUpdate: (value: string) => void;
 }) {
+  const isNextDisabled = !value.includes("@");
+
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[40px] font-normal leading-[1.08] tracking-normal text-[#050505] sm:text-[44px]">
+      <h1 className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]">
         {copy.email.title}
       </h1>
 
@@ -457,7 +462,7 @@ function EmailStep({
         {copy.email.label}
         <input
           autoComplete="email"
-          className="h-10 rounded-[6px] border border-[#dededa] bg-white px-3 text-[15px] font-normal text-[#111111] outline-none transition-colors placeholder:text-[#aaa9a3] focus:border-[#2383e2]"
+          className="h-10 rounded-[6px] border border-[#dededa] bg-transparent px-3 text-[15px] font-normal text-[#111111] outline-none transition-colors placeholder:text-[#aaa9a3] focus:border-[#dededa] [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_white] [&:-webkit-autofill]:[-webkit-text-fill-color:#111111]"
           name="email"
           onChange={(event) => onUpdate(event.target.value)}
           placeholder={copy.email.placeholder}
@@ -466,7 +471,12 @@ function EmailStep({
         />
       </label>
 
-      <PrimaryButton className="mt-14" label={copy.next} type="submit" />
+      <PrimaryButton
+        className="mt-14"
+        disabled={isNextDisabled}
+        label={copy.next}
+        type="submit"
+      />
     </form>
   );
 }
@@ -474,12 +484,10 @@ function EmailStep({
 function SizeStep({
   copy,
   selectedValue,
-  onBack,
   onSelect,
 }: {
   readonly copy: ContactFlowCopy;
   readonly selectedValue: string;
-  readonly onBack: () => void;
   readonly onSelect: (option: ContactOption) => void;
 }) {
   return (
@@ -488,7 +496,7 @@ function SizeStep({
       aria-labelledby="contact-size-title"
     >
       <h1
-        className="break-keep text-[40px] font-normal leading-[1.08] tracking-normal text-[#050505] sm:text-[44px]"
+        className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]"
         id="contact-size-title"
       >
         {copy.size.title}
@@ -498,10 +506,10 @@ function SizeStep({
         {copy.size.options.map((option) => (
           <button
             className={[
-              "h-12 rounded-[6px] border px-4 text-center text-[15px] font-normal transition-colors",
+              "h-12 rounded-[6px] border border-[#dededa] px-4 text-center text-[15px] font-normal transition-colors",
               selectedValue === option.value
-                ? "border-[#2383e2] bg-[#eef6ff] text-[#050505]"
-                : "border-[#dededa] bg-white text-[#111111] hover:border-[#2383e2] hover:bg-[#f2f8ff]",
+                ? "bg-[#F2F2EF] text-[#050505]"
+                : "bg-white text-[#111111] hover:bg-[#F2F2EF]",
             ].join(" ")}
             key={option.value}
             onClick={() => onSelect(option)}
@@ -511,8 +519,6 @@ function SizeStep({
           </button>
         ))}
       </div>
-
-      <StepActions backLabel={copy.back} onBack={onBack} />
     </section>
   );
 }
@@ -520,24 +526,28 @@ function SizeStep({
 function ProfileStep({
   copy,
   errorMessage,
+  regionOptions,
+  regionPlaceholder,
   values,
-  onBack,
   onSubmit,
   onUpdate,
 }: {
   readonly copy: ContactFlowCopy;
   readonly errorMessage: string;
+  readonly regionOptions: readonly ContactOption[];
+  readonly regionPlaceholder: string;
   readonly values: ContactFormValues;
-  readonly onBack: () => void;
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   readonly onUpdate: <TField extends keyof ContactFormValues>(
     field: TField,
     value: ContactFormValues[TField]
   ) => void;
 }) {
+  const isNextDisabled = !isProfileComplete(values);
+
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[36px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[40px]">
+      <h1 className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]">
         {copy.profile.title}
       </h1>
       <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
@@ -579,17 +589,20 @@ function ProfileStep({
           placeholder={copy.profile.placeholders.title}
           value={values.title}
         />
-        <FormField
-          autoComplete="country-name"
+        <RegionSelectField
           label={copy.profile.labels.region}
           onChange={(value) => onUpdate("region", value)}
-          placeholder={copy.profile.placeholders.region}
+          options={regionOptions}
+          placeholder={regionPlaceholder}
           value={values.region}
         />
         <FormField
           autoComplete="tel"
+          inputMode="numeric"
           label={copy.profile.labels.phone}
-          onChange={(value) => onUpdate("phone", value)}
+          onChange={(value) =>
+            onUpdate("phone", formatContactPhoneNumber(value))
+          }
           placeholder={copy.profile.placeholders.phone}
           value={values.phone}
         />
@@ -607,10 +620,11 @@ function ProfileStep({
         <span>{copy.profile.marketingAgreement}</span>
       </label>
 
-      <StepActions
-        backLabel={copy.back}
-        nextLabel={copy.next}
-        onBack={onBack}
+      <PrimaryButton
+        className="mt-10"
+        disabled={isNextDisabled}
+        label={copy.next}
+        type="submit"
       />
     </form>
   );
@@ -621,7 +635,6 @@ function ContextStep({
   email,
   errorMessage,
   values,
-  onBack,
   onSubmit,
   onUpdate,
 }: {
@@ -629,16 +642,17 @@ function ContextStep({
   readonly email: string;
   readonly errorMessage: string;
   readonly values: ContactFormValues;
-  readonly onBack: () => void;
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   readonly onUpdate: <TField extends keyof ContactFormValues>(
     field: TField,
     value: ContactFormValues[TField]
   ) => void;
 }) {
+  const isSubmitDisabled = !values.plan.trim() || !values.source.trim();
+
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[40px] font-normal leading-[1.08] tracking-normal text-[#050505] sm:text-[44px]">
+      <h1 className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]">
         {copy.context.title}
       </h1>
       <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
@@ -669,10 +683,11 @@ function ContextStep({
         value={values.source}
       />
 
-      <StepActions
-        backLabel={copy.back}
-        nextLabel={copy.submit}
-        onBack={onBack}
+      <PrimaryButton
+        className="mt-10"
+        disabled={isSubmitDisabled}
+        label={copy.submit}
+        type="submit"
       />
     </form>
   );
@@ -683,24 +698,22 @@ function ContactDone({
   email,
   homePath,
   sizeLabel,
-  onRestart,
 }: {
   readonly copy: ContactFlowCopy;
   readonly email: string;
   readonly homePath: string;
   readonly sizeLabel: string;
-  readonly onRestart: () => void;
 }) {
   return (
     <section
       className="min-w-0 w-full max-w-[508px]"
       aria-labelledby="contact-done-title"
     >
-      <div className="grid h-11 w-11 place-items-center rounded-full bg-[#2383e2] text-white">
+      <div className="grid h-11 w-11 place-items-center rounded-full bg-[#4880EE] text-white">
         <Check className="h-5 w-5" />
       </div>
       <h1
-        className="mt-8 break-keep text-[40px] font-normal leading-[1.08] tracking-normal text-[#050505] sm:text-[44px]"
+        className="mt-8 break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]"
         id="contact-done-title"
       >
         {copy.done.title}
@@ -710,32 +723,23 @@ function ContactDone({
       </p>
 
       <div className="mt-9 grid gap-3 rounded-[8px] border border-[#dededa] bg-[#FAFAF8] p-4 text-[13px] font-normal text-[#333330]">
-        <p className="text-[14px] text-[#050505]">{copy.done.summaryTitle}</p>
         <p className="min-w-0">
-          <span className="text-[#777770]">{copy.done.emailLabel}</span>{" "}
+          <span className="text-[#777770]">{copy.done.emailLabel} : </span>
           <span className="break-all text-[#333330]">{email}</span>
         </p>
         <p>
-          <span className="text-[#777770]">{copy.done.sizeLabel}</span>{" "}
+          <span className="text-[#777770]">{copy.done.sizeLabel} : </span>
           {sizeLabel}
         </p>
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">
         <Link
-          className="inline-flex h-10 items-center justify-center rounded-[6px] bg-[#2383e2] px-4 text-[14px] font-normal text-white transition-colors hover:bg-[#0f74d4]"
+          className="inline-flex h-10 items-center justify-center rounded-[6px] bg-[#4880EE] px-4 text-[14px] font-normal text-white transition-colors hover:bg-[#336FE0]"
           to={homePath}
         >
           {copy.home}
         </Link>
-        <button
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-[6px] border border-[#dededa] bg-white px-4 text-[14px] font-normal text-[#333330] transition-colors hover:bg-[#f2f2ef] hover:text-[#111111]"
-          onClick={onRestart}
-          type="button"
-        >
-          <RotateCcw className="h-4 w-4" />
-          {copy.restart}
-        </button>
       </div>
     </section>
   );
@@ -743,12 +747,14 @@ function ContactDone({
 
 function FormField({
   autoComplete,
+  inputMode,
   label,
   placeholder,
   value,
   onChange,
 }: {
   readonly autoComplete: string;
+  readonly inputMode?: "numeric";
   readonly label: string;
   readonly placeholder: string;
   readonly value: string;
@@ -759,12 +765,98 @@ function FormField({
       {label}
       <input
         autoComplete={autoComplete}
-        className="h-10 rounded-[6px] border border-[#dededa] bg-white px-3 text-[14px] font-normal text-[#111111] outline-none transition-colors placeholder:text-[#aaa9a3] focus:border-[#2383e2]"
+        className="h-10 rounded-[6px] border border-[#dededa] bg-transparent px-3 text-[15px] font-normal text-[#111111] outline-none transition-colors placeholder:text-[#aaa9a3] focus:border-[#dededa] [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_white] [&:-webkit-autofill]:[-webkit-text-fill-color:#111111]"
+        inputMode={inputMode}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         value={value}
       />
     </label>
+  );
+}
+
+function RegionSelectField({
+  label,
+  options,
+  placeholder,
+  value,
+  onChange,
+}: {
+  readonly label: string;
+  readonly options: readonly ContactOption[];
+  readonly placeholder: string;
+  readonly value: string;
+  readonly onChange: (value: string) => void;
+}) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const selectedOption = options.find((option) => option.value === value);
+
+  useEffect(() => {
+    const closeRegionMenu = () => {
+      detailsRef.current?.removeAttribute("open");
+    };
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (target instanceof Node && !detailsRef.current?.contains(target)) {
+        closeRegionMenu();
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeRegionMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className="grid gap-2 text-[13px] font-normal text-[#111111]">
+      <span>{label}</span>
+      <details className="group relative" ref={detailsRef}>
+        <summary
+          className="flex h-10 cursor-pointer list-none items-center rounded-[6px] border border-[#dededa] bg-transparent px-3 text-[15px] font-normal outline-none transition-colors focus:border-[#dededa] [&::-webkit-details-marker]:hidden"
+          aria-label={label}
+        >
+          <span
+            className={selectedOption ? "text-[#111111]" : "text-[#aaa9a3]"}
+          >
+            {selectedOption?.label ?? placeholder}
+          </span>
+          <ChevronDown className="ml-auto h-4 w-4 text-[#777770] transition-transform group-open:rotate-180" />
+        </summary>
+
+        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 grid gap-1 rounded-[8px] bg-white p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
+          {options.map((option) => (
+            <button
+              className={[
+                "min-h-9 rounded-[6px] px-3 py-1.5 text-left text-[13px] font-normal transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]",
+                option.value === value
+                  ? "bg-[#F2F2EF] text-[#111111]"
+                  : "text-[#333330]",
+              ].join(" ")}
+              key={option.value}
+              onClick={() => {
+                onChange(option.value);
+                detailsRef.current?.removeAttribute("open");
+              }}
+              type="button"
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </details>
+    </div>
   );
 }
 
@@ -803,45 +895,27 @@ function SelectField({
   );
 }
 
-function StepActions({
-  backLabel,
-  nextLabel,
-  onBack,
-}: {
-  readonly backLabel: string;
-  readonly nextLabel?: string;
-  readonly onBack: () => void;
-}) {
-  return (
-    <div className="mt-10 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
-      <button
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-[6px] border border-[#dededa] bg-white px-4 text-[14px] font-normal text-[#333330] transition-colors hover:bg-[#f2f2ef] hover:text-[#111111]"
-        onClick={onBack}
-        type="button"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {backLabel}
-      </button>
-      {nextLabel ? <PrimaryButton label={nextLabel} type="submit" /> : null}
-    </div>
-  );
-}
-
 function PrimaryButton({
   className = "",
+  disabled = false,
   label,
   type,
 }: {
   readonly className?: string;
+  readonly disabled?: boolean;
   readonly label: string;
   readonly type: "button" | "submit";
 }) {
   return (
     <button
       className={[
-        "inline-flex h-12 w-full items-center justify-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white transition-colors hover:bg-[#3f72d8]",
+        "inline-flex h-12 w-full items-center justify-center gap-2 rounded-[6px] px-5 text-[15px] font-normal text-white transition-colors",
+        disabled
+          ? "cursor-not-allowed bg-[#4880EE] opacity-45 hover:bg-[#4880EE]"
+          : "bg-[#4880EE] hover:bg-[#336FE0]",
         className,
       ].join(" ")}
+      disabled={disabled}
       type={type}
     >
       {label}
@@ -999,4 +1073,29 @@ function ContactIllustration({
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function formatContactPhoneNumber(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+
+  if (digits.length <= 3) {
+    return digits;
+  }
+
+  if (digits.length <= 7) {
+    return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  }
+
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+}
+
+function isProfileComplete(values: ContactFormValues) {
+  return Boolean(
+    values.firstName.trim() &&
+      values.lastName.trim() &&
+      values.company.trim() &&
+      values.title.trim() &&
+      values.region.trim() &&
+      values.phone.trim()
+  );
 }
