@@ -18,6 +18,7 @@
 | G6. Comment rule | Backend 코드 수정 시 한글 역할/기능/API/단계 주석을 반영할 위치를 확인했다. |
 | G7. Validation plan | 실행할 typecheck, lint, test, static check를 Goal 문서 기준으로 확정했다. |
 | G8. No unrelated edit | 현재 Goal과 무관한 파일을 수정하지 않는다. |
+| G9. Progress docs update | Goal 완료 후 개별 Goal, 상위 README, 작업 순서표, 리스크 요약, TODO_LOG 상태를 함께 갱신한다. |
 
 ## 3. TODO_LOG 작성 형식
 
@@ -39,6 +40,7 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - 자체 검토 결과
 - 남은 리스크
 - 추가 TODO 필요 여부
+- 관련 진행 문서 갱신 여부
 
 ## 4. 금지
 
@@ -47,4 +49,3 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - 사용자 변경을 되돌리지 않는다.
 - 실패한 검증을 기록 없이 넘기지 않는다.
 - 사용자가 요청하지 않으면 커밋하지 않는다.
-

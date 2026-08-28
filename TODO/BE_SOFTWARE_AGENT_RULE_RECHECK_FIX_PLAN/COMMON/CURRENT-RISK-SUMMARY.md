@@ -1,17 +1,19 @@
 # Current Risk Summary
 
-상태: Rechecked on 2026-08-28
+상태: In Progress / G01 resolved on 2026-08-28
 
 ## 1. 결론
 
 기존 BE 검증에서 typecheck, lint, prisma validate, test는 통과했지만 Backend Agent 규칙 기준으로 아래 수정 또는 감사 항목이 남아 있다.
 
+G01은 2026-08-28 완료되었고, `admin-operation/presentation`의 `@prisma/client` import는 0건으로 확인되었다.
+
 ## 2. P1
 
-| 항목 | 리스크 | Goal |
-| --- | --- | --- |
-| admin-operation presentation Prisma enum | presentation DTO/mapper가 `@prisma/client` enum에 직접 의존한다. | G01 |
-| sales-report schedule repository import | sales-report application service가 schedule repository port를 직접 import/inject한다. | G02 |
+| 항목 | 리스크 | Goal | 상태 |
+| --- | --- | --- | --- |
+| admin-operation presentation Prisma enum | presentation DTO/mapper가 `@prisma/client` enum에 직접 의존했다. | G01 | 해결 완료 |
+| sales-report schedule repository import | sales-report application service가 schedule repository port를 직접 import/inject한다. | G02 | 미해결 |
 
 ## 3. P2
 
@@ -52,7 +54,7 @@ pnpm.cmd test -- --runInBand
 
 - Domain forbidden dependency matches: 0
 - Application direct Prisma/provider matches: 0
-- Presentation Prisma/transaction matches: 3
+- Presentation Prisma/transaction matches: 0
 - Controller repo/prisma/transaction mentions: 0
 - Admin controller guard misses: 0
 - Missing API comments: 0
@@ -60,14 +62,17 @@ pnpm.cmd test -- --runInBand
 - production `any` keyword matches: 0
 - Cross-module repository/import persistence violations: 1
 
-## 6. 다시 확인해야 하는 현재 위치
+## 6. 다음 Goal에서 다시 확인해야 하는 현재 위치
 
-- `BE\src\modules\admin-operation\presentation\http\admin-audit-response.mapper.ts`
-- `BE\src\modules\admin-operation\presentation\http\dto\admin-audit-request.dto.ts`
-- `BE\src\modules\admin-operation\presentation\http\dto\admin-user-request.dto.ts`
 - `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`
 - `BE\src\modules\schedule\infrastructure\schedule.module.ts`
 - `BE\src\modules\schedule\presentation\http\dto\schedule-request.dto.ts`
 - `BE\src\modules\schedule\application\ports\schedule.repository.ts`
 - `FE\user-web\src\features\ai-weekly-report\types\ai-weekly-report.ts`
 
+## 7. 해결 완료 위치
+
+- G01: `BE\src\modules\admin-operation\presentation\http\admin-audit-response.mapper.ts`
+- G01: `BE\src\modules\admin-operation\presentation\http\dto\admin-audit-request.dto.ts`
+- G01: `BE\src\modules\admin-operation\presentation\http\dto\admin-user-request.dto.ts`
+- 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G01_ADMIN_OPERATION_PRESENTATION_PRISMA_ENUM\WORK_LOG.md`

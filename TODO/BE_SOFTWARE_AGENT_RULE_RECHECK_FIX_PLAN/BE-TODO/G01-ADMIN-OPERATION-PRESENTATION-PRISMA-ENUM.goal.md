@@ -1,8 +1,11 @@
 # G01 admin-operation presentation Prisma enum 의존 제거
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 코드 수정
 우선순위: P1
+완료일: 2026-08-28
+완료 커밋: `2f5647a2`
+TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G01_ADMIN_OPERATION_PRESENTATION_PRISMA_ENUM\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -44,7 +47,9 @@ cd D:\workspace_repository\onehandsales
 rg --files BE\src\modules\admin-operation | rg "\.spec\.ts$"
 ```
 
-## 6. 현재 확인된 문제 위치
+## 6. 작업 전 확인된 문제 위치
+
+2026-08-28 G01 완료 후 아래 위치의 `@prisma/client` 직접 import는 제거되었다.
 
 - `BE\src\modules\admin-operation\presentation\http\admin-audit-response.mapper.ts`
   - 1-6행 근처에서 `@prisma/client` enum import
@@ -89,4 +94,3 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - typecheck, lint, 관련 테스트가 통과한다.
 - API 응답 값이 기존과 호환된다.
 - 수정한 코드에 한글 주석 규칙이 반영되어 있다.
-

@@ -24,6 +24,7 @@ G01부터 G08까지 실행된 모든 수정이 Backend Agent 규칙과 각 Goal 
 - 한글 주석 규칙 재점검
 - 테스트/정적 검증 전체 실행
 - TODO_LOG 완료 상태 확인
+- 개별 Goal, 상위 README, 작업 순서표, 리스크 요약의 완료 상태 확인
 - 최종 검토 결과 문서화
 
 ## 4. 제외 범위
@@ -82,6 +83,7 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - 수정 파일 목록
 - 검증 명령과 결과
 - Backend Agent 규칙별 준수 여부
+- 진행 문서 상태 반영 여부
 - 남은 리스크
 - 추가 TODO 필요 여부
 - 커밋 여부

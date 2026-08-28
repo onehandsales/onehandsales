@@ -73,3 +73,4 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - presentation의 repository port import 감사 결과가 기록되어 있다.
 - 직접 repository token/interface 사용이 presentation에 남아 있지 않다.
 - 검증 명령과 결과가 각 `TODO_LOG`에 기록되어 있다.
+- 완료된 Goal 상태가 개별 Goal 문서, 상위 README, 작업 순서표, 리스크 요약에 반영되어 있다.

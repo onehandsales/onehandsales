@@ -16,10 +16,15 @@ D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLA
 D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\README.md
 ```
 
-첫 `/goal` 실행:
+진행 상태:
+
+- G01 완료: `2f5647a2 fix(admin-operation): remove prisma enum imports from presentation`
+- 다음 실행 대상: G02
+
+다음 `/goal` 실행:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G01-ADMIN-OPERATION-PRESENTATION-PRISMA-ENUM.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G02-SALES-REPORT-SCHEDULE-REPOSITORY-BOUNDARY.goal.md 실행해줘.
 ```
 
 주의:
