@@ -3,7 +3,7 @@
 상태: Completed
 작업일: 2026-08-28
 대상 Goal: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G04-AI-WEEKLY-REPORT-SUMMARY-PREVIEW-CONTRACT.goal.md`
-완료 커밋: 미커밋
+완료 커밋: `21841c62`
 
 ## 1. 수행 범위
 

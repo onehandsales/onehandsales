@@ -21,7 +21,7 @@ D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLA
 - G01 완료: `2f5647a2 fix(admin-operation): remove prisma enum imports from presentation`
 - G02 완료: `1e86c06c refactor(sales-report): remove schedule repository dependency`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G02_SALES_REPORT_SCHEDULE_REPOSITORY_BOUNDARY\WORK_LOG.md`
 - G03 완료: `c915111f fix(sales-report): log weekly report view events`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G03_AI_WEEKLY_REPORT_OBSERVABILITY\WORK_LOG.md`
-- G04 완료: 미커밋, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G04_AI_WEEKLY_REPORT_SUMMARY_PREVIEW_CONTRACT\WORK_LOG.md`
+- G04 완료: `21841c62 fix(sales-report): align weekly report summary contract`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G04_AI_WEEKLY_REPORT_SUMMARY_PREVIEW_CONTRACT\WORK_LOG.md`
 - 다음 실행 대상: G05
 
 다음 `/goal` 실행:
