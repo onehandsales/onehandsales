@@ -1,8 +1,11 @@
 # G03 AI Weekly Report 조회 관측성 계약 보강
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 코드/테스트 수정
 우선순위: P2
+완료일: 2026-08-28
+완료 커밋: `c915111f`
+TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G03_AI_WEEKLY_REPORT_OBSERVABILITY\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -44,7 +47,7 @@ cd D:\workspace_repository\onehandsales
 rg --files BE\src\modules\sales-report | rg "\.spec\.ts$"
 ```
 
-## 6. 현재 확인된 문제
+## 6. 작업 전 확인된 문제
 
 API-SPEC에는 아래 이벤트가 명시되어 있다.
 
@@ -53,7 +56,9 @@ API-SPEC에는 아래 이벤트가 명시되어 있다.
 - `ai.weeklyReport.detailViewed`
 - `ai.weeklyReport.snapshotSummaryViewed`
 
-실제 코드는 `generationRequested`만 확인되었다. `getWeek`, `getDetail`, `getSnapshotSummary`에서 조회 이벤트 로깅이 누락되어 있다.
+실제 코드는 `generationRequested`만 확인되었다. `getWeek`, `getDetail`, `getSnapshotSummary`에서 조회 이벤트 로깅이 누락되어 있었다.
+
+2026-08-28 G03 완료 후 `getWeek`, `getDetail`, `getSnapshotSummary`는 각각 API-SPEC과 동일한 조회 이벤트를 기록한다.
 
 ## 7. 구현 지시
 
@@ -89,4 +94,3 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - 로그 payload에 개인정보/원문 AI 결과/대량 snapshot이 포함되지 않는다.
 - typecheck, lint, 관련 테스트가 통과한다.
 - 수정한 코드에 한글 주석 규칙이 반영되어 있다.
-

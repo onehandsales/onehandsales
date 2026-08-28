@@ -1,6 +1,6 @@
 # G03 AI Weekly Report 조회 관측성 계약 보강 작업 로그
 
-상태: Completed / Uncommitted
+상태: Completed
 작업일: 2026-08-28
 대상 Goal: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G03-AI-WEEKLY-REPORT-OBSERVABILITY.goal.md`
 
@@ -74,6 +74,7 @@ git diff --check
 - `rg -n "console\." src\modules\sales-report`: 출력 없음, 0건
 - `rg --files BE\src\modules\sales-report | rg "spec\.ts"`: sales-report 관련 spec 4개 확인
 - `git diff --check`: 통과
+- 구현/로그 커밋: `c915111f fix(sales-report): log weekly report view events`
 
 ## 7. 자체 검토 결과
 
@@ -82,7 +83,7 @@ git diff --check
 - `getSnapshotSummary`는 snapshot 요약 응답을 만든 뒤 `snapshotSummaryViewed`를 기록합니다.
 - 조회 로그에는 section 원문, AI provider 원문 응답, snapshot 전체 payload, meeting note 본문을 포함하지 않습니다.
 - 테스트는 generation/week/detail/snapshotSummary 이벤트 payload와 원문 미포함을 검증합니다.
-- 기존 또는 동시 FE 미커밋 변경 `FE\user-web\src\pages\contact\index.tsx`, `FE\user-web\public\public-site\`는 G03 범위가 아니므로 수정하지 않았습니다.
+- G03 커밋 대상은 sales-report 코드와 관련 TODO/TODO_LOG 문서로 제한했습니다.
 
 ## 8. 잔여 리스크
 

@@ -1,6 +1,6 @@
 # BE Software Agent Rule Recheck Fix Plan
 
-상태: In Progress / G01-G02 Completed
+상태: In Progress / G01-G03 Completed
 작성일: 2026-08-28
 대상: `D:\workspace_repository\onehandsales\BE`
 기준 규칙: `D:\workspace_repository\onehandsales\AGENT\SOFTWARE_AGENT\BACKEND_AGENT`
@@ -17,8 +17,8 @@
 | --- | --- | --- |
 | G01 | Completed | `2f5647a2`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G01_ADMIN_OPERATION_PRESENTATION_PRISMA_ENUM\WORK_LOG.md` |
 | G02 | Completed | `1e86c06c`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G02_SALES_REPORT_SCHEDULE_REPOSITORY_BOUNDARY\WORK_LOG.md` |
-| G03 | Next | `BE-TODO\G03-AI-WEEKLY-REPORT-OBSERVABILITY.goal.md` |
-| G04 | Ready | `BE-TODO\G04-AI-WEEKLY-REPORT-SUMMARY-PREVIEW-CONTRACT.goal.md` |
+| G03 | Completed | `c915111f`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G03_AI_WEEKLY_REPORT_OBSERVABILITY\WORK_LOG.md` |
+| G04 | Next | `BE-TODO\G04-AI-WEEKLY-REPORT-SUMMARY-PREVIEW-CONTRACT.goal.md` |
 | G05 | Ready | `BE-TODO\G05-BACKEND-KOREAN-COMMENT-RULE.goal.md` |
 | G06 | Ready | `BE-TODO\G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md` |
 | G07 | Ready | `COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md` |
@@ -51,10 +51,9 @@
 
 정본 실행 순서는 `COMMON/GOAL-WORK-ORDER.md`를 따른다. 한 번의 `/goal`에서는 반드시 하나의 goal 파일만 실행한다.
 
-G01과 G02는 완료되었으므로 다음 실행은 G03부터 시작한다.
+G01, G02, G03은 완료되었으므로 다음 실행은 G04부터 시작한다.
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G03-AI-WEEKLY-REPORT-OBSERVABILITY.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G04-AI-WEEKLY-REPORT-SUMMARY-PREVIEW-CONTRACT.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G05-BACKEND-KOREAN-COMMENT-RULE.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md 실행해줘.
