@@ -20,8 +20,10 @@ MVP 운영 복잡도를 낮추고, 별도 staging 환경을 유지하기 전까�
 - production은 실제 사용자와 실제 데이터를 다루는 유일한 live 환경이다.
 - 실제 Provider 체크는 명시적인 smoke job 또는 수동 production-safe 체크로만 수행한다.
 - production secret은 local `.env`에 넣지 않는다.
+- local Backend bootstrap은 `ConfigModule` 생성 전 `BE/.env`, `BE/.env.local`을 process 환경에 반영할 수 있지만, 이 예외는 local env file loading에만 사용하고 application runtime 설정 접근은 `ConfigService`로 처리한다.
 
 ## 4. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/DEPLOYMENT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`

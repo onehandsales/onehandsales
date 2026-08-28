@@ -23,6 +23,8 @@ Local Backend API 기본 origin:
 
 - `http://localhost:3000`
 
+Local Backend는 `AppModule`과 `ConfigModule` 생성 전 bootstrap 단계에서 `BE/.env`를 먼저 읽고, `BE/.env.local`을 로컬 override로 읽을 수 있다. 이때 OS나 hosting이 먼저 주입한 환경 변수 값은 보존한다. direct `process.env` 접근은 이 bootstrap env loader 예외에만 허용하고, 이후 runtime 설정 접근은 `ConfigService`를 사용한다.
+
 ## 3. Production
 
 `production`은 실제 사용자와 실제 데이터를 다루는 유일한 live 환경이다.

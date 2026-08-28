@@ -1,8 +1,10 @@
 # G06 bootstrap process.env 정책 충돌 정리
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 문서/소폭 코드 수정
 우선순위: P3
+완료일: 2026-08-28
+완료 커밋: 커밋 예정
 
 ## 1. 목적
 
@@ -85,3 +87,15 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - bootstrap 이후 계층에서 직접 `process.env` 사용이 추가되지 않았다.
 - typecheck, lint, 테스트가 통과한다.
 
+## 11. 완료 결과
+
+- `ConfigService` 생성 전 local env file loading은 `BE/src/main.ts` bootstrap env loader의 제한 예외로 문서화했다.
+- `main.ts`와 `app.module.ts`에는 bootstrap env loading 순서와 `ConfigService` 사용 경계를 한글 주석으로 보강했다.
+- `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, Backend convention, deployment architecture, deployment decision 문서에 동일한 예외 범위를 반영했다.
+- `rg -n "process\.env" src` 결과 direct `process.env`는 `src\main.ts` bootstrap loader에만 남아 있음을 확인했다.
+- 검증 결과:
+  - `pnpm.cmd run typecheck`: 통과
+  - `pnpm.cmd run lint`: 통과
+  - `pnpm.cmd test -- --runInBand`: 통과, 103 suites / 548 tests
+  - `git diff --check`: 통과
+- TODO_LOG: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G06_BOOTSTRAP_PROCESS_ENV_POLICY\WORK_LOG.md`

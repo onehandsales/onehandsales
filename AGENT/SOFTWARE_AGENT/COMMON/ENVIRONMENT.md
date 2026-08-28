@@ -19,6 +19,17 @@
 
 운영/문서 기준 source of truth는 여전히 각 앱의 `.env`와 이 문서다. `.env.local`에만 존재하는 변수는 공유 환경 계약으로 보지 않는다.
 
+### Backend bootstrap `process.env` 예외
+
+Backend에서 direct `process.env` 접근은 `BE/src/main.ts`의 bootstrap env loader에만 허용한다.
+
+- 허용 시점: `AppModule`, `ConfigModule`, `ConfigService` 생성 이전
+- 허용 목적: `BE/.env`와 `BE/.env.local`을 local 실행용 process 환경에 반영
+- 보존 규칙: OS나 hosting이 먼저 주입한 값은 `.env` 또는 `.env.local`로 덮지 않음
+- 금지 범위: bootstrap 이후 controller, service, module, provider, repository 계층의 direct `process.env`
+
+bootstrap 이후 runtime 설정은 `ConfigService` 또는 해당 계층의 typed helper를 통해 읽는다.
+
 ## Backend
 
 필수:

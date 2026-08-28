@@ -193,6 +193,8 @@ All environment variable names and purposes must be listed in `AGENT/SOFTWARE_AG
 
 Access through ConfigService, not direct `process.env`.
 
+예외: `BE/src/main.ts`의 bootstrap env loader는 `AppModule`, `ConfigModule`, `ConfigService`가 생성되기 전까지만 `process.env`를 읽고 쓸 수 있다. 이 예외는 `BE/.env`, `BE/.env.local` 로딩과 OS/hosting이 먼저 주입한 값 보존에만 사용한다. bootstrap 이후 controller, service, module, provider, repository, helper는 direct `process.env` 대신 `ConfigService` 또는 typed config helper를 사용한다.
+
 Backend examples:
 
 ```text
@@ -289,7 +291,7 @@ Forbidden:
 - Application service using Prisma directly
 - Controller business logic
 - module-to-module repository import
-- direct `process.env`
+- direct `process.env` outside the `BE/src/main.ts` bootstrap env loader exception
 - `console.log`
 - PII plain logging
 - editing applied migrations

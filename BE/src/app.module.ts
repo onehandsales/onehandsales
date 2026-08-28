@@ -32,6 +32,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // bootstrap 예외 로더와 같은 local env 파일 우선순위를 ConfigModule에도 적용한다.
       envFilePath: [".env.local", ".env"],
     }),
     AnalyticsModule,
