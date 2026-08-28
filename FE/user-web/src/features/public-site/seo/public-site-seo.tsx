@@ -541,8 +541,8 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   },
   "/terms": {
     title: {
-      ko: "이용약관 | 한손에 영업",
-      en: "Terms | OneHand Sales",
+      ko: "서비스 이용약관 | 한손에 영업",
+      en: "Terms of Service | OneHand Sales",
     },
     description: {
       ko: "한손에 영업 서비스 이용 조건과 사용자 책임을 확인하세요.",

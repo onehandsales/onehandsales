@@ -223,7 +223,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "OneHand 1.0 둘러보기",
       productApp: "앱으로 이동",
       footerColumns: [
-        ["회사 소개", "OneHand 소개", "보안", "이용약관", "개인정보 처리방침"],
+        ["회사 소개", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
         ["다운로드", "iOS & Android"],
         ["리소스", "요금제", "자주 묻는 질문"],
         ["용도별", "엔터프라이즈", "스몰비즈니스", "개인"],
@@ -709,7 +709,7 @@ function makeEnglishCopy(copy: {
     productTour: "Explore OneHand 1.0",
     productApp: "Go to app",
     footerColumns: [
-      ["Company", "About us", "Security", "Terms and Conditions", "Your Privacy Policy"],
+      ["Company", "About us", "Security", "Terms of Service", "Your Privacy Policy"],
       ["Download", "iOS & Android"],
       ["Resources", "Pricing", "FAQ"],
       ["OneHand for", "Enterprise", "Small business", "Personal"],

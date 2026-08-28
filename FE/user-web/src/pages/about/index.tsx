@@ -16,6 +16,7 @@ import {
   PublicDocumentHero,
   PublicInfoCard,
   PublicPageSection,
+  PublicRelatedPolicyLinks,
   PublicSitePageShell,
 } from "@/features/public-site";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
@@ -32,7 +33,6 @@ type StoryBlockCopy = {
 };
 
 type AboutCopy = {
-  readonly eyebrow: string;
   readonly title: string;
   readonly intro: readonly string[];
   readonly chapterLabel: string;
@@ -60,7 +60,6 @@ const storyVisuals: readonly {
 
 const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
   ko: {
-    eyebrow: "OneHand 소개",
     title: "고객 업무의 맥락을 더 쉽게 붙잡는 이야기.",
     intro: [
       "통화를 끝낸 뒤 다음 액션은 다른 도구에 적고, 계정 정보는 또 다른 곳에 업데이트하고, 일주일 뒤 약속 내용을 다시 찾느라 시간을 쓴 적이 있다면 OneHand가 왜 필요한지 이미 알고 있습니다.",
@@ -119,7 +118,6 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
     ],
     sceneLabels: ["고객", "맥락", "어시스턴트"],
   },  "en-US": {
-    eyebrow: "About OneHand",
     title: "A story of customer work becoming easier to hold.",
     intro: [
       "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why OneHand exists.",
@@ -192,7 +190,9 @@ export function AboutPage() {
     <PublicSitePageShell>
       <PublicPageSection>
         <PublicContentContainer>
-          <PublicDocumentHero eyebrow={copy.eyebrow} title={copy.title} />
+          <PublicDocumentHero title={copy.title} />
+
+          <PublicRelatedPolicyLinks className="mt-10" currentPath="/about" />
 
           <div className="mt-14 grid gap-10 md:grid-cols-[1fr_0.88fr] md:items-center">
             <LineScene labels={copy.sceneLabels} />

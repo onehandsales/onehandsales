@@ -22,7 +22,6 @@ type PublicDocumentHeroProps = {
   readonly description?: ReactNode;
   readonly descriptionClassName?: string;
   readonly eyebrow?: ReactNode;
-  readonly lastUpdated?: ReactNode;
   readonly title: ReactNode;
   readonly titleClassName?: string;
 };
@@ -123,7 +122,6 @@ export function PublicDocumentHero({
   description,
   descriptionClassName,
   eyebrow,
-  lastUpdated,
   title,
   titleClassName,
 }: PublicDocumentHeroProps) {
@@ -153,11 +151,6 @@ export function PublicDocumentHero({
         >
           {typeof description === "string" ? <p>{description}</p> : description}
         </div>
-      ) : null}
-      {lastUpdated ? (
-        <p className="mt-4 text-[12px] font-normal text-[#888880]">
-          {lastUpdated}
-        </p>
       ) : null}
       {children}
     </div>

@@ -14,6 +14,7 @@ import {
   PublicDocumentHero,
   PublicInfoCard,
   PublicPageSection,
+  PublicRelatedPolicyLinks,
   PublicSitePageShell,
 } from "@/features/public-site";
 import {
@@ -35,9 +36,7 @@ type SecuritySectionCopy = {
 };
 
 type SecurityCopy = {
-  readonly eyebrow: string;
   readonly title: string;
-  readonly description: string;
   readonly trustItems: readonly string[];
   readonly sections: readonly SecuritySectionCopy[];
 };
@@ -54,10 +53,7 @@ const trustIcons: readonly LucideIcon[] = [Database, Globe2, CheckCircle2];
 
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
-    eyebrow: "OneHand 보안",
     title: "고객 업무를 위한 보안과 개인정보 보호.",
-    description:
-      "OneHand는 고객 기록, 세일즈 활동, AI 지원을 하나의 워크스페이스에서 관리하도록 돕습니다. 보안과 개인정보 보호는 그 맥락을 지키는 방식으로 설계됩니다.",
     trustItems: [
       "서비스 제공을 위한 데이터 처리",
       "적용 가능한 개인정보 권리 지원",
@@ -182,10 +178,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
     ],
   },
   "en-US": {
-    eyebrow: "OneHand security",
     title: "Security & privacy for customer work.",
-    description:
-      "OneHand helps teams manage customer records, sales activity, and AI assistance in one workspace. Our security and privacy work is built around protecting that context.",
     trustItems: [
       "Data handled for service delivery",
       "Privacy rights supported where applicable",
@@ -322,11 +315,10 @@ export function SecurityPage() {
         <PublicContentContainer>
           <PublicDocumentHero
             align="center"
-            description={copy.description}
-            descriptionClassName="max-w-[680px]"
-            eyebrow={copy.eyebrow}
             title={copy.title}
           />
+
+          <PublicRelatedPolicyLinks className="mt-10" currentPath="/security" />
 
           <div className="mx-auto mt-10 grid max-w-[860px] gap-3 md:grid-cols-3">
             {copy.trustItems.map((label, index) => {

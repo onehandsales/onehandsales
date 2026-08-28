@@ -1,19 +1,11 @@
-import {
-  CheckCircle2,
-  LockKeyhole,
-  Scale,
-  ShieldCheck,
-  Sparkles,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import {
   PublicContentContainer,
   PublicCtaPanel,
   PublicDocumentHero,
   PublicDocumentSection,
-  PublicInfoCard,
   PublicPageSection,
+  PublicRelatedPolicyLinks,
   PublicSitePageShell,
   PublicTableOfContents,
 } from "@/features/public-site";
@@ -23,13 +15,6 @@ import {
   type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
-type PolicyLink = {
-  readonly title: string;
-  readonly description: string;
-  readonly to: string;
-  readonly icon: LucideIcon;
-};
-
 type TermsSection = {
   readonly id: string;
   readonly title: string;
@@ -37,97 +22,22 @@ type TermsSection = {
 };
 
 type TermsCopy = {
-  readonly eyebrow: string;
   readonly title: string;
-  readonly description: string;
-  readonly lastUpdated: string;
   readonly contentsLabel: string;
-  readonly openLabel: string;
-  readonly shortTitle: string;
-  readonly shortDescription: string;
   readonly reviewTitle: string;
   readonly reviewDescription: string;
   readonly reviewCta: string;
-  readonly policyLinks: readonly PolicyLink[];
   readonly sections: readonly TermsSection[];
 };
 
-const policyIcons: readonly LucideIcon[] = [
-  Scale,
-  LockKeyhole,
-  ShieldCheck,
-  Users,
-];
-
-// 기능 : 약관 본문에서 참조하는 정책 링크 목록을 생성합니다.
-function makePolicyLinks(copy: {
-  readonly terms: string;
-  readonly termsDescription: string;
-  readonly privacy: string;
-  readonly privacyDescription: string;
-  readonly security: string;
-  readonly securityDescription: string;
-  readonly contact: string;
-  readonly contactDescription: string;
-}): readonly PolicyLink[] {
-  return [
-    {
-      title: copy.terms,
-      description: copy.termsDescription,
-      to: "/terms",
-      icon: policyIcons[0]!,
-    },
-    {
-      title: copy.privacy,
-      description: copy.privacyDescription,
-      to: "/privacy",
-      icon: policyIcons[1]!,
-    },
-    {
-      title: copy.security,
-      description: copy.securityDescription,
-      to: "/security",
-      icon: policyIcons[2]!,
-    },
-    {
-      title: copy.contact,
-      description: copy.contactDescription,
-      to: "/contact",
-      icon: policyIcons[3]!,
-    },
-  ];
-}
-
 const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   ko: {
-    eyebrow: "OneHand 정책 센터",
-    title: "이용약관과 개인정보.",
-    description:
-      "이 페이지는 OneHand 사용에 필요한 핵심 약관, 개인정보, 보안 정보를 함께 제공합니다. 제품 공개용 정책 초안이며 최종 법무 요구사항에 맞게 검토되어야 합니다.",
-    lastUpdated: "최종 업데이트: 2026년 7월 8일",
+    title: "서비스 이용약관",
     contentsLabel: "목차",
-    openLabel: "열기",
-    shortTitle: "짧게 말하면",
-    shortDescription:
-      "OneHand를 책임 있게 사용하고, 고객 데이터를 보호하며, AI 결과를 검토한 뒤 사용하고, 계정·개인정보·보안 질문이 있으면 문의해 주세요.",
     reviewTitle: "정식 검토 자료가 필요하신가요?",
     reviewDescription:
       "영업, 개인정보, 보안 검토와 관련해 OneHand 팀에 문의할 수 있습니다.",
     reviewCta: "문의하기",
-    policyLinks: makePolicyLinks({
-      terms: "서비스 이용약관",
-      termsDescription:
-        "OneHand 사용, 워크스페이스 생성, 계정 접근 관리에 관한 규칙입니다.",
-      privacy: "개인정보 처리방침",
-      privacyDescription:
-        "OneHand가 정보를 수집, 사용, 공개, 보호하는 방법입니다.",
-      security: "보안",
-      securityDescription:
-        "워크스페이스 접근, 인프라, 개인정보, 안정성에 대한 OneHand의 접근입니다.",
-      contact: "문의",
-      contactDescription:
-        "구독, 개인정보 요청, 보안 질문에 대해 OneHand 팀에 연락하세요.",
-    }),
     sections: [
       {
         id: "using-onehand",
@@ -203,34 +113,12 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
       },
     ],
   },  "en-US": {
-    eyebrow: "OneHand policy center",
-    title: "Terms and privacy.",
-    description:
-      "This page brings together the core terms, privacy, and security information for using OneHand. It is a product-facing policy draft and should be reviewed for your final legal requirements.",
-    lastUpdated: "Last updated: July 8, 2026",
+    title: "Terms of Service",
     contentsLabel: "Contents",
-    openLabel: "Open",
-    shortTitle: "Short version",
-    shortDescription:
-      "Use OneHand responsibly, protect customer data, review AI output before using it, and contact us when you need help with account, privacy, or security questions.",
     reviewTitle: "Need a formal review packet?",
     reviewDescription:
       "Contact the OneHand team for sales, privacy, and security questions related to your organization.",
     reviewCta: "Contact us",
-    policyLinks: makePolicyLinks({
-      terms: "Terms of service",
-      termsDescription:
-        "The rules for using OneHand, creating a workspace, and managing account access.",
-      privacy: "Privacy policy",
-      privacyDescription:
-        "How OneHand collects, uses, discloses, and protects information.",
-      security: "Security",
-      securityDescription:
-        "How OneHand approaches workspace access, infrastructure, privacy, and reliability.",
-      contact: "Contact",
-      contactDescription:
-        "Reach the OneHand team about subscriptions, privacy requests, or security questions.",
-    }),
     sections: [
       {
         id: "using-onehand",
@@ -317,25 +205,10 @@ export function TermsPage() {
       <PublicPageSection>
         <PublicContentContainer>
           <PublicDocumentHero
-            description={copy.description}
-            eyebrow={copy.eyebrow}
-            lastUpdated={copy.lastUpdated}
             title={copy.title}
           />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {copy.policyLinks.map((item) => (
-              <PublicInfoCard
-                actionLabel={copy.openLabel}
-                description={item.description}
-                icon={item.icon}
-                key={item.title}
-                title={item.title}
-                titleAs="h2"
-                to={item.to}
-              />
-            ))}
-          </div>
+          <PublicRelatedPolicyLinks className="mt-10" currentPath="/terms" />
 
           <div className="mt-16">
             <PublicTableOfContents
@@ -344,15 +217,7 @@ export function TermsPage() {
             />
 
             <article className="mt-10">
-              <PublicInfoCard
-                className="p-6"
-                description={copy.shortDescription}
-                icon={Sparkles}
-                title={copy.shortTitle}
-                titleAs="h2"
-              />
-
-              <div className="mt-10 grid gap-12">
+              <div className="grid gap-12">
                 {copy.sections.map((section) => (
                   <PublicDocumentSection
                     id={section.id}

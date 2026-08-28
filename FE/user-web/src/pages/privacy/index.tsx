@@ -1,11 +1,10 @@
-import { LockKeyhole } from "lucide-react";
 import {
   PublicContentContainer,
   PublicCtaPanel,
   PublicDocumentHero,
   PublicDocumentSection,
-  PublicInfoCard,
   PublicPageSection,
+  PublicRelatedPolicyLinks,
   PublicSitePageShell,
   PublicTableOfContents,
 } from "@/features/public-site";
@@ -14,11 +13,6 @@ import {
   usePublicSiteLanguage,
   type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
-
-type DefinitionCopy = {
-  readonly term: string;
-  readonly description: string;
-};
 
 type PrivacySubsection = {
   readonly title: string;
@@ -35,15 +29,10 @@ type PrivacySection = {
 };
 
 type PrivacyCopy = {
-  readonly eyebrow: string;
   readonly title: string;
-  readonly intro: readonly string[];
-  readonly definitionsTitle: string;
-  readonly definitions: readonly DefinitionCopy[];
   readonly contactTitle: string;
   readonly contactDescription: string;
   readonly contactCta: string;
-  readonly lastUpdated: string;
   readonly tableHeaders: readonly [string, string, string];
   readonly californiaRows: readonly (readonly [string, string, string])[];
   readonly sections: readonly PrivacySection[];
@@ -51,38 +40,11 @@ type PrivacyCopy = {
 
 const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   ko: {
-    eyebrow: "OneHand 개인정보",
     title: "개인정보 처리방침",
-    intro: [
-      "OneHand는 2026년 7월 8일자로 이 개인정보 처리방침을 업데이트했습니다. 이전 버전은 OneHand 팀에 문의해 요청할 수 있습니다.",
-      "이 방침은 OneHand가 정보를 수집, 사용, 공개하는 방법과 사용자가 특정 사용에 반대하거나 정보 접근 및 업데이트를 요청할 수 있는 선택권을 설명합니다.",
-    ],
-    definitionsTitle: "이 방침에서 사용하는 정의",
-    definitions: [
-      {
-        term: "OneHand",
-        description: "OneHand Labs, Inc. 및 관련 계열사를 의미합니다.",
-      },
-      {
-        term: "웹사이트",
-        description: "공개 웹사이트와 공개 제품 페이지를 의미합니다.",
-      },
-      {
-        term: "서비스",
-        description:
-          "OneHand SaaS 플랫폼, 관련 API, 웹·모바일·데스크톱 애플리케이션을 의미합니다.",
-      },
-      {
-        term: "워크스페이스",
-        description:
-          "사용자가 고객 기록과 관련 콘텐츠를 제출, 게시, 수정, 정리하는 분리된 공간입니다.",
-      },
-    ],
     contactTitle: "문의하기",
     contactDescription:
       "이 개인정보 처리방침 또는 개인정보 처리 관행에 대한 질문이 있으면 OneHand 팀에 문의하세요.",
     contactCta: "OneHand 문의",
-    lastUpdated: "최종 업데이트: 2026년 7월 8일",
     tableHeaders: ["범주", "비즈니스 목적 공개", "적용 시 판매/공유"],
     californiaRows: [
       ["식별자", "서비스 제공자, 계열사, 법적 수신자, 광고 파트너", "적용 가능한 광고 파트너"],
@@ -235,38 +197,11 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
       },
     ],
   },  "en-US": {
-    eyebrow: "OneHand privacy",
     title: "Privacy policy",
-    intro: [
-      "OneHand has updated this Privacy Policy effective July 8, 2026. Previous versions may be requested by contacting the OneHand team.",
-      "This Privacy Policy describes how OneHand collects, uses, and discloses your information. It also explains choices surrounding how we use personal information, including how you can object to certain uses, access information, or request updates.",
-    ],
-    definitionsTitle: "Definitions used in this policy",
-    definitions: [
-      {
-        term: "OneHand",
-        description: "refers to OneHand Labs, Inc. and relevant affiliates.",
-      },
-      {
-        term: "Website",
-        description: "refers to our public websites and public product pages.",
-      },
-      {
-        term: "Services",
-        description:
-          "refers to the OneHand software-as-a-service platform, related APIs, and related web, mobile, or desktop applications.",
-      },
-      {
-        term: "Workspaces",
-        description:
-          "are separated areas where users submit, post, modify, and organize customer records and related content.",
-      },
-    ],
     contactTitle: "Contact us",
     contactDescription:
       "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand team.",
     contactCta: "Contact OneHand",
-    lastUpdated: "Last updated: July 8, 2026",
     tableHeaders: ["Category", "Disclosed for business purposes", "Sold/shared where applicable"],
     californiaRows: [
       ["Identifiers", "Service providers, affiliates, legal recipients, advertising partners", "Advertising partners where applicable"],
@@ -423,8 +358,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
 // 기능 : 개인정보 페이지를 렌더링합니다.
 export function PrivacyPage() {
   const { language } = usePublicSiteLanguage();
-  const copyLanguage = getPublicSiteCopyLanguage(language);
-  const copy = privacyCopyByLanguage[copyLanguage];
+  const copy = privacyCopyByLanguage[getPublicSiteCopyLanguage(language)];
 
   return (
     <PublicSitePageShell>
@@ -432,36 +366,10 @@ export function PrivacyPage() {
         <PublicContentContainer>
           <article>
             <PublicDocumentHero
-              description={
-                <>
-                  {copy.intro.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </>
-              }
-              descriptionClassName="mt-5 grid max-w-[760px] gap-4 text-[14px] text-[#444440]"
-              eyebrow={copy.eyebrow}
               title={copy.title}
             />
 
-            <PublicInfoCard
-              className="mt-8 p-6"
-              icon={LockKeyhole}
-              title={copy.definitionsTitle}
-              titleAs="h2"
-            >
-              <ul className="mt-4 grid gap-3 break-keep text-[13px] leading-6 text-[#555550]">
-                {copy.definitions.map((definition) => (
-                  <li key={definition.term}>
-                    <strong className="font-normal text-[#222220]">
-                      {definition.term}
-                    </strong>
-                    {copyLanguage === "en-US" ? " " : ": "}
-                    {definition.description}
-                  </li>
-                ))}
-              </ul>
-            </PublicInfoCard>
+            <PublicRelatedPolicyLinks className="mt-10" currentPath="/privacy" />
 
             <PublicTableOfContents
               className="mt-10"
@@ -484,11 +392,7 @@ export function PrivacyPage() {
               description={copy.contactDescription}
               primaryAction={{ label: copy.contactCta, to: "/contact" }}
               title={copy.contactTitle}
-            >
-              <p className="mt-5 text-[12px] font-normal text-[#888880]">
-                {copy.lastUpdated}
-              </p>
-            </PublicCtaPanel>
+            />
           </article>
         </PublicContentContainer>
       </PublicPageSection>
