@@ -250,10 +250,12 @@ export class AiWeeklySalesReportApplicationService {
     return this.toGenerationResponse(result.report, result.job);
   }
 
+  // 기능 : 사용자의 특정 주 AI 리포트 목록을 조회하고 주차 조회 이벤트를 기록합니다.
   async getWeek(
     currentUser: CurrentUserContext,
     query: GetAiWeeklySalesReportWeekQuery
   ): Promise<AiWeeklySalesReportWeekResponse> {
+    // 1. 사용자 선호와 query를 기준으로 조회 timezone과 주간 범위를 확정한다.
     const preferences = await this.salesReportRepository.findUserPreferences(
       currentUser.id
     );
@@ -266,11 +268,15 @@ export class AiWeeklySalesReportApplicationService {
     this.assertMonday(weekStart);
     const range = this.createWeeklyRange(weekStart, timeZone);
     const weekStartDate = this.toDateOnly(range.weekStart);
+
+    // 2. 현재 사용자 소유 report version 목록을 조회한다.
     const reports = await this.salesReportRepository.listReportsForWeek({
       userId: currentUser.id,
       weekStart: weekStartDate,
       timeZone,
     });
+
+    // 3. 화면 응답에 노출할 성공/생성/실패 version을 분리한다.
     const includeFailed = this.normalizeIncludeFailed(query.includeFailed);
     const latestSuccessfulReport =
       reports.find((report) => report.status === "READY") ?? null;
@@ -281,7 +287,7 @@ export class AiWeeklySalesReportApplicationService {
       ? reports
       : reports.filter((report) => report.status !== "FAILED");
 
-    return {
+    const response = {
       weekStart: this.formatCalendarDate(range.weekStart),
       weekEnd: this.formatCalendarDate(range.weekEnd),
       timeZone,
@@ -297,12 +303,31 @@ export class AiWeeklySalesReportApplicationService {
         ? failedReports.map((report) => this.toReportSummary(report))
         : [],
     };
+
+    // 4. snapshot과 AI output 원문 없이 주차 조회 이벤트를 최소 식별 정보로 기록한다.
+    this.logEvent("ai.weeklyReport.weekViewed", {
+      userId: currentUser.id,
+      weekStart: response.weekStart,
+      weekEnd: response.weekEnd,
+      timeZone,
+      includeFailed,
+      reportCount: reports.length,
+      failedVersionCount: failedReports.length,
+      latestSuccessfulReportId: latestSuccessfulReport?.id ?? null,
+      latestSuccessfulReportVersion: latestSuccessfulReport?.version ?? null,
+      generatingReportId: generatingReport?.id ?? null,
+      generatingReportVersion: generatingReport?.version ?? null,
+    });
+
+    return response;
   }
 
+  // 기능 : 사용자의 AI 주간 영업 리포트 상세를 조회하고 상세 조회 이벤트를 기록합니다.
   async getDetail(
     currentUser: CurrentUserContext,
     reportId: string
   ): Promise<AiWeeklySalesReportDetailResponse> {
+    // 1. 현재 사용자 소유 report를 조회해 소유권을 함께 검증한다.
     const report = await this.salesReportRepository.findReportById(
       currentUser.id,
       reportId
@@ -312,7 +337,8 @@ export class AiWeeklySalesReportApplicationService {
       throw new AiWeeklySalesReportNotFoundError();
     }
 
-    return {
+    // 2. report output을 사용자 응답용 section으로 변환한다.
+    const response = {
       ...this.toReportSummary(report),
       safeErrorCode: report.safeErrorCode,
       safeErrorMessage: report.safeErrorMessage,
@@ -322,12 +348,22 @@ export class AiWeeklySalesReportApplicationService {
           : null,
       dataCoverage: this.extractDataCoverage(report),
     };
+
+    // 3. section과 snapshot 원문 없이 report 식별 정보만 상세 조회 이벤트로 기록한다.
+    this.logEvent("ai.weeklyReport.detailViewed", {
+      userId: currentUser.id,
+      ...this.toReportLogFields(report),
+    });
+
+    return response;
   }
 
+  // 기능 : 사용자의 AI 입력 snapshot 요약을 조회하고 snapshot 요약 조회 이벤트를 기록합니다.
   async getSnapshotSummary(
     currentUser: CurrentUserContext,
     reportId: string
   ): Promise<AiWeeklySalesReportSnapshotSummaryResponse> {
+    // 1. 현재 사용자 소유 report를 조회해 소유권을 함께 검증한다.
     const report = await this.salesReportRepository.findReportById(
       currentUser.id,
       reportId
@@ -337,7 +373,17 @@ export class AiWeeklySalesReportApplicationService {
       throw new AiWeeklySalesReportNotFoundError();
     }
 
-    return this.toSnapshotSummary(report);
+    // 2. 저장된 input snapshot 원문을 사용자에게 노출 가능한 요약으로 변환한다.
+    const summary = this.toSnapshotSummary(report);
+
+    // 3. snapshot 원문 없이 report 식별 정보만 snapshot 요약 조회 이벤트로 기록한다.
+    this.logEvent("ai.weeklyReport.snapshotSummaryViewed", {
+      userId: currentUser.id,
+      ...this.toReportLogFields(report),
+      snapshotSchemaVersion: summary.snapshotSchemaVersion,
+    });
+
+    return summary;
   }
 
   // 기능 : AI Provider 입력에 사용할 주간 영업 snapshot과 metadata를 생성합니다.
@@ -704,6 +750,20 @@ export class AiWeeklySalesReportApplicationService {
     };
   }
 
+  // 기능 : 조회 이벤트 로그에 필요한 report 식별값만 원문 payload 없이 추출합니다.
+  private toReportLogFields(
+    report: AiWeeklySalesReportRecord
+  ): Record<string, string | number> {
+    return {
+      reportId: report.id,
+      weekStart: this.formatDateOnly(report.weekStart),
+      weekEnd: this.formatDateOnly(report.weekEnd),
+      timeZone: report.timeZone,
+      status: report.status,
+      version: report.version,
+    };
+  }
+
   private extractDataCoverage(
     report: AiWeeklySalesReportRecord
   ): Record<string, unknown> {
@@ -1055,6 +1115,7 @@ export class AiWeeklySalesReportApplicationService {
     );
   }
 
+  // 기능 : 민감정보를 제외한 AI 주간 영업 리포트 구조화 이벤트 로그를 기록합니다.
   private logEvent(event: string, fields: Record<string, unknown>): void {
     this.logger.log(
       JSON.stringify({

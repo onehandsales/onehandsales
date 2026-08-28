@@ -49,10 +49,11 @@ describe("AiWeeklySalesReportApplicationService", () => {
       }),
     });
     const processJobs = createProcessJobs();
+    const logger = createLogger();
     const service = new AiWeeklySalesReportApplicationService(
       repository,
       createScheduleApplicationService(),
-      createLogger(),
+      logger,
       processJobs
     );
 
@@ -96,6 +97,24 @@ describe("AiWeeklySalesReportApplicationService", () => {
       details: "Discussed renewal risk and next plan.",
       requiredAction: "Send renewal proposal",
     });
+    const generationEvent = getLoggedEvent(
+      logger,
+      "ai.weeklyReport.generationRequested"
+    );
+    expect(generationEvent).toMatchObject({
+      event: "ai.weeklyReport.generationRequested",
+      userId: USER_ID,
+      reportId: REPORT_ID,
+      jobId: JOB_ID,
+      weekStart: "2026-07-20",
+      weekEnd: "2026-07-26",
+      timeZone: "America/New_York",
+      locale: "en-US",
+      version: 1,
+    });
+    expect(JSON.stringify(generationEvent)).not.toContain(
+      "Discussed renewal risk"
+    );
   });
 
   it("blocks duplicate generation for the same user, week, and timezone", async () => {
@@ -116,7 +135,69 @@ describe("AiWeeklySalesReportApplicationService", () => {
     ).rejects.toBeInstanceOf(AiWeeklySalesReportAlreadyGeneratingError);
   });
 
+  it("logs week view event with safe aggregate payload", async () => {
+    const logger = createLogger();
+    const repository = createRepository({
+      listReportsForWeek: jest.fn().mockResolvedValue([
+        createReport({
+          id: "ready-report-id",
+          status: "READY",
+          version: 2,
+          outputJson: {
+            executiveSummary: {
+              body: "Sensitive AI section body",
+            },
+          },
+        }),
+        createReport({
+          id: "failed-report-id",
+          status: "FAILED",
+          version: 1,
+          safeErrorCode: "AI_PROVIDER_TIMEOUT",
+          safeErrorMessage: "리포트를 만들지 못했어요.",
+        }),
+      ]),
+    });
+    const service = new AiWeeklySalesReportApplicationService(
+      repository,
+      createScheduleApplicationService(),
+      logger
+    );
+
+    const response = await service.getWeek(CURRENT_USER, {
+      weekStart: "2026-07-20",
+      timeZone: "Asia/Seoul",
+      includeFailed: "false",
+    });
+
+    expect(response.versions).toHaveLength(1);
+    expect(response.failedVersionCount).toBe(1);
+    expect(response.failedVersions).toEqual([]);
+    const weekViewedEvent = getLoggedEvent(
+      logger,
+      "ai.weeklyReport.weekViewed"
+    );
+    expect(weekViewedEvent).toMatchObject({
+      event: "ai.weeklyReport.weekViewed",
+      userId: USER_ID,
+      weekStart: "2026-07-20",
+      weekEnd: "2026-07-26",
+      timeZone: "Asia/Seoul",
+      includeFailed: false,
+      reportCount: 2,
+      failedVersionCount: 1,
+      latestSuccessfulReportId: "ready-report-id",
+      latestSuccessfulReportVersion: 2,
+      generatingReportId: null,
+      generatingReportVersion: null,
+    });
+    expect(JSON.stringify(weekViewedEvent)).not.toContain(
+      "Sensitive AI section body"
+    );
+  });
+
   it("returns snapshot summary without raw meeting note body", async () => {
+    const logger = createLogger();
     const repository = createRepository({
       findReportById: jest.fn().mockResolvedValue(
         createReport({
@@ -150,7 +231,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     const service = new AiWeeklySalesReportApplicationService(
       repository,
       createScheduleApplicationService(),
-      createLogger()
+      logger
     );
 
     const summary = await service.getSnapshotSummary(CURRENT_USER, REPORT_ID);
@@ -164,9 +245,31 @@ describe("AiWeeklySalesReportApplicationService", () => {
     });
     expect(summary.records.meetingNotes[0]).not.toHaveProperty("details");
     expect(summary.excluded).toContain("providerRawResponses");
+    const snapshotSummaryViewedEvent = getLoggedEvent(
+      logger,
+      "ai.weeklyReport.snapshotSummaryViewed"
+    );
+    expect(snapshotSummaryViewedEvent).toMatchObject({
+      event: "ai.weeklyReport.snapshotSummaryViewed",
+      userId: USER_ID,
+      reportId: REPORT_ID,
+      weekStart: "2026-07-20",
+      weekEnd: "2026-07-26",
+      timeZone: "Asia/Seoul",
+      status: "GENERATING",
+      version: 1,
+      snapshotSchemaVersion: "ai-weekly-sales-report-input-v1",
+    });
+    expect(JSON.stringify(snapshotSummaryViewedEvent)).not.toContain(
+      "Sensitive meeting note body"
+    );
+    expect(JSON.stringify(snapshotSummaryViewedEvent)).not.toContain(
+      "providerRawResponses"
+    );
   });
 
   it("attaches stored suggestion ids to ready report detail sections", async () => {
+    const logger = createLogger();
     const repository = createRepository({
       findReportById: jest.fn().mockResolvedValue(
         createReport({
@@ -205,7 +308,7 @@ describe("AiWeeklySalesReportApplicationService", () => {
     const service = new AiWeeklySalesReportApplicationService(
       repository,
       createScheduleApplicationService(),
-      createLogger()
+      logger
     );
 
     const detail = await service.getDetail(CURRENT_USER, REPORT_ID);
@@ -218,8 +321,53 @@ describe("AiWeeklySalesReportApplicationService", () => {
       sourceSuggestionId: SUGGESTION_ID,
       suggestionKey: "follow_up-follow-up-note-1",
     });
+    const detailViewedEvent = getLoggedEvent(
+      logger,
+      "ai.weeklyReport.detailViewed"
+    );
+    expect(detailViewedEvent).toMatchObject({
+      event: "ai.weeklyReport.detailViewed",
+      userId: USER_ID,
+      reportId: REPORT_ID,
+      weekStart: "2026-07-20",
+      weekEnd: "2026-07-26",
+      timeZone: "Asia/Seoul",
+      status: "READY",
+      version: 1,
+    });
+    expect(JSON.stringify(detailViewedEvent)).not.toContain(
+      "Send the next step."
+    );
   });
 });
+
+// 기능 : logger mock에서 특정 이벤트 payload를 찾아 반환합니다.
+function getLoggedEvent(
+  logger: AppLogger,
+  event: string
+): Record<string, unknown> {
+  const loggedEvent = getLoggedEvents(logger).find(
+    (entry) => entry.event === event
+  );
+  expect(loggedEvent).toBeDefined();
+
+  return loggedEvent ?? {};
+}
+
+// 기능 : logger mock의 JSON 메시지를 구조화 이벤트 목록으로 변환합니다.
+function getLoggedEvents(logger: AppLogger): Record<string, unknown>[] {
+  const logMock = logger.log as jest.MockedFunction<AppLogger["log"]>;
+
+  return logMock.mock.calls.map(([message]) => {
+    const parsed: unknown = JSON.parse(message);
+
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return {};
+    }
+
+    return parsed as Record<string, unknown>;
+  });
+}
 
 function createRepository(
   overrides: Partial<AiWeeklySalesReportRepository> = {}
