@@ -58,20 +58,20 @@ export function PublicSiteLanguageSelect() {
     <details className="group relative mt-5 w-fit" ref={detailsRef}>
       <summary
         aria-label={copy.common.languageAria}
-        className="inline-flex h-8 cursor-pointer list-none items-center gap-2 rounded-[6px] px-3 text-[12px] font-normal [&::-webkit-details-marker]:hidden"
+        className="inline-flex h-7 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[12px] font-normal transition-colors hover:bg-[#f2f2ef] hover:text-[#111111] [&::-webkit-details-marker]:hidden"
       >
         {selectedOption?.label ?? "한국어"}
         <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
       </summary>
 
-      <div className="absolute bottom-10 left-0 z-50 w-44 overflow-hidden rounded-[8px] bg-white p-1 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
+      <div className="absolute bottom-10 left-0 z-50 grid w-44 gap-1 overflow-hidden rounded-[8px] bg-white p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.14)]">
         {publicSiteLanguageOptions.map((option) => (
           <button
             className={[
-              "block w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-normal",
+              "block min-h-8 w-full rounded-[6px] px-3 py-1.5 text-left text-[12px] font-normal transition-colors hover:bg-[#f2f2ef] hover:text-[#111111]",
               option.value === language
                 ? "bg-[#0000000D] text-[#111111]"
-                : "text-[#333330] hover:bg-[#FAFAF8]",
+                : "text-[#333330]",
             ].join(" ")}
             data-language-option={option.value}
             key={option.value}

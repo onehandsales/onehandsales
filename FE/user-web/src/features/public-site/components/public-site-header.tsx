@@ -195,13 +195,22 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             </div>
           </div>
 
-          <Link className="hover:text-[#111111]" to={publicSitePath("/features")}>
+          <Link
+            className="inline-flex h-9 items-center rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
+            to={publicSitePath("/features")}
+          >
             {copy.common.nav.features}
           </Link>
-          <Link className="hover:text-[#111111]" to={publicSitePath("/pricing")}>
+          <Link
+            className="inline-flex h-9 items-center rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
+            to={publicSitePath("/pricing")}
+          >
             {copy.common.nav.pricing}
           </Link>
-          <Link className="hover:text-[#111111]" to={publicSitePath("/contact")}>
+          <Link
+            className="inline-flex h-9 items-center rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
+            to={publicSitePath("/contact")}
+          >
             {copy.common.nav.contact}
           </Link>
         </nav>
@@ -214,7 +223,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             {copy.common.nav.freeCta}
           </Link>
           <button
-            className="h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] md:px-3"
+            className="h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] hover:text-[#111111] md:px-3"
             onClick={handleLogin}
             type="button"
           >
