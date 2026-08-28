@@ -157,7 +157,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     realMoment: {
-      title: "언제 어디서든 영업 흐름을 바로 확인하세요.",
+      title: "언제든 어디서든\n업무를 확인하세요.",
       imageAlt: "도심에서 스마트폰으로 업무를 확인하는 영업자",
     },
     flow: {
@@ -239,7 +239,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     realMoment: {
-      title: "Check your sales work anytime, anywhere.",
+      title: "Anytime, Anywhere.\nCheck your Work.",
       imageAlt: "A salesperson checking work on a smartphone in the city",
     },
     flow: {
@@ -718,7 +718,7 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
       >
         <div className="landing-container">
           <div className="landing-real-copy text-white">
-            <h2 className="break-keep text-[36px] font-normal leading-[1.04] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
+            <h2 className="whitespace-pre-line break-keep text-[36px] font-normal leading-[1.04] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
               {copy.realMoment.title}
             </h2>
           </div>
