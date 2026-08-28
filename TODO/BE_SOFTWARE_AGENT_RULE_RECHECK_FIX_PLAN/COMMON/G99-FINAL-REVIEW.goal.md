@@ -1,0 +1,93 @@
+# G99 전체 수정 결과 최종 검토
+
+상태: Ready for `/goal`
+성격: 최종 검토
+우선순위: 필수
+
+## 1. 목적
+
+G01부터 G08까지 실행된 모든 수정이 Backend Agent 규칙과 각 Goal 완료 기준을 만족하는지 최종 검토한다.
+
+## 2. 선행 문서
+
+- `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\README.md`
+- `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\REFERENCES.md`
+- `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\SCOPE.md`
+- `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\VALIDATION-CHECKLIST.md`
+- `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ENGINEERING_REVIEW_CHECKLIST.md`
+- 각 Goal의 `TODO_LOG`
+
+## 3. 포함 범위
+
+- Backend Agent 규칙 재검토
+- 코드 계층 위반 재점검
+- 한글 주석 규칙 재점검
+- 테스트/정적 검증 전체 실행
+- TODO_LOG 완료 상태 확인
+- 최종 검토 결과 문서화
+
+## 4. 제외 범위
+
+- 신규 기능 추가
+- 검토 중 발견된 별도 대형 개선 사항의 즉시 구현
+- 사용자가 요청하지 않은 커밋 생성
+
+## 5. 검증 명령
+
+```powershell
+cd D:\workspace_repository\onehandsales\BE
+pnpm.cmd run typecheck
+pnpm.cmd run lint
+pnpm.cmd run prisma:validate
+pnpm.cmd test -- --runInBand
+pnpm.cmd run build
+```
+
+## 6. 정적 점검
+
+아래 strict 위반 검색은 출력이 없으면 통과로 기록한다.
+
+```powershell
+cd D:\workspace_repository\onehandsales\BE
+rg -n "@nestjs|@prisma/client|openai|@supabase|axios|fetch|Logger|console\." src\modules src\shared -g "*.ts" -g "!*.spec.ts" | rg "\\domain\\"
+rg -n "@prisma/client|PrismaClient|PrismaService|\$transaction|openai|@supabase|axios|fetch" src\modules src\shared -g "*.ts" -g "!*.spec.ts" | rg "\\application\\"
+rg -n "@prisma/client|PrismaClient|PrismaService|\$transaction|prisma\." src\modules src\shared -g "*.ts" -g "!*.spec.ts" | rg "\\presentation\\"
+rg -n "Repository|PrismaService|prisma\.|runInTransaction|\$transaction" src\modules -g "*controller*.ts" -g "!*.spec.ts"
+rg -n "schedule\.repository|SCHEDULE_REPOSITORY|ScheduleRepository" src\modules\sales-report\application
+rg -n "console\." src -g "*.ts" -g "!*.spec.ts"
+rg -n "\bany\b" src -g "*.ts" -g "!*.spec.ts"
+git diff --check
+git status --short
+```
+
+아래 명령은 수동 판정 또는 감사용이다. 출력이 있을 수 있으므로 각 Goal의 완료 기준과 TODO_LOG 기록 여부로 판정한다.
+
+```powershell
+cd D:\workspace_repository\onehandsales\BE
+rg -n "process\.env" src -g "*.ts" -g "!*.spec.ts"
+rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modules -g "*.ts" -g "!*.spec.ts" | rg "\\presentation\\"
+```
+
+## 7. 최종 산출물
+
+아래 파일을 작성하거나 갱신한다.
+
+```text
+D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RULE_RECHECK\G99_FINAL_REVIEW\WORK_LOG.md
+```
+
+필수 기록:
+
+- 실행한 Goal 목록
+- 수정 파일 목록
+- 검증 명령과 결과
+- Backend Agent 규칙별 준수 여부
+- 남은 리스크
+- 추가 TODO 필요 여부
+- 커밋 여부
+
+## 8. 완료 기준
+
+- 모든 필수 검증이 통과하거나, 실패한 검증의 원인과 남은 조치가 명확히 기록되어 있다.
+- 각 Goal 완료 기준이 충족되었는지 확인되어 있다.
+- 사용자에게 최종 결과를 보고할 수 있는 상태다.
