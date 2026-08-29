@@ -20,7 +20,6 @@ type RelatedPolicyPath = Extract<
 >;
 
 type RelatedPolicyLink = {
-  readonly description: string;
   readonly icon: LucideIcon;
   readonly iconClassName?: string;
   readonly title: string;
@@ -39,28 +38,24 @@ const relatedPolicyLinksByLanguage: Record<
   ko: [
     {
       title: "OneHand 소개",
-      description: "OneHand가 고객 업무를 더 쉽게 관리하려는 이유입니다.",
       to: "/about",
       icon: Info,
       iconClassName: "text-[#9CA3AF]",
     },
     {
       title: "보안",
-      description: "고객 기록, 접근 권한, 인프라를 보호하는 기준입니다.",
       to: "/security",
       icon: Shield,
       iconClassName: "text-[#9CA3AF]",
     },
     {
       title: "개인정보 처리방침",
-      description: "OneHand가 정보를 수집, 사용, 보호하는 방법입니다.",
       to: "/privacy",
       icon: ShieldCheck,
       iconClassName: "shrink-0 text-[#9CA3AF]",
     },
     {
       title: "서비스 이용약관",
-      description: "OneHand 사용과 계정 관리에 관한 규칙입니다.",
       to: "/terms",
       icon: FileText,
       iconClassName: "shrink-0 text-[#9CA3AF]",
@@ -69,28 +64,24 @@ const relatedPolicyLinksByLanguage: Record<
   "en-US": [
     {
       title: "About OneHand",
-      description: "Why OneHand exists and how it supports customer work.",
       to: "/about",
       icon: Info,
       iconClassName: "text-[#9CA3AF]",
     },
     {
       title: "Security",
-      description: "How OneHand protects customer records, access, and infrastructure.",
       to: "/security",
       icon: Shield,
       iconClassName: "text-[#9CA3AF]",
     },
     {
       title: "Privacy Policy",
-      description: "How OneHand collects, uses, and protects information.",
       to: "/privacy",
       icon: ShieldCheck,
       iconClassName: "shrink-0 text-[#9CA3AF]",
     },
     {
       title: "Terms of Service",
-      description: "The rules for using OneHand and managing account access.",
       to: "/terms",
       icon: FileText,
       iconClassName: "shrink-0 text-[#9CA3AF]",
@@ -123,12 +114,12 @@ export function PublicRelatedPolicyLinks({
         <PublicInfoCard
           actionLabel={actionLabelByLanguage[copyLanguage]}
           className="min-h-[176px]"
-          description={item.description}
           icon={item.icon}
           iconClassName={item.iconClassName}
           key={item.to}
           title={item.title}
           titleAs="h2"
+          titleLayout="inline"
           to={item.to}
         />
       ))}
