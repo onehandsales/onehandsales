@@ -234,6 +234,18 @@ export function PublicTableOfContents({
   label,
   numbered = false,
 }: PublicTableOfContentsProps) {
+  const splitIndex = Math.ceil(items.length / 2);
+  const columns = [items.slice(0, splitIndex), items.slice(splitIndex)];
+  const renderItem = (item: PublicTableOfContentsItem, index: number) => (
+    <a
+      className="rounded-[6px] px-2 py-1.5 hover:bg-white hover:text-[#111111]"
+      href={`#${item.id}`}
+      key={item.id}
+    >
+      {numbered ? `${index + 1}. ${item.title.replace(/^\d+\.\s*/, "")}` : item.title}
+    </a>
+  );
+
   return (
     <nav className={cn("rounded-[8px] bg-[#FAFAF8] p-4", className)}>
       {label ? (
@@ -243,18 +255,16 @@ export function PublicTableOfContents({
       ) : null}
       <div
         className={cn(
-          "grid gap-2 text-[13px] font-normal text-[#555550] sm:grid-cols-2",
+          "grid gap-2 text-[13px] font-normal text-[#555550] sm:grid-cols-2 sm:gap-x-6",
           label ? "mt-4" : "",
         )}
       >
-        {items.map((item, index) => (
-          <a
-            className="rounded-[6px] px-2 py-1.5 hover:bg-white hover:text-[#111111]"
-            href={`#${item.id}`}
-            key={item.id}
-          >
-            {numbered ? `${index + 1}. ${item.title.replace(/^\d+\.\s*/, "")}` : item.title}
-          </a>
+        {columns.map((columnItems, columnIndex) => (
+          <div className="grid gap-2" key={columnIndex}>
+            {columnItems.map((item, itemIndex) =>
+              renderItem(item, columnIndex * splitIndex + itemIndex)
+            )}
+          </div>
         ))}
       </div>
     </nav>
