@@ -60,7 +60,7 @@ const storyVisuals: readonly {
 
 const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
   ko: {
-    title: "고객 업무의 맥락을 더 쉽게 붙잡는 이야기.",
+    title: "OneHand 소개",
     intro: [
       "통화를 끝낸 뒤 다음 액션은 다른 도구에 적고, 계정 정보는 또 다른 곳에 업데이트하고, 일주일 뒤 약속 내용을 다시 찾느라 시간을 쓴 적이 있다면 OneHand가 왜 필요한지 이미 알고 있습니다.",
       "우리는 기록, 업무, 제품 정보, AI 지원이 한곳에 있는 세일즈 워크스페이스를 만들고 있습니다. 팀이 맥락을 다시 조립하는 시간보다 고객과 보내는 시간을 늘리기 위해서입니다.",
@@ -118,7 +118,7 @@ const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
     ],
     sceneLabels: ["고객", "맥락", "어시스턴트"],
   },  "en-US": {
-    title: "A story of customer work becoming easier to hold.",
+    title: "OneHand Introduction",
     intro: [
       "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why OneHand exists.",
       "We are building a sales workspace where records, tasks, product information, and AI assistance live together so teams can spend more time with customers and less time rebuilding context.",
