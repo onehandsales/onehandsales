@@ -37,7 +37,6 @@ type PublicInfoCardProps = {
   readonly title?: ReactNode;
   readonly titleAs?: "h2" | "h3" | "h4";
   readonly titleClassName?: string;
-  readonly titleLayout?: "stacked" | "inline";
   readonly to?: string;
 };
 
@@ -170,46 +169,33 @@ export function PublicInfoCard({
   title,
   titleAs = "h3",
   titleClassName,
-  titleLayout = "stacked",
   to,
 }: PublicInfoCardProps) {
   const publicSitePath = usePublicSitePath();
   const TitleTag = titleAs;
-  const shouldInlineTitle = titleLayout === "inline" && Boolean(Icon && title);
-  const iconElement = Icon ? (
-    <span
-      className={cn(
-        "grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-white text-[#0075DE]",
-        iconWrapClassName,
-      )}
-    >
-      <Icon className={cn("h-5 w-5", iconClassName)} />
-    </span>
-  ) : null;
-  const titleElement = title ? (
-    <TitleTag
-      className={cn(
-        !shouldInlineTitle && Icon ? "mt-5" : "",
-        "break-keep text-[18px] font-normal text-[#222220]",
-        titleClassName,
-      )}
-    >
-      {title}
-    </TitleTag>
-  ) : null;
   const content = (
     <>
-      {shouldInlineTitle ? (
-        <div className="flex items-center gap-3">
-          {iconElement}
-          {titleElement}
-        </div>
-      ) : (
-        <>
-          {iconElement}
-          {titleElement}
-        </>
-      )}
+      {Icon ? (
+        <span
+          className={cn(
+            "grid h-10 w-10 shrink-0 place-items-center rounded-[8px] bg-white text-[#0075DE]",
+            iconWrapClassName,
+          )}
+        >
+          <Icon className={cn("h-5 w-5", iconClassName)} />
+        </span>
+      ) : null}
+      {title ? (
+        <TitleTag
+          className={cn(
+            Icon ? "mt-5" : "",
+            "break-keep text-[18px] font-normal text-[#222220]",
+            titleClassName,
+          )}
+        >
+          {title}
+        </TitleTag>
+      ) : null}
       {description ? (
         <div className="mt-2 break-keep text-[13px] leading-6 text-[#555550]">
           {typeof description === "string" ? <p>{description}</p> : description}

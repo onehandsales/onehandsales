@@ -5,7 +5,6 @@ import {
   PublicDocumentHero,
   PublicDocumentSection,
   PublicPageSection,
-  PublicRelatedPolicyLinks,
   PublicSitePageShell,
   PublicTableOfContents,
 } from "@/features/public-site";
@@ -207,8 +206,6 @@ export function TermsPage() {
           <PublicDocumentHero
             title={copy.title}
           />
-
-          <PublicRelatedPolicyLinks className="mt-10" currentPath="/terms" />
 
           <div className="mt-16">
             <PublicTableOfContents

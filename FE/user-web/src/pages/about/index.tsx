@@ -16,7 +16,6 @@ import {
   PublicDocumentHero,
   PublicInfoCard,
   PublicPageSection,
-  PublicRelatedPolicyLinks,
   PublicSitePageShell,
 } from "@/features/public-site";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
@@ -191,8 +190,6 @@ export function AboutPage() {
       <PublicPageSection>
         <PublicContentContainer>
           <PublicDocumentHero title={copy.title} />
-
-          <PublicRelatedPolicyLinks className="mt-10" currentPath="/about" />
 
           <div className="mt-14 grid gap-10 md:grid-cols-[1fr_0.88fr] md:items-center">
             <LineScene labels={copy.sceneLabels} />

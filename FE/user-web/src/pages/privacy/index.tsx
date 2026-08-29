@@ -4,7 +4,6 @@ import {
   PublicDocumentHero,
   PublicDocumentSection,
   PublicPageSection,
-  PublicRelatedPolicyLinks,
   PublicSitePageShell,
   PublicTableOfContents,
 } from "@/features/public-site";
@@ -371,8 +370,6 @@ export function PrivacyPage() {
             <PublicDocumentHero
               title={copy.title}
             />
-
-            <PublicRelatedPolicyLinks className="mt-10" currentPath="/privacy" />
 
             <PublicTableOfContents
               className="mt-10"

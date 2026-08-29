@@ -11,7 +11,6 @@ import {
   PublicDocumentHero,
   PublicInfoCard,
   PublicPageSection,
-  PublicRelatedPolicyLinks,
   PublicSitePageShell,
 } from "@/features/public-site";
 import {
@@ -300,8 +299,6 @@ export function SecurityPage() {
           <PublicDocumentHero
             title={copy.title}
           />
-
-          <PublicRelatedPolicyLinks className="mt-10" currentPath="/security" />
 
           <div className="mt-16 grid gap-20">
             {copy.sections.map((section, index) => (
