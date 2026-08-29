@@ -1,6 +1,6 @@
 # G08 presentation의 repository projection type 의존 감사
 
-상태: Ready for `/goal`
+상태: Next for `/goal`
 성격: 감사/후속 분리
 우선순위: P3
 
@@ -99,4 +99,3 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - projection type 대량 분리가 필요한 경우 별도 TODO 문서가 생성되어 있다.
 - 코드 수정 시 typecheck, lint, 테스트가 통과한다.
 - 수정한 코드가 있다면 한글 주석 규칙이 반영되어 있다.
-

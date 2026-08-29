@@ -1,6 +1,6 @@
 # Current Risk Summary
 
-상태: In Progress / G01-G06 resolved on 2026-08-28
+상태: In Progress / G01-G07 resolved
 
 ## 1. 결론
 
@@ -12,6 +12,7 @@ G03은 2026-08-28 완료되었고, AI Weekly Report 조회 이벤트 `weekViewed
 G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 summary safe error가 API-SPEC, BE summary response/mapper, FE User Web 타입/mock에 동일한 nullable 계약으로 반영되었으며 `21841c62`로 구현/로그 커밋이 완료되었다.
 G05는 2026-08-28 완료되었고, 대상 Backend 파일의 class/interface/type/port token/method/helper 한글 역할/기능/단계 주석 누락을 보강했다. 추가 재검토에서 G05 관련 진행 문서가 G06 다음 실행 상태로 정리되어 있고, 주석 누락 정적 감사와 BE typecheck/lint가 통과했음을 확인했다. 구현/로그 커밋은 `dca1a22c`다.
 G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 direct `process.env` 접근을 제한 예외로 문서화했다. `BE/src/main.ts`와 `BE/src/app.module.ts`에는 한글 단계 주석을 보강했고, 공통 환경/Backend convention/배포 문서의 정책 충돌을 정리했다. BE typecheck/lint/test와 `process.env` 정적 확인이 통과했으며 `0d0530d3`로 구현/로그 커밋이 완료되었다.
+G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 보관 92개로 구분했다. 활성 Service QA API-SPEC 보강 대상과 보관 문서 제외/후속 감사 기준을 정리했으며, 대량 문서 보강은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
 
 ## 2. P1
 
@@ -33,8 +34,8 @@ G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 
 | 항목 | 리스크 | Goal | 상태 |
 | --- | --- | --- | --- |
 | bootstrap `process.env` | 공통 환경 문서는 bootstrap local env read를 허용하지만 Backend convention은 direct `process.env` 금지를 적고 있어 예외가 명확하지 않았다. | G06 | 해결 완료 |
-| API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 다음 실행 |
-| presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용인지, read model type 공유인지 감사가 필요하다. | G08 | 대기 |
+| API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 해결 완료, 후속 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 생성 |
+| presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용인지, read model type 공유인지 감사가 필요하다. | G08 | 다음 실행 |
 
 ## 5. 기존 검증 결과
 
@@ -77,12 +78,12 @@ G06 추가 검증 결과:
 
 ## 6. 다음 Goal에서 다시 확인해야 하는 현재 위치
 
-- G07: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
-- G07: `AGENT\PM_AGENT\DECISIONS\020_todo_execution_plan_standard.md`
-- G07: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\API_SPEC.md`
-- G07: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\API_CONTRACT.md`
-- G07: `TODO` 아래 활성 `COMMON\API-SPEC\*.md`
-- G07: `TODO\DONE` 아래 보관 `COMMON\API-SPEC\*.md`
+- G08: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`
+- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ARCHITECTURE\BACKEND.md`
+- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\BACKEND.md`
+- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\API_CONTRACT.md`
+- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\COMMENT_AND_LOGGING.md`
+- G08: `BE\src\modules\*\presentation\**\*.ts`의 `application/ports/*repository*` import
 
 ## 7. 해결 완료 위치
 
@@ -124,3 +125,10 @@ G06 추가 검증 결과:
 - G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\DECISIONS\004_backend_deployment_environment.md`
 - G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ARCHITECTURE\DEPLOYMENT.md`
 - 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G06_BOOTSTRAP_PROCESS_ENV_POLICY\WORK_LOG.md`
+- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\README.md`
+- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\API_SPEC_AUDIT_RESULT.md`
+- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\GOAL-WORK-ORDER.md`
+- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`
+- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`
+- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
+- 완료 로그: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`

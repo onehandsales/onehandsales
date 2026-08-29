@@ -1,6 +1,6 @@
 # Backend TODO
 
-상태: In Progress / G01-G06 Completed
+상태: In Progress / G01-G07 Completed / G08 Next
 
 ## 1. 실행 순서
 
@@ -12,9 +12,9 @@
 | 4 | G04 | `G04-AI-WEEKLY-REPORT-SUMMARY-PREVIEW-CONTRACT.goal.md` | P2 | Completed |
 | 5 | G05 | `G05-BACKEND-KOREAN-COMMENT-RULE.goal.md` | P2 | Completed |
 | 6 | G06 | `G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md` | P3 | Completed |
-| 7 | G08 | `G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | P3 | Ready |
+| 7 | G08 | `G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | P3 | Next |
 
-다음 문서 감사 Goal은 `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md`이며, Backend G08은 G07 이후 실행한다. 최종 검토 Goal은 `COMMON/G99-FINAL-REVIEW.goal.md`를 실행한다.
+문서 감사 Goal `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md`는 완료되었으며, 다음 Backend 실행 대상은 G08이다. 최종 검토 Goal은 `COMMON/G99-FINAL-REVIEW.goal.md`를 실행한다.
 
 ## 2. 공통 지시
 

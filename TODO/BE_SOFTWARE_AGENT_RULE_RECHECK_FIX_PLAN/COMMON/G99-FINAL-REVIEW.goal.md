@@ -1,6 +1,6 @@
 # G99 전체 수정 결과 최종 검토
 
-상태: Ready for `/goal`
+상태: Ready after G01-G08
 성격: 최종 검토
 우선순위: 필수
 

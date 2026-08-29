@@ -1,8 +1,10 @@
 # G07 API-SPEC 템플릿 누락 문서 정리 계획 분리
 
-상태: Ready for `/goal`
+상태: Completed
 성격: 문서 감사
 우선순위: P3
+완료일: 2026-08-29
+TODO_LOG: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -58,3 +60,10 @@ git diff -- BE
 - BE 코드 diff가 없다.
 - 결과가 `TODO_LOG`에 기록되어 있다.
 
+## 8. 완료 결과
+
+- 전체 API-SPEC 문서 95개를 확인했고, 활성 TODO API-SPEC 3개와 `TODO/DONE` 보관 API-SPEC 92개를 구분했다.
+- 활성 API-SPEC 중 `ERROR_REPORT_API.md`, `SUPPORT_REQUEST_API.md`, `README.md`를 우선 정규화 대상으로 판정했다.
+- 보관 API-SPEC은 완료 이력이므로 G07에서 직접 수정하지 않고, production API 관련성 기준으로 후속 감사 인덱스 대상에 넣었다.
+- 대량 문서 보강은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다.
+- BE/FE 코드는 수정하지 않았다.
