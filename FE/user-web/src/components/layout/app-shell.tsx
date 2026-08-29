@@ -4,6 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
@@ -287,7 +288,6 @@ export function AppShell() {
   const isHome = pathname === HOME_PATH;
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
   const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
-  const userInitial = getUserInitial(userName);
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
   const outletContext = useMemo<AppShellOutletContext>(
@@ -610,9 +610,7 @@ export function AppShell() {
           role="menu"
         >
           <div className="flex items-center gap-2.5 px-1 py-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F6C445] text-[14px] font-semibold text-white">
-              {userInitial}
-            </div>
+            <OneHandLogoMark className="h-9 w-9 shrink-0" />
             <p className="min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 text-[#111827]">
               {userName}
             </p>
@@ -651,9 +649,7 @@ export function AppShell() {
         }}
         type="button"
       >
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#4880EE] text-[14px] font-semibold text-white">
-          {userInitial}
-        </div>
+        <OneHandLogoMark className="h-7 w-7 shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-[14px] font-medium text-[#111827]">
             {userName}
@@ -2784,11 +2780,4 @@ function formatDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
   if (slot === "personal_laptop") return t("settings.personalLaptopSlot");
   if (slot === "work_laptop") return t("settings.workLaptopSlot");
   return t("settings.device");
-}
-
-// 기능 : 사용자 이니셜 값을 계산합니다.
-function getUserInitial(name: string) {
-  const trimmed = name.trim();
-
-  return trimmed ? trimmed.charAt(0).toUpperCase() : "?";
 }
