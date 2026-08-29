@@ -1,19 +1,19 @@
 # BE Software Agent Rule Recheck Fix Plan
 
-상태: Split into folder
+상태: Done / Archived
 
-이 계획은 `TODO/PADDLE_PLAN`과 같은 폴더형 구조로 분리했다.
+이 계획은 `TODO/PADDLE_PLAN`과 같은 폴더형 구조로 분리한 뒤, G01~G08 및 G99 최종 검토를 완료해 `TODO/DONE`에 보관했다.
 
 새 위치:
 
 ```text
-D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN
+D:\workspace_repository\onehandsales\TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN
 ```
 
 시작 문서:
 
 ```text
-D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\README.md
+D:\workspace_repository\onehandsales\TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\README.md
 ```
 
 진행 상태:
@@ -26,16 +26,19 @@ D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLA
 - G06 완료: `0d0530d3 docs(backend): document bootstrap env policy`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G06_BOOTSTRAP_PROCESS_ENV_POLICY\WORK_LOG.md`
 - G07 완료: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`, `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`
 - G08 완료: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G08_PRESENTATION_REPOSITORY_PROJECTION_AUDIT\WORK_LOG.md`, `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`
-- 다음 실행 대상: G99
+- G99 완료: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G99_FINAL_REVIEW\WORK_LOG.md`
 
-다음 `/goal` 실행:
+이 계획 안에서 추가 실행할 `/goal`은 없다.
+
+후속 활성 계획:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md 실행해줘.
 ```
 
 주의:
 
-- 기존 단일 실행 문서는 더 이상 정본이 아니다.
-- 각 Goal은 새 폴더 안의 개별 `.goal.md` 파일을 기준으로 실행한다.
-- Backend 코드 수정 시 한글 주석 필수 규칙을 반드시 따른다.
+- 기존 단일 실행 문서는 더 이상 정본이 아니며 완료 포인터로만 유지한다.
+- 완료 이력은 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`과 `TODO_LOG\2026-08-28`, `TODO_LOG\2026-08-29`를 기준으로 본다.
+- 새 요구사항이나 후속 구현은 활성 계획 폴더에서 별도 `/goal`로 실행한다.

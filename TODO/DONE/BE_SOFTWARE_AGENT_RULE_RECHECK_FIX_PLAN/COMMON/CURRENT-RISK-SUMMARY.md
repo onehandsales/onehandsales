@@ -1,10 +1,10 @@
 # Current Risk Summary
 
-상태: In Progress / G01-G08 resolved / G99 next
+상태: Done / Archived
 
 ## 1. 결론
 
-기존 BE 검증에서 typecheck, lint, prisma validate, test는 통과했지만 Backend Agent 규칙 기준으로 아래 감사 항목이 남아 있다.
+G01부터 G08까지의 Backend Agent 규칙 재검토 항목과 G99 최종 검토가 완료되었다. 2026-08-29 G99에서 BE 전체 검증과 strict 정적 점검을 다시 실행했고, 최종 확인 기준에서 즉시 수정해야 할 남은 위반은 없다.
 
 G01은 2026-08-28 완료되었고, `admin-operation/presentation`의 `@prisma/client` import는 0건으로 확인되었다.
 G02는 2026-08-28 완료되었고, `sales-report/application`의 schedule repository 직접 의존과 `ScheduleModule` repository token export는 0건으로 확인되었으며 `1e86c06c`로 구현/로그 커밋이 완료되었다.
@@ -14,6 +14,7 @@ G05는 2026-08-28 완료되었고, 대상 Backend 파일의 class/interface/type
 G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 direct `process.env` 접근을 제한 예외로 문서화했다. `BE/src/main.ts`와 `BE/src/app.module.ts`에는 한글 단계 주석을 보강했고, 공통 환경/Backend convention/배포 문서의 정책 충돌을 정리했다. BE typecheck/lint/test와 `process.env` 정적 확인이 통과했으며 `0d0530d3`로 구현/로그 커밋이 완료되었다.
 G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 보관 92개로 구분했다. 활성 Service QA API-SPEC 보강 대상과 보관 문서 제외/후속 감사 기준을 정리했으며, 대량 문서 보강은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
 G08은 2026-08-29 완료되었고, presentation의 `application/ports/*repository*` import 22 line / 20 file을 전수 확인했다. repository token/interface 직접 사용은 0건이라 즉시 코드 수정은 하지 않았고, DTO validation 값과 response mapper projection record의 대량 타입 소유권 분리는 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
+G99는 2026-08-29 완료되었고, BE 전체 검증과 Backend Agent strict 정적 점검이 통과했다. application 계층 forbidden keyword 정적 점검의 false positive를 제거하기 위해 `GoogleCalendarSyncService`의 private helper 이름을 `fetchProviderCalendars`에서 `loadProviderCalendars`로 변경했으며 동작 변경은 없다. 이 계획은 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`으로 완료 보관했다.
 
 ## 2. P1
 
@@ -38,7 +39,7 @@ G08은 2026-08-29 완료되었고, presentation의 `application/ports/*repositor
 | API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 해결 완료, 후속 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 생성 |
 | presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용은 0건이나 타입 소유권 분리가 필요하다. | G08 | 해결 완료, 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 생성 |
 
-## 5. 기존 검증 결과
+## 5. 검증 결과
 
 2026-08-28 기준 이전 재검토에서 실행된 명령:
 
@@ -84,12 +85,28 @@ G08 감사 검증 결과:
 - production `any` keyword matches: 0
 - Cross-module repository/import persistence violations: 0
 
-## 6. 다음 Goal에서 다시 확인해야 하는 현재 위치
+G99 최종 검증 결과:
 
-- G99: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
-- G99: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\VALIDATION-CHECKLIST.md`
-- G99: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ENGINEERING_REVIEW_CHECKLIST.md`
-- G99: `BE\src\modules`와 `BE\src\shared`의 최종 정적 점검
+- `pnpm run typecheck`: 통과
+- `pnpm run lint`: 통과
+- `pnpm run prisma:validate`: 통과
+- `pnpm test -- --runInBand`: 103 suites / 548 tests 통과
+- `pnpm run build`: 통과
+- Domain forbidden dependency matches: 0
+- Application direct Prisma/provider/fetch matches: 0
+- Presentation Prisma/transaction matches: 0
+- Controller repository/prisma/transaction mentions: 0
+- `sales-report/application` schedule repository 직접 의존: 0
+- `console.*` matches: 0
+- production `any` keyword matches: 0
+- `process.env` matches: `BE\src\main.ts` bootstrap env loader 예외 범위만 출력
+- presentation `application/ports/*repository*` import: 22 line, G08 감사 및 후속 계획과 일치
+- `git diff --check`: 통과
+
+## 6. 후속 활성 계획
+
+- `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: G07에서 분리한 API-SPEC 템플릿 정규화 계획. 다음 실행 대상은 `COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`다.
+- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: G08에서 분리한 presentation 계약 타입 경계 정리 계획. 다음 실행 대상은 `COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md`다.
 
 ## 7. 해결 완료 위치
 
@@ -112,7 +129,7 @@ G08 감사 검증 결과:
 - G04: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.spec.ts`
 - G04: `FE\user-web\src\features\ai-weekly-report\types\ai-weekly-report.ts`
 - G04: `FE\user-web\tests\e2e\support\user-web-api-mocks.ts`
-- G04: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\FE-TODO\USER-WEB-CONTRACT-CHECK.md`
+- G04: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\FE-TODO\USER-WEB-CONTRACT-CHECK.md`
 - G04: `TODO\DONE\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\05_AI_WEEKLY_SALES_REPORT\COMMON\API-SPEC\AI_WEEKLY_REPORT_API.md`
 - 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G04_AI_WEEKLY_REPORT_SUMMARY_PREVIEW_CONTRACT\WORK_LOG.md`
 - G05: `BE\src\modules\sales-report\application\services\ai-weekly-sales-report-application.service.ts`

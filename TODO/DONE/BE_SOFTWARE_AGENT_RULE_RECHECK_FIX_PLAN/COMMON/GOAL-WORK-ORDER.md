@@ -1,12 +1,12 @@
 # Goal Work Order
 
-상태: In Progress / G01-G08 Completed / G99 Next
+상태: Done / Archived
 
 ## 1. 실행 원칙
 
 - 한 번의 `/goal`에서는 하나의 goal 파일만 실행한다.
-- `G01`, `G02`, `G03`, `G04`, `G05`, `G06`, `G07`, `G08`은 완료되었고, 다음 실행 대상은 `G99`이다.
-- `G99`는 모든 수정과 감사 Goal 완료 후 마지막에 실행한다.
+- `G01`, `G02`, `G03`, `G04`, `G05`, `G06`, `G07`, `G08`, `G99`는 완료되었다.
+- 이 계획 안에서 추가 실행할 `/goal`은 없다.
 - 각 Goal 시작 전 `COMMON/REFERENCES.md`, `COMMON/SCOPE.md`, `COMMON/EXECUTION-GATES.md`를 확인한다.
 - Backend 코드 수정 시 한글 주석 필수 규칙을 적용한다.
 
@@ -22,12 +22,17 @@
 | 6 | G06 | `BE-TODO/G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md` | 문서/소폭 코드 수정 | Completed |
 | 7 | G07 | `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md` | 문서 감사 | Completed |
 | 8 | G08 | `BE-TODO/G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | 감사/후속 분리 | Completed |
-| 9 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Next |
+| 9 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Completed |
 
 ## 3. 실행 프롬프트
 
+완료 보관된 계획이므로 추가 실행 프롬프트는 없다.
+
+후속 활성 계획의 다음 실행 대상:
+
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md 실행해줘.
 ```
 
 ## 4. 완료 판정

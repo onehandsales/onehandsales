@@ -1,15 +1,16 @@
 # BE Software Agent Rule Recheck Fix Plan
 
-상태: In Progress / G01-G08 Completed / G99 Next
+상태: Done / Archived
 작성일: 2026-08-28
+완료일: 2026-08-29
 대상: `D:\workspace_repository\onehandsales\BE`
 기준 규칙: `D:\workspace_repository\onehandsales\AGENT\SOFTWARE_AGENT\BACKEND_AGENT`
 
 ## 1. 목적
 
-이 폴더는 Backend 코드가 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT` 규칙을 준수하도록 재검토하고 수정하기 위한 실행 계획이다.
+이 폴더는 Backend 코드가 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT` 규칙을 준수하도록 재검토하고 수정한 완료 보관 계획이다.
 
-기존 단일 문서 `TODO/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`의 내용을 `TODO/PADDLE_PLAN`처럼 `COMMON`, `BE-TODO`, `FE-TODO` 단위로 분리했다.
+기존 단일 문서 `TODO/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`의 내용을 `TODO/PADDLE_PLAN`처럼 `COMMON`, `BE-TODO`, `FE-TODO` 단위로 분리했고, G99 최종 검토 완료 후 `TODO/DONE`에 보관했다.
 
 ## 2. 진행 상태
 
@@ -23,7 +24,7 @@
 | G06 | Completed | `0d0530d3`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G06_BOOTSTRAP_PROCESS_ENV_POLICY\WORK_LOG.md` |
 | G07 | Completed | `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`, `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` |
 | G08 | Completed | `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G08_PRESENTATION_REPOSITORY_PROJECTION_AUDIT\WORK_LOG.md`, `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` |
-| G99 | Next | `COMMON\G99-FINAL-REVIEW.goal.md` |
+| G99 | Completed | `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G99_FINAL_REVIEW\WORK_LOG.md` |
 
 ## 3. 문서 구조
 
@@ -47,15 +48,13 @@
 | `BE-TODO/G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | presentation repository projection type 의존 감사 |
 | `FE-TODO/USER-WEB-CONTRACT-CHECK.md` | G04 User Web 계약 확인 결과 |
 
-## 4. /goal 실행 순서
+## 4. 완료 상태
 
-정본 실행 순서는 `COMMON/GOAL-WORK-ORDER.md`를 따른다. 한 번의 `/goal`에서는 반드시 하나의 goal 파일만 실행한다.
+정본 실행 순서는 `COMMON/GOAL-WORK-ORDER.md`에 완료 상태로 보관한다.
 
-G01, G02, G03, G04, G05, G06, G07, G08은 완료되었으므로 다음 실행은 G99 최종 검토다.
+G01부터 G08까지의 코드 수정/감사 Goal과 G99 최종 검토가 모두 완료되었다. 이 계획 안에서 추가 실행할 `/goal`은 없다.
 
-```text
-/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
-```
+후속으로 분리된 활성 계획은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`과 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`이다.
 
 ## 5. 공통 원칙
 

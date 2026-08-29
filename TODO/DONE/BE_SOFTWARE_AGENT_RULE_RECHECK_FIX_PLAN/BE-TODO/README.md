@@ -1,6 +1,6 @@
 # Backend TODO
 
-상태: In Progress / G01-G08 Completed / G99 Next
+상태: Done / Archived
 
 ## 1. 실행 순서
 
@@ -14,7 +14,7 @@
 | 6 | G06 | `G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md` | P3 | Completed |
 | 7 | G08 | `G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | P3 | Completed |
 
-문서 감사 Goal `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md`와 Backend 감사 Goal `G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`는 완료되었다. 최종 검토 Goal은 `COMMON/G99-FINAL-REVIEW.goal.md`를 실행한다.
+문서 감사 Goal `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md`, Backend 감사 Goal `G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`, 최종 검토 Goal `COMMON/G99-FINAL-REVIEW.goal.md`는 완료되었다.
 
 G08에서 확인된 presentation repository port 타입 의존의 대량 분리는 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다.
 

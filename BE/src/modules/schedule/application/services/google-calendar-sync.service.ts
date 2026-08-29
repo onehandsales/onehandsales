@@ -152,7 +152,7 @@ export class GoogleCalendarSyncService {
         connection,
         now,
       });
-      const providerCalendars = await this.fetchProviderCalendars(accessToken);
+      const providerCalendars = await this.loadProviderCalendars(accessToken);
       const sources = await this.syncRepository.upsertCalendarSources({
         userId: currentUser.id,
         connectionId: connection.id,
@@ -197,7 +197,7 @@ export class GoogleCalendarSyncService {
         connection,
         now,
       });
-      const providerCalendars = await this.fetchProviderCalendars(accessToken);
+      const providerCalendars = await this.loadProviderCalendars(accessToken);
       currentCalendarIds = new Set(
         providerCalendars.map((calendar) => calendar.calendarId)
       );
@@ -563,7 +563,8 @@ export class GoogleCalendarSyncService {
     }
   }
 
-  private async fetchProviderCalendars(
+  // 기능 : Google Calendar read port를 통해 provider calendar 목록을 page guard 안에서 조회합니다.
+  private async loadProviderCalendars(
     accessToken: string
   ): Promise<readonly GoogleCalendarProviderCalendar[]> {
     const calendars: GoogleCalendarProviderCalendar[] = [];
@@ -591,7 +592,7 @@ export class GoogleCalendarSyncService {
     readonly connectionId: string;
     readonly accessToken: string;
   }): Promise<readonly GoogleCalendarSourceRecord[]> {
-    const providerCalendars = await this.fetchProviderCalendars(input.accessToken);
+    const providerCalendars = await this.loadProviderCalendars(input.accessToken);
 
     return this.syncRepository.upsertCalendarSources({
       userId: input.userId,
