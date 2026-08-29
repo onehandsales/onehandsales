@@ -281,7 +281,7 @@ export function PublicDocumentSection({
   title,
 }: PublicDocumentSectionProps) {
   return (
-    <section className={className} id={id}>
+    <section className={cn("scroll-mt-20 sm:scroll-mt-24", className)} id={id}>
       <h2 className="break-keep text-[26px] font-normal leading-tight md:text-[28px]">
         {title}
       </h2>
