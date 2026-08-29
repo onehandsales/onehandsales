@@ -14,9 +14,11 @@ import {
   Users,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { PublicSiteFooter, PublicSiteHeader } from "@/features/public-site";
-import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
+import {
+  FinalSection,
+  PublicSiteFooter,
+  PublicSiteHeader,
+} from "@/features/public-site";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -91,7 +93,6 @@ type LandingCopy = {
 
 const landingHeroSectionHeightClassName = "landing-hero-section-height";
 const landingSectionHeightClassName = "landing-section-height";
-const landingFinalSectionHeightClassName = "landing-final-section-height";
 const landingCenteredSectionClassName =
   `${landingSectionHeightClassName} flex items-center justify-center`;
 const realMomentImageUrl =
@@ -333,7 +334,7 @@ export function AuthLandingPage({
         <FlowMotionSection copy={copy} />
         <PersonaSection copy={copy} />
         <TrustSection copy={copy} />
-        <FinalSection copy={copy} />
+        <FinalSection copy={copy.final} />
       </main>
       <PublicSiteFooter compactDesktop showTopDivider />
       {isModalOpen ? children : null}
@@ -1033,45 +1034,6 @@ function TrustSection({ copy }: { readonly copy: LandingCopy }) {
           })}
         </div>
       </div>
-    </section>
-  );
-}
-
-function FinalSection({ copy }: { readonly copy: LandingCopy }) {
-  const publicSitePath = usePublicSitePath();
-
-  return (
-    <section
-      className={`${landingFinalSectionHeightClassName} flex flex-col bg-white`}
-    >
-      <div className="flex flex-1 items-center justify-center text-center">
-        <div className="landing-container">
-          <h2 className="break-keep text-[36px] font-normal leading-tight text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
-            {copy.final.title}
-          </h2>
-          {copy.final.description ? (
-            <p className="landing-final-copy mt-4 break-keep text-[16px] font-normal leading-7 text-[#555550]">
-              {copy.final.description}
-            </p>
-          ) : null}
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Link
-              className="inline-flex h-11 items-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white hover:bg-[#336FE0]"
-              to={publicSitePath("/signup")}
-            >
-              {copy.final.primaryCta}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-normal text-[#4880EE] hover:bg-[#EFF6FF]"
-              to={publicSitePath("/contact")}
-            >
-              {copy.final.secondaryCta}
-            </Link>
-          </div>
-        </div>
-      </div>
-
     </section>
   );
 }

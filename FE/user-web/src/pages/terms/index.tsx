@@ -1,7 +1,6 @@
-import { CheckCircle2 } from "lucide-react";
 import {
+  FinalSection,
   PublicContentContainer,
-  PublicCtaPanel,
   PublicDocumentHero,
   PublicDocumentSection,
   PublicPageSection,
@@ -23,9 +22,7 @@ type TermsSection = {
 type TermsCopy = {
   readonly title: string;
   readonly contentsLabel: string;
-  readonly reviewTitle: string;
-  readonly reviewDescription: string;
-  readonly reviewCta: string;
+  readonly finalTitle: string;
   readonly sections: readonly TermsSection[];
 };
 
@@ -33,10 +30,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   ko: {
     title: "서비스 이용약관",
     contentsLabel: "목차",
-    reviewTitle: "정식 검토 자료가 필요하신가요?",
-    reviewDescription:
-      "영업, 개인정보, 보안 검토와 관련해 OneHand 팀에 문의할 수 있습니다.",
-    reviewCta: "문의하기",
+    finalTitle: "약관을 확인했다면 OneHand를 시작하세요.",
     sections: [
       {
         id: "using-onehand",
@@ -114,10 +108,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   },  "en-US": {
     title: "Terms of Service",
     contentsLabel: "Contents",
-    reviewTitle: "Need a formal review packet?",
-    reviewDescription:
-      "Contact the OneHand team for sales, privacy, and security questions related to your organization.",
-    reviewCta: "Contact us",
+    finalTitle: "Reviewed the terms? Start with OneHand.",
     sections: [
       {
         id: "using-onehand",
@@ -225,17 +216,11 @@ export function TermsPage() {
                 ))}
               </div>
 
-              <PublicCtaPanel
-                className="mt-14"
-                description={copy.reviewDescription}
-                icon={CheckCircle2}
-                primaryAction={{ label: copy.reviewCta, to: "/contact" }}
-                title={copy.reviewTitle}
-              />
             </article>
           </div>
         </PublicContentContainer>
       </PublicPageSection>
+      <FinalSection copy={{ title: copy.finalTitle }} />
     </PublicSitePageShell>
   );
 }

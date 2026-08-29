@@ -5,6 +5,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import {
+  FinalSection,
   PublicContentContainer,
   PublicCtaPanel,
   PublicDocumentHero,
@@ -34,6 +35,7 @@ type SolutionsCopy = {
   readonly ctaTitle: string;
   readonly description: string;
   readonly eyebrow: string;
+  readonly finalTitle: string;
   readonly segments: readonly SolutionSegmentCopy[];
   readonly title: string;
 };
@@ -50,6 +52,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     title: "개인부터 조직까지, 영업 기록을 쓰는 방식에 맞게.",
     description:
       "OneHand는 업종별 사례보다 먼저 사용자의 규모와 운영 방식에 맞춰 설명하는 것이 자연스럽습니다.",
+    finalTitle: "우리 방식에 맞는 OneHand를 찾아보세요.",
     contentsLabel: "대상별 보기",
     ctaTitle: "우리 방식에 맞는 도입이 궁금한가요?",
     ctaDescription:
@@ -96,6 +99,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     title: "For the way your sales work is organized.",
     description:
       "Before splitting by industry, OneHand is clearer when it is explained by team size and operating style.",
+    finalTitle: "Find the OneHand setup for your team.",
     contentsLabel: "Audience index",
     ctaTitle: "Want to map OneHand to your workflow?",
     ctaDescription:
@@ -199,6 +203,7 @@ export function SolutionsPage() {
           />
         </PublicContentContainer>
       </PublicPageSection>
+      <FinalSection copy={{ title: copy.finalTitle }} />
     </PublicSitePageShell>
   );
 }

@@ -1,5 +1,6 @@
 import { CircleHelp, Mail, MessageCircle, ShieldQuestion } from "lucide-react";
 import {
+  FinalSection,
   PublicContentContainer,
   PublicCtaPanel,
   PublicDocumentHero,
@@ -25,6 +26,7 @@ type HelpCopy = {
   readonly description: string;
   readonly eyebrow: string;
   readonly faqs: readonly FaqCopy[];
+  readonly finalTitle: string;
   readonly quickCards: readonly {
     readonly description: string;
     readonly title: string;
@@ -38,6 +40,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
     title: "OneHand를 시작하기 전에 자주 묻는 질문.",
     description:
       "가격, 모바일, AI, 데이터, 로그인, 팀 사용처럼 도입 전에 확인하는 질문을 한곳에 모았습니다.",
+    finalTitle: "궁금한 점이 남았다면 OneHand 팀에 문의하세요.",
     ctaTitle: "원하는 답을 찾지 못했나요?",
     ctaDescription:
       "현재 상황과 사용하려는 영업 흐름을 알려주시면 필요한 방식으로 안내하겠습니다.",
@@ -104,6 +107,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
     title: "Questions to check before starting OneHand.",
     description:
       "Find answers about pricing, mobile use, AI, data, sign-in, and team usage before adoption.",
+    finalTitle: "Still have questions? Talk to OneHand.",
     ctaTitle: "Did not find the answer you need?",
     ctaDescription:
       "Tell us about your current workflow and we can point you to the right starting point.",
@@ -227,6 +231,7 @@ export function HelpPage() {
           />
         </PublicContentContainer>
       </PublicPageSection>
+      <FinalSection copy={{ title: copy.finalTitle }} />
     </PublicSitePageShell>
   );
 }

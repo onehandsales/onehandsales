@@ -70,6 +70,7 @@ type PublicSiteCopy = {
     readonly trustedTitle: string;
     readonly finalCta: string;
     readonly finalPrimary: string;
+    readonly finalSecondary: string;
   };
   readonly pricing: {
     readonly title: string;
@@ -94,6 +95,7 @@ type PublicSiteCopy = {
     readonly featuresTitle: string;
     readonly featureColumn: string;
     readonly faqTitle: string;
+    readonly finalTitle: string;
     readonly includedValues: readonly string[];
     readonly emptyCell: string;
     readonly plans: readonly {
@@ -245,8 +247,9 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       sectionWorkspace: "고객, 일정, 미팅노트, 딜을 한곳에서 관리하세요.",
       quote: "“AI보다 먼저, 영업의 흐름이 정리됩니다.”",
       trustedTitle: "혼자서도 영업 흐름을 놓치지 않는 사람들을 위해.",
-      finalCta: "지금 시작하세요.",
+      finalCta: "오늘 바로 시작하세요.",
       finalPrimary: "OneHand 시작",
+      finalSecondary: "데모 요청",
     },
     pricing: {
       title: "영업 운영에 필요한 하나의 도구.",
@@ -274,6 +277,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       featuresTitle: "요금제와 기능",
       featureColumn: "기능",
       faqTitle: "자주 묻는 질문",
+      finalTitle: "우리에게 맞는 요금제로 시작하세요.",
       includedValues: ["포함"],
       emptyCell: "—",
       plans: [
@@ -530,6 +534,7 @@ function makeTranslatedPricing(copy: {
   readonly featuresTitle: string;
   readonly featureColumn: string;
   readonly faqTitle: string;
+  readonly finalTitle: string;
 }): PublicSiteCopy["pricing"] {
   const isCad = copy.currency.includes("CAD");
 
@@ -736,6 +741,7 @@ function makeEnglishCopy(copy: {
       trustedTitle: "For sellers who manage relationships directly.",
       finalCta: "Get started today.",
       finalPrimary: "Get OneHand",
+      finalSecondary: "Request Demo",
     },
     pricing: makeTranslatedPricing({
       title: copy.title,
@@ -758,6 +764,7 @@ function makeEnglishCopy(copy: {
       featuresTitle: "Plans and features",
       featureColumn: "Feature",
       faqTitle: "Frequently asked questions",
+      finalTitle: "Choose the plan that fits your sales work.",
     }),
     contact: makeTranslatedContact({
       title: ["OneHand", copy.contactTitle],

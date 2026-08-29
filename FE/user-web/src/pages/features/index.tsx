@@ -11,6 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import {
+  FinalSection,
   PublicContentContainer,
   PublicCtaPanel,
   PublicDocumentHero,
@@ -40,6 +41,7 @@ type FeaturesCopy = {
   readonly ctaTitle: string;
   readonly description: string;
   readonly eyebrow: string;
+  readonly finalTitle: string;
   readonly items: readonly FeatureItemCopy[];
   readonly title: string;
 };
@@ -62,6 +64,7 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
     title: "영업 흐름을 놓치지 않기 위한 핵심 기능.",
     description:
       "고객, 딜, 일정, 기록, 파일, AI 초안까지 개인 영업자가 매일 확인해야 하는 일을 한 흐름으로 정리합니다.",
+    finalTitle: "OneHand 기능으로 영업 흐름을 정리하세요.",
     contentsLabel: "기능 목차",
     ctaTitle: "기능을 보고 바로 시작해볼까요?",
     ctaDescription:
@@ -165,6 +168,7 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
     title: "Core tools for keeping sales work moving.",
     description:
       "Keep customers, deals, schedules, notes, files, and AI drafts in one workflow for everyday sales work.",
+    finalTitle: "Turn OneHand features into your daily sales flow.",
     contentsLabel: "Feature index",
     ctaTitle: "Ready to try the workflow?",
     ctaDescription:
@@ -321,6 +325,7 @@ export function FeaturesPage() {
           />
         </PublicContentContainer>
       </PublicPageSection>
+      <FinalSection copy={{ title: copy.finalTitle }} />
     </PublicSitePageShell>
   );
 }

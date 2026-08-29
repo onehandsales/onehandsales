@@ -1,6 +1,7 @@
 import { Check, CircleHelp, Sparkles } from "lucide-react";
 import { Fragment } from "react";
 import {
+  FinalSection,
   PublicContentContainer,
   PublicSitePageShell,
 } from "@/features/public-site";
@@ -242,6 +243,7 @@ export function PricingPage() {
           </div>
         </PublicContentContainer>
       </section>
+      <FinalSection copy={{ title: pricing.finalTitle }} />
     </PublicSitePageShell>
   );
 }

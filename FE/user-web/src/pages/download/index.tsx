@@ -6,6 +6,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import {
+  FinalSection,
   PublicContentContainer,
   PublicCtaPanel,
   PublicDocumentHero,
@@ -33,6 +34,7 @@ type DownloadCopy = {
   readonly ctaTitle: string;
   readonly description: string;
   readonly eyebrow: string;
+  readonly finalTitle: string;
   readonly iosLabel: string;
   readonly title: string;
 };
@@ -43,6 +45,7 @@ const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
     title: "iOS와 Android에서 OneHand를 바로 열어보세요.",
     description:
       "앱 다운로드 흐름을 기준으로 안내합니다. 현장에서 고객을 만난 뒤에도 모바일에서 영업 흐름을 확인할 수 있게 설계합니다.",
+    finalTitle: "모바일에서도 OneHand를 바로 시작하세요.",
     iosLabel: "App Store에서 다운로드",
     androidLabel: "Google Play에서 다운로드",
     ctaTitle: "계정이 있다면 웹에서도 바로 사용할 수 있어요.",
@@ -69,6 +72,7 @@ const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
     title: "Open OneHand on iOS and Android.",
     description:
       "This page is structured around the app download flow, so sellers can check customer and deal context while they are in the field.",
+    finalTitle: "Take OneHand with you on every visit.",
     iosLabel: "Download on the App Store",
     androidLabel: "Get it on Google Play",
     ctaTitle: "Already have an account? You can also start on the web.",
@@ -140,6 +144,7 @@ export function DownloadPage() {
           />
         </PublicContentContainer>
       </PublicPageSection>
+      <FinalSection copy={{ title: copy.finalTitle }} />
     </PublicSitePageShell>
   );
 }

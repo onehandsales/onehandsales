@@ -7,6 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import {
+  FinalSection,
   PublicContentContainer,
   PublicDocumentHero,
   PublicInfoCard,
@@ -33,6 +34,7 @@ type SecuritySectionCopy = {
 
 type SecurityCopy = {
   readonly title: string;
+  readonly finalTitle: string;
   readonly sections: readonly SecuritySectionCopy[];
 };
 
@@ -47,6 +49,7 @@ const sectionIcons: readonly LucideIcon[] = [
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
     title: "보안",
+    finalTitle: "보안 기준을 확인하고 OneHand를 시작하세요.",
     sections: [
       {
         eyebrow: "보안",
@@ -167,6 +170,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   },
   "en-US": {
     title: "Security",
+    finalTitle: "Review security, then move forward with OneHand.",
     sections: [
       {
         eyebrow: "Security",
@@ -311,7 +315,7 @@ export function SecurityPage() {
           </div>
         </PublicContentContainer>
       </PublicPageSection>
-
+      <FinalSection copy={{ title: copy.finalTitle }} />
     </PublicSitePageShell>
   );
 }
