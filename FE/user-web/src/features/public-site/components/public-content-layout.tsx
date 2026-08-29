@@ -237,9 +237,9 @@ export function PublicTableOfContents({
   return (
     <nav className={cn("rounded-[8px] bg-[#FAFAF8] p-4", className)}>
       {label ? (
-        <p className="text-[12px] font-normal uppercase tracking-[0.08em] text-[#888880]">
+        <h3 className="break-keep text-[18px] font-normal leading-tight text-[#222220]">
           {label}
-        </p>
+        </h3>
       ) : null}
       <div
         className={cn(

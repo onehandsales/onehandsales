@@ -30,6 +30,7 @@ type PrivacySection = {
 
 type PrivacyCopy = {
   readonly title: string;
+  readonly contentsLabel: string;
   readonly contactTitle: string;
   readonly contactDescription: string;
   readonly contactCta: string;
@@ -41,6 +42,7 @@ type PrivacyCopy = {
 const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   ko: {
     title: "개인정보 처리방침",
+    contentsLabel: "목차",
     contactTitle: "문의하기",
     contactDescription:
       "이 개인정보 처리방침 또는 개인정보 처리 관행에 대한 질문이 있으면 OneHand 팀에 문의하세요.",
@@ -198,6 +200,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     ],
   },  "en-US": {
     title: "Privacy policy",
+    contentsLabel: "Contents",
     contactTitle: "Contact us",
     contactDescription:
       "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand team.",
@@ -374,6 +377,7 @@ export function PrivacyPage() {
             <PublicTableOfContents
               className="mt-10"
               items={copy.sections}
+              label={copy.contentsLabel}
               numbered
             />
 
