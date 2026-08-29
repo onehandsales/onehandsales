@@ -7,7 +7,6 @@ import {
 import {
   FinalSection,
   PublicContentContainer,
-  PublicCtaPanel,
   PublicDocumentHero,
   PublicDocumentSection,
   PublicInfoCard,
@@ -31,11 +30,9 @@ type SolutionSegmentCopy = {
 type SolutionsCopy = {
   readonly contentsLabel: string;
   readonly ctaDescription: string;
-  readonly ctaLabel: string;
   readonly ctaTitle: string;
   readonly description: string;
   readonly eyebrow: string;
-  readonly finalTitle: string;
   readonly segments: readonly SolutionSegmentCopy[];
   readonly title: string;
 };
@@ -52,12 +49,10 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     title: "개인부터 조직까지, 영업 기록을 쓰는 방식에 맞게.",
     description:
       "OneHand는 업종별 사례보다 먼저 사용자의 규모와 운영 방식에 맞춰 설명하는 것이 자연스럽습니다.",
-    finalTitle: "우리 방식에 맞는 OneHand를 찾아보세요.",
     contentsLabel: "대상별 보기",
     ctaTitle: "우리 방식에 맞는 도입이 궁금한가요?",
     ctaDescription:
-      "개인 영업, 작은 팀, 조직 운영 중 어디에 가까운지 알려주시면 필요한 흐름부터 정리할 수 있습니다.",
-    ctaLabel: "문의하기",
+      "어디에 가까운지 알려주면 필요한 흐름부터 정리해요.",
     segments: [
       {
         id: "personal",
@@ -99,12 +94,10 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     title: "For the way your sales work is organized.",
     description:
       "Before splitting by industry, OneHand is clearer when it is explained by team size and operating style.",
-    finalTitle: "Find the OneHand setup for your team.",
     contentsLabel: "Audience index",
     ctaTitle: "Want to map OneHand to your workflow?",
     ctaDescription:
       "Tell us whether you are closer to personal sales, a small team, or a larger organization, and we can start with the right flow.",
-    ctaLabel: "Contact us",
     segments: [
       {
         id: "personal",
@@ -195,15 +188,14 @@ export function SolutionsPage() {
             ))}
           </div>
 
-          <PublicCtaPanel
-            className="mt-14"
-            description={copy.ctaDescription}
-            primaryAction={{ label: copy.ctaLabel, to: "/contact" }}
-            title={copy.ctaTitle}
-          />
         </PublicContentContainer>
       </PublicPageSection>
-      <FinalSection copy={{ title: copy.finalTitle }} />
+      <FinalSection
+        copy={{
+          description: copy.ctaDescription,
+          title: copy.ctaTitle,
+        }}
+      />
     </PublicSitePageShell>
   );
 }

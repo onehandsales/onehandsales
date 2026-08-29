@@ -277,7 +277,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       featuresTitle: "요금제와 기능",
       featureColumn: "기능",
       faqTitle: "자주 묻는 질문",
-      finalTitle: "우리에게 맞는 요금제로 시작하세요.",
+      finalTitle: "맞는 요금제로 시작해요.",
       includedValues: ["포함"],
       emptyCell: "—",
       plans: [

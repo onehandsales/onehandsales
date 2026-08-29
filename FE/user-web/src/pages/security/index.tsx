@@ -49,7 +49,7 @@ const sectionIcons: readonly LucideIcon[] = [
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
     title: "보안",
-    finalTitle: "보안 기준을 확인하고 OneHand를 시작하세요.",
+    finalTitle: "보안 기준을 확인하고 시작해요.",
     sections: [
       {
         eyebrow: "보안",

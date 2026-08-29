@@ -31,6 +31,7 @@ type PrivacyCopy = {
   readonly title: string;
   readonly contentsLabel: string;
   readonly finalTitle: string;
+  readonly finalDescription: string;
   readonly tableHeaders: readonly [string, string, string];
   readonly californiaRows: readonly (readonly [string, string, string])[];
   readonly sections: readonly PrivacySection[];
@@ -40,7 +41,9 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   ko: {
     title: "개인정보 처리방침",
     contentsLabel: "목차",
-    finalTitle: "개인정보 처리 기준을 확인하고 시작하세요.",
+    finalTitle: "개인정보 관련 질문이 있나요?",
+    finalDescription:
+      "처리방침이 궁금하면 OneHand 팀에 문의해 주세요.",
     tableHeaders: ["범주", "비즈니스 목적 공개", "적용 시 판매/공유"],
     californiaRows: [
       ["식별자", "서비스 제공자, 계열사, 법적 수신자, 광고 파트너", "적용 가능한 광고 파트너"],
@@ -195,7 +198,9 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
   },  "en-US": {
     title: "Privacy policy",
     contentsLabel: "Contents",
-    finalTitle: "Review privacy, then start with confidence.",
+    finalTitle: "Contact us",
+    finalDescription:
+      "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand team.",
     tableHeaders: ["Category", "Disclosed for business purposes", "Sold/shared where applicable"],
     californiaRows: [
       ["Identifiers", "Service providers, affiliates, legal recipients, advertising partners", "Advertising partners where applicable"],
@@ -383,7 +388,12 @@ export function PrivacyPage() {
           </article>
         </PublicContentContainer>
       </PublicPageSection>
-      <FinalSection copy={{ title: copy.finalTitle }} />
+      <FinalSection
+        copy={{
+          description: copy.finalDescription,
+          title: copy.finalTitle,
+        }}
+      />
     </PublicSitePageShell>
   );
 }

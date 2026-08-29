@@ -23,6 +23,7 @@ type TermsCopy = {
   readonly title: string;
   readonly contentsLabel: string;
   readonly finalTitle: string;
+  readonly finalDescription: string;
   readonly sections: readonly TermsSection[];
 };
 
@@ -30,7 +31,9 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   ko: {
     title: "서비스 이용약관",
     contentsLabel: "목차",
-    finalTitle: "약관을 확인했다면 OneHand를 시작하세요.",
+    finalTitle: "정식 검토 자료가 필요한가요?",
+    finalDescription:
+      "영업, 개인정보, 보안 검토는 OneHand 팀에 문의해 주세요.",
     sections: [
       {
         id: "using-onehand",
@@ -108,7 +111,9 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
   },  "en-US": {
     title: "Terms of Service",
     contentsLabel: "Contents",
-    finalTitle: "Reviewed the terms? Start with OneHand.",
+    finalTitle: "Need a formal review packet?",
+    finalDescription:
+      "Contact the OneHand team for sales, privacy, and security questions related to your organization.",
     sections: [
       {
         id: "using-onehand",
@@ -220,7 +225,12 @@ export function TermsPage() {
           </div>
         </PublicContentContainer>
       </PublicPageSection>
-      <FinalSection copy={{ title: copy.finalTitle }} />
+      <FinalSection
+        copy={{
+          description: copy.finalDescription,
+          title: copy.finalTitle,
+        }}
+      />
     </PublicSitePageShell>
   );
 }
