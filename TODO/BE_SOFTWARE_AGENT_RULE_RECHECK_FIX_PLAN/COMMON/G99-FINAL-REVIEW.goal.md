@@ -1,6 +1,6 @@
 # G99 전체 수정 결과 최종 검토
 
-상태: Ready after G01-G08
+상태: Next for `/goal`
 성격: 최종 검토
 우선순위: 필수
 
@@ -14,6 +14,9 @@ G01부터 G08까지 실행된 모든 수정이 Backend Agent 규칙과 각 Goal 
 - `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\REFERENCES.md`
 - `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\SCOPE.md`
 - `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\VALIDATION-CHECKLIST.md`
+- `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\README.md`
+- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\README.md`
+- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`
 - `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ENGINEERING_REVIEW_CHECKLIST.md`
 - 각 Goal의 `TODO_LOG`
 
@@ -86,10 +89,12 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\BE_SOFTWARE_AGENT_RUL
 - 진행 문서 상태 반영 여부
 - 남은 리스크
 - 추가 TODO 필요 여부
+- G07/G08에서 분리한 후속 계획의 상태와 다음 실행 대상
 - 커밋 여부
 
 ## 8. 완료 기준
 
 - 모든 필수 검증이 통과하거나, 실패한 검증의 원인과 남은 조치가 명확히 기록되어 있다.
 - 각 Goal 완료 기준이 충족되었는지 확인되어 있다.
+- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`과 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 다음 실행 대상이 상위 TODO 문서와 일치한다.
 - 사용자에게 최종 결과를 보고할 수 있는 상태다.

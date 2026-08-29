@@ -1,6 +1,6 @@
 # Current Risk Summary
 
-상태: In Progress / G01-G07 resolved
+상태: In Progress / G01-G08 resolved / G99 next
 
 ## 1. 결론
 
@@ -13,6 +13,7 @@ G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 s
 G05는 2026-08-28 완료되었고, 대상 Backend 파일의 class/interface/type/port token/method/helper 한글 역할/기능/단계 주석 누락을 보강했다. 추가 재검토에서 G05 관련 진행 문서가 G06 다음 실행 상태로 정리되어 있고, 주석 누락 정적 감사와 BE typecheck/lint가 통과했음을 확인했다. 구현/로그 커밋은 `dca1a22c`다.
 G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 direct `process.env` 접근을 제한 예외로 문서화했다. `BE/src/main.ts`와 `BE/src/app.module.ts`에는 한글 단계 주석을 보강했고, 공통 환경/Backend convention/배포 문서의 정책 충돌을 정리했다. BE typecheck/lint/test와 `process.env` 정적 확인이 통과했으며 `0d0530d3`로 구현/로그 커밋이 완료되었다.
 G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 보관 92개로 구분했다. 활성 Service QA API-SPEC 보강 대상과 보관 문서 제외/후속 감사 기준을 정리했으며, 대량 문서 보강은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
+G08은 2026-08-29 완료되었고, presentation의 `application/ports/*repository*` import 22 line / 20 file을 전수 확인했다. repository token/interface 직접 사용은 0건이라 즉시 코드 수정은 하지 않았고, DTO validation 값과 response mapper projection record의 대량 타입 소유권 분리는 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
 
 ## 2. P1
 
@@ -35,7 +36,7 @@ G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 
 | --- | --- | --- | --- |
 | bootstrap `process.env` | 공통 환경 문서는 bootstrap local env read를 허용하지만 Backend convention은 direct `process.env` 금지를 적고 있어 예외가 명확하지 않았다. | G06 | 해결 완료 |
 | API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 해결 완료, 후속 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 생성 |
-| presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용인지, read model type 공유인지 감사가 필요하다. | G08 | 다음 실행 |
+| presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용은 0건이나 타입 소유권 분리가 필요하다. | G08 | 해결 완료, 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 생성 |
 
 ## 5. 기존 검증 결과
 
@@ -64,6 +65,13 @@ G06 추가 검증 결과:
 - `rg -n "process\.env" src`: `BE\src\main.ts` bootstrap env loader 예외 범위만 출력
 - `git diff --check`: 통과
 
+G08 감사 검증 결과:
+
+- `rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modules -g "*.ts" -g "!*.spec.ts" | rg "\\presentation\\"`: 22 line 출력, 감사 목록과 일치
+- `rg -n "@Inject\\(|REPOSITORY|Repository" src\modules\*\presentation -g "*.ts" -g "!*.spec.ts"`: 출력 없음, 직접 repository token/interface 사용 0건
+- `git diff --name-only -- BE`: 출력 없음, BE 코드 변경 없음
+- `git diff --check`: 통과
+
 추가 정적 확인 결과:
 
 - Domain forbidden dependency matches: 0
@@ -78,12 +86,10 @@ G06 추가 검증 결과:
 
 ## 6. 다음 Goal에서 다시 확인해야 하는 현재 위치
 
-- G08: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`
-- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ARCHITECTURE\BACKEND.md`
-- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\BACKEND.md`
-- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\API_CONTRACT.md`
-- G08: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\CONVENTION\COMMENT_AND_LOGGING.md`
-- G08: `BE\src\modules\*\presentation\**\*.ts`의 `application/ports/*repository*` import
+- G99: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
+- G99: `TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\VALIDATION-CHECKLIST.md`
+- G99: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ENGINEERING_REVIEW_CHECKLIST.md`
+- G99: `BE\src\modules`와 `BE\src\shared`의 최종 정적 점검
 
 ## 7. 해결 완료 위치
 
@@ -132,3 +138,11 @@ G06 추가 검증 결과:
 - G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`
 - G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
 - 완료 로그: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`
+- G08: `BE\src\modules\*\presentation\**\*.ts`의 `application/ports/*repository*` import 감사
+- G08: `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\README.md`
+- G08: `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`
+- G08: `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\GOAL-WORK-ORDER.md`
+- G08: `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md`
+- G08: `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`
+- G08: `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
+- 완료 로그: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G08_PRESENTATION_REPOSITORY_PROJECTION_AUDIT\WORK_LOG.md`

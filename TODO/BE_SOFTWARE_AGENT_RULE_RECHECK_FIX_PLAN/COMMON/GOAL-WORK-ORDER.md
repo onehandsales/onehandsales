@@ -1,11 +1,11 @@
 # Goal Work Order
 
-상태: In Progress / G01-G07 Completed
+상태: In Progress / G01-G08 Completed / G99 Next
 
 ## 1. 실행 원칙
 
 - 한 번의 `/goal`에서는 하나의 goal 파일만 실행한다.
-- `G01`, `G02`, `G03`, `G04`, `G05`, `G06`, `G07`은 완료되었고, 다음 실행 대상은 `G08`이다.
+- `G01`, `G02`, `G03`, `G04`, `G05`, `G06`, `G07`, `G08`은 완료되었고, 다음 실행 대상은 `G99`이다.
 - `G99`는 모든 수정과 감사 Goal 완료 후 마지막에 실행한다.
 - 각 Goal 시작 전 `COMMON/REFERENCES.md`, `COMMON/SCOPE.md`, `COMMON/EXECUTION-GATES.md`를 확인한다.
 - Backend 코드 수정 시 한글 주석 필수 규칙을 적용한다.
@@ -21,13 +21,12 @@
 | 5 | G05 | `BE-TODO/G05-BACKEND-KOREAN-COMMENT-RULE.goal.md` | 코드 주석 수정 | Completed |
 | 6 | G06 | `BE-TODO/G06-BOOTSTRAP-PROCESS-ENV-POLICY.goal.md` | 문서/소폭 코드 수정 | Completed |
 | 7 | G07 | `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md` | 문서 감사 | Completed |
-| 8 | G08 | `BE-TODO/G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | 감사/후속 분리 | Next |
-| 9 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G01-G08 |
+| 8 | G08 | `BE-TODO/G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md` | 감사/후속 분리 | Completed |
+| 9 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Next |
 
 ## 3. 실행 프롬프트
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```
 
