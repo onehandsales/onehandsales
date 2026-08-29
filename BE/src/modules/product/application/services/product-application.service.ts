@@ -12,13 +12,13 @@ import {
   PRODUCT_PRIVATE_MEMO_ENCRYPTION_PORT,
   type ProductPrivateMemoEncryptionPort,
 } from "@/modules/product/application/ports/product-private-memo-encryption.port";
+import { ProductListSort } from "@/modules/product/application/ports/product-query.types";
 import {
   PRODUCT_REPOSITORY,
   type MemoLogCursor,
   type ProductCategoryRecord,
   type ProductDealRecord,
   type ProductListRecord,
-  ProductListSort,
   type ProductMemoLogRecord,
   type ProductPrivateMemoLogRecord,
   type ProductRecord,

@@ -36,8 +36,10 @@ D:\workspace_repository\onehandsales\TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FI
 
 ```text
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md 실행해줘.
 ```
+
+2026-08-29 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01 DTO validation contract boundary는 완료됐고, 다음 실행 대상은 G02 response mapper read model boundary다.
 
 주의:
 

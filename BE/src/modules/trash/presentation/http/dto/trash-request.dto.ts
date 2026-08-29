@@ -16,7 +16,7 @@ import type {
   TrashLogTypeFilter,
   TrashSort,
   TrashTargetType,
-} from "@/modules/trash/application/ports/trash.repository";
+} from "@/modules/trash/application/ports/trash.types";
 
 export const TRASH_TARGET_TYPES = [
   "COMPANY",

@@ -9,7 +9,7 @@ import {
   IsUUID,
   Min,
 } from "class-validator";
-import { ProductListSort } from "@/modules/product/application/ports/product.repository";
+import { ProductListSort } from "@/modules/product/application/ports/product-query.types";
 import { SUPPORTED_CURRENCY_CODES } from "@/shared/application/currency/currency-code";
 
 function toOptionalStringArray(params: TransformFnParams): string[] | undefined {

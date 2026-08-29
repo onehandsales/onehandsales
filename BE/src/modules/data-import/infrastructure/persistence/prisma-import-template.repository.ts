@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import type { ImportTemplateType } from "@/modules/data-import/application/ports/import-template.types";
 import type {
   ConfirmContactCompanyResolutionInput,
   ConfirmDealContactResolutionInput,
@@ -8,7 +9,6 @@ import type {
   FindImportUserLogInput,
   ImportTemplateRecord,
   ImportTemplateRepository,
-  ImportTemplateType,
   ImportUserLogPageRecord,
   ImportUserLogRecord,
   ListImportUserLogsInput,

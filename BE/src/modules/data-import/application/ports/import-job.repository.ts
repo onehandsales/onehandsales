@@ -1,4 +1,4 @@
-import type { ImportTemplateType } from "./import-template.repository";
+import type { ImportTemplateType } from "./import-template.types";
 
 export const IMPORT_JOB_REPOSITORY = Symbol("IMPORT_JOB_REPOSITORY");
 export const IMPORT_JOB_ROW_REPOSITORY = Symbol("IMPORT_JOB_ROW_REPOSITORY");

@@ -1,4 +1,5 @@
 ﻿import { Prisma } from "@prisma/client";
+import { CompanyListSort } from "@/modules/company/application/ports/company-query.types";
 import {
   type CompanyFieldRecord,
   type CompanyContactRecord,
@@ -11,7 +12,6 @@ import {
   type CompanyRecord,
   type CompanyRegionRecord,
   type CompanyRepository,
-  CompanyListSort,
   type CreateCompanyInput,
   type CreateCompanyMemoLogInput,
   type CreateCompanyPrivateMemoLogInput,

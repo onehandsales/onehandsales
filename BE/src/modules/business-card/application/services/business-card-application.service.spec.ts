@@ -10,9 +10,11 @@ import type {
 } from "@/modules/business-card/application/ports/business-card-ocr.provider";
 import {
   BusinessCardSafeFailureCodeValue,
+  BusinessCardScanStatusValue,
+} from "@/modules/business-card/application/ports/business-card-scan-log.types";
+import {
   type BusinessCardScanLogRecord,
   type BusinessCardScanLogRepository,
-  BusinessCardScanStatusValue,
   type CreateBusinessCardScanLogInput,
 } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
 import { BusinessCardImageValidationError } from "@/modules/business-card/domain/business-card.errors";

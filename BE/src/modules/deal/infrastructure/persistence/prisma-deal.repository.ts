@@ -5,8 +5,8 @@ import type {
   NotificationSettingsRecord,
   UpsertReminderNotificationInput,
 } from "@/shared/application/notification/notification-reminder-writer.port";
+import { DealListSort } from "@/modules/deal/application/ports/deal-query.types";
 import {
-  DealListSort,
   type CountDealsByStatusInput,
   type CreateDealCompaniesInput,
   type CreateDealContactsInput,

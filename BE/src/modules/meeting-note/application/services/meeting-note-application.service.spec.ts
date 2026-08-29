@@ -1,6 +1,8 @@
 import {
   MeetingNoteSort,
   MeetingNoteSourceTypeValue,
+} from "@/modules/meeting-note/application/ports/meeting-note.types";
+import {
   type CompanySnapshotRecord,
   type ContactSnapshotRecord,
   type CreateMeetingNoteInput,

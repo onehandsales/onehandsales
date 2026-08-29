@@ -7,24 +7,14 @@ import type {
   ScheduleWeeklyReportNextFollowingActionRecord,
   ScheduleWeeklyReportScheduleRecord,
 } from "./schedule-weekly-report-query.port";
+import type {
+  ScheduleSourceType,
+  ScheduleSourceTypeFilter,
+  ScheduleVisibility,
+} from "./schedule-query.types";
 
 // 역할 : 일정 repository 구현체를 주입하기 위한 토큰입니다.
 export const SCHEDULE_REPOSITORY = Symbol("SCHEDULE_REPOSITORY");
-
-// 역할 : ScheduleViewMode 일정 목록 조회 화면 단위를 정의합니다.
-export enum ScheduleViewMode {
-  MONTH = "month",
-  WEEK = "week",
-}
-
-// 역할 : ScheduleSourceType 일정 생성 출처 값을 정의합니다.
-export type ScheduleSourceType = "INTERNAL" | "GOOGLE";
-
-// 역할 : ScheduleSourceTypeFilter 일정 목록에서 조회할 출처 필터 값을 정의합니다.
-export type ScheduleSourceTypeFilter = "ALL" | ScheduleSourceType;
-
-// 역할 : ScheduleVisibility 일정 목록에서 노출할 일정 범위를 정의합니다.
-export type ScheduleVisibility = "ACTIVE" | "HIDDEN_GOOGLE" | "ALL";
 
 // 역할 : ScheduleExternalSyncStatus 외부 Calendar와 로컬 일정의 동기화 상태를 정의합니다.
 export type ScheduleExternalSyncStatus =

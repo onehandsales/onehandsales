@@ -1,6 +1,8 @@
 # G01 DTO validation contract boundary
 
-상태: Next for `/goal`
+상태: Completed
+완료일: 2026-08-29
+TODO_LOG: `TODO_LOG\2026-08-29\PRESENTATION_CONTRACT_TYPE_BOUNDARY\G01_DTO_VALIDATION_CONTRACT_BOUNDARY\WORK_LOG.md`
 성격: Backend 코드 수정
 우선순위: P3
 
@@ -56,3 +58,21 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - API request validation 값이 기존과 동일하다.
 - Backend typecheck/lint/test가 통과한다.
 - 수정한 class/interface/type/helper에 한글 주석 규칙이 반영되어 있다.
+
+## 8. 완료 결과
+
+- DTO validation 경계 대상 11 files의 repository port import를 제거했다.
+- sort/filter/status enum/const/type은 `application/ports/*.types.ts` 계열 non-repository contract 파일로 분리했다.
+- API request field 이름과 허용 값은 변경하지 않았다.
+- 2026-08-29 검증 결과 `pnpm run typecheck`, `pnpm run lint`, `pnpm test -- --runInBand`가 통과했다.
+- `rg -n 'application/ports/.+repository' src/modules -g '*.ts' -g '!*.spec.ts' | rg '/presentation/http/dto/'` 결과는 출력 없음이다.
+
+## 9. 재검토 결과
+
+2026-08-29 추가 재검토에서 G01 완료 기준 누락은 발견하지 못했다.
+
+- DTO validation 대상 11 files는 import 경로만 변경됐고 API request field와 validation 허용 값은 유지됐다.
+- `*repository.ts` 파일의 G01 이동 대상 enum/const/type export 잔존 검색 결과는 출력 없음이다.
+- presentation DTO의 repository port import 검색 결과는 출력 없음이다.
+- presentation 직접 repository token/interface 사용 검색 결과는 출력 없음이다.
+- 전체 presentation repository port import 잔여 9건은 모두 G02 response mapper 대상이다.

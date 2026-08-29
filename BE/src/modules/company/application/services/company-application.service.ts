@@ -8,13 +8,13 @@ import {
   recordProductAnalyticsServerEventBestEffort,
   toProductAnalyticsExportRowCountBucket,
 } from "@/modules/analytics/application/services/product-analytics-event-recorder";
+import { CompanyListSort } from "@/modules/company/application/ports/company-query.types";
 import {
   type CompanyMemoLogRecord,
   COMPANY_REPOSITORY,
   type CompanyContactRecord,
   type CompanyDealRecord,
   type CompanyListRecord,
-  CompanyListSort,
   type CompanyPrivateMemoLogRecord,
   type CompanyRecord,
   type CompanyRepository,

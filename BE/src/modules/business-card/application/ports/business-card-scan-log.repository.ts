@@ -1,34 +1,12 @@
+import type {
+  BusinessCardResolutionValue,
+  BusinessCardSafeFailureCodeValue,
+  BusinessCardScanStatusValue,
+} from "./business-card-scan-log.types";
+
 export const BUSINESS_CARD_SCAN_LOG_REPOSITORY = Symbol(
   "BUSINESS_CARD_SCAN_LOG_REPOSITORY"
 );
-
-export const BusinessCardScanStatusValue = {
-  OCR_SUCCESS: "OCR_SUCCESS",
-  OCR_FAILED: "OCR_FAILED",
-  CONFIRMED: "CONFIRMED",
-} as const;
-
-export type BusinessCardScanStatusValue =
-  (typeof BusinessCardScanStatusValue)[keyof typeof BusinessCardScanStatusValue];
-
-export const BusinessCardResolutionValue = {
-  EXISTING: "EXISTING",
-  CREATED: "CREATED",
-} as const;
-
-export type BusinessCardResolutionValue =
-  (typeof BusinessCardResolutionValue)[keyof typeof BusinessCardResolutionValue];
-
-export const BusinessCardSafeFailureCodeValue = {
-  IMAGE_QUALITY_LOW: "IMAGE_QUALITY_LOW",
-  OCR_PARSE_FAILED: "OCR_PARSE_FAILED",
-  OCR_PROVIDER_UNAVAILABLE: "OCR_PROVIDER_UNAVAILABLE",
-  OCR_RATE_LIMITED: "OCR_RATE_LIMITED",
-  OCR_UNKNOWN_FAILED: "OCR_UNKNOWN_FAILED",
-} as const;
-
-export type BusinessCardSafeFailureCodeValue =
-  (typeof BusinessCardSafeFailureCodeValue)[keyof typeof BusinessCardSafeFailureCodeValue];
 
 // 역할 : BusinessCardExtractedRecord 명함 OCR 결과와 사용자 보정 값을 저장하는 필드 집합입니다.
 export interface BusinessCardExtractedRecord {
@@ -94,8 +72,8 @@ export interface CreateBusinessCardScanLogInput
     BusinessCardSafeFailureRecord {
   readonly userId: string;
   readonly status:
-    | typeof BusinessCardScanStatusValue.OCR_SUCCESS
-    | typeof BusinessCardScanStatusValue.OCR_FAILED;
+    | "OCR_SUCCESS"
+    | "OCR_FAILED";
   readonly aiProvider: string;
   readonly aiModel: string;
   readonly promptSnapshot: string;

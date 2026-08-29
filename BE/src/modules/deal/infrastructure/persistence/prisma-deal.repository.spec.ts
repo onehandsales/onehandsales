@@ -1,4 +1,4 @@
-import { DealListSort } from "@/modules/deal/application/ports/deal.repository";
+import { DealListSort } from "@/modules/deal/application/ports/deal-query.types";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaDealRepository } from "./prisma-deal.repository";

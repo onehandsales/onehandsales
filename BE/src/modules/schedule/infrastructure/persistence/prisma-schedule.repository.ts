@@ -11,6 +11,7 @@ import type {
   NotificationSettingsRecord,
   UpsertReminderNotificationInput,
 } from "@/shared/application/notification/notification-reminder-writer.port";
+import type { ScheduleSourceType } from "@/modules/schedule/application/ports/schedule-query.types";
 import {
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
@@ -22,7 +23,6 @@ import {
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
-  type ScheduleSourceType,
   type SoftDeleteScheduleInput,
   type UpdateScheduleInput,
   type WeeklyReportDealRecord,

@@ -1,3 +1,4 @@
+import { ProductListSort } from "@/modules/product/application/ports/product-query.types";
 import {
   type CreateProductInput,
   type CreateProductMemoLogInput,
@@ -11,7 +12,6 @@ import {
   type ProductCategoryRecord,
   type ProductDealRecord,
   type ProductListRecord,
-  ProductListSort,
   type ProductLookupRecord,
   type ProductMemoLogRecord,
   type ProductPageRecord,

@@ -1,4 +1,5 @@
 import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
+import type { GoogleCalendarDisconnectScheduleAction } from "./google-calendar.types";
 
 export const GOOGLE_CALENDAR_CONNECTION_REPOSITORY = Symbol(
   "GOOGLE_CALENDAR_CONNECTION_REPOSITORY"
@@ -8,7 +9,6 @@ export type GoogleCalendarConnectionStatus =
   | "CONNECTED"
   | "RECONNECT_REQUIRED"
   | "DISCONNECTED";
-export type GoogleCalendarDisconnectScheduleAction = "KEEP" | "HIDE" | "TRASH";
 
 // 역할 : GoogleCalendarConnectionRecord Google Calendar 연결 상태 projection 구조를 정의합니다.
 export interface GoogleCalendarConnectionRecord {

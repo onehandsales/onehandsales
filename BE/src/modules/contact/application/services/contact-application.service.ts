@@ -12,9 +12,9 @@ import {
   CONTACT_PRIVATE_MEMO_ENCRYPTION_PORT,
   type ContactPrivateMemoEncryptionPort,
 } from "@/modules/contact/application/ports/contact-private-memo-encryption.port";
+import { ContactListSort } from "@/modules/contact/application/ports/contact-query.types";
 import {
   CONTACT_REPOSITORY,
-  ContactListSort,
   type ContactDealRecord,
   type ContactDepartmentRecord,
   type ContactJobGradeRecord,

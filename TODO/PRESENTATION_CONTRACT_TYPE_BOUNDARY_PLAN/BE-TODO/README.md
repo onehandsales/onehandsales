@@ -1,14 +1,14 @@
 # Backend TODO
 
-상태: Ready / G01 Next
+상태: In Progress / G01 Completed / G02 Next
 
 ## 1. 실행 순서
 
 | 순서 | Goal | 파일 | 우선순위 | 상태 |
 | --- | --- | --- | --- | --- |
-| 1 | G01 | `../COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md` | P3 | Next |
-| 2 | G02 | `../COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md` | P3 | Ready after G01 |
-| 3 | G99 | `../COMMON/G99-FINAL-REVIEW.goal.md` | P3 | Ready after G01-G02 |
+| 1 | G01 | `../COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md` | P3 | Completed |
+| 2 | G02 | `../COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md` | P3 | Next |
+| 3 | G99 | `../COMMON/G99-FINAL-REVIEW.goal.md` | P3 | Ready after G02 |
 
 ## 2. 공통 지시
 

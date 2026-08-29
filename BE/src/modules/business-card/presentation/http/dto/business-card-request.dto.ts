@@ -1,6 +1,6 @@
 import { Transform, type TransformFnParams, Type } from "class-transformer";
 import { IsArray, IsEnum, IsInt, IsOptional, IsString, Min } from "class-validator";
-import { BusinessCardScanStatusValue } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
+import { BusinessCardScanStatusValue } from "@/modules/business-card/application/ports/business-card-scan-log.types";
 
 function toOptionalStringArray(params: TransformFnParams): string[] | undefined {
   const { value } = params;

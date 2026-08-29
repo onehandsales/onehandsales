@@ -1,3 +1,5 @@
+import type { ContactListSort } from "./contact-query.types";
+
 export const CONTACT_REPOSITORY = Symbol("CONTACT_REPOSITORY");
 
 // 역할 : ContactLookupRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -54,12 +56,6 @@ export interface ContactDealRecord {
   readonly dealCost: number;
   readonly currencyCode: string;
   readonly createdAt: Date;
-}
-
-// 역할 : ContactListSort 담당자 목록 정렬 기준을 정의합니다.
-export enum ContactListSort {
-  CREATED_AT_DESC = "createdAtDesc",
-  USERNAME_ASC = "usernameAsc",
 }
 
 // 역할 : ListContactsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.

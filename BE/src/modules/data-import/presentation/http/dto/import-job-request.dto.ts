@@ -12,7 +12,7 @@ import {
   Min,
   ValidateNested,
 } from "class-validator";
-import type { ImportTemplateType } from "@/modules/data-import/application/ports/import-template.repository";
+import type { ImportTemplateType } from "@/modules/data-import/application/ports/import-template.types";
 
 const IMPORT_TEMPLATE_TYPE_VALUES: readonly ImportTemplateType[] = [
   "COMPANY",

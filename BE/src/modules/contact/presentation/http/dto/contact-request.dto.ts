@@ -8,7 +8,7 @@ import {
   IsUUID,
   Min,
 } from "class-validator";
-import { ContactListSort } from "@/modules/contact/application/ports/contact.repository";
+import { ContactListSort } from "@/modules/contact/application/ports/contact-query.types";
 
 function toOptionalStringArray(params: TransformFnParams): string[] | undefined {
   const { value } = params;

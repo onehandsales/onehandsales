@@ -7,7 +7,7 @@ import {
 import { Test } from "@nestjs/testing";
 import type { NextFunction, Request, Response } from "express";
 import * as request from "supertest";
-import { DealListSort } from "@/modules/deal/application/ports/deal.repository";
+import { DealListSort } from "@/modules/deal/application/ports/deal-query.types";
 import { DealApplicationService } from "@/modules/deal/application/services/deal-application.service";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";

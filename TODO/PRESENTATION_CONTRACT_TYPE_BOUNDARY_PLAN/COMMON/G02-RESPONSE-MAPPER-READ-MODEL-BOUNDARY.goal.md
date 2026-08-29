@@ -1,6 +1,6 @@
 # G02 response mapper read model boundary
 
-상태: Ready after G01
+상태: Next for `/goal`
 성격: Backend 코드 수정
 우선순위: P3
 

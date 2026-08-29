@@ -1,14 +1,16 @@
 import { Buffer } from "node:buffer";
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  SCHEDULE_REPOSITORY,
   ScheduleViewMode,
+  type ScheduleSourceTypeFilter,
+  type ScheduleVisibility,
+} from "@/modules/schedule/application/ports/schedule-query.types";
+import {
+  SCHEDULE_REPOSITORY,
   type ScheduleDealOptionRecord,
   type ScheduleDealRecord,
   type ScheduleRecord,
   type ScheduleRepository,
-  type ScheduleSourceTypeFilter,
-  type ScheduleVisibility,
   type UpdateScheduleInput,
   type WeeklyReportDealRecord,
   type WeeklyReportScheduleRecord,

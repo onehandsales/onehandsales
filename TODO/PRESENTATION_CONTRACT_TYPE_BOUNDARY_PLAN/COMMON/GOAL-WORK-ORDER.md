@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: Ready / G01 Next
+상태: In Progress / G01 Completed / G02 Next
 
 ## 1. 실행 원칙
 
@@ -14,14 +14,13 @@
 
 | 순서 | Goal | 파일 | 성격 | 상태 |
 | --- | --- | --- | --- | --- |
-| 1 | G01 | `COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md` | DTO validation 타입/값 경계 정리 | Next |
-| 2 | G02 | `COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md` | mapper read model 타입 경계 정리 | Ready after G01 |
-| 3 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G01-G02 |
+| 1 | G01 | `COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md` | DTO validation 타입/값 경계 정리 | Completed |
+| 2 | G02 | `COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md` | mapper read model 타입 경계 정리 | Next |
+| 3 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G02 |
 
 ## 3. 실행 프롬프트
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```

@@ -7,14 +7,9 @@ import type {
   UserRole,
   UserStatus,
 } from "./admin-operation.types";
+import type { AdminUserListSort } from "./admin-user-query.types";
 
 export const ADMIN_USER_REPOSITORY = Symbol("ADMIN_USER_REPOSITORY");
-
-// 역할 : AdminUserListSort Admin 사용자 목록 정렬 값을 정의합니다.
-export enum AdminUserListSort {
-  CREATED_AT_DESC = "createdAt.desc",
-  LAST_LOGIN_AT_DESC = "lastLoginAt.desc",
-}
 
 // 역할 : ListAdminUsersInput Admin 사용자 목록 조회 조건을 정의합니다.
 export interface ListAdminUsersInput {

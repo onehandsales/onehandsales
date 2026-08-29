@@ -6,6 +6,8 @@
 
 이 계획은 Backend 내부 타입 소유권 정리 작업이다. API request/response shape를 바꾸지 않는 것이 포함 범위이므로 현재 Frontend 코드 변경은 없다.
 
+2026-08-29 G01 DTO validation contract boundary 완료 후에도 API request field 이름과 허용 값은 변경되지 않았으므로 FE 변경은 없다.
+
 ## 2. 확인 기준
 
 - Backend API 계약 의미가 변경되면 해당 goal에서 작업을 중단하고 API-SPEC 갱신 후 별도 FE 영향 검토로 분리한다.

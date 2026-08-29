@@ -16,7 +16,7 @@ import {
 import {
   MeetingNoteSort,
   MeetingNoteSourceTypeValue,
-} from "@/modules/meeting-note/application/ports/meeting-note.repository";
+} from "@/modules/meeting-note/application/ports/meeting-note.types";
 import {
   MeetingNoteFollowUpChannelValue,
   MeetingNoteFollowUpToneValue,

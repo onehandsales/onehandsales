@@ -1,23 +1,17 @@
 import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
 import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
+import type { DealActivityTypeCode } from "./deal-activity.types";
 import type {
   CreateDealActivityInput,
   DealActivityRecord,
-  DealActivityTypeCode,
   FindDealActivityByIdInput,
   FindDealActivityBySourceInput,
   ListDealActivitiesForDealInput,
   UpdateUserDealActivityInput,
 } from "./deal-activity.repository";
+import type { DealListSort } from "./deal-query.types";
 
 export const DEAL_REPOSITORY = Symbol("DEAL_REPOSITORY");
-
-export enum DealListSort {
-  CREATED_AT_DESC = "createdAtDesc",
-  DEAL_COST_DESC = "dealCostDesc",
-  DEAL_COST_ASC = "dealCostAsc",
-  EXPECTED_END_DATE_ASC = "expectedEndDateAsc",
-}
 
 // 역할 : DealCompanyRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealCompanyRecord {

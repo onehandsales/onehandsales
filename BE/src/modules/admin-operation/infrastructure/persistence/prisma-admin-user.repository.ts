@@ -5,8 +5,8 @@ import {
   ProductAnalyticsTargetType,
   TrashRecoveryRequestStatus,
 } from "@prisma/client";
+import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user-query.types";
 import {
-  AdminUserListSort,
   type AdminUserActivityTimelinePageRecord,
   type AdminUserActivityTimelineRecord,
   type AdminUserListDomainCountsRecord,

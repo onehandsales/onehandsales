@@ -6,8 +6,10 @@ import {
   IsOptional,
   IsString,
 } from "class-validator";
-import type { GoogleCalendarDisconnectScheduleAction } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
-import type { GoogleCalendarSyncTrigger } from "@/modules/schedule/application/ports/google-calendar-sync.repository";
+import type {
+  GoogleCalendarDisconnectScheduleAction,
+  GoogleCalendarSyncTrigger,
+} from "@/modules/schedule/application/ports/google-calendar.types";
 
 const DISCONNECT_SCHEDULE_ACTIONS = [
   "KEEP",

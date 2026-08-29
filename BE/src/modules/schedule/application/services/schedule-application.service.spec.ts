@@ -1,5 +1,5 @@
+import { ScheduleViewMode } from "@/modules/schedule/application/ports/schedule-query.types";
 import {
-  ScheduleViewMode,
   type CreateScheduleDealsInput,
   type CreateScheduleInput,
   type DeleteScheduleDealsInput,

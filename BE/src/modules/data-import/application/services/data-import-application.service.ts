@@ -13,6 +13,7 @@ import {
   type ImportMapping,
   type ImportMappingSuggestion,
 } from "@/modules/data-import/application/ports/import-job.types";
+import type { ImportTemplateType } from "@/modules/data-import/application/ports/import-template.types";
 import {
   IMPORT_JOB_REPOSITORY,
   type ImportJobDetailRecord,
@@ -36,7 +37,6 @@ import {
   type ConfirmDealProductResolutionInput,
   type ImportTemplateRecord,
   type ImportTemplateRepository,
-  type ImportTemplateType,
   type ImportUserLogListRecord,
   type ConfirmImportInput as ConfirmImportRepositoryInput,
   type ConfirmImportResult,

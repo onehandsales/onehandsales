@@ -16,6 +16,8 @@ G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 
 G08은 2026-08-29 완료되었고, presentation의 `application/ports/*repository*` import 22 line / 20 file을 전수 확인했다. repository token/interface 직접 사용은 0건이라 즉시 코드 수정은 하지 않았고, DTO validation 값과 response mapper projection record의 대량 타입 소유권 분리는 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
 G99는 2026-08-29 완료되었고, BE 전체 검증과 Backend Agent strict 정적 점검이 통과했다. application 계층 forbidden keyword 정적 점검의 false positive를 제거하기 위해 `GoogleCalendarSyncService`의 private helper 이름을 `fetchProviderCalendars`에서 `loadProviderCalendars`로 변경했으며 동작 변경은 없다. 이 계획은 `acdb9eb3 chore(backend): complete rule recheck final review`로 커밋하고 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`으로 완료 보관했다. 커밋 이후 재검토에서도 작업 트리 clean, BE 전체 검증 재통과, 완료 문서 경로/상태 문구 정합성을 확인했다.
 
+2026-08-29 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01 DTO validation contract boundary가 완료되어 presentation DTO의 repository port import는 0건으로 정리됐다. 현재 presentation repository port import 잔여는 9 line / 9 file이며 모두 G02 response mapper read model boundary 대상이다.
+
 ## 2. P1
 
 | 항목 | 리스크 | Goal | 상태 |
@@ -113,10 +115,18 @@ G99 커밋 이후 재검토 결과:
 - 완료 문구/경로 잔존 검색: 출력 없음
 - BE post-commit `typecheck`, `lint`, `prisma:validate`, `test -- --runInBand`, `build`: 통과
 
+후속 Presentation Contract Type Boundary G01 재검토 결과:
+
+- presentation DTO repository port import: 0건
+- presentation 직접 repository token/interface 사용: 0건
+- G01 이동 대상 enum/const/type의 `*repository.ts` export 잔존: 0건
+- presentation repository port import 잔여: 9 line / 9 file, 모두 G02 response mapper 대상
+- BE `typecheck`, `lint`, `test -- --runInBand`: 통과
+
 ## 6. 후속 활성 계획
 
 - `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: G07에서 분리한 API-SPEC 템플릿 정규화 계획. 다음 실행 대상은 `COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`다.
-- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: G08에서 분리한 presentation 계약 타입 경계 정리 계획. 다음 실행 대상은 `COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md`다.
+- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: G08에서 분리한 presentation 계약 타입 경계 정리 계획. G01은 완료됐고 다음 실행 대상은 `COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`다.
 
 ## 7. 해결 완료 위치
 

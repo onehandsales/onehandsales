@@ -1,7 +1,14 @@
 import { Buffer } from "node:buffer";
 import { Inject, Injectable } from "@nestjs/common";
+import { DealListSort } from "@/modules/deal/application/ports/deal-query.types";
 import {
-  DealListSort,
+  DEAL_ACTIVITY_TYPES,
+  MANUAL_DEAL_ACTIVITY_TYPES,
+  type DealActivitySourceTypeCode,
+  type DealActivityTypeCode,
+  type ManualDealActivityTypeCode,
+} from "@/modules/deal/application/ports/deal-activity.types";
+import {
   DEAL_REPOSITORY,
   type DealCompanyRecord,
   type DealContactRecord,
@@ -20,14 +27,9 @@ import {
   type UpdateDealMemoLogInput,
 } from "@/modules/deal/application/ports/deal.repository";
 import {
-  DEAL_ACTIVITY_TYPES,
-  MANUAL_DEAL_ACTIVITY_TYPES,
   type CreateDealActivityInput,
   type DealActivityCursor,
   type DealActivityRecord,
-  type DealActivitySourceTypeCode,
-  type DealActivityTypeCode,
-  type ManualDealActivityTypeCode,
 } from "@/modules/deal/application/ports/deal-activity.repository";
 import {
   createDealActivityIfAbsent,

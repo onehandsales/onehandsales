@@ -1,3 +1,5 @@
+import type { ProductListSort } from "./product-query.types";
+
 export const PRODUCT_REPOSITORY = Symbol("PRODUCT_REPOSITORY");
 
 // 역할 : ProductLookupRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -39,13 +41,6 @@ export interface ProductListRecord extends ProductRecord {
 export interface ProductPageRecord {
   readonly items: ProductListRecord[];
   readonly totalCount: number;
-}
-
-// 역할 : ProductListSort 제품 목록 정렬 기준을 정의합니다.
-export enum ProductListSort {
-  CREATED_AT_DESC = "createdAtDesc",
-  DEAL_COUNT_DESC = "dealCountDesc",
-  DEAL_COUNT_ASC = "dealCountAsc",
 }
 
 // 역할 : ListProductsInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.

@@ -1,34 +1,11 @@
-export type TrashTargetType =
-  | "COMPANY"
-  | "CONTACT"
-  | "PRODUCT"
-  | "DEAL"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
-  | "COMPANY_MEMO_LOG"
-  | "COMPANY_PRIVATE_MEMO_LOG"
-  | "CONTACT_MEMO_LOG"
-  | "CONTACT_PRIVATE_MEMO_LOG"
-  | "PRODUCT_MEMO_LOG"
-  | "PRODUCT_PRIVATE_MEMO_LOG"
-  | "DEAL_MEMO_LOG"
-  | "DEAL_FOLLOWING_ACTION_LOG";
+import type {
+  TrashDomainFilter,
+  TrashItemKindFilter,
+  TrashLogTypeFilter,
+  TrashSort,
+  TrashTargetType,
+} from "./trash.types";
 
-export type TrashItemKindFilter = "ALL" | "ENTITY" | "LOG";
-export type TrashDomainFilter =
-  | "ALL"
-  | "COMPANY"
-  | "CONTACT"
-  | "PRODUCT"
-  | "DEAL"
-  | "SCHEDULE"
-  | "MEETING_NOTE";
-export type TrashLogTypeFilter =
-  | "ALL"
-  | "MEMO"
-  | "PRIVATE_MEMO"
-  | "FOLLOWING_ACTION";
-export type TrashSort = "RECENT" | "EXPIRES_SOON";
 export type TrashRestoreWindow = "ACTIVE" | "EXPIRED";
 export type TrashRecoveryRequestStatusValue =
   | "REQUESTED"

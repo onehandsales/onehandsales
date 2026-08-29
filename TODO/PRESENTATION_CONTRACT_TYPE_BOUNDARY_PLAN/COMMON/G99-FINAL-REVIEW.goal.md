@@ -1,6 +1,6 @@
 # G99 final review
 
-상태: Ready after G01-G02
+상태: Ready after G02
 성격: 최종 검토
 우선순위: P3
 

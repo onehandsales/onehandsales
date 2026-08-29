@@ -13,13 +13,13 @@ import {
   TrashRecoveryRequestNotAllowedBeforeExpiryError,
   TrashRecordNotFoundError,
 } from "@/modules/trash/domain/trash.errors";
+import type { TrashTargetType } from "../ports/trash.types";
 import {
   TRASH_REPOSITORY,
   type GetTrashDetailInput,
   type ListTrashInput,
   type RestoreTrashItemInput,
   type TrashRepository,
-  type TrashTargetType,
 } from "../ports/trash.repository";
 
 type ListTrashRequest = Omit<ListTrashInput, "userId" | "now">;

@@ -18,9 +18,9 @@ import {
   type MeetingNoteAiProviderCallOperationValue,
   type MeetingNoteAiProviderInfo,
 } from "@/modules/meeting-note/application/ports/meeting-note-ai-provider-call-log.repository";
+import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.types";
 import {
   MEETING_NOTE_REPOSITORY,
-  MeetingNoteSourceTypeValue,
   type CompanySnapshotRecord,
   type ContactSnapshotRecord,
   type DealSnapshotRecord,

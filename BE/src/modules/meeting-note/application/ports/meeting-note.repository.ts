@@ -1,17 +1,9 @@
+import type {
+  MeetingNoteSort,
+  MeetingNoteSourceTypeValue,
+} from "./meeting-note.types";
+
 export const MEETING_NOTE_REPOSITORY = Symbol("MEETING_NOTE_REPOSITORY");
-
-// 역할 : MeetingNoteSourceTypeValue 회의록 생성 출처 값을 정의합니다.
-export enum MeetingNoteSourceTypeValue {
-  MANUAL = "MANUAL",
-  TEXT_AI = "TEXT_AI",
-  STT_AI = "STT_AI",
-}
-
-// 역할 : MeetingNoteSort 회의록 목록 정렬 값을 정의합니다.
-export enum MeetingNoteSort {
-  CREATED_AT_DESC = "createdAtDesc",
-  MEETING_AT_DESC = "meetingAtDesc",
-}
 
 // 역할 : MeetingNoteCompanyRecord 저장소가 전달하는 회의록 회사 스냅샷 구조를 정의합니다.
 export interface MeetingNoteCompanyRecord {

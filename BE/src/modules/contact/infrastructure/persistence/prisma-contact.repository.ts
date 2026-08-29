@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
+import { ContactListSort } from "@/modules/contact/application/ports/contact-query.types";
 import {
   type ContactCompanyOptionRecord,
   type ContactDealRecord,
   type ContactDepartmentRecord,
   type ContactJobGradeRecord,
   type ContactLookupRecord,
-  ContactListSort,
   type ContactMemoLogRecord,
   type ContactPageRecord,
   type ContactPrivateMemoLogRecord,

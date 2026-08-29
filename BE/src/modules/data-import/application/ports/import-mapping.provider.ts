@@ -1,5 +1,5 @@
 import type { ImportMappingSuggestion } from "./import-job.types";
-import type { ImportTemplateType } from "./import-template.repository";
+import type { ImportTemplateType } from "./import-template.types";
 
 export const IMPORT_MAPPING_PROVIDER = Symbol("IMPORT_MAPPING_PROVIDER");
 

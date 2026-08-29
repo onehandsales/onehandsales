@@ -1,13 +1,15 @@
 import { Prisma } from "@prisma/client";
 import {
   BusinessCardResolutionValue,
+  type BusinessCardSafeFailureCodeValue,
+  BusinessCardScanStatusValue,
+} from "@/modules/business-card/application/ports/business-card-scan-log.types";
+import {
   type BusinessCardConfirmRepositoryResult,
   type BusinessCardConfirmResult,
-  type BusinessCardSafeFailureCodeValue,
   type BusinessCardScanLogPageRecord,
   type BusinessCardScanLogRecord,
   type BusinessCardScanLogRepository,
-  BusinessCardScanStatusValue,
   type ConfirmBusinessCardScanInput,
   type CreateBusinessCardScanLogInput,
   type ListBusinessCardScanLogsInput,

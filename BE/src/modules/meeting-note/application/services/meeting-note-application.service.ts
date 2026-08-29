@@ -1,8 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  MEETING_NOTE_REPOSITORY,
   MeetingNoteSort,
   MeetingNoteSourceTypeValue,
+} from "@/modules/meeting-note/application/ports/meeting-note.types";
+import {
+  MEETING_NOTE_REPOSITORY,
   type CompanySnapshotRecord,
   type ContactSnapshotRecord,
   type DealSnapshotRecord,

@@ -8,7 +8,7 @@ import {
   IsUUID,
   Min,
 } from "class-validator";
-import { CompanyListSort } from "@/modules/company/application/ports/company.repository";
+import { CompanyListSort } from "@/modules/company/application/ports/company-query.types";
 
 // 기능 : 반복 query와 comma-separated query를 UUID 배열 검증 대상으로 정규화합니다.
 function toOptionalStringArray(params: TransformFnParams): string[] | undefined {

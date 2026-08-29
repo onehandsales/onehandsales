@@ -2,11 +2,11 @@ import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { CancelScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
+import type { GoogleCalendarDisconnectScheduleAction } from "@/modules/schedule/application/ports/google-calendar.types";
 import {
   GOOGLE_CALENDAR_CONNECTION_REPOSITORY,
   type GoogleCalendarConnectionRecord,
   type GoogleCalendarConnectionRepository,
-  type GoogleCalendarDisconnectScheduleAction,
 } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
 import {
   GOOGLE_CALENDAR_OAUTH_PROVIDER,

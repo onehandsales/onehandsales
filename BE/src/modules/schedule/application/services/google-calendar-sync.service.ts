@@ -12,12 +12,12 @@ import {
   GoogleCalendarProviderTransientError,
   type GoogleCalendarReadProvider,
 } from "@/modules/schedule/application/ports/google-calendar-read.provider";
+import type { GoogleCalendarSyncTrigger } from "@/modules/schedule/application/ports/google-calendar.types";
 import {
   GOOGLE_CALENDAR_SYNC_REPOSITORY,
   type GoogleCalendarSourceRecord,
   type GoogleCalendarSyncConnectionRecord,
   type GoogleCalendarSyncRepository,
-  type GoogleCalendarSyncTrigger,
   type GoogleCalendarSyncedEventInput,
 } from "@/modules/schedule/application/ports/google-calendar-sync.repository";
 import {

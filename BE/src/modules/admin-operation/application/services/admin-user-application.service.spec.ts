@@ -4,8 +4,8 @@ import {
   AdminTargetType,
   UserStatus,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
+import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user-query.types";
 import {
-  AdminUserListSort,
   type AdminUserOverviewRecord,
   type AdminUserRepository,
 } from "@/modules/admin-operation/application/ports/admin-user.repository";

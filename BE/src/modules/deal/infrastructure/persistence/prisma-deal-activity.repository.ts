@@ -1,11 +1,13 @@
 import { Prisma } from "@prisma/client";
 import type {
+  DealActivitySourceTypeCode,
+  DealActivityTypeCode,
+} from "@/modules/deal/application/ports/deal-activity.types";
+import type {
   CreateDealActivityInput,
   DealActivityCursor,
   DealActivityRecord,
   DealActivityRepository,
-  DealActivitySourceTypeCode,
-  DealActivityTypeCode,
   FindDealActivityByIdInput,
   FindDealActivityBySourceInput,
   ListDealActivitiesForDealInput,

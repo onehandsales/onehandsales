@@ -12,7 +12,7 @@ import {
   ScheduleViewMode,
   type ScheduleSourceTypeFilter,
   type ScheduleVisibility,
-} from "@/modules/schedule/application/ports/schedule.repository";
+} from "@/modules/schedule/application/ports/schedule-query.types";
 
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const SCHEDULE_VISIBILITIES = [

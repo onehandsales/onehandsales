@@ -1,3 +1,4 @@
+import { DealListSort } from "@/modules/deal/application/ports/deal-query.types";
 import {
   type CreateDealActivityInput,
   type DealActivityCursor,
@@ -8,7 +9,6 @@ import {
   type UpdateUserDealActivityInput,
 } from "@/modules/deal/application/ports/deal-activity.repository";
 import {
-  DealListSort,
   type CountDealsByStatusInput,
   type CreateDealCompaniesInput,
   type CreateDealContactsInput,

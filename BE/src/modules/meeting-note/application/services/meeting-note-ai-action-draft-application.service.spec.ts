@@ -7,8 +7,8 @@ import {
 import type {
   MeetingNoteAiProviderCallLogRepository,
 } from "@/modules/meeting-note/application/ports/meeting-note-ai-provider-call-log.repository";
+import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.types";
 import {
-  MeetingNoteSourceTypeValue,
   type MeetingNoteRecord,
   type MeetingNoteRepository,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";

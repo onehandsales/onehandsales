@@ -1,44 +1,9 @@
+import type {
+  DealActivitySourceTypeCode,
+  DealActivityTypeCode,
+} from "./deal-activity.types";
+
 export const DEAL_ACTIVITY_REPOSITORY = Symbol("DEAL_ACTIVITY_REPOSITORY");
-
-export const DEAL_ACTIVITY_TYPES = [
-  "DEAL_CREATED",
-  "STAGE_CHANGED",
-  "NEXT_ACTION_CREATED",
-  "NEXT_ACTION_COMPLETION_CHANGED",
-  "SCHEDULE_LINKED",
-  "SCHEDULE_UNLINKED",
-  "MEETING_NOTE_LINKED",
-  "MEETING_NOTE_UNLINKED",
-  "FOLLOW_UP_SENT",
-  "FOLLOW_UP_FAILED",
-  "CALL",
-  "MEETING",
-  "EMAIL",
-  "VISIT",
-  "NOTE",
-] as const;
-
-export const MANUAL_DEAL_ACTIVITY_TYPES = [
-  "CALL",
-  "MEETING",
-  "EMAIL",
-  "VISIT",
-  "NOTE",
-] as const;
-
-export type DealActivityTypeCode =
-  (typeof DEAL_ACTIVITY_TYPES)[number];
-
-export type ManualDealActivityTypeCode =
-  (typeof MANUAL_DEAL_ACTIVITY_TYPES)[number];
-
-export type DealActivitySourceTypeCode =
-  | "SYSTEM"
-  | "USER"
-  | "NEXT_ACTION"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
-  | "FOLLOW_UP";
 
 // 역할 : DealActivityRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface DealActivityRecord {

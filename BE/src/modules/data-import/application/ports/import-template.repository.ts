@@ -1,6 +1,7 @@
+import type { ImportTemplateType } from "./import-template.types";
+
 export const IMPORT_TEMPLATE_REPOSITORY = Symbol("IMPORT_TEMPLATE_REPOSITORY");
 
-export type ImportTemplateType = "COMPANY" | "CONTACT" | "PRODUCT" | "DEAL";
 export type ImportSubmittedDataValue = string | number | boolean | null;
 export type ImportSubmittedData = Readonly<Record<string, ImportSubmittedDataValue>>;
 

@@ -20,8 +20,8 @@ import {
   MANUAL_DEAL_ACTIVITY_TYPES,
   type DealActivityTypeCode,
   type ManualDealActivityTypeCode,
-} from "@/modules/deal/application/ports/deal-activity.repository";
-import { DealListSort } from "@/modules/deal/application/ports/deal.repository";
+} from "@/modules/deal/application/ports/deal-activity.types";
+import { DealListSort } from "@/modules/deal/application/ports/deal-query.types";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import { SUPPORTED_CURRENCY_CODES } from "@/shared/application/currency/currency-code";
 

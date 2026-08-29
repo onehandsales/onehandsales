@@ -1,4 +1,11 @@
 import { Prisma, TrashRecoveryRequestStatus } from "@prisma/client";
+import type {
+  TrashDomainFilter,
+  TrashItemKindFilter,
+  TrashLogTypeFilter,
+  TrashSort,
+  TrashTargetType,
+} from "@/modules/trash/application/ports/trash.types";
 import {
   type CreateTrashRecoveryRequestInput,
   type FindOpenTrashRecoveryRequestInput,
@@ -8,11 +15,8 @@ import {
   type RestoreTrashItemInput,
   type TrashDetail,
   type TrashDetailField,
-  type TrashDomainFilter,
   type TrashItem,
-  type TrashItemKindFilter,
   type TrashListResult,
-  type TrashLogTypeFilter,
   type TrashRecoveryRequestRecord,
   type TrashRecoveryRequestStatusValue,
   type TrashRecoveryRequestSummary,
@@ -21,8 +25,6 @@ import {
   type TrashRestoreWindow,
   type TrashRestoreBlockedReason,
   type TrashRestoreRepositoryResult,
-  type TrashSort,
-  type TrashTargetType,
 } from "@/modules/trash/application/ports/trash.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 

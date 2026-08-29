@@ -5,7 +5,6 @@ export const GOOGLE_CALENDAR_SYNC_REPOSITORY = Symbol(
 );
 
 export type GoogleCalendarSourceStatus = "SELECTED" | "UNSELECTED";
-export type GoogleCalendarSyncTrigger = "AUTO" | "MANUAL";
 
 // 역할 : GoogleCalendarSyncConnectionRecord Google Calendar 동기화용 연결 projection 구조를 정의합니다.
 export interface GoogleCalendarSyncConnectionRecord {

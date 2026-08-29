@@ -1,6 +1,6 @@
 # Presentation Contract Type Boundary Plan
 
-상태: Ready / Backend Follow-up / G01 Next
+상태: In Progress / Backend Follow-up / G01 Done / G02 Next
 작성일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`
 
@@ -10,11 +10,11 @@
 
 G08 감사 결과 repository token/interface를 presentation에서 직접 사용한 위반은 없었다. 다만 DTO 런타임 검증 값과 response mapper 입력 타입이 repository port 파일에 함께 있어 계층 경계가 흐려져 있으므로, API 응답 shape를 바꾸지 않고 타입 소유 위치만 단계적으로 분리한다.
 
-다음 실행 대상은 `COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md`이다.
+다음 실행 대상은 `COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`이다.
 
 ## 2. 감사 요약
 
-2026-08-29 G08 기준:
+2026-08-29 G08 baseline:
 
 | 항목 | 결과 |
 | --- | ---: |
@@ -23,6 +23,18 @@ G08 감사 결과 repository token/interface를 presentation에서 직접 사용
 | repository token/interface 직접 사용 | 0 |
 | DTO validation 값/타입 경계 정리 대상 | 11 files |
 | response mapper projection record 경계 정리 대상 | 9 files |
+
+2026-08-29 G01 완료 후 현재 기준:
+
+| 항목 | 결과 |
+| --- | ---: |
+| presentation의 `application/ports/*repository*` import line | 9 |
+| 영향을 받는 presentation 파일 | 9 |
+| repository token/interface 직접 사용 | 0 |
+| DTO validation 값/타입 경계 잔여 | 0 |
+| response mapper projection record 경계 잔여 | 9 files |
+
+2026-08-29 추가 재검토에서 DTO repository port import, presentation 직접 repository token/interface 사용, G01 이동 대상의 repository export 잔존은 모두 0건으로 확인했다.
 
 상세 목록은 `COMMON/PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`를 기준으로 한다.
 
@@ -61,7 +73,6 @@ G08 감사 결과 repository token/interface를 presentation에서 직접 사용
 한 번의 `/goal`에서는 하나의 goal 파일만 실행한다.
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```

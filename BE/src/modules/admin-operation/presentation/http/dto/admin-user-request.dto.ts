@@ -10,7 +10,7 @@ import {
   Min,
 } from "class-validator";
 import { UserStatus } from "@/modules/admin-operation/application/ports/admin-operation.types";
-import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user.repository";
+import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user-query.types";
 
 // 역할 : ListAdminUsersQueryDto Admin 사용자 목록 query 요청 값을 검증합니다.
 export class ListAdminUsersQueryDto {

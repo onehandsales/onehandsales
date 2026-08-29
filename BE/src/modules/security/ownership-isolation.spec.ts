@@ -31,11 +31,13 @@ import {
   ScheduleNotificationReminderUseCase,
 } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import {
+  MeetingNoteSort,
+  MeetingNoteSourceTypeValue,
+} from "@/modules/meeting-note/application/ports/meeting-note.types";
+import {
   type MeetingNoteListRecord,
   type MeetingNoteRecord,
   type MeetingNoteRepository,
-  MeetingNoteSort,
-  MeetingNoteSourceTypeValue,
 } from "@/modules/meeting-note/application/ports/meeting-note.repository";
 import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
 import {
@@ -47,10 +49,12 @@ import {
 import type { ProductPrivateMemoEncryptionPort } from "@/modules/product/application/ports/product-private-memo-encryption.port";
 import { ProductApplicationService } from "@/modules/product/application/services/product-application.service";
 import {
+  ScheduleViewMode,
+} from "@/modules/schedule/application/ports/schedule-query.types";
+import {
   type ScheduleRecord,
   type ScheduleRepository,
   type WeeklyReportScheduleRecord,
-  ScheduleViewMode,
 } from "@/modules/schedule/application/ports/schedule.repository";
 import { ScheduleApplicationService } from "@/modules/schedule/application/services/schedule-application.service";
 import type {

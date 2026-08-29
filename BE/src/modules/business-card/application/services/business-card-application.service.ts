@@ -9,16 +9,18 @@ import {
   type BusinessCardOcrUsage,
 } from "@/modules/business-card/application/ports/business-card-ocr.provider";
 import {
+  BusinessCardResolutionValue,
+  BusinessCardSafeFailureCodeValue,
+  type BusinessCardSafeFailureCodeValue as BusinessCardSafeFailureCode,
+  BusinessCardScanStatusValue,
+  type BusinessCardScanStatusValue as BusinessCardScanStatus,
+} from "@/modules/business-card/application/ports/business-card-scan-log.types";
+import {
   BUSINESS_CARD_SCAN_LOG_REPOSITORY,
   type BusinessCardConfirmResult,
   type BusinessCardExtractedRecord,
-  BusinessCardSafeFailureCodeValue,
-  type BusinessCardSafeFailureCodeValue as BusinessCardSafeFailureCode,
   type BusinessCardScanLogRecord,
   type BusinessCardScanLogRepository,
-  BusinessCardResolutionValue,
-  BusinessCardScanStatusValue,
-  type BusinessCardScanStatusValue as BusinessCardScanStatus,
   type BusinessCardUsageRecord,
 } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
 import {

@@ -9,8 +9,8 @@ import {
   type MeetingNoteDraftAudioFile,
   type MeetingNoteSttProvider,
 } from "@/modules/meeting-note/application/ports/meeting-note-stt.provider";
+import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.types";
 import {
-  MeetingNoteSourceTypeValue,
   type CompanySnapshotRecord,
   type ContactSnapshotRecord,
   type DealSnapshotRecord,

@@ -18,7 +18,7 @@ import {
 import { MeetingNoteAiActionDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-action-draft-application.service";
 import { MeetingNoteAiDraftApplicationService } from "@/modules/meeting-note/application/services/meeting-note-ai-draft-application.service";
 import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
-import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.repository";
+import { MeetingNoteSourceTypeValue } from "@/modules/meeting-note/application/ports/meeting-note.types";
 import {
   MEETING_NOTE_AI_DRAFT_FAILED_SAFE_MESSAGE,
   MEETING_NOTE_AUDIO_REQUIRED_SAFE_MESSAGE,
