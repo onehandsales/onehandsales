@@ -25,8 +25,9 @@
 
 ## 2. 작업 상태
 
-- G99 착수 후 작업 트리에는 G99 관련 BE/TODO 문서 변경과 별도 FE 미커밋 변경이 함께 존재한다.
-- FE public-site/auth 관련 미커밋 변경은 G99 범위가 아니므로 검토/커밋 대상에서 제외한다.
+- G99 작업 중 한때 G99 관련 BE/TODO 문서 변경과 별도 FE 미커밋 변경이 함께 감지되었다.
+- 별도 FE 변경은 G99 범위가 아니므로 검토/커밋 대상에서 제외했다.
+- 커밋 이후 재검토 시점의 `git status --short --untracked-files=all`은 출력 없음이다.
 - Windows 기준 goal 문서의 `pnpm.cmd` 명령은 현재 macOS 실행 환경에서 같은 package script인 `pnpm`으로 실행한다.
 
 ## 3. 실행한 검증
@@ -118,5 +119,28 @@ strict 정적 점검 결과:
 
 ## 8. 커밋 결과
 
-- 사용자 요청에 따라 G99 관련 BE/TODO/TODO_LOG 변경을 `chore(backend): complete rule recheck final review` 커밋으로 기록했다.
-- FE public-site/auth 관련 변경은 G99 범위가 아니므로 커밋 대상에서 제외했다.
+- 사용자 요청에 따라 G99 관련 BE/TODO/TODO_LOG 변경을 `acdb9eb3 chore(backend): complete rule recheck final review` 커밋으로 기록했다.
+- 별도 FE 변경은 G99 범위가 아니므로 커밋 대상에서 제외했다.
+
+## 9. 커밋 이후 재검토
+
+- 최신 커밋: `acdb9eb3 chore(backend): complete rule recheck final review`
+- `git status --short --untracked-files=all`: 출력 없음
+- `git diff --exit-code && git diff --cached --exit-code`: 통과
+- `TODO/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN` 활성 폴더 없음
+- `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN` 완료 보관 폴더 존재, 문서 18개 확인
+- G99 대기/진행 중 상태 문구 잔존 검색: 출력 없음
+- 예전 활성 폴더 하위 경로 잔존 검색: 출력 없음
+- post-commit `pnpm run typecheck`: 통과
+- post-commit `pnpm run lint`: 통과
+- post-commit `pnpm run prisma:validate`: 통과
+- post-commit `pnpm test -- --runInBand`: 통과, 103 suites / 548 tests
+- post-commit `pnpm run build`: 통과
+- post-commit strict 정적 검색: 위반 출력 없음
+- 수동 판정 항목은 기존 G99 판단과 동일하다. `process.env`는 `BE/src/main.ts` bootstrap 예외 범위만 출력되고, presentation `application/ports/*repository*` import 22건은 G08 후속 계획 대상과 일치한다.
+
+## 10. 추가 문서 업데이트
+
+- 사용자 요청에 따라 커밋 이후 재검토 결과를 G99 관련 완료 문서에 추가 반영했다.
+- 업데이트 대상: G99 작업 로그, 완료 README, G99 goal, Goal work order, Backend TODO README, Current Risk Summary, 루트 TODO 포인터, TODO README.
+- 이 추가 문서 업데이트는 후속 문서 커밋으로 기록한다.

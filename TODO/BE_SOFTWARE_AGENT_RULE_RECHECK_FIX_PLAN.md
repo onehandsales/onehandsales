@@ -1,6 +1,7 @@
 # BE Software Agent Rule Recheck Fix Plan
 
 상태: Done / Archived
+완료 커밋: `acdb9eb3 chore(backend): complete rule recheck final review`
 
 이 계획은 `TODO/PADDLE_PLAN`과 같은 폴더형 구조로 분리한 뒤, G01~G08 및 G99 최종 검토를 완료해 `TODO/DONE`에 보관했다.
 
@@ -26,7 +27,8 @@ D:\workspace_repository\onehandsales\TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FI
 - G06 완료: `0d0530d3 docs(backend): document bootstrap env policy`, `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G06_BOOTSTRAP_PROCESS_ENV_POLICY\WORK_LOG.md`
 - G07 완료: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`, `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`
 - G08 완료: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G08_PRESENTATION_REPOSITORY_PROJECTION_AUDIT\WORK_LOG.md`, `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`
-- G99 완료: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G99_FINAL_REVIEW\WORK_LOG.md`
+- G99 완료: `acdb9eb3`, `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G99_FINAL_REVIEW\WORK_LOG.md`
+- 커밋 이후 재검토 완료: 작업 트리 clean, BE 전체 검증 재통과, 완료 문서 경로/상태 문구 정합성 확인
 
 이 계획 안에서 추가 실행할 `/goal`은 없다.
 

@@ -1,11 +1,13 @@
 # Goal Work Order
 
 상태: Done / Archived
+완료 커밋: `acdb9eb3 chore(backend): complete rule recheck final review`
 
 ## 1. 실행 원칙
 
 - 한 번의 `/goal`에서는 하나의 goal 파일만 실행한다.
 - `G01`, `G02`, `G03`, `G04`, `G05`, `G06`, `G07`, `G08`, `G99`는 완료되었다.
+- G99 완료 커밋 이후 재검토에서도 BE 전체 검증과 완료 문서 정합성이 통과했다.
 - 이 계획 안에서 추가 실행할 `/goal`은 없다.
 - 각 Goal 시작 전 `COMMON/REFERENCES.md`, `COMMON/SCOPE.md`, `COMMON/EXECUTION-GATES.md`를 확인한다.
 - Backend 코드 수정 시 한글 주석 필수 규칙을 적용한다.

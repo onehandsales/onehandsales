@@ -123,7 +123,7 @@ TODO/
 - 2026-08-23 기준 `TODO/SERVICE_QA_PLAN/SERVICE-QA-CHECKLIST.csv`의 P0 기능 QA는 완료됐고, 현재는 P0 범위에서 발견된 UX/UI 개선을 진행 중이다.
 - 2026-08-29 기준 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`은 API-SPEC 템플릿 누락 감사에서 분리된 문서 정규화 전용 활성 계획이다. BE/FE 코드와 API 계약 의미는 바꾸지 않고, 활성 API-SPEC 보강과 완료 보관 API-SPEC 감사 인덱스 작성을 다룬다. 다음 실행 대상은 `COMMON/G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`이다.
 - 2026-08-29 기준 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`은 G08 presentation repository port import 감사에서 분리된 Backend 타입 소유권 정리 계획이다. API 계약 의미를 바꾸지 않고 DTO validation 값과 response mapper read model 타입을 repository port 밖으로 분리한다. 다음 실행 대상은 `COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md`이다.
-- 2026-08-29 기준 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`은 Backend Agent rule recheck G01~G08과 G99 최종 검토를 완료한 archive다. 후속 실행은 위 두 활성 계획에서 이어간다.
+- 2026-08-29 기준 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`은 Backend Agent rule recheck G01~G08과 G99 최종 검토를 완료한 archive다. 완료 커밋은 `acdb9eb3 chore(backend): complete rule recheck final review`이고, 커밋 이후 재검토에서 작업 트리 clean, BE 전체 검증 재통과, 완료 문서 경로/상태 문구 정합성을 확인했다. 후속 실행은 위 두 활성 계획에서 이어간다.
 - 현재 즉시 실행 가능한 Backend 후속 구현 계획은 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`이다. QA에서 발견된 S0/S1/S2 결함이나 새 요구사항은 `TODO` 바로 아래에 새 계획 폴더를 만들거나, `TODO/SERVICE_QA_PLAN`의 이슈 로그에서 후속 구현 계획으로 승격한다.
 - `ACCOUNT_SETTINGS_MODAL_PLAN`은 계정 설정 모달 이관과 `/app/settings` route 제거가 완료되어 `TODO/DONE/ACCOUNT_SETTINGS_MODAL_PLAN`에 보관한다. 후속 QA와 UX/UI 개선에서 설정 진입점은 `/app?account=settings` 계정 모달 흐름을 기준으로 본다.
 - 이전 1순위였던 User Web UX/UI 공통 QA는 `TODO/DONE/USER_WEB_UXUI_COMMON_QA_PLAN`에서 `G01~G06` 완료 상태다.
@@ -131,7 +131,7 @@ TODO/
 - `IMPORT_TEMPLATE_PLAN`은 회사/담당자/제품/딜 불러오기 구현이 완료되어 `TODO/DONE/IMPORT_TEMPLATE_PLAN`에 보관한다. 확정 전 job 영속화는 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`에서 구현 완료했다.
 - `LOG_SOFT_DELETE_PLAN`은 구현 완료되어 `TODO/DONE/LOG_SOFT_DELETE_PLAN`에 보관한다.
 - `SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN`은 BE/FE의 `AGENT/SOFTWARE_AGENT` 규칙 정합성 점검과 G01~G07 구현/검증/재검토를 완료해 `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN`에 보관한다.
-- `BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`은 BE의 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT` 규칙 재검토와 G01~G08 구현/감사, G99 최종 검토를 완료해 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`에 보관한다.
+- `BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`은 BE의 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT` 규칙 재검토와 G01~G08 구현/감사, G99 최종 검토를 완료해 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`에 보관한다. 완료 커밋은 `acdb9eb3`이다.
 - 새 요구사항이나 후속 구현은 `TODO` 바로 아래에 새 계획 폴더를 만든다.
 
 보류/진행 중인 계획:
