@@ -191,7 +191,7 @@ export function AboutPage() {
         <PublicContentContainer>
           <PublicDocumentHero title={copy.title} />
 
-          <div className="mt-14 grid gap-10 md:grid-cols-[1fr_0.88fr] md:items-center">
+          <div className="mt-16 grid gap-10 md:grid-cols-[1fr_0.88fr] md:items-center">
             <LineScene labels={copy.sceneLabels} />
             <div className="break-keep text-[14px] leading-7 text-[#444440]">
               {copy.intro.map((paragraph) => (

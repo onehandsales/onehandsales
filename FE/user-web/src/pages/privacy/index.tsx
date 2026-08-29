@@ -372,7 +372,7 @@ export function PrivacyPage() {
             />
 
             <PublicTableOfContents
-              className="mt-10"
+              className="mt-16"
               items={copy.sections}
               label={copy.contentsLabel}
               numbered
