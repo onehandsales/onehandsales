@@ -1,9 +1,6 @@
 import {
   Bot,
-  CheckCircle2,
-  Database,
   FileCheck2,
-  Globe2,
   LockKeyhole,
   Server,
   ShieldCheck,
@@ -37,7 +34,6 @@ type SecuritySectionCopy = {
 
 type SecurityCopy = {
   readonly title: string;
-  readonly trustItems: readonly string[];
   readonly sections: readonly SecuritySectionCopy[];
 };
 
@@ -49,16 +45,9 @@ const sectionIcons: readonly LucideIcon[] = [
   Server,
 ];
 
-const trustIcons: readonly LucideIcon[] = [Database, Globe2, CheckCircle2];
-
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
     title: "보안",
-    trustItems: [
-      "서비스 제공을 위한 데이터 처리",
-      "적용 가능한 개인정보 권리 지원",
-      "제품 업무에 포함된 보안 검토",
-    ],
     sections: [
       {
         eyebrow: "보안",
@@ -179,11 +168,6 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   },
   "en-US": {
     title: "Security",
-    trustItems: [
-      "Data handled for service delivery",
-      "Privacy rights supported where applicable",
-      "Security reviews built into product work",
-    ],
     sections: [
       {
         eyebrow: "Security",
@@ -314,29 +298,10 @@ export function SecurityPage() {
       <PublicPageSection>
         <PublicContentContainer>
           <PublicDocumentHero
-            align="center"
             title={copy.title}
           />
 
           <PublicRelatedPolicyLinks className="mt-10" currentPath="/security" />
-
-          <div className="mx-auto mt-10 grid max-w-[860px] gap-3 md:grid-cols-3">
-            {copy.trustItems.map((label, index) => {
-              const Icon = trustIcons[index] ?? CheckCircle2;
-
-              return (
-                <div
-                  className="flex items-center gap-3 rounded-[8px] bg-[#FAFAF8] px-4 py-3"
-                  key={label}
-                >
-                  <Icon className="h-4 w-4 text-[#0075DE]" />
-                  <span className="min-w-0 text-[12px] font-normal text-[#333330]">
-                    {label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
 
           <div className="mt-16 grid gap-20">
             {copy.sections.map((section, index) => (
