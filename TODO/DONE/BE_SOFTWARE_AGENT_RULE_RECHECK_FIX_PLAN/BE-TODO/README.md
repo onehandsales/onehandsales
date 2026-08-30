@@ -17,7 +17,7 @@
 
 문서 감사 Goal `COMMON/G07-API-SPEC-TEMPLATE-AUDIT.goal.md`, Backend 감사 Goal `G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`, 최종 검토 Goal `COMMON/G99-FINAL-REVIEW.goal.md`는 완료되었다. 커밋 이후 재검토에서도 BE 전체 검증과 완료 문서 정합성이 통과했다.
 
-G08에서 확인된 presentation repository port 타입 의존의 대량 분리는 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다. 2026-08-30 기준 해당 후속 계획의 G01/G02는 완료 및 추가 재검토까지 통과했고, 다음 실행 대상은 G99 final review다.
+G08에서 확인된 presentation repository port 타입 의존의 대량 분리는 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`에서 G01/G02/G99까지 완료했다.
 
 ## 2. 공통 지시
 

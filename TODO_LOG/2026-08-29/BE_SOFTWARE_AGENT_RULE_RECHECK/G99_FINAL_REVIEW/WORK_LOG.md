@@ -16,8 +16,8 @@
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/COMMON/VALIDATION-CHECKLIST.md`
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/COMMON/G99-FINAL-REVIEW.goal.md`
 - `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/README.md`
-- `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/README.md`
-- `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/COMMON/PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`
+- `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/README.md`
+- `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/COMMON/PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
@@ -83,7 +83,7 @@ strict 정적 점검 결과:
 수동 판정 점검 결과:
 
 - `process.env`: `BE/src/main.ts` bootstrap env loader 예외 범위만 출력
-- presentation의 `application/ports/*repository*` import: 22 line 출력, G08 감사 결과 및 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`과 일치
+- presentation의 `application/ports/*repository*` import: 22 line 출력, G08 감사 결과 및 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`과 일치
 - admin operation controllers: `AuthGuard`, `AdminGuard`, `// API :` 주석 확인
 - AI Weekly Report `summaryPreview`, `weekViewed`, `detailViewed`, `snapshotSummaryViewed`: BE service/spec/API-SPEC/FE 타입 계약 정합성 확인
 - `TODO_LOG`: G01~G08과 G99 작업 로그 존재 확인
@@ -97,7 +97,7 @@ strict 정적 점검 결과:
 - G05: Backend 한글 주석 규칙 누락 보강 완료.
 - G06: bootstrap `process.env` 예외 정책 문서화 및 주석 보강 완료.
 - G07: API-SPEC 템플릿 감사 완료, 후속 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 분리.
-- G08: presentation repository projection type 의존 감사 완료, 후속 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 분리.
+- G08: presentation repository projection type 의존 감사 완료, 후속 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 분리.
 - G99: 전체 검증과 정적 점검 완료, 계획 폴더를 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`에 보관.
 
 ## 6. 수정 파일
@@ -107,7 +107,7 @@ strict 정적 점검 결과:
 - `TODO/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`: 완료 포인터와 후속 활성 계획 갱신.
 - `TODO/README.md`: 완료된 계획 목록과 현재 활성 후속 계획 상태 갱신.
 - `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/**`: 생성 근거 경로를 완료 보관 위치로 정리.
-- `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/**`: 생성 근거 경로를 완료 보관 위치로 정리.
+- `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/**`: 생성 근거 경로를 완료 보관 위치로 정리.
 - `TODO_LOG/2026-08-28/BE_SOFTWARE_AGENT_RULE_RECHECK/**/WORK_LOG.md`: 완료 보관 경로 참조 정리.
 - `TODO_LOG/2026-08-29/BE_SOFTWARE_AGENT_RULE_RECHECK/**/WORK_LOG.md`: 완료 보관 경로 참조와 G99 결과 기록.
 
@@ -115,7 +115,7 @@ strict 정적 점검 결과:
 
 - G99 기준 즉시 수정해야 할 Backend Agent 규칙 위반은 없다.
 - API-SPEC 템플릿 대량 보강은 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`에서 계속 진행한다.
-- presentation DTO/mapper 타입 소유권 정리는 `TODO/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`에서 계속 진행한다.
+- presentation DTO/mapper 타입 소유권 정리는 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`에서 계속 진행한다.
 
 ## 8. 커밋 결과
 

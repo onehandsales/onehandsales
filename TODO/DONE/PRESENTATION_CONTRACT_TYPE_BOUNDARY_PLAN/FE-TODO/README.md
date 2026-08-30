@@ -1,6 +1,6 @@
 # Frontend TODO
 
-상태: No direct FE work
+상태: Done / Archived / No direct FE work
 
 ## 1. 판단
 
@@ -11,6 +11,8 @@
 2026-08-30 G02 response mapper read model boundary 완료 후에도 API response field 이름, 타입, nullable 의미는 변경되지 않았으므로 FE 변경은 없다.
 
 2026-08-30 추가 재검토에서도 G02 변경은 Backend 타입 소유권 정리에 한정되며 FE 타입, mock, UI 코드 변경이 필요한 API 계약 변경은 없다.
+
+2026-08-30 G99 최종 검토에서도 API request/response shape 변경과 FE 변경 필요 사항은 발견하지 못했다.
 
 ## 2. 확인 기준
 

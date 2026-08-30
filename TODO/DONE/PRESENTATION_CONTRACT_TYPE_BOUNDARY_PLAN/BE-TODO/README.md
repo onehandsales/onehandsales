@@ -1,6 +1,6 @@
 # Backend TODO
 
-상태: In Progress / G01-G02 Completed / G99 Next
+상태: Done / Archived
 
 ## 1. 실행 순서
 
@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- |
 | 1 | G01 | `../COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md` | P3 | Completed |
 | 2 | G02 | `../COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md` | P3 | Completed |
-| 3 | G99 | `../COMMON/G99-FINAL-REVIEW.goal.md` | P3 | Next |
+| 3 | G99 | `../COMMON/G99-FINAL-REVIEW.goal.md` | P3 | Completed |
 
 ## 2. 공통 지시
 
@@ -20,4 +20,6 @@
 
 ## 3. 추가 재검토
 
-2026-08-30 G02 추가 재검토에서 Backend 코드 기준 presentation repository port import, presentation 직접 repository token/interface 사용, response mapper repository record alias 패턴은 모두 0건이다. BE `typecheck`, `lint`, `test -- --runInBand`도 통과했으며, 다음 Backend 실행 대상은 `../COMMON/G99-FINAL-REVIEW.goal.md`이다.
+2026-08-30 G02 추가 재검토에서 Backend 코드 기준 presentation repository port import, presentation 직접 repository token/interface 사용, response mapper repository record alias 패턴은 모두 0건이다. BE `typecheck`, `lint`, `test -- --runInBand`도 통과했으며, 이 상태를 기준으로 G99 최종 검토를 진행했다.
+
+2026-08-30 G99 최종 검토가 완료되어 이 계획 안에서 추가 Backend 실행 대상은 없다.

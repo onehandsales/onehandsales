@@ -79,6 +79,6 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - API-SPEC, DTO, mapper, FE API client/type이 서로 모순되지 않는다.
 - presentation의 repository port import 감사 결과가 기록되어 있다.
 - 직접 repository token/interface 사용이 presentation에 남아 있지 않다.
-- G07/G08에서 분리한 후속 계획의 상태와 다음 실행 대상이 상위 TODO 문서와 일치한다.
+- G07에서 분리한 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`의 다음 실행 대상과 G08에서 분리한 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 완료 보관 상태가 상위 TODO 문서와 일치한다.
 - 검증 명령과 결과가 각 `TODO_LOG`에 기록되어 있다.
 - 완료된 Goal 상태가 개별 Goal 문서, 상위 README, 작업 순서표, 리스크 요약에 반영되어 있다.

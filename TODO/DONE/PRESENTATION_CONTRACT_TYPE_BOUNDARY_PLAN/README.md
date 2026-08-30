@@ -1,8 +1,10 @@
 # Presentation Contract Type Boundary Plan
 
-상태: In Progress / Backend Follow-up / G01-G02 Done and Rechecked / G99 Next
+상태: Done / Archived
 작성일: 2026-08-29
+완료일: 2026-08-30
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\BE-TODO\G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`
+TODO_LOG: `TODO_LOG\2026-08-30\PRESENTATION_CONTRACT_TYPE_BOUNDARY\G99_FINAL_REVIEW\WORK_LOG.md`
 
 ## 1. 목적
 
@@ -10,7 +12,7 @@
 
 G08 감사 결과 repository token/interface를 presentation에서 직접 사용한 위반은 없었다. 다만 DTO 런타임 검증 값과 response mapper 입력 타입이 repository port 파일에 함께 있어 계층 경계가 흐려져 있으므로, API 응답 shape를 바꾸지 않고 타입 소유 위치만 단계적으로 분리한다.
 
-다음 실행 대상은 `COMMON/G99-FINAL-REVIEW.goal.md`이다.
+G99 최종 검토까지 완료되어 `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`에 보관한다. 이 계획 안에서 추가 실행할 `/goal`은 없다.
 
 ## 2. 감사 요약
 
@@ -50,6 +52,8 @@ G02에서 mapper 입력 read-model과 application service 반환 타입을 `appl
 
 2026-08-30 추가 재검토에서 presentation repository port import, 직접 repository token/interface 사용, response mapper repository record alias 패턴은 모두 0건으로 확인했다. BE `typecheck`, `lint`, `test -- --runInBand`도 재통과했다.
 
+2026-08-30 G99 최종 검토에서 G01/G02 완료 로그 존재, repository port import 0건, 직접 repository token/interface 사용 0건, API request/response shape 보존, BE typecheck/lint/test 통과를 확인했다. 계획 전체는 완료 보관 상태다.
+
 상세 목록은 `COMMON/PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`를 기준으로 한다.
 
 ## 3. 포함 범위
@@ -84,11 +88,9 @@ G02에서 mapper 입력 read-model과 application service 반환 타입을 `appl
 
 ## 6. 실행 순서
 
-한 번의 `/goal`에서는 하나의 goal 파일만 실행한다.
+G01, G02, G99가 모두 완료됐다. 완료 보관된 계획이므로 추가 실행 프롬프트는 없다.
 
-```text
-/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
-```
+후속 활성 문서 작업은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`의 G01이다.
 
 ## 7. 공통 원칙
 

@@ -66,8 +66,8 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - presentation의 `application/ports/*repository*` import는 22 line, 20 file로 확인했다.
 - presentation에서 repository token 또는 repository interface를 직접 주입/사용한 항목은 0건이다.
 - 즉시 수정해야 할 high-risk 위반은 없어 Backend 코드는 수정하지 않았다.
-- DTO validation enum/const/type과 response mapper projection record 분리는 3개 파일을 초과하고 API contract 검증이 필요한 구조 변경이므로 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다.
-- 상세 감사 목록은 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`에 기록했다.
+- DTO validation enum/const/type과 response mapper projection record 분리는 3개 파일을 초과하고 API contract 검증이 필요한 구조 변경이므로 `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다.
+- 상세 감사 목록은 `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`에 기록했다.
 
 ## 8. 실행 지시
 
