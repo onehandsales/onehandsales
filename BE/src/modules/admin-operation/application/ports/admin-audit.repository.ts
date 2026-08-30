@@ -4,6 +4,11 @@ import type {
   AdminSensitiveFieldSet,
   AdminTargetType,
 } from "./admin-operation.types";
+import type {
+  AdminAuditLogPageRecord,
+  AdminSensitiveAccessRecord,
+  AdminSensitiveRawDataRecord,
+} from "./admin-audit-read-model.types";
 
 export const ADMIN_AUDIT_REPOSITORY = Symbol("ADMIN_AUDIT_REPOSITORY");
 
@@ -19,37 +24,10 @@ export interface ListAdminAuditLogsInput {
   readonly to?: Date;
 }
 
-// 역할 : AdminAuditLogRecord 저장소가 반환하는 Admin 감사 로그 row 구조를 정의합니다.
-export interface AdminAuditLogRecord {
-  readonly id: string;
-  readonly adminUserId: string;
-  readonly adminEmail: string | null;
-  readonly targetUserId: string | null;
-  readonly targetType: AdminTargetType;
-  readonly targetId: string | null;
-  readonly action: AdminAuditAction;
-  readonly result: AdminAuditResult;
-  readonly reason: string | null;
-  readonly requestId: string | null;
-  readonly createdAt: Date;
-}
-
-// 역할 : AdminAuditLogPageRecord cursor 기반 Admin 감사 로그 페이지를 정의합니다.
-export interface AdminAuditLogPageRecord {
-  readonly items: AdminAuditLogRecord[];
-  readonly nextCursor: string | null;
-}
-
 // 역할 : FindAdminSensitiveRawDataInput 민감 원문 조회 대상 조건을 정의합니다.
 export interface FindAdminSensitiveRawDataInput {
   readonly targetUserId: string;
   readonly targetId: string;
-}
-
-// 역할 : AdminSensitiveRawDataRecord 허용 필드 원문과 반환 필드명 목록을 정의합니다.
-export interface AdminSensitiveRawDataRecord {
-  readonly data: Record<string, string | null>;
-  readonly returnedFieldNames: string[];
 }
 
 // 역할 : CreateSensitiveAccessLogInput 민감 원문 조회 감사 로그 생성 값을 정의합니다.
@@ -64,17 +42,6 @@ export interface CreateSensitiveAccessLogInput {
   readonly ipHash: string | null;
   readonly userAgentHash: string | null;
   readonly returnedFieldNames: readonly string[];
-}
-
-// 역할 : AdminSensitiveAccessRecord 민감 원문 조회 로그 생성 결과를 정의합니다.
-export interface AdminSensitiveAccessRecord {
-  readonly id: string;
-  readonly targetUserId: string;
-  readonly targetType: AdminTargetType;
-  readonly targetId: string;
-  readonly fieldSet: AdminSensitiveFieldSet;
-  readonly returnedFieldNames: string[];
-  readonly createdAt: Date;
 }
 
 // 역할 : AdminAuditRepository Admin 감사 로그와 민감 원문 조회 영속성 계약을 정의합니다.

@@ -5,7 +5,7 @@ import type {
   AdminDomainRecordStatus,
   AdminDomainRecordSummary,
   AdminDomainRecordsPageRecord,
-} from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
+} from "@/modules/admin-operation/application/ports/admin-domain-record-read-model.types";
 
 // 역할 : AdminDomainRecordItemResponse Admin 도메인 read-only row 응답을 정의합니다.
 export interface AdminDomainRecordItemResponse {

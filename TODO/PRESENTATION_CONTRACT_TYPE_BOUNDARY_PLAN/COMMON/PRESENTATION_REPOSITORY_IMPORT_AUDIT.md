@@ -1,8 +1,8 @@
 # Presentation Repository Import Audit
 
-상태: G01 DTO boundary completed / G02 mapper boundary next
+상태: G01-G02 completed / G99 final review next
 감사일: 2026-08-29
-재검토일: 2026-08-29
+재검토일: 2026-08-30
 
 ## 1. 감사 명령
 
@@ -22,9 +22,10 @@ rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g 
 
 - G08 baseline에서 presentation의 repository port import는 22 line, 20 file이었다.
 - G01 완료 후 presentation의 repository port import는 9 line, 9 file이며 모두 response mapper 대상이다.
+- G02 완료 후 presentation의 repository port import는 0 line, 0 file이다.
 - presentation에서 repository token 또는 repository interface를 직접 주입/사용한 항목은 없다.
 - DTO validation enum/const/type은 `G01`에서 repository port 밖의 non-repository contract 파일로 분리 완료했다.
-- response mapper 입력 projection record는 application service 출력/read model 계약으로 분리해야 하며 범위가 넓으므로 `G02`에서 별도 처리한다.
+- response mapper 입력 projection record는 `G02`에서 application service 출력/read model 계약 파일로 분리 완료했다.
 
 ## 3. DTO validation 경계 대상
 
@@ -46,15 +47,15 @@ rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g 
 
 | 파일 | repository port import | 사용 방식 | 후속 |
 | --- | --- | --- | --- |
-| `BE/src/modules/account-request/presentation/http/account-request-response.mapper.ts` | `AccountDeletionRequestRecord`, `UserDataExportRequestRecord`, `UserDataExportRequestStatusValue` | mapper input/response type | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-system-operation-response.mapper.ts` | `AdminOperationCheckItemsRecord`, `AdminOperationCheckRunRecord` | mapper input/response alias | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-provider-failure-response.mapper.ts` | `AdminProviderFailureDetailRecord`, `AdminProviderFailureListPageRecord`, `AdminProviderFailureRecord`, `AdminProviderFailureSafeContext` | mapper input/response type | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-account-request-response.mapper.ts` | `AdminAccountDeletionRequestsPageRecord`, `AdminDataExportRequestsPageRecord` | mapper input type | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-user-response.mapper.ts` | `AdminUserActivityTimelinePageRecord`, `AdminUserActivityTimelineRecord`, `AdminUserAnalyticsSummaryRecord`, `AdminUserListDomainCountsRecord`, `AdminUserListItemRecord`, `AdminUserListPageRecord`, `AdminUserNotificationSummaryRecord`, `AdminUserOverviewDomainCountsRecord`, `AdminUserOverviewRecord`, `AdminUserProfileRecord`, `AdminUserTrashSummaryRecord` | mapper input/response type | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-domain-record-response.mapper.ts` | `AdminDomainRecordDomain`, `AdminDomainRecordItemRecord`, `AdminDomainRecordSensitiveFlags`, `AdminDomainRecordStatus`, `AdminDomainRecordSummary`, `AdminDomainRecordsPageRecord` | mapper input/response type | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-trash-response.mapper.ts` | `AdminTrashRecoveryRequestsPageRecord`, `AdminTrashRecordsPageRecord`, `AdminTrashSummaryRecord` | mapper input/response type | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-analytics-response.mapper.ts` | `AdminAnalyticsActivationRecord`, `AdminAnalyticsAiUsageRecord`, `AdminAnalyticsEventCountRecord`, `AdminAnalyticsMobileFieldUseRecord`, `AdminAnalyticsOverviewRecord`, `AdminAnalyticsRangeRecord`, `AdminAnalyticsRetentionRecord`, `AdminAnalyticsRouteViewRecord` | mapper input/response alias | G02 |
-| `BE/src/modules/admin-operation/presentation/http/admin-audit-response.mapper.ts` | `AdminAuditLogPageRecord`, `AdminAuditLogRecord`, `AdminSensitiveAccessRecord`, `AdminSensitiveRawDataRecord` | mapper input type | G02 |
+| `BE/src/modules/account-request/presentation/http/account-request-response.mapper.ts` | `AccountDeletionRequestRecord`, `UserDataExportRequestRecord`, `UserDataExportRequestStatusValue` | mapper input/response type | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-system-operation-response.mapper.ts` | `AdminOperationCheckItemsRecord`, `AdminOperationCheckRunRecord` | mapper input/response alias | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-provider-failure-response.mapper.ts` | `AdminProviderFailureDetailRecord`, `AdminProviderFailureListPageRecord`, `AdminProviderFailureRecord`, `AdminProviderFailureSafeContext` | mapper input/response type | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-account-request-response.mapper.ts` | `AdminAccountDeletionRequestsPageRecord`, `AdminDataExportRequestsPageRecord` | mapper input type | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-user-response.mapper.ts` | `AdminUserActivityTimelinePageRecord`, `AdminUserActivityTimelineRecord`, `AdminUserAnalyticsSummaryRecord`, `AdminUserListDomainCountsRecord`, `AdminUserListItemRecord`, `AdminUserListPageRecord`, `AdminUserNotificationSummaryRecord`, `AdminUserOverviewDomainCountsRecord`, `AdminUserOverviewRecord`, `AdminUserProfileRecord`, `AdminUserTrashSummaryRecord` | mapper input/response type | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-domain-record-response.mapper.ts` | `AdminDomainRecordDomain`, `AdminDomainRecordItemRecord`, `AdminDomainRecordSensitiveFlags`, `AdminDomainRecordStatus`, `AdminDomainRecordSummary`, `AdminDomainRecordsPageRecord` | mapper input/response type | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-trash-response.mapper.ts` | `AdminTrashRecoveryRequestsPageRecord`, `AdminTrashRecordsPageRecord`, `AdminTrashSummaryRecord` | mapper input/response type | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-analytics-response.mapper.ts` | `AdminAnalyticsActivationRecord`, `AdminAnalyticsAiUsageRecord`, `AdminAnalyticsEventCountRecord`, `AdminAnalyticsMobileFieldUseRecord`, `AdminAnalyticsOverviewRecord`, `AdminAnalyticsRangeRecord`, `AdminAnalyticsRetentionRecord`, `AdminAnalyticsRouteViewRecord` | mapper input/response alias | G02 Completed |
+| `BE/src/modules/admin-operation/presentation/http/admin-audit-response.mapper.ts` | `AdminAuditLogPageRecord`, `AdminAuditLogRecord`, `AdminSensitiveAccessRecord`, `AdminSensitiveRawDataRecord` | mapper input type | G02 Completed |
 
 ## 5. 직접 repository 사용 확인 결과
 
@@ -73,7 +74,7 @@ cd BE
 rg -n 'application/ports/.+repository' src/modules -g '*.ts' -g '!*.spec.ts' | rg '/presentation/http/dto/'
 ```
 
-전체 presentation 잔여 repository port import는 아래 9개 response mapper 파일이다.
+G01 완료 직후 전체 presentation repository port import 대상은 아래 9개 response mapper 파일이었다.
 
 ```text
 src/modules/account-request/presentation/http/account-request-response.mapper.ts
@@ -89,9 +90,52 @@ src/modules/admin-operation/presentation/http/admin-user-response.mapper.ts
 
 2026-08-29 추가 재검토에서 위 9개 파일 외 presentation repository port import는 발견하지 못했다. DTO repository port import, presentation 직접 repository token/interface 사용, G01 이동 대상의 `*repository.ts` export 잔존 검색은 모두 출력 없음이다.
 
+## 5.2 G02 완료 후 잔여 import
+
+2026-08-30 G02 완료 후 아래 명령 결과 presentation repository port import는 0건이다.
+
+```bash
+cd BE
+rg -n 'application/ports/.+repository|application\\ports\\.+repository' src/modules -g '*.ts' -g '!*.spec.ts' | rg 'presentation'
+```
+
+직접 repository token/interface 사용 확인 결과도 출력 없음이다.
+
+```bash
+cd BE
+rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g '!*.spec.ts'
+```
+
+G02에서 추가한 non-repository read model contract 파일은 아래와 같다.
+
+```text
+BE/src/modules/account-request/application/ports/account-request-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-account-request-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-analytics-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-audit-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-domain-record-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-provider-failure-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-system-operation-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-trash-read-model.types.ts
+BE/src/modules/admin-operation/application/ports/admin-user-read-model.types.ts
+```
+
+## 5.3 G02 추가 재검토 결과
+
+2026-08-30 추가 재검토에서 아래 기준은 모두 출력 없음으로 확인했다.
+
+```bash
+cd BE
+rg -n 'application/ports/.+repository|application\\ports\\.+repository' src/modules -g '*.ts' -g '!*.spec.ts' | rg 'presentation'
+rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g '!*.spec.ts'
+rg -n 'export type .*Response = .*Record|export type .*Response = Omit<' src/modules/*/presentation -g '*response.mapper.ts'
+```
+
+BE `pnpm run typecheck`, `pnpm run lint`, `pnpm test -- --runInBand`도 추가 재검토 후 통과했다.
+
 ## 6. 분리 방향
 
 - DTO validation 값 중 application service input과 repository input이 함께 쓰는 값은 `application/ports/*.types.ts`처럼 non-repository contract 파일로 이동한다.
 - HTTP 검증에만 필요한 값은 presentation DTO 내부 또는 presentation contract 파일에 둔다.
-- response mapper 입력 타입은 repository port record가 아니라 application service output/read model contract를 참조하도록 분리한다.
+- response mapper 입력 타입은 repository port record가 아니라 application service output/read model contract를 참조하도록 분리했다.
 - API 계약 의미가 바뀌는 경우 해당 goal 안에서 처리하지 않고 API-SPEC 갱신이 필요한 별도 계획으로 승격한다.

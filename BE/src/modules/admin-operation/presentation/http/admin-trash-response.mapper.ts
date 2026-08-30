@@ -1,17 +1,33 @@
 import type {
+  AdminTrashDomain,
   AdminTrashRecoveryRequestsPageRecord,
   AdminTrashRecordsPageRecord,
   AdminTrashSummaryRecord,
-} from "@/modules/admin-operation/application/ports/admin-trash.repository";
+} from "@/modules/admin-operation/application/ports/admin-trash-read-model.types";
+
+// 역할 : AdminTrashDomainSummaryResponse Admin Trash 도메인별 count API 응답을 정의합니다.
+export interface AdminTrashDomainSummaryResponse {
+  readonly total: number;
+  readonly active: number;
+  readonly expired: number;
+}
+
+// 역할 : AdminTrashRecoveryRequestSummaryResponse Admin Trash 복구 요청 count API 응답을 정의합니다.
+export interface AdminTrashRecoveryRequestSummaryResponse {
+  readonly requested: number;
+  readonly reviewing: number;
+  readonly closed: number;
+}
 
 // 역할 : AdminTrashSummaryResponse Admin 사용자 Trash summary API 응답을 정의합니다.
-export type AdminTrashSummaryResponse = Omit<
-  AdminTrashSummaryRecord,
-  "byDomain" | "recoveryRequests"
-> & {
-  readonly byDomain: AdminTrashSummaryRecord["byDomain"];
-  readonly recoveryRequests: AdminTrashSummaryRecord["recoveryRequests"];
-};
+export interface AdminTrashSummaryResponse {
+  readonly userId: string;
+  readonly total: number;
+  readonly activeRestoreWindow: number;
+  readonly expiredRestoreWindow: number;
+  readonly byDomain: Record<AdminTrashDomain, AdminTrashDomainSummaryResponse>;
+  readonly recoveryRequests: AdminTrashRecoveryRequestSummaryResponse;
+}
 
 // 역할 : AdminTrashRecordsResponse Admin 사용자 Trash row 목록 API 응답을 정의합니다.
 export interface AdminTrashRecordsResponse {

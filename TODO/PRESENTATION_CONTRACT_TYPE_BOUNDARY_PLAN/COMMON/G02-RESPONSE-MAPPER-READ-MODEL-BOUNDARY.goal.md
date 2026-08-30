@@ -1,6 +1,8 @@
 # G02 response mapper read model boundary
 
-상태: Next for `/goal`
+상태: Completed
+완료일: 2026-08-30
+TODO_LOG: `TODO_LOG\2026-08-30\PRESENTATION_CONTRACT_TYPE_BOUNDARY\G02_RESPONSE_MAPPER_READ_MODEL_BOUNDARY\WORK_LOG.md`
 성격: Backend 코드 수정
 우선순위: P3
 
@@ -57,3 +59,26 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - API response shape가 변경되지 않았다.
 - Backend typecheck/lint/test가 통과한다.
 - 수정한 class/interface/type/helper에 한글 주석 규칙이 반영되어 있다.
+
+## 8. 완료 결과
+
+- response mapper 경계 대상 9 files의 `application/ports/*repository*` import를 제거했다.
+- mapper 입력 타입은 `application/ports/*-read-model.types.ts` 계열 non-repository contract를 참조하도록 분리했다.
+- account-request와 admin-operation application service 공개 반환 타입도 read-model contract를 참조하도록 보정했다.
+- repository port 파일은 token/interface/input/audit 계약을 유지하고, output/page/detail/read-model 타입은 non-repository contract 파일에서 소유하도록 정리했다.
+- `AdminOperationCheckItemsResponse`, `AdminAnalytics*Response`, `AdminTrashSummaryResponse`의 repository record 단순 alias 패턴은 명시적 response interface로 보정했다.
+- API response field 이름, 타입, nullable 의미, DB 조회 로직, FE 코드는 변경하지 않았다.
+- 2026-08-30 검증 결과 `pnpm run typecheck`, `pnpm run lint`, `pnpm test -- --runInBand`가 통과했다.
+- `rg -n 'application/ports/.+repository|application\\ports\\.+repository' src/modules -g '*.ts' -g '!*.spec.ts' | rg 'presentation'` 결과는 출력 없음이다.
+- `rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g '!*.spec.ts'` 결과는 출력 없음이다.
+
+## 9. 추가 재검토 결과
+
+2026-08-30 추가 재검토에서 G02 완료 기준 누락은 발견하지 못했다.
+
+- presentation 전체의 `application/ports/*repository*` import 검색 결과는 출력 없음이다.
+- presentation 직접 repository token/interface 사용 검색 결과는 출력 없음이다.
+- response mapper의 repository record 단순 alias response 패턴 검색 결과는 출력 없음이다.
+- application service 공개 반환 타입은 repository record/page 타입이 아니라 `*-read-model.types.ts` 계열 contract를 참조한다.
+- spec import 중 불필요하게 줄바꿈된 repository type import 형태만 `import type { ... }`로 정리했고 동작 변경은 없다.
+- 추가 재검토 후 `pnpm run typecheck`, `pnpm run lint`, `pnpm test -- --runInBand`가 모두 통과했다.

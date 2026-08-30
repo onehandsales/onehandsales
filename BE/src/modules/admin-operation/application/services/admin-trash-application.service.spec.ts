@@ -4,10 +4,8 @@ import {
   AdminTargetType,
   TrashRecoveryRequestStatus,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
-import {
-  AdminTrashDomain,
-  type AdminTrashRepository,
-} from "@/modules/admin-operation/application/ports/admin-trash.repository";
+import type { AdminTrashRepository } from "@/modules/admin-operation/application/ports/admin-trash.repository";
+import { AdminTrashDomain } from "@/modules/admin-operation/application/ports/admin-trash-read-model.types";
 import { AdminDomainUnsupportedError } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AdminTrashApplicationService } from "./admin-trash-application.service";

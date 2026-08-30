@@ -16,7 +16,7 @@ G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 
 G08은 2026-08-29 완료되었고, presentation의 `application/ports/*repository*` import 22 line / 20 file을 전수 확인했다. repository token/interface 직접 사용은 0건이라 즉시 코드 수정은 하지 않았고, DTO validation 값과 response mapper projection record의 대량 타입 소유권 분리는 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
 G99는 2026-08-29 완료되었고, BE 전체 검증과 Backend Agent strict 정적 점검이 통과했다. application 계층 forbidden keyword 정적 점검의 false positive를 제거하기 위해 `GoogleCalendarSyncService`의 private helper 이름을 `fetchProviderCalendars`에서 `loadProviderCalendars`로 변경했으며 동작 변경은 없다. 이 계획은 `acdb9eb3 chore(backend): complete rule recheck final review`로 커밋하고 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`으로 완료 보관했다. 커밋 이후 재검토에서도 작업 트리 clean, BE 전체 검증 재통과, 완료 문서 경로/상태 문구 정합성을 확인했다.
 
-2026-08-29 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01 DTO validation contract boundary가 완료되어 presentation DTO의 repository port import는 0건으로 정리됐다. 현재 presentation repository port import 잔여는 9 line / 9 file이며 모두 G02 response mapper read model boundary 대상이다.
+2026-08-30 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01 DTO validation contract boundary와 G02 response mapper read model boundary가 완료 및 추가 재검토까지 통과해 presentation 전체의 repository port import는 0건으로 정리됐다. 현재 다음 실행 대상은 G99 final review다.
 
 ## 2. P1
 
@@ -39,7 +39,7 @@ G99는 2026-08-29 완료되었고, BE 전체 검증과 Backend Agent strict 정�
 | --- | --- | --- | --- |
 | bootstrap `process.env` | 공통 환경 문서는 bootstrap local env read를 허용하지만 Backend convention은 direct `process.env` 금지를 적고 있어 예외가 명확하지 않았다. | G06 | 해결 완료 |
 | API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 해결 완료, 후속 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 생성 |
-| presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용은 0건이나 타입 소유권 분리가 필요하다. | G08 | 해결 완료, 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 생성 |
+| presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용은 0건이나 타입 소유권 분리가 필요하다. | G08 | 해결 완료, 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` G01/G02 완료 및 추가 재검토 통과 |
 
 ## 5. 검증 결과
 
@@ -120,13 +120,26 @@ G99 커밋 이후 재검토 결과:
 - presentation DTO repository port import: 0건
 - presentation 직접 repository token/interface 사용: 0건
 - G01 이동 대상 enum/const/type의 `*repository.ts` export 잔존: 0건
-- presentation repository port import 잔여: 9 line / 9 file, 모두 G02 response mapper 대상
+- G01 당시 presentation repository port import는 response mapper 9 line / 9 file로 남았고, 이후 G02에서 0건으로 정리됨
 - BE `typecheck`, `lint`, `test -- --runInBand`: 통과
+
+후속 Presentation Contract Type Boundary G02 검증 결과:
+
+- presentation 전체 repository port import: 0건
+- presentation 직접 repository token/interface 사용: 0건
+- response mapper repository record alias response 패턴: 0건
+- BE `typecheck`, `lint`, `test -- --runInBand`: 통과
+
+후속 Presentation Contract Type Boundary G02 추가 재검토 결과:
+
+- application service 공개 반환 타입의 repository read record/page type 노출: 0건
+- spec import 중 줄바꿈만 남은 repository type import는 `import type { ... }` 형태로 정리
+- BE `typecheck`, `lint`, `test -- --runInBand`: 재통과
 
 ## 6. 후속 활성 계획
 
 - `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: G07에서 분리한 API-SPEC 템플릿 정규화 계획. 다음 실행 대상은 `COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`다.
-- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: G08에서 분리한 presentation 계약 타입 경계 정리 계획. G01은 완료됐고 다음 실행 대상은 `COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`다.
+- `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: G08에서 분리한 presentation 계약 타입 경계 정리 계획. G01/G02는 완료 및 추가 재검토까지 통과했고 다음 실행 대상은 `COMMON\G99-FINAL-REVIEW.goal.md`다.
 
 ## 7. 해결 완료 위치
 

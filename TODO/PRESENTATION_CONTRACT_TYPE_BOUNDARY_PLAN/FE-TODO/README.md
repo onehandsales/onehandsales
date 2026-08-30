@@ -8,6 +8,10 @@
 
 2026-08-29 G01 DTO validation contract boundary 완료 후에도 API request field 이름과 허용 값은 변경되지 않았으므로 FE 변경은 없다.
 
+2026-08-30 G02 response mapper read model boundary 완료 후에도 API response field 이름, 타입, nullable 의미는 변경되지 않았으므로 FE 변경은 없다.
+
+2026-08-30 추가 재검토에서도 G02 변경은 Backend 타입 소유권 정리에 한정되며 FE 타입, mock, UI 코드 변경이 필요한 API 계약 변경은 없다.
+
 ## 2. 확인 기준
 
 - Backend API 계약 의미가 변경되면 해당 goal에서 작업을 중단하고 API-SPEC 갱신 후 별도 FE 영향 검토로 분리한다.

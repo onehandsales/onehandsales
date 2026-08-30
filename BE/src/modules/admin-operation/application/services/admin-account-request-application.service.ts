@@ -1,12 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ADMIN_ACCOUNT_REQUEST_REPOSITORY,
-  type AdminAccountDeletionRequestsPageRecord,
   type AdminAccountRequestRepository,
-  type AdminDataExportRequestsPageRecord,
   type ListAdminAccountDeletionRequestsInput,
   type ListAdminDataExportRequestsInput,
 } from "@/modules/admin-operation/application/ports/admin-account-request.repository";
+import type {
+  AdminAccountDeletionRequestsPageRecord,
+  AdminDataExportRequestsPageRecord,
+} from "@/modules/admin-operation/application/ports/admin-account-request-read-model.types";
 import {
   AccountDeletionRequestStatus,
   AdminAuditAction,

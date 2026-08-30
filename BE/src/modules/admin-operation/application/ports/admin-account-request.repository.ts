@@ -5,6 +5,10 @@ import type {
   AdminTargetType,
   UserDataExportRequestStatus,
 } from "./admin-operation.types";
+import type {
+  AdminAccountDeletionRequestsPageRecord,
+  AdminDataExportRequestsPageRecord,
+} from "./admin-account-request-read-model.types";
 
 export const ADMIN_ACCOUNT_REQUEST_REPOSITORY = Symbol(
   "ADMIN_ACCOUNT_REQUEST_REPOSITORY"
@@ -17,46 +21,11 @@ export interface ListAdminAccountDeletionRequestsInput {
   readonly limit: number;
 }
 
-// 역할 : AdminAccountDeletionRequestQueueItemRecord Admin 계정 삭제 요청 queue item을 정의합니다.
-export interface AdminAccountDeletionRequestQueueItemRecord {
-  readonly id: string;
-  readonly userId: string;
-  readonly userEmailMasked: string | null;
-  readonly status: AccountDeletionRequestStatus;
-  readonly requestedAt: Date;
-  readonly scheduledDeletionAt: Date;
-  readonly reasonCode: string | null;
-}
-
-// 역할 : AdminAccountDeletionRequestsPageRecord Admin 계정 삭제 요청 cursor page를 정의합니다.
-export interface AdminAccountDeletionRequestsPageRecord {
-  readonly items: AdminAccountDeletionRequestQueueItemRecord[];
-  readonly nextCursor: string | null;
-}
-
 // 역할 : ListAdminDataExportRequestsInput Admin 데이터 export 요청 queue 조회 조건을 정의합니다.
 export interface ListAdminDataExportRequestsInput {
   readonly status?: UserDataExportRequestStatus;
   readonly cursor?: string;
   readonly limit: number;
-}
-
-// 역할 : AdminDataExportRequestQueueItemRecord Admin 데이터 export 요청 queue item을 정의합니다.
-export interface AdminDataExportRequestQueueItemRecord {
-  readonly id: string;
-  readonly userId: string;
-  readonly userEmailMasked: string | null;
-  readonly status: UserDataExportRequestStatus;
-  readonly includeSensitive: boolean;
-  readonly format: string;
-  readonly requestedAt: Date;
-  readonly expiresAt: Date | null;
-}
-
-// 역할 : AdminDataExportRequestsPageRecord Admin 데이터 export 요청 cursor page를 정의합니다.
-export interface AdminDataExportRequestsPageRecord {
-  readonly items: AdminDataExportRequestQueueItemRecord[];
-  readonly nextCursor: string | null;
 }
 
 // 역할 : CreateAdminAccountRequestAuditLogInput 계정 데이터 요청 queue 조회 감사 로그 입력을 정의합니다.

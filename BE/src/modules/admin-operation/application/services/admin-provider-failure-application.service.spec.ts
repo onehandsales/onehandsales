@@ -3,12 +3,12 @@ import {
   AdminAuditResult,
   AdminTargetType,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
+import type { AdminProviderFailureRepository } from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
 import {
   AdminProviderFailureFeatureArea,
   AdminProviderFailureType,
   type AdminProviderFailureDetailRecord,
-  type AdminProviderFailureRepository,
-} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+} from "@/modules/admin-operation/application/ports/admin-provider-failure-read-model.types";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AdminProviderFailureApplicationService } from "./admin-provider-failure-application.service";
 

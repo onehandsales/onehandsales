@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ADMIN_ANALYTICS_REPOSITORY,
-  type AdminAnalyticsOverviewRecord,
   type AdminAnalyticsRepository,
   type GetAdminAnalyticsOverviewInput,
 } from "@/modules/admin-operation/application/ports/admin-analytics.repository";
+import type { AdminAnalyticsOverviewRecord } from "@/modules/admin-operation/application/ports/admin-analytics-read-model.types";
 import {
   AdminAuditAction,
   AdminAuditResult,

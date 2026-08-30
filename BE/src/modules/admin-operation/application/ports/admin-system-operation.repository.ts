@@ -4,38 +4,15 @@ import type {
   AdminOperationCheckRunStatus,
   AdminTargetType,
 } from "./admin-operation.types";
+import type {
+  AdminOperationCheckEnvironment,
+  AdminOperationCheckItemsRecord,
+  AdminOperationCheckRunRecord,
+} from "./admin-system-operation-read-model.types";
 
 export const ADMIN_SYSTEM_OPERATION_REPOSITORY = Symbol(
   "ADMIN_SYSTEM_OPERATION_REPOSITORY"
 );
-
-export type AdminOperationCheckEnvironment =
-  | "local"
-  | "qa"
-  | "staging"
-  | "production";
-
-// 역할 : AdminOperationCheckItemsRecord 운영 gate 점검 항목별 상태를 정의합니다.
-export interface AdminOperationCheckItemsRecord {
-  readonly prismaValidate: AdminOperationCheckRunStatus;
-  readonly prismaGenerate: AdminOperationCheckRunStatus;
-  readonly migrationStatus: AdminOperationCheckRunStatus;
-  readonly seedNotRunOnSharedDb: AdminOperationCheckRunStatus;
-  readonly backupVerified: AdminOperationCheckRunStatus;
-  readonly restoreDryRun: AdminOperationCheckRunStatus;
-  readonly providerSmoke: AdminOperationCheckRunStatus;
-}
-
-// 역할 : AdminOperationCheckRunRecord 운영 gate 점검 기록을 정의합니다.
-export interface AdminOperationCheckRunRecord {
-  readonly id: string;
-  readonly environment: AdminOperationCheckEnvironment;
-  readonly status: AdminOperationCheckRunStatus;
-  readonly checkedAt: Date;
-  readonly checkedByAdminUserId: string;
-  readonly items: AdminOperationCheckItemsRecord;
-  readonly notes: string | null;
-}
 
 // 역할 : CreateAdminOperationCheckRunInput 운영 gate 점검 기록 생성 값을 정의합니다.
 export interface CreateAdminOperationCheckRunInput {

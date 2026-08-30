@@ -3,7 +3,7 @@ import type {
   AdminProviderFailureListPageRecord,
   AdminProviderFailureRecord,
   AdminProviderFailureSafeContext,
-} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+} from "@/modules/admin-operation/application/ports/admin-provider-failure-read-model.types";
 import { maskEmail } from "./admin-redaction.mapper";
 
 // 역할 : AdminProviderFailureListResponse Admin provider 실패 목록 API 응답을 정의합니다.

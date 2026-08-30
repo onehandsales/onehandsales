@@ -5,9 +5,9 @@ import {
   AdminTargetType,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
 import type {
-  AdminOperationCheckRunRecord,
   AdminSystemOperationRepository,
 } from "@/modules/admin-operation/application/ports/admin-system-operation.repository";
+import type { AdminOperationCheckRunRecord } from "@/modules/admin-operation/application/ports/admin-system-operation-read-model.types";
 import {
   AdminForbiddenError,
   AdminSystemCheckStatusInvalidError,

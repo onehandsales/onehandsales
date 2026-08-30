@@ -75,4 +75,4 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - `*repository.ts` 파일의 G01 이동 대상 enum/const/type export 잔존 검색 결과는 출력 없음이다.
 - presentation DTO의 repository port import 검색 결과는 출력 없음이다.
 - presentation 직접 repository token/interface 사용 검색 결과는 출력 없음이다.
-- 전체 presentation repository port import 잔여 9건은 모두 G02 response mapper 대상이다.
+- G01 당시 전체 presentation repository port import는 response mapper 9건으로 남았고, 이후 G02에서 0건으로 정리됐다.

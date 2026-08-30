@@ -1,11 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ACCOUNT_REQUEST_REPOSITORY,
-  type AccountDeletionRequestRecord,
   type AccountRequestRepository,
-  type UserDataExportFormat,
-  type UserDataExportRequestRecord,
 } from "@/modules/account-request/application/ports/account-request.repository";
+import type {
+  AccountDeletionRequestRecord,
+  UserDataExportFormat,
+  UserDataExportRequestRecord,
+} from "@/modules/account-request/application/ports/account-request-read-model.types";
 import {
   AccountDeletionConfirmTextInvalidError,
   AccountDeletionRequestIdInvalidError,

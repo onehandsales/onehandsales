@@ -1,8 +1,10 @@
 import type {
-  AccountDeletionRequestRecord,
   AccountRequestRepository,
-  UserDataExportRequestRecord,
 } from "@/modules/account-request/application/ports/account-request.repository";
+import type {
+  AccountDeletionRequestRecord,
+  UserDataExportRequestRecord,
+} from "@/modules/account-request/application/ports/account-request-read-model.types";
 import {
   AccountDeletionConfirmTextInvalidError,
   AccountDeletionRequestNotCancelableError,

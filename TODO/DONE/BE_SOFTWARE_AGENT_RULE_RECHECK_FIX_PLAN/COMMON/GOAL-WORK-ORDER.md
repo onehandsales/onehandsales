@@ -34,8 +34,10 @@
 
 ```text
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```
+
+2026-08-30 기준 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01/G02는 완료 및 추가 재검토까지 통과했고, G99 final review만 남아 있다.
 
 ## 4. 완료 판정
 

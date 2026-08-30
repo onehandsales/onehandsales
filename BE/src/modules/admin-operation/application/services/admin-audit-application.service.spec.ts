@@ -5,10 +5,10 @@ import {
   AdminTargetType,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
 import type {
-  AdminAuditRepository,
   AdminSensitiveAccessRecord,
   AdminSensitiveRawDataRecord,
-} from "@/modules/admin-operation/application/ports/admin-audit.repository";
+} from "@/modules/admin-operation/application/ports/admin-audit-read-model.types";
+import type { AdminAuditRepository } from "@/modules/admin-operation/application/ports/admin-audit.repository";
 import {
   AdminReasonRequiredError,
   AdminSensitiveFieldSetUnsupportedError,

@@ -1,10 +1,16 @@
-import type {
-  AdminOperationCheckItemsRecord,
-  AdminOperationCheckRunRecord,
-} from "@/modules/admin-operation/application/ports/admin-system-operation.repository";
+import type { AdminOperationCheckRunStatus } from "@/modules/admin-operation/application/ports/admin-operation.types";
+import type { AdminOperationCheckRunRecord } from "@/modules/admin-operation/application/ports/admin-system-operation-read-model.types";
 
 // 역할 : AdminOperationCheckItemsResponse 운영 gate 점검 항목별 응답을 정의합니다.
-export type AdminOperationCheckItemsResponse = AdminOperationCheckItemsRecord;
+export interface AdminOperationCheckItemsResponse {
+  readonly prismaValidate: AdminOperationCheckRunStatus;
+  readonly prismaGenerate: AdminOperationCheckRunStatus;
+  readonly migrationStatus: AdminOperationCheckRunStatus;
+  readonly seedNotRunOnSharedDb: AdminOperationCheckRunStatus;
+  readonly backupVerified: AdminOperationCheckRunStatus;
+  readonly restoreDryRun: AdminOperationCheckRunStatus;
+  readonly providerSmoke: AdminOperationCheckRunStatus;
+}
 
 // 역할 : AdminOperationCheckRunResponse 운영 gate 점검 기록 API 응답을 정의합니다.
 export interface AdminOperationCheckRunResponse {

@@ -2,13 +2,15 @@ import { Inject, Injectable } from "@nestjs/common";
 import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user-query.types";
 import {
   ADMIN_USER_REPOSITORY,
-  type AdminUserActivityTimelinePageRecord,
-  type AdminUserListPageRecord,
-  type AdminUserOverviewRecord,
   type AdminUserRepository,
   type ListAdminUserActivityTimelineInput,
   type ListAdminUsersInput,
 } from "@/modules/admin-operation/application/ports/admin-user.repository";
+import type {
+  AdminUserActivityTimelinePageRecord,
+  AdminUserListPageRecord,
+  AdminUserOverviewRecord,
+} from "@/modules/admin-operation/application/ports/admin-user-read-model.types";
 import {
   AdminAuditAction,
   AdminAuditResult,

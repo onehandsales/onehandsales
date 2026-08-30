@@ -1,7 +1,7 @@
 import {
   AdminDomainRecordDomain,
   AdminDomainRecordSort,
-} from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
+} from "@/modules/admin-operation/application/ports/admin-domain-record-read-model.types";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaAdminDomainRecordRepository } from "./prisma-admin-domain-record.repository";
 

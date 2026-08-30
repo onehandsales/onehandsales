@@ -7,8 +7,8 @@ import {
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
 import type {
   AdminAccountRequestRepository,
-  AdminDataExportRequestsPageRecord,
 } from "@/modules/admin-operation/application/ports/admin-account-request.repository";
+import type { AdminDataExportRequestsPageRecord } from "@/modules/admin-operation/application/ports/admin-account-request-read-model.types";
 import { AdminForbiddenError } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AdminAccountRequestApplicationService } from "./admin-account-request-application.service";

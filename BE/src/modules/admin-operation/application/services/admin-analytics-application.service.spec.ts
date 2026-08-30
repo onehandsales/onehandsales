@@ -3,10 +3,8 @@ import {
   AdminAuditResult,
   AdminTargetType,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
-import type {
-  AdminAnalyticsOverviewRecord,
-  AdminAnalyticsRepository,
-} from "@/modules/admin-operation/application/ports/admin-analytics.repository";
+import type { AdminAnalyticsRepository } from "@/modules/admin-operation/application/ports/admin-analytics.repository";
+import type { AdminAnalyticsOverviewRecord } from "@/modules/admin-operation/application/ports/admin-analytics-read-model.types";
 import {
   AdminAnalyticsRangeRequiredError,
   AdminAnalyticsRangeTooLargeError,

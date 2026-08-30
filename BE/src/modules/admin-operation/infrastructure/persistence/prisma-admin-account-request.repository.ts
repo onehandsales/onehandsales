@@ -1,14 +1,16 @@
 import { Prisma } from "@prisma/client";
 import type {
-  AdminAccountDeletionRequestQueueItemRecord,
-  AdminAccountDeletionRequestsPageRecord,
   AdminAccountRequestRepository,
-  AdminDataExportRequestQueueItemRecord,
-  AdminDataExportRequestsPageRecord,
   CreateAdminAccountRequestAuditLogInput,
   ListAdminAccountDeletionRequestsInput,
   ListAdminDataExportRequestsInput,
 } from "@/modules/admin-operation/application/ports/admin-account-request.repository";
+import type {
+  AdminAccountDeletionRequestQueueItemRecord,
+  AdminAccountDeletionRequestsPageRecord,
+  AdminDataExportRequestQueueItemRecord,
+  AdminDataExportRequestsPageRecord,
+} from "@/modules/admin-operation/application/ports/admin-account-request-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { maskEmail } from "../../presentation/http/admin-redaction.mapper";
 

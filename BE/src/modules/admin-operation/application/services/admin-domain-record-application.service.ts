@@ -1,12 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ADMIN_DOMAIN_RECORD_REPOSITORY,
-  AdminDomainRecordDomain,
-  AdminDomainRecordSort,
-  type AdminDomainRecordsPageRecord,
   type AdminDomainRecordRepository,
   type ListAdminDomainRecordsInput,
 } from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
+import {
+  AdminDomainRecordDomain,
+  AdminDomainRecordSort,
+  type AdminDomainRecordsPageRecord,
+} from "@/modules/admin-operation/application/ports/admin-domain-record-read-model.types";
 import {
   AdminAuditAction,
   AdminAuditResult,

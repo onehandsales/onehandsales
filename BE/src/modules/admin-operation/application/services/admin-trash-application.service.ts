@@ -1,15 +1,17 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ADMIN_TRASH_REPOSITORY,
-  AdminTrashDomain,
-  type AdminTrashRecordsPageRecord,
-  type AdminTrashRecoveryRequestsPageRecord,
   type AdminTrashRepository,
-  type AdminTrashRestoreWindowFilter,
-  type AdminTrashSummaryRecord,
   type ListAdminTrashRecoveryRequestsInput,
   type ListAdminTrashRecordsInput,
 } from "@/modules/admin-operation/application/ports/admin-trash.repository";
+import {
+  AdminTrashDomain,
+  type AdminTrashRecordsPageRecord,
+  type AdminTrashRecoveryRequestsPageRecord,
+  type AdminTrashRestoreWindowFilter,
+  type AdminTrashSummaryRecord,
+} from "@/modules/admin-operation/application/ports/admin-trash-read-model.types";
 import {
   AdminAuditAction,
   AdminAuditResult,

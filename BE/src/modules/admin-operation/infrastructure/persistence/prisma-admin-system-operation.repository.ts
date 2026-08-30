@@ -3,13 +3,15 @@ import {
   Prisma,
 } from "@prisma/client";
 import type {
-  AdminOperationCheckEnvironment,
-  AdminOperationCheckItemsRecord,
-  AdminOperationCheckRunRecord,
   AdminSystemOperationRepository,
   CreateAdminOperationCheckRunInput,
   CreateAdminSystemOperationAuditLogInput,
 } from "@/modules/admin-operation/application/ports/admin-system-operation.repository";
+import type {
+  AdminOperationCheckEnvironment,
+  AdminOperationCheckItemsRecord,
+  AdminOperationCheckRunRecord,
+} from "@/modules/admin-operation/application/ports/admin-system-operation-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type AdminSystemOperationPrismaClient =

@@ -9,7 +9,7 @@ import type {
   AdminAuditLogRecord,
   AdminSensitiveAccessRecord,
   AdminSensitiveRawDataRecord,
-} from "@/modules/admin-operation/application/ports/admin-audit.repository";
+} from "@/modules/admin-operation/application/ports/admin-audit-read-model.types";
 import { maskEmail } from "./admin-redaction.mapper";
 
 const REASON_PREVIEW_MAX_LENGTH = 80;

@@ -5,10 +5,8 @@ import {
   UserStatus,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
 import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user-query.types";
-import {
-  type AdminUserOverviewRecord,
-  type AdminUserRepository,
-} from "@/modules/admin-operation/application/ports/admin-user.repository";
+import type { AdminUserRepository } from "@/modules/admin-operation/application/ports/admin-user.repository";
+import type { AdminUserOverviewRecord } from "@/modules/admin-operation/application/ports/admin-user-read-model.types";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AdminUserApplicationService } from "./admin-user-application.service";
 

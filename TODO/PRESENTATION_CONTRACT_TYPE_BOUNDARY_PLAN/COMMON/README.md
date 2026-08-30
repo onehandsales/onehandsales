@@ -1,6 +1,6 @@
 # Presentation Contract Type Boundary Common
 
-상태: G01 Done / G02 Next
+상태: G01-G02 Done and Rechecked / G99 Next
 
 ## 1. 목적
 
@@ -19,8 +19,11 @@
 ## 2.1 현재 진행 상태
 
 - G01 DTO validation contract 분리는 2026-08-29 완료됐다.
-- 다음 실행 대상은 `G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`이다.
+- G02 response mapper read model contract 분리는 2026-08-30 완료됐다.
+- 다음 실행 대상은 `G99-FINAL-REVIEW.goal.md`이다.
 - G01 완료 후 presentation DTO의 `application/ports/*repository*` import는 0건이다.
+- G02 완료 후 presentation 전체의 `application/ports/*repository*` import는 0건이다.
+- 2026-08-30 추가 재검토에서도 presentation 직접 repository token/interface 사용과 response mapper repository record alias 패턴은 0건이며, BE typecheck/lint/test가 통과했다.
 
 ## 3. 공통 기준
 

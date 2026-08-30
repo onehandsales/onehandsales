@@ -55,7 +55,7 @@
 
 G01부터 G08까지의 코드 수정/감사 Goal과 G99 최종 검토가 모두 완료되었다. 커밋 이후 재검토에서도 작업 트리 clean, BE 전체 검증 통과, 완료 상태 문구/경로 정합성을 확인했다. 이 계획 안에서 추가 실행할 `/goal`은 없다.
 
-후속으로 분리된 활성 계획은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`과 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`이다.
+후속으로 분리된 활성 계획은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`과 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`이다. 2026-08-30 기준 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01/G02는 완료 및 추가 재검토까지 통과했고, 다음 실행 대상은 G99 final review다.
 
 ## 5. 공통 원칙
 

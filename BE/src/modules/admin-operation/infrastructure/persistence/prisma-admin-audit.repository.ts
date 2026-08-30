@@ -5,15 +5,17 @@ import {
   type AdminTargetType,
 } from "@prisma/client";
 import {
-  type AdminAuditLogPageRecord,
-  type AdminAuditLogRecord,
   type AdminAuditRepository,
-  type AdminSensitiveAccessRecord,
-  type AdminSensitiveRawDataRecord,
   type CreateSensitiveAccessLogInput,
   type FindAdminSensitiveRawDataInput,
   type ListAdminAuditLogsInput,
 } from "@/modules/admin-operation/application/ports/admin-audit.repository";
+import type {
+  AdminAuditLogPageRecord,
+  AdminAuditLogRecord,
+  AdminSensitiveAccessRecord,
+  AdminSensitiveRawDataRecord,
+} from "@/modules/admin-operation/application/ports/admin-audit-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type AdminAuditPrismaClient = PrismaService | Prisma.TransactionClient;

@@ -1,7 +1,7 @@
 import type {
   AdminAccountDeletionRequestsPageRecord,
   AdminDataExportRequestsPageRecord,
-} from "@/modules/admin-operation/application/ports/admin-account-request.repository";
+} from "@/modules/admin-operation/application/ports/admin-account-request-read-model.types";
 
 // 역할 : AdminAccountDeletionRequestQueueItemResponse Admin 계정 삭제 요청 queue item 응답을 정의합니다.
 export interface AdminAccountDeletionRequestQueueItemResponse {

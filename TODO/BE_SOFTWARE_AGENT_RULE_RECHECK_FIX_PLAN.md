@@ -36,13 +36,13 @@ D:\workspace_repository\onehandsales\TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FI
 
 ```text
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```
 
-2026-08-29 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01 DTO validation contract boundary는 완료됐고, 다음 실행 대상은 G02 response mapper read model boundary다.
+2026-08-30 후속 `TODO\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01 DTO validation contract boundary와 G02 response mapper read model boundary는 완료 및 추가 재검토까지 통과했고, 다음 실행 대상은 G99 final review다.
 
 주의:
 
 - 기존 단일 실행 문서는 더 이상 정본이 아니며 완료 포인터로만 유지한다.
-- 완료 이력은 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`과 `TODO_LOG\2026-08-28`, `TODO_LOG\2026-08-29`를 기준으로 본다.
+- 완료 이력은 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`과 `TODO_LOG\2026-08-28`, `TODO_LOG\2026-08-29`, 후속 presentation boundary 작업 로그 `TODO_LOG\2026-08-30`을 기준으로 본다.
 - 새 요구사항이나 후속 구현은 활성 계획 폴더에서 별도 `/goal`로 실행한다.

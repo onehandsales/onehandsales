@@ -7,20 +7,22 @@ import {
 } from "@prisma/client";
 import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user-query.types";
 import {
-  type AdminUserActivityTimelinePageRecord,
-  type AdminUserActivityTimelineRecord,
-  type AdminUserListDomainCountsRecord,
-  type AdminUserListItemRecord,
-  type AdminUserListPageRecord,
-  type AdminUserOverviewDomainCountsRecord,
-  type AdminUserOverviewRecord,
-  type AdminUserProfileRecord,
   type AdminUserRepository,
-  type AdminUserTrashSummaryRecord,
   type CreateAdminAuditLogInput,
   type ListAdminUserActivityTimelineInput,
   type ListAdminUsersInput,
 } from "@/modules/admin-operation/application/ports/admin-user.repository";
+import type {
+  AdminUserActivityTimelinePageRecord,
+  AdminUserActivityTimelineRecord,
+  AdminUserListDomainCountsRecord,
+  AdminUserListItemRecord,
+  AdminUserListPageRecord,
+  AdminUserOverviewDomainCountsRecord,
+  AdminUserOverviewRecord,
+  AdminUserProfileRecord,
+  AdminUserTrashSummaryRecord,
+} from "@/modules/admin-operation/application/ports/admin-user-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type AdminUserPrismaClient = PrismaService | Prisma.TransactionClient;

@@ -4,14 +4,16 @@ import {
   UserDataExportRequestStatus,
 } from "@prisma/client";
 import type {
-  AccountDeletionRequestRecord,
   AccountRequestRepository,
   CancelAccountDeletionRequestInput,
   CreateAccountDeletionRequestInput,
   CreateUserDataExportRequestInput,
+} from "@/modules/account-request/application/ports/account-request.repository";
+import type {
+  AccountDeletionRequestRecord,
   UserDataExportFormat,
   UserDataExportRequestRecord,
-} from "@/modules/account-request/application/ports/account-request.repository";
+} from "@/modules/account-request/application/ports/account-request-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type AccountRequestPrismaClient = PrismaService | Prisma.TransactionClient;

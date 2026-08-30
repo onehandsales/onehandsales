@@ -2,7 +2,7 @@ import type {
   AccountDeletionRequestRecord,
   UserDataExportRequestRecord,
   UserDataExportRequestStatusValue,
-} from "@/modules/account-request/application/ports/account-request.repository";
+} from "@/modules/account-request/application/ports/account-request-read-model.types";
 
 // 역할 : UserDataExportRequestResponse 내 데이터 export 요청 응답을 정의합니다.
 export interface UserDataExportRequestResponse {

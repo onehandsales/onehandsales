@@ -1,4 +1,10 @@
 import { Prisma, TrashRecoveryRequestStatus } from "@prisma/client";
+import type {
+  AdminTrashRepository,
+  CreateAdminTrashAuditLogInput,
+  ListAdminTrashRecoveryRequestsInput,
+  ListAdminTrashRecordsInput,
+} from "@/modules/admin-operation/application/ports/admin-trash.repository";
 import {
   AdminTrashDomain,
   type AdminTrashLinkedRecoveryRequestRecord,
@@ -6,14 +12,10 @@ import {
   type AdminTrashRecordsPageRecord,
   type AdminTrashRecoveryRequestQueueItemRecord,
   type AdminTrashRecoveryRequestsPageRecord,
-  type AdminTrashRepository,
   type AdminTrashRestoreWindow,
   type AdminTrashRestoreWindowFilter,
   type AdminTrashSummaryRecord,
-  type CreateAdminTrashAuditLogInput,
-  type ListAdminTrashRecoveryRequestsInput,
-  type ListAdminTrashRecordsInput,
-} from "@/modules/admin-operation/application/ports/admin-trash.repository";
+} from "@/modules/admin-operation/application/ports/admin-trash-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { maskEmail } from "../../presentation/http/admin-redaction.mapper";
 

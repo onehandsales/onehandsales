@@ -9,17 +9,19 @@ import {
   Prisma,
 } from "@prisma/client";
 import {
+  type AdminProviderFailureRepository,
+  type CreateAdminProviderFailureAuditLogInput,
+  type ListAdminProviderFailuresInput,
+} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+import {
   AdminProviderFailureFeatureArea,
   AdminProviderFailureType,
   type AdminProviderFailureDetailRecord,
   type AdminProviderFailureListPageRecord,
   type AdminProviderFailureRecord,
-  type AdminProviderFailureRepository,
   type AdminProviderFailureStatus,
   type AdminProviderFailureStatusFilter,
-  type CreateAdminProviderFailureAuditLogInput,
-  type ListAdminProviderFailuresInput,
-} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+} from "@/modules/admin-operation/application/ports/admin-provider-failure-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { maskDisplayName } from "../../presentation/http/admin-redaction.mapper";
 

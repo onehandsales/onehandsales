@@ -1,13 +1,15 @@
 import { ImportJobStatus, ImportTemplateType, Prisma } from "@prisma/client";
+import type {
+  AdminDomainRecordRepository,
+  CreateAdminDomainAuditLogInput,
+  ListAdminDomainRecordsInput,
+} from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
 import {
   AdminDomainRecordDomain,
   AdminDomainRecordSort,
   type AdminDomainRecordItemRecord,
-  type AdminDomainRecordRepository,
   type AdminDomainRecordsPageRecord,
-  type CreateAdminDomainAuditLogInput,
-  type ListAdminDomainRecordsInput,
-} from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
+} from "@/modules/admin-operation/application/ports/admin-domain-record-read-model.types";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import {
   maskEmail,

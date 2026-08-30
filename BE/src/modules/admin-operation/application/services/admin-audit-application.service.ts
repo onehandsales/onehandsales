@@ -8,12 +8,14 @@ import {
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
 import {
   ADMIN_AUDIT_REPOSITORY,
-  type AdminAuditLogPageRecord,
   type AdminAuditRepository,
-  type AdminSensitiveAccessRecord,
-  type AdminSensitiveRawDataRecord,
   type ListAdminAuditLogsInput,
 } from "@/modules/admin-operation/application/ports/admin-audit.repository";
+import type {
+  AdminAuditLogPageRecord,
+  AdminSensitiveAccessRecord,
+  AdminSensitiveRawDataRecord,
+} from "@/modules/admin-operation/application/ports/admin-audit-read-model.types";
 import {
   AdminForbiddenError,
   AdminReasonRequiredError,

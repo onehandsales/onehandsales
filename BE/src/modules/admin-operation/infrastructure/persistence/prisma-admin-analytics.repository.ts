@@ -4,17 +4,19 @@ import {
   UserActivationStatus,
 } from "@prisma/client";
 import type {
+  AdminAnalyticsRepository,
+  CreateAdminAnalyticsAuditLogInput,
+  GetAdminAnalyticsOverviewInput,
+} from "@/modules/admin-operation/application/ports/admin-analytics.repository";
+import type {
   AdminAnalyticsActivationRecord,
   AdminAnalyticsAiUsageRecord,
   AdminAnalyticsMobileFieldUseRecord,
   AdminAnalyticsMobilePushPermissionResultRecord,
   AdminAnalyticsOverviewRecord,
-  AdminAnalyticsRepository,
   AdminAnalyticsRetentionRecord,
   AdminAnalyticsRouteViewRecord,
-  CreateAdminAnalyticsAuditLogInput,
-  GetAdminAnalyticsOverviewInput,
-} from "@/modules/admin-operation/application/ports/admin-analytics.repository";
+} from "@/modules/admin-operation/application/ports/admin-analytics-read-model.types";
 import {
   formatProductAnalyticsDateOnlyDate,
   resolveProductAnalyticsEventDate,

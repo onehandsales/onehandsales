@@ -13,7 +13,7 @@ import {
 import {
   AdminProviderFailureFeatureArea,
   AdminProviderFailureType,
-} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+} from "@/modules/admin-operation/application/ports/admin-provider-failure-read-model.types";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaAdminProviderFailureRepository } from "./prisma-admin-provider-failure.repository";
 

@@ -1,14 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   ADMIN_PROVIDER_FAILURE_REPOSITORY,
+  type AdminProviderFailureRepository,
+  type ListAdminProviderFailuresInput,
+} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+import {
   AdminProviderFailureFeatureArea,
   AdminProviderFailureType,
   type AdminProviderFailureDetailRecord,
   type AdminProviderFailureListPageRecord,
-  type AdminProviderFailureRepository,
   type AdminProviderFailureStatusFilter,
-  type ListAdminProviderFailuresInput,
-} from "@/modules/admin-operation/application/ports/admin-provider-failure.repository";
+} from "@/modules/admin-operation/application/ports/admin-provider-failure-read-model.types";
 import {
   AdminAuditAction,
   AdminAuditResult,

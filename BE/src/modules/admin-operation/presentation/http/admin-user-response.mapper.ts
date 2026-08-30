@@ -10,7 +10,7 @@ import type {
   AdminUserOverviewRecord,
   AdminUserProfileRecord,
   AdminUserTrashSummaryRecord,
-} from "@/modules/admin-operation/application/ports/admin-user.repository";
+} from "@/modules/admin-operation/application/ports/admin-user-read-model.types";
 import { maskDisplayName, maskEmail } from "./admin-redaction.mapper";
 
 // 역할 : AdminUserProfileResponse Admin 사용자 profile 응답을 정의합니다.

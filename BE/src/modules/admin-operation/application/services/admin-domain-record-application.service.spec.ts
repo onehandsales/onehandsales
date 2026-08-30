@@ -3,11 +3,11 @@ import {
   AdminAuditResult,
   AdminTargetType,
 } from "@/modules/admin-operation/application/ports/admin-operation.types";
+import type { AdminDomainRecordRepository } from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
 import {
   AdminDomainRecordDomain,
   AdminDomainRecordSort,
-  type AdminDomainRecordRepository,
-} from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
+} from "@/modules/admin-operation/application/ports/admin-domain-record-read-model.types";
 import { AdminDomainUnsupportedError } from "@/modules/admin-operation/domain/admin-operation.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AdminDomainRecordApplicationService } from "./admin-domain-record-application.service";

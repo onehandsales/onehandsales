@@ -1,6 +1,6 @@
 # G99 final review
 
-상태: Ready after G02
+상태: Next for `/goal`
 성격: 최종 검토
 우선순위: P3
 
@@ -48,3 +48,7 @@ rg -n "@Inject\\(|REPOSITORY|Repository" src\modules\*\presentation -g "*.ts" -g
 - 남은 예외가 있으면 사유와 후속 계획이 문서화되어 있다.
 - 계획 README와 `TODO/README.md`의 상태가 최신이다.
 - Backend 검증이 통과한다.
+
+## 7. 선행 상태
+
+2026-08-30 G02 추가 재검토에서 presentation repository port import, 직접 repository token/interface 사용, response mapper repository record alias 패턴은 모두 0건으로 확인됐다. `pnpm run typecheck`, `pnpm run lint`, `pnpm test -- --runInBand`도 통과했으며, G99는 이 상태를 기준으로 최종 완료/보관 가능 여부를 판정한다.
