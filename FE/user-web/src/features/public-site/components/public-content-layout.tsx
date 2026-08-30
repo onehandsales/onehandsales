@@ -95,7 +95,7 @@ export function PublicContentContainer({
   );
 }
 
-// 기능 : 공개 정보 페이지의 기본 섹션 배경과 상하 여백을 렌더링합니다.
+// 기능 : 공개 정보 페이지의 기본 섹션 배경과 상단 여백을 렌더링합니다.
 export function PublicPageSection({
   children,
   className,
@@ -105,7 +105,7 @@ export function PublicPageSection({
     <section
       className={cn(
         tone === "muted" ? "bg-[#FAFAF8]" : "bg-white",
-        "py-16 sm:py-20 lg:py-24",
+        "pt-16 sm:pt-20 lg:pt-24",
         className,
       )}
     >
