@@ -32,7 +32,6 @@ type SolutionsCopy = {
   readonly ctaDescription: string;
   readonly ctaTitle: string;
   readonly description: string;
-  readonly eyebrow: string;
   readonly segments: readonly SolutionSegmentCopy[];
   readonly title: string;
 };
@@ -45,7 +44,6 @@ const solutionIcons: Record<SolutionSegmentCopy["id"], LucideIcon> = {
 
 const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
   ko: {
-    eyebrow: "Solutions",
     title: "개인부터 조직까지, 영업 기록을 쓰는 방식에 맞게.",
     description:
       "OneHand는 업종별 사례보다 먼저 사용자의 규모와 운영 방식에 맞춰 설명하는 것이 자연스럽습니다.",
@@ -90,7 +88,6 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     ],
   },
   "en-US": {
-    eyebrow: "Solutions",
     title: "For the way your sales work is organized.",
     description:
       "Before splitting by industry, OneHand is clearer when it is explained by team size and operating style.",
@@ -149,25 +146,27 @@ export function SolutionsPage() {
     <PublicSitePageShell>
       <PublicPageSection>
         <PublicContentContainer>
-          <PublicDocumentHero
-            description={copy.description}
-            eyebrow={copy.eyebrow}
-            title={copy.title}
-          />
+          <PublicDocumentHero title={copy.title} />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {copy.segments.map((segment) => {
-              const Icon = solutionIcons[segment.id];
+          <div className="mt-16">
+            <p className="max-w-[720px] break-keep text-[15px] leading-7 text-[#555550]">
+              {copy.description}
+            </p>
 
-              return (
-                <PublicInfoCard
-                  description={segment.summary}
-                  icon={Icon}
-                  key={segment.id}
-                  title={segment.title}
-                />
-              );
-            })}
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {copy.segments.map((segment) => {
+                const Icon = solutionIcons[segment.id];
+
+                return (
+                  <PublicInfoCard
+                    description={segment.summary}
+                    icon={Icon}
+                    key={segment.id}
+                    title={segment.title}
+                  />
+                );
+              })}
+            </div>
           </div>
 
           <PublicTableOfContents

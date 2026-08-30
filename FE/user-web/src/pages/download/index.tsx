@@ -31,14 +31,12 @@ type DownloadCopy = {
   readonly ctaDescription: string;
   readonly ctaTitle: string;
   readonly description: string;
-  readonly eyebrow: string;
   readonly iosLabel: string;
   readonly title: string;
 };
 
 const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
   ko: {
-    eyebrow: "Download",
     title: "iOS와 Android에서 OneHand를 바로 열어보세요.",
     description:
       "앱 다운로드 흐름을 기준으로 안내합니다. 현장에서 고객을 만난 뒤에도 모바일에서 영업 흐름을 확인할 수 있게 설계합니다.",
@@ -63,7 +61,6 @@ const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
     ],
   },
   "en-US": {
-    eyebrow: "Download",
     title: "Open OneHand on iOS and Android.",
     description:
       "This page is structured around the app download flow, so sellers can check customer and deal context while they are in the field.",
@@ -100,11 +97,12 @@ export function DownloadPage() {
     <PublicSitePageShell>
       <PublicPageSection>
         <PublicContentContainer>
-          <PublicDocumentHero
-            description={copy.description}
-            eyebrow={copy.eyebrow}
-            title={copy.title}
-          >
+          <PublicDocumentHero title={copy.title} />
+
+          <div className="mt-16">
+            <p className="max-w-[720px] break-keep text-[15px] leading-7 text-[#555550]">
+              {copy.description}
+            </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <DownloadLink href={IOS_DOWNLOAD_URL} label={copy.iosLabel} />
               <DownloadLink
@@ -112,7 +110,7 @@ export function DownloadPage() {
                 label={copy.androidLabel}
               />
             </div>
-          </PublicDocumentHero>
+          </div>
 
           <div className="mt-12 grid gap-4 md:grid-cols-3">
             {copy.cards.map((card, index) => {

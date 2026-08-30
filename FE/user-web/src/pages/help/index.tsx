@@ -22,7 +22,6 @@ type HelpCopy = {
   readonly ctaDescription: string;
   readonly ctaTitle: string;
   readonly description: string;
-  readonly eyebrow: string;
   readonly faqs: readonly FaqCopy[];
   readonly quickCards: readonly {
     readonly description: string;
@@ -33,7 +32,6 @@ type HelpCopy = {
 
 const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
   ko: {
-    eyebrow: "Help",
     title: "OneHand를 시작하기 전에 자주 묻는 질문.",
     description:
       "가격, 모바일, AI, 데이터, 로그인, 팀 사용처럼 도입 전에 확인하는 질문을 한곳에 모았습니다.",
@@ -98,7 +96,6 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
     ],
   },
   "en-US": {
-    eyebrow: "Help",
     title: "Questions to check before starting OneHand.",
     description:
       "Find answers about pricing, mobile use, AI, data, sign-in, and team usage before adoption.",
@@ -175,25 +172,27 @@ export function HelpPage() {
     <PublicSitePageShell>
       <PublicPageSection>
         <PublicContentContainer>
-          <PublicDocumentHero
-            description={copy.description}
-            eyebrow={copy.eyebrow}
-            title={copy.title}
-          />
+          <PublicDocumentHero title={copy.title} />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {copy.quickCards.map((card, index) => {
-              const Icon = quickCardIcons[index] ?? CircleHelp;
+          <div className="mt-16">
+            <p className="max-w-[720px] break-keep text-[15px] leading-7 text-[#555550]">
+              {copy.description}
+            </p>
 
-              return (
-                <PublicInfoCard
-                  description={card.description}
-                  icon={Icon}
-                  key={card.title}
-                  title={card.title}
-                />
-              );
-            })}
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {copy.quickCards.map((card, index) => {
+                const Icon = quickCardIcons[index] ?? CircleHelp;
+
+                return (
+                  <PublicInfoCard
+                    description={card.description}
+                    icon={Icon}
+                    key={card.title}
+                    title={card.title}
+                  />
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-12 grid gap-3">

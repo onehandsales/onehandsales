@@ -38,7 +38,6 @@ type FeaturesCopy = {
   readonly ctaDescription: string;
   readonly ctaTitle: string;
   readonly description: string;
-  readonly eyebrow: string;
   readonly items: readonly FeatureItemCopy[];
   readonly title: string;
 };
@@ -57,7 +56,6 @@ const featureIcons: readonly LucideIcon[] = [
 
 const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
   ko: {
-    eyebrow: "Features",
     title: "영업 흐름을 놓치지 않기 위한 핵심 기능.",
     description:
       "고객, 딜, 일정, 기록, 파일, AI 초안까지 개인 영업자가 매일 확인해야 하는 일을 한 흐름으로 정리합니다.",
@@ -159,7 +157,6 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
     ],
   },
   "en-US": {
-    eyebrow: "Features",
     title: "Core tools for keeping sales work moving.",
     description:
       "Keep customers, deals, schedules, notes, files, and AI drafts in one workflow for everyday sales work.",
@@ -275,21 +272,23 @@ export function FeaturesPage() {
     <PublicSitePageShell>
       <PublicPageSection>
         <PublicContentContainer>
-          <PublicDocumentHero
-            description={copy.description}
-            eyebrow={copy.eyebrow}
-            title={copy.title}
-          />
+          <PublicDocumentHero title={copy.title} />
 
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {copy.items.map((item, index) => (
-              <PublicInfoCard
-                description={item.summary}
-                icon={featureIcons[index] ?? Building2}
-                key={item.id}
-                title={item.title}
-              />
-            ))}
+          <div className="mt-16">
+            <p className="max-w-[720px] break-keep text-[15px] leading-7 text-[#555550]">
+              {copy.description}
+            </p>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {copy.items.map((item, index) => (
+                <PublicInfoCard
+                  description={item.summary}
+                  icon={featureIcons[index] ?? Building2}
+                  key={item.id}
+                  title={item.title}
+                />
+              ))}
+            </div>
           </div>
 
           <PublicTableOfContents
