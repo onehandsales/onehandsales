@@ -3,6 +3,8 @@ import { Fragment } from "react";
 import {
   FinalSection,
   PublicContentContainer,
+  PublicDocumentHero,
+  PublicPageSection,
   PublicSitePageShell,
 } from "@/features/public-site";
 import { publicSiteImages } from "@/features/public-site/constants/public-site-assets";
@@ -15,16 +17,15 @@ export function PricingPage() {
 
   return (
     <PublicSitePageShell>
-      <section className="bg-white pb-16 pt-16 md:pb-24 md:pt-20">
+      <PublicPageSection>
         <PublicContentContainer>
-          <div className="text-center">
-            <h1 className="text-[38px] font-normal leading-[1.05] tracking-normal md:text-[58px]">
-              {pricing.title}
-            </h1>
-            <p className="mx-auto mt-4 max-w-[620px] text-[15px] leading-7 text-[#666661]">
+          <PublicDocumentHero title={pricing.title} />
+
+          <div className="mt-16">
+            <p className="max-w-[720px] text-[15px] leading-7 text-[#666661]">
               {pricing.description}
             </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-5 text-[13px] font-normal text-[#555550]">
+            <div className="mt-5 flex flex-wrap items-center gap-5 text-[13px] font-normal text-[#555550]">
               {pricing.tags.map((item) => (
                 <span className="inline-flex items-center gap-2" key={item}>
                   <span className="h-1 w-1 rounded-full bg-[#c8c8c2]" />
@@ -32,7 +33,7 @@ export function PricingPage() {
                 </span>
               ))}
             </div>
-            <div className="mx-auto mt-8 grid max-w-[1040px] gap-3 overflow-hidden rounded-[10px] border border-[#eeeeec] bg-white p-2 shadow-sm md:grid-cols-3">
+            <div className="mt-8 grid max-w-[1040px] gap-3 overflow-hidden rounded-[10px] border border-[#eeeeec] bg-white p-2 shadow-sm md:grid-cols-3">
               {[
                 {
                   alt: pricing.mediaAlts[0],
@@ -173,76 +174,72 @@ export function PricingPage() {
               </div>
             </aside>
           </div>
-        </PublicContentContainer>
-      </section>
 
-      <section className="bg-white pb-16 md:pb-24">
-        <PublicContentContainer>
-          <h2 className="text-[34px] font-normal md:text-[46px]">{pricing.featuresTitle}</h2>
-          <div className="mt-8 overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-left text-[13px]">
-              <thead>
-                <tr className="border-b border-[#dededa]">
-                  <th className="w-[32%] py-3 text-[12px] text-[#777770]">{pricing.featureColumn}</th>
-                  {pricing.plans.map((plan) => (
-                    <th className="py-3 text-center text-[12px] font-normal" key={plan.name}>
-                      {plan.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {pricing.comparisonGroups.map((group) => (
-                  <Fragment key={group.title}>
-                    <tr>
-                      <td className="pb-2 pt-10 text-[12px] font-normal text-[#777770]" colSpan={5}>
-                        {group.title}
-                      </td>
-                    </tr>
-                    {group.rows.map((row) => (
-                      <tr className="border-b border-[#eeeeec]" key={`${group.title}-${row[0]}`}>
-                        {row.map((cell, index) => (
-                          <td
-                            className={[
-                              "py-3",
-                              index === 0 ? "font-normal text-[#333330]" : "text-center text-[#555550]",
-                            ].join(" ")}
-                            key={`${row[0]}-${index}`}
-                          >
-                            {pricing.includedValues.includes(cell) ? (
-                              <Check className="mx-auto h-4 w-4 text-[#159447]" />
-                            ) : (
-                              cell || pricing.emptyCell
-                            )}
-                          </td>
-                        ))}
-                      </tr>
+          <section className="mt-20">
+            <h2 className="text-[34px] font-normal md:text-[46px]">{pricing.featuresTitle}</h2>
+            <div className="mt-8 overflow-x-auto">
+              <table className="w-full min-w-[760px] border-collapse text-left text-[13px]">
+                <thead>
+                  <tr className="border-b border-[#dededa]">
+                    <th className="w-[32%] py-3 text-[12px] text-[#777770]">{pricing.featureColumn}</th>
+                    {pricing.plans.map((plan) => (
+                      <th className="py-3 text-center text-[12px] font-normal" key={plan.name}>
+                        {plan.name}
+                      </th>
                     ))}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </PublicContentContainer>
-      </section>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pricing.comparisonGroups.map((group) => (
+                    <Fragment key={group.title}>
+                      <tr>
+                        <td className="pb-2 pt-10 text-[12px] font-normal text-[#777770]" colSpan={5}>
+                          {group.title}
+                        </td>
+                      </tr>
+                      {group.rows.map((row) => (
+                        <tr className="border-b border-[#eeeeec]" key={`${group.title}-${row[0]}`}>
+                          {row.map((cell, index) => (
+                            <td
+                              className={[
+                                "py-3",
+                                index === 0 ? "font-normal text-[#333330]" : "text-center text-[#555550]",
+                              ].join(" ")}
+                              key={`${row[0]}-${index}`}
+                            >
+                              {pricing.includedValues.includes(cell) ? (
+                                <Check className="mx-auto h-4 w-4 text-[#159447]" />
+                              ) : (
+                                cell || pricing.emptyCell
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-      <section className="bg-white pb-20 md:pb-28">
-        <PublicContentContainer>
-          <h2 className="text-[34px] font-normal md:text-[46px]">{pricing.faqTitle}</h2>
-          <div className="mt-8 divide-y divide-[#eeeeec] border-y border-[#eeeeec]">
-            {pricing.faqs.map((faq) => (
-              <button
-                className="flex w-full items-center justify-between gap-6 py-4 text-left text-[14px] font-normal"
-                key={faq}
-                type="button"
-              >
-                {faq}
-                <CircleHelp className="h-4 w-4 shrink-0 text-[#777770]" />
-              </button>
-            ))}
-          </div>
+          <section className="mt-20">
+            <h2 className="text-[34px] font-normal md:text-[46px]">{pricing.faqTitle}</h2>
+            <div className="mt-8 divide-y divide-[#eeeeec] border-y border-[#eeeeec]">
+              {pricing.faqs.map((faq) => (
+                <button
+                  className="flex w-full items-center justify-between gap-6 py-4 text-left text-[14px] font-normal"
+                  key={faq}
+                  type="button"
+                >
+                  {faq}
+                  <CircleHelp className="h-4 w-4 shrink-0 text-[#777770]" />
+                </button>
+              ))}
+            </div>
+          </section>
         </PublicContentContainer>
-      </section>
+      </PublicPageSection>
       <FinalSection copy={{ title: pricing.finalTitle }} />
     </PublicSitePageShell>
   );
