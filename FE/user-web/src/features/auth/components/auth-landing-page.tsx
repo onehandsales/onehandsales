@@ -500,11 +500,6 @@ function LandingScrollStyles() {
           min-height: var(--landing-viewport-height, 100dvh);
         }
 
-        .landing-section-height,
-        .landing-final-section-height {
-          padding-top: 56px;
-        }
-
         @media (min-width: 640px) {
           .landing-container {
             width: calc(100% - 48px);

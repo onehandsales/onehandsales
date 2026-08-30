@@ -87,7 +87,6 @@ function FinalSectionStyles() {
           min-height: 100svh;
           min-height: 100dvh;
           min-height: var(--landing-viewport-height, 100dvh);
-          padding-top: 56px;
         }
 
         @media (min-width: 640px) {
