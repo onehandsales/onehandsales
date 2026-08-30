@@ -53,7 +53,6 @@ type LandingCopy = {
     readonly imageAlt: string;
   };
   readonly flow: {
-    readonly eyebrow: string;
     readonly title: string;
     readonly description: string;
     readonly inputs: readonly [string, string, string, string];
@@ -62,7 +61,6 @@ type LandingCopy = {
     readonly resultLabel: string;
   };
   readonly persona: {
-    readonly eyebrow: string;
     readonly title: string;
     readonly description: string;
     readonly personas: readonly [
@@ -73,7 +71,6 @@ type LandingCopy = {
     ];
   };
   readonly trustProof: {
-    readonly eyebrow: string;
     readonly title: string;
     readonly description: string;
     readonly proofs: readonly [
@@ -162,7 +159,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       imageAlt: "도심에서 스마트폰으로 업무를 확인하는 영업자",
     },
     flow: {
-      eyebrow: "한 흐름",
       title: "흩어진 기록이 거래 성사까지 이어져요.",
       description:
         "명함, 메모, 엑셀, 일정이 고객 흐름으로 모이고 후속 연락과 거래 성사로 이어집니다.",
@@ -172,7 +168,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       resultLabel: "거래 성사",
     },
     persona: {
-      eyebrow: "누구에게 맞나요",
       title: "관계를 들고 움직이는 영업자를 위해 만들었어요.",
       description:
         "고객 앞에서 필요한 정보를 바로 찾고, 미팅 후 정리를 미루고 싶지 않은 사람에게 맞췄어요.",
@@ -196,7 +191,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     trustProof: {
-      eyebrow: "신뢰 기준",
       title: "기록은 가볍게 다루지 않아요.",
       description:
         "OneHand는 개인 영업자의 고객 기록을 빠르게 다루되, 저장과 복구의 기준은 분명하게 둡니다.",
@@ -244,7 +238,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       imageAlt: "A salesperson checking work on a smartphone in the city",
     },
     flow: {
-      eyebrow: "One flow",
       title: "Scattered records become closed deals.",
       description:
         "Cards, notes, Excel, and calendar moments become customer flow, follow-up, and closed deals.",
@@ -254,7 +247,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       resultLabel: "Closed deal",
     },
     persona: {
-      eyebrow: "Who it is for",
       title: "Made for relationship-driven sellers.",
       description:
         "For people who need customer context and a clear next step after every meeting.",
@@ -278,7 +270,6 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     trustProof: {
-      eyebrow: "Trust basics",
       title: "Your records stay intentional.",
       description:
         "OneHand helps you move fast without turning customer records into automatic guesswork.",
@@ -755,10 +746,7 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
-        <p className="text-[12px] font-normal uppercase text-[#6B7280]">
-          {copy.flow.eyebrow}
-        </p>
-        <h2 className="landing-heading mt-3 break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
+        <h2 className="landing-heading break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
           {copy.flow.title}
         </h2>
         <p className="landing-copy mt-5 break-keep text-[16px] font-normal leading-7 text-[#555550] sm:text-[18px] sm:leading-8">
@@ -953,10 +941,7 @@ function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
-        <p className="text-[12px] font-normal uppercase text-[#6B7280]">
-          {copy.persona.eyebrow}
-        </p>
-        <h2 className="landing-heading mt-3 break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
+        <h2 className="landing-heading break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
           {copy.persona.title}
         </h2>
         <p className="landing-copy mt-4 break-keep text-[15px] font-normal leading-6 text-[#555550] sm:mt-5 sm:text-[18px] sm:leading-8">
@@ -996,10 +981,7 @@ function TrustSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
       <div className="landing-container text-center">
-        <p className="text-[12px] font-normal uppercase text-[#6B7280]">
-          {copy.trustProof.eyebrow}
-        </p>
-        <h2 className="landing-heading mt-3 break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
+        <h2 className="landing-heading break-keep text-[36px] font-normal leading-[1.05] text-[#0f0f0f] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
           {copy.trustProof.title}
         </h2>
         <p className="landing-copy mt-5 break-keep text-[16px] font-normal leading-7 text-[#555550] sm:text-[18px] sm:leading-8">

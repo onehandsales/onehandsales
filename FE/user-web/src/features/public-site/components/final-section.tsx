@@ -53,7 +53,7 @@ export function FinalSection({ copy: copyOverride }: FinalSectionProps) {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                className="inline-flex h-11 items-center rounded-[6px] bg-white px-5 text-[15px] font-normal text-[#4880EE] hover:bg-[#EFF6FF]"
+                className="inline-flex h-11 items-center rounded-[6px] bg-[#f2f2ef] px-5 text-[15px] font-normal text-[#4880EE] hover:bg-[#e8e8e4]"
                 to={publicSitePath("/contact")}
               >
                 {copy.secondaryCta}
