@@ -297,7 +297,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       title: "Get started today.",
       description: "",
       primaryCta: "Get OneHand",
-      secondaryCta: "Request Demo",
+      secondaryCta: "Request a Demo",
     },
   },
 };

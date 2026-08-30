@@ -43,12 +43,14 @@ type PublicSiteCopy = {
     readonly nav: {
       readonly product: string;
       readonly features: string;
+      readonly resources: string;
       readonly pricing: string;
       readonly contact: string;
       readonly freeCta: string;
       readonly login: string;
     };
     readonly productMenuGroups: readonly ProductMenuItemCopy[][];
+    readonly resourceMenuItems: readonly ProductMenuItemCopy[];
     readonly productTour: string;
     readonly productApp: string;
     readonly footerColumns: readonly FooterColumnCopy[];
@@ -197,6 +199,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       nav: {
         product: "제품",
         features: "기능",
+        resources: "리소스",
         pricing: "요금제",
         contact: "문의하기",
         freeCta: "OneHand 시작",
@@ -221,6 +224,9 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           { title: "템플릿", description: "반복 업무 구조를 저장" },
           { title: "리포트", description: "성과와 리스크를 확인" },
         ],
+      ],
+      resourceMenuItems: [
+        { title: "도움말", description: "자주 묻는 질문을 확인해요." },
       ],
       productTour: "OneHand 1.0 둘러보기",
       productApp: "앱으로 이동",
@@ -426,7 +432,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
     title: "One tool for running sales.",
     contactTitle: "Contact sales",
     pricing: "Pricing",
-    contact: "Contact",
+    contact: "Request a Demo",
     languageRegion: "US",
   }),  "en-CA": makeEnglishCopy({
     organise: "organize",
@@ -434,7 +440,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
     title: "One tool for running sales.",
     contactTitle: "Contact sales",
     pricing: "Pricing",
-    contact: "Contact",
+    contact: "Request a Demo",
     languageRegion: "CA",
   }),
 };
@@ -686,6 +692,7 @@ function makeEnglishCopy(copy: {
     nav: {
       product: "Product",
       features: "Features",
+      resources: "Resources",
       pricing: copy.pricing,
       contact: copy.contact,
       freeCta: "Get OneHand",
@@ -710,6 +717,9 @@ function makeEnglishCopy(copy: {
         { title: "Templates", description: "Save repeat workflow structures" },
         { title: "Reports", description: "Review performance and risk" },
       ],
+    ],
+    resourceMenuItems: [
+      { title: "Help", description: "Find answers and product guidance." },
     ],
     productTour: "Explore OneHand 1.0",
     productApp: "Go to app",
@@ -741,7 +751,7 @@ function makeEnglishCopy(copy: {
       trustedTitle: "For sellers who manage relationships directly.",
       finalCta: "Get started today.",
       finalPrimary: "Get OneHand",
-      finalSecondary: "Request Demo",
+      finalSecondary: "Request a Demo",
     },
     pricing: makeTranslatedPricing({
       title: copy.title,
