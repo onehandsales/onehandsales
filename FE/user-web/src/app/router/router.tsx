@@ -48,7 +48,11 @@ import { ScheduleDetailPage } from "@/pages/schedules/detail";
 import { SchedulesPage } from "@/pages/schedules";
 import { SecurityPage } from "@/pages/security";
 import { ScheduleWeekPage } from "@/pages/schedules/week";
+import { B2bFieldSolutionPage } from "@/pages/solutions/b2b-field";
+import { InsuranceAutoSolutionPage } from "@/pages/solutions/insurance-auto";
 import { SolutionsPage } from "@/pages/solutions";
+import { PersonalSolutionPage } from "@/pages/solutions/personal";
+import { RealEstateSolutionPage } from "@/pages/solutions/real-estate";
 import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 import { TermsPage } from "@/pages/terms";
@@ -69,6 +73,22 @@ export const router = createBrowserRouter([
   { path: "/features", element: <LegacyPublicSiteRedirect to="/features" /> },
   { path: "/pricing", element: <LegacyPublicSiteRedirect to="/pricing" /> },
   { path: "/solutions", element: <LegacyPublicSiteRedirect to="/solutions" /> },
+  {
+    path: "/solutions/personal",
+    element: <LegacyPublicSiteRedirect to="/solutions/personal" />,
+  },
+  {
+    path: "/solutions/real-estate",
+    element: <LegacyPublicSiteRedirect to="/solutions/real-estate" />,
+  },
+  {
+    path: "/solutions/insurance-auto",
+    element: <LegacyPublicSiteRedirect to="/solutions/insurance-auto" />,
+  },
+  {
+    path: "/solutions/b2b-field",
+    element: <LegacyPublicSiteRedirect to="/solutions/b2b-field" />,
+  },
   { path: "/download", element: <LegacyPublicSiteRedirect to="/download" /> },
   { path: "/help", element: <LegacyPublicSiteRedirect to="/help" /> },
   { path: "/contact", element: <LegacyPublicSiteRedirect to="/contact" /> },
@@ -232,6 +252,22 @@ function getPublicSiteElement(path: PublicSiteLocalizedPath) {
 
   if (path === "/solutions") {
     return <SolutionsPage />;
+  }
+
+  if (path === "/solutions/personal") {
+    return <PersonalSolutionPage />;
+  }
+
+  if (path === "/solutions/real-estate") {
+    return <RealEstateSolutionPage />;
+  }
+
+  if (path === "/solutions/insurance-auto") {
+    return <InsuranceAutoSolutionPage />;
+  }
+
+  if (path === "/solutions/b2b-field") {
+    return <B2bFieldSolutionPage />;
   }
 
   if (path === "/download") {

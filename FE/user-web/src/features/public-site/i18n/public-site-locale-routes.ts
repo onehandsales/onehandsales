@@ -12,6 +12,10 @@ export type PublicSiteLocalizedPath =
   | "/features"
   | "/pricing"
   | "/solutions"
+  | "/solutions/personal"
+  | "/solutions/real-estate"
+  | "/solutions/insurance-auto"
+  | "/solutions/b2b-field"
   | "/download"
   | "/help"
   | "/contact"
@@ -46,6 +50,10 @@ export const publicSiteLocalizedPaths = [
   "/features",
   "/pricing",
   "/solutions",
+  "/solutions/personal",
+  "/solutions/real-estate",
+  "/solutions/insurance-auto",
+  "/solutions/b2b-field",
   "/download",
   "/help",
   "/contact",

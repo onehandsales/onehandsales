@@ -342,6 +342,110 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
       ],
     },
   },
+  "/solutions/personal": {
+    title: {
+      ko: "개인 영업 CRM | OneHand Sales",
+      en: "Personal Sales CRM | OneHand Sales",
+    },
+    description: {
+      ko: "혼자 고객, 일정, 딜, 후속 연락을 관리하는 개인 영업자를 위한 OneHand Sales 활용 방식을 확인하세요.",
+      en: "See how OneHand Sales helps personal sellers manage customers, schedules, deals, and follow-up on their own.",
+    },
+    keywords: {
+      ko: [
+        "개인 영업 CRM",
+        "1인 영업 CRM",
+        "개인 고객관리",
+        "영업 후속 연락",
+        "개인 딜 관리",
+      ],
+      en: [
+        "personal sales CRM",
+        "solo sales CRM",
+        "individual sales CRM",
+        "personal customer management",
+        "sales follow-up CRM",
+      ],
+    },
+  },
+  "/solutions/real-estate": {
+    title: {
+      ko: "부동산 중개 CRM | OneHand Sales",
+      en: "Real Estate CRM | OneHand Sales",
+    },
+    description: {
+      ko: "부동산 중개 상담 고객, 관심 조건, 방문 일정, 계약 가능성을 고객별로 관리하는 OneHand Sales 활용 방식을 확인하세요.",
+      en: "See how OneHand Sales helps real estate agents manage clients, property interest, visits, and deal readiness.",
+    },
+    keywords: {
+      ko: [
+        "부동산 CRM",
+        "부동산 중개 CRM",
+        "부동산 고객관리",
+        "매물 문의 관리",
+        "부동산 상담 관리",
+      ],
+      en: [
+        "real estate CRM",
+        "real estate agent CRM",
+        "real estate client management",
+        "property inquiry tracking",
+        "real estate follow-up",
+      ],
+    },
+  },
+  "/solutions/insurance-auto": {
+    title: {
+      ko: "보험/자동차 영업 CRM | OneHand Sales",
+      en: "Insurance and Auto Sales CRM | OneHand Sales",
+    },
+    description: {
+      ko: "보험과 자동차 영업의 상담 이력, 견적, 서류, 계약 전후 연락, 갱신과 재구매 흐름을 관리하는 방식을 확인하세요.",
+      en: "See how OneHand Sales helps insurance and auto sales teams manage consultations, quotes, documents, contracts, renewals, and repurchase timing.",
+    },
+    keywords: {
+      ko: [
+        "보험 영업 CRM",
+        "자동차 영업 CRM",
+        "자동차 영업 고객관리",
+        "보험 설계사 고객관리",
+        "견적 후속 연락",
+      ],
+      en: [
+        "insurance agent CRM",
+        "auto sales CRM",
+        "car sales CRM",
+        "quote follow-up CRM",
+        "renewal follow-up CRM",
+      ],
+    },
+  },
+  "/solutions/b2b-field": {
+    title: {
+      ko: "B2B 현장 영업 CRM | OneHand Sales",
+      en: "B2B Field Sales CRM | OneHand Sales",
+    },
+    description: {
+      ko: "B2B 현장 영업의 거래처, 담당자, 미팅 기록, 딜 단계, 다음 행동을 한곳에서 관리하는 OneHand Sales 활용 방식을 확인하세요.",
+      en: "See how OneHand Sales helps B2B field sellers connect accounts, contacts, meeting notes, deal stages, and next actions.",
+    },
+    keywords: {
+      ko: [
+        "B2B 현장 영업 CRM",
+        "B2B 영업 CRM",
+        "거래처 관리",
+        "담당자 관리",
+        "미팅 기록 CRM",
+      ],
+      en: [
+        "B2B field sales CRM",
+        "B2B sales CRM",
+        "account management CRM",
+        "meeting notes CRM",
+        "field sales follow-up",
+      ],
+    },
+  },
   "/download": {
     title: {
       ko: "다운로드 | OneHand Sales",

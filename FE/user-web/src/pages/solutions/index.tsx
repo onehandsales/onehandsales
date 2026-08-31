@@ -26,9 +26,11 @@ type SolutionSegmentCopy = {
   readonly id: "personal" | "real-estate" | "insurance-auto" | "b2b-field";
   readonly summary: string;
   readonly title: string;
+  readonly to: string;
 };
 
 type SolutionsCopy = {
+  readonly actionLabel: string;
   readonly contentsLabel: string;
   readonly ctaDescription: string;
   readonly ctaTitle: string;
@@ -46,118 +48,128 @@ const solutionIcons: Record<SolutionSegmentCopy["id"], LucideIcon> = {
 
 const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
   ko: {
-    title: "영업 방식에 맞게, 고객과 후속 업무를 놓치지 않게.",
+    title: "영업 방식별로 OneHand를 보는 방법.",
     description:
-      "OneHand는 개인 영업, 부동산 중개, 보험·자동차 영업, B2B 현장 영업처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 고객, 일정, 딜, 기록을 연결합니다.",
-    contentsLabel: "용도별 보기",
-    ctaTitle: "내 영업 방식에 맞는 흐름이 궁금한가요?",
+      "OneHand는 개인 영업, 부동산 중개, 보험·자동차 영업, B2B 현장 영업처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 다르게 사용할 수 있습니다.",
+    actionLabel: "자세히 보기",
+    contentsLabel: "용도별 선택 기준",
+    ctaTitle: "어떤 용도가 가장 가까운지 함께 정리해볼까요?",
     ctaDescription:
-      "현재 고객 관리 방식과 후속 업무를 알려주면 필요한 시작점을 함께 정리해요.",
+      "현재 고객 관리 방식과 후속 업무를 알려주면 필요한 시작점을 함께 잡아드려요.",
     segments: [
       {
         id: "personal",
         title: "개인 영업",
+        to: "/solutions/personal",
         summary:
-          "혼자 고객을 만나고, 연락하고, 딜을 챙기는 영업자를 위한 개인 작업 공간입니다.",
+          "혼자 고객, 일정, 딜, 후속 연락을 챙기는 영업자를 위한 흐름입니다.",
         bullets: [
-          "고객, 명함, 일정, 딜을 혼자 관리하는 사람",
-          "엑셀과 메모앱에 흩어진 기록을 한곳으로 모으고 싶은 사람",
-          "복잡한 팀 CRM보다 바로 쓸 수 있는 개인 CRM이 필요한 사람",
+          "엑셀, 메모앱, 명함 사진에 기록이 흩어져 있는 경우",
+          "팀 CRM보다 바로 쓸 수 있는 개인 CRM이 필요한 경우",
+          "오늘 연락해야 할 고객과 진행 중인 딜을 빠르게 보고 싶은 경우",
         ],
       },
       {
         id: "real-estate",
         title: "부동산 중개",
+        to: "/solutions/real-estate",
         summary:
-          "상담 고객, 매물 관심사, 방문 일정, 계약 가능성을 이어서 볼 수 있는 흐름입니다.",
+          "상담 고객, 관심 조건, 방문 일정, 계약 가능성을 이어서 보는 흐름입니다.",
         bullets: [
-          "매수·매도·임대 상담 고객을 계속 추적해야 하는 중개사",
-          "방문 일정과 후속 연락을 고객 기록에 함께 남기고 싶은 사람",
-          "고객별 관심 조건과 진행 상황을 빠르게 다시 확인해야 하는 사람",
+          "매수, 매도, 임대 고객의 조건을 계속 추적해야 하는 경우",
+          "방문 이후 반응과 다음 연락을 고객별로 남겨야 하는 경우",
+          "관심 매물과 계약 가능성을 단계별로 정리해야 하는 경우",
         ],
       },
       {
         id: "insurance-auto",
         title: "보험/자동차 영업",
+        to: "/solutions/insurance-auto",
         summary:
-          "반복 상담, 견적, 계약 전후 연락을 고객별 기록으로 관리하는 방식입니다.",
+          "견적, 서류, 계약 전후 연락과 장기 관계를 고객별로 관리하는 흐름입니다.",
         bullets: [
-          "상담 이후 재연락 시점과 필요 서류를 놓치기 쉬운 영업자",
-          "견적, 계약 가능성, 후속 연락을 고객별로 정리하고 싶은 사람",
-          "장기 관계와 갱신·재구매 흐름을 꾸준히 관리해야 하는 사람",
+          "상담 이후 재연락 시점과 필요 서류를 놓치기 쉬운 경우",
+          "견적 발송 후 검토 상태를 고객별로 봐야 하는 경우",
+          "갱신, 재구매, 소개 고객까지 이어서 관리해야 하는 경우",
         ],
       },
       {
         id: "b2b-field",
         title: "B2B 현장 영업",
+        to: "/solutions/b2b-field",
         summary:
           "외근 미팅, 담당자 관계, 딜 단계, 다음 행동을 함께 연결하는 흐름입니다.",
         bullets: [
-          "여러 회사와 담당자를 오가며 미팅을 반복하는 B2B 영업자",
-          "미팅 기록과 딜 진행 상황을 같은 맥락에서 보고 싶은 사람",
-          "다음 행동과 팔로업 우선순위를 빠르게 확인해야 하는 사람",
+          "여러 회사와 담당자를 오가며 미팅을 반복하는 경우",
+          "미팅 기록과 제안, 견적, 계약 단계를 같이 봐야 하는 경우",
+          "장기 검토 거래처의 다음 접점을 놓치지 않아야 하는 경우",
         ],
       },
     ],
   },
   "en-US": {
-    title: "For the way your field sales work actually happens.",
+    title: "Ways to use OneHand by sales workflow.",
     description:
-      "OneHand connects customers, schedules, deals, notes, and follow-up for personal sales, real estate, insurance, auto sales, and B2B field sales workflows.",
-    contentsLabel: "Use case index",
-    ctaTitle: "Want to map OneHand to your sales workflow?",
+      "OneHand can adapt to personal sales, real estate, insurance and auto sales, and B2B field sales workflows where repeated consultation and follow-up matter.",
+    actionLabel: "View details",
+    contentsLabel: "Use case guide",
+    ctaTitle: "Want to find the closest workflow?",
     ctaDescription:
-      "Tell us how you manage customers and follow-up today, and we can start from the right flow.",
+      "Tell us how you manage customers and follow-up today, and we can map the right starting point.",
     segments: [
       {
         id: "personal",
         title: "Personal sales",
+        to: "/solutions/personal",
         summary:
-          "A personal workspace for sellers who meet customers, follow up, and manage deals on their own.",
+          "For sellers managing customers, schedules, deals, and follow-up on their own.",
         bullets: [
-          "For people managing customers, cards, schedules, and deals alone",
-          "For sellers who want to organize records scattered across spreadsheets and notes",
-          "For people who need a personal CRM they can use immediately",
+          "When records are scattered across spreadsheets, notes, and card photos",
+          "When you need a personal CRM you can use without a team rollout",
+          "When you want to see today's follow-up and active deals quickly",
         ],
       },
       {
         id: "real-estate",
         title: "Real estate",
+        to: "/solutions/real-estate",
         summary:
-          "A workflow for tracking client needs, property interest, visits, and deal potential.",
+          "For tracking client conditions, property interest, visits, and deal readiness.",
         bullets: [
-          "For agents who keep tracking buyer, seller, and rental clients",
-          "For people who want visits and follow-up tied to each customer record",
-          "For people who need to quickly reopen each customer's conditions and status",
+          "When buyer, seller, and rental conditions need continuous tracking",
+          "When visit reactions and next contact timing must stay by client",
+          "When property interest and deal readiness need clearer stages",
         ],
       },
       {
         id: "insurance-auto",
         title: "Insurance and auto sales",
+        to: "/solutions/insurance-auto",
         summary:
-          "A way to manage repeat consultations, quotes, and pre/post-contract follow-up by customer.",
+          "For managing quotes, documents, pre/post-contract follow-up, and long-term relationships.",
         bullets: [
-          "For sellers who need reminders for follow-up timing and required documents",
-          "For people who want quotes, deal potential, and next contact organized by customer",
-          "For people managing long-term relationships, renewals, and repeat purchases",
+          "When follow-up timing and required documents are easy to miss",
+          "When quote review status needs to stay organized by customer",
+          "When renewals, repurchases, and referrals continue after the first deal",
         ],
       },
       {
         id: "b2b-field",
         title: "B2B field sales",
+        to: "/solutions/b2b-field",
         summary:
-          "A workflow for connecting field meetings, stakeholder context, deal stages, and next actions.",
+          "For connecting field meetings, stakeholder relationships, deal stages, and next actions.",
         bullets: [
-          "For B2B sellers who move across many companies and contacts",
-          "For people who want meeting notes and deal progress in the same context",
-          "For people who need to see next actions and follow-up priorities quickly",
+          "When you move across many companies and contacts",
+          "When meeting notes must connect to proposals, quotes, and contracts",
+          "When long-cycle accounts need reliable next contact timing",
         ],
       },
     ],
   },
 };
 
-// 기능: 공개 고객 유형별 랜딩 페이지를 렌더링합니다.
+// 기능: 공개 고객 유형별 허브 페이지를 렌더링합니다.
 export function SolutionsPage() {
   const { language } = usePublicSiteLanguage();
   const copy = solutionsCopyByLanguage[getPublicSiteCopyLanguage(language)];
@@ -177,16 +189,18 @@ export function SolutionsPage() {
               {copy.description}
             </p>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-4">
+            <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {copy.segments.map((segment) => {
                 const Icon = solutionIcons[segment.id];
 
                 return (
                   <PublicInfoCard
+                    actionLabel={copy.actionLabel}
                     description={segment.summary}
                     icon={Icon}
                     key={segment.id}
                     title={segment.title}
+                    to={segment.to}
                   />
                 );
               })}

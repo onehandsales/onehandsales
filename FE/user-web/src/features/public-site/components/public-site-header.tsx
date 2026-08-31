@@ -33,8 +33,8 @@ const productMenuTargets: readonly (readonly string[])[] = [
 
 const solutionMenuTargets: readonly (readonly string[])[] = [
   ["/solutions"],
-  ["/solutions#personal", "/solutions#b2b-field"],
-  ["/solutions#real-estate", "/solutions#insurance-auto"],
+  ["/solutions/personal", "/solutions/b2b-field"],
+  ["/solutions/real-estate", "/solutions/insurance-auto"],
 ];
 
 const resourceMenuTargets: readonly (readonly string[])[] = [

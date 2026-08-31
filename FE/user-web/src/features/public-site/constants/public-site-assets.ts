@@ -5,4 +5,8 @@ export const publicSiteImages = {
     "https://images.unsplash.com/photo-1573166826272-5acd0ef8f650?auto=format&fit=crop&w=1200&q=80",
   teamPresentation:
     "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80",
+  solutionPersonal: "/public-site/solutions/personal.jpg",
+  solutionRealEstate: "/public-site/solutions/real-estate.jpg",
+  solutionInsuranceAuto: "/public-site/solutions/insurance-auto.jpg",
+  solutionB2bField: "/public-site/solutions/b2b-field.jpg",
 } as const;
