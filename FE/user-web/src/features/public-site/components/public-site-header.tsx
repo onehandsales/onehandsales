@@ -21,14 +21,19 @@ type PublicSiteHeaderProps = {
 };
 
 const productMenuTargets: readonly (readonly string[])[] = [
-  ["/", "/features"],
+  ["/about", "/product"],
   [
-    "/features#customers",
-    "/features#deals",
-    "/features#schedules",
-    "/features#meeting-notes",
+    "/features",
+    "/features/customers",
+    "/features/pipeline",
+    "/features/schedules-follow-up",
+    "/features/activity-records",
   ],
-  ["/features#ai", "/features", "/features#import-export"],
+  [
+    "/features/ai-sales-assistant",
+    "/features/reports",
+    "/features/import-export",
+  ],
 ];
 
 const solutionMenuTargets: readonly (readonly string[])[] = [

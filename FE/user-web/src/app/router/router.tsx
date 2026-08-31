@@ -28,7 +28,14 @@ import { DealsPage } from "@/pages/deals";
 import { DealNewFullPage } from "@/pages/deals/new-full";
 import { DealNewPage } from "@/pages/deals/new";
 import { FaqPage } from "@/pages/faq";
+import { ActivityRecordsFeaturePage } from "@/pages/features/activity-records";
+import { AiSalesAssistantFeaturePage } from "@/pages/features/ai-sales-assistant";
+import { CustomerManagementFeaturePage } from "@/pages/features/customers";
 import { FeaturesPage } from "@/pages/features";
+import { ImportExportFeaturePage } from "@/pages/features/import-export";
+import { PipelineFeaturePage } from "@/pages/features/pipeline";
+import { ReportsFeaturePage } from "@/pages/features/reports";
+import { SchedulesFollowUpFeaturePage } from "@/pages/features/schedules-follow-up";
 import { HelpPage } from "@/pages/help";
 import { HomePage } from "@/pages/home";
 import { ImportDetailPage } from "@/pages/import/detail";
@@ -40,6 +47,7 @@ import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { MeetingNoteNewFullPage } from "@/pages/meeting-notes/new-full";
 import { NotificationsPage } from "@/pages/notifications";
 import { ProductDetailPage } from "@/pages/products/detail";
+import { ProductPage } from "@/pages/product";
 import { ProductsPage } from "@/pages/products";
 import { ProductNewFullPage } from "@/pages/products/new-full";
 import { ProductNewPage } from "@/pages/products/new";
@@ -71,7 +79,36 @@ export const router = createBrowserRouter([
   { path: "/", element: <LegacyPublicSiteRedirect to="/" /> },
   { path: "/login", element: <LegacyPublicSiteRedirect to="/login" /> },
   { path: "/signup", element: <LegacyPublicSiteRedirect to="/signup" /> },
+  { path: "/product", element: <LegacyPublicSiteRedirect to="/product" /> },
   { path: "/features", element: <LegacyPublicSiteRedirect to="/features" /> },
+  {
+    path: "/features/customers",
+    element: <LegacyPublicSiteRedirect to="/features/customers" />,
+  },
+  {
+    path: "/features/pipeline",
+    element: <LegacyPublicSiteRedirect to="/features/pipeline" />,
+  },
+  {
+    path: "/features/schedules-follow-up",
+    element: <LegacyPublicSiteRedirect to="/features/schedules-follow-up" />,
+  },
+  {
+    path: "/features/activity-records",
+    element: <LegacyPublicSiteRedirect to="/features/activity-records" />,
+  },
+  {
+    path: "/features/ai-sales-assistant",
+    element: <LegacyPublicSiteRedirect to="/features/ai-sales-assistant" />,
+  },
+  {
+    path: "/features/reports",
+    element: <LegacyPublicSiteRedirect to="/features/reports" />,
+  },
+  {
+    path: "/features/import-export",
+    element: <LegacyPublicSiteRedirect to="/features/import-export" />,
+  },
   { path: "/pricing", element: <LegacyPublicSiteRedirect to="/pricing" /> },
   { path: "/solutions", element: <LegacyPublicSiteRedirect to="/solutions" /> },
   {
@@ -250,6 +287,38 @@ function getPublicSiteElement(path: PublicSiteLocalizedPath) {
 
   if (path === "/features") {
     return <FeaturesPage />;
+  }
+
+  if (path === "/features/customers") {
+    return <CustomerManagementFeaturePage />;
+  }
+
+  if (path === "/features/pipeline") {
+    return <PipelineFeaturePage />;
+  }
+
+  if (path === "/features/schedules-follow-up") {
+    return <SchedulesFollowUpFeaturePage />;
+  }
+
+  if (path === "/features/activity-records") {
+    return <ActivityRecordsFeaturePage />;
+  }
+
+  if (path === "/features/ai-sales-assistant") {
+    return <AiSalesAssistantFeaturePage />;
+  }
+
+  if (path === "/features/reports") {
+    return <ReportsFeaturePage />;
+  }
+
+  if (path === "/features/import-export") {
+    return <ImportExportFeaturePage />;
+  }
+
+  if (path === "/product") {
+    return <ProductPage />;
   }
 
   if (path === "/solutions") {

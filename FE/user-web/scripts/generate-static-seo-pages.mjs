@@ -251,17 +251,129 @@ const routeSeo = {
     changefreq: "weekly",
     schemaType: "WebPage",
   },
+  "/product": {
+    title: { ko: "제품 소개 | OneHand Sales", en: "Product Overview | OneHand Sales" },
+    description: {
+      ko: "고객, 회사, 딜, 일정, 회의록, AI 초안을 한 흐름으로 연결하는 OneHand Sales 제품 소개를 확인하세요.",
+      en: "Explore the OneHand Sales product workflow for customers, companies, deals, schedules, meeting notes, and AI drafts.",
+    },
+    keywords: {
+      ko: ["OneHand Sales 제품 소개", "OneHand란", "영업 CRM 제품", "개인 CRM 제품 소개", "현장 영업 CRM", "AI 영업 워크스페이스"],
+      en: ["OneHand Sales product overview", "What is OneHand", "sales CRM product", "personal CRM overview", "field sales CRM", "AI sales workspace"],
+    },
+    priority: "0.8",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
   "/features": {
     title: { ko: "기능 | OneHand Sales", en: "Features | OneHand Sales" },
     description: {
-      ko: "고객/회사 관리, 딜, 일정, 회의록, 명함 스캔, 엑셀 가져오기/내보내기, AI 초안, 통합 검색, 보안 기능을 확인하세요.",
-      en: "Explore OneHand Sales features for customers, deals, schedules, meeting notes, business cards, Excel, AI drafts, search, and security.",
+      ko: "고객 관리, 영업 파이프라인, 일정/팔로업, 활동 기록, AI 영업 도우미, 리포트, 엑셀 기능을 확인하세요.",
+      en: "Explore OneHand Sales features for customer management, pipeline, schedules, follow-up, activity records, AI, reports, and Excel.",
     },
     keywords: {
-      ko: ["OneHand Sales 기능", "영업 CRM 기능", "고객 관리 기능", "딜 관리 기능", "명함 스캔 CRM", "엑셀 가져오기 CRM", "AI 영업 도우미"],
-      en: ["OneHand Sales features", "sales CRM features", "customer management features", "deal management features", "business card scanning CRM", "Excel import CRM", "AI sales assistant"],
+      ko: ["OneHand Sales 기능", "영업 CRM 기능", "고객 관리 기능", "영업 파이프라인 기능", "영업 리포트", "엑셀 가져오기 CRM", "AI 영업 도우미"],
+      en: ["OneHand Sales features", "sales CRM features", "customer management features", "sales pipeline features", "sales reports", "Excel import CRM", "AI sales assistant"],
     },
     priority: "0.8",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/customers": {
+    title: { ko: "고객 관리 | OneHand Sales", en: "Customer Management | OneHand Sales" },
+    description: {
+      ko: "회사, 담당자, 연락처, 상담 메모를 고객 맥락 안에서 함께 관리하는 OneHand Sales 고객 관리 기능을 확인하세요.",
+      en: "See how OneHand Sales keeps companies, contacts, contact details, and consultation notes connected around each customer.",
+    },
+    keywords: {
+      ko: ["고객 관리 CRM", "회사 관리 CRM", "담당자 관리", "영업 고객관리", "개인 CRM 고객관리"],
+      en: ["customer management CRM", "company management CRM", "contact management", "sales customer management", "personal CRM"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/pipeline": {
+    title: { ko: "영업 파이프라인 | OneHand Sales", en: "Sales Pipeline | OneHand Sales" },
+    description: {
+      ko: "딜 단계, 금액, 마감일, 고객 맥락과 다음 행동을 함께 관리하는 OneHand Sales 영업 파이프라인 기능을 확인하세요.",
+      en: "Explore OneHand Sales pipeline features for deal stages, value, due dates, customer context, and next actions.",
+    },
+    keywords: {
+      ko: ["영업 파이프라인", "딜 관리 CRM", "거래 단계 관리", "영업 기회 관리", "후속 연락 관리"],
+      en: ["sales pipeline", "deal management CRM", "deal stage management", "opportunity management", "follow-up CRM"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/schedules-follow-up": {
+    title: { ko: "일정/팔로업 | OneHand Sales", en: "Schedule and Follow-up | OneHand Sales" },
+    description: {
+      ko: "방문, 통화, 미팅 일정과 다음 연락을 고객과 딜에 연결하는 OneHand Sales 일정/팔로업 기능을 확인하세요.",
+      en: "See how OneHand Sales connects visits, calls, meetings, and next follow-up timing to customers and deals.",
+    },
+    keywords: {
+      ko: ["영업 일정 관리", "팔로업 관리", "후속 연락 CRM", "방문 일정 관리", "미팅 일정 관리"],
+      en: ["sales schedule management", "follow-up management", "sales follow-up CRM", "visit scheduling", "meeting scheduling"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/activity-records": {
+    title: { ko: "활동 기록 | OneHand Sales", en: "Activity Records | OneHand Sales" },
+    description: {
+      ko: "회의록, 메모, 고객 반응, 다음 행동을 고객과 딜에 연결하는 OneHand Sales 활동 기록 기능을 확인하세요.",
+      en: "Explore OneHand Sales activity records for meeting notes, memos, customer reactions, and next actions.",
+    },
+    keywords: {
+      ko: ["영업 활동 기록", "회의록 CRM", "고객 메모", "상담 기록 관리", "미팅노트"],
+      en: ["sales activity records", "meeting notes CRM", "customer memos", "consultation notes", "sales notes"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/ai-sales-assistant": {
+    title: { ko: "AI 영업 도우미 | OneHand Sales", en: "AI Sales Assistant | OneHand Sales" },
+    description: {
+      ko: "회의록 요약, 다음 행동 초안, 팔로업 정리를 사용자가 확인 가능한 방식으로 돕는 OneHand Sales AI 기능을 확인하세요.",
+      en: "See how OneHand Sales AI helps summarize meeting notes, draft next actions, and organize follow-up under user review.",
+    },
+    keywords: {
+      ko: ["AI 영업 도우미", "AI CRM", "회의록 요약 AI", "팔로업 초안", "영업 AI"],
+      en: ["AI sales assistant", "AI CRM", "meeting summary AI", "follow-up drafts", "sales AI"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/reports": {
+    title: { ko: "리포트 | OneHand Sales", en: "Reports | OneHand Sales" },
+    description: {
+      ko: "주간 일정, 딜 흐름, 후속 행동, AI 요약을 점검하는 OneHand Sales 리포트 기능을 확인하세요.",
+      en: "Explore OneHand Sales reports for weekly schedules, deal movement, follow-up, and AI summaries.",
+    },
+    keywords: {
+      ko: ["영업 리포트", "주간 영업 리포트", "CRM 리포트", "일정 리포트", "AI 영업 리포트"],
+      en: ["sales reports", "weekly sales report", "CRM reports", "schedule report", "AI sales report"],
+    },
+    priority: "0.7",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/features/import-export": {
+    title: { ko: "엑셀 가져오기/내보내기 | OneHand Sales", en: "Excel Import and Export | OneHand Sales" },
+    description: {
+      ko: "기존 엑셀 고객 데이터를 가져오고 필요한 업무 기록을 XLSX로 내려받는 OneHand Sales 데이터 기능을 확인하세요.",
+      en: "See how OneHand Sales imports existing customer spreadsheets and exports work records as XLSX.",
+    },
+    keywords: {
+      ko: ["CRM 엑셀 가져오기", "CRM 엑셀 내보내기", "고객 데이터 이전", "XLSX 다운로드", "엑셀 고객관리"],
+      en: ["CRM Excel import", "CRM Excel export", "customer data migration", "XLSX download", "spreadsheet CRM"],
+    },
+    priority: "0.7",
     changefreq: "monthly",
     schemaType: "WebPage",
   },

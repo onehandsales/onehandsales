@@ -9,7 +9,15 @@ export type PublicSiteLocalizedPath =
   | "/"
   | "/login"
   | "/signup"
+  | "/product"
   | "/features"
+  | "/features/customers"
+  | "/features/pipeline"
+  | "/features/schedules-follow-up"
+  | "/features/activity-records"
+  | "/features/ai-sales-assistant"
+  | "/features/reports"
+  | "/features/import-export"
   | "/pricing"
   | "/solutions"
   | "/solutions/personal"
@@ -48,7 +56,15 @@ export const publicSiteLocalizedPaths = [
   "/",
   "/login",
   "/signup",
+  "/product",
   "/features",
+  "/features/customers",
+  "/features/pipeline",
+  "/features/schedules-follow-up",
+  "/features/activity-records",
+  "/features/ai-sales-assistant",
+  "/features/reports",
+  "/features/import-export",
   "/pricing",
   "/solutions",
   "/solutions/personal",
