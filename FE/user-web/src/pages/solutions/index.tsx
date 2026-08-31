@@ -1,6 +1,7 @@
 import {
+  BriefcaseBusiness,
   Building2,
-  Store,
+  ShieldCheck,
   UserRound,
   type LucideIcon,
 } from "lucide-react";
@@ -22,7 +23,7 @@ import {
 
 type SolutionSegmentCopy = {
   readonly bullets: readonly string[];
-  readonly id: "personal" | "small-business" | "enterprise";
+  readonly id: "personal" | "real-estate" | "insurance-auto" | "b2b-field";
   readonly summary: string;
   readonly title: string;
 };
@@ -38,67 +39,79 @@ type SolutionsCopy = {
 
 const solutionIcons: Record<SolutionSegmentCopy["id"], LucideIcon> = {
   personal: UserRound,
-  "small-business": Store,
-  enterprise: Building2,
+  "real-estate": Building2,
+  "insurance-auto": ShieldCheck,
+  "b2b-field": BriefcaseBusiness,
 };
 
 const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
   ko: {
-    title: "개인부터 조직까지, 영업 기록을 쓰는 방식에 맞게.",
+    title: "영업 방식에 맞게, 고객과 후속 업무를 놓치지 않게.",
     description:
-      "OneHand는 업종별 사례보다 먼저 사용자의 규모와 운영 방식에 맞춰 설명하는 것이 자연스럽습니다.",
-    contentsLabel: "대상별 보기",
-    ctaTitle: "우리 방식에 맞는 도입이 궁금한가요?",
+      "OneHand는 개인 영업, 부동산 중개, 보험·자동차 영업, B2B 현장 영업처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 고객, 일정, 딜, 기록을 연결합니다.",
+    contentsLabel: "용도별 보기",
+    ctaTitle: "내 영업 방식에 맞는 흐름이 궁금한가요?",
     ctaDescription:
-      "어디에 가까운지 알려주면 필요한 흐름부터 정리해요.",
+      "현재 고객 관리 방식과 후속 업무를 알려주면 필요한 시작점을 함께 정리해요.",
     segments: [
       {
         id: "personal",
-        title: "Personal",
+        title: "개인 영업",
         summary:
-          "혼자 고객을 만나고, 연락하고, 딜을 챙기는 개인 영업자를 위한 기본 작업 공간입니다.",
+          "혼자 고객을 만나고, 연락하고, 딜을 챙기는 영업자를 위한 개인 작업 공간입니다.",
         bullets: [
           "고객, 명함, 일정, 딜을 혼자 관리하는 사람",
-          "엑셀과 메모앱에 흩어진 기록을 정리하고 싶은 사람",
+          "엑셀과 메모앱에 흩어진 기록을 한곳으로 모으고 싶은 사람",
           "복잡한 팀 CRM보다 바로 쓸 수 있는 개인 CRM이 필요한 사람",
         ],
       },
       {
-        id: "small-business",
-        title: "Small business",
+        id: "real-estate",
+        title: "부동산 중개",
         summary:
-          "소규모 팀이 고객과 후속 작업을 공유하면서도 운영 부담을 줄이는 방식입니다.",
+          "상담 고객, 매물 관심사, 방문 일정, 계약 가능성을 이어서 볼 수 있는 흐름입니다.",
         bullets: [
-          "대표나 팀장이 영업 흐름을 직접 챙기는 작은 팀",
-          "고객 데이터와 진행 딜을 팀 안에서 맞춰보고 싶은 조직",
-          "도입과 교육이 무거운 CRM 대신 단순한 영업 기록 체계가 필요한 팀",
+          "매수·매도·임대 상담 고객을 계속 추적해야 하는 중개사",
+          "방문 일정과 후속 연락을 고객 기록에 함께 남기고 싶은 사람",
+          "고객별 관심 조건과 진행 상황을 빠르게 다시 확인해야 하는 사람",
         ],
       },
       {
-        id: "enterprise",
-        title: "Enterprise",
+        id: "insurance-auto",
+        title: "보험/자동차 영업",
         summary:
-          "보안, 권한, 운영 정책, 도입 검토가 필요한 조직을 위한 방향입니다.",
+          "반복 상담, 견적, 계약 전후 연락을 고객별 기록으로 관리하는 방식입니다.",
         bullets: [
-          "데이터 접근과 보안 검토가 중요한 조직",
-          "팀별 권한과 운영 정책을 맞춰야 하는 회사",
-          "도입 전에 보안/법무/운영 검토가 필요한 고객",
+          "상담 이후 재연락 시점과 필요 서류를 놓치기 쉬운 영업자",
+          "견적, 계약 가능성, 후속 연락을 고객별로 정리하고 싶은 사람",
+          "장기 관계와 갱신·재구매 흐름을 꾸준히 관리해야 하는 사람",
+        ],
+      },
+      {
+        id: "b2b-field",
+        title: "B2B 현장 영업",
+        summary:
+          "외근 미팅, 담당자 관계, 딜 단계, 다음 행동을 함께 연결하는 흐름입니다.",
+        bullets: [
+          "여러 회사와 담당자를 오가며 미팅을 반복하는 B2B 영업자",
+          "미팅 기록과 딜 진행 상황을 같은 맥락에서 보고 싶은 사람",
+          "다음 행동과 팔로업 우선순위를 빠르게 확인해야 하는 사람",
         ],
       },
     ],
   },
   "en-US": {
-    title: "For the way your sales work is organized.",
+    title: "For the way your field sales work actually happens.",
     description:
-      "Before splitting by industry, OneHand is clearer when it is explained by team size and operating style.",
-    contentsLabel: "Audience index",
-    ctaTitle: "Want to map OneHand to your workflow?",
+      "OneHand connects customers, schedules, deals, notes, and follow-up for personal sales, real estate, insurance, auto sales, and B2B field sales workflows.",
+    contentsLabel: "Use case index",
+    ctaTitle: "Want to map OneHand to your sales workflow?",
     ctaDescription:
-      "Tell us whether you are closer to personal sales, a small team, or a larger organization, and we can start with the right flow.",
+      "Tell us how you manage customers and follow-up today, and we can start from the right flow.",
     segments: [
       {
         id: "personal",
-        title: "Personal",
+        title: "Personal sales",
         summary:
           "A personal workspace for sellers who meet customers, follow up, and manage deals on their own.",
         bullets: [
@@ -108,32 +121,43 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
         ],
       },
       {
-        id: "small-business",
-        title: "Small business",
+        id: "real-estate",
+        title: "Real estate",
         summary:
-          "A lighter way for small teams to share customer and follow-up context without heavy operations.",
+          "A workflow for tracking client needs, property interest, visits, and deal potential.",
         bullets: [
-          "For small teams where founders or managers still run sales closely",
-          "For teams that need shared visibility into customers and active deals",
-          "For teams that need a simple sales record system instead of a heavy CRM rollout",
+          "For agents who keep tracking buyer, seller, and rental clients",
+          "For people who want visits and follow-up tied to each customer record",
+          "For people who need to quickly reopen each customer's conditions and status",
         ],
       },
       {
-        id: "enterprise",
-        title: "Enterprise",
+        id: "insurance-auto",
+        title: "Insurance and auto sales",
         summary:
-          "A direction for organizations that need security, access control, policy, and adoption review.",
+          "A way to manage repeat consultations, quotes, and pre/post-contract follow-up by customer.",
         bullets: [
-          "For organizations that care about data access and security review",
-          "For companies that need team permissions and operating policies",
-          "For customers that need legal, security, or operations review before adoption",
+          "For sellers who need reminders for follow-up timing and required documents",
+          "For people who want quotes, deal potential, and next contact organized by customer",
+          "For people managing long-term relationships, renewals, and repeat purchases",
+        ],
+      },
+      {
+        id: "b2b-field",
+        title: "B2B field sales",
+        summary:
+          "A workflow for connecting field meetings, stakeholder context, deal stages, and next actions.",
+        bullets: [
+          "For B2B sellers who move across many companies and contacts",
+          "For people who want meeting notes and deal progress in the same context",
+          "For people who need to see next actions and follow-up priorities quickly",
         ],
       },
     ],
   },
 };
 
-// 기능 : 공개 고객 유형별 솔루션 페이지를 렌더링합니다.
+// 기능: 공개 고객 유형별 랜딩 페이지를 렌더링합니다.
 export function SolutionsPage() {
   const { language } = usePublicSiteLanguage();
   const copy = solutionsCopyByLanguage[getPublicSiteCopyLanguage(language)];
@@ -153,7 +177,7 @@ export function SolutionsPage() {
               {copy.description}
             </p>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="mt-10 grid gap-4 md:grid-cols-4">
               {copy.segments.map((segment) => {
                 const Icon = solutionIcons[segment.id];
 
@@ -186,7 +210,6 @@ export function SolutionsPage() {
               />
             ))}
           </div>
-
         </PublicContentContainer>
       </PublicPageSection>
       <FinalSection

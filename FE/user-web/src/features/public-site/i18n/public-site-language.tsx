@@ -205,6 +205,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         ["AI와 데이터", "AI 영업 도우미", "리포트", "엑셀 가져오기/내보내기"],
       ],
       solutionMenuColumns: [
+        ["전체", "전체 보기"],
         ["영업 방식별", "개인 영업", "B2B 현장 영업"],
         ["업종별", "부동산 중개", "보험/자동차 영업"],
       ],
@@ -679,6 +680,7 @@ function makeEnglishCopy(copy: {
       ["AI and data", "AI sales assistant", "Reports", "Excel import/export"],
     ],
     solutionMenuColumns: [
+      ["Overview", "View all"],
       ["Sales style", "Personal sales", "B2B field sales"],
       ["Industry", "Real estate", "Insurance and auto sales"],
     ],

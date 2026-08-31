@@ -32,6 +32,7 @@ const productMenuTargets: readonly (readonly string[])[] = [
 ];
 
 const solutionMenuTargets: readonly (readonly string[])[] = [
+  ["/solutions"],
   ["/solutions#personal", "/solutions#b2b-field"],
   ["/solutions#real-estate", "/solutions#insurance-auto"],
 ];
@@ -143,10 +144,10 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             columnRoutes={solutionMenuTargets}
             columns={copy.common.solutionMenuColumns}
             fallbackPath="/solutions"
-            gridClassName="grid gap-x-12 gap-y-8 md:grid-cols-2"
+            gridClassName="grid gap-x-12 gap-y-8 md:grid-cols-3"
             label={copy.common.nav.solutions}
             toPublicPath={publicSitePath}
-            widthClassName="w-[min(560px,calc(100vw-32px))]"
+            widthClassName="w-[min(700px,calc(100vw-32px))]"
           />
           <HeaderTextDropdown
             columnRoutes={resourceMenuTargets}
