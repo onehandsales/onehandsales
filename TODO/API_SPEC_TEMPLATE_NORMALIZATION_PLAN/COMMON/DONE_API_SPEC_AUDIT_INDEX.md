@@ -1,6 +1,6 @@
 # Done API-SPEC Audit Index
 
-상태: G05 Completed / G06 Next
+상태: G06 Completed / G99 Next
 감사일: 2026-08-31
 
 ## 1. 목적
@@ -44,7 +44,7 @@
 | `index-only` | 21 | per-API 템플릿 감사 제외 |
 | `no-api-contract` | 6 | API 없음 또는 HTTP API가 아닌 contract |
 | `archive-reference-only` | 42 | 보관 이력 참조. 현재 goal에서 직접 수정하지 않음 |
-| `needs-manual-review` | 1 | G03에서 복합 도메인 확장 계약으로 별도 G06 분리 판단 완료 |
+| `needs-manual-review` | 1 | G03에서 복합 도메인 확장 계약으로 별도 G06 분리 판단, G06 정규화 완료 |
 
 ## 4. Normalize Now Candidates
 
@@ -169,7 +169,7 @@
 
 | 파일 | 누락 수 | 판단 |
 | --- | ---: | --- |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md` | 6 | Product/Deal/Contact/Company response/request 확장을 한 문서에 묶은 복합 계약이다. G03에서 core domain 문서에 흡수하지 않고 별도 G06으로 분리하기로 판단했다. |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md` | 6 | Product/Deal/Contact/Company response/request 확장을 한 문서에 묶은 복합 계약이다. G03에서 core domain 문서에 흡수하지 않고 별도 G06으로 분리했고, G06에서 current BE/FE 구현 기준 matrix 정규화를 완료했다. |
 
 ## 9. Follow-up Goals
 
@@ -180,9 +180,9 @@ G02 결과 대량 보강 후보가 22개이므로 아래 follow-up goal로 분�
 | `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | BusinessCard, Contact, Product, Deal, Import Template, Meeting Note AI/STT 후보 9개와 `DOMAIN_GLOBAL_DATA_API.md` 수동 판단 1개 | 2026-08-31 완료. 6개 문서 템플릿 보강, 3개 개요 문서 archive-reference-only 판단, `DOMAIN_GLOBAL_DATA_API.md` G06 분리 판단 |
 | `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | Mobile PWA field use 후보 4개 | 2026-08-31 완료. HTTP API와 browser/local-only contract 경계를 분리하고 템플릿 항목을 보강 |
 | `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | Admin Operation 후보 9개 | 2026-08-31 완료. Admin/User API prefix와 소비자 분리, 민감정보 masking, audit/observability, FE error 처리/log level 보강 |
-| `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | `DOMAIN_GLOBAL_DATA_API.md` 1개 | 다음 실행 대상. Product/Deal/Contact/Company global data 복합 계약을 current BE/FE 구현 기준 matrix로 보강 |
+| `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | `DOMAIN_GLOBAL_DATA_API.md` 1개 | 2026-08-31 완료. Product/Deal/Contact/Company global data 복합 계약을 current BE/FE 구현 기준 matrix로 보강 |
 
-`needs-manual-review` 1개는 G03에서 core domain 문서 흡수 없이 별도 G06으로 분리했다.
+`needs-manual-review` 1개는 G03에서 core domain 문서 흡수 없이 별도 G06으로 분리했고, G06에서 정규화 완료했다.
 
 ## 10. G03 처리 결과
 
@@ -213,7 +213,17 @@ G04에서는 Mobile Field 보관 API-SPEC 문서의 HTTP API와 browser/local-on
 
 G05에서는 Admin Operation 보관 API-SPEC 문서의 Admin/User API 경계, `AuthGuard`/`AdminGuard` 권한, 민감정보 masking, audit action, request id, transaction, FE error 처리/log level을 current BE/FE 구현 기준으로 보강했다. BE/FE 코드는 수정하지 않았고 API path, method, runtime request/response/error/transaction/observability 동작을 변경하지 않았다.
 
-## 13. 보관 문서 수정 원칙
+## 13. G06 처리 결과
+
+| 처리 | 파일 수 | 파일 |
+| --- | ---: | --- |
+| 템플릿 보강 | 1 | `DOMAIN_GLOBAL_DATA_API.md` |
+| 복합 matrix 정리 | 4개 domain | Product currency, Deal currency, Contact global phone, Company region/address |
+| current BE/FE 대조 | 4개 domain | Product, Deal, Contact, Company controller/DTO/application service, User Web API client/type, Prisma schema |
+
+G06에서는 Domain Global Data 복합 API-SPEC 문서에 계약 상태, API 이름, API 식별자, 소비자, 호환성, 권한, Request/Response 이름, Error FE 처리/log level, Transaction, Observability, FE/BE 처리 기준을 current BE/FE 구현 기준으로 보강했다. BE/FE 코드는 수정하지 않았고 API path, method, runtime request/response/error/transaction/observability 동작을 변경하지 않았다.
+
+## 14. 보관 문서 수정 원칙
 
 - G02에서는 `TODO/DONE/**/COMMON/API-SPEC/*.md` 본문을 직접 수정하지 않는다.
 - 후속 goal에서 보관 문서를 수정할 때는 대상 파일을 명시하고 API 계약 의미 변경 없음, BE/FE diff 없음, TODO_LOG 검증 결과를 남긴다.

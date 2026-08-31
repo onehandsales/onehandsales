@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: In Progress / G05 Completed / G06 Next
+상태: In Progress / G06 Completed / G99 Next
 
 ## 1. 실행 원칙
 
@@ -19,8 +19,8 @@
 | 3 | G03 | `COMMON/G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | 보관 Core/User API-SPEC 정규화 | Completed 2026-08-31 |
 | 4 | G04 | `COMMON/G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | 보관 Mobile Field API-SPEC 정규화 | Completed 2026-08-31 |
 | 5 | G05 | `COMMON/G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | 보관 Admin Operation API-SPEC 정규화 | Completed 2026-08-31 |
-| 6 | G06 | `COMMON/G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | Domain Global Data 복합 API-SPEC 정규화 | Next |
-| 7 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G06 |
+| 6 | G06 | `COMMON/G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | Domain Global Data 복합 API-SPEC 정규화 | Completed 2026-08-31 |
+| 7 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Next |
 
 ## 3. 실행 프롬프트
 
@@ -37,7 +37,7 @@
 현재 다음 실행 대상:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```
 
 ## 4. 완료 판정

@@ -1,6 +1,6 @@
 # Frontend TODO
 
-상태: No frontend code work / G05 frontend diff none
+상태: No frontend code work / G06 frontend diff none
 
 ## 1. 판단
 
@@ -15,6 +15,8 @@
 2026-08-31 G04에서는 User Web BusinessCard, MeetingNote audio recording, Analytics, Mobile Local Draft, Notification API client/type과 permission helper를 읽어 Mobile Field 보관 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
 
 2026-08-31 G05에서는 Admin Web account request, audit, user/domain, trash, provider failure, analytics, system API client/type과 User Web account request/trash API client/type을 읽어 Admin Operation 보관 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
+
+2026-08-31 G06에서는 User Web Product, Deal, Contact, Company API client/type과 관련 mutation 흐름을 읽어 Domain Global Data 복합 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
 
 ## 2. Frontend 확인 범위
 

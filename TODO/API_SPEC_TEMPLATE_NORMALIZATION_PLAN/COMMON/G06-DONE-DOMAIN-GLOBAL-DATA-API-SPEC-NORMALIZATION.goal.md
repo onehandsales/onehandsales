@@ -1,6 +1,6 @@
 # G06 완료 보관 Domain Global Data API-SPEC 정규화
 
-상태: Next
+상태: Completed 2026-08-31
 성격: 문서 정규화
 우선순위: P2
 
@@ -63,3 +63,10 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\API_SPEC_TEMPLATE_NOR
 - API 계약 의미 변경이 없다.
 - BE/FE 코드 diff가 없다.
 - 결과와 남은 리스크가 TODO_LOG에 기록되어 있다.
+
+## 9. 완료 결과
+
+- `DOMAIN_GLOBAL_DATA_API.md`에 Product/Deal currency request-response matrix, Contact global phone matrix, Company region/address matrix를 current BE/FE 구현 기준으로 보강했다.
+- BE controller/DTO/application service, User Web API client/type, Prisma schema를 대조했고 문서 변경 외 BE/FE 코드 변경은 없다.
+- API path, method, runtime request/response/error, transaction, observability 의미를 바꾸지 않았다.
+- 검증 결과와 남은 리스크는 `TODO_LOG/2026-08-31/API_SPEC_TEMPLATE_NORMALIZATION/G06_DONE_DOMAIN_GLOBAL_DATA_API_SPEC_NORMALIZATION/WORK_LOG.md`에 기록했다.

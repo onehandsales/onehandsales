@@ -1,6 +1,6 @@
 # API Spec
 
-상태: Implemented / G10 Reviewed
+상태: Implemented / G10 Reviewed / G06 Template Normalized
 
 ## 1. 목적
 
@@ -13,7 +13,7 @@
 - `DOMAIN_GLOBAL_DATA_API.md`
 - `IMPORT_EXPORT_LOCALIZATION_API.md`
 
-G10 기준 네 spec 모두 구현 결과와 대조했다. 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다. 2026-07-29 사용자 확인 기준 LINE/Apple 실제 OAuth provider smoke와 provider 설정값 연결도 운영 환경에서 완료됐다.
+G10 기준 네 spec 모두 구현 결과와 대조했다. 2026-07-29 `pnpm.cmd exec prisma migrate status` 재확인 기준 현재 `BE/.env` 연결 DB는 최신 상태다. 2026-07-29 사용자 확인 기준 LINE/Apple 실제 OAuth provider smoke와 provider 설정값 연결도 운영 환경에서 완료됐다. 2026-08-31 G06에서 `DOMAIN_GLOBAL_DATA_API.md`의 Product/Deal currency, Contact global phone, Company region/address 복합 계약을 current BE/FE 구현 기준으로 정규화했다.
 
 ## 3. 공통 원칙
 
