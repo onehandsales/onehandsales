@@ -15,6 +15,8 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
+  Store,
+  UserRound,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
@@ -107,6 +109,29 @@ const resourceMenuItems = [
   {
     icon: CircleHelp,
     targetPath: "/help",
+    tone: "bg-[#f1f1ef] text-[#555550]",
+  },
+  {
+    icon: BookOpen,
+    targetPath: "/help",
+    tone: "bg-[#f1f1ef] text-[#555550]",
+  },
+] as const;
+
+const solutionMenuItems = [
+  {
+    icon: UserRound,
+    targetPath: "/solutions#personal",
+    tone: "bg-[#f1f1ef] text-[#555550]",
+  },
+  {
+    icon: Store,
+    targetPath: "/solutions#small-business",
+    tone: "bg-[#f1f1ef] text-[#555550]",
+  },
+  {
+    icon: Building2,
+    targetPath: "/solutions#enterprise",
     tone: "bg-[#f1f1ef] text-[#555550]",
   },
 ] as const;
@@ -208,12 +233,47 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             </div>
           </div>
 
-          <Link
-            className="inline-flex h-9 items-center rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
-            to={publicSitePath("/features")}
-          >
-            {copy.common.nav.features}
-          </Link>
+          <div className="group relative">
+            <button
+              className="inline-flex h-9 items-center gap-1 rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
+              type="button"
+            >
+              {copy.common.nav.solutions}
+              <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
+            </button>
+
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-full hidden h-8 group-hover:block group-focus-within:block"
+            />
+            <div className="pointer-events-none fixed left-1/2 top-[62px] hidden w-[min(420px,calc(100vw-32px))] -translate-x-1/2 rounded-[16px] border border-[#eeeeec] bg-white p-6 text-left opacity-0 shadow-[0_24px_80px_rgba(15,15,15,0.14)] transition group-hover:pointer-events-auto group-hover:block group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:block group-focus-within:opacity-100">
+              <div className="grid gap-3">
+                {solutionMenuItems.map(({ icon: Icon, targetPath, tone }, itemIndex) => {
+                  const itemCopy = copy.common.solutionMenuItems[itemIndex];
+
+                  return (
+                    <Link
+                      className="flex items-start gap-3 rounded-[8px] p-2 hover:bg-[#FAFAF8]"
+                      key={targetPath}
+                      to={publicSitePath(targetPath)}
+                    >
+                      <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-[8px] ${tone}`}>
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span>
+                        <span className="block text-[14px] font-normal text-[#222220]">
+                          {itemCopy?.title}
+                        </span>
+                        <span className="mt-0.5 block text-[12px] font-normal leading-5 text-[#777770]">
+                          {itemCopy?.description}
+                        </span>
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
           <div className="group relative">
             <button
               className="inline-flex h-9 items-center gap-1 rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
@@ -235,7 +295,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
                   return (
                     <Link
                       className="flex items-start gap-3 rounded-[8px] p-2 hover:bg-[#FAFAF8]"
-                      key={itemCopy?.title}
+                      key={targetPath}
                       to={publicSitePath(targetPath)}
                     >
                       <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-[8px] ${tone}`}>

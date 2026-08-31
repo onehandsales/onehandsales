@@ -42,7 +42,7 @@ type PublicSiteCopy = {
     readonly logoAria: string;
     readonly nav: {
       readonly product: string;
-      readonly features: string;
+      readonly solutions: string;
       readonly resources: string;
       readonly pricing: string;
       readonly contact: string;
@@ -50,6 +50,7 @@ type PublicSiteCopy = {
       readonly login: string;
     };
     readonly productMenuGroups: readonly ProductMenuItemCopy[][];
+    readonly solutionMenuItems: readonly ProductMenuItemCopy[];
     readonly resourceMenuItems: readonly ProductMenuItemCopy[];
     readonly productTour: string;
     readonly productApp: string;
@@ -198,7 +199,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       logoAria: "OneHand 홈",
       nav: {
         product: "제품",
-        features: "기능",
+        solutions: "용도별",
         resources: "리소스",
         pricing: "요금제",
         contact: "문의하기",
@@ -225,16 +226,22 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           { title: "리포트", description: "성과와 리스크를 확인" },
         ],
       ],
+      solutionMenuItems: [
+        { title: "개인 영업", description: "혼자 고객, 일정, 딜을 챙기는 흐름" },
+        { title: "작은 팀", description: "고객과 후속 작업을 함께 보는 흐름" },
+        { title: "조직 도입", description: "보안과 도입 검토가 필요한 흐름" },
+      ],
       resourceMenuItems: [
         { title: "도움말", description: "자주 묻는 질문을 확인해요." },
+        { title: "자주 묻는 질문", description: "가격, 모바일, 데이터 질문을 살펴봐요." },
       ],
       productTour: "OneHand 1.0 둘러보기",
       productApp: "앱으로 이동",
       footerColumns: [
         ["회사 소개", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
-        ["다운로드", "iOS & Android"],
-        ["리소스", "요금제", "자주 묻는 질문"],
-        ["용도별", "엔터프라이즈", "스몰비즈니스", "개인"],
+        ["제품", "주요 기능", "요금제", "다운로드"],
+        ["리소스", "도움말", "자주 묻는 질문", "문의하기"],
+        ["용도별", "개인 영업", "작은 팀", "조직 도입"],
       ],
       cookieSettings: "쿠키 설정",
       languageAria: "지역 선택",
@@ -691,7 +698,7 @@ function makeEnglishCopy(copy: {
     logoAria: "OneHand home",
     nav: {
       product: "Product",
-      features: "Features",
+      solutions: "Use cases",
       resources: "Resources",
       pricing: copy.pricing,
       contact: copy.contact,
@@ -718,16 +725,22 @@ function makeEnglishCopy(copy: {
         { title: "Reports", description: "Review performance and risk" },
       ],
     ],
+    solutionMenuItems: [
+      { title: "Personal sales", description: "Manage customers, schedules, and deals on your own" },
+      { title: "Small teams", description: "Share customer context and follow-up work" },
+      { title: "Organization rollout", description: "Plan security and adoption review" },
+    ],
     resourceMenuItems: [
       { title: "Help", description: "Find answers and product guidance." },
+      { title: "FAQ", description: "Review pricing, mobile, and data questions." },
     ],
     productTour: "Explore OneHand 1.0",
     productApp: "Go to app",
     footerColumns: [
       ["Company", "About us", "Security", "Terms of Service", "Your Privacy Policy"],
-      ["Download", "iOS & Android"],
-      ["Resources", "Pricing", "FAQ"],
-      ["OneHand for", "Enterprise", "Small business", "Personal"],
+      ["Product", "Features", "Pricing", "Download"],
+      ["Resources", "Help", "FAQ", "Contact sales"],
+      ["OneHand for", "Personal sales", "Small teams", "Organizations"],
     ],
     cookieSettings: "Cookie settings",
     languageAria: "Select region",
