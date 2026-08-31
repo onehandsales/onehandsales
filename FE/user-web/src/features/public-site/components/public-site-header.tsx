@@ -38,7 +38,7 @@ const solutionMenuTargets: readonly (readonly string[])[] = [
 ];
 
 const resourceMenuTargets: readonly (readonly string[])[] = [
-  ["/help", "/help", "/contact"],
+  ["/help", "/faq", "/contact"],
 ];
 
 // 기능 : 공개 사이트 상단의 텍스트 컬럼형 드롭다운 메뉴를 렌더링합니다.

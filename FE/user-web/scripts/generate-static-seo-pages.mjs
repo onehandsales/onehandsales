@@ -352,12 +352,26 @@ const routeSeo = {
   "/help": {
     title: { ko: "도움말 | OneHand Sales", en: "Help | OneHand Sales" },
     description: {
+      ko: "OneHand Sales에서 고객, 딜, 일정, 회의록, 명함 스캔, 엑셀, 휴지통 복구를 시작하는 기본 사용 흐름을 확인하세요.",
+      en: "Learn the basic OneHand Sales workflow for customers, deals, schedules, meeting notes, business card scanning, Excel, and trash restore.",
+    },
+    keywords: {
+      ko: ["OneHand Sales 도움말", "OneHand Sales 사용법", "영업 CRM 도움말", "CRM 사용 가이드", "명함 스캔 도움말", "CRM 엑셀 가져오기"],
+      en: ["OneHand Sales help", "OneHand Sales guide", "sales CRM help", "CRM user guide", "business card scanning help", "CRM Excel import"],
+    },
+    priority: "0.6",
+    changefreq: "monthly",
+    schemaType: "WebPage",
+  },
+  "/faq": {
+    title: { ko: "자주 묻는 질문 | OneHand Sales", en: "FAQ | OneHand Sales" },
+    description: {
       ko: "OneHand Sales의 무료 사용, 모바일, AI, 엑셀 다운로드, 휴지통 복구, 로그인, 팀 사용 FAQ를 확인하세요.",
       en: "Find answers about OneHand Sales pricing, mobile use, AI, Excel export, trash restore, sign-in, and team usage.",
     },
     keywords: {
-      ko: ["OneHand Sales 도움말", "영업 CRM FAQ", "CRM 엑셀 다운로드", "CRM 휴지통 복구", "AI CRM 도움말"],
-      en: ["OneHand Sales help", "sales CRM FAQ", "CRM Excel export", "CRM trash restore", "AI CRM help"],
+      ko: ["OneHand Sales FAQ", "OneHand Sales 자주 묻는 질문", "CRM 엑셀 다운로드", "CRM 휴지통 복구", "AI CRM 도움말"],
+      en: ["OneHand Sales FAQ", "OneHand Sales questions", "sales CRM FAQ", "CRM Excel export", "CRM trash restore", "AI CRM help"],
     },
     priority: "0.6",
     changefreq: "monthly",

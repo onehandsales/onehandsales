@@ -18,6 +18,7 @@ export type PublicSiteLocalizedPath =
   | "/solutions/b2b-field"
   | "/download"
   | "/help"
+  | "/faq"
   | "/contact"
   | "/about"
   | "/security"
@@ -56,6 +57,7 @@ export const publicSiteLocalizedPaths = [
   "/solutions/b2b-field",
   "/download",
   "/help",
+  "/faq",
   "/contact",
   "/about",
   "/security",

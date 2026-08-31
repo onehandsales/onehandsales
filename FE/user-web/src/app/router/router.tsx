@@ -27,6 +27,7 @@ import { DealDetailPage } from "@/pages/deals/detail";
 import { DealsPage } from "@/pages/deals";
 import { DealNewFullPage } from "@/pages/deals/new-full";
 import { DealNewPage } from "@/pages/deals/new";
+import { FaqPage } from "@/pages/faq";
 import { FeaturesPage } from "@/pages/features";
 import { HelpPage } from "@/pages/help";
 import { HomePage } from "@/pages/home";
@@ -91,6 +92,7 @@ export const router = createBrowserRouter([
   },
   { path: "/download", element: <LegacyPublicSiteRedirect to="/download" /> },
   { path: "/help", element: <LegacyPublicSiteRedirect to="/help" /> },
+  { path: "/faq", element: <LegacyPublicSiteRedirect to="/faq" /> },
   { path: "/contact", element: <LegacyPublicSiteRedirect to="/contact" /> },
   { path: "/about", element: <LegacyPublicSiteRedirect to="/about" /> },
   { path: "/security", element: <LegacyPublicSiteRedirect to="/security" /> },
@@ -276,6 +278,10 @@ function getPublicSiteElement(path: PublicSiteLocalizedPath) {
 
   if (path === "/help") {
     return <HelpPage />;
+  }
+
+  if (path === "/faq") {
+    return <FaqPage />;
   }
 
   if (path === "/contact") {

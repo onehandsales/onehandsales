@@ -31,7 +31,7 @@ const footerSocialLinks: readonly {
 const footerColumnRoutes: readonly (readonly string[])[] = [
   ["/about", "/security", "/terms", "/privacy"],
   ["/", "/features", "/pricing", "/download"],
-  ["/help", "/help", "/contact"],
+  ["/help", "/faq", "/contact"],
   [
     "/solutions/personal",
     "/solutions/real-estate",
