@@ -208,28 +208,24 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       },
       productMenuGroups: [
         [
-          { title: "AI 딜 도우미", description: "다음 행동과 우선순위를 정리" },
-          { title: "자동 팔로업", description: "놓친 연락과 일정 알림" },
-          { title: "회의록 정리", description: "메모를 요약하고 딜에 연결" },
-          { title: "통합 검색", description: "회사, 담당자, 딜을 한 번에 검색" },
+          { title: "OneHand란?", description: "고객, 일정, 딜을 한 흐름으로 연결해요." },
+          { title: "고객 관리", description: "회사, 담당자, 명함, 메모를 정리해요." },
+          { title: "영업 파이프라인", description: "딜 단계와 다음 확인 지점을 관리해요." },
         ],
         [
-          { title: "고객 데이터베이스", description: "회사와 담당자를 한곳에 모음" },
-          { title: "문서", description: "제안서와 자료를 정돈" },
-          { title: "프로젝트", description: "딜과 실행 업무를 같이 관리" },
-          { title: "일정", description: "미팅과 후속 작업을 추적" },
+          { title: "일정/팔로업", description: "미팅과 후속 연락을 놓치지 않게 해요." },
+          { title: "활동 기록", description: "회의록과 메모를 고객 맥락에 남겨요." },
         ],
         [
-          { title: "연결", description: "영업 기록을 서로 연결" },
-          { title: "보안", description: "민감 메모와 권한을 분리" },
-          { title: "템플릿", description: "반복 업무 구조를 저장" },
-          { title: "리포트", description: "성과와 리스크를 확인" },
+          { title: "AI 영업 도우미", description: "요약, 초안, 우선순위를 정리해요." },
+          { title: "리포트", description: "주간 흐름과 리스크를 확인해요." },
         ],
       ],
       solutionMenuItems: [
         { title: "개인 영업", description: "혼자 고객, 일정, 딜을 챙기는 흐름" },
-        { title: "작은 팀", description: "고객과 후속 작업을 함께 보는 흐름" },
-        { title: "조직 도입", description: "보안과 도입 검토가 필요한 흐름" },
+        { title: "부동산 중개", description: "상담, 매물, 고객 후속 연락을 정리해요." },
+        { title: "보험/자동차 영업", description: "반복 상담과 계약 후속 업무를 관리해요." },
+        { title: "B2B 현장 영업", description: "외근 미팅과 딜 진행 상황을 연결해요." },
       ],
       resourceMenuItems: [
         { title: "도움말", description: "자주 묻는 질문을 확인해요." },
@@ -238,10 +234,10 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       productTour: "OneHand 1.0 둘러보기",
       productApp: "앱으로 이동",
       footerColumns: [
-        ["회사 소개", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
-        ["제품", "주요 기능", "요금제", "다운로드"],
+        ["회사", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
+        ["제품", "제품 소개", "주요 기능", "요금제", "다운로드"],
         ["리소스", "도움말", "자주 묻는 질문", "문의하기"],
-        ["용도별", "개인 영업", "작은 팀", "조직 도입"],
+        ["용도별", "개인 영업", "부동산 중개", "보험/자동차 영업", "B2B 현장 영업"],
       ],
       cookieSettings: "쿠키 설정",
       languageAria: "지역 선택",
@@ -434,16 +430,12 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
     },
   },  "en-US": makeEnglishCopy({
-    organise: "organize",
-    organizing: "organizing",
     title: "One tool for running sales.",
     contactTitle: "Contact sales",
     pricing: "Pricing",
     contact: "Request a Demo",
     languageRegion: "US",
   }),  "en-CA": makeEnglishCopy({
-    organise: "organize",
-    organizing: "organizing",
     title: "One tool for running sales.",
     contactTitle: "Contact sales",
     pricing: "Pricing",
@@ -686,8 +678,6 @@ function getEnglishContactRegion(languageRegion: "US" | "CA") {
 
 // 기능 : 영어권 공개 사이트 전체 copy를 생성합니다.
 function makeEnglishCopy(copy: {
-  readonly organise: string;
-  readonly organizing: string;
   readonly title: string;
   readonly contactTitle: string;
   readonly pricing: string;
@@ -707,28 +697,24 @@ function makeEnglishCopy(copy: {
     },
     productMenuGroups: [
       [
-        { title: "AI deal assistant", description: `Prioritize and ${copy.organise} next actions` },
-        { title: "Automatic follow-up", description: "Reminders for missed calls and meetings" },
-        { title: "Meeting notes", description: "Summarize notes and connect them to deals" },
-        { title: "Unified search", description: "Search companies, contacts, and deals at once" },
+        { title: "What is OneHand?", description: "Connect customers, schedules, and deals in one workflow" },
+        { title: "Customer management", description: "Organize companies, contacts, cards, and notes" },
+        { title: "Sales pipeline", description: "Manage deal stages and next checkpoints" },
       ],
       [
-        { title: "Customer database", description: "Keep companies and contacts together" },
-        { title: "Documents", description: `${capitalize(copy.organise)} proposals and materials` },
-        { title: "Projects", description: "Manage deals and execution together" },
-        { title: "Calendar", description: "Track meetings and follow-up work" },
+        { title: "Schedule and follow-up", description: "Track meetings and follow-up work" },
+        { title: "Activity records", description: "Keep notes and meeting context with each customer" },
       ],
       [
-        { title: "Connections", description: "Connect every sales record" },
-        { title: "Security", description: "Separate sensitive notes and permissions" },
-        { title: "Templates", description: "Save repeat workflow structures" },
-        { title: "Reports", description: "Review performance and risk" },
+        { title: "AI sales assistant", description: "Organize summaries, drafts, and priorities" },
+        { title: "Reports", description: "Review weekly flow and sales risk" },
       ],
     ],
     solutionMenuItems: [
       { title: "Personal sales", description: "Manage customers, schedules, and deals on your own" },
-      { title: "Small teams", description: "Share customer context and follow-up work" },
-      { title: "Organization rollout", description: "Plan security and adoption review" },
+      { title: "Real estate", description: "Organize consultations, listings, and follow-up" },
+      { title: "Insurance and auto sales", description: "Manage repeat consultations and contract follow-up" },
+      { title: "B2B field sales", description: "Connect field meetings with deal progress" },
     ],
     resourceMenuItems: [
       { title: "Help", description: "Find answers and product guidance." },
@@ -738,9 +724,9 @@ function makeEnglishCopy(copy: {
     productApp: "Go to app",
     footerColumns: [
       ["Company", "About us", "Security", "Terms of Service", "Your Privacy Policy"],
-      ["Product", "Features", "Pricing", "Download"],
+      ["Product", "Product overview", "Features", "Pricing", "Download"],
       ["Resources", "Help", "FAQ", "Contact sales"],
-      ["OneHand for", "Personal sales", "Small teams", "Organizations"],
+      ["OneHand for", "Personal sales", "Real estate", "Insurance and auto sales", "B2B field sales"],
     ],
     cookieSettings: "Cookie settings",
     languageAria: "Select region",
@@ -826,9 +812,4 @@ function makeEnglishCopy(copy: {
       supportSuffix: ".",
     }),
   };
-}
-
-// 기능 : 영어 문구의 첫 글자를 대문자로 변환합니다.
-function capitalize(value: string) {
-  return `${value.slice(0, 1).toUpperCase()}${value.slice(1)}`;
 }

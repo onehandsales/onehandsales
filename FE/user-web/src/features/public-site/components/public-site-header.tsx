@@ -4,18 +4,13 @@ import {
   BookOpen,
   BriefcaseBusiness,
   Building2,
-  CalendarDays,
   ChevronDown,
   CircleHelp,
   FileText,
   FolderKanban,
-  Link as LinkIcon,
-  LockKeyhole,
   MessageSquareText,
-  Search,
   ShieldCheck,
   Sparkles,
-  Store,
   UserRound,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,9 +25,19 @@ type PublicSiteHeaderProps = {
 const productMenuIconGroups = [
   [
     {
-      icon: Sparkles,
-      tone: "bg-[#fff3e8] text-[#c6531a]",
+      icon: BriefcaseBusiness,
+      tone: "bg-[#f1f1ef] text-[#555550]",
     },
+    {
+      icon: Building2,
+      tone: "bg-[#edf7ff] text-[#1677d2]",
+    },
+    {
+      icon: FolderKanban,
+      tone: "bg-[#fff5d8] text-[#b77900]",
+    },
+  ],
+  [
     {
       icon: Bell,
       tone: "bg-[#fff0f0] text-[#d63c31]",
@@ -41,44 +46,14 @@ const productMenuIconGroups = [
       icon: MessageSquareText,
       tone: "bg-[#eef6ff] text-[#1677d2]",
     },
-    {
-      icon: Search,
-      tone: "bg-[#f3eaff] text-[#7c3aed]",
-    },
   ],
   [
     {
-      icon: Building2,
-      tone: "bg-[#edf7ff] text-[#1677d2]",
+      icon: Sparkles,
+      tone: "bg-[#fff3e8] text-[#c6531a]",
     },
     {
       icon: FileText,
-      tone: "bg-[#e8f8f4] text-[#16856b]",
-    },
-    {
-      icon: FolderKanban,
-      tone: "bg-[#fff5d8] text-[#b77900]",
-    },
-    {
-      icon: CalendarDays,
-      tone: "bg-[#f1f1ef] text-[#555550]",
-    },
-  ],
-  [
-    {
-      icon: LinkIcon,
-      tone: "bg-[#f1f1ef] text-[#555550]",
-    },
-    {
-      icon: LockKeyhole,
-      tone: "bg-[#f1f1ef] text-[#555550]",
-    },
-    {
-      icon: BookOpen,
-      tone: "bg-[#f1f1ef] text-[#555550]",
-    },
-    {
-      icon: ShieldCheck,
       tone: "bg-[#f1f1ef] text-[#555550]",
     },
   ],
@@ -86,22 +61,17 @@ const productMenuIconGroups = [
 
 const productMenuTargets: readonly (readonly string[])[] = [
   [
-    "/features#ai",
+    "/",
+    "/features#customers",
     "/features#deals",
-    "/features#meeting-notes",
-    "/features#search",
   ],
   [
-    "/features#customers",
-    "/features#import-export",
-    "/features#deals",
     "/features#schedules",
+    "/features#meeting-notes",
   ],
   [
-    "/features#customers",
-    "/features#security",
     "/features#ai",
-    "/features#deals",
+    "/features",
   ],
 ];
 
@@ -125,13 +95,18 @@ const solutionMenuItems = [
     tone: "bg-[#f1f1ef] text-[#555550]",
   },
   {
-    icon: Store,
-    targetPath: "/solutions#small-business",
+    icon: Building2,
+    targetPath: "/solutions#real-estate",
     tone: "bg-[#f1f1ef] text-[#555550]",
   },
   {
-    icon: Building2,
-    targetPath: "/solutions#enterprise",
+    icon: ShieldCheck,
+    targetPath: "/solutions#insurance-auto",
+    tone: "bg-[#f1f1ef] text-[#555550]",
+  },
+  {
+    icon: BriefcaseBusiness,
+    targetPath: "/solutions#b2b-field",
     tone: "bg-[#f1f1ef] text-[#555550]",
   },
 ] as const;
