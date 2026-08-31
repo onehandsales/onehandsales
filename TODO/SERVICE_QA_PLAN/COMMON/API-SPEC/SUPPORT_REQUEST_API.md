@@ -6,7 +6,7 @@
 
 - API 이름: 지원 요청 접수 API
 - API 식별자: CreateSupportRequest
-- 상태: implemented
+- 계약 상태: implemented
 - 범위: User Web 도움말 모달 `지원요청` 접수
 - 소비자: User Web
 - 호환성:
@@ -34,8 +34,14 @@ Path:
 인증:
 
 - `AuthGuard` 필수
+
+권한:
+
+- 로그인한 User Web 사용자만 호출한다.
 - FE request body의 `userId`는 받지 않는다.
 - Backend는 `CurrentUserContext.id`로 로그인 사용자를 식별하고, DB에서 사용자 계정 정보를 다시 조회한다.
+- 생성되는 지원 요청은 인증 사용자 본인 snapshot 기준으로만 저장한다.
+- Admin Web 조회/처리 권한과 전화 발신 provider 연동은 이번 API 범위에 포함하지 않는다.
 
 Content-Type:
 

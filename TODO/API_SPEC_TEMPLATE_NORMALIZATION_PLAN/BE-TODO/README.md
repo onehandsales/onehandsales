@@ -1,10 +1,12 @@
 # Backend TODO
 
-상태: No backend code work
+상태: No backend code work / G01 backend diff none
 
 ## 1. 판단
 
 이 계획은 API-SPEC 문서 템플릿 정규화 계획이다. Backend 코드를 수정하지 않는다.
+
+2026-08-31 G01에서는 Backend 구현을 읽어 API-SPEC을 보강했으며 Backend 코드는 수정하지 않았다.
 
 ## 2. Backend 확인 범위
 

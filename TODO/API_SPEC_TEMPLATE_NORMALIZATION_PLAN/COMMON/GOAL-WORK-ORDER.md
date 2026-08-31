@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: Ready / G01 Next
+상태: In Progress / G01 Completed / G02 Next
 
 ## 1. 실행 원칙
 
@@ -14,8 +14,8 @@
 
 | 순서 | Goal | 파일 | 성격 | 상태 |
 | --- | --- | --- | --- | --- |
-| 1 | G01 | `COMMON/G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md` | 활성 API-SPEC 정규화 | Next |
-| 2 | G02 | `COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md` | 보관 API-SPEC 감사 인덱스 | Ready after G01 |
+| 1 | G01 | `COMMON/G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md` | 활성 API-SPEC 정규화 | Completed 2026-08-31 |
+| 2 | G02 | `COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md` | 보관 API-SPEC 감사 인덱스 | Next |
 | 3 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G01-G02 |
 
 ## 3. 실행 프롬프트
@@ -24,6 +24,12 @@
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
+```
+
+현재 다음 실행 대상:
+
+```text
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
 ```
 
 ## 4. 완료 판정

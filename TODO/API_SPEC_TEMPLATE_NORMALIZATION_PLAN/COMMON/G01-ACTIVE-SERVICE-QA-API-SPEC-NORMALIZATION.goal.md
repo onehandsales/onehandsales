@@ -1,8 +1,9 @@
 # G01 활성 Service QA API-SPEC 정규화
 
-상태: Next for `/goal`
+상태: Completed
 성격: 문서 정규화
 우선순위: P1
+완료일: 2026-08-31
 
 ## 1. 목적
 
@@ -71,3 +72,11 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\API_SPEC_TEMPLATE_NOR
 - README 인덱스가 실제 API-SPEC 파일 목록과 맞는다.
 - BE/FE 코드 diff가 없다.
 - API 계약 의미 변경이 없음을 TODO_LOG에 기록했다.
+
+## 9. 완료 결과
+
+- `ERROR_REPORT_API.md`에 계약 상태 `implemented`, API 이름, API 식별자, 소비자, 호환성, 권한, Request/Response 이름, Error FE 처리/log level, Transaction/Observability 세부 항목을 보강했다.
+- `SUPPORT_REQUEST_API.md`의 계약 상태 표기를 정규화하고 별도 `권한` 항목을 추가했다.
+- `README.md`에 `SUPPORT_REQUEST_API.md` 인덱스를 추가하고 per-API 템플릿 감사 제외 문서임을 명시했다.
+- API path, method, request, response, error code, transaction, observability 의미 변경 없음.
+- 작업 로그: `TODO_LOG/2026-08-31/API_SPEC_TEMPLATE_NORMALIZATION/G01_ACTIVE_SERVICE_QA_API_SPEC_NORMALIZATION/WORK_LOG.md`

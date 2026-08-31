@@ -1,6 +1,6 @@
 # API-SPEC Audit Result
 
-상태: Ready / G01 Next reference
+상태: G01 Completed / G02 Next reference
 감사일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
 
@@ -67,9 +67,9 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 
 | 문서 | production 연결 | 판정 | 후속 조치 |
 | --- | --- | --- | --- |
-| `TODO/SERVICE_QA_PLAN/COMMON/API-SPEC/ERROR_REPORT_API.md` | 예. `POST /api/error-reports` | 보강 대상 | 계약 상태 `implemented` 여부, API 이름, API 식별자, 소비자, 호환성, 권한, Request 이름, Response 이름, Error FE 처리/log level, Transaction/Observability 세부 항목을 현재 코드 기준으로 보강한다. |
-| `TODO/SERVICE_QA_PLAN/COMMON/API-SPEC/SUPPORT_REQUEST_API.md` | 예. `POST /api/support-requests` | 보강 대상 | 별도 `권한` 항목과 `계약 상태` 표기를 정규화한다. API 의미 변경은 하지 않는다. |
-| `TODO/SERVICE_QA_PLAN/COMMON/API-SPEC/README.md` | 인덱스 | per-API 템플릿 감사 제외 | `SUPPORT_REQUEST_API.md`가 인덱스에서 누락되어 있으므로 README를 최신화한다. |
+| `TODO/SERVICE_QA_PLAN/COMMON/API-SPEC/ERROR_REPORT_API.md` | 예. `POST /api/error-reports` | G01 완료 | 계약 상태 `implemented`, API 이름, API 식별자, 소비자, 호환성, 권한, Request 이름, Response 이름, Error FE 처리/log level, Transaction/Observability 세부 항목을 현재 코드 기준으로 보강했다. |
+| `TODO/SERVICE_QA_PLAN/COMMON/API-SPEC/SUPPORT_REQUEST_API.md` | 예. `POST /api/support-requests` | G01 완료 | 별도 `권한` 항목과 `계약 상태` 표기를 정규화했다. API 의미 변경은 하지 않았다. |
+| `TODO/SERVICE_QA_PLAN/COMMON/API-SPEC/README.md` | 인덱스 | G01 완료 / per-API 템플릿 감사 제외 | `SUPPORT_REQUEST_API.md`를 인덱스에 추가하고 README가 per-API 템플릿 감사 제외 문서임을 명시했다. |
 
 ## 5. 완료 보관 문서 판정
 
@@ -120,6 +120,5 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 
 ## 7. 다음 작업
 
-1. `G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`에서 활성 API-SPEC 3개를 먼저 정리한다.
-2. `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`에서 보관 API-SPEC 92개를 직접 수정 대상, 인덱스/비계약 제외 대상, 보류 대상으로 분류한다.
-3. `G99-FINAL-REVIEW.goal.md`에서 API 계약 의미 변경이 없고 BE/FE 코드 diff가 없음을 확인한다.
+1. `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`에서 보관 API-SPEC 92개를 직접 수정 대상, 인덱스/비계약 제외 대상, 보류 대상으로 분류한다.
+2. `G99-FINAL-REVIEW.goal.md`에서 API 계약 의미 변경이 없고 BE/FE 코드 diff가 없음을 확인한다.
