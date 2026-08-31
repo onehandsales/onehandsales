@@ -30,12 +30,7 @@ type PublicSiteLanguageContextValue = {
   readonly copy: PublicSiteCopy;
 };
 
-type ProductMenuItemCopy = {
-  readonly title: string;
-  readonly description: string;
-};
-
-type FooterColumnCopy = readonly [string, ...string[]];
+type MenuColumnCopy = readonly [string, ...string[]];
 
 type PublicSiteCopy = {
   readonly common: {
@@ -49,12 +44,10 @@ type PublicSiteCopy = {
       readonly freeCta: string;
       readonly login: string;
     };
-    readonly productMenuGroups: readonly ProductMenuItemCopy[][];
-    readonly solutionMenuItems: readonly ProductMenuItemCopy[];
-    readonly resourceMenuItems: readonly ProductMenuItemCopy[];
-    readonly productTour: string;
-    readonly productApp: string;
-    readonly footerColumns: readonly FooterColumnCopy[];
+    readonly productMenuColumns: readonly MenuColumnCopy[];
+    readonly solutionMenuColumns: readonly MenuColumnCopy[];
+    readonly resourceMenuColumns: readonly MenuColumnCopy[];
+    readonly footerColumns: readonly MenuColumnCopy[];
     readonly cookieSettings: string;
     readonly languageAria: string;
     readonly footerSocialAria: string;
@@ -206,33 +199,18 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         freeCta: "OneHand 시작",
         login: "로그인",
       },
-      productMenuGroups: [
-        [
-          { title: "OneHand란?", description: "고객, 일정, 딜을 한 흐름으로 연결해요." },
-          { title: "고객 관리", description: "회사, 담당자, 명함, 메모를 정리해요." },
-          { title: "영업 파이프라인", description: "딜 단계와 다음 확인 지점을 관리해요." },
-        ],
-        [
-          { title: "일정/팔로업", description: "미팅과 후속 연락을 놓치지 않게 해요." },
-          { title: "활동 기록", description: "회의록과 메모를 고객 맥락에 남겨요." },
-        ],
-        [
-          { title: "AI 영업 도우미", description: "요약, 초안, 우선순위를 정리해요." },
-          { title: "리포트", description: "주간 흐름과 리스크를 확인해요." },
-        ],
+      productMenuColumns: [
+        ["제품 소개", "OneHand란?", "제품 둘러보기"],
+        ["핵심 기능", "고객 관리", "영업 파이프라인", "일정/팔로업", "활동 기록"],
+        ["AI와 데이터", "AI 영업 도우미", "리포트", "엑셀 가져오기/내보내기"],
       ],
-      solutionMenuItems: [
-        { title: "개인 영업", description: "혼자 고객, 일정, 딜을 챙기는 흐름" },
-        { title: "부동산 중개", description: "상담, 매물, 고객 후속 연락을 정리해요." },
-        { title: "보험/자동차 영업", description: "반복 상담과 계약 후속 업무를 관리해요." },
-        { title: "B2B 현장 영업", description: "외근 미팅과 딜 진행 상황을 연결해요." },
+      solutionMenuColumns: [
+        ["영업 방식별", "개인 영업", "B2B 현장 영업"],
+        ["업종별", "부동산 중개", "보험/자동차 영업"],
       ],
-      resourceMenuItems: [
-        { title: "도움말", description: "자주 묻는 질문을 확인해요." },
-        { title: "자주 묻는 질문", description: "가격, 모바일, 데이터 질문을 살펴봐요." },
+      resourceMenuColumns: [
+        ["도움받기", "도움말", "자주 묻는 질문", "문의하기"],
       ],
-      productTour: "OneHand 1.0 둘러보기",
-      productApp: "앱으로 이동",
       footerColumns: [
         ["회사", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
         ["제품", "제품 소개", "주요 기능", "요금제", "다운로드"],
@@ -695,33 +673,18 @@ function makeEnglishCopy(copy: {
       freeCta: "Get OneHand",
       login: "Log in",
     },
-    productMenuGroups: [
-      [
-        { title: "What is OneHand?", description: "Connect customers, schedules, and deals in one workflow" },
-        { title: "Customer management", description: "Organize companies, contacts, cards, and notes" },
-        { title: "Sales pipeline", description: "Manage deal stages and next checkpoints" },
-      ],
-      [
-        { title: "Schedule and follow-up", description: "Track meetings and follow-up work" },
-        { title: "Activity records", description: "Keep notes and meeting context with each customer" },
-      ],
-      [
-        { title: "AI sales assistant", description: "Organize summaries, drafts, and priorities" },
-        { title: "Reports", description: "Review weekly flow and sales risk" },
-      ],
+    productMenuColumns: [
+      ["Product", "What is OneHand?", "Product tour"],
+      ["Core features", "Customer management", "Sales pipeline", "Schedule and follow-up", "Activity records"],
+      ["AI and data", "AI sales assistant", "Reports", "Excel import/export"],
     ],
-    solutionMenuItems: [
-      { title: "Personal sales", description: "Manage customers, schedules, and deals on your own" },
-      { title: "Real estate", description: "Organize consultations, listings, and follow-up" },
-      { title: "Insurance and auto sales", description: "Manage repeat consultations and contract follow-up" },
-      { title: "B2B field sales", description: "Connect field meetings with deal progress" },
+    solutionMenuColumns: [
+      ["Sales style", "Personal sales", "B2B field sales"],
+      ["Industry", "Real estate", "Insurance and auto sales"],
     ],
-    resourceMenuItems: [
-      { title: "Help", description: "Find answers and product guidance." },
-      { title: "FAQ", description: "Review pricing, mobile, and data questions." },
+    resourceMenuColumns: [
+      ["Support", "Help", "FAQ", "Contact sales"],
     ],
-    productTour: "Explore OneHand 1.0",
-    productApp: "Go to app",
     footerColumns: [
       ["Company", "About us", "Security", "Terms of Service", "Your Privacy Policy"],
       ["Product", "Product overview", "Features", "Pricing", "Download"],
