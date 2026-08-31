@@ -285,3 +285,58 @@ Redaction:
 - 옵션 3개는 `createdAt DESC`다.
 - following action과 memo 목록은 `createdAt DESC`다.
 - export는 검색/필터/정렬을 반영하고 id, 제품, 최근수정일을 제외한다.
+
+## 11. API_SPEC_TEMPLATE_NORMALIZATION G03 보강
+
+판단: 현재 `DealController`, `DealApplicationService`, User Web `deal-api.ts` 기준으로 템플릿 누락 항목만 보강한다. API 계약 의미는 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 기존 `/api/deals*` path/method/request/response 유지. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 본인 `Deal`과 연결 `Company`, `Contact`, `Product`, `DealFollowingActionLog`, `DealMemoLog`만 접근한다.
+
+| API 이름 | API 식별자 | Request 이름 | Response 이름 |
+|---|---|---|---|
+| 딜 단계별 개수 조회 API | `CountDealsByStatus` | `DealStageCountsQueryDto` | `DealStageCountsResponse` |
+| 딜 목록 조회 API | `ListDeals` | `ListDealsQueryDto` | `DealListResponse` |
+| 딜 단건 상세 조회 API | `GetDeal` | `DealPathParams` | `DealDetail` |
+| 딜 생성 API | `CreateDeal` | `CreateDealDto` | `DealDetail` |
+| 딜 기본 정보 수정 API | `UpdateDeal` | `UpdateDealDto` | `DealDetail` |
+| 딜 삭제 API | `DeleteDeal` | `DealPathParams` | `EmptyResponse` |
+| 딜 옵션 조회 API | `ListDealOptions` | `EmptyRequest` | `DealCompanyOptionsResponse`, `DealContactOptionsResponse`, `DealProductOptionsResponse` |
+| 딜 활동 목록/수동 생성/수정 API | `DealActivityTimeline` | `DealActivityListQueryDto`, `CreateManualDealActivityDto`, `UpdateManualDealActivityDto` | `DealActivityListResponse`, `DealActivity` |
+| 딜 다음 행동 로그 API | `DealFollowingActionLogs` | `CursorQueryDto`, `CreateDealFollowingActionLogDto`, `UpdateDealFollowingActionLogDto` | `DealFollowingActionLogsResponse`, `DealFollowingActionLog`, `EmptyResponse` |
+| 딜 메모 로그 API | `DealMemoLogs` | `CursorQueryDto`, `CreateDealMemoLogDto`, `UpdateDealMemoLogDto` | `DealMemoLogsResponse`, `DealMemoLog`, `EmptyResponse` |
+| 딜 목록 xlsx 내보내기 API | `ExportDealsXlsx` | `ExportDealsQueryDto` | `ApiBlobResponse` / xlsx file |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름 | warn |
+| DTO validation 실패 | 400 | form field error 또는 toast | warn |
+| 본인 소유가 아닌 Deal/FK/Log | 404 | 선택값 초기화, 목록/상세 새로고침 | warn |
+| export 실패 또는 알 수 없는 서버 오류 | 500 | 다운로드 실패 toast, 재시도 안내 | error |
+
+Transaction:
+
+- 기존 6장 Transaction 기준을 유지한다.
+- `POST /api/deals`는 `Deal`, `DealProduct`, 최초 `DealFollowingActionLog`를 같은 transaction으로 처리한다.
+- `PATCH /api/deals/:dealId`에서 product 연결 교체가 있으면 `Deal`과 `DealProduct` 변경을 같은 transaction으로 처리한다.
+- 조회, 옵션, export, 단일 로그 생성/수정/삭제는 별도 DB transaction을 추가하지 않는다.
+
+Observability:
+
+- log event key: `deal.stage_counts_viewed`, `deal.listed`, `deal.viewed`, `deal.created`, `deal.updated`, `deal.deleted`, `deal.exported`, `deal.company_options_listed`, `deal.contact_options_listed`, `deal.product_options_listed`, `deal.following_action.*`, `deal.memo.*`, `deal.activity.*`
+- audit log: 없음
+- request id: export, create, following action 생성 등 request context에서 사용
+- redaction: `memo`, `followingAction`, `dealCost`, access token, refresh token 원문 logging 금지
+- provider error context: 없음
+
+FE/BE 처리 기준:
+
+- FE는 목록 query key에 `page`, `search`, `companyIds`, `contactIds`, `dealStatus`, `sort`를 포함한다.
+- FE는 생성/수정/삭제 후 목록, 상세, stage count, following action, memo query를 필요한 범위만 invalidate한다.
+- FE는 export를 blob 응답으로 처리하고 `Content-Disposition` 파일명을 우선한다.
+- BE는 controller에서 DTO validation을 수행하고 application service에서 ownership, FK, 연결 row, soft delete 상태를 검증한다.

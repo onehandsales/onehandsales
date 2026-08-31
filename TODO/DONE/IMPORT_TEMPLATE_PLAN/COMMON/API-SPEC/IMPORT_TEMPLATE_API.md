@@ -92,6 +92,56 @@ CSV/XLSX 파일을 업로드해 확정 전 임시 import job을 만든다.
 }
 ```
 
+## API_SPEC_TEMPLATE_NORMALIZATION G03 보강
+
+판단: 현재 `ImportTemplateController`, `ImportUserLogController`, `DataImportApplicationService`, User Web `import-template-api.ts`/`import-user-log-api.ts` 기준으로 템플릿 누락 항목만 보강한다. 이 문서에 함께 남아 있는 `/api/imports*` job 계약은 기존 구현 이력으로 유지하며 API 의미를 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 기존 `/api/import-templates/*`, `/api/import-user-logs*`, `/api/imports*` path/method/request/response 유지. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 활성 양식 목록은 인증 사용자 공통 read 계약이다. 양식 다운로드와 import user log 조회/상세는 현재 사용자 context와 본인 성공 이력만 사용한다.
+
+| API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 |
+|---|---|---|---|---|---|
+| 활성 데이터 불러오기 양식 목록 조회 API | `ListActiveImportTemplates` | `GET` | `/api/import-templates/active` | `EmptyRequest` | `ImportTemplateListResponse` |
+| 데이터 불러오기 양식 xlsx 다운로드 API | `DownloadImportTemplate` | `GET` | `/api/import-templates/:templateId/download` | `DownloadImportTemplateQueryDto` | `ExportedXlsxFileResponse` / FE `DownloadImportTemplateResponse` |
+| 데이터 불러오기 성공 이력 목록 조회 API | `ListImportUserLogs` | `GET` | `/api/import-user-logs` | `ListImportUserLogsQueryDto` | `ImportUserLogPageResponse` |
+| 데이터 불러오기 성공 이력 상세 조회 API | `GetImportUserLog` | `GET` | `/api/import-user-logs/:importUserLogId` | `ImportUserLogPathParams` | `ImportUserLogDetailResponse` / FE `ImportUserLogDetail` |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름 | warn |
+| query/path validation 실패 | 400 | field error 또는 toast | warn |
+| 활성 양식 또는 본인 import user log 없음 | 404 | 목록 새로고침 또는 접근 불가 안내 | warn |
+| xlsx 생성/다운로드 실패 | 500 | 다운로드 실패 toast와 재시도 안내 | error |
+
+Transaction:
+
+- `GET /api/import-templates/active`: 필요 없음. 조회 전용
+- `GET /api/import-templates/:templateId/download`: 필요 없음. template 조회와 xlsx 생성만 수행
+- `GET /api/import-user-logs`: 필요 없음. 조회 전용
+- `GET /api/import-user-logs/:importUserLogId`: 필요 없음. 조회 전용
+- `/api/imports/:importJobId/confirm`은 기존 계약대로 도메인 row 생성과 `ImportUserLog`/`ImportUserLogRow` 생성을 같은 transaction에서 처리한다.
+
+Observability:
+
+- log event key: `import-templates`/`import-user-logs` 조회 API에는 현재 별도 application `logEvent`가 없다.
+- import job 계열 event: `importJob.created`, `importJob.mapped`, `importJob.mappingUpdated`, `importJob.validated`, `importJob.confirmed`, `importJob.canceled`, `importJob.errorsListed`
+- audit log: 없음
+- request id: 다운로드와 import job mutation 흐름에서 사용
+- redaction: 원본 파일 내용, row 원문, storage key/raw error detail logging 금지
+- provider error context: mapping provider 사용 시 raw provider payload 저장 금지
+
+FE/BE 처리 기준:
+
+- FE는 활성 양식 조회 결과로 template type/column/sample row를 렌더링하고, 다운로드는 blob 응답으로 처리한다.
+- FE는 성공 이력 목록 query에 `page`, `targetTypes`만 보낸다.
+- BE는 import user log 조회에서 `currentUser.id` ownership을 적용하고, row snapshot을 응답 DTO로 정규화한다.
+- BE는 xlsx 파일 생성 후 `Content-Disposition`/xlsx content type을 내려준다.
+
 ## GET /api/imports/{importJobId}
 
 확정 전 임시 import job 상세와 전체 row를 조회한다. 임시 job은 in-memory store에 있으므로 서버 재시작 후 복구되지 않는다.

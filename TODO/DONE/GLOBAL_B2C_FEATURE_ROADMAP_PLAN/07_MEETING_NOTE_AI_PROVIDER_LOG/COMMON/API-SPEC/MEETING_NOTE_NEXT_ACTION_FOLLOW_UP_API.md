@@ -293,3 +293,48 @@ MEETING_NOTE_FOLLOW_UP_DRAFT
 - User Web 회의록 상세에서 follow-up 초안을 이메일/SMS 채널별로 생성하고 수정/복사할 수 있다.
 - next action draft와 follow-up draft는 자동 저장/자동 발송하지 않는다.
 - `pnpm run test -- meeting-note`, `pnpm run test -- deal`, User Web `pnpm run test:e2e`, `pnpm run test:e2e:mobile`이 통과했다.
+
+## 15. API_SPEC_TEMPLATE_NORMALIZATION G03 보강
+
+판단: 현재 `MeetingNoteController`, `MeetingNoteAiActionDraftApplicationService`, provider call log repository, User Web `meeting-note-api.ts` 기준으로 템플릿 누락 항목만 보강한다. API 계약 의미는 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 기존 `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`, `POST /api/meeting-notes/:meetingNoteId/follow-up-draft` 계약 유지. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 소유 회의록과 회의록에 연결된 본인 소유 딜/담당자만 provider 입력 context로 허용한다.
+
+| API 이름 | API 식별자 | Request 이름 | Response 이름 |
+|---|---|---|---|
+| 회의록 다음 행동 후보 생성 API | `CreateMeetingNoteNextActionDraft` | `CreateMeetingNoteNextActionDraftDto` | `MeetingNoteNextActionDraftResponse` |
+| 회의록 follow-up 문안 초안 생성 API | `CreateMeetingNoteFollowUpDraft` | `CreateMeetingNoteFollowUpDraftDto` | `MeetingNoteFollowUpDraftResponse` |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름 | warn |
+| DTO validation 실패 | 400 | form field error 또는 toast | warn |
+| 회의록/딜/담당자가 없거나 타 사용자 소유 | 404 | 상세 새로고침 또는 접근 불가 안내 | warn |
+| Provider 설정/호출 실패 | 502/503 | 안전 메시지와 직접 작성 유지 | error |
+
+Transaction:
+
+- next action draft/follow-up draft는 업무 row를 생성하지 않으므로 본문 저장 transaction 없음
+- `AiProviderCallLog`는 provider 호출 전후로 짧은 write만 수행한다.
+- 사용자가 다음 행동 후보를 저장하면 기존 `POST /api/deals/:dealId/following-action-logs` transaction/observability 기준을 따른다.
+- follow-up 자동 발송 또는 저장 transaction은 이번 계약에 없다.
+
+Observability:
+
+- provider call log operation: `MEETING_NOTE_NEXT_ACTION_DRAFT`, `MEETING_NOTE_FOLLOW_UP_DRAFT`
+- audit log: 없음
+- request id: 기존 middleware 기준 사용
+- redaction: 회의록 본문, 다음 행동 후보 전문, follow-up subject/body 전문, provider raw request/response, 연락처 이메일/전화번호 원문 logging 금지
+- provider error context: provider, model, operation, latency, retryable, safe error code만 허용
+
+FE/BE 처리 기준:
+
+- FE는 next action 후보를 사용자가 확인/수정한 뒤 기존 following-action API로 저장한다.
+- FE는 follow-up 문안을 자동 저장/발송하지 않고 수정/복사 중심으로 처리한다.
+- BE는 회의록 snapshot을 redacted provider context로 변환하고, provider 결과를 응답 계약 길이와 enum으로 정규화한다.

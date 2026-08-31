@@ -260,3 +260,49 @@ Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User W
 - 저장 후 딜 추가 연동 model: 기존 `MeetingNoteDeal`, `DealFollowingActionLog`
 - `MeetingNote.sourceType`: 최종 저장 시 `MANUAL`, `TEXT_AI`, `STT_AI` 허용
 - `MeetingNote.rawText`: 이번 범위에서는 저장하지 않음
+
+## 11. API_SPEC_TEMPLATE_NORMALIZATION G03 보강
+
+판단: 현재 `MeetingNoteController`, `MeetingNoteAiDraftApplicationService`, `MeetingNoteApplicationService`, User Web `meeting-note-api.ts` 기준으로 템플릿 누락 항목만 보강한다. API 계약 의미는 변경하지 않는다.
+
+- 소비자: User Web
+- 호환성: 기존 `/api/meeting-notes/ai-draft`, `/api/meeting-notes/stt-draft`, `/api/meeting-notes/:meetingNoteId/deals` 계약 유지. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 소유 회사/담당자/제품/딜/회의록만 선택하거나 연결한다.
+
+| API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 |
+|---|---|---|---|---|---|
+| 회의록 텍스트 AI 초안 생성 API | `CreateMeetingNoteTextAiDraft` | `POST` | `/api/meeting-notes/ai-draft` | `CreateMeetingNoteTextAiDraftDto` | `MeetingNoteAiDraftResponse` |
+| 회의록 음성 STT+AI 초안 생성 API | `CreateMeetingNoteSttAiDraft` | `POST` | `/api/meeting-notes/stt-draft` | `CreateMeetingNoteSttAiDraftDto` + multipart `audio` | `MeetingNoteAiDraftResponse` |
+| 저장된 회의록 딜 추가 연동 API | `LinkMeetingNoteDeals` | `POST` | `/api/meeting-notes/:meetingNoteId/deals` | `LinkMeetingNoteDealsDto` | `MeetingNoteResponse` / FE `MeetingNote` |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름 | warn |
+| DTO validation 또는 음성 파일 누락 | 400 | form field error, 파일 선택 안내 | warn |
+| 선택 리소스 또는 회의록이 본인 소유가 아님 | 404 | 선택값 새로고침 또는 접근 불가 안내 | warn |
+| 오디오 크기 초과 | 413 | 파일 교체 안내, 직접 작성 유지 | warn |
+| AI/STT provider 실패 | 502/503 | 안전 메시지, retryable이면 다시 시도 제공 | error |
+
+Transaction:
+
+- 초안 생성 API는 회의록 row를 만들지 않으므로 업무 data transaction 없음
+- provider call log는 `PENDING` 생성과 `SUCCEEDED/FAILED` 갱신을 짧은 DB write로 분리한다.
+- `POST /api/meeting-notes/:meetingNoteId/deals`는 `MeetingNoteDeal` 생성과 `DealFollowingActionLog` 자동 생성을 같은 transaction으로 처리한다.
+- 외부 Provider 호출은 업무 data transaction 밖에서 수행한다.
+
+Observability:
+
+- provider call log operation: `MEETING_NOTE_TEXT_DRAFT`, `MEETING_NOTE_STT_TRANSCRIPTION`, `MEETING_NOTE_STT_DRAFT`
+- provider failure event: `provider.openai.meetingNoteDraft.failed`, `provider.openai.meetingNoteStt.failed`
+- audit log: 없음
+- request id: 기존 middleware 기준 사용
+- redaction: `text`, `transcript`, `details`, `nextPlan`, `requiredAction`, 음성 파일 내용, provider raw response logging 금지
+
+FE/BE 처리 기준:
+
+- FE는 초안 응답을 생성 모달 form field에만 반영하고, 저장 API에는 사용자가 확인한 `sourceType`, `details`, `nextPlan`, `requiredAction`만 보낸다.
+- FE는 `transcript`를 임시 확인용으로만 표시하고 저장 request body에 넣지 않는다.
+- BE는 선택 context ownership 검증 후 provider를 호출하고, raw text/audio/provider response를 DB 업무 row에 저장하지 않는다.

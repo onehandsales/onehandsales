@@ -271,3 +271,48 @@ FE 규칙:
 - User Web 생성 모달은 AI/STT 실패 시 안전 메시지와 retryable 다시 시도를 제공한다.
 - STT transcript는 생성 모달의 임시 확인 영역에만 표시되고 저장 request body에는 포함되지 않는다.
 - `pnpm run test -- meeting-note`, User Web `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e`, `pnpm run test:e2e:mobile`이 통과했다.
+
+## 14. API_SPEC_TEMPLATE_NORMALIZATION G03 보강
+
+판단: 현재 `MeetingNoteController`, `MeetingNoteAiDraftApplicationService`, provider call log repository, User Web `meeting-note-api.ts` 기준으로 템플릿 누락 항목만 보강한다. API 계약 의미는 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 기존 `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`를 provider log로 확장한 구현 이력이다. 현재 path/method/request/response 유지, breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 소유 회사/담당자/제품/딜 context만 초안 생성 입력으로 허용한다.
+
+| API 이름 | API 식별자 | Request 이름 | Response 이름 |
+|---|---|---|---|
+| 회의록 텍스트 AI 초안 생성 API | `CreateMeetingNoteTextAiDraft` | `CreateMeetingNoteTextAiDraftDto` | `MeetingNoteAiDraftResponse` |
+| 회의록 음성 STT+AI 초안 생성 API | `CreateMeetingNoteSttAiDraft` | `CreateMeetingNoteSttAiDraftDto` + multipart `audio` | `MeetingNoteAiDraftResponse` |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름 | warn |
+| context validation 실패 | 400 | form field error 또는 선택값 정리 | warn |
+| 본인 소유가 아닌 context | 404 | 선택값 새로고침 안내 | warn |
+| 오디오 크기 초과 | 413 | 파일 교체 안내, 직접 작성 유지 | warn |
+| AI/STT provider 실패 | 502/503 | 안전 메시지와 retry 제공 | error |
+
+Transaction:
+
+- 업무 data transaction 없음. 초안 API는 `MeetingNote` row를 생성하지 않는다.
+- `AiProviderCallLog`는 provider 호출 전 `PENDING`, 성공/실패 후 `SUCCEEDED`/`FAILED`로 짧게 갱신한다.
+- 외부 Provider 호출은 DB transaction 밖에서 수행한다.
+
+Observability:
+
+- provider call log operation: `MEETING_NOTE_TEXT_DRAFT`, `MEETING_NOTE_STT_TRANSCRIPTION`, `MEETING_NOTE_STT_DRAFT`
+- audit log: 없음
+- request id: 기존 middleware 기준 사용
+- redaction: text/transcript/audio/prompt/provider raw request/response/contact email/phone 원문 logging 금지
+- provider error context: provider, model, operation, latency, retryable, safe error code만 허용
+
+FE/BE 처리 기준:
+
+- FE는 초안 응답의 `transcript`를 임시 확인용으로만 쓰고 저장 body에 포함하지 않는다.
+- FE는 provider 실패 시 사용자가 직접 작성으로 이어갈 수 있게 기존 입력 상태를 유지한다.
+- BE는 provider raw response를 사용자 응답이나 업무 table에 포함하지 않는다.

@@ -256,3 +256,26 @@ Company DB / Transaction:
 - [x] 각 domain mutation의 transaction 필요 여부가 기존 use case와 일치한다.
 - [x] 각 domain observability event와 redaction 기준이 구현 결과와 일치한다.
 - [x] Backend 신규/수정 코드에 한글 주석 규칙이 적용된다.
+
+## 7. API_SPEC_TEMPLATE_NORMALIZATION G03 수동 판단
+
+판단: 이 문서는 Product, Deal, Contact, Company response/request 확장을 한 파일에 묶은 복합 계약이다. G03의 Core/User 후보 9개에 직접 흡수하지 않고 별도 `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md`로 분리한다.
+
+분리 이유:
+
+- 현재 구현은 `ProductController`, `DealController`, `ContactController`, `CompanyController`와 각 User Web API client/type에 분산되어 있다.
+- Company Region/Address까지 포함하므로 G03의 포함 범위인 BusinessCard, Contact, Product, Deal, Import Template, Meeting Note AI/STT 후보 9개를 넘어선다.
+- 한 번에 core domain 문서에 흡수하면 보관 문서 대량 수정과 의미 변경 오해가 생길 수 있다.
+- API 계약 의미 변경 없이 current 구현 기준 matrix를 별도 goal에서 확인하는 편이 안전하다.
+
+G06 처리 기준:
+
+- 계약 상태: `implemented` 유지 여부를 current BE/FE 구현 기준으로 재확인한다.
+- 소비자: User Web
+- 호환성: 기존 Product/Deal/Contact/Company API response/request 확장 유지, breaking change 없음
+- 인증/권한: User `AuthGuard`, 현재 사용자 소유 domain row만 조회/수정
+- Request 이름/Response 이름: Product/Deal/Contact/Company current DTO와 FE type을 per-domain matrix로 대조한다.
+- Transaction: 각 domain mutation의 기존 transaction 기준을 따른다.
+- Observability: `product.*`, `deal.*`, `contact.*`, `company.*`, `companyRegion.*` event와 redaction 기준을 current 구현과 대조한다.
+- Error FE 처리/log level: currency/phone/region validation은 field error, ownership/not found는 일반 안내 toast, unknown server error는 error level로 정리한다.
+- FE/BE 처리 기준: FE는 locale/currency/phone/region 표시와 request body 구성을 domain별 client 기준으로 확인하고, BE는 DTO validation과 application normalization 기준을 확인한다.

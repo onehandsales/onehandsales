@@ -1,6 +1,6 @@
 # Done API-SPEC Audit Index
 
-상태: G02 Completed / Follow-up normalization needed
+상태: G03 Completed / Follow-up normalization needed
 감사일: 2026-08-31
 
 ## 1. 목적
@@ -44,7 +44,7 @@
 | `index-only` | 21 | per-API 템플릿 감사 제외 |
 | `no-api-contract` | 6 | API 없음 또는 HTTP API가 아닌 contract |
 | `archive-reference-only` | 42 | 보관 이력 참조. 현재 goal에서 직접 수정하지 않음 |
-| `needs-manual-review` | 1 | 복합 도메인 확장 계약으로 별도 수동 판단 필요 |
+| `needs-manual-review` | 1 | G03에서 복합 도메인 확장 계약으로 별도 G06 분리 판단 완료 |
 
 ## 4. Normalize Now Candidates
 
@@ -52,15 +52,15 @@
 
 | 파일 | 누락 수 | production 연결 | 후속 |
 | --- | ---: | --- | --- |
-| `TODO/DONE/BUSINESS_CARD_OCR_PLAN/COMMON/API-SPEC/BUSINESS_CARD_OCR_API.md` | 13 | `POST /api/business-card-scans`, `GET /api/business-card-scans`, confirm API | G03 |
-| `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API.md` | 7 | `api/contacts`, `api/contact-job-grades`, `api/contact-departments` | G03 |
-| `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API.md` | 11 | `api/deals` | G03 |
-| `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API_DETAIL.md` | 11 | `api/deals` detail/memo/following action 계약 | G03 |
-| `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API.md` | 7 | `api/products`, `api/product-categories`, `api/product-statuses` | G03 |
-| `TODO/DONE/IMPORT_TEMPLATE_PLAN/COMMON/API-SPEC/IMPORT_TEMPLATE_API.md` | 14 | `api/import-templates`, `api/import-user-logs` | G03 |
-| `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md` | 7 | `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` | G03 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/API-SPEC/MEETING_NOTE_AI_DRAFT_LOG_API.md` | 11 | meeting note AI draft log/provider contract | G03 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/API-SPEC/MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_API.md` | 11 | meeting note next action/follow-up draft contract | G03 |
+| `TODO/DONE/BUSINESS_CARD_OCR_PLAN/COMMON/API-SPEC/BUSINESS_CARD_OCR_API.md` | 13 | `POST /api/business-card-scans`, `GET /api/business-card-scans`, confirm API | G03 완료 |
+| `TODO/DONE/CONTACT_DOMAIN_PLAN/COMMON/API-SPEC/CONTACT_API.md` | 7 | `api/contacts`, `api/contact-job-grades`, `api/contact-departments` | G03 완료 |
+| `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API.md` | 11 | `api/deals` | G03 완료 |
+| `TODO/DONE/DEAL_DOMAIN_PLAN/COMMON/API-SPEC/DEAL_API_DETAIL.md` | 11 | `api/deals` detail/memo/following action 계약 | G03 완료 |
+| `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API.md` | 7 | `api/products`, `api/product-categories`, `api/product-statuses` | G03 완료 |
+| `TODO/DONE/IMPORT_TEMPLATE_PLAN/COMMON/API-SPEC/IMPORT_TEMPLATE_API.md` | 14 | `api/import-templates`, `api/import-user-logs` | G03 완료 |
+| `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md` | 7 | `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` | G03 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/API-SPEC/MEETING_NOTE_AI_DRAFT_LOG_API.md` | 11 | meeting note AI draft log/provider contract | G03 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/API-SPEC/MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_API.md` | 11 | meeting note next action/follow-up draft contract | G03 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/BUSINESS_CARD_MOBILE_CAPTURE_AND_FAILURE_CONTRACT.md` | 10 | `POST /api/business-card-scans`, confirm flow | G04 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MEETING_NOTE_MOBILE_RECORDING_STT_CONTRACT.md` | 10 | `POST /api/meeting-notes/stt-draft` | G04 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_FIELD_ANALYTICS_EVENT_CONTRACT.md` | 12 | `POST /api/analytics/events` mobile event contract | G04 |
@@ -169,7 +169,7 @@
 
 | 파일 | 누락 수 | 판단 |
 | --- | ---: | --- |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md` | 6 | Product/Deal/Contact/Company response/request 확장을 한 문서에 묶은 복합 계약이다. per-API 템플릿으로 분할할지, 각 current domain API 문서에 흡수할지 수동 결정이 필요하다. |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/DOMAIN_GLOBAL_DATA_API.md` | 6 | Product/Deal/Contact/Company response/request 확장을 한 문서에 묶은 복합 계약이다. G03에서 core domain 문서에 흡수하지 않고 별도 G06으로 분리하기로 판단했다. |
 
 ## 9. Follow-up Goals
 
@@ -177,13 +177,24 @@ G02 결과 대량 보강 후보가 22개이므로 아래 follow-up goal로 분�
 
 | Goal | 대상 | 완료 기준 |
 | --- | --- | --- |
-| `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | BusinessCard, Contact, Product, Deal, Import Template, Meeting Note AI/STT 후보 9개와 `DOMAIN_GLOBAL_DATA_API.md` 수동 판단 1개 | current BE/FE 계약과 어긋나지 않게 템플릿 항목 보강, 보관 원문 제한 수정 |
+| `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | BusinessCard, Contact, Product, Deal, Import Template, Meeting Note AI/STT 후보 9개와 `DOMAIN_GLOBAL_DATA_API.md` 수동 판단 1개 | 2026-08-31 완료. 6개 문서 템플릿 보강, 3개 개요 문서 archive-reference-only 판단, `DOMAIN_GLOBAL_DATA_API.md` G06 분리 판단 |
 | `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | Mobile PWA field use 후보 4개 | mobile contract의 API/비API 경계를 명확히 하고 템플릿 항목 보강 |
 | `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | Admin Operation 후보 9개 | Admin/User API 분리, 민감정보, audit/observability 계약 보강 |
+| `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | `DOMAIN_GLOBAL_DATA_API.md` 1개 | Product/Deal/Contact/Company global data 복합 계약을 current BE/FE 구현 기준 matrix로 보강 |
 
-`needs-manual-review` 1개는 G03 수행 중 core domain 문서 흡수 여부를 판단하거나 별도 G06으로 분리한다.
+`needs-manual-review` 1개는 G03에서 core domain 문서 흡수 없이 별도 G06으로 분리했다.
 
-## 10. 보관 문서 수정 원칙
+## 10. G03 처리 결과
+
+| 처리 | 파일 수 | 파일 |
+| --- | ---: | --- |
+| 템플릿 보강 | 6 | `BUSINESS_CARD_OCR_API.md`, `DEAL_API_DETAIL.md`, `IMPORT_TEMPLATE_API.md`, `MEETING_NOTE_AI_STT_API.md`, `MEETING_NOTE_AI_DRAFT_LOG_API.md`, `MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_API.md` |
+| `archive-reference-only` 판단 | 3 | `CONTACT_API.md`, `DEAL_API.md`, `PRODUCT_API.md` |
+| 별도 G06 분리 | 1 | `DOMAIN_GLOBAL_DATA_API.md` |
+
+G03에서는 BE/FE 코드를 수정하지 않았고 API 계약 의미를 변경하지 않았다.
+
+## 11. 보관 문서 수정 원칙
 
 - G02에서는 `TODO/DONE/**/COMMON/API-SPEC/*.md` 본문을 직접 수정하지 않는다.
 - 후속 goal에서 보관 문서를 수정할 때는 대상 파일을 명시하고 API 계약 의미 변경 없음, BE/FE diff 없음, TODO_LOG 검증 결과를 남긴다.

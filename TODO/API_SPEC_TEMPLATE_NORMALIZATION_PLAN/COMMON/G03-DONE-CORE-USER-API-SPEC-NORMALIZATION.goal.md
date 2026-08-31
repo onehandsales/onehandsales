@@ -1,6 +1,6 @@
 # G03 완료 보관 Core/User API-SPEC 정규화
 
-상태: Ready after G02
+상태: Completed 2026-08-31
 성격: 문서 정규화
 우선순위: P1
 
@@ -84,3 +84,10 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\API_SPEC_TEMPLATE_NOR
 - BE/FE 코드 diff가 없다.
 - `DOMAIN_GLOBAL_DATA_API.md` 후속 처리 판단이 기록되어 있다.
 - 결과와 남은 리스크가 TODO_LOG에 기록되어 있다.
+
+## 9. 완료 결과
+
+- 템플릿 보강: `BUSINESS_CARD_OCR_API.md`, `DEAL_API_DETAIL.md`, `IMPORT_TEMPLATE_API.md`, `MEETING_NOTE_AI_STT_API.md`, `MEETING_NOTE_AI_DRAFT_LOG_API.md`, `MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_API.md`
+- `archive-reference-only` 판단: `CONTACT_API.md`, `DEAL_API.md`, `PRODUCT_API.md`
+- 수동 판단: `DOMAIN_GLOBAL_DATA_API.md`는 core domain 문서에 흡수하지 않고 `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md`로 분리했다.
+- BE/FE 코드는 수정하지 않았고 API 계약 의미를 변경하지 않았다.

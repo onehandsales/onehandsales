@@ -493,3 +493,17 @@ Response `200`: `DealMemoLogResponse`
 | 404 | `RELATED_RESOURCE_NOT_FOUND` | 본인 소유 company/contact/product가 아니거나 contact가 company에 속하지 않음 |
 | 404 | `DEAL_LOG_NOT_FOUND` | 본인 소유 로그가 없거나 해당 deal에 속하지 않음 |
 | 500 | `INTERNAL_SERVER_ERROR` | 처리 중 예외 |
+
+## 8. API_SPEC_TEMPLATE_NORMALIZATION G03 archive-reference-only 판단
+
+판단: `DEAL_API.md`는 딜 endpoint와 예시 payload를 보관하는 개요/참조 문서로 유지한다. 현재 템플릿 정본은 `DEAL_API_DETAIL.md`이며, API별 `API 이름`, `API 식별자`, `Request 이름`, `Response 이름`, Error FE 처리/log level, Transaction, Observability, FE/BE 처리 기준은 상세 문서를 우선한다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 현재 `DealController`와 User Web `deal-api.ts`의 `/api/deals*` 계약을 유지한다. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 본인 `Deal`, 연결 `Company`, `Contact`, `Product`, following action log, memo log만 접근한다.
+- Request 이름/Response 이름: 상세 문서의 `DealStageCountsQueryDto`, `ListDealsQueryDto`, `CreateDealDto`, `UpdateDealDto`, `CreateDealFollowingActionLogDto`, `UpdateDealFollowingActionLogDto`, `CreateDealMemoLogDto`, `UpdateDealMemoLogDto`, `DealDetail`, `DealListResponse`, `DealFollowingActionLogsResponse`, `DealMemoLogsResponse` 기준을 따른다.
+- Transaction: 상세 문서 기준. `POST /api/deals`와 product 연결 교체를 포함한 수정은 관련 row를 같은 transaction으로 처리한다.
+- Observability: 상세 문서 기준. `deal.*`, `deal.following_action.*`, `deal.memo.*`, `deal.activity.*` event와 redaction 정책 유지
+- FE/BE 처리 기준: FE는 User Web `deal-api.ts` request/response type과 blob export 처리를 유지한다. BE는 controller DTO validation 후 application service에서 ownership과 연결 row를 검증한다.

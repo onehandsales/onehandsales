@@ -143,3 +143,17 @@
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/WORK-SPLIT.md`
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN/BE-TODO/G01-BE-PRODUCT-DOMAIN.goal.md`
 - `TODO/DONE/PRODUCT_DOMAIN_PLAN/FE-TODO/G01-FE-PRODUCT-PAGES.goal.md`
+
+## 5. API_SPEC_TEMPLATE_NORMALIZATION G03 archive-reference-only 판단
+
+판단: `PRODUCT_API.md`는 제품 API 목록과 공통 DTO 요약을 보관하는 개요 문서로 유지한다. API별 `API 이름`, `API 식별자`, `Request 이름`, `Response 이름`, 비즈니스 로직, Error FE 처리/log level, Transaction, Observability, FE/BE 처리 기준의 현재 정본은 `PRODUCT_API_DETAIL.md`다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 현재 `ProductController`, `ProductCategoryController`, `ProductStatusController`와 User Web `product-api.ts`의 `/api/products`, `/api/product-categories`, `/api/product-statuses` 계약을 유지한다. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 본인 제품/카테고리/상태/메모 로그만 접근한다.
+- Request 이름/Response 이름: 상세 문서의 `ListProductsQueryDto`, `CreateProductDto`, `UpdateProductDto`, `CreateProductCategoryDto`, `CreateProductStatusDto`, `ProductPageResponse`, `ProductDetailResponse`, `ProductMemoLogListResponse`, `EmptyResponse` 기준을 따른다.
+- Transaction: 상세 문서 기준. 제품 생성과 초기 `ProductMemoLog`가 함께 생성되는 경우만 필요하고 조회/단일 row 수정은 없음
+- Observability: 상세 문서 기준. `product.*`, `productCategory.*`, `productStatus.*`, `productMemoLog.*`, `productPrivateMemoLog.*` event와 redaction 정책 유지
+- FE/BE 처리 기준: User Web은 `product-api.ts` client와 query invalidation 기준을 따른다. BE는 controller에서 DTO validation 후 application service로 위임한다.

@@ -85,3 +85,52 @@ Body:
 - 실패 상세는 `BusinessCardScanLog`에 저장하지 않는다.
 - provider 실패 원인은 structured application log에 남긴다.
 - prompt snapshot, model, token/cost metric, `costCurrency`, `pendingTimeMs`는 로그 테이블에 저장한다.
+
+## API_SPEC_TEMPLATE_NORMALIZATION G03 보강
+
+판단: 현재 `BusinessCardController`, `BusinessCardApplicationService`, User Web `business-card-api.ts` 기준으로 템플릿 누락 항목만 보강한다. API path, method, request/response 의미는 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web
+- 호환성: 기존 `/api/business-card-scans*` 계약 유지. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 소유 `BusinessCardScanLog`만 조회/확정한다. 확정 저장 시 생성/재사용되는 `Company`, `Contact`, 옵션 row도 같은 `userId` 범위로 제한한다.
+
+| API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 |
+|---|---|---|---|---|---|
+| 명함 스캔 로그 목록 조회 API | `ListBusinessCardScanLogs` | `GET` | `/api/business-card-scans` | `ListBusinessCardScansQueryDto` | `BusinessCardScanLogPageResponse` / FE `BusinessCardScanLogPage` |
+| 명함 이미지 OCR 스캔 API | `ScanBusinessCard` | `POST` | `/api/business-card-scans` | `ScanBusinessCardMultipartRequest` (`image` multipart field, DTO class 없음) | `BusinessCardScanLogResponse` / FE `BusinessCardScanLog` |
+| 명함 스캔 로그 단건 조회 API | `GetBusinessCardScanLog` | `GET` | `/api/business-card-scans/:scanLogId` | `BusinessCardScanLogPathParams` | `BusinessCardScanLogResponse` / FE `BusinessCardScanLog` |
+| 명함 OCR 결과 확정 저장 API | `ConfirmBusinessCardScan` | `POST` | `/api/business-card-scans/:scanLogId/confirm` | `ConfirmBusinessCardScanDto` | `ConfirmBusinessCardScanResponse` / FE `BusinessCardConfirmResponse` |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름으로 이동 | warn |
+| `scanLogId`가 없거나 타 사용자 소유 | 404 | 목록 새로고침 또는 접근 불가 안내 | warn |
+| 이미지 없음, MIME/크기/품질 오류 | 400 | 파일 선택/교체 안내, 재시도 가능 상태 유지 | warn |
+| OCR provider 실패 | 502/503 또는 safe failure payload | 안전 메시지와 재시도 가능 여부 표시 | error |
+
+Transaction:
+
+- `GET` 계열: 필요 없음. 조회 전용
+- `POST /api/business-card-scans`: `BusinessCardScanLog` 단건 기록. 회사/담당자 생성 없음
+- `POST /api/business-card-scans/:scanLogId/confirm`: `BusinessCardScanLog` 확정과 `Company`, `Contact`, 옵션 row 생성/재사용을 repository transaction으로 처리한다.
+- 외부 Provider: OCR provider 호출은 확정 저장 transaction 밖에서 수행한다.
+
+Observability:
+
+- log event key: `businessCard.ocrSucceeded`, `businessCard.confirmed`
+- analytics event: `business_card_ocr_failed`, `business_card_scan_confirmed`
+- audit log: 없음
+- request id: OCR/confirm 흐름에서 사용
+- redaction: 이미지 원본, prompt 원문, provider raw response, 전화번호/이메일 원문 logging 금지
+- provider error context: safe error code, retryable, provider/model, file size bucket 수준만 허용
+
+FE/BE 처리 기준:
+
+- FE는 `FormData.image`만 OCR 요청에 전송하고, 확정 전 사용자가 보정한 필드만 confirm body로 보낸다.
+- FE는 OCR 실패 로그도 목록/상세에서 표시하되 provider 원문 오류를 노출하지 않는다.
+- BE는 OCR 성공 시 `OCR_SUCCESS`, 실패 시 `OCR_FAILED`, 확정 시 `CONFIRMED` 상태를 유지한다.
+- BE는 confirm에서 기존 회사/담당자를 재사용하거나 같은 사용자 범위에 새로 만든다.
