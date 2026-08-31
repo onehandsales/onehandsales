@@ -1,6 +1,6 @@
 # Frontend TODO
 
-상태: No frontend code work / G03 frontend diff none
+상태: No frontend code work / G04 frontend diff none
 
 ## 1. 판단
 
@@ -11,6 +11,8 @@
 2026-08-31 G02에서는 보관 API-SPEC 감사 인덱스만 작성했으며 Frontend 코드는 수정하지 않았다.
 
 2026-08-31 G03에서는 User Web BusinessCard, Contact, Product, Deal, Import/Export, Meeting Note API client/type을 읽어 보관 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
+
+2026-08-31 G04에서는 User Web BusinessCard, MeetingNote audio recording, Analytics, Mobile Local Draft, Notification API client/type과 permission helper를 읽어 Mobile Field 보관 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
 
 ## 2. Frontend 확인 범위
 
@@ -24,6 +26,9 @@
 - `FE/user-web/src/features/deal`
 - `FE/user-web/src/features/import-export`
 - `FE/user-web/src/features/meeting-note`
+- `FE/user-web/src/features/analytics`
+- `FE/user-web/src/features/mobile-local-draft`
+- `FE/user-web/src/features/notification`
 
 ## 3. 금지
 

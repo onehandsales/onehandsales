@@ -1,6 +1,6 @@
 # Backend TODO
 
-상태: No backend code work / G03 backend diff none
+상태: No backend code work / G04 backend diff none
 
 ## 1. 판단
 
@@ -11,6 +11,8 @@
 2026-08-31 G02에서는 Backend controller 목록을 확인해 보관 API-SPEC production 연결 여부를 분류했으며 Backend 코드는 수정하지 않았다.
 
 2026-08-31 G03에서는 BusinessCard, Contact, Product, Deal, Data Import, Meeting Note controller/application service를 읽어 보관 API-SPEC을 보강했으며 Backend 코드는 수정하지 않았다.
+
+2026-08-31 G04에서는 BusinessCard, MeetingNote STT, Analytics, Notification controller/DTO/application service를 읽어 Mobile Field 보관 API-SPEC을 보강했으며 Backend 코드는 수정하지 않았다.
 
 ## 2. Backend 확인 범위
 
@@ -24,6 +26,8 @@
 - `BE/src/modules/deal`
 - `BE/src/modules/data-import`
 - `BE/src/modules/meeting-note`
+- `BE/src/modules/analytics`
+- `BE/src/modules/notification`
 - 관련 controller, application service, FE API client
 
 ## 3. 금지

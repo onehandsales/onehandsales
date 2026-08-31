@@ -1,6 +1,6 @@
 # Done API-SPEC Audit Index
 
-상태: G03 Completed / Follow-up normalization needed
+상태: G04 Completed / Follow-up normalization needed
 감사일: 2026-08-31
 
 ## 1. 목적
@@ -61,10 +61,10 @@
 | `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md` | 7 | `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft` | G03 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/API-SPEC/MEETING_NOTE_AI_DRAFT_LOG_API.md` | 11 | meeting note AI draft log/provider contract | G03 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG/COMMON/API-SPEC/MEETING_NOTE_NEXT_ACTION_FOLLOW_UP_API.md` | 11 | meeting note next action/follow-up draft contract | G03 완료 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/BUSINESS_CARD_MOBILE_CAPTURE_AND_FAILURE_CONTRACT.md` | 10 | `POST /api/business-card-scans`, confirm flow | G04 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MEETING_NOTE_MOBILE_RECORDING_STT_CONTRACT.md` | 10 | `POST /api/meeting-notes/stt-draft` | G04 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_FIELD_ANALYTICS_EVENT_CONTRACT.md` | 12 | `POST /api/analytics/events` mobile event contract | G04 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_NOTIFICATION_PERMISSION_CONTRACT.md` | 11 | `api/notifications/settings`, browser push endpoints | G04 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/BUSINESS_CARD_MOBILE_CAPTURE_AND_FAILURE_CONTRACT.md` | 10 | `POST /api/business-card-scans`, confirm flow | G04 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MEETING_NOTE_MOBILE_RECORDING_STT_CONTRACT.md` | 10 | `POST /api/meeting-notes/stt-draft` | G04 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_FIELD_ANALYTICS_EVENT_CONTRACT.md` | 12 | `POST /api/analytics/events` mobile event contract | G04 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_NOTIFICATION_PERMISSION_CONTRACT.md` | 11 | `api/notifications/settings`, browser push endpoints | G04 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ACCOUNT_DATA_REQUEST_API.md` | 9 | `api/users/me/*requests`, `admin/api/*requests` | G05 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_ANALYTICS_API.md` | 9 | `GET /admin/api/analytics/overview` | G05 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_AUDIT_SECURITY_API.md` | 7 | `admin/api/me`, `admin/api/audit-logs`, sensitive raw access | G05 |
@@ -178,7 +178,7 @@ G02 결과 대량 보강 후보가 22개이므로 아래 follow-up goal로 분�
 | Goal | 대상 | 완료 기준 |
 | --- | --- | --- |
 | `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | BusinessCard, Contact, Product, Deal, Import Template, Meeting Note AI/STT 후보 9개와 `DOMAIN_GLOBAL_DATA_API.md` 수동 판단 1개 | 2026-08-31 완료. 6개 문서 템플릿 보강, 3개 개요 문서 archive-reference-only 판단, `DOMAIN_GLOBAL_DATA_API.md` G06 분리 판단 |
-| `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | Mobile PWA field use 후보 4개 | mobile contract의 API/비API 경계를 명확히 하고 템플릿 항목 보강 |
+| `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | Mobile PWA field use 후보 4개 | 2026-08-31 완료. HTTP API와 browser/local-only contract 경계를 분리하고 템플릿 항목을 보강 |
 | `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | Admin Operation 후보 9개 | Admin/User API 분리, 민감정보, audit/observability 계약 보강 |
 | `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | `DOMAIN_GLOBAL_DATA_API.md` 1개 | Product/Deal/Contact/Company global data 복합 계약을 current BE/FE 구현 기준 matrix로 보강 |
 
@@ -194,7 +194,16 @@ G02 결과 대량 보강 후보가 22개이므로 아래 follow-up goal로 분�
 
 G03에서는 BE/FE 코드를 수정하지 않았고 API 계약 의미를 변경하지 않았다.
 
-## 11. 보관 문서 수정 원칙
+## 11. G04 처리 결과
+
+| 처리 | 파일 수 | 파일 |
+| --- | ---: | --- |
+| 템플릿 보강 | 4 | `BUSINESS_CARD_MOBILE_CAPTURE_AND_FAILURE_CONTRACT.md`, `MEETING_NOTE_MOBILE_RECORDING_STT_CONTRACT.md`, `MOBILE_FIELD_ANALYTICS_EVENT_CONTRACT.md`, `MOBILE_NOTIFICATION_PERMISSION_CONTRACT.md` |
+| 서버 API 없음 경계 확인 | 1 | `LOCAL_DRAFT_CONTRACT.md` |
+
+G04에서는 Mobile Field 보관 API-SPEC 문서의 HTTP API와 browser/local-only contract 경계를 명확히 했다. BE/FE 코드는 수정하지 않았고 API path, method, runtime request/response/error/transaction/observability 동작을 변경하지 않았다.
+
+## 12. 보관 문서 수정 원칙
 
 - G02에서는 `TODO/DONE/**/COMMON/API-SPEC/*.md` 본문을 직접 수정하지 않는다.
 - 후속 goal에서 보관 문서를 수정할 때는 대상 파일을 명시하고 API 계약 의미 변경 없음, BE/FE diff 없음, TODO_LOG 검증 결과를 남긴다.

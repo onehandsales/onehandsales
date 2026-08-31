@@ -66,36 +66,39 @@ DTO: `BusinessCardScanLogResponse`
 type BusinessCardScanLogResponse = {
   id: string;
   status: "OCR_SUCCESS" | "OCR_FAILED" | "CONFIRMED";
-  imageUrl?: string | null;
   extracted: {
-    name?: string | null;
-    company?: string | null;
-    department?: string | null;
-    position?: string | null;
-    phone?: string | null;
-    mobile?: string | null;
-    email?: string | null;
-    address?: string | null;
-    homepage?: string | null;
-    memo?: string | null;
+    companyName: string | null;
+    companyFieldName: string | null;
+    companyRegionName: string | null;
+    contactName: string | null;
+    contactMobile: string | null;
+    contactEmail: string | null;
+    contactDepartmentName: string | null;
+    contactJobGradeName: string | null;
   };
-  linked?: {
-    companyId?: string | null;
-    contactId?: string | null;
+  linked: {
+    companyId: string | null;
+    contactId: string | null;
+    companyResolution: "EXISTING" | "CREATED" | null;
+    contactResolution: "EXISTING" | "CREATED" | null;
+    confirmedAt: string | null;
   };
-  ai?: {
-    provider?: string | null;
-    model?: string | null;
+  ai: {
+    provider: string;
+    model: string;
   };
-  usage?: {
-    promptTokens?: number | null;
-    completionTokens?: number | null;
-    totalTokens?: number | null;
-    estimatedCost?: string | null;
-    pendingTimeMs?: number | null;
+  usage: {
+    requestToken: number | null;
+    responseToken: number | null;
+    totalToken: number | null;
+    requestCost: number | null;
+    responseCost: number | null;
+    totalCost: number | null;
+    costCurrency: string;
+    pendingTimeMs: number | null;
   };
   failure: {
-    errorCode: BusinessCardOcrFailureCode;
+    errorCode: BusinessCardSafeFailureCode;
     userMessage: string;
     retryable: boolean;
   } | null;
@@ -121,7 +124,7 @@ type BusinessCardScanLogResponse = {
 |---|---:|---:|---|
 | `IMAGE_REQUIRED` | 400 | true | 이미지를 다시 선택 |
 | `IMAGE_TYPE_UNSUPPORTED` | 400 | true | jpg/png/webp로 교체 |
-| `IMAGE_TOO_LARGE` | 413 | true | 10MB 이하로 교체 |
+| `IMAGE_TOO_LARGE` | 400 | true | 10MB 이하로 교체 |
 | `IMAGE_QUALITY_LOW` | 201 | true | 더 밝고 선명하게 재촬영 |
 | `OCR_PARSE_FAILED` | 201 | true | 재촬영 또는 수동 입력 |
 | `OCR_PROVIDER_UNAVAILABLE` | 201 | true | 잠시 후 재시도 또는 수동 입력 |
@@ -231,3 +234,59 @@ E2E:
 
 - mobile viewport에서 촬영 파일 upload 성공
 - OCR 실패 mock에서 retry CTA 노출
+
+## 12. API_SPEC_TEMPLATE_NORMALIZATION G04 보강
+
+판단: 이 문서는 현재 구현된 BusinessCard HTTP API와 모바일 브라우저 UX/local draft 계약이 함께 들어 있는 보관 문서다. 서버 HTTP API는 아래 4개이며, 브라우저 파일 선택/capture attribute와 local draft는 서버 API 없음 범위로 분리한다. API path, method, request/response 의미는 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: User Web mobile browser
+- 호환성: 기존 `/api/business-card-scans*` 계약 유지. breaking change 없음
+- 인증: User `AuthGuard`
+- 권한: 현재 로그인한 사용자 소유 `BusinessCardScanLog`만 조회/확정한다. confirm에서 생성/재사용되는 `Company`, `Contact`, 기본 옵션 row도 같은 `userId` 범위로 제한한다.
+
+서버 API 없음:
+
+- `<input type="file" accept="image/*" capture="environment" />`는 browser/native picker 계약이며 HTTP endpoint가 아니다.
+- `getUserMedia` custom camera UI, client `deviceId`, server draft API는 만들지 않는다.
+- confirm form local draft는 `LOCAL_DRAFT_CONTRACT.md`의 IndexedDB/localStorage 계약을 따르며 server request에 draft id를 넣지 않는다.
+
+| API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 |
+|---|---|---|---|---|---|
+| 모바일 명함 스캔 로그 목록 조회 API | `ListBusinessCardScanLogs` | `GET` | `/api/business-card-scans` | `ListBusinessCardScansQueryDto` | `BusinessCardScanLogPageResponse` / FE `BusinessCardScanLogPage` |
+| 모바일 명함 이미지 OCR 스캔 API | `ScanBusinessCard` | `POST` | `/api/business-card-scans` | `ScanBusinessCardMultipartRequest` (`image` multipart field, DTO class 없음) | `BusinessCardScanLogResponse` / FE `BusinessCardScanLog` |
+| 모바일 명함 스캔 로그 단건 조회 API | `GetBusinessCardScanLog` | `GET` | `/api/business-card-scans/:scanLogId` | `BusinessCardScanLogPathParams` | `BusinessCardScanLogResponse` / FE `BusinessCardScanLog` |
+| 모바일 명함 OCR 결과 확정 저장 API | `ConfirmBusinessCardScan` | `POST` | `/api/business-card-scans/:scanLogId/confirm` | `ConfirmBusinessCardScanDto` | `ConfirmBusinessCardScanResponse` / FE `BusinessCardConfirmResponse` |
+
+Error FE 처리/log level:
+
+| 상황 | HTTP | FE 처리 | log level |
+|---|---:|---|---|
+| 인증 없음 | 401 | 로그인/토큰 갱신 흐름으로 이동 | warn |
+| 이미지 누락, MIME/크기 validation 실패 | 400 | 같은 화면에서 파일 교체 또는 재촬영 안내 | warn |
+| OCR 실패 safe failure row 생성 | 201 | safe `userMessage` 표시, 재촬영/파일 교체/수동 입력 제공 | warn |
+| `scanLogId` 없음 또는 타 사용자 소유 | 404 | 목록 새로고침 또는 접근 불가 안내 | warn |
+| 확정 불가 상태 | 409 | 상세 재조회 후 저장 버튼 상태 갱신 | warn |
+
+Transaction:
+
+- `GET` 계열: 필요 여부 없음. 조회 전용이다.
+- `POST /api/business-card-scans`: OCR provider 호출은 DB transaction 밖에서 수행하고, 결과는 `BusinessCardScanLog` 단건 기록으로 남긴다.
+- `POST /api/business-card-scans/:scanLogId/confirm`: `BusinessCardScanLog` 확정과 `Company`, `Contact`, 옵션 row 생성/재사용을 repository transaction으로 처리한다.
+- analytics event `business_card_ocr_failed` 기록 실패는 본 사용자 작업을 rollback하지 않는다.
+
+Observability:
+
+- log event key: `businessCard.ocrSucceeded`, `businessCard.ocrFailed`, `businessCard.confirmed`
+- analytics event: `business_card_ocr_failed`, `business_card_scan_confirmed`, `business_card_capture_started`, `business_card_capture_retried`
+- audit log: 없음
+- request id: OCR/confirm 흐름에서 사용
+- redaction: 이미지 원본, OCR 추출 전문, prompt, provider raw response/error, 전화번호/이메일 원문 logging 금지
+- provider error context: safe error code, retryable, provider/model, file size bucket 수준만 허용
+
+FE/BE 처리 기준:
+
+- FE는 `FormData.image`만 OCR 요청에 전송하고 `userId`, `organizationId`, `deviceId`, local draft id를 body에 넣지 않는다.
+- FE는 OCR 실패 row의 safe failure만 사용자에게 표시하고 provider raw detail은 표시/저장/logging하지 않는다.
+- FE는 confirm 성공 후 local draft를 삭제하고 business-card scan list/detail query를 갱신한다.
+- BE는 `currentUser.id` 기준 ownership을 적용하고, 실패 row도 safe failure 필드만 응답한다.

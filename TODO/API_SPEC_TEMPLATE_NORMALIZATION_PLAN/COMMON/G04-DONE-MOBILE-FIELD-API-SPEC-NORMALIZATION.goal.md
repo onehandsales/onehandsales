@@ -1,6 +1,6 @@
 # G04 완료 보관 Mobile Field API-SPEC 정규화
 
-상태: Next
+상태: Completed 2026-08-31
 성격: 문서 정규화
 우선순위: P1
 
@@ -62,3 +62,12 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\API_SPEC_TEMPLATE_NOR
 - API 계약 의미 변경이 없다.
 - BE/FE 코드 diff가 없다.
 - 결과와 남은 리스크가 TODO_LOG에 기록되어 있다.
+
+## 9. 완료 결과
+
+- 완료일: 2026-08-31
+- 포함 범위 4개 Mobile Field 보관 API-SPEC 문서에 `API_SPEC_TEMPLATE_NORMALIZATION G04 보강` 섹션을 추가했다.
+- HTTP API와 `MediaRecorder`, `Notification.requestPermission()`, local draft, FE fire-and-forget helper 같은 browser/local-only contract의 경계를 명확히 분리했다.
+- 현재 구현과 달랐던 MeetingNote STT 필수 field 표기와 Notification settings/subscription response 예시를 current BE/FE DTO 기준으로 정렬했다.
+- BE/FE 코드는 수정하지 않았다.
+- 검증 결과와 남은 리스크는 `TODO_LOG/2026-08-31/API_SPEC_TEMPLATE_NORMALIZATION/G04_DONE_MOBILE_FIELD_API_SPEC_NORMALIZATION/WORK_LOG.md`에 기록했다.

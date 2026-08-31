@@ -1,6 +1,6 @@
 # API-SPEC Audit Result
 
-상태: G03 Completed / G04 Next reference
+상태: G04 Completed / G05 Next reference
 감사일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
 
@@ -131,7 +131,7 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 ## 7. 다음 작업
 
 1. `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md`에서 Core/User 보관 API-SPEC 후보 9개 정규화를 완료했다.
-2. `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md`에서 Mobile Field 후보 4개를 정규화한다.
+2. `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md`에서 Mobile Field 후보 4개 정규화를 완료했다.
 3. `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md`에서 Admin Operation 후보 9개를 정규화한다.
 4. `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md`에서 `DOMAIN_GLOBAL_DATA_API.md` 복합 계약을 정규화한다.
 5. `G99-FINAL-REVIEW.goal.md`에서 API 계약 의미 변경이 없고 BE/FE 코드 diff가 없음을 확인한다.

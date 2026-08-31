@@ -1,6 +1,6 @@
 # G05 완료 보관 Admin Operation API-SPEC 정규화
 
-상태: Ready after G04
+상태: Next
 성격: 문서 정규화
 우선순위: P1
 
