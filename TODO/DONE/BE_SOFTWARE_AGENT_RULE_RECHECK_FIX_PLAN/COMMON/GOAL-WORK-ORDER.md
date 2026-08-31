@@ -30,12 +30,13 @@
 
 완료 보관된 계획이므로 추가 실행 프롬프트는 없다.
 
-후속 활성 계획의 다음 실행 대상:
+후속 API-SPEC 정규화 계획:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+D:\workspace_repository\onehandsales\TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN
 ```
 
+2026-08-31 기준 `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`의 G01~G06 및 G99는 모두 완료되어 완료 보관됐다.
 2026-08-30 기준 `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`의 G01/G02/G99는 모두 완료되어 완료 보관됐다.
 
 ## 4. 완료 판정

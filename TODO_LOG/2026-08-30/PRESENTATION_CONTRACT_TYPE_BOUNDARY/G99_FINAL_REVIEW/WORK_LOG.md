@@ -60,14 +60,14 @@ git diff --check
 - `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/**`: G99 완료와 완료 보관 상태 반영.
 - `TODO/README.md`: 활성/완료 계획 목록과 다음 실행 대상 갱신.
 - `TODO/DONE/README.md`: 완료 보관 목록에 `PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 추가.
-- `TODO/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`: G08 후속 presentation boundary 계획 완료 상태 반영.
+- `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`: G08 후속 presentation boundary 계획 완료 상태 반영.
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/**`: 후속 presentation boundary 계획 완료 상태와 DONE 경로 반영.
 
 ## 6. 남은 리스크와 후속
 
 - G99 기준 즉시 수정해야 할 presentation contract type boundary 위반은 없다.
 - 이 계획 안에서 추가 실행할 `/goal`은 없다.
-- 다음 활성 문서 작업은 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`의 G01이다.
+- 후속 API-SPEC 문서 작업은 2026-08-31 G99까지 완료되어 `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`에 보관했다.
 
 ## 7. 완료 처리
 

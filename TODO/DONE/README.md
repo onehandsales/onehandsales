@@ -32,4 +32,7 @@
 - `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`: User Web 출시 전 follow-up QA G01~G07, 모바일/브라우저/보안/DB/bugfix closeout와 deferred BE/API backlog split
 - `ADDITIONAL_WORK_PLAN`: count, linked list, xlsx export, dealCount, product dealCount sort 추가 유지보수 범위
 - `USER_TIMEZONE_FOUNDATION_PLAN`: User.timeZone DB/API와 User Web timezone 설정 기반
+- `BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`: Backend Agent rule recheck 완료 포인터 문서
+- `BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`: Backend Agent rule recheck G01~G08과 G99 최종 검토 완료
 - `PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: presentation repository port 타입 의존 G01~G02 정리와 G99 최종 검토 완료
+- `API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: API-SPEC 템플릿 정규화 G01~G06과 G99 최종 검토 완료

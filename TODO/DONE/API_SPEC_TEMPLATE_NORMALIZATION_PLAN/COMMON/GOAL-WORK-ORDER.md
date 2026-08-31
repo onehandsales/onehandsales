@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: In Progress / G06 Completed / G99 Next
+상태: Completed / G99 Completed
 
 ## 1. 실행 원칙
 
@@ -20,25 +20,13 @@
 | 4 | G04 | `COMMON/G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | 보관 Mobile Field API-SPEC 정규화 | Completed 2026-08-31 |
 | 5 | G05 | `COMMON/G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | 보관 Admin Operation API-SPEC 정규화 | Completed 2026-08-31 |
 | 6 | G06 | `COMMON/G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | Domain Global Data 복합 API-SPEC 정규화 | Completed 2026-08-31 |
-| 7 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Next |
+| 7 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Completed 2026-08-31 |
 
 ## 3. 실행 프롬프트
 
-```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
-```
+완료 보관된 계획이므로 추가 실행 프롬프트는 없다.
 
-현재 다음 실행 대상:
-
-```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
-```
+G01~G06과 G99의 완료 이력은 `TODO_LOG\2026-08-31\API_SPEC_TEMPLATE_NORMALIZATION`을 기준으로 본다.
 
 ## 4. 완료 판정
 

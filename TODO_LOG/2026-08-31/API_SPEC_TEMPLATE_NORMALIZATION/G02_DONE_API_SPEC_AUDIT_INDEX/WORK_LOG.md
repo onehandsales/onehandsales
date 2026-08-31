@@ -9,7 +9,7 @@
 - README/index 문서와 no-api 문서 제외 분류
 - current production API 관련 문서 우선순위 분류
 - 필요한 follow-up goal 분리 판단
-- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 상태 갱신
+- `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 상태 갱신
 
 ## 2. 제외 범위
 
@@ -20,9 +20,9 @@
 
 ## 3. 확인한 기준 문서
 
-- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`
-- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/README.md`
-- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/COMMON/API_SPEC_AUDIT_RESULT.md`
+- `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`
+- `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/README.md`
+- `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/COMMON/API_SPEC_AUDIT_RESULT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
@@ -72,7 +72,7 @@
 - 인덱스 내 실제 보관 API-SPEC 경로 추출 후 count: pass. 92개 확인.
 - 원본 `TODO/DONE` API-SPEC 목록과 인덱스 경로 목록의 `comm -3` 대조: pass. 누락/초과 실제 경로 없음.
 - `git diff -- TODO/DONE`: pass. 보관 API-SPEC 본문 diff 없음.
-- `git diff -- TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: pass. 감사 인덱스와 계획 문서 변경 확인.
+- `git diff -- TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: pass. 감사 인덱스와 계획 문서 변경 확인.
 - `git diff -- BE FE`: pass. BE/FE 코드 diff 없음.
 - `git diff --check`: pass. whitespace error 없음.
 - `git status --short --untracked-files=all`: pass. 변경 범위는 API-SPEC 정규화 계획 문서와 G02 TODO_LOG로 제한됨.

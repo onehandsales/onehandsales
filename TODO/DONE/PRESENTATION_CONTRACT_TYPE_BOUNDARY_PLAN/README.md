@@ -90,7 +90,7 @@ G02에서 mapper 입력 read-model과 application service 반환 타입을 `appl
 
 G01, G02, G99가 모두 완료됐다. 완료 보관된 계획이므로 추가 실행 프롬프트는 없다.
 
-후속 활성 문서 작업은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`의 G01이다.
+후속 API-SPEC 문서 작업은 2026-08-31 G99까지 완료되어 `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`에 보관했다.
 
 ## 7. 공통 원칙
 

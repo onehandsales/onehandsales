@@ -18,7 +18,7 @@
 ## 2. 시작 상태
 
 - `git status --short --untracked-files=all`: 출력 없음.
-- G01 시작 기준 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`은 `Ready / Backend Follow-up / G01 Next` 상태다.
+- G01 시작 기준 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`은 첫 실행 대기 상태였고, 2026-08-30 G99 완료 후 `Done / Archived`로 보관됐다.
 - 감사 문서 기준 DTO validation 경계 대상은 11 files다.
 
 ## 3. 작업 계획

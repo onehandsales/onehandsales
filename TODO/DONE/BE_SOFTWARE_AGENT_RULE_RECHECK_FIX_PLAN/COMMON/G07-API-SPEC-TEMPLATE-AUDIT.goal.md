@@ -65,5 +65,5 @@ git diff -- BE
 - 전체 API-SPEC 문서 95개를 확인했고, 활성 TODO API-SPEC 3개와 `TODO/DONE` 보관 API-SPEC 92개를 구분했다.
 - 활성 API-SPEC 중 `ERROR_REPORT_API.md`, `SUPPORT_REQUEST_API.md`, `README.md`를 우선 정규화 대상으로 판정했다.
 - 보관 API-SPEC은 완료 이력이므로 G07에서 직접 수정하지 않고, production API 관련성 기준으로 후속 감사 인덱스 대상에 넣었다.
-- 대량 문서 보강은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다.
+- 대량 문서 보강은 `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했고, 2026-08-31 G99 완료 후 완료 보관했다.
 - BE/FE 코드는 수정하지 않았다.

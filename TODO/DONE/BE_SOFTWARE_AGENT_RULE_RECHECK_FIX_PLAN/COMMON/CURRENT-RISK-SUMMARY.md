@@ -12,7 +12,7 @@ G03은 2026-08-28 완료되었고, AI Weekly Report 조회 이벤트 `weekViewed
 G04는 2026-08-28 완료되었고, AI Weekly Report `summaryPreview`와 실패 summary safe error가 API-SPEC, BE summary response/mapper, FE User Web 타입/mock에 동일한 nullable 계약으로 반영되었으며 `21841c62`로 구현/로그 커밋이 완료되었다.
 G05는 2026-08-28 완료되었고, 대상 Backend 파일의 class/interface/type/port token/method/helper 한글 역할/기능/단계 주석 누락을 보강했다. 추가 재검토에서 G05 관련 진행 문서가 G06 다음 실행 상태로 정리되어 있고, 주석 누락 정적 감사와 BE typecheck/lint가 통과했음을 확인했다. 구현/로그 커밋은 `dca1a22c`다.
 G06은 2026-08-28 완료되었고, Backend bootstrap 이전 local env loader의 direct `process.env` 접근을 제한 예외로 문서화했다. `BE/src/main.ts`와 `BE/src/app.module.ts`에는 한글 단계 주석을 보강했고, 공통 환경/Backend convention/배포 문서의 정책 충돌을 정리했다. BE typecheck/lint/test와 `process.env` 정적 확인이 통과했으며 `0d0530d3`로 구현/로그 커밋이 완료되었다.
-G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 보관 92개로 구분했다. 활성 Service QA API-SPEC 보강 대상과 보관 문서 제외/후속 감사 기준을 정리했으며, 대량 문서 보강은 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
+G07은 2026-08-29 완료되었고, API-SPEC 95개를 활성 3개와 `TODO/DONE` 보관 92개로 구분했다. 활성 Service QA API-SPEC 보강 대상과 보관 문서 제외/후속 감사 기준을 정리했으며, 대량 문서 보강은 `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다. 후속 API-SPEC 정규화 계획은 2026-08-31 G99 완료 후 완료 보관했다.
 G08은 2026-08-29 완료되었고, presentation의 `application/ports/*repository*` import 22 line / 20 file을 전수 확인했다. repository token/interface 직접 사용은 0건이라 즉시 코드 수정은 하지 않았고, DTO validation 값과 response mapper projection record의 대량 타입 소유권 분리는 `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`으로 분리했다. BE/FE 코드는 수정하지 않았다.
 G99는 2026-08-29 완료되었고, BE 전체 검증과 Backend Agent strict 정적 점검이 통과했다. application 계층 forbidden keyword 정적 점검의 false positive를 제거하기 위해 `GoogleCalendarSyncService`의 private helper 이름을 `fetchProviderCalendars`에서 `loadProviderCalendars`로 변경했으며 동작 변경은 없다. 이 계획은 `acdb9eb3 chore(backend): complete rule recheck final review`로 커밋하고 `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`으로 완료 보관했다. 커밋 이후 재검토에서도 작업 트리 clean, BE 전체 검증 재통과, 완료 문서 경로/상태 문구 정합성을 확인했다.
 
@@ -38,7 +38,7 @@ G99는 2026-08-29 완료되었고, BE 전체 검증과 Backend Agent strict 정�
 | 항목 | 리스크 | Goal | 상태 |
 | --- | --- | --- | --- |
 | bootstrap `process.env` | 공통 환경 문서는 bootstrap local env read를 허용하지만 Backend convention은 direct `process.env` 금지를 적고 있어 예외가 명확하지 않았다. | G06 | 해결 완료 |
-| API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 해결 완료, 후속 `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 생성 |
+| API-SPEC template | API-SPEC 문서 다수의 template 필수 항목 누락 여부가 확인되었지만 DONE archive와 활성 TODO를 구분해야 한다. | G07 | 해결 완료, 후속 `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 완료 보관 |
 | presentation repository projection type | presentation DTO/mapper가 repository port projection type을 import하는 패턴이 다수 있다. 직접 repository 사용은 0건이나 타입 소유권 분리가 필요하다. | G08 | 해결 완료, 후속 `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` G01/G02 완료 및 추가 재검토 통과 |
 
 ## 5. 검증 결과
@@ -136,9 +136,9 @@ G99 커밋 이후 재검토 결과:
 - spec import 중 줄바꿈만 남은 repository type import는 `import type { ... }` 형태로 정리
 - BE `typecheck`, `lint`, `test -- --runInBand`: 재통과
 
-## 6. 후속 활성 계획
+## 6. 후속 완료 보관 계획
 
-- `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: G07에서 분리한 API-SPEC 템플릿 정규화 계획. 다음 실행 대상은 `COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`다.
+- `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: G07에서 분리한 API-SPEC 템플릿 정규화 계획. G01~G06과 G99를 완료해 완료 보관했다.
 - `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: G08에서 분리한 presentation 계약 타입 경계 정리 계획. G01/G02/G99를 완료해 완료 보관했다.
 
 ## 7. 해결 완료 위치
@@ -181,12 +181,12 @@ G99 커밋 이후 재검토 결과:
 - G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\DECISIONS\004_backend_deployment_environment.md`
 - G06: `AGENT\SOFTWARE_AGENT\BACKEND_AGENT\ARCHITECTURE\DEPLOYMENT.md`
 - 완료 로그: `TODO_LOG\2026-08-28\BE_SOFTWARE_AGENT_RULE_RECHECK\G06_BOOTSTRAP_PROCESS_ENV_POLICY\WORK_LOG.md`
-- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\README.md`
-- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\API_SPEC_AUDIT_RESULT.md`
-- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\GOAL-WORK-ORDER.md`
-- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`
-- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`
-- G07: `TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
+- G07: `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\README.md`
+- G07: `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\API_SPEC_AUDIT_RESULT.md`
+- G07: `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\GOAL-WORK-ORDER.md`
+- G07: `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`
+- G07: `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`
+- G07: `TODO\DONE\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md`
 - 완료 로그: `TODO_LOG\2026-08-29\BE_SOFTWARE_AGENT_RULE_RECHECK\G07_API_SPEC_TEMPLATE_AUDIT\WORK_LOG.md`
 - G08: `BE\src\modules\*\presentation\**\*.ts`의 `application/ports/*repository*` import 감사
 - G08: `TODO\DONE\PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN\README.md`

@@ -15,7 +15,7 @@
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/COMMON/CURRENT-RISK-SUMMARY.md`
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/COMMON/VALIDATION-CHECKLIST.md`
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/COMMON/G99-FINAL-REVIEW.goal.md`
-- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/README.md`
+- `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/README.md`
 - `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/README.md`
 - `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/COMMON/PRESENTATION_REPOSITORY_IMPORT_AUDIT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
@@ -96,7 +96,7 @@ strict 정적 점검 결과:
 - G04: AI Weekly Report `summaryPreview` nullable 응답 계약 정합화 완료.
 - G05: Backend 한글 주석 규칙 누락 보강 완료.
 - G06: bootstrap `process.env` 예외 정책 문서화 및 주석 보강 완료.
-- G07: API-SPEC 템플릿 감사 완료, 후속 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 분리.
+- G07: API-SPEC 템플릿 감사 완료, 후속 `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN` 분리 및 2026-08-31 완료 보관.
 - G08: presentation repository projection type 의존 감사 완료, 후속 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN` 분리.
 - G99: 전체 검증과 정적 점검 완료, 계획 폴더를 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`에 보관.
 
@@ -104,9 +104,9 @@ strict 정적 점검 결과:
 
 - `BE/src/modules/schedule/application/services/google-calendar-sync.service.ts`: 정적 점검 false positive 제거를 위해 private helper `fetchProviderCalendars`를 `loadProviderCalendars`로 이름 변경. Google Calendar port 호출 동작은 변경하지 않았다.
 - `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/**`: G99 완료 상태, 검증 결과, 완료 보관 상태 반영.
-- `TODO/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`: 완료 포인터와 후속 활성 계획 갱신.
+- `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN.md`: 완료 포인터와 후속 API-SPEC 계획 완료 보관 상태 갱신.
 - `TODO/README.md`: 완료된 계획 목록과 현재 활성 후속 계획 상태 갱신.
-- `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/**`: 생성 근거 경로를 완료 보관 위치로 정리.
+- `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/**`: 생성 근거 경로를 완료 보관 위치로 정리.
 - `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/**`: 생성 근거 경로를 완료 보관 위치로 정리.
 - `TODO_LOG/2026-08-28/BE_SOFTWARE_AGENT_RULE_RECHECK/**/WORK_LOG.md`: 완료 보관 경로 참조 정리.
 - `TODO_LOG/2026-08-29/BE_SOFTWARE_AGENT_RULE_RECHECK/**/WORK_LOG.md`: 완료 보관 경로 참조와 G99 결과 기록.
@@ -114,8 +114,8 @@ strict 정적 점검 결과:
 ## 7. 남은 리스크와 추가 TODO
 
 - G99 기준 즉시 수정해야 할 Backend Agent 규칙 위반은 없다.
-- API-SPEC 템플릿 대량 보강은 `TODO/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`에서 계속 진행한다.
-- presentation DTO/mapper 타입 소유권 정리는 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`에서 계속 진행한다.
+- API-SPEC 템플릿 대량 보강은 `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`에서 G99까지 완료되어 완료 보관했다.
+- presentation DTO/mapper 타입 소유권 정리는 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`에서 G99까지 완료되어 완료 보관했다.
 
 ## 8. 커밋 결과
 
