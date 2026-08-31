@@ -129,3 +129,54 @@ Observability:
 - audit log: `ADMIN_PROVIDER_FAILURE_VIEW`
 - redaction: provider raw/prompt/token/quota detail 금지, browser push endpoint/key/userAgent 원문 금지
 - audit metadata: source prefix, provider type, source model, feature area, status, retryable, safe error code만 저장한다.
+
+## 3. API_SPEC_TEMPLATE_NORMALIZATION G05 보강
+
+판단: 이 문서는 Admin Web 전용 provider 실패 운영 조회 API 보관 문서다. G05에서는 Method/Path/Request 이름, audit transaction, safe context, FE/BE 처리 기준을 현재 구현 기준으로 보강하며 raw provider data를 추가하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: Admin Web
+- 호환성: 기존 `/admin/api/provider-failures` GET 계열 계약 유지. breaking change 없음
+- 권한: `AuthGuard` + `AdminGuard`, application service의 `assertAdmin`
+- FE 호출 경계: `adminApiClient` 상대 경로 `/provider-failures`, `/provider-failures/:failureId`
+
+| API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 |
+|---|---|---|---|---|---|
+| Admin Provider 실패 목록 API | `ListAdminProviderFailures` | `GET` | `/admin/api/provider-failures` | `ListAdminProviderFailuresQueryDto` / FE `AdminProviderFailureListParams` | `AdminProviderFailureListResponse` |
+| Admin Provider 실패 safe 상세 API | `GetAdminProviderFailureDetail` | `GET` | `/admin/api/provider-failures/:failureId` | path param `failureId` | `AdminProviderFailureDetailResponse` / FE `AdminProviderFailureDetail` |
+
+연결된 DB 스키마:
+
+- 조회: `AiProviderCallLog`, `BusinessCardScanLog`, `NotificationDeliveryAttempt`, `FollowUpDeliveryAttempt`, `ExternalCalendarConnection`, `ExternalCalendarSource`, `User`
+- audit: `AdminAuditLog`
+
+Transaction:
+
+- 필요 여부: 필요. 목록/상세 safe 조회와 `AdminAuditLog` 생성을 같은 application transaction으로 묶는다.
+- rollback 범위: provider failure 조회 audit log 생성. provider 원본 데이터는 수정하지 않는다.
+- 외부 Provider: 없음. 저장된 실패 log/read model만 조회한다.
+
+Observability:
+
+- log event key: 별도 application log event 없음. audit action은 `ADMIN_PROVIDER_FAILURE_VIEW`
+- audit log: 필수. 목록 metadata는 active filter key와 safe filter 값만 저장하고, 상세 metadata는 failureId prefix, providerType, sourceModel, featureArea, status, retryable, safeErrorCode만 저장한다.
+- request id: controller에서 application metadata로 전달해 audit에 저장한다.
+- masking: 사용자 이메일은 `userEmailMasked`로만 반환한다.
+- redaction: provider raw response, prompt, token, quota detail, push endpoint/key/userAgent, calendarId/syncToken 원문은 response/log/audit metadata에 넣지 않는다.
+
+Error FE 처리/log level:
+
+| 상황 | code | HTTP | FE 처리 | log level |
+|---|---|---:|---|---|
+| providerType/featureArea/status/retryable invalid | validation error | 400 | filter 값 초기화 또는 inline 오류 | warn |
+| from/to invalid 또는 순서 오류 | validation error | 400 | 기간 filter 오류 안내 | warn |
+| failureId 대상 없음 | `ADMIN_TARGET_NOT_FOUND` | 404 | 상세 panel 닫기 또는 not found 상태 표시 | warn |
+| Admin 권한 없음 | `ADMIN_FORBIDDEN` | 403 | Admin shell 접근 차단 | warn |
+| safe source 조회/audit 저장 실패 | 내부 오류 | 500 | 목록/상세 오류 상태와 재시도 제공 | error |
+
+FE/BE 처리 기준:
+
+- FE는 provider 실패 목록과 상세에서 `safeErrorCode`, `safeErrorMessage`, `safeContext`만 표시한다.
+- BE는 `failureId` prefix로 source를 선택하고 safe select만 수행한다.
+- raw provider payload가 필요한 별도 원문 조회 API는 G05 범위에 없으며 이 상세 response에 추가하지 않는다.
+- `MEETING_NOTE_STT_TRANSCRIPTION`은 `providerType=STT`, 그 외 AI draft/report는 `providerType=AI`로 normalize한다.

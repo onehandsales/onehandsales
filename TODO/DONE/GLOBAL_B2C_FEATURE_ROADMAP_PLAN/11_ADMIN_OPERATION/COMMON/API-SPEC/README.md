@@ -1,6 +1,6 @@
 # API Spec
 
-상태: Implemented
+상태: Implemented / G05 template normalized
 
 ## 1. 원칙
 
@@ -10,6 +10,7 @@
 - Admin API response는 기본 masked다.
 - 민감 원문은 별도 raw access API에서 reason + audit log 후 반환한다.
 - 결제/구독 API는 11에 만들지 않는다.
+- 2026-08-31 G05 API-SPEC 템플릿 정규화에서 9개 세부 문서의 계약 상태, 호환성, 권한, Request/Response 이름, Transaction, Observability, FE/BE 처리 기준을 current BE/FE 구현 기준으로 보강했다.
 
 ## 2. 계약 목록
 

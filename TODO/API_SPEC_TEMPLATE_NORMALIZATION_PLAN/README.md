@@ -1,6 +1,6 @@
 # API-SPEC Template Normalization Plan
 
-상태: In Progress / Documentation-only / G04 Completed / G05 Next
+상태: In Progress / Documentation-only / G05 Completed / G06 Next
 작성일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
 
@@ -10,9 +10,9 @@
 
 G07 감사에서 활성 API-SPEC 문서와 `TODO/DONE` 보관 API-SPEC 문서가 서로 다른 템플릿 수준을 가진 것으로 확인되었으므로, 코드 수정 Goal과 분리해 문서 정규화만 별도 관리한다.
 
-2026-08-31 기준 G01에서 활성 Service QA API-SPEC 문서 정규화를 완료했고, G02에서 `TODO/DONE` 보관 API-SPEC 92개 감사 인덱스를 작성했다. G03에서 Core/User 보관 API-SPEC 후보 9개를 제한 정규화하고 `DOMAIN_GLOBAL_DATA_API.md`는 별도 G06으로 분리했다. G04에서 Mobile Field 보관 API-SPEC 후보 4개를 제한 정규화하고 HTTP API와 browser/local-only contract 경계를 보강했다.
+2026-08-31 기준 G01에서 활성 Service QA API-SPEC 문서 정규화를 완료했고, G02에서 `TODO/DONE` 보관 API-SPEC 92개 감사 인덱스를 작성했다. G03에서 Core/User 보관 API-SPEC 후보 9개를 제한 정규화하고 `DOMAIN_GLOBAL_DATA_API.md`는 별도 G06으로 분리했다. G04에서 Mobile Field 보관 API-SPEC 후보 4개를 제한 정규화하고 HTTP API와 browser/local-only contract 경계를 보강했다. G05에서 Admin Operation 보관 API-SPEC 후보 9개의 Admin/User prefix, 권한, masking, audit, observability, FE error 처리 기준을 보강했다.
 
-다음 실행 대상은 `COMMON/G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md`이다.
+다음 실행 대상은 `COMMON/G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md`이다.
 
 ## 2. 감사 요약
 
@@ -86,7 +86,7 @@ G07 감사에서 활성 API-SPEC 문서와 `TODO/DONE` 보관 API-SPEC 문서가
 현재 다음 실행 프롬프트:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 ```
 
 ## 7. 공통 원칙

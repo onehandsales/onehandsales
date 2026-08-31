@@ -1,6 +1,6 @@
 # G99 API-SPEC 정규화 최종 검토
 
-상태: Ready after G01-G06
+상태: Ready after G06
 성격: 최종 검토
 우선순위: 필수
 
@@ -47,7 +47,7 @@ API-SPEC 템플릿 정규화 작업이 문서 범위를 벗어나지 않았고, 
 cd D:\workspace_repository\onehandsales
 rg -n "API 이름|API 식별자|소비자|호환성|권한|Request 이름|Response 이름|Transaction|Observability|FE/BE" TODO\SERVICE_QA_PLAN\COMMON\API-SPEC
 rg -n "normalize-now-candidate|index-only|no-api-contract|archive-reference-only|needs-manual-review|G03-DONE|G04-DONE|G05-DONE|G06-DONE" TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\DONE_API_SPEC_AUDIT_INDEX.md
-rg -n "상태: Completed|G05 Next|Ready after G05|Ready after G01-G06" TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON
+rg -n "상태: Completed|G06 Next|Ready after G06" TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON
 git diff -- TODO
 git diff -- BE FE
 git status --short

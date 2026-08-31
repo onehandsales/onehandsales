@@ -193,3 +193,61 @@ Business Logic:
 3. 도메인 원문 body/memo/private memo는 포함하지 않는다.
 
 Transaction: 없음.
+
+Observability:
+
+- audit log: 현재 구현은 timeline 조회 audit를 생성하지 않는다.
+- redaction: timeline title/summary에는 domain 원문 memo/body/private memo를 포함하지 않는다.
+
+## 4. API_SPEC_TEMPLATE_NORMALIZATION G05 보강
+
+판단: 이 문서는 Admin Web 전용 사용자 운영 조회 API 보관 문서다. G05에서는 세 API의 Method/Path/Request 이름, 현재 구현의 audit transaction 여부, masking, FE/BE 처리 기준을 보강하며 response shape 의미는 변경하지 않는다.
+
+- 계약 상태: `implemented`
+- 소비자: Admin Web
+- 호환성: 기존 `/admin/api/users*` GET 계약 유지. breaking change 없음
+- 권한: `AuthGuard` + `AdminGuard`, application service의 `assertAdmin`
+- FE 호출 경계: `adminApiClient` 상대 경로 `/users`, `/users/:userId`, `/users/:userId/activity-timeline`
+
+| API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 |
+|---|---|---|---|---|---|
+| Admin 사용자 목록 API | `ListAdminUsers` | `GET` | `/admin/api/users` | `ListAdminUsersQueryDto` / FE `AdminUserListParams` | `AdminUserListResponse` |
+| Admin 사용자 상세 요약 API | `GetAdminUserOverview` | `GET` | `/admin/api/users/:userId` | path param `userId` | `AdminUserOverviewResponse` |
+| Admin 사용자 활동 timeline API | `ListAdminUserActivityTimeline` | `GET` | `/admin/api/users/:userId/activity-timeline` | path param `userId` + `ListAdminUserActivityTimelineQueryDto` / FE `AdminUserActivityTimelineParams` | `AdminUserActivityTimelineResponse` |
+
+연결된 DB 스키마:
+
+- 조회: `User`, `Company`, `Contact`, `Product`, `Deal`, `Schedule`, `MeetingNote`, `BusinessCardScanLog`, `ImportJob`, `ProductAnalyticsEvent`, `AiProviderCallLog`, `UserActivationSnapshot`, `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`
+- audit: `AdminAuditLog`
+
+Transaction:
+
+- `GET /admin/api/users`: 필요 여부 없음. 현재 구현은 목록과 domain count를 transaction 밖에서 조회한 뒤 `ADMIN_USER_LIST_VIEW` audit를 append-only로 생성한다.
+- `GET /admin/api/users/:userId`: 필요 여부 없음. 현재 구현은 summary를 transaction 밖에서 조회한 뒤 `ADMIN_USER_DETAIL_VIEW` audit를 append-only로 생성한다.
+- `GET /admin/api/users/:userId/activity-timeline`: 필요 여부 없음. safe timeline 조회 전용이며 현재 audit를 생성하지 않는다.
+- 외부 Provider: 없음. 저장된 analytics/provider log summary만 조회한다.
+
+Observability:
+
+- log event key: 별도 application log event 없음. audit action은 `ADMIN_USER_LIST_VIEW`, `ADMIN_USER_DETAIL_VIEW`
+- audit log: 사용자 목록/상세는 필수. timeline 조회는 현재 구현 기준 미기록이다.
+- request id: 목록/상세는 controller에서 application metadata로 전달해 audit에 저장한다. timeline은 현재 request id를 application metadata로 전달하지 않는다.
+- masking: response mapper가 `emailMasked`, `displayNameMasked`만 반환한다.
+- redaction: 검색어 q 원문, email/displayName 원문, notification push endpoint/key/userAgent, domain memo/body/private memo 원문을 response/log/audit metadata에 넣지 않는다.
+
+Error FE 처리/log level:
+
+| 상황 | code | HTTP | FE 처리 | log level |
+|---|---|---:|---|---|
+| userId 형식 오류 | pipe validation | 400 | 잘못된 사용자 상세 경로 안내 | warn |
+| 사용자 없음 | `ADMIN_USER_NOT_FOUND` | 404 | 사용자 not found 상태 표시 | warn |
+| q 길이 초과/status/sort/eventType/date invalid | validation error | 400 | filter inline 오류 또는 기본값 재조회 | warn |
+| Admin 권한 없음 | `ADMIN_FORBIDDEN` | 403 | Admin shell 접근 차단 | warn |
+| 목록/상세 audit 저장 실패 | 내부 오류 | 500 | 사용자 화면 오류 상태와 재시도 제공 | error |
+
+FE/BE 처리 기준:
+
+- FE는 Admin Web 사용자 관리 기능에서만 이 API를 호출하며 User Web 계정 API와 섞지 않는다.
+- BE는 목록/상세 response에서 원문 email/displayName을 mapper 단계에서 masking한다.
+- 활동 timeline은 안전한 title/summary만 반환하고 domain 원문 content를 표시하지 않는다.
+- 민감 원문 조회는 `/admin/api/sensitive/raw-access`의 reason + audit flow로 분리한다.

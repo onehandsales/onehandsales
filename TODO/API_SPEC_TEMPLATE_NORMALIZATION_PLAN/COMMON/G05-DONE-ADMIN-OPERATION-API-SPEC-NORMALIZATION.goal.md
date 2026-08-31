@@ -1,6 +1,6 @@
 # G05 완료 보관 Admin Operation API-SPEC 정규화
 
-상태: Next
+상태: Completed 2026-08-31
 성격: 문서 정규화
 우선순위: P1
 
@@ -69,3 +69,13 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\API_SPEC_TEMPLATE_NOR
 - API 계약 의미 변경이 없다.
 - BE/FE 코드 diff가 없다.
 - 결과와 남은 리스크가 TODO_LOG에 기록되어 있다.
+
+## 9. 완료 결과
+
+- 완료일: 2026-08-31
+- 포함 범위 9개 Admin Operation 보관 API-SPEC 문서에 `API_SPEC_TEMPLATE_NORMALIZATION G05 보강` 섹션을 추가했다.
+- User API와 Admin API가 함께 있는 `ACCOUNT_DATA_REQUEST_API.md`는 `/api/users/me/*`와 `/admin/api/*` 소비자, 권한, audit 경계를 분리해 명시했다.
+- `ADMIN_AUDIT_SECURITY_API.md`는 현재 구현 기준 민감 원문 allowlist(`USER/USER_CONTACT`, `MEETING_NOTE/MEETING_NOTE_BODY`)와 reason/audit/log level 처리 기준을 보강했다.
+- Account data request, Admin Trash, Trash user recovery 문서에 FE error 처리와 audit/log level 기준을 보강했다.
+- BE/FE 코드는 수정하지 않았고 API path, method, request, response, runtime error, transaction, observability 동작을 변경하지 않았다.
+- 검증 결과와 남은 리스크는 `TODO_LOG/2026-08-31/API_SPEC_TEMPLATE_NORMALIZATION/G05_DONE_ADMIN_OPERATION_API_SPEC_NORMALIZATION/WORK_LOG.md`에 기록했다.

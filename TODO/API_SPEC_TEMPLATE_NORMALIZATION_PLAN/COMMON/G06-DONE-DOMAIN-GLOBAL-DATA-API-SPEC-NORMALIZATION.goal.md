@@ -1,6 +1,6 @@
 # G06 완료 보관 Domain Global Data API-SPEC 정규화
 
-상태: Ready after G05
+상태: Next
 성격: 문서 정규화
 우선순위: P2
 

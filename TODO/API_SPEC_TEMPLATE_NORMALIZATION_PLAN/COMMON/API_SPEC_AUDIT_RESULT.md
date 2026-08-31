@@ -1,6 +1,6 @@
 # API-SPEC Audit Result
 
-상태: G04 Completed / G05 Next reference
+상태: G05 Completed / G06 Next reference
 감사일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
 
@@ -96,7 +96,7 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 
 | 분류 | 파일 수 | 후속 |
 | --- | ---: | --- |
-| `normalize-now-candidate` | 22 | G03/G04/G05 |
+| `normalize-now-candidate` | 22 | G03/G04/G05 완료 |
 | `index-only` | 21 | per-API 템플릿 감사 제외 |
 | `no-api-contract` | 6 | per-HTTP API 템플릿 감사 제외 |
 | `archive-reference-only` | 42 | 완료 이력 참조 |
@@ -132,6 +132,6 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 
 1. `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md`에서 Core/User 보관 API-SPEC 후보 9개 정규화를 완료했다.
 2. `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md`에서 Mobile Field 후보 4개 정규화를 완료했다.
-3. `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md`에서 Admin Operation 후보 9개를 정규화한다.
-4. `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md`에서 `DOMAIN_GLOBAL_DATA_API.md` 복합 계약을 정규화한다.
+3. `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md`에서 Admin Operation 후보 9개 정규화를 완료했다.
+4. 다음 실행 대상은 `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md`이며 `DOMAIN_GLOBAL_DATA_API.md` 복합 계약을 정규화한다.
 5. `G99-FINAL-REVIEW.goal.md`에서 API 계약 의미 변경이 없고 BE/FE 코드 diff가 없음을 확인한다.

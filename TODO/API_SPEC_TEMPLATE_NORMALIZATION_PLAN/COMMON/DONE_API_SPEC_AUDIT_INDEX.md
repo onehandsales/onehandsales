@@ -1,6 +1,6 @@
 # Done API-SPEC Audit Index
 
-상태: G04 Completed / Follow-up normalization needed
+상태: G05 Completed / G06 Next
 감사일: 2026-08-31
 
 ## 1. 목적
@@ -40,7 +40,7 @@
 | 분류 | 파일 수 | 판단 |
 | --- | ---: | --- |
 | 전체 보관 API-SPEC | 92 | `TODO/DONE/**/COMMON/API-SPEC/*.md` 전수 |
-| `normalize-now-candidate` | 22 | 후속 G03/G04/G05로 분리 |
+| `normalize-now-candidate` | 22 | 후속 G03/G04/G05 완료 |
 | `index-only` | 21 | per-API 템플릿 감사 제외 |
 | `no-api-contract` | 6 | API 없음 또는 HTTP API가 아닌 contract |
 | `archive-reference-only` | 42 | 보관 이력 참조. 현재 goal에서 직접 수정하지 않음 |
@@ -65,15 +65,15 @@
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MEETING_NOTE_MOBILE_RECORDING_STT_CONTRACT.md` | 10 | `POST /api/meeting-notes/stt-draft` | G04 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_FIELD_ANALYTICS_EVENT_CONTRACT.md` | 12 | `POST /api/analytics/events` mobile event contract | G04 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE/COMMON/API-SPEC/MOBILE_NOTIFICATION_PERMISSION_CONTRACT.md` | 11 | `api/notifications/settings`, browser push endpoints | G04 완료 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ACCOUNT_DATA_REQUEST_API.md` | 9 | `api/users/me/*requests`, `admin/api/*requests` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_ANALYTICS_API.md` | 9 | `GET /admin/api/analytics/overview` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_AUDIT_SECURITY_API.md` | 7 | `admin/api/me`, `admin/api/audit-logs`, sensitive raw access | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_DOMAIN_READONLY_API.md` | 8 | `GET /admin/api/users/:userId/domain-records` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_PROVIDER_FAILURE_API.md` | 9 | `admin/api/provider-failures` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_SYSTEM_OPERATION_API.md` | 9 | `admin/api/system/operation-checks` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_TRASH_OPERATION_API.md` | 9 | `admin/api/users/:userId/trash-*`, `admin/api/trash/recovery-requests` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_USER_OPERATION_API.md` | 8 | `admin/api/users` | G05 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/TRASH_USER_RECOVERY_API.md` | 9 | `POST /api/trash/recovery-requests` | G05 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ACCOUNT_DATA_REQUEST_API.md` | 9 | `api/users/me/*requests`, `admin/api/*requests` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_ANALYTICS_API.md` | 9 | `GET /admin/api/analytics/overview` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_AUDIT_SECURITY_API.md` | 7 | `admin/api/me`, `admin/api/audit-logs`, sensitive raw access | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_DOMAIN_READONLY_API.md` | 8 | `GET /admin/api/users/:userId/domain-records` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_PROVIDER_FAILURE_API.md` | 9 | `admin/api/provider-failures` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_SYSTEM_OPERATION_API.md` | 9 | `admin/api/system/operation-checks` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_TRASH_OPERATION_API.md` | 9 | `admin/api/users/:userId/trash-*`, `admin/api/trash/recovery-requests` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_USER_OPERATION_API.md` | 8 | `admin/api/users` | G05 완료 |
+| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/TRASH_USER_RECOVERY_API.md` | 9 | `POST /api/trash/recovery-requests` | G05 완료 |
 
 ## 5. Index Only
 
@@ -179,8 +179,8 @@ G02 결과 대량 보강 후보가 22개이므로 아래 follow-up goal로 분�
 | --- | --- | --- |
 | `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | BusinessCard, Contact, Product, Deal, Import Template, Meeting Note AI/STT 후보 9개와 `DOMAIN_GLOBAL_DATA_API.md` 수동 판단 1개 | 2026-08-31 완료. 6개 문서 템플릿 보강, 3개 개요 문서 archive-reference-only 판단, `DOMAIN_GLOBAL_DATA_API.md` G06 분리 판단 |
 | `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | Mobile PWA field use 후보 4개 | 2026-08-31 완료. HTTP API와 browser/local-only contract 경계를 분리하고 템플릿 항목을 보강 |
-| `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | Admin Operation 후보 9개 | Admin/User API 분리, 민감정보, audit/observability 계약 보강 |
-| `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | `DOMAIN_GLOBAL_DATA_API.md` 1개 | Product/Deal/Contact/Company global data 복합 계약을 current BE/FE 구현 기준 matrix로 보강 |
+| `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | Admin Operation 후보 9개 | 2026-08-31 완료. Admin/User API prefix와 소비자 분리, 민감정보 masking, audit/observability, FE error 처리/log level 보강 |
+| `G06-DONE-DOMAIN-GLOBAL-DATA-API-SPEC-NORMALIZATION.goal.md` | `DOMAIN_GLOBAL_DATA_API.md` 1개 | 다음 실행 대상. Product/Deal/Contact/Company global data 복합 계약을 current BE/FE 구현 기준 matrix로 보강 |
 
 `needs-manual-review` 1개는 G03에서 core domain 문서 흡수 없이 별도 G06으로 분리했다.
 
@@ -203,7 +203,17 @@ G03에서는 BE/FE 코드를 수정하지 않았고 API 계약 의미를 변경�
 
 G04에서는 Mobile Field 보관 API-SPEC 문서의 HTTP API와 browser/local-only contract 경계를 명확히 했다. BE/FE 코드는 수정하지 않았고 API path, method, runtime request/response/error/transaction/observability 동작을 변경하지 않았다.
 
-## 12. 보관 문서 수정 원칙
+## 12. G05 처리 결과
+
+| 처리 | 파일 수 | 파일 |
+| --- | ---: | --- |
+| 템플릿 보강 | 9 | `ACCOUNT_DATA_REQUEST_API.md`, `ADMIN_ANALYTICS_API.md`, `ADMIN_AUDIT_SECURITY_API.md`, `ADMIN_DOMAIN_READONLY_API.md`, `ADMIN_PROVIDER_FAILURE_API.md`, `ADMIN_SYSTEM_OPERATION_API.md`, `ADMIN_TRASH_OPERATION_API.md`, `ADMIN_USER_OPERATION_API.md`, `TRASH_USER_RECOVERY_API.md` |
+| Admin/User prefix 분리 | 2 | `ACCOUNT_DATA_REQUEST_API.md`, `TRASH_USER_RECOVERY_API.md` |
+| 민감정보/audit/observability 보강 | 9 | G05 포함 범위 전체 |
+
+G05에서는 Admin Operation 보관 API-SPEC 문서의 Admin/User API 경계, `AuthGuard`/`AdminGuard` 권한, 민감정보 masking, audit action, request id, transaction, FE error 처리/log level을 current BE/FE 구현 기준으로 보강했다. BE/FE 코드는 수정하지 않았고 API path, method, runtime request/response/error/transaction/observability 동작을 변경하지 않았다.
+
+## 13. 보관 문서 수정 원칙
 
 - G02에서는 `TODO/DONE/**/COMMON/API-SPEC/*.md` 본문을 직접 수정하지 않는다.
 - 후속 goal에서 보관 문서를 수정할 때는 대상 파일을 명시하고 API 계약 의미 변경 없음, BE/FE diff 없음, TODO_LOG 검증 결과를 남긴다.
