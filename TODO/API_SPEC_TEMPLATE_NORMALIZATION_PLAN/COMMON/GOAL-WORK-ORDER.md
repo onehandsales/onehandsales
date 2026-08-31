@@ -1,6 +1,6 @@
 # Goal Work Order
 
-상태: In Progress / G01 Completed / G02 Next
+상태: In Progress / G02 Completed / G03 Next
 
 ## 1. 실행 원칙
 
@@ -15,27 +15,34 @@
 | 순서 | Goal | 파일 | 성격 | 상태 |
 | --- | --- | --- | --- | --- |
 | 1 | G01 | `COMMON/G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md` | 활성 API-SPEC 정규화 | Completed 2026-08-31 |
-| 2 | G02 | `COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md` | 보관 API-SPEC 감사 인덱스 | Next |
-| 3 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G01-G02 |
+| 2 | G02 | `COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md` | 보관 API-SPEC 감사 인덱스 | Completed 2026-08-31 |
+| 3 | G03 | `COMMON/G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | 보관 Core/User API-SPEC 정규화 | Next |
+| 4 | G04 | `COMMON/G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | 보관 Mobile Field API-SPEC 정규화 | Ready after G03 |
+| 5 | G05 | `COMMON/G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | 보관 Admin Operation API-SPEC 정규화 | Ready after G04 |
+| 6 | G99 | `COMMON/G99-FINAL-REVIEW.goal.md` | 최종 검토 | Ready after G01-G05 |
 
 ## 3. 실행 프롬프트
 
 ```text
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```
 
 현재 다음 실행 대상:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 ```
 
 ## 4. 완료 판정
 
 - 활성 API-SPEC의 템플릿 누락 보강 또는 제외 판단이 기록되어 있다.
 - 완료 보관 API-SPEC은 직접 수정 대상, 인덱스/비계약 제외 대상, 보류 대상으로 분류되어 있다.
+- G03-G05로 분리된 `normalize-now-candidate` 후속 정규화 결과가 기록되어 있다.
 - BE/FE 코드 diff가 없다.
 - API 계약 의미 변경이 없다.
 - TODO_LOG에 검증 결과와 남은 리스크가 기록되어 있다.

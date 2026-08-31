@@ -1,6 +1,6 @@
 # API-SPEC Audit Result
 
-상태: G01 Completed / G02 Next reference
+상태: G02 Completed / G03 Next reference
 감사일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
 
@@ -92,6 +92,16 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 | P2 | Product Analytics/Global I18N/Mobile field | `PRODUCT_ANALYTICS_*`, `USER_GLOBAL_SETTINGS_API.md`, `DOMAIN_GLOBAL_DATA_API.md`, mobile contract 문서 |
 | 제외 후보 | README 또는 no API 문서 | `README.md`, `NO_API_CHANGE.md`, `NO_NEW_API_CONTRACT.md` |
 
+2026-08-31 G02 전수 분류 결과는 `COMMON/DONE_API_SPEC_AUDIT_INDEX.md`에 기록했다.
+
+| 분류 | 파일 수 | 후속 |
+| --- | ---: | --- |
+| `normalize-now-candidate` | 22 | G03/G04/G05 |
+| `index-only` | 21 | per-API 템플릿 감사 제외 |
+| `no-api-contract` | 6 | per-HTTP API 템플릿 감사 제외 |
+| `archive-reference-only` | 42 | 완료 이력 참조 |
+| `needs-manual-review` | 1 | G03에서 흡수 또는 별도 G06 판단 |
+
 ## 6. 정적 누락 후보 요약
 
 아래 수치는 텍스트 패턴 기반 후보 수이며, 수동 판정 전 확정 결함 수가 아니다.
@@ -120,5 +130,7 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 
 ## 7. 다음 작업
 
-1. `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`에서 보관 API-SPEC 92개를 직접 수정 대상, 인덱스/비계약 제외 대상, 보류 대상으로 분류한다.
-2. `G99-FINAL-REVIEW.goal.md`에서 API 계약 의미 변경이 없고 BE/FE 코드 diff가 없음을 확인한다.
+1. `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md`에서 Core/User 보관 API-SPEC 후보 9개를 정규화한다.
+2. `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md`에서 Mobile Field 후보 4개를 정규화한다.
+3. `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md`에서 Admin Operation 후보 9개를 정규화한다.
+4. `G99-FINAL-REVIEW.goal.md`에서 API 계약 의미 변경이 없고 BE/FE 코드 diff가 없음을 확인한다.

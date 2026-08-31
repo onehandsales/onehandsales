@@ -1,8 +1,9 @@
 # G02 완료 보관 API-SPEC 감사 인덱스 작성
 
-상태: Ready after G01
+상태: Completed
 성격: 문서 감사
 우선순위: P2
+완료일: 2026-08-31
 
 ## 1. 목적
 
@@ -72,3 +73,12 @@ D:\workspace_repository\onehandsales\TODO_LOG\<YYYY-MM-DD>\API_SPEC_TEMPLATE_NOR
 - 완료 보관 API-SPEC 본문 대량 수정이 없다.
 - BE/FE 코드 diff가 없다.
 - 결과와 남은 리스크가 TODO_LOG에 기록되어 있다.
+
+## 9. 완료 결과
+
+- `TODO/DONE/**/COMMON/API-SPEC/*.md` 92개를 전수 확인했다.
+- `COMMON/DONE_API_SPEC_AUDIT_INDEX.md`에 `normalize-now-candidate` 22개, `index-only` 21개, `no-api-contract` 6개, `archive-reference-only` 42개, `needs-manual-review` 1개를 분류했다.
+- 대량 보강 후보를 G03 Core/User, G04 Mobile Field, G05 Admin Operation follow-up goal로 분리했다.
+- 완료 보관 API-SPEC 본문은 수정하지 않았다.
+- BE/FE 코드 변경 없음.
+- 작업 로그: `TODO_LOG/2026-08-31/API_SPEC_TEMPLATE_NORMALIZATION/G02_DONE_API_SPEC_AUDIT_INDEX/WORK_LOG.md`

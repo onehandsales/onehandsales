@@ -1,21 +1,25 @@
 # Common
 
-상태: In Progress / G01 Completed / G02 Next
+상태: In Progress / G02 Completed / G03 Next
 
 ## 1. 목적
 
 이 폴더는 API-SPEC 템플릿 정규화 계획의 공통 감사 결과와 실행 순서를 관리한다.
 
-2026-08-31 기준 `G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`를 완료했다.
+2026-08-31 기준 `G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`와 `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`를 완료했다.
 
-다음 실행 대상은 `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`이다.
+다음 실행 대상은 `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md`이다.
 
 ## 2. 문서
 
 - `API_SPEC_AUDIT_RESULT.md`: G07에서 확인한 API-SPEC 문서 수, 누락 후보, 우선순위
+- `DONE_API_SPEC_AUDIT_INDEX.md`: G02에서 작성한 보관 API-SPEC 전수 분류 인덱스
 - `GOAL-WORK-ORDER.md`: `/goal` 실행 순서
 - `G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md`: 활성 Service QA API-SPEC 정규화 완료
-- `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`: 완료 보관 API-SPEC 감사 인덱스 작성, 다음 실행 대상
+- `G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`: 완료 보관 API-SPEC 감사 인덱스 작성 완료
+- `G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md`: 보관 Core/User API-SPEC 정규화, 다음 실행 대상
+- `G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md`: 보관 Mobile Field API-SPEC 정규화
+- `G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md`: 보관 Admin Operation API-SPEC 정규화
 - `G99-FINAL-REVIEW.goal.md`: 최종 검토
 
 ## 3. 공통 기준

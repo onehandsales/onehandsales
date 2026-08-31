@@ -1,6 +1,6 @@
 # API-SPEC Template Normalization Plan
 
-상태: In Progress / Documentation-only / G01 Completed / G02 Next
+상태: In Progress / Documentation-only / G02 Completed / G03 Next
 작성일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
 
@@ -10,9 +10,9 @@
 
 G07 감사에서 활성 API-SPEC 문서와 `TODO/DONE` 보관 API-SPEC 문서가 서로 다른 템플릿 수준을 가진 것으로 확인되었으므로, 코드 수정 Goal과 분리해 문서 정규화만 별도 관리한다.
 
-2026-08-31 기준 G01에서 활성 Service QA API-SPEC 문서 정규화를 완료했다.
+2026-08-31 기준 G01에서 활성 Service QA API-SPEC 문서 정규화를 완료했고, G02에서 `TODO/DONE` 보관 API-SPEC 92개 감사 인덱스를 작성했다.
 
-다음 실행 대상은 `COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md`이다.
+다음 실행 대상은 `COMMON/G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md`이다.
 
 ## 2. 감사 요약
 
@@ -39,6 +39,7 @@ G07 감사에서 활성 API-SPEC 문서와 `TODO/DONE` 보관 API-SPEC 문서가
 - API-SPEC README/index 최신화
 - `TODO/DONE` 보관 API-SPEC의 수정 대상과 제외 대상 분류
 - 보관 문서 직접 수정 전 감사 인덱스 작성
+- G02에서 분류된 보관 API-SPEC 정규화 후보의 제한 보강
 - 문서 변경 결과의 TODO_LOG 기록
 
 ## 4. 제외 범위
@@ -56,9 +57,13 @@ G07 감사에서 활성 API-SPEC 문서와 `TODO/DONE` 보관 API-SPEC 문서가
 | --- | --- |
 | `COMMON/README.md` | 공통 문서 안내 |
 | `COMMON/API_SPEC_AUDIT_RESULT.md` | G07 감사 결과와 정규화 우선순위 |
+| `COMMON/DONE_API_SPEC_AUDIT_INDEX.md` | G02 보관 API-SPEC 전수 분류 인덱스 |
 | `COMMON/GOAL-WORK-ORDER.md` | 실행 순서 |
 | `COMMON/G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md` | 활성 Service QA API-SPEC 정규화 |
 | `COMMON/G02-DONE-API-SPEC-AUDIT-INDEX.goal.md` | 보관 API-SPEC 감사 인덱스 작성 |
+| `COMMON/G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md` | 보관 Core/User API-SPEC 정규화 |
+| `COMMON/G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md` | 보관 Mobile Field API-SPEC 정규화 |
+| `COMMON/G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md` | 보관 Admin Operation API-SPEC 정규화 |
 | `COMMON/G99-FINAL-REVIEW.goal.md` | 문서 정규화 최종 검토 |
 | `BE-TODO/README.md` | Backend 코드 변경 없음 안내 |
 | `FE-TODO/README.md` | Frontend 코드 변경 없음 안내 |
@@ -70,13 +75,16 @@ G07 감사에서 활성 API-SPEC 문서와 `TODO/DONE` 보관 API-SPEC 문서가
 ```text
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G01-ACTIVE-SERVICE-QA-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G04-DONE-MOBILE-FIELD-API-SPEC-NORMALIZATION.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G05-DONE-ADMIN-OPERATION-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 /goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G99-FINAL-REVIEW.goal.md 실행해줘.
 ```
 
 현재 다음 실행 프롬프트:
 
 ```text
-/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G02-DONE-API-SPEC-AUDIT-INDEX.goal.md 실행해줘.
+/goal D:\workspace_repository\onehandsales\TODO\API_SPEC_TEMPLATE_NORMALIZATION_PLAN\COMMON\G03-DONE-CORE-USER-API-SPEC-NORMALIZATION.goal.md 실행해줘.
 ```
 
 ## 7. 공통 원칙
