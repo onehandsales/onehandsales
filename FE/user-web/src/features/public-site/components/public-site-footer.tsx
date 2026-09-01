@@ -2,10 +2,9 @@ import {
   Facebook,
   Instagram,
   Linkedin,
-  Twitter,
   Youtube,
-  type LucideIcon,
 } from "lucide-react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { PublicSiteLanguageSelect } from "@/features/public-site/components/public-site-language-select";
@@ -19,13 +18,13 @@ type PublicSiteFooterProps = {
 
 const footerSocialLinks: readonly {
   readonly label: string;
-  readonly icon: LucideIcon;
+  readonly icon: ReactNode;
 }[] = [
-  { label: "Instagram", icon: Instagram },
-  { label: "Twitter", icon: Twitter },
-  { label: "LinkedIn", icon: Linkedin },
-  { label: "Facebook", icon: Facebook },
-  { label: "YouTube", icon: Youtube },
+  { label: "Instagram", icon: <Instagram className="h-4 w-4" /> },
+  { label: "X", icon: <XSocialIcon className="h-4 w-4" /> },
+  { label: "LinkedIn", icon: <Linkedin className="h-4 w-4" /> },
+  { label: "Facebook", icon: <Facebook className="h-4 w-4" /> },
+  { label: "YouTube", icon: <Youtube className="h-4 w-4" /> },
 ];
 
 const footerColumnRoutes: readonly (readonly string[])[] = [
@@ -39,6 +38,22 @@ const footerColumnRoutes: readonly (readonly string[])[] = [
     "/solutions/insurance-auto",
   ],
 ];
+
+// 기능 : 현재 X 브랜드 로고 형태의 단색 소셜 아이콘을 렌더링합니다.
+function XSocialIcon({ className }: { readonly className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      className={className}
+      fill="currentColor"
+      focusable="false"
+      viewBox="0 0 300 271"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="m236 0h46l-101 115 118 156h-92.6l-72.5-94.8-83 94.8h-46l107-123-113-148h94.9l65.5 86.6zm-16.1 244h25.5l-165-218h-27.4z" />
+    </svg>
+  );
+}
 
 // 기능 : 공개 사이트 하단 푸터와 locale 기반 링크 목록을 렌더링합니다.
 export function PublicSiteFooter({
@@ -71,14 +86,14 @@ export function PublicSiteFooter({
             aria-label={copy.common.footerSocialAria}
             className="mt-6 flex items-center gap-1.5 text-[#555550]"
           >
-            {footerSocialLinks.map(({ icon: Icon, label }) => (
+            {footerSocialLinks.map(({ icon, label }) => (
               <a
                 aria-label={label}
                 className="grid h-7 w-7 place-items-center rounded-[6px] transition-colors hover:bg-[#f4f4f1] hover:text-[#111111]"
                 href="/"
                 key={label}
               >
-                <Icon className="h-4 w-4" />
+                {icon}
               </a>
             ))}
           </div>
