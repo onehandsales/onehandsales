@@ -86,7 +86,7 @@ Snapshot date: 2026-08-24
 
 Current additional backend scope:
 
-- User Web 도움말 모달은 에러 신고 `POST /api/error-reports`와 지원 요청 `POST /api/support-requests`를 제공한다. 지원 요청은 문의 유형과 1000자 이하 본문을 `support_requests`에 저장한다.
+- User Web 도움말 모달은 에러 신고 `POST /api/error-reports`와 지원 요청 `POST /api/support-requests`를 제공한다. 지원 요청은 문의 유형과 1000자 이하 본문을 `SupportRequest`에 저장한다.
 - Company/Contact/Product/Deal 본문 삭제 API는 soft delete로 구현되어 있다. 삭제 시 `deletedAt`, `deletedByUserId`, `trashExpiresAt`만 설정하고 실제 row는 삭제하지 않는다.
 - Trash API는 Company/Contact/Product/Deal 본문 데이터와 지원 로그의 목록, 상세, 7일 이내 복구를 제공한다.
 - BusinessCard OCR API는 이미지 원본을 저장하지 않고 성공/실패/확정 로그와 provider 사용량을 `BusinessCardScanLog`에 기록한다. `GET /api/business-card-scans`는 반복 query 또는 comma-separated query로 상태 다중 필터를 지원하며, 목록은 등록일 최신순으로 반환한다.

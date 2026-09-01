@@ -12,7 +12,7 @@
 - 호환성:
   - breaking change 여부: 없음
   - 기존 FE 영향: 기존 User Web 도움말 모달의 multipart 요청과 성공 응답 의미 유지
-  - migration 또는 fallback: 기존 `error_reports`, `users`, Supabase Storage 연동을 그대로 사용
+  - migration 또는 fallback: 기존 `ErrorReport`, `User`, Supabase Storage 연동을 그대로 사용
 - 제외: Admin Web 에러 신고 목록/상세 조회, 처리 상태 변경 UI, signed URL 발급 API
 
 ## 2. 목표
@@ -161,7 +161,7 @@ DB에는 public URL을 저장하지 않고 bucket과 storage key를 저장한다
 - transaction: 없음
 - 외부 Provider: Supabase Storage
 
-`error_reports` 주요 column:
+`ErrorReport` 주요 column:
 
 - `id`
 - `userId`
@@ -233,7 +233,7 @@ BE:
 - `ErrorReportApplicationService`는 description/pageUrl/screenshot을 정규화하고 검증한다.
 - `ErrorReportApplicationService`는 `CurrentUserContext.id`로 User snapshot을 다시 조회한다.
 - `ErrorReportScreenshotStorage` port는 Supabase Storage adapter 뒤에 숨긴다.
-- `PrismaErrorReportRepository`는 `error_reports` row를 생성한다.
+- `PrismaErrorReportRepository`는 `ErrorReport` row를 생성한다.
 - 에러 신고 본문, screenshot 원문, 사용자 email/displayName 원문은 structured log에 남기지 않는다.
 
 검증:

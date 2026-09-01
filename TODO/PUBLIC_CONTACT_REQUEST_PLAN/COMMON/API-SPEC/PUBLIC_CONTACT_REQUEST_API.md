@@ -137,7 +137,7 @@ Response fields:
 - 감사 로그: 없음
 - transaction: 없음
 
-`public_contact_requests` 주요 column:
+`PublicContactRequest` 주요 column:
 
 - `id`
 - `email`

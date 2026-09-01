@@ -353,7 +353,7 @@ CREATE TABLE "AdminOperationCheckRun" (
 );
 
 -- CreateTable
-CREATE TABLE "error_reports" (
+CREATE TABLE "ErrorReport" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
     "userEmail" TEXT,
@@ -374,11 +374,11 @@ CREATE TABLE "error_reports" (
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
-    CONSTRAINT "error_reports_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ErrorReport_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "support_requests" (
+CREATE TABLE "SupportRequest" (
     "id" UUID NOT NULL,
     "userId" UUID NOT NULL,
     "userEmail" TEXT,
@@ -393,11 +393,11 @@ CREATE TABLE "support_requests" (
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
-    CONSTRAINT "support_requests_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "SupportRequest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public_contact_requests" (
+CREATE TABLE "PublicContactRequest" (
     "id" UUID NOT NULL,
     "email" TEXT NOT NULL,
     "normalizedEmail" TEXT NOT NULL,
@@ -420,7 +420,7 @@ CREATE TABLE "public_contact_requests" (
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
-    CONSTRAINT "public_contact_requests_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "PublicContactRequest_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1593,31 +1593,31 @@ CREATE INDEX "AdminOperationCheckRun_status_checkedAt_idx" ON "AdminOperationChe
 CREATE INDEX "AdminOperationCheckRun_adminUserId_checkedAt_idx" ON "AdminOperationCheckRun"("adminUserId", "checkedAt");
 
 -- CreateIndex
-CREATE INDEX "error_reports_userId_createdAt_idx" ON "error_reports"("userId", "createdAt");
+CREATE INDEX "ErrorReport_userId_createdAt_idx" ON "ErrorReport"("userId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "error_reports_status_createdAt_idx" ON "error_reports"("status", "createdAt");
+CREATE INDEX "ErrorReport_status_createdAt_idx" ON "ErrorReport"("status", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "support_requests_userId_createdAt_idx" ON "support_requests"("userId", "createdAt");
+CREATE INDEX "SupportRequest_userId_createdAt_idx" ON "SupportRequest"("userId", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "support_requests_status_createdAt_idx" ON "support_requests"("status", "createdAt");
+CREATE INDEX "SupportRequest_status_createdAt_idx" ON "SupportRequest"("status", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "support_requests_type_createdAt_idx" ON "support_requests"("type", "createdAt");
+CREATE INDEX "SupportRequest_type_createdAt_idx" ON "SupportRequest"("type", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "public_contact_requests_createdAt_idx" ON "public_contact_requests"("createdAt");
+CREATE INDEX "PublicContactRequest_createdAt_idx" ON "PublicContactRequest"("createdAt");
 
 -- CreateIndex
-CREATE INDEX "public_contact_requests_status_createdAt_idx" ON "public_contact_requests"("status", "createdAt");
+CREATE INDEX "PublicContactRequest_status_createdAt_idx" ON "PublicContactRequest"("status", "createdAt");
 
 -- CreateIndex
-CREATE INDEX "public_contact_requests_normalizedEmail_idx" ON "public_contact_requests"("normalizedEmail");
+CREATE INDEX "PublicContactRequest_normalizedEmail_idx" ON "PublicContactRequest"("normalizedEmail");
 
 -- CreateIndex
-CREATE INDEX "public_contact_requests_wasExistingUserAtSubmission_createdAt_idx" ON "public_contact_requests"("wasExistingUserAtSubmission", "createdAt");
+CREATE INDEX "PublicContactRequest_wasExistingUserAtSubmission_createdAt_idx" ON "PublicContactRequest"("wasExistingUserAtSubmission", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "ProductAnalyticsEvent_userId_eventName_occurredAt_idx" ON "ProductAnalyticsEvent"("userId", "eventName", "occurredAt");
@@ -2250,10 +2250,10 @@ ALTER TABLE "UserDataExportRequest" ADD CONSTRAINT "UserDataExportRequest_userId
 ALTER TABLE "AdminOperationCheckRun" ADD CONSTRAINT "AdminOperationCheckRun_adminUserId_fkey" FOREIGN KEY ("adminUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "error_reports" ADD CONSTRAINT "error_reports_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ErrorReport" ADD CONSTRAINT "ErrorReport_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "support_requests" ADD CONSTRAINT "support_requests_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SupportRequest" ADD CONSTRAINT "SupportRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProductAnalyticsEvent" ADD CONSTRAINT "ProductAnalyticsEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -34,7 +34,7 @@ Prisma model 이름:
 
 DB table:
 
-- `support_requests`
+- `SupportRequest`
 
 주요 column:
 

@@ -12,7 +12,7 @@
 - 호환성:
   - breaking change 여부: 없음
   - 기존 FE 영향: 기존 도움말 모달의 지원요청 mock submit을 실제 API 호출로 교체
-  - migration 또는 fallback: `support_requests` 신규 table 추가, 기존 데이터 영향 없음
+  - migration 또는 fallback: `SupportRequest` 신규 table 추가, 기존 데이터 영향 없음
 - 제외: Admin Web 지원 요청 목록/상세 조회, 처리 상태 변경 UI, 전화 발신 provider 연동
 
 ## 2. 목표
@@ -123,7 +123,7 @@ Response fields:
 - 감사 로그: 없음
 - transaction: 없음
 
-`support_requests` 주요 column:
+`SupportRequest` 주요 column:
 
 - `id`
 - `userId`
@@ -159,9 +159,9 @@ Response fields:
 ## 8. Transaction
 
 - 필요 여부: 없음
-- 이유: 지원 요청 접수는 `support_requests` 단일 row 생성만 수행한다.
+- 이유: 지원 요청 접수는 `SupportRequest` 단일 row 생성만 수행한다.
 - transaction model: 없음
-- rollback 범위: `support_requests` row 생성 실패 시 전체 요청 실패
+- rollback 범위: `SupportRequest` row 생성 실패 시 전체 요청 실패
 - 외부 Provider 호출 위치: 없음
 - audit log 포함 여부: 없음
 - idempotency: 없음. 사용자가 중복 제출하면 별도 row로 접수한다.
@@ -191,7 +191,7 @@ BE:
 - `SupportRequestController`는 인증 context, body, request id, user-agent를 application service로 전달한다.
 - `SupportRequestApplicationService`는 type/description/pageUrl을 정규화하고 검증한다.
 - `SupportRequestApplicationService`는 `CurrentUserContext.id`로 User snapshot을 다시 조회한다.
-- `PrismaSupportRequestRepository`는 `support_requests` row를 생성한다.
+- `PrismaSupportRequestRepository`는 `SupportRequest` row를 생성한다.
 - 지원 요청 본문과 사용자 email/displayName 원문은 structured log에 남기지 않는다.
 
 검증:

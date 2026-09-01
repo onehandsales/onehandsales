@@ -24,7 +24,7 @@ Prisma model 이름:
 
 DB table:
 
-- `public_contact_requests`
+- `PublicContactRequest`
 
 주요 column:
 

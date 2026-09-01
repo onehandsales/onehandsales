@@ -16,7 +16,7 @@ Prisma model 예정 이름:
 
 DB table:
 
-- `error_reports`
+- `ErrorReport`
 
 주요 column:
 

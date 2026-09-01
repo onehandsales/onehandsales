@@ -144,6 +144,7 @@ Auth/User 기준:
 - `BE/prisma/migrations/20260823010000_add_error_reports/migration.sql`
 - `BE/prisma/migrations/20260824010000_add_support_requests/migration.sql`
 - `BE/prisma/migrations/20260901010000_add_public_contact_requests/migration.sql`
+- `BE/prisma/migrations/20260901020000_rename_support_tables_to_pascal_case/migration.sql`
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 
