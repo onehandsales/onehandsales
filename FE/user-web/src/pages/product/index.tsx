@@ -89,7 +89,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
     sections: [
       {
         id: "overview",
-        title: "OneHand 제품 소개",
+        title: "제품 소개",
         paragraphs: [
           "OneHand는 복잡한 팀 CRM을 먼저 도입하기 어려운 개인 영업자와 작은 영업팀을 위해 만든 CRM이에요.",
           "엑셀, 메모앱, 명함 사진, 캘린더에 흩어진 고객 정보를 하나의 고객 흐름으로 묶고 다음 행동을 놓치지 않게 만드는 것이 핵심이에요.",

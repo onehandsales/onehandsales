@@ -200,7 +200,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         login: "로그인",
       },
       productMenuColumns: [
-        ["제품 소개", "OneHand란?", "OneHand 제품 소개"],
+        ["제품 소개", "OneHand란?", "제품 소개"],
         ["주요 기능", "주요 기능 소개", "고객 관리", "영업 파이프라인", "일정/팔로업", "활동 기록"],
         ["AI/Data", "AI 영업 도우미", "리포트", "엑셀 가져오기/내보내기"],
       ],
@@ -680,7 +680,7 @@ function makeEnglishCopy(copy: {
       ["AI/Data", "AI sales assistant", "Reports", "Excel import/export"],
     ],
     solutionMenuColumns: [
-      ["Overview", "ViewAll"],
+      ["Overview", "View All"],
       ["Style", "Personal", "B2B Field"],
       ["Industry", "Real Estate", "Insurance/Automobile"],
     ],
