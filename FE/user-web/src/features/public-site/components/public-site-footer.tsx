@@ -17,14 +17,35 @@ type PublicSiteFooterProps = {
 };
 
 const footerSocialLinks: readonly {
+  readonly href?: string;
   readonly label: string;
   readonly icon: ReactNode;
 }[] = [
-  { label: "Instagram", icon: <Instagram className="h-4 w-4" /> },
-  { label: "X", icon: <XSocialIcon className="h-4 w-4" /> },
-  { label: "LinkedIn", icon: <Linkedin className="h-4 w-4" /> },
-  { label: "Facebook", icon: <Facebook className="h-4 w-4" /> },
-  { label: "YouTube", icon: <Youtube className="h-4 w-4" /> },
+  {
+    href: "https://www.instagram.com/onehand_sales",
+    label: "Instagram",
+    icon: <Instagram className="h-4 w-4" />,
+  },
+  {
+    href: "https://x.com/OneHand_Sales",
+    label: "X",
+    icon: <XSocialIcon className="h-4 w-4" />,
+  },
+  {
+    href: "/",
+    label: "LinkedIn",
+    icon: <Linkedin className="h-4 w-4" />,
+  },
+  {
+    href: "https://www.facebook.com/profile.php?id=61593723132814",
+    label: "Facebook",
+    icon: <Facebook className="h-4 w-4" />,
+  },
+  {
+    href: "https://www.youtube.com/@OneHand_Sales",
+    label: "YouTube",
+    icon: <Youtube className="h-4 w-4" />,
+  },
 ];
 
 const footerColumnRoutes: readonly (readonly string[])[] = [
@@ -86,16 +107,22 @@ export function PublicSiteFooter({
             aria-label={copy.common.footerSocialAria}
             className="mt-6 flex items-center gap-1.5 text-[#555550]"
           >
-            {footerSocialLinks.map(({ icon, label }) => (
-              <a
-                aria-label={label}
-                className="grid h-7 w-7 place-items-center rounded-[6px] transition-colors hover:bg-[#f4f4f1] hover:text-[#111111]"
-                href="/"
-                key={label}
-              >
-                {icon}
-              </a>
-            ))}
+            {footerSocialLinks.map(({ href = "/", icon, label }) => {
+              const isExternalLink = href.startsWith("http");
+
+              return (
+                <a
+                  aria-label={label}
+                  className="grid h-7 w-7 place-items-center rounded-[6px] transition-colors hover:bg-[#f4f4f1] hover:text-[#111111]"
+                  href={href}
+                  key={label}
+                  rel={isExternalLink ? "noreferrer" : undefined}
+                  target={isExternalLink ? "_blank" : undefined}
+                >
+                  {icon}
+                </a>
+              );
+            })}
           </div>
 
           <PublicSiteLanguageSelect />
