@@ -34,9 +34,9 @@ const footerColumnRoutes: readonly (readonly string[])[] = [
   ["/help", "/faq", "/contact"],
   [
     "/solutions/personal",
+    "/solutions/b2b-field",
     "/solutions/real-estate",
     "/solutions/insurance-auto",
-    "/solutions/b2b-field",
   ],
 ];
 

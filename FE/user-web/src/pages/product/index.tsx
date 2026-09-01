@@ -81,7 +81,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
           "진행 중인 딜과 다음 행동을 같은 흐름에서 확인해요.",
       },
       {
-        title: "AI와 데이터",
+        title: "AI/Data",
         description:
           "AI 초안과 엑셀 데이터를 사용자가 확인 가능한 기록으로 다뤄요.",
       },
@@ -171,7 +171,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
     title: "OneHand is a personal CRM for field sales.",
     description:
       "A sales workspace that connects customers, companies, deals, schedules, meeting notes, and AI drafts so repeated consultation and follow-up do not get lost.",
-    contentsLabel: "Product overview",
+    contentsLabel: "Products Guide",
     ctaTitle: "Ready to try the product workflow?",
     ctaDescription:
       "Bring scattered customer records and next actions into one OneHand workflow.",
@@ -187,7 +187,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
           "Track active deals and next actions in the same workflow.",
       },
       {
-        title: "AI and data",
+        title: "AI/Data",
         description:
           "Use AI drafts and spreadsheet data as records you can review and control.",
       },
@@ -195,7 +195,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
     sections: [
       {
         id: "overview",
-        title: "OneHand product overview",
+        title: "Products Guide",
         paragraphs: [
           "OneHand is a CRM for personal sellers and small sales teams that need something lighter than a complex team rollout.",
           "Its core job is to bring customer data scattered across spreadsheets, notes, card photos, and calendars into one customer workflow.",

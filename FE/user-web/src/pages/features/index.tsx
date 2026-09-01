@@ -143,11 +143,11 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
     ],
   },
   "en-US": {
-    title: "Key features for keeping sales work moving.",
+    title: "Core Features for keeping sales work moving.",
     description:
       "Organize customer management, pipeline, schedules, follow-up, activity records, AI, reports, and Excel data in one flow.",
     actionLabel: "View details",
-    contentsLabel: "Key features",
+    contentsLabel: "Core Features",
     ctaTitle: "Ready to try the workflow?",
     ctaDescription:
       "Organize scattered sales records in OneHand.",

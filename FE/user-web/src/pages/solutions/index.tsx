@@ -48,9 +48,9 @@ const solutionIcons: Record<SolutionSegmentCopy["id"], LucideIcon> = {
 
 const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
   ko: {
-    title: "영업 방식별로 OneHand를 보는 방법.",
+    title: "용도별로 OneHand를 보는 방법.",
     description:
-      "OneHand는 개인 영업, 부동산 중개, 보험·자동차 영업, B2B 현장 영업처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 다르게 사용할 수 있습니다.",
+      "OneHand는 개인, 현장 B2B, 부동산 중개, 보험/자동차처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 다르게 사용할 수 있습니다.",
     actionLabel: "자세히 보기",
     contentsLabel: "용도별 선택 기준",
     ctaTitle: "어떤 용도가 가장 가까운지 함께 정리해볼까요?",
@@ -59,7 +59,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     segments: [
       {
         id: "personal",
-        title: "개인 영업",
+        title: "개인",
         to: "/solutions/personal",
         summary:
           "혼자 고객, 일정, 딜, 후속 연락을 챙기는 영업자를 위한 흐름입니다.",
@@ -67,6 +67,18 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
           "엑셀, 메모앱, 명함 사진에 기록이 흩어져 있는 경우",
           "팀 CRM보다 바로 쓸 수 있는 개인 CRM이 필요한 경우",
           "오늘 연락해야 할 고객과 진행 중인 딜을 빠르게 보고 싶은 경우",
+        ],
+      },
+      {
+        id: "b2b-field",
+        title: "현장 B2B",
+        to: "/solutions/b2b-field",
+        summary:
+          "외근 미팅, 담당자 관계, 딜 단계, 다음 행동을 함께 연결하는 흐름입니다.",
+        bullets: [
+          "여러 회사와 담당자를 오가며 미팅을 반복하는 경우",
+          "미팅 기록과 제안, 견적, 계약 단계를 같이 봐야 하는 경우",
+          "장기 검토 거래처의 다음 접점을 놓치지 않아야 하는 경우",
         ],
       },
       {
@@ -83,7 +95,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
       },
       {
         id: "insurance-auto",
-        title: "보험/자동차 영업",
+        title: "보험/자동차",
         to: "/solutions/insurance-auto",
         summary:
           "견적, 서류, 계약 전후 연락과 장기 관계를 고객별로 관리하는 흐름입니다.",
@@ -93,24 +105,12 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
           "갱신, 재구매, 소개 고객까지 이어서 관리해야 하는 경우",
         ],
       },
-      {
-        id: "b2b-field",
-        title: "B2B 현장 영업",
-        to: "/solutions/b2b-field",
-        summary:
-          "외근 미팅, 담당자 관계, 딜 단계, 다음 행동을 함께 연결하는 흐름입니다.",
-        bullets: [
-          "여러 회사와 담당자를 오가며 미팅을 반복하는 경우",
-          "미팅 기록과 제안, 견적, 계약 단계를 같이 봐야 하는 경우",
-          "장기 검토 거래처의 다음 접점을 놓치지 않아야 하는 경우",
-        ],
-      },
     ],
   },
   "en-US": {
-    title: "Ways to use OneHand by sales workflow.",
+    title: "Ways to use OneHand.",
     description:
-      "OneHand can adapt to personal sales, real estate, insurance and auto sales, and B2B field sales workflows where repeated consultation and follow-up matter.",
+      "OneHand can adapt to personal, B2B field, real estate, and insurance/automobile workflows where repeated consultation and follow-up matter.",
     actionLabel: "View details",
     contentsLabel: "Use case guide",
     ctaTitle: "Want to find the closest workflow?",
@@ -119,7 +119,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     segments: [
       {
         id: "personal",
-        title: "Personal sales",
+        title: "Personal",
         to: "/solutions/personal",
         summary:
           "For sellers managing customers, schedules, deals, and follow-up on their own.",
@@ -130,8 +130,20 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
         ],
       },
       {
+        id: "b2b-field",
+        title: "B2B Field",
+        to: "/solutions/b2b-field",
+        summary:
+          "For connecting field meetings, stakeholder relationships, deal stages, and next actions.",
+        bullets: [
+          "When you move across many companies and contacts",
+          "When meeting notes must connect to proposals, quotes, and contracts",
+          "When long-cycle accounts need reliable next contact timing",
+        ],
+      },
+      {
         id: "real-estate",
-        title: "Real estate",
+        title: "Real Estate",
         to: "/solutions/real-estate",
         summary:
           "For tracking client conditions, property interest, visits, and deal readiness.",
@@ -143,7 +155,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
       },
       {
         id: "insurance-auto",
-        title: "Insurance and auto sales",
+        title: "Insurance/Automobile",
         to: "/solutions/insurance-auto",
         summary:
           "For managing quotes, documents, pre/post-contract follow-up, and long-term relationships.",
@@ -151,18 +163,6 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
           "When follow-up timing and required documents are easy to miss",
           "When quote review status needs to stay organized by customer",
           "When renewals, repurchases, and referrals continue after the first deal",
-        ],
-      },
-      {
-        id: "b2b-field",
-        title: "B2B field sales",
-        to: "/solutions/b2b-field",
-        summary:
-          "For connecting field meetings, stakeholder relationships, deal stages, and next actions.",
-        bullets: [
-          "When you move across many companies and contacts",
-          "When meeting notes must connect to proposals, quotes, and contracts",
-          "When long-cycle accounts need reliable next contact timing",
         ],
       },
     ],

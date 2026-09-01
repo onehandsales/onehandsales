@@ -100,7 +100,7 @@ const solutionDetailCopyByLanguage: Record<
             "상담 중인 고객이 어떤 단계에 있는지 혼자서도 빠르게 확인합니다.",
         },
       ],
-      contentsLabel: "개인 영업 흐름",
+      contentsLabel: "개인 흐름",
       sections: [
         {
           id: "customer-context",
@@ -139,7 +139,7 @@ const solutionDetailCopyByLanguage: Record<
           ],
         },
       ],
-      ctaTitle: "개인 영업 흐름부터 정리해볼까요?",
+      ctaTitle: "개인 흐름부터 정리해볼까요?",
       ctaDescription:
         "지금 쓰는 메모, 엑셀, 일정 방식에 맞춰 OneHand 시작 흐름을 잡아드려요.",
     },
@@ -232,7 +232,7 @@ const solutionDetailCopyByLanguage: Record<
             "계약 이후에도 갱신, 재구매, 소개 고객 흐름을 이어갑니다.",
         },
       ],
-      contentsLabel: "보험/자동차 영업 흐름",
+      contentsLabel: "보험/자동차 흐름",
       sections: [
         {
           id: "consultation",
@@ -298,7 +298,7 @@ const solutionDetailCopyByLanguage: Record<
             "제안, 견적, 검토, 계약 단계의 기회를 빠르게 구분합니다.",
         },
       ],
-      contentsLabel: "B2B 현장 영업 흐름",
+      contentsLabel: "현장 B2B 흐름",
       sections: [
         {
           id: "accounts",
@@ -366,13 +366,13 @@ const solutionDetailCopyByLanguage: Record<
             "See which customers are active and what stage each opportunity is in.",
         },
       ],
-      contentsLabel: "Personal sales workflow",
+      contentsLabel: "Personal workflow",
       sections: [
         {
           id: "customer-context",
           title: "Keep customer records from scattering",
           paragraphs: [
-            "Personal sales records often split across messengers, notes, spreadsheets, and business card photos. OneHand keeps the customer context close to the next conversation.",
+            "Personal customer records often split across messengers, notes, spreadsheets, and business card photos. OneHand keeps the customer context close to the next conversation.",
           ],
           bullets: [
             "Review contact, company, notes, and interests on one screen",
@@ -405,7 +405,7 @@ const solutionDetailCopyByLanguage: Record<
           ],
         },
       ],
-      ctaTitle: "Want to organize your personal sales workflow?",
+      ctaTitle: "Want to organize your personal workflow?",
       ctaDescription:
         "Tell us how you use notes, spreadsheets, and schedules today, and we can map the starting flow.",
     },
@@ -476,9 +476,9 @@ const solutionDetailCopyByLanguage: Record<
         "We can start from your client conditions, visits, and follow-up process.",
     },
     "insurance-auto": {
-      title: "Manage long insurance and auto sales conversations by customer.",
+      title: "Manage long insurance/automobile conversations by customer.",
       description:
-        "Insurance and auto sales often continue through quotes, comparison, documents, contracts, renewals, and repurchase. OneHand keeps the next contact and status connected by customer.",
+        "Insurance and automobile workflows often continue through quotes, comparison, documents, contracts, renewals, and repurchase. OneHand keeps the next contact and status connected by customer.",
       imageAlt: "A white car displayed inside a showroom",
       imageCaption: "Manage vehicle consultations, quotes, and pre/post-contract follow-up by customer.",
       cards: [
@@ -498,7 +498,7 @@ const solutionDetailCopyByLanguage: Record<
             "Continue the relationship after the first contract or purchase.",
         },
       ],
-      contentsLabel: "Insurance and auto workflow",
+      contentsLabel: "Insurance/Automobile workflow",
       sections: [
         {
           id: "consultation",
@@ -564,7 +564,7 @@ const solutionDetailCopyByLanguage: Record<
             "Separate proposal, quote, review, and contract opportunities quickly.",
         },
       ],
-      contentsLabel: "B2B field sales workflow",
+      contentsLabel: "B2B Field workflow",
       sections: [
         {
           id: "accounts",

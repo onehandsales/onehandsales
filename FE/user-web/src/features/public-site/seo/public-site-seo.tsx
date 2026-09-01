@@ -287,7 +287,7 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/product": {
     title: {
       ko: "제품 소개 | OneHand Sales",
-      en: "Product Overview | OneHand Sales",
+      en: "Products Guide | OneHand Sales",
     },
     description: {
       ko: "고객, 회사, 딜, 일정, 회의록, AI 초안을 한 흐름으로 연결하는 OneHand Sales 제품 소개를 확인하세요.",
@@ -303,8 +303,8 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "AI 영업 워크스페이스",
       ],
       en: [
-        "OneHand Sales product overview",
-        "What is OneHand",
+        "Products Guide",
+        "OneHand",
         "sales CRM product",
         "personal CRM overview",
         "field sales CRM",
