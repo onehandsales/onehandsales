@@ -11,6 +11,7 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
+import { createPublicContactRequest } from "@/features/public-contact-request/api/public-contact-request-api";
 import {
   getPublicSiteCopyLanguage,
   usePublicSiteLanguage,
@@ -50,6 +51,7 @@ type ContactFlowCopy = {
   readonly home: string;
   readonly required: string;
   readonly emailInvalid: string;
+  readonly submitFailed: string;
   readonly progress: (step: number, total: number) => string;
   readonly email: {
     readonly title: string;
@@ -147,6 +149,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
     home: "OneHand로 돌아가기",
     required: "필수 입력 항목이에요.",
     emailInvalid: "업무용 이메일 주소를 정확히 입력해 주세요.",
+    submitFailed: "문의 접수에 실패했습니다. 잠시 후 다시 시도해 주세요.",
     progress: (step, total) => `${step} / ${total}`,
     email: {
       title: "업무용 이메일 주소를 입력해 주세요.",
@@ -221,6 +224,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
     home: "Back to OneHand",
     required: "This field is required.",
     emailInvalid: "Enter a valid work email address.",
+    submitFailed: "We could not submit your request. Try again in a moment.",
     progress: (step, total) => `${step} / ${total}`,
     email: {
       title: "Enter your work email.",
@@ -307,6 +311,7 @@ export function ContactPage() {
   );
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const currentStep = contactStepIds[stepIndex] ?? "email";
   const selectedSize = copy.size.options.find(
     (option) => option.value === values.companySize
@@ -357,7 +362,7 @@ export function ContactPage() {
     goNext();
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!values.plan.trim() || !values.source.trim()) {
@@ -365,8 +370,36 @@ export function ContactPage() {
       return;
     }
 
+    if (isSubmitting) {
+      return;
+    }
+
     setErrorMessage("");
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      await createPublicContactRequest({
+        email: values.email,
+        companySize: values.companySize,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        company: values.company,
+        title: values.title,
+        region: values.region,
+        phone: values.phone,
+        plan: values.plan,
+        source: values.source,
+        marketingAgreement: values.marketingAgreement,
+        pageUrl:
+          typeof window === "undefined" ? undefined : window.location.href,
+        locale: language,
+      });
+      setIsSubmitted(true);
+    } catch {
+      setErrorMessage(copy.submitFailed);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -433,6 +466,7 @@ export function ContactPage() {
                   copy={copy}
                   email={values.email}
                   errorMessage={errorMessage}
+                  isSubmitting={isSubmitting}
                   onSubmit={handleSubmit}
                   onUpdate={updateValue}
                   values={values}
@@ -647,6 +681,7 @@ function ContextStep({
   copy,
   email,
   errorMessage,
+  isSubmitting,
   values,
   onSubmit,
   onUpdate,
@@ -654,14 +689,18 @@ function ContextStep({
   readonly copy: ContactFlowCopy;
   readonly email: string;
   readonly errorMessage: string;
+  readonly isSubmitting: boolean;
   readonly values: ContactFormValues;
-  readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  readonly onSubmit: (
+    event: FormEvent<HTMLFormElement>
+  ) => void | Promise<void>;
   readonly onUpdate: <TField extends keyof ContactFormValues>(
     field: TField,
     value: ContactFormValues[TField]
   ) => void;
 }) {
-  const isSubmitDisabled = !values.plan.trim() || !values.source.trim();
+  const isSubmitDisabled =
+    isSubmitting || !values.plan.trim() || !values.source.trim();
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>

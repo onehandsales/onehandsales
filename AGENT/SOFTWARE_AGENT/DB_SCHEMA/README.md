@@ -18,6 +18,7 @@
 - `BUSINESS_CARD_SCHEMA.md`: BusinessCardScanLog DB 구조
 - `ERROR_REPORT_SCHEMA.md`: User Web 에러 신고 DB 구조
 - `SUPPORT_REQUEST_SCHEMA.md`: User Web 지원 요청 DB 구조
+- `PUBLIC_CONTACT_REQUEST_SCHEMA.md`: 로그인 전 공개 문의 접수 DB 구조
 - `DATA_IMPORT_SCHEMA.md`: DataImport 양식/성공 로그 DB 구조
 - `PRODUCT_ANALYTICS_SCHEMA.md`: Product Analytics raw event/snapshot DB 구조
 - `TIME_AND_TIMEZONE_POLICY.md`: DB/API/Frontend 시간과 timezone 처리 기준
@@ -59,6 +60,8 @@ Auth/User 기준:
 - `SupportRequestType`
 - `SupportRequestStatus`
 - `SupportRequest`
+- `PublicContactRequestStatus`
+- `PublicContactRequest`
 - `Product`
 - `ProductCategory`
 - `ProductStatus`
@@ -140,6 +143,7 @@ Auth/User 기준:
 - `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`
 - `BE/prisma/migrations/20260823010000_add_error_reports/migration.sql`
 - `BE/prisma/migrations/20260824010000_add_support_requests/migration.sql`
+- `BE/prisma/migrations/20260901010000_add_public_contact_requests/migration.sql`
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 
@@ -205,6 +209,7 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/BUSINESS_CARD_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/ERROR_REPORT_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SUPPORT_REQUEST_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PUBLIC_CONTACT_REQUEST_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DATA_IMPORT_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`

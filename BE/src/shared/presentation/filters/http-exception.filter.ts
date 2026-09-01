@@ -178,6 +178,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "SUPPORT_REQUEST_DESCRIPTION_TOO_LONG":
       case "SUPPORT_REQUEST_PAGE_URL_REQUIRED":
       case "SUPPORT_REQUEST_PAGE_URL_TOO_LONG":
+      case "PUBLIC_CONTACT_REQUEST_VALIDATION_FAILED":
         return HttpStatus.BAD_REQUEST;
       case "AUDIO_TOO_LARGE":
       case "ERROR_REPORT_SCREENSHOT_TOO_LARGE":

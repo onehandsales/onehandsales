@@ -19,6 +19,7 @@ import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting-note.module";
 import { NotificationModule } from "./modules/notification/infrastructure/notification.module";
 import { ProductModule } from "./modules/product/infrastructure/product.module";
+import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
 import { SalesReportModule } from "./modules/sales-report/infrastructure/sales-report.module";
 import { ScheduleModule } from "./modules/schedule/infrastructure/schedule.module";
 import { SearchModule } from "./modules/search/infrastructure/search.module";
@@ -46,6 +47,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     ContactModule,
     DataImportModule,
     ProductModule,
+    PublicContactRequestModule,
     DealModule,
     ErrorReportModule,
     FollowUpModule,

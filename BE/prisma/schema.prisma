@@ -433,6 +433,11 @@ enum SupportRequestStatus {
   OPEN
 }
 
+/// 기능 : 로그인 전 공개 문의 접수 처리 상태를 구분합니다.
+enum PublicContactRequestStatus {
+  OPEN
+}
+
 model User {
   id                   String     @id @default(uuid()) @db.Uuid
   email                String?
@@ -627,6 +632,55 @@ model SupportRequest {
   @@index([status, createdAt])
   @@index([type, createdAt])
   @@map("support_requests")
+}
+
+/// 기능 : 로그인 전 공개 문의 페이지에서 접수된 도입/상담 요청을 저장합니다.
+model PublicContactRequest {
+  id                          String                     @id @default(uuid()) @db.Uuid
+  /// 기능 : 사용자가 공개 문의 form에 입력한 이메일을 저장합니다.
+  email                       String
+  /// 기능 : 회원 여부 확인과 검색에 사용할 trim/lower-case 이메일을 저장합니다.
+  normalizedEmail             String
+  /// 기능 : 사용자가 선택한 사용 인원 규모를 저장합니다.
+  companySize                 String
+  /// 기능 : 사용자가 입력한 이름을 저장합니다.
+  firstName                   String
+  /// 기능 : 사용자가 입력한 성을 저장합니다.
+  lastName                    String
+  /// 기능 : 사용자가 입력한 회사명을 저장합니다.
+  companyName                 String
+  /// 기능 : 사용자가 입력한 직함을 저장합니다.
+  jobTitle                    String
+  /// 기능 : 사용자가 선택한 국가 또는 지역 코드를 저장합니다.
+  region                      String
+  /// 기능 : 사용자가 입력한 연락처 전화번호를 저장합니다.
+  phone                       String
+  /// 기능 : 사용자가 입력한 OneHand 사용 계획을 저장합니다.
+  plan                        String                     @db.Text
+  /// 기능 : 사용자가 선택한 OneHand 인지 경로를 저장합니다.
+  source                      String
+  /// 기능 : 제품 소식과 온보딩 안내 수신 동의 여부를 저장합니다.
+  marketingAgreement          Boolean                    @default(false)
+  /// 기능 : 제출 시점에 같은 정규화 이메일을 가진 삭제되지 않은 회원이 있었는지 저장합니다.
+  wasExistingUserAtSubmission Boolean                    @default(false)
+  /// 기능 : 문의가 제출된 공개 페이지 URL을 저장합니다.
+  pageUrl                     String?
+  /// 기능 : 문의가 제출된 공개 사이트 언어를 저장합니다.
+  locale                      String?
+  /// 기능 : 문의 제출 요청의 user-agent를 저장합니다.
+  userAgent                   String?
+  /// 기능 : Backend request id를 저장합니다.
+  requestId                   String?
+  /// 기능 : 공개 문의 처리 상태를 저장합니다.
+  status                      PublicContactRequestStatus @default(OPEN)
+  createdAt                   DateTime                   @default(now()) @db.Timestamptz(3)
+  updatedAt                   DateTime                   @updatedAt @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([normalizedEmail])
+  @@index([wasExistingUserAtSubmission, createdAt])
+  @@map("public_contact_requests")
 }
 
 model UserOAuthAccount {

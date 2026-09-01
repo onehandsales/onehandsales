@@ -169,6 +169,9 @@ CREATE TYPE "SupportRequestType" AS ENUM ('FEATURE_QUESTION', 'PRICING_QUESTION'
 -- CreateEnum
 CREATE TYPE "SupportRequestStatus" AS ENUM ('OPEN');
 
+-- CreateEnum
+CREATE TYPE "PublicContactRequestStatus" AS ENUM ('OPEN');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -391,6 +394,33 @@ CREATE TABLE "support_requests" (
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "support_requests_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public_contact_requests" (
+    "id" UUID NOT NULL,
+    "email" TEXT NOT NULL,
+    "normalizedEmail" TEXT NOT NULL,
+    "companySize" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "companyName" TEXT NOT NULL,
+    "jobTitle" TEXT NOT NULL,
+    "region" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "plan" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "marketingAgreement" BOOLEAN NOT NULL DEFAULT false,
+    "wasExistingUserAtSubmission" BOOLEAN NOT NULL DEFAULT false,
+    "pageUrl" TEXT,
+    "locale" TEXT,
+    "userAgent" TEXT,
+    "requestId" TEXT,
+    "status" "PublicContactRequestStatus" NOT NULL DEFAULT 'OPEN',
+    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "public_contact_requests_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1576,6 +1606,18 @@ CREATE INDEX "support_requests_status_createdAt_idx" ON "support_requests"("stat
 
 -- CreateIndex
 CREATE INDEX "support_requests_type_createdAt_idx" ON "support_requests"("type", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "public_contact_requests_createdAt_idx" ON "public_contact_requests"("createdAt");
+
+-- CreateIndex
+CREATE INDEX "public_contact_requests_status_createdAt_idx" ON "public_contact_requests"("status", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "public_contact_requests_normalizedEmail_idx" ON "public_contact_requests"("normalizedEmail");
+
+-- CreateIndex
+CREATE INDEX "public_contact_requests_wasExistingUserAtSubmission_createdAt_idx" ON "public_contact_requests"("wasExistingUserAtSubmission", "createdAt");
 
 -- CreateIndex
 CREATE INDEX "ProductAnalyticsEvent_userId_eventName_occurredAt_idx" ON "ProductAnalyticsEvent"("userId", "eventName", "occurredAt");
