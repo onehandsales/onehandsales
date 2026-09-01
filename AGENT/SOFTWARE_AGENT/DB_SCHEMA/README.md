@@ -191,6 +191,9 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 
 - 실제 Prisma schema를 수정하면 이 폴더 문서도 함께 갱신한다.
 - migration을 추가하거나 이미 적용된 DB 구조를 바꾸면 관련 schema 문서와 API 문서를 함께 갱신한다.
+- 실제 DB table 이름은 Prisma model 이름과 동일한 PascalCase를 사용한다. 예: `User`, `UserOAuthAccount`, `UserActivationSnapshot`, `NotificationDeliveryAttempt`.
+- 신규 table을 만들 때 snake_case table 이름을 위한 `@@map("...")`을 사용하지 않는다. `@@map`은 기존 DB 호환, 외부 DB 연동, 명시적인 아키텍처 결정 문서가 있는 경우에만 예외적으로 허용한다.
+- migration 디렉터리/파일 이름은 snake_case를 유지하지만, `CREATE TABLE` 대상 이름은 Prisma model 이름과 동일한 PascalCase로 작성한다.
 - table/column을 추가할 때 역할, nullable 여부, 기본값, 관계, index 의도를 기록한다.
 - 시간 column을 추가하거나 API 시간 필드를 설계할 때는 `TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 - `createdAt`, `updatedAt` 같은 시스템 시각은 UTC 기준으로 저장한다.
