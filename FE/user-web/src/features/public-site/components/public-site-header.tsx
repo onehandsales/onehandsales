@@ -178,12 +178,6 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0] sm:inline-flex"
-            to={publicSitePath("/signup")}
-          >
-            {copy.common.nav.freeCta}
-          </Link>
           <button
             className="h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] hover:text-[#111111] md:px-3"
             onClick={handleLogin}
@@ -191,6 +185,12 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
           >
             {copy.common.nav.login}
           </button>
+          <Link
+            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0] sm:inline-flex"
+            to={publicSitePath("/signup")}
+          >
+            {copy.common.nav.freeCta}
+          </Link>
         </div>
       </div>
     </header>
