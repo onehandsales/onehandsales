@@ -143,7 +143,7 @@ function HeaderMobileMenuPanel({
     <div
       aria-label={copy.common.menuAria}
       aria-modal="true"
-      className="fixed inset-0 z-[60] flex min-h-dvh flex-col overflow-y-auto bg-white text-[#111111] xl:hidden"
+      className="fixed inset-0 z-[60] flex min-h-dvh flex-col overflow-hidden bg-white text-[#111111] xl:hidden"
       id="public-site-mobile-menu"
       role="dialog"
     >
@@ -166,7 +166,7 @@ function HeaderMobileMenuPanel({
             {copy.common.nav.login}
           </button>
           <Link
-            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0] sm:inline-flex"
+            className="inline-flex h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0]"
             onClick={onClose}
             to={toPublicPath("/signup")}
           >
@@ -183,7 +183,7 @@ function HeaderMobileMenuPanel({
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1120px] flex-1 px-6 py-7 sm:px-8 lg:px-10 lg:py-10">
+      <div className="mx-auto w-full max-w-[1120px] flex-1 overflow-y-auto px-6 py-7 sm:px-8 lg:px-10 lg:py-10">
         <nav
           aria-label={copy.common.menuAria}
           className="grid divide-y divide-[#eeeeec] border-y border-[#eeeeec]"
@@ -230,6 +230,25 @@ function HeaderMobileMenuPanel({
             {copy.common.nav.contact}
           </Link>
         </nav>
+      </div>
+
+      <div className="shrink-0 border-t border-[#eeeeec] bg-white px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+        <div className="mx-auto grid w-full max-w-[1120px] grid-cols-2 gap-3">
+          <Link
+            className="inline-flex h-11 min-w-0 items-center justify-center rounded-[6px] bg-[#4880EE] px-4 text-center text-[14px] font-normal text-white transition-colors hover:bg-[#336FE0]"
+            onClick={onClose}
+            to={toPublicPath("/download")}
+          >
+            {copy.common.nav.downloadApp}
+          </Link>
+          <button
+            className="inline-flex h-11 min-w-0 items-center justify-center rounded-[6px] bg-[#EAF2FF] px-4 text-center text-[14px] font-normal text-[#0075DE] transition-colors hover:bg-[#DCEBFF]"
+            onClick={onLoginClick}
+            type="button"
+          >
+            {copy.common.nav.login}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -418,7 +437,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             {copy.common.nav.login}
           </button>
           <Link
-            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0] sm:inline-flex"
+            className="inline-flex h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0]"
             to={publicSitePath("/signup")}
           >
             {copy.common.nav.freeCta}

@@ -365,7 +365,7 @@ export function PublicCtaPanel({
             >
               {primaryAction ? (
                 <Link
-                  className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#0075DE] px-4 text-[13px] font-normal text-white hover:bg-[#006AC8]"
+                  className="inline-flex h-9 items-center gap-2 rounded-[6px] bg-[#4880EE] px-4 text-[13px] font-normal text-white hover:bg-[#336FE0]"
                   to={publicSitePath(primaryAction.to)}
                 >
                   {primaryAction.label}

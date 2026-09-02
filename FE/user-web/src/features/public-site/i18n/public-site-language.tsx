@@ -43,6 +43,7 @@ type PublicSiteCopy = {
       readonly resources: string;
       readonly pricing: string;
       readonly contact: string;
+      readonly downloadApp: string;
       readonly freeCta: string;
       readonly login: string;
     };
@@ -200,6 +201,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         resources: "리소스",
         pricing: "요금제",
         contact: "문의하기",
+        downloadApp: "앱 다운로드",
         freeCta: "OneHand 시작",
         login: "로그인",
       },
@@ -677,6 +679,7 @@ function makeEnglishCopy(copy: {
       resources: "Resources",
       pricing: copy.pricing,
       contact: copy.contact,
+      downloadApp: "Download App",
       freeCta: "Get OneHand",
       login: "Log in",
     },
