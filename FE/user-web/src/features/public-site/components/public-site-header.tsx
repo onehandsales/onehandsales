@@ -242,7 +242,7 @@ function HeaderMobileMenuPanel({
             {copy.common.nav.downloadApp}
           </Link>
           <button
-            className="inline-flex h-11 min-w-0 items-center justify-center rounded-[6px] bg-[#EAF2FF] px-4 text-center text-[14px] font-normal text-[#0075DE] transition-colors hover:bg-[#DCEBFF]"
+            className="inline-flex h-11 min-w-0 items-center justify-center rounded-[6px] bg-[#F2F2EF] px-4 text-center text-[14px] font-normal text-[#4880EE] transition-colors hover:bg-[#e8e8e4]"
             onClick={onLoginClick}
             type="button"
           >
