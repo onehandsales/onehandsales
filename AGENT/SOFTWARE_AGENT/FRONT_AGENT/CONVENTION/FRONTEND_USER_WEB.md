@@ -78,6 +78,12 @@
 ## 8. 스타일과 UI
 
 - Tailwind CSS를 기본 스타일링 도구로 사용한다.
+- 반응형 breakpoint는 Tailwind CSS 3 기본값을 따른다. 별도 `theme.screens` override를 만들지 않는다.
+- User Web 반응형은 mobile-first로 작성한다. 기본 class는 모바일/좁은 화면 기준이고, `sm:`, `md:`, `lg:`, `xl:`, `2xl:` prefix로 넓은 화면을 점진 확장한다.
+- Tailwind 기본 breakpoint 기준은 `sm` 640px 이상, `md` 768px 이상, `lg` 1024px 이상, `xl` 1280px 이상, `2xl` 1536px 이상이다.
+- `max-[...]`, `min-[...]` 같은 임의 breakpoint는 제품 요구가 명확한 예외 상황에만 사용하고, 사용 사유를 해당 구현 또는 문서에 남긴다.
+- 공개 사이트 헤더는 desktop nav가 필요한 정보량 때문에 `xl` 이상에서만 중앙 nav를 노출한다.
+- 공개 사이트 헤더의 액션 노출은 `0~639px`: 로고 + 햄버거, `640~1023px`: 로고 + `Get OneHand` + 햄버거, `1024~1279px`: 로고 + `Log in` + `Get OneHand` + 햄버거, `1280px 이상`: 로고 + 중앙 nav + `Log in` + `Get OneHand`를 기준으로 한다.
 - 기본 UI 폰트는 Notion-like 다국어 스택을 기준으로 한다: `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`.
 - 이 폰트 기준은 현재 노출 언어인 한국어, 영어 US, 영어 Canada에 적용하고, 추후 확장 후보인 일본어, 영어 UK/Singapore/Australia에도 재사용한다.
 - 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
