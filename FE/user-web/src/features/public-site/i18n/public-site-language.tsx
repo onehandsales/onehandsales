@@ -35,6 +35,7 @@ type MenuColumnCopy = readonly [string, ...string[]];
 type PublicSiteCopy = {
   readonly common: {
     readonly logoAria: string;
+    readonly menuAria: string;
     readonly nav: {
       readonly product: string;
       readonly solutions: string;
@@ -190,6 +191,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
   ko: {
     common: {
       logoAria: "OneHand 홈",
+      menuAria: "메뉴 열기",
       nav: {
         product: "제품",
         solutions: "용도별",
@@ -665,6 +667,7 @@ function makeEnglishCopy(copy: {
 }): PublicSiteCopy {
   const common: PublicSiteCopy["common"] = {
     logoAria: "OneHand home",
+    menuAria: "Open menu",
     nav: {
       product: "Products",
       solutions: "Use Cases",

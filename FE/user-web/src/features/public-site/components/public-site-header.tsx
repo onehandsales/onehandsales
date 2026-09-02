@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
@@ -126,7 +126,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
-      <div className="flex h-14 w-full items-center justify-between px-4 md:px-5">
+      <div className="flex h-14 w-full items-center justify-between px-[14px]">
         <Link
           aria-label={copy.common.logoAria}
           className="flex h-9 w-9 items-center justify-center text-[#111111]"
@@ -135,7 +135,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
           <OneHandLogoMark className="h-9 w-9" />
         </Link>
 
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-normal text-[#4b4b48] md:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-normal text-[#4b4b48] xl:flex">
           <HeaderTextDropdown
             columnRoutes={productMenuTargets}
             columns={copy.common.productMenuColumns}
@@ -179,7 +179,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
         <div className="flex items-center gap-2">
           <button
-            className="h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] hover:text-[#111111] md:px-3"
+            className="hidden h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] hover:text-[#111111] md:px-3 lg:block"
             onClick={handleLogin}
             type="button"
           >
@@ -191,6 +191,13 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
           >
             {copy.common.nav.freeCta}
           </Link>
+          <button
+            aria-label={copy.common.menuAria}
+            className="grid h-9 w-9 place-items-center rounded-[6px] text-[#4b4b48] transition-colors hover:bg-[#f2f2ef] hover:text-[#111111] xl:hidden"
+            type="button"
+          >
+            <Menu className="h-[25px] w-[25px]" />
+          </button>
         </div>
       </div>
     </header>
