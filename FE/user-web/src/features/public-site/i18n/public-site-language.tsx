@@ -36,6 +36,7 @@ type PublicSiteCopy = {
   readonly common: {
     readonly logoAria: string;
     readonly menuAria: string;
+    readonly menuCloseAria: string;
     readonly nav: {
       readonly product: string;
       readonly solutions: string;
@@ -192,6 +193,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
     common: {
       logoAria: "OneHand 홈",
       menuAria: "메뉴 열기",
+      menuCloseAria: "메뉴 닫기",
       nav: {
         product: "제품",
         solutions: "용도별",
@@ -668,6 +670,7 @@ function makeEnglishCopy(copy: {
   const common: PublicSiteCopy["common"] = {
     logoAria: "OneHand home",
     menuAria: "Open menu",
+    menuCloseAria: "Close menu",
     nav: {
       product: "Products",
       solutions: "Use Cases",

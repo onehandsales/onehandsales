@@ -1,10 +1,12 @@
-import { ChevronDown, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
 import { usePublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 
 type HeaderMenuColumn = readonly [string, ...string[]];
+type PublicSiteCopy = ReturnType<typeof usePublicSiteLanguage>["copy"];
 
 type HeaderTextDropdownProps = {
   readonly columnRoutes: readonly (readonly string[])[];
@@ -18,6 +20,22 @@ type HeaderTextDropdownProps = {
 
 type PublicSiteHeaderProps = {
   readonly onLogin?: () => void;
+};
+
+type HeaderMobileMenuPanelProps = {
+  readonly copy: PublicSiteCopy;
+  readonly onClose: () => void;
+  readonly onLogin: () => void;
+  readonly toPublicPath: (path: string) => string;
+};
+
+type HeaderMobileMenuSectionProps = {
+  readonly columnRoutes: readonly (readonly string[])[];
+  readonly columns: readonly HeaderMenuColumn[];
+  readonly fallbackPath: string;
+  readonly label: string;
+  readonly onNavigate: () => void;
+  readonly toPublicPath: (path: string) => string;
 };
 
 const productMenuTargets: readonly (readonly string[])[] = [
@@ -108,11 +126,192 @@ function HeaderTextDropdown({
   );
 }
 
+// 기능 : 공개 사이트 햄버거 메뉴의 텍스트 중심 전체 화면 panel을 렌더링합니다.
+function HeaderMobileMenuPanel({
+  copy,
+  onClose,
+  onLogin,
+  toPublicPath,
+}: HeaderMobileMenuPanelProps) {
+  const onLoginClick = () => {
+    onClose();
+    onLogin();
+  };
+
+  return (
+    <div
+      aria-label={copy.common.menuAria}
+      aria-modal="true"
+      className="fixed inset-0 z-[60] flex min-h-dvh flex-col overflow-y-auto bg-white text-[#111111] xl:hidden"
+      id="public-site-mobile-menu"
+      role="dialog"
+    >
+      <div className="flex h-14 shrink-0 items-center justify-between px-[14px]">
+        <Link
+          aria-label={copy.common.logoAria}
+          className="flex h-9 w-9 items-center justify-center text-[#111111]"
+          onClick={onClose}
+          to={toPublicPath("/")}
+        >
+          <OneHandLogoMark className="h-9 w-9" />
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <button
+            className="hidden h-8 rounded-[6px] px-2 text-[13px] font-normal text-[#4b4b48] hover:bg-[#f2f2ef] hover:text-[#111111] md:px-3 lg:block"
+            onClick={onLoginClick}
+            type="button"
+          >
+            {copy.common.nav.login}
+          </button>
+          <Link
+            className="hidden h-8 items-center rounded-[6px] bg-[#4880EE] px-3 text-[13px] font-normal text-white hover:bg-[#336FE0] sm:inline-flex"
+            onClick={onClose}
+            to={toPublicPath("/signup")}
+          >
+            {copy.common.nav.freeCta}
+          </Link>
+          <button
+            aria-label={copy.common.menuCloseAria}
+            className="grid h-9 w-9 place-items-center rounded-[6px] text-[#111111] transition-colors hover:bg-[#f2f2ef]"
+            onClick={onClose}
+            type="button"
+          >
+            <X className="h-[25px] w-[25px]" />
+          </button>
+        </div>
+      </div>
+
+      <div className="mx-auto w-full max-w-[1120px] flex-1 px-6 py-7 sm:px-8 lg:px-10 lg:py-10">
+        <nav
+          aria-label={copy.common.menuAria}
+          className="grid divide-y divide-[#eeeeec] border-y border-[#eeeeec]"
+        >
+          <HeaderMobileMenuSection
+            columnRoutes={productMenuTargets}
+            columns={copy.common.productMenuColumns}
+            fallbackPath="/features"
+            label={copy.common.nav.product}
+            onNavigate={onClose}
+            toPublicPath={toPublicPath}
+          />
+          <HeaderMobileMenuSection
+            columnRoutes={solutionMenuTargets}
+            columns={copy.common.solutionMenuColumns}
+            fallbackPath="/solutions"
+            label={copy.common.nav.solutions}
+            onNavigate={onClose}
+            toPublicPath={toPublicPath}
+          />
+          <HeaderMobileMenuSection
+            columnRoutes={resourceMenuTargets}
+            columns={copy.common.resourceMenuColumns}
+            fallbackPath="/help"
+            label={copy.common.nav.resources}
+            onNavigate={onClose}
+            toPublicPath={toPublicPath}
+          />
+          <Link
+            className="flex min-h-[64px] items-center rounded-[6px] px-2 py-4 text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]"
+            onClick={onClose}
+            to={toPublicPath("/pricing")}
+          >
+            {copy.common.nav.pricing}
+          </Link>
+          <Link
+            className="flex min-h-[64px] items-center rounded-[6px] px-2 py-4 text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]"
+            onClick={onClose}
+            to={toPublicPath("/contact")}
+          >
+            {copy.common.nav.contact}
+          </Link>
+        </nav>
+      </div>
+    </div>
+  );
+}
+
+function HeaderMobileMenuSection({
+  columnRoutes,
+  columns,
+  fallbackPath,
+  label,
+  onNavigate,
+  toPublicPath,
+}: HeaderMobileMenuSectionProps) {
+  return (
+    <details className="group">
+      <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4 rounded-[6px] px-2 py-4 text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111] [&::-webkit-details-marker]:hidden">
+        <span>{label}</span>
+        <ChevronDown className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="grid gap-6 pb-7 lg:grid-cols-3">
+        {columns.map((column, columnIndex) => {
+          const [title, ...links] = column;
+          const routes = columnRoutes[columnIndex] ?? [];
+
+          return (
+            <div className="min-w-0" key={title}>
+              <p className="text-[12px] font-normal text-[#777770]">
+                {title}
+              </p>
+              <ul className="mt-3 grid gap-1">
+                {links.map((linkLabel, linkIndex) => (
+                  <li key={linkLabel}>
+                    <Link
+                      className="block rounded-[6px] px-2 py-1.5 text-[16px] font-normal leading-6 text-[#333330] transition-colors hover:bg-[#F2F2EF] hover:text-[#333330]"
+                      onClick={onNavigate}
+                      to={toPublicPath(routes[linkIndex] ?? fallbackPath)}
+                    >
+                      {linkLabel}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </details>
+  );
+}
+
 // 기능 : 공개 사이트 상단 고정 헤더와 주요 내비게이션을 렌더링합니다.
 export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
   const navigate = useNavigate();
   const { copy } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    const desktopMediaQuery = window.matchMedia("(min-width: 1280px)");
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    const closeOnDesktop = () => {
+      if (desktopMediaQuery.matches) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", closeOnEscape);
+    desktopMediaQuery.addEventListener("change", closeOnDesktop);
+    closeOnDesktop();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+      desktopMediaQuery.removeEventListener("change", closeOnDesktop);
+    };
+  }, [isMobileMenuOpen]);
 
   // 기능 : 로그인 버튼 클릭 시 지정된 핸들러 또는 locale 로그인 페이지 이동을 실행합니다.
   const handleLogin = () => {
@@ -192,14 +391,26 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             {copy.common.nav.freeCta}
           </Link>
           <button
+            aria-controls="public-site-mobile-menu"
+            aria-expanded={isMobileMenuOpen}
             aria-label={copy.common.menuAria}
             className="grid h-9 w-9 place-items-center rounded-[6px] text-[#4b4b48] transition-colors hover:bg-[#f2f2ef] hover:text-[#111111] xl:hidden"
+            onClick={() => setIsMobileMenuOpen(true)}
             type="button"
           >
             <Menu className="h-[25px] w-[25px]" />
           </button>
         </div>
       </div>
+
+      {isMobileMenuOpen ? (
+        <HeaderMobileMenuPanel
+          copy={copy}
+          onClose={() => setIsMobileMenuOpen(false)}
+          onLogin={handleLogin}
+          toPublicPath={publicSitePath}
+        />
+      ) : null}
     </header>
   );
 }
