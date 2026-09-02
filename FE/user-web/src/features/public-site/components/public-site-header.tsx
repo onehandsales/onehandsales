@@ -35,6 +35,7 @@ type HeaderMobileMenuSectionProps = {
   readonly fallbackPath: string;
   readonly label: string;
   readonly onNavigate: () => void;
+  readonly sectionId: string;
   readonly toPublicPath: (path: string) => string;
 };
 
@@ -193,6 +194,7 @@ function HeaderMobileMenuPanel({
             fallbackPath="/features"
             label={copy.common.nav.product}
             onNavigate={onClose}
+            sectionId="products"
             toPublicPath={toPublicPath}
           />
           <HeaderMobileMenuSection
@@ -201,6 +203,7 @@ function HeaderMobileMenuPanel({
             fallbackPath="/solutions"
             label={copy.common.nav.solutions}
             onNavigate={onClose}
+            sectionId="solutions"
             toPublicPath={toPublicPath}
           />
           <HeaderMobileMenuSection
@@ -209,6 +212,7 @@ function HeaderMobileMenuPanel({
             fallbackPath="/help"
             label={copy.common.nav.resources}
             onNavigate={onClose}
+            sectionId="resources"
             toPublicPath={toPublicPath}
           />
           <Link
@@ -237,42 +241,71 @@ function HeaderMobileMenuSection({
   fallbackPath,
   label,
   onNavigate,
+  sectionId,
   toPublicPath,
 }: HeaderMobileMenuSectionProps) {
-  return (
-    <details className="group">
-      <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4 rounded-[6px] px-2 py-4 text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111] [&::-webkit-details-marker]:hidden">
-        <span>{label}</span>
-        <ChevronDown className="h-5 w-5 shrink-0 transition-transform group-open:rotate-180" />
-      </summary>
-      <div className="grid gap-6 pb-7 lg:grid-cols-3">
-        {columns.map((column, columnIndex) => {
-          const [title, ...links] = column;
-          const routes = columnRoutes[columnIndex] ?? [];
+  const [isOpen, setIsOpen] = useState(false);
+  const contentId = `public-site-mobile-menu-${sectionId}`;
 
-          return (
-            <div className="min-w-0" key={title}>
-              <p className="text-[12px] font-normal text-[#777770]">
-                {title}
-              </p>
-              <ul className="mt-3 grid gap-1">
-                {links.map((linkLabel, linkIndex) => (
-                  <li key={linkLabel}>
-                    <Link
-                      className="block rounded-[6px] px-2 py-1.5 text-[16px] font-normal leading-6 text-[#333330] transition-colors hover:bg-[#F2F2EF] hover:text-[#333330]"
-                      onClick={onNavigate}
-                      to={toPublicPath(routes[linkIndex] ?? fallbackPath)}
-                    >
-                      {linkLabel}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+  return (
+    <section>
+      <button
+        aria-controls={contentId}
+        aria-expanded={isOpen}
+        className="flex min-h-[64px] w-full cursor-pointer items-center justify-between gap-4 rounded-[6px] px-2 py-4 text-left text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]"
+        onClick={() => setIsOpen((current) => !current)}
+        type="button"
+      >
+        <span>{label}</span>
+        <ChevronDown
+          className={[
+            "h-5 w-5 shrink-0 transition-transform duration-200 ease-out motion-reduce:transition-none",
+            isOpen ? "rotate-180" : "",
+          ].join(" ")}
+        />
+      </button>
+      <div
+        aria-hidden={!isOpen}
+        className={[
+          "grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+          isOpen
+            ? "grid-rows-[1fr] opacity-100"
+            : "pointer-events-none grid-rows-[0fr] opacity-0",
+        ].join(" ")}
+        id={contentId}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="grid gap-6 pb-7 lg:grid-cols-3">
+            {columns.map((column, columnIndex) => {
+              const [title, ...links] = column;
+              const routes = columnRoutes[columnIndex] ?? [];
+
+              return (
+                <div className="min-w-0" key={title}>
+                  <p className="text-[12px] font-normal text-[#777770]">
+                    {title}
+                  </p>
+                  <ul className="mt-3 grid gap-1">
+                    {links.map((linkLabel, linkIndex) => (
+                      <li key={linkLabel}>
+                        <Link
+                          className="block rounded-[6px] px-2 py-1.5 text-[16px] font-normal leading-6 text-[#333330] transition-colors hover:bg-[#F2F2EF] hover:text-[#333330]"
+                          onClick={onNavigate}
+                          tabIndex={isOpen ? undefined : -1}
+                          to={toPublicPath(routes[linkIndex] ?? fallbackPath)}
+                        >
+                          {linkLabel}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </details>
+    </section>
   );
 }
 
