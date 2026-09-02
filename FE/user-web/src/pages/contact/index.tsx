@@ -405,7 +405,7 @@ export function ContactPage() {
   return (
     <main className="min-h-dvh overflow-x-hidden bg-white text-[#050505]">
       <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
-        <div className="flex h-14 w-full items-center px-4 md:px-5">
+        <div className="flex h-14 w-full items-center px-[14px]">
           <Link
             aria-label={publicSiteCopy.common.logoAria}
             className="flex h-9 w-9 items-center justify-center text-[#111111]"
@@ -416,8 +416,8 @@ export function ContactPage() {
         </div>
       </header>
 
-      <section className="mx-auto grid min-h-dvh w-full max-w-[1100px] items-center gap-10 px-4 py-24 sm:px-6 lg:grid-cols-[minmax(0,520px)_minmax(300px,1fr)] lg:px-8">
-        <div className="min-w-0 w-full">
+      <section className="mx-auto grid min-h-dvh w-full max-w-[1100px] items-start gap-10 px-[14px] pb-10 pt-24 sm:px-6 lg:grid-cols-[minmax(0,520px)_minmax(300px,1fr)] lg:items-center lg:px-8 lg:py-24">
+        <div className="min-w-0 w-full max-w-[508px] justify-self-center lg:max-w-none lg:justify-self-auto">
           {isSubmitted ? (
             <ContactDone
               copy={copy}
@@ -499,7 +499,7 @@ function EmailStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]">
+      <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.email.title}
       </h1>
 
@@ -519,7 +519,7 @@ function EmailStep({
       </label>
 
       <PrimaryButton
-        className="mt-14"
+        className="mt-8 sm:mt-14"
         disabled={isNextDisabled}
         label={copy.next}
         type="submit"
@@ -543,7 +543,7 @@ function SizeStep({
       aria-labelledby="contact-size-title"
     >
       <h1
-        className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]"
+        className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
         id="contact-size-title"
       >
         {copy.size.title}
@@ -594,7 +594,7 @@ function ProfileStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]">
+      <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.profile.title}
       </h1>
       <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
@@ -704,7 +704,7 @@ function ContextStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]">
+      <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.context.title}
       </h1>
       <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
@@ -765,7 +765,7 @@ function ContactDone({
         <Check className="h-5 w-5" />
       </div>
       <h1
-        className="mt-8 break-keep text-[35px] font-normal leading-[1.12] tracking-normal text-[#050505]"
+        className="mt-8 break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
         id="contact-done-title"
       >
         {copy.done.title}
