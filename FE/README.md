@@ -6,6 +6,7 @@ Frontend 앱은 제품 사용 면에 따라 분리한다.
 
 - `user-web`: 사용자가 직접 쓰는 Web MVP
 - `admin-web`: 운영자를 위한 Admin Web 앱
+- `mobile-app`: 사용자가 직접 쓰는 Expo/React Native 모바일 앱
 
 각 앱은 자기 package dependency를 가진다. monorepo root에는 공유 frontend package를 두지 않는다.
 
@@ -13,7 +14,7 @@ Frontend 앱은 제품 사용 면에 따라 분리한다.
 
 각 앱은 별도 터미널에서 실행한다.
 
-전제 조건: Node.js 24 LTS가 활성화되어 있어야 한다. 각 앱은 `.nvmrc`와 `engines` 기준을 Node 24로 맞춘다.
+전제 조건: Node.js 24 LTS가 활성화되어 있어야 한다. 각 앱은 `package.json`의 `engines` 기준을 Node 24로 맞춘다.
 
 User Web 실행:
 
@@ -33,14 +34,24 @@ pnpm install
 pnpm run dev
 ```
 
+Mobile App 실행:
+
+```bash
+cd FE/mobile-app
+# 문서 확정 이후 재생성될 수 있으므로 현재 코드를 정본 구조로 보지 않는다.
+pnpm install
+pnpm run start
+```
+
 로컬 포트:
 
 - User Web: `http://localhost:5173` (`/{locale}` 공개 진입, `/app` 보호 앱)
 - Admin Web: `http://localhost:5174`
+- Mobile App: Expo dev server 기준. 실제 기기/시뮬레이터 실행은 Expo CLI 안내를 따른다.
 
-두 frontend 앱은 Vercel에서 별도 프로젝트로 배포한다.
+User Web과 Admin Web은 Vercel에서 별도 프로젝트로 배포한다. Mobile App의 App Store/Play Store/EAS Build 정책은 아직 확정하지 않는다.
 
-환경 변수 정본은 각 앱의 `.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. `VITE_*` 변수명은 공통 환경 문서를 기준으로 확인한다.
+환경 변수 정본은 각 앱의 `.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. User Web/Admin Web의 `VITE_*` 변수명은 공통 환경 문서를 기준으로 확인하고, Mobile App의 public config와 secret 금지 기준은 `../AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/BUILD_AND_DISTRIBUTION.md`를 함께 따른다.
 
 ## 검증
 
@@ -64,6 +75,13 @@ pnpm run build
 pnpm run test:e2e
 ```
 
+Mobile App:
+
+```bash
+cd FE/mobile-app
+pnpm run typecheck
+```
+
 Playwright smoke E2E는 Backend와 외부 Provider를 route mock으로 대체한다.
 
 - User Web E2E: login, company, contact, product, deal, schedule, meeting note core flow
@@ -82,6 +100,8 @@ Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 
 
 User Web app access token은 localStorage와 API client memory에 저장하고, refresh token은 Backend가 httpOnly cookie로 설정한다. 로그아웃은 Backend app session 폐기, Supabase `signOut`, localStorage token 삭제 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`. 실제 provider credential 검증은 별도 smoke에서 다룬다.
 
+Mobile App의 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이다. 모바일은 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `/api/me` 계약을 기준으로 하며, `mobileRefreshToken`은 secure storage의 `onehand.mobile.auth.mobileRefreshToken` key에만 저장한다. access token은 메모리에만 보관하고, API client는 `TokenProvider`로 access token을 주입받는다.
+
 Provider 현황:
 
 - Google OAuth 가입/로그인: QA 통과.
@@ -93,6 +113,13 @@ Provider 현황:
 - 화면 폭 `767px 이하`: `mobile`
 - 그 외: `personal_laptop`
 - `replaceExistingDevice=true`로 exchange하므로 같은 slot의 다른 브라우저/기기 로그인은 기존 slot 기기와 활성 session을 교체한다.
+
+현재 Mobile App device slot 정책:
+
+- `deviceSlot`은 항상 `mobile`
+- 사용자당 활성 모바일 기기는 1대
+- 새 모바일 기기 로그인 시 기존 모바일 기기와 활성 session 교체
+- exchange 요청은 `replaceExistingDevice=true`
 
 ## 현재 구현 상태
 
@@ -114,6 +141,13 @@ Admin Web:
 - 실제 Backend 연동 완료: 11 Admin Operation foundation. 활성 route는 `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/account-requests`, `/trash/recovery-requests`, `/analytics`, `/audit-logs`, `/system`이다.
 - 후속 경계: `/organizations`, `/subscriptions`, `/support`는 `/`로 redirect한다. Billing Admin, subscription/payment/refund/invoice, B2B tenant/team admin은 `TODO/PADDLE_PLAN` 또는 별도 전략 확정 전까지 열지 않는다.
 
+Mobile App:
+
+- 현재 `FE/mobile-app`은 문서 확정 이후 재생성할 수 있다. 필요한 이미지/로고 asset은 선별 보존할 수 있다.
+- 모바일 1차 범위는 앱 실행, 로그인/회원가입, Backend 모바일 인증 세션 교환, 앱 시작 시 세션 복구, `/api/me` 확인, 최소 `HomeScreen`, 로그아웃이다.
+- CRM 전체 화면은 1차 범위에 포함하지 않는다.
+- 로그인/회원가입 UX는 user-web의 브라우저 모바일 auth 화면을 기준으로 React Native + NativeWind로 재구현한다.
+
 ## 정본 규칙
 
 User Web 정본:
@@ -129,3 +163,11 @@ Admin Web 정본:
 공통 주석/로깅:
 
 - `../AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+
+Mobile App 정본:
+
+- `../AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `../AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `../AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `../AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/MOBILE_APP.md`
+- `../AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/AUTH_AND_STORAGE.md`

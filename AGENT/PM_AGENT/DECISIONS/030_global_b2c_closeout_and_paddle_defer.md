@@ -1,6 +1,7 @@
 # 030 Global B2C Closeout And Paddle Defer
 
 Date: 2026-08-11
+Updated: 2026-09-03
 
 ## Decision
 
@@ -16,6 +17,8 @@ Global B2C 01~11 기능 선구현 로드맵은 구현과 QA closeout 기준으�
 4. 베타 피드백 반영
 5. 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책 확정
 6. Paddle Billing 구현 착수 여부와 범위 확정
+
+단, 2026-09-03에 확정한 Mobile App 인증 foundation은 결제/CRM 신규 기능 확장이 아니라 네이티브 앱 기반을 여는 별도 범위다. 모바일 1차 범위는 로그인/회원가입, Backend 모바일 인증 세션, `/api/me` 확인, 최소 홈, 로그아웃으로 제한한다.
 
 ## Reason
 
@@ -69,3 +72,5 @@ Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`

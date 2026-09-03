@@ -6,6 +6,8 @@
 
 2026-08-24 기준 우선 타겟 국가는 한국, 미국, 캐나다다. 공개/인증 화면의 언어 선택 UI는 `ko`, `en-us`, `en-ca`만 노출한다. `ja`, `en-gb`, `en-sg`, `en-au` locale과 일본/영국/싱가포르/호주 시장은 추후 확장 후보로만 보류한다. 로그인 이후 `/app` 관리 화면은 `ko-KR`, `en` 1차 지원으로 운영한다.
 
+2026-09-03 기준 모바일 앱은 Expo/React Native 기반으로 문서화한다. 현재 모바일 1차 범위는 전체 CRM 구현이 아니라 로그인/회원가입, Backend 모바일 인증 세션, 앱 시작 시 세션 복구, `/api/me`, 최소 `HomeScreen`, 로그아웃이다.
+
 ## Production Origins
 
 2026-08-25 기준 production 공개 URL:
@@ -15,6 +17,7 @@
 - User Web Vercel default/legacy: `https://onehandsales.vercel.app`
 - Admin Web: `https://onehandsales-admin.vercel.app`
 - Backend API: `https://onehandsales-production.up.railway.app`
+- Mobile App: App Store, Play Store, EAS Build, production deep link 정책은 아직 확정하지 않는다.
 
 `onehandsales.com`은 Vercel에서 구매/관리하며 User Web에 연결되어 있다. Frontend domain 변경은 Railway Backend, Supabase project/database region, provider secret을 자동으로 바꾸지 않는다. 상세 환경 변수 기준은 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`, Supabase/Auth provider 설정은 `BE/SUPABASE_SETUP.md`를 따른다.
 
@@ -25,9 +28,14 @@ AGENT/
   PM_AGENT/
   UXUI_AGENT/
   SOFTWARE_AGENT/
+    FRONT_AGENT/
+    MOBILE_AGENT/
+    BACKEND_AGENT/
+    DB_SCHEMA/
 FE/
   user-web/
   admin-web/
+  mobile-app/
 BE/
 TODO/
 TODO_LOG/
@@ -64,7 +72,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공하고, Company/Contact/Product 상세에서는 연결 딜 조회 API를 사용한다. DataImport는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다. Admin API는 현재 `GET /admin/api/me`만 구현되어 있으며 관리자 페이지와 운영 조회 API는 후속 단계에서 만든다.
+현재 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote, Search, Trash, DataImport 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공하고, Company/Contact/Product 상세에서는 연결 딜 조회 API를 사용한다. DataImport는 회사/담당자/제품/딜 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 제공한다. Admin API는 11 Admin Operation foundation 기준으로 `/admin/api/me`, 사용자 조회, 사용자 도메인/휴지통 조회, provider failure, analytics, account request, Trash recovery request, audit log, system operation check 계열을 제공한다.
 
 ### 2. User Web
 
@@ -81,7 +89,7 @@ User Web의 공개/인증 canonical URL은 locale prefix를 사용한다. 예: `
 
 명함 스캔은 `/app/business-cards`에서 실제 API와 연결되어 있다. 사용자는 이미지를 업로드한 뒤 `명함스캔` 진행 표시를 보고, 추출 결과를 확인/수정한 후 회사/담당자로 저장한다.
 
-데이터 불러오기는 `/app/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품/딜 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. 필수값 누락 메시지는 누락된 셀에만 표시한다. `/app/export`의 범용 Export 화면과 `/app/notifications`는 Backend 구현 전까지 숨긴다. 회사/담당자/제품/딜/회의록 생성은 목록 맥락의 `/new` 라우트와 패널에서 확대한 `/new/full` 라우트를 함께 가진다.
+데이터 불러오기는 `/app/import`에서 실제 API와 연결되어 있다. 사용자는 회사/담당자/제품/딜 양식을 내려받고, CSV/XLSX 파일을 업로드한 뒤 AI 매핑과 row 검증 결과를 확인/수정하고 확정 저장할 수 있다. 필수값 누락 메시지는 누락된 셀에만 표시한다. `/app/export`의 범용 Export 화면은 현재 Backend 방향이 아니므로 숨긴다. `/app/notifications`는 실제 Notification API와 연결되어 있다. 회사/담당자/제품/딜/회의록 생성은 목록 맥락의 `/new` 라우트와 패널에서 확대한 `/new/full` 라우트를 함께 가진다.
 
 ### 3. Admin Web
 
@@ -94,7 +102,20 @@ pnpm run dev
 
 Admin Web URL: `http://localhost:5174`
 
-Admin Web은 현재 local mock admin/user token으로 `/admin/api/me` 보호 라우트를 검증한다. `admin-query` feature에는 대시보드, 사용자/도메인 목록, 감사 로그, 민감 원문 조회 준비 코드가 있으나 현재 router와 메뉴에서 노출하지 않는다. 관리자 페이지와 Backend Admin query API를 후속 구현하기 전까지 운영 route는 root redirect와 mock/placeholder 경계를 명확히 둔다.
+Admin Web은 11 Admin Operation foundation 기준의 운영 route를 제공한다. 활성 route는 `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/account-requests`, `/trash/recovery-requests`, `/analytics`, `/audit-logs`, `/system`이다. `/organizations`, `/subscriptions`, `/support`는 Billing Admin, B2B tenant/team admin, support console 확정 전까지 `/`로 redirect한다.
+
+### 4. Mobile App
+
+```bash
+cd FE/mobile-app
+# 현재 코드는 문서 확정 이후 재생성할 수 있다.
+pnpm install
+pnpm run start
+```
+
+Mobile App은 Expo/React Native 기반이다. 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이며, 모바일 인증 API는 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `/api/me` 계약을 기준으로 한다. `mobileRefreshToken`은 secure storage의 `onehand.mobile.auth.mobileRefreshToken` key에만 저장하고, access token은 메모리에만 보관한다.
+
+모바일 로그인/회원가입 UX는 user-web의 브라우저 모바일 auth 화면을 기준으로 React Native + NativeWind로 재구현한다. CRM 전체 화면은 1차 범위에 포함하지 않는다. 정본 문서는 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`다.
 
 ## Verification
 
@@ -129,9 +150,16 @@ pnpm run lint
 pnpm run build
 ```
 
+Mobile App:
+
+```bash
+cd FE/mobile-app
+pnpm run typecheck
+```
+
 Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock으로 대체한다. User Web E2E는 5175 포트의 Vite dev server를 테스트용으로 사용한다. Admin Web의 `test:e2e` 스크립트와 파일은 남아 있지만 과거 운영 화면 기대값을 포함하므로, 현재 라우터 기준으로 갱신하기 전까지 Admin release gate는 `typecheck`, `lint`, `build`와 관리자 인증 수동 smoke다.
 
-2026-07-10 기준 BE `typecheck`, `lint`, `test`, `build`, FE/user-web `typecheck`, `lint`, `build`, `test:e2e`, FE/admin-web 선택 점검 `typecheck`, `lint`, `build`가 통과했다. 핵심 업무 happy path, URL locale smoke, API/security smoke도 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
+2026-07-10 기준 BE `typecheck`, `lint`, `test`, `build`, FE/user-web `typecheck`, `lint`, `build`, `test:e2e`, FE/admin-web 선택 점검 `typecheck`, `lint`, `build`가 통과했다. 핵심 업무 happy path, URL locale smoke, API/security smoke도 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Mobile App 인증 foundation QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## External Providers
 
@@ -157,8 +185,10 @@ DataImport 컬럼 자동 매핑도 별도 provider port 뒤에 있으며, 현재
 
 - 루트에는 `package.json`을 두지 않는다.
 - `FE`와 `BE`는 package dependency를 공유하지 않는다.
-- `FE/user-web`과 `FE/admin-web`은 별도 Frontend 앱이다.
+- `FE/user-web`, `FE/admin-web`, `FE/mobile-app`은 별도 Frontend 앱이다.
 - `BE`는 `/api/*`와 `/admin/api/*`를 제공하는 단일 NestJS 서버다.
-- 모바일 앱은 아직 만들지 않는다. MVP 이후 모바일 개발 때 추가한다.
+- 모바일 앱의 구현 기준은 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 따른다.
+- 모바일 앱은 Backend User API인 `/api/*`만 호출하고 `/admin/api/*`를 호출하지 않는다.
+- 모바일 앱은 Supabase DB/Storage에 직접 접근하지 않는다.
 - `AGENT`는 PM, UX/UI, Software 역할별 정본 문서 공간이다.
 - `TODO`, `TODO_LOG`, `IMAGE_SAMPLE`, `UX Design`은 작업/참고 자료이며 `AGENT`를 override하지 않는다.

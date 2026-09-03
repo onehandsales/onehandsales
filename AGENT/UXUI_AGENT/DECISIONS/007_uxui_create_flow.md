@@ -57,7 +57,7 @@ Deal:
 - 제품
 - 금액
 - 단계
-- 가능성
+- 가능성 optional. 현재 API/FE 필드가 없으므로 후속 범위가 열릴 때만 받는다.
 - 다음 행동 optional
 - 마감/예상 종료일 optional
 

@@ -1,49 +1,63 @@
 # 001 Mobile Login First Scope
 
-Date: 2026-09-02
+Date: 2026-09-03
 
-## 결정
+## 1. 결정
 
-모바일 앱은 React Native 기반으로 작성한다.
+모바일 1차 구현 범위는 사용자가 앱을 실행하고 로그인 또는 회원가입을 완료한 뒤 Backend 모바일 앱 세션을 얻고 `/api/me`를 확인하는 데까지로 제한한다.
 
-모바일 1차 구현 범위는 사용자가 앱을 실행하고 로그인 또는 회원가입을 완료한 뒤 Backend 앱 세션으로 `/api/me`를 확인하는 데까지로 제한한다.
+CRM 도메인 화면은 1차 범위에 포함하지 않는다.
 
-## 인증 기준
+## 2. 포함 범위
 
-- 현재 로그인 provider 구현은 User Web과 같은 Supabase OAuth 흐름을 사용할 수 있다.
-- Supabase는 앱의 영구 세션 저장소가 아니라 교체 가능한 external auth provider로 취급한다.
-- 모바일 앱은 Supabase access token을 Backend `POST /api/auth/exchange`에 전달하는 용도로만 사용한다.
-- token exchange 이후 모바일 앱의 인증 기준은 Backend가 발급한 OneHand app access token이다.
-- 모바일 앱은 Supabase access token을 business API 호출에 사용하지 않는다.
+- 앱 시작
+- 앱 시작 시 세션 복구
+- 로그인/회원가입 provider 선택
+- OAuth 진행 상태
+- OAuth callback 복귀
+- Backend `POST /api/auth/mobile/exchange`
+- Backend `POST /api/auth/mobile/refresh`
+- Backend `GET /api/me`
+- 최소 `HomeScreen`
+- Backend `POST /api/auth/mobile/logout`
+- 로그인 실패, 세션 만료, 네트워크 오류 상태
 
-## DB 접근 기준
+## 3. HomeScreen 기준
 
-- 모바일 앱은 PostgreSQL에 직접 연결하지 않는다.
-- 모바일 앱은 Prisma를 사용하지 않는다.
-- 모바일 앱은 `DATABASE_URL`, `DIRECT_URL`, Supabase service role key 같은 서버 전용 값을 보유하지 않는다.
-- 사용자 생성, OAuth 계정 연결, 기기 등록, 세션 생성은 Backend가 담당한다.
+1차 모바일 앱의 로그인 이후 첫 화면은 최소 `HomeScreen`으로 둔다.
 
-## Backend API 기준
+`HomeScreen`은 `/api/me` 호출 결과를 확인할 수 있는 수준으로만 구현한다.
 
-모바일 앱은 User Web과 같은 Backend API 계약을 따른다.
+표시 범위:
 
-```text
-POST /api/auth/exchange
-POST /api/auth/refresh
-POST /api/auth/logout
-GET /api/me
-```
+- 사용자 이름
+- 이메일
+- 인증 상태
+- 현재 모바일 기기 정보
+- 로그아웃 액션
 
-1차 구현에서 refresh 유지 방식은 최소화할 수 있다. 다만 로그인 유지 기능을 구현할 때는 모바일 OS 보안 저장소를 사용하고, 웹의 `localStorage` 전제를 가져오지 않는다.
+CRM 홈, 대시보드, 거래/회사/연락처 목록, 일정/회의록 요약은 1차 범위에 포함하지 않는다.
 
-## 후속 결정
+## 4. 제외 범위
 
-- Expo 사용 여부
-- iOS/Android 동시 지원 범위
-- deep link scheme과 universal link/app link 정책
-- 모바일 refresh token 전달 방식
-- biometric unlock 사용 여부
-- offline local draft 정책
-- push notification 정책
-- App Store, Play Store 배포 정책
+- 모바일 CRM 전체 화면
+- 회사/담당자/상품/딜/일정/회의록 CRUD
+- 명함 OCR
+- push notification
+- native contacts/calendar 연동
+- offline-first local draft
+- biometric unlock
+- App Store, Play Store 정식 배포 정책
+- Supabase 독립 전환 구현
 
+## 5. 이유
+
+현재 모바일 작업의 목표는 전체 CRM 기능 구현보다 모바일 앱의 기초 규칙을 먼저 확정하는 것이다.
+
+인증/세션/라우팅/저장소 정책이 확정되어야 이후 CRM 화면을 같은 구조로 확장할 수 있다.
+
+## 6. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

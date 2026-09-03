@@ -1,17 +1,31 @@
-# Mobile Architecture
+# Mobile Architecture 문서
 
-모바일 상세 아키텍처 문서는 아직 확정하지 않는다.
+## 1. 목적
 
-현재 단계에서는 `MOBILE_AGENT/DECISIONS/001_mobile_login_first_scope.md`와 `MOBILE_AGENT/CONVENTION/MOBILE_APP.md`를 우선 기준으로 삼는다.
+이 폴더는 `FE/mobile-app`의 React Native/Expo 앱 구조, 인증/세션 흐름, navigation, 테스트, 빌드/배포 기준을 관리한다.
 
-상세 아키텍처를 적립할 때는 최소한 다음 항목을 별도 문서로 분리한다.
+## 2. 현재 문서
 
-- React Native 앱 구조
-- auth/session adapter 구조
-- API client 구조
-- navigation 구조
-- secure storage 구조
-- deep link callback 구조
-- test strategy
-- native build/deployment 구조
+- `MOBILE_APP.md`
+- `AUTH_SESSION.md`
+- `NAVIGATION.md`
+- `TESTING.md`
+- `BUILD_AND_DISTRIBUTION.md`
 
+## 3. 기본 원칙
+
+- 모바일 앱은 Expo 기반 React Native 앱으로 작성한다.
+- `src/app`은 Expo Router route entry와 layout만 담당한다.
+- 실제 화면 구현, API 호출, hook, schema, type, business UI는 `src/features/<domain>`에 둔다.
+- Backend User API인 `/api/*`만 호출한다.
+- Admin API인 `/admin/api/*`는 호출하지 않는다.
+- Supabase는 인증 어댑터 경계 밖으로 퍼뜨리지 않는다.
+- 모바일 앱은 DB, Prisma, Supabase Storage에 직접 접근하지 않는다.
+
+## 4. 관련 문서
+
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`

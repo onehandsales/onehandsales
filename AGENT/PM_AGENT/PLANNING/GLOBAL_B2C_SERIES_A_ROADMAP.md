@@ -43,6 +43,8 @@
 - Mobile Field Use foundation
 - Admin Operation foundation
 
+2026-09-03 기준 네이티브 Mobile App 인증 foundation은 별도 1차 범위로 확정했다. 이는 로그인/회원가입, Backend 모바일 인증 세션, `/api/me`, 최소 홈, 로그아웃까지이며, 모바일 CRM 전체 화면은 아직 Series A급 확장 후보로 남긴다.
+
 하지만 글로벌 B2C 유료 제품으로 판매하기에는 아직 제품 유지보수, UX/UI 상품성, 베타 검증, 결제/구독/세금 정책 확정이 남아 있다.
 
 현재 바로 해야 할 일은 Paddle checkout 구현이 아니라 유지보수와 UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
@@ -73,7 +75,7 @@
 | MeetingNote AI/STT | draft 기능 완료 | transcript 저장 여부, provider call log, 품질 분석, 템플릿, 개인정보 정책 | AI 운영 고도화 |
 | BusinessCard OCR | 업로드 OCR 완료 | 모바일 카메라 촬영 UX, 다국가 전화번호 검증, provider error observability | 모바일/글로벌 강화 |
 | 민감정보/보안 | 기본 보호 | 자동 민감정보 감지, Admin 원문 조회 사유/감사, 민감 export 마스킹 | 유료 운영 신뢰 |
-| 모바일 앱 | 없음 | iOS/Android, push, 카메라, 음성 기록, 오프라인 임시 저장 | Series A급 확장 후보 |
+| 모바일 앱 | 인증 foundation 1차 범위 확정 | iOS/Android CRM 전체 화면, push, 카메라, 음성 기록, 오프라인 임시 저장 | Series A급 확장 후보 |
 | 제품 분석 | 09 Product Analytics와 11 Admin analytics foundation 완료 | paid conversion, churn, CAC, LTV, paywall funnel, AI cost/user | Paddle 이후 필수 |
 
 ## 4. 최종 완성 형태
@@ -194,7 +196,7 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 2. DealActivity timeline 고도화
 3. Google Calendar write/watch/export
 4. AI follow-up/next action 추천 고도화
-5. 모바일 앱 또는 강한 PWA
+5. 모바일 앱 인증 foundation 이후 CRM 앱 또는 강한 PWA
 6. 제품 분석과 paywall 실험
 
 ## 7. Series A급으로 가기 위한 추가 기능
@@ -287,6 +289,8 @@ Series A는 기능 수가 아니라 성장성과 반복 매출의 질로 판단�
 - `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
 - `TODO/PADDLE_PLAN/README.md`

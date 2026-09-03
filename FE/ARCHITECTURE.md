@@ -1,15 +1,16 @@
 # Frontend Architecture
 
-`FE`에는 독립적인 frontend 앱 두 개가 있다.
+`FE`에는 독립적인 frontend 앱 세 개가 있다.
 
 - `user-web`: 사용자가 직접 쓰는 responsive 영업 workflow 앱
 - `admin-web`: 운영자를 위한 desktop-first Admin console
+- `mobile-app`: 사용자가 직접 쓰는 Expo/React Native 모바일 앱
 
 루트 frontend package와 공유 frontend package는 만들지 않는다. 각 앱은 자기 dependency, API client, UI primitive, test, build config를 소유한다.
 
-## 공통 구조
+## Web 앱 공통 구조
 
-두 앱 모두 feature-first 구조를 따른다.
+User Web과 Admin Web은 feature-first 구조를 따른다.
 
 ```text
 src/
@@ -58,6 +59,44 @@ src/features/<feature>/
 
 Page는 route entry이며 feature public export를 조합한다. API 호출, schema, business UI는 `features/<domain>`에 둔다.
 
+## Mobile App 구조
+
+Mobile App은 Expo Router 기반 구조를 따른다.
+
+```text
+FE/mobile-app/src/
+  app/
+    _layout.tsx
+    (public)/
+      login.tsx
+    (app)/
+      _layout.tsx
+      index.tsx
+  features/
+    auth/
+      api/
+      adapters/
+      components/
+      hooks/
+      screens/
+      schemas/
+      store/
+      types/
+    home/
+      screens/
+  components/
+    ui/
+    layout/
+  lib/
+    api-client/
+    config/
+  types/
+```
+
+`src/app`은 route entry와 layout만 담당한다. 실제 화면 구현, API 호출, hook, schema, type, business UI는 `src/features/<domain>`에 둔다.
+
+Mobile App API client는 `TokenProvider`를 통해 access token을 읽는다. API client는 Zustand store, React context, secure storage, Supabase client를 직접 import하지 않는다.
+
 ## 현재 구현 스냅샷
 
 스냅샷 기준일: 2026-08-13 FE/BE 문서 동기화
@@ -85,12 +124,30 @@ Admin Web:
 - implemented Backend integration: current 11 Admin Operation APIs under `/admin/api/*`, including `/me`, users, user activity timeline, user domain records, user trash, audit logs, sensitive raw access, provider failures, analytics overview, account deletion/data export queues, trash recovery request queue, and system operation checks.
 - dormant prepared code: `src/features/admin-query` still has legacy dashboard/global-domain/raw-access expectations, but current router/menu do not expose it.
 
+Mobile App:
+
+- architecture source of truth는 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`다.
+- 현재 `FE/mobile-app`은 문서 확정 이후 재생성할 수 있다. 필요한 이미지/로고 asset은 선별 보존할 수 있다.
+- 1차 범위는 앱 실행, 로그인/회원가입, Backend 모바일 인증 세션 교환, 앱 시작 시 세션 복구, `/api/me`, 최소 `HomeScreen`, 로그아웃이다.
+- CRM 전체 화면은 1차 범위에 포함하지 않는다.
+- navigation은 Expo Router를 기준으로 한다.
+- 스타일은 NativeWind + Tailwind config token을 기준으로 한다.
+- 인증 상태는 Zustand auth store에서 관리할 수 있으나 refresh token은 store/persist에 저장하지 않는다.
+- 모바일의 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이다.
+- 모바일 인증 API는 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `/api/me`를 기준으로 한다.
+- `mobileRefreshToken`은 secure storage의 `onehand.mobile.auth.mobileRefreshToken` key에만 저장한다.
+- 로그인/회원가입 UX는 user-web의 브라우저 모바일 auth 화면을 기준으로 React Native + NativeWind로 재구현한다.
+
 ## Rules
 
 - User Web must not call `/admin/api/*`.
 - Admin Web must use `src/lib/admin-api-client.ts` and `/admin/api/*`.
-- TanStack Query owns server state.
+- Mobile App must not call `/admin/api/*`.
+- Mobile App must call Backend User API through `/api/*`.
+- Mobile App auth/session rules are owned by `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`.
+- User Web and Admin Web use TanStack Query for server state.
+- Mobile App may use TanStack Query for server state when API-backed screens are introduced.
 - React Hook Form and component local state own form/modal/panel state.
-- Zustand is only for cross-page UI state when local state is insufficient.
-- Icons in tool buttons should use `lucide-react`.
+- Zustand is only for cross-page UI state when local state is insufficient. Mobile auth state may use Zustand, but refresh token must not be stored in Zustand or Zustand persist.
+- Web icon buttons should use `lucide-react`. Mobile icon rules are owned by `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`.
 - API response types live in each feature's `types` folder or a shared app-level type only when truly cross-domain.

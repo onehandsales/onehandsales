@@ -15,6 +15,7 @@
 - 도메인 개념 모델
 - 기능 우선순위
 - 결제/운영 전략
+- 네이티브 모바일 앱의 제품 범위와 단계 판단
 - 문서 작성 규칙
 - 전체 결정 기록
 - TODO 계획 문서 작성 방식
@@ -42,11 +43,13 @@ PM_AGENT/
 8. `CONVENTION/DOCUMENTATION.md`
 9. `CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 10. `OPERATING_MODEL.md`
+11. `DECISIONS/032_mobile_auth_foundation_scope.md`
 
 ## 5. 협업 원칙
 
 - UX/UI 결정이 필요한 기능은 `UXUI_AGENT` 문서와 함께 갱신한다.
 - API, DB, 테스트, 배포 결정이 필요한 기능은 `SOFTWARE_AGENT` 문서와 함께 갱신한다.
+- 네이티브 모바일 앱 범위가 포함되면 `SOFTWARE_AGENT/MOBILE_AGENT` 문서를 함께 갱신한다.
 - 결정이 여러 역할에 걸치면 PM이 최종 결정 문서를 남긴다.
 - 새 구현 계획은 `TODO/{PLAN_NAME}/`에 만들고, `/goal` 작업 단위로 나눈다.
 
@@ -56,11 +59,13 @@ PM_AGENT/
 - `AGENT/UXUI_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`

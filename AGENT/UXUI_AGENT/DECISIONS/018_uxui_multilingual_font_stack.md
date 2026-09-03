@@ -4,6 +4,8 @@ Date: 2026-07-08
 
 `onehand.sales`의 User Web과 Admin Web은 앞으로 Notion-like typography 기준을 따른다.
 
+React Native/Expo Mobile App도 같은 가독성 의도를 따른다. 단, CSS font stack을 그대로 복사하지 않고 `MOBILE_AGENT`의 Expo/font loading 기준에 맞춰 별도 구현한다.
+
 이 결정은 Notion의 브랜드나 고유 폰트를 복제한다는 뜻이 아니다. Notion식 작업도구 UX에 맞는 조용하고 읽기 쉬운 타이포그래피 방향을 `onehand.sales`의 다국어 제품 범위에 맞게 적용한다는 뜻이다.
 
 ## 결정
@@ -50,7 +52,8 @@ sans-serif
 ## 구현 기준
 
 - `FE/user-web`과 `FE/admin-web`의 Tailwind `fontFamily.sans`는 같은 스택을 사용한다.
-- `Inter`와 `Pretendard Variable` 웹폰트는 각 앱의 `index.html`에서 로드한다.
+- `FE/mobile-app`은 같은 시각 의도를 유지하되 React Native에서 지원되는 font loading 방식과 `MOBILE_AGENT` 정본을 따른다.
+- `Inter`와 `Pretendard Variable` 웹폰트는 각 Web 앱의 `index.html`에서 로드한다.
 - 새 화면, 새 컴포넌트, 새 landing/public page, Admin 화면은 모두 `font-sans` 또는 이 스택을 기준으로 한다.
 - 특정 장식 목적이 명확하지 않으면 별도 custom font를 추가하지 않는다.
 - `font-serif`, `font-mono`는 명시적 의도가 있을 때만 사용하고, 제품 전체 기본 폰트를 대체하지 않는다.

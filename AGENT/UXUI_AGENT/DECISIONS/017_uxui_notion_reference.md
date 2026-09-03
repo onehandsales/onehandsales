@@ -47,6 +47,7 @@ Notion의 UX/UI는 다음 특징을 가진다.
 - 연결된 record는 relation처럼 보이게 한다.
 - Memo 기록과 활동 로그는 page body의 section/block처럼 다룬다.
 - 모바일 브라우저에서도 같은 정보 구조를 유지하되, table은 card/list로 전환한다.
+- React Native/Expo Mobile App은 별도 `MOBILE_AGENT` 정본을 따른다. 2026-09-03 기준 앱 1차 범위는 인증 foundation이며, CRM record 화면은 후속 범위다.
 
 ### Admin Web
 
@@ -86,4 +87,6 @@ Notion의 UX/UI는 다음 특징을 가진다.
 
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `QA_CHECKLIST.md`

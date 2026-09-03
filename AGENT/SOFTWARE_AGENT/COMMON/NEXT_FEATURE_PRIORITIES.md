@@ -2,6 +2,7 @@
 
 기준일: 2026-08-11
 전략 보강: 2026-08-11 `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+모바일 보강: 2026-09-03 `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 
 이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발이나 Paddle checkout 구현보다 기존 01~11 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비가 우선이다.
 
@@ -22,6 +23,7 @@
 - Web
 - 반응형 Web
 - 모바일 브라우저 Web
+- React Native/Expo Mobile App 인증 foundation
 - 공개/인증 화면의 URL locale 지원
 - 앱 내부 관리 화면은 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원
 
@@ -46,7 +48,7 @@
 
 현재 범위가 아닌 항목은 다음과 같다.
 
-- iOS/Android 네이티브 앱
+- iOS/Android 네이티브 CRM 전체 앱
 - 네이티브 푸시
 - 네이티브 연락처/캘린더 연동
 - 오프라인 앱 동작
@@ -56,7 +58,7 @@
 - `/app` 내부 `ja` 등 후속 시장 언어 추가 번역
 - Admin 결제/구독 운영 도구
 
-따라서 모바일 QA는 네이티브 앱 QA가 아니라, 현재 Web 제품이 모바일 브라우저에서도 핵심 업무를 수행할 수 있는지 확인하는 QA다.
+따라서 기존 모바일 QA는 현재 Web 제품이 모바일 브라우저에서도 핵심 업무를 수행할 수 있는지 확인하는 QA다. 별도로 Mobile App 1차 QA는 로그인/회원가입, Backend 모바일 인증 세션, 앱 시작 세션 복구, `/api/me`, 최소 홈, 로그아웃만 본다.
 
 ## 2. 현재 완료 상태
 
@@ -149,6 +151,21 @@
 - 작은 화면 모달
 - 모바일 키보드가 올라온 상태의 저장 버튼 접근
 
+### 3.2A Mobile App 인증 foundation QA
+
+Mobile App 1차 QA는 CRM 화면이 아니라 인증 foundation만 확인한다.
+
+우선 확인할 흐름:
+
+- Expo/React Native 앱 실행
+- secure storage 기반 앱 시작 세션 복구
+- Google, LINE, Apple provider 노출 순서
+- Expo AuthSession 또는 시스템 브라우저 OAuth
+- Backend `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`
+- `/api/me` 확인 후 최소 `HomeScreen`
+- 로그아웃 시 Backend session revoke와 secure storage 삭제
+- refresh token, OAuth token, access token 원문이 일반 저장소나 로그에 남지 않는지 확인
+
 ### 3.3 브라우저 QA
 
 우선순위는 Chrome, 그다음 Edge다.
@@ -190,7 +207,7 @@
 - `/app/export`는 `/app`으로 redirect됨
 - Billing Admin과 B2B tenant/team admin은 현재 범위에서 제외
 - 결제, 구독, 세금, invoice, refund, entitlement, paywall은 `TODO/PADDLE_PLAN` Deferred / Draft 범위
-- iOS/Android 네이티브 앱은 현재 제품 범위가 아님
+- iOS/Android 네이티브 CRM 전체 앱은 현재 제품 범위가 아님. 단 Mobile App 인증 foundation은 2026-09-03 기준 1차 범위로 확정됨
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
 - 현재 전화번호 입력/검증은 KR/US를 1차 지원한다. KR/US/CA 우선 전략에 맞춘 CA 전화번호, CAD, 캐나다 회사 지역은 후속 구현 대상이다.
@@ -201,7 +218,7 @@
 | --- | --- | --- | --- |
 | 1 | 기능 유지보수 | 01~11 foundation을 베타 제공 가능한 상태로 안정화 | S0/S1/S2가 수정 또는 명확히 보류 판단됨 |
 | 2 | UX/UI 상품성 개선 | 반복 사용자가 보기 좋은 업무 도구 품질 확보 | 핵심 화면의 레이아웃/문구/상태/접근성 이슈 정리 |
-| 3 | 모바일/브라우저 확인 | 현재 Web 제품의 실제 사용성 확인 | 390px/360px, Chrome/Edge 핵심 흐름 사용 가능 |
+| 3 | 모바일 브라우저/Mobile App 인증/브라우저 확인 | 현재 Web 제품의 실제 사용성과 Mobile App 인증 foundation 확인 | 390px/360px, Mobile App 인증 foundation, Chrome/Edge 핵심 흐름 사용 가능 |
 | 4 | 베타 준비 | 결제창 없는 100명 베타 운영 준비 | onboarding, feedback loop, 지원 흐름 정리 |
 | 5 | Paddle 의사결정 | 결제 구현 전 정책 확정 | 가격/플랜/entitlement/AI usage/refund/tax/invoice confirmed |
 | 6 | `TODO/PADDLE_PLAN` 승격 | 결제 구현 착수 조건 충족 | API/DB/User Web/Admin 범위가 confirmed 문서로 작성됨 |
@@ -222,7 +239,7 @@
 | 2 | Billing Admin | 구독 상태, 결제 이슈, invoice/refund/failed payment 운영 필요 |
 | 3 | paid conversion/churn analytics | 결제 이후 전환/해지/ARPU/LTV/CAC 판단 필요 |
 | 4 | 캐나다 데이터 정합성 및 추가 국가/언어 rollout | KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호/지역을 정리하고, 이후 일본/호주 등 보류 시장 확장 |
-| 5 | native/PWA packaging | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토 |
+| 5 | native CRM/PWA packaging | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토. Mobile App 인증 foundation은 별도 1차 범위로 먼저 진행 가능 |
 | 6 | B2B tenant/team admin | 개인 B2C보다 팀/seat 기반 ARPU가 더 강하다고 확인될 때 검토 |
 
 ## 7. 지금 바로 할 일
@@ -250,6 +267,8 @@
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`

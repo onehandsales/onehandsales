@@ -29,6 +29,10 @@
 - 데스크톱 목록 row가 약 48px 수준의 업무용 밀도를 갖고, 큰 row + 약한 업무 맥락 조합으로 보이지 않는가?
 - page size를 바꾸려는 경우 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약까지 함께 확인했는가?
 - 모바일에서는 15개 목록 계약을 card/list로 표현하고, 15~20개 desktop table을 억지로 보여주지 않는가?
+- 네이티브 Mobile App 작업이면 현재 1차 범위가 로그인/회원가입, 인증 복구, `/api/me` 확인, 최소 홈, 로그아웃으로 제한되어 있는가?
+- 네이티브 Mobile App 로그인/회원가입 화면은 User Web 브라우저 모바일 auth UX를 참고하되 WebView나 pixel-level 복제가 아닌 React Native 화면으로 구현했는가?
+- 네이티브 Mobile App OAuth와 정책 링크는 앱 내부 WebView가 아니라 Expo AuthSession 또는 OS 브라우저 흐름을 따르는가?
+- 네이티브 Mobile App 보호 화면은 세션 복구가 끝나기 전에 먼저 렌더링되지 않는가?
 - 최근 활동 또는 다음 행동 summary가 현재 list response에 없으면 FE에서 임의 값처럼 꾸미지 않고 BE/API 후속으로 기록했는가?
 - 목록에서 새 record를 생성할 때 목록 맥락을 유지해야 한다면 오른쪽 문서형 패널을 우선 검토했는가?
 - 문서형 생성 패널이 열려도 목록의 비교 컬럼을 숨기거나 합치지 않는가?
@@ -93,5 +97,7 @@
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

@@ -18,6 +18,7 @@ Backend 테스트 우선순위:
 - trash retention과 restore
 - deal stage/activity logging
 - meeting note to deal activity integration
+- Mobile App auth exchange/refresh/logout and one active mobile device policy
 
 ## 3. 계층별 테스트 기준
 
@@ -77,8 +78,11 @@ Backend 테스트는 `BE`에서 실행한다.
 
 현재 다음 Backend QA 목적은 Paddle/Billing 구현 전 새 결제 API를 여는 것이 아니라, 기존 01~11 기능의 유지보수, edge case hardening, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비를 지원하는 것이다.
 
+Mobile App 인증 foundation API를 구현하는 경우에는 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `deviceSlot=mobile`, `replaceExistingDevice=true`, refresh token rotation, previous mobile session revoke, `/api/me` 연동을 별도 Backend 테스트 범위로 추가한다.
+
 ## 6. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`

@@ -30,6 +30,8 @@ PM 관점에서 사용자의 문제, 제품 가치, 포함/제외 범위, 도메
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`
 - `AGENT/UXUI_AGENT/PLANNING/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`

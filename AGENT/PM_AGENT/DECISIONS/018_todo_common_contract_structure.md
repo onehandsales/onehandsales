@@ -6,7 +6,7 @@
 
 `TODO` 계획 폴더는 단순 정리 문서가 아니라 바로 실행 가능한 계획서로 작성한다. 구현자는 `TODO/{PLAN_NAME}` 문서만 보고 어떤 순서로 `/goal`을 실행하고, FE/BE/API/DB를 어디까지 구현하며, 무엇으로 완료를 검증해야 하는지 알 수 있어야 한다.
 
-`COMMON`은 Frontend와 Backend가 함께 봐야 하는 공통 계약 문서를 관리한다. 사용자 흐름, `/goal` 작업 순서, API 명세, goal별 화면/기능/DB 추적 명세, 기획 검토 결과는 `COMMON` 아래에 둔다.
+`COMMON`은 Frontend와 Backend가 함께 봐야 하는 공통 계약 문서를 관리한다. 사용자 흐름, `/goal` 작업 순서, API 명세, goal별 화면/기능/DB 추적 명세, 기획 검토 결과는 `COMMON` 아래에 둔다. Mobile App이 포함된 계획도 같은 `COMMON` 계약을 보며, 모바일 구현 기준은 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 함께 연결한다.
 
 기본 구조는 다음을 따른다.
 
@@ -64,7 +64,7 @@ Frontend와 Backend는 같은 요구사항을 구현하지만 역할이 다르�
 - `COMMON/GOAL-SPECS`에는 각 `/goal`별 화면 명세, API 연결, DB 연결, 완료 기준을 쓴다.
 - `COMMON/PLANNING-REVIEW.md`에는 구현 전 기획 검토 결과를 쓴다.
 - `BE-TODO/DB-SCHEMA.md`에는 구현 직전 Prisma schema로 옮길 수 있는 수준의 DB 스키마를 둔다.
-- `FE-TODO`에는 화면 구현 작업, 컴포넌트, 상태 관리, E2E 작업을 둔다.
+- `FE-TODO`에는 화면 구현 작업, 컴포넌트, 상태 관리, E2E 작업을 둔다. React Native/Expo Mobile App 작업도 `FE-TODO`에 둘 수 있지만, route, storage, auth session, build/test 기준은 `MOBILE_AGENT` 정본을 따른다.
 - `BE-TODO`에는 Backend 내부 구조, 도메인 계층, repository, service, provider adapter, 테스트 작업을 둔다.
 - 완료 기준은 명령 실행, 화면 확인, 테스트 통과, 문서 검토처럼 검증 가능한 형태로 쓴다.
 
@@ -114,4 +114,5 @@ Frontend와 Backend는 같은 요구사항을 구현하지만 역할이 다르�
 - `AGENT/PM_AGENT/DECISIONS/017_planning_review_gate.md`
 - `AGENT/PM_AGENT/DECISIONS/020_todo_execution_plan_standard.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`

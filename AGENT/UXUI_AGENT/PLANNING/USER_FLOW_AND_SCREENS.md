@@ -14,6 +14,21 @@
 6. 필요한 딜 상세로 진입하거나 새 딜을 생성한다.
 7. 데스크톱에서는 선택한 딜의 상세 정보를 우측 패널에서 확인한다.
 
+### Flow 0A. Mobile App 1차 인증
+
+1. 사용자가 모바일 앱을 실행한다.
+2. 앱은 secure storage에 저장된 모바일 refresh token이 있는지 확인한다.
+3. 저장된 token이 있으면 Backend `POST /api/auth/mobile/refresh`로 세션 복구를 시도한다.
+4. 세션 복구가 끝나기 전에는 보호 화면을 먼저 보여주지 않는다.
+5. 세션이 없거나 복구에 실패하면 로그인/회원가입 provider 선택 화면을 보여준다.
+6. 사용자는 Google, LINE, Apple 중 하나로 OAuth를 시작한다.
+7. OAuth는 Expo AuthSession 또는 시스템 브라우저로 진행하고, 완료 후 Backend `POST /api/auth/mobile/exchange`로 OneHand app session을 만든다.
+8. 성공하면 `GET /api/me`로 현재 사용자를 확인하고 최소 `HomeScreen`을 보여준다.
+9. 최소 `HomeScreen`은 사용자 이름, 이메일, 인증 상태, 현재 모바일 기기 정보, 로그아웃 액션만 보여준다.
+10. 로그아웃하면 Backend `POST /api/auth/mobile/logout`을 호출하고 secure storage의 refresh token을 삭제한다.
+
+이 flow는 네이티브 Mobile App의 1차 범위다. User Web의 딜/회사/담당자/제품/일정/회의록 CRM flow를 모바일 앱에 즉시 포함하지 않는다.
+
 ### Flow 1. 기본 데이터 등록
 
 1. 사용자가 로그인한다.
@@ -176,7 +191,25 @@
 | `/subscriptions` | 구독 관리 | 보류. 현재 `/`로 redirect |
 | `/support` | 운영 지원 | 보류. 현재 `/`로 redirect |
 
-## 4. 현재 코드 라우트 상태
+## 4. Mobile App 1차 화면 목록
+
+| 경로 | 화면 | 현재 판단 |
+|---|---|---|
+| `src/app/(public)/login.tsx` | 로그인/회원가입 provider 선택 | 1차 포함 |
+| `src/app/(app)/index.tsx` | 최소 HomeScreen | 1차 포함. `/api/me` 확인 UI로 제한 |
+| `src/app/_layout.tsx` | 앱 전역 layout/auth restore gate | 1차 포함 |
+| `src/app/(app)/_layout.tsx` | 보호 route layout | 1차 포함 |
+
+Mobile App 1차 제외:
+
+- 모바일 CRM 홈
+- 회사, 담당자, 제품, 딜, 일정, 회의록 목록/상세/생성
+- 명함 촬영/OCR
+- native push permission UX
+- native contacts/calendar 연동
+- offline-first draft
+
+## 5. 현재 코드 라우트 상태
 
 > 최종 업데이트: 2026-08-23
 
@@ -265,9 +298,9 @@ pen 디자인 반영 대기 도메인:
 - Backend에는 11 Admin Operation 기준 사용자, 도메인, Trash, provider failure, analytics, account request, audit, system gate Admin API가 구현되어 있다.
 - `/organizations`, `/subscriptions`, `/support`는 redirect/future 경계이며 Billing Admin, Customer/B2B tenant admin, 운영 지원 화면을 현재 열지 않는다.
 
-라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다.
+라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다. Mobile App route를 변경하면 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/NAVIGATION.md`도 함께 갱신한다.
 
-## 5. 기본 레이아웃 방향
+## 6. 기본 레이아웃 방향
 
 User Web:
 
@@ -289,11 +322,13 @@ User Web:
 - 다음 행동은 딜 목록, 딜 상세, 홈 파이프라인에서 바로 보여준다
 - 가능성(`긍정/중립/부정`, percent)은 현재 Deal API/FE 입력에 없으며 후속 범위로 본다.
 
-## 6. 화면 구현 우선순위
+## 7. 화면 구현 우선순위
 
 이 프로젝트는 화면 수가 많기 때문에, 라우트 개수 순서대로 구현하지 않는다.
 
 UX/UI 기준 우선순위는 아래와 같다.
+
+이 섹션의 `Mobile`은 User Web의 브라우저 모바일 레이아웃을 뜻한다. 네이티브 Mobile App은 현재 1차 인증 범위만 따르며, route와 화면 기준은 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 우선한다.
 
 1. 공용 토큰
 2. 공용 Shell
@@ -317,8 +352,8 @@ UX/UI 기준 우선순위는 아래와 같다.
 
 - Desktop Sidebar
 - Desktop TopBar
-- Mobile Header
-- Bottom Tab Bar
+- User Web Mobile Header
+- User Web Browser-Mobile Bottom Tab Bar
 - Modal Shell
 - Toast
 - Loading / Empty / Error 상태 UI
@@ -331,9 +366,9 @@ UX/UI 기준 우선순위는 아래와 같다.
 ### 딜 화면에서 먼저 마감할 것
 
 - Desktop Deal Pipeline Home
-- Mobile Deal Pipeline Home
+- User Web Mobile Deal Pipeline Home
 - Desktop Detail Panel
-- Mobile Deal Detail
+- User Web Mobile Deal Detail
 - Deal Quick Create Modal
 
 ### 그 다음 도메인 확장 순서
@@ -347,7 +382,8 @@ UX/UI 기준 우선순위는 아래와 같다.
 원칙:
 
 - 새 도메인 화면은 공용 shell, 공용 상태 UI, 공용 card/button/filter 문법을 재사용해야 한다.
-- desktop/mobile은 레이아웃을 분리하되, 데이터 로직과 작은 UI는 공유할 수 있다.
+- User Web의 desktop/browser-mobile은 레이아웃을 분리하되, 데이터 로직과 작은 UI는 공유할 수 있다.
+- 네이티브 Mobile App은 CRM 화면 범위가 열리기 전까지 이 우선순위를 직접 적용하지 않는다.
 
 Admin Web:
 
@@ -359,11 +395,22 @@ Admin Web:
 - 필터/서버 페이지네이션/행 상세 패널 중심
 - 민감정보 원문 보기와 위험 액션은 사유 입력과 감사 로그 필수
 
-## 7. 관련 문서
+Mobile App:
+
+- 1차는 인증 화면과 최소 홈만 구현한다.
+- 로그인/회원가입 화면은 User Web 브라우저 모바일 auth 화면의 정보 구조와 문구 톤을 참고한다.
+- WebView로 User Web 화면을 감싸지 않고 React Native 화면으로 구현한다.
+- OAuth와 정책 링크는 Expo AuthSession 또는 OS 브라우저로 연다.
+- CRM 화면이 열릴 때까지는 모바일 앱 안에서 sidebar/table 패턴을 만들지 않는다.
+
+## 8. 관련 문서
 
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/NAVIGATION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `UX Design/PEN_UI_06_SHARED_FIRST_WORK_ORDER.md`

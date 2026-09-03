@@ -51,6 +51,26 @@
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/DECISIONS/003_frontend_testing.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/DECISIONS/004_frontend_deployment_environment.md`
 
+### Mobile Agent
+
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/NAVIGATION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/BUILD_AND_DISTRIBUTION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/AUTH_AND_STORAGE.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/DECISIONS/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/DECISIONS/001_mobile_login_first_scope.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/DECISIONS/002_mobile_app_foundation.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/DECISIONS/003_mobile_auth_session_policy.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/DECISIONS/004_mobile_navigation_and_auth_ux.md`
+
 ### DB Schema
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
@@ -69,6 +89,7 @@
 - 연결 DB: 생성/조회/수정/삭제 model, relation, transaction 대상, soft delete 여부, 감사 로그 model
 - 에러 응답: status, domain error code, 사용자가 보게 될 처리 기준
 - FE 처리 기준: body 없는 성공 응답 처리, 재조회 범위, optimistic update 여부, route guard, 권한 없음 처리
+- Mobile 처리 기준: Expo Router route entry/layout 경계, `src/features/<domain>` 배치, secure storage refresh token, memory-only access token, `TokenProvider`, 앱 시작 세션 복구, OAuth system browser 흐름
 - BE 처리 기준: Clean Architecture 계층, application use case, repository/port, infrastructure adapter, User/Admin API 분리, 구현 검증 범위
 - Backend 주석 기준: class/interface의 `// 역할 : ...`, API controller method의 `// API : ...`, 내부 method/function의 `// 기능 : ...`, 주요 orchestration의 numbered step comment
 - API 계약 기준: 계약 상태, 소비자, 호환성, request/response/error 계약, DB schema 연결
@@ -128,4 +149,8 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/AUTH_AND_STORAGE.md`
 - `TODO/README.md`

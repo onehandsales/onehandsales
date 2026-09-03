@@ -43,6 +43,7 @@ AGENT/
 
 - `BACKEND_AGENT`: Backend 아키텍처, API, 코드 컨벤션, 주석과 로깅, 테스트, 배포, 기술 결정
 - `FRONT_AGENT`: User Web/Admin Web 아키텍처, 코드 컨벤션, 주석과 로깅, E2E, 배포, 기술 결정
+- `MOBILE_AGENT`: React Native/Expo Mobile App 아키텍처, 인증/세션, 코드 컨벤션, 테스트, 빌드/배포, 기술 결정
 - `DB_SCHEMA`: DB schema와 테이블 설명
 
 ## 문서 이동 기준
@@ -52,6 +53,7 @@ AGENT/
 - UX/UI 관련 결정은 `UXUI_AGENT/DECISIONS`에 둔다.
 - Backend 아키텍처와 컨벤션은 `SOFTWARE_AGENT/BACKEND_AGENT`에 둔다.
 - User Web/Admin Web 아키텍처와 컨벤션은 `SOFTWARE_AGENT/FRONT_AGENT`에 둔다.
+- React Native/Expo Mobile App 아키텍처와 컨벤션은 `SOFTWARE_AGENT/MOBILE_AGENT`에 둔다.
 - DB schema 문서는 `SOFTWARE_AGENT/DB_SCHEMA`에 둔다.
 - 문서 작성 규칙은 PM 운영 책임으로 보고 `PM_AGENT/CONVENTION`에 둔다.
 
@@ -70,3 +72,4 @@ AGENT/
 - `AGENT/UXUI_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`

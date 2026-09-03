@@ -57,6 +57,7 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - Memo 기록은 Activity/Log와 구분하고, 민감 가능 입력으로 다룬다.
 - 생성은 목록 맥락이 중요하면 오른쪽 문서형 패널을 우선한다. 짧은 보조 입력, 삭제 확인, 위험 액션 확인은 modal/dialog를 사용할 수 있다.
 - 모바일에서는 desktop table을 억지로 유지하지 않고 stage tab + card/list로 전환한다.
+- 네이티브 Mobile App은 User Web 모바일 브라우저 UX와 구분한다. 2026-09-03 기준 1차 범위는 인증 foundation이므로 CRM record 화면을 이 reference만 보고 임의로 열지 않는다.
 
 ## 4A. Record Table Density 기준
 
@@ -103,6 +104,7 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 5. `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 6. `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 7. `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+8. Mobile App 작업이면 `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
 
 Backend/API/DB 작업이 화면 계약이나 record 관계에 영향을 주면 위 문서와 함께 Backend API contract, transaction, DB schema 문서를 확인한다.
 
@@ -126,6 +128,8 @@ UX/UI 또는 Frontend 리뷰 시 아래 질문을 반드시 포함한다.
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/DECISIONS/017_uxui_notion_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`

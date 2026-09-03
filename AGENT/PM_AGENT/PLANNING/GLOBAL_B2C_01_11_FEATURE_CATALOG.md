@@ -8,6 +8,8 @@
 
 현재 제품 순서는 Paddle checkout 구현이 아니다. 01~11 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타, 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격한다.
 
+2026-09-03 기준 네이티브 Mobile App 인증 foundation은 `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`와 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`에서 별도 1차 범위로 관리한다. 이 문서의 10 Mobile/PWA Field Use는 User Web의 모바일 브라우저 현장 입력성 완료 범위다.
+
 ## 1. 전체 색인
 
 | 번호 | 완료 기능 | 핵심 산출물 | 현재 판단 |
@@ -394,6 +396,7 @@ Runtime event boundary:
 목적:
 
 - native app보다 모바일 브라우저/PWA 기반 현장 입력성을 먼저 제공한다.
+- 이 완료 범위는 User Web 모바일 브라우저 기준이다. React Native/Expo Mobile App 인증 foundation은 별도 PM/MOBILE_AGENT 정본을 따른다.
 
 구현된 기능:
 

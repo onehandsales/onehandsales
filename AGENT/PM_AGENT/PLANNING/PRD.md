@@ -4,6 +4,7 @@
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 > 현재 구현 스냅샷: 2026-08-11 `BE`, `FE/user-web`, `FE/admin-web`, `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`
+> 모바일 앱 범위 스냅샷: 2026-09-03 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`
 > 글로벌/Series A 전략 보강: 2026-08-11 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 
 ---
@@ -39,7 +40,7 @@
 
 1. 회사/담당자/제품/딜을 개인 기준으로 통합 관리한다.
 2. 딜 금액, 단계, 다음 행동, 활동 기록을 한곳에서 관리한다.
-3. 일정을 딜과 연결하고 일정 화면에서 확인한다. 주간 보고서와 파일 출력은 후속 범위다.
+3. 일정을 딜과 연결하고 일정 화면에서 확인한다. 주간 보고서와 파일 출력 foundation은 구현되어 있으며, 고도화는 후속 범위다.
 4. 회의 내용을 직접 저장하거나 AI/STT로 정리한 뒤 딜 활동 로그에 연결한다.
 5. 명함 OCR과 AI Import 매핑으로 초기 입력 비용을 줄인다.
 
@@ -49,7 +50,7 @@
 2. 회사/담당자/제품을 기반으로 딜을 생성한다.
 3. 딜 단계, 금액, 다음 행동, 활동 로그를 관리한다.
 4. 일정을 딜과 연결한다.
-5. 일정 화면에서 딜과 연결된 일정을 확인한다. 별도 주간 보고서 화면/PDF/Excel은 후속 범위다.
+5. 일정 화면에서 딜과 연결된 일정을 확인하고, 필요하면 주간 일정 보고서를 본다. PDF와 고도화된 출력은 후속 범위다.
 6. 회의 내용을 직접 작성해 저장하거나 텍스트/음성 AI 정리로 초안을 만든 뒤 저장한다.
 7. 저장한 회의록을 딜과 연결해 딜 활동 로그를 자동 생성한다.
 
@@ -60,7 +61,8 @@
 - 구현 완료: 명함 OCR은 `/app/business-cards` 화면과 `/api/business-card-scans` API로 제공한다. 이미지를 업로드하면 `명함스캔` 진행 표시 후 추출값을 확인/수정하고, 저장 시 회사/담당자를 재사용하거나 생성한다.
 - 구현 완료: DataImport는 `ImportJob` 기반으로 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, 성공 내역 조회를 제공한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
 - 구현 완료: Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity Timeline, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation.
-- Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, native/PWA packaging, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
+- Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, native CRM/PWA packaging, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
+- 모바일 앱 1차 범위: React Native/Expo 기반 로그인/회원가입, Backend 모바일 인증 세션 교환, 앱 시작 세션 복구, `/api/me` 확인, 최소 홈, 로그아웃. 모바일 CRM 전체 화면은 후속이다.
 - 2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 베타 전 checkout/webhook/API/DB migration은 만들지 않는다.
 - 현재 다음 작업은 새 기능 추가나 결제창 구현이 아니라 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
@@ -88,7 +90,7 @@
 ## 7. MVP 제외 기능
 
 - 결제/구독 자동화
-- 모바일 앱
+- 모바일 CRM 전체 앱. 단, 모바일 인증 foundation은 2026-09-03 기준 별도 1차 범위로 연다.
 - STT transcript 영구 저장과 고도화된 브라우저 녹음 UX
 - 구글 캘린더 write/watch/export 고도화
 - 주간 일정 보고서 고도화
@@ -147,5 +149,7 @@ Series A급 제품 방향:
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
 - `TODO/PADDLE_PLAN/README.md`

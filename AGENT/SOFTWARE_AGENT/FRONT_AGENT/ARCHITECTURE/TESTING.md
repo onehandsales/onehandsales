@@ -7,6 +7,8 @@ MVP Frontend 테스트 자동화는 User Web 핵심 업무 흐름을 우선한�
 - `FE/user-web`
 - `FE/admin-web`
 
+React Native/Expo Mobile App 테스트 기준은 `FRONT_AGENT`가 아니라 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`가 소유한다. FE 전체 출시 QA에서 Mobile App 인증 foundation을 확인해야 하면 `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`와 `MOBILE_AGENT` 테스트 문서를 함께 본다.
+
 Playwright는 두 앱의 E2E 도구다. 저장소 루트에 workspace나 공용 테스트 패키지를 만들지 않으므로 각 Frontend 앱이 자기 테스트 의존성과 설정을 소유한다.
 
 ## 2. User Web E2E Scope
@@ -102,7 +104,7 @@ CI timing:
 - FE/admin-web `typecheck`, `lint`, `test:e2e` 통과.
 - FE/admin-web E2E는 현재 11 Admin route smoke 기준으로 유지한다.
 
-2026-08-11 기준 Global B2C 01~11 Frontend foundation은 완료 archive다. 남은 출시 전 Front QA는 기존 기능 유지보수, UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA, 결제창 없는 100명 베타 준비다.
+2026-08-11 기준 Global B2C 01~11 Frontend foundation은 완료 archive다. 남은 출시 전 Web Front QA는 기존 기능 유지보수, UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge 브라우저 QA, 결제창 없는 100명 베타 준비다. 2026-09-03 기준 Mobile App 인증 foundation QA는 `MOBILE_AGENT`와 공통 QA 체크리스트를 따른다.
 
 Paddle checkout, Billing Admin, B2B tenant/team admin route smoke는 `TODO/PADDLE_PLAN` 또는 B2B 계획이 confirmed 된 이후에 추가한다.
 
@@ -111,3 +113,5 @@ Paddle checkout, Billing Admin, B2B tenant/team admin route smoke는 `TODO/PADDL
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`

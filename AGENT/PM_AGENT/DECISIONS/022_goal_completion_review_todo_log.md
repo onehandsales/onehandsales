@@ -27,7 +27,7 @@
 - `/goal`로 실행한 작업
 - 사용자가 명시한 하나의 구현 작업
 - 문서 계획 작성 작업
-- Backend, User Web, Admin Web, DB, API, 테스트, 배포 준비 작업
+- Backend, User Web, Admin Web, Mobile App, DB, API, 테스트, 배포 준비 작업
 
 단순 질문 답변, 코드 설명, 상태 확인만 수행한 경우에는 적용하지 않는다.
 
@@ -72,6 +72,12 @@ Frontend 검토 항목:
 - User Web/Admin Web 분리와 API client 경계를 지켰는가?
 - 화면 상태, loading/error/empty/success, 모바일/데스크톱 기준을 확인했는가?
 - typecheck, lint, build, E2E 등 필요한 검증을 수행했는가?
+
+Mobile App 검토 항목:
+
+- Expo Router, React Native, NativeWind, feature 구조가 `MOBILE_AGENT` 정본을 따르는가?
+- refresh token secure storage, access token memory-only, `TokenProvider`, 앱 시작 세션 복구 기준을 지켰는가?
+- `/api/*`만 호출하고 `/admin/api/*` 또는 Supabase DB/Storage를 직접 호출하지 않았는가?
 
 ## 6. TODO_LOG 작성 규칙
 
@@ -124,4 +130,5 @@ TODO_LOG/2026-06-06/G10_PRODUCT_BACKEND_VERTICAL_SLICE/WORK_LOG.md
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
 - `AGENT/PM_AGENT/DECISIONS/020_todo_execution_plan_standard.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `TODO/README.md`

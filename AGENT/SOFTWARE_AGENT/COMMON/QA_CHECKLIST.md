@@ -2,10 +2,13 @@
 
 작성일: 2026-07-06
 전략 보강: 2026-08-11 `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+모바일 보강: 2026-09-03 `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 
 이 문서는 `BE`, `FE`, `AGENT` 문서를 기준으로 만든 QA 체크리스트입니다. QA를 처음 진행하는 사람이 그대로 따라가며 확인할 수 있도록 기능 QA와 UX/UI QA를 함께 정리합니다.
 
-현재 QA 대상 제품은 `Web + 반응형 Web + 모바일 브라우저 Web`입니다. iOS/Android 네이티브 앱은 현재 구현/QA 범위가 아니며, 모바일 QA는 모바일 브라우저에서 현재 Web 제품의 핵심 업무가 사용 가능한지 확인하는 기준으로 진행합니다.
+현재 QA 대상 제품은 `Web + 반응형 Web + 모바일 브라우저 Web + Mobile App 인증 foundation`입니다. iOS/Android 네이티브 CRM 전체 앱은 현재 구현/QA 범위가 아니며, 기존 모바일 QA는 모바일 브라우저에서 현재 Web 제품의 핵심 업무가 사용 가능한지 확인하는 기준으로 진행합니다.
+
+Mobile App 1차 QA는 로그인/회원가입, Backend 모바일 인증 세션, 앱 시작 세션 복구, `/api/me`, 최소 `HomeScreen`, 로그아웃만 확인합니다. 회사/담당자/제품/딜/일정/회의록 같은 CRM 화면은 네이티브 앱 1차 QA 범위가 아닙니다.
 
 2026-08-11 PM 전략 기준으로, Global B2C 01~11 foundation은 완료 archive입니다. 지금 바로 해야 할 일은 Paddle checkout 구현이 아니라 기존 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비입니다. 이 체크리스트는 그 과정에서 핵심 흐름과 반응형/접근성/보안 품질을 확인하는 기준으로 사용합니다.
 
@@ -43,6 +46,7 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - DealActivity
   - Product Analytics
   - Admin Operation foundation
+  - Mobile App 인증 foundation API 계약
 
 - `FE/user-web`
   - 로그인
@@ -62,6 +66,14 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - 11 Admin Operation foundation 범위를 확인합니다.
   - Billing Admin과 B2B tenant/team admin은 제외합니다.
 
+- `FE/mobile-app`
+  - 로그인/회원가입
+  - 앱 시작 세션 복구
+  - `/api/me` 확인
+  - 최소 `HomeScreen`
+  - 로그아웃
+  - React Native/Expo Mobile App 인증 foundation만 확인합니다.
+
 ### 제외
 
 사용자 요청에 따라 아래 기능은 이번 QA에서 제외합니다.
@@ -69,13 +81,13 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
 - Billing Admin과 B2B tenant/team admin
 - Notification source/TTL/cleanup 고도화
 - 과금 및 구독 결제
-- iOS/Android 네이티브 앱
+- iOS/Android 네이티브 CRM 전체 앱
 
 현재 구현 상태 기준으로 아래 항목도 실패로 처리하지 않고 `N/A` 또는 `후속 범위`로 기록합니다.
 
 - `/app/export`: generic export 화면은 현재 제품 방향에서 제외, `/app`으로 리다이렉트
 - Billing Admin: Paddle/Billing 이후 구현
-- iOS/Android 네이티브 앱: 현재 QA 범위가 아니며 모바일 브라우저 Web만 확인
+- iOS/Android 네이티브 CRM 전체 앱: 현재 QA 범위가 아니며, Mobile App은 인증 foundation만 확인
 
 ## 3. 참고 기준 문서
 
@@ -87,12 +99,16 @@ QA 판단 기준은 아래 파일을 우선합니다.
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `FE/user-web/src/app/router/router.tsx`
 - `FE/admin-web/src/app/router/router.tsx`
 - `BE/src/modules/**/presentation/http/*.controller.ts`
@@ -132,6 +148,7 @@ QA 판단 기준은 아래 파일을 우선합니다.
 - [ ] `BE/.env` 존재 여부 확인
 - [ ] `FE/user-web/.env` 존재 여부 확인
 - [ ] `FE/admin-web/.env` 존재 여부 확인 또는 Admin QA 제외 사유 기록
+- [ ] Mobile App 인증 foundation QA를 진행한다면 `FE/mobile-app` public config와 secret 금지 기준을 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/BUILD_AND_DISTRIBUTION.md` 기준으로 확인
 - [ ] 실제 `.env` 값은 문서나 이슈에 복사하지 않음
 - [ ] `.env.example`, `.env.local`이 아니라 각 앱의 `.env`와 공통 환경 문서를 정본으로 삼는다고 기록
 - [ ] 환경 변수명과 용도는 `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` 기준으로 확인
@@ -151,6 +168,7 @@ PowerShell 실행 정책 때문에 `pnpm`이 막히면 같은 명령을 `pnpm.cm
 - BE 기본 주소: `http://localhost:3000`
 - User Web 기본 주소: `http://localhost:5173`
 - Admin Web 기본 주소: `http://localhost:5174`
+- Mobile App 기본 실행: `FE/mobile-app`에서 Expo dev server 기준
 - BE health check: `GET http://localhost:3000/api/health`
 
 ### DB 준비
@@ -349,6 +367,25 @@ pnpm test:e2e
 - Google 로그인, `/app` 진입, 새로고침 후 세션 유지, 새 탭 `/app` 세션 유지, 로그아웃 후 선호 locale login URL 이동, 로그아웃 후 뒤로가기 보호, 재로그인 후 기존 CRM 데이터 유지, 설정/계정 화면 사용자 정보 표시를 확인했다.
 - 가입 국가/마지막 로그인 국가는 `기록 없음`이어도 현재 정책상 정상으로 본다.
 - Apple/LINE provider, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 2026-07-09 QA 범위에서 제외했다. Apple/LINE은 08 G08에서 구현/QA 대상으로 승격한다.
+
+### Mobile App 인증 foundation QA
+
+2026-09-03 기준 Mobile App 1차 QA는 CRM 핵심 플로우가 아니라 인증 foundation을 먼저 본다.
+
+- [ ] `FE/mobile-app`이 Expo/React Native 앱으로 실행됨
+- [ ] 앱 시작 시 secure storage의 `onehand.mobile.auth.mobileRefreshToken`으로 세션 복구를 먼저 시도함
+- [ ] 세션 복구가 끝나기 전에는 보호 route나 최소 `HomeScreen`을 먼저 렌더링하지 않음
+- [ ] 로그인/회원가입 provider 순서가 Google, LINE, Apple임
+- [ ] OAuth provider 화면은 WebView가 아니라 Expo AuthSession 또는 시스템 브라우저로 열림
+- [ ] OAuth 성공 후 Backend `POST /api/auth/mobile/exchange`로 OneHand app session을 생성함
+- [ ] exchange 요청은 `deviceSlot: "mobile"`과 `replaceExistingDevice: true`를 사용함
+- [ ] 응답의 `mobileRefreshToken`은 secure storage에만 저장함
+- [ ] access token은 메모리에만 보관하고 API client는 `TokenProvider`를 통해 주입받음
+- [ ] `GET /api/me` 성공 후 최소 `HomeScreen`에 사용자 이름, 이메일, 인증 상태, 현재 모바일 기기 정보, 로그아웃 액션만 표시함
+- [ ] refresh 실패 시 secure storage의 refresh token을 삭제하고 signedOut 상태로 전환함
+- [ ] 로그아웃 시 `POST /api/auth/mobile/logout`을 호출하고 secure storage의 refresh token을 삭제함
+- [ ] Mobile App은 `/api/*`만 호출하고 `/admin/api/*`를 호출하지 않음
+- [ ] refresh token, OAuth token, access token 원문이 AsyncStorage, Zustand persist, 일반 state, 로그, analytics, crash report에 남지 않음
 
 ## 10. 홈 QA
 
@@ -1037,7 +1074,7 @@ pnpm test:e2e
 
 ## 26. 모바일 브라우저 QA
 
-모바일은 현재 네이티브 앱이 아니라 모바일 브라우저 Web 기준으로 확인합니다. iOS/Android 앱 기능을 검증하는 것이 아니라, 현재 Web 제품이 작은 화면에서도 핵심 업무를 수행할 수 있는지 확인합니다.
+이 섹션은 User Web의 모바일 브라우저 QA입니다. iOS/Android 네이티브 CRM 전체 앱 기능을 검증하는 것이 아니라, 현재 Web 제품이 작은 화면에서도 핵심 업무를 수행할 수 있는지 확인합니다. Mobile App 인증 foundation은 `Mobile App 인증 foundation QA` 섹션을 따릅니다.
 
 - [ ] 로그인 화면이 모바일에서 사용 가능함
 - [ ] 하단 또는 모바일 내비게이션이 명확함
@@ -1053,7 +1090,7 @@ pnpm test:e2e
 - [ ] 휴지통 복구 버튼이 실수로 누르기 어렵지 않음
 - [ ] dialog가 작은 화면에서 화면 밖으로 벗어나지 않음
 - [ ] 키보드가 올라와도 입력 중인 필드와 저장 버튼을 사용할 수 있음
-- [ ] iOS/Android 네이티브 앱 전용 기능을 현재 실패로 기록하지 않음
+- [ ] iOS/Android 네이티브 CRM 전체 앱 전용 기능을 현재 실패로 기록하지 않음
 
 ## 27. 브라우저 QA
 
@@ -1140,6 +1177,7 @@ pnpm test:e2e
 
 - [ ] UX/UI 공통 QA 완료
 - [ ] 모바일 브라우저 390px/360px 기준 핵심 시나리오 확인 완료
+- [ ] Mobile App 인증 foundation QA 완료
 - [ ] Chrome/Edge 브라우저 QA 완료
 - [ ] 다중 계정 보안 QA 완료
 - [ ] DB/Prisma/migration 운영 정합성 정리

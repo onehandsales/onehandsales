@@ -29,6 +29,8 @@ MVP 구현 범위는 Frontend, Backend, DB, API, Admin, 테스트를 모두 포�
 
 Frontend와 Backend는 같은 요구사항과 기획을 바라보지만 역할이 다르다. 따라서 하나의 계획 폴더 안에서 공통 사용자 흐름을 공유하고, 세부 작업은 `FE-TODO`, `BE-TODO`로 나누어 작성한다.
 
+React Native/Expo Mobile App 작업도 사용자-facing FE 작업이므로 `FE-TODO` 아래에 둘 수 있다. 단, 선행 정본과 구현 기준은 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 따른다.
+
 공통 사용자 흐름, `/goal` 작업 순서, API 명세, goal별 상세 명세, 기획 검토 결과는 FE와 BE가 함께 봐야 하므로 `COMMON`에 둔다.
 
 ## 적용 범위
@@ -76,6 +78,7 @@ API 명세 위치는 `TODO/{PLAN_NAME}/COMMON/API-SPEC`을 기본으로 한다.
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `TODO/DONE/MVP-STARTER_PLAN/COMMON/GOAL-WORK-ORDER.md`
 
 

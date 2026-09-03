@@ -175,6 +175,9 @@ Auth/session runtime notes:
 - Refresh token originals are sent through httpOnly cookie and stored in DB only as hashes.
 - Same active device relogin rotates the existing session refresh token. Different device in the same slot replaces the active device when `replaceExistingDevice=true` and revokes the previous slot sessions.
 - Current User Web uses `mobile` and `personal_laptop` slots only. Backend also supports `work_laptop` for future clients.
+- 2026-09-03 Mobile App auth foundation contract is confirmed but not yet implemented in the current Backend source. It adds `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, and `/api/auth/mobile/logout` as mobile-specific auth APIs separated from web cookie APIs.
+- Mobile App official session is still Backend `AuthSession`, not Supabase session. Mobile uses `deviceSlot: "mobile"` and `replaceExistingDevice: true`.
+- Mobile App raw refresh token response field is `mobileRefreshToken`; Backend stores only the hash and the client stores the raw token only in secure storage.
 - Country code metadata is read from proxy geo headers only: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
 - 2026-07-10 QA status: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed. HTTP smoke confirmed health 200, unauthenticated protected API 401, invalid token 401, and unknown route 404.
 - 2026-07-30 Product Analytics G04 QA status: `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`, `pnpm run typecheck`, `pnpm run lint` pass.
@@ -186,6 +189,7 @@ Current backend gaps and intentional deferrals:
 - B2B tenant/team admin, organization management, and subscription management routes are deferred.
 - DataImport ImportJob persistence/recovery is implemented. Remaining import work is product refinement, edge-case hardening, and UX/UI quality.
 - Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
+- Mobile App auth foundation APIs are confirmed follow-up work under the existing auth module boundary. They must reuse `AuthSession` and must not introduce Supabase session as Backend state.
 - Admin Operation foundation and `DealActivity` are implemented. RawText/STT transcript persistence and B2B/team CRM activity expansion remain future scope.
 - Kakao OAuth provider setup is no longer a release blocker because Kakao login has been removed. Apple and LINE are active runtime providers together with Google; actual provider smoke still depends on Supabase/provider operational configuration.
 - Country code fields may remain null in local/dev environments that do not provide proxy geo headers.
@@ -435,3 +439,4 @@ When creating a module:
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`

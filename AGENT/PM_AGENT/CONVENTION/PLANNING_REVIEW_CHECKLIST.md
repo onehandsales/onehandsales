@@ -14,6 +14,7 @@ AI가 사용자의 의도에 맞춰 문서를 작성했더라도, 바로 구현�
 - `AGENT/UXUI_AGENT/PLANNING`의 사용자 흐름과 화면 문서
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE`의 Backend 구현 방향 문서
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE`의 Frontend 구현 방향 문서
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE`의 Mobile App 구현 방향 문서
 - `TODO/{PLAN_NAME}/README.md`
 - `TODO/{PLAN_NAME}/COMMON/USER-FLOW.md`
 - `TODO/{PLAN_NAME}/COMMON/GOAL-WORK-ORDER.md`
@@ -83,8 +84,9 @@ TODO 계획 문서를 검토할 때는 단순히 문서 항목이 채워졌는�
 - Backend 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - User Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - Admin Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
+- Mobile App 기준: `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/NAVIGATION.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/MOBILE_APP.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/AUTH_AND_STORAGE.md`
 - UX/UI 기준: `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`, `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`, `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`, `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`, `AGENT/UXUI_AGENT/DECISIONS/*`
-- 테스트/위험 흐름 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- 테스트/위험 흐름 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 
 Backend 구체화 검토:
 
@@ -107,12 +109,15 @@ Frontend와 UX/UI 구체화 검토:
 - User Web은 `FE/user-web`의 Feature-Sliced 구조, TanStack Query, React Hook Form + Zod, URL search params 기준을 따르는가?
 - User Web은 `/api/*`만 호출하고 `/admin/api/*`를 호출하지 않는가?
 - Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, TanStack Table, 서버 페이지네이션, 데스크톱 전용 운영 콘솔 기준을 따르는가?
+- Mobile App은 `FE/mobile-app`의 Expo Router 구조를 따르고, `src/app`을 route entry/layout으로만 사용하며 실제 화면/API/hook/schema/type/business UI를 `src/features/<domain>`에 두는가?
+- Mobile App 인증 계획은 Backend `AuthSession`을 공식 세션으로 사용하고, `/api/auth/mobile/*`, secure storage refresh token, memory-only access token, `TokenProvider` 경계를 설명하는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
 - UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈 대시보드, `/app/deals` 딜 파이프라인의 역할을 구분하고, 딜 목록에서 금액, 단계, 다음 행동, 마감 상태가 빠르게 보이도록 하는가?
 - 화면/Frontend/API/DB 계획이 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX` 기준을 반영해 workspace/page/database/detail과 record/linked record/activity 맥락을 함께 설명하는가?
 - 가능성/likelihood처럼 현재 API에 없는 필드는 후속 범위로 분리되어 있는가?
 - 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
 - 모바일 User Web은 테이블이나 가로 칸반을 기본 UI로 쓰지 않고 카드형/리스트형 흐름을 따르는가?
+- 네이티브 Mobile App은 현재 1차 범위가 로그인/회원가입, 세션 복구, `/api/me` 확인, 최소 홈, 로그아웃으로 제한되어 있으며 CRM 전체 화면을 임의로 열지 않는가?
 - Admin UI는 데이터 테이블, 필터, 서버 페이지네이션, 민감정보 마스킹, 원문 조회 사유 dialog를 중심으로 설계되어 있는가?
 - 금지 표현인 `Customer`, `상품`, `오프더레코드`가 정본 의도와 다르게 쓰이지 않는가?
 - 장식적 hero, card-in-card, 과한 gradient/orb, 베이지/크림 또는 다크 네이비 지배 팔레트 같은 금지된 시각 방향을 전제로 하지 않는가?
@@ -121,6 +126,7 @@ Frontend와 UX/UI 구체화 검토:
 
 - Clean Architecture 계층을 무너뜨리는 요구, controller의 Prisma 직접 접근, Domain의 외부 SDK 의존, 사용자 데이터 소유권 누락, Admin 감사 로그 누락은 `Critical` 또는 `Major`로 본다.
 - FE가 서버 상태를 TanStack Query가 아닌 임의 fetch/useEffect 중심으로 전제하거나, Admin/User API 경계를 흐리면 `Major`로 본다.
+- Mobile App이 refresh token을 AsyncStorage, Zustand persist, 일반 state, 로그, analytics, crash report에 저장하거나 Supabase session을 공식 앱 세션으로 전제하면 `Critical` 또는 `Major`로 본다.
 - UX/UI 정본과 충돌하는 화면 우선순위, 모바일 테이블/가로 칸반, 민감정보 원문 노출 흐름 누락은 `Major`로 본다.
 - 관련 AGENT 기준 문서 링크 누락, 용어 일부 불일치, 완료 기준 구체성 부족은 `Minor`로 본다.
 
@@ -536,10 +542,15 @@ DB 스키마 문서는 아래 항목을 확인한다.
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/AUTH_AND_STORAGE.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`

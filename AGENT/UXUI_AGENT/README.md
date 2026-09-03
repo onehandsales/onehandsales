@@ -18,6 +18,7 @@
 - 다음 행동과 알림 UX
 - Admin UI 톤
 - 모바일 화면 패턴
+- 네이티브 모바일 앱 1차 인증 UX
 - 외부 UX reference 적용 규칙
 - Notion + Attio 결합 reference 적용 규칙
 - UX/UI 리뷰 체크리스트
@@ -40,6 +41,7 @@ UXUI_AGENT/
 4. `DECISIONS/005_uxui_home_screen.md`
 5. `DECISIONS/006_uxui_reference_style.md`
 6. `UX_REVIEW_CHECKLIST.md`
+7. `DECISIONS/021_uxui_mobile_auth_native_reference.md`
 
 ## 5. 협업 원칙
 
@@ -48,6 +50,7 @@ UXUI_AGENT/
 - UI는 장식보다 업무 흐름과 정보 인식 속도를 우선한다.
 - 현재 선호 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
 - 모바일과 데스크톱의 기본 패턴이 다를 수 있음을 문서에 명시한다.
+- User Web의 브라우저 모바일 UX와 React Native/Expo Mobile App UX는 구분해서 문서화한다.
 - 외부 UX reference는 패턴만 참고하고 brand, copy, visual asset, layout을 그대로 복제하지 않는다.
 
 ## 6. 관련 문서
@@ -56,7 +59,10 @@ UXUI_AGENT/
 - `AGENT/PM_AGENT/README.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
 - `TODO/DONE/MVP-STARTER_PLAN/FE-TODO/README.md`
 

@@ -1,10 +1,11 @@
 # Implementation Status
 
-이 문서는 현재 `BE`, `FE/user-web`, `FE/admin-web` 기준 구현 완료/부분 완료/후속 범위를 정리하는 AGENT 정본 문서다.
+이 문서는 현재 `BE`, `FE/user-web`, `FE/admin-web`, `FE/mobile-app` 기준 구현 완료/부분 완료/후속 범위를 정리하는 AGENT 정본 문서다.
 
 외부 보조 문서나 `UX Design` 아래 현황 문서가 이 문서와 충돌하면 이 문서를 우선한다. 구현 상태가 바뀌면 이 문서를 먼저 갱신하고, 필요한 경우 `MVP_SCOPE.md`, `PRD.md`, Software/UXUI 문서를 함께 갱신한다.
 
 기준일: 2026-08-11
+모바일 앱 범위 기준일: 2026-09-03
 
 ## 0. 2026-08-11 Closeout 기준
 
@@ -90,7 +91,8 @@ Export는 범용 `/api/exports` job이나 `ExportJob` table로 처리하지 않�
 | --- | --- | --- |
 | Admin Billing | 11 Admin Operation은 완료됐지만 subscription/payment/refund/invoice/Billing Admin은 포함하지 않았다 | `TODO/PADDLE_PLAN`에서 Paddle confirmed scope 이후 구현 |
 | Generic Export route | `features/import-export` 코드는 남아 있으나 User Web `/app/export`는 `/app`으로 redirect한다 | 현재 제품 정본이 아니며 신규 확장 금지 |
-| PWA/native | 10 Mobile Field Use는 모바일 브라우저와 field-use foundation 완료 범위다 | install/offline shell, native app, native push/contact/calendar는 후속 |
+| Mobile App auth foundation | 2026-09-03 기준 `MOBILE_AGENT` 문서와 PM 결정으로 1차 범위 확정 | 로그인/회원가입, 모바일 인증 exchange/refresh/logout, `/api/me`, 최소 홈, 로그아웃만 우선. CRM 전체 화면은 후속 |
+| PWA/native CRM | 10 Mobile Field Use는 모바일 브라우저와 field-use foundation 완료 범위다 | install/offline shell, native CRM, native push/contact/calendar는 후속 |
 | B2B tenant admin | 11 Admin Operation은 Global B2C 개인 사용자 운영 기준이다 | team/B2B 조직 관리와 seat billing은 후속 전략 후보 |
 
 ## 5. 미완성 또는 후속 기능
@@ -172,7 +174,9 @@ Series A급으로 가기 위한 미완성 영역:
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
 - `TODO/PADDLE_PLAN/README.md`

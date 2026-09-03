@@ -12,7 +12,7 @@
 |---|---|---|
 | PM_AGENT | 문제 정의, MVP 범위, 우선순위, 정책 결정 | PRD, MVP 범위, 데이터 개념, 결정 기록 |
 | UXUI_AGENT | 사용자 흐름, 화면 구조, 정보 우선순위, UI 톤 | 유저 플로우, 화면 목록, UX/UI 방향, UX 결정 |
-| SOFTWARE_AGENT | 아키텍처, API, DB, 코드 규칙, 테스트, 배포 | 아키텍처 문서, 컨벤션, 기술 결정 |
+| SOFTWARE_AGENT | 아키텍처, API, DB, 웹/모바일 코드 규칙, 테스트, 배포 | 아키텍처 문서, 컨벤션, 기술 결정 |
 
 ## 3. 작업 흐름
 
@@ -46,6 +46,7 @@ TODO 계획 문서는 큰 작업을 한 번에 실행하지 않기 위한 안전
 - 한 번의 `/goal`에는 하나의 작업 단위만 넣는다.
 - 작업 단위마다 포함 범위, 제외 범위, 완료 기준을 적는다.
 - FE와 BE 작업은 같은 계획 폴더 안에서 `FE-TODO`, `BE-TODO`로 나눈다.
+- 네이티브 모바일 앱 작업도 사용자-facing FE 작업이므로 기본적으로 `FE-TODO`에 둘 수 있지만, 구현 기준은 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 우선 연결한다.
 
 ## 6. 문서 품질 기준
 
@@ -56,6 +57,7 @@ TODO 계획 문서는 큰 작업을 한 번에 실행하지 않기 위한 안전
 - 포함 범위와 제외 범위가 분리되어 있다.
 - 구현자가 임의 해석하지 않아도 된다.
 - 관련 UX/UI와 Software 문서가 연결되어 있다.
+- 모바일 앱 범위가 있으면 PM 결정, UXUI 결정, `MOBILE_AGENT` 정본이 함께 연결되어 있다.
 
 ## 7. 관련 문서
 
@@ -64,5 +66,7 @@ TODO 계획 문서는 큰 작업을 한 번에 실행하지 않기 위한 안전
 - `AGENT/PM_AGENT/README.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/DECISIONS/README.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 
 

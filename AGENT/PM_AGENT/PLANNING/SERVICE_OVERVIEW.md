@@ -139,7 +139,7 @@ Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전�
 다음은 MVP에서 제외하거나 후속 범위로 둔다.
 
 - 결제/구독 자동화
-- 모바일 앱
+- 모바일 CRM 전체 앱. 단, React Native/Expo 기반 모바일 인증 foundation은 2026-09-03 기준 1차 범위로 별도 확정했다.
 - 구글 캘린더 양방향 동기화
 - 우리 서비스 일정의 구글 캘린더 내보내기
 - 카카오 알림톡
@@ -159,6 +159,8 @@ Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전�
 User Web은 URL locale 기반 공개/인증 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구와 Global B2C 01~11 foundation 화면/API가 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다. Import preview validation은 누락된 셀에만 메시지를 표시한다.
 
 Admin Operation foundation은 11번 로드맵 기준 구현 완료다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 구현 범위로 본다.
+
+Mobile App은 2026-09-03 기준 `FE/mobile-app`과 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 기준 위치로 둔다. 1차 범위는 로그인/회원가입, Backend 모바일 인증 세션, 앱 시작 세션 복구, `/api/me` 확인, 최소 홈, 로그아웃이며 CRM 전체 화면은 후속이다.
 
 2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 현재 다음 작업은 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
@@ -211,4 +213,6 @@ Series A급 방향:
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `TODO/README.md`

@@ -33,6 +33,25 @@ Current implementation note as of 2026-07-10:
 - Contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
+## 2A. Native Mobile App First Scope
+
+2026-09-03 기준 네이티브 Mobile App의 1차 UX 범위는 로그인/회원가입, 인증 복구, 최소 홈, 로그아웃이다.
+
+Mobile App 첫 화면 기준:
+
+- 앱 시작 시 secure storage 기반 세션 복구가 끝나기 전에는 보호 화면을 먼저 보여주지 않는다.
+- 세션이 없으면 로그인/회원가입 provider 선택 화면을 보여준다.
+- provider 순서는 User Web과 같은 Google, LINE, Apple이다.
+- 로그인/회원가입 화면은 User Web 브라우저 모바일 auth 화면의 정보 구조와 문구 톤을 참고한다.
+- WebView로 User Web 화면을 감싸거나 pixel-level layout을 복제하지 않는다.
+- OAuth는 Expo AuthSession 또는 시스템 브라우저로 진행한다.
+- 약관, 개인정보처리방침, 보안 문서 링크는 OS 브라우저로 연다.
+- 로그인 성공 후 최소 `HomeScreen`은 `/api/me` 확인 UI로 제한한다.
+- 최소 `HomeScreen`에는 사용자 이름, 이메일, 인증 상태, 현재 모바일 기기 정보, 로그아웃 액션만 둔다.
+- CRM 홈, 딜 파이프라인, 회사/담당자/제품/일정/회의록 화면은 1차 범위가 아니다.
+
+Mobile App의 아키텍처, 인증 저장소, route 구조는 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 따른다.
+
 현재 우선순위 메모 기준일: 2026-08-09 G03 route architecture closeout
 
 - 지금은 새 기능을 추가하기보다 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 진행한다.
@@ -127,7 +146,7 @@ Do not copy blindly:
 - Do not use `오프더레코드` as a UI term.
 - Use `Memo 기록` for domain-specific subjective notes.
 - Do not make numeric probability the default UI.
-- Default likelihood is `긍정 / 중립 / 부정`.
+- When likelihood is added, its default UI is `긍정 / 중립 / 부정`.
 - Avoid a UI dominated by beige/cream tones.
 - Keep the UI clean, but make deal data more legible than decorative dashboard cards.
 - Do not copy reference product brand, copy, visual assets, or layout one-to-one.
@@ -172,7 +191,7 @@ The pipeline should be usable for scanning and action:
 - list/table rows on desktop
 - mobile can use compact deal cards or list rows
 - visible company/contact/product context
-- visible amount and likelihood
+- visible amount and, after the matching API/FE field exists, likelihood
 - clear next-action marker
 - quick link to deal detail
 - selected deal opens a detail panel on desktop
@@ -241,7 +260,7 @@ Desktop deal list should show the important comparison fields without horizontal
 - company/contact
 - stage
 - amount
-- likelihood
+- likelihood, only after the matching API/FE field is added
 - next action
 - due/expected close date
 
@@ -441,10 +460,12 @@ Why:
 
 Shared layer to finish early:
 
+In this section, `mobile` means User Web browser-mobile layout unless the document explicitly says `Mobile App`.
+
 - desktop sidebar
 - desktop top bar
-- mobile header
-- bottom tab bar
+- User Web mobile header
+- User Web browser-mobile bottom tab bar
 - modal shell
 - toast
 - loading / empty / error states
@@ -457,9 +478,9 @@ Shared layer to finish early:
 Deal screen work that should define the baseline:
 
 - desktop deal pipeline home
-- mobile deal pipeline home
+- User Web mobile deal pipeline home
 - desktop detail panel
-- mobile deal detail
+- User Web mobile deal detail
 - deal quick create modal
 
 After that, domain expansion should follow:
@@ -473,7 +494,8 @@ After that, domain expansion should follow:
 Rules:
 
 - new domain screens should reuse shared shell and shared state UI
-- desktop and mobile layouts may differ, but they should not invent separate visual systems
+- User Web desktop and browser-mobile layouts may differ, but they should not invent separate visual systems
+- Native Mobile App CRM screens are future scope and must follow `AGENT/SOFTWARE_AGENT/MOBILE_AGENT` when opened
 - do not expand route count faster than shared component quality
 
 ## 10. Deal Row Information Priority
@@ -484,7 +506,7 @@ A deal row/card should prioritize:
 2. company/contact
 3. stage
 4. amount
-5. likelihood: `긍정 / 중립 / 부정`
+5. likelihood: `긍정 / 중립 / 부정`, only after the matching API/FE field is added
 6. next action
 7. due date or expected close date
 8. recent activity when available in the current response
@@ -493,13 +515,13 @@ A deal row/card should prioritize:
 Reason:
 
 - Salespeople first need to recognize what the deal is and who it is with.
-- Then they compare current status, money, and probability.
+- Then they compare current status, money, and, after future support, probability.
 - Finally they decide what action should happen next.
 
 Desktop recommended column order:
 
 ```text
-딜이름 -> 회사/담당자 -> 단계 -> 금액 -> 가능성 -> 다음 행동 -> 마감일
+딜이름 -> 회사/담당자 -> 단계 -> 금액 -> 가능성(후속) -> 다음 행동 -> 마감일
 ```
 
 Mobile recommended card order:
@@ -507,7 +529,7 @@ Mobile recommended card order:
 ```text
 딜이름
 회사/담당자
-단계 · 금액 · 가능성
+단계 · 금액 · 가능성(후속)
 다음 행동
 마감일
 ```
@@ -519,6 +541,7 @@ Mobile pipeline pattern:
 - no mobile table as default
 - no horizontal Kanban as default
 - card should make next action and due date immediately visible
+- likelihood is not shown until the Deal API/FE input field is added
 
 Optional advanced fields:
 
@@ -577,7 +600,7 @@ Panel tabs:
 Rules:
 
 - Do not hide essential deal status inside tabs.
-- Stage, amount, likelihood, company/contact, and next action must remain immediately visible.
+- Stage, amount, company/contact, and next action must remain immediately visible. Likelihood follows the same rule after the matching API/FE field is added.
 - Activity log entry should be possible from the detail panel.
 - `Memo 기록` must be visually distinct from Log/활동 로그 and treated as sensitive.
 
@@ -636,7 +659,7 @@ Deal:
 - product
 - amount
 - stage
-- likelihood
+- likelihood, only after the matching API/FE field is added
 - next action optional
 - due/expected close date optional
 
@@ -695,7 +718,7 @@ Deal list filters:
 
 - stage
 - amount range
-- likelihood
+- likelihood, only after the matching API/FE field is added
 - next action status
 - due/expected close date
 - company/contact
@@ -726,7 +749,7 @@ The summary area must always make these visible:
 - company/contact
 - stage
 - amount
-- likelihood
+- likelihood, only after the matching API/FE field is added
 - next action
 - due/expected close date
 
@@ -740,7 +763,7 @@ Detail sections:
 
 Activity log should be timeline-like and support quick entry.
 
-Do not hide current stage, amount, likelihood, next action, or company/contact behind tabs.
+Do not hide current stage, amount, next action, or company/contact behind tabs. Do not hide likelihood after the matching API/FE field is added.
 
 ## 16. Schedule And Meeting Link UX
 
@@ -837,7 +860,7 @@ Admin screens should prioritize:
 
 Admin should not try to feel like the User Web. It should feel like an internal operations console.
 
-## 12. 관련 문서
+## 19. 관련 문서
 
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
@@ -845,3 +868,5 @@ Admin should not try to feel like the User Web. It should feel like an internal 
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`

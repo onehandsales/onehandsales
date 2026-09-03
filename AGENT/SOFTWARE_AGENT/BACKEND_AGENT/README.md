@@ -95,6 +95,9 @@ Current additional backend scope:
 - DataImport 확정 전 job은 DB에 저장한다. 확정 성공 시 도메인 row와 `ImportUserLog`/`ImportUserLogRow` snapshot을 같은 transaction에서 저장한다.
 - User에는 기본 timezone/preferredLocale, 사용자 기본 국가/통화인 `User.countryCode`, `User.defaultCurrencyCode`, signup/last-login locale, country code, timezone 메타데이터가 반영되어 있다.
 - Auth runtime은 Supabase OAuth token exchange 이후 Backend app session을 별도로 발급하는 구조다. app access token은 `userId`/`sessionId`를 담고, refresh token 원문은 httpOnly cookie로만 내려가며 DB에는 hash만 저장한다.
+- Mobile App 인증 foundation은 같은 Backend `AuthSession`을 공식 세션으로 사용한다. 단, 모바일 refresh token 원문은 httpOnly cookie가 아니라 모바일 보안 저장소에만 저장하며, Backend는 hash만 저장한다.
+- Mobile App 인증 API는 웹 cookie 기반 API와 분리해 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout` 계약으로 설계한다.
+- Mobile App의 `deviceSlot`은 `mobile`이며, 새 모바일 기기 로그인은 기존 active mobile device/session을 교체한다.
 - 신규/기존 사용자 판정은 `provider + providerUserId`를 먼저 사용한다. provider email은 Backend exchange에서 필수다.
 - 현재 Auth runtime provider는 Google/LINE/Apple이다. 기존 provider 계정이 없고 같은 verified email의 기존 `User`가 있으면 새 provider 계정을 기존 User에 연결한다. Kakao는 legacy enum으로만 유지하고 runtime provider로 노출하지 않는다.
 - 같은 active device 재로그인은 session row를 새로 만들지 않고 refresh token을 회전한다. 같은 slot의 다른 device login은 기존 device/session을 교체한다.
@@ -107,7 +110,7 @@ Current additional backend scope:
 
 - Paddle/Billing, subscription, payment, tax, invoice, refund, entitlement, paywall
 - Billing Admin과 B2B tenant/team admin
-- native/PWA packaging, native push/contact/calendar
+- native CRM/PWA packaging, native push/contact/calendar
 - 7일 이후 유료 복구 API와 영구 삭제 운영 mutation
 - 민감 데이터 포함 export
 - Series A급 AI/리텐션 고도화 기능
@@ -118,6 +121,8 @@ Current additional backend scope:
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`

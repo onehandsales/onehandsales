@@ -17,6 +17,7 @@
 - `AGENT/UXUI_AGENT/DECISIONS`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA`
 - `AGENT/PM_AGENT/DECISIONS`
 - `AGENT/PM_AGENT/CONVENTION`
@@ -144,6 +145,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - UX/UI 흐름과 화면 결정: `AGENT/UXUI_AGENT/DECISIONS`
 - Backend 아키텍처, API, 테스트, 배포, 코드 구조 결정: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS`
 - Frontend 아키텍처, 테스트, 배포, 코드 구조 결정: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/DECISIONS`
+- Mobile App 아키텍처, 인증/세션, 테스트, 빌드/배포, 코드 구조 결정: `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/DECISIONS`
 
 결정 문서에는 다음을 포함한다.
 
@@ -210,6 +212,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - 사용자 흐름, 화면 목록, UX/UI 방향은 `UXUI_AGENT`에 작성한다.
 - Backend 아키텍처, API, 코드 컨벤션, 테스트, 배포 기준은 `SOFTWARE_AGENT/BACKEND_AGENT`에 작성한다.
 - User Web/Admin Web 아키텍처, 코드 컨벤션, 테스트, 배포 기준은 `SOFTWARE_AGENT/FRONT_AGENT`에 작성한다.
+- React Native/Expo 기반 Mobile App 아키텍처, 코드 컨벤션, 인증/세션, 테스트, 빌드/배포 기준은 `SOFTWARE_AGENT/MOBILE_AGENT`에 작성한다.
 - DB schema와 테이블 설명은 `SOFTWARE_AGENT/DB_SCHEMA`에 작성한다.
 - 역할 간 충돌은 `PM_AGENT/DECISIONS`에 최종 결정으로 남긴다.
 - 한 문서가 여러 역할에 걸치면 주 책임 역할 폴더에 두고 관련 문서를 링크한다.
@@ -222,7 +225,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 
 - `TODO` 바로 아래에는 기획 또는 구현 계획 단위의 폴더를 1개 만든다.
 - `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
-- TODO 작성자는 Software Agent의 아키텍처, API 명세, API 계약, transaction, observability, Backend/Frontend/Admin 컨벤션, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 계획에 영향을 주는 기준을 TODO 문서에 구체적으로 옮긴다.
+- TODO 작성자는 Software Agent의 아키텍처, API 명세, API 계약, transaction, observability, Backend/Frontend/Admin/Mobile 컨벤션, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 계획에 영향을 주는 기준을 TODO 문서에 구체적으로 옮긴다.
 - 계획 폴더명은 목적이 드러나게 대문자와 `_PLAN` 접미사를 사용한다.
 - 예: `MVP-STARTER_PLAN`, `IMPORT_EXPORT_PLAN`, `PAYMENT_MANUAL_PLAN`
 - 각 계획 폴더는 구현자가 문서만 보고 첫 `/goal`을 실행할 수 있는 수준의 실행 계획서여야 한다.
@@ -230,6 +233,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - 이렇게 나누는 이유는 Frontend와 Backend가 같은 요구사항과 기획을 기준으로 작업하지만 실제 역할과 산출물이 다르기 때문이다.
 - `COMMON`은 Frontend와 Backend가 함께 봐야 하는 공통 계약 문서를 둔다.
 - Frontend는 화면, 컴포넌트, 사용자 입력, 상태 관리, E2E 흐름을 책임진다.
+- Mobile App 작업은 `FE-TODO`에 둘 수 있지만, React Native/Expo 구조와 인증 저장소 기준은 `MOBILE_AGENT` 정본을 따른다.
 - Backend는 API 명세, 비즈니스 로직, DB 스키마, 권한, 감사 로그, 외부 Provider adapter를 책임진다.
 - 공통 사용자 흐름은 `COMMON/USER-FLOW.md`에 둔다.
 - `/goal` 실행을 위한 우선순위 작업 단위는 `COMMON/GOAL-WORK-ORDER.md`에 둔다.

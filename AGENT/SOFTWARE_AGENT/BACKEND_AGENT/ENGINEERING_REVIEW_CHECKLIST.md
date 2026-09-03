@@ -32,6 +32,8 @@
 - Domain layer가 NestJS, Prisma, OpenAI, HTTP SDK를 import하지 않는가?
 - 사용자 소유 데이터 조회와 mutation에 `userId` 필터가 있는가?
 - 구현한 API가 User Web/Admin Web의 실제 API client 계약과 일치하는가?
+- Mobile App 인증 API를 구현한다면 `/api/auth/mobile/*`로 웹 cookie API와 분리하고, `AuthSession`, `deviceSlot=mobile`, `replaceExistingDevice=true`, `mobileRefreshToken` 계약을 지키는가?
+- Mobile App 인증 API가 Supabase session을 Backend 공식 세션으로 취급하지 않는가?
 - 시간 필드는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`의 UTC instant + IANA `timeZone` 기준을 따르는가?
 - 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 같은 row에 `timeZone` 컬럼을 저장하는가?
 - API 계약에서 시간 필드가 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 무엇인지 명시되어 있는가?
@@ -46,6 +48,7 @@
 - AdminGuard 테스트가 있는가?
 - 딜 단계 변경 시 활동 로그 생성 테스트가 있는가?
 - 회의록 딜 연결 시 활동 로그 생성 테스트가 있는가?
+- Mobile App 인증 API 구현 시 exchange/refresh/logout, refresh token rotation, one active mobile device 정책 테스트가 있는가?
 - 민감정보 원문 조회와 감사 로그 transaction 테스트가 있는가?
 - 외부 Provider는 기본 테스트에서 mock/stub 처리되는가?
 
@@ -64,3 +67,4 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`

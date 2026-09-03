@@ -18,7 +18,7 @@
 
 - `AGENT 학습해줘`
 - `AGENT 폴더 학습해줘`
-- `D:\workspace_repository\sales_b2c_platform\Sales_b2c\AGENT 여기를 학습해줘`
+- `D:\workspace_repository\onehandsales\AGENT 여기를 학습해줘`
 
 처리 규칙:
 
@@ -45,6 +45,7 @@
 | 문서 작성 품질, 문서 구조, 관련 문서 연결 | `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md` |
 | Backend 구현 구조, API, API 계약, transaction, observability, 배포, 보안 | `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md` |
 | Frontend 구현 구조, 화면 상태, E2E, 프론트 배포 | `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md` |
+| Mobile 구현 구조, React Native/Expo, 모바일 인증/세션, secure storage, 모바일 테스트 | `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md` |
 | UX/UI 화면, 흐름, 정보 우선순위 | `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md` |
 
 사용자가 단순히 `문서 검토해줘`라고 말하면 기본적으로 `PLANNING_REVIEW_CHECKLIST.md`와 `DOCUMENTATION.md`를 함께 적용한다.
@@ -53,9 +54,10 @@
 
 모든 작업자는 작업을 시작할 때 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`와 충돌하는 결과가 생기는지 확인한다.
 
-특히 아래 범위가 포함되면 해당 문서를 반드시 먼저 읽고, 관련 UXUI/FRONT_AGENT 문서와 함께 적용한다.
+특히 아래 범위가 포함되면 해당 문서를 반드시 먼저 읽고, 관련 UXUI/FRONT_AGENT/MOBILE_AGENT 문서와 함께 적용한다.
 
 - 화면 설계 또는 Frontend 구현
+- React Native/Expo 모바일 화면 또는 모바일 navigation 구현
 - 사용자 노출 문구, route, navigation, sidebar, top bar
 - 목록, 상세, 생성, 수정, 삭제, 복구, 검색, 필터, pagination
 - 회사/담당자/제품/딜/일정/회의록의 linked record와 activity/Memo 기록 흐름
@@ -97,4 +99,5 @@
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`

@@ -8,7 +8,7 @@ TODO 계획 문서, API 명세, DB 스키마, FE-TODO, BE-TODO, GOAL-SPECS를 �
 
 - PM 제품 범위와 사용자 흐름이 TODO의 goal 순서와 포함/제외 범위로 구체화됐는가?
 - UXUI_AGENT의 화면 우선순위, 입력 흐름, 모바일/데스크톱 패턴, Admin 운영 UX가 FE 문서로 구체화됐는가?
-- SOFTWARE_AGENT의 Clean Architecture, DDD, 계층 분리, port/adapter, API/DB/테스트 규칙이 BE/API/DB 문서로 구체화됐는가?
+- SOFTWARE_AGENT의 Backend, Frontend, Mobile App, DB 기준이 BE/API/FE/Mobile/DB 문서로 구체화됐는가?
 
 ## 2. 이유
 
@@ -30,6 +30,7 @@ TODO 계획 문서, API 명세, DB 스키마, FE-TODO, BE-TODO, GOAL-SPECS를 �
 - 검토 시 `AGENT 정본 기반 구체화 검토` 섹션을 반드시 적용한다.
 - Backend/API/DB 문서는 `SOFTWARE_AGENT`의 Backend Architecture, Backend Convention, API Spec, Testing Architecture와 대조한다.
 - FE/UX 문서는 `UXUI_AGENT`의 사용자 흐름, UX/UI Direction, UX Review Checklist와 `SOFTWARE_AGENT`의 Frontend/User Web/Admin Web Architecture와 대조한다.
+- Mobile App 문서는 `UXUI_AGENT`의 모바일 UX 결정과 `SOFTWARE_AGENT/MOBILE_AGENT`의 Expo, React Native, 인증/세션, 테스트 기준과 대조한다.
 - 발견 사항은 `Critical`, `Major`, `Minor`, `Question`, `Resolved` 중 하나로 분류한다.
 - 명확한 누락은 문서에 반영하고, 제품 판단이 필요한 항목은 임의 확정하지 않고 질문으로 남긴다.
 
@@ -43,6 +44,8 @@ TODO 계획 문서, API 명세, DB 스키마, FE-TODO, BE-TODO, GOAL-SPECS를 �
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`

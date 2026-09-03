@@ -15,6 +15,7 @@
 - PM의 제품 범위와 연결해 화면 흐름을 정의한다.
 - Software의 API/DB 제약을 고려하되, 사용자 문제 해결 흐름을 먼저 설명한다.
 - 데스크톱과 모바일의 기본 패턴이 다르면 명시적으로 구분한다.
+- User Web의 브라우저 모바일과 React Native/Expo Mobile App의 화면/세션 흐름은 구분해서 쓴다.
 
 ## 4. 관련 문서
 
@@ -24,3 +25,5 @@
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`

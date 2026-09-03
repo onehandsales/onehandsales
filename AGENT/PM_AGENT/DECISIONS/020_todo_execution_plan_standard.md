@@ -57,7 +57,7 @@
 - 각 `/goal`이 너무 크지 않고 검증 가능한 완료 기준을 가지는가?
 - API 명세와 DB 스키마가 FE 화면 요구를 실제로 지원하는가?
 - Backend 작업이 `SOFTWARE_AGENT`의 Clean Architecture, DDD, 계층 분리, port/adapter, transaction, audit log 기준으로 구체화되어 있는가?
-- Frontend/UX 작업이 `UXUI_AGENT`와 `SOFTWARE_AGENT`의 User Web/Admin Web 기준으로 구체화되어 있는가?
+- Frontend/UX 작업이 `UXUI_AGENT`와 `SOFTWARE_AGENT`의 User Web/Admin Web/Mobile App 기준으로 구체화되어 있는가?
 - 아직 결정되지 않은 항목은 `Question` 또는 G00 같은 선행 결정 작업으로 분리되어 있는가?
 
 이 기준을 만족하지 못하면 `COMMON/PLANNING-REVIEW.md`에서 `조건부 통과`, `수정 필요`, 또는 `보류`로 판정한다.
@@ -69,4 +69,5 @@
 - `AGENT/PM_AGENT/DECISIONS/015_todo_goal_work_order.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
 - `AGENT/PM_AGENT/DECISIONS/019_agent_based_planning_review.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `TODO/DONE/MVP-STARTER_PLAN/README.md`

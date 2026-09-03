@@ -13,6 +13,7 @@
 우선 적용 범위:
 
 - User Web의 화면 텍스트
+- Mobile App의 화면 텍스트
 - 버튼, 탭, 메뉴, 필터, placeholder
 - toast, dialog, modal
 - loading, empty, error state
@@ -20,6 +21,8 @@
 - API error message 중 사용자에게 노출되는 문구
 
 Admin Web도 사용자에게 보이는 제품 문구에는 같은 원칙을 적용한다. 다만 Admin은 운영 콘솔이므로 표 제목, 테이블 헤더, 필터명처럼 업무 용어가 더 정확한 곳은 짧은 명사형을 허용한다.
+
+Mobile App도 같은 UX writing 원칙을 적용한다. 특히 로그인/회원가입, 세션 만료, OAuth 실패, refresh 실패, 로그아웃 문구는 User Web과 톤을 맞춘다.
 
 ## 3. 기본 원칙
 
@@ -269,10 +272,12 @@ UX writing 검수 시 아래 표현을 우선 검색한다.
 3. form schema validation message
 4. toast/dialog/modal 문구
 5. API client의 사용자 노출 error fallback
-6. Admin Web 운영자 노출 문구
+6. Mobile App 로그인/세션/최소 홈 문구
+7. Admin Web 운영자 노출 문구
 
 ## 7. 관련 문서
 
 - `AGENT/UXUI_AGENT/DECISIONS/016_uxui_writing_tone.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
