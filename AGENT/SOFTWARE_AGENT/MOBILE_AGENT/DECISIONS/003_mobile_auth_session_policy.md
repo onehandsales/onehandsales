@@ -12,8 +12,8 @@ Supabase는 현재 빠른 OAuth 구현을 위한 외부 인증 어댑터로만 �
 
 ## 2. 기기 정책
 
-- 모바일 `deviceSlot`은 항상 `mobile`이다.
-- 사용자당 활성 모바일 기기는 1대만 허용한다.
+- 네이티브 Mobile App의 API `deviceSlot`은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`이다.
+- 사용자당 활성 네이티브 모바일 기기는 1대만 허용한다.
 - 새 모바일 기기 로그인 시 기존 활성 모바일 기기와 세션은 교체한다.
 - exchange 요청은 `replaceExistingDevice: true`를 사용한다.
 
@@ -38,7 +38,7 @@ GET /api/me
 
 `POST /api/auth/mobile/exchange` 응답에는 access token과 refresh token을 함께 포함한다.
 
-`POST /api/auth/mobile/refresh` 응답에는 새 access token과 새 refresh token을 함께 포함한다.
+`POST /api/auth/mobile/refresh` 응답에는 새 access token, 새 refresh token, 현재 native mobile device 정보를 함께 포함한다.
 
 응답 필드명은 `mobileRefreshToken`이다.
 
@@ -60,7 +60,7 @@ refresh token은 AsyncStorage, Zustand persist, localStorage와 유사한 일반
 
 access token은 짧은 수명을 가진 토큰으로 취급하며, 메모리에만 보관할 수 있다.
 
-refresh token 회전과 세션 만료/폐기는 백엔드의 AuthSession 정책을 따른다.
+refresh token 회전과 세션 만료/폐기는 백엔드의 AuthSession 정책을 따른다. refresh token rotation은 기존 refresh token hash와 session id 조건이 모두 맞을 때만 성공해야 하며, 이미 회전된 refresh token 재사용은 실패해야 한다.
 
 ## 6. 앱 시작 시 세션 복구
 
@@ -68,7 +68,7 @@ refresh token 회전과 세션 만료/폐기는 백엔드의 AuthSession 정책�
 
 저장된 `mobileRefreshToken`이 있으면 즉시 `POST /api/auth/mobile/refresh`를 호출한다.
 
-refresh 성공 시 새 `accessToken`, `accessTokenExpiresAt`, `mobileRefreshToken`, `user`를 반영한다.
+refresh 성공 시 새 `accessToken`, `accessTokenExpiresAt`, `mobileRefreshToken`, `user`, `device`를 반영한다.
 
 새 `mobileRefreshToken`은 secure storage에 즉시 덮어쓴다.
 

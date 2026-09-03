@@ -80,7 +80,7 @@ Mobile App
   -> 최소 HomeScreen 표시
 ```
 
-앱 재시작 시에는 secure storage의 `onehand.mobile.auth.mobileRefreshToken`을 읽어 `POST /api/auth/mobile/refresh`를 먼저 호출한다. refresh 성공 시 새 access token과 새 `mobileRefreshToken`을 반영하고, 실패 시 secure storage의 refresh token을 삭제한 뒤 signedOut 상태로 전환한다.
+앱 재시작 시에는 secure storage의 `onehand.mobile.auth.mobileRefreshToken`을 읽어 `POST /api/auth/mobile/refresh`를 먼저 호출한다. refresh 성공 시 새 access token, 새 `mobileRefreshToken`, 현재 native mobile device 정보를 반영하고, 실패 시 secure storage의 refresh token을 삭제한 뒤 signedOut 상태로 전환한다.
 
 ## 7. 지금 만들지 않는 범위
 

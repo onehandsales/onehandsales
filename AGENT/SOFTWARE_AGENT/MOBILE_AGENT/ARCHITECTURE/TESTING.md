@@ -17,6 +17,7 @@ CRM 전체 E2E는 1차 범위가 아니다.
 - 로그인 완료 후 최소 `HomeScreen` 표시
 - 앱 재시작 시 `POST /api/auth/mobile/refresh` 호출
 - refresh 성공 시 token rotation 반영
+- 이미 회전된 refresh token 재사용 실패
 - refresh 실패 시 secure storage 삭제와 signedOut 전환
 - logout 시 Backend session revoke 요청과 로컬 세션 삭제
 

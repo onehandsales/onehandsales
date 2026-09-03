@@ -42,7 +42,7 @@ OneHand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 - 모바일의 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이다.
 - Supabase는 현재 OAuth access token을 얻기 위한 외부 인증 adapter로만 취급하며, 향후 교체 가능해야 한다.
 - 모바일 인증 API는 웹 cookie 기반 API와 분리해 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`으로 설계한다.
-- 모바일 앱은 exchange 요청에서 `deviceSlot: "mobile"`과 `replaceExistingDevice: true`를 사용한다.
+- 모바일 앱은 exchange 요청에서 `deviceSlot: "native_mobile"`과 `replaceExistingDevice: true`를 사용한다. Backend Prisma enum은 `NATIVE_MOBILE`을 추가한다.
 - 사용자당 활성 모바일 기기는 1대만 허용한다. 새 모바일 기기 로그인은 기존 활성 모바일 기기와 세션을 교체한다.
 - 모바일 refresh token 응답 필드는 `mobileRefreshToken`으로 둔다.
 - 모바일 refresh token은 AsyncStorage, Zustand persist, localStorage 유사 저장소, 일반 React state, 로그, analytics, crash report에 저장하지 않는다.

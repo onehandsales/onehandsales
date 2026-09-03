@@ -16,8 +16,8 @@ Backend DB 기준:
 
 모바일 기준:
 
-- `deviceSlot`은 항상 `mobile`이다.
-- 사용자당 활성 모바일 기기는 1대만 허용한다.
+- 네이티브 Mobile App의 API `deviceSlot`은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`이다.
+- 사용자당 활성 네이티브 모바일 기기는 1대만 허용한다.
 - 새 모바일 기기에서 로그인하면 기존 활성 모바일 기기와 세션은 교체한다.
 - 모바일 exchange 요청은 `replaceExistingDevice: true`를 사용한다.
 - access token은 Backend가 발급한 OneHand app access token만 사용한다.
@@ -44,7 +44,7 @@ GET /api/me
 
 - `Authorization: Bearer <external OAuth access token>`
 - body:
-  - `deviceSlot: "mobile"`
+  - `deviceSlot: "native_mobile"`
   - `deviceId: string`
   - `deviceLabel?: string`
   - `replaceExistingDevice: true`
@@ -71,6 +71,7 @@ GET /api/me
 - `accessTokenExpiresAt`
 - `mobileRefreshToken`
 - `user`
+- `device`
 
 ### POST /api/auth/mobile/logout
 
@@ -92,7 +93,7 @@ refresh token은 AsyncStorage, Zustand persist, localStorage와 유사한 일반
 
 access token은 짧은 수명을 가진 토큰으로 취급하며, 메모리에만 보관할 수 있다.
 
-refresh token 회전과 세션 만료/폐기는 백엔드의 AuthSession 정책을 따른다.
+refresh token 회전과 세션 만료/폐기는 백엔드의 AuthSession 정책을 따른다. refresh token rotation은 기존 refresh token hash와 session id 조건이 모두 맞을 때만 성공해야 하며, 이미 회전된 refresh token 재사용은 실패해야 한다.
 
 모바일 refresh token 저장 key:
 
@@ -113,6 +114,7 @@ refresh 성공 시:
 - 새 `accessToken`을 메모리에 반영한다.
 - 새 `accessTokenExpiresAt`을 auth 상태에 반영한다.
 - 새 `mobileRefreshToken`을 secure storage에 즉시 덮어쓴다.
+- response의 `device`를 현재 모바일 기기 상태로 반영한다.
 - `/api/me` 기준 사용자 상태를 반영한다.
 
 refresh 실패 시:

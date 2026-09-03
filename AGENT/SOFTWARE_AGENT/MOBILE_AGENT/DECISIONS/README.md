@@ -19,8 +19,8 @@
 - 현재 `FE/mobile-app`은 문서 확정 이후 재생성할 수 있다.
 - 1차 범위는 로그인/회원가입, 모바일 인증 세션, 앱 시작 시 세션 복구, `/api/me`, 최소 `HomeScreen`, 로그아웃이다.
 - 모바일 인증은 Backend `AuthDevice/AuthSession` 정책을 공유한다.
-- 모바일 `deviceSlot`은 항상 `mobile`이다.
-- 사용자당 활성 모바일 기기는 1대만 허용한다.
+- 네이티브 Mobile App의 API `deviceSlot`은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`이다.
+- 사용자당 활성 네이티브 모바일 기기는 1대만 허용한다.
 - 모바일 refresh token은 secure storage에만 저장한다.
 - 모바일 인증 API는 `/api/auth/mobile/*`로 웹 인증 API와 분리한다.
 - 모바일 refresh 요청 body 필드명은 `mobileRefreshToken`이다.

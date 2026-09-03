@@ -110,6 +110,8 @@ AuthDevice 1 ─ N AuthSession
 
 현재 User Web은 화면 폭 기준으로 `MOBILE`과 `PERSONAL_LAPTOP`만 사용한다. `WORK_LAPTOP`은 Backend enum에는 있지만 현재 User Web payload에서는 보내지 않는다.
 
+Mobile Auth Foundation Plan의 네이티브 앱은 API `deviceSlot: "native_mobile"`을 사용하고, G01 Backend 작업에서 `AuthDeviceSlot.NATIVE_MOBILE` enum migration을 추가한다. 실제 `BE/prisma/schema.prisma`가 변경되기 전까지 이 문서의 enum 블록은 현재 schema 기준을 유지한다.
+
 ## 5. Table: User
 
 서비스 내부 사용자 기준 테이블이다. 외부 provider 계정과 별개로 권한, 상태, 로그인 시각을 관리한다.

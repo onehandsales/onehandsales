@@ -135,6 +135,7 @@ Mobile App:
 - 인증 상태는 Zustand auth store에서 관리할 수 있으나 refresh token은 store/persist에 저장하지 않는다.
 - 모바일의 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이다.
 - 모바일 인증 API는 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `/api/me`를 기준으로 한다.
+- 네이티브 앱의 `deviceSlot`은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`을 추가한다. User Web 브라우저 모바일의 기존 `mobile` slot과 분리한다.
 - `mobileRefreshToken`은 secure storage의 `onehand.mobile.auth.mobileRefreshToken` key에만 저장한다.
 - 로그인/회원가입 UX는 user-web의 브라우저 모바일 auth 화면을 기준으로 React Native + NativeWind로 재구현한다.
 

@@ -76,13 +76,14 @@ API client는 Zustand store, React context, secure storage, Supabase client를 �
 - 앱 시작 시 secure storage에서 `onehand.mobile.auth.mobileRefreshToken`을 읽는다.
 - token이 있으면 즉시 `POST /api/auth/mobile/refresh`를 호출한다.
 - 성공하면 새 `mobileRefreshToken`을 secure storage에 덮어쓴다.
+- 성공하면 response의 `device`를 현재 모바일 기기 상태로 반영한다.
 - 실패하면 secure storage token을 삭제하고 signedOut 상태로 전환한다.
 - 인증 복구가 끝나기 전에는 보호 화면을 렌더링하지 않는다.
 
 ## 8. Device 정책
 
-- 모바일 `deviceSlot`은 항상 `mobile`이다.
-- 사용자당 활성 모바일 기기는 1대만 허용한다.
+- 네이티브 Mobile App의 API `deviceSlot`은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`이다.
+- 사용자당 활성 네이티브 모바일 기기는 1대만 허용한다.
 - 새 모바일 기기 로그인 시 기존 모바일 기기와 세션은 교체한다.
 - exchange 요청은 `replaceExistingDevice: true`를 사용한다.
 - `deviceId`는 설치 단위로 안정적인 값을 사용한다.

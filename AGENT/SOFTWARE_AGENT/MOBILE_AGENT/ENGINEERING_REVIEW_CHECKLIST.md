@@ -20,7 +20,8 @@
 
 - [ ] 앱 시작 시 secure storage에서 `onehand.mobile.auth.mobileRefreshToken`을 읽는다.
 - [ ] 저장된 `mobileRefreshToken`이 있으면 `POST /api/auth/mobile/refresh`를 호출한다.
-- [ ] refresh 성공 시 새 access token과 새 `mobileRefreshToken`을 반영한다.
+- [ ] refresh 성공 시 새 access token, 새 `mobileRefreshToken`, 현재 native mobile device 정보를 반영한다.
+- [ ] 이미 회전된 refresh token 재사용은 실패한다.
 - [ ] refresh 실패 시 secure storage token을 삭제하고 signedOut 상태로 전환한다.
 - [ ] 인증 복구 완료 전 보호 화면을 렌더링하지 않는다.
 - [ ] 로그아웃 시 Backend `POST /api/auth/mobile/logout`을 호출한다.
@@ -41,7 +42,7 @@
 - [ ] 모바일 앱은 `/admin/api/*`를 호출하지 않는다.
 - [ ] 모바일 auth API는 `/api/auth/mobile/*` 계약을 따른다.
 - [ ] refresh 요청 body 필드명은 `mobileRefreshToken`이다.
-- [ ] exchange 요청은 `deviceSlot: "mobile"`을 사용한다.
+- [ ] exchange 요청은 `deviceSlot: "native_mobile"` 값을 사용한다.
 - [ ] exchange 요청은 `replaceExistingDevice: true`를 사용한다.
 - [ ] 사용자당 활성 모바일 기기 1대 정책과 충돌하는 구현이 없다.
 - [ ] API base URL은 public config로만 주입한다.

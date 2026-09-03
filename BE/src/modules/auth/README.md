@@ -16,8 +16,10 @@ Confirmed Mobile App auth foundation contract:
 
 - Mobile App official session is Backend `AuthSession`, not Supabase session.
 - Mobile App auth APIs are planned as `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, and `/api/auth/mobile/logout`, separated from web cookie APIs.
-- Mobile App uses `deviceSlot: "mobile"` and `replaceExistingDevice: true`.
+- Mobile App uses `deviceSlot: "native_mobile"`, Prisma `AuthDeviceSlot.NATIVE_MOBILE`, and `replaceExistingDevice: true`.
 - Mobile App response field for the raw refresh token is `mobileRefreshToken`.
+- Mobile App refresh response includes the current native mobile device so restored sessions can render device context.
+- Mobile App refresh token rotation must succeed only when the previous refresh token hash still matches the target session.
 - Backend stores only refresh token hashes. The raw mobile refresh token is stored only in the app secure storage by the client.
 
 Current runtime policy:

@@ -116,7 +116,9 @@ Provider 현황:
 
 현재 Mobile App device slot 정책:
 
-- `deviceSlot`은 항상 `mobile`
+- 네이티브 Mobile App은 `deviceSlot: "native_mobile"`을 사용한다.
+- Backend Prisma enum은 `AuthDeviceSlot.NATIVE_MOBILE`을 추가한다.
+- User Web 브라우저 모바일의 기존 `mobile` slot은 유지한다.
 - 사용자당 활성 모바일 기기는 1대
 - 새 모바일 기기 로그인 시 기존 모바일 기기와 활성 session 교체
 - exchange 요청은 `replaceExistingDevice=true`

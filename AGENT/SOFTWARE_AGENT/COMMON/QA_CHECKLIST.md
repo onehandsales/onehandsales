@@ -378,7 +378,7 @@ pnpm test:e2e
 - [ ] 로그인/회원가입 provider 순서가 Google, LINE, Apple임
 - [ ] OAuth provider 화면은 WebView가 아니라 Expo AuthSession 또는 시스템 브라우저로 열림
 - [ ] OAuth 성공 후 Backend `POST /api/auth/mobile/exchange`로 OneHand app session을 생성함
-- [ ] exchange 요청은 `deviceSlot: "mobile"`과 `replaceExistingDevice: true`를 사용함
+- [ ] exchange 요청은 `deviceSlot: "native_mobile"`과 `replaceExistingDevice: true`를 사용함
 - [ ] 응답의 `mobileRefreshToken`은 secure storage에만 저장함
 - [ ] access token은 메모리에만 보관하고 API client는 `TokenProvider`를 통해 주입받음
 - [ ] `GET /api/me` 성공 후 최소 `HomeScreen`에 사용자 이름, 이메일, 인증 상태, 현재 모바일 기기 정보, 로그아웃 액션만 표시함

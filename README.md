@@ -113,7 +113,7 @@ pnpm install
 pnpm run start
 ```
 
-Mobile App은 Expo/React Native 기반이다. 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이며, 모바일 인증 API는 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `/api/me` 계약을 기준으로 한다. `mobileRefreshToken`은 secure storage의 `onehand.mobile.auth.mobileRefreshToken` key에만 저장하고, access token은 메모리에만 보관한다.
+Mobile App은 Expo/React Native 기반이다. 공식 인증 세션은 Supabase session이 아니라 Backend `AuthSession`이며, 모바일 인증 API는 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`, `/api/me` 계약을 기준으로 한다. 네이티브 앱의 `deviceSlot`은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`을 추가한다. `mobileRefreshToken`은 secure storage의 `onehand.mobile.auth.mobileRefreshToken` key에만 저장하고, access token은 메모리에만 보관한다.
 
 모바일 로그인/회원가입 UX는 user-web의 브라우저 모바일 auth 화면을 기준으로 React Native + NativeWind로 재구현한다. CRM 전체 화면은 1차 범위에 포함하지 않는다. 정본 문서는 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`다.
 

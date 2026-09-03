@@ -16,6 +16,11 @@ TODO/
     COMMON/
     FE-TODO/
     BE-TODO/
+  MOBILE_AUTH_FOUNDATION_PLAN/
+    README.md
+    COMMON/
+    FE-TODO/
+    BE-TODO/
   PADDLE_PLAN/
     README.md
     COMMON/
@@ -114,6 +119,7 @@ TODO/
 - Paddle/Billing 구현은 기능 유지보수, UX/UI 상품성 개선, 100명 베타 테스트, 가격/플랜/권한 정책 확정 이후 다시 착수한다.
 - 2026-08-12 기준 `TODO/SERVICE_QA_PLAN`은 실제 서비스 QA 실행을 위한 활성 문서 계획이다. 순수 문서 계획이며, QA 실행 결과는 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록한다.
 - 2026-08-23 기준 `TODO/SERVICE_QA_PLAN/SERVICE-QA-CHECKLIST.csv`의 P0 기능 QA는 완료됐고, 현재는 P0 범위에서 발견된 UX/UI 개선을 진행 중이다.
+- 2026-09-03 기준 `TODO/MOBILE_AUTH_FOUNDATION_PLAN`은 네이티브 Mobile App 인증 foundation 구현을 위한 Active 계획이다. 네이티브 앱은 `deviceSlot: "native_mobile"`, Prisma enum `NATIVE_MOBILE`을 사용하고, User Web 브라우저 모바일의 기존 `mobile` slot과 분리한다. Backend `/api/auth/mobile/*`, Mobile App secure storage refresh token, memory-only access token, Expo Router, NativeWind, 최소 HomeScreen, logout을 `/goal` 단위로 실행한다.
 - 2026-08-31 기준 `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`은 API-SPEC 템플릿 누락 감사에서 분리된 문서 정규화 전용 완료 보관 계획이다. BE/FE 코드와 API 계약 의미는 바꾸지 않고, G01에서 활성 Service QA API-SPEC 보강을 완료했고 G02에서 보관 API-SPEC 92개 감사 인덱스를 작성했으며 G03에서 Core/User 보관 API-SPEC 후보 9개를 정규화했다. G04에서 Mobile Field 보관 API-SPEC 후보 4개를 정규화했고, G05에서 Admin Operation 보관 API-SPEC 후보 9개의 Admin/User 경계, 권한, masking, audit, observability, FE error 처리 기준을 보강했다. G06에서 Domain Global Data 복합 API-SPEC의 Product/Deal currency, Contact global phone, Company region/address matrix를 current BE/FE 구현 기준으로 정규화했다. G99에서 전체 최종 검토를 완료했고 남은 API-SPEC 정규화 goal은 없다.
 - 2026-08-30 기준 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`은 G08 presentation repository port import 감사에서 분리된 Backend 타입 소유권 정리 완료 보관 계획이다. API 계약 의미를 바꾸지 않고 DTO validation 값과 response mapper read model 타입을 repository port 밖으로 분리했으며, G01/G02/G99가 모두 완료됐다.
 - 2026-08-29 기준 `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`은 Backend Agent rule recheck G01~G08과 G99 최종 검토를 완료한 archive다. 완료 커밋은 `acdb9eb3 chore(backend): complete rule recheck final review`이고, 커밋 이후 재검토에서 작업 트리 clean, BE 전체 검증 재통과, 완료 문서 경로/상태 문구 정합성을 확인했다. 후속 presentation boundary 계획은 `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`, 후속 API-SPEC 정규화 계획은 `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN`으로 완료 보관했다.
@@ -131,6 +137,7 @@ TODO/
 보류/진행 중인 계획:
 
 - `SERVICE_QA_PLAN`: Active / Ready. 실제 서비스 QA를 위한 자동 검증, Playwright, 실제 BE 통합, 수동 UX/보안 QA 실행 계획이다.
+- `MOBILE_AUTH_FOUNDATION_PLAN`: Active / Ready. 네이티브 Mobile App 인증 foundation을 Backend `/api/auth/mobile/*`와 `FE/mobile-app` Expo React Native 구조로 구현하기 위한 계획이다.
 - `PADDLE_PLAN`: Deferred / Draft. 결제, 구독, 세금, entitlement, paywall, AI 사용량 제한 정책을 베타 이후 다시 확정하기 위한 보류 계획이다.
 
 완료된 계획:
@@ -200,13 +207,19 @@ TODO/
 
 - `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
+- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/PM_AGENT/PLANNING/PRD.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
+- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`
 - `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/MOBILE_APP.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`
+- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/CONVENTION/AUTH_AND_STORAGE.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`

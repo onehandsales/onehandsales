@@ -22,7 +22,7 @@ React Native가 React와 유사하더라도 런타임과 보안 저장소가 다
 - Supabase는 현재 빠른 OAuth 구현을 위한 외부 인증 adapter로만 취급한다.
 - 모바일 앱은 Backend User API인 `/api/*`만 호출하고 `/admin/api/*`는 호출하지 않는다.
 - 모바일 인증은 `/api/auth/mobile/exchange`, `/api/auth/mobile/refresh`, `/api/auth/mobile/logout`을 기준으로 설계한다.
-- `deviceSlot`은 `mobile`이고, 사용자당 활성 모바일 기기는 1대만 허용한다.
+- 네이티브 Mobile App의 `deviceSlot` 값은 `native_mobile`이고 Backend Prisma enum은 `NATIVE_MOBILE`이다. 사용자당 활성 네이티브 모바일 기기는 1대만 허용한다.
 - 새 모바일 기기 로그인은 기존 활성 모바일 기기와 세션을 교체한다.
 - refresh token은 모바일 보안 저장소에만 저장하고, AsyncStorage, Zustand persist, 일반 state, 로그, analytics, crash report에 남기지 않는다.
 - access token은 짧은 수명으로 취급하고 메모리에만 보관한다.
