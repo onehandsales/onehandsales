@@ -67,7 +67,7 @@
 - 외부 analytics provider forwarding port/adapter/runtime call 추가
 - public site/UTM/ad attribution/growth experiment API/model 추가
 - marketing opt-in/communication consent policy API/model/UI 추가
-- PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution 추가
+- PWA install/offline shell/full offline sync, install attribution 추가
 - BusinessCard 전용 `getUserMedia`, custom camera preview/crop/canvas capture flow를 `PRE12-F42` 계약 없이 추가
 - `UserDraft`, `/api/drafts/*`, server draft DB, media/raw 저장을 `PRE12-F43` 정책 없이 10 후속처럼 추가
 - `/app/export`, `/api/exports`, `ExportJob`을 10/PRE12 후속처럼 활성화
@@ -91,9 +91,9 @@
 
 08 재대조 기준으로 `/app` 기본 `ko-KR/en` i18n, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. 시장/국가/auth 확장과 UX polish는 08 미완성이 아니라 `PRE12-F17`~`PRE12-F25` 후속 후보 또는 후속 seed로 분류했고 G09 closeout을 완료했다.
 
-09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, marketing opt-in, PWA/native install attribution은 09 미완성이 아니라 `PRE12-F26`~`PRE12-F30` 및 `PRE12-F41` 후속 후보 또는 후속 seed로 분류했고 G10 closeout을 완료했다.
+09 재대조 기준으로 자체 DB `ProductAnalyticsEvent`, collector, core event, activation/retention, AI usage summary, billing reserved taxonomy, 10 mobile field-use event, 11 Admin analytics overview는 완료다. account deletion 실제 처리, 세부 event 확장, 외부 provider, attribution/experiment, marketing opt-in, PWA install attribution은 09 미완성이 아니라 `PRE12-F26`~`PRE12-F30` 및 `PRE12-F41` 후속 후보 또는 후속 seed로 분류했고 G10 closeout을 완료했다.
 
-10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트와 FE route architecture 정합성은 `PRE12-F31`/`PRE12-F32`로 분류했고 BEFORE_12 G02/G03에서 닫았다. PWA/native packaging은 `PRE12-F30`, advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`, generic ExportJob은 기존 `PRE12-F09`로 본다.
+10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트와 FE route architecture 정합성은 `PRE12-F31`/`PRE12-F32`로 분류했고 BEFORE_12 G02/G03에서 닫았다. PWA packaging은 `PRE12-F30`, advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`, generic ExportJob은 기존 `PRE12-F09`로 본다.
 
 11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분류했고 BEFORE_12 G04/G05에서 닫았다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다. 2026-08-07 2차 재대조에서 Admin 직접 도메인 데이터 mutation은 `PRE12-F44`, Customer/B2B tenant admin은 `PRE12-F45`로 추가 분리했고, ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13`에 연결했다.
 

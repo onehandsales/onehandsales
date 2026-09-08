@@ -21,7 +21,7 @@ BEFORE_12 G02 정합성 확인: 2026-08-09 G07 QA closeout, G03~G06 goal 문서,
 ## 3. G02 BusinessCard UI TODO
 
 - [x] 모바일 CTA는 실제 업무 시작 버튼이어야 하며 landing/hero를 만들지 않는다.
-- [x] native file/camera input을 사용한다.
+- [x] browser file/camera input을 사용한다.
 - [x] input attribute는 `type="file"`, `accept="image/*"`, `capture="environment"`를 사용한다.
 - [x] custom `getUserMedia` camera UI를 만들지 않는다.
 - [x] upload loading/progress 상태를 보여준다.

@@ -76,7 +76,6 @@
 ## 6. 10에서 만들지 않는 event
 
 - PWA install attribution event
-- native app install event
 - billing/paywall/churn event
 - marketing campaign/UTM event
 - full offline sync conflict event

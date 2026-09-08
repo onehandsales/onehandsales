@@ -109,7 +109,7 @@
 - 제품화 수준의 최종 UX/UI 완성도 판단
 - 첫 판매 기준인 Global B2C 유료 판매를 위한 결제/구독, 세금/컴플라이언스, Billing 정책/신뢰 gate
 - billing 기반 paid conversion/churn/ARPU 분석 연결
-- Series A급 고급 리텐션/AI와 native/PWA packaging 고도화
+- Series A급 고급 리텐션/AI와 PWA packaging 고도화
 
 진행 순서 결정:
 
@@ -263,7 +263,7 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- PWA install prompt/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
+- PWA install prompt/offline shell, full offline sync
 - Admin provider failure dashboard와 운영 추적은 11에서 완료
 - Marketing opt-in, billing/paywall/churn runtime event
 
@@ -320,7 +320,7 @@
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline, activity deletion/retention/audit 정책. `NBA-003` 잔여는 2026-08-06 A 결정에 따라 PRE12 제품화 gap으로 승격하지 않는다.
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행
 - 완료된 Product Analytics/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event
-- 완료된 Mobile Field Use 범위를 넘어서는 PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
+- 완료된 Mobile Field Use 범위를 넘어서는 PWA install/offline shell, full offline sync
 - 완료된 Admin Operation 범위를 넘어서는 Billing Admin 연동, Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다. UX/UI 전체 polish는 지금 06 후속으로 진행하지 않고, 로드맵 DONE 이후 별도 전면 유지보수 계획에서 다룬다.

@@ -17,7 +17,6 @@
 
 ## 3. 제외 범위
 
-- native app recorder
 - audio file DB 저장
 - 녹음 local draft 저장
 - provider raw response 표시

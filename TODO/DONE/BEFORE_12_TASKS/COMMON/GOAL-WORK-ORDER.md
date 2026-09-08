@@ -124,7 +124,7 @@ pnpm run lint
 완료 기준:
 
 - 10 README, checklist, FE/BE TODO가 실제 상태와 맞는다.
-- PWA/offline/native, server draft, `/api/exports`를 새로 만들지 않는다.
+- PWA/offline, server draft, `/api/exports`를 새로 만들지 않는다.
 - 10 완료 범위와 post-12 후보가 섞이지 않는다.
 
 권장 실행 문구:

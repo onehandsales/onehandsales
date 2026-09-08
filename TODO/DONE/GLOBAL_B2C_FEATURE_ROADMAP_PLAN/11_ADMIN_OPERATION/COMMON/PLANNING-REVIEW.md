@@ -53,7 +53,7 @@
 | Push permission result bucket | `permissionState`만 예시에 있고 `browserPushEnabled` bucket이 빠져 있었음 | `browserPushEnabledTrue/False` aggregate 추가 |
 | 기존 `BrowserPushSubscription.userAgent` field | Admin 문서가 userAgent 저장 금지처럼 읽힐 수 있었음 | Admin select/response/log 원문 금지로 표현을 좁힘 |
 | Local draft | client-local 기능이므로 Admin 직접 관리 대상 아님 | scope 제외 유지, event count만 G07 집계 가능 |
-| PWA install/offline shell/native app | 10 1차 제외 및 후속 roadmap | 11에 추가하지 않음 |
+| PWA install/offline shell | 10 1차 제외 및 후속 roadmap | 11에 추가하지 않음 |
 
 재검토 결과 새 goal은 필요 없고, G03/G06/G07/G10과 공통 체크리스트 보강으로 충분하다.
 

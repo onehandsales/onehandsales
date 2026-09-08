@@ -39,7 +39,7 @@
 | AI usage | 09는 `AiProviderCallLog` 기반 Admin 참고용 AI usage summary를 만든다. `AiUsageDaily`와 `UsageMeter`는 없다. |
 | billing reserved | paywall/trial/coupon/referral/subscription/churn event name은 reserved taxonomy에만 있고 runtime allowlist로 발생하지 않는다. |
 | Admin analytics | 11에서 `/admin/api/analytics/overview`와 Admin Web `/analytics` overview가 구현됐다. billing/subscription 지표는 표시하지 않는다. |
-| mobile field-use | 10에서 business card capture, meeting note recording, browser push permission 같은 mobile field-use event를 추가했다. PWA install/offline shell/full offline sync/native app/native push/contact/calendar는 후속이다. |
+| mobile field-use | 10에서 business card capture, meeting note recording, browser push permission 같은 mobile field-use event를 추가했다. PWA install/offline shell/full offline sync는 후속이다. |
 
 ## 3. PRE12 후보 분류
 
@@ -50,7 +50,7 @@
 | Product analytics 세부 event 확장 | `PRE12-F27` | 후속 seed / 별도 analytics 계획 | Notification delivery/click/reach, Google Calendar sync detail, AI weekly/follow-up delivery detail event는 09 최소 taxonomy 밖이다. |
 | 외부 analytics provider forwarding | `PRE12-F28` | 후속 seed / growth/ops | 자체 DB 정본을 유지한다. Segment/PostHog/Mixpanel/GA류 provider port/adapter/runtime call은 09 대상이 아니다. |
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` | 후속 seed / growth/marketing | 09는 core `/app` route view만 수집했다. public route, UTM/referrer/ad attribution, `ExperimentAssignment`는 후속이다. |
-| PWA/native packaging과 install attribution | `PRE12-F30` | 후속 seed / 별도 mobile roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 후속이다. |
+| PWA packaging과 install attribution | `PRE12-F30` | 후속 seed / 별도 PWA roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell/full offline sync, install attribution은 후속이다. |
 | Marketing opt-in/communication consent policy | `PRE12-F41` | billing-blocked / growth-compliance | 원천 문서에 남은 Marketing opt-in은 09 runtime event나 10 push permission UX가 아니다. `FollowUpConsentNotice`는 follow-up 발송 고지 확인이고 public contact form `marketingAgreement`는 lead submission field이므로 대체물이 아니다. |
 
 ## 4. 기존/신규 PRE12 후보로 연결할 항목
@@ -63,7 +63,7 @@
 | AI usage plan/quota/paywall source | `PRE12-F12` | 09 `AiProviderCallLog` summary는 Admin 참고용이다. `TODO/PADDLE_PLAN`에서 `AiUsageDaily`/`UsageMeter` 여부를 결정한다. |
 | Notification reminder 기능 자체 | `PRE12-F01`, `PRE12-F02` | 09에서 새 알림 기능을 만들지 않는다. 필요한 것은 별도 세부 analytics event 후보 `PRE12-F27`뿐이다. |
 | Google Calendar 고급 sync/provider 기능 자체 | `PRE12-F10` | 09는 Calendar sync detail event를 만들지 않는다. Calendar export/write/watch/recurrence/reminders/attendee/multi-account/provider 확장은 기존 후보를 따른다. |
-| PWA/native app 기능 자체 | `PRE12-F30` | 10 완료 범위는 mobile browser field-use다. PWA/offline/native는 10 미완성이 아니라 별도 mobile roadmap 후속이다. |
+| PWA 기능 자체 | `PRE12-F30` | 10 완료 범위는 mobile browser field-use다. PWA/offline은 10 미완성이 아니라 별도 PWA roadmap 후속이다. |
 | Marketing opt-in/communication consent | `PRE12-F41` | 09 route analytics와 10 browser push permission은 marketing consent를 대신하지 않는다. 12/growth/privacy 정책 이후 별도 판단한다. |
 
 ## 5. 구현 금지
@@ -80,7 +80,7 @@
 - marketing opt-in/communication consent preference, withdrawal, campaign channel consent API/UI/model 추가
 - account deletion 실제 hard delete/anonymization processor 추가
 - session revoke/access block/deletion-complete UX를 정책 없이 추가
-- PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution 추가
+- PWA install/offline shell/full offline sync, install attribution 추가
 
 ## 6. 코드 재대조 기준
 
@@ -92,7 +92,7 @@
 - `FE/user-web/src/features/analytics`와 `FE/user-web/src/components/layout/app-shell.tsx`에는 `VITE_PRODUCT_ANALYTICS_ENABLED` gate, `trackAnalyticsEvent`, `useAppRouteAnalytics`, routeKey mapper가 있다.
 - `BE/src/modules/admin-operation`과 `FE/admin-web/src/features/usage-analytics`에는 11 범위의 Admin analytics overview가 있으며, billing/subscription 지표는 제외된다.
 - billing/paywall/churn event는 `PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES`에만 있고 09 runtime allowlist로 발생하지 않는다.
-- `ExperimentAssignment`, external analytics provider forwarding, public/UTM attribution runtime, PWA/native install attribution 구현은 확인되지 않았다. `FE/user-web/src/pages/privacy`의 analytics provider 문구는 public privacy copy이며 실제 provider SDK/adapter 구현 근거가 아니다.
+- `ExperimentAssignment`, external analytics provider forwarding, public/UTM attribution runtime, PWA install attribution 구현은 확인되지 않았다. `FE/user-web/src/pages/privacy`의 analytics provider 문구는 public privacy copy이며 실제 provider SDK/adapter 구현 근거가 아니다.
 - `FollowUpConsentNotice`와 follow-up consent modal은 사용자 주도 follow-up EMAIL/SMS 발송 고지 확인이며, public contact form `marketingAgreement`는 lead submission field다. account-level marketing opt-in/withdrawal/campaign consent 구현 근거로 보지 않는다.
 
 ```powershell
@@ -112,5 +112,5 @@ rg -n "ExperimentAssignment|experiments/assignments|Segment|PostHog|Mixpanel|Goo
 - [x] 09 후속 후보를 `PRE12-F26`~`PRE12-F30`으로 분류했다.
 - [x] 2026-08-07 2차 재대조에서 source plan의 Marketing opt-in gap을 `PRE12-F41`로 추가 분리했다.
 - [x] `PRE12-F12`가 billing/subscription/tax/paywall/churn뿐 아니라 AI usage billing source-of-truth 결정까지 포함한다고 보강했다.
-- [x] 10 mobile field-use와 11 Admin analytics는 완료 연결로 보고, PWA/native 및 account deletion 실제 job은 별도 후속으로 분리했다.
+- [x] 10 mobile field-use와 11 Admin analytics는 완료 연결로 보고, PWA 및 account deletion 실제 job은 별도 후속으로 분리했다.
 - [x] external provider, public/UTM attribution, growth experiment, reserved billing runtime event는 09/PRE12 구현 금지로 고정했다.

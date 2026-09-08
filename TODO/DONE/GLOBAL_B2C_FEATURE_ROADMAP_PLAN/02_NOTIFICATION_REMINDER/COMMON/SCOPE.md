@@ -31,7 +31,6 @@
 |---|---|
 | 다음 행동 알림 | 딜 1건 데이터 구조가 바뀔 수 있어 06 DealActivity/다음 행동 고도화에서 설계한다. |
 | 회의록 후속 알림 | 07 MeetingNote AI/provider log와 함께 설계한다. |
-| 네이티브 push | iOS/Android 앱 이전에는 제외한다. |
 | 마케팅 알림 | 제품 사용 reminder와 분리한다. |
 | 복잡한 automation builder | Series A 이후 후보로 둔다. |
 | digest email | 1차는 개별 일정/딜 알림 email만 구현한다. digest는 후속이다. |

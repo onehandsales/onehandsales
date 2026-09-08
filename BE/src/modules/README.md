@@ -26,4 +26,4 @@ Current modules:
 | `data-import` | Import templates, DB-backed ImportJob, CSV/XLSX upload, AI mapping, confirm/cancel/expire import, import logs for company/contact/product/deal |
 | `health` | Lightweight health endpoint |
 
-Deferred scope: Paddle/Billing, Billing Admin, B2B tenant/team admin, native apps, generic ExportJob, and paid recovery/hard purge policy.
+Deferred scope: Paddle/Billing, Billing Admin, B2B tenant/team admin, generic ExportJob, and paid recovery/hard purge policy.

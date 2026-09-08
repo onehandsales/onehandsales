@@ -26,7 +26,6 @@
 
 ## 제외 범위
 - 특정 유료 email SaaS vendor 고정
-- native mobile push
 
 ## 작업 로그
 - G27 기준 문서와 Notification endpoint 계약을 확인했다.
@@ -46,7 +45,7 @@
 - 일정 reminder와 딜 마감/다음 행동은 pending notification을 새 기준으로 교체하고, 완료/제거 상태에서는 pending notification을 취소한다.
 - SMTP/Web Push 실제 adapter는 `.env.example`의 `SMTP_*`, `VAPID_*` 값이 모두 있을 때 선택되고, 값이 없으면 stub adapter가 사용된다.
 - Push endpoint/key 원문은 기존 encryption port로 암호화 저장하고, 발송 시에만 복호화한다.
-- G27 제외 범위인 유료 email SaaS vendor 고정과 native mobile push는 추가하지 않았다.
+- G27 제외 범위인 유료 email SaaS vendor 고정은 추가하지 않았다.
 
 ## 검증
 - `cd BE && pnpm run typecheck`

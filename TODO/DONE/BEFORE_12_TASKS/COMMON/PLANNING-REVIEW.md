@@ -124,7 +124,7 @@ DB/운영:
 - B2B/customer admin
 - ExportJob/UserDraft
 - Admin direct mutation
-- PWA/native/offline
+- PWA/offline
 
 ## 6. 누락 사항
 

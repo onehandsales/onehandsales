@@ -78,7 +78,7 @@
 | Global | 통화/금액/currency | 08 | Done: Product/Deal `currencyCode`, KRW/USD 표시 |
 | Global | 주소/지역 모델 | 08 | Done: Company country/region/address |
 | Global | 글로벌 UX writing | 08 | Done: 핵심 `/app` 문구/에러/empty `ko-KR`/`en`. 직접 keying 축소는 polish 후보 |
-| Global auth | Apple login | 08, 후속 native app roadmap | Done for 08 implementation. 2026-07-29 사용자 확인 기준 Apple 운영 설정과 실제 OAuth 동작 완료. iOS native app은 10 완료 범위 밖 후속 로드맵 |
+| Global auth | Apple login | 08 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 Apple 운영 설정과 실제 OAuth 동작 완료. |
 | Global auth | LINE login | 08 | Done for 08 implementation. 2026-07-29 사용자 확인 기준 LINE 운영 설정과 실제 OAuth 동작 완료 |
 | Analytics | Event taxonomy | 09 | Done: `app_route_viewed`, signup, core server action, billing reserved taxonomy 분리 완료 |
 | Analytics | Activation/retention/funnel/churn | 09, `TODO/PADDLE_PLAN` | 09 Done: activation/retention snapshot과 runtime funnel foundation 완료. paid conversion/churn runtime source는 Paddle Billing 구현 후 연결 |
@@ -89,8 +89,6 @@
 | Mobile | BusinessCard OCR provider failure/error contract | 10, 11 | Done: 10 사용자 safe failure 계약과 DB safe failure field 구현, 11 Admin provider failure 운영 조회 구현 |
 | Mobile | 모바일 음성 기록 | 10 | Done: `MediaRecorder` 녹음 UX와 기존 STT draft API 재사용, 음성 파일 fallback 구현 |
 | Mobile | offline draft | 10 | Done: 서버 draft DB 없이 FE local draft 24시간 TTL, 복원/폐기 UX 구현. full offline sync는 후속 |
-| Mobile | iOS/Android native app | 후속 native app roadmap | 10 1차 제외. 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 승격 |
-| Mobile | native push/contact/calendar | 후속 native app roadmap | native app 이후 결정 |
 | Ops/Admin | Admin 사용자/도메인 조회 | 11 | Done: 사용자 목록/상세, 활동 timeline, 도메인 read-only tab 구현 |
 | Ops/Admin | 민감정보 마스킹/원문 조회 사유/audit | 11 | Done: masking, reason validation, append-only audit/sensitive log 구현 |
 | Ops/Admin | Trash/삭제 정책 고도화 | 11 | Done: `NBA-012`. 만료 row 유지, User 복구 문의, Admin recovery queue 구현. hard delete/purge와 유료 복구 결제는 제외 |

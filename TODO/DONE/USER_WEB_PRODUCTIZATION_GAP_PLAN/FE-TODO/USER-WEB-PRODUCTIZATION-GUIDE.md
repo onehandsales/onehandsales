@@ -89,7 +89,7 @@
 - 완료된 Deal Activity Timeline 범위를 넘어서는 범용 activity bus, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline, activity deletion/retention/audit 정책은 API/DB/정책 계약 없이 확장하지 않는다. `NBA-003` 잔여는 2026-08-06 A 결정에 따라 PRE12 FE 작업으로 올리지 않는다.
 - 완료된 MeetingNote AI Provider Log 범위를 넘어서는 회의록 목록 summary, 자동 저장/자동 발송, 회의록 follow-up 알림, Admin provider audit 조회는 API/DB/정책 계약 없이 확장하지 않는다.
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration은 계약/운영 계획 없이 진행하지 않는다.
-- 완료된 Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event, PWA install/offline shell, native app은 별도 계약 없이 확장하지 않는다.
+- 완료된 Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event, PWA install/offline shell은 별도 계약 없이 확장하지 않는다.
 - 이 문서의 과거 기준과 달리, 현재 순서는 UX/UI 전체 유지보수와 기능 유지보수를 먼저 진행하고 결제는 `TODO/PADDLE_PLAN`에서 나중에 확정한다.
 - `/app/export` generic export를 다시 노출하지 않는다.
 - page size를 FE 단독으로 바꾸지 않는다.

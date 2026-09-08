@@ -18,7 +18,6 @@ G02~G06 구현 결과가 10번 문서, Software Agent, UXUI Agent, Prisma 기준
 ## 3. 제외 범위
 
 - 신규 기능 구현
-- native app 구현
 - Admin analytics 구현
 - PWA install/offline shell 구현
 

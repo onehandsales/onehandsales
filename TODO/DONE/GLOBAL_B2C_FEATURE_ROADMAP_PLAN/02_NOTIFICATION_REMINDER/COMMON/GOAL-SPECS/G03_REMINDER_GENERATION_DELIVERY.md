@@ -33,7 +33,6 @@
 - 회의록 후속 알림
 - digest email
 - Admin provider failure 화면
-- native push
 
 ## 5. Scheduling 기준
 

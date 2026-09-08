@@ -13,13 +13,11 @@
 | FE local draft | 명함 확인 폼, 회의록 작성 폼 | IndexedDB 우선, 24시간 TTL, 서버 DB 저장 제외 |
 | 모바일 알림 permission UX | push 권한 안내, 거부/미지원 fallback, 설정 이동 | 02 Notification API 재사용 |
 | 모바일 field-use analytics | 명함 촬영/재시도, OCR 실패, 녹음, draft 복원/폐기, push 권한 결과 | 09 `ProductAnalyticsEvent` foundation 재사용 |
-| Native app 위치 | iOS/Android 둘 다 후속 필수 로드맵으로 승격 | 10에서는 구현하지 않음 |
 
 ## 2. 제외 범위
 
 | 항목 | 제외 이유 | 후속 위치 |
 |---|---|---|
-| native iOS/Android 구현 | 10 1차는 모바일 웹/PWA 필수 현장 UX를 빠르게 제공한다 | 별도 native app roadmap |
 | custom `getUserMedia` 명함 카메라 preview/crop | browser camera/file capture보다 호환성/테스트 부담이 큼 | mobile advanced capture 후속 |
 | 완전 오프라인 sync | 충돌 해결, ownership, server merge 정책이 큼 | 별도 offline sync 계획 |
 | server draft DB | 민감정보 보관/삭제/계정 삭제 정책이 커짐 | 10 이후 별도 roadmap/goal에서 재의사결정 |

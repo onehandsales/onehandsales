@@ -33,7 +33,6 @@
 ## 3. 제외 범위
 
 - PWA install/offline shell 구현
-- iOS/Android native app 구현
 - BusinessCard custom camera preview/crop 구현
 - server draft/media raw storage 구현
 - `UserDraft`, `/api/drafts/*` 추가
@@ -75,7 +74,7 @@ G02는 새 API를 만들지 않는다.
 ## 6. Business Logic / User Flow 체크
 
 - 모바일 브라우저 기준 flow가 실제 구현과 문서에서 충돌하지 않는다.
-- offline/PWA/native는 현재 완료 범위로 오해되지 않는다.
+- offline/PWA는 현재 완료 범위로 오해되지 않는다.
 - server draft/raw media storage는 현재 완료 범위로 오해되지 않는다.
 - Notification 확장 후보는 post-12 후보로 남긴다.
 - UX/UI는 Notion식 작업공간과 Attio식 record 흐름을 해치지 않는다.
@@ -126,7 +125,7 @@ rg -n "UserDraft|/api/drafts|ExportJob|/api/exports" TODO/GLOBAL_B2C_FEATURE_ROA
 - [x] 10 BE TODO의 완료된 G03/G05/G06 항목이 실제 상태에 맞게 정리됐다.
 - [x] 10 README와 goal completion checklist가 G07 closeout 상태와 맞는다.
 - [x] 10 완료 범위와 post-12 후보가 섞이지 않는다.
-- [x] PWA/native/server draft/export를 10 미완성으로 재오픈하지 않는다.
+- [x] PWA/server draft/export를 10 미완성으로 재오픈하지 않는다.
 - [x] BE typecheck/lint가 통과했다.
 - [x] FE user-web typecheck/lint가 통과했다.
 

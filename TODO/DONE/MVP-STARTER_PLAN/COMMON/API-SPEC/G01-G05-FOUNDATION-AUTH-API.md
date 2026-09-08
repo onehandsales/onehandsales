@@ -148,7 +148,7 @@ User Web과 Admin Web 로그인 화면이 MVP에서 제공하는 소셜 로그�
 
 1. G00 결정에 따라 MVP 1차 provider 목록을 만든다.
 2. Kakao, Google은 `enabled=true`로 반환한다.
-3. Apple은 iOS 앱 개발 단계의 후속 provider이므로 `enabled=false`, `status=planned`로 반환할 수 있다.
+3. Apple은 후속 provider이므로 `enabled=false`, `status=planned`로 반환할 수 있다.
 4. 각 provider의 `enabled`, `status`, `label`, `displayOrder`를 반환한다.
 5. provider별 실제 로그인 이동은 FE Supabase Auth client가 처리한다.
 
@@ -171,7 +171,7 @@ MVP 초기 provider 기준:
 |---|---|---|---|
 | `kakao` | true | `enabled` | MVP 초기 실제 구현 |
 | `google` | true | `enabled` | MVP 초기 실제 구현 |
-| `apple` | false | `planned` | iOS 앱 단계 후속 구현 |
+| `apple` | false | `planned` | 후속 provider 구현 |
 
 ### 4.3 외부 Auth Token 교환 API
 

@@ -1,6 +1,6 @@
 # user-web
 
-사용자가 직접 쓰는 Web MVP 앱이다. iOS/Android native app보다 먼저 만드는 첫 MVP client다.
+사용자가 직접 쓰는 Web MVP 앱이다. 데스크톱과 모바일 브라우저에서 사용하는 첫 MVP client다.
 
 ## 기술 스택
 

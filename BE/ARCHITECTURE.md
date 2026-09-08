@@ -32,7 +32,7 @@ Active modules:
 Current intentional gaps:
 
 - Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
-- Paddle/Billing, subscription/payment/tax/invoice/refund, entitlement/paywall, Billing Admin, B2B tenant/team admin, native app packaging, and paid recovery/hard purge policy are deferred.
+- Paddle/Billing, subscription/payment/tax/invoice/refund, entitlement/paywall, Billing Admin, B2B tenant/team admin, and paid recovery/hard purge policy are deferred.
 - Current HTTP confirm wiring passes contact company resolutions, deal company/contact/product resolutions, and row overrides through FE API, DTO, controller, application service, repository, and controller spec.
 - Current runtime auth providers are Google, LINE, and Apple. Kakao remains only as a legacy Prisma enum value and is not exposed for runtime exchange.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.

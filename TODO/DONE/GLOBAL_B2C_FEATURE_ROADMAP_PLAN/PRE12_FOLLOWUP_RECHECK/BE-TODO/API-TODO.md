@@ -23,7 +23,7 @@
 | MeetingNote raw storage | transcript/raw provider response/follow-up draft body 전용 저장 API나 table은 없다. 07은 safe metadata log만 남긴다. |
 | Global Data I18N | User global settings, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 완료됐다. |
 | Product Analytics | `POST /api/analytics/events`, server-side recorder, activation/retention snapshot, AI usage summary, 10 mobile field-use event, 11 Admin analytics overview가 있다. 09는 외부 provider, billing runtime, public attribution, experiment, account deletion 실제 job을 만들지 않았다. |
-| Mobile Field Use | BusinessCard OCR safe failure, 기존 MeetingNote STT draft, 기존 Notification browser push subscription API, 09 analytics collector 재사용으로 10 범위가 완료됐다. 10은 advanced camera/image processing API, `UserDraft`, `/api/drafts/*`, media/raw 저장 API, PWA/native API, `/api/exports`를 만들지 않았다. |
+| Mobile Field Use | BusinessCard OCR safe failure, 기존 MeetingNote STT draft, 기존 Notification browser push subscription API, 09 analytics collector 재사용으로 10 범위가 완료됐다. 10은 advanced camera/image processing API, `UserDraft`, `/api/drafts/*`, media/raw 저장 API, PWA API, `/api/exports`를 만들지 않았다. |
 | Admin Operation | `/admin/api/*`, AuthGuard/AdminGuard, Admin users/domain/trash/provider/analytics/account-request/audit/system API가 있다. Admin domain records는 read-only 조회 기준이며 Admin 도메인 데이터 mutation API는 없다. `UserRole`은 `USER`/`ADMIN` 기준이고 customer/B2B tenant admin API는 없다. 11은 Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge, export artifact/download endpoint, 자동 민감정보 감지를 만들지 않았다. |
 
 ## 3. 구현 금지
@@ -62,7 +62,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - public site/UTM/ad attribution API 또는 `/api/experiments/assignments` 추가
 - marketing opt-in/communication consent policy API 추가
 - `AiUsageDaily`/`UsageMeter` 기반 billing usage API 추가
-- PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution API 추가
+- PWA install/offline shell/full offline sync/install attribution API 추가
 - BusinessCard advanced camera preview/crop을 위한 image processing/upload API를 `PRE12-F42` 계약 없이 추가
 - `UserDraft`, `/api/drafts/*`, server draft DB API를 `PRE12-F43` 정책 없이 추가
 - audio/image binary, transcript 전문, provider raw response 저장/조회 API를 `PRE12-F43` 정책 없이 추가
@@ -86,7 +86,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 08 재대조 기준으로 Google/LINE/Apple 외 provider, `/app` locale prefix, 추가 국가/통화/전화번호 포맷은 새 계약 없이 확장하지 않는다. 국가별 tax/terms/pricing, subscription/payment/refund/invoice/failed payment, amount precision은 `TODO/PADDLE_PLAN` 결정 전 Backend API 작업으로 올리지 않는다.
 
-09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, marketing opt-in, billing usage source-of-truth, PWA/native attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 별도 후속 계획으로 둔다.
+09 재대조 기준으로 Product Analytics foundation은 완료다. account deletion 실제 처리, Notification/Calendar/follow-up 세부 analytics event, 외부 provider forwarding, public/UTM attribution, growth experiment, marketing opt-in, billing usage source-of-truth, PWA attribution은 09 미완성이 아니라 PRE12 후속 후보 또는 별도 후속 계획으로 둔다.
 
 10 재대조 기준으로 Mobile Field Use Backend/API 범위는 완료다. `10/BE-TODO/API-TODO.md`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. `/api/exports`와 `ExportJob`은 03/11 후속 `PRE12-F09`로만 본다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`으로 분리한다.
 
@@ -120,7 +120,7 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | public/UTM attribution/growth experiment | public route event collector, attribution cookie/referrer policy, experiment assignment API 기준 필요 | 후속 seed / growth/marketing |
 | Marketing opt-in/communication consent policy | account-level opt-in/withdrawal API, campaign channel consent, audit snapshot, billing/growth event linkage 기준 필요. `FollowUpConsentNotice` 재사용 금지 | billing-blocked / growth-compliance / `PRE12-F41` |
 | Billing/subscription/tax/paywall runtime | plan/payment/subscription, tax/refund/invoice/failed payment, `AiProviderCallLog` summary, `FollowUpDeliveryAttempt` cost 추정과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정 필요 | billing-blocked / `PRE12-F12` |
-| PWA/native packaging과 attribution | manifest/install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | 후속 seed / 별도 mobile roadmap |
+| PWA packaging과 attribution | manifest/install/offline/full offline sync/install attribution API 필요 여부 결정 | 후속 seed / 별도 PWA roadmap |
 | BusinessCard mobile advanced camera preview/crop | 기본은 FE camera UX 후보이며, image preprocessing/upload 제약이 필요할 때만 API 계약을 재검토한다. 10 safe failure API를 재오픈하지 않는다 | 후속 seed / mobile advanced capture / `PRE12-F42` |
 | Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, `/api/drafts/*`, blob/raw upload, transcript/provider raw 저장/조회 API 필요 여부와 retention/delete/raw access 기준 필요 | defer / trust-policy / `PRE12-F43` |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 BE TODO의 G03/G05/G06 체크박스를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | closed-by-BEFORE_12 |

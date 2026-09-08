@@ -8,7 +8,6 @@
 ## 현재 BE/TODO 구현 상태
 
 기준일: 2026-08-11
-모바일 앱 범위 기준일: 2026-09-03
 
 - Backend 구현 완료: Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 기본 도메인, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation과 `TODO/DONE/ADDITIONAL_WORK_PLAN` G01-G12.
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`.
@@ -22,8 +21,7 @@
 - Search: 회사/담당자/제품/딜/일정/회의록 통합검색 API.
 - Trash: 회사/담당자/제품/딜/회의록 본문 데이터와 지원 로그의 휴지통 목록, 상세 모달 조회, 7일 이내 복구 API.
 - DataImport: `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, `ImportUserLog` 목록/상세 조회. 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 BE confirm 경로에 연결되어 있다.
-- 현재 Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, native CRM/PWA packaging, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
-- Mobile App 1차 범위는 2026-09-03 기준 로그인/회원가입, Backend 모바일 인증 세션 교환, 앱 시작 세션 복구, `/api/me` 확인, 최소 홈, 로그아웃으로 별도 확정했다. 모바일 CRM 전체 화면, native push, 명함 OCR, 음성 기록, 오프라인 임시 저장은 후속이다.
+- 현재 Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
 - 범용 Export job은 현재 제품 방향에서 사용하지 않는다. Export는 Company/Contact/Product/Deal 각 목록 화면의 xlsx 다운로드 API로 처리한다.
 - Admin Operation은 11번 로드맵 기준 user/domain readonly operation, audit/security, provider failure, trash/account request, admin analytics, system operation gate foundation까지 구현 완료다. Billing Admin은 `TODO/PADDLE_PLAN` 이후 범위다.
 - User Web은 URL locale 공개/인증 진입면과 `/app` 홈 대시보드, Company, Contact, 명함 스캔, Product, Deal, Schedule, MeetingNote 수동 화면, MeetingNote AI/STT draft UI, 저장 후 딜 연동, Search GlobalSearch, Trash 목록/상세/복구, DataImport의 실제 API 연동이 완료되어 있다. 나머지 미구현 Backend 도메인은 실제 API 연동 전까지 mock/placeholder 경계를 명확히 해야 한다.
@@ -40,7 +38,7 @@
 5. 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책 확정
 6. `TODO/PADDLE_PLAN`을 confirmed Paddle Billing 구현 계획으로 승격할지 결정
 7. 7일 이후 유료 복구 정책과 API
-8. B2B tenant/team admin 또는 native CRM/PWA packaging 같은 별도 전략 후보 검토. 단, 모바일 인증 foundation은 1차 범위로 먼저 진행할 수 있다.
+8. B2B tenant/team admin 같은 별도 전략 후보 검토
 
 ### 1A. 지금 UX/UI인가 기능 추가인가
 
@@ -74,7 +72,7 @@
 - Admin Web `GET /admin/api/me`
 - 내 프로필 조회/수정
 - 내 등록 기기 목록 조회
-- 앱 세션은 Backend `AuthSession`으로 관리한다. User Web refresh token은 httpOnly cookie로 저장하고, Mobile App refresh token은 보안 저장소에만 저장한다.
+- 앱 세션은 Backend `AuthSession`으로 관리한다. User Web refresh token은 httpOnly cookie로 저장한다.
 - User Web은 현재 `mobile`/`personal_laptop` device slot만 사용한다. 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
 - 기존 사용자의 기본 `timeZone`은 로그인 때 덮어쓰지 않고 `lastLoginTimeZone`만 갱신한다.
 - 국가 코드는 배포 프록시 geo header가 있을 때만 저장된다. 로컬이나 해당 header가 없는 환경에서는 `기록 없음`이 정상일 수 있다.
@@ -83,13 +81,11 @@
 
 - Google, LINE, Apple 소셜 로그인
 - 사용자별 데이터 분리
-- Mobile App 1차 인증 foundation: 로그인/회원가입, 모바일 인증 exchange/refresh/logout, 앱 시작 세션 복구, `/api/me` 확인, 최소 홈
 
 ### 제외
 
 - 이메일/비밀번호 로그인
 - 결제 기반 권한 자동 처리
-- 모바일 CRM 전체 화면
 
 ## 3. 회사
 
@@ -137,7 +133,6 @@
 
 ### 제외
 
-- 모바일 카메라 촬영 OCR
 - 사용자 확인 없는 자동 회사/담당자 확정 저장
 
 ## 5. 제품
@@ -373,7 +368,7 @@ Series A급 후속 범위:
 
 - Notification/Reminder 기반 리텐션 루프 고도화
 - AI next action/follow-up/딜 리스크/주간 영업 리포트 고도화
-- 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder 고도화
+- 모바일 브라우저 현장 입력, 명함 촬영, 음성 기록, browser push reminder 고도화
 - DealActivity timeline 고도화
 - Google Calendar write/watch/export 고도화
 - 결제/paywall 실험과 국가별 가격
@@ -390,9 +385,7 @@ Series A급 후속 범위:
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
-- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
 - `TODO/PADDLE_PLAN/README.md`

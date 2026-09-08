@@ -35,7 +35,6 @@
 
 ## 3. 제외 범위
 
-- iOS/Android 네이티브 앱 QA
 - Safari 전용 QA
 - Notification 구현
 - DataImport Job 영속화 구현

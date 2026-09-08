@@ -48,7 +48,6 @@ model BusinessCardScanLog {
 - `/api/drafts/*`용 draft table
 - audio temporary storage table
 - image temporary storage table
-- native device table
 - marketing opt-in table
 - Admin provider failure dashboard table
 

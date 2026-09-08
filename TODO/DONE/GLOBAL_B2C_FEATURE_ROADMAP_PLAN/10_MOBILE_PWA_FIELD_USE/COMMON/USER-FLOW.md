@@ -78,15 +78,6 @@
 6. 거부되면 앱 안 알림과 이메일 알림 fallback을 안내한다.
 7. 사용자는 설정에서 browser push를 끌 수 있다.
 
-## 7. Native app 후속 흐름
+## 7. PWA/offline 후속 흐름
 
-10번 완료 후 별도 native app roadmap에서 iOS/Android 앱을 다룬다.
-
-후속 native app 필수 범위:
-
-- native camera
-- native audio recording
-- native push
-- auth callback
-- app store 배포
-- mobile device/session 정책
+PWA install prompt, offline shell, full offline sync는 10번 완료 후 별도 계획에서 다룬다.

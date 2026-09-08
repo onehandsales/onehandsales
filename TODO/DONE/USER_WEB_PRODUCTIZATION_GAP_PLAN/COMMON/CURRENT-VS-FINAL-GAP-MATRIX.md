@@ -69,7 +69,7 @@
 | 다국가 데이터 모델 | 전화번호, 통화, 날짜/주소가 국가별로 자연스럽다. | User country/default currency, Product/Deal currency, Contact KR/US global phone, Company country/region/address, localized import/export 구현 | 기본 global data model gap은 08에서 닫힘. KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호와 세금/가격 정책은 후속 결정 | Closed for 08 / First-sale ops decision | 완료, 운영 후속 |
 | 제품 분석 | activation, retention, paid conversion, churn, AI cost를 본다. | 09 foundation, 10 mobile field event, 11 Admin analytics overview 구현 완료 | paid conversion/churn/ARPU는 `TODO/PADDLE_PLAN` source event 연결 후 완성 | Closed for 09/10/11 / First-sale Billing gap | Admin 분석 완료, Billing 후속 |
 | AI next action | 딜 리스크, follow-up, 다음 행동을 추천한다. | 05 AI weekly report suggestion/follow-up delivery와 07 회의록 상세 next action/follow-up draft 구현 | 저장형 AI report와 사용자가 확인하는 follow-up 실행은 닫힘. Series A급 딜 리스크 고도화, 자동 mutation, 자동 follow-up 발송은 후속 | Closed for 05/07 / Series A gap | 기본 AI 후속 완료, 고도화 후속 |
-| 모바일 앱/PWA | 현장 입력, 카메라, 음성, push reminder가 자연스럽다. | 10 기준 모바일 브라우저 명함 촬영, 회의 음성 기록, local draft, push permission UX, mobile analytics 구현 완료 | PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 후속 | Closed for 10 / Series A native gap | 모바일 웹 완료, native/PWA 후속 |
+| 모바일 브라우저/PWA | 현장 입력, 카메라, 음성, browser push reminder가 자연스럽다. | 10 기준 모바일 브라우저 명함 촬영, 회의 음성 기록, local draft, push permission UX, mobile analytics 구현 완료 | PWA install/offline shell, full offline sync는 후속 | Closed for 10 / Series A PWA gap | 모바일 웹 완료, PWA 후속 |
 
 ## 3. 당장 판단해야 할 질문
 
@@ -83,7 +83,7 @@
 | ImportJob 유실이 Global B2C 첫 판매 blocker인지 known limitation인지 | 완료 처리됨. `NBA-006`은 `01_IMPORT_JOB_PERSISTENCE` G01~G09에서 구현 및 최종 QA closeout 완료. |
 | Notification 실제 provider smoke와 회의록 follow-up 알림을 언제 다룰지 | 일정/딜 reminder와 회의록 follow-up draft는 완료됐고, 실제 SMTP/Web Push env 검증은 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다. 회의록 follow-up 알림/발송만 후속 범위로 남는다. |
 | 05 follow-up email provider smoke를 언제 닫을지 | 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 Gmail/Microsoft provider smoke closeout 완료 처리. 더 이상 PRE12 User Web 제품화 gap으로 남기지 않는다. |
-| PWA install/offline shell과 native app을 언제 다룰지 | 10에서 모바일 웹 현장 입력성은 완료됐다. PWA packaging, full offline sync, iOS/Android native app은 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 다룬다. |
+| PWA install/offline shell을 언제 다룰지 | 10에서 모바일 웹 현장 입력성은 완료됐다. PWA packaging과 full offline sync는 현장 사용 지표와 사용자 결정 후 별도 로드맵으로 다룬다. |
 | Google Calendar export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결을 언제 다룰지 | 현재 read-only import와 한손 Schedule/Trash/Reminder 연결은 완료됐고, 쓰기/실시간/고급 캘린더 범위는 후속 확장으로 남는다. |
 | LINE/Apple 실제 provider smoke 실행 여부 | 08 구현과 자동 QA, DB migration 최신 상태 재확인은 완료됐다. LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료됐다. |
 | Billing Admin 연동을 어느 수준까지 구현할지 | 11 Admin 운영은 결제/구독을 제외하고 완료됐다. 결제 실패, 환불, invoice, plan 상태 운영 범위는 `TODO/PADDLE_PLAN`에서 결정해야 한다. |

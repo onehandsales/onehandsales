@@ -94,7 +94,7 @@
 | NBA-010 | 완료: Notification route/sidebar 노출 | Active FE TODO에서 제외한다. `/app/notifications`, unread badge, settings, browser push 권한 fallback UX 구현 완료 |
 | NBA-015 | 완료: `/app/schedules` source badge/sync/calendar hidden handling, `/app/settings` Google Calendar 연결/선택/해제, `/app/trash` Schedule restore UX 구현 | Active FE TODO에서 제외한다. Google export/write, realtime webhook/watch, 반복 일정은 별도 backlog에서 다룬다. |
 | 09_PRODUCT_ANALYTICS | 완료: `/app` 보호 route 진입 시 routeKey allowlist 기반 `app_route_viewed` 전송 | Active FE TODO에서 제외한다. Admin analytics 화면은 11에서 완료됐고 billing/paywall/churn UI는 `TODO/PADDLE_PLAN`에서 다룬다. |
-| 10_MOBILE_PWA_FIELD_USE | 완료: 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics | Active FE TODO에서 제외한다. PWA install/offline shell/native app은 후속 별도 결정이다. |
+| 10_MOBILE_PWA_FIELD_USE | 완료: 모바일 명함 촬영, OCR safe failure, 회의 녹음/fallback, local draft, push permission UX, mobile field analytics | Active FE TODO에서 제외한다. PWA install/offline shell은 후속 별도 결정이다. |
 | 11_ADMIN_OPERATION | 완료: `/app/trash` 만료 row/복구 문의, account/data request 영향, `/admin/api/*` 미호출 QA | Active FE TODO에서 제외한다. Billing/paywall/churn UI는 `TODO/PADDLE_PLAN`에서 다룬다. |
 
 후속 재검토에서 위 잔여 후보를 다시 분류한다. User Web UX/UI 전체 유지보수는 결제보다 먼저 별도 계획에서 진행한다. 2026-08-06 A 결정 기준으로 UX/UI 전체 polish는 지금 06 후속으로 진행하지 않는다.

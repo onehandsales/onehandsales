@@ -103,7 +103,7 @@ Backend/DB:
 - 새 Prisma schema/migration을 만들지 않았다.
 - 새 User Web route를 활성화하지 않았다.
 - `UserDraft`, `/api/drafts/*`, `ExportJob`, `/api/exports`를 만들지 않았다.
-- PWA install/offline shell, iOS/Android native app, server draft/media raw storage를 구현하지 않았다.
+- PWA install/offline shell, server draft/media raw storage를 구현하지 않았다.
 - Notification TTL/cleanup 확장을 구현하지 않았다.
 - 10 완료 범위와 post-12 후보를 섞지 않았다.
 
@@ -160,5 +160,5 @@ git diff --check
 - 10 FE TODO의 완료된 G03~G06 항목을 실제 상태에 맞게 정리했다.
 - 10 BE TODO의 완료된 G03/G05/G06 항목을 실제 상태에 맞게 정리했다.
 - 10 README와 goal completion checklist는 G07 closeout 상태와 충돌하지 않는다.
-- PWA/native/server draft/export를 10 미완성으로 재오픈하지 않았다.
+- PWA/server draft/export를 10 미완성으로 재오픈하지 않았다.
 - 12 Billing 또는 post-12 후보를 BEFORE_12 G02 범위에 섞지 않았다.

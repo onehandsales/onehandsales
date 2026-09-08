@@ -7,7 +7,7 @@ Status: Done
 
 - Closed the 02 Notification Reminder implementation against `COMMON/REVIEW-CHECKLIST.md`.
 - Verified Backend API, DB/migration, reminder scheduling, delivery processor, provider failure redaction, ownership isolation, and User Web notification UX.
-- Kept next-action reminders, meeting-note follow-up reminders, Admin provider failure UI, Billing/email compliance full review, and native push QA out of scope.
+- Kept next-action reminders, meeting-note follow-up reminders, Admin provider failure UI, and Billing/email compliance full review out of scope.
 
 ## QA Evidence
 

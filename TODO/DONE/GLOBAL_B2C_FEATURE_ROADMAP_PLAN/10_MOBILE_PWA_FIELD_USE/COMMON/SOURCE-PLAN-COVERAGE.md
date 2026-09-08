@@ -20,7 +20,7 @@
 
 | 원본 gap | 10 반영 | 위치 |
 |---|---|---|
-| 모바일 앱/PWA 현장 입력 | 1차 모바일 브라우저 필수 현장 UX는 완료. PWA install/offline shell과 native iOS/Android는 후속 필수 로드맵 | `README.md`, `COMMON/DECISION-LOG.md` |
+| 모바일 브라우저/PWA 현장 입력 | 1차 모바일 브라우저 필수 현장 UX는 완료. PWA install/offline shell은 후속 로드맵 | `README.md`, `COMMON/DECISION-LOG.md` |
 | 명함 촬영 UX | `capture="environment"` 기반 후면 카메라 호출, 앨범 선택, 다시 촬영, 촬영 품질 안내 | `COMMON/USER-FLOW.md`, `FE-TODO/USER-WEB-TODO.md` |
 | OCR provider 실패 copy와 retry UI | safe error response와 FE `다시 촬영`/`파일 바꾸기`/`수동 입력` UX | `COMMON/API-SPEC/BUSINESS_CARD_MOBILE_CAPTURE_AND_FAILURE_CONTRACT.md` |
 | 회의 직후 음성 기록 | `MediaRecorder` 녹음 UX와 기존 STT draft API 재사용 | `COMMON/API-SPEC/MEETING_NOTE_MOBILE_RECORDING_STT_CONTRACT.md` |
@@ -46,4 +46,3 @@
 - Admin analytics dashboard/API
 - 광고 attribution/UTM
 - full offline sync event
-- native app store install attribution

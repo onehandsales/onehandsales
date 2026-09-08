@@ -19,7 +19,6 @@
 
 - 회원가입 동의만으로 push permission 요청/구독 등록
 - marketing opt-in 신규 DB/API
-- native push token
 - notification delivery runner 변경
 
 ## 4. Request 계약

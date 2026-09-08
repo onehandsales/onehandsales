@@ -39,7 +39,7 @@
 | `AccountDeletionRequest`, `UserDataExportRequest` | 11에서 계정 삭제 요청/취소/Admin queue와 데이터 export request workflow로 완료됐다. 실제 계정 hard delete/anonymization processor는 없다. |
 | `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, `ExperimentAssignment`, billing/payment/tax/refund/invoice 관련 모델 | 현재 schema에 없다. 09에서는 만들지 않았고 08도 결제 국가/세금/환불/인보이스를 다루지 않았으며 `TODO/PADDLE_PLAN` 또는 별도 후속 후보로 남긴다. |
 | `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable` | 10에서 BusinessCard OCR safe failure 계약으로 완료됐다. 10 범위 신규 DB model은 이것 외에 없다. |
-| BusinessCard advanced camera preview/crop model | 현재 schema에 없다. 10은 native file/camera picker와 safe failure field까지만 닫았고 custom camera/crop 상태 저장 model을 만들지 않았다. |
+| BusinessCard advanced camera preview/crop model | 현재 schema에 없다. 10은 browser file/camera picker와 safe failure field까지만 닫았고 custom camera/crop 상태 저장 model을 만들지 않았다. |
 | `UserDraft`, server draft DB, media/raw 저장 table | 현재 schema에 없다. 10 local draft는 FE storage 기준이며 audio/image binary, transcript 전문, provider raw response를 DB에 저장하지 않는다. |
 | `ExportJob` | 현재 schema에 없다. 03/11 후속 `PRE12-F09`로만 본다. FE 잔여 코드가 있어도 10 또는 PRE12에서 migration을 만들지 않는다. |
 | `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AdminOperationCheckRun` | 11 Admin Operation에서 운영 audit/redaction, Trash recovery queue, system gate record로 완료됐다. Admin 직접 restore/payment/purge 실행 model, Admin domain mutation result/rollback model, ImportJob cleanup failure aggregate model은 없다. |
@@ -81,7 +81,7 @@
 - public/UTM/ad attribution과 growth experiment assignment 저장 모델
 - marketing opt-in/communication consent preference, withdrawal, audit snapshot 저장 모델
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`, subscription/payment/tax/refund/invoice model
-- PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution 저장 모델
+- PWA install/offline shell/full offline sync/install attribution 저장 모델
 - BusinessCard advanced camera preview/crop 상태, image preprocessing, crop metadata 저장 model을 `PRE12-F42` 계약 없이 추가
 - `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table을 `PRE12-F43` 정책 없이 추가
 - `ExportJob`, export file retention, `/api/exports` 전용 저장 모델
@@ -103,9 +103,9 @@
 
 08 재대조 기준으로 global data/i18n의 1차 schema는 완료다. 추가 country/currency/phone/auth provider/money/address 변경은 08 미완성이 아니라 후속 seed 또는 `TODO/PADDLE_PLAN` 정책 이후의 별도 migration 후보로 둔다.
 
-09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, marketing opt-in, billing usage source, PWA/native attribution은 별도 migration 후보로만 둔다.
+09 재대조 기준으로 analytics 1차 schema는 완료다. `ProductAnalyticsEvent`와 snapshot model을 재오픈하지 않고, account deletion 실제 처리, 세부 event taxonomy, provider forwarding, attribution/experiment, marketing opt-in, billing usage source, PWA attribution은 별도 migration 후보로만 둔다.
 
-10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, `UserDraft`, server draft DB, media/raw 저장 table은 `PRE12-F43`, PWA/native attribution table은 `PRE12-F30`, `ExportJob`은 `PRE12-F09` 후속 후보로만 둔다.
+10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, `UserDraft`, server draft DB, media/raw 저장 table은 `PRE12-F43`, PWA attribution table은 `PRE12-F30`, `ExportJob`은 `PRE12-F09` 후속 후보로만 둔다.
 
 11 재대조 기준으로 Admin Operation의 1차 DB 영향은 Admin audit/security, Trash recovery request, account/data request, system operation check run으로 닫혔다. 11 문서 체크리스트 미체크를 근거로 새 migration을 만들지 않는다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지, Admin direct domain data mutation, Customer/B2B tenant admin은 별도 정책/운영/전략 계약 전 migration 후보로 올리지 않는다. ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13` import/Admin ops 확장으로만 본다.
 
@@ -138,7 +138,7 @@
 | public/UTM attribution/growth experiment | attribution touchpoint, campaign/referrer, `ExperimentAssignment` 저장 모델 필요 여부 결정 | 후속 seed / growth/marketing |
 | Marketing opt-in/communication consent policy | account-level marketing consent preference, withdrawal history, campaign channel consent, audit snapshot 저장 모델 필요 여부 결정. `FollowUpConsentNotice`는 follow-up 발송 고지 확인이므로 대체 모델로 쓰지 않는다 | billing-blocked / growth-compliance / `PRE12-F41` |
 | Billing/subscription/tax/paywall runtime | `UserSubscription`, plan/payment/invoice/refund/failed payment/tax profile과 `AiUsageDaily`/`UsageMeter` 중 billing source-of-truth 결정. `AiProviderCallLog`와 `FollowUpDeliveryAttempt.estimatedCostAmount`는 내부 참고/운영용 기록일 뿐 billing source-of-truth가 아니다 | billing-blocked / `PRE12-F12` |
-| PWA/native packaging과 attribution | install attribution, full offline sync metadata, native device/push/contact/calendar/app install event 저장 필요 여부 결정 | 후속 seed / 별도 mobile roadmap |
+| PWA packaging과 attribution | install attribution, full offline sync metadata 저장 필요 여부 결정 | 후속 seed / 별도 mobile roadmap |
 | BusinessCard mobile advanced camera preview/crop | crop metadata, preprocessing result, device capability 저장이 필요한지 검토하되 기본은 FE UX 후보로 둔다. 10 safe failure schema를 재오픈하지 않는다 | 후속 seed / mobile advanced capture / `PRE12-F42` |
 | Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, audio/image binary, transcript 전문, provider raw response 저장 model 필요 여부와 TTL/deletion/encryption/raw access audit 기준 필요 | defer / trust-policy / `PRE12-F43` |
 | 10 FE/BE TODO 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | closed-by-BEFORE_12 |

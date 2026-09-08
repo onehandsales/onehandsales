@@ -49,5 +49,5 @@ G00은 구현 goal이 아니다. 문서와 실제 코드 상태를 다시 대조
 ```powershell
 rg -n "enum NotificationSourceType|enum DealActivityType|enum DealActivitySourceType|enum AiProviderOperation" BE\prisma\schema.prisma
 rg -n "NotificationSourceType|sourceType: \"NEXT|sourceType: \"MEETING|sourceType: \"FOLLOW" BE\src -g "*.ts"
-rg -n "대용량 import|일정/회의록 import|ImportJob Admin|NEXT_ACTION|MEETING_NOTE|FOLLOW_UP|알림|reminder|자동 발송|latestActivity|Company/Contact/Product|MeetingNote 목록|PWA|offline|native|UserDraft|ExportJob|/app/export|/api/exports" TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\01_IMPORT_JOB_PERSISTENCE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\06_DEAL_ACTIVITY_TIMELINE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\07_MEETING_NOTE_AI_PROVIDER_LOG TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE -g "*.md"
+rg -n "대용량 import|일정/회의록 import|ImportJob Admin|NEXT_ACTION|MEETING_NOTE|FOLLOW_UP|알림|reminder|자동 발송|latestActivity|Company/Contact/Product|MeetingNote 목록|PWA|offline|UserDraft|ExportJob|/app/export|/api/exports" TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\01_IMPORT_JOB_PERSISTENCE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\06_DEAL_ACTIVITY_TIMELINE TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\07_MEETING_NOTE_AI_PROVIDER_LOG TODO\GLOBAL_B2C_FEATURE_ROADMAP_PLAN\10_MOBILE_PWA_FIELD_USE -g "*.md"
 ```

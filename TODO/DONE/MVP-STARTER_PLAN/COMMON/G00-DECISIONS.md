@@ -390,7 +390,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 결정:
 
 - MVP 초기 실제 로그인 provider는 `Kakao`, `Google`로 고정한다.
-- `Apple` 로그인은 MVP Web 초기 구현 범위에서 제외하고, iOS 앱을 만들 때 후속으로 구현한다.
+- `Apple` 로그인은 MVP Web 초기 구현 범위에서 제외하고, 후속 provider 검증에서 구현한다.
 - User Web과 Admin Web의 로그인 provider 목록 API는 `kakao`, `google`을 `enabled=true`로 반환한다.
 - `apple`은 API 응답에 포함할 수 있지만 `enabled=false`, `status=planned` 또는 동일 의미의 상태로 표시한다.
 
@@ -398,7 +398,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 
 - 국내 B2C 사용자 기준으로 Kakao는 초기 로그인 접근성에 중요하다.
 - Google은 개발/테스트와 범용 계정 사용성이 좋아 초기 검증에 필요하다.
-- Apple 로그인은 iOS 앱에서 Apple 정책상 필요해질 수 있지만, Web MVP 초기에는 구현 비용 대비 우선순위가 낮다.
+- Apple 로그인은 Web MVP 초기에는 구현 비용 대비 우선순위가 낮다.
 - Apple을 후속으로 분리해도 Backend App token 구조는 외부 provider adapter 뒤에 있으므로 business API 인증 구조는 바뀌지 않는다.
 
 구현 영향:
@@ -406,7 +406,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 - Supabase Auth 개발 project에는 MVP 초기 provider로 Kakao, Google을 설정한다.
 - `GET /api/auth/providers`는 Kakao, Google을 활성 provider로 반환한다.
 - Apple 로그인 버튼을 화면에 노출한다면 disabled 또는 준비 중 상태로만 표시한다.
-- Apple 실제 로그인, Apple provider 설정, Apple callback 검증은 iOS 앱 준비 시 별도 goal로 진행한다.
+- Apple 실제 로그인, Apple provider 설정, Apple callback 검증은 별도 auth provider goal로 진행한다.
 
 ### D12. 같은 이메일의 다른 provider 계정 처리
 
@@ -491,7 +491,7 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 - 같은 슬롯의 active `AuthDevice.deviceIdHash`가 다르고 `replaceExistingDevice`가 `true`가 아니면 `DeviceSlotAlreadyRegistered`를 반환한다.
 - `replaceExistingDevice=true`이면 기존 `AuthDevice`와 그 하위 active `AuthSession`을 폐기한 뒤 새 `AuthDevice`와 `AuthSession`을 만든다.
 - FE 로그인 흐름은 사용자가 현재 기기 슬롯을 선택하거나 확인할 수 있어야 하며, 슬롯 충돌 시 기존 기기를 교체할지 확인해야 한다.
-- 모바일 앱을 만들 때는 기본 슬롯을 `MOBILE`로 사용할 수 있다.
+- 모바일 브라우저 로그인은 기본 슬롯을 `MOBILE`로 사용할 수 있다.
 - Admin 강제 logout 기능은 MVP 이후 운영 기능으로 분리한다.
 
 ### D15. 파일 저장소 1차 전략

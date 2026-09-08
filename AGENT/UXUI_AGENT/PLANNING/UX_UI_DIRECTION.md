@@ -33,25 +33,6 @@ Current implementation note as of 2026-07-10:
 - Contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
 
-## 2A. Native Mobile App First Scope
-
-2026-09-03 기준 네이티브 Mobile App의 1차 UX 범위는 로그인/회원가입, 인증 복구, 최소 홈, 로그아웃이다.
-
-Mobile App 첫 화면 기준:
-
-- 앱 시작 시 secure storage 기반 세션 복구가 끝나기 전에는 보호 화면을 먼저 보여주지 않는다.
-- 세션이 없으면 로그인/회원가입 provider 선택 화면을 보여준다.
-- provider 순서는 User Web과 같은 Google, LINE, Apple이다.
-- 로그인/회원가입 화면은 User Web 브라우저 모바일 auth 화면의 정보 구조와 문구 톤을 참고한다.
-- WebView로 User Web 화면을 감싸거나 pixel-level layout을 복제하지 않는다.
-- OAuth는 Expo AuthSession 또는 시스템 브라우저로 진행한다.
-- 약관, 개인정보처리방침, 보안 문서 링크는 OS 브라우저로 연다.
-- 로그인 성공 후 최소 `HomeScreen`은 `/api/me` 확인 UI로 제한한다.
-- 최소 `HomeScreen`에는 사용자 이름, 이메일, 인증 상태, 현재 모바일 기기 정보, 로그아웃 액션만 둔다.
-- CRM 홈, 딜 파이프라인, 회사/담당자/제품/일정/회의록 화면은 1차 범위가 아니다.
-
-Mobile App의 아키텍처, 인증 저장소, route 구조는 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`를 따른다.
-
 현재 우선순위 메모 기준일: 2026-08-09 G03 route architecture closeout
 
 - 지금은 새 기능을 추가하기보다 UX/UI 공통 QA와 모바일 브라우저 QA를 먼저 진행한다.
@@ -460,7 +441,7 @@ Why:
 
 Shared layer to finish early:
 
-In this section, `mobile` means User Web browser-mobile layout unless the document explicitly says `Mobile App`.
+In this section, `mobile` means User Web browser-mobile layout.
 
 - desktop sidebar
 - desktop top bar
@@ -495,7 +476,6 @@ Rules:
 
 - new domain screens should reuse shared shell and shared state UI
 - User Web desktop and browser-mobile layouts may differ, but they should not invent separate visual systems
-- Native Mobile App CRM screens are future scope and must follow `AGENT/SOFTWARE_AGENT/MOBILE_AGENT` when opened
 - do not expand route count faster than shared component quality
 
 ## 10. Deal Row Information Priority
@@ -868,5 +848,3 @@ Admin should not try to feel like the User Web. It should feel like an internal 
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
-- `AGENT/UXUI_AGENT/DECISIONS/021_uxui_mobile_auth_native_reference.md`

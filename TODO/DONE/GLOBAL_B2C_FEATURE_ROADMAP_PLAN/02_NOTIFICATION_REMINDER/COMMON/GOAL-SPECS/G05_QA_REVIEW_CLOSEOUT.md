@@ -34,7 +34,6 @@
 - 회의록 후속 알림 QA
 - Admin provider failure UI QA
 - Billing/email compliance full review
-- native push QA
 
 ## 5. 수동 QA 시나리오
 

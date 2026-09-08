@@ -199,7 +199,7 @@ Backend log context:
 ## 9. User Flow
 
 1. 사용자가 `/app/business-cards` 모바일 화면에서 촬영/업로드 버튼을 누른다.
-2. native file/camera picker가 열린다.
+2. browser file/camera picker가 열린다.
 3. 선택 즉시 미리보기와 업로드 진행 상태를 보여준다.
 4. OCR 성공 시 확인 form으로 이동하고, 사용자가 수정하는 값은 24h local draft로 저장한다.
 5. OCR 실패 시 safe `userMessage`를 표시하고 `다시 촬영`, `파일 바꾸기`, `수동 입력`을 제공한다.
@@ -247,7 +247,7 @@ E2E:
 
 서버 API 없음:
 
-- `<input type="file" accept="image/*" capture="environment" />`는 browser/native picker 계약이며 HTTP endpoint가 아니다.
+- `<input type="file" accept="image/*" capture="environment" />`는 browser picker 계약이며 HTTP endpoint가 아니다.
 - `getUserMedia` custom camera UI, client `deviceId`, server draft API는 만들지 않는다.
 - confirm form local draft는 `LOCAL_DRAFT_CONTRACT.md`의 IndexedDB/localStorage 계약을 따르며 server request에 draft id를 넣지 않는다.
 

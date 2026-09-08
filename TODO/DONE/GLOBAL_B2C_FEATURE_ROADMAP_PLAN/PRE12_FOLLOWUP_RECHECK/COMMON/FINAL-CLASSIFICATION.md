@@ -49,7 +49,7 @@ PRE12에는 새 API, Prisma migration, User Web route, Admin Web route, 후속 T
 | 후보 | 작업 | 허용 범위 | 금지 |
 | --- | --- | --- | --- |
 | `PRE12-F04` | Gmail/Microsoft provider smoke closeout | 운영 credential, callback URL, allowlist 기준으로 실제 수신자 smoke를 실행하고 결과를 문서에 기록한다. | 새 email API, 새 provider, SMS vendor, sequence/campaign, scheduled send 구현 |
-| `PRE12-F31` | 10 Mobile Field Use 문서 체크리스트 정합성 | 10 README/G07 closeout/실제 코드 기준으로 미체크 문서를 정리한다. | 10 기능 재구현, PWA/offline/native, server draft, `/api/exports` 추가 |
+| `PRE12-F31` | 10 Mobile Field Use 문서 체크리스트 정합성 | 10 README/G07 closeout/실제 코드 기준으로 미체크 문서를 정리한다. | 10 기능 재구현, PWA/offline, server draft, `/api/exports` 추가 |
 | `PRE12-F32` | User Web route/architecture 문서 정합성 | 실제 `/app/notifications` 활성, `/app/export` redirect 상태를 FE architecture 문서와 맞춘다. | stale 문서에 맞춰 `/app/notifications`를 숨기거나 route를 되돌림 |
 | `PRE12-F33` | 11 Admin Operation 문서 체크리스트/goal index 정합성 | 11 README/G10 closeout/실제 코드 기준으로 checklist와 goal index를 정리한다. | 11 Admin 기능 재구현, Admin route/API rollback |
 | `PRE12-F34` | Admin Web architecture/legacy route 정합성 | 실제 11 Admin route/API와 `/organizations`, `/subscriptions`, `/support` redirect 상태를 문서에 반영하고 legacy 잔여 코드 방향을 정리한다. | Billing Admin, customer tenant admin, legacy `admin-query` route/API를 활성화 |
@@ -83,7 +83,7 @@ PRE12에는 새 API, Prisma migration, User Web route, Admin Web route, 후속 T
 | `PRE12-F27` | analytics 세부 event는 별도 taxonomy 계약으로 다룬다. |
 | `PRE12-F28` | external analytics provider forwarding은 privacy/DPA/growth 요구 이후 판단한다. |
 | `PRE12-F29` | public/UTM/ad attribution/growth experiment는 growth/marketing 계획에서 다룬다. |
-| `PRE12-F30` | PWA/native packaging과 install attribution은 별도 mobile roadmap에서 다룬다. |
+| `PRE12-F30` | PWA packaging과 install attribution은 별도 mobile roadmap에서 다룬다. |
 | `PRE12-F36` | data export artifact/download는 ExportJob/file retention/audit 계약과 함께 재검토한다. |
 | `PRE12-F37` | 자동 민감정보 감지는 data governance와 오탐/누락 처리 정책이 필요하다. |
 | `PRE12-F38` | Notification TTL/cleanup은 보존 기간, provider failure 조회, account deletion 정책과 함께 다룬다. |

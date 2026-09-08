@@ -104,4 +104,3 @@ Frontend:
 - image/audio blob을 local draft에 저장하지 않는다.
 - transcript/provider raw response를 local draft, analytics, 일반 log에 저장하지 않는다.
 - Admin provider failure UI/API를 10에서 만들지 않는다.
-- native app 코드를 10에서 만들지 않는다.

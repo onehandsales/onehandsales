@@ -9,7 +9,6 @@
 ## 2. 공통 리뷰
 
 - [ ] goal 범위 밖 기능을 구현하지 않았다.
-- [ ] native iOS/Android app 구현을 10번에서 시작하지 않았다.
 - [ ] PWA install/offline shell을 10번에서 핵심 범위로 확장하지 않았다.
 - [ ] `/api/drafts/*`, `UserDraft`, server draft sync를 만들지 않았다.
 - [ ] 기존 migration 파일을 수정하지 않고 새 migration만 추가했다.
@@ -50,7 +49,7 @@
 ## 6. Frontend 리뷰
 
 - [ ] 모바일 360px/390px에서 주요 CTA와 입력 필드가 겹치지 않는다.
-- [ ] 명함 촬영은 native file/camera input을 사용한다.
+- [ ] 명함 촬영은 browser file/camera input을 사용한다.
 - [ ] 회의 녹음은 `MediaRecorder`와 audio file fallback을 모두 제공한다.
 - [ ] local draft restore prompt에는 `불러오기`, `버리기`가 있다.
 - [ ] browser push permission은 사용자 클릭 이후에만 요청한다.

@@ -23,7 +23,7 @@
 | Import | `/app/import` review/resume, row detail 만료 안내, 10MB/5,000행 제한 안내는 01 범위로 완료됐다. |
 | Global Data I18N | `/app` `ko-KR/en`, Settings global profile, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08 범위로 완료됐다. |
 | Product Analytics | User Web analytics helper, `/app` route view hook, mobile field-use client event, `VITE_PRODUCT_ANALYTICS_ENABLED` gate가 있다. analytics 실패는 사용자-facing UI로 표시하지 않는다. |
-| Mobile Field Use | BusinessCard native file/camera picker capture/OCR safe failure, MeetingNote recording/STT fallback, FE local draft 24시간 TTL, `/app/notifications` browser push permission UX, mobile field analytics는 10 범위로 완료됐다. `/app/export`는 `/app`으로 redirect된다. |
+| Mobile Field Use | BusinessCard browser file/camera picker capture/OCR safe failure, MeetingNote recording/STT fallback, FE local draft 24시간 TTL, `/app/notifications` browser push permission UX, mobile field analytics는 10 범위로 완료됐다. `/app/export`는 `/app`으로 redirect된다. |
 | Admin Operation 영향 | `/app/trash` 만료 row/복구 문의와 `/app/settings` account deletion/data export request UI는 11에서 완료됐다. User Web은 `/admin/api/*`를 호출하지 않는다. |
 
 ## 3. 구현 금지
@@ -60,7 +60,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 - public site/UTM/ad attribution, campaign attribution, experiment assignment UI 추가
 - marketing opt-in/communication consent policy UI 추가
 - billing/subscription/tax/refund/invoice/paywall/churn/AI quota 사용량 UI를 Paddle 확정 전 추가
-- PWA install/offline shell/full offline sync/native app/native push/contact/calendar/native install attribution UI 추가
+- PWA install/offline shell/full offline sync/install attribution UI 추가
 - BusinessCard 전용 `getUserMedia`, custom camera preview/crop/canvas capture flow를 `PRE12-F42` 계약 없이 추가
 - `UserDraft`, server draft DB, audio/image binary, transcript/provider raw 저장 UX를 `PRE12-F43` 정책 없이 추가
 - FE에 남은 `ExportScreen`/`/api/exports` 잔여 코드를 `/app/export` 활성 route로 연결
@@ -83,7 +83,7 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 
 05 재대조 기준으로 `/app/schedules/week` AI report와 `/app/settings` follow-up delivery, compose/send/retry/timeline UX는 완료다. 운영 provider smoke는 화면 변경 없이 BEFORE_12 G01 문서 기록으로 닫혔고, SMS 실제 provider와 B2B/email growth 확장, 사용자-facing cost/paywall, 자동 생성/자동 mutation은 05 미완성이 아니라 후속 후보로 둔다.
 
-09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, marketing opt-in, PWA/native install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 별도 후속 계획으로 둔다.
+09 재대조 기준으로 Product Analytics User Web foundation은 완료다. 신규 사용자-facing analytics 화면, external provider SDK, billing/paywall/churn UI, public attribution, marketing opt-in, PWA install flow는 09 미완성이 아니라 PRE12 후속 후보 또는 별도 후속 계획으로 둔다.
 
 10 재대조 기준으로 Mobile Field Use User Web 범위는 완료다. `10/FE-TODO/USER-WEB-TODO.md`의 G03~G06 정합성은 BEFORE_12 G02에서 닫았고, `FE/ARCHITECTURE.md`와 `FE/user-web/ARCHITECTURE.md`의 `/app/notifications` stale 설명은 BEFORE_12 G03에서 실제 router 기준으로 정리했다. 2차 재대조에서 `custom getUserMedia` 기반 BusinessCard preview/crop은 `PRE12-F42`, server draft/media raw storage는 `PRE12-F43`으로 분리한다.
 
@@ -119,8 +119,8 @@ G00과 API contract 확정 전에는 아래 User Web 변경을 하지 않는다.
 | public/UTM attribution/growth experiment | public/auth route attribution, campaign parameter 보존, experiment assignment 표시/노출 기준 필요 | 후속 seed / growth/marketing |
 | Marketing opt-in/communication consent policy | account-level opt-in/withdrawal UI, campaign channel consent, preference display, consent audit copy 기준 필요. public contact form `marketingAgreement`와 follow-up consent modal은 대체물이 아니다 | billing-blocked / growth-compliance / `PRE12-F41` |
 | Billing/subscription/tax/paywall UI | 05/09 내부 cost/usage 기록과 별개로 `TODO/PADDLE_PLAN`의 plan/payment/subscription/tax/refund/invoice/failed payment, quota/paywall/upgrade contract와 API 필요 | billing-blocked / `PRE12-F12` |
-| PWA/native packaging과 attribution | install prompt, offline shell/full offline sync, native app deep link, native push/contact/calendar bridge, install attribution UX 기준 필요 | 후속 seed / 별도 mobile roadmap |
-| BusinessCard mobile advanced camera preview/crop | `getUserMedia`, camera preview, crop/retake, fallback, permission denial, accessibility/device QA 기준 필요. 10의 native file/camera picker를 임의 대체하지 않는다 | 후속 seed / mobile advanced capture / `PRE12-F42` |
+| PWA packaging과 attribution | install prompt, offline shell/full offline sync, install attribution UX 기준 필요 | 후속 seed / 별도 PWA roadmap |
+| BusinessCard mobile advanced camera preview/crop | `getUserMedia`, camera preview, crop/retake, fallback, permission denial, accessibility/device QA 기준 필요. 10의 browser file/camera picker를 임의 대체하지 않는다 | 후속 seed / mobile advanced capture / `PRE12-F42` |
 | Server draft and media/raw storage policy | server-backed draft restore, blob/raw transcript 보관 표시, 삭제/만료/계정 삭제 UX 기준 필요. 10 local draft TTL 완료 범위와 분리한다 | defer / trust-policy / `PRE12-F43` |
 | 10 FE/BE TODO 체크리스트 정합성 | 10 FE TODO의 G03~G06 체크박스를 실제 완료 상태와 맞추는 문서 정리 | closed-by-BEFORE_12 |
 | User Web route/architecture 문서 정합성 | 실제 router 기준 `/app/notifications` 활성, `/app/export` redirect 상태를 architecture 문서에 반영 | closed-by-BEFORE_12 |

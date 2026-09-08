@@ -129,7 +129,7 @@
   - provider raw detail, transcript 전문, audio/image raw data, push endpoint/key/token, PII/raw text를 response/log/analytics/local draft에 저장하지 않는다.
   - 10 범위 신규 DB model은 없고 G02 BusinessCard safe failure migration만 추가했다.
 - 10 밖으로 남는 범위:
-  - PWA install/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar
+  - PWA install/offline shell, full offline sync
   - Admin provider failure dashboard와 운영 추적은 11에서 완료
   - marketing opt-in, billing/paywall/churn runtime event
 

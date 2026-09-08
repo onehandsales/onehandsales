@@ -143,7 +143,7 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 - MVP 초기 실제 로그인 provider는 `Kakao`, `Google`로 간다.
 - `Apple` 로그인은 Web MVP 초기 범위에서 제외한다.
-- `Apple` 로그인은 iOS 앱을 만들 때 후속으로 구현한다.
+- `Apple` 로그인은 후속 provider 검증에서 구현한다.
 - Apple 버튼을 노출한다면 disabled 또는 준비 중 상태로 둔다.
 
 기존 검토 내용:
@@ -159,7 +159,7 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 선택지:
 
-- A. Kakao + Google을 먼저 구현하고 Apple은 iOS 앱 단계로 미룬다.
+- A. Kakao + Google을 먼저 구현하고 Apple은 후속 provider 단계로 미룬다.
 - B. Kakao, Google, Apple을 G05에서 모두 구현한다.
 - C. Google만 먼저 구현하고 나머지는 버튼 disabled 상태로 둔다.
 
@@ -171,7 +171,7 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 추천안:
 
-- A. Kakao + Google 먼저 구현, Apple은 iOS 앱 단계 후속 구현
+- A. Kakao + Google 먼저 구현, Apple은 후속 provider 단계에서 구현
 
 문서 반영 위치:
 

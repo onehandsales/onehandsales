@@ -59,7 +59,7 @@
 | 07 | `07_MEETING_NOTE_AI_PROVIDER_LOG` | 회의록 AI/provider log 고도화 | Done |
 | 08 | `08_GLOBAL_DATA_I18N` | 다국가 데이터 모델과 `/app` 다국어 | Done |
 | 09 | `09_PRODUCT_ANALYTICS` | 제품 분석 | Done |
-| 10 | `10_MOBILE_PWA_FIELD_USE` | 모바일/PWA/현장 사용성 | Done for mobile browser field-use. PWA/native는 후속 |
+| 10 | `10_MOBILE_PWA_FIELD_USE` | 모바일/PWA/현장 사용성 | Done for mobile browser field-use. PWA는 후속 |
 | 11 | `11_ADMIN_OPERATION` | Admin 운영 | Done. Billing Admin은 제외 |
 | 12 | `12_BILLING_SUBSCRIPTION_TAX` | 결제/구독/세금 | Moved / Deferred to `TODO/PADDLE_PLAN` |
 

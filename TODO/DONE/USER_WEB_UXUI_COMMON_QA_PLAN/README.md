@@ -71,7 +71,6 @@
 - `/app/export` generic export 재노출
 - `/app/schedules/week` 구현
 - 결제/구독 구현
-- 네이티브 iOS/Android 앱
 - 390px/360px 모바일 브라우저 전용 QA
 
 단, UX/UI QA 중 Backend error code, response shape, data isolation, migration 문제가 발견되면 이 계획에서 바로 수정하지 않고 별도 Backend/DB 계획으로 분리한다.

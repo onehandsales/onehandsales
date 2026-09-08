@@ -52,7 +52,7 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 |---|---|
 | 리텐션 | 다음 행동, 일정, 회의록 follow-up, 딜 지연, AI report가 사용자를 다시 부른다. 기본 주간 일정 보고서, Google Calendar read-only import, 05 AI weekly report/follow-up delivery, Gmail/Microsoft provider smoke closeout, 회의록 follow-up draft는 구현 완료 상태로 본다. 회의록 follow-up 알림/자동 발송과 SMS 실제 provider/B2B email growth는 후속 정책/운영 범위다. |
 | AI 핵심 가치 | 회의록 요약을 넘어 딜 리스크, 다음 행동, follow-up 문구, 영업 리포트를 제안한다. 05 저장형 AI weekly report/follow-up delivery와 07 회의록 상세 next action/follow-up draft는 구현 완료됐고, 딜 리스크 고도화와 자동화는 후속이다. |
-| 모바일 현장성 | 모바일 브라우저 또는 앱에서 명함 촬영, 음성 기록, 빠른 입력, push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell과 native app은 후속이다. |
+| 모바일 현장성 | 모바일 브라우저에서 명함 촬영, 음성 기록, 빠른 입력, browser push reminder가 자연스럽다. 모바일 브라우저 1차 현장성은 10에서 완료했고, PWA install/offline shell은 후속이다. |
 | Deal timeline | 일정, Google Calendar에서 가져온 일정, 회의록, follow-up, 다음 행동, 단계 변경이 하나의 영업 활동 흐름으로 연결된다. 기본 `DealActivity` timeline은 06에서 구현 완료됐고, 메모 통합, 범용 activity bus, Company/Contact/Product별 상세 timeline은 후속 정책 결정 범위다. |
 | 성장 실험 | trial, annual plan, AI plan, paywall, coupon/referral, churn survey를 운영한다. |
 | 운영 신뢰 | 11 Admin 운영으로 감사 로그, 민감정보 원문 조회 사유, provider 상태 기록, system gate 기록을 갖췄다. 실제 장애 대응 drill과 Billing 운영 신뢰는 후속으로 검증한다. |

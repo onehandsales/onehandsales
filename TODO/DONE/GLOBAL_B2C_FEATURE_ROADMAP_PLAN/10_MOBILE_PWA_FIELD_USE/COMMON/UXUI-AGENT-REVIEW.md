@@ -38,7 +38,7 @@
 ## 5. 구현자가 반드시 확인할 항목
 
 - [ ] 첫 화면이 실제 업무 화면이다.
-- [ ] 명함 촬영 CTA는 native file/camera picker를 호출한다.
+- [ ] 명함 촬영 CTA는 browser file/camera picker를 호출한다.
 - [ ] 회의 녹음 실패 시 파일 업로드 fallback이 같은 흐름 안에 있다.
 - [ ] local draft restore prompt는 사용자가 이해할 수 있는 짧은 copy와 `불러오기`/`버리기`를 제공한다.
 - [ ] push permission copy는 사용자가 브라우저 권한을 직접 허용해야 한다고 말한다.

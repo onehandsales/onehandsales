@@ -30,8 +30,8 @@
 - 06에서 닫은 DealActivity 범위와 06 밖으로 남은 record summary, activity lifecycle/search/score 후보
 - 07에서 닫은 MeetingNote 상세 AI 후보와 07 밖으로 남은 목록 summary, 자동 발송, 알림, AI data cleanup, raw/transcript 저장, AI 후보 자동 업무 mutation 후보
 - 08에서 닫은 Global Data I18N 범위와 08 밖으로 남은 시장/국가/통화/전화번호/auth/UX polish 후보
-- 09에서 닫은 Product Analytics foundation과 09 밖으로 남은 account deletion 실제 처리, 세부 analytics event, 외부 provider, attribution/experiment, marketing opt-in, PWA/native 후보
-- 10에서 닫은 mobile browser field-use 범위와 10 밖으로 남은 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보
+- 09에서 닫은 Product Analytics foundation과 09 밖으로 남은 account deletion 실제 처리, 세부 analytics event, 외부 provider, attribution/experiment, marketing opt-in, PWA 후보
+- 10에서 닫은 mobile browser field-use 범위와 10 밖으로 남은 PWA/offline, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보
 - 11에서 닫은 Admin 운영 범위와 11 밖으로 남은 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin 후보
 
 이 폴더는 13번 기능 폴더가 아니다. 기존 완료 슬롯을 재대조하기 위한 보조 계획이었으며, 2026-08-11 기준 billing 종속 후보는 `TODO/PADDLE_PLAN`으로 이관됐다.
@@ -46,7 +46,7 @@
 | 후속 seed | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / Paddle 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-따라서 PRE12의 잔여 작업은 없다. 운영 provider smoke와 문서 정합성 정리는 BEFORE_12에서 닫혔고, billing 종속 항목은 `TODO/PADDLE_PLAN`으로 이관됐다. 다음 행동 reminder, 회의록 follow-up reminder, record summary, mobile/PWA/native, ExportJob, Admin mutation, B2B tenant admin 같은 제품 기능은 이 폴더에서 구현하지 않는다.
+따라서 PRE12의 잔여 작업은 없다. 운영 provider smoke와 문서 정합성 정리는 BEFORE_12에서 닫혔고, billing 종속 항목은 `TODO/PADDLE_PLAN`으로 이관됐다. 다음 행동 reminder, 회의록 follow-up reminder, record summary, mobile/PWA, ExportJob, Admin mutation, B2B tenant admin 같은 제품 기능은 이 폴더에서 구현하지 않는다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
@@ -60,8 +60,8 @@
 | 06 DealActivity | 완료 이력 유지 / A 결정 반영 | 06은 DealActivity timeline, manual create/update, Deal list latestActivity, products summary, Contact dealCount 범위를 넘기지 않고 완료로 유지한다. record summary 잔여는 `PRE12-F07`, activity lifecycle/search/score 확장은 `PRE12-F39`로 분리한다. |
 | 07 MeetingNote AI | 완료 이력 유지 / G08 closeout 완료 | 상세 next action/follow-up draft와 provider log는 완료다. 회의록 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 저장/자동 일정 생성/자동 딜 변경은 07 완료 범위가 아니다. Admin provider audit/raw access는 11 완료 범위를 참조한다. |
 | 08 Global Data I18N | 완료 이력 유지 / G09 closeout 완료 | `/app` `ko-KR/en`, User global settings, KR/US phone/region, KRW/USD currency, Import/Export localization, Google/LINE/Apple auth는 완료다. KR/US/CA 우선 전략에 맞춘 CA/CAD/캐나다 전화번호/지역은 새 후속 범위이며, `ja`, `zh-CN`, 전 세계 국가/통화/전화번호, minor unit, 상세 주소 검증, auth strategy 확장은 08 미완성이 아니다. |
-| 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, marketing opt-in, PWA/native install attribution은 09 완료 범위가 아니다. |
-| 10 Mobile PWA Field Use | 완료 이력 유지 / G11 및 BEFORE_12 G02~G03 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync/iOS/Android native app/native push/contact/calendar, advanced camera preview/crop, server draft/media raw storage는 후속이고, 10 FE/BE TODO 체크리스트와 FE route architecture 문서 정합성은 `PRE12-F31`/`PRE12-F32`로 분리한 뒤 BEFORE_12에서 닫았다. 남는 기능 후보는 `PRE12-F30`, `PRE12-F42`, `PRE12-F43`과 기존 `PRE12-F09`다. |
+| 09 Product Analytics | 완료 이력 유지 / G10 closeout 완료 | 자체 DB `ProductAnalyticsEvent`, collector, server/client event, activation/retention snapshot, AI usage summary, 10 mobile field-use event와 11 Admin analytics 연결은 완료다. account deletion 실제 hard delete/anonymization job, 세부 event 확장, 외부 provider, UTM/experiment, marketing opt-in, PWA install attribution은 09 완료 범위가 아니다. |
+| 10 Mobile PWA Field Use | 완료 이력 유지 / G11 및 BEFORE_12 G02~G03 closeout 완료 | 명함 촬영/OCR safe failure, 회의 녹음/STT fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics는 완료다. PWA install/offline shell/full offline sync, advanced camera preview/crop, server draft/media raw storage는 후속이고, 10 FE/BE TODO 체크리스트와 FE route architecture 문서 정합성은 `PRE12-F31`/`PRE12-F32`로 분리한 뒤 BEFORE_12에서 닫았다. 남는 기능 후보는 `PRE12-F30`, `PRE12-F42`, `PRE12-F43`과 기존 `PRE12-F09`다. |
 | 11 Admin Operation | 완료 이력 유지 / G12 및 BEFORE_12 G04~G05 closeout 완료 | `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분리한 뒤 BEFORE_12에서 닫았다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding은 batch 조회와 회귀 테스트로 해결했다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin은 11 완료 범위가 아니다. 남는 후보는 `PRE12-F35`~`PRE12-F37`, `PRE12-F44`, `PRE12-F45`와 기존 `PRE12-F09`, `PRE12-F11`, `PRE12-F12`, `PRE12-F13`, `PRE12-F26` 연결이다. |
 
 2026-08-06 사용자 결정 A에 따라 `NBA-003` 잔여인 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 계약화/구현 대상이 아니다. 이 후보들은 B2B 또는 team CRM 성격이 더 강한 후속 전략 재검토 seed로 남기며, UX/UI 전체 polish도 지금 06 후속으로 하지 않고 별도 전면 유지보수 계획에서 다룬다.
@@ -111,8 +111,8 @@
 | 외부 analytics provider forwarding | 후속 seed / growth/ops | 자체 DB analytics 정본을 유지하고 Segment/PostHog/Mixpanel류 provider port/adapter/runtime call은 별도 계획에서 판단한다. |
 | public site/UTM/ad attribution/growth experiment | 후속 seed / growth/marketing | 09는 core `/app` route view만 수집했다. public route, UTM/referrer/ad attribution, experiment assignment API/model은 후속이다. |
 | Marketing opt-in/communication consent policy | billing-blocked / growth-compliance | 원천 문서의 Marketing opt-in은 09/10 완료 범위가 아니며 Paddle Billing/growth/privacy 정책 이후 판단한다. `FollowUpConsentNotice`나 public contact form `marketingAgreement`와 혼동하지 않는다. |
-| PWA/native packaging과 install attribution | 후속 seed / 별도 mobile roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution은 후속으로 유지한다. |
-| BusinessCard mobile advanced camera preview/crop | 후속 seed / mobile advanced capture | 10은 native file/camera picker 기반으로 완료했다. `getUserMedia`, custom camera preview/crop/canvas capture는 별도 usage/device QA/접근성 계약 전 구현하지 않는다. |
+| PWA packaging과 install attribution | 후속 seed / 별도 PWA roadmap | 10은 mobile browser field-use까지 완료했다. PWA install/offline shell/full offline sync, install attribution은 후속으로 유지한다. |
+| BusinessCard mobile advanced camera preview/crop | 후속 seed / mobile advanced capture | 10은 browser file/camera picker 기반으로 완료했다. `getUserMedia`, custom camera preview/crop/canvas capture는 별도 usage/device QA/접근성 계약 전 구현하지 않는다. |
 | Server draft and media/raw storage policy | defer / trust-policy / 후속 seed | 10 local draft는 FE 24시간 TTL 저장으로 닫혔다. `UserDraft`, `/api/drafts/*`, audio/image binary, transcript 전문, provider raw response 저장은 retention/account deletion/raw access 정책 전 구현하지 않는다. |
 | 10 FE/BE TODO 체크리스트 정합성 | closed-by-BEFORE_12 | 10 README/G07 closeout/실제 코드 기준 완료 상태와 문서 체크리스트를 BEFORE_12 G02에서 맞췄다. |
 | User Web route/architecture 문서 정합성 | closed-by-BEFORE_12 | 실제 `/app/notifications` 활성, `/app/export` redirect 상태를 BEFORE_12 G03에서 FE architecture 문서에 반영했다. |

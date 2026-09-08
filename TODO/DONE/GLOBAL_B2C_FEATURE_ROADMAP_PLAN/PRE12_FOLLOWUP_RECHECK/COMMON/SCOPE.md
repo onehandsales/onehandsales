@@ -18,7 +18,7 @@
 | 후속 seed | `PRE12-F01`, `PRE12-F02`, `PRE12-F03`, `PRE12-F05`, `PRE12-F06`, `PRE12-F07`, `PRE12-F08`, `PRE12-F09`, `PRE12-F10`, `PRE12-F11`, `PRE12-F13`, `PRE12-F14`, `PRE12-F15`, `PRE12-F17`, `PRE12-F18`, `PRE12-F19`, `PRE12-F22`, `PRE12-F23`, `PRE12-F24`, `PRE12-F25`, `PRE12-F27`, `PRE12-F28`, `PRE12-F29`, `PRE12-F30`, `PRE12-F36`, `PRE12-F37`, `PRE12-F38`, `PRE12-F39`, `PRE12-F40`, `PRE12-F42`, `PRE12-F43`, `PRE12-F44`, `PRE12-F45` |
 | billing 충돌 / Paddle 종속 | `PRE12-F12`, `PRE12-F20`, `PRE12-F21`, `PRE12-F26`, `PRE12-F35`, `PRE12-F41` |
 
-기존 PRE12 처리 대상으로 분류했던 운영 smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding도 11 품질 보정으로 해결했다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA/native, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 PRE12 구현으로 올리지 않는다.
+기존 PRE12 처리 대상으로 분류했던 운영 smoke와 문서 정합성은 2026-08-09 BEFORE_12에서 모두 닫혔다. 2026-08-10 Admin provider failure 목록 cursor pagination 편중 누락 Finding도 11 품질 보정으로 해결했다. 다음 행동 reminder, 회의록 follow-up reminder, ExportJob, PWA, Admin mutation, Customer/B2B tenant admin 같은 기능 후보는 PRE12 구현으로 올리지 않는다.
 
 분류 제외 완료 참조: `PRE12-F16`
 
@@ -34,8 +34,8 @@
 | 06 작업 경계 설정 | DealActivity event와 실제 Notification reminder, record summary, activity lifecycle/search/score 확장 후보를 분리한다. |
 | 07 작업 경계 설정 | MeetingNote 상세 AI draft와 MeetingNote 목록 summary/자동 발송/알림/AI data cleanup/raw 저장 후보를 분리한다. |
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
-| 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA/native 후보를 분리한다. |
-| 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline/native, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
+| 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA 후보를 분리한다. |
+| 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
 | 11 작업 경계 설정 | Admin Operation 완료 범위와 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin 후보를 분리한다. |
 | 후보 상태 분류 | `FINAL-CLASSIFICATION.md` 기준으로 PRE12 처리 대상, 후속 seed, billing 충돌/Paddle 종속으로 분리한다. 완료 참조는 작업 분류에서 제외한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
@@ -57,9 +57,9 @@
 | UX/UI 전체 polish | Product UX first-sale gate와 UX/UI 유지보수는 별도 흐름이다. |
 | Company/Contact/Product latest summary PRE12 계약화 | 2026-08-06 A 결정에 따라 `NBA-003` 잔여 record summary는 B2B/team CRM 성격이 강한 후속 전략 후보로 둔다. |
 | 08 market/global expansion PRE12 구현 | 보류 locale 앱 번역, `zh-CN`, 전 세계 국가/통화/전화번호, USD minor unit, 상세 주소 검증, 신규 auth provider는 08 완료 범위를 넓히지 않는다. KR/US/CA 전략에 필요한 CA/CAD/캐나다 전화번호도 새 후속 범위로 다룬다. |
-| 09 analytics/growth/trust 확장 PRE12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, marketing opt-in, PWA/native attribution은 09 완료 범위를 넓히지 않는다. |
-| 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline/native, advanced camera preview/crop, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
-| 10 mobile/PWA 확장 PRE12 구현 | PWA install/offline shell/full offline sync, native app, native push/contact/calendar, native install attribution은 10 완료 범위를 넓히지 않는다. |
+| 09 analytics/growth/trust 확장 PRE12 구현 | account deletion 실제 job, 세부 event taxonomy, 외부 provider forwarding, public/UTM attribution, growth experiment, marketing opt-in, PWA attribution은 09 완료 범위를 넓히지 않는다. |
+| 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline, advanced camera preview/crop, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
+| 10 mobile/PWA 확장 PRE12 구현 | PWA install/offline shell/full offline sync, install attribution은 10 완료 범위를 넓히지 않는다. |
 | 11 Admin Operation 구현 재개 | 11은 최소 Admin 운영 API/화면과 audit/redaction 기준으로 완료됐다. 문서 stale이나 후속 후보를 근거로 Admin 기능을 재구현하지 않는다. |
 | Admin 직접 Trash 복구/유료 복구/hard delete/purge PRE12 구현 | 11은 User 복구 문의와 Admin queue까지만 완료했다. 복구 실행/과금/삭제 정책은 recovery policy와 Paddle Billing 이후 판단한다. |
 | Admin 직접 도메인 데이터 수정 PRE12 구현 | 11은 사용자별 도메인 records를 read-only/masked 조회로 닫았다. Admin mutation은 ownership, 사용자 통지, audit/result, rollback, redaction 정책이 확정되기 전 구현하지 않는다. |
@@ -265,7 +265,7 @@
 - `ExperimentAssignment`, `/api/experiments/assignments` 같은 growth experiment model/API 추가
 - marketing opt-in/communication consent policy API/model/UI 추가
 - `AiUsageDaily`, `UsageMeter`, `BillingEvent`, `UserSubscription`, `ChurnSurveyResponse`를 09/PRE12에서 생성
-- PWA install/offline shell/full offline sync, iOS/Android native app, native push/contact/calendar, native install attribution을 09 완료 범위로 끼워 넣기
+- PWA install/offline shell/full offline sync, install attribution을 09 완료 범위로 끼워 넣기
 
 ## 11. 기존 PRE12 후보와 연결되는 09 항목
 
@@ -278,7 +278,7 @@
 | Notification/Calendar/follow-up 세부 analytics event | `PRE12-F27` |
 | 외부 analytics provider forwarding | `PRE12-F28` |
 | public site/UTM/ad attribution/growth experiment | `PRE12-F29` |
-| PWA/native packaging과 install attribution | `PRE12-F30` |
+| PWA packaging과 install attribution | `PRE12-F30` |
 | Marketing opt-in/communication consent policy | `PRE12-F41` |
 
 ## 12. 10 Mobile PWA Field Use에 직접 영향을 주는 기준
@@ -286,7 +286,7 @@
 10에서 완료로 보는 범위:
 
 - BusinessCard mobile capture와 OCR safe failure 계약
-- BusinessCard capture는 native file/camera picker 기반 `input type=file`, `accept="image/*"`, `capture="environment"`
+- BusinessCard capture는 browser file/camera picker 기반 `input type=file`, `accept="image/*"`, `capture="environment"`
 - MeetingNote mobile recording, audio file fallback, 기존 STT draft API 재사용
 - FE local draft 24시간 TTL, IndexedDB primary/localStorage fallback, restore/discard UX
 - Browser push permission UX와 기존 notification settings/subscription API 재사용
@@ -299,7 +299,6 @@
 - audio/image binary, transcript 전문, provider raw response 저장
 - BusinessCard 전용 `getUserMedia`, `ImageCapture`, camera preview/crop/canvas capture flow 추가
 - PWA manifest, offline shell, full offline sync, cache strategy, workbox/vite-plugin-pwa 추가
-- iOS/Android native app, native push/contact/calendar bridge 추가
 - `/app/export` route 활성화
 - `/api/exports`, `ExportJob`, export file retention API/model 추가
 - 10 FE/BE TODO 체크리스트 미체크를 근거로 기능을 재구현
@@ -309,7 +308,7 @@
 
 | 항목 | PRE12 후보 |
 | --- | --- |
-| PWA/native packaging과 install attribution | `PRE12-F30` |
+| PWA packaging과 install attribution | `PRE12-F30` |
 | BusinessCard mobile advanced camera preview/crop | `PRE12-F42` |
 | Server draft and media/raw storage policy | `PRE12-F43` |
 | generic ExportJob/PDF | `PRE12-F09` |

@@ -14,7 +14,7 @@
 | M10-D05 | local draft 저장 위치 | 서버 DB가 아니라 FE local draft로 처리한다. IndexedDB를 1차 선택지로 둔다. |
 | M10-D06 | local draft TTL | 24시간 TTL, 복원 확인 UX, `불러오기`/`버리기` 버튼을 사용한다. 저장 완료/버림/만료 시 삭제한다. |
 | M10-D07 | 모바일 event | 모바일 필수 기능 품질 개선을 위해 최소 allowlist analytics event를 10에서 추가한다. |
-| M10-D08 | native app | iOS와 Android native app은 필수 후속 로드맵이다. 10에서는 구현하지 않고 별도 필수 항목으로 승격한다. |
+| M10-D08 | PWA packaging | PWA install/offline shell은 10에서 구현하지 않고 별도 후속 계획으로 둔다. |
 | M10-D09 | push 권한 | 02 Notification API를 재사용하고 모바일 permission UX만 보강한다. 회원가입/약관 동의로 browser push 권한을 자동 허용한 것으로 간주하지 않는다. |
 | M10-D10 | 문서 수준 | 09와 같은 실행형 문서 구조를 만들고 `/goal` 단위로 처리한다. |
 

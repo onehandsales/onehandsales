@@ -47,7 +47,7 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 - Google Calendar write/sync/watch/recurrence
 - import scale/source/Admin 확장
 - app i18n polish와 growth attribution
-- PWA/native packaging
+- PWA packaging
 - advanced mobile camera/draft/media raw storage
 - Admin direct domain mutation
 - Customer/B2B tenant admin

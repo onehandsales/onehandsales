@@ -10,7 +10,7 @@
 
 10번은 모바일이 필요한지 검증하는 슬롯이 아니다. 개인 영업자에게 모바일 현장 사용성은 필수 사용 환경이다.
 
-1차 구현은 native app이 아니라 모바일 브라우저/PWA 기반으로 진행했다. 가장 빠르게 Global B2C 사용자에게 현장 입력성을 제공하기 위해 `/app/business-cards`, `/app/meeting-notes`, `/app/notifications`의 모바일 사용 흐름을 구체화했다.
+1차 구현은 모바일 브라우저/PWA 기반으로 진행했다. 가장 빠르게 Global B2C 사용자에게 현장 입력성을 제공하기 위해 `/app/business-cards`, `/app/meeting-notes`, `/app/notifications`의 모바일 사용 흐름을 구체화했다.
 
 ## 2. 1차 확정 범위
 
@@ -24,7 +24,6 @@
 | 모바일 알림 권한 | 02 Notification API를 재사용하고 모바일 permission UX만 보강 |
 | 알림 동의 | 회원가입/약관 동의로 browser push를 자동 허용한 것으로 간주하지 않는다 |
 | Analytics | 모바일 필수 기능 품질 개선용 event를 09 foundation에 추가 |
-| Native app | iOS/Android 모두 필수 후속 로드맵. 10번에서는 별도 필수 항목으로 승격만 한다 |
 
 ## 3. 현재 코드 기준
 
@@ -64,7 +63,6 @@ G01_DOCUMENT_CONTRACT_SYNC
 - browser push 권한은 사용자 명시 클릭으로만 요청하고, 거부/미지원 fallback을 제공한다.
 - 모바일 field-use analytics event가 allowlist payload로만 저장된다.
 - 이미지, 음성 파일, transcript, 회의록 본문, 명함 원문, provider raw response는 analytics/log/local draft에 무기한 저장하지 않는다.
-- iOS/Android native app은 후속 필수 로드맵으로 문서화된다.
 
 ## 6. 참고
 
@@ -90,4 +88,4 @@ G01_DOCUMENT_CONTRACT_SYNC
 - `BusinessCardScanLog` safe failure field migration 외 신규 DB model은 만들지 않았고, `UserDraft`, server draft DB, audio/image binary 저장은 만들지 않았다.
 - provider raw detail, transcript 전문, audio/image raw data, push endpoint/key/token, PII/raw text가 response/log/analytics/local draft에 저장되지 않는지 G07에서 확인했다.
 - 360px/390px mobile QA, BE/FE targeted test, BE/FE typecheck/lint, `git diff --check`를 통과했다.
-- PWA install/offline shell과 iOS/Android native app은 10 1차 완료 범위가 아니라 후속 로드맵 범위로 유지한다.
+- PWA install/offline shell은 10 1차 완료 범위가 아니라 후속 로드맵 범위로 유지한다.

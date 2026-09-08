@@ -41,8 +41,8 @@
 - browser push permission은 사용자 명시 클릭으로만 요청한다.
 - 회원가입/약관 동의는 browser/OS permission을 대체하지 않는다.
 
-## 5. Native app boundary
+## 5. PWA/offline boundary
 
-- iOS/Android native app은 필수 후속 로드맵이다.
-- 10에서 native app 코드를 만들지 않는다.
-- 10의 모바일 웹/PWA 구현은 native app 전환 시 재사용 가능한 API/UX 계약을 남긴다.
+- PWA install/offline shell은 후속 로드맵이다.
+- 10에서 PWA install/offline sync 코드를 만들지 않는다.
+- 10의 모바일 웹/PWA 구현은 현재 User Web 모바일 브라우저 API/UX 계약을 기준으로 유지한다.

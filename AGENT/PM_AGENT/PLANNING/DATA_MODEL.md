@@ -134,11 +134,9 @@ User
 
 - 신규/기존 사용자 판정은 `provider + providerUserId`를 먼저 사용한다.
 - User Web은 Supabase OAuth 이후 Backend `/api/auth/exchange`에서 내부 사용자와 앱 세션을 생성한다.
-- Mobile App은 외부 OAuth access token을 Backend `/api/auth/mobile/exchange`에서 내부 사용자와 앱 세션으로 교환한다.
-- 공식 앱 세션은 User Web과 Mobile App 모두 Backend `AuthSession`이며, Supabase session은 외부 provider adapter의 결과로만 취급한다.
+- 공식 앱 세션은 User Web의 Backend `AuthSession`이며, Supabase session은 외부 provider adapter의 결과로만 취급한다.
 - 현재 User Web device slot은 `mobile`, `personal_laptop` 두 개를 사용한다. 같은 slot의 다른 기기 로그인은 기존 slot 기기/session을 교체한다.
-- Mobile App의 `deviceSlot` 값은 `native_mobile`이고 Prisma enum은 `NATIVE_MOBILE`이다. 현재 User Web 브라우저 모바일은 기존 `mobile` slot을 유지하며, 네이티브 앱은 별도 slot으로 분리한다.
-- User Web refresh token 원문은 httpOnly cookie, Mobile App refresh token 원문은 보안 저장소에만 저장하며 DB에는 hash만 저장한다.
+- User Web refresh token 원문은 httpOnly cookie로만 내려가고 DB에는 hash만 저장한다.
 - 국가 코드는 provider 계정 정보가 아니라 배포 프록시 geo header에서 가져온다. 해당 header가 없으면 `signupCountryCode`/`lastLoginCountryCode`는 비어 있을 수 있다.
 - 기존 provider 계정이 없고 같은 verified email의 기존 `User`가 있으면 새 `UserOAuthAccount`를 연결한다. email이 없거나 verified email로 확인할 수 없으면 차단한다.
 
@@ -805,4 +803,3 @@ erDiagram
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`
 - `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
-- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/ARCHITECTURE/AUTH_SESSION.md`

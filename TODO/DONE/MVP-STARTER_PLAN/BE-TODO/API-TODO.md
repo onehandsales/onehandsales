@@ -89,7 +89,7 @@ BE/
 
 - Supabase Auth provider 목록 제공
 - MVP 초기 실제 provider는 Kakao, Google
-- Apple provider는 iOS 앱 단계 후속 구현으로 분리
+- Apple provider는 후속 provider 구현으로 분리
 - Supabase token을 Backend App token으로 exchange
 - Backend App access token 검증
 - 외부 Auth user와 local User 동기화

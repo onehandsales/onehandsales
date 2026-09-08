@@ -24,7 +24,7 @@
 - `/app/schedules/week` 숨김/rollback
 - `/app/export` 활성화
 - generic export 화면/API 연결
-- PWA/offline/native 구현
+- PWA/offline 구현
 - server draft 구현
 - 새 User Web route 추가
 - User Web에서 `/admin/api/*` 호출 추가

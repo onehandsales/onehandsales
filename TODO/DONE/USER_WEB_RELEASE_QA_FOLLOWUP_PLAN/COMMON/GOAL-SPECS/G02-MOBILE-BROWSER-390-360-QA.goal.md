@@ -33,7 +33,6 @@
 
 ## 4. 제외 범위
 
-- iOS/Android 네이티브 앱 기능
 - Safari QA
 - 실제 모바일 기기 성능 측정
 - Notification 구현

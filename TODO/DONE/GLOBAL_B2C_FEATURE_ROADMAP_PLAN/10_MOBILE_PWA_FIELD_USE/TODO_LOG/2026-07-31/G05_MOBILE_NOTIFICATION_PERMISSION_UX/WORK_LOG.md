@@ -12,7 +12,7 @@
 - browser push 구독 생성은 기존 public key/subscription API를 재사용한다.
 - 구독 해제는 기존 subscription delete API와 local subscription ID 정리를 유지한다.
 - 서비스 알림 저장은 기존 notification settings PATCH API를 재사용하되 browser push 자동 허용으로 취급하지 않는다.
-- G05 범위에서는 신규 marketing opt-in DB/API, native push token, notification delivery runner 변경을 만들지 않았다.
+- G05 범위에서는 신규 marketing opt-in DB/API, notification delivery runner 변경을 만들지 않았다.
 - push permission client event는 endpoint/key/userAgent 없이 browser 내부 CustomEvent로만 발행했다. 09 collector allowlist 확장은 G06 범위로 남겼다.
 
 ## 검증 결과

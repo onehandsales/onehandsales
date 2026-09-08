@@ -42,7 +42,7 @@
 | public site/UTM/ad attribution/growth experiment | public route event, attribution cookie/referrer policy, experiment assignment API | 후속 seed / growth/marketing | 구현 금지 |
 | Marketing opt-in/communication consent policy | account-level marketing opt-in, withdrawal, campaign channel consent, consent audit snapshot contract | billing-blocked / growth-compliance / `PRE12-F41` | PRE12 구현 금지 |
 | Billing/subscription/tax/paywall runtime | plan/payment/subscription, tax/refund/invoice/failed payment, `AiProviderCallLog`/`FollowUpDeliveryAttempt` 내부 cost 추정과 `AiUsageDaily` 또는 `UsageMeter`, plan/quota/paywall/upgrade event contract 연결 | billing-blocked / `PRE12-F12` | PRE12 구현 금지 |
-| PWA/native packaging과 install attribution | install/offline/full offline sync/native push/contact/calendar/native app install attribution API 필요 여부 결정 | 후속 seed / 별도 mobile roadmap | 구현 금지 |
+| PWA packaging과 install attribution | install/offline/full offline sync/install attribution API 필요 여부 결정 | 후속 seed / 별도 PWA roadmap | 구현 금지 |
 | BusinessCard mobile advanced camera preview/crop | FE 중심 camera capability/preview/crop/retake flow 계약. Backend는 필요 시 image preprocessing/upload 제약만 재검토 | 후속 seed / mobile advanced capture / `PRE12-F42` | 구현 금지 |
 | Server draft and media/raw storage policy | `UserDraft`/`MobileDraft`, `/api/drafts/*`, media blob upload, transcript/raw provider response 저장/조회 API 필요 여부 결정 | defer / trust-policy / `PRE12-F43` | 구현 금지 |
 | 10 FE/BE TODO 체크리스트 정합성 | 새 API 없음. 완료 체크리스트 문서 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |

@@ -19,7 +19,7 @@
 - 이번 계획의 기본 대상은 `FE/user-web`과 `BE`다.
 - Admin 운영 화면 구현은 포함하지 않는다.
 - User Web은 `/api/*`만 호출하고 `/admin/api/*`를 호출하지 않는다.
-- 모바일 QA는 네이티브 앱이 아니라 모바일 브라우저 Web QA다.
+- 모바일 QA는 모바일 브라우저 Web QA다.
 - Chrome/Edge QA는 최신 설치 브라우저 channel을 기준으로 한다.
 - 자동화 QA가 실제 브라우저 channel 부재로 막히면 `Blocked`로 기록하고 수동 Edge 확인 또는 브라우저 설치를 별도 조치로 남긴다.
 - API response shape나 DB schema를 바꾸는 수정은 `COMMON/API-SPEC` 계약을 먼저 작성한 뒤 구현한다.

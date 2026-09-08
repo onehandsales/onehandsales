@@ -19,7 +19,6 @@
 ## 3. 제외 범위
 
 - custom `getUserMedia` camera UI
-- native app camera module
 - Admin provider failure dashboard
 - provider raw detail user response
 - server draft
@@ -82,7 +81,7 @@ failure: {
 ## 7. User Flow
 
 1. `/app/business-cards`에서 촬영/업로드 CTA를 누른다.
-2. native file/camera picker에서 이미지를 선택한다.
+2. browser file/camera picker에서 이미지를 선택한다.
 3. 업로드 중 진행 상태를 표시한다.
 4. OCR 성공 시 confirm form으로 이동한다.
 5. OCR 실패 시 safe message와 `다시 촬영`, `파일 바꾸기`, `수동 입력`을 표시한다.

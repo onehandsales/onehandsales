@@ -75,10 +75,10 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - `NBA-004` MeetingNote detail next action/follow-up draft subset과 `NBA-011` MeetingNote provider log subset은 2026-07-26 기준 `07_MEETING_NOTE_AI_PROVIDER_LOG`에서 구현 및 QA closeout이 완료되어 active backlog 후보에서 제외한다.
 - `08_GLOBAL_DATA_I18N`은 2026-07-28 기준 구현 및 QA closeout이 완료되어 first-sale global data/API gap에서 제외한다. 2026-07-29 `BE/.env` 연결 DB도 `prisma migrate status` 기준 최신 상태로 재확인했다. 같은 날 사용자 확인 기준 LINE/Apple provider 설정값 연결과 실제 OAuth 동작도 운영 환경에서 완료됐다.
 - `09_PRODUCT_ANALYTICS`는 2026-07-30 기준 구현 및 QA closeout이 완료되어 first-sale product analytics foundation gap에서 제외한다. Admin analytics UI/API는 11에서 완료됐고, billing/paywall/churn runtime conversion source는 `TODO/PADDLE_PLAN`에서 다룬다.
-- `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell, native app, native push/contact/calendar는 후속 별도 로드맵이다.
+- `10_MOBILE_PWA_FIELD_USE`는 2026-07-31 기준 구현 및 QA closeout이 완료되어 mobile field-use API/DB/User Web gap에서 제외한다. PWA install/offline shell은 후속 별도 로드맵이다.
 - `11_ADMIN_OPERATION`은 2026-08-01 기준 구현 및 QA closeout이 완료되어 Admin 운영 API/DB/Admin Web gap에서 제외한다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 `TODO/PADDLE_PLAN`에서 다룬다.
 - 2026-08-10 기준 Admin provider failure 목록 source 편중 cursor pagination Finding은 `PrismaAdminProviderFailureRepository` batch 조회와 회귀 테스트로 해결했다. 신규 API/DB 후보가 아니라 11 완료 범위의 품질 보정으로 본다.
-- MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA/native packaging은 후속 후보다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 PRE12 구현 후보가 아니다.
+- MeetingNote 목록 summary, Company/Contact/Product latest summary, Billing 연동 conversion/churn flow, PWA packaging은 후속 후보다. 단 Company/Contact/Product latest summary와 generic summary endpoint는 PRE12 구현 후보가 아니다.
 - 2026-08-10 기준 기존 Billing 착수 전 01~11 PRE12 재대조, BEFORE_12 closeout, Admin provider failure pagination 보정은 완료됐다. 이 백로그의 active next 작업은 없으며, 결제 관련 후보는 UX/UI 유지보수와 100명 베타 이후 `TODO/PADDLE_PLAN`에서 다시 확정한다. non-billing 잔여 후보는 필요성이 확인될 때 새 TODO 폴더로 승격할지 결정한다.
 - 이 archived 백로그만으로 `NBA-003`, `NBA-004`, backup/restore runbook, 장애 대응 drill을 무작위로 구현하지 않는다. 특히 `NBA-003` 잔여는 A 결정에 따라 PRE12 계약 초안도 만들지 않고 후속 전략 재검토 seed로 유지한다.
 
@@ -224,7 +224,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 남은 백로그로 오해하지 않을 범위:
 
-- PWA install prompt/offline shell, full offline sync, iOS/Android native app, native push/contact/calendar는 10 완료 범위가 아니다.
+- PWA install prompt/offline shell, full offline sync는 10 완료 범위가 아니다.
 - Admin provider failure dashboard와 운영 추적은 `11_ADMIN_OPERATION`에서 완료됐다.
 - Marketing opt-in, billing/paywall/churn runtime event는 `TODO/PADDLE_PLAN`에서 다룬다.
 
@@ -278,7 +278,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 - Prisma schema 또는 migration 추가
 - seed 수정 또는 운영/공유 DB migration 실행
 - 11에서 완료된 Admin 운영 범위를 넘어서는 새 Admin API 구현
-- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 새 알림 endpoint, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, billing/paywall/churn runtime event, PWA install/offline shell, native app 구현
+- 완료된 Notification/Weekly Schedule Report/Google Calendar Integration/Deal Activity Timeline/MeetingNote AI Provider Log/Global Data I18N/Product Analytics/Mobile Field Use/Admin Operation 범위를 넘어서는 새 알림 endpoint, PDF/범용 ExportJob, 반복 일정, AI 요약, Google Calendar export/write/realtime webhook, 범용 activity bus, MeetingNote 자동 저장/자동 발송, 신규 auth provider, `/app` locale prefix, billing/paywall/churn runtime event, PWA install/offline shell 구현
 - 2026-08-06 A 결정으로 보류된 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline 구현
 - User Web에서 `/admin/api/*` 호출 추가
 - FE 단독 page size 변경

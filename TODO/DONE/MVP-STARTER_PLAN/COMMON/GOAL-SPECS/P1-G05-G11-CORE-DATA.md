@@ -12,7 +12,7 @@ P1은 사용자가 회사, 담당자, 제품을 등록하고 딜 생성의 기�
 
 - User Web `/login`: provider 목록을 API로 받아 소셜 로그인 버튼을 표시한다.
 - MVP 초기 실제 로그인 provider는 Kakao, Google이다.
-- Apple은 iOS 앱 개발 단계의 후속 provider로 두고, Web MVP에서는 disabled 또는 준비 중 상태로만 표시한다.
+- Apple은 후속 provider로 두고, Web MVP에서는 disabled 또는 준비 중 상태로만 표시한다.
 - 로그인 버튼은 Supabase Auth client로 provider login을 시작한다.
 - Supabase Auth callback은 User Web/Admin Web이 처리하고, 로그인 성공 후 `POST /api/auth/exchange`로 local User/AuthDevice/AuthSession을 동기화하고 Backend App token을 발급받는다.
 - token exchange 시 사용자는 현재 기기 슬롯 `mobile`, `personal_laptop`, `work_laptop` 중 하나를 선택하거나 확인한다.

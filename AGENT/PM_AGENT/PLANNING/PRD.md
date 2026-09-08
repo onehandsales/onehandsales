@@ -4,7 +4,6 @@
 > 상태: MVP 정본 초안  
 > 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 > 현재 구현 스냅샷: 2026-08-11 `BE`, `FE/user-web`, `FE/admin-web`, `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`
-> 모바일 앱 범위 스냅샷: 2026-09-03 `AGENT/SOFTWARE_AGENT/MOBILE_AGENT`
 > 글로벌/Series A 전략 보강: 2026-08-11 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
 
 ---
@@ -61,8 +60,7 @@
 - 구현 완료: 명함 OCR은 `/app/business-cards` 화면과 `/api/business-card-scans` API로 제공한다. 이미지를 업로드하면 `명함스캔` 진행 표시 후 추출값을 확인/수정하고, 저장 시 회사/담당자를 재사용하거나 생성한다.
 - 구현 완료: DataImport는 `ImportJob` 기반으로 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, 성공 내역 조회를 제공한다. 딜 import 누락 회사/담당자/제품 보정 배열은 FE API/controller/application/repository confirm 경로에 연결되어 있다.
 - 구현 완료: Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity Timeline, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation.
-- Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, native CRM/PWA packaging, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
-- 모바일 앱 1차 범위: React Native/Expo 기반 로그인/회원가입, Backend 모바일 인증 세션 교환, 앱 시작 세션 복구, `/api/me` 확인, 최소 홈, 로그아웃. 모바일 CRM 전체 화면은 후속이다.
+- Backend 미구현 또는 후속 범위: Paddle/Billing, Billing Admin, B2B tenant/team admin, 7일 이후 유료 복구 API, 영구 삭제 운영 mutation, 민감 데이터 포함 export.
 - 2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 베타 전 checkout/webhook/API/DB migration은 만들지 않는다.
 - 현재 다음 작업은 새 기능 추가나 결제창 구현이 아니라 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
@@ -90,7 +88,6 @@
 ## 7. MVP 제외 기능
 
 - 결제/구독 자동화
-- 모바일 CRM 전체 앱. 단, 모바일 인증 foundation은 2026-09-03 기준 별도 1차 범위로 연다.
 - STT transcript 영구 저장과 고도화된 브라우저 녹음 UX
 - 구글 캘린더 write/watch/export 고도화
 - 주간 일정 보고서 고도화
@@ -121,7 +118,7 @@ Series A급 제품 방향:
 
 - Notification/Reminder 기반 리텐션 루프
 - AI next action, follow-up 문구, 딜 리스크, 주간 영업 리포트
-- 모바일 현장 입력, 명함 촬영, 음성 기록, push reminder
+- 모바일 브라우저 현장 입력, 명함 촬영, 음성 기록, browser push reminder
 - free trial, annual plan, 국가별 가격, paywall 실험
 - activation, D7/D30 retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user 분석
 - Admin 운영 고도화, 민감정보 마스킹, 원문 조회 사유, 감사 로그, 결제/구독 상태 관리
@@ -149,7 +146,5 @@ Series A급 제품 방향:
 - `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 - `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
 - `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
-- `AGENT/PM_AGENT/DECISIONS/032_mobile_auth_foundation_scope.md`
-- `AGENT/SOFTWARE_AGENT/MOBILE_AGENT/README.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
 - `TODO/PADDLE_PLAN/README.md`

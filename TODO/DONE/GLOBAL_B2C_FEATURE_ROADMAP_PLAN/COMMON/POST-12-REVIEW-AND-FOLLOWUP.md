@@ -52,7 +52,7 @@ PRE12의 non-billing post-12 seed는 이 문서에서 바로 실행하지 않는
 - Google Calendar write/sync/watch/recurrence
 - generic ExportJob/PDF
 - backup/restore drill
-- PWA/native packaging
+- PWA packaging
 - B2B tenant admin
 - Admin direct domain mutation
 - 자동 민감정보 감지

@@ -863,7 +863,6 @@ P6. 테스트와 릴리즈 준비
 제외 범위:
 
 - 특정 유료 email SaaS vendor 고정
-- native mobile push
 
 완료 기준:
 

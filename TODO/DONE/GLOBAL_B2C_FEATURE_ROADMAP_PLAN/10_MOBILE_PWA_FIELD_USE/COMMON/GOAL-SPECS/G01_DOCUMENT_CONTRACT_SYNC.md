@@ -18,7 +18,6 @@
 
 - 실제 BE/FE 코드 구현
 - Prisma migration 실행
-- native iOS/Android app 구현
 - PWA install/offline shell 구현
 
 ## 4. Request 계약
