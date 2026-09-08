@@ -2,6 +2,15 @@
 
 ```
 D:\workspace_repository\onehandsales\AGENT 이곳에는 PM 에이전트, 소프트웨어관련 에이전트, UXUI 에이전트가 있어.
+
+D:\workspace_repository\onehandsales\AGENT\PM_AGENT
+D:\workspace_repository\onehandsales\AGENT\SOFTWARE_AGENT
+D:\workspace_repository\onehandsales\AGENT\UXUI_AGENT
+
+여기 3개 전부 꼼꼼하게 학습해.
+
+그리고 학습이 끝나면 D:\workspace_repository\onehandsales\AGENT\README.md + D:\workspace_repository\onehandsales\README.md 여기 학습해.
+
 D:\workspace_repository\onehandsales\BE 백엔드 코드
 D:\workspace_repository\onehandsales\FE 프론트 코드(관리자 페이지와 사용자 페이지와 모바일버전)
 
