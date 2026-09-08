@@ -12,7 +12,7 @@ D:\workspace_repository\onehandsales\AGENT\UXUI_AGENT
 그리고 학습이 끝나면 D:\workspace_repository\onehandsales\AGENT\README.md + D:\workspace_repository\onehandsales\README.md 여기 학습해.
 
 D:\workspace_repository\onehandsales\BE 백엔드 코드
-D:\workspace_repository\onehandsales\FE 프론트 코드(관리자 페이지와 사용자 페이지와 모바일버전)
+D:\workspace_repository\onehandsales\FE 프론트 코드(관리자 페이지와 사용자 페이지)
 
 D:\workspace_repository\onehandsales\BE\prisma 데이터 베이스
 
