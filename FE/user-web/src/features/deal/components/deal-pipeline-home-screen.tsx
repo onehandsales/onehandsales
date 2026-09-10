@@ -514,7 +514,7 @@ export function DealPipelineHomeScreen({
           actions={[
             {
               icon: Download,
-              tooltip: t("importExport.excelDownload"),
+              tooltip: t("download.excel"),
               onClick: () => void onExport(),
               disabled: isExporting,
             },
@@ -961,7 +961,7 @@ export function DealPipelineHomeScreen({
             })}
           </span>
           <button
-            aria-label={t("importExport.excelDownload")}
+            aria-label={t("download.excel")}
             className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#F3F4F6] text-[#4B5563] disabled:opacity-40"
             disabled={isExporting}
             onClick={() => void onExport()}

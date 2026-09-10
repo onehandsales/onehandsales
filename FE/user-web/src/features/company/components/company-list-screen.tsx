@@ -519,7 +519,7 @@ export function CompanyListScreen({
         actions={[
           {
             icon: Download,
-            tooltip: t("importExport.excelDownload"),
+            tooltip: t("download.excel"),
             onClick: () => void onExport(),
             disabled: exportCompaniesMutation.isPending,
           },

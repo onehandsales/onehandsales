@@ -483,7 +483,7 @@ export function ProductListScreen({
         actions={[
           {
             icon: Download,
-            tooltip: t("importExport.excelDownload"),
+            tooltip: t("download.excel"),
             onClick: () => void onExport(),
             disabled: isExporting,
           },

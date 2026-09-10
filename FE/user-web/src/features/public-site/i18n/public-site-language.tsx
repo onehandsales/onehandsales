@@ -594,7 +594,7 @@ function makeTranslatedPricing(copy: {
       "How long can I use the free plan?",
       "What data does the Business AI use?",
       "When will team permissions be available?",
-      "Can I import existing customer data?",
+      "Can I download customer data?",
     ],
   };
 }

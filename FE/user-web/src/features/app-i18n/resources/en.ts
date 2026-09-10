@@ -493,8 +493,8 @@ export const enResource = {
     devicesLoading: "Loading devices.",
     workLaptopSlot: "Work Laptop",
   },
-  importExport: {
-    excelDownload: "Download Excel",
+  download: {
+    excel: "Download Excel",
   },
   errors: {
     AMOUNT_INTEGER_REQUIRED: "Enter an integer amount of 0 or more.",

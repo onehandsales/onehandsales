@@ -247,15 +247,6 @@ export class PrismaTrashRepository implements TrashRepository {
     return detail;
   }
 
-  // 기능 : 복구 문의 대상 Trash row의 안전 snapshot을 조회합니다.
-
-
-  // 기능 : 같은 사용자와 대상의 열린 복구 문의를 조회합니다.
-
-
-  // 기능 : 만료된 Trash row에 대한 복구 문의를 생성합니다.
-
-
   // 기능 : 삭제된 회사의 상세 모달 데이터를 조회합니다.
   private async getCompanyDetail(
     input: GetTrashDetailInput
@@ -1633,26 +1624,6 @@ export class PrismaTrashRepository implements TrashRepository {
       parentTitle: input.parentTitle ?? null,
     };
   }
-
-  // 기능 : 목록 page item에 열린 복구 문의 summary를 결합합니다.
-
-
-  // 기능 : 단건 상세 item에 열린 복구 문의 summary를 결합합니다.
-
-
-  // 기능 : 지정한 Trash 대상들의 열린 복구 문의를 key map으로 조회합니다.
-
-
-
-
-  // 기능 : Trash 대상 tuple을 복구 요청 조회 key 문자열로 변환합니다.
-
-
-  // 기능 : Prisma 복구 문의 row를 사용자용 summary로 변환합니다.
-
-
-  // 기능 : Prisma 복구 문의 row를 application service 반환 record로 변환합니다.
-
 
   // 기능 : 무료 셀프 복구 기간이 남았는지 기준 상태를 계산합니다.
   private getRestoreWindow(

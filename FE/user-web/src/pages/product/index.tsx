@@ -189,7 +189,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
       {
         title: "AI/Data",
         description:
-          "Use AI drafts and spreadsheet data as records you can review and control.",
+          "Use AI drafts and structured records you can review and control.",
       },
     ],
     sections: [

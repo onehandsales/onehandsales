@@ -220,7 +220,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
         id: "data-ai",
         title: "Data and AI",
         summary:
-          "Questions about customer data, AI drafts, xxcel, and deleted record recovery.",
+          "Questions about customer data, AI drafts, Excel download, and deleted record recovery.",
         questions: [
           {
             question: "Does AI automatically save my data?",
@@ -228,9 +228,9 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
               "AI helps draft and summarize. Important records are designed to be reviewed by the user before they are saved.",
           },
           {
-            question: "Can I import or download xxcel data?",
+            question: "Can I download Excel data?",
             answer:
-              "OneHand supports importing existing spreadsheet data and exporting work records as XLSX.",
+              "OneHand supports downloading work records as XLSX.",
           },
           {
             question: "Can I recover deleted data?",

@@ -364,9 +364,6 @@ model User {
   followUpMessageTargets      FollowUpMessageTarget[]
   /// Feature: provider send attempt logs for follow-up messages.
   followUpDeliveryAttempts    FollowUpDeliveryAttempt[]
-  /// 기능 : 사용자가 만료된 Trash row에 대해 남긴 복구 요청 목록입니다.
-  /// 기능 : 사용자가 요청한 계정 삭제 유예 queue 목록입니다.
-  /// 기능 : 사용자가 요청한 본인 데이터 export queue 목록입니다.
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
   errorReports                ErrorReport[]
   /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
@@ -542,13 +539,6 @@ model AuthSession {
   @@index([expiresAt])
 }
 
-
-
-/// 기능 : 무료 셀프 복구 기간이 지난 Trash row에 대해 사용자가 남긴 복구 요청입니다.
-
-/// 기능 : 사용자가 요청한 계정 삭제 유예 queue row입니다.
-
-/// 기능 : 사용자가 요청한 본인 데이터 export queue row입니다.
 
 
 /// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.

@@ -492,8 +492,8 @@ export const koKRResource = {
     devicesLoading: "기기를 불러오고 있어요.",
     workLaptopSlot: "회사 노트북",
   },
-  importExport: {
-    excelDownload: "엑셀 다운로드",
+  download: {
+    excel: "엑셀 다운로드",
   },
   errors: {
     AMOUNT_INTEGER_REQUIRED: "금액은 0 이상의 정수로 입력해 주세요.",

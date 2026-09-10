@@ -910,7 +910,7 @@ function createUserSettings() {
   };
 }
 
-// 기능 : 사용자 데이터 export 요청 mock 응답을 생성하고 store에 저장합니다.
+// 기능 : Google Calendar 연결 mock 응답을 생성합니다.
 function createGoogleCalendarConnection() {
   return {
     connectedAt: NOW,
