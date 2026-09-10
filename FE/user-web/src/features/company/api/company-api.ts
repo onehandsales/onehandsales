@@ -1,6 +1,4 @@
 import type {
-  CompanyContactListResponse,
-  CompanyDealListResponse,
   CompanyDetail,
   CompanyExportFilters,
   CompanyFieldListResponse,
@@ -107,21 +105,6 @@ export function deleteCompanyRegion(regionId: string) {
   });
 }
 
-// 기능 : 회사에 연결된 담당자 전체 목록을 조회합니다.
-export function listCompanyContacts(companyId: string) {
-  return apiClient<CompanyContactListResponse>(
-    `/api/companies/${companyId}/contacts`
-  );
-}
-
-// 기능 : 회사에 연결된 딜 전체 목록을 조회합니다.
-export function listCompanyDeals(companyId: string) {
-  return apiClient<CompanyDealListResponse>(
-    `/api/companies/${companyId}/deals`
-  );
-}
-
-// 기능 : 회사 일반 메모 로그를 커서 기반으로 조회합니다.
 export function listCompanyMemoLogs(companyId: string, cursor?: string) {
   const query = new URLSearchParams();
 

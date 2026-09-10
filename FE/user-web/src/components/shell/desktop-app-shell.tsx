@@ -1,4 +1,4 @@
-import { LogOut, Plus } from "lucide-react";
+﻿import { LogOut, Plus } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
@@ -11,14 +11,9 @@ import {
 } from "@/features/public-site/i18n/public-site-locale-routes";
 
 const PAGE_TITLES: Record<string, { title: string }> = {
-  "/app": { title: "홈" },
-  "/app/deals": { title: "딜" },
-  "/app/deals/new": { title: "딜" },
-  "/app/companies": { title: "회사" },
-  "/app/companies/new": { title: "회사" },
-  "/app/contacts": { title: "담당자" },
-  "/app/products": { title: "제품" },
-  "/app/products/new": { title: "제품" },
+  "/app": { title: "Home" },
+  "/app/companies": { title: "Companies" },
+  "/app/companies/new": { title: "Companies" },
 };
 
 type DesktopAppShellProps = {
@@ -33,7 +28,7 @@ export function DesktopAppShell({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuthSession();
-  const page = PAGE_TITLES[pathname] ?? { title: "한손에 영업" };
+  const page = PAGE_TITLES[pathname] ?? { title: "OneHand Sales" };
 
   const handleLogout = async () => {
     await logout();
@@ -51,7 +46,7 @@ export function DesktopAppShell({
           </div>
           <div className="min-w-0">
             <p className="truncate text-[14px] font-semibold leading-tight tracking-[-0.02em] text-sidebar-foreground">
-              한손에 영업
+              ?쒖넀???곸뾽
             </p>
             <p className="text-[14px] text-sidebar-foreground/45">
               OneHand
@@ -73,11 +68,11 @@ export function DesktopAppShell({
         {/* User profile */}
         <div className="flex items-center gap-3 px-4 py-4">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-[14px] font-semibold text-primary">
-            강
+            媛?
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[14px] font-medium text-sidebar-foreground">
-              강변범
+              媛뺣?踰?
             </p>
             <p className="text-[14px] text-sidebar-foreground/45">
               Store Manager
@@ -85,7 +80,7 @@ export function DesktopAppShell({
           </div>
           <button
             className="shrink-0 rounded-md p-1.5 text-sidebar-foreground/40 transition-colors hover:bg-sidebar-border hover:text-sidebar-foreground"
-            title="로그아웃"
+            title="濡쒓렇?꾩썐"
             onClick={() => void handleLogout()}
           >
             <LogOut className="h-4 w-4" strokeWidth={1.75} />
@@ -106,9 +101,9 @@ export function DesktopAppShell({
             <GlobalSearch />
             <Link
               className="inline-flex h-[34px] items-center gap-1.5 rounded-lg bg-primary px-3 text-[13px] font-semibold text-white transition hover:bg-primary/90"
-              to="/app/deals/new"
+              to="/app/companies/new"
             >
-              <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />새 딜
+              <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />????
             </Link>
           </div>
         </header>

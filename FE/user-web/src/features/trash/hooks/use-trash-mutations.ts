@@ -1,8 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { companyQueryKeys } from "@/features/company/query-keys";
-import { contactQueryKeys } from "@/features/contact/query-keys";
-import { dealQueryKeys } from "@/features/deal/query-keys";
-import { productQueryKeys } from "@/features/product/query-keys";
 import { restoreTrashItem } from "@/features/trash/api/trash-api";
 import { trashQueryKeys } from "@/features/trash/api/trash-query-keys";
 import type { RestoreTrashItemInput } from "@/features/trash/types/trash";
@@ -16,9 +13,6 @@ export function useRestoreTrashItemMutation() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: trashQueryKeys.lists() });
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.all });
-      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.all });
-      void queryClient.invalidateQueries({ queryKey: productQueryKeys.all });
-      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.all });
     },
   });
 }

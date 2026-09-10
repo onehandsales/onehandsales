@@ -48,51 +48,11 @@ enum AuthDeviceSlot {
   WORK_LAPTOP
 }
 
-enum AiSuggestionPriority {
-  LOW
-  MEDIUM
-  HIGH
-}
 
-/// 기능 : 딜 활동 내역에 표시할 활동 종류를 정의한다.
-enum DealActivityType {
-  DEAL_CREATED
-  STAGE_CHANGED
-  NEXT_ACTION_CREATED
-  NEXT_ACTION_COMPLETION_CHANGED
-  CALL
-  MEETING
-  EMAIL
-  VISIT
-  NOTE
-}
 
-/// 기능 : 딜 활동이 시스템, 사용자, 연결 도메인 중 어디에서 생성됐는지 정의한다.
-enum DealActivitySourceType {
-  SYSTEM
-  USER
-  NEXT_ACTION
-}
 
-/// 기능 : 제품 분석 이벤트가 어떤 경로에서 기록됐는지 구분합니다.
-enum ProductAnalyticsEventSource {
-  CLIENT
-  SERVER
-  SYSTEM
-}
 
-/// 기능 : 사용자 activation snapshot 계산 상태를 구분합니다.
-enum UserActivationStatus {
-  NOT_ACTIVATED
-  ACTIVATED
-}
 
-/// 기능 : 제품 분석 이벤트가 연결할 수 있는 안전한 대상 타입을 구분합니다.
-enum ProductAnalyticsTargetType {
-  USER
-  DEAL
-  EXPORT
-}
 
 /// 기능 : 사용자 에러 신고 처리 상태를 구분합니다.
 enum ErrorReportStatus {
@@ -154,44 +114,6 @@ model User {
   companyMemoLogs         CompanyMemoLog[]
   /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
   companyPrivateMemoLogs  CompanyUserPrivateMemoLog[]
-  /// 기능 : 사용자가 등록한 담당자 목록이다.
-  contacts                Contact[]
-  /// 기능 : 사용자가 만든 담당자 직급 옵션 목록이다.
-  contactJobGrades        ContactJobGrade[]
-  /// 기능 : 사용자가 만든 담당자 부서 옵션 목록이다.
-  contactDepartments      ContactDepartment[]
-  /// 기능 : 사용자가 작성한 담당자 일반 메모 로그 목록이다.
-  contactMemoLogs         ContactMemoLog[]
-  /// 기능 : 사용자가 작성한 담당자 개인 비밀 메모 로그 목록이다.
-  contactPrivateMemoLogs  ContactUserPrivateMemoLog[]
-  /// 기능 : 사용자가 등록한 제품 목록이다.
-  products                Product[]
-  /// 기능 : 사용자가 만든 제품 카테고리 옵션 목록이다.
-  productCategories       ProductCategory[]
-  /// 기능 : 사용자가 만든 제품 상태 옵션 목록이다.
-  productStatuses         ProductStatus[]
-  /// 기능 : 사용자가 작성한 제품 일반 메모 로그 목록이다.
-  productMemoLogs         ProductMemoLog[]
-  /// 기능 : 사용자가 작성한 제품 개인 비밀 메모 로그 목록이다.
-  productPrivateMemoLogs  ProductUserPrivateMemoLog[]
-  /// 기능 : 사용자가 등록한 딜 목록이다.
-  deals                   Deal[]
-  /// 기능 : 사용자가 딜에 연결한 회사 매핑 목록이다.
-  dealCompanies           DealCompany[]
-  /// 기능 : 사용자가 딜에 연결한 담당자 매핑 목록이다.
-  dealContacts            DealContact[]
-  /// 기능 : 사용자가 작성한 딜 다음 행동 로그 목록이다.
-  dealFollowingActionLogs DealFollowingActionLog[]
-  /// 기능 : 사용자가 작성한 딜 메모 로그 목록이다.
-  dealMemoLogs            DealMemoLog[]
-  /// 기능 : 사용자가 만든 딜 활동 목록이다. 모든 조회와 변경은 이 userId로 제한한다.
-  dealActivities          DealActivity[]
-  /// 기능 : 사용자가 딜에 연결한 제품 매핑 목록이다.
-  dealProducts            DealProduct[]
-  /// 기능 : 사용자의 제품 분석 원본 이벤트 목록입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  productAnalyticsEvents  ProductAnalyticsEvent[]
-  /// 기능 : 사용자의 activation 계산 snapshot입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  activationSnapshot      UserActivationSnapshot?
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
   errorReports            ErrorReport[]
   /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
@@ -334,8 +256,6 @@ model AuthDevice {
 
   user                   User                    @relation(fields: [userId], references: [id])
   sessions               AuthSession[]
-  /// 기능 : 이 인증 기기에서 발생한 제품 분석 이벤트 목록입니다.
-  productAnalyticsEvents ProductAnalyticsEvent[]
 
   @@index([userId])
   @@index([userId, deviceSlot, status])
@@ -358,8 +278,6 @@ model AuthSession {
 
   user                   User                    @relation(fields: [userId], references: [id])
   authDevice             AuthDevice              @relation(fields: [authDeviceId], references: [id])
-  /// 기능 : 이 app session에서 발생한 제품 분석 이벤트 목록입니다.
-  productAnalyticsEvents ProductAnalyticsEvent[]
 
   @@index([userId])
   @@index([authDeviceId])
@@ -367,122 +285,8 @@ model AuthSession {
   @@index([expiresAt])
 }
 
-/// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.
-model ProductAnalyticsEvent {
-  /// 기능 : 분석 이벤트 row의 고유 식별자입니다.
-  id             String                      @id @default(uuid()) @db.Uuid
-  /// 기능 : 이벤트를 발생시킨 사용자입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  userId         String                      @db.Uuid
-  /// 기능 : Backend app session 식별자입니다. Client가 보내지 않고 Backend가 현재 인증에서 채웁니다.
-  authSessionId  String?                     @db.Uuid
-  /// 기능 : 인증 device 식별자입니다. AuthSession 조회로 Backend가 채웁니다.
-  authDeviceId   String?                     @db.Uuid
-  /// 기능 : allowlist에 등록된 snake_case 이벤트 이름입니다.
-  eventName      String
-  /// 기능 : 이벤트 payload schema 버전입니다.
-  eventVersion   Int                         @default(1)
-  /// 기능 : client, server, system 중 이벤트 기록 출처입니다.
-  source         ProductAnalyticsEventSource
-  /// 기능 : 이벤트 발생 시각입니다. UTC instant로 저장합니다.
-  occurredAt     DateTime                    @db.Timestamptz(3)
-  /// 기능 : 이벤트 당시 사용자 timezone 기준 날짜입니다. D1/D7/D30 계산에 사용합니다.
-  eventDate      DateTime                    @db.Date
-  /// 기능 : 이벤트 당시 사용자 IANA timezone입니다.
-  timeZone       String
-  /// 기능 : 같은 server event의 중복 기록을 막는 선택 idempotency key입니다.
-  idempotencyKey String?
-  /// 기능 : 이벤트가 연결된 안전한 대상 타입입니다. 회사명/담당자명 같은 PII는 저장하지 않습니다.
-  targetType     ProductAnalyticsTargetType?
-  /// 기능 : 이벤트가 연결된 안전한 대상 UUID입니다. payload에는 중복 저장하지 않습니다.
-  targetId       String?                     @db.Uuid
-  /// 기능 : event별 allowlist schema를 통과한 비식별 payload입니다.
-  payloadJson    Json                        @default("{}")
-  /// 기능 : 이벤트가 수집된 시각입니다.
-  createdAt      DateTime                    @default(now()) @db.Timestamptz(3)
 
-  /// 기능 : 이벤트를 발생시킨 사용자입니다.
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  /// 기능 : 이벤트가 발생한 app session입니다.
-  authSession AuthSession? @relation(fields: [authSessionId], references: [id], onDelete: SetNull)
-  /// 기능 : 이벤트가 발생한 인증 기기입니다.
-  authDevice  AuthDevice?  @relation(fields: [authDeviceId], references: [id], onDelete: SetNull)
 
-  /// 기능 : server event idempotency key 중복 저장을 방지합니다.
-  @@unique([userId, eventName, idempotencyKey])
-  /// 기능 : 사용자별 핵심 event 발생 순서와 activation 계산 조회에 사용합니다.
-  @@index([userId, eventName, occurredAt])
-  /// 기능 : 사용자 timezone 기준 일자별 active 여부 계산에 사용합니다.
-  @@index([userId, eventDate])
-  /// 기능 : event 이름과 사용자 timezone 기준 날짜별 aggregate 계산에 사용합니다.
-  @@index([eventName, eventDate])
-  /// 기능 : client/server/system 출처별 수집 상태 확인에 사용합니다.
-  @@index([source, createdAt])
-  /// 기능 : 365일 raw event retention purge에 사용합니다.
-  @@index([occurredAt])
-  /// 기능 : 현재 app session에서 파생된 event 추적에 사용합니다.
-  @@index([authSessionId])
-  /// 기능 : 인증 device 단위 event 분석에 사용합니다.
-  @@index([authDeviceId])
-}
-
-/// 기능 : 사용자별 activation 달성 여부와 달성 시점을 저장합니다.
-model UserActivationSnapshot {
-  /// 기능 : activation snapshot row의 고유 식별자입니다.
-  id                      String               @id @default(uuid()) @db.Uuid
-  /// 기능 : activation을 계산할 사용자입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  userId                  String               @unique @db.Uuid
-  /// 기능 : 현재 activation 계산 상태입니다.
-  status                  UserActivationStatus @default(NOT_ACTIVATED)
-  /// 기능 : 첫 딜 생성 이벤트 시각입니다.
-  firstDealCreatedAt      DateTime?            @db.Timestamptz(3)
-  /// 기능 : 첫 다음 행동/일정/회의록 연결 이벤트 시각입니다.
-  firstMeaningfulActionAt DateTime?            @db.Timestamptz(3)
-  /// 기능 : activation 달성 시각입니다.
-  activatedAt             DateTime?            @db.Timestamptz(3)
-  /// 기능 : activation 달성 이벤트 row의 사용자 timezone 기준 날짜입니다.
-  activatedEventDate      DateTime?            @db.Date
-  /// 기능 : activation 달성 이벤트 row에 저장된 사용자 timezone입니다.
-  timeZone                String?
-  /// 기능 : snapshot 마지막 계산 시각입니다.
-  calculatedAt            DateTime             @default(now()) @db.Timestamptz(3)
-  /// 기능 : row 생성 시각입니다.
-  createdAt               DateTime             @default(now()) @db.Timestamptz(3)
-  /// 기능 : row 수정 시각입니다.
-  updatedAt               DateTime             @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : activation snapshot을 소유한 사용자입니다.
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  /// 기능 : activation 상태와 cohort 날짜별 snapshot 조회에 사용합니다.
-  @@index([status, activatedEventDate])
-  /// 기능 : activation 달성 시각 기준 재계산 범위 조회에 사용합니다.
-  @@index([activatedAt])
-}
-
-/// 기능 : 비식별 cohort 단위 retention 계산 결과를 저장합니다.
-model RetentionCohortSnapshot {
-  /// 기능 : retention cohort snapshot row의 고유 식별자입니다.
-  id                String   @id @default(uuid()) @db.Uuid
-  /// 기능 : cohort 기준 날짜입니다. 사용자 timezone 기준 activation date를 사용합니다.
-  cohortDate        DateTime @db.Date
-  /// 기능 : retention day offset입니다. 예: 1, 7, 30.
-  dayOffset         Int
-  /// 기능 : cohort에 포함된 사용자 수입니다.
-  cohortUserCount   Int
-  /// 기능 : 해당 day에 active로 관측된 사용자 수입니다.
-  retainedUserCount Int
-  /// 기능 : snapshot 계산 시각입니다.
-  calculatedAt      DateTime @default(now()) @db.Timestamptz(3)
-  /// 기능 : row 생성 시각입니다.
-  createdAt         DateTime @default(now()) @db.Timestamptz(3)
-  /// 기능 : row 수정 시각입니다.
-  updatedAt         DateTime @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : cohort 날짜와 retention day offset 중복 snapshot을 방지합니다.
-  @@unique([cohortDate, dayOffset])
-  /// 기능 : cohort 날짜 범위별 retention 조회에 사용합니다.
-  @@index([cohortDate])
-}
 
 model Company {
   id              String    @id @default(uuid()) @db.Uuid
@@ -508,10 +312,6 @@ model Company {
   memoLogs        CompanyMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
   privateMemoLogs CompanyUserPrivateMemoLog[]
-  /// 기능 : 회사에 소속된 담당자 목록이다.
-  contacts        Contact[]
-  /// 기능 : 회사가 연결된 딜 매핑 목록이다.
-  dealCompanies   DealCompany[]
 
   @@index([userId, createdAt])
   @@index([userId, companyName])
@@ -521,432 +321,22 @@ model Company {
   @@index([userId, trashExpiresAt])
 }
 
-model Contact {
-  id                  String    @id @default(uuid()) @db.Uuid
-  userId              String    @db.Uuid
-  companyId           String    @db.Uuid
-  username            String
-  mobile              String
-  /// 기능 : 담당자 전화번호가 속한 KR/US 국가 코드를 저장한다.
-  phoneCountryCode    String?
-  /// 기능 : 국가별 표준 national number 숫자 문자열을 저장한다.
-  phoneNationalNumber String?
-  /// 기능 : 검색/중복/외부 연동 기준이 되는 E.164 전화번호를 저장한다.
-  phoneE164           String?
-  email               String
-  contactJobGradeId   String    @db.Uuid
-  contactDepartmentId String    @db.Uuid
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  deletedAt           DateTime? @db.Timestamptz(3)
-  deletedByUserId     String?   @db.Uuid
-  trashExpiresAt      DateTime? @db.Timestamptz(3)
 
-  /// 기능 : 담당자를 등록한 사용자다. 모든 담당자 API는 이 userId로 소유권을 검증한다.
-  user              User                        @relation(fields: [userId], references: [id])
-  /// 기능 : 담당자가 소속된 회사다. 담당자는 회사 없이 저장되지 않는다.
-  company           Company                     @relation(fields: [companyId], references: [id])
-  /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 직급이다.
-  contactJobGrade   ContactJobGrade             @relation(fields: [contactJobGradeId], references: [id])
-  /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 부서다.
-  contactDepartment ContactDepartment           @relation(fields: [contactDepartmentId], references: [id])
-  /// 기능 : 담당자 일반 메모 로그 목록이다.
-  memoLogs          ContactMemoLog[]
-  /// 기능 : 작성자 본인만 복호화해 볼 수 있는 담당자 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs   ContactUserPrivateMemoLog[]
-  /// 기능 : 담당자가 연결된 딜 매핑 목록이다.
-  dealContacts      DealContact[]
 
-  @@index([userId, createdAt])
-  @@index([userId, username])
-  @@index([userId, phoneE164])
-  @@index([userId, companyId])
-  @@index([userId, contactDepartmentId])
-  @@index([userId, contactJobGradeId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
 
-model ContactJobGrade {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @db.Uuid
-  jobGradeName String
-  createdAt    DateTime @default(now())
 
-  /// 기능 : 담당자 직급을 생성한 사용자다.
-  user     User      @relation(fields: [userId], references: [id])
-  /// 기능 : 이 직급을 사용하는 담당자 목록이다. 하나라도 있으면 직급 삭제를 막는다.
-  contacts Contact[]
 
-  @@unique([userId, jobGradeName])
-  @@index([userId])
-}
 
-model ContactDepartment {
-  id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @db.Uuid
-  departmentName String
-  createdAt      DateTime @default(now())
 
-  /// 기능 : 담당자 부서를 생성한 사용자다.
-  user     User      @relation(fields: [userId], references: [id])
-  /// 기능 : 이 부서를 사용하는 담당자 목록이다. 하나라도 있으면 부서 삭제를 막는다.
-  contacts Contact[]
 
-  @@unique([userId, departmentName])
-  @@index([userId])
-}
 
-model ContactMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  contactId       String    @db.Uuid
-  userId          String    @db.Uuid
-  memoType        String
-  memo            String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
-  /// 기능 : 메모가 속한 담당자다.
-  contact Contact @relation(fields: [contactId], references: [id])
-  /// 기능 : 메모를 작성한 사용자다.
-  user    User    @relation(fields: [userId], references: [id])
 
-  @@index([contactId, createdAt])
-  @@index([userId, contactId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
 
-model ContactUserPrivateMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  contactId       String    @db.Uuid
-  userId          String    @db.Uuid
-  memoCiphertext  String
-  memoKeyVersion  String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
 
-  /// 기능 : 비밀 메모가 속한 담당자다.
-  contact Contact @relation(fields: [contactId], references: [id])
-  /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
-  user    User    @relation(fields: [userId], references: [id])
 
-  @@index([contactId, createdAt])
-  @@index([userId, contactId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
 
-model Product {
-  id                String    @id @default(uuid()) @db.Uuid
-  userId            String    @db.Uuid
-  productName       String
-  productPrice      Int
-  /// 기능 : 제품 금액이 어떤 통화 기준인지 보존한다.
-  currencyCode      String    @default("KRW")
-  productCategoryId String    @db.Uuid
-  productStatusId   String    @db.Uuid
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  deletedAt         DateTime? @db.Timestamptz(3)
-  deletedByUserId   String?   @db.Uuid
-  trashExpiresAt    DateTime? @db.Timestamptz(3)
 
-  /// 기능 : 제품을 등록한 사용자다. 모든 제품 API는 이 userId로 소유권을 검증한다.
-  user            User                        @relation(fields: [userId], references: [id])
-  /// 기능 : 제품 목록 필터와 상세에 사용되는 제품 카테고리다.
-  productCategory ProductCategory             @relation(fields: [productCategoryId], references: [id])
-  /// 기능 : 제품 목록 필터와 상세에 사용되는 제품 상태다.
-  productStatus   ProductStatus               @relation(fields: [productStatusId], references: [id])
-  /// 기능 : 제품 일반 메모 로그 목록이다.
-  memoLogs        ProductMemoLog[]
-  /// 기능 : 작성자 본인만 복호화해 볼 수 있는 제품 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs ProductUserPrivateMemoLog[]
-  /// 기능 : 제품이 연결된 딜 매핑 목록이다.
-  dealProducts    DealProduct[]
-
-  @@index([userId, createdAt])
-  @@index([userId, productName])
-  @@index([userId, productCategoryId])
-  @@index([userId, productStatusId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model ProductCategory {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @db.Uuid
-  categoryName String
-  createdAt    DateTime @default(now())
-
-  /// 기능 : 제품 카테고리를 생성한 사용자다.
-  user     User      @relation(fields: [userId], references: [id])
-  /// 기능 : 이 카테고리를 사용하는 제품 목록이다. 하나라도 있으면 카테고리 삭제를 막는다.
-  products Product[]
-
-  @@unique([userId, categoryName])
-  @@index([userId])
-}
-
-model ProductStatus {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @db.Uuid
-  statusName String
-  createdAt  DateTime @default(now())
-
-  /// 기능 : 제품 상태를 생성한 사용자다.
-  user     User      @relation(fields: [userId], references: [id])
-  /// 기능 : 이 상태를 사용하는 제품 목록이다. 하나라도 있으면 상태 삭제를 막는다.
-  products Product[]
-
-  @@unique([userId, statusName])
-  @@index([userId])
-}
-
-model ProductMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  productId       String    @db.Uuid
-  userId          String    @db.Uuid
-  memoType        String
-  memo            String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 메모가 속한 제품이다.
-  product Product @relation(fields: [productId], references: [id])
-  /// 기능 : 메모를 작성한 사용자다.
-  user    User    @relation(fields: [userId], references: [id])
-
-  @@index([productId, createdAt])
-  @@index([userId, productId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model ProductUserPrivateMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  productId       String    @db.Uuid
-  userId          String    @db.Uuid
-  memoCiphertext  String
-  memoKeyVersion  String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 비밀 메모가 속한 제품이다.
-  product Product @relation(fields: [productId], references: [id])
-  /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
-  user    User    @relation(fields: [userId], references: [id])
-
-  @@index([productId, createdAt])
-  @@index([userId, productId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model Deal {
-  id              String    @id @default(uuid()) @db.Uuid
-  userId          String    @db.Uuid
-  dealName        String
-  dealCost        Int
-  /// 기능 : 딜 금액이 어떤 통화 기준인지 보존한다.
-  currencyCode    String    @default("KRW")
-  dealStatus      String
-  expectedEndDate DateTime  @db.Date
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 딜을 등록한 사용자다. 모든 딜 API는 이 userId로 소유권을 검증한다.
-  user                User                     @relation(fields: [userId], references: [id])
-  /// 기능 : 딜에 연결된 회사 매핑 목록이다. 딜 하나는 여러 회사와 연결될 수 있다.
-  dealCompanies       DealCompany[]
-  /// 기능 : 딜에 연결된 담당자 매핑 목록이다. 딜 하나는 여러 담당자와 연결될 수 있다.
-  dealContacts        DealContact[]
-  /// 기능 : 딜에 연결된 제품 매핑 목록이다. 딜 하나는 여러 제품을 가질 수 있다.
-  dealProducts        DealProduct[]
-  /// 기능 : 딜 다음 행동 로그 목록이다.
-  followingActionLogs DealFollowingActionLog[]
-  /// 기능 : 딜 일반 메모 로그 목록이다.
-  memoLogs            DealMemoLog[]
-  /// 기능 : 딜 상세 활동 내역에 표시할 활동 목록이다.
-  activities          DealActivity[]
-
-  @@index([userId, createdAt])
-  @@index([userId, dealName])
-  @@index([userId, dealStatus])
-  @@index([userId, expectedEndDate])
-  @@index([userId, dealCost])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model DealCompany {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  dealId    String   @db.Uuid
-  companyId String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  /// 기능 : 딜-회사 연결을 만든 사용자다. 모든 딜 회사 연결은 이 userId로 소유권을 검증한다.
-  user    User    @relation(fields: [userId], references: [id])
-  /// 기능 : 회사가 연결된 딜이다.
-  deal    Deal    @relation(fields: [dealId], references: [id])
-  /// 기능 : 딜에 연결된 회사다.
-  company Company @relation(fields: [companyId], references: [id])
-
-  @@unique([dealId, companyId])
-  @@index([userId, dealId])
-  @@index([userId, companyId])
-  @@index([companyId])
-}
-
-model DealContact {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  dealId    String   @db.Uuid
-  contactId String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  /// 기능 : 딜-담당자 연결을 만든 사용자다. 모든 딜 담당자 연결은 이 userId로 소유권을 검증한다.
-  user    User    @relation(fields: [userId], references: [id])
-  /// 기능 : 담당자가 연결된 딜이다.
-  deal    Deal    @relation(fields: [dealId], references: [id])
-  /// 기능 : 딜에 연결된 담당자다.
-  contact Contact @relation(fields: [contactId], references: [id])
-
-  @@unique([dealId, contactId])
-  @@index([userId, dealId])
-  @@index([userId, contactId])
-  @@index([contactId])
-}
-
-model DealProduct {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @db.Uuid
-  dealId    String   @db.Uuid
-  productId String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  /// 기능 : 딜-제품 연결을 만든 사용자다. 모든 딜 제품 연결은 이 userId로 소유권을 검증한다.
-  user    User    @relation(fields: [userId], references: [id])
-  /// 기능 : 제품이 연결된 딜이다.
-  deal    Deal    @relation(fields: [dealId], references: [id])
-  /// 기능 : 딜에 연결된 제품이다.
-  product Product @relation(fields: [productId], references: [id])
-
-  @@unique([dealId, productId])
-  @@index([userId, dealId])
-  @@index([userId, productId])
-  @@index([productId])
-}
-
-model DealFollowingActionLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  userId          String    @db.Uuid
-  dealId          String    @db.Uuid
-  followingAction String
-  checkComplete   Boolean   @default(false)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 다음 행동 로그를 작성한 사용자다.
-  user User @relation(fields: [userId], references: [id])
-  /// 기능 : 다음 행동 로그가 속한 딜이다.
-  deal Deal @relation(fields: [dealId], references: [id])
-
-  @@index([dealId, createdAt])
-  @@index([userId, dealId])
-  @@index([userId, checkComplete])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model DealMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  userId          String    @db.Uuid
-  dealId          String    @db.Uuid
-  memoType        String
-  memo            String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 메모를 작성한 사용자다.
-  user User @relation(fields: [userId], references: [id])
-  /// 기능 : 메모가 속한 딜이다.
-  deal Deal @relation(fields: [dealId], references: [id])
-
-  @@index([dealId, createdAt])
-  @@index([userId, dealId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-/// 기능 : 딜 상세 활동 내역에 표시할 활동 정본이다. 비공개 메모와 외부 제공자 원문 세부 정보는 저장하지 않는다.
-model DealActivity {
-  /// 기능 : 딜 활동 행의 고유 식별자다.
-  id                String                 @id @default(uuid()) @db.Uuid
-  /// 기능 : 활동을 소유한 사용자다. 모든 활동 조회와 변경은 이 userId로 제한한다.
-  userId            String                 @db.Uuid
-  /// 기능 : 활동이 속한 딜 식별자다.
-  dealId            String                 @db.Uuid
-  /// 기능 : 활동 내역 표시 유형과 비즈니스 분기 기준이다.
-  activityType      DealActivityType
-  /// 기능 : 활동 생성 출처를 구분한다.
-  sourceType        DealActivitySourceType
-  /// 기능 : 원본 사건 또는 원본 레코드 ID다. 자동 활동의 중복 생성 방지 기준으로 사용한다.
-  sourceId          String?                @db.Uuid
-  /// 기능 : 활동 내역 제목이다. 구조화 로그에 원문을 남기지 않는다.
-  title             String
-  /// 기능 : 안전한 짧은 요약이다. 비공개 메모와 외부 제공자 원문 세부 정보는 넣지 않는다.
-  summary           String?
-  /// 기능 : 수동 활동 본문이다. 민감정보가 포함될 수 있으므로 로그와 목록 요약에 원문을 남기지 않는다.
-  body              String?                @db.Text
-  /// 기능 : 활동 발생 시각이다. 활동 내역 정렬 커서의 1차 기준이다.
-  occurredAt        DateTime               @db.Timestamptz(3)
-  /// 기능 : User Web 이동에 필요한 안전한 연결 레코드 배열만 저장한다.
-  linkedRecordsJson Json?
-  /// 기능 : 자동 활동 생성에 필요한 허용 목록 기반 비식별 메타데이터만 저장한다.
-  metadataJson      Json?
-  /// 기능 : 활동 행 생성 시각이다.
-  createdAt         DateTime               @default(now()) @db.Timestamptz(3)
-  /// 기능 : 활동 행 수정 시각이다.
-  updatedAt         DateTime               @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : 활동을 소유한 사용자다.
-  user User @relation(fields: [userId], references: [id])
-  /// 기능 : 활동이 속한 딜이다.
-  deal Deal @relation(fields: [dealId], references: [id])
-
-  /// 기능 : 딜 상세 활동 내역을 최신순 커서 페이지네이션으로 조회한다.
-  @@index([userId, dealId, occurredAt(sort: Desc), id(sort: Desc)])
-  /// 기능 : 사용자 단위 활동 유형 필터와 운영 확인에 사용한다.
-  @@index([userId, activityType, occurredAt])
-  /// 기능 : 자동 활동의 원본 레코드 추적과 중복 생성 방지 확인에 사용한다.
-  @@index([userId, sourceType, sourceId])
-}
 
 model CompanyField {
   id        String   @id @default(uuid()) @db.Uuid

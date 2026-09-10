@@ -1,19 +1,9 @@
 ﻿import { Buffer } from "node:buffer";
 import { Inject, Injectable } from "@nestjs/common";
-import {
-  NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER,
-  PRODUCT_ANALYTICS_EVENT_RECORDER,
-  type ProductAnalyticsServerEventRecorder,
-  type RecordProductAnalyticsServerEventCommand,
-  recordProductAnalyticsServerEventBestEffort,
-  toProductAnalyticsExportRowCountBucket,
-} from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import { CompanyListSort } from "@/modules/company/application/ports/company-query.types";
 import {
   type CompanyMemoLogRecord,
   COMPANY_REPOSITORY,
-  type CompanyContactRecord,
-  type CompanyDealRecord,
   type CompanyListRecord,
   type CompanyPrivateMemoLogRecord,
   type CompanyRecord,
@@ -80,8 +70,6 @@ const COMPANY_EXPORT_HEADERS: Readonly<
   companyRegionCountryCode: { "ko-KR": "지역 국가", en: "Region Country" },
   companyRegionCode: { "ko-KR": "지역 코드", en: "Region Code" },
   address: { "ko-KR": "주소", en: "Address" },
-  contactCount: { "ko-KR": "담당자 수", en: "Contacts" },
-  dealCount: { "ko-KR": "딜 수", en: "Deals" },
   createdAt: { "ko-KR": "등록일", en: "Created At" },
 };
 
@@ -154,8 +142,6 @@ export interface CompanyListItemResponse {
     readonly regionCode: string | null;
   };
   readonly address: string | null;
-  readonly contactCount: number;
-  readonly dealCount: number;
   readonly createdAt: string;
 }
 
@@ -176,41 +162,6 @@ export interface CompanyDetailResponse {
   readonly address: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
-}
-
-// 역할 : CompanyContactListResponse 회사에 연결된 담당자 목록 응답을 정의합니다.
-export interface CompanyContactListResponse {
-  readonly items: CompanyContactItemResponse[];
-}
-
-// 역할 : CompanyContactItemResponse 회사에 연결된 담당자 응답 항목을 정의합니다.
-export interface CompanyContactItemResponse {
-  readonly id: string;
-  readonly username: string;
-  readonly mobile: string;
-  readonly email: string;
-  readonly contactDepartment: {
-    readonly id: string;
-    readonly departmentName: string;
-  };
-  readonly contactJobGrade: {
-    readonly id: string;
-    readonly jobGradeName: string;
-  };
-}
-
-// 역할 : CompanyDealListResponse 회사에 연결된 딜 목록 응답을 정의합니다.
-export interface CompanyDealListResponse {
-  readonly items: CompanyDealItemResponse[];
-}
-
-// 역할 : CompanyDealItemResponse 회사에 연결된 딜 응답 항목을 정의합니다.
-export interface CompanyDealItemResponse {
-  readonly id: string;
-  readonly dealName: string;
-  readonly dealCost: number;
-  readonly currencyCode: string;
-  readonly createdAt: string;
 }
 
 // 역할 : CompanyFieldListResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -265,9 +216,7 @@ export class CompanyApplicationService {
     private readonly privateMemoEncryption: PrivateMemoEncryptionPort,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
-    private readonly logger: AppLogger,
-    @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
-    private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
+    private readonly logger: AppLogger
   ) {}
 
   // 기능 : 현재 사용자의 회사 목록을 15개 단위 페이지로 조회합니다.
@@ -320,63 +269,10 @@ export class CompanyApplicationService {
     };
   }
 
-  // 기능 : 현재 사용자의 회사에 연결된 담당자 전체 목록을 조회합니다.
-  async listCompanyContacts(
-    currentUser: CurrentUserContext,
-    companyId: string
-  ): Promise<CompanyContactListResponse> {
-    // 1. 조회 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 현재 사용자 ownership 기준으로 회사에 연결된 담당자 목록을 조회한다.
-    const contacts = await this.companyRepository.listCompanyContacts({
-      userId: currentUser.id,
-      companyId,
-    });
-
-    // 3. 민감한 담당자 본문 없이 회사별 담당자 목록 조회 이벤트를 기록한다.
-    this.logEvent("company.contactsListed", {
-      userId: currentUser.id,
-      companyId,
-    });
-
-    // 4. repository 결과를 응답 DTO로 변환한다.
-    return {
-      items: contacts.map((contact) => this.toCompanyContactItem(contact)),
-    };
-  }
-
-  // 기능 : 현재 사용자의 회사에 연결된 딜 전체 목록을 조회합니다.
-  async listCompanyDeals(
-    currentUser: CurrentUserContext,
-    companyId: string
-  ): Promise<CompanyDealListResponse> {
-    // 1. 조회 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 현재 사용자 ownership 기준으로 회사에 연결된 딜 목록을 조회한다.
-    const deals = await this.companyRepository.listCompanyDeals({
-      userId: currentUser.id,
-      companyId,
-    });
-
-    // 3. 민감한 딜 본문 없이 회사별 딜 목록 조회 이벤트를 기록한다.
-    this.logEvent("company.dealsListed", {
-      userId: currentUser.id,
-      companyId,
-    });
-
-    // 4. repository 결과를 응답 DTO로 변환한다.
-    return {
-      items: deals.map((deal) => this.toCompanyDealItem(deal)),
-    };
-  }
-
   // 기능 : 검색과 필터가 반영된 회사 목록을 xlsx 파일로 생성합니다.
   async exportCompaniesXlsx(
     currentUser: CurrentUserContext,
-    query: CompanyExportQueryInput,
-    requestId: string | null = null
+    query: CompanyExportQueryInput
   ): Promise<ExportedXlsxFileResponse> {
     // 1. export 조회 조건을 저장소 입력에 맞게 정규화한다.
     const companyName = this.normalizeOptionalText(query.companyName);
@@ -421,24 +317,7 @@ export class CompanyApplicationService {
       companyRegionFilterCount: companyRegionIds.length,
     });
 
-    // 6. 다운로드 성공 후 row count bucket만 포함해 제품 분석 export 이벤트를 기록한다.
-    await this.recordServerAnalyticsEvent({
-      userId: currentUser.id,
-      authSessionId: currentUser.sessionId,
-      requestId,
-      eventName: "export_downloaded",
-      timeZone: currentUser.timeZone,
-      idempotencyKey: `export_downloaded:${currentUser.id}:COMPANY:${requestId ?? "internal"}`,
-      targetType: "EXPORT",
-      targetId: null,
-      payload: {
-        exportType: "COMPANY",
-        rowCountBucket: toProductAnalyticsExportRowCountBucket(companies.length),
-        locale: localization.locale,
-      },
-    });
-
-    // 7. controller가 다운로드 응답으로 변환할 파일 정보를 반환한다.
+    // 6. controller가 다운로드 응답으로 변환할 파일 정보를 반환한다.
     return {
       fileName: createTimestampedXlsxFileName("companies"),
       contentType: XLSX_CONTENT_TYPE,
@@ -584,7 +463,7 @@ export class CompanyApplicationService {
     // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
     const timestamps = createTrashRetentionTimestamps();
 
-    // 3. 회사 자체만 휴지통 상태로 전환하고 연결된 담당자/딜/로그는 변경하지 않는다.
+    // 3. 회사 자체만 휴지통 상태로 전환하고 회사 메모는 별도 복원 단위로 유지한다.
     const deleted = await this.companyRepository.deleteCompany({
       userId: currentUser.id,
       companyId,
@@ -1080,8 +959,6 @@ export class CompanyApplicationService {
       companyField: company.companyField,
       companyRegion: company.companyRegion,
       address: company.address,
-      contactCount: company.contactCount,
-      dealCount: company.dealCount,
       createdAt: company.createdAt.toISOString(),
     };
   }
@@ -1096,31 +973,6 @@ export class CompanyApplicationService {
       address: company.address,
       createdAt: company.createdAt.toISOString(),
       updatedAt: company.updatedAt.toISOString(),
-    };
-  }
-
-  // 기능 : 회사에 연결된 담당자 레코드를 응답 항목으로 변환합니다.
-  private toCompanyContactItem(
-    contact: CompanyContactRecord
-  ): CompanyContactItemResponse {
-    return {
-      id: contact.id,
-      username: contact.username,
-      mobile: contact.mobile,
-      email: contact.email,
-      contactDepartment: contact.contactDepartment,
-      contactJobGrade: contact.contactJobGrade,
-    };
-  }
-
-  // 기능 : 회사에 연결된 딜 레코드를 응답 항목으로 변환합니다.
-  private toCompanyDealItem(deal: CompanyDealRecord): CompanyDealItemResponse {
-    return {
-      id: deal.id,
-      dealName: deal.dealName,
-      dealCost: deal.dealCost,
-      currencyCode: deal.currencyCode,
-      createdAt: deal.createdAt.toISOString(),
     };
   }
 
@@ -1156,8 +1008,6 @@ export class CompanyApplicationService {
       },
       { header: this.companyExportHeader("companyRegionCode", locale), key: "companyRegionCode", width: 14 },
       { header: this.companyExportHeader("address", locale), key: "address", width: 34 },
-      { header: this.companyExportHeader("contactCount", locale), key: "contactCount", width: 12 },
-      { header: this.companyExportHeader("dealCount", locale), key: "dealCount", width: 12 },
       { header: this.companyExportHeader("createdAt", locale), key: "createdAt", width: 22 },
     ];
   }
@@ -1179,8 +1029,6 @@ export class CompanyApplicationService {
       companyRegionCountryCode: company.companyRegion.countryCode ?? "",
       companyRegionCode: company.companyRegion.regionCode ?? "",
       address: company.address ?? "",
-      contactCount: company.contactCount,
-      dealCount: company.dealCount,
       createdAt: formatXlsxDateTime(company.createdAt, localization),
     }));
   }
@@ -1225,19 +1073,6 @@ export class CompanyApplicationService {
       nextCursor: hasNext && lastItem ? this.createCursor(lastItem) : null,
       hasNext,
     };
-  }
-
-  // 기능 : 민감정보를 제외한 구조화 이벤트 로그를 기록합니다.
-  // 기능 : 회사 서버 이벤트를 best-effort로 기록해 본 API 응답을 막지 않습니다.
-  private async recordServerAnalyticsEvent(
-    command: RecordProductAnalyticsServerEventCommand
-  ): Promise<void> {
-    await recordProductAnalyticsServerEventBestEffort({
-      recorder: this.productAnalyticsEventRecorder,
-      logger: this.logger,
-      command,
-      logContext: "CompanyApplicationService",
-    });
   }
 
   private logEvent(event: string, fields: Record<string, unknown>): void {

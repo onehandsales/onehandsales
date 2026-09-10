@@ -2,8 +2,6 @@
 import { CompanyListSort } from "@/modules/company/application/ports/company-query.types";
 import {
   type CompanyFieldRecord,
-  type CompanyContactRecord,
-  type CompanyDealRecord,
   type CompanyLookupRecord,
   type CompanyListRecord,
   type CompanyMemoLogRecord,
@@ -20,8 +18,6 @@ import {
   type DeleteCompanyInput,
   type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
-  type ListCompanyContactsInput,
-  type ListCompanyDealsInput,
   type ListCompaniesInput,
   type MemoLogCursor,
   type UpdateCompanyInput,
@@ -45,13 +41,6 @@ type CompanyWithRelations = {
     readonly region: string;
     readonly countryCode: string | null;
     readonly regionCode: string | null;
-  };
-};
-
-type CompanyListWithRelations = CompanyWithRelations & {
-  readonly _count: {
-    readonly contacts: number;
-    readonly dealCompanies: number;
   };
 };
 
@@ -84,7 +73,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
     const [items, totalCount] = await Promise.all([
       this.client.company.findMany({
         where,
-        include: this.createCompanyListInclude(input.userId),
+        include: this.createCompanyListInclude(),
         orderBy: this.createCompanyOrderBy(input.sort),
         skip: (input.page - 1) * input.pageSize,
         take: input.pageSize,
@@ -104,69 +93,11 @@ export class PrismaCompanyRepository implements CompanyRepository {
   ): Promise<CompanyListRecord[]> {
     const items = await this.client.company.findMany({
       where: this.createCompanyWhere(input),
-      include: this.createCompanyListInclude(input.userId),
+      include: this.createCompanyListInclude(),
       orderBy: this.createCompanyOrderBy(input.sort),
     });
 
     return items.map((company) => this.mapCompanyList(company));
-  }
-
-  // 기능 : 현재 사용자의 회사에 연결된 담당자 전체 목록을 조회합니다.
-  async listCompanyContacts(
-    input: ListCompanyContactsInput
-  ): Promise<CompanyContactRecord[]> {
-    return this.client.contact.findMany({
-      where: {
-        userId: input.userId,
-        companyId: input.companyId,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        username: true,
-        mobile: true,
-        email: true,
-        contactDepartment: {
-          select: {
-            id: true,
-            departmentName: true,
-          },
-        },
-        contactJobGrade: {
-          select: {
-            id: true,
-            jobGradeName: true,
-          },
-        },
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    });
-  }
-
-  // 기능 : 현재 사용자의 회사에 연결된 딜 전체 목록을 조회합니다.
-  async listCompanyDeals(
-    input: ListCompanyDealsInput
-  ): Promise<CompanyDealRecord[]> {
-    return this.client.deal.findMany({
-      where: {
-        userId: input.userId,
-        deletedAt: null,
-        dealCompanies: {
-          some: {
-            userId: input.userId,
-            companyId: input.companyId,
-          },
-        },
-      },
-      select: {
-        id: true,
-        dealName: true,
-        dealCost: true,
-        currencyCode: true,
-        createdAt: true,
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    });
   }
 
   // 기능 : 현재 사용자의 회사 단건을 relation과 함께 조회합니다.
@@ -698,29 +629,11 @@ export class PrismaCompanyRepository implements CompanyRepository {
     };
   }
 
-  // 기능 : 회사 목록과 export에 필요한 relation과 담당자 수 집계를 정의합니다.
-  private createCompanyListInclude(userId: string): Prisma.CompanyInclude {
+  // 기능 : 회사 목록과 export에 필요한 relation을 정의합니다.
+  private createCompanyListInclude(): Prisma.CompanyInclude {
     return {
       companyField: true,
       companyRegion: true,
-      _count: {
-        select: {
-          contacts: {
-            where: {
-              userId,
-              deletedAt: null,
-            },
-          },
-          dealCompanies: {
-            where: {
-              userId,
-              deal: {
-                deletedAt: null,
-              },
-            },
-          },
-        },
-      },
     };
   }
 
@@ -728,38 +641,7 @@ export class PrismaCompanyRepository implements CompanyRepository {
   private createCompanyOrderBy(
     sort: CompanyListSort | undefined
   ): Prisma.CompanyOrderByWithRelationInput[] {
-    if (sort === CompanyListSort.CONTACT_COUNT_DESC) {
-      return [
-        { contacts: { _count: "desc" } },
-        { createdAt: "desc" },
-        { id: "desc" },
-      ];
-    }
-
-    if (sort === CompanyListSort.CONTACT_COUNT_ASC) {
-      return [
-        { contacts: { _count: "asc" } },
-        { createdAt: "desc" },
-        { id: "desc" },
-      ];
-    }
-
-    if (sort === CompanyListSort.DEAL_COUNT_DESC) {
-      return [
-        { dealCompanies: { _count: "desc" } },
-        { createdAt: "desc" },
-        { id: "desc" },
-      ];
-    }
-
-    if (sort === CompanyListSort.DEAL_COUNT_ASC) {
-      return [
-        { dealCompanies: { _count: "asc" } },
-        { createdAt: "desc" },
-        { id: "desc" },
-      ];
-    }
-
+    void sort;
     return [{ createdAt: "desc" }, { id: "desc" }];
   }
 
@@ -784,12 +666,8 @@ export class PrismaCompanyRepository implements CompanyRepository {
     };
   }
 
-  // 기능 : Prisma 회사 목록 행을 contactCount 포함 application 레코드로 변환합니다.
-  private mapCompanyList(company: CompanyListWithRelations): CompanyListRecord {
-    return {
-      ...this.mapCompany(company),
-      contactCount: company._count.contacts,
-      dealCount: company._count.dealCompanies,
-    };
+  // 기능 : Prisma 회사 목록 행을 application 레코드로 변환합니다.
+  private mapCompanyList(company: CompanyWithRelations): CompanyListRecord {
+    return this.mapCompany(company);
   }
 }

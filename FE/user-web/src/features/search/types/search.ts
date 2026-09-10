@@ -1,8 +1,4 @@
-export type SearchTargetType =
-  | "COMPANY"
-  | "CONTACT"
-  | "PRODUCT"
-  | "DEAL";
+export type SearchTargetType = "COMPANY";
 
 export interface SearchItem {
   readonly title: string;

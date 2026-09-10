@@ -11,11 +11,5 @@ export function getSearchFallbackTargetPath(
   switch (type) {
     case "COMPANY":
       return `/app/companies/${item.targetId}`;
-    case "CONTACT":
-      return `/app/contacts/${item.targetId}`;
-    case "PRODUCT":
-      return `/app/products/${item.targetId}`;
-    case "DEAL":
-      return `/app/deals/${item.targetId}`;
   }
 }

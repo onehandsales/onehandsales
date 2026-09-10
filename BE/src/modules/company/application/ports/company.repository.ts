@@ -33,36 +33,7 @@ export interface CompanyRecord {
   readonly updatedAt: Date;
 }
 
-// 역할 : CompanyListRecord 목록에서만 필요한 집계 값을 포함한 회사 레코드를 정의합니다.
-export interface CompanyListRecord extends CompanyRecord {
-  readonly contactCount: number;
-  readonly dealCount: number;
-}
-
-// 역할 : CompanyContactRecord 회사에 연결된 담당자 목록 레코드를 정의합니다.
-export interface CompanyContactRecord {
-  readonly id: string;
-  readonly username: string;
-  readonly mobile: string;
-  readonly email: string;
-  readonly contactDepartment: {
-    readonly id: string;
-    readonly departmentName: string;
-  };
-  readonly contactJobGrade: {
-    readonly id: string;
-    readonly jobGradeName: string;
-  };
-}
-
-// 역할 : CompanyDealRecord 회사에 연결된 딜 목록 레코드를 정의합니다.
-export interface CompanyDealRecord {
-  readonly id: string;
-  readonly dealName: string;
-  readonly dealCost: number;
-  readonly currencyCode: string;
-  readonly createdAt: Date;
-}
+export type CompanyListRecord = CompanyRecord;
 
 // 역할 : CompanyPageRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface CompanyPageRecord {
@@ -88,18 +59,6 @@ export interface ExportCompaniesInput {
   readonly companyFieldIds?: readonly string[];
   readonly companyRegionIds?: readonly string[];
   readonly sort?: CompanyListSort;
-}
-
-// 역할 : ListCompanyContactsInput 회사에 연결된 담당자 조회 조건을 정의합니다.
-export interface ListCompanyContactsInput {
-  readonly userId: string;
-  readonly companyId: string;
-}
-
-// 역할 : ListCompanyDealsInput 회사에 연결된 딜 조회 조건을 정의합니다.
-export interface ListCompanyDealsInput {
-  readonly userId: string;
-  readonly companyId: string;
 }
 
 // 역할 : CreateCompanyInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -204,12 +163,6 @@ export interface CompanyRepository {
   listCompanies(input: ListCompaniesInput): Promise<CompanyPageRecord>;
   // 기능 : 현재 사용자의 회사 export 대상 전체 목록을 조회합니다.
   listCompaniesForExport(input: ExportCompaniesInput): Promise<CompanyListRecord[]>;
-  // 기능 : 현재 사용자의 회사에 연결된 담당자 전체 목록을 조회합니다.
-  listCompanyContacts(
-    input: ListCompanyContactsInput
-  ): Promise<CompanyContactRecord[]>;
-  // 기능 : 현재 사용자의 회사에 연결된 딜 전체 목록을 조회합니다.
-  listCompanyDeals(input: ListCompanyDealsInput): Promise<CompanyDealRecord[]>;
   // 기능 : 현재 사용자의 회사 단건을 조회합니다.
   findCompany(userId: string, companyId: string): Promise<CompanyRecord | null>;
   // 기능 : 현재 사용자의 회사 존재 여부만 조회합니다.

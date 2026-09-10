@@ -1,24 +1,20 @@
 import { Prisma } from "@prisma/client";
 import type {
+  GetTrashDetailInput,
+  ListTrashInput,
+  RestoreTrashItemInput,
+  TrashDetail,
+  TrashItem,
+  TrashListResult,
+  TrashRepository,
+  TrashRestoreRepositoryResult,
+} from "@/modules/trash/application/ports/trash.repository";
+import type {
   TrashDomainFilter,
   TrashItemKindFilter,
   TrashLogTypeFilter,
-  TrashSort,
   TrashTargetType,
 } from "@/modules/trash/application/ports/trash.types";
-import {
-  type GetTrashDetailInput,
-  type ListTrashInput,
-  type RestoreTrashItemInput,
-  type TrashDetail,
-  type TrashDetailField,
-  type TrashItem,
-  type TrashListResult,
-  type TrashRepository,
-  type TrashRestoreWindow,
-  type TrashRestoreBlockedReason,
-  type TrashRestoreRepositoryResult,
-} from "@/modules/trash/application/ports/trash.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type TrashPrismaClient = PrismaService | Prisma.TransactionClient;
@@ -29,21 +25,23 @@ type TrashLogType = Exclude<TrashLogTypeFilter, "ALL">;
 type TargetMetadata = {
   readonly targetType: TrashTargetType;
   readonly domain: TrashDomain;
-  readonly kind: TrashItemKind;
-  readonly logType?: TrashLogType;
+  readonly itemKind: TrashItemKind;
+  readonly logType: TrashLogType | null;
+  readonly label: string;
+  readonly parentType?: TrashDomain;
 };
 
 type DeletedItemInput = {
-  readonly targetType: TrashTargetType;
+  readonly metadata: TargetMetadata;
   readonly targetId: string;
   readonly title: string;
-  readonly deletedAt: Date | null;
-  readonly trashExpiresAt: Date | null;
-  readonly parentType?: TrashDomain;
   readonly parentId?: string | null;
   readonly parentTitle?: string | null;
-  readonly hasPrivateMemo?: boolean;
+  readonly deletedAt: Date | null;
+  readonly trashExpiresAt: Date | null;
   readonly now: Date;
+  readonly canRestore?: boolean;
+  readonly hasPrivateMemo?: boolean;
 };
 
 const DEFAULT_PAGE = 1;
@@ -55,70 +53,25 @@ const TARGET_METADATA: readonly TargetMetadata[] = [
   {
     targetType: "COMPANY",
     domain: "COMPANY",
-    kind: "ENTITY",
-  },
-  {
-    targetType: "CONTACT",
-    domain: "CONTACT",
-    kind: "ENTITY",
-  },
-  {
-    targetType: "PRODUCT",
-    domain: "PRODUCT",
-    kind: "ENTITY",
-  },
-  {
-    targetType: "DEAL",
-    domain: "DEAL",
-    kind: "ENTITY",
+    itemKind: "ENTITY",
+    logType: null,
+    label: "회사",
   },
   {
     targetType: "COMPANY_MEMO_LOG",
     domain: "COMPANY",
-    kind: "LOG",
+    itemKind: "LOG",
     logType: "MEMO",
+    label: "회사 메모",
+    parentType: "COMPANY",
   },
   {
     targetType: "COMPANY_PRIVATE_MEMO_LOG",
     domain: "COMPANY",
-    kind: "LOG",
+    itemKind: "LOG",
     logType: "PRIVATE_MEMO",
-  },
-  {
-    targetType: "CONTACT_MEMO_LOG",
-    domain: "CONTACT",
-    kind: "LOG",
-    logType: "MEMO",
-  },
-  {
-    targetType: "CONTACT_PRIVATE_MEMO_LOG",
-    domain: "CONTACT",
-    kind: "LOG",
-    logType: "PRIVATE_MEMO",
-  },
-  {
-    targetType: "PRODUCT_MEMO_LOG",
-    domain: "PRODUCT",
-    kind: "LOG",
-    logType: "MEMO",
-  },
-  {
-    targetType: "PRODUCT_PRIVATE_MEMO_LOG",
-    domain: "PRODUCT",
-    kind: "LOG",
-    logType: "PRIVATE_MEMO",
-  },
-  {
-    targetType: "DEAL_MEMO_LOG",
-    domain: "DEAL",
-    kind: "LOG",
-    logType: "MEMO",
-  },
-  {
-    targetType: "DEAL_FOLLOWING_ACTION_LOG",
-    domain: "DEAL",
-    kind: "LOG",
-    logType: "FOLLOWING_ACTION",
+    label: "회사 개인 메모",
+    parentType: "COMPANY",
   },
 ];
 
@@ -126,20 +79,16 @@ const TARGET_METADATA_BY_TYPE = new Map<TrashTargetType, TargetMetadata>(
   TARGET_METADATA.map((metadata) => [metadata.targetType, metadata])
 );
 
-// 기능 : null이 제거된 휴지통 목록 항목인지 검증합니다.
 function isTrashItem(item: TrashItem | null): item is TrashItem {
   return item !== null;
 }
 
-// 역할 : PrismaTrashRepository 휴지통 저장소 계약을 Prisma 기반 영속성 처리로 구현합니다.
 export class PrismaTrashRepository implements TrashRepository {
-  // 기능 : 휴지통 조회와 복구에 사용할 Prisma 클라이언트와 transaction runner를 주입받습니다.
   constructor(
     private readonly client: TrashPrismaClient,
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
-  // 기능 : 휴지통 저장소 작업을 Prisma transaction 안에서 실행합니다.
   async runInTransaction<T>(
     work: (repository: TrashRepository) => Promise<T>
   ): Promise<T> {
@@ -147,288 +96,131 @@ export class PrismaTrashRepository implements TrashRepository {
       return work(this);
     }
 
-    return this.transactionRunner.$transaction(async (transaction) => {
-      return work(new PrismaTrashRepository(transaction, null));
-    });
+    return this.transactionRunner.$transaction((transaction) =>
+      work(new PrismaTrashRepository(transaction, null))
+    );
   }
 
-  // 기능 : 현재 사용자의 복구 가능 삭제 항목을 조건에 맞춰 조회합니다.
   async listTrash(input: ListTrashInput): Promise<TrashListResult> {
     const page = this.normalizePage(input.page);
     const pageSize = this.normalizePageSize(input.pageSize);
-    const collectedItems = await this.collectTrashItems(input);
-    const filteredItems = this.filterByQuery(collectedItems, input.query);
-    const sortedItems = this.sortTrashItems(filteredItems, input.sort);
-    const pageItems = sortedItems.slice((page - 1) * pageSize, page * pageSize);
+    const collected = await this.collectTrashItems(input);
+    const filtered = this.filterByQuery(collected, input.query);
+    const sorted = this.sortTrashItems(filtered, input.sort);
+    const totalCount = sorted.length;
+    const offset = (page - 1) * pageSize;
 
     return {
-      items: pageItems,
+      items: sorted.slice(offset, offset + pageSize),
       page,
       pageSize,
-      totalCount: filteredItems.length,
-      totalPages: Math.ceil(filteredItems.length / pageSize),
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
     };
   }
 
-  // 기능 : 휴지통 대상 유형에 맞는 row의 삭제 상태를 초기화합니다.
+  async getTrashDetail(input: GetTrashDetailInput): Promise<TrashDetail | null> {
+    switch (input.targetType) {
+      case "COMPANY":
+        return this.getCompanyDetail(input);
+      case "COMPANY_MEMO_LOG":
+        return this.getCompanyMemoLogDetail(input);
+      case "COMPANY_PRIVATE_MEMO_LOG":
+        return this.getCompanyPrivateMemoLogDetail(input);
+    }
+  }
+
   async restoreTrashItem(
     input: RestoreTrashItemInput
   ): Promise<TrashRestoreRepositoryResult | null> {
-    const blockedReason = await this.getRestoreBlockedReason(input);
+    if (!TARGET_METADATA_BY_TYPE.has(input.targetType)) {
+      return null;
+    }
 
-    if (blockedReason) {
-      return { blockedReason };
+    if (await this.hasDeletedParent(input)) {
+      return { blockedReason: "PARENT_DELETED" };
     }
 
     const restored = await this.restoreByTargetType(input);
 
     if (!restored) {
-      const retryBlockedReason = await this.getRestoreBlockedReason(input);
-
-      if (retryBlockedReason) {
-        return { blockedReason: retryBlockedReason };
-      }
-
       return null;
     }
 
     return {
-      targetType: input.targetType,
       targetId: input.targetId,
+      targetType: input.targetType,
       restoredAt: input.now,
     };
   }
 
-  // 기능 : 휴지통 대상 유형에 맞는 상세 정보를 조회합니다.
-  async getTrashDetail(input: GetTrashDetailInput): Promise<TrashDetail | null> {
-    const detail = await (async (): Promise<TrashDetail | null> => {
-      switch (input.targetType) {
-        case "COMPANY":
-          return this.getCompanyDetail(input);
-        case "CONTACT":
-          return this.getContactDetail(input);
-        case "PRODUCT":
-          return this.getProductDetail(input);
-        case "DEAL":
-          return this.getDealDetail(input);
-        case "COMPANY_MEMO_LOG":
-          return this.getCompanyMemoLogDetail(input);
-        case "COMPANY_PRIVATE_MEMO_LOG":
-          return this.getCompanyPrivateMemoLogDetail(input);
-        case "CONTACT_MEMO_LOG":
-          return this.getContactMemoLogDetail(input);
-        case "CONTACT_PRIVATE_MEMO_LOG":
-          return this.getContactPrivateMemoLogDetail(input);
-        case "PRODUCT_MEMO_LOG":
-          return this.getProductMemoLogDetail(input);
-        case "PRODUCT_PRIVATE_MEMO_LOG":
-          return this.getProductPrivateMemoLogDetail(input);
-        case "DEAL_MEMO_LOG":
-          return this.getDealMemoLogDetail(input);
-        case "DEAL_FOLLOWING_ACTION_LOG":
-          return this.getDealFollowingActionLogDetail(input);
-      }
-    })();
+  private async collectTrashItems(input: ListTrashInput): Promise<TrashItem[]> {
+    const candidates = await Promise.all([
+      this.listDeletedCompanies(input),
+      this.listDeletedCompanyMemoLogs(input),
+      this.listDeletedCompanyPrivateMemoLogs(input),
+    ]);
 
-    return detail;
+    return candidates.flat().filter(isTrashItem);
   }
 
-  // 기능 : 삭제된 회사의 상세 모달 데이터를 조회합니다.
   private async getCompanyDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
+    const metadata = TARGET_METADATA_BY_TYPE.get("COMPANY");
+
+    if (!metadata) {
+      return null;
+    }
+
     const company = await this.client.company.findFirst({
-      where: this.createDetailWhere(input),
+      where: this.createEntityWhere(input),
       select: {
         id: true,
         companyName: true,
+        address: true,
         deletedAt: true,
         trashExpiresAt: true,
-        companyField: {
-          select: {
-            field: true,
-          },
-        },
+        companyField: { select: { field: true } },
         companyRegion: {
           select: {
             region: true,
+            countryCode: true,
+            regionCode: true,
           },
         },
         _count: {
           select: {
-            privateMemoLogs: true,
+            privateMemoLogs: {
+              where: {
+                deletedAt: null,
+              },
+            },
           },
         },
       },
     });
 
-    if (!company?.deletedAt || !company.trashExpiresAt) {
+    if (!company) {
       return null;
     }
 
     return this.createTrashDetail({
-      targetType: "COMPANY",
+      metadata,
       targetId: company.id,
-      now: input.now,
       title: company.companyName,
       deletedAt: company.deletedAt,
       trashExpiresAt: company.trashExpiresAt,
-      summary: `${company.companyName} 회사 데이터`,
+      now: input.now,
       hasPrivateMemo: company._count.privateMemoLogs > 0,
+      summary: company.companyName,
       fields: [
         this.createField("회사명", company.companyName),
         this.createField("분야", company.companyField.field),
         this.createField("지역", company.companyRegion.region),
-      ],
-    });
-  }
-
-  // 기능 : 삭제된 담당자의 상세 모달 데이터를 조회합니다.
-  private async getContactDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const contact = await this.client.contact.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        username: true,
-        mobile: true,
-        email: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        company: {
-          select: {
-            companyName: true,
-          },
-        },
-        contactDepartment: {
-          select: {
-            departmentName: true,
-          },
-        },
-        contactJobGrade: {
-          select: {
-            jobGradeName: true,
-          },
-        },
-        _count: {
-          select: {
-            privateMemoLogs: true,
-          },
-        },
-      },
-    });
-
-    if (!contact?.deletedAt || !contact.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "CONTACT",
-      targetId: contact.id,
-      now: input.now,
-      title: contact.username,
-      deletedAt: contact.deletedAt,
-      trashExpiresAt: contact.trashExpiresAt,
-      summary: `${contact.username} 담당자 데이터`,
-      hasPrivateMemo: contact._count.privateMemoLogs > 0,
-      fields: [
-        this.createField("담당자명", contact.username),
-        this.createField("회사", contact.company.companyName),
-        this.createField("부서", contact.contactDepartment.departmentName),
-        this.createField("직급", contact.contactJobGrade.jobGradeName),
-        this.createField("연락처", contact.mobile),
-        this.createField("이메일", contact.email),
-      ],
-    });
-  }
-
-  // 기능 : 삭제된 제품의 상세 모달 데이터를 조회합니다.
-  private async getProductDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const product = await this.client.product.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        productName: true,
-        productPrice: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        productCategory: {
-          select: {
-            categoryName: true,
-          },
-        },
-        productStatus: {
-          select: {
-            statusName: true,
-          },
-        },
-        _count: {
-          select: {
-            privateMemoLogs: true,
-          },
-        },
-      },
-    });
-
-    if (!product?.deletedAt || !product.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "PRODUCT",
-      targetId: product.id,
-      now: input.now,
-      title: product.productName,
-      deletedAt: product.deletedAt,
-      trashExpiresAt: product.trashExpiresAt,
-      summary: `${product.productName} 제품 데이터`,
-      hasPrivateMemo: product._count.privateMemoLogs > 0,
-      fields: [
-        this.createField("제품명", product.productName),
-        this.createField("가격", this.formatNumber(product.productPrice)),
-        this.createField("카테고리", product.productCategory.categoryName),
-        this.createField("상태", product.productStatus.statusName),
-      ],
-    });
-  }
-
-  // 기능 : 삭제된 딜의 상세 모달 데이터를 조회합니다.
-  private async getDealDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const deal = await this.client.deal.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        dealName: true,
-        dealCost: true,
-        dealStatus: true,
-        expectedEndDate: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-      },
-    });
-
-    if (!deal?.deletedAt || !deal.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "DEAL",
-      targetId: deal.id,
-      now: input.now,
-      title: deal.dealName,
-      deletedAt: deal.deletedAt,
-      trashExpiresAt: deal.trashExpiresAt,
-      summary: `${deal.dealName} 딜 데이터`,
-      fields: [
-        this.createField("딜이름", deal.dealName),
-        this.createField("금액", this.formatNumber(deal.dealCost)),
-        this.createField("상태", deal.dealStatus),
-        this.createField("예상 종료일", this.formatDateOnly(deal.expectedEndDate)),
+        this.createField("지역 국가", company.companyRegion.countryCode),
+        this.createField("지역 코드", company.companyRegion.regionCode),
+        this.createField("주소", company.address),
       ],
     });
   }
@@ -436,396 +228,276 @@ export class PrismaTrashRepository implements TrashRepository {
   private async getCompanyMemoLogDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
+    const metadata = TARGET_METADATA_BY_TYPE.get("COMPANY_MEMO_LOG");
+
+    if (!metadata) {
+      return null;
+    }
+
     const memoLog = await this.client.companyMemoLog.findFirst({
-      where: this.createDetailWhere(input),
+      where: this.createCompanyLogWhere(input),
       select: {
         id: true,
         memoType: true,
         memo: true,
+        createdAt: true,
         deletedAt: true,
         trashExpiresAt: true,
         company: {
           select: {
             id: true,
             companyName: true,
+            deletedAt: true,
           },
         },
       },
     });
 
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
+    if (!memoLog) {
       return null;
     }
 
     return this.createTrashDetail({
-      targetType: "COMPANY_MEMO_LOG",
+      metadata,
       targetId: memoLog.id,
-      now: input.now,
       title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "COMPANY",
       parentId: memoLog.company.id,
       parentTitle: memoLog.company.companyName,
-      summary: `${memoLog.company.companyName} 회사 일반 메모`,
-      fields: [
-        this.createField("회사", memoLog.company.companyName),
-        this.createField("메모 유형", memoLog.memoType),
-      ],
+      deletedAt: memoLog.deletedAt,
+      trashExpiresAt: memoLog.trashExpiresAt,
+      now: input.now,
+      canRestore: memoLog.company.deletedAt === null,
+      summary: memoLog.memoType,
       content: memoLog.memo,
+      fields: [
+        this.createField("메모 유형", memoLog.memoType),
+        this.createField("소속 회사", memoLog.company.companyName),
+        this.createField("작성일", this.formatDateOnly(memoLog.createdAt)),
+      ],
     });
   }
 
-  // 기능 : 삭제된 회사 비밀 메모 로그의 상세 모달 데이터를 조회합니다.
   private async getCompanyPrivateMemoLogDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
+    const metadata = TARGET_METADATA_BY_TYPE.get("COMPANY_PRIVATE_MEMO_LOG");
+
+    if (!metadata) {
+      return null;
+    }
+
     const memoLog = await this.client.companyUserPrivateMemoLog.findFirst({
-      where: this.createDetailWhere(input),
+      where: this.createCompanyPrivateLogWhere(input),
       select: {
         id: true,
+        createdAt: true,
         deletedAt: true,
         trashExpiresAt: true,
         company: {
           select: {
             id: true,
             companyName: true,
+            deletedAt: true,
           },
         },
       },
     });
 
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
+    if (!memoLog) {
       return null;
     }
 
     return this.createTrashDetail({
-      targetType: "COMPANY_PRIVATE_MEMO_LOG",
+      metadata,
       targetId: memoLog.id,
-      now: input.now,
-      title: "비밀 메모",
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "COMPANY",
+      title: `개인 메모 ${this.formatDateOnly(memoLog.createdAt)}`,
       parentId: memoLog.company.id,
       parentTitle: memoLog.company.companyName,
+      deletedAt: memoLog.deletedAt,
+      trashExpiresAt: memoLog.trashExpiresAt,
+      now: input.now,
+      canRestore: memoLog.company.deletedAt === null,
       hasPrivateMemo: true,
-      summary: `${memoLog.company.companyName} 회사 비밀 메모`,
-      fields: [this.createField("회사", memoLog.company.companyName)],
-      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있어요.",
+      summary: "개인 메모",
+      fields: [
+        this.createField("소속 회사", memoLog.company.companyName),
+        this.createField("작성일", this.formatDateOnly(memoLog.createdAt)),
+      ],
     });
   }
 
-  // 기능 : 삭제된 담당자 일반 메모 로그의 상세 모달 데이터를 조회합니다.
-  private async getContactMemoLogDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const memoLog = await this.client.contactMemoLog.findFirst({
-      where: this.createDetailWhere(input),
+  private async listDeletedCompanies(input: ListTrashInput) {
+    const metadata = TARGET_METADATA_BY_TYPE.get("COMPANY");
+
+    if (!metadata || !this.shouldIncludeTarget(input, metadata)) {
+      return [];
+    }
+
+    const companies = await this.client.company.findMany({
+      where: this.createDeletedEntityWhere(input),
+      select: {
+        id: true,
+        companyName: true,
+        deletedAt: true,
+        trashExpiresAt: true,
+        _count: {
+          select: {
+            privateMemoLogs: {
+              where: {
+                deletedAt: null,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return companies.map((company) =>
+      this.createTrashItem({
+        metadata,
+        targetId: company.id,
+        title: company.companyName,
+        deletedAt: company.deletedAt,
+        trashExpiresAt: company.trashExpiresAt,
+        now: input.now,
+        hasPrivateMemo: company._count.privateMemoLogs > 0,
+      })
+    );
+  }
+
+  private async listDeletedCompanyMemoLogs(input: ListTrashInput) {
+    const metadata = TARGET_METADATA_BY_TYPE.get("COMPANY_MEMO_LOG");
+
+    if (!metadata || !this.shouldIncludeTarget(input, metadata)) {
+      return [];
+    }
+
+    const memoLogs = await this.client.companyMemoLog.findMany({
+      where: this.createDeletedCompanyLogWhere(input),
       select: {
         id: true,
         memoType: true,
         memo: true,
         deletedAt: true,
         trashExpiresAt: true,
-        contact: {
+        company: {
           select: {
             id: true,
-            username: true,
+            companyName: true,
+            deletedAt: true,
           },
         },
       },
     });
 
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "CONTACT_MEMO_LOG",
-      targetId: memoLog.id,
-      now: input.now,
-      title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "CONTACT",
-      parentId: memoLog.contact.id,
-      parentTitle: memoLog.contact.username,
-      summary: `${memoLog.contact.username} 담당자 일반 메모`,
-      fields: [
-        this.createField("담당자", memoLog.contact.username),
-        this.createField("메모 유형", memoLog.memoType),
-      ],
-      content: memoLog.memo,
-    });
+    return memoLogs.map((memoLog) =>
+      this.createTrashItem({
+        metadata,
+        targetId: memoLog.id,
+        title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
+        parentId: memoLog.company.id,
+        parentTitle: memoLog.company.companyName,
+        deletedAt: memoLog.deletedAt,
+        trashExpiresAt: memoLog.trashExpiresAt,
+        now: input.now,
+        canRestore: memoLog.company.deletedAt === null,
+      })
+    );
   }
 
-  // 기능 : 삭제된 담당자 비밀 메모 로그의 상세 모달 데이터를 조회합니다.
-  private async getContactPrivateMemoLogDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const memoLog = await this.client.contactUserPrivateMemoLog.findFirst({
-      where: this.createDetailWhere(input),
+  private async listDeletedCompanyPrivateMemoLogs(input: ListTrashInput) {
+    const metadata = TARGET_METADATA_BY_TYPE.get("COMPANY_PRIVATE_MEMO_LOG");
+
+    if (!metadata || !this.shouldIncludeTarget(input, metadata)) {
+      return [];
+    }
+
+    const memoLogs = await this.client.companyUserPrivateMemoLog.findMany({
+      where: this.createDeletedCompanyPrivateLogWhere(input),
       select: {
         id: true,
+        createdAt: true,
         deletedAt: true,
         trashExpiresAt: true,
-        contact: {
+        company: {
           select: {
             id: true,
-            username: true,
+            companyName: true,
+            deletedAt: true,
           },
         },
       },
     });
 
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
+    return memoLogs.map((memoLog) =>
+      this.createTrashItem({
+        metadata,
+        targetId: memoLog.id,
+        title: `개인 메모 ${this.formatDateOnly(memoLog.createdAt)}`,
+        parentId: memoLog.company.id,
+        parentTitle: memoLog.company.companyName,
+        deletedAt: memoLog.deletedAt,
+        trashExpiresAt: memoLog.trashExpiresAt,
+        now: input.now,
+        canRestore: memoLog.company.deletedAt === null,
+        hasPrivateMemo: true,
+      })
+    );
+  }
+
+  private createTrashDetail(
+    input: DeletedItemInput & {
+      readonly summary: string;
+      readonly fields: TrashDetail["fields"];
+      readonly content?: string | null;
+    }
+  ): TrashDetail | null {
+    const item = this.createTrashItem(input);
+
+    if (!item) {
       return null;
     }
 
-    return this.createTrashDetail({
-      targetType: "CONTACT_PRIVATE_MEMO_LOG",
-      targetId: memoLog.id,
-      now: input.now,
-      title: "비밀 메모",
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "CONTACT",
-      parentId: memoLog.contact.id,
-      parentTitle: memoLog.contact.username,
-      hasPrivateMemo: true,
-      summary: `${memoLog.contact.username} 담당자 비밀 메모`,
-      fields: [this.createField("담당자", memoLog.contact.username)],
-      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있어요.",
-    });
-  }
-
-  // 기능 : 삭제된 제품 일반 메모 로그의 상세 모달 데이터를 조회합니다.
-  private async getProductMemoLogDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const memoLog = await this.client.productMemoLog.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        product: {
-          select: {
-            id: true,
-            productName: true,
-          },
-        },
-      },
-    });
-
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "PRODUCT_MEMO_LOG",
-      targetId: memoLog.id,
-      now: input.now,
-      title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "PRODUCT",
-      parentId: memoLog.product.id,
-      parentTitle: memoLog.product.productName,
-      summary: `${memoLog.product.productName} 제품 일반 메모`,
-      fields: [
-        this.createField("제품", memoLog.product.productName),
-        this.createField("메모 유형", memoLog.memoType),
-      ],
-      content: memoLog.memo,
-    });
-  }
-
-  // 기능 : 삭제된 제품 비밀 메모 로그의 상세 모달 데이터를 조회합니다.
-  private async getProductPrivateMemoLogDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const memoLog = await this.client.productUserPrivateMemoLog.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        product: {
-          select: {
-            id: true,
-            productName: true,
-          },
-        },
-      },
-    });
-
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "PRODUCT_PRIVATE_MEMO_LOG",
-      targetId: memoLog.id,
-      now: input.now,
-      title: "비밀 메모",
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "PRODUCT",
-      parentId: memoLog.product.id,
-      parentTitle: memoLog.product.productName,
-      hasPrivateMemo: true,
-      summary: `${memoLog.product.productName} 제품 비밀 메모`,
-      fields: [this.createField("제품", memoLog.product.productName)],
-      content: "비밀 메모는 복구 후 상세 화면에서 확인할 수 있어요.",
-    });
-  }
-
-  // 기능 : 삭제된 딜 일반 메모 로그의 상세 모달 데이터를 조회합니다.
-  private async getDealMemoLogDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const memoLog = await this.client.dealMemoLog.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        deal: {
-          select: {
-            id: true,
-            dealName: true,
-          },
-        },
-      },
-    });
-
-    if (!memoLog?.deletedAt || !memoLog.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "DEAL_MEMO_LOG",
-      targetId: memoLog.id,
-      now: input.now,
-      title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-      deletedAt: memoLog.deletedAt,
-      trashExpiresAt: memoLog.trashExpiresAt,
-      parentType: "DEAL",
-      parentId: memoLog.deal.id,
-      parentTitle: memoLog.deal.dealName,
-      summary: `${memoLog.deal.dealName} 딜 일반 메모`,
-      fields: [
-        this.createField("딜", memoLog.deal.dealName),
-        this.createField("메모 유형", memoLog.memoType),
-      ],
-      content: memoLog.memo,
-    });
-  }
-
-  // 기능 : 삭제된 딜 다음 행동 로그의 상세 모달 데이터를 조회합니다.
-  private async getDealFollowingActionLogDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const actionLog = await this.client.dealFollowingActionLog.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        followingAction: true,
-        checkComplete: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        deal: {
-          select: {
-            id: true,
-            dealName: true,
-          },
-        },
-      },
-    });
-
-    if (!actionLog?.deletedAt || !actionLog.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "DEAL_FOLLOWING_ACTION_LOG",
-      targetId: actionLog.id,
-      now: input.now,
-      title: actionLog.followingAction,
-      deletedAt: actionLog.deletedAt,
-      trashExpiresAt: actionLog.trashExpiresAt,
-      parentType: "DEAL",
-      parentId: actionLog.deal.id,
-      parentTitle: actionLog.deal.dealName,
-      summary: `${actionLog.deal.dealName} 다음 행동`,
-      fields: [
-        this.createField("딜", actionLog.deal.dealName),
-        this.createField("완료 여부", actionLog.checkComplete ? "완료" : "미완료"),
-      ],
-      content: actionLog.followingAction,
-    });
-  }
-
-  // 기능 : 공통 상세 응답에 선택적 위치 정보를 결합합니다.
-  private createTrashDetail(input: {
-    readonly targetType: TrashTargetType;
-    readonly targetId: string;
-    readonly now: Date;
-    readonly title: string;
-    readonly deletedAt: Date;
-    readonly trashExpiresAt: Date;
-    readonly summary: string;
-    readonly fields: TrashDetailField[];
-    readonly content?: string | null;
-    readonly parentType?: TrashDomain;
-    readonly parentId?: string | null;
-    readonly parentTitle?: string | null;
-    readonly hasPrivateMemo?: boolean;
-  }): TrashDetail {
-    const restoreWindow = this.getRestoreWindow(input.trashExpiresAt, input.now);
-    const detail: TrashDetail = {
-      targetType: input.targetType,
-      targetId: input.targetId,
-      title: input.title,
-      deletedAt: input.deletedAt,
-      trashExpiresAt: input.trashExpiresAt,
-      restoreWindow,
-      canRestore: restoreWindow === "ACTIVE",
-      hasPrivateMemo: input.hasPrivateMemo ?? false,
-      privateMemoIncluded: false,
+    return {
+      ...item,
       summary: input.summary,
       fields: input.fields,
       ...(input.content !== undefined ? { content: input.content } : {}),
     };
+  }
 
-    if (!input.parentType) {
-      return detail;
+  private createTrashItem(input: DeletedItemInput): TrashItem | null {
+    if (!input.deletedAt || !input.trashExpiresAt) {
+      return null;
     }
 
+    const restoreWindow = this.getRestoreWindow(input.trashExpiresAt, input.now);
+    const canRestore =
+      restoreWindow === "ACTIVE" && (input.canRestore ?? true);
+
     return {
-      ...detail,
-      parentType: input.parentType,
-      parentId: input.parentId ?? null,
-      parentTitle: input.parentTitle ?? null,
+      targetType: input.metadata.targetType,
+      targetId: input.targetId,
+      title: input.title,
+      ...(input.metadata.parentType
+        ? { parentType: input.metadata.parentType }
+        : {}),
+      ...(input.parentId !== undefined ? { parentId: input.parentId } : {}),
+      ...(input.parentTitle !== undefined
+        ? { parentTitle: input.parentTitle }
+        : {}),
+      deletedAt: input.deletedAt,
+      trashExpiresAt: input.trashExpiresAt,
+      restoreWindow,
+      canRestore,
+      hasPrivateMemo: input.hasPrivateMemo ?? false,
+      privateMemoIncluded: false,
     };
   }
 
-  // 기능 : 상세 모달 필드 값을 문자열 표시 값으로 변환합니다.
-  private createField(label: string, value: string | number | null) {
-    return {
-      label,
-      value: value === null ? null : String(value),
-    } satisfies TrashDetailField;
-  }
-
-  // 기능 : 현재 사용자의 복구 가능 단건 조회 where 조건을 만듭니다.
-  private createDetailWhere(input: GetTrashDetailInput) {
+  private createEntityWhere(
+    input: GetTrashDetailInput
+  ): Prisma.CompanyWhereInput {
     return {
       id: input.targetId,
       userId: input.userId,
@@ -835,479 +507,31 @@ export class PrismaTrashRepository implements TrashRepository {
     };
   }
 
-  // 기능 : 숫자 값을 한국어 로케일 표시 문자열로 변환합니다.
-  private formatNumber(value: number) {
-    return value.toLocaleString("ko-KR");
-  }
-
-  // 기능 : UTC instant에서 날짜 표시용 YYYY-MM-DD 문자열을 만듭니다.
-  private formatDateOnly(value: Date) {
-    return value.toISOString().slice(0, 10);
-  }
-
-  private async collectTrashItems(input: ListTrashInput): Promise<TrashItem[]> {
-    const tasks: Promise<TrashItem[]>[] = [];
-
-    if (this.shouldIncludeTarget(input, "COMPANY")) {
-      tasks.push(this.listDeletedCompanies(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "CONTACT")) {
-      tasks.push(this.listDeletedContacts(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "PRODUCT")) {
-      tasks.push(this.listDeletedProducts(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "DEAL")) {
-      tasks.push(this.listDeletedDeals(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "COMPANY_MEMO_LOG")) {
-      tasks.push(this.listDeletedCompanyMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "COMPANY_PRIVATE_MEMO_LOG")) {
-      tasks.push(this.listDeletedCompanyPrivateMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "CONTACT_MEMO_LOG")) {
-      tasks.push(this.listDeletedContactMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "CONTACT_PRIVATE_MEMO_LOG")) {
-      tasks.push(this.listDeletedContactPrivateMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "PRODUCT_MEMO_LOG")) {
-      tasks.push(this.listDeletedProductMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "PRODUCT_PRIVATE_MEMO_LOG")) {
-      tasks.push(this.listDeletedProductPrivateMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "DEAL_MEMO_LOG")) {
-      tasks.push(this.listDeletedDealMemoLogs(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "DEAL_FOLLOWING_ACTION_LOG")) {
-      tasks.push(this.listDeletedDealFollowingActionLogs(input));
-    }
-
-    const itemGroups = await Promise.all(tasks);
-
-    return itemGroups.flat();
-  }
-
-  // 기능 : 삭제된 회사 row를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedCompanies(input: ListTrashInput) {
-    const companies = await this.client.company.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        companyName: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        _count: {
-          select: {
-            privateMemoLogs: true,
-          },
-        },
+  private createCompanyLogWhere(
+    input: GetTrashDetailInput
+  ): Prisma.CompanyMemoLogWhereInput {
+    return {
+      id: input.targetId,
+      userId: input.userId,
+      deletedAt: {
+        not: null,
       },
-    });
-
-    return companies
-      .map((company) =>
-        this.createTrashItem({
-          targetType: "COMPANY",
-          targetId: company.id,
-          now: input.now,
-          title: company.companyName,
-          deletedAt: company.deletedAt,
-          trashExpiresAt: company.trashExpiresAt,
-          hasPrivateMemo: company._count.privateMemoLogs > 0,
-        })
-      )
-      .filter(isTrashItem);
+    };
   }
 
-  // 기능 : 삭제된 담당자 row를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedContacts(input: ListTrashInput) {
-    const contacts = await this.client.contact.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        username: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        _count: {
-          select: {
-            privateMemoLogs: true,
-          },
-        },
+  private createCompanyPrivateLogWhere(
+    input: GetTrashDetailInput
+  ): Prisma.CompanyUserPrivateMemoLogWhereInput {
+    return {
+      id: input.targetId,
+      userId: input.userId,
+      deletedAt: {
+        not: null,
       },
-    });
-
-    return contacts
-      .map((contact) =>
-        this.createTrashItem({
-          targetType: "CONTACT",
-          targetId: contact.id,
-          now: input.now,
-          title: contact.username,
-          deletedAt: contact.deletedAt,
-          trashExpiresAt: contact.trashExpiresAt,
-          hasPrivateMemo: contact._count.privateMemoLogs > 0,
-        })
-      )
-      .filter(isTrashItem);
+    };
   }
 
-  // 기능 : 삭제된 제품 row를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedProducts(input: ListTrashInput) {
-    const products = await this.client.product.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        productName: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        _count: {
-          select: {
-            privateMemoLogs: true,
-          },
-        },
-      },
-    });
-
-    return products
-      .map((product) =>
-        this.createTrashItem({
-          targetType: "PRODUCT",
-          targetId: product.id,
-          now: input.now,
-          title: product.productName,
-          deletedAt: product.deletedAt,
-          trashExpiresAt: product.trashExpiresAt,
-          hasPrivateMemo: product._count.privateMemoLogs > 0,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 딜 row를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedDeals(input: ListTrashInput) {
-    const deals = await this.client.deal.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        dealName: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-      },
-    });
-
-    return deals
-      .map((deal) =>
-        this.createTrashItem({
-          targetType: "DEAL",
-          targetId: deal.id,
-          now: input.now,
-          title: deal.dealName,
-          deletedAt: deal.deletedAt,
-          trashExpiresAt: deal.trashExpiresAt,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  private async listDeletedCompanyMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.companyMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        company: {
-          select: {
-            id: true,
-            companyName: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "COMPANY_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "COMPANY",
-          parentId: memoLog.company.id,
-          parentTitle: memoLog.company.companyName,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 회사 비밀 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedCompanyPrivateMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.companyUserPrivateMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        company: {
-          select: {
-            id: true,
-            companyName: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "COMPANY_PRIVATE_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: "비밀 메모",
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "COMPANY",
-          parentId: memoLog.company.id,
-          parentTitle: memoLog.company.companyName,
-          hasPrivateMemo: true,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 담당자 일반 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedContactMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.contactMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        contact: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "CONTACT_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "CONTACT",
-          parentId: memoLog.contact.id,
-          parentTitle: memoLog.contact.username,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 담당자 비밀 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedContactPrivateMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.contactUserPrivateMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        contact: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "CONTACT_PRIVATE_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: "비밀 메모",
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "CONTACT",
-          parentId: memoLog.contact.id,
-          parentTitle: memoLog.contact.username,
-          hasPrivateMemo: true,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 제품 일반 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedProductMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.productMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        product: {
-          select: {
-            id: true,
-            productName: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "PRODUCT_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "PRODUCT",
-          parentId: memoLog.product.id,
-          parentTitle: memoLog.product.productName,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 제품 비밀 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedProductPrivateMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.productUserPrivateMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        product: {
-          select: {
-            id: true,
-            productName: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "PRODUCT_PRIVATE_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: "비밀 메모",
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "PRODUCT",
-          parentId: memoLog.product.id,
-          parentTitle: memoLog.product.productName,
-          hasPrivateMemo: true,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 딜 일반 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedDealMemoLogs(input: ListTrashInput) {
-    const memoLogs = await this.client.dealMemoLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        deal: {
-          select: {
-            id: true,
-            dealName: true,
-          },
-        },
-      },
-    });
-
-    return memoLogs
-      .map((memoLog) =>
-        this.createTrashItem({
-          targetType: "DEAL_MEMO_LOG",
-          targetId: memoLog.id,
-          now: input.now,
-          title: this.createMemoTitle(memoLog.memoType, memoLog.memo),
-          deletedAt: memoLog.deletedAt,
-          trashExpiresAt: memoLog.trashExpiresAt,
-          parentType: "DEAL",
-          parentId: memoLog.deal.id,
-          parentTitle: memoLog.deal.dealName,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 딜 다음 행동 로그를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedDealFollowingActionLogs(input: ListTrashInput) {
-    const actionLogs = await this.client.dealFollowingActionLog.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        followingAction: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        deal: {
-          select: {
-            id: true,
-            dealName: true,
-          },
-        },
-      },
-    });
-
-    return actionLogs
-      .map((actionLog) =>
-        this.createTrashItem({
-          targetType: "DEAL_FOLLOWING_ACTION_LOG",
-          targetId: actionLog.id,
-          now: input.now,
-          title: actionLog.followingAction,
-          deletedAt: actionLog.deletedAt,
-          trashExpiresAt: actionLog.trashExpiresAt,
-          parentType: "DEAL",
-          parentId: actionLog.deal.id,
-          parentTitle: actionLog.deal.dealName,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 현재 사용자의 복구 가능 삭제 목록 where 조건을 만듭니다.
-  private createDeletedWhere(input: ListTrashInput) {
+  private createDeletedEntityWhere(input: ListTrashInput): Prisma.CompanyWhereInput {
     return {
       userId: input.userId,
       deletedAt: {
@@ -1316,84 +540,43 @@ export class PrismaTrashRepository implements TrashRepository {
     };
   }
 
-  // 기능 : 삭제 row의 공통 필드를 휴지통 목록 항목으로 정규화합니다.
-  private createTrashItem(input: DeletedItemInput): TrashItem | null {
-    if (!input.deletedAt || !input.trashExpiresAt) {
-      return null;
-    }
-
-    const restoreWindow = this.getRestoreWindow(
-      input.trashExpiresAt,
-      input.now
-    );
-    const item: TrashItem = {
-      targetType: input.targetType,
-      targetId: input.targetId,
-      title: input.title,
-      deletedAt: input.deletedAt,
-      trashExpiresAt: input.trashExpiresAt,
-      restoreWindow,
-      canRestore: restoreWindow === "ACTIVE",
-      hasPrivateMemo: input.hasPrivateMemo ?? false,
-      privateMemoIncluded: false,
-    };
-
-    if (!input.parentType) {
-      return item;
-    }
-
+  private createDeletedCompanyLogWhere(
+    input: ListTrashInput
+  ): Prisma.CompanyMemoLogWhereInput {
     return {
-      ...item,
-      parentType: input.parentType,
-      parentId: input.parentId ?? null,
-      parentTitle: input.parentTitle ?? null,
+      userId: input.userId,
+      deletedAt: {
+        not: null,
+      },
     };
   }
 
-  // 기능 : 무료 셀프 복구 기간이 남았는지 기준 상태를 계산합니다.
-  private getRestoreWindow(
-    trashExpiresAt: Date,
-    now: Date
-  ): TrashRestoreWindow {
-    return trashExpiresAt.getTime() >= now.getTime() ? "ACTIVE" : "EXPIRED";
+  private createDeletedCompanyPrivateLogWhere(
+    input: ListTrashInput
+  ): Prisma.CompanyUserPrivateMemoLogWhereInput {
+    return {
+      userId: input.userId,
+      deletedAt: {
+        not: null,
+      },
+    };
   }
 
-  // 기능 : 메모 유형과 내용을 이용해 목록 표시용 제목을 만듭니다.
-  private createMemoTitle(memoType: string, memo: string): string {
-    const type = memoType.trim();
-
-    if (type.length > 0) {
-      return type;
-    }
-
-    const content = memo.trim();
-
-    if (content.length === 0) {
-      return "일반 메모";
-    }
-
-    if (content.length <= MEMO_TITLE_MAX_LENGTH) {
-      return content;
-    }
-
-    return `${content.slice(0, MEMO_TITLE_MAX_LENGTH)}...`;
+  private createField(label: string, value: string | number | null) {
+    return {
+      label,
+      value: value === null ? null : String(value),
+    };
   }
 
-  // 기능 : 대상 유형이 현재 휴지통 필터 조건에 포함되는지 판단합니다.
   private shouldIncludeTarget(
     input: ListTrashInput,
-    targetType: TrashTargetType
+    metadata: TargetMetadata
   ): boolean {
-    const metadata = TARGET_METADATA_BY_TYPE.get(targetType);
-
-    if (!metadata) {
-      return false;
-    }
-
     if (
       input.targetType &&
       input.targetType !== "ALL" &&
-      input.targetType !== targetType
+      input.targetType !== metadata.targetType
     ) {
       return false;
     }
@@ -1401,23 +584,26 @@ export class PrismaTrashRepository implements TrashRepository {
     if (
       input.itemKind &&
       input.itemKind !== "ALL" &&
-      input.itemKind !== metadata.kind
+      input.itemKind !== metadata.itemKind
     ) {
       return false;
     }
 
-    if (input.domain && input.domain !== "ALL" && input.domain !== metadata.domain) {
+    if (
+      input.domain &&
+      input.domain !== "ALL" &&
+      input.domain !== metadata.domain
+    ) {
       return false;
     }
 
-    if (!input.logType || input.logType === "ALL") {
-      return true;
-    }
-
-    return metadata.kind === "LOG" && metadata.logType === input.logType;
+    return !(
+      input.logType &&
+      input.logType !== "ALL" &&
+      input.logType !== metadata.logType
+    );
   }
 
-  // 기능 : 휴지통 목록 항목을 제목, 위치, 식별자 기준으로 검색합니다.
   private filterByQuery(
     items: readonly TrashItem[],
     query: string | undefined
@@ -1431,228 +617,117 @@ export class PrismaTrashRepository implements TrashRepository {
     return items.filter((item) =>
       [
         item.title,
+        item.parentTitle,
         item.targetType,
-        item.targetId,
-        item.parentTitle ?? "",
-        item.parentId ?? "",
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery)
+        item.parentType,
+      ].some((value) => value?.toLowerCase().includes(normalizedQuery))
     );
   }
 
-  // 기능 : 휴지통 목록 항목을 최신순 또는 만료 임박순으로 정렬합니다.
   private sortTrashItems(
     items: readonly TrashItem[],
-    sort: TrashSort | undefined
+    sort: ListTrashInput["sort"]
   ): TrashItem[] {
-    return [...items].sort((left, right) => {
-      if (sort === "EXPIRES_SOON") {
-        return (
-          left.trashExpiresAt.getTime() - right.trashExpiresAt.getTime() ||
-          right.deletedAt.getTime() - left.deletedAt.getTime()
-        );
+    const sorted = [...items];
+
+    sorted.sort((left, right) => {
+      const leftDate =
+        sort === "EXPIRES_SOON" ? left.trashExpiresAt : left.deletedAt;
+      const rightDate =
+        sort === "EXPIRES_SOON" ? right.trashExpiresAt : right.deletedAt;
+      const direction = sort === "EXPIRES_SOON" ? 1 : -1;
+      const dateDiff = leftDate.getTime() - rightDate.getTime();
+
+      if (dateDiff !== 0) {
+        return dateDiff * direction;
       }
 
-      return (
-        right.deletedAt.getTime() - left.deletedAt.getTime() ||
-        left.trashExpiresAt.getTime() - right.trashExpiresAt.getTime()
-      );
+      return left.targetId.localeCompare(right.targetId);
     });
+
+    return sorted;
   }
 
-  // 기능 : 휴지통 대상 유형에 맞는 Prisma 모델의 삭제 상태를 초기화합니다.
   private async restoreByTargetType(
     input: RestoreTrashItemInput
   ): Promise<boolean> {
+    const data = this.createRestoreData();
+
     switch (input.targetType) {
       case "COMPANY": {
         const result = await this.client.company.updateMany({
-          where: this.createRestoreWhere(input),
-          data: this.createRestoreData(),
+          where: this.createCompanyRestoreWhere(input),
+          data,
         });
-
         return result.count > 0;
       }
-      case "CONTACT": {
-        const result = await this.client.contact.updateMany({
-          where: this.createRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
 
-        return result.count > 0;
-      }
-      case "PRODUCT": {
-        const result = await this.client.product.updateMany({
-          where: this.createRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "DEAL": {
-        const result = await this.client.deal.updateMany({
-          where: this.createRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
       case "COMPANY_MEMO_LOG": {
         const result = await this.client.companyMemoLog.updateMany({
           where: this.createCompanyLogRestoreWhere(input),
-          data: this.createRestoreData(),
+          data,
         });
-
         return result.count > 0;
       }
+
       case "COMPANY_PRIVATE_MEMO_LOG": {
-        const result = await this.client.companyUserPrivateMemoLog.updateMany({
-          where: this.createCompanyLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "CONTACT_MEMO_LOG": {
-        const result = await this.client.contactMemoLog.updateMany({
-          where: this.createContactLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "CONTACT_PRIVATE_MEMO_LOG": {
-        const result = await this.client.contactUserPrivateMemoLog.updateMany({
-          where: this.createContactLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "PRODUCT_MEMO_LOG": {
-        const result = await this.client.productMemoLog.updateMany({
-          where: this.createProductLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "PRODUCT_PRIVATE_MEMO_LOG": {
-        const result = await this.client.productUserPrivateMemoLog.updateMany({
-          where: this.createProductLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "DEAL_MEMO_LOG": {
-        const result = await this.client.dealMemoLog.updateMany({
-          where: this.createDealLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
-      case "DEAL_FOLLOWING_ACTION_LOG": {
-        const result = await this.client.dealFollowingActionLog.updateMany({
-          where: this.createDealLogRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
+        const result =
+          await this.client.companyUserPrivateMemoLog.updateMany({
+            where: this.createCompanyPrivateLogRestoreWhere(input),
+            data,
+          });
         return result.count > 0;
       }
     }
   }
 
-  // 기능 : 로그의 직접 상위 도메인 row가 삭제 상태이면 복구 차단 사유를 반환합니다.
-  private async getRestoreBlockedReason(
+  private async hasDeletedParent(input: RestoreTrashItemInput): Promise<boolean> {
+    if (input.targetType === "COMPANY_MEMO_LOG") {
+      const row = await this.client.companyMemoLog.findFirst({
+        where: {
+          id: input.targetId,
+          userId: input.userId,
+          deletedAt: {
+            not: null,
+          },
+          company: {
+            deletedAt: {
+              not: null,
+            },
+          },
+        },
+        select: { id: true },
+      });
+
+      return Boolean(row);
+    }
+
+    if (input.targetType === "COMPANY_PRIVATE_MEMO_LOG") {
+      const row = await this.client.companyUserPrivateMemoLog.findFirst({
+        where: {
+          id: input.targetId,
+          userId: input.userId,
+          deletedAt: {
+            not: null,
+          },
+          company: {
+            deletedAt: {
+              not: null,
+            },
+          },
+        },
+        select: { id: true },
+      });
+
+      return Boolean(row);
+    }
+
+    return false;
+  }
+
+  private createCompanyRestoreWhere(
     input: RestoreTrashItemInput
-  ): Promise<TrashRestoreBlockedReason | null> {
-    return (await this.hasDeletedParent(input)) ? "PARENT_DELETED" : null;
-  }
-
-  private async hasDeletedParent(input: RestoreTrashItemInput) {
-    switch (input.targetType) {
-      case "COMPANY":
-      case "CONTACT":
-      case "PRODUCT":
-      case "DEAL":
-        return false;
-      case "COMPANY_MEMO_LOG": {
-        const memoLog = await this.client.companyMemoLog.findFirst({
-          where: this.createCompanyDeletedParentWhere(input),
-          select: { id: true },
-        });
-
-        return memoLog !== null;
-      }
-      case "COMPANY_PRIVATE_MEMO_LOG": {
-        const memoLog =
-          await this.client.companyUserPrivateMemoLog.findFirst({
-            where: this.createCompanyDeletedParentWhere(input),
-            select: { id: true },
-          });
-
-        return memoLog !== null;
-      }
-      case "CONTACT_MEMO_LOG": {
-        const memoLog = await this.client.contactMemoLog.findFirst({
-          where: this.createContactDeletedParentWhere(input),
-          select: { id: true },
-        });
-
-        return memoLog !== null;
-      }
-      case "CONTACT_PRIVATE_MEMO_LOG": {
-        const memoLog =
-          await this.client.contactUserPrivateMemoLog.findFirst({
-            where: this.createContactDeletedParentWhere(input),
-            select: { id: true },
-          });
-
-        return memoLog !== null;
-      }
-      case "PRODUCT_MEMO_LOG": {
-        const memoLog = await this.client.productMemoLog.findFirst({
-          where: this.createProductDeletedParentWhere(input),
-          select: { id: true },
-        });
-
-        return memoLog !== null;
-      }
-      case "PRODUCT_PRIVATE_MEMO_LOG": {
-        const memoLog =
-          await this.client.productUserPrivateMemoLog.findFirst({
-            where: this.createProductDeletedParentWhere(input),
-            select: { id: true },
-          });
-
-        return memoLog !== null;
-      }
-      case "DEAL_MEMO_LOG": {
-        const memoLog = await this.client.dealMemoLog.findFirst({
-          where: this.createDealDeletedParentWhere(input),
-          select: { id: true },
-        });
-
-        return memoLog !== null;
-      }
-      case "DEAL_FOLLOWING_ACTION_LOG": {
-        const actionLog =
-          await this.client.dealFollowingActionLog.findFirst({
-            where: this.createDealDeletedParentWhere(input),
-            select: { id: true },
-          });
-
-        return actionLog !== null;
-      }
-    }
-  }
-
-  // 기능 : 현재 사용자의 복구 가능 삭제 row where 조건을 만듭니다.
-  private createRestoreWhere(input: RestoreTrashItemInput) {
+  ): Prisma.CompanyWhereInput {
     return {
       id: input.targetId,
       userId: input.userId,
@@ -1665,80 +740,42 @@ export class PrismaTrashRepository implements TrashRepository {
     };
   }
 
-  // 기능 : 직접 상위 도메인 row가 활성 상태인 로그 복구 where 조건을 만듭니다.
-  private createCompanyLogRestoreWhere(input: RestoreTrashItemInput) {
+  private createCompanyLogRestoreWhere(
+    input: RestoreTrashItemInput
+  ): Prisma.CompanyMemoLogWhereInput {
     return {
-      ...this.createRestoreWhere(input),
-      company: this.createActiveParentWhere(input),
-    };
-  }
-
-  private createContactLogRestoreWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      contact: this.createActiveParentWhere(input),
-    };
-  }
-
-  private createProductLogRestoreWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      product: this.createActiveParentWhere(input),
-    };
-  }
-
-  private createDealLogRestoreWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      deal: this.createActiveParentWhere(input),
-    };
-  }
-
-  private createCompanyDeletedParentWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      company: this.createDeletedParentWhere(input),
-    };
-  }
-
-  private createContactDeletedParentWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      contact: this.createDeletedParentWhere(input),
-    };
-  }
-
-  private createProductDeletedParentWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      product: this.createDeletedParentWhere(input),
-    };
-  }
-
-  private createDealDeletedParentWhere(input: RestoreTrashItemInput) {
-    return {
-      ...this.createRestoreWhere(input),
-      deal: this.createDeletedParentWhere(input),
-    };
-  }
-
-  private createActiveParentWhere(input: RestoreTrashItemInput) {
-    return {
-      userId: input.userId,
-      deletedAt: null,
-    };
-  }
-
-  private createDeletedParentWhere(input: RestoreTrashItemInput) {
-    return {
+      id: input.targetId,
       userId: input.userId,
       deletedAt: {
         not: null,
       },
+      trashExpiresAt: {
+        gte: input.now,
+      },
+      company: {
+        deletedAt: null,
+      },
     };
   }
 
-  // 기능 : 복구 시 초기화할 soft delete 컬럼 값을 만듭니다.
+  private createCompanyPrivateLogRestoreWhere(
+    input: RestoreTrashItemInput
+  ): Prisma.CompanyUserPrivateMemoLogWhereInput {
+    return {
+      id: input.targetId,
+      userId: input.userId,
+      deletedAt: {
+        not: null,
+      },
+      trashExpiresAt: {
+        gte: input.now,
+      },
+      company: {
+        deletedAt: null,
+      },
+    };
+  }
+
   private createRestoreData() {
     return {
       deletedAt: null,
@@ -1747,16 +784,36 @@ export class PrismaTrashRepository implements TrashRepository {
     };
   }
 
-  // 기능 : 휴지통 목록 page 값을 최소 1로 정규화합니다.
-  private normalizePage(page: number | undefined): number {
-    return Math.max(page ?? DEFAULT_PAGE, 1);
+  private createMemoTitle(memoType: string, memo: string): string {
+    const normalizedMemoType = memoType.trim();
+    const normalizedMemo = memo.trim();
+    const baseTitle =
+      normalizedMemo.length > 0 ? normalizedMemo : normalizedMemoType;
+    const shortened =
+      baseTitle.length > MEMO_TITLE_MAX_LENGTH
+        ? `${baseTitle.slice(0, MEMO_TITLE_MAX_LENGTH)}...`
+        : baseTitle;
+
+    return normalizedMemoType ? `${normalizedMemoType}: ${shortened}` : shortened;
   }
 
-  // 기능 : 휴지통 목록 pageSize 값을 허용 범위 안으로 정규화합니다.
+  private getRestoreWindow(trashExpiresAt: Date, now: Date) {
+    return trashExpiresAt.getTime() >= now.getTime() ? "ACTIVE" : "EXPIRED";
+  }
+
+  private formatDateOnly(value: Date): string {
+    return value.toISOString().slice(0, 10);
+  }
+
+  private normalizePage(page: number | undefined): number {
+    return Number.isInteger(page) && page && page > 0 ? page : DEFAULT_PAGE;
+  }
+
   private normalizePageSize(pageSize: number | undefined): number {
-    return Math.min(
-      Math.max(pageSize ?? DEFAULT_PAGE_SIZE, 1),
-      MAX_PAGE_SIZE
-    );
+    if (!Number.isInteger(pageSize) || !pageSize || pageSize < 1) {
+      return DEFAULT_PAGE_SIZE;
+    }
+
+    return Math.min(pageSize, MAX_PAGE_SIZE);
   }
 }

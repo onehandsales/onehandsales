@@ -101,15 +101,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DuplicateCompanyRegion":
       case "CompanyFieldInUse":
       case "CompanyRegionInUse":
-      case "DuplicateContactDepartment":
-      case "DuplicateContactJobGrade":
-      case "ContactDepartmentInUse":
-      case "ContactJobGradeInUse":
-      case "DuplicateProductCategory":
-      case "DuplicateProductStatus":
-      case "ProductCategoryInUse":
-      case "ProductStatusInUse":
-      case "DealActivityNotEditable":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":
@@ -119,19 +110,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidRefreshOrigin":
       case "ValidationError":
       case "CURRENCY_UNSUPPORTED":
-      case "AMOUNT_INTEGER_REQUIRED":
       case "USER_LOCALE_UNSUPPORTED":
       case "USER_TIMEZONE_INVALID":
       case "USER_COUNTRY_UNSUPPORTED":
       case "USER_DEFAULT_CURRENCY_UNSUPPORTED":
-      case "CONTACT_PHONE_COUNTRY_UNSUPPORTED":
-      case "CONTACT_PHONE_INVALID":
       case "COMPANY_REGION_UNSUPPORTED":
-      case "ANALYTICS_EVENT_UNSUPPORTED":
-      case "ANALYTICS_EVENT_VERSION_UNSUPPORTED":
-      case "ANALYTICS_PAYLOAD_INVALID":
-      case "ANALYTICS_PAYLOAD_PII_REJECTED":
-      case "ANALYTICS_ROUTE_KEY_UNSUPPORTED":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
       case "ERROR_REPORT_DESCRIPTION_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_REQUIRED":

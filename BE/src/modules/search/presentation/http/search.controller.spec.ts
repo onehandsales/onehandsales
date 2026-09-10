@@ -28,9 +28,7 @@ type RequestWithCurrentUser = Request & {
 
 type SearchServiceFake = Pick<SearchApplicationService, "searchAll">;
 
-// 역할 : FakeAuthGuard 테스트 요청에 현재 사용자 컨텍스트를 주입합니다.
 class FakeAuthGuard implements CanActivate {
-  // 기능 : 테스트 요청을 인증된 요청으로 처리합니다.
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<RequestWithCurrentUser>();
     request.currentUser = CURRENT_USER;
@@ -39,14 +37,12 @@ class FakeAuthGuard implements CanActivate {
   }
 }
 
-// 기능 : SearchController 테스트용 service fake를 생성합니다.
 function createSearchServiceFake(): jest.Mocked<SearchServiceFake> {
   return {
     searchAll: jest.fn().mockResolvedValue({ groups: [] }),
   };
 }
 
-// 기능 : SearchController의 HTTP route와 DTO 연결을 검증합니다.
 describe("SearchController", () => {
   let app: INestApplication;
   let service: jest.Mocked<SearchServiceFake>;
@@ -79,12 +75,12 @@ describe("SearchController", () => {
 
   it("routes integrated search request with transformed query", async () => {
     await request(app.getHttpServer())
-      .get("/api/search?q=세손&types=COMPANY,DEAL&limit=3")
+      .get("/api/search?q=OneHand&types=COMPANY&limit=3")
       .expect(200);
 
     expect(service.searchAll).toHaveBeenCalledWith(CURRENT_USER, {
-      q: "세손",
-      types: "COMPANY,DEAL",
+      q: "OneHand",
+      types: "COMPANY",
       limit: 3,
     });
   });

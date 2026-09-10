@@ -1,16 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  BriefcaseBusiness,
   Building2,
-  Check,
-  Copy,
   LockKeyhole,
   MoreHorizontal,
   Plus,
   Pencil,
   ShieldCheck,
   Trash2,
-  UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
@@ -29,8 +25,6 @@ import { ModalShell } from "@/components/ui/modal-shell";
 import { useAppI18n } from "@/features/app-i18n";
 import { CompanyEditDialog } from "@/features/company/components/company-edit-dialog";
 import {
-  useCompanyContacts,
-  useCompanyDeals,
   useCompanyDetail,
   useCompanyMemoLogs,
   useCompanyPrivateMemoLogs,
@@ -50,8 +44,6 @@ import {
 } from "@/features/company/hooks/use-company-list";
 import type {
   CompanyDetail,
-  CompanyContact,
-  CompanyDeal,
   CompanyField,
   CompanyMemoLog,
   CompanyPrivateMemoLog,
@@ -71,7 +63,7 @@ import {
   type CompanyPrivateMemoLogFormValues,
 } from "@/features/company/schemas/company-schema";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { formatDate, formatDateTime } from "@/utils/format";
+import { formatDateTime } from "@/utils/format";
 import {
   isInvalidDetailPathError,
   navigateFromInvalidDetailPath,
@@ -91,10 +83,6 @@ const COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY = "onehand.company.detail.smallText"
 const COMPANY_RELATED_BODY_CLASS_NAME = "rounded-lg bg-[#FAF9F6] px-4 py-3";
 const COMPANY_RELATED_SCROLL_CLASS_NAME =
   "notion-scrollbar overflow-x-hidden overflow-y-auto pr-1";
-const COMPANY_RELATED_ROW_CLASS_NAME =
-  "-mx-2 grid min-h-[56px] min-w-0 items-center gap-x-3 gap-y-1 rounded-md border-b border-[#E7E3DC] px-2 py-2 transition-colors last:border-b-0 hover:bg-[#F0EEE8] md:grid-cols-3";
-const COMPANY_RELATED_FIRST_CELL_CLASS_NAME = "min-w-0 px-2 text-left";
-const COMPANY_RELATED_CELL_CLASS_NAME = "min-w-0 px-2 text-center";
 const COMPANY_MEMO_ROW_CLASS_NAME =
   "group -mx-2 flex gap-3 rounded-md border-b border-[#E7E3DC] px-2 py-1.5 transition-colors last:border-b-0 hover:bg-[#F0EEE8]";
 
@@ -115,8 +103,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const pageMenuRef = useRef<HTMLDivElement | null>(null);
 
   const companyQuery = useCompanyDetail(companyId);
-  const contactsQuery = useCompanyContacts(companyId);
-  const dealsQuery = useCompanyDeals(companyId);
   const fieldsQuery = useCompanyFields();
   const regionsQuery = useCompanyRegions();
   const memoLogsQuery = useCompanyMemoLogs(companyId);
@@ -207,8 +193,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   }
   if (!company) return <CompanyDetailSkeleton />;
 
-  const contacts = contactsQuery.data?.items ?? [];
-  const deals = dealsQuery.data?.items ?? [];
   const contentWidthClassName = isFullWidth ? "max-w-[1444px]" : "max-w-[678px]";
   const twoColumnSectionsClassName = isFullWidth
     ? "grid gap-y-5 lg:grid-cols-2 lg:gap-x-10"
@@ -222,14 +206,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const clearNotice = () => {
     setNotice(null);
     setNoticeDescription(null);
-  };
-
-  const onCopyEmail = async (email: string) => {
-    try {
-      await copyTextToClipboard(email);
-    } catch {
-      // Ignore clipboard failures; copying from the inline icon should stay silent.
-    }
   };
 
   const onDeleteCompany = async () => {
@@ -330,24 +306,8 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
             <CompanySummaryHeader
               company={company}
-              contactCount={contacts.length}
-              dealCount={deals.length}
               isSmallText={isSmallText}
             />
-
-            <div className={twoColumnSectionsClassName}>
-              <ConnectedContactsTable
-                contacts={contacts}
-                isLoading={contactsQuery.isLoading}
-                isSmallText={isSmallText}
-                onCopyEmail={onCopyEmail}
-              />
-              <ConnectedDealsTable
-                deals={deals}
-                isLoading={dealsQuery.isLoading}
-                isSmallText={isSmallText}
-              />
-            </div>
 
             <div className={twoColumnSectionsClassName}>
               <MemoPanel
@@ -408,13 +368,9 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
 
 function CompanySummaryHeader({
   company,
-  contactCount,
-  dealCount,
   isSmallText,
 }: {
   readonly company: CompanyDetail;
-  readonly contactCount: number;
-  readonly dealCount: number;
   readonly isSmallText: boolean;
 }) {
   const { locale } = useAppI18n();
@@ -454,16 +410,6 @@ function CompanySummaryHeader({
           label="주소"
           isSmallText={isSmallText}
           value={companyAddress}
-        />
-        <CompanyDocumentProperty
-          isSmallText={isSmallText}
-          label="담당자"
-          value={`${contactCount}명`}
-        />
-        <CompanyDocumentProperty
-          isSmallText={isSmallText}
-          label="딜"
-          value={`${dealCount}건`}
         />
       </div>
     </section>
@@ -645,244 +591,6 @@ function CompanyPageOptionToggle({
     </button>
   );
 }
-
-// ── Connected Contacts Table ────────────────────────────────────────
-
-function ConnectedContactsTable({
-  contacts,
-  isLoading,
-  isSmallText,
-  onCopyEmail,
-}: {
-  readonly contacts: CompanyContact[];
-  readonly isLoading: boolean;
-  readonly isSmallText: boolean;
-  readonly onCopyEmail: (email: string) => Promise<void>;
-}) {
-  const SHOW_LIMIT = 3;
-  const hasMore = contacts.length > SHOW_LIMIT;
-  const [copiedContactId, setCopiedContactId] = useState<string | null>(null);
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (copiedTimerRef.current) {
-        clearTimeout(copiedTimerRef.current);
-      }
-    };
-  }, []);
-
-  const onClickCopyEmail = (contact: CompanyContact) => {
-    if (copiedTimerRef.current) {
-      clearTimeout(copiedTimerRef.current);
-    }
-
-    setCopiedContactId(contact.id);
-    void onCopyEmail(contact.email);
-
-    copiedTimerRef.current = setTimeout(() => {
-      setCopiedContactId(null);
-      copiedTimerRef.current = null;
-    }, 800);
-  };
-
-  return (
-    <CompanyDocumentSection>
-      <div>
-        <CompanyDocumentSectionHeader
-          count={contacts.length}
-          isSmallText={isSmallText}
-          title="연결된 담당자"
-        />
-      </div>
-      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
-        {isLoading ? (
-          <CompanyLoadingRows />
-        ) : contacts.length === 0 ? (
-          <CompanyEmptyText isSmallText={isSmallText}>
-            연결된 담당자들을 이곳에서 볼 수 있어요.
-          </CompanyEmptyText>
-        ) : (
-          <div
-            className={
-              hasMore
-                ? `${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[168px]`
-                : "overflow-x-hidden"
-            }
-          >
-            {contacts.map((contact) => {
-              const jobGradeName = contact.contactJobGrade?.jobGradeName;
-              const isEmailCopied = copiedContactId === contact.id;
-
-              return (
-                <div
-                  className={COMPANY_RELATED_ROW_CLASS_NAME}
-                  key={contact.id}
-                >
-                  <Link
-                    aria-label={`${contact.username} 상세 보기`}
-                    className={`${COMPANY_RELATED_FIRST_CELL_CLASS_NAME} flex items-center justify-start gap-2.5`}
-                    to={`/app/contacts/${contact.id}`}
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#DBEAFE]">
-                      <UserRound className="h-3.5 w-3.5 text-[#4880EE]" />
-                    </span>
-                    <span className="grid min-w-0 text-left">
-                      <span className="flex min-w-0 items-center gap-1.5">
-                        <span
-                          className={`truncate font-extrabold text-[#111827] ${
-                            isSmallText ? "text-[12px]" : "text-[13px]"
-                          }`}
-                        >
-                          {contact.username}
-                        </span>
-                        {jobGradeName ? (
-                          <span
-                            className={`shrink-0 font-extrabold text-[#111827] ${
-                              isSmallText ? "text-[12px]" : "text-[13px]"
-                            }`}
-                          >
-                            {jobGradeName}
-                          </span>
-                        ) : null}
-                      </span>
-                      <span className="mt-0.5 min-w-0 truncate text-[11px] font-semibold leading-4 text-[#94A3B8]">
-                        {contact.contactDepartment.departmentName}
-                      </span>
-                    </span>
-                  </Link>
-                    <div
-                      className={`${COMPANY_RELATED_CELL_CLASS_NAME} flex items-center justify-center gap-1.5 font-medium leading-4 text-[#9CA3AF] ${
-                        isSmallText ? "text-[11px]" : "text-[12px]"
-                      }`}
-                    >
-                      <button
-                        aria-label={`${contact.email} 복사`}
-                        className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded transition duration-150 hover:bg-[#EFF6FF] hover:text-[#4880EE] ${
-                          isEmailCopied
-                            ? "scale-110 text-[#4880EE]"
-                            : "scale-100 text-[#94A3B8]"
-                        }`}
-                        onClick={() => onClickCopyEmail(contact)}
-                        title="이메일 복사"
-                        type="button"
-                      >
-                        {isEmailCopied ? (
-                          <Check className="h-3 w-3" />
-                        ) : (
-                          <Copy className="h-3 w-3" />
-                        )}
-                      </button>
-                      <Link
-                        className="min-w-0 max-w-full truncate"
-                        to={`/app/contacts/${contact.id}`}
-                      >
-                        {contact.email}
-                      </Link>
-                    </div>
-                    <Link
-                      className={`${COMPANY_RELATED_CELL_CLASS_NAME} max-w-full truncate font-medium leading-4 text-[#9CA3AF] ${
-                        isSmallText ? "text-[11px]" : "text-[12px]"
-                      }`}
-                      to={`/app/contacts/${contact.id}`}
-                    >
-                      {contact.mobile}
-                    </Link>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </CompanyDocumentSection>
-  );
-}
-
-// ── Connected Deals Table ───────────────────────────────────────────
-
-function ConnectedDealsTable({
-  deals,
-  isLoading,
-  isSmallText,
-}: {
-  readonly deals: CompanyDeal[];
-  readonly isLoading: boolean;
-  readonly isSmallText: boolean;
-}) {
-  const { formatCurrency } = useAppI18n();
-  const SHOW_LIMIT = 3;
-  const hasMore = deals.length > SHOW_LIMIT;
-
-  return (
-    <CompanyDocumentSection>
-      <div>
-        <CompanyDocumentSectionHeader
-          count={deals.length}
-          isSmallText={isSmallText}
-          title="연결된 딜"
-        />
-      </div>
-      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
-        {isLoading ? (
-          <CompanyLoadingRows />
-        ) : deals.length === 0 ? (
-          <CompanyEmptyText isSmallText={isSmallText}>
-            연결된 딜들을 이곳에서 볼 수 있어요.
-          </CompanyEmptyText>
-        ) : (
-          <div
-            className={
-              hasMore
-                ? `${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[168px]`
-                : "overflow-x-hidden"
-            }
-          >
-            {deals.map((deal) => (
-              <Link
-                className={COMPANY_RELATED_ROW_CLASS_NAME}
-                key={deal.id}
-                to={`/app/deals/${deal.id}`}
-              >
-                <span
-                  className={`${COMPANY_RELATED_FIRST_CELL_CLASS_NAME} flex items-center justify-start gap-2.5`}
-                >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FEF2F2]">
-                    <BriefcaseBusiness className="h-3.5 w-3.5 text-[#DC2626]" />
-                  </span>
-                  <span
-                    className={`min-w-0 truncate text-left font-extrabold text-[#111827] ${
-                      isSmallText ? "text-[12px]" : "text-[13px]"
-                    }`}
-                  >
-                    {deal.dealName}
-                  </span>
-                </span>
-                  <span
-                    className={`${COMPANY_RELATED_CELL_CLASS_NAME} max-w-full truncate font-medium leading-4 text-[#9CA3AF] ${
-                      isSmallText ? "text-[11px]" : "text-[12px]"
-                    }`}
-                  >
-                    {formatCurrency(deal.dealCost, {
-                      currencyCode: deal.currencyCode,
-                    })}
-                  </span>
-                  <span
-                    className={`${COMPANY_RELATED_CELL_CLASS_NAME} truncate font-medium leading-4 text-[#9CA3AF] ${
-                      isSmallText ? "text-[11px]" : "text-[12px]"
-                    }`}
-                  >
-                    {formatDate(deal.createdAt, { includeYear: true })}
-                  </span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </CompanyDocumentSection>
-  );
-}
-
-// ── Memo Panel ──────────────────────────────────────────────────────
 
 function TimelineMarker() {
   return (
@@ -1584,34 +1292,4 @@ function readStoredBoolean(key: string, fallback: boolean) {
   }
 
   return fallback;
-}
-
-async function copyTextToClipboard(text: string) {
-  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  if (typeof document === "undefined") {
-    throw new Error("Clipboard is not available.");
-  }
-
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.left = "-9999px";
-  textarea.style.top = "0";
-
-  document.body.appendChild(textarea);
-  textarea.select();
-
-  try {
-    const copied = document.execCommand("copy");
-    if (!copied) {
-      throw new Error("Copy command failed.");
-    }
-  } finally {
-    document.body.removeChild(textarea);
-  }
 }

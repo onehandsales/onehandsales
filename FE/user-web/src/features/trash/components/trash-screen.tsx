@@ -1,6 +1,5 @@
 import {
   ArrowUpDown,
-  BriefcaseBusiness,
   Building2,
   CalendarClock,
   ClipboardList,
@@ -9,12 +8,10 @@ import {
   Loader2,
   LockKeyhole,
   MapPin,
-  Package,
   RotateCcw,
   StickyNote,
   Timer,
   Trash2,
-  UserRound,
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -76,21 +73,17 @@ const domainOptions: readonly {
   readonly value: TrashDomainFilter;
   readonly label: string;
 }[] = [
-  { value: "ALL", label: "대상" },
-  { value: "COMPANY", label: "회사" },
-  { value: "CONTACT", label: "담당자" },
-  { value: "PRODUCT", label: "제품" },
-  { value: "DEAL", label: "딜" },
+  { value: "ALL", label: "??" },
+  { value: "COMPANY", label: "??" },
 ];
 
 const logTypeOptions: readonly {
   readonly value: TrashLogTypeFilter;
   readonly label: string;
 }[] = [
-  { value: "ALL", label: "로그 유형" },
-  { value: "MEMO", label: "일반 메모" },
-  { value: "PRIVATE_MEMO", label: "비밀 메모" },
-  { value: "FOLLOWING_ACTION", label: "다음 행동" },
+  { value: "ALL", label: "?? ??" },
+  { value: "MEMO", label: "?? ??" },
+  { value: "PRIVATE_MEMO", label: "?? ??" },
 ];
 
 const sortOptions: readonly {
@@ -102,10 +95,7 @@ const sortOptions: readonly {
 ];
 
 const domainLabels: Record<Exclude<TrashDomainFilter, "ALL">, string> = {
-  COMPANY: "회사",
-  CONTACT: "담당자",
-  PRODUCT: "제품",
-  DEAL: "딜",
+  COMPANY: "??",
 };
 
 const targetMeta: Record<
@@ -118,60 +108,19 @@ const targetMeta: Record<
     readonly isSensitive?: boolean;
   }
 > = {
-  COMPANY: { label: "회사", icon: Building2, domain: "COMPANY", kind: "ENTITY" },
-  CONTACT: { label: "담당자", icon: UserRound, domain: "CONTACT", kind: "ENTITY" },
-  PRODUCT: { label: "제품", icon: Package, domain: "PRODUCT", kind: "ENTITY" },
-  DEAL: { label: "딜", icon: BriefcaseBusiness, domain: "DEAL", kind: "ENTITY" },
+  COMPANY: { label: "??", icon: Building2, domain: "COMPANY", kind: "ENTITY" },
   COMPANY_MEMO_LOG: {
-    label: "회사 일반 메모",
+    label: "?? ?? ??",
     icon: StickyNote,
     domain: "COMPANY",
     kind: "LOG",
   },
   COMPANY_PRIVATE_MEMO_LOG: {
-    label: "회사 비밀 메모",
+    label: "?? ?? ??",
     icon: LockKeyhole,
     domain: "COMPANY",
     kind: "LOG",
     isSensitive: true,
-  },
-  CONTACT_MEMO_LOG: {
-    label: "담당자 일반 메모",
-    icon: StickyNote,
-    domain: "CONTACT",
-    kind: "LOG",
-  },
-  CONTACT_PRIVATE_MEMO_LOG: {
-    label: "담당자 비밀 메모",
-    icon: LockKeyhole,
-    domain: "CONTACT",
-    kind: "LOG",
-    isSensitive: true,
-  },
-  PRODUCT_MEMO_LOG: {
-    label: "제품 일반 메모",
-    icon: StickyNote,
-    domain: "PRODUCT",
-    kind: "LOG",
-  },
-  PRODUCT_PRIVATE_MEMO_LOG: {
-    label: "제품 비밀 메모",
-    icon: LockKeyhole,
-    domain: "PRODUCT",
-    kind: "LOG",
-    isSensitive: true,
-  },
-  DEAL_MEMO_LOG: {
-    label: "딜 일반 메모",
-    icon: StickyNote,
-    domain: "DEAL",
-    kind: "LOG",
-  },
-  DEAL_FOLLOWING_ACTION_LOG: {
-    label: "다음 행동",
-    icon: ClipboardList,
-    domain: "DEAL",
-    kind: "LOG",
   },
 };
 

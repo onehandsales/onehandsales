@@ -17,17 +17,8 @@ import type {
 
 export const TRASH_TARGET_TYPES = [
   "COMPANY",
-  "CONTACT",
-  "PRODUCT",
-  "DEAL",
   "COMPANY_MEMO_LOG",
   "COMPANY_PRIVATE_MEMO_LOG",
-  "CONTACT_MEMO_LOG",
-  "CONTACT_PRIVATE_MEMO_LOG",
-  "PRODUCT_MEMO_LOG",
-  "PRODUCT_PRIVATE_MEMO_LOG",
-  "DEAL_MEMO_LOG",
-  "DEAL_FOLLOWING_ACTION_LOG",
 ] as const satisfies readonly TrashTargetType[];
 
 const TRASH_TARGET_FILTERS = [
@@ -44,16 +35,12 @@ const TRASH_ITEM_KIND_FILTERS = [
 const TRASH_DOMAIN_FILTERS = [
   "ALL",
   "COMPANY",
-  "CONTACT",
-  "PRODUCT",
-  "DEAL",
 ] as const satisfies readonly TrashDomainFilter[];
 
 const TRASH_LOG_TYPE_FILTERS = [
   "ALL",
   "MEMO",
   "PRIVATE_MEMO",
-  "FOLLOWING_ACTION",
 ] as const satisfies readonly TrashLogTypeFilter[];
 
 const TRASH_SORTS = [

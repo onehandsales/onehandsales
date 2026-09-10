@@ -7,7 +7,7 @@ export type SupportedCurrencyCode = (typeof SUPPORTED_CURRENCY_CODES)[number];
 
 const SUPPORTED_CURRENCY_CODE_SET = new Set<string>(SUPPORTED_CURRENCY_CODES);
 
-// 기능 : 입력 통화 코드가 Product/Deal에서 지원하는 통화인지 확인합니다.
+// 기능 : 입력 통화 코드가 서비스에서 지원하는 통화인지 확인합니다.
 export function isSupportedCurrencyCode(
   value: string
 ): value is SupportedCurrencyCode {

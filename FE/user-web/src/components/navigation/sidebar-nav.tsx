@@ -1,9 +1,6 @@
 import {
-  BriefcaseBusiness,
   Building2,
   ChevronRight,
-  IdCard,
-  Package,
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -30,14 +27,11 @@ const groups: Array<{
     closeTooltipKey: "navigation.mainGroupClose",
     openTooltipKey: "navigation.mainGroupOpen",
     items: [
-      { labelKey: "navigation.deals", to: "/app/deals", icon: BriefcaseBusiness },
       {
         labelKey: "navigation.companies",
         to: "/app/companies",
         icon: Building2,
       },
-      { labelKey: "navigation.contacts", to: "/app/contacts", icon: IdCard },
-      { labelKey: "navigation.products", to: "/app/products", icon: Package },
     ],
   },
 ];

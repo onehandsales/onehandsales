@@ -1,10 +1,7 @@
 import {
   Building2,
-  Handshake,
   Loader2,
-  Package,
   Search,
-  UserRound,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -33,10 +30,7 @@ const targetMeta: Record<
   SearchTargetType,
   { readonly label: string; readonly icon: LucideIcon }
 > = {
-  COMPANY: { label: "회사", icon: Building2 },
-  CONTACT: { label: "담당자", icon: UserRound },
-  PRODUCT: { label: "제품", icon: Package },
-  DEAL: { label: "딜", icon: Handshake },
+  COMPANY: { label: "\uD68C\uC0AC", icon: Building2 },
 };
 
 // 기능 : 데스크톱과 모바일 상단 통합검색 UI를 렌더링합니다.
@@ -193,7 +187,7 @@ function SearchInput({
       <input
         ref={inputRef}
         className="h-10 w-full rounded-md border bg-white pl-9 pr-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-        placeholder="회사, 담당자, 제품, 딜, 일정, 회의록 검색"
+        placeholder={"\uD68C\uC0AC \uAC80\uC0C9"}
         value={query}
         onChange={onChange}
         onFocus={onFocus}
@@ -228,7 +222,7 @@ function SearchResultsPanel({
       <PanelShell onClose={onClose}>
         <EmptyPanel
           title="검색어를 입력해 주세요"
-          description="두 글자 이상 입력하면 주요 데이터에서 검색해요."
+          description="두 글자 이상 입력하면 회사 데이터에서 검색해요."
         />
       </PanelShell>
     );

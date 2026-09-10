@@ -16,8 +16,6 @@ import {
   updateCompanyPrivateMemoLog,
 } from "@/features/company/api/company-api";
 import { companyQueryKeys } from "@/features/company/api/company-query-keys";
-import { contactQueryKeys } from "@/features/contact/query-keys";
-import { dealQueryKeys } from "@/features/deal/query-keys";
 import type {
   CompanyExportFilters,
   CreateCompanyFieldInput,
@@ -70,19 +68,6 @@ export function useDeleteCompanyMutation() {
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.details() });
       void queryClient.invalidateQueries({
         queryKey: companyQueryKeys.detail(companyId),
-      });
-      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.lists() });
-      void queryClient.invalidateQueries({ queryKey: contactQueryKeys.details() });
-      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.lists() });
-      void queryClient.invalidateQueries({
-        queryKey: [...dealQueryKeys.all, "stage-counts"] as const,
-      });
-      void queryClient.invalidateQueries({ queryKey: dealQueryKeys.details() });
-      void queryClient.invalidateQueries({
-        queryKey: contactQueryKeys.companyOptions(),
-      });
-      void queryClient.invalidateQueries({
-        queryKey: dealQueryKeys.companyOptions(),
       });
     },
   });

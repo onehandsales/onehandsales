@@ -4,14 +4,10 @@ import {
   type NestModule,
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { AnalyticsModule } from "./modules/analytics/infrastructure/analytics.module";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { CompanyModule } from "./modules/company/infrastructure/company.module";
-import { ContactModule } from "./modules/contact/infrastructure/contact.module";
-import { DealModule } from "./modules/deal/infrastructure/deal.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
-import { ProductModule } from "./modules/product/infrastructure/product.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
 import { SearchModule } from "./modules/search/infrastructure/search.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
@@ -27,15 +23,11 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
       // bootstrap 예외 로더와 같은 local env 파일 우선순위를 ConfigModule에도 적용한다.
       envFilePath: [".env.local", ".env"],
     }),
-    AnalyticsModule,
     HealthModule,
     AuthModule,
     UserModule,
     CompanyModule,
-    ContactModule,
-    ProductModule,
     PublicContactRequestModule,
-    DealModule,
     ErrorReportModule,
     SearchModule,
     SupportRequestModule,

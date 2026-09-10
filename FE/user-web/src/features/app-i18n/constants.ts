@@ -25,14 +25,14 @@ export function isAppCurrencyCode(value: string): value is AppCurrencyCode {
   return APP_SUPPORTED_CURRENCY_CODES.includes(value as AppCurrencyCode);
 }
 
-// 기능 : 입력 국가 코드가 담당자 전화번호에서 지원하는 국가인지 확인합니다.
+// Feature: Checks whether a country code is supported for phone display.
 export function isAppPhoneCountryCode(
   value: string
 ): value is AppPhoneCountryCode {
   return APP_SUPPORTED_PHONE_COUNTRY_CODES.includes(value as AppPhoneCountryCode);
 }
 
-// 기능 : 서버/사용자 국가 코드를 담당자 전화번호 지원 국가로 정규화합니다.
+// Feature: Normalizes server or user country codes for phone display.
 export function normalizeAppPhoneCountryCode(
   value: string | null | undefined
 ): AppPhoneCountryCode {

@@ -1,5 +1,4 @@
 export { AppI18nProvider } from "./i18n-provider";
-export { CurrencyCodeSelect } from "./currency-code-select";
 export { useAppI18n } from "./use-app-i18n";
 export {
   APP_SUPPORTED_CURRENCY_CODES,

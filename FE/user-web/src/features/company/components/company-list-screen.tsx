@@ -1,7 +1,6 @@
 import {
   Activity,
   ArrowUpDown,
-  BriefcaseBusiness,
   Building2,
   ChevronDown,
   Download,
@@ -11,7 +10,6 @@ import {
   Search,
   SlidersHorizontal,
   Tags,
-  UsersRound,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -78,18 +76,12 @@ const COMPANY_SORT_OPTIONS: Array<{
   readonly labelKey: AppI18nKey;
 }> = [
   { value: "createdAtDesc", labelKey: "companyList.sortCreatedAtDesc" },
-  { value: "contactCountDesc", labelKey: "companyList.sortContactCountDesc" },
-  { value: "contactCountAsc", labelKey: "companyList.sortContactCountAsc" },
-  { value: "dealCountDesc", labelKey: "companyList.sortDealCountDesc" },
-  { value: "dealCountAsc", labelKey: "companyList.sortDealCountAsc" },
 ];
 
 const COMPANY_TABLE_COLUMNS = [
   { id: "companyName", defaultWidth: 220, minWidth: 165, maxWidth: 420 },
   { id: "field", defaultWidth: 150, minWidth: 115 },
   { id: "region", defaultWidth: 150, minWidth: 115 },
-  { id: "contactCount", defaultWidth: 120, minWidth: 95 },
-  { id: "dealCount", defaultWidth: 110, minWidth: 95 },
   { id: "createdAt", defaultWidth: 130, minWidth: 115 },
 ] satisfies readonly ResizableTableColumn[];
 const COMPANY_TABLE_COLUMNS_STORAGE_KEY = "onehand.table.companies.columns";
@@ -687,7 +679,7 @@ export function CompanyListScreen({
         </div>
         <ListFilterSelect
           active={sort !== "createdAtDesc"}
-          ariaLabel={t("dealList.sortAria")}
+          ariaLabel={t("common.filter")}
           icon={ArrowUpDown}
           className={
             isCompactFilterMode
@@ -838,20 +830,8 @@ export function CompanyListScreen({
                   {t("companyList.region")}
                 </ListTableHeaderCell>
                 <ListTableHeaderCell
-                  icon={UsersRound}
-                  {...getHeaderCellResizeProps("contactCount", 3)}
-                >
-                  {t("companyList.contactCount")}
-                </ListTableHeaderCell>
-                <ListTableHeaderCell
-                  icon={BriefcaseBusiness}
-                  {...getHeaderCellResizeProps("dealCount", 4)}
-                >
-                  {t("companyList.dealCount")}
-                </ListTableHeaderCell>
-                <ListTableHeaderCell
                   icon={Activity}
-                  {...getHeaderCellResizeProps("createdAt", 5)}
+                  {...getHeaderCellResizeProps("createdAt", 3)}
                 >
                   {t("companyList.activity")}
                 </ListTableHeaderCell>
@@ -1106,10 +1086,6 @@ function CompanyRow({
 }) {
   const navigate = useNavigate();
   const { t } = useAppI18n();
-  const numberFormatter = useMemo(
-    () => new Intl.NumberFormat(getIntlLocale(locale)),
-    [locale],
-  );
   const companyRegionLabel = formatCompanyRegionLabel(
     company.companyRegion,
     locale
@@ -1152,16 +1128,6 @@ function CompanyRow({
             {companyRegionLabel}
           </span>
         </span>
-      </div>
-      <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-medium text-[#475569]">
-        {t("companyList.contactCountValue", {
-          values: { count: numberFormatter.format(company.contactCount) },
-        })}
-      </div>
-      <div className="min-w-0 truncate whitespace-nowrap text-[12px] font-medium text-[#475569]">
-        {t("companyList.dealCountValue", {
-          values: { count: numberFormatter.format(company.dealCount) },
-        })}
       </div>
       <div
         className="min-w-0 truncate text-[12px] font-medium text-[#64748B]"
@@ -1752,10 +1718,6 @@ function CompanyMobileCard({
 }) {
   const navigate = useNavigate();
   const { t } = useAppI18n();
-  const numberFormatter = useMemo(
-    () => new Intl.NumberFormat(getIntlLocale(locale)),
-    [locale],
-  );
   const initial = company.companyName.charAt(0).toUpperCase();
   const companyRegionLabel = formatCompanyRegionLabel(
     company.companyRegion,
@@ -1789,14 +1751,7 @@ function CompanyMobileCard({
         </p>
         {/* Row3: 연결 record + 현재 응답에서 가능한 활동 */}
         <div className="mt-1 flex items-center justify-between">
-          <span className="text-[12px] text-[#6B7280]">
-            {t("companyList.mobileRelation", {
-              values: {
-                contacts: numberFormatter.format(company.contactCount),
-                deals: numberFormatter.format(company.dealCount),
-              },
-            })}
-          </span>
+
           <span className="shrink-0 text-[11px] text-[#9CA3AF]">
             {formatCompanyCreatedActivity(
               company.createdAt,

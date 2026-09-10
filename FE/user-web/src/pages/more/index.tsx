@@ -1,10 +1,8 @@
 import {
   Building2,
   ChevronRight,
-  Package,
   Settings,
   Trash2,
-  Users,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -72,7 +70,9 @@ function SectionHeader({ title }: SectionHeaderProps) {
   );
 }
 
-const salesRows: ReadonlyArray<{
+const MORE_SETTINGS_MODAL_PATH = createAccountSettingsModalPath("/app/more");
+
+const managementRows: ReadonlyArray<{
   readonly labelKey: AppI18nKey;
   readonly to: string;
   readonly iconBg: string;
@@ -86,31 +86,6 @@ const salesRows: ReadonlyArray<{
     iconColor: "#4880EE",
     icon: Building2,
   },
-  {
-    labelKey: "navigation.contacts",
-    to: "/app/contacts",
-    iconBg: "#4880EE18",
-    iconColor: "#4880EE",
-    icon: Users,
-  },
-  {
-    labelKey: "navigation.products",
-    to: "/app/products",
-    iconBg: "#B4530918",
-    iconColor: "#B45309",
-    icon: Package,
-  },
-];
-
-const MORE_SETTINGS_MODAL_PATH = createAccountSettingsModalPath("/app/more");
-
-const managementRows: ReadonlyArray<{
-  readonly labelKey: AppI18nKey;
-  readonly to: string;
-  readonly iconBg: string;
-  readonly iconColor: string;
-  readonly icon: LucideIcon;
-}> = [
   {
     labelKey: "navigation.trash",
     to: "/app/trash",
@@ -167,21 +142,6 @@ export function MorePage() {
 
           <ChevronRight style={{ width: 18, height: 18, color: "#D1D5DB", flexShrink: 0 }} />
         </Link>
-
-        <SectionHeader title={t("more.salesManagement")} />
-        <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>
-          {salesRows.map((row, index) => (
-            <MenuRow
-              key={row.to}
-              label={t(row.labelKey)}
-              to={row.to}
-              iconBg={row.iconBg}
-              iconColor={row.iconColor}
-              icon={row.icon}
-              isLast={index === salesRows.length - 1}
-            />
-          ))}
-        </div>
 
         <SectionHeader title={t("more.management")} />
         <div style={{ borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB" }}>

@@ -16,16 +16,8 @@ import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
 import { CompanyNewFullPage } from "@/pages/companies/new-full";
 import { CompanyNewPage } from "@/pages/companies/new";
-import { ContactDetailPage } from "@/pages/contacts/detail";
-import { ContactsPage } from "@/pages/contacts";
-import { ContactNewFullPage } from "@/pages/contacts/new-full";
-import { ContactNewPage } from "@/pages/contacts/new";
 import { ContactPage } from "@/pages/contact";
 import { DownloadPage } from "@/pages/download";
-import { DealDetailPage } from "@/pages/deals/detail";
-import { DealsPage } from "@/pages/deals";
-import { DealNewFullPage } from "@/pages/deals/new-full";
-import { DealNewPage } from "@/pages/deals/new";
 import { FaqPage } from "@/pages/faq";
 import { ActivityRecordsFeaturePage } from "@/pages/features/activity-records";
 import { AiSalesAssistantFeaturePage } from "@/pages/features/ai-sales-assistant";
@@ -37,11 +29,7 @@ import { SchedulesFollowUpFeaturePage } from "@/pages/features/schedules-follow-
 import { HelpPage } from "@/pages/help";
 import { HomePage } from "@/pages/home";
 import { LoginPage } from "@/pages/login";
-import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductPage } from "@/pages/product";
-import { ProductsPage } from "@/pages/products";
-import { ProductNewFullPage } from "@/pages/products/new-full";
-import { ProductNewPage } from "@/pages/products/new";
 import { PrivacyPage } from "@/pages/privacy";
 import { PricingPage } from "@/pages/pricing";
 import { SecurityPage } from "@/pages/security";
@@ -136,43 +124,19 @@ export const router = createBrowserRouter([
       <LegacyAppRedirect paramName="companyId" to="/app/companies" />
     ),
   },
-  { path: "/contacts", element: <LegacyAppRedirect to="/app/contacts" /> },
-  { path: "/contacts/scan", element: <Navigate replace to="/app/contacts" /> },
-  {
-    path: "/contacts/new/full",
-    element: <LegacyAppRedirect to="/app/contacts/new/full" />,
-  },
-  {
-    path: "/contacts/new",
-    element: <LegacyAppRedirect to="/app/contacts/new" />,
-  },
-  {
-    path: "/contacts/:contactId",
-    element: <LegacyAppRedirect paramName="contactId" to="/app/contacts" />,
-  },
-  { path: "/products", element: <LegacyAppRedirect to="/app/products" /> },
-  {
-    path: "/products/new/full",
-    element: <LegacyAppRedirect to="/app/products/new/full" />,
-  },
-  {
-    path: "/products/new",
-    element: <LegacyAppRedirect to="/app/products/new" />,
-  },
-  {
-    path: "/products/:productId",
-    element: <LegacyAppRedirect paramName="productId" to="/app/products" />,
-  },
-  { path: "/deals", element: <LegacyAppRedirect to="/app/deals" /> },
-  {
-    path: "/deals/new/full",
-    element: <LegacyAppRedirect to="/app/deals/new/full" />,
-  },
-  { path: "/deals/new", element: <LegacyAppRedirect to="/app/deals/new" /> },
-  {
-    path: "/deals/:dealId",
-    element: <LegacyAppRedirect paramName="dealId" to="/app/deals" />,
-  },
+  { path: "/contacts", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/contacts/scan", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/contacts/new/full", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/contacts/new", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/contacts/:contactId", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/products", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/products/new/full", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/products/new", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/products/:productId", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/deals", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/deals/new/full", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/deals/new", element: <LegacyAppRedirect to="/app" /> },
+  { path: "/deals/:dealId", element: <LegacyAppRedirect to="/app" /> },
   { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
@@ -188,19 +152,9 @@ export const router = createBrowserRouter([
       { path: "companies/new/full", element: <CompanyNewFullPage /> },
       { path: "companies/new", element: <CompanyNewPage /> },
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
-      { path: "contacts", element: <ContactsPage /> },
-      { path: "contacts/scan", element: <Navigate replace to="/app/contacts" /> },
-      { path: "contacts/new/full", element: <ContactNewFullPage /> },
-      { path: "contacts/new", element: <ContactNewPage /> },
-      { path: "contacts/:contactId", element: <ContactDetailPage /> },
-      { path: "products", element: <ProductsPage /> },
-      { path: "products/new/full", element: <ProductNewFullPage /> },
-      { path: "products/new", element: <ProductNewPage /> },
-      { path: "products/:productId", element: <ProductDetailPage /> },
-      { path: "deals", element: <DealsPage /> },
-      { path: "deals/new/full", element: <DealNewFullPage /> },
-      { path: "deals/new", element: <DealNewPage /> },
-      { path: "deals/:dealId", element: <DealDetailPage /> },
+      { path: "contacts/*", element: <Navigate replace to="/app" /> },
+      { path: "products/*", element: <Navigate replace to="/app" /> },
+      { path: "deals/*", element: <Navigate replace to="/app" /> },
       { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },
       { path: "more", element: <MorePage /> },

@@ -1,30 +1,15 @@
 export type TrashTargetType =
   | "COMPANY"
-  | "CONTACT"
-  | "PRODUCT"
-  | "DEAL"
   | "COMPANY_MEMO_LOG"
-  | "COMPANY_PRIVATE_MEMO_LOG"
-  | "CONTACT_MEMO_LOG"
-  | "CONTACT_PRIVATE_MEMO_LOG"
-  | "PRODUCT_MEMO_LOG"
-  | "PRODUCT_PRIVATE_MEMO_LOG"
-  | "DEAL_MEMO_LOG"
-  | "DEAL_FOLLOWING_ACTION_LOG";
+  | "COMPANY_PRIVATE_MEMO_LOG";
 
 export type TrashTargetFilter = "ALL" | TrashTargetType;
 export type TrashItemKindFilter = "ALL" | "ENTITY" | "LOG";
-export type TrashDomainFilter =
-  | "ALL"
-  | "COMPANY"
-  | "CONTACT"
-  | "PRODUCT"
-  | "DEAL";
+export type TrashDomainFilter = "ALL" | "COMPANY";
 export type TrashLogTypeFilter =
   | "ALL"
   | "MEMO"
-  | "PRIVATE_MEMO"
-  | "FOLLOWING_ACTION";
+  | "PRIVATE_MEMO";
 export type TrashSort = "RECENT" | "EXPIRES_SOON";
 export type TrashRestoreWindow = "ACTIVE" | "EXPIRED";
 

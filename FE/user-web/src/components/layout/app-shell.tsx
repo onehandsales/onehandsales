@@ -10,7 +10,6 @@ import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
   BookOpen,
-  BriefcaseBusiness,
   Bug,
   Check,
   ChevronsLeft,
@@ -24,8 +23,6 @@ import {
   LogOut,
   Menu,
   MoreHorizontal,
-  Package,
-  Pencil,
   Plus,
   ScreenShare,
   Search,
@@ -36,7 +33,6 @@ import {
   type LucideIcon,
   X,
 } from "lucide-react";
-import { useAppRouteAnalytics } from "@/features/analytics";
 import {
   useAuthSession,
   useMyDevices,
@@ -59,10 +55,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDealDetail, useDeleteDealMutation } from "@/features/deal";
 import { ErrorReportHelpContent } from "@/features/error-report";
 import { SupportRequestHelpContent } from "@/features/support-request";
-import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
   createAccountModalSearchParams,
@@ -70,7 +64,6 @@ import {
   type AccountModalQuerySection,
 } from "@/components/layout/account-modal-route";
 import { PageHeader } from "@/components/layout/page-header";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const HOME_PATH = "/app";
@@ -98,157 +91,9 @@ export type AppShellOutletContext = {
   readonly setAutoSidebarCollapsed: (collapsed: boolean) => void;
 };
 
-// ── 딜 상세 TopBar ──────────────────────────────────────────
-// 기능 : 딜 상세 헤더를 렌더링합니다.
-function DealDetailHeader({ dealId }: { readonly dealId: string }) {
-  const navigate = useNavigate();
-  const { t } = useAppI18n();
-  const dealQuery = useDealDetail(dealId);
-  const deleteDealMutation = useDeleteDealMutation();
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const dealName = dealQuery.data?.dealName ?? "...";
-
-  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
-  const onDelete = async () => {
-    setDeleteError(null);
-    try {
-      await deleteDealMutation.mutateAsync(dealId);
-      setDeleteConfirmOpen(false);
-      void navigate("/app/deals", {
-        replace: true,
-        state: { notice: t("shell.dealDeleted") },
-      });
-    } catch (error) {
-      setDeleteError(getApiErrorMessage(error));
-    }
-  };
-
-  return (
-    <>
-      <PageHeader
-        breadcrumbs={[
-          { label: t("navigation.deals"), to: "/app/deals", icon: BriefcaseBusiness },
-          { label: dealName },
-        ]}
-        actions={[
-          {
-            icon: Trash2,
-            tooltip: t("common.delete"),
-            variant: "danger",
-            disabled: deleteDealMutation.isPending,
-            onClick: () => {
-              setDeleteError(null);
-              setDeleteConfirmOpen(true);
-            },
-          },
-        ]}
-      />
-      <ConfirmDialog
-        cancelLabel={t("common.close")}
-        confirmLabel={t("common.delete")}
-        errorMessage={deleteError}
-        isPending={deleteDealMutation.isPending}
-        onCancel={() => {
-          if (!deleteDealMutation.isPending) {
-            setDeleteConfirmOpen(false);
-          }
-        }}
-        onConfirm={() => void onDelete()}
-        open={deleteConfirmOpen}
-        title={t("shell.deleteDealQuestion", {
-          values: { name: dealQuery.data?.dealName ?? t("entities.deal") },
-        })}
-      />
-    </>
-  );
-}
-
-// ── 제품 상세 TopBar ─────────────────────────────────────────
-// 기능 : 제품 상세 헤더를 렌더링합니다.
-function ProductDetailHeader({ productId }: { readonly productId: string }) {
-  const navigate = useNavigate();
-  const { search: locationSearch } = useLocation();
-  const { t } = useAppI18n();
-  const productQuery = useProductDetail(productId);
-  const deleteProductMutation = useDeleteProductMutation();
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const productName = productQuery.data?.productName ?? "...";
-  const isEditing = new URLSearchParams(locationSearch).get("edit") === "1";
-
-  // 기능 : 프론트엔드 화면의 열림 또는 선택 상태를 전환합니다.
-  const toggleEdit = () => {
-    void navigate(
-      isEditing ? `/app/products/${productId}` : `/app/products/${productId}?edit=1`,
-      { replace: true },
-    );
-  };
-
-  // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
-  const onDelete = async () => {
-    setDeleteError(null);
-    try {
-      await deleteProductMutation.mutateAsync(productId);
-      setDeleteConfirmOpen(false);
-      void navigate("/app/products", {
-        replace: true,
-        state: { notice: t("shell.productDeleted") },
-      });
-    } catch (error) {
-      setDeleteError(getApiErrorMessage(error));
-    }
-  };
-
-  return (
-    <>
-      <PageHeader
-        breadcrumbs={[
-          { label: t("navigation.products"), to: "/app/products", icon: Package },
-          { label: productName },
-        ]}
-        actions={[
-          {
-            icon: isEditing ? X : Pencil,
-            tooltip: isEditing ? t("shell.cancelEdit") : t("common.edit"),
-            onClick: toggleEdit,
-          },
-          {
-            icon: Trash2,
-            tooltip: t("common.delete"),
-            variant: "danger",
-            disabled: deleteProductMutation.isPending,
-            onClick: () => {
-              setDeleteError(null);
-              setDeleteConfirmOpen(true);
-            },
-          },
-        ]}
-      />
-      <ConfirmDialog
-        cancelLabel={t("common.close")}
-        confirmLabel={t("common.delete")}
-        errorMessage={deleteError}
-        isPending={deleteProductMutation.isPending}
-        onCancel={() => {
-          if (!deleteProductMutation.isPending) {
-            setDeleteConfirmOpen(false);
-          }
-        }}
-        onConfirm={() => void onDelete()}
-        open={deleteConfirmOpen}
-        title={t("shell.deleteProductQuestion", {
-          values: { name: productQuery.data?.productName ?? t("entities.product") },
-        })}
-      />
-    </>
-  );
-}
-
-// 기능 : 앱 셸 영역을 렌더링합니다.
+// 기능 : 로그인 후 워크스페이스 shell과 공통 모달을 렌더링합니다.
 export function AppShell() {
   const { pathname } = useLocation();
-  useAppRouteAnalytics();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { logout, user } = useAuthSession();
@@ -474,20 +319,6 @@ export function AppShell() {
     }
   }, [accountModal]);
 
-  // /app/products/:id 패턴 감지
-  const productDetailMatch = /^\/app\/products\/([^/]+)$/.exec(pathname);
-  const productDetailId = productDetailMatch
-    ? (productDetailMatch[1] ?? "")
-    : "";
-  const isProductDetail =
-    productDetailId.length > 0 && productDetailId !== "new";
-
-  // /app/deals/:id 패턴 감지
-  const dealDetailMatch = /^\/app\/deals\/([^/]+)$/.exec(pathname);
-  const dealDetailId = dealDetailMatch ? (dealDetailMatch[1] ?? "") : "";
-  const isDealDetail = dealDetailId.length > 0 && dealDetailId !== "new";
-
-  // /app/companies/:id 패턴 감지
   const companyDetailMatch = /^\/app\/companies\/([^/]+)$/.exec(pathname);
   const companyDetailId = companyDetailMatch
     ? (companyDetailMatch[1] ?? "")
@@ -495,68 +326,30 @@ export function AppShell() {
   const isCompanyDetail =
     companyDetailId.length > 0 && companyDetailId !== "new";
 
-  // /app/contacts/:id 패턴 감지
-  const contactDetailMatch = /^\/app\/contacts\/([^/]+)$/.exec(pathname);
-  const contactDetailId = contactDetailMatch
-    ? (contactDetailMatch[1] ?? "")
-    : "";
-  const isContactDetail =
-    contactDetailId.length > 0 &&
-    contactDetailId !== "scan" &&
-    contactDetailId !== "new";
-
-  // 자체 헤더를 가진 화면들 — app-shell TopBar 숨김
-  const isDealListPage = pathname === "/app/deals" || pathname === "/app/deals/new";
-  const isProductListPage =
-    pathname === "/app/products" || pathname === "/app/products/new";
   const isCompanyListPage =
     pathname === "/app/companies" ||
     pathname === "/app/companies/new" ||
-    isCompanyDetail ||
-    isContactDetail;
-  const isContactListPage =
-    pathname === "/app/contacts" || pathname === "/app/contacts/new";
+    isCompanyDetail;
   const isTrashPage = pathname === "/app/trash";
-  const isFixedViewportPage = isHome || isProductDetail;
+  const isFixedViewportPage = isHome;
+  const isMobileHeaderHidden = isCompanyDetail;
+  const hideTopBar = isCompanyListPage || isTrashPage;
 
-  // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
-  const isMobileHeaderHidden =
-    isDealDetail ||
-    isCompanyDetail ||
-    isContactDetail ||
-    isProductDetail;
-
-  const hideTopBar =
-    isDealListPage ||
-    isDealDetail ||
-    isCompanyListPage ||
-    isProductListPage ||
-    isContactListPage ||
-    isTrashPage ||
-    isProductDetail;
-
-  // 현재 페이지 브레드크럼 결정
   const topBarContent = (() => {
-    if (isProductDetail)
-      return <ProductDetailHeader productId={productDetailId} />;
-    if (isDealDetail) return <DealDetailHeader dealId={dealDetailId} />;
-
     type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
     const pageMetaMap: Record<string, PageMeta> = {
       "/app": { labelKey: "navigation.home", icon: House },
-      "/app/deals": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
-      "/app/deals/new": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
       "/app/trash": { labelKey: "navigation.trash", icon: Trash2 },
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
     const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
     const actions =
-      pathname === "/app/deals" || pathname === "/app"
+      pathname === "/app"
         ? [
             {
               icon: Plus,
-              tooltip: t("shell.dealCreate"),
-              href: "/app/deals/new",
+              tooltip: t("companyList.createCompany"),
+              href: "/app/companies/new",
               variant: "primary" as const,
             },
           ]
@@ -1539,10 +1332,6 @@ function HelpModalSectionContent({
     <HelpModalStaticContent
       cards={[
         {
-          title: t("helpModal.guideDealTitle"),
-          description: t("helpModal.guideDealDescription"),
-        },
-        {
           title: t("helpModal.guideRecordTitle"),
           description: t("helpModal.guideRecordDescription"),
         },
@@ -1966,7 +1755,7 @@ const termsOfUseModalDocument: LegalDocumentModal = {
     {
       title: "1. OneHand 사용",
       paragraphs: [
-        "OneHand는 영업팀이 고객 기록, 딜 활동, 업무, 노트, AI 보조 워크플로우를 관리할 수 있도록 제공되는 업무용 워크스페이스입니다.",
+        "OneHand는 사용자가 회사 기록, 메모, 검색, 휴지통 복원, 계정 설정을 관리할 수 있도록 제공되는 업무용 워크스페이스입니다.",
         "사용자는 본인이 제출하는 정보와 계정 자격 증명의 보안을 책임집니다. OneHand는 관련 법률, 본 약관, 이 페이지에서 참조하는 정책에 따라 사용해야 합니다.",
         "조직을 대신해 OneHand를 사용하는 경우, 사용자는 해당 조직을 대표해 본 약관을 수락할 권한이 있음을 진술합니다.",
       ],
@@ -1984,7 +1773,7 @@ const termsOfUseModalDocument: LegalDocumentModal = {
       paragraphs: [
         "사용자는 OneHand를 법률 위반, 권리 침해, 악성 코드 배포, 무단 접근 시도, 서비스 운영 방해, 처리 권한이 없는 데이터 처리에 사용할 수 없습니다.",
         "법률상 허용되는 경우를 제외하고, 서비스를 역설계하거나 자동화 접근을 남용하거나 서비스에 피해를 주는 방식으로 플랫폼 콘텐츠를 수집할 수 없습니다.",
-        "OneHand의 기능, 화면, 데이터 또는 워크플로우를 경쟁 제품 개발 목적으로 사용할 수 없습니다.",
+        "OneHand의 기능, 화면, 데이터 또는 워크플로우를 경쟁 서비스 개발 목적으로 사용할 수 없습니다.",
       ],
     },
     {
@@ -1996,11 +1785,10 @@ const termsOfUseModalDocument: LegalDocumentModal = {
       ],
     },
     {
-      title: "5. AI 보조 기능",
+      title: "5. 서비스 기능",
       paragraphs: [
-        "OneHand는 AI 기반 요약, 초안, 검색, 라우팅 등 업무 지원 기능을 포함할 수 있습니다.",
-        "AI 결과물은 유용할 수 있으나 불완전하거나 부정확할 수 있으므로, 고객 약속이나 비즈니스 의사결정에 사용하기 전에 사용자가 검토해야 합니다.",
-        "AI 기능은 승인된 워크스페이스 맥락을 기반으로 사용자를 돕기 위한 기능이며, 사람의 검토, 전문적 판단, 고객별 검증을 대체하지 않습니다.",
+        "OneHand는 회사 기록, 메모, 검색, 휴지통 복원, 계정 설정 기능을 제공합니다.",
+        "서비스의 표시 내용은 사용자가 입력한 데이터와 브라우저 환경에 따라 달라질 수 있습니다.",
       ],
     },
     {
@@ -2022,7 +1810,7 @@ const termsOfUseModalDocument: LegalDocumentModal = {
       title: "8. 면책과 책임 제한",
       paragraphs: [
         "법률이 허용하는 최대 범위에서 OneHand는 있는 그대로, 제공 가능한 상태로 제공됩니다.",
-        "OneHand는 서비스가 항상 중단 없이 작동하거나 오류가 없거나 AI 보조 콘텐츠가 항상 정확하다고 보장하지 않습니다.",
+        "OneHand는 서비스가 항상 중단 없이 작동하거나 오류가 없다고 보장하지 않습니다.",
         "법률이 허용하는 최대 범위에서 OneHand는 간접 손해, 부수적 손해, 특별 손해, 결과적 손해, 징벌적 손해, 이익 손실, 매출 손실, 데이터 손실 또는 사업 기회 손실에 대해 책임지지 않습니다.",
       ],
     },
@@ -2049,8 +1837,8 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
         "계정 생성 정보: 이름, 이메일 주소, 비밀번호, 역할, 회사 정보, 선택적 프로필 사진, 워크스페이스 정보",
         "문의 및 지원 정보: 이메일 주소, 전화번호, 지원 메시지, 첨부파일, 사용자가 제공하는 기타 정보",
         "결제 정보: 결제 제공업체를 통해 처리되는 청구 정보와 거래 정보. OneHand는 전체 결제 카드 정보를 서비스에 직접 저장하지 않습니다.",
-        "제품 사용 정보: 브라우저, 운영체제, 기기 식별자, IP 주소, 브라우저 언어, 시간대, 네트워크 신호에서 추정한 국가 코드 또는 대략적인 위치, 조회한 페이지, 클릭한 링크, 활동 빈도와 기간",
-        "통합 정보: 사용자가 연결한 캘린더, 연락처, 이메일, 파일, CRM, 커뮤니케이션 도구에서 요청한 기능 제공에 필요한 정보",
+        "서비스 사용 정보: 브라우저, 운영체제, 기기 식별자, IP 주소, 브라우저 언어, 시간대, 네트워크 신호에서 추정한 국가 코드 또는 대략적인 위치, 조회한 페이지, 클릭한 링크, 활동 빈도와 기간",
+        "서비스 요청 정보: 사용자가 지원 또는 계정 설정 기능 제공을 위해 입력한 정보",
       ],
     },
     {
@@ -2060,11 +1848,11 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
       ],
       bullets: [
         "계정과 워크스페이스 생성, 인증, 관리",
-        "고객 기록, 노트, 업무, 제품, 딜 워크플로우, AI 보조 기능 제공",
+        "회사 기록, 메모, 검색, 휴지통 복원, 계정 설정 기능 제공",
         "구독, 청구서, 결제, 구매 주문 처리",
         "고객 지원, 보안 문의, 개인정보 요청에 대한 응답",
-        "서비스 메시지, 제품 업데이트, 관리 고지, 지원 커뮤니케이션 발송",
-        "플랫폼 안정성, 보안, 오류 분석, 제품 개선, 부정 사용 방지",
+        "서비스 메시지, 업데이트, 관리 고지, 지원 커뮤니케이션 발송",
+        "플랫폼 안정성, 보안, 오류 확인, 서비스 개선, 부정 사용 방지",
       ],
     },
     {
@@ -2073,10 +1861,10 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
         "OneHand는 서비스 제공과 운영에 필요한 범위에서 아래 범주의 수신자에게 정보를 공개할 수 있습니다.",
       ],
       bullets: [
-        "호스팅, 분석, 결제, 고객 지원, 커뮤니케이션, 보안, 사기 방지를 지원하는 서비스 제공업체",
-        "사용자가 요청하거나 승인한 제품, 서비스, 통합 또는 공동 제공을 위한 비즈니스 파트너",
+        "호스팅, 결제, 고객 지원, 커뮤니케이션, 보안, 사기 방지를 지원하는 서비스 제공업체",
+        "사용자가 요청하거나 승인한 서비스 또는 공동 제공을 위한 비즈니스 파트너",
         "공동 소유 또는 지배 관계에 있는 계열사",
-        "광고와 분석 캠페인 측정을 위한 파트너",
+        "서비스 운영에 필요한 계약 파트너",
         "공유 워크스페이스에서 협업하는 다른 사용자와 워크스페이스를 소유하거나 관리하는 조직",
         "법률 준수, 권리 보호, 정책 집행, 채무 회수, 위법 행위 조사에 필요한 기관 또는 제3자",
       ],
@@ -2158,8 +1946,8 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
       bullets: [
         "식별자는 서비스 제공업체, 계열사, 법률상 수신자, 광고 파트너, 거래 당사자 또는 사용자가 동의한 대상에게 공개될 수 있습니다.",
         "상업 정보는 서비스 제공업체, 계열사, 법률상 수신자, 거래 당사자 또는 사용자가 동의한 대상에게 공개될 수 있습니다.",
-        "인터넷 또는 전자 네트워크 활동 정보는 서비스 제공업체, 분석 제공업체, 광고 파트너, 법률상 수신자 또는 거래 당사자에게 공개될 수 있습니다.",
-        "일반 위치 정보와 추론 정보는 서비스 제공업체, 분석 제공업체, 광고 파트너 또는 법률상 필요한 대상에게 공개될 수 있습니다.",
+        "인터넷 또는 전자 네트워크 활동 정보는 서비스 제공업체, 법률상 수신자 또는 거래 당사자에게 공개될 수 있습니다.",
+        "일반 위치 정보와 추론 정보는 서비스 제공업체 또는 법률상 필요한 대상에게 공개될 수 있습니다.",
       ],
     },
     {

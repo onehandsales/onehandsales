@@ -167,13 +167,7 @@ export function isApiErrorRetryable(error: unknown): boolean {
 function getConflictErrorMessage(code: string) {
   switch (code) {
     case "CompanyInUse":
-      return "연결된 담당자 또는 딜을 정리하면 회사를 삭제할 수 있어요.";
-    case "ContactInUse":
-      return "연결된 딜을 정리하면 담당자를 삭제할 수 있어요.";
-    case "ProductInUse":
-      return "연결된 딜을 정리하면 제품을 삭제할 수 있어요.";
-    case "DealInUse":
-      return "연결된 활동을 정리하면 딜을 삭제할 수 있어요.";
+      return "연결된 기록을 정리하면 회사를 삭제할 수 있어요.";
     default:
       return null;
   }

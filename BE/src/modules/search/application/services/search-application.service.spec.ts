@@ -15,7 +15,6 @@ const CURRENT_USER: CurrentUserContext = {
   timeZone: "Asia/Seoul",
 };
 
-// 기능 : SearchApplicationService 테스트용 repository fake를 생성합니다.
 function createRepository(): jest.Mocked<SearchRepository> {
   return {
     search: jest.fn().mockResolvedValue([
@@ -23,10 +22,10 @@ function createRepository(): jest.Mocked<SearchRepository> {
         type: SearchTargetType.COMPANY,
         items: [
           {
-            title: "세손상사",
-            subtitle: "제조 · 서울",
+            title: "OneHand",
+            subtitle: "SaaS / Seoul",
             targetId: "00000000-0000-4000-8000-000000000001",
-            targetPath: "/companies/00000000-0000-4000-8000-000000000001",
+            targetPath: "/app/companies/00000000-0000-4000-8000-000000000001",
           },
         ],
       },
@@ -34,14 +33,12 @@ function createRepository(): jest.Mocked<SearchRepository> {
   };
 }
 
-// 기능 : SearchApplicationService 테스트용 logger fake를 생성합니다.
 function createLogger(): jest.Mocked<Pick<AppLogger, "log">> {
   return {
     log: jest.fn(),
   };
 }
 
-// 기능 : SearchApplicationService의 query 정규화와 저장소 위임을 검증합니다.
 describe("SearchApplicationService", () => {
   it("normalizes default search input and delegates to repository", async () => {
     const repository = createRepository();
@@ -52,19 +49,14 @@ describe("SearchApplicationService", () => {
     );
 
     const response = await service.searchAll(CURRENT_USER, {
-      q: "  세손  ",
+      q: "  OneHand  ",
     });
 
     expect(response.groups).toHaveLength(1);
     expect(repository.search).toHaveBeenCalledWith({
       userId: CURRENT_USER.id,
-      query: "세손",
-      types: [
-        SearchTargetType.COMPANY,
-        SearchTargetType.CONTACT,
-        SearchTargetType.PRODUCT,
-        SearchTargetType.DEAL,
-      ],
+      query: "OneHand",
+      types: [SearchTargetType.COMPANY],
       limit: 5,
     });
     expect(logger.log).toHaveBeenCalledWith(
@@ -81,7 +73,7 @@ describe("SearchApplicationService", () => {
       logger as unknown as AppLogger
     );
 
-    const response = await service.searchAll(CURRENT_USER, { q: "세" });
+    const response = await service.searchAll(CURRENT_USER, { q: "A" });
 
     expect(response).toEqual({ groups: [] });
     expect(repository.search).not.toHaveBeenCalled();
@@ -97,14 +89,14 @@ describe("SearchApplicationService", () => {
     );
 
     await service.searchAll(CURRENT_USER, {
-      q: "세손",
-      types: "COMPANY,DEAL,COMPANY",
+      q: "OneHand",
+      types: "COMPANY,COMPANY",
       limit: 99,
     });
 
     expect(repository.search).toHaveBeenCalledWith(
       expect.objectContaining({
-        types: [SearchTargetType.COMPANY, SearchTargetType.DEAL],
+        types: [SearchTargetType.COMPANY],
         limit: 20,
       })
     );
@@ -120,8 +112,8 @@ describe("SearchApplicationService", () => {
 
     await expect(
       service.searchAll(CURRENT_USER, {
-        q: "세손",
-        types: "COMPANY,UNKNOWN",
+        q: "OneHand",
+        types: "COMPANY,DEAL",
       })
     ).rejects.toBeInstanceOf(ValidationDomainError);
     expect(repository.search).not.toHaveBeenCalled();

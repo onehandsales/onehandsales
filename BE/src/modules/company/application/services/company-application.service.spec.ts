@@ -1,7 +1,5 @@
 import { Buffer } from "node:buffer";
 import {
-  type CompanyContactRecord,
-  type CompanyDealRecord,
   type CompanyFieldRecord,
   type CompanyListRecord,
   type CompanyMemoLogRecord,
@@ -19,8 +17,6 @@ import {
   type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompaniesInput,
-  type ListCompanyContactsInput,
-  type ListCompanyDealsInput,
   type MemoLogCursor,
   type UpdateCompanyInput,
 } from "@/modules/company/application/ports/company.repository";
@@ -104,22 +100,6 @@ class FakeCompanyRepository implements CompanyRepository {
     input: ExportCompaniesInput
   ): Promise<CompanyListRecord[]> {
     this.exportCompaniesInputs.push(input);
-    return [];
-  }
-
-  // 기능 : fake 회사 연결 담당자 목록을 반환합니다.
-  async listCompanyContacts(
-    _input: ListCompanyContactsInput
-  ): Promise<CompanyContactRecord[]> {
-    void _input;
-    return [];
-  }
-
-  // 기능 : fake 회사 연결 딜 목록을 반환합니다.
-  async listCompanyDeals(
-    _input: ListCompanyDealsInput
-  ): Promise<CompanyDealRecord[]> {
-    void _input;
     return [];
   }
 

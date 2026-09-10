@@ -10,7 +10,6 @@
   Patch,
   Post,
   Query,
-  Req,
   Res,
   StreamableFile,
   UseGuards,
@@ -21,7 +20,6 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { createXlsxDownloadResponse } from "@/shared/presentation/http/download-file-response";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
-import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import {
   CreateCompanyDto,
   CreateCompanyFieldDto,
@@ -60,44 +58,16 @@ export class CompanyController {
   async exportCompaniesXlsx(
     @CurrentUser() currentUser: CurrentUserContext,
     @Query() query: ExportCompaniesQueryDto,
-    @Req() request: RequestWithRequestId,
     @Res({ passthrough: true }) response: Response
   ): Promise<StreamableFile> {
     // 1. query 조건과 현재 사용자를 application 계층으로 전달해 xlsx 파일을 생성한다.
     const file = await this.companyApplicationService.exportCompaniesXlsx(
       currentUser,
-      query,
-      request.requestId
+      query
     );
 
     // 2. 생성된 xlsx 파일 정보를 HTTP 다운로드 응답으로 변환한다.
     return createXlsxDownloadResponse(response, file);
-  }
-
-  // API : 회사, 회사에 연결된 담당자 전체 목록 조회
-  @Get(":companyId/contacts")
-  listCompanyContacts(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string
-  ) {
-    // 1. path param의 회사 ID와 현재 사용자를 application 계층으로 전달한다.
-    return this.companyApplicationService.listCompanyContacts(
-      currentUser,
-      companyId
-    );
-  }
-
-  // API : 회사, 회사에 연결된 딜 전체 목록 조회
-  @Get(":companyId/deals")
-  listCompanyDeals(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string
-  ) {
-    // 1. path param의 회사 ID와 현재 사용자를 application 계층으로 전달한다.
-    return this.companyApplicationService.listCompanyDeals(
-      currentUser,
-      companyId
-    );
   }
 
   // API : 회사, 회사 단건 조회

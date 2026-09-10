@@ -1,4 +1,4 @@
-import { Briefcase, House, MoreHorizontal } from "lucide-react";
+import { House, MoreHorizontal } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 
@@ -10,7 +10,6 @@ const items: ReadonlyArray<{
   readonly activeColor: string;
 }> = [
   { labelKey: "navigation.home", to: "/app", icon: House, end: true, activeColor: "#4880EE" },
-  { labelKey: "navigation.deals", to: "/app/deals", icon: Briefcase, activeColor: "#4880EE" },
   { labelKey: "navigation.more", to: "/app/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 
@@ -22,7 +21,7 @@ export function BottomTabBar() {
       className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white px-1 pb-[max(env(safe-area-inset-bottom),8px)] pt-1 lg:hidden"
       style={{ height: 72 }}
     >
-      <ul className="grid grid-cols-3">
+      <ul className="grid grid-cols-2">
         {items.map((item) => (
           <li key={item.to}>
             <NavLink

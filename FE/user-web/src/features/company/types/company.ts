@@ -1,5 +1,3 @@
-import type { AppCurrencyCode } from "@/features/app-i18n";
-
 export type CompanyField = {
   readonly id: string;
   readonly field: string;
@@ -18,8 +16,6 @@ export type CompanyListItem = {
   readonly companyField: CompanyField;
   readonly companyRegion: CompanyRegion;
   readonly address: string | null;
-  readonly contactCount: number;
-  readonly dealCount: number;
   readonly createdAt: string;
 };
 
@@ -45,12 +41,7 @@ export type CompanyPageResponse = {
 
 export type CompanyListResponse = CompanyPageResponse;
 
-export type CompanySort =
-  | "createdAtDesc"
-  | "contactCountDesc"
-  | "contactCountAsc"
-  | "dealCountDesc"
-  | "dealCountAsc";
+export type CompanySort = "createdAtDesc";
 
 export type CompanyListParams = {
   readonly page?: number;
@@ -96,37 +87,6 @@ export type CreateCompanyRegionInput = {
   readonly region: string;
   readonly countryCode?: string | null;
   readonly regionCode?: string | null;
-};
-
-export type CompanyContact = {
-  readonly id: string;
-  readonly username: string;
-  readonly mobile: string;
-  readonly email: string;
-  readonly contactDepartment: {
-    readonly id: string;
-    readonly departmentName: string;
-  };
-  readonly contactJobGrade?: {
-    readonly id: string;
-    readonly jobGradeName: string;
-  };
-};
-
-export type CompanyContactListResponse = {
-  readonly items: CompanyContact[];
-};
-
-export type CompanyDeal = {
-  readonly id: string;
-  readonly dealName: string;
-  readonly dealCost: number;
-  readonly currencyCode: AppCurrencyCode;
-  readonly createdAt: string;
-};
-
-export type CompanyDealListResponse = {
-  readonly items: CompanyDeal[];
 };
 
 export type CompanyMemoType = string;

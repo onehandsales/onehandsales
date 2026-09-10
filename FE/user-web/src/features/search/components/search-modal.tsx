@@ -1,10 +1,7 @@
 import {
   Building2,
-  Handshake,
   Loader2,
-  Package,
   Search,
-  UserRound,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -37,10 +34,7 @@ const targetMeta: Record<
   SearchTargetType,
   { readonly label: string; readonly icon: LucideIcon }
 > = {
-  COMPANY: { label: "회사", icon: Building2 },
-  CONTACT: { label: "담당자", icon: UserRound },
-  PRODUCT: { label: "제품", icon: Package },
-  DEAL: { label: "딜", icon: Handshake },
+  COMPANY: { label: "\uD68C\uC0AC", icon: Building2 },
 };
 
 type SearchModalProps = {
@@ -173,7 +167,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
           <input
             ref={inputRef}
             className="flex-1 bg-transparent text-[15px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
-            placeholder="찾고 싶은 것을 검색하세요."
+            placeholder={"\uD68C\uC0AC \uAC80\uC0C9"}
             value={query}
             onChange={onQueryChange}
             onKeyDown={onKeyDown}
