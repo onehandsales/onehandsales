@@ -1,41 +1,7 @@
 # UX/UI Deal Detail Decision
 
-## 결정
+현재 비활성 결정이다.
 
-딜 상세는 핵심 요약 우선 구조로 간다.
+2026-09-10 기준 `FE/user-web`에는 `/app/deals/:dealId` 활성 route가 없고 Backend에도 `/api/deals` API가 없다. 딜 상세 UX는 현재 구현 범위에 적용하지 않는다.
 
-## 구조
-
-Desktop:
-
-- 딜 선택 시 우측 상세 패널로 빠르게 확인한다.
-- 전체 수정은 별도 상세 페이지에서 한다.
-
-Mobile:
-
-- 딜 선택 시 상세 화면으로 이동한다.
-
-## 항상 먼저 보여줄 정보
-
-- 딜이름
-- 회사/담당자
-- 단계
-- 금액
-- 가능성. 현재 API/FE 필드가 없으므로 후속 범위가 열릴 때만 표시한다.
-- 다음 행동
-- 마감/예상 종료일
-
-## 상세 섹션
-
-- 기본 정보
-- 활동 로그
-- 제품/연결 정보
-- Memo 기록
-
-활동 로그는 타임라인 형태로 보여주고, 상세 안에서 빠르게 추가할 수 있게 한다.
-
-## 관련 문서
-
-- `AGENT/UXUI_AGENT/DECISIONS/README.md`
-- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+딜 도메인을 다시 활성화할 때 이 파일을 새 route/API/schema 기준으로 재검토한다.

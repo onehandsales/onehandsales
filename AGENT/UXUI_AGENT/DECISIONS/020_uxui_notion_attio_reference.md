@@ -7,7 +7,7 @@ Date: 2026-07-18
 `onehand.sales`의 선호 UX/UI 기준은 앞으로 다음 조합으로 고정한다.
 
 ```text
-Notion식 작업공간 UX + Attio식 CRM record 관계 UX
+Notion식 작업공간 UX + Attio식 CRM record UX
 ```
 
 이 결정은 화면, Frontend 구현, 사용자 노출 흐름, UX/UI QA, 화면이 연결된 API/DB 설계에서 항상 참고한다.
@@ -28,12 +28,11 @@ Notion은 전체 작업공간 문법의 1차 기준이다.
 
 ## 3. Attio에서 가져올 것
 
-Attio는 CRM record와 관계 구조의 1차 기준이다.
+Attio는 CRM record 구조의 1차 기준이다.
 
-- record 간 관계를 화면에서 분명히 보여주는 linked record 구조
+- record의 속성과 메모 맥락을 화면에서 분명히 보여주는 구조
 - property-first 상세 화면
-- activity timeline 또는 activity-like section
-- notes/tasks처럼 record에 붙는 업무 맥락
+- notes/memo처럼 record에 붙는 업무 맥락
 - table/list/kanban view를 CRM workflow에 맞게 바꿔 보는 감각
 - quick action과 inline creation으로 입력 흐름을 끊지 않는 방식
 
@@ -44,13 +43,13 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 따라서 Notion과 Attio의 패턴을 참고하되, 아래 기준을 유지한다.
 
 - 사용자가 custom object나 custom field를 자유롭게 만드는 제품으로 확장하지 않는다.
-- 목록은 Notion database처럼 조용하고 조밀하게 보이되, Attio처럼 record 관계와 업무 상태를 분명히 보여준다.
+- 목록은 Notion database처럼 조용하고 조밀하게 보이되, Attio처럼 record 속성과 업무 메모 맥락을 분명히 보여준다.
 - 시각 톤은 Notion처럼 화이트/중립 그레이를 기본으로 한다. 선택 navigation/active tab은 회색 중심이며, 파랑은 전역 active identity로 쓰지 않는다.
 - 아이콘 컬러는 도메인/메뉴 인식 또는 상태 의미를 보조할 때만 제한적으로 사용한다.
-- 딜은 핵심 workflow record다. 딜 목록과 상세에서 단계, 금액, 다음 행동, 마감일, 연결 회사/담당자/제품이 즉시 보여야 한다.
+- 현재 핵심 workflow record는 회사다. 회사 목록과 상세에서 회사명, 분야, 지역, 주소, 메모 맥락이 즉시 보여야 한다.
 - Memo 기록은 Activity/Log와 구분하고, 민감 가능 입력으로 다룬다.
 - 생성은 목록 맥락이 중요하면 오른쪽 문서형 패널을 우선한다. 짧은 보조 입력, 삭제 확인, 위험 액션 확인은 modal/dialog를 사용할 수 있다.
-- 모바일에서는 desktop table을 억지로 유지하지 않고 stage tab + card/list로 전환한다.
+- 모바일에서는 desktop table을 억지로 유지하지 않고 compact list/detail 흐름으로 전환한다.
 
 ## 4A. Record Table Density 기준
 
@@ -58,8 +57,8 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 목록 UX 판단 기준:
 
 - 단순 조회 테이블이 아니라, 영업자가 목록에서 바로 판단하고 행동할 수 있는 record table이어야 한다.
-- 등록일보다 다음 행동, 현재 응답에서 가능한 최근 활동, 연결 record, 상태, 마감일 같은 업무 판단 정보가 우선이다.
-- 최근 활동은 현재 목록 API 응답에 있는 `updatedAt`, 최신/다음 행동, 연결 record 요약 등 가능한 데이터로 먼저 표현한다. 응답이 부족하면 FE에서 새 값을 꾸미지 말고 BE/API 후속으로 기록한다.
+- 회사명, 분야, 지역, 주소, 현재 응답에서 가능한 최근 메모 맥락 같은 업무 판단 정보가 우선이다.
+- 최근 활동은 현재 목록 API 응답에 있는 데이터로 먼저 표현한다. 응답이 부족하면 FE에서 새 값을 꾸미지 말고 BE/API 후속으로 기록한다.
 - desktop 목록은 현재 15개 기본 표시 계약을 가진다.
 - page size는 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약과 연결되어 있으므로 FE에서 숫자만 바꾸지 않는다.
 - 후속 UX 우선순위는 row density와 record 관계 표현 개선이다.
@@ -67,12 +66,9 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - 모바일도 15개 목록 계약을 사용하되, desktop table을 억지로 유지하지 않고 card/list로 표현한다.
 - 20개 기본 표시는 현재 row 높이와 layout에서는 과하다. 나중에 고밀도 보기 옵션으로만 검토한다.
 
-도메인별 목록에서 우선할 정보:
+현재 도메인별 목록에서 우선할 정보:
 
-- 딜: 딜명, 회사/담당자, 단계, 금액, 다음 행동, 마감일, 현재 응답에서 가능한 최근 활동
-- 회사: 회사명, 분야, 지역, 담당자, 진행 딜, 다음 행동 또는 현재 응답에서 가능한 최근 활동
-- 담당자: 이름, 회사, 부서/직급, 연락처, 연결 딜, 현재 응답에서 가능한 최근 활동
-- 제품: 제품명, 카테고리/타입, 연결 딜 수, 현재 응답에서 가능한 최근 활동 또는 사용 맥락
+- 회사: 회사명, 분야, 지역, 주소, 현재 응답에서 가능한 최근 메모 맥락
 
 ## 5. 가져오지 않을 것
 
@@ -80,8 +76,8 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - Notion처럼 모든 것을 자유 block editor로 만드는 것
 - Attio 브랜드, 문구, 화면 구조의 직접 복제
 - Attio의 custom object builder, 팀 CRM 설정, 이메일 동기화, 협업 권한 복잡도를 현재 MVP에 끌어오는 것
-- 딜 desktop 기본 화면을 pure Kanban으로 고정하는 것
-- 제품의 고정 도메인 필드를 자유 텍스트나 임의 속성으로 약화하는 것
+- 현재 Company-only 화면을 pure Kanban으로 고정하는 것
+- 회사 분야/지역 같은 고정 도메인 필드를 자유 텍스트나 임의 속성으로 약화하는 것
 
 ## 6. 작업 전 확인 규칙
 
@@ -101,10 +97,10 @@ Backend/API/DB 작업이 화면 계약이나 record 관계에 영향을 주면 �
 UX/UI 또는 Frontend 리뷰 시 아래 질문을 반드시 포함한다.
 
 - Notion식 workspace/page/database/detail 문법이 살아 있는가?
-- Attio식 record 관계와 linked record 맥락이 분명한가?
+- Attio식 record 속성과 memo 맥락이 분명한가?
 - 이 화면이 사용자를 custom CRM builder로 밀어내지 않고, 고정된 개인 영업 workflow를 빠르게 처리하게 하는가?
-- 딜과 다음 행동이 필요한 곳에서 1급 정보로 보이는가?
-- 목록에서 record를 찾고, 열고, 연결하고, 생성하는 흐름이 끊기지 않는가?
+- 회사와 메모가 필요한 곳에서 1급 정보로 보이는가?
+- 목록에서 record를 찾고, 열고, 생성하는 흐름이 끊기지 않는가?
 - reference 제품의 brand/copy/visual asset/layout을 그대로 복제하지 않았는가?
 
 ## 8. 관련 문서

@@ -5,12 +5,11 @@
 ## 활성 업무 범위
 
 - `/app` 홈
-- 회사, 담당자, 제품, 딜 목록/생성/상세/수정
-- 딜 다음 행동, 메모, 활동 로그
-- 회사/담당자/제품/딜 도메인별 xlsx export
+- 회사 목록/생성/상세/수정
+- 회사 메모와 개인 비밀 메모
+- 회사 xlsx export
 - 통합검색
 - 휴지통 목록/상세/복구
-- 제품 분석 이벤트 수집
 - 오류 신고와 지원 문의
 - 계정 모달 기반 프로필/기기/세션 관리
 
@@ -24,6 +23,5 @@
 - `pnpm test:e2e`
 - `pnpm test:e2e:mobile`
 - `pnpm test:e2e:browsers`
-- `pnpm test:e2e:analytics`
 
-로그인 이후 화면은 `/app/*` 아래에 있고, 공개 페이지는 기존 라우팅을 유지한다.
+로그인 이후 활성 화면은 `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/trash`, `/app/more`다. Contact/Product/Deal의 `/app/*` 경로는 현재 `/app`으로 redirect한다. 공개 페이지는 locale 기반 라우팅을 유지한다.

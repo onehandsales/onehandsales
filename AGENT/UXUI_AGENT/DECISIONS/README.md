@@ -9,10 +9,10 @@
 - `006_uxui_reference_style.md`
 - `007_uxui_create_flow.md`
 - `008_uxui_inline_entity_creation.md`
-- `009_uxui_mobile_pipeline.md`
+- `009_uxui_mobile_pipeline.md` (비활성)
 - `010_uxui_search.md`
-- `011_uxui_deal_detail.md`
-- `013_uxui_next_action_due_state.md`
+- `011_uxui_deal_detail.md` (비활성)
+- `013_uxui_next_action_due_state.md` (비활성)
 - `014_uxui_admin_tone.md`
 - `015_uxui_list_filter_pagination.md`
 - `016_uxui_writing_tone.md`

@@ -1,39 +1,7 @@
 # UX/UI Next Action Due State Decision
 
-## 결정
+현재 비활성 결정이다.
 
-다음 행동은 딜의 1급 정보로 취급한다.
+2026-09-10 기준 현재 schema와 Backend API에는 Deal 다음 행동 모델/API가 없다. 다음 행동 due state UX는 현재 구현 범위에 적용하지 않는다.
 
-## 표시 위치
-
-- 딜 목록 row/card
-- 딜 상세 요약
-- 홈 파이프라인
-
-## 상태
-
-- 없음
-- 예정됨
-- 임박
-- 지연
-- 완료
-
-## 사용자 액션
-
-- 완료
-- 미루기
-- 날짜 변경
-- 활동 로그 추가
-
-## 시각 방향
-
-- 임박: 앰버
-- 지연: 레드
-- 완료: 뉴트럴 또는 그린
-
-
-## 관련 문서
-
-- `AGENT/UXUI_AGENT/DECISIONS/README.md`
-- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+딜 또는 일정 도메인을 다시 활성화할 때 이 파일을 새 route/API/schema 기준으로 재검토한다.

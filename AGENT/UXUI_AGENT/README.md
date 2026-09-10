@@ -10,10 +10,10 @@
 
 - 사용자 흐름
 - 화면 목록
-- 홈 딜 파이프라인 방향
+- 홈/회사 화면 방향
 - 검색 UX
-- 빠른 등록과 inline creation
-- 딜 상세 UX
+- 빠른 등록과 옵션 추가 흐름
+- 회사 상세 UX
 - Admin UI 톤
 - 모바일 화면 패턴
 - 외부 UX reference 적용 규칙
@@ -44,7 +44,7 @@ UXUI_AGENT/
 - 새 기능은 먼저 사용자 의도와 흐름을 정의한다.
 - 화면 작업은 PM의 MVP 범위와 Software의 API/DB 가능성을 함께 확인한다.
 - UI는 장식보다 업무 흐름과 정보 인식 속도를 우선한다.
-- 현재 선호 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
+- 현재 선호 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record UX`다.
 - 모바일과 데스크톱의 기본 패턴이 다를 수 있음을 문서에 명시한다.
 - 외부 UX reference는 패턴만 참고하고 brand, copy, visual asset, layout을 그대로 복제하지 않는다.
 

@@ -43,18 +43,13 @@ AuthDevice 1 ─ N AuthSession
 - `User.permanentDeleteAt`: 영구 삭제 정책을 현재 두지 않는다.
 - 계정 삭제 API: 현재 만들지 않는다.
 - 등록 기기 수정/해제 API용 컬럼: 현재 조회만 제공한다.
-- DealActivity 등 후속 영업 활동 통합 테이블: 이후 요청 순서대로 별도 설계한다.
+- 후속 영업 활동 통합 테이블: 이후 요청 순서대로 별도 설계한다.
 
 참고:
 
 - Company 도메인은 현재 `BE/prisma/schema.prisma`와 `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`에 포함되어 있다.
-- Contact 도메인은 현재 `BE/prisma/schema.prisma`와 `BE/prisma/migrations/20260611010000_add_contact_domain/migration.sql`에 포함되어 있다.
-- Product 도메인은 현재 `BE/prisma/schema.prisma`와 `BE/prisma/migrations/20260611020000_add_product_domain/migration.sql`에 포함되어 있다.
-- Deal 도메인은 현재 `BE/prisma/schema.prisma`, `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`, `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`에 포함되어 있다.
 - Company 구조는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`를 기준으로 확인한다.
-- Contact 구조는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`를 기준으로 확인한다.
-- Product 구조는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_SCHEMA.md`를 기준으로 확인한다.
-- Deal 구조는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DEAL_SCHEMA.md`를 기준으로 확인한다.
+- Contact/Product/Deal 구조 문서는 현재 비활성 기록이다. 해당 모델은 현재 `BE/prisma/schema.prisma`에 없다.
 
 ## 4. Enum
 
@@ -123,7 +118,7 @@ AuthDevice 1 ─ N AuthSession
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
 | `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이며, KR/US/CA 우선 전략에 맞춘 `CA` 지원은 후속 구현 범위다. |
-| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 금액 입력 기본값과 Product/Deal currency fallback에 사용한다. 현재 구현은 `KRW/USD` 중심이며, `CAD` 지원은 후속 구현 범위다. |
+| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 현재 구현은 `KRW/USD` 중심이며, `CAD` 지원은 후속 구현 범위다. |
 | `signupLocale` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 locale. |
 | `signupCountryCode` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 국가 코드. |
 | `signupTimeZone` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 timezone. |

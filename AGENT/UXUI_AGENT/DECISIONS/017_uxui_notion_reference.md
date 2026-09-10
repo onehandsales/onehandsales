@@ -37,11 +37,10 @@ Notion의 UX/UI는 다음 특징을 가진다.
 
 ### User Web
 
-- 홈과 딜 화면은 Notion database + CRM record view처럼 구성한다.
-- 딜 목록은 stage tab을 가진 database view로 보고, row/card 클릭 시 detail page 또는 detail panel로 들어간다.
+- 홈과 회사 화면은 Notion database + CRM record view처럼 구성한다.
+- 회사 목록은 database view로 보고, row/card 클릭 시 detail page로 들어간다.
 - 회사 생성은 목록을 유지한 채 오른쪽 문서형 패널에서 처리한다. 패널은 데스크톱에서 화면 최상단~최하단에 고정되고 resize가 가능하며, 목록 컬럼은 숨기지 않는다.
-- 연결된 record는 relation처럼 보이게 한다.
-- Memo 기록과 활동 로그는 page body의 section/block처럼 다룬다.
+- Memo 기록은 page body의 section/block처럼 다룬다.
 - 모바일 브라우저에서도 같은 정보 구조를 유지하되, table은 card/list로 전환한다.
 
 ### Admin Web
@@ -55,7 +54,7 @@ Notion의 UX/UI는 다음 특징을 가진다.
 - Notion 화면을 픽셀 단위로 복사
 - 모든 것을 자유 편집 가능한 문서 편집기로 만드는 것
 - 영업 업무에 필요한 고정 필드와 검증을 약화하는 것
-- 딜 pipeline을 Notion board처럼만 고정하는 것
+- 현재 Company-only 화면을 딜 pipeline처럼 구성하는 것
 - 정보 밀도를 지나치게 낮춰 실제 영업 비교가 어려워지는 것
 
 ## 기존 reference 우선순위 변경
@@ -63,7 +62,7 @@ Notion의 UX/UI는 다음 특징을 가진다.
 기존 Toss, Pipedrive, Attio, Linear, Airtable reference는 폐기하지 않는다. 다만 우선순위를 다음처럼 바꾼다.
 
 1. Notion: 전체 UX/UI 기준
-2. Pipedrive/Attio: 영업 record와 pipeline 도메인 참고
+2. Pipedrive/Attio: 후속 영업 record와 pipeline 도메인 참고
 3. Linear: 빠른 탐색, command/search, peek/detail 참고
 4. Airtable: Admin table/filter/detail 참고
 5. Toss: 문구, 명확한 CTA, 낮은 시각 소음 참고

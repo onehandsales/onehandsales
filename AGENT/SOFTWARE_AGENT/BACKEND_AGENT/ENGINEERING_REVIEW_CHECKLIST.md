@@ -40,7 +40,7 @@
 
 - user ownership isolation 테스트가 있는가?
 - AdminGuard 테스트가 있는가?
-- 딜 단계 변경 시 활동 로그 생성 테스트가 있는가?
+- Company soft delete와 메모/비밀 메모 복구 테스트가 있는가?
 - 외부 Provider는 기본 테스트에서 mock/stub 처리되는가?
 
 ## 4. 배포 체크리스트

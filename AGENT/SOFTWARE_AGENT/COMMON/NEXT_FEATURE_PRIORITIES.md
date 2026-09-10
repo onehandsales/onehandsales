@@ -3,13 +3,13 @@
 기준일: 2026-08-11
 전략 보강: 2026-08-11 `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
 
-이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발이나 Paddle checkout 구현보다 기존 01~11 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비가 우선이다.
+이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발이나 Paddle checkout 구현보다 현재 활성 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비가 우선이다.
 
 2026-08-11 기준 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고 Deferred / Draft 상태로 둔다.
 
 현재 결론:
 
-- 기존 01~11 기능 유지보수와 S0/S1/S2 버그 수정을 가장 먼저 한다.
+- 현재 활성 기능 유지보수와 S0/S1/S2 버그 수정을 가장 먼저 한다.
 - 그 다음 UX/UI 상품성 개선과 결제창 없는 100명 베타 준비를 진행한다.
 - 베타 전에는 Paddle checkout, 결제 webhook/API/DB migration, AI 사용량 제한 billing source-of-truth 연결을 하지 않는다.
 - Paddle/Billing은 베타 피드백과 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격할 때 시작한다.
@@ -55,29 +55,25 @@
 
 ## 2. 현재 완료 상태
 
-### 2.1 기능 QA happy path 완료
+### 2.1 기능 QA happy path
 
-아래 흐름은 수동 QA 기준으로 동작 확인 완료 상태다.
+아래 흐름은 현재 활성 범위 기준으로 우선 확인해야 한다.
 
 1. 로그인
 2. 회사 생성/조회/수정/삭제/복구
-3. 담당자 생성/조회/수정/삭제/복구
-4. 제품 생성/조회/수정/삭제/복구
-5. 딜 생성/조회/수정/삭제/복구
-10. 검색
-11. 휴지통
-12. 도메인별 XLSX Export
-13. 설정/더보기
+3. 회사 메모와 개인 비밀 메모 생성/조회/수정/삭제/복구
+4. 검색
+5. 휴지통
+6. 회사 XLSX Export
+7. 설정/더보기
 
-### 2.2 자동 검증 완료
+### 2.2 자동 검증
 
-2026-07-10 기준 자동 검증 결과는 다음과 같다.
+문서와 코드 변경 후에는 현재 package script 기준으로 자동 검증을 다시 실행한다.
 
-- BE `typecheck`, `lint`, `test`, `build` 통과
-- BE test: 17 suites / 82 tests passed
-- FE/user-web `typecheck`, `lint`, `build`, `test:e2e` 통과
-- FE/user-web E2E: 핵심 업무 smoke 1 passed
-- FE/admin-web `typecheck`, `lint`, `build` 선택 점검 통과. 이후 2026-08-09 G05 closeout에서 현재 Admin route smoke E2E도 통과 상태로 기록됨
+- BE: `pnpm prisma:validate`, `pnpm prisma:generate`, `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`
+- FE/user-web: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, `pnpm test:e2e`
+- FE/admin-web: `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm test:e2e`
 
 ### 2.3 진입/인증/라우팅 smoke 완료
 
@@ -115,8 +111,8 @@
 - 390px mobile
 - 360px mobile
 - 브라우저 확대 125%
-- 긴 회사명/담당자명/제품명/딜이름
-- 긴 이메일/전화번호/URL
+- 긴 회사명
+- 긴 주소/URL
 - 회사 생성 오른쪽 문서형 패널의 resize, 70% max 폭, 목록 컬럼 유지, 가로 스크롤
 - 모달/드롭다운/토스트 위치
 - Tab/Enter/Escape 기본 접근성
@@ -131,8 +127,7 @@
 
 - 모바일 로그인
 - 홈
-- 회사/담당자/제품 목록
-- 딜 단계 탭과 딜 목록
+- 회사 목록
 - 휴지통 복구
 - 작은 화면 모달
 - 모바일 키보드가 올라온 상태의 저장 버튼 접근
@@ -164,11 +159,11 @@
 
 ### 3.5 DB/운영 환경 정합성
 
-현재 기능 수동 QA는 통과했지만, 운영 전 별도 정리가 필요하다.
+현재 기능은 운영 전 별도 정리가 필요하다.
 
 - Prisma generate가 실행 중 BE 프로세스의 query engine DLL lock 때문에 실패했던 기록 정리
 - migration 기록 정합성 확인
-- seed 실행 여부와 실제 Supabase OAuth/CRM QA 데이터 분리
+- seed 실행 여부와 실제 Supabase OAuth/회사 QA 데이터 분리
 - 배포 DB와 로컬 DB의 migration 상태 차이 정리
 
 ## 4. 알려진 한계
@@ -179,7 +174,7 @@
 - 결제, 구독, 세금, invoice, refund, entitlement, paywall은 `TODO/PADDLE_PLAN` Deferred / Draft 범위
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
-- 현재 전화번호 입력/검증은 KR/US를 1차 지원한다. KR/US/CA 우선 전략에 맞춘 CA 전화번호, CAD, 캐나다 회사 지역은 후속 구현 대상이다.
+- KR/US/CA 우선 전략에 맞춘 CAD, 캐나다 회사 지역 정합성은 후속 구현 대상이다.
 
 ## 5. 실행 우선순위
 
@@ -213,7 +208,7 @@
 
 바로 다음 행동은 새 기능 개발이 아니다.
 
-1. 01~11 기능 유지보수 범위를 정리한다.
+1. 현재 활성 기능 유지보수 범위를 정리한다.
 2. UX/UI 상품성 개선 범위를 정리한다.
 3. 발견 버그를 S0/S1/S2/S3/S4로 분류한다.
 4. S0/S1/S2를 Paddle/Billing보다 먼저 수정한다.
@@ -226,7 +221,7 @@
 
 - 지금은 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
 - 결제창만 붙이는 작업은 아직 이르다.
-- 이미 구현된 01~11 기능이 베타 사용자가 반복해서 쓰기에 충분히 안정적이고 읽기 쉬운지 먼저 확인해야 한다.
+- 현재 활성 기능이 베타 사용자가 반복해서 쓰기에 충분히 안정적이고 읽기 쉬운지 먼저 확인해야 한다.
 - Paddle/Billing은 100명 베타 이후 가격/플랜/권한 정책이 확정되면 시작한다.
 
 ## 8. 관련 정본 문서

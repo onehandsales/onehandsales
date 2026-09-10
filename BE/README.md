@@ -22,13 +22,12 @@
 
 - `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리, 로그인 locale/region 메타데이터 동기화
 - `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회
-- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, 연결 담당자/딜 조회, xlsx export
-- `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
-- `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
-- `deal`: 사용자 소유 딜, 회사/담당자/제품 연결, `DealActivity`, 다음 행동 로그, 메모 로그, Trash 복구, xlsx export
-- `analytics`: 제품 분석 client event 수집, activation/retention snapshot
-- `search`: 회사/담당자/제품/딜 통합검색
-- `trash`: 회사/담당자/제품/딜과 지원 로그의 휴지통 목록/상세/7일 이내 복구
+- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, soft delete, xlsx export
+- `search`: 회사 통합검색
+- `trash`: 회사, 회사 일반 메모 로그, 회사 개인 비밀 메모 로그의 휴지통 목록/상세/7일 이내 복구
+- `error-report`: User Web 오류 신고 접수와 screenshot storage 연동
+- `support-request`: User Web 지원 문의 접수
+- `public-contact-request`: 로그인 전 공개 문의 접수
 - `health`: health check
 
 
@@ -72,8 +71,6 @@ API_PUBLIC_ORIGIN="https://onehandsales-production.up.railway.app"
 ## API 호출 예제
 
 - 회사 도메인: `restdoc/company-domain.http`
-- 담당자 도메인: `restdoc/contact-domain.http`
-- 제품 도메인: `restdoc/product-domain.http`
 - 전체 API 한 줄 설명: `../AGENT/SOFTWARE_AGENT/COMMON/API_SAMPLE.md`
 
 ## DB
@@ -92,8 +89,8 @@ pnpm run db:dev:down
 
 CI/배포처럼 이미 migration 파일을 적용해야 하는 환경에서는 `pnpm run prisma:migrate:deploy`를 사용한다.
 
-현재 seed는 local mock Auth 사용자와 session만 만든다.
-회사/담당자/제품 개인 비밀 메모 API를 사용하려면 `.env`에 `COMPANY_PRIVATE_MEMO_ENCRYPTION_KEY`, `CONTACT_PRIVATE_MEMO_ENCRYPTION_KEY`, `PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY` 또는 공통 `ENCRYPTION_MASTER_KEY`를 채워야 한다.
+현재 seed는 production에서는 실행하지 않고, local mock Auth 사용자/session과 회사 demo 데이터를 만든다.
+회사 개인 비밀 메모 API를 사용하려면 `.env`에 `COMPANY_PRIVATE_MEMO_ENCRYPTION_KEY` 또는 공통 `ENCRYPTION_MASTER_KEY`를 채워야 한다.
 
 ## 검증
 
@@ -104,7 +101,7 @@ pnpm test
 pnpm run build
 ```
 
-2026-07-10 기준 위 검증은 모두 통과했다. `pnpm test`는 17 suites / 82 tests passed 상태다.
+문서와 코드 변경 후에는 위 명령으로 다시 검증한다.
 
 ## 외부 Provider
 

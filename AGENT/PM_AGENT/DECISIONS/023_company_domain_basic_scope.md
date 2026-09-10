@@ -18,12 +18,10 @@
 
 - 회사 목록은 `createdAt DESC`로 정렬한다.
 - 회사 목록 응답에는 `updatedAt`을 포함하지 않는다.
-- 회사 목록 응답에는 각 회사의 연결 담당자 수 `contactCount`를 포함한다.
 - 회사 분야 전체 조회 응답에는 `createdAt`을 포함하지 않는다.
 - 회사 지역 전체 조회 응답에는 `createdAt`을 포함하지 않는다.
 - 회사 단건 조회 응답에는 회사명, 회사분야, 회사지역, 등록일, 최근수정일을 포함한다.
-- 회사 단건 조회 응답 자체에는 담당자 수와 딜 수를 병합하지 않는다.
-- 회사 단건 화면에서 필요한 연결 Contact 전체 목록은 `GET /api/companies/:companyId/contacts` 별도 API로 조회한다.
+- 회사 단건 조회 응답 자체에는 담당자 수와 딜 수를 병합하지 않는다. 현재 `BE/prisma/schema.prisma`에는 Contact/Deal 모델이 없으므로 연결 Contact/Deal 목록 API도 제공하지 않는다.
 - 회사 목록 xlsx 내보내기는 `GET /api/companies/export/xlsx`로 제공하고, 현재 검색어와 필터를 반영하되 `page`는 제외한다.
 - 회사 생성 요청의 `companyMemo`는 `Company` 테이블 컬럼이 아니라 `CompanyMemoLog` 첫 데이터로 저장한다.
 - 회사 생성 요청의 `companyMemo`로 만들어지는 첫 메모 로그는 `memoType`을 `초기 메모`로 저장한다.
@@ -48,7 +46,6 @@
 - 회사 개인 비밀 메모 로그 생성 성공: `201 Created`, response body 없음
 - 회사 개인 비밀 메모 로그 수정 성공: `201 Created`, response body 없음
 - 회사 목록 xlsx 내보내기 성공: `200 OK`, xlsx binary body
-- 회사 연결 Contact 목록 조회 성공: `200 OK`, `items[]` body
 
 ## 5. 비밀 메모 보안
 

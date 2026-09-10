@@ -11,13 +11,12 @@ Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management, login locale/region metadata sync.
 - `user`: current user profile, timezone/locale metadata, and registered device lookup.
-- `company`: user-owned company, company field/region, memo/private memo logs, linked contacts/deals, soft delete, trash restore, xlsx export.
-- `contact`: user-owned contact, company option, department/job grade, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
-- `product`: user-owned product, product category/status, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
-- `deal`: user-owned deal, company/contact/product links, stage counts, `DealActivity`, following action logs, memo logs, soft delete, trash restore, xlsx export.
-- `analytics`: product analytics client event 수집, activation/retention snapshot.
-- `search`: integrated search over company, contact, product, and deal data.
-- `trash`: 7-day trash list/detail/restore for supported entities and logs.
+- `company`: user-owned company, company field/region, memo/private memo logs, soft delete, trash restore, xlsx export.
+- `search`: integrated search over company data.
+- `trash`: 7-day trash list/detail/restore for company, company memo log, and company private memo log rows.
+- `error-report`: User Web error report intake and optional screenshot storage.
+- `support-request`: authenticated support request intake.
+- `public-contact-request`: unauthenticated public contact request intake.
 - `health`: health check endpoint.
 
 Current intentional gaps:
@@ -25,7 +24,7 @@ Current intentional gaps:
 - Paddle/Billing, subscription/payment/tax/invoice/refund, entitlement/paywall, B2B tenant/team features, and paid recovery/hard purge policy are deferred.
 - Current runtime auth providers are Google, LINE, and Apple. Kakao remains only as a legacy Prisma enum value and is not exposed for runtime exchange.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
-- 2026-07-10 verification: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed.
+- Verification must be rerun after code or document contract changes: `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test`, and `build`.
 
 Auth/session policy:
 

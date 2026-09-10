@@ -9,7 +9,6 @@
 - `pnpm test:e2e`
 - `pnpm test:e2e:mobile`
 - `pnpm test:e2e:browsers`
-- `pnpm test:e2e:analytics`
 
 ## Admin Web
 
@@ -22,9 +21,9 @@
 
 - login
 - `/app` home
-- company/contact/product/deal core flow
+- company core flow
 - search
 - trash
-- export
+- company export
 - account modal
 - admin authority check

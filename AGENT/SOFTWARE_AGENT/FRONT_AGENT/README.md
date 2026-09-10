@@ -7,15 +7,12 @@ Frontend Agent는 User Web과 Admin Web의 현재 활성 범위를 기준으로 
 - Auth/User
 - Home(`/app`)
 - Company
-- Contact
-- Product
-- Deal
 - Search
 - Trash
-- Product Analytics
 - Help Error Report
 - Help Support Request
-- Company/Contact/Product/Deal xlsx export
+- Public Contact Request
+- Company xlsx export
 
 ## Admin Web 활성 범위
 

@@ -46,14 +46,13 @@ OneHand Sales의 현재 인증은 Supabase OAuth를 외부 identity provider로 
 
 ## QA Next Step
 
-인증 QA 이후의 다음 제품 QA는 로그인 후 CRM 핵심 플로우다.
+인증 QA 이후의 다음 제품 QA는 로그인 후 회사 관리 핵심 플로우다.
 
 User Web QA:
 
 1. 회사 생성
-2. 담당자 생성
-3. 제품 생성
-4. 딜 생성
-5. 딜에 회사/담당자/제품 연결
-6. Next Action 등록/완료 처리
-9. 수정/삭제/휴지통 복구
+2. 회사 상세 조회
+3. 회사 수정
+4. 회사 메모/개인 비밀 메모 생성
+5. 회사 삭제/휴지통 복구
+6. 검색과 회사 export

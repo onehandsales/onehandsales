@@ -1,6 +1,6 @@
 # Trash Delete Policy Backend Guide
 
-현재 휴지통 정책은 Company, Contact, Product, Deal과 각 도메인의 메모/다음 행동 row에 적용한다.
+현재 휴지통 정책은 Company와 Company 메모 row에 적용한다.
 
 ## 원칙
 
@@ -15,19 +15,10 @@
 - Company
 - CompanyMemoLog
 - CompanyUserPrivateMemoLog
-- Contact
-- ContactMemoLog
-- ContactUserPrivateMemoLog
-- Product
-- ProductMemoLog
-- ProductUserPrivateMemoLog
-- Deal
-- DealFollowingActionLog
-- DealMemoLog
 
 ## 제외 대상
 
 - 인증/세션 row
-- 제품 분석 snapshot
 - 오류 신고와 지원 문의 row
 - 공개 문의 row
+- Contact/Product/Deal 계열 row와 Product Analytics row는 현재 Prisma schema에 없다.

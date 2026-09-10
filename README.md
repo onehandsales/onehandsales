@@ -67,7 +67,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, Product, Deal, Search, Trash, Analytics, PublicContactRequest, ErrorReport, SupportRequest 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공하고, Company/Contact/Product 상세에서는 연결 딜 조회 API를 사용한다. 관리자 확인 API는 `GET /admin/api/me`만 제공한다.
+현재 Backend는 Auth/User, Company, Search, Trash, PublicContactRequest, ErrorReport, SupportRequest, Health 모듈을 구현한다. Company는 회사/분야/지역/메모/개인 비밀 메모와 xlsx export API를 제공한다. Search와 Trash의 현재 대상은 Company와 Company 메모 로그 범위다. 관리자 확인 API는 `GET /admin/api/me`만 제공한다.
 
 ### 2. User Web
 
@@ -131,7 +131,7 @@ pnpm run build
 
 Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock으로 대체한다. User Web E2E는 5175 포트의 Vite dev server를 테스트용으로 사용한다. Admin Web E2E는 관리자 token 통과, non-admin 차단, `GET /admin/api/me` 호출만 확인한다.
 
-2026-07-10 기준 BE `typecheck`, `lint`, `test`, `build`, FE/user-web `typecheck`, `lint`, `build`, `test:e2e`, FE/admin-web 선택 점검 `typecheck`, `lint`, `build`가 통과했다. 핵심 업무 happy path, URL locale smoke, API/security smoke도 통과했다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
+문서와 코드 변경 후에는 위 명령으로 각 실행 단위를 다시 검증한다. 출시 전 남은 품질 범위는 UX/UI 공통 QA, 모바일 브라우저 QA, Chrome/Edge QA, 다중 계정 보안 QA, DB/운영 환경 정합성 확인이다.
 
 ## External Providers
 

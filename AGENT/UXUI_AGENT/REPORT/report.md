@@ -1,5 +1,6 @@
 # UI Audit Report — onehand.sales (localhost:5173)
 
+> **현재 상태**: 비활성 이력 리포트. 이 문서는 과거 `/deals` 화면이 있던 시점의 UX/UI QA 기록이며, 2026-09-10 기준 `FE/user-web`의 `/app/deals/*` route는 `/app`으로 redirect한다.
 > **근거**: measurements.json 실측값 전용 (getComputedStyle · getBoundingClientRect · WCAG relativeLuminance)
 > **측정 뷰포트**: 1280px (desktop), 390px (mobile)
 > **Tier**: 1 (FilterChip, 모바일 Chip, FAB, PreviewPanel, PageHeader, Button, Badge/StageBadge, ListRowActions, Pagination)

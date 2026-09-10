@@ -6,24 +6,28 @@ User Web은 React Router, TanStack Query, i18n, Playwright/Vitest 기반으로 �
 
 - `/app`
 - `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`
-- `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`
-- `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`
-- `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`
 - `/app/trash`
 - `/app/more`
+
+Redirect-only:
+
+- `/app/contacts/*` -> `/app`
+- `/app/products/*` -> `/app`
+- `/app/deals/*` -> `/app`
+- `/app/export` -> `/app`
 
 ## Feature 구조
 
 - `auth`: token exchange, session refresh, logout
-- `user`: profile, OAuth accounts, devices, sessions
-- `company`: list/detail/create/edit/export/memo
-- `contact`: list/detail/create/edit/export/memo
-- `product`: list/detail/create/edit/export/memo
-- `deal`: pipeline/list/detail/create/edit/export/next action/memo/activity
-- `search`: global search modal and result navigation
-- `trash`: deleted row listing, preview, restore
-- `product-analytics`: client event capture
-- `help`: error report and support request
+- `app-i18n`: app locale, timezone, country/currency formatting
+- `company`: list/detail/create/edit/export/memo/private memo
+- `search`: company search modal and result navigation
+- `trash`: deleted company/company memo listing, preview, restore
+- `error-report`: authenticated error report intake
+- `support-request`: authenticated support request intake
+- `public-contact-request`: unauthenticated public contact request intake
+- `public-site`: locale public pages
+- `schedule`, `meeting-note`: placeholder folders only, no active route/API
 
 ## API 원칙
 

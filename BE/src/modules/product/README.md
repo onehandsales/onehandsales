@@ -1,39 +1,7 @@
 # Product Module
 
-## 현재 범위
+현재 비활성 문서다.
 
-- `GET /api/products`
-- `GET /api/products/export/xlsx`
-- `GET /api/products/:productId/deals`
-- `GET /api/product-categories`
-- `POST /api/product-categories`
-- `DELETE /api/product-categories/:categoryId`
-- `GET /api/product-statuses`
-- `POST /api/product-statuses`
-- `DELETE /api/product-statuses/:statusId`
-- `POST /api/products`
-- `GET /api/products/:productId`
-- `PATCH /api/products/:productId`
-- `DELETE /api/products/:productId`
-- `POST /api/products/:productId/memo-logs`
-- `GET /api/products/:productId/memo-logs`
-- `PATCH /api/products/:productId/memo-logs/:memoLogId`
-- `DELETE /api/products/:productId/memo-logs/:memoLogId`
-- `POST /api/products/:productId/private-memo-logs`
-- `GET /api/products/:productId/private-memo-logs`
-- `PATCH /api/products/:productId/private-memo-logs/:privateMemoLogId`
-- `DELETE /api/products/:productId/private-memo-logs/:privateMemoLogId`
+`BE/src/modules/product`에는 런타임 TypeScript 코드가 없고 `AppModule`에도 연결되어 있지 않다. 현재 `BE/prisma/schema.prisma`에는 `Product` 계열 모델이 남아 있지 않으며 `/api/products` API도 제공하지 않는다.
 
-이 모듈은 User Web에서 사용하는 제품, 제품 카테고리, 제품 상태, 제품 일반 메모 로그, 제품 개인 비밀 메모 로그 API를 담당한다.
-
-## 구현 기준
-
-- 모든 API는 `AuthGuard`를 사용한다.
-- 모든 조회와 변경은 현재 사용자 `userId` ownership 기준으로 처리한다.
-- 제품 목록 응답에는 제품별 연결 딜 수 `dealCount`를 포함한다.
-- 제품 export는 검색/필터/정렬 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
-- 제품 생성 시 `productMemo`가 있으면 같은 transaction에서 `ProductMemoLog` 첫 데이터로 저장한다.
-- 제품 생성 시 초기 메모의 `memoType`은 서버가 `초기 메모`로 저장한다.
-- 제품 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
-- 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
-- API 계약은 `TODO/DONE/PRODUCT_DOMAIN_PLAN/COMMON/API-SPEC/PRODUCT_API_DETAIL.md`와 `TODO/DONE/ADDITIONAL_WORK_PLAN/COMMON/API-SPEC/PRODUCT_DEAL_LIST_API.md`를 따른다.
+과거 제품 도메인 구현 맥락이 필요할 때만 git history 또는 archived TODO 문서를 확인한다.

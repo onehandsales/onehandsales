@@ -1,23 +1,20 @@
 # Backend Overview
 
-Backend는 NestJS module 구조와 Prisma repository를 사용한다. 현재 활성 범위는 개인 사용자 소유 CRM 데이터, 인증/세션, 제품 분석, 지원 접수, 관리자 권한 확인이다.
+Backend는 NestJS module 구조와 Prisma repository를 사용한다. 현재 활성 범위는 개인 사용자 소유 회사 데이터, 인증/세션, 검색/휴지통, 지원 접수, 관리자 권한 확인이다.
 
 ## Module 범위
 
 - AuthModule
 - UserModule
 - CompanyModule
-- ContactModule
-- ProductModule
-- DealModule
 - SearchModule
 - TrashModule
-- AnalyticsModule
 - ErrorReportModule
 - SupportRequestModule
 - PublicContactRequestModule
 - HealthModule
-- AdminModule
+
+관리자 확인 API는 별도 AdminModule이 아니라 AuthModule의 `GET /admin/api/me` controller로 제공한다.
 
 ## 공통 정책
 

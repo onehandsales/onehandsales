@@ -46,7 +46,7 @@ Frontend logs go through a logger wrapper.
 Channels:
 
 - Sentry for errors/warnings
-- analytics for meaningful product events when introduced
+- analytics channel only after an explicit analytics scope is introduced
 - debug logger only in development
 
 Rules:

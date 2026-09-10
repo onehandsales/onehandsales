@@ -3,7 +3,7 @@
 ## 결정
 
 
-목록 페이지 필터는 제품 목록의 category/status select처럼 전체 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
+목록 페이지 필터는 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
 
 ## 적용 범위
 
@@ -11,21 +11,6 @@
   - `GET /api/company-fields`
   - `GET /api/company-regions`
   - `분야 ▾`, `지역 ▾` select
-- 담당자 목록
-  - `GET /api/contact-departments`
-  - `GET /api/contact-job-grades`
-  - `부서 ▾`, `직급 ▾` select
-- 제품 목록
-  - `GET /api/product-categories`
-  - `GET /api/product-statuses`
-  - `카테고리 ▾`, `판매 상태 ▾` select
-- 딜 목록
-  - stage tab
-  - `딜이름 검색`, `전체`, `회사`, `담당자`, sort select
-  - 회사/담당자 옵션은 Deal option API를 사용하고, 회사 선택 시 담당자 옵션을 같은 회사 기준으로 좁힌다.
-  - 회사/담당자 filter option API
-  - status filter
-  - 작성 경로 filter
 - 휴지통 목록
   - domain/item kind/log type filter
 
@@ -43,24 +28,18 @@
 
 ## Option 관리 UX
 
-회사/담당자/제품 목록 필터 select에는 `+ 추가` 옵션을 제공한다.
+회사 목록 필터 select에는 `+ 추가` 옵션을 제공한다.
 
 예:
 
 - 회사 분야/지역 select의 `+ 추가` -> 회사 분류 관리 다이얼로그
-- 담당자 부서/직급 select의 `+ 추가` -> 담당자 분류 관리 다이얼로그
-- 제품 카테고리/판매 상태 select의 `+ 추가` -> 제품 분류 관리 다이얼로그
-
 분류 다이얼로그에서는 옵션 추가/삭제를 처리하고, 새로 추가된 옵션은 목록 필터로 바로 선택한다.
 
 ## 정렬 Select
 
 목록 정렬은 chip 나열보다 compact select를 기본으로 한다.
 
-- 회사 목록: `최신순`, `담당자 높은순`, `담당자 낮은순`, `딜 높은순`, `딜 낮은순`
-- 담당자 목록: `최신순`, `이름순`
-- 제품 목록: `최신순`, `딜 높은순`, `딜 낮은순`
-- 딜 목록: `최신순`, `금액 높은순`, `금액 낮은 순`, `마감일순`
+- 회사 목록: `최신순`
 
 ## Visual Grammar
 
