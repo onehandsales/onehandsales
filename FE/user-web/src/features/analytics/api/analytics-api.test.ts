@@ -44,7 +44,7 @@ describe("trackAnalyticsEvent", () => {
         eventName: "local_draft_discarded",
         eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
         payload: {
-          draftType: "business_card_confirm",
+          draftType: "meeting_note_create",
           reason: "saved",
         },
       })
@@ -55,7 +55,7 @@ describe("trackAnalyticsEvent", () => {
         eventName: "local_draft_discarded",
         eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
         payload: {
-          draftType: "business_card_confirm",
+          draftType: "meeting_note_create",
           reason: "saved",
         },
       },

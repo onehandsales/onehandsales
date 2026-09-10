@@ -41,11 +41,6 @@ const ROUTE_KEY_CASES: ReadonlyArray<{
     pathname: "/app/meeting-notes/meeting-note-001",
     routeKey: "meeting_note_detail",
   },
-  { pathname: "/app/business-cards", routeKey: "business_cards" },
-  { pathname: "/app/notifications", routeKey: "notifications" },
-  { pathname: "/app/import", routeKey: "import" },
-  { pathname: "/app/import/review/import-job-001", routeKey: "import_review" },
-  { pathname: "/app/import/import-log-001", routeKey: "import_detail" },
   { pathname: "/app/trash", routeKey: "trash" },
   { pathname: "/app/more", routeKey: "more" },
 ];

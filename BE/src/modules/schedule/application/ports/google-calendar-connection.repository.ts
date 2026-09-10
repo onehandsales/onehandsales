@@ -1,4 +1,3 @@
-import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
 import type { GoogleCalendarDisconnectScheduleAction } from "./google-calendar.types";
 
 export const GOOGLE_CALENDAR_CONNECTION_REPOSITORY = Symbol(
@@ -64,12 +63,10 @@ export interface DisconnectGoogleCalendarConnectionResult {
   readonly hiddenScheduleCount: number;
   readonly keptScheduleCount: number;
   readonly disconnectedAt: Date;
-  readonly trashedScheduleIds: string[];
 }
 
 // 역할 : GoogleCalendarConnectionRepository Google Calendar 연결 영속성 계약을 정의합니다.
-export interface GoogleCalendarConnectionRepository
-  extends NotificationReminderWriteRepository {
+export interface GoogleCalendarConnectionRepository {
   // 기능 : Google Calendar 연결 작업을 하나의 DB transaction으로 실행합니다.
   runInTransaction<T>(
     work: (repository: GoogleCalendarConnectionRepository) => Promise<T>

@@ -25,12 +25,6 @@ import {
 import { DealApplicationService } from "@/modules/deal/application/services/deal-application.service";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import {
-  CancelDealDueReminderUseCase,
-  CancelScheduleNotificationReminderUseCase,
-  ScheduleDealDueReminderUseCase,
-  ScheduleNotificationReminderUseCase,
-} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
-import {
   MeetingNoteSort,
   MeetingNoteSourceTypeValue,
 } from "@/modules/meeting-note/application/ports/meeting-note.types";
@@ -162,50 +156,6 @@ class SilentLogger extends AppLogger {
   }
 }
 
-function createScheduleNotificationReminderUseCase(): ScheduleNotificationReminderUseCase {
-  return {
-    execute: jest.fn().mockResolvedValue({
-      scheduled: true,
-      notification: null,
-      canceledCount: 0,
-    }),
-    executeWithRepository: jest.fn().mockResolvedValue({
-      scheduled: true,
-      notification: null,
-      canceledCount: 0,
-    }),
-  } as unknown as ScheduleNotificationReminderUseCase;
-}
-
-function createCancelScheduleNotificationReminderUseCase(): CancelScheduleNotificationReminderUseCase {
-  return {
-    execute: jest.fn().mockResolvedValue(0),
-    executeWithRepository: jest.fn().mockResolvedValue(0),
-  } as unknown as CancelScheduleNotificationReminderUseCase;
-}
-
-function createScheduleDealDueReminderUseCase(): ScheduleDealDueReminderUseCase {
-  return {
-    execute: jest.fn().mockResolvedValue({
-      scheduled: true,
-      notification: null,
-      canceledCount: 0,
-    }),
-    executeWithRepository: jest.fn().mockResolvedValue({
-      scheduled: true,
-      notification: null,
-      canceledCount: 0,
-    }),
-  } as unknown as ScheduleDealDueReminderUseCase;
-}
-
-function createCancelDealDueReminderUseCase(): CancelDealDueReminderUseCase {
-  return {
-    execute: jest.fn().mockResolvedValue(0),
-    executeWithRepository: jest.fn().mockResolvedValue(0),
-  } as unknown as CancelDealDueReminderUseCase;
-}
-
 const privateMemoEncryption: PrivateMemoEncryptionPort &
   ContactPrivateMemoEncryptionPort &
   ProductPrivateMemoEncryptionPort = {
@@ -323,8 +273,6 @@ describe("G04 multi-account ownership isolation", () => {
     const service = new DealApplicationService(
       createDealRepository(),
       writer,
-      createScheduleDealDueReminderUseCase(),
-      createCancelDealDueReminderUseCase(),
       new SilentLogger()
     );
 
@@ -367,8 +315,6 @@ describe("G04 multi-account ownership isolation", () => {
     const writer = new RecordingXlsxWriter();
     const service = new ScheduleApplicationService(
       createScheduleRepository(),
-      createScheduleNotificationReminderUseCase(),
-      createCancelScheduleNotificationReminderUseCase(),
       writer,
       new SilentLogger()
     );
@@ -1028,10 +974,8 @@ function createTrashRepository(): TrashRepository {
       trashExpiresAt: UPDATED_AT,
       restoreWindow: "ACTIVE",
       canRestore: true,
-      canRequestRecovery: false,
       hasPrivateMemo: false,
       privateMemoIncluded: false,
-      recoveryRequest: null,
     },
     {
       userId: CURRENT_USER_B.id,
@@ -1042,10 +986,8 @@ function createTrashRepository(): TrashRepository {
       trashExpiresAt: UPDATED_AT,
       restoreWindow: "ACTIVE",
       canRestore: true,
-      canRequestRecovery: false,
       hasPrivateMemo: false,
       privateMemoIncluded: false,
-      recoveryRequest: null,
     },
   ];
 
@@ -1077,10 +1019,8 @@ function createTrashRepository(): TrashRepository {
             trashExpiresAt: item.trashExpiresAt,
             restoreWindow: item.restoreWindow,
             canRestore: item.canRestore,
-            canRequestRecovery: item.canRequestRecovery,
             hasPrivateMemo: item.hasPrivateMemo,
             privateMemoIncluded: item.privateMemoIncluded,
-            recoveryRequest: item.recoveryRequest,
             summary: item.title,
             fields: [{ label: "title", value: item.title }],
           }
@@ -1103,15 +1043,6 @@ function createTrashRepository(): TrashRepository {
             restoredAt: input.now,
           }
         : null;
-    },
-    async findRecoveryTarget() {
-      return null;
-    },
-    async findOpenRecoveryRequest() {
-      return null;
-    },
-    async createRecoveryRequest() {
-      throw new Error("not implemented in ownership isolation fixture");
     },
     async runInTransaction(work) {
       return work(this);

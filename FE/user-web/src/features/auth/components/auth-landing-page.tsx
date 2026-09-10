@@ -161,8 +161,8 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     flow: {
       title: "흩어진 기록이 거래 성사까지 이어져요.",
       description:
-        "명함, 메모, 엑셀, 일정이 고객 흐름으로 모이고 후속 연락과 거래 성사로 이어집니다.",
-      inputs: ["명함", "메모", "엑셀", "일정"],
+        "연락처, 메모, 엑셀, 일정이 고객 흐름으로 모이고 후속 연락과 거래 성사로 이어집니다.",
+      inputs: ["연락처", "메모", "엑셀", "일정"],
       recordLabel: "고객 흐름",
       followUpLabel: "후속 연락",
       resultLabel: "거래 성사",

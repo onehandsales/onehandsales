@@ -5,18 +5,14 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AnalyticsModule } from "./modules/analytics/infrastructure/analytics.module";
-import { AccountRequestModule } from "./modules/account-request/infrastructure/account-request.module";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
-import { BusinessCardModule } from "./modules/business-card/infrastructure/business-card.module";
 import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ContactModule } from "./modules/contact/infrastructure/contact.module";
-import { DataImportModule } from "./modules/data-import/infrastructure/data-import.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { FollowUpModule } from "./modules/follow-up/infrastructure/follow-up.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting-note.module";
-import { NotificationModule } from "./modules/notification/infrastructure/notification.module";
 import { ProductModule } from "./modules/product/infrastructure/product.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
 import { SalesReportModule } from "./modules/sales-report/infrastructure/sales-report.module";
@@ -36,14 +32,11 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
       envFilePath: [".env.local", ".env"],
     }),
     AnalyticsModule,
-    AccountRequestModule,
     HealthModule,
     AuthModule,
-    BusinessCardModule,
     UserModule,
     CompanyModule,
     ContactModule,
-    DataImportModule,
     ProductModule,
     PublicContactRequestModule,
     DealModule,
@@ -52,7 +45,6 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     ScheduleModule,
     SalesReportModule,
     MeetingNoteModule,
-    NotificationModule,
     SearchModule,
     SupportRequestModule,
     TrashModule,

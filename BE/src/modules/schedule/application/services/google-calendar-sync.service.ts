@@ -1,9 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  CancelScheduleNotificationReminderUseCase,
-  ScheduleNotificationReminderUseCase,
-} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
-import {
   GOOGLE_CALENDAR_READ_PROVIDER,
   GoogleCalendarProviderAuthError,
   type GoogleCalendarProviderCalendar,
@@ -119,8 +115,6 @@ export interface GoogleCalendarSyncResponse {
     readonly googleDeletedCount: number;
     readonly hiddenByCalendarSelectionCount: number;
     readonly trashedCount: number;
-    readonly reminderScheduledCount: number;
-    readonly reminderCanceledCount: number;
     readonly errorCount: number;
   };
   readonly nextAutoSyncAvailableAt: string;
@@ -135,8 +129,6 @@ export class GoogleCalendarSyncService {
     private readonly readProvider: GoogleCalendarReadProvider,
     @Inject(GOOGLE_CALENDAR_TOKEN_ENCRYPTION_PORT)
     private readonly tokenEncryption: GoogleCalendarTokenEncryptionPort,
-    private readonly scheduleNotificationReminder: ScheduleNotificationReminderUseCase,
-    private readonly cancelScheduleNotificationReminder: CancelScheduleNotificationReminderUseCase,
     private readonly logger: AppLogger
   ) {}
 
@@ -246,22 +238,7 @@ export class GoogleCalendarSyncService {
           );
         }
 
-        let reminderCanceledCount = 0;
-
-        for (const scheduleId of updated.hiddenScheduleIds) {
-          reminderCanceledCount +=
-            await this.cancelScheduleNotificationReminder.executeWithRepository(
-              {
-                userId: currentUser.id,
-                scheduleId,
-                cancelReason: "SOURCE_HIDDEN",
-                now,
-              },
-              repository
-            );
-        }
-
-        return { ...updated, reminderCanceledCount };
+        return updated;
       }
     );
 
@@ -271,7 +248,6 @@ export class GoogleCalendarSyncService {
       calendarSourceCount: selection.sources.length,
       selectedCalendarSourceCount: selectedCalendarIds.length,
       hiddenScheduleCount: selection.hiddenScheduleIds.length,
-      reminderCanceledCount: selection.reminderCanceledCount,
     });
 
     return {
@@ -747,53 +723,14 @@ export class GoogleCalendarSyncService {
       throw new GoogleCalendarProviderTransientError("GOOGLE_EVENTS_LIST_LOOP");
     }
 
-    const applied = await this.syncRepository.runInTransaction(
-      async (repository) => {
-        const result = await repository.applySyncedEvents({
-          userId: input.userId,
-          source: input.source,
-          events,
-          nextSyncToken,
-          syncedAt: input.syncedAt,
-        });
-        let reminderScheduledCount = 0;
-        let reminderCanceledCount = 0;
-
-        for (const request of result.reminderScheduleRequests) {
-          const scheduled =
-            await this.scheduleNotificationReminder.executeWithRepository(
-              {
-                userId: input.userId,
-                scheduleId: request.scheduleId,
-                scheduleTitle: request.scheduleTitle,
-                startAt: request.startAt,
-                now: input.syncedAt,
-              },
-              repository
-            );
-          reminderScheduledCount += scheduled.scheduled ? 1 : 0;
-          reminderCanceledCount += scheduled.canceledCount;
-        }
-
-        for (const scheduleId of result.reminderCancelScheduleIds) {
-          reminderCanceledCount +=
-            await this.cancelScheduleNotificationReminder.executeWithRepository(
-              {
-                userId: input.userId,
-                scheduleId,
-                cancelReason: "SOURCE_DELETED",
-                now: input.syncedAt,
-              },
-              repository
-            );
-        }
-
-        return {
-          ...result,
-          reminderScheduledCount,
-          reminderCanceledCount,
-        };
-      }
+    const applied = await this.syncRepository.runInTransaction((repository) =>
+      repository.applySyncedEvents({
+        userId: input.userId,
+        source: input.source,
+        events,
+        nextSyncToken,
+        syncedAt: input.syncedAt,
+      })
     );
 
     return {
@@ -803,8 +740,6 @@ export class GoogleCalendarSyncService {
       googleDeletedCount: applied.googleDeletedCount,
       hiddenByCalendarSelectionCount: 0,
       trashedCount: applied.trashedCount,
-      reminderScheduledCount: applied.reminderScheduledCount,
-      reminderCanceledCount: applied.reminderCanceledCount,
       errorCount: mappingErrorCount,
     };
   }
@@ -1289,8 +1224,6 @@ export class GoogleCalendarSyncService {
       googleDeletedCount: 0,
       hiddenByCalendarSelectionCount: 0,
       trashedCount: 0,
-      reminderScheduledCount: 0,
-      reminderCanceledCount: 0,
       errorCount: 0,
     };
   }
@@ -1305,8 +1238,6 @@ export class GoogleCalendarSyncService {
     target.googleDeletedCount += source.googleDeletedCount;
     target.hiddenByCalendarSelectionCount += source.hiddenByCalendarSelectionCount;
     target.trashedCount += source.trashedCount;
-    target.reminderScheduledCount += source.reminderScheduledCount;
-    target.reminderCanceledCount += source.reminderCanceledCount;
     target.errorCount += source.errorCount;
   }
 

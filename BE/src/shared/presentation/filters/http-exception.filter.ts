@@ -1,4 +1,4 @@
-﻿import {
+import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
@@ -97,7 +97,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case "OAuthAccountConflict":
       case "DeviceSlotAlreadyRegistered":
-      case "PushSubscriptionConflict":
       case "DuplicateCompanyField":
       case "DuplicateCompanyRegion":
       case "CompanyFieldInUse":
@@ -110,7 +109,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DuplicateProductStatus":
       case "ProductCategoryInUse":
       case "ProductStatusInUse":
-      case "BusinessCardScanNotConfirmable":
       case "AiWeeklySalesReportAlreadyGenerating":
       case "DealActivityNotEditable":
         return HttpStatus.CONFLICT;
@@ -123,9 +121,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ValidationError":
       case "AUDIO_REQUIRED":
       case "AUDIO_TYPE_UNSUPPORTED":
-      case "IMAGE_REQUIRED":
-      case "IMAGE_TYPE_UNSUPPORTED":
-      case "IMAGE_TOO_LARGE":
       case "CURRENCY_UNSUPPORTED":
       case "AMOUNT_INTEGER_REQUIRED":
       case "USER_LOCALE_UNSUPPORTED":
@@ -135,11 +130,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "CONTACT_PHONE_COUNTRY_UNSUPPORTED":
       case "CONTACT_PHONE_INVALID":
       case "COMPANY_REGION_UNSUPPORTED":
-      case "InvalidImportMapping":
-      case "UnsupportedImportFileType":
-      case "ImportFileTooLarge":
-      case "ImportRowLimitExceeded":
-      case "ImportFileParseFailed":
       case "GoogleCalendarOAuthStateInvalid":
       case "FollowUpEmailOAuthStateInvalid":
       case "FollowUpDraftSourceInvalid":
@@ -154,11 +144,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ANALYTICS_PAYLOAD_PII_REJECTED":
       case "ANALYTICS_ROUTE_KEY_UNSUPPORTED":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
-      case "DATA_EXPORT_REQUEST_ID_INVALID":
-      case "DATA_EXPORT_INCLUDE_SENSITIVE_UNSUPPORTED":
-      case "DATA_EXPORT_FORMAT_UNSUPPORTED":
-      case "ACCOUNT_DELETION_CONFIRM_TEXT_INVALID":
-      case "ACCOUNT_DELETION_REQUEST_ID_INVALID":
       case "ERROR_REPORT_DESCRIPTION_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_TOO_LONG":
@@ -174,13 +159,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "AUDIO_TOO_LARGE":
       case "ERROR_REPORT_SCREENSHOT_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;
-      case "ImportJobExpired":
       case "SmsSenderVerificationExpired":
         return HttpStatus.GONE;
-      case "ImportJobAlreadyClosed":
-      case "ImportJobAlreadyConfirmed":
-      case "ImportJobNotReady":
-      case "ImportMappingRequired":
       case "GoogleCalendarReconnectRequired":
       case "GoogleCalendarSyncInProgress":
       case "FollowUpConsentNoticeRequired":
@@ -190,11 +170,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "FollowUpMessageNotSendable":
       case "FollowUpMessageNotRetryable":
         return HttpStatus.CONFLICT;
-      case "ImportMappingFailed":
-      case "ImportConfirmValidationFailed":
-        return HttpStatus.UNPROCESSABLE_ENTITY;
-      case "ImportFileStorageFailed":
-      case "BrowserPushNotConfigured":
       case "MeetingNoteAiDraftProviderUnavailable":
       case "AiWeeklySalesReportProviderUnavailable":
       case "FollowUpProviderUnavailable":
@@ -211,14 +186,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
       case "TRASH_RECORD_NOT_FOUND":
-      case "DATA_EXPORT_REQUEST_NOT_FOUND":
-      case "ACCOUNT_DELETION_REQUEST_NOT_FOUND":
       case "ERROR_REPORT_USER_NOT_FOUND":
       case "SUPPORT_REQUEST_USER_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
-      case "TRASH_RECOVERY_REQUEST_NOT_ALLOWED_BEFORE_EXPIRY":
-      case "ACCOUNT_DELETION_REQUEST_NOT_CANCELABLE":
-        return HttpStatus.CONFLICT;
       case "STT_TRANSCRIPTION_FAILED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
       default:

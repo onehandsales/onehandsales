@@ -64,7 +64,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
         summary:
           "혼자 고객, 일정, 딜, 후속 연락을 챙기는 영업자를 위한 흐름입니다.",
         bullets: [
-          "엑셀, 메모앱, 명함 사진에 기록이 흩어져 있는 경우",
+          "엑셀, 메모앱, 연락처에 기록이 흩어져 있는 경우",
           "팀 CRM보다 바로 쓸 수 있는 개인 CRM이 필요한 경우",
           "오늘 연락해야 할 고객과 진행 중인 딜을 빠르게 보고 싶은 경우",
         ],

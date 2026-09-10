@@ -218,18 +218,8 @@ describe("PrismaGoogleCalendarSyncRepository", () => {
         memo: "Imported memo",
         externalSyncStatus: "SYNCED",
       }),
-      select: {
-        id: true,
-      },
     });
     expect(result.importedCount).toBe(1);
-    expect(result.reminderScheduleRequests).toEqual([
-      {
-        scheduleId: "schedule-1",
-        scheduleTitle: "Google event",
-        startAt: new Date("2026-07-24T01:00:00.000Z"),
-      },
-    ]);
   });
 
   it("protects local modified fields and only updates external metadata", async () => {
@@ -336,7 +326,6 @@ describe("PrismaGoogleCalendarSyncRepository", () => {
     });
     expect(client.schedule.create).not.toHaveBeenCalled();
     expect(result.googleDeletedCount).toBe(1);
-    expect(result.reminderCancelScheduleIds).toEqual(["schedule-1"]);
   });
 
   it("skips new incremental events outside the sync range", async () => {

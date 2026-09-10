@@ -8,11 +8,10 @@ describe("trackMobileFieldAnalyticsEvent", () => {
 
     trackMobileFieldAnalyticsEvent(
       {
-        eventName: "business_card_capture_started",
+        eventName: "meeting_note_recording_started",
         eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
         payload: {
-          captureMode: "camera",
-          entryPoint: "business_cards",
+          entryPoint: "meeting_note_create",
         },
       },
       { enabled: true, trackEvent }
@@ -20,11 +19,10 @@ describe("trackMobileFieldAnalyticsEvent", () => {
     await vi.waitFor(() => expect(trackEvent).toHaveBeenCalledTimes(1));
 
     expect(trackEvent).toHaveBeenCalledWith({
-      eventName: "business_card_capture_started",
+      eventName: "meeting_note_recording_started",
       eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
       payload: {
-        captureMode: "camera",
-        entryPoint: "business_cards",
+        entryPoint: "meeting_note_create",
       },
     });
   });
@@ -65,16 +63,16 @@ describe("trackMobileFieldAnalyticsEvent", () => {
     await vi.waitFor(() => expect(trackEvent).toHaveBeenCalledTimes(1));
   });
 
-  it("keeps push endpoint and subscription keys out of permission analytics", async () => {
+  it("posts local draft events without form contents", async () => {
     const trackEvent = vi.fn().mockResolvedValue({ accepted: true });
 
     trackMobileFieldAnalyticsEvent(
       {
-        eventName: "mobile_push_permission_result",
+        eventName: "local_draft_discarded",
         eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
         payload: {
-          browserPushEnabled: true,
-          permissionState: "granted",
+          draftType: "meeting_note_create",
+          reason: "saved",
         },
       },
       { enabled: true, trackEvent }
@@ -83,9 +81,8 @@ describe("trackMobileFieldAnalyticsEvent", () => {
 
     const sentBody = trackEvent.mock.calls[0]?.[0];
 
-    expect(JSON.stringify(sentBody)).not.toContain("endpoint");
-    expect(JSON.stringify(sentBody)).not.toContain("p256dh");
-    expect(JSON.stringify(sentBody)).not.toContain("auth");
-    expect(JSON.stringify(sentBody)).not.toContain("token");
+    expect(JSON.stringify(sentBody)).not.toContain("details");
+    expect(JSON.stringify(sentBody)).not.toContain("transcript");
+    expect(JSON.stringify(sentBody)).not.toContain("providerResponse");
   });
 });

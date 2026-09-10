@@ -93,7 +93,6 @@ describe("PrismaGoogleCalendarConnectionRepository", () => {
       scheduleAction: "TRASH",
       affectedScheduleCount: 2,
       trashedScheduleCount: 2,
-      trashedScheduleIds: ["schedule-1", "schedule-2"],
     });
   });
 });

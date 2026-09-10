@@ -2,7 +2,6 @@ import {
   BriefcaseBusiness,
   Building2,
   CalendarDays,
-  Camera,
   ChevronRight,
   IdCard,
   NotebookPen,
@@ -11,7 +10,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { DataUploadIcon } from "@/components/icons/data-upload-icon";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
 
@@ -52,8 +50,6 @@ const groups: Array<{
     items: [
       { labelKey: "navigation.schedules", to: "/app/schedules", icon: CalendarDays },
       { labelKey: "navigation.meetingNotes", to: "/app/meeting-notes", icon: NotebookPen },
-      { labelKey: "navigation.businessCards", to: "/app/business-cards", icon: Camera },
-      { labelKey: "navigation.import", to: "/app/import", icon: DataUploadIcon },
     ],
   },
 ];

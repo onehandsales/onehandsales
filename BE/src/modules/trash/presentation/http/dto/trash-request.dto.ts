@@ -4,11 +4,8 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUUID,
   Max,
-  MaxLength,
   Min,
-  MinLength,
 } from "class-validator";
 import type {
   TrashDomainFilter,
@@ -111,18 +108,4 @@ export class ListTrashQueryDto {
   @Min(1)
   @Max(100)
   pageSize?: number;
-}
-
-// 역할 : CreateTrashRecoveryRequestDto 만료 Trash 복구 문의 생성 body를 검증합니다.
-export class CreateTrashRecoveryRequestDto {
-  @IsIn(TRASH_TARGET_TYPES)
-  targetType!: TrashTargetType;
-
-  @IsUUID(4)
-  targetId!: string;
-
-  @IsString()
-  @MinLength(1)
-  @MaxLength(1000)
-  message!: string;
 }

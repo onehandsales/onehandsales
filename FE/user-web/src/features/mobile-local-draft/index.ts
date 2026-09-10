@@ -16,17 +16,13 @@ export {
   type MobileLocalDraftStore,
 } from "./storage/mobile-local-draft-storage";
 export {
-  isBusinessCardConfirmLocalDraftEmpty,
   isMeetingNoteCreateLocalDraftEmpty,
-  toBusinessCardConfirmLocalDraftPayload,
-  toBusinessCardConfirmValuesFromLocalDraft,
   toMeetingNoteCreateLocalDraftPayload,
   toMeetingNoteCreateValuesFromLocalDraft,
 } from "./utils/mobile-local-draft-payload";
 export {
   MOBILE_LOCAL_DRAFT_SCHEMA_VERSION,
   MOBILE_LOCAL_DRAFT_TTL_MS,
-  type BusinessCardConfirmLocalDraftPayload,
   type LocalDraftLoadResult,
   type LocalDraftSaveResult,
   type MeetingNoteCreateLocalDraftPayload,

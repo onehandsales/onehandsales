@@ -12,7 +12,6 @@ import {
   type PublicSiteLocalizedPath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
 import { AboutPage } from "@/pages/about";
-import { BusinessCardsPage } from "@/pages/business-cards";
 import { CompanyDetailPage } from "@/pages/companies/detail";
 import { CompaniesPage } from "@/pages/companies";
 import { CompanyNewFullPage } from "@/pages/companies/new-full";
@@ -32,20 +31,15 @@ import { ActivityRecordsFeaturePage } from "@/pages/features/activity-records";
 import { AiSalesAssistantFeaturePage } from "@/pages/features/ai-sales-assistant";
 import { CustomerManagementFeaturePage } from "@/pages/features/customers";
 import { FeaturesPage } from "@/pages/features";
-import { ImportExportFeaturePage } from "@/pages/features/import-export";
 import { PipelineFeaturePage } from "@/pages/features/pipeline";
 import { ReportsFeaturePage } from "@/pages/features/reports";
 import { SchedulesFollowUpFeaturePage } from "@/pages/features/schedules-follow-up";
 import { HelpPage } from "@/pages/help";
 import { HomePage } from "@/pages/home";
-import { ImportDetailPage } from "@/pages/import/detail";
-import { ImportPage } from "@/pages/import";
-import { ImportReviewPage } from "@/pages/import/review";
 import { LoginPage } from "@/pages/login";
 import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
 import { MeetingNotesPage } from "@/pages/meeting-notes";
 import { MeetingNoteNewFullPage } from "@/pages/meeting-notes/new-full";
-import { NotificationsPage } from "@/pages/notifications";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductPage } from "@/pages/product";
 import { ProductsPage } from "@/pages/products";
@@ -105,10 +99,6 @@ export const router = createBrowserRouter([
     path: "/features/reports",
     element: <LegacyPublicSiteRedirect to="/features/reports" />,
   },
-  {
-    path: "/features/import-export",
-    element: <LegacyPublicSiteRedirect to="/features/import-export" />,
-  },
   { path: "/pricing", element: <LegacyPublicSiteRedirect to="/pricing" /> },
   { path: "/solutions", element: <LegacyPublicSiteRedirect to="/solutions" /> },
   {
@@ -153,7 +143,7 @@ export const router = createBrowserRouter([
     ),
   },
   { path: "/contacts", element: <LegacyAppRedirect to="/app/contacts" /> },
-  { path: "/contacts/scan", element: <Navigate replace to="/app/business-cards" /> },
+  { path: "/contacts/scan", element: <Navigate replace to="/app/contacts" /> },
   {
     path: "/contacts/new/full",
     element: <LegacyAppRedirect to="/app/contacts/new/full" />,
@@ -216,19 +206,6 @@ export const router = createBrowserRouter([
       <LegacyAppRedirect paramName="meetingNoteId" to="/app/meeting-notes" />
     ),
   },
-  {
-    path: "/business-cards",
-    element: <LegacyAppRedirect to="/app/business-cards" />,
-  },
-  { path: "/import", element: <LegacyAppRedirect to="/app/import" /> },
-  {
-    path: "/import/review/:importJobId",
-    element: <LegacyAppRedirect paramName="importJobId" to="/app/import/review" />,
-  },
-  {
-    path: "/import/:importUserLogId",
-    element: <LegacyAppRedirect paramName="importUserLogId" to="/app/import" />,
-  },
   { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
@@ -245,7 +222,7 @@ export const router = createBrowserRouter([
       { path: "companies/new", element: <CompanyNewPage /> },
       { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts", element: <ContactsPage /> },
-      { path: "contacts/scan", element: <Navigate replace to="/app/business-cards" /> },
+      { path: "contacts/scan", element: <Navigate replace to="/app/contacts" /> },
       { path: "contacts/new/full", element: <ContactNewFullPage /> },
       { path: "contacts/new", element: <ContactNewPage /> },
       { path: "contacts/:contactId", element: <ContactDetailPage /> },
@@ -267,11 +244,6 @@ export const router = createBrowserRouter([
         element: <Navigate replace to="/app/meeting-notes?create=1" />,
       },
       { path: "meeting-notes/:meetingNoteId", element: <MeetingNoteDetailPage /> },
-      { path: "business-cards", element: <BusinessCardsPage /> },
-      { path: "notifications", element: <NotificationsPage /> },
-      { path: "import", element: <ImportPage /> },
-      { path: "import/review/:importJobId", element: <ImportReviewPage /> },
-      { path: "import/:importUserLogId", element: <ImportDetailPage /> },
       { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },
       { path: "more", element: <MorePage /> },
@@ -311,10 +283,6 @@ function getPublicSiteElement(path: PublicSiteLocalizedPath) {
 
   if (path === "/features/reports") {
     return <ReportsFeaturePage />;
-  }
-
-  if (path === "/features/import-export") {
-    return <ImportExportFeaturePage />;
   }
 
   if (path === "/product") {

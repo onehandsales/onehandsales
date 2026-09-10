@@ -15,16 +15,12 @@ export type ProductAnalyticsEventSourceCode =
 // 기능 : 09/10에서 User Web client가 직접 보낼 수 있는 이벤트 이름을 정의합니다.
 export const PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES = [
   "app_route_viewed",
-  "business_card_capture_started",
-  "business_card_capture_retried",
   "meeting_note_recording_started",
   "meeting_note_recording_completed",
   "meeting_note_recording_failed",
   "local_draft_saved",
   "local_draft_restored",
   "local_draft_discarded",
-  "mobile_push_permission_prompt_opened",
-  "mobile_push_permission_result",
 ] as const;
 
 // 역할 : ProductAnalyticsClientEventName User Web client 이벤트 이름을 정의합니다.
@@ -52,11 +48,6 @@ export const PRODUCT_ANALYTICS_APP_ROUTE_KEYS = [
   "meeting_notes",
   "meeting_note_create",
   "meeting_note_detail",
-  "business_cards",
-  "notifications",
-  "import",
-  "import_review",
-  "import_detail",
   "trash",
   "settings",
   "more",
@@ -88,9 +79,6 @@ export const PRODUCT_ANALYTICS_SERVER_EVENT_NAMES = [
   "schedule_deal_linked",
   "meeting_note_created",
   "meeting_note_deal_linked",
-  "business_card_scan_confirmed",
-  "business_card_ocr_failed",
-  "import_confirmed",
   "export_downloaded",
 ] as const;
 
@@ -117,8 +105,6 @@ export const PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES = [
   "schedule_deal_linked",
   "meeting_note_created",
   "meeting_note_deal_linked",
-  "business_card_scan_confirmed",
-  "import_confirmed",
   "export_downloaded",
 ] as const satisfies readonly ProductAnalyticsRuntimeEventName[];
 
@@ -144,8 +130,6 @@ export const PRODUCT_ANALYTICS_TARGET_TYPE_CODES = [
   "DEAL",
   "SCHEDULE",
   "MEETING_NOTE",
-  "BUSINESS_CARD_SCAN",
-  "IMPORT_JOB",
   "EXPORT",
 ] as const;
 

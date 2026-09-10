@@ -1,4 +1,3 @@
-import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
 import type { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import type { DealActivityTypeCode } from "./deal-activity.types";
 import type {
@@ -299,7 +298,7 @@ export interface DeleteDealMemoLogInput {
 }
 
 // 역할 : DealRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
-export interface DealRepository extends NotificationReminderWriteRepository {
+export interface DealRepository {
   // 기능 : 딜 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
   runInTransaction<T>(work: (repository: DealRepository) => Promise<T>): Promise<T>;
   // 기능 : 현재 사용자의 딜 단계별 개수를 조회합니다.

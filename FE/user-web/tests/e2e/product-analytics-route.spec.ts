@@ -23,8 +23,8 @@ test("sends allowlisted app route analytics events without raw route data", asyn
   await waitForRouteKey(api.analyticsEvents, "deal_detail");
 
   await page.goto("/app/contacts/scan");
-  await expect(page).toHaveURL(/\/app\/business-cards$/);
-  await waitForRouteKey(api.analyticsEvents, "business_cards");
+  await expect(page).toHaveURL(/\/app\/contacts$/);
+  await waitForRouteKey(api.analyticsEvents, "contacts");
 
   await page.goto("/app/export");
   await expect(page).toHaveURL(/\/app$/);

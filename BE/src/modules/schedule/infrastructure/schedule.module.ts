@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AnalyticsRecorderModule } from "@/modules/analytics/infrastructure/analytics-recorder.module";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
-import { NotificationModule } from "@/modules/notification/infrastructure/notification.module";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
@@ -33,7 +32,6 @@ import { NodeGoogleCalendarTokenEncryptionAdapter } from "./security/node-google
     AnalyticsRecorderModule,
     AuthModule,
     PrismaInfrastructureModule,
-    NotificationModule,
     XlsxInfrastructureModule,
   ],
   controllers: [

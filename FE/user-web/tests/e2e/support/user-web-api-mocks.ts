@@ -49,15 +49,7 @@ export type UserWebApiMockStore = {
   readonly googleCalendars: MutableRecord[];
   readonly meetingNotes: MutableRecord[];
   readonly aiWeeklyReports: MutableRecord[];
-  readonly dataExportRequests: MutableRecord[];
-  readonly accountDeletionRequests: MutableRecord[];
-  readonly businessCardScans: MutableRecord[];
-  readonly importJobs: MutableRecord[];
-  readonly importTemplates: MutableRecord[];
-  readonly importUserLogs: MutableRecord[];
-  readonly notificationSettings: MutableRecord;
   readonly followUpDeliverySettings: MutableRecord;
-  readonly notifications: MutableRecord[];
   readonly trashItems: MutableRecord[];
   readonly counters: Record<string, number>;
 };
@@ -206,110 +198,8 @@ async function handleApiRequest(
     return json(createUserSettings());
   }
 
-  if (pathname === "/api/users/me/data-export-requests" && method === "POST") {
-    return json(createDataExportRequest(store, await readJsonBody(route)), 201);
-  }
-
-  const dataExportRequestMatch = pathname.match(
-    /^\/api\/users\/me\/data-export-requests\/([^/]+)$/,
-  );
-
-  if (dataExportRequestMatch && method === "GET") {
-    return getDataExportRequestResponse(store, dataExportRequestMatch[1]);
-  }
-
-  if (pathname === "/api/users/me/account-deletion-requests" && method === "POST") {
-    return json(
-      createAccountDeletionRequest(store, await readJsonBody(route)),
-      201,
-    );
-  }
-
-  const accountDeletionCancelMatch = pathname.match(
-    /^\/api\/users\/me\/account-deletion-requests\/([^/]+)\/cancel$/,
-  );
-
-  if (accountDeletionCancelMatch && method === "POST") {
-    return cancelAccountDeletionRequestResponse(
-      store,
-      accountDeletionCancelMatch[1],
-    );
-  }
-
-  if (pathname === "/api/notifications/unread-count" && method === "GET") {
-    return json({
-      unreadCount: countUnreadNotifications(store.notifications),
-    });
-  }
-
-  if (pathname === "/api/notifications/settings" && method === "GET") {
-    return json(store.notificationSettings);
-  }
-
-  if (pathname === "/api/notifications/settings" && method === "PATCH") {
-    Object.assign(store.notificationSettings, await readJsonBody(route));
-    return json(store.notificationSettings);
-  }
-
-  // 기능 : account settings modal의 follow-up delivery 설정 조회 응답을 제공합니다.
   if (pathname === "/api/follow-up-delivery/settings" && method === "GET") {
     return json(store.followUpDeliverySettings);
-  }
-
-  if (pathname === "/api/notifications/browser-push/public-key" && method === "GET") {
-    return json({ publicKey: "AQIDBA" });
-  }
-
-  if (pathname === "/api/notifications/browser-subscriptions" && method === "POST") {
-    store.notificationSettings.browserPushEnabled = true;
-    return json(
-      {
-        createdAt: NOW,
-        deviceLabel: "Mobile browser",
-        id: "browser-subscription-mobile-001",
-        revokedAt: null,
-        status: "ACTIVE",
-      },
-      201,
-    );
-  }
-
-  const browserSubscriptionMatch = pathname.match(
-    /^\/api\/notifications\/browser-subscriptions\/([^/]+)$/,
-  );
-
-  if (browserSubscriptionMatch && method === "DELETE") {
-    store.notificationSettings.browserPushEnabled = false;
-    return json({
-      createdAt: NOW,
-      deviceLabel: "Mobile browser",
-      id: decodeURIComponent(browserSubscriptionMatch[1] ?? ""),
-      revokedAt: now(),
-      status: "REVOKED",
-    });
-  }
-
-  const notificationReadMatch = pathname.match(
-    /^\/api\/notifications\/([^/]+)\/read$/,
-  );
-
-  if (notificationReadMatch && method === "PATCH") {
-    const notificationId = decodeURIComponent(notificationReadMatch[1] ?? "");
-    const notification = store.notifications.find(
-      (item) => item.id === notificationId,
-    );
-
-    if (!notification) {
-      return json({ message: "알림을 찾지 못했어요." }, 404);
-    }
-
-    notification.readAt = notification.readAt ?? now();
-    notification.updatedAt = now();
-    return json(notification);
-  }
-
-  if (pathname === "/api/notifications" && method === "GET") {
-    return json(listMockNotifications(store.notifications, url));
   }
 
   if (pathname === "/api/search" && method === "GET") {
@@ -421,8 +311,6 @@ async function handleApiRequest(
         hiddenByCalendarSelectionCount: 0,
         importedCount: 0,
         localModifiedSkippedCount: 0,
-        reminderCanceledCount: 0,
-        reminderScheduledCount: 1,
         trashedCount: 0,
         updatedCount: 1,
       },
@@ -775,21 +663,6 @@ async function handleApiRequest(
     return json(requireItem(store.meetingNotes, meetingNoteDetailMatch[1]));
   }
 
-  if (pathname === "/api/business-card-scans" && method === "GET") {
-    return json(paginated(store.businessCardScans, url));
-  }
-
-  if (pathname === "/api/business-card-scans" && method === "POST") {
-    const scan = {
-      ...store.businessCardScans[0],
-      failure: null,
-      id: nextId(store, "business-card"),
-      status: "OCR_SUCCESS",
-    };
-    store.businessCardScans.unshift(scan);
-    return json(scan, 201);
-  }
-
   if (pathname === "/api/error-reports" && method === "POST") {
     return json(
       {
@@ -798,253 +671,6 @@ async function handleApiRequest(
       },
       201,
     );
-  }
-
-  const businessCardConfirmMatch = pathname.match(/^\/api\/business-card-scans\/([^/]+)\/confirm$/);
-  if (businessCardConfirmMatch && method === "POST") {
-    const scan = requireItem(store.businessCardScans, businessCardConfirmMatch[1]);
-    return json({
-      company: {
-        companyName: MOBILE_LONG_FIXTURE.companyName,
-        id: "company-mobile-001",
-        resolution: "EXISTING",
-      },
-      contact: {
-        id: "contact-mobile-001",
-        resolution: "EXISTING",
-        username: MOBILE_LONG_FIXTURE.contactName,
-      },
-      scanLog: {
-        ...scan,
-        failure: null,
-        status: "CONFIRMED",
-      },
-    });
-  }
-
-  const businessCardDetailMatch = pathname.match(/^\/api\/business-card-scans\/([^/]+)$/);
-  if (businessCardDetailMatch && method === "GET") {
-    return json(requireItem(store.businessCardScans, businessCardDetailMatch[1]));
-  }
-
-  if (pathname === "/api/import-templates/active" && method === "GET") {
-    return jsonList(store.importTemplates);
-  }
-
-  if (pathname.startsWith("/api/import-templates/") && pathname.endsWith("/download")) {
-    return text("mock template", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", {
-      "content-disposition": "attachment; filename=mock-template.xlsx",
-    });
-  }
-
-  if (pathname === "/api/import-user-logs" && method === "GET") {
-    return json(paginated(store.importUserLogs, url));
-  }
-
-  const importUserLogDetailMatch = pathname.match(/^\/api\/import-user-logs\/([^/]+)$/);
-  if (importUserLogDetailMatch && method === "GET") {
-    return json(requireItem(store.importUserLogs, importUserLogDetailMatch[1]));
-  }
-
-  if (pathname === "/api/imports" && method === "POST") {
-    const detail = createImportJobDetail(nextId(store, "import-job"), "UPLOADED");
-    store.importJobs.unshift(detail);
-    return json(detail, 201);
-  }
-
-  if (pathname === "/api/imports/active" && method === "GET") {
-    return json({
-      items: store.importJobs
-        .map((detail) => nestedRecord(detail.job))
-        .filter((job) =>
-          [
-            "UPLOADED",
-            "MAPPED",
-            "NEEDS_REVIEW",
-            "READY_TO_CONFIRM",
-            "CONFIRMING",
-          ].includes(stringField(job, "status") ?? "")
-        ),
-    });
-  }
-
-  const importJobMatch = pathname.match(/^\/api\/imports\/([^/]+)$/);
-  if (importJobMatch && method === "GET") {
-    const detail = requireImportJobDetail(store, importJobMatch[1]);
-    return importJobResponse(detail);
-  }
-
-  const importJobMapMatch = pathname.match(/^\/api\/imports\/([^/]+)\/map$/);
-  if (importJobMapMatch && method === "POST") {
-    const detail = requireImportJobDetail(store, importJobMapMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    detail.mapping = { companyName: "companyName", email: "email" };
-    updateImportJobDetail(detail, { mappingSource: "AI" });
-    recalculateImportJobSummary(detail);
-    return json(detail);
-  }
-
-  const importJobMappingMatch = pathname.match(/^\/api\/imports\/([^/]+)\/mapping$/);
-  if (importJobMappingMatch && method === "PATCH") {
-    const detail = requireImportJobDetail(store, importJobMappingMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    const body = await readJsonBody(route);
-    const mapping = nestedRecord(body.mapping);
-    detail.mapping = {
-      companyName: stringField(mapping, "companyName") ?? "companyName",
-      email: stringField(mapping, "email") ?? "email",
-    };
-    updateImportJobDetail(detail, { status: "READY_TO_CONFIRM" });
-    return json(detail);
-  }
-
-  const importJobRowsMatch = pathname.match(/^\/api\/imports\/([^/]+)\/rows$/);
-  if (importJobRowsMatch && method === "PATCH") {
-    const detail = requireImportJobDetail(store, importJobRowsMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    const body = await readJsonBody(route);
-    const rows = Array.isArray(body.rows) ? body.rows.filter(isRecord) : [];
-
-    detail.rows = (Array.isArray(detail.rows) ? detail.rows : []).map((row) => {
-      if (!isRecord(row)) {
-        return row;
-      }
-
-      const rowId = stringField(row, "rowId") ?? stringField(row, "id");
-      const update =
-        rowId === null
-          ? undefined
-          : rows.find((item) => {
-              const updateRowId =
-                stringField(item, "rowId") ?? stringField(item, "id");
-              return updateRowId === rowId;
-            });
-
-      if (!update) {
-        return row;
-      }
-
-      const data = nestedRecord(update.data);
-      const companyName = stringField(data, "companyName") ?? "";
-      const errors =
-        companyName.trim().length === 0
-          ? [
-              {
-                code: "InvalidImportField",
-                fieldKey: "companyName",
-                message: "회사명을 입력해 주세요.",
-              },
-            ]
-          : [];
-
-      return {
-        ...row,
-        data: {
-          companyName,
-          email: stringField(data, "email") ?? MOBILE_LONG_FIXTURE.email,
-        },
-        errors,
-        status:
-          update.excluded === true
-            ? "EXCLUDED"
-            : errors.length > 0
-              ? "INVALID"
-              : "VALID",
-      };
-    });
-    recalculateImportJobSummary(detail);
-    return json(detail);
-  }
-
-  const importJobValidateMatch = pathname.match(/^\/api\/imports\/([^/]+)\/validate$/);
-  if (importJobValidateMatch && method === "POST") {
-    const detail = requireImportJobDetail(store, importJobValidateMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    recalculateImportJobSummary(detail);
-    return json(detail);
-  }
-
-  const importJobConfirmMatch = pathname.match(/^\/api\/imports\/([^/]+)\/confirm$/);
-  if (importJobConfirmMatch && method === "POST") {
-    const detail = requireImportJobDetail(store, importJobConfirmMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    const importUserLogId = "import-user-log-mobile-001";
-    updateImportJobDetail(detail, {
-      importedRowCount: numberField(nestedRecord(detail.job), "validRowCount") ?? 1,
-      importUserLogId,
-      status: "CONFIRMED",
-    });
-    return json({
-      importJobId: importJobConfirmMatch[1],
-      importUserLogId,
-      importedRowCount:
-        numberField(nestedRecord(detail.job), "importedRowCount") ?? 1,
-      status: "CONFIRMED",
-    });
-  }
-
-  const importJobCancelMatch = pathname.match(/^\/api\/imports\/([^/]+)\/cancel$/);
-  if (importJobCancelMatch && method === "POST") {
-    const detail = requireImportJobDetail(store, importJobCancelMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    updateImportJobDetail(detail, { status: "CANCELED" });
-    return json(null, 204);
-  }
-
-  const importJobErrorsMatch = pathname.match(/^\/api\/imports\/([^/]+)\/errors$/);
-  if (importJobErrorsMatch && method === "GET") {
-    const detail = requireImportJobDetail(store, importJobErrorsMatch[1]);
-    const errorResponse = importJobErrorResponse(detail);
-    if (errorResponse) {
-      return errorResponse;
-    }
-    return json({ items: Array.isArray(detail.errors) ? detail.errors : [] });
-  }
-
-  if (pathname === "/api/exports" && method === "POST") {
-    return json({
-      createdAt: NOW,
-      downloadReady: true,
-      format: "EXCEL",
-      id: "export-mobile-001",
-      includeSensitiveData: false,
-      status: "COMPLETED",
-      targetType: "COMPANY",
-    });
-  }
-
-  if (/^\/api\/exports\/[^/]+$/.test(pathname)) {
-    return json({
-      createdAt: NOW,
-      downloadReady: true,
-      format: "EXCEL",
-      id: "export-mobile-001",
-      includeSensitiveData: false,
-      status: "COMPLETED",
-      targetType: "COMPANY",
-    });
-  }
-
-  if (/^\/api\/exports\/[^/]+\/download$/.test(pathname)) {
-    return json({ downloadUrl: "/mock-export.xlsx", expiresAt: NEXT_WEEK });
   }
 
   if (pathname === "/api/trash" && method === "GET") {
@@ -1182,13 +808,10 @@ function createStore(): UserWebApiMockStore {
   const googleCalendars = createGoogleCalendars();
   const meetingNote = createMeetingNoteFromFixtures(company, contact, product, deal);
   const aiWeeklyReports = createAiWeeklyReportFixtures(schedule, deal, meetingNote);
-  const notifications = createNotificationsFromFixtures(deal, schedule);
   const dealActivities = createDealActivityFixtures(deal, schedule, meetingNote);
 
   return {
-    accountDeletionRequests: [],
     aiWeeklyReports,
-    businessCardScans: [createBusinessCardScan()],
     companyField,
     companyRegion,
     companies: [company],
@@ -1196,31 +819,21 @@ function createStore(): UserWebApiMockStore {
     contactJobGrade,
     contacts: [contact],
     counters: {
-      "account-deletion-request": 0,
-      "business-card": 1,
       company: 1,
-      "data-export-request": 0,
       contact: 1,
       deal: 1,
-      "import-job": 1,
       "ai-weekly-report": 2,
       "meeting-note": 1,
       product: 1,
       schedule: 1,
       "deal-activity": 3,
     },
-    dataExportRequests: [],
     dealActivities,
     deals: [deal],
     googleCalendarConnection,
     googleCalendars,
-    importJobs: [createImportJobDetail()],
-    importTemplates: [createImportTemplate()],
-    importUserLogs: [createImportUserLog()],
     meetingNotes: [meetingNote],
-    notificationSettings: createNotificationSettings(),
     followUpDeliverySettings: createFollowUpDeliverySettings(),
-    notifications,
     productCategory,
     productStatus,
     products: [product],
@@ -1292,95 +905,12 @@ function createUserProfile(body: unknown) {
 
 function createUserSettings() {
   return {
-    browserPushEnabled: true,
     defaultReminderMinutes: 30,
-    emailNotificationEnabled: true,
     sensitiveWarningEnabled: true,
   };
 }
 
 // 기능 : 사용자 데이터 export 요청 mock 응답을 생성하고 store에 저장합니다.
-function createDataExportRequest(store: UserWebApiMockStore, body: unknown) {
-  const request = {
-    downloadUrl: null,
-    expiresAt: NEXT_WEEK,
-    format:
-      stringField(body, "format") === "ZIP_JSON_XLSX"
-        ? "ZIP_JSON_XLSX"
-        : "ZIP_JSON_XLSX",
-    id: `${nextId(store, "data-export-request")}-modal-overflow-check-abcdefghijklmnopqrstuvwxyz-0123456789`,
-    includeSensitive: isRecord(body) && body.includeSensitive === true,
-    requestedAt: now(),
-    status: "REQUESTED",
-  };
-
-  store.dataExportRequests.unshift(request);
-  return request;
-}
-
-// 기능 : 사용자 데이터 export 요청 상세 mock 응답을 반환합니다.
-function getDataExportRequestResponse(
-  store: UserWebApiMockStore,
-  encodedRequestId: string | undefined,
-): MockApiResponse {
-  const requestId = decodeURIComponent(encodedRequestId ?? "");
-  const request = store.dataExportRequests.find((item) => item.id === requestId);
-
-  if (!request) {
-    return json({ message: "데이터 export 요청을 찾지 못했어요." }, 404);
-  }
-
-  if (request.status === "REQUESTED") {
-    request.status = "PROCESSING";
-  }
-
-  return json(request);
-}
-
-// 기능 : 사용자 계정 삭제 요청 mock 응답을 생성하고 store에 저장합니다.
-function createAccountDeletionRequest(
-  store: UserWebApiMockStore,
-  body: unknown,
-) {
-  const request = {
-    canCancelUntil: NEXT_WEEK,
-    confirmText: stringField(body, "confirmText") ?? "",
-    id: `${nextId(store, "account-deletion-request")}-modal-overflow-check-abcdefghijklmnopqrstuvwxyz-0123456789`,
-    reasonCode: stringField(body, "reasonCode"),
-    reasonMessage: stringField(body, "reasonMessage"),
-    requestedAt: now(),
-    scheduledDeletionAt: "2026-08-19T09:00:00.000Z",
-    status: "REQUESTED",
-  };
-
-  store.accountDeletionRequests.unshift(request);
-  return request;
-}
-
-// 기능 : 사용자 계정 삭제 요청 취소 mock 응답을 반환합니다.
-function cancelAccountDeletionRequestResponse(
-  store: UserWebApiMockStore,
-  encodedRequestId: string | undefined,
-): MockApiResponse {
-  const requestId = decodeURIComponent(encodedRequestId ?? "");
-  const request = store.accountDeletionRequests.find(
-    (item) => item.id === requestId,
-  );
-
-  if (!request) {
-    return json({ message: "계정 삭제 요청을 찾지 못했어요." }, 404);
-  }
-
-  request.status = "CANCELLED";
-  request.cancelledAt = now();
-
-  return json({
-    cancelledAt: request.cancelledAt,
-    id: request.id,
-    status: request.status,
-  });
-}
-
 function createGoogleCalendarConnection() {
   return {
     connectedAt: NOW,
@@ -1458,19 +988,6 @@ function countSelectedGoogleCalendars(store: UserWebApiMockStore) {
   ).length;
 }
 
-function createNotificationSettings() {
-  return {
-    browserPushEnabled: false,
-    dealDueReminderDaysBefore: 1,
-    dealDueReminderEnabled: true,
-    dealDueReminderLocalTime: "09:00",
-    emailNotificationEnabled: true,
-    scheduleReminderEnabled: true,
-    scheduleReminderMinutes: 30,
-  };
-}
-
-// 기능 : account settings modal follow-up delivery 섹션에 필요한 연결 설정 fixture를 만듭니다.
 function createFollowUpDeliverySettings() {
   return {
     consentNotices: [
@@ -1516,210 +1033,6 @@ function createFollowUpDeliverySettings() {
   };
 }
 
-function createNotificationsFromFixtures(
-  deal: MutableRecord,
-  schedule: MutableRecord,
-) {
-  return [
-    {
-      body: `${String(deal.dealName)} 마감일이 가까워요.`,
-      createdAt: NOW,
-      id: "notification-mobile-deal-001",
-      readAt: null,
-      scheduledAt: NOW,
-      sentAt: NOW,
-      sourceId: String(deal.id),
-      sourceType: "DEAL",
-      status: "SENT",
-      targetLabel: String(deal.dealName),
-      targetPath: `/app/deals/${String(deal.id)}`,
-      title: "딜 마감 reminder",
-      type: "DEAL_DUE_REMINDER",
-      updatedAt: NOW,
-    },
-    {
-      body: `${String(schedule.scheduleTitle)} 일정이 곧 시작돼요.`,
-      createdAt: NOW,
-      id: "notification-mobile-schedule-001",
-      readAt: NOW,
-      scheduledAt: NOW,
-      sentAt: NOW,
-      sourceId: String(schedule.id),
-      sourceType: "SCHEDULE",
-      status: "SENT",
-      targetLabel: String(schedule.scheduleTitle),
-      targetPath: `/app/schedules/${String(schedule.id)}`,
-      title: "일정 시작 reminder",
-      type: "SCHEDULE_START_REMINDER",
-      updatedAt: NOW,
-    },
-  ];
-}
-
-function createDealActivityFixtures(
-  deal: MutableRecord,
-  schedule: MutableRecord,
-  meetingNote: MutableRecord,
-) {
-  return [
-    {
-      activityType: "MEETING_NOTE_LINKED",
-      body: null,
-      createdAt: NOW,
-      dealId: String(deal.id),
-      id: "deal-activity-mobile-003",
-      isEditable: false,
-      linkedRecords: [toDealLinkedRecord(deal), toMeetingNoteLinkedRecord(meetingNote)],
-      occurredAt: "2026-07-20T09:20:00.000Z",
-      sourceId: String(meetingNote.id),
-      sourceType: "MEETING_NOTE",
-      summary: stringField(meetingNote, "title"),
-      title: "회의록을 연결했어요.",
-      updatedAt: NOW,
-    },
-    {
-      activityType: "SCHEDULE_LINKED",
-      body: null,
-      createdAt: NOW,
-      dealId: String(deal.id),
-      id: "deal-activity-mobile-002",
-      isEditable: false,
-      linkedRecords: [toDealLinkedRecord(deal), toScheduleLinkedRecord(schedule)],
-      occurredAt: "2026-07-20T09:10:00.000Z",
-      sourceId: String(schedule.id),
-      sourceType: "SCHEDULE",
-      summary: stringField(schedule, "scheduleTitle"),
-      title: "일정을 연결했어요.",
-      updatedAt: NOW,
-    },
-    {
-      activityType: "DEAL_CREATED",
-      body: null,
-      createdAt: NOW,
-      dealId: String(deal.id),
-      id: "deal-activity-mobile-001",
-      isEditable: false,
-      linkedRecords: [toDealLinkedRecord(deal)],
-      occurredAt: "2026-07-20T09:00:00.000Z",
-      sourceId: String(deal.id),
-      sourceType: "SYSTEM",
-      summary: stringField(deal, "dealName"),
-      title: "딜을 만들었어요.",
-      updatedAt: NOW,
-    },
-  ];
-}
-
-function listDealActivities(
-  store: UserWebApiMockStore,
-  dealId: string,
-  url: URL,
-) {
-  const activityType = url.searchParams.get("type");
-
-  return store.dealActivities
-    .filter((activity) => stringField(activity, "dealId") === dealId)
-    .filter(
-      (activity) =>
-        !activityType || stringField(activity, "activityType") === activityType,
-    )
-    .sort(compareDealActivityDesc);
-}
-
-function createManualDealActivity(
-  store: UserWebApiMockStore,
-  dealId: string,
-  body: unknown,
-) {
-  const deal = requireItem(store.deals, dealId);
-  const timestamp = now();
-  const activity = {
-    activityType: stringField(body, "activityType") ?? "NOTE",
-    body: stringField(body, "body"),
-    createdAt: timestamp,
-    dealId,
-    id: nextId(store, "deal-activity"),
-    isEditable: true,
-    linkedRecords: isApiErrorShape(deal) ? [] : [toDealLinkedRecord(deal)],
-    occurredAt: stringField(body, "occurredAt") ?? timestamp,
-    sourceId: null,
-    sourceType: "USER",
-    summary: null,
-    title: stringField(body, "title") ?? "수동 활동",
-    updatedAt: timestamp,
-  };
-
-  store.dealActivities.unshift(activity);
-  return activity;
-}
-
-function updateManualDealActivity(
-  store: UserWebApiMockStore,
-  dealId: string,
-  activityId: string,
-  body: unknown,
-) {
-  const activity = store.dealActivities.find(
-    (item) =>
-      stringField(item, "dealId") === dealId &&
-      stringField(item, "id") === activityId,
-  );
-
-  if (!activity) {
-    return {
-      code: "NotFound",
-      message: "Not found",
-      statusCode: 404,
-    };
-  }
-
-  const nextActivity = {
-    ...activity,
-    activityType: stringField(body, "activityType") ?? activity.activityType,
-    body: isRecord(body) && "body" in body ? stringField(body, "body") : activity.body,
-    occurredAt: stringField(body, "occurredAt") ?? activity.occurredAt,
-    title: stringField(body, "title") ?? activity.title,
-    updatedAt: now(),
-  };
-
-  const activityIndex = store.dealActivities.findIndex(
-    (item) => stringField(item, "id") === activityId,
-  );
-
-  if (activityIndex >= 0) {
-    store.dealActivities[activityIndex] = nextActivity;
-  }
-
-  return nextActivity;
-}
-
-function toDealLinkedRecord(deal: MutableRecord) {
-  return {
-    targetId: String(deal.id),
-    targetLabel: stringField(deal, "dealName"),
-    targetPath: `/app/deals/${String(deal.id)}`,
-    targetType: "DEAL",
-  };
-}
-
-function toScheduleLinkedRecord(schedule: MutableRecord) {
-  return {
-    targetId: String(schedule.id),
-    targetLabel: stringField(schedule, "scheduleTitle"),
-    targetPath: `/app/schedules/${String(schedule.id)}`,
-    targetType: "SCHEDULE",
-  };
-}
-
-function toMeetingNoteLinkedRecord(meetingNote: MutableRecord) {
-  return {
-    targetId: String(meetingNote.id),
-    targetLabel: stringField(meetingNote, "title"),
-    targetPath: `/app/meeting-notes/${String(meetingNote.id)}`,
-    targetType: "MEETING_NOTE",
-  };
-}
-
 function compareDealActivityDesc(left: MutableRecord, right: MutableRecord) {
   const leftTime = Date.parse(stringField(left, "occurredAt") ?? "");
   const rightTime = Date.parse(stringField(right, "occurredAt") ?? "");
@@ -1730,39 +1043,6 @@ function compareDealActivityDesc(left: MutableRecord, right: MutableRecord) {
   }
 
   return String(right.id).localeCompare(String(left.id));
-}
-
-function listMockNotifications(notifications: MutableRecord[], url: URL) {
-  const read = url.searchParams.get("read") ?? "ALL";
-  const page = Math.max(Number(url.searchParams.get("page") ?? "1"), 1);
-  const pageSize = Math.max(Number(url.searchParams.get("pageSize") ?? "15"), 1);
-  const filtered = notifications.filter((notification) => {
-    if (read === "READ") {
-      return notification.readAt !== null;
-    }
-
-    if (read === "UNREAD") {
-      return notification.readAt === null;
-    }
-
-    return true;
-  });
-  const offset = (page - 1) * pageSize;
-
-  return {
-    items: filtered.slice(offset, offset + pageSize),
-    page,
-    pageSize,
-    totalCount: filtered.length,
-    unreadCount: countUnreadNotifications(notifications),
-  };
-}
-
-function countUnreadNotifications(notifications: readonly MutableRecord[]) {
-  return notifications.filter(
-    (notification) =>
-      notification.status === "SENT" && notification.readAt === null,
-  ).length;
 }
 
 function createContact(store: UserWebApiMockStore, body: unknown) {
@@ -2681,239 +1961,6 @@ function createMeetingNoteFromFixtures(
     title,
     updatedAt: NOW,
   };
-}
-
-function createBusinessCardScan() {
-  return {
-    ai: {
-      model: "gpt-4.1-mini",
-      provider: "openai",
-    },
-    createdAt: NOW,
-    extracted: {
-      companyFieldName: "모바일 QA 분야",
-      companyName: MOBILE_LONG_FIXTURE.companyName,
-      companyRegionName: "서울/수도권",
-      contactDepartmentName: "영업기획본부",
-      contactEmail: MOBILE_LONG_FIXTURE.email,
-      contactJobGradeName: "팀장",
-      contactMobile: MOBILE_LONG_FIXTURE.phone,
-      contactName: MOBILE_LONG_FIXTURE.contactName,
-    },
-    id: "business-card-mobile-001",
-    linked: {
-      companyId: "company-mobile-001",
-      companyResolution: "EXISTING",
-      confirmedAt: null,
-      contactId: "contact-mobile-001",
-      contactResolution: "EXISTING",
-    },
-    failure: null,
-    status: "OCR_SUCCESS",
-    updatedAt: NOW,
-    usage: {
-      costCurrency: "USD",
-      pendingTimeMs: 128,
-      requestCost: 0.001,
-      requestToken: 120,
-      responseCost: 0.001,
-      responseToken: 80,
-      totalCost: 0.002,
-      totalToken: 200,
-    },
-  };
-}
-
-function createImportTemplate() {
-  return {
-    columns: [
-      {
-        description: "회사 이름",
-        key: "companyName",
-        label: "회사명",
-        required: true,
-        type: "text",
-      },
-      {
-        description: "담당자 이메일",
-        key: "email",
-        label: "이메일",
-        required: false,
-        type: "email",
-      },
-    ],
-    createdAt: NOW,
-    id: "import-template-mobile-001",
-    sampleRows: [{ companyName: MOBILE_LONG_FIXTURE.companyName, email: MOBILE_LONG_FIXTURE.email }],
-    templateName: "회사 데이터 업로드 양식",
-    templateType: "COMPANY",
-    templateVersion: "2026.07",
-    updatedAt: NOW,
-  };
-}
-
-function createImportUserLog() {
-  return {
-    context: { memo: MOBILE_LONG_FIXTURE.url },
-    contextLabel: "모바일 QA 업로드",
-    createdAt: NOW,
-    fileSizeBytes: 2048,
-    id: "import-user-log-mobile-001",
-    importedRowCount: 1,
-    originalFileName: "rqa002-mobile-browser-long-file-name-390-360.xlsx",
-    rows: [
-      {
-        createdAt: NOW,
-        id: "import-user-log-row-mobile-001",
-        rowNumber: 1,
-        submittedData: {
-          companyName: MOBILE_LONG_FIXTURE.companyName,
-          email: MOBILE_LONG_FIXTURE.email,
-        },
-        targetLabel: MOBILE_LONG_FIXTURE.companyName,
-      },
-    ],
-    targetType: "COMPANY",
-    templateColumns: createImportTemplate().columns,
-    templateVersion: "2026.07",
-    totalRowCount: 1,
-  };
-}
-
-function createImportJobDetail(
-  id = "import-job-mobile-001",
-  status = "NEEDS_REVIEW",
-) {
-  const rowStatus = status === "UPLOADED" ? "PENDING" : "INVALID";
-  const rowErrors =
-    rowStatus === "INVALID"
-      ? [
-          {
-            code: "InvalidImportField",
-            fieldKey: "companyName",
-            message: "회사명을 입력해 주세요.",
-          },
-        ]
-      : [];
-  const rows = [
-    {
-      data: {
-        companyName: rowStatus === "INVALID" ? "" : MOBILE_LONG_FIXTURE.companyName,
-        email: MOBILE_LONG_FIXTURE.email,
-      },
-      errors: rowErrors,
-      rowId: "import-job-row-mobile-001",
-      rowNumber: 2,
-      status: rowStatus,
-      targetLabel: rowStatus === "INVALID" ? null : MOBILE_LONG_FIXTURE.companyName,
-    },
-  ];
-
-  return {
-    errors: [],
-    job: {
-      createdAt: NOW,
-      expiresAt: NEXT_WEEK,
-      failedRowCount: 0,
-      id,
-      importedRowCount: 0,
-      importUserLogId: null,
-      invalidRowCount: rowErrors.length > 0 ? 1 : 0,
-      mappingSource: status === "UPLOADED" ? "NONE" : "USER",
-      originalFileName: "rqa002-mobile-browser-long-file-name-390-360.xlsx",
-      status,
-      targetType: "COMPANY",
-      totalRowCount: 1,
-      updatedAt: NOW,
-      validRowCount: rowErrors.length > 0 ? 0 : 1,
-    },
-    mapping: status === "UPLOADED" ? {} : { companyName: "companyName", email: "email" },
-    rows,
-    sourceColumns: ["companyName", "email"],
-    templateColumns: createImportTemplate().columns,
-  };
-}
-
-function requireImportJobDetail(
-  store: UserWebApiMockStore,
-  id: string | undefined,
-): MutableRecord {
-  const detail = store.importJobs.find((item) => nestedId(nestedRecord(item.job)) === id);
-
-  if (!detail) {
-    return {
-      code: "ImportJobNotFound",
-      message: "가져오기를 찾지 못했어요.",
-      statusCode: 404,
-    };
-  }
-
-  return detail;
-}
-
-function importJobResponse(detail: MutableRecord): MockApiResponse {
-  return importJobErrorResponse(detail) ?? json(detail);
-}
-
-function importJobErrorResponse(detail: MutableRecord): MockApiResponse | null {
-  const statusCode = numberField(detail, "statusCode");
-  const code = stringField(detail, "code");
-
-  if (statusCode === null || code === null) {
-    return null;
-  }
-
-  return json(detail, statusCode);
-}
-
-function updateImportJobDetail(detail: MutableRecord, patch: MutableRecord) {
-  const job = nestedRecord(detail.job);
-  detail.job = {
-    ...job,
-    ...patch,
-    updatedAt: now(),
-  };
-}
-
-function recalculateImportJobSummary(detail: MutableRecord) {
-  const rows = (Array.isArray(detail.rows) ? detail.rows.filter(isRecord) : []).map(
-    (row) => {
-      if (row.status === "EXCLUDED") {
-        return {
-          ...row,
-          errors: [],
-        };
-      }
-
-      const data = nestedRecord(row.data);
-      const companyName = stringField(data, "companyName") ?? "";
-      const errors =
-        companyName.trim().length === 0
-          ? [
-              {
-                code: "InvalidImportField",
-                fieldKey: "companyName",
-                message: "회사명을 입력해 주세요.",
-              },
-            ]
-          : [];
-
-      return {
-        ...row,
-        errors,
-        status: errors.length > 0 ? "INVALID" : "VALID",
-      };
-    },
-  );
-  detail.rows = rows;
-  const validRowCount = rows.filter((row) => row.status === "VALID").length;
-  const invalidRowCount = rows.filter((row) => row.status === "INVALID").length;
-
-  updateImportJobDetail(detail, {
-    invalidRowCount,
-    status: invalidRowCount === 0 && validRowCount > 0 ? "READY_TO_CONFIRM" : "NEEDS_REVIEW",
-    validRowCount,
-  });
 }
 
 function createTrashItem() {

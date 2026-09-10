@@ -18,16 +18,12 @@ import {
 // 기능 : 09/10 문서에 확정된 client 이벤트 이름을 테스트 기준으로 고정합니다.
 const EXPECTED_CLIENT_EVENT_NAMES = [
   "app_route_viewed",
-  "business_card_capture_started",
-  "business_card_capture_retried",
   "meeting_note_recording_started",
   "meeting_note_recording_completed",
   "meeting_note_recording_failed",
   "local_draft_saved",
   "local_draft_restored",
   "local_draft_discarded",
-  "mobile_push_permission_prompt_opened",
-  "mobile_push_permission_result",
 ] as const;
 
 // 기능 : 09/10 문서에 확정된 server 이벤트 이름을 테스트 기준으로 고정합니다.
@@ -39,9 +35,6 @@ const EXPECTED_SERVER_EVENT_NAMES = [
   "schedule_deal_linked",
   "meeting_note_created",
   "meeting_note_deal_linked",
-  "business_card_scan_confirmed",
-  "business_card_ocr_failed",
-  "import_confirmed",
   "export_downloaded",
 ] as const;
 
@@ -84,11 +77,6 @@ const EXPECTED_APP_ROUTE_KEYS = [
   "meeting_notes",
   "meeting_note_create",
   "meeting_note_detail",
-  "business_cards",
-  "notifications",
-  "import",
-  "import_review",
-  "import_detail",
   "trash",
   "settings",
   "more",
@@ -133,8 +121,6 @@ describe("product analytics event taxonomy", () => {
       "schedule_deal_linked",
       "meeting_note_created",
       "meeting_note_deal_linked",
-      "business_card_scan_confirmed",
-      "import_confirmed",
       "export_downloaded",
     ]);
 

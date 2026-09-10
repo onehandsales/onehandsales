@@ -50,7 +50,7 @@ test.describe("G03 account settings route link QA", () => {
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 
-  test("uses modal-open links from More and schedules while notification bell stays separate", async ({
+  test("uses modal-open links from More and schedules", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);
@@ -75,11 +75,6 @@ test.describe("G03 account settings route link QA", () => {
     await scheduleSettingsLink.first().click();
     await expect(page).toHaveURL(/\/app\/schedules\?account=settings$/);
     await expect(page.getByRole("dialog").first()).toBeVisible();
-
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("/app");
-    await page.locator('a[href="/app/notifications"]:visible').first().click();
-    await expect(page).toHaveURL(/\/app\/notifications$/);
 
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });

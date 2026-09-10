@@ -2,7 +2,6 @@ import {
   BrainCircuit,
   BriefcaseBusiness,
   CalendarDays,
-  FileSpreadsheet,
   FileText,
   ListChecks,
   UsersRound,
@@ -49,7 +48,6 @@ const featureIcons: readonly LucideIcon[] = [
   FileText,
   BrainCircuit,
   ListChecks,
-  FileSpreadsheet,
 ];
 
 const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
@@ -129,17 +127,6 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
           "AI 요약과 XLSX 다운로드 흐름 연결",
         ],
       },
-      {
-        id: "import-export",
-        title: "엑셀 가져오기/내보내기",
-        to: "/features/import-export",
-        summary: "기존 엑셀 데이터를 가져오고 필요한 데이터를 다시 내려받아요.",
-        bullets: [
-          "회사, 담당자, 딜 데이터를 엑셀에서 가져오기",
-          "검토 후 저장하는 import 흐름",
-          "업무 기록을 XLSX로 다운로드",
-        ],
-      },
     ],
   },
   "en-US": {
@@ -216,17 +203,6 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
           "Review weekly schedules and customer meetings",
           "Check deals close to due dates and missing follow-up",
           "Connect AI summaries and XLSX download workflows",
-        ],
-      },
-      {
-        id: "import-export",
-        title: "Excel import/export",
-        to: "/features/import-export",
-        summary: "Bring in existing spreadsheets and download records when needed.",
-        bullets: [
-          "Import company, contact, and deal data from Excel",
-          "Review imported rows before saving",
-          "Download work records as XLSX",
         ],
       },
     ],

@@ -1,4 +1,3 @@
-import { Buffer } from "node:buffer";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import {
   MOBILE_LONG_FIXTURE,
@@ -68,60 +67,6 @@ test.describe("G04 mobile local draft recovery", () => {
     runtime.assertClean();
   });
 
-  test("restores a business card confirm draft for the same scan log", async ({
-    page,
-  }) => {
-    const api = await setupUserWebApiMocks(page);
-    const runtime = collectRuntimeErrors(page);
-    await seedAuthenticatedSession(page);
-
-    await page.goto("/app/business-cards");
-    await page.locator("main button:visible").last().click();
-
-    let dialog = businessCardRegisterDialog(page);
-    await expect(dialog).toBeVisible();
-    await dialog
-      .locator('input[type="file"][capture="environment"]')
-      .first()
-      .setInputFiles({
-        buffer: Buffer.from("fake-business-card-image"),
-        mimeType: "image/jpeg",
-        name: "business-card.jpg",
-      });
-    await dialog.locator("footer button").last().click();
-    await expect(dialog.locator("#business-card-company-name")).toBeVisible();
-
-    await dialog.locator("#business-card-company-name").fill("G04 temp company");
-    await dialog.locator("#business-card-contact-name").fill("G04 temp contact");
-    await page.waitForTimeout(800);
-    await dialog.locator("header button").first().click();
-    await expect(dialog).toBeHidden();
-
-    await page
-      .locator("main button:visible")
-      .filter({ hasText: MOBILE_LONG_FIXTURE.companyName })
-      .first()
-      .click();
-    const detailDialog = page
-      .locator('section[role="dialog"]:visible')
-      .filter({ hasText: MOBILE_LONG_FIXTURE.companyName })
-      .first();
-    await detailDialog.locator("footer button").last().click();
-
-    dialog = businessCardRegisterDialog(page);
-    const prompt = dialog.getByTestId("mobile-local-draft-restore-prompt");
-    await expect(prompt).toBeVisible();
-    await prompt.getByRole("button").nth(1).click();
-    await expect(dialog.locator("#business-card-company-name")).toHaveValue(
-      "G04 temp company"
-    );
-    await expect(dialog.locator("#business-card-contact-name")).toHaveValue(
-      "G04 temp contact"
-    );
-
-    expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
-    runtime.assertClean();
-  });
 });
 
 function meetingNoteCreateDialog(page: Page) {
@@ -130,16 +75,6 @@ function meetingNoteCreateDialog(page: Page) {
     .filter({ has: page.locator("#meeting-create-title") })
     .first();
 }
-
-function businessCardRegisterDialog(page: Page) {
-  return page
-    .locator('section[role="dialog"]:visible')
-    .filter({
-      has: page.locator("#business-card-image, #business-card-company-name"),
-    })
-    .first();
-}
-
 // 기능 : React Hook Form에 등록된 숨김 input 값을 input/change event와 함께 갱신합니다.
 async function setRegisteredInputValue(locator: Locator, value: string) {
   await locator.evaluate((element, nextValue) => {

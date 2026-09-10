@@ -53,12 +53,7 @@ export function getMobileLocalDraftKey(input: {
   readonly userScopedHash: string;
   readonly draftId: string;
 }) {
-  const prefix =
-    input.draftType === "BUSINESS_CARD_CONFIRM"
-      ? "mobile-business-card-confirm"
-      : "mobile-meeting-note-create";
-
-  return `${prefix}:${input.userScopedHash}:${input.draftId}`;
+  return `mobile-meeting-note-create:${input.userScopedHash}:${input.draftId}`;
 }
 
 // 기능 : userId를 그대로 저장하지 않도록 브라우저 로컬 salt 기반 hash로 바꿉니다.

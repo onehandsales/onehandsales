@@ -51,10 +51,6 @@ import {
   RelatedResourceNotFoundError,
 } from "@/modules/deal/domain/deal.errors";
 import {
-  CancelDealDueReminderUseCase,
-  ScheduleDealDueReminderUseCase,
-} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
-import {
   DEAL_STATUS_CODES,
   DealStatusCode,
   getDealStatusLabel,
@@ -431,8 +427,6 @@ export class DealApplicationService {
     private readonly dealRepository: DealRepository,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
-    private readonly scheduleDealDueReminder: ScheduleDealDueReminderUseCase,
-    private readonly cancelDealDueReminder: CancelDealDueReminderUseCase,
     private readonly logger: AppLogger,
     @Inject(PRODUCT_ANALYTICS_EVENT_RECORDER)
     private readonly productAnalyticsEventRecorder: ProductAnalyticsServerEventRecorder = NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER
@@ -845,16 +839,6 @@ export class DealApplicationService {
         });
       }
 
-      await this.scheduleDealDueReminder.executeWithRepository(
-        {
-          userId: currentUser.id,
-          dealId: deal.id,
-          dealName,
-          expectedEndDate,
-          userTimeZone: currentUser.timeZone,
-        },
-        repository
-      );
     });
 
     if (!createdDealId) {
@@ -947,8 +931,6 @@ export class DealApplicationService {
     const finalProductIds =
       updateInput.productIds ?? existingDeal.products.map((product) => product.id);
     const finalDealName = updateInput.dealName ?? existingDeal.dealName;
-    const finalExpectedEndDate =
-      updateInput.expectedEndDate ?? existingDeal.expectedEndDate;
     const stageChanged =
       updateInput.dealStatus !== undefined &&
       updateInput.dealStatus !== existingDeal.dealStatus;
@@ -1000,17 +982,6 @@ export class DealApplicationService {
           contactIds,
         });
       }
-
-      await this.scheduleDealDueReminder.executeWithRepository(
-        {
-          userId: currentUser.id,
-          dealId,
-          dealName: finalDealName,
-          expectedEndDate: finalExpectedEndDate,
-          userTimeZone: currentUser.timeZone,
-        },
-        repository
-      );
 
       if (dealUpdated && stageChanged && updateInput.dealStatus) {
         const fromStatusLabel = getDealStatusLabel(existingDeal.dealStatus);
@@ -1087,14 +1058,6 @@ export class DealApplicationService {
         throw new DealNotFoundError();
       }
 
-      await this.cancelDealDueReminder.executeWithRepository(
-        {
-          userId: currentUser.id,
-          dealId,
-          cancelReason: "SOURCE_DELETED",
-        },
-        repository
-      );
     });
 
     // 5. 민감한 입력값 없이 딜 삭제 이벤트를 기록한다.

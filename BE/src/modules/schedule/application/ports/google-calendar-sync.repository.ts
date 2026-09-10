@@ -1,5 +1,3 @@
-import type { NotificationReminderWriteRepository } from "@/shared/application/notification/notification-reminder-writer.port";
-
 export const GOOGLE_CALENDAR_SYNC_REPOSITORY = Symbol(
   "GOOGLE_CALENDAR_SYNC_REPOSITORY"
 );
@@ -78,27 +76,17 @@ export interface GoogleCalendarSyncedEventInput {
   readonly fields: GoogleCalendarSyncedEventFields | null;
 }
 
-// 역할 : ScheduleReminderRequest 동기화 후 일정 알림 예약에 필요한 값을 정의합니다.
-export interface ScheduleReminderRequest {
-  readonly scheduleId: string;
-  readonly scheduleTitle: string;
-  readonly startAt: Date;
-}
-
-// 역할 : ApplyGoogleCalendarEventsResult provider event 반영 결과와 알림 후속 작업을 정의합니다.
+// 역할 : ApplyGoogleCalendarEventsResult provider event 반영 결과 카운트를 정의합니다.
 export interface ApplyGoogleCalendarEventsResult {
   readonly importedCount: number;
   readonly updatedCount: number;
   readonly localModifiedSkippedCount: number;
   readonly googleDeletedCount: number;
   readonly trashedCount: number;
-  readonly reminderScheduleRequests: readonly ScheduleReminderRequest[];
-  readonly reminderCancelScheduleIds: readonly string[];
 }
 
 // 역할 : GoogleCalendarSyncRepository Google Calendar source와 event 동기화 영속성 계약을 정의합니다.
-export interface GoogleCalendarSyncRepository
-  extends NotificationReminderWriteRepository {
+export interface GoogleCalendarSyncRepository {
   // 기능 : Google Calendar 동기화 작업을 하나의 DB transaction으로 실행합니다.
   runInTransaction<T>(
     work: (repository: GoogleCalendarSyncRepository) => Promise<T>

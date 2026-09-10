@@ -18,16 +18,6 @@ import {
   RelatedDealNotFoundError,
   ScheduleWeekReportExportFailedError,
 } from "@/modules/schedule/domain/schedule.errors";
-import {
-  CancelScheduleNotificationReminderUseCase,
-  ScheduleNotificationReminderUseCase,
-} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
-import type {
-  CancelPendingNotificationsBySourceInput,
-  NotificationRecord,
-  NotificationSettingsRecord,
-  UpsertReminderNotificationInput,
-} from "@/shared/application/notification/notification-reminder-writer.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { XLSX_CONTENT_TYPE } from "@/shared/application/export/xlsx-export-file";
 import type { XlsxWorkbookWriter } from "@/shared/application/ports/xlsx-workbook.writer";
@@ -75,46 +65,6 @@ class FakeScheduleRepository implements ScheduleRepository {
   ): Promise<T> {
     this.transactionCount += 1;
     return work(this);
-  }
-
-  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
-  async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
-    return null;
-  }
-
-  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
-  async cancelPendingNotificationsBySource(
-    _input: CancelPendingNotificationsBySourceInput
-  ): Promise<number> {
-    void _input;
-    return 0;
-  }
-
-  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
-  async upsertReminderNotification(
-    input: UpsertReminderNotificationInput
-  ): Promise<NotificationRecord> {
-    return {
-      id: `notification-${this.schedules.length + 1}`,
-      userId: input.userId,
-      type: input.type,
-      sourceType: input.sourceType,
-      sourceId: input.sourceId,
-      dedupeKey: input.dedupeKey,
-      targetPath: input.targetPath,
-      title: input.title,
-      body: input.body ?? null,
-      targetLabel: input.targetLabel ?? null,
-      status: "PENDING",
-      scheduledAt: input.scheduledAt,
-      sentAt: null,
-      readAt: null,
-      canceledAt: null,
-      cancelReason: null,
-      metadataJson: input.metadataJson ?? {},
-      createdAt: BASE_DATE,
-      updatedAt: input.now,
-    };
   }
 
   // 기능 : fake 딜 옵션 전체 목록을 반환합니다.
@@ -334,40 +284,16 @@ function createService() {
   const logger = {
     log: jest.fn(),
   } as unknown as AppLogger;
-  const scheduleNotificationReminder = {
-    execute: jest.fn().mockResolvedValue({
-      scheduled: true,
-      notification: null,
-      canceledCount: 0,
-    }),
-    executeWithRepository: jest.fn().mockResolvedValue({
-      scheduled: true,
-      notification: null,
-      canceledCount: 0,
-    }),
-  } as unknown as ScheduleNotificationReminderUseCase;
-  const cancelScheduleNotificationReminder = {
-    execute: jest.fn().mockResolvedValue(0),
-    executeWithRepository: jest.fn().mockResolvedValue(0),
-  } as unknown as CancelScheduleNotificationReminderUseCase;
   const xlsxWriter = {
     writeWorksheet: jest.fn().mockResolvedValue(Buffer.from("xlsx-content")),
   } as unknown as XlsxWorkbookWriter;
-  const service = new ScheduleApplicationService(
-    repository,
-    scheduleNotificationReminder,
-    cancelScheduleNotificationReminder,
-    xlsxWriter,
-    logger
-  );
+  const service = new ScheduleApplicationService(repository, xlsxWriter, logger);
 
   return {
     repository,
     service,
     logger,
     xlsxWriter,
-    scheduleNotificationReminder,
-    cancelScheduleNotificationReminder,
   };
 }
 
@@ -451,32 +377,6 @@ describe("ScheduleApplicationService", () => {
     ).rejects.toBeInstanceOf(RelatedDealNotFoundError);
   });
 
-  it("일정 생성 시 시작 30분 전 reminder 예약을 같은 transaction에서 요청한다", async () => {
-    const { repository, service, scheduleNotificationReminder } = createService();
-
-    const created = await service.createSchedule(CURRENT_USER, {
-      scheduleTitle: " 방문 미팅 ",
-      startAt: "2026-06-14T09:00",
-      endAt: "2026-06-14T10:00",
-      timeZone: "Asia/Seoul",
-      dealIds: ["deal-1"],
-    });
-
-    expect(created.scheduleTitle).toBe("방문 미팅");
-    expect(repository.transactionCount).toBe(1);
-    expect(
-      scheduleNotificationReminder.executeWithRepository
-    ).toHaveBeenCalledWith(
-      {
-        userId: CURRENT_USER.id,
-        scheduleId: created.id,
-        scheduleTitle: "방문 미팅",
-        startAt: new Date("2026-06-14T00:00:00.000Z"),
-      },
-      repository
-    );
-  });
-
   it("일정 수정 시 요청한 최종 dealIds 기준으로 ScheduleDeal을 추가하고 삭제한다", async () => {
     const { repository, service } = createService();
     const created = await service.createSchedule(CURRENT_USER, {
@@ -496,64 +396,6 @@ describe("ScheduleApplicationService", () => {
     expect(updated.deals).toEqual([{ id: "deal-2", dealName: "B 딜" }]);
     expect(repository.scheduleDealIds.get(created.id)).toEqual(["deal-2"]);
     expect(repository.transactionCount).toBe(2);
-  });
-
-  it("일정 시간 수정 시 새 시작 시각 기준으로 reminder 재예약을 요청한다", async () => {
-    const { repository, service, scheduleNotificationReminder } = createService();
-    const created = await service.createSchedule(CURRENT_USER, {
-      scheduleTitle: "방문 미팅",
-      startAt: "2026-06-14T09:00",
-      endAt: "2026-06-14T10:00",
-      timeZone: "Asia/Seoul",
-      dealIds: ["deal-1"],
-    });
-    jest.clearAllMocks();
-
-    await service.updateSchedule(CURRENT_USER, created.id, {
-      startAt: "2026-06-14T11:00",
-      endAt: "2026-06-14T12:00",
-    });
-
-    expect(
-      scheduleNotificationReminder.executeWithRepository
-    ).toHaveBeenCalledWith(
-      {
-        userId: CURRENT_USER.id,
-        scheduleId: created.id,
-        scheduleTitle: "방문 미팅",
-        startAt: new Date("2026-06-14T02:00:00.000Z"),
-      },
-      repository
-    );
-  });
-
-  it("일정 삭제 시 pending reminder 취소를 같은 transaction에서 요청한다", async () => {
-    const { repository, service, cancelScheduleNotificationReminder } =
-      createService();
-    const created = await service.createSchedule(CURRENT_USER, {
-      scheduleTitle: "방문 미팅",
-      startAt: "2026-06-14T09:00",
-      endAt: "2026-06-14T10:00",
-      timeZone: "Asia/Seoul",
-      dealIds: ["deal-1"],
-    });
-    jest.clearAllMocks();
-
-    await service.deleteSchedule(CURRENT_USER, created.id);
-
-    expect(
-      cancelScheduleNotificationReminder.executeWithRepository
-    ).toHaveBeenCalledWith(
-      {
-        userId: CURRENT_USER.id,
-        scheduleId: created.id,
-        cancelReason: "SOURCE_DELETED",
-      },
-      repository
-    );
-    expect(repository.schedules).toHaveLength(1);
-    expect(repository.schedules[0]?.deletedAt).toBeInstanceOf(Date);
-    expect(repository.scheduleDealIds.get(created.id)).toEqual(["deal-1"]);
   });
 
   it("일정 수정 요청에 수정 가능한 필드가 없으면 ownership 조회 전에 차단한다", async () => {

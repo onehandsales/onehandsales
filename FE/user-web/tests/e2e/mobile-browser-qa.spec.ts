@@ -5,7 +5,6 @@ import {
   MOBILE_LONG_FIXTURE,
   seedAuthenticatedSession,
   setupUserWebApiMocks,
-  type UserWebApiMockStore,
 } from "./support/user-web-api-mocks";
 
 const MOBILE_ROUTES: ReadonlyArray<{
@@ -51,18 +50,7 @@ const MOBILE_ROUTES: ReadonlyArray<{
     expectedText: "AI 후속 작업",
     hasMobileHeader: false,
   },
-  {
-    path: "/app/business-cards",
-    expectedText: MOBILE_LONG_FIXTURE.contactName,
-    hasMobileHeader: true,
-  },
-  {
-    path: "/app/import",
-    expectedText: "rqa002-mobile-browser-long-file-name-390-360.xlsx",
-    hasMobileHeader: true,
-  },
   { path: "/app/trash", expectedText: "삭제된", hasMobileHeader: true },
-  { path: "/app/notifications", expectedText: "딜 마감 reminder", hasMobileHeader: true },
   { path: "/app?account=settings", expectedText: "설정", hasMobileHeader: true },
   { path: "/app/more", expectedText: "영업 관리", hasMobileHeader: true },
 ];
@@ -163,67 +151,6 @@ test.describe("G02 mobile browser release QA", () => {
     expect(
       api.protectedRequestsWithoutAuthorization(),
       "Company create smoke must keep Authorization on private API calls.",
-    ).toEqual([]);
-    runtime.assertClean();
-  });
-
-  test("keeps business card capture failure actions inside mobile viewport", async ({
-    page,
-  }, testInfo) => {
-    const store = createUserWebApiMockStore();
-    const api = await setupUserWebApiMocks(page, { store });
-    const runtime = collectRuntimeErrors(page);
-    await seedAuthenticatedSession(page);
-
-    await page.route("**/api/business-card-scans", async (route) => {
-      if (route.request().method().toUpperCase() !== "POST") {
-        await route.fallback();
-        return;
-      }
-
-      const failedScan = createBusinessCardFailureScan(store);
-      store.businessCardScans.unshift(failedScan);
-      await route.fulfill({
-        body: JSON.stringify(failedScan),
-        contentType: "application/json",
-        status: 201,
-      });
-    });
-
-    await page.goto("/app/business-cards");
-    await page.getByRole("button", { name: "명함 스캔" }).last().click();
-
-    const dialog = page.getByRole("dialog", { name: "명함 스캔" });
-    await expect(dialog).toBeVisible();
-
-    const captureInput = dialog
-      .locator('input[type="file"][capture="environment"]')
-      .first();
-    await expect(captureInput).toHaveAttribute("accept", "image/*");
-    await captureInput.setInputFiles({
-      buffer: Buffer.from("fake-business-card-image"),
-      mimeType: "image/jpeg",
-      name: "business-card.jpg",
-    });
-
-    await dialog.getByRole("button", { exact: true, name: "명함 스캔" }).click();
-
-    await expect(dialog.getByText("명함을 읽지 못했어요.")).toBeVisible();
-    await expect(dialog.getByRole("button", { name: "다시 촬영" })).toBeVisible();
-    await expect(dialog.getByRole("button", { name: "파일 바꾸기" })).toBeVisible();
-    await expect(dialog.getByRole("button", { name: "수동 입력" })).toBeVisible();
-    await expectLocatorWithinViewport(page, dialog, "business card failure dialog");
-    await expectNoDocumentHorizontalOverflow(
-      page,
-      `${testInfo.project.name} business card failure dialog`,
-    );
-
-    await dialog.getByRole("button", { name: "수동 입력" }).click();
-    await expect(page).toHaveURL(/\/app\/contacts\/new$/);
-
-    expect(
-      api.protectedRequestsWithoutAuthorization(),
-      "Business card failure UX must keep Authorization on private API calls.",
     ).toEqual([]);
     runtime.assertClean();
   });
@@ -541,52 +468,6 @@ function collectRuntimeErrors(page: Page) {
         { consoleErrors, pageErrors },
         "Mobile QA route smoke should not emit page or console errors.",
       ).toEqual({ consoleErrors: [], pageErrors: [] });
-    },
-  };
-}
-
-// 기능 : OCR 실패 API 응답 fixture를 G02 safe failure 계약에 맞게 생성합니다.
-function createBusinessCardFailureScan(store: UserWebApiMockStore) {
-  return {
-    ai: {
-      model: "gpt-4.1-mini",
-      provider: "openai",
-    },
-    createdAt: "2026-07-20T09:00:00.000Z",
-    extracted: {
-      companyFieldName: null,
-      companyName: null,
-      companyRegionName: null,
-      contactDepartmentName: null,
-      contactEmail: null,
-      contactJobGradeName: null,
-      contactMobile: null,
-      contactName: null,
-    },
-    failure: {
-      errorCode: "OCR_PARSE_FAILED",
-      retryable: true,
-      userMessage: "명함을 읽지 못했어요. 다시 찍거나 파일을 바꿔 주세요.",
-    },
-    id: `business-card-failed-${store.counters["business-card"] + 1}`,
-    linked: {
-      companyId: null,
-      companyResolution: null,
-      confirmedAt: null,
-      contactId: null,
-      contactResolution: null,
-    },
-    status: "OCR_FAILED",
-    updatedAt: "2026-07-20T09:00:00.000Z",
-    usage: {
-      costCurrency: "USD",
-      pendingTimeMs: 128,
-      requestCost: null,
-      requestToken: null,
-      responseCost: null,
-      responseToken: null,
-      totalCost: null,
-      totalToken: null,
     },
   };
 }

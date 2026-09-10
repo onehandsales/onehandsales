@@ -38,8 +38,6 @@ export type AuthUser = {
   readonly settings: {
     readonly sensitiveWarningEnabled: boolean;
     readonly defaultReminderMinutes: number;
-    readonly emailNotificationEnabled: boolean;
-    readonly browserPushEnabled: boolean;
   };
 };
 

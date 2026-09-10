@@ -1,6 +1,5 @@
 import {
   Building2,
-  Camera,
   ChevronRight,
   Package,
   Settings,
@@ -93,13 +92,6 @@ const salesRows: ReadonlyArray<{
     iconBg: "#4880EE18",
     iconColor: "#4880EE",
     icon: Users,
-  },
-  {
-    labelKey: "navigation.businessCards",
-    to: "/app/business-cards",
-    iconBg: "#05966918",
-    iconColor: "#059669",
-    icon: Camera,
   },
   {
     labelKey: "navigation.products",

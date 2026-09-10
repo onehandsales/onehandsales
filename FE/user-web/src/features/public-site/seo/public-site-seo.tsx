@@ -98,8 +98,6 @@ const workflowKoreanSeoKeywords = [
   "미팅 관리",
   "미팅노트",
   "회의록 정리",
-  "명함 스캔",
-  "명함 OCR",
   "후속 연락",
   "팔로업 관리",
   "영업 후속관리",
@@ -196,15 +194,12 @@ const workflowEnglishSeoKeywords = [
   "proposal tracking",
   "sales schedule management",
   "visit schedule management",
-  "follow-up reminders",
   "customer follow-up",
   "sales follow-up",
   "marketing follow-up",
   "sales marketing",
   "meeting notes",
   "meeting note CRM",
-  "business card scanning",
-  "business card OCR",
   "mobile CRM",
   "sales management app",
   "sales management software",
@@ -337,7 +332,6 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "customer management features",
         "sales pipeline features",
         "sales reports",
-        "Excel import CRM",
         "AI sales assistant",
       ],
     },
@@ -424,20 +418,6 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
     keywords: {
       ko: ["영업 리포트", "주간 영업 리포트", "CRM 리포트", "일정 리포트", "AI 영업 리포트"],
       en: ["sales reports", "weekly sales report", "CRM reports", "schedule report", "AI sales report"],
-    },
-  },
-  "/features/import-export": {
-    title: {
-      ko: "엑셀 가져오기/내보내기 | OneHand Sales",
-      en: "Excel Import and Export | OneHand Sales",
-    },
-    description: {
-      ko: "기존 엑셀 고객 데이터를 가져오고 필요한 업무 기록을 XLSX로 내려받는 OneHand Sales 데이터 기능을 확인하세요.",
-      en: "See how OneHand Sales imports existing customer spreadsheets and exports work records as XLSX.",
-    },
-    keywords: {
-      ko: ["CRM 엑셀 가져오기", "CRM 엑셀 내보내기", "고객 데이터 이전", "XLSX 다운로드", "엑셀 고객관리"],
-      en: ["CRM Excel import", "CRM Excel export", "customer data migration", "XLSX download", "spreadsheet CRM"],
     },
   },
   "/solutions": {
@@ -604,8 +584,6 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
       en: "Help | OneHand Sales",
     },
     description: {
-      ko: "OneHand Sales에서 고객, 딜, 일정, 회의록, 명함 스캔, 엑셀, 휴지통 복구를 시작하는 기본 사용 흐름을 확인하세요.",
-      en: "Learn the basic OneHand Sales workflow for customers, deals, schedules, meeting notes, business card scanning, Excel, and trash restore.",
     },
     keywords: {
       ko: [
@@ -613,7 +591,6 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "OneHand Sales 사용법",
         "영업 CRM 도움말",
         "CRM 사용 가이드",
-        "명함 스캔 도움말",
         "CRM 엑셀 가져오기",
       ],
       en: [
@@ -621,8 +598,6 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "OneHand Sales guide",
         "sales CRM help",
         "CRM user guide",
-        "business card scanning help",
-        "CRM Excel import",
       ],
     },
   },
@@ -974,8 +949,7 @@ function getSoftwareFeatureList(language: PublicSiteLanguage) {
         "딜 파이프라인 관리",
         "영업 일정 및 재방문 일정 관리",
         "미팅노트와 회의록 정리",
-        "명함 스캔 및 명함 OCR",
-        "후속 연락과 팔로업 알림",
+        "후속 연락 관리",
         "제안, 견적, 계약 흐름 관리",
       ]
     : [
@@ -984,8 +958,6 @@ function getSoftwareFeatureList(language: PublicSiteLanguage) {
         "Deal pipeline tracking",
         "Sales schedule and revisit management",
         "Meeting notes",
-        "Business card scanning and OCR",
-        "Follow-up reminders",
         "Proposal, quote, and contract workflow tracking",
       ];
 }

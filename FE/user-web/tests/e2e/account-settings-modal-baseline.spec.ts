@@ -5,7 +5,7 @@ import {
 } from "./support/user-web-api-mocks";
 
 test.describe("G01 account settings modal baseline", () => {
-  test("opens Settings from the query contract and keeps Profile/Notifications separated", async ({
+  test("opens Settings from the query contract and keeps Profile visible", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);

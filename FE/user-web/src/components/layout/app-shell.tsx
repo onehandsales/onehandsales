@@ -9,7 +9,6 @@ import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
-  Bell,
   BookOpen,
   BriefcaseBusiness,
   Bug,
@@ -64,12 +63,7 @@ import {
 } from "react";
 import { useDealDetail, useDeleteDealMutation } from "@/features/deal";
 import { ErrorReportHelpContent } from "@/features/error-report";
-import {
-  NotificationBellButton,
-  ServiceNotificationSettingsSection,
-} from "@/features/notification";
 import { SupportRequestHelpContent } from "@/features/support-request";
-import { AccountDataRequestsSettingsSection } from "@/features/account-request";
 import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
 import { GoogleCalendarSettingsSection } from "@/features/schedule";
@@ -96,8 +90,7 @@ type AccountModalSection =
   | AccountModalQuerySection
   | "profile"
   | "devices"
-  | "externalIntegrations"
-  | "notifications";
+  | "externalIntegrations";
 
 type HelpModalSection = "guide" | "support" | "error" | "terms" | "privacy";
 
@@ -526,10 +519,6 @@ export function AppShell() {
   const isSchedulePage =
     pathname === "/app/schedules" || pathname === "/app/schedules/week";
   const isTrashPage = pathname === "/app/trash";
-  const isNotificationPage = pathname === "/app/notifications";
-  const isBusinessCardPage = pathname === "/app/business-cards";
-  const isImportPage = pathname === "/app/import";
-  const isImportDetailPage = /^\/app\/import\/(?:review\/)?[^/]+$/.test(pathname);
   const isFixedViewportPage = isHome || isProductDetail;
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
@@ -542,7 +531,6 @@ export function AppShell() {
     isContactDetail ||
     isProductDetail ||
     isMeetingNoteDetail ||
-    isImportDetailPage ||
     isScheduleRoute;
 
   const hideTopBar =
@@ -554,10 +542,6 @@ export function AppShell() {
     isMeetingNoteListPage ||
     isSchedulePage ||
     isTrashPage ||
-    isNotificationPage ||
-    isBusinessCardPage ||
-    isImportPage ||
-    isImportDetailPage ||
     isProductDetail;
 
   // 현재 페이지 브레드크럼 결정
@@ -868,10 +852,6 @@ export function AppShell() {
                 {t("shell.homeTooltip")}
               </span>
             </button>
-            <NotificationBellButton
-              className="h-8 w-8 shrink-0"
-              tooltipLabel={t("shell.notificationsTooltip")}
-            />
             <button
               aria-label={t("shell.integratedSearch")}
               type="button"
@@ -974,7 +954,6 @@ export function AppShell() {
         {!isMobileHeaderHidden ? (
           <MobileAppHeader
             onSearchClick={() => setSearchOpen(true)}
-            rightSlot={<NotificationBellButton className="h-11 w-11 rounded-full" />}
           />
         ) : null}
         <main className="pb-24">
@@ -1262,7 +1241,6 @@ function AccountModalContent({
       label: t("settings.externalIntegrationsTab"),
       section: "externalIntegrations",
     },
-    { icon: Bell, label: t("navigation.notifications"), section: "notifications" },
   ];
 
   return (
@@ -1339,10 +1317,6 @@ function AccountModalSectionContent({
 }) {
   if (section === "profile") {
     return <ProfileModalQueryContent />;
-  }
-
-  if (section === "notifications") {
-    return <ServiceNotificationSettingsSection />;
   }
 
   if (section === "devices") {
@@ -1718,7 +1692,7 @@ function DevicesModalQueryContent() {
 
 const accountLocaleOptions = [
   { value: "ko-KR", labelKey: "settings.korean" },
-  { value: "en", labelKey: "importExport.englishTemplate" },
+  { value: "en", labelKey: "settings.english" },
 ] as const;
 
 const accountCountryOptions = [
@@ -1763,10 +1737,6 @@ function AccountSettingsModalContent() {
     : false;
 
   // 기능 : Settings 모달 안의 요청 섹션 성공 안내를 공통 notice에 연결합니다.
-  const onSettingsSectionNotice = useCallback((message: string) => {
-    setNotice({ message, variant: "success" });
-  }, []);
-
   // 기능 : 조회된 프로필 값을 앱 기본값 form 상태에 반영합니다.
   useEffect(() => {
     if (!profile) {
@@ -1896,15 +1866,6 @@ function AccountSettingsModalContent() {
               </ProfileSection>
             </form>
 
-            <ProfileSection
-              icon={FileText}
-              title={t("settings.accountDataRequestsTitle")}
-            >
-              <AccountDataRequestsSettingsSection
-                onNotice={onSettingsSectionNotice}
-                presentation="modal"
-              />
-            </ProfileSection>
           </div>
         ) : null}
       </div>

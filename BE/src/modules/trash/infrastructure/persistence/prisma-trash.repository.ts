@@ -1,4 +1,4 @@
-import { Prisma, TrashRecoveryRequestStatus } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type {
   TrashDomainFilter,
   TrashItemKindFilter,
@@ -7,9 +7,6 @@ import type {
   TrashTargetType,
 } from "@/modules/trash/application/ports/trash.types";
 import {
-  type CreateTrashRecoveryRequestInput,
-  type FindOpenTrashRecoveryRequestInput,
-  type FindTrashRecoveryTargetInput,
   type GetTrashDetailInput,
   type ListTrashInput,
   type RestoreTrashItemInput,
@@ -17,10 +14,6 @@ import {
   type TrashDetailField,
   type TrashItem,
   type TrashListResult,
-  type TrashRecoveryRequestRecord,
-  type TrashRecoveryRequestStatusValue,
-  type TrashRecoveryRequestSummary,
-  type TrashRecoveryTargetRecord,
   type TrashRepository,
   type TrashRestoreWindow,
   type TrashRestoreBlockedReason,
@@ -53,24 +46,10 @@ type DeletedItemInput = {
   readonly now: Date;
 };
 
-type RecoveryRequestRow = {
-  readonly id: string;
-  readonly targetType: string;
-  readonly targetId: string;
-  readonly status: TrashRecoveryRequestStatus;
-  readonly createdAt: Date;
-};
-
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 15;
 const MAX_PAGE_SIZE = 100;
 const MEMO_TITLE_MAX_LENGTH = 40;
-const OPEN_RECOVERY_REQUEST_STATUSES: readonly TrashRecoveryRequestStatus[] = [
-  TrashRecoveryRequestStatus.REQUESTED,
-  TrashRecoveryRequestStatus.REVIEWING,
-  TrashRecoveryRequestStatus.WAITING_RECOVERY_POLICY,
-  TrashRecoveryRequestStatus.RECOVERY_AVAILABLE,
-];
 
 const TARGET_METADATA: readonly TargetMetadata[] = [
   {
@@ -193,7 +172,7 @@ export class PrismaTrashRepository implements TrashRepository {
     const pageItems = sortedItems.slice((page - 1) * pageSize, page * pageSize);
 
     return {
-      items: await this.attachRecoveryRequests(input.userId, pageItems),
+      items: pageItems,
       page,
       pageSize,
       totalCount: filteredItems.length,
@@ -223,16 +202,10 @@ export class PrismaTrashRepository implements TrashRepository {
       return null;
     }
 
-    const scheduleReminder =
-      input.targetType === "SCHEDULE"
-        ? await this.findRestoredScheduleReminder(input)
-        : null;
-
     return {
       targetType: input.targetType,
       targetId: input.targetId,
       restoredAt: input.now,
-      ...(scheduleReminder ? { scheduleReminder } : {}),
     };
   }
 
@@ -271,80 +244,17 @@ export class PrismaTrashRepository implements TrashRepository {
       }
     })();
 
-    return detail
-      ? await this.attachDetailRecoveryRequest(input.userId, detail)
-      : null;
+    return detail;
   }
 
   // 기능 : 복구 문의 대상 Trash row의 안전 snapshot을 조회합니다.
-  async findRecoveryTarget(
-    input: FindTrashRecoveryTargetInput
-  ): Promise<TrashRecoveryTargetRecord | null> {
-    const detail = await this.getTrashDetail(input);
 
-    if (!detail) {
-      return null;
-    }
-
-    return {
-      targetType: detail.targetType,
-      targetId: detail.targetId,
-      titleSnapshot: detail.title,
-      deletedAt: detail.deletedAt,
-      trashExpiresAt: detail.trashExpiresAt,
-      restoreWindow: detail.restoreWindow,
-    };
-  }
 
   // 기능 : 같은 사용자와 대상의 열린 복구 문의를 조회합니다.
-  async findOpenRecoveryRequest(
-    input: FindOpenTrashRecoveryRequestInput
-  ): Promise<TrashRecoveryRequestRecord | null> {
-    const request = await this.client.trashRecoveryRequest.findFirst({
-      where: {
-        userId: input.userId,
-        targetType: input.targetType,
-        targetId: input.targetId,
-        status: { in: [...OPEN_RECOVERY_REQUEST_STATUSES] },
-      },
-      select: {
-        id: true,
-        targetType: true,
-        targetId: true,
-        status: true,
-        createdAt: true,
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    });
 
-    return request ? this.toRecoveryRequestRecord(request) : null;
-  }
 
   // 기능 : 만료된 Trash row에 대한 복구 문의를 생성합니다.
-  async createRecoveryRequest(
-    input: CreateTrashRecoveryRequestInput
-  ): Promise<TrashRecoveryRequestRecord> {
-    const request = await this.client.trashRecoveryRequest.create({
-      data: {
-        userId: input.userId,
-        targetType: input.targetType,
-        targetId: input.targetId,
-        titleSnapshot: input.titleSnapshot,
-        deletedAt: input.deletedAt,
-        trashExpiresAt: input.trashExpiresAt,
-        message: input.message,
-      },
-      select: {
-        id: true,
-        targetType: true,
-        targetId: true,
-        status: true,
-        createdAt: true,
-      },
-    });
 
-    return this.toRecoveryRequestRecord(request);
-  }
 
   // 기능 : 삭제된 회사의 상세 모달 데이터를 조회합니다.
   private async getCompanyDetail(
@@ -1037,10 +947,8 @@ export class PrismaTrashRepository implements TrashRepository {
       trashExpiresAt: input.trashExpiresAt,
       restoreWindow,
       canRestore: restoreWindow === "ACTIVE",
-      canRequestRecovery: restoreWindow === "EXPIRED",
       hasPrivateMemo: input.hasPrivateMemo ?? false,
       privateMemoIncluded: false,
-      recoveryRequest: null,
       summary: input.summary,
       fields: input.fields,
       ...(input.content !== undefined ? { content: input.content } : {}),
@@ -1710,10 +1618,8 @@ export class PrismaTrashRepository implements TrashRepository {
       trashExpiresAt: input.trashExpiresAt,
       restoreWindow,
       canRestore: restoreWindow === "ACTIVE",
-      canRequestRecovery: restoreWindow === "EXPIRED",
       hasPrivateMemo: input.hasPrivateMemo ?? false,
       privateMemoIncluded: false,
-      recoveryRequest: null,
     };
 
     if (!input.parentType) {
@@ -1729,121 +1635,24 @@ export class PrismaTrashRepository implements TrashRepository {
   }
 
   // 기능 : 목록 page item에 열린 복구 문의 summary를 결합합니다.
-  private async attachRecoveryRequests(
-    userId: string,
-    items: readonly TrashItem[]
-  ): Promise<TrashItem[]> {
-    if (items.length === 0) {
-      return [];
-    }
 
-    const recoveryRequestMap = await this.getOpenRecoveryRequestMap(
-      userId,
-      items
-    );
-
-    return items.map((item) => {
-      const recoveryRequest =
-        recoveryRequestMap.get(this.createRecoveryRequestKey(item)) ?? null;
-
-      return this.withRecoveryRequest(item, recoveryRequest);
-    });
-  }
 
   // 기능 : 단건 상세 item에 열린 복구 문의 summary를 결합합니다.
-  private async attachDetailRecoveryRequest(
-    userId: string,
-    detail: TrashDetail
-  ): Promise<TrashDetail> {
-    const recoveryRequestMap = await this.getOpenRecoveryRequestMap(userId, [
-      detail,
-    ]);
-    const recoveryRequest =
-      recoveryRequestMap.get(this.createRecoveryRequestKey(detail)) ?? null;
 
-    return this.withRecoveryRequest(detail, recoveryRequest);
-  }
 
   // 기능 : 지정한 Trash 대상들의 열린 복구 문의를 key map으로 조회합니다.
-  private async getOpenRecoveryRequestMap(
-    userId: string,
-    items: ReadonlyArray<Pick<TrashItem, "targetType" | "targetId">>
-  ): Promise<Map<string, TrashRecoveryRequestSummary>> {
-    const requests = await this.client.trashRecoveryRequest.findMany({
-      where: {
-        userId,
-        status: { in: [...OPEN_RECOVERY_REQUEST_STATUSES] },
-        OR: items.map((item) => ({
-          targetType: item.targetType,
-          targetId: item.targetId,
-        })),
-      },
-      select: {
-        id: true,
-        targetType: true,
-        targetId: true,
-        status: true,
-        createdAt: true,
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    });
 
-    const requestMap = new Map<string, TrashRecoveryRequestSummary>();
 
-    for (const request of requests) {
-      const key = this.createRecoveryRequestKey(request);
 
-      if (!requestMap.has(key)) {
-        requestMap.set(key, this.toRecoveryRequestSummary(request));
-      }
-    }
-
-    return requestMap;
-  }
-
-  // 기능 : 복구 요청 summary 유무에 따라 canRequestRecovery 상태를 갱신합니다.
-  private withRecoveryRequest<TItem extends TrashItem | TrashDetail>(
-    item: TItem,
-    recoveryRequest: TrashRecoveryRequestSummary | null
-  ): TItem {
-    return {
-      ...item,
-      recoveryRequest,
-      canRequestRecovery:
-        item.restoreWindow === "EXPIRED" && recoveryRequest === null,
-    } as TItem;
-  }
 
   // 기능 : Trash 대상 tuple을 복구 요청 조회 key 문자열로 변환합니다.
-  private createRecoveryRequestKey(
-    item: { readonly targetType: string; readonly targetId: string }
-  ): string {
-    return `${item.targetType}:${item.targetId}`;
-  }
+
 
   // 기능 : Prisma 복구 문의 row를 사용자용 summary로 변환합니다.
-  private toRecoveryRequestSummary(
-    request: RecoveryRequestRow
-  ): TrashRecoveryRequestSummary {
-    return {
-      id: request.id,
-      status: request.status as TrashRecoveryRequestStatusValue,
-      createdAt: request.createdAt,
-    };
-  }
+
 
   // 기능 : Prisma 복구 문의 row를 application service 반환 record로 변환합니다.
-  private toRecoveryRequestRecord(
-    request: RecoveryRequestRow
-  ): TrashRecoveryRequestRecord {
-    return {
-      id: request.id,
-      targetType: request.targetType as TrashTargetType,
-      targetId: request.targetId,
-      status: request.status as TrashRecoveryRequestStatusValue,
-      createdAt: request.createdAt,
-    };
-  }
+
 
   // 기능 : 무료 셀프 복구 기간이 남았는지 기준 상태를 계산합니다.
   private getRestoreWindow(
@@ -2102,31 +1911,6 @@ export class PrismaTrashRepository implements TrashRepository {
     });
 
     return result.count > 0;
-  }
-
-  private async findRestoredScheduleReminder(input: RestoreTrashItemInput) {
-    const schedule = await this.client.schedule.findFirst({
-      where: {
-        id: input.targetId,
-        userId: input.userId,
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        scheduleTitle: true,
-        startAt: true,
-      },
-    });
-
-    if (!schedule) {
-      return null;
-    }
-
-    return {
-      scheduleId: schedule.id,
-      scheduleTitle: schedule.scheduleTitle,
-      startAt: schedule.startAt,
-    };
   }
 
   private async hasDeletedParent(input: RestoreTrashItemInput) {

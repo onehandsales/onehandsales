@@ -18,9 +18,6 @@ const STATIC_APP_ROUTE_KEYS = new Map<string, ProductAnalyticsAppRouteKey>([
   ["/app/schedules/week", "schedule_week"],
   ["/app/meeting-notes", "meeting_notes"],
   ["/app/meeting-notes/new/full", "meeting_note_create"],
-  ["/app/business-cards", "business_cards"],
-  ["/app/notifications", "notifications"],
-  ["/app/import", "import"],
   ["/app/trash", "trash"],
   ["/app/more", "more"],
 ]);
@@ -46,8 +43,6 @@ const DYNAMIC_APP_ROUTE_MATCHERS: readonly DynamicRouteMatcher[] = [
     pattern: /^\/app\/meeting-notes\/[^/]+$/,
     routeKey: "meeting_note_detail",
   },
-  { pattern: /^\/app\/import\/review\/[^/]+$/, routeKey: "import_review" },
-  { pattern: /^\/app\/import\/[^/]+$/, routeKey: "import_detail" },
 ];
 
 // 기능 : 현재 pathname을 분석 허용 routeKey로 변환합니다.

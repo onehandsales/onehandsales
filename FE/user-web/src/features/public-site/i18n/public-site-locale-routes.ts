@@ -17,7 +17,6 @@ export type PublicSiteLocalizedPath =
   | "/features/activity-records"
   | "/features/ai-sales-assistant"
   | "/features/reports"
-  | "/features/import-export"
   | "/pricing"
   | "/solutions"
   | "/solutions/personal"
@@ -64,7 +63,6 @@ export const publicSiteLocalizedPaths = [
   "/features/activity-records",
   "/features/ai-sales-assistant",
   "/features/reports",
-  "/features/import-export",
   "/pricing",
   "/solutions",
   "/solutions/personal",

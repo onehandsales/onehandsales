@@ -113,8 +113,6 @@ function createSyncService() {
         googleDeletedCount: 0,
         hiddenByCalendarSelectionCount: 0,
         trashedCount: 0,
-        reminderScheduledCount: 0,
-        reminderCanceledCount: 0,
         errorCount: 0,
       },
       nextAutoSyncAvailableAt: "2026-07-23T01:10:01.000Z",

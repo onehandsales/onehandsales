@@ -5,18 +5,12 @@ type MockPrismaClient = {
   readonly schedule: {
     readonly findFirst: jest.Mock;
   };
-  readonly trashRecoveryRequest: {
-    readonly findMany: jest.Mock;
-  };
 };
 
 function createClient(): MockPrismaClient {
   return {
     schedule: {
       findFirst: jest.fn(),
-    },
-    trashRecoveryRequest: {
-      findMany: jest.fn().mockResolvedValue([]),
     },
   };
 }
@@ -92,13 +86,6 @@ describe("PrismaTrashRepository", () => {
     );
     expect(client.schedule.findFirst.mock.calls[0]?.[0].where).not.toHaveProperty(
       "trashExpiresAt"
-    );
-    expect(client.trashRecoveryRequest.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({
-          userId: "user-1",
-        }),
-      })
     );
   });
 

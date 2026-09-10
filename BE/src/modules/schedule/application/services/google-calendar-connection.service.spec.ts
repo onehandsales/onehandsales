@@ -1,11 +1,4 @@
 import { ConfigService } from "@nestjs/config";
-import type { CancelScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
-import type {
-  CancelPendingNotificationsBySourceInput,
-  NotificationRecord,
-  NotificationSettingsRecord,
-  UpsertReminderNotificationInput,
-} from "@/shared/application/notification/notification-reminder-writer.port";
 import type {
   DisconnectGoogleCalendarConnectionInput,
   DisconnectGoogleCalendarConnectionResult,
@@ -67,47 +60,6 @@ class FakeGoogleCalendarConnectionRepository
     return work(this);
   }
 
-  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
-  async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
-    return null;
-  }
-
-  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
-  async cancelPendingNotificationsBySource(
-    _input: CancelPendingNotificationsBySourceInput
-  ): Promise<number> {
-    void _input;
-    return 0;
-  }
-
-  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
-  async upsertReminderNotification(
-    input: UpsertReminderNotificationInput
-  ): Promise<NotificationRecord> {
-    return {
-      id: "notification-1",
-      userId: input.userId,
-      type: input.type,
-      sourceType: input.sourceType,
-      sourceId: input.sourceId,
-      dedupeKey: input.dedupeKey,
-      targetPath: input.targetPath,
-      title: input.title,
-      body: input.body ?? null,
-      targetLabel: input.targetLabel ?? null,
-      status: "PENDING",
-      scheduledAt: input.scheduledAt,
-      sentAt: null,
-      readAt: null,
-      canceledAt: null,
-      cancelReason: null,
-      metadataJson: input.metadataJson ?? {},
-      createdAt: input.now,
-      updatedAt: input.now,
-    };
-  }
-
-  // 기능 : fake Google Calendar 연결 record를 반환합니다.
   async findConnection(): Promise<GoogleCalendarConnectionRecord | null> {
     return this.connection;
   }
@@ -177,9 +129,6 @@ function createService(options: { readonly userWebOrigin?: string | null } = {})
     encrypt: jest.fn((plaintext) => `enc:${plaintext}`),
     decrypt: jest.fn((ciphertext) => ciphertext.replace(/^enc:/, "")),
   };
-  const cancelScheduleNotificationReminder = {
-    executeWithRepository: jest.fn().mockResolvedValue(1),
-  } as unknown as CancelScheduleNotificationReminderUseCase;
   const logger = {
     log: jest.fn(),
   } as unknown as AppLogger;
@@ -202,13 +151,11 @@ function createService(options: { readonly userWebOrigin?: string | null } = {})
     repository,
     oauthProvider,
     tokenEncryption,
-    cancelScheduleNotificationReminder,
     configService,
     logger
   );
 
   return {
-    cancelScheduleNotificationReminder,
     oauthProvider,
     repository,
     service,
@@ -367,34 +314,4 @@ describe("GoogleCalendarConnectionService", () => {
     ).rejects.toThrow(GoogleCalendarTokenEncryptionKeyMissingError);
   });
 
-  it("disconnects with TRASH and cancels pending reminders for trashed schedules", async () => {
-    const { cancelScheduleNotificationReminder, repository, service } =
-      createService();
-    repository.connection = CONNECTED_CONNECTION;
-    repository.disconnectResult = {
-      connectionStatus: "DISCONNECTED",
-      scheduleAction: "TRASH",
-      affectedScheduleCount: 2,
-      trashedScheduleCount: 2,
-      hiddenScheduleCount: 0,
-      keptScheduleCount: 0,
-      disconnectedAt: new Date("2026-07-23T02:00:00.000Z"),
-      trashedScheduleIds: ["schedule-1", "schedule-2"],
-    };
-
-    const result = await service.disconnect(CURRENT_USER, {
-      scheduleAction: "TRASH",
-    });
-
-    expect(result).toMatchObject({
-      connectionStatus: "DISCONNECTED",
-      scheduleAction: "TRASH",
-      affectedScheduleCount: 2,
-      trashedScheduleCount: 2,
-    });
-    expect(repository.transactionCount).toBe(1);
-    expect(
-      cancelScheduleNotificationReminder.executeWithRepository
-    ).toHaveBeenCalledTimes(2);
-  });
 });

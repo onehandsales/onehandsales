@@ -20,16 +20,6 @@ import {
   GoogleCalendarReconnectRequiredError,
   GoogleCalendarSourceSelectionRequiredError,
 } from "@/modules/schedule/domain/google-calendar.errors";
-import type {
-  CancelPendingNotificationsBySourceInput,
-  NotificationRecord,
-  NotificationSettingsRecord,
-  UpsertReminderNotificationInput,
-} from "@/shared/application/notification/notification-reminder-writer.port";
-import type {
-  CancelScheduleNotificationReminderUseCase,
-  ScheduleNotificationReminderUseCase,
-} from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -96,47 +86,6 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
     return work(this);
   }
 
-  // 기능 : fake 알림 설정은 별도 설정 없이 기본값을 사용하도록 비워 반환합니다.
-  async findSettingsForUser(): Promise<NotificationSettingsRecord | null> {
-    return null;
-  }
-
-  // 기능 : fake reminder 취소는 부수효과 없이 0건 처리로 응답합니다.
-  async cancelPendingNotificationsBySource(
-    _input: CancelPendingNotificationsBySourceInput
-  ): Promise<number> {
-    void _input;
-    return 0;
-  }
-
-  // 기능 : fake reminder 알림 row를 입력값 기준으로 생성해 반환합니다.
-  async upsertReminderNotification(
-    input: UpsertReminderNotificationInput
-  ): Promise<NotificationRecord> {
-    return {
-      id: "notification-1",
-      userId: input.userId,
-      type: input.type,
-      sourceType: input.sourceType,
-      sourceId: input.sourceId,
-      dedupeKey: input.dedupeKey,
-      targetPath: input.targetPath,
-      title: input.title,
-      body: input.body ?? null,
-      targetLabel: input.targetLabel ?? null,
-      status: "PENDING",
-      scheduledAt: input.scheduledAt,
-      sentAt: null,
-      readAt: null,
-      canceledAt: null,
-      cancelReason: null,
-      metadataJson: input.metadataJson ?? {},
-      createdAt: input.now,
-      updatedAt: input.now,
-    };
-  }
-
-  // 기능 : fake Google Calendar 동기화 연결 record를 반환합니다.
   async findConnectionForUser(): Promise<GoogleCalendarSyncConnectionRecord | null> {
     return this.connection;
   }
@@ -281,8 +230,6 @@ class FakeGoogleCalendarSyncRepository implements GoogleCalendarSyncRepository {
       localModifiedSkippedCount: 0,
       googleDeletedCount: 0,
       trashedCount: 0,
-      reminderScheduleRequests: [],
-      reminderCancelScheduleIds: [],
     };
   }
 }
@@ -350,15 +297,6 @@ function createService(
     encrypt: jest.fn((value) => `enc:${value}`),
     decrypt: jest.fn((value) => value.replace(/^enc:/, "")),
   };
-  const scheduleNotificationReminder = {
-    executeWithRepository: jest.fn(async () => ({
-      scheduled: false,
-      canceledCount: 0,
-    })),
-  } as unknown as ScheduleNotificationReminderUseCase;
-  const cancelScheduleNotificationReminder = {
-    executeWithRepository: jest.fn(async () => 0),
-  } as unknown as CancelScheduleNotificationReminderUseCase;
   const logger = {
     log: jest.fn(),
   } as unknown as AppLogger;
@@ -366,8 +304,6 @@ function createService(
     repository,
     provider,
     tokenEncryption,
-    scheduleNotificationReminder,
-    cancelScheduleNotificationReminder,
     logger
   );
 

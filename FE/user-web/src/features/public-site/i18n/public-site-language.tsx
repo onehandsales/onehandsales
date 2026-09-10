@@ -232,7 +232,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
     landing: {
       heroTitle: ["현장 영업자가", "고객을 놓치지 않는 곳"],
       heroDescription:
-        "개인영업, 부동산 중개, B2B 외근, 보험·자동차 영업의 고객, 명함, 미팅, 일정, 딜, 팔로업을 한 화면에서 연결하세요.",
+        "개인영업, 부동산 중개, B2B 외근, 보험·자동차 영업의 고객, 미팅, 일정, 딜, 팔로업을 한 화면에서 연결하세요.",
       primaryCta: "OneHand 시작",
       secondaryCta: "흐름 보기",
       customerStrip: "개인영업, 부동산 중개, B2B 현장 영업을 위해 설계한 CRM",
@@ -261,13 +261,13 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       aiLabel: "AI 옵션",
       aiTitle: "중요한 업무를 위한 AI 영업 도우미.",
       aiDescription:
-        "회의록 요약, 다음 행동 추천, 팔로업 알림을 파이프라인과 연결합니다.",
+        "회의록 요약, 다음 행동 추천, 후속 연락을 파이프라인과 연결합니다.",
       aiCta: "AI 기능 알아보기",
       aiImageAlt: "회의실에서 팀이 영업 계획을 공유하는 모습",
       aiAvatarLabels: ["딜", "회", "일"],
       setupTitle: "도입 지원 포함",
       setupDescription:
-        "고객 데이터 가져오기, 영업 단계 정리, 개인과 작은 팀의 온보딩을 함께 설계합니다.",
+        "고객 데이터 정리, 영업 단계 정리, 개인과 작은 팀의 온보딩을 함께 설계합니다.",
       featuresTitle: "요금제와 기능",
       featureColumn: "기능",
       faqTitle: "자주 묻는 질문",
@@ -316,7 +316,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           rows: [
             ["회의록 요약", "", "", "포함", "포함"],
             ["다음 행동 추천", "", "", "포함", "포함"],
-            ["팔로업 알림", "기본", "고급", "고급", "고급"],
+            ["후속 연락", "기본", "고급", "고급", "고급"],
             ["영업 리포트", "", "기본", "고급", "맞춤"],
             ["반복 업무 템플릿", "", "포함", "포함", "맞춤"],
           ],
@@ -414,13 +414,15 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         },
       ],
     },
-  },  "en-US": makeEnglishCopy({
+  },
+  "en-US": makeEnglishCopy({
     title: "One tool for running sales.",
     contactTitle: "Contact Us",
     pricing: "Pricing",
     contact: "Request a Demo",
     languageRegion: "US",
-  }),  "en-CA": makeEnglishCopy({
+  }),
+  "en-CA": makeEnglishCopy({
     title: "One tool for running sales.",
     contactTitle: "Contact Us",
     pricing: "Pricing",
@@ -582,7 +584,7 @@ function makeTranslatedPricing(copy: {
         rows: [
           ["Meeting summaries", "", "", "Included", "Included"],
           ["Next action suggestions", "", "", "Included", "Included"],
-          ["Follow-up reminders", "Basic", "Advanced", "Advanced", "Advanced"],
+          ["Follow-up workflow", "Basic", "Advanced", "Advanced", "Advanced"],
           ["Sales reports", "", "Basic", "Advanced", "Custom"],
           ["Repeat task templates", "", "Included", "Included", "Custom"],
         ],
@@ -686,7 +688,7 @@ function makeEnglishCopy(copy: {
     productMenuColumns: [
       ["Products", "OneHand?", "Products Guide"],
       ["Core Features", "Feature overview", "Customer management", "Sales pipeline", "Schedule and follow-up", "Activity records"],
-      ["AI/Data", "AI sales assistant", "Reports", "Excel import/export"],
+      ["AI/Data", "AI sales assistant", "Reports", "Excel download"],
     ],
     solutionMenuColumns: [
       ["Overview", "View All"],
@@ -713,7 +715,7 @@ function makeEnglishCopy(copy: {
     landing: {
       heroTitle: ["Where field sales", "keeps follow-up moving"],
       heroDescription:
-        "Connect customers, contacts, business cards, meetings, schedules, deals, and follow-up for real estate, B2B, insurance, and car sales.",
+        "Connect customers, contacts, meetings, schedules, deals, and follow-up for real estate, B2B, insurance, and car sales.",
       primaryCta: "Get OneHand",
       secondaryCta: "See the flow",
       customerStrip: "A CRM designed for individual and field sales workflows",
@@ -739,11 +741,11 @@ function makeEnglishCopy(copy: {
       aiLabel: "AI option",
       aiTitle: "AI sales assistant for important work.",
       aiDescription:
-        "Connect meeting summaries, next actions, and follow-up reminders to your pipeline.",
+        "Connect meeting summaries, next actions, and follow-up tasks to your pipeline.",
       aiCta: "Explore AI features",
       setupTitle: "Onboarding included",
       setupDescription:
-        "We help design data import, sales stages, and onboarding around your sales workflow.",
+        "We help design data structure, sales stages, and onboarding around your sales workflow.",
       featuresTitle: "Plans and features",
       featureColumn: "Feature",
       faqTitle: "Frequently asked questions",

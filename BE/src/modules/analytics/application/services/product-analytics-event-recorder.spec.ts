@@ -6,7 +6,6 @@ import {
   ProductAnalyticsEventRecorder,
   type RecordProductAnalyticsServerEventCommand,
   toProductAnalyticsExportRowCountBucket,
-  toProductAnalyticsImportRowCountBucket,
   toProductAnalyticsLinkCountBucket,
 } from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -79,39 +78,6 @@ const SERVER_EVENT_CASES: readonly ServerEventCase[] = [
     targetType: "MEETING_NOTE",
     targetId: TARGET_ID,
     payload: { linkCountBucket: "1" },
-  },
-  {
-    eventName: "business_card_scan_confirmed",
-    targetType: "BUSINESS_CARD_SCAN",
-    targetId: TARGET_ID,
-    payload: {
-      companyResolution: "CREATED",
-      contactResolution: "EXISTING",
-      createdCompany: true,
-      createdContact: false,
-    },
-  },
-  {
-    eventName: "business_card_ocr_failed",
-    targetType: "BUSINESS_CARD_SCAN",
-    targetId: TARGET_ID,
-    payload: {
-      safeErrorCode: "OCR_PARSE_FAILED",
-      retryable: true,
-      provider: "OPENAI",
-      model: "gpt-4o-mini",
-      fileSizeBucket: "1_5mb",
-    },
-  },
-  {
-    eventName: "import_confirmed",
-    targetType: "IMPORT_JOB",
-    targetId: TARGET_ID,
-    payload: {
-      importType: "DEAL",
-      rowCountBucket: "11_50",
-      importedRowCount: 12,
-    },
   },
   {
     eventName: "export_downloaded",
@@ -294,15 +260,10 @@ describe("ProductAnalyticsEventRecorder", () => {
     expect(JSON.stringify(log)).not.toContain("customer@example.com");
   });
 
-  it("maps link, import and export row counts into analytics buckets", () => {
+  it("maps link and export row counts into analytics buckets", () => {
     expect(toProductAnalyticsLinkCountBucket(1)).toBe("1");
     expect(toProductAnalyticsLinkCountBucket(3)).toBe("2_3");
     expect(toProductAnalyticsLinkCountBucket(4)).toBe("4_plus");
-    expect(toProductAnalyticsImportRowCountBucket(1)).toBe("1");
-    expect(toProductAnalyticsImportRowCountBucket(10)).toBe("2_10");
-    expect(toProductAnalyticsImportRowCountBucket(50)).toBe("11_50");
-    expect(toProductAnalyticsImportRowCountBucket(200)).toBe("51_200");
-    expect(toProductAnalyticsImportRowCountBucket(201)).toBe("201_plus");
     expect(toProductAnalyticsExportRowCountBucket(0)).toBe("0");
     expect(toProductAnalyticsExportRowCountBucket(2)).toBe("2_10");
   });

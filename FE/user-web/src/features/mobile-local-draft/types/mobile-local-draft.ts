@@ -1,13 +1,9 @@
 export const MOBILE_LOCAL_DRAFT_SCHEMA_VERSION = 1;
 export const MOBILE_LOCAL_DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
 
-export type MobileLocalDraftType =
-  | "BUSINESS_CARD_CONFIRM"
-  | "MEETING_NOTE_CREATE";
+export type MobileLocalDraftType = "MEETING_NOTE_CREATE";
 
-export type MobileLocalDraftAnalyticsDraftType =
-  | "business_card_confirm"
-  | "meeting_note_create";
+export type MobileLocalDraftAnalyticsDraftType = "meeting_note_create";
 
 export type MobileLocalDraftDiscardReason =
   | "user_discarded"
@@ -42,18 +38,6 @@ export type LocalDraftLoadResult<TPayload> =
     };
 
 export type RestorePromptResponse = "RESTORE" | "DISCARD";
-
-export type BusinessCardConfirmLocalDraftPayload = {
-  readonly scanLogId: string;
-  readonly companyName?: string;
-  readonly companyFieldName?: string;
-  readonly companyRegionName?: string;
-  readonly contactName?: string;
-  readonly contactMobile?: string;
-  readonly contactEmail?: string;
-  readonly contactDepartmentName?: string;
-  readonly contactJobGradeName?: string;
-};
 
 export type MeetingNoteCreateLocalDraftPayload = {
   readonly clientDraftId: string;

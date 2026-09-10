@@ -87,7 +87,7 @@ const solutionDetailCopyByLanguage: Record<
         {
           title: "고객 맥락",
           description:
-            "연락처, 명함, 상담 메모, 관심사를 고객 단위로 정리합니다.",
+            "연락처, 상담 메모, 관심사를 고객 단위로 정리합니다.",
         },
         {
           title: "후속 연락",
@@ -106,11 +106,11 @@ const solutionDetailCopyByLanguage: Record<
           id: "customer-context",
           title: "고객 기록이 흩어지지 않게",
           paragraphs: [
-            "개인 영업은 고객 정보가 메신저, 메모앱, 엑셀, 명함 사진에 나뉘기 쉽습니다. OneHand는 연락처와 상담 기록을 고객 중심으로 묶어 다음 대화에 필요한 맥락을 바로 찾게 합니다.",
+            "개인 영업은 고객 정보가 메신저, 메모앱, 엑셀에 나뉘기 쉽습니다. OneHand는 연락처와 상담 기록을 고객 중심으로 묶어 다음 대화에 필요한 맥락을 바로 찾게 합니다.",
           ],
           bullets: [
             "고객별 연락처, 회사, 메모, 관심 내용을 한 화면에서 확인",
-            "명함 스캔 이후 고객 정보로 자연스럽게 연결",
+            "담당자 정보를 고객 흐름으로 자연스럽게 연결",
             "오래된 상담도 검색과 기록으로 빠르게 복기",
           ],
         },
@@ -353,7 +353,7 @@ const solutionDetailCopyByLanguage: Record<
         {
           title: "Customer context",
           description:
-            "Keep contacts, business cards, notes, and interests organized by customer.",
+            "Keep contacts, notes, and interests organized by customer.",
         },
         {
           title: "Follow-up timing",
@@ -372,11 +372,11 @@ const solutionDetailCopyByLanguage: Record<
           id: "customer-context",
           title: "Keep customer records from scattering",
           paragraphs: [
-            "Personal customer records often split across messengers, notes, spreadsheets, and business card photos. OneHand keeps the customer context close to the next conversation.",
+            "Personal customer records often split across messengers, notes, and spreadsheets. OneHand keeps the customer context close to the next conversation.",
           ],
           bullets: [
             "Review contact, company, notes, and interests on one screen",
-            "Connect scanned business cards to customer records",
+            "Connect new contact details to customer records",
             "Find older conversations quickly through search and notes",
           ],
         },

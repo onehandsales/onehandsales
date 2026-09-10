@@ -1,9 +1,3 @@
-import type {
-  CancelPendingNotificationsBySourceInput,
-  NotificationRecord,
-  NotificationSettingsRecord,
-  UpsertReminderNotificationInput,
-} from "@/shared/application/notification/notification-reminder-writer.port";
 import {
   type DisconnectGoogleCalendarConnectionInput,
   type DisconnectGoogleCalendarConnectionResult,
@@ -13,7 +7,6 @@ import {
   type UpsertConnectedGoogleCalendarConnectionInput,
 } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
-import { PrismaNotificationReminderWriter } from "@/shared/infrastructure/notification/prisma-notification-reminder-writer";
 import { Prisma } from "@prisma/client";
 
 type GoogleCalendarPrismaClient = PrismaService | Prisma.TransactionClient;
@@ -57,27 +50,13 @@ export class PrismaGoogleCalendarConnectionRepository
   }
 
   // 기능 : 현재 사용자의 알림 설정을 reminder writer에 위임해 조회합니다.
-  async findSettingsForUser(
-    userId: string
-  ): Promise<NotificationSettingsRecord | null> {
-    return this.createNotificationReminderWriter().findSettingsForUser(userId);
-  }
+
 
   // 기능 : 현재 연결 저장소 경계에서 source 기준 pending 알림을 취소합니다.
-  async cancelPendingNotificationsBySource(
-    input: CancelPendingNotificationsBySourceInput
-  ): Promise<number> {
-    return this.createNotificationReminderWriter().cancelPendingNotificationsBySource(
-      input
-    );
-  }
+
 
   // 기능 : 현재 연결 저장소 경계에서 reminder 알림을 생성하거나 갱신합니다.
-  async upsertReminderNotification(
-    input: UpsertReminderNotificationInput
-  ): Promise<NotificationRecord> {
-    return this.createNotificationReminderWriter().upsertReminderNotification(input);
-  }
+
 
   // 기능 : 현재 사용자의 Google Calendar 연결 record를 조회합니다.
   async findConnection(
@@ -221,7 +200,6 @@ export class PrismaGoogleCalendarConnectionRepository
     let trashedScheduleCount = 0;
     let hiddenScheduleCount = 0;
     let keptScheduleCount = 0;
-    let trashedScheduleIds: string[] = [];
 
     if (input.scheduleAction === "KEEP") {
       keptScheduleCount = activeScheduleIds.length;
@@ -258,7 +236,6 @@ export class PrismaGoogleCalendarConnectionRepository
         },
       });
       trashedScheduleCount = result.count;
-      trashedScheduleIds = activeScheduleIds;
     }
 
     await this.client.externalCalendarConnection.update({
@@ -283,15 +260,10 @@ export class PrismaGoogleCalendarConnectionRepository
       hiddenScheduleCount,
       keptScheduleCount,
       disconnectedAt: input.disconnectedAt,
-      trashedScheduleIds,
     };
   }
 
   // 기능 : 현재 client 범위에서 reminder writer를 생성합니다.
-  private createNotificationReminderWriter(): PrismaNotificationReminderWriter {
-    return new PrismaNotificationReminderWriter(this.client);
-  }
-
   // 기능 : Google Calendar 연결 projection에 필요한 Prisma select 조건을 생성합니다.
   private createConnectionSelect() {
     return {

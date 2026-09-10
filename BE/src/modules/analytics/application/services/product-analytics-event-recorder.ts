@@ -28,7 +28,7 @@ type ProductAnalyticsEventTargetMap = Readonly<
 >;
 
 type ProductAnalyticsLinkCountBucket = "1" | "2_3" | "4_plus";
-type ProductAnalyticsImportRowCountBucket =
+type ProductAnalyticsPositiveRowCountBucket =
   | "1"
   | "2_10"
   | "11_50"
@@ -36,30 +36,7 @@ type ProductAnalyticsImportRowCountBucket =
   | "201_plus";
 type ProductAnalyticsExportRowCountBucket =
   | "0"
-  | ProductAnalyticsImportRowCountBucket;
-type ProductAnalyticsBusinessCardOcrFailureCode =
-  | "IMAGE_QUALITY_LOW"
-  | "OCR_PARSE_FAILED"
-  | "OCR_PROVIDER_UNAVAILABLE"
-  | "OCR_RATE_LIMITED"
-  | "OCR_UNKNOWN_FAILED";
-type ProductAnalyticsBusinessCardFileSizeBucket =
-  | "0_1mb"
-  | "1_5mb"
-  | "5_10mb"
-  | "over_10mb"
-  | "unknown";
-
-const BUSINESS_CARD_OCR_FAILURE_CODES: readonly ProductAnalyticsBusinessCardOcrFailureCode[] =
-  [
-    "IMAGE_QUALITY_LOW",
-    "OCR_PARSE_FAILED",
-    "OCR_PROVIDER_UNAVAILABLE",
-    "OCR_RATE_LIMITED",
-    "OCR_UNKNOWN_FAILED",
-  ];
-const BUSINESS_CARD_FILE_SIZE_BUCKETS: readonly ProductAnalyticsBusinessCardFileSizeBucket[] =
-  ["0_1mb", "1_5mb", "5_10mb", "over_10mb", "unknown"];
+  | ProductAnalyticsPositiveRowCountBucket;
 
 // 역할 : RecordProductAnalyticsServerEventCommand server 분석 이벤트 저장 요청을 application 계층에 전달합니다.
 export interface RecordProductAnalyticsServerEventCommand {
@@ -98,9 +75,6 @@ const SERVER_EVENT_TARGET_TYPES: ProductAnalyticsEventTargetMap = {
   schedule_deal_linked: "SCHEDULE",
   meeting_note_created: "MEETING_NOTE",
   meeting_note_deal_linked: "MEETING_NOTE",
-  business_card_scan_confirmed: "BUSINESS_CARD_SCAN",
-  business_card_ocr_failed: "BUSINESS_CARD_SCAN",
-  import_confirmed: "IMPORT_JOB",
   export_downloaded: "EXPORT",
 };
 
@@ -318,12 +292,6 @@ export class ProductAnalyticsEventRecorder
         return this.normalizeLinkCreatedPayload(payload);
       case "meeting_note_created":
         return this.normalizeMeetingNoteCreatedPayload(payload);
-      case "business_card_scan_confirmed":
-        return this.normalizeBusinessCardScanConfirmedPayload(payload);
-      case "business_card_ocr_failed":
-        return this.normalizeBusinessCardOcrFailedPayload(payload);
-      case "import_confirmed":
-        return this.normalizeImportConfirmedPayload(payload);
       case "export_downloaded":
         return this.normalizeExportDownloadedPayload(payload);
     }
@@ -434,90 +402,6 @@ export class ProductAnalyticsEventRecorder
       hasAiDraft: this.readBoolean(payload, "hasAiDraft"),
     };
   }
-
-  // 기능 : 명함 스캔 확정 event payload를 생성/재사용 결과만 남기도록 정규화합니다.
-  private normalizeBusinessCardScanConfirmedPayload(
-    payload: Record<string, unknown>
-  ): Record<string, unknown> {
-    this.assertOnlyKeys(payload, [
-      "companyResolution",
-      "contactResolution",
-      "createdCompany",
-      "createdContact",
-    ]);
-
-    return {
-      companyResolution: this.readString(payload, "companyResolution", [
-        "EXISTING",
-        "CREATED",
-      ]),
-      contactResolution: this.readString(payload, "contactResolution", [
-        "EXISTING",
-        "CREATED",
-      ]),
-      createdCompany: this.readBoolean(payload, "createdCompany"),
-      createdContact: this.readBoolean(payload, "createdContact"),
-    };
-  }
-
-  // 기능 : 명함 OCR 실패 event payload를 safe code와 비식별 provider 메타데이터로 축소합니다.
-  private normalizeBusinessCardOcrFailedPayload(
-    payload: Record<string, unknown>
-  ): Record<string, unknown> {
-    this.assertOnlyKeys(payload, [
-      "safeErrorCode",
-      "retryable",
-      "provider",
-      "model",
-      "fileSizeBucket",
-    ]);
-
-    return {
-      safeErrorCode: this.readString(
-        payload,
-        "safeErrorCode",
-        BUSINESS_CARD_OCR_FAILURE_CODES
-      ),
-      retryable: this.readBoolean(payload, "retryable"),
-      provider: this.readString(payload, "provider"),
-      model: this.readString(payload, "model"),
-      fileSizeBucket: this.readString(
-        payload,
-        "fileSizeBucket",
-        BUSINESS_CARD_FILE_SIZE_BUCKETS
-      ),
-    };
-  }
-
-  // 기능 : import 확정 event payload를 대상 타입과 row count summary만 남기도록 정규화합니다.
-  private normalizeImportConfirmedPayload(
-    payload: Record<string, unknown>
-  ): Record<string, unknown> {
-    this.assertOnlyKeys(payload, [
-      "importType",
-      "rowCountBucket",
-      "importedRowCount",
-    ]);
-
-    return {
-      importType: this.readString(payload, "importType", [
-        "COMPANY",
-        "CONTACT",
-        "PRODUCT",
-        "DEAL",
-      ]),
-      rowCountBucket: this.readString(payload, "rowCountBucket", [
-        "1",
-        "2_10",
-        "11_50",
-        "51_200",
-        "201_plus",
-      ]),
-      importedRowCount: this.readPositiveInteger(payload, "importedRowCount"),
-    };
-  }
-
-  // 기능 : export 다운로드 event payload를 export 타입, row count bucket, locale만 남기도록 정규화합니다.
   private normalizeExportDownloadedPayload(
     payload: Record<string, unknown>
   ): Record<string, unknown> {
@@ -702,10 +586,9 @@ export function toProductAnalyticsLinkCountBucket(
   return "4_plus";
 }
 
-// 기능 : import 확정 row 수를 안전한 분석 bucket으로 변환합니다.
-export function toProductAnalyticsImportRowCountBucket(
+function toProductAnalyticsPositiveRowCountBucket(
   rowCount: number
-): ProductAnalyticsImportRowCountBucket {
+): ProductAnalyticsPositiveRowCountBucket {
   if (rowCount <= 1) {
     return "1";
   }
@@ -733,7 +616,7 @@ export function toProductAnalyticsExportRowCountBucket(
     return "0";
   }
 
-  return toProductAnalyticsImportRowCountBucket(rowCount);
+  return toProductAnalyticsPositiveRowCountBucket(rowCount);
 }
 
 // 기능 : server event 실패 로그에서 payload 원문을 제외한 추적 context만 만듭니다.

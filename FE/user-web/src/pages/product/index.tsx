@@ -92,7 +92,7 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
         title: "제품 소개",
         paragraphs: [
           "OneHand는 복잡한 팀 CRM을 먼저 도입하기 어려운 개인 영업자와 작은 영업팀을 위해 만든 CRM이에요.",
-          "엑셀, 메모앱, 명함 사진, 캘린더에 흩어진 고객 정보를 하나의 고객 흐름으로 묶고 다음 행동을 놓치지 않게 만드는 것이 핵심이에요.",
+          "엑셀, 메모앱, 연락처, 캘린더에 흩어진 고객 정보를 하나의 고객 흐름으로 묶고 다음 행동을 놓치지 않게 만드는 것이 핵심이에요.",
         ],
         bullets: [
           "고객과 회사 정보를 한곳에서 정리해요.",
@@ -144,11 +144,11 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
         title: "현장에서 바로 쓰는 모바일 기준",
         paragraphs: [
           "개인 영업과 현장 영업은 책상 앞보다 이동 중에 더 많은 일이 생겨요.",
-          "OneHand는 외근 중에도 고객을 찾고, 명함을 등록하고, 미팅 후 다음 연락을 남길 수 있는 흐름을 중요하게 봐요.",
+          "OneHand는 외근 중에도 고객을 찾고, 담당자 정보를 등록하고, 미팅 후 다음 연락을 남길 수 있는 흐름을 중요하게 봐요.",
         ],
         bullets: [
           "이동 중에도 고객과 딜 정보를 빠르게 확인해요.",
-          "명함 스캔으로 새 담당자를 기록으로 전환해요.",
+          "새 담당자를 기록으로 전환해요.",
           "미팅 직후 일정과 팔로업을 바로 남겨요.",
         ],
       },
@@ -250,11 +250,11 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
         title: "Built around mobile field work",
         paragraphs: [
           "Personal and field sales work often happens away from a desk.",
-          "OneHand emphasizes finding customers, saving business cards, and adding follow-up right after a meeting.",
+          "OneHand emphasizes finding customers, saving contact details, and adding follow-up right after a meeting.",
         ],
         bullets: [
           "Check customer and deal information while moving.",
-          "Turn business card scans into contact records.",
+          "Turn new contact details into customer records.",
           "Add schedules and follow-up shortly after meetings.",
         ],
       },

@@ -2,7 +2,6 @@
 export { trackAnalyticsEvent } from "./api/analytics-api";
 export { useAppRouteAnalytics } from "./hooks/use-app-route-analytics";
 export {
-  type BusinessCardCaptureAnalyticsEventInput,
   PRODUCT_ANALYTICS_APP_ROUTE_KEYS,
   PRODUCT_ANALYTICS_EVENT_VERSION,
   type CollectProductAnalyticsEventResponse,
@@ -10,7 +9,6 @@ export {
   type MeetingNoteRecordingAnalyticsEventInput,
   type MobileFieldAnalyticsClientEventName,
   type MobileFieldAnalyticsEventInput,
-  type MobilePushPermissionAnalyticsEventInput,
   type ProductAnalyticsAppRouteKey,
   type ProductAnalyticsClientEventName,
   type ProductAnalyticsClientEventContext,

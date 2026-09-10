@@ -160,28 +160,15 @@ describe("CollectClientAnalyticsEventUseCase", () => {
 
   it.each([
     [
-      "business_card_capture_started",
-      { captureMode: "camera", entryPoint: "business_cards" },
-    ],
-    ["business_card_capture_retried", { reason: "ocr_failed" }],
-    [
       "meeting_note_recording_started",
       { entryPoint: "meeting_note_create" },
     ],
     ["meeting_note_recording_failed", { reason: "permission_denied" }],
-    ["local_draft_saved", { draftType: "business_card_confirm" }],
+    ["local_draft_saved", { draftType: "meeting_note_create" }],
     ["local_draft_restored", { draftType: "meeting_note_create" }],
     [
       "local_draft_discarded",
       { draftType: "meeting_note_create", reason: "saved" },
-    ],
-    [
-      "mobile_push_permission_prompt_opened",
-      { entryPoint: "notifications" },
-    ],
-    [
-      "mobile_push_permission_result",
-      { browserPushEnabled: true, permissionState: "granted" },
     ],
   ])("accepts %s mobile field payload", async (eventName, payload) => {
     const { repository, useCase } = createUseCase();
@@ -322,21 +309,8 @@ describe("CollectClientAnalyticsEventUseCase", () => {
     expect(repository.createEvent).not.toHaveBeenCalled();
   });
 
-  it("rejects G06 forbidden push and media payload keys before saving", async () => {
+  it("rejects forbidden media payload keys before saving", async () => {
     const { repository, useCase } = createUseCase();
-
-    await expect(
-      useCase.execute(
-        createCommand({
-          eventName: "mobile_push_permission_result",
-          payload: {
-            browserPushEnabled: true,
-            endpoint: "https://push.example.test/subscription",
-            permissionState: "granted",
-          },
-        })
-      )
-    ).rejects.toMatchObject({ code: "ANALYTICS_PAYLOAD_PII_REJECTED" });
 
     await expect(
       useCase.execute(

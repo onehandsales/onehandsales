@@ -106,8 +106,6 @@ export type GoogleCalendarSyncResult = {
   readonly googleDeletedCount: number;
   readonly hiddenByCalendarSelectionCount: number;
   readonly trashedCount: number;
-  readonly reminderScheduledCount: number;
-  readonly reminderCanceledCount: number;
   readonly errorCount: number;
 };
 

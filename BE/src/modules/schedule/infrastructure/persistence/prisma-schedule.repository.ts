@@ -5,12 +5,6 @@ import {
   createDealLinkedRecord,
   createSafeActivitySummary,
 } from "@/shared/application/deal/deal-activity-writer.port";
-import type {
-  CancelPendingNotificationsBySourceInput,
-  NotificationRecord,
-  NotificationSettingsRecord,
-  UpsertReminderNotificationInput,
-} from "@/shared/application/notification/notification-reminder-writer.port";
 import type { ScheduleSourceType } from "@/modules/schedule/application/ports/schedule-query.types";
 import {
   type CreateScheduleDealsInput,
@@ -34,7 +28,6 @@ import {
 } from "@/modules/deal/domain/deal-status";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaDealBoundaryAdapter } from "@/shared/infrastructure/deal/prisma-deal-boundary.adapter";
-import { PrismaNotificationReminderWriter } from "@/shared/infrastructure/notification/prisma-notification-reminder-writer";
 
 type SchedulePrismaClient = PrismaService | Prisma.TransactionClient;
 
@@ -179,27 +172,13 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : 현재 사용자의 알림 설정을 reminder writer에 위임해 조회합니다.
-  async findSettingsForUser(
-    userId: string
-  ): Promise<NotificationSettingsRecord | null> {
-    return this.createNotificationReminderWriter().findSettingsForUser(userId);
-  }
+
 
   // 기능 : 현재 일정 저장소 경계에서 source 기준 pending 알림을 취소합니다.
-  async cancelPendingNotificationsBySource(
-    input: CancelPendingNotificationsBySourceInput
-  ): Promise<number> {
-    return this.createNotificationReminderWriter().cancelPendingNotificationsBySource(
-      input
-    );
-  }
+
 
   // 기능 : 현재 일정 저장소 경계에서 reminder 알림을 생성하거나 갱신합니다.
-  async upsertReminderNotification(
-    input: UpsertReminderNotificationInput
-  ): Promise<NotificationRecord> {
-    return this.createNotificationReminderWriter().upsertReminderNotification(input);
-  }
+
 
   // 기능 : 현재 사용자의 일정 연결용 딜 옵션 전체 목록을 조회합니다.
   async listDealOptions(userId: string): Promise<ScheduleDealOptionRecord[]> {
@@ -644,10 +623,6 @@ export class PrismaScheduleRepository implements ScheduleRepository {
   }
 
   // 기능 : 현재 client 범위에서 reminder writer를 생성합니다.
-  private createNotificationReminderWriter(): PrismaNotificationReminderWriter {
-    return new PrismaNotificationReminderWriter(this.client);
-  }
-
   // 기능 : 현재 client 범위에서 딜 module shared boundary adapter를 생성합니다.
   private createDealBoundary(): PrismaDealBoundaryAdapter {
     return new PrismaDealBoundaryAdapter(this.client);

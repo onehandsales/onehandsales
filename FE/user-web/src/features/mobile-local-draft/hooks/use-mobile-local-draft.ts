@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { trackMobileFieldAnalyticsEvent } from "@/features/analytics";
 import {
   createBrowserMobileLocalDraftStore,
@@ -50,13 +50,7 @@ export function useMobileLocalDraft<TPayload>({
     useState<MobileLocalDraftEnvelope<TPayload> | null>(null);
   const activeStore =
     store ?? (defaultStoreRef.current ??= createBrowserMobileLocalDraftStore());
-  const analyticsDraftType = useMemo(
-    () =>
-      draftType === "BUSINESS_CARD_CONFIRM"
-        ? "business_card_confirm"
-        : "meeting_note_create",
-    [draftType]
-  );
+  const analyticsDraftType = "meeting_note_create";
 
   useEffect(() => {
     let isMounted = true;

@@ -51,7 +51,6 @@ const productMenuTargets: readonly (readonly string[])[] = [
   [
     "/features/ai-sales-assistant",
     "/features/reports",
-    "/features/import-export",
   ],
 ];
 

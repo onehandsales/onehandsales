@@ -31,7 +31,6 @@ export type PublicFeatureDetailId =
   | "activity-records"
   | "ai-sales-assistant"
   | "reports"
-  | "import-export";
 
 type FeatureDetailSectionCopy = {
   readonly bullets: readonly string[];
@@ -455,70 +454,6 @@ const featureDetailCopyByLanguage: Record<
         },
       ],
     },
-    "import-export": {
-      title: "엑셀 가져오기와 내보내기로 데이터를 옮겨요.",
-      description:
-        "기존 엑셀 고객 데이터를 OneHand로 가져오고, 필요한 업무 기록은 XLSX로 내려받아 검토와 백업에 활용해요.",
-      contentsLabel: "엑셀 데이터 목차",
-      ctaTitle: "기존 데이터를 OneHand로 옮겨볼까요?",
-      ctaDescription:
-        "엑셀에 흩어진 고객, 담당자, 딜 기록을 정리해요.",
-      quickCards: [
-        {
-          title: "가져오기",
-          description:
-            "회사, 담당자, 딜 데이터를 엑셀에서 가져와요.",
-        },
-        {
-          title: "검토",
-          description:
-            "저장 전에 누락된 값과 잘못된 값을 확인해요.",
-        },
-        {
-          title: "내보내기",
-          description:
-            "필요한 업무 데이터를 XLSX로 내려받아요.",
-        },
-      ],
-      sections: [
-        {
-          id: "prepare",
-          title: "엑셀 데이터 준비",
-          paragraphs: [
-            "가져오기 전에 엑셀 컬럼이 OneHand의 필드와 잘 맞는지 확인하면 저장 이후 정리 시간이 줄어들어요.",
-          ],
-          bullets: [
-            "회사명, 담당자명, 연락처 같은 기본 컬럼을 정리해요.",
-            "딜 단계나 금액처럼 필요한 업무 컬럼을 분리해요.",
-            "중복 고객과 비어 있는 값을 미리 확인해요.",
-          ],
-        },
-        {
-          id: "review",
-          title: "가져오기 전 검토",
-          paragraphs: [
-            "데이터는 바로 저장하기보다 검토 단계를 거치는 것이 좋아요. 잘못된 값이 들어가면 고객 기록 전체의 신뢰도가 낮아질 수 있어요.",
-          ],
-          bullets: [
-            "매칭된 필드와 누락된 값을 확인해요.",
-            "수정이 필요한 행을 저장 전에 정리해요.",
-            "검토가 끝난 데이터만 OneHand 기록으로 만들어요.",
-          ],
-        },
-        {
-          id: "export",
-          title: "필요한 데이터 내보내기",
-          paragraphs: [
-            "내보내기는 백업, 월간 검토, 다른 도구와의 이전 작업에 사용할 수 있어요.",
-          ],
-          bullets: [
-            "필요한 고객이나 업무 데이터를 XLSX로 내려받아요.",
-            "팀 공유나 월간 보고에 맞춰 데이터를 활용해요.",
-            "중요한 기록은 정기적으로 검토하고 보관해요.",
-          ],
-        },
-      ],
-    },
   },
   "en-US": {
     customers: {
@@ -901,70 +836,6 @@ const featureDetailCopyByLanguage: Record<
             "Download schedule data as XLSX when needed.",
             "Use AI reports to review key movement quickly.",
             "Keep records for repeated review in one place.",
-          ],
-        },
-      ],
-    },
-    "import-export": {
-      title: "Import and export Excel data without losing control.",
-      description:
-        "Bring existing customer spreadsheets into OneHand and export work records as XLSX for review, backup, or migration.",
-      contentsLabel: "Excel data guide",
-      ctaTitle: "Ready to move existing data into OneHand?",
-      ctaDescription:
-        "Organize customer, contact, and deal records that currently live in spreadsheets.",
-      quickCards: [
-        {
-          title: "Import",
-          description:
-            "Bring company, contact, and deal data from Excel.",
-        },
-        {
-          title: "Review",
-          description:
-            "Check missing or invalid values before saving.",
-        },
-        {
-          title: "Export",
-          description:
-            "Download needed work records as XLSX.",
-        },
-      ],
-      sections: [
-        {
-          id: "prepare",
-          title: "Prepare spreadsheet data",
-          paragraphs: [
-            "Before import, make sure spreadsheet columns map cleanly to OneHand fields. This reduces cleanup after saving.",
-          ],
-          bullets: [
-            "Prepare basic columns such as company, contact, and phone.",
-            "Separate work columns such as deal stage and value.",
-            "Review duplicate customers and empty values first.",
-          ],
-        },
-        {
-          id: "review",
-          title: "Review before import",
-          paragraphs: [
-            "Data should be checked before it becomes a record. Bad values can reduce trust in the customer database.",
-          ],
-          bullets: [
-            "Check matched fields and missing values.",
-            "Clean rows that need edits before saving.",
-            "Save only reviewed data into OneHand records.",
-          ],
-        },
-        {
-          id: "export",
-          title: "Export the data you need",
-          paragraphs: [
-            "Export can support backup, monthly review, or migration to another workflow.",
-          ],
-          bullets: [
-            "Download customer or work data as XLSX.",
-            "Use exported records for team sharing or monthly reporting.",
-            "Review and archive important records regularly.",
           ],
         },
       ],

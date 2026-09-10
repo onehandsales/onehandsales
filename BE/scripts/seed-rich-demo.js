@@ -6,9 +6,6 @@ const {
   AuthDeviceSlot,
   AuthDeviceStatus,
   AuthSessionStatus,
-  BusinessCardResolution,
-  BusinessCardScanStatus,
-  ImportTemplateType,
   MeetingNoteSourceType,
   OAuthProvider,
   PrismaClient,
@@ -289,156 +286,6 @@ const strategicMeetingSeeds = [
   },
 ];
 
-const pendingBusinessCardSeeds = [
-  ["라온모빌리티 EV사업추진단", "문서윤", "010-7312-4401", "sy.moon@demo.onehandsales.local", "EV사업추진단", "책임"],
-  ["세움건설 현장혁신TF", "배준호", "010-7318-4407", "jh.bae@demo.onehandsales.local", "현장혁신TF", "팀장"],
-  ["다온클라우드 파트너세일즈팀", "권하린", "010-7324-4413", "hr.kwon@demo.onehandsales.local", "파트너세일즈팀", "매니저"],
-  ["리버핀테크 정보보호실", "임태경", "010-7330-4419", "tk.lim@demo.onehandsales.local", "정보보호실", "이사"],
-  ["해솔교육 디지털캠퍼스팀", "오지안", "010-7336-4425", "jian.oh@demo.onehandsales.local", "디지털캠퍼스팀", "책임"],
-  ["브릿지미디어 브랜드솔루션팀", "정다온", "010-7342-4431", "daon.jeong@demo.onehandsales.local", "브랜드솔루션팀", "팀장"],
-  ["코어에너지 안전운영팀", "서민재", "010-7348-4437", "mj.seo@demo.onehandsales.local", "안전운영팀", "본부장"],
-  ["모아로지스 물류자동화팀", "한유림", "010-7354-4443", "yr.han@demo.onehandsales.local", "물류자동화팀", "책임"],
-];
-
-const importFileNames = {
-  COMPANY: ["상반기_전략계정_회사목록.xlsx", "전시회_상담기업_정리.xlsx", "파트너_추천계정_리스트.xlsx"],
-  CONTACT: ["스마트팩토리_담당자_명함정리.xlsx", "금융보안_검토담당자.xlsx", "공공입찰_참석자명단.xlsx"],
-  PRODUCT: ["Q3_제안제품_가격표.xlsx", "보안패키지_옵션목록.xlsx", "자동화제품_프로모션목록.xlsx"],
-  DEAL: ["7월_핵심딜_파이프라인.xlsx", "PoC_전환대상_딜목록.xlsx", "하반기_확장계약_후보.xlsx"],
-};
-
-const importTemplates = [
-  {
-    type: ImportTemplateType.COMPANY,
-    version: "demo-2026-06-30",
-    name: "회사 불러오기 데모 양식.xlsx",
-    columns: [
-      column("companyName", "회사명", true, "text"),
-      column("companyFieldName", "회사 분야", true, "text"),
-      column("companyRegionName", "회사 지역", true, "text"),
-    ],
-    samples: [
-      { companyName: "한빛테크", companyFieldName: "제조/스마트팩토리", companyRegionName: "서울 강남" },
-      { companyName: "누리커머스", companyFieldName: "유통/커머스", companyRegionName: "서울 송파" },
-    ],
-  },
-  {
-    type: ImportTemplateType.CONTACT,
-    version: "demo-2026-06-30",
-    name: "담당자 불러오기 데모 양식.xlsx",
-    columns: [
-      column("companyName", "회사명", true, "text"),
-      column("contactName", "담당자명", true, "text"),
-      column("contactEmail", "담당자 이메일", true, "email"),
-      column("contactPhone", "담당자 휴대폰", true, "phone"),
-      column("contactDepartmentName", "담당자 부서", true, "text"),
-      column("contactJobGradeName", "담당자 직급", true, "text"),
-    ],
-    samples: [
-      {
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        contactEmail: "sample1@demo.onehandsales.local",
-        contactPhone: "010-4100-6100",
-        contactDepartmentName: "영업기획팀",
-        contactJobGradeName: "팀장",
-      },
-    ],
-  },
-  {
-    type: ImportTemplateType.PRODUCT,
-    version: "demo-2026-06-30",
-    name: "제품 불러오기 데모 양식.xlsx",
-    columns: [
-      column("productName", "제품명", true, "text"),
-      column("productPrice", "제품 가격", true, "number"),
-      column("productCategoryName", "제품 카테고리", true, "text"),
-      column("productStatusName", "제품 상태", true, "text"),
-    ],
-    samples: [
-      {
-        productName: "세일즈 파이프라인 Enterprise",
-        productPrice: 3200000,
-        productCategoryName: "CRM",
-        productStatusName: "판매중",
-      },
-    ],
-  },
-  {
-    type: ImportTemplateType.DEAL,
-    version: "demo-2026-06-30",
-    name: "딜 불러오기 데모 양식.xlsx",
-    columns: [
-      column("dealName", "딜 이름", true, "text"),
-      column("dealCost", "딜 금액", true, "number"),
-      {
-        ...column("dealStatus", "딜 단계", false, "text"),
-        options: ["초기 접촉", "니즈 확인", "제안/견적", "협상", "성사", "실패"],
-      },
-      column("companyName", "회사명", true, "text"),
-      column("contactName", "담당자명", true, "text"),
-      column("productName", "제품명", true, "text"),
-      column("expectedEndDate", "예상 마감일", true, "text"),
-    ],
-    samples: [
-      {
-        dealName: "한빛테크 초기 접촉 딜",
-        dealCost: 11800000,
-        dealStatus: "초기 접촉",
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        productName: "세일즈 파이프라인 Enterprise",
-        expectedEndDate: "2026-07-31",
-      },
-      {
-        dealName: "한빛테크 니즈 확인 딜",
-        dealCost: 12900000,
-        dealStatus: "니즈 확인",
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        productName: "세일즈 파이프라인 Enterprise",
-        expectedEndDate: "2026-08-15",
-      },
-      {
-        dealName: "한빛테크 제안 견적 딜",
-        dealCost: 14000000,
-        dealStatus: "제안/견적",
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        productName: "세일즈 파이프라인 Enterprise",
-        expectedEndDate: "2026-08-31",
-      },
-      {
-        dealName: "한빛테크 협상 딜",
-        dealCost: 15100000,
-        dealStatus: "협상",
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        productName: "세일즈 파이프라인 Enterprise",
-        expectedEndDate: "2026-09-15",
-      },
-      {
-        dealName: "한빛테크 성사 딜",
-        dealCost: 16200000,
-        dealStatus: "성사",
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        productName: "세일즈 파이프라인 Enterprise",
-        expectedEndDate: "2026-09-30",
-      },
-      {
-        dealName: "한빛테크 실패 딜",
-        dealCost: 17300000,
-        dealStatus: "실패",
-        companyName: "한빛테크",
-        contactName: "김도윤",
-        productName: "세일즈 파이프라인 Enterprise",
-        expectedEndDate: "2026-10-15",
-      },
-    ],
-  },
-];
-
 function loadEnv(filePath) {
   if (!fs.existsSync(filePath)) {
     return;
@@ -672,20 +519,6 @@ async function upsertDeviceAndSessions({ userId, deviceId, label, sessions }) {
 }
 
 async function clearDemoData(userId) {
-  const importLogs = await prisma.importUserLog.findMany({
-    where: { userId },
-    select: { id: true },
-  });
-  const importLogIds = importLogs.map((log) => log.id);
-
-  if (importLogIds.length > 0) {
-    await prisma.importUserLogRow.deleteMany({
-      where: { importUserLogId: { in: importLogIds } },
-    });
-  }
-
-  await prisma.importUserLog.deleteMany({ where: { userId } });
-  await prisma.businessCardScanLog.deleteMany({ where: { userId } });
   await prisma.meetingNoteDeal.deleteMany({ where: { userId } });
   await prisma.meetingNoteProduct.deleteMany({ where: { userId } });
   await prisma.meetingNoteContact.deleteMany({ where: { userId } });
@@ -714,35 +547,6 @@ async function clearDemoData(userId) {
   await prisma.company.deleteMany({ where: { userId } });
   await prisma.companyField.deleteMany({ where: { userId } });
   await prisma.companyRegion.deleteMany({ where: { userId } });
-}
-
-async function seedImportTemplates() {
-  await prisma.importTemplate.updateMany({ data: { isActive: false } });
-
-  for (const template of importTemplates) {
-    await prisma.importTemplate.upsert({
-      where: {
-        templateType_templateVersion: {
-          templateType: template.type,
-          templateVersion: template.version,
-        },
-      },
-      create: {
-        templateType: template.type,
-        templateVersion: template.version,
-        templateName: template.name,
-        columnsJson: template.columns,
-        sampleRowsJson: template.samples,
-        isActive: true,
-      },
-      update: {
-        templateName: template.name,
-        columnsJson: template.columns,
-        sampleRowsJson: template.samples,
-        isActive: true,
-      },
-    });
-  }
 }
 
 async function seedDomainData(userId) {
@@ -1130,8 +934,6 @@ async function seedDomainData(userId) {
     });
   }
 
-  await seedBusinessCards({ userId, companies, contacts });
-  await seedImportLogs({ userId, companies, contacts, products, deals });
 
   return { companies, contacts, products, deals, schedules };
 }
@@ -1206,166 +1008,6 @@ async function createMeetingNote(input) {
   });
 }
 
-async function seedBusinessCards({ userId, companies, contacts }) {
-  for (const index of range(24)) {
-    const contact = contacts[index];
-    const company = companies.find((item) => item.id === contact.companyId);
-    await prisma.businessCardScanLog.create({
-      data: {
-        userId,
-        status: BusinessCardScanStatus.CONFIRMED,
-        companyName: company.companyName,
-        companyFieldName: company.field,
-        companyRegionName: company.region,
-        contactName: contact.username,
-        contactMobile: contact.mobile,
-        contactEmail: contact.email,
-        contactDepartmentName: contact.departmentName,
-        contactJobGradeName: contact.jobGradeName,
-        companyId: company.id,
-        contactId: contact.id,
-        companyResolution: BusinessCardResolution.EXISTING,
-        contactResolution: BusinessCardResolution.EXISTING,
-        aiProvider: "OPENAI",
-        aiModel: "gpt-4.1-mini-demo",
-        promptSnapshot: "명함 이미지에서 회사명, 담당자명, 연락처, 직급, 부서를 JSON으로 추출합니다.",
-        requestToken: 820 + index,
-        responseToken: 210 + index,
-        totalToken: 1030 + index * 2,
-        requestCost: 0.0008,
-        responseCost: 0.0004,
-        totalCost: 0.0012,
-        pendingTimeMs: 1200 + index * 35,
-        confirmedAt: kstDateTime(-6 + index, 13),
-        createdAt: kstDateTime(-7 + index, 11),
-      },
-    });
-  }
-
-  for (const [index, pendingCard] of pendingBusinessCardSeeds.entries()) {
-    const company = pick(companies, index + 4);
-    await prisma.businessCardScanLog.create({
-      data: {
-        userId,
-        status: BusinessCardScanStatus.OCR_SUCCESS,
-        companyName: pendingCard[0],
-        companyFieldName: company.field,
-        companyRegionName: company.region,
-        contactName: pendingCard[1],
-        contactMobile: pendingCard[2],
-        contactEmail: pendingCard[3],
-        contactDepartmentName: pendingCard[4],
-        contactJobGradeName: pendingCard[5],
-        aiProvider: "OPENAI",
-        aiModel: "gpt-4.1-mini-demo",
-        promptSnapshot: "명함 OCR 성공 후 사용자의 확인을 기다리는 스캔 로그입니다.",
-        requestToken: 790 + index,
-        responseToken: 180 + index,
-        totalToken: 970 + index,
-        requestCost: 0.0007,
-        responseCost: 0.0003,
-        totalCost: 0.001,
-        pendingTimeMs: 980 + index * 42,
-        createdAt: kstDateTime(-2 + index, 10),
-      },
-    });
-  }
-
-  for (const index of range(4)) {
-    await prisma.businessCardScanLog.create({
-      data: {
-        userId,
-        status: BusinessCardScanStatus.OCR_FAILED,
-        companyName: null,
-        contactName: null,
-        aiProvider: "OPENAI",
-        aiModel: "gpt-4.1-mini-demo",
-        promptSnapshot: "흐린 명함 이미지로 OCR이 실패한 스캔 로그입니다.",
-        requestToken: 610 + index,
-        responseToken: 40,
-        totalToken: 650 + index,
-        requestCost: 0.0005,
-        responseCost: 0.0001,
-        totalCost: 0.0006,
-        pendingTimeMs: 2100 + index * 80,
-        createdAt: kstDateTime(-1 + index, 18),
-      },
-    });
-  }
-}
-
-async function seedImportLogs({ userId, companies, contacts, products, deals }) {
-  const rowsByType = {
-    COMPANY: companies.slice(0, 18).map((company) => ({
-      companyName: company.companyName,
-      companyFieldName: company.field,
-      companyRegionName: company.region,
-    })),
-    CONTACT: contacts.slice(0, 18).map((contact) => ({
-      companyName: contact.companyName,
-      contactName: contact.username,
-      contactEmail: contact.email,
-      contactPhone: contact.mobile,
-      contactDepartmentName: contact.departmentName,
-      contactJobGradeName: contact.jobGradeName,
-    })),
-    PRODUCT: products.slice(0, 18).map((product) => ({
-      productName: product.productName,
-      productPrice: product.productPrice,
-      productCategoryName: product.categoryName,
-      productStatusName: product.statusName,
-    })),
-    DEAL: deals.slice(0, 18).map((deal) => ({
-      dealName: deal.dealName,
-      dealCost: deal.dealCost,
-      dealStatus: deal.dealStatus,
-      expectedEndDate: deal.expectedEndDate.toISOString().slice(0, 10),
-      companyName: deal.company.companyName,
-      contactName: deal.contacts[0].username,
-      productName: deal.products[0].productName,
-    })),
-  };
-
-  for (const template of importTemplates) {
-    const rows = rowsByType[template.type];
-    for (const batchIndex of range(3)) {
-      const batchRows = rows.slice(batchIndex * 6, batchIndex * 6 + 6);
-      const log = await prisma.importUserLog.create({
-        data: {
-          userId,
-          targetType: template.type,
-          templateVersion: template.version,
-        templateColumnsJson: template.columns,
-        contextLabel:
-          template.type === ImportTemplateType.CONTACT
-              ? batchRows[0]?.companyName ?? null
-              : null,
-          contextJson:
-            template.type === ImportTemplateType.CONTACT
-              ? { companyName: batchRows[0]?.companyName ?? null, batchSize: batchRows.length }
-              : null,
-          originalFileName: importFileNames[template.type][batchIndex],
-          fileSizeBytes: 48_000 + batchIndex * 3200,
-          totalRowCount: batchRows.length,
-          importedRowCount: batchRows.length,
-          createdAt: kstDateTime(-12 + batchIndex, 8 + batchIndex),
-        },
-      });
-
-      await prisma.importUserLogRow.createMany({
-        data: batchRows.map((row, rowIndex) => ({
-          importUserLogId: log.id,
-          rowNumber: rowIndex + 2,
-          submittedDataJson: row,
-          targetLabel:
-            row.companyName || row.contactName || row.productName || row.dealName || `row-${rowIndex + 1}`,
-          createdAt: kstDateTime(-12 + batchIndex, 8 + batchIndex, rowIndex),
-        })),
-      });
-    }
-  }
-}
-
 async function assertTrashEmpty(userId) {
   const trashModels = [
     "company",
@@ -1427,20 +1069,11 @@ async function summary(userId) {
     meetingNoteContact: { userId },
     meetingNoteProduct: { userId },
     meetingNoteDeal: { userId },
-    businessCardScanLog: { userId },
-    importUserLog: { userId },
   };
 
   for (const [model, where] of Object.entries(modelWhere)) {
     counts[model] = await prisma[model].count({ where });
   }
-
-  counts.importUserLogRow = await prisma.importUserLogRow.count({
-    where: { importUserLog: { userId } },
-  });
-  counts.activeImportTemplate = await prisma.importTemplate.count({
-    where: { isActive: true },
-  });
 
   return counts;
 }
@@ -1449,7 +1082,6 @@ async function main() {
   console.log("Seeding rich local demo data...");
   await seedAuth();
   await clearDemoData(USER_ID);
-  await seedImportTemplates();
   await seedDomainData(USER_ID);
   await assertTrashEmpty(USER_ID);
   console.log(JSON.stringify(await summary(USER_ID), null, 2));

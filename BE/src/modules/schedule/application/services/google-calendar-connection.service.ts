@@ -1,7 +1,6 @@
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { CancelScheduleNotificationReminderUseCase } from "@/modules/notification/application/use-cases/notification-reminder-scheduling.use-cases";
 import type { GoogleCalendarDisconnectScheduleAction } from "@/modules/schedule/application/ports/google-calendar.types";
 import {
   GOOGLE_CALENDAR_CONNECTION_REPOSITORY,
@@ -119,7 +118,6 @@ export class GoogleCalendarConnectionService {
     private readonly oauthProvider: GoogleCalendarOAuthProvider,
     @Inject(GOOGLE_CALENDAR_TOKEN_ENCRYPTION_PORT)
     private readonly tokenEncryption: GoogleCalendarTokenEncryptionPort,
-    private readonly cancelScheduleNotificationReminder: CancelScheduleNotificationReminderUseCase,
     private readonly configService: ConfigService,
     private readonly logger: AppLogger
   ) {}
@@ -295,18 +293,6 @@ export class GoogleCalendarConnectionService {
 
         if (!disconnected) {
           throw new GoogleCalendarConnectionNotFoundError();
-        }
-
-        for (const scheduleId of disconnected.trashedScheduleIds) {
-          await this.cancelScheduleNotificationReminder.executeWithRepository(
-            {
-              userId: currentUser.id,
-              scheduleId,
-              cancelReason: "SOURCE_DELETED",
-              now,
-            },
-            repository
-          );
         }
 
         return disconnected;

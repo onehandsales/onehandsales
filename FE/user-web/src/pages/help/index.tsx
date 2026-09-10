@@ -2,10 +2,8 @@ import {
   BookOpenCheck,
   CalendarDays,
   Database,
-  FileSpreadsheet,
   FileText,
   ListChecks,
-  ScanLine,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -68,7 +66,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
       {
         title: "현장 업무 이어가기",
         description:
-          "명함 스캔, 일정, 회의록, 팔로업을 고객 기록과 연결해요.",
+          "일정, 회의록, 팔로업을 고객 기록과 연결해요.",
       },
       {
         title: "데이터 정리하기",
@@ -130,32 +128,6 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
         ],
       },
       {
-        id: "business-cards",
-        title: "명함 스캔으로 고객 만들기",
-        paragraphs: [
-          "현장에서 받은 명함은 사진으로 남긴 뒤 담당자 기록으로 바꿔 관리할 수 있어요.",
-          "인식된 정보는 바로 확정하지 않고 확인과 수정을 거쳐 저장하는 방식이 좋아요.",
-        ],
-        bullets: [
-          "명함 사진을 등록하고 이름, 회사, 직함, 연락처를 확인해요.",
-          "기존 회사나 담당자와 중복되는지 저장 전에 살펴봐요.",
-          "저장한 담당자에는 첫 만남 내용과 다음 연락 계획을 함께 남겨요.",
-        ],
-      },
-      {
-        id: "import-export",
-        title: "엑셀 가져오기와 내보내기",
-        paragraphs: [
-          "기존 고객 목록이 엑셀에 있다면 가져오기 흐름으로 회사, 담당자, 딜 데이터를 옮길 수 있어요.",
-          "업무 검토나 백업이 필요할 때는 필요한 데이터를 XLSX로 내려받는 흐름을 사용해요.",
-        ],
-        bullets: [
-          "가져오기 전에 엑셀 컬럼을 OneHand의 필드와 맞춰요.",
-          "검토 화면에서 누락되거나 이상한 값을 확인한 뒤 저장해요.",
-          "내보내기는 데이터 이전, 월간 검토, 백업이 필요할 때 사용해요.",
-        ],
-      },
-      {
         id: "trash",
         title: "삭제한 기록 복구하기",
         paragraphs: [
@@ -192,7 +164,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
       {
         title: "Organize data",
         description:
-          "Review Excel import, export, and trash restore workflows.",
+          "Review Excel download and trash restore workflows.",
       },
     ],
     sections: [
@@ -226,7 +198,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
         id: "follow-up",
         title: "Add schedules and follow-up",
         paragraphs: [
-          "Visits, calls, and follow-up reminders are easier to find when they are connected to a customer or deal.",
+          "Visits, calls, and follow-up tasks are easier to find when they are connected to a customer or deal.",
           "Keeping today's work and upcoming meetings in one flow reduces missed customer follow-up.",
         ],
         bullets: [
@@ -246,32 +218,6 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
           "Separate background, requirements, decisions, and next actions in the note.",
           "Review AI drafts before saving them to your workspace.",
           "Connect meeting notes to deals as evidence for proposals, quotes, and contracts.",
-        ],
-      },
-      {
-        id: "business-cards",
-        title: "Create customers from business cards",
-        paragraphs: [
-          "Cards collected in the field can be turned into contact records from an image.",
-          "Recognized information should be reviewed and corrected before it becomes a record.",
-        ],
-        bullets: [
-          "Upload a card image and check name, company, title, and contact details.",
-          "Look for duplicates before saving the new contact.",
-          "Add first-meeting notes and the next follow-up plan after saving.",
-        ],
-      },
-      {
-        id: "import-export",
-        title: "Import and export Excel data",
-        paragraphs: [
-          "If your customer list already lives in a spreadsheet, import can move company, contact, and deal data into OneHand.",
-          "When you need a backup or review file, export the necessary records as XLSX.",
-        ],
-        bullets: [
-          "Match spreadsheet columns to OneHand fields before importing.",
-          "Use the review step to catch missing or unusual values before saving.",
-          "Use export for migration, monthly review, or backup needs.",
         ],
       },
       {
@@ -296,8 +242,6 @@ const sectionIcons: readonly LucideIcon[] = [
   ListChecks,
   CalendarDays,
   FileText,
-  ScanLine,
-  FileSpreadsheet,
   Database,
 ];
 

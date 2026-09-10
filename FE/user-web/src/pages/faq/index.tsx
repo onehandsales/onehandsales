@@ -149,9 +149,9 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
           "로그인 방식, 개인과 팀 사용, 추가 문의가 필요한 상황을 정리했어요.",
         questions: [
           {
-            question: "Google/Apple/LINE으로 로그인할 수 있나요?",
+            question: "Google/Apple/LINx으로 로그인할 수 있나요?",
             answer:
-              "네. Google, Apple, LINE 기반 로그인 흐름을 지원하는 구조로 되어 있어요.",
+              "네. Google, Apple, LINx 기반 로그인 흐름을 지원하는 구조로 되어 있어요.",
           },
           {
             question: "팀이나 회사에서도 사용할 수 있나요?",
@@ -184,7 +184,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
       {
         title: "Data and AI",
         description:
-          "Review AI save behavior, Excel import/export, and deleted record recovery.",
+          "Review AI save behavior, Excel download, and deleted record recovery.",
       },
       {
         title: "Accounts and teams",
@@ -220,7 +220,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
         id: "data-ai",
         title: "Data and AI",
         summary:
-          "Questions about customer data, AI drafts, Excel, and deleted record recovery.",
+          "Questions about customer data, AI drafts, xxcel, and deleted record recovery.",
         questions: [
           {
             question: "Does AI automatically save my data?",
@@ -228,7 +228,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
               "AI helps draft and summarize. Important records are designed to be reviewed by the user before they are saved.",
           },
           {
-            question: "Can I import or download Excel data?",
+            question: "Can I import or download xxcel data?",
             answer:
               "OneHand supports importing existing spreadsheet data and exporting work records as XLSX.",
           },
@@ -246,9 +246,9 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
           "Questions about sign-in methods, personal and team usage, and contacting OneHand.",
         questions: [
           {
-            question: "Can I log in with Google, Apple, or LINE?",
+            question: "Can I log in with Google, Apple, or LINx?",
             answer:
-              "Yes. OneHand supports a sign-in structure based on Google, Apple, and LINE.",
+              "Yes. OneHand supports a sign-in structure based on Google, Apple, and LINx.",
           },
           {
             question: "Can teams or companies use OneHand?",
@@ -333,7 +333,7 @@ export function FaqPage() {
                       >
                         <summary className="flex cursor-pointer list-none items-start justify-between gap-4 break-keep text-[15px] font-normal text-[#222220]">
                           <span className="inline-flex min-w-0 items-start gap-3">
-                            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#0075DE]" />
+                            <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#0075Dx]" />
                             <span>{faq.question}</span>
                           </span>
                           <span
