@@ -4,32 +4,6 @@
 
 실제 secret 값은 문서, 이슈, 로그에 기록하지 않는다. 아래 목록은 현재 `BE`, `FE/user-web`, `FE/admin-web` 코드가 읽는 변수명과 용도만 정리한 것이다.
 
-## 파일 위치
-
-- Backend: `BE/.env`
-- User Web: `FE/user-web/.env`
-- Admin Web: `FE/admin-web/.env`
-
-루트 `.env`는 정본이 아니다.
-
-구현상 로컬 override 파일을 읽을 수 있는 위치:
-
-- Backend bootstrap은 `BE/.env`를 먼저 읽고, `BE/.env.local`이 있으면 이미 OS 환경 변수로 주입된 값은 보존하면서 로컬 override로 읽는다. `ConfigModule`도 `.env.local`, `.env` 경로를 알고 있다.
-- User Web/Admin Web은 Vite `import.meta.env`를 사용하므로 Vite 기본 env 로딩 규칙의 영향을 받는다.
-
-운영/문서 기준 source of truth는 여전히 각 앱의 `.env`와 이 문서다. `.env.local`에만 존재하는 변수는 공유 환경 계약으로 보지 않는다.
-
-### Backend bootstrap `process.env` 예외
-
-Backend에서 direct `process.env` 접근은 `BE/src/main.ts`의 bootstrap env loader에만 허용한다.
-
-- 허용 시점: `AppModule`, `ConfigModule`, `ConfigService` 생성 이전
-- 허용 목적: `BE/.env`와 `BE/.env.local`을 local 실행용 process 환경에 반영
-- 보존 규칙: OS나 hosting이 먼저 주입한 값은 `.env` 또는 `.env.local`로 덮지 않음
-- 금지 범위: bootstrap 이후 controller, service, module, provider, repository 계층의 direct `process.env`
-
-bootstrap 이후 runtime 설정은 `ConfigService` 또는 해당 계층의 typed helper를 통해 읽는다.
-
 ## Backend
 
 필수:
@@ -69,24 +43,9 @@ CONTACT_PRIVATE_MEMO_ENCRYPTION_KEY
 CONTACT_PRIVATE_MEMO_ENCRYPTION_KEY_VERSION
 PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY
 PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY_VERSION
-OPENAI_API_KEY
-OPENAI_BASE_URL
-OPENAI_MEETING_NOTE_DRAFT_MODEL
-OPENAI_MEETING_NOTE_STT_MODEL
-OPENAI_AI_WEEKLY_SALES_REPORT_MODEL
-AI_WEEKLY_REPORT_PROVIDER
 SUPABASE_URL
 SUPABASE_SECRET_KEY
 SUPABASE_STORAGE_ERROR_REPORT_BUCKET
-FOLLOW_UP_DELIVERY_ENCRYPTION_KEY
-FOLLOW_UP_DELIVERY_ENCRYPTION_KEY_VERSION
-FOLLOW_UP_GOOGLE_CLIENT_ID
-FOLLOW_UP_GOOGLE_CLIENT_SECRET
-FOLLOW_UP_MICROSOFT_CLIENT_ID
-FOLLOW_UP_MICROSOFT_CLIENT_SECRET
-FOLLOW_UP_MICROSOFT_TENANT_ID
-FOLLOW_UP_EMAIL_SMOKE_MODE
-FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS
 PRODUCT_ANALYTICS_SNAPSHOT_PROCESSOR_ENABLED
 PRODUCT_ANALYTICS_SNAPSHOT_PROCESSOR_INTERVAL_MS
 PRODUCT_ANALYTICS_SNAPSHOT_PROCESSOR_BATCH_SIZE
@@ -97,34 +56,12 @@ PRODUCT_ANALYTICS_RETENTION_PURGE_BATCH_SIZE
 메모:
 
 - Prisma는 `DATABASE_URL`, `DIRECT_URL`을 사용한다.
-- Auth 교환은 `SUPABASE_JWKS_URL`, `SUPABASE_JWT_ISSUER`, 앱 JWT/refresh token secret을 사용한다.
-- 에러 신고 screenshot 저장은 `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_STORAGE_ERROR_REPORT_BUCKET`을 사용한다. 실제 secret 값과 bucket 정책은 코드/문서/로그에 기록하지 않는다.
+- Auth 교환은 Supabase JWT 설정과 앱 JWT/refresh token secret을 사용한다.
+- 에러 신고 screenshot 저장은 Supabase storage 설정을 사용한다.
 - private memo 암호화는 도메인별 key가 없으면 `ENCRYPTION_MASTER_KEY`를 fallback으로 사용한다.
-- Follow-up delivery token/phone/code 암호화는 `FOLLOW_UP_DELIVERY_ENCRYPTION_KEY`가 없으면 `ENCRYPTION_MASTER_KEY`를 fallback으로 사용한다. Key version은 `FOLLOW_UP_DELIVERY_ENCRYPTION_KEY_VERSION`, `ENCRYPTION_KEY_VERSION`, `v1` 순서로 본다.
-- Follow-up Gmail/Microsoft OAuth는 `FOLLOW_UP_GOOGLE_CLIENT_ID`, `FOLLOW_UP_GOOGLE_CLIENT_SECRET`, `FOLLOW_UP_MICROSOFT_CLIENT_ID`, `FOLLOW_UP_MICROSOFT_CLIENT_SECRET`, `FOLLOW_UP_MICROSOFT_TENANT_ID`를 사용한다. production이 아니고 provider env가 없으면 backend test/dummy provider로 설정 API를 검증한다.
-- Follow-up email provider smoke 검증은 `FOLLOW_UP_EMAIL_SMOKE_MODE=true`와 `FOLLOW_UP_EMAIL_SMOKE_ALLOWED_RECIPIENTS`를 사용한다. smoke mode에서는 allowlist 밖 수신자에게 실제 Gmail/Microsoft provider 호출을 하지 않고 safe failed attempt만 저장한다.
-- G10 production-equivalent smoke 증거는 배포된 production-equivalent Backend 또는 `NODE_ENV=production` 환경에서만 인정한다. non-production의 test/dummy provider fallback은 Gmail/Microsoft 실제 발송 완료 증거가 아니다.
-- product analytics snapshot processor는 `PRODUCT_ANALYTICS_SNAPSHOT_PROCESSOR_ENABLED=true`일 때만 activation/retention snapshot을 interval로 계산한다. `PRODUCT_ANALYTICS_SNAPSHOT_PROCESSOR_INTERVAL_MS` 기본값은 300000, `PRODUCT_ANALYTICS_SNAPSHOT_PROCESSOR_BATCH_SIZE` 기본값은 100이다.
-- product analytics raw event purge는 `PRODUCT_ANALYTICS_RETENTION_PURGE_ENABLED=true`일 때만 365일보다 오래된 `ProductAnalyticsEvent`를 batch 삭제한다. `PRODUCT_ANALYTICS_RETENTION_PURGE_BATCH_SIZE` 기본값은 500이며, snapshot과 AI provider call log는 삭제하지 않는다.
-- 로그인 국가 코드는 환경 변수가 아니라 배포 프록시 header(`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`)에서 온다.
-
-### Backend production origin 기준
-
-2026-08-25 기준 production domain/origin 정책:
-
-```text
-APP_ALLOWED_ORIGINS="https://www.onehandsales.com,https://onehandsales.com,https://onehandsales.vercel.app,https://onehandsales-admin.vercel.app"
-USER_WEB_ORIGIN="https://www.onehandsales.com"
-ADMIN_WEB_ORIGIN="https://onehandsales-admin.vercel.app"
-API_PUBLIC_ORIGIN="https://onehandsales-production.up.railway.app"
-```
-
-- User Web canonical origin은 `https://www.onehandsales.com`이다.
-- `https://onehandsales.com`은 apex domain으로 동작해야 하며 가능하면 `www`로 redirect한다. redirect 전 요청이나 OAuth return 경계를 위해 Backend CORS allowlist에는 유지한다.
-- `https://onehandsales.vercel.app`은 Vercel default/legacy origin이다. 전환 기간 호환용으로 allowlist에 둘 수 있지만 사용자 공유 URL과 QA 기준 URL은 아니다.
-- Admin Web은 현재 `https://onehandsales-admin.vercel.app`을 production origin으로 사용한다.
-- `API_PUBLIC_ORIGIN`은 현재 Railway production API URL이다. `api.onehandsales.com`을 연결하기 전까지 `https://onehandsales-production.up.railway.app`을 유지한다.
-- `APP_REFRESH_COOKIE_DOMAIN`은 API가 Railway 기본 domain에 있는 동안 비워둔다. API를 `https://api.onehandsales.com`으로 이전한 뒤에만 `.onehandsales.com` 설정을 검토한다.
+- product analytics snapshot processor는 enable flag가 `true`일 때만 activation/retention snapshot을 계산한다.
+- product analytics raw event purge는 enable flag가 `true`일 때만 오래된 `ProductAnalyticsEvent`를 batch 삭제한다.
+- 로그인 국가 코드는 환경 변수가 아니라 배포 프록시 header에서 온다.
 
 ## User Web
 
@@ -136,19 +73,6 @@ VITE_SUPABASE_REDIRECT_URL
 VITE_PRODUCT_ANALYTICS_ENABLED
 ```
 
-기본 local 기준:
-
-- `VITE_API_URL`: `http://localhost:3000`
-- `VITE_SUPABASE_REDIRECT_URL`: `http://localhost:5173/auth/callback`
-- `VITE_PRODUCT_ANALYTICS_ENABLED`: 기본 비활성. 운영 배포에서 User Web route 분석을 보낼 때만 `true`로 둔다.
-
-production 기준:
-
-- `VITE_API_URL`: `https://onehandsales-production.up.railway.app`
-- `VITE_SUPABASE_REDIRECT_URL`: `https://www.onehandsales.com/auth/callback`
-- `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`: Supabase project 값. secret이 아닌 anon key라도 문서에는 실제 값을 기록하지 않는다.
-- Supabase Auth redirect allowlist에는 `https://www.onehandsales.com/auth/callback`, `https://onehandsales.com/auth/callback`, 전환 기간의 `https://onehandsales.vercel.app/auth/callback`을 함께 둔다.
-
 ## Admin Web
 
 ```text
@@ -158,15 +82,4 @@ VITE_SUPABASE_ANON_KEY
 VITE_SUPABASE_REDIRECT_URL
 ```
 
-기본 local 기준:
-
-- `VITE_API_URL`: `http://localhost:3000`
-- `VITE_SUPABASE_REDIRECT_URL`: `http://localhost:5174/auth/callback`
-
-production 기준:
-
-- `VITE_API_URL`: `https://onehandsales-production.up.railway.app`
-- `VITE_SUPABASE_REDIRECT_URL`: `https://onehandsales-admin.vercel.app/auth/callback`
-- Admin custom domain `https://admin.onehandsales.com`은 아직 활성 기준이 아니다. 연결 후에만 Admin Web Vercel domain, Backend `ADMIN_WEB_ORIGIN`, `APP_ALLOWED_ORIGINS`, Supabase redirect URL, Google Cloud OAuth origin을 함께 갱신한다.
-
-현재 Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 호출해 관리자 권한을 확인한다. Admin Web 운영 코드는 로컬 가짜 관리자/일반 사용자 토큰이나 역할 대체값을 사용하지 않는다.
+현재 Admin Web은 입력받은 Backend App access token으로 `GET /admin/api/me`를 호출해 관리자 권한을 확인한다.

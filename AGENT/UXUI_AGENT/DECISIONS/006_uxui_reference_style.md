@@ -1,4 +1,4 @@
-﻿# UX/UI Reference Style Decision
+# UX/UI Reference Style Decision
 
 ## 결정
 
@@ -29,7 +29,6 @@
 | Pipedrive | 영업 pipeline 중심성, 딜 단계 인식, next action 중심 흐름 | desktop 기본 화면을 pure Kanban으로 고정하는 방식 |
 | Attio | 회사/사람/딜 record 관계, activity timeline, linked record detail | 팀 협업 CRM의 과한 custom object 복잡도 |
 | Linear | list-first 탐색, 빠른 선택, peek/detail panel, command/search 감각 | 개발 도구 특유의 issue 중심 용어와 단축키 의존 UX |
-| Google Calendar | 월간 calendar 기본값, 주간 view 전환, 일정 밀도 | Google 제품 brand/copy/visual asset |
 | Monday/Salesforce | 참고 우선순위 낮음. 복잡한 enterprise CRM의 위험 요소를 피하는 반례 | 화려한 dashboard, 무거운 CRM density, 과한 자동화/설정 노출 |
 
 Reference URL:
@@ -166,5 +165,3 @@ Mobile:
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
-
-

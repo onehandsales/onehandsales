@@ -1,4 +1,4 @@
-﻿# UX/UI Mobile Pipeline Decision
+# UX/UI Mobile Pipeline Decision
 
 ## 결정
 
@@ -44,6 +44,3 @@
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
-
-
-

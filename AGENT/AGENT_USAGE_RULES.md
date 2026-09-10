@@ -58,7 +58,6 @@
 - 화면 설계 또는 Frontend 구현
 - 사용자 노출 문구, route, navigation, sidebar, top bar
 - 목록, 상세, 생성, 수정, 삭제, 복구, 검색, 필터, pagination
-- 회사/담당자/제품/딜/일정/회의록의 linked record와 activity/Memo 기록 흐름
 - API request/response가 화면의 record 관계나 상세 표시 방식에 영향을 주는 작업
 - DB schema 변경이 화면의 record 관계, 상세 속성, activity/Memo 흐름에 영향을 주는 작업
 
@@ -84,7 +83,6 @@
 
 1. 지정된 TODO 폴더의 `README.md`, `COMMON/API-SPEC/*`, `COMMON/WORK-SPLIT.md`, `BE-TODO/*`, `FE-TODO/*`를 먼저 확인한다.
 2. TODO 문서가 지정한 `AGENT` 선행 문서를 함께 읽고 구현 기준으로 삼는다.
-3. 구현 범위와 제외 범위를 분리해 Schedule, Admin, 삭제/복구 등 범위 밖 작업을 임의로 추가하지 않는다.
 4. 구현 완료 후 해당 `AGENT` review checklist와 TODO goal checklist를 다시 대조한다.
 5. 검증 명령을 실행하고, 통과/경고/실패 결과를 TODO goal 문서 또는 완료 보고에 남긴다.
 6. 커밋 요청이 포함된 경우 관련 변경만 stage하고, 작업 전부터 있던 미추적/무관 파일은 포함하지 않는다.

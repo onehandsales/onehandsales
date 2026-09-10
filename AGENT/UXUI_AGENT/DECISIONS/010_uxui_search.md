@@ -1,4 +1,4 @@
-﻿# UX/UI Search Decision
+# UX/UI Search Decision
 
 ## 결정
 
@@ -14,7 +14,6 @@
 
 ## 규칙
 
-- 상단 통합검색은 회사/담당자/제품/딜/일정/회의록을 검색한다.
 - 결과는 엔티티 유형별로 묶는다.
 - 진행 중 딜과 최근 항목을 우선한다.
 - 화면별 검색/필터는 현재 화면 목록만 제어한다.
@@ -26,6 +25,3 @@
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
-
-
-

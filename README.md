@@ -67,7 +67,7 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Contact, Product, Deal, Schedule, MeetingNote, FollowUp, SalesReport, Search, Trash, Analytics, PublicContactRequest, ErrorReport, SupportRequest 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공하고, Company/Contact/Product 상세에서는 연결 딜 조회 API를 사용한다. 관리자 확인 API는 `GET /admin/api/me`만 제공한다.
+현재 Backend는 Auth/User, Company, Contact, Product, Deal, Search, Trash, Analytics, PublicContactRequest, ErrorReport, SupportRequest 모듈을 구현한다. Company/Contact/Product/Deal은 각 도메인별 xlsx export API를 제공하고, Company/Contact/Product 상세에서는 연결 딜 조회 API를 사용한다. 관리자 확인 API는 `GET /admin/api/me`만 제공한다.
 
 ### 2. User Web
 
@@ -141,12 +141,10 @@ Playwright smoke E2E는 기본적으로 Backend와 외부 Provider를 route mock
 
 - Backend Auth/DB: `DATABASE_URL`, `DIRECT_URL`, `APP_JWT_SECRET`, `APP_REFRESH_TOKEN_SECRET`, `SUPABASE_JWKS_URL`, `SUPABASE_JWT_ISSUER`
 - Frontend Supabase/Auth: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SUPABASE_REDIRECT_URL`
-- OpenAI/AI sales: `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`, `OPENAI_MEETING_NOTE_STT_MODEL`, `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL`
 - Encryption/session: `ENCRYPTION_MASTER_KEY`, `APP_JWT_SECRET`, `APP_REFRESH_TOKEN_SECRET`
 
 로그인 국가 메타데이터는 Google/Supabase 계정 정보가 아니라 배포 프록시가 전달하는 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 헤더에서 저장한다. 로컬 또는 해당 헤더가 없는 배포 환경에서는 `signupCountryCode`, `lastLoginCountryCode`가 `null`이며 화면에는 `기록 없음`으로 표시될 수 있다.
 
-MeetingNote AI 초안 생성과 STT는 Backend에서 별도 provider port로 분리되어 있다. AI 초안 생성은 OpenAI를 기본으로 사용하고, STT는 현재 OpenAI adapter를 쓰되 provider 교체 시 STT adapter만 바꾸는 구조다.
 
 ## Rules
 

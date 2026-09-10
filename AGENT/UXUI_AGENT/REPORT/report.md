@@ -13,7 +13,6 @@
 | --- | ------ | ----------------------------------------------------------------------------- | -------------------------------------- | ------ |
 | A-1 | **H**  | 강조색 분열 — 모바일 전체가 보라(#5e5ce6), 데스크톱은 파랑(#4880EE)           | 모바일 전 화면                         | M      |
 | A-2 | **H**  | 클릭 타겟 28–30px — WCAG 2.5.5 44px 미달                                      | 전 라우트 PageHeader·LRA·Pagination    | M      |
-| A-3 | **M**  | FilterChip 데스크톱 fw700 vs 모바일 fw500 불일치                              | companies/contacts/deals/meeting-notes | S      |
 | A-4 | **M**  | PageHeader br=6px vs Button.primary br=8px 불일치                             | 전 라우트 + /settings                  | S      |
 | A-5 | **M**  | StageBadge 높이 24px vs 20.5px 불일치                                         | /deals preview panel                   | S      |
 | A-6 | **L**  | 모바일 FilterChip active 대비비 4.41:1 — WCAG AA(4.5:1) 미달                  | companies/contacts mobile              | S      |

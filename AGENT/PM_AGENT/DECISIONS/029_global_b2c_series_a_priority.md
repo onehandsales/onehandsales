@@ -25,7 +25,6 @@ Status: Superseded by `030_global_b2c_closeout_and_paddle_defer.md` on 2026-08-1
 기능을 더 추가하면 제품 완성도가 올라가는 것처럼 보일 수 있지만, 실제 유료 사용자가 보는 품질은 다음 요소에서 결정된다.
 
 - 모바일 브라우저에서 핵심 업무를 수행할 수 있는가?
-- 딜/회사/담당자/제품/일정/회의록 화면이 실무 도구처럼 읽히는가?
 - 긴 텍스트, 작은 화면, 로딩/오류/빈 상태가 깨지지 않는가?
 - 다른 사용자 데이터가 Search, Trash, Export, 직접 URL 접근에서 섞이지 않는가?
 - DB migration과 seed 상태가 운영 배포에 안전한가?
@@ -50,8 +49,6 @@ Series A급으로 가려면 기능 완성이 아니라 반복 매출과 리텐�
 
 추가로 필요한 축:
 
-- AI next action/follow-up/딜 리스크 추천
-- 주간 영업 리포트
 - 모바일 현장 사용성
 - 결제/paywall 실험
 - 제품 분석과 unit economics

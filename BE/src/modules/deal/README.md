@@ -1,32 +1,34 @@
 # Deal Module
 
-## 현재 범위
+딜 도메인은 사용자 소유 거래 정보, 연결 회사/담당자/제품, 다음 행동, 메모, 활동 로그, 휴지통 복구, xlsx export를 관리한다.
+
+## 주요 API
 
 - `GET /api/deals/stage-counts`
 - `GET /api/deals`
 - `GET /api/deals/export/xlsx`
+- `GET /api/deals/:dealId`
+- `POST /api/deals`
+- `PATCH /api/deals/:dealId`
+- `DELETE /api/deals/:dealId`
 - `GET /api/deals/company-options`
 - `GET /api/deals/contact-options`
 - `GET /api/deals/product-options`
-- `POST /api/deals`
-- `GET /api/deals/:dealId`
-- `PATCH /api/deals/:dealId`
-- `DELETE /api/deals/:dealId`
-- `POST /api/deals/:dealId/following-action-logs`
 - `GET /api/deals/:dealId/following-action-logs`
+- `POST /api/deals/:dealId/following-action-logs`
 - `PATCH /api/deals/:dealId/following-action-logs/:followingActionLogId`
 - `DELETE /api/deals/:dealId/following-action-logs/:followingActionLogId`
-- `POST /api/deals/:dealId/memo-logs`
 - `GET /api/deals/:dealId/memo-logs`
+- `POST /api/deals/:dealId/memo-logs`
 - `PATCH /api/deals/:dealId/memo-logs/:memoLogId`
 - `DELETE /api/deals/:dealId/memo-logs/:memoLogId`
+- `GET /api/deals/:dealId/activities`
+- `POST /api/deals/:dealId/activities`
+- `PATCH /api/deals/:dealId/activities/:activityId`
 
-## 구현 기준
+## 정책
 
-- 모든 API는 `AuthGuard`를 사용한다.
-- 모든 조회와 변경은 현재 사용자 `userId` ownership 기준으로 처리한다.
-- 딜은 `DealCompany`, `DealContact`, `DealProduct`를 통해 회사/담당자/제품과 N:M으로 연결한다.
-- 딜 생성/수정 시 선택한 담당자는 선택한 회사 중 하나에 소속되어야 한다.
-- 딜 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
-- 일반 목록/상세/검색/export와 일정/회의록 딜 옵션은 `deletedAt IS NULL` 딜만 대상으로 한다.
-- 딜 기존 연결 응답은 삭제된 회사/담당자/제품 이력을 유지할 수 있도록 연결 대상에 `isDeleted`를 포함한다.
+- 일반 목록/상세/검색/export는 `deletedAt IS NULL` 딜만 대상으로 한다.
+- 삭제는 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 설정하는 soft delete다.
+- 복구 기간 안의 row만 Trash API에서 복구할 수 있다.
+- 딜 생성/수정은 연결 제품과 첫 다음 행동 변경을 transaction 안에서 처리한다.

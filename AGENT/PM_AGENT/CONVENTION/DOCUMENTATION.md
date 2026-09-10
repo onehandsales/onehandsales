@@ -123,8 +123,6 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - 담당자: `Contact`
 - 제품: `Product`
 - 딜: `Deal`
-- 일정: `Schedule`
-- 회의록: `MeetingNote`
 - Memo 기록: 회사/담당자/제품/딜에 대한 사용자의 주관적 생각과 판단 기록
 
 금지 또는 정리 대상 표현:
@@ -224,7 +222,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한다.
 - TODO 작성자는 Software Agent의 아키텍처, API 명세, API 계약, transaction, observability, Backend/Frontend/Admin 컨벤션, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 계획에 영향을 주는 기준을 TODO 문서에 구체적으로 옮긴다.
 - 계획 폴더명은 목적이 드러나게 대문자와 `_PLAN` 접미사를 사용한다.
-- 예: `MVP-STARTER_PLAN`, `IMPORT_EXPORT_PLAN`, `PAYMENT_MANUAL_PLAN`
+- 예: `MVP-STARTER_PLAN`, `PAYMENT_MANUAL_PLAN`
 - 각 계획 폴더는 구현자가 문서만 보고 첫 `/goal`을 실행할 수 있는 수준의 실행 계획서여야 한다.
 - 각 계획 폴더 안에는 `COMMON`, `FE-TODO`, `BE-TODO`를 둔다.
 - 이렇게 나누는 이유는 Frontend와 Backend가 같은 요구사항과 기획을 기준으로 작업하지만 실제 역할과 산출물이 다르기 때문이다.

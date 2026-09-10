@@ -1,4 +1,4 @@
-﻿# FE
+# FE
 
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 
@@ -66,7 +66,7 @@ pnpm run test:e2e
 
 Playwright smoke E2E는 Backend와 외부 Provider를 route mock으로 대체한다.
 
-- User Web E2E: login, company, contact, product, deal, schedule, meeting note core flow
+- User Web E2E: login, company, contact, product, deal core flow
 - Admin Web E2E: 관리자 token 통과, non-admin 차단, `GET /admin/api/me` 호출을 확인한다.
 
 E2E 전용 Vite port:
@@ -98,9 +98,9 @@ Provider 현황:
 
 User Web:
 
-- 실제 API 연동 완료: Auth/User, Home(`/app`), Company, Contact, Product, Deal, Schedule, Weekly Schedule Report, Google Calendar Integration, MeetingNote 수동 CRUD, MeetingNote AI/STT draft, MeetingNote next action/follow-up draft, MeetingNote deal link, AI Weekly Sales Report/Follow-up, Search, Trash, Product Analytics, Company/Contact/Product/Deal 도메인별 xlsx export.
+- 실제 API 연동 완료: Auth/User, Home(`/app`), Company, Contact, Product, Deal, Search, Trash, Product Analytics, Help Error Report, Help Support Request, Company/Contact/Product/Deal 도메인별 xlsx export.
 - 공개/인증 페이지: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`. 현재 언어 선택 UI에 노출하는 locale은 KR/US/CA 우선 전략 기준 `ko`, `en-us`, `en-ca`다. `ja`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로만 보류한다. 기존 `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
-- 보호 앱 route는 `/app/*` 아래에 있으며 회사/담당자/제품/딜 생성은 목록 맥락의 `/new`와 패널 확장용 `/new/full`을 모두 지원한다. 회의록도 `/app/meeting-notes/new/full` page-mode 작성 route를 가지며 `/app/meeting-notes/new`는 `?create=1`로 redirect한다.
+- 보호 앱 route는 `/app/*` 아래에 있으며 회사/담당자/제품/딜 생성은 목록 맥락의 `/new`와 패널 확장용 `/new/full`을 모두 지원한다.
 - 회사 생성 UX는 `/app/companies` 목록 맥락을 유지한 채 오른쪽 문서형 생성 패널을 여는 방식을 사용한다. `/app/companies/new`도 별도 전체 생성 페이지가 아니라 회사 목록을 렌더링하고 생성 패널을 초기 open 상태로 연다. 데스크톱 패널은 화면 최상단~최하단에 고정되고 좌우 resize가 가능하며, 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`다. 목록 컬럼은 줄이지 않고 공간이 부족하면 가로 스크롤로 처리한다.
 
 Admin Web:

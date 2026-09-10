@@ -1,233 +1,27 @@
-# User Web Frontend Architecture
+# Frontend User Web
 
-이 문서는 `FE/user-web`의 정본 frontend 아키텍처를 정의한다. User Web은 개인 영업자가 회사, 담당자, 제품, 딜, 일정, 회의록을 실제로 관리하는 화면이며, 모바일과 데스크톱을 함께 지원한다.
+User Web은 로그인 이후 `/app` 핵심 CRM 화면과 계정/도움말 모달을 제공한다.
 
-## 1. 기술 기준
+## Route 범위
 
-| 구분 | 기술 |
-| --- | --- |
-| 런타임 | Node.js 24 LTS |
-| 프레임워크 | React 19 |
-| 언어 | TypeScript |
-| 번들러/개발 서버 | Vite 7 |
-| 라우터 | React Router DOM 7 |
-| 스타일 | Tailwind CSS 3, PostCSS, shadcn/ui, Inter-first multilingual font stack |
-| 아이콘 | lucide-react |
-| 서버 상태 | TanStack Query |
-| 입력 검증 | React Hook Form, Zod |
-| 빌드 검증 | `tsc -b`, `vite build` |
+- `/app`
+- `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`
+- `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`
+- `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`
+- `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`
+- `/app/trash`
+- `/app/more`
 
-## 2. 구조 원칙
+## Feature 경계
 
-- `pages`는 route entry와 화면 조립만 담당한다.
-- 실제 business UI, API 호출, schema, type은 `features/<domain>` 안에 둔다.
-- 공통 UI는 `components/ui`, layout은 `components/layout`에 둔다.
-- API client, env parsing, QueryClient 설정은 `lib`에 둔다.
-- 인증 token은 UI component에서 직접 다루지 않고 auth feature와 API client를 통해 접근한다.
-- User Web은 일반 `/api/*` 계약만 호출한다.
-- 화면 구조와 상호작용은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 따른다.
-- 회사, 담당자, 제품, 딜, 일정, 회의록 화면은 열 수 있는 record, linked record, property-first detail, activity/Memo 맥락을 우선해서 구성한다.
+- API client와 query key는 feature 내부에 둔다.
+- list/detail mutation 이후 관련 query를 invalidate한다.
+- 공통 UI는 `components`와 `components/ui`에서만 공유한다.
+- 도메인별 생성/수정 form은 `/new`와 `/new/full` 양쪽 UX를 고려한다.
 
-## 3. 현재 라우트
+## E2E 기준
 
-현재 `FE/user-web/src/app/router/router.tsx` 기준:
-
-공개/인증 라우트:
-
-- `/{locale}`: 공개 랜딩/진입 화면. 앱 홈이 아니다.
-- `/{locale}/login`, `/{locale}/signup`: 로그인/가입 진입 화면
-- `/{locale}/pricing`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`: 공개 정보 페이지
-- 현재 언어 선택 UI 노출 locale slug: `ko`, `en-us`, `en-ca`
-- 추후 확장 후보 locale slug: `ja`, `en-gb`, `en-sg`, `en-au`
-- legacy `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 redirect한다.
-- `/auth/callback`: Supabase OAuth callback. locale prefix 없이 유지한다.
-
-legacy redirect 라우트:
-
-- `/companies`, `/companies/new`, `/companies/:companyId` -> `/app/companies...`
-- `/companies/new/full` -> `/app/companies/new/full`
-- `/contacts`, `/contacts/:contactId` -> `/app/contacts...`
-- `/contacts/new`, `/contacts/new/full` -> `/app/contacts...`
-- `/products`, `/products/new`, `/products/:productId` -> `/app/products...`
-- `/products/new/full` -> `/app/products/new/full`
-- `/deals`, `/deals/new`, `/deals/:dealId` -> `/app/deals...`
-- `/deals/new/full` -> `/app/deals/new/full`
-- `/schedules`, `/schedules/:scheduleId` -> `/app/schedules...`
-- `/schedules/week`는 `/app/schedules/week`로 이동한다.
-- `/meeting-notes`, `/meeting-notes/:meetingNoteId` -> `/app/meeting-notes...`
-- `/meeting-notes/new` -> `/app/meeting-notes?create=1`
-- `/meeting-notes/new/full` -> `/app/meeting-notes/new/full`
-- `/trash`, `/more` -> `/app/...`
-- `/settings` legacy route는 현재 router에 없으며, 설정 진입은 현재 업무 route 위의 `?account=settings` 또는 `/app?account=settings` 계정 모달 흐름을 사용한다.
-
-보호 앱 라우트:
-
-- `/app`은 Home dashboard를 표시한다.
-- `/app/companies`, `/app/companies/new`, `/app/companies/:companyId`
-- `/app/companies/new/full`
-- `/app/contacts`, `/app/contacts/:contactId`
-- `/app/contacts/new`, `/app/contacts/new/full`
-- `/app/products`, `/app/products/new`, `/app/products/:productId`
-- `/app/products/new/full`
-- `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`
-- `/app/deals/new/full`
-- `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`는 보호 앱 route다.
-- `/app/schedules/week`는 `ScheduleWeekPage`와 `ScheduleWeekReportScreen`을 통해 주간 보고서 화면을 활성 제공한다.
-- `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`
-- `/app/meeting-notes/new` -> `/app/meeting-notes?create=1`
-- `/app/meeting-notes/new/full`
-- `/app/trash`, `/app/more`
-- `/app/settings` 사용자-facing route는 현재 router에 없으며, 계정 설정은 `/app?account=settings` 또는 현재 보호 앱 route 위의 `?account=settings` query로 여는 계정 모달에서 제공한다.
-
-08 Global Data I18N에서도 보호 앱 라우트는 `/app/*` 형태를 유지한다. `/ko/app` 또는 `/en/app` 같은 locale prefix route를 만들지 않는다.
-
-
-## 4. 현재 Feature 폴더
-
-현재 `FE/user-web/src/features` 기준:
-
-- `auth`
-- `ai-weekly-report`
-- `analytics`
-- `app-i18n`
-- `company`
-- `contact`
-- `deal`
-- `deal-redesign`
-- `error-report`
-- `follow-up-delivery`
-- `meeting-note`
-- `mobile-local-draft`
-- `product`
-- `public-site`
-- `schedule`
-- `search`
-- `support-request`
-- `trash`
-
-08 G03에서는 public-site i18n을 확장하지 않고, `/app` 내부 문구/formatter용 app i18n feature를 `FE/user-web/src/features/app-i18n`에 둔다. `AppI18nProvider`는 `AuthProvider` 내부에서 `User.preferredLocale`을 우선 사용하고, profile 로딩 전에는 browser locale과 `ko-KR` 순서로 fallback한다.
-
-## 5. 현재 API 연동 상태
-
-실제 Backend API 연동 완료:
-
-- Auth/User는 Supabase OAuth callback, Backend token exchange, refresh/logout, current user/profile/devices를 연동한다.
-- Home dashboard는 일정/딜/회의록 조합 조회를 연동한다.
-- Company는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export를 연동한다.
-- Contact는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
-- Product는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
-- Deal은 목록/상세/생성/수정/삭제, stage counts, 옵션, `DealActivity` timeline 생성/수정/조회, 다음 행동 로그, 메모 로그, xlsx export를 연동한다.
-- Schedule은 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options, 주간 보고서 조회와 xlsx 다운로드, Google Calendar 연결/status/calendar 선택/read-only sync를 연동한다.
-- AI Weekly Report는 `/api/sales-reports/weekly` 생성 요청, 주간 조회, 상세, snapshot summary를 홈/보고서 섹션에서 연동한다.
-- MeetingNote는 목록/상세/생성/수정, filter options, AI text draft, STT+AI draft, next action draft, follow-up draft, 저장 후 딜 추가를 연동한다.
-- Follow-up delivery는 설정 화면과 관련 패널에서 email provider 연결, SMS sender number, consent notice, follow-up draft/send/retry/timeline을 연동한다.
-- Search는 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동을 연동한다.
-- 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
-- Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
-- Help Error Report는 도움말 모달에서 `POST /api/error-reports`를 호출해 에러 신고와 선택 스크린샷을 접수한다.
-- Help Support Request는 도움말 모달에서 `POST /api/support-requests`를 호출해 문의 유형과 1000자 이하 문의 내용을 접수한다.
-- Product Analytics는 app route, activation/retention 후보, mobile field/local draft 이벤트를 `POST /api/analytics/events`로 전송한다.
-- Mobile Field Use는 모바일 녹음/local draft, mobile analytics event foundation을 연동한다.
-
-회사 생성 UX 기준:
-
-- `/app/companies/new`는 full page create form이 아니라 회사 목록을 유지한 채 오른쪽 문서형 생성 패널을 초기 open 상태로 연다.
-- 데스크톱 패널은 viewport 최상단~최하단에 fixed로 붙고, 왼쪽 edge resize handle로 폭을 조절한다.
-- 패널 폭은 최소 `420px`, 최대 화면/작업영역의 `70%`다. 사용자가 조절한 폭은 localStorage key `onehand.company.createPanelWidth`에 저장한다.
-- 패널이 열릴 때 목록 영역은 오른쪽 padding으로 패널 폭만큼 밀리고, 회사 목록 컬럼은 하나도 숨기거나 합치지 않는다. 공간이 부족하면 horizontal scroll을 사용한다.
-- 데스크톱 미만 viewport에서는 overlay panel을 사용해 작은 화면 목록 레이아웃을 깨지 않게 한다.
-- 담당자/제품/딜 생성 route도 현재 목록 맥락의 `/app/contacts/new`, `/app/products/new`, `/app/deals/new`와 page-mode 확장 route `/app/contacts/new/full`, `/app/products/new/full`, `/app/deals/new/full`을 가진다.
-- page-mode 확장 route는 각 생성 dialog를 `mode="page"`로 렌더링하고 route state의 draft를 초기값으로 복원한다. 생성 성공 또는 닫기 후에는 해당 목록으로 돌아간다.
-- 회의록은 `/app/meeting-notes/new`가 목록의 `?create=1` 흐름으로 redirect하고, `/app/meeting-notes/new/full`이 page-mode 작성 route다.
-
-도메인별 export 기준:
-
-- Company: `GET /api/companies/export/xlsx`, 표시 문구 `엑셀 다운로드`
-- Contact: `GET /api/contacts/export/xlsx`, 표시 문구 `엑셀 다운로드`
-- Product: `GET /api/products/export/xlsx`, 표시 문구 `엑셀 다운로드`
-- Deal: `GET /api/deals/export/xlsx`, 표시 문구 `엑셀 다운로드`
-
-도메인 구분은 버튼 문구가 아니라 사용자가 보고 있는 목록 화면과 호출 API로 판단한다. 각 목록의 `Download` icon action은 공통 tooltip/aria-label `엑셀 다운로드`를 사용한다.
-- export 요청은 현재 목록 검색어/필터/정렬을 반영하고 `page`는 제외한다.
-
-Backend는 구현되었지만 Frontend 연결이 남은 항목:
-
-- 없음
-
-mock/placeholder 경계를 유지해야 하는 항목:
-
-
-## 5A. Auth Runtime Frontend 기준
-
-로그인/회원가입은 Supabase OAuth provider login을 공통으로 사용한다.
-
-- `/{locale}/login`과 `/{locale}/signup`은 같은 provider login 흐름이다. 기존 `/login`과 `/signup`은 선호 locale URL로 redirect한다. 신규 provider 계정이면 가입, 기존 provider 계정이면 로그인으로 처리한다.
-- 로그인/회원가입 provider 버튼은 가능한 경우 Supabase OAuth URL을 browser popup으로 열고, popup이 차단되면 기존 full-page redirect를 사용한다.
-- `/auth/callback`은 Supabase session을 읽고 Backend `POST /api/auth/exchange`로 앱 session을 교환한다.
-- popup OAuth callback도 같은 `/auth/callback`을 사용하며 app session 저장 후 popup을 닫아 부모 창이 session을 복원한다.
-- 개발용 mock login flow는 User Web에서 제거되어 있다. E2E와 QA는 현재 로그인 UI의 Google/LINE/Apple provider 버튼을 기준으로 한다.
-- Google OAuth signup/login은 기존 수동 QA 통과 상태다. LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정 후 별도 기록한다.
-- Kakao OAuth는 로그인 기능에서 제거되어 있다. 현재 runtime provider는 Google, LINE, Apple이며 이 순서의 provider 카드로 표시한다.
-- 로그아웃은 Backend `/api/auth/logout`, Supabase `signOut`, localStorage app token 삭제 후 선호 locale의 login URL로 이동한다. 예: `/ko/login`, `/en-us/login`.
-- app access token은 localStorage와 API client memory에 저장한다. refresh token은 Backend httpOnly cookie로만 다룬다.
-- exchange payload의 device slot은 화면 폭 `767px 이하`면 `mobile`, 그 외는 `personal_laptop`이다. `work_laptop`은 Backend enum에는 있지만 현재 User Web에서는 보내지 않는다.
-- `replaceExistingDevice=true`를 보내므로 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.
-- Frontend는 `locale`과 IANA `timeZone`을 exchange payload로 보낸다. 국가는 Frontend가 보내지 않고 Backend proxy geo header에서만 저장한다.
-- URL locale smoke는 2026-07-10 기준 통과했다.
-
-## 6. Search 구현 기준
-
-상단 통합검색은 `features/search`에 둔다.
-
-- 두 글자 이상 입력 시 `GET /api/search`를 호출한다.
-- 요청 query: `q`, optional `types`, optional `limit`.
-- 응답은 도메인별 group과 item을 반환한다.
-- item은 상세 화면 이동에 필요한 `targetType`, `targetId`, `targetPath`를 포함한다.
-- 검색 필드 정책은 Backend 계약의 넓게 검색을 따른다. 일정 메모와 회의록 상세내용/필요 행동에만 있는 키워드도 결과로 표시될 수 있다.
-- 전용 `/search` 라우트는 현재 없다. 상단 검색 UI 안에서 결과를 선택해 상세 화면으로 이동한다.
-- User Web GlobalSearch는 `GET /api/search`와 연결되어 있으며 loading, empty, error 상태를 처리한다.
-- Backend `targetPath`와 FE fallback은 `/app/companies/:id`, `/app/deals/:id`, `/app/schedules/:scheduleId` 같은 `/app/*` 보호 route를 직접 반환한다.
-- 일정 검색 결과는 `/app/schedules/:scheduleId`로 이동하고, 일정 상세 화면에서 `GET /api/schedules/{scheduleId}`를 호출한다.
-
-## 7. MeetingNote AI/STT Frontend 기준
-
-회의록 AI/STT는 사용자가 직접 선택해야 하는 값과 AI가 생성할 값을 분리한다.
-
-사용자가 선택:
-
-- 회사
-- 담당자
-- 제품
-- 딜
-- 회의 일시
-
-AI/STT가 생성:
-
-- 회의 내용
-- 다음 계획
-- 필요 행동
-
-Frontend는 draft API 결과를 자동 저장하지 않는다. 결과를 form field에 채우고 사용자가 수정한 뒤 기존 `POST /api/meeting-notes`로 저장한다. STT transcript는 검토용으로 표시하고 현재 범위에서는 저장하지 않는다. 직접 작성 저장은 AI/STT draft API를 호출하지 않고 `sourceType: MANUAL`로 저장한다.
-
-Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provider 종류를 직접 알 필요가 없고, `ai-draft`와 `stt-draft` API 계약만 유지하면 된다.
-
-## 8. Pagination 기준
-
-- Company/Contact/Product/Deal/MeetingNote/Trash 목록은 page-number pagination을 사용한다.
-- 현재 목록 페이지의 기본 page size는 15개다.
-- page size를 바꿀 때는 FE 단독으로 숫자를 바꾸지 않는다.
-- page size를 변경하려면 Backend 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트 계약을 함께 갱신한다.
-- 모바일 record list도 현재 page size 계약은 15개이며, desktop table 대신 card/list로 표현한다.
-- 서버 응답은 `totalCount`, `totalPages`, `page`, `pageSize` 기준으로 처리한다.
-- cursor 기반 `hasNext`는 memo log 같은 infinite loading 영역에서만 사용한다.
-
-## 9. 관련 문서
-
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
-- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
-- `AGENT/UXUI_AGENT/DECISIONS/015_uxui_list_filter_pagination.md`
-- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
-- `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md`
-- `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/COMMON/API-SPEC/MEETING_NOTE_AI_STT_API.md`
+- 로그인 후 `/app` 진입
+- 회사/담당자/제품/딜 핵심 flow
+- 검색, 휴지통, export smoke
+- 모바일 주요 화면 smoke

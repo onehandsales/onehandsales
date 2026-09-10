@@ -75,7 +75,6 @@ export interface TransactionManager {
 
 다음 흐름은 outbox 또는 outbox에 준하는 후속 처리 기록을 검토한다.
 
-- calendar, email처럼 네트워크 실패가 잦은 side effect가 있다.
 - 사용자는 성공 응답을 받았지만 후속 처리가 나중에 완료될 수 있다.
 - 재시도와 중복 방지가 필요하다.
 

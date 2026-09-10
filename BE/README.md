@@ -1,4 +1,4 @@
-﻿# BE
+# BE
 
 백엔드 앱이다.
 
@@ -26,13 +26,9 @@
 - `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
 - `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
 - `deal`: 사용자 소유 딜, 회사/담당자/제품 연결, `DealActivity`, 다음 행동 로그, 메모 로그, Trash 복구, xlsx export
-- `schedule`: 사용자 소유 일정, 월간/주간 조회, 주간 보고서/xlsx export, 일정-딜 연결, Google Calendar read-only sync, Trash 복구
-- `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, next action/follow-up draft, 저장 후 딜 연결, Trash 복구
-- `follow-up`: AI 주간 보고서/회의록 기반 follow-up draft, send/retry/history, email provider 연결, SMS 발신번호/동의 안내
-- `sales-report`: AI 주간 영업 리포트 생성/조회/상세/snapshot summary
-- `analytics`: 제품 분석 client event 수집, activation/retention snapshot, AI usage summary foundation
-- `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
-- `trash`: 회사/담당자/제품/딜/일정/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구
+- `analytics`: 제품 분석 client event 수집, activation/retention snapshot
+- `search`: 회사/담당자/제품/딜 통합검색
+- `trash`: 회사/담당자/제품/딜과 지원 로그의 휴지통 목록/상세/7일 이내 복구
 - `health`: health check
 
 
@@ -112,7 +108,7 @@ pnpm run build
 
 ## 외부 Provider
 
-기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth 또는 OpenAI MeetingNote draft smoke를 하려면 `.env`에 credential을 채운 뒤 별도 provider smoke로 확인한다.
+기본 Backend 테스트는 외부 Provider를 실제 호출하지 않는다. 실제 Supabase Auth smoke가 필요하면 `.env`에 credential을 채운 뒤 별도 smoke로 확인한다.
 
 local에서 최소 서버만 띄울 때도 `DATABASE_URL`, `DIRECT_URL`, token secret 값은 실제 안전한 값으로 채우는 것을 권장한다. `TEST_DATABASE_URL`은 테스트 DB를 별도로 검증할 때 사용한다.
 
@@ -128,7 +124,6 @@ Auth runtime 기준:
 - `preferredLocale`과 `timeZone`은 신규 사용자 생성 시 저장된다. 기존 사용자의 `timeZone`은 로그인 때 덮어쓰지 않고 `lastLoginTimeZone`만 갱신한다.
 - `signupCountryCode`, `lastLoginCountryCode`는 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 같은 배포 프록시 헤더가 있을 때만 저장된다. 로컬이나 해당 헤더가 없는 환경에서는 `null`일 수 있다.
 
-MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. AI 주간 영업 리포트는 기본적으로 OpenAI adapter를 사용하며 `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL`로 모델을 지정할 수 있고, 로컬 검증에서 deterministic 결과가 필요할 때만 `AI_WEEKLY_REPORT_PROVIDER=deterministic`으로 전환한다. 추후 AI/STT/AI weekly report provider를 바꿀 때는 각 adapter만 교체한다.
 
 ## 정본 규칙
 

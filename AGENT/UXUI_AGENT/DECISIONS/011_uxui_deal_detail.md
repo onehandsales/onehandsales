@@ -1,4 +1,4 @@
-﻿# UX/UI Deal Detail Decision
+# UX/UI Deal Detail Decision
 
 ## 결정
 
@@ -29,7 +29,6 @@ Mobile:
 
 - 기본 정보
 - 활동 로그
-- 일정/회의록
 - 제품/연결 정보
 - Memo 기록
 
@@ -40,6 +39,3 @@ Mobile:
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
-
-
-

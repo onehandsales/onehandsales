@@ -2,7 +2,6 @@
 
 ## 1. 목적
 
-이 폴더는 화면 구조, 입력 방식, 검색, 딜 상세, 일정/회의록 연결, Admin UI 톤과 관련한 UX/UI 결정을 기록한다.
 
 ## 2. 현재 문서
 
@@ -13,7 +12,6 @@
 - `009_uxui_mobile_pipeline.md`
 - `010_uxui_search.md`
 - `011_uxui_deal_detail.md`
-- `012_uxui_schedule_meeting_link.md`
 - `013_uxui_next_action_due_state.md`
 - `014_uxui_admin_tone.md`
 - `015_uxui_list_filter_pagination.md`

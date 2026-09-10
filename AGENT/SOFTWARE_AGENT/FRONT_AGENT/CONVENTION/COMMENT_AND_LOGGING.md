@@ -74,7 +74,6 @@ Rules:
 - JSX 구조 설명용 `header`, `body` 같은 주석을 남발하지 않는다.
 - commented-out code를 남기지 않는다.
 - `console.log`를 사용하지 않는다.
-- phone, email, token, memo, meeting note body, deal amount를 plain text로 logging하지 않는다.
 
 ## 6. Review Checklist
 

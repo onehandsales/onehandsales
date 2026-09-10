@@ -121,7 +121,6 @@ AuthDevice 1 ─ N AuthSession
 | `displayName` | `String` | 예 | 없음 | 서비스에서 보여줄 이름. 기존 사용자 로그인 시 provider 이름으로 덮어쓰지 않는다. |
 | `role` | `UserRole` | 아니오 | `USER` | 사용자 권한 |
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
-| `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone ID. 일정 range 계산 기본값으로 사용한다. |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
 | `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이며, KR/US/CA 우선 전략에 맞춘 `CA` 지원은 후속 구현 범위다. |
 | `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 금액 입력 기본값과 Product/Deal currency fallback에 사용한다. 현재 구현은 `KRW/USD` 중심이며, `CAD` 지원은 후속 구현 범위다. |
@@ -141,13 +140,6 @@ Relations:
 - `oauthAccounts`: `UserOAuthAccount[]`
 - `authDevices`: `AuthDevice[]`
 - `authSessions`: `AuthSession[]`
-- `schedules`: `Schedule[]`
-- `scheduleDeals`: `ScheduleDeal[]`
-- `meetingNotes`: `MeetingNote[]`
-- `meetingNoteCompanies`: `MeetingNoteCompany[]`
-- `meetingNoteContacts`: `MeetingNoteContact[]`
-- `meetingNoteProducts`: `MeetingNoteProduct[]`
-- `meetingNoteDeals`: `MeetingNoteDeal[]`
 
 Indexes:
 
@@ -334,13 +326,6 @@ model User {
   oauthAccounts UserOAuthAccount[] // 연결된 외부 provider 계정들
   authDevices   AuthDevice[]       // 로그인 과정에서 등록된 기기들
   authSessions  AuthSession[]      // Backend refresh sessions
-  schedules     Schedule[]         // 사용자가 등록한 일정
-  scheduleDeals ScheduleDeal[]     // 사용자가 일정에 연결한 딜 매핑
-  meetingNotes         MeetingNote[]        // 사용자가 작성한 회의록
-  meetingNoteCompanies MeetingNoteCompany[] // 사용자가 회의록에 연결한 회사 snapshot
-  meetingNoteContacts  MeetingNoteContact[] // 사용자가 회의록에 연결한 담당자 snapshot
-  meetingNoteProducts  MeetingNoteProduct[] // 사용자가 회의록에 연결한 제품 snapshot
-  meetingNoteDeals     MeetingNoteDeal[]    // 사용자가 회의록에 연결한 딜 snapshot
 
   @@index([role])
   @@index([status])

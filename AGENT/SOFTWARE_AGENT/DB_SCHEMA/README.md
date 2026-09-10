@@ -1,40 +1,27 @@
 # DB Schema
 
-## 1. 목적
+현재 Prisma schema는 로그인 사용자 기준 핵심 CRM, 인증/세션, 제품 분석, 지원 접수 모델만 활성 범위로 둔다.
 
-이 폴더는 Backend 데이터베이스 구조의 정본을 관리한다.
+## Enums
 
-실제 source of truth는 `BE/prisma/schema.prisma`와 migration 파일이다. 이 폴더의 문서는 구현자와 기획자가 table 역할, 관계, column 의미를 빠르게 확인하기 위한 설명 문서다.
+- `UserRole`
+- `UserStatus`
+- `OAuthProvider`
+- `AuthSessionStatus`
+- `AuthDeviceStatus`
+- `AuthDeviceSlot`
+- `AiSuggestionPriority`
+- `DealActivityType`
+- `DealActivitySourceType`
+- `ProductAnalyticsEventSource`
+- `UserActivationStatus`
+- `ProductAnalyticsTargetType`
+- `ErrorReportStatus`
+- `SupportRequestType`
+- `SupportRequestStatus`
+- `PublicContactRequestStatus`
 
-## 2. 현재 문서
-
-- `AUTH_USER_SCHEMA.md`: Auth/User DB 구조
-- `COMPANY_SCHEMA.md`: Company DB 구조
-- `CONTACT_SCHEMA.md`: Contact DB 구조
-- `PRODUCT_SCHEMA.md`: Product DB 구조
-- `DEAL_SCHEMA.md`: Deal DB 구조
-- `SCHEDULE_SCHEMA.md`: Schedule DB 구조
-- `MEETING_NOTE_SCHEMA.md`: MeetingNote DB 구조
-- `ERROR_REPORT_SCHEMA.md`: User Web 에러 신고 DB 구조
-- `SUPPORT_REQUEST_SCHEMA.md`: User Web 지원 요청 DB 구조
-- `PUBLIC_CONTACT_REQUEST_SCHEMA.md`: 로그인 전 공개 문의 접수 DB 구조
-- `PRODUCT_ANALYTICS_SCHEMA.md`: Product Analytics raw event/snapshot DB 구조
-- `TIME_AND_TIMEZONE_POLICY.md`: DB/API/Frontend 시간과 timezone 처리 기준
-
-## 3. 현재 DB 범위
-
-Snapshot date: 2026-09-10
-
-현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, Error Report, Support Request, Product, Deal, DealActivity, Schedule, MeetingNote, Google Calendar integration, AI Weekly Sales Report/Follow-up, AI provider call log, Product Analytics 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/Schedule/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
-
-Auth/User 기준:
-
-- Supabase OAuth provider 계정은 `UserOAuthAccount`로 내부 `User`와 연결한다.
-- 앱 session은 `AuthSession`이 정본이며, refresh token 원문은 저장하지 않고 hash만 저장한다.
-- 현재 User Web은 `mobile`/`personal_laptop` device slot을 사용한다. 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
-- `signupCountryCode`/`lastLoginCountryCode`는 proxy geo header가 없으면 `null`일 수 있다.
-
-포함 table/model:
+## Models
 
 - `User`
 - `UserOAuthAccount`
@@ -50,13 +37,6 @@ Auth/User 기준:
 - `ContactDepartment`
 - `ContactMemoLog`
 - `ContactUserPrivateMemoLog`
-- `ErrorReportStatus`
-- `ErrorReport`
-- `SupportRequestType`
-- `SupportRequestStatus`
-- `SupportRequest`
-- `PublicContactRequestStatus`
-- `PublicContactRequest`
 - `Product`
 - `ProductCategory`
 - `ProductStatus`
@@ -68,119 +48,17 @@ Auth/User 기준:
 - `DealProduct`
 - `DealFollowingActionLog`
 - `DealMemoLog`
-- `Schedule`
-- `ScheduleDeal`
-- `MeetingNoteSourceType`
-- `MeetingNote`
-- `MeetingNoteCompany`
-- `MeetingNoteContact`
-- `MeetingNoteProduct`
-- `MeetingNoteDeal`
-- `ProductAnalyticsEventSource`
-- `UserActivationStatus`
-- `ProductAnalyticsTargetType`
+- `DealActivity`
 - `ProductAnalyticsEvent`
 - `UserActivationSnapshot`
 - `RetentionCohortSnapshot`
-- `DealActivity`
-- `ExternalCalendarConnection`
-- `ExternalCalendarSource`
-- `AiWeeklySalesReport`
-- `AiWeeklySalesReportSuggestion`
-- `AiJob`
-- `AiProviderCallLog`
-- `ExternalEmailConnection`
-- `ExternalEmailOAuthState`
-- `SmsSenderNumber`
-- `FollowUpConsentNotice`
-- `FollowUpMessage`
-- `FollowUpMessageTarget`
-- `FollowUpDeliveryAttempt`
+- `ErrorReport`
+- `SupportRequest`
+- `PublicContactRequest`
 
-현재 반영된 주요 migration:
+## 원칙
 
-- `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`
-- `BE/prisma/migrations/20260611010000_add_contact_domain/migration.sql`
-- `BE/prisma/migrations/20260611020000_add_product_domain/migration.sql`
-- `BE/prisma/migrations/20260612000000_add_deal_domain/migration.sql`
-- `BE/prisma/migrations/20260612010000_add_deal_product_join/migration.sql`
-- `BE/prisma/migrations/20260614010000_add_user_timezone/migration.sql`
-- `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
-- `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
-- `BE/prisma/migrations/20260617010000_make_meeting_note_meeting_at_required/migration.sql`
-- `BE/prisma/migrations/20260626010000_add_meeting_note_title/migration.sql`
-- `BE/prisma/migrations/20260623010000_add_deal_company_contact_joins/migration.sql`
-- `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
-- `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
-- `BE/prisma/migrations/20260626020000_add_meeting_note_soft_delete_columns/migration.sql`
-- `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
-- `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`
-- `BE/prisma/migrations/20260823010000_add_error_reports/migration.sql`
-- `BE/prisma/migrations/20260824010000_add_support_requests/migration.sql`
-- `BE/prisma/migrations/20260901010000_add_public_contact_requests/migration.sql`
-- `BE/prisma/migrations/20260901020000_rename_support_tables_to_pascal_case/migration.sql`
-- `BE/prisma/migrations/20260910010000_remove_admin_operation_only_schema/migration.sql`
-
-Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
-
-MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. AI 초안 provider와 STT provider는 application port로 분리되어 있으며, transcript, raw text, provider call log table은 후속 범위다.
-
-
-2026-09-10 기준 User Web DB foundation은 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 완료 archive를 따른다. Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment 관련 table은 아직 만들지 않았고 `TODO/PADDLE_PLAN`에서 베타 이후 confirmed scope로 확정한다.
-
-## 4. 현재 DB 기준 구현 완료/참조 Backend TODO
-
-- `TODO/DONE/AUTH_FE_INTEGRATION_PLAN/BE-TODO/G01-BE-USER-PROFILE-DEVICES.goal.md`
-- `TODO/DONE/COMPANY_DOMAIN_PLAN/BE-TODO/G01-BE-COMPANY-DOMAIN.goal.md`
-- `TODO/DONE/CONTACT_DOMAIN_PLAN/BE-TODO/G01-BE-CONTACT-DOMAIN.goal.md`
-- `TODO/DONE/PRODUCT_DOMAIN_PLAN/BE-TODO/G01-BE-PRODUCT-DOMAIN.goal.md`
-- `TODO/DONE/DEAL_DOMAIN_PLAN/BE-TODO/G01-BE-DEAL-DOMAIN.goal.md`
-- `TODO/DONE/SCHEDULE_DOMAIN_PLAN/BE-TODO/G01-BE-SCHEDULE-DOMAIN.goal.md`
-- `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/BE-TODO/G01-BE-MEETING-NOTE-DOMAIN.goal.md`
-- `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
-- `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/07_MEETING_NOTE_AI_PROVIDER_LOG`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
-
-## 5. 아직 포함되지 않은 DB 범위
-
-- `UserSetting`
-- 계정 영구 삭제 예약 column/table
-- 유료 영구 삭제 복구 예약 column/table
-- MeetingNote AI/STT transcript/raw text 영구 저장 table
-- Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment table은 `TODO/PADDLE_PLAN`에서 베타 이후 확정한다.
-
-## 6. 관리 규칙
-
-- 실제 Prisma schema를 수정하면 이 폴더 문서도 함께 갱신한다.
-- migration을 추가하거나 이미 적용된 DB 구조를 바꾸면 관련 schema 문서와 API 문서를 함께 갱신한다.
-- 신규 table을 만들 때 snake_case table 이름을 위한 `@@map("...")`을 사용하지 않는다. `@@map`은 기존 DB 호환, 외부 DB 연동, 명시적인 아키텍처 결정 문서가 있는 경우에만 예외적으로 허용한다.
-- migration 디렉터리/파일 이름은 snake_case를 유지하지만, `CREATE TABLE` 대상 이름은 Prisma model 이름과 동일한 PascalCase로 작성한다.
-- table/column을 추가할 때 역할, nullable 여부, 기본값, 관계, index 의도를 기록한다.
-- 시간 column을 추가하거나 API 시간 필드를 설계할 때는 `TIME_AND_TIMEZONE_POLICY.md`를 따른다.
-- `createdAt`, `updatedAt` 같은 시스템 시각은 UTC 기준으로 저장한다.
-- 일정의 `startAt`, `endAt`은 사용자 입력 local date-time과 IANA `timeZone`을 해석해 DB에는 UTC instant로 저장한다.
-- date-only 값은 Prisma `DateTime @db.Date`를 사용한다.
-
-## 7. 관련 문서
-
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DEAL_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SCHEDULE_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/MEETING_NOTE_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/ERROR_REPORT_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SUPPORT_REQUEST_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PUBLIC_CONTACT_REQUEST_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
+- 모든 업무 row는 `userId` ownership을 가진다.
+- Company/Contact/Product/Deal과 관련 로그는 soft delete 컬럼으로 휴지통을 구현한다.
+- 별도 Trash table은 두지 않는다.
+- Product Analytics raw event는 사용자 삭제 시 같이 정리하고, cohort snapshot은 aggregate로 보관한다.

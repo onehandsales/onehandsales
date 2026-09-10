@@ -92,20 +92,13 @@ Google Cloud OAuth authorized redirect URIs:
 
 ```text
 https://<project-ref>.supabase.co/auth/v1/callback
-http://localhost:3000/api/schedules/google/callback
-http://localhost:3000/api/follow-up-delivery/email-connections/google/callback
-https://onehandsales-production.up.railway.app/api/schedules/google/callback
-https://onehandsales-production.up.railway.app/api/follow-up-delivery/email-connections/google/callback
 ```
 
 If Backend later moves to `https://api.onehandsales.com`, add these redirect URIs before switching production traffic:
 
 ```text
-https://api.onehandsales.com/api/schedules/google/callback
-https://api.onehandsales.com/api/follow-up-delivery/email-connections/google/callback
 ```
 
-When separate Google OAuth clients are used for Supabase login, Google Calendar, and follow-up email delivery, put only the relevant origins/redirect URIs into each client. Do not remove the Supabase callback or Railway callbacks until the production smoke for the replacement domain has passed.
 
 ## Locale And Country Metadata
 

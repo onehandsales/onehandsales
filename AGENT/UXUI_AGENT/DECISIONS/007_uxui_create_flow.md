@@ -1,4 +1,4 @@
-﻿# UX/UI Create Flow Decision
+# UX/UI Create Flow Decision
 
 ## 결정
 
@@ -82,5 +82,3 @@ Deal:
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
-
-

@@ -1,4 +1,4 @@
-﻿# UX/UI Admin Tone Decision
+# UX/UI Admin Tone Decision
 
 ## 결정
 
@@ -21,6 +21,3 @@ Admin은 사용자 앱처럼 빠르고 부드러운 입력 경험보다 권한 �
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-
-
-

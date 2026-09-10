@@ -12,7 +12,6 @@ Backend 테스트는 `BE` 내부에서 관리한다.
 - request validation과 DTO whitelist
 - trash retention과 restore
 - deal stage/activity logging
-- meeting note to deal activity integration
 
 ## 2. 이유
 

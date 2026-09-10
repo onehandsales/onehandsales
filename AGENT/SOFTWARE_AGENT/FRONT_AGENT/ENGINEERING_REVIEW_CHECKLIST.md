@@ -1,50 +1,12 @@
-# Front 엔지니어링 리뷰 체크리스트
+# Frontend Engineering Review Checklist
 
-## 1. 목적
-
-이 문서는 User Web과 Admin Web 구현 결과를 검토할 때 사용하는 Frontend 품질 기준이다.
-
-## 2. Frontend User Web 체크리스트
-
-- 서버 상태는 TanStack Query로 관리되는가?
-- feature 내부 API 호출은 `src/lib/api-client.ts`의 앱 API client를 사용하는가?
-- form validation은 React Hook Form과 Zod를 사용하는가?
-- route state가 필요한 목록 필터는 URL search params에 반영되는가?
-- 다른 feature의 internal file을 직접 import하지 않는가?
-- User Web에서 일반 `/api/*` 계약만 호출하는가?
-- User Web API client가 실제 Backend `/api/*` contract와 맞는가?
-- 시간 필드는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`의 UTC instant + IANA `timeZone` 기준을 따르는가?
-- 일정 생성/수정 form은 사용자 입력 local date-time과 IANA `timeZone`을 함께 보내고, 입력값을 `toISOString()`으로 임의 변환하지 않는가?
-- Backend에서 받은 UTC ISO string은 일정/사용자/조직 timezone으로 변환해 표시하는가?
-- Company 화면/API 작업 시 `companyName`, `companyFieldId`, `companyRegionId`, memo/private memo contract가 Backend와 맞는가?
-- User Web 화면이 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 Notion + Attio 기준을 따라 workspace/page/database/detail과 CRM record/linked record 맥락을 함께 보여주는가?
-- 모바일에서 딜 파이프라인이 카드형 리스트로 동작하는가?
-- Frontend component/function/hook에 `// 기능 : ...` 주석이 있는가?
-
-## 3. Admin Web 체크리스트
-
-- Admin Web은 `GET /admin/api/me`만 호출하는가?
-- Admin Web에서 일반 User API인 `/api/*`를 호출하지 않는가?
-- Admin Web에서 호출하는 API가 현재 Backend에 구현되어 있는가?
-- 보호 route가 Backend 응답 기준으로 관리자 권한을 확인하는가?
-- 사용자 웹의 feature 내부 구현을 직접 import하지 않는가?
-
-## 4. 테스트 체크리스트
-
-- User Web 핵심 smoke E2E가 있는가?
-- Admin Web auth/role smoke E2E가 변경된 라우터 기준과 맞는가?
-- 외부 Provider는 E2E에서 mock/stub 처리되는가?
-
-## 5. 배포 체크리스트
-
-- User Web과 Admin Web은 Vercel에서 별도 프로젝트로 배포되는가?
-- production secret이 Frontend `.env`에 들어가지 않는가?
-- 배포 전 User Web 전체 E2E와 Admin Web 현재 route smoke E2E를 실행할 수 있는가?
-
-## 6. 관련 문서
-
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/DEPLOYMENT.md`
-- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
+- TypeScript 오류가 없는가?
+- lint 오류가 없는가?
+- route와 navigation이 현재 활성 기능만 노출하는가?
+- access token 만료/복구 흐름이 깨지지 않는가?
+- list query key에 검색, 필터, 정렬, 페이지가 포함되는가?
+- mutation 이후 관련 query invalidate가 충분한가?
+- 회사/담당자/제품/딜 생성 flow가 `/new`와 `/new/full` 양쪽에서 동작하는가?
+- 딜 다음 행동과 활동 로그 UI가 상태 변경 후 즉시 갱신되는가?
+- 모바일 viewport에서 주요 버튼과 텍스트가 겹치지 않는가?
+- E2E smoke가 현재 route 기준으로 갱신되어 있는가?

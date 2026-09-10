@@ -27,7 +27,7 @@
 - mutation, 민감정보, 외부 Provider API에 observability 항목이 작성되어 있는가?
 - structured log event key, request id, redaction 기준이 정의되어 있는가?
 - 외부 Provider 실패는 provider, retry 가능 여부, 안전한 error context로 남길 수 있는가?
-- Domain layer가 NestJS, Prisma, OpenAI, HTTP SDK를 import하지 않는가?
+- Domain layer가 NestJS, Prisma, HTTP SDK를 import하지 않는가?
 - 사용자 소유 데이터 조회와 mutation에 `userId` 필터가 있는가?
 - 구현한 API가 User Web/Admin Web의 실제 API client 계약과 일치하는가?
 - 시간 필드는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`의 UTC instant + IANA `timeZone` 기준을 따르는가?
@@ -35,14 +35,12 @@
 - API 계약에서 시간 필드가 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 무엇인지 명시되어 있는가?
 - Company API 변경 시 `FE/user-web/src/features/company/api/company-api.ts`의 요청/응답 필드가 Backend controller와 맞는가?
 - Admin Web용 API를 추가할 때 `FE/admin-web`의 현재 범위와 별도 제품 결정을 먼저 확인했는가?
-- 단계 변경, 회의록 딜 연결처럼 부수 효과가 필요한 흐름이 같은 transaction에서 처리되는가?
 
 ## 3. 테스트 체크리스트
 
 - user ownership isolation 테스트가 있는가?
 - AdminGuard 테스트가 있는가?
 - 딜 단계 변경 시 활동 로그 생성 테스트가 있는가?
-- 회의록 딜 연결 시 활동 로그 생성 테스트가 있는가?
 - 외부 Provider는 기본 테스트에서 mock/stub 처리되는가?
 
 ## 4. 배포 체크리스트

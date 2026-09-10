@@ -23,7 +23,6 @@
 - 완료
 - 미루기
 - 날짜 변경
-- 일정 추가
 - 활동 로그 추가
 
 ## 시각 방향
@@ -38,6 +37,3 @@
 - `AGENT/UXUI_AGENT/DECISIONS/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
-
-
-

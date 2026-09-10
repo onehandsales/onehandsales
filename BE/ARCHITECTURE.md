@@ -15,12 +15,8 @@ Active modules:
 - `contact`: user-owned contact, company option, department/job grade, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
 - `product`: user-owned product, product category/status, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
 - `deal`: user-owned deal, company/contact/product links, stage counts, `DealActivity`, following action logs, memo logs, soft delete, trash restore, xlsx export.
-- `schedule`: user-owned schedule, month/week list, weekly report/xlsx export, deal links, Google Calendar read-only sync, soft delete, trash restore.
-- `meeting-note`: user-owned meeting note, snapshot links, manual CRUD, AI/STT draft, next-action/follow-up draft, saved-note deal linking, soft delete, trash restore.
-- `follow-up`: follow-up message draft/send/retry/history, email provider connection, SMS sender number, and consent notice foundation.
-- `sales-report`: AI weekly sales report generation, list/detail, and snapshot summary.
-- `analytics`: product analytics client event collection, activation/retention snapshots, and AI usage summary foundation.
-- `search`: integrated search over company, contact, product, deal, schedule, and meeting note data.
+- `analytics`: product analytics client event 수집, activation/retention snapshot.
+- `search`: integrated search over company, contact, product, and deal data.
 - `trash`: 7-day trash list/detail/restore for supported entities and logs.
 - `health`: health check endpoint.
 

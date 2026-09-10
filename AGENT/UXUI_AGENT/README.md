@@ -14,7 +14,6 @@
 - 검색 UX
 - 빠른 등록과 inline creation
 - 딜 상세 UX
-- 일정/회의록 연결 UX
 - Admin UI 톤
 - 모바일 화면 패턴
 - 외부 UX reference 적용 규칙
@@ -58,4 +57,3 @@ UXUI_AGENT/
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `TODO/DONE/MVP-STARTER_PLAN/FE-TODO/README.md`
-

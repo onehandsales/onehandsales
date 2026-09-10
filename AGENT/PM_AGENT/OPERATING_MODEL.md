@@ -1,4 +1,4 @@
-﻿# 에이전트 운영 모델
+# 에이전트 운영 모델
 
 ## 1. 목적
 
@@ -64,5 +64,3 @@ TODO 계획 문서는 큰 작업을 한 번에 실행하지 않기 위한 안전
 - `AGENT/PM_AGENT/README.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/DECISIONS/README.md`
-
-

@@ -1,24 +1,21 @@
 # Backend Modules
 
-This folder contains Backend feature modules. The current baseline is a single NestJS modular monolith with User API modules and admin auth verification support.
+현재 활성 Backend module은 로그인 사용자 기준의 핵심 영업 데이터와 지원 접수 기능에 집중한다.
 
-Current modules:
+| Module | 책임 |
+| --- | --- |
+| `auth` | OAuth token exchange, refresh session, logout, current user 인증 |
+| `user` | 내 프로필, OAuth 계정, 로그인 기기/세션 관리 |
+| `company` | 회사 CRUD, 옵션, 메모/비밀 메모, 딜 연결 조회, export |
+| `contact` | 담당자 CRUD, 옵션, 메모/비밀 메모, 딜 연결 조회, export |
+| `product` | 제품 CRUD, 옵션, 메모/비밀 메모, 딜 연결 조회, export |
+| `deal` | 딜 CRUD, 회사/담당자/제품 연결, 다음 행동, 메모, 활동 로그, export |
+| `search` | 회사/담당자/제품/딜 통합검색 |
+| `trash` | 활성 도메인 soft delete row의 목록/상세/복구 |
+| `analytics` | 제품 분석 이벤트와 activation/retention snapshot |
+| `error-report` | User Web 오류 신고 접수 |
+| `support-request` | User Web 지원 문의 접수 |
+| `public-contact-request` | 로그인 전 공개 문의 접수 |
+| `health` | 상태 확인 |
 
-| Module | Purpose |
-|---|---|
-| `auth` | Supabase token exchange, App token, session, device registration |
-| `user` | Current user profile and registered device lookup |
-| `company` | User-owned company, company field/region, memo log, encrypted private memo log APIs, linked contacts/deals, xlsx export |
-| `contact` | User-owned contact, company option, department/job grade, memo log, encrypted private memo log APIs, linked deals, xlsx export |
-| `product` | User-owned product, product category/status, memo log, encrypted private memo log APIs, linked deals, xlsx export |
-| `deal` | User-owned deal, company/contact/product links, `DealActivity`, following action log, memo log, soft delete APIs, xlsx export |
-| `schedule` | User-owned schedule, month/week list, weekly report/xlsx export, schedule-deal link, Google Calendar read-only sync, soft delete APIs |
-| `meeting-note` | User-owned meeting note, snapshot links, manual CRUD, AI/STT draft, next-action/follow-up draft, saved-note deal linking |
-| `follow-up` | Follow-up message draft/send/retry/history and delivery settings |
-| `sales-report` | AI weekly sales report generation/list/detail/snapshot summary |
-| `analytics` | Product analytics client event collection and snapshot/AI usage summary foundation |
-| `search` | Integrated search over company, contact, product, deal, schedule, and meeting note data |
-| `trash` | 7-day trash list/detail/restore for supported entities and logs |
-| `health` | Lightweight health endpoint |
-
-Deferred scope: Paddle/Billing, B2B tenant/team features, paid recovery/hard purge policy.
+관리자 영역은 `GET /admin/api/me` 권한 확인만 유지한다.

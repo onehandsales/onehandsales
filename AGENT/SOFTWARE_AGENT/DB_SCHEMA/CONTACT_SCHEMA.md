@@ -28,7 +28,6 @@ ContactDepartment 1 ─ N Contact
 Contact 1 ─ N ContactMemoLog
 Contact 1 ─ N ContactUserPrivateMemoLog
 Contact 1 ─ N DealContact
-Contact 1 ─ N MeetingNoteContact
 ```
 
 관계 요약:
@@ -39,7 +38,6 @@ Contact 1 ─ N MeetingNoteContact
 - `ContactMemoLog`는 담당자 일반 메모 로그다.
 - `ContactUserPrivateMemoLog`는 담당자별 사용자 비밀 메모 로그다.
 - `Deal`은 특정 담당자와 진행하는 딜이다.
-- `MeetingNoteContact`는 회의록 작성 시점의 담당자 snapshot 연결이다.
 
 ## 3. 현재 제외한 구조
 
@@ -49,7 +47,6 @@ Contact 1 ─ N MeetingNoteContact
 - 회사 소속 없는 담당자 모델
 - 담당자 부서/직급 수정 API
 - 담당자 목록의 최근 수정일 응답
-- 담당자 상세 응답 자체에 딜 수, 제품 수, 일정 수, 회의록 수를 병합하는 구조
 - 기존 `ContactLog` 방식
 - 기존 공통 `PersonalMemo(targetType=CONTACT)` 방식
 
@@ -85,7 +82,6 @@ Relations:
 - `memoLogs`: `ContactMemoLog[]`
 - `privateMemoLogs`: `ContactUserPrivateMemoLog[]`
 - `dealContacts`: `DealContact[]`
-- `meetingNoteContacts`: `MeetingNoteContact[]`
 
 Indexes:
 

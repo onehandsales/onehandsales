@@ -12,7 +12,6 @@ Notion식 작업공간 UX + Attio식 CRM record 관계 UX
 
 이 결정은 화면, Frontend 구현, 사용자 노출 흐름, UX/UI QA, 화면이 연결된 API/DB 설계에서 항상 참고한다.
 
-순수 Backend 내부 리팩터링처럼 사용자 화면과 직접 관련이 없는 작업도 이 결정과 충돌하는 데이터 구조나 API 표현을 만들지 않는지 빠르게 확인한다. 화면, 문구, 목록, 상세, 생성, 검색, 연결 record, 활동/메모/회의록 흐름에 조금이라도 영향이 있으면 이 문서를 반드시 먼저 읽는다.
 
 ## 2. Notion에서 가져올 것
 
@@ -31,9 +30,7 @@ Notion은 전체 작업공간 문법의 1차 기준이다.
 
 Attio는 CRM record와 관계 구조의 1차 기준이다.
 
-- 회사, 담당자, 제품, 딜, 일정, 회의록을 각각 열 수 있는 record처럼 다루는 방식
 - record 간 관계를 화면에서 분명히 보여주는 linked record 구조
-- 회사 ↔ 담당자 ↔ 딜 ↔ 일정/회의록 연결 흐름
 - property-first 상세 화면
 - activity timeline 또는 activity-like section
 - notes/tasks처럼 record에 붙는 업무 맥락
@@ -46,11 +43,8 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 
 따라서 Notion과 Attio의 패턴을 참고하되, 아래 기준을 유지한다.
 
-- `Company`, `Contact`, `Product`, `Deal`, `Schedule`, `MeetingNote`는 고정된 영업 도메인 record다.
 - 사용자가 custom object나 custom field를 자유롭게 만드는 제품으로 확장하지 않는다.
-- 회사/담당자/제품/딜/일정/회의록의 DB/API validation, ownership, soft delete, transaction 기준을 약화하지 않는다.
 - 목록은 Notion database처럼 조용하고 조밀하게 보이되, Attio처럼 record 관계와 업무 상태를 분명히 보여준다.
-- 상세는 Notion page처럼 읽히되, Attio record page처럼 속성, 관계, 활동, 메모, 일정/회의록 맥락이 먼저 보인다.
 - 시각 톤은 Notion처럼 화이트/중립 그레이를 기본으로 한다. 선택 navigation/active tab은 회색 중심이며, 파랑은 전역 active identity로 쓰지 않는다.
 - 아이콘 컬러는 도메인/메뉴 인식 또는 상태 의미를 보조할 때만 제한적으로 사용한다.
 - 딜은 핵심 workflow record다. 딜 목록과 상세에서 단계, 금액, 다음 행동, 마감일, 연결 회사/담당자/제품이 즉시 보여야 한다.
@@ -60,7 +54,6 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 
 ## 4A. Record Table Density 기준
 
-현재 onehand.sales의 회사, 담당자, 제품, 딜, 회의록 목록은 이미 record table 구조에 가깝다. 따라서 후속 작업은 "record table로 새로 바꾸는 작업"이 아니라, 기존 record table을 더 조용하고 조밀한 Notion database table과 Attio식 CRM linked record 기준으로 다듬는 작업이다.
 
 목록 UX 판단 기준:
 
@@ -80,7 +73,6 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - 회사: 회사명, 분야, 지역, 담당자, 진행 딜, 다음 행동 또는 현재 응답에서 가능한 최근 활동
 - 담당자: 이름, 회사, 부서/직급, 연락처, 연결 딜, 현재 응답에서 가능한 최근 활동
 - 제품: 제품명, 카테고리/타입, 연결 딜 수, 현재 응답에서 가능한 최근 활동 또는 사용 맥락
-- 회의록: 제목/요약, 연결 회사/담당자/딜, 작성일, 다음 행동 맥락
 
 ## 5. 가져오지 않을 것
 
@@ -93,7 +85,6 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 
 ## 6. 작업 전 확인 규칙
 
-화면, Frontend, UX/UI, 사용자 노출 문구, route, list/detail, create/edit, search/filter, linked record, meeting note, schedule, deal 흐름이 포함된 작업은 시작 전에 아래 문서를 함께 본다.
 
 1. `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
 2. `AGENT/UXUI_AGENT/DECISIONS/015_uxui_list_filter_pagination.md`
