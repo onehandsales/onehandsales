@@ -13,7 +13,7 @@ User Web, Admin Web, 화면 상태 관리, API client 경계, 폼 검증, E2E, f
 - Frontend 코드 컨벤션
 - Frontend 주석/로깅 규칙
 - User Web과 Admin Web의 API client 분리
-- TanStack Query, React Hook Form, Zod 기준
+- User Web의 TanStack Query, React Hook Form, Zod 기준
 - Playwright E2E 기준
 - Vercel 배포 기준
 - Frontend 기술 결정 기록
@@ -46,11 +46,11 @@ FRONT_AGENT/
 - 화면, Frontend, 사용자 노출 흐름 작업은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 먼저 확인한다.
 - User Web과 Admin Web은 별도 앱으로 유지한다.
 - User Web은 `/api/*`만 호출한다.
-- Admin Web은 `/admin/api/*`만 호출한다.
-- 서버 상태는 TanStack Query로 관리한다.
-- 폼 검증은 React Hook Form과 Zod를 기준으로 한다.
+- Admin Web은 현재 `GET /admin/api/me`만 호출한다.
+- User Web의 서버 상태는 TanStack Query로 관리한다.
+- User Web의 폼 검증은 React Hook Form과 Zod를 기준으로 한다.
 - 실제 Backend 미구현 영역은 mock/placeholder 경계를 문서와 코드에서 명확히 둔다.
-- 2026-08-11 PM 전략 기준으로, Global B2C 01~11 foundation은 완료 archive다. 지금은 새 결제 화면을 늘리기보다 기존 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비를 먼저 진행한다.
+- 2026-09-10 기준 Admin Web은 관리자 권한 확인 전용으로 축소되어 있다. 지금은 기존 User Web 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비를 먼저 진행한다.
 
 ## 6. 현재 구현 스냅샷
 
@@ -58,20 +58,17 @@ Snapshot date: 2026-08-24
 
 User Web:
 
-- 실제 API 연동 완료: URL locale Public/Auth site, Auth/User, Home(`/app`), Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, Product Analytics, Account request, Help Error Report, Help Support Request, Company/Contact/Product/Deal domain xlsx export.
-- mock/placeholder 경계: generic Export route/API, Billing/Paddle, Billing Admin, B2B tenant/team admin.
+- 실제 API 연동 완료: URL locale Public/Auth site, Auth/User, Home(`/app`), Company, Contact, Product, Deal, Schedule, MeetingNote manual CRUD, MeetingNote AI/STT draft, MeetingNote deal link, Search, Trash, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, Product Analytics, Help Error Report, Help Support Request, Company/Contact/Product/Deal domain xlsx export.
 - Auth/User: 개발용 mock login은 제거되었고, Supabase OAuth provider login과 Backend token exchange가 정본이다. Public/auth canonical URL은 `/{locale}` 계열을 사용하고 기존 `/login` 등은 선호 locale URL로 redirect한다. 로그인/회원가입 provider 버튼은 Google/LINE/Apple 카드형 버튼이며 가능한 경우 browser popup으로 OAuth를 시작하고, popup이 차단되면 기존 full-page redirect로 fallback한다.
 - 08 G03 App I18N foundation은 public/auth URL locale i18n과 `/app` 내부 i18n을 분리한다. public-site i18n은 `FE/user-web/src/features/public-site/i18n`에 유지하고, `/app` 문구/formatter 기반은 `FE/user-web/src/features/app-i18n`에서 `User.preferredLocale`, `User.timeZone`, `User.countryCode`, `User.defaultCurrencyCode` 기준으로 처리한다. `/app` route에는 locale prefix를 붙이지 않는다.
 - Auth device/session: 현재 User Web은 `mobile`/`personal_laptop` slot만 보내며 같은 slot의 다른 기기 로그인은 기존 active device/session을 교체한다.
-- BusinessCard OCR 화면은 `/app/business-cards`다. 목록은 등록일 최신순 고정, 상태 다중 필터와 `상태 초기화`를 제공하고, `명함스캔` 모달은 이미지 업로드 -> 진행 표시 -> 추출 결과 확인/수정 -> 저장 흐름을 사용한다.
-- DataImport 화면은 `/app/import`와 `/app/import/:importUserLogId`다. 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회를 실제 API와 연결한다. 딜 import 회사/담당자/제품 보정 배열은 현재 FE API와 BE controller/application/repository confirm 경로에 연결되어 있다.
 - 생성 route 기준: 회사/담당자/제품/딜은 목록 맥락의 `/app/<domain>/new`와 page-mode 확장 route `/app/<domain>/new/full`을 함께 가진다. 회의록은 `/app/meeting-notes/new`가 `?create=1`로 redirect하고 `/app/meeting-notes/new/full`이 page-mode 작성 route다.
-- 2026-08-11 기준 Global B2C 01~11 Frontend foundation은 완료 archive다. 세부 검증 이력은 각 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/*` closeout 문서를 따른다.
+- 2026-09-10 기준 Admin Web은 `/login`, `/`, `GET /admin/api/me`만 유지한다.
 
 Admin Web:
 
-- 실제 API 연동 완료: 11 Admin Operation foundation. 활성 route는 `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/account-requests`, `/trash/recovery-requests`, `/analytics`, `/audit-logs`, `/system`이다.
-- 후속 작업: Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin, 운영 mutation 확대.
+- 실제 API 연동 완료: `GET /admin/api/me`.
+- 현재 route는 `/login`과 보호 route `/`이다.
 
 ## 7. 관련 문서
 

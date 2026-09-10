@@ -22,18 +22,10 @@
 4. 빠른 등록 모달로 제품을 등록한다.
 5. 필요 시 상세 페이지에서 추가 정보를 보강한다.
 
-### Flow 2. 명함스캔
 
-1. 사용자가 사이드바 `명함 스캔` 또는 모바일 더보기에서 `/app/business-cards`로 이동한다.
-2. 명함 스캔 전체 내역을 확인한다. 목록은 등록일 최신순 고정이며 별도 정렬 필터를 두지 않는다.
 3. 필요한 경우 상태 다중 필터에서 `확인 필요`, `저장 완료`, `등록 실패`를 고르거나 `상태 초기화`로 전체 상태를 다시 본다.
-4. 우측 상단 `+` 버튼을 눌러 `명함스캔` 모달을 연다.
-5. 최초 모달에는 명함 이미지 업로드 영역만 보여준다.
-6. 사용자가 `명함스캔`을 누르면 OpenAI OCR 요청을 보내고 이미지 영역 위에 `명함스캔 중` 진행 표시를 보여준다. 요청 중에는 사진 교체/삭제와 모달 닫기를 막는다.
-7. OCR 성공 후에는 추출 결과 확인/수정 폼만 보여준다.
 8. 사용자가 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급을 확인/수정한다. 휴대폰은 현재 한국 휴대폰 형식 중심이며, 다국가 전화번호 입력/검증 모델은 후속 검토한다.
 9. 저장 시 Backend가 기존 회사/담당자를 재사용하거나 없으면 생성한다. 회사 없는 담당자 저장은 허용하지 않는다.
-10. 성공/실패/확정 로그는 `BusinessCardScanLog`에 남기고, 업로드 이미지는 저장하지 않는다.
 
 ### Flow 3. 딜 관리
 
@@ -50,7 +42,6 @@
 
 1. 사용자가 일정을 등록한다.
 2. 딜/회사/담당자와 연결한다.
-3. 알림 기본값을 확인하거나 수정한다.
 4. 일정 기본 화면에서 이번 달 월간 캘린더를 확인한다.
 5. 같은 일정 화면에서 월간/목록 중심으로 확인한다.
 6. 주간 보고서 화면, PDF, Excel 출력은 후속 범위로 둔다.
@@ -73,23 +64,12 @@
 7. 저장 후 필요 시 회의록 상세에서 영업 딜과 연동한다.
 8. 딜 연동 성공 후 딜 활동기록에 회의록 링크와 요약이 표시된다.
 
-### Flow 7. Import
-
-1. 사용자가 `/app/import`에서 회사/담당자/제품/딜 중 불러오기 대상을 선택한다.
-2. 필요한 양식을 내려받거나 기존 CSV/XLSX 파일을 업로드한다.
-3. AI가 컬럼을 자동 매핑한다. provider 실패 시 규칙 기반 매핑으로 보완한다.
-4. 사용자가 매핑 결과와 row 검증 결과를 확인/수정한다.
-5. 담당자 불러오기에서 새 회사 생성이 필요하면 보정값을 입력한다. 딜 불러오기에서 새 회사/담당자/제품 보정값은 FE API와 BE confirm 경로로 전달한다.
-6. Import를 확정한다.
-7. 성공 내역 목록과 상세 row snapshot을 확인한다.
-
-### Flow 8. Export
+### Flow 7. Export
 
 1. 사용자가 회사/담당자/제품/딜 목록 화면에서 `엑셀 다운로드`를 누른다.
 2. 현재 목록의 검색어, 필터, 정렬 조건을 기준으로 xlsx 파일을 다운로드한다.
-3. 범용 `/app/export` 화면, PDF, 민감 데이터 포함 export는 현재 정본 흐름이 아니며 후속 결정 전까지 숨긴다.
 
-### Flow 9. 통합검색
+### Flow 8. 통합검색
 
 1. 사용자가 상단 통합검색에 키워드를 입력한다.
 2. 회사/담당자/제품/딜/일정/회의록 결과가 유형별로 표시된다.
@@ -131,7 +111,6 @@
 | `/app/contacts/new` | 담당자 생성 | 포함. 담당자 목록을 유지하고 생성 패널을 초기 open 상태로 표시 |
 | `/app/contacts/new/full` | 담당자 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
 | `/app/contacts/:id` | 담당자 상세 | 포함 |
-| `/app/contacts/scan` | 명함 스캔 legacy redirect | `/app/business-cards`로 redirect |
 | `/app/products` | 제품 목록 | 포함 |
 | `/app/products/new` | 제품 생성 | 포함 |
 | `/app/products/new/full` | 제품 생성 확장 화면 | 포함. 패널에서 확대한 page-mode 생성 route |
@@ -147,13 +126,8 @@
 | `/app/meeting-notes/new` | 회의록 작성 | `/app/meeting-notes?create=1`로 redirect |
 | `/app/meeting-notes/new/full` | 회의록 작성 확장 화면 | 포함. page-mode 작성 route |
 | `/app/meeting-notes/:meetingNoteId` | 회의록 상세 | 포함 |
-| `/app/import` | 데이터 업로드/불러오기 | 포함 |
-| `/app/import/:importUserLogId` | 데이터 업로드 성공 내역 상세 | 포함 |
-| `/app/export` | 범용 Export 작업 | 보류. 현재 `/app`으로 redirect하며 export는 각 도메인 목록의 엑셀 다운로드로 처리 |
 | `/app?account=settings` | 계정 설정 모달 | 포함. `/app/settings` 사용자-facing route는 제거됨 |
 | `/app/more` | 더보기 | 포함 |
-| `/app/business-cards` | 명함 스캔 내역/명함스캔 | 포함 |
-| `/app/notifications` | 알림 | 포함. 알림 bell 진입점과 `NotificationsPage`로 활성 제공 |
 | `/app/trash` | 휴지통 | 포함 |
 | `/search` | 통합검색 결과 | 전용 라우트 없음 |
 
@@ -162,23 +136,12 @@
 | 경로 | 화면 | MVP |
 |---|---|---|
 | `/login` | Admin 로그인 | 포함 |
-| `/` | Admin root placeholder | 부분 포함 |
-| `/users`, `/users/:userId` | 사용자 목록/상세 | 포함 |
-| `/users/:userId/domain` | 사용자 도메인 read-only 탭 | 포함 |
-| `/users/:userId/trash` | 사용자 Trash | 포함 |
-| `/provider-failures` | Provider failure 운영 | 포함 |
-| `/account-requests` | 계정/데이터 요청 queue | 포함 |
-| `/trash/recovery-requests` | Trash 복구 요청 queue | 포함 |
-| `/analytics` | 사용량 분석 | 포함 |
-| `/audit-logs` | 감사 로그 | 포함 |
-| `/system` | 운영 gate | 포함 |
-| `/organizations` | 조직 관리 | 보류. 현재 `/`로 redirect |
-| `/subscriptions` | 구독 관리 | 보류. 현재 `/`로 redirect |
-| `/support` | 운영 지원 | 보류. 현재 `/`로 redirect |
+| `/` | 관리자 권한 확인 화면 | 포함 |
+| `*` | `/` redirect | 포함 |
 
 ## 4. 현재 코드 라우트 상태
 
-> 최종 업데이트: 2026-08-23
+> 최종 업데이트: 2026-09-10
 
 현재 User Web router 기준 실제 구현 경로:
 
@@ -187,10 +150,7 @@
 - 추후 확장 후보 locale slug: `ja`, `en-gb`, `en-sg`, `en-au`
 - legacy public/auth redirect: `/`, `/login`, `/signup`, `/pricing`, `/contact`, `/about`, `/security`, `/terms`, `/privacy`는 선호 locale URL로 이동한다.
 - OAuth callback: `/auth/callback`은 locale prefix 없이 유지한다.
-- legacy redirect: `/companies`, `/contacts`, `/products`, `/deals`, `/schedules`, `/meeting-notes`, `/business-cards`, `/import`, `/trash`, `/more` 및 각 상세/생성/`new/full` 경로는 대응되는 `/app/*`로 이동한다. `/settings` legacy route는 계정 설정 모달 이관 후 제거됐다.
-- 보호 앱 활성 route: `/app`, `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`, `/app/contacts`, `/app/contacts/new`, `/app/contacts/new/full`, `/app/contacts/:contactId`, `/app/products`, `/app/products/new`, `/app/products/new/full`, `/app/products/:productId`, `/app/deals`, `/app/deals/new`, `/app/deals/new/full`, `/app/deals/:dealId`, `/app/schedules`, `/app/schedules/week`, `/app/schedules/:scheduleId`, `/app/meeting-notes`, `/app/meeting-notes/new`, `/app/meeting-notes/new/full`, `/app/meeting-notes/:meetingNoteId`, `/app/business-cards`, `/app/notifications`, `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`, `/app/trash`, `/app/more`
 - 계정 설정 진입점: `/app?account=settings` query contract를 사용해 현재 업무 화면 위에서 계정 모달 `Settings`를 연다.
-- redirect/future 경계: `/contacts/scan`과 `/app/contacts/scan`은 `/app/business-cards`로 이동하고, `/app/export`는 `/app`으로 이동한다.
 
 pen 디자인 반영 완료/정리 도메인:
 - `/app` — Schedule/Deal/MeetingNote API 조합 대시보드 구현 완료
@@ -201,34 +161,25 @@ pen 디자인 반영 완료/정리 도메인:
 - 회사/담당자/제품 생성 모달 — 입력 검색형 선택, 결과 없음 즉시 추가, 생성 후 자동 선택 기준 반영
 - `/app/meeting-notes` — 회의록 목록/상세/생성 API, AI/STT draft UI, 저장 후 딜 추가 연동 연결 완료
 - `/app/trash` — 회의록 목록형 밀도를 따른 휴지통 목록, row 클릭 상세 모달, 모달 내부 복구 액션 반영 완료
-- `/app/business-cards` — 명함 스캔 내역, 상태 다중 필터, 카메라 아이콘 내비게이션, `명함스캔` 모달의 이미지 업로드 -> 진행 표시 -> 결과 확인/수정 -> 저장 흐름 구현 완료
-- `/app/import` — 회사/담당자/제품/딜 양식 다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 전 job 이어받기, confirm/cancel/expire, 확정 저장, 성공 내역 목록/상세 조회 구현 완료. 딜 누락 참조 보정값 전달은 현재 FE/BE confirm 경로에 연결되어 있음
 - `/app/schedules` — 주간 일정 보고서, Google Calendar 연결/status/calendar 선택/read-only sync foundation 구현 완료
 - `/app/deals/:dealId` — `DealActivity` timeline 생성/수정/조회 foundation 구현 완료
 - `/app/meeting-notes/:meetingNoteId` — AI next action draft와 follow-up draft 보조 액션 구현 완료
-- `/app?account=settings` — 계정 모달 `Settings` 안에서 Google Calendar 설정, follow-up delivery 설정, account/data request 진입 흐름 구현 완료. `/app/settings` route는 제거됨
+- `/app?account=settings` — 계정 모달 `Settings` 안에서 Google Calendar 설정, follow-up delivery 설정. `/app/settings` route는 제거됨
 - `/app` — AI weekly sales report 섹션과 제품 분석 route/mobile event foundation 구현 완료
 - 상단 통합검색 — Backend `GET /api/search`와 User Web GlobalSearch 연결 완료
 
 현재 의도적으로 보류된 화면:
-- `/app/export` — FE feature는 남아 있지만 현재 export 정본 흐름이 아니다. route를 숨기고 `/app`으로 redirect하며, 회사/담당자/제품/딜 목록의 엑셀 다운로드를 사용한다.
-- `/contacts/scan`, `/app/contacts/scan` — 명함 스캔 legacy route이며 `/app/business-cards`로 redirect한다.
 - MeetingNote AI/STT draft UI — 작성 화면의 기본 흐름은 직접 작성 저장이며, AI/STT는 선택 보조 액션으로 연결되어 있다.
 
-현재 활성화된 01~11 확장 화면/진입점:
+현재 활성화된 확장 화면/진입점:
 
-01~11 기능별 완료 범위와 제외 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`를 우선한다. 이 문단은 UX/UI 화면 진입점만 요약한다.
+기능별 완료 범위와 제외 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`를 우선한다. 이 문단은 UX/UI 화면 진입점만 요약한다.
 
 - `/app/schedules/week` — 주간 일정 보고서 화면이며 일정 화면의 `주간 보고서` link에서 진입한다.
-- `/app/notifications` — 알림 화면이며 AppShell의 알림 bell에서 진입한다. Notification source/TTL/cleanup 확장은 이 문서에서 새로 정의하지 않는다.
 
 pen 디자인 반영 대기 도메인:
 - `/app/products/:productId`
 - `/app/schedules`, `/app/schedules/week`
-- `/app/notifications`
-- `/app/import` — 확정 전 job 이어받기, cancel/expire, 기본 업로드/매핑/검증/확정 저장은 구현 완료.
-- `/app/export`
-- `/app/business-cards` — Backend 연동 완료. pen 시각 고도화는 후속.
 - `/app/contacts/:contactId` (부분 반영)
 - `/app/companies/:companyId` (부분 반영)
 
@@ -236,34 +187,17 @@ pen 디자인 반영 대기 도메인:
 
 - `/login`
 - `/`
-- `/users`
-- `/users/:userId`
-- `/users/:userId/domain`
-- `/users/:userId/trash`
-- `/provider-failures`
-- `/account-requests`
-- `/trash/recovery-requests`
-- `/analytics`
-- `/audit-logs`
-- `/system`
 
-현재 Admin Web redirect/future 경계:
+현재 Admin Web wildcard redirect:
 
-- `/organizations`
-- `/subscriptions`
-- `/support`
+- `*`는 `/`로 이동한다.
 
 현재 화면 목록과 코드의 차이:
 
 - 기획 목록의 `/meetings*`는 현재 코드에서 `/meeting-notes*`로 구현되어 있다.
-- 기획 목록의 `/imports`, `/exports`는 현재 코드에서 `/app/import`, `/app/export`로 구현되어 있다.
 - 기획 목록의 `/search` 전용 라우트는 현재 User Web router에 없다. 통합검색 흐름은 상단 UI에서 `GET /api/search`를 호출하고 결과 선택 시 상세 화면으로 이동하는 방식으로 구현되어 있다.
 - 현재 `/`는 공개 진입면이고 `/app`이 홈 대시보드다. 딜 파이프라인은 `/app/deals`에서 운영한다.
-- `/app/import`는 현재 사이드바 업무 섹션의 `데이터 업로드`로 노출한다. 범용 `/app/export`는 현재 정본 흐름이 아니므로 route를 `/app`으로 redirect하고 navigation에서 숨긴다. 휴지통은 관리 섹션에 노출하고, 목록 row 클릭으로 상세/복구 모달을 제공한다.
-- 기획 목록의 전체 딜/회사/담당자/제품 전역 Admin route는 현재 Admin Web router에 없다. 사용자별 도메인 조회는 `/users/:userId/domain`에서 read-only 탭으로 제공한다.
-- Admin Web `admin-query` feature에는 dashboard, 전역 domain list/detail, legacy raw access 준비 화면과 API client가 있지만 현재 router/menu에서 노출하지 않는 legacy boundary다.
-- Backend에는 11 Admin Operation 기준 사용자, 도메인, Trash, provider failure, analytics, account request, audit, system gate Admin API가 구현되어 있다.
-- `/organizations`, `/subscriptions`, `/support`는 redirect/future 경계이며 Billing Admin, Customer/B2B tenant admin, 운영 지원 화면을 현재 열지 않는다.
+- Admin Web은 현재 `GET /admin/api/me`로 관리자 권한만 확인한다.
 
 라우트명을 변경하거나 신규 화면을 추가할 때는 이 문서와 `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`를 함께 갱신한다.
 
@@ -344,7 +278,6 @@ UX/UI 기준 우선순위는 아래와 같다.
 - 담당자
 - 제품
 - 일정
-- 회의록 / 휴지통 / 명함 / Import / Export / 알림 / 검색
 
 원칙:
 
@@ -353,13 +286,9 @@ UX/UI 기준 우선순위는 아래와 같다.
 
 Admin Web:
 
-- 데스크톱 전용
-- 좌측 사이드바
-- 데이터 테이블 중심
-- 민감 데이터는 기본 마스킹
-- User Web보다 더 높은 정보 밀도
-- 필터/서버 페이지네이션/행 상세 패널 중심
-- 민감정보 원문 보기와 위험 액션은 사유 입력과 감사 로그 필수
+- `/login`과 보호 route `/`만 현재 활성이다.
+- Backend `GET /admin/api/me` 응답으로 관리자 권한을 확인한다.
+- User Web의 도메인 화면과 데이터를 암시하지 않는다.
 
 ## 7. 관련 문서
 

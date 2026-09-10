@@ -24,7 +24,7 @@
 - 공통 UI는 `components/ui`, layout은 `components/layout`에 둔다.
 - API client, env parsing, QueryClient 설정은 `lib`에 둔다.
 - 인증 token은 UI component에서 직접 다루지 않고 auth feature와 API client를 통해 접근한다.
-- User Web은 `/admin/api/*`를 호출하지 않는다.
+- User Web은 일반 `/api/*` 계약만 호출한다.
 - 화면 구조와 상호작용은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 따른다.
 - 회사, 담당자, 제품, 딜, 일정, 회의록 화면은 열 수 있는 record, linked record, property-first detail, activity/Memo 맥락을 우선해서 구성한다.
 
@@ -47,7 +47,7 @@ legacy redirect 라우트:
 - `/companies`, `/companies/new`, `/companies/:companyId` -> `/app/companies...`
 - `/companies/new/full` -> `/app/companies/new/full`
 - `/contacts`, `/contacts/:contactId` -> `/app/contacts...`
-- `/contacts/scan` -> `/app/business-cards`
+- `/contacts/scan` -> `/app/contacts`
 - `/contacts/new`, `/contacts/new/full` -> `/app/contacts...`
 - `/products`, `/products/new`, `/products/:productId` -> `/app/products...`
 - `/products/new/full` -> `/app/products/new/full`
@@ -58,8 +58,6 @@ legacy redirect 라우트:
 - `/meeting-notes`, `/meeting-notes/:meetingNoteId` -> `/app/meeting-notes...`
 - `/meeting-notes/new` -> `/app/meeting-notes?create=1`
 - `/meeting-notes/new/full` -> `/app/meeting-notes/new/full`
-- `/business-cards` -> `/app/business-cards`
-- `/import`, `/import/:importUserLogId` -> `/app/import...`
 - `/trash`, `/more` -> `/app/...`
 - `/settings` legacy route는 현재 router에 없으며, 설정 진입은 현재 업무 route 위의 `?account=settings` 또는 `/app?account=settings` 계정 모달 흐름을 사용한다.
 
@@ -70,7 +68,7 @@ legacy redirect 라우트:
 - `/app/companies/new/full`
 - `/app/contacts`, `/app/contacts/:contactId`
 - `/app/contacts/new`, `/app/contacts/new/full`
-- `/app/contacts/scan` -> `/app/business-cards`
+- `/app/contacts/scan` -> `/app/contacts`
 - `/app/products`, `/app/products/new`, `/app/products/:productId`
 - `/app/products/new/full`
 - `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`
@@ -80,38 +78,28 @@ legacy redirect 라우트:
 - `/app/meeting-notes`, `/app/meeting-notes/:meetingNoteId`
 - `/app/meeting-notes/new` -> `/app/meeting-notes?create=1`
 - `/app/meeting-notes/new/full`
-- `/app/business-cards`
-- `/app/import`, `/app/import/review/:importJobId`, `/app/import/:importUserLogId`는 보호 앱 route다.
 - `/app/trash`, `/app/more`
 - `/app/settings` 사용자-facing route는 현재 router에 없으며, 계정 설정은 `/app?account=settings` 또는 현재 보호 앱 route 위의 `?account=settings` query로 여는 계정 모달에서 제공한다.
-- `/app/notifications`는 `NotificationsPage`를 통해 활성 제공한다.
-- `/app/export`는 `/app`으로 이동한다. Generic Export는 현재 정본 흐름이 아니므로 숨긴다.
 
 08 Global Data I18N에서도 보호 앱 라우트는 `/app/*` 형태를 유지한다. `/ko/app` 또는 `/en/app` 같은 locale prefix route를 만들지 않는다.
 
-`import-export` feature 중 `/app/import`와 `/app/import/review/:importJobId`는 실제 Backend API와 연결되어 있고, `/app/export` route는 `/app`으로 redirect한다. 현재 Export 정본 흐름은 회사/담당자/제품/딜 각 목록 화면의 엑셀 다운로드다.
-현재 사이드바는 `/app/import`를 `데이터 업로드` 메뉴로 노출한다. `/app/export`는 route가 있어도 navigation에서 숨기고, `/app/notifications`는 AppShell의 알림 bell 진입점으로 노출한다.
 
 ## 4. 현재 Feature 폴더
 
 현재 `FE/user-web/src/features` 기준:
 
 - `auth`
-- `account-request`
 - `ai-weekly-report`
 - `analytics`
 - `app-i18n`
-- `business-card`
 - `company`
 - `contact`
 - `deal`
 - `deal-redesign`
 - `error-report`
 - `follow-up-delivery`
-- `import-export`
 - `meeting-note`
 - `mobile-local-draft`
-- `notification`
 - `product`
 - `public-site`
 - `schedule`
@@ -129,7 +117,6 @@ legacy redirect 라우트:
 - Home dashboard는 일정/딜/회의록 조합 조회를 연동한다.
 - Company는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Contact/Deal, xlsx export를 연동한다.
 - Contact는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
-- BusinessCard OCR은 `/app/business-cards`, `POST/GET /api/business-card-scans`, 명함스캔 모달, 확인/수정 후 회사/담당자 저장을 연동한다.
 - Product는 목록/상세/생성/수정/삭제, 옵션, 메모, 개인 메모, 연결 Deal, xlsx export를 연동한다.
 - Deal은 목록/상세/생성/수정/삭제, stage counts, 옵션, `DealActivity` timeline 생성/수정/조회, 다음 행동 로그, 메모 로그, xlsx export를 연동한다.
 - Schedule은 월/주 목록, 단건 상세, 생성, 수정, 삭제, deal options, 주간 보고서 조회와 xlsx 다운로드, Google Calendar 연결/status/calendar 선택/read-only sync를 연동한다.
@@ -139,13 +126,10 @@ legacy redirect 라우트:
 - Search는 상단/모바일 GlobalSearch, `GET /api/search`, 결과 `targetPath` 이동을 연동한다.
 - 삭제 UX: 회사/담당자/제품/딜 본문과 로그 삭제는 빨간 휴지통 아이콘 클릭 후 중앙 확인 모달을 열고, 성공 시 중앙 성공 모달로 `삭제가 완료되었습니다.`와 7일 복구 안내를 보여준다.
 - Trash: `/app/trash` 화면에서 `GET /api/trash` 목록, `GET /api/trash/:targetType/:targetId` 상세 모달, `POST /api/trash/:targetType/:targetId/restore` 복구를 연동한다. 목록 row 클릭으로 상세 모달을 열고, 복구는 모달 내부 버튼에서만 수행한다.
-- Notification은 `/app/notifications` 화면에서 `GET /api/notifications`, `PATCH /api/notifications/:notificationId/read`, `GET/PATCH /api/notifications/settings`, browser push public key/subscription API를 연동한다. 알림 bell은 `/app/notifications`로 이동한다.
-- DataImport는 `/app/import` 화면에서 활성 양식 목록/다운로드, CSV/XLSX 업로드, AI 컬럼 매핑, mapping 수정, row 수정/검증, 누락 셀 단위 validation 메시지, 확정 전 job 재개, confirm/cancel/expire, 확정 저장, 성공 내역 목록을 연동한다. `/app/import/review/:importJobId`는 확정 전 review 화면이며, `/app/import/:importUserLogId`는 성공 내역 상세와 row snapshot을 조회한다.
-- Account request는 설정/계정 관리 흐름에서 data export request와 account deletion request/cancel API를 연동한다.
 - Help Error Report는 도움말 모달에서 `POST /api/error-reports`를 호출해 에러 신고와 선택 스크린샷을 접수한다.
 - Help Support Request는 도움말 모달에서 `POST /api/support-requests`를 호출해 문의 유형과 1000자 이하 문의 내용을 접수한다.
 - Product Analytics는 app route, activation/retention 후보, mobile field/local draft 이벤트를 `POST /api/analytics/events`로 전송한다.
-- Mobile Field Use는 모바일 녹음/local draft, push permission UX, mobile analytics event foundation을 연동한다.
+- Mobile Field Use는 모바일 녹음/local draft, mobile analytics event foundation을 연동한다.
 
 회사 생성 UX 기준:
 
@@ -174,8 +158,6 @@ Backend는 구현되었지만 Frontend 연결이 남은 항목:
 
 mock/placeholder 경계를 유지해야 하는 항목:
 
-- `/api/exports` 기반 generic Export job은 현재 정본 Export 흐름이 아니다. 현재 Export 정책은 도메인별 xlsx 다운로드이므로 `/app/export` route는 `/app`으로 redirect하고, 신규 작업에서 generic Export 화면/API를 확장하지 않는다.
-- Notification source/TTL/cleanup 정책 확장은 현재 G03 범위가 아니다. 기존 Notification route/API 상태만 문서에 반영하고 새 정책이나 DB schema는 만들지 않는다.
 
 ## 5A. Auth Runtime Frontend 기준
 
@@ -195,9 +177,7 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - Frontend는 `locale`과 IANA `timeZone`을 exchange payload로 보낸다. 국가는 Frontend가 보내지 않고 Backend proxy geo header에서만 저장한다.
 - URL locale smoke는 2026-07-10 기준 통과했다.
 
-## 5B. BusinessCard OCR Frontend 기준
 
-명함 스캔 route는 `/app/business-cards`다. `/business-cards`와 `/contacts/scan`은 legacy redirect만 유지한다. 사이드바와 모바일 더보기 메뉴에서는 `명함 스캔`으로 노출하고, 아이콘은 lucide `Camera`를 사용한다.
 
 목록 UX:
 
@@ -206,12 +186,9 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - 상태 필터 안에는 `상태 초기화` 액션을 둔다.
 - 전체 상태로 되돌리는 상단 액션은 회사 목록의 reset icon 버튼 패턴을 따른다.
 
-`명함스캔` 모달 UX:
 
 - 최초 상태에서는 이미지 업로드만 보여준다.
-- 사용자가 `명함스캔`을 누르면 OCR 요청을 보내고 이미지 영역에 `명함스캔 중` 진행 표시를 올린다.
 - 요청 중에는 파일 교체/삭제와 모달 닫기를 막는다.
-- OCR 성공 후에는 추출 결과 확인/수정 폼만 보여준다.
 - 수정 필드는 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급이다.
 - 휴대폰은 Frontend에서 `010-0000-0000` 형태로 포맷한다.
 - 같은 모달에서 재촬영/재시도 흐름은 제공하지 않는다.
@@ -254,7 +231,7 @@ Backend는 AI 초안 provider와 STT provider를 분리한다. Frontend는 provi
 
 ## 8. Pagination 기준
 
-- Company/Contact/Product/Deal/MeetingNote/BusinessCardScan/ImportUserLog/Trash 목록은 page-number pagination을 사용한다.
+- Company/Contact/Product/Deal/MeetingNote/Trash 목록은 page-number pagination을 사용한다.
 - 현재 목록 페이지의 기본 page size는 15개다.
 - page size를 바꿀 때는 FE 단독으로 숫자를 바꾸지 않는다.
 - page size를 변경하려면 Backend 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트 계약을 함께 갱신한다.

@@ -92,11 +92,11 @@ Controller에서 끝나는 설명이 아니라 application use case 기준으로
 - 중복 또는 예외 처리
 - transaction 필요 여부
 - 자동 생성되는 부수 데이터
-- 감사 로그 필요 여부
+- 부수 로그/이력 필요 여부
 - 외부 Provider 호출 여부
 - 암호화 또는 masking 여부
 - response body 없는 성공 응답 처리
-- structured log 또는 audit log 필요 여부
+- structured log 필요 여부
 
 예:
 
@@ -153,7 +153,7 @@ Response 이름: CompanyResponse
 - 수정하는 model
 - soft delete 처리 model
 - transaction에 함께 묶이는 model
-- 감사 로그 model
+- 부수 로그/이력 model
 
 예:
 
@@ -163,7 +163,7 @@ Response 이름: CompanyResponse
 - 생성: Company
 - 조회: User, CompanyField, CompanyRegion
 - transaction: Company와 초기 CompanyMemoLog를 함께 만들 때 필요
-- 감사 로그: 없음
+- 부수 로그/이력: 없음
 ```
 
 ### Transaction 계약
@@ -180,14 +180,14 @@ Transaction:
 - transaction model: Company, CompanyMemoLog
 - rollback 범위: Company 생성과 memo log 생성 전체
 - 외부 Provider: 없음
-- audit log 포함: 없음
+- 부수 로그/이력 포함: 없음
 ```
 
 Transaction이 필요하지 않은 조회 API도 `필요 여부: 없음`과 이유를 적는다.
 
 ### Observability 계약
 
-`OBSERVABILITY.md` 기준으로 log, audit log, request context를 적는다.
+`OBSERVABILITY.md` 기준으로 structured log와 request context를 적는다.
 
 예:
 
@@ -195,13 +195,13 @@ Transaction이 필요하지 않은 조회 API도 `필요 여부: 없음`과 이�
 Observability:
 
 - log event key: company.created
-- audit log: 없음
+- structured log: company.created
 - request id: 사용
 - redaction: company private memo 원문 logging 금지
 - provider error context: 없음
 ```
 
-mutation, Admin API, 민감정보, 외부 Provider, batch/import API는 이 항목을 생략하지 않는다.
+mutation, 민감정보, 외부 Provider API는 이 항목을 생략하지 않는다.
 
 ### 에러 응답
 
@@ -275,7 +275,7 @@ API 명세에는 FE와 BE가 각각 어떤 처리를 해야 하는지도 적는�
 - 조회:
 - 수정:
 - 삭제:
-- 감사 로그:
+- 부수 로그/이력:
 - transaction:
 
 ### Transaction
@@ -285,12 +285,12 @@ API 명세에는 FE와 BE가 각각 어떤 처리를 해야 하는지도 적는�
 - transaction model:
 - rollback 범위:
 - 외부 Provider 호출 위치:
-- audit log 포함 여부:
+- 부수 로그/이력 포함 여부:
 
 ### Observability
 
 - log event key:
-- audit log:
+- structured log:
 - request id:
 - redaction:
 - provider error context:
@@ -322,9 +322,9 @@ API 명세에는 FE와 BE가 각각 어떤 처리를 해야 하는지도 적는�
 - success status와 response body 유무를 생략하지 않는다.
 - DB model 연결을 생략하지 않는다.
 - Frontend 화면 요구사항과 연결하지 않고 Backend 관점만 적지 않는다.
-- Admin API의 권한, masking, 감사 로그 여부를 생략하지 않는다.
+- 관리자 확인 API의 권한 기준을 생략하지 않는다.
 - API 계약 상태와 소비자를 생략하지 않는다.
-- mutation, Admin API, 민감정보, 외부 Provider API에서 transaction과 observability 항목을 생략하지 않는다.
+- mutation, 민감정보, 외부 Provider API에서 transaction과 observability 항목을 생략하지 않는다.
 
 ## 6. 관련 문서
 

@@ -2,7 +2,6 @@
 
 ## 결정
 
-회사, 담당자, 제품, 딜, 회의록, 명함스캔, 데이터 업로드 내역, 휴지통의 목록 조회 화면은 page-number pagination을 기준으로 한다.
 
 목록 페이지 필터는 제품 목록의 category/status select처럼 전체 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
 
@@ -26,9 +25,7 @@
   - 회사/담당자 옵션은 Deal option API를 사용하고, 회사 선택 시 담당자 옵션을 같은 회사 기준으로 좁힌다.
 - 회의록 목록
   - 회사/담당자 filter option API
-- 명함스캔 목록
   - status filter
-- 데이터 업로드 내역 목록
   - 업로드 대상 filter
 - 휴지통 목록
   - domain/item kind/log type filter

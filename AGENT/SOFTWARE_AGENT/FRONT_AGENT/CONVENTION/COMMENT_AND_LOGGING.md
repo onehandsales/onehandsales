@@ -63,12 +63,10 @@ Rules:
 Admin has two separate concepts:
 
 - client logs: browser/UI errors and non-sensitive events
-- audit logs: backend records of Admin actions
 
 Rules:
 
-- client does not write audit logs directly
-- reason text goes to backend audit flow only
+- client logs must not contain secret, token, or sensitive user input
 - PII and reason text do not go to Sentry/client logs
 
 ## 5. 금지
@@ -83,7 +81,6 @@ Rules:
 - Frontend component/function/hook에 `// 기능 : ...` 주석이 있는가?
 - 직접 `console.log`가 없는가?
 - PII가 client log로 나가지 않는가?
-- Admin 원문 조회 사유가 client log나 Sentry에 남지 않는가?
 
 ## 7. 관련 문서
 

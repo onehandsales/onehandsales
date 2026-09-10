@@ -8,7 +8,7 @@ Backend는 저장소의 `BE` 아래에 있다.
 BE/
 ```
 
-MVP Backend는 단일 NestJS 서버이며 하나의 배포 단위다. User API와 Admin API는 경로, controller, guard, application method 기준으로 분리한다.
+MVP Backend는 단일 NestJS 서버이며 하나의 배포 단위다. User API와 관리자 권한 확인 API는 경로, controller, guard 기준으로 분리한다.
 
 ## 2. 기술 기준
 
@@ -38,22 +38,18 @@ MVP Backend는 단일 NestJS 서버이며 하나의 배포 단위다. User API�
 ## 3. API 분리
 
 - User API: `/api/*`
-- Admin API: `/admin/api/*`
+- 관리자 권한 확인 API: `GET /admin/api/me`
 
-Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 현재 사용자 본인 데이터만 다루며 모든 사용자 소유 데이터 조회와 mutation은 `userId` ownership 필터를 가진다.
+관리자 권한 확인 API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 현재 사용자 본인 데이터만 다루며 모든 사용자 소유 데이터 조회와 mutation은 `userId` ownership 필터를 가진다.
 
 현재 `BE/src/app.module.ts`에 등록된 구현 모듈:
 
 - `HealthModule`
 - `AnalyticsModule`
-- `AccountRequestModule`
-- `AdminOperationModule`
 - `AuthModule`
 - `UserModule`
 - `CompanyModule`
 - `ContactModule`
-- `DataImportModule`
-- `BusinessCardModule`
 - `ProductModule`
 - `DealModule`
 - `ErrorReportModule`
@@ -61,14 +57,10 @@ Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다. User API는 
 - `ScheduleModule`
 - `SalesReportModule`
 - `MeetingNoteModule`
-- `NotificationModule`
 - `SearchModule`
 - `SupportRequestModule`
 - `TrashModule`
 
-Admin API는 11 Admin Operation 기준으로 사용자/domain readonly operation, Trash/account request/provider failure queue, audit/security log, analytics overview, system operation check foundation까지 구현되어 있다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 범위다.
-
-Company/Contact/Product/Deal xlsx export는 각 도메인 모듈 안에서 처리한다. 범용 `ExportJob` Backend 모듈은 현재 제품 방향에서 사용하지 않는다. DataImport는 `ImportJob` persistence 기반으로 회사/담당자/제품/딜 CSV/XLSX 불러오기, AI 컬럼 매핑, 사용자 보정/검증, 서버 재시작 후 이어받기, 확정 저장, 성공 내역 조회를 담당한다.
 
 ## 4. 계층 구조
 
@@ -91,28 +83,17 @@ Domain 계층은 NestJS, Prisma, HTTP client, OpenAI SDK 같은 외부 의존성
 
 ## 5. 외부 Provider
 
-OpenAI, Google Calendar, email, browser push, file parser 같은 외부 Provider는 Backend port/interface 뒤에 둔다.
 
 현재 OpenAI 관련 구현 상태:
 
 - MeetingNote text AI draft API 구현. AI 초안 생성은 `MeetingNoteAiDraftProvider` port 뒤에 두고 현재 adapter는 OpenAI다.
 - MeetingNote STT+AI draft API 구현. STT는 `MeetingNoteSttProvider` port로 AI provider와 분리되어 있으며 현재 adapter는 OpenAI transcription이다.
 - MeetingNote next action/follow-up draft와 `AiProviderCallLog` provider observability foundation이 구현되어 있다.
-- BusinessCard OCR은 `BusinessCardOcrProvider` port 뒤에 두고 현재 adapter는 OpenAI vision 기반 Responses API다. prompt와 strict JSON schema 응답 계약은 `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`에서 관리한다.
-- Import AI mapping은 `ImportMappingProvider` port 뒤에 두고 현재 adapter는 OpenAI Responses API다. provider 실패 시 규칙 기반 매핑으로 fallback한다.
 - AI weekly sales report는 `SalesReportModule`에서 provider port 뒤에 두고 저장형 보고서와 suggestion foundation을 제공한다.
 
 Provider-specific prompt, response parsing, SDK 호출은 infrastructure adapter에서만 처리한다.
 
 ## 6. 데이터 보호
-
-Admin에서 민감 데이터는 기본 마스킹한다.
-
-민감 데이터 원문 접근에는 다음이 필요하다.
-
-- 명시적 action
-- 사유 입력
-- 감사 로그
 
 민감 데이터 예:
 

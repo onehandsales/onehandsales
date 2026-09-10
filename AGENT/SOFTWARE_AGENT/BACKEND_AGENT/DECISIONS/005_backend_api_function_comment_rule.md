@@ -18,7 +18,7 @@ API별로 어떤 사용자 행동을 처리하는지 주석으로 먼저 보이�
 
 클래스와 인터페이스는 Clean Architecture 계층 안에서 책임과 경계를 표현하는 단위다. 어떤 클래스가 controller인지, use case인지, repository 구현체인지, 어떤 인터페이스가 repository 계약인지 external provider port인지 주석으로 명확히 남기면 계층 경계와 의존 방향을 검토하기 쉬워진다.
 
-numbered step comment는 긴 use case에서 인증, 검증, transaction, repository 저장, 외부 port 호출, 감사 로그 같은 처리 순서를 읽기 쉽게 만든다.
+numbered step comment는 긴 use case에서 인증, 검증, transaction, repository 저장, 외부 port 호출 같은 처리 순서를 읽기 쉽게 만든다.
 
 ## 3. 적용 규칙
 
@@ -31,7 +31,7 @@ numbered step comment는 긴 use case에서 인증, 검증, transaction, reposit
 - 클래스와 인터페이스 선언에는 `// 기능 : ...`을 쓰지 않는다.
 - API controller가 호출하는 내부 메소드와 service/use case/helper는 `// 기능 : ...` 형식을 사용한다.
 - Controller 내부 단계는 인증/권한 확인, request 처리, application 계층 호출, response 처리 같은 큰 흐름을 기준으로 적는다.
-- Application service/use case 내부 단계는 검증, 조회, 도메인 객체 생성, transaction, repository 저장, 외부 port 호출, 감사 로그 같은 흐름을 기준으로 적는다.
+- Application service/use case 내부 단계는 검증, 조회, 도메인 객체 생성, transaction, repository 저장, 외부 port 호출 같은 흐름을 기준으로 적는다.
 - 단순 getter, mapper, 순수 계산 함수처럼 흐름을 나눌 필요가 없는 함수에는 numbered step comment를 억지로 넣지 않는다.
 
 ## 4. 예시

@@ -11,7 +11,7 @@
 - form validation은 React Hook Form과 Zod를 사용하는가?
 - route state가 필요한 목록 필터는 URL search params에 반영되는가?
 - 다른 feature의 internal file을 직접 import하지 않는가?
-- User Web에서 `/admin/api/*`를 호출하지 않는가?
+- User Web에서 일반 `/api/*` 계약만 호출하는가?
 - User Web API client가 실제 Backend `/api/*` contract와 맞는가?
 - 시간 필드는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`의 UTC instant + IANA `timeZone` 기준을 따르는가?
 - 일정 생성/수정 form은 사용자 입력 local date-time과 IANA `timeZone`을 함께 보내고, 입력값을 `toISOString()`으로 임의 변환하지 않는가?
@@ -23,22 +23,17 @@
 
 ## 3. Admin Web 체크리스트
 
-- Admin Web은 `/admin/api/*`만 호출하는가?
-- query key가 `admin` namespace로 시작하는가?
-- Admin Web에서 호출하는 `/admin/api/*`가 현재 Backend에 구현되어 있는가?
-- Backend에 없는 legacy `admin-query` API를 사용하는 화면은 active route/menu에 연결하지 않았는가?
-- 글로벌 목록은 서버 페이지네이션을 사용하는가?
-- 민감 데이터가 기본 마스킹되는가?
-- 원문 조회 사유가 client log에 남지 않는가?
-- 위험 액션은 확인 dialog와 필요한 경우 사유 입력을 요구하는가?
+- Admin Web은 `GET /admin/api/me`만 호출하는가?
+- Admin Web에서 일반 User API인 `/api/*`를 호출하지 않는가?
+- Admin Web에서 호출하는 API가 현재 Backend에 구현되어 있는가?
+- 보호 route가 Backend 응답 기준으로 관리자 권한을 확인하는가?
 - 사용자 웹의 feature 내부 구현을 직접 import하지 않는가?
 
 ## 4. 테스트 체크리스트
 
 - User Web 핵심 smoke E2E가 있는가?
-- Admin Web auth/role smoke와 현재 11 Admin Operation route smoke E2E가 변경된 라우터 기준과 맞는가?
+- Admin Web auth/role smoke E2E가 변경된 라우터 기준과 맞는가?
 - 외부 Provider는 E2E에서 mock/stub 처리되는가?
-- Admin 페이지 본 구현 범위라면 민감정보 마스킹과 원문 조회 사유 입력 흐름을 Admin Web에서 검증하는가?
 
 ## 5. 배포 체크리스트
 

@@ -50,9 +50,8 @@ Notion의 UX/UI는 다음 특징을 가진다.
 
 ### Admin Web
 
-- Admin은 Notion database보다 더 운영 콘솔에 가깝게, table/filter/detail panel을 중심으로 한다.
-- 그래도 사이드바, page title, view controls, property/detail 구조는 Notion식 정돈감을 따른다.
-- 민감정보 masking, reason dialog, audit trail은 Notion reference보다 우선한다.
+- Admin Web은 현재 관리자 권한 확인 전용이다.
+- 로그인과 접근 차단 상태는 User Web과 섞이지 않게 간결하게 표현한다.
 
 ## 피할 것
 

@@ -70,4 +70,3 @@ DB table:
 - `email`, `normalizedEmail`, `firstName`, `lastName`, `companyName`, `jobTitle`, `phone`, `plan`은 개인정보 또는 사용자가 직접 입력한 원문이므로 일반 application log에 남기지 않는다.
 - `wasExistingUserAtSubmission`은 account enumeration을 막기 위해 공개 API 응답으로 반환하지 않는다.
 - 이 테이블은 공개 문의 접수 원장을 보존하기 위해 User row와 FK로 연결하지 않는다.
-- Admin 조회/처리 API는 별도 범위에서 권한, masking, audit log 계약을 먼저 정의한 뒤 추가한다.

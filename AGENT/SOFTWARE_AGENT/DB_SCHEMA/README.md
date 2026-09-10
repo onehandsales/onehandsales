@@ -15,19 +15,17 @@
 - `DEAL_SCHEMA.md`: Deal DB 구조
 - `SCHEDULE_SCHEMA.md`: Schedule DB 구조
 - `MEETING_NOTE_SCHEMA.md`: MeetingNote DB 구조
-- `BUSINESS_CARD_SCHEMA.md`: BusinessCardScanLog DB 구조
 - `ERROR_REPORT_SCHEMA.md`: User Web 에러 신고 DB 구조
 - `SUPPORT_REQUEST_SCHEMA.md`: User Web 지원 요청 DB 구조
 - `PUBLIC_CONTACT_REQUEST_SCHEMA.md`: 로그인 전 공개 문의 접수 DB 구조
-- `DATA_IMPORT_SCHEMA.md`: DataImport 양식/성공 로그 DB 구조
 - `PRODUCT_ANALYTICS_SCHEMA.md`: Product Analytics raw event/snapshot DB 구조
 - `TIME_AND_TIMEZONE_POLICY.md`: DB/API/Frontend 시간과 timezone 처리 기준
 
 ## 3. 현재 DB 범위
 
-Snapshot date: 2026-08-24
+Snapshot date: 2026-09-10
 
-현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, BusinessCard OCR, Error Report, Support Request, Product, Deal, DealActivity, Schedule, MeetingNote, DataImport/ImportJob, Notification/BrowserPush, Google Calendar integration, AI Weekly Sales Report/Follow-up, AI provider call log, Product Analytics, Admin Operation 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/Schedule/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
+현재 Backend DB는 `BE/prisma/schema.prisma`와 migration 기준으로 Auth/User, Company, Contact, Error Report, Support Request, Product, Deal, DealActivity, Schedule, MeetingNote, Google Calendar integration, AI Weekly Sales Report/Follow-up, AI provider call log, Product Analytics 도메인을 포함한다. `User`에는 기본 timezone과 사용자 locale/region 메타데이터가 포함된다. Company/Contact/Product/Deal/Schedule/MeetingNote 본문 row와 각 도메인의 메모, 비밀 메모, 다음 행동 로그에는 7일 휴지통 보관을 위한 soft delete 컬럼이 반영되어 있다. Product Analytics raw event는 User hard delete 시 함께 삭제하고, retention cohort snapshot은 userId 없는 aggregate로 보관한다. 별도 `Trash` table은 없고, Trash 목록/상세/복구 API는 기존 row의 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기준으로 동작한다.
 
 Auth/User 기준:
 
@@ -52,9 +50,6 @@ Auth/User 기준:
 - `ContactDepartment`
 - `ContactMemoLog`
 - `ContactUserPrivateMemoLog`
-- `BusinessCardScanStatus`
-- `BusinessCardResolution`
-- `BusinessCardScanLog`
 - `ErrorReportStatus`
 - `ErrorReport`
 - `SupportRequestType`
@@ -81,26 +76,12 @@ Auth/User 기준:
 - `MeetingNoteContact`
 - `MeetingNoteProduct`
 - `MeetingNoteDeal`
-- `ImportTemplateType`
-- `ImportTemplate`
-- `ImportUserLog`
-- `ImportUserLogRow`
-- `ImportJob`
-- `ImportJobRow`
-- `ImportJobError`
-- `ImportUploadedFile`
 - `ProductAnalyticsEventSource`
 - `UserActivationStatus`
 - `ProductAnalyticsTargetType`
 - `ProductAnalyticsEvent`
 - `UserActivationSnapshot`
 - `RetentionCohortSnapshot`
-- `AdminAuditLog`
-- `AdminSensitiveAccessLog`
-- `TrashRecoveryRequest`
-- `AccountDeletionRequest`
-- `UserDataExportRequest`
-- `AdminOperationCheckRun`
 - `DealActivity`
 - `ExternalCalendarConnection`
 - `ExternalCalendarSource`
@@ -115,10 +96,6 @@ Auth/User 기준:
 - `FollowUpMessage`
 - `FollowUpMessageTarget`
 - `FollowUpDeliveryAttempt`
-- `UserNotificationSetting`
-- `Notification`
-- `NotificationDeliveryAttempt`
-- `BrowserPushSubscription`
 
 현재 반영된 주요 migration:
 
@@ -136,23 +113,20 @@ Auth/User 기준:
 - `BE/prisma/migrations/20260625010000_add_log_soft_delete_columns/migration.sql`
 - `BE/prisma/migrations/20260625020000_add_core_entity_soft_delete_columns/migration.sql`
 - `BE/prisma/migrations/20260626020000_add_meeting_note_soft_delete_columns/migration.sql`
-- `BE/prisma/migrations/20260629010000_add_business_card_scan_log/migration.sql`
-- `BE/prisma/migrations/20260630010000_add_import_templates_and_logs/migration.sql`
-- `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
 - `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
 - `BE/prisma/migrations/20260730090000_add_product_analytics/migration.sql`
 - `BE/prisma/migrations/20260823010000_add_error_reports/migration.sql`
 - `BE/prisma/migrations/20260824010000_add_support_requests/migration.sql`
 - `BE/prisma/migrations/20260901010000_add_public_contact_requests/migration.sql`
 - `BE/prisma/migrations/20260901020000_rename_support_tables_to_pascal_case/migration.sql`
+- `BE/prisma/migrations/20260910010000_remove_admin_operation_only_schema/migration.sql`
 
 Search는 기존 table을 읽는 기능이므로 별도 table이나 migration이 없다.
 
 MeetingNote AI/STT draft는 현재 DB table을 추가하지 않는다. `POST /api/meeting-notes/ai-draft`와 `POST /api/meeting-notes/stt-draft`는 draft만 반환하고, 최종 저장은 기존 `MeetingNote`와 snapshot link table을 사용한다. AI 초안 provider와 STT provider는 application port로 분리되어 있으며, transcript, raw text, provider call log table은 후속 범위다.
 
-DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, `ImportUserLog`, `ImportUserLogRow`를 사용한다. 확정 전 import job은 DB에 저장하며 resume/cancel/expire/confirm 상태를 추적한다. 확정 성공 시에는 도메인 row와 성공 내역 snapshot이 같은 transaction에서 저장된다. 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다. 누락 회사/담당자/제품 보정 배열은 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
 
-2026-08-11 기준 Global B2C 01~11 DB foundation은 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 완료 archive를 따른다. Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment 관련 table은 아직 만들지 않았고 `TODO/PADDLE_PLAN`에서 베타 이후 confirmed scope로 확정한다.
+2026-09-10 기준 User Web DB foundation은 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` 완료 archive를 따른다. Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment 관련 table은 아직 만들지 않았고 `TODO/PADDLE_PLAN`에서 베타 이후 confirmed scope로 확정한다.
 
 ## 4. 현재 DB 기준 구현 완료/참조 Backend TODO
 
@@ -165,10 +139,6 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 - `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/BE-TODO/G01-BE-MEETING-NOTE-DOMAIN.goal.md`
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
-- `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
-- `TODO/DONE/IMPORT_TEMPLATE_PLAN`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
@@ -177,7 +147,6 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 
 ## 5. 아직 포함되지 않은 DB 범위
 
@@ -185,14 +154,12 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 - 계정 영구 삭제 예약 column/table
 - 유료 영구 삭제 복구 예약 column/table
 - MeetingNote AI/STT transcript/raw text 영구 저장 table
-- generic ExportJob table은 현재 범용 export를 쓰지 않는 정책으로 제외한다. Company/Contact/Product/Deal export는 각 도메인 API가 xlsx 파일을 직접 생성한다.
 - Billing/paywall/churn final event table, `UserSubscription`, `UsageMeter`, invoice/refund/tax/payment table은 `TODO/PADDLE_PLAN`에서 베타 이후 확정한다.
 
 ## 6. 관리 규칙
 
 - 실제 Prisma schema를 수정하면 이 폴더 문서도 함께 갱신한다.
 - migration을 추가하거나 이미 적용된 DB 구조를 바꾸면 관련 schema 문서와 API 문서를 함께 갱신한다.
-- 실제 DB table 이름은 Prisma model 이름과 동일한 PascalCase를 사용한다. 예: `User`, `UserOAuthAccount`, `UserActivationSnapshot`, `NotificationDeliveryAttempt`.
 - 신규 table을 만들 때 snake_case table 이름을 위한 `@@map("...")`을 사용하지 않는다. `@@map`은 기존 DB 호환, 외부 DB 연동, 명시적인 아키텍처 결정 문서가 있는 경우에만 예외적으로 허용한다.
 - migration 디렉터리/파일 이름은 snake_case를 유지하지만, `CREATE TABLE` 대상 이름은 Prisma model 이름과 동일한 PascalCase로 작성한다.
 - table/column을 추가할 때 역할, nullable 여부, 기본값, 관계, index 의도를 기록한다.
@@ -210,11 +177,9 @@ DataImport는 `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DEAL_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SCHEDULE_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/MEETING_NOTE_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/BUSINESS_CARD_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/ERROR_REPORT_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SUPPORT_REQUEST_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PUBLIC_CONTACT_REQUEST_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/DATA_IMPORT_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PRODUCT_ANALYTICS_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`

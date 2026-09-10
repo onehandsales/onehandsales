@@ -33,7 +33,6 @@
 - Backend DTO, application service, repository mapping
 - API 계약 문서의 request/response 시간 필드
 - User Web 일정/딜/메모/목록 표시
-- Admin Web 운영 조회/감사 로그 표시
 - Export 파일의 시간 표시 기준
 
 ## 4. 구현 규칙

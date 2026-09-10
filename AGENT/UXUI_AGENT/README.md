@@ -15,7 +15,6 @@
 - 빠른 등록과 inline creation
 - 딜 상세 UX
 - 일정/회의록 연결 UX
-- 다음 행동과 알림 UX
 - Admin UI 톤
 - 모바일 화면 패턴
 - 외부 UX reference 적용 규칙

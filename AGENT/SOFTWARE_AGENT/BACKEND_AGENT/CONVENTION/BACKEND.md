@@ -1,4 +1,4 @@
-﻿# Backend Convention
+# Backend Convention
 
 ## 1. Naming
 
@@ -20,7 +20,6 @@ create-contact.dto.ts
 contact.response.dto.ts
 contact.mapper.ts
 contact.errors.ts
-notification.module.ts
 ```
 
 Classes:
@@ -164,7 +163,6 @@ Rules:
 
 - document transaction need in API contract before implementation
 - use transaction when one use case writes multiple models
-- keep audit log writes in the same transaction as the audited mutation
 - do not start transactions in controllers
 - do not expose Prisma transaction types to domain/application contracts
 - keep long external Provider calls outside DB transaction when possible
@@ -231,8 +229,6 @@ OPENAI_API_KEY
 OPENAI_BASE_URL
 OPENAI_MEETING_NOTE_DRAFT_MODEL
 OPENAI_MEETING_NOTE_STT_MODEL
-OPENAI_BUSINESS_CARD_OCR_MODEL
-OPENAI_IMPORT_MAPPING_MODEL
 OPENAI_AI_WEEKLY_SALES_REPORT_MODEL
 AI_WEEKLY_REPORT_PROVIDER
 ```
@@ -263,8 +259,6 @@ Priority:
 - domain entities and value objects
 - auth isolation
 - user data ownership
-- Excel/CSV import mapping
-- sensitive raw access audit flow
 - trash/restore retention behavior
 
 Unit tests focus on domain logic. Integration tests cover cross-layer behavior where data leakage or irreversible actions are possible.

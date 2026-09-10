@@ -230,7 +230,7 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - 이렇게 나누는 이유는 Frontend와 Backend가 같은 요구사항과 기획을 기준으로 작업하지만 실제 역할과 산출물이 다르기 때문이다.
 - `COMMON`은 Frontend와 Backend가 함께 봐야 하는 공통 계약 문서를 둔다.
 - Frontend는 화면, 컴포넌트, 사용자 입력, 상태 관리, E2E 흐름을 책임진다.
-- Backend는 API 명세, 비즈니스 로직, DB 스키마, 권한, 감사 로그, 외부 Provider adapter를 책임진다.
+- Backend는 API 명세, 비즈니스 로직, DB 스키마, 권한, structured log, 외부 Provider adapter를 책임진다.
 - 공통 사용자 흐름은 `COMMON/USER-FLOW.md`에 둔다.
 - `/goal` 실행을 위한 우선순위 작업 단위는 `COMMON/GOAL-WORK-ORDER.md`에 둔다.
 - API 명세는 `COMMON/API-SPEC`에 둔다.
@@ -251,9 +251,9 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 - API가 포함된 TODO 문서에는 계약 상태, 소비자, 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, transaction, observability, 에러 응답, FE/BE 처리 기준을 반드시 상세하게 적는다.
 - 요청값은 path param, query, header, body, 필수 여부, validation 기준을 구분해서 적는다.
 - 응답값은 success status, response body 유무, response DTO 이름, 필드명, 타입, nullable 여부, 예시를 적는다.
-- 내부 비즈니스 로직은 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 감사 로그, 에러 분기를 use case 흐름으로 적는다.
-- transaction은 필요 여부, 이유, transaction model, rollback 범위, audit log 포함 여부, 외부 Provider 호출 위치를 적는다.
-- observability는 log event key, audit log 필요 여부, request id, redaction 기준, provider error context를 적는다.
+- 내부 비즈니스 로직은 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 에러 분기를 use case 흐름으로 적는다.
+- transaction은 필요 여부, 이유, transaction model, rollback 범위, 부수 로그/이력 포함 여부, 외부 Provider 호출 위치를 적는다.
+- observability는 log event key, request id, redaction 기준, provider error context를 적는다.
 - 확정되지 않은 항목은 완료된 계획처럼 쓰지 않고 `Question`, `보류`, 또는 선행 `/goal` 결정 작업으로 분리한다.
 - "적절히", "추후", "나중에", "필요하면"처럼 실행자가 임의 해석해야 하는 표현은 남기지 않는다.
 - 사용자가 별도로 다시 묻지 말라고 확정한 항목은 이후 같은 종류의 기획 문서에서 기본값으로 적용한다.
@@ -298,8 +298,8 @@ TODO 계획 문서, 기획서, API 명세, DB 스키마, FE/BE 작업 문서를 
 - 검토 중 관련 문서 링크, 용어, API 필수 항목, DB 스키마 설명 누락처럼 명확히 보완 가능한 항목은 문서에 반영한다.
 - TODO 문서가 바로 실행 가능한 계획서 수준인지 확인한다.
 - 검토는 반드시 `PLANNING_REVIEW_CHECKLIST.md`의 `AGENT 정본 기반 구체화 검토`를 포함한다.
-- TODO 문서가 SOFTWARE_AGENT의 Clean Architecture, DDD, domain/application/infrastructure/presentation 계층, port/adapter, Prisma infrastructure-only, User/Admin API 분리, API contract, transaction, observability, audit log 규칙을 구체 문서로 옮겼는지 확인한다.
-- TODO 문서가 UXUI_AGENT와 Frontend 규칙의 딜 파이프라인 우선순위, 빠른 등록, inline creation, 모바일 카드형 흐름, Admin 데스크톱 운영 콘솔, TanStack Query, React Hook Form + Zod, User/Admin API client 분리 기준을 구체 문서로 옮겼는지 확인한다.
+- TODO 문서가 SOFTWARE_AGENT의 Clean Architecture, DDD, domain/application/infrastructure/presentation 계층, port/adapter, Prisma infrastructure-only, User API와 관리자 확인 API 분리, API contract, transaction, observability 규칙을 구체 문서로 옮겼는지 확인한다.
+- TODO 문서가 UXUI_AGENT와 Frontend 규칙의 딜 파이프라인 우선순위, 빠른 등록, inline creation, 모바일 카드형 흐름, TanStack Query, React Hook Form + Zod, User Web/Admin Web API client 분리 기준을 구체 문서로 옮겼는지 확인한다.
 
 사용자 결정 질문 진행 규칙:
 

@@ -38,7 +38,7 @@
 - 각 `/goal`의 목적, 포함 범위, 제외 범위, 선행 조건, 완료 기준
 - FE 화면 명세, 사용자 행동, 입력 필드, 상태, validation, E2E 기준
 - BE API 명세, business flow, 권한, transaction, error, 연결 DB
-- DB 스키마, 제약, index, soft delete, audit log, 민감정보 기준
+- DB 스키마, 제약, index, soft delete, 민감정보 기준
 - 관련 AGENT 정본 문서와 TODO 내부 문서 링크
 - 구현 전 검토 결과
 
@@ -56,7 +56,7 @@
 - 문서만 보고 첫 번째 `/goal`을 바로 실행할 수 있는가?
 - 각 `/goal`이 너무 크지 않고 검증 가능한 완료 기준을 가지는가?
 - API 명세와 DB 스키마가 FE 화면 요구를 실제로 지원하는가?
-- Backend 작업이 `SOFTWARE_AGENT`의 Clean Architecture, DDD, 계층 분리, port/adapter, transaction, audit log 기준으로 구체화되어 있는가?
+- Backend 작업이 `SOFTWARE_AGENT`의 Clean Architecture, DDD, 계층 분리, port/adapter, transaction 기준으로 구체화되어 있는가?
 - Frontend/UX 작업이 `UXUI_AGENT`와 `SOFTWARE_AGENT`의 User Web/Admin Web 기준으로 구체화되어 있는가?
 - 아직 결정되지 않은 항목은 `Question` 또는 G00 같은 선행 결정 작업으로 분리되어 있는가?
 

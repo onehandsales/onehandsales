@@ -57,9 +57,8 @@ Backend API는 Frontend Vercel hosting과 분리된 별도 hosting을 사용한�
 운영 규칙:
 
 - production secret은 local `.env`에 넣지 않는다.
-- Admin access는 제한하고 감사 가능해야 한다.
-- 민감 데이터는 기본 마스킹한다.
-- 원문 조회는 명시적 액션, 사유 입력, 감사 로그가 필요하다.
+- Admin access는 제한되어야 한다.
+- 민감 데이터는 필요한 응답 계약에서만 노출한다.
 
 ## 4. External Provider Checks
 

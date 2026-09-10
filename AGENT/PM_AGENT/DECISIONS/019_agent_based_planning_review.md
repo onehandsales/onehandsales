@@ -7,7 +7,7 @@ TODO 계획 문서, API 명세, DB 스키마, FE-TODO, BE-TODO, GOAL-SPECS를 �
 즉, 검토는 문서가 상세한지 여부만 보지 않고 다음을 확인한다.
 
 - PM 제품 범위와 사용자 흐름이 TODO의 goal 순서와 포함/제외 범위로 구체화됐는가?
-- UXUI_AGENT의 화면 우선순위, 입력 흐름, 모바일/데스크톱 패턴, Admin 운영 UX가 FE 문서로 구체화됐는가?
+- UXUI_AGENT의 화면 우선순위, 입력 흐름, 모바일/데스크톱 패턴이 FE 문서로 구체화됐는가?
 - SOFTWARE_AGENT의 Backend, Frontend, DB 기준이 BE/API/FE/DB 문서로 구체화됐는가?
 
 ## 2. 이유
@@ -17,8 +17,7 @@ TODO 계획 문서, API 명세, DB 스키마, FE-TODO, BE-TODO, GOAL-SPECS를 �
 상위 문서와 TODO 문서 사이의 연결이 약하면 다음 문제가 생긴다.
 
 - Backend가 controller 중심 CRUD로 흐르고 domain/application 계층이 약해질 수 있다.
-- Prisma, OpenAI, OCR, Calendar 같은 infrastructure 의존성이 domain/application으로 새어 들어갈 수 있다.
-- User API와 Admin API 경계가 흐려져 데이터 소유권, masking, audit log가 누락될 수 있다.
+- User API와 관리자 확인 API 경계가 흐려져 데이터 소유권과 권한 기준이 누락될 수 있다.
 - Frontend가 User Web/Admin Web 분리, TanStack Query, form validation, URL state 같은 기준을 놓칠 수 있다.
 - UX/UI가 딜 파이프라인 중심 업무 도구가 아니라 장식적 화면이나 단순 CRUD 화면으로 변할 수 있다.
 

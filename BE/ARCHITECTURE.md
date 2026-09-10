@@ -1,11 +1,11 @@
 # Backend Architecture
 
-`BE` is the single NestJS backend for the User API and current Admin Operation API.
+`BE` is the single NestJS backend for the User API and admin auth verification API.
 
 Routes:
 
 - User API: `/api/*`
-- Admin API: `/admin/api/*`
+- Admin auth verification API: `GET /admin/api/me`
 
 Active modules:
 
@@ -13,27 +13,20 @@ Active modules:
 - `user`: current user profile, timezone/locale metadata, and registered device lookup.
 - `company`: user-owned company, company field/region, memo/private memo logs, linked contacts/deals, soft delete, trash restore, xlsx export.
 - `contact`: user-owned contact, company option, department/job grade, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
-- `business-card`: business card image OCR, scan log, extracted candidate confirmation, company/contact creation or reuse.
 - `product`: user-owned product, product category/status, memo/private memo logs, linked deals, soft delete, trash restore, xlsx export.
 - `deal`: user-owned deal, company/contact/product links, stage counts, `DealActivity`, following action logs, memo logs, soft delete, trash restore, xlsx export.
 - `schedule`: user-owned schedule, month/week list, weekly report/xlsx export, deal links, Google Calendar read-only sync, soft delete, trash restore.
 - `meeting-note`: user-owned meeting note, snapshot links, manual CRUD, AI/STT draft, next-action/follow-up draft, saved-note deal linking, soft delete, trash restore.
 - `follow-up`: follow-up message draft/send/retry/history, email provider connection, SMS sender number, and consent notice foundation.
 - `sales-report`: AI weekly sales report generation, list/detail, and snapshot summary.
-- `notification`: notification list/unread/read, settings, browser push subscription, and reminder delivery foundation.
 - `analytics`: product analytics client event collection, activation/retention snapshots, and AI usage summary foundation.
-- `account-request`: user-facing account deletion and data export request flows.
-- `admin-operation`: Admin user/domain read-only operation, sensitive raw access/audit, provider failure, analytics, account/trash/system operation queues.
 - `search`: integrated search over company, contact, product, deal, schedule, and meeting note data.
-- `trash`: 7-day trash list/detail/restore and recovery request support for supported entities and logs.
-- `data-import`: active templates, template xlsx download, DB-backed ImportJob, CSV/XLSX upload, AI column mapping, editable preview validation with cell-scoped validation messages, confirm/cancel/expire import, import logs for company/contact/product/deal.
+- `trash`: 7-day trash list/detail/restore for supported entities and logs.
 - `health`: health check endpoint.
 
 Current intentional gaps:
 
-- Generic `/api/exports` and `ExportJob` are not used; exports live in each domain module.
-- Paddle/Billing, subscription/payment/tax/invoice/refund, entitlement/paywall, Billing Admin, B2B tenant/team admin, and paid recovery/hard purge policy are deferred.
-- Current HTTP confirm wiring passes contact company resolutions, deal company/contact/product resolutions, and row overrides through FE API, DTO, controller, application service, repository, and controller spec.
+- Paddle/Billing, subscription/payment/tax/invoice/refund, entitlement/paywall, B2B tenant/team features, and paid recovery/hard purge policy are deferred.
 - Current runtime auth providers are Google, LINE, and Apple. Kakao remains only as a legacy Prisma enum value and is not exposed for runtime exchange.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
 - 2026-07-10 verification: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed.

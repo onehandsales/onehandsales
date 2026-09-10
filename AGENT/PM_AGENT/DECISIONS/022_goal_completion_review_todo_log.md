@@ -63,7 +63,7 @@
 
 Backend 검토 항목:
 
-- Prisma, NestJS, Clean Architecture, User/Admin API 분리 규칙을 지켰는가?
+- Prisma, NestJS, Clean Architecture, User API와 관리자 확인 API 분리 규칙을 지켰는가?
 - domain/application/infrastructure/presentation 경계를 어기지 않았는가?
 - DB migration, seed, typecheck, lint, build, test 등 필요한 검증을 수행했는가?
 

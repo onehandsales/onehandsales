@@ -66,8 +66,6 @@
 5. 딜 생성/조회/수정/삭제/복구
 6. 일정 생성/조회/수정/삭제
 7. 회의록 생성/조회/수정/삭제/복구
-8. 명함 OCR
-9. 데이터 가져오기 Import
 10. 검색
 11. 휴지통
 12. 도메인별 XLSX Export
@@ -99,7 +97,7 @@
 - 잘못된 token 401 확인
 - 존재하지 않는 route 404 확인
 - AdminGuard 403은 자동 테스트로 확인
-- User Web API client는 `/admin/api/*` 호출을 차단한다.
+- User Web API client는 일반 `/api/*` 계약만 사용한다.
 - 로그인/보호 redirect URL에 token-like query가 붙지 않는다.
 - 비로그인 상태에서 앱 access token이 localStorage에 생성되지 않는다.
 - FE/BE source에서 `console.*` 사용자 데이터 출력은 발견되지 않았다.
@@ -139,7 +137,6 @@
 - 딜 단계 탭과 딜 목록
 - 일정 생성 form
 - 회의록 긴 입력
-- Import 표 가로 스크롤
 - 휴지통 복구
 - 작은 화면 모달
 - 모바일 키보드가 올라온 상태의 저장 버튼 접근
@@ -182,8 +179,7 @@
 
 현재 실패로 처리하지 않고 `N/A` 또는 `Known limitation`으로 기록하는 항목은 다음이다.
 
-- `/app/export`는 `/app`으로 redirect됨
-- Billing Admin과 B2B tenant/team admin은 현재 범위에서 제외
+- B2B tenant/team 기능은 현재 범위에서 제외
 - 결제, 구독, 세금, invoice, refund, entitlement, paywall은 `TODO/PADDLE_PLAN` Deferred / Draft 범위
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
@@ -193,18 +189,17 @@
 
 | 순서 | 작업 | 목적 | 완료 기준 |
 | --- | --- | --- | --- |
-| 1 | 기능 유지보수 | 01~11 foundation을 베타 제공 가능한 상태로 안정화 | S0/S1/S2가 수정 또는 명확히 보류 판단됨 |
+| 1 | 기능 유지보수 | User Web foundation을 베타 제공 가능한 상태로 안정화 | S0/S1/S2가 수정 또는 명확히 보류 판단됨 |
 | 2 | UX/UI 상품성 개선 | 반복 사용자가 보기 좋은 업무 도구 품질 확보 | 핵심 화면의 레이아웃/문구/상태/접근성 이슈 정리 |
 | 3 | 모바일 브라우저/브라우저 확인 | 현재 Web 제품의 실제 사용성 확인 | 390px/360px, Chrome/Edge 핵심 흐름 사용 가능 |
 | 4 | 베타 준비 | 결제창 없는 100명 베타 운영 준비 | onboarding, feedback loop, 지원 흐름 정리 |
 | 5 | Paddle 의사결정 | 결제 구현 전 정책 확정 | 가격/플랜/entitlement/AI usage/refund/tax/invoice confirmed |
-| 6 | `TODO/PADDLE_PLAN` 승격 | 결제 구현 착수 조건 충족 | API/DB/User Web/Admin 범위가 confirmed 문서로 작성됨 |
+| 6 | `TODO/PADDLE_PLAN` 승격 | 결제 구현 착수 조건 충족 | API/DB/User Web 범위가 confirmed 문서로 작성됨 |
 
 기능 추가 판단 기준:
 
 - 위 1~4번이 끝나기 전에는 Paddle/Billing 구현을 시작하지 않는다.
-- 글로벌 B2C 유료 판매 기능은 베타 이후 결제/구독, 세금/컴플라이언스, Billing Admin, `/app` 추가 언어 확장을 한 계획으로 묶어 설계한다.
-- Series A급 기능은 이미 구현된 Notification/Reminder, AI report/follow-up, mobile field-use, Product Analytics foundation을 실제 리텐션/매출 지표로 고도화할 때 의미가 있다.
+- 글로벌 B2C 유료 판매 기능은 베타 이후 결제/구독, 세금/컴플라이언스, `/app` 추가 언어 확장을 한 계획으로 묶어 설계한다.
 
 ## 6. 베타 이후 기능 우선순위
 
@@ -213,11 +208,10 @@
 | 순서 | 작업 | 이유 |
 | --- | --- | --- |
 | 1 | Paddle/Billing | 유료 판매를 위해 subscription/payment/tax/invoice/refund/entitlement가 필요 |
-| 2 | Billing Admin | 구독 상태, 결제 이슈, invoice/refund/failed payment 운영 필요 |
-| 3 | paid conversion/churn analytics | 결제 이후 전환/해지/ARPU/LTV/CAC 판단 필요 |
-| 4 | 캐나다 데이터 정합성 및 추가 국가/언어 rollout | KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호/지역을 정리하고, 이후 일본/호주 등 보류 시장 확장 |
-| 5 | 모바일 브라우저 현장 사용성 고도화 | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토 |
-| 6 | B2B tenant/team admin | 개인 B2C보다 팀/seat 기반 ARPU가 더 강하다고 확인될 때 검토 |
+| 2 | paid conversion/churn analytics | 결제 이후 전환/해지/ARPU/LTV/CAC 판단 필요 |
+| 3 | 캐나다 데이터 정합성 및 추가 국가/언어 rollout | KR/US/CA 우선 전략에 맞춰 CA/CAD/캐나다 전화번호/지역을 정리하고, 이후 일본/호주 등 보류 시장 확장 |
+| 4 | 모바일 브라우저 현장 사용성 고도화 | 모바일 현장 사용성이 매출/리텐션에 직접 기여할 때 검토 |
+| 5 | B2B tenant/team 기능 | 개인 B2C보다 팀/seat 기반 ARPU가 더 강하다고 확인될 때 검토 |
 
 ## 7. 지금 바로 할 일
 

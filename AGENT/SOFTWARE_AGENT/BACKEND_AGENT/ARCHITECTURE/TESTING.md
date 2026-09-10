@@ -4,7 +4,7 @@
 
 이 문서는 `BE`의 Backend 테스트 기준을 정의한다.
 
-Backend 테스트는 모든 코드를 균등하게 덮는 것이 아니라 데이터 유출, 권한 누락, 민감정보 원문 접근, irreversible action 같은 위험 흐름을 우선한다.
+Backend 테스트는 모든 코드를 균등하게 덮는 것이 아니라 데이터 유출, 권한 누락, irreversible action 같은 위험 흐름을 우선한다.
 
 ## 2. 테스트 우선순위
 
@@ -12,8 +12,7 @@ Backend 테스트 우선순위:
 
 - domain entities와 value objects
 - user ownership isolation
-- AdminGuard와 admin-only application methods
-- sensitive raw access audit transaction
+- AdminGuard
 - import mapping validation
 - trash retention과 restore
 - deal stage/activity logging
@@ -46,9 +45,7 @@ Presentation 테스트:
 자동 테스트는 기본적으로 아래 외부 서비스를 호출하지 않는다.
 
 - OpenAI
-- OCR provider
 - Google Calendar
-- email/browser push
 
 실제 Provider 확인은 명시적인 smoke job 또는 수동 production-safe 체크로 제한한다.
 

@@ -2,24 +2,20 @@
 
 Admin 비즈니스 feature slice를 이곳에 둔다.
 
-`user-management` feature를 구현할 때의 예시:
+`admin-auth` feature example:
 
 ```text
-features/user-management/
+features/admin-auth/
   api/
-    admin-user-api.ts
-    admin-user-query-keys.ts
+    admin-auth-api.ts
+    admin-auth-query-keys.ts
   components/
-    admin-user-table.tsx
-    admin-user-detail-panel.tsx
-    user-status-dialog.tsx
+    admin-auth-status.tsx
   hooks/
-    use-admin-user-table-state.ts
-  schemas/
-    user-status-schema.ts
+    use-admin-auth-status.ts
   types/
-    admin-user.ts
+    admin-auth.ts
   index.ts
 ```
 
-page는 내부 feature 파일이 아니라 `@/features/user-management`에서 import해야 한다.
+page는 내부 feature 파일이 아니라 `@/features/admin-auth`에서 import해야 한다.

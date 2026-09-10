@@ -88,7 +88,6 @@ Attio는 CRM record와 관계 구조의 1차 기준이다.
 - Notion처럼 모든 것을 자유 block editor로 만드는 것
 - Attio 브랜드, 문구, 화면 구조의 직접 복제
 - Attio의 custom object builder, 팀 CRM 설정, 이메일 동기화, 협업 권한 복잡도를 현재 MVP에 끌어오는 것
-- Backend에 없는 Notification, generic Export, Admin 운영, 결제/구독, Series A급 AI 기능을 reference에 있다는 이유만으로 화면에 노출하는 것
 - 딜 desktop 기본 화면을 pure Kanban으로 고정하는 것
 - 제품의 고정 도메인 필드를 자유 텍스트나 임의 속성으로 약화하는 것
 

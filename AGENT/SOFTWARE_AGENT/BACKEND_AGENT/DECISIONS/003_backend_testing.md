@@ -8,8 +8,7 @@ Backend 테스트는 `BE` 내부에서 관리한다.
 
 - domain entities와 value objects
 - user ownership isolation
-- AdminGuard와 admin-only application methods
-- sensitive raw access audit transaction
+- AdminGuard
 - import mapping validation
 - trash retention과 restore
 - deal stage/activity logging
@@ -17,7 +16,7 @@ Backend 테스트는 `BE` 내부에서 관리한다.
 
 ## 2. 이유
 
-Backend는 사용자 데이터 소유권, Admin 권한, 민감정보 원문 조회, transaction 같은 위험 흐름을 담당한다.
+Backend는 사용자 데이터 소유권, Admin 권한, transaction 같은 위험 흐름을 담당한다.
 
 따라서 단순 coverage 수치보다 데이터 유출과 권한 누락을 막는 테스트가 우선이다.
 

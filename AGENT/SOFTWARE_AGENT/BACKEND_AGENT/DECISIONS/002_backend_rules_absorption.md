@@ -18,7 +18,7 @@ Backend 정본 문서 위치:
 
 Backend와 Frontend 규칙이 같은 `ARCHITECTURE` 또는 `CONVENTION` 폴더에 섞여 있으면 구현자가 어떤 문서를 먼저 봐야 하는지 불명확하다.
 
-Backend는 NestJS, Prisma, Clean Architecture, DDD, transaction, audit log, provider port/adapter 같은 고유 기준을 가진다. 따라서 Backend 전용 Agent 폴더에서 관리한다.
+Backend는 NestJS, Prisma, Clean Architecture, DDD, transaction, structured log, provider port/adapter 같은 고유 기준을 가진다. 따라서 Backend 전용 Agent 폴더에서 관리한다.
 
 ## 3. 적용 범위
 

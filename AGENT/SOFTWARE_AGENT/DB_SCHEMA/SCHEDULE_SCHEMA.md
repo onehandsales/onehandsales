@@ -84,10 +84,9 @@ Schedule 도메인은 Backend `BE/src/modules/schedule`와 Prisma `Schedule`, `S
 
 1. `Schedule.id = scheduleId` AND `Schedule.userId = currentUser.id`로 소유권을 확인한다.
 2. `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 설정해 일정 row를 soft delete한다.
-3. 연결된 pending reminder를 취소하거나 재계산한다.
 4. Trash 복구 시 Google-origin 일정은 local modified 상태로 다루고, local field를 Provider sync가 덮어쓰지 않게 한다.
 
-Trash 무료 복구 기간이 지난 Schedule row는 사용자가 직접 복구할 수 없다. Admin 직접 복구 실행은 11 Admin Operation 1차 범위가 아니며, 복구 문의 queue와 후속 운영 정책으로 다룬다.
+Trash 무료 복구 기간이 지난 Schedule row는 사용자가 직접 복구할 수 없다.
 
 ## 5. 시간 정책
 

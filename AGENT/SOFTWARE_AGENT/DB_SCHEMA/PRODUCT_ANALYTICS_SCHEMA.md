@@ -4,7 +4,7 @@
 
 09 Product Analytics는 Global B2C 유료 판매를 위한 제품 사용 분석 정본을 만든다.
 
-이 schema는 raw event, activation snapshot, retention cohort snapshot만 포함한다. Admin 분석 화면/API는 11 Admin Operation에서 구현 완료했고, billing/paywall/churn 최종 이벤트와 과금 사용량 정본은 `TODO/PADDLE_PLAN`에서 베타 이후 확정한다.
+이 schema는 raw event, activation snapshot, retention cohort snapshot만 포함한다. billing/paywall/churn 최종 이벤트와 과금 사용량 정본은 `TODO/PADDLE_PLAN`에서 베타 이후 확정한다.
 
 ## 2. 포함 Model
 
@@ -31,8 +31,6 @@
 - `DEAL`
 - `SCHEDULE`
 - `MEETING_NOTE`
-- `BUSINESS_CARD_SCAN`
-- `IMPORT_JOB`
 - `EXPORT`
 
 ## 4. ProductAnalyticsEvent
@@ -133,5 +131,4 @@ activation 기준:
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/EVENT-TAXONOMY.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/BE-TODO/DB-SCHEMA.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/PRISMA-MIGRATION-SPEC.md`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 - `TODO/PADDLE_PLAN`

@@ -91,37 +91,34 @@ Backend 구체화 검토:
 - TODO의 BE 작업이 `domain`, `application`, `infrastructure`, `presentation` 네 계층으로 나뉘는가?
 - 비즈니스 규칙은 domain/application 기준으로 설명되고, controller는 application service를 호출하는 얇은 계층으로 남는가?
 - repository interface, port, adapter 경계가 드러나며 Prisma는 infrastructure 전용으로 제한되는가?
-- User API와 Admin API가 `/api/*`, `/admin/api/*` 경로와 guard 기준으로 분리되는가?
-- 사용자 소유권, `userId` 필터, soft delete, restore, audit log, 민감정보 masking이 API와 DB 스키마에 반영되는가?
-- 여러 테이블을 함께 쓰거나 감사 로그가 필요한 use case에 transaction 기준이 명시되는가?
+- User API와 관리자 권한 확인 API가 `/api/*`, `GET /admin/api/me` 경로와 guard 기준으로 분리되는가?
+- 사용자 소유권, `userId` 필터, soft delete, restore, 민감정보 masking이 API와 DB 스키마에 반영되는가?
+- 여러 테이블을 함께 쓰는 use case에 transaction 기준이 명시되는가?
 - transaction 필요 여부가 `필요`, `없음`, `보류` 중 하나로 API 계약에 적혀 있는가?
 - transaction model, rollback 범위, 외부 Provider 호출 위치가 명시되는가?
-- mutation, Admin API, 민감정보, 외부 Provider API에 observability 항목이 있는가?
-- log event key, audit log 필요 여부, request id, redaction 기준이 문서화되어 있는가?
-- OpenAI, OCR, Google Calendar, email/browser push, file parser 같은 외부 의존성이 port/adapter 뒤에 있는가?
-- Admin 전용 조회/복구/원문 조회는 User controller의 role 분기가 아니라 admin controller 또는 admin application method로 분리되는가?
+- mutation, 민감정보, 외부 Provider API에 observability 항목이 있는가?
+- log event key, request id, redaction 기준이 문서화되어 있는가?
 - API 명세의 business flow가 도메인 의도를 설명하고, 단순 CRUD 절차나 controller 절차에 머물지 않는가?
 
 Frontend와 UX/UI 구체화 검토:
 
 - User Web은 `FE/user-web`의 Feature-Sliced 구조, TanStack Query, React Hook Form + Zod, URL search params 기준을 따르는가?
-- User Web은 `/api/*`만 호출하고 `/admin/api/*`를 호출하지 않는가?
-- Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, TanStack Table, 서버 페이지네이션, 데스크톱 전용 운영 콘솔 기준을 따르는가?
+- User Web은 일반 `/api/*` 계약만 호출하는가?
+- Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, `GET /admin/api/me` 기준을 따르는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
 - UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈 대시보드, `/app/deals` 딜 파이프라인의 역할을 구분하고, 딜 목록에서 금액, 단계, 다음 행동, 마감 상태가 빠르게 보이도록 하는가?
 - 화면/Frontend/API/DB 계획이 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX` 기준을 반영해 workspace/page/database/detail과 record/linked record/activity 맥락을 함께 설명하는가?
 - 가능성/likelihood처럼 현재 API에 없는 필드는 후속 범위로 분리되어 있는가?
 - 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
 - 모바일 User Web은 테이블이나 가로 칸반을 기본 UI로 쓰지 않고 카드형/리스트형 흐름을 따르는가?
-- Admin UI는 데이터 테이블, 필터, 서버 페이지네이션, 민감정보 마스킹, 원문 조회 사유 dialog를 중심으로 설계되어 있는가?
 - 금지 표현인 `Customer`, `상품`, `오프더레코드`가 정본 의도와 다르게 쓰이지 않는가?
 - 장식적 hero, card-in-card, 과한 gradient/orb, 베이지/크림 또는 다크 네이비 지배 팔레트 같은 금지된 시각 방향을 전제로 하지 않는가?
 
 심각도 판정:
 
-- Clean Architecture 계층을 무너뜨리는 요구, controller의 Prisma 직접 접근, Domain의 외부 SDK 의존, 사용자 데이터 소유권 누락, Admin 감사 로그 누락은 `Critical` 또는 `Major`로 본다.
+- Clean Architecture 계층을 무너뜨리는 요구, controller의 Prisma 직접 접근, Domain의 외부 SDK 의존, 사용자 데이터 소유권 누락은 `Critical` 또는 `Major`로 본다.
 - FE가 서버 상태를 TanStack Query가 아닌 임의 fetch/useEffect 중심으로 전제하거나, Admin/User API 경계를 흐리면 `Major`로 본다.
-- UX/UI 정본과 충돌하는 화면 우선순위, 모바일 테이블/가로 칸반, 민감정보 원문 노출 흐름 누락은 `Major`로 본다.
+- UX/UI 정본과 충돌하는 화면 우선순위, 모바일 테이블/가로 칸반은 `Major`로 본다.
 - 관련 AGENT 기준 문서 링크 누락, 용어 일부 불일치, 완료 기준 구체성 부족은 `Minor`로 본다.
 
 ## 5.2. 활성 TODO 재검토 기준
@@ -190,7 +187,7 @@ Frontend 남은 작업 확인:
 
 - FE 화면 요구와 BE API 명세가 일부 맞지 않는다.
 - API response에 화면에서 필요한 필드가 빠져 있다.
-- DB 인덱스, 상태값, soft delete, audit log 같은 운영 기준이 빠져 있다.
+- DB 인덱스, 상태값, soft delete 같은 운영 기준이 빠져 있다.
 - 예외 흐름과 에러 메시지 정책이 부족하다.
 - 우선순위 순서가 의존성과 맞지 않는다.
 
@@ -252,7 +249,7 @@ TODO 계획 문서는 추가로 아래 항목을 확인한다.
 - 사용자가 중간에 필요한 데이터를 새로 만들 수 있는 흐름이 있는가?
 - 모바일과 데스크톱에서 흐름이 다르게 필요한 부분이 구분됐는가?
 - Admin 사용자의 흐름과 일반 사용자의 흐름이 섞이지 않았는가?
-- 민감정보를 보는 흐름에 사유 입력, 마스킹, 감사 로그가 연결됐는가?
+- 민감정보를 보는 흐름에 권한, 마스킹, redaction 기준이 연결됐는가?
 
 ## 9. FE-TODO 검토
 
@@ -274,9 +271,8 @@ TODO 계획 문서는 추가로 아래 항목을 확인한다.
 `BE-TODO` 문서는 아래 항목을 확인한다.
 
 - 도메인별 책임이 명확히 분리되어 있는가?
-- User API와 Admin API가 경로와 권한 기준으로 분리되어 있는가?
+- User API와 관리자 권한 확인 API가 경로와 권한 기준으로 분리되어 있는가?
 - 사용자별 데이터 소유권 검증이 모든 User API에 반영됐는가?
-- Admin API는 기본 마스킹, 원문 조회 사유 입력, 감사 로그 정책을 따르는가?
 - soft delete, restore, hard delete 정책이 문서화되어 있는가?
 - 외부 Provider는 port/interface와 adapter 뒤에 숨겨져 있는가?
 - 비즈니스 로직이 controller에 몰리지 않도록 application service 기준이 있는가?
@@ -302,7 +298,7 @@ API 명세는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`와
 - response 필드
 - 연결된 DB 스키마
 - transaction 필요 여부와 rollback 범위
-- observability event key, audit log, request id, redaction 기준
+- observability event key, request id, redaction 기준
 - 에러 응답
 - 관련 문서
 
@@ -331,7 +327,7 @@ DB 스키마 문서는 아래 항목을 확인한다.
 - 관계와 cardinality가 명확한가?
 - User ownership 기준 필드가 필요한 테이블에 있는가?
 - soft delete가 필요한 테이블에 `deletedAt` 기준이 있는가?
-- 감사 로그가 필요한 위험 행동이 식별되어 있는가?
+- 부수 로그/이력이 필요한 위험 행동이 식별되어 있는가?
 - 민감정보 필드와 마스킹 대상이 구분되어 있는가?
 - unique, index, foreign key, cascade 정책이 설명되어 있는가?
 - Prisma schema로 옮길 수 있을 만큼 타입과 제약이 구체적인가?
@@ -464,15 +460,12 @@ DB 스키마 문서는 아래 항목을 확인한다.
 
 ## 4. 누락 사항
 
--
 
 ## 5. 충돌 사항
 
--
 
 ## 6. 사용자의 결정이 필요한 질문
 
--
 
 ## 7. 구현 가능 여부
 

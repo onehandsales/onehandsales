@@ -27,8 +27,6 @@ Current implementation note as of 2026-07-10:
 - Global Search has Backend `GET /api/search` and User Web GlobalSearch connection with loading, empty, error states implemented.
 - Trash has Backend list/detail/restore APIs and a User Web full-width list with row-click detail modal and modal-only restore action.
 - MeetingNote AI/STT draft Backend APIs and User Web draft UI integration are implemented.
-- BusinessCard OCR has Backend `POST/GET /api/business-card-scans` and User Web `/app/business-cards` integration implemented. The visible feature name is `명함 스캔`, and the modal action is `명함스캔`.
-- DataImport has Company/Contact/Product/Deal upload, AI mapping, row edit/validation, cell-scoped validation messages, confirm save, and import log detail implemented.
 - Company create uses a Notion-like right document panel from the company list. `/app/companies/new` opens the list with the create panel already open instead of rendering a separate full-page form. The desktop panel is full-height, resizable, and capped at 70% of the workspace; the company list keeps all columns and uses horizontal scroll when space is tight.
 - Contact/product create modals use search-input selection, immediate creation when no result exists, and automatic selection after creation.
 - Deal likelihood (`긍정 / 중립 / 부정` or percent) is not implemented in the current Deal API/FE form. Treat it as future UX scope unless a new backend plan adds it.
@@ -40,7 +38,6 @@ Current implementation note as of 2026-07-10:
 - 1440px, 1280px, 768px, 390px, 360px, 125% 확대에서 주요 화면이 깨지지 않는지 확인한다.
 - 긴 회사명/담당자명/제품명/딜이름, 긴 이메일/전화번호/URL이 layout을 깨지 않는지 확인한다.
 - loading, empty, error, success, destructive action 상태가 UX writing 기준과 맞는지 확인한다.
-- Notification route/API는 현재 활성 상태로 문서화한다. 다만 Notification source/TTL/cleanup 정책 확장, 결제/구독, Admin 운영, Series A급 AI 기능은 별도 goal 전까지 새로 노출하지 않는다.
 - 자세한 제품 우선순위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
 Primary focus:
@@ -155,14 +152,12 @@ Recommended `/app/deals` structure:
 
 ```text
 Top bar:
-  global search, quick create, notifications
 
 Main:
   deal pipeline list/table with stage tabs and filters
 
 Side or lower area:
   today's schedule
-  follow-up reminders
   recent meeting notes
 ```
 
@@ -373,17 +368,13 @@ Primary navigation should make these areas easy to reach:
 - 제품
 - 일정
 - 회의록
-- 명함 스캔
 - 설정
 
 현재 노출 기준:
 
-- `Import`는 실제 Backend API와 연결되어 있으므로 `데이터 업로드`로 노출한다.
 - Generic `Export` route/feature는 코드에 남아 있을 수 있지만, 현재 export 정본이 domain별 xlsx 다운로드이므로 main sidebar에서 숨긴다.
 - 현재 제품의 Export는 domain별 action으로 처리한다. User Web에 보이는 공통 label은 `엑셀 다운로드`이며, 사용자가 보고 있는 목록 화면과 API가 회사/담당자/제품/딜 중 무엇을 export하는지 결정한다.
 - `휴지통`은 삭제와 복구가 활성 사용자 workflow이므로 관리 섹션에 노출한다. 전체 폭 목록 layout, row-click detail modal, modal-only restore action을 사용한다.
-- `명함 스캔`은 simple camera icon과 함께 primary navigation에 노출한다. Page header에는 `명함 스캔`만 표시하고 중복 app name/header label을 추가하지 않는다.
-- `알림`은 AppShell의 알림 bell 진입점으로 `/app/notifications`에 연결한다.
 - deferred feature는 route가 존재한다는 이유만으로 primary navigation에 노출하지 않는다.
 
 Even though the first screen is deal-centered, company/contact/product registration must remain easy because deals require those entities.
@@ -410,8 +401,6 @@ Rules:
 - Newly created taxonomy options should be selected in the list filter immediately when possible.
 - Deal list controls are ordered as deal-name search, `전체`, company select, contact select, and sort select.
 - Deal stage counts should receive the same search/company/contact filters as the current list context.
-- BusinessCard scan list controls use a reset icon for 전체 상태 and a multi-select status filter with internal `상태 초기화`. It does not expose a sort select because registration date descending is fixed.
-- BusinessCard `명함스캔` modal is staged: image upload only before OCR, progress overlay during OCR, extracted result form only after OCR success.
 - Company/contact/product/deal operational lists should share the dense `Controls Bar + Table Card + Pagination` visual grammar where possible.
 - Shared list size baseline: `Pagination` is 48px high, preview headers and table headers are 44px high.
 
@@ -470,7 +459,6 @@ After that, domain expansion should follow:
 - contact
 - product
 - schedule
-- meeting note / business card / import-export / trash / notifications / search
 
 Rules:
 
@@ -789,7 +777,6 @@ Next action should be visible in:
 - deal list row/card
 - deal detail summary
 - home pipeline
-- notification area
 
 Next action states:
 
@@ -814,31 +801,16 @@ User actions:
 - add schedule
 - add activity log
 
-Alerts should not overwhelm the user. Show urgent items clearly, but keep normal reminders quiet.
 
 ## 18. Admin UI Direction
 
-Admin Web is a later-stage operations surface. When it is implemented, it should use the same trust-oriented blue/gray system, but with higher information density than User Web.
+현재 Admin Web은 관리자 권한 확인 전용이다.
 
 Admin UI principles:
 
-- desktop only
-- table-first
-- filter-first
-- audit-safe
-- less emotional, more operational
+- 로그인과 접근 차단 상태를 명확히 보여준다.
+- User Web 도메인 화면을 암시하지 않는다.
 - no marketing-style visuals
-
-Admin screens should prioritize:
-
-- fast filtering
-- server pagination
-- row detail panels
-- masked sensitive fields
-- reason dialogs for sensitive/raw/destructive actions
-- clear audit trail visibility
-
-Admin should not try to feel like the User Web. It should feel like an internal operations console.
 
 ## 19. 관련 문서
 

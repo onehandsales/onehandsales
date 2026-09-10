@@ -1,6 +1,6 @@
 # Global B2C And Series A Roadmap
 
-> 기준일: 2026-08-11
+> 기준정: 2026-08-11
 > 상태: PM 전략 정본  
 > 구현 상태 기준: `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`  
 > 제품 범위 기준: `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
@@ -22,17 +22,13 @@
 - `/app` 홈
 - Company
 - Contact
-- BusinessCard OCR
 - Product
 - Deal
 - Schedule
 - MeetingNote
 - Search
 - Trash
-- DataImport
 - Company/Contact/Product/Deal 도메인별 XLSX export
-- ImportJob persistence
-- Notification/Reminder
 - Weekly Schedule Report
 - Google Calendar Integration
 - AI Weekly Sales Report / Follow-up
@@ -41,15 +37,14 @@
 - Global Data / I18N foundation
 - Product Analytics
 - Mobile Field Use foundation
-- Admin Operation foundation
 
 하지만 글로벌 B2C 유료 제품으로 판매하기에는 아직 제품 유지보수, UX/UI 상품성, 베타 검증, 결제/구독/세금 정책 확정이 남아 있다.
 
-현재 바로 해야 할 일은 Paddle checkout 구현이 아니라 유지보수와 UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
+현재 바로 해야 할 정은 Paddle checkout 구현이 아니라 유지보수와 UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
 우선순위 결론:
 
-1. 지금은 기존 01~11 기능 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
+1. 지금은 기존 User Web 기능 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
 2. 결제는 100명 베타를 결제창 없이 진행한 뒤 가격/플랜/entitlement/AI 사용량 제한 정책이 확정되면 시작한다.
 3. QA나 베타 중 S0/S1/S2 버그가 발견되면 Paddle/Billing보다 먼저 수정한다.
 4. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 분리된 Deferred / Draft 계획이다.
@@ -58,22 +53,18 @@
 
 | 영역 | 현재 상태 | 미완성 내용 | 우선순위 판단 |
 |---|---|---|---|
-| 기능 유지보수 | 01~11 foundation 완료 | 베타 전 S0/S1/S2 버그, edge case, 문서/코드 drift 정리 | 최우선 |
-| UX/UI 상품성 | 핵심 기능 happy path는 있음 | 반복 사용 흐름, 모바일/데스크톱 polish, 긴 텍스트, 모달/토스트, 접근성, UX writing | 최우선 |
+| 기능 유지보수 | User Web foundation 완료 | 베타 전 S0/S1/S2 버그, edge case, 문서/코드 drift 정리 | 최우선 |
+| UX/UI 상품성 | 핵심 기능 happy path는 있음 | 반복 사용 흐름, 모바정/데스크톱 polish, 긴 텍스트, 모달/토스트, 접근성, UX writing | 최우선 |
 | 베타 검증 | 아직 결제창 없는 100명 베타 전 | 반복 사용, 이탈 지점, 유료 전환 후보 기능, plan별 가치 차이 검증 | 최우선 |
 | 결제/구독 | `TODO/PADDLE_PLAN` Deferred / Draft | 요금제, 무료체험, 월/연 결제, 환불, 쿠폰, 구독 상태, 결제 실패 복구, 영수증/인보이스 | 베타 이후 필요 |
 | 글로벌 세금/컴플라이언스 | 미구현 | VAT/GST/판매세 계산/징수/신고, 환불/차지백, 국가별 약관/환불 정책 | 글로벌 유료 판매 전 필요 |
 | 앱 내부 다국어 | 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원 | KR/US/CA 우선 UX writing 정리 후 `ja` 등 보류 시장별 앱 내부 locale 확장 | 글로벌 확장 전 필요 |
 | 다국가 데이터 모델 | 08_GLOBAL_DATA_I18N 완료 기준 KR/US 전화번호, 국가/지역, KRW/USD, locale export 1차 지원 | KR/US/CA 전략에 맞춘 CA/CAD/캐나다 전화번호/회사 지역 확장 및 이후 국가 확장 | 글로벌 확장 전 필요 |
-| Admin 운영 | 11 Admin Operation foundation 완료. Billing Admin 제외 | 구독/결제/환불/인보이스 운영은 Paddle 이후 연결 | 유료 운영 전 필요 |
-| Notification | 02 Notification/Reminder foundation 완료 | email/browser push 운영 고도화와 리텐션 실험 | 리텐션 강화 |
-| DataImport | ImportJob persistence 완료 | 대용량 worker와 source 확장 | scale 후보 |
-| Schedule 고도화 | CRUD와 월간 화면 완료 | 주간 보고서, PDF/Excel, 반복 일정, Google Calendar 가져오기/내보내기 | 리텐션 강화 |
-| Deal 활동 | FollowingAction/Memo 중심 | 범용 DealActivity, 활동 타입, 단계 변경 자동 로그, 일정/회의록 통합 타임라인 | 제품 완성도 강화 |
+| Schedule 고도화 | CRUD와 월간 화면 완료 | 주간 보고서, PDF/Excel, 반복 정정, Google Calendar 가져오기/내보내기 | 리텐션 강화 |
+| Deal 활동 | FollowingAction/Memo 중심 | 범용 DealActivity, 활동 타입, 단계 변경 자동 로그, 정정/회의록 통합 타임라인 | 제품 완성도 강화 |
 | MeetingNote AI/STT | draft 기능 완료 | transcript 저장 여부, provider call log, 품질 분석, 템플릿, 개인정보 정책 | AI 운영 고도화 |
-| BusinessCard OCR | 업로드 OCR 완료 | 모바일 카메라 촬영 UX, 다국가 전화번호 검증, provider error observability | 모바일/글로벌 강화 |
-| 민감정보/보안 | 기본 보호 | 자동 민감정보 감지, Admin 원문 조회 사유/감사, 민감 export 마스킹 | 유료 운영 신뢰 |
-| 제품 분석 | 09 Product Analytics와 11 Admin analytics foundation 완료 | paid conversion, churn, CAC, LTV, paywall funnel, AI cost/user | Paddle 이후 필수 |
+| 민감정보/보안 | 기본 보호 | 자동 민감정보 감지, 민감 export 마스킹 | 유료 운영 신뢰 |
+| 제품 분석 | 09 Product Analytics foundation 완료 | paid conversion, churn, CAC, LTV, paywall funnel, AI cost/user | Paddle 이후 필수 |
 
 ## 4. 최종 완성 형태
 
@@ -85,9 +76,8 @@
 
 필수 조건:
 
-- 회사/담당자/제품/딜/일정/회의록/명함 OCR/DataImport/Search/Trash/Export 핵심 흐름이 desktop과 mobile browser에서 깨지지 않는다.
 - UX/UI 공통 QA가 완료되어 주요 화면의 레이아웃, 문구, 입력 상태, empty/error/loading 상태가 제품 톤과 맞는다.
-- 390px/360px 모바일 브라우저에서 핵심 업무를 수행할 수 있다.
+- 390px/360px 모바정 브라우저에서 핵심 업무를 수행할 수 있다.
 - Chrome/Edge에서 핵심 시나리오가 통과한다.
 - 다중 계정 데이터 격리가 Search, Trash, Export, 직접 URL 접근에서 확인된다.
 - DB/Prisma/migration/seed 운영 정합성이 배포 가능한 수준으로 정리된다.
@@ -106,8 +96,7 @@
 - VAT/GST/판매세, 환불, chargeback, invoice, receipt 처리가 가능하다.
 - `ko`, `en-us`, `en-ca` 우선 시장의 공개/앱 UX writing이 정리되고, 보류 locale(`ja`, `en-gb`, `en-sg`, `en-au`)은 확장 결정 후 `/app` 내부 다국어로 승격한다.
 - 국가별 날짜/시간/전화번호/통화/주소 표시가 자연스럽다.
-- Admin에서 사용자, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그, 고객 지원 흐름을 운영할 수 있다.
-- 개인정보 처리, 계정 삭제, 데이터 export, 환불/약관/보안 문서가 실제 판매 국가 기준으로 준비된다.
+- 개인정보 처리, 환불/약관/보안 문서가 실제 판매 국가 기준으로 준비된다.
 - 제품 분석으로 가입, 활성화, 유료전환, 해지, 재방문, AI 사용 비용을 추적한다.
 
 이 단계가 되어야 세계를 대상으로 B2C 유료 판매를 실질적으로 시도할 수 있다.
@@ -118,27 +107,26 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 
 필수 방향:
 
-- 사용자가 매일 열 이유가 있는 리텐션 루프가 있다.
-- 일정, 다음 행동, 회의록, 명함, Import, Search가 딜 타임라인으로 자동 연결된다.
+- 사용자가 매정 열 이유가 있는 리텐션 루프가 있다.
+- 정정, 다음 행동, 회의록, Search가 딜 타임라인으로 자동 연결된다.
 - AI가 회의록 요약 보조가 아니라 딜 리스크, 다음 행동, follow-up, 영업 리포트, 데이터 정리까지 핵심 가치에 들어간다.
-- 모바일 브라우저에서 현장 입력, 명함 촬영, 음성 기록, browser push reminder가 자연스럽다.
 - 요금제, 무료체험, annual plan, 국가별 가격, paywall A/B test, churn survey가 운영된다.
 - 활성화율, D7/D30 retention, 유료 전환율, churn, ARPU, LTV/CAC, AI cost/user, gross margin을 지속적으로 본다.
-- Admin 운영, 보안, 감사 로그, 데이터 삭제/내보내기, 장애 대응이 유료 고객을 감당할 수 있다.
+- 보안, 데이터 삭제/내보내기, 장애 대응이 유료 고객을 감당할 수 있다.
 - 개인 영업자 B2C에서 시작하되 prosumer, solo-to-small-team, 보험/부동산/프리랜서 영업 등 더 높은 ARPU segment로 확장할 수 있다.
 
 ## 5. 세계 대상 B2C 판매 가능성
 
 최종 유료 판매 가능형까지 갖추면 세계 대상 B2C 판매는 가능하다.
 
-단, 전 세계 동시 공략은 기본 전략으로 보지 않는다. 초기에는 한국, 미국, 캐나다에서 유료 전환과 리텐션을 검증하고, 이후 일본/호주 등 보류 시장으로 넓히는 단계적 확장을 우선한다.
+단, 전 세계 동시 공략은 기본 전략으로 보지 않는다. 초기에는 한국, 미국, 캐나다에서 유료 전환과 리텐션을 검증하고, 이후 정본/호주 등 보류 시장으로 넓히는 단계적 확장을 우선한다.
 
 이유:
 
 - B2C subscription app 시장은 경쟁이 강하고 acquisition cost와 churn 압력이 크다.
 - 낮은 월 구독료만으로 의미 있는 ARR을 만들려면 많은 유료 사용자가 필요하다.
 - 영업 업무 도구는 국가별 언어, 전화번호, 날짜/시간, 영업 관행, 결제/세금 정책의 영향을 받는다.
-- 글로벌 결제와 세금은 Stripe Tax, Paddle 같은 도구나 Merchant of Record로 줄일 수 있지만 제품 내부 로컬라이제이션과 고객 지원은 직접 해결해야 한다.
+- 글로벌 결제와 세금은 Stripe Tax, Paddle 같은 도구나 Merchant of Record로 줄정 수 있지만 제품 내부 로컬라이제이션과 고객 지원은 직접 해결해야 한다.
 
 초기 가격 가설 월 6,900원 기준 단순 계산:
 
@@ -154,13 +142,13 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 
 지금은 유지보수와 UX/UI 상품성 개선을 신경써야 하는 타이밍이다.
 
-기능을 더 붙이기 전에 현재 구현된 01~11 기능이 실제 베타 사용자에게 반복 사용 가능한 수준인지, 모바일/데스크톱에서 사용성이 자연스러운지, 어떤 기능이 유료 플랜의 가치가 되는지 먼저 확인해야 한다.
+기능을 더 붙이기 전에 현재 구현된 01~11 기능이 실제 베타 사용자에게 반복 사용 가능한 수준인지, 모바정/데스크톱에서 사용성이 자연스러운지, 어떤 기능이 유료 플랜의 가치가 되는지 먼저 확인해야 한다.
 
 ### P0. 유지보수와 UX/UI 상품성 개선
 
 1. 기존 01~11 기능 S0/S1/S2 버그 정리
 2. 핵심 반복 업무 흐름 UX/UI polish
-3. 모바일 브라우저 390px/360px 사용성 확인
+3. 모바정 브라우저 390px/360px 사용성 확인
 4. Chrome/Edge 핵심 시나리오 확인
 5. 다중 계정 보안과 DB/Prisma/migration 운영 정합성 재확인
 
@@ -185,7 +173,7 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 2. plan별 entitlement와 AI 사용량 제한
 3. Paddle Billing/Checkout/customer portal/webhook 방식
 4. 환불, 해지, failed payment, invoice, tax, chargeback 정책
-5. Billing Admin과 paid conversion/churn analytics 범위
+5. paid conversion/churn analytics 범위
 
 ### P3. 리텐션/Series A 기반 기능
 
@@ -193,19 +181,14 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 2. DealActivity timeline 고도화
 3. Google Calendar write/watch/export
 4. AI follow-up/next action 추천 고도화
-5. 모바일 브라우저 현장 사용성 고도화
+5. 모바정 브라우저 현장 사용성 고도화
 6. 제품 분석과 paywall 실험
 
 ## 7. Series A급으로 가기 위한 추가 기능
 
 ### 7.1 리텐션 루프
 
-- 다음 행동 reminder
-- 일정 알림
-- 회의록 follow-up reminder
 - 주간 영업 리포트
-- 딜 마감 임박/지연 알림
-- browser push
 
 ### 7.2 AI 핵심 가치
 
@@ -213,16 +196,13 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 - 다음 행동 추천
 - follow-up 메시지 초안
 - 영업 리포트 자동 요약
-- 명함/Import/회의록 데이터 정리 품질 개선
 - 사용자별 영업 패턴 기반 추천
 
-### 7.3 모바일 현장 사용성
+### 7.3 모바정 현장 사용성
 
-- 모바일 브라우저 최적화 우선
-- 명함 카메라 촬영
+- 모바정 브라우저 최적화 우선
 - 회의 직후 음성 기록
 - 오프라인 임시 저장
-- browser push reminder
 
 ### 7.4 결제와 성장 실험
 
@@ -237,13 +217,7 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 
 ### 7.5 운영과 신뢰
 
-- Admin dashboard
-- 사용자/도메인 조회
 - 결제/구독 상태 관리
-- 민감정보 마스킹
-- 원문 조회 사유 입력
-- 감사 로그
-- 계정 삭제/데이터 export
 - 장애 대응과 provider status 기록
 
 ### 7.6 제품 분석
@@ -252,7 +226,6 @@ Series A급은 기능이 많다는 뜻이 아니다. 반복 매출, 리텐션, �
 - first company/contact/product/deal created
 - first schedule linked
 - first meeting note saved
-- first OCR/import success
 - D1/D7/D30 retention
 - paid conversion
 - churn
@@ -267,8 +240,8 @@ Series A는 기능 수가 아니라 성장성과 반복 매출의 질로 판단�
 참고 기준:
 
 - 2026년 SaaS Series A 시장은 전반적으로 ARR, 성장률, 리텐션, 매출 품질을 더 강하게 본다.
-- B2B SaaS benchmark는 일반적으로 수백만 달러 ARR가 언급되지만, B2C는 revenue threshold가 다를 수 있고 retention/growth evidence가 더 중요하다.
-- AI 관련 회사에 자금이 강하게 쏠리는 시장이므로, 일반 SaaS로 보이면 더 강한 지표가 필요하다.
+- B2B SaaS benchmark는 정반적으로 수백만 달러 ARR가 언급되지만, B2C는 revenue threshold가 다를 수 있고 retention/growth evidence가 더 중요하다.
+- AI 관련 회사에 자금이 강하게 쏠리는 시장이므로, 정반 SaaS로 보이면 더 강한 지표가 필요하다.
 - 이 제품은 "AI 기능이 있는 CRM"이 아니라 "AI가 개인 영업자의 다음 행동과 기록 정리를 실질적으로 자동화하는 도구"로 진화해야 Series A급 차별화를 만들 수 있다.
 
 이 문서의 외부 benchmark는 전략 참고용이다. 투자 유치, 가격, 세금, 법무 판단 전에는 최신 자료와 전문가 검토를 다시 확인한다.

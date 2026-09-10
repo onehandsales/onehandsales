@@ -66,8 +66,6 @@
 - 제품 목록의 최근 수정일 표시
 - 제품 목록의 가격 표시
 - 딜 생성 중 제품 inline creation 연동
-- 범용 Import/OCR 연동
-- ExportJob 기반 비동기 내보내기. 현재 제품 export는 `GET /api/products/export/xlsx` 도메인 API로 처리한다.
 
 ## 6. API 범위
 

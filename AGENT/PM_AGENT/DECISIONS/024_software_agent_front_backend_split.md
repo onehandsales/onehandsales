@@ -23,7 +23,7 @@ SOFTWARE_AGENT/
 
 기존 `SOFTWARE_AGENT/ARCHITECTURE`, `SOFTWARE_AGENT/CONVENTION`, `SOFTWARE_AGENT/DECISIONS` 구조는 한 문서나 한 폴더 안에 Backend, User Web, Admin Web 기준이 섞일 수 있었다.
 
-Frontend와 Backend는 같은 제품 요구사항을 구현하지만 책임과 검토 기준이 다르다. Backend는 API, transaction, ownership, Prisma, provider adapter, audit log가 중심이고, Frontend는 화면, 상태 관리, form validation, API client, E2E, Vercel 배포가 중심이다.
+Frontend와 Backend는 같은 제품 요구사항을 구현하지만 책임과 검토 기준이 다르다. Backend는 API, transaction, ownership, Prisma, provider adapter, structured log가 중심이고, Frontend는 화면, 상태 관리, form validation, API client, E2E, Vercel 배포가 중심이다.
 
 따라서 Software 문서는 기술 성격별 폴더가 아니라 구현 책임별 Agent 폴더로 분리한다.
 

@@ -14,9 +14,9 @@
 ## API 분리 기준
 
 - 사용자 API: `/api/*`
-- Admin API: `/admin/api/*`
+- 관리자 확인 API: `GET /admin/api/me`
 
-Admin API는 반드시 Admin guard로 보호한다.
+관리자 확인 API는 반드시 Admin guard로 보호한다.
 
 ## 현재 구현 모듈
 
@@ -24,24 +24,17 @@ Admin API는 반드시 Admin guard로 보호한다.
 - `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회
 - `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, 연결 담당자/딜 조회, xlsx export
 - `contact`: 사용자 소유 담당자, 회사 옵션, 담당자 부서/직급, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
-- `business-card`: 명함 이미지 OCR, 성공/실패 로그, 확인/수정 후 회사/담당자 저장
 - `product`: 사용자 소유 제품, 제품 카테고리/상태, 일반 메모 로그, 개인 비밀 메모 로그, 연결 딜 조회, xlsx export
 - `deal`: 사용자 소유 딜, 회사/담당자/제품 연결, `DealActivity`, 다음 행동 로그, 메모 로그, Trash 복구, xlsx export
 - `schedule`: 사용자 소유 일정, 월간/주간 조회, 주간 보고서/xlsx export, 일정-딜 연결, Google Calendar read-only sync, Trash 복구
 - `meeting-note`: 사용자 소유 회의록, 연결 스냅샷, 수동 저장/수정/삭제, AI/STT draft 생성, next action/follow-up draft, 저장 후 딜 연결, Trash 복구
 - `follow-up`: AI 주간 보고서/회의록 기반 follow-up draft, send/retry/history, email provider 연결, SMS 발신번호/동의 안내
 - `sales-report`: AI 주간 영업 리포트 생성/조회/상세/snapshot summary
-- `notification`: 알림 목록/읽음, 알림 설정, browser push subscription, 일정/딜 reminder delivery foundation
 - `analytics`: 제품 분석 client event 수집, activation/retention snapshot, AI usage summary foundation
-- `account-request`: 사용자 data export request, account deletion request/cancel
-- `admin-operation`: Admin user/domain read-only 운영, 민감 원문 조회/audit, provider failure, analytics, account/trash/system operation gate
 - `search`: 회사/담당자/제품/딜/일정/회의록 통합검색
-- `trash`: 회사/담당자/제품/딜/일정/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구, 복구 요청
-- `data-import`: 회사/담당자/제품/딜 CSV/XLSX 업로드, DB-backed ImportJob, AI 컬럼 매핑, 사용자 보정/검증, 셀 단위 validation 메시지, 확정 저장, 성공 내역 조회
+- `trash`: 회사/담당자/제품/딜/일정/회의록과 지원 로그의 휴지통 목록/상세/7일 이내 복구
 - `health`: health check
 
-범용 ExportJob Backend는 현재 사용하지 않는다. Export는 회사/담당자/제품/딜 각 도메인의 `GET /api/*/export/xlsx`로 처리한다.
-데이터 불러오기 확정 전 job은 `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`에 저장되어 새로고침, 탭 이동, 서버 재시작 후 이어받을 수 있다. 현재 HTTP confirm 경로는 연락처 import의 회사 보정값, 딜 import의 회사/담당자/제품 보정값, row override를 모두 전달한다. Import preview validation 메시지는 누락 또는 오류가 있는 셀에만 표시한다.
 
 ## 로컬 실행
 
@@ -135,7 +128,7 @@ Auth runtime 기준:
 - `preferredLocale`과 `timeZone`은 신규 사용자 생성 시 저장된다. 기존 사용자의 `timeZone`은 로그인 때 덮어쓰지 않고 `lastLoginTimeZone`만 갱신한다.
 - `signupCountryCode`, `lastLoginCountryCode`는 `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country` 같은 배포 프록시 헤더가 있을 때만 저장된다. 로컬이나 해당 헤더가 없는 환경에서는 `null`일 수 있다.
 
-MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. 명함 OCR은 `BusinessCardOcrProvider` port와 OpenAI adapter를 사용하며 `OPENAI_BUSINESS_CARD_OCR_MODEL`로 모델을 지정할 수 있다. DataImport AI 컬럼 매핑은 `ImportMappingProvider` port와 OpenAI adapter를 사용하며 `OPENAI_IMPORT_MAPPING_MODEL`로 모델을 지정할 수 있다. AI 주간 영업 리포트는 기본적으로 OpenAI adapter를 사용하며 `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL`로 모델을 지정할 수 있고, 로컬 검증에서 deterministic 결과가 필요할 때만 `AI_WEEKLY_REPORT_PROVIDER=deterministic`으로 전환한다. 추후 STT/OCR/Import mapping/AI weekly report provider를 바꿀 때는 각 adapter만 교체한다.
+MeetingNote AI 초안 생성은 `MeetingNoteAiDraftProvider` port와 OpenAI adapter를 사용하며 `OPENAI_API_KEY`, `OPENAI_MEETING_NOTE_DRAFT_MODEL`이 필요하다. MeetingNote STT는 별도 `MeetingNoteSttProvider` port와 OpenAI STT adapter를 사용하며 `OPENAI_MEETING_NOTE_STT_MODEL`로 모델을 지정한다. AI 주간 영업 리포트는 기본적으로 OpenAI adapter를 사용하며 `OPENAI_AI_WEEKLY_SALES_REPORT_MODEL`로 모델을 지정할 수 있고, 로컬 검증에서 deterministic 결과가 필요할 때만 `AI_WEEKLY_REPORT_PROVIDER=deterministic`으로 전환한다. 추후 AI/STT/AI weekly report provider를 바꿀 때는 각 adapter만 교체한다.
 
 ## 정본 규칙
 

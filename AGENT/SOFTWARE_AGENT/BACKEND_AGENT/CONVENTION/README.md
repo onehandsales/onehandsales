@@ -20,7 +20,7 @@
 - API 명세 작성 규칙은 Backend API 명세를 포함하는 모든 AGENT/TODO 문서에 적용한다.
 - API 계약 작성과 `/goal` 실행 기준은 `API_CONTRACT.md`를 따른다.
 - transaction 경계와 rollback 범위는 `TRANSACTION.md`를 따른다.
-- structured log, audit log, request context는 `OBSERVABILITY.md`를 따른다.
+- structured log와 request context는 `OBSERVABILITY.md`를 따른다.
 - 시간과 timezone 처리는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 - Backend class/interface는 `// 역할 : ...`, API controller method는 `// API : ...`, 내부 method/function은 `// 기능 : ...` 주석을 사용한다.
 

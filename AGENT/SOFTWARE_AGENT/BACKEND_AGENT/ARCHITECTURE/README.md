@@ -14,7 +14,7 @@
 ## 3. 규칙
 
 - Backend는 MVP에서 단일 NestJS 서버다.
-- User API는 `/api/*`, Admin API는 `/admin/api/*`로 분리한다.
+- User API는 `/api/*`, 관리자 권한 확인 API는 `GET /admin/api/me`로 분리한다.
 - Backend 구현은 DDD, Clean Architecture, Modular Monolith를 따른다.
 - DB 구조 설명은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA`를 따른다.
 

@@ -1,101 +1,16 @@
-# Global B2C 01~11 Feature Catalog
+# Global B2C 01~10 Feature Catalog
 
-기준일: 2026-08-11
+기준일: 2026-09-10
 
-이 문서는 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 완료 폴더를 다시 검토해, 현재 제품에 어떤 기능 foundation이 있는지 정리한 AGENT 정본 카탈로그다.
+이 문서는 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~10 완료 폴더를 다시 검토해, 현재 제품에 어떤 기능 foundation이 있는지 정리한 AGENT 정본 카탈로그다.
 
-`IMPLEMENTATION_STATUS.md`는 완료/후속 상태 판단의 정본이고, 이 문서는 01~11의 기능별 상세 색인이다. 세부 검증 이력은 각 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/*/COMMON/GOAL-COMPLETION-CHECKLIST.md`와 goal closeout 문서를 따른다.
+`IMPLEMENTATION_STATUS.md`는 완료/후속 상태 판단의 정본이고, 이 문서는 01~10의 기능별 상세 색인이다. 세부 검증 이력은 각 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/*/COMMON/GOAL-COMPLETION-CHECKLIST.md`와 goal closeout 문서를 따른다.
 
-현재 제품 순서는 Paddle checkout 구현이 아니다. 01~11 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타, 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격한다.
+현재 제품 순서는 Paddle checkout 구현이 아니다. 01~10 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타, 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격한다.
 
 이 문서의 10 Mobile/PWA Field Use는 User Web의 모바일 브라우저 현장 입력성 완료 범위다.
 
 ## 1. 전체 색인
-
-| 번호 | 완료 기능 | 핵심 산출물 | 현재 판단 |
-| --- | --- | --- | --- |
-| 01 | ImportJob Persistence | DB 영속 import job, active job resume, upload/file cleanup, row-level cleanup | 완료 |
-| 02 | Notification Reminder | in-app/browser push/email notification, schedule/deal due reminder, delivery attempt | 완료 |
-| 03 | Weekly Schedule Report | `/app/schedules/week`, 주간 일정 API, XLSX export | 완료 |
-| 04 | Google Calendar Integration | Google Calendar read-only import/sync, calendar source 선택, Schedule soft delete/Trash | 완료 |
-| 05 | AI Weekly Sales Report / Follow-up | 저장형 AI weekly report, suggestion, follow-up draft/send/retry, email provider send | 완료 |
-| 06 | Deal Activity Timeline | `DealActivity` canonical timeline, manual activity, domain summary extension | 완료 |
-| 07 | MeetingNote AI Provider Log | MeetingNote AI/STT provider log, next-action draft, follow-up draft | 완료 |
-| 08 | Global Data / I18N | user global settings, `/app` i18n, currency/phone/address, import/export locale, Google/LINE/Apple auth | 완료 |
-| 09 | Product Analytics | `ProductAnalyticsEvent`, activation/retention snapshot, AI usage summary, reserved billing taxonomy | 완료 |
-| 10 | Mobile/PWA Field Use | mobile business-card capture, meeting recording, local draft, push permission UX, mobile analytics | 완료 |
-| 11 | Admin Operation | Admin audit/security, user/domain readonly, trash/provider/account/system/analytics operation | 완료 |
-
-## 2. 01 ImportJob Persistence
-
-목적:
-
-- CSV/XLSX import를 서버 메모리 preview가 아니라 DB-backed job으로 유지한다.
-- 새로고침, 탭 이동, 서버 재시작, deploy 이후에도 확정 전 import 작업을 이어받는다.
-
-구현된 기능:
-
-- `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile` 기반 확정 전 작업 snapshot.
-- `ImportUserLog`, `ImportUserLogRow` 기반 확정 후 성공 내역.
-- upload, AI column mapping, mapping edit, row edit, validate, confirm, cancel, active job resume.
-- upload 제한: 10MB, 5,000 data rows.
-- terminal status `CONFIRMED`, `CANCELED`, `EXPIRED`, `FAILED` snapshot 7일 후 cleanup.
-- 원본 업로드 파일 binary는 parse와 DB snapshot 생성 후 즉시 삭제하고, DB에는 metadata/delete tracking만 남긴다.
-- `ImportUserLogRow` row-level submitted data는 30일 후 cleanup하고 `ImportUserLog` summary는 유지한다.
-
-주요 API:
-
-- `POST /api/imports`
-- `GET /api/imports/:importJobId`
-- `GET /api/imports/active`
-- import mapping/row validate/edit/confirm/cancel 계열 API
-- `GET /api/import-user-logs`
-
-명시적 제외:
-
-- generic `ExportJob`
-- import admin UI/API
-- 대용량 background worker
-- Schedule/MeetingNote import
-- billing/payment 연결
-
-## 3. 02 Notification Reminder
-
-목적:
-
-- 사용자 일정과 딜 마감 위험을 놓치지 않도록 in-app, browser push, email reminder foundation을 만든다.
-
-구현된 기능:
-
-- 채널: in-app notification, browser push, email.
-- reminder type: `SCHEDULE_START_REMINDER`, `DEAL_DUE_REMINDER`.
-- 일정 시작 30분 전 reminder.
-- 딜 예상 종료일 1일 전, 사용자 timezone 기준 09:00 reminder.
-- schedule/deal create/update/delete/soft-delete 시 pending reminder 생성, 수정, 취소.
-- due processor가 `PENDING` notification을 `SENT`로 처리하고 email/browser push delivery attempt를 기록한다.
-- retryable failure 최대 3회 재시도.
-- SMTP/Web Push provider smoke는 사용자 acceptance 기준으로 완료됐다.
-
-DB/보안:
-
-- `Notification`
-- `UserNotificationSetting`
-- `BrowserPushSubscription`
-- `NotificationDeliveryAttempt`
-- browser push endpoint/key는 암호화한다.
-- raw provider response, email/push endpoint/private memo/meeting body/deal amount는 log/response에 남기지 않는다.
-
-주요 API:
-
-- notification list, unread count, mark read.
-- `GET/PATCH /api/notifications/settings`
-- `GET /api/notifications/browser-push/public-key`
-- browser push subscription create/revoke.
-
-명시적 제외:
-
-- 02 자체 범위에서는 next action reminder, meeting note follow-up reminder, marketing notification, automation builder를 만들지 않는다.
-- 후속 reminder가 필요하면 별도 follow-up/제품 정책 문서 기준으로 다룬다.
 
 ## 4. 03 Weekly Schedule Report
 
@@ -121,8 +36,6 @@ DB/보안:
 
 명시적 제외:
 
-- `/api/exports`
-- `ExportJob`
 - PDF export
 - recurring schedule
 - product summary
@@ -157,7 +70,6 @@ DB/삭제 정책:
 - `Schedule.meetingUrl`, `isAllDay`, `sourceType`, external event metadata, sync status.
 - Schedule은 04 이후 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete/Trash 대상이다.
 - Schedule restore 시 Google-origin 일정은 `LOCAL_MODIFIED`로 처리한다.
-- Schedule soft delete/restore는 pending reminder 재계산/취소와 연결된다.
 
 주요 API:
 
@@ -178,7 +90,6 @@ DB/삭제 정책:
 - attendees import
 - 다른 calendar provider
 - multi Google accounts
-- provider failure admin API는 11 범위
 
 ## 6. 05 AI Weekly Sales Report / Follow-up
 
@@ -215,8 +126,6 @@ DB/삭제 정책:
 - scheduled/bulk/campaign follow-up
 - SMTP direct settings
 - Google Calendar write/webhook
-- PDF/generic export
-- admin raw access
 - 사용자-facing cost display
 - permanent legal deletion policy
 
@@ -297,7 +206,6 @@ Operation:
 - automatic send/schedule/deal mutation
 - data cleanup suggestion
 - meeting note list summary
-- Admin operation
 
 ## 9. 08 Global Data / I18N
 
@@ -317,7 +225,6 @@ Operation:
 - Contact phone global fields: `phoneCountryCode`, `phoneNationalNumber`, `phoneE164`.
 - Company region/address는 1차로 Company에만 적용하고 Contact 개인 주소는 추가하지 않는다.
 - 1차 region/country support: `KR`, `US`.
-- Import template download는 `locale=ko-KR|en`을 지원한다.
 - Domain export는 locale-aware header/date-time/currency/phone 표시를 사용한다.
 - Google, LINE, Apple auth provider를 정식 runtime provider로 구현했다. 버튼 순서는 Google, LINE, Apple이다.
 - LINE/Apple 실제 OAuth provider smoke와 운영 설정 연결은 2026-07-29 사용자 확인 기준 완료됐다.
@@ -333,7 +240,6 @@ DB/API:
 - `GET/PATCH /api/users/me/profile`
 - `GET /api/auth/providers`
 - `POST /api/auth/exchange`
-- `GET /api/import-templates/:templateId/download?locale=ko-KR|en`
 
 명시적 제외:
 
@@ -355,7 +261,6 @@ DB/API:
 - 외부 analytics provider forwarding은 만들지 않는다.
 - `POST /api/analytics/events` client event collector.
 - User Web core `/app` route view는 `VITE_PRODUCT_ANALYTICS_ENABLED="true"`일 때만 전송한다.
-- server event는 auth/deal/schedule/meeting-note/business-card/data-import/export 성공 지점에서 best-effort로 기록한다.
 - analytics 저장 실패는 원래 제품 action을 막지 않는다.
 - event는 `snake_case`, allowlist, `eventVersion` 기준을 따른다.
 - `occurredAt`은 UTC instant, `eventDate`는 사용자 timezone 기준 local date다.
@@ -381,11 +286,9 @@ DB/API:
 Runtime event boundary:
 
 - 09 client runtime event: `app_route_viewed`.
-- 09 server runtime events: `auth_signup_completed`, `deal_created`, `deal_next_action_created`, `schedule_created`, `schedule_deal_linked`, `meeting_note_created`, `meeting_note_deal_linked`, `business_card_scan_confirmed`, `import_confirmed`, `export_downloaded`.
 
 명시적 제외:
 
-- `/admin/api/analytics/*` full API는 11 범위.
 - billing/paywall/churn 실제 상태 전이.
 - external analytics provider.
 - public/auth route tracking, UTM/ad attribution, raw URL query, UUID path param.
@@ -400,18 +303,10 @@ Runtime event boundary:
 
 구현된 기능:
 
-- `/app/business-cards` 모바일 명함 촬영/앨범 선택.
-- `input type=file`, `accept="image/*"`, `capture="environment"` 기반 후면 카메라 유도.
-- OCR 실패 시 `errorCode`, `userMessage`, `retryable` safe failure 계약.
-- `BusinessCardScanLog.safeErrorCode`, `safeErrorMessage`, `retryable`.
-- OCR 실패 server analytics event `business_card_ocr_failed`.
 - `/app/meeting-notes` 또는 create dialog의 mobile recording.
 - `MediaRecorder` 기반 녹음, permission denied/unsupported 상태의 audio file upload fallback.
 - `POST /api/meeting-notes/stt-draft` 재사용.
-- 명함 확인 form과 회의록 작성 form에 IndexedDB 우선 local draft 적용.
 - local draft TTL은 24시간이며, `불러오기`/`버리기` UX를 제공한다.
-- browser push permission은 사용자의 명시적 클릭 이후에만 `Notification.requestPermission()`을 호출한다.
-- 02 Notification API를 재사용한다.
 - mobile field-use analytics event allowlist를 09 analytics foundation에 추가했다.
 - 360px/390px mobile viewport QA를 완료했다.
 
@@ -424,17 +319,12 @@ Local draft boundary:
 
 Mobile event:
 
-- `business_card_capture_started`
-- `business_card_capture_retried`
 - `meeting_note_recording_started`
 - `meeting_note_recording_completed`
 - `meeting_note_recording_failed`
 - `local_draft_saved`
 - `local_draft_restored`
 - `local_draft_discarded`
-- `mobile_push_permission_prompt_opened`
-- `mobile_push_permission_result`
-- `business_card_ocr_failed`
 
 명시적 제외:
 
@@ -442,77 +332,9 @@ Mobile event:
 - PWA install prompt/offline shell.
 - server-side draft persistence.
 
-## 12. 11 Admin Operation
+## 12. 현재 후속 판단
 
-목적:
-
-- onehand.sales 내부 최종 관리자 전용 운영 콘솔/API foundation을 만든다.
-- 결제/구독 운영이 아니라 유료 고객을 받기 전에 필요한 보안, 감사, 운영 조회, 신뢰 gate를 닫는다.
-
-구현된 기능:
-
-- Admin API는 `/admin/api/*`로 분리한다.
-- Admin API는 AuthGuard + AdminGuard를 모두 통과한다.
-- Admin Web은 User Web feature/API client를 import하지 않는다.
-- Admin response는 기본 masked다.
-- 민감 원문 조회는 별도 raw access API에서 reason + audit log 후 반환한다.
-- provider raw response, prompt, token, quota detail은 원문 접근 API에서도 제외한다.
-- Admin audit/security foundation.
-- Admin user list/detail/activity timeline.
-- Admin user domain read-only tab.
-- Trash summary/list/recovery request queue.
-- Provider failure safe list/detail.
-- 09/10 기반 Admin analytics overview.
-- account deletion/data export request.
-- system operation gate.
-- Billing Admin, subscription/payment/refund/invoice 운영은 제외다.
-
-DB:
-
-- `AdminAuditLog`
-- `AdminSensitiveAccessLog`
-- `TrashRecoveryRequest`
-- `AccountDeletionRequest`
-- `UserDataExportRequest`
-- `AdminOperationCheckRun`
-
-주요 API:
-
-- `GET /admin/api/me`
-- `GET /admin/api/audit-logs`
-- `POST /admin/api/sensitive/raw-access`
-- `GET /admin/api/users`
-- `GET /admin/api/users/:userId`
-- `GET /admin/api/users/:userId/activity-timeline`
-- `GET /admin/api/users/:userId/domain-records`
-- `GET /admin/api/users/:userId/trash-summary`
-- `GET /admin/api/users/:userId/trash-records`
-- `POST /api/trash/recovery-requests`
-- `GET /admin/api/trash/recovery-requests`
-- `GET /admin/api/provider-failures`
-- `GET /admin/api/provider-failures/:failureId`
-- `GET /admin/api/analytics/overview`
-- `POST /api/users/me/data-export-requests`
-- `GET /api/users/me/data-export-requests/:requestId`
-- `POST /api/users/me/account-deletion-requests`
-- `POST /api/users/me/account-deletion-requests/:requestId/cancel`
-- `GET /admin/api/account-deletion-requests`
-- `GET /admin/api/data-export-requests`
-- `GET /admin/api/system/operation-checks/latest`
-- `POST /admin/api/system/operation-checks`
-
-명시적 제외:
-
-- Billing Admin.
-- invoice/refund/failed payment recovery.
-- customer/B2B tenant admin.
-- Admin 직접 도메인 데이터 수정.
-- Admin 직접 복구 실행/비용 처리.
-- ImportJob cleanup 실패 전용 Admin 화면/API.
-
-## 13. 현재 후속 판단
-
-01~11은 기능 foundation 완료 상태지만, 유료 판매 완료 상태는 아니다.
+01~10은 기능 foundation 완료 상태지만, 유료 판매 완료 상태는 아니다.
 
 바로 다음 작업:
 
@@ -532,5 +354,4 @@ Paddle/Billing에서 다시 열어야 하는 대표 범위:
 - failed payment/dunning.
 - entitlement/paywall.
 - AI usage quota source of truth.
-- Billing Admin.
 - paid conversion/churn/ARPU/LTV analytics.

@@ -10,8 +10,8 @@
 
 ## 2. Backend 체크리스트
 
-- User API는 `/api/*`, Admin API는 `/admin/api/*`로 분리되어 있는가?
-- Admin API는 AuthGuard와 AdminGuard를 모두 사용하는가?
+- User API는 `/api/*`, 관리자 확인 API는 `GET /admin/api/me`로 분리되어 있는가?
+- 관리자 확인 API는 AuthGuard와 AdminGuard를 모두 사용하는가?
 - Controller가 repository나 Prisma를 직접 호출하지 않는가?
 - Backend class/interface 선언은 `// 역할 : ...` 주석으로 책임과 계약을 설명하는가?
 - Backend HTTP API controller 메소드는 `// API : ...` 주석을 사용하는가?
@@ -21,13 +21,11 @@
 - API가 포함된 작업이면 `COMMON/API-SPEC`의 계약 문서가 있는가?
 - API 계약 상태가 구현 전 최소 `confirmed`였는가?
 - API 계약에 소비자, 호환성, request, response, error, DB 연결이 모두 적혀 있는가?
-- mutation, Admin API, 민감정보, 외부 Provider API에 transaction 항목이 작성되어 있는가?
+- mutation, 민감정보, 외부 Provider API에 transaction 항목이 작성되어 있는가?
 - transaction이 필요한 use case는 application layer에서 경계를 잡고 rollback 범위를 명확히 하는가?
-- audit log가 필요한 mutation은 본 데이터 변경과 같은 transaction으로 묶이는가?
 - transaction이 필요 없는 API도 명세에 `transaction: 없음`과 이유가 적혀 있는가?
-- mutation, Admin API, 민감정보, 외부 Provider API에 observability 항목이 작성되어 있는가?
+- mutation, 민감정보, 외부 Provider API에 observability 항목이 작성되어 있는가?
 - structured log event key, request id, redaction 기준이 정의되어 있는가?
-- application log와 audit log를 혼동하지 않았는가?
 - 외부 Provider 실패는 provider, retry 가능 여부, 안전한 error context로 남길 수 있는가?
 - Domain layer가 NestJS, Prisma, OpenAI, HTTP SDK를 import하지 않는가?
 - 사용자 소유 데이터 조회와 mutation에 `userId` 필터가 있는가?
@@ -36,9 +34,8 @@
 - 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 같은 row에 `timeZone` 컬럼을 저장하는가?
 - API 계약에서 시간 필드가 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 무엇인지 명시되어 있는가?
 - Company API 변경 시 `FE/user-web/src/features/company/api/company-api.ts`의 요청/응답 필드가 Backend controller와 맞는가?
-- Admin Web용 `/admin/api/*`를 추가할 때 현재 active feature API(`user-management`, `audit-log`, `provider-failure-management`, `usage-analytics`, `account-request-management`, `trash-management`, `system-config`)의 기대 경로와 응답 형태를 함께 확인했는가? Legacy `admin-query`는 현재 route/menu 미연결 경계로 본다.
-- 단계 변경, 회의록 딜 연결, 민감정보 원문 조회처럼 부수 효과가 필요한 흐름이 같은 transaction에서 처리되는가?
-- 민감정보 원문 조회는 사유 입력과 감사 로그를 강제하는가?
+- Admin Web용 API를 추가할 때 `FE/admin-web`의 현재 범위와 별도 제품 결정을 먼저 확인했는가?
+- 단계 변경, 회의록 딜 연결처럼 부수 효과가 필요한 흐름이 같은 transaction에서 처리되는가?
 
 ## 3. 테스트 체크리스트
 
@@ -46,7 +43,6 @@
 - AdminGuard 테스트가 있는가?
 - 딜 단계 변경 시 활동 로그 생성 테스트가 있는가?
 - 회의록 딜 연결 시 활동 로그 생성 테스트가 있는가?
-- 민감정보 원문 조회와 감사 로그 transaction 테스트가 있는가?
 - 외부 Provider는 기본 테스트에서 mock/stub 처리되는가?
 
 ## 4. 배포 체크리스트

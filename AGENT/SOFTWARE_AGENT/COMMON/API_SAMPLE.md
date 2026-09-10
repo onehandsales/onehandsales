@@ -1,8 +1,7 @@
-아래는 2026-08-24 현재 BE 구현 기준 API별 한 줄 설명입니다.
+아래는 2026-09-10 현재 BE 구현 기준 API별 한 줄 설명입니다.
 
-Global B2C 01~11 foundation 이후 추가된 주요 API surface까지 포함합니다. 01~11 기능별 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`, 세부 DTO와 validation은 각 controller/spec, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`를 함께 봅니다.
+현재 주요 API surface를 포함합니다. 기능별 범위는 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`, 세부 DTO와 validation은 각 controller/spec, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`를 함께 봅니다.
 
-Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal 각 도메인의 xlsx 다운로드 API로 처리합니다.
 
 **User / Auth**
 | API | 설명 |
@@ -16,22 +15,10 @@ Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal �
 | `GET /api/users/me/profile` | 내 프로필과 연결된 OAuth 계정 정보를 조회합니다. |
 | `PATCH /api/users/me/profile` | 내 이름, 타임존, 기본 locale, 기본 국가, 기본 통화 등 프로필 정보를 수정합니다. |
 | `GET /api/users/me/devices` | 내 로그인 기기 목록과 현재 기기 여부를 조회합니다. |
-| `POST /api/users/me/data-export-requests` | 내 데이터 export 요청을 생성합니다. |
-| `GET /api/users/me/data-export-requests/{requestId}` | 내 데이터 export 요청 상태를 조회합니다. |
-| `POST /api/users/me/account-deletion-requests` | 내 계정 삭제 요청을 생성합니다. |
-| `POST /api/users/me/account-deletion-requests/{requestId}/cancel` | 내 계정 삭제 요청을 취소합니다. |
 
-**Global B2C 01~11 추가 API 요약**
+**추가 API 요약**
 | API | 설명 |
 |---|---|
-| `GET /api/notifications` | 내 알림 목록을 조회합니다. |
-| `GET /api/notifications/unread-count` | 읽지 않은 알림 수를 조회합니다. |
-| `GET /api/notifications/settings` | 알림 설정을 조회합니다. |
-| `PATCH /api/notifications/settings` | 알림 설정을 수정합니다. |
-| `GET /api/notifications/browser-push/public-key` | 브라우저 푸시 등록용 public key를 조회합니다. |
-| `POST /api/notifications/browser-subscriptions` | 브라우저 푸시 구독을 등록합니다. |
-| `DELETE /api/notifications/browser-subscriptions/{subscriptionId}` | 브라우저 푸시 구독을 해지합니다. |
-| `PATCH /api/notifications/{notificationId}/read` | 알림을 읽음 처리합니다. |
 | `GET /api/schedules/week` | 주간 일정 보고서 데이터를 조회합니다. |
 | `GET /api/schedules/week/export/xlsx` | 주간 일정 보고서를 xlsx로 다운로드합니다. |
 | `POST /api/schedules/google/connect` | Google Calendar 연결을 시작합니다. |
@@ -64,22 +51,6 @@ Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal �
 | `POST /api/follow-up-delivery/sms-sender-numbers/{senderNumberId}/verify` | SMS 발신번호 인증을 완료합니다. |
 | `POST /api/follow-up-delivery/sms-sender-numbers/{senderNumberId}/revoke` | SMS 발신번호를 해지합니다. |
 | `POST /api/follow-up-delivery/consent-notices/{channel}/acknowledge` | Follow-up 채널 동의 안내 확인을 기록합니다. |
-| `GET /admin/api/users` | Admin 사용자 목록을 조회합니다. |
-| `GET /admin/api/users/{userId}` | Admin 사용자 상세 overview를 조회합니다. |
-| `GET /admin/api/users/{userId}/activity-timeline` | Admin 사용자 활동 timeline을 조회합니다. |
-| `GET /admin/api/users/{userId}/domain-records` | Admin 사용자별 도메인 record를 조회합니다. |
-| `GET /admin/api/users/{userId}/trash-summary` | Admin 사용자 Trash summary를 조회합니다. |
-| `GET /admin/api/users/{userId}/trash-records` | Admin 사용자 Trash row 목록을 조회합니다. |
-| `GET /admin/api/audit-logs` | Admin 감사 로그를 조회합니다. |
-| `POST /admin/api/sensitive/raw-access` | Admin 민감 raw access 요청을 감사 로그와 함께 처리합니다. |
-| `GET /admin/api/provider-failures` | Provider failure queue를 조회합니다. |
-| `GET /admin/api/provider-failures/{failureId}` | Provider failure 상세를 조회합니다. |
-| `GET /admin/api/analytics/overview` | Admin 운영 분석 overview를 조회합니다. |
-| `GET /admin/api/account-deletion-requests` | 계정 삭제 요청 queue를 조회합니다. |
-| `GET /admin/api/data-export-requests` | 데이터 export 요청 queue를 조회합니다. |
-| `GET /admin/api/trash/recovery-requests` | Trash 복구 요청 queue를 조회합니다. |
-| `GET /admin/api/system/operation-checks/latest` | 최신 운영 gate 점검 결과를 조회합니다. |
-| `POST /admin/api/system/operation-checks` | 운영 gate 점검을 실행합니다. |
 
 **Company**
 | API | 설명 |
@@ -132,14 +103,6 @@ Export는 범용 `/api/exports` job이 아니라 Company/Contact/Product/Deal �
 | `GET /api/contact-departments` | 연락처 부서 옵션 목록을 조회합니다. |
 | `POST /api/contact-departments` | 연락처 부서 옵션을 생성합니다. |
 | `DELETE /api/contact-departments/{departmentId}` | 연락처 부서 옵션을 삭제합니다. |
-
-**BusinessCard OCR**
-| API | 설명 |
-|---|---|
-| `POST /api/business-card-scans` | 명함 이미지를 업로드해 OpenAI OCR 후보 값을 만들고 성공/실패 로그를 저장합니다. Company/Contact는 아직 생성하지 않습니다. |
-| `GET /api/business-card-scans` | 명함 스캔 내역을 등록일 최신순으로 조회합니다. `status`는 반복 query 또는 comma-separated query로 여러 값을 필터링할 수 있습니다. |
-| `GET /api/business-card-scans/{scanLogId}` | 명함 스캔 로그 단건 상세를 조회합니다. |
-| `POST /api/business-card-scans/{scanLogId}/confirm` | 사용자가 확인/수정한 값으로 기존 회사/담당자를 재사용하거나 새로 생성하고 scan log를 `CONFIRMED`로 업데이트합니다. |
 
 **Product**
 | API | 설명 |
@@ -228,19 +191,6 @@ Deal relation payload:
 | `GET /api/trash` | 휴지통에 있는 회사, 담당자, 제품, 거래, 회의록, 지원 로그 목록을 조회합니다. |
 | `GET /api/trash/{targetType}/{targetId}` | 휴지통 항목의 상세 미리보기 정보를 조회합니다. |
 | `POST /api/trash/{targetType}/{targetId}/restore` | 7일 복구 기간 안의 휴지통 항목을 복구합니다. |
-
-**DataImport**
-| API | 설명 |
-|---|---|
-| `GET /api/import-templates/active` | 회사/담당자/제품/딜 데이터 불러오기 활성 양식 목록을 조회합니다. |
-| `GET /api/import-templates/{templateId}/download` | 선택한 데이터 불러오기 양식을 xlsx 파일로 다운로드합니다. 담당자 양식은 `companyName` query로 회사 context를 받을 수 있습니다. |
-| `POST /api/imports` | CSV/XLSX 파일을 업로드해 확정 전 임시 import job과 preview row를 생성합니다. 지원 대상은 회사/담당자/제품/딜이며 파일은 최대 10MB입니다. |
-| `GET /api/imports/{importJobId}` | 확정 전 임시 import job 상세와 전체 row 상태를 조회합니다. |
-| `POST /api/imports/{importJobId}/map` | AI 컬럼 자동 매핑을 생성합니다. provider 실패 시 규칙 기반 매핑으로 fallback합니다. |
-| `PATCH /api/imports/{importJobId}/mapping` | 사용자가 수정한 컬럼 매핑을 적용하고 row 검증 결과를 반환합니다. 필수값 누락 메시지는 누락된 셀 기준으로 반환/표시합니다. |
-| `POST /api/imports/{importJobId}/confirm` | 검증된 row를 회사/담당자/제품/딜 데이터로 확정 저장하고 성공 내역을 남깁니다. 현재 HTTP 경로는 연락처 회사 보정값, 딜 회사/담당자/제품 보정값, row override를 전달합니다. |
-| `GET /api/import-user-logs` | 확정 저장된 데이터 불러오기 성공 내역 목록을 조회합니다. |
-| `GET /api/import-user-logs/{importUserLogId}` | 데이터 불러오기 성공 내역 상세와 row snapshot을 조회합니다. |
 
 **Help**
 | API | 설명 |

@@ -15,7 +15,6 @@
 - Deal 기본 도메인: `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog`
 - Schedule 기본 도메인: `Schedule`, `ScheduleDeal`
 - MeetingNote 수동 도메인: `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal`
-- DataImport: `ImportTemplate`, `ImportUserLog`, `ImportUserLogRow`
 
 현재 구현 기준 migration:
 
@@ -27,9 +26,6 @@
 - `BE/prisma/migrations/20260614010000_add_user_timezone/migration.sql`
 - `BE/prisma/migrations/20260614020000_add_schedule_domain/migration.sql`
 - `BE/prisma/migrations/20260615000000_add_meeting_note_domain/migration.sql`
-- `BE/prisma/migrations/20260629010000_add_business_card_scan_log/migration.sql`
-- `BE/prisma/migrations/20260630010000_add_import_templates_and_logs/migration.sql`
-- `BE/prisma/migrations/20260702010000_add_deal_import_template/migration.sql`
 - `BE/prisma/migrations/20260708010000_add_user_locale_region_metadata/migration.sql`
 
 08 Global Data I18N 목표 delta:
@@ -39,7 +35,6 @@
 - Product/Deal: `currencyCode` 추가, 현재 구현된 1차 허용 통화는 `KRW`, `USD`다. KR/US/CA 우선 전략에 맞춘 `CAD`는 후속 구현 범위다.
 - Contact: 기존 `mobile` 유지, `phoneCountryCode`, `phoneNationalNumber`, `phoneE164` 추가.
 - Company/CompanyRegion: Company 자유 입력 주소와 CompanyRegion `countryCode`, `regionCode` 추가. Contact에는 주소/지역을 추가하지 않는다.
-- DataImport/Export: 사용자 locale/timezone/currency 기준 현지화. generic `ExportJob` table은 계속 제외한다.
 - Frontend: public-site URL locale i18n과 `/app` 내부 app i18n을 분리하고, `/app`에는 locale prefix를 붙이지 않는다.
 
 아직 DB에 구현되지 않은 계획 범위:
@@ -47,11 +42,7 @@
 - Product 후속 확장: `ProductLog`, `ProductConnection`
 - `DealActivity`
 - `PersonalMemo`
-- `AuditLog`
-- `Notification`
-- persistent `ImportJob`
 
-범용 `ExportJob` table은 현재 제품 방향에서 제외한다. 회사/담당자/제품/딜 export는 각 도메인 API가 동기 xlsx 파일로 내려준다.
 
 이 문서는 제품 관점의 전체 목표 모델을 설명한다. 실제 구현 여부와 컬럼 상세는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`와 각 schema 문서를 우선 확인한다.
 
@@ -87,15 +78,7 @@ User
   │   ├─ MeetingNoteContact
   │   ├─ MeetingNoteProduct
   │   └─ MeetingNoteDeal
-  ├─ ImportUserLog
-  │   └─ ImportUserLogRow
-  ├─ ImportJob
-  │   ├─ ImportJobRow
-  │   ├─ ImportJobError
-  │   └─ ImportUploadedFile
-  ├─ Notification / NotificationDeliveryAttempt / BrowserPushSubscription
   ├─ ProductAnalyticsEvent / UserActivationSnapshot / RetentionCohortSnapshot
-  ├─ AdminAuditLog / AdminSensitiveAccessLog / AdminOperationCheckRun
   └─ Billing / Subscription / Payment models are deferred to TODO/PADDLE_PLAN
 ```
 
@@ -648,13 +631,13 @@ User
 - 저장 후 딜 추가 연동 API는 기존 `MeetingNoteDeal`에 snapshot row를 추가하고 `DealFollowingActionLog`에 회의록 링크/요약 로그를 생성한다.
 - request에서는 `timeZone`, `rawText`, `stageText`, 단일 `dealId`를 받지 않는다.
 - 회의록 삭제는 `MeetingNote.deletedAt`, `deletedByUserId`, `trashExpiresAt`을 기록하는 soft delete이며, 공통 Trash API에서 복구한다.
-- Admin 조회 foundation과 DealActivity table은 Global B2C 01~11 closeout 기준 구현 완료다. B2B/team CRM식 record별 timeline 고도화는 후속 범위다.
+- `DealActivity` table은 구현 완료다. B2B/team CRM식 record별 timeline 고도화는 후속 범위다.
 
 ## 16. PersonalMemo
 
 담당자/제품/딜의 Memo는 각 엔티티의 단일 `memo` 필드가 아니라 Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
 
-Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사용자의 주관적 생각, 판단, 개인 참고 기록이다. Memo 원문은 민감정보 후보로 보고 암호화, Admin masking, 원문 조회 감사 정책을 적용한다.
+Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사용자의 주관적 생각, 판단, 개인 참고 기록이다. Memo 원문은 민감정보 후보로 보고 사용자 소유권과 암호화 정책을 적용한다.
 
 회사 도메인은 최신 요구사항에 따라 `CompanyMemoLog`와 `CompanyUserPrivateMemoLog`를 별도 사용한다. 따라서 `PersonalMemo`의 회사 target은 현재 회사 기본 기능에 사용하지 않는다.
 담당자 도메인도 최신 요구사항에 따라 `ContactMemoLog`와 `ContactUserPrivateMemoLog`를 별도 사용한다. 따라서 `PersonalMemo`의 담당자 target은 현재 담당자 기본 기능에 사용하지 않는다.
@@ -675,20 +658,6 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - updatedAt
 - deletedAt
 
-## 17. AuditLog
-
-- id
-- actorUserId
-- action
-- targetType
-- targetId
-- reason nullable
-- metadata
-- createdAt
-
-민감 데이터 원문 조회는 반드시 AuditLog를 남긴다.
-
-## 18. Notification
 
 - id
 - userId
@@ -701,30 +670,18 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - status
 - metadata
 
-## 19. DataImport / ImportJob
 
-현재 구현된 DataImport DB 모델:
 
-- `ImportTemplate`
-- `ImportJob`
-- `ImportJobRow`
-- `ImportJobError`
-- `ImportUploadedFile`
-- `ImportUserLog`
-- `ImportUserLogRow`
 
-`ImportTemplate` 목적:
 
 - 회사/담당자/제품/딜 불러오기 양식의 컬럼 정의와 샘플 row를 저장한다.
 - 활성 양식만 사용자에게 노출한다.
 - 현재 기본 seed는 `COMPANY`, `PRODUCT`, `CONTACT`, `DEAL` v1이다.
 
-`ImportUserLog` 목적:
 
 - 확정 저장에 성공한 불러오기 작업의 header snapshot을 저장한다.
 - `targetType`, `templateVersion`, 확정 당시 `templateColumnsJson`, context, 원본 파일명/크기, 전체 row 수, import row 수를 가진다.
 
-`ImportUserLogRow` 목적:
 
 - 확정 저장된 각 row의 제출 데이터 snapshot과 대상 label을 저장한다.
 - 성공 내역 상세 화면에서 row별 제출값을 조회할 수 있게 한다.
@@ -732,13 +689,11 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 정책:
 
 - 확정 전 job은 DB table에 저장하며 resume/cancel/expire/confirm 상태를 추적한다.
-- 회사/담당자/제품/딜 불러오기는 CSV/XLSX 업로드, AI 컬럼 매핑, 사용자 보정/검증, 확정 저장을 지원한다.
 - 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다.
 - 딜 불러오기 누락 회사/담당자/제품 보정값은 FE API 함수, BE DTO, HTTP controller confirm, application service, repository 경로에 연결되어 있다.
 
-## 20. Global Paid / Growth 후속 데이터 범위
+## 19. Global Paid / Growth 후속 데이터 범위
 
-글로벌 B2C 01~11 foundation에서 Product Analytics, Admin audit/security, Notification, ImportJob은 구현 완료됐다. 결제/구독/세금/Paddle 관련 모델은 아직 Prisma schema에 구현하지 않았고 `TODO/PADDLE_PLAN`에서 베타 이후 confirmed scope로 확정한다.
 
 Paddle/Billing 후속 후보:
 
@@ -762,7 +717,7 @@ Paddle/Billing 후속 후보:
 
 자세한 제품 전략은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
-## 21. Mermaid ERD
+## 20. Mermaid ERD
 
 ```mermaid
 erDiagram
@@ -795,7 +750,7 @@ erDiagram
   PRODUCT ||--o{ PRODUCT_CONNECTION : connects
 ```
 
-## 22. 관련 문서
+## 21. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`

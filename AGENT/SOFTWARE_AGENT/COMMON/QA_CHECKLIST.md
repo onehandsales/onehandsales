@@ -30,19 +30,14 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - Prisma schema/migration/seed
   - 인증/권한
   - 회사, 담당자, 제품, 딜, 일정, 회의록
-  - 명함 OCR
-  - 데이터 가져오기
   - 검색
   - 휴지통
   - 도메인별 XLSX export
-  - ImportJob persistence
-  - Notification/Reminder
   - Weekly Schedule Report
   - Google Calendar Integration
   - AI Weekly Sales Report/Follow-up
   - DealActivity
   - Product Analytics
-  - Admin Operation foundation
 
 - `FE/user-web`
   - 로그인
@@ -51,7 +46,6 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - 회사, 담당자, 제품, 딜
   - 일정
   - 회의록
-  - 명함 스캔
   - 가져오기
   - 검색
   - 휴지통
@@ -59,21 +53,16 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - UX/UI, 반응형, 모바일 브라우저, 접근성 기본
 
 - `FE/admin-web`
-  - 11 Admin Operation foundation 범위를 확인합니다.
-  - Billing Admin과 B2B tenant/team admin은 제외합니다.
+  - 관리자 token 통과, non-admin 차단, `GET /admin/api/me` 호출을 확인합니다.
 
 ### 제외
 
 사용자 요청에 따라 아래 기능은 이번 QA에서 제외합니다.
 
-- Billing Admin과 B2B tenant/team admin
-- Notification source/TTL/cleanup 고도화
 - 과금 및 구독 결제
 
 현재 구현 상태 기준으로 아래 항목도 실패로 처리하지 않고 `N/A` 또는 `후속 범위`로 기록합니다.
 
-- `/app/export`: generic export 화면은 현재 제품 방향에서 제외, `/app`으로 리다이렉트
-- Billing Admin: Paddle/Billing 이후 구현
 
 ## 3. 참고 기준 문서
 
@@ -189,8 +178,6 @@ pnpm prisma:seed
 - [x] User Web legacy `/login`이 선호 locale login URL로 redirect됨을 확인
 - [x] DB 연결 대상 확인: `DATABASE_URL`과 `DIRECT_URL` 모두 Supabase pooler의 `postgres` DB를 가리킴. 실제 URL 값은 기록하지 않음
 - [x] DB 데이터 확인: `User` 3, `UserOAuthAccount` 3, `AuthDevice` 4, `AuthSession` 5
-- [x] CRM 업무 데이터 확인: `Company`, `Contact`, `Product`, `Deal`, `Schedule`, `MeetingNote`, `BusinessCardScanLog`, `ImportUserLog` 모두 0건
-- [x] 기능용 seed 데이터 확인: `ImportTemplate` 4건 존재
 - [ ] `pnpm prisma:generate` 미완료. 실행 중인 BE 프로세스가 Prisma query engine DLL을 잡고 있어 `EPERM rename` 발생. BE를 중지한 뒤 재실행 필요
 - [ ] migration 기록 정합성 미완료. 현재 `BE/.env`의 Prisma datasource는 Supabase pooler를 가리키며, `_prisma_migrations`에는 `20260611000000_add_company_domain` 1건만 있고 `finished_at`이 비어 있음. `pnpm exec prisma migrate status`에서도 이후 migration들이 미적용으로 표시됨. 수동 QA 전 데이터 조회는 가능하지만, 배포/DB 운영 전 migration 기록 정리가 필요함
 - [ ] seed 미실행. 실제 Supabase OAuth/CRM QA 데이터와 섞일 수 있어 자동 실행하지 않음
@@ -233,7 +220,7 @@ pnpm test:e2e
 
 ### FE/admin-web 자동 점검
 
-관리자 페이지는 11 Admin Operation foundation 범위에서 현재 QA 포함 대상입니다. Billing Admin과 B2B tenant/team admin만 제외합니다.
+관리자 페이지는 현재 auth/role smoke만 QA 포함 대상입니다.
 
 ```powershell
 cd FE/admin-web
@@ -251,7 +238,7 @@ pnpm test:e2e
 ### FE/admin-web 자동 점검 결과 기록 기준
 
 - 최신 실행 결과는 `TODO/SERVICE_QA_PLAN/COMMON/QA-RESULTS.md`에 기록한다.
-- `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 현재 11 Admin Operation route smoke 기준이어야 한다.
+- `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 현재 auth/role smoke 기준이어야 한다.
 
 ## 8. 수동 QA 기본 시나리오
 
@@ -332,21 +319,21 @@ pnpm test:e2e
 
 - [x] access token 없이 보호 API 호출 시 401
 - [x] 잘못된 token으로 보호 API 호출 시 401
-- [x] 일반 사용자가 admin API를 호출하면 403 또는 접근 차단
-- [x] FE에서 `/admin/api/*`를 User Web API client로 호출하지 않음
+- [x] 일반 사용자가 `GET /admin/api/me`를 호출하면 403 또는 접근 차단
+- [x] FE User Web API client가 일반 `/api/*` 계약만 사용함
 - [N/A] 다른 사용자의 UUID를 추측해 조회/수정/삭제할 수 없음. 이번 배포 수동 QA 범위에서 제외
 
 ### 2026-07-10 권한/API 보호 smoke 결과
 
 - 실제 로컬 BE HTTP smoke로 보호 API 인증 없음 401, 잘못된 token 401을 확인했다.
-- BE `AdminGuard` 자동 테스트로 일반 사용자 admin API 접근 403을 확인했다.
-- User Web `apiClient`/`apiBlobClient`가 `/admin/api/*` 호출을 차단함을 코드로 확인했다.
+- BE `AdminGuard` 자동 테스트로 일반 사용자 `GET /admin/api/me` 접근 403을 확인했다.
+- User Web `apiClient`/`apiBlobClient`가 일반 `/api/*` 계약만 사용함을 코드로 확인했다.
 
 ### 2026-07-09 배포 사이트 인증/세션 QA 결과
 
 - Google 로그인, `/app` 진입, 새로고침 후 세션 유지, 새 탭 `/app` 세션 유지, 로그아웃 후 선호 locale login URL 이동, 로그아웃 후 뒤로가기 보호, 재로그인 후 기존 CRM 데이터 유지, 설정/계정 화면 사용자 정보 표시를 확인했다.
 - 가입 국가/마지막 로그인 국가는 `기록 없음`이어도 현재 정책상 정상으로 본다.
-- Apple/LINE provider, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, Admin API/권한 침투성 테스트는 2026-07-09 QA 범위에서 제외했다. Apple/LINE은 08 G08에서 구현/QA 대상으로 승격한다.
+- Apple/LINE provider, 만료 토큰 강제 테스트, 모바일 여러 대 동시 로그인, 관리자 권한 침투성 테스트는 2026-07-09 QA 범위에서 제외했다. Apple/LINE은 08 G08에서 구현/QA 대상으로 승격한다.
 
 ## 10. 홈 QA
 
@@ -590,7 +577,6 @@ pnpm test:e2e
 ### 2026-07-09 딜 기능 QA 결과
 
 - 배포 사이트 기준 딜 목록, 단계 count, 단계/키워드/회사/담당자 필터, 정렬/페이지네이션, 생성, 회사/담당자/제품 연결, 상세, 수정, 팔로잉 액션, 메모, 삭제, 휴지통 복구, XLSX 다운로드 동작 확인 완료.
-- 딜 데이터 업로드에서 새 담당자 생성까지 동작 확인 완료.
 - 필수값/금액 형식 검증, 삭제된 연결 데이터 표시, 모바일 레이아웃, UX/UI는 이번 성공 케이스 QA 범위에서 제외한다.
 
 ## 15. 일정 QA
@@ -694,98 +680,6 @@ pnpm test:e2e
 - 배포 사이트 기준 회의록 목록, 검색/필터/정렬, 수동 생성, 연결 회사/담당자/제품/딜, AI/STT 성공 케이스, 상세, 수정, 딜 추가 연결, 삭제, 휴지통 복구 동작 확인 완료.
 - OpenAI key 미설정, AI/STT provider 실패, 지원하지 않는 파일 형식, 대용량 파일 같은 예외 케이스는 이번 성공 케이스 기능 QA 범위에서 제외한다.
 
-## 17. 명함 OCR QA
-
-### 업로드
-
-- [x] `/app/business-cards` 진입 가능
-- [x] 이미지 업로드 UI가 보임
-- [x] JPG/PNG 등 지원 형식 업로드 가능
-- [N/A] 지원하지 않는 파일 형식은 막힘. 이번 성공 케이스 기능 QA 범위에서 제외
-- [N/A] 10MB 초과 파일은 막힘. 이번 성공 케이스 기능 QA 범위에서 제외
-- [x] 업로드 중 로딩 상태가 보임
-- [x] OCR 실패 시 실패 상태와 재시도 가능성이 보임
-
-### 스캔 로그
-
-- [x] 스캔 로그 목록이 보임
-- [x] 성공/실패/확정 등 상태 필터가 동작함
-- [x] 스캔 상세에서 추출값을 확인 가능
-- [x] 추출값이 비어 있을 때 사용자가 직접 보정 가능
-
-### 확정
-
-- [x] 추출된 회사/담당자 정보를 수정 가능
-- [x] 확정 시 회사와 담당자가 생성 또는 연결됨
-- [x] 확정 후 담당자 목록에 표시됨
-- [x] 확정 후 회사 상세에 담당자가 연결됨
-- [N/A] 동일 명함을 반복 확정할 때 중복 생성 정책이 기대와 일치함. 이번 성공 케이스 기능 QA 범위에서 제외
-- [x] OCR provider 장애 시 앱 전체가 깨지지 않음
-
-### 2026-07-09 명함 OCR 기능 QA 결과
-
-- 배포 사이트 기준 명함 스캔 화면 진입, 이미지 업로드, OCR 자동 입력, 추출값 확인/수정, 확정 저장, 담당자 목록 반영, 회사 상세 연결, 스캔 로그와 상태 필터 동작 확인 완료.
-- 결제 전 OpenAI quota 부족으로 `OCR_FAILED` 안내가 노출되고 이미지를 저장하지 않는 실패 처리도 확인했다. 결제 후 OCR 성공 케이스가 통과했다.
-- 지원하지 않는 파일 형식, 10MB 초과 파일, 동일 명함 반복 확정 정책은 이번 성공 케이스 기능 QA 범위에서 제외한다.
-
-## 18. 데이터 가져오기 QA
-
-### 템플릿
-
-- [x] `/app/import` 진입 가능
-- [x] 활성 import template 목록이 보임
-- [x] 회사 템플릿 다운로드 가능
-- [x] 담당자 템플릿 다운로드 가능
-- [x] 제품 템플릿 다운로드 가능
-- [x] 딜 템플릿 다운로드 가능
-- [x] 다운로드 파일이 열림
-- [x] 템플릿 헤더가 화면 설명과 일치함
-
-### 파일 업로드
-
-- [x] CSV 업로드 가능
-- [x] XLSX 업로드 가능
-- [x] 지원하지 않는 파일 형식은 막힘
-- [x] 10MB 초과 파일은 막힘
-- [x] 빈 파일은 명확히 막힘
-- [x] 필수 컬럼이 없는 파일은 명확히 안내됨
-- [x] 업로드 후 미리보기 표가 표시됨
-
-### 매핑
-
-- [x] AI 컬럼 매핑 실행 가능
-- [x] `OPENAI_API_KEY`가 없는 환경에서 앱이 깨지지 않고 에러 안내가 보임
-- [x] AI 매핑 실패 시 수동 매핑 가능
-- [x] 컬럼 매핑을 직접 수정 가능
-- [x] 필수 필드가 매핑되지 않으면 확정이 막힘
-- [x] 매핑 변경 후 미리보기가 갱신됨
-
-### 행 검증/수정
-
-- [x] 행별 validation 결과가 보임
-- [x] 오류 행이 명확히 표시됨
-- [x] 이메일 형식 오류가 표시됨
-- [x] 휴대폰 형식 오류가 표시됨
-- [x] 숫자 필드 오류가 표시됨
-- [x] 셀 값을 직접 수정 가능
-- [x] 수정 후 validation이 갱신됨
-- [x] 긴 표에서 가로 스크롤이 사용 가능하고 헤더/셀 정렬이 깨지지 않음
-
-### 확정/로그
-
-- [x] 검증 통과 후 import 확정 가능
-- [x] 확정 후 실제 데이터가 생성됨
-- [x] 확정 후 import log가 생성됨
-- [x] `/app/import/:importUserLogId` 상세 진입 가능
-- [x] 성공/실패/부분 성공 결과가 이해 가능하게 표시됨
-- [x] 확정 전 서버 재시작 시 job이 사라질 수 있음을 알려진 한계로 기록
-
-### 2026-07-10 데이터 가져오기 수동 QA 결과
-
-- 회사/담당자/제품/딜 import 템플릿, 파일 업로드, 미리보기, 행 검증, 셀 수정, 확정, import log 흐름이 동작함을 확인했다.
-- 필수값 누락, 이메일 형식, 휴대폰 형식, 숫자 필드 오류 표시가 동작함을 확인했다.
-- 미리보기 validation 메시지는 오류가 있는 해당 셀에만 표시됨을 확인했다.
-- 확정 전 ImportJob은 DB에 저장되며 새로고침, 탭 이동, 서버 재시작 후 이어받을 수 있다.
 
 ## 19. 검색 QA
 
@@ -843,7 +737,6 @@ pnpm test:e2e
 
 ## 21. 도메인별 XLSX Export QA
 
-현재 제품 방향은 generic export job이 아니라 각 도메인 목록에서 바로 XLSX를 다운로드하는 방식입니다.
 
 - [x] 회사 XLSX 다운로드 가능
 - [x] 담당자 XLSX 다운로드 가능
@@ -874,11 +767,10 @@ pnpm test:e2e
 - [x] 내 기기 목록 조회 가능
 - [x] 가입 locale/timezone과 마지막 로그인 locale/timezone이 표시됨
 - [x] 가입 국가/마지막 로그인 국가는 geo header가 없는 환경에서 `기록 없음`으로 표시될 수 있음을 기록
-- [x] Google Calendar 설정, follow-up delivery 설정, account/data request가 계정 모달 `Settings` 안에서 동작함
+- [x] Google Calendar 설정, follow-up delivery 설정가 계정 모달 `Settings` 안에서 동작함
 - [x] `/app/settings`와 legacy `/settings` route는 사용자-facing route로 유지하지 않음
 - [x] `/app/more` 진입 가능
 - [x] 더보기에서 현재 노출해야 하는 기능만 보임
-- [x] generic export와 관리자 기능이 User Web에 잘못 노출되지 않음. 알림은 AppShell bell과 `/app/notifications`에서 노출될 수 있음
 - [x] 로그아웃 진입점이 명확함
 - [x] 로그아웃 후 선호 locale의 login URL로 이동함
 
@@ -886,7 +778,6 @@ pnpm test:e2e
 
 - 설정 화면 진입, 프로필 조회/수정, 새로고침 후 유지, 내 기기 목록, locale/timezone 표시가 동작함을 확인했다.
 - geo header가 없는 환경에서는 가입 국가/마지막 로그인 국가가 `기록 없음`으로 표시될 수 있음을 확인했다.
-- 더보기 화면 진입, 현재 노출해야 하는 기능만 표시, 알림/generic export/admin 기능 미노출, 로그아웃 흐름이 동작함을 확인했다.
 
 ### 2026-08-23 계정 설정 모달 이관 결과
 
@@ -1047,7 +938,6 @@ pnpm test:e2e
 - [ ] 딜 목록이 테이블 때문에 깨지지 않음
 - [ ] 일정 생성 form이 모바일에서 잘리지 않음
 - [ ] 회의록 긴 입력이 모바일에서 사용 가능함
-- [ ] Import 표는 모바일에서 최소한 가로 스크롤로 확인 가능함
 - [ ] 휴지통 복구 버튼이 실수로 누르기 어렵지 않음
 - [ ] dialog가 작은 화면에서 화면 밖으로 벗어나지 않음
 - [ ] 키보드가 올라와도 입력 중인 필드와 저장 버튼을 사용할 수 있음
@@ -1067,11 +957,8 @@ pnpm test:e2e
 
 아래는 현재 실패로 보지 않고, QA 결과에 `N/A` 또는 `Known limitation`으로 기록합니다.
 
-- [ ] 확정 전 ImportJob은 DB에 저장되며 재시작 후 이어받을 수 있음
-- [ ] `/app/export`는 `/app`으로 리다이렉트됨
-- [ ] Admin 운영 화면은 11 Admin Operation foundation 범위에서 QA 대상. Billing Admin과 B2B tenant/team admin은 제외
 - [ ] 과금/구독 결제는 현재 제품 QA 범위에서 제외
-- [ ] MeetingNote raw text/admin raw access는 미래 범위
+- [ ] MeetingNote raw text는 미래 범위
 - [ ] Google/LINE/Apple 실제 provider smoke는 Supabase/provider 운영 설정과 secret 준비 후 별도 provider 설정/QA 필요
 - [ ] 가입 국가/마지막 로그인 국가는 proxy geo header가 없는 환경에서 `기록 없음`일 수 있음
 - [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
@@ -1128,7 +1015,6 @@ pnpm test:e2e
 - [x] FE/admin-web 점검 `typecheck`, `lint`, `build` 결과 기록 완료. 현재 Admin Web route smoke E2E 결과는 최신 QA 실행 시 `SERVICE_QA_PLAN`에 기록
 - [x] 핵심 수동 시나리오 1회 이상 완료
 - [x] 회사/담당자/제품/딜/일정/회의록 CRUD 확인 완료
-- [x] Import/Export/Search/Trash 확인 완료
 - [x] URL locale smoke 확인 완료
 - [x] API/security 기본 smoke 확인 완료
 - [x] 제외 범위와 알려진 한계가 QA 결과에 기록됨

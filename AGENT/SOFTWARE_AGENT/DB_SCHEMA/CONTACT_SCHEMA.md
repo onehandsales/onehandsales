@@ -56,7 +56,6 @@ Contact 1 ─ N MeetingNoteContact
 ## 4. Table: Contact
 
 사용자가 등록한 담당자 기준 테이블이다. 담당자는 반드시 `Company`에 소속되며, 부서와 직급은 문자열 직접 저장이 아니라 각각 `ContactDepartment`, `ContactJobGrade`의 ID를 FK로 가진다.
-명함 OCR 확정 저장도 이 정본 `Contact`를 생성하거나 기존 담당자를 재사용한다.
 
 | 컬럼 | 타입 | Null | 기본값 | 주석 |
 |---|---|---:|---|---|

@@ -15,7 +15,7 @@
 특히 다음과 같은 사용자를 기본 대상으로 본다.
 
 - 회사 시스템이 있어도 개인 메모와 실제 영업 맥락을 따로 관리하는 영업자
-- 담당자, 회사, 제품, 딜, 일정을 엑셀, 메모장, 캘린더, 명함에 흩어져 관리하는 영업자
+- 담당자, 회사, 제품, 딜, 일정을 엑셀, 메모장, 캘린더, 연락처에 흩어져 관리하는 영업자
 - 오늘 어떤 딜을 챙겨야 하는지, 다음 행동이 무엇인지 빠르게 확인해야 하는 영업자
 - 주간 일정 보고서나 회의 후 정리를 매번 다시 만드는 영업자
 - 대형 CRM보다 빠른 입력, 빠른 검색, 개인 기준 정리를 더 중요하게 느끼는 영업자
@@ -29,7 +29,7 @@
 개인 영업자는 실제 업무에서 많은 정보를 여러 곳에 나누어 저장한다.
 
 - 회사 정보는 회사 시스템이나 엑셀에 있다.
-- 담당자 정보는 명함, 휴대폰 연락처, 메모에 흩어져 있다.
+- 담당자 정보는 휴대폰 연락처, 메모, 엑셀에 흩어져 있다.
 - 제품과 제안 내용은 별도 파일이나 기억에 의존한다.
 - 딜 금액, 단계, 가능성, 다음 행동은 개인 메모로 관리되는 경우가 많다.
 - 일정은 캘린더에 있지만 딜, 회사, 담당자와 충분히 연결되지 않는다.
@@ -55,7 +55,6 @@
 
 넷째, 입력 부담을 줄인다.
 
-빠른 등록, 명함스캔 OCR 자동 입력, 화면별 검색/필터, 통합검색, 회의록 AI/STT 정리, 데이터 불러오기 AI 매핑, 도메인별 엑셀 다운로드 같은 기능으로 처음 입력하거나 다시 찾는 부담을 줄이는 방향이다. 명함스캔은 자동 입력 후 사용자가 확인/수정하고 저장하는 흐름이며, 데이터 불러오기는 회사/담당자/제품/딜 CSV/XLSX 업로드 후 AI 매핑과 사용자 보정을 거쳐 확정 저장하는 흐름이다.
 
 ## 5. 사용자가 경험하는 핵심 루프
 
@@ -111,7 +110,7 @@
 
 상단 통합검색은 회사, 담당자, 제품, 딜, 일정, 회의록을 한 번에 찾는 기능이다. 각 화면의 검색/필터는 현재 화면 목록만 좁혀보는 역할을 한다.
 
-Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전용 운영 콘솔이다. 현재 사용자 목록/상세, 사용자별 도메인 read-only 조회, 사용자 Trash, provider failure, account/data request queue, Trash recovery request queue, analytics overview, audit logs, system operation gate를 제공한다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 범위다.
+Admin Web은 현재 관리자 권한 확인만 제공한다. 현재 route는 `/login`과 보호 route `/`이며, Backend 연동은 `GET /admin/api/me`만 사용한다.
 
 ## 8. MVP에 포함되는 것
 
@@ -128,8 +127,6 @@ Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전�
 - 회의록 STT+AI 초안
 - 회의록 저장 후 딜 연동과 딜 활동 로그 생성
 - 상단 통합검색
-- 명함스캔 OCR 자동 입력, 진행 표시, 확인/수정 후 회사/담당자 저장
-- 회사/담당자/제품/딜 데이터 불러오기
 - 회사/담당자/제품/딜 도메인별 Excel export
 - 민감정보 기본 보호 정책
 - 휴지통 목록/상세/7일 이내 복구
@@ -141,25 +138,18 @@ Admin Web은 11 Admin Operation foundation 기준으로 열린 데스크톱 전�
 - 결제/구독 자동화
 - 구글 캘린더 양방향 동기화
 - 우리 서비스 일정의 구글 캘린더 내보내기
-- 카카오 알림톡
 - 사용자 커스텀 필드 UI
 - 캐나다 국가/통화 rollout 및 추가 국가/통화 rollout
 - 자동 민감정보 키워드 감지
 - 팀 공유/협업
 - 회의 STT transcript 영구 저장
-- Billing Admin과 B2B tenant/team admin
-- 범용 ExportJob 구현
 - 휴지통 7일 이후 유료 복구 정책과 API
 
 ## 10. 현재 구현 관점의 요약
 
-2026-08-13 기준으로 Backend는 Auth/User, Company, Contact, BusinessCard OCR, Product, Deal, Schedule, MeetingNote 수동 도메인, Search, Trash, DataImport/ImportJob, Notification/Reminder, Weekly Schedule Report, Google Calendar Integration, AI Weekly Sales Report/Follow-up, DealActivity, MeetingNote AI provider log, Global Data/I18N, Product Analytics, Mobile Field Use foundation, Admin Operation foundation을 구현한 상태다.
 
-User Web은 URL locale 기반 공개/인증 진입면과 `/app` 홈 대시보드, 회사, 담당자, 명함 스캔, 제품, 딜, 일정, 수동 회의록, 회의록 AI/STT 초안, 회의록 저장 후 딜 연동 화면, 회사/담당자/제품/딜 데이터 불러오기, 회사/담당자/제품/딜 엑셀 다운로드, 상단/모바일 통합검색, 휴지통 목록/상세/복구와 Global B2C 01~11 foundation 화면/API가 연결되어 있다. 명함 스캔 화면은 등록일 최신순 내역, 상태 다중 필터, 이미지 업로드 기반 명함스캔 모달을 제공한다. Import preview validation은 누락된 셀에만 메시지를 표시한다.
 
-Admin Operation foundation은 11번 로드맵 기준 구현 완료다. Billing Admin, subscription/payment/refund/invoice 운영, B2B tenant/team admin은 후속 구현 범위로 본다.
-
-2026-08-11 기준 Global B2C 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 현재 다음 작업은 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
+기존 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고, 현재 다음 작업은 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비다.
 
 ## 11. 이 서비스를 이해할 때 중요한 기준
 
@@ -169,7 +159,7 @@ Admin Operation foundation은 11번 로드맵 기준 구현 완료다. Billing A
 
 따라서 화면은 마케팅 사이트처럼 설명적이거나 장식적이면 안 된다. 업무 도구처럼 조용하고 읽기 쉬워야 하며, 딜과 다음 행동을 빠르게 비교할 수 있어야 한다.
 
-또한 이 서비스의 데이터는 사용자 개인 기준으로 소유된다. User API는 항상 본인 데이터만 다루고, Admin API는 별도 경로와 권한, 민감정보 마스킹, 감사 로그 기준을 따라야 한다.
+또한 이 서비스의 데이터는 사용자 개인 기준으로 소유된다. User API는 항상 본인 데이터만 다루고, 관리자 확인 API는 별도 경로와 권한 guard를 따른다.
 
 ## 12. 글로벌 B2C 유료 판매와 Series A 방향
 
@@ -181,22 +171,18 @@ Admin Operation foundation은 11번 로드맵 기준 구현 완료다. Billing A
 - VAT/GST/판매세 또는 Merchant of Record
 - `/app` 내부 다국어
 - 국가별 전화번호, 날짜/시간, 통화, 주소/지역 표시
-- Admin 고객 지원, 구독 상태, 결제 이슈, 민감정보 마스킹, 감사 로그
-- 개인정보, 계정 삭제, 데이터 export, 환불/약관/보안 문서
+- 개인정보, 환불/약관/보안 문서
 - activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user 분석
 
 Series A급 제품으로 가려면 기능 수를 늘리는 것보다 매일 열 이유와 반복 매출의 질을 만들어야 한다.
 
 Series A급 방향:
 
-- Notification/Reminder 기반 리텐션 루프
 - AI next action, follow-up 문구, 딜 리스크, 주간 영업 리포트
-- 모바일 브라우저 현장 입력, 명함 촬영, 음성 기록, browser push reminder
 - 범용 DealActivity timeline
 - Google Calendar 연동
 - 결제/paywall 실험
 - 제품 분석과 unit economics
-- Admin 운영과 보안/감사 신뢰 체계
 
 자세한 기준은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 

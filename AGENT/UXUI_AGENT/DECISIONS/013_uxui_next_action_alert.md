@@ -1,4 +1,4 @@
-﻿# UX/UI Next Action And Alert Decision
+# UX/UI Next Action And Alert Decision
 
 ## 결정
 
@@ -9,7 +9,6 @@
 - 딜 목록 row/card
 - 딜 상세 요약
 - 홈 파이프라인
-- 알림 영역
 
 ## 상태
 
@@ -33,7 +32,6 @@
 - 지연: 레드
 - 완료: 뉴트럴 또는 그린
 
-알림은 사용자를 압박하지 않게 하되, 임박/지연 항목은 명확히 보여준다.
 
 ## 관련 문서
 

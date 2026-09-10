@@ -20,7 +20,7 @@ Global B2C 01~11 기능 선구현 로드맵은 구현과 QA closeout 기준으�
 
 ## Reason
 
-구독 결제를 먼저 붙이면 가격, plan, trial, entitlement, AI 사용량 제한, 환불/해지/failed payment 정책이 바뀔 때 checkout, webhook, DB, User Web, Admin 운영 범위를 다시 고칠 가능성이 높다.
+구독 결제를 먼저 붙이면 가격, plan, trial, entitlement, AI 사용량 제한, 환불/해지/failed payment 정책이 바뀔 때 checkout, webhook, DB, User Web 범위를 다시 고칠 가능성이 높다.
 
 현재 제품은 대부분의 핵심 기능이 구현된 상태이므로, 결제창을 붙이는 것보다 유지보수와 UX/UI 개선으로 상품성을 높이고 100명 베타에서 실제 반복 사용과 유료 전환 후보 기능을 확인하는 것이 우선이다.
 
@@ -46,7 +46,6 @@ Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`
 - paywall, upgrade, trial
 - tax, invoice, refund, chargeback
 - failed payment recovery
-- Billing Admin 연동
 - billing-linked conversion/churn/ARPU
 
 ## Implementation Rule

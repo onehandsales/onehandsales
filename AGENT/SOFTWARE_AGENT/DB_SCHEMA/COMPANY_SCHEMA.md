@@ -48,7 +48,6 @@ Company 1 ─ N MeetingNoteContact
 - 회사 목록의 최근 수정일 응답
 - 회사 단건 응답에 담당자 수와 딜 수를 직접 병합하는 구조
 - 회사분야/회사지역 수정 API
-- Admin 원문 조회용 회사 개인 비밀 메모 복호화
 - 기존 공통 `PersonalMemo(targetType=COMPANY)` 방식
 
 회사 목록의 연결 담당자 수는 `Contact.companyId` 관계를 기준으로 `contactCount` 집계값으로 제공한다. 회사 목록의 연결 딜 수는 `Deal.companyId` 관계를 기준으로 `dealCount` 집계값으로 제공한다. 회사 단건 조회 응답 자체에는 담당자 수와 딜 수를 병합하지 않으며, 회사 단건 화면의 연결 Contact/Deal 목록은 별도 API로 조회한다.

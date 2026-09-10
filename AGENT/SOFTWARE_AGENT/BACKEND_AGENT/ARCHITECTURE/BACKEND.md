@@ -16,9 +16,9 @@ Stack:
 API split:
 
 - User API: `/api/*`
-- Admin API: `/admin/api/*`
+- Admin auth verification API: `GET /admin/api/me`
 
-MVP에서는 하나의 배포 단위로 운영한다. 단, Admin 코드는 나중에 분리할 수 있도록 controller, guard, application method 경계를 User API와 분리한다.
+MVP에서는 하나의 배포 단위로 운영한다. 단, 관리자 권한 확인 controller와 guard는 User API와 분리한다.
 
 ## 2. Domain Vocabulary
 
@@ -30,7 +30,6 @@ Canonical domain:
 - `Deal`: 딜/영업 건
 - `Schedule`: 일정
 - `MeetingNote`: 회의록
-- `BusinessCardScanLog`: 명함 OCR 요청/확정 저장 로그
 - `Search`: 기존 도메인을 읽는 통합검색
 
 일반적인 `Customer` 도메인은 현재 정본 모델에 없다. 후속 결정 없이 새로 만들지 않는다.
@@ -51,13 +50,10 @@ Currently imported modules in `AppModule`:
 
 - `health`
 - `analytics`
-- `account-request`
-- `admin-operation`
 - `auth`
 - `user`
 - `company`
 - `contact`
-- `business-card`
 - `product`
 - `deal`
 - `error-report`
@@ -65,31 +61,24 @@ Currently imported modules in `AppModule`:
 - `schedule`
 - `sales-report`
 - `meeting-note`
-- `notification`
 - `search`
 - `support-request`
 - `trash`
-- `data-import`
 
 Currently implemented API surface:
 
 - Auth/User: `/api/auth/providers`, `/api/auth/exchange`, `/api/auth/refresh`, `/api/auth/logout`, `/api/me`, `/admin/api/me`, `/api/users/me/profile`, `/api/users/me/devices`, user timezone/locale/region metadata
-- Account Request: user-facing account deletion/data export request endpoints under `/api/users/me`
 - Company: list/detail/create/update/delete, field/region options, memo/private memo logs, linked contacts/deals, xlsx export
 - Contact: list/detail/create/update/delete, company options, department/job grade options, memo/private memo logs, linked deals, xlsx export
-- BusinessCard OCR: `POST /api/business-card-scans`, `GET /api/business-card-scans`, `GET /api/business-card-scans/:scanLogId`, `POST /api/business-card-scans/:scanLogId/confirm`
 - Product: list/detail/create/update/delete, category/status options, memo/private memo logs, linked deals, xlsx export
 - Deal: stage counts, list/detail/create/update/delete, company/contact/product options, `DealActivity`, following action logs, memo logs, xlsx export
 - Schedule: deal options, month/week list, weekly report/xlsx export, detail/create/update/delete, schedule-deal N:M link, Google Calendar connect/status/calendar selection/read-only sync/callback
 - Sales Report: AI weekly sales report generate/list/detail/suggestion foundation under `/api/sales-reports/weekly`
 - MeetingNote: filter options, list/detail/create/update/delete, AI text draft, STT+AI draft, next action draft, follow-up draft, saved-note deal linking, AI provider call log persistence
 - Follow-up: follow-up message draft/send/retry/history and email provider delivery settings
-- Notification: notification list/unread/read, user notification settings, browser push public key/subscription management, reminder delivery foundation
 - Search: `GET /api/search`
 - Trash: `GET /api/trash`, `GET /api/trash/:targetType/:targetId`, `POST /api/trash/:targetType/:targetId/restore`
-- DataImport: active templates, template xlsx download, CSV/XLSX upload for Company/Contact/Product/Deal, AI mapping, mapping validation, cell-scoped validation messages, confirm import, import user logs
 - Help: `POST /api/error-reports`, `POST /api/support-requests`
-- Admin Operation: admin user/domain readonly operation, trash/account request/provider failure queues, audit/security logs, analytics overview, system operation check endpoints under `/admin/api/*`
 - Health: `GET /api/health`
 - Analytics: `POST /api/analytics/events`
 
@@ -105,10 +94,6 @@ Implemented Backend TODO references:
 - `TODO/DONE/ADDITIONAL_WORK_PLAN/BE-TODO/G01-G12`
 - `TODO/DONE/INTEGRATED_SEARCH_PLAN/BE-TODO/G01-BE-INTEGRATED-SEARCH.goal.md`
 - `TODO/DONE/MEETING_NOTE_AI_STT_PLAN/BE-TODO/G01-BE-MEETING-NOTE-AI-STT-DRAFT.goal.md`
-- `TODO/DONE/BUSINESS_CARD_OCR_PLAN`
-- `TODO/DONE/IMPORT_TEMPLATE_PLAN`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/01_IMPORT_JOB_PERSISTENCE`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/03_WEEKLY_SCHEDULE_REPORT`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/05_AI_WEEKLY_SALES_REPORT`
@@ -117,7 +102,6 @@ Implemented Backend TODO references:
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 
 Current response notes:
 
@@ -132,10 +116,6 @@ Current response notes:
 - `GET /api/meeting-notes` returns summary objects for `companies`, `contacts`, `products`, `deals`, uses fixed `pageSize=15`, and uses `totalPages`.
 - `POST /api/meeting-notes/ai-draft` and `POST /api/meeting-notes/stt-draft` generate draft fields only. They do not create a meeting note row.
 - `POST /api/meeting-notes/:meetingNoteId/deals` adds deal links to a saved meeting note and writes linked deal following-action logs.
-- `POST /api/business-card-scans` accepts an image file as `image`, calls OpenAI OCR, stores `OCR_SUCCESS` or `OCR_FAILED` in `BusinessCardScanLog`, and does not create Company/Contact.
-- `GET /api/business-card-scans` supports fixed `pageSize=15`, `page`, and repeated or comma-separated `status=OCR_SUCCESS|OCR_FAILED|CONFIRMED` filters. Results are ordered by newest registration first.
-- `POST /api/business-card-scans/:scanLogId/confirm` requires user-confirmed fields, reuses existing Company/Contact when found, creates missing Company/Contact and taxonomy rows when needed, and updates the scan log to `CONFIRMED`.
-- BusinessCard OCR does not store the uploaded image. The log stores extracted/corrected fields, provider model, token/cost metrics, `costCurrency`, `pendingTimeMs`, and linked company/contact IDs after confirmation.
 - `DELETE /api/meeting-notes/:meetingNoteId` is a soft delete API and the deleted row can be restored through Trash while it remains within retention.
 - MeetingNote AI draft and STT are separated as `MeetingNoteAiDraftProvider` and `MeetingNoteSttProvider`; current adapters are OpenAI.
 - MeetingNote AI/STT writes `AiProviderCallLog` for provider observability. Raw transcript table and raw-text storage remain deferred.
@@ -144,16 +124,6 @@ Current response notes:
 - `GET /api/trash` aggregates deleted Company, Contact, Product, Deal, MeetingNote, and supported memo/action log rows owned by the current user where `deletedAt IS NOT NULL` and `trashExpiresAt > now`. Default `pageSize` is 15.
 - `GET /api/trash/:targetType/:targetId` returns preview details for the trash detail modal. Private memo content is not exposed before restore.
 - `POST /api/trash/:targetType/:targetId/restore` clears `deletedAt`, `deletedByUserId`, and `trashExpiresAt` and returns the restored target metadata.
-- `GET /api/import-templates/active` returns active import templates for Company, Contact, Product, and Deal.
-- `GET /api/import-templates/:templateId/download` returns an xlsx template. Contact templates may receive `companyName` as context.
-- `POST /api/imports` accepts a CSV/XLSX file as `file`, validates 10 MB and 5,000 data row limits, creates a persisted `ImportJob`/row/file metadata snapshot, deletes the original file binary after DB snapshot creation, and returns preview rows.
-- `GET /api/imports/active` and `GET /api/imports/:importJobId` restore active import review state from DB for refresh, tab movement, server restart, and deploy recovery.
-- `POST /api/imports/:importJobId/map` calls the import mapping provider and falls back to heuristic mapping if the provider fails.
-- `PATCH /api/imports/:importJobId/mapping` applies the user's mapping and validates mapped rows. Preview validation messages are scoped to the missing or invalid cell instead of being repeated across unrelated columns.
-- `POST /api/imports/:importJobId/confirm` creates Company, Contact, Product, or Deal rows and writes `ImportUserLog`/`ImportUserLogRow` snapshots in a database transaction.
-- `GET /api/import-user-logs` uses fixed `pageSize=15` page-number pagination for successful import history.
-- Deal import creates the deal and `DealCompany`, `DealContact`, `DealProduct` links in one transaction when referenced company/contact/product values resolve. Missing-reference resolution arrays are forwarded as `dealCompanyResolutions`, `dealContactResolutions`, and `dealProductResolutions` through the FE API function, BE DTO, HTTP controller, application service, repository, and controller spec.
-- Temporary DataImport jobs use `ImportJob`, `ImportJobRow`, `ImportJobError`, and `ImportUploadedFile` persistence. Terminal ImportJob snapshots are cleaned up after 7 days, and successful `ImportUserLogRow` row-level snapshots are cleaned up after 30 days.
 - `POST /api/analytics/events` uses AuthGuard, accepts only `eventName`, `eventVersion`, and allowlist `payload`, and stores Backend-enriched `ProductAnalyticsEvent`.
 
 Current runtime behavior:
@@ -177,16 +147,12 @@ Auth/session runtime notes:
 - Current User Web uses `mobile` and `personal_laptop` slots only. Backend also supports `work_laptop` for future clients.
 - Country code metadata is read from proxy geo headers only: `cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`.
 - 2026-07-10 QA status: `typecheck`, `lint`, `test`, and `build` pass. Backend tests are 17 suites / 82 tests passed. HTTP smoke confirmed health 200, unauthenticated protected API 401, invalid token 401, and unknown route 404.
-- 2026-07-30 Product Analytics G04 QA status: `pnpm run test -- auth deal schedule meeting-note business-card data-import analytics`, `pnpm run typecheck`, `pnpm run lint` pass.
 
 Current backend gaps and intentional deferrals:
 
-- Global B2C 01~11 Backend foundation is complete as of the `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` archive.
-- Billing/Paddle, subscription, payment, tax, invoice, refund, entitlement, paywall, and Billing Admin are deferred to `TODO/PADDLE_PLAN`.
-- B2B tenant/team admin, organization management, and subscription management routes are deferred.
-- DataImport ImportJob persistence/recovery is implemented. Remaining import work is product refinement, edge-case hardening, and UX/UI quality.
-- Generic ExportJob is intentionally not used for the current export direction. Company, Contact, Product, and Deal each provide their own `GET /api/<domain>/export/xlsx` API.
-- Admin Operation foundation and `DealActivity` are implemented. RawText/STT transcript persistence and B2B/team CRM activity expansion remain future scope.
+- User Web Backend foundation is complete as of the `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN` archive.
+- Billing/Paddle, subscription, payment, tax, invoice, refund, entitlement, and paywall are deferred to `TODO/PADDLE_PLAN`.
+- `DealActivity` is implemented. RawText/STT transcript persistence and B2B/team CRM activity expansion remain future scope.
 - Kakao OAuth provider setup is no longer a release blocker because Kakao login has been removed. Apple and LINE are active runtime providers together with Google; actual provider smoke still depends on Supabase/provider operational configuration.
 - Country code fields may remain null in local/dev environments that do not provide proxy geo headers.
 - Prisma generate/migration/seed operating-state consistency still needs release-readiness validation before production DB changes.
@@ -197,13 +163,10 @@ Implemented MVP modules:
 
 - `health`
 - `analytics`
-- `account-request`
-- `admin-operation`
 - `auth`
 - `user`
 - `company`
 - `contact`
-- `business-card`
 - `product`
 - `deal`
 - `error-report`
@@ -211,18 +174,15 @@ Implemented MVP modules:
 - `schedule`
 - `sales-report`
 - `meeting-note`
-- `notification`
 - `search`
 - `support-request`
 - `trash`
-- `data-import`
 
 Deferred modules/features:
 
 - `billing`
 - `subscription`
 - `payment`
-- `billing-admin`
 - `organization` / B2B tenant-team admin
 
 `export` is not planned as a generic Backend module in the current direction. Domain xlsx export lives inside `company`, `contact`, `product`, and `deal`.
@@ -264,7 +224,7 @@ Application:
 
 Infrastructure:
 
-- implements Prisma repositories, OpenAI adapters, Supabase storage adapters, Google Calendar adapters, email/push adapters, and file parser adapters.
+- implements Prisma repositories, OpenAI adapters, Supabase storage adapters, Google Calendar adapters, email adapters.
 - may import domain/application interfaces to implement them.
 
 Presentation:
@@ -284,18 +244,9 @@ Forbidden:
 
 - importing another module's repository.
 - reading another module's Prisma model directly.
-- mixing User/Admin behavior inside the same controller method.
+- hiding cross-user behavior behind a User API role branch.
 
-Admin-specific application methods must be explicit:
-
-```text
-findAllForAdmin
-countForAdmin
-restoreForAdmin
-viewSensitiveForAdmin
-```
-
-## 7. User API And Admin API
+## 7. User API And Admin Auth API
 
 User controllers:
 
@@ -303,15 +254,13 @@ User controllers:
 - guard: JWT/auth guard
 - scope: current user's own data only
 
-Admin controllers:
+Admin auth controller:
 
-- route prefix: `/admin/api/*`
+- route: `GET /admin/api/me`
 - guards: JWT/auth guard + admin guard
-- scope: cross-user data access through admin-specific application methods
-- sensitive fields masked by default
-- raw sensitive access requires reason and audit log
+- scope: current authenticated user's admin eligibility only
 
-Do not put Admin behavior behind role checks in User controllers.
+Do not put cross-user behavior behind role checks in User controllers.
 
 ## 8. Transactions
 
@@ -321,11 +270,6 @@ Use a transaction when one use case writes multiple tables, especially:
 
 - deal creation with first following action log
 - meeting note save with snapshot links
-- business card confirmation that can create taxonomy, company, contact, and update scan log
-- import confirmation that creates domain data and writes import log snapshots
-- sensitive raw access with audit log
-- Admin data mutation with audit log
-- import batch creation
 
 Read-only APIs such as `GET /api/search` do not need a transaction.
 
@@ -335,15 +279,13 @@ Detailed transaction writing rules are defined in `AGENT/SOFTWARE_AGENT/BACKEND_
 
 ## 9. Observability
 
-Backend observability starts with structured JSON logs, audit logs, and request context.
+Backend observability starts with structured JSON logs and request context.
 
 Rules:
 
-- application log and audit log are different records.
-- mutation, Admin API, sensitive data access, external Provider, and batch/import flows must state observability requirements in the API contract.
+- mutation, sensitive data handling, and external Provider flows must state observability requirements in the API contract.
 - request id must be available to exception filters and logger wrapper.
 - PII, tokens, sensitive memo body, meeting note body, raw private data, search query raw text, and provider raw prompts are not logged.
-- audit log records business-sensitive actions in DB and is not replaced by technical logs.
 
 Detailed observability rules are defined in `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`.
 
@@ -360,9 +302,8 @@ Database principles:
 - Soft delete is domain-specific, not a universal baseline.
 - FK constraints are explicit and FK columns are indexed.
 - RLS is a last line of defense; backend queries still filter by `userId`.
-- Admin RLS bypass must go through explicit Admin methods.
 
-Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation. BusinessCard OCR uses `BusinessCardScanLog` because success/failure/conversion and provider usage metrics must be analyzed. DataImport uses `ImportTemplate`, `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`, `ImportUserLog`, and `ImportUserLogRow`; pre-confirmation jobs are persisted with 7-day TTL/cleanup and successful row-level history snapshots have 30-day cleanup.
+Search and MeetingNote AI/STT draft do not introduce new database tables in the current implementation.
 
 ## 11. Enum And Lookup Policy
 
@@ -379,10 +320,8 @@ Canonical examples:
 
 OpenAI-centered use cases:
 
-- business card OCR
 - meeting note draft generation
 - meeting note STT transcription
-- Excel/CSV import column mapping for DataImport
 
 Rules:
 
@@ -390,13 +329,8 @@ Rules:
 - Domain/application code must not depend on OpenAI SDK directly.
 - Provider-specific prompt/response handling belongs in infrastructure adapters.
 - MeetingNote AI draft and STT must remain separate provider ports.
-- BusinessCard OCR must remain a separate provider port from MeetingNote AI draft/STT.
-- DataImport column mapping must remain a separate provider port from MeetingNote and BusinessCard providers.
-- BusinessCard OCR OpenAI adapter uses the Responses API with strict JSON schema output. The prompt constant and schema live in `BE/src/modules/business-card/infrastructure/providers/openai-business-card-ocr.provider.ts`.
-- DataImport OpenAI adapter uses the Responses API and falls back to heuristic mapping when provider output is unavailable or invalid.
 - STT provider adapters may be replaced independently of the OpenAI AI draft adapter.
 - MeetingNote AI/STT draft APIs generate editable drafts only. Final save remains `POST /api/meeting-notes`.
-- BusinessCard OCR APIs generate editable company/contact candidate fields only. Final save remains `POST /api/business-card-scans/:scanLogId/confirm`.
 
 ## 13. Migration Rules
 
@@ -419,11 +353,10 @@ When creating a module:
 - infrastructure Prisma repository and mapper exist
 - presentation controller/DTO/response mapper exists
 - user data is filtered by `userId`
-- Admin endpoint uses `/admin/api/*` and AdminGuard
-- sensitive fields are masked by default
-- mutations that require audit log write it in the same transaction
+- admin auth verification endpoint uses `GET /admin/api/me` and AdminGuard
+- sensitive fields are not logged or exposed outside the intended response contract
 - API contract exists in `COMMON/API-SPEC` before implementation
-- transaction and observability sections are filled for mutation/Admin/sensitive/provider APIs
+- transaction and observability sections are filled for mutation/sensitive/provider APIs
 
 ## 15. Related Documents
 

@@ -65,15 +65,15 @@
 
 - 요청값 형태: HTTP method/path, path param, query, header, body, 필수 여부, validation 기준
 - 응답값 형태: success status, response body 유무, response DTO 이름, 필드명, 타입, nullable 여부, 예시
-- 내부 비즈니스 로직: 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 감사 로그, 에러 분기
-- 연결 DB: 생성/조회/수정/삭제 model, relation, transaction 대상, soft delete 여부, 감사 로그 model
+- 내부 비즈니스 로직: 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 에러 분기
+- 연결 DB: 생성/조회/수정/삭제 model, relation, transaction 대상, soft delete 여부, 부수 로그/이력 model
 - 에러 응답: status, domain error code, 사용자가 보게 될 처리 기준
 - FE 처리 기준: body 없는 성공 응답 처리, 재조회 범위, optimistic update 여부, route guard, 권한 없음 처리
-- BE 처리 기준: Clean Architecture 계층, application use case, repository/port, infrastructure adapter, User/Admin API 분리, 구현 검증 범위
+- BE 처리 기준: Clean Architecture 계층, application use case, repository/port, infrastructure adapter, User API와 관리자 확인 API 분리, 구현 검증 범위
 - Backend 주석 기준: class/interface의 `// 역할 : ...`, API controller method의 `// API : ...`, 내부 method/function의 `// 기능 : ...`, 주요 orchestration의 numbered step comment
 - API 계약 기준: 계약 상태, 소비자, 호환성, request/response/error 계약, DB schema 연결
-- Transaction 기준: 필요 여부, 이유, transaction model, rollback 범위, audit log 포함 여부, 외부 Provider 호출 위치
-- Observability 기준: log event key, audit log 필요 여부, request id, redaction, provider error context
+- Transaction 기준: 필요 여부, 이유, transaction model, rollback 범위, 부수 로그/이력 포함 여부, 외부 Provider 호출 위치
+- Observability 기준: log event key, request id, redaction, provider error context
 
 ## 4. API 계약 작성 규칙
 
@@ -90,7 +90,7 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - 내부 비즈니스 로직 흐름
 - 연결된 DB 스키마
 - transaction 필요 여부와 rollback 범위
-- observability event key, audit log, redaction 기준
+- observability event key, request id, redaction 기준
 - 에러 응답
 - FE가 성공/실패를 처리하는 방식
 

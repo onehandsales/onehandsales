@@ -94,7 +94,7 @@ Backend API controller와 application orchestration 메소드 내부에는 처�
 
 - 단계 주석은 `// 1. ...`, `// 2. ...` 형식으로 쓴다.
 - Controller에서는 인증/권한 확인, request 처리, application 계층 호출, response 처리처럼 큰 흐름을 보여준다.
-- Application service/use case에서는 검증, 조회, 도메인 객체 생성, transaction, repository 저장, 외부 port 호출, 감사 로그 같은 흐름을 보여준다.
+- Application service/use case에서는 검증, 조회, 도메인 객체 생성, transaction, repository 저장, 외부 port 호출 같은 흐름을 보여준다.
 - 단순 getter, mapper, 순수 계산 함수에는 numbered step comment를 억지로 넣지 않는다.
 
 ## 6. Backend Logging
@@ -120,7 +120,6 @@ company.created
 contact.duplicateDetected
 deal.stageChanged
 meetingNote.generated
-admin.sensitiveRawView.requested
 ocr.callFailed
 ```
 
@@ -134,7 +133,6 @@ Sensitive data includes:
 - email
 - token
 - password
-- business card image URL when private
 
 ## 7. 금지
 

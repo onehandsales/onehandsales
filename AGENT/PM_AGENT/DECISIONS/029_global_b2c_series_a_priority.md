@@ -17,7 +17,6 @@ Status: Superseded by `030_global_b2c_closeout_and_paddle_defer.md` on 2026-08-1
 5. DB/Prisma/migration 운영 정합성 정리
 6. S0/S1/S2 버그 수정
 
-2026-08-11 기준 DataImport 영속화, Notification, Admin Operation foundation은 Global B2C 01~11 archive에서 완료됐다. 현재는 `030_global_b2c_closeout_and_paddle_defer.md`에 따라 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타를 먼저 진행하고 Paddle/Billing은 `TODO/PADDLE_PLAN`에 보류한다.
 
 ## Reason
 
@@ -43,7 +42,6 @@ Status: Superseded by `030_global_b2c_closeout_and_paddle_defer.md` on 2026-08-1
 - VAT/GST/판매세 또는 Merchant of Record
 - `/app` 내부 다국어
 - 국가별 전화번호/날짜/통화/문구
-- Admin 고객 지원/구독 상태/감사 로그
 - 제품 분석과 유료 전환 funnel
 
 ## Series A Implication
@@ -52,13 +50,11 @@ Series A급으로 가려면 기능 완성이 아니라 반복 매출과 리텐�
 
 추가로 필요한 축:
 
-- Notification/Reminder 기반 리텐션 루프
 - AI next action/follow-up/딜 리스크 추천
 - 주간 영업 리포트
 - 모바일 현장 사용성
 - 결제/paywall 실험
 - 제품 분석과 unit economics
-- Admin 운영과 보안/감사 신뢰 체계
 
 ## Related Documents
 

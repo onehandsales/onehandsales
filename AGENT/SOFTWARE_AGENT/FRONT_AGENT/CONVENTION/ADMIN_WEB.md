@@ -4,81 +4,53 @@
 
 ## 1. 기본 원칙
 
-- 관리자 웹은 운영 도구이므로 밀도 높은 정보, 빠른 탐색, 명확한 상태 표시를 우선한다.
+- Admin Web은 User Web과 별도 앱으로 유지한다.
 - 사용자 웹의 도메인 feature를 직접 재사용하지 않는다.
-- 관리자 API는 `/admin/api/*`만 호출한다.
-- 위험한 운영 작업은 확인 UI와 감사 로그 설계를 함께 고려한다.
+- 관리자 권한 확인은 서버를 신뢰 기준으로 한다.
+- 프론트의 라우트 가드는 UX 보조 장치일 뿐 보안 경계가 아니다.
+- 관리자 토큰, 권한, 역할 정보는 필요한 범위에서만 사용한다.
 
 ## 2. 파일과 폴더 이름
 
 - 폴더와 파일 이름은 `kebab-case`를 사용한다.
-- 관리자 도메인은 목적이 드러나는 이름을 사용한다. 예: `user-management`, `audit-log`, `subscription-management`.
-- 페이지 폴더는 라우트 이름과 맞춘다. 예: `pages/users`, `pages/audit-logs`.
-- 관리자 전용 API 파일은 `admin-` prefix를 사용할 수 있다. 예: `admin-user-api.ts`.
+- 관리자 확인 API client 파일은 `admin-` prefix를 사용할 수 있다. 예: `admin-api-client.ts`.
+- 페이지 폴더는 라우트 이름과 맞춘다. 예: `pages/login`, `pages/home`.
 
 ## 3. TypeScript 기준
 
 - `strict`를 켠다.
-- API 응답, 테이블 row, 필터 값, mutation payload 타입을 명시한다.
+- API 응답과 auth 상태 타입을 명시한다.
 - `any`는 금지한다.
-- 관리자 운영 액션 payload는 Zod 또는 명시 타입으로 검증한다.
 
-## 4. 데이터 호출과 서버 상태
+## 4. 데이터 호출
 
-- 서버 상태는 TanStack Query로 관리한다.
-- API 클라이언트는 `src/lib/admin-api-client.ts`를 통해서만 사용한다.
-- Query Key는 `['admin', ...]`으로 시작한다.
+- Admin Web의 API 호출은 `src/lib/admin-api-client.ts`를 통해서만 수행한다.
+- 현재 허용된 Backend 호출은 `GET /admin/api/me`뿐이다.
 - 사용자 웹의 `api-client.ts` 또는 feature API를 import하지 않는다.
-- 변경 작업 이후 관련 목록, 상세, 통계 Query Key를 명확히 invalidate한다.
 
-## 4.1. 시간과 Timezone 표시
+## 5. 시간과 Timezone 표시
 
 시간과 timezone 처리는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
 
-- Admin API의 `createdAt`, `updatedAt`, 감사 로그 시각, 민감정보 조회 시각은 UTC ISO string으로 본다.
-- Admin Web 화면에는 UTC string을 그대로 출력하지 않고 운영자/조직 timezone으로 변환해 표시한다.
-- Export나 감사 로그 상세에서 시간 기준이 중요하면 표시 timezone을 함께 드러낸다.
+- Backend에서 받은 `createdAt`, `updatedAt`은 UTC ISO string으로 본다.
+- 화면에는 UTC string을 그대로 출력하지 않고 필요한 표시 timezone으로 변환한다.
 - 날짜만 필요한 `YYYY-MM-DD` 값은 timezone 변환 없이 표시한다.
 
-## 5. 표와 대시보드
-
-- 대량 목록은 TanStack Table을 기준으로 한다.
-- 목록 화면은 검색, 필터, 정렬, 10개 단위 페이지네이션, 빈 상태, 오류 상태를 포함한다.
-- 차트가 필요한 경우에만 Recharts를 추가한다.
-- 차트는 숫자 확인이 가능한 보조 텍스트나 표를 함께 고려한다.
-
-## 6. 폼과 운영 액션
-
-- 폼은 React Hook Form을 기준으로 한다.
-- 검증은 Zod를 기준으로 한다.
-- 상태 변경, 권한 변경, 구독 변경, 데이터 삭제 같은 작업은 확인 모달을 사용한다.
-- 서버 에러는 운영자가 조치할 수 있는 메시지로 변환한다.
-
-## 7. 권한과 보안
-
-- 관리자 권한 확인은 서버를 신뢰 기준으로 한다.
-- 프론트의 라우트 가드는 UX 보조 장치일 뿐 보안 경계가 아니다.
-- 관리자 토큰, 권한, 역할 정보는 필요한 범위에서만 사용한다.
-- 로그나 화면에 secret 값을 출력하지 않는다.
-
-## 8. 스타일과 UI
+## 6. 스타일과 UI
 
 - Tailwind CSS를 기본 스타일링 도구로 사용한다.
 - 기본 UI 폰트는 Notion-like 다국어 스택을 기준으로 한다: `Inter`, `Pretendard Variable`, `Pretendard`, `ui-sans-serif`, `system-ui`, `-apple-system`, `BlinkMacSystemFont`, `Segoe UI`, `Apple SD Gothic Neo`, `Noto Sans KR`, `Noto Sans CJK KR`, `PingFang TC`, `PingFang SC`, `Microsoft JhengHei`, `Microsoft YaHei`, `Hiragino Sans`, `Hiragino Kaku Gothic ProN`, `Yu Gothic`, `Meiryo`, `Noto Sans TC`, `Noto Sans SC`, `Noto Sans JP`, `sans-serif`.
 - 이 폰트 기준은 현재 노출 언어인 한국어, 영어 US, 영어 Canada에 적용하고, 추후 확장 후보인 일본어, 영어 UK/Singapore/Australia에도 재사용한다.
 - 영어/라틴 문자는 `Inter`를 우선하고, 한국어는 `Pretendard` 계열 fallback, 일본어는 OS CJK 시스템 폰트 fallback을 사용한다.
-- 아이콘은 가능한 한 `lucide-react`를 사용한다.
-- 운영 화면은 데스크톱 뷰를 우선한다.
-- 카드 중심의 장식적 화면보다 표, 필터, 상세 패널 중심의 실무형 레이아웃을 우선한다.
 
-## 9. 금지 사항
+## 7. 금지 사항
 
 - 관리자 웹에서 사용자 앱 라우트나 사용자 feature 내부 구현을 직접 import하지 않는다.
-- `/api/*` 일반 사용자 API로 관리자 데이터를 처리하지 않는다.
-- 전역 상태에 서버 응답 전체를 복제하지 않는다.
-- 운영 액션 성공/실패를 토스트만으로 처리하고 목록 갱신을 누락하지 않는다.
+- `/api/*` 일반 사용자 API로 관리자 권한을 확인하지 않는다.
+- 로그나 화면에 secret 값을 출력하지 않는다.
+- 로컬 가짜 역할 값으로 Backend 권한 확인을 대체하지 않는다.
 
-## 10. 관련 문서
+## 8. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

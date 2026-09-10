@@ -32,7 +32,7 @@ TODO/{PLAN_NAME}/
 - request 또는 response 필드를 바꾼다.
 - success status 또는 response body 유무를 바꾼다.
 - error code, HTTP status, validation 정책을 바꾼다.
-- transaction, audit log, masking, ownership 정책이 바뀐다.
+- transaction, redaction, masking, ownership 정책이 바뀐다.
 - Frontend API client가 기대하는 path나 응답 형태가 바뀐다.
 
 API 계약이 없는 상태에서 FE 또는 BE 구현을 먼저 시작하지 않는다.
@@ -77,7 +77,7 @@ API 계약은 `API_SPEC.md`의 항목을 따르며, 추가로 아래 항목을 �
 - transaction 필요 여부
 - 변경 model
 - rollback 범위
-- audit log transaction 포함 여부
+- 부수 로그/이력 transaction 포함 여부
 - 외부 Provider 호출 위치
 
 ### Observability 계약
@@ -85,7 +85,7 @@ API 계약은 `API_SPEC.md`의 항목을 따르며, 추가로 아래 항목을 �
 `OBSERVABILITY.md` 기준으로 아래 항목을 적는다.
 
 - log event key
-- audit log 필요 여부
+- 구조화 로그 필요 여부
 - request id 사용 여부
 - redaction 대상
 - provider error context
@@ -121,7 +121,6 @@ Response는 성공 status와 body 유무를 먼저 적는다.
 - nullable 필드는 `null` 가능 여부를 표시한다.
 - 날짜는 ISO string 기준으로 적는다.
 - 목록 API는 pagination, filtering, sorting 계약을 포함한다.
-- Admin API는 masking된 필드와 원문 조회 API를 분리한다.
 
 ## 7. Error 계약
 
@@ -141,7 +140,6 @@ Error response는 domain/application error code와 HTTP status를 함께 적는�
 
 - validation error와 domain error를 구분한다.
 - 권한 없음과 소유권 없음은 client 응답에서 정보 노출을 피한다.
-- Admin 민감정보 원문 조회 실패는 reason 누락, 권한 없음, target 없음을 구분한다.
 
 ## 8. FE/BE 동기화 기준
 
@@ -161,7 +159,7 @@ API 계약을 변경하면 아래를 함께 확인한다.
 - 해당 goal이 참조하는 `COMMON/API-SPEC/*` 문서가 있다.
 - API 계약 상태가 최소 `confirmed`이다.
 - transaction 항목이 `필요`, `없음`, `보류` 중 하나로 표시되어 있다.
-- observability 항목이 mutation/Admin/민감정보/외부 Provider 범위에 맞게 작성되어 있다.
+- observability 항목이 mutation/민감정보/외부 Provider 범위에 맞게 작성되어 있다.
 - FE 영향 또는 BE-only 여부가 명시되어 있다.
 - DB schema 문서와 API request/response가 연결되어 있다.
 
@@ -172,9 +170,9 @@ API 계약이 없거나 draft 상태라면 먼저 계약 문서를 보완하는 
 - API 구현 후 문서를 나중에 맞춘다고 두지 않는다.
 - request/response 타입을 FE 코드에서만 추론하게 하지 않는다.
 - API path와 method만 있고 transaction, observability, error 계약이 없는 문서를 완료로 보지 않는다.
-- User API와 Admin API를 같은 계약 안에서 role 분기로 처리하지 않는다.
+- User API와 관리자 확인 API를 같은 계약 안에서 role 분기로 처리하지 않는다.
 - breaking change를 기존 FE 영향 없이 처리된 것처럼 표시하지 않는다.
-- 민감정보 원문 응답을 일반 상세 API response에 섞지 않는다.
+- 민감정보를 일반 상세 API response에 불필요하게 섞지 않는다.
 
 ## 11. Review Checklist
 
