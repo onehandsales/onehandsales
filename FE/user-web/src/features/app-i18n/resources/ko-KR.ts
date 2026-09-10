@@ -32,7 +32,6 @@ export const koKRResource = {
   entities: {
     company: "회사",
     settings: "설정",
-    trash: "휴지통",
   },
   navigation: {
     appName: "기타",
@@ -45,7 +44,6 @@ export const koKRResource = {
     mainGroupOpen: "주요 메뉴 열기",
     more: "더보기",
     settings: "설정",
-    trash: "휴지통",
   },
   shell: {
     accountMenuTooltip: "계정 메뉴 열기",
@@ -90,12 +88,12 @@ export const koKRResource = {
     errorSubmitAction: "보내기",
     errorSubmitting: "신고 중",
     errorTitle: "에러신고",
-    guideDescription: "회사 기록, 검색, 휴지통 복원을 한 작업 공간에서 확인하세요.",
-    guideRecordDescription: "회사에 분야와 지역 정보를 추가하고 상세 화면에서 메모 기록을 확인하세요.",
+    guideDescription: "회사 기록과 검색을 한 작업 공간에서 확인하세요.",
+    guideRecordDescription: "회사에 분야와 지역 정보를 추가하고 상세 화면에서 기본 정보를 관리하세요.",
     guideRecordTitle: "회사 기록",
     guideTitle: "사용 가이드",
-    guideWorkDescription: "통합 검색으로 회사를 찾고 휴지통에서 삭제된 회사 또는 회사 메모를 복원하세요.",
-    guideWorkTitle: "검색과 휴지통",
+    guideWorkDescription: "통합 검색으로 등록된 회사를 빠르게 찾으세요.",
+    guideWorkTitle: "통합 검색",
     supportAction: "이메일로 지원 요청",
     supportBodyDescription:
       "문제가 발생한 화면, 기대한 동작, 실제 결과를 함께 적어주면 확인이 빨라요.",
@@ -136,7 +134,7 @@ export const koKRResource = {
     recentScope: "최근 목록 기준",
     quickActions: "빠른 실행",
     companyCreate: "회사 생성",
-    companyCreateDescription: "회사와 메모를 정리합니다.",
+    companyCreateDescription: "회사 기본 정보를 정리합니다.",
     countItems: "{count}개",
   },
   more: {

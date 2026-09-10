@@ -135,11 +135,6 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
             answer:
               "기존 데이터를 엑셀로 가져오고, 필요한 업무 기록을 XLSX 형태로 내보내는 흐름을 제공해요.",
           },
-          {
-            question: "삭제한 데이터는 복구할 수 있나요?",
-            answer:
-              "휴지통 복구 흐름을 통해 실수로 삭제한 기록을 다시 확인하고 복구할 수 있게 설계해요.",
-          },
         ],
       },
       {
@@ -231,11 +226,6 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
             question: "Can I download Excel data?",
             answer:
               "OneHand supports downloading work records as XLSX.",
-          },
-          {
-            question: "Can I recover deleted data?",
-            answer:
-              "Trash restore is designed so accidentally deleted records can be reviewed and recovered.",
           },
         ],
       },

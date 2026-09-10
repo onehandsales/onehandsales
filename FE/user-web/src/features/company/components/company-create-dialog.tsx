@@ -7,7 +7,7 @@ import {
   Loader2,
   Maximize2,
 } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { ManagedTaxonomyDropdown } from "@/components/ui/managed-taxonomy-dropdown";
 import { ErrorState } from "@/components/ui/state";
@@ -92,12 +92,9 @@ export function CompanyCreateDialog({
   });
   const formId = "company-create-form";
   const [pendingFieldName, setPendingFieldName] = useState("");
-  const memoTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const selectedFieldId = watch("companyFieldId");
   const selectedRegionId = watch("companyRegionId");
   const selectedCountryCode = watch("countryCode") ?? "KR";
-  const companyMemo = watch("companyMemo") ?? "";
-  const memoRegister = register("companyMemo");
 
   useEffect(() => {
     if (open) {
@@ -110,7 +107,6 @@ export function CompanyCreateDialog({
         countryCode: initialValues?.countryCode ?? "KR",
         regionCode: initialValues?.regionCode ?? "",
         address: initialValues?.address ?? "",
-        companyMemo: initialValues?.companyMemo ?? "",
       });
       setPendingFieldName("");
     }
@@ -133,10 +129,6 @@ export function CompanyCreateDialog({
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [createCompanyMutation.isPending, onOpenChange, open]);
-
-  useEffect(() => {
-    resizeMemoTextarea(memoTextareaRef.current);
-  }, [open, initialValues]);
 
   useEffect(() => {
     if (!pendingFieldName) {
@@ -194,10 +186,6 @@ export function CompanyCreateDialog({
     }
 
     setPendingFieldName(name);
-  };
-
-  const focusMemoTextarea = () => {
-    memoTextareaRef.current?.focus();
   };
 
   const deleteField = async (field: CompanyField) => {
@@ -336,25 +324,13 @@ export function CompanyCreateDialog({
         id={formId}
         onSubmit={(event) => void onSubmit(event)}
       >
-        <div
-          className="min-h-0 flex-1 cursor-text overflow-y-auto px-5 py-6"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              focusMemoTextarea();
-            }
-          }}
-        >
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6">
           <div
             className={
               isPage
-                ? "mx-auto grid min-h-full w-full max-w-[920px] cursor-text content-start gap-4"
-                : "grid min-h-full cursor-text content-start gap-4"
+                ? "mx-auto grid min-h-full w-full max-w-[920px] content-start gap-4"
+                : "grid min-h-full content-start gap-4"
             }
-            onClick={(event) => {
-              if (event.target === event.currentTarget) {
-                focusMemoTextarea();
-              }
-            }}
           >
             <section className="grid cursor-auto gap-2">
               <label
@@ -449,37 +425,6 @@ export function CompanyCreateDialog({
               />
             </CompanyCreatePanelProperty>
 
-            <section className="grid cursor-auto gap-2">
-              <label
-                className="text-[16px] font-semibold text-[#94A3B8]"
-                htmlFor="company-memo"
-              >
-                메모
-              </label>
-              <div className="relative min-h-8">
-                <textarea
-                  aria-label="메모"
-                  className="min-h-0 w-full resize-none overflow-hidden border-0 bg-white px-0 py-1 text-[14px] leading-6 text-[#111827] outline-none"
-                  id="company-memo"
-                  {...memoRegister}
-                  onChange={(event) => {
-                    memoRegister.onChange(event);
-                    resizeMemoTextarea(event.currentTarget);
-                  }}
-                  ref={(element) => {
-                    memoRegister.ref(element);
-                    memoTextareaRef.current = element;
-                  }}
-                  rows={1}
-                />
-                {companyMemo.trim().length === 0 ? (
-                  <span className="pointer-events-none absolute left-0 top-1 text-[14px] font-semibold leading-6 text-[#CBD5E1]">
-                    번뜩이는 생각들을 기록하세요!
-                  </span>
-                ) : null}
-              </div>
-            </section>
-
             {createCompanyMutation.error ? (
               <ErrorState
                 message={getApiErrorMessage(createCompanyMutation.error)}
@@ -533,15 +478,6 @@ export function CompanyCreateDialog({
       {panel}
     </div>
   );
-}
-
-function resizeMemoTextarea(element: HTMLTextAreaElement | null) {
-  if (!element) {
-    return;
-  }
-
-  element.style.height = "auto";
-  element.style.height = `${element.scrollHeight}px`;
 }
 
 type CompanyCreatePanelPropertyProps = {

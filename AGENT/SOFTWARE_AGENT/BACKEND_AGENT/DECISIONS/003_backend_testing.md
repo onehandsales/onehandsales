@@ -10,7 +10,7 @@ Backend 테스트는 `BE` 내부에서 관리한다.
 - user ownership isolation
 - AdminGuard
 - request validation과 DTO whitelist
-- trash retention과 restore
+- company search/export ownership
 - deal stage/activity logging
 
 ## 2. 이유

@@ -2,27 +2,18 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CompanyListSort } from "@/modules/company/application/ports/company-query.types";
 import {
-  type CompanyMemoLogRecord,
   COMPANY_REPOSITORY,
   type CompanyListRecord,
-  type CompanyPrivateMemoLogRecord,
   type CompanyRecord,
   type CompanyRepository,
-  type MemoLogCursor,
   type UpdateCompanyInput,
 } from "@/modules/company/application/ports/company.repository";
 import { normalizeCompanyRegionCodeInput } from "@/modules/company/application/services/company-region-code";
 import {
-  PRIVATE_MEMO_ENCRYPTION_PORT,
-  type PrivateMemoEncryptionPort,
-} from "@/modules/company/application/ports/private-memo-encryption.port";
-import {
   CompanyExportFailedError,
   CompanyFieldInUseError,
   CompanyFieldNotFoundError,
-  CompanyMemoLogNotFoundError,
   CompanyNotFoundError,
-  CompanyPrivateMemoLogNotFoundError,
   CompanyRegionInUseError,
   CompanyRegionNotFoundError,
   DuplicateCompanyFieldError,
@@ -46,13 +37,10 @@ import {
   type XlsxRow,
   type XlsxWorkbookWriter,
 } from "@/shared/application/ports/xlsx-workbook.writer";
-import { createTrashRetentionTimestamps } from "@/shared/application/trash/trash-retention";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const COMPANY_PAGE_SIZE = 15;
-const MEMO_LOG_PAGE_SIZE = 10;
-const INITIAL_COMPANY_MEMO_TYPE = "초기 메모";
 
 const COMPANY_EXPORT_SHEET_NAMES: Readonly<
   Record<XlsxSupportedLocale, string>
@@ -102,7 +90,6 @@ export interface CreateCompanyInput {
   readonly companyFieldId: string;
   readonly companyRegionId: string;
   readonly address?: string | null;
-  readonly companyMemo?: string | null;
 }
 
 // 역할 : UpdateCompanyCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -111,11 +98,6 @@ export interface UpdateCompanyCommand {
   readonly companyFieldId?: string;
   readonly companyRegionId?: string;
   readonly address?: string | null;
-}
-
-// 역할 : CursorQueryInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CursorQueryInput {
-  readonly cursor?: string;
 }
 
 // 역할 : CompanyPageResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -182,38 +164,13 @@ export interface CompanyRegionListResponse {
   }>;
 }
 
-// 역할 : CompanyMemoLogConnectionResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CompanyMemoLogConnectionResponse {
-  readonly items: Array<{
-    readonly id: string;
-    readonly memoType: string;
-    readonly memo: string;
-    readonly createdAt: string;
-  }>;
-  readonly nextCursor: string | null;
-  readonly hasNext: boolean;
-}
-
-// 역할 : CompanyPrivateMemoLogConnectionResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CompanyPrivateMemoLogConnectionResponse {
-  readonly items: Array<{
-    readonly id: string;
-    readonly memo: string;
-    readonly createdAt: string;
-  }>;
-  readonly nextCursor: string | null;
-  readonly hasNext: boolean;
-}
-
 // 역할 : CompanyApplicationService 공통 기능 또는 application 서비스를 제공합니다.
 @Injectable()
 export class CompanyApplicationService {
-  // 기능 : 회사 저장소와 개인 비밀 메모 암호화 포트를 주입받습니다.
+  // 기능 : 회사 저장소와 xlsx writer를 주입받습니다.
   constructor(
     @Inject(COMPANY_REPOSITORY)
     private readonly companyRepository: CompanyRepository,
-    @Inject(PRIVATE_MEMO_ENCRYPTION_PORT)
-    private readonly privateMemoEncryption: PrivateMemoEncryptionPort,
     @Inject(XLSX_WORKBOOK_WRITER)
     private readonly xlsxWriter: XlsxWorkbookWriter,
     private readonly logger: AppLogger
@@ -365,20 +322,19 @@ export class CompanyApplicationService {
     return this.toCompanyDetail(company);
   }
 
-  // 기능 : 회사를 생성하고 선택 메모가 있으면 같은 트랜잭션에서 첫 메모 로그를 생성합니다.
+  // 기능 : 현재 사용자의 회사를 생성합니다.
   async createCompany(
     currentUser: CurrentUserContext,
     input: CreateCompanyInput
   ): Promise<void> {
-    // 1. 회사명과 초기 메모 입력값을 저장 가능한 형태로 정규화한다.
+    // 1. 회사명과 주소를 저장 가능한 형태로 정규화한다.
     const companyName = this.normalizeRequiredText(
       input.companyName,
       "companyName is required"
     );
     const address = this.normalizeOptionalText(input.address) ?? null;
-    const companyMemo = this.normalizeOptionalText(input.companyMemo);
 
-    // 2. 회사 생성과 초기 메모 생성을 같은 transaction 안에서 실행한다.
+    // 2. 소유권 검증과 회사 생성을 같은 transaction 안에서 실행한다.
     await this.companyRepository.runInTransaction(async (repository) => {
       // 3. 회사 분야와 회사 지역이 현재 사용자 소유인지 검증한다.
       await this.assertFieldExists(
@@ -393,23 +349,13 @@ export class CompanyApplicationService {
       );
 
       // 4. 회사 본문 데이터를 생성한다.
-      const company = await repository.createCompany({
+      await repository.createCompany({
         userId: currentUser.id,
         companyName,
         companyFieldId: input.companyFieldId,
         companyRegionId: input.companyRegionId,
         address,
       });
-
-      // 5. 초기 메모가 있으면 일반 메모 로그 첫 데이터로 저장한다.
-      if (companyMemo) {
-        await repository.createMemoLog({
-          companyId: company.id,
-          userId: currentUser.id,
-          memoType: INITIAL_COMPANY_MEMO_TYPE,
-          memo: companyMemo,
-        });
-      }
     });
   }
 
@@ -450,35 +396,6 @@ export class CompanyApplicationService {
     if (!updated) {
       throw new CompanyNotFoundError();
     }
-  }
-
-  // 기능 : 현재 사용자의 회사를 휴지통 상태로 전환합니다.
-  async deleteCompany(
-    currentUser: CurrentUserContext,
-    companyId: string
-  ): Promise<void> {
-    // 1. 삭제 대상 회사가 현재 사용자 소유의 활성 회사인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 휴지통 보관 정책에 맞는 삭제 시각과 만료 시각을 계산한다.
-    const timestamps = createTrashRetentionTimestamps();
-
-    // 3. 회사 자체만 휴지통 상태로 전환하고 회사 메모는 별도 복원 단위로 유지한다.
-    const deleted = await this.companyRepository.deleteCompany({
-      userId: currentUser.id,
-      companyId,
-      deletedAt: timestamps.deletedAt,
-      deletedByUserId: currentUser.id,
-      trashExpiresAt: timestamps.trashExpiresAt,
-    });
-
-    // 4. 삭제 결과가 없으면 회사 없음 오류로 중단한다.
-    if (!deleted) {
-      throw new CompanyNotFoundError();
-    }
-
-    // 5. 민감한 입력값 없이 회사 삭제 이벤트를 기록한다.
-    this.logEvent("company.deleted", { userId: currentUser.id, companyId });
   }
 
   // 기능 : 현재 사용자의 회사 분야를 생성합니다.
@@ -581,205 +498,6 @@ export class CompanyApplicationService {
 
     // 3. 사용 중이 아닌 지역을 삭제한다.
     await this.companyRepository.deleteRegion(currentUser.id, regionId);
-  }
-
-  // 기능 : 현재 사용자의 회사에 일반 메모 로그를 생성합니다.
-  async createMemoLog(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    input: { readonly memoType: string; readonly memo: string }
-  ): Promise<void> {
-    // 1. 메모 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 메모 유형과 본문을 정규화해 일반 메모 로그로 저장한다.
-    await this.companyRepository.createMemoLog({
-      companyId,
-      userId: currentUser.id,
-      memoType: this.normalizeRequiredText(input.memoType, "memoType is required"),
-      memo: this.normalizeRequiredText(input.memo, "memo is required"),
-    });
-  }
-
-  // 기능 : 현재 사용자의 회사 일반 메모 로그를 10개 단위 cursor 방식으로 조회합니다.
-  async listMemoLogs(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    query: CursorQueryInput
-  ): Promise<CompanyMemoLogConnectionResponse> {
-    // 1. 조회 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. cursor 조건으로 일반 메모 로그를 페이지 크기보다 1개 더 조회한다.
-    const records = await this.companyRepository.listMemoLogs({
-      companyId,
-      cursor: this.parseCursor(query.cursor),
-      take: MEMO_LOG_PAGE_SIZE + 1,
-    });
-
-    // 3. 조회 결과를 cursor connection 응답으로 변환한다.
-    return this.toMemoLogConnection(records);
-  }
-
-  // 기능 : 현재 사용자의 회사 일반 메모 로그 유형과 본문을 수정합니다.
-  async updateMemoLog(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    memoLogId: string,
-    input: { readonly memoType: string; readonly memo: string }
-  ): Promise<void> {
-    // 1. 메모 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 일반 메모 로그 유형과 본문을 정규화해 수정한다.
-    const updated = await this.companyRepository.updateMemoLog({
-      userId: currentUser.id,
-      companyId,
-      memoLogId,
-      memoType: this.normalizeRequiredText(input.memoType, "memoType is required"),
-      memo: this.normalizeRequiredText(input.memo, "memo is required"),
-    });
-
-    // 3. 수정 대상 메모 로그가 없으면 오류로 중단한다.
-    if (!updated) {
-      throw new CompanyMemoLogNotFoundError();
-    }
-  }
-
-  // 기능 : 현재 사용자의 회사 일반 메모 로그를 휴지통 상태로 전환합니다.
-  async deleteMemoLog(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    memoLogId: string
-  ): Promise<void> {
-    // 1. 메모 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 일반 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
-    const timestamps = createTrashRetentionTimestamps();
-    const deleted = await this.companyRepository.deleteMemoLog({
-      userId: currentUser.id,
-      companyId,
-      memoLogId,
-      deletedByUserId: currentUser.id,
-      ...timestamps,
-    });
-
-    // 3. 삭제 대상 메모 로그가 없으면 오류로 중단한다.
-    if (!deleted) {
-      throw new CompanyMemoLogNotFoundError();
-    }
-
-    this.logEvent("companyMemoLog.deleted", {
-      userId: currentUser.id,
-      companyId,
-      memoLogId,
-    });
-  }
-
-  // 기능 : 현재 사용자의 회사에 암호화된 개인 비밀 메모 로그를 생성합니다.
-  async createPrivateMemoLog(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    memo: string
-  ): Promise<void> {
-    // 1. 비밀 메모 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 비밀 메모 본문을 정규화한 뒤 암호화한다.
-    const encrypted = this.privateMemoEncryption.encrypt(
-      this.normalizeRequiredText(memo, "memo is required")
-    );
-
-    // 3. 암호문과 key version만 저장소에 저장한다.
-    await this.companyRepository.createPrivateMemoLog({
-      companyId,
-      userId: currentUser.id,
-      memoCiphertext: encrypted.ciphertext,
-      memoKeyVersion: encrypted.keyVersion,
-    });
-  }
-
-  // 기능 : 현재 사용자가 작성한 회사 개인 비밀 메모 로그만 복호화해 조회합니다.
-  async listPrivateMemoLogs(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    query: CursorQueryInput
-  ): Promise<CompanyPrivateMemoLogConnectionResponse> {
-    // 1. 조회 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 현재 사용자가 작성한 비밀 메모 로그를 cursor 조건으로 조회한다.
-    const records = await this.companyRepository.listPrivateMemoLogs({
-      userId: currentUser.id,
-      companyId,
-      cursor: this.parseCursor(query.cursor),
-      take: MEMO_LOG_PAGE_SIZE + 1,
-    });
-
-    // 3. 암호화된 메모 목록을 복호화된 cursor connection 응답으로 변환한다.
-    return this.toPrivateMemoLogConnection(records);
-  }
-
-  // 기능 : 현재 사용자의 회사 개인 비밀 메모 로그 본문만 다시 암호화해 수정합니다.
-  async updatePrivateMemoLog(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    privateMemoLogId: string,
-    memo: string
-  ): Promise<void> {
-    // 1. 비밀 메모 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 새 비밀 메모 본문을 정규화한 뒤 암호화한다.
-    const encrypted = this.privateMemoEncryption.encrypt(
-      this.normalizeRequiredText(memo, "memo is required")
-    );
-
-    // 3. 작성자와 회사 소유권 조건으로 비밀 메모 로그를 수정한다.
-    const updated = await this.companyRepository.updatePrivateMemoLog({
-      userId: currentUser.id,
-      companyId,
-      privateMemoLogId,
-      memoCiphertext: encrypted.ciphertext,
-      memoKeyVersion: encrypted.keyVersion,
-    });
-
-    // 4. 수정 대상 비밀 메모 로그가 없으면 오류로 중단한다.
-    if (!updated) {
-      throw new CompanyPrivateMemoLogNotFoundError();
-    }
-  }
-
-  // 기능 : 현재 사용자의 회사 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
-  async deletePrivateMemoLog(
-    currentUser: CurrentUserContext,
-    companyId: string,
-    privateMemoLogId: string
-  ): Promise<void> {
-    // 1. 비밀 메모 대상 회사가 현재 사용자 소유인지 검증한다.
-    await this.assertCompanyExists(currentUser.id, companyId);
-
-    // 2. 비밀 메모 로그를 휴지통 보관 정책에 맞춰 삭제 상태로 전환한다.
-    const timestamps = createTrashRetentionTimestamps();
-    const deleted = await this.companyRepository.deletePrivateMemoLog({
-      userId: currentUser.id,
-      companyId,
-      privateMemoLogId,
-      deletedByUserId: currentUser.id,
-      ...timestamps,
-    });
-
-    // 3. 삭제 대상 비밀 메모 로그가 없으면 오류로 중단한다.
-    if (!deleted) {
-      throw new CompanyPrivateMemoLogNotFoundError();
-    }
-
-    this.logEvent("companyPrivateMemoLog.deleted", {
-      userId: currentUser.id,
-      companyId,
-      privateMemoLogId,
-    });
   }
 
   // 기능 : 회사 분야들이 현재 사용자의 소유인지 확인합니다.
@@ -898,59 +616,6 @@ export class CompanyApplicationService {
     };
   }
 
-  // 기능 : 서버가 발급한 cursor 문자열을 조회 조건으로 복원합니다.
-  private parseCursor(cursor: string | undefined): MemoLogCursor | null {
-    if (!cursor) {
-      return null;
-    }
-
-    try {
-      const raw = JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"));
-
-      if (!this.isCursorPayload(raw)) {
-        throw new Error("Invalid cursor payload");
-      }
-
-      const createdAt = new Date(raw.createdAt);
-
-      if (Number.isNaN(createdAt.getTime())) {
-        throw new Error("Invalid cursor date");
-      }
-
-      return {
-        createdAt,
-        id: raw.id,
-      };
-    } catch {
-      throw new ValidationDomainError("Cursor is invalid");
-    }
-  }
-
-  // 기능 : cursor payload가 필요한 필드를 가진 객체인지 확인합니다.
-  private isCursorPayload(
-    value: unknown
-  ): value is { readonly createdAt: string; readonly id: string } {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "createdAt" in value &&
-      "id" in value &&
-      typeof value.createdAt === "string" &&
-      typeof value.id === "string"
-    );
-  }
-
-  // 기능 : 응답용 다음 페이지 cursor 문자열을 생성합니다.
-  private createCursor(record: { readonly createdAt: Date; readonly id: string }): string {
-    return Buffer.from(
-      JSON.stringify({
-        createdAt: record.createdAt.toISOString(),
-        id: record.id,
-      }),
-      "utf8"
-    ).toString("base64url");
-  }
-
   // 기능 : 회사 레코드를 목록 응답 항목으로 변환합니다.
   private toCompanyListItem(company: CompanyListRecord): CompanyListItemResponse {
     return {
@@ -1031,48 +696,6 @@ export class CompanyApplicationService {
       address: company.address ?? "",
       createdAt: formatXlsxDateTime(company.createdAt, localization),
     }));
-  }
-
-  // 기능 : 일반 메모 로그 목록을 cursor connection 응답으로 변환합니다.
-  private toMemoLogConnection(
-    records: CompanyMemoLogRecord[]
-  ): CompanyMemoLogConnectionResponse {
-    const items = records.slice(0, MEMO_LOG_PAGE_SIZE);
-    const hasNext = records.length > MEMO_LOG_PAGE_SIZE;
-    const lastItem = items[items.length - 1] ?? null;
-
-    return {
-      items: items.map((record) => ({
-        id: record.id,
-        memoType: record.memoType,
-        memo: record.memo,
-        createdAt: record.createdAt.toISOString(),
-      })),
-      nextCursor: hasNext && lastItem ? this.createCursor(lastItem) : null,
-      hasNext,
-    };
-  }
-
-  // 기능 : 개인 비밀 메모 로그 목록을 복호화된 cursor connection 응답으로 변환합니다.
-  private toPrivateMemoLogConnection(
-    records: CompanyPrivateMemoLogRecord[]
-  ): CompanyPrivateMemoLogConnectionResponse {
-    const items = records.slice(0, MEMO_LOG_PAGE_SIZE);
-    const hasNext = records.length > MEMO_LOG_PAGE_SIZE;
-    const lastItem = items[items.length - 1] ?? null;
-
-    return {
-      items: items.map((record) => ({
-        id: record.id,
-        memo: this.privateMemoEncryption.decrypt(
-          record.memoCiphertext,
-          record.memoKeyVersion
-        ),
-        createdAt: record.createdAt.toISOString(),
-      })),
-      nextCursor: hasNext && lastItem ? this.createCursor(lastItem) : null,
-      hasNext,
-    };
   }
 
   private logEvent(event: string, fields: Record<string, unknown>): void {

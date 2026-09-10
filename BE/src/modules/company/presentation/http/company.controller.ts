@@ -23,15 +23,10 @@ import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import {
   CreateCompanyDto,
   CreateCompanyFieldDto,
-  CreateCompanyMemoLogDto,
-  CreateCompanyPrivateMemoLogDto,
   CreateCompanyRegionDto,
-  CursorQueryDto,
   ExportCompaniesQueryDto,
   ListCompaniesQueryDto,
   UpdateCompanyDto,
-  UpdateCompanyMemoLogDto,
-  UpdateCompanyPrivateMemoLogDto,
 } from "./dto/company-request.dto";
 
 // 역할 : CompanyController HTTP API 요청을 받아 application 계층으로 위임합니다.
@@ -107,146 +102,6 @@ export class CompanyController {
     );
   }
 
-  // API : 회사, 회사 삭제
-  @Delete(":companyId")
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteCompany(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string
-  ): Promise<void> {
-    // 1. path param의 회사 ID와 현재 사용자를 application 계층으로 전달한다.
-    await this.companyApplicationService.deleteCompany(currentUser, companyId);
-  }
-
-  // API : 회사 메모, 일반 메모 로그 생성
-  @Post(":companyId/memo-logs")
-  @HttpCode(HttpStatus.CREATED)
-  async createMemoLog(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Body() body: CreateCompanyMemoLogDto
-  ): Promise<void> {
-    // 1. 회사 ID와 메모 생성 요청을 application 계층으로 전달한다.
-    await this.companyApplicationService.createMemoLog(
-      currentUser,
-      companyId,
-      body
-    );
-  }
-
-  // API : 회사 메모, 일반 메모 로그 목록 조회
-  @Get(":companyId/memo-logs")
-  listMemoLogs(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Query() query: CursorQueryDto
-  ) {
-    // 1. 회사 ID와 cursor 조건을 application 계층으로 전달한다.
-    return this.companyApplicationService.listMemoLogs(
-      currentUser,
-      companyId,
-      query
-    );
-  }
-
-  // API : 회사 메모, 일반 메모 로그 수정
-  @Patch(":companyId/memo-logs/:memoLogId")
-  @HttpCode(HttpStatus.CREATED)
-  async updateMemoLog(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Param("memoLogId", ParseUUIDPipe) memoLogId: string,
-    @Body() body: UpdateCompanyMemoLogDto
-  ): Promise<void> {
-    // 1. 회사 ID, 메모 로그 ID, 수정 본문을 application 계층으로 전달한다.
-    await this.companyApplicationService.updateMemoLog(
-      currentUser,
-      companyId,
-      memoLogId,
-      body
-    );
-  }
-
-  // API : 회사 메모, 일반 메모 로그 삭제
-  @Delete(":companyId/memo-logs/:memoLogId")
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteMemoLog(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Param("memoLogId", ParseUUIDPipe) memoLogId: string
-  ): Promise<void> {
-    // 1. 회사 ID, 메모 로그 ID를 application 계층으로 전달한다.
-    await this.companyApplicationService.deleteMemoLog(
-      currentUser,
-      companyId,
-      memoLogId
-    );
-  }
-
-  // API : 회사 비밀 메모, 개인 비밀 메모 로그 생성
-  @Post(":companyId/private-memo-logs")
-  @HttpCode(HttpStatus.CREATED)
-  async createPrivateMemoLog(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Body() body: CreateCompanyPrivateMemoLogDto
-  ): Promise<void> {
-    // 1. 회사 ID와 비밀 메모 본문을 application 계층으로 전달한다.
-    await this.companyApplicationService.createPrivateMemoLog(
-      currentUser,
-      companyId,
-      body.memo
-    );
-  }
-
-  // API : 회사 비밀 메모, 개인 비밀 메모 로그 목록 조회
-  @Get(":companyId/private-memo-logs")
-  listPrivateMemoLogs(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Query() query: CursorQueryDto
-  ) {
-    // 1. 회사 ID와 cursor 조건을 application 계층으로 전달한다.
-    return this.companyApplicationService.listPrivateMemoLogs(
-      currentUser,
-      companyId,
-      query
-    );
-  }
-
-  // API : 회사 비밀 메모, 개인 비밀 메모 로그 수정
-  @Patch(":companyId/private-memo-logs/:privateMemoLogId")
-  @HttpCode(HttpStatus.CREATED)
-  async updatePrivateMemoLog(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Param("privateMemoLogId", ParseUUIDPipe) privateMemoLogId: string,
-    @Body() body: UpdateCompanyPrivateMemoLogDto
-  ): Promise<void> {
-    // 1. 회사 ID, 비밀 메모 로그 ID, 수정 본문을 application 계층으로 전달한다.
-    await this.companyApplicationService.updatePrivateMemoLog(
-      currentUser,
-      companyId,
-      privateMemoLogId,
-      body.memo
-    );
-  }
-
-  // API : 회사 비밀 메모, 개인 비밀 메모 로그 삭제
-  @Delete(":companyId/private-memo-logs/:privateMemoLogId")
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deletePrivateMemoLog(
-    @CurrentUser() currentUser: CurrentUserContext,
-    @Param("companyId", ParseUUIDPipe) companyId: string,
-    @Param("privateMemoLogId", ParseUUIDPipe) privateMemoLogId: string
-  ): Promise<void> {
-    // 1. 회사 ID, 비밀 메모 로그 ID를 application 계층으로 전달한다.
-    await this.companyApplicationService.deletePrivateMemoLog(
-      currentUser,
-      companyId,
-      privateMemoLogId
-    );
-  }
 }
 
 // 역할 : CompanyFieldController HTTP API 요청을 받아 application 계층으로 위임합니다.

@@ -11,9 +11,8 @@ Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management, login locale/region metadata sync.
 - `user`: current user profile, timezone/locale metadata, and registered device lookup.
-- `company`: user-owned company, company field/region, memo/private memo logs, soft delete, trash restore, xlsx export.
+- `company`: user-owned company, company field/region options, create/read/update, and xlsx export.
 - `search`: integrated search over company data.
-- `trash`: 7-day trash list/detail/restore for company, company memo log, and company private memo log rows.
 - `error-report`: User Web error report intake and optional screenshot storage.
 - `support-request`: authenticated support request intake.
 - `public-contact-request`: unauthenticated public contact request intake.

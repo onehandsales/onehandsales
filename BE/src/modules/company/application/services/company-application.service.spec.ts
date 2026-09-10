@@ -2,25 +2,16 @@ import { Buffer } from "node:buffer";
 import {
   type CompanyFieldRecord,
   type CompanyListRecord,
-  type CompanyMemoLogRecord,
   type CompanyPageRecord,
-  type CompanyPrivateMemoLogRecord,
   type CompanyRecord,
   type CompanyRegionRecord,
   type CompanyRepository,
   type CreateCompanyInput,
-  type CreateCompanyMemoLogInput,
-  type CreateCompanyPrivateMemoLogInput,
   type CreateCompanyRegionInput,
-  type DeleteCompanyMemoLogInput,
-  type DeleteCompanyInput,
-  type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompaniesInput,
-  type MemoLogCursor,
   type UpdateCompanyInput,
 } from "@/modules/company/application/ports/company.repository";
-import type { PrivateMemoEncryptionPort } from "@/modules/company/application/ports/private-memo-encryption.port";
 import { CompanyFieldNotFoundError } from "@/modules/company/domain/company.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { XlsxWorkbookWriter } from "@/shared/application/ports/xlsx-workbook.writer";
@@ -143,12 +134,6 @@ class FakeCompanyRepository implements CompanyRepository {
     return true;
   }
 
-  // 기능 : fake 회사 삭제를 처리합니다.
-  async deleteCompany(_input: DeleteCompanyInput): Promise<boolean> {
-    void _input;
-    return true;
-  }
-
   // 기능 : fake 회사 분야 목록을 반환합니다.
   async listFields(_userId: string): Promise<CompanyFieldRecord[]> {
     void _userId;
@@ -249,76 +234,6 @@ class FakeCompanyRepository implements CompanyRepository {
     void _regionId;
   }
 
-  // 기능 : fake 회사 메모 로그를 생성합니다.
-  async createMemoLog(_input: CreateCompanyMemoLogInput): Promise<void> {
-    void _input;
-  }
-
-  // 기능 : fake 회사 메모 로그 목록을 반환합니다.
-  async listMemoLogs(_input: {
-    readonly companyId: string;
-    readonly cursor: MemoLogCursor | null;
-    readonly take: number;
-  }): Promise<CompanyMemoLogRecord[]> {
-    void _input;
-    return [];
-  }
-
-  // 기능 : fake 회사 메모 로그를 수정합니다.
-  async updateMemoLog(_input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly memoLogId: string;
-    readonly memoType: string;
-    readonly memo: string;
-  }): Promise<boolean> {
-    void _input;
-    return true;
-  }
-
-  // 기능 : fake 회사 메모 로그 삭제를 처리합니다.
-  async deleteMemoLog(_input: DeleteCompanyMemoLogInput): Promise<boolean> {
-    void _input;
-    return true;
-  }
-
-  // 기능 : fake 회사 개인 비밀 메모 로그를 생성합니다.
-  async createPrivateMemoLog(
-    _input: CreateCompanyPrivateMemoLogInput
-  ): Promise<void> {
-    void _input;
-  }
-
-  // 기능 : fake 회사 개인 비밀 메모 로그 목록을 반환합니다.
-  async listPrivateMemoLogs(_input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly cursor: MemoLogCursor | null;
-    readonly take: number;
-  }): Promise<CompanyPrivateMemoLogRecord[]> {
-    void _input;
-    return [];
-  }
-
-  // 기능 : fake 회사 개인 비밀 메모 로그를 수정합니다.
-  async updatePrivateMemoLog(_input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly privateMemoLogId: string;
-    readonly memoCiphertext: string;
-    readonly memoKeyVersion: string;
-  }): Promise<boolean> {
-    void _input;
-    return true;
-  }
-
-  // 기능 : fake 회사 개인 비밀 메모 로그 삭제를 처리합니다.
-  async deletePrivateMemoLog(
-    _input: DeleteCompanyPrivateMemoLogInput
-  ): Promise<boolean> {
-    void _input;
-    return true;
-  }
 }
 
 // 역할 : SilentLogger 테스트 중 로그 출력을 막는 logger입니다.
@@ -330,18 +245,6 @@ class SilentLogger extends AppLogger {
   }
 }
 
-const privateMemoEncryption: PrivateMemoEncryptionPort = {
-  encrypt(plaintext: string) {
-    return {
-      ciphertext: plaintext,
-      keyVersion: "test",
-    };
-  },
-  decrypt(ciphertext: string) {
-    return ciphertext;
-  },
-};
-
 const xlsxWriter: XlsxWorkbookWriter = {
   async writeWorksheet() {
     return Buffer.from("xlsx");
@@ -351,7 +254,6 @@ const xlsxWriter: XlsxWorkbookWriter = {
 function createService(repository: FakeCompanyRepository): CompanyApplicationService {
   return new CompanyApplicationService(
     repository,
-    privateMemoEncryption,
     xlsxWriter,
     new SilentLogger()
   );

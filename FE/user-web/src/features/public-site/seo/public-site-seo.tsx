@@ -607,15 +607,14 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
       en: "FAQ | OneHand Sales",
     },
     description: {
-      ko: "OneHand Sales의 무료 사용, 모바일, AI, 엑셀 다운로드, 휴지통 복구, 로그인, 팀 사용 FAQ를 확인하세요.",
-      en: "Find answers about OneHand Sales pricing, mobile use, AI, Excel export, trash restore, sign-in, and team usage.",
+      ko: "OneHand Sales의 무료 사용, 모바일, AI, 엑셀 다운로드, 로그인, 팀 사용 FAQ를 확인하세요.",
+      en: "Find answers about OneHand Sales pricing, mobile use, AI, Excel export, sign-in, and team usage.",
     },
     keywords: {
       ko: [
         "OneHand Sales FAQ",
         "OneHand Sales 자주 묻는 질문",
         "CRM 엑셀 다운로드",
-        "CRM 휴지통 복구",
         "AI CRM 도움말",
       ],
       en: [
@@ -623,7 +622,6 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
         "OneHand Sales questions",
         "sales CRM FAQ",
         "CRM Excel export",
-        "CRM trash restore",
         "AI CRM help",
       ],
     },

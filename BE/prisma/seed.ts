@@ -43,7 +43,6 @@ const companySeeds = [
     countryCode: "KR",
     regionCode: "41",
     address: "129 Samsung-ro, Yeongtong-gu, Suwon-si",
-    memo: "Key account for enterprise sales workflow validation.",
   },
   {
     companyName: "LG Electronics",
@@ -52,7 +51,6 @@ const companySeeds = [
     countryCode: "KR",
     regionCode: "11",
     address: "128 Yeoui-daero, Yeongdeungpo-gu, Seoul",
-    memo: "Tracks B2B account history and weekly sales notes.",
   },
   {
     companyName: "Kakao",
@@ -61,7 +59,6 @@ const companySeeds = [
     countryCode: "KR",
     regionCode: "41",
     address: "242 Pangyoyeok-ro, Bundang-gu, Seongnam-si",
-    memo: "Public demo company used for local UI smoke checks.",
   },
   {
     companyName: "OneHand Demo US",
@@ -70,7 +67,6 @@ const companySeeds = [
     countryCode: "US",
     regionCode: "CA",
     address: "San Francisco, CA",
-    memo: "US locale sample for region and currency preference testing.",
   },
 ] as const;
 
@@ -143,8 +139,6 @@ async function seedLocalMockAuth() {
 
 async function resetLocalDemoDomainData(userId: string) {
   await prisma.$transaction([
-    prisma.companyUserPrivateMemoLog.deleteMany({ where: { userId } }),
-    prisma.companyMemoLog.deleteMany({ where: { userId } }),
     prisma.company.deleteMany({ where: { userId } }),
     prisma.companyField.deleteMany({ where: { userId } }),
     prisma.companyRegion.deleteMany({ where: { userId } }),
@@ -186,22 +180,13 @@ async function seedLocalDemoSalesData() {
   }
 
   for (const seed of companySeeds) {
-    const company = await prisma.company.create({
+    await prisma.company.create({
       data: {
         userId,
         companyName: seed.companyName,
         companyFieldId: fieldMap.get(seed.field)!,
         companyRegionId: regionMap.get(seed.region)!,
         address: seed.address,
-      },
-    });
-
-    await prisma.companyMemoLog.create({
-      data: {
-        userId,
-        companyId: company.id,
-        memoType: "Account memo",
-        memo: seed.memo,
       },
     });
   }

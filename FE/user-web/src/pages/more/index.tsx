@@ -2,7 +2,6 @@ import {
   Building2,
   ChevronRight,
   Settings,
-  Trash2,
   type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -85,13 +84,6 @@ const managementRows: ReadonlyArray<{
     iconBg: "#4880EE18",
     iconColor: "#4880EE",
     icon: Building2,
-  },
-  {
-    labelKey: "navigation.trash",
-    to: "/app/trash",
-    iconBg: "#B91C1C18",
-    iconColor: "#B91C1C",
-    icon: Trash2,
   },
   {
     labelKey: "navigation.settings",

@@ -37,9 +37,6 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     await page.goto("/app/companies");
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
 
-    await page.goto("/app/trash");
-    await expect(page.locator("body")).toContainText("Deleted company");
-
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
     runtime.assertClean();
   });
@@ -56,17 +53,17 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     await expect(page).toHaveURL(/\/app\/companies$/);
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
 
-    await page.goto("/app/trash");
-    await expect(page).toHaveURL(/\/app\/trash$/);
-    await expect(page.locator("body")).toContainText("Deleted company");
+    await page.goto("/app/more");
+    await expect(page).toHaveURL(/\/app\/more$/);
+    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
     await page.goBack();
     await expect(page).toHaveURL(/\/app\/companies$/);
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
 
     await page.goForward();
-    await expect(page).toHaveURL(/\/app\/trash$/);
-    await expect(page.locator("body")).toContainText("Deleted company");
+    await expect(page).toHaveURL(/\/app\/more$/);
+    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
     runtime.assertClean();
   });

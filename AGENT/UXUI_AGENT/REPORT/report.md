@@ -61,7 +61,7 @@
 | PageHeader default 버튼 (download 등) | 30×30px   | -14px   |
 | PageHeader primary 버튼 (+추가)       | 30×30px   | -14px   |
 | ListRowActions 상세 pill              | 46.8×28px | h -16px |
-| ListRowActions trash 버튼             | 28×28px   | -16px   |
+| ListRowActions 삭제 버튼              | 28×28px   | -16px   |
 | Pagination prev/next 버튼             | 28×28px   | -16px   |
 | FAB                                   | 52×52px   | ✅ 충족 |
 
@@ -70,7 +70,7 @@
 **수정안**:
 
 - PageHeader 버튼: 실제 버튼 크기를 44px로 늘리거나 `padding` 또는 투명 hit-area(`::before`) 추가
-- LRA trash: `h-7 w-7`(28px) → `h-9 w-9`(36px) 또는 hit-area 확장
+- LRA 삭제 버튼: `h-7 w-7`(28px) → `h-9 w-9`(36px) 또는 hit-area 확장
 - Pagination btn: 동일 방식
 - LRA 상세 pill: h를 `h-7`(28) → `h-10`(40) 이상으로 높이거나 투명 padding 추가
 - 대안: `min-h-[44px] min-w-[44px]`를 버튼 wrapper에 적용하되 시각적 크기는 유지 (`overflow: visible` hit-area 기법)

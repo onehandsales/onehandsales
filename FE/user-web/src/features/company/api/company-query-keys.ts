@@ -21,8 +21,4 @@ export const companyQueryKeys = {
     [...companyQueryKeys.details(), companyId] as const,
   fields: () => [...companyQueryKeys.all, "field"] as const,
   regions: () => [...companyQueryKeys.all, "region"] as const,
-  memoLogs: (companyId: string) =>
-    [...companyQueryKeys.detail(companyId), "memo-log"] as const,
-  privateMemoLogs: (companyId: string) =>
-    [...companyQueryKeys.detail(companyId), "private-memo-log"] as const,
 };

@@ -12,7 +12,6 @@ const MOBILE_ROUTES: ReadonlyArray<{
 }> = [
   { path: "/app", expectedText: MOBILE_LONG_FIXTURE.companyName, hasMobileHeader: true },
   { path: "/app/companies", expectedText: MOBILE_LONG_FIXTURE.companyName, hasMobileHeader: true },
-  { path: "/app/trash", expectedText: "Deleted company", hasMobileHeader: true },
   { path: "/app?account=settings", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
   { path: "/app/more", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
 ];
@@ -55,7 +54,7 @@ async function expectMobileShell(page: Page, hasMobileHeader: boolean) {
   await expect(bottomNav(page)).toBeVisible();
 
   if (hasMobileHeader) {
-    await expect(page.locator("header").first()).toBeVisible();
+    await expect(page.getByTestId("mobile-app-header")).toBeVisible();
     await expect(page.getByRole("button", { name: /search|검색|통합/i }).first()).toBeVisible();
   }
 }

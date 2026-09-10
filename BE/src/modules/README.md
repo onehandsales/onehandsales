@@ -6,9 +6,8 @@
 | --- | --- |
 | `auth` | OAuth token exchange, refresh session, logout, current user 인증 |
 | `user` | 내 프로필, OAuth 계정, 로그인 기기/세션 관리 |
-| `company` | 회사 CRUD, 회사 분야/지역 옵션, 메모/비밀 메모, soft delete, export |
+| `company` | 회사 생성/조회/수정, 회사 분야/지역 옵션, export |
 | `search` | 회사 통합검색 |
-| `trash` | 회사/회사 메모/회사 개인 비밀 메모 soft delete row의 목록/상세/복구 |
 | `error-report` | User Web 오류 신고 접수 |
 | `support-request` | User Web 지원 문의 접수 |
 | `public-contact-request` | 로그인 전 공개 문의 접수 |

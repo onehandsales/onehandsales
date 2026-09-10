@@ -69,7 +69,6 @@ function readCompanyCreateDraft(
     countryCode: readCompanyRegionCountryCode(draft.countryCode),
     regionCode: readString(draft.regionCode),
     address: readString(draft.address),
-    companyMemo: readString(draft.companyMemo),
   };
 }
 

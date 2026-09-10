@@ -23,7 +23,6 @@
 - `/app` home
 - company core flow
 - search
-- trash
 - company export
 - account modal
 - admin authority check

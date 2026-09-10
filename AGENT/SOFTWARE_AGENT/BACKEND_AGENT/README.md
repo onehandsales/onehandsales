@@ -1,6 +1,6 @@
 # Backend Agent
 
-Backend Agent는 NestJS, Prisma, Supabase Auth 연동, 회사 중심 API, 검색/휴지통, 지원 접수, 관리자 권한 확인을 담당한다.
+Backend Agent는 NestJS, Prisma, Supabase Auth 연동, 회사 중심 API, 검색, 지원 접수, 관리자 권한 확인을 담당한다.
 
 ## 활성 모듈
 
@@ -8,7 +8,6 @@ Backend Agent는 NestJS, Prisma, Supabase Auth 연동, 회사 중심 API, 검색
 - `user`
 - `company`
 - `search`
-- `trash`
 - `error-report`
 - `support-request`
 - `public-contact-request`

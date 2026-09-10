@@ -86,73 +86,6 @@ export interface CreateCompanyRegionInput {
   readonly regionCode: string | null;
 }
 
-// 역할 : DeleteCompanyInput 회사 휴지통 이동에 필요한 값을 정의합니다.
-export interface DeleteCompanyInput {
-  readonly userId: string;
-  readonly companyId: string;
-  readonly deletedAt: Date;
-  readonly deletedByUserId: string;
-  readonly trashExpiresAt: Date;
-}
-
-// 역할 : CreateCompanyMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CreateCompanyMemoLogInput {
-  readonly companyId: string;
-  readonly userId: string;
-  readonly memoType: string;
-  readonly memo: string;
-}
-
-// 역할 : MemoLogCursor 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface MemoLogCursor {
-  readonly createdAt: Date;
-  readonly id: string;
-}
-
-// 역할 : CompanyMemoLogRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CompanyMemoLogRecord {
-  readonly id: string;
-  readonly memoType: string;
-  readonly memo: string;
-  readonly createdAt: Date;
-}
-
-// 역할 : CompanyPrivateMemoLogRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CompanyPrivateMemoLogRecord {
-  readonly id: string;
-  readonly memoCiphertext: string;
-  readonly memoKeyVersion: string;
-  readonly createdAt: Date;
-}
-
-// 역할 : CreateCompanyPrivateMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface CreateCompanyPrivateMemoLogInput {
-  readonly companyId: string;
-  readonly userId: string;
-  readonly memoCiphertext: string;
-  readonly memoKeyVersion: string;
-}
-
-// 역할 : DeleteCompanyMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface DeleteCompanyMemoLogInput {
-  readonly userId: string;
-  readonly companyId: string;
-  readonly memoLogId: string;
-  readonly deletedAt: Date;
-  readonly deletedByUserId: string;
-  readonly trashExpiresAt: Date;
-}
-
-// 역할 : DeleteCompanyPrivateMemoLogInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface DeleteCompanyPrivateMemoLogInput {
-  readonly userId: string;
-  readonly companyId: string;
-  readonly privateMemoLogId: string;
-  readonly deletedAt: Date;
-  readonly deletedByUserId: string;
-  readonly trashExpiresAt: Date;
-}
-
 // 역할 : CompanyRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface CompanyRepository {
   // 기능 : 회사 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
@@ -178,8 +111,6 @@ export interface CompanyRepository {
     companyId: string,
     input: UpdateCompanyInput
   ): Promise<boolean>;
-  // 기능 : 현재 사용자의 회사를 휴지통 상태로 전환합니다.
-  deleteCompany(input: DeleteCompanyInput): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 분야 목록을 조회합니다.
   listFields(userId: string): Promise<CompanyFieldRecord[]>;
   // 기능 : 현재 사용자의 회사 분야 단건을 조회합니다.
@@ -213,43 +144,4 @@ export interface CompanyRepository {
   isRegionInUse(userId: string, regionId: string): Promise<boolean>;
   // 기능 : 현재 사용자의 회사 지역을 삭제합니다.
   deleteRegion(userId: string, regionId: string): Promise<void>;
-  // 기능 : 회사 일반 메모 로그를 생성합니다.
-  createMemoLog(input: CreateCompanyMemoLogInput): Promise<void>;
-  // 기능 : 회사 일반 메모 로그를 cursor 기준으로 조회합니다.
-  listMemoLogs(input: {
-    readonly companyId: string;
-    readonly cursor: MemoLogCursor | null;
-    readonly take: number;
-  }): Promise<CompanyMemoLogRecord[]>;
-  // 기능 : 회사 일반 메모 로그의 memoType과 memo를 수정합니다.
-  updateMemoLog(input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly memoLogId: string;
-    readonly memoType: string;
-    readonly memo: string;
-  }): Promise<boolean>;
-  // 기능 : 회사 일반 메모 로그를 휴지통 상태로 전환합니다.
-  deleteMemoLog(input: DeleteCompanyMemoLogInput): Promise<boolean>;
-  // 기능 : 회사 개인 비밀 메모 로그를 생성합니다.
-  createPrivateMemoLog(input: CreateCompanyPrivateMemoLogInput): Promise<void>;
-  // 기능 : 회사 개인 비밀 메모 로그를 작성자 본인 기준으로 조회합니다.
-  listPrivateMemoLogs(input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly cursor: MemoLogCursor | null;
-    readonly take: number;
-  }): Promise<CompanyPrivateMemoLogRecord[]>;
-  // 기능 : 회사 개인 비밀 메모 로그의 암호문과 key version만 수정합니다.
-  updatePrivateMemoLog(input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly privateMemoLogId: string;
-    readonly memoCiphertext: string;
-    readonly memoKeyVersion: string;
-  }): Promise<boolean>;
-  // 기능 : 회사 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
-  deletePrivateMemoLog(
-    input: DeleteCompanyPrivateMemoLogInput
-  ): Promise<boolean>;
 }

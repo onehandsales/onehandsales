@@ -8,7 +8,6 @@ Frontend Agent는 User Web과 Admin Web의 현재 활성 범위를 기준으로 
 - Home(`/app`)
 - Company
 - Search
-- Trash
 - Help Error Report
 - Help Support Request
 - Public Contact Request

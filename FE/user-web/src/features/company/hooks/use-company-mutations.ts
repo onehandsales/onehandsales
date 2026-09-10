@@ -2,32 +2,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createCompany,
   createCompanyField,
-  createCompanyMemoLog,
-  createCompanyPrivateMemoLog,
   createCompanyRegion,
-  deleteCompany,
   deleteCompanyField,
-  deleteCompanyMemoLog,
-  deleteCompanyPrivateMemoLog,
   deleteCompanyRegion,
   exportCompaniesXlsx,
   updateCompany,
-  updateCompanyMemoLog,
-  updateCompanyPrivateMemoLog,
 } from "@/features/company/api/company-api";
 import { companyQueryKeys } from "@/features/company/api/company-query-keys";
 import type {
   CompanyExportFilters,
   CreateCompanyFieldInput,
   CreateCompanyInput,
-  CreateCompanyMemoLogInput,
-  CreateCompanyPrivateMemoLogInput,
   CreateCompanyRegionInput,
-  DeleteCompanyMemoLogInput,
-  DeleteCompanyPrivateMemoLogInput,
   UpdateCompanyInput,
-  UpdateCompanyMemoLogInput,
-  UpdateCompanyPrivateMemoLogInput,
 } from "@/features/company/types/company";
 
 // 기능 : 회사를 생성한 뒤 회사 목록 캐시를 갱신합니다.
@@ -52,22 +39,6 @@ export function useUpdateCompanyMutation() {
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
       void queryClient.invalidateQueries({
         queryKey: companyQueryKeys.detail(input.companyId),
-      });
-    },
-  });
-}
-
-// 기능 : 회사를 삭제한 뒤 목록, 상세, 연결 옵션 캐시를 갱신합니다.
-export function useDeleteCompanyMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (companyId: string) => deleteCompany(companyId),
-    onSuccess: (_result, companyId) => {
-      void queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
-      void queryClient.invalidateQueries({ queryKey: companyQueryKeys.details() });
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.detail(companyId),
       });
     },
   });
@@ -121,96 +92,6 @@ export function useDeleteCompanyRegionMutation() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.regions() });
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.lists() });
-    },
-  });
-}
-
-// 기능 : 일반 메모 로그를 생성한 뒤 일반 메모 캐시를 갱신합니다.
-export function useCreateCompanyMemoLogMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: CreateCompanyMemoLogInput) =>
-      createCompanyMemoLog(input),
-    onSuccess: (_result, input) => {
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.memoLogs(input.companyId),
-      });
-    },
-  });
-}
-
-// 기능 : 일반 메모 로그를 수정한 뒤 일반 메모 캐시를 갱신합니다.
-export function useUpdateCompanyMemoLogMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: UpdateCompanyMemoLogInput) =>
-      updateCompanyMemoLog(input),
-    onSuccess: (_result, input) => {
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.memoLogs(input.companyId),
-      });
-    },
-  });
-}
-
-// 기능 : 일반 메모 로그를 삭제하고 일반 메모 캐시를 갱신합니다.
-export function useDeleteCompanyMemoLogMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: DeleteCompanyMemoLogInput) =>
-      deleteCompanyMemoLog(input),
-    onSuccess: (_result, input) => {
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.memoLogs(input.companyId),
-      });
-    },
-  });
-}
-
-// 기능 : 개인 메모 로그를 생성한 뒤 개인 메모 캐시를 갱신합니다.
-export function useCreateCompanyPrivateMemoLogMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: CreateCompanyPrivateMemoLogInput) =>
-      createCompanyPrivateMemoLog(input),
-    onSuccess: (_result, input) => {
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.privateMemoLogs(input.companyId),
-      });
-    },
-  });
-}
-
-// 기능 : 개인 메모 로그를 수정한 뒤 개인 메모 캐시를 갱신합니다.
-export function useUpdateCompanyPrivateMemoLogMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: UpdateCompanyPrivateMemoLogInput) =>
-      updateCompanyPrivateMemoLog(input),
-    onSuccess: (_result, input) => {
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.privateMemoLogs(input.companyId),
-      });
-    },
-  });
-}
-
-// 기능 : 개인 비밀 메모 로그를 삭제하고 개인 비밀 메모 캐시를 갱신합니다.
-export function useDeleteCompanyPrivateMemoLogMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: DeleteCompanyPrivateMemoLogInput) =>
-      deleteCompanyPrivateMemoLog(input),
-    onSuccess: (_result, input) => {
-      void queryClient.invalidateQueries({
-        queryKey: companyQueryKeys.privateMemoLogs(input.companyId),
-      });
     },
   });
 }

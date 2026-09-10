@@ -4,22 +4,14 @@ import {
   type CompanyFieldRecord,
   type CompanyLookupRecord,
   type CompanyListRecord,
-  type CompanyMemoLogRecord,
   type CompanyPageRecord,
-  type CompanyPrivateMemoLogRecord,
   type CompanyRecord,
   type CompanyRegionRecord,
   type CompanyRepository,
   type CreateCompanyInput,
-  type CreateCompanyMemoLogInput,
-  type CreateCompanyPrivateMemoLogInput,
   type CreateCompanyRegionInput,
-  type DeleteCompanyMemoLogInput,
-  type DeleteCompanyInput,
-  type DeleteCompanyPrivateMemoLogInput,
   type ExportCompaniesInput,
   type ListCompaniesInput,
-  type MemoLogCursor,
   type UpdateCompanyInput,
 } from "@/modules/company/application/ports/company.repository";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
@@ -109,7 +101,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         id: companyId,
         userId,
-        deletedAt: null,
       },
       include: {
         companyField: true,
@@ -129,7 +120,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         id: companyId,
         userId,
-        deletedAt: null,
       },
       select: {
         id: true,
@@ -169,7 +159,6 @@ export class PrismaCompanyRepository implements CompanyRepository {
       where: {
         id: companyId,
         userId,
-        deletedAt: null,
       },
       data: {
         ...(input.companyName !== undefined
@@ -376,243 +365,12 @@ export class PrismaCompanyRepository implements CompanyRepository {
     });
   }
 
-  // 기능 : 회사 일반 메모 로그를 생성합니다.
-  async createMemoLog(input: CreateCompanyMemoLogInput): Promise<void> {
-    await this.client.companyMemoLog.create({
-      data: {
-        companyId: input.companyId,
-        userId: input.userId,
-        memoType: input.memoType,
-        memo: input.memo,
-      },
-    });
-  }
-
-  // 기능 : 회사 일반 메모 로그를 cursor 조건으로 조회합니다.
-  async listMemoLogs(input: {
-    readonly companyId: string;
-    readonly cursor: MemoLogCursor | null;
-    readonly take: number;
-  }): Promise<CompanyMemoLogRecord[]> {
-    return this.client.companyMemoLog.findMany({
-      where: {
-        companyId: input.companyId,
-        deletedAt: null,
-        ...this.createCursorWhere(input.cursor),
-      },
-      select: {
-        id: true,
-        memoType: true,
-        memo: true,
-        createdAt: true,
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: input.take,
-    });
-  }
-
-  // 기능 : 회사 일반 메모 로그의 memoType과 memo를 수정합니다.
-  async updateMemoLog(input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly memoLogId: string;
-    readonly memoType: string;
-    readonly memo: string;
-  }): Promise<boolean> {
-    const result = await this.client.companyMemoLog.updateMany({
-      where: {
-        id: input.memoLogId,
-        companyId: input.companyId,
-        userId: input.userId,
-        deletedAt: null,
-      },
-      data: {
-        memoType: input.memoType,
-        memo: input.memo,
-      },
-    });
-
-    return result.count > 0;
-  }
-
-  // 기능 : 현재 사용자의 회사를 휴지통 상태로 전환합니다.
-  async deleteCompany(input: DeleteCompanyInput): Promise<boolean> {
-    const result = await this.client.company.updateMany({
-      where: {
-        id: input.companyId,
-        userId: input.userId,
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: input.deletedAt,
-        deletedByUserId: input.deletedByUserId,
-        trashExpiresAt: input.trashExpiresAt,
-      },
-    });
-
-    return result.count > 0;
-  }
-
-  // 기능 : 회사 일반 메모 로그를 휴지통 상태로 전환합니다.
-  async deleteMemoLog(input: DeleteCompanyMemoLogInput): Promise<boolean> {
-    const result = await this.client.companyMemoLog.updateMany({
-      where: {
-        id: input.memoLogId,
-        companyId: input.companyId,
-        userId: input.userId,
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: input.deletedAt,
-        deletedByUserId: input.deletedByUserId,
-        trashExpiresAt: input.trashExpiresAt,
-      },
-    });
-
-    return result.count > 0;
-  }
-
-  // 기능 : 회사 개인 비밀 메모 로그를 생성합니다.
-  async createPrivateMemoLog(
-    input: CreateCompanyPrivateMemoLogInput
-  ): Promise<void> {
-    await this.client.companyUserPrivateMemoLog.create({
-      data: {
-        companyId: input.companyId,
-        userId: input.userId,
-        memoCiphertext: input.memoCiphertext,
-        memoKeyVersion: input.memoKeyVersion,
-      },
-    });
-  }
-
-  // 기능 : 작성자 본인의 회사 개인 비밀 메모 로그를 cursor 조건으로 조회합니다.
-  async listPrivateMemoLogs(input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly cursor: MemoLogCursor | null;
-    readonly take: number;
-  }): Promise<CompanyPrivateMemoLogRecord[]> {
-    return this.client.companyUserPrivateMemoLog.findMany({
-      where: {
-        userId: input.userId,
-        companyId: input.companyId,
-        deletedAt: null,
-        ...this.createPrivateMemoCursorWhere(input.cursor),
-      },
-      select: {
-        id: true,
-        memoCiphertext: true,
-        memoKeyVersion: true,
-        createdAt: true,
-      },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: input.take,
-    });
-  }
-
-  // 기능 : 회사 개인 비밀 메모 로그의 암호문과 key version만 수정합니다.
-  async updatePrivateMemoLog(input: {
-    readonly userId: string;
-    readonly companyId: string;
-    readonly privateMemoLogId: string;
-    readonly memoCiphertext: string;
-    readonly memoKeyVersion: string;
-  }): Promise<boolean> {
-    const result = await this.client.companyUserPrivateMemoLog.updateMany({
-      where: {
-        id: input.privateMemoLogId,
-        userId: input.userId,
-        companyId: input.companyId,
-        deletedAt: null,
-      },
-      data: {
-        memoCiphertext: input.memoCiphertext,
-        memoKeyVersion: input.memoKeyVersion,
-      },
-    });
-
-    return result.count > 0;
-  }
-
-  // 기능 : 회사 개인 비밀 메모 로그를 휴지통 상태로 전환합니다.
-  async deletePrivateMemoLog(
-    input: DeleteCompanyPrivateMemoLogInput
-  ): Promise<boolean> {
-    const result = await this.client.companyUserPrivateMemoLog.updateMany({
-      where: {
-        id: input.privateMemoLogId,
-        userId: input.userId,
-        companyId: input.companyId,
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: input.deletedAt,
-        deletedByUserId: input.deletedByUserId,
-        trashExpiresAt: input.trashExpiresAt,
-      },
-    });
-
-    return result.count > 0;
-  }
-
-  // 기능 : cursor 기준보다 이전 데이터만 조회하는 Prisma 조건을 생성합니다.
-  private createCursorWhere(
-    cursor: MemoLogCursor | null
-  ): Prisma.CompanyMemoLogWhereInput {
-    if (!cursor) {
-      return {};
-    }
-
-    return {
-      OR: [
-        {
-          createdAt: {
-            lt: cursor.createdAt,
-          },
-        },
-        {
-          createdAt: cursor.createdAt,
-          id: {
-            lt: cursor.id,
-          },
-        },
-      ],
-    };
-  }
-
-  // 기능 : 개인 비밀 메모 cursor 기준보다 이전 데이터만 조회하는 Prisma 조건을 생성합니다.
-  private createPrivateMemoCursorWhere(
-    cursor: MemoLogCursor | null
-  ): Prisma.CompanyUserPrivateMemoLogWhereInput {
-    if (!cursor) {
-      return {};
-    }
-
-    return {
-      OR: [
-        {
-          createdAt: {
-            lt: cursor.createdAt,
-          },
-        },
-        {
-          createdAt: cursor.createdAt,
-          id: {
-            lt: cursor.id,
-          },
-        },
-      ],
-    };
-  }
-
   // 기능 : 회사 목록과 export에 공통으로 쓰는 Prisma 조회 조건을 생성합니다.
   private createCompanyWhere(
     input: ExportCompaniesInput
   ): Prisma.CompanyWhereInput {
     return {
       userId: input.userId,
-      deletedAt: null,
       ...(input.companyName
         ? {
             companyName: {

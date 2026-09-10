@@ -12,7 +12,7 @@
 
 ## Time Display
 
-- Backend가 내려주는 `createdAt`, `updatedAt`, `deletedAt`, `trashExpiresAt` 같은 instant는 UTC ISO string으로 본다.
+- Backend가 내려주는 `createdAt`, `updatedAt`, `deletedAt` 같은 instant는 UTC ISO string으로 본다. 현재 `deletedAt`은 User 계정 상태 필드에만 남는다.
 - 화면에는 UTC string을 그대로 출력하지 않고 사용자 표시 기준으로 변환한다.
 
 ## Route

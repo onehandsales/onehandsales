@@ -11,8 +11,6 @@
 - Company
 - CompanyField
 - CompanyRegion
-- CompanyMemoLog
-- CompanyUserPrivateMemoLog
 - ErrorReport
 - SupportRequest
 - PublicContactRequest
@@ -37,17 +35,14 @@
 - User 1:N CompanyRegion
 - CompanyField 1:N Company
 - CompanyRegion 1:N Company
-- Company 1:N CompanyMemoLog
-- Company 1:N CompanyUserPrivateMemoLog
 - User 1:N auth device/session/OAuth account
 - User 1:N ErrorReport
 - User 1:N SupportRequest
 
 ## 삭제 정책
 
-- Company, CompanyMemoLog, CompanyUserPrivateMemoLog는 soft delete를 사용한다.
-- `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기준으로 휴지통 목록과 복구를 처리한다.
-- 복구 기간이 지난 row는 사용자 직접 복구 대상에서 제외한다.
+- Company 삭제 API와 휴지통 복구 정책은 현재 활성 범위에서 제거되어 있다.
+- 현재 schema의 `deletedAt`은 User 계정 상태 필드로만 남는다.
 
 ## 지원 접수
 

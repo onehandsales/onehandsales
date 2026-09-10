@@ -26,7 +26,7 @@ Status: Superseded by `030_global_b2c_closeout_and_paddle_defer.md` on 2026-08-1
 
 - 모바일 브라우저에서 핵심 업무를 수행할 수 있는가?
 - 긴 텍스트, 작은 화면, 로딩/오류/빈 상태가 깨지지 않는가?
-- 다른 사용자 데이터가 Search, Trash, Export, 직접 URL 접근에서 섞이지 않는가?
+- 다른 사용자 데이터가 Search, Export, 직접 URL 접근에서 섞이지 않는가?
 - DB migration과 seed 상태가 운영 배포에 안전한가?
 
 따라서 지금은 UX/UI를 신경써야 하는 타이밍이다.

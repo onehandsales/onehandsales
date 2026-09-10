@@ -48,12 +48,6 @@ enum AuthDeviceSlot {
   WORK_LAPTOP
 }
 
-
-
-
-
-
-
 /// 기능 : 사용자 에러 신고 처리 상태를 구분합니다.
 enum ErrorReportStatus {
   OPEN
@@ -101,23 +95,19 @@ model User {
   updatedAt            DateTime   @updatedAt
   deletedAt            DateTime?
 
-  oauthAccounts           UserOAuthAccount[]
-  authDevices             AuthDevice[]
-  authSessions            AuthSession[]
+  oauthAccounts   UserOAuthAccount[]
+  authDevices     AuthDevice[]
+  authSessions    AuthSession[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
-  companies               Company[]
+  companies       Company[]
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
-  companyFields           CompanyField[]
+  companyFields   CompanyField[]
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
-  companyRegions          CompanyRegion[]
-  /// 기능 : 사용자가 작성한 회사 일반 메모 로그 목록이다.
-  companyMemoLogs         CompanyMemoLog[]
-  /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
-  companyPrivateMemoLogs  CompanyUserPrivateMemoLog[]
+  companyRegions  CompanyRegion[]
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
-  errorReports            ErrorReport[]
+  errorReports    ErrorReport[]
   /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
-  supportRequests         SupportRequest[]
+  supportRequests SupportRequest[]
 
   @@index([role])
   @@index([status])
@@ -254,8 +244,8 @@ model AuthDevice {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
-  user                   User                    @relation(fields: [userId], references: [id])
-  sessions               AuthSession[]
+  user     User          @relation(fields: [userId], references: [id])
+  sessions AuthSession[]
 
   @@index([userId])
   @@index([userId, deviceSlot, status])
@@ -276,8 +266,8 @@ model AuthSession {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
-  user                   User                    @relation(fields: [userId], references: [id])
-  authDevice             AuthDevice              @relation(fields: [authDeviceId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+  authDevice AuthDevice @relation(fields: [authDeviceId], references: [id])
 
   @@index([userId])
   @@index([authDeviceId])
@@ -285,58 +275,29 @@ model AuthSession {
   @@index([expiresAt])
 }
 
-
-
-
 model Company {
-  id              String    @id @default(uuid()) @db.Uuid
-  userId          String    @db.Uuid
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @db.Uuid
   companyName     String
-  companyFieldId  String    @db.Uuid
-  companyRegionId String    @db.Uuid
+  companyFieldId  String   @db.Uuid
+  companyRegionId String   @db.Uuid
   /// 기능 : 회사 상세 주소를 국가별 강제 검증 없이 자유 입력으로 저장한다.
   address         String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   /// 기능 : 회사를 생성한 사용자다. 모든 회사 API는 이 userId로 소유권을 검증한다.
-  user            User                        @relation(fields: [userId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
   /// 기능 : 회사 목록 필터에 사용되는 회사 분야다.
-  companyField    CompanyField                @relation(fields: [companyFieldId], references: [id])
+  companyField  CompanyField  @relation(fields: [companyFieldId], references: [id])
   /// 기능 : 회사 목록 필터에 사용되는 회사 지역이다.
-  companyRegion   CompanyRegion               @relation(fields: [companyRegionId], references: [id])
-  /// 기능 : 회사 특징에 대한 일반 메모 로그 목록이다.
-  memoLogs        CompanyMemoLog[]
-  /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs CompanyUserPrivateMemoLog[]
+  companyRegion CompanyRegion @relation(fields: [companyRegionId], references: [id])
 
   @@index([userId, createdAt])
   @@index([userId, companyName])
   @@index([userId, companyFieldId])
   @@index([userId, companyRegionId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 model CompanyField {
   id        String   @id @default(uuid()) @db.Uuid
@@ -371,50 +332,4 @@ model CompanyRegion {
   @@unique([userId, region])
   @@index([userId])
   @@index([userId, countryCode, regionCode])
-}
-
-model CompanyMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  companyId       String    @db.Uuid
-  userId          String    @db.Uuid
-  memoType        String
-  memo            String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 메모가 속한 회사다.
-  company Company @relation(fields: [companyId], references: [id])
-  /// 기능 : 메모를 작성한 사용자다.
-  user    User    @relation(fields: [userId], references: [id])
-
-  @@index([companyId, createdAt])
-  @@index([userId, companyId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model CompanyUserPrivateMemoLog {
-  id              String    @id @default(uuid()) @db.Uuid
-  companyId       String    @db.Uuid
-  userId          String    @db.Uuid
-  memoCiphertext  String
-  memoKeyVersion  String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  deletedAt       DateTime? @db.Timestamptz(3)
-  deletedByUserId String?   @db.Uuid
-  trashExpiresAt  DateTime? @db.Timestamptz(3)
-
-  /// 기능 : 비밀 메모가 속한 회사다.
-  company Company @relation(fields: [companyId], references: [id])
-  /// 기능 : 비밀 메모를 작성한 사용자다. 이 사용자만 복호화된 memo를 볼 수 있다.
-  user    User    @relation(fields: [userId], references: [id])
-
-  @@index([companyId, createdAt])
-  @@index([userId, companyId])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
 }

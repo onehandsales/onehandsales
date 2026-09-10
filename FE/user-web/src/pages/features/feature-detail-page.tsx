@@ -695,7 +695,7 @@ const featureDetailCopyByLanguage: Record<
           bullets: [
             "Keep small context by customer.",
             "Record internal checks related to products or proposals.",
-            "Use private memo flows when a note needs separation.",
+            "Keep internal checks clear before the next follow-up.",
           ],
         },
         {

@@ -17,6 +17,6 @@
 
 ## 표시 원칙
 
-- API 응답의 `createdAt`, `updatedAt`, `deletedAt`, `trashExpiresAt`은 UTC ISO string으로 간주한다.
+- API 응답의 `createdAt`, `updatedAt`, `deletedAt`은 UTC ISO string으로 간주한다. 현재 `deletedAt`은 User 계정 상태 필드에만 남는다.
 - Frontend는 UTC string을 그대로 렌더링하지 않고 사용자 표시 기준으로 변환한다.
-- 휴지통 만료, 세션 만료, 최근 활동 표시는 같은 formatter를 공유한다.
+- 세션 만료와 최근 활동 표시는 같은 formatter를 공유한다.

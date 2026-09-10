@@ -11,8 +11,6 @@
   - `GET /api/company-fields`
   - `GET /api/company-regions`
   - `분야 ▾`, `지역 ▾` select
-- 휴지통 목록
-  - domain/item kind/log type filter
 
 ## Pagination 규칙
 
@@ -24,7 +22,7 @@
 - 20개 기본 표시는 현재 row height와 layout에서는 쓰지 않는다. 나중에 고밀도 보기 옵션으로만 검토한다.
 - 공용 `Pagination` 컴포넌트에는 `hasNext`를 전달하지 않는다.
 - 1페이지만 존재하면 pagination은 숨길 수 있다.
-- `hasNext`는 상세 메모 로그처럼 cursor 기반 incremental loading에서만 사용한다.
+- `hasNext`는 cursor 기반 incremental loading API가 다시 추가될 때만 사용한다.
 
 ## Option 관리 UX
 

@@ -32,7 +32,6 @@ export const enResource = {
   entities: {
     company: "Company",
     settings: "Settings",
-    trash: "Trash",
   },
   navigation: {
     appName: "Other",
@@ -45,7 +44,6 @@ export const enResource = {
     mainGroupOpen: "Open main menu",
     more: "More",
     settings: "Settings",
-    trash: "Trash",
   },
   shell: {
     accountMenuTooltip: "Open account menu",
@@ -91,12 +89,12 @@ export const enResource = {
     errorSubmitAction: "Send",
     errorSubmitting: "Submitting",
     errorTitle: "Error",
-    guideDescription: "Review company records, search, and trash recovery in one workspace.",
-    guideRecordDescription: "Create companies with field and region details, then review memo history on each detail screen.",
+    guideDescription: "Review company records and search in one workspace.",
+    guideRecordDescription: "Create companies with field and region details, then manage the core details on each screen.",
     guideRecordTitle: "Company records",
     guideTitle: "User Guide",
-    guideWorkDescription: "Use search to find companies and trash to restore deleted companies or company memo logs.",
-    guideWorkTitle: "Search and trash",
+    guideWorkDescription: "Use search to find registered companies quickly.",
+    guideWorkTitle: "Search",
     supportAction: "Request support by email",
     supportBodyDescription:
       "Include the screen, what you expected, and what actually happened so we can check it faster.",
@@ -138,7 +136,7 @@ export const enResource = {
     recentScope: "Recent list",
     quickActions: "Quick Actions",
     companyCreate: "Add Company",
-    companyCreateDescription: "Organize companies and memos.",
+    companyCreateDescription: "Organize company details.",
     countItems: "{count}",
   },
   more: {

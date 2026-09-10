@@ -9,29 +9,18 @@
 - `GET /api/companies/export/xlsx`
 - `POST /api/companies`
 - `PATCH /api/companies/:companyId`
-- `DELETE /api/companies/:companyId`
 - `POST /api/company-fields`
 - `DELETE /api/company-fields/:fieldId`
 - `POST /api/company-regions`
 - `DELETE /api/company-regions/:regionId`
-- `POST /api/companies/:companyId/memo-logs`
-- `GET /api/companies/:companyId/memo-logs`
-- `PATCH /api/companies/:companyId/memo-logs/:memoLogId`
-- `DELETE /api/companies/:companyId/memo-logs/:memoLogId`
-- `POST /api/companies/:companyId/private-memo-logs`
-- `GET /api/companies/:companyId/private-memo-logs`
-- `PATCH /api/companies/:companyId/private-memo-logs/:privateMemoLogId`
-- `DELETE /api/companies/:companyId/private-memo-logs/:privateMemoLogId`
 
-이 모듈은 User Web에서 사용하는 회사, 회사 분야, 회사 지역, 회사 일반 메모 로그, 회사 개인 비밀 메모 로그 API를 담당한다.
+이 모듈은 User Web에서 사용하는 회사, 회사 분야, 회사 지역 API와 회사 XLSX export를 담당한다.
 
 ## 구현 기준
 
 - 모든 API는 `AuthGuard`를 사용한다.
 - 모든 조회와 변경은 현재 사용자 `userId` ownership 기준으로 처리한다.
 - 회사 export는 검색/다중 필터/정렬 조건을 적용하고 `page` 없이 전체 대상 xlsx를 반환한다.
-- 회사 생성 시 `companyMemo`가 있으면 같은 transaction에서 `CompanyMemoLog` 첫 데이터로 저장한다.
-- 회사 삭제는 실제 row 삭제가 아니라 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 설정으로 처리한다.
-- 개인 비밀 메모 평문은 API DTO에서만 `memo`로 다루고, DB에는 `memoCiphertext`, `memoKeyVersion`만 저장한다.
+- 회사 삭제 API와 회사 메모/개인 비밀 메모 로그 API는 현재 범위에서 제거되어 있다.
 - Contact/Deal 연결 목록 API와 `contactCount`, `dealCount` 응답은 현재 controller와 Prisma schema에 없다.
 - API 계약은 현재 controller와 `AGENT/SOFTWARE_AGENT/COMMON/API_SAMPLE.md`를 기준으로 확인한다.

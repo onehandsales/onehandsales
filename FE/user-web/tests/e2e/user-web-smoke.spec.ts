@@ -16,9 +16,6 @@ test.describe("User Web smoke E2E", () => {
     await page.goto("/app/companies");
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
 
-    await page.goto("/app/trash");
-    await expect(page.locator("body")).toContainText("Deleted company");
-
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 });

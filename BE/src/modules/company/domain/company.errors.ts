@@ -56,45 +56,10 @@ export class CompanyRegionInUseError extends DomainError {
   }
 }
 
-// 역할 : CompanyMemoLogNotFoundError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
-export class CompanyMemoLogNotFoundError extends DomainError {
-  // 기능 : 회사 메모 로그가 없거나 수정 권한이 없는 경우의 오류를 생성합니다.
-  constructor() {
-    super("CompanyMemoLogNotFound", "Company memo log was not found");
-  }
-}
-
-// 역할 : CompanyPrivateMemoLogNotFoundError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
-export class CompanyPrivateMemoLogNotFoundError extends DomainError {
-  // 기능 : 회사 개인 비밀 메모 로그가 없거나 수정 권한이 없는 경우의 오류를 생성합니다.
-  constructor() {
-    super(
-      "CompanyPrivateMemoLogNotFound",
-      "Company private memo log was not found"
-    );
-  }
-}
-
 // 역할 : CompanyExportFailedError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
 export class CompanyExportFailedError extends DomainError {
   // 기능 : 회사 xlsx export 파일 생성 실패 오류를 생성합니다.
   constructor() {
     super("CompanyExportFailed", "Company export failed");
-  }
-}
-
-// 역할 : PrivateMemoEncryptFailedError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
-export class PrivateMemoEncryptFailedError extends DomainError {
-  // 기능 : 개인 비밀 메모 암호화 실패 오류를 생성합니다.
-  constructor() {
-    super("PrivateMemoEncryptFailed", "Private memo encryption failed");
-  }
-}
-
-// 역할 : PrivateMemoDecryptFailedError 도메인 또는 애플리케이션 오류 상태를 표현합니다.
-export class PrivateMemoDecryptFailedError extends DomainError {
-  // 기능 : 개인 비밀 메모 복호화 실패 오류를 생성합니다.
-  constructor() {
-    super("PrivateMemoDecryptFailed", "Private memo decryption failed");
   }
 }

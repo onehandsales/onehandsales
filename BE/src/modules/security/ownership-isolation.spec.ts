@@ -1,5 +1,5 @@
 import { Buffer } from "node:buffer";
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { ForbiddenException } from "@nestjs/common";
 import type { ExecutionContext } from "@nestjs/common";
 import type {
   CompanyListRecord,
@@ -7,7 +7,6 @@ import type {
   CompanyRecord,
   CompanyRepository,
 } from "@/modules/company/application/ports/company.repository";
-import type { PrivateMemoEncryptionPort } from "@/modules/company/application/ports/private-memo-encryption.port";
 import { CompanyApplicationService } from "@/modules/company/application/services/company-application.service";
 import type {
   SearchGroupRecord,
@@ -15,14 +14,6 @@ import type {
 } from "@/modules/search/application/ports/search.repository";
 import { SearchApplicationService } from "@/modules/search/application/services/search-application.service";
 import { SearchTargetType } from "@/modules/search/domain/search-target-type";
-import type {
-  TrashDetail,
-  TrashItem,
-  TrashListResult,
-  TrashRepository,
-  TrashRestoreRepositoryResult,
-} from "@/modules/trash/application/ports/trash.repository";
-import { TrashApplicationService } from "@/modules/trash/application/services/trash-application.service";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type {
   XlsxWorkbookWriter,
@@ -56,11 +47,8 @@ const RQA004_A_MARKER = "RQA004-A";
 const RQA004_B_MARKER = "RQA004-B";
 const CREATED_AT = new Date("2026-07-20T01:00:00.000Z");
 const UPDATED_AT = new Date("2026-07-20T02:00:00.000Z");
-const TARGET_ID_B = "00000000-0000-4000-8000-000000000402";
-
 type OwnedCompanyRecord = CompanyRecord & {
   readonly userId: string;
-  deleted?: boolean;
 };
 
 class RecordingXlsxWriter implements XlsxWorkbookWriter {
@@ -79,24 +67,11 @@ class SilentLogger extends AppLogger {
   }
 }
 
-const privateMemoEncryption: PrivateMemoEncryptionPort = {
-  encrypt(plaintext: string) {
-    return {
-      ciphertext: plaintext,
-      keyVersion: "test",
-    };
-  },
-  decrypt(ciphertext: string) {
-    return ciphertext;
-  },
-};
-
 describe("G04 multi-account ownership isolation", () => {
-  it("isolates company list, detail, export, update, and delete access", async () => {
+  it("isolates company list, detail, export, and update access", async () => {
     const writer = new RecordingXlsxWriter();
     const service = new CompanyApplicationService(
       createCompanyRepository(),
-      privateMemoEncryption,
       writer,
       new SilentLogger()
     );
@@ -118,10 +93,6 @@ describe("G04 multi-account ownership isolation", () => {
         }),
       "CompanyNotFound"
     );
-    await expectDomainNotFound(
-      () => service.deleteCompany(CURRENT_USER_A, "rqa004-company-b"),
-      "CompanyNotFound"
-    );
   });
 
   it("does not return user B data in integrated search for user A", async () => {
@@ -136,24 +107,6 @@ describe("G04 multi-account ownership isolation", () => {
 
     expect(result.groups).toEqual([]);
     assertNoBMarker(result);
-  });
-
-  it("isolates trash list, detail, and restore access", async () => {
-    const service = new TrashApplicationService(createTrashRepository());
-
-    const list = await service.listTrash(CURRENT_USER_A, {
-      targetType: "ALL",
-      page: 1,
-      pageSize: 15,
-    });
-
-    assertNoBMarker(list);
-    await expectHttpNotFound(
-      () => service.getTrashDetail(CURRENT_USER_A, "COMPANY", TARGET_ID_B)
-    );
-    await expectHttpNotFound(
-      () => service.restoreTrashItem(CURRENT_USER_A, "COMPANY", TARGET_ID_B)
-    );
   });
 
   it("rejects a normal user at the admin API guard boundary", () => {
@@ -178,14 +131,14 @@ function createCompanyRepository(): CompanyRepository {
     },
     async listCompanies(input): Promise<CompanyPageRecord> {
       const items = companies.filter(
-        (company) => company.userId === input.userId && !company.deleted
+        (company) => company.userId === input.userId
       );
 
       return { items, totalCount: items.length };
     },
     async listCompaniesForExport(input): Promise<CompanyListRecord[]> {
       return companies.filter(
-        (company) => company.userId === input.userId && !company.deleted
+        (company) => company.userId === input.userId
       );
     },
     async findCompany(userId, companyId): Promise<CompanyRecord | null> {
@@ -193,14 +146,13 @@ function createCompanyRepository(): CompanyRepository {
         companies.find(
           (company) =>
             company.id === companyId &&
-            company.userId === userId &&
-            !company.deleted
+            company.userId === userId
         ) ?? null
       );
     },
     async findCompanyLookup(userId, companyId) {
       const company = companies.find(
-        (item) => item.id === companyId && item.userId === userId && !item.deleted
+        (item) => item.id === companyId && item.userId === userId
       );
 
       return company ? { id: company.id, userId: company.userId } : null;
@@ -209,24 +161,8 @@ function createCompanyRepository(): CompanyRepository {
       return companies.some(
         (company) =>
           company.id === companyId &&
-          company.userId === userId &&
-          !company.deleted
+          company.userId === userId
       );
-    },
-    async deleteCompany(input): Promise<boolean> {
-      const company = companies.find(
-        (item) =>
-          item.id === input.companyId &&
-          item.userId === input.userId &&
-          !item.deleted
-      );
-
-      if (!company) {
-        return false;
-      }
-
-      company.deleted = true;
-      return true;
     },
   };
 
@@ -253,89 +189,6 @@ function createSearchRepository(): SearchRepository {
           ],
         },
       ];
-    },
-  };
-}
-
-function createTrashRepository(): TrashRepository {
-  const deletedAt = new Date("2026-07-21T01:00:00.000Z");
-  const trashExpiresAt = new Date("2026-08-20T01:00:00.000Z");
-  const items: TrashItem[] = [
-    {
-      targetType: "COMPANY",
-      targetId: "00000000-0000-4000-8000-000000000401",
-      title: `${RQA004_A_MARKER} Company`,
-      deletedAt,
-      trashExpiresAt,
-      restoreWindow: "ACTIVE",
-      canRestore: true,
-      hasPrivateMemo: false,
-      privateMemoIncluded: false,
-    },
-    {
-      targetType: "COMPANY",
-      targetId: TARGET_ID_B,
-      title: `${RQA004_B_MARKER} Company`,
-      deletedAt,
-      trashExpiresAt,
-      restoreWindow: "ACTIVE",
-      canRestore: true,
-      hasPrivateMemo: false,
-      privateMemoIncluded: false,
-    },
-  ];
-
-  return {
-    async runInTransaction<T>(
-      work: (repository: TrashRepository) => Promise<T>
-    ): Promise<T> {
-      return work(this);
-    },
-    async listTrash(input): Promise<TrashListResult> {
-      const scopedItems = items.filter((item) =>
-        input.userId === CURRENT_USER_A.id
-          ? item.title.includes(RQA004_A_MARKER)
-          : item.title.includes(RQA004_B_MARKER)
-      );
-
-      return {
-        items: scopedItems,
-        page: 1,
-        pageSize: 15,
-        totalCount: scopedItems.length,
-        totalPages: 1,
-      };
-    },
-    async getTrashDetail(input): Promise<TrashDetail | null> {
-      const item = items.find(
-        (candidate) =>
-          candidate.targetId === input.targetId &&
-          ((input.userId === CURRENT_USER_A.id &&
-            candidate.title.includes(RQA004_A_MARKER)) ||
-            (input.userId === CURRENT_USER_B.id &&
-              candidate.title.includes(RQA004_B_MARKER)))
-      );
-
-      return item
-        ? {
-            ...item,
-            summary: item.title,
-            fields: [],
-          }
-        : null;
-    },
-    async restoreTrashItem(
-      input
-    ): Promise<TrashRestoreRepositoryResult | null> {
-      const item = await this.getTrashDetail(input);
-
-      return item
-        ? {
-            targetType: item.targetType,
-            targetId: item.targetId,
-            restoredAt: input.now,
-          }
-        : null;
     },
   };
 }
@@ -374,10 +227,6 @@ async function expectDomainNotFound(
   code: string
 ) {
   await expect(action()).rejects.toMatchObject({ code } satisfies Partial<DomainError>);
-}
-
-async function expectHttpNotFound(action: () => Promise<unknown>) {
-  await expect(action()).rejects.toBeInstanceOf(NotFoundException);
 }
 
 function createExecutionContext(currentUser: CurrentUserContext): ExecutionContext {

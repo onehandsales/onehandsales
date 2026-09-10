@@ -4,19 +4,11 @@ import type {
   CompanyFieldListResponse,
   CompanyListParams,
   CompanyListResponse,
-  CompanyMemoLogConnectionResponse,
-  CompanyPrivateMemoLogConnectionResponse,
   CompanyRegionListResponse,
   CreateCompanyFieldInput,
   CreateCompanyInput,
-  CreateCompanyMemoLogInput,
-  CreateCompanyPrivateMemoLogInput,
   CreateCompanyRegionInput,
-  DeleteCompanyMemoLogInput,
-  DeleteCompanyPrivateMemoLogInput,
   UpdateCompanyInput,
-  UpdateCompanyMemoLogInput,
-  UpdateCompanyPrivateMemoLogInput,
 } from "@/features/company/types/company";
 import {
   apiBlobClient,
@@ -47,7 +39,7 @@ export function listCompanyRegions() {
   return apiClient<CompanyRegionListResponse>("/api/company-regions");
 }
 
-// 기능 : 회사를 생성하고 선택 입력된 첫 메모를 일반 메모 로그로 저장합니다.
+// 기능 : 회사를 생성합니다.
 export function createCompany(input: CreateCompanyInput) {
   return apiClient<void>("/api/companies", {
     method: "POST",
@@ -65,13 +57,6 @@ export function updateCompany(input: UpdateCompanyInput) {
       companyRegionId: input.companyRegionId,
       address: input.address,
     }),
-  });
-}
-
-// 기능 : 참조가 없는 회사를 삭제합니다.
-export function deleteCompany(companyId: string) {
-  return apiClient<void>(`/api/companies/${companyId}`, {
-    method: "DELETE",
   });
 }
 
@@ -103,112 +88,6 @@ export function deleteCompanyRegion(regionId: string) {
   return apiClient<void>(`/api/company-regions/${regionId}`, {
     method: "DELETE",
   });
-}
-
-export function listCompanyMemoLogs(companyId: string, cursor?: string) {
-  const query = new URLSearchParams();
-
-  if (cursor) {
-    query.set("cursor", cursor);
-  }
-
-  const suffix = query.toString() ? `?${query.toString()}` : "";
-
-  return apiClient<CompanyMemoLogConnectionResponse>(
-    `/api/companies/${companyId}/memo-logs${suffix}`
-  );
-}
-
-// 기능 : 회사 일반 메모 로그를 생성합니다.
-export function createCompanyMemoLog(input: CreateCompanyMemoLogInput) {
-  return apiClient<void>(`/api/companies/${input.companyId}/memo-logs`, {
-    method: "POST",
-    body: compactBody({
-      memoType: input.memoType,
-      memo: input.memo,
-    }),
-  });
-}
-
-// 기능 : 회사 일반 메모 로그를 수정합니다.
-export function updateCompanyMemoLog(input: UpdateCompanyMemoLogInput) {
-  return apiClient<void>(
-    `/api/companies/${input.companyId}/memo-logs/${input.memoLogId}`,
-    {
-      method: "PATCH",
-      body: compactBody({
-        memoType: input.memoType,
-        memo: input.memo,
-      }),
-    }
-  );
-}
-
-// 기능 : 회사 일반 메모 로그를 삭제합니다.
-export function deleteCompanyMemoLog(input: DeleteCompanyMemoLogInput) {
-  return apiClient<void>(
-    `/api/companies/${input.companyId}/memo-logs/${input.memoLogId}`,
-    {
-      method: "DELETE",
-    }
-  );
-}
-
-// 기능 : 회사 개인 메모 로그를 커서 기반으로 조회합니다.
-export function listCompanyPrivateMemoLogs(
-  companyId: string,
-  cursor?: string
-) {
-  const query = new URLSearchParams();
-
-  if (cursor) {
-    query.set("cursor", cursor);
-  }
-
-  const suffix = query.toString() ? `?${query.toString()}` : "";
-
-  return apiClient<CompanyPrivateMemoLogConnectionResponse>(
-    `/api/companies/${companyId}/private-memo-logs${suffix}`
-  );
-}
-
-// 기능 : 회사 개인 메모 로그를 생성합니다.
-export function createCompanyPrivateMemoLog(
-  input: CreateCompanyPrivateMemoLogInput
-) {
-  return apiClient<void>(`/api/companies/${input.companyId}/private-memo-logs`, {
-    method: "POST",
-    body: compactBody({
-      memo: input.memo,
-    }),
-  });
-}
-
-// 기능 : 회사 개인 메모 로그를 수정합니다.
-export function updateCompanyPrivateMemoLog(
-  input: UpdateCompanyPrivateMemoLogInput
-) {
-  return apiClient<void>(
-    `/api/companies/${input.companyId}/private-memo-logs/${input.privateMemoLogId}`,
-    {
-      method: "PATCH",
-      body: compactBody({
-        memo: input.memo,
-      }),
-    }
-  );
-}
-
-// 기능 : 회사 개인 비밀 메모 로그를 삭제합니다.
-export function deleteCompanyPrivateMemoLog(
-  input: DeleteCompanyPrivateMemoLogInput
-) {
-  return apiClient<void>(
-    `/api/companies/${input.companyId}/private-memo-logs/${input.privateMemoLogId}`,
-    {
-      method: "DELETE",
-    }
-  );
 }
 
 // 기능 : 현재 회사 필터에 해당하는 목록을 엑셀 Blob으로 내려받습니다.

@@ -285,7 +285,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           name: "플러스",
           description: "꾸준히 파이프라인을 관리하는 사용자에게",
           cta: "무료 체험",
-          features: ["딜 무제한", "XLSX 다운로드", "휴지통 복구", "고급 필터와 정렬"],
+          features: ["딜 무제한", "XLSX 다운로드", "통합 검색", "고급 필터와 정렬"],
         },
         {
           name: "비즈니스",
@@ -325,7 +325,6 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
           title: "데이터와 보안",
           rows: [
             ["도메인별 XLSX 다운로드", "", "포함", "포함", "포함"],
-            ["휴지통 복구", "7일", "30일", "90일", "맞춤"],
             ["민감 메모 보호", "", "", "포함", "포함"],
             ["감사 로그", "", "", "기본", "고급"],
             ["도입/보안 검토", "", "", "", "지원"],
@@ -553,7 +552,7 @@ function makeTranslatedPricing(copy: {
         name: "Plus",
         description: "For people actively managing a sales pipeline",
         cta: "Free trial",
-        features: ["Unlimited deals", "XLSX export", "Trash restore", "Advanced filters and sorting"],
+        features: ["Unlimited deals", "XLSX export", "Integrated search", "Advanced filters and sorting"],
       },
       {
         name: "Business",

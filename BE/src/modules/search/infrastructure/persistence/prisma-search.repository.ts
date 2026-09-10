@@ -42,7 +42,6 @@ export class PrismaSearchRepository implements SearchRepository {
     const companies = await this.prismaService.company.findMany({
       where: {
         userId: input.userId,
-        deletedAt: null,
         OR: [
           { companyName: { contains: input.query } },
           { companyField: { field: { contains: input.query } } },

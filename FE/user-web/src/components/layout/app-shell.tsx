@@ -28,7 +28,6 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  Trash2,
   UserRound,
   type LucideIcon,
   X,
@@ -113,7 +112,6 @@ export function AppShell() {
     useState<AccountModalSection>("settings");
   const [helpModal, setHelpModal] = useState<HelpModalSection | null>(null);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
-  const [onehandAppOpen, setOneHandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
@@ -330,16 +328,14 @@ export function AppShell() {
     pathname === "/app/companies" ||
     pathname === "/app/companies/new" ||
     isCompanyDetail;
-  const isTrashPage = pathname === "/app/trash";
   const isFixedViewportPage = isHome;
   const isMobileHeaderHidden = isCompanyDetail;
-  const hideTopBar = isCompanyListPage || isTrashPage;
+  const hideTopBar = isCompanyListPage;
 
   const topBarContent = (() => {
     type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
     const pageMetaMap: Record<string, PageMeta> = {
       "/app": { labelKey: "navigation.home", icon: House },
-      "/app/trash": { labelKey: "navigation.trash", icon: Trash2 },
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
     const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
@@ -541,57 +537,6 @@ export function AppShell() {
     </div>
   );
 
-  const sidebarAppLinks = (
-    <div className="mt-3">
-      <button
-        aria-label={t(
-          onehandAppOpen ? "navigation.appNameClose" : "navigation.appNameOpen",
-        )}
-        aria-expanded={onehandAppOpen}
-        className="group/sidebar-tooltip relative mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-        onClick={() => setOneHandAppOpen((open) => !open)}
-        type="button"
-      >
-        <ChevronRight
-          className={`h-5 w-5 shrink-0 transition-transform ${
-            onehandAppOpen ? "rotate-90" : "rotate-0"
-          }`}
-          strokeWidth={2}
-        />
-        <span>{t("navigation.appName")}</span>
-        <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
-          {t(
-            onehandAppOpen
-              ? "navigation.appNameClose"
-              : "navigation.appNameOpen",
-          )}
-        </span>
-      </button>
-      {onehandAppOpen ? (
-        <div className="flex flex-col gap-px">
-          <button
-            aria-current={isTrashPage ? "page" : undefined}
-            className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
-              isTrashPage
-                ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
-                : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
-            }`}
-            onClick={() => void navigate("/app/trash")}
-            type="button"
-          >
-            <Trash2
-              className={`h-5 w-5 shrink-0 ${
-                isTrashPage ? "text-[#6B7280]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
-              }`}
-              strokeWidth={2}
-            />
-            <span>{t("navigation.trash")}</span>
-          </button>
-        </div>
-      ) : null}
-    </div>
-  );
-
   return (
     <div className="min-h-dvh bg-background text-foreground" data-app-i18n-root>
       {/* ── Desktop Shell ── */}
@@ -657,7 +602,6 @@ export function AppShell() {
           {/* Nav */}
           <div className="flex-1 px-2 py-1">
             <SidebarNav />
-            {sidebarAppLinks}
           </div>
           {sidebarHelpMenu}
         </aside>
@@ -1755,7 +1699,7 @@ const termsOfUseModalDocument: LegalDocumentModal = {
     {
       title: "1. OneHand 사용",
       paragraphs: [
-        "OneHand는 사용자가 회사 기록, 메모, 검색, 휴지통 복원, 계정 설정을 관리할 수 있도록 제공되는 업무용 워크스페이스입니다.",
+        "OneHand는 사용자가 회사 기록, 검색, 지원 요청, 계정 설정을 관리할 수 있도록 제공되는 업무용 워크스페이스입니다.",
         "사용자는 본인이 제출하는 정보와 계정 자격 증명의 보안을 책임집니다. OneHand는 관련 법률, 본 약관, 이 페이지에서 참조하는 정책에 따라 사용해야 합니다.",
         "조직을 대신해 OneHand를 사용하는 경우, 사용자는 해당 조직을 대표해 본 약관을 수락할 권한이 있음을 진술합니다.",
       ],
@@ -1787,7 +1731,7 @@ const termsOfUseModalDocument: LegalDocumentModal = {
     {
       title: "5. 서비스 기능",
       paragraphs: [
-        "OneHand는 회사 기록, 메모, 검색, 휴지통 복원, 계정 설정 기능을 제공합니다.",
+        "OneHand는 회사 기록, 검색, 지원 요청, 계정 설정 기능을 제공합니다.",
         "서비스의 표시 내용은 사용자가 입력한 데이터와 브라우저 환경에 따라 달라질 수 있습니다.",
       ],
     },
@@ -1848,7 +1792,7 @@ const privacyPolicyModalDocument: LegalDocumentModal = {
       ],
       bullets: [
         "계정과 워크스페이스 생성, 인증, 관리",
-        "회사 기록, 메모, 검색, 휴지통 복원, 계정 설정 기능 제공",
+        "회사 기록, 검색, 지원 요청, 계정 설정 기능 제공",
         "구독, 청구서, 결제, 구매 주문 처리",
         "고객 지원, 보안 문의, 개인정보 요청에 대한 응답",
         "서비스 메시지, 업데이트, 관리 고지, 지원 커뮤니케이션 발송",

@@ -22,9 +22,8 @@
 
 - `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리, 로그인 locale/region 메타데이터 동기화
 - `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회
-- `company`: 사용자 소유 회사, 회사 분야/지역, 일반 메모 로그, 개인 비밀 메모 로그, soft delete, xlsx export
+- `company`: 사용자 소유 회사, 회사 분야/지역 옵션, 생성/조회/수정, xlsx export
 - `search`: 회사 통합검색
-- `trash`: 회사, 회사 일반 메모 로그, 회사 개인 비밀 메모 로그의 휴지통 목록/상세/7일 이내 복구
 - `error-report`: User Web 오류 신고 접수와 screenshot storage 연동
 - `support-request`: User Web 지원 문의 접수
 - `public-contact-request`: 로그인 전 공개 문의 접수
@@ -90,7 +89,6 @@ pnpm run db:dev:down
 CI/배포처럼 이미 migration 파일을 적용해야 하는 환경에서는 `pnpm run prisma:migrate:deploy`를 사용한다.
 
 현재 seed는 production에서는 실행하지 않고, local mock Auth 사용자/session과 회사 demo 데이터를 만든다.
-회사 개인 비밀 메모 API를 사용하려면 `.env`에 `COMPANY_PRIVATE_MEMO_ENCRYPTION_KEY` 또는 공통 `ENCRYPTION_MASTER_KEY`를 채워야 한다.
 
 ## 검증
 

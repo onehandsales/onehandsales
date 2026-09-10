@@ -53,7 +53,7 @@ describe("PrismaSearchRepository", () => {
     ).toEqual([[SearchTargetType.COMPANY, "/app/companies/company-1"]]);
   });
 
-  it("scopes company search by user and excludes deleted rows", async () => {
+  it("scopes company search by user", async () => {
     const prisma = createPrismaMock();
     const repository = createRepository(prisma);
 
@@ -68,7 +68,6 @@ describe("PrismaSearchRepository", () => {
       expect.objectContaining({
         where: expect.objectContaining({
           userId: USER_ID,
-          deletedAt: null,
         }),
       })
     );

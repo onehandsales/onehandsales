@@ -1,43 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Building2,
-  LockKeyhole,
   MoreHorizontal,
-  Plus,
-  Pencil,
-  ShieldCheck,
-  Trash2,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/page-header";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { InvalidDetailPathDialog } from "@/components/ui/invalid-detail-path-dialog";
 import { Toast } from "@/components/ui/toast";
-import {
-  ModalFieldGroup,
-  ModalFooterActions,
-  ModalForm,
-  ModalFormSection,
-} from "@/components/ui/modal-form";
-import { ModalShell } from "@/components/ui/modal-shell";
 import { useAppI18n } from "@/features/app-i18n";
 import { CompanyEditDialog } from "@/features/company/components/company-edit-dialog";
-import {
-  useCompanyDetail,
-  useCompanyMemoLogs,
-  useCompanyPrivateMemoLogs,
-} from "@/features/company/hooks/use-company-detail";
-import {
-  useDeleteCompanyMutation,
-  useDeleteCompanyMemoLogMutation,
-  useDeleteCompanyPrivateMemoLogMutation,
-  useCreateCompanyMemoLogMutation,
-  useUpdateCompanyMemoLogMutation,
-  useCreateCompanyPrivateMemoLogMutation,
-  useUpdateCompanyPrivateMemoLogMutation,
-} from "@/features/company/hooks/use-company-mutations";
+import { useCompanyDetail } from "@/features/company/hooks/use-company-detail";
 import {
   useCompanyFields,
   useCompanyRegions,
@@ -45,34 +17,14 @@ import {
 import type {
   CompanyDetail,
   CompanyField,
-  CompanyMemoLog,
-  CompanyPrivateMemoLog,
   CompanyRegion,
 } from "@/features/company/types/company";
 import { formatCompanyRegionLabel } from "@/features/company/utils/company-region-options";
-import {
-  toCreateCompanyMemoLogInput,
-  toUpdateCompanyMemoLogInput,
-  toCreateCompanyPrivateMemoLogInput,
-  toUpdateCompanyPrivateMemoLogInput,
-  companyMemoLogFormSchema,
-  companyPrivateMemoLogFormSchema,
-  emptyCompanyMemoLogFormValues,
-  emptyCompanyPrivateMemoLogFormValues,
-  type CompanyMemoLogFormValues,
-  type CompanyPrivateMemoLogFormValues,
-} from "@/features/company/schemas/company-schema";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { formatDateTime } from "@/utils/format";
 import {
   isInvalidDetailPathError,
   navigateFromInvalidDetailPath,
 } from "@/utils/invalid-detail-path";
-import {
-  LOG_DELETE_CONFIRM_MESSAGE,
-  LOG_DELETE_SUCCESS_DESCRIPTION,
-  LOG_DELETE_SUCCESS_MESSAGE,
-} from "@/utils/log-delete-feedback";
 
 type CompanyDetailScreenProps = {
   readonly companyId: string;
@@ -80,19 +32,12 @@ type CompanyDetailScreenProps = {
 
 const COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY = "onehand.company.detail.fullWidth";
 const COMPANY_DETAIL_SMALL_TEXT_STORAGE_KEY = "onehand.company.detail.smallText";
-const COMPANY_RELATED_BODY_CLASS_NAME = "rounded-lg bg-[#FAF9F6] px-4 py-3";
-const COMPANY_RELATED_SCROLL_CLASS_NAME =
-  "notion-scrollbar overflow-x-hidden overflow-y-auto pr-1";
-const COMPANY_MEMO_ROW_CLASS_NAME =
-  "group -mx-2 flex gap-3 rounded-md border-b border-[#E7E3DC] px-2 py-1.5 transition-colors last:border-b-0 hover:bg-[#F0EEE8]";
 
 export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const navigate = useNavigate();
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeDescription, setNoticeDescription] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [isPageMenuOpen, setIsPageMenuOpen] = useState(false);
   const [isFullWidth, setIsFullWidth] = useState(() =>
     readStoredBoolean(COMPANY_DETAIL_FULL_WIDTH_STORAGE_KEY, false)
@@ -105,9 +50,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const companyQuery = useCompanyDetail(companyId);
   const fieldsQuery = useCompanyFields();
   const regionsQuery = useCompanyRegions();
-  const memoLogsQuery = useCompanyMemoLogs(companyId);
-  const privateMemoLogsQuery = useCompanyPrivateMemoLogs(companyId);
-  const deleteCompanyMutation = useDeleteCompanyMutation();
 
   const company = companyQuery.data;
   const fields = useMemo(
@@ -124,8 +66,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
         : (regionsQuery.data?.items ?? []),
     [company, regionsQuery.data?.items]
   );
-  const memoLogs = memoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
-  const privateMemoLogs = privateMemoLogsQuery.data?.pages.flatMap((page) => page.items) ?? [];
   // 기능 : 삭제/미존재 회사 상세 URL 접근 오류를 전용 안내 대상으로 분리합니다.
   const isInvalidCompanyDetailPath =
     companyQuery.isError &&
@@ -194,10 +134,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   if (!company) return <CompanyDetailSkeleton />;
 
   const contentWidthClassName = isFullWidth ? "max-w-[1444px]" : "max-w-[678px]";
-  const twoColumnSectionsClassName = isFullWidth
-    ? "grid gap-y-5 lg:grid-cols-2 lg:gap-x-10"
-    : "grid gap-5";
-
   const showNotice = (message: string, description?: string) => {
     setNotice(message);
     setNoticeDescription(description ?? null);
@@ -206,23 +142,6 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
   const clearNotice = () => {
     setNotice(null);
     setNoticeDescription(null);
-  };
-
-  const onDeleteCompany = async () => {
-    setActionError(null);
-    try {
-      await deleteCompanyMutation.mutateAsync(company.id);
-      setDeleteConfirmOpen(false);
-      void navigate("/app/companies", {
-        replace: true,
-        state: {
-          notice: LOG_DELETE_SUCCESS_MESSAGE,
-          noticeDescription: LOG_DELETE_SUCCESS_DESCRIPTION,
-        },
-      });
-    } catch (error) {
-      setActionError(getApiErrorMessage(error));
-    }
   };
 
   return (
@@ -265,13 +184,8 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
               </button>
               {isPageMenuOpen ? (
                 <CompanyPageOptionsMenu
-                  isDeleting={deleteCompanyMutation.isPending}
                   isFullWidth={isFullWidth}
                   isSmallText={isSmallText}
-                  onDelete={() => {
-                    setIsPageMenuOpen(false);
-                    setDeleteConfirmOpen(true);
-                  }}
                   onToggleFullWidth={() =>
                     setIsFullWidth((current) => !current)
                   }
@@ -296,59 +210,13 @@ export function CompanyDetailScreen({ companyId }: CompanyDetailScreenProps) {
                 variant="success"
               />
             ) : null}
-            {actionError ? (
-              <Toast
-                message={actionError}
-                onClose={() => setActionError(null)}
-                variant="error"
-              />
-            ) : null}
-
             <CompanySummaryHeader
               company={company}
               isSmallText={isSmallText}
             />
-
-            <div className={twoColumnSectionsClassName}>
-              <MemoPanel
-                companyId={companyId}
-                memoLogs={memoLogs}
-                isLoading={memoLogsQuery.isLoading}
-                hasNext={Boolean(memoLogsQuery.hasNextPage)}
-                isFetchingNext={memoLogsQuery.isFetchingNextPage}
-                isSmallText={isSmallText}
-                onFetchMore={() => void memoLogsQuery.fetchNextPage()}
-                onChanged={showNotice}
-              />
-              <ActivityLogPanel
-                companyId={companyId}
-                privateMemoLogs={privateMemoLogs}
-                isLoading={privateMemoLogsQuery.isLoading}
-                hasNext={Boolean(privateMemoLogsQuery.hasNextPage)}
-                isFetchingNext={privateMemoLogsQuery.isFetchingNextPage}
-                isSmallText={isSmallText}
-                onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
-                onChanged={showNotice}
-              />
-            </div>
           </div>
         </main>
       </div>
-      <ConfirmDialog
-        cancelLabel="아니요"
-        confirmLabel="예"
-        errorMessage={actionError}
-        isPending={deleteCompanyMutation.isPending}
-        open={deleteConfirmOpen}
-        title={LOG_DELETE_CONFIRM_MESSAGE}
-        onCancel={() => {
-          if (!deleteCompanyMutation.isPending) {
-            setActionError(null);
-            setDeleteConfirmOpen(false);
-          }
-        }}
-        onConfirm={() => void onDeleteCompany()}
-      />
       <CompanyEditDialog
         company={company}
         fields={fields}
@@ -439,94 +307,14 @@ function CompanyDocumentProperty({
   );
 }
 
-function CompanyDocumentSectionHeader({
-  isSmallText,
-  title,
-  count,
-}: {
-  readonly isSmallText: boolean;
-  readonly title: string;
-  readonly count?: number;
-}) {
-  return (
-    <div className="flex min-h-8 items-center gap-2">
-      <h2
-        className={`font-semibold leading-[1.25] text-[#111827] ${
-          isSmallText ? "text-[18px]" : "text-[20px]"
-        }`}
-      >
-        {title}
-      </h2>
-      {count !== undefined ? (
-        <span
-          className={`font-semibold leading-[1.25] text-[#94A3B8] ${
-            isSmallText ? "text-[18px]" : "text-[20px]"
-          }`}
-        >
-          {count}
-        </span>
-      ) : null}
-    </div>
-  );
-}
-
-function CompanyEmptyText({
-  children,
-  isSmallText,
-}: {
-  readonly children: string;
-  readonly isSmallText: boolean;
-}) {
-  return (
-    <p
-      className={`py-3 font-medium text-[#94A3B8] ${
-        isSmallText ? "text-[12px]" : "text-[13px]"
-      }`}
-    >
-      {children}
-    </p>
-  );
-}
-
-function CompanyLoadingRows({ count = 3 }: { readonly count?: number }) {
-  return (
-    <div className="grid gap-2">
-      {Array.from({ length: count }).map((_, index) => (
-        <div
-          className="h-10 animate-pulse rounded-md bg-[#F3F4F6]"
-          key={index}
-        />
-      ))}
-    </div>
-  );
-}
-
-function CompanyDocumentSection({
-  children,
-  className = "",
-}: {
-  readonly children: ReactNode;
-  readonly className?: string;
-}) {
-  return (
-    <section className={`grid gap-3 pt-3 ${className}`}>
-      {children}
-    </section>
-  );
-}
-
 function CompanyPageOptionsMenu({
-  isDeleting,
   isFullWidth,
   isSmallText,
-  onDelete,
   onToggleFullWidth,
   onToggleSmallText,
 }: {
-  readonly isDeleting: boolean;
   readonly isFullWidth: boolean;
   readonly isSmallText: boolean;
-  readonly onDelete: () => void;
   readonly onToggleFullWidth: () => void;
   readonly onToggleSmallText: () => void;
 }) {
@@ -545,16 +333,6 @@ function CompanyPageOptionsMenu({
         label="전체 너비"
         onClick={onToggleFullWidth}
       />
-      <button
-        className="flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[13px] font-medium text-[#B91C1C] transition hover:bg-[#FEF2F2] disabled:cursor-not-allowed disabled:opacity-50"
-        disabled={isDeleting}
-        onClick={onDelete}
-        role="menuitem"
-        type="button"
-      >
-        <Trash2 className="h-4 w-4" />
-        휴지통으로 이동
-      </button>
     </div>
   );
 }
@@ -589,623 +367,6 @@ function CompanyPageOptionToggle({
         />
       </span>
     </button>
-  );
-}
-
-function TimelineMarker() {
-  return (
-    <div className="relative flex w-[8px] shrink-0 self-stretch items-start justify-center pt-[16px]">
-      <div className="relative h-[8px] w-[8px] rounded-full bg-[#4880EE]" />
-    </div>
-  );
-}
-
-function MemoPanel({
-  companyId,
-  memoLogs,
-  isLoading,
-  hasNext,
-  isFetchingNext,
-  isSmallText,
-  onFetchMore,
-  onChanged,
-}: {
-  readonly companyId: string;
-  readonly memoLogs: CompanyMemoLog[];
-  readonly isLoading: boolean;
-  readonly hasNext: boolean;
-  readonly isFetchingNext: boolean;
-  readonly isSmallText: boolean;
-  readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string, description?: string) => void;
-}) {
-  const createMemoMutation = useCreateCompanyMemoLogMutation();
-  const updateMemoMutation = useUpdateCompanyMemoLogMutation();
-  const deleteMemoMutation = useDeleteCompanyMemoLogMutation();
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [deletingLog, setDeletingLog] = useState<CompanyMemoLog | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-
-  const createForm = useForm<CompanyMemoLogFormValues>({
-    resolver: zodResolver(companyMemoLogFormSchema),
-    defaultValues: emptyCompanyMemoLogFormValues,
-  });
-
-  const editForm = useForm<CompanyMemoLogFormValues>({
-    resolver: zodResolver(companyMemoLogFormSchema),
-    defaultValues: emptyCompanyMemoLogFormValues,
-  });
-
-  const onSubmitCreate = createForm.handleSubmit(async (values) => {
-    await createMemoMutation.mutateAsync(toCreateCompanyMemoLogInput(companyId, values));
-    createForm.reset(emptyCompanyMemoLogFormValues);
-    setIsCreateOpen(false);
-    onChanged("업무용 메모를 추가했어요.");
-  });
-
-  const onStartEdit = (log: CompanyMemoLog) => {
-    setEditingId(log.id);
-    editForm.reset({ memoType: log.memoType, memo: log.memo });
-  };
-
-  const onSubmitEdit = editForm.handleSubmit(async (values) => {
-    if (!editingId) return;
-    await updateMemoMutation.mutateAsync(
-      toUpdateCompanyMemoLogInput(companyId, editingId, values)
-    );
-    setEditingId(null);
-    onChanged("업무용 메모를 수정했어요.");
-  });
-
-  const onConfirmDelete = async () => {
-    if (!deletingLog) return;
-    setDeleteError(null);
-    try {
-      await deleteMemoMutation.mutateAsync({
-        companyId,
-        memoLogId: deletingLog.id,
-      });
-      if (editingId === deletingLog.id) {
-        setEditingId(null);
-      }
-      if (expandedId === deletingLog.id) {
-        setExpandedId(null);
-      }
-      setDeletingLog(null);
-      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
-    } catch (error) {
-      setDeleteError(getApiErrorMessage(error));
-    }
-  };
-
-  const createFormId = "company-log-create-form";
-  const editFormId = "company-log-edit-form";
-
-  return (
-    <>
-    <CompanyDocumentSection>
-      <div className="flex min-h-8 items-center gap-2">
-        <CompanyDocumentSectionHeader
-          isSmallText={isSmallText}
-          title="업무용 메모"
-        />
-        <div className="flex-1" />
-        <button
-          aria-label="업무용 메모 추가"
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#4880EE] transition-colors hover:bg-[#EFF6FF] hover:text-[#1D4ED8]"
-          onClick={() => setIsCreateOpen(true)}
-          title="업무용 메모 추가"
-          type="button"
-        >
-          <Plus className="h-3.5 w-3.5" />
-        </button>
-      </div>
-
-      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
-        <div className={`${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[420px]`}>
-          {isLoading ? (
-            <CompanyLoadingRows count={2} />
-          ) : memoLogs.length === 0 ? (
-            <CompanyEmptyText isSmallText={isSmallText}>
-              업무와 관련된 회사의 변경 내용들을 실시간으로 기록해요.
-            </CompanyEmptyText>
-          ) : (
-            memoLogs.map((log) => (
-              <div
-                className={COMPANY_MEMO_ROW_CLASS_NAME}
-                key={log.id}
-              >
-                {/* 제목 행 — 클릭 시 본문 토글 */}
-                <TimelineMarker />
-                <div className="min-w-0 flex-1">
-                <button
-                  className="flex min-h-[40px] w-full items-center text-left"
-                  onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
-                  type="button"
-                >
-                  <span
-                    className={`flex-1 truncate font-semibold text-[#111827] ${
-                      isSmallText ? "text-[12px]" : "text-[13px]"
-                    }`}
-                  >
-                    {log.memoType || "제목 없음"}
-                  </span>
-                  <span className="shrink-0 text-[11px] font-bold text-[#9CA3AF]">
-                    {formatDateTime(log.createdAt, { includeYear: true })}
-                  </span>
-                  <div
-                    className="invisible ml-1 flex h-6 w-6 shrink-0 items-center justify-center rounded group-hover:visible"
-                    onClick={(e) => { e.stopPropagation(); onStartEdit(log); }}
-                    role="button"
-                    tabIndex={-1}
-                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
-                  >
-                    <Pencil className="h-3 w-3 text-[#9CA3AF]" />
-                  </div>
-                  <div
-                    aria-label="삭제"
-                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteError(null);
-                      setDeletingLog(log);
-                    }}
-                    role="button"
-                    tabIndex={-1}
-                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </div>
-                </button>
-                {/* 본문 — 펼쳐진 경우만 표시 */}
-                {expandedId === log.id ? (
-                  <p
-                    className={`whitespace-pre-wrap pb-3 pt-1 font-medium leading-[1.35] text-[#374151] ${
-                      isSmallText ? "text-[12px]" : "text-[13px]"
-                    }`}
-                  >
-                    {log.memo}
-                  </p>
-                ) : null}
-                </div>
-              </div>
-            )
-            )
-          )}
-          {hasNext ? (
-            <button
-              className="text-[12px] font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
-              disabled={isFetchingNext}
-              onClick={onFetchMore}
-              type="button"
-            >
-              {isFetchingNext ? "불러오는 중..." : "더 보기"}
-            </button>
-          ) : null}
-        </div>
-      </div>
-    </CompanyDocumentSection>
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={createFormId}
-          isSubmitting={createMemoMutation.isPending}
-          pendingLabel="추가 중"
-          submitLabel="추가"
-          onCancel={() => setIsCreateOpen(false)}
-          onSubmit={() => void onSubmitCreate()}
-        />
-      }
-      open={isCreateOpen}
-      size="md"
-      title="업무용 메모 추가"
-      onOpenChange={setIsCreateOpen}
-    >
-      <ModalForm id={createFormId} onSubmit={onSubmitCreate}>
-        <ModalFormSection title="업무용 메모">
-          <ModalFieldGroup
-            error={createForm.formState.errors.memoType?.message}
-            id="company-log-create-title"
-            label="제목"
-          >
-            <input
-              className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="company-log-create-title"
-              placeholder="업무용 메모 제목"
-              {...createForm.register("memoType")}
-            />
-          </ModalFieldGroup>
-          <ModalFieldGroup
-            error={createForm.formState.errors.memo?.message}
-            id="company-log-create-memo"
-            label="내용"
-          >
-            <textarea
-              className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="company-log-create-memo"
-              placeholder="내용 입력"
-              rows={4}
-              {...createForm.register("memo")}
-            />
-          </ModalFieldGroup>
-        </ModalFormSection>
-        {createMemoMutation.error ? (
-          <p className="text-xs text-[#B91C1C]">
-            {getApiErrorMessage(createMemoMutation.error)}
-          </p>
-        ) : null}
-      </ModalForm>
-    </ModalShell>
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={editFormId}
-          isSubmitting={updateMemoMutation.isPending}
-          pendingLabel="저장 중..."
-          submitLabel="저장"
-          onCancel={() => setEditingId(null)}
-        />
-      }
-      open={editingId !== null}
-      size="md"
-      title="업무용 메모 수정"
-      onOpenChange={(open) => {
-        if (!open) setEditingId(null);
-      }}
-    >
-      <ModalForm id={editFormId} onSubmit={onSubmitEdit}>
-        <ModalFormSection title="업무용 메모">
-          <ModalFieldGroup
-            error={editForm.formState.errors.memoType?.message}
-            id="company-log-edit-title"
-            label="제목"
-          >
-            <input
-              className="h-10 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="company-log-edit-title"
-              placeholder="업무용 메모 제목"
-              {...editForm.register("memoType")}
-            />
-          </ModalFieldGroup>
-          <ModalFieldGroup
-            error={editForm.formState.errors.memo?.message}
-            id="company-log-edit-memo"
-            label="내용"
-          >
-            <textarea
-              className="min-h-28 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="company-log-edit-memo"
-              placeholder="내용 입력"
-              rows={4}
-              {...editForm.register("memo")}
-            />
-          </ModalFieldGroup>
-        </ModalFormSection>
-        {updateMemoMutation.error ? (
-          <p className="text-xs text-[#B91C1C]">
-            {getApiErrorMessage(updateMemoMutation.error)}
-          </p>
-        ) : null}
-      </ModalForm>
-    </ModalShell>
-    <ConfirmDialog
-      cancelLabel="아니요"
-      confirmLabel="예"
-      errorMessage={deleteError}
-      isPending={deleteMemoMutation.isPending}
-      open={deletingLog !== null}
-      title={LOG_DELETE_CONFIRM_MESSAGE}
-      onCancel={() => {
-        if (!deleteMemoMutation.isPending) {
-          setDeleteError(null);
-          setDeletingLog(null);
-        }
-      }}
-      onConfirm={() => void onConfirmDelete()}
-    />
-    </>
-  );
-}
-
-// ── Activity Log Panel ──────────────────────────────────────────────
-
-function ActivityLogPanel({
-  companyId,
-  privateMemoLogs,
-  isLoading,
-  hasNext,
-  isFetchingNext,
-  isSmallText,
-  onFetchMore,
-  onChanged,
-}: {
-  readonly companyId: string;
-  readonly privateMemoLogs: CompanyPrivateMemoLog[];
-  readonly isLoading: boolean;
-  readonly hasNext: boolean;
-  readonly isFetchingNext: boolean;
-  readonly isSmallText: boolean;
-  readonly onFetchMore: () => void;
-  readonly onChanged: (notice: string, description?: string) => void;
-}) {
-  const createMutation = useCreateCompanyPrivateMemoLogMutation();
-  const updateMutation = useUpdateCompanyPrivateMemoLogMutation();
-  const deleteMutation = useDeleteCompanyPrivateMemoLogMutation();
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [deletingLog, setDeletingLog] = useState<CompanyPrivateMemoLog | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-
-  const createForm = useForm<CompanyPrivateMemoLogFormValues>({
-    resolver: zodResolver(companyPrivateMemoLogFormSchema),
-    defaultValues: emptyCompanyPrivateMemoLogFormValues,
-  });
-
-  const editForm = useForm<CompanyPrivateMemoLogFormValues>({
-    resolver: zodResolver(companyPrivateMemoLogFormSchema),
-    defaultValues: emptyCompanyPrivateMemoLogFormValues,
-  });
-
-  const onSubmitCreate = createForm.handleSubmit(async (values) => {
-    await createMutation.mutateAsync(
-      toCreateCompanyPrivateMemoLogInput(companyId, values)
-    );
-    createForm.reset(emptyCompanyPrivateMemoLogFormValues);
-    setIsCreateOpen(false);
-    onChanged("사적인 비밀 메모를 추가했어요.");
-  });
-
-  const onStartEdit = (log: CompanyPrivateMemoLog) => {
-    setEditingId(log.id);
-    editForm.reset({ memo: log.memo });
-  };
-
-  const onSubmitEdit = editForm.handleSubmit(async (values) => {
-    if (!editingId) return;
-    await updateMutation.mutateAsync(
-      toUpdateCompanyPrivateMemoLogInput(companyId, editingId, values)
-    );
-    setEditingId(null);
-    onChanged("사적인 비밀 메모를 수정했어요.");
-  });
-
-  const onConfirmDelete = async () => {
-    if (!deletingLog) return;
-    setDeleteError(null);
-    try {
-      await deleteMutation.mutateAsync({
-        companyId,
-        privateMemoLogId: deletingLog.id,
-      });
-      if (editingId === deletingLog.id) {
-        setEditingId(null);
-      }
-      if (expandedId === deletingLog.id) {
-        setExpandedId(null);
-      }
-      setDeletingLog(null);
-      onChanged(LOG_DELETE_SUCCESS_MESSAGE, LOG_DELETE_SUCCESS_DESCRIPTION);
-    } catch (error) {
-      setDeleteError(getApiErrorMessage(error));
-    }
-  };
-
-  const createFormId = "company-private-memo-create-form";
-  const editFormId = "company-private-memo-edit-form";
-
-  return (
-    <>
-    <CompanyDocumentSection>
-      <div className="flex min-h-8 items-center gap-2">
-        <CompanyDocumentSectionHeader
-          isSmallText={isSmallText}
-          title="사적인 비밀 메모"
-        />
-        <div
-          aria-label="암호화 보안 메모"
-          className="flex items-center gap-1.5"
-          title="암호화 보안 메모"
-        >
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DBEAFE]">
-            <ShieldCheck className="h-4 w-4 text-[#1D4ED8]" />
-          </span>
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DBEAFE]">
-            <LockKeyhole className="h-4 w-4 text-[#1D4ED8]" />
-          </span>
-        </div>
-        <div className="flex-1" />
-        <button
-          aria-label="사적인 비밀 메모 추가"
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#4880EE] transition-colors hover:bg-[#EFF6FF] hover:text-[#1D4ED8]"
-          onClick={() => setIsCreateOpen(true)}
-          title="사적인 비밀 메모 추가"
-          type="button"
-        >
-          <Plus className="h-3.5 w-3.5" />
-        </button>
-      </div>
-
-      <div className={COMPANY_RELATED_BODY_CLASS_NAME}>
-        <div className={`${COMPANY_RELATED_SCROLL_CLASS_NAME} max-h-[420px]`}>
-          {isLoading ? (
-            <CompanyLoadingRows />
-          ) : privateMemoLogs.length === 0 ? (
-            <CompanyEmptyText isSmallText={isSmallText}>
-              사적인 나만의 아이디어와 생각들을 바로바로 기록해요.
-            </CompanyEmptyText>
-          ) : (
-            privateMemoLogs.map((log) => (
-              <div
-                className={COMPANY_MEMO_ROW_CLASS_NAME}
-                key={log.id}
-              >
-                {/* 1줄 미리보기 행 — 클릭 시 전체 토글 */}
-                <TimelineMarker />
-                <div className="min-w-0 flex-1">
-                <button
-                  className="flex min-h-[40px] w-full items-center text-left"
-                  onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
-                  type="button"
-                >
-                  <span
-                    className={`flex-1 truncate font-medium text-[#4B5563] ${
-                      isSmallText ? "text-[11px]" : "text-[12px]"
-                    }`}
-                  >
-                    {log.memo}
-                  </span>
-                  <span className="shrink-0 text-[11px] font-semibold text-[#9CA3AF]">
-                    {formatDateTime(log.createdAt, { includeYear: true })}
-                  </span>
-                  <div
-                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded group-hover:visible"
-                    onClick={(e) => { e.stopPropagation(); onStartEdit(log); }}
-                    role="button"
-                    tabIndex={-1}
-                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onStartEdit(log); } }}
-                  >
-                    <Pencil className="h-3 w-3 text-[#9CA3AF]" />
-                  </div>
-                  <div
-                    aria-label="삭제"
-                    className="invisible ml-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#DC2626] hover:bg-[#FEE2E2] group-hover:visible"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteError(null);
-                      setDeletingLog(log);
-                    }}
-                    role="button"
-                    tabIndex={-1}
-                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setDeleteError(null); setDeletingLog(log); } }}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </div>
-                </button>
-                {expandedId === log.id ? (
-                  <p
-                    className={`whitespace-pre-wrap pb-3 pt-1 font-medium leading-[1.35] text-[#4B5563] ${
-                      isSmallText ? "text-[11px]" : "text-[12px]"
-                    }`}
-                  >
-                    {log.memo}
-                  </p>
-                ) : null}
-                </div>
-              </div>
-            )
-            )
-          )}
-          {hasNext ? (
-            <button
-              className="text-[12px] font-semibold text-[#6B7280] hover:text-[#374151] transition-colors"
-              disabled={isFetchingNext}
-              onClick={onFetchMore}
-              type="button"
-            >
-              {isFetchingNext ? "불러오는 중..." : "더 보기"}
-            </button>
-          ) : null}
-        </div>
-      </div>
-    </CompanyDocumentSection>
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={createFormId}
-          isSubmitting={createMutation.isPending}
-          pendingLabel="추가 중"
-          submitLabel="추가"
-          onCancel={() => setIsCreateOpen(false)}
-          onSubmit={() => void onSubmitCreate()}
-        />
-      }
-      open={isCreateOpen}
-      size="md"
-      title="사적인 비밀 메모 추가"
-      onOpenChange={setIsCreateOpen}
-    >
-      <ModalForm id={createFormId} onSubmit={onSubmitCreate}>
-        <ModalFormSection title="사적인 비밀 메모">
-          <ModalFieldGroup
-            error={createForm.formState.errors.memo?.message}
-            id="company-private-memo-create-memo"
-            label="내용"
-          >
-            <textarea
-              className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="company-private-memo-create-memo"
-              placeholder="사적인 비밀 메모 입력"
-              rows={5}
-              {...createForm.register("memo")}
-            />
-          </ModalFieldGroup>
-        </ModalFormSection>
-        {createMutation.error ? (
-          <p className="text-xs text-[#B91C1C]">
-            {getApiErrorMessage(createMutation.error)}
-          </p>
-        ) : null}
-      </ModalForm>
-    </ModalShell>
-    <ModalShell
-      footer={
-        <ModalFooterActions
-          formId={editFormId}
-          isSubmitting={updateMutation.isPending}
-          pendingLabel="저장 중..."
-          submitLabel="저장"
-          onCancel={() => setEditingId(null)}
-        />
-      }
-      open={editingId !== null}
-      size="md"
-      title="사적인 비밀 메모 수정"
-      onOpenChange={(open) => {
-        if (!open) setEditingId(null);
-      }}
-    >
-      <ModalForm id={editFormId} onSubmit={onSubmitEdit}>
-        <ModalFormSection title="사적인 비밀 메모">
-          <ModalFieldGroup
-            error={editForm.formState.errors.memo?.message}
-            id="company-private-memo-edit-memo"
-            label="내용"
-          >
-            <textarea
-              className="min-h-32 resize-y rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              id="company-private-memo-edit-memo"
-              placeholder="사적인 비밀 메모 입력"
-              rows={5}
-              {...editForm.register("memo")}
-            />
-          </ModalFieldGroup>
-        </ModalFormSection>
-        {updateMutation.error ? (
-          <p className="text-xs text-[#B91C1C]">
-            {getApiErrorMessage(updateMutation.error)}
-          </p>
-        ) : null}
-      </ModalForm>
-    </ModalShell>
-    <ConfirmDialog
-      cancelLabel="아니요"
-      confirmLabel="예"
-      errorMessage={deleteError}
-      isPending={deleteMutation.isPending}
-      open={deletingLog !== null}
-      title={LOG_DELETE_CONFIRM_MESSAGE}
-      onCancel={() => {
-        if (!deleteMutation.isPending) {
-          setDeleteError(null);
-          setDeletingLog(null);
-        }
-      }}
-      onConfirm={() => void onConfirmDelete()}
-    />
-    </>
   );
 }
 

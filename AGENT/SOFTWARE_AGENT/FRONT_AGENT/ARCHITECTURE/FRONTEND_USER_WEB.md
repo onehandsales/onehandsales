@@ -6,7 +6,6 @@ User Web은 로그인 이후 `/app` 핵심 CRM 화면과 계정/도움말 모달
 
 - `/app`
 - `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`
-- `/app/trash`
 - `/app/more`
 
 Redirect-only:
@@ -27,5 +26,5 @@ Redirect-only:
 
 - 로그인 후 `/app` 진입
 - 회사 핵심 flow
-- 검색, 휴지통, 회사 export smoke
+- 검색과 회사 export smoke
 - 모바일 주요 화면 smoke

@@ -32,9 +32,6 @@ export type UserWebApiMockStore = {
   readonly companyFields: MutableRecord[];
   readonly companyRegions: MutableRecord[];
   readonly companies: MutableRecord[];
-  readonly memoLogs: MutableRecord[];
-  readonly privateMemoLogs: MutableRecord[];
-  readonly trashItems: MutableRecord[];
   readonly counters: Record<string, number>;
 };
 
@@ -246,10 +243,6 @@ async function handleApiRequest(
   if (pathname === "/api/companies" && method === "POST") {
     const company = createCompany(store, await readJsonBody(route));
     store.companies.unshift(company);
-    const memo = stringField(await safeReadJsonBody(route), "companyMemo");
-    if (memo) {
-      store.memoLogs.unshift(createCompanyMemoLog(store, String(company.id), { memo, memoType: "General memo" }));
-    }
     return json(company, 201);
   }
 
@@ -264,23 +257,6 @@ async function handleApiRequest(
     return json(company);
   }
 
-  if (companyMatch && method === "DELETE") {
-    const company = requireItem(store.companies, companyMatch[1]);
-    company.deletedAt = NOW;
-    store.trashItems.unshift(toTrashItem("COMPANY", company));
-    return json({ ok: true });
-  }
-
-  const memoLogsMatch = pathname.match(/^\/api\/companies\/([^/]+)\/memo-logs(?:\/([^/]+))?$/);
-  if (memoLogsMatch) {
-    return handleMemoLogRequest(store, route, method, memoLogsMatch, false);
-  }
-
-  const privateMemoLogsMatch = pathname.match(/^\/api\/companies\/([^/]+)\/private-memo-logs(?:\/([^/]+))?$/);
-  if (privateMemoLogsMatch) {
-    return handleMemoLogRequest(store, route, method, privateMemoLogsMatch, true);
-  }
-
   if (pathname === "/api/search" && method === "GET") {
     const q = (url.searchParams.get("q") ?? "").trim().toLowerCase();
     const items = store.companies
@@ -293,22 +269,6 @@ async function handleApiRequest(
       }));
 
     return json({ groups: [{ items, type: "COMPANY" }] });
-  }
-
-  if (pathname === "/api/trash" && method === "GET") {
-    return json(paginated(store.trashItems, url));
-  }
-
-  const trashDetailMatch = pathname.match(/^\/api\/trash\/([^/]+)\/([^/]+)(?:\/restore)?$/);
-  if (trashDetailMatch && method === "GET") {
-    const item = requireTrashItem(store, trashDetailMatch[1], trashDetailMatch[2]);
-    return json(toTrashDetail(item));
-  }
-
-  if (trashDetailMatch && method === "POST" && pathname.endsWith("/restore")) {
-    const item = requireTrashItem(store, trashDetailMatch[1], trashDetailMatch[2]);
-    item.canRestore = false;
-    return json({ restoredAt: NOW, targetId: item.targetId, targetType: item.targetType });
   }
 
   return json(
@@ -336,44 +296,11 @@ function createStore(): UserWebApiMockStore {
     companyRegion,
     id: "company-mobile-001",
   });
-  const memoLog = {
-    companyId: company.id,
-    createdAt: NOW,
-    id: "company-memo-001",
-    memo: "Initial company memo",
-    memoType: "General memo",
-  };
-  const privateMemoLog = {
-    companyId: company.id,
-    createdAt: NOW,
-    id: "company-private-memo-001",
-    memo: "Private company memo",
-  };
-
   return {
     companyFields: [companyField],
     companyRegions: [companyRegion],
     companies: [company],
-    counters: { company: 1, field: 1, memo: 1, privateMemo: 1, region: 1 },
-    memoLogs: [memoLog],
-    privateMemoLogs: [privateMemoLog],
-    trashItems: [
-      {
-        canRestore: true,
-        deletedAt: NOW,
-        hasPrivateMemo: false,
-        parentId: null,
-        parentTitle: null,
-        parentType: null,
-        permanentDeleteAt: "2026-08-19T09:00:00.000Z",
-        privateMemoIncluded: false,
-        restoreWindow: "ACTIVE",
-        targetId: "trash-company-001",
-        targetType: "COMPANY",
-        title: "Deleted company",
-        trashExpiresAt: "2026-08-19T09:00:00.000Z",
-      },
-    ],
+    counters: { company: 1, field: 1, region: 1 },
   };
 }
 
@@ -479,68 +406,6 @@ function updateCompany(store: UserWebApiMockStore, company: MutableRecord, body:
   company.updatedAt = NOW;
 }
 
-async function handleMemoLogRequest(
-  store: UserWebApiMockStore,
-  route: Route,
-  method: string,
-  match: RegExpMatchArray,
-  isPrivate: boolean,
-): Promise<MockApiResponse> {
-  const companyId = match[1];
-  const logId = match[2];
-  const collection = isPrivate ? store.privateMemoLogs : store.memoLogs;
-
-  if (method === "GET" && !logId) {
-    return jsonConnection(collection.filter((log) => log.companyId === companyId));
-  }
-
-  if (method === "POST" && !logId) {
-    const created = isPrivate
-      ? createCompanyPrivateMemoLog(store, companyId, await readJsonBody(route))
-      : createCompanyMemoLog(store, companyId, await readJsonBody(route));
-    collection.unshift(created);
-    return json(created, 201);
-  }
-
-  if (method === "PATCH" && logId) {
-    const log = requireItem(collection, logId);
-    const body = await readJsonBody(route);
-    if (isPrivate) {
-      log.memo = stringField(body, "memo") || log.memo;
-    } else {
-      log.memo = stringField(body, "memo") || log.memo;
-      log.memoType = stringField(body, "memoType") || log.memoType;
-    }
-    return json(log);
-  }
-
-  if (method === "DELETE" && logId) {
-    removeById(collection, logId);
-    return json({ ok: true });
-  }
-
-  return json({ code: "NotFound", message: "No memo mock", statusCode: 404 }, 404);
-}
-
-function createCompanyMemoLog(store: UserWebApiMockStore, companyId: string | undefined, body: unknown) {
-  return {
-    companyId,
-    createdAt: NOW,
-    id: nextId(store, "memo"),
-    memo: stringField(body, "memo") || "Memo",
-    memoType: stringField(body, "memoType") || "General memo",
-  };
-}
-
-function createCompanyPrivateMemoLog(store: UserWebApiMockStore, companyId: string | undefined, body: unknown) {
-  return {
-    companyId,
-    createdAt: NOW,
-    id: nextId(store, "privateMemo"),
-    memo: stringField(body, "memo") || "Private memo",
-  };
-}
-
 function filterCompanies(companies: readonly MutableRecord[], url: URL) {
   const query = (url.searchParams.get("companyName") ?? "").trim().toLowerCase();
   if (!query) return companies;
@@ -563,50 +428,6 @@ function paginated(items: readonly MutableRecord[], url: URL) {
     totalCount: items.length,
     totalPages: Math.max(1, Math.ceil(items.length / pageSize)),
   };
-}
-
-function jsonConnection(items: readonly MutableRecord[]) {
-  return json({ hasNext: false, items, nextCursor: null });
-}
-
-function toTrashItem(targetType: string, record: MutableRecord) {
-  return {
-    canRestore: true,
-    deletedAt: NOW,
-    hasPrivateMemo: false,
-    parentId: null,
-    parentTitle: null,
-    parentType: null,
-    permanentDeleteAt: "2026-08-19T09:00:00.000Z",
-    privateMemoIncluded: false,
-    restoreWindow: "ACTIVE",
-    targetId: String(record.id),
-    targetType,
-    title: stringField(record, "companyName") || "Deleted record",
-    trashExpiresAt: "2026-08-19T09:00:00.000Z",
-  };
-}
-
-function toTrashDetail(item: MutableRecord) {
-  return {
-    ...item,
-    content: null,
-    fields: [
-      { label: "Type", value: stringField(item, "targetType") },
-      { label: "Deleted at", value: stringField(item, "deletedAt") },
-    ],
-    summary: stringField(item, "title"),
-  };
-}
-
-function requireTrashItem(store: UserWebApiMockStore, targetType: string, targetId: string) {
-  const item = store.trashItems.find(
-    (candidate) => candidate.targetType === targetType && candidate.targetId === targetId,
-  );
-  if (!item) {
-    throw new Error(`Missing trash item ${targetType}/${targetId}`);
-  }
-  return item;
 }
 
 function findById(collection: readonly MutableRecord[], id: string | undefined) {
@@ -639,14 +460,6 @@ async function readJsonBody(route: Route): Promise<unknown> {
   const body = route.request().postData();
   if (!body) return {};
   return JSON.parse(body) as unknown;
-}
-
-async function safeReadJsonBody(route: Route): Promise<unknown> {
-  try {
-    return await readJsonBody(route);
-  } catch {
-    return {};
-  }
 }
 
 function stringField(value: unknown, key: string): string {

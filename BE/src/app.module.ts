@@ -11,7 +11,6 @@ import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
 import { SearchModule } from "./modules/search/infrastructure/search.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
-import { TrashModule } from "./modules/trash/infrastructure/trash.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
 
@@ -31,7 +30,6 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     ErrorReportModule,
     SearchModule,
     SupportRequestModule,
-    TrashModule,
   ],
 })
 export class AppModule implements NestModule {

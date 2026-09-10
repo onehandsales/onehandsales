@@ -27,7 +27,7 @@
 
 ## Time
 
-- `createdAt`, `updatedAt`, `deletedAt`, `trashExpiresAt`은 UTC instant로 저장한다.
+- `createdAt`, `updatedAt`, `deletedAt`은 UTC instant로 저장한다. 현재 `deletedAt`은 User 계정 상태 필드에만 남는다.
 - 사용자 표시 timezone은 `User.timeZone`을 따른다.
 
 ## Environment

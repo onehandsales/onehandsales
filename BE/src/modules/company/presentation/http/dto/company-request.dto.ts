@@ -103,13 +103,6 @@ export class ExportCompaniesQueryDto {
   sort?: CompanyListSort;
 }
 
-// 역할 : CursorQueryDto HTTP 요청 값을 검증하기 위한 DTO입니다.
-export class CursorQueryDto {
-  @IsOptional()
-  @IsString()
-  cursor?: string;
-}
-
 // 역할 : CreateCompanyDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class CreateCompanyDto {
   @IsString()
@@ -124,10 +117,6 @@ export class CreateCompanyDto {
   @IsOptional()
   @IsString()
   address?: string | null;
-
-  @IsOptional()
-  @IsString()
-  companyMemo?: string | null;
 }
 
 // 역할 : UpdateCompanyDto HTTP 요청 값을 검증하기 위한 DTO입니다.
@@ -167,34 +156,4 @@ export class CreateCompanyRegionDto {
   @IsOptional()
   @IsString()
   regionCode?: string | null;
-}
-
-// 역할 : CreateCompanyMemoLogDto HTTP 요청 값을 검증하기 위한 DTO입니다.
-export class CreateCompanyMemoLogDto {
-  @IsString()
-  memoType!: string;
-
-  @IsString()
-  memo!: string;
-}
-
-// 역할 : UpdateCompanyMemoLogDto HTTP 요청 값을 검증하기 위한 DTO입니다.
-export class UpdateCompanyMemoLogDto {
-  @IsString()
-  memoType!: string;
-
-  @IsString()
-  memo!: string;
-}
-
-// 역할 : CreateCompanyPrivateMemoLogDto HTTP 요청 값을 검증하기 위한 DTO입니다.
-export class CreateCompanyPrivateMemoLogDto {
-  @IsString()
-  memo!: string;
-}
-
-// 역할 : UpdateCompanyPrivateMemoLogDto HTTP 요청 값을 검증하기 위한 DTO입니다.
-export class UpdateCompanyPrivateMemoLogDto {
-  @IsString()
-  memo!: string;
 }

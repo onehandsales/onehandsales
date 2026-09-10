@@ -68,7 +68,6 @@ export type CreateCompanyInput = {
   readonly companyFieldId: string;
   readonly companyRegionId: string;
   readonly address?: string;
-  readonly companyMemo?: string;
 };
 
 export type UpdateCompanyInput = {
@@ -87,61 +86,4 @@ export type CreateCompanyRegionInput = {
   readonly region: string;
   readonly countryCode?: string | null;
   readonly regionCode?: string | null;
-};
-
-export type CompanyMemoType = string;
-
-export type CompanyMemoLog = {
-  readonly id: string;
-  readonly memoType: CompanyMemoType;
-  readonly memo: string;
-  readonly createdAt: string;
-};
-
-export type CompanyMemoLogConnectionResponse = {
-  readonly items: CompanyMemoLog[];
-  readonly nextCursor: string | null;
-  readonly hasNext: boolean;
-};
-
-export type CreateCompanyMemoLogInput = {
-  readonly companyId: string;
-  readonly memoType: CompanyMemoType;
-  readonly memo: string;
-};
-
-export type UpdateCompanyMemoLogInput = CreateCompanyMemoLogInput & {
-  readonly memoLogId: string;
-};
-
-export type DeleteCompanyMemoLogInput = {
-  readonly companyId: string;
-  readonly memoLogId: string;
-};
-
-export type CompanyPrivateMemoLog = {
-  readonly id: string;
-  readonly memo: string;
-  readonly createdAt: string;
-};
-
-export type CompanyPrivateMemoLogConnectionResponse = {
-  readonly items: CompanyPrivateMemoLog[];
-  readonly nextCursor: string | null;
-  readonly hasNext: boolean;
-};
-
-export type CreateCompanyPrivateMemoLogInput = {
-  readonly companyId: string;
-  readonly memo: string;
-};
-
-export type UpdateCompanyPrivateMemoLogInput =
-  CreateCompanyPrivateMemoLogInput & {
-    readonly privateMemoLogId: string;
-  };
-
-export type DeleteCompanyPrivateMemoLogInput = {
-  readonly companyId: string;
-  readonly privateMemoLogId: string;
 };

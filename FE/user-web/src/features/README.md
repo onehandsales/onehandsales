@@ -10,7 +10,6 @@
 - `public-site`
 - `search`
 - `support-request`
-- `trash`
 
 자리만 남은 feature folder:
 

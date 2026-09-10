@@ -38,7 +38,6 @@ import { InsuranceAutoSolutionPage } from "@/pages/solutions/insurance-auto";
 import { SolutionsPage } from "@/pages/solutions";
 import { PersonalSolutionPage } from "@/pages/solutions/personal";
 import { RealEstateSolutionPage } from "@/pages/solutions/real-estate";
-import { TrashPage } from "@/pages/trash";
 import { MorePage } from "@/pages/more";
 import { TermsPage } from "@/pages/terms";
 
@@ -137,7 +136,6 @@ export const router = createBrowserRouter([
   { path: "/deals/new/full", element: <LegacyAppRedirect to="/app" /> },
   { path: "/deals/new", element: <LegacyAppRedirect to="/app" /> },
   { path: "/deals/:dealId", element: <LegacyAppRedirect to="/app" /> },
-  { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
     path: "/app",
@@ -156,7 +154,6 @@ export const router = createBrowserRouter([
       { path: "products/*", element: <Navigate replace to="/app" /> },
       { path: "deals/*", element: <Navigate replace to="/app" /> },
       { path: "export", element: <Navigate replace to="/app" /> },
-      { path: "trash", element: <TrashPage /> },
       { path: "more", element: <MorePage /> },
     ],
   },

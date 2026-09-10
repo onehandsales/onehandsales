@@ -3,12 +3,8 @@ import type {
   CompanyDetail,
   CreateCompanyFieldInput,
   CreateCompanyInput,
-  CreateCompanyMemoLogInput,
-  CreateCompanyPrivateMemoLogInput,
   CreateCompanyRegionInput,
   UpdateCompanyInput,
-  UpdateCompanyMemoLogInput,
-  UpdateCompanyPrivateMemoLogInput,
 } from "@/features/company/types/company";
 
 export const companyCreateFormSchema = z.object({
@@ -18,7 +14,6 @@ export const companyCreateFormSchema = z.object({
   countryCode: z.enum(["KR", "US"]),
   regionCode: z.string().trim().optional(),
   address: z.string().trim().optional(),
-  companyMemo: z.string().trim().optional(),
 });
 
 export type CompanyCreateFormValues = z.infer<typeof companyCreateFormSchema>;
@@ -40,21 +35,6 @@ export const companyTaxonomyFormSchema = z.object({
 
 export type CompanyTaxonomyFormValues = z.infer<typeof companyTaxonomyFormSchema>;
 
-export const companyMemoLogFormSchema = z.object({
-  memoType: z.string().trim().min(1, "메모 유형을 입력해 주세요."),
-  memo: z.string().trim().min(1, "메모를 입력해 주세요."),
-});
-
-export type CompanyMemoLogFormValues = z.infer<typeof companyMemoLogFormSchema>;
-
-export const companyPrivateMemoLogFormSchema = z.object({
-  memo: z.string().trim().min(1, "개인 메모를 입력해 주세요."),
-});
-
-export type CompanyPrivateMemoLogFormValues = z.infer<
-  typeof companyPrivateMemoLogFormSchema
->;
-
 export const emptyCompanyCreateFormValues: CompanyCreateFormValues = {
   companyName: "",
   companyFieldId: "",
@@ -62,22 +42,11 @@ export const emptyCompanyCreateFormValues: CompanyCreateFormValues = {
   countryCode: "KR",
   regionCode: "",
   address: "",
-  companyMemo: "",
 };
 
 export const emptyCompanyTaxonomyFormValues: CompanyTaxonomyFormValues = {
   name: "",
 };
-
-export const emptyCompanyMemoLogFormValues: CompanyMemoLogFormValues = {
-  memoType: "일반 메모",
-  memo: "",
-};
-
-export const emptyCompanyPrivateMemoLogFormValues: CompanyPrivateMemoLogFormValues =
-  {
-    memo: "",
-  };
 
 // 기능 : 회사 상세 응답을 수정 폼 기본값으로 변환합니다.
 export function toCompanyEditFormValues(
@@ -103,7 +72,6 @@ export function toCreateCompanyInput(
     companyFieldId: values.companyFieldId,
     companyRegionId: values.companyRegionId,
     address: optionalText(values.address),
-    companyMemo: optionalText(values.companyMemo),
   };
 }
 
@@ -136,53 +104,6 @@ export function toCreateCompanyRegionInput(
 ): CreateCompanyRegionInput {
   return {
     region: values.name.trim(),
-  };
-}
-
-// 기능 : 일반 메모 생성 폼 값을 API 요청 값으로 변환합니다.
-export function toCreateCompanyMemoLogInput(
-  companyId: string,
-  values: CompanyMemoLogFormValues
-): CreateCompanyMemoLogInput {
-  return {
-    companyId,
-    memoType: values.memoType.trim(),
-    memo: values.memo.trim(),
-  };
-}
-
-// 기능 : 일반 메모 수정 폼 값을 API 요청 값으로 변환합니다.
-export function toUpdateCompanyMemoLogInput(
-  companyId: string,
-  memoLogId: string,
-  values: CompanyMemoLogFormValues
-): UpdateCompanyMemoLogInput {
-  return {
-    ...toCreateCompanyMemoLogInput(companyId, values),
-    memoLogId,
-  };
-}
-
-// 기능 : 개인 메모 생성 폼 값을 API 요청 값으로 변환합니다.
-export function toCreateCompanyPrivateMemoLogInput(
-  companyId: string,
-  values: CompanyPrivateMemoLogFormValues
-): CreateCompanyPrivateMemoLogInput {
-  return {
-    companyId,
-    memo: values.memo.trim(),
-  };
-}
-
-// 기능 : 개인 메모 수정 폼 값을 API 요청 값으로 변환합니다.
-export function toUpdateCompanyPrivateMemoLogInput(
-  companyId: string,
-  privateMemoLogId: string,
-  values: CompanyPrivateMemoLogFormValues
-): UpdateCompanyPrivateMemoLogInput {
-  return {
-    ...toCreateCompanyPrivateMemoLogInput(companyId, values),
-    privateMemoLogId,
   };
 }
 

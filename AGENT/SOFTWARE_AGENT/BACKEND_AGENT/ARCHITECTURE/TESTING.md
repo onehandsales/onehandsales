@@ -12,8 +12,7 @@
 ## 테스트 기준
 
 - Auth/User session flow
-- Company CRUD, option, memo/private memo flow
+- Company create/read/update, option, export flow
 - Search ownership and target mapping
-- Trash list/detail/restore
 - Error Report and Support Request intake
 - Admin authority check

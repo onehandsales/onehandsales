@@ -13,5 +13,5 @@
 ## 적용
 
 - `User.timeZone`은 기본 표시 timezone이다.
-- `createdAt`, `updatedAt`, `deletedAt`, `trashExpiresAt`은 UTC instant로 본다.
+- `createdAt`, `updatedAt`, `deletedAt`은 UTC instant로 본다. 현재 `deletedAt`은 User 계정 상태 필드에만 남는다.
 - Frontend formatter는 UTC string을 사용자 표시 기준으로 변환한다.

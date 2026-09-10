@@ -6,7 +6,6 @@ User Web은 React Router, TanStack Query, i18n, Playwright/Vitest 기반으로 �
 
 - `/app`
 - `/app/companies`, `/app/companies/new`, `/app/companies/new/full`, `/app/companies/:companyId`
-- `/app/trash`
 - `/app/more`
 
 Redirect-only:
@@ -20,9 +19,8 @@ Redirect-only:
 
 - `auth`: token exchange, session refresh, logout
 - `app-i18n`: app locale, timezone, country/currency formatting
-- `company`: list/detail/create/edit/export/memo/private memo
+- `company`: list/detail/create/edit/export
 - `search`: company search modal and result navigation
-- `trash`: deleted company/company memo listing, preview, restore
 - `error-report`: authenticated error report intake
 - `support-request`: authenticated support request intake
 - `public-contact-request`: unauthenticated public contact request intake

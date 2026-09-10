@@ -71,7 +71,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
       {
         title: "데이터 정리하기",
         description:
-          "엑셀 가져오기, 내보내기, 휴지통 복구 흐름을 확인해요.",
+          "검색과 엑셀 내보내기 흐름을 확인해요.",
       },
     ],
     sections: [
@@ -127,19 +127,6 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
           "회의록을 딜과 연결해 제안, 견적, 계약 흐름의 근거로 활용해요.",
         ],
       },
-      {
-        id: "trash",
-        title: "삭제한 기록 복구하기",
-        paragraphs: [
-          "실수로 삭제한 고객, 딜, 일정, 회의록은 휴지통에서 다시 확인할 수 있어요.",
-          "복구가 필요한 기록은 항목별로 확인한 뒤 원래 흐름으로 되돌리는 방식을 사용해요.",
-        ],
-        bullets: [
-          "삭제 직후에는 휴지통에서 기록 이름과 삭제 시점을 확인해요.",
-          "복구 전 관련 고객이나 딜 맥락이 맞는지 살펴봐요.",
-          "복구 후에는 필요한 일정이나 후속 행동이 남아 있는지 다시 점검해요.",
-        ],
-      },
     ],
   },
   "en-US": {
@@ -164,7 +151,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
       {
         title: "Organize data",
         description:
-          "Review Excel download and trash restore workflows.",
+          "Review search and Excel export workflows.",
       },
     ],
     sections: [
@@ -218,19 +205,6 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
           "Separate background, requirements, decisions, and next actions in the note.",
           "Review AI drafts before saving them to your workspace.",
           "Connect meeting notes to deals as evidence for proposals, quotes, and contracts.",
-        ],
-      },
-      {
-        id: "trash",
-        title: "Restore deleted records",
-        paragraphs: [
-          "Accidentally deleted customers, deals, schedules, and meeting notes can be reviewed in trash.",
-          "Restore records after checking the item and its original context.",
-        ],
-        bullets: [
-          "Check the record name and deletion timing soon after deletion.",
-          "Review the related customer or deal context before restoring.",
-          "After restore, confirm that any needed schedules or next actions are still in place.",
         ],
       },
     ],

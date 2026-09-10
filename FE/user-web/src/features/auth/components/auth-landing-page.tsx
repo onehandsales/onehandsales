@@ -208,8 +208,8 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
           description: "회사, 담당자, 제품, 딜 기록을 내려받을 수 있어요.",
         },
         {
-          title: "휴지통 복구",
-          description: "삭제한 기록은 7일 안에 다시 복구할 수 있어요.",
+          title: "통합 검색",
+          description: "등록한 회사 기록을 빠르게 다시 찾을 수 있어요.",
         },
       ],
     },
@@ -288,8 +288,8 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
             "Companies, contacts, products, and deals can be exported.",
         },
         {
-          title: "Trash recovery",
-          description: "Deleted records can be restored within 7 days.",
+          title: "Integrated search",
+          description: "Find registered company records quickly.",
         },
       ],
     },

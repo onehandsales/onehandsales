@@ -4,7 +4,6 @@
   Plus,
   RefreshCw,
   Search,
-  Trash2,
   type LucideIcon,
 } from "lucide-react";
 import { useMemo, type ReactNode } from "react";
@@ -42,7 +41,7 @@ export function HomePage() {
   return (
     <section className="min-h-0 flex-1 overflow-y-auto bg-white px-5 pb-8 pt-2 md:px-8 md:pt-4">
       <div className="mx-auto grid w-full max-w-[1180px] gap-5">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           <SummaryCard
             icon={Building2}
             label={t("navigation.companies")}
@@ -54,11 +53,6 @@ export function HomePage() {
             icon={Search}
             label={t("shell.integratedSearch")}
             value={t("navigation.companies")}
-          />
-          <SummaryCard
-            icon={Trash2}
-            label={t("navigation.trash")}
-            value={t("entities.company")}
           />
           <SummaryCard
             icon={RefreshCw}
@@ -99,11 +93,6 @@ export function HomePage() {
               {QUICK_ACTIONS.map((action) => (
                 <QuickActionCard action={action} key={action.href} t={t} />
               ))}
-              <QuickLink
-                href="/app/trash"
-                icon={Trash2}
-                label={t("navigation.trash")}
-              />
             </div>
           </DashboardSection>
         </div>
@@ -261,27 +250,6 @@ function QuickActionCard({
         </span>
       </span>
       <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" strokeWidth={2} />
-    </Link>
-  );
-}
-
-function QuickLink({
-  href,
-  icon: Icon,
-  label,
-}: {
-  readonly href: string;
-  readonly icon: LucideIcon;
-  readonly label: string;
-}) {
-  return (
-    <Link
-      className="flex h-10 items-center gap-2 rounded-lg px-2 text-[13px] font-semibold text-[#374151] transition hover:bg-[#F8FAFC] active:bg-[#F3F6FB]"
-      to={href}
-    >
-      <Icon className="h-4 w-4 text-[#64748B]" strokeWidth={1.8} />
-      <span>{label}</span>
-      <ArrowRight className="ml-auto h-4 w-4 text-[#94A3B8]" strokeWidth={2} />
     </Link>
   );
 }
