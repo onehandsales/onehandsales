@@ -9,7 +9,7 @@ Backend 테스트는 `BE` 내부에서 관리한다.
 - domain entities와 value objects
 - user ownership isolation
 - AdminGuard
-- import mapping validation
+- request validation과 DTO whitelist
 - trash retention과 restore
 - deal stage/activity logging
 - meeting note to deal activity integration

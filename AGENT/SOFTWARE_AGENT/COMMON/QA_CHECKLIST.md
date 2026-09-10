@@ -46,7 +46,6 @@ QA는 제품이 의도한 대로 동작하는지, 사용자가 실제 업무를 
   - 회사, 담당자, 제품, 딜
   - 일정
   - 회의록
-  - 가져오기
   - 검색
   - 휴지통
   - 설정/더보기
@@ -157,7 +156,6 @@ pnpm prisma:seed
 - [ ] migration 성공
 - [ ] 로컬 DB smoke가 필요하면 seed 성공
 - [ ] 실제 Supabase OAuth QA를 할 때는 테스트 사용자/CRM 데이터를 초기화한 깨끗한 DB에서 시작
-- [ ] 기본 import template 4개는 기능용 seed이므로 사용자 테스트 데이터와 별도로 보존 가능
 
 ### 2026-07-09 QA 전 준비 확인 결과
 
@@ -681,7 +679,7 @@ pnpm test:e2e
 - OpenAI key 미설정, AI/STT provider 실패, 지원하지 않는 파일 형식, 대용량 파일 같은 예외 케이스는 이번 성공 케이스 기능 QA 범위에서 제외한다.
 
 
-## 19. 검색 QA
+## 17. 검색 QA
 
 - [x] 전역 검색 UI가 열림
 - [x] 검색어 입력 시 로딩 상태가 보임
@@ -701,7 +699,7 @@ pnpm test:e2e
 - 전역 검색 UI, 검색어 입력, 회사/담당자/제품/딜/회의록 결과 표시, 결과 상세 이동이 동작함을 확인했다.
 - 결과 없음, 짧은 검색어/공백 검색, 빠른 입력, 삭제 데이터 미노출 처리가 기대대로 동작함을 확인했다.
 
-## 20. 휴지통 QA
+## 18. 휴지통 QA
 
 ### 목록/상세
 
@@ -735,7 +733,7 @@ pnpm test:e2e
 - 복구 후 원래 목록과 검색 결과에 다시 표시되고, 연결 관계가 기대대로 유지됨을 확인했다.
 - 이미 복구된 항목 재복구와 만료 항목 복구 정책은 일반 UI에서 재현하기 어려워 이번 수동 UI QA 범위에서 제외한다.
 
-## 21. 도메인별 XLSX Export QA
+## 19. 도메인별 XLSX Export QA
 
 
 - [x] 회사 XLSX 다운로드 가능
@@ -758,7 +756,7 @@ pnpm test:e2e
 - 다운로드 파일명, 파일 열림, 헤더, 한글, 숫자/날짜 형식, 삭제 데이터 미포함이 기대대로 동작함을 확인했다.
 - 다른 사용자 데이터 격리, 대량 데이터, export 실패 안내는 이번 수동 UI QA 범위에서 제외한다.
 
-## 22. 설정/더보기 QA
+## 20. 설정/더보기 QA
 
 - [x] 계정 메뉴 또는 `/app?account=settings` query로 계정 설정 모달 진입 가능
 - [x] 내 프로필 조회 가능
@@ -784,7 +782,7 @@ pnpm test:e2e
 - `TODO/DONE/ACCOUNT_SETTINGS_MODAL_PLAN` 기준으로 `/app/settings` 사용자-facing route는 제거됐고, 계정 설정 진입은 `/app?account=settings` modal-open 흐름을 기준으로 확인한다.
 - Google Calendar callback과 follow-up email callback은 Settings modal 안에서 처리한다.
 
-## 23. API 공통 QA
+## 21. API 공통 QA
 
 ### 상태 코드
 
@@ -819,7 +817,6 @@ pnpm test:e2e
 ### 트랜잭션/데이터 무결성
 
 - [x] 딜 생성 중 관계 연결 실패 시 부분 데이터가 남지 않음
-- [x] import 확정 중 일부 실패 정책이 명확함
 - [x] 삭제/복구 중 관계 데이터가 깨지지 않음
 - [x] 메모 로그 삭제가 부모 리소스 상태와 충돌하지 않음
 - [N/A] 동시에 저장 버튼을 두 번 눌러도 중복 생성되지 않음. 이번 무인 API smoke 범위에서 제외
@@ -830,7 +827,7 @@ pnpm test:e2e
 - BE 자동 테스트 17 suites / 82 tests passed 기준으로 controller status 계약, validation 400, DTO whitelist, enum/date 검증, pagination/filter 변환, AdminGuard 403, 휴지통 복구 conflict를 확인했다.
 - 삭제된 리소스 직접 조회와 동시 저장 중복 방지는 별도 인증 세션/DB 상태 조작이 필요해 이번 무인 API smoke 범위에서 제외한다.
 
-## 24. 보안/개인정보 QA
+## 22. 보안/개인정보 QA
 
 - [x] `.env` 값이 화면에 노출되지 않음
 - [x] `.env` 값이 콘솔 로그에 노출되지 않음
@@ -852,7 +849,7 @@ pnpm test:e2e
 - 실제 401/404 API 응답 body에 stack trace가 포함되지 않음을 확인했다.
 - refresh token은 BE에서 httpOnly, sameSite=lax cookie로 설정되고 저장소에는 hash만 보관하는 구조임을 확인했다.
 
-## 25. UX/UI 공통 QA
+## 23. UX/UI 공통 QA
 
 ### 레이아웃
 
@@ -924,7 +921,7 @@ pnpm test:e2e
 - [ ] 작은 보조 텍스트가 너무 낮은 대비로 밀려나지 않음
 - [ ] 버튼/입력/탭/필터 스타일이 화면마다 일관됨
 
-## 26. 모바일 브라우저 QA
+## 24. 모바일 브라우저 QA
 
 이 섹션은 User Web의 모바일 브라우저 QA입니다. 현재 Web 제품이 작은 화면에서도 핵심 업무를 수행할 수 있는지 확인합니다.
 
@@ -942,7 +939,7 @@ pnpm test:e2e
 - [ ] dialog가 작은 화면에서 화면 밖으로 벗어나지 않음
 - [ ] 키보드가 올라와도 입력 중인 필드와 저장 버튼을 사용할 수 있음
 
-## 27. 브라우저 QA
+## 25. 브라우저 QA
 
 우선순위는 Chrome입니다. 가능하면 Edge까지 확인합니다.
 
@@ -953,7 +950,7 @@ pnpm test:e2e
 - [ ] 여러 탭에서 같은 데이터 수정 시 화면이 심하게 꼬이지 않음
 - [ ] 네트워크 slow 3G 또는 throttling에서 로딩 상태가 보임
 
-## 28. 알려진 한계 확인
+## 26. 알려진 한계 확인
 
 아래는 현재 실패로 보지 않고, QA 결과에 `N/A` 또는 `Known limitation`으로 기록합니다.
 
@@ -964,7 +961,7 @@ pnpm test:e2e
 - [ ] 현재 User Web은 `mobile`/`personal_laptop` 두 device slot만 사용하며 모바일 여러 대 동시 active session은 보장하지 않음
 - [ ] 현재 전화번호 입력/검증은 KR/US 1차 지원이며, KR/US/CA 우선 전략에 맞춘 CA 전화번호 모델은 후속 구현 대상
 
-## 29. 버그 리포트 템플릿
+## 27. 버그 리포트 템플릿
 
 버그를 발견하면 아래 형식으로 기록합니다.
 
@@ -1006,7 +1003,7 @@ pnpm test:e2e
 - 필수값을 모두 입력해도 재현됨
 ```
 
-## 30. 최종 QA 완료 기준
+## 28. 최종 QA 완료 기준
 
 2026-07-10 기준 1차 기능 QA 완료 조건은 아래와 같이 충족했다.
 

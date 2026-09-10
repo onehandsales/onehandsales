@@ -47,7 +47,6 @@ legacy redirect 라우트:
 - `/companies`, `/companies/new`, `/companies/:companyId` -> `/app/companies...`
 - `/companies/new/full` -> `/app/companies/new/full`
 - `/contacts`, `/contacts/:contactId` -> `/app/contacts...`
-- `/contacts/scan` -> `/app/contacts`
 - `/contacts/new`, `/contacts/new/full` -> `/app/contacts...`
 - `/products`, `/products/new`, `/products/:productId` -> `/app/products...`
 - `/products/new/full` -> `/app/products/new/full`
@@ -68,7 +67,6 @@ legacy redirect 라우트:
 - `/app/companies/new/full`
 - `/app/contacts`, `/app/contacts/:contactId`
 - `/app/contacts/new`, `/app/contacts/new/full`
-- `/app/contacts/scan` -> `/app/contacts`
 - `/app/products`, `/app/products/new`, `/app/products/:productId`
 - `/app/products/new/full`
 - `/app/deals`, `/app/deals/new`, `/app/deals/:dealId`
@@ -176,22 +174,6 @@ mock/placeholder 경계를 유지해야 하는 항목:
 - `replaceExistingDevice=true`를 보내므로 같은 slot의 다른 브라우저/기기 로그인은 기존 active device/session을 교체한다.
 - Frontend는 `locale`과 IANA `timeZone`을 exchange payload로 보낸다. 국가는 Frontend가 보내지 않고 Backend proxy geo header에서만 저장한다.
 - URL locale smoke는 2026-07-10 기준 통과했다.
-
-
-
-목록 UX:
-
-- 등록일 최신순 고정. 별도 정렬 select를 만들지 않는다.
-- 상태 필터는 담당자 목록의 회사 필터와 같은 multi-select combobox 패턴을 사용한다.
-- 상태 필터 안에는 `상태 초기화` 액션을 둔다.
-- 전체 상태로 되돌리는 상단 액션은 회사 목록의 reset icon 버튼 패턴을 따른다.
-
-
-- 최초 상태에서는 이미지 업로드만 보여준다.
-- 요청 중에는 파일 교체/삭제와 모달 닫기를 막는다.
-- 수정 필드는 회사명, 회사분야, 회사지역, 담당자명, 휴대폰, 이메일, 부서, 직급이다.
-- 휴대폰은 Frontend에서 `010-0000-0000` 형태로 포맷한다.
-- 같은 모달에서 재촬영/재시도 흐름은 제공하지 않는다.
 
 ## 6. Search 구현 기준
 

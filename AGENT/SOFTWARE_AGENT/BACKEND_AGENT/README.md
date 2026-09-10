@@ -90,7 +90,6 @@ Current additional backend scope:
 - 현재 Auth runtime provider는 Google/LINE/Apple이다. 기존 provider 계정이 없고 같은 verified email의 기존 `User`가 있으면 새 provider 계정을 기존 User에 연결한다. Kakao는 legacy enum으로만 유지하고 runtime provider로 노출하지 않는다.
 - 같은 active device 재로그인은 session row를 새로 만들지 않고 refresh token을 회전한다. 같은 slot의 다른 device login은 기존 device/session을 교체한다.
 - 국가 코드 메타데이터는 배포 프록시 geo header가 있을 때만 저장되므로 local/dev에서는 `null`일 수 있다.
-- 딜 import 누락 회사/담당자/제품 보정 배열은 현재 FE API와 HTTP controller/application/repository confirm 경로에 연결되어 있다.
 - 08 Global Data I18N 구현 시 Backend 신규/수정 코드에는 기존 주석 규칙에 맞춰 한글 `// 기능 : ...` 또는 Prisma/migration 한글 주석을 남긴다.
 - 2026-09-10 기준 User Web Backend foundation은 완료 archive다. 세부 검증 이력은 각 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/*` closeout 문서를 따른다.
 

@@ -658,41 +658,7 @@ Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사
 - updatedAt
 - deletedAt
 
-
-- id
-- userId
-- type
-- channel
-- targetType
-- targetId
-- scheduledAt
-- sentAt nullable
-- status
-- metadata
-
-
-
-
-
-- 회사/담당자/제품/딜 불러오기 양식의 컬럼 정의와 샘플 row를 저장한다.
-- 활성 양식만 사용자에게 노출한다.
-- 현재 기본 seed는 `COMPANY`, `PRODUCT`, `CONTACT`, `DEAL` v1이다.
-
-
-- 확정 저장에 성공한 불러오기 작업의 header snapshot을 저장한다.
-- `targetType`, `templateVersion`, 확정 당시 `templateColumnsJson`, context, 원본 파일명/크기, 전체 row 수, import row 수를 가진다.
-
-
-- 확정 저장된 각 row의 제출 데이터 snapshot과 대상 label을 저장한다.
-- 성공 내역 상세 화면에서 row별 제출값을 조회할 수 있게 한다.
-
-정책:
-
-- 확정 전 job은 DB table에 저장하며 resume/cancel/expire/confirm 상태를 추적한다.
-- 딜 불러오기는 기존 회사/담당자/제품 이름 매칭을 전제로 딜과 연결 row를 같은 transaction에서 생성한다.
-- 딜 불러오기 누락 회사/담당자/제품 보정값은 FE API 함수, BE DTO, HTTP controller confirm, application service, repository 경로에 연결되어 있다.
-
-## 19. Global Paid / Growth 후속 데이터 범위
+## 17. Global Paid / Growth 후속 데이터 범위
 
 
 Paddle/Billing 후속 후보:
@@ -717,7 +683,7 @@ Paddle/Billing 후속 후보:
 
 자세한 제품 전략은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
-## 20. Mermaid ERD
+## 18. Mermaid ERD
 
 ```mermaid
 erDiagram
@@ -750,7 +716,7 @@ erDiagram
   PRODUCT ||--o{ PRODUCT_CONNECTION : connects
 ```
 
-## 21. 관련 문서
+## 19. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`

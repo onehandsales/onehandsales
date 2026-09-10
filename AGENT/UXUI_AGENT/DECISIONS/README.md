@@ -14,7 +14,7 @@
 - `010_uxui_search.md`
 - `011_uxui_deal_detail.md`
 - `012_uxui_schedule_meeting_link.md`
-- `013_uxui_next_action_alert.md`
+- `013_uxui_next_action_due_state.md`
 - `014_uxui_admin_tone.md`
 - `015_uxui_list_filter_pagination.md`
 - `016_uxui_writing_tone.md`

@@ -120,7 +120,7 @@ company.created
 contact.duplicateDetected
 deal.stageChanged
 meetingNote.generated
-ocr.callFailed
+aiProvider.callFailed
 ```
 
 Sensitive data includes:

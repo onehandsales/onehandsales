@@ -124,10 +124,6 @@
 
 - 위치 선택 입력
 
-### 제외
-
-- 사용자 확인 없는 자동 회사/담당자 확정 저장
-
 ## 5. 제품
 
 ### 현재 Backend 구현
@@ -279,9 +275,7 @@
 
 
 
-- 지원 대상: 회사, 담당자, 제품, 딜
-- 확정 전 job은 DB에 저장하며 resume/cancel/expire/confirm 상태를 추적한다.
-- 딜 import 누락 회사/담당자/제품 보정 배열은 FE API 함수, BE DTO, controller confirm, application service, repository 경로에 연결되어 있다.
+## 10. Export
 
 ### 현재 구현된 도메인별 Export
 

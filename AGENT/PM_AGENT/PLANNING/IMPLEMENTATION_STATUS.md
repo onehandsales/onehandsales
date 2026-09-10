@@ -42,7 +42,7 @@
 | Trash | 완료 | 완료 | `/api/trash` 목록, 상세, 복구. Company/Contact/Product/Deal/Schedule/MeetingNote와 지원 로그의 7일 이내 복구 |
 | Domain export | 완료 | 완료 | Company/Contact/Product/Deal 각 도메인별 xlsx 다운로드 |
 | Weekly Schedule Report | 완료 | 완료 | 주간 일정 보고서 API/User Web 및 XLSX export foundation |
-| Google Calendar Integration | 완료 | 완료 | Google Calendar 연결, calendar source 선택, read-only import/sync foundation |
+| Google Calendar Integration | 완료 | 완료 | Google Calendar 연결, calendar source 선택, read-only sync foundation |
 | AI Weekly Sales Report / Follow-up | 완료 | 완료 | 저장형 AI weekly report, suggestion, follow-up draft/send/retry/timeline, Gmail/Microsoft email provider adapter와 provider smoke closeout |
 | Deal Activity Timeline | 완료 | 완료 | `DealActivity` 기반 deal activity timeline, record summary subset, 기존 next action/memo log와 연결 |
 | MeetingNote AI Provider Log | 완료 | 완료 | `AiProviderCallLog`, 회의록 AI provider log, next action/follow-up draft 고도화 |

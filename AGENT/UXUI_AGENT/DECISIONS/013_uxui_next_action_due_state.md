@@ -1,4 +1,4 @@
-# UX/UI Next Action And Alert Decision
+# UX/UI Next Action Due State Decision
 
 ## 결정
 

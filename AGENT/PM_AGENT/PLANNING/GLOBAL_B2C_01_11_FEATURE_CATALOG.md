@@ -12,7 +12,7 @@
 
 ## 1. 전체 색인
 
-## 4. 03 Weekly Schedule Report
+## 2. 03 Weekly Schedule Report
 
 목적:
 
@@ -42,7 +42,7 @@
 - AI summary
 - 민감 memo export
 
-## 5. 04 Google Calendar Integration
+## 3. 04 Google Calendar Integration
 
 목적:
 
@@ -87,11 +87,11 @@ DB/삭제 정책:
 - webhook/watch
 - bidirectional sync
 - recurring schedule formal model
-- attendees import
+- attendee detail sync
 - 다른 calendar provider
 - multi Google accounts
 
-## 6. 05 AI Weekly Sales Report / Follow-up
+## 4. 05 AI Weekly Sales Report / Follow-up
 
 목적:
 
@@ -129,7 +129,7 @@ DB/삭제 정책:
 - 사용자-facing cost display
 - permanent legal deletion policy
 
-## 7. 06 Deal Activity Timeline
+## 5. 06 Deal Activity Timeline
 
 목적:
 
@@ -168,7 +168,7 @@ Activity type:
 - record-level detailed timeline.
 - team CRM식 activity 확장.
 
-## 8. 07 MeetingNote AI Provider Log
+## 6. 07 MeetingNote AI Provider Log
 
 목적:
 
@@ -207,7 +207,7 @@ Operation:
 - data cleanup suggestion
 - meeting note list summary
 
-## 9. 08 Global Data / I18N
+## 7. 08 Global Data / I18N
 
 목적:
 
@@ -249,7 +249,7 @@ DB/API:
 - Contact 주소/지역 field.
 - `KAKAO` runtime provider 복구.
 
-## 10. 09 Product Analytics
+## 8. 09 Product Analytics
 
 목적:
 
@@ -294,7 +294,7 @@ Runtime event boundary:
 - public/auth route tracking, UTM/ad attribution, raw URL query, UUID path param.
 - `AiUsageDaily` table.
 
-## 11. 10 Mobile/PWA Field Use
+## 9. 10 Mobile/PWA Field Use
 
 목적:
 
@@ -332,7 +332,7 @@ Mobile event:
 - PWA install prompt/offline shell.
 - server-side draft persistence.
 
-## 12. 현재 후속 판단
+## 10. 현재 후속 판단
 
 01~10은 기능 foundation 완료 상태지만, 유료 판매 완료 상태는 아니다.
 

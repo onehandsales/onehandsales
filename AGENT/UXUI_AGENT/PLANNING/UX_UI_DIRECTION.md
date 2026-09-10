@@ -53,7 +53,7 @@ Secondary information:
 
 - today's schedule
 - weekly activity summary
-- alerts
+- due state highlights
 - quick create buttons
 
 These can appear as compact side panels or secondary sections, but they should not replace the pipeline as the first visual priority.
@@ -372,8 +372,7 @@ Primary navigation should make these areas easy to reach:
 
 현재 노출 기준:
 
-- Generic `Export` route/feature는 코드에 남아 있을 수 있지만, 현재 export 정본이 domain별 xlsx 다운로드이므로 main sidebar에서 숨긴다.
-- 현재 제품의 Export는 domain별 action으로 처리한다. User Web에 보이는 공통 label은 `엑셀 다운로드`이며, 사용자가 보고 있는 목록 화면과 API가 회사/담당자/제품/딜 중 무엇을 export하는지 결정한다.
+- Export는 domain별 action으로 처리한다. User Web에 보이는 공통 label은 `엑셀 다운로드`이며, 사용자가 보고 있는 목록 화면과 API가 회사/담당자/제품/딜 중 무엇을 export하는지 결정한다.
 - `휴지통`은 삭제와 복구가 활성 사용자 workflow이므로 관리 섹션에 노출한다. 전체 폭 목록 layout, row-click detail modal, modal-only restore action을 사용한다.
 - deferred feature는 route가 존재한다는 이유만으로 primary navigation에 노출하지 않는다.
 
@@ -768,7 +767,7 @@ AI meeting note:
 - user confirms and edits generated fields before final save
 - avoid naming the whole feature `AI 회의록`; use `회의록`, `회의록 작성`, `AI로 정리`, and `음성으로 작성`
 
-## 17. Next Action And Alert UX
+## 17. Next Action Due State UX
 
 Treat next action as a first-class sales workflow field.
 

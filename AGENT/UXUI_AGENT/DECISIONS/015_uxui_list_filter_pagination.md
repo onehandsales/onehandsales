@@ -26,7 +26,7 @@
 - 회의록 목록
   - 회사/담당자 filter option API
   - status filter
-  - 업로드 대상 filter
+  - 작성 경로 filter
 - 휴지통 목록
   - domain/item kind/log type filter
 

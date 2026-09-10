@@ -13,7 +13,7 @@ Backend 테스트 우선순위:
 - domain entities와 value objects
 - user ownership isolation
 - AdminGuard
-- import mapping validation
+- request validation과 DTO whitelist
 - trash retention과 restore
 - deal stage/activity logging
 - meeting note to deal activity integration

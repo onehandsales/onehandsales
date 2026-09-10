@@ -23,7 +23,7 @@ log event key는 domain.action 형식을 사용한다.
 auth.exchange.succeeded
 company.created
 meeting_note.ai_draft.failed
-import.confirm.completed
+trash.restore.completed
 provider.openai.failed
 ```
 
