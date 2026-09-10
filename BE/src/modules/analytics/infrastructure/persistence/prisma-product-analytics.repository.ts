@@ -1,12 +1,10 @@
-import {
+﻿import {
   Prisma,
   UserActivationStatus as PrismaUserActivationStatus,
 } from "@prisma/client";
 import type {
   ActivationCandidate,
-  AiUsageProviderCallLogSummarySource,
   CreateProductAnalyticsEventInput,
-  ListAiUsageProviderCallLogsInput,
   ProductAnalyticsEventRecord,
   ProductAnalyticsRepository,
   UpsertRetentionCohortSnapshotInput,
@@ -26,25 +24,23 @@ type ProductAnalyticsPrismaClient = PrismaService | Prisma.TransactionClient;
 const FIRST_DEAL_CREATED_EVENT_NAME = "deal_created";
 const MEANINGFUL_ACTIVATION_EVENT_NAMES = [
   "deal_next_action_created",
-  "schedule_deal_linked",
-  "meeting_note_deal_linked",
 ] as const;
 const ACTIVATION_EVENT_NAMES = [
   FIRST_DEAL_CREATED_EVENT_NAME,
   ...MEANINGFUL_ACTIVATION_EVENT_NAMES,
 ] as const;
 
-// 역할 : PrismaProductAnalyticsRepository 제품 분석 저장소를 Prisma로 구현합니다.
+// ??븷 : PrismaProductAnalyticsRepository ?쒗뭹 遺꾩꽍 ??μ냼瑜?Prisma濡?援ы쁽?⑸땲??
 export class PrismaProductAnalyticsRepository
   implements ProductAnalyticsRepository
 {
-  // 기능 : 제품 분석 저장소가 사용할 Prisma client를 보관합니다.
+  // 湲곕뒫 : ?쒗뭹 遺꾩꽍 ??μ냼媛 ?ъ슜??Prisma client瑜?蹂닿??⑸땲??
   constructor(
     private readonly client: ProductAnalyticsPrismaClient,
     private readonly transactionRunner: PrismaService | null = null
   ) {}
 
-  // 기능 : snapshot upsert 묶음을 Prisma transaction 안에서 실행합니다.
+  // 湲곕뒫 : snapshot upsert 臾띠쓬??Prisma transaction ?덉뿉???ㅽ뻾?⑸땲??
   async runInTransaction<T>(
     work: (repository: ProductAnalyticsRepository) => Promise<T>
   ): Promise<T> {
@@ -57,7 +53,7 @@ export class PrismaProductAnalyticsRepository
     );
   }
 
-  // 기능 : allowlist를 통과한 제품 분석 원본 이벤트를 저장합니다.
+  // 湲곕뒫 : allowlist瑜??듦낵???쒗뭹 遺꾩꽍 ?먮낯 ?대깽?몃? ??ν빀?덈떎.
   async createEvent(
     input: CreateProductAnalyticsEventInput
   ): Promise<ProductAnalyticsEventRecord> {
@@ -89,7 +85,7 @@ export class PrismaProductAnalyticsRepository
     };
   }
 
-  // 기능 : app session ID로 연결된 authDeviceId를 조회합니다.
+  // 湲곕뒫 : app session ID濡??곌껐??authDeviceId瑜?議고쉶?⑸땲??
   async findAuthDeviceIdBySessionId(sessionId: string): Promise<string | null> {
     const session = await this.client.authSession.findUnique({
       where: {
@@ -103,7 +99,7 @@ export class PrismaProductAnalyticsRepository
     return session?.authDeviceId ?? null;
   }
 
-  // 기능 : 지정한 eventDate 범위 안에서 activation 재계산 대상 사용자와 all-time 최초 이벤트를 조회합니다.
+  // 湲곕뒫 : 吏?뺥븳 eventDate 踰붿쐞 ?덉뿉??activation ?ш퀎??????ъ슜?먯? all-time 理쒖큹 ?대깽?몃? 議고쉶?⑸땲??
   async findFirstActivationCandidates(
     fromDate: string,
     toDate: string,
@@ -197,7 +193,7 @@ export class PrismaProductAnalyticsRepository
     return [...candidates.values()];
   }
 
-  // 기능 : 사용자별 activation snapshot을 userId 기준으로 생성하거나 갱신합니다.
+  // 湲곕뒫 : ?ъ슜?먮퀎 activation snapshot??userId 湲곗??쇰줈 ?앹꽦?섍굅??媛깆떊?⑸땲??
   async upsertUserActivationSnapshot(
     input: UpsertUserActivationSnapshotInput
   ): Promise<void> {
@@ -225,7 +221,7 @@ export class PrismaProductAnalyticsRepository
     });
   }
 
-  // 기능 : retention snapshot 계산 대상 activation cohort date 목록을 date-only 문자열로 조회합니다.
+  // 湲곕뒫 : retention snapshot 怨꾩궛 ???activation cohort date 紐⑸줉??date-only 臾몄옄?대줈 議고쉶?⑸땲??
   async listActivatedCohortDates(
     fromDate: string,
     toDate: string,
@@ -254,7 +250,7 @@ export class PrismaProductAnalyticsRepository
     );
   }
 
-  // 기능 : 특정 cohort date에 activation 된 사용자 수를 집계합니다.
+  // 湲곕뒫 : ?뱀젙 cohort date??activation ???ъ슜???섎? 吏묎퀎?⑸땲??
   async countActivatedUsersByDate(cohortDate: string): Promise<number> {
     return this.client.userActivationSnapshot.count({
       where: {
@@ -264,7 +260,7 @@ export class PrismaProductAnalyticsRepository
     });
   }
 
-  // 기능 : cohort 사용자 중 target date에 active event를 남긴 distinct user 수를 집계합니다.
+  // 湲곕뒫 : cohort ?ъ슜??以?target date??active event瑜??④릿 distinct user ?섎? 吏묎퀎?⑸땲??
   async countRetainedUsersByDate(
     cohortDate: string,
     targetDate: string,
@@ -294,7 +290,7 @@ export class PrismaProductAnalyticsRepository
     return rows.length;
   }
 
-  // 기능 : cohort date와 day offset 기준으로 retention snapshot을 생성하거나 갱신합니다.
+  // 湲곕뒫 : cohort date? day offset 湲곗??쇰줈 retention snapshot???앹꽦?섍굅??媛깆떊?⑸땲??
   async upsertRetentionCohortSnapshot(
     input: UpsertRetentionCohortSnapshotInput
   ): Promise<void> {
@@ -322,7 +318,7 @@ export class PrismaProductAnalyticsRepository
     });
   }
 
-  // 기능 : cutoff보다 오래된 raw event ID를 batch로 고른 뒤 ProductAnalyticsEvent만 삭제합니다.
+  // 湲곕뒫 : cutoff蹂대떎 ?ㅻ옒??raw event ID瑜?batch濡?怨좊Ⅸ ??ProductAnalyticsEvent留???젣?⑸땲??
   async deleteRawEventsBefore(cutoff: Date, batchSize: number): Promise<number> {
     const rows = await this.client.productAnalyticsEvent.findMany({
       where: {
@@ -352,67 +348,12 @@ export class PrismaProductAnalyticsRepository
     return result.count;
   }
 
-  // 기능 : AI usage summary에 필요한 provider 호출 로그 최소 field만 조회합니다.
-  async listAiUsageProviderCallLogsForSummary(
-    input: ListAiUsageProviderCallLogsInput
-  ): Promise<AiUsageProviderCallLogSummarySource[]> {
-    const rows = await this.client.aiProviderCallLog.findMany({
-      where: this.createAiUsageProviderCallLogWhere(input),
-      orderBy: [{ userId: "asc" }, { startedAt: "asc" }, { id: "asc" }],
-      select: {
-        costCurrency: true,
-        estimatedCostAmount: true,
-        operation: true,
-        startedAt: true,
-        status: true,
-        totalTokenCount: true,
-        user: {
-          select: {
-            id: true,
-            timeZone: true,
-          },
-        },
-        userId: true,
-      },
-    });
-
-    return rows.map((row) => ({
-      costCurrency: row.costCurrency,
-      estimatedCostAmount: row.estimatedCostAmount?.toString() ?? null,
-      operation: row.operation,
-      startedAt: row.startedAt,
-      status: row.status,
-      totalTokenCount: row.totalTokenCount,
-      userId: row.userId,
-      userTimeZone: row.user.timeZone,
-    }));
-  }
-
-  // 기능 : application allowlist를 통과한 payload를 Prisma JSON 입력 형태로 변환합니다.
   private toPrismaPayload(
     payloadJson: Record<string, unknown>
   ): Prisma.InputJsonObject {
     return payloadJson as Prisma.InputJsonObject;
   }
 
-  // 기능 : AI usage summary 조회 조건을 Prisma where 입력으로 변환합니다.
-  private createAiUsageProviderCallLogWhere(
-    input: ListAiUsageProviderCallLogsInput
-  ): Prisma.AiProviderCallLogWhereInput {
-    return {
-      ...(input.userId ? { userId: input.userId } : {}),
-      ...(input.from || input.to
-        ? {
-            startedAt: {
-              ...(input.from ? { gte: input.from } : {}),
-              ...(input.to ? { lte: input.to } : {}),
-            },
-          }
-        : {}),
-    };
-  }
-
-  // 기능 : 아직 이벤트가 채워지지 않은 activation 후보 기본값을 만듭니다.
   private createEmptyActivationCandidate(userId: string): ActivationCandidate {
     return {
       userId,
@@ -425,7 +366,7 @@ export class PrismaProductAnalyticsRepository
     };
   }
 
-  // 기능 : application activation status를 Prisma enum 값으로 변환합니다.
+  // 湲곕뒫 : application activation status瑜?Prisma enum 媛믪쑝濡?蹂?섑빀?덈떎.
   private toPrismaActivationStatus(
     status: UserActivationSnapshotStatus
   ): PrismaUserActivationStatus {

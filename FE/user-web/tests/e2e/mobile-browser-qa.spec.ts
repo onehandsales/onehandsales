@@ -1,7 +1,5 @@
-import { Buffer } from "node:buffer";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import {
-  createUserWebApiMockStore,
   MOBILE_LONG_FIXTURE,
   seedAuthenticatedSession,
   setupUserWebApiMocks,
@@ -12,7 +10,7 @@ const MOBILE_ROUTES: ReadonlyArray<{
   readonly expectedText: string;
   readonly hasMobileHeader: boolean;
 }> = [
-  { path: "/app", expectedText: "오늘 일정", hasMobileHeader: true },
+  { path: "/app", expectedText: "딜 현황", hasMobileHeader: true },
   {
     path: "/app/companies",
     expectedText: MOBILE_LONG_FIXTURE.companyName,
@@ -32,23 +30,6 @@ const MOBILE_ROUTES: ReadonlyArray<{
     path: "/app/deals",
     expectedText: "RQA002 모바일 브라우저 긴 딜명",
     hasMobileHeader: true,
-  },
-  { path: "/app/schedules", expectedText: "일정", hasMobileHeader: false },
-  {
-    path: "/app/schedules/week?weekStart=2026-07-20",
-    expectedText: "주간 보고서",
-    hasMobileHeader: false,
-  },
-  {
-    path: "/app/meeting-notes",
-    expectedText: "RQA002 모바일 회의록",
-    hasMobileHeader: true,
-  },
-  // 기능 : G05 회의록 상세 AI 후속 작업 섹션의 모바일 overflow를 함께 확인합니다.
-  {
-    path: "/app/meeting-notes/meeting-note-mobile-001",
-    expectedText: "AI 후속 작업",
-    hasMobileHeader: false,
   },
   { path: "/app/trash", expectedText: "삭제된", hasMobileHeader: true },
   { path: "/app?account=settings", expectedText: "설정", hasMobileHeader: true },
@@ -128,7 +109,7 @@ test.describe("G02 mobile browser release QA", () => {
     const regionSelect = dialog.getByLabel("지역", { exact: true });
     await regionSelect.focus();
     await expect(regionSelect).toBeFocused();
-    await regionSelect.selectOption({ label: "서울/수도권" });
+    await regionSelect.selectOption({ label: "서울" });
     await expectNoDocumentHorizontalOverflow(
       page,
       `${testInfo.project.name} company region select`,
@@ -155,80 +136,6 @@ test.describe("G02 mobile browser release QA", () => {
     runtime.assertClean();
   });
 
-  test("uses meeting note audio upload fallback when browser recording is unsupported", async ({
-    page,
-  }, testInfo) => {
-    await page.addInitScript(() => {
-      Object.defineProperty(window, "MediaRecorder", {
-        configurable: true,
-        value: undefined,
-      });
-      Object.defineProperty(window.navigator, "mediaDevices", {
-        configurable: true,
-        value: undefined,
-      });
-    });
-    const store = createUserWebApiMockStore();
-    const initialMeetingNoteCount = store.meetingNotes.length;
-    const api = await setupUserWebApiMocks(page, { store });
-    const runtime = collectRuntimeErrors(page);
-    await seedAuthenticatedSession(page);
-
-    await page.goto("/app/meeting-notes?create=1");
-
-    const dialog = page.getByRole("dialog", { name: "회의록 생성" });
-    await expect(dialog).toBeVisible();
-    await setRegisteredInputValue(
-      dialog.locator("#meeting-create-local-date-time-value"),
-      "2026-07-31T10:30",
-    );
-    const titleInput = dialog.locator("#meeting-create-title");
-    await titleInput.fill("G03 모바일 STT fallback 회의록");
-    await dialog.getByRole("button", { name: "회사 선택" }).click();
-    await dialog.getByText(MOBILE_LONG_FIXTURE.companyName).first().click();
-    await titleInput.click();
-    await dialog.getByRole("button", { name: "담당자 선택" }).click();
-    await dialog.getByText(MOBILE_LONG_FIXTURE.contactName).first().click();
-    await titleInput.click();
-
-    await dialog.getByRole("button", { exact: true, name: "녹음" }).click();
-    await expect(
-      dialog.getByText("이 브라우저에서는 녹음을 사용할 수 없어요. 음성 파일로 올려 주세요."),
-    ).toBeVisible();
-
-    await dialog.locator("#meeting-create-audio-file").setInputFiles({
-      buffer: Buffer.from("fake meeting audio"),
-      mimeType: "audio/webm",
-      name: "meeting.webm",
-    });
-    await expect(dialog.getByText("meeting.webm")).toBeVisible();
-
-    await dialog.getByRole("button", { exact: true, name: "초안 만들기" }).click();
-
-    await expect(dialog.getByLabel("상세 내용")).toHaveValue(
-      "모바일 현장 미팅에서 도입 범위와 다음 확인 항목을 정리했어요.",
-    );
-    await expect(dialog.getByLabel("다음 계획")).toHaveValue(
-      "견적 조건을 확인한 뒤 다음 주에 재논의해요.",
-    );
-    await expect(dialog.getByLabel("필요 액션")).toHaveValue(
-      "보안 자료와 모바일 견적서를 보내요.",
-    );
-    await expect(
-      dialog.getByRole("button", { name: /녹취 텍스트/ }),
-    ).toBeVisible();
-    expect(store.meetingNotes.length).toBe(initialMeetingNoteCount);
-    await expectLocatorWithinViewport(page, dialog, "meeting note STT fallback dialog");
-    await expectNoDocumentHorizontalOverflow(
-      page,
-      `${testInfo.project.name} meeting note STT fallback`,
-    );
-    expect(
-      api.protectedRequestsWithoutAuthorization(),
-      "Meeting note STT fallback must keep Authorization on private API calls.",
-    ).toEqual([]);
-    runtime.assertClean();
-  });
 });
 
 function bottomNav(page: Page) {
@@ -239,7 +146,7 @@ async function expectMobileShell(page: Page, hasMobileHeader: boolean) {
   const nav = bottomNav(page);
   await expect(nav).toBeVisible();
 
-  for (const label of ["홈", "딜", "일정", "회의록", "더보기"]) {
+  for (const label of ["홈", "딜", "더보기"]) {
     await expect(nav.getByRole("link", { name: label })).toBeVisible();
   }
 
@@ -425,20 +332,6 @@ async function expectLocatorWithinViewport(page: Page, locator: Locator, label: 
   expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(
     viewport.height + 2,
   );
-}
-
-async function setRegisteredInputValue(locator: Locator, value: string) {
-  await locator.evaluate((element, nextValue) => {
-    const input = element as HTMLInputElement;
-    const valueSetter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      "value",
-    )?.set;
-
-    valueSetter?.call(input, nextValue);
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-  }, value);
 }
 
 function collectRuntimeErrors(page: Page) {

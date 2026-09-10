@@ -26,7 +26,7 @@ test.describe("G06 deal record summary", () => {
 
     expect((await dealsResponse.json()).pageSize).toBe(15);
     await expect(dealRow).toContainText("RQA002 모바일 상품");
-    await expect(dealRow).toContainText("회의록을 연결했어요.");
+    await expect(dealRow).toContainText("초기 상담을 기록했어요.");
 
     const contactsResponsePromise = page.waitForResponse(
       (response) =>
@@ -60,7 +60,7 @@ test.describe("G06 deal record summary", () => {
         .first();
 
       await expect(dealCard).toContainText("RQA002 모바일 상품");
-      await expect(dealCard).toContainText("회의록을 연결했어요.");
+      await expect(dealCard).toContainText("초기 상담을 기록했어요.");
       await expectNoDocumentHorizontalOverflow(page, `deal summary ${width}px`);
 
       await page.goto("/app/contacts");

@@ -10,8 +10,6 @@ const BROWSER_COMPAT_COMPANY = "RQA003 브라우저 호환 회사";
 const BROWSER_COMPAT_CONTACT = "RQA003 브라우저 담당자";
 const BROWSER_COMPAT_PRODUCT = "RQA003 브라우저 상품";
 const BROWSER_COMPAT_DEAL = "RQA003 브라우저 딜";
-const BROWSER_COMPAT_SCHEDULE = "RQA003 브라우저 일정";
-const BROWSER_COMPAT_MEETING = "RQA003 브라우저 회의록";
 const MULTI_TAB_UPDATED_COMPANY = "RQA003 두 탭 새로고침 수정 회사";
 
 test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
@@ -32,7 +30,7 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     runtime.assertClean();
   });
 
-  test("creates company, contact, product, deal, schedule, and meeting note", async ({
+  test("creates company, contact, product, and deal", async ({
     page,
   }) => {
     const api = await setupUserWebApiMocks(page);
@@ -46,8 +44,6 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     await createContact(page);
     await createProduct(page);
     await createDeal(page);
-    await createSchedule(page);
-    await createMeetingNote(page);
 
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
     runtime.assertClean();
@@ -145,7 +141,7 @@ async function createCompany(page: Page) {
   await expect(dialog).toBeVisible();
   await dialog.getByLabel("회사명").fill(BROWSER_COMPAT_COMPANY);
   await selectManagedOption(dialog, "분야명", "모바일 QA 분야");
-  await selectCompanyRegionOption(dialog, "서울/수도권");
+  await selectCompanyRegionOption(dialog, "서울");
   await dialog.getByLabel("메모").fill("G03 Chrome Edge company smoke");
   await dialog.getByRole("button", { name: "저장" }).click();
 
@@ -217,50 +213,6 @@ async function createDeal(page: Page) {
   await expect(page.getByText(BROWSER_COMPAT_DEAL).first()).toBeVisible();
 }
 
-async function createSchedule(page: Page) {
-  await goToNav(page, "일정");
-  await page.getByRole("button", { name: "일정 보기 방식" }).click();
-  await page.getByRole("option", { name: "주" }).click();
-  await page.getByRole("button", { name: "일정 생성" }).first().click();
-  const dialog = page.getByRole("dialog").filter({ hasText: "일정 생성" }).first();
-
-  await expect(dialog).toBeVisible();
-  await dialog.getByLabel("제목").fill(BROWSER_COMPAT_SCHEDULE);
-  await dialog.getByLabel("시작일시").fill("2026-08-03T10:00");
-  await dialog.getByLabel("종료일시").fill("2026-08-03T11:00");
-  await dialog.getByLabel("장소").fill("Chrome Edge QA 회의실");
-  await dialog.getByLabel("연결 딜").fill(BROWSER_COMPAT_DEAL);
-  await dialog.getByRole("button", { name: new RegExp(escapeRegExp(BROWSER_COMPAT_DEAL)) }).click();
-  await dialog.getByLabel("메모").fill("G03 Chrome Edge schedule smoke");
-  await dialog.getByRole("button", { name: "저장" }).click();
-
-  await expect(dialog).toBeHidden();
-  await expectAndCloseNotice(page, `${BROWSER_COMPAT_SCHEDULE} 일정을 만들었어요.`);
-  await expect(page.getByText(BROWSER_COMPAT_SCHEDULE).first()).toBeVisible();
-}
-
-async function createMeetingNote(page: Page) {
-  await goToNav(page, "회의록");
-  await page.getByRole("button", { name: "회의록 생성" }).first().click();
-  const dialog = getDialog(page, "회의록 생성");
-
-  await expect(dialog).toBeVisible();
-  await dialog.getByLabel("회의록 제목").fill(BROWSER_COMPAT_MEETING);
-  await selectEntityOption(dialog, "회사", BROWSER_COMPAT_COMPANY);
-  await selectEntityOption(dialog, "담당자", BROWSER_COMPAT_CONTACT);
-  await selectEntityOption(dialog, "제품(옵션)", BROWSER_COMPAT_PRODUCT);
-  await selectEntityOption(dialog, "딜(옵션)", BROWSER_COMPAT_DEAL);
-  await dialog.getByLabel("원문 메모").fill("Chrome과 Edge에서 같은 회의록 저장 smoke.");
-  await dialog.getByLabel("상세 내용").fill("브라우저 호환 QA 상세 내용");
-  await dialog.getByLabel("다음 계획").fill("reload와 history 확인");
-  await dialog.getByLabel("필요 액션").fill("두 탭 새로고침 확인");
-  await dialog.getByRole("button", { name: "저장", exact: true }).click();
-
-  await expect(dialog).toBeHidden();
-  await expectAndCloseNotice(page, "회의록을 추가했어요.");
-  await expect(page.getByText(BROWSER_COMPAT_MEETING).first()).toBeVisible();
-}
-
 async function updateCompanyNameFromBrowser(page: Page, companyName: string) {
   await page.evaluate(async (nextCompanyName) => {
     const accessToken = window.localStorage.getItem("onehand.userWeb.accessToken");
@@ -330,15 +282,6 @@ async function selectSearchOption(
     .getByRole("button", { name: new RegExp(escapeRegExp(optionName)) })
     .first()
     .click();
-}
-
-async function selectEntityOption(
-  dialog: Locator,
-  triggerName: string,
-  optionName: string,
-) {
-  await dialog.getByRole("button", { name: triggerName }).click();
-  await dialog.getByLabel(new RegExp(escapeRegExp(optionName))).check();
 }
 
 function collectRuntimeErrors(page: Page) {

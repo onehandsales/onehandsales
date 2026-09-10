@@ -15,7 +15,7 @@ test.describe("G04 deal activity timeline", () => {
     const timeline = getVisibleDealActivityTimeline(page);
 
     await expect(timeline).toBeVisible();
-    await expect(timeline).toContainText("회의록을 연결했어요.");
+    await expect(timeline).toContainText("초기 상담을 기록했어요.");
     await expect(timeline.getByRole("button", { name: "활동 수정" })).toHaveCount(0);
 
     await timeline.getByRole("button", { name: "활동 추가" }).click();

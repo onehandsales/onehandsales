@@ -64,8 +64,6 @@ describe("SearchApplicationService", () => {
         SearchTargetType.CONTACT,
         SearchTargetType.PRODUCT,
         SearchTargetType.DEAL,
-        SearchTargetType.SCHEDULE,
-        SearchTargetType.MEETING_NOTE,
       ],
       limit: 5,
     });

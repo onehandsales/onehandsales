@@ -73,16 +73,6 @@ const TARGET_METADATA: readonly TargetMetadata[] = [
     kind: "ENTITY",
   },
   {
-    targetType: "SCHEDULE",
-    domain: "SCHEDULE",
-    kind: "ENTITY",
-  },
-  {
-    targetType: "MEETING_NOTE",
-    domain: "MEETING_NOTE",
-    kind: "ENTITY",
-  },
-  {
     targetType: "COMPANY_MEMO_LOG",
     domain: "COMPANY",
     kind: "LOG",
@@ -221,10 +211,6 @@ export class PrismaTrashRepository implements TrashRepository {
           return this.getProductDetail(input);
         case "DEAL":
           return this.getDealDetail(input);
-        case "SCHEDULE":
-          return this.getScheduleDetail(input);
-        case "MEETING_NOTE":
-          return this.getMeetingNoteDetail(input);
         case "COMPANY_MEMO_LOG":
           return this.getCompanyMemoLogDetail(input);
         case "COMPANY_PRIVATE_MEMO_LOG":
@@ -447,133 +433,6 @@ export class PrismaTrashRepository implements TrashRepository {
     });
   }
 
-  // 기능 : 삭제된 일정의 상세 모달 데이터를 조회합니다.
-  private async getScheduleDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const schedule = await this.client.schedule.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        scheduleTitle: true,
-        startAt: true,
-        endAt: true,
-        timeZone: true,
-        location: true,
-        meetingUrl: true,
-        memo: true,
-        sourceType: true,
-        externalSyncStatus: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        externalCalendarSource: {
-          select: {
-            status: true,
-            calendarName: true,
-            connection: {
-              select: {
-                status: true,
-              },
-            },
-          },
-        },
-        _count: {
-          select: {
-            scheduleDeals: true,
-          },
-        },
-      },
-    });
-
-    if (!schedule?.deletedAt || !schedule.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "SCHEDULE",
-      targetId: schedule.id,
-      now: input.now,
-      title: schedule.scheduleTitle,
-      deletedAt: schedule.deletedAt,
-      trashExpiresAt: schedule.trashExpiresAt,
-      summary: `${schedule.scheduleTitle} 일정 데이터`,
-      fields: [
-        this.createField(
-          "일정 시간",
-          this.formatScheduleDateTimeRange(
-            schedule.startAt,
-            schedule.endAt,
-            schedule.timeZone
-          )
-        ),
-        this.createField("장소", schedule.location),
-        this.createField("출처", this.createScheduleSourceLabel(schedule)),
-        this.createField(
-          "미팅 링크",
-          this.formatMeetingUrl(schedule.meetingUrl)
-        ),
-        this.createField("연결 딜", schedule._count.scheduleDeals),
-      ],
-      content: schedule.memo,
-    });
-  }
-
-  // 기능 : 삭제된 회의록의 상세 모달 데이터를 조회하되 본문 원문은 응답에서 제외합니다.
-  private async getMeetingNoteDetail(
-    input: GetTrashDetailInput
-  ): Promise<TrashDetail | null> {
-    const meetingNote = await this.client.meetingNote.findFirst({
-      where: this.createDetailWhere(input),
-      select: {
-        id: true,
-        title: true,
-        meetingAt: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-        companies: {
-          select: { companyNameSnapshot: true },
-          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-        },
-        contacts: {
-          select: { contactUsernameSnapshot: true },
-          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-        },
-      },
-    });
-
-    if (!meetingNote?.deletedAt || !meetingNote.trashExpiresAt) {
-      return null;
-    }
-
-    return this.createTrashDetail({
-      targetType: "MEETING_NOTE",
-      targetId: meetingNote.id,
-      now: input.now,
-      title: meetingNote.title,
-      deletedAt: meetingNote.deletedAt,
-      trashExpiresAt: meetingNote.trashExpiresAt,
-      summary: `${meetingNote.title} 회의록 데이터`,
-      fields: [
-        this.createField("제목", meetingNote.title),
-        this.createField("미팅일", this.formatDateTime(meetingNote.meetingAt)),
-        this.createField(
-          "회사",
-          this.joinLabels(
-            meetingNote.companies.map((company) => company.companyNameSnapshot)
-          )
-        ),
-        this.createField(
-          "담당자",
-          this.joinLabels(
-            meetingNote.contacts.map((contact) => contact.contactUsernameSnapshot)
-          )
-        ),
-      ],
-      content: "회의록 본문은 복구 후 상세 화면에서 확인할 수 있어요.",
-    });
-  }
-
-  // 기능 : 삭제된 회사 일반 메모 로그의 상세 모달 데이터를 조회합니다.
   private async getCompanyMemoLogDetail(
     input: GetTrashDetailInput
   ): Promise<TrashDetail | null> {
@@ -986,80 +845,6 @@ export class PrismaTrashRepository implements TrashRepository {
     return value.toISOString().slice(0, 10);
   }
 
-  // 기능 : UTC instant를 휴지통 상세용 날짜·시간 문자열로 변환합니다.
-  private formatDateTime(value: Date) {
-    return value.toISOString().slice(0, 16).replace("T", " ");
-  }
-
-  // 기능 : 여러 스냅샷 이름을 휴지통 상세 한 줄 표시 값으로 합칩니다.
-  private formatScheduleDateTimeRange(
-    startAt: Date,
-    endAt: Date,
-    timeZone: string
-  ) {
-    const formatter = new Intl.DateTimeFormat("ko-KR", {
-      dateStyle: "medium",
-      timeStyle: "short",
-      timeZone,
-    });
-
-    return `${formatter.format(startAt)} - ${formatter.format(endAt)}`;
-  }
-
-  // 기능 : 미팅 URL 원문 대신 hostname만 표시 값으로 변환합니다.
-  private formatMeetingUrl(value: string | null) {
-    if (!value) {
-      return null;
-    }
-
-    try {
-      return new URL(value).hostname;
-    } catch {
-      return value;
-    }
-  }
-
-  // 기능 : 일정 출처와 외부 캘린더 연결 상태를 사용자 표시 label로 변환합니다.
-  private createScheduleSourceLabel(schedule: {
-    readonly sourceType: string;
-    readonly externalSyncStatus: string | null;
-    readonly externalCalendarSource: {
-      readonly status: string;
-      readonly calendarName: string;
-      readonly connection: {
-        readonly status: string;
-      };
-    } | null;
-  }) {
-    if (schedule.sourceType !== "GOOGLE") {
-      return "한손";
-    }
-
-    if (schedule.externalSyncStatus === "LOCAL_DELETED") {
-      return "Google · 로컬 삭제";
-    }
-
-    if (schedule.externalSyncStatus === "LOCAL_MODIFIED") {
-      return "Google · 로컬 수정";
-    }
-
-    if (schedule.externalCalendarSource?.connection.status !== "CONNECTED") {
-      return "Google · 연결 끊김";
-    }
-
-    return schedule.externalCalendarSource?.calendarName ?? "Google";
-  }
-
-  // 기능 : 빈 스냅샷을 제거하고 쉼표 구분 label 문자열로 합칩니다.
-  private joinLabels(labels: readonly string[]) {
-    const normalizedLabels = labels
-      .map((label) => label.trim())
-      .filter((label) => label.length > 0);
-
-    return normalizedLabels.length > 0 ? normalizedLabels.join(", ") : null;
-  }
-
-  // 기능 : 필터 조건에 포함되는 모든 휴지통 대상 목록을 병렬 조회합니다.
   private async collectTrashItems(input: ListTrashInput): Promise<TrashItem[]> {
     const tasks: Promise<TrashItem[]>[] = [];
 
@@ -1077,14 +862,6 @@ export class PrismaTrashRepository implements TrashRepository {
 
     if (this.shouldIncludeTarget(input, "DEAL")) {
       tasks.push(this.listDeletedDeals(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "SCHEDULE")) {
-      tasks.push(this.listDeletedSchedules(input));
-    }
-
-    if (this.shouldIncludeTarget(input, "MEETING_NOTE")) {
-      tasks.push(this.listDeletedMeetingNotes(input));
     }
 
     if (this.shouldIncludeTarget(input, "COMPANY_MEMO_LOG")) {
@@ -1246,58 +1023,6 @@ export class PrismaTrashRepository implements TrashRepository {
       .filter(isTrashItem);
   }
 
-  // 기능 : 삭제된 회의록 row를 휴지통 목록 항목으로 변환해 조회합니다.
-  private async listDeletedSchedules(input: ListTrashInput) {
-    const schedules = await this.client.schedule.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        scheduleTitle: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-      },
-    });
-
-    return schedules
-      .map((schedule) =>
-        this.createTrashItem({
-          targetType: "SCHEDULE",
-          targetId: schedule.id,
-          now: input.now,
-          title: schedule.scheduleTitle,
-          deletedAt: schedule.deletedAt,
-          trashExpiresAt: schedule.trashExpiresAt,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  private async listDeletedMeetingNotes(input: ListTrashInput) {
-    const meetingNotes = await this.client.meetingNote.findMany({
-      where: this.createDeletedWhere(input),
-      select: {
-        id: true,
-        title: true,
-        deletedAt: true,
-        trashExpiresAt: true,
-      },
-    });
-
-    return meetingNotes
-      .map((meetingNote) =>
-        this.createTrashItem({
-          targetType: "MEETING_NOTE",
-          targetId: meetingNote.id,
-          now: input.now,
-          title: meetingNote.title,
-          deletedAt: meetingNote.deletedAt,
-          trashExpiresAt: meetingNote.trashExpiresAt,
-        })
-      )
-      .filter(isTrashItem);
-  }
-
-  // 기능 : 삭제된 회사 일반 메모 로그를 휴지통 목록 항목으로 변환해 조회합니다.
   private async listDeletedCompanyMemoLogs(input: ListTrashInput) {
     const memoLogs = await this.client.companyMemoLog.findMany({
       where: this.createDeletedWhere(input),
@@ -1774,16 +1499,6 @@ export class PrismaTrashRepository implements TrashRepository {
 
         return result.count > 0;
       }
-      case "SCHEDULE":
-        return this.restoreSchedule(input);
-      case "MEETING_NOTE": {
-        const result = await this.client.meetingNote.updateMany({
-          where: this.createRestoreWhere(input),
-          data: this.createRestoreData(),
-        });
-
-        return result.count > 0;
-      }
       case "COMPANY_MEMO_LOG": {
         const result = await this.client.companyMemoLog.updateMany({
           where: this.createCompanyLogRestoreWhere(input),
@@ -1858,40 +1573,12 @@ export class PrismaTrashRepository implements TrashRepository {
     return (await this.hasDeletedParent(input)) ? "PARENT_DELETED" : null;
   }
 
-  // 기능 : 복구 대상 로그의 직접 상위 도메인 row 삭제 여부를 확인합니다.
-  private async restoreSchedule(input: RestoreTrashItemInput): Promise<boolean> {
-    const schedule = await this.client.schedule.findFirst({
-      where: this.createRestoreWhere(input),
-      select: {
-        sourceType: true,
-      },
-    });
-
-    if (!schedule) {
-      return false;
-    }
-
-    const result = await this.client.schedule.updateMany({
-      where: this.createRestoreWhere(input),
-      data: {
-        ...this.createRestoreData(),
-        ...(schedule.sourceType === "GOOGLE"
-          ? { externalSyncStatus: "LOCAL_MODIFIED" as const }
-          : {}),
-      },
-    });
-
-    return result.count > 0;
-  }
-
   private async hasDeletedParent(input: RestoreTrashItemInput) {
     switch (input.targetType) {
       case "COMPANY":
       case "CONTACT":
       case "PRODUCT":
       case "DEAL":
-      case "SCHEDULE":
-      case "MEETING_NOTE":
         return false;
       case "COMPANY_MEMO_LOG": {
         const memoLog = await this.client.companyMemoLog.findFirst({

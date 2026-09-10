@@ -1,8 +1,7 @@
-import {
+﻿import {
   AuthDeviceSlot,
   AuthDeviceStatus,
   AuthSessionStatus,
-  MeetingNoteSourceType,
   PrismaClient,
   UserRole,
   UserStatus,
@@ -18,7 +17,7 @@ const localDemoUsers = [
   {
     id: demoUserId,
     email: "local.user@example.com",
-    displayName: "로컬 사용자",
+    displayName: "濡쒖뺄 ?ъ슜??,
     role: UserRole.USER,
     deviceId: "00000000-0000-4000-8000-000000000011",
     sessions: [
@@ -29,7 +28,7 @@ const localDemoUsers = [
   {
     id: "00000000-0000-4000-8000-000000000002",
     email: "local.admin@example.com",
-    displayName: "로컬 관리자",
+    displayName: "濡쒖뺄 愿由ъ옄",
     role: UserRole.ADMIN,
     deviceId: "00000000-0000-4000-8000-000000000021",
     sessions: ["00000000-0000-4000-8000-000000000201"],
@@ -49,190 +48,190 @@ type DealStatus = (typeof dealStatuses)[number];
 
 const companySeeds = [
   {
-    companyName: "삼성전자",
-    field: "반도체/모바일/가전",
-    region: "경기 수원 디지털시티",
-    memo: "DX와 DS 조직의 B2B 영업 파이프라인을 분리해 보고 싶어 한다. 경영진 주간 보고용 단계별 예상 매출이 중요하다.",
+    companyName: "?쇱꽦?꾩옄",
+    field: "諛섎룄泥?紐⑤컮??媛??,
+    region: "寃쎄린 ?섏썝 ?붿??몄떆??,
+    memo: "DX? DS 議곗쭅??B2B ?곸뾽 ?뚯씠?꾨씪?몄쓣 遺꾨━??蹂닿퀬 ?띠뼱 ?쒕떎. 寃쎌쁺吏?二쇨컙 蹂닿퀬???④퀎蹂??덉긽 留ㅼ텧??以묒슂?섎떎.",
     contacts: [
-      ["김민준", "MX사업부", "부장"],
-      ["박서연", "VD사업부", "차장"],
-      ["이도현", "DS영업기획팀", "이사"],
-      ["최유진", "B2B솔루션팀", "과장"],
+      ["源誘쇱?", "MX?ъ뾽遺", "遺??],
+      ["諛뺤꽌??, "VD?ъ뾽遺", "李⑥옣"],
+      ["?대룄??, "DS?곸뾽湲고쉷?", "?댁궗"],
+      ["理쒖쑀吏?, "B2B?붾（?섑?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "SK하이닉스",
-    field: "반도체 메모리",
-    region: "경기 이천",
-    memo: "글로벌 고객사별 장기 공급 협상 이력을 제품군과 함께 추적하려는 니즈가 강하다.",
+    companyName: "SK?섏씠?됱뒪",
+    field: "諛섎룄泥?硫붾え由?,
+    region: "寃쎄린 ?댁쿇",
+    memo: "湲濡쒕쾶 怨좉컼?щ퀎 ?κ린 怨듦툒 ?묒긽 ?대젰???쒗뭹援곌낵 ?④퍡 異붿쟻?섎젮???덉쫰媛 媛뺥븯??",
     contacts: [
-      ["정현우", "Global Sales", "부장"],
-      ["한지민", "DRAM영업팀", "차장"],
-      ["오세준", "NAND사업기획팀", "이사"],
-      ["임하늘", "고객품질지원팀", "과장"],
+      ["?뺥쁽??, "Global Sales", "遺??],
+      ["?쒖?誘?, "DRAM?곸뾽?", "李⑥옣"],
+      ["?ㅼ꽭以", "NAND?ъ뾽湲고쉷?", "?댁궗"],
+      ["?꾪븯??, "怨좉컼?덉쭏吏?먰?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "LG전자",
-    field: "가전/전장 솔루션",
-    region: "서울 여의도",
-    memo: "B2B 공조와 전장 고객사의 제안 이력을 한 화면에서 비교하고 싶어 한다.",
+    companyName: "LG?꾩옄",
+    field: "媛???꾩옣 ?붾（??,
+    region: "?쒖슱 ?ъ쓽??,
+    memo: "B2B 怨듭“? ?꾩옣 怨좉컼?ъ쓽 ?쒖븞 ?대젰?????붾㈃?먯꽌 鍮꾧탳?섍퀬 ?띠뼱 ?쒕떎.",
     contacts: [
-      ["강민준", "BS사업본부", "이사"],
-      ["윤태오", "H&A영업기획팀", "부장"],
-      ["배수빈", "전장고객전략팀", "차장"],
-      ["서지안", "마케팅전략팀", "과장"],
+      ["媛뺣?以", "BS?ъ뾽蹂몃?", "?댁궗"],
+      ["?ㅽ깭??, "H&A?곸뾽湲고쉷?", "遺??],
+      ["諛곗닔鍮?, "?꾩옣怨좉컼?꾨왂?", "李⑥옣"],
+      ["?쒖???, "留덉??낆쟾?듯?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "미래에셋증권",
-    field: "증권/자산관리",
-    region: "서울 을지로",
-    memo: "법인 WM 영업과 IPO 관련 딜을 분리해 관리하고, 고객 미팅 후속 조치 누락을 줄이고 싶어 한다.",
+    companyName: "誘몃옒?먯뀑利앷텒",
+    field: "利앷텒/?먯궛愿由?,
+    region: "?쒖슱 ?꾩?濡?,
+    memo: "踰뺤씤 WM ?곸뾽怨?IPO 愿???쒖쓣 遺꾨━??愿由ы븯怨? 怨좉컼 誘명똿 ?꾩냽 議곗튂 ?꾨씫??以꾩씠怨??띠뼱 ?쒕떎.",
     contacts: [
-      ["신아린", "법인영업본부", "부장"],
-      ["문지호", "WM전략팀", "차장"],
-      ["장예은", "IB사업부", "이사"],
-      ["고태민", "디지털전략팀", "과장"],
+      ["?좎븘由?, "踰뺤씤?곸뾽蹂몃?", "遺??],
+      ["臾몄???, "WM?꾨왂?", "李⑥옣"],
+      ["?μ삁?", "IB?ъ뾽遺", "?댁궗"],
+      ["怨좏깭誘?, "?붿??몄쟾?듯?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "현대자동차",
-    field: "완성차/모빌리티",
-    region: "서울 양재",
-    memo: "법인차량, PBV, 글로벌 파트너 영업의 진행 상황을 제품군별로 보고하려 한다.",
+    companyName: "?꾨??먮룞李?,
+    field: "?꾩꽦李?紐⑤퉴由ы떚",
+    region: "?쒖슱 ?묒옱",
+    memo: "踰뺤씤李⑤웾, PBV, 湲濡쒕쾶 ?뚰듃???곸뾽??吏꾪뻾 ?곹솴???쒗뭹援곕퀎濡?蹂닿퀬?섎젮 ?쒕떎.",
     contacts: [
-      ["남기준", "국내사업본부", "부장"],
-      ["류선우", "PBV사업팀", "차장"],
-      ["권나연", "글로벌사업관리팀", "과장"],
-      ["백지아", "모빌리티전략팀", "이사"],
+      ["?④린以", "援?궡?ъ뾽蹂몃?", "遺??],
+      ["瑜섏꽑??, "PBV?ъ뾽?", "李⑥옣"],
+      ["沅뚮굹??, "湲濡쒕쾶?ъ뾽愿由ы?", "怨쇱옣"],
+      ["諛깆???, "紐⑤퉴由ы떚?꾨왂?", "?댁궗"],
     ],
   },
   {
-    companyName: "더존비즈온",
-    field: "ERP/클라우드/AI",
-    region: "강원 춘천",
-    memo: "ERP와 클라우드 솔루션 영업에서 고객사별 PoC, 제안서, 계약 일정을 촘촘히 관리하려 한다.",
+    companyName: "?붿〈鍮꾩쫰??,
+    field: "ERP/?대씪?곕뱶/AI",
+    region: "媛뺤썝 異섏쿇",
+    memo: "ERP? ?대씪?곕뱶 ?붾（???곸뾽?먯꽌 怨좉컼?щ퀎 PoC, ?쒖븞?? 怨꾩빟 ?쇱젙??珥섏킌??愿由ы븯???쒕떎.",
     contacts: [
-      ["송민재", "클라우드사업부", "이사"],
-      ["조은서", "AI비즈니스팀", "부장"],
-      ["홍지후", "엔터프라이즈세일즈", "차장"],
-      ["유다인", "파트너전략팀", "과장"],
+      ["?〓???, "?대씪?곕뱶?ъ뾽遺", "?댁궗"],
+      ["議곗???, "AI鍮꾩쫰?덉뒪?", "遺??],
+      ["?띿???, "?뷀꽣?꾨씪?댁쫰?몄씪利?, "李⑥옣"],
+      ["?좊떎??, "?뚰듃?덉쟾?듯?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "카카오",
-    field: "플랫폼/메시징",
-    region: "경기 성남 판교",
-    memo: "광고, 커머스, 톡채널 제휴 영업을 고객사별로 묶어 보고 싶어 한다.",
+    companyName: "移댁뭅??,
+    field: "?뚮옯??硫붿떆吏?,
+    region: "寃쎄린 ?깅궓 ?먭탳",
+    memo: "愿묎퀬, 而ㅻ㉧?? ?≪콈???쒗쑕 ?곸뾽??怨좉컼?щ퀎濡?臾띠뼱 蹂닿퀬 ?띠뼱 ?쒕떎.",
     contacts: [
-      ["김하준", "비즈니스플랫폼팀", "부장"],
-      ["이서윤", "커머스제휴팀", "차장"],
-      ["박지호", "광고사업전략팀", "이사"],
-      ["최나은", "톡채널영업팀", "과장"],
+      ["源?섏?", "鍮꾩쫰?덉뒪?뚮옯?쇳?", "遺??],
+      ["?댁꽌??, "而ㅻ㉧?ㅼ젣?댄?", "李⑥옣"],
+      ["諛뺤???, "愿묎퀬?ъ뾽?꾨왂?", "?댁궗"],
+      ["理쒕굹?", "?≪콈?먯쁺?낇?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "쿠팡",
-    field: "이커머스/물류",
-    region: "서울 송파",
-    memo: "셀러 영업과 물류 파트너 계약이 빠르게 늘어 일정과 딜 연결을 중요하게 본다.",
+    companyName: "荑좏뙜",
+    field: "?댁빱癒몄뒪/臾쇰쪟",
+    region: "?쒖슱 ?≫뙆",
+    memo: "????곸뾽怨?臾쇰쪟 ?뚰듃??怨꾩빟??鍮좊Ⅴ寃??섏뼱 ?쇱젙怨????곌껐??以묒슂?섍쾶 蹂몃떎.",
     contacts: [
-      ["정서준", "마켓플레이스팀", "부장"],
-      ["한소율", "로켓배송운영팀", "차장"],
-      ["오지훈", "물류파트너십팀", "이사"],
-      ["임채원", "셀러성장팀", "과장"],
+      ["?뺤꽌以", "留덉폆?뚮젅?댁뒪?", "遺??],
+      ["?쒖냼??, "濡쒖폆諛곗넚?댁쁺?", "李⑥옣"],
+      ["?ㅼ???, "臾쇰쪟?뚰듃?덉떗?", "?댁궗"],
+      ["?꾩콈??, "??ъ꽦?ν?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "토스",
-    field: "핀테크/금융 플랫폼",
-    region: "서울 강남",
-    memo: "제휴 금융사별 계약 조건과 보안 검토 상태를 딜 단계와 함께 관리하려 한다.",
+    companyName: "?좎뒪",
+    field: "??뚰겕/湲덉쑖 ?뚮옯??,
+    region: "?쒖슱 媛뺣궓",
+    memo: "?쒗쑕 湲덉쑖?щ퀎 怨꾩빟 議곌굔怨?蹂댁븞 寃???곹깭瑜????④퀎? ?④퍡 愿由ы븯???쒕떎.",
     contacts: [
-      ["강도윤", "제휴사업팀", "부장"],
-      ["윤서아", "금융플랫폼팀", "차장"],
-      ["배현준", "리스크관리팀", "이사"],
-      ["서민지", "프로덕트전략팀", "과장"],
+      ["媛뺣룄??, "?쒗쑕?ъ뾽?", "遺??],
+      ["?ㅼ꽌??, "湲덉쑖?뚮옯?쇳?", "李⑥옣"],
+      ["諛고쁽以", "由ъ뒪?ш?由ы?", "?댁궗"],
+      ["?쒕?吏", "?꾨줈?뺥듃?꾨왂?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "신한은행",
-    field: "은행/기업금융",
-    region: "서울 중구",
-    memo: "기업금융 RM의 고객 접촉 이력, 회의록, 다음 행동을 표준화하려는 요구가 있다.",
+    companyName: "?좏븳???,
+    field: "???湲곗뾽湲덉쑖",
+    region: "?쒖슱 以묎뎄",
+    memo: "湲곗뾽湲덉쑖 RM??怨좉컼 ?묒큺 ?대젰, ?뚯쓽濡? ?ㅼ쓬 ?됰룞???쒖??뷀븯?ㅻ뒗 ?붽뎄媛 ?덈떎.",
     contacts: [
-      ["문서준", "기업금융부", "부장"],
-      ["장하린", "디지털전략부", "차장"],
-      ["고현우", "WM사업부", "이사"],
-      ["남유정", "리스크심사부", "과장"],
+      ["臾몄꽌以", "湲곗뾽湲덉쑖遺", "遺??],
+      ["?ν븯由?, "?붿??몄쟾?듬?", "李⑥옣"],
+      ["怨좏쁽??, "WM?ъ뾽遺", "?댁궗"],
+      ["?⑥쑀??, "由ъ뒪?ъ떖?щ?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "포스코홀딩스",
-    field: "철강/소재",
-    region: "서울 대치",
-    memo: "그룹사별 장기 프로젝트와 소재 공급 딜을 연결해 관리하려 한다.",
+    companyName: "?ъ뒪肄뷀??⑹뒪",
+    field: "泥좉컯/?뚯옱",
+    region: "?쒖슱 ?移?,
+    memo: "洹몃９?щ퀎 ?κ린 ?꾨줈?앺듃? ?뚯옱 怨듦툒 ?쒖쓣 ?곌껐??愿由ы븯???쒕떎.",
     contacts: [
-      ["류지훈", "철강사업전략팀", "부장"],
-      ["권서연", "친환경소재팀", "차장"],
-      ["백도현", "그룹사업관리팀", "이사"],
-      ["송아영", "구매협력팀", "과장"],
+      ["瑜섏???, "泥좉컯?ъ뾽?꾨왂?", "遺??],
+      ["沅뚯꽌??, "移쒗솚寃쎌냼?ы?", "李⑥옣"],
+      ["諛깅룄??, "洹몃９?ъ뾽愿由ы?", "?댁궗"],
+      ["?≪븘??, "援щℓ?묐젰?", "怨쇱옣"],
     ],
   },
   {
-    companyName: "한화솔루션",
-    field: "태양광/화학",
-    region: "서울 장교동",
-    memo: "태양광 프로젝트별 투자사, EPC, 공급 계약을 하나의 딜 흐름으로 보고 싶어 한다.",
+    companyName: "?쒗솕?붾（??,
+    field: "?쒖뼇愿??뷀븰",
+    region: "?쒖슱 ?κ탳??,
+    memo: "?쒖뼇愿??꾨줈?앺듃蹂??ъ옄?? EPC, 怨듦툒 怨꾩빟???섎굹?????먮쫫?쇰줈 蹂닿퀬 ?띠뼱 ?쒕떎.",
     contacts: [
-      ["조민석", "큐셀사업부", "부장"],
-      ["홍서영", "케미칼영업팀", "차장"],
-      ["유지완", "프로젝트금융팀", "이사"],
-      ["김라온", "글로벌사업팀", "과장"],
+      ["議곕???, "?먯??ъ뾽遺", "遺??],
+      ["?띿꽌??, "耳誘몄뭡?곸뾽?", "李⑥옣"],
+      ["?좎???, "?꾨줈?앺듃湲덉쑖?", "?댁궗"],
+      ["源?쇱삩", "湲濡쒕쾶?ъ뾽?", "怨쇱옣"],
     ],
   },
 ] as const;
 
 const productSeeds = [
-  ["세일즈 파이프라인 Enterprise", 3200000, "CRM", "판매중"],
-  ["AI 회의록 요약팩", 1250000, "AI 회의록", "판매중"],
-  ["현장 영업 모바일팩", 1480000, "모바일 영업", "판매중"],
-  ["명함 OCR 자동입력", 850000, "자동화", "프로모션"],
-  ["임원 보고 대시보드", 2400000, "리포팅", "판매중"],
-  ["기업 보안 감사 옵션", 1900000, "보안/관리", "엔터프라이즈"],
-  ["ERP/그룹웨어 연동 커넥터", 3600000, "데이터 연동", "엔터프라이즈"],
-  ["고객사 통합 검색 애드온", 980000, "검색", "판매중"],
-  ["영업 조직 온보딩 워크숍", 1100000, "온보딩/교육", "판매중"],
-  ["계약 리스크 체크리스트", 1350000, "보안/관리", "상담중"],
-  ["주간 리마인더 자동화", 760000, "자동화", "프로모션"],
-  ["파트너 딜룸 패키지", 2800000, "협업", "상담중"],
+  ["?몄씪利??뚯씠?꾨씪??Enterprise", 3200000, "CRM", "?먮ℓ以?],
+  ["AI ?뚯쓽濡??붿빟??, 1250000, "AI ?뚯쓽濡?, "?먮ℓ以?],
+  ["?꾩옣 ?곸뾽 紐⑤컮?쇳뙥", 1480000, "紐⑤컮???곸뾽", "?먮ℓ以?],
+  ["紐낇븿 OCR ?먮룞?낅젰", 850000, "?먮룞??, "?꾨줈紐⑥뀡"],
+  ["?꾩썝 蹂닿퀬 ??쒕낫??, 2400000, "由ы룷??, "?먮ℓ以?],
+  ["湲곗뾽 蹂댁븞 媛먯궗 ?듭뀡", 1900000, "蹂댁븞/愿由?, "?뷀꽣?꾨씪?댁쫰"],
+  ["ERP/洹몃９?⑥뼱 ?곕룞 而ㅻ꽖??, 3600000, "?곗씠???곕룞", "?뷀꽣?꾨씪?댁쫰"],
+  ["怨좉컼???듯빀 寃???좊뱶??, 980000, "寃??, "?먮ℓ以?],
+  ["?곸뾽 議곗쭅 ?⑤낫???뚰겕??, 1100000, "?⑤낫??援먯쑁", "?먮ℓ以?],
+  ["怨꾩빟 由ъ뒪??泥댄겕由ъ뒪??, 1350000, "蹂댁븞/愿由?, "?곷떞以?],
+  ["二쇨컙 由щ쭏?몃뜑 ?먮룞??, 760000, "?먮룞??, "?꾨줈紐⑥뀡"],
+  ["?뚰듃???쒕８ ?⑦궎吏", 2800000, "?묒뾽", "?곷떞以?],
 ] as const;
 
 const dealTemplates = [
   {
-    suffix: "전사 영업 파이프라인 표준화",
+    suffix: "?꾩궗 ?곸뾽 ?뚯씠?꾨씪???쒖???,
     baseCost: 11800000,
-    action: "부서별 기존 엑셀 관리 양식 3종 수집",
-    memo: "현업 입력 부담을 줄이고 경영진 보고 포맷을 맞추는 것이 핵심이다.",
+    action: "遺?쒕퀎 湲곗〈 ?묒? 愿由??묒떇 3醫??섏쭛",
+    memo: "?꾩뾽 ?낅젰 遺?댁쓣 以꾩씠怨?寃쎌쁺吏?蹂닿퀬 ?щ㎎??留욎텛??寃껋씠 ?듭떖?대떎.",
   },
   {
-    suffix: "AI 회의록 기반 후속 조치 자동화",
+    suffix: "AI ?뚯쓽濡?湲곕컲 ?꾩냽 議곗튂 ?먮룞??,
     baseCost: 7200000,
-    action: "최근 고객 미팅 녹취 샘플로 요약 품질 비교",
-    memo: "회의 후 24시간 안에 다음 행동이 등록되는 흐름을 검증하려 한다.",
+    action: "理쒓렐 怨좉컼 誘명똿 ?뱀랬 ?섑뵆濡??붿빟 ?덉쭏 鍮꾧탳",
+    memo: "?뚯쓽 ??24?쒓컙 ?덉뿉 ?ㅼ쓬 ?됰룞???깅줉?섎뒗 ?먮쫫??寃利앺븯???쒕떎.",
   },
   {
-    suffix: "임원 보고 대시보드 구축",
+    suffix: "?꾩썝 蹂닿퀬 ??쒕낫??援ъ텞",
     baseCost: 16400000,
-    action: "주간 보고 지표 6개와 필터 기준 확정",
-    memo: "단계별 예상 매출과 지연 딜을 한 화면에서 보는 요구가 강하다.",
+    action: "二쇨컙 蹂닿퀬 吏??6媛쒖? ?꾪꽣 湲곗? ?뺤젙",
+    memo: "?④퀎蹂??덉긽 留ㅼ텧怨?吏???쒖쓣 ???붾㈃?먯꽌 蹂대뒗 ?붽뎄媛 媛뺥븯??",
   },
   {
-    suffix: "보안 감사 및 데이터 연동 PoC",
+    suffix: "蹂댁븞 媛먯궗 諛??곗씠???곕룞 PoC",
     baseCost: 19800000,
-    action: "보안 체크리스트와 연동 범위 문서 전달",
-    memo: "운영자 접근 기록과 민감 원문 조회 사유가 내부 승인 조건이다.",
+    action: "蹂댁븞 泥댄겕由ъ뒪?몄? ?곕룞 踰붿쐞 臾몄꽌 ?꾨떖",
+    memo: "?댁쁺???묎렐 湲곕줉怨?誘쇨컧 ?먮Ц 議고쉶 ?ъ쑀媛 ?대? ?뱀씤 議곌굔?대떎.",
   },
 ] as const;
 
@@ -264,7 +263,7 @@ function getMobile(companyIndex: number, contactIndex: number): string {
   return `010-${middle}-${last}`;
 }
 
-// 기능 : 데모 담당자 휴대폰을 KR national/E.164 저장 필드로 변환합니다.
+// 湲곕뒫 : ?곕え ?대떦???대??곗쓣 KR national/E.164 ????꾨뱶濡?蹂?섑빀?덈떎.
 function createSeedContactPhone(mobile: string) {
   const nationalNumber = mobile.replace(/\D/g, "");
 
@@ -363,20 +362,6 @@ async function seedLocalMockAuth() {
 
 async function resetLocalDemoDomainData(userId: string) {
   await prisma.$transaction([
-    prisma.followUpDeliveryAttempt.deleteMany({ where: { userId } }),
-    prisma.followUpMessageTarget.deleteMany({ where: { userId } }),
-    prisma.followUpMessage.deleteMany({ where: { userId } }),
-    prisma.followUpConsentNotice.deleteMany({ where: { userId } }),
-    prisma.smsSenderNumber.deleteMany({ where: { userId } }),
-    prisma.externalEmailOAuthState.deleteMany({ where: { userId } }),
-    prisma.externalEmailConnection.deleteMany({ where: { userId } }),
-    prisma.meetingNoteDeal.deleteMany({ where: { userId } }),
-    prisma.meetingNoteProduct.deleteMany({ where: { userId } }),
-    prisma.meetingNoteContact.deleteMany({ where: { userId } }),
-    prisma.meetingNoteCompany.deleteMany({ where: { userId } }),
-    prisma.meetingNote.deleteMany({ where: { userId } }),
-    prisma.scheduleDeal.deleteMany({ where: { userId } }),
-    prisma.schedule.deleteMany({ where: { userId } }),
     prisma.dealProduct.deleteMany({ where: { userId } }),
     prisma.dealContact.deleteMany({ where: { userId } }),
     prisma.dealCompany.deleteMany({ where: { userId } }),
@@ -478,7 +463,7 @@ async function seedLocalDemoSalesData() {
       data: {
         userId,
         companyId: company.id,
-        memoType: "계정 개요",
+        memoType: "怨꾩젙 媛쒖슂",
         memo: seed.memo,
       },
     });
@@ -507,14 +492,14 @@ async function seedLocalDemoSalesData() {
         data: {
           userId,
           contactId: contact.id,
-          memoType: "관계 메모",
-          memo: `${seed.companyName} ${departmentName} 담당자. ${
+          memoType: "愿怨?硫붾え",
+          memo: `${seed.companyName} ${departmentName} ?대떦?? ${
             getRequired(
               dealTemplates,
               contactIndex % dealTemplates.length,
               "deal template"
             ).suffix
-          } 논의에 참여한다.`,
+          } ?쇱쓽??李몄뿬?쒕떎.`,
         },
       });
     }
@@ -540,18 +525,14 @@ async function seedLocalDemoSalesData() {
       data: {
         userId,
         productId: product.id,
-        memoType: "상품 설명",
-        memo: `${categoryName} 영역의 ${statusName} 상품. 대기업 영업 조직의 반복 보고와 후속 조치 관리를 줄이는 데 초점을 둔다. 상품 코드 DEMO-${String(productIndex + 1).padStart(2, "0")}.`,
+        memoType: "?곹뭹 ?ㅻ챸",
+        memo: `${categoryName} ?곸뿭??${statusName} ?곹뭹. ?湲곗뾽 ?곸뾽 議곗쭅??諛섎났 蹂닿퀬? ?꾩냽 議곗튂 愿由щ? 以꾩씠????珥덉젏???붾떎. ?곹뭹 肄붾뱶 DEMO-${String(productIndex + 1).padStart(2, "0")}.`,
       },
     });
   }
 
-  const dealsByCompany = new Map<string, Awaited<ReturnType<typeof prisma.deal.create>>[]>();
-  const allDeals = [];
-
   for (const [companyIndex, company] of companies.entries()) {
     const contacts = contactsByCompany.get(company.id)!;
-    const companyDeals = [];
 
     for (const [templateIndex, template] of dealTemplates.entries()) {
       const productCount = 3 + ((companyIndex + templateIndex) % 3);
@@ -582,9 +563,6 @@ async function seedLocalDemoSalesData() {
           expectedEndDate: getDate(companyIndex * 3 + templateIndex * 11),
         },
       });
-      companyDeals.push(deal);
-      allDeals.push(deal);
-
       await prisma.dealCompany.create({
         data: {
           userId,
@@ -622,165 +600,13 @@ async function seedLocalDemoSalesData() {
         data: {
           userId,
           dealId: deal.id,
-          memoType: "영업 메모",
-          memo: `${company.companyName} ${template.memo} 연결 상품은 ${linkedProducts.map((product) => product.productName).join(", ")}이다.`,
+          memoType: "?곸뾽 硫붾え",
+          memo: `${company.companyName} ${template.memo} ?곌껐 ?곹뭹? ${linkedProducts.map((product) => product.productName).join(", ")}?대떎.`,
         },
       });
     }
 
-    dealsByCompany.set(company.id, companyDeals);
   }
-
-  for (const [companyIndex, company] of companies.entries()) {
-    const companyDeals = dealsByCompany.get(company.id)!;
-    const linkedDeals = companyDeals.slice(0, 3);
-    const schedule = await prisma.schedule.create({
-      data: {
-        userId,
-        scheduleTitle: `${company.companyName} 주간 영업 점검`,
-        startAt: getDateTime(companyIndex, 10 + (companyIndex % 5)),
-        endAt: getDateTime(companyIndex, 11 + (companyIndex % 5)),
-        timeZone: "Asia/Seoul",
-        location: `${company.companyName} 담당자 온라인 미팅`,
-        memo: "주요 딜 3건의 단계, 다음 행동, 리스크를 점검한다.",
-      },
-    });
-
-    await prisma.scheduleDeal.createMany({
-      data: linkedDeals.map((deal) => ({
-        userId,
-        scheduleId: schedule.id,
-        dealId: deal.id,
-      })),
-    });
-  }
-
-  for (let index = 0; index < 4; index += 1) {
-    const linkedDeals = getCircularItems(allDeals, index * 7, 5);
-    const schedule = await prisma.schedule.create({
-      data: {
-        userId,
-        scheduleTitle: `전략 계정 ${index + 1}차 통합 리뷰`,
-        startAt: getDateTime(14 + index, 14),
-        endAt: getDateTime(14 + index, 15),
-        timeZone: "Asia/Seoul",
-        location: "onehand.sales 내부 리뷰",
-        memo: "대기업 계정별 중요 딜 5건을 묶어 리스크와 다음 행동을 정리한다.",
-      },
-    });
-
-    await prisma.scheduleDeal.createMany({
-      data: linkedDeals.map((deal) => ({
-        userId,
-        scheduleId: schedule.id,
-        dealId: deal.id,
-      })),
-    });
-  }
-
-  for (const [companyIndex, company] of companies.entries()) {
-    const companySeed = getRequired(companySeeds, companyIndex, "company seed");
-    const linkedCompanies = getCircularItems(companies, companyIndex, 3);
-    const contacts = contactsByCompany.get(company.id)!.slice(0, 4);
-    const companyDeals = dealsByCompany.get(company.id)!.slice(0, 4);
-    const linkedProducts = getCircularItems(products, companyIndex, 4);
-    const sourceType =
-      companyIndex % 3 === 0
-        ? MeetingNoteSourceType.TEXT_AI
-        : companyIndex % 3 === 1
-          ? MeetingNoteSourceType.STT_AI
-          : MeetingNoteSourceType.MANUAL;
-    const note = await prisma.meetingNote.create({
-      data: {
-        userId,
-        sourceType,
-        title: `${company.companyName} meeting note`,
-        meetingAt: getDateTime(companyIndex - 10, 9 + (companyIndex % 6)),
-        timeZone: "Asia/Seoul",
-        details: `${company.companyName} 미팅에서는 ${companySeed.field} 조직의 영업 진행 상황을 개인 담당자 기준으로 남기되, 임원 보고에서는 단계별 딜과 예상 매출을 합산해 보고하는 방향을 논의했다. 담당자 4명, 딜 4건, 상품 4개가 같은 회의록에 연결되어 후속 조치 누락을 줄이는 흐름을 검증했다.`,
-        nextPlan: "다음 미팅 전까지 핵심 딜 4건의 다음 행동과 예상 마감일을 업데이트한다.",
-        requiredAction: "보안 검토 자료, 모바일 입력 화면, 임원 보고 대시보드 예시를 전달한다.",
-        rawText: null,
-      },
-    });
-
-    for (const linkedCompany of linkedCompanies) {
-      const field = await prisma.companyField.findUnique({
-        where: { id: linkedCompany.companyFieldId },
-      });
-      const region = await prisma.companyRegion.findUnique({
-        where: { id: linkedCompany.companyRegionId },
-      });
-      await prisma.meetingNoteCompany.create({
-        data: {
-          userId,
-          meetingNoteId: note.id,
-          companyId: linkedCompany.id,
-          companyNameSnapshot: linkedCompany.companyName,
-          companyFieldSnapshot: field?.field ?? null,
-          companyRegionSnapshot: region?.region ?? null,
-        },
-      });
-    }
-
-    for (const contact of contacts) {
-      const department = await prisma.contactDepartment.findUnique({
-        where: { id: contact.contactDepartmentId },
-      });
-      const jobGrade = await prisma.contactJobGrade.findUnique({
-        where: { id: contact.contactJobGradeId },
-      });
-      await prisma.meetingNoteContact.create({
-        data: {
-          userId,
-          meetingNoteId: note.id,
-          contactId: contact.id,
-          companyId: company.id,
-          contactUsernameSnapshot: contact.username,
-          contactEmailSnapshot: contact.email,
-          contactMobileSnapshot: contact.mobile,
-          contactCompanyNameSnapshot: company.companyName,
-          contactDepartmentSnapshot: department?.departmentName ?? null,
-          contactJobGradeSnapshot: jobGrade?.jobGradeName ?? null,
-        },
-      });
-    }
-
-    for (const product of linkedProducts) {
-      const category = await prisma.productCategory.findUnique({
-        where: { id: product.productCategoryId },
-      });
-      const status = await prisma.productStatus.findUnique({
-        where: { id: product.productStatusId },
-      });
-      await prisma.meetingNoteProduct.create({
-        data: {
-          userId,
-          meetingNoteId: note.id,
-          productId: product.id,
-          productNameSnapshot: product.productName,
-          productPriceSnapshot: product.productPrice,
-          productCategorySnapshot: category?.categoryName ?? null,
-          productStatusSnapshot: status?.statusName ?? null,
-        },
-      });
-    }
-
-    for (const deal of companyDeals) {
-      await prisma.meetingNoteDeal.create({
-        data: {
-          userId,
-          meetingNoteId: note.id,
-          dealId: deal.id,
-          dealNameSnapshot: deal.dealName,
-          dealStatusSnapshot: deal.dealStatus,
-          dealCostSnapshot: deal.dealCost,
-          dealExpectedEndDateSnapshot: deal.expectedEndDate,
-        },
-      });
-    }
-  }
-}
 
 async function main() {
   await seedLocalMockAuth();

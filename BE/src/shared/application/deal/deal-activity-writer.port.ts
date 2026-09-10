@@ -1,11 +1,8 @@
 export const DEAL_ACTIVITY_LINKED_RECORD_TARGET_TYPES = [
   "DEAL",
-  "SCHEDULE",
-  "MEETING_NOTE",
   "CONTACT",
   "COMPANY",
   "PRODUCT",
-  "FOLLOW_UP_MESSAGE",
 ] as const;
 
 export const DEAL_ACTIVITY_TYPES = [
@@ -13,12 +10,6 @@ export const DEAL_ACTIVITY_TYPES = [
   "STAGE_CHANGED",
   "NEXT_ACTION_CREATED",
   "NEXT_ACTION_COMPLETION_CHANGED",
-  "SCHEDULE_LINKED",
-  "SCHEDULE_UNLINKED",
-  "MEETING_NOTE_LINKED",
-  "MEETING_NOTE_UNLINKED",
-  "FOLLOW_UP_SENT",
-  "FOLLOW_UP_FAILED",
   "CALL",
   "MEETING",
   "EMAIL",
@@ -32,10 +23,7 @@ export type DealActivityTypeCode = (typeof DEAL_ACTIVITY_TYPES)[number];
 export type DealActivitySourceTypeCode =
   | "SYSTEM"
   | "USER"
-  | "NEXT_ACTION"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
-  | "FOLLOW_UP";
+  | "NEXT_ACTION";
 
 // 역할 : DealActivityLinkedRecordValue timeline 연결 record 구조를 정의합니다.
 export interface DealActivityLinkedRecordValue {

@@ -37,9 +37,6 @@ import { SchedulesFollowUpFeaturePage } from "@/pages/features/schedules-follow-
 import { HelpPage } from "@/pages/help";
 import { HomePage } from "@/pages/home";
 import { LoginPage } from "@/pages/login";
-import { MeetingNoteDetailPage } from "@/pages/meeting-notes/detail";
-import { MeetingNotesPage } from "@/pages/meeting-notes";
-import { MeetingNoteNewFullPage } from "@/pages/meeting-notes/new-full";
 import { ProductDetailPage } from "@/pages/products/detail";
 import { ProductPage } from "@/pages/product";
 import { ProductsPage } from "@/pages/products";
@@ -47,10 +44,7 @@ import { ProductNewFullPage } from "@/pages/products/new-full";
 import { ProductNewPage } from "@/pages/products/new";
 import { PrivacyPage } from "@/pages/privacy";
 import { PricingPage } from "@/pages/pricing";
-import { ScheduleDetailPage } from "@/pages/schedules/detail";
-import { SchedulesPage } from "@/pages/schedules";
 import { SecurityPage } from "@/pages/security";
-import { ScheduleWeekPage } from "@/pages/schedules/week";
 import { B2bFieldSolutionPage } from "@/pages/solutions/b2b-field";
 import { InsuranceAutoSolutionPage } from "@/pages/solutions/insurance-auto";
 import { SolutionsPage } from "@/pages/solutions";
@@ -179,33 +173,6 @@ export const router = createBrowserRouter([
     path: "/deals/:dealId",
     element: <LegacyAppRedirect paramName="dealId" to="/app/deals" />,
   },
-  { path: "/schedules", element: <LegacyAppRedirect to="/app/schedules" /> },
-  {
-    path: "/schedules/week",
-    element: <LegacyAppRedirect to="/app/schedules/week" />,
-  },
-  {
-    path: "/schedules/:scheduleId",
-    element: <LegacyAppRedirect paramName="scheduleId" to="/app/schedules" />,
-  },
-  {
-    path: "/meeting-notes",
-    element: <LegacyAppRedirect to="/app/meeting-notes" />,
-  },
-  {
-    path: "/meeting-notes/new/full",
-    element: <LegacyAppRedirect to="/app/meeting-notes/new/full" />,
-  },
-  {
-    path: "/meeting-notes/new",
-    element: <Navigate replace to="/app/meeting-notes?create=1" />,
-  },
-  {
-    path: "/meeting-notes/:meetingNoteId",
-    element: (
-      <LegacyAppRedirect paramName="meetingNoteId" to="/app/meeting-notes" />
-    ),
-  },
   { path: "/trash", element: <LegacyAppRedirect to="/app/trash" /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
   {
@@ -234,16 +201,6 @@ export const router = createBrowserRouter([
       { path: "deals/new/full", element: <DealNewFullPage /> },
       { path: "deals/new", element: <DealNewPage /> },
       { path: "deals/:dealId", element: <DealDetailPage /> },
-      { path: "schedules", element: <SchedulesPage /> },
-      { path: "schedules/week", element: <ScheduleWeekPage /> },
-      { path: "schedules/:scheduleId", element: <ScheduleDetailPage /> },
-      { path: "meeting-notes", element: <MeetingNotesPage /> },
-      { path: "meeting-notes/new/full", element: <MeetingNoteNewFullPage /> },
-      {
-        path: "meeting-notes/new",
-        element: <Navigate replace to="/app/meeting-notes?create=1" />,
-      },
-      { path: "meeting-notes/:meetingNoteId", element: <MeetingNoteDetailPage /> },
       { path: "export", element: <Navigate replace to="/app" /> },
       { path: "trash", element: <TrashPage /> },
       { path: "more", element: <MorePage /> },

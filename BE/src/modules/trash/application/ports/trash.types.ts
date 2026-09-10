@@ -4,8 +4,6 @@ export type TrashTargetType =
   | "CONTACT"
   | "PRODUCT"
   | "DEAL"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
   | "COMPANY_MEMO_LOG"
   | "COMPANY_PRIVATE_MEMO_LOG"
   | "CONTACT_MEMO_LOG"
@@ -24,9 +22,7 @@ export type TrashDomainFilter =
   | "COMPANY"
   | "CONTACT"
   | "PRODUCT"
-  | "DEAL"
-  | "SCHEDULE"
-  | "MEETING_NOTE";
+  | "DEAL";
 
 // 역할 : TrashLogTypeFilter 휴지통 로그 유형 필터 값을 정의합니다.
 export type TrashLogTypeFilter =

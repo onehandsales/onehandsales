@@ -109,7 +109,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DuplicateProductStatus":
       case "ProductCategoryInUse":
       case "ProductStatusInUse":
-      case "AiWeeklySalesReportAlreadyGenerating":
       case "DealActivityNotEditable":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
@@ -119,8 +118,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
-      case "AUDIO_REQUIRED":
-      case "AUDIO_TYPE_UNSUPPORTED":
       case "CURRENCY_UNSUPPORTED":
       case "AMOUNT_INTEGER_REQUIRED":
       case "USER_LOCALE_UNSUPPORTED":
@@ -130,14 +127,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "CONTACT_PHONE_COUNTRY_UNSUPPORTED":
       case "CONTACT_PHONE_INVALID":
       case "COMPANY_REGION_UNSUPPORTED":
-      case "GoogleCalendarOAuthStateInvalid":
-      case "FollowUpEmailOAuthStateInvalid":
-      case "FollowUpDraftSourceInvalid":
-      case "FollowUpInvalidRecipient":
-      case "FollowUpSmsBodyTooLong":
-      case "SmsSenderVerificationCodeInvalid":
-      case "GoogleCalendarSourceSelectionRequired":
-      case "ScheduleMeetingUrlInvalid":
       case "ANALYTICS_EVENT_UNSUPPORTED":
       case "ANALYTICS_EVENT_VERSION_UNSUPPORTED":
       case "ANALYTICS_PAYLOAD_INVALID":
@@ -156,41 +145,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "SUPPORT_REQUEST_PAGE_URL_TOO_LONG":
       case "PUBLIC_CONTACT_REQUEST_VALIDATION_FAILED":
         return HttpStatus.BAD_REQUEST;
-      case "AUDIO_TOO_LARGE":
       case "ERROR_REPORT_SCREENSHOT_TOO_LARGE":
         return HttpStatus.PAYLOAD_TOO_LARGE;
-      case "SmsSenderVerificationExpired":
-        return HttpStatus.GONE;
-      case "GoogleCalendarReconnectRequired":
-      case "GoogleCalendarSyncInProgress":
-      case "FollowUpConsentNoticeRequired":
-      case "FollowUpEmailReconnectRequired":
-      case "FollowUpSmsSenderNotVerified":
-      case "FollowUpMessageAlreadySent":
-      case "FollowUpMessageNotSendable":
-      case "FollowUpMessageNotRetryable":
-        return HttpStatus.CONFLICT;
-      case "MeetingNoteAiDraftProviderUnavailable":
-      case "AiWeeklySalesReportProviderUnavailable":
-      case "FollowUpProviderUnavailable":
-      case "FollowUpDeliverySecretEncryptionKeyMissing":
       case "ERROR_REPORT_SCREENSHOT_STORAGE_FAILED":
         return HttpStatus.SERVICE_UNAVAILABLE;
-      case "GoogleCalendarProviderUnavailable":
       case "AUTH_PROVIDER_EXCHANGE_FAILED":
-      case "STT_PROVIDER_UNAVAILABLE":
-      case "AI_DRAFT_FAILED":
-      case "AiWeeklySalesReportProviderFailed":
-      case "FollowUpProviderRequestFailed":
-        return HttpStatus.BAD_GATEWAY;
-      case "MeetingNoteAiDraftFailed":
         return HttpStatus.BAD_GATEWAY;
       case "TRASH_RECORD_NOT_FOUND":
       case "ERROR_REPORT_USER_NOT_FOUND":
       case "SUPPORT_REQUEST_USER_NOT_FOUND":
         return HttpStatus.NOT_FOUND;
-      case "STT_TRANSCRIPTION_FAILED":
-        return HttpStatus.UNPROCESSABLE_ENTITY;
       default:
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

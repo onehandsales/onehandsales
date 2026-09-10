@@ -3,16 +3,12 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   Building2,
-  CalendarClock,
-  CalendarDays,
   CheckCircle2,
-  Clock3,
-  NotebookPen,
   Plus,
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
@@ -24,11 +20,6 @@ import {
   useDealList,
   useDealStageCounts,
 } from "@/features/deal";
-import {
-  useMeetingNoteList,
-  type MeetingNoteListItem,
-} from "@/features/meeting-note";
-import { useScheduleList, type Schedule } from "@/features/schedule";
 import { cn } from "@/utils/cn";
 
 const ACTIVE_DEAL_STATUSES: DealStatus[] = [
@@ -45,20 +36,6 @@ const QUICK_ACTIONS: QuickAction[] = [
     icon: BriefcaseBusiness,
     labelKey: "home.dealRegister",
     tone: "blue",
-  },
-  {
-    descriptionKey: "home.meetingNoteCreateDescription",
-    href: "/app/meeting-notes?create=1",
-    icon: NotebookPen,
-    labelKey: "home.meetingNoteCreate",
-    tone: "emerald",
-  },
-  {
-    descriptionKey: "home.scheduleViewDescription",
-    href: "/app/schedules",
-    icon: CalendarDays,
-    labelKey: "home.scheduleView",
-    tone: "amber",
   },
   {
     descriptionKey: "home.companyCreateDescription",
@@ -82,33 +59,23 @@ type ActivityItem = {
   readonly href: string;
   readonly meta: string;
   readonly title: string;
-  readonly type: "deal" | "meeting";
 };
 
-// 기능 : CRM 시작 화면을 렌더링합니다.
 export function HomePage() {
-  const { formatCurrency, formatDateTime, locale, t, timeZone } = useAppI18n();
-  const numberFormatter = useMemo(() => new Intl.NumberFormat(getIntlLocale(locale)), [locale]);
+  const { formatCurrency, formatDateTime, locale, t } = useAppI18n();
+  const numberFormatter = useMemo(
+    () => new Intl.NumberFormat(getIntlLocale(locale)),
+    [locale]
+  );
   const today = useMemo(() => new Date(), []);
-  const todayKey = useMemo(
-    () => toDateKeyInTimeZone(today.toISOString(), timeZone),
-    [timeZone, today]
-  );
 
-  const scheduleQuery = useScheduleList({
-    baseDate: todayKey,
-    timeZone,
-    view: "week",
-  });
   const recentDealsQuery = useDealList({ page: 1, sort: "createdAtDesc" });
-  const deadlineDealsQuery = useDealList({ page: 1, sort: "expectedEndDateAsc" });
+  const deadlineDealsQuery = useDealList({
+    page: 1,
+    sort: "expectedEndDateAsc",
+  });
   const stageCountsQuery = useDealStageCounts();
-  const meetingNotesQuery = useMeetingNoteList({ page: 1, sort: "createdAtDesc" });
 
-  const schedules = useMemo(
-    () => scheduleQuery.data?.items ?? [],
-    [scheduleQuery.data?.items]
-  );
   const recentDeals = useMemo(
     () => recentDealsQuery.data?.items ?? [],
     [recentDealsQuery.data?.items]
@@ -117,30 +84,9 @@ export function HomePage() {
     () => deadlineDealsQuery.data?.items ?? [],
     [deadlineDealsQuery.data?.items]
   );
-  const meetingNotes = useMemo(
-    () => meetingNotesQuery.data?.items ?? [],
-    [meetingNotesQuery.data?.items]
-  );
   const stageCounts = useMemo(
     () => stageCountsQuery.data?.items ?? [],
     [stageCountsQuery.data?.items]
-  );
-
-  const todaySchedules = useMemo(
-    () =>
-      schedules
-        .filter((schedule) => toDateKeyInTimeZone(schedule.startAt, timeZone) === todayKey)
-        .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()),
-    [schedules, timeZone, todayKey]
-  );
-
-  const upcomingSchedules = useMemo(
-    () =>
-      schedules
-        .filter((schedule) => new Date(schedule.endAt).getTime() >= today.getTime())
-        .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
-        .slice(0, 5),
-    [schedules, today]
   );
 
   const activeDeadlineDeals = useMemo(
@@ -150,11 +96,14 @@ export function HomePage() {
         .slice(0, 5),
     [deadlineDeals]
   );
-
-  const followUpDeals = useMemo(
+  const nextActionDeals = useMemo(
     () =>
       recentDeals
-        .filter((deal) => deal.latestFollowingAction && !deal.latestFollowingAction.checkComplete)
+        .filter(
+          (deal) =>
+            deal.latestFollowingAction &&
+            !deal.latestFollowingAction.checkComplete
+        )
         .slice(0, 5),
     [recentDeals]
   );
@@ -170,29 +119,18 @@ export function HomePage() {
     deals: recentDeals,
     formatCurrency,
     formatDateTime,
-    meetingNotes,
     t,
   });
 
   const isAnyLoading =
-    scheduleQuery.isLoading ||
     recentDealsQuery.isLoading ||
     deadlineDealsQuery.isLoading ||
-    stageCountsQuery.isLoading ||
-    meetingNotesQuery.isLoading;
+    stageCountsQuery.isLoading;
 
   return (
     <section className="min-h-0 flex-1 overflow-y-auto bg-white px-5 pb-8 pt-2 md:px-8 md:pt-4">
       <div className="mx-auto grid w-full max-w-[1480px] gap-5">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <SummaryCard
-            icon={CalendarClock}
-            label={t("home.scheduleToday")}
-            tone="emerald"
-            value={t("home.countItems", {
-              values: { count: numberFormatter.format(todaySchedules.length) },
-            })}
-          />
           <SummaryCard
             icon={BriefcaseBusiness}
             label={t("home.totalDeals")}
@@ -200,6 +138,12 @@ export function HomePage() {
             value={t("home.countCases", {
               values: { count: numberFormatter.format(activeDealCount) },
             })}
+          />
+          <SummaryCard
+            icon={TrendingUp}
+            label={t("home.totalDealAmount")}
+            tone="emerald"
+            value={formatCurrency(pipelineValue)}
           />
           <SummaryCard
             icon={AlertCircle}
@@ -210,13 +154,11 @@ export function HomePage() {
             })}
           />
           <SummaryCard
-            icon={NotebookPen}
-            label={t("home.recentMeetingNotes")}
-            tone="blue"
+            icon={CheckCircle2}
+            label={t("home.recentScope")}
+            tone="slate"
             value={t("home.countCases", {
-              values: {
-                count: numberFormatter.format(meetingNotesQuery.data?.totalCount ?? 0),
-              },
+              values: { count: numberFormatter.format(recentDeals.length) },
             })}
           />
         </div>
@@ -224,98 +166,73 @@ export function HomePage() {
         <div className="grid min-h-0 gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
           <div className="grid content-start gap-5">
             <DashboardSection
-              actionHref="/app/schedules"
-              actionLabel={t("navigation.schedules")}
-              icon={CalendarDays}
-              title={t("home.taskToday")}
+              actionHref="/app/deals"
+              actionLabel={t("navigation.deals")}
+              icon={TrendingUp}
+              title={t("home.dealStatus")}
             >
-              <div className="grid gap-4 lg:grid-cols-2">
-                <TaskPanel
-                  emptyText={t("home.emptyTodaySchedules")}
-                  isLoading={scheduleQuery.isLoading}
-                  title={t("home.scheduleToday")}
-                >
-                  {todaySchedules.slice(0, 5).map((schedule) => (
-                    <ScheduleTaskItem key={schedule.id} schedule={schedule} timeZone={timeZone} />
-                  ))}
-                </TaskPanel>
-                <TaskPanel
-                  emptyText={t("home.emptyFollowUps")}
-                  isLoading={recentDealsQuery.isLoading}
-                  title={t("home.dealsFollowUp")}
-                >
-                  {followUpDeals.map((deal) => (
-                    <FollowUpTaskItem deal={deal} key={deal.id} />
-                  ))}
-                </TaskPanel>
+              <div className="grid gap-3">
+                <div className="grid gap-3 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] p-3 sm:grid-cols-2">
+                  <MiniMetric
+                    label={t("home.totalDealAmount")}
+                    value={formatCurrency(pipelineValue)}
+                  />
+                  <MiniMetric
+                    label={t("home.recentScope")}
+                    value={t("home.countCases", {
+                      values: {
+                        count: numberFormatter.format(recentDeals.length),
+                      },
+                    })}
+                  />
+                </div>
+                <StageBreakdown
+                  counts={stageCounts}
+                  isLoading={stageCountsQuery.isLoading}
+                  numberFormatter={numberFormatter}
+                  t={t}
+                />
               </div>
             </DashboardSection>
 
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-              <DashboardSection
-                actionHref="/app/deals"
-                actionLabel={t("navigation.deals")}
-                icon={TrendingUp}
-                title={t("home.dealStatus")}
+            <DashboardSection
+              actionHref="/app/deals"
+              actionLabel={t("home.all")}
+              icon={AlertCircle}
+              title={t("home.dueSoonDeals")}
+            >
+              <ListState
+                emptyText={t("home.emptyDueSoonDeals")}
+                isLoading={deadlineDealsQuery.isLoading}
               >
-                <div className="grid gap-3">
-                  <div className="grid gap-3 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] p-3 sm:grid-cols-2">
-                    <MiniMetric label={t("home.totalDealAmount")} value={formatCurrency(pipelineValue)} />
-                    <MiniMetric
-                      label={t("home.recentScope")}
-                      value={t("home.countCases", {
-                        values: { count: numberFormatter.format(recentDeals.length) },
-                      })}
-                    />
-                  </div>
-                  <StageBreakdown
-                    counts={stageCounts}
-                    isLoading={stageCountsQuery.isLoading}
-                    numberFormatter={numberFormatter}
+                {activeDeadlineDeals.map((deal) => (
+                  <DeadlineDealItem
+                    deal={deal}
+                    formatCurrency={formatCurrency}
+                    key={deal.id}
                     t={t}
+                    today={today}
                   />
-                </div>
-              </DashboardSection>
-
-              <DashboardSection
-                actionHref="/app/deals"
-                actionLabel={t("home.all")}
-                icon={AlertCircle}
-                title={t("home.dueSoonDeals")}
-              >
-                <ListState
-                  emptyText={t("home.emptyDueSoonDeals")}
-                  isLoading={deadlineDealsQuery.isLoading}
-                >
-                  {activeDeadlineDeals.map((deal) => (
-                    <DeadlineDealItem
-                      deal={deal}
-                      formatCurrency={formatCurrency}
-                      key={deal.id}
-                      t={t}
-                      today={today}
-                    />
-                  ))}
-                </ListState>
-              </DashboardSection>
-            </div>
+                ))}
+              </ListState>
+            </DashboardSection>
           </div>
 
           <div className="grid content-start gap-5">
             <QuickActionPanel />
 
             <DashboardSection
-              actionHref="/app/schedules"
+              actionHref="/app/deals"
               actionLabel={t("home.all")}
-              icon={Clock3}
-              title={t("home.upcomingSchedules")}
+              icon={CheckCircle2}
+              title={t("home.dealsNextActions")}
             >
               <ListState
-                emptyText={t("home.emptySchedules")}
-                isLoading={scheduleQuery.isLoading}
+                emptyText={t("home.emptyNextActions")}
+                isLoading={recentDealsQuery.isLoading}
               >
-                {upcomingSchedules.map((schedule) => (
-                  <UpcomingScheduleItem key={schedule.id} schedule={schedule} timeZone={timeZone} />
+                {nextActionDeals.map((deal) => (
+                  <NextActionTaskItem deal={deal} key={deal.id} />
                 ))}
               </ListState>
             </DashboardSection>
@@ -323,12 +240,12 @@ export function HomePage() {
             <DashboardSection
               actionHref="/app/deals"
               actionLabel={t("home.all")}
-              icon={CheckCircle2}
+              icon={BriefcaseBusiness}
               title={t("home.activitiesTitle")}
             >
               <ListState emptyText={t("home.emptyActivities")} isLoading={isAnyLoading}>
                 {recentActivity.map((activity) => (
-                  <ActivityItemRow activity={activity} key={`${activity.type}-${activity.href}`} />
+                  <ActivityItemRow activity={activity} key={activity.href} />
                 ))}
               </ListState>
             </DashboardSection>
@@ -339,7 +256,6 @@ export function HomePage() {
   );
 }
 
-// 기능 : 요약 카드 항목을 렌더링합니다.
 function SummaryCard({
   icon: Icon,
   label,
@@ -348,13 +264,14 @@ function SummaryCard({
 }: {
   readonly icon: LucideIcon;
   readonly label: string;
-  readonly tone: "amber" | "blue" | "emerald";
+  readonly tone: "amber" | "blue" | "emerald" | "slate";
   readonly value: string;
 }) {
   const styles = {
     amber: "border-[#FED7AA] bg-[#FFF7ED] text-[#C2410C]",
     blue: "border-[#BFDBFE] bg-[#EFF6FF] text-[#4880EE]",
     emerald: "border-[#BBF7D0] bg-[#F0FDF4] text-[#047857]",
+    slate: "border-[#CBD5E1] bg-[#F8FAFC] text-[#475569]",
   };
 
   return (
@@ -374,7 +291,6 @@ function SummaryCard({
   );
 }
 
-// 기능 : 대시보드 섹션을 렌더링합니다.
 function DashboardSection({
   actionHref,
   actionLabel,
@@ -384,7 +300,7 @@ function DashboardSection({
 }: {
   readonly actionHref?: string;
   readonly actionLabel?: string;
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
   readonly icon: LucideIcon;
   readonly title: string;
 }) {
@@ -410,70 +326,7 @@ function DashboardSection({
   );
 }
 
-// 기능 : 할 일 패널을 렌더링합니다.
-function TaskPanel({
-  children,
-  emptyText,
-  isLoading,
-  title,
-}: {
-  readonly children: React.ReactNode;
-  readonly emptyText: string;
-  readonly isLoading: boolean;
-  readonly title: string;
-}) {
-  const hasChildren = Boolean(toArrayLength(children));
-
-  return (
-    <div className="min-w-0 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC]">
-      <div className="flex h-10 items-center border-b border-[#EEF2F7] px-3">
-        <h3 className="text-[13px] font-semibold text-[#334155]">{title}</h3>
-      </div>
-      <div className="divide-y divide-[#EEF2F7]">
-        {isLoading ? (
-          <LoadingRows count={3} />
-        ) : hasChildren ? (
-          children
-        ) : (
-          <EmptyLine text={emptyText} />
-        )}
-      </div>
-    </div>
-  );
-}
-
-// 기능 : 일정 할 일 항목을 렌더링합니다.
-function ScheduleTaskItem({
-  schedule,
-  timeZone,
-}: {
-  readonly schedule: Schedule;
-  readonly timeZone: string;
-}) {
-  const { formatDateTime, t } = useAppI18n();
-
-  return (
-    <Link
-      className="grid min-w-0 grid-cols-[72px_minmax(0,1fr)] gap-3 px-3 py-3 transition hover:bg-white"
-      to={`/app/schedules/${schedule.id}`}
-    >
-      <span className="text-[12px] font-bold text-[#047857]">
-        {formatDateTime(schedule.startAt, { timeZone })}
-      </span>
-      <div className="min-w-0">
-        <p className="truncate text-[13px] font-semibold text-[#111827]">
-          {schedule.scheduleTitle}
-        </p>
-        <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {schedule.location || getScheduleDealLabel(schedule, t)}
-        </p>
-      </div>
-    </Link>
-  );
-}
-
-// 기능 : 후속 액션 할 일 항목을 렌더링합니다.
-function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
+function NextActionTaskItem({ deal }: { readonly deal: DealListItem }) {
   const { t } = useAppI18n();
 
   return (
@@ -496,7 +349,6 @@ function FollowUpTaskItem({ deal }: { readonly deal: DealListItem }) {
   );
 }
 
-// 기능 : 미니 지표 영역을 렌더링합니다.
 function MiniMetric({
   label,
   value,
@@ -512,7 +364,6 @@ function MiniMetric({
   );
 }
 
-// 기능 : 딜 단계 분포 영역을 렌더링합니다.
 function StageBreakdown({
   counts,
   isLoading,
@@ -522,10 +373,16 @@ function StageBreakdown({
   readonly counts: readonly DealStageCount[];
   readonly isLoading: boolean;
   readonly numberFormatter: Intl.NumberFormat;
-  readonly t: (key: AppI18nKey, options?: { readonly values?: Record<string, string | number> }) => string;
+  readonly t: (
+    key: AppI18nKey,
+    options?: { readonly values?: Record<string, string | number> }
+  ) => string;
 }) {
   const countMap = new Map(counts.map((item) => [item.dealStatus, item.count]));
-  const maxCount = Math.max(1, ...DEAL_STATUS_LIST.map((status) => countMap.get(status) ?? 0));
+  const maxCount = Math.max(
+    1,
+    ...DEAL_STATUS_LIST.map((status) => countMap.get(status) ?? 0)
+  );
 
   if (isLoading) {
     return <LoadingRows count={4} />;
@@ -545,7 +402,9 @@ function StageBreakdown({
                 {DEAL_STATUS_LABEL[status]}
               </span>
               <span className="text-[11px] font-semibold text-[#111827]">
-                {t("home.countCases", { values: { count: numberFormatter.format(count) } })}
+                {t("home.countCases", {
+                  values: { count: numberFormatter.format(count) },
+                })}
               </span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-[#F1F5F9]">
@@ -564,7 +423,6 @@ function StageBreakdown({
   );
 }
 
-// 기능 : 마감 딜 항목을 렌더링합니다.
 function DeadlineDealItem({
   deal,
   formatCurrency,
@@ -573,7 +431,10 @@ function DeadlineDealItem({
 }: {
   readonly deal: DealListItem;
   readonly formatCurrency: (amount: number | null | undefined) => string;
-  readonly t: (key: AppI18nKey, options?: { readonly values?: Record<string, string | number> }) => string;
+  readonly t: (
+    key: AppI18nKey,
+    options?: { readonly values?: Record<string, string | number> }
+  ) => string;
   readonly today: Date;
 }) {
   const daysUntil = getDaysUntil(deal.expectedEndDate, today);
@@ -605,8 +466,6 @@ function DeadlineDealItem({
   );
 }
 
-
-// 기능 : 빠른 액션 패널을 렌더링합니다.
 function QuickActionPanel() {
   const { t } = useAppI18n();
 
@@ -627,7 +486,6 @@ function QuickActionPanel() {
   );
 }
 
-// 기능 : 빠른 액션 링크 영역을 렌더링합니다.
 function QuickActionLink({ action }: { readonly action: QuickAction }) {
   const Icon = action.icon;
   const { t } = useAppI18n();
@@ -657,61 +515,14 @@ function QuickActionLink({ action }: { readonly action: QuickAction }) {
   );
 }
 
-// 기능 : 예정 일정 항목을 렌더링합니다.
-function UpcomingScheduleItem({
-  schedule,
-  timeZone,
-}: {
-  readonly schedule: Schedule;
-  readonly timeZone: string;
-}) {
-  const { formatDate, formatDateTime, t } = useAppI18n();
-
-  return (
-    <Link
-      className="grid min-w-0 grid-cols-[54px_minmax(0,1fr)] gap-3 px-1 py-2.5 transition hover:bg-[#FAFBFC]"
-      to={`/app/schedules/${schedule.id}`}
-    >
-      <div className="rounded-lg bg-[#ECFDF5] px-2 py-1 text-center">
-        <p className="text-[11px] font-bold text-[#047857]">
-          {formatDate(schedule.startAt, { timeZone })}
-        </p>
-        <p className="mt-0.5 text-[11px] font-semibold text-[#065F46]">
-          {formatDateTime(schedule.startAt, { timeZone })}
-        </p>
-      </div>
-      <div className="min-w-0">
-        <p className="truncate text-[13px] font-semibold text-[#111827]">
-          {schedule.scheduleTitle}
-        </p>
-        <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {schedule.location || getScheduleDealLabel(schedule, t)}
-        </p>
-      </div>
-    </Link>
-  );
-}
-
-// 기능 : 활동 항목 행을 렌더링합니다.
 function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
-  const isDeal = activity.type === "deal";
-
   return (
     <Link
       className="grid min-w-0 grid-cols-[30px_minmax(0,1fr)] gap-3 px-1 py-2.5 transition hover:bg-[#FAFBFC]"
       to={activity.href}
     >
-      <span
-        className={cn(
-          "flex h-7 w-7 items-center justify-center rounded-lg",
-          isDeal ? "bg-[#EFF6FF] text-[#4880EE]" : "bg-[#EFF6FF] text-[#4880EE]"
-        )}
-      >
-        {isDeal ? (
-          <BriefcaseBusiness className="h-3.5 w-3.5" />
-        ) : (
-          <NotebookPen className="h-3.5 w-3.5" />
-        )}
+      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EFF6FF] text-[#4880EE]">
+        <BriefcaseBusiness className="h-3.5 w-3.5" />
       </span>
       <span className="min-w-0">
         <span className="block truncate text-[13px] font-semibold text-[#111827]">
@@ -725,13 +536,12 @@ function ActivityItemRow({ activity }: { readonly activity: ActivityItem }) {
   );
 }
 
-// 기능 : 목록 상태 영역을 렌더링합니다.
 function ListState({
   children,
   emptyText,
   isLoading,
 }: {
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
   readonly emptyText: string;
   readonly isLoading: boolean;
 }) {
@@ -748,7 +558,6 @@ function ListState({
   return <div className="divide-y divide-[#EEF2F7]">{children}</div>;
 }
 
-// 기능 : 목록 로딩 행을 렌더링합니다.
 function LoadingRows({ count }: { readonly count: number }) {
   return (
     <div className="grid gap-2">
@@ -759,7 +568,6 @@ function LoadingRows({ count }: { readonly count: number }) {
   );
 }
 
-// 기능 : 빈 상태 문구를 렌더링합니다.
 function EmptyLine({ text }: { readonly text: string }) {
   return (
     <div className="flex min-h-20 items-center justify-center rounded-md bg-[#FAFBFC] px-4 py-5 text-center text-[13px] text-[#94A3B8]">
@@ -768,7 +576,6 @@ function EmptyLine({ text }: { readonly text: string }) {
   );
 }
 
-// 기능 : 진행 중인 딜 수를 계산합니다.
 function getActiveDealCount(counts: readonly DealStageCount[]) {
   return counts
     .filter((item) => ACTIVE_DEAL_STATUSES.includes(item.dealStatus))
@@ -780,7 +587,6 @@ type HomeTranslate = (
   options?: { readonly values?: Record<string, string | number> }
 ) => string;
 
-// 기능 : 딜 회사 라벨 값을 계산해 반환합니다.
 function getDealCompanyLabel(deal: DealListItem, t: HomeTranslate) {
   return (
     deal.companies
@@ -789,70 +595,29 @@ function getDealCompanyLabel(deal: DealListItem, t: HomeTranslate) {
   );
 }
 
-// 기능 : 삭제된 연결 항목의 표시 라벨을 생성합니다.
 function formatDeletedLabel(label: string, isDeleted: boolean, t: HomeTranslate): string {
   return isDeleted ? `${label} (${t("home.deleted")})` : label;
 }
 
-// 기능 : 최근 활동 데이터를 조합합니다.
 function buildRecentActivity({
   deals,
   formatCurrency,
   formatDateTime,
-  meetingNotes,
   t,
 }: {
   readonly deals: readonly DealListItem[];
   readonly formatCurrency: (amount: number | null | undefined) => string;
   readonly formatDateTime: (value: string | null | undefined) => string;
-  readonly meetingNotes: readonly MeetingNoteListItem[];
   readonly t: HomeTranslate;
 }) {
-  const dealItems: ActivityItem[] = deals.slice(0, 5).map((deal) => ({
+  return deals.slice(0, 6).map((deal) => ({
     createdAt: deal.createdAt,
     href: `/app/deals/${deal.id}`,
-    meta: `${getDealCompanyLabel(deal, t)} · ${formatCurrency(deal.dealCost)}`,
+    meta: `${getDealCompanyLabel(deal, t)} · ${formatCurrency(deal.dealCost)} · ${formatDateTime(deal.createdAt)}`,
     title: deal.dealName,
-    type: "deal",
   }));
-  const meetingItems: ActivityItem[] = meetingNotes.slice(0, 5).map((meetingNote) => ({
-    createdAt: meetingNote.createdAt,
-    href: `/app/meeting-notes/${meetingNote.id}`,
-    meta: getMeetingNoteSubtitle(meetingNote, formatDateTime),
-    title: getMeetingNoteTitle(meetingNote, t),
-    type: "meeting",
-  }));
-
-  return [...dealItems, ...meetingItems]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 6);
 }
 
-// 기능 : 회의록 제목을 계산해 반환합니다.
-function getMeetingNoteTitle(meetingNote: MeetingNoteListItem, t: HomeTranslate) {
-  if (meetingNote.companies.label && meetingNote.contacts.label) {
-    return `${meetingNote.companies.label} · ${meetingNote.contacts.label}`;
-  }
-
-  return meetingNote.companies.label || meetingNote.contacts.label || t("home.meetingNote");
-}
-
-// 기능 : 회의록 보조 문구를 계산합니다.
-function getMeetingNoteSubtitle(
-  meetingNote: MeetingNoteListItem,
-  formatDateTime: (value: string | null | undefined) => string
-) {
-  return [meetingNote.deals.label, formatDateTime(meetingNote.createdAt)]
-    .filter(Boolean)
-    .join(" · ");
-}
-
-// 기능 : 일정 딜 라벨 값을 계산해 반환합니다.
-function getScheduleDealLabel(schedule: Schedule, t: HomeTranslate) {
-  return schedule.deals.map((deal) => deal.dealName).join(" · ") || t("home.connectedDealMissing");
-}
-
-// 기능 : 기한 라벨 표시 문구를 생성합니다.
 function formatDueLabel(daysUntil: number, t: HomeTranslate) {
   if (daysUntil < 0) {
     return t("home.daysOverdue", { values: { days: Math.abs(daysUntil) } });
@@ -862,7 +627,6 @@ function formatDueLabel(daysUntil: number, t: HomeTranslate) {
   return `D-${daysUntil}`;
 }
 
-// 기능 : 남은 일수를 계산합니다.
 function getDaysUntil(value: string, today: Date) {
   const target = startOfDay(new Date(value));
   const base = startOfDay(today);
@@ -874,7 +638,6 @@ function getDaysUntil(value: string, today: Date) {
   return Math.ceil((target.getTime() - base.getTime()) / 86_400_000);
 }
 
-// 기능 : 날짜 비교를 위해 하루 시작 시각을 계산합니다.
 function startOfDay(date: Date) {
   const next = new Date(date);
   next.setHours(0, 0, 0, 0);
@@ -882,36 +645,10 @@ function startOfDay(date: Date) {
   return next;
 }
 
-// 기능 : 시간대 기준 날짜 key로 변환합니다.
-function toDateKeyInTimeZone(value: string, timeZone: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value.slice(0, 10);
-  }
-
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone,
-    year: "numeric",
-  });
-  const parts = new Map(
-    formatter
-      .formatToParts(date)
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, part.value])
-  );
-
-  return `${parts.get("year")}-${parts.get("month")}-${parts.get("day")}`;
-}
-
-// 기능 : nullable 배열의 항목 수를 안전하게 계산합니다.
-function toArrayLength(children: React.ReactNode) {
+function toArrayLength(children: ReactNode) {
   return Array.isArray(children) ? children.filter(Boolean).length : children ? 1 : 0;
 }
 
-// 기능 : 브라우저 locale을 Intl formatting에 사용할 값으로 정규화합니다.
 function getIntlLocale(locale: string) {
   return locale === "en" ? "en-US" : locale;
 }

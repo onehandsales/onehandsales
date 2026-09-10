@@ -29,18 +29,6 @@ const ROUTE_KEY_CASES: ReadonlyArray<{
     pathname: "/app/deals/550e8400-e29b-41d4-a716-446655440000",
     routeKey: "deal_detail",
   },
-  { pathname: "/app/schedules", routeKey: "schedules" },
-  { pathname: "/app/schedules/week", routeKey: "schedule_week" },
-  { pathname: "/app/schedules/schedule-001", routeKey: "schedule_detail" },
-  { pathname: "/app/meeting-notes", routeKey: "meeting_notes" },
-  {
-    pathname: "/app/meeting-notes/new/full",
-    routeKey: "meeting_note_create",
-  },
-  {
-    pathname: "/app/meeting-notes/meeting-note-001",
-    routeKey: "meeting_note_detail",
-  },
   { pathname: "/app/trash", routeKey: "trash" },
   { pathname: "/app/more", routeKey: "more" },
 ];
@@ -71,7 +59,6 @@ describe("resolveProductAnalyticsRouteKey", () => {
     expect(resolveProductAnalyticsRouteKey("/auth/callback")).toBeNull();
     expect(resolveProductAnalyticsRouteKey("/deals")).toBeNull();
     expect(resolveProductAnalyticsRouteKey("/app/contacts/scan")).toBeNull();
-    expect(resolveProductAnalyticsRouteKey("/app/meeting-notes/new")).toBeNull();
     expect(resolveProductAnalyticsRouteKey("/app/export")).toBeNull();
   });
 

@@ -12,7 +12,6 @@ import {
   BookOpen,
   BriefcaseBusiness,
   Bug,
-  CalendarDays,
   Check,
   ChevronsLeft,
   ChevronRight,
@@ -24,7 +23,6 @@ import {
   Loader2,
   LogOut,
   Menu,
-  MessageSquareText,
   MoreHorizontal,
   Package,
   Pencil,
@@ -64,9 +62,7 @@ import {
 import { useDealDetail, useDeleteDealMutation } from "@/features/deal";
 import { ErrorReportHelpContent } from "@/features/error-report";
 import { SupportRequestHelpContent } from "@/features/support-request";
-import { FollowUpDeliverySettingsSection } from "@/features/follow-up-delivery";
 import { useDeleteProductMutation, useProductDetail } from "@/features/product";
-import { GoogleCalendarSettingsSection } from "@/features/schedule";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
   createAccountModalSearchParams,
@@ -89,8 +85,7 @@ const LOGOUT_MODAL_OPEN_DELAY_MS = 20;
 type AccountModalSection =
   | AccountModalQuerySection
   | "profile"
-  | "devices"
-  | "externalIntegrations";
+  | "devices";
 
 type HelpModalSection = "guide" | "support" | "error" | "terms" | "privacy";
 
@@ -276,19 +271,11 @@ export function AppShell() {
   const [onehandAppOpen, setOneHandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
-  const preserveExternalIntegrationCallbackRef = useRef(false);
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
 
     if (!querySection) {
       return null;
-    }
-
-    if (
-      searchParams.has("followUpEmailConnection") ||
-      searchParams.has("googleCalendar")
-    ) {
-      return "externalIntegrations";
     }
 
     return querySection;
@@ -472,28 +459,10 @@ export function AppShell() {
       setHelpMenuOpen(false);
       setHelpModal(null);
       setLogoutConfirmOpen(false);
-      setAccountModal((currentSection) => {
-        if (accountModalFromSearchParams === "externalIntegrations") {
-          preserveExternalIntegrationCallbackRef.current = true;
-          return accountModalFromSearchParams;
-        }
-
-        if (
-          accountModalFromSearchParams === "settings" &&
-          currentSection === "externalIntegrations" &&
-          preserveExternalIntegrationCallbackRef.current
-        ) {
-          preserveExternalIntegrationCallbackRef.current = false;
-          return currentSection;
-        }
-
-        preserveExternalIntegrationCallbackRef.current = false;
-        return accountModalFromSearchParams;
-      });
+      setAccountModal(accountModalFromSearchParams);
       return;
     }
 
-    preserveExternalIntegrationCallbackRef.current = false;
     setAccountModal((currentSection) =>
       currentSection === "settings" ? null : currentSection,
     );
@@ -547,24 +516,15 @@ export function AppShell() {
     isContactDetail;
   const isContactListPage =
     pathname === "/app/contacts" || pathname === "/app/contacts/new";
-  const isMeetingNoteListPage =
-    pathname === "/app/meeting-notes" || /^\/app\/meeting-notes\/[^/]+$/.test(pathname);
-  const isSchedulePage =
-    pathname === "/app/schedules" || pathname === "/app/schedules/week";
   const isTrashPage = pathname === "/app/trash";
   const isFixedViewportPage = isHome || isProductDetail;
 
   // 모바일 헤더 숨김 처리: 상세 페이지 및 자체 헤더 보유 페이지
-  const isMeetingNoteDetail = /^\/app\/meeting-notes\/[^/]+$/.test(pathname);
-  const isScheduleRoute =
-    pathname === "/app/schedules" || pathname === "/app/schedules/week";
   const isMobileHeaderHidden =
     isDealDetail ||
     isCompanyDetail ||
     isContactDetail ||
-    isProductDetail ||
-    isMeetingNoteDetail ||
-    isScheduleRoute;
+    isProductDetail;
 
   const hideTopBar =
     isDealListPage ||
@@ -572,8 +532,6 @@ export function AppShell() {
     isCompanyListPage ||
     isProductListPage ||
     isContactListPage ||
-    isMeetingNoteListPage ||
-    isSchedulePage ||
     isTrashPage ||
     isProductDetail;
 
@@ -588,7 +546,6 @@ export function AppShell() {
       "/app": { labelKey: "navigation.home", icon: House },
       "/app/deals": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
       "/app/deals/new": { labelKey: "navigation.deals", icon: BriefcaseBusiness },
-      "/app/schedules": { labelKey: "navigation.schedules", icon: CalendarDays },
       "/app/trash": { labelKey: "navigation.trash", icon: Trash2 },
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
@@ -1269,11 +1226,6 @@ function AccountModalContent({
     { icon: UserRound, label: profileLabel, section: "profile" },
     { icon: Settings, label: t("settings.preferencesTab"), section: "settings" },
     { icon: Laptop, label: t("settings.devicesTab"), section: "devices" },
-    {
-      icon: Link,
-      label: t("settings.externalIntegrationsTab"),
-      section: "externalIntegrations",
-    },
   ];
 
   return (
@@ -1354,10 +1306,6 @@ function AccountModalSectionContent({
 
   if (section === "devices") {
     return <DevicesModalQueryContent />;
-  }
-
-  if (section === "externalIntegrations") {
-    return <ExternalIntegrationsModalContent />;
   }
 
   return <AccountSettingsModalContent />;
@@ -1989,50 +1937,6 @@ function getAccountSelectTextLength(label: string) {
 }
 
 // 기능 : 외부 연동 모달 콘텐츠 영역을 렌더링합니다.
-function ExternalIntegrationsModalContent() {
-  const { t } = useAppI18n();
-  const [notice, setNotice] = useState<AccountModalNotice | null>(null);
-
-  // 기능 : 외부 연동 섹션 성공 안내를 공통 notice에 연결합니다.
-  const onExternalIntegrationsNotice = useCallback((message: string) => {
-    setNotice({ message, variant: "success" });
-  }, []);
-
-  return (
-    <section className="min-h-full bg-white px-8 py-10 md:px-12">
-      <div className="mx-auto w-full max-w-[800px]">
-        <div>
-          <h1 className="text-[28px] font-bold leading-tight text-[#111827]">
-            {t("settings.externalIntegrationsTab")}
-          </h1>
-        </div>
-
-        {notice ? <AccountModalNoticeBanner notice={notice} /> : null}
-
-        <div className="mt-10 grid gap-10">
-          <ProfileSection icon={CalendarDays} title={t("settings.googleCalendarTitle")}>
-            <GoogleCalendarSettingsSection
-              onNotice={onExternalIntegrationsNotice}
-              presentation="modal"
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            icon={MessageSquareText}
-            title={t("settings.followUpDeliveryTitle")}
-          >
-            <FollowUpDeliverySettingsSection
-              onNotice={onExternalIntegrationsNotice}
-              presentation="modal"
-            />
-          </ProfileSection>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// 기능 : 계정 설정 시간대 옵션을 계산합니다.
 function getAccountTimeZoneOptions(currentTimeZone: string) {
   const browserTimeZone =
     Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul";

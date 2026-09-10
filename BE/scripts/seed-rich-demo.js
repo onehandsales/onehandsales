@@ -6,7 +6,6 @@ const {
   AuthDeviceSlot,
   AuthDeviceStatus,
   AuthSessionStatus,
-  MeetingNoteSourceType,
   OAuthProvider,
   PrismaClient,
   UserRole,
@@ -47,7 +46,7 @@ const companySeeds = [
   ["비전메디컬", "바이오/헬스케어", "서울 종로", "의료기기 구매와 임상 세미나 일정을 함께 관리합니다."],
   ["플랜비리테일", "유통/커머스", "경기 고양", "오프라인 매장별 프로모션과 본사 승인 절차가 중요합니다."],
   ["아이든소프트", "IT/SaaS", "서울 판교", "SaaS 구독 확장과 기술 PoC가 동시에 진행됩니다."],
-  ["청명소재", "제조/소재", "충북 청주", "소재 공급 계약과 품질 이슈 follow-up이 잦습니다."],
+  ["청명소재", "제조/소재", "충북 청주", "소재 공급 계약과 품질 이슈 확인이 잦습니다."],
   ["그린하우스랩", "농식품/애그테크", "전북 전주", "스마트팜 구축과 지자체 협력 프로젝트를 검토합니다."],
   ["에이치큐파트너스", "컨설팅", "서울 중구", "고객사별 제안 산출물과 파트너 담당자를 촘촘히 관리합니다."],
   ["블루핀보험", "금융", "서울 강서", "대리점 영업망과 상품 교육 일정을 연동하고 싶어 합니다."],
@@ -103,7 +102,7 @@ const dealTemplates = [
   {
     suffix: "운영 자동화 PoC",
     action: "PoC 범위와 성공 기준을 문서로 정리해 전달",
-    memo: "반복 보고와 일정 follow-up을 줄이는 데 관심이 큽니다.",
+    memo: "반복 보고와 다음 행동 정리 부담을 줄이는 데 관심이 큽니다.",
     cost: 7200000,
   },
   {
@@ -111,178 +110,6 @@ const dealTemplates = [
     action: "기존 사용 부서의 정량 효과와 추가 라이선스 수량 확인",
     memo: "기존 도입 부서 만족도가 높아 인접 조직 확장이 가능합니다.",
     cost: 16400000,
-  },
-];
-
-const accountMeetingTopics = [
-  "생산라인 PoC 범위 확정 미팅",
-  "하반기 입점 브랜드 CRM 연동 협의",
-  "병원 네트워크 세미나 후속 미팅",
-  "법인 차량 패키지 도입 검토",
-  "현장 장비 리포트 자동화 협의",
-  "파트너 영업 운영 기준 정리",
-  "보안 심사 자료 사전 검토",
-  "캠퍼스 상담 데이터 이관 미팅",
-  "광고주 제안 현황 공유",
-  "가맹점 물류 계약 조건 협의",
-  "안전 점검 장기계약 리뷰",
-  "창고 자동화 견적 조정 미팅",
-  "의료기기 구매위원회 준비 미팅",
-  "매장 프로모션 성과 리포트 협의",
-  "SaaS 구독 확장 기술 검토",
-  "품질 이슈 대응 프로세스 미팅",
-  "스마트팜 구축 일정 조율",
-  "컨설팅 고객사 제안서 리뷰",
-  "대리점 교육 운영 회의",
-  "브랜드 리뉴얼 프로젝트 킥오프",
-  "공공 입찰 제안 범위 협의",
-  "호텔 B2B 행사 유치 전략 미팅",
-  "복지시설 정기 납품 협의",
-  "공장 자동화 본계약 전환 미팅",
-];
-
-const accountScheduleTopics = [
-  "PoC 착수 전 현업 인터뷰",
-  "견적 승인 전 의사결정자 브리핑",
-  "보안 체크리스트 검토",
-  "제품 데모 리허설",
-  "계약 조건 최종 조율",
-  "도입 일정 운영팀 공유",
-  "ROI 산출 기준 워크숍",
-  "파트너 제휴 범위 협의",
-  "파일럿 결과 회고",
-  "하반기 확장 예산 리뷰",
-  "레퍼런스 사례 공유",
-  "데이터 이관 범위 확정",
-];
-
-const pipelineReviewSeeds = [
-  {
-    title: "스마트팩토리 PoC 지연 리스크 점검",
-    location: "한빛테크 본사 프로젝트룸",
-    memo: "설비 연동 일정, 현장 보안 승인, PoC 성공 기준을 같은 표로 맞춥니다.",
-  },
-  {
-    title: "커머스 대형 계정 견적 승인 회의",
-    location: "누리커머스 파트너 라운지",
-    memo: "입점 브랜드별 견적 범위와 캠페인 운영 담당자를 연결해 확인합니다.",
-  },
-  {
-    title: "바이오 헬스케어 세미나 후속 딜 리뷰",
-    location: "오름바이오 판교 회의실",
-    memo: "병원 네트워크 담당자 반응과 의료기기 구매위원회 일정 리스크를 점검합니다.",
-  },
-  {
-    title: "금융 보안 심사 대응 현황 회의",
-    location: "리버핀테크 여의도 오피스",
-    memo: "감사 로그, 데이터 보관 정책, 접근권한 자료 제출 일정을 정리합니다.",
-  },
-  {
-    title: "공공 입찰 제안서 마감 전 점검",
-    location: "세종 공공서비스 컨퍼런스룸",
-    memo: "제안 범위, 가격 산출 근거, 현장 설명회 질의 답변을 확인합니다.",
-  },
-  {
-    title: "물류 자동화 본계약 전환 회의",
-    location: "모아로지스 송도 물류센터",
-    memo: "창고 자동화 PoC 결과와 라스트마일 운영 리포트 확장 범위를 검토합니다.",
-  },
-  {
-    title: "호텔 B2B 행사 유치 파이프라인 리뷰",
-    location: "스텔라호텔 제주 세일즈룸",
-    memo: "장기 행사 계약 가능성과 지점별 담당자 follow-up을 묶어 봅니다.",
-  },
-  {
-    title: "제조 소재 공급계약 품질 이슈 회의",
-    location: "청명소재 청주 공장 회의실",
-    memo: "품질 이슈 대응 일정과 공급계약 갱신 조건을 함께 점검합니다.",
-  },
-];
-
-const strategicMeetingSeeds = [
-  {
-    title: "제조 계정 PoC 전환 전략 회의",
-    details:
-      "한빛테크와 메타팩토리의 설비 연동 조건을 비교했습니다. 두 계정 모두 현장 보안 승인이 병목이라, 데모 환경과 운영 데이터 범위를 분리해 제안하기로 했습니다.",
-    nextPlan: "보안 승인 전에도 진행 가능한 샘플 데이터 기반 데모 시나리오를 준비합니다.",
-    requiredAction: "한빛테크 설비 담당자와 메타팩토리 운영팀에게 PoC 체크리스트를 각각 전달합니다.",
-  },
-  {
-    title: "커머스 계정 캠페인 CRM 연동 전략 회의",
-    details:
-      "누리커머스와 플랜비리테일의 프로모션 운영 흐름을 비교했습니다. 본사 승인 절차와 매장별 캠페인 리포트가 공통 요구라, 데이터 불러오기와 대시보드 묶음 제안이 적합합니다.",
-    nextPlan: "입점 브랜드별 샘플 리포트와 매장별 승인 흐름 화면을 묶어 데모합니다.",
-    requiredAction: "두 계정의 실제 캠페인 필드명을 받아 import 템플릿 샘플에 반영합니다.",
-  },
-  {
-    title: "금융 계정 보안 패키지 제안 회의",
-    details:
-      "리버핀테크와 블루핀보험은 모두 보안 심사 자료가 딜 진행 속도를 좌우합니다. 감사 로그와 계약 리스크 체크리스트를 기본 제안에 포함하는 방향으로 정리했습니다.",
-    nextPlan: "보안/관리 제품군 가격표와 내부 통제 예시 문서를 업데이트합니다.",
-    requiredAction: "각 계정 보안 담당자에게 데이터 보관 정책 FAQ를 보냅니다.",
-  },
-  {
-    title: "공공 교육 계정 입찰 대응 회의",
-    details:
-      "해솔교육과 케이씨공공서비스의 입찰 일정이 겹쳐 제안서 산출물 재사용 범위를 검토했습니다. 현장 설명회 질문은 일정과 회의록에 바로 연결해 관리하기로 했습니다.",
-    nextPlan: "공공 제안서 공통 목차와 필수 증빙 자료 목록을 정리합니다.",
-    requiredAction: "입찰 마감일 기준으로 회의록 후속 조치 알림을 세팅합니다.",
-  },
-  {
-    title: "헬스케어 계정 구매위원회 준비 회의",
-    details:
-      "오름바이오와 비전메디컬은 실무 검토 후 구매위원회 자료가 필요합니다. 임상 협력 사례와 의료기기 도입 효과를 제품별로 나눠 제안하기로 했습니다.",
-    nextPlan: "의료기기 구매위원회용 5장 요약 자료를 작성합니다.",
-    requiredAction: "담당자별 관심 제품과 예상 질문을 담당자 메모에 업데이트합니다.",
-  },
-  {
-    title: "물류 자동화 계정 ROI 산정 회의",
-    details:
-      "모아로지스와 파인푸드의 물류 운영 지표를 비교했습니다. 창고 자동화와 가맹점 납품 일정이 연결되어 있어 일정-딜 연결 데이터를 보여주는 데모가 효과적입니다.",
-    nextPlan: "배송 리드타임 개선 가정과 운영 비용 절감 시나리오를 계산합니다.",
-    requiredAction: "두 계정에서 최근 3개월 물류 KPI 샘플을 요청합니다.",
-  },
-  {
-    title: "브랜드 리뉴얼 프로젝트 영업 회의",
-    details:
-      "아크디자인과 브릿지미디어는 제작 일정과 광고주 제안이 함께 움직입니다. 회의록에서 제작 산출물, 광고주 요구, 후속 액션을 같은 딜에 연결하는 방식으로 제안합니다.",
-    nextPlan: "콘텐츠 제작 일정 샘플과 광고주 제안 히스토리 화면을 준비합니다.",
-    requiredAction: "브랜드 리뉴얼 프로젝트의 주요 이해관계자를 담당자 목록에 보강합니다.",
-  },
-  {
-    title: "호텔 행사 유치 장기계약 전략 회의",
-    details:
-      "스텔라호텔의 B2B 행사 유치 딜은 시즌별 수요가 달라 장기계약 옵션을 별도로 설명해야 합니다. 일정과 계약 예상 종료일을 함께 보여주는 흐름이 필요합니다.",
-    nextPlan: "행사 성수기별 견적 범위와 우선순위 계정을 정리합니다.",
-    requiredAction: "제주 지점 담당자와 서울 본사 승인 라인을 분리해 기록합니다.",
-  },
-  {
-    title: "에너지 설비 유지보수 계약 회의",
-    details:
-      "코어에너지의 설비 교체 딜은 안전 점검과 유지보수 계약이 붙어 있습니다. 제품 패키지를 단일 견적이 아니라 도입 단계별로 쪼개 제시하기로 했습니다.",
-    nextPlan: "유지보수 SLA와 안전 점검 리포트 샘플을 하나의 제안서로 묶습니다.",
-    requiredAction: "설비 담당자에게 다음 정기점검 일정을 확인합니다.",
-  },
-  {
-    title: "컨설팅 파트너 계정 공동제안 회의",
-    details:
-      "에이치큐파트너스는 고객사별 산출물과 파트너 담당자가 많아 딜-담당자 연결이 핵심입니다. 파트너 제휴 패키지와 회의록 요약 기능을 함께 제안합니다.",
-    nextPlan: "파트너 공동제안 프로세스 예시와 권한 분리 기준을 정리합니다.",
-    requiredAction: "공동제안 대상 고객사 5곳의 담당자 목록을 받아 import합니다.",
-  },
-  {
-    title: "SaaS 기술 PoC 확장 회의",
-    details:
-      "아이든소프트와 다온클라우드는 기술 PoC 이후 구독 확장 가능성이 큽니다. API 연동 범위와 사용자 교육 계획을 제품 묶음으로 제안하기로 했습니다.",
-    nextPlan: "기술 PoC 완료 후 확장 견적을 두 단계로 나눠 제출합니다.",
-    requiredAction: "개발 담당자와 운영 담당자의 의사결정 기준을 담당자 메모에 분리합니다.",
-  },
-  {
-    title: "복지시설 정기 납품 계정 회의",
-    details:
-      "온유케어는 복지시설별 정기 납품 일정과 담당자 변경 이력이 중요합니다. 일정 반복 관리와 담당자 메모 기능을 중심으로 제안합니다.",
-    nextPlan: "정기 납품 주기별 알림과 회의록 후속 조치 예시를 준비합니다.",
-    requiredAction: "시설별 담당자와 납품 주기를 contact import 양식으로 정리합니다.",
   },
 ];
 
@@ -519,13 +346,6 @@ async function upsertDeviceAndSessions({ userId, deviceId, label, sessions }) {
 }
 
 async function clearDemoData(userId) {
-  await prisma.meetingNoteDeal.deleteMany({ where: { userId } });
-  await prisma.meetingNoteProduct.deleteMany({ where: { userId } });
-  await prisma.meetingNoteContact.deleteMany({ where: { userId } });
-  await prisma.meetingNoteCompany.deleteMany({ where: { userId } });
-  await prisma.meetingNote.deleteMany({ where: { userId } });
-  await prisma.scheduleDeal.deleteMany({ where: { userId } });
-  await prisma.schedule.deleteMany({ where: { userId } });
   await prisma.dealProduct.deleteMany({ where: { userId } });
   await prisma.dealContact.deleteMany({ where: { userId } });
   await prisma.dealCompany.deleteMany({ where: { userId } });
@@ -598,7 +418,6 @@ async function seedDomainData(userId) {
   const contactsByCompanyId = new Map();
   const products = [];
   const deals = [];
-  const dealsByCompanyId = new Map();
 
   for (const [companyIndex, seed] of companySeeds.entries()) {
     const [companyName, field, region, memo] = seed;
@@ -841,171 +660,10 @@ async function seedDomainData(userId) {
       });
     }
 
-    dealsByCompanyId.set(company.id, companyDeals);
-  }
-
-  const schedules = [];
-  for (const [companyIndex, company] of companies.entries()) {
-    const companyDeals = dealsByCompanyId.get(company.id);
-    const scheduleTopic = pick(accountScheduleTopics, companyIndex);
-    const schedule = await prisma.schedule.create({
-      data: {
-        userId,
-        scheduleTitle: `${company.companyName} ${scheduleTopic}`,
-        startAt: kstDateTime(companyIndex % 21, 10 + (companyIndex % 5)),
-        endAt: kstDateTime(companyIndex % 21, 11 + (companyIndex % 5)),
-        timeZone: "Asia/Seoul",
-        location: `${company.companyName} 담당자 회의`,
-        memo: `${scheduleTopic}에서 연결된 딜의 예산, 의사결정권자, 다음 행동을 확인합니다.`,
-        createdAt: kstDateTime(-3 + companyIndex, 9),
-      },
-    });
-    schedules.push(schedule);
-    await prisma.scheduleDeal.createMany({
-      data: companyDeals.map((deal) => ({
-        userId,
-        scheduleId: schedule.id,
-        dealId: deal.id,
-      })),
-      skipDuplicates: true,
-    });
-  }
-
-  for (const [index, review] of pipelineReviewSeeds.entries()) {
-    const linkedDeals = range(5).map((offset) => pick(deals, index * 6 + offset));
-    const schedule = await prisma.schedule.create({
-      data: {
-        userId,
-        scheduleTitle: review.title,
-        startAt: kstDateTime(3 + index * 2, 14),
-        endAt: kstDateTime(3 + index * 2, 15, 30),
-        timeZone: "Asia/Seoul",
-        location: review.location,
-        memo: review.memo,
-        createdAt: kstDateTime(-2 + index, 10),
-      },
-    });
-    schedules.push(schedule);
-    await prisma.scheduleDeal.createMany({
-      data: linkedDeals.map((deal) => ({
-        userId,
-        scheduleId: schedule.id,
-        dealId: deal.id,
-      })),
-      skipDuplicates: true,
-    });
-  }
-
-  for (const [companyIndex, company] of companies.entries()) {
-    const meetingTopic = pick(accountMeetingTopics, companyIndex);
-    await createMeetingNote({
-      userId,
-      title: `${company.companyName} ${meetingTopic}`,
-      sourceType: pick(
-        [MeetingNoteSourceType.MANUAL, MeetingNoteSourceType.TEXT_AI, MeetingNoteSourceType.STT_AI],
-        companyIndex
-      ),
-      meetingAt: kstDateTime(-9 + companyIndex, 9 + (companyIndex % 7)),
-      companies: [company, pick(companies, companyIndex + 1)],
-      contacts: contactsByCompanyId.get(company.id),
-      products: range(4).map((offset) => pick(products, companyIndex + offset)),
-      deals: dealsByCompanyId.get(company.id).slice(0, 2),
-      details: `${company.companyName} ${meetingTopic}에서 연결 딜의 단계, 담당자별 관심사, 제품별 제안 포인트를 확인했습니다. ${company.memo}`,
-      nextPlan: `${meetingTopic} 후속으로 견적 범위, 검토 자료, 다음 미팅 일정을 정리해 공유합니다.`,
-      requiredAction: "제품 데모 계정 준비, 의사결정권자 참석 일정 확인, 성공 기준 합의",
-    });
-  }
-
-  for (const [index, seed] of strategicMeetingSeeds.entries()) {
-    const firstDeal = pick(deals, index * 4);
-    const secondDeal = pick(deals, index * 4 + 1);
-    await createMeetingNote({
-      userId,
-      title: seed.title,
-      sourceType: pick([MeetingNoteSourceType.TEXT_AI, MeetingNoteSourceType.MANUAL], index),
-      meetingAt: kstDateTime(-5 + index, 16),
-      companies: [firstDeal.company, secondDeal.company],
-      contacts: [firstDeal.contacts[0], firstDeal.contacts[1], secondDeal.contacts[0]],
-      products: [firstDeal.products[0], firstDeal.products[1], secondDeal.products[2]],
-      deals: [firstDeal, secondDeal],
-      details: seed.details,
-      nextPlan: seed.nextPlan,
-      requiredAction: seed.requiredAction,
-    });
   }
 
 
-  return { companies, contacts, products, deals, schedules };
-}
-
-async function createMeetingNote(input) {
-  const note = await prisma.meetingNote.create({
-    data: {
-      userId: input.userId,
-      sourceType: input.sourceType,
-      title: input.title,
-      meetingAt: input.meetingAt,
-      timeZone: "Asia/Seoul",
-      details: input.details,
-      nextPlan: input.nextPlan,
-      requiredAction: input.requiredAction,
-      rawText:
-        input.sourceType === MeetingNoteSourceType.MANUAL
-          ? null
-          : `${input.title} 회의 원문 기록입니다. 참석자별 발언, 의사결정 조건, 후속 조치가 포함되어 있습니다.`,
-    },
-  });
-
-  await prisma.meetingNoteCompany.createMany({
-    data: input.companies.map((company) => ({
-      userId: input.userId,
-      meetingNoteId: note.id,
-      companyId: company.id,
-      companyNameSnapshot: company.companyName,
-      companyFieldSnapshot: company.field,
-      companyRegionSnapshot: company.region,
-    })),
-  });
-
-  await prisma.meetingNoteContact.createMany({
-    data: input.contacts.map((contact) => ({
-      userId: input.userId,
-      meetingNoteId: note.id,
-      contactId: contact.id,
-      companyId: contact.companyId,
-      contactUsernameSnapshot: contact.username,
-      contactEmailSnapshot: contact.email,
-      contactMobileSnapshot: contact.mobile,
-      contactCompanyNameSnapshot: contact.companyName,
-      contactDepartmentSnapshot: contact.departmentName,
-      contactJobGradeSnapshot: contact.jobGradeName,
-    })),
-  });
-
-  await prisma.meetingNoteProduct.createMany({
-    data: input.products.map((product) => ({
-      userId: input.userId,
-      meetingNoteId: note.id,
-      productId: product.id,
-      productNameSnapshot: product.productName,
-      productPriceSnapshot: product.productPrice,
-      productCategorySnapshot: product.categoryName,
-      productStatusSnapshot: product.statusName,
-    })),
-  });
-
-  await prisma.meetingNoteDeal.createMany({
-    data: input.deals.map((deal) => ({
-      userId: input.userId,
-      meetingNoteId: note.id,
-      dealId: deal.id,
-      dealNameSnapshot: deal.dealName,
-      dealStatusSnapshot: deal.dealStatus,
-      dealCostSnapshot: deal.dealCost,
-      dealExpectedEndDateSnapshot: deal.expectedEndDate,
-    })),
-    skipDuplicates: true,
-  });
+  return { companies, contacts, products, deals };
 }
 
 async function assertTrashEmpty(userId) {
@@ -1022,7 +680,6 @@ async function assertTrashEmpty(userId) {
     "productUserPrivateMemoLog",
     "dealFollowingActionLog",
     "dealMemoLog",
-    "meetingNote",
   ];
 
   const trash = {};
@@ -1062,13 +719,6 @@ async function summary(userId) {
     dealProduct: { userId },
     dealFollowingActionLog: { userId },
     dealMemoLog: { userId },
-    schedule: { userId },
-    scheduleDeal: { userId },
-    meetingNote: { userId },
-    meetingNoteCompany: { userId },
-    meetingNoteContact: { userId },
-    meetingNoteProduct: { userId },
-    meetingNoteDeal: { userId },
   };
 
   for (const [model, where] of Object.entries(modelWhere)) {

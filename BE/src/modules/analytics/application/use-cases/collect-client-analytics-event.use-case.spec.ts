@@ -38,7 +38,6 @@ function createRepositoryFake(): jest.Mocked<ProductAnalyticsRepository> {
     deleteRawEventsBefore: jest.fn(),
     findAuthDeviceIdBySessionId: jest.fn().mockResolvedValue(DEVICE_ID),
     findFirstActivationCandidates: jest.fn(),
-    listAiUsageProviderCallLogsForSummary: jest.fn().mockResolvedValue([]),
     listActivatedCohortDates: jest.fn(),
     runInTransaction: jest.fn(async (work) =>
       work(createRepositoryFake())
@@ -120,75 +119,6 @@ describe("CollectClientAnalyticsEventUseCase", () => {
     );
   });
 
-  it("stores allowlisted mobile field client events without PII", async () => {
-    const { repository, useCase } = createUseCase();
-
-    await useCase.execute(
-      createCommand({
-        eventName: "meeting_note_recording_completed",
-        occurredAt: "2026-07-29T14:00:00.000Z",
-        payload: {
-          durationBucket: "1m_5m",
-        },
-        requestFieldNames: [
-          "eventName",
-          "eventVersion",
-          "occurredAt",
-          "payload",
-          "targetId",
-          "targetType",
-        ],
-        targetId: TARGET_ID,
-        targetType: "MEETING_NOTE",
-      })
-    );
-
-    expect(repository.createEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        eventDate: "2026-07-29",
-        eventName: "meeting_note_recording_completed",
-        occurredAt: new Date("2026-07-29T14:00:00.000Z"),
-        payloadJson: {
-          durationBucket: "1m_5m",
-        },
-        source: "CLIENT",
-        targetId: TARGET_ID,
-        targetType: "MEETING_NOTE",
-      })
-    );
-  });
-
-  it.each([
-    [
-      "meeting_note_recording_started",
-      { entryPoint: "meeting_note_create" },
-    ],
-    ["meeting_note_recording_failed", { reason: "permission_denied" }],
-    ["local_draft_saved", { draftType: "meeting_note_create" }],
-    ["local_draft_restored", { draftType: "meeting_note_create" }],
-    [
-      "local_draft_discarded",
-      { draftType: "meeting_note_create", reason: "saved" },
-    ],
-  ])("accepts %s mobile field payload", async (eventName, payload) => {
-    const { repository, useCase } = createUseCase();
-
-    await useCase.execute(
-      createCommand({
-        eventName,
-        payload,
-      })
-    );
-
-    expect(repository.createEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        eventName,
-        payloadJson: payload,
-        source: "CLIENT",
-      })
-    );
-  });
-
   it("rejects request fields that the client must not send", async () => {
     const { repository, useCase } = createUseCase();
 
@@ -214,7 +144,7 @@ describe("CollectClientAnalyticsEventUseCase", () => {
             "payload",
             "targetId",
           ],
-          targetId: "meeting-note-001",
+          targetId: TARGET_ID,
         })
       )
     ).rejects.toMatchObject({ code: "ANALYTICS_PAYLOAD_INVALID" });
@@ -227,42 +157,13 @@ describe("CollectClientAnalyticsEventUseCase", () => {
     await expect(
       useCase.execute(
         createCommand({
-          eventName: "local_draft_saved",
-          payload: {
-            draftType: "meeting_note_create",
-          },
           requestFieldNames: [
             "eventName",
             "eventVersion",
             "payload",
             "targetType",
           ],
-          targetType: "MEETING_NOTE",
-        })
-      )
-    ).rejects.toMatchObject({ code: "ANALYTICS_PAYLOAD_INVALID" });
-    expect(repository.createEvent).not.toHaveBeenCalled();
-  });
-
-  it("rejects client target ids that are not UUID strings", async () => {
-    const { repository, useCase } = createUseCase();
-
-    await expect(
-      useCase.execute(
-        createCommand({
-          eventName: "meeting_note_recording_started",
-          payload: {
-            entryPoint: "meeting_note_create",
-          },
-          requestFieldNames: [
-            "eventName",
-            "eventVersion",
-            "payload",
-            "targetId",
-            "targetType",
-          ],
-          targetId: "meeting-note-001",
-          targetType: "MEETING_NOTE",
+          targetType: "USER",
         })
       )
     ).rejects.toMatchObject({ code: "ANALYTICS_PAYLOAD_INVALID" });
@@ -315,10 +216,9 @@ describe("CollectClientAnalyticsEventUseCase", () => {
     await expect(
       useCase.execute(
         createCommand({
-          eventName: "meeting_note_recording_failed",
           payload: {
             audio: "base64-audio",
-            reason: "unsupported",
+            routeKey: "deals",
           },
         })
       )
@@ -326,16 +226,15 @@ describe("CollectClientAnalyticsEventUseCase", () => {
     expect(repository.createEvent).not.toHaveBeenCalled();
   });
 
-  it("rejects payload keys outside each mobile event schema", async () => {
+  it("rejects payload keys outside the route event schema", async () => {
     const { repository, useCase } = createUseCase();
 
     await expect(
       useCase.execute(
         createCommand({
-          eventName: "local_draft_saved",
           payload: {
-            draftType: "meeting_note_create",
             reason: "saved",
+            routeKey: "deals",
           },
         })
       )

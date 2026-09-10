@@ -18,7 +18,6 @@ import {
 import { companyQueryKeys } from "@/features/company/api/company-query-keys";
 import { contactQueryKeys } from "@/features/contact/query-keys";
 import { dealQueryKeys } from "@/features/deal/query-keys";
-import { meetingNoteQueryKeys } from "@/features/meeting-note/query-keys";
 import type {
   CompanyExportFilters,
   CreateCompanyFieldInput,
@@ -85,11 +84,6 @@ export function useDeleteCompanyMutation() {
       void queryClient.invalidateQueries({
         queryKey: dealQueryKeys.companyOptions(),
       });
-      void queryClient.invalidateQueries({
-        queryKey: meetingNoteQueryKeys.filterCompanies(),
-      });
-      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.lists() });
-      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.details() });
     },
   });
 }

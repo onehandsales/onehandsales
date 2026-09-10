@@ -48,131 +48,10 @@ enum AuthDeviceSlot {
   WORK_LAPTOP
 }
 
-enum MeetingNoteSourceType {
-  MANUAL
-  TEXT_AI
-  STT_AI
-}
-
-enum ExternalCalendarProvider {
-  GOOGLE
-}
-
-enum ExternalCalendarConnectionStatus {
-  CONNECTED
-  RECONNECT_REQUIRED
-  DISCONNECTED
-}
-
-enum ExternalCalendarSourceStatus {
-  SELECTED
-  UNSELECTED
-}
-
-enum ScheduleSourceType {
-  INTERNAL
-  GOOGLE
-}
-
-enum ScheduleExternalSyncStatus {
-  SYNCED
-  LOCAL_MODIFIED
-  GOOGLE_DELETED
-  LOCAL_DELETED
-}
-
-enum AiWeeklySalesReportStatus {
-  GENERATING
-  READY
-  FAILED
-}
-
-enum AiWeeklySalesReportSuggestionType {
-  RISK
-  NEXT_ACTION
-  FOLLOW_UP
-  DATA_CLEANUP
-}
-
 enum AiSuggestionPriority {
   LOW
   MEDIUM
   HIGH
-}
-
-enum AiJobStatus {
-  PENDING
-  RUNNING
-  SUCCEEDED
-  FAILED
-  CANCELED
-}
-
-enum AiProviderOperation {
-  WEEKLY_SALES_REPORT
-  FOLLOW_UP_EMAIL_DRAFT
-  FOLLOW_UP_SMS_DRAFT
-  /// 기능 : 회의 원문 텍스트를 회의록 초안으로 변환하는 provider 호출입니다.
-  MEETING_NOTE_TEXT_DRAFT
-  /// 기능 : 회의 음성 파일을 transcript로 변환하는 STT provider 호출입니다.
-  MEETING_NOTE_STT_TRANSCRIPTION
-  /// 기능 : STT transcript를 회의록 초안으로 변환하는 provider 호출입니다.
-  MEETING_NOTE_STT_DRAFT
-  /// 기능 : 저장된 회의록에서 다음 행동 후보를 생성하는 provider 호출입니다.
-  MEETING_NOTE_NEXT_ACTION_DRAFT
-  /// 기능 : 저장된 회의록에서 follow-up 문안 초안을 생성하는 provider 호출입니다.
-  MEETING_NOTE_FOLLOW_UP_DRAFT
-}
-
-enum AiProviderCallStatus {
-  PENDING
-  SUCCEEDED
-  FAILED
-  CANCELED
-}
-
-enum ExternalEmailProvider {
-  GOOGLE
-  MICROSOFT
-}
-
-enum ExternalEmailConnectionStatus {
-  CONNECTED
-  RECONNECT_REQUIRED
-  DISCONNECTED
-}
-
-enum SmsSenderNumberStatus {
-  PENDING_VERIFICATION
-  VERIFIED
-  REVOKED
-}
-
-enum FollowUpDeliveryChannel {
-  EMAIL
-  SMS
-}
-
-enum FollowUpMessageStatus {
-  DRAFT
-  SENDING
-  SENT
-  FAILED
-}
-
-enum FollowUpTargetType {
-  AI_WEEKLY_REPORT
-  DEAL
-  CONTACT
-  MEETING_NOTE
-  SCHEDULE
-}
-
-enum FollowUpDeliveryAttemptStatus {
-  PENDING
-  SENT
-  FAILED
-  CANCELED
 }
 
 /// 기능 : 딜 활동 내역에 표시할 활동 종류를 정의한다.
@@ -181,12 +60,6 @@ enum DealActivityType {
   STAGE_CHANGED
   NEXT_ACTION_CREATED
   NEXT_ACTION_COMPLETION_CHANGED
-  SCHEDULE_LINKED
-  SCHEDULE_UNLINKED
-  MEETING_NOTE_LINKED
-  MEETING_NOTE_UNLINKED
-  FOLLOW_UP_SENT
-  FOLLOW_UP_FAILED
   CALL
   MEETING
   EMAIL
@@ -199,9 +72,6 @@ enum DealActivitySourceType {
   SYSTEM
   USER
   NEXT_ACTION
-  SCHEDULE
-  MEETING_NOTE
-  FOLLOW_UP
 }
 
 /// 기능 : 제품 분석 이벤트가 어떤 경로에서 기록됐는지 구분합니다.
@@ -221,13 +91,8 @@ enum UserActivationStatus {
 enum ProductAnalyticsTargetType {
   USER
   DEAL
-  SCHEDULE
-  MEETING_NOTE
   EXPORT
 }
-
-
-
 
 /// 기능 : 사용자 에러 신고 처리 상태를 구분합니다.
 enum ErrorReportStatus {
@@ -276,98 +141,61 @@ model User {
   updatedAt            DateTime   @updatedAt
   deletedAt            DateTime?
 
-  oauthAccounts               UserOAuthAccount[]
-  authDevices                 AuthDevice[]
-  authSessions                AuthSession[]
+  oauthAccounts           UserOAuthAccount[]
+  authDevices             AuthDevice[]
+  authSessions            AuthSession[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
-  companies                   Company[]
+  companies               Company[]
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
-  companyFields               CompanyField[]
+  companyFields           CompanyField[]
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
-  companyRegions              CompanyRegion[]
+  companyRegions          CompanyRegion[]
   /// 기능 : 사용자가 작성한 회사 일반 메모 로그 목록이다.
-  companyMemoLogs             CompanyMemoLog[]
+  companyMemoLogs         CompanyMemoLog[]
   /// 기능 : 사용자가 작성한 회사 개인 비밀 메모 로그 목록이다.
-  companyPrivateMemoLogs      CompanyUserPrivateMemoLog[]
+  companyPrivateMemoLogs  CompanyUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 담당자 목록이다.
-  contacts                    Contact[]
+  contacts                Contact[]
   /// 기능 : 사용자가 만든 담당자 직급 옵션 목록이다.
-  contactJobGrades            ContactJobGrade[]
+  contactJobGrades        ContactJobGrade[]
   /// 기능 : 사용자가 만든 담당자 부서 옵션 목록이다.
-  contactDepartments          ContactDepartment[]
+  contactDepartments      ContactDepartment[]
   /// 기능 : 사용자가 작성한 담당자 일반 메모 로그 목록이다.
-  contactMemoLogs             ContactMemoLog[]
+  contactMemoLogs         ContactMemoLog[]
   /// 기능 : 사용자가 작성한 담당자 개인 비밀 메모 로그 목록이다.
-  contactPrivateMemoLogs      ContactUserPrivateMemoLog[]
+  contactPrivateMemoLogs  ContactUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 제품 목록이다.
-  products                    Product[]
+  products                Product[]
   /// 기능 : 사용자가 만든 제품 카테고리 옵션 목록이다.
-  productCategories           ProductCategory[]
+  productCategories       ProductCategory[]
   /// 기능 : 사용자가 만든 제품 상태 옵션 목록이다.
-  productStatuses             ProductStatus[]
+  productStatuses         ProductStatus[]
   /// 기능 : 사용자가 작성한 제품 일반 메모 로그 목록이다.
-  productMemoLogs             ProductMemoLog[]
+  productMemoLogs         ProductMemoLog[]
   /// 기능 : 사용자가 작성한 제품 개인 비밀 메모 로그 목록이다.
-  productPrivateMemoLogs      ProductUserPrivateMemoLog[]
+  productPrivateMemoLogs  ProductUserPrivateMemoLog[]
   /// 기능 : 사용자가 등록한 딜 목록이다.
-  deals                       Deal[]
+  deals                   Deal[]
   /// 기능 : 사용자가 딜에 연결한 회사 매핑 목록이다.
-  dealCompanies               DealCompany[]
+  dealCompanies           DealCompany[]
   /// 기능 : 사용자가 딜에 연결한 담당자 매핑 목록이다.
-  dealContacts                DealContact[]
+  dealContacts            DealContact[]
   /// 기능 : 사용자가 작성한 딜 다음 행동 로그 목록이다.
-  dealFollowingActionLogs     DealFollowingActionLog[]
+  dealFollowingActionLogs DealFollowingActionLog[]
   /// 기능 : 사용자가 작성한 딜 메모 로그 목록이다.
-  dealMemoLogs                DealMemoLog[]
+  dealMemoLogs            DealMemoLog[]
   /// 기능 : 사용자가 만든 딜 활동 목록이다. 모든 조회와 변경은 이 userId로 제한한다.
-  dealActivities              DealActivity[]
+  dealActivities          DealActivity[]
   /// 기능 : 사용자가 딜에 연결한 제품 매핑 목록이다.
-  dealProducts                DealProduct[]
-  /// 기능 : 사용자가 등록한 일정 목록이다.
-  schedules                   Schedule[]
-  externalCalendarConnections ExternalCalendarConnection[]
-  externalCalendarSources     ExternalCalendarSource[]
-  /// 기능 : 사용자가 일정에 연결한 딜 매핑 목록이다.
-  scheduleDeals               ScheduleDeal[]
-  meetingNotes                MeetingNote[]
-  meetingNoteCompanies        MeetingNoteCompany[]
-  meetingNoteContacts         MeetingNoteContact[]
-  meetingNoteProducts         MeetingNoteProduct[]
-  meetingNoteDeals            MeetingNoteDeal[]
-  /// 기능 : 사용자의 알림 수신 설정 row입니다. 사용자당 하나만 허용합니다.
-  /// 기능 : 사용자에게 예약되거나 발송된 앱 안 알림 목록입니다.
-  /// 기능 : 사용자에게 시도된 email/browser push 발송 이력 목록입니다.
-  /// 기능 : 사용자의 browser push 구독 정보를 암호화해 저장한 목록입니다.
-  /// 기능 : 사용자의 주간 AI 영업 리포트 version 목록입니다.
-  aiWeeklySalesReports        AiWeeklySalesReport[]
-  /// 기능 : 사용자의 주간 AI 리포트 제안 목록입니다.
-  aiWeeklyReportSuggestions   AiWeeklySalesReportSuggestion[]
-  /// 기능 : 사용자의 AI 비동기 작업 목록입니다.
-  aiJobs                      AiJob[]
-  /// 기능 : 사용자의 AI provider 호출 이력 목록입니다.
-  aiProviderCallLogs          AiProviderCallLog[]
+  dealProducts            DealProduct[]
   /// 기능 : 사용자의 제품 분석 원본 이벤트 목록입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  productAnalyticsEvents      ProductAnalyticsEvent[]
+  productAnalyticsEvents  ProductAnalyticsEvent[]
   /// 기능 : 사용자의 activation 계산 snapshot입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  activationSnapshot          UserActivationSnapshot?
-  /// Feature: external email account connections used for follow-up delivery.
-  externalEmailConnections    ExternalEmailConnection[]
-  /// Feature: short-lived OAuth state rows for follow-up email connections.
-  externalEmailOAuthStates    ExternalEmailOAuthState[]
-  /// Feature: verified sender phone numbers used for follow-up SMS delivery.
-  smsSenderNumbers            SmsSenderNumber[]
-  /// Feature: channel consent acknowledgements for user-initiated follow-up delivery.
-  followUpConsentNotices      FollowUpConsentNotice[]
-  /// Feature: AI/user follow-up draft and delivery history.
-  followUpMessages            FollowUpMessage[]
-  /// Feature: follow-up message target links for timeline/history.
-  followUpMessageTargets      FollowUpMessageTarget[]
-  /// Feature: provider send attempt logs for follow-up messages.
-  followUpDeliveryAttempts    FollowUpDeliveryAttempt[]
+  activationSnapshot      UserActivationSnapshot?
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
-  errorReports                ErrorReport[]
+  errorReports            ErrorReport[]
   /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
-  supportRequests             SupportRequest[]
+  supportRequests         SupportRequest[]
 
   @@index([role])
   @@index([status])
@@ -539,8 +367,6 @@ model AuthSession {
   @@index([expiresAt])
 }
 
-
-
 /// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.
 model ProductAnalyticsEvent {
   /// 기능 : 분석 이벤트 row의 고유 식별자입니다.
@@ -673,21 +499,19 @@ model Company {
   trashExpiresAt  DateTime? @db.Timestamptz(3)
 
   /// 기능 : 회사를 생성한 사용자다. 모든 회사 API는 이 userId로 소유권을 검증한다.
-  user                 User                        @relation(fields: [userId], references: [id])
+  user            User                        @relation(fields: [userId], references: [id])
   /// 기능 : 회사 목록 필터에 사용되는 회사 분야다.
-  companyField         CompanyField                @relation(fields: [companyFieldId], references: [id])
+  companyField    CompanyField                @relation(fields: [companyFieldId], references: [id])
   /// 기능 : 회사 목록 필터에 사용되는 회사 지역이다.
-  companyRegion        CompanyRegion               @relation(fields: [companyRegionId], references: [id])
+  companyRegion   CompanyRegion               @relation(fields: [companyRegionId], references: [id])
   /// 기능 : 회사 특징에 대한 일반 메모 로그 목록이다.
-  memoLogs             CompanyMemoLog[]
+  memoLogs        CompanyMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 회사 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs      CompanyUserPrivateMemoLog[]
+  privateMemoLogs CompanyUserPrivateMemoLog[]
   /// 기능 : 회사에 소속된 담당자 목록이다.
-  contacts             Contact[]
+  contacts        Contact[]
   /// 기능 : 회사가 연결된 딜 매핑 목록이다.
-  dealCompanies        DealCompany[]
-  meetingNoteCompanies MeetingNoteCompany[]
-  meetingNoteContacts  MeetingNoteContact[]
+  dealCompanies   DealCompany[]
 
   @@index([userId, createdAt])
   @@index([userId, companyName])
@@ -719,21 +543,19 @@ model Contact {
   trashExpiresAt      DateTime? @db.Timestamptz(3)
 
   /// 기능 : 담당자를 등록한 사용자다. 모든 담당자 API는 이 userId로 소유권을 검증한다.
-  user                 User                        @relation(fields: [userId], references: [id])
+  user              User                        @relation(fields: [userId], references: [id])
   /// 기능 : 담당자가 소속된 회사다. 담당자는 회사 없이 저장되지 않는다.
-  company              Company                     @relation(fields: [companyId], references: [id])
+  company           Company                     @relation(fields: [companyId], references: [id])
   /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 직급이다.
-  contactJobGrade      ContactJobGrade             @relation(fields: [contactJobGradeId], references: [id])
+  contactJobGrade   ContactJobGrade             @relation(fields: [contactJobGradeId], references: [id])
   /// 기능 : 담당자 목록 필터와 상세에 사용되는 담당자 부서다.
-  contactDepartment    ContactDepartment           @relation(fields: [contactDepartmentId], references: [id])
+  contactDepartment ContactDepartment           @relation(fields: [contactDepartmentId], references: [id])
   /// 기능 : 담당자 일반 메모 로그 목록이다.
-  memoLogs             ContactMemoLog[]
+  memoLogs          ContactMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 담당자 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs      ContactUserPrivateMemoLog[]
+  privateMemoLogs   ContactUserPrivateMemoLog[]
   /// 기능 : 담당자가 연결된 딜 매핑 목록이다.
-  dealContacts         DealContact[]
-  meetingNoteContacts  MeetingNoteContact[]
-  followUpMessages     FollowUpMessage[]
+  dealContacts      DealContact[]
 
   @@index([userId, createdAt])
   @@index([userId, username])
@@ -837,18 +659,17 @@ model Product {
   trashExpiresAt    DateTime? @db.Timestamptz(3)
 
   /// 기능 : 제품을 등록한 사용자다. 모든 제품 API는 이 userId로 소유권을 검증한다.
-  user                User                        @relation(fields: [userId], references: [id])
+  user            User                        @relation(fields: [userId], references: [id])
   /// 기능 : 제품 목록 필터와 상세에 사용되는 제품 카테고리다.
-  productCategory     ProductCategory             @relation(fields: [productCategoryId], references: [id])
+  productCategory ProductCategory             @relation(fields: [productCategoryId], references: [id])
   /// 기능 : 제품 목록 필터와 상세에 사용되는 제품 상태다.
-  productStatus       ProductStatus               @relation(fields: [productStatusId], references: [id])
+  productStatus   ProductStatus               @relation(fields: [productStatusId], references: [id])
   /// 기능 : 제품 일반 메모 로그 목록이다.
-  memoLogs            ProductMemoLog[]
+  memoLogs        ProductMemoLog[]
   /// 기능 : 작성자 본인만 복호화해 볼 수 있는 제품 개인 비밀 메모 로그 목록이다.
-  privateMemoLogs     ProductUserPrivateMemoLog[]
+  privateMemoLogs ProductUserPrivateMemoLog[]
   /// 기능 : 제품이 연결된 딜 매핑 목록이다.
-  dealProducts        DealProduct[]
-  meetingNoteProducts MeetingNoteProduct[]
+  dealProducts    DealProduct[]
 
   @@index([userId, createdAt])
   @@index([userId, productName])
@@ -963,9 +784,6 @@ model Deal {
   memoLogs            DealMemoLog[]
   /// 기능 : 딜 상세 활동 내역에 표시할 활동 목록이다.
   activities          DealActivity[]
-  /// 기능 : 이 딜이 연결된 일정 매핑 목록이다.
-  scheduleDeals       ScheduleDeal[]
-  meetingNoteDeals    MeetingNoteDeal[]
 
   @@index([userId, createdAt])
   @@index([userId, dealName])
@@ -1129,603 +947,6 @@ model DealActivity {
   /// 기능 : 자동 활동의 원본 레코드 추적과 중복 생성 방지 확인에 사용한다.
   @@index([userId, sourceType, sourceId])
 }
-
-model ExternalCalendarConnection {
-  id                    String                           @id @default(uuid()) @db.Uuid
-  userId                String                           @db.Uuid
-  provider              ExternalCalendarProvider
-  providerAccountId     String?
-  providerAccountEmail  String?
-  status                ExternalCalendarConnectionStatus @default(CONNECTED)
-  encryptedAccessToken  String?
-  encryptedRefreshToken String?
-  tokenExpiresAt        DateTime?                        @db.Timestamptz(3)
-  grantedScopes         String[]                         @default([])
-  connectedAt           DateTime?                        @db.Timestamptz(3)
-  disconnectedAt        DateTime?                        @db.Timestamptz(3)
-  reconnectRequiredAt   DateTime?                        @db.Timestamptz(3)
-  lastSyncedAt          DateTime?                        @db.Timestamptz(3)
-  lastSyncStartedAt     DateTime?                        @db.Timestamptz(3)
-  lastSyncFailedAt      DateTime?                        @db.Timestamptz(3)
-  lastSyncErrorCode     String?
-  syncLockExpiresAt     DateTime?                        @db.Timestamptz(3)
-  createdAt             DateTime                         @default(now()) @db.Timestamptz(3)
-  updatedAt             DateTime                         @default(now()) @updatedAt @db.Timestamptz(3)
-
-  user    User                     @relation(fields: [userId], references: [id])
-  sources ExternalCalendarSource[]
-
-  @@unique([userId, provider])
-  @@index([userId, status])
-  @@index([provider, providerAccountId])
-  @@index([userId, lastSyncedAt])
-  @@index([userId, syncLockExpiresAt])
-}
-
-model ExternalCalendarSource {
-  id                String                       @id @default(uuid()) @db.Uuid
-  userId            String                       @db.Uuid
-  connectionId      String                       @db.Uuid
-  provider          ExternalCalendarProvider
-  calendarId        String
-  calendarName      String
-  calendarTimeZone  String?
-  isPrimary         Boolean                      @default(false)
-  isSystemCalendar  Boolean                      @default(false)
-  status            ExternalCalendarSourceStatus @default(UNSELECTED)
-  syncToken         String?
-  lastSyncedAt      DateTime?                    @db.Timestamptz(3)
-  lastSyncFailedAt  DateTime?                    @db.Timestamptz(3)
-  lastSyncErrorCode String?
-  createdAt         DateTime                     @default(now()) @db.Timestamptz(3)
-  updatedAt         DateTime                     @default(now()) @updatedAt @db.Timestamptz(3)
-
-  user       User                       @relation(fields: [userId], references: [id])
-  connection ExternalCalendarConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
-  schedules  Schedule[]
-
-  @@unique([userId, provider, calendarId])
-  @@index([connectionId, status])
-  @@index([userId, status])
-}
-
-model Schedule {
-  id                       String                      @id @default(uuid()) @db.Uuid
-  userId                   String                      @db.Uuid
-  scheduleTitle            String
-  startAt                  DateTime                    @db.Timestamptz(3)
-  endAt                    DateTime                    @db.Timestamptz(3)
-  timeZone                 String                      @default("Asia/Seoul")
-  location                 String?
-  meetingUrl               String?
-  memo                     String?
-  isAllDay                 Boolean                     @default(false)
-  sourceType               ScheduleSourceType          @default(INTERNAL)
-  externalCalendarSourceId String?                     @db.Uuid
-  externalEventId          String?
-  externalEventICalUid     String?
-  externalEventEtag        String?
-  externalHtmlLink         String?
-  externalUpdatedAt        DateTime?                   @db.Timestamptz(3)
-  lastExternalSyncedAt     DateTime?                   @db.Timestamptz(3)
-  externalDeletedAt        DateTime?                   @db.Timestamptz(3)
-  externalSyncStatus       ScheduleExternalSyncStatus?
-  deletedAt                DateTime?                   @db.Timestamptz(3)
-  deletedByUserId          String?                     @db.Uuid
-  trashExpiresAt           DateTime?                   @db.Timestamptz(3)
-  createdAt                DateTime                    @default(now()) @db.Timestamptz(3)
-  updatedAt                DateTime                    @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : 일정을 등록한 사용자다. 모든 일정 API는 이 userId로 소유권을 검증한다.
-  user                   User                    @relation(fields: [userId], references: [id])
-  externalCalendarSource ExternalCalendarSource? @relation(fields: [externalCalendarSourceId], references: [id], onDelete: SetNull)
-  /// 기능 : 일정에 연결된 딜 매핑 목록이다.
-  scheduleDeals          ScheduleDeal[]
-
-  @@unique([userId, externalCalendarSourceId, externalEventId])
-  @@index([userId, startAt])
-  @@index([userId, createdAt])
-  @@index([userId, sourceType, startAt])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-  @@index([externalCalendarSourceId])
-  @@index([userId, externalSyncStatus])
-}
-
-model ScheduleDeal {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @db.Uuid
-  scheduleId String   @db.Uuid
-  dealId     String   @db.Uuid
-  createdAt  DateTime @default(now()) @db.Timestamptz(3)
-
-  /// 기능 : 일정-딜 연결을 만든 사용자다. 연결 조회와 변경은 이 userId로 소유권을 검증한다.
-  user     User     @relation(fields: [userId], references: [id])
-  /// 기능 : 딜이 연결된 일정이다.
-  schedule Schedule @relation(fields: [scheduleId], references: [id])
-  /// 기능 : 일정에 연결된 딜이다.
-  deal     Deal     @relation(fields: [dealId], references: [id])
-
-  @@unique([scheduleId, dealId])
-  @@index([userId, scheduleId])
-  @@index([userId, dealId])
-}
-
-model MeetingNote {
-  id              String                @id @default(uuid()) @db.Uuid
-  userId          String                @db.Uuid
-  sourceType      MeetingNoteSourceType @default(MANUAL)
-  title           String
-  meetingAt       DateTime              @db.Timestamptz(3)
-  timeZone        String                @default("Asia/Seoul")
-  details         String
-  nextPlan        String?
-  requiredAction  String?
-  rawText         String?
-  createdAt       DateTime              @default(now()) @db.Timestamptz(3)
-  updatedAt       DateTime              @updatedAt @db.Timestamptz(3)
-  deletedAt       DateTime?             @db.Timestamptz(3)
-  deletedByUserId String?               @db.Uuid
-  trashExpiresAt  DateTime?             @db.Timestamptz(3)
-
-  user      User                 @relation(fields: [userId], references: [id])
-  companies MeetingNoteCompany[]
-  contacts  MeetingNoteContact[]
-  products  MeetingNoteProduct[]
-  deals     MeetingNoteDeal[]
-
-  @@index([userId, meetingAt])
-  @@index([userId, title])
-  @@index([userId, createdAt])
-  @@index([userId, deletedAt])
-  @@index([userId, trashExpiresAt])
-}
-
-model MeetingNoteCompany {
-  id                    String   @id @default(uuid()) @db.Uuid
-  userId                String   @db.Uuid
-  meetingNoteId         String   @db.Uuid
-  companyId             String?  @db.Uuid
-  companyNameSnapshot   String
-  companyFieldSnapshot  String?
-  companyRegionSnapshot String?
-  createdAt             DateTime @default(now()) @db.Timestamptz(3)
-
-  user        User        @relation(fields: [userId], references: [id])
-  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
-  company     Company?    @relation(fields: [companyId], references: [id])
-
-  @@index([userId, meetingNoteId])
-  @@index([userId, companyId])
-}
-
-model MeetingNoteContact {
-  id                         String   @id @default(uuid()) @db.Uuid
-  userId                     String   @db.Uuid
-  meetingNoteId              String   @db.Uuid
-  contactId                  String?  @db.Uuid
-  companyId                  String?  @db.Uuid
-  contactUsernameSnapshot    String
-  contactEmailSnapshot       String?
-  contactMobileSnapshot      String?
-  contactCompanyNameSnapshot String?
-  contactDepartmentSnapshot  String?
-  contactJobGradeSnapshot    String?
-  createdAt                  DateTime @default(now()) @db.Timestamptz(3)
-
-  user        User        @relation(fields: [userId], references: [id])
-  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
-  contact     Contact?    @relation(fields: [contactId], references: [id])
-  company     Company?    @relation(fields: [companyId], references: [id])
-
-  @@index([userId, meetingNoteId])
-  @@index([userId, contactId])
-  @@index([userId, companyId])
-}
-
-model MeetingNoteProduct {
-  id                      String   @id @default(uuid()) @db.Uuid
-  userId                  String   @db.Uuid
-  meetingNoteId           String   @db.Uuid
-  productId               String?  @db.Uuid
-  productNameSnapshot     String
-  productPriceSnapshot    Int?
-  productCategorySnapshot String?
-  productStatusSnapshot   String?
-  createdAt               DateTime @default(now()) @db.Timestamptz(3)
-
-  user        User        @relation(fields: [userId], references: [id])
-  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
-  product     Product?    @relation(fields: [productId], references: [id])
-
-  @@index([userId, meetingNoteId])
-  @@index([userId, productId])
-}
-
-model MeetingNoteDeal {
-  id                          String   @id @default(uuid()) @db.Uuid
-  userId                      String   @db.Uuid
-  meetingNoteId               String   @db.Uuid
-  dealId                      String   @db.Uuid
-  dealNameSnapshot            String
-  dealStatusSnapshot          String
-  dealCostSnapshot            Int
-  dealExpectedEndDateSnapshot DateTime @db.Date
-  createdAt                   DateTime @default(now()) @db.Timestamptz(3)
-
-  user        User        @relation(fields: [userId], references: [id])
-  meetingNote MeetingNote @relation(fields: [meetingNoteId], references: [id])
-  deal        Deal        @relation(fields: [dealId], references: [id])
-
-  @@unique([meetingNoteId, dealId])
-  @@index([userId, meetingNoteId])
-  @@index([userId, dealId])
-}
-
-/// 기능 : 사용자가 생성한 주간 AI 영업 리포트 version 정본입니다.
-model AiWeeklySalesReport {
-  id                String                    @id @default(uuid()) @db.Uuid
-  userId            String                    @db.Uuid
-  weekStart         DateTime                  @db.Date
-  weekEnd           DateTime                  @db.Date
-  timeZone          String
-  locale            String
-  version           Int
-  status            AiWeeklySalesReportStatus @default(GENERATING)
-  provider          String?
-  model             String?
-  /// 기능 : AI가 참고한 전체 input snapshot입니다. 일반 response에 원문 전체를 반환하지 않습니다.
-  inputSnapshotJson Json                      @default("{}")
-  /// 기능 : snapshot count, input hash, schema version 등 원문 없는 metadata입니다.
-  inputMetadataJson Json                      @default("{}")
-  /// 기능 : strict JSON schema를 통과한 AI 리포트 결과입니다.
-  outputJson        Json?
-  /// 기능 : AI가 참고한 source 수와 누락 신호 요약입니다.
-  dataCoverageJson  Json                      @default("{}")
-  safeErrorCode     String?
-  safeErrorMessage  String?
-  requestedAt       DateTime                  @default(now()) @db.Timestamptz(3)
-  startedAt         DateTime?                 @db.Timestamptz(3)
-  generatedAt       DateTime?                 @db.Timestamptz(3)
-  failedAt          DateTime?                 @db.Timestamptz(3)
-  createdAt         DateTime                  @default(now()) @db.Timestamptz(3)
-  updatedAt         DateTime                  @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : 리포트를 소유한 사용자입니다. 모든 조회와 변경은 userId로 제한합니다.
-  user             User                            @relation(fields: [userId], references: [id])
-  /// 기능 : 이 report version에서 생성된 구조화 제안 목록입니다.
-  suggestions      AiWeeklySalesReportSuggestion[]
-  /// 기능 : 이 report version과 연결된 provider 호출 이력입니다. prompt/raw response는 저장하지 않습니다.
-  providerCallLogs AiProviderCallLog[]
-  /// Feature: follow-up messages drafted or sent from this report.
-  followUpMessages FollowUpMessage[]
-
-  @@unique([userId, weekStart, timeZone, version])
-  @@index([userId, weekStart, timeZone, status])
-  @@index([userId, weekStart, timeZone, version(sort: Desc)])
-}
-
-/// 기능 : 주간 AI 리포트 section에 표시할 구조화 제안입니다.
-model AiWeeklySalesReportSuggestion {
-  id            String                            @id @default(uuid()) @db.Uuid
-  reportId      String                            @db.Uuid
-  userId        String                            @db.Uuid
-  type          AiWeeklySalesReportSuggestionType
-  suggestionKey String
-  priority      AiSuggestionPriority              @default(MEDIUM)
-  title         String
-  body          String
-  reason        String?
-  targetType    String?
-  targetId      String?                           @db.Uuid
-  targetPath    String?
-  targetLabel   String?
-  /// 기능 : follow-up 초안, cleanup 세부 정보 등 section별 구조화 payload입니다. provider raw response 전체를 넣지 않습니다.
-  payloadJson   Json                              @default("{}")
-  createdAt     DateTime                          @default(now()) @db.Timestamptz(3)
-  updatedAt     DateTime                          @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : 제안을 생성한 AI 리포트 version입니다. report 삭제 시 함께 삭제됩니다.
-  report           AiWeeklySalesReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  /// 기능 : 제안을 소유한 사용자입니다. report와 같은 userId를 가집니다.
-  user             User                @relation(fields: [userId], references: [id])
-  /// Feature: follow-up messages drafted from this report suggestion.
-  followUpMessages FollowUpMessage[]
-
-  @@unique([reportId, suggestionKey])
-  @@index([userId, reportId, type])
-  @@index([userId, targetType, targetId])
-}
-
-/// 기능 : AI 비동기 작업 상태를 추적합니다.
-model AiJob {
-  id               String              @id @default(uuid()) @db.Uuid
-  userId           String              @db.Uuid
-  operation        AiProviderOperation
-  status           AiJobStatus         @default(PENDING)
-  targetType       String
-  targetId         String              @db.Uuid
-  idempotencyKey   String?
-  attemptCount     Int                 @default(0)
-  maxAttemptCount  Int                 @default(1)
-  safeErrorCode    String?
-  safeErrorMessage String?
-  requestedAt      DateTime            @default(now()) @db.Timestamptz(3)
-  startedAt        DateTime?           @db.Timestamptz(3)
-  completedAt      DateTime?           @db.Timestamptz(3)
-  failedAt         DateTime?           @db.Timestamptz(3)
-  /// 기능 : job 처리 metadata입니다. provider raw response나 prompt는 저장하지 않습니다.
-  metadataJson     Json                @default("{}")
-  createdAt        DateTime            @default(now()) @db.Timestamptz(3)
-  updatedAt        DateTime            @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : job을 소유한 사용자입니다.
-  user             User                @relation(fields: [userId], references: [id])
-  /// 기능 : 이 job과 연결된 provider 호출 이력입니다.
-  providerCallLogs AiProviderCallLog[]
-
-  @@index([status, operation, createdAt])
-  @@index([userId, operation, status, createdAt])
-  @@index([userId, targetType, targetId])
-}
-
-/// 기능 : AI provider 호출 비용, latency, 실패 상태를 기록합니다.
-model AiProviderCallLog {
-  id                  String               @id @default(uuid()) @db.Uuid
-  userId              String               @db.Uuid
-  operation           AiProviderOperation
-  status              AiProviderCallStatus @default(PENDING)
-  reportId            String?              @db.Uuid
-  jobId               String?              @db.Uuid
-  /// 기능 : provider 호출이 특정 기능 record에서 발생했을 때 대상 타입을 기록합니다. 저장 전 초안은 MEETING_NOTE_DRAFT를 사용합니다.
-  targetType          String?
-  /// 기능 : provider 호출이 특정 기능 record에서 발생했을 때 대상 record ID를 기록합니다. 저장 전 초안처럼 대상 ID가 없으면 null입니다.
-  targetId            String?              @db.Uuid
-  provider            String
-  model               String
-  requestId           String?
-  latencyMs           Int?
-  inputTokenCount     Int?
-  outputTokenCount    Int?
-  totalTokenCount     Int?
-  estimatedCostAmount Decimal?             @db.Decimal(12, 6)
-  costCurrency        String               @default("USD")
-  safeErrorCode       String?
-  safeErrorMessage    String?
-  retryable           Boolean              @default(false)
-  retryCount          Int                  @default(0)
-  startedAt           DateTime             @default(now()) @db.Timestamptz(3)
-  completedAt         DateTime?            @db.Timestamptz(3)
-  failedAt            DateTime?            @db.Timestamptz(3)
-  /// 기능 : redacted provider metadata입니다. prompt, raw response, API key, quota detail은 저장하지 않습니다.
-  metadataJson        Json                 @default("{}")
-  createdAt           DateTime             @default(now()) @db.Timestamptz(3)
-  updatedAt           DateTime             @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// 기능 : provider 호출을 발생시킨 사용자입니다.
-  user   User                 @relation(fields: [userId], references: [id])
-  /// 기능 : 관련 AI 주간 리포트입니다. report 삭제 시 이력은 남기고 연결만 해제합니다.
-  report AiWeeklySalesReport? @relation(fields: [reportId], references: [id], onDelete: SetNull)
-  /// 기능 : 관련 AI job입니다. job 삭제 시 이력은 남기고 연결만 해제합니다.
-  job    AiJob?               @relation(fields: [jobId], references: [id], onDelete: SetNull)
-
-  @@index([userId, operation, createdAt])
-  @@index([userId, targetType, targetId, createdAt])
-  @@index([reportId, createdAt])
-  @@index([jobId, createdAt])
-  @@index([status, createdAt])
-}
-
-/// Feature: external email account connection for user-confirmed follow-up email delivery.
-model ExternalEmailConnection {
-  id                    String                        @id @default(uuid()) @db.Uuid
-  userId                String                        @db.Uuid
-  provider              ExternalEmailProvider
-  providerAccountId     String?
-  providerAccountEmail  String
-  status                ExternalEmailConnectionStatus @default(CONNECTED)
-  encryptedAccessToken  String?
-  encryptedRefreshToken String?
-  tokenExpiresAt        DateTime?                     @db.Timestamptz(3)
-  grantedScopes         String[]                      @default([])
-  connectedAt           DateTime                      @default(now()) @db.Timestamptz(3)
-  disconnectedAt        DateTime?                     @db.Timestamptz(3)
-  reconnectRequiredAt   DateTime?                     @db.Timestamptz(3)
-  lastSentAt            DateTime?                     @db.Timestamptz(3)
-  lastSendSafeErrorCode String?
-  createdAt             DateTime                      @default(now()) @db.Timestamptz(3)
-  updatedAt             DateTime                      @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// Feature: connection owner. All reads and writes must be scoped by userId.
-  user             User              @relation(fields: [userId], references: [id], onDelete: Restrict)
-  /// Feature: follow-up email messages that used this connection.
-  followUpMessages FollowUpMessage[]
-
-  @@unique([userId, provider])
-  @@index([userId, status])
-}
-
-/// Feature: short-lived OAuth state used to bind external email callback to the authenticated user.
-model ExternalEmailOAuthState {
-  id          String                @id @default(uuid()) @db.Uuid
-  userId      String                @db.Uuid
-  provider    ExternalEmailProvider
-  stateHash   String
-  redirectUri String
-  expiresAt   DateTime              @db.Timestamptz(3)
-  consumedAt  DateTime?             @db.Timestamptz(3)
-  createdAt   DateTime              @default(now()) @db.Timestamptz(3)
-  updatedAt   DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// Feature: OAuth state owner. Raw state is never persisted.
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
-
-  @@unique([stateHash])
-  @@index([userId, provider, expiresAt])
-}
-
-/// Feature: verified SMS sender number. Raw E.164 number is stored only as encrypted ciphertext.
-model SmsSenderNumber {
-  id                    String                @id @default(uuid()) @db.Uuid
-  userId                String                @db.Uuid
-  phoneE164Hash         String
-  phoneE164Ciphertext   String
-  phoneE164Masked       String
-  status                SmsSenderNumberStatus @default(PENDING_VERIFICATION)
-  provider              String?
-  providerSenderId      String?
-  verificationCodeHash  String?
-  verificationExpiresAt DateTime?             @db.Timestamptz(3)
-  verifiedAt            DateTime?             @db.Timestamptz(3)
-  revokedAt             DateTime?             @db.Timestamptz(3)
-  lastSentAt            DateTime?             @db.Timestamptz(3)
-  lastSendSafeErrorCode String?
-  createdAt             DateTime              @default(now()) @db.Timestamptz(3)
-  updatedAt             DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// Feature: sender owner. Phone uniqueness is checked by HMAC hash per user.
-  user             User              @relation(fields: [userId], references: [id], onDelete: Restrict)
-  /// Feature: follow-up SMS messages that used this sender number.
-  followUpMessages FollowUpMessage[]
-
-  @@unique([userId, phoneE164Hash])
-  @@index([userId, status, createdAt])
-}
-
-/// Feature: records that a user acknowledged the legal/consent notice for a channel.
-model FollowUpConsentNotice {
-  id             String                  @id @default(uuid()) @db.Uuid
-  userId         String                  @db.Uuid
-  channel        FollowUpDeliveryChannel
-  acknowledgedAt DateTime                @default(now()) @db.Timestamptz(3)
-  createdAt      DateTime                @default(now()) @db.Timestamptz(3)
-  updatedAt      DateTime                @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// Feature: consent owner. One latest acknowledgement row is kept per channel.
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
-
-  @@unique([userId, channel])
-}
-
-/// Feature: follow-up draft and delivery history generated from AI report suggestions or user edits.
-model FollowUpMessage {
-  id                       String                  @id @default(uuid()) @db.Uuid
-  userId                   String                  @db.Uuid
-  sourceReportId           String?                 @db.Uuid
-  sourceSuggestionId       String?                 @db.Uuid
-  channel                  FollowUpDeliveryChannel
-  status                   FollowUpMessageStatus   @default(DRAFT)
-  languageTag              String
-  emailConnectionId        String?                 @db.Uuid
-  smsSenderNumberId        String?                 @db.Uuid
-  senderDisplayName        String?
-  senderEmail              String?
-  senderPhoneE164Masked    String?
-  recipientContactId       String?                 @db.Uuid
-  recipientName            String
-  recipientEmail           String?
-  recipientPhoneE164Masked String?
-  subject                  String?
-  body                     String                  @db.Text
-  bodyPreview              String
-  provider                 String?
-  providerMessageId        String?
-  safeErrorCode            String?
-  safeErrorMessage         String?
-  retryable                Boolean                 @default(false)
-  retryCount               Int                     @default(0)
-  sentAt                   DateTime?               @db.Timestamptz(3)
-  failedAt                 DateTime?               @db.Timestamptz(3)
-  createdAt                DateTime                @default(now()) @db.Timestamptz(3)
-  updatedAt                DateTime                @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// Feature: message owner. All history queries must include userId.
-  user             User                           @relation(fields: [userId], references: [id], onDelete: Restrict)
-  /// Feature: source AI report. History remains if a report version is removed.
-  sourceReport     AiWeeklySalesReport?           @relation(fields: [sourceReportId], references: [id], onDelete: SetNull)
-  /// Feature: source AI follow-up suggestion. History remains if a suggestion is removed.
-  sourceSuggestion AiWeeklySalesReportSuggestion? @relation(fields: [sourceSuggestionId], references: [id], onDelete: SetNull)
-  /// Feature: email account used by an email follow-up.
-  emailConnection  ExternalEmailConnection?       @relation(fields: [emailConnectionId], references: [id], onDelete: SetNull)
-  /// Feature: sender number used by an SMS follow-up.
-  smsSenderNumber  SmsSenderNumber?               @relation(fields: [smsSenderNumberId], references: [id], onDelete: SetNull)
-  /// Feature: CRM contact recipient. History remains if contact is removed.
-  recipientContact Contact?                       @relation(fields: [recipientContactId], references: [id], onDelete: SetNull)
-  /// Feature: timeline target links related to this follow-up.
-  targets          FollowUpMessageTarget[]
-  /// Feature: provider delivery attempts for this follow-up.
-  deliveryAttempts FollowUpDeliveryAttempt[]
-
-  @@index([userId, channel, status, createdAt])
-  @@index([userId, sourceReportId, createdAt])
-  @@index([recipientContactId, createdAt])
-}
-
-/// Feature: stable target references used to show follow-up history on report/deal/contact timelines.
-model FollowUpMessageTarget {
-  id          String             @id @default(uuid()) @db.Uuid
-  userId      String             @db.Uuid
-  messageId   String             @db.Uuid
-  targetType  FollowUpTargetType
-  targetId    String             @db.Uuid
-  targetPath  String
-  targetLabel String?
-  createdAt   DateTime           @default(now()) @db.Timestamptz(3)
-
-  /// Feature: target owner. Duplicates are scoped by message and concrete target.
-  user    User            @relation(fields: [userId], references: [id], onDelete: Restrict)
-  /// Feature: parent follow-up message. Message deletion removes only child target rows.
-  message FollowUpMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-
-  @@unique([messageId, targetType, targetId])
-  @@index([userId, targetType, targetId, createdAt])
-}
-
-/// Feature: provider attempt log for follow-up email/SMS delivery with safe, redacted metadata only.
-model FollowUpDeliveryAttempt {
-  id                  String                        @id @default(uuid()) @db.Uuid
-  userId              String                        @db.Uuid
-  messageId           String                        @db.Uuid
-  channel             FollowUpDeliveryChannel
-  status              FollowUpDeliveryAttemptStatus @default(PENDING)
-  attemptNumber       Int                           @default(1)
-  provider            String?
-  providerMessageId   String?
-  providerStatusCode  String?
-  safeErrorCode       String?
-  safeErrorMessage    String?
-  retryable           Boolean                       @default(false)
-  nextRetryAt         DateTime?                     @db.Timestamptz(3)
-  latencyMs           Int?
-  estimatedCostAmount Decimal?                      @db.Decimal(12, 6)
-  costCurrency        String                        @default("USD")
-  sentAt              DateTime?                     @db.Timestamptz(3)
-  failedAt            DateTime?                     @db.Timestamptz(3)
-  detailJson          Json                          @default("{}")
-  createdAt           DateTime                      @default(now()) @db.Timestamptz(3)
-  updatedAt           DateTime                      @default(now()) @updatedAt @db.Timestamptz(3)
-
-  /// Feature: attempt owner. Operational queries must include userId.
-  user    User            @relation(fields: [userId], references: [id], onDelete: Restrict)
-  /// Feature: parent follow-up message. Message deletion removes only child attempt rows.
-  message FollowUpMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-
-  @@index([messageId, createdAt])
-  @@index([userId, channel, status, createdAt])
-  @@index([status, nextRetryAt])
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 model CompanyField {
   id        String   @id @default(uuid()) @db.Uuid

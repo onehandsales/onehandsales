@@ -276,7 +276,7 @@ describe("DealController", () => {
       .expect(200);
     await request(app.getHttpServer())
       .post(`/api/deals/${DEAL_ID}/following-action-logs`)
-      .send({ followingAction: "전화 follow-up" })
+      .send({ followingAction: "전화 다음 행동" })
       .expect(201);
     await request(app.getHttpServer())
       .patch(
@@ -328,7 +328,7 @@ describe("DealController", () => {
     expect(service.createFollowingActionLog).toHaveBeenCalledWith(
       CURRENT_USER,
       DEAL_ID,
-      { followingAction: "전화 follow-up" },
+      { followingAction: "전화 다음 행동" },
       "request-deal-1"
     );
     expect(service.updateFollowingActionLog).toHaveBeenCalledWith(

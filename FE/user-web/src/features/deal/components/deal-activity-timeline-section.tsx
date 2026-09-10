@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Activity,
   AlertCircle,
-  CalendarClock,
   CheckSquare,
   CircleDot,
   Edit3,
@@ -12,11 +11,9 @@ import {
   Link2,
   Mail,
   MapPin,
-  MessageSquareText,
   PhoneCall,
   Plus,
   Save,
-  Send,
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
@@ -69,25 +66,16 @@ const ACTIVITY_TYPE_LABEL: Record<DealActivityType, string> = {
   CALL: "통화",
   DEAL_CREATED: "딜 생성",
   EMAIL: "이메일",
-  FOLLOW_UP_FAILED: "후속 연락 실패",
-  FOLLOW_UP_SENT: "후속 연락",
   MEETING: "미팅",
-  MEETING_NOTE_LINKED: "회의록 연결",
-  MEETING_NOTE_UNLINKED: "회의록 해제",
   NEXT_ACTION_COMPLETION_CHANGED: "다음 행동 변경",
   NEXT_ACTION_CREATED: "다음 행동",
   NOTE: "기타",
-  SCHEDULE_LINKED: "일정 연결",
-  SCHEDULE_UNLINKED: "일정 해제",
   STAGE_CHANGED: "단계 변경",
   VISIT: "방문",
 };
 
 const SOURCE_TYPE_LABEL: Record<DealActivitySourceType, string> = {
-  FOLLOW_UP: "후속 연락",
-  MEETING_NOTE: "회의록",
   NEXT_ACTION: "다음 행동",
-  SCHEDULE: "일정",
   SYSTEM: "자동",
   USER: "수동",
 };
@@ -96,10 +84,7 @@ const LINKED_RECORD_LABEL: Record<DealActivityLinkedRecordTargetType, string> = 
   COMPANY: "회사",
   CONTACT: "담당자",
   DEAL: "딜",
-  FOLLOW_UP_MESSAGE: "후속 연락",
-  MEETING_NOTE: "회의록",
   PRODUCT: "제품",
-  SCHEDULE: "일정",
 };
 
 // 기능 : 딜 활동 timeline의 loading/error/empty/success 상태를 한곳에서 처리합니다.
@@ -570,15 +555,6 @@ function getActivityIcon(activityType: DealActivityType): LucideIcon {
     case "NEXT_ACTION_CREATED":
     case "NEXT_ACTION_COMPLETION_CHANGED":
       return CheckSquare;
-    case "SCHEDULE_LINKED":
-    case "SCHEDULE_UNLINKED":
-      return CalendarClock;
-    case "MEETING_NOTE_LINKED":
-    case "MEETING_NOTE_UNLINKED":
-      return MessageSquareText;
-    case "FOLLOW_UP_SENT":
-    case "FOLLOW_UP_FAILED":
-      return Send;
     case "DEAL_CREATED":
       return CircleDot;
   }
@@ -595,10 +571,6 @@ function getActivityIconClassName(activityType: DealActivityType) {
     case "VISIT":
     case "NOTE":
       return cn(baseClassName, "bg-[#EEF4FF] text-[#1F4EF5]");
-    case "FOLLOW_UP_FAILED":
-      return cn(baseClassName, "bg-[#FEF2F2] text-[#B91C1C]");
-    case "FOLLOW_UP_SENT":
-      return cn(baseClassName, "bg-[#F0FDF4] text-[#047857]");
     case "STAGE_CHANGED":
       return cn(baseClassName, "bg-[#FFF7ED] text-[#C2410C]");
     default:

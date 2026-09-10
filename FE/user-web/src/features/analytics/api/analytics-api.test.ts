@@ -38,31 +38,6 @@ describe("trackAnalyticsEvent", () => {
     });
   });
 
-  it("posts mobile field events to the same Backend collector API", async () => {
-    await expect(
-      trackAnalyticsEvent({
-        eventName: "local_draft_discarded",
-        eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
-        payload: {
-          draftType: "meeting_note_create",
-          reason: "saved",
-        },
-      })
-    ).resolves.toEqual({ accepted: true });
-
-    expect(apiClientMock).toHaveBeenCalledWith("/api/analytics/events", {
-      body: {
-        eventName: "local_draft_discarded",
-        eventVersion: PRODUCT_ANALYTICS_EVENT_VERSION,
-        payload: {
-          draftType: "meeting_note_create",
-          reason: "saved",
-        },
-      },
-      method: "POST",
-    });
-  });
-
   it("does not include user, session, device, surface, raw path, or query data", async () => {
     await trackAnalyticsEvent({
       eventName: "app_route_viewed",

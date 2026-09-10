@@ -19,9 +19,9 @@ type DealActivityRowFixture = {
   readonly dealId: string;
   readonly activityType:
     | "DEAL_CREATED"
-    | "SCHEDULE_LINKED"
-    | "FOLLOW_UP_SENT";
-  readonly sourceType: "SYSTEM" | "USER" | "SCHEDULE" | "FOLLOW_UP";
+    | "NEXT_ACTION_CREATED"
+    | "CALL";
+  readonly sourceType: "SYSTEM" | "USER" | "NEXT_ACTION";
   readonly sourceId: string | null;
   readonly title: string;
   readonly summary: string | null;
@@ -50,30 +50,30 @@ describe("PrismaDealActivityRepository", () => {
     const activity = await repository.createActivity({
       userId: USER_ID,
       dealId: DEAL_ID,
-      activityType: "FOLLOW_UP_SENT",
-      sourceType: "FOLLOW_UP",
+      activityType: "CALL",
+      sourceType: "USER",
       sourceId: SOURCE_ID,
-      title: "후속 연락 발송",
-      summary: "이메일 발송 성공",
+      title: "고객 통화 완료",
+      summary: "예산 확인 통화",
       body: null,
       occurredAt: OCCURRED_AT,
       linkedRecordsJson: [{ targetType: "CONTACT", targetId: "contact-1" }],
-      metadataJson: { messageId: "message-1" },
+      metadataJson: { callResult: "confirmed" },
     });
 
     expect(client.dealActivity.create).toHaveBeenCalledWith({
       data: {
         userId: USER_ID,
         dealId: DEAL_ID,
-        activityType: "FOLLOW_UP_SENT",
-        sourceType: "FOLLOW_UP",
+        activityType: "CALL",
+        sourceType: "USER",
         sourceId: SOURCE_ID,
-        title: "후속 연락 발송",
-        summary: "이메일 발송 성공",
+        title: "고객 통화 완료",
+        summary: "예산 확인 통화",
         body: null,
         occurredAt: OCCURRED_AT,
         linkedRecordsJson: [{ targetType: "CONTACT", targetId: "contact-1" }],
-        metadataJson: { messageId: "message-1" },
+        metadataJson: { callResult: "confirmed" },
       },
       select: expect.objectContaining({
         id: true,
@@ -81,7 +81,7 @@ describe("PrismaDealActivityRepository", () => {
       }),
     });
     expect(activity.id).toBe(ACTIVITY_ID);
-    expect(activity.metadataJson).toEqual({ messageId: "message-1" });
+    expect(activity.metadataJson).toEqual({ callResult: "confirmed" });
   });
 
   it("finds an existing automatic activity by source ownership key", async () => {
@@ -94,8 +94,8 @@ describe("PrismaDealActivityRepository", () => {
     await repository.findActivityBySource({
       userId: USER_ID,
       dealId: DEAL_ID,
-      activityType: "SCHEDULE_LINKED",
-      sourceType: "SCHEDULE",
+      activityType: "NEXT_ACTION_CREATED",
+      sourceType: "NEXT_ACTION",
       sourceId: SOURCE_ID,
     });
 
@@ -103,8 +103,8 @@ describe("PrismaDealActivityRepository", () => {
       where: {
         userId: USER_ID,
         dealId: DEAL_ID,
-        activityType: "SCHEDULE_LINKED",
-        sourceType: "SCHEDULE",
+        activityType: "NEXT_ACTION_CREATED",
+        sourceType: "NEXT_ACTION",
         sourceId: SOURCE_ID,
       },
       select: expect.objectContaining({
@@ -128,14 +128,14 @@ describe("PrismaDealActivityRepository", () => {
         id: ACTIVITY_ID,
       },
       take: 21,
-      type: "FOLLOW_UP_SENT",
+      type: "CALL",
     });
 
     expect(client.dealActivity.findMany).toHaveBeenCalledWith({
       where: {
         userId: USER_ID,
         dealId: DEAL_ID,
-        activityType: "FOLLOW_UP_SENT",
+        activityType: "CALL",
         deal: {
           deletedAt: null,
         },
@@ -280,15 +280,15 @@ function createActivityRow(
     id: ACTIVITY_ID,
     userId: USER_ID,
     dealId: DEAL_ID,
-    activityType: "FOLLOW_UP_SENT",
-    sourceType: "FOLLOW_UP",
+    activityType: "CALL",
+    sourceType: "USER",
     sourceId: SOURCE_ID,
-    title: "후속 연락 발송",
-    summary: "이메일 발송 성공",
+    title: "고객 통화 완료",
+    summary: "예산 확인 통화",
     body: null,
     occurredAt: OCCURRED_AT,
     linkedRecordsJson: [{ targetType: "CONTACT", targetId: "contact-1" }],
-    metadataJson: { messageId: "message-1" },
+    metadataJson: { callResult: "confirmed" },
     createdAt: OCCURRED_AT,
     updatedAt: OCCURRED_AT,
     ...overrides,

@@ -4,8 +4,6 @@ export enum SearchTargetType {
   CONTACT = "CONTACT",
   PRODUCT = "PRODUCT",
   DEAL = "DEAL",
-  SCHEDULE = "SCHEDULE",
-  MEETING_NOTE = "MEETING_NOTE",
 }
 
 export const SEARCH_TARGET_TYPES: readonly SearchTargetType[] = [
@@ -13,8 +11,6 @@ export const SEARCH_TARGET_TYPES: readonly SearchTargetType[] = [
   SearchTargetType.CONTACT,
   SearchTargetType.PRODUCT,
   SearchTargetType.DEAL,
-  SearchTargetType.SCHEDULE,
-  SearchTargetType.MEETING_NOTE,
 ];
 
 // 기능 : 문자열 값이 통합검색 대상 타입인지 확인합니다.

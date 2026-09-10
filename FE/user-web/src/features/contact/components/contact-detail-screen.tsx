@@ -27,7 +27,6 @@ import {
 import { ModalShell } from "@/components/ui/modal-shell";
 import { useAppI18n } from "@/features/app-i18n";
 import { ContactEditDialog } from "@/features/contact/components/contact-edit-dialog";
-import { FollowUpTimelinePanel } from "@/features/follow-up-delivery";
 import {
   useContactDeals,
   useContactDetail,
@@ -266,11 +265,6 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
             onFetchMore={() => void privateMemoLogsQuery.fetchNextPage()}
             onChanged={showNotice}
           />
-          <FollowUpTimelinePanel
-            targetId={contactId}
-            targetType="CONTACT"
-            title="연락처 후속 연락 이력"
-          />
         </div>
       </div>
 
@@ -368,11 +362,6 @@ export function ContactDetailScreen({ contactId }: ContactDetailScreenProps) {
               onChanged={showNotice}
             />
           </div>
-          <FollowUpTimelinePanel
-            targetId={contactId}
-            targetType="CONTACT"
-            title="연락처 후속 연락 이력"
-          />
         </div>
       </div>
       <ConfirmDialog

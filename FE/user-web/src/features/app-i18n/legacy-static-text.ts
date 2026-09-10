@@ -45,8 +45,6 @@ const LEGACY_KO_TO_EN: Readonly<Record<string, string>> = {
   제품: "Product",
   제품명: "Product Name",
   딜: "Deal",
-  일정: "Schedule",
-  회의록: "Meeting Note",
   알림: "Alert",
   휴지통: "Trash",
   설정: "Settings",
@@ -103,19 +101,12 @@ const LEGACY_KO_TO_EN: Readonly<Record<string, string>> = {
   "제품 로그": "Product Log",
   "일반": "General",
   "제목 없음": "Untitled",
-  "미팅 일시": "Meeting Time",
-  "미팅 링크": "Meeting Link",
-  "후속 연락": "Follow-up",
-  "연락처 후속 연락 이력": "Contact Follow-up History",
-  "딜 후속 연락 이력": "Deal Follow-up History",
-
   "데이터가 존재하지 않아요": "No data.",
   "조건을 바꾸면 데이터를 찾을 수 있어요": "Change filters to find data.",
   "조건을 바꾸면 회사를 찾을 수 있어요.": "Change filters to find companies.",
   "조건을 바꾸면 담당자를 찾을 수 있어요.": "Change filters to find contacts.",
   "조건을 바꾸면 제품을 찾을 수 있어요.": "Change filters to find products.",
   "조건을 바꾸면 딜을 찾을 수 있어요.": "Change filters to find deals.",
-  "조건을 바꾸면 회의록을 찾을 수 있어요": "Change filters to find meeting notes.",
   "조건을 바꾸면 상태를 찾을 수 있어요.": "Change filters to find statuses.",
   "조건을 바꾸면 카테고리를 찾을 수 있어요.": "Change filters to find categories.",
   "조건을 바꾸면 지역을 찾을 수 있어요.": "Change filters to find regions.",
@@ -137,9 +128,6 @@ const LEGACY_KO_TO_EN: Readonly<Record<string, string>> = {
   "삭제했어요.": "Deleted.",
   "7일 안에는 휴지통에서 복구할 수 있어요.":
     "You can restore it from Trash within 7 days.",
-  "회의록을 삭제할까요?": "Delete this meeting note?",
-  "회의록을 삭제했어요.": "Meeting note deleted.",
-  "회의록을 수정했어요.": "Meeting note saved.",
   "회사 정보를 저장했어요.": "Company saved.",
   "담당자 정보를 저장했어요.": "Contact saved.",
   "제품 정보를 저장했어요.": "Product saved.",
@@ -160,9 +148,6 @@ const LEGACY_KO_TO_EN: Readonly<Record<string, string>> = {
   "가져오기를 불러오지 못했어요.": "Could not load import.",
   "가져오기를 찾지 못했어요. 새 파일로 다시 시작해 주세요.":
     "Could not find the import. Start again with a new file.",
-  "일정을 삭제할까요?": "Delete this schedule?",
-  "이메일 연결을 해제할까요?": "Disconnect email?",
-
   "저장 완료": "Saved",
   "확인 필요": "Needs Review",
   "오류 확인 필요": "Needs Error Review",
@@ -177,24 +162,6 @@ const LEGACY_KO_TO_EN: Readonly<Record<string, string>> = {
   제외: "Exclude",
   포함: "Include",
   민감정보: "Sensitive Data",
-  "캘린더 선택": "Select Calendar",
-  종일: "All Day",
-  "주간 보고서": "Weekly Report",
-  "Google Calendar가 연결됐어요.": "Google Calendar connected.",
-  "Google Calendar 동기화 중이에요. 곧 반영할게요.":
-    "Google Calendar is syncing. Changes will appear shortly.",
-  "Google Calendar 연결 권한이 거절됐어요.":
-    "Google Calendar permission was denied.",
-  "Google Calendar와 연결하지 못했어요. 다시 시도해 주세요.":
-    "Could not connect Google Calendar. Try again.",
-  "가져올 캘린더를 선택해 주세요.": "Choose a calendar to import.",
-  "가져온 Google 일정을 계속 표시합니다.":
-    "Keep showing imported Google events.",
-  "가져온 Google 일정을 기본 일정 화면에서 숨깁니다.":
-    "Hide imported Google events from the main schedule.",
-  "가져온 Google 일정을 휴지통으로 이동합니다.":
-    "Move imported Google events to Trash.",
-
   "이름을 입력해 주세요.": "Enter a name.",
   "회사명을 입력해 주세요.": "Enter a company name.",
   "제품명을 입력해 주세요.": "Enter a product name.",

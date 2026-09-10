@@ -17,9 +17,5 @@ export function getSearchFallbackTargetPath(
       return `/app/products/${item.targetId}`;
     case "DEAL":
       return `/app/deals/${item.targetId}`;
-    case "SCHEDULE":
-      return `/app/schedules/${item.targetId}`;
-    case "MEETING_NOTE":
-      return `/app/meeting-notes/${item.targetId}`;
   }
 }

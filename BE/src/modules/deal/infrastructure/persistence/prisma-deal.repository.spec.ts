@@ -36,9 +36,9 @@ describe("PrismaDealRepository", () => {
       {
         id: "00000000-0000-4000-8000-000000000401",
         dealId: DEAL_ID,
-        activityType: "FOLLOW_UP_SENT",
-        title: "이메일 follow-up을 보냈어요.",
-        summary: "담당자에게 발송됨",
+        activityType: "CALL",
+        title: "초기 상담을 기록했어요.",
+        summary: "고객 니즈 확인 통화",
         occurredAt: LATEST_ACTIVITY_AT,
       },
       {
@@ -143,9 +143,9 @@ describe("PrismaDealRepository", () => {
     ]);
     expect(result.items[0]?.latestActivity).toEqual({
       id: "00000000-0000-4000-8000-000000000401",
-      activityType: "FOLLOW_UP_SENT",
-      title: "이메일 follow-up을 보냈어요.",
-      summary: "담당자에게 발송됨",
+      activityType: "CALL",
+      title: "초기 상담을 기록했어요.",
+      summary: "고객 니즈 확인 통화",
       occurredAt: LATEST_ACTIVITY_AT,
     });
   });

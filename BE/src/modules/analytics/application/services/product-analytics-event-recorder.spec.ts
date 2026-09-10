@@ -6,7 +6,6 @@ import {
   ProductAnalyticsEventRecorder,
   type RecordProductAnalyticsServerEventCommand,
   toProductAnalyticsExportRowCountBucket,
-  toProductAnalyticsLinkCountBucket,
 } from "@/modules/analytics/application/services/product-analytics-event-recorder";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
@@ -56,30 +55,6 @@ const SERVER_EVENT_CASES: readonly ServerEventCase[] = [
     payload: { source: "deal_create" },
   },
   {
-    eventName: "schedule_created",
-    targetType: "SCHEDULE",
-    targetId: TARGET_ID,
-    payload: { sourceType: "INTERNAL", isAllDay: false, hasDealLink: true },
-  },
-  {
-    eventName: "schedule_deal_linked",
-    targetType: "SCHEDULE",
-    targetId: TARGET_ID,
-    payload: { linkCountBucket: "2_3" },
-  },
-  {
-    eventName: "meeting_note_created",
-    targetType: "MEETING_NOTE",
-    targetId: TARGET_ID,
-    payload: { sourceType: "TEXT_AI", hasDealLink: true, hasAiDraft: true },
-  },
-  {
-    eventName: "meeting_note_deal_linked",
-    targetType: "MEETING_NOTE",
-    targetId: TARGET_ID,
-    payload: { linkCountBucket: "1" },
-  },
-  {
     eventName: "export_downloaded",
     targetType: "EXPORT",
     targetId: null,
@@ -110,7 +85,6 @@ function createRepositoryFake(): jest.Mocked<ProductAnalyticsRepository> {
     deleteRawEventsBefore: jest.fn(),
     findAuthDeviceIdBySessionId: jest.fn().mockResolvedValue(DEVICE_ID),
     findFirstActivationCandidates: jest.fn(),
-    listAiUsageProviderCallLogsForSummary: jest.fn().mockResolvedValue([]),
     listActivatedCohortDates: jest.fn(),
     runInTransaction: jest.fn(async (work) =>
       work(createRepositoryFake())
@@ -260,10 +234,7 @@ describe("ProductAnalyticsEventRecorder", () => {
     expect(JSON.stringify(log)).not.toContain("customer@example.com");
   });
 
-  it("maps link and export row counts into analytics buckets", () => {
-    expect(toProductAnalyticsLinkCountBucket(1)).toBe("1");
-    expect(toProductAnalyticsLinkCountBucket(3)).toBe("2_3");
-    expect(toProductAnalyticsLinkCountBucket(4)).toBe("4_plus");
+  it("maps export row counts into analytics buckets", () => {
     expect(toProductAnalyticsExportRowCountBucket(0)).toBe("0");
     expect(toProductAnalyticsExportRowCountBucket(2)).toBe("2_10");
   });

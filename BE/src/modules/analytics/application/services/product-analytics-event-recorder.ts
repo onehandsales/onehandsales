@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+﻿import { Inject, Injectable } from "@nestjs/common";
 import {
   PRODUCT_ANALYTICS_REPOSITORY,
   type ProductAnalyticsRepository,
@@ -27,7 +27,6 @@ type ProductAnalyticsEventTargetMap = Readonly<
   Record<ProductAnalyticsServerEventName, ProductAnalyticsTargetTypeCode>
 >;
 
-type ProductAnalyticsLinkCountBucket = "1" | "2_3" | "4_plus";
 type ProductAnalyticsPositiveRowCountBucket =
   | "1"
   | "2_10"
@@ -38,7 +37,7 @@ type ProductAnalyticsExportRowCountBucket =
   | "0"
   | ProductAnalyticsPositiveRowCountBucket;
 
-// 역할 : RecordProductAnalyticsServerEventCommand server 분석 이벤트 저장 요청을 application 계층에 전달합니다.
+// ??븷 : RecordProductAnalyticsServerEventCommand server 遺꾩꽍 ?대깽??????붿껌??application 怨꾩링???꾨떖?⑸땲??
 export interface RecordProductAnalyticsServerEventCommand {
   readonly userId: string;
   readonly authSessionId: string | null;
@@ -53,15 +52,15 @@ export interface RecordProductAnalyticsServerEventCommand {
   readonly payload?: Record<string, unknown>;
 }
 
-// 역할 : ProductAnalyticsServerEventRecorder 제품 기능 성공 후 server 분석 이벤트를 기록하는 계약입니다.
+// ??븷 : ProductAnalyticsServerEventRecorder ?쒗뭹 湲곕뒫 ?깃났 ??server 遺꾩꽍 ?대깽?몃? 湲곕줉?섎뒗 怨꾩빟?낅땲??
 export interface ProductAnalyticsServerEventRecorder {
-  // 기능 : server 분석 이벤트를 allowlist 기준으로 저장합니다.
+  // 湲곕뒫 : server 遺꾩꽍 ?대깽?몃? allowlist 湲곗??쇰줈 ??ν빀?덈떎.
   recordServerEvent(
     command: RecordProductAnalyticsServerEventCommand
   ): Promise<void>;
 }
 
-// 기능 : 테스트와 수동 생성에서 분석 기록 의존성이 없을 때 제품 흐름만 유지합니다.
+// 湲곕뒫 : ?뚯뒪?몄? ?섎룞 ?앹꽦?먯꽌 遺꾩꽍 湲곕줉 ?섏〈?깆씠 ?놁쓣 ???쒗뭹 ?먮쫫留??좎??⑸땲??
 export const NOOP_PRODUCT_ANALYTICS_EVENT_RECORDER: ProductAnalyticsServerEventRecorder =
   {
     recordServerEvent: () => Promise.resolve(),
@@ -71,10 +70,6 @@ const SERVER_EVENT_TARGET_TYPES: ProductAnalyticsEventTargetMap = {
   auth_signup_completed: "USER",
   deal_created: "DEAL",
   deal_next_action_created: "DEAL",
-  schedule_created: "SCHEDULE",
-  schedule_deal_linked: "SCHEDULE",
-  meeting_note_created: "MEETING_NOTE",
-  meeting_note_deal_linked: "MEETING_NOTE",
   export_downloaded: "EXPORT",
 };
 
@@ -117,35 +112,35 @@ const FORBIDDEN_PAYLOAD_KEY_CODES = new Set([
   "uuid",
 ]);
 
-// 역할 : ProductAnalyticsEventRecorder server 분석 이벤트를 검증하고 raw event table에 저장합니다.
+// ??븷 : ProductAnalyticsEventRecorder server 遺꾩꽍 ?대깽?몃? 寃利앺븯怨?raw event table????ν빀?덈떎.
 @Injectable()
 export class ProductAnalyticsEventRecorder
   implements ProductAnalyticsServerEventRecorder
 {
-  // 기능 : 제품 분석 저장소와 구조화 logger를 주입받습니다.
+  // 湲곕뒫 : ?쒗뭹 遺꾩꽍 ??μ냼? 援ъ“??logger瑜?二쇱엯諛쏆뒿?덈떎.
   constructor(
     @Inject(PRODUCT_ANALYTICS_REPOSITORY)
     private readonly productAnalyticsRepository: ProductAnalyticsRepository,
     private readonly logger: AppLogger
   ) {}
 
-  // 기능 : server 분석 이벤트를 allowlist 기준으로 저장합니다.
+  // 湲곕뒫 : server 遺꾩꽍 ?대깽?몃? allowlist 湲곗??쇰줈 ??ν빀?덈떎.
   async recordServerEvent(
     command: RecordProductAnalyticsServerEventCommand
   ): Promise<void> {
     try {
       await this.recordServerEventStrict(command);
     } catch (error) {
-      // 기능 : 분석 저장 실패는 제품 API 성공 응답을 막지 않기 위해 warning log만 남깁니다.
+      // 湲곕뒫 : 遺꾩꽍 ????ㅽ뙣???쒗뭹 API ?깃났 ?묐떟??留됱? ?딄린 ?꾪빐 warning log留??④퉩?덈떎.
       this.logRecordFailed(command, error);
     }
   }
 
-  // 기능 : server event 공통 context와 payload를 검증한 뒤 저장소에 위임합니다.
+  // 湲곕뒫 : server event 怨듯넻 context? payload瑜?寃利앺븳 ????μ냼???꾩엫?⑸땲??
   private async recordServerEventStrict(
     command: RecordProductAnalyticsServerEventCommand
   ): Promise<void> {
-    // 1. event 이름, version, target, idempotency key가 09 server 계약에 맞는지 검증한다.
+    // 1. event ?대쫫, version, target, idempotency key媛 09 server 怨꾩빟??留욌뒗吏 寃利앺븳??
     const eventName = this.normalizeServerEventName(command.eventName);
     const eventVersion = this.normalizeEventVersion(command.eventVersion);
     const idempotencyKey = this.normalizeIdempotencyKey(
@@ -157,25 +152,25 @@ export class ProductAnalyticsEventRecorder
     );
     const targetId = this.normalizeTargetId(eventName, command.targetId);
 
-    // 2. event별 payload allowlist와 PII 의심 key를 검증한다.
+    // 2. event蹂?payload allowlist? PII ?섏떖 key瑜?寃利앺븳??
     const payloadJson = this.normalizeServerPayload(
       eventName,
       command.payload ?? {}
     );
 
-    // 3. session이 있는 server event는 기존 AuthSession에서 authDeviceId를 보강한다.
+    // 3. session???덈뒗 server event??湲곗〈 AuthSession?먯꽌 authDeviceId瑜?蹂닿컯?쒕떎.
     const authDeviceId = command.authSessionId
       ? await this.productAnalyticsRepository.findAuthDeviceIdBySessionId(
           command.authSessionId
         )
       : null;
 
-    // 4. 발생 시각과 사용자 timezone 기준 eventDate를 계산한다.
+    // 4. 諛쒖깮 ?쒓컖怨??ъ슜??timezone 湲곗? eventDate瑜?怨꾩궛?쒕떎.
     const occurredAt = command.occurredAt ?? new Date();
     const timeZone = this.normalizeTimeZone(command.timeZone);
     const eventDate = resolveProductAnalyticsEventDate(occurredAt, timeZone);
 
-    // 5. 제품 mutation transaction과 분리된 단일 analytics insert로 저장한다.
+    // 5. ?쒗뭹 mutation transaction怨?遺꾨━???⑥씪 analytics insert濡???ν븳??
     await this.productAnalyticsRepository.createEvent({
       authDeviceId,
       authSessionId: command.authSessionId,
@@ -193,7 +188,7 @@ export class ProductAnalyticsEventRecorder
     });
   }
 
-  // 기능 : server event 이름이 09 runtime allowlist에 있는지 확인합니다.
+  // 湲곕뒫 : server event ?대쫫??09 runtime allowlist???덈뒗吏 ?뺤씤?⑸땲??
   private normalizeServerEventName(
     value: string
   ): ProductAnalyticsServerEventName {
@@ -204,7 +199,7 @@ export class ProductAnalyticsEventRecorder
     return value;
   }
 
-  // 기능 : server event payload schema 버전을 09 기본 버전으로 고정합니다.
+  // 湲곕뒫 : server event payload schema 踰꾩쟾??09 湲곕낯 踰꾩쟾?쇰줈 怨좎젙?⑸땲??
   private normalizeEventVersion(value: number | undefined): number {
     const version = value ?? PRODUCT_ANALYTICS_EVENT_VERSION;
 
@@ -215,7 +210,7 @@ export class ProductAnalyticsEventRecorder
     return version;
   }
 
-  // 기능 : server event 중복 방지 key가 비어 있지 않은지 확인합니다.
+  // 湲곕뒫 : server event 以묐났 諛⑹? key媛 鍮꾩뼱 ?덉? ?딆?吏 ?뺤씤?⑸땲??
   private normalizeIdempotencyKey(value: string): string {
     const normalized = value.trim();
 
@@ -228,7 +223,7 @@ export class ProductAnalyticsEventRecorder
     return normalized;
   }
 
-  // 기능 : event별 target type이 taxonomy 계약과 일치하는지 확인합니다.
+  // 湲곕뒫 : event蹂?target type??taxonomy 怨꾩빟怨??쇱튂?섎뒗吏 ?뺤씤?⑸땲??
   private normalizeTargetType(
     eventName: ProductAnalyticsServerEventName,
     targetType: ProductAnalyticsTargetTypeCode
@@ -242,7 +237,7 @@ export class ProductAnalyticsEventRecorder
     return targetType;
   }
 
-  // 기능 : export event는 targetId를 비우고 그 외 server event는 대상 UUID 값을 요구합니다.
+  // 湲곕뒫 : export event??targetId瑜?鍮꾩슦怨?洹???server event?????UUID 媛믪쓣 ?붽뎄?⑸땲??
   private normalizeTargetId(
     eventName: ProductAnalyticsServerEventName,
     targetId: string | null | undefined
@@ -260,7 +255,7 @@ export class ProductAnalyticsEventRecorder
     return normalized;
   }
 
-  // 기능 : event 당시 사용자 timezone이 IANA timezone인지 확인합니다.
+  // 湲곕뒫 : event ?뱀떆 ?ъ슜??timezone??IANA timezone?몄? ?뺤씤?⑸땲??
   private normalizeTimeZone(timeZone: string): string {
     const normalized = timeZone.trim();
 
@@ -271,7 +266,7 @@ export class ProductAnalyticsEventRecorder
     return normalized;
   }
 
-  // 기능 : event 이름에 맞는 server payload allowlist를 적용합니다.
+  // 湲곕뒫 : event ?대쫫??留욌뒗 server payload allowlist瑜??곸슜?⑸땲??
   private normalizeServerPayload(
     eventName: ProductAnalyticsServerEventName,
     payload: Record<string, unknown>
@@ -285,19 +280,12 @@ export class ProductAnalyticsEventRecorder
         return this.normalizeDealCreatedPayload(payload);
       case "deal_next_action_created":
         return this.normalizeDealNextActionCreatedPayload(payload);
-      case "schedule_created":
-        return this.normalizeScheduleCreatedPayload(payload);
-      case "schedule_deal_linked":
-      case "meeting_note_deal_linked":
-        return this.normalizeLinkCreatedPayload(payload);
-      case "meeting_note_created":
-        return this.normalizeMeetingNoteCreatedPayload(payload);
       case "export_downloaded":
         return this.normalizeExportDownloadedPayload(payload);
     }
   }
 
-  // 기능 : 신규 가입 완료 event payload를 안전한 가입 메타데이터로 축소합니다.
+  // 湲곕뒫 : ?좉퇋 媛???꾨즺 event payload瑜??덉쟾??媛??硫뷀??곗씠?곕줈 異뺤냼?⑸땲??
   private normalizeAuthSignupCompletedPayload(
     payload: Record<string, unknown>
   ): Record<string, unknown> {
@@ -319,7 +307,7 @@ export class ProductAnalyticsEventRecorder
     };
   }
 
-  // 기능 : 딜 생성 event payload를 단계, 통화, 연결 여부만 남기도록 정규화합니다.
+  // 湲곕뒫 : ???앹꽦 event payload瑜??④퀎, ?듯솕, ?곌껐 ?щ?留??④린?꾨줉 ?뺢퇋?뷀빀?덈떎.
   private normalizeDealCreatedPayload(
     payload: Record<string, unknown>
   ): Record<string, unknown> {
@@ -347,7 +335,7 @@ export class ProductAnalyticsEventRecorder
     };
   }
 
-  // 기능 : 다음 행동 생성 event payload를 생성 출처 코드만 남기도록 정규화합니다.
+  // 湲곕뒫 : ?ㅼ쓬 ?됰룞 ?앹꽦 event payload瑜??앹꽦 異쒖쿂 肄붾뱶留??④린?꾨줉 ?뺢퇋?뷀빀?덈떎.
   private normalizeDealNextActionCreatedPayload(
     payload: Record<string, unknown>
   ): Record<string, unknown> {
@@ -358,50 +346,6 @@ export class ProductAnalyticsEventRecorder
     };
   }
 
-  // 기능 : 일정 생성 event payload를 출처, 종일 여부, 딜 연결 여부만 남기도록 정규화합니다.
-  private normalizeScheduleCreatedPayload(
-    payload: Record<string, unknown>
-  ): Record<string, unknown> {
-    this.assertOnlyKeys(payload, ["sourceType", "isAllDay", "hasDealLink"]);
-
-    return {
-      sourceType: this.readString(payload, "sourceType", ["INTERNAL", "GOOGLE"]),
-      isAllDay: this.readBoolean(payload, "isAllDay"),
-      hasDealLink: this.readBoolean(payload, "hasDealLink"),
-    };
-  }
-
-  // 기능 : 연결 생성 event payload를 연결 개수 bucket만 남기도록 정규화합니다.
-  private normalizeLinkCreatedPayload(
-    payload: Record<string, unknown>
-  ): Record<string, unknown> {
-    this.assertOnlyKeys(payload, ["linkCountBucket"]);
-
-    return {
-      linkCountBucket: this.readString(payload, "linkCountBucket", [
-        "1",
-        "2_3",
-        "4_plus",
-      ]),
-    };
-  }
-
-  // 기능 : 회의록 생성 event payload를 출처와 연결 여부만 남기도록 정규화합니다.
-  private normalizeMeetingNoteCreatedPayload(
-    payload: Record<string, unknown>
-  ): Record<string, unknown> {
-    this.assertOnlyKeys(payload, ["sourceType", "hasDealLink", "hasAiDraft"]);
-
-    return {
-      sourceType: this.readString(payload, "sourceType", [
-        "MANUAL",
-        "TEXT_AI",
-        "STT_AI",
-      ]),
-      hasDealLink: this.readBoolean(payload, "hasDealLink"),
-      hasAiDraft: this.readBoolean(payload, "hasAiDraft"),
-    };
-  }
   private normalizeExportDownloadedPayload(
     payload: Record<string, unknown>
   ): Record<string, unknown> {
@@ -426,7 +370,7 @@ export class ProductAnalyticsEventRecorder
     };
   }
 
-  // 기능 : payload에 허용되지 않은 key가 포함되어 있는지 확인합니다.
+  // 湲곕뒫 : payload???덉슜?섏? ?딆? key媛 ?ы븿?섏뼱 ?덈뒗吏 ?뺤씤?⑸땲??
   private assertOnlyKeys(
     payload: Record<string, unknown>,
     allowedKeys: readonly string[]
@@ -440,7 +384,7 @@ export class ProductAnalyticsEventRecorder
     }
   }
 
-  // 기능 : payload 문자열 field를 읽고 선택 allowlist를 적용합니다.
+  // 湲곕뒫 : payload 臾몄옄??field瑜??쎄퀬 ?좏깮 allowlist瑜??곸슜?⑸땲??
   private readString(
     payload: Record<string, unknown>,
     key: string,
@@ -459,7 +403,7 @@ export class ProductAnalyticsEventRecorder
     return value;
   }
 
-  // 기능 : payload nullable 문자열 field를 읽고 값이 있으면 선택 allowlist를 적용합니다.
+  // 湲곕뒫 : payload nullable 臾몄옄??field瑜??쎄퀬 媛믪씠 ?덉쑝硫??좏깮 allowlist瑜??곸슜?⑸땲??
   private readNullableString(
     payload: Record<string, unknown>,
     key: string,
@@ -482,7 +426,7 @@ export class ProductAnalyticsEventRecorder
     return value;
   }
 
-  // 기능 : payload boolean field를 읽고 타입을 검증합니다.
+  // 湲곕뒫 : payload boolean field瑜??쎄퀬 ??낆쓣 寃利앺빀?덈떎.
   private readBoolean(payload: Record<string, unknown>, key: string): boolean {
     const value = payload[key];
 
@@ -493,7 +437,7 @@ export class ProductAnalyticsEventRecorder
     return value;
   }
 
-  // 기능 : payload 양의 정수 field를 읽고 타입과 범위를 검증합니다.
+  // 湲곕뒫 : payload ?묒쓽 ?뺤닔 field瑜??쎄퀬 ??낃낵 踰붿쐞瑜?寃利앺빀?덈떎.
   private readPositiveInteger(
     payload: Record<string, unknown>,
     key: string
@@ -507,14 +451,14 @@ export class ProductAnalyticsEventRecorder
     return value;
   }
 
-  // 기능 : payload 안에 PII 또는 raw text 의심 key가 있는지 재귀적으로 검사합니다.
+  // 湲곕뒫 : payload ?덉뿉 PII ?먮뒗 raw text ?섏떖 key媛 ?덈뒗吏 ?ш??곸쑝濡?寃?ы빀?덈떎.
   private assertNoPiiPayloadKey(payload: Record<string, unknown>): void {
     if (this.hasPiiPayloadKey(payload)) {
       throw new ProductAnalyticsPayloadPiiRejectedError();
     }
   }
 
-  // 기능 : unknown JSON 값에서 민감정보 의심 key를 탐색합니다.
+  // 湲곕뒫 : unknown JSON 媛믪뿉??誘쇨컧?뺣낫 ?섏떖 key瑜??먯깋?⑸땲??
   private hasPiiPayloadKey(value: unknown): boolean {
     if (Array.isArray(value)) {
       return value.some((item) => this.hasPiiPayloadKey(item));
@@ -531,17 +475,17 @@ export class ProductAnalyticsEventRecorder
     );
   }
 
-  // 기능 : unknown 값이 순회 가능한 JSON object인지 확인합니다.
+  // 湲곕뒫 : unknown 媛믪씠 ?쒗쉶 媛?ν븳 JSON object?몄? ?뺤씤?⑸땲??
   private isJsonObject(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
   }
 
-  // 기능 : payload key 비교에서 대소문자와 구분 기호 차이를 제거합니다.
+  // 湲곕뒫 : payload key 鍮꾧탳?먯꽌 ??뚮Ц?먯? 援щ텇 湲고샇 李⑥씠瑜??쒓굅?⑸땲??
   private toPayloadKeyCode(key: string): string {
     return key.replace(/[-_]/g, "").toLowerCase();
   }
 
-  // 기능 : server event 기록 실패를 payload 없이 구조화 로그로 남깁니다.
+  // 湲곕뒫 : server event 湲곕줉 ?ㅽ뙣瑜?payload ?놁씠 援ъ“??濡쒓렇濡??④퉩?덈떎.
   private logRecordFailed(
     command: RecordProductAnalyticsServerEventCommand,
     error: unknown
@@ -553,7 +497,7 @@ export class ProductAnalyticsEventRecorder
   }
 }
 
-// 기능 : analytics recorder 호출 실패가 제품 API 응답을 막지 않도록 보호합니다.
+// 湲곕뒫 : analytics recorder ?몄텧 ?ㅽ뙣媛 ?쒗뭹 API ?묐떟??留됱? ?딅룄濡?蹂댄샇?⑸땲??
 export async function recordProductAnalyticsServerEventBestEffort(input: {
   readonly recorder: ProductAnalyticsServerEventRecorder;
   readonly logger: AppLogger | undefined;
@@ -563,27 +507,12 @@ export async function recordProductAnalyticsServerEventBestEffort(input: {
   try {
     await input.recorder.recordServerEvent(input.command);
   } catch (error) {
-    // 기능 : 분석 저장 실패는 제품 API 성공 응답을 막지 않기 위해 warning log만 남깁니다.
+    // 湲곕뒫 : 遺꾩꽍 ????ㅽ뙣???쒗뭹 API ?깃났 ?묐떟??留됱? ?딄린 ?꾪빐 warning log留??④퉩?덈떎.
     input.logger?.warn(
       JSON.stringify(createProductAnalyticsRecordFailedLog(input.command, error)),
       input.logContext
     );
   }
-}
-
-// 기능 : 일정/회의록 연결 event에서 전체 연결 개수를 안전한 bucket으로 변환합니다.
-export function toProductAnalyticsLinkCountBucket(
-  linkCount: number
-): ProductAnalyticsLinkCountBucket {
-  if (linkCount <= 1) {
-    return "1";
-  }
-
-  if (linkCount <= 3) {
-    return "2_3";
-  }
-
-  return "4_plus";
 }
 
 function toProductAnalyticsPositiveRowCountBucket(
@@ -608,7 +537,7 @@ function toProductAnalyticsPositiveRowCountBucket(
   return "201_plus";
 }
 
-// 기능 : export row 수를 안전한 분석 bucket으로 변환합니다.
+// 湲곕뒫 : export row ?섎? ?덉쟾??遺꾩꽍 bucket?쇰줈 蹂?섑빀?덈떎.
 export function toProductAnalyticsExportRowCountBucket(
   rowCount: number
 ): ProductAnalyticsExportRowCountBucket {
@@ -619,7 +548,7 @@ export function toProductAnalyticsExportRowCountBucket(
   return toProductAnalyticsPositiveRowCountBucket(rowCount);
 }
 
-// 기능 : server event 실패 로그에서 payload 원문을 제외한 추적 context만 만듭니다.
+// 湲곕뒫 : server event ?ㅽ뙣 濡쒓렇?먯꽌 payload ?먮Ц???쒖쇅??異붿쟻 context留?留뚮벊?덈떎.
 function createProductAnalyticsRecordFailedLog(
   command: RecordProductAnalyticsServerEventCommand,
   error: unknown
@@ -636,7 +565,7 @@ function createProductAnalyticsRecordFailedLog(
   };
 }
 
-// 기능 : unknown 오류에서 안전한 오류 이름만 추출합니다.
+// 湲곕뒫 : unknown ?ㅻ쪟?먯꽌 ?덉쟾???ㅻ쪟 ?대쫫留?異붿텧?⑸땲??
 function toProductAnalyticsErrorName(error: unknown): string {
   if (error instanceof Error) {
     return error.name;

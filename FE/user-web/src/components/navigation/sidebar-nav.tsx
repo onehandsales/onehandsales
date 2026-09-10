@@ -1,10 +1,8 @@
 import {
   BriefcaseBusiness,
   Building2,
-  CalendarDays,
   ChevronRight,
   IdCard,
-  NotebookPen,
   Package,
   type LucideIcon,
 } from "lucide-react";
@@ -40,16 +38,6 @@ const groups: Array<{
       },
       { labelKey: "navigation.contacts", to: "/app/contacts", icon: IdCard },
       { labelKey: "navigation.products", to: "/app/products", icon: Package },
-    ],
-  },
-  {
-    id: "work",
-    labelKey: "navigation.workGroup",
-    closeTooltipKey: "navigation.workGroupClose",
-    openTooltipKey: "navigation.workGroupOpen",
-    items: [
-      { labelKey: "navigation.schedules", to: "/app/schedules", icon: CalendarDays },
-      { labelKey: "navigation.meetingNotes", to: "/app/meeting-notes", icon: NotebookPen },
     ],
   },
 ];

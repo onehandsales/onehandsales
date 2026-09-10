@@ -25,16 +25,6 @@ import {
 import { DealApplicationService } from "@/modules/deal/application/services/deal-application.service";
 import { DealStatusCode } from "@/modules/deal/domain/deal-status";
 import {
-  MeetingNoteSort,
-  MeetingNoteSourceTypeValue,
-} from "@/modules/meeting-note/application/ports/meeting-note.types";
-import {
-  type MeetingNoteListRecord,
-  type MeetingNoteRecord,
-  type MeetingNoteRepository,
-} from "@/modules/meeting-note/application/ports/meeting-note.repository";
-import { MeetingNoteApplicationService } from "@/modules/meeting-note/application/services/meeting-note-application.service";
-import {
   type ProductListRecord,
   type ProductPageRecord,
   type ProductRecord,
@@ -42,15 +32,6 @@ import {
 } from "@/modules/product/application/ports/product.repository";
 import type { ProductPrivateMemoEncryptionPort } from "@/modules/product/application/ports/product-private-memo-encryption.port";
 import { ProductApplicationService } from "@/modules/product/application/services/product-application.service";
-import {
-  ScheduleViewMode,
-} from "@/modules/schedule/application/ports/schedule-query.types";
-import {
-  type ScheduleRecord,
-  type ScheduleRepository,
-  type WeeklyReportScheduleRecord,
-} from "@/modules/schedule/application/ports/schedule.repository";
-import { ScheduleApplicationService } from "@/modules/schedule/application/services/schedule-application.service";
 import type {
   SearchGroupRecord,
   SearchRepository,
@@ -126,15 +107,6 @@ type OwnedDealRecord = DealDetailRecord &
     readonly deleted?: boolean;
   };
 
-type OwnedScheduleRecord = ScheduleRecord &
-  OwnedRecord & {
-    readonly deleted?: boolean;
-  };
-
-type OwnedMeetingNoteRecord = MeetingNoteRecord &
-  OwnedRecord & {
-    readonly deleted?: boolean;
-  };
 
 // 역할 : G04 export 검증을 위해 workbook row와 생성된 binary payload를 기록합니다.
 class RecordingXlsxWriter implements XlsxWorkbookWriter {
@@ -308,75 +280,6 @@ describe("G04 multi-account ownership isolation", () => {
     await expectDomainNotFound(
       () => service.deleteDeal(CURRENT_USER_A, "rqa004-deal-b"),
       "DealNotFound"
-    );
-  });
-
-  it("isolates schedule list, detail, export, update, and delete access", async () => {
-    const writer = new RecordingXlsxWriter();
-    const service = new ScheduleApplicationService(
-      createScheduleRepository(),
-      writer,
-      new SilentLogger()
-    );
-
-    const list = await service.listSchedules(CURRENT_USER_A, {
-      baseDate: "2026-07-20",
-      view: ScheduleViewMode.MONTH,
-    });
-    const exportFile = await service.exportWeeklyScheduleReportXlsx(
-      CURRENT_USER_A,
-      {
-        weekStart: "2026-07-20",
-      }
-    );
-
-    assertNoBMarker(list);
-    assertNoBMarker(writer.inputs);
-    expect(exportFile.content.toString("utf8")).not.toContain(RQA004_B_MARKER);
-    await expectDomainNotFound(
-      () => service.getSchedule(CURRENT_USER_A, "rqa004-schedule-b"),
-      "ScheduleNotFound"
-    );
-    await expectDomainNotFound(
-      () =>
-        service.updateSchedule(CURRENT_USER_A, "rqa004-schedule-b", {
-          scheduleTitle: "RQA004-A updated schedule",
-        }),
-      "ScheduleNotFound"
-    );
-    await expectDomainNotFound(
-      () => service.deleteSchedule(CURRENT_USER_A, "rqa004-schedule-b"),
-      "ScheduleNotFound"
-    );
-  });
-
-  it("isolates meeting note list, detail, update, and delete access", async () => {
-    const service = new MeetingNoteApplicationService(
-      createMeetingNoteRepository(),
-      new SilentLogger()
-    );
-
-    const list = await service.listMeetingNotes(CURRENT_USER_A, {
-      search: "RQA004",
-      sort: MeetingNoteSort.CREATED_AT_DESC,
-    });
-
-    assertNoBMarker(list);
-    await expectDomainNotFound(
-      () => service.getMeetingNote(CURRENT_USER_A, "rqa004-meeting-note-b"),
-      "MeetingNoteNotFound"
-    );
-    await expectDomainNotFound(
-      () =>
-        service.updateMeetingNote(CURRENT_USER_A, "rqa004-meeting-note-b", {
-          title: "RQA004-A updated meeting note",
-        }),
-      "MeetingNoteNotFound"
-    );
-    await expectDomainNotFound(
-      () =>
-        service.deleteMeetingNote(CURRENT_USER_A, "rqa004-meeting-note-b"),
-      "MeetingNoteNotFound"
     );
   });
 
@@ -738,191 +641,6 @@ function createDealRepository(): DealRepository {
   return repository as DealRepository;
 }
 
-function createScheduleRepository(): ScheduleRepository {
-  const schedules: OwnedScheduleRecord[] = [
-    createScheduleRecord(
-      CURRENT_USER_A.id,
-      "rqa004-schedule-a",
-      RQA004_A_MARKER
-    ),
-    createScheduleRecord(
-      CURRENT_USER_B.id,
-      "rqa004-schedule-b",
-      RQA004_B_MARKER
-    ),
-  ];
-  const repository: Partial<ScheduleRepository> = {
-    async runInTransaction<T>(
-      work: (repository: ScheduleRepository) => Promise<T>
-    ): Promise<T> {
-      return work(repository as ScheduleRepository);
-    },
-    async listSchedules(input): Promise<ScheduleRecord[]> {
-      return schedules.filter(
-        (schedule) => schedule.userId === input.userId && !schedule.deleted
-      );
-    },
-    async listSchedulesForWeeklyReport(
-      input
-    ): Promise<WeeklyReportScheduleRecord[]> {
-      return schedules
-        .filter(
-          (schedule) =>
-            schedule.userId === input.userId &&
-            !schedule.deleted &&
-            schedule.startAt < input.rangeEndAt &&
-            schedule.endAt > input.rangeStartAt
-        )
-        .map((schedule) => ({
-          id: schedule.id,
-          scheduleTitle: schedule.scheduleTitle,
-          startAt: schedule.startAt,
-          endAt: schedule.endAt,
-          timeZone: schedule.timeZone,
-          location: schedule.location,
-          meetingUrl: schedule.meetingUrl,
-          memo: schedule.memo,
-          isAllDay: schedule.isAllDay,
-          sourceType: schedule.sourceType,
-          googleCalendar: schedule.googleCalendar,
-          deals: schedule.deals.map((deal) => ({
-            id: deal.id,
-            dealName: deal.dealName,
-            dealCost: 1000,
-            currencyCode: "KRW",
-            dealStatus: DealStatusCode.INITIAL_CONTACT,
-            expectedEndDate: new Date("2026-07-31T00:00:00.000Z"),
-            companies: [],
-            contacts: [],
-            nextFollowingAction: null,
-          })),
-        }));
-    },
-    async findSchedule(userId, scheduleId): Promise<ScheduleRecord | null> {
-      return (
-        schedules.find(
-          (schedule) =>
-            schedule.id === scheduleId &&
-            schedule.userId === userId &&
-            !schedule.deleted
-        ) ?? null
-      );
-    },
-    async updateSchedule(userId, scheduleId): Promise<boolean> {
-      return schedules.some(
-        (schedule) =>
-          schedule.id === scheduleId &&
-          schedule.userId === userId &&
-          !schedule.deleted
-      );
-    },
-    async softDeleteSchedule(input): Promise<boolean> {
-      const index = schedules.findIndex(
-        (schedule) =>
-          schedule.id === input.scheduleId &&
-          schedule.userId === input.userId &&
-          !schedule.deleted
-      );
-
-      if (index < 0) {
-        return false;
-      }
-
-      const schedule = schedules[index];
-
-      if (!schedule) {
-        return false;
-      }
-
-      schedules[index] = {
-        ...schedule,
-        deleted: true,
-        deletedAt: input.deletedAt,
-        trashExpiresAt: input.trashExpiresAt,
-      };
-      return true;
-    },
-  };
-
-  return repository as ScheduleRepository;
-}
-
-function createMeetingNoteRepository(): MeetingNoteRepository {
-  const meetingNotes: OwnedMeetingNoteRecord[] = [
-    createMeetingNoteRecord(
-      CURRENT_USER_A.id,
-      "rqa004-meeting-note-a",
-      RQA004_A_MARKER
-    ),
-    createMeetingNoteRecord(
-      CURRENT_USER_B.id,
-      "rqa004-meeting-note-b",
-      RQA004_B_MARKER
-    ),
-  ];
-  const repository: Partial<MeetingNoteRepository> = {
-    async runInTransaction<T>(
-      work: (repository: MeetingNoteRepository) => Promise<T>
-    ): Promise<T> {
-      return work(repository as MeetingNoteRepository);
-    },
-    async listMeetingNotes(input): Promise<MeetingNoteListRecord> {
-      const items = meetingNotes.filter(
-        (meetingNote) =>
-          meetingNote.userId === input.userId &&
-          !meetingNote.deleted &&
-          (!input.search || meetingNote.title.includes(input.search))
-      );
-      return { items, totalCount: items.length };
-    },
-    async findMeetingNote(
-      userId,
-      meetingNoteId
-    ): Promise<MeetingNoteRecord | null> {
-      return (
-        meetingNotes.find(
-          (meetingNote) =>
-            meetingNote.id === meetingNoteId &&
-            meetingNote.userId === userId &&
-            !meetingNote.deleted
-        ) ?? null
-      );
-    },
-    async updateMeetingNote(userId, meetingNoteId): Promise<boolean> {
-      return meetingNotes.some(
-        (meetingNote) =>
-          meetingNote.id === meetingNoteId &&
-          meetingNote.userId === userId &&
-          !meetingNote.deleted
-      );
-    },
-    async deleteMeetingNote(input): Promise<boolean> {
-      const index = meetingNotes.findIndex(
-        (meetingNote) =>
-          meetingNote.id === input.meetingNoteId &&
-          meetingNote.userId === input.userId &&
-          !meetingNote.deleted
-      );
-
-      if (index < 0) {
-        return false;
-      }
-
-      const meetingNote = meetingNotes[index];
-
-      if (!meetingNote) {
-        return false;
-      }
-
-      meetingNotes[index] = { ...meetingNote, deleted: true };
-      return true;
-    },
-    async replaceMeetingNoteRelations(): Promise<void> {},
-  };
-
-  return repository as MeetingNoteRepository;
-}
-
 function createSearchRepository(): SearchRepository {
   const records = [
     {
@@ -1200,78 +918,6 @@ function createDealRecord(
     latestActivity: null,
     latestFollowingAction: null,
     nextFollowingAction: null,
-    createdAt: CREATED_AT,
-    updatedAt: UPDATED_AT,
-  };
-}
-
-function createScheduleRecord(
-  userId: string,
-  id: string,
-  marker: string
-): OwnedScheduleRecord {
-  return {
-    id,
-    userId,
-    scheduleTitle: `${marker} Schedule`,
-    startAt: new Date("2026-07-20T01:00:00.000Z"),
-    endAt: new Date("2026-07-20T02:00:00.000Z"),
-    timeZone: "Asia/Seoul",
-    location: `${marker} Location`,
-    meetingUrl: null,
-    memo: `${marker} Memo`,
-    isAllDay: false,
-    sourceType: "INTERNAL",
-    googleCalendar: null,
-    deletedAt: null,
-    trashExpiresAt: null,
-    deals: [{ id: `${userId}-deal`, dealName: `${marker} Deal` }],
-    createdAt: CREATED_AT,
-    updatedAt: UPDATED_AT,
-  };
-}
-
-function createMeetingNoteRecord(
-  userId: string,
-  id: string,
-  marker: string
-): OwnedMeetingNoteRecord {
-  return {
-    id,
-    userId,
-    sourceType: MeetingNoteSourceTypeValue.MANUAL,
-    title: `${marker} MeetingNote`,
-    meetingAt: new Date("2026-07-20T01:00:00.000Z"),
-    timeZone: "Asia/Seoul",
-    details: `${marker} Details`,
-    nextPlan: `${marker} NextPlan`,
-    requiredAction: `${marker} RequiredAction`,
-    rawText: null,
-    companies: [
-      {
-        id: `${userId}-meeting-note-company`,
-        companyId: `${userId}-company`,
-        isDeleted: false,
-        companyNameSnapshot: `${marker} Company`,
-        companyFieldSnapshot: `${marker} Field`,
-        companyRegionSnapshot: `${marker} Region`,
-        createdAt: CREATED_AT,
-      },
-    ],
-    contacts: [],
-    products: [],
-    deals: [
-      {
-        id: `${userId}-meeting-note-deal`,
-        dealId: `${userId}-deal`,
-        isDeleted: false,
-        dealNameSnapshot: `${marker} Deal`,
-        dealStatusSnapshot: "INITIAL_CONTACT",
-        dealCostSnapshot: 100000,
-        dealExpectedEndDateSnapshot: new Date("2026-07-31T00:00:00.000Z"),
-        createdAt: CREATED_AT,
-      },
-    ],
     createdAt: CREATED_AT,
     updatedAt: UPDATED_AT,
   };

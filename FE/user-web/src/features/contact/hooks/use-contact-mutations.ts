@@ -18,7 +18,6 @@ import {
 import { contactQueryKeys } from "@/features/contact/api/contact-query-keys";
 import { companyQueryKeys } from "@/features/company/query-keys";
 import { dealQueryKeys } from "@/features/deal/query-keys";
-import { meetingNoteQueryKeys } from "@/features/meeting-note/query-keys";
 import type {
   ContactExportParams,
   CreateContactDepartmentInput,
@@ -81,11 +80,6 @@ export function useDeleteContactMutation() {
       void queryClient.invalidateQueries({
         queryKey: dealQueryKeys.contactOptions(),
       });
-      void queryClient.invalidateQueries({
-        queryKey: meetingNoteQueryKeys.filterContacts(),
-      });
-      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.lists() });
-      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.details() });
     },
   });
 }

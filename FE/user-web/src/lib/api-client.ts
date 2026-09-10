@@ -1,4 +1,4 @@
-import { env } from "@/lib/env";
+﻿import { env } from "@/lib/env";
 
 type JsonRequestBody = Record<string, unknown> | readonly unknown[];
 
@@ -64,7 +64,7 @@ export async function apiClient<TResponse>(
     throw new ApiClientError({
       statusCode: 400,
       code: "InvalidUserWebApiPath",
-      message: "사용자 웹에서는 관리자 API를 호출할 수 없어요.",
+      message: "?ъ슜???뱀뿉?쒕뒗 愿由ъ옄 API瑜??몄텧?????놁뼱??",
       raw: null,
     });
   }
@@ -97,7 +97,7 @@ export async function apiBlobClient(
     throw new ApiClientError({
       statusCode: 400,
       code: "InvalidUserWebApiPath",
-      message: "사용자 웹에서는 관리자 API를 호출할 수 없어요.",
+      message: "?ъ슜???뱀뿉?쒕뒗 愿由ъ옄 API瑜??몄텧?????놁뼱??",
       raw: null,
     });
   }
@@ -125,15 +125,15 @@ export async function apiBlobClient(
 export function getApiErrorMessage(error: unknown): string {
   if (error instanceof ApiClientError) {
     if (error.statusCode === 401) {
-      return "로그인하면 이용할 수 있어요.";
+      return "濡쒓렇?명븯硫??댁슜?????덉뼱??";
     }
 
     if (error.statusCode === 410 && error.isDeletedResource) {
-      return "삭제된 항목이에요.";
+      return "??젣????ぉ?댁뿉??";
     }
 
     if (error.statusCode === 409 && error.isDeletedResource) {
-      return "삭제된 항목은 복구한 뒤 수정할 수 있어요.";
+      return "??젣????ぉ? 蹂듦뎄?????섏젙?????덉뼱??";
     }
 
     const conflictMessage = getConflictErrorMessage(error.code);
@@ -148,10 +148,10 @@ export function getApiErrorMessage(error: unknown): string {
     return error.message;
   }
 
-  return "요청을 처리하지 못했어요. 다시 시도해 주세요.";
+  return "?붿껌??泥섎━?섏? 紐삵뻽?댁슂. ?ㅼ떆 ?쒕룄??二쇱꽭??";
 }
 
-// 기능 : Backend safe failure 응답의 retryable 값을 사용자 재시도 버튼 노출 기준으로 변환합니다.
+// 湲곕뒫 : Backend safe failure ?묐떟??retryable 媛믪쓣 ?ъ슜???ъ떆??踰꾪듉 ?몄텧 湲곗??쇰줈 蹂?섑빀?덈떎.
 export function isApiErrorRetryable(error: unknown): boolean {
   if (!(error instanceof ApiClientError)) {
     return false;
@@ -166,30 +166,14 @@ export function isApiErrorRetryable(error: unknown): boolean {
 
 function getConflictErrorMessage(code: string) {
   switch (code) {
-    case "GoogleCalendarConnectionNotFound":
-      return "Google Calendar를 연결해 주세요.";
-    case "GoogleCalendarReconnectRequired":
-      return "Google Calendar를 다시 연결해 주세요.";
-    case "GoogleCalendarSourceSelectionRequired":
-      return "가져올 캘린더를 선택해 주세요.";
-    case "GoogleCalendarOAuthStateInvalid":
-      return "연결을 다시 시작해 주세요.";
-    case "GoogleCalendarProviderUnavailable":
-      return "Google Calendar와 연결하지 못했어요. 잠시 후 다시 시도해 주세요.";
-    case "GoogleCalendarSyncInProgress":
-      return "Google Calendar 동기화가 이미 진행 중이에요.";
-    case "GoogleCalendarTokenEncryptionKeyMissing":
-      return "Google Calendar 연결 설정을 확인해 주세요.";
-    case "ScheduleMeetingUrlInvalid":
-      return "https://로 시작하는 링크를 입력해 주세요.";
     case "CompanyInUse":
-      return "연결된 담당자, 딜 또는 회의록을 정리하면 회사를 삭제할 수 있어요.";
+      return "연결된 담당자 또는 딜을 정리하면 회사를 삭제할 수 있어요.";
     case "ContactInUse":
-      return "연결된 딜 또는 회의록을 정리하면 담당자를 삭제할 수 있어요.";
+      return "연결된 딜을 정리하면 담당자를 삭제할 수 있어요.";
     case "ProductInUse":
-      return "연결된 딜 또는 회의록을 정리하면 제품을 삭제할 수 있어요.";
+      return "연결된 딜을 정리하면 제품을 삭제할 수 있어요.";
     case "DealInUse":
-      return "연결된 일정 또는 회의록을 정리하면 딜을 삭제할 수 있어요.";
+      return "연결된 활동을 정리하면 딜을 삭제할 수 있어요.";
     default:
       return null;
   }

@@ -33,12 +33,6 @@ export type DealActivityType =
   | "STAGE_CHANGED"
   | "NEXT_ACTION_CREATED"
   | "NEXT_ACTION_COMPLETION_CHANGED"
-  | "SCHEDULE_LINKED"
-  | "SCHEDULE_UNLINKED"
-  | "MEETING_NOTE_LINKED"
-  | "MEETING_NOTE_UNLINKED"
-  | "FOLLOW_UP_SENT"
-  | "FOLLOW_UP_FAILED"
   | "CALL"
   | "MEETING"
   | "EMAIL"
@@ -48,19 +42,13 @@ export type DealActivityType =
 export type DealActivitySourceType =
   | "SYSTEM"
   | "USER"
-  | "NEXT_ACTION"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
-  | "FOLLOW_UP";
+  | "NEXT_ACTION";
 
 export type DealActivityLinkedRecordTargetType =
   | "DEAL"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
   | "CONTACT"
   | "COMPANY"
-  | "PRODUCT"
-  | "FOLLOW_UP_MESSAGE";
+  | "PRODUCT";
 
 export type DealActivityLinkedRecord = {
   readonly targetType: DealActivityLinkedRecordTargetType;

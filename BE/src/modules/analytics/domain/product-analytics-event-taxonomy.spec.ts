@@ -18,12 +18,6 @@ import {
 // 기능 : 09/10 문서에 확정된 client 이벤트 이름을 테스트 기준으로 고정합니다.
 const EXPECTED_CLIENT_EVENT_NAMES = [
   "app_route_viewed",
-  "meeting_note_recording_started",
-  "meeting_note_recording_completed",
-  "meeting_note_recording_failed",
-  "local_draft_saved",
-  "local_draft_restored",
-  "local_draft_discarded",
 ] as const;
 
 // 기능 : 09/10 문서에 확정된 server 이벤트 이름을 테스트 기준으로 고정합니다.
@@ -31,10 +25,6 @@ const EXPECTED_SERVER_EVENT_NAMES = [
   "auth_signup_completed",
   "deal_created",
   "deal_next_action_created",
-  "schedule_created",
-  "schedule_deal_linked",
-  "meeting_note_created",
-  "meeting_note_deal_linked",
   "export_downloaded",
 ] as const;
 
@@ -71,12 +61,6 @@ const EXPECTED_APP_ROUTE_KEYS = [
   "deals",
   "deal_create",
   "deal_detail",
-  "schedules",
-  "schedule_week",
-  "schedule_detail",
-  "meeting_notes",
-  "meeting_note_create",
-  "meeting_note_detail",
   "trash",
   "settings",
   "more",
@@ -105,7 +89,7 @@ describe("product analytics event taxonomy", () => {
   });
 
   it("identifies runtime server events and idempotency requirements", () => {
-    expect(isProductAnalyticsClientEventName("local_draft_saved")).toBe(true);
+    expect(isProductAnalyticsClientEventName("app_route_viewed")).toBe(true);
     expect(isProductAnalyticsRuntimeEventName("deal_created")).toBe(true);
     expect(isProductAnalyticsServerEventName("deal_created")).toBe(true);
     expect(requiresProductAnalyticsIdempotencyKey("SERVER")).toBe(true);
@@ -117,10 +101,6 @@ describe("product analytics event taxonomy", () => {
       "app_route_viewed",
       "deal_created",
       "deal_next_action_created",
-      "schedule_created",
-      "schedule_deal_linked",
-      "meeting_note_created",
-      "meeting_note_deal_linked",
       "export_downloaded",
     ]);
 

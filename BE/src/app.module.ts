@@ -10,13 +10,9 @@ import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ContactModule } from "./modules/contact/infrastructure/contact.module";
 import { DealModule } from "./modules/deal/infrastructure/deal.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
-import { FollowUpModule } from "./modules/follow-up/infrastructure/follow-up.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
-import { MeetingNoteModule } from "./modules/meeting-note/infrastructure/meeting-note.module";
 import { ProductModule } from "./modules/product/infrastructure/product.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
-import { SalesReportModule } from "./modules/sales-report/infrastructure/sales-report.module";
-import { ScheduleModule } from "./modules/schedule/infrastructure/schedule.module";
 import { SearchModule } from "./modules/search/infrastructure/search.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
 import { TrashModule } from "./modules/trash/infrastructure/trash.module";
@@ -41,10 +37,6 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     PublicContactRequestModule,
     DealModule,
     ErrorReportModule,
-    FollowUpModule,
-    ScheduleModule,
-    SalesReportModule,
-    MeetingNoteModule,
     SearchModule,
     SupportRequestModule,
     TrashModule,

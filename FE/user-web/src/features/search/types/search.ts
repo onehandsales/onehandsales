@@ -2,9 +2,7 @@ export type SearchTargetType =
   | "COMPANY"
   | "CONTACT"
   | "PRODUCT"
-  | "DEAL"
-  | "SCHEDULE"
-  | "MEETING_NOTE";
+  | "DEAL";
 
 export interface SearchItem {
   readonly title: string;

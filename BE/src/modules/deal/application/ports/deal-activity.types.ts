@@ -4,12 +4,6 @@ export const DEAL_ACTIVITY_TYPES = [
   "STAGE_CHANGED",
   "NEXT_ACTION_CREATED",
   "NEXT_ACTION_COMPLETION_CHANGED",
-  "SCHEDULE_LINKED",
-  "SCHEDULE_UNLINKED",
-  "MEETING_NOTE_LINKED",
-  "MEETING_NOTE_UNLINKED",
-  "FOLLOW_UP_SENT",
-  "FOLLOW_UP_FAILED",
   "CALL",
   "MEETING",
   "EMAIL",
@@ -37,7 +31,4 @@ export type ManualDealActivityTypeCode =
 export type DealActivitySourceTypeCode =
   | "SYSTEM"
   | "USER"
-  | "NEXT_ACTION"
-  | "SCHEDULE"
-  | "MEETING_NOTE"
-  | "FOLLOW_UP";
+  | "NEXT_ACTION";

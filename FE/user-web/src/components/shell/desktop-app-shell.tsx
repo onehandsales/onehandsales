@@ -19,8 +19,6 @@ const PAGE_TITLES: Record<string, { title: string }> = {
   "/app/contacts": { title: "담당자" },
   "/app/products": { title: "제품" },
   "/app/products/new": { title: "제품" },
-  "/app/schedules": { title: "일정" },
-  "/app/meeting-notes": { title: "회의록" },
 };
 
 type DesktopAppShellProps = {

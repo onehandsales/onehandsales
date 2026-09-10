@@ -17,9 +17,7 @@ import {
 import { companyQueryKeys } from "@/features/company/query-keys";
 import { contactQueryKeys } from "@/features/contact/query-keys";
 import { dealQueryKeys } from "@/features/deal/api/deal-query-keys";
-import { meetingNoteQueryKeys } from "@/features/meeting-note/query-keys";
 import { productQueryKeys } from "@/features/product/query-keys";
-import { scheduleQueryKeys } from "@/features/schedule/query-keys";
 import type {
   CreateDealInput,
   CreateFollowingActionLogInput,
@@ -78,11 +76,6 @@ export function useDeleteDealMutation() {
       void queryClient.invalidateQueries({ queryKey: companyQueryKeys.details() });
       void queryClient.invalidateQueries({ queryKey: contactQueryKeys.details() });
       void queryClient.invalidateQueries({ queryKey: productQueryKeys.details() });
-      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.lists() });
-      void queryClient.invalidateQueries({ queryKey: meetingNoteQueryKeys.details() });
-      void queryClient.invalidateQueries({
-        queryKey: scheduleQueryKeys.dealOptions(),
-      });
     },
   });
 }

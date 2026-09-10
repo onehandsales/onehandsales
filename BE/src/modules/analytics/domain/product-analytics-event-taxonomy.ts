@@ -15,12 +15,6 @@ export type ProductAnalyticsEventSourceCode =
 // 기능 : 09/10에서 User Web client가 직접 보낼 수 있는 이벤트 이름을 정의합니다.
 export const PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES = [
   "app_route_viewed",
-  "meeting_note_recording_started",
-  "meeting_note_recording_completed",
-  "meeting_note_recording_failed",
-  "local_draft_saved",
-  "local_draft_restored",
-  "local_draft_discarded",
 ] as const;
 
 // 역할 : ProductAnalyticsClientEventName User Web client 이벤트 이름을 정의합니다.
@@ -42,12 +36,6 @@ export const PRODUCT_ANALYTICS_APP_ROUTE_KEYS = [
   "deals",
   "deal_create",
   "deal_detail",
-  "schedules",
-  "schedule_week",
-  "schedule_detail",
-  "meeting_notes",
-  "meeting_note_create",
-  "meeting_note_detail",
   "trash",
   "settings",
   "more",
@@ -75,10 +63,6 @@ export const PRODUCT_ANALYTICS_SERVER_EVENT_NAMES = [
   "auth_signup_completed",
   "deal_created",
   "deal_next_action_created",
-  "schedule_created",
-  "schedule_deal_linked",
-  "meeting_note_created",
-  "meeting_note_deal_linked",
   "export_downloaded",
 ] as const;
 
@@ -101,10 +85,6 @@ export const PRODUCT_ANALYTICS_ACTIVE_RETENTION_EVENT_NAMES = [
   "app_route_viewed",
   "deal_created",
   "deal_next_action_created",
-  "schedule_created",
-  "schedule_deal_linked",
-  "meeting_note_created",
-  "meeting_note_deal_linked",
   "export_downloaded",
 ] as const satisfies readonly ProductAnalyticsRuntimeEventName[];
 
@@ -128,8 +108,6 @@ export type ProductAnalyticsReservedBillingEventName =
 export const PRODUCT_ANALYTICS_TARGET_TYPE_CODES = [
   "USER",
   "DEAL",
-  "SCHEDULE",
-  "MEETING_NOTE",
   "EXPORT",
 ] as const;
 

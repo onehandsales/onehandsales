@@ -43,7 +43,7 @@ describe("PrismaDealBoundaryAdapter", () => {
     const log = await adapter.createFollowingActionLog({
       userId: USER_ID,
       dealId: DEAL_ID,
-      followingAction: "회의록 기반 후속 조치",
+      followingAction: "고객 통화 후 다음 행동",
     });
 
     expect(log.id).toBe(LOG_ID);
@@ -51,7 +51,7 @@ describe("PrismaDealBoundaryAdapter", () => {
       data: {
         userId: USER_ID,
         dealId: DEAL_ID,
-        followingAction: "회의록 기반 후속 조치",
+        followingAction: "고객 통화 후 다음 행동",
       },
     });
   });
@@ -66,24 +66,24 @@ describe("PrismaDealBoundaryAdapter", () => {
     await adapter.createActivity({
       userId: USER_ID,
       dealId: DEAL_ID,
-      activityType: "FOLLOW_UP_SENT",
-      sourceType: "FOLLOW_UP",
-      sourceId: "attempt-1",
-      title: "이메일 follow-up을 보냈어요.",
+      activityType: "NEXT_ACTION_CREATED",
+      sourceType: "NEXT_ACTION",
+      sourceId: LOG_ID,
+      title: "다음 행동을 등록했어요.",
       occurredAt: NOW,
       linkedRecordsJson: [],
-      metadataJson: { deliveryAttemptId: "attempt-1" },
+      metadataJson: { followingActionLogId: LOG_ID },
     });
 
     expect(client.dealActivity.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         userId: USER_ID,
         dealId: DEAL_ID,
-        activityType: "FOLLOW_UP_SENT",
-        sourceType: "FOLLOW_UP",
-        sourceId: "attempt-1",
+        activityType: "NEXT_ACTION_CREATED",
+        sourceType: "NEXT_ACTION",
+        sourceId: LOG_ID,
         linkedRecordsJson: [],
-        metadataJson: { deliveryAttemptId: "attempt-1" },
+        metadataJson: { followingActionLogId: LOG_ID },
       }),
       select: expect.objectContaining({
         id: true,
@@ -114,7 +114,7 @@ function createLogRow() {
     id: LOG_ID,
     userId: USER_ID,
     dealId: DEAL_ID,
-    followingAction: "회의록 기반 후속 조치",
+    followingAction: "고객 통화 후 다음 행동",
     checkComplete: false,
     deletedAt: null,
     deletedByUserId: null,
@@ -130,15 +130,15 @@ function createActivityRow() {
     id: ACTIVITY_ID,
     userId: USER_ID,
     dealId: DEAL_ID,
-    activityType: "FOLLOW_UP_SENT",
-    sourceType: "FOLLOW_UP",
-    sourceId: "attempt-1",
-    title: "이메일 follow-up을 보냈어요.",
+    activityType: "NEXT_ACTION_CREATED",
+    sourceType: "NEXT_ACTION",
+    sourceId: LOG_ID,
+    title: "다음 행동을 등록했어요.",
     summary: null,
     body: null,
     occurredAt: NOW,
     linkedRecordsJson: [],
-    metadataJson: { deliveryAttemptId: "attempt-1" },
+    metadataJson: { followingActionLogId: LOG_ID },
     createdAt: NOW,
     updatedAt: NOW,
   };

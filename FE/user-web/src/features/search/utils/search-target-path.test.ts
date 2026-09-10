@@ -22,8 +22,6 @@ const TARGET_PATH_CASES: ReadonlyArray<{
   { type: "CONTACT", targetPath: "/app/contacts/record-001" },
   { type: "PRODUCT", targetPath: "/app/products/record-001" },
   { type: "DEAL", targetPath: "/app/deals/record-001" },
-  { type: "SCHEDULE", targetPath: "/app/schedules/record-001" },
-  { type: "MEETING_NOTE", targetPath: "/app/meeting-notes/record-001" },
 ];
 
 // 기능 : 검색 fallback targetPath가 `/app/*` route 계약을 유지하는지 검증합니다.
