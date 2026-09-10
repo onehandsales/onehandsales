@@ -1,7 +1,7 @@
 UPDATE "ProductAnalyticsEvent"
 SET "targetType" = NULL,
     "targetId" = NULL
-WHERE "targetType" IN ('BUSINESS_CARD_SCAN', 'IMPORT_JOB');
+WHERE "targetType"::text IN ('BUSINESS_CARD_SCAN', 'IMPORT_JOB');
 
 ALTER TYPE "ProductAnalyticsTargetType" RENAME TO "ProductAnalyticsTargetType_old";
 
