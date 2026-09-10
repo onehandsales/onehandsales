@@ -1,5 +1,7 @@
 # Decision Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 최종 업데이트: 2026-07-30
 
@@ -77,7 +79,6 @@
 
 - 자유 JSON
 - 이름, 이메일, 전화번호, 회사명, 담당자명
-- memo, meeting note body, private memo
 - AI prompt, raw response, provider raw response
 - token, authorization header, provider token
 

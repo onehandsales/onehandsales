@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. 포함 범위
@@ -10,11 +12,7 @@
 | 사용자 목록/상세 | 사용자 검색, 상태, 가입/최근 로그인, locale/timezone/country, 도메인 count, 활동 summary, notification/browser push safe summary |
 | 사용자 활동 | 09 analytics/server event와 핵심 domain created/updated 시각 기반 최근 활동 timeline |
 | 도메인 read-only | 회사/담당자/제품/딜/일정/회의록/명함/import/export 요약 탭 |
-| 민감정보 마스킹 | email, phone, OAuth provider email, meeting note body, memo, private memo, token, provider metadata redaction |
 | 원문 접근 사유 | 민감 원문 조회 시 reason 필수, 별도 API, audit log |
-| 감사 로그 | Admin login/access, 사용자 상세 조회, raw access, provider failure detail, Trash 만료 목록, account/data request, system gate action |
-| Trash/삭제 | 사용자 7일 무료 복구, 7일 이후 사용자 복구 제한, Admin 삭제 데이터 목록, 복구 문의 queue |
-| Trash private memo 제한 | Trash list/detail/restore response에서 private memo 원문 제외 |
 | Provider failure | AI/OCR/STT/Calendar/Push/Email/SMS safe failure 조회 |
 | Product analytics Admin summary | 09 foundation의 activation, retention, event count, AI usage/cost와 10 mobile field-use event summary |
 | 계정 삭제 요청 | User Web 요청, 30일 유예, Admin 상태 조회, 실제 삭제/익명화 job 후보 |
@@ -34,7 +32,6 @@
 | Customer/B2B tenant admin | 현재 Admin은 내부 최종 관리자 전용 |
 | provider raw response 저장 | 보안/개인정보 리스크로 금지 |
 | prompt 전문/STT transcript 전문 저장 | provider log와 Admin 화면 모두 금지 |
-| DB hard delete/purge for Trash | 사용자 의도와 맞지 않음. Trash는 soft delete 보존 |
 | ImportJob cleanup 실패 전용 Admin 화면/API | 01 cleanup은 safe summary log만 남기고, 반복 장애 시 post-12 Admin 운영 후속에서 aggregate/system gate로 검토 |
 
 ## 3. 1차 추천 범위
@@ -44,7 +41,6 @@
 - G01 문서/계약 sync
 - G02 Admin audit/security foundation
 - G03 사용자 목록/상세/활동 summary
-- G05 Trash 7일 이후 정책과 복구 문의
 - G06 provider failure 운영 조회
 - G07 09/10 기반 Admin analytics summary
 - G09 DB/migration/backup operation gate

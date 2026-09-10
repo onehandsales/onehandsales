@@ -1,5 +1,7 @@
 # Planning Review
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / 12 Billing Handoff Ready
 판정: G01~G06 완료, 12 Billing 문서 작성/상세화 착수 가능
 검토일: 2026-08-09
@@ -57,7 +59,6 @@ AGENT 기준:
 - `BE/src/modules/notification`
 - `BE/src/modules/admin-operation`
 - `BE/src/modules/account-request`
-- `BE/src/modules/trash`
 - `BE/prisma/schema.prisma`
 - `FE/user-web/src/app/router/router.tsx`
 - `FE/user-web/src/features/follow-up-delivery`

@@ -1,5 +1,7 @@
 # DB Schema TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / G04 Closeout Confirmed
 
 ## 1. 현재 DB 기반
@@ -8,7 +10,6 @@
 
 - `User.role=ADMIN`이 존재한다.
 - 핵심 도메인은 `userId` 소유권을 가진다.
-- Company/Contact/Product/Deal/Schedule/MeetingNote/메모 로그류는 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete를 가진다.
 - `AiProviderCallLog`, `BusinessCardScanLog`, `NotificationDeliveryAttempt`, `FollowUpDeliveryAttempt`, `ExternalCalendarConnection/Source`에 provider 실패를 safe field 중심으로 추적할 기반이 있다.
 - `ProductAnalyticsEvent`, `UserActivationSnapshot`, `RetentionCohortSnapshot`이 09에서 구현됐다.
 - `UserNotificationSetting`, `BrowserPushSubscription`은 10번 browser push permission UX의 운영 상태 요약에 사용할 수 있다. Admin response에는 endpoint/key/ciphertext/hash와 userAgent 원문을 노출하지 않는다.
@@ -19,7 +20,6 @@
 |---|---|---|---|
 | G02 | `AdminAuditLog` | Admin 주요 조회/action append-only 감사 | 구현됨 |
 | G02 | `AdminSensitiveAccessLog` | 민감 원문 조회 사유와 결과 추적 | 구현됨 |
-| G05 | `TrashRecoveryRequest` | 7일 이후 복구 문의 queue | 구현됨 |
 | G08 | `AccountDeletionRequest` | 계정 삭제 30일 유예 workflow | 구현됨 |
 | G08 | `UserDataExportRequest` | 사용자 데이터 export 요청 workflow | 구현됨 |
 | G09 | `AdminOperationCheckRun` | DB/migration/backup/provider smoke 운영 점검 기록 | 구현됨 |
@@ -73,7 +73,6 @@ enum AdminSensitiveFieldSet {
   TRASH_RECORD_DETAIL
 }
 
-enum TrashRecoveryRequestStatus {
   REQUESTED
   REVIEWING
   WAITING_RECOVERY_POLICY
@@ -206,7 +205,6 @@ model AdminSensitiveAccessLog {
 ```
 
 ```prisma
-model TrashRecoveryRequest {
   /// 기능 : 사용자가 무료 복구 기간 이후 복구 문의를 남긴 요청 ID입니다.
   id String @id @default(uuid()) @db.Uuid
 
@@ -226,13 +224,11 @@ model TrashRecoveryRequest {
   deletedAt DateTime @db.Timestamptz(3)
 
   /// 기능 : 무료 복구 만료 시각입니다.
-  trashExpiresAt DateTime @db.Timestamptz(3)
 
   /// 기능 : 사용자 문의 사유입니다.
   userMessage String? @db.Text
 
   /// 기능 : 복구 문의 처리 상태입니다.
-  status TrashRecoveryRequestStatus @default(REQUESTED)
 
   /// 기능 : 담당 관리자 ID입니다.
   assignedAdminUserId String? @db.Uuid
@@ -401,8 +397,6 @@ model User {
   /// 기능 : 이 관리자가 수행한 민감 원문 조회 로그 목록입니다.
   adminSensitiveAccessLogs AdminSensitiveAccessLog[] @relation("AdminSensitiveAccessActor")
 
-  /// 기능 : 사용자가 생성한 Trash 복구 문의 목록입니다. 계정 실제 삭제 시 함께 삭제됩니다.
-  trashRecoveryRequests TrashRecoveryRequest[]
 
   /// 기능 : 사용자의 계정 삭제 요청 목록입니다. 계정 실제 삭제 시 함께 삭제됩니다.
   accountDeletionRequests AccountDeletionRequest[]
@@ -425,7 +419,6 @@ model User {
 
 - 기존 migration 파일은 수정하지 않는다.
 - 공유/운영성 DB에 무단 `migrate dev`, `migrate deploy`, `seed`를 실행하지 않는다.
-- Trash 7일 만료를 이유로 Company/Contact/Product/Deal/Schedule/MeetingNote row를 hard delete하지 않는다.
 - provider raw response, prompt, token, quota detail을 저장하는 column을 추가하지 않는다.
 - audit log table에는 원문 민감값을 저장하지 않는다.
 - Prisma schema 신규 model/field/enum에는 `/// 기능 : ...` 주석을 추가한다.

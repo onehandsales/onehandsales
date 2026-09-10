@@ -1,5 +1,7 @@
 # P4 G21-G29 입력/출력 자동화 상세 명세
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 P4는 사용자가 데이터를 더 빠르게 입력하고, 필요한 데이터를 다시 찾고, 내보내고, 삭제 데이터를 복구할 수 있게 하는 단계다.
@@ -247,27 +249,20 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 - SMTP adapter로 email 알림이 실제 발송된다.
 - Web Push VAPID adapter로 browser push 알림이 실제 발송된다.
 
-## G28. Trash 기본 흐름
 
 ### 화면 목적
 
-삭제된 모든 soft delete 대상 데이터를 휴지통에서 확인하고 복구할 수 있게 한다.
 
 ### API 연결
 
-- `GET /api/trash`
-- `POST /api/trash/:targetType/:targetId/restore`
-- `DELETE /api/trash/:targetType/:targetId/permanent`
 
 ### DB 연결
 
 - 모든 deletedAt 삭제 대상 모델
 - 우선 노출: Company, Contact, Product, Deal, Schedule, MeetingNote
-- targetType 필터 지원: CompanyLog, ContactLog, ProductLog, ProductConnection, DealActivity, PersonalMemo
 
 ### 화면 구성
 
-- 휴지통 목록
 - entity type 필터
 - 삭제일과 완전 삭제 예정일
 - 복구 버튼
@@ -275,7 +270,6 @@ G22 명함 OCR 화면이 사용할 API를 제공한다.
 
 ### 완료 기준
 
-- 모든 soft delete 대상 삭제 데이터가 휴지통에 표시된다.
 - `permanentDeleteAt` 이전에는 복구가 가능하다.
 - 30일이 지난 삭제 데이터는 시스템 자동 작업으로 완전 삭제될 수 있다.
 

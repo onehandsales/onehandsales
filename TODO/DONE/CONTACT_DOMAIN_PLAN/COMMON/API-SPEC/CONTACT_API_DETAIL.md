@@ -1,5 +1,7 @@
 # Contact API Detail
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `CONTACT_DOMAIN_PLAN`에서 사용하는 담당자 API의 요청값, 응답값, 내부 비즈니스 로직, 연결 DB, transaction, observability, 에러, FE/BE 처리 기준을 고정한다.
@@ -26,10 +28,7 @@
 - `Contact.mobile`은 `010-1111-2222` 형식만 허용한다.
 - `Contact.email`은 이메일 형식만 허용한다.
 - 담당자 목록은 10개 단위 페이지네이션이다.
-- 담당자 일반/개인 비밀 메모 로그는 10개 단위 cursor 무한스크롤이다.
 - 상태값만 반환하는 생성/수정/삭제 API는 response body가 없다.
-- 개인 비밀 메모 원문은 DB, application log, audit log에 저장하거나 출력하지 않는다.
-- 이 계획에서는 관리자 API, 휴지통, soft delete, 명함 OCR 저장 연동을 만들지 않는다.
 
 ## 3. API 목록
 
@@ -44,12 +43,6 @@
 9. 담당자 단건 생성 API: `POST /api/contacts`
 10. 담당자 단건 조회 API: `GET /api/contacts/:contactId`
 11. 담당자 기본 정보 수정 API: `PATCH /api/contacts/:contactId`
-12. 담당자 일반 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/memo-logs`
-13. 담당자 일반 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/memo-logs`
-14. 담당자 일반 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
-15. 담당자 개인 비밀 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/private-memo-logs`
-16. 담당자 개인 비밀 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/private-memo-logs`
-17. 담당자 개인 비밀 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
 18. 담당자 목록 xlsx 내보내기 API: `GET /api/contacts/export/xlsx`
 
 ## 4. API 계약 상태 요약
@@ -67,15 +60,8 @@
 | `GET /api/contact-departments` | implemented | 없음. 조회 전용 | event key: `contactDepartment.listed`, audit log: 없음, request id: 사용, redaction: 없음 |
 | `POST /api/contact-departments` | implemented | 없음. 단일 `ContactDepartment` 생성 | event key: `contactDepartment.created`, audit log: 없음, request id: 사용, redaction: 없음 |
 | `DELETE /api/contact-departments/:departmentId` | implemented | 없음. 사용 여부 검증 후 단일 삭제 | event key: `contactDepartment.deleted`, audit log: 없음, request id: 사용, redaction: 없음 |
-| `POST /api/contacts` | implemented | 필요. `Contact`와 조건부 `ContactMemoLog`를 같은 transaction에서 생성 | event key: `contact.created`, audit log: 없음, request id: 사용, redaction: `contactMemo`, `mobile`, `email` 원문 logging 금지 |
 | `GET /api/contacts/:contactId` | implemented | 없음. 조회 전용 | event key: `contact.viewed`, audit log: 없음, request id: 사용, redaction: 핸드폰/이메일 원문 logging 금지 |
 | `PATCH /api/contacts/:contactId` | implemented | 없음. 단일 `Contact` 수정 | event key: `contact.updated`, audit log: 없음, request id: 사용, redaction: 핸드폰/이메일 원문 logging 금지 |
-| `POST /api/contacts/:contactId/memo-logs` | implemented | 없음. 담당자 ownership 확인 후 단일 `ContactMemoLog` 생성 | event key: `contactMemoLog.created`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
-| `GET /api/contacts/:contactId/memo-logs` | implemented | 없음. 조회 전용 | event key: `contactMemoLog.listed`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
-| `PATCH /api/contacts/:contactId/memo-logs/:memoLogId` | implemented | 없음. 단일 `ContactMemoLog` 수정 | event key: `contactMemoLog.updated`, audit log: 없음, request id: 사용, redaction: `memo` 원문 logging 금지 |
-| `POST /api/contacts/:contactId/private-memo-logs` | implemented | 없음. 암호화 후 단일 `ContactUserPrivateMemoLog` 생성 | event key: `contactPrivateMemoLog.created`, audit log: 없음, request id: 사용, redaction: 개인 비밀 메모 원문 logging 금지 |
-| `GET /api/contacts/:contactId/private-memo-logs` | implemented | 없음. 작성자 본인 로그 조회와 복호화 | event key: `contactPrivateMemoLog.listed`, audit log: 없음, request id: 사용, redaction: 개인 비밀 메모 원문 logging 금지 |
-| `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId` | implemented | 없음. 암호화 후 단일 `ContactUserPrivateMemoLog` 수정 | event key: `contactPrivateMemoLog.updated`, audit log: 없음, request id: 사용, redaction: 개인 비밀 메모 원문 logging 금지 |
 
 ## 5. 담당자 페이지네이션 API
 
@@ -735,7 +721,6 @@
 
 ### 목적
 
-회사에 소속된 담당자를 생성한다. 생성 시 선택 메모가 있으면 같은 transaction에서 `ContactMemoLog` 첫 데이터로 저장한다.
 
 ### Request
 
@@ -749,7 +734,6 @@
 | body | `companyId` | string | 예 | UUID | 소속 회사 ID |
 | body | `contactDepartmentId` | string | 예 | UUID | 담당자 부서 ID |
 | body | `contactJobGradeId` | string | 예 | UUID | 담당자 직급 ID |
-| body | `contactMemo` | string \| null | 아니오 | trim 후 빈 문자열이면 미작성 처리 | 생성 시 함께 남길 초기 담당자 메모 |
 
 예시:
 
@@ -761,7 +745,6 @@
   "companyId": "00000000-0000-0000-0000-000000000101",
   "contactDepartmentId": "00000000-0000-0000-0000-000000000201",
   "contactJobGradeId": "00000000-0000-0000-0000-000000000301",
-  "contactMemo": "첫 미팅에서 예산 확인"
 }
 ```
 
@@ -769,7 +752,6 @@
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. request body를 validation한다.
-3. `username`, `mobile`, `email`, `contactMemo`를 trim한다.
 4. `username`, `mobile`, `email`이 비어 있으면 `ValidationError`로 중단한다.
 5. `mobile`이 `010-1111-2222` 형식이 아니면 `ValidationError`로 중단한다.
 6. `email` 형식이 아니면 `ValidationError`로 중단한다.
@@ -778,9 +760,6 @@
 9. `contactJobGradeId`가 현재 사용자 소유 직급인지 검증한다.
 10. transaction을 시작한다.
 11. `Contact`를 생성한다.
-12. `contactMemo`가 있으면 `ContactMemoLog`를 생성한다.
-13. `contactMemo`로 만들어지는 첫 메모 로그의 `memoType`은 서버가 `초기 메모`로 저장한다.
-14. `contactMemo`가 없으면 메모 로그를 만들지 않는다.
 15. transaction을 commit한다.
 
 ### Response
@@ -791,19 +770,14 @@
 
 ### 연결된 DB 스키마
 
-- 생성: `Contact`, 조건부 `ContactMemoLog`
 - 조회: `Company`, `ContactDepartment`, `ContactJobGrade`
 - 수정: 없음
 - 삭제: 없음
 - 감사 로그: 없음
-- transaction: `Contact`와 조건부 `ContactMemoLog`
 
 ### Transaction
 
 - 필요 여부: 필요
-- 이유: 담당자 생성과 초기 메모 로그 생성이 하나의 사용자 행동이다.
-- transaction model: `Contact`, `ContactMemoLog`
-- rollback 범위: `Contact` 생성과 초기 `ContactMemoLog` 생성 전체
 - 외부 Provider 호출 위치: 없음
 - audit log 포함 여부: 없음
 
@@ -812,7 +786,6 @@
 - log event key: `contact.created`
 - audit log: 없음
 - request id: 사용
-- redaction: `contactMemo`, `mobile`, `email` 원문 logging 금지
 - provider error context: 없음
 
 ### 에러 응답
@@ -1006,21 +979,16 @@
 - FE: response body를 기대하지 않는다.
 - BE: 요청에 포함되지 않은 필드는 변경하지 않는다.
 
-## 16. 담당자 일반 메모 로그 단건 생성 API
 
-- API 이름: 담당자 일반 메모 로그 단건 생성 API
-- API 식별자: `CreateContactMemoLog`
 - 계약 상태: `implemented`
 - 소비자: User Web
 - 호환성: 신규 API
 - Method: `POST`
-- Path: `/api/contacts/:contactId/memo-logs`
 - 인증: Backend App access token 필요
 - 권한: 본인 담당자의 메모만 생성
 
 ### Request
 
-- Request 이름: `CreateContactMemoLogRequest`
 
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
@@ -1035,7 +1003,6 @@
 3. 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
 4. `memoType`, `memo`를 trim한다.
 5. 값이 비어 있으면 `ValidationError`로 중단한다.
-6. `ContactMemoLog`를 생성한다.
 
 ### Response
 
@@ -1045,18 +1012,15 @@
 
 ### 연결된 DB 스키마
 
-- 생성: `ContactMemoLog`
 - 조회: `Contact`
 - 수정/삭제/감사 로그/transaction: 없음
 
 ### Transaction
 
 - 필요 여부: 없음
-- 이유: 담당자 ownership 검증 후 단일 메모 로그 생성이다.
 
 ### Observability
 
-- log event key: `contactMemoLog.created`
 - audit log: 없음
 - request id: 사용
 - redaction: `memo` 원문 logging 금지
@@ -1072,25 +1036,19 @@
 
 ### FE/BE 처리 기준
 
-- FE: 성공 시 메모 로그 목록을 재조회한다.
 - FE: response body를 기대하지 않는다.
 - BE: 메모 원문을 application log에 남기지 않는다.
 
-## 17. 담당자 일반 메모 로그 무한스크롤 API
 
-- API 이름: 담당자 일반 메모 로그 무한스크롤 API
-- API 식별자: `ListContactMemoLogs`
 - 계약 상태: `implemented`
 - 소비자: User Web
 - 호환성: 신규 API
 - Method: `GET`
-- Path: `/api/contacts/:contactId/memo-logs`
 - 인증: Backend App access token 필요
 - 권한: 본인 담당자의 메모만 조회
 
 ### Request
 
-- Request 이름: `ListContactMemoLogsQuery`
 
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
@@ -1104,21 +1062,17 @@
 3. 조회 대상 담당자가 현재 사용자 소유인지 검증한다.
 4. `cursor`가 있으면 base64url decode 후 `{ createdAt, id }` 구조인지 검증한다.
 5. cursor가 잘못됐으면 `ValidationError`로 중단한다.
-6. `ContactMemoLog.contactId` 기준으로 `createdAt DESC`, `id DESC` 조회한다.
 7. page size 10보다 1개 더 조회한다.
 8. 10개만 응답하고 11번째 존재 여부로 `hasNext`를 계산한다.
 9. 다음 페이지가 있으면 마지막 응답 항목 기준으로 `nextCursor`를 생성한다.
 
 ### Response
 
-- Response 이름: `ContactMemoLogConnectionResponse`
 - Status: `200 OK`
 - Body: 있음
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
-| `items` | `ContactMemoLogResponse[]` | 아니오 | 일반 메모 로그 목록 |
-| `items[].id` | string | 아니오 | 메모 로그 ID |
 | `items[].memoType` | string | 아니오 | 메모 유형 |
 | `items[].memo` | string | 아니오 | 일반 메모 본문 |
 | `items[].createdAt` | string | 아니오 | 등록일 ISO string |
@@ -1127,7 +1081,6 @@
 
 ### 연결된 DB 스키마
 
-- 조회: `Contact`, `ContactMemoLog`
 - 생성/수정/삭제/감사 로그/transaction: 없음
 
 ### Transaction
@@ -1137,7 +1090,6 @@
 
 ### Observability
 
-- log event key: `contactMemoLog.listed`
 - audit log: 없음
 - request id: 사용
 - redaction: `memo` 원문 logging 금지
@@ -1157,26 +1109,20 @@
 - FE: 메모 원문을 client log에 남기지 않는다.
 - BE: cursor는 서버가 생성한 문자열만 신뢰한다.
 
-## 18. 담당자 일반 메모 로그 단건 수정 API
 
-- API 이름: 담당자 일반 메모 로그 단건 수정 API
-- API 식별자: `UpdateContactMemoLog`
 - 계약 상태: `implemented`
 - 소비자: User Web
 - 호환성: 신규 API
 - Method: `PATCH`
-- Path: `/api/contacts/:contactId/memo-logs/:memoLogId`
 - 인증: Backend App access token 필요
 - 권한: 본인 담당자의 메모만 수정
 
 ### Request
 
-- Request 이름: `UpdateContactMemoLogRequest`
 
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
 | path | `contactId` | string | 예 | UUID | 담당자 ID |
-| path | `memoLogId` | string | 예 | UUID | 일반 메모 로그 ID |
 | body | `memoType` | string | 아니오 | trim 후 1자 이상 | 수정할 메모 유형 |
 | body | `memo` | string | 아니오 | trim 후 1자 이상 | 수정할 메모 본문 |
 
@@ -1190,8 +1136,6 @@
 4. `memoType`, `memo` 중 최소 1개가 있는지 검증한다.
 5. 포함된 값은 trim한다.
 6. 포함된 값이 빈 문자열이면 `ValidationError`로 중단한다.
-7. `memoLogId`, `contactId`, `userId` 조건으로 `ContactMemoLog`를 수정한다.
-8. 수정 결과가 없으면 `ContactMemoLogNotFound`로 중단한다.
 
 ### Response
 
@@ -1202,17 +1146,14 @@
 ### 연결된 DB 스키마
 
 - 조회: `Contact`
-- 수정: `ContactMemoLog`
 - 생성/삭제/감사 로그/transaction: 없음
 
 ### Transaction
 
 - 필요 여부: 없음
-- 이유: 단일 `ContactMemoLog` 수정이다.
 
 ### Observability
 
-- log event key: `contactMemoLog.updated`
 - audit log: 없음
 - request id: 사용
 - redaction: `memo` 원문 logging 금지
@@ -1226,7 +1167,6 @@
 | 담당자가 없거나 본인 소유가 아님 | `ContactNotFound` | 404 | not found 안내 | log |
 | 수정 필드가 없음 | `ValidationError` | 400 | form error 표시 | log |
 | 수정 값이 빈 문자열 | `ValidationError` | 400 | form field error 표시 | log |
-| 메모 로그가 없거나 권한 없음 | `ContactMemoLogNotFound` | 404 | 목록 재조회 후 안내 | log |
 
 ### FE/BE 처리 기준
 
@@ -1234,36 +1174,26 @@
 - FE: response body를 기대하지 않는다.
 - BE: `memoType`과 `memo`를 모두 수정할 수 있게 구현한다.
 
-## 19. 담당자 개인 비밀 메모 로그 단건 생성 API
 
-- API 이름: 담당자 개인 비밀 메모 로그 단건 생성 API
-- API 식별자: `CreateContactPrivateMemoLog`
 - 계약 상태: `implemented`
 - 소비자: User Web
 - 호환성: 신규 API
 - Method: `POST`
-- Path: `/api/contacts/:contactId/private-memo-logs`
 - 인증: Backend App access token 필요
-- 권한: 본인 담당자의 개인 비밀 메모만 생성
 
 ### Request
 
-- Request 이름: `CreateContactPrivateMemoLogRequest`
 
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
 | path | `contactId` | string | 예 | UUID | 담당자 ID |
-| body | `memo` | string | 예 | trim 후 1자 이상 | 개인 비밀 메모 본문 |
 
 ### 비즈니스 로직 흐름
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. `contactId`와 request body를 validation한다.
-3. 비밀 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
 4. `memo`를 trim한다.
 5. 값이 비어 있으면 `ValidationError`로 중단한다.
-6. 비밀 메모 원문을 암호화한다.
-7. `ContactUserPrivateMemoLog`에 `memoCiphertext`, `memoKeyVersion`만 저장한다.
 
 ### Response
 
@@ -1273,7 +1203,6 @@
 
 ### 연결된 DB 스키마
 
-- 생성: `ContactUserPrivateMemoLog`
 - 조회: `Contact`
 - 수정/삭제/감사 로그/transaction: 없음
 
@@ -1284,10 +1213,8 @@
 
 ### Observability
 
-- log event key: `contactPrivateMemoLog.created`
 - audit log: 없음
 - request id: 사용
-- redaction: 개인 비밀 메모 원문 logging 금지
 - provider error context: 없음
 
 ### 에러 응답
@@ -1301,25 +1228,17 @@
 
 ### FE/BE 처리 기준
 
-- FE: 성공 시 개인 비밀 메모 목록을 재조회한다.
-- FE: 비밀 메모 암호화/복호화를 직접 구현하지 않는다.
 - BE: 평문을 DB나 log에 남기지 않는다.
 
-## 20. 담당자 개인 비밀 메모 로그 무한스크롤 API
 
-- API 이름: 담당자 개인 비밀 메모 로그 무한스크롤 API
-- API 식별자: `ListContactPrivateMemoLogs`
 - 계약 상태: `implemented`
 - 소비자: User Web
 - 호환성: 신규 API
 - Method: `GET`
-- Path: `/api/contacts/:contactId/private-memo-logs`
 - 인증: Backend App access token 필요
-- 권한: 본인이 작성한 담당자 개인 비밀 메모만 조회
 
 ### Request
 
-- Request 이름: `ListContactPrivateMemoLogsQuery`
 
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
@@ -1332,29 +1251,23 @@
 2. `contactId`와 query를 validation한다.
 3. 조회 대상 담당자가 현재 사용자 소유인지 검증한다.
 4. `cursor`가 있으면 base64url decode 후 `{ createdAt, id }` 구조인지 검증한다.
-5. 현재 사용자가 작성한 `ContactUserPrivateMemoLog`만 조회한다.
 6. `createdAt DESC`, `id DESC` 기준으로 page size 10보다 1개 더 조회한다.
 7. 암호문을 복호화해 응답의 `memo`로 변환한다.
 8. 10개만 응답하고 11번째 존재 여부로 `hasNext`와 `nextCursor`를 계산한다.
 
 ### Response
 
-- Response 이름: `ContactPrivateMemoLogConnectionResponse`
 - Status: `200 OK`
 - Body: 있음
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
-| `items` | `ContactPrivateMemoLogResponse[]` | 아니오 | 개인 비밀 메모 로그 목록 |
-| `items[].id` | string | 아니오 | 개인 비밀 메모 로그 ID |
-| `items[].memo` | string | 아니오 | 복호화된 개인 비밀 메모 본문 |
 | `items[].createdAt` | string | 아니오 | 등록일 ISO string |
 | `nextCursor` | string \| null | 예 | 다음 페이지 cursor |
 | `hasNext` | boolean | 아니오 | 다음 페이지 존재 여부 |
 
 ### 연결된 DB 스키마
 
-- 조회: `Contact`, `ContactUserPrivateMemoLog`
 - 생성/수정/삭제/감사 로그/transaction: 없음
 
 ### Transaction
@@ -1364,10 +1277,8 @@
 
 ### Observability
 
-- log event key: `contactPrivateMemoLog.listed`
 - audit log: 없음
 - request id: 사용
-- redaction: 개인 비밀 메모 원문 logging 금지
 - provider error context: 없음
 
 ### 에러 응답
@@ -1385,38 +1296,26 @@
 - FE: 응답의 `memo`는 화면 표시용으로만 사용하고 client log에 남기지 않는다.
 - BE: `memoCiphertext`, `memoKeyVersion`은 응답하지 않는다.
 
-## 21. 담당자 개인 비밀 메모 로그 단건 수정 API
 
-- API 이름: 담당자 개인 비밀 메모 로그 단건 수정 API
-- API 식별자: `UpdateContactPrivateMemoLog`
 - 계약 상태: `implemented`
 - 소비자: User Web
 - 호환성: 신규 API
 - Method: `PATCH`
-- Path: `/api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
 - 인증: Backend App access token 필요
-- 권한: 본인이 작성한 담당자 개인 비밀 메모만 수정
 
 ### Request
 
-- Request 이름: `UpdateContactPrivateMemoLogRequest`
 
 | 위치 | 필드 | 타입 | 필수 | validation | 설명 |
 |---|---|---|---:|---|---|
 | path | `contactId` | string | 예 | UUID | 담당자 ID |
-| path | `privateMemoLogId` | string | 예 | UUID | 개인 비밀 메모 로그 ID |
-| body | `memo` | string | 예 | trim 후 1자 이상 | 수정할 개인 비밀 메모 본문 |
 
 ### 비즈니스 로직 흐름
 
 1. AuthGuard로 현재 사용자를 확인한다.
 2. path param과 request body를 validation한다.
-3. 비밀 메모 대상 담당자가 현재 사용자 소유인지 검증한다.
 4. `memo`를 trim한다.
 5. 값이 비어 있으면 `ValidationError`로 중단한다.
-6. 새 비밀 메모 원문을 암호화한다.
-7. `privateMemoLogId`, `contactId`, `userId` 조건으로 `ContactUserPrivateMemoLog`의 `memoCiphertext`, `memoKeyVersion`을 수정한다.
-8. 수정 결과가 없으면 `ContactPrivateMemoLogNotFound`로 중단한다.
 
 ### Response
 
@@ -1427,20 +1326,16 @@
 ### 연결된 DB 스키마
 
 - 조회: `Contact`
-- 수정: `ContactUserPrivateMemoLog`
 - 생성/삭제/감사 로그/transaction: 없음
 
 ### Transaction
 
 - 필요 여부: 없음
-- 이유: 암호화 후 단일 개인 비밀 메모 로그 수정이다.
 
 ### Observability
 
-- log event key: `contactPrivateMemoLog.updated`
 - audit log: 없음
 - request id: 사용
-- redaction: 개인 비밀 메모 원문 logging 금지
 - provider error context: 없음
 
 ### 에러 응답
@@ -1450,12 +1345,10 @@
 | 인증 없음 또는 invalid | `Unauthorized` | 401 | 로그인 또는 refresh 흐름 | warn |
 | 담당자가 없거나 본인 소유가 아님 | `ContactNotFound` | 404 | not found 안내 | log |
 | `memo` 누락 | `ValidationError` | 400 | form field error 표시 | log |
-| 개인 비밀 메모 로그가 없거나 권한 없음 | `ContactPrivateMemoLogNotFound` | 404 | 목록 재조회 후 안내 | log |
 | 암호화 실패 | `PrivateMemoEncryptFailed` | 500 | 저장 실패 안내 | error |
 
 ### FE/BE 처리 기준
 
-- FE: 성공 시 해당 개인 비밀 메모 목록을 재조회하거나 로컬 상태를 갱신한다.
 - FE: response body를 기대하지 않는다.
 - BE: 기존 암호문과 key version을 새 값으로 교체한다.
 
@@ -1494,7 +1387,6 @@
 5. `Contact.userId = currentUserId`와 검색/필터 조건을 적용한다.
 6. 담당자 목록 API와 같은 정렬 조건을 적용한다.
 7. `Company`, `ContactDepartment`, `ContactJobGrade` relation을 포함해 조회한다.
-8. ID와 memo/private memo 필드를 제외하고 xlsx 파일을 생성한다.
 
 ### Response
 
@@ -1548,15 +1440,11 @@ Domain error는 Backend 전역 exception filter 기준으로 다음 형태를 �
 | `ContactNotFound` | 404 | 담당자가 없거나 현재 사용자 소유가 아님 |
 | `ContactDepartmentNotFound` | 404 | 담당자 부서가 없거나 현재 사용자 소유가 아님 |
 | `ContactJobGradeNotFound` | 404 | 담당자 직급이 없거나 현재 사용자 소유가 아님 |
-| `ContactMemoLogNotFound` | 404 | 일반 메모 로그가 없거나 수정 권한이 없음 |
-| `ContactPrivateMemoLogNotFound` | 404 | 개인 비밀 메모 로그가 없거나 수정 권한이 없음 |
 | `ContactExportFailed` | 500 | 담당자 xlsx export 파일 생성 실패 |
 | `DuplicateContactDepartment` | 409 | 같은 사용자 안에서 부서명이 중복됨 |
 | `DuplicateContactJobGrade` | 409 | 같은 사용자 안에서 직급명이 중복됨 |
 | `ContactDepartmentInUse` | 409 | 담당자가 사용하는 부서를 삭제하려 함 |
 | `ContactJobGradeInUse` | 409 | 담당자가 사용하는 직급을 삭제하려 함 |
-| `PrivateMemoEncryptFailed` | 500 | 개인 비밀 메모 암호화 실패 |
-| `PrivateMemoDecryptFailed` | 500 | 개인 비밀 메모 복호화 실패 |
 
 ## 24. 관련 문서
 

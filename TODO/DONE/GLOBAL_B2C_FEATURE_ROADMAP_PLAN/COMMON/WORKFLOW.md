@@ -1,5 +1,7 @@
 # Workflow
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Archived / Closed Roadmap Workflow
 최종 업데이트: 2026-08-11
 
@@ -44,7 +46,6 @@
 | DB/Prisma gate | 신규 migration, generate, seed, 운영성 DB 영향이 있으면 `NBA-014` 체크가 있어야 한다. |
 | FE 계약 | route, 화면 상태, query key, invalidation, empty/error/loading이 있어야 한다. |
 | Product UX gate | 핵심 `/app` 업무 흐름을 바꾸면 첫 판매 전 제품화 QA 영향이 기록되어야 한다. |
-| Trust/policy gate | Trash/export/delete/retention/billing/policy를 바꾸면 정책 gate 영향이 기록되어야 한다. |
 | 보안 | user ownership, 민감정보, provider error redaction을 확인한다. |
 
 ## 5. Paddle 작업 기준

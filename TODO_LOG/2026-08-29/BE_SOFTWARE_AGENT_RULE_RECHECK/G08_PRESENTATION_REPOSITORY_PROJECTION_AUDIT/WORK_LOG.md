@@ -1,5 +1,7 @@
 # G08 Presentation Repository Projection Audit 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 - 날짜: 2026-08-29
 - 작업 범위: `BE` presentation 계층의 `application/ports/*repository*` 타입/값 import 전수 감사
 - Goal: `TODO/DONE/BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN/BE-TODO/G08-PRESENTATION-REPOSITORY-PROJECTION-AUDIT.goal.md`
@@ -53,7 +55,6 @@ src/modules/account-request/presentation/http/account-request-response.mapper.ts
 src/modules/schedule/presentation/http/dto/google-calendar-request.dto.ts:9:import type { GoogleCalendarDisconnectScheduleAction } from "@/modules/schedule/application/ports/google-calendar-connection.repository";
 src/modules/schedule/presentation/http/dto/google-calendar-request.dto.ts:10:import type { GoogleCalendarSyncTrigger } from "@/modules/schedule/application/ports/google-calendar-sync.repository";
 src/modules/schedule/presentation/http/dto/schedule-request.dto.ts:15:} from "@/modules/schedule/application/ports/schedule.repository";
-src/modules/trash/presentation/http/dto/trash-request.dto.ts:19:} from "@/modules/trash/application/ports/trash.repository";
 src/modules/meeting-note/presentation/http/dto/meeting-note-request.dto.ts:19:} from "@/modules/meeting-note/application/ports/meeting-note.repository";
 src/modules/business-card/presentation/http/dto/business-card-request.dto.ts:3:import { BusinessCardScanStatusValue } from "@/modules/business-card/application/ports/business-card-scan-log.repository";
 src/modules/product/presentation/http/dto/product-request.dto.ts:12:import { ProductListSort } from "@/modules/product/application/ports/product.repository";
@@ -63,7 +64,6 @@ src/modules/admin-operation/presentation/http/admin-account-request-response.map
 src/modules/admin-operation/presentation/http/admin-user-response.mapper.ts:13:} from "@/modules/admin-operation/application/ports/admin-user.repository";
 src/modules/admin-operation/presentation/http/dto/admin-user-request.dto.ts:13:import { AdminUserListSort } from "@/modules/admin-operation/application/ports/admin-user.repository";
 src/modules/admin-operation/presentation/http/admin-domain-record-response.mapper.ts:8:} from "@/modules/admin-operation/application/ports/admin-domain-record.repository";
-src/modules/admin-operation/presentation/http/admin-trash-response.mapper.ts:5:} from "@/modules/admin-operation/application/ports/admin-trash.repository";
 src/modules/admin-operation/presentation/http/admin-analytics-response.mapper.ts:10:} from "@/modules/admin-operation/application/ports/admin-analytics.repository";
 src/modules/admin-operation/presentation/http/admin-audit-response.mapper.ts:12:} from "@/modules/admin-operation/application/ports/admin-audit.repository";
 src/modules/company/presentation/http/dto/company-request.dto.ts:11:import { CompanyListSort } from "@/modules/company/application/ports/company.repository";
@@ -84,7 +84,6 @@ src/modules/deal/presentation/http/dto/deal-request.dto.ts:24:import { DealListS
 | `product/presentation/http/dto/product-request.dto.ts` | `ProductListSort` | 런타임 `@IsEnum` query validation에 사용한다. |
 | `deal/presentation/http/dto/deal-request.dto.ts` | `DealListSort`, `DEAL_ACTIVITY_TYPES`, `MANUAL_DEAL_ACTIVITY_TYPES`, activity code types | 런타임 `@IsEnum`/`@IsIn` validation에 사용한다. |
 | `meeting-note/presentation/http/dto/meeting-note-request.dto.ts` | `MeetingNoteSort`, `MeetingNoteSourceTypeValue` | 런타임 `@IsEnum` query/body validation에 사용한다. |
-| `trash/presentation/http/dto/trash-request.dto.ts` | `Trash*` filter/sort/target types | type-only import이나 HTTP query/path 허용값 배열과 type guard에 사용한다. |
 | `data-import/presentation/http/dto/import-job-request.dto.ts` | `ImportTemplateType` | type-only import이나 HTTP body/query 허용값 배열에 사용한다. |
 | `business-card/presentation/http/dto/business-card-request.dto.ts` | `BusinessCardScanStatusValue` | 런타임 `@IsEnum` query validation에 사용한다. |
 | `admin-operation/presentation/http/dto/admin-user-request.dto.ts` | `AdminUserListSort` | 런타임 `@IsEnum` query validation에 사용한다. |
@@ -99,7 +98,6 @@ src/modules/deal/presentation/http/dto/deal-request.dto.ts:24:import { DealListS
 | `admin-operation/presentation/http/admin-account-request-response.mapper.ts` | account/data export page records | type-only mapper input type이다. |
 | `admin-operation/presentation/http/admin-user-response.mapper.ts` | admin user list/overview/timeline records | type-only mapper input/response type이다. |
 | `admin-operation/presentation/http/admin-domain-record-response.mapper.ts` | domain record/page/status/summary types | type-only mapper input/response type이다. |
-| `admin-operation/presentation/http/admin-trash-response.mapper.ts` | admin trash records/page/summary | type-only mapper input/response type이다. |
 | `admin-operation/presentation/http/admin-analytics-response.mapper.ts` | analytics records | type-only response alias와 mapper input type이다. |
 | `admin-operation/presentation/http/admin-audit-response.mapper.ts` | audit/access/raw data records | type-only mapper input type이다. |
 

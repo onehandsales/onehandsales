@@ -1,5 +1,7 @@
 # Deal API Detail
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 구현 경계
 
 - Backend module: `BE/src/modules/deal`
@@ -14,12 +16,9 @@
 | API | 주요 모델 |
 |---|---|
 | stage-counts | `Deal` |
-| list/detail/create/update/export | `Deal`, `DealProduct`, `Company`, `Contact`, `ContactDepartment`, `Product`, `DealFollowingActionLog` |
 | company-options | `Company` |
 | contact-options | `Contact`, `ContactDepartment` |
 | product-options | `Product` |
-| following-action-logs | `Deal`, `DealFollowingActionLog` |
-| memo-logs | `Deal`, `DealMemoLog` |
 
 ## 3. DTO 이름
 
@@ -38,12 +37,6 @@
 | `DealContactOptionResponseDto` | 담당자 옵션 응답 |
 | `DealProductOptionResponseDto` | 제품 옵션 응답 |
 | `DealExportQueryDto` | export query |
-| `DealFollowingActionLogResponseDto` | 다음 행동 로그 응답 |
-| `CreateDealFollowingActionLogRequestDto` | 다음 행동 생성 body |
-| `UpdateDealFollowingActionLogRequestDto` | 다음 행동 수정 body |
-| `DealMemoLogResponseDto` | 메모 로그 응답 |
-| `CreateDealMemoLogRequestDto` | 메모 생성 body |
-| `UpdateDealMemoLogRequestDto` | 메모 수정 body |
 
 ## 4. Validation
 
@@ -111,7 +104,6 @@
 4. transaction을 시작한다.
 5. Deal을 생성한다.
 6. DealProduct를 `productIds` 개수만큼 생성한다.
-7. DealFollowingActionLog를 생성한다.
    - `followingAction`: request body
    - `checkComplete`: `false`
 8. transaction을 commit한다.
@@ -153,7 +145,6 @@ Rollback:
 목록:
 
 1. deal ownership을 검증한다.
-2. `DealFollowingActionLog`를 `dealId`, `userId` 조건으로 `createdAt DESC, id DESC` cursor 방식으로 10개씩 조회한다.
 3. 응답은 `items`, `nextCursor`, `hasNext`를 반환한다.
 
 생성:
@@ -169,12 +160,10 @@ Rollback:
 2. log가 해당 deal과 user에 속하는지 검증한다.
 3. 전달된 `followingAction`, `checkComplete`만 수정한다.
 
-### 5.9 메모 로그
 
 목록:
 
 1. deal ownership을 검증한다.
-2. `DealMemoLog`를 `dealId`, `userId` 조건으로 `createdAt DESC, id DESC` cursor 방식으로 10개씩 조회한다.
 3. 응답은 `items`, `nextCursor`, `hasNext`를 반환한다.
 
 생성:
@@ -196,7 +185,6 @@ Rollback:
 - `POST /api/deals`
   - Deal 생성
   - DealProduct 생성
-  - 최초 DealFollowingActionLog 생성
 - `PATCH /api/deals/:dealId`
   - Deal 기본 정보 수정
   - productIds 전달 시 DealProduct 연결 교체
@@ -204,7 +192,6 @@ Rollback:
 단일 row update라 transaction 필수는 아니지만 ownership 검증과 update 사이 race를 고려할 API:
 
 - `PATCH /api/deals/:dealId/following-action-logs/:followingActionLogId`
-- `PATCH /api/deals/:dealId/memo-logs/:memoLogId`
 
 외부 Provider 호출:
 
@@ -221,8 +208,6 @@ Event name은 영어 dot notation을 사용한다.
 | `GET /api/deals/export/xlsx` | `deal.exported` |
 | `POST /api/deals/:dealId/following-action-logs` | `deal.following_action.created` |
 | `PATCH /api/deals/:dealId/following-action-logs/:followingActionLogId` | `deal.following_action.updated` |
-| `POST /api/deals/:dealId/memo-logs` | `deal.memo.created` |
-| `PATCH /api/deals/:dealId/memo-logs/:memoLogId` | `deal.memo.updated` |
 
 Log context:
 
@@ -271,7 +256,6 @@ Redaction:
 - 목록의 제품 필드는 사용하지 않는다.
 - 상세에서만 `products` 객체 배열을 표시한다.
 - 다음 행동 생성 후 목록의 `latestFollowingAction`, 상세 로그 목록을 invalidate한다.
-- 메모 생성/수정 후 메모 로그 목록을 invalidate한다.
 - export는 blob 응답으로 처리하고 파일명은 `Content-Disposition`을 우선 사용한다.
 
 ## 10. Backend 검증 기준
@@ -294,7 +278,6 @@ Redaction:
 - 소비자: User Web
 - 호환성: 기존 `/api/deals*` path/method/request/response 유지. breaking change 없음
 - 인증: User `AuthGuard`
-- 권한: 현재 로그인한 사용자 본인 `Deal`과 연결 `Company`, `Contact`, `Product`, `DealFollowingActionLog`, `DealMemoLog`만 접근한다.
 
 | API 이름 | API 식별자 | Request 이름 | Response 이름 |
 |---|---|---|---|
@@ -306,8 +289,6 @@ Redaction:
 | 딜 삭제 API | `DeleteDeal` | `DealPathParams` | `EmptyResponse` |
 | 딜 옵션 조회 API | `ListDealOptions` | `EmptyRequest` | `DealCompanyOptionsResponse`, `DealContactOptionsResponse`, `DealProductOptionsResponse` |
 | 딜 활동 목록/수동 생성/수정 API | `DealActivityTimeline` | `DealActivityListQueryDto`, `CreateManualDealActivityDto`, `UpdateManualDealActivityDto` | `DealActivityListResponse`, `DealActivity` |
-| 딜 다음 행동 로그 API | `DealFollowingActionLogs` | `CursorQueryDto`, `CreateDealFollowingActionLogDto`, `UpdateDealFollowingActionLogDto` | `DealFollowingActionLogsResponse`, `DealFollowingActionLog`, `EmptyResponse` |
-| 딜 메모 로그 API | `DealMemoLogs` | `CursorQueryDto`, `CreateDealMemoLogDto`, `UpdateDealMemoLogDto` | `DealMemoLogsResponse`, `DealMemoLog`, `EmptyResponse` |
 | 딜 목록 xlsx 내보내기 API | `ExportDealsXlsx` | `ExportDealsQueryDto` | `ApiBlobResponse` / xlsx file |
 
 Error FE 처리/log level:
@@ -322,7 +303,6 @@ Error FE 처리/log level:
 Transaction:
 
 - 기존 6장 Transaction 기준을 유지한다.
-- `POST /api/deals`는 `Deal`, `DealProduct`, 최초 `DealFollowingActionLog`를 같은 transaction으로 처리한다.
 - `PATCH /api/deals/:dealId`에서 product 연결 교체가 있으면 `Deal`과 `DealProduct` 변경을 같은 transaction으로 처리한다.
 - 조회, 옵션, export, 단일 로그 생성/수정/삭제는 별도 DB transaction을 추가하지 않는다.
 

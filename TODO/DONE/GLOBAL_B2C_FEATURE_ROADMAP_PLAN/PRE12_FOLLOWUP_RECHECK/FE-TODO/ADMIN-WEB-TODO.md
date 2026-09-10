@@ -1,5 +1,7 @@
 # Admin Web Todo
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final / confirmed Admin Web 구현 작업 없음 / BEFORE_12 반영 완료 / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -14,8 +16,6 @@
 
 | 영역 | 현재 기준 |
 | --- | --- |
-| Admin route | `FE/admin-web/src/app/router/router.tsx` 기준 `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/account-requests`, `/trash/recovery-requests`, `/analytics`, `/audit-logs`, `/system`이 활성화되어 있다. |
-| Admin navigation | `FE/admin-web/src/components/layout/admin-shell.tsx` 기준 사용자, Provider 실패, 사용량 분석, 계정 요청, Trash 요청, 감사 로그, 운영 gate가 메뉴에 있다. |
 | Redirect route | `/organizations`, `/subscriptions`, `/support`는 `/`로 redirect한다. 이 상태는 11에서 Billing/Admin subscription 또는 Customer/B2B tenant admin을 구현했다는 의미가 아니다. |
 | Admin API client | `FE/admin-web/src/lib/admin-api-client.ts`는 `/admin/api${path}`를 호출한다. |
 | Smoke E2E | `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 11 Admin 운영 route와 mock API를 검증한다. |
@@ -29,9 +29,7 @@ G12 closeout과 별도 Admin Web contract 확정 전에는 아래 변경을 하�
 - stale architecture 문서에 맞추기 위해 실제 Admin route를 redirect로 되돌림
 - `subscriptions` placeholder를 활성 Billing Admin 화면으로 연결
 - legacy `admin-query`의 `/dashboard`, `/sensitive/raw`, domain별 API path를 현재 계약 없이 활성 route에 연결
-- Admin 직접 Trash 복구 실행 버튼 추가
 - 유료 복구 결제 버튼, refund/invoice/payment action 추가
-- Trash hard delete/purge 버튼 추가
 - Admin 도메인 records 화면에 Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 직접 edit/delete/restore action 추가
 - `/organizations` redirect를 customer-facing tenant admin, organization/member management 화면으로 활성화
 - ImportJob cleanup failure 전용 Admin dashboard/gate를 `PRE12-F13` 전략 없이 추가
@@ -45,7 +43,6 @@ G12 closeout과 별도 Admin Web contract 확정 전에는 아래 변경을 하�
 | --- | --- | --- |
 | 11 Admin 문서 체크리스트 정합성 | 11 `FE-TODO/ADMIN-WEB-TODO.md`와 goal checklist를 실제 route/API 완료 상태와 맞추는 문서 정리. 새 화면 없음 | closed-by-BEFORE_12 |
 | Admin Web architecture/legacy route 정합성 | `FE/admin-web/ARCHITECTURE.md`의 route/API 설명과 비활성 legacy `admin-query` 잔여 코드를 실제 router와 feature-first 구조 기준으로 정리 | closed-by-BEFORE_12 |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | recovery request detail, 실행 confirmation, billing/payment 연결, audit/result 표시 기준 필요 | billing-blocked / recovery-policy |
 | User data export artifact/download | Admin queue에서 artifact 상태, 만료, failed reason, download 가능 여부 표시 기준 필요. 실제 download는 User/export contract와 연결 | 후속 seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, confidence, override, audit trail 화면 필요 여부 결정 | defer / 정책 필요 |
 | Admin direct domain data mutation and recovery action policy | read-only domain records를 edit/delete/restore action으로 바꿀지, confirmation/audit/result/rollback/user notification UX 기준 필요 | defer / ops-policy / `PRE12-F44` |

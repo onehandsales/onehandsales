@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-26
 
@@ -38,7 +40,6 @@
 | 앱 내부 다국어/다국가 데이터 모델 | 07은 MeetingNote AI 후속 작업 범위만 다룬다. |
 | 제품 분석 event taxonomy | 07은 provider log만 포함하고 제품 분석 pipeline은 만들지 않는다. |
 | backup/restore/장애 대응 운영 절차 | provider log 기반은 포함하지만 운영 절차는 Data reliability gate로 남긴다. |
-| BusinessCard/Trash 후속 후보 | `NBA-005`, `NBA-007`, `NBA-012`는 각 도메인 후속 계획으로 둔다. |
 
 ## 4. 확정 결정
 

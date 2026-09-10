@@ -1,5 +1,7 @@
 # Goal Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. 목적
@@ -58,7 +60,6 @@
 ## 7. Privacy 리뷰
 
 - [ ] name/email/phone/companyName/contactName이 payload에 없다.
-- [ ] memo/private memo/meeting note body가 payload에 없다.
 - [ ] AI prompt/raw response/provider raw response가 payload에 없다.
 - [ ] token/authorization header/provider token이 payload/log에 없다.
 - [ ] deletion/retention 정책과 충돌하지 않는다.

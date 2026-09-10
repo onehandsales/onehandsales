@@ -1,12 +1,13 @@
 # G05 Complex Flow UX
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P1
 담당 영역: FE/user-web
 
 ## 1. 목표
 
-일정, 회의록, 명함 스캔, Import, Trash처럼 상태가 복잡한 화면의 UX를 정리한다.
 
 ## 2. 먼저 읽을 문서
 
@@ -27,12 +28,10 @@
 - `FE/user-web/src/pages/meeting-notes/*`
 - `FE/user-web/src/pages/business-cards/*`
 - `FE/user-web/src/pages/import/*`
-- `FE/user-web/src/pages/trash/*`
 - `FE/user-web/src/features/schedule/components/*`
 - `FE/user-web/src/features/meeting-note/components/*`
 - `FE/user-web/src/features/business-card/components/*`
 - `FE/user-web/src/features/import-export/components/*`
-- `FE/user-web/src/features/trash/components/*`
 
 ## 4. 작업 내용
 
@@ -70,17 +69,14 @@
 - 오류 셀 메시지가 누락된 셀에만 보이는지 확인한다.
 - 확정 전 job in-memory 한계가 사용자 혼란을 만들면 UX 문구 또는 후속 분리로 기록한다.
 
-### Trash
 
 - 목록, 상세 modal, 복구 action이 명확해야 한다.
 - 복구 성공/실패 문구가 안전해야 한다.
-- private memo 원문이 복구 전 preview에 과하게 노출되지 않는지 확인한다.
 - 삭제된 항목도 원래 sales record 유형과 연결 맥락을 알아볼 수 있어야 한다.
 - 목록 row는 삭제된 record를 찾고 판단하기 위한 업무용 밀도를 유지하되, 복구 전 민감 정보 preview를 과하게 늘리지 않는다.
 
 ## 4A. UX 기준
 
-- 일정/회의록/명함 스캔/Import/Trash는 복잡한 보조 기능이지만, 화면 문법은 workspace/page/list/detail 기준을 유지한다.
 - 연결 딜, 회사, 담당자 정보가 필요한 곳에서는 Attio식 linked record 맥락을 보여준다.
 - 목록은 단순 등록일 최신순 확인표가 아니라 record 관계, 상태, 현재 응답에서 가능한 최근 활동, 다음 행동 맥락을 가능한 범위에서 드러내야 한다.
 - 최근 활동 또는 다음 행동 summary가 현재 list response에 부족하면 FE에서 임의로 만들지 않고 BE/API 후속으로 기록한다.
@@ -94,7 +90,6 @@
 - ImportJob 영속화
 - MeetingNote transcript 저장
 - provider call log table 구현
-- Trash 7일 이후 복구 구현
 - FE만의 page size 숫자 변경
 
 ## 6. 검증
@@ -109,16 +104,13 @@ pnpm run test:e2e
 
 ## 7. 완료 기준
 
-- 일정/회의록/명함/Import/Trash의 주요 상태가 사용자에게 안전하게 보인다.
 - 복잡한 흐름 화면도 Notion + Attio reference gate를 통과한다.
-- 회의록/명함/Trash 등 목록형 화면이 조용하고 조밀한 record list로 보이며, 연결 record와 현재 응답에서 가능한 다음 행동/상태 맥락이 등록일보다 우선된다.
 - provider failure와 validation failure가 내부 정보를 노출하지 않는다.
 - 관련 이슈가 `COMMON/ISSUE-LOG.md`에서 정리된다.
 
 ## 8. 완료 기록
 
 - 완료일: 2026-07-18
-- 구현 파일: `FE/user-web/src/features/schedule/components/schedule-screen.tsx`, `FE/user-web/src/features/meeting-note/components/meeting-note-list-screen.tsx`, `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`, `FE/user-web/src/features/import-export/components/import-screen.tsx`, `FE/user-web/src/features/trash/components/trash-screen.tsx`
 - 문서 파일: `COMMON/ISSUE-LOG.md`, `COMMON/GOAL-WORK-ORDER.md`, `COMMON/API-SPEC/README.md`, `BE-TODO/API-TODO.md`, `FE-TODO/USER-WEB-TODO.md`
 - 화면 검증: `/tmp/onehandsales-g05-final/*.png` 로컬 screenshot. repository에는 보관하지 않는다.
 - 자동 점검 결과: 28개 route/viewport/detail 조합에서 console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건
@@ -129,7 +121,6 @@ pnpm run test:e2e
 - `/app/meeting-notes`는 desktop 56px row, 회사/담당자 + 연결 딜 우선 table, 768px card/list를 적용했다.
 - `/app/business-cards`는 desktop 56px row, 768px card/list, 상태/저장 action 중심 표시, 이미지 미저장 안내, provider 내부값 비노출을 적용했다.
 - `/app/import`는 desktop 56px row, 768px preview table 내부 스크롤, field-level validation 표시를 보강했다.
-- `/app/trash`는 desktop 56px row, 768px card/list, private memo preview masking, restore modal의 안전한 상세 표시를 적용했다.
 
 ### 검증 결과
 
@@ -142,6 +133,5 @@ pnpm run test:e2e
 
 ### 완료 후 검토
 
-- G05 제외 범위인 Schedule week report, Notification, ImportJob 영속화, MeetingNote transcript 저장, provider call log table, Trash 7일 이후 복구, FE 단독 page size 변경은 구현하지 않았다.
 - 현재 API 응답에 없는 실제 최신 활동/다음 행동 summary는 FE에서 임의 생성하지 않았다.
 - 15개 page size 기본 전환은 Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서 계약과 함께 변경해야 하므로 G05에서 제외했다.

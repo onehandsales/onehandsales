@@ -1,5 +1,7 @@
 # Weekly Schedule Report API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조 완료: 이 API spec에 추가할 03 후속 계약 없음. 04/08에서 반영된 Google-origin source/meeting URL과 currency-aware weekly report는 실제 코드에 구현되어 있으며, PDF/범용 ExportJob/반복 일정/AI 고급 리포트는 별도 계획 또는 post-12 후보로 유지한다.
 
 상태: confirmed
@@ -66,9 +68,7 @@
 - `summary.totalScheduleCount`는 distinct schedule row 수이고, `summary.totalScheduleEntryCount`는 `days[].schedules[]`에 들어간 총 표시 row 수다.
 - 연결 딜은 삭제되지 않은 active deal만 포함한다. 조건은 `Deal.deletedAt IS NULL`이다.
 - 딜 status label은 기존 Deal API와 같은 label mapping을 사용한다.
-- 다음 행동은 기존 Deal 목록의 `nextFollowingAction` 기준과 동일하게, 삭제되지 않았고 완료되지 않은 `DealFollowingActionLog` 중 `createdAt ASC`, `id ASC` 첫 항목이다.
 - 제품 요약은 이번 API에 넣지 않는다. `NBA-001`이 끝나기 전 FE가 제품 요약을 꾸며내면 안 된다.
-- 일정 메모 본문, private memo, meeting note body, provider raw response는 보고서 응답과 export에 넣지 않는다.
 - `hasMemo`는 일정에 메모가 있는지 여부만 알려준다. 사용자가 메모 본문을 보려면 기존 일정 상세를 연다.
 - 딜 금액은 현재 Deal list/export API에도 노출되는 사용자 본인 소유 딜 기본 필드이므로 보고서에 포함한다. 단 structured log에는 금액 원문이나 합계를 남기지 않는다.
 - 딜 금액은 기존 Deal 금액 semantics를 그대로 사용한다. 03에서 currency code, 통화 변환, 국가별 금액 정책을 새로 만들지 않는다.
@@ -112,10 +112,8 @@ Deal status:
   - `DealContact`
   - `Company`
   - `Contact`
-  - `DealFollowingActionLog`
 - soft delete:
   - `Deal.deletedAt IS NULL`
-  - `DealFollowingActionLog.deletedAt IS NULL`
   - 연결 회사/담당자는 딜 요약 context로만 반환하며, 삭제 상태가 필요해지기 전까지 이번 response에는 넣지 않는다.
 - audit log: 없음
 - migration: 없음
@@ -381,12 +379,10 @@ Top-level fields:
 13. response DTO로 변환한다.
 14. structured log `schedule.week_report.viewed`를 남긴다.
    - 남기는 값: `userId`, `weekStart`, `timeZone`, `scheduleCount`, `scheduledDayCount`, `distinctLinkedDealCount`
-   - 남기지 않는 값: 일정 제목, 장소, 메모, 딜명, 딜 금액, 담당자명, 회사명, 다음 행동 본문
 
 ### 연결된 DB 스키마
 
 - 생성: 없음
-- 조회: `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog`
 - 수정: 없음
 - 삭제: 없음
 - 감사 로그: 없음
@@ -533,7 +529,6 @@ Excel에 넣지 않는 값:
 - contact ID
 - company ID
 - 일정 메모 본문
-- private memo
 - meeting note body
 - provider raw response
 - 삭제된 딜
@@ -554,12 +549,10 @@ Excel에 넣지 않는 값:
 7. `createXlsxDownloadResponse`로 `StreamableFile`을 반환한다.
 8. structured log `schedule.week_report.exported`를 남긴다.
    - 남기는 값: `userId`, `weekStart`, `timeZone`, `scheduleCount`, `scheduledDayCount`, `distinctLinkedDealCount`, `rowCount`
-   - 남기지 않는 값: 일정 제목, 장소, 메모, 딜명, 딜 금액, 담당자명, 회사명, 다음 행동 본문
 
 ### 연결된 DB 스키마
 
 - 생성: 없음
-- 조회: `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog`
 - 수정: 없음
 - 삭제: 없음
 - 감사 로그: 없음
@@ -731,7 +724,6 @@ Backend:
   - 인증 없으면 401
   - validation 실패 시 파일 생성 안 함
   - xlsx header와 filename 확인
-  - row 내용에 ID/private memo/meeting note body 없음
   - xlsx writer 실패 시 `ScheduleWeekReportExportFailed` 반환
 
 Frontend:

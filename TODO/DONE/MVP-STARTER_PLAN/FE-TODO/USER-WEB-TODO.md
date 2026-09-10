@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 `FE/user-web`은 개인 영업자가 실제로 사용하는 MVP의 첫 번째 클라이언트다.
@@ -80,7 +82,6 @@ FE/user-web/
 | `/imports` | Import 작업 | 3 |
 | `/exports` | Export 작업 | 3 |
 | `/settings` | 설정 | 3 |
-| `/trash` | 휴지통 | 3 |
 | `/search` | 통합검색 결과 | 3 |
 
 ### 앱 Shell
@@ -255,7 +256,6 @@ src/lib/api-client.ts
 - 회사 상세 page
 - 회사 수정 form
 - 회사 로그 CRUD
-- 삭제와 휴지통 이동
 - 복구 진입점
 
 ### 완료 기준
@@ -549,36 +549,16 @@ src/lib/api-client.ts
 - 상단 검색 input
 - 검색 결과 command palette 또는 search sheet
 - entity type grouping
-- 회사/담당자/제품/딜/일정/회의록 기본 검색
-- 삭제 데이터 제외
+- 회사 기본 검색
 - 검색어 2자 이상부터 실행
 - type별 최대 5개 기본 표시
-- Memo 원문과 회의록 원문 비노출
-- 최근 항목과 진행 중 딜 우선 표시
-- 상세 페이지 또는 상세 패널 이동
+- 상세 페이지 이동
 - 모바일 full-screen search sheet
 
 ### 완료 기준
 
-- 한 키워드로 회사, 담당자, 제품, 딜, 일정, 회의록을 찾을 수 있다.
+- 한 키워드로 회사를 찾고 `/app/companies/:companyId`로 이동할 수 있다.
 
-## 15. 휴지통 Feature
-
-### 작업 목록
-
-- 삭제된 회사/담당자/제품/딜/일정/회의록 목록
-- 대상 유형 필터
-- 복구
-- 완전 삭제 예정일 표시
-- 7일 전 알림 상태 표시
-- 즉시 완전 삭제 버튼은 MVP 1차에서 표시하지 않음
-
-### 완료 기준
-
-- 삭제 후 30일 보관 정책이 UI에 반영된다.
-- 휴지통 목록에서 `permanentDeleteAt` 기준 완전 삭제 예정일을 확인할 수 있다.
-- 기존 상세 URL에서 `410 DeletedResource`를 받으면 삭제된 항목 안내와 휴지통/복구 CTA를 표시한다.
-- 수정 중 `409 DeletedResource`를 받으면 저장을 막고 복구 후 수정하라는 안내를 표시한다.
 
 ## 16. 설정 Feature
 
@@ -619,7 +599,6 @@ src/lib/api-client.ts
 - 명함 OCR 실제 연동 flow: 이미지 업로드, 진행 표시, 확인/수정, 확정 저장
 - Import AI 매핑 실제 연동 flow
 - Export flow
-- 휴지통 복구
 - 통합검색
 - 딜 상세 일정/회의록 연결
 
@@ -637,4 +616,3 @@ src/lib/api-client.ts
 - `TODO/DONE/MVP-STARTER_PLAN/FE-TODO/README.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
 - `AGENT/SOFTWARE_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-

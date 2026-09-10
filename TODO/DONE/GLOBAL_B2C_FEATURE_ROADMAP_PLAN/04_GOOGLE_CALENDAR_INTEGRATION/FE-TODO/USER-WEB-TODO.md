@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 최종 업데이트: 2026-07-23
 
@@ -11,7 +13,6 @@
 | `/app/schedules/week` | 주간 보고서. Google-origin active schedule과 meeting URL/source badge 표시 |
 | `/app/schedules/:scheduleId` | Google-origin schedule 상세, meeting URL 버튼, badge, 로컬 수정 상태, 딜/메모 수정 |
 | `/app/settings` | 연동 설정. 연결 상태, 재연결, calendar 선택 관리, 연결 해제 action 제공 |
-| `/app/trash` | `SCHEDULE` 휴지통 항목 표시와 복구 |
 
 ## 2. API Client/State
 
@@ -31,11 +32,9 @@
   - `sourceType`
   - `googleCalendar`
   - `deletedAt`
-  - `trashExpiresAt`
 - schedule form schema에 `meetingUrl` 추가
 - schedule form schema에 `isAllDay` input은 추가하지 않는다.
 - schedule list params에 hidden Google schedule filter 추가
-- Trash type에 `SCHEDULE` target/domain 추가
 
 ## 3. UX 정책
 
@@ -64,7 +63,6 @@
   - `숨긴 Google 일정`
   - `전체`
 - 일정 삭제 확인 modal title은 `일정을 삭제할까요?`로 둔다.
-- 일정 삭제 확인 modal body는 `삭제한 일정은 휴지통으로 이동하며 7일 안에 복구할 수 있어요.`로 둔다.
 
 ## 4. 연결 해제 UX
 
@@ -74,9 +72,7 @@
 |---|---:|---|---|
 | `KEEP` | 예 | Google 연결만 끊고 일정은 유지 | schedule 표시 유지, badge `Google · 연결 끊김` |
 | `HIDE` | 아니오 | Google 연결 끊고 가져온 일정 숨김 | 기본 일정 화면에서 숨김 |
-| `TRASH` | 아니오 | Google 연결 끊고 가져온 일정 휴지통으로 이동 | soft delete, 휴지통 복구 대상 |
 
-`TRASH` 선택 시 연결된 딜/메모가 유지되며 휴지통에서 복구된다는 설명을 둔다.
 
 ## 5. Google-origin schedule 편집 UX
 
@@ -97,7 +93,6 @@
 - Google-origin schedule badge와 meeting URL 버튼이 list/week/detail에 표시된다.
 - Google-origin all-day schedule이 list/week/detail에서 `종일`로 표시된다.
 - hidden Google filter가 Google 삭제/선택 해제/연결 해제 숨김 schedule을 기본 목록에서 분리한다.
-- schedule delete는 휴지통 이동으로 동작하고 `/app/trash`에서 복구된다.
 - 모바일/데스크톱에서 text overlap이 없다.
 
 ## 7. 검증 명령

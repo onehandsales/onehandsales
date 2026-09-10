@@ -1,5 +1,7 @@
 # UX/UI Common QA Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 이번 계획의 QA 범위
 
 이번 계획은 `FE/user-web`의 UX/UI 공통 QA다.
@@ -64,7 +66,6 @@
 - `/app/meeting-notes`
 - `/app/business-cards`
 - `/app/import`
-- `/app/trash`
 
 ### P2
 

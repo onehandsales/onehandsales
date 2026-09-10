@@ -1,5 +1,7 @@
 # References
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 최종 업데이트: 2026-07-22
 
@@ -48,17 +50,13 @@
 
 - `BE/src/modules/schedule`
 - `BE/src/modules/notification`
-- `BE/src/modules/trash`
 - `BE/prisma/schema.prisma`
 - `FE/user-web/src/features/schedule`
 - `FE/user-web/src/features/notification`
-- `FE/user-web/src/features/trash`
 - `FE/user-web/src/pages/settings`
 
 ## 확인한 현재 구현 사실
 
 - `Schedule`은 현재 `scheduleTitle`, `startAt`, `endAt`, `timeZone`, `location`, `memo`와 `ScheduleDeal`을 가진다.
-- `Schedule`은 현재 `meetingUrl`, `deletedAt`, `trashExpiresAt`, Google source metadata가 없다.
 - `ScheduleApplicationService.deleteSchedule`은 현재 hard delete를 수행한다.
 - `ScheduleNotificationReminderUseCase`는 `SCHEDULE_START_REMINDER`를 생성하고, 일정 삭제 시 cancel use case가 있다.
-- Trash target type에는 현재 `SCHEDULE`이 없다.

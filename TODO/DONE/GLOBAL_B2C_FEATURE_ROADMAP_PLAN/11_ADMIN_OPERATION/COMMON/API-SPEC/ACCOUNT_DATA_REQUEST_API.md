@@ -1,5 +1,7 @@
 # Account Data Request API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented
 연결 Goal: G08
 소비자: User Web, Admin Web
@@ -124,7 +126,6 @@ Business Logic:
 3. `scheduledDeletionAt = now + 30일`로 저장한다.
 4. 유예 기간 중 취소 flow를 유지하기 위해 G08에서는 세션 revoke/접근 차단을 적용하지 않는다.
 5. 세션 revoke/접근 차단은 실제 삭제/익명화 job 정책에서 확정한다.
-6. 일반 Trash row hard delete와 섞지 않는다.
 
 Error:
 

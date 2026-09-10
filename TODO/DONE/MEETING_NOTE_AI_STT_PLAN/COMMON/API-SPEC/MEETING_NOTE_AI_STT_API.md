@@ -1,5 +1,7 @@
 # Meeting Note AI/STT Draft API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 공통 계약
 
 - 계약 상태: `implemented`
@@ -178,7 +180,6 @@ Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User W
 - 회의록 저장 전 AI/STT 초안 API가 딜 활동기록을 만들지 않는다.
 - 회의록 저장 후 `영업 딜과 연동` 액션에서 딜을 선택한다.
 - 연결 성공 후 딜 상세 활동기록에는 회의록 링크와 요약을 표시한다.
-- 현재 구현은 별도 `DealActivity` table을 만들지 않고 기존 딜 상세의 활동 로그 저장소인 `DealFollowingActionLog`를 재사용한다.
 - 같은 회의록에 이미 연결된 딜은 중복 생성하지 않고 건너뛴다.
 - 연결 row는 `MeetingNoteDeal`에 추가하며, 회의록 작성 시점의 딜 snapshot을 저장한다.
 
@@ -209,7 +210,6 @@ Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User W
 
 - Backend는 `currentUser.id` 기준으로 회의록과 딜 ownership을 검증한다.
 - 신규 연결 딜마다 `MeetingNoteDeal` row를 생성한다.
-- 신규 연결 딜마다 `DealFollowingActionLog` row를 생성한다.
 - 활동 로그의 `followingAction`에는 회의록 날짜, 회의록 상세 링크, 회의록 요약 snippet을 저장한다.
 - 응답은 갱신된 회의록 상세 payload다.
 
@@ -237,7 +237,6 @@ Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User W
 - audit log transaction 포함 여부: 없음
 - 외부 Provider 호출 위치: application service에서 ownership 검증 후 provider port 호출, DB transaction 밖
 - 최종 저장 API `POST /api/meeting-notes`는 기존 회의록 저장 transaction을 그대로 사용한다.
-- 딜 추가 연동 API `POST /api/meeting-notes/:meetingNoteId/deals`는 `MeetingNoteDeal` 생성과 `DealFollowingActionLog` 생성을 같은 transaction 안에서 처리한다.
 
 ## 9. Observability
 
@@ -257,7 +256,6 @@ Backend 생성 DTO는 `MANUAL`, `TEXT_AI`, `STT_AI`를 받을 수 있다. User W
 - 신규 migration: 없음
 - 조회 model: `Company`, `Contact`, `Product`, `Deal`
 - 최종 저장 model: 기존 `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal`
-- 저장 후 딜 추가 연동 model: 기존 `MeetingNoteDeal`, `DealFollowingActionLog`
 - `MeetingNote.sourceType`: 최종 저장 시 `MANUAL`, `TEXT_AI`, `STT_AI` 허용
 - `MeetingNote.rawText`: 이번 범위에서는 저장하지 않음
 
@@ -290,7 +288,6 @@ Transaction:
 
 - 초안 생성 API는 회의록 row를 만들지 않으므로 업무 data transaction 없음
 - provider call log는 `PENDING` 생성과 `SUCCEEDED/FAILED` 갱신을 짧은 DB write로 분리한다.
-- `POST /api/meeting-notes/:meetingNoteId/deals`는 `MeetingNoteDeal` 생성과 `DealFollowingActionLog` 자동 생성을 같은 transaction으로 처리한다.
 - 외부 Provider 호출은 업무 data transaction 밖에서 수행한다.
 
 Observability:

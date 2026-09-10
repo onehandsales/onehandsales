@@ -1,5 +1,7 @@
 # Architecture Guardrails
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-25
 
@@ -105,7 +107,6 @@ Structured log는 count, id, type, status 같은 안전한 값만 남긴다.
 Logging 금지:
 
 - activity title/body 원문
-- private memo
 - follow-up body 전체
 - meeting note details/rawText
 - provider raw response
@@ -141,6 +142,5 @@ Logging 금지:
 - 자동 activity 수정/삭제 구현
 - Admin API 구현
 - generic activity bus 구현
-- private memo summary 노출
 - FE 단독 page size 변경
 - AI activity 자동 판단

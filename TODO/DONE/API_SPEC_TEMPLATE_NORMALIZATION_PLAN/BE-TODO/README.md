@@ -1,5 +1,7 @@
 # Backend TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: No backend code work / G99 backend diff none
 
 ## 1. 판단
@@ -14,7 +16,6 @@
 
 2026-08-31 G04에서는 BusinessCard, MeetingNote STT, Analytics, Notification controller/DTO/application service를 읽어 Mobile Field 보관 API-SPEC을 보강했으며 Backend 코드는 수정하지 않았다.
 
-2026-08-31 G05에서는 Admin Operation, AccountRequest, Trash controller/DTO/application service와 Prisma schema model을 읽어 Admin Operation 보관 API-SPEC 9개를 보강했으며 Backend 코드는 수정하지 않았다.
 
 2026-08-31 G06에서는 Product, Deal, Contact, Company controller/DTO/application service, 통화/전화/지역 validation helper, Prisma schema model을 읽어 Domain Global Data 복합 API-SPEC을 보강했으며 Backend 코드는 수정하지 않았다.
 
@@ -36,7 +37,6 @@
 - `BE/src/modules/notification`
 - `BE/src/modules/admin-operation`
 - `BE/src/modules/account-request`
-- `BE/src/modules/trash`
 - `BE/src/shared/application/currency`
 - `BE/src/shared/presentation`
 - `BE/prisma/schema.prisma`

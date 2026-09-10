@@ -1,5 +1,7 @@
 # /goal G01 FE Deal Count And Linked Deal Lists
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## /goal 입력문
 
 아래 문서를 먼저 읽고, User Web의 회사/담당자/제품 화면에 새 딜 count와 연결 딜 목록 API를 반영해줘.
@@ -89,7 +91,6 @@ Backend 추가 API가 구현된 뒤 User Web에서 회사/담당자/제품 화�
 
 - Backend 코드는 이 goal에서 수정하지 않는다.
 - Admin Web은 이 goal 범위가 아니다.
-- 회사/담당자/제품의 기존 생성/수정/메모 동작을 변경하지 않는다.
 - 딜 생성/수정 API stale contract 정렬은 이 goal 범위가 아니다. 단, 타입 충돌이 생기면 필요한 최소 보정만 한다.
 - 제품 화면이 아직 구 API 계약이면 `PRODUCT_DOMAIN_PLAN/FE-TODO/G01-FE-PRODUCT-PAGES.goal.md`와 충돌하지 않게 새 Backend 계약 기준으로 정렬한다.
 

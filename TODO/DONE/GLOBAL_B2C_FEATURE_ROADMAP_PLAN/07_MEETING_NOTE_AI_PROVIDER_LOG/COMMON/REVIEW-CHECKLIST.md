@@ -1,5 +1,7 @@
 # Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 최종 업데이트: 2026-07-26
 목적: 07 구현 후 검토자가 확인할 체크리스트
@@ -14,7 +16,6 @@
 - [x] 자동 저장/자동 발송이 구현되지 않았다.
 - [x] `NEXT_BACKEND_API_BACKLOG_PLAN` 반영 범위가 `SOURCE-PLAN-COVERAGE.md`와 일치한다.
 - [x] `USER_WEB_PRODUCTIZATION_GAP_PLAN` 반영 범위가 `SOURCE-PLAN-COVERAGE.md`와 일치한다.
-- [x] BusinessCard, Trash, Admin, Payment, Localization, Analytics, Backup/restore가 07에 섞이지 않았다.
 - [x] `NBA-011`은 transcript table이 아니라 공통 `AiProviderCallLog` 확장으로 처리됐다.
 - [x] `NBA-004` 목록 summary는 제외되고 회의록 상세 next action/follow-up 후보만 포함됐다.
 

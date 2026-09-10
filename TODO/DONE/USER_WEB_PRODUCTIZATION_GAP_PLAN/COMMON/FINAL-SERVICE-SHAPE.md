@@ -1,5 +1,7 @@
 # Final Service Shape
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태이며 `NBA-003` 잔여 record summary/generic summary/record별 timeline은 PRE12 구현 대상이 아닌 후속 B2B/team CRM 전략 후보로 둔다.
 
 상태: DONE / Source Gap Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -19,7 +21,6 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 
 | 영역 | 최종적으로 필요한 상태 |
 |---|---|
-| 핵심 업무 | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 회의록 AI 후속 작업, 명함 OCR, Import, Search, Trash, Export를 한 사람의 영업 루프로 사용할 수 있다. |
 | UX/UI | Notion식 workspace/page/database/detail 문법과 Attio식 CRM linked record 맥락이 살아 있다. |
 | 홈 | 오늘 일정, 진행 딜, 다음 행동, 최근 회의록이 바로 읽힌다. |
 | 딜 | 단계, 금액, 회사/담당자/제품, 다음 행동, 마감일, 최신 활동이 목록에서 빠르게 비교된다. Deal list products/latest activity와 Contact dealCount는 06에서 구현 완료됐다. Company/Contact/Product latest summary는 PRE12 구현 대상이 아닌 후속 전략 재검토로 남긴다. |
@@ -27,7 +28,6 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 상세 | 속성, linked record, 메모, 일정/회의록, 활동 맥락이 분명하다. 딜 상세 `DealActivity` timeline은 06에서 구현 완료됐다. |
 | 모바일 브라우저 | 390px/360px에서 핵심 생성/수정/조회/복구/업로드 흐름이 깨지지 않는다. 10에서 모바일 명함 촬영, 회의 음성 기록, local draft, push permission UX를 구현하고 mobile QA를 완료했다. |
 | 브라우저 | Chrome/Edge에서 reload, history, multi-tab, slow network 상태가 안정적이다. |
-| 보안 | 다른 사용자 데이터가 Search, Trash, Export, 직접 API 접근에서 섞이지 않는다. |
 | DB/운영 | Prisma generate, migration status, seed 정책, DB target이 배포 전 판단 가능하다. |
 
 ## 3. Global B2C 첫 판매 가능형
@@ -41,7 +41,6 @@ MVP는 판매 버전이 아니다. 이 단계의 목적은 개인 영업자의 �
 | 세금/컴플라이언스 | VAT/GST/판매세 또는 Merchant of Record 처리가 가능하다. |
 | 앱 내부 다국어 | KR/US/CA 우선 판매 기준으로 `/app` 내부 locale과 UX writing이 준비된다. 기본 `ko-KR`/`en` app i18n은 08에서 구현 완료됐다. |
 | 다국가 데이터 | 전화번호, 날짜/시간, 통화, 주소/지역 표시가 국가별로 자연스럽다. User global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization은 08에서 구현 완료됐고, CA/CAD/캐나다 전화번호는 후속 구현 범위다. |
-| Admin 운영 | 사용자, 도메인 데이터, 민감정보 마스킹, 감사 로그, provider 실패, Trash/account/data request, system gate를 운영할 수 있다. 11에서 최소 운영 범위는 완료됐고, 구독/결제 이슈 운영은 `TODO/PADDLE_PLAN` Billing 도메인과 연결한다. |
 | 고객 신뢰 | 약관, 개인정보, 보안, 계정 삭제, 데이터 export, 환불 정책이 실제 판매 범위와 맞는다. |
 | 제품 분석 | activation, retention, paid conversion, churn, ARPU, LTV/CAC, AI cost/user를 추적한다. 09에서 event taxonomy, route/server event, activation/retention snapshot, AI usage/cost foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 `TODO/PADDLE_PLAN` Billing source 연결 후 완성된다. |
 | 지원/운영 | 로그인 문제, OCR/STT/Calendar/Push provider 실패, 데이터 복구 요청은 11 Admin 운영으로 처리할 수 있다. 결제 실패와 구독 문제는 `TODO/PADDLE_PLAN` Billing 운영 범위다. |

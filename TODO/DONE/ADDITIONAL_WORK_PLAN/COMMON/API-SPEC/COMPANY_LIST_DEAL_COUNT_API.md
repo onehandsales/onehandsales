@@ -1,5 +1,7 @@
 # Company List Deal Count API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 회사 목록 페이지네이션 API 응답에 회사별 연결 딜 수 `dealCount`를 추가한다.
@@ -125,7 +127,6 @@ dealCount: number
 - event key: `company.listed`
 - audit log: 없음
 - request id: 사용
-- redaction: 회사 검색어 원문, 메모 원문 logging 금지
 - log context 권장값: `userId`, `filterKeys`, `page`, `itemCount`
 
 ## 10. Error

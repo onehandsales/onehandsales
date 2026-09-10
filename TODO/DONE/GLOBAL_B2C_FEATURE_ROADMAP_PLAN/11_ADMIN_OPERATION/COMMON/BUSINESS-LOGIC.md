@@ -1,5 +1,7 @@
 # Business Logic
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. Admin Authorization
@@ -20,7 +22,6 @@
 | phone | `+82 10-****-1234` |
 | provider email | `go***@example.com` |
 | meeting note body | preview 80자 이하 또는 `본문 숨김` |
-| memo | preview 80자 이하, private memo 원문 제외 |
 | token/secret | response 포함 금지 |
 
 raw access API에서도 provider raw, prompt, token, API key, quota detail은 제외한다.
@@ -42,7 +43,6 @@ Admin 주요 조회/action은 append-only audit를 남긴다.
 
 1. User 기본 정보를 masked로 조회한다.
 2. 도메인별 count를 계산한다.
-3. Trash count와 무료 복구 만료 count를 계산한다.
 4. 09 analytics snapshot/event 기반 activation/최근 활동 summary를 결합한다.
 5. AI usage summary는 `AiProviderCallLog`의 count/token/cost/status만 사용한다.
 6. notification summary는 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`에서 설정값, active/revoked 구독 수, 최근 safe delivery 상태만 계산한다.
@@ -58,13 +58,9 @@ Admin 주요 조회/action은 append-only audit를 남긴다.
 4. provider failure 화면에는 `NotificationDeliveryAttempt`의 safe error code/message/retryable만 연결한다.
 5. browser permission analytics는 `ProductAnalyticsEvent` allowlist payload의 `permissionState`, `browserPushEnabled` 집계만 사용한다.
 
-## 6. Trash
 
 일반 도메인 삭제는 soft delete다.
 
-1. 삭제 시 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 채운다.
-2. `trashExpiresAt` 이전에는 User Web에서 self-restore 가능하다.
-3. `trashExpiresAt` 이후에는 User Web 복구 버튼을 비활성화한다.
 4. 만료 후에도 row를 hard delete하지 않는다.
 5. 사용자는 `복구 문의`를 생성할 수 있다.
 6. Admin은 요약과 목록, 복구 문의 queue를 볼 수 있다.
@@ -82,7 +78,6 @@ Admin provider failure는 safe log read model이다.
 
 ## 8. Account Deletion
 
-계정 삭제는 일반 Trash와 다르다.
 
 1. 사용자가 `/app/settings`에서 삭제 요청을 생성한다.
 2. request row를 만들고 `scheduledDeletionAt=requestedAt+30일`을 저장한다.

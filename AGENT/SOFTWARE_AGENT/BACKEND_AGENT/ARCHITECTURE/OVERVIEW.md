@@ -20,4 +20,4 @@ Backend는 NestJS module 구조와 Prisma repository를 사용한다. 현재 활
 - 모든 업무 API는 `AuthGuard` 이후 current user를 사용한다.
 - 관리자 권한 확인은 `AdminGuard`와 `UserRole.ADMIN`을 사용한다.
 - Prisma transaction은 다중 row 변경이 필요한 생성/수정에 사용한다.
-- Company 삭제 API와 TrashModule은 현재 제거되어 있다.
+- Company 보조 로그와 복구 모듈은 현재 연결되어 있지 않다.

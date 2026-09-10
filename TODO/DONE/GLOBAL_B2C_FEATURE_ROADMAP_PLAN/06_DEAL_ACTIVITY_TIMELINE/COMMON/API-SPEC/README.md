@@ -1,5 +1,7 @@
 # API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented
 확정일: 2026-07-25
 구현일: 2026-07-26
@@ -34,7 +36,6 @@ G07 closeout에서 API spec과 구현 결과가 일치함을 확인했다.
 - Admin API는 만들지 않는다.
 - 모든 API는 AuthGuard를 사용한다.
 - 다른 사용자 딜/활동 접근은 존재 여부를 노출하지 않고 안전한 404로 처리한다.
-- private memo, provider raw response, follow-up body 전체, meeting note raw text는 response summary에 넣지 않는다.
 - mutation은 transaction 계약을 문서와 코드에 맞춘다.
 - FE는 API 응답에 없는 summary/count를 임의로 만들지 않는다.
 - request/response body가 있는 API는 JSON 예시를 포함한다.

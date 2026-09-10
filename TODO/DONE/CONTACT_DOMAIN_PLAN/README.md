@@ -1,12 +1,13 @@
 # Contact Domain Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 목적
 
 사용자가 사용하는 담당자 페이지의 기본 기능을 FE와 BE가 같은 계약으로 구현할 수 있게 실행 문서를 둔다.
 
 이 계획에서 `담당자`, `담당자`, `Contact`는 같은 의미다. `Contact`는 반드시 `Company`에 소속된 사람이며, 회사 없이 저장하지 않는다.
 
-관리자 페이지, 휴지통, soft delete, 명함 OCR, 딜/제품/일정/회의록 연결 수 계산은 현재 범위에서 제외한다.
 
 ## 필수 선행 정본
 
@@ -75,12 +76,6 @@ BE가 책임지는 API:
 - `POST /api/contacts`
 - `GET /api/contacts/:contactId`
 - `PATCH /api/contacts/:contactId`
-- `POST /api/contacts/:contactId/memo-logs`
-- `GET /api/contacts/:contactId/memo-logs`
-- `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
-- `POST /api/contacts/:contactId/private-memo-logs`
-- `GET /api/contacts/:contactId/private-memo-logs`
-- `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
 
 FE가 책임지는 화면:
 
@@ -95,13 +90,10 @@ FE가 책임지는 화면:
 - 담당자 직급 생성/삭제
 - 담당자 단건 상세
 - 회사/이름/핸드폰번호/이메일/부서/직급 수정
-- 담당자 일반 메모 로그 생성/조회/수정
-- 담당자 개인 비밀 메모 로그 생성/조회/수정
 
 ## 현재 만들지 않는 기능
 
 - 관리자 담당자 관리 화면
-- 담당자 휴지통
 - 담당자 soft delete
 - 담당자 삭제 API
 - 담당자 부서 수정 API
@@ -122,12 +114,6 @@ FE가 책임지는 화면:
 - 담당자 목록에는 `updatedAt`이 나오지 않는다.
 - 담당자 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬을 반영하고 `page`는 제외한다.
 - 담당자 필터용 회사/부서/직급 전체 조회에는 `createdAt`이 나오지 않는다.
-- 담당자 생성의 `contactMemo`는 값이 있을 때만 `ContactMemoLog` 첫 데이터로 저장된다.
-- 담당자 생성의 `contactMemo`로 만들어진 첫 메모 로그는 `memoType`이 `초기 메모`다.
-- 독립적인 담당자 일반 메모 로그 생성은 `memo`, `memoType`을 받는다.
-- 담당자 일반 메모 로그 수정은 `memo`, `memoType` 중 최소 1개를 수정할 수 있다.
-- 독립적인 담당자 개인 비밀 메모 로그 생성/수정은 `memo`만 받는다.
-- 비밀 메모는 DB에 평문으로 저장되지 않는다.
 
 ## 관련 문서
 

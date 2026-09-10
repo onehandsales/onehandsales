@@ -1,5 +1,7 @@
 # Planning Review
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 검토일: 2026-07-25
 최종 업데이트: 2026-08-06
@@ -62,13 +64,9 @@
 | 영역 | 확인 결과 | G02~G07 적용 기준 |
 |---|---|---|
 | Prisma schema | 현재 `DealActivityType`, `DealActivitySourceType`, `DealActivity`, `User.dealActivities`, `Deal.activities`는 아직 없다. 기존 enum/model 이름과 충돌은 확인되지 않았다. | G02에서 신규 enum/model/relation을 추가한다. 기존 migration 파일은 수정하지 않는다. |
-| User/Deal relation | `User`에는 `dealFollowingActionLogs`, `dealMemoLogs`, `dealProducts` 등이 있고 `Deal`에는 `followingActionLogs`, `memoLogs`, `scheduleDeals`, `meetingNoteDeals`가 있다. | `User.dealActivities`, `Deal.activities` relation 추가 위치는 기존 Deal relation 근처로 둔다. |
-| Deal route | `DealController`에는 `GET/POST /api/deals/:dealId/activities`, `PATCH /api/deals/:dealId/activities/:activityId`가 없다. 기존 `following-action-logs`, `memo-logs` route와 충돌하지 않는다. | G03에서 새 route를 `DealController`에 추가한다. User API `/api/*`만 사용한다. |
-| Deal 생성 | `DealApplicationService.createDeal`은 딜, 회사/담당자/제품 연결, 초기 `DealFollowingActionLog`, 초기 메모, deal due reminder를 같은 transaction에서 처리한다. | G03에서 같은 transaction 안에 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`를 모두 생성한다. 초기 메모는 06 범위가 아니므로 activity로 만들지 않는다. |
 | Deal 단계 변경 | `updateDeal`은 기존 딜을 먼저 조회하고 transaction 안에서 `updateDeal`과 relation 교체/reminder 갱신을 수행한다. | G03에서 기존 상태와 요청 상태를 비교해 실제 변경일 때만 `STAGE_CHANGED`를 같은 transaction에 생성한다. |
 | 다음 행동 | 단독 다음 행동 생성/수정은 현재 transaction으로 감싸지 않는다. 삭제는 soft delete지만 06 activity 삭제/삭제 activity 범위가 아니다. | G03에서 생성/완료 변경을 transaction으로 감싸 `NEXT_ACTION_CREATED`, `NEXT_ACTION_COMPLETION_CHANGED`를 함께 쓴다. 삭제 activity는 만들지 않는다. |
 | Schedule 연결 | Schedule 생성/수정은 transaction이 있고 수정 시 dealId diff를 계산한다. 단 `createScheduleDeals`/`deleteScheduleDeals`는 현재 `ScheduleDeal.id`를 반환하지 않는다. | G03에서 생성된/삭제 직전 `ScheduleDeal.id`와 schedule snapshot을 transaction 안에서 확보할 repository 계약을 추가한다. Schedule soft delete만으로 `SCHEDULE_UNLINKED`를 만들지 않는다. |
-| MeetingNote 연결 | 생성/수정은 `replaceMeetingNoteRelations`가 delete 후 recreate 방식이다. 별도 `linkMeetingNoteDeals`는 `MeetingNoteDeal` 생성 후 legacy `DealFollowingActionLog` proxy 로그를 만든다. | G03에서 replace 전 기존 deal relation을 조회해 diff를 먼저 계산한다. `MeetingNoteDeal.id`와 회의록 snapshot을 기준으로 `MEETING_NOTE_LINKED/UNLINKED`를 만들고, legacy proxy 문구를 activity summary로 재사용하지 않는다. |
 | Follow-up 발송 | provider 호출은 transaction 밖이고, `markDeliverySucceeded/Failed`가 `FollowUpDeliveryAttempt`와 `FollowUpMessage` 상태를 transaction 안에서 갱신한다. | G03에서 같은 transaction 안에 `FOLLOW_UP_SENT/FAILED`를 만들고 `sourceId=FollowUpDeliveryAttempt.id`, `metadataJson.messageId=FollowUpMessage.id`를 사용한다. `DEAL` target만 딜 activity로 기록한다. |
 | Module dependency | Deal/Schedule/MeetingNote/Follow-up 각 repository가 Prisma transaction client를 감싸는 패턴을 사용한다. MeetingNoteModule은 현재 repository를 export하지 않는다. | G03에서 다른 feature module이 `DealApplicationService`를 import하지 않는다. `PrismaDealActivityRepository` 같은 writer helper를 transaction client로 생성해 쓰는 방식으로 module cycle을 피한다. |
 | Contact dealCount | Contact list는 page size 15이고 현재 `dealCount` field는 없다. | G05에서 현재 page contact IDs만 aggregation해 `dealCount`를 추가한다. |
@@ -88,11 +86,9 @@
 - follow-up 본문 전체는 timeline 목록에 넣지 않는다.
 - follow-up 발송 성공/실패는 `FollowUpDeliveryAttempt.id`를 sourceId로 사용하고 messageId는 metadata에 둔다.
 - 딜 생성 시 초기 다음 행동 row가 함께 생성되므로 `DEAL_CREATED`와 초기 `NEXT_ACTION_CREATED`를 같은 transaction에서 처리한다.
-- private memo, meeting note raw text, provider raw response를 summary에 넣지 않는다.
 - schedule/meeting-note/follow-up 모듈에 activity writer를 연결할 때 module dependency cycle을 피한다.
 - 기존 following-action/memo API를 즉시 제거하지 않는다.
 - Schedule/MeetingNote 연결 activity는 relation row 삭제 전에 `ScheduleDeal.id`/`MeetingNoteDeal.id`를 확보한다.
-- MeetingNote의 legacy `DealFollowingActionLog` proxy 문구는 새 `DealActivity` summary로 재사용하지 않는다.
 - G04에서는 기존 다음 행동/메모/follow-up 섹션을 갑자기 제거하지 않되, 새 `딜 활동`과 같은 이력이 중복 primary activity처럼 보이지 않게 배치한다.
 
 ## 8. 후속 결정 후보

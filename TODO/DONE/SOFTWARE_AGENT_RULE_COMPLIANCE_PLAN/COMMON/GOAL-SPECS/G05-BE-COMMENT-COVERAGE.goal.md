@@ -1,5 +1,7 @@
 # G05 BE Comment Coverage
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / Verified / Re-review Follow-up Recorded
 영역: BE
 우선순위: Medium
@@ -103,6 +105,5 @@ pnpm.cmd test
 
 후속 보완 기록:
 
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `getUserTrashSummary`, `listUserTrashRecords`, `listRecoveryRequests`는 public application orchestration method이고 `// 기능 : ...`은 있으나 numbered step comment가 없다.
 - 위 3개 method는 G05의 "controller와 application orchestration의 주요 흐름 numbered step comment" 기준에 맞춰 후속 보완이 필요하다.
 - 누락되어 있던 G05 완료 로그는 `TODO_LOG/2026-08-11/G05_BE_COMMENT_COVERAGE/WORK_LOG.md`에 보강했다.

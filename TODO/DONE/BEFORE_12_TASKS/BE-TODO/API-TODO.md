@@ -1,5 +1,7 @@
 # Backend API TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G01-G06 Done / No New API Confirmed
 계약 상태: confirmed / No new API
 
@@ -39,7 +41,6 @@ G01에서만 기존 User API를 smoke에 사용한다.
 - `BE/src/modules/notification`
 - `BE/src/modules/admin-operation`
 - `BE/src/modules/account-request`
-- `BE/src/modules/trash`
 - `BE/src/shared`
 - `BE/prisma/schema.prisma`
 

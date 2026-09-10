@@ -1,5 +1,7 @@
 # MeetingNote Deal Link Activity Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업 일시
 
 - 2026-06-19 KST
@@ -17,14 +19,12 @@
   - `MeetingNoteApplicationService.linkMeetingNoteDeals` 추가
   - 기존 연결 딜은 중복 생성하지 않고 건너뜀
   - 신규 연결마다 `MeetingNoteDeal` snapshot row 생성
-  - 신규 연결마다 `DealFollowingActionLog` row 생성
 - User Web
   - 회의록 상세 화면 우측에 `영업 딜과 연동` 카드 추가
   - 딜 검색/선택 후 새 API 호출
   - 성공 시 회의록 상세, 딜 상세, 딜 활동 로그 query cache 갱신
 - 문서
   - API spec, PM/UX/DB/Frontend/Backend 상태 문서 갱신
-  - 현재 구현은 범용 `DealActivity` table 없이 `DealFollowingActionLog`를 재사용하는 방식으로 기록
 
 ## 검증
 

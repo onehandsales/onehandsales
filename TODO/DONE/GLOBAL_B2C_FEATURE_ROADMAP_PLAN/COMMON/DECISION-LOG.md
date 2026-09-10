@@ -1,5 +1,7 @@
 # Decision Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Decision Baseline / Roadmap DONE / Billing moved to `TODO/PADDLE_PLAN`
 기준일: 2026-08-11
 
@@ -63,15 +65,12 @@
 |---|---|---|
 | 01 ImportJob Persistence | Done | `ImportJob`, `ImportJobRow`, `ImportJobError`, `ImportUploadedFile`로 확정 전 작업을 DB에 저장한다. 작업 재개 TTL은 7일로 둔다. 원본 파일 binary는 DB에 저장하지 않고 storage에 두며 장기 보관하지 않는다. confirm/cancel/expire 후 원본 파일 삭제를 추적한다. resume route와 cancel API를 제공한다. 구현 및 QA closeout 완료. 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 미완성이 아니라 post-12 scale/source/Admin ops 후보로 분리한다. |
 | 02 Notification Reminder | Done | 2026-07-22 구현 및 QA closeout 완료. 1차 채널은 앱 안 알림, browser push, email을 모두 포함한다. 1차 알림 대상은 일정 시작 전과 딜 마감일만 포함한다. 일정 알림은 시작 30분 전, 딜 마감 알림은 사용자 timezone 기준 마감일 1일 전 오전 9시에 보낸다. 다음 행동 알림은 딜 데이터 구조 변경 가능성이 있어 06 DealActivity/다음 행동 고도화에서 다시 설계한다. 회의록 후속 알림은 07에서 다시 설계한다. 실제 SMTP/Web Push provider smoke는 2026-08-04 사용자 확인 기준 운영 완료됐다. |
-| 03 Weekly Schedule Report | Done | 2026-07-22 구현 및 QA closeout 완료. 03은 주간 보고서 화면과 동기식 Excel 다운로드까지만 구현했다. `NBA-009 Schedule week report`를 confirmed 기능 goal로 승격했고, API는 `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`로 확정/구현했다. `weekStart`는 월요일 date-only로 받고, 다일 일정은 겹치는 날짜마다 표시하며, 일정 없는 날도 7일 모두 표시한다. 딜 금액/단계/마감일/회사/담당자/다음 행동은 포함하되 일정 메모 본문은 제외하고 `hasMemo`만 둔다. 새 DB 구조와 migration은 만들지 않았다. 03은 Global B2C retention/Product UX 일부를 강화하지만 첫 판매 gate 전체를 닫지 않는다. 결제/Admin/앱 전체 다국어/통화 모델/제품 분석, 제품 요약, PDF, `/app/export`, 범용 ExportJob, 반복 일정 정식 모델은 별도 사용자 결정/goal로 분리한다. |
-| 04 Google Calendar Integration | Done | 2026-07-23 구현 및 QA closeout 완료. Google login과 Calendar scope를 분리했고, 사용자당 Google Calendar connection 1개에서 primary calendar 기본 선택과 추가 calendar 선택을 구현했다. 04는 Google read-only import이며 Google export, 양방향 sync, webhook, 반복 일정 정식 모델, 참석자 import, Google reminders import는 제외했다. `/app/schedules` 진입 시 10분 freshness 자동 sync와 수동 sync를 제공한다. sync range는 사용자 timezone 기준 과거 1개월/미래 3개월이다. Google description은 최초 import 때만 `Schedule.memo`로 저장하고 이후 sync는 memo를 덮어쓰지 않는다. safe `https://` meeting URL, all-day `isAllDay`, source badge를 구현했다. Google-origin schedule도 로컬 수정/딜 연결/메모/한손 `SCHEDULE_START_REMINDER`를 지원하며, 로컬 수정은 `Google · 로컬 수정` badge와 `LOCAL_MODIFIED`로 보호한다. Google 삭제/선택 해제/연결 해제 숨김은 물리 삭제하지 않고 보존한다. Schedule 삭제는 전체적으로 soft delete/Trash로 전환했고, 연결 해제는 `KEEP/HIDE/TRASH` 중 선택하며 기본은 `KEEP`이다. 실제 Google provider smoke는 2026-08-04 사용자 확인 기준 운영 완료됐다. |
 | 05 AI Weekly Sales Report | Done / Provider Smoke Closeout Complete | 저장형 AI weekly report, follow-up delivery, Gmail/Microsoft 실제 email provider adapter, reconnect, safe failure, smoke allowlist 구현 및 자동 검증 완료. Gmail/Microsoft provider smoke closeout은 2026-08-09 PRE12/BEFORE_12에서 완료 처리됐으며, SMS 실제 provider와 고급 딜 리스크/자동화는 후속이다. |
 | 06 Deal Activity Timeline | Done | `DealActivity` 정본 모델/API/UX, 딜 목록 products/latest activity, 담당자 dealCount, page size 15 계약, 06 범위 DB/Prisma gate closeout 완료. Company/Contact/Product latest summary와 범용 activity bus는 후속이다. |
 | 07 MeetingNote AI Provider Log | Done | 공통 `AiProviderCallLog` target 확장, MeetingNote AI/STT safe failure, 상세 next action/follow-up draft, User Web AI 후속 작업 UX 구현 및 QA closeout 완료. 목록 summary, 자동 발송, Admin audit/retention은 후속이다. |
 | 08 Global Data I18N | Done | `/app` `ko-KR`/`en` i18n, user global settings, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth 구현 완료. 2026-07-29 현재 DB 최신 상태 재확인 완료. 2026-07-29 사용자 확인 기준 LINE/Apple 운영 설정과 실제 OAuth 동작도 완료됐다. |
 | 09 Product Analytics | Done | 자체 DB `ProductAnalyticsEvent` 기반 allowlist event taxonomy, `POST /api/analytics/events`, User Web route event wrapper, core server event logging, activation/retention snapshot, 365일 raw event purge, `AiProviderCallLog` 기반 AI usage summary를 구현하고 QA closeout을 완료했다. billing/paywall/churn event는 reserved taxonomy로만 남기고 실제 runtime flow는 `TODO/PADDLE_PLAN`에서 연결한다. Admin analytics UI/API는 11에서 구현 완료됐다. |
 | 10 Mobile PWA Field Use | Done | 2026-07-31 구현 및 QA closeout 완료. 모바일 웹 현장 입력성에 집중했고, 명함 후면 카메라/앨범 선택, OCR safe failure 계약, 회의 직후 녹음과 음성 파일 fallback, FE local draft 24시간 TTL, browser push permission UX, mobile field analytics event를 구현했다. server draft DB, audio/image binary DB 저장, provider raw detail/log/analytics/local draft 저장, PWA install/offline shell은 제외했다. PWA install/offline shell은 후속 지표와 사용자 결정으로 판단한다. |
-| 11 Admin Operation | Done | 2026-08-01 구현 및 QA closeout 완료. `INITIAL_ADMIN_EMAILS` bootstrap, `/admin/api/*` AuthGuard/AdminGuard 분리, 사용자/도메인 read-only 운영 조회, masking, raw access reason, append-only audit/sensitive log, Trash 만료/복구 문의, account deletion/data export request, provider failure, analytics overview, system operation gate를 구현했다. 결제/구독/plan/payment/invoice/refund는 11에서 제외했고 2026-08-11 기준 `TODO/PADDLE_PLAN`으로 이관했다. |
 | 12 Billing Subscription Tax | Moved / Deferred | 기존 결정 baseline은 `TODO/PADDLE_PLAN`으로 이관했다. Paddle은 Merchant of Record 우선 후보이고 Stripe 직접 결제는 fallback이다. 판매 rollout, 가격, plan, entitlement, AI 사용량 limit, failed payment, refund, chargeback, invoice/tax 정책은 UX/UI 유지보수와 100명 베타 이후 `TODO/PADDLE_PLAN`에서 confirmed로 승격한다. |
 
 ## 4. 구현 전 승격 규칙
@@ -84,7 +83,6 @@
 4. 신규 migration이 있으면 `COMMON/FIRST-SALE-GATE-MAP.md`의 `NBA-014` 체크를 선행 조건으로 goal spec에 넣는다.
 5. User Web 변경이 있으면 `FE-TODO/USER-WEB-TODO.md`에 route, state, query key, empty/error/success를 적는다.
 6. `/app` 핵심 업무 흐름을 바꾸면 Product UX first-sale gate 영향 여부를 적는다.
-7. Trash/export/delete/retention/billing/policy를 건드리면 Trust/policy first-sale gate 영향 여부를 적는다.
 8. `/goal` 실행 전 `COMMON/GOAL-SPECS`와 `COMMON/PLANNING-REVIEW.md`를 만든다.
 
 ## 5. 관련 문서

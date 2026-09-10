@@ -1,9 +1,10 @@
 # Google Calendar Integration API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: confirmed
 최종 업데이트: 2026-07-23
 소비자: User Web
-호환성: 신규 Google Calendar API + 기존 Schedule/Trash API 확장
 아키텍처/UXUI 기준: `../ARCHITECTURE-GUARDRAILS.md`
 
 ## 1. 결정 요약
@@ -28,10 +29,8 @@
 | `GET /api/schedules/:scheduleId` | `meetingUrl`, source metadata, editability 추가 |
 | `POST /api/schedules` | `meetingUrl` request/response 추가. client source 지정 금지 |
 | `PATCH /api/schedules/:scheduleId` | `meetingUrl` request/response 추가. Google-origin local modified 전환 |
-| `DELETE /api/schedules/:scheduleId` | hard delete에서 soft delete/Trash 이동으로 변경 |
 | `GET /api/schedules/week` | Google-origin active schedule source/meetingUrl 포함 |
 | `GET /api/schedules/week/export/xlsx` | Google-origin active schedule source/meetingUrl 포함 |
-| `/api/trash` | `SCHEDULE` target/domain/restore 지원 |
 
 04에서 만들지 않는 API:
 
@@ -144,7 +143,6 @@ Google sync status:
 | `SYNCED` | 표시 | Google과 동기화된 상태 |
 | `LOCAL_MODIFIED` | 표시 | 사용자가 로컬 필드를 수정했고 Google sync가 덮어쓰지 않는 상태 |
 | `GOOGLE_DELETED` | 숨김 | Google에서 cancelled/deleted된 상태 |
-| `LOCAL_DELETED` | Trash | 사용자가 한손에서 삭제한 상태 |
 
 연결 끊김과 calendar 선택 해제는 `ScheduleExternalSyncStatus`가 아니라 connection/source 상태로 계산한다.
 
@@ -160,7 +158,6 @@ Badge:
 | `sourceType=GOOGLE`, connection `CONNECTED`, status `SYNCED` | `Google` |
 | connection `RECONNECT_REQUIRED` 또는 disconnect `KEEP` | `Google · 연결 끊김` |
 | status `LOCAL_MODIFIED` | `Google · 로컬 수정` |
-| status `LOCAL_DELETED` 또는 Trash detail | `Google · 로컬 삭제` |
 
 ### Google event field mapping
 
@@ -221,7 +218,6 @@ Description -> memo 정규화:
 - 과거 일정은 reminder를 만들지 않는다.
 - `startAt` 변경 시 reminder를 재계산한다.
 - hidden/deleted schedule은 pending reminder를 취소한다.
-- Trash restore 시 reminder를 다시 계산한다.
 
 ### Logging
 
@@ -339,7 +335,6 @@ Log에 남기지 않는 값:
     "canEditLocalFields": true
   },
   "deletedAt": null,
-  "trashExpiresAt": null
 }
 ```
 
@@ -352,7 +347,6 @@ Internal schedule:
   "sourceType": "INTERNAL",
   "googleCalendar": null,
   "deletedAt": null,
-  "trashExpiresAt": null
 }
 ```
 
@@ -657,7 +651,6 @@ Status: `200 OK`
     "localModifiedSkippedCount": 3,
     "googleDeletedCount": 1,
     "hiddenByCalendarSelectionCount": 0,
-    "trashedCount": 0,
     "reminderScheduledCount": 15,
     "reminderCanceledCount": 1,
     "errorCount": 0
@@ -781,7 +774,6 @@ Status: `200 OK`
   "connectionStatus": "DISCONNECTED",
   "scheduleAction": "KEEP",
   "affectedScheduleCount": 24,
-  "trashedScheduleCount": 0,
   "hiddenScheduleCount": 0,
   "keptScheduleCount": 24,
   "disconnectedAt": "2026-07-22T01:20:00.000Z"
@@ -821,12 +813,10 @@ Status: `200 OK`
 
 Response:
 
-- 기존 `ScheduleResponse`에 `meetingUrl`, `sourceType`, `googleCalendar`, `deletedAt`, `trashExpiresAt` 필드를 추가한다.
 - 기존 `ScheduleResponse`에 `isAllDay` 필드를 추가한다.
 
 ### GET /api/schedules/:scheduleId
 
-- soft-deleted schedule은 기본 상세에서 404다. Trash detail에서 확인한다.
 - hidden Google schedule은 직접 URL 접근 시 현재 사용자의 schedule이면 상세를 반환한다.
 - FE는 `googleCalendar.isHidden`으로 hidden banner를 표시한다.
 
@@ -877,8 +867,6 @@ Status: `204 No Content`
 Business logic:
 
 - hard delete를 하지 않는다.
-- `deletedAt=now`, `deletedByUserId=currentUser.id`, `trashExpiresAt=createTrashRetentionTimestamps(now).trashExpiresAt`으로 soft delete한다.
-- 현재 `trashExpiresAt` 정책은 `now+7일`이다.
 - `sourceType=GOOGLE`이면 `externalSyncStatus=LOCAL_DELETED`로 둔다.
 - `ScheduleDeal`은 삭제하지 않는다.
 - pending reminder를 취소한다.
@@ -902,22 +890,14 @@ Business logic:
 - source badge label은 export에는 text로 넣는다.
 - meeting URL은 query string 포함 원문을 export에 넣는다. log에는 query string 포함 원문을 남기지 않는다.
 
-## 13. Trash API 변경 계약
 
 ### Target type
 
-`TrashTargetType`에 `SCHEDULE`을 추가한다.
-
-`TrashDomainFilter`에 `SCHEDULE`을 추가한다.
-
-### GET /api/trash
 
 - `targetType=SCHEDULE` filter를 지원한다.
-- Schedule trash item title은 `scheduleTitle`이다.
 - parent는 없다.
 - summary는 `일정` domain 기준으로 표시한다.
 
-### GET /api/trash/SCHEDULE/:scheduleId
 
 Response detail fields:
 
@@ -929,14 +909,9 @@ Response detail fields:
 | 미팅 링크 | meeting URL domain 또는 URL |
 | 연결 딜 | 연결된 deal count |
 
-memo 본문은 Trash detail `content`에 넣는다. 단 structured log에는 남기지 않는다.
-
-### POST /api/trash/SCHEDULE/:scheduleId/restore
 
 Business logic:
 
-- `deletedAt/trashExpiresAt`이 없는 schedule은 404.
-- restore 시 `deletedAt/deletedByUserId/trashExpiresAt=NULL`.
 - Google-origin schedule은 `externalSyncStatus=LOCAL_MODIFIED`로 복구한다.
 - future schedule이면 reminder를 다시 계산한다.
 - 복구 후 기본 일정 화면에 표시된다.
@@ -963,7 +938,6 @@ Business logic:
 - 기존 Schedule API response type이 FE와 BE에서 동시에 확장된다.
 - Schedule hard delete가 남아 있지 않다.
 - soft-deleted schedule은 기본 list/week/home upcoming에서 제외된다.
-- `SCHEDULE` Trash list/detail/restore가 동작한다.
 - Google-origin schedule을 수정하면 local modified 상태가 보존된다.
 - Google description은 최초 import 외에는 memo를 덮어쓰지 않는다.
 - Google provider auth failure가 `RECONNECT_REQUIRED`로 전환된다.

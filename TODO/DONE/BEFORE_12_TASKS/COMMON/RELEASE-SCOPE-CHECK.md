@@ -1,5 +1,7 @@
 # Release Scope Check
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / 12 Billing Handoff Ready
 
 ## 1. 목적
@@ -60,7 +62,6 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 - money precision, currency minor unit, tax 표시
 - billing address, tax profile, terms, refund policy, invoice policy
 - account deletion hard delete/anonymization과 billing retention
-- paid recovery, paid Trash restore, hard delete/purge
 - marketing opt-in, billing lifecycle communication, consent audit
 
 ## 6. 12 Billing provider 경계
@@ -81,7 +82,6 @@ PRE12 final classification의 post-12 후보는 이번 계획에 포함하지 �
 - [x] `/app/notifications` 활성 상태를 rollback하지 않는다.
 - [x] `/app/schedules/week` 활성 상태를 rollback하지 않는다.
 - [x] `/app/export` redirect 상태를 변경하지 않는다.
-- [x] G04에서 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
 - [x] Admin Web redirect route를 billing/admin 기능으로 활성화하지 않는다.
 - [x] G01~G06 각 goal 문서에 착수 체크리스트, request/response, business logic, user flow, DB/Prisma, 검증 명령, 완료 기준이 반영되어 있다.
 - [x] 새 API와 새 DB migration이 없다.

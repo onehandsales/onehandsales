@@ -1,5 +1,7 @@
 # G04 User Web Notification UX
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 
 ## 1. 목적
@@ -48,7 +50,6 @@ User Web에서 `/app/notifications`를 열고 알림 목록, unread badge, 읽�
 - 알림 row는 대상과 action을 빠르게 보여준다.
 - push 권한 요청은 사용자가 toggle을 켤 때만 실행한다.
 - email/browser push 실패 상세는 사용자에게 provider raw로 노출하지 않는다.
-- private memo, meeting note body, deal amount는 알림 목록에 표시하지 않는다.
 
 ## 6. 검증 명령
 

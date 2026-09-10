@@ -1,5 +1,7 @@
 # G01 FE Contact Pages
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업명
 
 User Web 담당자 목록/상세/생성/메모/내보내기 화면 구현
@@ -25,9 +27,7 @@ User Web 담당자 목록/상세/생성/메모/내보내기 화면 구현
 
 - 기존 contact FE가 구 API 계약(name/phone/department 문자열/position 문자열/address/initialMemo)에 묶여 있음을 확인했다.
 - contact feature 타입, API client, query key, hook, schema를 새 계약(username/mobile/contactDepartmentId/contactJobGradeId)으로 전면 재구성했다.
-- `useInfiniteQuery`를 사용해 cursor 기반 메모 로그 / 개인 비밀 메모 로그 무한스크롤을 구현했다.
 - 부서/직급 인라인 생성(생성 후 자동 선택) 및 목록 관리 UI를 구현했다.
-- 담당자 삭제/복구/휴지통 UI를 모두 제거했다.
 - xlsx export를 blob 다운로드로 처리하고 Content-Disposition 파일명을 우선 사용했다.
 - deal/product/schedule의 담당자 관련 표시 필드를 새 계약에 맞게 보정했다.
 

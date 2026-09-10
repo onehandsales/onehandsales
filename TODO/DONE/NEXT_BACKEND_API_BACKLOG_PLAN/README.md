@@ -1,5 +1,7 @@
 # Next Backend API Backlog Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 API/DB/FE 계약화/구현 대상이 아니며 후속 B2B/team CRM 전략 후보로 유지한다.
 
 상태: DONE / Source Backlog Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -30,12 +32,9 @@
 - [x] `09_PRODUCT_ANALYTICS`: Product analytics collector API, Prisma schema, server/client event logging, activation/retention snapshot, AI usage summary 구현 및 QA closeout 완료
 - [x] `NBA-005 BusinessCard provider failure code/message contract`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/10_MOBILE_PWA_FIELD_USE`에서 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: BusinessCard OCR safe failure, MeetingNote mobile recording, local draft, push permission UX, mobile field analytics 구현 및 QA closeout 완료
-- [x] `NBA-007 Trash private memo backend response restriction`: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
 - [x] `NBA-011` Admin/internal provider audit 조회 범위: `11_ADMIN_OPERATION`에서 provider failure 운영 조회와 raw access audit 기준 구현 완료
-- [x] `NBA-012 Trash 7일 이후 복구 정책`: `11_ADMIN_OPERATION`에서 User 만료 row/복구 문의와 Admin recovery queue 구현 완료
 - [x] `NBA-013 Admin 운영 UX/API`: `11_ADMIN_OPERATION`에서 `/admin/api/*`와 Admin Web 운영 화면 구현 및 QA closeout 완료
 - [x] 11 범위 `NBA-014` DB/Prisma/system operation gate closeout 완료
-- [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
 - [x] `11_ADMIN_OPERATION` Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 - [x] Backend/API/DB/User Web 영향 반영 완료
 - [x] 완료 기록: `TODO_LOG/2026-07-21/G04_IMPORT_JOB_PERSISTENCE_QA_CLEANUP/WORK_LOG.md`
@@ -90,9 +89,6 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - Google Calendar OAuth connect/callback/status/calendar list/selection/sync/disconnect API 구현
 - `ExternalCalendarConnection`, `ExternalCalendarSource`, Schedule Google metadata, sync lock/status, token encryption persistence 구현
-- 기존 Schedule API에 `meetingUrl`, `isAllDay`, `sourceType`, `googleCalendar`, soft delete/Trash 필드 반영
-- Schedule delete를 hard delete에서 `deletedAt/trashExpiresAt` 기반 soft delete로 변경
-- `SCHEDULE` Trash list/detail/restore와 Google-origin restore 시 `LOCAL_MODIFIED` 전환 구현
 - Weekly Schedule Report와 weekly xlsx export에 Google-origin active schedule, source, meeting URL 반영
 - Google-origin schedule도 한손 `SCHEDULE_START_REMINDER` 생성/변경/취소 대상에 포함
 
@@ -140,9 +136,7 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 남은 백로그로 분리할 범위:
 
-- `NBA-003` 중 Company/Contact/Product latest activity, latest memo, next action summary. 2026-08-06 A 결정에 따라 PRE12 계약화/구현 대상이 아니며 B2B/team CRM 성격의 후속 전략 후보로 둔다.
 - MeetingNote 목록 latest/next summary
-- MeetingNote Admin provider audit/raw access policy, Trash private memo response restriction, 7일 이후 복구 문의, Admin 운영 API/UX는 11에서 완료
 - 실제 backup/restore 실행 runbook과 장애 대응 drill
 
 ## 2.4 `NBA-004` MeetingNote detail subset, `NBA-011` provider log subset 반영 기준
@@ -236,19 +230,13 @@ G07의 산출물이므로 이 문서는 구현 계획 확정본이 아니다. �
 
 - `/admin/api/*`를 User API와 분리하고 AuthGuard/AdminGuard를 적용했다.
 - `INITIAL_ADMIN_EMAILS` 기반 첫 Admin bootstrap과 `/admin/api/me` 확인 흐름을 유지한다.
-- Admin 사용자 목록/상세, 활동 timeline, 도메인 read-only records, User Trash summary/records API와 Admin Web 화면을 구현했다.
 - raw/sensitive access는 reason validation과 append-only audit/sensitive log를 사용하며 일반 상세 API에 섞지 않는다.
-- `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest`, `AdminOperationCheckRun` schema/migration을 구현했다.
-- User Trash 만료 row는 hard delete/purge하지 않고 복구 버튼 disabled와 복구 문의 흐름을 제공한다.
-- Admin provider failure, analytics overview, account deletion/data export request queue, trash recovery request queue, system operation gate 화면/API를 구현했다.
-- provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump, private memo 원문 노출 금지 조건을 QA closeout에서 확인했다.
 - Admin provider failure 목록 source 편중 cursor pagination은 2026-08-10 회귀 테스트로 보강되어 한 source에 실패 row가 몰려도 다음 cursor가 조기 종료되지 않는다.
 
 남은 백로그로 오해하지 않을 범위:
 
 - 결제/구독/plan/payment/invoice/refund/failed payment recovery/billing-linked conversion/churn은 11 범위가 아니며 `TODO/PADDLE_PLAN`에서 다룬다.
 - Admin 직접 DB migrate/seed/backup/restore 실행은 만들지 않았다. 11 system gate는 점검 결과 기록용이다.
-- Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge는 11 범위가 아니다.
 - 자동 민감정보 감지, generic ExportJob 파일 생성/대량 export는 별도 계약 없이는 확장하지 않는다.
 
 ## 3. 우선순위 분류 기준

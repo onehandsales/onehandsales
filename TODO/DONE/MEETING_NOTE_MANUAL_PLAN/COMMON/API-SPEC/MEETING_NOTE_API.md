@@ -1,5 +1,7 @@
 # Meeting Note API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 공통 계약
 
 - 계약 상태: `confirmed`
@@ -8,7 +10,6 @@
 - 인증: Backend App access token 필요
 - 권한: 현재 사용자 본인 데이터만 접근 가능
 - Admin API: 이번 범위 제외
-- 삭제 API: 회의록 본문 row soft delete와 휴지통 복구 지원
 - AI/STT API: 이번 범위 제외
 - audit log: 없음
 
@@ -165,7 +166,6 @@ type MeetingNoteDealDetailResponse = {
 | `GET` | `/api/meeting-notes/:meetingNoteId` | `GetMeetingNote` | 회의록 단건 상세 조회 |
 | `POST` | `/api/meeting-notes` | `CreateMeetingNote` | 수동 회의록 생성 |
 | `PATCH` | `/api/meeting-notes/:meetingNoteId` | `UpdateMeetingNote` | 회의록 수정 |
-| `DELETE` | `/api/meeting-notes/:meetingNoteId` | `DeleteMeetingNote` | 회의록 휴지통 이동 |
 
 `filter-companies`, `filter-contacts`는 `:meetingNoteId`보다 controller에서 먼저 선언한다.
 
@@ -494,7 +494,6 @@ type MeetingNoteDetailResponse = {
 
 ## 12. DELETE /api/meeting-notes/:meetingNoteId
 
-- API 이름: 회의록 휴지통 이동 API
 - API 식별자: `DeleteMeetingNote`
 - Request 이름: `DeleteMeetingNotePath`
 - Response 이름: 없음
@@ -512,9 +511,7 @@ type MeetingNoteDetailResponse = {
 1. AuthGuard로 현재 사용자를 확인한다.
 2. `MeetingNote.id = meetingNoteId`, `userId = currentUser.id`, `deletedAt IS NULL` 회의록을 조회한다.
 3. 없으면 `MeetingNoteNotFound`를 반환한다.
-4. `deletedAt = now`, `deletedByUserId = currentUser.id`, `trashExpiresAt = now + 7일`을 기록한다.
 5. 회의록 연결 snapshot row는 삭제하지 않는다.
-6. 삭제된 회의록은 일반 목록/상세/검색/필터에서 제외되고, 휴지통 API에서 조회·복구한다.
 
 ### Response
 

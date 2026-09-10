@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# Release Scope Check
 
 상태: G01~G09 release scope 구현 및 최종 QA 완료 / 01 최종 서비스 형태 완료
@@ -20,16 +22,13 @@ G05~G09 완료일: 2026-08-03
 |---|---:|---|
 | `NBA-001` Deal list `products` summary | No | 딜 목록 제품 summary는 release follow-up이다. 01 Import persistence와 직접 관련 없다. |
 | `NBA-002` Contact list `dealCount` | No | 담당자 목록 summary 후보이며 01 범위가 아니다. |
-| `NBA-003` latest memo/activity/next action summary | No | core record activity 설계가 필요하다. 01에서 FE가 summary를 꾸미지 않는 원칙만 반영한다. |
 | `NBA-004` MeetingNote next/latest summary | No | 회의록 summary/AI 정책 후보이며 01 범위가 아니다. |
 | `NBA-005` BusinessCard provider failure contract | No | OCR provider failure 계약이며 import file/parser 오류와 분리한다. |
 | `NBA-006` ImportJob persistence/resume API | Yes | 01의 직접 대상이며 구현 및 QA closeout 완료 상태다. |
-| `NBA-007` Trash private memo restriction | No | Trash response 보안 정책이며 01 범위가 아니다. |
 | `NBA-008` Page size 15 contract cleanup | No | 목록 pagination 계약 정리이며 01 범위가 아니다. |
 | `NBA-009` Schedule week report | No | 일정 주간 보고서 후보이며 01 범위가 아니다. |
 | `NBA-010` Notification | No | retention 후보이며 01에서 route/sidebar를 노출하지 않는다. |
 | `NBA-011` MeetingNote transcript/provider call log | No | provider audit/retention 정책 후보이며 01 범위가 아니다. |
-| `NBA-012` Trash 7일 이후 복구 정책 | No | 휴지통 운영/복구 정책 후보이며 01 범위가 아니다. |
 | `NBA-013` Admin 운영 UX/API | No | 첫 판매 전 별도 큰 계획이 필요하다. 01은 Admin API를 만들지 않는다. |
 | `NBA-014` DB/Prisma migration 운영 gate closeout | Partial | 01에서 신규 migration 검증 기준을 적지만, 전체 DB 운영 gate closeout은 별도 goal이다. |
 
@@ -76,7 +75,6 @@ G05~G09 완료일: 2026-08-03
 - Notification과 reminder delivery
 - Schedule week report
 - MeetingNote provider audit/transcript retention
-- Trash 7일 이후 복구/영구삭제 정책
 - 범용 ExportJob
 
 ## 6. 완료 판정

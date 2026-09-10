@@ -1,5 +1,7 @@
 # Planning Review
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Closed
 검토일: 2026-07-22
 
@@ -64,7 +66,6 @@
 | ExportJob 제외 | 파일 저장, TTL, 권한, audit, 대용량 worker는 03보다 Trust/policy/Admin gate에 가깝다. |
 | PDF 제외 | 데이터 계약과 화면 UX가 안정된 뒤 print/export 정책으로 별도 확정한다. |
 | 반복 일정 제외 | RRULE, exception, DST, 알림 재생성, Calendar 연동 영향이 커서 별도 확정한다. |
-| 보안 | 일정 메모 본문과 private memo/meeting note body는 response/export/log에 넣지 않는다. |
 
 ## 5. 미해결 Critical/Major
 

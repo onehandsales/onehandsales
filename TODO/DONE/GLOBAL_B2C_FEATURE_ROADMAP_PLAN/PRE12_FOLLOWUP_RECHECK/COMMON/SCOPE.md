@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final / BEFORE_12 closeout reflected / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -36,7 +38,6 @@
 | 08 작업 경계 설정 | `/app` 기본 i18n/global data/auth provider 완료 범위와 시장/국가/통화/auth 확장 후보를 분리한다. |
 | 09 작업 경계 설정 | Product Analytics foundation 완료 범위와 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA 후보를 분리한다. |
 | 10 작업 경계 설정 | mobile browser field-use 완료 범위와 PWA/offline, advanced camera preview/crop, server draft/media raw storage, generic ExportJob, 문서 체크리스트/architecture 정합성 후보를 분리한다. |
-| 11 작업 경계 설정 | Admin Operation 완료 범위와 Admin 문서 정합성, Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 수정, Customer/B2B tenant admin 후보를 분리한다. |
 | 후보 상태 분류 | `FINAL-CLASSIFICATION.md` 기준으로 PRE12 처리 대상, 후속 seed, billing 충돌/Paddle 종속으로 분리한다. 완료 참조는 작업 분류에서 제외한다. |
 | 구현 전 계약 요구 | API/DB/FE 변경 후보는 API contract와 DB 영향 문서를 먼저 확정하도록 한다. |
 
@@ -47,7 +48,6 @@
 | 06 DealActivity 구현 재개 | 06은 이미 완료 슬롯이다. manual create/update와 safe timeline/list summary 범위를 넘는 삭제/보존/감사/search/score/AI 확장은 `PRE12-F39`로만 둔다. |
 | 07 MeetingNote AI 구현 재개 | 07은 이미 완료 슬롯이다. detail AI draft/provider log 범위를 넘는 목록 summary, 자동 발송, 알림, AI data cleanup, transcript/raw/follow-up draft 저장, AI 후보 자동 업무 mutation은 별도 후보다. |
 | 01 ImportJob 구현 재개 | 대용량 import worker, 일정/회의록 import, ImportJob Admin 전용 화면/API는 01 완료 의미를 깨지 않고 후속 seed로 재검토한다. |
-| 04 Google Calendar 구현 재개 | 04는 Google read-only import/sync, 선택 calendar, source badge, Trash restore, Google-origin reminder, provider smoke 기준으로 완료됐다. 고급 sync/provider 확장은 `PRE12-F10`으로만 둔다. |
 | 05 AI Weekly Sales Report 구현 재개 | 05는 저장형 AI weekly report, 사용자 확인 기반 follow-up delivery, Gmail/Microsoft send adapter 기준으로 완료됐다. provider smoke는 운영 closeout이고 SMS/B2B/email growth/cost/legal deletion은 별도 후속이다. |
 | 08 Global Data I18N 구현 재개 | 08은 `ko-KR/en`, KR/US, KRW/USD, Google/LINE/Apple 기준으로 완료됐다. 시장/국가/auth 확장은 별도 후속이다. |
 | 09 Product Analytics 구현 재개 | 09는 자체 DB analytics 정본, collector, core event, snapshot/retention, AI usage summary, billing reserved taxonomy로 완료됐다. 후속 event/provider/attribution/deletion job은 별도 후보다. |
@@ -61,7 +61,6 @@
 | 10 Mobile PWA Field Use 구현 재개 | 10은 mobile browser field-use 기준으로 완료됐다. PWA/offline, advanced camera preview/crop, server draft DB, media/raw 저장, `/app/export`/`/api/exports`는 10 완료 범위가 아니다. |
 | 10 mobile/PWA 확장 PRE12 구현 | PWA install/offline shell/full offline sync, install attribution은 10 완료 범위를 넓히지 않는다. |
 | 11 Admin Operation 구현 재개 | 11은 최소 Admin 운영 API/화면과 audit/redaction 기준으로 완료됐다. 문서 stale이나 후속 후보를 근거로 Admin 기능을 재구현하지 않는다. |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge PRE12 구현 | 11은 User 복구 문의와 Admin queue까지만 완료했다. 복구 실행/과금/삭제 정책은 recovery policy와 Paddle Billing 이후 판단한다. |
 | Admin 직접 도메인 데이터 수정 PRE12 구현 | 11은 사용자별 도메인 records를 read-only/masked 조회로 닫았다. Admin mutation은 ownership, 사용자 통지, audit/result, rollback, redaction 정책이 확정되기 전 구현하지 않는다. |
 | Customer/B2B tenant admin PRE12 구현 | 11 Admin은 내부 onehand.sales 관리자용이다. tenant/org/member/role/permission/billing/support 경계가 확정되기 전 `/organizations` redirect나 내부 AdminGuard를 고객 관리자 기능으로 바꾸지 않는다. |
 | ImportJob cleanup 실패 전용 Admin aggregate/system gate PRE12 구현 | 01 cleanup은 safe summary log 범위이고 11 system gate는 generic operation check 기록이다. ImportJob cleanup failure 전용 Admin 화면/API/집계는 `PRE12-F13` 전략 전 구현하지 않는다. |
@@ -74,7 +73,6 @@
 - Google calendar list 조회와 selected calendar 저장
 - 선택 calendar event read-only import/sync
 - `/app/schedules` freshness auto sync와 manual sync
-- Google source badge, hidden source 처리, Trash restore
 - Google-origin schedule reminder
 - 실제 Google provider smoke 기록
 
@@ -151,8 +149,6 @@
 - Company/Contact/Product summary 전용 endpoint 또는 record별 상세 activity timeline 추가
 - manual activity delete API/UI 추가
 - 자동 activity update/delete API 추가
-- DealActivity soft delete/trash/restore/retention/audit model 추가
-- memo/private memo timeline 통합
 - 모든 도메인 공통 activity bus 추가
 - DealActivity 고급 검색/필터, 딜 score, AI activity 자동 판단 추가
 - DealActivity summary cache 또는 denormalized latest table 추가
@@ -323,20 +319,17 @@
 - `INITIAL_ADMIN_EMAILS` 기반 Admin bootstrap과 `/admin/api/me`
 - Admin 사용자 목록/상세, 활동 timeline, 도메인 read-only records
 - 내부 onehand.sales AdminGuard/Admin Web. Customer/B2B tenant admin은 아님
-- Admin Trash summary/records와 Trash recovery request queue
 - provider failure safe summary/detail
 - Admin analytics overview
 - account deletion/data export request API와 Admin queue
 - audit log, sensitive raw access reason, append-only sensitive access log
 - system operation gate record API와 Admin Web `/system`
 - User Web `/admin/api/*` 호출 차단
-- provider raw/prompt/token/quota, browser push endpoint/key/userAgent, analytics raw payload, private memo 원문 미노출
 
 11 완료 범위로 다루면 안 되는 범위:
 
 - 11 문서 체크리스트/goal index 미체크를 근거로 기능을 재구현
 - stale Admin Web architecture 문서에 맞춰 실제 Admin route/API를 숨기거나 되돌리기
-- Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
 - Admin domain read-only records를 Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 직접 수정/삭제/복구 mutation으로 확장
 - Admin 직접 DB migrate/seed/backup/restore shell command 실행
 - `/organizations` redirect를 customer-facing tenant admin으로 활성화하거나 tenant/org/member role model 추가
@@ -352,7 +345,6 @@
 | --- | --- |
 | Admin 문서 체크리스트/goal index 정합성 | `PRE12-F33` |
 | Admin Web architecture/legacy route 정합성 | `PRE12-F34` |
-| Admin 직접 Trash 복구/유료 복구/Trash hard delete/purge | `PRE12-F35` |
 | User data export artifact/download endpoint | `PRE12-F36` 및 `PRE12-F09` |
 | 자동 민감정보 감지 | `PRE12-F37` |
 | Admin direct domain data mutation and recovery action policy | `PRE12-F44` |

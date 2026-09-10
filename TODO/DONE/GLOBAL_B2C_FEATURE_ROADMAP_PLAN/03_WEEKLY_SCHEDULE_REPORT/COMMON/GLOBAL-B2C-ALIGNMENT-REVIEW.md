@@ -1,5 +1,7 @@
 # Global B2C Alignment Review
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조: 03 추가 후속 구현 없음
 재대조 기록: `COMMON/FINAL-SERVICE-FOLLOWUP-AUDIT.md`
 
@@ -37,9 +39,7 @@
 | `NBA-003 latest activity summary` | 제외 | 최신 활동/요약은 03 report response에 새로 만들지 않는다. |
 | `NBA-008 Page size 15 cleanup` | 해당 없음 | 주간 보고서는 pagination list가 아니라 7일 고정 report다. |
 | `NBA-014 DB/Prisma 운영 gate` | 제한 반영 | 새 migration이 없으므로 migrate/seed 금지와 prisma validate 수준으로만 확인한다. |
-| `NBA-007 Trash private memo restriction` | 보안 원칙만 반영 | private memo 원문을 response/export/log에 넣지 않는 기준만 반영한다. Trash 정책은 별도. |
 | `NBA-011 MeetingNote provider log` | 제외 | provider raw response와 meeting note body는 03에 넣지 않는다. |
-| `NBA-012 Trash retention policy` | 제외 | export 파일 저장/TTL/retention 정책은 03에 넣지 않는다. |
 | `NBA-013 Admin operation API` | 제외 | User API만 만들고 Admin API는 만들지 않는다. |
 
 ## 3. USER_WEB_PRODUCTIZATION_GAP_PLAN 대조
@@ -49,7 +49,6 @@
 | Product UX | 반영 | Notion식 page/report, Attio식 linked record, schedule-deal 연결 맥락을 기준으로 둔다. |
 | Global UX | 일부 반영 | IANA timezone, date-only, local week boundary는 반영한다. 앱 내부 다국어/국가별 데이터 모델은 별도 계획이다. |
 | Data reliability | 일부 반영 | 새 DB/migration 없이 기존 row 조회로 구현한다. DB/Prisma 운영 gate 전체 closeout은 별도다. |
-| Trust/policy | 일부 반영 | memo/private memo/meeting note/provider raw response redaction과 민감 export 제외 기준을 둔다. 정책 문서/계정 삭제/export 권리는 별도다. |
 | Retention | 반영 | 일정과 딜을 주간 보고서로 연결해 반복 사용 이유를 만든다. 회의록 follow-up/AI report는 별도다. |
 | Product analytics | 제외 | ad hoc analytics event를 만들지 않는다. 제품 분석 taxonomy는 별도 첫 판매 gate다. |
 | Admin/support | 제외 | Admin API와 운영 화면은 별도 첫 판매 gate다. |

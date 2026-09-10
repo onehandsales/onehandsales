@@ -1,5 +1,7 @@
 # 04 Google Calendar Integration
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 순서: 04
 성격: Google Calendar read-only import + 한손 일정 운영 UX
@@ -14,7 +16,6 @@
 
 - G01~G05가 완료됐다.
 - Google Calendar read-only import, calendar 선택, sync, source badge, meeting URL, all-day 표시가 구현됐다.
-- 모든 Schedule 삭제는 휴지통 기반 soft delete로 동작하고 `SCHEDULE` Trash list/detail/restore가 연결됐다.
 - Google-origin schedule도 딜/메모/로컬 필드 수정과 한손 `SCHEDULE_START_REMINDER` 대상이다.
 - 자동 테스트와 코드 검증으로 Done 판정을 완료했다.
 - 실제 Google provider smoke는 2026-08-04 사용자 확인 기준 배포 환경에서 완료했다.
@@ -35,8 +36,6 @@
 - Google schedule에 딜 연결과 한손 메모 수정 허용
 - Google schedule의 로컬 제목/시간/장소/meetingUrl 수정 허용
 - Google 삭제/취소/캘린더 선택 해제 시 기본 목록에서 숨기고, 연결 해제 `KEEP` 시 `Google · 연결 끊김` 상태 표시
-- 모든 Schedule 삭제를 휴지통 기반 soft delete로 변경
-- Schedule 복구 API/UX를 `/app/trash`에 추가
 - 한손 `SCHEDULE_START_REMINDER` 알림을 Google-origin schedule에도 적용
 
 제외:
@@ -65,7 +64,6 @@
 | 로컬 편집 | Google-origin schedule도 title/time/location/meetingUrl/memo/dealIds 수정을 허용한다. 허용된 필드 중 하나라도 수정하면 `LOCAL_MODIFIED`가 된다. source 필드는 수정 request를 400 처리한다. |
 | Conflict | `SYNCED`만 Google 변경으로 title/time/location/meetingUrl/isAllDay를 갱신한다. `LOCAL_MODIFIED`는 Google 변경이 로컬 필드를 덮어쓰지 않는다. |
 | Google 삭제 | 기본 일정 화면에서는 숨기고 `GOOGLE_DELETED` 상태로 보존한다. |
-| 사용자 삭제 | `deletedAt/trashExpiresAt` soft delete로 휴지통에 보낸다. `trashExpiresAt`은 현재 `now+7일`이다. 진짜 삭제가 아니다. |
 | 복구 | Google-origin schedule 복구 시 `LOCAL_MODIFIED`로 복구하고 Google sync가 덮어쓰지 않는다. |
 | 연결 해제 | 기본값은 유지. 사용자는 `KEEP`, `HIDE`, `TRASH` 중 선택한다. `TRASH`도 hard delete가 아니다. |
 | 알림 | Google reminders는 가져오지 않는다. 한손 일정 알림 설정으로 `SCHEDULE_START_REMINDER`를 만든다. |

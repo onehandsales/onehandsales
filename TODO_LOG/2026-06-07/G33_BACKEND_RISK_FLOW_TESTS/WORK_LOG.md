@@ -1,5 +1,7 @@
 # G33 Backend 위험 흐름 테스트
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 상태
 - 완료
 
@@ -16,7 +18,6 @@
 - deal stage change activity log 경로를 테스트한다.
 - meeting note link activity log 경로를 테스트한다.
 - sensitive raw view audit transaction을 테스트한다.
-- trash restore 경로를 테스트한다.
 - 위험 흐름 테스트가 자동 실행되게 한다.
 
 ## 제외 범위
@@ -31,7 +32,6 @@
 - AdminGuard는 non-admin 접근 차단을 확인했다.
 - 딜 단계 변경과 회의록-딜 연결은 repository의 activity-log 경로로 전달되는 입력을 확인했다.
 - 민감 원문 조회는 Prisma `$transaction` 내부 AuditLog 생성 후 복호화 순서를 확인했다.
-- 휴지통 복구는 current user id와 target type/id가 repository로 전달되는지 확인했다.
 
 ## 검토
 - 신규 risk spec은 G33 완료 기준을 한 파일에서 추적하기 위한 보강 테스트이며, 기존 도메인별 단위 테스트를 제거하거나 대체하지 않았다.

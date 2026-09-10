@@ -1,5 +1,7 @@
 # Deal Domain Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 계획은 User Web의 딜 목록/상세 화면과 Backend Deal API를 현재 프로젝트 구조에 맞게 새로 구현하기 위한 실행 문서다.
@@ -8,7 +10,6 @@
 
 ## 2. 현재 상태
 
-- Backend에는 `deal` 모듈, Prisma `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog` 모델과 User API가 구현되어 있다.
 - User Web 딜 목록/상세/생성/수정/로그/export 화면은 현재 Backend Deal API와 연결되어 있다.
 - 딜 목록은 10개 단위 page-number pagination, 딜이름 검색, 회사/담당자/상태 필터, 정렬 select를 사용한다.
 - 딜 stage counts는 딜이름 검색과 회사/담당자 필터를 반영한다.
@@ -27,13 +28,11 @@
 - 회사/담당자/제품 선택 옵션 API
 - 딜 xlsx export API
 - 딜 다음 행동 로그 목록/생성/수정 API
-- 딜 메모 로그 목록/생성/수정 API
 - User Web 딜 목록 split view, 생성/수정, 로그 UI 연동
 
 제외:
 
 - Admin Deal API
-- 딜 삭제, 휴지통, soft delete
 - 일정, 회의록, 자동화와의 연동
 - 딜 활동 타임라인 별도 모델
 - DB enum 사용
@@ -63,7 +62,6 @@
 
 - Backend Deal API가 명세대로 구현되고 테스트가 통과한다.
 - User Web 딜 화면이 새 API 계약만 사용한다.
-- 딜 목록, 상세, 생성, 수정, export, 다음 행동 로그, 메모 로그가 실제 Backend와 연결된다.
 - 딜 상세와 생성/수정 form은 `products`/`productIds` 다중 제품 계약을 사용한다.
 - export에는 id, 제품, 최근수정일이 포함되지 않는다.
 - 완료 후 TODO_LOG에 작업 결과와 검증 결과를 남긴다.

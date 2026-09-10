@@ -1,5 +1,7 @@
 # G07 QA Review Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 완료일: 2026-07-26
 목표: 06 구현 검증과 문서 closeout
@@ -57,7 +59,6 @@ pnpm run test:e2e:mobile
 ## 6. 완료 기준
 
 - [x] S0/S1 blocker가 없다.
-- [x] private memo/provider raw/follow-up body 전체/meeting note raw text가 timeline summary/log에 노출되지 않는다.
 - [x] User Web이 `/admin/api/*`를 호출하지 않는다.
 - [x] G07 work log를 남길 준비가 됐다.
 

@@ -1,5 +1,7 @@
 # G00 질문 처리 기록
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `MVP-STARTER_PLAN`의 G00 구현 전 결정 과정에서 새 미확정 질문과 확정된 질문 이력을 함께 기록한다.
@@ -38,13 +40,9 @@
 - Backend는 Supabase access token 원문, Supabase refresh token, App access token 원문, refresh token 원문을 DB에 저장하지 않는다.
 - Backend는 `AuthSession`을 만들고 refresh/session token은 hash만 저장한다.
 - 로그인 유지 정책은 `7일 sliding session`으로 간다.
-- application-level encryption은 `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`부터 적용한다.
 - Import는 preview 검증 후 확정 실행하고, 확정 실행 중 오류가 있으면 전체 rollback한다.
 - Google Calendar, OCR, OpenAI, Notification email/browser push는 MVP 기능에서 처음부터 실제 provider로 연동한다.
 - local/preview는 분리 domain을 허용하고, production은 같은 parent domain 아래의 `app`, `admin`, `api` subdomain으로 고정한다.
-- 모든 영속 삭제 대상 리소스는 soft delete하고 30일 휴지통 보관 후 시스템이 자동 완전 삭제한다.
-- `Company`, `Contact`, `Product`, `Deal`의 Log는 객관 기록, Memo는 주관 기록으로 분리한다.
-- Memo는 `PersonalMemo` 기록 테이블에 암호화 저장하고, Admin 기본 화면은 원문 대신 요약/존재 여부만 반환한다.
 - Admin 민감 원문 조회는 사유 필수 전용 API와 `AuditLog` transaction으로 처리한다.
 - 일정 목록/캘린더의 기본 조회 기간은 사용자 timezone 기준 이번 달이며, User Web은 월간/주간 view mode 전환을 제공한다.
 - 통합검색은 회사/담당자/제품/딜/일정/회의록을 기본 검색 대상으로 한다.
@@ -356,7 +354,6 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 확정:
 
-- MVP 1차 application-level encryption 대상은 `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`이다.
 - 전화번호, 이메일, 명함 OCR 결과, 회의록 구조화 요약 필드는 MVP 1차 암호화 대상에서 제외한다.
 - 암호화 제외 민감 후보 필드도 Admin 목록/상세에서는 기본 마스킹 또는 존재 여부만 반환한다.
 - Backend는 `EncryptionPort`를 정의하고 application/domain 계층은 구체 암호화 library에 직접 의존하지 않는다.
@@ -540,7 +537,6 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 - soft delete된 리소스는 일반 목록 API에서 기본 제외한다.
 - 소유자가 기존 상세 URL로 soft delete된 리소스를 조회하면 `410 DeletedResource`를 반환한다.
 - soft delete된 리소스에 대한 수정, 단계 변경, 다음 행동 변경, 연결 변경, 재삭제 같은 일반 변경 요청은 `409 DeletedResource`로 막는다.
-- 복구는 일반 수정 API가 아니라 restore API 또는 휴지통 restore API로만 처리한다.
 - 일반 상세 API에서 `includeDeleted=true`로 삭제 리소스를 직접 반환하는 정책은 MVP 1차에서 사용하지 않는다.
 
 기존 검토 내용:
@@ -551,7 +547,6 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 왜 지금 결정해야 하는가:
 
-- FE 상세 화면의 에러 처리, 휴지통 복구 UX, Backend 공통 error, API status code가 달라진다.
 - 삭제된 데이터가 일반 목록/상세에서 보이면 사용자가 혼란스러울 수 있고, 반대로 무조건 404로 숨기면 복구 안내가 어렵다.
 
 선택지:
@@ -563,12 +558,10 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 예시:
 
 - A를 선택하면 구현과 보안 처리가 단순하지만, 사용자가 북마크나 알림 링크로 들어왔을 때 왜 안 보이는지 알기 어렵다.
-- B를 선택하면 사용자는 "삭제된 항목이며 휴지통에서 복구할 수 있음"을 알 수 있고, 수정은 명확히 차단된다.
 - C를 선택하면 유연하지만 모든 상세 API와 FE route가 `includeDeleted` 분기를 가져야 한다.
 
 사용자 결정:
 
-- B. 삭제 상태를 명확히 알려주되, 일반 수정은 막고 복구는 휴지통/restore API로만 처리
 
 문서 반영 위치:
 
@@ -583,18 +576,15 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 - 사용자 또는 Admin이 삭제 API로 지우는 영속 삭제 대상 리소스는 soft delete한다.
 - 삭제 시 `deletedAt`을 기록하고, `permanentDeleteAt`은 `deletedAt + 30일`로 기록한다.
-- 삭제된 리소스는 30일 동안 휴지통에 보관한다.
 - 30일이 지나면 시스템 자동 작업이 해당 리소스를 완전 삭제한다.
 - MVP 1차에서 사용자가 직접 즉시 완전 삭제하는 API와 UI는 제공하지 않는다.
 - 복구는 `permanentDeleteAt` 이전에만 가능하다.
 
 질문의 의미:
 
-- 삭제된 데이터를 휴지통에 얼마나 보관할지, 사용자가 직접 완전 삭제할 수 있는지, 30일 후 자동 완전 삭제를 할지 정해야 한다.
 
 왜 지금 결정해야 하는가:
 
-- DB의 `deletedAt`, `permanentDeleteAt`, 휴지통 화면, restore API, 완전 삭제 API, 배치 작업 기준이 달라진다.
 
 선택지:
 
@@ -624,13 +614,9 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 확정:
 
-- `Company`, `Contact`, `Product`, `Deal`은 각각 Log 기록과 Memo 기록을 가질 수 있다.
 - Log는 대상 도메인에 대한 객관적 사실, 변경, 만남, 소식, 이력 기록이다.
 - Memo는 대상 도메인에 대한 사용자의 주관적 생각, 판단, 개인 참고 기록이다.
 - Memo는 각 엔티티의 단일 `memo` 필드에 저장하지 않고 Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
-- `PersonalMemo`는 회사 Memo, 담당자 Memo, 제품 Memo, 딜 Memo를 담는 기록 테이블로 사용한다.
-- `PersonalMemo`는 `targetType`, `targetId`, `memoDate`, 선택적 `title`, `contentCiphertext`, `contentKeyVersion`을 가진다.
-- Admin 목록/상세에서는 Memo 원문을 반환하지 않고 `hasMemo`, `memoCount`, `latestMemoAt` 같은 요약 또는 존재 여부만 반환한다.
 - Admin 원문 조회는 사유 입력과 `AuditLog` 기록을 거친 별도 민감정보 원문 조회 API에서만 허용한다.
 
 질문의 의미:
@@ -639,23 +625,19 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 왜 지금 결정해야 하는가:
 
-- Company/Contact/Product/Deal detail 화면, Log/Memo API, `PersonalMemo` schema, encryption 적용 위치, Admin masking, 원문 조회 transaction 기준이 달라진다.
 
 선택지:
 
-- A. Log와 Memo를 분리하고, Memo는 도메인별 기록 테이블 `PersonalMemo`에 암호화 저장한다.
 - B. Log와 Memo를 같은 timeline 테이블에 두고 type만 구분한다.
 - C. MVP에서는 각 엔티티의 단일 `memo` 필드만 사용한다.
 
 예시:
 
-- A를 선택하면 회사 소식 변경은 `CompanyLog`에 객관 기록으로 남기고, 그 소식에 대한 내 판단은 `PersonalMemo(targetType=COMPANY)`에 주관 기록으로 남긴다.
 - B를 선택하면 timeline UI는 단순하지만 객관 기록과 주관 기록의 권한, 마스킹, 검색 기준이 섞인다.
 - C를 선택하면 구현은 단순하지만 시간순 기록이 어렵고, Log와 Memo 의미가 섞인다.
 
 사용자 결정:
 
-- A. Log는 객관 기록, Memo는 주관 기록으로 분리하고, Memo는 `PersonalMemo`에 암호화 저장한다.
 
 문서 반영 위치:
 
@@ -714,40 +696,30 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 확정:
 
 - B. 도메인별 Log 테이블을 둔다.
-- 회사 Log는 `CompanyLog`를 사용한다.
-- 담당자 Log는 `ContactLog`를 추가한다.
-- 제품 Log는 `ProductLog`를 추가한다.
 - 딜 Log는 기존 `DealActivity`를 사용한다.
 - 각 도메인별 사용자 개인 Memo Log도 객관 Log와 별도로 둔다.
-- 사용자 개인 Memo Log는 `PersonalMemo`를 사용하되 `targetType`, `targetId`로 `Company`, `Contact`, `Product`, `Deal` 중 하나에 연결한다.
 - 각 도메인 상세 화면은 `Log` 섹션과 `Memo` 섹션을 분리한다.
 
 질문의 의미:
 
 - Log는 회사/담당자/제품/딜에 대한 객관적 사실, 변경, 만남, 소식, 이력 기록이다.
-- 기존 문서에는 `CompanyLog`와 `DealActivity`가 있지만, 담당자와 제품 Log 구현 단위는 아직 명확하지 않다.
 - Log를 공통 테이블로 둘지, 도메인별 개별 테이블로 둘지 결정해야 한다.
 
 왜 지금 결정해야 하는가:
 
 - DB schema, API path, 상세 화면 timeline, 자동 생성 로그, 소유권 검증 방식이 달라진다.
-- Memo는 `PersonalMemo` 공통 테이블로 확정했으므로, Log도 같은 방식으로 갈지 별도 판단이 필요하다.
 
 선택지:
 
 - A. 공통 `DomainLog` 테이블을 만들고 `targetType`, `targetId`로 `COMPANY|CONTACT|PRODUCT|DEAL`에 연결한다.
-- B. 도메인별 Log 테이블을 둔다. 기존 `CompanyLog`, `DealActivity`를 유지하고 `ContactLog`, `ProductLog`를 추가한다.
-- C. MVP 1차에서는 기존 `CompanyLog`, `DealActivity`만 구현하고, 담당자/제품 Log는 후속으로 미룬다.
 
 예시:
 
 - A를 선택하면 `/api/logs?targetType=CONTACT&targetId=...` 같은 공통 API로 회사/담당자/제품/딜 Log를 모두 처리할 수 있다. 다만 딜 단계 변경, 다음 행동 완료 같은 특수 자동 로그도 공통 metadata로 표현해야 한다.
-- B를 선택하면 `CompanyLog`, `ContactLog`, `ProductLog`, `DealActivity`가 각각 명확한 FK와 도메인 규칙을 가진다. 대신 schema와 API 반복이 늘어난다.
 - C를 선택하면 구현은 빠르지만 사용자가 기대하는 담당자/제품 Log가 MVP에서 빠진다.
 
 추천안:
 
-- B. 기존 문서의 `CompanyLog`, `DealActivity`를 보존하면서 `ContactLog`, `ProductLog`를 추가한다.
 
 사용자 결정:
 
@@ -810,7 +782,6 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 확정:
 
 - B. 현재 UX 정본 범위 그대로 회사/담당자/제품/딜/일정/회의록을 검색한다.
-- 삭제된 데이터는 통합검색 기본 결과에서 제외한다. 휴지통 데이터는 휴지통 화면/API에서만 찾는다.
 - 검색 실행은 trim 후 2자 이상부터 한다. 1자 이하는 검색 대신 최근 항목 또는 빈 상태를 표시한다.
 - 결과는 type별 그룹으로 묶고 기본 limit은 type별 최대 5개로 둔다.
 - Memo 원문, `MeetingNote.rawText`, Admin 민감 원문은 통합검색 결과 title/subtitle에 노출하지 않는다.
@@ -822,7 +793,6 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 왜 지금 결정해야 하는가:
 
 - `GET /api/search` contract, DB query/index, User Web command palette, 검색 결과 그룹, E2E fixture가 달라진다.
-- Memo/회의록/휴지통 데이터는 민감 정보와도 연결되므로 기본 노출 정책을 먼저 고정해야 한다.
 
 선택지:
 
@@ -832,7 +802,6 @@ App Bearer Token 방식 확정에 따라 인증 문서 정합성 작업은 완�
 
 공통 전제:
 
-- 삭제된 데이터는 통합검색 기본 결과에서 제외한다. 휴지통 데이터는 휴지통 화면/API에서만 찾는다.
 - 검색 실행은 trim 후 2자 이상부터 한다. 1자 이하는 검색 대신 최근 항목 또는 빈 상태를 표시한다.
 - 결과는 type별 그룹으로 묶고 기본 limit은 type별 최대 5개로 둔다.
 - Memo 원문, `MeetingNote.rawText`, Admin 민감 원문은 통합검색 결과 title/subtitle에 노출하지 않는다.

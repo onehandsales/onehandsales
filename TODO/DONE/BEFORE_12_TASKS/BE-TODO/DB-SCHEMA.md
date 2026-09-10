@@ -1,5 +1,7 @@
 # DB Schema
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G01-G06 Done / No New Migration Confirmed
 계약 상태: confirmed / No new migration
 
@@ -31,7 +33,6 @@ G01 provider smoke는 기존 follow-up delivery DB 모델을 사용한다. G02~G
 - `AdminAuditLog`
 - `AdminOperationCheckRun`
 - `AccountDataRequest`
-- `TrashRecoveryRequest`
 - `Notification`
 - `BrowserPushSubscription`
 - `ProductAnalyticsEvent`

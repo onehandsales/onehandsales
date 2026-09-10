@@ -1,5 +1,7 @@
 # 통합검색 API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. API 개요
 
 - API 이름: 통합검색 API
@@ -45,7 +47,6 @@ Body 없음.
 6. 허용하지 않는 type이 있으면 validation error를 반환한다.
 7. `limit`는 기본 `5`, 최대 `20`으로 정규화한다.
 8. 각 도메인 repository query는 반드시 `userId` 조건을 포함한다.
-9. soft delete 대상 도메인은 `deletedAt: null` 조건으로 휴지통 데이터를 제외한다.
 10. 검색 필드는 편의성을 우선해 넓게 검색한다. 일정 `memo`, 회의록 `details`, `nextPlan`, `requiredAction`처럼 본문성 필드도 검색 대상에 포함한다.
 11. 조회 결과를 도메인별 `SearchGroup`으로 변환한다.
 12. 결과에는 상세 이동에 필요한 `/app/*` `targetPath`를 포함한다.

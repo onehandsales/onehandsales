@@ -1,5 +1,7 @@
 # Release QA Follow-up QA Results
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 각 `/goal` 실행 결과와 검증 명령 결과를 누적 기록한다.
@@ -46,14 +48,12 @@
   - `git diff --check`: 통과
 - 자동 확인:
   - 보호 route 미인증 접근은 `/login`으로 redirect되고 private API 호출이 발생하지 않았다.
-  - 인증 mock session으로 `/app`, `/app/companies`, `/app/contacts`, `/app/products`, `/app/deals`, `/app/schedules`, `/app/meeting-notes`, `/app/business-cards`, `/app/import`, `/app/trash`, `/app/settings`, `/app/more`를 순회했다.
   - 모바일 header, bottom navigation, 더보기 진입, deal stage label, long company/email/phone/URL fixture, page-level horizontal overflow, console/page error를 확인했다.
   - 회사 생성 panel/dialog, 분야/지역 dropdown, 저장 버튼 keyboard focus, 성공 toast/dialog가 390px/360px viewport 안에서 동작했다.
 - 수동 확인 대체 근거:
   - 360px bottom nav label overlap은 자동 bounding-box 검사로 통과했다.
   - deal stage tab 존재와 문서 가로 overflow 없음은 자동 route smoke에서 통과했다.
   - schedule 화면은 360px/390px에서 route load, 내부 calendar horizontal scroll containment, page-level overflow 없음이 통과했다.
-  - meeting note/import/trash는 long fixture route smoke와 page-level overflow 없음이 통과했다.
 - 결과: Chrome/Edge channel이 모두 사용 가능했고, 390px/360px 모바일 브라우저 자동 QA에서 S0/S1/S2 제품 이슈는 발견되지 않았다. 기본 `test:e2e`는 release 모바일 spec을 제외하도록 유지했고, 새 QA는 `test:e2e:mobile`에서만 실행된다.
 - 비고: `build`, `test:e2e`, `test:e2e:mobile` webServer 출력에 기존 Tailwind `duration-[500ms]` ambiguity 경고와 큰 chunk 경고가 남아 있다. G02 release gate 실패 요인은 아니다.
 - 연결 이슈: `RQA-002`
@@ -90,11 +90,9 @@
 - 상태: Done
 - 실행일: 2026-07-20
 - 자동 테스트:
-  - `BE/src/modules/security/ownership-isolation.spec.ts`: Company, Contact, Product, Deal, Schedule, MeetingNote, Search, Trash, AdminGuard ownership isolation 자동 검증
   - `FE/user-web/tests/e2e/security-boundary-qa.spec.ts`: session 제거 후 보호 route reload/back에서 사용자 데이터 미노출 smoke
 - 확인 범위:
   - Search: 통과. 사용자 A 기준 `RQA004-B` 검색 결과 group/item 없음.
-  - Trash: 통과. 목록/detail/restore에서 사용자 B 삭제 데이터와 marker 미노출.
   - Export: 통과. Company/Contact/Product/Deal export workbook input과 fake binary string 모두 `RQA004-B` 미포함.
   - 직접 API 접근: 통과. Company/Contact/Product/Deal/Schedule/MeetingNote detail/update/delete에서 사용자 B id를 사용자 A로 접근하면 NotFound 계열 error이며 B id/name/title/email 미노출. 기존 `HttpExceptionFilter`가 `*NotFound` DomainError를 HTTP 404로 매핑하는 것을 확인했다.
   - Admin API 차단: 통과. `AdminGuard`가 일반 `USER` role을 `ForbiddenException`으로 거부해 HTTP 403 경계를 검증.
@@ -124,9 +122,6 @@
   - MeetingNote detail: Passed, B id detail as A는 `MeetingNoteNotFound`
   - MeetingNote mutation: Passed, B id update/delete as A는 `MeetingNoteNotFound`
   - Search: Passed, `RQA004-B` 검색 as A 결과 없음
-  - Trash list: Passed, A trash list에 B 삭제 데이터 미포함
-  - Trash detail: Passed, B target detail as A는 `NotFoundException`
-  - Trash restore: Passed, B target restore as A는 `NotFoundException`
   - Admin boundary: Passed, normal USER role은 `ForbiddenException`
 - 조건부 HTTP smoke:
   - 상태: Blocked
@@ -231,16 +226,13 @@
 - 분리한 후보:
   - `NBA-001`: Deal list `products` summary, release follow-up
   - `NBA-002`: Contact list `dealCount`, release follow-up
-  - `NBA-003`: Company/Contact/Product latest memo/activity/next action summary, product feature
   - `NBA-004`: MeetingNote next/latest summary, product feature
   - `NBA-005`: BusinessCard provider failure code/message contract, release follow-up
   - `NBA-006`: ImportJob persistence/resume API, product feature
-  - `NBA-007`: Trash private memo backend response restriction, ops/security
   - `NBA-008`: Page size 15 contract cleanup, release follow-up
   - `NBA-009`: Schedule week report, product feature
   - `NBA-010`: Notification, product feature
   - `NBA-011`: MeetingNote transcript/provider call log table, ops/security
-  - `NBA-012`: Trash 7일 이후 복구 정책, ops/security
   - `NBA-013`: Admin 운영 UX/API, ops/security
   - `NBA-014`: DB/Prisma migration 운영 gate closeout, release blocker, `RQA-005` 후속
 - 다음 계획 후보:

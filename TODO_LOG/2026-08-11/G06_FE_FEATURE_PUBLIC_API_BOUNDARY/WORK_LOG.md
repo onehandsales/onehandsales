@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# G06 FE Feature Public API Boundary Work Log
 
 날짜: 2026-08-11
@@ -14,7 +16,6 @@
 
 ## 2. 작업 내용
 
-- User Web의 company/contact/deal/meeting-note/product/schedule/trash/auth/notification/public-site public `index.ts` export를 필요한 범위로 보강했다.
 - feature 내부에서 다른 feature의 `components/hooks/api/schemas/types/utils` 깊은 경로를 직접 import하던 코드를 public `@/features/<feature>` import로 변경했다.
 - page와 layout 같은 외부 consumer가 feature 내부 파일을 직접 import하던 경로도 public index import로 정리했다.
 - query key, 딜 선택지, 딜 상태, 딜 후속 액션처럼 교차 feature에서 반복 참조되는 값은 top-level public sub-entry로 분리해 넓은 barrel 순환 위험을 낮췄다.

@@ -1,5 +1,7 @@
 # Frontend TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: No frontend code work / G99 frontend diff none
 
 ## 1. 판단
@@ -14,7 +16,6 @@
 
 2026-08-31 G04에서는 User Web BusinessCard, MeetingNote audio recording, Analytics, Mobile Local Draft, Notification API client/type과 permission helper를 읽어 Mobile Field 보관 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
 
-2026-08-31 G05에서는 Admin Web account request, audit, user/domain, trash, provider failure, analytics, system API client/type과 User Web account request/trash API client/type을 읽어 Admin Operation 보관 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
 
 2026-08-31 G06에서는 User Web Product, Deal, Contact, Company API client/type과 관련 mutation 흐름을 읽어 Domain Global Data 복합 API-SPEC을 보강했으며 Frontend 코드는 수정하지 않았다.
 
@@ -36,12 +37,10 @@
 - `FE/user-web/src/features/mobile-local-draft`
 - `FE/user-web/src/features/notification`
 - `FE/user-web/src/features/account-request`
-- `FE/user-web/src/features/trash`
 - `FE/admin-web/src/lib/admin-api-client.ts`
 - `FE/admin-web/src/features/account-request-management`
 - `FE/admin-web/src/features/audit-log`
 - `FE/admin-web/src/features/user-management`
-- `FE/admin-web/src/features/trash-management`
 - `FE/admin-web/src/features/provider-failure-management`
 - `FE/admin-web/src/features/usage-analytics`
 - `FE/admin-web/src/features/system-config`

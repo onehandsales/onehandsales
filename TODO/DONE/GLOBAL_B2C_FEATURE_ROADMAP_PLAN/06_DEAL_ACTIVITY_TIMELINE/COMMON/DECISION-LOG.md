@@ -1,5 +1,7 @@
 # Decision Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-25
 최종 업데이트: 2026-08-06
@@ -23,7 +25,6 @@
 | 수동 activity 수정 | 포함한다. | 사용자가 직접 남긴 기록은 오타/시간/내용 보정이 필요하다. |
 | 수동 activity 삭제 | 1차에서 제외한다. | 삭제/복구/retention/audit 정책과 묶어 Trust 기준으로 따로 결정하는 편이 낫다. |
 | 자동 activity 수정/삭제 | 제외한다. | 시스템 이력 정합성을 지킨다. |
-| 메모 timeline 통합 | 후속으로 둔다. | private memo와 민감정보 노출 정책을 먼저 확정해야 한다. |
 | 목록 summary | DealActivity 정본 뒤 G05/G06에서 구현한다. | API 정본 없이 FE에서 꾸미면 Global B2C 품질 기준에 맞지 않는다. |
 | 상위 backlog 승격 | `NBA-001`, `NBA-002`, `NBA-008`, `NBA-014`와 `NBA-003`의 Deal latest activity subset만 06으로 승격한다. | 원본 가이드의 "바로 구현 금지" 상태를 06의 confirmed 계약과 `/goal` 순서로 해소한다. |
 | first-sale global bundle | Admin 운영, 결제/구독/세금, 앱 내부 다국어, 다국가 데이터 모델, 제품 분석은 06에서 구현하지 않는다. | DealActivity와 record summary의 구현 범위를 넘는 별도 큰 계획이다. |

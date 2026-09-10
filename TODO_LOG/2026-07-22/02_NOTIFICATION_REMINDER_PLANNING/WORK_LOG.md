@@ -1,5 +1,7 @@
 # 02 Notification Reminder Planning Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 날짜: 2026-07-22
 작업 유형: 계획 문서 확정
 대상: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/02_NOTIFICATION_REMINDER`
@@ -43,7 +45,6 @@
 - 딜 마감 알림은 사용자 timezone 기준 `expectedEndDate - 1일 09:00` 기준이다.
 - 다음 행동과 회의록 후속 알림은 제외한다.
 - Browser push endpoint/key는 암호화 저장한다.
-- provider raw response, email body 전문, push endpoint/key, private memo, meeting note body, deal amount는 log/response에 노출하지 않는다.
 
 ## 4. 검증
 

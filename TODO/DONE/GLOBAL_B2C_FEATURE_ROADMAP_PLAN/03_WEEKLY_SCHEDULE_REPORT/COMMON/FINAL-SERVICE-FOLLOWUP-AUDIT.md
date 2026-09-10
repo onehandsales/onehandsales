@@ -1,5 +1,7 @@
 # Final Service Follow-up Audit
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Closed / 03 추가 후속 구현 없음
 검토일: 2026-08-04
 
@@ -23,7 +25,6 @@ Backend:
 
 - `BE/src/modules/schedule/presentation/http/schedule.controller.ts`에 `@Get("week/export/xlsx")`, `@Get("week")`가 `@Get(":scheduleId")`보다 먼저 선언되어 있다.
 - `BE/src/modules/schedule/application/services/schedule-application.service.ts`에 `getWeeklyScheduleReport`, `exportWeeklyScheduleReportXlsx`, timezone range 계산, Monday `weekStart` 검증, 7일 day bucket, linked deal summary, xlsx row 변환이 구현되어 있다.
-- `BE/src/modules/schedule/infrastructure/persistence/prisma-schedule.repository.ts`에 weekly report 전용 projection이 있으며 기존 `Schedule`, `ScheduleDeal`, `Deal`, `Company`, `Contact`, `DealFollowingActionLog`를 runtime aggregation으로 사용한다.
 - Google-origin active schedule의 `sourceType`, `googleCalendar`, `meetingUrl`과 Deal `currencyCode`가 weekly report projection/response/xlsx에 반영되어 있다.
 
 User Web:

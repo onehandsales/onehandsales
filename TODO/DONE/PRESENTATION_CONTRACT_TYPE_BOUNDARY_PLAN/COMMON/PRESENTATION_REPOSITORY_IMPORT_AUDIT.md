@@ -1,5 +1,7 @@
 # Presentation Repository Import Audit
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed / Archived
 감사일: 2026-08-29
 재검토일: 2026-08-30
@@ -38,7 +40,6 @@ rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g 
 | `BE/src/modules/product/presentation/http/dto/product-request.dto.ts` | `ProductListSort` | `@IsEnum`, query type | G01 Completed |
 | `BE/src/modules/deal/presentation/http/dto/deal-request.dto.ts` | `DealListSort`, `DEAL_ACTIVITY_TYPES`, `MANUAL_DEAL_ACTIVITY_TYPES`, `DealActivityTypeCode`, `ManualDealActivityTypeCode` | `@IsEnum`, `@IsIn`, query/body type | G01 Completed |
 | `BE/src/modules/meeting-note/presentation/http/dto/meeting-note-request.dto.ts` | `MeetingNoteSort`, `MeetingNoteSourceTypeValue` | `@IsEnum`, query/body type | G01 Completed |
-| `BE/src/modules/trash/presentation/http/dto/trash-request.dto.ts` | `TrashDomainFilter`, `TrashItemKindFilter`, `TrashLogTypeFilter`, `TrashSort`, `TrashTargetType` | type-only + local `@IsIn` values | G01 Completed |
 | `BE/src/modules/data-import/presentation/http/dto/import-job-request.dto.ts` | `ImportTemplateType` | type-only + local `@IsIn` values | G01 Completed |
 | `BE/src/modules/business-card/presentation/http/dto/business-card-request.dto.ts` | `BusinessCardScanStatusValue` | `@IsEnum`, query type | G01 Completed |
 | `BE/src/modules/admin-operation/presentation/http/dto/admin-user-request.dto.ts` | `AdminUserListSort` | `@IsEnum`, query type | G01 Completed |
@@ -51,9 +52,7 @@ rg -n '@Inject\(|REPOSITORY|Repository' src/modules/*/presentation -g '*.ts' -g 
 | `BE/src/modules/admin-operation/presentation/http/admin-system-operation-response.mapper.ts` | `AdminOperationCheckItemsRecord`, `AdminOperationCheckRunRecord` | mapper input/response alias | G02 Completed |
 | `BE/src/modules/admin-operation/presentation/http/admin-provider-failure-response.mapper.ts` | `AdminProviderFailureDetailRecord`, `AdminProviderFailureListPageRecord`, `AdminProviderFailureRecord`, `AdminProviderFailureSafeContext` | mapper input/response type | G02 Completed |
 | `BE/src/modules/admin-operation/presentation/http/admin-account-request-response.mapper.ts` | `AdminAccountDeletionRequestsPageRecord`, `AdminDataExportRequestsPageRecord` | mapper input type | G02 Completed |
-| `BE/src/modules/admin-operation/presentation/http/admin-user-response.mapper.ts` | `AdminUserActivityTimelinePageRecord`, `AdminUserActivityTimelineRecord`, `AdminUserAnalyticsSummaryRecord`, `AdminUserListDomainCountsRecord`, `AdminUserListItemRecord`, `AdminUserListPageRecord`, `AdminUserNotificationSummaryRecord`, `AdminUserOverviewDomainCountsRecord`, `AdminUserOverviewRecord`, `AdminUserProfileRecord`, `AdminUserTrashSummaryRecord` | mapper input/response type | G02 Completed |
 | `BE/src/modules/admin-operation/presentation/http/admin-domain-record-response.mapper.ts` | `AdminDomainRecordDomain`, `AdminDomainRecordItemRecord`, `AdminDomainRecordSensitiveFlags`, `AdminDomainRecordStatus`, `AdminDomainRecordSummary`, `AdminDomainRecordsPageRecord` | mapper input/response type | G02 Completed |
-| `BE/src/modules/admin-operation/presentation/http/admin-trash-response.mapper.ts` | `AdminTrashRecoveryRequestsPageRecord`, `AdminTrashRecordsPageRecord`, `AdminTrashSummaryRecord` | mapper input/response type | G02 Completed |
 | `BE/src/modules/admin-operation/presentation/http/admin-analytics-response.mapper.ts` | `AdminAnalyticsActivationRecord`, `AdminAnalyticsAiUsageRecord`, `AdminAnalyticsEventCountRecord`, `AdminAnalyticsMobileFieldUseRecord`, `AdminAnalyticsOverviewRecord`, `AdminAnalyticsRangeRecord`, `AdminAnalyticsRetentionRecord`, `AdminAnalyticsRouteViewRecord` | mapper input/response alias | G02 Completed |
 | `BE/src/modules/admin-operation/presentation/http/admin-audit-response.mapper.ts` | `AdminAuditLogPageRecord`, `AdminAuditLogRecord`, `AdminSensitiveAccessRecord`, `AdminSensitiveRawDataRecord` | mapper input type | G02 Completed |
 
@@ -84,7 +83,6 @@ src/modules/admin-operation/presentation/http/admin-audit-response.mapper.ts
 src/modules/admin-operation/presentation/http/admin-domain-record-response.mapper.ts
 src/modules/admin-operation/presentation/http/admin-provider-failure-response.mapper.ts
 src/modules/admin-operation/presentation/http/admin-system-operation-response.mapper.ts
-src/modules/admin-operation/presentation/http/admin-trash-response.mapper.ts
 src/modules/admin-operation/presentation/http/admin-user-response.mapper.ts
 ```
 
@@ -116,7 +114,6 @@ BE/src/modules/admin-operation/application/ports/admin-audit-read-model.types.ts
 BE/src/modules/admin-operation/application/ports/admin-domain-record-read-model.types.ts
 BE/src/modules/admin-operation/application/ports/admin-provider-failure-read-model.types.ts
 BE/src/modules/admin-operation/application/ports/admin-system-operation-read-model.types.ts
-BE/src/modules/admin-operation/application/ports/admin-trash-read-model.types.ts
 BE/src/modules/admin-operation/application/ports/admin-user-read-model.types.ts
 ```
 

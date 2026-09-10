@@ -1,5 +1,7 @@
 # Goal Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. Security
@@ -13,11 +15,9 @@
 ## 2. Privacy
 
 - [ ] email/phone/provider email은 기본 masked다.
-- [ ] private memo 원문은 Trash list/detail/restore response에서 제외된다.
 - [ ] provider raw response/prompt/token/quota detail은 조회하지 않는다.
 - [ ] browser push endpoint/key/userAgent 원문은 Admin response/log에 노출되지 않는다.
 - [ ] mobile analytics raw payload는 Admin response에 dump하지 않는다.
-- [ ] 계정 삭제는 일반 Trash soft delete와 분리되어 있다.
 
 ## 3. UX/UI
 

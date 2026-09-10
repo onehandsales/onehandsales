@@ -1,5 +1,7 @@
 # G01 Planning API DB Contract
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 완료일: 2026-07-23
 
@@ -18,7 +20,6 @@
 ## 3. 포함 범위
 
 - 04 문서 계약 검토
-- 현재 Schedule/Trash/Notification/User Web 구조 재확인
 - API request/response shape와 FE 타입 변경 필요성 점검
 - DB migration scope 점검
 - blocking 질문 여부 확인
@@ -34,9 +35,7 @@
 
 ## 5. 확인해야 할 현재 코드 사실
 
-- `BE/prisma/schema.prisma`의 `Schedule`에는 아직 `meetingUrl`, Google source metadata, `deletedAt`, `trashExpiresAt`이 없다.
 - `BE/src/modules/schedule/application/services/schedule-application.service.ts`의 delete는 현재 hard delete다.
-- `BE/src/modules/trash` target type에는 아직 `SCHEDULE`이 없다.
 - `BE/src/modules/notification`에는 `SCHEDULE_START_REMINDER`가 있고 schedule create/update/delete에서 use case를 호출한다.
 - `FE/user-web/src/features/schedule`은 `memo`, `dealIds`를 지원하지만 `meetingUrl`과 Google source badge는 없다.
 - `FE/user-web/src/pages/settings`는 연동 설정 entry point로 사용한다.
@@ -45,7 +44,6 @@
 
 - `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`가 모든 신규 Google API의 request/response/business logic을 담고 있는가?
 - 기존 Schedule API 변경이 명시되어 있는가?
-- Schedule soft delete와 Trash restore가 명시되어 있는가?
 - Google description -> `Schedule.memo` 최초 import 정책이 명시되어 있는가?
 - `meetingUrl` validation과 UI 표시 정책이 명시되어 있는가?
 - Google-origin schedule reminder 정책이 명시되어 있는가?
@@ -79,9 +77,7 @@ git diff --check
 
 - 선행 문서 `COMMON/SCOPE.md`, `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`, `COMMON/ARCHITECTURE-GUARDRAILS.md`, `COMMON/REVIEW-CHECKLIST.md`, `BE-TODO/*`, `FE-TODO/*`를 재확인했다.
 - 현재 코드 사실을 확인했다.
-  - `BE/prisma/schema.prisma`의 `Schedule`에는 아직 `meetingUrl`, Google source metadata, `deletedAt`, `trashExpiresAt`이 없다.
   - `ScheduleApplicationService.deleteSchedule`은 현재 `deleteScheduleHard` 경로를 사용한다.
-  - `BE/src/modules/trash`와 `FE/user-web/src/features/trash`의 target/domain type에는 아직 `SCHEDULE`이 없다.
   - `BE/src/modules/notification`에는 `SCHEDULE_START_REMINDER`가 있다.
   - `FE/user-web/src/features/schedule`은 `memo`, `dealIds`를 지원하지만 `meetingUrl`, `isAllDay`, `googleCalendar` 타입은 아직 없다.
   - `FE/user-web/src/pages/settings`는 `/app/settings` entry point로 연결되어 있다.

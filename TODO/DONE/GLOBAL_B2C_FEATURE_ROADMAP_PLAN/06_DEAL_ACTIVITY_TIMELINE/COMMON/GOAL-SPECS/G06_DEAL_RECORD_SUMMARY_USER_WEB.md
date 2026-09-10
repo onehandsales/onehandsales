@@ -1,5 +1,7 @@
 # G06 Deal Record Summary User Web
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 목표: 목록 summary User Web 구현
 완료일: 2026-07-26
@@ -30,7 +32,6 @@ FE는 `COMMON/SOURCE-PLAN-COVERAGE.md` 기준으로 06에 승격된 summary만 �
 
 - 회사/제품 latest activity summary
 - Contact latest activity summary
-- latest memo summary
 - next action summary 신규 표시
 - 고급 필터 UI
 - page size 변경

@@ -1,5 +1,7 @@
 # G10 Product Backend vertical slice 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업 상태
 
 - 상태: 완료
@@ -20,9 +22,7 @@
 ## 예정 범위
 
 - Product CRUD API 구현
-- ProductLog CRUD API 구현
 - ProductConnection 생성/삭제 API 구현
-- Product Memo는 `PersonalMemo(targetType=PRODUCT)`로 암호화 저장
 - 사용자별 ownership 검증
 - soft delete, restore, deleted resource 410/409 처리
 - use case 테스트, typecheck, lint, build, smoke 검증
@@ -71,8 +71,6 @@
 
 ## 검토 결과
 
-- G10 요구사항 기준 Product CRUD, ProductLog CRUD, ProductConnection 생성/삭제를 구현했다.
-- Product memo는 `PersonalMemo(targetType=PRODUCT)`에 암호화 저장하고 상세 조회에서 복호화 응답한다.
 - ProductConnection target은 `COMPANY`, `CONTACT`, `DEAL`을 지원하며 대상 ownership과 삭제 상태를 검증한다.
 - Prisma schema에 Product `currency` 컬럼이 없어 API 계약의 `currency`는 `Product.metadata.currency`로 저장한다.
 - application/domain 계층은 Prisma/JWT/Supabase 의존 없이 repository port와 domain error만 사용한다.

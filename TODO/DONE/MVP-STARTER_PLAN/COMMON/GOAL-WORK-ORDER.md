@@ -1,5 +1,7 @@
 # Goal 작업 순서
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `MVP-STARTER_PLAN`을 한 번에 구현하지 않고, `/goal`로 실행 가능한 작은 작업 단위로 나누기 위한 우선순위 문서다.
@@ -90,17 +92,13 @@ P6. 테스트와 릴리즈 준비
 - FE token 전달/보관 방식 결정
 - FE token 전달/보관 방식 확정값: FE는 Supabase access token을 token exchange API에만 전달하고, business API에는 Backend가 발급한 App access token을 `Authorization: Bearer` header로 전달한다. App access token은 memory에만 저장하고, refresh token은 httpOnly cookie와 `AuthSession.refreshTokenHash`로 관리한다.
 - FE/BE 배포 도메인 전략 확정값: local/preview는 분리 domain을 허용하고, production은 같은 parent domain 아래 `app`, `admin`, `api` subdomain으로 고정한다.
-- 삭제된 리소스 조회/수정 응답 정책 확정값: 기존 상세 URL 조회는 `410 DeletedResource`, 수정/상태 변경/재삭제 같은 변경 요청은 `409 DeletedResource`
-- soft delete, restore, hard delete, 휴지통 완전 삭제 정책 확정값: 모든 영속 삭제 대상 리소스는 soft delete하고, 30일 휴지통 보관 후 시스템이 자동 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다.
-- 도메인별 Memo 기록과 민감정보 저장 위치 확정값: `Company`, `Contact`, `Product`, `Deal`은 Log와 Memo 기록을 각각 가질 수 있다. Log는 객관적 사실/변경/만남/소식 기록이고, Memo는 사용자의 주관적 생각/판단 기록이다. Memo는 각 엔티티의 단일 `memo` 필드가 아니라 `PersonalMemo` 기록 테이블에 암호화 저장한다.
-- 도메인별 Log 구현 단위 확정값: 회사는 `CompanyLog`, 담당자는 `ContactLog`, 제품은 `ProductLog`, 딜은 `DealActivity`를 사용한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장하고 상세 화면에서 Log와 Memo 섹션을 분리한다.
+- 현재 Company 범위에는 제거 상태 응답 정책이 적용되지 않음
 - 일정 기본 조회 기간과 view mode 확정값: `/api/schedules`의 `from`, `to`가 없으면 사용자 timezone 기준 이번 달 1일~말일 범위를 조회한다. User Web `/schedules`는 Google Calendar처럼 월간 캘린더를 기본으로 보여주고 월간/주간 view mode 전환을 제공한다. 주간 보고서/Export는 `/api/schedules/week`와 `/api/schedules/week/export`로 분리한다.
-- 민감정보 암호화 adapter 적용 범위 확정값: `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`부터 application-level encryption 적용
 - Admin masking, 원문 조회, AuditLog transaction 정책 확정값: Admin 목록/기본 상세는 민감 원문을 마스킹하거나 존재 여부만 반환하고, 원문 조회는 사유 필수 전용 API에서 대상 조회와 `AuditLog` 생성을 같은 transaction으로 처리한다.
 - Import 처리 방식 확정값: preview/validation 후 확정 실행, 확정 실행 중 row 오류 발생 시 전체 rollback
 - Google Calendar, OCR, OpenAI 실연동 범위 확정값: MVP 기능은 처음부터 실제 provider를 호출하고, mock/stub은 자동 테스트와 장애 대체 검증 용도로만 사용한다.
 - Notification 실제 발송 범위 확정값: MVP 1차에서 email과 browser push를 모두 실제 발송한다. email은 SMTP adapter, browser push는 Web Push VAPID adapter를 기본 실제 구현으로 두고, mock/stub은 자동 테스트와 장애 재현용으로만 사용한다.
-- 통합검색 기본 정책 확정값: 회사/담당자/제품/딜/일정/회의록을 검색한다. 삭제 데이터는 제외하고, 검색어 2자 이상, type별 최대 5개, 민감 원문 비노출을 기본으로 한다.
+- 통합검색 기본 정책 확정값: 현재 Company를 검색한다. 검색어 2자 이상, type별 최대 5개를 기본으로 한다.
 - `.env.example` 기준 변수 목록 정리
 
 제외 범위:
@@ -224,7 +222,6 @@ P6. 테스트와 릴리즈 준비
 포함 범위:
 
 - `BE/prisma/schema.prisma` 작성
-- User, Company, CompanyLog, Contact, ContactLog, Product, ProductLog, Deal, DealActivity, PersonalMemo 핵심 모델
 - Schedule, MeetingNote, AuditLog 기본 모델
 - ImportJob, ExportJob, Notification 기본 모델. BusinessCard OCR은 현재 `BusinessCardScanLog`를 사용하고 별도 `AiJob`을 두지 않는다.
 - Prisma client 생성
@@ -297,9 +294,9 @@ P6. 테스트와 릴리즈 준비
 - PrismaCompanyRepository
 - Company mapper
 - Company application service
-- User API CRUD
-- soft delete와 restore
-- CompanyLog 기본 CRUD
+- 회사 목록/상세/생성/수정 API
+- 회사 분야/지역 옵션 API
+- 회사 목록 xlsx 내보내기 API
 - userId ownership 필터
 
 제외 범위:
@@ -310,9 +307,9 @@ P6. 테스트와 릴리즈 준비
 
 완료 기준:
 
-- `/api/companies` CRUD가 동작한다.
-- 다른 사용자의 회사는 조회/수정/삭제할 수 없다.
-- 삭제는 `deletedAt` 처리된다.
+- `/api/companies` 목록/상세/생성/수정이 동작한다.
+- `/api/company-fields`, `/api/company-regions` 옵션 API가 동작한다.
+- 다른 사용자의 회사와 옵션은 조회/수정할 수 없다.
 
 ### G07. Company User Web 화면
 
@@ -326,7 +323,8 @@ P6. 테스트와 릴리즈 준비
 - 회사 빠른 등록 modal
 - 회사 상세 placeholder 또는 기본 상세
 - 회사 수정 form
-- 회사 로그 표시와 생성
+- 회사 분야/지역 옵션 생성과 삭제
+- 회사 목록 xlsx 내보내기
 - TanStack Query hook
 
 제외 범위:
@@ -336,7 +334,7 @@ P6. 테스트와 릴리즈 준비
 
 완료 기준:
 
-- User Web에서 회사 생성, 목록, 상세, 수정, 삭제가 가능하다.
+- User Web에서 회사 생성, 목록, 상세, 수정, 분야/지역 옵션 관리, xlsx 내보내기가 가능하다.
 - API error와 loading 상태가 표현된다.
 
 ### G08. Contact Backend vertical slice
@@ -351,8 +349,6 @@ P6. 테스트와 릴리즈 준비
 - 회사 연결 검증
 - User API CRUD
 - soft delete와 restore
-- ContactLog 기본 CRUD
-- 담당자 Memo 요약과 `PersonalMemo(targetType=CONTACT)` 연결
 - userId ownership 필터
 - 전화번호/이메일 필드 저장
 
@@ -401,8 +397,6 @@ P6. 테스트와 릴리즈 준비
 포함 범위:
 
 - Product CRUD
-- ProductLog 기본 CRUD
-- 제품 Memo 요약과 `PersonalMemo(targetType=PRODUCT)` 연결
 - ProductConnection 생성/삭제
 - 제품 연결 대상 타입 검증
 - userId ownership 필터
@@ -869,42 +863,18 @@ P6. 테스트와 릴리즈 준비
 - 알림 데이터가 생성되고 User Web에서 확인할 수 있다.
 - email/browser push가 실제 adapter를 통해 발송된다.
 
-### G28. Trash 기본 흐름
-
-목적:
-
-- 삭제된 모든 soft delete 대상 데이터를 휴지통에서 확인하고 복구할 수 있게 한다.
-
-포함 범위:
-
-- `/api/trash` 조회
-- Company/Contact/Product/Deal/Schedule/MeetingNote 복구
-- 완전 삭제 예정일 표시 기준
-- 30일 경과 리소스 자동 완전 삭제 job 기본 구조
-- User Web 휴지통 화면
-
-제외 범위:
-
-- 사용자 즉시 완전 삭제 API와 UI
-- 7일 전 실제 알림 발송
-
-완료 기준:
-
-- 삭제 데이터가 휴지통에 표시되고 `permanentDeleteAt` 이전에는 복구된다.
-- 30일이 지난 삭제 데이터는 시스템 자동 작업으로 완전 삭제될 수 있다.
 
 ### G29. 통합검색 기본 흐름
 
 목적:
 
-- 사용자가 하나의 키워드로 주요 엔티티를 찾을 수 있게 한다.
+- 사용자가 하나의 키워드로 현재 활성 회사 데이터를 찾을 수 있게 한다.
 
 포함 범위:
 
 - Backend 통합검색 API
-- Company/Contact/Product/Deal/Schedule/MeetingNote 검색
+- Company 검색
 - entity type별 grouping
-- 삭제 데이터 제외
 - 검색어 2자 이상
 - type별 최대 5개 기본 limit
 - 민감 원문 비노출
@@ -918,7 +888,7 @@ P6. 테스트와 릴리즈 준비
 
 완료 기준:
 
-- 진행 중 딜과 최근 항목이 우선 표시된다.
+- 회사 검색 결과가 `/app/companies/:companyId`로 이동한다.
 
 ## 9. P5. Admin과 감사
 
@@ -1015,7 +985,6 @@ P6. 테스트와 릴리즈 준비
 - deal stage change activity log
 - meeting note link activity log
 - sensitive raw view audit transaction
-- trash restore
 
 제외 범위:
 
@@ -1146,5 +1115,3 @@ G00 -> G01 -> G02 -> G03 -> G04 -> G05
 - `TODO/DONE/MVP-STARTER_PLAN/FE-TODO/README.md`
 - `TODO/DONE/MVP-STARTER_PLAN/BE-TODO/README.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
-
-

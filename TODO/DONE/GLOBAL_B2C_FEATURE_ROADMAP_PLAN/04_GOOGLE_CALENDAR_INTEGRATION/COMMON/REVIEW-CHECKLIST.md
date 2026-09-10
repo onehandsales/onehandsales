@@ -1,5 +1,7 @@
 # Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 최종 업데이트: 2026-07-23
 
@@ -7,7 +9,6 @@
 
 - [x] `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`와 구현 API가 일치한다.
 - [x] `BE-TODO/API-TODO.md`, `BE-TODO/DB-SCHEMA.md`, `FE-TODO/USER-WEB-TODO.md`와 충돌이 없다.
-- [x] 기존 Schedule/Trash/Weekly Report API 타입이 FE/BE에서 동시에 갱신됐다.
 - [x] DB migration이 Prisma schema와 일치한다.
 
 근거:
@@ -15,9 +16,7 @@
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations/20260723010000_google_calendar_integration/migration.sql`
 - `BE/src/modules/schedule`
-- `BE/src/modules/trash`
 - `FE/user-web/src/features/schedule`
-- `FE/user-web/src/features/trash`
 
 ## 2. Backend
 
@@ -52,13 +51,9 @@
 - `google-calendar-connection.service.spec.ts`, `google-calendar-sync.service.spec.ts`, `google-calendar-read.provider.spec.ts`
 - `prisma-google-calendar-connection.repository.spec.ts`, `prisma-google-calendar-sync.repository.spec.ts`
 
-## 3. Schedule/Trash/Reminder
 
 - [x] `DELETE /api/schedules/:scheduleId`가 hard delete를 하지 않는다.
-- [x] schedule soft delete가 `deletedAt/deletedByUserId/trashExpiresAt`을 채운다.
-- [x] `trashExpiresAt`은 `createTrashRetentionTimestamps(now)` 기준 `now+7일`이다.
 - [x] soft-deleted schedule은 기본 list/week/home upcoming에서 제외된다.
-- [x] `SCHEDULE` Trash list/detail/restore가 동작한다.
 - [x] Google-origin restore가 `LOCAL_MODIFIED`로 복구된다.
 - [x] schedule delete/hidden/Google deleted에서 pending reminder가 취소된다.
 - [x] restore/future schedule/update에서 reminder가 다시 계산된다.
@@ -68,16 +63,10 @@
 
 - `schedule-application.service.ts`
 - `prisma-schedule.repository.ts`
-- `prisma-trash.repository.ts`
-- `trash-application.service.ts`
 - `schedule-application.service.spec.ts`
-- `trash-application.service.spec.ts`
-- `prisma-trash.repository.spec.ts`
 
 G05 보정:
 
-- `SCHEDULE` Trash detail의 `Schedule time`, `Location`, `Linked deals` label을 API 계약의 `일정 시간`, `장소`, `연결 딜`로 수정했다.
-- internal schedule의 Trash source label을 사용자 문구에 맞춰 `한손`으로 수정했다.
 
 ## 4. Frontend
 
@@ -92,7 +81,6 @@ G05 보정:
 - [x] `isAllDay=true` schedule은 list/detail/week에서 `종일`로 표시된다.
 - [x] Google-origin all-day schedule에서 start/end를 수정하면 `isAllDay=false`, `LOCAL_MODIFIED`가 된다.
 - [x] disconnect modal이 `KEEP`, `HIDE`, `TRASH`를 제공하고 기본값은 `KEEP`이다.
-- [x] `/app/trash`에서 `SCHEDULE` 복구가 동작한다.
 - [x] 모바일/데스크톱 text overlap이 없다.
 
 근거:
@@ -116,7 +104,6 @@ pnpm run typecheck
 pnpm run lint
 pnpm run test -- schedule
 pnpm run test -- notification
-pnpm run test -- trash
 pnpm run test -- ownership
 pnpm run build
 ```
@@ -157,7 +144,6 @@ pnpm exec playwright test tests/e2e/weekly-schedule-report-ux.spec.ts --project=
 - [x] memo/Google description 원문이 structured log에 없다.
 - [x] provider attendee email을 저장/log하지 않는다.
 - [x] meeting URL full query string을 structured log에 남기지 않는다.
-- [x] cross-user calendar source/schedule/trash 접근이 ownership 기준으로 차단된다.
 
 근거:
 

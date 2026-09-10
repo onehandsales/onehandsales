@@ -1,5 +1,7 @@
 # Goal Completion Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 최종 업데이트: 2026-07-26
 
@@ -31,8 +33,6 @@
 - [x] `COMMON/BUSINESS-LOGIC.md`와 현재 mutation 흐름을 대조했다.
 - [x] API path와 기존 route 충돌이 없다.
 - [x] activity writer provider 배치가 module cycle을 만들지 않는다.
-- [x] 회의록 연결 legacy `DealFollowingActionLog`와 새 `DealActivity` 중복 노출 처리 기준이 정해졌다.
-- [x] 딜 생성 시 초기 `DealFollowingActionLog`가 `NEXT_ACTION_CREATED`로 함께 기록되는 기준을 확인했다.
 - [x] follow-up sourceId 기준이 `FollowUpDeliveryAttempt.id`로 확정됐다.
 - [x] `DealActivity` schema 후보와 현재 Prisma 관계 충돌이 없다.
 - [x] API request/response 예시와 실제 DTO 네이밍 충돌이 없다.
@@ -71,11 +71,9 @@ G02 증거:
 - [x] `PATCH /api/deals/:dealId/activities/:activityId`가 구현됐다.
 - [x] 자동 activity 생성 지점이 transaction과 연결됐다.
 - [x] 회의록 연결 변경은 delete/recreate 전 diff 기준으로 activity가 생성됐다.
-- [x] 회의록 연결 legacy `DealFollowingActionLog` 문구를 activity summary로 재사용하지 않는다.
 - [x] follow-up activity는 `DEAL` target message만 딜 timeline에 기록한다.
 - [x] follow-up 발송 성공/실패 activity가 delivery attempt 단위로 기록됐다.
 - [x] 자동 activity는 수정할 수 없다.
-- [x] private memo/provider raw/follow-up body 전체가 response/log에 노출되지 않는다.
 
 G03 증거:
 

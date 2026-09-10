@@ -1,5 +1,7 @@
 # G04 User Web Notification UX Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 Date: 2026-07-22
 Status: Done
 
@@ -26,7 +28,6 @@ Status: Done
 
 ## Security / UX Notes
 
-- Notification rows show title/body/target label only; private memo, meeting note body, provider raw detail, push endpoint/key, and deal amount are not introduced into the UI.
 - Browser push public-key lookup failure is shown inside the push panel and does not break the full notification page.
 - Read mutation invalidates both list and unread-count queries.
 

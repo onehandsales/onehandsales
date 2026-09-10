@@ -1,5 +1,7 @@
 # G03 Backend Calendar List Sync
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 
 ## 1. 목적
@@ -98,7 +100,6 @@ Response count:
 - `localModifiedSkippedCount`
 - `googleDeletedCount`
 - `hiddenByCalendarSelectionCount`
-- `trashedCount`
 - `reminderScheduledCount`
 - `reminderCanceledCount`
 - `errorCount`
@@ -141,7 +142,6 @@ Business logic:
 
 - `CreateScheduleDto`, `UpdateScheduleDto`에 `meetingUrl?: string | null`
 - client source/external field 지정은 400
-- `ScheduleResponse`에 `meetingUrl`, `isAllDay`, `sourceType`, `googleCalendar`, `deletedAt`, `trashExpiresAt`
 - `ListSchedulesQueryDto`에 `visibility`, `sourceType`
 - 기본 list/detail/week/export에서 soft-deleted schedule 제외
 - `visibility=ACTIVE`에서 Google hidden status 제외
@@ -195,5 +195,4 @@ pnpm run build
 
 - 완료일: 2026-07-23
 - 구현: Google calendar list/selection/sync provider, service, repository, controller endpoint를 추가했다.
-- 확장: Schedule list `visibility/sourceType`, source badge, weekly xlsx `출처/미팅 링크`, Trash schedule source label을 계약에 맞췄다.
 - 검증: `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `build`, `git diff --check` 통과.

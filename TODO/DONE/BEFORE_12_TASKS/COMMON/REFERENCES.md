@@ -1,5 +1,7 @@
 # References
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final
 
 ## 1. 목적
@@ -91,7 +93,6 @@ DB/환경/QA:
 - `BE/src/modules/notification`
 - `BE/src/modules/admin-operation`
 - `BE/src/modules/account-request`
-- `BE/src/modules/trash`
 - `BE/prisma/schema.prisma`
 - `BE/prisma/migrations`
 - `BE/prisma/seed.ts`
@@ -129,7 +130,6 @@ Admin Web:
 | G01 | 05 G10 문서, follow-up API 계약, `BE/src/modules/follow-up`, `FE/user-web/src/features/follow-up-delivery`, `AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md` |
 | G02 | 10 Mobile 문서, User Web mobile/local draft/notification 코드, BE notification/analytics/schema |
 | G03 | User Web router, User Web architecture, UXUI user flow, Frontend User Web architecture |
-| G04 | 11 Admin Operation 문서, 11 User Web 영향 문서, BE admin-operation/account-request/trash, Admin Web router/features, User Web trash/account-request 경계 |
 | G05 | Admin Web architecture, Admin router, `features/admin-query`, Admin Web E2E, Software/UXUI Admin docs |
 | G06 | PRE12 final classification, G01~G05 결과, 12 Billing scope |
 

@@ -1,5 +1,7 @@
 # References
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. 11 내부 문서
@@ -81,11 +83,9 @@ DB 작업자는 아래를 먼저 읽는다.
 ## 6. 현재 코드 참조
 
 - `BE/src/modules/auth/presentation/http/me.controller.ts`
-- `BE/src/modules/trash`
 - `BE/src/modules/product-analytics`
 - `BE/src/modules/meeting-note`
 - `BE/src/modules/business-card`
 - `FE/admin-web/src/app/router/router.tsx`
 - `FE/admin-web/src/pages`
-- `FE/user-web/src/features/trash`
 - `FE/user-web/src/features/settings`

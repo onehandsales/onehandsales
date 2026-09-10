@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 
 ## 1. 포함 범위
@@ -69,7 +71,6 @@ Reserved event:
 Analytics payload에 저장하지 않는다.
 
 - 이름, 이메일, 전화번호, 주소 상세, 회사명, 담당자명
-- memo, private memo, meeting note details, nextPlan, requiredAction 원문
 - AI prompt, raw response, provider raw response, quota detail
 - access token, refresh token, authorization header, provider token
 - userAgent, ipAddressHash, deviceIdHash 같은 auth/security data 복제

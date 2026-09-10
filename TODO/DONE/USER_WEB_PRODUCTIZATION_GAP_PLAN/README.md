@@ -1,5 +1,7 @@
 # User Web Productization Gap Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: 06은 Completed 상태를 유지하고, Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 제품화 gap으로 승격하지 않는다. 해당 후보는 B2B/team CRM 성격이 강한 후속 전략 후보로 유지한다.
 
 상태: DONE / Source Gap Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -98,11 +100,9 @@
 - DataImport. `01_IMPORT_JOB_PERSISTENCE`는 G01~G09 기준으로 최종 서비스 형태 완료 상태다.
 - Notification reminder
 - Search
-- Trash
 - Company/Contact/Product/Deal xlsx export
 - 글로벌 통화/전화번호/회사 지역/주소 및 Import/Export 현지화
 - Product Analytics foundation과 mobile field-use event
-- Admin 운영 API/Web, audit/redaction, provider failure, analytics overview, Trash/account request/system gate
 
 부족한 핵심 축:
 
@@ -151,7 +151,6 @@
 - `/app/settings`에서 Google Calendar 연결, 재연결, calendar 선택 관리, 연결 해제 action 제공
 - `/app/schedules/:scheduleId`에서 Google-origin schedule의 meeting URL, `종일`, source badge, 로컬 수정 상태, 딜/메모 수정 지원
 - `/app/schedules/week`에서 Google-origin active schedule과 meeting URL/source badge 표시
-- `/app/trash`에서 `SCHEDULE` 휴지통 항목과 복구 지원
 - Google-origin schedule도 일정 reminder와 연결되어 retention 흐름에 포함
 
 남은 제품화 gap으로 분리할 범위:
@@ -175,8 +174,6 @@
 
 남은 제품화 gap으로 분리할 범위:
 
-- Company/Contact/Product latest activity, latest memo, next action summary. 2026-08-06 A 결정에 따라 PRE12 API/DB/FE 계약화/구현 대상이 아니며 B2B/team CRM 성격의 후속 전략 후보로 둔다.
-- 일반 메모와 private memo의 activity 통합 정책
 - 수동 activity 삭제, retention, audit 정책
 - MeetingNote 목록 latest/next summary
 - MeetingNote Admin provider audit/raw access policy는 11에서 완료. 회의록 목록 summary와 자동 발송/알림은 후속
@@ -273,18 +270,13 @@
 
 완료로 반영할 운영/제품 흐름:
 
-- Admin Web `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`에서 사용자 상태, 활동, 도메인 데이터, Trash를 read-only/masked 기준으로 본다.
-- Admin Web `/provider-failures`, `/analytics`, `/account-requests`, `/trash/recovery-requests`, `/audit-logs`, `/system`을 운영 화면으로 제공한다.
 - `/admin/api/*`는 AuthGuard/AdminGuard를 통과하고 User Web은 `/admin/api/*`를 호출하지 않는다.
 - 민감 원문 접근은 reason 필수와 append-only audit/sensitive log를 사용한다.
-- User Web `/app/trash`는 만료 row를 유지하고 restore disabled와 복구 문의 흐름을 제공한다.
-- provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload, private memo 원문은 Admin/User response/log에 노출하지 않는다.
 - Admin provider failure 목록은 2026-08-10 source 편중 cursor pagination 회귀 테스트로 보강되어 한 provider source에 실패 row가 몰려도 목록 cursor가 조기 종료되지 않는다.
 
 남은 제품화 gap으로 분리할 범위:
 
 - 결제/구독/plan/payment/invoice/refund/failed payment recovery와 Billing Admin 연동은 `TODO/PADDLE_PLAN` 범위다.
-- Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge는 11 범위가 아니다.
 - Admin system gate는 점검 결과 기록용이며, 실제 backup/restore 실행 runbook과 장애 대응 drill은 별도 운영 절차로 남는다.
 
 ## 4. 문서 구성
@@ -321,7 +313,6 @@
 - 완료된 Global Data I18N 범위를 넘어서는 신규 국가/통화/provider, `/app` locale prefix, 추가 DB migration 실행
 - 완료된 Product Analytics/Admin Operation 범위를 넘어서는 billing/paywall/churn runtime event
 - 완료된 Mobile Field Use 범위를 넘어서는 PWA install/offline shell, full offline sync
-- 완료된 Admin Operation 범위를 넘어서는 Billing Admin 연동, Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge
 
 위 항목은 제품화 우선순위와 UX/UI 방향을 확정한 뒤 별도 계획에서 다룬다. UX/UI 전체 polish는 지금 06 후속으로 진행하지 않고, 로드맵 DONE 이후 별도 전면 유지보수 계획에서 다룬다.
 

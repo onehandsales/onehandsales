@@ -1,5 +1,7 @@
 # G03 Deal Activity Backend
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 목표: DealActivity API와 자동 생성 Backend 구현
 
@@ -58,7 +60,6 @@ Logging 금지:
 - activity title/body 원문
 - follow-up body
 - meeting note details/rawText
-- private memo
 - provider raw response
 
 ## 7. 검증

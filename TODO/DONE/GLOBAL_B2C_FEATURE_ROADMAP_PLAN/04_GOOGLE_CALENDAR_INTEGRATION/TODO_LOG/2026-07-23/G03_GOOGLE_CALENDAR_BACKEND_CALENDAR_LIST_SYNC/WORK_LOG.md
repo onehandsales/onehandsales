@@ -1,5 +1,7 @@
 # G03 Google Calendar Backend Calendar List Sync Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 날짜: 2026-07-23
 상태: Done
 대상 goal: `COMMON/GOAL-SPECS/G03_BACKEND_CALENDAR_LIST_SYNC.md`
@@ -13,7 +15,6 @@
 - Google event를 Schedule로 import/update하며 description은 최초 import 때만 memo로 저장하고, LOCAL_MODIFIED 일정은 external metadata만 갱신한다.
 - Google cancelled/deleted event는 `GOOGLE_DELETED`로 숨김 처리하고 reminder cancel 대상에 포함한다.
 - all-day event local boundary, meeting URL 우선순위, incremental range 밖 신규 이벤트 skip을 반영했다.
-- Schedule list에 `visibility/sourceType` 필터를 추가하고 weekly xlsx/Trash source label을 API 계약에 맞췄다.
 - provider adapter, sync service, Prisma sync repository, controller, Schedule application service 테스트를 추가/수정했다.
 
 ## 검증

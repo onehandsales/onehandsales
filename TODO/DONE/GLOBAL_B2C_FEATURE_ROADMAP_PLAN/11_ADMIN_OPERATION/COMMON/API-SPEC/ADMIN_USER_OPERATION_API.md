@@ -1,5 +1,7 @@
 # Admin User Operation API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented
 연결 Goal: G03
 소비자: Admin Web
@@ -49,8 +51,6 @@ Response:
         "deals": 19,
         "schedules": 6,
         "meetingNotes": 8,
-        "trashActive": 3,
-        "trashExpired": 1
       }
     }
   ],
@@ -109,7 +109,6 @@ Response:
     "imports": 2,
     "exports": 5
   },
-  "trashSummary": {
     "active": 3,
     "expired": 1,
     "recoveryRequests": 0
@@ -136,7 +135,6 @@ Business Logic:
 1. AdminGuard를 확인한다.
 2. `userId`로 User를 조회한다.
 3. User 소유 도메인 count를 계산한다.
-4. Trash active/expired count를 계산한다.
 5. 09 snapshot과 `AiProviderCallLog` 기반 summary를 결합한다.
 6. 10번 notification permission UX 운영 확인을 위해 `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt`에서 safe notification summary를 계산한다.
 7. `ADMIN_USER_DETAIL_VIEW` audit를 남긴다.
@@ -190,14 +188,12 @@ Business Logic:
 
 1. `ProductAnalyticsEvent`와 필요한 domain createdAt 기반으로 timeline을 만든다.
 2. title/summary는 안전한 문구로 생성한다.
-3. 도메인 원문 body/memo/private memo는 포함하지 않는다.
 
 Transaction: 없음.
 
 Observability:
 
 - audit log: 현재 구현은 timeline 조회 audit를 생성하지 않는다.
-- redaction: timeline title/summary에는 domain 원문 memo/body/private memo를 포함하지 않는다.
 
 ## 4. API_SPEC_TEMPLATE_NORMALIZATION G05 보강
 
@@ -233,7 +229,6 @@ Observability:
 - audit log: 사용자 목록/상세는 필수. timeline 조회는 현재 구현 기준 미기록이다.
 - request id: 목록/상세는 controller에서 application metadata로 전달해 audit에 저장한다. timeline은 현재 request id를 application metadata로 전달하지 않는다.
 - masking: response mapper가 `emailMasked`, `displayNameMasked`만 반환한다.
-- redaction: 검색어 q 원문, email/displayName 원문, notification push endpoint/key/userAgent, domain memo/body/private memo 원문을 response/log/audit metadata에 넣지 않는다.
 
 Error FE 처리/log level:
 

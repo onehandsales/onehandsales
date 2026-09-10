@@ -1,5 +1,7 @@
 # Business Logic
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 0. Software Agent 기준
@@ -172,13 +174,11 @@ Application 흐름:
 
 Transaction:
 
-- Company와 초기 memo/private memo 등 부수 row를 함께 생성하면 transaction 필요다.
 - CompanyRegion migration은 가능한 row만 update하고 실패 row는 유지한다.
 
 Observability:
 
 - event key: `company.created`, `company.updated`, `companyRegion.updated`, `companyRegion.migration.completed`
-- private memo 원문 logging 금지
 - migration log는 mapping count 중심으로 기록한다.
 
 ## 7. Import/Export

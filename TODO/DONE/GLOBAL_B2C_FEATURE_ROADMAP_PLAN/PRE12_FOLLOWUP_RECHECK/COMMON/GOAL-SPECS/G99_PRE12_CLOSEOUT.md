@@ -1,5 +1,7 @@
 # G99 Pre-12 Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / BEFORE_12 및 상위 문서 반영 완료 / Billing moved to `TODO/PADDLE_PLAN`
 목표: 선택된 PRE12 후속 작업을 닫고, Paddle 이관 전 보류 목록을 상위 문서에 반영한다.
 완료 반영일: 2026-08-10
@@ -57,6 +59,5 @@
 - [x] 08 Global Data I18N 완료 범위와 08 밖의 market locale/global data/money/address/auth polish 후보가 분리되어 남는다.
 - [x] 09 Product Analytics 완료 범위와 09 밖의 account deletion 실제 처리, 세부 event, 외부 provider, attribution/experiment, marketing opt-in, PWA 후보가 분리되어 남는다.
 - [x] 10 Mobile PWA Field Use 완료 범위와 10 밖의 PWA/offline, advanced camera preview/crop, server draft/media raw storage, generic ExportJob 후보가 분리되어 남고 문서 정합성 후보는 BEFORE_12에서 닫혔다.
-- [x] 11 Admin Operation 완료 범위와 11 밖의 Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin direct domain mutation, Customer/B2B tenant admin 후보가 분리되어 남고 문서 정합성 후보는 BEFORE_12에서 닫혔다.
 - [x] ImportJob cleanup failure aggregate/system gate가 11 system gate 완료 범위가 아니라 `PRE12-F13` import/Admin ops 확장으로 남는다.
 - [x] Admin provider failure 목록 cursor pagination 편중 누락 Finding은 2026-08-10 코드/테스트 보정으로 닫혔고 Paddle Billing 선행 blocker가 아니다.

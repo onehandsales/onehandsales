@@ -1,5 +1,7 @@
 # G05 Admin Operation API-SPEC Normalization Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 작업 일자: 2026-08-31
 상태: 완료
 
@@ -22,7 +24,6 @@
 - Admin Operation 보관 API-SPEC 9개를 현재 Backend API-SPEC 템플릿 기준으로 제한 정규화한다.
 - Admin/User API prefix, Admin 권한, 민감정보 masking, audit log, observability 계약을 현재 구현 기준으로 확인한다.
 - User API와 Admin API가 한 문서에 함께 있는 경우 소비자와 prefix를 분리해 명시한다.
-- account data request, trash recovery, 민감 원문 조회 문서에는 error FE 처리와 log level을 보강한다.
 
 ## 제외 범위
 
@@ -48,9 +49,7 @@
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_DOMAIN_READONLY_API.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_PROVIDER_FAILURE_API.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_SYSTEM_OPERATION_API.md`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_TRASH_OPERATION_API.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_USER_OPERATION_API.md`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/TRASH_USER_RECOVERY_API.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/README.md`
 - `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/README.md`
 - `TODO/DONE/API_SPEC_TEMPLATE_NORMALIZATION_PLAN/COMMON/README.md`
@@ -77,9 +76,7 @@
 ## 검토 결과
 
 - G05 포함 범위 9개 Admin Operation 보관 API-SPEC에 모두 `API_SPEC_TEMPLATE_NORMALIZATION G05 보강` 섹션을 추가했다.
-- `ACCOUNT_DATA_REQUEST_API.md`와 `TRASH_USER_RECOVERY_API.md`는 User API와 Admin API의 prefix, 소비자, 권한, audit 경계를 분리해 명시했다.
 - `ADMIN_AUDIT_SECURITY_API.md`는 current 구현 기준 민감 원문 조회 allowlist(`USER/USER_CONTACT`, `MEETING_NOTE/MEETING_NOTE_BODY`), reason 검증, audit 저장, raw data logging 금지를 명시했다.
-- Admin analytics, provider failure, domain readonly, system operation, trash, user operation 문서는 current BE controller/service와 FE admin API client 경로를 기준으로 Request/Response 이름, transaction, observability, FE error 처리/log level을 보강했다.
 - API path, method, runtime request/response/error/transaction/observability 의미는 변경하지 않았다.
 - BE/FE 코드는 수정하지 않았다.
 

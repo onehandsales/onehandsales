@@ -1,5 +1,7 @@
 # UX/UI Issue Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 이 문서는 `USER_WEB_UXUI_COMMON_QA_PLAN` 중 발견한 UX/UI 이슈와 처리 상태를 기록한다.
 
 ## 상태 값
@@ -124,7 +126,6 @@
 ### Reference Gate
 
 - 회사/담당자/제품 목록은 기존 record table/list를 유지하면서 Notion database-like row density와 Attio식 linked record count를 강화했다.
-- 상세는 property-first 기본 정보, 연결 딜/담당자, Memo 기록과 비밀 메모가 구분된다.
 - Company/Contact/Product를 custom object builder처럼 노출하지 않았다.
 - 실제 최신 활동, 다음 행동, 담당자 연결 딜 수는 현재 API 응답에 없으므로 FE에서 꾸며내지 않고 BE/API 후속으로 기록했다.
 - 15개 page size는 Backend 상수, 응답 `pageSize`, 테스트/API 문서 계약과 함께 바꿔야 하므로 G04에서 FE 단독 변경하지 않았다.
@@ -133,7 +134,6 @@
 
 - 완료일: 2026-07-18
 - 처리 goal: `G05-COMPLEX-FLOW-UX`
-- 구현 파일: `FE/user-web/src/features/schedule/components/schedule-screen.tsx`, `FE/user-web/src/features/meeting-note/components/meeting-note-list-screen.tsx`, `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`, `FE/user-web/src/features/import-export/components/import-screen.tsx`, `FE/user-web/src/features/trash/components/trash-screen.tsx`
 - 화면 검증: `/tmp/onehandsales-g05-final/*.png` 로컬 screenshot. 이미지 파일은 repository에 보관하지 않는다.
 - 자동 점검 결과: 28개 route/viewport/detail 조합에서 console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건
 - 검증 명령: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `git diff --check`
@@ -147,13 +147,10 @@
 - 명함 스캔 desktop/mobile list는 상태와 저장 판단 action을 우선 표시하고, provider/model/token 같은 내부값은 상세에서 숨겼다.
 - 명함 스캔 성공/실패/확인 필요 상태에는 이미지가 저장되지 않는다는 안내와 안전한 실패 문구를 보여주도록 정리했다.
 - Import 목록 row를 56px로 낮추고, 768px preview table은 내부 가로 스크롤과 field-level validation 표시가 가능하게 했다.
-- Trash desktop row를 56px로 낮추고, 768px은 민감 preview를 줄인 card/list로 전환했다.
-- Trash 상세 modal은 복구 action을 유지하되, private memo 원문과 내부 enum 노출을 막고 원문은 복구 후 record에서 확인하도록 안내한다.
 
 ### Reference Gate
 
 - 복잡 흐름 화면도 workspace/page/list/detail 문법을 유지한다.
-- 일정, 회의록, 명함, Import, Trash는 custom builder나 운영 콘솔이 아니라 sales workflow를 보조하는 고정 업무 record처럼 보인다.
 - linked record 맥락이 필요한 곳은 현재 API 응답의 회사/담당자/딜 summary를 사용했고, 없는 next action/recent activity summary는 FE에서 임의 생성하지 않았다.
 - provider failure와 validation failure는 내부 provider/quota/API key 정보를 노출하지 않는다.
 - 15개 page size, Schedule week report, ImportJob 영속화, transcript 저장, provider call log table, 7일 이후 restore는 G05 제외 범위대로 구현하지 않았다.
@@ -162,7 +159,6 @@
 
 - 완료일: 2026-07-18
 - 처리 goal: `G06-UX-WRITING-STATES-A11Y-CLOSEOUT`
-- 구현 파일: `FE/user-web/src/components/layout/app-shell.tsx`, `FE/user-web/src/components/ui/list-filter-select.tsx`, `FE/user-web/src/features/auth/components/auth-login-page.tsx`, `FE/user-web/src/features/import-export/components/import-detail-screen.tsx`, `FE/user-web/src/features/import-export/components/import-screen.tsx`, `FE/user-web/src/features/trash/components/trash-screen.tsx`
 - 화면 검증: `/tmp/onehandsales-g06-qa.cjs` Playwright + Google Chrome channel. 임시 스크립트는 repository에 보관하지 않는다.
 - 자동 점검 결과: console error 0건, page error 0건, failed request 0건
 - 검증 명령: `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `git diff --check`
@@ -174,7 +170,6 @@
 - profile/device/login provider loading 문구를 `~하고 있어요` 계열로 정리했다.
 - 공통 filter empty state와 Import detail/list empty state를 다음 행동 안내형 문구로 정리했다.
 - Import preview validation 문구를 짧고 구체적인 입력 안내형으로 바꿨다.
-- Trash private memo 원문 비노출 안내를 해요체로 정리했다.
 - icon-only button 검색과 browser QA로 `aria-label` 또는 title 기본 조건을 확인했다.
 
 ### Reference Gate
@@ -256,7 +251,6 @@
 | `/app/meeting-notes` | FIXED | G05에서 desktop 56px row, 회사/담당자/연결 딜 우선 table, 768px card/list 전환을 확인함 | UX-006 |
 | `/app/business-cards` | FIXED | G05에서 desktop 56px row, 768px card/list, 상태/저장 action, provider 내부값 비노출을 확인함 | UX-006 |
 | `/app/import` | PASS | G05에서 768px preview table 내부 스크롤과 field-level validation 표시를 재확인함 | UX-004 |
-| `/app/trash` | FIXED | G05에서 desktop 56px row, 768px card/list, private memo preview masking, restore modal을 확인함 | UX-006 |
 | `/app/settings` | PASS | 올바른 profile/device mock 기준 console error 0건, overflow 0건 | - |
 | `/app/more` | PASS | P2 화면으로 기능 접근은 가능함 | UX-005 |
 
@@ -266,7 +260,6 @@
 
 1. G03: `/app/deals` 목록에서 마감일, 다음 행동, 금액, 단계가 1440/1280/768/125%에서 비교되도록 수정한다. 2026-07-18 G03에서 처리 완료했다.
 2. G05: `/app/schedules` 월간 캘린더의 768px 표시 방식을 수정한다. 2026-07-18 G05에서 처리 완료했다.
-3. G05: UX-006 중 남은 회의록/명함 스캔/Trash 목록 row/table이 compact/tablet layout 또는 명확한 내부 스크롤을 갖는지 정리한다. 회사/담당자/제품은 2026-07-18 G04에서, 회의록/명함 스캔/Trash는 2026-07-18 G05에서 처리 완료했다.
 4. G06: Import, 명함 스캔, 계정 popover, empty/error/validation 문구의 해요체/행동형 기준을 정리했다.
 5. G02 polish는 2026-07-18 G02에서 처리 완료했다.
 
@@ -433,9 +426,7 @@ G02에서 AppShell 기준을 수정했다. 도메인별 목록 row/table 자체�
 - 주요 캡처에서는 populated state를 보았기 때문에 empty/error/validation 문구는 source 기준으로 기록했다.
 - G05에서 명함 스캔 upload/progress/failure/success 문구 일부와 Import empty/preview/validation 문구 일부를 해요체와 행동형으로 정리했다.
 - G05 명함 스캔 상세에서 provider/model/token/cost/pending time 같은 내부 운영값이 사용자에게 노출되지 않는지 확인했다.
-- G06에서 남은 계정 설정, profile/device loading, login provider loading, 공통 filter empty, Import detail empty/error, Import validation, Trash private memo 안내 문구를 정리했다.
 - G06 `rg` 재검색 결과 앱 내부 주요 화면의 직접 위반은 정리됐고, 남은 stiff 문구는 약관/개인정보 법무 고지로 분리했다.
-- G06 `/tmp/onehandsales-g06-qa.cjs` Playwright + Google Chrome channel 기준 Import/Trash/Business Card/AppShell 계정 modal 상태를 확인했다.
 - `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `git diff --check`를 통과했다.
 - `pnpm run test:e2e`는 로컬 Playwright chromium headless shell 누락으로 테스트 시작 전 실패했다. 코드 assertion 실패는 발생하지 않았다.
 
@@ -480,17 +471,14 @@ G02에서 처리했다. More는 여전히 P2 화면이므로 추가 시각 고�
 
 - 상태: Fixed
 - 심각도: S3 Minor
-- 화면: `/app/companies`, `/app/contacts`, `/app/products`, `/app/meeting-notes`, `/app/business-cards`, `/app/trash`
 - Viewport: 768px
 - 발견 goal: G02
 - 처리 goal: G04, G05
-- 관련 파일: `FE/user-web/src/features/*/components/*list*`, `FE/user-web/src/features/trash/components/trash-screen.tsx`, `FE/user-web/src/features/business-card/components/business-card-scan-screen.tsx`
 
 ### 문제
 
 G02에서 768px AppShell 본문 폭 문제는 해결했지만, 각 도메인 목록이 자체 table/card 문법으로 핵심 비교 정보와 상태 배지를 충분히 유지하는지는 화면별로 다시 확인해야 한다.
 
-추가 해석: 회사/담당자/제품/회의록/Trash 목록은 이미 record table 또는 record list 구조다. 후속 작업은 새 구조 전환이 아니라, 기존 row/card를 더 조밀하게 만들고 등록일보다 연결 record, 진행 딜, 다음 행동, 현재 응답에서 가능한 최근 활동, 상태를 우선 보이게 하는 것이다.
 
 ### 기대 결과
 
@@ -501,7 +489,6 @@ G02에서 768px AppShell 본문 폭 문제는 해결했지만, 각 도메인 목
 ### 수정 제안
 
 - G04에서 회사/담당자/제품 목록 row/table을 확인했다.
-- G05에서 회의록/명함 스캔/Trash 목록 row/table을 확인했다.
 - 필요한 경우 화면별 compact row/card 또는 명확한 내부 scroll affordance로 처리한다.
 - 15개 page size가 필요하면 FE 단독 변경이 아니라 Backend 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약 영향을 함께 기록한다.
 - 최근 활동 또는 다음 행동 summary가 현재 list response에 부족하면 BE/API 후속으로 기록한다.
@@ -512,16 +499,11 @@ G02에서 768px AppShell 본문 폭 문제는 해결했지만, 각 도메인 목
 - G04 36개 route/viewport 조합에서 console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건을 확인했다.
 - G04 768px에서 회사/담당자/제품 목록은 desktop table 대신 card/list를 유지한다.
 - G04 1440px, 1280px, 125% proxy 1152px에서 회사/담당자/제품 desktop row height 56px와 활동/연결 record count 표시를 확인했다.
-- G05 Playwright route mock + Google Chrome headless 기준 `/app/meeting-notes`, `/app/business-cards`, `/app/trash`를 1440px, 1280px, 768px, 125% proxy 1152px에서 확인했다.
 - G05 28개 route/viewport/detail 조합에서 console error 0건, page error 0건, failed request 0건, document horizontal overflow 0건을 확인했다.
-- G05 768px에서 회의록/명함 스캔/Trash 목록은 desktop table 대신 card/list를 유지한다.
-- G05 1440px, 1280px, 125% proxy 1152px에서 회의록/명함 스캔/Trash desktop row height 56px와 linked record/status/restore 맥락 표시를 확인했다.
-- G05 명함 스캔 상세에서 provider/model 내부값이 노출되지 않는지, Trash private memo 상세에서 원문과 내부 enum이 노출되지 않는지 확인했다.
 - `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `git diff --check`를 통과했다.
 - `pnpm run test:e2e`는 로컬 Playwright chromium headless shell 누락으로 테스트 시작 전 실패했다. 코드 assertion 실패는 발생하지 않았다.
 
 ### 완료 후 검토
 
-G04에서 회사/담당자/제품 목록/상세/생성 흐름을 처리했고, G05에서 회의록/명함 스캔/Trash 목록/상세 상태를 처리했다.
 
 담당자 list response에는 연결 딜 수가 없고, 회사/담당자/제품/회의록 list response에는 실제 최신 활동/다음 행동 summary가 부족하다. FE에서 임의 값을 만들지 않고 `COMMON/API-SPEC/README.md`와 `BE-TODO/API-TODO.md` 후속으로 기록했다.

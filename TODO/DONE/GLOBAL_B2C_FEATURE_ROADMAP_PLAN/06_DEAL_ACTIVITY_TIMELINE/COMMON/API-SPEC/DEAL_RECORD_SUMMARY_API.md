@@ -1,5 +1,7 @@
 # Deal Record Summary API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 계약 상태: implemented
 확정일: 2026-07-25
 Backend 구현일: 2026-07-26
@@ -12,7 +14,6 @@ User Web 구현일: 2026-07-26
 
 `NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-001`, `NBA-002`, `NBA-008`과 `NBA-003` 중 Deal latest activity subset을 DealActivity 정본 위에 반영한다.
 
-원본 `NBA-003`의 Company/Contact/Product latest summary, latest memo summary, next action summary, generic summary endpoint는 06 범위가 아니다. 이 제외 기준은 `COMMON/SOURCE-PLAN-COVERAGE.md`를 따른다. 2026-08-06 A 결정에 따라 잔여 record summary와 record별 상세 timeline은 12 전 계약화/구현 대상도 아니다.
 
 G05/G06에서 구현하며, G02~G04의 DealActivity timeline 구현이 선행된다.
 
@@ -105,7 +106,6 @@ Response item 예시:
 3. 현재 page의 deal IDs에 대해서만 products와 latest activity를 aggregation 조회한다.
 4. products summary는 기존 `DealProduct` 관계를 사용한다.
 5. latest activity는 현재 사용자 active deal에 속한 `DealActivity`의 최신 row를 사용한다.
-6. private memo/provider raw/follow-up body/meeting note raw text는 latest summary에 포함하지 않는다.
 
 ### Transaction
 
@@ -209,6 +209,5 @@ Response item 예시:
 ## 6. 검증 기준
 
 - Deal list products summary는 다른 사용자 제품/딜을 포함하지 않는다.
-- latest activity summary는 private memo/provider raw/follow-up body 전체를 포함하지 않는다.
 - Contact dealCount는 soft-deleted deal을 제외한다.
 - Page size 15가 FE/BE/test에서 일치한다.

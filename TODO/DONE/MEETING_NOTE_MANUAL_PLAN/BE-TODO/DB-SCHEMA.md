@@ -1,5 +1,7 @@
 # Meeting Note DB Schema
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. Enum
 
 ```prisma
@@ -220,4 +222,3 @@ meetingNoteDeals MeetingNoteDeal[]
 - 기존 migration은 수정하지 않는다.
 - 새 migration 이름 후보: `add_meeting_note_domain`
 - FK delete 정책은 기본 Prisma 정책을 따른다.
-- 회의록 삭제/복구는 이후 `MeetingNote.deletedAt`, `deletedByUserId`, `trashExpiresAt` 기반 soft delete와 공통 Trash API 복구로 구현되었다.

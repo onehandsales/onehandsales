@@ -1,5 +1,7 @@
 # G04 User Web Google Calendar UX
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 
 ## 1. 목적
@@ -25,7 +27,6 @@ User Web에서 Google Calendar 연결, calendar 선택, sync, source badge, meet
 - schedule list/detail/week source badge와 meeting URL button
 - Google-origin schedule local edit UX
 - disconnect modal `KEEP/HIDE/TRASH`
-- Trash `SCHEDULE` type 표시/restore
 - cache invalidation
 - responsive/mobile layout 검증
 
@@ -61,7 +62,6 @@ User Web에서 Google Calendar 연결, calendar 선택, sync, source badge, meet
 - `features/schedule/schemas/schedule-schema.ts`
   - `meetingUrl` `https://` validation
   - `isAllDay` input은 추가하지 않는다.
-- `features/trash/types/trash.ts`
   - `SCHEDULE` target/domain 추가
 
 ## 6. /app/schedules UX
@@ -112,16 +112,12 @@ User Web에서 Google Calendar 연결, calendar 선택, sync, source badge, meet
 - detail에는 meeting URL button을 domain label과 external-link icon으로 표시한다.
 - `externalHtmlLink`가 있으면 `Google에서 열기` secondary action을 표시한다.
 
-## 10. Trash UX
 
-- Trash filter/type label에 `일정`을 추가한다.
-- Schedule trash item detail fields:
   - 일정 시간
   - 장소
   - 출처
   - 미팅 링크
   - 연결 딜
-- restore 후 schedule list/week/home/trash query invalidation.
 - Google-origin restore 후 badge는 `Google · 로컬 수정`.
 
 ## 11. Responsive/UXUI
@@ -159,5 +155,4 @@ pnpm run dev
 - meeting URL 표시/수정/validation이 동작한다.
 - disconnect `KEEP/HIDE/TRASH` UX가 API와 일치한다.
 - Google-origin all-day schedule이 `종일`로 표시되고 start/end 수정 후 `Google · 로컬 수정`으로 전환된다.
-- `/app/trash`에서 `SCHEDULE` 복구가 동작한다.
 - desktop/mobile에서 text overlap이 없다.

@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# Planning Review
 
 상태: G01~G09 완료 검토 기록 / 01 최종 서비스 형태 완료
@@ -145,7 +147,6 @@ DB/운영:
 - Notification
 - Schedule week report
 - MeetingNote provider audit
-- Trash 7일 이후 복구 정책
 
 이 제외는 누락이 아니라 `USER_WEB_PRODUCTIZATION_GAP_PLAN` 기준상 별도 first-sale bundle로 분리해야 하는 항목이다.
 

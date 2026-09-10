@@ -1,5 +1,7 @@
 # Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조: Closed / 03 추가 후속 구현 없음
 재대조 기록: `COMMON/FINAL-SERVICE-FOLLOWUP-AUDIT.md`
 
@@ -68,7 +70,6 @@
 
 - [x] 일정 메모 본문이 response/export/log에 노출되지 않는다.
 - [x] `hasMemo`만 제공한다.
-- [x] private memo가 response/export/log에 노출되지 않는다.
 - [x] meeting note body가 response/export/log에 노출되지 않는다.
 - [x] Excel row 전체가 structured log에 남지 않는다.
 - [x] 딜 금액, 딜명, 회사명, 담당자명, 다음 행동 본문이 structured log에 남지 않는다.

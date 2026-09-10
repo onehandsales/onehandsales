@@ -1,5 +1,7 @@
 # Goal Work Order
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / Archived
 
 ## 1. 원칙
@@ -79,7 +81,6 @@ rg -n "presentation/http|\\.\\./\\.\\./presentation|@/modules/.*/presentation" B
 git diff --check
 
 cd D:\workspace_repository\onehandsales\BE
-pnpm.cmd test -- account-request-application.service.spec.ts admin-audit-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-user-application.service.spec.ts admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts
 pnpm.cmd test
 ```
 
@@ -90,7 +91,6 @@ cd D:\workspace_repository\onehandsales
 rg -n "@prisma/client" BE/src/modules/admin-operation/application --glob "!**/*.spec.ts"
 
 cd D:\workspace_repository\onehandsales\BE
-pnpm.cmd test -- admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-audit-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts admin-user-application.service.spec.ts prisma-admin-account-request.repository.spec.ts prisma-admin-analytics.repository.spec.ts prisma-admin-audit.repository.spec.ts prisma-admin-domain-record.repository.spec.ts prisma-admin-provider-failure.repository.spec.ts prisma-admin-system-operation.repository.spec.ts prisma-admin-trash.repository.spec.ts prisma-admin-user.repository.spec.ts
 pnpm.cmd test
 ```
 

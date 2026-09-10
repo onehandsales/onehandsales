@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조 완료: 03 User Web 추가 후속 구현 없음. `/app/schedules/week`, Google-origin source badge/meeting URL, currency-aware weekly report display는 실제 코드와 일치한다.
 
 상태: completed
@@ -137,7 +139,6 @@ Deal summary:
 - 390px/360px에서 날짜 section, summary, row/card, 다운로드 버튼이 겹치지 않는다.
 - 일정 없는 주도 7개 날짜가 표시된다.
 - Excel 다운로드 실패 시 재시도 안내가 있다.
-- 제품 요약, 일정 메모 본문, private memo, meeting note body를 화면/export에 꾸며 넣지 않는다.
 
 ## 8. 구현 결과
 

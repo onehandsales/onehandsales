@@ -1,5 +1,7 @@
 # G32 민감정보 원문 조회와 감사 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 상태
 - 완료
 
@@ -18,7 +20,6 @@
 - Backend raw sensitive view API를 구현한다.
 - 원문 조회 시 reason 필수 validation을 적용한다.
 - 원문 조회와 AuditLog 생성을 transaction으로 처리한다.
-- 암호화된 PersonalMemo/MeetingNote 원문은 감사 로그 기록 이후에만 복호화한다.
 - Admin Web에 reason dialog와 원문 일시 표시 상태를 구현한다.
 - 감사 로그 목록/상세 화면을 구현한다.
 - client/server log에 PII와 reason 전문을 남기지 않는다.
@@ -35,7 +36,6 @@
 - Backend에 Admin 민감 원문 조회 port/use case/Prisma repository/controller/DTO를 추가했다.
 - `POST /admin/api/sensitive/raw`, `POST /admin/api/deals/:dealId/sensitive/raw`, `POST /admin/api/meeting-notes/:meetingNoteId/sensitive/raw`를 구현했다.
 - `GET /admin/api/audit-logs`, `GET /admin/api/audit-logs/:auditLogId`를 구현했다.
-- 허용 raw field를 연락처 phone/email, 제품 unitPrice, 딜 amount, 도메인 최신 Memo, 회의록 rawText/details/nextPlan/requiredAction, PersonalMemo content로 제한했다.
 - AuditLog에는 action, target, target user, reason, 요청 field 이름, IP, user-agent만 기록하고 원문 값은 기록하지 않도록 했다.
 - Admin Web 도메인 상세 패널에 민감 원문 reason dialog와 field별 일시 표시 상태를 추가했다.
 - Admin Web `/audit-logs` placeholder를 감사 로그 목록/필터/상세 패널 화면으로 교체했다.

@@ -1,5 +1,7 @@
 # Release QA Follow-up Goal Work Order
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`을 `/goal`로 실행할 때의 순서를 고정한다.
@@ -69,7 +71,6 @@
 
 목적:
 
-- 사용자 A/B 데이터가 Search, Trash, Export, 직접 API 접근에서 섞이지 않는지 확인한다.
 
 완료 기준:
 
@@ -118,7 +119,6 @@
 
 완료 기준:
 
-- Deal list products summary, Contact dealCount, latest activity/next action summary, ImportJob persistence, Trash private memo backend restriction, BusinessCard provider failure contract, page size contract 후보가 분류되어 있다.
 - 품질 라운드가 끝나기 전 구현 금지 항목과 다음 계획 후보가 분리되어 있다.
 - 확정된 새 API 계약이 없으면 `draft` 또는 `후보` 상태로만 남긴다.
 

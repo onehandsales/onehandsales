@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# P6 G33-G36 테스트와 릴리즈 준비 상세 명세
 
 ## 1. 목적
@@ -19,12 +21,10 @@ P6는 MVP starter 범위가 다음 개발 단계로 넘어갈 수 있는지 검�
 - deal stage change activity log
 - meeting note link activity log
 - sensitive raw view audit transaction
-- trash restore
 
 ### API 연결
 
 - `COMMON/API-SPEC`의 모든 User/Admin 위험 API
-- 특히 Deal, MeetingNote, Admin sensitive raw, Trash API
 
 ### DB 연결
 

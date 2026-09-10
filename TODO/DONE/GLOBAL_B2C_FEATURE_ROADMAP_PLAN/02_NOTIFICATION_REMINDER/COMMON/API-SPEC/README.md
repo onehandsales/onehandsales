@@ -1,5 +1,7 @@
 # API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 구현 상태: User API G02 Done / internal scheduling-delivery G03 Done / User Web G04 Done / QA G05 Done
 
@@ -24,4 +26,3 @@
 
 - 이 API는 User API이며 `/api/*` 경로만 사용한다.
 - User Web은 `/admin/api/*`를 호출하지 않는다.
-- email body 전문, push endpoint/key, provider raw response, private memo, meeting note body, deal amount는 response/log에 원문으로 노출하지 않는다.

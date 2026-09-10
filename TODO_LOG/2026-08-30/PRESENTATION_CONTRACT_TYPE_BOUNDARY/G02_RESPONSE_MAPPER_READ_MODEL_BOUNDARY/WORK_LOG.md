@@ -1,5 +1,7 @@
 # G02 Response Mapper Read Model Boundary 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 - 날짜: 2026-08-30
 - 상태: 완료
 - Goal: `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/COMMON/G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`
@@ -27,7 +29,6 @@
 - repository port 파일은 repository token/interface/input/audit 계약을 유지하고, output/page/detail/read-model 타입은 새 contract 파일에서 소유하도록 분리했다.
 - application service 공개 반환 타입이 repository projection 타입을 노출하지 않도록 새 read-model contract import로 보정했다.
 - repository 구현체와 관련 spec import를 새 타입 소유 위치에 맞췄다.
-- `AdminOperationCheckItemsResponse`, `AdminAnalytics*Response`, `AdminTrashSummaryResponse`의 repository record 단순 alias 패턴은 명시적 response interface로 보정했다.
 
 ## 4. 추가한 read-model contract 파일
 
@@ -38,7 +39,6 @@
 - `BE/src/modules/admin-operation/application/ports/admin-domain-record-read-model.types.ts`
 - `BE/src/modules/admin-operation/application/ports/admin-provider-failure-read-model.types.ts`
 - `BE/src/modules/admin-operation/application/ports/admin-system-operation-read-model.types.ts`
-- `BE/src/modules/admin-operation/application/ports/admin-trash-read-model.types.ts`
 - `BE/src/modules/admin-operation/application/ports/admin-user-read-model.types.ts`
 
 ## 5. 검증 결과

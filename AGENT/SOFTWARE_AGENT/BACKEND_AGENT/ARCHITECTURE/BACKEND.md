@@ -24,12 +24,12 @@
 - `GET /admin/api/me`는 관리자 권한 확인만 수행한다.
 - Company API는 current user ownership을 필수로 검증한다.
 - Search는 현재 Company만 대상으로 한다.
-- Company 삭제 API와 Trash API는 현재 제공하지 않는다.
+- Company는 사용자용 제거/복구 API를 제공하지 않는다.
 
 ## DB 정책
 
 - 업무 row는 `userId`를 갖는다.
-- 현재 Company row에는 soft delete/trash 컬럼을 두지 않는다.
+- 현재 Company row에는 사용자용 제거/복구 상태 컬럼을 두지 않는다.
 - schema 변경은 새 migration으로 추가한다.
 
 ## 검증 정책

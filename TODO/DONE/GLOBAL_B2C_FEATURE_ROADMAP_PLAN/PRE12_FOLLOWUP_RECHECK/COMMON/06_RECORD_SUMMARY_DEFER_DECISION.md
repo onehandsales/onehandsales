@@ -1,5 +1,7 @@
 # 06 Record Summary Defer Decision
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Decided / PRE12 계약화 및 구현 금지
 결정일: 2026-08-06
 결정: A - 06 완료 범위 유지, 잔여 record summary는 후속 전략 재검토
@@ -15,7 +17,6 @@
 ## 2. 결정 내용
 
 - 06은 Completed 상태를 유지한다.
-- Company/Contact/Product latest activity, latest memo, next action summary는 PRE12 API/DB/FE 계약화 대상이 아니다.
 - 모든 record를 묶는 generic summary endpoint와 Company/Contact/Product별 상세 activity timeline은 PRE12 구현 대상이 아니다.
 - B/C로 논의된 전체 record summary와 record별 상세 timeline 확장은 B2B 또는 team CRM에서 더 강한 가치가 있는 후보로 본다.
 - UX/UI 전체 polish는 지금 06 후속으로 하지 않고, 로드맵 DONE 이후 별도 UX/UI 전면 유지보수 계획에서 다룬다.
@@ -27,7 +28,6 @@
 - Company/Contact/Product list response에 latest summary field 추가
 - Company/Contact/Product summary 전용 endpoint 추가
 - Company/Contact/Product별 activity timeline route 추가
-- private memo, meeting note raw text, follow-up body, provider raw를 list summary로 합치는 작업
 - FE에서 API에 없는 latest summary를 조합해 사실처럼 표시하는 작업
 - 06 문서의 완료 의미를 바꿔 잔여 summary를 06 미완료로 재분류하는 작업
 

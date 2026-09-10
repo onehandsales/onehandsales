@@ -1,5 +1,7 @@
 # Final Classification
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final / DONE / PRE12 closeout 완료 / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-07
 최종 업데이트: 2026-08-11
@@ -104,7 +106,6 @@ PRE12에는 새 API, Prisma migration, User Web route, Admin Web route, 후속 T
 | `PRE12-F20` | USD cent/minor unit과 amount precision은 Paddle money model, invoice/tax 표시, 기존 금액 migration과 직접 연결된다. |
 | `PRE12-F21` | 국가별 주소 검증, tax, terms, pricing policy는 billing address, tax profile, 약관/환불/인보이스 정책과 연결된다. |
 | `PRE12-F26` | account deletion 실제 hard delete/anonymization은 subscription 상태, 환불/chargeback, invoice/tax 보관, AI/follow-up 영구 로그 retention과 충돌한다. |
-| `PRE12-F35` | Admin 직접 Trash 복구, 유료 복구, hard delete/purge는 paid recovery, refund, audit, recovery policy와 연결된다. |
 | `PRE12-F41` | marketing opt-in/communication consent는 growth, churn, billing lifecycle communication, privacy consent audit와 연결된다. |
 
 ## 6. 완료 참조 / 재구현 금지

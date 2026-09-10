@@ -1,5 +1,7 @@
 # G07 Deferred BE API Backlog Split
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P1
 담당 영역: Common, BE
@@ -33,16 +35,13 @@ UX/UI 공통 QA와 release QA에서 이번 범위 밖으로 남긴 BE/API 개선
 
 - Deal list `products` summary
 - Contact list `dealCount`
-- Company/Contact/Product latest memo/activity/next action summary
 - MeetingNote next/latest summary
 - BusinessCard provider failure code/message contract
 - ImportJob persistence/resume API
-- Trash private memo backend response restriction
 - Page size 15 contract 정리
 - Schedule week report
 - Notification
 - MeetingNote transcript/provider call log table
-- Trash 7일 이후 복구 정책
 - Admin 운영 UX/API
 
 ## 4. 제외 범위
@@ -100,16 +99,13 @@ G07 시작 시 아래 분류를 초안으로 사용하고, G02~G06 결과에 따
 |---|---|---|
 | Deal list `products` summary | release follow-up | 목록 정보 밀도 개선 후보 |
 | Contact list `dealCount` | release follow-up | 목록 판단 정보 개선 후보 |
-| Company/Contact/Product latest memo/activity/next action summary | product feature | 새 summary 계약 필요 |
 | MeetingNote next/latest summary | product feature | 새 summary 계약 필요 |
 | BusinessCard provider failure code/message contract | release follow-up | provider failure UX 안정화 |
 | ImportJob persistence/resume API | product feature | 새 persistence/API 필요 |
-| Trash private memo backend response restriction | ops/security | 개인정보/비밀 메모 응답 정책 |
 | Page size 15 contract 정리 | release follow-up | FE/BE/test 계약 동시 변경 필요 |
 | Schedule week report | product feature | 새 화면/API 후보 |
 | Notification | product feature | 새 도메인 후보 |
 | MeetingNote transcript/provider call log table | ops/security | 원문/외부 provider 감사 정책 필요 |
-| Trash 7일 이후 복구 정책 | ops/security | 운영/복구 정책 필요 |
 | Admin 운영 UX/API | ops/security | 운영 권한과 감사 정책 필요 |
 
 ## 5C. 실행 절차

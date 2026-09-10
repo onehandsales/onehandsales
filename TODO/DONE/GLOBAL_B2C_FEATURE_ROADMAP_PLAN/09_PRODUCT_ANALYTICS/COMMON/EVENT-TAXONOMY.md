@@ -1,5 +1,7 @@
 # Event Taxonomy
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 최종 업데이트: 2026-07-30
 
@@ -100,7 +102,6 @@ RouteKey allowlist:
 | `import` | `/app/import` |
 | `import_review` | `/app/import/review/:importJobId` |
 | `import_detail` | `/app/import/:importUserLogId` |
-| `trash` | `/app/trash` |
 | `settings` | `/app/settings` |
 | `more` | `/app/more` |
 

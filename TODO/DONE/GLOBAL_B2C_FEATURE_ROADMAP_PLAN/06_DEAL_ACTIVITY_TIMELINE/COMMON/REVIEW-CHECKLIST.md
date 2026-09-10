@@ -1,5 +1,7 @@
 # Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 최종 업데이트: 2026-07-26
 목적: 06 구현 후 검토자가 확인할 체크리스트
@@ -61,7 +63,6 @@
 - [x] 일정 연결/해제 activity가 연결 변경과 같은 transaction에 있다.
 - [x] 회의록 연결/해제 activity가 연결 변경과 같은 transaction에 있다.
 - [x] 회의록 relation delete/recreate 구현은 삭제 전 diff를 계산해 link/unlink activity를 만든다.
-- [x] 회의록 연결 legacy `DealFollowingActionLog`와 새 `DealActivity`가 중복 노출되지 않는다.
 - [x] follow-up 발송 상태와 activity 생성이 provider 호출 이후 DB transaction에서 처리된다.
 - [x] follow-up activity는 `DEAL` target이 있는 message만 딜 timeline에 기록한다.
 - [x] follow-up activity의 `sourceId`는 `FollowUpDeliveryAttempt.id`이고 `messageId`는 redacted metadata로만 저장된다.
@@ -70,7 +71,6 @@
 ## 6. Security / Redaction
 
 - [x] activity title/body 원문이 structured log에 남지 않는다.
-- [x] private memo 원문이 timeline response에 섞이지 않는다.
 - [x] follow-up body 전체가 timeline list에 노출되지 않는다.
 - [x] meeting note details/rawText 전문이 timeline summary에 노출되지 않는다.
 - [x] provider raw response/token/API key/quota detail이 log/response에 없다.

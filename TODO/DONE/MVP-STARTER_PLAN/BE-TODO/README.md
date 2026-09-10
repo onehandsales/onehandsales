@@ -1,5 +1,7 @@
 # BE TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `BE` NestJS 서버 구현 작업의 공통 기준을 정리한다.
@@ -21,7 +23,6 @@ Backend는 MVP에서 하나의 배포 단위지만 User API와 Admin API를 명�
 - Admin API는 AuthGuard와 AdminGuard를 모두 통과해야 한다.
 - 사용자 소유 데이터는 항상 `userId`로 필터링한다.
 - 민감정보 원문 조회는 사유 입력과 감사 로그가 필수다.
-- `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`는 `EncryptionPort`로 암호화해 저장한다.
 - OpenAI, Google Calendar, Email, Browser Push, Storage는 application port 뒤에 둔다.
 - Prisma는 infrastructure 계층에서만 사용한다.
 - managed business DB는 Supabase Cloud PostgreSQL이고, NestJS Backend가 Prisma로 직접 접속해 application layer에서 transaction을 관리한다.

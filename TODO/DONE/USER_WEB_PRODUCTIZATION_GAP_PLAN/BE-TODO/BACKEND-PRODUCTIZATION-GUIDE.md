@@ -1,5 +1,7 @@
 # Backend Productization Guide
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 Backend/API/DB gap으로 승격하지 않는다.
 
 상태: DONE / Source Gap Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -45,20 +47,13 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | 영역 | 현재 구현 |
 |---|---|
 | Auth/User | Google/LINE/Apple auth providers, exchange, verified email linking, refresh, logout, `/api/me`, `/admin/api/me`, profile, country/locale/default currency, devices |
-| Company | CRUD, taxonomy, country/region/address, memo/private memo, linked contacts/deals, localized xlsx export, trash |
-| Contact | CRUD, taxonomy, linked deals, dealCount, global phone, memo/private memo, localized xlsx export, trash |
-| Product | CRUD, taxonomy, currencyCode, dealCount/sort, linked deals, memo/private memo, localized xlsx export, trash |
-| Deal | list/detail/create/update/delete, stage counts, linked company/contact/product, currencyCode, following action, memo, localized xlsx export, trash, `DealActivity` timeline, products/latest activity summary |
 | Schedule | CRUD, deal link, timezone local time handling, weekly report API, weekly xlsx export, Google Calendar connect/import/sync/calendar selection/source metadata/local edit/soft delete |
 | AI Weekly Report / Follow-up Delivery | sales report 생성/조회/snapshot, async job/version/suggestion, follow-up settings/draft/send/retry/list/detail, Gmail/Microsoft actual email provider adapter, reconnect, safe failure, smoke allowlist |
-| MeetingNote | CRUD, AI/STT draft, provider call log, next action draft, follow-up draft, deal link, trash |
 | BusinessCard | OCR scan log, upload scan, safe failure fields, KR/US phone normalization, confirm company/contact |
 | DataImport | localized templates, upload/mapping/row edit/validation/confirm/cancel/logs, 확정 전 job DB persistence, terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한 |
 | Notification | list/read/settings/browser-push API, 일정/딜/Google-origin schedule reminder 생성, due processor, delivery attempt |
 | Search | integrated search |
-| Trash | list/detail/restore, Schedule restore |
 | Product analytics | collector API, ProductAnalyticsEvent raw event, server event recorder, activation/retention snapshot, AI usage summary, mobile field-use event allowlist |
-| Admin | `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API, raw access reason, audit/sensitive log |
 
 ## 3. Backend gap 판단 표
 
@@ -70,16 +65,12 @@ Backend 판단 기준은 MVP 기능 추가가 아니라 Global B2C 첫 판매 ga
 | Latest activity summary | Deal list `latestActivity` 구현 완료. Company/Contact/Product summary 없음 | 2026-08-06 A 결정: 잔여 summary, generic summary endpoint, record별 상세 timeline은 PRE12에서 계약화하지 않는다. 후속에서 Global B2C 지표와 B2B/team CRM 전략 기준으로 다시 판단 | Deal subset 완료, 잔여는 defer |
 | BusinessCard provider failure | 10에서 구현 완료 | safe `errorCode`, `userMessage`, `retryable`, provider raw detail 미노출, `BusinessCardScanLog` safe failure field QA 완료 | 완료 |
 | ImportJob persistence | G01~G09 구현 및 최종 QA closeout 완료 | ImportJob/Row/Error/UploadedFile, TTL/delete tracking, resume API, redaction/ownership QA 완료. terminal cleanup, 원본 file binary 즉시 삭제, `ImportUserLogRow` 30일 cleanup, 10MB/5,000행 제한까지 보강해 01은 최종 서비스 형태 기준으로 완전 종료 | 완료 |
-| Trash private memo restriction | 11에서 구현 완료 | User/Admin Trash response에서 private memo 원문 미노출 확인 | 완료 |
 | Page size 15 cleanup | 구현 완료 | service response, API 문서, Backend/User Web test 기준 확인 | 완료 |
-| Schedule week report | 구현 완료 | `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, 기존 `User`, `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` runtime aggregation, timezone/weekStart/ownership/redaction QA 완료. AI weekly report는 05에서 구현 완료됐고, PDF/범용 ExportJob과 반복 일정은 별도 후속 범위 | 완료 |
 | Notification | 구현 완료 | Notification/UserNotificationSetting/NotificationDeliveryAttempt/BrowserPushSubscription, redaction/ownership/provider failure QA 완료. 실제 SMTP/Web Push provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료 | 완료 |
-| Google Calendar Integration | 구현 완료 | Google OAuth connect/callback/status/calendar list/selection/sync/disconnect, token encryption/redaction, Schedule Google metadata, soft delete/Trash restore, reminder QA 완료. 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료. export/write/realtime webhook/watch/반복 일정/여러 Google 계정 동시 연결은 별도 후속 범위 | 완료 |
 | AI Weekly Report / Follow-up Delivery | 구현 완료 | sales report API, async job/version/suggestion, follow-up delivery settings/draft/send/retry/history, Gmail/Microsoft actual email provider adapter, reconnect, safe failure, smoke allowlist 구현/자동 검증 완료. Gmail/Microsoft provider smoke closeout은 2026-08-10 PRE12/BEFORE_12 배포 환경 smoke verified 기준 완료 처리. SMS 실제 provider/B2B/sequence/email sync는 후속 | 구현 완료 |
 | MeetingNote AI follow-up draft | 구현 완료 | next action/follow-up draft API, provider log, safe failure, ownership/redaction QA 완료. 자동 저장/자동 발송은 하지 않음 | 완료 |
 | Global Data I18N | 구현 완료 | User country/locale/default currency, app i18n API 기반 설정, Product/Deal currency, Contact KR/US phone, Company country/region/address, import/export localization, Google/LINE/Apple auth 구현 완료. 현재 `BE/.env` 연결 DB는 2026-07-29 최신 상태 재확인 완료, LINE/Apple 실제 provider smoke도 2026-07-29 사용자 확인 기준 운영 완료 | 완료 |
 | MeetingNote provider audit 잔여 | 공통 `AiProviderCallLog` 기반 provider log subset 구현 완료. 별도 raw/transcript table 없음. 11에서 Admin provider failure 조회와 raw access audit 구현 | 회의록 목록 summary, 자동 발송/알림은 후속. provider raw/prompt/token/quota detail 저장은 계속 금지 | Admin audit 완료, 제품 후속 |
-| Admin operation | 11에서 구현 완료. 2026-08-10 provider failure 목록 source 편중 cursor pagination Finding 보정 완료 | 사용자/도메인/Trash/provider/analytics/account/system/audit, masking, raw access reason, audit log, support flow. provider failure 목록은 한 source에 실패 row가 몰려도 cursor가 조기 종료되지 않도록 회귀 테스트로 보강 | 완료 |
 | Payment/subscription | 없음 | plan, entitlement, payment provider, admin ops | 첫 판매 전 별도 큰 계획 필요 |
 | Product analytics | 09 foundation과 10 mobile field-use event, 11 Admin analytics 구현 완료 | billing/paywall/churn runtime source 연결 | Admin 분석 완료, Paddle 확정 전 billing 확장 금지 |
 

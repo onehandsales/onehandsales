@@ -66,7 +66,7 @@
 - 요청값 형태: HTTP method/path, path param, query, header, body, 필수 여부, validation 기준
 - 응답값 형태: success status, response body 유무, response DTO 이름, 필드명, 타입, nullable 여부, 예시
 - 내부 비즈니스 로직: 인증, 권한, ownership, validation 이후 흐름, transaction, 외부 Provider 호출, 자동 생성 데이터, 암호화, 에러 분기
-- 연결 DB: 생성/조회/수정/삭제 model, relation, transaction 대상, soft delete 여부, 부수 로그/이력 model
+- 연결 DB: 생성/조회/수정/삭제 model, relation, transaction 대상, 제거/보존 정책 여부, 부수 로그/이력 model
 - 에러 응답: status, domain error code, 사용자가 보게 될 처리 기준
 - FE 처리 기준: body 없는 성공 응답 처리, 재조회 범위, optimistic update 여부, route guard, 권한 없음 처리
 - BE 처리 기준: Clean Architecture 계층, application use case, repository/port, infrastructure adapter, User API와 관리자 확인 API 분리, 구현 검증 범위

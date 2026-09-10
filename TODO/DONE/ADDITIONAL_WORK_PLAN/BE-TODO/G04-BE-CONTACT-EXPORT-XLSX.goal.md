@@ -1,5 +1,7 @@
 # /goal G04 BE Contact Export XLSX
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## /goal 입력문
 
 아래 문서를 먼저 읽고, 담당자 목록 페이지의 현재 필터 조건에 맞는 담당자 데이터를 xlsx로 내려받는 내보내기 API를 추가해줘.
@@ -83,7 +85,6 @@ id 계열 값은 xlsx에 포함하지 않는다.
 - Company API는 변경하지 않는다.
 - Product API는 변경하지 않는다.
 - 범용 Import/Export 모듈, ExportJob, 비동기 queue는 이 goal에서 구현하지 않는다.
-- 메모 원문과 개인 비밀 메모 원문은 조회하거나 파일에 포함하지 않는다.
 - `export/xlsx` route가 `:contactId` route에 가로막히지 않도록 controller 선언 순서를 확인한다.
 
 ## 검증

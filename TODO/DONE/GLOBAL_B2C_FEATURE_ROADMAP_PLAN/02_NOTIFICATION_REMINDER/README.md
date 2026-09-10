@@ -1,5 +1,7 @@
 # 02 Notification Reminder
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / 배포 환경 provider smoke QA 완료
 구현 상태: G01 DB foundation 완료 / G02 Backend API 완료 / G03 reminder generation-delivery 완료 / G04 User Web UX 완료 / G05 QA closeout 완료 / 배포 환경 SMTP/Web Push provider smoke QA 완료
 확정일: 2026-07-22
@@ -45,7 +47,6 @@
 - 사용자는 `/app/notifications`에서 알림 목록과 unread count를 확인하고 읽음 처리할 수 있다.
 - 사용자는 알림 설정에서 email/browser push를 켜고 끌 수 있다.
 - browser push subscription endpoint/key는 암호화해 저장한다.
-- provider raw error, push endpoint/key, email 원문, private memo, meeting note body, deal amount는 log/response에 노출하지 않는다.
 
 ## 4. 문서 구조
 

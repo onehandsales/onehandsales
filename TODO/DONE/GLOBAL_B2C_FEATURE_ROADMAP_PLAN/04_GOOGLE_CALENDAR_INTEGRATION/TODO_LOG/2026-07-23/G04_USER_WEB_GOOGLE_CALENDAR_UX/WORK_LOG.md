@@ -1,5 +1,7 @@
 # G04 User Web Google Calendar UX Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 날짜: 2026-07-23
 상태: Done
 대상 goal: `COMMON/GOAL-SPECS/G04_USER_WEB_GOOGLE_CALENDAR_UX.md`
@@ -11,7 +13,6 @@
 - `/app/settings`에 Google Calendar 연결/재연결, calendar selection modal, disconnect `KEEP/HIDE/TRASH` modal을 추가했다.
 - schedule form에 `meetingUrl` 입력과 `https://` validation을 추가하고, all-day 토글은 추가하지 않았다.
 - schedule detail/week/list에서 Google source badge, meeting URL, external Google link, hidden banner, `종일` 표시를 반영했다.
-- Trash `SCHEDULE` target/domain label을 User Web에 추가하고 restore 이후 schedule/trash cache invalidation 흐름을 유지했다.
 - Playwright 공용 API mock에 Google Calendar status/calendars/sync/disconnect와 schedule extension fields를 추가했다.
 - G04 전용 Playwright spec을 추가해 schedules/settings Google Calendar UX 핵심 흐름을 검증했다.
 

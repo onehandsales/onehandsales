@@ -1,5 +1,7 @@
 # G02 Next Action Reminder Contract
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Classified 후속 / PRE12 구현 금지
 목표: 다음 행동 reminder를 PRE12에는 구현하지 않고 후속 Notification policy 후보로 남긴다.
 
@@ -14,7 +16,6 @@
 
 ## 2. 후속 재검토 질문
 
-1. 다음 행동에 별도 due date/time을 둘 것인가, 아니면 기존 `DealFollowingActionLog`의 현재 구조 안에서만 알림을 만들 것인가?
 2. 알림 source를 `DEAL`로 유지할 것인가, `NEXT_ACTION`으로 확장할 것인가?
 3. 사용자 설정에 next action reminder toggle/time을 추가할 것인가?
 4. 완료된 다음 행동, 삭제된 딜, soft-deleted source의 pending reminder를 어떻게 취소할 것인가?

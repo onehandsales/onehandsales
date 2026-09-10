@@ -1,5 +1,7 @@
 # User Web Productization Guide
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 User Web gap으로 승격하지 않는다.
 
 상태: DONE / Source Gap Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -14,7 +16,6 @@
 - [x] `NBA-009` User Web productization gap 종료
 - [x] `/app/notifications` Notification reminder UX 구현 완료
 - [x] `NBA-010` User Web productization gap 종료
-- [x] `/app/schedules`/`/app/settings`/`/app/trash` Google Calendar UX 구현 완료
 - [x] `NBA-015` User Web productization gap 종료
 - [x] `/app/schedules/week` AI weekly report UX 구현 완료
 - [x] `/app/settings` Gmail/Microsoft follow-up provider settings와 compose/send/retry/timeline UX 구현 완료
@@ -37,7 +38,6 @@
 - [x] `/app/meeting-notes` 모바일 녹음/fallback과 local draft UX 구현 완료
 - [x] `/app/notifications` browser push permission explicit click UX 구현 완료
 - [x] `10_MOBILE_PWA_FIELD_USE` User Web mobile field-use gap 종료
-- [x] `/app/trash` 만료 row/복구 문의 UX 구현 완료
 - [x] `11_ADMIN_OPERATION` User Web 영향 gap 종료. User Web은 `/admin/api/*`를 호출하지 않는다.
 
 ## 1. 목적
@@ -74,7 +74,6 @@
 | `/app/meeting-notes` | 수동/AI/STT draft/딜 연결, 모바일 녹음/fallback, local draft, 상세 AI 후속 작업, 다음 행동 후보 편집 저장, follow-up draft 수정/복사 구현 | 회의록 목록에서도 최신/다음 행동 맥락이 충분히 보이는가. 상세 AI 후보는 자동 저장/자동 발송하지 않는가 | `NBA-004` detail subset, `NBA-011` provider log subset, 10 mobile recording/local draft 완료. Admin audit는 11 완료. 목록 summary, 자동 발송/알림은 후속 |
 | `/app/business-cards` | OCR/upload/confirm, 모바일 촬영/앨범 선택, OCR safe failure, local draft, KR/US phone validation 구현 | advanced crop/preview가 필요한지 | `NBA-005`, 08 phone, 10 mobile capture 완료. Admin 운영 추적은 11 완료 |
 | `/app/import` | template language selector, upload/mapping/row edit/validation/resume/confirm/cancel/log, row detail 만료 안내, 10MB/5,000행 제한 초과 안내 구현 | 새로고침/탭 이동/배포 중 유실 복구와 template localization, row detail 만료 안내, upload 제한 안내까지 완료되어 01 Import UX는 최종 서비스 형태 기준으로 완전 종료 | `NBA-006`, 08, 01 G07/G08 완료 |
-| `/app/trash` | list/detail/restore, Schedule restore, 만료 row restore disabled, 복구 문의 구현 | private memo 원문 없이 7일 이후 정책이 안전하게 읽히는가. Admin 직접 복구/유료 복구는 11 제외 범위다 | `NBA-007`, `NBA-012`, `NBA-015`, `11_ADMIN_OPERATION` 완료 |
 | `/app/settings` | profile/devices, 국가/앱 언어/기본 통화, Google Calendar 연결/캘린더 선택/연결 해제, Gmail/Microsoft follow-up provider 연결/재연결/해제, SMS 발신번호 인증 UX 구현 | 첫 판매 전 계정 삭제/데이터 삭제/구독 상태 UX가 충분한가. Gmail/Microsoft actual send smoke closeout은 완료 상태인가 | global settings는 08 완료. Account/data request는 11 완료. Payment subscription UX는 `TODO/PADDLE_PLAN`과 연결. Google Calendar 설정은 `NBA-015` 완료. Follow-up provider settings와 provider smoke closeout은 05/PRE12 완료 |
 | `/app/more` | 보조 메뉴 구현 | 숨긴 기능이 잘못 노출되지 않는가 | 낮음 |
 | `/app/notifications` | list/read/settings/browser push explicit permission/fallback 구현 | 일정/딜 reminder가 사용자가 놓치지 않게 표시되는지 운영 env에서 최종 smoke 필요 | `NBA-010`, 10 permission UX 완료 |

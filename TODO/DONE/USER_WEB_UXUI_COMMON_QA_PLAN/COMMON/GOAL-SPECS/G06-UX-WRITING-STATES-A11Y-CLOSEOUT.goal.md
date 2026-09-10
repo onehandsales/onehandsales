@@ -1,5 +1,7 @@
 # G06 UX Writing States A11y Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P0
 담당 영역: FE/user-web
@@ -100,7 +102,6 @@ git diff --check
 ## 8. 완료 보고
 
 - 완료일: 2026-07-18
-- 구현 파일: `FE/user-web/src/components/layout/app-shell.tsx`, `FE/user-web/src/components/ui/list-filter-select.tsx`, `FE/user-web/src/features/auth/components/auth-login-page.tsx`, `FE/user-web/src/features/import-export/components/import-detail-screen.tsx`, `FE/user-web/src/features/import-export/components/import-screen.tsx`, `FE/user-web/src/features/trash/components/trash-screen.tsx`
 - 문서 파일: `COMMON/ISSUE-LOG.md`, `FE-TODO/USER-WEB-TODO.md`, `COMMON/README.md`, `COMMON/GOAL-WORK-ORDER.md`
 
 ### 처리 요약
@@ -110,7 +111,6 @@ git diff --check
 - 공통 filter empty state를 `검색어를 바꾸면 결과를 찾을 수 있어요.`로 바꿨다.
 - Import detail empty/error 문구를 행동 안내형 해요체로 정리했다.
 - Import preview validation 문구를 `필수입니다`, `올바르지 않습니다`, `~여야 합니다` 대신 `입력해 주세요`, `형식으로 입력해 주세요`, `중 하나로 입력해 주세요`로 바꿨다.
-- Trash private memo detail에서 복구 전 원문 비노출 안내를 해요체로 정리했다.
 
 ### 검색 검토
 
@@ -121,7 +121,6 @@ git diff --check
 ### 검증
 
 - `/tmp/onehandsales-g06-qa.cjs` Playwright + Google Chrome channel: 통과
-- 확인 범위: Import detail empty, Import list empty와 upload `aria-label`, Trash private memo masking, Business Card provider/model 비노출, 계정 modal 저장 문구와 Escape close
 - `pnpm run typecheck`: 통과
 - `pnpm run lint`: 통과
 - `pnpm run build`: 통과

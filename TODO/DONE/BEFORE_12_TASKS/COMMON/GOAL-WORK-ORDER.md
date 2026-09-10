@@ -1,5 +1,7 @@
 # Goal Work Order
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G01-G06 Done / 12 Billing Handoff Ready
 고도화일: 2026-08-08
 
@@ -188,9 +190,7 @@ git diff --check
 작업:
 
 1. 11 README, G10 closeout, GOAL-COMPLETION-CHECKLIST, GOAL-SPECS README를 확인한다.
-2. 실제 `BE/src/modules/admin-operation`, `account-request`, `trash` 상태를 확인한다.
 3. 실제 `FE/admin-web/src/app/router/router.tsx`와 Admin features 상태를 확인한다.
-4. 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 확인한다.
 5. 완료된 checklist는 `[x]`로 보정하고 closeout 근거를 남긴다.
 6. Billing/Admin mutation/B2B tenant admin 후속 후보는 11 미완성으로 표시하지 않는다.
 
@@ -212,7 +212,6 @@ pnpm run lint
 
 - 11 상위 checklist가 G10 closeout 및 실제 코드 상태와 맞는다.
 - 11 goal index가 G01~G10 완료/구현 상태와 맞는다.
-- 11 User Web 영향 문서가 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준과 맞는다.
 - BE/FE TODO가 planning 상태로 오해되지 않는다.
 - Billing/B2B/Admin mutation 후속 후보가 11 완료 범위에 섞이지 않는다.
 

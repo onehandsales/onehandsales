@@ -1,5 +1,7 @@
 # Global B2C First Sale Gate
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: Product UX 중 06 Deal/Contact summary 범위는 완료됐고, Company/Contact/Product latest summary/generic summary/record별 timeline은 PRE12 첫 판매 gate로 승격하지 않는다.
 
 상태: DONE / Source Gate Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -37,11 +39,9 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 
 | Gate | 판매 전 필요한 상태 | 현재 방향 |
 |---|---|---|
-| Product UX | 회사, 담당자, 제품, 딜, 일정, 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, 회의록, 명함, import, search, trash, export가 반복 업무 도구처럼 자연스럽게 이어진다. | 현재 MVP 핵심 루프를 화면별로 제품화 QA한다. 주간 일정 보고서, Google Calendar read-only import, AI weekly report/follow-up delivery, DealActivity timeline, Deal list products/latestActivity, Contact dealCount, 회의록 AI 후속 작업 draft, 모바일 명함 촬영/회의 녹음/local draft/push permission UX는 구현 완료됐다. Company/Contact/Product latest summary는 PRE12 first-sale gate가 아니라 후속 전략 후보로 둔다. |
 | Global UX | KR/US/CA 판매 기준 언어, 날짜/시간, 통화, 전화번호, 주소, UX writing이 어색하지 않다. | 08에서 `/app` `ko-KR`/`en` i18n, 사용자 국가/기본 통화, Product/Deal currency, Contact KR/US phone, Company country/region/address, Import/Export localization, Google/LINE/Apple auth를 구현했다. LINE/Apple provider smoke는 2026-07-29 사용자 확인 기준 운영 완료됐고, CA/CAD/캐나다 전화번호/시장별 UX writing은 후속 polish로 남긴다. |
 | Pricing/plan | 가격표, trial 여부, 무료/유료 제한, paywall, plan별 entitlement가 명확하다. | Public pricing과 app 내부 구독 상태 UX를 함께 정의한다. |
 | Billing | 결제 provider 또는 Merchant of Record, 구독 생성/갱신/해지, 환불, 결제 실패 복구, 영수증/인보이스가 준비된다. | Payment/subscription은 첫 판매 전 큰 계획으로 다룬다. |
-| Admin/support | 사용자, 민감정보 마스킹, 감사 로그, provider 실패, Trash/account/data request, system gate를 운영자가 처리할 수 있다. 결제/구독 이슈는 Billing 도메인과 연결한다. | 11에서 Admin Web/API 최소 운영 범위를 구현했다. 결제/구독/plan/payment/invoice/refund 운영은 `TODO/PADDLE_PLAN`에서 다룬다. |
 | Trust/policy | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, 보관 기간 정책이 판매 범위와 맞는다. | 정책 문서와 Backend 데이터 처리 기준을 함께 확정한다. |
 | Data reliability | migration, seed, backup/restore, import job 유실, provider log, 장애 대응 기준이 있다. | ImportJob persistence/resume과 최종형 보관/삭제/입력량 제한은 `01_IMPORT_JOB_PERSISTENCE` G01~G09로 완료. Google Calendar token encryption/redaction, callback/redirect QA, 06/11 범위 DB target/migrate/seed gate, 07 MeetingNote provider call log subset, 08 migration 파일 작성과 DB 최신 상태 확인, 11 Admin system operation check record도 완료. 실제 backup/restore 실행 runbook과 장애 대응 drill은 별도 운영 절차로 남긴다. |
 | Analytics | activation, retention, paid conversion, churn, ARPU, AI cost/user를 볼 수 있다. | 09에서 event taxonomy, client/server event 수집, activation/retention snapshot, AI usage/cost summary foundation을 구현했고 10에서 mobile field-use event를 연결했으며 11에서 Admin analytics UI/API를 구현했다. paid conversion/churn/ARPU는 `TODO/PADDLE_PLAN` Billing runtime source가 연결되어야 완성된다. |
@@ -62,7 +62,6 @@ MVP는 판매 버전이 아니다. MVP는 핵심 업무 루프가 동작하는�
 | 묶음 | 이유 |
 |---|---|
 | Global B2C sales policy/payment | 가격, trial, plan, 결제 provider, 세금/환불 기준이 없으면 판매할 수 없다. |
-| Admin minimal operation | 완료. 11에서 계정/데이터/민감정보/provider/Trash/system gate 운영 화면과 API를 구현했다. 결제/구독 운영은 `TODO/PADDLE_PLAN` 범위다. |
 | Account/data deletion/billing UX | `/app` 언어와 global settings는 08에서 완료. 계정 삭제 요청과 데이터 export 요청 UX/API/Admin queue는 11에서 완료. 구독 상태 UX는 `TODO/PADDLE_PLAN` 범위다. |
 | Product analytics | 09 foundation, 10 mobile field-use event, 11 Admin analytics 화면/API는 완료됐다. 유료 판매 후 conversion/churn을 운영하려면 `TODO/PADDLE_PLAN` Billing source event 연결이 필요하다. |
 | Data reliability/DB gate | 06 범위 DB/Prisma gate, ImportJob persistence/resume G01~G09, 07 MeetingNote provider call log subset, 08 migration 작성/검증과 DB 최신 상태 확인, 11 Admin system operation gate는 완료. 실제 backup/restore 실행 runbook과 장애 대응 drill은 판매 신뢰와 연결된다. |

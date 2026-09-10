@@ -1,5 +1,7 @@
 # API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 이번 `USER_WEB_UXUI_COMMON_QA_PLAN`은 새 API를 추가하지 않는다.
 
 ## 기준
@@ -16,7 +18,6 @@
 아래 이슈가 발견되면 별도 BE 계획으로 분리한다.
 
 - 다른 사용자 데이터가 노출된다.
-- Search, Trash, Export에 ownership 문제가 있다.
 - 삭제된 리소스 접근 error code가 FE에서 안전하게 처리되지 않는다.
 - OCR/AI/STT/Import mapping provider failure가 사용자에게 내부 provider 정보를 노출한다.
 - API validation error가 field-level UI를 만들 수 없을 정도로 모호하다.
@@ -52,9 +53,7 @@ Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backe
 ## G05 Complex Flow Contract Note
 
 - 확인일: 2026-07-18
-- 관련 화면: `/app/schedules`, `/app/meeting-notes`, `/app/business-cards`, `/app/import`, `/app/trash`
 
-G05는 Schedule, MeetingNote, BusinessCard OCR, Import, Trash API를 변경하지 않고 완료했다.
 
 현재 Schedule list response의 `deals` summary로 일정 pill에 연결 딜 맥락을 표시할 수 있다. `/app/schedules/week` 신규 구현이나 week report API는 G05 범위가 아니다.
 
@@ -64,6 +63,5 @@ BusinessCard scan response에는 `ai`, `usage` 같은 운영/비용 정보가 �
 
 ImportJob persistence는 G05 제외 범위다. 확정 전 in-memory job 한계가 사용자 혼란을 만들면 별도 Backend/API 계획으로 분리한다.
 
-Trash detail response가 private memo `content` 또는 raw `targetType` field를 내려주더라도 User Web은 복구 전 preview에서 원문과 내부 enum을 숨긴다. 더 강한 보안이 필요하면 Backend detail response에서도 private memo content를 제거하는 계약으로 분리한다.
 
 Desktop page size 15개 기본값은 FE 단독 변경 대상이 아니다. Backend 상수, 응답 `pageSize`, 관련 테스트/API 문서와 함께 변경해야 한다.

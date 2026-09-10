@@ -1,5 +1,7 @@
 # G03 User Web Weekly Report UX
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 
 ## 1. 목적
@@ -116,7 +118,6 @@ pnpm run test:e2e
 - Excel 다운로드가 현재 보고서와 같은 `weekStart`, `timeZone`으로 호출된다.
 - 다운로드 중 버튼이 disabled 처리된다.
 - 390px/360px에서 날짜 section, summary, row/card, 다운로드 버튼이 겹치지 않는다.
-- 제품 요약, 일정 메모 본문, private memo, meeting note body를 화면/export에 꾸며 넣지 않는다.
 - FE가 Backend 응답에 없는 DB 파생값을 사실처럼 꾸며 넣지 않는다.
 - UX/UI가 `AGENT/UXUI_AGENT` 기준과 충돌하지 않는다.
 - Global B2C 첫 판매 gate 중 결제/Admin/앱 전체 다국어/통화 모델/제품 분석을 G03에 섞지 않는다.

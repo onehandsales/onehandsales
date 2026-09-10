@@ -1,5 +1,7 @@
 # P1 G05-G11 핵심 기준 데이터 상세 명세
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 P1은 사용자가 회사, 담당자, 제품을 등록하고 딜 생성의 기반 데이터를 준비할 수 있게 하는 단계다.
@@ -67,26 +69,24 @@ G07 회사 화면이 사용할 API를 제공한다.
 ### API 연결
 
 - Company CRUD
-- CompanyLog CRUD
 - API 요약: `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/G06-G12-CORE-DOMAIN-API.md`
 - 엔드포인트 구현 계약: `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/G06-G12-ENDPOINT-CONTRACT.md`
 
 ### DB 연결
 
 - Company
-- CompanyLog
 
 ### 비즈니스 기준
 
 - 회사는 사용자별로 분리된다.
-- 삭제는 soft delete다.
-- 회사 로그는 영업 접촉 이력이 아니라 회사 자체 히스토리다.
+- 회사는 목록, 상세, 생성, 수정, 분야/지역 옵션, xlsx 내보내기 범위로 제공된다.
+- 회사 보조 기록 API는 현재 범위에 포함하지 않는다.
 
 ### 완료 기준
 
-- `/api/companies` CRUD가 동작한다.
-- 다른 사용자의 회사는 조회/수정/삭제할 수 없다.
-- 회사 로그를 조회/생성/수정/삭제할 수 있다.
+- `/api/companies` 목록/상세/생성/수정이 동작한다.
+- `/api/company-fields`, `/api/company-regions` 옵션 API가 동작한다.
+- 다른 사용자의 회사와 옵션은 조회/수정할 수 없다.
 
 ## G07. Company User Web 화면
 
@@ -98,29 +98,34 @@ G07 회사 화면이 사용할 API를 제공한다.
 
 #### 회사 목록
 
-- 경로: `/companies`
-- 주요 UI: 검색 input, 회사 생성 버튼, 회사 목록 table/list, 삭제/복구 상태 표시
-- 컬럼: 회사명, 분야, 지역, 담당자 수, 딜 수, 최근 수정일
+- 경로: `/app/companies`
+- 주요 UI: 회사명 검색, 분야/지역 필터, 정렬, 회사 생성 버튼, 회사 목록 table/list, xlsx 내보내기
+- 컬럼: 회사명, 분야, 지역, 주소, 최근 수정일
 
 #### 회사 빠른 등록 modal
 
-- 필수 입력: 회사명
-- 선택 입력: 분야, 지역, initial Memo
+- 필수 입력: 회사명, 분야, 지역
+- 선택 입력: 주소
 - 저장 후 목록 갱신
 
 #### 회사 상세
 
-- 경로: `/companies/:companyId`
-- 주요 UI: 기본 정보, 회사 로그, Memo 기록, 연결 담당자/딜/제품 요약
+- 경로: `/app/companies/:companyId`
+- 주요 UI: 기본 정보, 분야/지역 표시, 주소, 수정 form
 
 ### API 연결
 
 - `GET /api/companies`
+- `GET /api/companies/export/xlsx`
 - `POST /api/companies`
 - `GET /api/companies/:companyId`
 - `PATCH /api/companies/:companyId`
-- `DELETE /api/companies/:companyId`
-- `POST /api/companies/:companyId/logs`
+- `GET /api/company-fields`
+- `POST /api/company-fields`
+- `DELETE /api/company-fields/:fieldId`
+- `GET /api/company-regions`
+- `POST /api/company-regions`
+- `DELETE /api/company-regions/:regionId`
 
 ### 상태/validation
 
@@ -132,7 +137,7 @@ G07 회사 화면이 사용할 API를 제공한다.
 
 ### 완료 기준
 
-- 회사 생성, 목록, 상세, 수정, 삭제가 가능하다.
+- 회사 생성, 목록, 상세, 수정, 분야/지역 옵션 관리, xlsx 내보내기가 가능하다.
 - API error와 loading 상태가 화면에 표현된다.
 
 ## G08. Contact Backend vertical slice
@@ -150,17 +155,13 @@ G09 담당자 화면과 딜 생성의 담당자 선택 UI가 사용할 API를 �
 ### DB 연결
 
 - Contact
-- ContactLog
 - Company
-- PersonalMemo
 
 ### 비즈니스 기준
 
 - 담당자는 회사와 연결될 수 있다.
 - 회사 없이도 저장 가능하다.
 - 회사 연결 시 현재 사용자 소유 회사인지 검증한다.
-- 담당자 Log는 `ContactLog`에 객관 기록으로 저장한다.
-- 담당자 Memo는 Contact 단일 필드가 아니라 `PersonalMemo(targetType=CONTACT)`에 암호화 저장한다.
 - 전화번호, 이메일, Memo 원문은 민감정보 후보로 본다.
 
 ### 완료 기준
@@ -233,20 +234,16 @@ G11 제품 화면과 G13 딜 생성의 제품 선택 UI가 사용할 API를 제�
 ### DB 연결
 
 - Product
-- ProductLog
 - ProductConnection
 - Company
 - Contact
 - Deal
-- PersonalMemo
 
 ### 비즈니스 기준
 
 - 제품 단가는 선택 입력이다.
 - 제품 연결 대상은 Company, Contact, Deal 중 하나다.
 - 연결 대상은 현재 사용자 소유여야 한다.
-- 제품 Log는 `ProductLog`에 객관 기록으로 저장한다.
-- 제품 Memo는 `PersonalMemo(targetType=PRODUCT)`에 암호화 저장한다.
 
 ### 완료 기준
 

@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# G02 BE Application Presentation Boundary Work Log
 
 상태: 완료 / 검증 완료
@@ -28,7 +30,6 @@
 - `BE/src/modules/admin-operation/application/services/admin-provider-failure-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-provider-failure-application.service.spec.ts`
 - `BE/src/modules/admin-operation/application/services/admin-system-operation-application.service.ts`
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-user-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-user-application.service.spec.ts`
 - `BE/src/modules/admin-operation/presentation/http/admin-account-request.controller.ts`
@@ -37,7 +38,6 @@
 - `BE/src/modules/admin-operation/presentation/http/admin-domain-record.controller.ts`
 - `BE/src/modules/admin-operation/presentation/http/admin-provider-failure.controller.ts`
 - `BE/src/modules/admin-operation/presentation/http/admin-system-operation.controller.ts`
-- `BE/src/modules/admin-operation/presentation/http/admin-trash.controller.ts`
 - `BE/src/modules/admin-operation/presentation/http/admin-user.controller.ts`
 - `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/*`
 - `TODO/README.md`
@@ -52,7 +52,6 @@ git diff --check
 cd D:\workspace_repository\onehandsales\BE
 pnpm.cmd run typecheck
 pnpm.cmd run lint
-pnpm.cmd test -- account-request-application.service.spec.ts admin-audit-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-user-application.service.spec.ts admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts
 pnpm.cmd test
 ```
 

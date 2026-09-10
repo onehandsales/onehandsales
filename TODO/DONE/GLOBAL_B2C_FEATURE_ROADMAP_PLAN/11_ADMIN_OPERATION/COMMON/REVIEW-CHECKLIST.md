@@ -1,5 +1,7 @@
 # Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 11 전체 review 기준이다.
@@ -11,7 +13,5 @@
 - [ ] API spec 문서와 goal 문서의 endpoint가 일치한다.
 - [ ] BE-TODO와 FE-TODO의 작업 항목이 goal matrix와 일치한다.
 - [ ] DB schema 후보가 현재 `BE/prisma/schema.prisma`와 충돌하지 않는다.
-- [ ] Trash 만료 정책이 soft delete 보존과 맞다.
-- [ ] 계정 삭제 정책이 Trash 정책과 별개로 설명되어 있다.
 - [ ] provider failure는 safe field 중심이다.
 - [ ] Admin analytics는 09 read model과 10 mobile field-use event만 사용하고 billing 지표를 제외한다.

@@ -1,5 +1,7 @@
 # G05 QA Review Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 
 ## 1. 목적
@@ -18,7 +20,6 @@
 - Frontend 전체 검증
 - Prisma migration 검증
 - API contract diff 검토
-- Schedule soft delete/Trash restore 검토
 - Google sync business rule 검토
 - Reminder 생성/취소/복구 검토
 - Token/log redaction 검토
@@ -61,7 +62,6 @@
 - provider auth failure vs transient failure
 - schedule `meetingUrl` validation
 - schedule soft delete
-- Trash `SCHEDULE` restore
 - reminder generation/cancel/restore
 - cross-user ownership isolation
 
@@ -74,7 +74,6 @@ pnpm run typecheck
 pnpm run lint
 pnpm run test -- schedule
 pnpm run test -- notification
-pnpm run test -- trash
 pnpm run build
 ```
 
@@ -93,7 +92,6 @@ pnpm run build
 - meeting URL display/edit validation
 - Google-origin schedule edit
 - disconnect `KEEP/HIDE/TRASH`
-- `/app/trash` `SCHEDULE` restore
 - desktop/mobile responsive
 - provider failure copy
 
@@ -113,7 +111,6 @@ pnpm run build
 - memo/Google description 원문이 structured log에 없다.
 - provider attendee email을 저장/log하지 않는다.
 - meeting URL full query string을 log하지 않는다.
-- cross-user calendar source/schedule/trash 접근이 404/403으로 차단된다.
 
 ## 8. 문서 업데이트
 
@@ -145,7 +142,6 @@ Smoke env가 없으면 완료 보고에 "실제 Google provider smoke는 env 미
 - `COMMON/REVIEW-CHECKLIST.md`의 critical 항목이 모두 통과한다.
 - Backend/Frontend 검증 명령 결과를 기록했다.
 - Schedule soft delete와 Google-origin restore가 확인됐다.
-- `trashExpiresAt=now+7일` 정책이 확인됐다.
 - token/log redaction이 확인됐다.
 - 실제 Google provider smoke 실행 여부와 이유가 기록됐다.
 - 문서 상태가 구현 결과와 일치한다.

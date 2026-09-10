@@ -1,5 +1,7 @@
 # G05 Deal Record Summary Backend
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 목표: 목록 summary Backend 구현
 완료일: 2026-07-26
@@ -29,7 +31,6 @@
 
 - 회사/제품 latest activity summary
 - Contact latest activity summary
-- latest memo summary
 - next action summary 신규 계산
 - 고급 검색/필터
 - 딜 가능성/확률

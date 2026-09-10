@@ -1,5 +1,7 @@
 # Release QA Follow-up Issue Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` 실행 중 발견한 이슈, 미검증 품질 gap, 보류 항목을 기록한다.
@@ -97,15 +99,12 @@ Chrome과 Edge에서 핵심 시나리오, reload, history, slow network, multi-t
 
 #### 내용
 
-Search, Trash, Export, 직접 API 접근에서 다른 사용자 데이터가 섞이지 않는지 별도 계정 기준으로 끝까지 확인한 산출물이 없다.
 
 #### 기대 결과
 
-사용자 A token으로 사용자 B 데이터가 조회, 검색, export, trash detail/restore에 노출되지 않는다.
 
 #### 처리 결과
 
-`BE/src/modules/security/ownership-isolation.spec.ts`를 추가해 `RQA004-A`, `RQA004-B` 격리 fixture 기준으로 Company/Contact/Product/Deal/Schedule/MeetingNote 직접 접근, Search, Trash, XLSX export, AdminGuard 경계를 자동 검증했다. 사용자 A 기준 응답과 error payload에 사용자 B marker/id/email이 노출되지 않았고, `*NotFound` DomainError는 기존 `HttpExceptionFilter`에서 HTTP 404로 매핑된다. 일반 USER role의 AdminGuard 접근은 `ForbiddenException`으로 거부됐다.
 
 `FE/user-web/tests/e2e/security-boundary-qa.spec.ts`를 추가해 session 제거 후 보호 route reload/back에서 사용자 데이터가 보이지 않는지 확인했다. User Web source의 `/admin/api/` 문자열은 `src/lib/api-client.ts`의 차단 로직 2건뿐이며, feature API 호출 문자열은 발견되지 않았다.
 

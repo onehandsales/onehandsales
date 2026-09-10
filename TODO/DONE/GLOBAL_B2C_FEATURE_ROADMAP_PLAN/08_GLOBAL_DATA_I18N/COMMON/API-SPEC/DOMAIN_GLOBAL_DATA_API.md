@@ -1,5 +1,7 @@
 # Domain Global Data API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / G10 Reviewed / G06 template normalized
 
 ## 1. Product Currency
@@ -151,7 +153,6 @@ Contact Business Logic:
 Contact DB / Transaction:
 
 - 조회: User, Company, Contact, ContactDepartment, ContactJobGrade
-- 생성/수정: Contact, 필요 시 ContactMemoLog
 - transaction 필요 여부: Contact와 초기 memo log를 함께 만들면 필요
 - rollback 범위: Contact 생성과 같은 사용자 행동의 부수 row 전체
 - audit log: 없음
@@ -208,11 +209,9 @@ Company DB / Transaction:
 
 - 조회: User, Company, CompanyField, CompanyRegion
 - 생성/수정: Company, CompanyRegion
-- transaction 필요 여부: Company와 초기 memo log를 함께 만들면 필요
 - rollback 범위: Company 본 데이터와 같은 사용자 행동의 부수 row 전체
 - audit log: 없음
 - observability event: current 구현 기준 회사 목록/연결 딜/연결 담당자/export/delete 일부 흐름은 `company.*` event를 남긴다. `createCompany`, `updateCompany`, `createRegion`은 별도 application log event가 없다.
-- redaction: private memo 원문 logging 금지
 
 ## 5. Error Response / FE 처리 기준
 
@@ -247,7 +246,6 @@ Company DB / Transaction:
 - 기존 ownership/not found 응답은 대상 존재 여부를 과도하게 노출하지 않는다.
 - `message`는 개발/기본 fallback용이며 사용자 노출 문구 정본이 아니다.
 - FE는 G03 app i18n foundation 이후 `code`와 `field`를 기준으로 `ko-KR`, `en` 문구를 렌더링한다.
-- 서버 로그에는 phone/email, private memo, deal amount/product price 원문을 남기지 않는다.
 
 ## 6. 구현 체크리스트
 
@@ -313,7 +311,6 @@ Request/Response 필드:
 
 Transaction:
 
-- `POST /api/products`: 필요. 현재 구현은 Product 생성, category/status ownership 검증, optional `ProductMemoLog` 생성을 `productRepository.runInTransaction`으로 묶는다.
 - `PATCH /api/products/:productId`: 필요 여부 없음. 현재 구현은 ownership/taxonomy 검증 후 Product 단일 row update를 수행한다.
 - 조회/export API: 필요 여부 없음. ownership scope 조회만 수행하고 DB 변경은 없다.
 - audit log: 없음.
@@ -323,7 +320,6 @@ Observability:
 
 - log event key: `product.listed`, `product.viewed`, `product.dealsListed`, `product.created`, `product.updated`, `product.exported`
 - request id: export server analytics event에 controller의 request id를 전달한다. 일반 create/update는 current 구현상 application log에 request id를 직접 전달하지 않는다.
-- redaction: `productName`, `productMemo`, product private memo 원문, `productPrice` 원문을 log context에 넣지 않는다.
 
 ### 8.2 Deal Currency Matrix
 
@@ -347,7 +343,6 @@ Request/Response 필드:
 
 Transaction:
 
-- `POST /api/deals`: 필요. Deal, DealCompany, DealContact, DealProduct, initial `DealFollowingActionLog`, 자동 activity, due reminder를 같은 `dealRepository.runInTransaction` 범위로 묶는다.
 - `PATCH /api/deals/:dealId`: 필요. Deal 기본 field와 company/contact/product relation 교체, due reminder 갱신, stage change activity를 같은 transaction으로 묶는다.
 - 조회/export/option API: 필요 여부 없음. ownership scope 조회만 수행한다.
 - audit log: 없음.
@@ -381,7 +376,6 @@ Request/Response 필드:
 
 Transaction:
 
-- `POST /api/contacts`: 필요. Contact 생성, company/department/jobGrade ownership 검증, optional `ContactMemoLog` 생성을 `contactRepository.runInTransaction`으로 묶는다.
 - `PATCH /api/contacts/:contactId`: 필요 여부 없음. phone 변경이 있으면 application에서 정규화한 뒤 Contact 단일 row update를 수행한다.
 - 조회/export API: 필요 여부 없음. ownership scope 조회만 수행한다.
 - audit log: 없음.
@@ -391,7 +385,6 @@ Observability:
 
 - log event key: `contact.listed`, `contact.viewed`, `contact.dealsListed`, `contact.created`, `contact.updated`, `contact.exported`
 - request id: export server analytics event에 controller의 request id를 전달한다. 일반 create/update는 current 구현상 application log에 request id를 직접 전달하지 않는다.
-- redaction: `username`, `mobile`, `phoneNationalNumber`, `phoneE164`, `email`, `contactMemo`, contact private memo 원문을 log context에 넣지 않는다.
 
 ### 8.4 Company Region / Address Matrix
 
@@ -418,7 +411,6 @@ Request/Response 필드:
 
 Transaction:
 
-- `POST /api/companies`: 필요. Company 생성, companyField/companyRegion ownership 검증, optional `CompanyMemoLog` 생성을 `companyRepository.runInTransaction`으로 묶는다.
 - `PATCH /api/companies/:companyId`: 필요 여부 없음. ownership/taxonomy 검증 후 Company 단일 row update를 수행한다.
 - `POST /api/company-regions`: 필요 여부 없음. region/code 중복 검증 후 `CompanyRegion` 단일 row를 생성한다.
 - 조회/export API: 필요 여부 없음. ownership scope 조회만 수행한다.
@@ -430,7 +422,6 @@ Observability:
 - log event key: current 구현은 `company.listed`, `company.contactsListed`, `company.dealsListed`, `company.exported`, `company.deleted`를 남긴다.
 - current 구현상 `createCompany`, `updateCompany`, `createRegion`에는 별도 application log event가 없다. G06은 현 상태를 문서화할 뿐 새 log를 추가하지 않는다.
 - request id: export server analytics event에 controller의 request id를 전달한다. 일반 create/update/region create는 current 구현상 application log에 request id를 직접 전달하지 않는다.
-- redaction: `companyName`, `address`, `companyMemo`, company private memo 원문을 log context에 넣지 않는다.
 
 ### 8.5 공통 Error / FE 처리 / Log Level
 

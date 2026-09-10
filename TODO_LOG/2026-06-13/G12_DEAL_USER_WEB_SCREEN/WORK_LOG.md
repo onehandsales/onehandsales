@@ -1,5 +1,7 @@
 # G12 Deal User Web Screen — WORK LOG
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업일
 
 2026-06-13
@@ -14,12 +16,10 @@
 
 - 파일: `FE/user-web/src/features/deal/types/deal.ts`
 - 제거한 stale 필드: `title`, `amount`, `currency`, `stage`, `likelihoodStatus`, `likelihoodPercent`, `expectedCloseDate`, `nextActionText`, `nextActionDueAt`, `nextActionStatus`, `hasMemo`, `memoCount`, `DealActivity`, `DealMemo`, `DealStageSummary`
-- 추가한 새 타입: `DealStatus`, `DEAL_STATUS_LABEL`, `DEAL_STATUS_LIST`, `DealListItem`, `DealDetail`, `DealFollowingActionLog`, `DealMemoLog`, `DealCompanyOption`, `DealContactOption`, `DealProductOption`, `CreateDealInput`, `UpdateDealInput`, `DealSort`, `DealExportParams`
 
 ### 2. Deal API client 전면 재작성
 
 - 파일: `FE/user-web/src/features/deal/api/deal-api.ts`
-- 구현 API: 15개 전체 (`stage-counts`, `list`, `detail`, `create`, `update`, `company-options`, `contact-options`, `product-options`, `export/xlsx`, `following-action-logs` CRUD, `memo-logs` CRUD)
 - export API는 `apiBlobClient` 사용
 
 ### 3. Deal Query Keys 전면 재작성
@@ -30,8 +30,6 @@
 ### 4. TanStack Query Hooks 전면 재작성
 
 - `use-deal-list.ts`: `useDealStageCounts`, `useDealList`
-- `use-deal-detail.ts`: `useDealDetail`, `useDealFollowingActionLogs`, `useDealMemoLogs`
-- `use-deal-mutations.ts`: `useCreateDealMutation`, `useUpdateDealMutation`, `useCreateFollowingActionLogMutation`, `useUpdateFollowingActionLogMutation`, `useCreateMemoLogMutation`, `useUpdateMemoLogMutation`, `useExportDealsMutation`
 - `use-deal-entity-options.ts`: `useDealCompanyOptions`, `useDealContactOptions`, `useDealProductOptions` (BE `/api/deals/*-options` 직접 호출로 변경)
 
 ### 5. Deal 스키마 전면 재작성
@@ -51,7 +49,6 @@
 ### 7. Deal Detail Panel 전면 재작성
 
 - 파일: `FE/user-web/src/features/deal/components/deal-detail-panel.tsx`
-- 기본 정보, 제품 목록, 다음 행동 로그 CRUD, 메모 로그 CRUD
 - 로그 인라인 생성/수정/완료 토글
 
 ### 8. Deal Create Dialog 전면 재작성

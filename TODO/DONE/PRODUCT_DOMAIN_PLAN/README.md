@@ -1,12 +1,13 @@
 # Product Domain Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 목적
 
 사용자가 영업하는 상품/제품(Product) 페이지의 기본 기능을 FE와 BE가 같은 계약으로 구현할 수 있게 실행 문서를 둔다.
 
 이 계획에서 `상품`, `제품`, `Product`는 같은 의미다. UI 문구는 `제품`을 사용하고, 코드/DB/API 도메인명은 `Product`를 사용한다.
 
-관리자 페이지, 휴지통, soft delete, 제품 삭제/복구, 제품 연결, 제품 객관 로그, 딜 연동, 범용 Import/Export/OCR 연동은 현재 범위에서 제외한다. 제품 목록 xlsx 내보내기 API는 추가 유지보수 범위에서 Backend 구현이 완료되어 FE 목록 작업에 포함한다.
 
 ## 필수 선행 정본
 
@@ -65,12 +66,6 @@ BE가 책임지는 API:
 - `POST /api/products`
 - `GET /api/products/:productId`
 - `PATCH /api/products/:productId`
-- `POST /api/products/:productId/memo-logs`
-- `GET /api/products/:productId/memo-logs`
-- `PATCH /api/products/:productId/memo-logs/:memoLogId`
-- `POST /api/products/:productId/private-memo-logs`
-- `GET /api/products/:productId/private-memo-logs`
-- `PATCH /api/products/:productId/private-memo-logs/:privateMemoLogId`
 
 FE가 책임지는 화면:
 
@@ -84,20 +79,15 @@ FE가 책임지는 화면:
 - 제품 상태 생성/삭제
 - 제품 단건 상세
 - 제품명/제품가격/제품 카테고리/제품 상태 수정
-- 제품 일반 메모 로그 생성/조회/수정
-- 제품 개인 비밀 메모 로그 생성/조회/수정
 
 ## 현재 만들지 않는 기능
 
 - 관리자 제품 관리 화면
-- 제품 휴지통
 - 제품 soft delete
 - 제품 삭제/복구/영구삭제 API
 - 제품 카테고리 수정 API
 - 제품 상태 수정 API
 - `ProductConnection`
-- `ProductLog`
-- 기존 `ProductMemo` 또는 공통 `PersonalMemo(targetType=PRODUCT)` 방식
 - `initialMemo` 요청 필드명
 - `unitPrice`, `currency`, `description` 필드
 - 제품 목록의 최근 수정일 표시
@@ -117,12 +107,6 @@ FE가 책임지는 화면:
 - 제품 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬을 반영하고 `page`는 제외한다.
 - 제품 목록 xlsx에는 제품명, 카테고리, 상태, 딜 수, 등록일을 포함하고 ID와 제품 가격은 포함하지 않는다.
 - 제품 카테고리/상태 전체 조회에는 `createdAt`이 나오지 않는다.
-- 제품 생성의 `productMemo`는 값이 있을 때만 `ProductMemoLog` 첫 데이터로 저장된다.
-- 제품 생성의 `productMemo`로 만들어진 첫 메모 로그는 `memoType`이 `초기 메모`다.
-- 독립적인 제품 일반 메모 로그 생성은 `memo`, `memoType`을 받는다.
-- 제품 일반 메모 로그 수정은 `memo`, `memoType` 중 최소 1개를 수정할 수 있다.
-- 독립적인 제품 개인 비밀 메모 로그 생성/수정은 `memo`만 받는다.
-- 비밀 메모는 DB에 평문으로 저장되지 않는다.
 
 ## 관련 문서
 

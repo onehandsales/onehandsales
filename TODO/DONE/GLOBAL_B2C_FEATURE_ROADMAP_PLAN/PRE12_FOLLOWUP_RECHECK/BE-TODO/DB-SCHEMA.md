@@ -1,5 +1,7 @@
 # DB Schema Todo
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final / migration 없음 / BEFORE_12 반영 완료 / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -21,7 +23,6 @@
 | `ExternalCalendarConnection`, `ExternalCalendarSource`, `Schedule` external fields | 04에서 Google read-only import/sync metadata로 완료됐다. provider는 `GOOGLE`만 있고 `ExternalCalendarConnection`은 `@@unique([userId, provider])`로 사용자당 Google 연결 1개 기준이다. recurrence/reminders/attendee/watch channel/other provider table은 없다. |
 | `DealActivityType` | next action, schedule, meeting note, follow-up event를 activity로 기록한다. |
 | `DealActivitySourceType` | `SYSTEM`, `USER`, `NEXT_ACTION`, `SCHEDULE`, `MEETING_NOTE`, `FOLLOW_UP`가 있다. |
-| `DealActivity` | 06에서 Deal timeline source-of-truth로 추가됐다. soft delete/trash/restore/retention/audit field, score field, summary cache table은 없다. |
 | `AiProviderOperation` | Weekly report, follow-up draft, MeetingNote AI/STT/next action/follow-up draft operation을 포함한다. |
 | `AiProviderCallLog` | MeetingNote provider log를 공통 로그로 기록하며 `targetType`, `targetId`, `[userId, targetType, targetId, createdAt]` index가 있다. |
 | `AiWeeklySalesReport`, `AiWeeklySalesReportSuggestion`, `AiJob`, `AiProviderCallLog` | 05에서 저장형 weekly report, version/failed version, input snapshot, safe provider log, suggestion을 완료했다. 자동 생성 schedule/cursor나 AI suggestion 자동 mutation 적용 모델은 없다. |
@@ -42,7 +43,6 @@
 | BusinessCard advanced camera preview/crop model | 현재 schema에 없다. 10은 browser file/camera picker와 safe failure field까지만 닫았고 custom camera/crop 상태 저장 model을 만들지 않았다. |
 | `UserDraft`, server draft DB, media/raw 저장 table | 현재 schema에 없다. 10 local draft는 FE storage 기준이며 audio/image binary, transcript 전문, provider raw response를 DB에 저장하지 않는다. |
 | `ExportJob` | 현재 schema에 없다. 03/11 후속 `PRE12-F09`로만 본다. FE 잔여 코드가 있어도 10 또는 PRE12에서 migration을 만들지 않는다. |
-| `AdminAuditLog`, `AdminSensitiveAccessLog`, `TrashRecoveryRequest`, `AdminOperationCheckRun` | 11 Admin Operation에서 운영 audit/redaction, Trash recovery queue, system gate record로 완료됐다. Admin 직접 restore/payment/purge 실행 model, Admin domain mutation result/rollback model, ImportJob cleanup failure aggregate model은 없다. |
 | Tenant/organization 계열 model | 현재 `Tenant`, `Organization`, `OrgMember`, `TenantAdmin` model은 없다. 11 Admin Web `/organizations` redirect는 customer-facing tenant admin schema가 있다는 의미가 아니다. |
 
 ## 3. 새 migration 금지 기준
@@ -57,7 +57,6 @@
 - SMS 실제 provider/vendor, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, scheduled send, tracking/attachment 저장 모델
 - Notification/NotificationDeliveryAttempt/BrowserPushSubscription TTL cleanup 기준을 확정하지 않은 상태의 삭제 migration 또는 cleanup cursor table
 - Company/Contact/Product latest summary의 저장 방식
-- DealActivity soft delete/trash/restore/retention/audit, summary cache/denormalized latest, score/AI 판단, memo/private memo 통합, all-domain activity bus 저장 방식
 - MeetingNote list summary의 저장 방식
 - AI data cleanup suggestion의 저장/적용/rollback 방식
 - MeetingNote transcript/raw provider response/follow-up draft body의 retention, 삭제권, raw access audit 방식
@@ -85,7 +84,6 @@
 - BusinessCard advanced camera preview/crop 상태, image preprocessing, crop metadata 저장 model을 `PRE12-F42` 계약 없이 추가
 - `UserDraft`, server draft DB, audio/image binary, transcript 전문, provider raw response 저장 table을 `PRE12-F43` 정책 없이 추가
 - `ExportJob`, export file retention, `/api/exports` 전용 저장 모델
-- Admin 직접 Trash 복구 실행, 유료 복구 결제, hard delete/purge 상태/결과 저장 모델
 - Admin domain mutation result/rollback/audit 저장 모델
 - Tenant/organization/member/role/permission 저장 모델 또는 customer/B2B admin role enum
 - data export artifact 생성/다운로드 worker 상태, storage object, signed URL audit 저장 모델
@@ -107,19 +105,16 @@
 
 10 재대조 기준으로 Mobile Field Use의 DB 영향은 BusinessCard safe failure field까지로 닫혔다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, `UserDraft`, server draft DB, media/raw 저장 table은 `PRE12-F43`, PWA attribution table은 `PRE12-F30`, `ExportJob`은 `PRE12-F09` 후속 후보로만 둔다.
 
-11 재대조 기준으로 Admin Operation의 1차 DB 영향은 Admin audit/security, Trash recovery request, account/data request, system operation check run으로 닫혔다. 11 문서 체크리스트 미체크를 근거로 새 migration을 만들지 않는다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지, Admin direct domain data mutation, Customer/B2B tenant admin은 별도 정책/운영/전략 계약 전 migration 후보로 올리지 않는다. ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13` import/Admin ops 확장으로만 본다.
 
 ## 4. 후보별 DB 영향
 
 | 후보 | 가능한 DB 영향 | 현재 판단 |
 | --- | --- | --- |
-| 다음 행동 reminder | `NotificationSourceType` 확장, `UserNotificationSetting` 필드 추가, `DealFollowingActionLog` due field 검토 | 후속 seed / notification policy |
 | 회의록 follow-up reminder | Notification source 확장 또는 별도 reminder table 검토 | 후속 seed |
 | follow-up 자동 발송 | send schedule, consent, unsubscribe, retry policy table 검토 | 후속 seed |
 | MeetingNote AI 후보 자동 업무 mutation | 자동 적용 승인 상태, mutation 이력, undo/rollback, audit, confidence threshold 저장 모델 필요 여부 결정 | 후속 seed / `PRE12-F40` |
 | Notification 데이터 TTL/cleanup | `Notification.createdAt`, `NotificationDeliveryAttempt.createdAt`, `BrowserPushSubscription.revokedAt` 기준 hard delete/보존 정책과 provider failure 운영 조회 영향 검토 | 후속 seed / `PRE12-F38` |
 | record summary | denormalized summary table 또는 runtime aggregation 여부 결정 | Company/Contact/Product는 defer. 비고: 후속 B2B/team CRM strategy seed. MeetingNote list summary는 후속 seed. |
-| DealActivity lifecycle/search/score 확장 | soft delete/trash/restore/retention/audit field/table, memo/private memo 통합 모델, all-domain activity bus, search index, score/AI 판단 결과, summary cache/denormalized latest 필요 여부 결정 | 후속 seed / `PRE12-F39` |
 | AI data cleanup | suggestion table, 적용 이력, rollback/audit table 필요 여부 결정 | 후속 seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | raw text 저장 table, TTL, 삭제권, sensitive access log 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | background job queue, source별 row snapshot, Admin cleanup/audit table, cleanup failure aggregate/system gate 저장 필요 여부 결정 | 후속 seed / `PRE12-F13` |
@@ -145,7 +140,6 @@
 | generic ExportJob/PDF | `ExportJob`, file TTL, audit, ownership, deletion policy가 필요하지만 후속 재검토 전 migration 금지 | 후속 seed |
 | Google Calendar 고급 sync/provider 확장 | write/watch channel, recurrence/reminder/attendee mapping, multi-account connection key, provider abstraction table 필요 여부 결정 | 후속 seed / `PRE12-F10` |
 | 11 Admin 문서 체크리스트 정합성 | DB 변경 없음. 문서 체크리스트 정리만 대상 | closed-by-BEFORE_12 |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | 복구 실행 결과, 결제 연결, purge audit/hold table 필요 여부 결정. 11에서는 없음 | billing-blocked / recovery-policy |
 | User data export artifact/download | `ExportJob` 또는 `UserDataExportRequest` status transition으로 충분한지 결정. file TTL/storage/audit 기준 필요 | 후속 seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | scan result, override, audit, retention 저장 모델 필요 여부 결정 | defer / 정책 필요 |
 | Admin direct domain data mutation and recovery action policy | 도메인 mutation result, rollback snapshot, user notification, redaction/audit model 필요 여부 결정. 11 read-only records 완료 범위와 분리한다 | defer / ops-policy / `PRE12-F44` |

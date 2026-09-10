@@ -1,5 +1,7 @@
 # Goal Completion Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 최종 업데이트: 2026-07-23
 
@@ -23,17 +25,13 @@
 | 완료 | Goal | 상태 | 완료일 | 완료 기준 | 증거 | 비고 |
 |---|---|---|---|---|---|---|
 | [x] | G01 Planning API DB Contract | Done | 2026-07-23 | 문서 계약과 현재 코드 사실을 대조하고, G02~G05 착수 blocking 질문이 없음을 확인한다. | G01 `rg ...` 검색, `git diff --check` 통과 | API spec token encryption missing-key 계약 보정 |
-| [x] | G02 Backend DB Google Connection | Done | 2026-07-23 | DB foundation, Schedule soft delete, Trash `SCHEDULE`, connection/status/connect/callback/disconnect API가 spec과 일치한다. | `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build` 통과 | 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
 | [x] | G03 Backend Calendar List Sync | Done | 2026-07-23 | calendar list/selection/sync, Google event mapping, 기존 Schedule/Weekly API 확장이 spec과 일치한다. | `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `build`, `git diff --check` 통과 | 실제 Google provider smoke는 G05에서 수행 여부를 기록한다. |
-| [x] | G04 User Web Google Calendar UX | Done | 2026-07-23 | `/app/schedules`, `/app/settings`, detail/week/trash UX가 FE TODO와 API 계약에 맞게 연결됐다. | `typecheck`, `lint`, `build`, `playwright google-calendar-ux`, `playwright weekly-schedule-report-ux`, `git diff --check` 통과 | Vite dev server `http://localhost:5173` 확인. 실제 Google provider smoke는 G05에서 실행 여부를 기록한다. |
-| [x] | G05 QA Review Closeout | Done | 2026-07-23 | `COMMON/REVIEW-CHECKLIST.md` critical 항목과 BE/FE 검증 명령이 완료되고 문서 상태가 갱신된다. | `prisma:validate`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `test -- ownership`, `build`, FE `typecheck`, `lint`, `build`, Playwright G04/G03 통과 | 실제 Google provider smoke는 2026-08-04 사용자 확인 기준 배포 환경에서 완료 |
 
 ## 4. Goal별 체크 조건
 
 ### G01 Planning API DB Contract
 
 - [x] `COMMON/SCOPE.md`, `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`, `COMMON/ARCHITECTURE-GUARDRAILS.md`를 재확인했다.
-- [x] 현재 `Schedule`, `Trash`, `Notification`, User Web schedule/settings 구조를 확인했다.
 - [x] API path, enum, 상태명, badge 문구, error code 충돌이 없다.
 - [x] 현재 코드와 충돌하는 부분은 구현해야 할 변경으로 문서에 명시되어 있다.
 - [x] G02~G05 구현 착수를 막는 질문이 없다.
@@ -44,7 +42,6 @@
 - [x] Prisma enum/model/field/migration이 추가됐다.
 - [x] 기존 Schedule row가 `INTERNAL`로 호환된다.
 - [x] `DELETE /api/schedules/:scheduleId`가 soft delete로 바뀌었다.
-- [x] Trash `SCHEDULE` list/detail/restore가 동작한다.
 - [x] Google connect/callback/status/disconnect API가 spec과 일치한다.
 - [x] token/code/raw provider body가 log/response/test snapshot에 노출되지 않는다.
 - [x] BE 검증 명령을 실행했다.
@@ -72,7 +69,6 @@
 - [x] meeting URL 표시/수정/validation이 동작한다.
 - [x] source badge 4종 문구가 확정값과 일치한다.
 - [x] Google-origin all-day schedule이 `종일`로 표시된다.
-- [x] `/app/trash`에서 `SCHEDULE` 복구가 동작한다.
 - [x] FE 검증 명령과 desktop/mobile 수동 확인을 실행했다.
 
 ### G05 QA Review Closeout

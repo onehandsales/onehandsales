@@ -1,5 +1,7 @@
 # Backend API TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조 완료: 03 Backend/API 추가 후속 구현 없음. `GET /api/schedules/week`, `GET /api/schedules/week/export/xlsx`, Google-origin source/meeting URL, currency-aware weekly report는 실제 코드와 일치한다.
 
 상태: completed
@@ -151,7 +153,6 @@ listSchedulesForWeeklyReport(
 - distinct linked deal summary는 중복을 제거한다.
 - 다음 행동은 미완료/미삭제 가장 오래된 항목이다.
 - xlsx 응답 header와 filename이 기존 domain export와 일관된다.
-- xlsx row에 ID/private memo/meeting note body가 없다.
 - xlsx writer 실패는 안전한 500 error로 변환된다.
 
 ## 8. 구현 결과

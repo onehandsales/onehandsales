@@ -1,5 +1,7 @@
 # Source Plan Coverage
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. NEXT_BACKEND_API_BACKLOG_PLAN 반영
@@ -7,9 +9,7 @@
 | Source | 11 반영 |
 |---|---|
 | NBA-005 BusinessCard provider failure contract | G06에서 `BusinessCardScanLog.safeErrorCode/safeErrorMessage/retryable` 기반 Admin provider failure에 포함 |
-| NBA-007 Trash private memo backend response restriction | G05에서 User Trash response와 Admin Trash response 모두 private memo 원문 제외 |
 | NBA-011 MeetingNote provider Admin/internal audit 잔여 | G06에서 `AiProviderCallLog` safe 조회, G02에서 raw access/audit foundation |
-| NBA-012 Trash 7일 이후 복구 정책 | G05에서 7일 무료 복구, 만료 후 복구 문의, hard delete 금지로 반영 |
 | NBA-013 Admin 운영 UX/API | G02~G09로 분해 |
 | NBA-014 DB/Prisma migration 운영 gate | G09에서 operation check run으로 반영 |
 | 09_PRODUCT_ANALYTICS Admin dashboard 이관 | G07에서 Admin analytics overview로 반영 |
@@ -22,7 +22,6 @@
 | Trust/policy 계정 삭제/데이터 export/delete | G08 |
 | Data reliability backup/restore/장애 대응 | G09 |
 | Admin provider audit/retention | G06/G09 |
-| Trash 7일 이후 정책/private memo | G05 |
 | Admin analytics dashboard | G07 |
 | Billing/paywall/churn 연결 | 11 제외, 12 이관 |
 

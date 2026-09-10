@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-22
 
@@ -18,8 +20,6 @@
 | Memo import | Google description을 최초 import 때 한손 `Schedule.memo` 초안으로 저장 |
 | Meeting URL | Google event에서 `hangoutLink`, video conference URI, description 첫 `https://` URL, location `https://` URL 순서로 `Schedule.meetingUrl`에 저장하고 UI에서 버튼으로 표시 |
 | Reminder | Google-origin schedule도 한손 `SCHEDULE_START_REMINDER` 생성/변경/취소 흐름에 포함 |
-| Soft delete | 모든 Schedule 삭제를 hard delete에서 `deletedAt/trashExpiresAt` soft delete로 변경 |
-| Trash restore | `/api/trash`와 `/app/trash`에 `SCHEDULE` target type과 restore를 추가 |
 | Disconnect action | 연결 해제 시 `KEEP`, `HIDE`, `TRASH` 중 선택. 기본값은 `KEEP` |
 | Failure handling | revoked/invalid_grant는 `RECONNECT_REQUIRED`, transient error는 sync 실패 상태로 표시 |
 
@@ -46,8 +46,6 @@
 | 2 | 기본 캘린더만 기본 선택하고 사용자가 추가 캘린더를 고른다. |
 | 3 | Google-origin schedule도 로컬 편집을 허용한다. 로컬 편집 상태는 `Google · 로컬 수정`으로 표시한다. |
 | 4 | 일정이 지저분해지지 않도록 선택 해제/Google 삭제/연결 해제 schedule은 기본 화면에서 숨기고 필터로만 본다. |
-| 5 | 연결 해제 기본 동작은 가져온 일정을 유지하는 것이다. 사용자는 숨김/휴지통 이동 선택지도 받는다. |
-| 6 | 삭제는 진짜 삭제가 아니라 soft delete/Trash다. |
 | 7 | Badge 문구는 `Google`, `Google · 연결 끊김`, `Google · 로컬 수정`, `Google · 로컬 삭제`로 간결하게 둔다. |
 | 8 | Google description은 최초 import 시 한손 `Schedule.memo`에 연결한다. 이후 sync는 memo를 덮어쓰지 않는다. |
 | 9 | 딜 연결은 자동 매칭하지 않고 사용자가 직접 연결한다. |
@@ -72,9 +70,6 @@
 - 선택된 calendar만 sync한다.
 - calendar 선택 해제 시 해당 source의 schedule은 default schedule list/week report/home upcoming에서 제외한다.
 - Google event가 cancelled/deleted면 schedule row를 물리 삭제하지 않고 `GOOGLE_DELETED` 상태로 보존한다.
-- 사용자가 Google-origin schedule을 삭제하면 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 채우고 reminder를 취소한다.
-- `trashExpiresAt`은 `createTrashRetentionTimestamps(now)` 기준이며 현재 `now+7일`이다.
-- Trash에서 Google-origin schedule을 복구하면 `LOCAL_MODIFIED` 상태로 복구하고 reminder를 다시 계산한다.
 - `SYNCED` 상태 schedule만 Google 변경으로 title/time/location/meetingUrl/isAllDay를 갱신한다.
 - `LOCAL_MODIFIED` schedule은 Google sync가 로컬 title/time/location/meetingUrl/isAllDay/memo/dealIds를 덮어쓰지 않는다.
 - Google all-day event는 `Schedule.isAllDay=true`로 저장하고 list/detail/week에서 `종일`로 표시한다.
@@ -91,7 +86,6 @@
 - `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`와 구현이 일치한다.
 - Google connection/status/list/sync/disconnect API가 있다.
 - 기존 schedule create/update/list/delete API가 확장 계약과 일치한다.
-- Schedule soft delete와 Trash restore가 동작한다.
 - Google-origin schedule badge와 hidden/filtered state가 FE에 표시된다.
 - Google-origin schedule도 onehand schedule reminder가 생성/변경/취소된다.
 - 자동 테스트와 build/typecheck/lint가 통과하고, 실제 Google provider smoke도 2026-08-04 사용자 확인 기준 배포 환경에서 완료됐다.

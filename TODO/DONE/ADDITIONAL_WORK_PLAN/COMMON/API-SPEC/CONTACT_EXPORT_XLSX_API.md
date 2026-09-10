@@ -1,5 +1,7 @@
 # Contact Export XLSX API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 담당자 목록 페이지의 내보내기 버튼에서 사용할 xlsx 다운로드 API 계약을 정의한다.
@@ -92,7 +94,6 @@ FE는 담당자 목록 화면의 현재 검색어와 필터 query를 전달하�
 - `ContactJobGrade.id`
 - 내부 userId
 - 메모 원문
-- 개인 비밀 메모 원문 또는 암호문
 
 ## 6. 필터링 예시
 
@@ -187,7 +188,6 @@ GET /api/contacts/export/xlsx
 - event key: `contact.exported`
 - audit log: 없음
 - request id: 사용
-- redaction: 담당자명, 핸드폰번호, 이메일, 메모 원문, 개인 비밀 메모 원문 logging 금지
 - log context 권장값: `userId`, `filterKeys`, `rowCount`
 
 ## 11. Error

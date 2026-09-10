@@ -92,7 +92,7 @@ Backend 구체화 검토:
 - 비즈니스 규칙은 domain/application 기준으로 설명되고, controller는 application service를 호출하는 얇은 계층으로 남는가?
 - repository interface, port, adapter 경계가 드러나며 Prisma는 infrastructure 전용으로 제한되는가?
 - User API와 관리자 권한 확인 API가 `/api/*`, `GET /admin/api/me` 경로와 guard 기준으로 분리되는가?
-- 사용자 소유권, `userId` 필터, soft delete, restore, 민감정보 masking이 API와 DB 스키마에 반영되는가?
+- 사용자 소유권, `userId` 필터, 제거/보존 정책, 민감정보 masking이 API와 DB 스키마에 반영되는가?
 - 여러 테이블을 함께 쓰는 use case에 transaction 기준이 명시되는가?
 - transaction 필요 여부가 `필요`, `없음`, `보류` 중 하나로 API 계약에 적혀 있는가?
 - transaction model, rollback 범위, 외부 Provider 호출 위치가 명시되는가?
@@ -187,7 +187,7 @@ Frontend 남은 작업 확인:
 
 - FE 화면 요구와 BE API 명세가 일부 맞지 않는다.
 - API response에 화면에서 필요한 필드가 빠져 있다.
-- DB 인덱스, 상태값, soft delete 같은 운영 기준이 빠져 있다.
+- DB 인덱스, 상태값, 제거/보존 같은 운영 기준이 빠져 있다.
 - 예외 흐름과 에러 메시지 정책이 부족하다.
 - 우선순위 순서가 의존성과 맞지 않는다.
 
@@ -273,7 +273,7 @@ TODO 계획 문서는 추가로 아래 항목을 확인한다.
 - 도메인별 책임이 명확히 분리되어 있는가?
 - User API와 관리자 권한 확인 API가 경로와 권한 기준으로 분리되어 있는가?
 - 사용자별 데이터 소유권 검증이 모든 User API에 반영됐는가?
-- soft delete, restore, hard delete 정책이 문서화되어 있는가?
+- 제거, 보존, 되돌림 정책이 문서화되어 있는가?
 - 외부 Provider는 port/interface와 adapter 뒤에 숨겨져 있는가?
 - 비즈니스 로직이 controller에 몰리지 않도록 application service 기준이 있는가?
 - transaction이 필요한 흐름이 식별되어 있는가?
@@ -310,7 +310,7 @@ API 명세는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`와
 - 목록 API에는 pagination, filtering, sorting 기준이 있는가?
 - 상세 API에는 관련 엔티티 포함 범위가 명확한가?
 - 생성/수정 API의 validation 기준이 DB 제약과 맞는가?
-- 삭제 API는 soft delete 또는 hard delete 정책과 맞는가?
+- 삭제 API는 제거 방식과 보존 정책에 맞는가?
 - 실패 케이스가 HTTP status, error code, message 기준으로 정의되어 있는가?
 - API가 연결된 DB 모델과 필드를 명시하는가?
 - API 계약 상태가 구현 전 최소 `confirmed`인가?
@@ -326,7 +326,7 @@ DB 스키마 문서는 아래 항목을 확인한다.
 - enum 또는 상태값의 의미가 설명되어 있는가?
 - 관계와 cardinality가 명확한가?
 - User ownership 기준 필드가 필요한 테이블에 있는가?
-- soft delete가 필요한 테이블에 `deletedAt` 기준이 있는가?
+- 제거 상태 관리가 필요한 테이블에 `deletedAt` 기준이 있는가?
 - 부수 로그/이력이 필요한 위험 행동이 식별되어 있는가?
 - 민감정보 필드와 마스킹 대상이 구분되어 있는가?
 - unique, index, foreign key, cascade 정책이 설명되어 있는가?

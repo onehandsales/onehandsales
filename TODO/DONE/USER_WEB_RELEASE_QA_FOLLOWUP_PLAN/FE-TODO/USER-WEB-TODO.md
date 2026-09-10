@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 `FE/user-web`의 모바일 브라우저 QA, Chrome/Edge 호환 QA, e2e 환경 복구, S0/S1/S2 bugfix를 바로 실행 가능한 작업으로 정리한다.
@@ -27,7 +29,6 @@
 - [x] Edge 360px project 추가 또는 Edge 부재 `Blocked` 처리
 - [x] `test:e2e:mobile` script 추가
 - [x] `/app` 홈, mobile header, bottom navigation 확인
-- [x] 회사/담당자/제품/딜/일정/회의록/명함/Import/Trash route 이동 확인
 - [x] dialog/dropdown/toast viewport 이탈 여부 확인
 - [x] page-level horizontal overflow 확인
 - [x] 결과를 `COMMON/QA-RESULTS.md`와 `COMMON/ISSUE-LOG.md`에 기록

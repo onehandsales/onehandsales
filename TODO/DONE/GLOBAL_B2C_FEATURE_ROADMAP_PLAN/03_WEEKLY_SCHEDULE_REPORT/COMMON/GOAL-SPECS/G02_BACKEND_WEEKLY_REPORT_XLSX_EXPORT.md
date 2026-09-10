@@ -1,5 +1,7 @@
 # G02 Backend Weekly Report Xlsx Export
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 
 ## 1. 목적
@@ -96,7 +98,6 @@ Excel에 넣지 않는다.
 - contact ID
 - company ID
 - 일정 메모 본문
-- private memo
 - meeting note body
 - provider raw response
 - deleted deal
@@ -144,7 +145,6 @@ pnpm run build
 - xlsx response header가 기존 domain export와 일관된다.
 - 파일명이 `weekly_schedules_YYYYMMDD_HHMMSS.xlsx` 형태다.
 - 일정 없는 주도 7개 날짜 row가 생성된다.
-- xlsx row에 ID/private memo/meeting note body가 없다.
 - Excel writer 실패는 `ScheduleWeekReportExportFailed`로 변환된다.
 - Excel row 내용이 structured log에 남지 않는다.
 - 새 DB 구조와 migration이 생기지 않았다.

@@ -1,5 +1,7 @@
 # G04 QA Review Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조 완료: 03 추가 후속 구현 없음. 정본 재대조 기록은 `../FINAL-SERVICE-FOLLOWUP-AUDIT.md`다.
 
 상태: Done
@@ -59,7 +61,6 @@
 8. 다른 사용자 일정/딜 -> response에 섞이지 않음 확인
 9. 일정 메모 있는 일정 -> hasMemo만 표시되고 본문 미노출 확인
 10. Excel 다운로드 -> 파일명/header/row 확인
-11. Excel row -> ID/private memo/meeting note body 미포함 확인
 12. `/app/schedules/week` 모바일 390px/360px 확인
 13. `/app/schedules` 진입 버튼 -> 주간 보고서 이동 확인
 14. 새 Prisma model/table/column/index/migration 없음 확인
@@ -99,7 +100,6 @@ pnpm run test:e2e
 - 핵심 수동 QA가 통과한다.
 - `GET /api/schedules/week`와 xlsx export가 API spec과 일치한다.
 - cross-user 데이터가 response/export에 섞이지 않는다.
-- 일정 메모 본문, private memo, meeting note body가 response/export/log에 노출되지 않는다.
 - `/app/export`, `/api/exports`, PDF, 반복 일정이 03 구현에 섞이지 않았다.
 - 새 DB 구조와 migration이 생기지 않았다.
 - DB 관련 구현 또는 문서 변경에는 한글 주석이 있다.

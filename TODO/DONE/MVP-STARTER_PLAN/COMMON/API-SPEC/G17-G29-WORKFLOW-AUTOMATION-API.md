@@ -1,8 +1,9 @@
 # G17-G29 업무 흐름/자동화 API 명세
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
-이 문서는 일정, 회의록, 명함 OCR, Import/Export, 알림, 휴지통, 통합검색 API 계약을 정의한다.
 
 이 범위의 API는 MVP 핵심 루프를 확장하며, Google Calendar, OCR, OpenAI, Notification email/browser push는 MVP 기능에서 처음부터 실제 provider adapter를 호출한다. 자동 테스트에서는 같은 port 뒤의 stub/mock adapter를 사용할 수 있다.
 
@@ -22,7 +23,6 @@
 - G23-G24. Import Backend/User Web
 - G25-G26. Export Backend/User Web
 - G27. Notification 기본 흐름
-- G28. Trash 기본 흐름
 - G29. 통합검색 기본 흐름
 
 구현 시 API별 request 필드, 비즈니스 로직 흐름, response 필드, 연결 DB, adapter, transaction, 에러 기준은 `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/G17-G29-ENDPOINT-CONTRACT.md`를 상세 계약 정본으로 본다.
@@ -212,7 +212,6 @@
 - transaction: Import 확정 실행 시 target 도메인 insert/update는 단일 transaction, 실패 row 기록은 rollback 이후 별도 상태 갱신
 - 에러: `InvalidImportFile` 400, `ImportMappingRequired` 409, `ImportValidationFailed` 409, `ImportExecutionFailed` 409, `SensitiveExportConfirmationRequired` 400
 
-## 7. Notification, Trash, Search API
 
 | API 이름 | API 식별자 | Method | Path | Request 이름 | Response 이름 | 연결 DB |
 |---|---|---|---|---|---|---|
@@ -222,12 +221,8 @@
 | Browser Push public key API | `GetBrowserPushPublicKey` | `GET` | `/api/notifications/browser-push/public-key` | `GetBrowserPushPublicKeyRequest` | `BrowserPushPublicKeyResponse` | 없음 |
 | Browser Push 구독 등록 API | `CreateBrowserPushSubscription` | `POST` | `/api/notifications/browser-subscriptions` | `CreateBrowserPushSubscriptionRequest` | `BrowserPushSubscriptionResponse` | BrowserPushSubscription |
 | Browser Push 구독 해제 API | `RevokeBrowserPushSubscription` | `DELETE` | `/api/notifications/browser-subscriptions/:subscriptionId` | `RevokeBrowserPushSubscriptionRequest` | `BrowserPushSubscriptionResponse` | BrowserPushSubscription |
-| 휴지통 목록 API | `ListTrash` | `GET` | `/api/trash` | `ListTrashRequest` | `TrashListResponse` | 모든 deletedAt 삭제 대상 모델 |
-| 휴지통 복구 API | `RestoreTrashItem` | `POST` | `/api/trash/:targetType/:targetId/restore` | `RestoreTrashItemRequest` | `TrashRestoreResponse` | 모든 deletedAt 삭제 대상 모델 |
-| 완전 삭제 차단 API | `PermanentlyDeleteTrashItem` | `DELETE` | `/api/trash/:targetType/:targetId/permanent` | `PermanentlyDeleteTrashItemRequest` | `PermanentDeleteNotAllowed` | 없음. MVP 1차 사용자 즉시 완전 삭제는 차단 |
 | 통합검색 API | `SearchAll` | `GET` | `/api/search` | `SearchAllRequest` | `SearchAllResponse` | Company, Contact, Product, Deal, Schedule, MeetingNote |
 
-### Notification/Trash/Search request/response
 
 | Request 이름 | 필드 |
 |---|---|
@@ -235,7 +230,6 @@
 | `UpdateNotificationSettingsRequest` | `defaultReminderMinutes?:number`, `emailNotificationEnabled?:boolean`, `browserPushEnabled?:boolean` |
 | `CreateBrowserPushSubscriptionRequest` | `endpoint:string 필수`, `keys.p256dh:string 필수`, `keys.auth:string 필수`, `userAgent?:string`, `deviceLabel?:string` |
 | `RevokeBrowserPushSubscriptionRequest` | `subscriptionId:string path 필수` |
-| `ListTrashRequest` | `targetType?:enum`, `page?:number`, `pageSize?:number` |
 | `SearchAllRequest` | `q:string 필수`, `types?:(COMPANY|CONTACT|PRODUCT|DEAL|SCHEDULE|MEETING_NOTE)[]`, `limit?:number`. `limit`은 type별 limit이며 기본값은 5 |
 
 | Response 이름 | 주요 필드 |
@@ -243,17 +237,14 @@
 | `NotificationResponse` | `id`, `type`, `channel`, `status`, `title`, `body`, `scheduledAt`, `readAt`, `targetType`, `targetId` |
 | `BrowserPushPublicKeyResponse` | `publicKey` |
 | `BrowserPushSubscriptionResponse` | `id`, `status`, `deviceLabel`, `createdAt`, `revokedAt` |
-| `TrashListResponse` | `items[]`, `items[].targetType`, `items[].targetId`, `items[].title`, `items[].deletedAt`, `items[].permanentDeleteAt` |
 | `SearchAllResponse` | `groups[]`, `groups[].type`, `groups[].items[]`, `groups[].items[].title`, `groups[].items[].subtitle`, `groups[].items[].targetId`, `groups[].items[].targetPath?` |
 
-### Notification/Trash/Search 비즈니스 로직과 DB
 
 1. 알림은 일정 시작 전, 딜 마감일, 다음 행동, 회의록 생성 완료를 대상으로 생성한다.
 2. email 알림은 `EmailDeliveryPort` 뒤의 실제 SMTP adapter로 발송한다.
 3. browser push 알림은 `BrowserPushPort` 뒤의 실제 Web Push VAPID adapter로 발송한다.
 4. 자동 테스트와 장애 재현에서는 같은 port 뒤에 stub/mock adapter를 주입할 수 있다.
 5. browser push subscription endpoint/key는 민감 가능 데이터이므로 `BrowserPushSubscription`에 endpoint hash와 암호화 ciphertext로 저장한다.
-6. 휴지통은 모든 deletedAt 삭제 대상 모델의 데이터를 모아 보여준다. 회사/담당자/제품/딜/일정/회의록 같은 주요 엔티티를 우선 노출하되, Memo, Log, 제품 연결 리소스도 targetType 필터로 조회와 복구가 가능해야 한다.
 7. 사용자 즉시 완전 삭제는 MVP 1차에서 제공하지 않고 시스템 자동 완전 삭제만 수행한다.
 8. 통합검색은 초기에는 DB `ILIKE` 기반으로 구현한다.
 9. 통합검색 기본 대상은 Company, Contact, Product, Deal, Schedule, MeetingNote다.
@@ -263,11 +254,8 @@
 13. Memo 원문, `MeetingNote.rawText`, Admin 민감 원문은 검색 결과 title/subtitle에 노출하지 않는다.
 
 - 생성: Notification, BrowserPushSubscription
-- 조회: Company, CompanyLog, Contact, ContactLog, Product, ProductLog, ProductConnection, Deal, DealActivity, Schedule, MeetingNote, PersonalMemo, Notification, BrowserPushSubscription
 - 수정: Notification, UserSetting, BrowserPushSubscription, deletedAt 복구
 - 삭제: 30일 경과 후 시스템 자동 완전 삭제 대상 모델
-- transaction: 휴지통 복구와 연결 데이터 복구 정책에 따라 필요
-- 에러: `NotificationNotFound` 404, `TrashItemNotFound` 404, `SearchQueryRequired` 400, `PermanentDeleteNotAllowed` 409
 
 ## 8. 관련 문서
 

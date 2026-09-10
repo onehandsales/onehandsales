@@ -4,7 +4,7 @@
 
 2026-09-10 기준 현재 활성 코드와 schema에는 Product 도메인이 없다.
 
-- `BE/prisma/schema.prisma`에 `Product`, `ProductCategory`, `ProductStatus`, `ProductMemoLog`, `ProductUserPrivateMemoLog` 모델이 없다.
+- `BE/prisma/schema.prisma`에 Product 계열 모델이 없다.
 - `BE/src/modules/product`에는 런타임 TypeScript 코드가 없고 `AppModule`에 연결되어 있지 않다.
 - `FE/user-web`의 `/app/products/*` route는 `/app`으로 redirect한다.
 

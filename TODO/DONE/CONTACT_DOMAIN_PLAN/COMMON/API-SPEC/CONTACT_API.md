@@ -1,5 +1,7 @@
 # Contact API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 공통 규칙
 
 - 이 API 계약은 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
@@ -11,8 +13,6 @@
 - 권한: 로그인한 사용자 본인 데이터만 접근 가능
 - 날짜 형식: ISO 8601 string
 - 담당자 목록 페이지 크기: 10개 고정
-- 담당자 일반 메모 로그 페이지 크기: 10개 고정
-- 담당자 개인 비밀 메모 로그 페이지 크기: 10개 고정
 - 담당자 목록 검색: `username` 부분 검색만 제공
 - 담당자 목록 필터: `companyId`, `contactDepartmentId`, `contactDepartmentIds`, `contactJobGradeId`
 - 담당자 목록 정렬: `createdAtDesc`, `usernameAsc`
@@ -20,7 +20,6 @@
 - 담당자 필터용 회사/직급/부서 전체 조회 응답: `createdAt` 제외
 - 상태값만 반환하는 API: response body 없음
 - 담당자 핸드폰번호 형식: `010-1111-2222`
-- 담당자 개인 비밀 메모: API에서는 `memo`를 사용하지만 DB에는 평문 저장 금지
 
 ## 2. API 목록
 
@@ -35,12 +34,6 @@
 9. 담당자 단건 생성 API: `POST /api/contacts`
 10. 담당자 단건 조회 API: `GET /api/contacts/:contactId`
 11. 담당자 기본 정보 수정 API: `PATCH /api/contacts/:contactId`
-12. 담당자 일반 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/memo-logs`
-13. 담당자 일반 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/memo-logs`
-14. 담당자 일반 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
-15. 담당자 개인 비밀 메모 로그 단건 생성 API: `POST /api/contacts/:contactId/private-memo-logs`
-16. 담당자 개인 비밀 메모 로그 무한스크롤 API: `GET /api/contacts/:contactId/private-memo-logs`
-17. 담당자 개인 비밀 메모 로그 단건 수정 API: `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
 18. 담당자 목록 xlsx 내보내기 API: `GET /api/contacts/export/xlsx`
 
 ## 2.1. API 계약 상태 요약
@@ -58,15 +51,8 @@
 | `GET /api/contact-departments` | implemented | 없음 | `contactDepartment.listed`, audit log 없음, request id 사용 |
 | `POST /api/contact-departments` | implemented | 없음 | `contactDepartment.created`, audit log 없음, request id 사용 |
 | `DELETE /api/contact-departments/:departmentId` | implemented | 없음 | `contactDepartment.deleted`, audit log 없음, request id 사용 |
-| `POST /api/contacts` | implemented | 필요. `Contact`와 조건부 `ContactMemoLog` | `contact.created`, audit log 없음, request id 사용, `contactMemo`, `mobile`, `email` redaction |
 | `GET /api/contacts/:contactId` | implemented | 없음 | `contact.viewed`, audit log 없음, request id 사용, `mobile`, `email` 원문 logging 금지 |
 | `PATCH /api/contacts/:contactId` | implemented | 없음 | `contact.updated`, audit log 없음, request id 사용, `mobile`, `email` redaction |
-| `POST /api/contacts/:contactId/memo-logs` | implemented | 없음 | `contactMemoLog.created`, audit log 없음, request id 사용, `memo` redaction |
-| `GET /api/contacts/:contactId/memo-logs` | implemented | 없음 | `contactMemoLog.listed`, audit log 없음, request id 사용, `memo` redaction |
-| `PATCH /api/contacts/:contactId/memo-logs/:memoLogId` | implemented | 없음 | `contactMemoLog.updated`, audit log 없음, request id 사용, `memo` redaction |
-| `POST /api/contacts/:contactId/private-memo-logs` | implemented | 없음 | `contactPrivateMemoLog.created`, audit log 없음, request id 사용, private memo redaction |
-| `GET /api/contacts/:contactId/private-memo-logs` | implemented | 없음 | `contactPrivateMemoLog.listed`, audit log 없음, request id 사용, private memo redaction |
-| `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId` | implemented | 없음 | `contactPrivateMemoLog.updated`, audit log 없음, request id 사용, private memo redaction |
 
 ## 3. 공통 응답 DTO
 
@@ -109,7 +95,6 @@
 - query: `username`, `companyId`, `contactDepartmentId`, `contactDepartmentIds`, `contactJobGradeId`, `sort`
 - `page`는 받지 않는다. 검색어, 필터, 정렬 조건에 맞는 전체 담당자를 export한다.
 - xlsx 컬럼: `회사명`, `담당자명`, `핸드폰번호`, `이메일`, `부서`, `직급`, `등록일`
-- 제외 필드: 담당자 ID, 회사 ID, 부서 ID, 직급 ID, userId, memo/private memo
 
 ## 4. 관련 문서
 
@@ -126,8 +111,4 @@
 - 소비자: User Web
 - 호환성: 현재 `ContactController`, `ContactJobGradeController`, `ContactDepartmentController`와 User Web `contact-api.ts`의 `/api/contacts`, `/api/contact-job-grades`, `/api/contact-departments` 계약을 유지한다. breaking change 없음
 - 인증: User `AuthGuard`
-- 권한: 현재 로그인한 사용자 본인 데이터와 본인 소유 회사/부서/직급/메모 로그만 접근한다.
-- Request 이름/Response 이름: 상세 문서의 `ListContactsQueryDto`, `CreateContactDto`, `UpdateContactDto`, `ContactPageResponse`, `ContactDetailResponse`, `ContactMemoLogConnection`, `EmptyResponse` 기준을 따른다.
-- Transaction: 상세 문서 기준. 담당자 생성과 초기 `ContactMemoLog`가 함께 생성되는 경우만 필요하고 조회/단일 row 수정은 없음
-- Observability: 상세 문서 기준. `contact.*`, `contactJobGrade.*`, `contactDepartment.*`, `contactMemoLog.*`, `contactPrivateMemoLog.*` event와 redaction 정책 유지
 - FE/BE 처리 기준: User Web은 `contact-api.ts` client와 query invalidation 기준을 따른다. BE는 controller에서 DTO validation 후 application service로 위임한다.

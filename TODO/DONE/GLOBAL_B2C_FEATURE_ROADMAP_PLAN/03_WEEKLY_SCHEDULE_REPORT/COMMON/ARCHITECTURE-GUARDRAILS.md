@@ -1,5 +1,7 @@
 # Architecture Guardrails
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 최종 업데이트: 2026-07-22
 
@@ -15,7 +17,6 @@
 - 새 migration 없음
 - seed 실행 없음
 
-주간 보고서는 기존 `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog`, `User` 데이터를 조회해 runtime에서 계산한다.
 
 ## 2. 정본 기준
 
@@ -80,7 +81,6 @@ Global B2C 제품화 판단은 아래 문서를 함께 따른다.
 - 새 내부 method/function에는 한국어 `// 기능 : ...` 주석을 붙인다.
 - controller와 application orchestration에는 필요한 경우 `// 1. ...`, `// 2. ...` 단계 주석을 둔다.
 - structured log event key는 짧은 영어를 사용하되, PII/private data는 남기지 않는다.
-- 일정 제목, 장소, 메모 본문, 딜명, 딜 금액, 회사명, 담당자명, 다음 행동 본문, Excel row 전체는 log에 남기지 않는다.
 
 ## 5. DB 관련 주석 규칙
 

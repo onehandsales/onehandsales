@@ -1,5 +1,7 @@
 # User Web Release QA Follow-up Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 작성일: 2026-07-20
 완료일: 2026-07-20
@@ -28,7 +30,6 @@
 - 모바일 브라우저 Web 기준 390px/360px QA
 - Chrome/Edge 브라우저 호환 QA
 - User Web 핵심 화면의 reload, history, slow network, multi-tab smoke
-- Search, Trash, Export, 직접 URL/API 접근의 다중 계정 데이터 격리 QA
 - Prisma generate, migration status, seed 정책, 로컬 DB 실행 상태 점검
 - 발견된 S0/S1/S2 bug 우선 수정
 - UX/UI 공통 QA에서 분리된 BE/API 후보를 별도 계획 후보로 문서화

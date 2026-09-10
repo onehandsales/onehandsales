@@ -1,5 +1,7 @@
 # User Web UX/UI Common QA Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 작성일: 2026-07-18
 목적: 1순위 작업인 `UX/UI 공통 QA`를 바로 `/goal`로 실행할 수 있게 작업 단위로 쪼갠다.
@@ -56,7 +58,6 @@
 7. `/app/meeting-notes`
 8. `/app/business-cards`
 9. `/app/import`
-10. `/app/trash`
 11. `/app/settings`
 12. `/app/more`
 
@@ -83,7 +84,6 @@
 | 2 | `COMMON/GOAL-SPECS/G02-HOME-AND-APP-SHELL-UX.goal.md` | `/app` 홈, AppShell, navigation, topbar, quick action을 정리한다. |
 | 3 | `COMMON/GOAL-SPECS/G03-DEAL-PIPELINE-UX.goal.md` | `/app/deals` 파이프라인, 목록, 상세 패널, 다음 행동 가시성을 정리한다. |
 | 4 | `COMMON/GOAL-SPECS/G04-DOMAIN-LIST-DETAIL-CREATE-UX.goal.md` | 회사/담당자/제품의 목록, 상세, 생성/수정 UX를 정리한다. |
-| 5 | `COMMON/GOAL-SPECS/G05-COMPLEX-FLOW-UX.goal.md` | 일정, 회의록, 명함 스캔, Import, Trash의 복잡한 상태 UX를 정리한다. |
 | 6 | `COMMON/GOAL-SPECS/G06-UX-WRITING-STATES-A11Y-CLOSEOUT.goal.md` | UX writing, 상태, 접근성 기본, 최종 검증을 닫는다. |
 
 2026-07-18 기준 G01~G06은 모두 완료됐다. 모바일 브라우저 390px/360px 전용 QA와 Chrome/Edge 호환 QA는 `TODO/DONE/USER_WEB_RELEASE_QA_FOLLOWUP_PLAN`에서 별도 후속 계획으로 다룬다.

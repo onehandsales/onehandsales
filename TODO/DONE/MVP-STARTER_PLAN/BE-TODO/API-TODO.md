@@ -1,5 +1,7 @@
 # Backend API 구현 TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 Backend 구현 작업을 모듈과 API 기준으로 나눈다.
@@ -192,37 +194,33 @@ BE/
 
 ### 책임
 
-- 회사 CRUD
-- 회사 로그
-- 휴지통 이동과 복구
+- 회사 목록, 상세, 생성, 수정
+- 회사 분야/지역 옵션 목록, 생성, 삭제
+- 회사 목록 xlsx 내보내기
 
 ### User API
 
 | Method | Path | 설명 |
 |---|---|---|
 | `GET` | `/api/companies` | 회사 목록 |
+| `GET` | `/api/companies/export/xlsx` | 회사 목록 xlsx 내보내기 |
 | `POST` | `/api/companies` | 회사 생성 |
 | `GET` | `/api/companies/:companyId` | 회사 상세 |
 | `PATCH` | `/api/companies/:companyId` | 회사 수정 |
-| `DELETE` | `/api/companies/:companyId` | 회사 휴지통 이동 |
-| `POST` | `/api/companies/:companyId/restore` | 회사 복구 |
-| `GET` | `/api/companies/:companyId/logs` | 회사 로그 목록 |
-| `POST` | `/api/companies/:companyId/logs` | 회사 로그 생성 |
-| `PATCH` | `/api/companies/:companyId/logs/:logId` | 회사 로그 수정 |
-| `DELETE` | `/api/companies/:companyId/logs/:logId` | 회사 로그 삭제 |
+| `GET` | `/api/company-fields` | 회사 분야 목록 |
+| `POST` | `/api/company-fields` | 회사 분야 생성 |
+| `DELETE` | `/api/company-fields/:fieldId` | 사용 중이지 않은 회사 분야 삭제 |
+| `GET` | `/api/company-regions` | 회사 지역 목록 |
+| `POST` | `/api/company-regions` | 회사 지역 생성 |
+| `DELETE` | `/api/company-regions/:regionId` | 사용 중이지 않은 회사 지역 삭제 |
 
 ### Admin API
 
-| Method | Path | 설명 |
-|---|---|---|
-| `GET` | `/admin/api/companies` | 전체 회사 목록 |
-| `GET` | `/admin/api/companies/:companyId` | 회사 상세 |
-| `GET` | `/admin/api/users/:userId/companies` | 특정 사용자 회사 목록 |
+현재 Company 전용 Admin API는 제공하지 않는다.
 
 ### 완료 기준
 
 - 회사 데이터는 사용자별로 분리된다.
-- 회사 삭제는 soft delete다.
 
 ## 6.5 Memo 모듈
 
@@ -231,7 +229,6 @@ BE/
 - 회사/담당자/제품/딜 Memo 기록 CRUD
 - 대상 도메인 ownership 검증
 - Memo 원문 암호화 저장
-- 휴지통 이동과 복구 정책 적용
 
 ### User API
 
@@ -240,13 +237,10 @@ BE/
 | `GET` | `/api/memos` | 대상별 Memo 목록 |
 | `POST` | `/api/memos` | Memo 생성 |
 | `PATCH` | `/api/memos/:memoId` | Memo 수정 |
-| `DELETE` | `/api/memos/:memoId` | Memo 휴지통 이동 |
 
 ### 완료 기준
 
 - `targetType`은 `COMPANY`, `CONTACT`, `PRODUCT`, `DEAL`만 허용한다.
-- Memo 원문은 `PersonalMemo.contentCiphertext`로 암호화 저장된다.
-- 목록/요약 API는 원문 대신 `hasMemo`, `memoCount`, `latestMemoAt`을 사용할 수 있다.
 
 ## 7. Contact 모듈
 
@@ -257,7 +251,6 @@ BE/
 - 담당자 Log
 - Memo 기록
 - 명함 OCR 저장 결과 반영
-- 휴지통 이동과 복구
 
 ### User API
 
@@ -267,7 +260,6 @@ BE/
 | `POST` | `/api/contacts` | 담당자 생성 |
 | `GET` | `/api/contacts/:contactId` | 담당자 상세 |
 | `PATCH` | `/api/contacts/:contactId` | 담당자 수정 |
-| `DELETE` | `/api/contacts/:contactId` | 담당자 휴지통 이동 |
 | `POST` | `/api/contacts/:contactId/restore` | 담당자 복구 |
 | `GET` | `/api/contacts/:contactId/logs` | 담당자 Log 목록 |
 | `POST` | `/api/contacts/:contactId/logs` | 담당자 Log 생성 |
@@ -287,7 +279,6 @@ BE/
 - 담당자는 회사에 연결될 수 있고, 회사 없이도 예외적으로 저장 가능하다.
 - 담당자 Log는 객관 기록이고, Memo 기록과 분리된다.
 - Admin 목록에서는 전화번호와 이메일이 기본 마스킹된다.
-- Memo 원문은 `PersonalMemo.contentCiphertext`로 암호화 저장된다.
 
 ## 8. Product 모듈
 
@@ -308,7 +299,6 @@ BE/
 | `POST` | `/api/products` | 제품 생성 |
 | `GET` | `/api/products/:productId` | 제품 상세 |
 | `PATCH` | `/api/products/:productId` | 제품 수정 |
-| `DELETE` | `/api/products/:productId` | 제품 휴지통 이동 |
 | `POST` | `/api/products/:productId/restore` | 제품 복구 |
 | `POST` | `/api/products/:productId/connections` | 제품 연결 생성 |
 | `DELETE` | `/api/products/:productId/connections/:connectionId` | 제품 연결 삭제 |
@@ -341,7 +331,6 @@ BE/
 - 다음 행동
 - 제품 연결
 - 딜 활동 로그
-- 휴지통 이동과 복구
 
 ### User API
 
@@ -355,7 +344,6 @@ BE/
 | `PATCH` | `/api/deals/:dealId/next-action` | 다음 행동 수정 |
 | `POST` | `/api/deals/:dealId/next-action/complete` | 다음 행동 완료 |
 | `POST` | `/api/deals/:dealId/next-action/snooze` | 다음 행동 미루기 |
-| `DELETE` | `/api/deals/:dealId` | 딜 휴지통 이동 |
 | `POST` | `/api/deals/:dealId/restore` | 딜 복구 |
 | `GET` | `/api/deals/:dealId/activities` | 활동 로그 목록 |
 | `POST` | `/api/deals/:dealId/activities` | 활동 로그 생성 |
@@ -397,7 +385,6 @@ BE/
 | `POST` | `/api/schedules` | 일정 생성 |
 | `GET` | `/api/schedules/:scheduleId` | 일정 상세 |
 | `PATCH` | `/api/schedules/:scheduleId` | 일정 수정 |
-| `DELETE` | `/api/schedules/:scheduleId` | 일정 휴지통 이동 |
 | `POST` | `/api/schedules/:scheduleId/restore` | 일정 복구 |
 | `GET` | `/api/schedules/week` | 주간 보고서 조회 |
 | `POST` | `/api/schedules/week/export` | 주간 일정 보고서 Export 생성 |
@@ -432,7 +419,6 @@ BE/
 | `GET` | `/api/meeting-notes/:meetingNoteId` | 회의록 상세 |
 | `PATCH` | `/api/meeting-notes/:meetingNoteId` | 회의록 수정 |
 | `POST` | `/api/meeting-notes/:meetingNoteId/link-deal` | 딜 연결 |
-| `DELETE` | `/api/meeting-notes/:meetingNoteId` | 회의록 휴지통 이동 |
 | `POST` | `/api/meeting-notes/:meetingNoteId/restore` | 회의록 복구 |
 
 ### Admin API
@@ -551,24 +537,6 @@ BE/
 - browser push 알림은 Web Push VAPID adapter로 실제 발송된다.
 - 자동 테스트에서는 email/browser push stub adapter를 사용할 수 있다.
 
-## 15. Trash 모듈
-
-### User API
-
-| Method | Path | 설명 |
-|---|---|---|
-| `GET` | `/api/trash` | 휴지통 목록 |
-| `POST` | `/api/trash/:targetType/:targetId/restore` | 복구 |
-| `DELETE` | `/api/trash/:targetType/:targetId/permanent` | MVP 1차에서는 사용자 즉시 완전 삭제를 막고 `PermanentDeleteNotAllowed` 반환 |
-
-### 완료 기준
-
-- 삭제된 모든 soft delete 대상 데이터는 30일 보관된다.
-- soft delete 시 `deletedAt`과 `permanentDeleteAt`이 함께 기록된다.
-- 30일 경과 데이터는 시스템 자동 작업으로 완전 삭제될 수 있다.
-- 사용자 즉시 완전 삭제는 MVP 1차에서 허용하지 않는다.
-- 완전 삭제 7일 전 알림을 준비할 수 있다.
-
 ## 16. Admin 모듈
 
 ### 책임
@@ -613,7 +581,6 @@ BE/
 - deal stage change with activity log
 - meeting note link with deal activity
 - sensitive raw view with audit log
-- trash restore
 
 ### 완료 기준
 
@@ -627,6 +594,3 @@ BE/
 - `TODO/DONE/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/ARCHITECTURE/BACKEND.md`
-
-
-

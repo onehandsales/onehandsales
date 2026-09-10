@@ -1,8 +1,9 @@
 # Admin Web / User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / G04 Closeout Confirmed
 
-주의: 이 파일명은 기존 구조 때문에 `USER-WEB-TODO.md`로 남아 있지만, 11의 주 작업 대상은 `FE/admin-web`이다. User Web은 Trash 복구 문의와 계정/데이터 요청 goal에서만 수정한다.
 
 ## 1. Admin Web 구현 route
 
@@ -12,8 +13,6 @@
 | G03 | `/users` | 사용자 목록 | search, status filter, country/locale filter, pagination |
 | G03 | `/users/:userId` | 사용자 상세 | summary metrics, recent activity timeline, masked profile |
 | G04 | `/users/:userId/domain` | 도메인 read-only 탭 | domain tabs, table, detail side panel |
-| G05 | `/users/:userId/trash` | 사용자 Trash | summary, expired list, recovery request status |
-| G05 | `/trash/recovery-requests` | 복구 문의 queue | request table, status filter |
 | G06 | `/provider-failures` | Provider failure | provider/type/status filters, safe detail |
 | G07 | `/analytics` | 운영 분석 요약 | activation, retention, core events, AI usage |
 | G08 | `/account-requests` | 계정/데이터 요청 | deletion/export queue |
@@ -45,16 +44,12 @@
 
 | Goal | Route | 변경 |
 |---|---|---|
-| G05 | `/app/trash` | 무료 복구 만료 row는 복구 버튼 비활성화, `복구 문의` 표시 |
-| G05 | `/app/trash` | Trash detail response에 private memo 원문이 없어도 UI가 깨지지 않게 처리 |
 | G08 | `/app/settings` | 데이터 export 요청, 계정 삭제 요청, 취소 flow |
 
 ## 5. User Web 금지
 
 - User Web에서 `/admin/api/*`를 호출하지 않는다.
-- Trash 만료 후 복구 문의에서 결제/paywall을 표시하지 않는다.
 - 계정 삭제 flow에 결제/구독 상태를 섞지 않는다.
-- private memo 원문이 없는 Trash response를 FE에서 억지로 복원하지 않는다.
 
 ## 6. 검증 후보
 

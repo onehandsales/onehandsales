@@ -39,9 +39,9 @@
 - User 1:N ErrorReport
 - User 1:N SupportRequest
 
-## 삭제 정책
+## 데이터 보존 정책
 
-- Company 삭제 API와 휴지통 복구 정책은 현재 활성 범위에서 제거되어 있다.
+- Company는 사용자용 제거/복구 API를 제공하지 않는다.
 - 현재 schema의 `deletedAt`은 User 계정 상태 필드로만 남는다.
 
 ## 지원 접수

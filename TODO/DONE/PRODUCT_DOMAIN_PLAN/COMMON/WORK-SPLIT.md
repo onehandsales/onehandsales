@@ -1,5 +1,7 @@
 # FE/BE Work Split
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 목적
 
 `PRODUCT_DOMAIN_PLAN` 안에서 FE와 BE가 같은 작업을 중복하거나 API shape를 임의로 바꾸지 않도록 책임 경계를 고정한다.
@@ -19,16 +21,11 @@
 - 제품 목록 xlsx 내보내기는 현재 검색어, 필터, 정렬 조건을 적용하고 `page`는 적용하지 않는다.
 - 제품 목록 xlsx에는 제품명, 카테고리, 상태, 딜 수, 등록일을 포함하고 ID와 제품 가격은 포함하지 않는다.
 - 제품 카테고리/상태 전체 조회 응답에는 `createdAt`을 포함하지 않는다.
-- 제품 생성 요청의 `productMemo`는 값이 있을 때만 `ProductMemoLog` 첫 데이터로 저장한다.
-- 제품 생성 요청의 `productMemo`로 만들어지는 첫 메모 로그는 `memoType`을 `초기 메모`로 저장한다.
-- 제품 일반 메모 로그 수정 API는 `memoType`, `memo` 중 최소 1개를 수정할 수 있다.
-- 제품 개인 비밀 메모는 DB에 평문으로 저장하지 않는다.
 
 ## BE 책임
 
 BE는 DB, API, 비즈니스 규칙, 보안 정책을 책임진다.
 
-- `Product`, `ProductCategory`, `ProductStatus`, `ProductMemoLog`, `ProductUserPrivateMemoLog` Prisma schema와 migration
 - 제품 목록 페이지네이션 API
 - 제품 목록 xlsx 내보내기 API
 - 제품 카테고리 전체 조회 API
@@ -38,16 +35,8 @@ BE는 DB, API, 비즈니스 규칙, 보안 정책을 책임진다.
 - 제품 기본 정보 수정 API
 - 제품 카테고리 생성/삭제 API
 - 제품 상태 생성/삭제 API
-- 제품 일반 메모 로그 단건 생성 API
-- 제품 일반 메모 로그 10개씩 무한스크롤 조회 API
-- 제품 일반 메모 로그 단건 수정 API
-- 제품 개인 비밀 메모 로그 단건 생성 API
-- 제품 개인 비밀 메모 로그 10개씩 무한스크롤 조회 API
-- 제품 개인 비밀 메모 로그 단건 수정 API
-- `productMemo`가 있는 제품 생성 요청의 transaction 처리
 - 제품 API 계약의 observability event key, request id, redaction 기준 유지
 - 제품 카테고리/상태 삭제 전 매핑 여부 검사
-- 개인 비밀 메모 암호화/복호화 처리
 - API 응답 shape와 status code 유지
 - Backend 검증: Prisma validate/generate, typecheck, lint, test, build
 
@@ -55,11 +44,9 @@ BE가 하지 않는 일:
 
 - FE 화면 구현
 - 관리자 API 추가
-- 제품 휴지통 또는 soft delete 추가
 - 제품 삭제/복구 API 추가
 - 제품 카테고리/상태 수정 API 추가
 - `ProductConnection` 구현
-- `ProductLog` 구현
 - 딜 생성 중 제품 inline creation 연동
 - 범용 Import/Export/OCR 연동
 - ExportJob 기반 비동기 내보내기
@@ -79,12 +66,6 @@ FE는 사용자 화면, 상태, API client 연결을 책임진다.
 - 제품 상태 생성/삭제 UI
 - 제품 단건 상세 화면
 - 제품명/제품가격/제품카테고리/제품상태 수정 UI
-- 제품 일반 메모 로그 생성 UI
-- 제품 일반 메모 로그 10개씩 무한스크롤 조회 UI
-- 제품 일반 메모 로그 수정 UI
-- 제품 개인 비밀 메모 로그 생성 UI
-- 제품 개인 비밀 메모 로그 10개씩 무한스크롤 조회 UI
-- 제품 개인 비밀 메모 로그 수정 UI
 - 생성/수정/삭제 API가 body 없이 성공하는 경우 필요한 목록 재조회
 
 FE가 하지 않는 일:
@@ -93,13 +74,10 @@ FE가 하지 않는 일:
 - BE 코드 수정
 - DB schema 또는 migration 작성
 - 관리자 화면 구현
-- 제품 휴지통 UI 추가
 - 제품 삭제/복구 UI 추가
 - 제품 목록에 최근 수정일 표시
 - 제품 목록에 가격 표시
-- `ProductConnection`, `ProductLog` UI 유지
 - export API에 `page`를 전달하거나 JSON 응답처럼 처리
-- 프론트엔드에서 비밀 메모 암호화 로직 직접 구현
 
 ## 실행 순서
 

@@ -1,5 +1,7 @@
 # DB Schema TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 이번 계획의 DB 변경 상태: 없음.
 
 ## 하지 않는 것
@@ -15,7 +17,6 @@
 ## QA 중 DB/운영 이슈로 분리할 조건
 
 - 다중 계정 데이터가 섞인다.
-- Trash retention/restore 기준이 화면과 맞지 않는다.
 - Export 결과에 다른 사용자 데이터가 포함된다.
 - Prisma generate/migration/seed 운영 정합성 문제가 확인된다.
 - Company, Contact, Product, Deal, Schedule, MeetingNote의 고정 sales record 관계가 화면 계약과 맞지 않는다.

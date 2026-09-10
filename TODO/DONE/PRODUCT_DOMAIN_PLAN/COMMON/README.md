@@ -1,5 +1,7 @@
 # Product Domain Common
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 목적
 
 제품(Product) 도메인에서 FE와 BE가 함께 봐야 하는 계약을 둔다.
@@ -21,14 +23,6 @@
 - 제품 목록 검색은 `productName` 부분 검색만 제공한다.
 - 제품 목록 필터는 `productCategoryId`, `productStatusId`만 제공한다.
 - 제품 목록 응답에는 `productPrice`, `updatedAt`을 포함하지 않는다.
-- 제품 기본 기능에는 휴지통과 soft delete를 넣지 않는다.
-- `productMemo`는 `Product` 테이블 컬럼이 아니다.
-- 제품 생성의 `productMemo`는 값이 있을 때만 `ProductMemoLog` 첫 데이터로 저장한다.
-- 제품 생성의 `productMemo`는 `memoType`을 `초기 메모`로 저장한다.
-- 독립적인 제품 일반 메모 로그 생성은 `memoType`, `memo`를 받는다.
-- 독립적인 제품 일반 메모 로그 수정은 `memoType`, `memo` 중 최소 1개를 받는다.
-- 독립적인 제품 개인 비밀 메모 로그 생성/수정은 `memo`만 받는다.
-- 제품 개인 비밀 메모 원문은 DB에 평문으로 저장하지 않는다.
 
 API 계약을 수정할 때는 계약 상태, 소비자, 요청값 형태, 응답값 형태, 내부 비즈니스 로직, 연결 DB 스키마, transaction, observability, 에러 응답, FE/BE 처리 기준을 누락하지 않는다.
 API 구현 또는 FE 연동을 할 때는 `API-SPEC/PRODUCT_API_DETAIL.md`를 최종 API 상세 계약으로 사용한다.

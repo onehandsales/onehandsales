@@ -38,7 +38,7 @@
 - 각 `/goal`의 목적, 포함 범위, 제외 범위, 선행 조건, 완료 기준
 - FE 화면 명세, 사용자 행동, 입력 필드, 상태, validation, E2E 기준
 - BE API 명세, business flow, 권한, transaction, error, 연결 DB
-- DB 스키마, 제약, index, soft delete, 민감정보 기준
+- DB 스키마, 제약, index, 제거/보존 정책, 민감정보 기준
 - 관련 AGENT 정본 문서와 TODO 내부 문서 링크
 - 구현 전 검토 결과
 

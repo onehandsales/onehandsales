@@ -1,5 +1,7 @@
 # G00 구현 전 결정 기록
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `MVP-STARTER_PLAN`의 첫 번째 `/goal`인 G00에서 확정해야 하는 운영, API, DB, 보안, 외부 연동 정책을 기록한다.
@@ -530,7 +532,6 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 
 결정:
 
-- MVP 1차 application-level encryption 대상은 `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`로 고정한다.
 - 전화번호, 이메일, 명함 OCR 추출 결과, 회의록 구조화 요약 필드(`details`, `nextPlan`, `requiredAction` 등)는 MVP 1차에서 암호화하지 않는다.
 - 암호화하지 않는 민감 후보 필드도 Admin 목록/상세에서는 기본 마스킹 또는 존재 여부만 반환한다.
 - Backend는 `EncryptionPort`를 정의하고, application/domain 계층은 구체 암호화 library에 직접 의존하지 않는다.
@@ -548,12 +549,10 @@ SUPABASE_JWT_ISSUER="https://xxxx.supabase.co/auth/v1"
 
 구현 영향:
 
-- `PersonalMemo.content`는 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
 - `MeetingNote.rawText`는 `rawTextCiphertext`, `rawTextKeyVersion`으로 저장한다.
 - `BrowserPushSubscription`은 `endpointHash`, `endpointCiphertext`, `p256dhCiphertext`, `authCiphertext`, `contentKeyVersion`으로 저장한다.
 - `CreateMeetingNote`, `UpdateMeetingNote`, Memo 생성/수정, browser push subscription 등록 use case는 저장 전 `EncryptionPort.encrypt`를 호출한다.
 - 사용자 본인이 조회하는 회의록 상세/Memo 상세는 Backend application layer에서 복호화해 반환할 수 있다.
-- Admin 목록/상세 API는 복호화하지 않고 마스킹 또는 `hasMemo`, `memoCount`, `latestMemoAt` 같은 요약/존재 여부만 반환한다.
 - Admin 원문 조회 API는 허용 field 검증, reason 검증, AuditLog 기록을 거친 후 복호화한다.
 - `.env.example`에는 `ENCRYPTION_MASTER_KEY`, `ENCRYPTION_KEY_VERSION` 예시를 포함한다.
 - 암호화 key rotation은 key version 필드로 확장 가능하게 두고, 실제 rotation 운영은 MVP 이후 별도 작업으로 분리한다.
@@ -708,22 +707,18 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - 소유자가 기존 상세 URL로 soft delete된 리소스를 조회하면 `410 DeletedResource`를 반환한다.
 - 다른 사용자 리소스는 삭제 여부와 관계없이 `OwnershipViolation` 403 또는 NotFound 계열 정책을 우선 적용하고, 삭제 상태를 노출하지 않는다.
 - soft delete된 리소스에 대한 수정, 단계 변경, 다음 행동 변경, 연결 변경, 재삭제 같은 일반 변경 요청은 `409 DeletedResource`로 막는다.
-- 복구는 일반 수정 API가 아니라 restore API 또는 휴지통 restore API로만 처리한다.
-- 휴지통과 명시된 복구 화면에서만 삭제된 리소스 목록을 조회한다.
 - 일반 상세 API에서 `includeDeleted=true`로 삭제 리소스를 직접 반환하는 정책은 MVP 1차에서 사용하지 않는다.
 
 선택 이유:
 
 - 사용자가 북마크, 알림, 브라우저 히스토리로 삭제된 상세 URL에 접근했을 때 단순 404보다 원인을 명확히 알 수 있다.
 - 삭제된 데이터 수정을 막으면 복구 전 데이터 변경으로 생길 수 있는 정합성 문제를 줄일 수 있다.
-- 복구 경로를 휴지통/restore API로 고정하면 FE UX와 Backend transaction 기준이 명확하다.
 
 구현 영향:
 
 - 공통 error mapper는 `DeletedResource`를 조회 context에서는 410, 변경 context에서는 409로 매핑할 수 있어야 한다.
 - 단건 상세 use case는 `deletedAt != null`이면 소유자에게 `DeletedResource` 410을 반환한다.
 - 수정/삭제/상태 변경 use case는 `deletedAt != null`이면 `DeletedResource` 409를 반환한다.
-- FE 상세 화면은 410 응답을 받으면 "삭제된 항목" 상태와 휴지통/복구 CTA를 표시한다.
 - FE 수정 form은 409 `DeletedResource` 응답을 받으면 저장 실패 메시지와 복구 안내를 표시한다.
 
 ### D21. soft delete 보관 기간, restore, hard delete 정책
@@ -732,7 +727,6 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 - 사용자 또는 Admin이 삭제 API로 지우는 영속 삭제 대상 리소스는 즉시 hard delete하지 않고 soft delete한다.
 - 삭제 시 `deletedAt`을 기록하고, `permanentDeleteAt`은 `deletedAt + 30일`로 기록한다.
-- 삭제된 리소스는 30일 동안 휴지통에 보관한다.
 - 30일이 지나면 시스템 자동 작업이 해당 리소스를 완전 삭제한다.
 - MVP 1차에서 사용자가 직접 즉시 완전 삭제하는 API와 UI는 제공하지 않는다.
 - 복구는 `permanentDeleteAt` 이전에만 가능하다.
@@ -748,14 +742,11 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - 사용자가 실수로 삭제한 데이터를 30일 동안 복구할 수 있어야 한다.
 - 영속 리소스 삭제를 soft delete로 통일하면 API, DB, UX의 삭제 상태 처리가 단순해진다.
 - 사용자의 즉시 완전 삭제를 막으면 MVP 1차에서 위험한 irreversible action을 줄일 수 있다.
-- 자동 완전 삭제 시점을 `permanentDeleteAt`으로 고정하면 휴지통 UI, 배치 작업, 알림 기준이 명확해진다.
 
 구현 영향:
 
 - soft delete 대상 모델은 `deletedAt`과 `permanentDeleteAt`을 함께 가진다.
 - soft delete 대상의 일반 삭제 API는 `deletedAt`과 `permanentDeleteAt`만 갱신한다.
-- 휴지통 목록은 `permanentDeleteAt`을 반환해 완전 삭제 예정일을 표시한다.
-- 휴지통 복구 API는 `deletedAt`과 `permanentDeleteAt`을 `null`로 되돌린다.
 - 사용자 즉시 완전 삭제 API가 호출되면 MVP 1차에서는 `PermanentDeleteNotAllowed` 409를 반환한다.
 - 30일 경과 리소스를 hard delete하는 시스템 job은 사용자 API와 분리한다.
 - 회원 탈퇴 API는 현재 사용자의 `User`를 soft delete하고 active session을 revoke한다.
@@ -766,15 +757,9 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 결정:
 
-- MVP의 핵심 도메인인 `Company`, `Contact`, `Product`, `Deal`은 각각 Log와 Memo 기록을 가질 수 있다.
 - Log는 대상 도메인에 대한 객관적 사실, 변경, 만남, 소식, 이력 기록이다.
 - Memo는 대상 도메인에 대한 사용자의 주관적 생각, 판단, 개인 참고 기록이다.
 - Memo는 각 엔티티의 단일 `memo` 필드에 저장하지 않고, Log처럼 여러 건 누적되는 기록형 데이터로 저장한다.
-- `PersonalMemo`는 회사 Memo, 담당자 Memo, 제품 Memo, 딜 Memo를 담는 기록 테이블로 사용한다.
-- `PersonalMemo`는 `targetType`, `targetId`로 `Company`, `Contact`, `Product`, `Deal` 중 하나에 연결한다.
-- `PersonalMemo`는 `memoDate`, 선택적 `title`, `contentCiphertext`, `contentKeyVersion`을 가진다.
-- `PersonalMemo.content` 원문은 DB에 평문 저장하지 않고 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
-- 일반 목록 API와 Admin 목록/상세 API는 메모 원문을 반환하지 않고 `memoCount`, `latestMemoAt`, `hasMemo` 같은 요약 또는 존재 여부만 반환한다.
 - 사용자 본인의 상세 화면은 Backend application layer에서 복호화한 Memo 기록 목록을 반환할 수 있다.
 - Admin 원문 조회는 별도 민감정보 원문 조회 API에서만 허용하며, 사유 입력과 `AuditLog` 기록을 전제로 한다.
 
@@ -782,17 +767,10 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 - Log와 Memo의 의미를 분리하면 객관적 이력과 사용자의 생각이 섞이지 않는다.
 - 메모가 여러 건 누적되므로 시간순 맥락을 남길 수 있다.
-- 회사/담당자/제품/딜마다 같은 메모 구조를 쓰면 UI와 API가 일관된다.
-- 민감 가능성이 높은 주관적 자유 입력 텍스트는 `PersonalMemo`에 모아 암호화, 마스킹, 감사 정책을 일관되게 적용할 수 있다.
 
 구현 영향:
 
-- 회사/담당자/제품/딜의 단일 `memo` 필드는 메모 기능의 정본 저장소로 사용하지 않는다.
-- 메모 생성/수정 use case는 `PersonalMemo` 저장 전 `EncryptionPort.encrypt`를 호출한다.
 - 상세 화면은 Log 섹션과 Memo 섹션을 분리한다.
-- User Web 상세 API는 `PersonalMemo`를 복호화해 Memo 기록 목록으로 표시할 수 있다.
-- Admin 목록과 상세는 `PersonalMemo`를 복호화하지 않고 요약 또는 존재 여부만 반환한다.
-- Admin 원문 조회 API는 `PersonalMemo.contentCiphertext` 복호화와 `AuditLog` 생성을 같은 transaction으로 처리한다.
 
 ### D23. Admin masking, 원문 조회, AuditLog transaction 정책
 
@@ -816,7 +794,6 @@ APP_REFRESH_COOKIE_DOMAIN=""
 
 구현 영향:
 
-- Admin list/detail response는 `amountMasked`, `phoneMasked`, `emailMasked`, `hasMemo`, `memoCount`, `latestMemoAt`, `hasRawText` 같은 마스킹/요약/존재 여부 필드를 사용한다.
 - `ViewSensitiveRawData`, `ViewDealSensitiveRawData`, `ViewMeetingNoteSensitiveRawData` 계열 API는 `reason`을 필수로 검증한다.
 - 원문 조회 use case는 transaction 안에서 대상 접근 가능 여부 확인과 `AuditLog` 생성을 완료해야 한다.
 - 복호화는 허용 field 검증과 감사 로그 기록이 성공한 뒤 수행한다.
@@ -827,13 +804,8 @@ APP_REFRESH_COOKIE_DOMAIN=""
 결정:
 
 - 객관 기록인 Log는 도메인별 별도 모델로 둔다.
-- 회사 Log는 `CompanyLog`를 사용한다.
-- 담당자 Log는 `ContactLog`를 추가한다.
-- 제품 Log는 `ProductLog`를 추가한다.
 - 딜 Log는 기존 딜 활동 기록 모델인 `DealActivity`를 사용한다.
-- `CompanyLog`, `ContactLog`, `ProductLog`, `DealActivity`는 객관적 사실, 변경, 만남, 소식, 이력, 자동 상태 변경 기록을 저장한다.
 - 사용자 개인 Memo Log는 객관 Log와 별도로 둔다.
-- 사용자 개인 Memo Log는 `PersonalMemo`를 사용하되 `targetType`, `targetId`로 `Company`, `Contact`, `Product`, `Deal` 중 하나에 연결한다.
 - 화면은 각 도메인 상세에서 `Log` 섹션과 `Memo` 섹션을 별도로 보여준다.
 - API는 각 도메인별 Log endpoint를 제공하고, Memo는 도메인별 Memo endpoint 또는 공통 Memo use case를 통해 처리하되 response에서는 도메인별 Memo Log로 분리해 반환한다.
 
@@ -842,11 +814,9 @@ APP_REFRESH_COOKIE_DOMAIN=""
 - 도메인별 Log 모델을 두면 각 Log가 명확한 FK와 도메인 규칙을 가진다.
 - 회사/담당자/제품/딜마다 객관 기록과 사용자 생각 기록이 섞이지 않는다.
 - 딜은 단계 변경, 다음 행동 완료, 회의록 연결 같은 자동 기록이 많으므로 기존 `DealActivity`의 특수 규칙을 유지하는 편이 낫다.
-- Memo는 사용자 주관 기록이고 민감 가능성이 높으므로 `PersonalMemo`로 암호화, 마스킹, 원문 조회 감사를 일관되게 적용한다.
 
 구현 영향:
 
-- Prisma schema에 `ContactLog`, `ProductLog`를 추가한다.
 - `User`, `Contact`, `Product` relation에 각 Log 배열을 추가한다.
 - `ContactDetailResponse`, `ProductDetailResponse`는 `logs`와 `memos`를 모두 포함한다.
 - Contact/Product User API에 Log 목록/생성/수정/삭제 endpoint를 추가한다.
@@ -886,7 +856,6 @@ APP_REFRESH_COOKIE_DOMAIN=""
 결정:
 
 - 통합검색은 회사, 담당자, 제품, 딜, 일정, 회의록을 기본 검색 대상으로 한다.
-- 삭제된 데이터는 통합검색 기본 결과에서 제외한다. 휴지통 데이터는 휴지통 화면/API에서만 조회한다.
 - 검색어는 trim 후 2자 이상부터 실행한다. 1자 이하는 검색 대신 최근 항목 또는 빈 상태를 표시한다.
 - 검색 결과는 type별 group으로 묶고, 기본 limit은 type별 최대 5개로 둔다.
 - Memo 원문, `MeetingNote.rawText`, Admin 민감 원문은 통합검색 결과의 title/subtitle에 노출하지 않는다.

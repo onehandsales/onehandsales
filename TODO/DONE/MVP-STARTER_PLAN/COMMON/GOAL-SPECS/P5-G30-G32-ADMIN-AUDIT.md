@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# P5 G30-G32 Admin과 감사 상세 명세
 
 ## 1. 목적
@@ -128,7 +130,6 @@ Admin이 꼭 필요한 경우에만 사유를 입력하고 민감정보 원문�
 - Deal
 - Contact
 - MeetingNote
-- PersonalMemo
 
 ### 상태/validation
 

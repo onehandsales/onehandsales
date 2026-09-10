@@ -1,5 +1,7 @@
 # G03 Admin User Overview
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 목표: Admin이 사용자 목록, 사용자 상세 요약, 최근 활동 timeline을 read-only/masked로 볼 수 있게 한다.
 
@@ -10,7 +12,6 @@
 - `GET /admin/api/users/:userId/activity-timeline`
 - Admin Web `/users`
 - Admin Web `/users/:userId`
-- domain count, Trash count, activation/AI usage summary
 - notification/browser push safe summary
 
 ## 2. 제외 범위
@@ -26,7 +27,6 @@
 2. 사용자 목록 repository query를 만든다.
 3. email/displayName masking mapper를 만든다.
 4. domain count aggregate를 만든다.
-5. Trash active/expired count aggregate를 만든다.
 6. 09 `UserActivationSnapshot`과 `AiProviderCallLog` summary를 조회한다.
 7. `UserNotificationSetting`, `BrowserPushSubscription`, `NotificationDeliveryAttempt` 기반 notification safe summary를 만든다.
 8. activity timeline read model을 만든다.
@@ -37,7 +37,6 @@
 1. `/users` list page를 만든다.
 2. 검색, status, locale, country filter를 만든다.
 3. 사용자 row 선택 시 `/users/:userId`로 이동한다.
-4. 상세 page에 profile summary, domain counts, Trash summary, analytics summary, notification summary를 배치한다.
 5. activity timeline을 표시한다.
 6. 결제/구독 card나 tab을 만들지 않는다.
 
@@ -76,7 +75,6 @@ GET /admin/api/users/:userId/activity-timeline?limit=30
     "schedules": 6,
     "meetingNotes": 8
   },
-  "trashSummary": {
     "active": 3,
     "expired": 1
   },
@@ -108,7 +106,6 @@ GET /admin/api/users/:userId/activity-timeline?limit=30
 1. Admin이 `/users`에 진입한다.
 2. 검색과 필터로 사용자를 찾는다.
 3. 사용자를 선택한다.
-4. 상세에서 profile, domain count, Trash summary, activity timeline을 본다.
 5. 상세한 도메인 목록이 필요하면 G04 탭으로 이동한다.
 
 ## 9. DB/Prisma 영향
@@ -129,7 +126,6 @@ GET /admin/api/users/:userId/activity-timeline?limit=30
 
 ```ts
 // 역할 : Admin 사용자 목록과 요약 정보를 조회합니다.
-// 기능 : 사용자 도메인 count와 Trash 만료 count를 계산합니다.
 ```
 
 ## 11. 검증
@@ -155,7 +151,6 @@ pnpm run build
 - [x] activity timeline API가 있다.
 - [x] email/displayName은 masked다.
 - [x] domain count가 userId 기준으로 계산된다.
-- [x] Trash active/expired count가 있다.
 - [x] activation/AI usage summary가 있다.
 - [x] notification/browser push safe summary가 있다.
 - [x] browser push endpoint/key/userAgent 원문이 response/log에 없다.
@@ -174,12 +169,10 @@ pnpm run build
   - `GET /admin/api/users/:userId/activity-timeline`
   - 사용자 목록/상세 조회 `AdminAuditLog` 기록
   - email/displayName masking mapper
-  - domain count, Trash count, activation/AI usage, notification/browser push safe summary
 - Frontend 구현:
   - Admin Web `/users`
   - Admin Web `/users/:userId`
   - 검색/status/country/locale/sort filter
-  - profile/domain/trash/analytics/notification/timeline summary
 - DB 변경:
   - 신규 schema/migration 없음
   - 운영/공유 DB migrate/seed 실행 없음

@@ -1,5 +1,7 @@
 # G02 Mobile Browser 390/360 QA
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P0
 담당 영역: FE/user-web
@@ -26,7 +28,6 @@
 - Chrome channel 확인
 - Edge channel 확인 또는 Edge channel 부재 기록
 - AppShell mobile header, bottom navigation, more menu
-- `/app`, `/app/companies`, `/app/contacts`, `/app/products`, `/app/deals`, `/app/schedules`, `/app/meeting-notes`, `/app/business-cards`, `/app/import`, `/app/trash`, `/app/settings`, `/app/more`
 - 긴 이름, 긴 이메일, 긴 전화번호, 긴 URL overflow smoke
 - dialog, create panel, dropdown, toast, keyboard focus smoke
 - page-level horizontal overflow 금지 확인
@@ -88,7 +89,6 @@ Edge channel이 설치되어 있지 않으면 테스트를 통과한 것처럼 �
 - 딜 단계 탭은 가로 스크롤 또는 줄바꿈 없이 선택 가능하다.
 - 일정 생성에서 mobile keyboard가 올라와도 입력 중인 필드와 저장 버튼을 사용할 수 있다.
 - 회의록 긴 입력이 화면 아래로 밀려 저장 버튼을 숨기지 않는다.
-- Trash 복구 버튼이 위험 행동처럼 구분된다.
 
 ## 8. 검증 명령
 

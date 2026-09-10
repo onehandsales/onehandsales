@@ -1,5 +1,7 @@
 # Architecture Guardrails
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. API 경계
@@ -43,13 +45,9 @@
 - API key/token/authorization header
 - quota detail
 - DB URL
-- private memo 원문 audit 저장
 - email/phone/provider email 원문 log 저장
 
-## 6. Trash
 
-- Trash 만료는 hard delete/purge trigger가 아니다.
-- `trashExpiresAt`은 무료 self-restore 만료 기준이다.
 - User Web restore 불가 상태와 Admin recovery request는 결제/구독과 연결하지 않는다.
 
 ## 7. Analytics

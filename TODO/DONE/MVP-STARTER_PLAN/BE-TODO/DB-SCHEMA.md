@@ -1,5 +1,7 @@
 # DB 스키마 TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 MVP 구현에 필요한 데이터베이스 스키마 초안을 정리한다.
@@ -35,12 +37,9 @@ User
   │   └─ AuthSession
   ├─ UserSetting
   ├─ Company
-  │   ├─ CompanyLog
   │   └─ Contact
   ├─ Product
-  │   └─ ProductLog
   ├─ ProductConnection
-  ├─ ContactLog
   ├─ Deal
   │   └─ DealActivity
   ├─ Schedule
@@ -50,7 +49,6 @@ User
   ├─ ImportJob
   │   └─ ImportJobRow
   ├─ ExportJob
-  ├─ PersonalMemo
   ├─ Notification
   ├─ ExternalCalendarConnection
   └─ AiJob
@@ -129,7 +127,6 @@ enum ScheduleSource {
   GOOGLE
 }
 
-enum PersonalMemoTargetType {
   COMPANY
   CONTACT
   PRODUCT
@@ -309,11 +306,8 @@ model User {
   authSessions          AuthSession[]
   setting               UserSetting?
   companies             Company[]
-  companyLogs           CompanyLog[]
   contacts              Contact[]
-  contactLogs           ContactLog[]
   products              Product[]
-  productLogs           ProductLog[]
   productConnections    ProductConnection[]
   deals                 Deal[]
   dealActivities        DealActivity[]
@@ -322,7 +316,6 @@ model User {
   scheduleReminders     ScheduleReminder[]
   meetingNotes          MeetingNote[]
   businessCardScans     BusinessCardScan[]
-  personalMemos         PersonalMemo[]
   notifications         Notification[]
   browserPushSubscriptions BrowserPushSubscription[]
   importJobs            ImportJob[]
@@ -428,7 +421,6 @@ model Company {
   permanentDeleteAt  DateTime?
 
   user               User                @relation(fields: [userId], references: [id])
-  logs               CompanyLog[]
   contacts           Contact[]
   deals              Deal[]
   schedules          Schedule[]
@@ -441,7 +433,6 @@ model Company {
   @@index([userId, permanentDeleteAt])
 }
 
-model CompanyLog {
   id          String    @id @default(uuid()) @db.Uuid
   userId      String    @db.Uuid
   companyId   String    @db.Uuid
@@ -482,7 +473,6 @@ model Contact {
   user               User                @relation(fields: [userId], references: [id])
   company            Company?            @relation(fields: [companyId], references: [id])
   deals              Deal[]
-  logs               ContactLog[]
   schedules          Schedule[]
   meetingNotes       MeetingNote[]
   businessCardScans  BusinessCardScan[]
@@ -496,7 +486,6 @@ model Contact {
   @@index([userId, permanentDeleteAt])
 }
 
-model ContactLog {
   id                  String    @id @default(uuid()) @db.Uuid
   userId              String    @db.Uuid
   contactId           String    @db.Uuid
@@ -532,7 +521,6 @@ model Product {
   permanentDeleteAt   DateTime?
 
   user                User                 @relation(fields: [userId], references: [id])
-  logs                ProductLog[]
   productConnections  ProductConnection[]
 
   @@index([userId])
@@ -542,7 +530,6 @@ model Product {
   @@index([userId, permanentDeleteAt])
 }
 
-model ProductLog {
   id                  String    @id @default(uuid()) @db.Uuid
   userId              String    @db.Uuid
   productId           String    @db.Uuid
@@ -799,10 +786,8 @@ model BusinessCardScan {
   @@index([userId, status])
 }
 
-model PersonalMemo {
   id                  String                  @id @default(uuid()) @db.Uuid
   userId              String                  @db.Uuid
-  targetType          PersonalMemoTargetType
   targetId            String                  @db.Uuid
   memoDate            DateTime                @default(now())
   title               String?
@@ -1075,19 +1060,13 @@ G00에서 파일 저장소 1차 전략은 `Supabase Storage adapter + StoragePor
 
 ### 민감정보 암호화
 
-G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`로 확정했다.
 
 따라서 MVP 1차에서는 다음 기준을 따른다.
 
-- `Company`, `Contact`, `Product`, `Deal`은 Log와 Memo 기록을 각각 가질 수 있다.
 - Log는 객관적 사실, 변경, 만남, 소식, 이력 기록이고 Memo는 사용자의 주관적 생각, 판단, 개인 참고 기록이다.
-- Log는 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 도메인별 별도 모델에 저장한다.
-- Memo는 각 엔티티의 단일 `memo` 필드에 섞지 않고 기록 테이블 `PersonalMemo`에 저장한다.
-- `PersonalMemo`는 회사/담당자/제품/딜 Memo 원문을 `contentCiphertext`, `contentKeyVersion`으로 저장한다.
 - `MeetingNote`는 회의록 원문 입력값을 `rawTextCiphertext`, `rawTextKeyVersion`으로 저장한다.
 - DB에는 Memo 원문과 회의록 원문 입력값을 평문으로 저장하지 않는다.
 - `EncryptionPort`가 암호화와 복호화를 담당하고, 구체 crypto library는 infrastructure adapter 내부에 둔다.
-- `PersonalMemo.content`, `MeetingNote.rawText`, `BrowserPushSubscription.endpoint/p256dh/auth`는 MVP 1차 암호화 대상이다.
 - 전화번호, 이메일, 명함 OCR 결과, 회의록 구조화 요약 필드는 MVP 1차 암호화 대상에서 제외하되 Admin 목록/상세에서는 마스킹한다.
 - key rotation은 key version 필드로 확장 가능하게 두고 실제 rotation 운영은 MVP 이후 별도 작업으로 분리한다.
 
@@ -1122,11 +1101,8 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 | `AuthSession` | Backend App token session | `POST /api/auth/exchange`, `POST /api/auth/refresh`, logout | refresh token hash와 접속 정보는 민감 | authDeviceId/status/expiresAt index, 같은 AuthDevice 안에서는 session 여러 개 허용, token 원문 저장 금지 |
 | `UserSetting` | 사용자별 알림/경고 설정 | 내 설정, 알림 설정 | 민감 아님 | userId 1:1 |
 | `Company` | 회사 기준 데이터 | 회사 CRUD, 딜/일정/제품 연결 | 일반적으로 민감 아님 | userId ownership, soft delete |
-| `CompanyLog` | 회사 자체 히스토리 | 회사 상세 로그 | 내용은 민감 가능 | Company ownership 상속 |
 | `Contact` | 담당자 | 담당자 CRUD, 딜/일정 연결, OCR 저장 | 전화번호, 이메일, Memo 원문 관련 민감 | userId ownership, company optional |
-| `ContactLog` | 담당자 객관 기록 | 담당자 상세 로그 | 내용은 민감 가능 | Contact ownership 상속 |
 | `Product` | 제품 기준 데이터 | 제품 CRUD, 딜 제품 선택 | 단가가 영업상 민감 가능 | userId ownership, KRW 기본 |
-| `ProductLog` | 제품 객관 기록 | 제품 상세 로그 | 내용은 민감 가능 | Product ownership 상속 |
 | `ProductConnection` | 제품과 회사/담당자/딜 연결 | 제품 연결, 딜 제품 연결 | 연결 관계가 영업상 민감 가능 | targetType/targetId ownership 검증 |
 | `Deal` | 영업 딜 | 딜 목록/상세/단계/다음 행동 | 금액, Memo 원문 관련 민감 | amount 필수, userId ownership, soft delete |
 | `DealActivityType` | 활동 로그 타입 | 딜 활동 로그 | 민감 아님 | system 기본값과 사용자 커스텀 구분 |
@@ -1135,7 +1111,6 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 | `ScheduleReminder` | 일정 알림 예약 | 일정 알림 | 민감 아님 | Schedule 소유권 상속 |
 | `MeetingNote` | 회의록 | 회의록 AI 생성/저장/딜 연결 | 원문 입력값은 암호화, 9개 구조화 항목도 민감 가능 | 딜 없이 저장 가능, 딜 연결 시 활동 로그 |
 | `BusinessCardScan` | 명함 OCR 처리 결과 | 명함 OCR | 이미지 storage metadata, OCR 결과 민감 | 자동 저장 금지, confirm 필요 |
-| `PersonalMemo` | 도메인 Memo 기록 | 회사/담당자/제품/딜별 주관 메모 | 원문 암호화 대상 | Admin 기본 마스킹, 원문 조회 audit 필요 |
 | `Notification` | 알림 데이터와 발송 상태 | 알림 목록/읽음, email/browser push 발송 | target 내용에 따라 민감 가능 | 사용자별 조회, channel/status/scheduledAt 기준 발송 job |
 | `BrowserPushSubscription` | 브라우저 push 구독 정보 | Push 구독 등록/해제, browser push 발송 | endpoint와 key는 민감 가능 | endpoint hash unique, endpoint/key는 암호화 저장, userId/status index |
 | `ImportJob` | Import 작업 | Import flow | 업로드 파일 metadata/매핑 민감 가능 | preview 확인 후 실행, confirm은 all-or-nothing |
@@ -1150,7 +1125,6 @@ G00에서 MVP 1차 application-level encryption 대상은 `PersonalMemo.content`
 - User API는 모든 사용자 소유 모델에서 `userId` 조건을 필수로 사용한다.
 - Admin API는 기본적으로 마스킹된 response만 반환한다.
 - 민감정보 원문 조회는 대상 모델 조회와 `AuditLog` 생성을 같은 transaction으로 처리한다.
-- soft delete 대상은 목록 API에서 기본 제외하고, 휴지통 API에서만 조회한다.
 - soft delete된 리소스를 기존 상세 URL로 조회하면 소유자에게 `410 DeletedResource`를 반환하고, 수정/상태 변경/재삭제 요청은 `409 DeletedResource`로 막는다.
 - soft delete 시 `deletedAt`과 `permanentDeleteAt`을 함께 기록하고, 복구 시 둘 다 `null`로 되돌린다.
 - `permanentDeleteAt`이 지난 리소스는 사용자 API가 아니라 시스템 자동 작업으로 완전 삭제한다.

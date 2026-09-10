@@ -1,5 +1,7 @@
 # G15 Deal 상세 패널과 상세 페이지 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업 상태
 
 - 상태: 완료
@@ -106,7 +108,6 @@
 - 상세 패널에서 단계 변경이 가능하고, 성공 후 query invalidate로 timeline 자동 로그를 다시 조회함
 - 상세 패널에서 활동 로그를 추가할 수 있음
 - 다음 행동 완료/미루기가 동작하고 관련 query가 갱신됨
-- Memo 기록은 상세 응답의 `PersonalMemo(targetType=DEAL)` 기록을 표시하되, G15 범위 밖인 신규 Memo 작성 UI는 추가하지 않음
 - 일정/회의록은 G15 제외 범위에 맞춰 summary/placeholder 수준으로 표시함
 - User Web feature 구조 준수
   - 페이지는 route param 전달만 담당

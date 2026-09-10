@@ -1,5 +1,7 @@
 # Done API-SPEC Audit Index
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G99 Completed / Final reference
 감사일: 2026-08-31
 
@@ -71,9 +73,7 @@
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_DOMAIN_READONLY_API.md` | 8 | `GET /admin/api/users/:userId/domain-records` | G05 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_PROVIDER_FAILURE_API.md` | 9 | `admin/api/provider-failures` | G05 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_SYSTEM_OPERATION_API.md` | 9 | `admin/api/system/operation-checks` | G05 완료 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_TRASH_OPERATION_API.md` | 9 | `admin/api/users/:userId/trash-*`, `admin/api/trash/recovery-requests` | G05 완료 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/ADMIN_USER_OPERATION_API.md` | 8 | `admin/api/users` | G05 완료 |
-| `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/COMMON/API-SPEC/TRASH_USER_RECOVERY_API.md` | 9 | `POST /api/trash/recovery-requests` | G05 완료 |
 
 ## 5. Index Only
 
@@ -152,7 +152,6 @@
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/08_GLOBAL_DATA_I18N/COMMON/API-SPEC/USER_GLOBAL_SETTINGS_API.md` | 0 | user settings current API, 템플릿 키워드 충족 |
 | `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/09_PRODUCT_ANALYTICS/COMMON/API-SPEC/PRODUCT_ANALYTICS_EVENT_API.md` | 0 | product analytics event current API, 템플릿 키워드 충족 |
 | `TODO/DONE/INTEGRATED_SEARCH_PLAN/COMMON/API-SPEC/SEARCH_API.md` | 3 | search current API, 중간 이하 누락 |
-| `TODO/DONE/LOG_SOFT_DELETE_PLAN/COMMON/API-SPEC/LOG_SOFT_DELETE_API.md` | 3 | soft delete current API, 중간 이하 누락 |
 | `TODO/DONE/MEETING_NOTE_MANUAL_PLAN/COMMON/API-SPEC/MEETING_NOTE_API.md` | 1 | meeting note current API, 낮은 누락 |
 | `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/G01-G05-FOUNDATION-AUTH-API.md` | 6 | MVP 초기 통합 명세. 현재 세부 auth/user 계약을 우선 참조 |
 | `TODO/DONE/MVP-STARTER_PLAN/COMMON/API-SPEC/G06-G12-CORE-DOMAIN-API.md` | 8 | MVP 초기 통합 명세. 현재 company/contact/product/deal 세부 계약을 우선 참조 |
@@ -208,8 +207,6 @@ G04에서는 Mobile Field 보관 API-SPEC 문서의 HTTP API와 browser/local-on
 
 | 처리 | 파일 수 | 파일 |
 | --- | ---: | --- |
-| 템플릿 보강 | 9 | `ACCOUNT_DATA_REQUEST_API.md`, `ADMIN_ANALYTICS_API.md`, `ADMIN_AUDIT_SECURITY_API.md`, `ADMIN_DOMAIN_READONLY_API.md`, `ADMIN_PROVIDER_FAILURE_API.md`, `ADMIN_SYSTEM_OPERATION_API.md`, `ADMIN_TRASH_OPERATION_API.md`, `ADMIN_USER_OPERATION_API.md`, `TRASH_USER_RECOVERY_API.md` |
-| Admin/User prefix 분리 | 2 | `ACCOUNT_DATA_REQUEST_API.md`, `TRASH_USER_RECOVERY_API.md` |
 | 민감정보/audit/observability 보강 | 9 | G05 포함 범위 전체 |
 
 G05에서는 Admin Operation 보관 API-SPEC 문서의 Admin/User API 경계, `AuthGuard`/`AdminGuard` 권한, 민감정보 masking, audit action, request id, transaction, FE error 처리/log level을 current BE/FE 구현 기준으로 보강했다. BE/FE 코드는 수정하지 않았고 API path, method, runtime request/response/error/transaction/observability 동작을 변경하지 않았다.

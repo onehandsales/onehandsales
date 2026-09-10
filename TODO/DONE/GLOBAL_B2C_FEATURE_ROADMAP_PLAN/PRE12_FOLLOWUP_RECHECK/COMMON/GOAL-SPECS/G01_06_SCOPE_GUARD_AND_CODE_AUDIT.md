@@ -1,5 +1,7 @@
 # G01 06 Scope Guard And Code Audit
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Not selected / final classification에 흡수
 목표: 06 완료 결과가 DealActivity 범위를 넘어 새 알림, 자동 발송, list summary, activity lifecycle/search/score 기능으로 확장되지 않았는지 확인하는 audit 후보였으나, 2026-08-07 최종 분류에서는 별도 PRE12 작업으로 선택하지 않는다.
 
@@ -17,7 +19,6 @@
 - Notification module 변경 여부 확인
 - MeetingNote follow-up 자동 발송/알림 변경 여부 확인
 - Company/Contact/Product/MeetingNote list summary response field 추가 여부 확인
-- manual activity delete, automatic activity update/delete, DealActivity retention/audit/trash, memo/private memo 통합, 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단 추가 여부 확인
 - 필요한 경우 06 문서에 "범위 확장 금지" closeout 보강
 
 ## 3. 제외 범위
@@ -32,7 +33,6 @@
 
 - 06 변경이 DealActivity timeline 범위 안이면 `PRE12-follow-up-done`으로 기록한다.
 - 06 변경이 후보 기능을 넓혔다면 해당 후보를 이 폴더의 matrix로 이동시키고, 구현 코드는 별도 결정 전 유지하지 않는다.
-- private memo, provider raw, follow-up body 전체, meeting note raw text가 새 response/log에 노출되지 않음을 확인한다.
 
 ## 5. 권장 확인 명령
 

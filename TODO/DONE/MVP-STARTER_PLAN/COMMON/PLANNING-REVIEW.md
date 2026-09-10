@@ -1,5 +1,7 @@
 # MVP Starter 기획 검토 결과
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 결론
 
 - 판정: 조건부 통과
@@ -74,14 +76,11 @@ G00 기준으로 구현 전 필요한 운영 결정은 모두 확정되었다. �
 - 인증 구현 1차 전략: `Supabase Auth 외부 Provider + Backend token exchange + Backend 발급 App Bearer Token + local User/AuthDevice/AuthSession`으로 확정됨
 - FE token 전달/보관 방식: App access token은 memory에만 저장하고 `Authorization: Bearer`로 전달하며, refresh token은 httpOnly refresh cookie로 보관하는 것으로 확정됨
 - FE/BE 배포 도메인 전략: local/preview는 유연하게 허용하고 production은 같은 parent domain의 `app`, `admin`, `api` subdomain으로 확정됨
-- 삭제된 리소스 조회/수정 응답 정책: 상세 조회는 `410 DeletedResource`, 변경 요청은 `409 DeletedResource`로 확정됨
-- 삭제/복구/휴지통 정책: 모든 영속 삭제 대상 리소스는 soft delete하고, 30일 휴지통 보관 후 시스템이 자동 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는 것으로 확정됨.
-- 민감정보 저장/암호화 정책: `Company`, `Contact`, `Product`, `Deal`의 Log는 객관 기록, Memo는 주관 기록으로 분리하고, Memo는 `PersonalMemo`에 암호화 저장하는 것으로 확정됨
-- 도메인별 Log 기록 구현 단위: 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 확정됨. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장한다.
+- 현재 Company 범위에는 제거 상태 응답 정책이 적용되지 않음
 - 일정 기본 조회 기간/view mode: `/api/schedules` 기본값은 사용자 timezone 기준 이번 달 1일~말일이고, User Web은 월간 기본 캘린더와 주간 보기 전환을 제공하는 것으로 확정됨
 - Admin masking, 원문 조회, AuditLog transaction 정책: 기본 마스킹/존재 여부 반환, 사유 필수 원문 조회 API, AuditLog transaction으로 확정됨
 - Import/Export와 외부 provider 실제 연동 범위: Google Calendar, OCR, OpenAI, Notification email/browser push는 실제 provider adapter로 연동하고 테스트/장애 재현용 stub은 별도로 두는 것으로 확정됨
-- 통합검색 기본 정책: 회사/담당자/제품/딜/일정/회의록 검색, 삭제 데이터 제외, 2자 이상, type별 최대 5개, 민감 원문 비노출로 확정됨
+- 통합검색 기본 정책: 현재 Company 검색, 2자 이상, type별 최대 5개로 정리됨
 - `.env.example` 변수 목록: local/test DB, Supabase Cloud PostgreSQL/Auth/Storage, App token, refresh cookie, encryption, 외부 provider, CORS/domain 변수 예시를 포함하는 것으로 확정됨
 
 ## 6. 구현 가능 여부

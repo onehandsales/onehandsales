@@ -1,5 +1,7 @@
 # BE-TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 이번 `USER_WEB_UXUI_COMMON_QA_PLAN`은 Backend 구현 계획이 아니다.
 
 ## 원칙
@@ -15,7 +17,6 @@
 아래가 발견되면 이 계획에서 임의 수정하지 않고 별도 Backend/DB 계획을 만든다.
 
 - 다른 사용자 데이터가 노출된다.
-- Search, Trash, Export ownership isolation 문제가 있다.
 - 삭제된 리소스 접근 error code가 FE에서 안전하게 처리되지 않는다.
 - OCR/AI/STT/Import provider failure가 내부 provider, quota, API key, stack trace를 사용자에게 노출한다.
 - API validation response가 field-level error UX를 만들 수 없을 정도로 부족하다.

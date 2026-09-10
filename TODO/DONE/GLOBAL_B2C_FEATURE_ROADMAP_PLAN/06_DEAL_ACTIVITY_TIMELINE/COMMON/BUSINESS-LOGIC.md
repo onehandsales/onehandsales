@@ -1,5 +1,7 @@
 # Business Logic
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-25
 
@@ -17,7 +19,6 @@
 - 자동 activity는 사용자가 수정하거나 삭제할 수 없다.
 - 수동 activity는 사용자가 직접 만든 `sourceType=USER` row만 수정할 수 있다.
 - 1차에서는 수동 activity 삭제를 만들지 않는다.
-- private memo, provider raw response, follow-up body 전체, meeting note raw text 전문은 timeline summary에 포함하지 않는다.
 - 수동 activity `body`는 딜 상세 timeline response에는 포함할 수 있지만 structured log와 목록 summary에는 포함하지 않는다.
 - API 응답에 없는 latest activity, products summary, dealCount를 FE에서 임의로 만들지 않는다.
 - 원본 source record가 삭제되어도 activity row는 정본 이력으로 남긴다. 단 삭제된 source의 linked record link와 원문 detail은 response에 포함하지 않는다.
@@ -83,8 +84,6 @@
 |---|---|---|---|---|
 | 딜 생성 | `DEAL_CREATED` | `SYSTEM` | `deal.id` | 딜 생성 사실만 기록 |
 | 딜 단계 변경 | `STAGE_CHANGED` | `SYSTEM` | `deal.id` | 이전 단계와 새 단계를 summary에 저장 |
-| 다음 행동 생성 | `NEXT_ACTION_CREATED` | `NEXT_ACTION` | `DealFollowingActionLog.id` | 다음 행동 제목을 safe summary로 저장 |
-| 다음 행동 완료 변경 | `NEXT_ACTION_COMPLETION_CHANGED` | `NEXT_ACTION` | `DealFollowingActionLog.id` | 완료/미완료 상태 변경만 저장 |
 | 일정 연결 | `SCHEDULE_LINKED` | `SCHEDULE` | `ScheduleDeal.id` | 일정 제목과 시작 시각 summary |
 | 일정 연결 해제 | `SCHEDULE_UNLINKED` | `SCHEDULE` | 삭제 직전 `ScheduleDeal.id` | 연결 해제 사실만 기록 |
 | 회의록 연결 | `MEETING_NOTE_LINKED` | `MEETING_NOTE` | `MeetingNoteDeal.id` | 회의록 제목과 회의 시각 summary |
@@ -97,12 +96,9 @@
 - source row가 있는 자동 activity는 같은 mutation 재시도에서 같은 `dealId + activityType + sourceType + sourceId` 조합이 중복 생성되지 않게 application layer에서 확인한다.
 - `STAGE_CHANGED`처럼 같은 `sourceId=deal.id`로 여러 번 발생할 수 있는 activity는 DB unique 제약을 1차에서 두지 않는다.
 - G01 대조 결과 별도 mutation idempotency key 패턴은 확인되지 않았다. source row가 있는 자동 activity는 application layer에서 기존 row를 확인한 뒤 생성한다.
-- `DealApplicationService.createDeal`은 현재 초기 `DealFollowingActionLog`를 같은 transaction에서 생성한다. 1차 기준은 딜 생성 transaction 안에서 `DEAL_CREATED`와 초기 다음 행동의 `NEXT_ACTION_CREATED`를 모두 생성하는 것이다.
 - 회의록 relation update처럼 기존 연결을 delete 후 recreate하는 구현은 삭제 전에 연결 diff를 계산해 link/unlink activity를 만든다.
 - follow-up activity는 `FollowUpMessageTarget.targetType=DEAL`인 target별로 만들며, 다른 target만 가진 message는 딜 timeline에 기록하지 않는다.
 - follow-up 발송 성공/실패 activity의 `sourceId`는 message id가 아니라 확정된 `FollowUpDeliveryAttempt.id`로 둔다. `FollowUpMessage.id`는 `metadataJson.messageId`에 넣어 재시도 실패/성공 시도별 이력을 구분한다.
-- 기존 회의록 연결 mutation이 `DealFollowingActionLog`에 남기는 proxy 로그 문구를 `DealActivity` summary로 재사용하지 않는다. 06 activity는 `MeetingNoteDeal` snapshot과 회의록 title/meetingAt 기준 safe summary로 별도 생성한다.
-- G01 결정: 회의록 연결 시 legacy `DealFollowingActionLog` 생성은 1차 호환성 때문에 유지하되, UI에서는 새 `DealActivity`와 중복 primary activity처럼 보이지 않게 배치한다.
 - source record 자체의 soft delete는 1차에서 별도 `*_DELETED` activity를 만들지 않는다. 관계 row가 실제로 제거되거나 replace diff에서 빠진 경우에만 `SCHEDULE_UNLINKED`, `MEETING_NOTE_UNLINKED`를 만든다.
 
 G01 현재 코드 적용 기준:
@@ -112,7 +108,6 @@ G01 현재 코드 적용 기준:
 - Schedule 생성/수정은 이미 transaction이 있고 수정 시 dealId diff가 있다. G03에서는 생성된 `ScheduleDeal.id`와 삭제 직전 `ScheduleDeal.id`를 transaction 안에서 확보할 repository 계약을 추가한다.
 - Schedule soft delete는 relation row를 제거하지 않으므로 1차에서 `SCHEDULE_UNLINKED`를 만들지 않는다.
 - MeetingNote 생성/수정의 relation replace는 현재 delete 후 recreate 방식이다. G03에서는 replace 호출 전에 기존 `MeetingNoteDeal` 목록을 조회해 old/new diff를 계산하고, 변경된 deal만 link/unlink activity로 기록한다.
-- 별도 `linkMeetingNoteDeals`는 현재 legacy `DealFollowingActionLog` proxy 로그를 만든다. G03에서는 이 legacy 생성을 1차 호환성 때문에 유지하되, `DealActivity` summary는 meeting note snapshot으로 별도 생성한다.
 - Follow-up 발송은 provider 호출 뒤 `markDeliverySucceeded` 또는 `markDeliveryFailed` transaction에서 activity를 만든다. `FollowUpDeliveryAttempt.id`를 `sourceId`로 쓰고 `FollowUpMessage.id`는 metadata에만 둔다.
 
 Transaction 기준:
@@ -142,7 +137,6 @@ Timeline title/summary는 사용자가 빠르게 이해할 수 있는 짧은 문
 금지:
 
 - follow-up 본문 전체 복사
-- private memo 원문 복사
 - meeting note details/rawText 전문 복사
 - provider raw error/detail 복사
 - token, API key, 외부 provider quota detail 저장
@@ -181,7 +175,6 @@ Timeline title/summary는 사용자가 빠르게 이해할 수 있는 짧은 문
 
 - follow-up body 전체
 - meeting note details/rawText
-- private memo
 - provider raw response
 - token, API key, quota detail
 - contact email/phone 원문
@@ -195,7 +188,6 @@ Deal list:
 3. 현재 page deal IDs에 대해서만 latest activity를 조회한다.
 4. products summary는 `DealProduct -> Product` 관계 기준으로 만든다.
 5. latest activity는 `DealActivity.occurredAt desc, id desc` 기준 첫 row를 사용한다.
-6. private memo, provider raw, follow-up body 전체를 summary에 포함하지 않는다.
 
 Contact list:
 
@@ -208,6 +200,5 @@ Contact list:
 
 1차 구현은 새 mutation부터 `DealActivity`를 쌓는 방식으로 시작한다.
 
-- 기존 `DealFollowingActionLog`, `DealMemoLog`, `ScheduleDeal`, `MeetingNoteDeal`, `FollowUpMessageTarget` 데이터를 강제 backfill하지 않는다.
 - G04에서는 기존 섹션을 갑자기 제거하지 않고, 새 timeline과 충돌하지 않게 점진 통합한다.
 - 과거 데이터 backfill이 필요하면 별도 migration/운영 goal로 분리한다.

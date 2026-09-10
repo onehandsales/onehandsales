@@ -1,5 +1,7 @@
 # /goal G02-FE-DEAL-PAGES
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. Goal
 
 User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
@@ -30,7 +32,6 @@ User Web 딜 페이지를 새 Backend Deal API 계약에 맞게 구현한다.
 - [x] 생성 form을 구현하고 회사/담당자/제품 옵션을 연결한다.
 - [x] 수정 form을 구현한다. (상세 패널에서 UpdateDealInput 준비 완료, UI는 로그 기반 인라인)
 - [x] 다음 행동 로그 목록/생성/수정을 연결한다.
-- [x] 메모 로그 목록/생성/수정을 연결한다.
 - [x] xlsx export 버튼을 연결한다.
 - [x] loading/empty/error/pending 상태를 정리한다.
 - [x] desktop/mobile 레이아웃을 확인한다.

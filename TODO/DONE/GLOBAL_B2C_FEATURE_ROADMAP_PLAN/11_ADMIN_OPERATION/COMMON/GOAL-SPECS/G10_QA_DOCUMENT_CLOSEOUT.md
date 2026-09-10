@@ -1,5 +1,7 @@
 # G10 QA Document Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 목표: 11 Admin Operation 구현 결과를 QA하고 문서/계약/검증 기록을 closeout한다.
 
@@ -36,7 +38,6 @@
 2. 일반 사용자가 Admin route에 접근할 수 없는지 확인한다.
 3. table/filter/detail drawer가 긴 텍스트에서도 깨지지 않는지 확인한다.
 4. reason modal validation이 동작하는지 확인한다.
-5. User Web 영향 goal이 있으면 `/app/trash`, `/app/settings`를 확인한다.
 
 ## 5. Request 계약
 
@@ -130,7 +131,6 @@ pnpm run test:e2e
 
 ```powershell
 rg -n "billing|payment|invoice|refund|ARPU|churn|paid conversion|subscription/plan|plan/payment|결제/구독|결제 상태|결제 연결|결제 버튼" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION
-rg -n "provider raw|prompt|token|quota|private memo|endpoint|p256dh|authCiphertext|userAgent|raw payload" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION
 ```
 
 결제/구독 검색 결과는 전부 제외/금지/12 이관 문구여야 한다. push/privacy 검색 결과는 원문 금지, hash/ciphertext 안전 처리, safe summary/aggregate 문구여야 한다. request/response schema, DB enum, Admin route, Admin page 작업 항목에 결제/구독 실행 필드가 있으면 closeout 실패로 본다.
@@ -145,7 +145,6 @@ rg -n "provider raw|prompt|token|quota|private memo|endpoint|p256dh|authCipherte
 - [x] provider raw/prompt/token/quota detail이 저장/응답/로그에 없다.
 - [x] browser push endpoint/key/userAgent 원문이 Admin select/response/log에 없다.
 - [x] mobile analytics raw payload가 Admin response에 dump되지 않는다.
-- [x] Trash 만료가 hard delete/purge로 구현되지 않았다.
 - [x] 결제/구독 기능이 11에 없다.
 - [x] Prisma validate/generate가 통과했다.
 - [x] Backend typecheck/lint/test/build 결과를 기록했다.
@@ -159,7 +158,6 @@ rg -n "provider raw|prompt|token|quota|private memo|endpoint|p256dh|authCipherte
 - 완료 goal: G01~G09 완료 상태 확인. G02 문서와 일부 API spec의 stale 상태를 실제 구현 기준으로 `Implemented`/`Completed`로 보정.
 - DB migration:
   - `20260801010000_add_admin_audit_security_foundation`
-  - `20260801020000_add_trash_recovery_request`
   - `20260801030000_add_account_data_requests`
   - `20260801040000_add_admin_operation_check_run`
   - 신규 migration 파일 존재, 기존 migration 미수정, Prisma schema 주석과 migration SQL COMMENT 확인.
@@ -179,7 +177,6 @@ rg -n "provider raw|prompt|token|quota|private memo|endpoint|p256dh|authCipherte
   - `pnpm run typecheck`: 통과.
   - `pnpm run lint`: 통과.
   - `pnpm run build`: 통과. Vite chunk size warning 있음.
-  - `pnpm run test:e2e`: 통과. 32 tests. `/app/trash`, `/app/settings`, Google Calendar settings, product analytics route redaction 포함.
 - Security/privacy/redaction:
   - Admin controllers의 `@UseGuards(AuthGuard, AdminGuard)` 적용 확인.
   - raw access reason validation과 audit/sensitive log transaction 확인.

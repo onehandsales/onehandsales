@@ -1,5 +1,7 @@
 # /goal G01 BE Product Domain
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## /goal 입력문
 
 아래 문서를 먼저 읽고, 사용자 페이지 제품(Product) 도메인 백엔드 구현을 완료해줘.
@@ -44,8 +46,6 @@
 - `Product`
 - `ProductCategory`
 - `ProductStatus`
-- `ProductMemoLog`
-- `ProductUserPrivateMemoLog`
 
 필드 기준:
 - `Product.id`: uuid
@@ -64,20 +64,6 @@
 - `ProductStatus.userId`: uuid FK
 - `ProductStatus.statusName`: string
 - `ProductStatus.createdAt`: 생성일
-- `ProductMemoLog.id`: uuid
-- `ProductMemoLog.productId`: uuid FK
-- `ProductMemoLog.userId`: uuid FK
-- `ProductMemoLog.memoType`: string
-- `ProductMemoLog.memo`: string
-- `ProductMemoLog.createdAt`: 생성일
-- `ProductMemoLog.updatedAt`: 수정일
-- `ProductUserPrivateMemoLog.id`: uuid
-- `ProductUserPrivateMemoLog.productId`: uuid FK
-- `ProductUserPrivateMemoLog.userId`: uuid FK
-- `ProductUserPrivateMemoLog.memoCiphertext`: string
-- `ProductUserPrivateMemoLog.memoKeyVersion`: string
-- `ProductUserPrivateMemoLog.createdAt`: 생성일
-- `ProductUserPrivateMemoLog.updatedAt`: 수정일
 
 권장 인덱스:
 - `Product.userId + Product.createdAt`
@@ -86,8 +72,6 @@
 - `Product.userId + Product.productStatusId`
 - `ProductCategory.userId + ProductCategory.categoryName`
 - `ProductStatus.userId + ProductStatus.statusName`
-- `ProductMemoLog.productId + ProductMemoLog.createdAt`
-- `ProductUserPrivateMemoLog.productId + ProductUserPrivateMemoLog.createdAt`
 
 ### 2. API 구현
 
@@ -103,12 +87,6 @@
 - `POST /api/products`
 - `GET /api/products/:productId`
 - `PATCH /api/products/:productId`
-- `POST /api/products/:productId/memo-logs`
-- `GET /api/products/:productId/memo-logs`
-- `PATCH /api/products/:productId/memo-logs/:memoLogId`
-- `POST /api/products/:productId/private-memo-logs`
-- `GET /api/products/:productId/private-memo-logs`
-- `PATCH /api/products/:productId/private-memo-logs/:privateMemoLogId`
 
 ### 3. 비즈니스 규칙
 
@@ -121,15 +99,10 @@
 - 필터 옵션 API는 드롭다운 선택에 필요한 `id`와 표시명을 반환한다.
 - 제품 생성/수정 시 `productPrice`는 정수, 0 이상만 허용한다.
 - `productCategoryId`, `productStatusId`는 해당 사용자의 데이터인지 검증한다.
-- 제품 생성 시 `productMemo`가 있으면 같은 트랜잭션에서 `ProductMemoLog`를 생성한다.
-- 제품 생성 시 `productMemo`가 없으면 `ProductMemoLog`를 생성하지 않는다.
 - 제품 생성 시 초기 일반 메모의 `memoType`은 `"초기 메모"`로 저장한다.
 - 제품 일반 메모 수정 API는 `memoType`, `memo` 중 최소 1개를 수정할 수 있어야 한다.
-- 제품 개인 비밀 메모는 평문을 DB에 저장하지 않는다.
-- 제품 개인 비밀 메모 목록 응답은 복호화된 `memo`를 반환한다.
 - 제품 카테고리/상태 삭제는 사용 중이면 `409 Conflict`를 반환한다.
 - 본 작업에 제품 삭제/복구/영구삭제 API를 만들지 않는다.
-- 본 작업에 `ProductConnection`, `ProductLog`, `PersonalMemo(targetType=PRODUCT)`를 만들지 않는다.
 
 ### 4. 아키텍처 규칙
 
@@ -141,15 +114,10 @@
 - API 내부 기능 메서드는 `// 기능 : ...` 주석을 작성한다.
 - 모든 클래스와 인터페이스에는 `// 역할 : ...` 주석을 작성한다.
 - 트랜잭션 경계는 service 계층에서 명확하게 보이도록 작성한다.
-- 주요 생성/수정/삭제/비밀 메모 작업에는 구조화 로그를 남긴다.
-- 로그에는 비밀 메모 평문, 암호문, 민감한 입력값을 남기지 않는다.
 
-### 5. 개인 비밀 메모 암호화
 
-- Company/Contact 개인 비밀 메모 구현 패턴을 따른다.
 - `.env.example`에 `PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY`, `PRODUCT_PRIVATE_MEMO_ENCRYPTION_KEY_VERSION`을 추가한다.
 - 공통 `ENCRYPTION_MASTER_KEY`, `ENCRYPTION_KEY_VERSION` fallback이 이미 있으면 기존 패턴과 일관되게 사용한다.
-- 비밀 메모 원문은 API DTO와 복호화 응답에서만 다루고 DB에는 저장하지 않는다.
 
 ### 6. API 계약 문서와 AGENT 문서
 
@@ -173,9 +141,7 @@
 - [x] 모든 Product API가 구현되어 있다.
 - [x] 제품 목록 검색은 `productName`만 대상으로 한다.
 - [x] 제품 생성 + 선택적 초기 메모 생성이 한 트랜잭션으로 처리된다.
-- [x] 개인 비밀 메모는 암호화 저장되고 응답에서만 복호화된다.
 - [x] 일반 메모 수정에서 `memoType`과 `memo` 중 최소 1개를 수정할 수 있다.
-- [x] 개인 비밀 메모 수정 API가 존재한다.
 - [x] 카테고리/상태 삭제 시 사용 중이면 `409 Conflict`를 반환한다.
 - [x] API별 주석, 기능 주석, 클래스/인터페이스 역할 주석이 반영되어 있다.
 - [x] 관측성 로그가 민감정보 없이 작성되어 있다.
@@ -203,7 +169,6 @@ pnpm.cmd run build
 
 ```powershell
 cd D:\workspace_repository\sales_b2c_platform\Sales_b2c
-rg -n "unitPrice|currency|description|initialMemo|ProductConnection|ProductLog|DELETE /api/products|restore|permanentDeleteAt" BE TODO/DONE/PRODUCT_DOMAIN_PLAN AGENT/SOFTWARE_AGENT
 rg -n "API :|기능 :|역할" BE/src/modules/product
 git diff --check
 ```
@@ -213,10 +178,8 @@ git diff --check
 - 프론트엔드 구현
 - 관리자 페이지 구현
 - 제품 삭제/복구/영구삭제
-- 제품 휴지통 또는 soft delete
 - 제품 카테고리/상태 수정 API
 - ProductConnection
-- ProductLog
 - 딜 생성 중 제품 inline creation 연동
 - 범용 Import/Export/OCR 연동
 - ExportJob 기반 비동기 내보내기
@@ -226,4 +189,3 @@ git diff --check
 이 기본 goal 완료 이후 `TODO/DONE/ADDITIONAL_WORK_PLAN`에서 `GET /api/products/export/xlsx`가 추가 구현됐다.
 
 따라서 현재 FE 작업자는 제품 목록 내보내기 버튼에서 현재 검색어와 필터를 export API에 전달하고, `page`는 전달하지 않는다. 범용 Import/Export 화면, ExportJob, OCR 연동은 여전히 범위 밖이다.
-- 비밀 메모 평문 저장

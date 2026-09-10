@@ -1,5 +1,7 @@
 # Admin Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / G04 Closeout Confirmed
 
 이 문서가 11 Admin Operation의 Frontend 정본이다. 기존 `FE-TODO/USER-WEB-TODO.md`는 08 구조 호환과 User Web 영향 기록용이다.
@@ -18,7 +20,6 @@
 Admin shell
 -> Users list/detail
 -> Audit logs/detail drawer
--> Trash/recovery request
 -> Provider failures
 -> Analytics overview
 -> System operation gate

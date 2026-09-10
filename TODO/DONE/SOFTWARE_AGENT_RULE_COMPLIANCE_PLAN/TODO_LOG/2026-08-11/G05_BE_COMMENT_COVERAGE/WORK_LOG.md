@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# G05 BE Comment Coverage Work Log
 
 상태: 구현 및 검증 완료 / 2026-08-12 재검토 후 후속 보완 기록
@@ -94,8 +96,5 @@ git diff --check
 
 ## 5. 남은 후속 보완
 
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `getUserTrashSummary`는 public application orchestration method이고 `// 기능 : ...`은 있으나 numbered step comment가 없다.
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `listUserTrashRecords`는 public application orchestration method이고 `// 기능 : ...`은 있으나 numbered step comment가 없다.
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `listRecoveryRequests`는 public application orchestration method이고 `// 기능 : ...`은 있으나 numbered step comment가 없다.
 - 위 3개 method는 G05의 "controller와 application orchestration의 주요 흐름 numbered step comment" 기준에 맞춰 후속 보완이 필요하다.
 - 2026-08-12 재검토 전에는 이 `WORK_LOG.md` 파일이 없었고, 상위 TODO 문서들이 존재하지 않는 완료 로그를 참조하고 있었다. 이 문서를 추가해 완료 로그 참조 정합성을 보강했다.

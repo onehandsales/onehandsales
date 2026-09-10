@@ -1,5 +1,7 @@
 # G04_MERGE_CONFLICT_RESOLUTION Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업 일자
 
 - 2026-06-15
@@ -16,7 +18,6 @@
 | 브랜치 | 작업 내용 |
 |--------|-----------|
 | `fe/contact` (HEAD) | 회사/담당자 목록 화면 PageHeader 기반 디자인 시스템으로 전면 개편, taxonomy 다이얼로그, FilterChip 컴포넌트 등 UI 전면 교체 |
-| `origin/main` | Pagination 컴포넌트에 `totalCount` 표시 기능 추가, meeting-note/trash 화면에 회사/담당자 필터·정렬 기능 추가 |
 
 ---
 
@@ -210,7 +211,6 @@ git checkout --theirs FE/user-web/src/features/meeting-note/components/meeting-n
 
 ---
 
-### 6. `FE/user-web/src/features/trash/components/trash-screen.tsx`
 
 #### 충돌 위치
 
@@ -218,7 +218,6 @@ git checkout --theirs FE/user-web/src/features/meeting-note/components/meeting-n
 
 #### HEAD
 ```tsx
-{(trashQuery.data && (totalPages > 1 || page > 1)) ? (
   <Pagination
     page={page}
     totalPages={totalPages}
@@ -229,11 +228,8 @@ git checkout --theirs FE/user-web/src/features/meeting-note/components/meeting-n
 
 #### origin/main
 ```tsx
-{trashQuery.data && (trashTotalPages > 1 || page > 1) ? (
   <Pagination
     page={page}
-    totalCount={trashQuery.data?.totalCount}
-    totalPages={trashTotalPages}
     onPageChange={setPage}
   />
 ) : null}
@@ -242,13 +238,10 @@ git checkout --theirs FE/user-web/src/features/meeting-note/components/meeting-n
 #### 해결 방법: **origin 버전 채택**
 
 ```bash
-git checkout --theirs FE/user-web/src/features/trash/components/trash-screen.tsx
 ```
 
 #### 이유
-- origin 버전이 파일 전체적으로 더 완성된 구조 (유형 필터 사이드바, 다양한 TrashTargetType 등)
 - `totalCount` prop 전달은 Pagination 개선(1번 파일)과 일관성 유지
-- HEAD의 `totalPages`는 지역 변수(`Math.ceil(...)`)였으나 origin의 `trashTotalPages`가 동일한 역할
 
 ---
 
@@ -261,7 +254,6 @@ git checkout --theirs FE/user-web/src/features/trash/components/trash-screen.tsx
 | `company-list-screen.tsx` | HEAD | `git checkout --ours` |
 | `contact-list-screen.tsx` | HEAD | `git checkout --ours` |
 | `meeting-note-list-screen.tsx` | origin | `git checkout --theirs` |
-| `trash-screen.tsx` | origin | `git checkout --theirs` |
 | `app-shell.tsx` | HEAD | 충돌 마커 없음, 이미 정상 |
 
 ## 후속 확인 사항

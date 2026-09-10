@@ -1,5 +1,7 @@
 # Weekly Schedule Report API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조 완료: 03 추가 API 계약 없음. 상세 판단은 `../FINAL-SERVICE-FOLLOWUP-AUDIT.md`를 따른다.
 
 상태: confirmed
@@ -17,7 +19,6 @@
   - `GET /api/schedules/week/export/xlsx`
 - 범용 `/api/exports` job, `/app/export`, PDF export, 반복 일정 정식 모델은 이번 API 계약에서 제외한다.
 - `NBA-009 Schedule week report`만 이번 03으로 승격한다.
-- 새 DB migration 없이 기존 `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` 조회로 구현한다.
 - 새 Prisma model, table, column, index를 만들지 않는다.
 - DB 관련 구현 또는 문서 변경이 생기면 한글 주석을 반드시 둔다.
 - 새 DB 구조가 필요하다고 판단되면 03에 섞지 않고 별도 사용자 결정/goal로 분리한다.

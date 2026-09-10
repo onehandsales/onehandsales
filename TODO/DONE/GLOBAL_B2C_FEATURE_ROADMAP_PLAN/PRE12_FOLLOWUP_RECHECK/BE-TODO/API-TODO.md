@@ -1,5 +1,7 @@
 # Backend API Todo
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final / confirmed backend API 없음 / BEFORE_12 반영 완료 / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -16,7 +18,6 @@
 | --- | --- |
 | Notification | `NotificationSourceType`은 `SCHEDULE`, `DEAL`만 사용한다. 일정 시작 reminder와 딜 마감 reminder 중심이다. |
 | Google Calendar | `/api/schedules/google` connect/status/calendars/selection/sync/disconnect와 callback은 04 범위로 완료됐다. OAuth scope는 `calendar.readonly`이고 export/write/watch/reminders/attendee/multi-account/other provider API는 없다. |
-| DealActivity | `GET/POST/PATCH /api/deals/:dealId/activities`와 자동 event, manual create/update, Deal list products/latestActivity, Contact dealCount가 06에서 완료됐다. manual delete API, automatic activity update/delete API, memo/private memo activity 통합, all-domain activity bus, advanced search/filter/score/AI 판단 API는 없다. |
 | MeetingNote AI | `POST /api/meeting-notes/ai-draft`, `POST /api/meeting-notes/stt-draft`, `POST /api/meeting-notes/:meetingNoteId/next-actions/draft`, `POST /api/meeting-notes/:meetingNoteId/follow-up-draft`가 07에서 완료됐다. `AiProviderOperation`에는 MeetingNote draft/STT/next action/follow-up draft operation이 있고, 후보 자동 저장/자동 발송 API는 없다. |
 | Follow-up Delivery | `FollowUpMessage`, `FollowUpDeliveryAttempt`, `ExternalEmailConnection` 계열이 있고 Gmail/Microsoft email adapter는 구현됐다. SMS provider는 production 실제 provider가 아니라 test/not-configured provider 상태이며, 예약 발송/sequence/campaign/unsubscribe/email sync API는 없다. |
 | ImportJob | `/api/imports` 계열 persistence/resume/confirm/cancel과 10MB/5,000 data row 제한은 01에서 완료됐다. 현재 import 대상은 회사, 담당자, 제품, 딜이다. ImportJob cleanup 실패 전용 Admin aggregate/system gate API는 없다. |
@@ -24,7 +25,6 @@
 | Global Data I18N | User global settings, Product/Deal currency, Contact KR/US phone, Company KR/US region/address, Import/Export localization, Google/LINE/Apple auth는 08에서 완료됐다. |
 | Product Analytics | `POST /api/analytics/events`, server-side recorder, activation/retention snapshot, AI usage summary, 10 mobile field-use event, 11 Admin analytics overview가 있다. 09는 외부 provider, billing runtime, public attribution, experiment, account deletion 실제 job을 만들지 않았다. |
 | Mobile Field Use | BusinessCard OCR safe failure, 기존 MeetingNote STT draft, 기존 Notification browser push subscription API, 09 analytics collector 재사용으로 10 범위가 완료됐다. 10은 advanced camera/image processing API, `UserDraft`, `/api/drafts/*`, media/raw 저장 API, PWA API, `/api/exports`를 만들지 않았다. |
-| Admin Operation | `/admin/api/*`, AuthGuard/AdminGuard, Admin users/domain/trash/provider/analytics/account-request/audit/system API가 있다. Admin domain records는 read-only 조회 기준이며 Admin 도메인 데이터 mutation API는 없다. `UserRole`은 `USER`/`ADMIN` 기준이고 customer/B2B tenant admin API는 없다. 11은 Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge, export artifact/download endpoint, 자동 민감정보 감지를 만들지 않았다. |
 
 ## 3. 구현 금지
 
@@ -40,7 +40,6 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - AI weekly report 자동 생성 또는 AI suggestion 자동 mutation API 추가
 - Follow-up delivery SMS 실제 provider/vendor API, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML/첨부/tracking API 추가
 - Company/Contact/Product list summary API field 추가
-- DealActivity manual delete/restore API, automatic activity update/delete API, retention/audit/trash API, memo/private memo activity 통합 API, all-domain activity bus, 고급 search/filter, deal score, AI activity 자동 판단 API 추가
 - MeetingNote list summary API field 추가
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 또는 조회 API 추가
@@ -68,7 +67,6 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 - audio/image binary, transcript 전문, provider raw response 저장/조회 API를 `PRE12-F43` 정책 없이 추가
 - `/api/exports`, `ExportJob` API를 10/PRE12 후속처럼 추가
 - stale 11 문서 체크리스트를 근거로 Admin API 재구현
-- Admin 직접 Trash 복구 mutation, 유료 복구 결제 API, Trash hard delete/purge API 추가
 - Admin domain records를 Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 직접 수정/삭제/복구 mutation으로 확장
 - Customer/B2B tenant admin API, organization/member/role/permission API를 11 Admin 후속처럼 추가
 - data export artifact 생성 processor, signed URL, download endpoint 추가
@@ -80,7 +78,6 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 07 재대조 기준으로 MeetingNote AI/STT provider log, detail next action draft, detail follow-up draft API는 완료다. MeetingNote follow-up reminder/자동 발송, list latest/next summary, AI data cleanup 저장/적용, transcript/raw/follow-up draft 저장/조회 API, AI 후보 자동 업무 mutation API는 07 미완성이 아니라 `PRE12-F02`/`PRE12-F03`/`PRE12-F08`/`PRE12-F14`/`PRE12-F15`/`PRE12-F40` 후속 후보로만 둔다. 11에서 닫힌 Admin provider audit/raw access는 07 또는 PRE12에서 재구현하지 않는다.
 
-04 재대조 기준으로 Google Calendar Backend/API 범위는 read-only import/sync, calendar 선택, source metadata, Trash restore, Google-origin reminder까지 완료다. Google export/write/양방향 sync, realtime webhook/watch, 반복 일정 정식 모델, reminders/attendee import, multi-account/provider 확장은 04 미완성이 아니라 `PRE12-F10` 후속 후보로만 둔다.
 
 05 재대조 기준으로 AI weekly report API, snapshot-summary, follow-up delivery settings, Gmail/Microsoft connect/callback/disconnect, draft/send/retry/list API와 send adapter는 완료다. 운영 provider smoke는 새 API 없이 BEFORE_12 G01 기록으로 닫혔고, SMS 실제 provider와 B2B/email growth 확장은 `PRE12-F05`/`PRE12-F06` 후속 후보로 둔다.
 
@@ -90,7 +87,6 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 
 10 재대조 기준으로 Mobile Field Use Backend/API 범위는 완료다. `10/BE-TODO/API-TODO.md`의 G03/G05/G06 미체크는 기능 미구현이 아니라 문서 체크리스트 정리 대상이다. `/api/exports`와 `ExportJob`은 03/11 후속 `PRE12-F09`로만 본다. BusinessCard advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`으로 분리한다.
 
-11 재대조 기준으로 Admin Operation Backend/API 범위는 완료다. `11/COMMON/GOAL-COMPLETION-CHECKLIST`, `11/COMMON/GOAL-SPECS/README`, `11/BE-TODO/API-TODO.md`의 정합성은 BEFORE_12 G04에서 닫았다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, data export artifact/download, 자동 민감정보 감지, Admin 직접 도메인 데이터 mutation, Customer/B2B tenant admin은 11 밖의 후속 후보로만 본다. ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13` import/Admin ops 확장으로 연결한다.
 
 ## 4. 후보별 Backend 영향
 
@@ -102,7 +98,6 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | MeetingNote AI 후보 자동 업무 mutation | 자동 적용 endpoint/worker, approval/audit/rollback, confidence threshold, idempotency/ownership 계약 필요 | 후속 seed / `PRE12-F40` |
 | Notification 데이터 TTL/cleanup | `Notification`/delivery attempt/revoked subscription 삭제 기준, batch runner, Admin/provider failure 조회 보존 기간, 계정 삭제 실제 처리와의 충돌 기준 필요 | 후속 seed / `PRE12-F38` |
 | record summary | 기존 list API field 추가 또는 별도 summary endpoint, redaction 기준 필요 | Company/Contact/Product는 defer. 비고: 후속 B2B/team CRM strategy seed. MeetingNote list summary는 후속 seed. |
-| DealActivity lifecycle/search/score 확장 | manual delete/restore, automatic activity update/delete, retention/audit/trash, memo/private memo 통합, all-domain activity bus, advanced search/filter, deal score, AI activity 자동 판단, summary cache API 계약 필요 | 후속 seed / `PRE12-F39` |
 | AI data cleanup | cleanup suggestion 생성/적용/rollback API, audit log, ownership/redaction 기준 필요 | 후속 seed / 별도 data quality 계획 |
 | transcript/raw/follow-up draft 저장 | retention, 삭제권, raw access audit, redaction, Admin/User 노출 기준 필요 | defer / 정책 필요 |
 | Import scale/source/Admin 확장 | worker queue/status/cancel/retry, schedule/meeting-note source mapping, Admin 조회/cleanup API, cleanup failure aggregate/system gate 기준 필요 | 후속 seed / `PRE12-F13` |
@@ -127,7 +122,6 @@ G00과 API contract 확정 전에는 아래 Backend 변경을 하지 않는다.
 | generic ExportJob/PDF | BE `ExportJob`/`/api/exports`는 현재 없음. FE 잔여 코드가 있어도 후속 재검토 전 API를 열지 않음 | 후속 seed |
 | Google Calendar 고급 sync/provider 확장 | 현재 API는 read-only sync와 selected calendar 관리만 제공한다. write/export/watch/reminders/attendee/multi-account/other provider는 새 API contract 필요 | 후속 seed / `PRE12-F10` |
 | 11 Admin 문서 체크리스트 정합성 | 11 BE/API TODO와 goal index를 실제 완료 상태와 맞추는 문서 정리. 새 API 없음 | closed-by-BEFORE_12 |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, payment recovery API, purge/hard delete API 기준 필요 | billing-blocked / recovery-policy |
 | User data export artifact/download | artifact 생성 processor, storage signed URL, download controller, file TTL/ownership/audit 기준 필요 | 후속 seed / `PRE12-F09` 연결 |
 | 자동 민감정보 감지 | PII/DLP detection 위치, 오탐/누락 처리, audit/redaction 기준 필요 | defer / 정책 필요 |
 | Admin direct domain data mutation and recovery action policy | 도메인별 Admin mutation, ownership, 사용자 통지, audit/result, rollback, redaction 기준 필요. 11 read-only records API를 재오픈하지 않는다 | defer / ops-policy / `PRE12-F44` |
@@ -143,7 +137,6 @@ rg -n "SUPPORTED_LOCALES|SUPPORTED_COUNTRY_CODES|SUPPORTED_CURRENCY_CODES|SUPPOR
 rg -n "ExternalAuthProvider|OAuthProvider|normalizeProvider" BE\src\modules\auth BE\src\shared -g "*.ts"
 rg -n "ProductAnalyticsEvent|PRODUCT_ANALYTICS_CLIENT_EVENT_NAMES|PRODUCT_ANALYTICS_SERVER_EVENT_NAMES|PRODUCT_ANALYTICS_RESERVED_BILLING_EVENT_NAMES" BE\src\modules\analytics BE\prisma\schema.prisma
 rg -n "AccountDeletionRequest|scheduledDeletionAt|user\.delete|account deletion" BE\src\modules BE\prisma\schema.prisma
-rg -n "@Controller\(|@UseGuards\(|data-export-requests/.*/download|TrashRecoveryRequest|AdminOperationCheckRun" BE\src\modules\admin-operation BE\src\modules\account-request BE\src\modules\trash BE\prisma\schema.prisma
 rg -n "@Post|@Patch|@Put|@Delete|domain-records|UserRole|TenantAdmin|CustomerAdmin|model Tenant|model Organization|tenantId" BE\src\modules\admin-operation BE\prisma\schema.prisma
 ```
 

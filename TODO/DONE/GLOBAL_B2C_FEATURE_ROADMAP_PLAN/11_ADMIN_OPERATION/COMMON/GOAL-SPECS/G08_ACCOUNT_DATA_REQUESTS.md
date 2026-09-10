@@ -1,5 +1,7 @@
 # G08 Account Data Requests
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented
 목표: 사용자 데이터 export 요청과 계정 삭제 요청을 User Web/Admin Web 운영 queue로 만든다.
 
@@ -96,7 +98,6 @@ Admin Web:
 
 ## 7. Business Logic
 
-- 계정 삭제는 일반 Trash soft delete와 별개다.
 - 계정 삭제 요청은 30일 유예를 둔다.
 - 유예 기간 내 취소할 수 있다.
 - user-linked analytics raw event와 user-level snapshot은 실제 삭제 대상이다.
@@ -184,7 +185,6 @@ pnpm run build
 - [x] account deletion 요청 API가 있다.
 - [x] account deletion 취소 API가 있다.
 - [x] 30일 유예가 저장된다.
-- [x] 일반 Trash hard delete 정책과 섞이지 않는다.
 - [x] provider raw/token/admin audit가 export에 포함되지 않는다.
 - [x] User Web settings UI가 있다.
 - [x] Admin Web request queue가 있다.

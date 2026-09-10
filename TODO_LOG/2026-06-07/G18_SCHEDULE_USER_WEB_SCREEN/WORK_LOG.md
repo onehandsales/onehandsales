@@ -1,5 +1,7 @@
 # G18 Schedule User Web Screen
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 상태
 - 완료
 
@@ -17,7 +19,6 @@
 - 같은 화면에서 월간/주간 view mode를 전환할 수 있어야 한다.
 - 월/주 이동, 오늘 이동, 일정 생성 버튼, 일정 카드가 필요하다.
 - 일정 생성/수정 form은 제목, 시작일시, 종료일시를 필수로 받는다.
-- 장소, 딜, 회사, 담당자, 알림 시간, 메모 입력을 제공한다.
 - `GET/POST/PATCH/DELETE /api/schedules`와 `GET /api/schedules/week`를 연결한다.
 - 일정 없음 상태에는 빈 캘린더와 생성 CTA를 보여준다.
 - Google source 일정은 출처 배지를 표시한다.
@@ -34,7 +35,6 @@
 - Schedule API client, query key, 조회/mutation 훅, 타입, form schema를 추가했다.
 - `/schedules`를 월간 기본 캘린더 화면으로 교체했다.
 - 같은 화면에서 월간/주간 view mode 전환, 월/주 이동, 오늘 이동, 일정 생성 CTA를 구현했다.
-- 일정 생성/수정 dialog에 제목, 시작/종료일시, 종일, 장소, 딜/회사/담당자 검색 연결, 알림 시간, 메모 입력을 추가했다.
 - 일정 수정 dialog에서 상세 조회와 삭제 액션을 연결했다.
 - `/schedules/week` 주간 보고서 화면과 라우트를 추가했다.
 - Google source 일정은 월간 pill과 주간 카드/보고서에서 출처를 표시하도록 했다.

@@ -1,5 +1,7 @@
 # G01 UX/UI Audit Baseline
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P0
 담당 영역: UX/UI QA, FE/user-web
@@ -40,7 +42,6 @@ P1:
 - `/app/meeting-notes`
 - `/app/business-cards`
 - `/app/import`
-- `/app/trash`
 
 P2:
 
@@ -109,7 +110,6 @@ pnpm run lint
 
 - Goal 원문 재확인: 큰 UX/UI 구현 수정, Backend API 수정, DB schema/migration 수정, 390px/360px 모바일 전용 QA는 제외 범위로 유지했다.
 - Diff 자체 검토: 문서와 TODO 상태 업데이트만 포함했다. `FE/user-web` 구현 코드는 수정하지 않았고, screenshot artifact는 repository에 보관하지 않는다.
-- 화면 재확인: G01 로컬 캡처 `1440-app-home.png`, `1440-deals.png`, `1280-deals.png`, `768-app-home.png`, `768-deals.png`, `768-schedules.png`, `768-business-cards.png`, `768-trash.png`, `1440-more.png`를 시각 확인했다.
 - Viewport 검토: 1440px, 1280px, 768px, 125% 확대 proxy 기준으로 P0/P1/P2 화면 48장을 생성했다.
 - 자동 검토: 실제 Backend API mock 기준 console error 0건, page error 0건, failed request 0건, document-level horizontal overflow 0건을 확인했다.
 - 남은 리스크: UX-001과 UX-002가 S2 후보로 남아 있으며 각각 G03, G05에서 먼저 처리해야 한다.

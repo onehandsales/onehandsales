@@ -1,5 +1,7 @@
 # MVP 유저 플로우
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 MVP 구현 시 Frontend와 Backend가 같은 사용자 흐름을 기준으로 작업하도록 정리한 실행용 유저 플로우다.
@@ -73,27 +75,20 @@
 
 ### Backend 처리
 
-- 회사 생성, 수정, 목록, 상세, 삭제, 복구
-- 담당자 생성, 수정, 목록, 상세, 삭제, 복구
-- 제품 생성, 수정, 목록, 상세, 삭제, 복구
+- 회사 생성, 수정, 목록, 상세, 분야/지역 옵션, xlsx 내보내기
+- 담당자, 제품, 딜은 현재 User Web `/app`으로 redirect되는 후속 범위다.
 - 사용자 소유 데이터 필터링
 
 ### 주요 데이터
 
 - `Company`
-- `CompanyLog`
-- `Contact`
-- `ContactLog`
-- `Product`
-- `ProductLog`
-- `ProductConnection`
-- `PersonalMemo`
+- `CompanyField`
+- `CompanyRegion`
 
 ### 완료 기준
 
 - 최소 정보만으로 회사/담당자/제품을 빠르게 저장할 수 있다.
 - 목록 검색과 상세 조회가 가능하다.
-- 삭제한 데이터는 휴지통에서 복구할 수 있다.
 
 ## 5. Flow 2. 명함 OCR
 
@@ -431,7 +426,6 @@ Admin은 운영상 필요한 경우 전체 데이터를 확인할 수 있지만,
 - `AuditLog`
 - `Deal`
 - `MeetingNote`
-- `PersonalMemo`
 
 ### 완료 기준
 
@@ -449,5 +443,4 @@ Admin은 운영상 필요한 경우 전체 데이터를 확인할 수 있지만,
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
 - `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
-
 

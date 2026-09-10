@@ -1,11 +1,12 @@
 # G02 Backend DB Google Connection
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 완료일: 2026-07-23
 
 ## 1. 목적
 
-Google Calendar integration의 DB foundation, Schedule soft delete/Trash foundation, OAuth connection/status/disconnect API를 구현한다.
 
 ## 2. 선행 조건
 
@@ -29,7 +30,6 @@ Google Calendar integration의 DB foundation, Schedule soft delete/Trash foundat
 - `GET /api/schedules/google/status`
 - `POST /api/schedules/google/disconnect`
 - `DELETE /api/schedules/:scheduleId` soft delete 전환
-- Trash `SCHEDULE` list/detail/restore
 - Schedule restore 시 reminder 재계산
 - disconnect `KEEP/HIDE/TRASH` schedule 처리
 - Backend unit/controller/repository test
@@ -75,7 +75,6 @@ Google Calendar integration의 DB foundation, Schedule soft delete/Trash foundat
   - `externalSyncStatus`
   - `deletedAt`
   - `deletedByUserId`
-  - `trashExpiresAt`
 - indexes/unique:
   - `@@unique([userId, externalCalendarSourceId, externalEventId])`
   - schedule delete/source 관련 indexes
@@ -162,13 +161,9 @@ Business logic:
 - soft-deleted schedule은 기존 list/detail/week/export 기본 조회에서 제외한다.
 - `ScheduleDeal`은 유지한다.
 - pending reminder는 취소한다.
-- `trashExpiresAt`은 `createTrashRetentionTimestamps(now)`로 계산하며 현재 값은 `now+7일`이다.
 - structured log에는 memo/title 원문을 남기지 않는다.
 
-## 8. Trash SCHEDULE
 
-- `TrashTargetType`에 `SCHEDULE` 추가
-- `TrashDomainFilter`에 `SCHEDULE` 추가
 - list/detail/restore repository branch 추가
 - restore 시 Google-origin schedule은 `LOCAL_MODIFIED`
 - restore 시 future schedule reminder 재계산
@@ -197,7 +192,6 @@ pnpm run typecheck
 pnpm run lint
 pnpm run test -- schedule
 pnpm run test -- notification
-pnpm run test -- trash
 pnpm run build
 ```
 
@@ -206,7 +200,6 @@ pnpm run build
 - Prisma migration이 생성되고 validate/typecheck가 통과한다.
 - 기존 schedule row가 `INTERNAL`로 정상 조회된다.
 - Schedule hard delete가 soft delete로 바뀐다.
-- Trash `SCHEDULE` list/detail/restore가 동작한다.
 - Google connection/status/connect/callback/disconnect API가 spec과 일치한다.
 - token/code/raw provider body가 log/response/test snapshot에 노출되지 않는다.
 - disconnect `KEEP/HIDE/TRASH`가 schedule과 reminder를 올바르게 처리한다.
@@ -215,9 +208,6 @@ pnpm run build
 
 - Prisma enum/model/field와 Google Calendar integration migration을 추가했다.
 - 기존 schedule row는 `sourceType=INTERNAL` 기본값으로 호환되도록 했다.
-- schedule delete는 hard delete 대신 soft delete/Trash 보존으로 전환했다.
-- Trash `SCHEDULE` list/detail/restore와 restore reminder 재계산을 추가했다.
 - Google connect/callback/status/disconnect API와 token encryption/OAuth state 검증 foundation을 구현했다.
 - disconnect `KEEP/HIDE/TRASH` 처리와 `TRASH` 대상 reminder cancel을 구현했다.
-- 검증은 `prisma:validate`, `prisma:migrate --name google_calendar_integration`, `typecheck`, `lint`, `test -- schedule`, `test -- notification`, `test -- trash`, `build`로 확인했다.
 - 실제 Google provider smoke는 G02 제외 범위이며 G05에서 실행 여부 또는 미실행 사유를 기록한다.

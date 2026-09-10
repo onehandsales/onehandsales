@@ -1,5 +1,7 @@
 # G02 response mapper read model boundary
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 완료일: 2026-08-30
 TODO_LOG: `TODO_LOG\2026-08-30\PRESENTATION_CONTRACT_TYPE_BOUNDARY\G02_RESPONSE_MAPPER_READ_MODEL_BOUNDARY\WORK_LOG.md`
@@ -66,7 +68,6 @@ rg -n "application/ports/.+repository|application\\ports\\.+repository" src\modu
 - mapper 입력 타입은 `application/ports/*-read-model.types.ts` 계열 non-repository contract를 참조하도록 분리했다.
 - account-request와 admin-operation application service 공개 반환 타입도 read-model contract를 참조하도록 보정했다.
 - repository port 파일은 token/interface/input/audit 계약을 유지하고, output/page/detail/read-model 타입은 non-repository contract 파일에서 소유하도록 정리했다.
-- `AdminOperationCheckItemsResponse`, `AdminAnalytics*Response`, `AdminTrashSummaryResponse`의 repository record 단순 alias 패턴은 명시적 response interface로 보정했다.
 - API response field 이름, 타입, nullable 의미, DB 조회 로직, FE 코드는 변경하지 않았다.
 - 2026-08-30 검증 결과 `pnpm run typecheck`, `pnpm run lint`, `pnpm test -- --runInBand`가 통과했다.
 - `rg -n 'application/ports/.+repository|application\\ports\\.+repository' src/modules -g '*.ts' -g '!*.spec.ts' | rg 'presentation'` 결과는 출력 없음이다.

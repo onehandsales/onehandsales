@@ -1,5 +1,7 @@
 # Notification Reminder API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 계약 상태: confirmed
 구현 상태: User API G02 Done / internal scheduling-delivery G03 Done / User Web G04 Done / QA G05 Done
 소비자:
@@ -111,7 +113,6 @@
 - email/browser push provider 호출은 DB transaction 밖에서 실행한다.
 - provider 호출 결과는 `NotificationDeliveryAttempt`에 redacted summary로 저장한다.
 - application log event key는 `notification.*` dot notation을 사용한다.
-- email body 전문, push endpoint/key, provider raw response, private memo, meeting note body, deal amount는 structured log에 남기지 않는다.
 
 ## 2. 알림 목록 API
 

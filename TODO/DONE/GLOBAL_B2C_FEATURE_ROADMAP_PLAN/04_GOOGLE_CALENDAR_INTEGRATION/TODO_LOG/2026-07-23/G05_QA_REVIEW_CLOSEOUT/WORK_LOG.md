@@ -1,5 +1,7 @@
 # G05 QA Review Closeout Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 날짜: 2026-07-23
 상태: Done
 대상 goal: `COMMON/GOAL-SPECS/G05_QA_REVIEW_CLOSEOUT.md`
@@ -7,19 +9,14 @@
 ## 검토 요약
 
 - `COMMON/API-SPEC/GOOGLE_CALENDAR_INTEGRATION_API.md`, `COMMON/REVIEW-CHECKLIST.md`, G01~G04 완료 결과를 기준으로 Backend/Frontend/Security/Privacy QA를 대조했다.
-- OAuth scope/state/ID token 검증, token encryption/redaction, calendar list/selection, sync lock/range/full-incremental 분리, 410 fallback, soft delete/Trash restore/reminder 흐름을 확인했다.
-- User Web schedules/settings/detail/week/trash UX와 Google Calendar E2E mock/spec를 확인했다.
 - 상위 roadmap과 04 README/Planning Review/Goal Completion Checklist 상태를 구현 결과와 맞췄다.
 
 ## G05 중 보정
 
-- `SCHEDULE` Trash detail field label을 API 계약에 맞게 수정했다.
   - `Schedule time` -> `일정 시간`
   - `Location` -> `장소`
   - `Linked deals` -> `연결 딜`
-- internal schedule Trash source label을 `Internal`에서 `한손`으로 수정했다.
 - Schedule soft delete 관련 stale code comment를 실제 동작에 맞게 정리했다.
-- `prisma-trash.repository.spec.ts`를 추가해 `SCHEDULE` Trash detail labels/source label을 고정했다.
 
 ## 검증
 
@@ -30,7 +27,6 @@ Backend:
 - `pnpm.cmd run lint`: 통과
 - `pnpm.cmd run test -- schedule`: 통과
 - `pnpm.cmd run test -- notification`: 통과
-- `pnpm.cmd run test -- trash`: 통과
 - `pnpm.cmd run test -- ownership`: 통과
 - `pnpm.cmd run build`: 통과
 

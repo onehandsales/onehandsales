@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / Archived
 
 ## 1. G06 User Web feature public API boundary
@@ -9,7 +11,6 @@
 대상 후보:
 
 - `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
-- `FE/user-web/src/features/trash/hooks/use-trash-mutations.ts`
 - `FE/user-web/src/features/meeting-note/*`
 - `FE/user-web/src/features/follow-up-delivery/*`
 - `FE/user-web/src/features/contact/*`

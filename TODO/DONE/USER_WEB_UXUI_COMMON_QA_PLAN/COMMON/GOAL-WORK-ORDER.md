@@ -1,5 +1,7 @@
 # Goal Work Order
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 문서는 `USER_WEB_UXUI_COMMON_QA_PLAN`을 `/goal`로 실행할 때의 작업 순서를 고정한다.
@@ -48,11 +50,9 @@ G01에서 발견한 홈/쉘 관련 S0/S1/S2를 우선 처리한다.
 
 문서: `COMMON/GOAL-SPECS/G05-COMPLEX-FLOW-UX.goal.md`
 
-일정, 회의록, 명함 스캔, Import, Trash의 복잡한 상태 UX를 정리한다.
 
 provider failure, validation, long text, table overflow, restore/delete 상태를 집중한다.
 
-회의록/명함/Trash 목록은 단순 등록일 최신순 확인표가 아니라, 연결 record와 상태/다음 행동 맥락이 드러나는 record list로 검토한다.
 
 ### G06. UX Writing, States, Accessibility Closeout
 
@@ -66,8 +66,6 @@ UX writing, loading/empty/error/success 상태, icon-only aria-label/tooltip, fo
 - G01은 2026-07-18에 완료됐고, 이후 `Notion + Attio` reference를 반영해 baseline 해석만 갱신했다. 화면 코드가 크게 바뀌지 않았다면 G01 전체를 다시 실행하지 않는다.
 - G02는 2026-07-18에 완료됐다. AppShell/home 기준을 다시 열지 말고, 남은 목록형 화면의 record table density 문제는 G03~G05에서 처리한다.
 - G03은 2026-07-18에 완료됐다. 딜 목록/상세 기준을 다시 열지 말고, 남은 기본 도메인 record 목록은 G04, 복잡 상태 화면은 G05에서 처리한다.
-- G04는 2026-07-18에 완료됐다. 회사/담당자/제품의 목록/상세/생성 UX 기준을 다시 열지 말고, UX-006 중 남은 회의록/명함 스캔/Trash와 UX-002 일정 문제는 G05에서 처리한다.
-- G05는 2026-07-18에 완료됐다. 일정/회의록/명함 스캔/Import/Trash의 복잡 상태 UX 기준을 다시 열지 말고, 남은 앱 전체 문구/상태/접근성 closeout은 G06에서 처리한다.
 - G06은 2026-07-18에 완료됐다. 앱 내부 UX writing, 상태 문구, icon-only 접근성, final closeout 기준을 다시 열지 않는다.
 - G02와 G03은 G01 이후 우선 실행한다.
 - 기본 실행 순서는 G02 -> G03 -> G04 -> G05 -> G06이다. G01의 S2 이슈 심각도만 보면 G03/G05가 더 급하지만, AppShell과 홈 기준이 후속 화면의 공통 문법에 영향을 주므로 계획 순서를 유지한다.

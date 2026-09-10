@@ -1,5 +1,7 @@
 # Planning Review
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Closed
 검토일: 2026-07-22
 
@@ -39,7 +41,6 @@
 |---|---|
 | 앱 안 알림 정본 | `Notification`은 앱 안 알림의 정본이다. |
 | 외부 채널 분리 | email/browser push는 `NotificationDeliveryAttempt`로 분리한다. |
-| 다음 행동 제외 | 현재 `DealFollowingActionLog`에는 due date가 없으므로 02에서 건드리지 않는다. |
 | 딜 마감 계산 | `Deal.expectedEndDate` date-only를 사용자 timezone local 09:00으로 변환한다. |
 | Push 보안 | endpoint/p256dh/auth는 암호화 저장한다. |
 | Provider 실패 | 외부 발송 실패는 앱 안 알림을 rollback하지 않고 delivery attempt에 redacted 기록한다. |

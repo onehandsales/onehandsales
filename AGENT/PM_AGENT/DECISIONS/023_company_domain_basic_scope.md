@@ -25,7 +25,7 @@
 - 회사명, 회사분야, 회사지역은 회사 단건 수정 API로 변경할 수 있다.
 - 회사 분야와 회사 지역은 생성과 삭제만 제공하고 수정은 제공하지 않는다.
 - 이미 회사에 매핑된 회사 분야와 회사 지역은 삭제할 수 없다.
-- 회사 삭제 API, 회사 일반 메모 로그 API, 회사 개인 비밀 메모 로그 API, 휴지통 API는 현재 범위에서 제거되어 있다.
+- 회사 보조 로그와 복구 계열 API는 현재 범위에 포함하지 않는다.
 
 ## 4. API 상태값
 
@@ -37,9 +37,9 @@
 - 회사 지역 삭제 성공: `204 No Content`, response body 없음
 - 회사 목록 xlsx 내보내기 성공: `200 OK`, xlsx binary body
 
-## 5. 제거된 범위
+## 5. 제외 범위
 
-`CompanyMemoLog`, `CompanyUserPrivateMemoLog`, `DELETE /api/companies/:companyId`, `/api/trash/*`는 현재 Prisma schema와 controller에서 제거된 범위다.
+회사 보조 로그와 복구 계열 모델/API는 현재 Prisma schema와 controller에 없다.
 
 ## 6. 관련 문서
 

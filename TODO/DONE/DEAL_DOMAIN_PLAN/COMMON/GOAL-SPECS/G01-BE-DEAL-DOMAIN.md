@@ -1,5 +1,7 @@
 # G01-BE-DEAL-DOMAIN
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 Backend에 딜 도메인의 DB 모델과 User API를 구현한다.
@@ -34,9 +36,6 @@ Backend에 딜 도메인의 DB 모델과 User API를 구현한다.
 - `GET /api/deals/:dealId/following-action-logs`
 - `POST /api/deals/:dealId/following-action-logs`
 - `PATCH /api/deals/:dealId/following-action-logs/:followingActionLogId`
-- `GET /api/deals/:dealId/memo-logs`
-- `POST /api/deals/:dealId/memo-logs`
-- `PATCH /api/deals/:dealId/memo-logs/:memoLogId`
 
 ## 5. 설계 기준
 
@@ -48,7 +47,6 @@ Backend에 딜 도메인의 DB 모델과 User API를 구현한다.
 - 딜 생성/수정 시 contact가 company에 속하는지 확인한다.
 - 목록은 `search`, `companyId`, `contactId`, `dealStatus`, `sort`를 지원한다.
 - stage counts는 `search`, `companyId`, `contactId`를 지원한다.
-- 다음 행동 로그와 메모 로그 수정은 log가 해당 deal에 속하는지도 확인한다.
 - export는 목록 조건을 재사용하되 page를 제외한다.
 
 ## 6. 완료 기준
@@ -59,7 +57,6 @@ Backend에 딜 도메인의 DB 모델과 User API를 구현한다.
 - 생성 API는 Deal, DealProduct, 최초 다음 행동 로그를 transaction으로 생성한다.
 - 목록은 최신 다음 행동 1개를 포함하고 제품은 제외한다.
 - 상세는 `products` 배열을 포함한다.
-- 옵션 3개, 다음 행동 로그, 메모 로그 정렬이 `createdAt DESC`다.
 - export xlsx가 id, 제품, 최근수정일을 제외한다.
 - 인증/ownership/validation/error 테스트가 통과한다.
 

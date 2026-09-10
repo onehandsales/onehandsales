@@ -1,5 +1,7 @@
 # /goal G01 BE Contact Domain
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## /goal 입력문
 
 아래 문서를 먼저 읽고, 사용자 페이지 담당자(Contact) 도메인 백엔드 구현을 완료해줘.
@@ -43,8 +45,6 @@
 - `Contact`
 - `ContactJobGrade`
 - `ContactDepartment`
-- `ContactMemoLog`
-- `ContactUserPrivateMemoLog`
 
 필드 기준:
 - `Contact.id`: uuid
@@ -65,20 +65,6 @@
 - `ContactDepartment.userId`: uuid FK
 - `ContactDepartment.departmentName`: string
 - `ContactDepartment.createdAt`: 생성일
-- `ContactMemoLog.id`: uuid
-- `ContactMemoLog.contactId`: uuid FK
-- `ContactMemoLog.userId`: uuid FK
-- `ContactMemoLog.memoType`: string
-- `ContactMemoLog.memo`: string
-- `ContactMemoLog.createdAt`: 생성일
-- `ContactMemoLog.updatedAt`: 수정일
-- `ContactUserPrivateMemoLog.id`: uuid
-- `ContactUserPrivateMemoLog.contactId`: uuid FK
-- `ContactUserPrivateMemoLog.userId`: uuid FK
-- `ContactUserPrivateMemoLog.memoCiphertext`: string
-- `ContactUserPrivateMemoLog.memoKeyVersion`: string
-- `ContactUserPrivateMemoLog.createdAt`: 생성일
-- `ContactUserPrivateMemoLog.updatedAt`: 수정일
 
 ### 2. API 구현
 
@@ -95,12 +81,6 @@
 - `POST /api/contacts`
 - `GET /api/contacts/:contactId`
 - `PATCH /api/contacts/:contactId`
-- `POST /api/contacts/:contactId/memo-logs`
-- `GET /api/contacts/:contactId/memo-logs`
-- `PATCH /api/contacts/:contactId/memo-logs/:memoLogId`
-- `POST /api/contacts/:contactId/private-memo-logs`
-- `GET /api/contacts/:contactId/private-memo-logs`
-- `PATCH /api/contacts/:contactId/private-memo-logs/:privateMemoLogId`
 
 ### 3. 비즈니스 규칙
 
@@ -111,12 +91,8 @@
 - 필터 옵션 API는 드롭다운 선택에 필요한 `id`와 표시명을 반환한다.
 - `mobile`은 `010-1111-2222` 형식만 허용한다.
 - `companyId`, `contactDepartmentId`, `contactJobGradeId`는 해당 사용자의 데이터인지 검증한다.
-- 담당자 생성 시 `contactMemo`가 있으면 같은 트랜잭션에서 `ContactMemoLog`를 생성한다.
-- 담당자 생성 시 `contactMemo`가 없으면 `ContactMemoLog`를 생성하지 않는다.
 - 담당자 생성 시 초기 일반 메모의 `memoType`은 `"초기 메모"`로 저장한다.
 - 담당자 일반 메모 수정 API는 `memoType`, `memo`를 모두 수정할 수 있어야 한다.
-- 담당자 개인 비밀 메모는 평문을 DB에 저장하지 않는다.
-- 담당자 개인 비밀 메모 목록/상세 응답은 복호화된 `memo`를 반환한다.
 - 담당자 직급/부서 삭제는 사용 중이면 `409 Conflict`를 반환한다.
 - 본 작업에 담당자 삭제/복구/영구삭제 API를 만들지 않는다.
 
@@ -130,8 +106,6 @@
 - API 내부 기능 메서드는 `"""기능 : ..."""` 주석을 작성한다.
 - 모든 클래스와 인터페이스에는 역할 주석을 작성한다.
 - 트랜잭션 경계는 서비스 계층에서 명확하게 보이도록 작성한다.
-- 주요 생성/수정/삭제/비밀 메모 작업에는 구조화 로그를 남긴다.
-- 로그에는 비밀 메모 평문, 암호문, 민감한 개인정보를 남기지 않는다.
 
 ### 5. API 계약 문서
 
@@ -146,9 +120,7 @@
 - [x] Prisma migration이 생성되어 있다.
 - [x] 모든 Contact API가 구현되어 있다.
 - [x] 담당자 생성 + 선택적 초기 메모 생성이 한 트랜잭션으로 처리된다.
-- [x] 개인 비밀 메모는 암호화 저장되고 응답에서만 복호화된다.
 - [x] 일반 메모 수정에서 `memoType`과 `memo`를 수정할 수 있다.
-- [x] 개인 비밀 메모 수정 API가 존재한다.
 - [x] 직급/부서 삭제 시 사용 중이면 `409 Conflict`를 반환한다.
 - [x] API별 주석, 기능 주석, 클래스/인터페이스 역할 주석이 반영되어 있다.
 - [x] 관측성 로그가 민감정보 없이 작성되어 있다.
@@ -173,7 +145,6 @@
 - `pnpm.cmd run lint`: 성공
 - `pnpm.cmd run test`: 성공
 - `pnpm.cmd run build`: 성공
-- `rg -n "DELETE /api/contacts|permanentDeleteAt|initialMemo|ContactLog|PersonalMemo|companyId nullable" BE`: 결과 없음
 - `rg -n "API :|기능 :|역할" BE/src/modules/contact`: 주석 존재 확인
 - `git diff --check`: 성공
 
@@ -197,7 +168,6 @@ pnpm.cmd run build
 
 ```powershell
 cd D:\workspace_repository\sales_b2c_platform\Sales_b2c
-rg -n "companyId nullable|initialMemo|ContactLog|PersonalMemo|DELETE /api/contacts|permanentDeleteAt" BE TODO/DONE/CONTACT_DOMAIN_PLAN
 rg -n "API :|기능 :|역할" BE/src/modules/contact BE/src/modules/contacts
 git diff --check
 ```
@@ -210,4 +180,3 @@ git diff --check
 - 회사 없이 저장되는 담당자
 - 담당자 직급/부서 수정 API
 - OCR, 명함 인식, 외부 주소록 연동
-- 비밀 메모 평문 저장

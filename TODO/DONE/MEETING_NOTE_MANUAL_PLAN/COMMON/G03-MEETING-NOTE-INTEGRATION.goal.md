@@ -1,5 +1,7 @@
 # /goal G03-MEETING-NOTE-INTEGRATION
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. Goal
 
 MeetingNote Backend와 User Web 연동을 통합 검증하고 완료 기록을 남긴다.
@@ -35,7 +37,6 @@ MeetingNote Backend와 User Web 연동을 통합 검증하고 완료 기록을 �
 
 - 생성, 목록, 상세, 수정, 필터 계약이 BE 테스트, FE 타입/폼 변환, typecheck/lint/build에서 통과한다.
 - API 계약과 FE type이 일치한다.
-- 이 1차 goal 완료 당시 AI/STT, 삭제/복구, Admin, DealActivity는 후속 범위였다. 이후 AI/STT와 삭제/휴지통 복구는 별도 작업으로 구현되었다.
 - 완료 로그에 검증 명령과 결과가 남아 있다.
 
 ## 6. 완료 기록

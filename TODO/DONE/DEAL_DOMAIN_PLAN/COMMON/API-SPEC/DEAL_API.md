@@ -1,5 +1,7 @@
 # Deal API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 계약 상태
 
 - Contract status: `implemented`
@@ -52,9 +54,6 @@
 | 10 | GET | `/api/deals/:dealId/following-action-logs` | 딜 다음 행동 로그 cursor 목록 조회 | implemented |
 | 11 | POST | `/api/deals/:dealId/following-action-logs` | 딜 다음 행동 로그 단건 생성 | implemented |
 | 12 | PATCH | `/api/deals/:dealId/following-action-logs/:followingActionLogId` | 딜 다음 행동 로그 단건 수정 | implemented |
-| 13 | GET | `/api/deals/:dealId/memo-logs` | 딜 메모 로그 cursor 목록 조회 | implemented |
-| 14 | POST | `/api/deals/:dealId/memo-logs` | 딜 메모 로그 단건 생성 | implemented |
-| 15 | PATCH | `/api/deals/:dealId/memo-logs/:memoLogId` | 딜 메모 로그 단건 수정 | implemented |
 
 ## 5. 공통 객체
 
@@ -428,11 +427,6 @@ Body:
 | `followingAction` | string | 아니오 | 다음에 해야 할 행동 |
 | `checkComplete` | boolean | 아니오 | 완료 여부 |
 
-Response `200`: `DealFollowingActionLogResponse`
-
-### 6.13 GET `/api/deals/:dealId/memo-logs`
-
-딜 메모 로그를 `createdAt DESC, id DESC` 정렬의 cursor 방식으로 10개씩 조회한다.
 
 Query:
 
@@ -457,9 +451,6 @@ Response `200`:
 }
 ```
 
-### 6.14 POST `/api/deals/:dealId/memo-logs`
-
-딜 메모 로그를 생성한다.
 
 Body:
 
@@ -468,11 +459,6 @@ Body:
 | `memoType` | string | 예 | 메모 타입 |
 | `memo` | string | 예 | 메모 내용 |
 
-Response `201`: `DealMemoLogResponse`
-
-### 6.15 PATCH `/api/deals/:dealId/memo-logs/:memoLogId`
-
-딜 메모 로그를 수정한다.
 
 Body:
 
@@ -481,7 +467,6 @@ Body:
 | `memoType` | string | 아니오 | 메모 타입 |
 | `memo` | string | 아니오 | 메모 내용 |
 
-Response `200`: `DealMemoLogResponse`
 
 ## 7. 공통 에러
 
@@ -502,8 +487,6 @@ Response `200`: `DealMemoLogResponse`
 - 소비자: User Web
 - 호환성: 현재 `DealController`와 User Web `deal-api.ts`의 `/api/deals*` 계약을 유지한다. breaking change 없음
 - 인증: User `AuthGuard`
-- 권한: 현재 로그인한 사용자 본인 `Deal`, 연결 `Company`, `Contact`, `Product`, following action log, memo log만 접근한다.
-- Request 이름/Response 이름: 상세 문서의 `DealStageCountsQueryDto`, `ListDealsQueryDto`, `CreateDealDto`, `UpdateDealDto`, `CreateDealFollowingActionLogDto`, `UpdateDealFollowingActionLogDto`, `CreateDealMemoLogDto`, `UpdateDealMemoLogDto`, `DealDetail`, `DealListResponse`, `DealFollowingActionLogsResponse`, `DealMemoLogsResponse` 기준을 따른다.
 - Transaction: 상세 문서 기준. `POST /api/deals`와 product 연결 교체를 포함한 수정은 관련 row를 같은 transaction으로 처리한다.
 - Observability: 상세 문서 기준. `deal.*`, `deal.following_action.*`, `deal.memo.*`, `deal.activity.*` event와 redaction 정책 유지
 - FE/BE 처리 기준: FE는 User Web `deal-api.ts` request/response type과 blob export 처리를 유지한다. BE는 controller DTO validation 후 application service에서 ownership과 연결 row를 검증한다.

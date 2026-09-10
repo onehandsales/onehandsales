@@ -1,5 +1,7 @@
 # AI Weekly Report API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 계약 상태: confirmed
 소비자: User Web
 호환성: 신규 API, 기존 `/api/schedules/week` 변경 없음
@@ -361,7 +363,6 @@ DB에 저장된 input snapshot 전체를 사용자에게 그대로 노출하지 
     }
   ],
   "excluded": [
-    "private memo",
     "provider raw response",
     "deleted records"
   ]

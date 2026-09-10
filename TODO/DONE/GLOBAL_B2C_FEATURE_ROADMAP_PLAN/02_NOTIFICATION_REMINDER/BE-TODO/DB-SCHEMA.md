@@ -1,5 +1,7 @@
 # Notification Reminder DB Schema
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 구현 상태: G01 Done (2026-07-22)
 기준: `BE/prisma/schema.prisma`
@@ -396,7 +398,6 @@ COMMENT ON COLUMN "Notification"."sourceId" IS '알림 원본 Schedule 또는 De
 COMMENT ON COLUMN "Notification"."dedupeKey" IS '동일 사용자 내 중복 알림 방지 key. userId와 함께 unique index를 가진다.';
 COMMENT ON COLUMN "Notification"."targetPath" IS '알림 클릭 시 이동할 User Web 경로. 예: /app/schedules/:scheduleId, /app/deals/:dealId.';
 COMMENT ON COLUMN "Notification"."title" IS '화면, email, browser push에 사용할 안전한 짧은 제목.';
-COMMENT ON COLUMN "Notification"."body" IS '화면 표시용 짧은 본문. private memo, meeting note body, deal amount, contact phone/email을 넣지 않는다.';
 COMMENT ON COLUMN "Notification"."targetLabel" IS '사용자에게 보여줄 원본 대상명. 일정 제목 또는 딜 이름 등 안전한 label만 저장한다.';
 COMMENT ON COLUMN "Notification"."status" IS '알림 상태. PENDING은 due 전, SENT는 앱 안 알림 목록 노출 가능, FAILED는 내부 처리 실패, CANCELED는 원본 변경/삭제 취소다.';
 COMMENT ON COLUMN "Notification"."scheduledAt" IS '알림 due 시각. UTC instant. 일정은 startAt-30분, 딜은 사용자 timezone 기준 마감 1일 전 09:00을 UTC로 변환한다.';
@@ -404,7 +405,6 @@ COMMENT ON COLUMN "Notification"."sentAt" IS '앱 안 알림이 due 처리되어
 COMMENT ON COLUMN "Notification"."readAt" IS '사용자가 알림을 읽음 처리한 시각. NULL이면 unread.';
 COMMENT ON COLUMN "Notification"."canceledAt" IS '원본 일정/딜 변경 또는 삭제로 pending 알림이 취소된 시각. UTC instant.';
 COMMENT ON COLUMN "Notification"."cancelReason" IS '취소 사유 code 또는 안전한 짧은 설명.';
-COMMENT ON COLUMN "Notification"."metadataJson" IS '알림 처리에 필요한 최소 metadata. provider raw response, private memo, meeting note body, deal amount를 저장하지 않는다.';
 COMMENT ON COLUMN "Notification"."createdAt" IS '알림 row 생성 시각. UTC instant.';
 COMMENT ON COLUMN "Notification"."updatedAt" IS '알림 row 마지막 수정 시각. UTC instant.';
 
@@ -484,7 +484,6 @@ deal:{dealId}:due:{expectedEndDate}:{scheduledAtUtcIso}
 - `BrowserPushSubscription.endpointCiphertext`, `p256dhCiphertext`, `authCiphertext`는 encryption port로 암호화한다.
 - `endpointHash`는 중복 감지를 위한 hash다.
 - provider raw response는 `NotificationDeliveryAttempt.detailJson`에 저장하지 않는다.
-- `Notification.body`에는 private memo, meeting note body, deal amount, contact phone/email을 넣지 않는다.
 - email/push payload는 generic title/body와 `targetPath` 중심으로 만든다.
 
 ## 8. Migration 주의

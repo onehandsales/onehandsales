@@ -45,9 +45,9 @@ CompanyRegion 1 - N Company
 
 이미 회사에 매핑된 분야/지역은 삭제할 수 없다. 수정 API는 제공하지 않는다.
 
-## 제거된 범위
+## 제외 범위
 
-`CompanyMemoLog`, `CompanyUserPrivateMemoLog`, 회사 삭제 API, 휴지통 API는 현재 schema와 controller에서 제거되어 있다.
+회사 보조 로그와 복구 계열 모델/API는 현재 schema와 controller에 없다.
 
 ## 현재 제공 API
 

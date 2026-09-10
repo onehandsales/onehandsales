@@ -1,5 +1,7 @@
 # P0 G00-G04 구현 기반 상세 명세
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 P0는 실제 도메인 기능 구현 전에 Backend, User Web, Admin Web, DB 기반을 준비하는 단계다.
@@ -58,9 +60,6 @@ P0는 실제 도메인 기능 구현 전에 Backend, User Web, Admin Web, DB 기
 - `.env.example`에는 실제 OpenAI/OCR/Google Calendar/SMTP/Web Push VAPID 연동에 필요한 `OPENAI_API_KEY`, OpenAI model 변수, `GOOGLE_CALENDAR_CLIENT_ID`, `GOOGLE_CALENDAR_CLIENT_SECRET`, `GOOGLE_CALENDAR_REDIRECT_URI`, `GOOGLE_CALENDAR_SCOPES`, SMTP 변수, VAPID 변수 예시를 포함한다.
 - 개발용 Supabase project에는 User Web/Admin Web callback URL을 등록한다.
 - local/preview는 분리 domain을 허용하고, production은 `app`, `admin`, `api`를 같은 parent domain 아래 subdomain으로 배포한다.
-- 30일 휴지통 보관 후 시스템 자동 작업이 완전 삭제하며, MVP 1차에서 사용자 즉시 완전 삭제는 제공하지 않는다.
-- `Company`, `Contact`, `Product`, `Deal`의 Log는 객관 기록, Memo는 주관 기록으로 분리한다. Memo는 각 엔티티 단일 `memo` 필드가 아니라 `PersonalMemo` 기록 테이블에 암호화 저장한다.
-- 도메인별 Log는 회사 `CompanyLog`, 담당자 `ContactLog`, 제품 `ProductLog`, 딜 `DealActivity`로 구현한다. 각 도메인별 사용자 개인 Memo Log는 `PersonalMemo`로 별도 저장한다.
 - Admin 목록/기본 상세는 민감 원문을 마스킹하거나 존재 여부만 반환하고, 원문 조회는 사유 필수 전용 API에서 대상 조회와 `AuditLog` 생성을 같은 transaction으로 처리한다.
 
 ### 화면 명세
@@ -231,7 +230,6 @@ MVP 핵심 도메인을 담을 수 있는 DB schema와 Prisma client 기반을 �
 ### DB 명세
 
 - 구현 기준: `TODO/DONE/MVP-STARTER_PLAN/BE-TODO/DB-SCHEMA.md`
-- 핵심 모델: User, Company, CompanyLog, Contact, ContactLog, Product, ProductLog, Deal, DealActivity, PersonalMemo, Schedule, MeetingNote, AuditLog, ImportJob, ExportJob, Notification, AiJob
 
 ### API 연결
 

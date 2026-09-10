@@ -1,5 +1,7 @@
 # G11 Product User Web 화면 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업 상태
 
 - 상태: 완료
@@ -26,7 +28,6 @@
 - 제품 빠른 등록 modal
 - 제품 상세/수정 화면
 - 제품 연결 관리 UI
-- ProductLog 작성/조회 UI
 - `src/lib/api-client.ts` 기반 Product API 연동
 - loading, error, empty, success 상태
 - 모바일/데스크톱 반응형 확인
@@ -39,7 +40,6 @@
 - 2026-06-06: Product API, query key, hook, schema, type 추가
 - 2026-06-06: 제품 목록, 빠른 등록 modal, 상세/수정 화면 구현
 - 2026-06-06: ProductConnection 회사/담당자 연결 생성/삭제 UI 구현
-- 2026-06-06: ProductLog 생성/수정/삭제 UI 구현
 - 2026-06-06: typecheck, lint, build, route smoke 검증 수행
 
 ## 검증 결과
@@ -69,8 +69,6 @@
 - 제품 단가는 `Intl.NumberFormat` 기반 KRW/통화 코드로 표시한다.
 - 제품 연결 섹션은 Company/Contact 검색 선택과 연결 생성/삭제를 지원한다.
 - Deal 연결은 G12 Deal Backend 전까지 선택 목록이 없어 UI에서 비활성 안내로 처리했다.
-- ProductLog 영역은 별도 logs API를 호출해 생성/수정/삭제를 지원한다.
-- Memo 기록은 G10 상세 API가 반환하는 `PersonalMemo(targetType=PRODUCT)` 복호화 결과를 표시한다.
 - 페이지는 feature 조립 구조를 유지하고 Product API 호출은 `src/lib/api-client.ts` 경유로만 수행한다.
 - User Web dev server는 `http://localhost:5173/`에서 실행 중이다.
 

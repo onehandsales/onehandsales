@@ -1,5 +1,7 @@
 # BE TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 폴더는 `USER_WEB_RELEASE_QA_FOLLOWUP_PLAN` 중 Backend와 DB 작업을 정리한다.
@@ -7,7 +9,6 @@
 ## 2. 이번 계획의 BE 기본 범위
 
 - 다중 계정 ownership isolation QA
-- Search, Trash, Export 데이터 격리 QA
 - Admin API 일반 사용자 접근 차단 smoke
 - Prisma validate/generate/migration status 점검
 - seed 실행 정책 정리

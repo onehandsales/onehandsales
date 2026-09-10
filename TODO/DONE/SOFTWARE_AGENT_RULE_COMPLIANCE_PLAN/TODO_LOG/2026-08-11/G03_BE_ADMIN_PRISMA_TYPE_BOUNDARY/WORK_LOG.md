@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# G03 BE Admin Prisma Type Boundary Work Log
 
 상태: 완료 / 검증 완료
@@ -22,7 +24,6 @@
 - `BE/src/modules/admin-operation/application/ports/admin-domain-record.repository.ts`
 - `BE/src/modules/admin-operation/application/ports/admin-provider-failure.repository.ts`
 - `BE/src/modules/admin-operation/application/ports/admin-system-operation.repository.ts`
-- `BE/src/modules/admin-operation/application/ports/admin-trash.repository.ts`
 - `BE/src/modules/admin-operation/application/ports/admin-user.repository.ts`
 - `BE/src/modules/admin-operation/application/services/admin-account-request-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-analytics-application.service.ts`
@@ -30,7 +31,6 @@
 - `BE/src/modules/admin-operation/application/services/admin-domain-record-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-provider-failure-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-system-operation-application.service.ts`
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-user-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/*application.service.spec.ts`
 - `TODO/DONE/SOFTWARE_AGENT_RULE_COMPLIANCE_PLAN/*`
@@ -45,7 +45,6 @@ rg -n "@prisma/client" BE/src/modules/admin-operation/application --glob "!**/*.
 cd D:\workspace_repository\onehandsales\BE
 pnpm.cmd run typecheck
 pnpm.cmd run lint
-pnpm.cmd test -- admin-account-request-application.service.spec.ts admin-analytics-application.service.spec.ts admin-audit-application.service.spec.ts admin-domain-record-application.service.spec.ts admin-provider-failure-application.service.spec.ts admin-system-operation-application.service.spec.ts admin-trash-application.service.spec.ts admin-user-application.service.spec.ts prisma-admin-account-request.repository.spec.ts prisma-admin-analytics.repository.spec.ts prisma-admin-audit.repository.spec.ts prisma-admin-domain-record.repository.spec.ts prisma-admin-provider-failure.repository.spec.ts prisma-admin-system-operation.repository.spec.ts prisma-admin-trash.repository.spec.ts prisma-admin-user.repository.spec.ts
 pnpm.cmd test
 ```
 

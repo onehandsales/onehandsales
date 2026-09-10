@@ -1,5 +1,7 @@
 # G04 11 Admin Checklist Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 연결 PRE12 ID: `PRE12-F33`
 성격: 11 Admin Operation 문서 정합성 closeout
@@ -8,9 +10,7 @@
 
 - [x] `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION` 전체 상태를 확인한다.
 - [x] 11 G10 QA/document closeout 결과를 확인한다.
-- [x] 실제 `BE/src/modules/admin-operation`, `account-request`, `trash` 상태를 확인한다.
 - [x] 실제 `FE/admin-web/src/app/router/router.tsx`와 Admin Web features 상태를 확인한다.
-- [x] 11 User Web 영향 문서와 실제 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 상태를 확인한다.
 - [x] `BE/prisma/schema.prisma`에서 11 Admin 관련 DB 상태를 확인한다.
 - [x] 새 API/DB/route를 만들지 않는 기준을 확인한다.
 - [x] 코드 변경 발생 시 한글 주석 규칙과 typecheck/lint gate를 확인한다.
@@ -36,7 +36,6 @@
 
 - Admin route/API rollback
 - Admin direct domain mutation 구현
-- Admin Trash 복구 mutation, 유료 복구, hard delete, purge 구현
 - export artifact 생성/download endpoint 구현
 - account deletion hard delete/anonymization job 구현
 - billing/subscription/Admin Billing 구현
@@ -60,10 +59,8 @@
 
 - `BE/src/modules/admin-operation`
 - `BE/src/modules/account-request`
-- `BE/src/modules/trash`
 - `BE/prisma/schema.prisma`
 - `FE/user-web/src/app/router/router.tsx`
-- `FE/user-web/src/features/trash`
 - `FE/user-web/src/features/account-request`
 - `FE/admin-web/src/app/router/router.tsx`
 - `FE/admin-web/src/features`
@@ -81,7 +78,6 @@ G04는 새 API를 만들지 않는다.
 ## 6. Business Logic / User Flow 체크
 
 - Admin Web의 현재 활성 route와 API 계약이 11 문서와 맞는지 확인한다.
-- User Web의 `/app/trash` 만료 row/복구 문의와 `/app/settings` 계정/데이터 요청 문서가 실제 완료 상태와 맞는지 확인한다.
 - User Web이 `/admin/api/*`를 호출하지 않는다는 11 경계가 문서와 코드에서 유지되는지 확인한다.
 - Admin direct mutation, B2B tenant admin, Billing Admin은 11 완료 범위가 아니다.
 - Admin 운영 화면은 desktop-first, 표/필터/상태 중심의 실무형 구조를 유지한다.
@@ -89,7 +85,6 @@ G04는 새 API를 만들지 않는다.
 
 ## 7. DB/Prisma 체크
 
-- `AdminAuditLog`, `AdminOperationCheckRun`, `TrashRecoveryRequest`, `AccountDeletionRequest`, `UserDataExportRequest` 등 11 관련 모델 상태를 확인한다.
 - billing/subscription/customer admin 모델을 추가하지 않는다.
 - DB 변경이 필요하면 현재 goal에서 구현하지 않는다.
 
@@ -98,7 +93,6 @@ G04는 새 API를 만들지 않는다.
 1. 11 상위 README와 G10 closeout을 읽는다.
 2. 11 goal completion checklist와 goal specs README를 실제 완료 상태와 비교한다.
 3. BE/FE TODO의 planning/stale 문구를 실제 완료 상태와 비교한다.
-4. 11 User Web 영향 문서의 `/app/trash`, `/app/settings`, `/admin/api/*` 차단 기준을 실제 상태와 비교한다.
 5. 실제 BE/FE 코드 경로와 Prisma schema를 확인한다.
 6. 완료된 항목은 `[x]`로 보정하고 근거를 남긴다.
 7. Billing/B2B/Admin mutation 후보는 후속 또는 12 종속으로 유지한다.
@@ -135,7 +129,6 @@ pnpm run lint
 git diff --check
 rg -n "Subscription|Billing Admin|CustomerAdmin|direct mutation|hard delete|paid recovery" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION TODO/BEFORE_12_TASKS
 rg -n "/admin/api" FE/user-web/src
-rg -n "/app/trash|/app/settings|account deletion|data export" TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION/FE-TODO/USER-WEB-TODO.md TODO/BEFORE_12_TASKS
 ```
 
 ## 10. 완료 기준
@@ -143,7 +136,6 @@ rg -n "/app/trash|/app/settings|account deletion|data export" TODO/GLOBAL_B2C_FE
 - [x] 11 상위 checklist가 G10 closeout 및 실제 코드 상태와 맞는다.
 - [x] 11 goal index가 G01~G10 완료/구현 상태와 맞는다.
 - [x] BE/FE TODO가 planning 상태로 오해되지 않게 정리됐다.
-- [x] 11 `FE-TODO/USER-WEB-TODO.md`의 `/app/trash`, `/app/settings`, `/admin/api/*` 경계가 실제 User Web 상태와 맞는다.
 - [x] User Web 영향 항목을 11 미완성이나 새 기능 구현으로 재오픈하지 않았다.
 - [x] Billing/B2B/Admin mutation 후속 후보가 11 미완성처럼 표시되지 않는다.
 - [x] BE typecheck/lint가 통과했다.

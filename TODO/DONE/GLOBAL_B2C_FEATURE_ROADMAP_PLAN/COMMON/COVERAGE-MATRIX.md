@@ -1,5 +1,7 @@
 # Coverage Matrix
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: DONE / 01~11 Implemented / Pre-12 Closeout Complete / Billing moved to `TODO/PADDLE_PLAN`
 
 ## 0. 완료 반영
@@ -38,9 +40,7 @@
 | 분류 | 기능 | 포함 슬롯 | 비고 |
 |---|---|---|---|
 | First-sale gate | DB/Prisma/migration 운영 gate | 선행 gate, 11 | Done: 신규 migration goal마다 선행 체크했고 11에서 `AdminOperationCheckRun` 기반 운영 점검 기록을 구현했다. 실제 backup/restore 실행은 Admin API가 직접 수행하지 않는다 |
-| First-sale gate | Product UX first-sale QA | 01~11 closeout, 선행 gate | 회사/담당자/제품/딜/일정/회의록/명함/import/search/trash/export/account request 영향 흐름 검토 |
 | First-sale gate | Trust/policy first-sale QA | 03, 11, `TODO/PADDLE_PLAN`, 선행 gate | 약관, 개인정보, 보안, 환불, 계정 삭제, 데이터 export/delete, retention |
-| First-sale gate | Trash private memo backend response restriction | 11, 선행 gate | Done: `NBA-007`. User/Admin Trash response에서 private memo 원문을 노출하지 않는 계약과 QA 확인 완료 |
 | Import/Data | ImportJob 영속화 | 01 | Done: 확정 전 job, preview row, TTL, resume 구현 완료 |
 | Import/Data | Import 원본/preview 보관 정책 | 01 | Done: 개인정보와 cleanup 기준 포함 |
 | Import/Data | Import/Export 파일 저장 기반 | 01, 후속 별도 결정 | Import 파일은 01 완료. Export job/file은 03에서 제외하고 Trust/policy/Admin gate와 함께 별도 결정 |
@@ -55,7 +55,6 @@
 | Schedule | 범용 ExportJob / 비동기 Export | 후속 별도 결정, 11 | 03에서 제외. `/app/export`, `/api/exports`, 대용량 export, 파일 TTL/권한/삭제/audit는 Trust/policy/Admin gate와 함께 결정 |
 | Schedule | 일정/회의록 export | 후속 별도 결정 | 03에서 제외. 기존 domain xlsx 이후 확장 여부를 별도 확정 |
 | Schedule | 반복 일정 | 후속 별도 결정 | 03에서 제외. recurrence rule, exception, DST, 알림 재생성, Calendar 연동 영향 검토 후 별도 확정 |
-| Calendar | Google Calendar connect/read-only import | 04 | Done: `NBA-015` 구현 완료. login OAuth와 Calendar scope 분리, primary 기본 선택+추가 calendar 선택, 10분 freshness 자동 sync+수동 sync, source badge, meeting URL, all-day 표시, Schedule soft delete/Trash restore 구현. Google export/write, 양방향 sync, webhook, 반복 일정 정식 모델은 제외 |
 | Calendar | external calendar sync 실패 처리 | 04, 11 | Done: 04에서 사용자-facing 실패 처리, 11에서 Admin provider failure 운영 조회를 구현했다 |
 | AI report | AI 주간 영업 리포트 | 05 | Done: 저장형 AI weekly report와 follow-up delivery foundation 구현 완료. G10에서 Gmail/Microsoft 실제 email provider 발송 adapter, reconnect, safe failure, smoke allowlist 구현/자동 검증 완료. Provider smoke closeout은 PRE12/BEFORE_12에서 완료 처리 |
 | AI report | AI follow-up/next action/딜 리스크 | 05, 07 | Done subset: 05 follow-up delivery foundation과 Gmail/Microsoft email send adapter, 07 회의록 next action/follow-up draft. 딜 리스크 고도화와 자동화는 후속 |
@@ -91,8 +90,6 @@
 | Mobile | offline draft | 10 | Done: 서버 draft DB 없이 FE local draft 24시간 TTL, 복원/폐기 UX 구현. full offline sync는 후속 |
 | Ops/Admin | Admin 사용자/도메인 조회 | 11 | Done: 사용자 목록/상세, 활동 timeline, 도메인 read-only tab 구현 |
 | Ops/Admin | 민감정보 마스킹/원문 조회 사유/audit | 11 | Done: masking, reason validation, append-only audit/sensitive log 구현 |
-| Ops/Admin | Trash/삭제 정책 고도화 | 11 | Done: `NBA-012`. 만료 row 유지, User 복구 문의, Admin recovery queue 구현. hard delete/purge와 유료 복구 결제는 제외 |
-| Ops/Admin | Trash private memo backend response restriction | 11 | Done: `NBA-007`. private memo 원문 미노출 보안 체크 완료 |
 | Ops/Admin | 계정 삭제/데이터 삭제 | 11 | Done: account deletion/data export request API와 Admin queue 구현 |
 | Ops/Admin | 사용자 데이터 export 정책 | 11, 03 | Done: 요청/운영 queue 정책은 11. 파일 job/대량 export는 후속 별도 결정 |
 | Ops/Admin | 자동 민감정보 감지 | 후속 별도 결정 | 11의 masking/raw access와 별도인 자동 탐지 기능은 아직 계약화하지 않는다 |

@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조: 03 추가 후속 구현 없음. PDF/범용 ExportJob/반복 일정/AI 고급 리포트/Google Calendar write-realtime/watch/회의록 follow-up 알림은 03 재오픈 사유가 아니라 별도 계획 또는 post-12 후보로 유지한다.
 재대조 기록: `FINAL-SERVICE-FOLLOWUP-AUDIT.md`
 
@@ -22,7 +24,6 @@ Global B2C 대조: `COMMON/GLOBAL-B2C-ALIGNMENT-REVIEW.md`
 | 주간 summary | 일정 수, 일정 있는 날짜 수, 미연결 일정 수, 연결 딜 수, 딜 단계별 count, 중복 제거 딜 금액 합계 |
 | Excel export | `GET /api/schedules/week/export/xlsx` 동기식 다운로드 |
 | AI 리포트 준비 | 05 AI 주간 영업 리포트가 재사용할 report response 구조 |
-| 보안/노출 제한 | 일정 메모 본문, private memo, meeting note body, provider raw response 제외 |
 | 아키텍처 기준 | `AGENT/SOFTWARE_AGENT` 기반 Backend/DB/Frontend 구조 |
 | UX/UI 기준 | `AGENT/UXUI_AGENT` 기반 Notion식 page/report + Attio식 linked record UX |
 | Global B2C 대조 | `NBA-009` 승격, first-sale gate 중 retention/Product UX 일부 반영 |
@@ -72,7 +73,6 @@ Global B2C 대조: `COMMON/GLOBAL-B2C-ALIGNMENT-REVIEW.md`
 - `weekStart`와 `timeZone` 기준이 FE/BE에서 일관된다.
 - 사용자 소유 일정과 active linked deal만 포함된다.
 - 일정 없는 주도 7개 day가 표시된다.
-- 일정 메모 본문, private memo, meeting note body는 response/export/log에 노출되지 않는다.
 - `/app/export`, `/api/exports`, PDF, 반복 일정은 별도 사용자 결정/goal 항목으로 문서화되어 있다.
 - Backend/DB/Frontend 구조가 `COMMON/ARCHITECTURE-GUARDRAILS.md`와 `AGENT/SOFTWARE_AGENT`를 따른다.
 - UX/UI와 사용자 노출 문구가 `COMMON/ARCHITECTURE-GUARDRAILS.md`와 `AGENT/UXUI_AGENT`를 따른다.

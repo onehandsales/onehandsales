@@ -1,5 +1,7 @@
 # Review Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G05 Reviewed
 목적: 02 구현 완료 후 검토자가 확인할 체크리스트
 
@@ -62,7 +64,6 @@
 - [x] p256dh/auth key가 log/response에 노출되지 않는다.
 - [x] email body 전문이 log에 남지 않는다.
 - [x] provider raw response가 log/DB detail에 남지 않는다.
-- [x] private memo, meeting note body, deal amount가 알림 payload에 들어가지 않는다.
 - [x] token/authorization header가 logging되지 않는다.
 
 ## 7. User Web

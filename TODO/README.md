@@ -1,5 +1,7 @@
 # TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 폴더는 `한손에 영업 / onehand.sales`의 기획 또는 구현 계획을 `/goal`로 실행 가능한 작업 단위로 정리하는 공간이다.
@@ -119,13 +121,12 @@ Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 �
 - `BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`: Backend Agent rule recheck G01~G08과 G99 최종 검토
 - `BEFORE_12_TASKS`: 12번 전 선행 closeout, provider smoke, 모바일 체크리스트, route architecture, Admin checklist 정리
 - `BUSINESS_CARD_OCR_PLAN`: BusinessCard OCR Backend API, `BusinessCardScanLog`, User Web 명함 스캔 화면
-- `COMPANY_DOMAIN_PLAN`: Company Backend API와 User Web 회사 목록/상세/메모/export 화면
+- `COMPANY_DOMAIN_PLAN`: Company Backend API와 User Web 회사 목록/생성/분야/지역/export 화면
 - `CONTACT_DOMAIN_PLAN`: Contact Backend API와 User Web 담당자 목록/상세/메모/export 화면
 - `DEAL_DOMAIN_PLAN`: Deal Backend API와 User Web 딜 목록/상세/로그/export 화면
 - `GLOBAL_B2C_FEATURE_ROADMAP_PLAN`: Global B2C 01~11 기능 선구현 로드맵과 closeout
 - `IMPORT_TEMPLATE_PLAN`: 회사/담당자/제품/딜 불러오기 템플릿 구현
 - `INTEGRATED_SEARCH_PLAN`: Backend `GET /api/search`와 User Web GlobalSearch 연결
-- `LOG_SOFT_DELETE_PLAN`: 로그성 데이터 soft delete 정책 정리
 - `MEETING_NOTE_AI_STT_PLAN`: MeetingNote AI/STT 초안 Backend API와 User Web draft UI
 - `MEETING_NOTE_MANUAL_PLAN`: MeetingNote 수동 Backend API와 User Web 회의록 목록/상세/생성/수정 화면
 - `MVP-STARTER_PLAN`: G00-G36 MVP starter 계획과 공통 계약 문서

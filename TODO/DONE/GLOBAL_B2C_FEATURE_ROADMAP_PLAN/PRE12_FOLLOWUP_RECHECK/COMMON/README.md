@@ -1,5 +1,7 @@
 # PRE12_FOLLOWUP_RECHECK Common
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: DONE / Pre-12 Closeout Complete / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -47,7 +49,6 @@
 - AI weekly report 자동 생성, AI suggestion 자동 mutation, MeetingNote AI 후보 자동 업무 mutation
 - Follow-up delivery SMS 실제 provider, B2B tenant sender, email sync/inbox import, sequence/campaign/bulk, unsubscribe, 예약 발송, SMTP/external email SaaS, HTML email/첨부/tracking pixel
 - Company/Contact/Product latest summary response field 추가
-- DealActivity manual delete/restore, automatic activity update/delete, retention/audit/trash, memo/private memo 통합, 모든 도메인 공통 activity bus, 고급 검색/필터, 딜 score, AI activity 자동 판단, summary cache/denormalized latest 추가
 - MeetingNote list latest/next summary response field 추가
 - AI data cleanup 제안 저장/적용 API 추가
 - MeetingNote transcript/raw provider response/follow-up draft 저장 table 또는 raw 조회 API 추가
@@ -74,7 +75,6 @@
 - stale FE architecture 문서에 맞추기 위해 `/app/notifications` route를 숨김 route로 되돌리기
 - 11 문서 체크리스트/goal index 미체크를 근거로 Admin 기능 재구현
 - stale Admin Web architecture 문서에 맞추기 위해 11 Admin route/API를 숨기거나 되돌리기
-- Admin 직접 Trash 복구 mutation, 유료 복구 결제, Trash hard delete/purge 추가
 - data export artifact 생성 processor, storage signed URL, download endpoint 추가
 - 자동 민감정보 감지/DLP model 또는 processor 추가
 - Admin 도메인 read-only records를 직접 수정/삭제/복구 mutation으로 확장
@@ -95,7 +95,6 @@
 
 10 재대조 기준으로 BusinessCard capture/OCR safe failure, MeetingNote recording/STT fallback, local draft, browser push permission UX, mobile field analytics는 완료다. 10 FE/BE TODO 체크리스트와 FE route architecture 정합성은 `PRE12-F31`/`PRE12-F32`로 분류했고 BEFORE_12 G02/G03에서 닫았다. PWA packaging은 `PRE12-F30`, advanced camera preview/crop은 `PRE12-F42`, server draft/media raw storage policy는 `PRE12-F43`, generic ExportJob은 기존 `PRE12-F09`로 본다.
 
-11 재대조 기준으로 `/admin/api/*`, Admin Web 운영 화면, audit/redaction, Trash/account request/provider/system gate는 완료다. 11 문서 체크리스트와 Admin Web architecture/legacy route 정합성은 `PRE12-F33`/`PRE12-F34`로 분류했고 BEFORE_12 G04/G05에서 닫았다. Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지는 11 완료 범위를 넓히지 않는 `PRE12-F35`~`PRE12-F37` 후속 후보로만 둔다. 2026-08-07 2차 재대조에서 Admin 직접 도메인 데이터 mutation은 `PRE12-F44`, Customer/B2B tenant admin은 `PRE12-F45`로 추가 분리했고, ImportJob cleanup 실패 전용 aggregate/system gate는 기존 `PRE12-F13`에 연결했다.
 
 ## 4. 관련 문서
 

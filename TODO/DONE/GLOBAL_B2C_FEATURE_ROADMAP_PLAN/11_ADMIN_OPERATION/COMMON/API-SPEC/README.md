@@ -1,5 +1,7 @@
 # API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / G05 template normalized
 
 ## 1. 원칙
@@ -19,8 +21,6 @@
 | `ADMIN_AUDIT_SECURITY_API.md` | Admin Web | G02 |
 | `ADMIN_USER_OPERATION_API.md` | Admin Web | G03 |
 | `ADMIN_DOMAIN_READONLY_API.md` | Admin Web | G04 |
-| `ADMIN_TRASH_OPERATION_API.md` | Admin Web | G05 |
-| `TRASH_USER_RECOVERY_API.md` | User Web | G05 |
 | `ADMIN_PROVIDER_FAILURE_API.md` | Admin Web | G06 |
 | `ADMIN_ANALYTICS_API.md` | Admin Web | G07 |
 | `ACCOUNT_DATA_REQUEST_API.md` | User Web, Admin Web | G08 |

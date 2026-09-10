@@ -1,5 +1,7 @@
 # API TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 이번 계획의 API 변경 상태
 
 기본 상태: 새 API 변경 없음.
@@ -17,7 +19,6 @@ G04는 기존 API의 ownership isolation을 검증한다. G06에서 S0/S1/S2 수
 | Schedule | 사용자 A token으로 사용자 B 일정 목록/detail 접근 불가 |
 | MeetingNote | 사용자 A token으로 사용자 B 회의록 목록/detail 접근 불가 |
 | Search | 사용자 A 검색 결과에 사용자 B 데이터 미포함 |
-| Trash | 사용자 A 휴지통 목록/detail/restore에서 사용자 B 삭제 데이터 접근 불가 |
 | Admin API | 일반 사용자 token으로 `/admin/api/*` 접근 차단 |
 
 ## 3. 테스트 기준
@@ -43,7 +44,6 @@ G04는 기존 API의 ownership isolation을 검증한다. G06에서 S0/S1/S2 수
 | Schedule | B fixture 미포함 | B id `GET /api/schedules/:scheduleId` -> `404` | B id `PATCH/DELETE` -> `404` |
 | MeetingNote | B fixture 미포함 | B id `GET /api/meeting-notes/:meetingNoteId` -> `404` | B id `PATCH/DELETE` -> `404` |
 | Search | `GET /api/search?q=RQA004-B` 결과 없음 | N/A | N/A |
-| Trash | B 삭제 데이터 미포함 | B target detail -> `404` | B target restore -> `404` |
 | Admin API | N/A | `GET /admin/api/me` with USER -> `403` | N/A |
 
 ## 4. 후속 API 후보
@@ -52,11 +52,9 @@ G04는 기존 API의 ownership isolation을 검증한다. G06에서 S0/S1/S2 수
 
 - Deal list `products` summary
 - Contact list `dealCount`
-- Company/Contact/Product latest memo/activity/next action summary
 - MeetingNote next/latest summary
 - BusinessCard provider failure code/message contract
 - ImportJob persistence/resume API
-- Trash private memo backend response restriction
 - Page size 15 contract 정리
 
 ## 5. API 변경이 필요한 bug가 발견된 경우

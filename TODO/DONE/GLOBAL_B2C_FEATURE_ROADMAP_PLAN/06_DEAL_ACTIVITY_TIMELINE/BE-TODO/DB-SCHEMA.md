@@ -1,5 +1,7 @@
 # DB Schema TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented
 확정일: 2026-07-25
 구현일: 2026-07-26
@@ -205,7 +207,6 @@ dealActivities DealActivity[]
 - 자동 activity는 수정/삭제하지 않는다.
 - 삭제/retention/audit 정책은 11 Admin/Trust/policy와 연결한다.
 
-후속에서 삭제가 필요하면 `deletedAt`, `deletedByUserId`, `trashExpiresAt` 또는 별도 retention model을 검토한다.
 
 ## 8. Summary/cache 정책
 
@@ -218,4 +219,3 @@ dealActivities DealActivity[]
 - userId/dealId/occurredAt index로 timeline 조회가 가능하다.
 - sourceType/sourceId로 중복 자동 activity 방지 또는 조회가 가능하다.
 - products summary와 dealCount는 기존 relation runtime aggregation으로 처리한다.
-- private memo/provider raw/follow-up body 전체를 저장하지 않는다.

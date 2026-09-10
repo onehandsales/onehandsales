@@ -1,5 +1,7 @@
 # Additional Work Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 계획은 기존 활성 계획에 속하지 않는 추가 유지보수 요청을 `AGENT` 정본 기준에 맞춰 실행 가능한 TODO로 정리한다.
@@ -123,7 +125,6 @@ TODO/DONE/ADDITIONAL_WORK_PLAN/
 - 회사 연결 Contact 목록 페이지네이션
 - 회사/담당자/제품 연결 Deal 목록 페이지네이션
 - 범용 Import/Export 모듈 또는 ExportJob 구현
-- Company 삭제, soft delete, 휴지통 기능
 
 ## 7.1. Frontend 반영 목적
 

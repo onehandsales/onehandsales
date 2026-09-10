@@ -1,5 +1,7 @@
 # TODO Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 2026-08-04 Final Service Follow-up Audit
 
 ### 결론
@@ -56,7 +58,6 @@
 - 일정 없는 주도 7개 day를 반환하고, User Web은 empty state를 표시한다.
 - 다일 일정은 겹치는 day bucket에 표시된다.
 - Excel 다운로드는 현재 보고서와 같은 `weekStart`, `timeZone`으로 호출된다.
-- 일정 메모 본문, private memo, meeting note body는 response/export/log에 노출되지 않는다.
 - `hasMemo`만 response와 화면에 사용한다.
 - cross-user 일정/딜/회사/담당자는 response/export에 섞이지 않는다.
 - 새 데이터베이스, Prisma model/table/column/index/migration은 생성하지 않았다.

@@ -1,5 +1,7 @@
 # Goal Work Order
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-22
 
@@ -17,7 +19,6 @@ DB migration을 허용한다. Prisma schema와 migration에는 한글 주석 기
 
 이번 04는 Google Calendar read-only import다. Google export, 양방향 sync, webhook, 반복 일정 정식 모델, 참석자 import, Google reminders import는 만들지 않는다.
 
-기존 Schedule 삭제 API는 hard delete에서 soft delete/Trash 이동으로 바꾼다. 이 변경은 Google 연동과 분리하지 않는다.
 
 ## 2. 실행 순서
 
@@ -46,7 +47,6 @@ G01_PLANNING_API_DB_CONTRACT
 목표:
 
 - Prisma schema/migration을 추가한다.
-- Schedule soft delete와 Trash `SCHEDULE` restore를 구현한다.
 - Google connection/status/connect/callback/disconnect API를 구현한다.
 - token 암호화, OAuth state, reconnect required 처리의 foundation을 만든다.
 
@@ -67,7 +67,6 @@ G01_PLANNING_API_DB_CONTRACT
 
 목표:
 
-- `/app/schedules`, `/app/settings`, `/app/schedules/:scheduleId`, `/app/schedules/week`, `/app/trash` UX를 연결한다.
 - connect/reconnect/calendar selection/manual sync/disconnect/source badge/meeting URL/soft delete restore를 구현한다.
 
 ## 7. G05 QA Review Closeout
@@ -76,7 +75,6 @@ G01_PLANNING_API_DB_CONTRACT
 
 목표:
 
-- Backend/User Web 검증, migration, ownership, token redaction, reminder, Trash restore, hidden Google filter를 점검한다.
 - `COMMON/REVIEW-CHECKLIST.md` 기준으로 구현 검토를 닫는다.
 
 ## 8. 첫 실행 문구

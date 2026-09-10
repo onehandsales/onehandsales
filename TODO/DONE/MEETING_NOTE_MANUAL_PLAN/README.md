@@ -1,10 +1,11 @@
 # Meeting Note Manual Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 이 계획은 회의록의 1차 구현 범위를 현재 프로젝트 구조에 맞게 실행 가능한 `/goal` 단위로 정리한다.
 
-회의록은 영업 미팅 내용을 기록하고 회사, 담당자, 제품, 딜과 연결해 영업 맥락을 남기는 도메인이다. 이번 1차 계획은 `meetingNote.md`의 최신 결정과 `AGENT`, `UX Design`의 당시 구현 상태를 기준으로 하되, AI Text/STT, 삭제/복구, Admin, 딜 활동 로그 자동 생성은 후속 범위로 분리했다. 이후 AI Text/STT, 딜 활동 로그 자동 생성, 삭제/휴지통 복구는 별도 작업으로 구현되었다.
 
 ## 2. 현재 상태
 
@@ -34,7 +35,6 @@
 - `POST /api/meeting-notes/generate`
 - `POST /api/meeting-notes/transcribe`
 - AI Text/STT 생성 UX
-- 삭제/휴지통/복구
 - Admin API와 Admin 화면
 - 딜 활동 로그 자동 생성
 - 캘린더 연동

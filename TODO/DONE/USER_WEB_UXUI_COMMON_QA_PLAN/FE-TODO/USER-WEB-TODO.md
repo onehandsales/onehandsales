@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 `FE/user-web`의 UX/UI 공통 QA와 수정 작업을 바로 실행 가능한 단위로 정리한다.
@@ -72,18 +74,14 @@ G03 완료 기준으로 목록 row/card는 회사/담당자 linked record를 보
 
 G04 완료 기준으로 회사/담당자/제품 desktop row는 56px이고, 768px에서는 card/list를 유지한다. 회사/제품 list response에는 연결 record count가 있지만, 담당자 list response에는 연결 딜 수가 없고 세 도메인 list response에는 실제 최신 활동/다음 행동 summary가 부족하다. FE에서 임의 값을 만들지 않고 `COMMON/API-SPEC/README.md`와 `BE-TODO/API-TODO.md` 후속으로 기록했다.
 
-### P1. Schedule/MeetingNote/BusinessCard/Import/Trash
 
 - [x] 일정 생성/수정 form 확인
 - [x] 일정/회의록에서 연결 딜/회사/담당자 맥락 확인
 - [x] 회의록 목록에서 제목/요약/연결 회사·담당자·딜/작성일/다음 행동 맥락 확인
-- [x] 명함 스캔/Trash 목록이 상태와 연결 record를 조밀하게 보여주는지 확인
 - [x] 회의록 긴 입력과 AI/STT 보조 action 확인
 - [x] 명함스캔 upload/progress/success/failure/confirm 상태 확인
 - [x] Import upload/mapping/validation/confirm 단계 확인
-- [x] Trash list/detail/restore 상태 확인
 
-G05 완료 기준으로 일정 768px month/week grid, 회의록/명함 스캔/Trash desktop 56px row, 768px card/list, Import preview 내부 스크롤과 field-level validation, 명함 provider 내부값 비노출, Trash private memo preview masking을 확인했다. 실제 최신 활동/다음 행동 summary처럼 현재 API에 없는 정보는 FE에서 만들지 않고 API 후속으로 기록한다.
 
 ### P0. Writing/states/a11y closeout
 
@@ -96,7 +94,6 @@ G05 완료 기준으로 일정 768px month/week grid, 회의록/명함 스캔/Tr
 - [x] custom object/custom field builder로 오해되는 노출 문구 확인
 - [x] 최종 검증 명령 실행
 
-G06 완료 기준으로 계정 설정, 로그인 loading, 공통 filter empty, Import detail/list/validation, Trash private memo 안내 문구를 정리했다. 약관/개인정보 법무 장문과 영어권 public/landing locale copy는 업무 화면 UX writing closeout 범위에서 제외했다.
 
 ### P0. Goal closeout review
 

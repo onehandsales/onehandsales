@@ -1,5 +1,7 @@
 # G01 Google Calendar Planning API DB Contract Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 작업일: 2026-07-23
 대상: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/04_GOOGLE_CALENDAR_INTEGRATION/COMMON/GOAL-SPECS/G01_PLANNING_API_DB_CONTRACT.md`
@@ -10,9 +12,7 @@
 
 ## 2. 확인한 현재 코드 사실
 
-- `BE/prisma/schema.prisma`의 `Schedule`에는 아직 `meetingUrl`, Google source metadata, `deletedAt`, `trashExpiresAt`이 없다.
 - `BE/src/modules/schedule/application/services/schedule-application.service.ts`의 `deleteSchedule`은 현재 `deleteScheduleHard` 경로를 사용한다.
-- `BE/src/modules/trash`와 `FE/user-web/src/features/trash`의 target/domain type에는 아직 `SCHEDULE`이 없다.
 - `BE/src/modules/notification`에는 `SCHEDULE_START_REMINDER`가 있다.
 - `FE/user-web/src/features/schedule`은 `memo`, `dealIds`를 지원하지만 `meetingUrl`, `isAllDay`, `googleCalendar` 타입은 아직 없다.
 - `FE/user-web/src/pages/settings`는 `/app/settings` entry point로 연결되어 있다.

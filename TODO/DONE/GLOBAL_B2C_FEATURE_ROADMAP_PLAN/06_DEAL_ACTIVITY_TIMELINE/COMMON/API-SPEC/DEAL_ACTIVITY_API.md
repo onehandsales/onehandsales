@@ -1,5 +1,7 @@
 # Deal Activity API
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 계약 상태: implemented
 확정일: 2026-07-25
 Backend 구현일: 2026-07-26
@@ -115,7 +117,6 @@ Authorization: Bearer <access-token>
 3. cursor가 있으면 cursor를 `occurredAt`, `id` 기준으로 해석한다.
 4. `DealActivity`를 `occurredAt desc, id desc`로 page size + 1개 조회한다.
 5. source record가 삭제됐거나 접근 불가이면 activity row는 반환하되 해당 linked record/detail은 포함하지 않는다.
-6. private memo 원문, provider raw detail, follow-up body 전체는 포함하지 않는다.
 7. `linkedRecordsJson`이 null이면 `linkedRecords=[]`로 변환한다.
 8. response DTO로 변환한다.
 
@@ -166,7 +167,6 @@ Response 예시:
 ### 연결된 DB 스키마
 
 - 조회: `Deal`, `DealActivity`
-- 참조: source type에 따라 `Schedule`, `MeetingNote`, `FollowUpMessage`, `FollowUpDeliveryAttempt`, `DealFollowingActionLog`
 
 ### Transaction
 
@@ -442,7 +442,4 @@ Response 예시:
 | follow-up 발송 실패 | `FOLLOW_UP_FAILED` | FollowUpMessage/FollowUpDeliveryAttempt 상태 변경 transaction. `DEAL` target이 있는 메시지만. sourceId는 `FollowUpDeliveryAttempt.id` |
 
 자동 생성 시 title/summary는 Backend에서 안전한 문구로 만든다. source 원문 전문을 그대로 복사하지 않는다.
-딜 생성 API가 초기 `DealFollowingActionLog`를 함께 만들면 `DEAL_CREATED`와 `NEXT_ACTION_CREATED`를 같은 transaction에서 모두 생성한다.
 follow-up은 `FollowUpMessage.id`를 `metadataJson.messageId`에 남기고, 전송 시도별 이력은 `FollowUpDeliveryAttempt.id`를 `sourceId`로 구분한다.
-기존 mutation이 이미 `DealFollowingActionLog`를 만들고 있으면 G01에서 중복 노출 여부를 확인하고, 06의 정본은 `DealActivity`로 둔다.
-회의록 연결에서 기존 `DealFollowingActionLog.followingAction` 문구를 activity summary로 재사용하지 않는다.

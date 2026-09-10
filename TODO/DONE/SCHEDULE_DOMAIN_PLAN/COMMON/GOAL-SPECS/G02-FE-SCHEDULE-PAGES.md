@@ -1,5 +1,7 @@
 # G02-FE-SCHEDULE-PAGES Goal Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 User Web 일정 화면을 Backend Schedule API 계약에 맞게 구현한다.
@@ -20,7 +22,6 @@ User Web 일정 화면을 Backend Schedule API 계약에 맞게 구현한다.
 - Google Calendar
 - 알림
 - 반복 일정
-- 일정 휴지통
 - Admin 화면
 
 ## 4. 완료 기준

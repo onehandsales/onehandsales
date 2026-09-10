@@ -1,5 +1,7 @@
 # G01-BE-SCHEDULE-DOMAIN Goal Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 Backend Schedule DB와 User API를 구현한다.
@@ -20,7 +22,6 @@ Backend Schedule DB와 User API를 구현한다.
 - Google Calendar
 - 알림
 - 반복 일정
-- 휴지통
 - Admin API
 - 일정별 활동 로그
 

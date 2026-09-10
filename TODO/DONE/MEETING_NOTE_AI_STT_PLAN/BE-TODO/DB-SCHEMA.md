@@ -1,5 +1,7 @@
 # Meeting Note AI/STT DB 스키마
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 결론
 
 이번 Backend 작업은 새 DB table, column, migration을 만들지 않는다.
@@ -51,5 +53,3 @@
 - provider 비용/사용량 집계
 - 회의록 삭제/복구
 - 범용 DealActivity table 전환
-
-현재 저장 후 딜 추가 연동은 새 DB schema 없이 기존 `MeetingNoteDeal`과 `DealFollowingActionLog`를 사용한다.

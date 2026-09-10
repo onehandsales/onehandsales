@@ -1,15 +1,15 @@
 # Deal Work Split
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. Backend 책임
 
 상태: completed
 
-- [x] Prisma schema에 `Deal`, `DealProduct`, `DealFollowingActionLog`, `DealMemoLog`를 추가한다.
 - [x] migration을 생성하고 Prisma Client를 갱신한다.
 - [x] 코드 단 DealStatus enum과 label mapper를 만든다.
 - [x] `deal` Nest module을 `domain`, `application`, `infrastructure`, `presentation` 경계에 맞게 구현한다.
 - [x] Company, Contact, Product ownership과 Contact-Company 관계를 검증한다.
-- [x] 목록, 상세, 생성, 수정, 옵션, export, 다음 행동 로그, 메모 로그 API를 구현한다.
 - [x] Deal 생성 시 Deal, DealProduct, 최초 다음 행동 로그 생성을 transaction으로 묶는다.
 - [x] Deal 수정 시 productIds가 전달되면 DealProduct 연결을 교체한다.
 - [x] 로그 생성/수정 API는 deal ownership과 log ownership을 모두 검증한다.
@@ -26,7 +26,6 @@
 - 단계별 개수, 검색, 회사/담당자/상태 필터, 정렬, 10개 페이지네이션을 연결한다.
 - 회사/담당자/제품 옵션을 생성/수정 form에 연결한다.
 - 제품은 `productIds` 배열로 1개 이상 선택한다.
-- 상세, 수정, 다음 행동 로그, 메모 로그, export를 연결한다.
 - loading, empty, error, mutation pending 상태를 제공한다.
 - Desktop과 Mobile에서 텍스트 겹침 없이 사용할 수 있게 검증한다.
 

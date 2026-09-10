@@ -1,5 +1,7 @@
 # Before 12 Tasks
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G01-G06 Done / 12 Billing Handoff Ready
 작성일: 2026-08-07
 고도화일: 2026-08-08
@@ -58,7 +60,6 @@ PRE12 최종 분류에서 12 전에 할 것으로 확정된 항목은 5개뿐이
 - `/api/exports`, `ExportJob`, `UserDraft`, `/api/drafts/*` 추가
 - Billing, subscription, plan, entitlement, payment, invoice, refund, tax, paywall 구현
 - Customer/B2B tenant admin, organization/member/role/permission 구현
-- Admin 직접 Trash 복구, 유료 복구, hard delete, purge 구현
 - stale 문서에 맞추기 위한 `/app/notifications` rollback
 - legacy `admin-query` route/API 활성화
 - post-12 후보를 이번 폴더에서 구현하는 작업

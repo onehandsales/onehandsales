@@ -1,5 +1,7 @@
 # DB Schema TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-04 최종 서비스 형태 재대조 완료: 03 추가 DB/Prisma/migration 후속 없음. weekly report는 기존 Schedule/Deal 계열 runtime aggregation과 04/08에서 이미 반영된 Google/currency 필드를 사용한다.
 
 상태: completed
@@ -65,7 +67,6 @@ DB 관련 구현 또는 문서 변경이 생기면 한글 주석을 반드시 �
 | `DealContact` | 딜 연결 담당자 |
 | `Company` | 회사 표시명 |
 | `Contact` | 담당자 표시명과 소속 회사 |
-| `DealFollowingActionLog` | 대표 미완료 다음 행동 |
 
 ## 4. 조회 조건
 
@@ -83,16 +84,11 @@ Linked deal:
 
 Next following action:
 
-- `DealFollowingActionLog.userId = currentUser.id`
-- `DealFollowingActionLog.dealId IN linkedDealIds`
-- `DealFollowingActionLog.checkComplete = false`
-- `DealFollowingActionLog.deletedAt IS NULL`
 - 정렬: `createdAt ASC`, `id ASC`
 
 ## 5. Response/export에 포함하지 않는 값
 
 - `Schedule.memo` 본문
-- private memo
 - meeting note body
 - provider raw response
 - DB 내부 ID 컬럼의 Excel 노출
@@ -109,8 +105,6 @@ Next following action:
 - `ScheduleDeal @@index([userId, scheduleId])`
 - `ScheduleDeal @@index([userId, dealId])`
 - `Deal @@index([userId, deletedAt])`
-- `DealFollowingActionLog @@index([userId, dealId])`
-- `DealFollowingActionLog @@index([userId, checkComplete])`
 
 주간 범위는 7일 고정이므로 별도 report table이나 snapshot table은 만들지 않는다.
 
@@ -134,7 +128,6 @@ Next following action:
 ## 8. 구현 결과
 
 - 이번 03 구현에서 새 데이터베이스, Prisma model, table, column, enum, index, migration은 생성하지 않았다.
-- `BE/prisma/schema.prisma`는 기존 `Schedule`, `ScheduleDeal`, `Deal`, `DealCompany`, `DealContact`, `Company`, `Contact`, `DealFollowingActionLog` 관계와 index를 그대로 사용한다.
 - `BE/src/modules/schedule/infrastructure/persistence/prisma-schedule.repository.ts`의 `listSchedulesForWeeklyReport` projection은 `Schedule.userId`, schedule range overlap, linked `Deal.userId`, `Deal.deletedAt IS NULL`, 미완료/미삭제 following action 조건으로 조회한다.
 - DB 관련 projection/service/controller 구현에는 한글 `// 기능 : ...`, `// API : ...` 주석이 포함되어 있다.
 - `pnpm.cmd run prisma:validate` 통과로 schema 유효성을 확인했다.

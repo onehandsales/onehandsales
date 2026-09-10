@@ -1,12 +1,13 @@
 # G05 Admin Web Architecture Legacy Closeout 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 작업일: 2026-08-09
 대상 goal: `TODO/BEFORE_12_TASKS/COMMON/GOAL-SPECS/G05_ADMIN_WEB_ARCHITECTURE_LEGACY_CLOSEOUT.md`
 결론: Admin Web architecture와 legacy route 설명을 실제 11 Admin Web route/API 기준으로 맞췄다.
 
 ## 1. 확인한 실제 상태
 
-- `FE/admin-web/src/app/router/router.tsx` 기준 active route는 `/users`, `/users/:userId`, `/users/:userId/domain`, `/users/:userId/trash`, `/provider-failures`, `/account-requests`, `/trash/recovery-requests`, `/analytics`, `/audit-logs`, `/system`이다.
 - `FE/admin-web/src/app/router/router.tsx` 기준 `/organizations`, `/subscriptions`, `/support`는 `/`로 redirect한다.
 - `FE/admin-web/src/components/layout/admin-shell.tsx` navigation에는 active 운영 route만 노출되고 `/organizations`, `/subscriptions`, `/support`는 노출되지 않는다.
 - `FE/admin-web/src/features/admin-query`는 과거 dashboard, 전역 domain list/detail, legacy raw access path를 기대하는 준비 코드이며 현재 router와 menu에 연결되지 않는다.
@@ -14,7 +15,6 @@
 - `FE/admin-web/src/pages/subscriptions/index.tsx`와 `FE/admin-web/src/pages/support/index.tsx`는 placeholder page지만 현재 router에서 직접 쓰지 않는다.
 - `organization-management`, `subscription-management`, `support` feature 폴더는 빈 scaffold다.
 - `FE/admin-web/src/lib/admin-api-client.ts`는 모든 요청을 `/admin/api${path}`로 보낸다.
-- `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 현재 Admin route, non-admin 차단, reason modal validation, provider/analytics/account/trash/system route smoke를 확인한다.
 
 ## 2. 보정한 문서
 

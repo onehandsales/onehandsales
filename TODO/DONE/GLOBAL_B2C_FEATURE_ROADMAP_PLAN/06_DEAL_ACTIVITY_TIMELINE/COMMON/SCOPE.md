@@ -1,5 +1,7 @@
 # Scope
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-25
 최종 업데이트: 2026-08-06
@@ -27,7 +29,6 @@
 | Page size 15 cleanup | 목록 API/FE/test 문서의 15개 page 계약을 함께 정리한다. |
 | NBA-003 Deal subset | `NBA-003` 중 Deal list `latestActivity`만 06 범위로 승격한다. |
 | NBA-014 gate | 신규 migration 전 DB/Prisma 운영 gate를 확인한다. |
-| 보안 | user ownership, soft delete 제외, private memo와 provider raw redaction을 지킨다. |
 | UX | Notion식 detail page와 Attio식 CRM activity timeline 기준을 따른다. |
 
 ## 3. 1차 구현 제외
@@ -36,8 +37,6 @@
 |---|---|
 | 수동 activity 삭제 | 삭제/복구/retention/audit 정책과 연결되므로 후속으로 분리한다. |
 | 자동 activity 수정/삭제 | 시스템 이력 정합성을 지킨다. |
-| 메모 activity 통합 | 일반 메모와 private memo의 노출 정책을 먼저 확정해야 한다. |
-| activity trash/restore | 11 Admin/Trust/policy와 연결해 후속으로 결정한다. |
 | 모든 도메인 공통 activity bus | 1차는 Deal 중심으로 제한한다. |
 | 고급 검색/필터 전체 개편 | timeline 정본 뒤 별도 goal로 확장한다. |
 | 딜 가능성/확률 score | 1차 timeline과 별개로 후속 제품 결정이 필요하다. |
@@ -77,11 +76,9 @@
 | `FOLLOW_UP` | FollowUpMessage 발송 상태 기반 기록 |
 | `SCHEDULE` | ScheduleDeal 연결 기반 기록 |
 | `MEETING_NOTE` | MeetingNoteDeal 연결 기반 기록 |
-| `NEXT_ACTION` | DealFollowingActionLog 기반 기록 |
 
 ## 6. 민감정보와 노출 제한
 
-- private memo 원문은 activity summary에 포함하지 않는다.
 - follow-up 본문 전체는 timeline 목록에 노출하지 않는다.
 - provider raw response, token, API key, quota detail은 저장/응답/log에 노출하지 않는다.
 - 회의록 details/rawText 전문은 timeline summary에 넣지 않는다.
@@ -101,7 +98,6 @@
 - 수동 activity를 만들고 수정할 수 있다.
 - 자동 activity는 수정할 수 없다.
 - 다른 사용자의 딜 activity에 접근할 수 없다.
-- 삭제된 딜, 삭제된 source, private memo, provider raw detail이 timeline response에 섞이지 않는다.
 - 딜 목록 products/latest activity와 담당자 dealCount는 API 응답 기준으로 표시된다.
 - page size 15 계약이 Backend/FE/test에서 일치한다.
 - Company/Contact/Product latest summary, generic summary endpoint, record별 상세 activity timeline은 06 완료 조건에 포함하지 않는다.

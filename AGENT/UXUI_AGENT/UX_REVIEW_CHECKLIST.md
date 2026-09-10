@@ -21,7 +21,7 @@
 - `오프더레코드`, `상품`, `Customer`처럼 정본에서 제외된 표현을 쓰지 않는가?
 - 외부 UX reference를 패턴으로만 참고하고, brand/copy/visual asset/layout을 그대로 복제하지 않았는가?
 - Notion식 sidebar/page/database/detail 구조를 기준으로 화면이 정돈되어 있는가?
-- Attio식 CRM record와 Memo 맥락이 상세 화면에 분명히 드러나는가?
+- Attio식 CRM record 맥락이 상세 화면에 분명히 드러나는가?
 - row/card가 열 수 있는 record처럼 동작하고, 상세는 page 또는 peek/detail panel처럼 구성되어 있는가?
 - 기존 목록이 이미 record table 구조라면 새 구조로 갈아엎지 않고, row density와 linked record/업무 판단 정보만 강화했는가?
 - 데스크톱 목록 row가 약 48px 수준의 업무용 밀도를 갖고, 큰 row + 약한 업무 맥락 조합으로 보이지 않는가?

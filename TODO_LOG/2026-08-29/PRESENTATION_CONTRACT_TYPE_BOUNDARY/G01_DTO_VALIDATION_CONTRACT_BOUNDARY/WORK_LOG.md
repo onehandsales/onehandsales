@@ -1,5 +1,7 @@
 # G01 DTO Validation Contract Boundary 작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 - 날짜: 2026-08-29
 - 상태: 완료
 - Goal: `TODO/DONE/PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN/COMMON/G01-DTO-VALIDATION-CONTRACT-BOUNDARY.goal.md`
@@ -50,7 +52,6 @@
   - `BE/src/modules/product/application/ports/product-query.types.ts`
   - `BE/src/modules/schedule/application/ports/google-calendar.types.ts`
   - `BE/src/modules/schedule/application/ports/schedule-query.types.ts`
-  - `BE/src/modules/trash/application/ports/trash.types.ts`
 - DTO, application service, repository port, Prisma repository, 관련 spec import를 새 contract 경로로 보정했다.
 - API request field 이름과 validation 허용 값은 변경하지 않았다.
 - G01 완료 후 presentation의 repository port import 잔여는 9건이며 모두 response mapper 대상이다. 다음 실행 대상은 `G02-RESPONSE-MAPPER-READ-MODEL-BOUNDARY.goal.md`다.

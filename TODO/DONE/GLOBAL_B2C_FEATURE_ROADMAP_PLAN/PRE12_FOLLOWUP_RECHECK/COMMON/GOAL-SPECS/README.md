@@ -1,5 +1,7 @@
 # Goal Specs
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Pre-12 Closeout Complete / BEFORE_12 반영 완료 / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -37,6 +39,5 @@
 - 09 완료 범위를 넓혀서 account deletion 실제 job, 세부 analytics event, 외부 provider, public/UTM attribution, growth experiment, marketing opt-in, billing runtime model, PWA attribution을 끼워 넣지 않는다.
 - 10 완료 범위를 넓혀서 PWA/offline, BusinessCard custom camera preview/crop, `UserDraft`, server draft DB, media/raw 저장, `/app/export`, `/api/exports`를 끼워 넣지 않는다.
 - 10 문서 체크리스트나 FE architecture stale 문서를 기능 미구현 근거로 보지 않는다.
-- 11 완료 범위를 넓혀서 Admin 직접 Trash 복구/유료 복구/hard delete/purge, export artifact/download, 자동 민감정보 감지, Admin direct domain mutation, Customer/B2B tenant admin, Billing Admin을 끼워 넣지 않는다.
 - 11 문서 체크리스트나 Admin Web architecture stale 문서를 기능 미구현 근거로 보지 않는다.
 - ImportJob cleanup failure aggregate/system gate는 `PRE12-F13` 전략 전 11 system gate에 끼워 넣지 않는다.

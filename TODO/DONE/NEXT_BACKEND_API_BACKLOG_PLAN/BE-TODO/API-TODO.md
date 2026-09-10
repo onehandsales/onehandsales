@@ -1,5 +1,7 @@
 # API TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 2026-08-06 `06_DEAL_ACTIVITY_TIMELINE` 후속 재검토 A 결정 반영: `NBA-003` 잔여 Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 PRE12 API 계약화/구현 대상이 아니다.
 
 상태: DONE / Source Backlog Archived / Billing moved to `TODO/PADDLE_PLAN`
@@ -23,11 +25,8 @@
 - [x] `09_PRODUCT_ANALYTICS`: product analytics collector API, server event recorder, snapshot/AI usage internal use case 구현 및 QA closeout 완료
 - [x] `NBA-005 BusinessCard provider failure code/message contract`: `10_MOBILE_PWA_FIELD_USE`에서 구현 및 QA closeout 완료
 - [x] `10_MOBILE_PWA_FIELD_USE`: BusinessCard safe failure, MeetingNote STT draft reuse, notification API reuse, mobile analytics event 구현 및 QA closeout 완료
-- [x] `NBA-007 Trash private memo backend response restriction`: `11_ADMIN_OPERATION`에서 구현 및 QA closeout 완료
 - [x] `NBA-011` Admin/internal provider audit 조회 범위: `11_ADMIN_OPERATION`에서 provider failure 운영 조회와 raw access audit 기준 구현 완료
-- [x] `NBA-012 Trash 7일 이후 복구 정책`: `11_ADMIN_OPERATION`에서 User 만료 row/복구 문의와 Admin recovery queue 구현 완료
 - [x] `NBA-013 Admin 운영 UX/API`: `11_ADMIN_OPERATION`에서 `/admin/api/*`와 Admin Web 운영 화면 구현 완료
-- [x] `11_ADMIN_OPERATION`: Admin 운영 API/Web, audit/redaction, provider/trash/account/system gate 구현 및 QA closeout 완료
 - [x] Admin provider failure 목록 source 편중 cursor pagination Finding 해결 및 회귀 테스트 추가 (2026-08-10)
 
 ## 1. 목적
@@ -137,19 +136,15 @@
 
 - 연결 계획: `TODO/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/11_ADMIN_OPERATION`
 - API 영향:
-  - `/admin/api/*` 사용자/도메인/Trash/provider/analytics/account/system/audit API 구현
-  - `POST /api/trash/recovery-requests` 만료 Trash 복구 문의 API 구현
   - 계정 삭제/데이터 export request User/Admin API 구현
   - Admin raw access reason validation과 sensitive/audit log transaction 구현
 - Backend 영향:
   - Admin API는 AuthGuard와 AdminGuard를 모두 통과한다.
   - User API와 Admin API를 같은 endpoint의 role 분기로 합치지 않는다.
-  - provider raw/prompt/token/quota detail, browser push endpoint/key/userAgent 원문, analytics raw payload dump, private memo 원문은 response/log에 노출하지 않는다.
   - Admin provider failure 목록 cursor pagination은 source별 batch 조회와 305건 편중 회귀 테스트로 보강되어 한 source에 실패 row가 몰려도 next cursor가 끊기지 않는다.
   - Admin system gate는 migration/seed/backup/restore/provider smoke 점검 결과를 기록하지만 shell command를 직접 실행하지 않는다.
 - 11 밖으로 남는 범위:
   - 결제/구독/plan/payment/invoice/refund/failed payment recovery와 billing-linked conversion/churn event
-  - Admin 직접 Trash 복구 실행, 유료 복구 결제, Trash hard delete/purge
   - 자동 민감정보 감지와 generic ExportJob 파일 생성/대량 export
 
 ## 3. Release follow-up API 후보
@@ -173,7 +168,6 @@
 
 ## 4. Product feature API 후보
 
-- `NBA-003`: Company/Contact/Product latest memo/activity/next action summary. Deal list `latestActivity` subset은 06에서 완료. 2026-08-06 A 결정으로 잔여 summary, generic summary endpoint, record별 상세 timeline은 PRE12 API 계약화/구현 대상이 아니다.
 - `NBA-004`: MeetingNote 목록 next/latest summary. 상세 next action/follow-up draft subset은 07에서 완료
 
 위 후보는 후속 재검토에서 새 TODO로 승격할지 결정한다. 이 archived 문서만으로 API를 구현하지 않는다.
@@ -201,4 +195,3 @@
 - 이 draft 문서만 보고 controller/service/repository를 구현하지 않는다.
 - API 계약 상태가 `draft`인 후보를 구현하지 않는다.
 - User API와 Admin API를 같은 endpoint의 role 분기로 합치지 않는다.
-- private memo, transcript, provider raw detail을 일반 사용자 response에 추가하지 않는다.

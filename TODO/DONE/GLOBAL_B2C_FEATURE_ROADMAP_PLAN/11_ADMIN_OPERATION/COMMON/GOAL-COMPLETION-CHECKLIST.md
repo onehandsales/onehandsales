@@ -1,5 +1,7 @@
 # Goal Completion Checklist
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed / G04 Closeout Confirmed
 
 각 goal 완료 시 아래를 확인한다. 2026-08-09 G04 closeout 기준 G10 완료 기록과 실제 코드 상태를 다시 대조했다.
@@ -15,7 +17,6 @@
 - [x] provider raw/prompt/token/quota detail이 저장/응답/로그에 없다.
 - [x] browser push endpoint/key/userAgent 원문이 Admin select/response/log에 노출되지 않는다.
 - [x] mobile field-use analytics는 event count와 allowlist payload bucket만 집계한다.
-- [x] Trash 만료가 hard delete/purge로 구현되지 않았다.
 - [x] 결제/구독/plan/paywall이 11에 들어오지 않았다.
 - [x] Backend 신규/수정 코드에 필요한 한글 주석이 있다.
 - [x] Frontend 신규/수정 코드에 필요한 한글 주석이 있다.

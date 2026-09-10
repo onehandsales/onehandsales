@@ -1,5 +1,7 @@
 # 06 Deal Activity Timeline
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Completed
 확정일: 2026-07-25
 최종 업데이트: 2026-08-06
@@ -11,7 +13,6 @@
 
 딜 하나를 열었을 때 영업이 어떻게 진행돼 왔는지 시간순으로 읽을 수 있게 한다.
 
-06의 핵심은 화면 장식이 아니라 `DealActivity` 정본을 만드는 것이다. 현재 딜 상세에는 다음 행동 로그, 메모 로그, follow-up 이력이 분리돼 있고, 일정/회의록 연결은 각 도메인에 흩어져 있다. 06은 이 조각들을 딜 중심 activity timeline으로 연결해 Notion식 record page와 Attio식 CRM activity 맥락을 만든다.
 
 ## 2. 제품 방향
 
@@ -75,7 +76,6 @@
 
 - 수동 activity 삭제
 - 자동 activity 수정/삭제
-- 일반 메모와 private memo의 timeline 통합
 - 모든 도메인 공통 activity bus
 - 고급 검색/필터 전체 개편
 - 딜 가능성/확률 score 모델
@@ -154,7 +154,6 @@ G07 완료 후 상태:
 - 수동 activity 생성/수정 API가 구현된다.
 - 딜 상세 화면에서 timeline이 loading/empty/error/success 상태를 가진다.
 - follow-up 발송 이력이 딜 timeline에 안전한 summary로 표시된다.
-- private memo, provider raw response, follow-up 본문 전체, 회의록 원문 전문이 timeline summary에 노출되지 않는다.
 - Deal list `products` summary와 latest activity summary가 API 계약에 맞게 반영된다.
 - Contact list `dealCount`가 ownership/soft delete 기준을 지킨다.
 - page size 15 계약이 FE 단독 숫자 변경 없이 정리된다.

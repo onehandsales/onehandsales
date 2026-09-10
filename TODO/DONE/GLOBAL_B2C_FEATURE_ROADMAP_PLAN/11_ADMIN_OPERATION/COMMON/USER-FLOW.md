@@ -1,5 +1,7 @@
 # User Flow
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 
 ## 1. Admin 사용자 확인
@@ -30,13 +32,10 @@
 6. 허용된 field만 원문으로 표시된다.
 7. provider raw/prompt/token/quota detail은 어떤 경우에도 표시되지 않는다.
 
-## 4. Trash 만료와 복구 문의
 
-1. 사용자가 User Web `/app/trash`에 진입한다.
 2. 7일 이내 row는 `복구` 버튼이 활성화된다.
 3. 7일 이후 row는 `무료 복구 기간이 지났어요` 상태로 표시된다.
 4. 7일 이후 row는 `복구 문의`를 생성할 수 있다.
-5. 운영자는 Admin Web `/trash/recovery-requests`에서 문의를 확인한다.
 6. 운영자는 상태만 관리한다.
 7. 11 1차에서는 Admin이 직접 복구하거나 결제를 받지 않는다.
 

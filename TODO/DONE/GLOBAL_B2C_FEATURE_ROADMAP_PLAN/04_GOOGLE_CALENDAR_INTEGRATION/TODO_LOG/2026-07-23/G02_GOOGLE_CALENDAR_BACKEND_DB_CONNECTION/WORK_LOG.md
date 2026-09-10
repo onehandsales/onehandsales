@@ -1,5 +1,7 @@
 # G02 Google Calendar Backend DB Connection Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 날짜: 2026-07-23
 상태: Done
 대상 goal: `COMMON/GOAL-SPECS/G02_BACKEND_DB_GOOGLE_CONNECTION.md`
@@ -10,7 +12,6 @@
 - Google Calendar integration migration을 추가하고 로컬 migration 상태가 최신임을 확인했다.
 - Schedule 삭제를 soft delete로 전환하고 기본 list/detail/week/export 조회에서 deleted schedule을 제외했다.
 - Google-origin schedule의 badge/source/status 표현과 meeting URL/all-day 필드를 Schedule 응답에 반영했다.
-- Trash `SCHEDULE` list/detail/restore branch를 추가하고 restore 시 future reminder 재계산을 연결했다.
 - Google connect/callback/status/disconnect API를 추가했다.
 - OAuth state 서명/TTL/returnTo allowlist, Google ID token 검증, token encryption adapter를 추가했다.
 - disconnect `KEEP/HIDE/TRASH` 정책을 구현하고 `TRASH` schedule reminder cancel을 transaction 안에서 처리했다.
@@ -25,7 +26,6 @@
 - `pnpm.cmd run lint`: 통과
 - `pnpm.cmd run test -- schedule`: 통과
 - `pnpm.cmd run test -- notification`: 통과
-- `pnpm.cmd run test -- trash`: 통과
 - `pnpm.cmd run build`: 통과
 
 ## 메모

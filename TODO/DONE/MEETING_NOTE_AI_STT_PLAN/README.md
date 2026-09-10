@@ -1,5 +1,7 @@
 # Meeting Note AI/STT Plan
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 회의록 작성 화면에서 사용자가 AI 없이 직접 저장할 수 있는 흐름을 유지하고, 필요할 때만 AI/STT가 `details`, `nextPlan`, `requiredAction` 초안을 생성하도록 Backend와 Frontend 작업을 분리한다.
@@ -17,7 +19,6 @@
 - transcript, provider raw response, provider 호출 이력 테이블은 이번 범위에서 만들지 않는다.
 - 최종 저장은 기존 `POST /api/meeting-notes`를 사용한다.
 - 최종 저장의 `sourceType`은 `MANUAL`, `TEXT_AI`, `STT_AI`를 허용하되 `rawText`는 저장하지 않는다.
-- 저장 후 딜 연동은 별도 액션이며, `POST /api/meeting-notes/:meetingNoteId/deals`가 `MeetingNoteDeal` 추가와 `DealFollowingActionLog` 생성을 처리한다.
 
 ## 3. 포함 범위
 

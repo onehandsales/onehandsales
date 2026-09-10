@@ -1,5 +1,7 @@
 # 통합검색 DB 스키마
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 통합검색은 기존 업무 데이터를 읽는 기능이다. 새 DB table과 migration을 만들지 않는다.
@@ -15,7 +17,6 @@
 | `SCHEDULE` | `Schedule`, `ScheduleDeal`, `Deal` | `scheduleTitle`, `location`, `memo`, `dealName` | `Schedule.userId` |
 | `MEETING_NOTE` | `MeetingNote`, `MeetingNoteCompany`, `MeetingNoteContact`, `MeetingNoteProduct`, `MeetingNoteDeal` | `title`, `details`, `nextPlan`, `requiredAction`, snapshot fields | `MeetingNote.userId` |
 
-soft delete 대상 모델은 검색 시 `deletedAt: null` 조건으로 휴지통 데이터를 제외한다.
 
 제품 정책은 넓게 검색이다. 통합검색은 record 제목/이름뿐 아니라 업무 본문성 필드인 일정 `memo`, 회의록 `details`, `nextPlan`, `requiredAction`까지 조회 조건에 포함한다.
 

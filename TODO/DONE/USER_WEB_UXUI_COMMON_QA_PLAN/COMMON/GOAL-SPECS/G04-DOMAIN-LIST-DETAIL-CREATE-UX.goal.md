@@ -1,5 +1,7 @@
 # G04 Domain List Detail Create UX
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P1
 담당 영역: FE/user-web
@@ -60,7 +62,6 @@
 - 단순 조회 목록이 아니라 연결 record, 진행 딜, 다음 행동, 현재 응답에서 가능한 최근 활동을 통해 바로 판단 가능한 CRM record table이어야 한다.
 - 상세는 Attio record처럼 속성, 연결 딜, Memo 기록을 먼저 이해할 수 있어야 한다.
 - 회사 생성 패널은 desktop에서 목록을 숨기지 않고, 필요한 경우 horizontal scroll을 허용한다.
-- 삭제 버튼은 빨간 휴지통 icon action 기준을 따른다.
 - 삭제 성공 문구는 정본 문구와 맞춘다.
 
 ## 6. 제외 범위

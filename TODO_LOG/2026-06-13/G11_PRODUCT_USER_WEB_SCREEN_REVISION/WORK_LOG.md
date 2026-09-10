@@ -1,5 +1,7 @@
 # G11 Product User Web 화면 재작업 로그
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 작업 상태
 
 - 상태: 완료 (UX 개선 추가 반영 포함)
@@ -10,7 +12,6 @@
 ## 요청 내용
 
 1. **400 Bad Request 수정** — BE `ListProductsQueryDto`와 FE 파라미터 불일치(`pageSize`, `search`, `includeDeleted` → `productName`, `productCategoryId`, `productStatusId`)
-2. **전체 제품 기능 재구현** — 카테고리/상태 인라인 CRUD, 메모 로그/비밀 메모 무한 스크롤, xlsx 내보내기
 3. **pen 디자인 파일 기준 스타일 정합**
 4. **페이지네이션 전 도메인 적용**
 5. **제품 상세 TopBar를 공통 app-shell TopBar로 이전**
@@ -27,11 +28,8 @@
 
 ### 제품 도메인
 - `src/features/product/types/product.ts` — BE 실제 응답 스키마로 전면 재작성 (`productName`, `productCategory`, `productStatus`, `productPrice` 등)
-- `src/features/product/api/product-api.ts` — 올바른 쿼리 파라미터 전송, void 반환 API, 메모 로그/비밀 메모/카테고리·상태 CRUD, xlsx 내보내기 추가
 - `src/features/product/api/product-query-keys.ts` — 키 구조 정비
 - `src/features/product/hooks/use-product-list.ts` — `page` 파라미터 지원
-- `src/features/product/hooks/use-product-detail.ts` — `useProductCategories`, `useProductStatuses`, `useProductMemoLogsInfinite`, `useProductPrivateMemoLogsInfinite` 추가
-- `src/features/product/hooks/use-product-mutations.ts` — 전면 재작성 (카테고리·상태·메모 로그·비밀 메모 mutation 추가)
 - `src/features/product/components/product-list-screen.tsx` — 카테고리/상태 필터 API 연동, 페이지네이션, 내보내기 버튼 제거(TopBar 이전), 카테고리 배지 스타일(파란색 rounded-full), `initialCreateOpen` prop 추가
 - `src/features/product/components/product-detail-screen.tsx` — 내부 TopBar 제거, `isEditing`/`onEditingChange` prop화, 기본 정보 필드 재구성(분류/단위), 제품 로그 카드, 판매 현황 카드, Memo 기록 카드
 - `src/features/product/components/product-create-dialog.tsx` — 헤더 amber(`#b45309`), 타이틀 "새 제품 등록", 단가 ₩/KRW 입력 그룹, 카테고리·상태 인라인 CRUD 패널
@@ -41,7 +39,6 @@
 ### 페이지네이션 (전 도메인)
 - `src/features/deal/components/deal-list-screen.tsx` — `page` state, 필터 변경 시 리셋, `<Pagination hasNext>` 추가
 - `src/features/meeting-note/components/meeting-note-list-screen.tsx` — 동일
-- `src/features/trash/components/trash-screen.tsx` — 커스텀 `PaginationControls` → 공통 `<Pagination>` 교체
 
 ### 제품 등록 모달 UX 개선 (추가)
 - `src/features/product/components/product-create-dialog.tsx`
@@ -80,7 +77,6 @@
 | 상세 TopBar | 내부 header → 공통 app-shell TopBar (브레드크럼 + 수정/삭제) |
 | 상세 기본 정보 필드 | "카테고리"→"분류", "상태" 제거, "단가"→"단위", 순서 재정렬 |
 | 상세 좌측 로그 카드 | "메모 기록" → "제품 로그" |
-| 상세 우측 | 판매 현황 카드 추가, "비밀 메모" → "Memo 기록" |
 | 등록 모달 헤더 | `#1D4ED8` → `#b45309` amber, 타이틀 "새 제품 등록" |
 | 등록 모달 저장 버튼 | `#1D4ED8` → `#b45309`, 텍스트 "제품 추가" |
 | 등록 모달 단가 | ₩ prefix + KRW suffix 입력 그룹 |

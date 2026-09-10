@@ -1,5 +1,7 @@
 # Architecture Guardrails
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 최종 업데이트: 2026-07-22
 
@@ -27,7 +29,6 @@
 ## 3. DB/Migration
 
 - 기존 schedule row는 `sourceType=INTERNAL`으로 migrate한다.
-- 기존 schedule row의 `deletedAt/trashExpiresAt`은 `NULL`이다.
 - Google token field는 nullable로 두고 disconnect 시 폐기할 수 있어야 한다.
 - `ExternalCalendarConnection.syncLockExpiresAt`을 추가한다.
 - `ExternalCalendarConnection`은 04에서 사용자당 provider 1개 unique로 시작한다.
@@ -38,15 +39,9 @@
 - `ScheduleDeal` row는 schedule soft delete 때 삭제하지 않는다.
 - 모든 schedule 기본 조회에는 `deletedAt IS NULL`을 추가한다.
 
-## 4. Schedule/Trash
 
 - `DELETE /api/schedules/:scheduleId`는 hard delete가 아니다.
-- schedule 삭제는 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 채우고 pending reminder를 취소한다.
-- `trashExpiresAt`은 `createTrashRetentionTimestamps(now)`를 사용하며 현재 정책은 `now+7일`이다.
 - Google-origin schedule 삭제는 `externalSyncStatus=LOCAL_DELETED`를 함께 저장한다.
-- Trash restore는 schedule soft delete fields를 비우고, Google-origin이면 `LOCAL_MODIFIED`로 복구한다.
-- Trash restore 후 future schedule reminder를 다시 계산한다.
-- 기존 Trash module에 `SCHEDULE` target/domain을 추가하되 기존 target type 동작을 깨지 않는다.
 
 ## 5. Google Sync
 

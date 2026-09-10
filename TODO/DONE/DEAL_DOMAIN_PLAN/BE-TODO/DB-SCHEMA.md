@@ -1,5 +1,7 @@
 # Deal DB Schema
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 목적
 
 Deal 도메인의 Prisma 모델 추가 기준을 정의한다.
@@ -32,7 +34,6 @@ Deal 도메인의 Prisma 모델 추가 기준을 정의한다.
 | `createdAt` | datetime | 예 | 생성일 |
 | `updatedAt` | datetime | 예 | 최근수정일 |
 
-### 2.3 DealFollowingActionLog
 
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---:|---|
@@ -44,7 +45,6 @@ Deal 도메인의 Prisma 모델 추가 기준을 정의한다.
 | `createdAt` | datetime | 예 | 생성일 |
 | `updatedAt` | datetime | 예 | 최근수정일 |
 
-### 2.4 DealMemoLog
 
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---:|---|
@@ -77,8 +77,6 @@ model Deal {
   company             Company                  @relation(fields: [companyId], references: [id])
   contact             Contact                  @relation(fields: [contactId], references: [id])
   dealProducts        DealProduct[]
-  followingActionLogs DealFollowingActionLog[]
-  memoLogs            DealMemoLog[]
 
   @@index([userId, createdAt])
   @@index([userId, dealName])
@@ -107,7 +105,6 @@ model DealProduct {
   @@index([productId])
 }
 
-model DealFollowingActionLog {
   id              String   @id @default(uuid()) @db.Uuid
   userId          String   @db.Uuid
   dealId          String   @db.Uuid
@@ -124,7 +121,6 @@ model DealFollowingActionLog {
   @@index([userId, checkComplete])
 }
 
-model DealMemoLog {
   id        String   @id @default(uuid()) @db.Uuid
   userId    String   @db.Uuid
   dealId    String   @db.Uuid
@@ -148,8 +144,6 @@ model DealMemoLog {
 ```prisma
 deals                   Deal[]
 dealProducts             DealProduct[]
-dealFollowingActionLogs  DealFollowingActionLog[]
-dealMemoLogs             DealMemoLog[]
 ```
 
 `Company`:

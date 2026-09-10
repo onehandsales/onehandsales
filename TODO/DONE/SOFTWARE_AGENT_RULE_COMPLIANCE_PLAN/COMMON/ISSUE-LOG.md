@@ -1,5 +1,7 @@
 # Issue Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done / Archived
 검토일: 2026-08-11
 완료 보관일: 2026-08-12
@@ -43,7 +45,6 @@
 
 - `BE/src/modules/account-request/application/services/account-request-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-user-application.service.ts`
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-system-operation-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-audit-application.service.ts`
 - `BE/src/modules/admin-operation/application/services/admin-provider-failure-application.service.ts`
@@ -159,7 +160,6 @@
 근거:
 
 - User Web feature 내부에서 다른 feature의 `components/hooks/api/schemas/types/utils`를 직접 import한 후보가 다수 있다.
-- 예: `deal-create-dialog.tsx`, `use-trash-mutations.ts`, `meeting-note-*`, `follow-up-delivery-*`
 
 문제:
 
@@ -173,7 +173,6 @@
 처리 상태:
 
 - 2026-08-11 구현 및 검증 완료
-- User Web의 company/contact/deal/meeting-note/product/schedule/trash/auth/notification/public-site public export를 필요한 범위로 보강했다.
 - User Web feature 내부의 cross-feature `components/hooks/api/schemas/types/utils` deep import를 public `@/features/<feature>` import로 정리했다.
 - 반복 참조되는 query key와 딜 선택/상태/후속 액션 API는 top-level public sub-entry로 분리해 넓은 barrel 순환 위험을 낮췄다.
 - page/layout 외부 consumer의 feature 내부 경로 import도 public index import로 정리했다.
@@ -229,9 +228,6 @@
 
 상태: 후속 보완 기록
 
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `getUserTrashSummary`
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `listUserTrashRecords`
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 `listRecoveryRequests`
 
 위 3개 public application orchestration method는 `// 기능 : ...`은 있으나 numbered step comment가 없다. G05 완료 로그에 후속 보완으로 기록했다.
 

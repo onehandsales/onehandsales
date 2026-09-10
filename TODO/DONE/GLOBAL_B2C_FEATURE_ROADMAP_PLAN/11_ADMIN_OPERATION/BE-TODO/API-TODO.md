@@ -1,5 +1,7 @@
 # Backend API TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implemented / G04 Closeout Confirmed
 
 ## 1. 공통 규칙
@@ -25,10 +27,6 @@
 | G03 | `GET` | `/admin/api/users/:userId` | 사용자 상세 요약 | `ADMIN_USER_OPERATION_API.md` |
 | G03 | `GET` | `/admin/api/users/:userId/activity-timeline` | 최근 활동 timeline | `ADMIN_USER_OPERATION_API.md` |
 | G04 | `GET` | `/admin/api/users/:userId/domain-records` | 사용자 도메인 read-only 탭 | `ADMIN_DOMAIN_READONLY_API.md` |
-| G05 | `GET` | `/admin/api/users/:userId/trash-summary` | 사용자 Trash 요약 | `ADMIN_TRASH_OPERATION_API.md` |
-| G05 | `GET` | `/admin/api/users/:userId/trash-records` | 사용자 Trash 목록 | `ADMIN_TRASH_OPERATION_API.md` |
-| G05 | `POST` | `/api/trash/recovery-requests` | 사용자 복구 문의 생성 | `TRASH_USER_RECOVERY_API.md` |
-| G05 | `GET` | `/admin/api/trash/recovery-requests` | 복구 문의 queue | `ADMIN_TRASH_OPERATION_API.md` |
 | G06 | `GET` | `/admin/api/provider-failures` | provider 실패 목록 | `ADMIN_PROVIDER_FAILURE_API.md` |
 | G06 | `GET` | `/admin/api/provider-failures/:failureId` | provider 실패 safe 상세 | `ADMIN_PROVIDER_FAILURE_API.md` |
 | G07 | `GET` | `/admin/api/analytics/overview` | 09/10 기반 운영 분석 요약 | `ADMIN_ANALYTICS_API.md` |
@@ -47,8 +45,6 @@
 - 민감 원문 조회는 `AdminSensitiveAccessLog`와 `AdminAuditLog`를 같은 transaction에서 남긴다.
 - provider failure detail 조회는 provider raw response, prompt, token, quota detail을 조회하지 않는다.
 - Admin 사용자 상세 notification summary는 browser push endpoint/key/userAgent 원문을 조회하지 않는다.
-- Trash 만료 이후에도 domain row를 hard delete하지 않는다.
-- account deletion은 일반 Trash와 별개로 30일 유예 후 실제 삭제/익명화 job 후보를 둔다.
 - analytics admin summary는 09 read model과 10 mobile field-use event만 사용하고 billing/subscription source를 조회하지 않는다.
 
 ## 4. 검증 기준
@@ -60,7 +56,6 @@ pnpm run prisma:generate
 pnpm run typecheck
 pnpm run lint
 pnpm run test -- admin
-pnpm run test -- trash
 pnpm run test -- product-analytics
 ```
 

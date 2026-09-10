@@ -1,5 +1,7 @@
 # Planning Review
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 검토일: 2026-07-23
 
@@ -32,8 +34,6 @@
 | Google reminders | import 제외 |
 | 한손 알림 | Google-origin schedule도 `SCHEDULE_START_REMINDER` 생성/변경/취소 |
 | Google 삭제 | hard delete 아님. hidden 상태로 보존 |
-| 사용자 삭제 | soft delete/Trash. 진짜 삭제 아님 |
-| Trash retention | `createTrashRetentionTimestamps(now)` 기준 `now+7일` |
 | 복구 | Google-origin schedule restore는 `LOCAL_MODIFIED` |
 | 연결 해제 | `KEEP`, `HIDE`, `TRASH`; 기본 `KEEP` |
 | Badge | `Google`, `Google · 연결 끊김`, `Google · 로컬 수정`, `Google · 로컬 삭제` |
@@ -88,7 +88,6 @@
 - provider 호출은 DB transaction 밖에서 수행한다.
 - migration 후 기존 schedule row가 모두 `INTERNAL`로 정상 동작해야 한다.
 - Schedule hard delete method가 남아 있으면 안 된다.
-- Trash `SCHEDULE` 추가가 기존 target type filter를 깨지 않아야 한다.
 - Google-origin schedule의 memo/dealIds가 sync로 사라지면 안 된다.
 - hidden Google schedule이 home/upcoming/week/export에 섞이면 안 된다.
 - 실제 Google env가 없으면 provider adapter test double로 자동 테스트를 닫는다.

@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# G06 FE Feature Public API Boundary Work Log
 
 상태: 구현 및 검증 완료 / 2026-08-12 재검토 완료
@@ -16,7 +18,6 @@
 ## 2. 우선 검토 파일
 
 - `FE/user-web/src/features/deal/components/deal-create-dialog.tsx`
-- `FE/user-web/src/features/trash/hooks/use-trash-mutations.ts`
 - `FE/user-web/src/features/meeting-note/*`
 - `FE/user-web/src/features/follow-up-delivery/*`
 - `FE/user-web/src/features/contact/*`

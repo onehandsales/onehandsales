@@ -1,5 +1,7 @@
 # API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Final / confirmed API 없음 / BEFORE_12 반영 완료 / Billing moved to `TODO/PADDLE_PLAN`
 작성일: 2026-08-06
 최종 업데이트: 2026-08-11
@@ -21,7 +23,6 @@
 | MeetingNote follow-up 자동 발송 | Follow-up delivery 예약/자동 발송/취소/재시도 | 후속 seed | 구현 금지 |
 | MeetingNote AI 후보 자동 업무 mutation | AI 후보를 Schedule/Deal/Contact/MeetingNote mutation으로 적용하는 approval/apply/rollback 계약 | 후속 seed / `PRE12-F40` | 구현 금지 |
 | Company/Contact/Product latest summary | 기존 list response field 추가 또는 summary endpoint | defer | PRE12 계약화/구현 금지. 비고: 2026-08-06 A 결정, 후속 B2B/team CRM strategy seed. |
-| DealActivity lifecycle/search/score 확장 | manual activity delete/restore, retention/audit, memo/private memo activity 통합, all-domain activity bus, 고급 filter/search, deal score/AI activity 자동 판단, summary cache 계약 | 후속 seed / `PRE12-F39` | 구현 금지 |
 | MeetingNote list latest/next summary | `GET /api/meeting-notes` response field 추가 또는 별도 summary endpoint | 후속 seed | PRE12 구현 금지 |
 | AI data cleanup 제안 저장/적용 | MeetingNote/record cleanup suggestion 생성, 적용, 되돌리기 | 후속 seed / 별도 data quality 계획 | 구현 금지 |
 | MeetingNote transcript/raw/follow-up draft 저장/조회 | transcript, provider raw response, follow-up draft body 저장 또는 raw access API | defer / 정책 필요 | 구현 금지 |
@@ -50,7 +51,6 @@
 | generic ExportJob/PDF | `/api/exports`, `ExportJob`, export file TTL/ownership/audit contract | 후속 seed | PRE12 구현 금지 |
 | 11 Admin 문서 체크리스트/goal index 정합성 | 새 API 없음. 완료 체크리스트와 goal index 문서 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
 | Admin Web architecture/legacy route 정합성 | 새 API 없음. 실제 Admin route/API 기준 architecture 문서와 비활성 legacy route/API 잔여 코드 정리만 대상 | closed-by-BEFORE_12 | 완료 / API 구현 대상 아님 |
-| Admin 직접 Trash 복구/유료 복구/hard delete/purge | Admin restore mutation, paid recovery payment, purge/hard delete API가 필요할 수 있으나 정책 미확정 | billing-blocked / recovery-policy | PRE12 구현 금지 |
 | User data export artifact/download endpoint | artifact 생성 processor, signed URL, `GET /api/users/me/data-export-requests/:requestId/download` 또는 `/api/exports` 계약 필요 | 후속 seed / `PRE12-F09` 연결 | PRE12 구현 금지 |
 | 자동 민감정보 감지 | PII/DLP scan API/worker 또는 저장 시 detection hook 필요 여부 결정 | defer / 정책 필요 | 구현 금지 |
 | Admin direct domain data mutation and recovery action policy | Admin Company/Contact/Product/Deal/Schedule/MeetingNote/BusinessCard/Import 수정/삭제/복구 mutation, audit/result/rollback contract 필요 | defer / ops-policy / `PRE12-F44` | 구현 금지 |

@@ -1,5 +1,7 @@
 # /goal G01-BE-DEAL-DOMAIN
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. Goal
 
 Backend Deal 도메인 DB와 User API를 구현한다.
@@ -30,7 +32,6 @@ Backend Deal 도메인 DB와 User API를 구현한다.
 - [x] 옵션 API 3개를 `createdAt DESC`로 구현한다.
 - [x] export xlsx를 구현한다.
 - [x] 다음 행동 로그 API 3개를 구현한다.
-- [x] 메모 로그 API 3개를 구현한다.
 - [x] observability event를 남긴다.
 - [x] API 테스트를 추가한다.
 - [x] lint/test/e2e 가능한 검증을 실행한다.
@@ -51,9 +52,6 @@ Backend Deal 도메인 DB와 User API를 구현한다.
 - [x] `GET /api/deals/:dealId/following-action-logs`
 - [x] `POST /api/deals/:dealId/following-action-logs`
 - [x] `PATCH /api/deals/:dealId/following-action-logs/:followingActionLogId`
-- [x] `GET /api/deals/:dealId/memo-logs`
-- [x] `POST /api/deals/:dealId/memo-logs`
-- [x] `PATCH /api/deals/:dealId/memo-logs/:memoLogId`
 
 ## 5. Acceptance Criteria
 

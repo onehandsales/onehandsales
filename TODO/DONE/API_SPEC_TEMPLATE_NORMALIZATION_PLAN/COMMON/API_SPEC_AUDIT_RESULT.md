@@ -1,5 +1,7 @@
 # API-SPEC Audit Result
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: G99 Completed / Final reference
 감사일: 2026-08-29
 생성 근거: `TODO\DONE\BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN\COMMON\G07-API-SPEC-TEMPLATE-AUDIT.goal.md`
@@ -85,10 +87,8 @@ find TODO/DONE -path '*/COMMON/API-SPEC/*.md' -print
 | 우선순위 | 그룹 | 예시 |
 | --- | --- | --- |
 | P1 | 인증/사용자, 핵심 도메인 | `AUTH_USER_API_DETAIL.md`, `COMPANY_API*.md`, `CONTACT_API*.md`, `PRODUCT_API*.md`, `DEAL_API*.md` |
-| P1 | 일정/회의록/검색/휴지통 | `SCHEDULE_API.md`, `MEETING_NOTE_API.md`, `SEARCH_API.md`, `LOG_SOFT_DELETE_API.md` |
 | P1 | Import/OCR/알림/Google Calendar | `IMPORT_TEMPLATE_API.md`, `IMPORT_JOB_API.md`, `BUSINESS_CARD_OCR_API.md`, `NOTIFICATION_API.md`, `GOOGLE_CALENDAR_INTEGRATION_API.md` |
 | P1 | AI Weekly/Follow-up/Activity | `AI_WEEKLY_REPORT_API.md`, `FOLLOW_UP_DELIVERY_API.md`, `FOLLOW_UP_EMAIL_PROVIDER_INTEGRATION_API.md`, `DEAL_ACTIVITY_API.md` |
-| P1 | Admin Operation | `ADMIN_*_API.md`, `ACCOUNT_DATA_REQUEST_API.md`, `TRASH_USER_RECOVERY_API.md` |
 | P2 | Product Analytics/Global I18N/Mobile field | `PRODUCT_ANALYTICS_*`, `USER_GLOBAL_SETTINGS_API.md`, `DOMAIN_GLOBAL_DATA_API.md`, mobile contract 문서 |
 | 제외 후보 | README 또는 no API 문서 | `README.md`, `NO_API_CHANGE.md`, `NO_NEW_API_CONTRACT.md` |
 

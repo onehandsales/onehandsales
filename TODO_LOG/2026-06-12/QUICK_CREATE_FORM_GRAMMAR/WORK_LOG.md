@@ -1,5 +1,7 @@
 # Quick Create Form Grammar
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 목표
 
 - `ModalShell` 위에서 Quick Create 계열 모달 내부 폼 문법을 공통화한다.
@@ -24,7 +26,6 @@
   - 인라인 담당자/제품 생성 영역을 `ModalInlineCreateArea`로 대체
   - helper/error text 위치를 `ModalFieldGroup` 기준으로 정리
 - Company Create Modal
-  - 회사 기본 정보, 첫 메모 섹션으로 재구성
   - footer action을 `ModalFooterActions`로 대체
 - Contact Create Modal
   - 담당자 기본 정보, 상세 정보, 첫 메모 섹션으로 재구성

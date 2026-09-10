@@ -1,5 +1,7 @@
 # G03 Reminder Generation Delivery Work Log
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 Date: 2026-07-22
 Status: Done
 
@@ -54,7 +56,6 @@ Status: Done
 - Provider failure storage uses safe error code/message fields.
 - Delivery logs include IDs, channel, provider, and safe error code only.
 - Email body is passed to SMTP only and is not logged.
-- Deal amount, private memo, and meeting note body are not included in reminder payloads.
 
 ## Notes
 

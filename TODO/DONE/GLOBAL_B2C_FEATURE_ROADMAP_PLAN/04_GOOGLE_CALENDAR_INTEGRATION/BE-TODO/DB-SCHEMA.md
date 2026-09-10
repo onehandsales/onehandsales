@@ -1,5 +1,7 @@
 # DB Schema TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 최종 업데이트: 2026-07-23
 
@@ -13,7 +15,6 @@
 - `ExternalCalendarSource`
 - Google Calendar 관련 enum
 - `Schedule` source/meetingUrl/soft delete 필드
-- `Trash` target/domain type에 `SCHEDULE`
 
 `ExternalCalendarEventMapping` model은 04에서 만들지 않는다. 한손 `Schedule` row가 import된 Google event의 운영 row가 되므로, external event key와 sync metadata를 `Schedule`에 둔다.
 
@@ -117,7 +118,6 @@ Index:
 | `externalSyncStatus` | `ScheduleExternalSyncStatus?` | 예 | Google-origin schedule sync 상태 |
 | `deletedAt` | `DateTime? @db.Timestamptz(3)` | 예 | 사용자 soft delete 시각 |
 | `deletedByUserId` | `String? @db.Uuid` | 예 | 삭제 사용자 |
-| `trashExpiresAt` | `DateTime? @db.Timestamptz(3)` | 예 | 영구 삭제 예정 시각 |
 
 Index:
 
@@ -125,7 +125,6 @@ Index:
 - `@@index([userId, sourceType, startAt])`
 - `@@index([userId, externalSyncStatus, startAt])`
 - `@@index([userId, deletedAt])`
-- `@@index([userId, trashExpiresAt])`
 
 호환:
 
@@ -136,7 +135,6 @@ Index:
 
 ## 6. 데이터 보안
 
-- access token과 refresh token은 existing private memo encryption style과 같은 AES-GCM 형태의 envelope string으로 암호화 저장한다.
 - Calendar token 암호화 env는 아래 우선순위로 읽는다.
   1. `GOOGLE_CALENDAR_TOKEN_ENCRYPTION_KEY`
   2. `ENCRYPTION_MASTER_KEY`
@@ -150,13 +148,10 @@ Index:
 
 ## 7. Schedule soft delete
 
-- `DELETE /api/schedules/:scheduleId`는 `deletedAt`, `deletedByUserId`, `trashExpiresAt`을 채운다.
 - `ScheduleDeal` row는 삭제하지 않는다. 복구 시 기존 연결이 유지되어야 한다.
 - pending `SCHEDULE_START_REMINDER`는 삭제 시 취소한다.
-- `trashExpiresAt`은 `BE/src/shared/application/trash/trash-retention.ts`의 `createTrashRetentionTimestamps(now)`를 사용한다.
 - 현재 retention은 `now+7일`이다.
 - Google-origin schedule 삭제 시 `externalSyncStatus=LOCAL_DELETED`로 둔다.
-- 복구 시 `deletedAt/deletedByUserId/trashExpiresAt=NULL`로 되돌리고 Google-origin이면 `externalSyncStatus=LOCAL_MODIFIED`로 둔다.
 
 ## 8. Migration 검증
 
@@ -166,5 +161,4 @@ pnpm run prisma:validate
 pnpm run prisma:migrate -- --name google_calendar_integration
 pnpm run typecheck
 pnpm run test -- schedule
-pnpm run test -- trash
 ```

@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# Scope
 
 상태: G01~G09 구현 및 최종 QA 완료 / 01 최종 서비스 형태 완료
@@ -112,6 +114,5 @@ G05~G09 완료일: 2026-08-03
 01은 `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`의 `NBA-006` 구현 완료 계획이다.
 
 - 포함: Import upload/mapping/validation/confirm 중 유실 방지, DB persistence, TTL, cleanup, resume UX
-- 제외: 결제/구독, Admin 운영, 앱 다국어, 제품 분석, Notification, Schedule week report, Trash 장기 복구 정책
 
 상세 대조는 `COMMON/RELEASE-SCOPE-CHECK.md`를 따른다.

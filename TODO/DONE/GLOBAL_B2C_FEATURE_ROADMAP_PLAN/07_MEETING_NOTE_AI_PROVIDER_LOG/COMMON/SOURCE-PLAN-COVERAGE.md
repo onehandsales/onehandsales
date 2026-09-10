@@ -1,5 +1,7 @@
 # Source Plan Coverage
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-26
 
@@ -53,8 +55,6 @@
 |---|---|---|
 | `NBA-003` Company/Contact/Product latest summary 잔여 | MeetingNote AI provider log 범위가 아님 | record summary 후속 |
 | `NBA-005` BusinessCard provider failure contract | MeetingNote provider log 범위가 아님 | BusinessCard provider failure contract |
-| `NBA-007` Trash private memo backend response restriction | MeetingNote AI 범위가 아님 | Trash privacy/security 후속 |
-| `NBA-012` Trash 7일 이후 복구 정책 | MeetingNote AI 범위가 아님 | Trash retention policy |
 | `NBA-013` Admin 운영 UX/API | 07 일반 User API와 섞지 않음 | 11 Admin Operation |
 | 완료된 `NBA-001`, `NBA-002`, `NBA-003` Deal subset, `NBA-006`, `NBA-008`, `NBA-009`, `NBA-010`, `NBA-015` | 이미 별도 roadmap에서 완료된 이력 | 07에서 재구현하지 않음 |
 

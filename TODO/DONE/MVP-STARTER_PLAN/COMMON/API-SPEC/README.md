@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# API 명세 인덱스
 
 ## 1. 목적
@@ -63,7 +65,6 @@ API 명세는 Backend 내부 작업 목록이 아니다. 화면이 어떤 reques
 | P0-P1 | `G01-G05-FOUNDATION-AUTH-API.md` | G01-G05 | health, auth, me, settings, admin me |
 | P1-P2 | `G06-G12-CORE-DOMAIN-API.md` | G06-G12 | Company, Contact, Product, Deal Backend |
 | P1-P2 | `G06-G12-ENDPOINT-CONTRACT.md` | G06-G12 | 핵심 도메인 API별 request, business flow, response, DB, transaction, error 구현 계약 |
-| P3-P4 | `G17-G29-WORKFLOW-AUTOMATION-API.md` | G17-G29 | Schedule, MeetingNote, OCR, Import, Export, 알림, 휴지통, 검색 |
 | P3-P4 | `G17-G29-ENDPOINT-CONTRACT.md` | G17-G29 | 업무 흐름/자동화 API별 request, business flow, response, DB, adapter, error 구현 계약 |
 | P5 | `G30-G32-ADMIN-AUDIT-API.md` | G30-G32 | Admin 조회, 민감정보 원문 조회, 감사 로그 |
 | P5 | `G30-G32-ENDPOINT-CONTRACT.md` | G30-G32 | Admin/Audit API별 masking, 원문 조회, 감사 로그 transaction 구현 계약 |

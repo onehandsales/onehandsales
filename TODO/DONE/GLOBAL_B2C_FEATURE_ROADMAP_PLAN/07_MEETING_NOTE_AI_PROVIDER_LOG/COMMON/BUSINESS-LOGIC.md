@@ -1,5 +1,7 @@
 # Business Logic
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 확정일: 2026-07-26
 
@@ -50,7 +52,6 @@ Provider log는 유료 제품 운영을 위한 기반이다. 사용자에게 pro
 
 흐름:
 
-1. 사용자가 미팅일, 회사, 담당자, 선택 제품/딜, 원문 메모를 입력한다.
 2. Backend가 사용자 소유권을 검증한다.
 3. `AiProviderCallLog`를 `MEETING_NOTE_TEXT_DRAFT` pending 상태로 만든다.
 4. provider를 호출한다.
@@ -91,7 +92,6 @@ Provider log는 유료 제품 운영을 위한 기반이다. 사용자에게 pro
 
 자동 생성 금지:
 
-- DealFollowingActionLog 자동 생성
 - Schedule 자동 생성
 - Deal stage 자동 변경
 

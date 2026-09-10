@@ -1,5 +1,7 @@
 # Backend API TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 구현 상태: User API G02 Done / internal scheduling-delivery G03 Done / QA G05 Done
 기준 API 계약: `COMMON/API-SPEC/NOTIFICATION_API.md`
@@ -116,7 +118,6 @@ Logging 금지:
 - push endpoint
 - p256dh/auth key
 - provider raw response
-- private memo
 - meeting note body
 - deal amount
 - authorization header/token

@@ -1,3 +1,5 @@
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ﻿# G05 BE Comment Coverage Work Log
 
 날짜: 2026-08-11
@@ -43,12 +45,9 @@ pnpm.cmd test
 
 - 우선 대상 controller 5개는 HTTP method별 `// API : ...`와 controller 흐름 numbered step comment를 충족한다.
 - G02-G04 변경 Backend source와 G05 우선 대상의 class/interface/function/method 주석은 기존 완료 기준을 유지한다.
-- `BE/src/modules/admin-operation/application/services/admin-trash-application.service.ts`의 public application orchestration method 3개는 `// 기능 : ...`은 있으나 numbered step comment가 없어 후속 보완으로 기록한다.
 
 ## 6. 남은 후속 보완
 
-- `getUserTrashSummary`
-- `listUserTrashRecords`
 - `listRecoveryRequests`
 
 위 3개 method는 G05의 "controller와 application orchestration의 주요 흐름 numbered step comment" 기준에 맞춰 후속 보완이 필요하다.

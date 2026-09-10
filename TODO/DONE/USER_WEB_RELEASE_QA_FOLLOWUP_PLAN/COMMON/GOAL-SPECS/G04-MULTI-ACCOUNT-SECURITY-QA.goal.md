@@ -1,12 +1,13 @@
 # G04 Multi Account Security QA
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 우선순위: P0
 담당 영역: BE, FE/user-web
 
 ## 1. 목표
 
-다중 계정 환경에서 사용자 A/B 데이터가 Search, Trash, Export, 직접 API 접근, Admin API 경계에서 섞이지 않는지 확인한다.
 
 ## 1A. 확정 결정
 
@@ -35,7 +36,6 @@
 - 사용자 A/B test fixture 준비
 - Company/Contact/Product/Deal/Schedule/MeetingNote 직접 조회 ownership 확인
 - Search 결과 ownership 확인
-- Trash 목록/detail/restore ownership 확인
 - Company/Contact/Product/Deal XLSX export ownership 확인
 - 일반 사용자 token의 `/admin/api/*` 접근 차단 확인
 - User Web API client가 `/admin/api/*` 호출을 막는지 확인
@@ -57,10 +57,8 @@
 - Jest 자동 테스트를 반드시 추가하거나 기존 spec에 보강한다.
 - 테스트 파일 위치는 실제 코드 구조 기준으로 선택하고 `QA-RESULTS.md`에 기록한다.
 - cross-module ownership을 한 파일로 묶는 편이 안전하면 `BE/src/modules/security/ownership-isolation.spec.ts`를 새로 만든다.
-- 기존 모듈 spec에 붙이는 편이 침투가 적으면 `company`, `contact`, `product`, `deal`, `schedule`, `meeting-note`, `search`, `trash`, `auth`의 기존 `*.spec.ts`에 케이스를 추가한다.
 - presentation/controller spec에서는 fake guard로 `CURRENT_USER_A`, `CURRENT_USER_B`를 명시하고, service/repository 호출에 `userId: CURRENT_USER_A.id`가 전달되는지 확인한다.
 - application/repository spec에서는 사용자 B fixture가 A 응답으로 반환되지 않는지 확인한다.
-- Search, Trash, Export처럼 데이터 유출 위험이 큰 흐름은 HTTP 또는 presentation-level test를 우선한다.
 - XLSX export는 response binary를 파싱하거나 buffer string 검사로 사용자 B의 fixture name/id/email/title이 없는지 확인한다.
 - controller에서 Prisma를 직접 호출하지 않는다.
 - domain/application은 Prisma type을 import하지 않는다.
@@ -83,7 +81,6 @@
 - Deal: `RQA004-A Deal`, `RQA004-B Deal`
 - Schedule: `RQA004-A Schedule`, `RQA004-B Schedule`
 - MeetingNote: `RQA004-A MeetingNote`, `RQA004-B MeetingNote`
-- Trash: A/B 각각 삭제된 entity 또는 log fixture
 
 DB를 쓰는 테스트라면 `beforeEach`에서 생성하고 `afterEach`에서 삭제한다. 기존 seed와 실계정 데이터에 의존하면 실패로 본다.
 
@@ -94,7 +91,6 @@ DB를 쓰는 테스트라면 `beforeEach`에서 생성하고 `afterEach`에서 �
 | Company list | `GET /api/companies` | A 응답에 `RQA004-B` 없음 |
 | Company detail | `GET /api/companies/:companyId` with B id | `404`, B id/name 미노출 |
 | Company export | `GET /api/companies/export/xlsx` | `200`, export에 `RQA004-B` 없음 |
-| Company mutation | `PATCH/DELETE /api/companies/:companyId` with B id | `404`, B id/name 미노출 |
 | Contact list | `GET /api/contacts` | A 응답에 `RQA004-B` 없음 |
 | Contact detail | `GET /api/contacts/:contactId` with B id | `404`, B id/name 미노출 |
 | Contact export | `GET /api/contacts/export/xlsx` | `200`, export에 `RQA004-B` 없음 |
@@ -114,9 +110,6 @@ DB를 쓰는 테스트라면 `beforeEach`에서 생성하고 `afterEach`에서 �
 | MeetingNote detail | `GET /api/meeting-notes/:meetingNoteId` with B id | `404`, B id/title 미노출 |
 | MeetingNote mutation | `PATCH/DELETE /api/meeting-notes/:meetingNoteId` with B id | `404`, B id/title 미노출 |
 | Search | `GET /api/search?q=RQA004-B` as A | B result group/item 없음 |
-| Trash list | `GET /api/trash` | A 응답에 B 삭제 데이터 없음 |
-| Trash detail | `GET /api/trash/:targetType/:targetId` with B target | `404`, B id/name 미노출 |
-| Trash restore | `POST /api/trash/:targetType/:targetId/restore` with B target | `404`, B id/name 미노출 |
 | Admin boundary | `GET /admin/api/me` with USER role | `403` |
 
 ### 5C. Assertion 기준
@@ -171,7 +164,6 @@ git diff --check
 
 - `RQA-004`가 `Fixed`, `Blocked`, 또는 구체 이슈 목록으로 정리되어 있다.
 - 다른 사용자 데이터 노출 후보가 있으면 S1 이상으로 기록되어 있다.
-- Search, Trash, Export, 직접 API 접근 중 확인하지 못한 항목이 있으면 이유와 다음 조치가 `QA-RESULTS.md`에 있다.
 - endpoint 기대값 matrix의 각 행이 `Passed`, `Failed`, `Blocked`, `N/A` 중 하나로 기록되어 있다.
 - 추가/수정한 자동 테스트 파일 경로가 `QA-RESULTS.md`에 기록되어 있다.
 - 테스트 또는 smoke 결과가 명령과 함께 남아 있다.

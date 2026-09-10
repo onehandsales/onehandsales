@@ -1,5 +1,7 @@
 # G05 Admin Web Architecture Legacy Closeout
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Done
 연결 PRE12 ID: `PRE12-F34`
 성격: Admin Web architecture/legacy route 문서 정합성 closeout
@@ -46,7 +48,6 @@ Admin Web architecture와 legacy route 설명을 실제 11 Admin Web route/API �
 - `FE/admin-web/src/features/admin-query`
 - `FE/admin-web/src/features/provider-failure-management`
 - `FE/admin-web/src/features/account-request-management`
-- `FE/admin-web/src/features/trash-management`
 - `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`
@@ -59,10 +60,8 @@ Admin Web architecture와 legacy route 설명을 실제 11 Admin Web route/API �
 - 활성: `/users`
 - 활성: `/users/:userId`
 - 활성: `/users/:userId/domain`
-- 활성: `/users/:userId/trash`
 - 활성: `/provider-failures`
 - 활성: `/account-requests`
-- 활성: `/trash/recovery-requests`
 - 활성: `/analytics`
 - 활성: `/audit-logs`
 - 활성: `/system`

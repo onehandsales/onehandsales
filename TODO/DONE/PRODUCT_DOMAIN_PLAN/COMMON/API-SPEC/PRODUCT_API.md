@@ -1,5 +1,7 @@
 # Product API Spec
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 ## 1. 공통 규칙
 
 - 이 API 계약은 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 전체 문서를 먼저 참고한 뒤 작성/수정한다.
@@ -11,8 +13,6 @@
 - 권한: 로그인한 사용자 본인 데이터만 접근 가능
 - 날짜 형식: ISO 8601 string
 - 제품 목록 페이지 크기: 10개 고정
-- 제품 일반 메모 로그 페이지 크기: 10개 고정
-- 제품 개인 비밀 메모 로그 페이지 크기: 10개 고정
 - 제품 목록 검색: `productName` 부분 검색만 제공
 - 제품 목록 필터: `productCategoryId`, `productStatusId`
 - 제품 목록 정렬: `createdAtDesc`, `dealCountDesc`, `dealCountAsc`
@@ -20,7 +20,6 @@
 - 제품 카테고리/상태 전체 조회 응답: `createdAt` 제외
 - 상태값만 반환하는 API: response body 없음
 - 제품 가격: `productPrice` 정수, 0 이상
-- 제품 개인 비밀 메모: API에서는 `memo`를 사용하지만 DB에는 평문 저장 금지
 
 ## 2. API 목록
 
@@ -34,12 +33,6 @@
 8. 제품 단건 생성 API: `POST /api/products`
 9. 제품 단건 조회 API: `GET /api/products/:productId`
 10. 제품 기본 정보 수정 API: `PATCH /api/products/:productId`
-11. 제품 일반 메모 로그 단건 생성 API: `POST /api/products/:productId/memo-logs`
-12. 제품 일반 메모 로그 무한스크롤 API: `GET /api/products/:productId/memo-logs`
-13. 제품 일반 메모 로그 단건 수정 API: `PATCH /api/products/:productId/memo-logs/:memoLogId`
-14. 제품 개인 비밀 메모 로그 단건 생성 API: `POST /api/products/:productId/private-memo-logs`
-15. 제품 개인 비밀 메모 로그 무한스크롤 API: `GET /api/products/:productId/private-memo-logs`
-16. 제품 개인 비밀 메모 로그 단건 수정 API: `PATCH /api/products/:productId/private-memo-logs/:privateMemoLogId`
 17. 제품 목록 xlsx 내보내기 API: `GET /api/products/export/xlsx`
 
 ## 2.1. API 계약 상태 요약
@@ -56,15 +49,8 @@
 | `GET /api/product-statuses` | implemented | 없음 | `productStatus.listed`, audit log 없음, request id 사용 |
 | `POST /api/product-statuses` | implemented | 없음 | `productStatus.created`, audit log 없음, request id 사용 |
 | `DELETE /api/product-statuses/:statusId` | implemented | 없음 | `productStatus.deleted`, audit log 없음, request id 사용 |
-| `POST /api/products` | implemented | 필요. `Product`와 조건부 `ProductMemoLog` | `product.created`, audit log 없음, request id 사용, `productMemo` redaction |
 | `GET /api/products/:productId` | implemented | 없음 | `product.viewed`, audit log 없음, request id 사용 |
 | `PATCH /api/products/:productId` | implemented | 없음 | `product.updated`, audit log 없음, request id 사용 |
-| `POST /api/products/:productId/memo-logs` | implemented | 없음 | `productMemoLog.created`, audit log 없음, request id 사용, `memo` redaction |
-| `GET /api/products/:productId/memo-logs` | implemented | 없음 | `productMemoLog.listed`, audit log 없음, request id 사용, `memo` redaction |
-| `PATCH /api/products/:productId/memo-logs/:memoLogId` | implemented | 없음 | `productMemoLog.updated`, audit log 없음, request id 사용, `memo` redaction |
-| `POST /api/products/:productId/private-memo-logs` | implemented | 없음 | `productPrivateMemoLog.created`, audit log 없음, request id 사용, private memo redaction |
-| `GET /api/products/:productId/private-memo-logs` | implemented | 없음 | `productPrivateMemoLog.listed`, audit log 없음, request id 사용, private memo redaction |
-| `PATCH /api/products/:productId/private-memo-logs/:privateMemoLogId` | implemented | 없음 | `productPrivateMemoLog.updated`, audit log 없음, request id 사용, private memo redaction |
 
 ## 3. 공통 응답 DTO
 
@@ -106,21 +92,16 @@
 | `id` | string | 아니오 | 제품 상태 ID |
 | `statusName` | string | 아니오 | 제품 상태명 |
 
-### ProductMemoLogResponse
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
-| `id` | string | 아니오 | 제품 일반 메모 로그 ID |
 | `memoType` | string | 아니오 | 메모 유형 |
 | `memo` | string | 아니오 | 일반 메모 본문 |
 | `createdAt` | string | 아니오 | 등록일 ISO string |
 
-### ProductPrivateMemoLogResponse
 
 | 필드 | 타입 | nullable | 설명 |
 |---|---|---:|---|
-| `id` | string | 아니오 | 제품 개인 비밀 메모 로그 ID |
-| `memo` | string | 아니오 | 복호화된 개인 비밀 메모 |
 | `createdAt` | string | 아니오 | 등록일 ISO string |
 
 ### EmptyResponse
@@ -135,7 +116,6 @@
 - query: `productName`, `productCategoryId`, `productStatusId`, `sort`
 - `page`는 받지 않는다. 검색어, 필터, 정렬 조건에 맞는 전체 제품을 export한다.
 - xlsx 컬럼: `제품명`, `카테고리`, `상태`, `딜 수`, `등록일`
-- 제외 필드: 제품 ID, 카테고리 ID, 상태 ID, userId, 제품가격, memo/private memo, 딜 연결 ID
 
 ## 4. 관련 문서
 
@@ -152,8 +132,4 @@
 - 소비자: User Web
 - 호환성: 현재 `ProductController`, `ProductCategoryController`, `ProductStatusController`와 User Web `product-api.ts`의 `/api/products`, `/api/product-categories`, `/api/product-statuses` 계약을 유지한다. breaking change 없음
 - 인증: User `AuthGuard`
-- 권한: 현재 로그인한 사용자 본인 제품/카테고리/상태/메모 로그만 접근한다.
-- Request 이름/Response 이름: 상세 문서의 `ListProductsQueryDto`, `CreateProductDto`, `UpdateProductDto`, `CreateProductCategoryDto`, `CreateProductStatusDto`, `ProductPageResponse`, `ProductDetailResponse`, `ProductMemoLogListResponse`, `EmptyResponse` 기준을 따른다.
-- Transaction: 상세 문서 기준. 제품 생성과 초기 `ProductMemoLog`가 함께 생성되는 경우만 필요하고 조회/단일 row 수정은 없음
-- Observability: 상세 문서 기준. `product.*`, `productCategory.*`, `productStatus.*`, `productMemoLog.*`, `productPrivateMemoLog.*` event와 redaction 정책 유지
 - FE/BE 처리 기준: User Web은 `product-api.ts` client와 query invalidation 기준을 따른다. BE는 controller에서 DTO validation 후 application service로 위임한다.

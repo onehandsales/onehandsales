@@ -1,5 +1,7 @@
 # 05-A Business Logic
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Implementation-ready draft
 
 ## 1. Use case 목록
@@ -20,7 +22,6 @@
 4. 같은 `userId + weekStart + timeZone`에 `GENERATING` report가 있으면 새 report/job을 만들지 않고 `AiWeeklySalesReportAlreadyGenerating`으로 응답한다.
 5. 03 주간 일정 보고서 builder와 회의록/딜 조회를 사용해 input snapshot을 만든다.
 6. snapshot에는 회의록 `details`, `nextPlan`, `requiredAction` 전체를 포함한다.
-7. snapshot에는 private memo, provider raw response, internal error/log, API key, token, 삭제된 record, 다른 사용자 record를 포함하지 않는다.
 8. 같은 `userId + weekStart + timeZone`의 최대 version을 조회해 `version + 1`을 계산한다.
 9. transaction 안에서 `AiWeeklySalesReport(status=GENERATING)`, `AiJob(status=PENDING)`을 생성한다.
 10. transaction 밖에서 worker가 job을 처리한다.
@@ -73,7 +74,6 @@
 
 제외:
 
-- private memo
 - provider raw response
 - STT provider raw detail
 - API key, token, quota detail
@@ -191,7 +191,6 @@ Logging 금지:
 
 - input snapshot 전문
 - meeting note body
-- private memo
 - provider prompt
 - provider raw response
 - deal amount 원문
@@ -206,6 +205,5 @@ Logging 금지:
 - provider 성공 시 report가 READY가 된다.
 - provider 실패 시 report가 FAILED가 되고 실패 version이 남는다.
 - snapshot에는 회의록 본문이 포함된다.
-- snapshot에는 private memo/provider raw/다른 사용자 record가 포함되지 않는다.
 - report 조회에서 사용자는 snapshot 원문 전체를 받지 않는다.
 - AI 제안은 Deal/Schedule/MeetingNote를 자동 변경하지 않는다.

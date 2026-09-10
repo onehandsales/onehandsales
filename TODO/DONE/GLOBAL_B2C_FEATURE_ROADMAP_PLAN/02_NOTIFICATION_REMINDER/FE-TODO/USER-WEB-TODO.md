@@ -1,5 +1,7 @@
 # User Web TODO
 
+> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+
 상태: Confirmed
 구현 상태: G04 Done / G05 QA Done
 기준 문서:
@@ -136,7 +138,6 @@ Mutation 후 invalidation:
 - Notion 브랜드/화면을 복제하지 않고, page/list/detail 문법만 참고한다.
 - Attio 브랜드/화면을 복제하지 않고, 일정/딜 linked record 맥락만 참고한다.
 - 알림 row는 한 줄 요약과 대상 이동을 우선한다.
-- private memo, meeting note body, deal amount를 알림 목록에 노출하지 않는다.
 - 모바일에서는 table이 아니라 card/list로 표시한다.
 
 ## 10. 테스트 기준
