@@ -1033,6 +1033,176 @@ function createFollowUpDeliverySettings() {
   };
 }
 
+function createDealActivityFixtures(
+  deal: MutableRecord,
+  schedule: MutableRecord,
+  meetingNote: MutableRecord,
+) {
+  const dealId = stringField(deal, "id") ?? "deal-mobile-001";
+  const dealName = stringField(deal, "dealName") ?? "RQA002 deal";
+  const scheduleId = stringField(schedule, "id") ?? "schedule-mobile-001";
+  const scheduleTitle = stringField(schedule, "scheduleTitle") ?? "RQA002 schedule";
+  const meetingNoteId =
+    stringField(meetingNote, "id") ?? "meeting-note-mobile-001";
+  const meetingNoteTitle =
+    stringField(meetingNote, "title") ?? "RQA002 meeting note";
+
+  return [
+    {
+      activityType: "MEETING_NOTE_LINKED",
+      body: null,
+      createdAt: NOW,
+      dealId,
+      id: "deal-activity-mobile-003",
+      isEditable: false,
+      linkedRecords: [
+        {
+          targetId: meetingNoteId,
+          targetLabel: meetingNoteTitle,
+          targetPath: `/app/meeting-notes/${meetingNoteId}`,
+          targetType: "MEETING_NOTE",
+        },
+      ],
+      occurredAt: "2026-07-20T09:20:00.000Z",
+      sourceId: meetingNoteId,
+      sourceType: "MEETING_NOTE",
+      summary: "회의록을 연결했어요.",
+      title: "회의록을 연결했어요",
+      updatedAt: NOW,
+    },
+    {
+      activityType: "SCHEDULE_LINKED",
+      body: null,
+      createdAt: NOW,
+      dealId,
+      id: "deal-activity-mobile-002",
+      isEditable: false,
+      linkedRecords: [
+        {
+          targetId: scheduleId,
+          targetLabel: scheduleTitle,
+          targetPath: `/app/schedules/${scheduleId}`,
+          targetType: "SCHEDULE",
+        },
+      ],
+      occurredAt: "2026-07-20T09:10:00.000Z",
+      sourceId: scheduleId,
+      sourceType: "SCHEDULE",
+      summary: "일정을 연결했어요.",
+      title: "일정을 연결했어요",
+      updatedAt: NOW,
+    },
+    {
+      activityType: "DEAL_CREATED",
+      body: null,
+      createdAt: NOW,
+      dealId,
+      id: "deal-activity-mobile-001",
+      isEditable: false,
+      linkedRecords: [
+        {
+          targetId: dealId,
+          targetLabel: dealName,
+          targetPath: `/app/deals/${dealId}`,
+          targetType: "DEAL",
+        },
+      ],
+      occurredAt: "2026-07-20T09:00:00.000Z",
+      sourceId: dealId,
+      sourceType: "SYSTEM",
+      summary: "딜을 생성했어요.",
+      title: "딜을 생성했어요",
+      updatedAt: NOW,
+    },
+  ];
+}
+
+function listDealActivities(
+  store: UserWebApiMockStore,
+  dealId: string,
+  url: URL,
+) {
+  const type = url.searchParams.get("type");
+
+  return store.dealActivities
+    .filter(
+      (activity) =>
+        stringField(activity, "dealId") === dealId &&
+        (type === null || stringField(activity, "activityType") === type),
+    )
+    .sort(compareDealActivityDesc);
+}
+
+function createManualDealActivity(
+  store: UserWebApiMockStore,
+  dealId: string,
+  body: unknown,
+) {
+  const activity = {
+    activityType: stringField(body, "activityType") ?? "NOTE",
+    body: stringField(body, "body"),
+    createdAt: now(),
+    dealId,
+    id: nextId(store, "deal-activity"),
+    isEditable: true,
+    linkedRecords: [
+      {
+        targetId: dealId,
+        targetLabel: stringField(requireItem(store.deals, dealId), "dealName"),
+        targetPath: `/app/deals/${dealId}`,
+        targetType: "DEAL",
+      },
+    ],
+    occurredAt: stringField(body, "occurredAt") ?? now(),
+    sourceId: null,
+    sourceType: "USER",
+    summary: stringField(body, "title") ?? "수동 활동",
+    title: stringField(body, "title") ?? "수동 활동",
+    updatedAt: now(),
+  };
+
+  store.dealActivities.unshift(activity);
+  return activity;
+}
+
+function updateManualDealActivity(
+  store: UserWebApiMockStore,
+  dealId: string,
+  activityId: string,
+  body: unknown,
+) {
+  const activity = store.dealActivities.find(
+    (item) =>
+      stringField(item, "dealId") === dealId &&
+      stringField(item, "id") === activityId,
+  );
+
+  if (!activity) {
+    return {
+      code: "NotFound",
+      message: "Not found",
+      statusCode: 404,
+    };
+  }
+
+  if (stringField(body, "activityType")) {
+    activity.activityType = stringField(body, "activityType");
+  }
+  if (stringField(body, "title")) {
+    activity.title = stringField(body, "title");
+    activity.summary = stringField(body, "title");
+  }
+  if (isRecord(body) && "body" in body) {
+    activity.body = stringField(body, "body");
+  }
+  if (stringField(body, "occurredAt")) {
+    activity.occurredAt = stringField(body, "occurredAt");
+  }
+  activity.updatedAt = now();
+
+  return activity;
+}
+
 function compareDealActivityDesc(left: MutableRecord, right: MutableRecord) {
   const leftTime = Date.parse(stringField(left, "occurredAt") ?? "");
   const rightTime = Date.parse(stringField(right, "occurredAt") ?? "");

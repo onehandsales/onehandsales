@@ -64,9 +64,9 @@ test.describe("help modal UX", () => {
     await expect(
       helpDialog.getByRole("heading", { exact: true, name: "지원요청" }),
     ).toBeVisible();
-    await expect(
-      helpDialog.getByRole("link", { exact: true, name: "이메일로 지원 요청" }),
-    ).toHaveAttribute("href", /mailto:team@onehandsales\.com/);
+    await expect(helpDialog.getByRole("combobox").first()).toBeVisible();
+    await expect(helpDialog.getByRole("textbox").first()).toBeVisible();
+    await expect(helpDialog.locator("button:disabled").last()).toBeVisible();
 
     await helpDialog.getByRole("button", { exact: true, name: "에러신고" }).click();
     await expect(

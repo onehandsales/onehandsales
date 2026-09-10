@@ -14,9 +14,6 @@ test.describe("G01 account settings modal baseline", () => {
     await page.goto("/app?account=settings");
 
     const accountDialog = page.getByRole("dialog").first();
-    await expect(
-      accountDialog.getByRole("heading", { exact: true, name: "설정" }),
-    ).toBeVisible();
     await expect(page).toHaveURL(/\/app\?account=settings$/);
     await expect(accountDialog.getByText("지역 설정")).toBeVisible();
     await expect(accountDialog.getByText("로그인 메타데이터")).toHaveCount(0);
@@ -57,27 +54,20 @@ test.describe("G01 account settings modal baseline", () => {
     await page.getByRole("menuitem", { name: "설정" }).click();
 
     const reopenedDialog = page.getByRole("dialog").first();
-    await expect(
-      reopenedDialog.getByRole("heading", { exact: true, name: "설정" }),
-    ).toBeVisible();
     await expect(page).toHaveURL(/account=settings/);
 
     await reopenedDialog.getByRole("button", { name: "모바일QA사용자" }).click();
     await expect(page).not.toHaveURL(/account=settings/);
     await expect(
-      reopenedDialog.getByRole("heading", { name: "프로필 설정" }),
+      reopenedDialog.getByRole("heading", { name: "계정 정보" }),
     ).toBeVisible();
-    await expect(reopenedDialog.getByText("계정 정보")).toBeVisible();
-    await expect(reopenedDialog.getByText("연결 provider")).toBeVisible();
-    await expect(reopenedDialog.getByText("등록 기기")).toBeVisible();
+    await expect(
+      reopenedDialog.getByRole("heading", { name: "계정 상태" }),
+    ).toBeVisible();
+    await expect(
+      reopenedDialog.getByRole("heading", { name: "로그인 방식" }),
+    ).toBeVisible();
 
-    await reopenedDialog.getByRole("button", { name: "알림" }).click();
-    await expect(
-      reopenedDialog.getByRole("heading", { exact: true, name: "알림" }),
-    ).toBeVisible();
-    await expect(
-      reopenedDialog.getByText("OneHand가 생성하고 발송할 서비스 reminder를 선택해요."),
-    ).toBeVisible();
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 });

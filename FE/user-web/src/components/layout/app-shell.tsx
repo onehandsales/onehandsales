@@ -276,8 +276,23 @@ export function AppShell() {
   const [onehandAppOpen, setOneHandAppOpen] = useState(true);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
-  const accountModalFromSearchParams =
-    getAccountModalSectionFromSearchParams(searchParams);
+  const preserveExternalIntegrationCallbackRef = useRef(false);
+  const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
+    const querySection = getAccountModalSectionFromSearchParams(searchParams);
+
+    if (!querySection) {
+      return null;
+    }
+
+    if (
+      searchParams.has("followUpEmailConnection") ||
+      searchParams.has("googleCalendar")
+    ) {
+      return "externalIntegrations";
+    }
+
+    return querySection;
+  }, [searchParams]);
   const isHome = pathname === HOME_PATH;
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
   const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
@@ -457,10 +472,28 @@ export function AppShell() {
       setHelpMenuOpen(false);
       setHelpModal(null);
       setLogoutConfirmOpen(false);
-      setAccountModal(accountModalFromSearchParams);
+      setAccountModal((currentSection) => {
+        if (accountModalFromSearchParams === "externalIntegrations") {
+          preserveExternalIntegrationCallbackRef.current = true;
+          return accountModalFromSearchParams;
+        }
+
+        if (
+          accountModalFromSearchParams === "settings" &&
+          currentSection === "externalIntegrations" &&
+          preserveExternalIntegrationCallbackRef.current
+        ) {
+          preserveExternalIntegrationCallbackRef.current = false;
+          return currentSection;
+        }
+
+        preserveExternalIntegrationCallbackRef.current = false;
+        return accountModalFromSearchParams;
+      });
       return;
     }
 
+    preserveExternalIntegrationCallbackRef.current = false;
     setAccountModal((currentSection) =>
       currentSection === "settings" ? null : currentSection,
     );
