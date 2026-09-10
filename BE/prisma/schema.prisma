@@ -330,56 +330,6 @@ enum ProductAnalyticsTargetType {
   EXPORT
 }
 
-/// 기능 : Admin 감사 로그에 기록할 운영 action을 구분합니다.
-enum AdminAuditAction {
-  ADMIN_LOGIN
-  ADMIN_USER_LIST_VIEW
-  ADMIN_USER_DETAIL_VIEW
-  ADMIN_DOMAIN_RECORDS_VIEW
-  ADMIN_TRASH_VIEW
-  ADMIN_PROVIDER_FAILURE_VIEW
-  ADMIN_ANALYTICS_VIEW
-  ADMIN_ACCOUNT_DELETION_VIEW
-  ADMIN_DATA_EXPORT_VIEW
-  ADMIN_SYSTEM_CHECK_VIEW
-  ADMIN_SYSTEM_CHECK_RECORDED
-  ADMIN_SENSITIVE_RAW_ACCESS
-}
-
-/// 기능 : Admin 감사 로그 처리 결과를 구분합니다.
-enum AdminAuditResult {
-  SUCCESS
-  DENIED
-  FAILED
-}
-
-/// 기능 : Admin 감사 또는 민감 원문 조회 대상 종류를 구분합니다.
-enum AdminTargetType {
-  USER
-  COMPANY
-  CONTACT
-  PRODUCT
-  DEAL
-  SCHEDULE
-  MEETING_NOTE
-  BUSINESS_CARD_SCAN
-  IMPORT_JOB
-  NOTIFICATION
-  PROVIDER_FAILURE
-  TRASH_RECORD
-  ACCOUNT_DELETION_REQUEST
-  DATA_EXPORT_REQUEST
-  SYSTEM_OPERATION_CHECK
-}
-
-/// 기능 : Admin 민감 원문 조회에서 허용하는 필드 묶음을 구분합니다.
-enum AdminSensitiveFieldSet {
-  USER_CONTACT
-  DOMAIN_MEMO
-  MEETING_NOTE_BODY
-  TRASH_RECORD_DETAIL
-}
-
 /// 기능 : Trash 복구 요청의 운영 처리 상태를 구분합니다.
 enum TrashRecoveryRequestStatus {
   REQUESTED
@@ -405,13 +355,6 @@ enum UserDataExportRequestStatus {
   READY
   EXPIRED
   FAILED
-}
-
-/// 기능 : Admin 운영 gate 점검 결과 상태를 구분합니다.
-enum AdminOperationCheckRunStatus {
-  PASS
-  WARN
-  FAIL
 }
 
 /// 기능 : 사용자 에러 신고 처리 상태를 구분합니다.
@@ -559,18 +502,12 @@ model User {
   followUpMessageTargets      FollowUpMessageTarget[]
   /// Feature: provider send attempt logs for follow-up messages.
   followUpDeliveryAttempts    FollowUpDeliveryAttempt[]
-  /// 기능 : 이 사용자가 수행한 Admin 감사 로그 목록입니다.
-  adminAuditLogs              AdminAuditLog[]             @relation("AdminAuditActor")
-  /// 기능 : 이 사용자가 수행한 Admin 민감 원문 조회 로그 목록입니다.
-  adminSensitiveAccessLogs    AdminSensitiveAccessLog[]   @relation("AdminSensitiveAccessActor")
   /// 기능 : 사용자가 만료된 Trash row에 대해 남긴 복구 요청 목록입니다.
   trashRecoveryRequests       TrashRecoveryRequest[]
   /// 기능 : 사용자가 요청한 계정 삭제 유예 queue 목록입니다.
   accountDeletionRequests     AccountDeletionRequest[]
   /// 기능 : 사용자가 요청한 본인 데이터 export queue 목록입니다.
   dataExportRequests          UserDataExportRequest[]
-  /// 기능 : 이 관리자가 기록한 운영 gate 점검 기록 목록입니다.
-  adminOperationCheckRuns     AdminOperationCheckRun[]
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
   errorReports                ErrorReport[]
   /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
@@ -746,78 +683,7 @@ model AuthSession {
   @@index([expiresAt])
 }
 
-/// 기능 : Admin 주요 조회와 운영 action을 append-only로 남기는 감사 로그입니다.
-model AdminAuditLog {
-  /// 기능 : Admin 감사 로그 row의 고유 식별자입니다.
-  id                 String                    @id @default(uuid()) @db.Uuid
-  /// 기능 : 작업을 수행한 관리자 사용자 ID입니다.
-  adminUserId        String                    @db.Uuid
-  /// 기능 : 감사 대상 사용자 ID snapshot입니다. 계정 삭제를 막지 않도록 FK를 만들지 않습니다.
-  targetUserId       String?                   @db.Uuid
-  /// 기능 : 감사 대상 종류입니다.
-  targetType         AdminTargetType
-  /// 기능 : 감사 대상 record ID입니다.
-  targetId           String?                   @db.Uuid
-  /// 기능 : 수행된 Admin action입니다.
-  action             AdminAuditAction
-  /// 기능 : 수행 결과입니다.
-  result             AdminAuditResult          @default(SUCCESS)
-  /// 기능 : 운영자가 입력한 사유입니다. 원문 민감값은 저장하지 않습니다.
-  reason             String?                   @db.Text
-  /// 기능 : HTTP 요청 추적 ID입니다.
-  requestId          String?
-  /// 기능 : IP 원문 대신 저장하는 HMAC 또는 단방향 hash입니다.
-  ipHash             String?
-  /// 기능 : User-Agent 원문 대신 저장하는 hash입니다.
-  userAgentHash      String?
-  /// 기능 : 원문 민감값 없는 구조화 metadata입니다.
-  metadataJson       Json                      @default("{}")
-  /// 기능 : 감사 로그 생성 시각입니다.
-  createdAt          DateTime                  @default(now()) @db.Timestamptz(3)
 
-  /// 기능 : 작업을 수행한 관리자 사용자입니다.
-  adminUser          User                      @relation("AdminAuditActor", fields: [adminUserId], references: [id], onDelete: Restrict)
-  /// 기능 : 이 감사 로그와 1:1로 연결된 민감 원문 조회 로그입니다.
-  sensitiveAccessLog AdminSensitiveAccessLog?
-
-  @@index([adminUserId, createdAt])
-  @@index([targetUserId, createdAt])
-  @@index([action, createdAt])
-  @@index([targetType, targetId, createdAt])
-}
-
-/// 기능 : Admin 민감 원문 조회 사유와 반환 필드명을 추적하는 append-only 로그입니다.
-model AdminSensitiveAccessLog {
-  /// 기능 : 민감 원문 조회 로그 row의 고유 식별자입니다.
-  id                 String                 @id @default(uuid()) @db.Uuid
-  /// 기능 : 연결된 AdminAuditLog ID입니다.
-  auditLogId         String                 @unique @db.Uuid
-  /// 기능 : 작업을 수행한 관리자 사용자 ID입니다.
-  adminUserId        String                 @db.Uuid
-  /// 기능 : 민감정보 소유 사용자 ID snapshot입니다.
-  targetUserId       String                 @db.Uuid
-  /// 기능 : 민감정보 대상 종류입니다.
-  targetType         AdminTargetType
-  /// 기능 : 민감정보 대상 record ID입니다.
-  targetId           String                 @db.Uuid
-  /// 기능 : 조회한 민감 필드 묶음입니다.
-  fieldSet           AdminSensitiveFieldSet
-  /// 기능 : 운영자가 입력한 원문 조회 사유입니다.
-  reason             String                 @db.Text
-  /// 기능 : 원문 값 없이 반환된 필드명만 저장합니다.
-  returnedFieldNames String[]
-  /// 기능 : 민감 원문 조회 로그 생성 시각입니다.
-  createdAt          DateTime               @default(now()) @db.Timestamptz(3)
-
-  /// 기능 : 원문 조회와 같은 transaction에서 생성한 감사 로그입니다.
-  auditLog           AdminAuditLog          @relation(fields: [auditLogId], references: [id], onDelete: Restrict)
-  /// 기능 : 작업을 수행한 관리자 사용자입니다.
-  adminUser          User                   @relation("AdminSensitiveAccessActor", fields: [adminUserId], references: [id], onDelete: Restrict)
-
-  @@index([adminUserId, createdAt])
-  @@index([targetUserId, createdAt])
-  @@index([targetType, targetId, createdAt])
-}
 
 /// 기능 : 무료 셀프 복구 기간이 지난 Trash row에 대해 사용자가 남긴 복구 요청입니다.
 model TrashRecoveryRequest {
@@ -863,7 +729,7 @@ model AccountDeletionRequest {
   status              AccountDeletionRequestStatus @default(REQUESTED)
   /// 기능 : 사용자가 선택한 삭제 사유 코드입니다.
   reasonCode          String?
-  /// 기능 : 사용자가 입력한 삭제 사유 메시지입니다. Admin queue와 audit에는 원문을 노출하지 않습니다.
+  /// 기능 : 사용자가 입력한 삭제 사유 메시지입니다. 처리 큐에는 원문을 노출하지 않습니다.
   reasonMessage       String?                      @db.Text
   /// 기능 : 계정 삭제 요청을 생성한 시각입니다.
   requestedAt         DateTime                     @default(now()) @db.Timestamptz(3)
@@ -929,32 +795,6 @@ model UserDataExportRequest {
   @@index([createdAt])
 }
 
-/// 기능 : Admin이 기록한 DB/migration/backup/restore/provider smoke 운영 gate 점검 row입니다.
-model AdminOperationCheckRun {
-  /// 기능 : 운영 gate 점검 기록 row의 고유 식별자입니다.
-  id              String                       @id @default(uuid()) @db.Uuid
-  /// 기능 : 점검을 기록한 관리자 사용자 ID입니다.
-  adminUserId     String                       @db.Uuid
-  /// 기능 : 점검 대상 환경입니다. 예: local, qa, staging, production.
-  environment     String
-  /// 기능 : 전체 운영 gate 점검 결과입니다.
-  status          AdminOperationCheckRunStatus
-  /// 기능 : prisma validate/generate, migration, seed, backup, restore, provider smoke 결과 JSON입니다. secret은 저장하지 않습니다.
-  itemsJson       Json                         @default("{}")
-  /// 기능 : 운영자가 남긴 점검 메모입니다. DB URL, token, secret 저장은 validation으로 차단합니다.
-  notes           String?                      @db.Text
-  /// 기능 : 점검 기준 시각입니다.
-  checkedAt       DateTime                     @default(now()) @db.Timestamptz(3)
-  /// 기능 : 점검 기록 row 생성 시각입니다.
-  createdAt       DateTime                     @default(now()) @db.Timestamptz(3)
-
-  /// 기능 : 운영 gate 점검을 기록한 관리자 사용자입니다.
-  adminUser       User                         @relation(fields: [adminUserId], references: [id], onDelete: Restrict)
-
-  @@index([environment, checkedAt])
-  @@index([status, checkedAt])
-  @@index([adminUserId, checkedAt])
-}
 
 /// 기능 : Global B2C 제품 사용 분석을 위한 allowlist 기반 원본 이벤트입니다.
 model ProductAnalyticsEvent {
@@ -2122,7 +1962,7 @@ model FollowUpDeliveryAttempt {
   createdAt           DateTime                      @default(now()) @db.Timestamptz(3)
   updatedAt           DateTime                      @default(now()) @updatedAt @db.Timestamptz(3)
 
-  /// Feature: attempt owner. Operational/admin queries must include userId.
+  /// Feature: attempt owner. Operational queries must include userId.
   user    User            @relation(fields: [userId], references: [id], onDelete: Restrict)
   /// Feature: parent follow-up message. Message deletion removes only child attempt rows.
   message FollowUpMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)

@@ -1821,7 +1821,7 @@ export class PrismaTrashRepository implements TrashRepository {
     return `${item.targetType}:${item.targetId}`;
   }
 
-  // 기능 : Prisma 복구 문의 row를 User/Admin 공통 summary로 변환합니다.
+  // 기능 : Prisma 복구 문의 row를 사용자용 summary로 변환합니다.
   private toRecoveryRequestSummary(
     request: RecoveryRequestRow
   ): TrashRecoveryRequestSummary {
