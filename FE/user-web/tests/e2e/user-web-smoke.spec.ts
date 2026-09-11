@@ -11,7 +11,7 @@ test.describe("User Web smoke E2E", () => {
     await seedAuthenticatedSession(page);
 
     await page.goto("/app");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
     await page.goto("/app/more");
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);

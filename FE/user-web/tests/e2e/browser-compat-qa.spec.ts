@@ -29,7 +29,7 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     await seedAuthenticatedSession(page);
 
     await page.goto("/app");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
     await page.goto("/app/more");
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
@@ -44,11 +44,11 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     await seedAuthenticatedSession(page);
 
     await page.goto("/app");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
     await page.reload();
     await expect(page).toHaveURL(/\/app$/);
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
     await page.goto("/app/more");
     await expect(page).toHaveURL(/\/app\/more$/);
@@ -56,7 +56,7 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
 
     await page.goBack();
     await expect(page).toHaveURL(/\/app$/);
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
     await page.goForward();
     await expect(page).toHaveURL(/\/app\/more$/);
@@ -65,7 +65,7 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     runtime.assertClean();
   });
 
-  test("shows loading state while profile API responses are delayed", async ({ page }) => {
+  test("keeps the empty app home stable while profile API responses are delayed", async ({ page }) => {
     await setupUserWebApiMocks(page, {
       delayMs: (request) =>
         request.method === "GET" && request.pathname === "/api/users/me/profile" ? 1_200 : 0,
@@ -73,17 +73,9 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     const runtime = collectRuntimeErrors(page);
     await seedAuthenticatedSession(page);
 
-    const profileResponse = page.waitForResponse(
-      (response) =>
-        response.request().method() === "GET" &&
-        new URL(response.url()).pathname === "/api/users/me/profile",
-    );
-
     await page.goto("/app");
-    await expect(page.locator(".animate-pulse").first()).toBeVisible();
-
-    await profileResponse;
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(page.locator(".animate-pulse")).toHaveCount(0);
 
     runtime.assertClean();
   });

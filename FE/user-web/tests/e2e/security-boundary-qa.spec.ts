@@ -15,7 +15,7 @@ test.describe("G04 User Web security boundary QA", () => {
     await storeSession(page);
     await page.reload();
     await page.goto("/app");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
     await clearStoredSession(page);
     await page.reload();

@@ -7,10 +7,11 @@ import {
 
 const MOBILE_ROUTES: ReadonlyArray<{
   readonly path: string;
-  readonly expectedText: string;
+  readonly expectedText?: string;
+  readonly expectsEmptyHome?: boolean;
   readonly hasMobileHeader: boolean;
 }> = [
-  { path: "/app", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
+  { path: "/app", expectsEmptyHome: true, hasMobileHeader: true },
   { path: "/app?account=settings", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
   { path: "/app/more", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
 ];
@@ -35,7 +36,12 @@ test.describe("G02 mobile browser release QA", () => {
 
     for (const route of MOBILE_ROUTES) {
       await page.goto(route.path);
-      await expect(page.locator("body")).toContainText(route.expectedText);
+      if (route.expectsEmptyHome) {
+        await expect(page.getByTestId("app-home-empty")).toBeVisible();
+      }
+      if (route.expectedText) {
+        await expect(page.locator("body")).toContainText(route.expectedText);
+      }
       await expectMobileShell(page, route.hasMobileHeader);
       await expectNoDocumentHorizontalOverflow(page, `${testInfo.project.name} ${route.path}`);
     }
