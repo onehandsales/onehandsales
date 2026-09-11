@@ -10,6 +10,7 @@ import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import {
   BookOpen,
+  Bell,
   Bug,
   Check,
   ChevronsLeft,
@@ -24,6 +25,7 @@ import {
   Menu,
   MoreHorizontal,
   ScreenShare,
+  Search,
   Settings,
   ShieldCheck,
   UserRound,
@@ -510,7 +512,7 @@ export function AppShell() {
           }`}
         >
           {accountProfile}
-          {/* Search button */}
+          {/* Shortcut buttons */}
           <div className="flex gap-1 px-2 pb-1">
             <button
               aria-label={t("shell.homeAria")}
@@ -534,6 +536,26 @@ export function AppShell() {
               <span>{t("navigation.home")}</span>
               <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
                 {t("shell.homeTooltip")}
+              </span>
+            </button>
+            <button
+              aria-label={t("shell.notificationsAria")}
+              className="group/sidebar-tooltip relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
+              type="button"
+            >
+              <Bell className="h-5 w-5 shrink-0" strokeWidth={2} />
+              <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+                {t("shell.notificationsTooltip")}
+              </span>
+            </button>
+            <button
+              aria-label={t("shell.searchAria")}
+              className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
+              type="button"
+            >
+              <Search className="h-5 w-5 shrink-0" strokeWidth={2} />
+              <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+                {t("shell.searchTooltip")}
               </span>
             </button>
           </div>

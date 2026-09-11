@@ -1,3 +1,4 @@
+import { Bell, Search } from "lucide-react";
 import { useAuthSession } from "@/features/auth";
 import { useAppI18n } from "@/features/app-i18n";
 
@@ -25,6 +26,21 @@ export function MobileAppHeader({
         </span>
 
         <div className="flex-1" />
+
+        <button
+          aria-label={t("shell.notificationsAria")}
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#374151] active:bg-[#E5E7EB]"
+          type="button"
+        >
+          <Bell className="h-5 w-5" strokeWidth={2} />
+        </button>
+        <button
+          aria-label={t("shell.searchAria")}
+          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#6B7280] transition hover:bg-[#F3F4F6] hover:text-[#374151] active:bg-[#E5E7EB]"
+          type="button"
+        >
+          <Search className="h-5 w-5" strokeWidth={2} />
+        </button>
 
         <div
           className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold"
