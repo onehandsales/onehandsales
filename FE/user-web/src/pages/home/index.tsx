@@ -1,271 +1,174 @@
-﻿import {
-  ArrowRight,
-  Building2,
-  Plus,
-  RefreshCw,
-  Search,
+import { Link } from "react-router-dom";
+import {
+  Clock3,
+  Settings,
+  ShieldCheck,
+  UserRound,
   type LucideIcon,
 } from "lucide-react";
-import { useMemo, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { createAccountSettingsModalPath } from "@/components/layout/account-modal-route";
+import { useAuthSession, useMyProfile } from "@/features/auth";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
-import { useCompanyList } from "@/features/company/hooks/use-company-list";
-import type { CompanyListItem } from "@/features/company";
+import { getApiErrorMessage } from "@/lib/api-client";
 
-type QuickAction = {
-  readonly descriptionKey: AppI18nKey;
-  readonly href: string;
-  readonly icon: LucideIcon;
+const HOME_SETTINGS_PATH = createAccountSettingsModalPath("/app");
+
+type ProfileRow = {
   readonly labelKey: AppI18nKey;
+  readonly value: string;
 };
 
-const QUICK_ACTIONS: readonly QuickAction[] = [
-  {
-    descriptionKey: "home.companyCreateDescription",
-    href: "/app/companies/new",
-    icon: Building2,
-    labelKey: "home.companyCreate",
-  },
-];
-
 export function HomePage() {
-  const { formatDateTime, locale, t } = useAppI18n();
-  const numberFormatter = useMemo(
-    () => new Intl.NumberFormat(getIntlLocale(locale)),
-    [locale],
-  );
-  const companiesQuery = useCompanyList({ page: 1, sort: "createdAtDesc" });
-  const companies = companiesQuery.data?.items ?? [];
-  const totalCount = companiesQuery.data?.totalCount ?? companies.length;
+  const { user } = useAuthSession();
+  const { formatDateTime, t } = useAppI18n();
+  const profileQuery = useMyProfile();
+  const profile = profileQuery.data;
+  const name = profile?.name ?? user?.name ?? t("settings.noName");
+  const email = profile?.email ?? user?.email ?? t("settings.emailMissing");
+  const role = profile?.role ?? user?.role ?? t("common.noRecord");
+  const status = profile?.status ?? user?.status ?? t("common.noRecord");
+
+  const accountRows: readonly ProfileRow[] = [
+    { labelKey: "settings.name", value: name },
+    { labelKey: "settings.email", value: email },
+    { labelKey: "settings.role", value: role },
+    { labelKey: "settings.accountStatus", value: status },
+    { labelKey: "settings.userId", value: profile?.id ?? user?.id ?? t("common.noRecord") },
+  ];
+  const metadataRows: readonly ProfileRow[] = [
+    {
+      labelKey: "settings.lastLogin",
+      value: formatDateTime(profile?.lastLoginAt, {
+        fallback: t("common.noRecord"),
+      }),
+    },
+    {
+      labelKey: "settings.timeZone",
+      value: profile?.timeZone ?? user?.timeZone ?? t("common.noRecord"),
+    },
+    {
+      labelKey: "settings.defaultCountry",
+      value: profile?.countryCode ?? user?.countryCode ?? t("common.noRecord"),
+    },
+    {
+      labelKey: "settings.updatedAt",
+      value: formatDateTime(profile?.updatedAt, {
+        fallback: t("common.noRecord"),
+      }),
+    },
+  ];
 
   return (
     <section className="min-h-0 flex-1 overflow-y-auto bg-white px-5 pb-8 pt-2 md:px-8 md:pt-4">
-      <div className="mx-auto grid w-full max-w-[1180px] gap-5">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <SummaryCard
-            icon={Building2}
-            label={t("navigation.companies")}
-            value={t("home.countItems", {
-              values: { count: numberFormatter.format(totalCount) },
-            })}
-          />
-          <SummaryCard
-            icon={Search}
-            label={t("shell.integratedSearch")}
-            value={t("navigation.companies")}
-          />
-          <SummaryCard
-            icon={RefreshCw}
-            label={t("home.recentScope")}
-            value={t("home.countItems", {
-              values: { count: numberFormatter.format(companies.length) },
-            })}
-          />
-        </div>
-
-        <div className="grid min-h-0 gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.65fr)]">
-          <DashboardSection
-            actionHref="/app/companies"
-            actionLabel={t("home.all")}
-            icon={Building2}
-            title={t("navigation.companies")}
-          >
-            <ListState
-              emptyText={t("companyList.dataEmpty")}
-              isLoading={companiesQuery.isLoading}
-            >
-              {companies.slice(0, 8).map((company) => (
-                <CompanyActivityItem
-                  company={company}
-                  formatDateTime={formatDateTime}
-                  key={company.id}
-                  t={t}
-                />
-              ))}
-            </ListState>
-          </DashboardSection>
-
-          <DashboardSection
-            icon={Plus}
-            title={t("home.quickActions")}
-          >
-            <div className="grid gap-3">
-              {QUICK_ACTIONS.map((action) => (
-                <QuickActionCard action={action} key={action.href} t={t} />
-              ))}
+      <div className="mx-auto grid w-full max-w-[920px] gap-5">
+        <div className="rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] px-5 py-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white text-[#4880EE] shadow-sm">
+                <UserRound className="h-5 w-5" strokeWidth={1.8} />
+              </div>
+              <div className="min-w-0">
+                <h1 className="truncate text-[20px] font-semibold leading-7 text-[#111827]">
+                  {name}
+                </h1>
+                <p className="truncate text-[13px] text-[#64748B]">{email}</p>
+              </div>
             </div>
-          </DashboardSection>
+
+            <Link
+              className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-md border border-[#D8DEE8] bg-white px-3 text-[13px] font-semibold text-[#374151] transition hover:bg-[#F8FAFC] active:bg-[#EEF2F7]"
+              to={HOME_SETTINGS_PATH}
+            >
+              <Settings className="h-4 w-4" strokeWidth={1.8} />
+              {t("settings.accountTitle")}
+            </Link>
+          </div>
         </div>
+
+        {profileQuery.isLoading ? (
+          <ProfileLoadingState />
+        ) : profileQuery.error ? (
+          <div className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-[13px] font-medium text-red-700">
+            {getApiErrorMessage(profileQuery.error)}
+          </div>
+        ) : (
+          <div className="grid gap-5 lg:grid-cols-2">
+            <ProfilePanel
+              icon={ShieldCheck}
+              rows={accountRows}
+              title={t("settings.accountInformation")}
+            />
+            <ProfilePanel
+              icon={Clock3}
+              rows={metadataRows}
+              title={t("settings.loginMetadata")}
+            />
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function SummaryCard({
+function ProfilePanel({
   icon: Icon,
-  label,
-  value,
-}: {
-  readonly icon: LucideIcon;
-  readonly label: string;
-  readonly value: string;
-}) {
-  return (
-    <article className="rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] px-4 py-3">
-      <div className="flex items-center gap-2 text-[13px] font-medium text-[#64748B]">
-        <Icon className="h-4 w-4 text-[#3A83F7]" strokeWidth={1.8} />
-        <span>{label}</span>
-      </div>
-      <p className="mt-2 text-[24px] font-semibold leading-tight text-[#111827]">
-        {value}
-      </p>
-    </article>
-  );
-}
-
-function DashboardSection({
-  actionHref,
-  actionLabel,
-  children,
-  icon: Icon,
+  rows,
   title,
 }: {
-  readonly actionHref?: string;
-  readonly actionLabel?: string;
-  readonly children: ReactNode;
   readonly icon: LucideIcon;
+  readonly rows: readonly ProfileRow[];
   readonly title: string;
 }) {
+  const { t } = useAppI18n();
+
   return (
     <section className="rounded-lg border border-[#EEF2F7] bg-white">
-      <div className="flex min-h-[52px] items-center justify-between gap-3 border-b border-[#EEF2F7] px-4 py-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <Icon className="h-4 w-4 shrink-0 text-[#64748B]" strokeWidth={1.8} />
-          <h2 className="truncate text-[15px] font-semibold text-[#111827]">
-            {title}
-          </h2>
-        </div>
-        {actionHref && actionLabel ? (
-          <Link
-            className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-[13px] font-semibold text-[#2563EB] transition hover:bg-[#EFF6FF] active:bg-[#DBEAFE]"
-            to={actionHref}
-          >
-            {actionLabel}
-            <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </Link>
-        ) : null}
+      <div className="flex min-h-[52px] items-center gap-2 border-b border-[#EEF2F7] px-4 py-3">
+        <Icon className="h-4 w-4 shrink-0 text-[#64748B]" strokeWidth={1.8} />
+        <h2 className="truncate text-[15px] font-semibold text-[#111827]">
+          {title}
+        </h2>
       </div>
-      <div className="p-4">{children}</div>
+      <dl className="grid">
+        {rows.map((row) => (
+          <div
+            className="grid min-h-[54px] grid-cols-[132px_minmax(0,1fr)] items-center gap-3 border-b border-[#F4F6F9] px-4 py-2 last:border-b-0"
+            key={row.labelKey}
+          >
+            <dt className="truncate text-[12px] font-medium text-[#64748B]">
+              {t(row.labelKey)}
+            </dt>
+            <dd className="truncate text-right text-[13px] font-semibold text-[#111827]">
+              {row.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </section>
   );
 }
 
-function ListState({
-  children,
-  emptyText,
-  isLoading,
-}: {
-  readonly children: ReactNode;
-  readonly emptyText: string;
-  readonly isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <div className="grid gap-2">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <div
-            className="h-14 rounded-lg bg-[#F4F6F9]"
-            key={index}
-          />
-        ))}
-      </div>
-    );
-  }
-
-  if (!hasRenderableChildren(children)) {
-    return (
-      <p className="rounded-lg bg-[#F8FAFC] px-4 py-8 text-center text-[13px] text-[#64748B]">
-        {emptyText}
-      </p>
-    );
-  }
-
-  return <div className="grid gap-2">{children}</div>;
-}
-
-function CompanyActivityItem({
-  company,
-  formatDateTime,
-  t,
-}: {
-  readonly company: CompanyListItem;
-  readonly formatDateTime: (value: string) => string;
-  readonly t: (key: AppI18nKey, options?: { readonly values?: Record<string, string> }) => string;
-}) {
+function ProfileLoadingState() {
   return (
-    <Link
-      className="flex min-h-14 items-center justify-between gap-3 rounded-lg border border-[#EEF2F7] px-3 py-2 transition hover:border-[#D8DEE8] hover:bg-[#FAFBFC] active:bg-[#F3F6FB]"
-      to={`/app/companies/${company.id}`}
-    >
-      <div className="min-w-0">
-        <p className="truncate text-[14px] font-semibold text-[#111827]">
-          {company.companyName}
-        </p>
-        <p className="mt-0.5 truncate text-[12px] text-[#64748B]">
-          {company.companyField.field} · {formatCompanyRegion(company)}
-        </p>
-      </div>
-      <span className="shrink-0 text-[12px] text-[#94A3B8]">
-        {t("companyList.registeredAt", {
-          values: { date: formatDateTime(company.createdAt) },
-        })}
-      </span>
-    </Link>
+    <div className="grid gap-5 lg:grid-cols-2">
+      {Array.from({ length: 2 }).map((_, panelIndex) => (
+        <section
+          className="rounded-lg border border-[#EEF2F7] bg-white"
+          key={panelIndex}
+        >
+          <div className="h-[52px] border-b border-[#EEF2F7] px-4 py-3">
+            <div className="h-4 w-32 animate-pulse rounded bg-[#F4F6F9]" />
+          </div>
+          <div className="grid gap-3 p-4">
+            {Array.from({ length: 4 }).map((_, rowIndex) => (
+              <div
+                className="h-8 animate-pulse rounded bg-[#F4F6F9]"
+                key={rowIndex}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   );
-}
-
-function QuickActionCard({
-  action,
-  t,
-}: {
-  readonly action: QuickAction;
-  readonly t: (key: AppI18nKey) => string;
-}) {
-  const Icon = action.icon;
-
-  return (
-    <Link
-      className="flex items-center gap-3 rounded-lg border border-[#EEF2F7] bg-[#FAFBFC] px-3 py-3 transition hover:border-[#D8DEE8] hover:bg-white active:bg-[#F3F6FB]"
-      to={action.href}
-    >
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-white text-[#3A83F7] shadow-sm">
-        <Icon className="h-4 w-4" strokeWidth={1.8} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-[14px] font-semibold text-[#111827]">
-          {t(action.labelKey)}
-        </span>
-        <span className="mt-0.5 block truncate text-[12px] text-[#64748B]">
-          {t(action.descriptionKey)}
-        </span>
-      </span>
-      <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" strokeWidth={2} />
-    </Link>
-  );
-}
-
-function formatCompanyRegion(company: CompanyListItem) {
-  const code = company.companyRegion.regionCode
-    ? ` (${company.companyRegion.regionCode})`
-    : "";
-
-  return `${company.companyRegion.region}${code}`;
-}
-
-function hasRenderableChildren(children: ReactNode) {
-  return Array.isArray(children) ? children.length > 0 : Boolean(children);
-}
-
-function getIntlLocale(locale: string) {
-  return locale === "ko-KR" ? "ko-KR" : "en-US";
 }

@@ -23,9 +23,7 @@ import {
   LogOut,
   Menu,
   MoreHorizontal,
-  Plus,
   ScreenShare,
-  Search,
   Settings,
   ShieldCheck,
   UserRound,
@@ -42,7 +40,6 @@ import {
   resolvePublicSiteLanguage,
   toPublicSitePath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
-import { SearchModal } from "@/features/search";
 import {
   type CSSProperties,
   type FormEvent,
@@ -97,7 +94,6 @@ export function AppShell() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { logout, user } = useAuthSession();
   const { t } = useAppI18n();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [helpMenuOpen, setHelpMenuOpen] = useState(false);
   const [isSidebarManuallyCollapsed, setIsSidebarManuallyCollapsed] =
@@ -171,7 +167,6 @@ export function AppShell() {
   const openHelpModal = useCallback((section: HelpModalSection) => {
     setAccountMenuOpen(false);
     setHelpMenuOpen(false);
-    setSearchOpen(false);
     setLogoutConfirmOpen(false);
     setHelpModal(section);
   }, []);
@@ -186,22 +181,6 @@ export function AppShell() {
     await logout();
     void navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
   };
-
-  // ⌘K / Ctrl+K 단축키로 검색 모달 열기
-  useEffect(() => {
-    // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
-    const onKeyDown = (e: globalThis.KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setAccountMenuOpen(false);
-        setHelpMenuOpen(false);
-        setHelpModal(null);
-        setSearchOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   useEffect(() => {
     setIsSidebarOpenButtonVisible(false);
@@ -317,20 +296,9 @@ export function AppShell() {
     }
   }, [accountModal]);
 
-  const companyDetailMatch = /^\/app\/companies\/([^/]+)$/.exec(pathname);
-  const companyDetailId = companyDetailMatch
-    ? (companyDetailMatch[1] ?? "")
-    : "";
-  const isCompanyDetail =
-    companyDetailId.length > 0 && companyDetailId !== "new";
-
-  const isCompanyListPage =
-    pathname === "/app/companies" ||
-    pathname === "/app/companies/new" ||
-    isCompanyDetail;
   const isFixedViewportPage = isHome;
-  const isMobileHeaderHidden = isCompanyDetail;
-  const hideTopBar = isCompanyListPage;
+  const isMobileHeaderHidden = false;
+  const hideTopBar = false;
 
   const topBarContent = (() => {
     type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
@@ -339,21 +307,9 @@ export function AppShell() {
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
     const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
-    const actions =
-      pathname === "/app"
-        ? [
-            {
-              icon: Plus,
-              tooltip: t("companyList.createCompany"),
-              href: "/app/companies/new",
-              variant: "primary" as const,
-            },
-          ]
-        : [];
     return (
       <PageHeader
         breadcrumbs={[{ label: t(meta.labelKey), icon: meta.icon }]}
-        actions={actions}
       />
     );
   })();
@@ -580,24 +536,6 @@ export function AppShell() {
                 {t("shell.homeTooltip")}
               </span>
             </button>
-            <button
-              aria-label={t("shell.integratedSearch")}
-              type="button"
-              className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-              onClick={() => {
-                setHelpMenuOpen(false);
-                setHelpModal(null);
-                setSearchOpen(true);
-              }}
-            >
-              <Search
-                className="h-5 w-5 shrink-0"
-                strokeWidth={2}
-              />
-              <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
-                {t("shell.searchTooltip")}
-              </span>
-            </button>
           </div>
           {/* Nav */}
           <div className="flex-1 px-2 py-1">
@@ -649,8 +587,6 @@ export function AppShell() {
         </div>
       </div>
 
-      {/* Search Modal */}
-      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
       <HelpModal
         open={helpModal !== null}
         section={helpModal ?? "guide"}
@@ -679,9 +615,7 @@ export function AppShell() {
       {/* ── Mobile Shell ── */}
       <div className="min-h-dvh lg:hidden">
         {!isMobileHeaderHidden ? (
-          <MobileAppHeader
-            onSearchClick={() => setSearchOpen(true)}
-          />
+          <MobileAppHeader />
         ) : null}
         <main className="pb-24">
           <Outlet context={outletContext} />

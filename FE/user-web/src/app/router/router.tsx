@@ -12,10 +12,6 @@ import {
   type PublicSiteLocalizedPath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
 import { AboutPage } from "@/pages/about";
-import { CompanyDetailPage } from "@/pages/companies/detail";
-import { CompaniesPage } from "@/pages/companies";
-import { CompanyNewFullPage } from "@/pages/companies/new-full";
-import { CompanyNewPage } from "@/pages/companies/new";
 import { ContactPage } from "@/pages/contact";
 import { DownloadPage } from "@/pages/download";
 import { FaqPage } from "@/pages/faq";
@@ -108,21 +104,6 @@ export const router = createBrowserRouter([
   { path: "/privacy", element: <LegacyPublicSiteRedirect to="/privacy" /> },
   { path: "/auth/callback", element: <LoginPage /> },
   ...localizedPublicSiteRoutes,
-  { path: "/companies", element: <LegacyAppRedirect to="/app/companies" /> },
-  {
-    path: "/companies/new/full",
-    element: <LegacyAppRedirect to="/app/companies/new/full" />,
-  },
-  {
-    path: "/companies/new",
-    element: <LegacyAppRedirect to="/app/companies/new" />,
-  },
-  {
-    path: "/companies/:companyId",
-    element: (
-      <LegacyAppRedirect paramName="companyId" to="/app/companies" />
-    ),
-  },
   { path: "/contacts", element: <LegacyAppRedirect to="/app" /> },
   { path: "/contacts/scan", element: <LegacyAppRedirect to="/app" /> },
   { path: "/contacts/new/full", element: <LegacyAppRedirect to="/app" /> },
@@ -146,10 +127,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <HomePage /> },
-      { path: "companies", element: <CompaniesPage /> },
-      { path: "companies/new/full", element: <CompanyNewFullPage /> },
-      { path: "companies/new", element: <CompanyNewPage /> },
-      { path: "companies/:companyId", element: <CompanyDetailPage /> },
       { path: "contacts/*", element: <Navigate replace to="/app" /> },
       { path: "products/*", element: <Navigate replace to="/app" /> },
       { path: "deals/*", element: <Navigate replace to="/app" /> },

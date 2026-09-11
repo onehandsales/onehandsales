@@ -22,12 +22,12 @@
 
 - `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리, 로그인 locale/region 메타데이터 동기화
 - `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회
-- `company`: 사용자 소유 회사, 회사 분야/지역 옵션, 생성/조회/수정, xlsx export
-- `search`: 회사 통합검색
 - `error-report`: User Web 오류 신고 접수와 screenshot storage 연동
 - `support-request`: User Web 지원 문의 접수
 - `public-contact-request`: 로그인 전 공개 문의 접수
 - `health`: health check
+
+고정형 `company`/`search` 도메인은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Object/Attribute/Record/List/View 기반의 유연한 데이터 모델로 다시 설계한다.
 
 
 ## 로컬 실행
@@ -69,7 +69,6 @@ API_PUBLIC_ORIGIN="https://onehandsales-production.up.railway.app"
 
 ## API 호출 예제
 
-- 회사 도메인: `restdoc/company-domain.http`
 - 전체 API 한 줄 설명: `../AGENT/SOFTWARE_AGENT/COMMON/API_SAMPLE.md`
 
 ## DB
@@ -88,7 +87,7 @@ pnpm run db:dev:down
 
 CI/배포처럼 이미 migration 파일을 적용해야 하는 환경에서는 `pnpm run prisma:migrate:deploy`를 사용한다.
 
-현재 seed는 production에서는 실행하지 않고, local mock Auth 사용자/session과 회사 demo 데이터를 만든다.
+현재 seed는 production에서는 실행하지 않고, local mock Auth 사용자/session 데이터를 만든다.
 
 ## 검증
 

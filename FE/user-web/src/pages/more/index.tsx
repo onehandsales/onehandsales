@@ -1,5 +1,4 @@
 import {
-  Building2,
   ChevronRight,
   Settings,
   type LucideIcon,
@@ -78,13 +77,6 @@ const managementRows: ReadonlyArray<{
   readonly iconColor: string;
   readonly icon: LucideIcon;
 }> = [
-  {
-    labelKey: "navigation.companies",
-    to: "/app/companies",
-    iconBg: "#4880EE18",
-    iconColor: "#4880EE",
-    icon: Building2,
-  },
   {
     labelKey: "navigation.settings",
     to: MORE_SETTINGS_MODAL_PATH,

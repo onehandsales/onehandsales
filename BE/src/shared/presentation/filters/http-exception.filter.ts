@@ -97,10 +97,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case "OAuthAccountConflict":
       case "DeviceSlotAlreadyRegistered":
-      case "DuplicateCompanyField":
-      case "DuplicateCompanyRegion":
-      case "CompanyFieldInUse":
-      case "CompanyRegionInUse":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":
@@ -114,7 +110,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "USER_TIMEZONE_INVALID":
       case "USER_COUNTRY_UNSUPPORTED":
       case "USER_DEFAULT_CURRENCY_UNSUPPORTED":
-      case "COMPANY_REGION_UNSUPPORTED":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
       case "ERROR_REPORT_DESCRIPTION_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_REQUIRED":

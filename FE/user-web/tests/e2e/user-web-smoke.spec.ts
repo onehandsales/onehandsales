@@ -1,4 +1,4 @@
-﻿import { expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import {
   MOBILE_LONG_FIXTURE,
   seedAuthenticatedSession,
@@ -11,10 +11,10 @@ test.describe("User Web smoke E2E", () => {
     await seedAuthenticatedSession(page);
 
     await page.goto("/app");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
+    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
-    await page.goto("/app/companies");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
+    await page.goto("/app/more");
+    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });

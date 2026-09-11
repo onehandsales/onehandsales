@@ -5,11 +5,9 @@ import {
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
-import { CompanyModule } from "./modules/company/infrastructure/company.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
-import { SearchModule } from "./modules/search/infrastructure/search.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
@@ -25,10 +23,8 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     HealthModule,
     AuthModule,
     UserModule,
-    CompanyModule,
     PublicContactRequestModule,
     ErrorReportModule,
-    SearchModule,
     SupportRequestModule,
   ],
 })

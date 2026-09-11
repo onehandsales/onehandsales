@@ -35,41 +35,6 @@ const localDemoUsers = [
   },
 ] as const;
 
-const companySeeds = [
-  {
-    companyName: "Samsung Electronics",
-    field: "Semiconductor",
-    region: "Gyeonggi Suwon",
-    countryCode: "KR",
-    regionCode: "41",
-    address: "129 Samsung-ro, Yeongtong-gu, Suwon-si",
-  },
-  {
-    companyName: "LG Electronics",
-    field: "Consumer Electronics",
-    region: "Seoul Yeongdeungpo",
-    countryCode: "KR",
-    regionCode: "11",
-    address: "128 Yeoui-daero, Yeongdeungpo-gu, Seoul",
-  },
-  {
-    companyName: "Kakao",
-    field: "Platform",
-    region: "Gyeonggi Seongnam",
-    countryCode: "KR",
-    regionCode: "41",
-    address: "242 Pangyoyeok-ro, Bundang-gu, Seongnam-si",
-  },
-  {
-    companyName: "OneHand Demo US",
-    field: "SaaS",
-    region: "California",
-    countryCode: "US",
-    regionCode: "CA",
-    address: "San Francisco, CA",
-  },
-] as const;
-
 async function seedLocalMockAuth() {
   if (configService.get<string>("NODE_ENV") === "production") {
     return;
@@ -137,64 +102,8 @@ async function seedLocalMockAuth() {
   }
 }
 
-async function resetLocalDemoDomainData(userId: string) {
-  await prisma.$transaction([
-    prisma.company.deleteMany({ where: { userId } }),
-    prisma.companyField.deleteMany({ where: { userId } }),
-    prisma.companyRegion.deleteMany({ where: { userId } }),
-  ]);
-}
-
-async function seedLocalDemoSalesData() {
-  if (configService.get<string>("NODE_ENV") === "production") {
-    return;
-  }
-
-  const userId = demoUserId;
-  await resetLocalDemoDomainData(userId);
-
-  const fieldMap = new Map<string, string>();
-  const regionMap = new Map<string, string>();
-
-  for (const field of [
-    ...new Set(companySeeds.map((company) => company.field)),
-  ]) {
-    const row = await prisma.companyField.create({ data: { userId, field } });
-    fieldMap.set(field, row.id);
-  }
-
-  for (const seed of companySeeds) {
-    if (regionMap.has(seed.region)) {
-      continue;
-    }
-
-    const row = await prisma.companyRegion.create({
-      data: {
-        userId,
-        region: seed.region,
-        countryCode: seed.countryCode,
-        regionCode: seed.regionCode,
-      },
-    });
-    regionMap.set(seed.region, row.id);
-  }
-
-  for (const seed of companySeeds) {
-    await prisma.company.create({
-      data: {
-        userId,
-        companyName: seed.companyName,
-        companyFieldId: fieldMap.get(seed.field)!,
-        companyRegionId: regionMap.get(seed.region)!,
-        address: seed.address,
-      },
-    });
-  }
-}
-
 async function main() {
   await seedLocalMockAuth();
-  await seedLocalDemoSalesData();
 }
 
 void main().finally(async () => {

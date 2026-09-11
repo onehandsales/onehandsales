@@ -11,8 +11,6 @@ Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management, login locale/region metadata sync.
 - `user`: current user profile, timezone/locale metadata, and registered device lookup.
-- `company`: user-owned company, company field/region options, create/read/update, and xlsx export.
-- `search`: integrated search over company data.
 - `error-report`: User Web error report intake and optional screenshot storage.
 - `support-request`: authenticated support request intake.
 - `public-contact-request`: unauthenticated public contact request intake.
@@ -41,3 +39,5 @@ Layer rules:
 - `presentation`: controllers, DTOs, guards, filters, decorators, and response mapping.
 
 Business modules should continue to be added one module and one migration at a time, following the same layer boundaries.
+
+The fixed company/search domain has been removed for the OneHand CRM pivot. The next CRM core should be introduced as a flexible Workspace/Object/Attribute/Record/List/View model instead of extending the old company tables.

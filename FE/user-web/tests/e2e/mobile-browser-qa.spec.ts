@@ -1,4 +1,4 @@
-﻿import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import {
   MOBILE_LONG_FIXTURE,
   seedAuthenticatedSession,
@@ -10,8 +10,7 @@ const MOBILE_ROUTES: ReadonlyArray<{
   readonly expectedText: string;
   readonly hasMobileHeader: boolean;
 }> = [
-  { path: "/app", expectedText: MOBILE_LONG_FIXTURE.companyName, hasMobileHeader: true },
-  { path: "/app/companies", expectedText: MOBILE_LONG_FIXTURE.companyName, hasMobileHeader: true },
+  { path: "/app", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
   { path: "/app?account=settings", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
   { path: "/app/more", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
 ];
@@ -21,7 +20,7 @@ test.describe("G02 mobile browser release QA", () => {
     const api = await setupUserWebApiMocks(page);
     const runtime = collectRuntimeErrors(page);
 
-    await page.goto("/app/companies");
+    await page.goto("/app");
 
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
@@ -55,7 +54,6 @@ async function expectMobileShell(page: Page, hasMobileHeader: boolean) {
 
   if (hasMobileHeader) {
     await expect(page.getByTestId("mobile-app-header")).toBeVisible();
-    await expect(page.getByRole("button", { name: /search|검색|통합/i }).first()).toBeVisible();
   }
 }
 

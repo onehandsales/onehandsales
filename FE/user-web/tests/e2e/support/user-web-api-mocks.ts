@@ -1,4 +1,4 @@
-﻿import type { Page, Route } from "@playwright/test";
+import type { Page, Route } from "@playwright/test";
 
 const E2E_ACCESS_TOKEN = "e2e-user-web-access-token";
 const E2E_ACCESS_TOKEN_EXPIRES_AT = "2026-12-31T23:59:59.000Z";
@@ -6,12 +6,11 @@ const E2E_AUTHORIZATION = `Bearer ${E2E_ACCESS_TOKEN}`;
 const NOW = "2026-07-20T09:00:00.000Z";
 
 export const MOBILE_LONG_FIXTURE = {
-  companyName:
-    "RQA002 Mobile 90360 Jeonju Sales Opportunity Company Browser Compatibility ABCDEFGHIJK",
-  email: "rqa002.mobile.browser.compatibility.long-email-address@example-onehand-sales.test",
+  email: "rqa002.mobile.browser.compatibility.long-email-address@example-onehand-crm.test",
+  name: "\uBAA8\uBC14\uC77CQA\uC0AC\uC6A9\uC790",
   phone: "+82-10-1234-5678-9999",
-  url: "https://onehand-sales.example.test/mobile-browser/overflow/390/360/chrome/edge/release-qa",
-};
+  url: "https://onehand-crm.example.test/mobile-browser/overflow/390/360/chrome/edge/release-qa",
+} as const;
 
 export type ApiRequestRecord = {
   readonly method: string;
@@ -28,12 +27,7 @@ type MockApiResponse = {
 
 type MutableRecord = Record<string, unknown>;
 
-export type UserWebApiMockStore = {
-  readonly companyFields: MutableRecord[];
-  readonly companyRegions: MutableRecord[];
-  readonly companies: MutableRecord[];
-  readonly counters: Record<string, number>;
-};
+export type UserWebApiMockStore = Record<string, never>;
 
 type ApiDelayResolver = (request: ApiRequestRecord) => number;
 
@@ -43,14 +37,14 @@ type SetupUserWebApiMockOptions = {
 };
 
 export function createUserWebApiMockStore(): UserWebApiMockStore {
-  return createStore();
+  return {};
 }
 
 export async function setupUserWebApiMocks(
   page: Page,
   options: SetupUserWebApiMockOptions = {},
 ) {
-  const store = options.store ?? createStore();
+  const store = options.store ?? createUserWebApiMockStore();
   const protectedRequests: ApiRequestRecord[] = [];
 
   await page.route("**/*", async (route) => {
@@ -109,7 +103,7 @@ export async function seedAuthenticatedSession(page: Page) {
 }
 
 async function handleApiRequest(
-  store: UserWebApiMockStore,
+  _store: UserWebApiMockStore,
   route: Route,
   method: string,
   url: URL,
@@ -152,7 +146,8 @@ async function handleApiRequest(
   if (pathname === "/api/error-reports" && method === "POST") {
     return json({
       id: "error-report-1",
-      message: "\uC2E0\uACE0\uAC00 \uC811\uC218\uB418\uC5C8\uC5B4\uC694. \uBB38\uC81C\uB97C \uBE60\uB974\uAC8C \uD574\uACB0\uD560\uAC8C\uC694.",
+      message:
+        "\uC2E0\uACE0\uAC00 \uC811\uC218\uB418\uC5C8\uC5B4\uC694. \uBB38\uC81C\uB97C \uBE60\uB974\uAC8C \uD574\uACB0\uD560\uAC8C\uC694.",
     }, 201);
   }
 
@@ -165,7 +160,8 @@ async function handleApiRequest(
   }
 
   if (pathname === "/api/users/me/profile" && method === "PATCH") {
-    return json(createUserProfile(await readJsonBody(route)));
+    const overrides = recordField(await readJsonBody(route));
+    return json(createUserProfile(overrides));
   }
 
   if (pathname === "/api/users/me/devices" && method === "GET") {
@@ -186,91 +182,6 @@ async function handleApiRequest(
     });
   }
 
-  if (pathname === "/api/company-fields" && method === "GET") {
-    return jsonList(store.companyFields);
-  }
-
-  if (pathname === "/api/company-fields" && method === "POST") {
-    const body = await readJsonBody(route);
-    const created = {
-      field: stringField(body, "field") || "New field",
-      id: nextId(store, "field"),
-    };
-    store.companyFields.unshift(created);
-    return json(created, 201);
-  }
-
-  const fieldMatch = pathname.match(/^\/api\/company-fields\/([^/]+)$/);
-  if (fieldMatch && method === "DELETE") {
-    removeById(store.companyFields, fieldMatch[1]);
-    return json({ ok: true });
-  }
-
-  if (pathname === "/api/company-regions" && method === "GET") {
-    return jsonList(store.companyRegions);
-  }
-
-  if (pathname === "/api/company-regions" && method === "POST") {
-    const body = await readJsonBody(route);
-    const created = {
-      countryCode: stringField(body, "countryCode") || "KR",
-      id: nextId(store, "region"),
-      region: stringField(body, "region") || "New region",
-      regionCode: stringField(body, "regionCode") || null,
-    };
-    store.companyRegions.unshift(created);
-    return json(created, 201);
-  }
-
-  const regionMatch = pathname.match(/^\/api\/company-regions\/([^/]+)$/);
-  if (regionMatch && method === "DELETE") {
-    removeById(store.companyRegions, regionMatch[1]);
-    return json({ ok: true });
-  }
-
-  if (pathname === "/api/companies/export/xlsx" && method === "GET") {
-    return {
-      body: "company export",
-      contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      headers: { "content-disposition": "attachment; filename=companies.xlsx" },
-    };
-  }
-
-  if (pathname === "/api/companies" && method === "GET") {
-    return json(paginated(filterCompanies(store.companies, url), url));
-  }
-
-  if (pathname === "/api/companies" && method === "POST") {
-    const company = createCompany(store, await readJsonBody(route));
-    store.companies.unshift(company);
-    return json(company, 201);
-  }
-
-  const companyMatch = pathname.match(/^\/api\/companies\/([^/]+)$/);
-  if (companyMatch && method === "GET") {
-    return json(requireItem(store.companies, companyMatch[1]));
-  }
-
-  if (companyMatch && method === "PATCH") {
-    const company = requireItem(store.companies, companyMatch[1]);
-    updateCompany(store, company, await readJsonBody(route));
-    return json(company);
-  }
-
-  if (pathname === "/api/search" && method === "GET") {
-    const q = (url.searchParams.get("q") ?? "").trim().toLowerCase();
-    const items = store.companies
-      .filter((company) => stringField(company, "companyName").toLowerCase().includes(q))
-      .map((company) => ({
-        subtitle: stringField(recordField(company, "companyRegion"), "region"),
-        targetId: String(company.id),
-        targetPath: `/app/companies/${company.id}`,
-        title: stringField(company, "companyName"),
-      }));
-
-    return json({ groups: [{ items, type: "COMPANY" }] });
-  }
-
   return json(
     {
       code: "NotFound",
@@ -279,29 +190,6 @@ async function handleApiRequest(
     },
     404,
   );
-}
-
-function createStore(): UserWebApiMockStore {
-  const companyField = { field: "Mobile QA Field", id: "field-mobile-001" };
-  const companyRegion = {
-    countryCode: "KR",
-    id: "region-seoul-001",
-    region: "Seoul",
-    regionCode: "11",
-  };
-  const company = createCompanyRecord({
-    address: MOBILE_LONG_FIXTURE.url,
-    companyField,
-    companyName: MOBILE_LONG_FIXTURE.companyName,
-    companyRegion,
-    id: "company-mobile-001",
-  });
-  return {
-    companyFields: [companyField],
-    companyRegions: [companyRegion],
-    companies: [company],
-    counters: { company: 1, field: 1, region: 1 },
-  };
 }
 
 function createAuthUser(overrides: Partial<MutableRecord> = {}) {
@@ -313,7 +201,7 @@ function createAuthUser(overrides: Partial<MutableRecord> = {}) {
     lastLoginCountryCode: "KR",
     lastLoginLocale: "ko-KR",
     lastLoginTimeZone: "Asia/Seoul",
-    name: "\uBAA8\uBC14\uC77CQA\uC0AC\uC6A9\uC790",
+    name: MOBILE_LONG_FIXTURE.name,
     preferredLocale: "ko-KR",
     role: "USER",
     settings: {
@@ -361,110 +249,10 @@ function createUserProfile(overrides: Partial<MutableRecord> = {}) {
   };
 }
 
-function createCompany(store: UserWebApiMockStore, body: unknown) {
-  const field = findById(store.companyFields, stringField(body, "companyFieldId")) ?? store.companyFields[0];
-  const region = findById(store.companyRegions, stringField(body, "companyRegionId")) ?? store.companyRegions[0];
-
-  return createCompanyRecord({
-    address: stringField(body, "address") || null,
-    companyField: field,
-    companyName: stringField(body, "companyName") || `Company ${store.counters.company + 1}`,
-    companyRegion: region,
-    id: nextId(store, "company"),
-  });
-}
-
-function createCompanyRecord(input: {
-  readonly address?: string | null;
-  readonly companyField: MutableRecord;
-  readonly companyName: string;
-  readonly companyRegion: MutableRecord;
-  readonly id: string;
-}) {
-  return {
-    address: input.address ?? null,
-    companyField: input.companyField,
-    companyName: input.companyName,
-    companyRegion: input.companyRegion,
-    createdAt: NOW,
-    id: input.id,
-    updatedAt: NOW,
-  };
-}
-
-function updateCompany(store: UserWebApiMockStore, company: MutableRecord, body: unknown) {
-  const companyName = stringField(body, "companyName");
-  const companyFieldId = stringField(body, "companyFieldId");
-  const companyRegionId = stringField(body, "companyRegionId");
-
-  if (companyName) company.companyName = companyName;
-  if (Object.prototype.hasOwnProperty.call(recordField(body), "address")) {
-    company.address = stringField(body, "address") || null;
-  }
-  if (companyFieldId) company.companyField = findById(store.companyFields, companyFieldId) ?? company.companyField;
-  if (companyRegionId) company.companyRegion = findById(store.companyRegions, companyRegionId) ?? company.companyRegion;
-  company.updatedAt = NOW;
-}
-
-function filterCompanies(companies: readonly MutableRecord[], url: URL) {
-  const query = (url.searchParams.get("companyName") ?? "").trim().toLowerCase();
-  if (!query) return companies;
-
-  return companies.filter((company) =>
-    stringField(company, "companyName").toLowerCase().includes(query),
-  );
-}
-
-function paginated(items: readonly MutableRecord[], url: URL) {
-  const page = Math.max(1, Number(url.searchParams.get("page") ?? 1));
-  const pageSize = Math.max(1, Number(url.searchParams.get("pageSize") ?? 20));
-  const offset = (page - 1) * pageSize;
-  const pageItems = items.slice(offset, offset + pageSize);
-
-  return {
-    items: pageItems,
-    page,
-    pageSize,
-    totalCount: items.length,
-    totalPages: Math.max(1, Math.ceil(items.length / pageSize)),
-  };
-}
-
-function findById(collection: readonly MutableRecord[], id: string | undefined) {
-  if (!id) return undefined;
-  return collection.find((item) => item.id === id);
-}
-
-function requireItem(collection: readonly MutableRecord[], id: string | undefined) {
-  const item = findById(collection, id);
-  if (!item) {
-    throw new Error(`Missing mock record ${id ?? "unknown"}`);
-  }
-  return item;
-}
-
-function removeById(collection: MutableRecord[], id: string | undefined) {
-  const index = collection.findIndex((item) => item.id === id);
-  if (index >= 0) {
-    collection.splice(index, 1);
-  }
-}
-
-function nextId(store: UserWebApiMockStore, key: string) {
-  const nextValue = (store.counters[key] ?? 0) + 1;
-  store.counters[key] = nextValue;
-  return `${key}-${String(nextValue).padStart(3, "0")}`;
-}
-
 async function readJsonBody(route: Route): Promise<unknown> {
   const body = route.request().postData();
   if (!body) return {};
   return JSON.parse(body) as unknown;
-}
-
-function stringField(value: unknown, key: string): string {
-  const field = recordField(value)[key];
-  return typeof field === "string" ? field : "";
 }
 
 function recordField(value: unknown): MutableRecord {
@@ -473,10 +261,6 @@ function recordField(value: unknown): MutableRecord {
 
 function json(body: unknown, status = 200): MockApiResponse {
   return { body, contentType: "application/json", status };
-}
-
-function jsonList(items: readonly unknown[]) {
-  return json({ items });
 }
 
 async function fulfill(route: Route, response: MockApiResponse) {

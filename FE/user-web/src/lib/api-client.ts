@@ -136,11 +136,6 @@ export function getApiErrorMessage(error: unknown): string {
       return "??젣????ぉ? 蹂듦뎄?????섏젙?????덉뼱??";
     }
 
-    const conflictMessage = getConflictErrorMessage(error.code);
-    if (conflictMessage) {
-      return conflictMessage;
-    }
-
     return error.message;
   }
 
@@ -162,15 +157,6 @@ export function isApiErrorRetryable(error: unknown): boolean {
     getBooleanField(getNestedError(error.raw), "retryable") ??
     false
   );
-}
-
-function getConflictErrorMessage(code: string) {
-  switch (code) {
-    case "CompanyInUse":
-      return "연결된 기록을 정리하면 회사를 삭제할 수 있어요.";
-    default:
-      return null;
-  }
 }
 
 async function request(path: string, options: ApiClientOptions) {

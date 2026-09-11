@@ -108,8 +108,8 @@ describe("ErrorReportApplicationService", () => {
 
     const response = await fixture.service.createErrorReport({
       currentUser: CURRENT_USER,
-      description: "회사 상세 화면에서 저장 버튼을 누르면 멈춰요.",
-      pageUrl: "http://localhost:5173/app/companies/company-1?tab=memo",
+      description: "계정 화면에서 저장 버튼을 누르면 멈춰요.",
+      pageUrl: "http://localhost:5173/app",
       requestId: "request-1",
       screenshotFile: null,
       userAgent: "playwright",
@@ -121,8 +121,8 @@ describe("ErrorReportApplicationService", () => {
     expect(fixture.screenshotStorage.store).not.toHaveBeenCalled();
     expect(fixture.repository.createErrorReport).toHaveBeenCalledWith({
       user: USER_SNAPSHOT,
-      description: "회사 상세 화면에서 저장 버튼을 누르면 멈춰요.",
-      pageUrl: "http://localhost:5173/app/companies/company-1?tab=memo",
+        description: "계정 화면에서 저장 버튼을 누르면 멈춰요.",
+      pageUrl: "http://localhost:5173/app",
       requestId: "request-1",
       screenshot: null,
       userAgent: "playwright",

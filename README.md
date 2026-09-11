@@ -114,9 +114,9 @@ Health check:
 curl http://localhost:3000/api/health
 ```
 
-현재 Backend는 Auth/User, Company, Search, PublicContactRequest, ErrorReport, SupportRequest, Health 모듈을 구현한다. Company는 회사/분야/지역 생성·조회·수정과 xlsx export API를 제공한다. Search의 현재 대상은 Company다. 관리자 확인 API는 `GET /admin/api/me`만 제공한다.
+현재 Backend는 Auth/User, PublicContactRequest, ErrorReport, SupportRequest, Health 모듈을 구현한다. 고정형 Company/Search 도메인은 OneHand CRM 방향 전환에 맞춰 제거했다. 관리자 확인 API는 `GET /admin/api/me`만 제공한다.
 
-이 구현은 현재 코드 스냅샷이다. 새 제품 방향에서는 Company 전용 구조를 그대로 확장하기보다, Workspace, WorkspaceMember, Actor, Object, Attribute, SelectOption, Status, Record, RecordValue, List, View 같은 유연한 CRM 데이터 모델을 검토한다.
+이 구현은 현재 코드 스냅샷이다. 새 제품 방향에서는 Workspace, WorkspaceMember, Actor, Object, Attribute, SelectOption, Status, Record, RecordValue, List, View 같은 유연한 CRM 데이터 모델을 검토한다.
 
 ### 2. User Web
 

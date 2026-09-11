@@ -14,20 +14,20 @@ test.describe("G04 User Web security boundary QA", () => {
     await page.goto("/login");
     await storeSession(page);
     await page.reload();
-    await page.goto("/app/companies");
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.companyName);
+    await page.goto("/app");
+    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
     await clearStoredSession(page);
     await page.reload();
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.locator("body")).not.toContainText(
-      MOBILE_LONG_FIXTURE.companyName,
+      MOBILE_LONG_FIXTURE.email,
     );
 
     await page.goBack();
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.locator("body")).not.toContainText(
-      MOBILE_LONG_FIXTURE.companyName,
+      MOBILE_LONG_FIXTURE.email,
     );
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
     runtime.assertClean();
