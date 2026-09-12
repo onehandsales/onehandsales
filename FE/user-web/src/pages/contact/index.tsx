@@ -317,6 +317,7 @@ export function ContactPage() {
     (option) => option.value === values.companySize
   );
 
+  // 기능 : update Value 정보를 수정합니다.
   const updateValue = <TField extends keyof ContactFormValues>(
     field: TField,
     value: ContactFormValues[TField]
@@ -325,11 +326,13 @@ export function ContactPage() {
     setErrorMessage("");
   };
 
+  // 기능 : go Next 기능을 수행합니다.
   const goNext = () => {
     setErrorMessage("");
     setStepIndex((current) => Math.min(contactStepIds.length - 1, current + 1));
   };
 
+  // 기능 : handle Email Next 이벤트를 처리합니다.
   const handleEmailNext = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -346,11 +349,13 @@ export function ContactPage() {
     goNext();
   };
 
+  // 기능 : handle Size Select 이벤트를 처리합니다.
   const handleSizeSelect = (option: ContactOption) => {
     updateValue("companySize", option.value);
     setStepIndex(2);
   };
 
+  // 기능 : handle Profile Next 이벤트를 처리합니다.
   const handleProfileNext = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -362,6 +367,7 @@ export function ContactPage() {
     goNext();
   };
 
+  // 기능 : handle Submit 이벤트를 처리합니다.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -482,6 +488,7 @@ export function ContactPage() {
   );
 }
 
+// 기능 : EmailStep 컴포넌트를 렌더링합니다.
 function EmailStep({
   copy,
   errorMessage,
@@ -528,6 +535,7 @@ function EmailStep({
   );
 }
 
+// 기능 : SizeStep 컴포넌트를 렌더링합니다.
 function SizeStep({
   copy,
   selectedValue,
@@ -570,6 +578,7 @@ function SizeStep({
   );
 }
 
+// 기능 : ProfileStep 컴포넌트를 렌더링합니다.
 function ProfileStep({
   copy,
   errorMessage,
@@ -677,6 +686,7 @@ function ProfileStep({
   );
 }
 
+// 기능 : ContextStep 컴포넌트를 렌더링합니다.
 function ContextStep({
   copy,
   email,
@@ -745,6 +755,7 @@ function ContextStep({
   );
 }
 
+// 기능 : ContactDone 컴포넌트를 렌더링합니다.
 function ContactDone({
   copy,
   email,
@@ -797,6 +808,7 @@ function ContactDone({
   );
 }
 
+// 기능 : FormField 컴포넌트를 렌더링합니다.
 function FormField({
   autoComplete,
   inputMode,
@@ -827,6 +839,7 @@ function FormField({
   );
 }
 
+// 기능 : RegionSelectField 컴포넌트를 렌더링합니다.
 function RegionSelectField({
   label,
   options,
@@ -844,10 +857,12 @@ function RegionSelectField({
   const selectedOption = options.find((option) => option.value === value);
 
   useEffect(() => {
+    // 기능 : close Region Menu 창 또는 상태를 닫습니다.
     const closeRegionMenu = () => {
       detailsRef.current?.removeAttribute("open");
     };
 
+    // 기능 : on Pointer Down 기능을 수행합니다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
 
@@ -856,6 +871,7 @@ function RegionSelectField({
       }
     };
 
+    // 기능 : on Key Down 기능을 수행합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeRegionMenu();
@@ -912,6 +928,7 @@ function RegionSelectField({
   );
 }
 
+// 기능 : SelectField 컴포넌트를 렌더링합니다.
 function SelectField({
   label,
   options,
@@ -947,6 +964,7 @@ function SelectField({
   );
 }
 
+// 기능 : PrimaryButton 버튼 UI를 렌더링합니다.
 function PrimaryButton({
   className = "",
   disabled = false,
@@ -976,6 +994,7 @@ function PrimaryButton({
   );
 }
 
+// 기능 : FieldError 컴포넌트를 렌더링합니다.
 function FieldError({ message }: { readonly message: string }) {
   if (!message) return null;
 
@@ -986,6 +1005,7 @@ function FieldError({ message }: { readonly message: string }) {
   );
 }
 
+// 기능 : ContactIllustration 컴포넌트를 렌더링합니다.
 function ContactIllustration({
   step,
 }: {
@@ -1009,10 +1029,12 @@ function ContactIllustration({
   );
 }
 
+// 기능 : is Valid Email 여부를 판별합니다.
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+// 기능 : format Contact Phone Number 표시 문자열을 생성합니다.
 function formatContactPhoneNumber(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 11);
 
@@ -1027,6 +1049,7 @@ function formatContactPhoneNumber(value: string) {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
 
+// 기능 : is Profile Complete 여부를 판별합니다.
 function isProfileComplete(values: ContactFormValues) {
   return Boolean(
     values.firstName.trim() &&

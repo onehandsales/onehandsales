@@ -23,6 +23,7 @@ describe("G04 multi-account ownership isolation", () => {
   });
 });
 
+// 기능 : create Execution Context 요청 또는 객체를 생성합니다.
 function createExecutionContext(currentUser: CurrentUserContext): ExecutionContext {
   return {
     switchToHttp: () => ({

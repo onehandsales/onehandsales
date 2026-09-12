@@ -44,6 +44,7 @@ export function PublicSiteLanguageSelect() {
       }
     };
 
+    // 기능 : on Key Down 기능을 수행합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeLanguageMenu();

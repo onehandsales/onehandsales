@@ -58,6 +58,7 @@ export const authProviderModalCopy: Record<
     },
   },};
 
+// 기능 : 공개 사이트 언어와 provider에 맞는 계속하기 버튼 문구를 반환합니다.
 export function getAuthProviderContinueLabel({
   language,
   provider,

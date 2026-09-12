@@ -12,14 +12,17 @@ type ToastState = ToastOptions & { readonly id: number };
 
 let nextId = 0;
 
+// 기능 : Toast hook으로 상태와 동작을 제공합니다.
 export function useToast() {
   const [current, setCurrent] = useState<ToastState | null>(null);
 
+  // 기능 : toast 형식으로 변환합니다.
   const toast = (options: ToastOptions) => {
     nextId += 1;
     setCurrent({ ...options, id: nextId });
   };
 
+  // 기능 : dismiss 기능을 수행합니다.
   const dismiss = () => {
     setCurrent(null);
   };

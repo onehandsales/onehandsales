@@ -7,6 +7,7 @@ type MobileAppShellProps = {
   readonly children?: ReactNode;
 };
 
+// 기능 : MobileAppShell 컴포넌트를 렌더링합니다.
 export function MobileAppShell({ children }: MobileAppShellProps) {
   const location = useLocation();
   const isHome = location.pathname === "/";

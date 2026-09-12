@@ -13,6 +13,7 @@ type ConfirmDialogProps = {
   readonly onConfirm: () => void;
 };
 
+// 기능 : ConfirmDialog dialog UI를 렌더링합니다.
 export function ConfirmDialog({
   open,
   title,
@@ -29,6 +30,7 @@ export function ConfirmDialog({
       return;
     }
 
+    // 기능 : handle Key Down 이벤트를 처리합니다.
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCancel();

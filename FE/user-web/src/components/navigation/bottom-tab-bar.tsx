@@ -13,6 +13,7 @@ const items: ReadonlyArray<{
   { labelKey: "navigation.more", to: "/app/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 
+// 기능 : BottomTabBar 컴포넌트를 렌더링합니다.
 export function BottomTabBar() {
   const { t } = useAppI18n();
 

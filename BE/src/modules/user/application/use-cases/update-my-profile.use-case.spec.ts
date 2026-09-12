@@ -63,13 +63,16 @@ describe("UpdateMyProfileUseCase", () => {
   });
 });
 
+// 역할 : FakeUserRepository 영속성 계약 또는 구현 책임을 정의합니다.
 class FakeUserRepository implements UserRepository {
   lastUpdateInput: UpdateUserProfileInput | null = null;
 
+  // 기능 : get Profile 값을 조회합니다.
   async getProfile(): Promise<UserProfileRecord | null> {
     return makeProfile();
   }
 
+  // 기능 : update Profile 정보를 수정합니다.
   async updateProfile(
     _userId: string,
     input: UpdateUserProfileInput
@@ -84,11 +87,13 @@ class FakeUserRepository implements UserRepository {
     });
   }
 
+  // 기능 : list Active Devices 목록을 조회합니다.
   async listActiveDevices(): Promise<UserDeviceRecord[]> {
     return [];
   }
 }
 
+// 기능 : make Current User 테스트 fixture 값을 생성합니다.
 function makeCurrentUser(): CurrentUserContext {
   return {
     id: "user-1",
@@ -101,6 +106,7 @@ function makeCurrentUser(): CurrentUserContext {
   };
 }
 
+// 기능 : make Profile 테스트 fixture 값을 생성합니다.
 function makeProfile(
   overrides: Partial<UserProfileRecord> = {}
 ): UserProfileRecord {

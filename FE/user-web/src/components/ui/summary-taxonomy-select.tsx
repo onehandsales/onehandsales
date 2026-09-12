@@ -14,6 +14,7 @@ type SummaryTaxonomyPopoverPosition = {
   readonly width: number;
 };
 
+// 기능 : SummaryTaxonomySelect 선택 UI를 렌더링합니다.
 export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
   emptyText,
   getLabel,
@@ -68,6 +69,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
       return;
     }
 
+    // 기능 : update Popover Position 정보를 수정합니다.
     const updatePopoverPosition = () => {
       if (!inputRef.current) {
         return;
@@ -75,6 +77,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
 
       setPopoverPosition(getSummaryTaxonomyPopoverPosition(inputRef.current));
     };
+    // 기능 : on Mouse Down 기능을 수행합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -97,6 +100,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
     };
   }, [isOpen]);
 
+  // 기능 : open Options 창 또는 상태를 엽니다.
   const openOptions = (nextSearch: string) => {
     setSearch(nextSearch);
 
@@ -107,6 +111,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
     setIsOpen(true);
   };
 
+  // 기능 : select Item 기능을 수행합니다.
   const selectItem = (id: string) => {
     onSelect(id);
     setSearch("");
@@ -114,6 +119,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
     inputRef.current?.blur();
   };
 
+  // 기능 : clear Selection 상태를 초기화합니다.
   const clearSelection = () => {
     onSelect("");
     setSearch("");
@@ -270,6 +276,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
   );
 }
 
+// 기능 : get Summary Taxonomy Popover Position 값을 조회합니다.
 function getSummaryTaxonomyPopoverPosition(
   input: HTMLInputElement
 ): SummaryTaxonomyPopoverPosition {
@@ -287,10 +294,12 @@ function getSummaryTaxonomyPopoverPosition(
   };
 }
 
+// 기능 : normalize Summary Taxonomy Text 값을 내부 기준으로 정규화합니다.
 function normalizeSummaryTaxonomyText(value: string) {
   return value.trim().toLowerCase();
 }
 
+// 기능 : get Summary Taxonomy Input Selected Class 값을 조회합니다.
 function getSummaryTaxonomyInputSelectedClass(tone: SummaryTaxonomyTone) {
   if (tone === "amber") {
     return "border-[#FDE68A] bg-[#FFFBEB] font-semibold text-[#B45309]";
@@ -307,6 +316,7 @@ function getSummaryTaxonomyInputSelectedClass(tone: SummaryTaxonomyTone) {
   return "border-[#E2E8F0] bg-[#F8FAFC] font-semibold text-[#475569]";
 }
 
+// 기능 : get Summary Taxonomy Item Selected Class 값을 조회합니다.
 function getSummaryTaxonomyItemSelectedClass(tone: SummaryTaxonomyTone) {
   if (tone === "amber") {
     return "bg-[#FFFBEB] font-semibold text-[#B45309]";
@@ -323,6 +333,7 @@ function getSummaryTaxonomyItemSelectedClass(tone: SummaryTaxonomyTone) {
   return "bg-[#F8FAFC] font-semibold text-[#475569]";
 }
 
+// 기능 : get Summary Taxonomy Check Border Class 값을 조회합니다.
 function getSummaryTaxonomyCheckBorderClass(tone: SummaryTaxonomyTone) {
   if (tone === "amber") {
     return "border-[#B45309]";
@@ -339,6 +350,7 @@ function getSummaryTaxonomyCheckBorderClass(tone: SummaryTaxonomyTone) {
   return "border-[#475569]";
 }
 
+// 기능 : get Summary Taxonomy Check Dot Class 값을 조회합니다.
 function getSummaryTaxonomyCheckDotClass(tone: SummaryTaxonomyTone) {
   if (tone === "amber") {
     return "bg-[#B45309]";

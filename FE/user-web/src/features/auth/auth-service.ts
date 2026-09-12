@@ -370,6 +370,7 @@ function waitForPopupLoginCompletion(popup: Window) {
     let timeoutId: number | null = null;
 
     // 2. 완료 후 interval, timeout, storage listener를 모두 해제한다.
+    // 기능 : cleanup 기능을 수행합니다.
     const cleanup = () => {
       if (pollId !== null) {
         window.clearInterval(pollId);
@@ -383,6 +384,7 @@ function waitForPopupLoginCompletion(popup: Window) {
     };
 
     // 3. 최초 완료 이벤트만 처리하고 이후 이벤트는 무시한다.
+    // 기능 : settle 값을 설정합니다.
     const settle = (callback: () => void) => {
       if (isSettled) {
         return;
@@ -394,6 +396,7 @@ function waitForPopupLoginCompletion(popup: Window) {
     };
 
     // 4. callback 창이 access token을 저장하면 부모 창의 대기를 종료한다.
+    // 기능 : on Storage 기능을 수행합니다.
     const onStorage = (event: StorageEvent) => {
       if (event.key === accessTokenStorageKey && event.newValue) {
         settle(resolve);

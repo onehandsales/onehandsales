@@ -26,6 +26,7 @@ export function isAppCurrencyCode(value: string): value is AppCurrencyCode {
 }
 
 // Feature: Checks whether a country code is supported for phone display.
+// 기능 : is App Phone Country Code 여부를 판별합니다.
 export function isAppPhoneCountryCode(
   value: string
 ): value is AppPhoneCountryCode {
@@ -33,6 +34,7 @@ export function isAppPhoneCountryCode(
 }
 
 // Feature: Normalizes server or user country codes for phone display.
+// 기능 : normalize App Phone Country Code 값을 내부 기준으로 정규화합니다.
 export function normalizeAppPhoneCountryCode(
   value: string | null | undefined
 ): AppPhoneCountryCode {

@@ -7,6 +7,7 @@ type PublicSitePageShellProps = {
   readonly children: ReactNode;
 };
 
+// 기능 : PublicSitePageShell 컴포넌트를 렌더링합니다.
 export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
   const location = useLocation();
   const scrollProgress = usePublicSiteScrollProgress();
@@ -32,6 +33,7 @@ export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
   );
 }
 
+// 기능 : Public Site Scroll Progress hook으로 상태와 동작을 제공합니다.
 function usePublicSiteScrollProgress() {
   const [progress, setProgress] = useState(0);
 
@@ -39,6 +41,7 @@ function usePublicSiteScrollProgress() {
     document.documentElement.classList.add("public-site-scrollbar-hidden");
     document.body.classList.add("public-site-scrollbar-hidden");
 
+    // 기능 : update Progress 정보를 수정합니다.
     const updateProgress = () => {
       const scrollableHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -65,6 +68,7 @@ function usePublicSiteScrollProgress() {
   return progress;
 }
 
+// 기능 : PublicSiteScrollStyles 컴포넌트를 렌더링합니다.
 function PublicSiteScrollStyles() {
   return (
     <style>
@@ -84,6 +88,7 @@ function PublicSiteScrollStyles() {
   );
 }
 
+// 기능 : ScrollProgressBar 컴포넌트를 렌더링합니다.
 function ScrollProgressBar({ progress }: { readonly progress: number }) {
   return (
     <div

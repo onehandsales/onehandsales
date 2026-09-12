@@ -843,6 +843,7 @@ const featureDetailCopyByLanguage: Record<
   },
 };
 
+// 기능 : FeatureDetailPage 화면을 렌더링합니다.
 export function FeatureDetailPage({
   featureId,
 }: {

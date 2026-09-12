@@ -6,14 +6,17 @@ type AdminApiClientOptions = RequestInit & {
 
 let adminAccessToken: string | null = null;
 
+// 기능 : set Admin Api Access Token 값을 설정합니다.
 export function setAdminApiAccessToken(accessToken: string | null) {
   adminAccessToken = accessToken;
 }
 
+// 기능 : clear Admin Api Access Token 상태를 초기화합니다.
 export function clearAdminApiAccessToken() {
   adminAccessToken = null;
 }
 
+// 기능 : admin Api Client 기능을 수행합니다.
 export async function adminApiClient<TResponse>(
   path: string,
   options: AdminApiClientOptions = {}

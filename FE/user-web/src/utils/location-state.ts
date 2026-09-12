@@ -9,6 +9,7 @@ export function readLocationNotice(state: unknown) {
   return typeof value === "string" ? value : null;
 }
 
+// 기능 : read Location Notice Description 값을 읽습니다.
 export function readLocationNoticeDescription(state: unknown) {
   if (!state || typeof state !== "object" || Array.isArray(state)) {
     return null;

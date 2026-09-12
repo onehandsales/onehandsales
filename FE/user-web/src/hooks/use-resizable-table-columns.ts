@@ -32,6 +32,7 @@ type UseResizableTableColumnsOptions = {
   readonly storageKey: string;
 };
 
+// 기능 : Resizable Table Columns hook으로 상태와 동작을 제공합니다.
 export function useResizableTableColumns({
   allowHorizontalOverflow = false,
   columns,
@@ -64,6 +65,7 @@ export function useResizableTableColumns({
       return;
     }
 
+    // 기능 : update Container Width 정보를 수정합니다.
     const updateContainerWidth = () => {
       setContainerWidth(Math.floor(element.clientWidth));
     };
@@ -164,6 +166,7 @@ export function useResizableTableColumns({
       document.body.style.userSelect = "none";
       setResizingColumnId(columnId);
 
+      // 기능 : handle Mouse Move 이벤트를 처리합니다.
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const delta = getBoundedPairDelta(
           moveEvent.clientX - startX,
@@ -191,6 +194,7 @@ export function useResizableTableColumns({
         });
       };
 
+      // 기능 : cleanup Resize 기능을 수행합니다.
       const cleanupResize = () => {
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseup", cleanupResize);
@@ -228,6 +232,7 @@ export function useResizableTableColumns({
   };
 }
 
+// 기능 : get Default Widths 값을 조회합니다.
 function getDefaultWidths(columns: readonly ResizableTableColumn[]): WidthMap {
   return Object.fromEntries(
     columns.map((column) => [
@@ -237,6 +242,7 @@ function getDefaultWidths(columns: readonly ResizableTableColumn[]): WidthMap {
   );
 }
 
+// 기능 : read Stored Widths 값을 읽습니다.
 function readStoredWidths(
   storageKey: string,
   columns: readonly ResizableTableColumn[],
@@ -262,6 +268,7 @@ function readStoredWidths(
   }
 }
 
+// 기능 : write Stored Widths 값을 저장소에 기록합니다.
 function writeStoredWidths(storageKey: string, widths: WidthMap) {
   if (typeof window === "undefined") {
     return;
@@ -270,6 +277,7 @@ function writeStoredWidths(storageKey: string, widths: WidthMap) {
   window.localStorage.setItem(storageKey, JSON.stringify(widths));
 }
 
+// 기능 : remove Stored Widths 값을 제거합니다.
 function removeStoredWidths(storageKey: string) {
   if (typeof window === "undefined") {
     return;
@@ -278,6 +286,7 @@ function removeStoredWidths(storageKey: string) {
   window.localStorage.removeItem(storageKey);
 }
 
+// 기능 : normalize Widths 값을 내부 기준으로 정규화합니다.
 function normalizeWidths(
   source: WidthMap,
   columns: readonly ResizableTableColumn[],
@@ -295,6 +304,7 @@ function normalizeWidths(
   );
 }
 
+// 기능 : clamp Column Width 기능을 수행합니다.
 function clampColumnWidth(width: number, column: ResizableTableColumn) {
   return Math.round(
     Math.min(
@@ -304,6 +314,7 @@ function clampColumnWidth(width: number, column: ResizableTableColumn) {
   );
 }
 
+// 기능 : fit Widths To Container 기능을 수행합니다.
 function fitWidthsToContainer(
   source: WidthMap,
   columns: readonly ResizableTableColumn[],
@@ -335,6 +346,7 @@ function fitWidthsToContainer(
   );
 }
 
+// 기능 : shrink Widths To Target 기능을 수행합니다.
 function shrinkWidthsToTarget(
   widths: number[],
   columns: readonly ResizableTableColumn[],
@@ -379,6 +391,7 @@ function shrinkWidthsToTarget(
   }
 }
 
+// 기능 : grow Widths To Target 기능을 수행합니다.
 function growWidthsToTarget(
   widths: number[],
   columns: readonly ResizableTableColumn[],
@@ -423,6 +436,7 @@ function growWidthsToTarget(
   }
 }
 
+// 기능 : get Effective Minimum Widths 값을 조회합니다.
 function getEffectiveMinimumWidths(
   columns: readonly ResizableTableColumn[],
   targetWidth: number,
@@ -437,10 +451,12 @@ function getEffectiveMinimumWidths(
   return minimumWidths.map((width) => width * scale);
 }
 
+// 기능 : get Minimum Column Width Total 값을 조회합니다.
 function getMinimumColumnWidthTotal(columns: readonly ResizableTableColumn[]) {
   return sum(columns.map((column) => column.minWidth));
 }
 
+// 기능 : get Bounded Pair Delta 값을 조회합니다.
 function getBoundedPairDelta(
   delta: number,
   column: ResizableTableColumn,
@@ -460,6 +476,7 @@ function getBoundedPairDelta(
   return Math.min(Math.max(delta, minDelta), maxDelta);
 }
 
+// 기능 : widths Array To Map 기능을 수행합니다.
 function widthsArrayToMap(
   columns: readonly ResizableTableColumn[],
   widths: readonly number[],
@@ -472,6 +489,7 @@ function widthsArrayToMap(
   );
 }
 
+// 기능 : round Widths To Available Total 기능을 수행합니다.
 function roundWidthsToAvailableTotal(
   widths: readonly number[],
   availableWidth: number,
@@ -492,10 +510,12 @@ function roundWidthsToAvailableTotal(
   return roundedWidths;
 }
 
+// 기능 : sum 기능을 수행합니다.
 function sum(values: readonly number[]) {
   return values.reduce((total, value) => total + value, 0);
 }
 
+// 기능 : is Width Map 여부를 판별합니다.
 function isWidthMap(value: unknown): value is WidthMap {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;

@@ -10,6 +10,7 @@ type ProtectedRouteProps = {
   readonly children: ReactNode;
 };
 
+// 기능 : ProtectedRoute route 보호 또는 전환 화면을 렌더링합니다.
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isInitializing, isPending } = useAuthSession();
   const location = useLocation();

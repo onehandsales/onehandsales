@@ -36,10 +36,12 @@ type SetupUserWebApiMockOptions = {
   readonly store?: UserWebApiMockStore;
 };
 
+// 기능 : create User Web Api Mock Store 요청 또는 객체를 생성합니다.
 export function createUserWebApiMockStore(): UserWebApiMockStore {
   return {};
 }
 
+// 기능 : setup User Web Api Mocks 테스트 환경을 준비합니다.
 export async function setupUserWebApiMocks(
   page: Page,
   options: SetupUserWebApiMockOptions = {},
@@ -82,6 +84,7 @@ export async function setupUserWebApiMocks(
   });
 
   return {
+    // 기능 : protected Requests Without Authorization 기능을 수행합니다.
     protectedRequestsWithoutAuthorization() {
       return protectedRequests.filter((request) => request.authorization === null);
     },
@@ -89,6 +92,7 @@ export async function setupUserWebApiMocks(
   };
 }
 
+// 기능 : seed Authenticated Session 기능을 수행합니다.
 export async function seedAuthenticatedSession(page: Page) {
   await page.addInitScript(
     ({ accessToken, expiresAt }) => {
@@ -102,6 +106,7 @@ export async function seedAuthenticatedSession(page: Page) {
   );
 }
 
+// 기능 : handle Api Request 이벤트를 처리합니다.
 async function handleApiRequest(
   _store: UserWebApiMockStore,
   route: Route,
@@ -192,6 +197,7 @@ async function handleApiRequest(
   );
 }
 
+// 기능 : create Auth User 요청 또는 객체를 생성합니다.
 function createAuthUser(overrides: Partial<MutableRecord> = {}) {
   return {
     countryCode: "KR",
@@ -218,6 +224,7 @@ function createAuthUser(overrides: Partial<MutableRecord> = {}) {
   };
 }
 
+// 기능 : create Auth Token Response 요청 또는 객체를 생성합니다.
 function createAuthTokenResponse() {
   return {
     accessToken: E2E_ACCESS_TOKEN,
@@ -232,6 +239,7 @@ function createAuthTokenResponse() {
   };
 }
 
+// 기능 : create User Profile 요청 또는 객체를 생성합니다.
 function createUserProfile(overrides: Partial<MutableRecord> = {}) {
   return {
     ...createAuthUser(overrides),
@@ -249,20 +257,24 @@ function createUserProfile(overrides: Partial<MutableRecord> = {}) {
   };
 }
 
+// 기능 : read Json Body 값을 읽습니다.
 async function readJsonBody(route: Route): Promise<unknown> {
   const body = route.request().postData();
   if (!body) return {};
   return JSON.parse(body) as unknown;
 }
 
+// 기능 : record Field 기능을 수행합니다.
 function recordField(value: unknown): MutableRecord {
   return value && typeof value === "object" ? (value as MutableRecord) : {};
 }
 
+// 기능 : json 기능을 수행합니다.
 function json(body: unknown, status = 200): MockApiResponse {
   return { body, contentType: "application/json", status };
 }
 
+// 기능 : fulfill 기능을 수행합니다.
 async function fulfill(route: Route, response: MockApiResponse) {
   if (response.contentType === "application/json") {
     await fulfillJson(route, response.body ?? null, response.status ?? 200, response.headers);
@@ -280,6 +292,7 @@ async function fulfill(route: Route, response: MockApiResponse) {
   });
 }
 
+// 기능 : Playwright route에 JSON mock 응답을 반환합니다.
 async function fulfillJson(
   route: Route,
   body: unknown,
@@ -297,6 +310,7 @@ async function fulfillJson(
   });
 }
 
+// 기능 : cors Headers 기능을 수행합니다.
 function corsHeaders() {
   return {
     "access-control-allow-credentials": "true",
@@ -306,6 +320,7 @@ function corsHeaders() {
   };
 }
 
+// 기능 : is Public Api Request 여부를 판별합니다.
 function isPublicApiRequest(pathname: string) {
   return [
     "/api/auth/providers",
@@ -316,6 +331,7 @@ function isPublicApiRequest(pathname: string) {
   ].includes(pathname);
 }
 
+// 기능 : delay Api Response 기능을 수행합니다.
 async function delayApiResponse(
   delayMs: number | ApiDelayResolver | undefined,
   request: ApiRequestRecord,

@@ -66,6 +66,7 @@ export function FinalSection({ copy: copyOverride }: FinalSectionProps) {
   );
 }
 
+// 기능 : FinalSectionStyles 컴포넌트를 렌더링합니다.
 function FinalSectionStyles() {
   return (
     <style>

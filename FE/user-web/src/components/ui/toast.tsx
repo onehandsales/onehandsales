@@ -23,6 +23,7 @@ const variantIcons = {
   info: Info,
 } as const;
 
+// 기능 : Toast 컴포넌트를 렌더링합니다.
 export function Toast({
   variant = "info",
   message,

@@ -2,6 +2,7 @@ type OneHandLogoMarkProps = {
   readonly className?: string;
 };
 
+// 기능 : OneHandLogoMark 컴포넌트를 렌더링합니다.
 export function OneHandLogoMark({ className }: OneHandLogoMarkProps) {
   return (
     <img

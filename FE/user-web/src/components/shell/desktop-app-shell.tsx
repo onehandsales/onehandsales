@@ -18,6 +18,7 @@ type DesktopAppShellProps = {
   readonly noPadding?: boolean;
 };
 
+// 기능 : DesktopAppShell 컴포넌트를 렌더링합니다.
 export function DesktopAppShell({
   children,
   noPadding = false,
@@ -27,6 +28,7 @@ export function DesktopAppShell({
   const { logout } = useAuthSession();
   const page = PAGE_TITLES[pathname] ?? { title: "OneHand CRM" };
 
+  // 기능 : handle Logout 이벤트를 처리합니다.
   const handleLogout = async () => {
     await logout();
     navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));

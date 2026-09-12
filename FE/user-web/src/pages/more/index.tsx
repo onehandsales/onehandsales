@@ -17,6 +17,7 @@ type MenuRowProps = {
   readonly isLast?: boolean;
 };
 
+// 기능 : MenuRow 컴포넌트를 렌더링합니다.
 function MenuRow({ label, to, iconBg, iconColor, icon: Icon, isLast }: MenuRowProps) {
   return (
     <Link
@@ -52,6 +53,7 @@ type SectionHeaderProps = {
   readonly title: string;
 };
 
+// 기능 : SectionHeader 컴포넌트를 렌더링합니다.
 function SectionHeader({ title }: SectionHeaderProps) {
   return (
     <div

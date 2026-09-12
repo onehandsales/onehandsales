@@ -236,6 +236,7 @@ export function PublicTableOfContents({
 }: PublicTableOfContentsProps) {
   const splitIndex = Math.ceil(items.length / 2);
   const columns = [items.slice(0, splitIndex), items.slice(splitIndex)];
+  // 기능 : render Item markup을 생성합니다.
   const renderItem = (item: PublicTableOfContentsItem, index: number) => (
     <a
       className="rounded-[6px] px-2 py-1.5 hover:bg-white hover:text-[#111111]"

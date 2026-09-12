@@ -8,6 +8,7 @@ import { authQueryKeys } from "@/features/auth/api/auth-query-keys";
 import { useAuthSession } from "@/features/auth/auth-context";
 import type { UpdateUserProfileInput } from "@/features/auth/types/auth";
 
+// 기능 : My Profile hook으로 상태와 동작을 제공합니다.
 export function useMyProfile() {
   return useQuery({
     queryKey: authQueryKeys.profile(),
@@ -15,6 +16,7 @@ export function useMyProfile() {
   });
 }
 
+// 기능 : My Devices hook으로 상태와 동작을 제공합니다.
 export function useMyDevices() {
   return useQuery({
     queryKey: authQueryKeys.devices(),
@@ -22,6 +24,7 @@ export function useMyDevices() {
   });
 }
 
+// 기능 : Update My Profile Mutation hook으로 상태와 동작을 제공합니다.
 export function useUpdateMyProfileMutation() {
   const queryClient = useQueryClient();
   const { updateAuthUser } = useAuthSession();

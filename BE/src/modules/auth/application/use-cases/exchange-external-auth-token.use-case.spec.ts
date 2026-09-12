@@ -362,6 +362,7 @@ class FakeAuthRepository implements AuthRepository {
   }
 }
 
+// 기능 : make Auth User 테스트 fixture 값을 생성합니다.
 function makeAuthUser(overrides: Partial<AuthUserRecord> = {}): AuthUserRecord {
   return {
     id: "user-1",
@@ -384,6 +385,7 @@ function makeAuthUser(overrides: Partial<AuthUserRecord> = {}): AuthUserRecord {
   };
 }
 
+// 기능 : make Exchange Command 테스트 fixture 값을 생성합니다.
 function makeExchangeCommand(
   overrides: Partial<ExchangeExternalAuthTokenCommand> = {}
 ): ExchangeExternalAuthTokenCommand {

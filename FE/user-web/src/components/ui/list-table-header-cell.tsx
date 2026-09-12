@@ -21,6 +21,7 @@ export const LIST_TABLE_ROW_CLASS_NAME =
 export const LIST_TABLE_SKELETON_ROW_CLASS_NAME =
   "grid h-12 min-w-full w-max items-stretch border-b border-[#E5E7EB] bg-[#F8FAFC] [grid-template-columns:var(--list-table-grid-template)] [&>*]:flex [&>*]:h-full [&>*]:min-w-0 [&>*]:items-center [&>*]:border-r [&>*]:border-[#EEF0F3] [&>*]:px-3 [&>*:last-child]:border-r-0 [&>*>*]:min-w-0 md:[&>*]:px-4 xl:[&>*]:px-6";
 
+// 기능 : ListTableHeaderCell 컴포넌트를 렌더링합니다.
 export function ListTableHeaderCell({
   children,
   className,

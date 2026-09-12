@@ -1,3 +1,4 @@
+// 기능 : PlaceholderPage 화면을 렌더링합니다.
 export function PlaceholderPage({ title }: { title: string }) {
   return (
     <section className="mx-auto max-w-6xl px-5 py-8">

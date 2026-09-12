@@ -170,6 +170,7 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
 };
 
 // 기능: 공개 고객 유형별 허브 페이지를 렌더링합니다.
+// 기능 : SolutionsPage 화면을 렌더링합니다.
 export function SolutionsPage() {
   const { language } = usePublicSiteLanguage();
   const copy = solutionsCopyByLanguage[getPublicSiteCopyLanguage(language)];

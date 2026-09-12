@@ -333,6 +333,7 @@ export function AuthLandingPage({
   );
 }
 
+// 기능 : Landing Scroll Progress hook으로 상태와 동작을 제공합니다.
 function useLandingScrollProgress() {
   const [progress, setProgress] = useState(0);
 
@@ -340,6 +341,7 @@ function useLandingScrollProgress() {
     document.documentElement.classList.add("landing-scrollbar-hidden");
     document.body.classList.add("landing-scrollbar-hidden");
 
+    // 기능 : update Progress 정보를 수정합니다.
     const updateProgress = () => {
       const scrollableHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -366,8 +368,10 @@ function useLandingScrollProgress() {
   return progress;
 }
 
+// 기능 : Landing Viewport Height Variable hook으로 상태와 동작을 제공합니다.
 function useLandingViewportHeightVariable() {
   useEffect(() => {
+    // 기능 : update Viewport Height 정보를 수정합니다.
     const updateViewportHeight = () => {
       const userAgent = window.navigator.userAgent;
       const viewportHeightCandidates = [
@@ -418,6 +422,7 @@ function useLandingViewportHeightVariable() {
   }, []);
 }
 
+// 기능 : LandingScrollStyles 컴포넌트를 렌더링합니다.
 function LandingScrollStyles() {
   return (
     <style>
@@ -602,6 +607,7 @@ function LandingScrollStyles() {
   );
 }
 
+// 기능 : LandingScrollProgressBar 컴포넌트를 렌더링합니다.
 function LandingScrollProgressBar({ progress }: { readonly progress: number }) {
   return (
     <div
@@ -618,6 +624,7 @@ function LandingScrollProgressBar({ progress }: { readonly progress: number }) {
   );
 }
 
+// 기능 : HeroSection section UI를 렌더링합니다.
 function HeroSection({ copy }: { readonly copy: LandingCopy }) {
   const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
   const rotatingItemsCount = copy.hero.rotatingItems.length;
@@ -684,6 +691,7 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : RealMomentSection section UI를 렌더링합니다.
 function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section
@@ -715,6 +723,7 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : FlowMotionSection section UI를 렌더링합니다.
 function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
   const compactFlowItems = [
     ...copy.flow.inputs.map((label, index) => ({
@@ -792,6 +801,7 @@ function FlowMotionSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : FlowCompactItem 컴포넌트를 렌더링합니다.
 function FlowCompactItem({
   icon: Icon,
   index,
@@ -829,6 +839,7 @@ function FlowCompactItem({
   );
 }
 
+// 기능 : FlowInputCluster 컴포넌트를 렌더링합니다.
 function FlowInputCluster({ copy }: { readonly copy: LandingCopy }) {
   return (
     <div className="landing-flow-input-cluster grid w-full grid-cols-1 gap-3">
@@ -853,6 +864,7 @@ function FlowInputCluster({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : FlowArrow 컴포넌트를 렌더링합니다.
 function FlowArrow({ delayClassName }: { readonly delayClassName: string }) {
   return (
     <span
@@ -866,6 +878,7 @@ function FlowArrow({ delayClassName }: { readonly delayClassName: string }) {
   );
 }
 
+// 기능 : FlowCustomerCard 컴포넌트를 렌더링합니다.
 function FlowCustomerCard({ copy }: { readonly copy: LandingCopy }) {
   return (
     <div className="landing-flow-float landing-flow-delay-1 rounded-[8px] border border-[#D3D1CB] bg-white p-5 text-left shadow-[0_18px_55px_rgba(17,24,39,0.08)]">
@@ -894,6 +907,7 @@ function FlowCustomerCard({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : FlowOutcomeCard 컴포넌트를 렌더링합니다.
 function FlowOutcomeCard({
   delayClassName,
   icon: Icon,
@@ -937,6 +951,7 @@ function FlowOutcomeCard({
   );
 }
 
+// 기능 : PersonaSection section UI를 렌더링합니다.
 function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>
@@ -977,6 +992,7 @@ function PersonaSection({ copy }: { readonly copy: LandingCopy }) {
   );
 }
 
+// 기능 : TrustSection section UI를 렌더링합니다.
 function TrustSection({ copy }: { readonly copy: LandingCopy }) {
   return (
     <section className={`${landingCenteredSectionClassName} bg-white`}>

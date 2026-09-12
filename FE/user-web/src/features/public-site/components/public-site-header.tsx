@@ -133,6 +133,7 @@ function HeaderMobileMenuPanel({
   onLogin,
   toPublicPath,
 }: HeaderMobileMenuPanelProps) {
+  // 기능 : on Login Click 기능을 수행합니다.
   const onLoginClick = () => {
     onClose();
     onLogin();
@@ -253,6 +254,7 @@ function HeaderMobileMenuPanel({
   );
 }
 
+// 기능 : HeaderMobileMenuSection section UI를 렌더링합니다.
 function HeaderMobileMenuSection({
   columnRoutes,
   columns,
@@ -341,11 +343,13 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
 
     const previousOverflow = document.body.style.overflow;
     const desktopMediaQuery = window.matchMedia("(min-width: 1280px)");
+    // 기능 : close On Escape 창 또는 상태를 닫습니다.
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsMobileMenuOpen(false);
       }
     };
+    // 기능 : close On Desktop 창 또는 상태를 닫습니다.
     const closeOnDesktop = () => {
       if (desktopMediaQuery.matches) {
         setIsMobileMenuOpen(false);

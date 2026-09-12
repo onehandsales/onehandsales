@@ -610,6 +610,7 @@ const solutionDetailCopyByLanguage: Record<
   },
 };
 
+// 기능 : SolutionDetailPage 화면을 렌더링합니다.
 export function SolutionDetailPage({ solutionId }: SolutionDetailPageProps) {
   const { language } = usePublicSiteLanguage();
   const copy =

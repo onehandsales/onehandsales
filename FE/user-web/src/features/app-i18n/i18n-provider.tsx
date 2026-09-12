@@ -84,6 +84,7 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
     return;
   }
 
+  // 기능 : translate Text Node 기능을 수행합니다.
   const translateTextNode = (node: Text) => {
     const parent = node.parentElement;
 
@@ -104,6 +105,7 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
     }
   };
 
+  // 기능 : translate Element Attributes 기능을 수행합니다.
   const translateElementAttributes = (element: Element) => {
     let records = legacyAttributeRecords.get(element);
 

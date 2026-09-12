@@ -81,6 +81,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
       return;
     }
 
+    // 기능 : on Mouse Down 기능을 수행합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -101,6 +102,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
       return;
     }
 
+    // 기능 : on Key Down 기능을 수행합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -113,6 +115,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, selectedLabel]);
 
+  // 기능 : handle Create 이벤트를 처리합니다.
   const handleCreate = async (options: { readonly promptWhenEmpty?: boolean } = {}) => {
     const name = query;
 
@@ -142,6 +145,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     }
   };
 
+  // 기능 : handle Delete 이벤트를 처리합니다.
   const handleDelete = async (item: TItem) => {
     setDeleteErrors((prev) => ({ ...prev, [item.id]: "" }));
 
@@ -321,6 +325,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   );
 }
 
+// 기능 : normalize Text 값을 내부 기준으로 정규화합니다.
 function normalizeText(value: string) {
   return value.trim().toLowerCase();
 }

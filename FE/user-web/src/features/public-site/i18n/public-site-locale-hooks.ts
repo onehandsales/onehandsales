@@ -10,6 +10,7 @@ import {
   type PublicSiteLanguage,
 } from "@/features/public-site/i18n/public-site-language";
 
+// 기능 : Public Site Path hook으로 상태와 동작을 제공합니다.
 export function usePublicSitePath() {
   const { language } = usePublicSiteLanguage();
 
@@ -20,6 +21,7 @@ export function usePublicSitePath() {
   );
 }
 
+// 기능 : Public Site Locale Switcher hook으로 상태와 동작을 제공합니다.
 export function usePublicSiteLocaleSwitcher() {
   const location = useLocation();
   const navigate = useNavigate();

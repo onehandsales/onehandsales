@@ -23,6 +23,7 @@ const DESKTOP_SEARCH_MIN_WIDTH = 150;
 const DESKTOP_SEARCH_MAX_WIDTH = 170;
 const DESKTOP_SEARCH_VIEWPORT_RATIO = 0.2;
 
+// 기능 : CollapsibleDesktopSearch 컴포넌트를 렌더링합니다.
 export function CollapsibleDesktopSearch({
   appliedValue,
   maxExpandedWidth,
@@ -63,6 +64,7 @@ export function CollapsibleDesktopSearch({
   }, [appliedValue, value]);
 
   useEffect(() => {
+    // 기능 : sync Expanded Width 기능을 수행합니다.
     const syncExpandedWidth = () => {
       setExpandedWidth(getDesktopSearchExpandedWidth());
     };
@@ -84,6 +86,7 @@ export function CollapsibleDesktopSearch({
     setIsOpen(false);
   }, [resetSignal]);
 
+  // 기능 : submit Search 제출 동작을 수행합니다.
   const submitSearch = () => {
     const nextValue = value.trim();
 
@@ -93,6 +96,7 @@ export function CollapsibleDesktopSearch({
     }
   };
 
+  // 기능 : on Form Submit 기능을 수행합니다.
   const onFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     submitSearch();
@@ -159,6 +163,7 @@ export function CollapsibleDesktopSearch({
   );
 }
 
+// 기능 : get Desktop Search Expanded Width 값을 조회합니다.
 function getDesktopSearchExpandedWidth() {
   if (typeof window === "undefined") {
     return DESKTOP_SEARCH_MAX_WIDTH;

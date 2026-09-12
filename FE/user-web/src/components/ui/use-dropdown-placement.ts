@@ -24,6 +24,7 @@ export function useDropdownPlacement({
       return;
     }
 
+    // 기능 : update Placement 정보를 수정합니다.
     const updatePlacement = () => {
       const trigger = triggerRef.current;
 

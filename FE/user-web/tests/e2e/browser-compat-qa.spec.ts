@@ -81,6 +81,7 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
   });
 });
 
+// 기능 : collect Runtime Errors 기능을 수행합니다.
 function collectRuntimeErrors(page: Page) {
   const pageErrors: string[] = [];
   const consoleErrors: string[] = [];
@@ -93,6 +94,7 @@ function collectRuntimeErrors(page: Page) {
   });
 
   return {
+    // 기능 : assert Clean 기능을 수행합니다.
     assertClean() {
       expect({ consoleErrors, pageErrors }).toEqual({ consoleErrors: [], pageErrors: [] });
     },

@@ -49,6 +49,7 @@ const modalCloseButtonClassName =
 const modalPanelClassName =
   "min-h-[408px] w-[380px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)] rounded-[16px] border-0 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_2px_8px_rgba(15,23,42,0.08)]";
 
+// 기능 : AuthLoginModal modal UI를 렌더링합니다.
 export function AuthLoginModal({
   authError,
   callbackMessage,

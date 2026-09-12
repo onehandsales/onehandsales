@@ -256,6 +256,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
   },
 };
 
+// 기능 : get Question Icon 값을 조회합니다.
 function getQuestionIcon(sectionIndex: number, questionIndex: number) {
   const flatIndex = sectionIndex * 3 + questionIndex;
 

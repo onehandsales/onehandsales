@@ -34,6 +34,7 @@ test.describe("G04 User Web security boundary QA", () => {
   });
 });
 
+// 기능 : store Session 기능을 수행합니다.
 async function storeSession(page: Page) {
   await page.evaluate(() => {
     window.localStorage.setItem(
@@ -47,6 +48,7 @@ async function storeSession(page: Page) {
   });
 }
 
+// 기능 : clear Stored Session 상태를 초기화합니다.
 async function clearStoredSession(page: Page) {
   await page.evaluate(() => {
     window.localStorage.removeItem("onehand.userWeb.accessToken");
@@ -54,6 +56,7 @@ async function clearStoredSession(page: Page) {
   });
 }
 
+// 기능 : collect Runtime Errors 기능을 수행합니다.
 function collectRuntimeErrors(page: Page) {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
@@ -77,6 +80,7 @@ function collectRuntimeErrors(page: Page) {
   });
 
   return {
+    // 기능 : assert Clean 기능을 수행합니다.
     assertClean() {
       expect({ consoleErrors, pageErrors }).toEqual({
         consoleErrors: [],

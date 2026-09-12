@@ -51,10 +51,12 @@ test.describe("G02 mobile browser release QA", () => {
   });
 });
 
+// 기능 : bottom Nav 기능을 수행합니다.
 function bottomNav(page: Page) {
   return page.locator("nav").last();
 }
 
+// 기능 : expect Mobile Shell 기대 상태를 검증합니다.
 async function expectMobileShell(page: Page, hasMobileHeader: boolean) {
   await expect(bottomNav(page)).toBeVisible();
 
@@ -63,6 +65,7 @@ async function expectMobileShell(page: Page, hasMobileHeader: boolean) {
   }
 }
 
+// 기능 : expect No Document Horizontal Overflow 기대 상태를 검증합니다.
 async function expectNoDocumentHorizontalOverflow(page: Page, label: string) {
   const metrics = await page.evaluate(() => ({
     documentScrollWidth: document.documentElement.scrollWidth,
@@ -72,6 +75,7 @@ async function expectNoDocumentHorizontalOverflow(page: Page, label: string) {
   expect(metrics.documentScrollWidth, label).toBeLessThanOrEqual(metrics.viewportWidth + 2);
 }
 
+// 기능 : collect Runtime Errors 기능을 수행합니다.
 function collectRuntimeErrors(page: Page) {
   const pageErrors: string[] = [];
   const consoleErrors: string[] = [];
@@ -84,6 +88,7 @@ function collectRuntimeErrors(page: Page) {
   });
 
   return {
+    // 기능 : assert Clean 기능을 수행합니다.
     assertClean() {
       expect({ consoleErrors, pageErrors }).toEqual({ consoleErrors: [], pageErrors: [] });
     },

@@ -97,6 +97,7 @@ export class AuthController {
     return result.response;
   }
 
+  // 기능 : logout 기능을 수행합니다.
   @UseGuards(AuthGuard)
   // API : 인증, 현재 앱 세션 로그아웃
   @Post("logout")

@@ -152,6 +152,7 @@ const providerLogoStyles: Record<AuthProviderId, string> = {
   apple: "h-[30px] w-[30px]",
 };
 
+// 기능 : 로그인/회원가입 provider 선택 화면을 렌더링합니다.
 export function AuthLoginPage({
   authError,
   enabledProviders,
@@ -316,6 +317,7 @@ export function AuthLoginPage({
   );
 }
 
+// 기능 : 로그인 화면 언어 선택 메뉴를 렌더링합니다.
 function LoginLanguageSelect({
   copy,
   language,
@@ -334,10 +336,12 @@ function LoginLanguageSelect({
   );
 
   useEffect(() => {
+    // 기능 : 언어 선택 메뉴를 닫습니다.
     const closeLanguageMenu = () => {
       detailsRef.current?.removeAttribute("open");
     };
 
+    // 기능 : 언어 선택 메뉴 외부 클릭을 처리합니다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
 
@@ -349,6 +353,7 @@ function LoginLanguageSelect({
       }
     };
 
+    // 기능 : Escape 키로 언어 선택 메뉴를 닫습니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeLanguageMenu();

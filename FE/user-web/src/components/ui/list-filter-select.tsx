@@ -70,6 +70,7 @@ export function ListFilterSelect<TValue extends string>({
       return;
     }
 
+    // 기능 : update Popover Position 정보를 수정합니다.
     const updatePopoverPosition = () => {
       if (!triggerRef.current) {
         return;
@@ -77,6 +78,7 @@ export function ListFilterSelect<TValue extends string>({
 
       setPopoverPosition(getPopoverPosition(triggerRef.current));
     };
+    // 기능 : on Mouse Down 기능을 수행합니다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -85,6 +87,7 @@ export function ListFilterSelect<TValue extends string>({
         setIsOpen(false);
       }
     };
+    // 기능 : on Key Down 기능을 수행합니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -114,6 +117,7 @@ export function ListFilterSelect<TValue extends string>({
     };
   }, [isOpen, searchable]);
 
+  // 기능 : open Options 창 또는 상태를 엽니다.
   const openOptions = (nextSearch: string) => {
     if (disabled) {
       return;
@@ -128,6 +132,7 @@ export function ListFilterSelect<TValue extends string>({
     setIsOpen(true);
   };
 
+  // 기능 : select Option 기능을 수행합니다.
   const selectOption = (nextValue: TValue) => {
     onChange(nextValue);
     setSearch("");
@@ -135,6 +140,7 @@ export function ListFilterSelect<TValue extends string>({
     triggerRef.current?.focus();
   };
 
+  // 기능 : reset Option 기능을 수행합니다.
   const resetOption = () => {
     const defaultOption = options[0];
 
@@ -269,6 +275,7 @@ export function ListFilterSelect<TValue extends string>({
   );
 }
 
+// 기능 : get Popover Position 값을 조회합니다.
 function getPopoverPosition(trigger: HTMLButtonElement): PopoverPosition {
   const rect = trigger.getBoundingClientRect();
   const viewportWidth = window.innerWidth;
@@ -284,6 +291,7 @@ function getPopoverPosition(trigger: HTMLButtonElement): PopoverPosition {
   };
 }
 
+// 기능 : normalize List Filter Text 값을 내부 기준으로 정규화합니다.
 function normalizeListFilterText(value: string) {
   return value.toLowerCase().replace(/\s+/g, "");
 }

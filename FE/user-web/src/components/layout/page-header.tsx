@@ -27,6 +27,7 @@ type PageHeaderProps = {
   readonly className?: string;
 };
 
+// 기능 : PageHeader 컴포넌트를 렌더링합니다.
 export function PageHeader({
   breadcrumbs,
   actions = [],
@@ -121,6 +122,7 @@ export function PageHeader({
 }
 
 // ── 툴팁 아이콘 버튼 ────────────────────────────────────────
+// 기능 : TooltipIconButton 버튼 UI를 렌더링합니다.
 function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
   const Icon = action.icon;
 

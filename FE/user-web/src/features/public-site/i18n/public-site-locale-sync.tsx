@@ -7,6 +7,7 @@ type PublicSiteLocaleSyncProps = {
   readonly children: ReactNode;
 };
 
+// 기능 : PublicSiteLocaleSync 컴포넌트를 렌더링합니다.
 export function PublicSiteLocaleSync({
   children,
 }: PublicSiteLocaleSyncProps) {

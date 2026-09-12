@@ -7,6 +7,7 @@ type SidebarNavProps = {
   readonly className?: string;
 };
 
+// 기능 : SidebarNav 컴포넌트를 렌더링합니다.
 export function SidebarNav({ className }: SidebarNavProps) {
   const { t } = useAppI18n();
   const [isMainGroupOpen, setMainGroupOpen] = useState(true);

@@ -6,6 +6,7 @@ type MobileAppHeaderProps = {
   readonly logoColor?: string;
 };
 
+// 기능 : MobileAppHeader 컴포넌트를 렌더링합니다.
 export function MobileAppHeader({
   logoColor = "#4880EE",
 }: MobileAppHeaderProps) {

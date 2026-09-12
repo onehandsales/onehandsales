@@ -47,6 +47,7 @@ const providerLogoStyles: Record<AuthProviderId, string> = {
   apple: "h-[30px] w-[30px]",
 };
 
+// 기능 : AuthSocialLoginModal modal UI를 렌더링합니다.
 export function AuthSocialLoginModal({
   open,
   onOpenChange,
@@ -116,6 +117,7 @@ export function AuthSocialLoginModal({
     }
   }, [isPending]);
 
+  // 기능 : on Provider Login 기능을 수행합니다.
   const onProviderLogin = (provider: AuthProviderId) => {
     setPendingProvider(provider);
     void startProviderLogin(provider).catch(() => {
