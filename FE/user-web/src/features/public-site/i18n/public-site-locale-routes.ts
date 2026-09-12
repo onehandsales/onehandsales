@@ -130,9 +130,9 @@ export function getPublicSiteLanguageFromPathname(
 
 // 기능 : 공개 사이트 pathname에서 locale prefix를 제거합니다.
 export function stripPublicSiteLocaleFromPathname(pathname: string) {
-  // 1. 이후 처리에 사용할 normalizedPathname을 계산한다.
+  // 1. 이후 단계에서 사용할 normalizedPathname 값을 준비한다.
   const normalizedPathname = normalizePathname(pathname);
-  // 2. 이후 처리에 사용할 [, firstSegment, ...restSegments]을 계산한다.
+  // 2. 이후 단계에서 사용할 배열 구조분해 값을 준비한다.
   const [, firstSegment, ...restSegments] = normalizedPathname.split("/");
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -154,9 +154,9 @@ export function toPublicSitePath(
   language: PublicSiteLanguage,
   pathname: PublicSiteLocalizedPath | string = "/"
 ) {
-  // 1. 이후 처리에 사용할 suffix을 계산한다.
+  // 1. 이후 단계에서 사용할 suffix 값을 준비한다.
   const suffix = getPathSuffix(pathname);
-  // 2. 이후 처리에 사용할 normalizedPathname을 계산한다.
+  // 2. 이후 단계에서 사용할 normalizedPathname 값을 준비한다.
   const normalizedPathname = normalizePathname(pathname);
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -164,10 +164,10 @@ export function toPublicSitePath(
     return `${normalizedPathname}${suffix}`;
   }
 
-  // 4. 이후 처리에 사용할 slug을 계산한다.
+  // 4. 이후 단계에서 사용할 slug 값을 준비한다.
   const slug = getPublicSiteLocaleSlug(language);
 
-  // 5. 이후 처리에 사용할 localizedPath을 계산한다.
+  // 5. 이후 단계에서 사용할 localizedPath 값을 준비한다.
   const localizedPath = normalizedPathname === "/"
     ? `/${slug}`
     : `/${slug}${normalizedPathname}`;
@@ -247,7 +247,7 @@ function getBrowserPublicSiteLanguage(): PublicSiteLanguage | null {
     return null;
   }
 
-  // 2. 이후 처리에 사용할 browserLanguage을 계산한다.
+  // 2. 이후 단계에서 사용할 browserLanguage 값을 준비한다.
   const browserLanguage = window.navigator.language.toLowerCase();
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -266,11 +266,11 @@ function getBrowserPublicSiteLanguage(): PublicSiteLanguage | null {
 
 // 기능 : 경로 비교를 위해 pathname의 query/hash와 trailing slash를 정리합니다.
 function normalizePathname(pathname: string) {
-  // 1. 이후 처리에 사용할 pathOnly을 계산한다.
+  // 1. 이후 단계에서 사용할 pathOnly 값을 준비한다.
   const pathOnly = pathname.split(/[?#]/)[0] ?? "/";
-  // 2. 이후 처리에 사용할 withLeadingSlash을 계산한다.
+  // 2. 이후 단계에서 사용할 withLeadingSlash 값을 준비한다.
   const withLeadingSlash = pathOnly.startsWith("/") ? pathOnly : `/${pathOnly}`;
-  // 3. 이후 처리에 사용할 withoutTrailingSlash을 계산한다.
+  // 3. 이후 단계에서 사용할 withoutTrailingSlash 값을 준비한다.
   const withoutTrailingSlash =
     withLeadingSlash.length > 1
       ? withLeadingSlash.replace(/\/+$/, "")

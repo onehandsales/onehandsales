@@ -256,7 +256,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
   },
 };
 
-// 기능 : get Question Icon 값을 조회합니다.
+// 기능 : 질문 아이콘을 조회합니다.
 function getQuestionIcon(sectionIndex: number, questionIndex: number) {
   const flatIndex = sectionIndex * 3 + questionIndex;
 
@@ -265,11 +265,11 @@ function getQuestionIcon(sectionIndex: number, questionIndex: number) {
 
 // 기능 : 공개 FAQ 페이지를 카테고리별 질문 목록으로 렌더링합니다.
 export function FaqPage() {
-  // 1. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { language } 값을 준비한다.
   const { language } = usePublicSiteLanguage();
-  // 2. 이후 처리에 사용할 copy을 계산한다.
+  // 2. 이후 단계에서 사용할 copy 값을 준비한다.
   const copy = faqCopyByLanguage[getPublicSiteCopyLanguage(language)];
-  // 3. 이후 처리에 사용할 tocItems을 계산한다.
+  // 3. 이후 단계에서 사용할 tocItems 값을 준비한다.
   const tocItems = copy.sections.map((section) => ({
     id: section.id,
     title: section.title,

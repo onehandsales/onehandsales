@@ -277,11 +277,11 @@ const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
 
 // 기능 : 공개 제품 소개 페이지를 렌더링합니다.
 export function ProductPage() {
-  // 1. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { language } 값을 준비한다.
   const { language } = usePublicSiteLanguage();
-  // 2. 이후 처리에 사용할 copy을 계산한다.
+  // 2. 이후 단계에서 사용할 copy 값을 준비한다.
   const copy = productCopyByLanguage[getPublicSiteCopyLanguage(language)];
-  // 3. 이후 처리에 사용할 tocItems을 계산한다.
+  // 3. 이후 단계에서 사용할 tocItems 값을 준비한다.
   const tocItems = copy.sections.map((section) => ({
     id: section.id,
     title: section.title,

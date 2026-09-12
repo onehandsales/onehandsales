@@ -68,22 +68,22 @@ export function getAuthProviderContinueLabel({
   readonly provider: AuthProviderId;
   readonly providerLabel: string;
 }) {
+  // 1. 이후 단계에서 사용할 configuredLabel 값을 준비한다.
   const configuredLabel =
     authProviderModalCopy[getPublicSiteCopyLanguage(language)].providerLabels[
-      // 1. 이후 처리에 사용할 configuredLabel을 계산한다.
       provider
     ];
 
+  // 2. 설정된 provider 문구가 있으면 그대로 반환한다.
   if (configuredLabel) {
     return configuredLabel;
-  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   }
 
+  // 3. 한국어 화면이면 한국어 기본 provider 문구를 반환한다.
   if (language === "ko") {
     return `${providerLabel}로 계속하기`;
-  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   }
 
+  // 4. 기본 영어 provider 문구를 반환한다.
   return `Continue with ${providerLabel}`;
 }
-// 4. 계산된 결과를 호출자에게 반환한다.

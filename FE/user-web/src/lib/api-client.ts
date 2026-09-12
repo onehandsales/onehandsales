@@ -34,15 +34,15 @@ export class ApiClientError extends Error {
 
   // 기능 : 클래스 실행에 필요한 의존성과 초기 상태를 준비합니다.
   constructor(error: ApiErrorShape) {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     super(error.message);
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     this.name = "ApiClientError";
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     this.statusCode = error.statusCode;
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     this.code = error.code;
-    // 5. 현재 단계에서 필요한 side effect를 실행한다.
+    // 5. 현재 단계에서 필요한 동작을 실행한다.
     this.raw = error.raw;
   }
 
@@ -142,7 +142,7 @@ export async function apiBlobClient(
   return handleBlobResponse(response);
 }
 
-// 기능 : get Api Error Message 값을 조회합니다.
+// 기능 : API 오류 메시지를 조회합니다.
 export function getApiErrorMessage(error: unknown): string {
   if (error instanceof ApiClientError) {
     if (error.statusCode === 401) {
@@ -183,9 +183,9 @@ export function isApiErrorRetryable(error: unknown): boolean {
 
 // 기능 : request 기능을 수행합니다.
 async function request(path: string, options: ApiClientOptions) {
-  // 1. 이후 처리에 사용할 headers을 계산한다.
+  // 1. 이후 단계에서 사용할 headers 값을 준비한다.
   const headers = new Headers(options.headers);
-  // 2. 이후 처리에 사용할 body을 계산한다.
+  // 2. 이후 단계에서 사용할 body 값을 준비한다.
   const body = getRequestBody(options.body);
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -193,7 +193,7 @@ async function request(path: string, options: ApiClientOptions) {
     headers.set("Content-Type", "application/json");
   }
 
-  // 4. 이후 처리에 사용할 accessToken을 계산한다.
+  // 4. 이후 단계에서 사용할 accessToken 값을 준비한다.
   const accessToken = options.accessToken ?? appAccessToken;
 
   // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -258,7 +258,7 @@ function buildUrl(path: string) {
   return `${baseUrl}${normalizedPath}`;
 }
 
-// 기능 : get Request Body 값을 조회합니다.
+// 기능 : 요청 본문을 조회합니다.
 function getRequestBody(body: BodyInit | JsonRequestBody | null | undefined) {
   if (body === undefined || body === null) {
     return { value: body, shouldSetJsonContentType: false };
@@ -304,15 +304,15 @@ async function readResponseBody(response: Response): Promise<unknown> {
 
 // 기능 : normalize Error 값을 내부 기준으로 정규화합니다.
 function normalizeError(response: Response, raw: unknown): ApiErrorShape {
-  // 1. 이후 처리에 사용할 nestedError을 계산한다.
+  // 1. 이후 단계에서 사용할 nestedError 값을 준비한다.
   const nestedError = getNestedError(raw);
-  // 2. 이후 처리에 사용할 code을 계산한다.
+  // 2. 이후 단계에서 사용할 code 값을 준비한다.
   const code =
     getStringField(raw, "error") ??
     getStringField(nestedError, "error") ??
     response.statusText ??
     "ApiError";
-  // 3. 이후 처리에 사용할 message을 계산한다.
+  // 3. 이후 단계에서 사용할 message 값을 준비한다.
   const message =
     getStringField(raw, "message") ??
     getStringField(nestedError, "message") ??
@@ -334,7 +334,7 @@ function parseContentDispositionFileName(value: string | null) {
     return null;
   }
 
-  // 2. 이후 처리에 사용할 encodedFileName을 계산한다.
+  // 2. 이후 단계에서 사용할 encodedFileName 값을 준비한다.
   const encodedFileName = value.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -346,7 +346,7 @@ function parseContentDispositionFileName(value: string | null) {
   return value.match(/filename="?([^";]+)"?/i)?.[1] ?? null;
 }
 
-// 기능 : get Nested Error 값을 조회합니다.
+// 기능 : 중첩된 오류 정보를 조회합니다.
 function getNestedError(value: unknown): unknown {
   if (!isRecord(value)) {
     return null;
@@ -355,14 +355,14 @@ function getNestedError(value: unknown): unknown {
   return value.error;
 }
 
-// 기능 : get String Field 값을 조회합니다.
+// 기능 : 문자열 필드 값을 조회합니다.
 function getStringField(value: unknown, field: string): string | null {
   // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!isRecord(value)) {
     return null;
   }
 
-  // 2. 이후 처리에 사용할 fieldValue을 계산한다.
+  // 2. 이후 단계에서 사용할 fieldValue 값을 준비한다.
   const fieldValue = value[field];
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -379,7 +379,7 @@ function getStringField(value: unknown, field: string): string | null {
   return null;
 }
 
-// 기능 : get Boolean Field 값을 조회합니다.
+// 기능 : 불리언 필드 값을 조회합니다.
 function getBooleanField(value: unknown, field: string): boolean | null {
   if (!isRecord(value)) {
     return null;

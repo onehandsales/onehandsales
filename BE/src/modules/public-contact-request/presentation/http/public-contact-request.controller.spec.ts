@@ -38,14 +38,14 @@ function createServiceFake(): jest.Mocked<PublicContactRequestApplicationService
 
 // 기능 : PublicContactRequestController의 공개 HTTP 계약을 검증합니다.
 describe("PublicContactRequestController", () => {
-  // 1. 이후 처리에 사용할 app을 계산한다.
+  // 1. 이후 단계에서 사용할 app 값을 준비한다.
   let app: INestApplication;
-  // 2. 이후 처리에 사용할 service을 계산한다.
+  // 2. 이후 단계에서 사용할 service 값을 준비한다.
   let service: jest.Mocked<PublicContactRequestApplicationServiceFake>;
 
   // 3. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     service = createServiceFake();
 
     // 2. 비동기 결과를 받아 moduleRef에 저장한다.
@@ -59,11 +59,11 @@ describe("PublicContactRequestController", () => {
       ],
     }).compile();
 
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     app = moduleRef.createNestApplication();
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     app.use(attachRequestId);
-    // 5. 현재 단계에서 필요한 side effect를 실행한다.
+    // 5. 현재 단계에서 필요한 동작을 실행한다.
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -80,7 +80,7 @@ describe("PublicContactRequestController", () => {
     await app.close();
   });
 
-  // 5. 현재 단계에서 필요한 side effect를 실행한다.
+  // 5. 테스트 시나리오를 실행한다.
   it("does not use AuthGuard for public contact request endpoints", () => {
     const guards =
       Reflect.getMetadata(GUARDS_METADATA, PublicContactRequestController) ?? [];

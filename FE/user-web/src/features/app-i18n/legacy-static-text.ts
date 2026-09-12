@@ -218,7 +218,7 @@ function normalizeLegacyText(value: string) {
 
 // 기능 : 한국어 앱 정적 문구를 locale에 맞게 변환합니다.
 export function translateLegacyAppStaticText(value: string, locale: AppLocale) {
-  // 1. 이후 처리에 사용할 normalized을 계산한다.
+  // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
   const normalized = normalizeLegacyText(value);
 
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -226,7 +226,7 @@ export function translateLegacyAppStaticText(value: string, locale: AppLocale) {
     return value;
   }
 
-  // 3. 이후 처리에 사용할 exact을 계산한다.
+  // 3. 이후 단계에서 사용할 exact 값을 준비한다.
   const exact = LEGACY_KO_TO_EN[normalized];
 
   // 4. 조건을 확인해 필요한 분기 처리를 수행한다.

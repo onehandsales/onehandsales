@@ -15,7 +15,7 @@ export class MeController {
   // 기능 : 사용자 내 정보 조회 유스케이스를 주입받습니다.
   constructor(private readonly getMeUseCase: GetMeUseCase) {}
 
-  // 기능 : get Me 값을 조회합니다.
+  // 기능 : 내 사용자 정보를 조회합니다.
   @UseGuards(AuthGuard)
   // API : 사용자, 현재 사용자 조회
   @Get()
@@ -31,7 +31,7 @@ export class AdminMeController {
   // 기능 : 관리자 내 정보 조회 유스케이스를 주입받습니다.
   constructor(private readonly getMeUseCase: GetMeUseCase) {}
 
-  // 기능 : get Admin Me 값을 조회합니다.
+  // 기능 : 관리자 내 정보를 조회합니다.
   @UseGuards(AuthGuard, AdminGuard)
   // API : 관리자, 현재 관리자 조회
   @Get()

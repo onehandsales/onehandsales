@@ -38,34 +38,34 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
   readonly widthClassName: string;
   readonly onSelect: (id: string) => void;
 }) {
-  // 1. 화면 상태와 동작에 필요한 [isOpen, setIsOpen] 값을 준비한다.
+  // 1. 처리 흐름에 필요한 [isOpen, setIsOpen] 값을 준비한다.
   const [isOpen, setIsOpen] = useState(false);
-  // 2. 화면 상태와 동작에 필요한 [search, setSearch] 값을 준비한다.
+  // 2. 처리 흐름에 필요한 [search, setSearch] 값을 준비한다.
   const [search, setSearch] = useState("");
-  // 3. 화면 상태와 동작에 필요한 [popoverPosition, setPopoverPosition] 값을 준비한다.
+  // 3. 처리 흐름에 필요한 [popoverPosition, setPopoverPosition] 값을 준비한다.
   const [popoverPosition, setPopoverPosition] =
     useState<SummaryTaxonomyPopoverPosition | null>(null);
-  // 4. 화면 상태와 동작에 필요한 wrapperRef 값을 준비한다.
+  // 4. 처리 흐름에 필요한 wrapperRef 값을 준비한다.
   const wrapperRef = useRef<HTMLDivElement>(null);
-  // 5. 화면 상태와 동작에 필요한 inputRef 값을 준비한다.
+  // 5. 처리 흐름에 필요한 inputRef 값을 준비한다.
   const inputRef = useRef<HTMLInputElement>(null);
-  // 6. 화면 상태와 동작에 필요한 selectedItem 값을 준비한다.
+  // 6. 처리 흐름에 필요한 selectedItem 값을 준비한다.
   const selectedItem = useMemo(
     () => items.find((item) => item.id === selectedId),
     [items, selectedId]
   );
-  // 7. 이후 처리에 사용할 selectedLabel을 계산한다.
+  // 7. 이후 단계에서 사용할 selectedLabel 값을 준비한다.
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
-  // 8. 이후 처리에 사용할 normalizedQuery을 계산한다.
+  // 8. 이후 단계에서 사용할 normalizedQuery 값을 준비한다.
   const normalizedQuery = normalizeSummaryTaxonomyText(search);
-  // 9. 이후 처리에 사용할 filteredItems을 계산한다.
+  // 9. 이후 단계에서 사용할 filteredItems 값을 준비한다.
   const filteredItems =
     normalizedQuery.length > 0
       ? items.filter((item) =>
           normalizeSummaryTaxonomyText(getLabel(item)).includes(normalizedQuery)
         )
       : items;
-  // 10. 이후 처리에 사용할 inputValue을 계산한다.
+  // 10. 이후 단계에서 사용할 inputValue 값을 준비한다.
   const inputValue = isOpen ? search : selectedLabel;
 
   // 11. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -75,7 +75,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
     }
   }, [isOpen]);
 
-  // 12. 현재 단계에서 필요한 side effect를 실행한다.
+  // 12. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
     // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isOpen) {
@@ -83,7 +83,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
     }
 
     // 기능 : update Popover Position 정보를 수정합니다.
-    // 2. 이후 처리에 사용할 updatePopoverPosition을 계산한다.
+    // 2. 이후 단계에서 사용할 updatePopoverPosition 값을 준비한다.
     const updatePopoverPosition = () => {
       if (!inputRef.current) {
         return;
@@ -92,7 +92,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
       setPopoverPosition(getSummaryTaxonomyPopoverPosition(inputRef.current));
     };
     // 기능 : on Mouse Down 기능을 수행합니다.
-    // 3. 화면 상태와 동작에 필요한 onMouseDown 값을 준비한다.
+    // 3. 처리 흐름에 필요한 onMouseDown 값을 준비한다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -103,7 +103,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
       }
     };
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     updatePopoverPosition();
     // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("mousedown", onMouseDown);
@@ -121,7 +121,7 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
   }, [isOpen]);
 
   // 기능 : open Options 창 또는 상태를 엽니다.
-  // 13. 이후 처리에 사용할 openOptions을 계산한다.
+  // 13. 이후 단계에서 사용할 openOptions 값을 준비한다.
   const openOptions = (nextSearch: string) => {
     setSearch(nextSearch);
 
@@ -133,28 +133,28 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
   };
 
   // 기능 : select Item 기능을 수행합니다.
-  // 14. 이후 처리에 사용할 selectItem을 계산한다.
+  // 14. 이후 단계에서 사용할 selectItem 값을 준비한다.
   const selectItem = (id: string) => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     onSelect(id);
     // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setSearch("");
     // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setIsOpen(false);
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     inputRef.current?.blur();
   };
 
   // 기능 : clear Selection 상태를 초기화합니다.
-  // 15. 이후 처리에 사용할 clearSelection을 계산한다.
+  // 15. 이후 단계에서 사용할 clearSelection 값을 준비한다.
   const clearSelection = () => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     onSelect("");
     // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setSearch("");
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     inputRef.current?.focus();
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     openOptions("");
   };
 
@@ -308,21 +308,21 @@ export function SummaryTaxonomySelect<TItem extends SummaryTaxonomyItem>({
   );
 }
 
-// 기능 : get Summary Taxonomy Popover Position 값을 조회합니다.
+// 기능 : 요약 분류 팝오버 위치를 조회합니다.
 function getSummaryTaxonomyPopoverPosition(
   input: HTMLInputElement
 ): SummaryTaxonomyPopoverPosition {
-  // 1. 이후 처리에 사용할 rect을 계산한다.
+  // 1. 이후 단계에서 사용할 rect 값을 준비한다.
   const rect = input.getBoundingClientRect();
-  // 2. 이후 처리에 사용할 viewportWidth을 계산한다.
+  // 2. 이후 단계에서 사용할 viewportWidth 값을 준비한다.
   const viewportWidth = window.innerWidth;
-  // 3. 이후 처리에 사용할 margin을 계산한다.
+  // 3. 이후 단계에서 사용할 margin 값을 준비한다.
   const margin = 16;
-  // 4. 이후 처리에 사용할 width을 계산한다.
+  // 4. 이후 단계에서 사용할 width 값을 준비한다.
   const width = Math.min(256, Math.max(200, viewportWidth - margin * 2));
-  // 5. 이후 처리에 사용할 maxLeft을 계산한다.
+  // 5. 이후 단계에서 사용할 maxLeft 값을 준비한다.
   const maxLeft = Math.max(margin, viewportWidth - width - margin);
-  // 6. 이후 처리에 사용할 left을 계산한다.
+  // 6. 이후 단계에서 사용할 left 값을 준비한다.
   const left = Math.min(Math.max(rect.left, margin), maxLeft);
 
   // 7. 계산된 결과를 호출자에게 반환한다.
@@ -338,7 +338,7 @@ function normalizeSummaryTaxonomyText(value: string) {
   return value.trim().toLowerCase();
 }
 
-// 기능 : get Summary Taxonomy Input Selected Class 값을 조회합니다.
+// 기능 : 요약 분류 입력 선택 클래스를 조회합니다.
 function getSummaryTaxonomyInputSelectedClass(tone: SummaryTaxonomyTone) {
   // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (tone === "amber") {
@@ -359,7 +359,7 @@ function getSummaryTaxonomyInputSelectedClass(tone: SummaryTaxonomyTone) {
   return "border-[#E2E8F0] bg-[#F8FAFC] font-semibold text-[#475569]";
 }
 
-// 기능 : get Summary Taxonomy Item Selected Class 값을 조회합니다.
+// 기능 : 요약 분류 항목 선택 클래스를 조회합니다.
 function getSummaryTaxonomyItemSelectedClass(tone: SummaryTaxonomyTone) {
   // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (tone === "amber") {
@@ -380,7 +380,7 @@ function getSummaryTaxonomyItemSelectedClass(tone: SummaryTaxonomyTone) {
   return "bg-[#F8FAFC] font-semibold text-[#475569]";
 }
 
-// 기능 : get Summary Taxonomy Check Border Class 값을 조회합니다.
+// 기능 : 요약 분류 체크 테두리 클래스를 조회합니다.
 function getSummaryTaxonomyCheckBorderClass(tone: SummaryTaxonomyTone) {
   // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (tone === "amber") {
@@ -401,7 +401,7 @@ function getSummaryTaxonomyCheckBorderClass(tone: SummaryTaxonomyTone) {
   return "border-[#475569]";
 }
 
-// 기능 : get Summary Taxonomy Check Dot Class 값을 조회합니다.
+// 기능 : 요약 분류 체크 표시 클래스를 조회합니다.
 function getSummaryTaxonomyCheckDotClass(tone: SummaryTaxonomyTone) {
   // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (tone === "amber") {

@@ -9,12 +9,12 @@ type PublicSitePageShellProps = {
 
 // 기능 : PublicSitePageShell 컴포넌트를 렌더링합니다.
 export function PublicSitePageShell({ children }: PublicSitePageShellProps) {
-  // 1. 화면 상태와 동작에 필요한 location 값을 준비한다.
+  // 1. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
-  // 2. 화면 상태와 동작에 필요한 scrollProgress 값을 준비한다.
+  // 2. 처리 흐름에 필요한 scrollProgress 값을 준비한다.
   const scrollProgress = usePublicSiteScrollProgress();
 
-  // 3. 현재 단계에서 필요한 side effect를 실행한다.
+  // 3. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
     window.scrollTo({
       behavior: "smooth",
@@ -42,13 +42,13 @@ function usePublicSiteScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     document.documentElement.classList.add("public-site-scrollbar-hidden");
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     document.body.classList.add("public-site-scrollbar-hidden");
 
     // 기능 : update Progress 정보를 수정합니다.
-    // 3. 이후 처리에 사용할 updateProgress을 계산한다.
+    // 3. 이후 단계에서 사용할 updateProgress 값을 준비한다.
     const updateProgress = () => {
       const scrollableHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -60,7 +60,7 @@ function usePublicSiteScrollProgress() {
       setProgress(nextProgress);
     };
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     updateProgress();
     // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("scroll", updateProgress, { passive: true });
@@ -73,9 +73,9 @@ function usePublicSiteScrollProgress() {
       window.removeEventListener("scroll", updateProgress);
       // 2. 브라우저 이벤트 listener를 등록하거나 정리한다.
       window.removeEventListener("resize", updateProgress);
-      // 3. 현재 단계에서 필요한 side effect를 실행한다.
+      // 3. 현재 단계에서 필요한 동작을 실행한다.
       document.documentElement.classList.remove("public-site-scrollbar-hidden");
-      // 4. 현재 단계에서 필요한 side effect를 실행한다.
+      // 4. 현재 단계에서 필요한 동작을 실행한다.
       document.body.classList.remove("public-site-scrollbar-hidden");
     };
   }, []);

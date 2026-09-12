@@ -17,11 +17,11 @@ export function Pagination({
   onPageChange,
   className,
 }: PaginationProps) {
-  // 1. 이후 처리에 사용할 safeTotalPages을 계산한다.
+  // 1. 이후 단계에서 사용할 safeTotalPages 값을 준비한다.
   const safeTotalPages = Math.max(totalPages, 1);
-  // 2. 이후 처리에 사용할 canPrev을 계산한다.
+  // 2. 이후 단계에서 사용할 canPrev 값을 준비한다.
   const canPrev = page > 1;
-  // 3. 이후 처리에 사용할 canNext을 계산한다.
+  // 3. 이후 단계에서 사용할 canNext 값을 준비한다.
   const canNext = page < safeTotalPages;
 
   // 4. 계산된 결과를 호출자에게 반환한다.

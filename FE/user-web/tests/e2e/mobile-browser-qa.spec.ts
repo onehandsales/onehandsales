@@ -20,7 +20,7 @@ test.describe("G02 mobile browser release QA", () => {
   test("redirects protected mobile routes without a session", async ({ page }) => {
     // 1. 비동기 결과를 받아 api에 저장한다.
     const api = await setupUserWebApiMocks(page);
-    // 2. 이후 처리에 사용할 runtime을 계산한다.
+    // 2. 이후 단계에서 사용할 runtime 값을 준비한다.
     const runtime = collectRuntimeErrors(page);
 
     // 3. 필요한 비동기 작업을 실행한다.
@@ -32,14 +32,14 @@ test.describe("G02 mobile browser release QA", () => {
     await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
     // 6. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
-    // 7. 현재 단계에서 필요한 side effect를 실행한다.
+    // 7. 현재 단계에서 필요한 동작을 실행한다.
     runtime.assertClean();
   });
 
   test("loads core App routes without mobile shell overlap or page overflow", async ({ page }, testInfo) => {
     // 1. 비동기 결과를 받아 api에 저장한다.
     const api = await setupUserWebApiMocks(page);
-    // 2. 이후 처리에 사용할 runtime을 계산한다.
+    // 2. 이후 단계에서 사용할 runtime 값을 준비한다.
     const runtime = collectRuntimeErrors(page);
     // 3. 필요한 비동기 작업을 실행한다.
     await seedAuthenticatedSession(page);
@@ -59,7 +59,7 @@ test.describe("G02 mobile browser release QA", () => {
 
     // 5. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
-    // 6. 현재 단계에서 필요한 side effect를 실행한다.
+    // 6. 현재 단계에서 필요한 동작을 실행한다.
     runtime.assertClean();
   });
 });
@@ -90,14 +90,14 @@ async function expectNoDocumentHorizontalOverflow(page: Page, label: string) {
 
 // 기능 : collect Runtime Errors 기능을 수행합니다.
 function collectRuntimeErrors(page: Page) {
-  // 1. 이후 처리에 사용할 pageErrors을 계산한다.
+  // 1. 이후 단계에서 사용할 pageErrors 값을 준비한다.
   const pageErrors: string[] = [];
-  // 2. 이후 처리에 사용할 consoleErrors을 계산한다.
+  // 2. 이후 단계에서 사용할 consoleErrors 값을 준비한다.
   const consoleErrors: string[] = [];
 
-  // 3. 현재 단계에서 필요한 side effect를 실행한다.
+  // 3. 현재 단계에서 필요한 동작을 실행한다.
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  // 4. 현재 단계에서 필요한 side effect를 실행한다.
+  // 4. 현재 단계에서 필요한 동작을 실행한다.
   page.on("console", (message) => {
     if (message.type() === "error" && !message.text().includes("favicon.ico")) {
       consoleErrors.push(message.text());

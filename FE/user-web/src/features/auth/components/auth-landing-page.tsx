@@ -308,15 +308,15 @@ export function AuthLandingPage({
   isModalOpen,
   onOpenLogin,
 }: AuthLandingPageProps) {
-  // 1. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { language } 값을 준비한다.
   const { language } = usePublicSiteLanguage();
-  // 2. 이후 처리에 사용할 copyLanguage을 계산한다.
+  // 2. 이후 단계에서 사용할 copyLanguage 값을 준비한다.
   const copyLanguage = getPublicSiteCopyLanguage(language);
-  // 3. 화면 상태와 동작에 필요한 scrollProgress 값을 준비한다.
+  // 3. 처리 흐름에 필요한 scrollProgress 값을 준비한다.
   const scrollProgress = useLandingScrollProgress();
-  // 4. 이후 처리에 사용할 copy을 계산한다.
+  // 4. 이후 단계에서 사용할 copy 값을 준비한다.
   const copy = landingCopyByLanguage[copyLanguage];
-  // 5. 현재 단계에서 필요한 side effect를 실행한다.
+  // 5. 현재 단계에서 필요한 동작을 실행한다.
   useLandingViewportHeightVariable();
 
   // 6. 계산된 결과를 호출자에게 반환한다.
@@ -344,13 +344,13 @@ function useLandingScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     document.documentElement.classList.add("landing-scrollbar-hidden");
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     document.body.classList.add("landing-scrollbar-hidden");
 
     // 기능 : update Progress 정보를 수정합니다.
-    // 3. 이후 처리에 사용할 updateProgress을 계산한다.
+    // 3. 이후 단계에서 사용할 updateProgress 값을 준비한다.
     const updateProgress = () => {
       const scrollableHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -362,7 +362,7 @@ function useLandingScrollProgress() {
       setProgress(nextProgress);
     };
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     updateProgress();
     // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("scroll", updateProgress, { passive: true });
@@ -375,9 +375,9 @@ function useLandingScrollProgress() {
       window.removeEventListener("scroll", updateProgress);
       // 2. 브라우저 이벤트 listener를 등록하거나 정리한다.
       window.removeEventListener("resize", updateProgress);
-      // 3. 현재 단계에서 필요한 side effect를 실행한다.
+      // 3. 현재 단계에서 필요한 동작을 실행한다.
       document.documentElement.classList.remove("landing-scrollbar-hidden");
-      // 4. 현재 단계에서 필요한 side effect를 실행한다.
+      // 4. 현재 단계에서 필요한 동작을 실행한다.
       document.body.classList.remove("landing-scrollbar-hidden");
     };
   }, []);
@@ -389,30 +389,30 @@ function useLandingScrollProgress() {
 function useLandingViewportHeightVariable() {
   useEffect(() => {
     // 기능 : update Viewport Height 정보를 수정합니다.
-    // 1. 이후 처리에 사용할 updateViewportHeight을 계산한다.
+    // 1. 이후 단계에서 사용할 updateViewportHeight 값을 준비한다.
     const updateViewportHeight = () => {
-      // 1. 이후 처리에 사용할 userAgent을 계산한다.
+      // 1. 이후 단계에서 사용할 userAgent 값을 준비한다.
       const userAgent = window.navigator.userAgent;
-      // 2. 이후 처리에 사용할 viewportHeightCandidates을 계산한다.
+      // 2. 이후 단계에서 사용할 viewportHeightCandidates 값을 준비한다.
       const viewportHeightCandidates = [
         window.innerHeight,
         document.documentElement.clientHeight,
         window.visualViewport?.height ?? 0,
       ];
-      // 3. 이후 처리에 사용할 isIos을 계산한다.
+      // 3. 이후 단계에서 사용할 isIos 값을 준비한다.
       const isIos =
         /iPad|iPhone|iPod/.test(userAgent) ||
         (window.navigator.platform === "MacIntel" &&
           window.navigator.maxTouchPoints > 1);
-      // 4. 이후 처리에 사용할 isSafari을 계산한다.
+      // 4. 이후 단계에서 사용할 isSafari 값을 준비한다.
       const isSafari =
         /Safari/.test(userAgent) &&
         !/(CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|GSA)/.test(userAgent);
-      // 5. 이후 처리에 사용할 isNarrowTouchViewport을 계산한다.
+      // 5. 이후 단계에서 사용할 isNarrowTouchViewport 값을 준비한다.
       const isNarrowTouchViewport =
         window.matchMedia("(max-width: 767px)").matches &&
         window.matchMedia("(pointer: coarse)").matches;
-      // 6. 이후 처리에 사용할 shouldUseScreenHeight을 계산한다.
+      // 6. 이후 단계에서 사용할 shouldUseScreenHeight 값을 준비한다.
       const shouldUseScreenHeight =
         isIos && isSafari && isNarrowTouchViewport;
 
@@ -421,7 +421,7 @@ function useLandingViewportHeightVariable() {
         viewportHeightCandidates.push(window.screen.height);
       }
 
-      // 8. 이후 처리에 사용할 viewportHeight을 계산한다.
+      // 8. 이후 단계에서 사용할 viewportHeight 값을 준비한다.
       const viewportHeight = Math.ceil(Math.max(...viewportHeightCandidates));
 
       // 9. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -431,7 +431,7 @@ function useLandingViewportHeightVariable() {
       );
     };
 
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     updateViewportHeight();
     // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("orientationchange", updateViewportHeight);
@@ -452,7 +452,7 @@ function useLandingViewportHeightVariable() {
       window.visualViewport?.removeEventListener("resize", updateViewportHeight);
       // 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
       window.visualViewport?.removeEventListener("scroll", updateViewportHeight);
-      // 5. 현재 단계에서 필요한 side effect를 실행한다.
+      // 5. 현재 단계에서 필요한 동작을 실행한다.
       document.documentElement.style.removeProperty(
         "--landing-viewport-height",
       );
@@ -664,15 +664,15 @@ function LandingScrollProgressBar({ progress }: { readonly progress: number }) {
 
 // 기능 : HeroSection section UI를 렌더링합니다.
 function HeroSection({ copy }: { readonly copy: LandingCopy }) {
-  // 1. 화면 상태와 동작에 필요한 [activeHeroWordIndex, setActiveHeroWordIndex] 값을 준비한다.
+  // 1. 처리 흐름에 필요한 [activeHeroWordIndex, setActiveHeroWordIndex] 값을 준비한다.
   const [activeHeroWordIndex, setActiveHeroWordIndex] = useState(0);
-  // 2. 이후 처리에 사용할 rotatingItemsCount을 계산한다.
+  // 2. 이후 단계에서 사용할 rotatingItemsCount 값을 준비한다.
   const rotatingItemsCount = copy.hero.rotatingItems.length;
-  // 3. 이후 처리에 사용할 activeHeroItem을 계산한다.
+  // 3. 이후 단계에서 사용할 activeHeroItem 값을 준비한다.
   const activeHeroItem =
     copy.hero.rotatingItems[activeHeroWordIndex % rotatingItemsCount] ??
     copy.hero.rotatingItems[0];
-  // 4. 이후 처리에 사용할 activeHeroWordStyle을 계산한다.
+  // 4. 이후 단계에서 사용할 activeHeroWordStyle 값을 준비한다.
   const activeHeroWordStyle =
     heroRotatingWordStyles[
       activeHeroWordIndex % heroRotatingWordStyles.length

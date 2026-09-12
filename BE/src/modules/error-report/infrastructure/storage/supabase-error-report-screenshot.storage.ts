@@ -26,13 +26,13 @@ export class SupabaseErrorReportScreenshotStorage
   async store(
     input: StoreErrorReportScreenshotInput
   ): Promise<StoredErrorReportScreenshotReference> {
-    // 1. 이후 처리에 사용할 config을 계산한다.
+    // 1. 이후 단계에서 사용할 config 값을 준비한다.
     const config = this.getConfig();
-    // 2. 이후 처리에 사용할 fileName을 계산한다.
+    // 2. 이후 단계에서 사용할 fileName 값을 준비한다.
     const fileName = this.createFileName(input.capturedAt);
-    // 3. 이후 처리에 사용할 storageKey을 계산한다.
+    // 3. 이후 단계에서 사용할 storageKey 값을 준비한다.
     const storageKey = this.createStorageKey(input.userId, input.capturedAt, fileName);
-    // 4. 이후 처리에 사용할 checksum을 계산한다.
+    // 4. 이후 단계에서 사용할 checksum 값을 준비한다.
     const checksum = createHash("sha256").update(input.buffer).digest("hex");
     // 5. 비동기 결과를 받아 response에 저장한다.
     const response = await fetch(this.createObjectUrl(config, storageKey), {
@@ -92,17 +92,17 @@ export class SupabaseErrorReportScreenshotStorage
 
   // 기능 : UTC 시각과 UUID로 screenshot 파일명을 생성합니다.
   private createFileName(capturedAt: Date): string {
-    // 1. 이후 처리에 사용할 year을 계산한다.
+    // 1. 이후 단계에서 사용할 year 값을 준비한다.
     const year = String(capturedAt.getUTCFullYear()).padStart(4, "0");
-    // 2. 이후 처리에 사용할 month을 계산한다.
+    // 2. 이후 단계에서 사용할 month 값을 준비한다.
     const month = String(capturedAt.getUTCMonth() + 1).padStart(2, "0");
-    // 3. 이후 처리에 사용할 day을 계산한다.
+    // 3. 이후 단계에서 사용할 day 값을 준비한다.
     const day = String(capturedAt.getUTCDate()).padStart(2, "0");
-    // 4. 이후 처리에 사용할 hour을 계산한다.
+    // 4. 이후 단계에서 사용할 hour 값을 준비한다.
     const hour = String(capturedAt.getUTCHours()).padStart(2, "0");
-    // 5. 이후 처리에 사용할 minute을 계산한다.
+    // 5. 이후 단계에서 사용할 minute 값을 준비한다.
     const minute = String(capturedAt.getUTCMinutes()).padStart(2, "0");
-    // 6. 이후 처리에 사용할 second을 계산한다.
+    // 6. 이후 단계에서 사용할 second 값을 준비한다.
     const second = String(capturedAt.getUTCSeconds()).padStart(2, "0");
 
     // 7. 계산된 결과를 호출자에게 반환한다.
@@ -115,11 +115,11 @@ export class SupabaseErrorReportScreenshotStorage
     capturedAt: Date,
     fileName: string
   ): string {
-    // 1. 이후 처리에 사용할 year을 계산한다.
+    // 1. 이후 단계에서 사용할 year 값을 준비한다.
     const year = String(capturedAt.getUTCFullYear()).padStart(4, "0");
-    // 2. 이후 처리에 사용할 month을 계산한다.
+    // 2. 이후 단계에서 사용할 month 값을 준비한다.
     const month = String(capturedAt.getUTCMonth() + 1).padStart(2, "0");
-    // 3. 이후 처리에 사용할 day을 계산한다.
+    // 3. 이후 단계에서 사용할 day 값을 준비한다.
     const day = String(capturedAt.getUTCDate()).padStart(2, "0");
 
     // 4. 계산된 결과를 호출자에게 반환한다.

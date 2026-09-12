@@ -7,9 +7,9 @@ export function createXlsxDownloadResponse(
   response: Response,
   file: ExportedXlsxFileResponse
 ): StreamableFile {
-  // 1. 이후 처리에 사용할 asciiFileName을 계산한다.
+  // 1. 이후 단계에서 사용할 asciiFileName 값을 준비한다.
   const asciiFileName = createAsciiDownloadFileName(file.fileName);
-  // 2. 이후 처리에 사용할 encodedFileName을 계산한다.
+  // 2. 이후 단계에서 사용할 encodedFileName 값을 준비한다.
   const encodedFileName = encodeURIComponent(file.fileName);
 
   // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.

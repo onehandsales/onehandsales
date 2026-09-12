@@ -79,7 +79,7 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
     return;
   }
 
-  // 2. 이후 처리에 사용할 root을 계산한다.
+  // 2. 이후 단계에서 사용할 root 값을 준비한다.
   const root = document.querySelector(LEGACY_APP_I18N_ROOT_SELECTOR);
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -88,9 +88,9 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
   }
 
   // 기능 : translate Text Node 기능을 수행합니다.
-  // 4. 이후 처리에 사용할 translateTextNode을 계산한다.
+  // 4. 이후 단계에서 사용할 translateTextNode 값을 준비한다.
   const translateTextNode = (node: Text) => {
-    // 1. 이후 처리에 사용할 parent을 계산한다.
+    // 1. 이후 단계에서 사용할 parent 값을 준비한다.
     const parent = node.parentElement;
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -98,17 +98,17 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
       return;
     }
 
-    // 3. 이후 처리에 사용할 current을 계산한다.
+    // 3. 이후 단계에서 사용할 current 값을 준비한다.
     const current = node.nodeValue ?? "";
-    // 4. 이후 처리에 사용할 previous을 계산한다.
+    // 4. 이후 단계에서 사용할 previous 값을 준비한다.
     const previous = legacyTextNodeRecords.get(node);
-    // 5. 이후 처리에 사용할 original을 계산한다.
+    // 5. 이후 단계에서 사용할 original 값을 준비한다.
     const original =
       previous && previous.translated === current ? previous.original : current;
-    // 6. 이후 처리에 사용할 translated을 계산한다.
+    // 6. 이후 단계에서 사용할 translated 값을 준비한다.
     const translated = translateLegacyAppStaticText(original, locale);
 
-    // 7. 현재 단계에서 필요한 side effect를 실행한다.
+    // 7. 현재 단계에서 필요한 동작을 실행한다.
     legacyTextNodeRecords.set(node, { original, translated });
 
     // 8. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -118,7 +118,7 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
   };
 
   // 기능 : translate Element Attributes 기능을 수행합니다.
-  // 5. 이후 처리에 사용할 translateElementAttributes을 계산한다.
+  // 5. 이후 단계에서 사용할 translateElementAttributes 값을 준비한다.
   const translateElementAttributes = (element: Element) => {
     let records = legacyAttributeRecords.get(element);
 
@@ -128,7 +128,7 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
     }
 
     LEGACY_APP_I18N_ATTRIBUTE_NAMES.forEach((attributeName) => {
-      // 1. 이후 처리에 사용할 current을 계산한다.
+      // 1. 이후 단계에서 사용할 current 값을 준비한다.
       const current = element.getAttribute(attributeName);
 
       // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -137,15 +137,15 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
         return;
       }
 
-      // 3. 이후 처리에 사용할 previous을 계산한다.
+      // 3. 이후 단계에서 사용할 previous 값을 준비한다.
       const previous = records?.get(attributeName);
-      // 4. 이후 처리에 사용할 original을 계산한다.
+      // 4. 이후 단계에서 사용할 original 값을 준비한다.
       const original =
         previous && previous.translated === current ? previous.original : current;
-      // 5. 이후 처리에 사용할 translated을 계산한다.
+      // 5. 이후 단계에서 사용할 translated 값을 준비한다.
       const translated = translateLegacyAppStaticText(original, locale);
 
-      // 6. 현재 단계에서 필요한 side effect를 실행한다.
+      // 6. 현재 단계에서 필요한 동작을 실행한다.
       records?.set(attributeName, { original, translated });
 
       // 7. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -155,13 +155,13 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
     });
   };
 
-  // 6. 이후 처리에 사용할 walk을 계산한다.
+  // 6. 이후 단계에서 사용할 walk 값을 준비한다.
   const walk = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT
   );
 
-  // 7. 현재 단계에서 필요한 side effect를 실행한다.
+  // 7. 현재 단계에서 필요한 동작을 실행한다.
   translateElementAttributes(root);
 
   // 8. 현재 처리 흐름의 다음 단계를 수행한다.
@@ -181,22 +181,22 @@ function applyLegacyStaticTextTranslation(locale: AppI18nContextValue["locale"])
 
 // 기능 : 인증 사용자 설정을 기준으로 앱 전용 i18n 상태와 formatter를 제공합니다.
 export function AppI18nProvider({ children }: { readonly children: ReactNode }) {
-  // 1. 화면 상태와 동작에 필요한 { user } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { user } 값을 준비한다.
   const { user } = useAuthSession();
-  // 2. 화면 상태와 동작에 필요한 browserLocale 값을 준비한다.
+  // 2. 처리 흐름에 필요한 browserLocale 값을 준비한다.
   const browserLocale = useMemo(() => getBrowserAppLocale(), []);
-  // 3. 이후 처리에 사용할 locale을 계산한다.
+  // 3. 이후 단계에서 사용할 locale 값을 준비한다.
   const locale = normalizeAppLocale(user?.preferredLocale ?? browserLocale);
-  // 4. 이후 처리에 사용할 timeZone을 계산한다.
+  // 4. 이후 단계에서 사용할 timeZone 값을 준비한다.
   const timeZone = user?.timeZone || DEFAULT_APP_TIME_ZONE;
-  // 5. 이후 처리에 사용할 countryCode을 계산한다.
+  // 5. 이후 단계에서 사용할 countryCode 값을 준비한다.
   const countryCode = normalizeAppPhoneCountryCode(
     user?.countryCode ?? DEFAULT_APP_COUNTRY_CODE
   );
-  // 6. 이후 처리에 사용할 defaultCurrencyCode을 계산한다.
+  // 6. 이후 단계에서 사용할 defaultCurrencyCode 값을 준비한다.
   const defaultCurrencyCode = normalizeAppCurrencyCode(user?.defaultCurrencyCode);
 
-  // 7. 화면 상태와 동작에 필요한 t 값을 준비한다.
+  // 7. 처리 흐름에 필요한 t 값을 준비한다.
   const t = useCallback<AppI18nContextValue["t"]>(
     (key, options) => {
       const activeText = getResourceText(appI18nResources[locale], key);
@@ -207,7 +207,7 @@ export function AppI18nProvider({ children }: { readonly children: ReactNode }) 
     [locale]
   );
 
-  // 8. 화면 상태와 동작에 필요한 value 값을 준비한다.
+  // 8. 처리 흐름에 필요한 value 값을 준비한다.
   const value = useMemo<AppI18nContextValue>(
     () => ({
       locale,
@@ -243,17 +243,17 @@ export function AppI18nProvider({ children }: { readonly children: ReactNode }) 
     [countryCode, defaultCurrencyCode, locale, t, timeZone]
   );
 
-  // 9. 현재 단계에서 필요한 side effect를 실행한다.
+  // 9. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
     // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (typeof document === "undefined") {
       return;
     }
 
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     applyLegacyStaticTextTranslation(locale);
 
-    // 3. 이후 처리에 사용할 observer을 계산한다.
+    // 3. 이후 단계에서 사용할 observer 값을 준비한다.
     const observer = new MutationObserver((mutations) => {
       const hasAppMutation = mutations.some((mutation) => {
         const target =
@@ -269,7 +269,7 @@ export function AppI18nProvider({ children }: { readonly children: ReactNode }) 
       }
     });
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     observer.observe(document.body, {
       attributeFilter: [...LEGACY_APP_I18N_ATTRIBUTE_NAMES],
       attributes: true,

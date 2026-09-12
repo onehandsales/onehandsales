@@ -121,7 +121,7 @@ export class ExchangeExternalAuthTokenUseCase {
           now,
           loginMetadata
         );
-        // 3. 현재 단계에서 필요한 side effect를 실행한다.
+        // 3. 현재 단계에서 필요한 동작을 실행한다.
         this.assertActiveUser(user);
 
         // 5. 기기 slot 충돌, 갱신, 교체 정책을 처리한다.
@@ -136,9 +136,9 @@ export class ExchangeExternalAuthTokenUseCase {
 
         // 6. refresh token 원문을 생성하고 hash만 세션에 저장한다.
         const refreshToken = this.secureTokenService.createToken();
-        // 6. 이후 처리에 사용할 refreshTokenHash을 계산한다.
+        // 6. 이후 단계에서 사용할 refreshTokenHash 값을 준비한다.
         const refreshTokenHash = this.hashRefreshToken(refreshToken);
-        // 7. 이후 처리에 사용할 sessionExpiresAt을 계산한다.
+        // 7. 이후 단계에서 사용할 sessionExpiresAt 값을 준비한다.
         const sessionExpiresAt = this.addDays(now, this.getSessionTtlDays());
         // 8. 비동기 결과를 받아 session에 저장한다.
         const session = await this.createOrRotateSession(repository, {
@@ -167,7 +167,7 @@ export class ExchangeExternalAuthTokenUseCase {
           throw new InactiveUserError();
         }
 
-        // 12. 현재 단계에서 필요한 side effect를 실행한다.
+        // 12. 현재 단계에서 필요한 동작을 실행한다.
         this.logEvent("auth.exchange.succeeded", {
           provider: verifiedUser.provider,
         });

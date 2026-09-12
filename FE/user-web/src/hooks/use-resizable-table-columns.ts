@@ -38,27 +38,27 @@ export function useResizableTableColumns({
   columns,
   storageKey,
 }: UseResizableTableColumnsOptions) {
-  // 1. 화면 상태와 동작에 필요한 defaultWidths 값을 준비한다.
+  // 1. 처리 흐름에 필요한 defaultWidths 값을 준비한다.
   const defaultWidths = useMemo(() => getDefaultWidths(columns), [columns]);
-  // 2. 화면 상태와 동작에 필요한 columnsById 값을 준비한다.
+  // 2. 처리 흐름에 필요한 columnsById 값을 준비한다.
   const columnsById = useMemo(
     () => new Map(columns.map((column) => [column.id, column])),
     [columns],
   );
-  // 3. 화면 상태와 동작에 필요한 [widths, setWidths] 값을 준비한다.
+  // 3. 처리 흐름에 필요한 [widths, setWidths] 값을 준비한다.
   const [widths, setWidths] = useState<WidthMap>(() =>
     readStoredWidths(storageKey, columns),
   );
-  // 4. 화면 상태와 동작에 필요한 [resizingColumnId, setResizingColumnId] 값을 준비한다.
+  // 4. 처리 흐름에 필요한 [resizingColumnId, setResizingColumnId] 값을 준비한다.
   const [resizingColumnId, setResizingColumnId] = useState<string | null>(null);
-  // 5. 화면 상태와 동작에 필요한 [containerWidth, setContainerWidth] 값을 준비한다.
+  // 5. 처리 흐름에 필요한 [containerWidth, setContainerWidth] 값을 준비한다.
   const [containerWidth, setContainerWidth] = useState(0);
-  // 6. 화면 상태와 동작에 필요한 tableContainerRef 값을 준비한다.
+  // 6. 처리 흐름에 필요한 tableContainerRef 값을 준비한다.
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
-  // 7. 화면 상태와 동작에 필요한 resizeCleanupRef 값을 준비한다.
+  // 7. 처리 흐름에 필요한 resizeCleanupRef 값을 준비한다.
   const resizeCleanupRef = useRef<(() => void) | null>(null);
 
-  // 8. 현재 단계에서 필요한 side effect를 실행한다.
+  // 8. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(
     () => () => {
       resizeCleanupRef.current?.();
@@ -67,9 +67,9 @@ export function useResizableTableColumns({
     [],
   );
 
-  // 9. 현재 단계에서 필요한 side effect를 실행한다.
+  // 9. 현재 단계에서 필요한 동작을 실행한다.
   useLayoutEffect(() => {
-    // 1. 이후 처리에 사용할 element을 계산한다.
+    // 1. 이후 단계에서 사용할 element 값을 준비한다.
     const element = tableContainerRef.current;
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!element || typeof window === "undefined") {
@@ -77,12 +77,12 @@ export function useResizableTableColumns({
     }
 
     // 기능 : update Container Width 정보를 수정합니다.
-    // 3. 이후 처리에 사용할 updateContainerWidth을 계산한다.
+    // 3. 이후 단계에서 사용할 updateContainerWidth 값을 준비한다.
     const updateContainerWidth = () => {
       setContainerWidth(Math.floor(element.clientWidth));
     };
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     updateContainerWidth();
 
     // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -94,9 +94,9 @@ export function useResizableTableColumns({
       };
     }
 
-    // 6. 이후 처리에 사용할 resizeObserver을 계산한다.
+    // 6. 이후 단계에서 사용할 resizeObserver 값을 준비한다.
     const resizeObserver = new ResizeObserver(updateContainerWidth);
-    // 7. 현재 단계에서 필요한 side effect를 실행한다.
+    // 7. 현재 단계에서 필요한 동작을 실행한다.
     resizeObserver.observe(element);
 
     // 8. 계산된 결과를 호출자에게 반환한다.
@@ -105,7 +105,7 @@ export function useResizableTableColumns({
     };
   }, []);
 
-  // 10. 화면 상태와 동작에 필요한 displayWidths 값을 준비한다.
+  // 10. 처리 흐름에 필요한 displayWidths 값을 준비한다.
   const displayWidths = useMemo(
     () => {
       const targetWidth = allowHorizontalOverflow
@@ -117,7 +117,7 @@ export function useResizableTableColumns({
     [allowHorizontalOverflow, columns, containerWidth, widths],
   );
 
-  // 11. 화면 상태와 동작에 필요한 gridTemplateColumns 값을 준비한다.
+  // 11. 처리 흐름에 필요한 gridTemplateColumns 값을 준비한다.
   const gridTemplateColumns = useMemo(
     () =>
       columns
@@ -133,7 +133,7 @@ export function useResizableTableColumns({
     [columns, displayWidths],
   );
 
-  // 12. 화면 상태와 동작에 필요한 tableContainerStyle 값을 준비한다.
+  // 12. 처리 흐름에 필요한 tableContainerStyle 값을 준비한다.
   const tableContainerStyle = useMemo(
     () =>
       ({
@@ -142,21 +142,21 @@ export function useResizableTableColumns({
     [gridTemplateColumns],
   );
 
-  // 13. 화면 상태와 동작에 필요한 resetColumnWidths 값을 준비한다.
+  // 13. 처리 흐름에 필요한 resetColumnWidths 값을 준비한다.
   const resetColumnWidths = useCallback(() => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     resizeCleanupRef.current?.();
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     resizeCleanupRef.current = null;
     // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setResizingColumnId(null);
     // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setWidths(defaultWidths);
-    // 5. 현재 단계에서 필요한 side effect를 실행한다.
+    // 5. 현재 단계에서 필요한 동작을 실행한다.
     removeStoredWidths(storageKey);
   }, [defaultWidths, storageKey]);
 
-  // 14. 화면 상태와 동작에 필요한 startColumnResize 값을 준비한다.
+  // 14. 처리 흐름에 필요한 startColumnResize 값을 준비한다.
   const startColumnResize = useCallback(
     (
       columnId: string,
@@ -168,50 +168,50 @@ export function useResizableTableColumns({
         return;
       }
 
-      // 2. 이후 처리에 사용할 column을 계산한다.
+      // 2. 이후 단계에서 사용할 column 값을 준비한다.
       const column = columnsById.get(columnId);
-      // 3. 이후 처리에 사용할 nextColumn을 계산한다.
+      // 3. 이후 단계에서 사용할 nextColumn 값을 준비한다.
       const nextColumn = columns[columnIndex + 1];
       // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
       if (!column || !nextColumn) {
         return;
       }
 
-      // 5. 현재 단계에서 필요한 side effect를 실행한다.
+      // 5. 브라우저 기본 동작을 막는다.
       event.preventDefault();
-      // 6. 현재 단계에서 필요한 side effect를 실행한다.
+      // 6. 현재 단계에서 필요한 동작을 실행한다.
       event.stopPropagation();
-      // 7. 현재 단계에서 필요한 side effect를 실행한다.
+      // 7. 현재 단계에서 필요한 동작을 실행한다.
       resizeCleanupRef.current?.();
 
-      // 8. 이후 처리에 사용할 startX을 계산한다.
+      // 8. 이후 단계에서 사용할 startX 값을 준비한다.
       const startX = event.clientX;
-      // 9. 이후 처리에 사용할 startWidth을 계산한다.
+      // 9. 이후 단계에서 사용할 startWidth 값을 준비한다.
       const startWidth = clampColumnWidth(
         displayWidths[columnId] ?? column.defaultWidth,
         column,
       );
-      // 10. 이후 처리에 사용할 nextStartWidth을 계산한다.
+      // 10. 이후 단계에서 사용할 nextStartWidth 값을 준비한다.
       const nextStartWidth = clampColumnWidth(
         displayWidths[nextColumn.id] ?? nextColumn.defaultWidth,
         nextColumn,
       );
-      // 11. 이후 처리에 사용할 originalCursor을 계산한다.
+      // 11. 이후 단계에서 사용할 originalCursor 값을 준비한다.
       const originalCursor = document.body.style.cursor;
-      // 12. 이후 처리에 사용할 originalUserSelect을 계산한다.
+      // 12. 이후 단계에서 사용할 originalUserSelect 값을 준비한다.
       const originalUserSelect = document.body.style.userSelect;
 
-      // 13. 현재 단계에서 필요한 side effect를 실행한다.
+      // 13. 현재 단계에서 필요한 동작을 실행한다.
       document.body.style.cursor = "col-resize";
-      // 14. 현재 단계에서 필요한 side effect를 실행한다.
+      // 14. 현재 단계에서 필요한 동작을 실행한다.
       document.body.style.userSelect = "none";
       // 15. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setResizingColumnId(columnId);
 
       // 기능 : handle Mouse Move 이벤트를 처리합니다.
-      // 16. 화면 상태와 동작에 필요한 handleMouseMove 값을 준비한다.
+      // 16. 처리 흐름에 필요한 handleMouseMove 값을 준비한다.
       const handleMouseMove = (moveEvent: MouseEvent) => {
-        // 1. 이후 처리에 사용할 delta을 계산한다.
+        // 1. 이후 단계에서 사용할 delta 값을 준비한다.
         const delta = getBoundedPairDelta(
           moveEvent.clientX - startX,
           column,
@@ -219,9 +219,9 @@ export function useResizableTableColumns({
           startWidth,
           nextStartWidth,
         );
-        // 2. 이후 처리에 사용할 nextWidth을 계산한다.
+        // 2. 이후 단계에서 사용할 nextWidth 값을 준비한다.
         const nextWidth = startWidth + delta;
-        // 3. 이후 처리에 사용할 adjustedNextWidth을 계산한다.
+        // 3. 이후 단계에서 사용할 adjustedNextWidth 값을 준비한다.
         const adjustedNextWidth = nextStartWidth - delta;
 
         // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -242,15 +242,15 @@ export function useResizableTableColumns({
       };
 
       // 기능 : cleanup Resize 기능을 수행합니다.
-      // 17. 화면 상태와 동작에 필요한 cleanupResize 값을 준비한다.
+      // 17. 처리 흐름에 필요한 cleanupResize 값을 준비한다.
       const cleanupResize = () => {
         // 1. 브라우저 이벤트 listener를 등록하거나 정리한다.
         window.removeEventListener("mousemove", handleMouseMove);
         // 2. 브라우저 이벤트 listener를 등록하거나 정리한다.
         window.removeEventListener("mouseup", cleanupResize);
-        // 3. 현재 단계에서 필요한 side effect를 실행한다.
+        // 3. 현재 단계에서 필요한 동작을 실행한다.
         document.body.style.cursor = originalCursor;
-        // 4. 현재 단계에서 필요한 side effect를 실행한다.
+        // 4. 현재 단계에서 필요한 동작을 실행한다.
         document.body.style.userSelect = originalUserSelect;
         // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
         setResizingColumnId(null);
@@ -265,13 +265,13 @@ export function useResizableTableColumns({
       window.addEventListener("mousemove", handleMouseMove);
       // 19. 브라우저 이벤트 listener를 등록하거나 정리한다.
       window.addEventListener("mouseup", cleanupResize);
-      // 20. 현재 단계에서 필요한 side effect를 실행한다.
+      // 20. 현재 단계에서 필요한 동작을 실행한다.
       resizeCleanupRef.current = cleanupResize;
     },
     [columns, columnsById, displayWidths, storageKey],
   );
 
-  // 15. 화면 상태와 동작에 필요한 getHeaderCellResizeProps 값을 준비한다.
+  // 15. 처리 흐름에 필요한 getHeaderCellResizeProps 값을 준비한다.
   const getHeaderCellResizeProps = useCallback(
     (columnId: string, columnIndex: number): HeaderCellResizeProps => ({
       isResizable: columnIndex < columns.length - 1,
@@ -291,7 +291,7 @@ export function useResizableTableColumns({
   };
 }
 
-// 기능 : get Default Widths 값을 조회합니다.
+// 기능 : 기본 열 너비를 조회합니다.
 function getDefaultWidths(columns: readonly ResizableTableColumn[]): WidthMap {
   return Object.fromEntries(
     columns.map((column) => [
@@ -383,20 +383,20 @@ function fitWidthsToContainer(
   columns: readonly ResizableTableColumn[],
   containerWidth: number,
 ) {
-  // 1. 이후 처리에 사용할 normalizedWidths을 계산한다.
+  // 1. 이후 단계에서 사용할 normalizedWidths 값을 준비한다.
   const normalizedWidths = normalizeWidths(source, columns);
-  // 2. 이후 처리에 사용할 targetWidth을 계산한다.
+  // 2. 이후 단계에서 사용할 targetWidth 값을 준비한다.
   const targetWidth = Math.floor(containerWidth);
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (targetWidth <= 0 || columns.length === 0) {
     return normalizedWidths;
   }
 
-  // 4. 이후 처리에 사용할 nextWidths을 계산한다.
+  // 4. 이후 단계에서 사용할 nextWidths 값을 준비한다.
   const nextWidths = columns.map(
     (column) => normalizedWidths[column.id] ?? column.defaultWidth,
   );
-  // 5. 이후 처리에 사용할 currentTotalWidth을 계산한다.
+  // 5. 이후 단계에서 사용할 currentTotalWidth 값을 준비한다.
   const currentTotalWidth = sum(nextWidths);
   // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (currentTotalWidth === targetWidth) {
@@ -423,14 +423,14 @@ function shrinkWidthsToTarget(
   columns: readonly ResizableTableColumn[],
   targetWidth: number,
 ) {
-  // 1. 이후 처리에 사용할 overflowWidth을 계산한다.
+  // 1. 이후 단계에서 사용할 overflowWidth 값을 준비한다.
   let overflowWidth = sum(widths) - targetWidth;
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (overflowWidth <= 0) {
     return;
   }
 
-  // 3. 이후 처리에 사용할 minimumWidths을 계산한다.
+  // 3. 이후 단계에서 사용할 minimumWidths 값을 준비한다.
   const minimumWidths = getEffectiveMinimumWidths(columns, targetWidth);
   // 4. 현재 처리 흐름의 다음 단계를 수행한다.
   while (overflowWidth > 0.01) {
@@ -511,32 +511,32 @@ function growWidthsToTarget(
   }
 }
 
-// 기능 : get Effective Minimum Widths 값을 조회합니다.
+// 기능 : 적용 가능한 최소 열 너비를 조회합니다.
 function getEffectiveMinimumWidths(
   columns: readonly ResizableTableColumn[],
   targetWidth: number,
 ) {
-  // 1. 이후 처리에 사용할 minimumWidths을 계산한다.
+  // 1. 이후 단계에서 사용할 minimumWidths 값을 준비한다.
   const minimumWidths = columns.map((column) => column.minWidth);
-  // 2. 이후 처리에 사용할 minimumTotalWidth을 계산한다.
+  // 2. 이후 단계에서 사용할 minimumTotalWidth 값을 준비한다.
   const minimumTotalWidth = sum(minimumWidths);
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (targetWidth >= minimumTotalWidth) {
     return minimumWidths;
   }
 
-  // 4. 이후 처리에 사용할 scale을 계산한다.
+  // 4. 이후 단계에서 사용할 scale 값을 준비한다.
   const scale = targetWidth / minimumTotalWidth;
   // 5. 계산된 결과를 호출자에게 반환한다.
   return minimumWidths.map((width) => width * scale);
 }
 
-// 기능 : get Minimum Column Width Total 값을 조회합니다.
+// 기능 : 최소 열 너비 합계를 조회합니다.
 function getMinimumColumnWidthTotal(columns: readonly ResizableTableColumn[]) {
   return sum(columns.map((column) => column.minWidth));
 }
 
-// 기능 : get Bounded Pair Delta 값을 조회합니다.
+// 기능 : 제한된 열 너비 변경량을 조회합니다.
 function getBoundedPairDelta(
   delta: number,
   column: ResizableTableColumn,
@@ -574,11 +574,11 @@ function roundWidthsToAvailableTotal(
   widths: readonly number[],
   availableWidth: number,
 ) {
-  // 1. 이후 처리에 사용할 roundedWidths을 계산한다.
+  // 1. 이후 단계에서 사용할 roundedWidths 값을 준비한다.
   const roundedWidths = widths.map((width) => Math.max(1, Math.floor(width)));
-  // 2. 이후 처리에 사용할 desiredTotalWidth을 계산한다.
+  // 2. 이후 단계에서 사용할 desiredTotalWidth 값을 준비한다.
   const desiredTotalWidth = Math.min(availableWidth, Math.round(sum(widths)));
-  // 3. 이후 처리에 사용할 remainingWidth을 계산한다.
+  // 3. 이후 단계에서 사용할 remainingWidth 값을 준비한다.
   let remainingWidth = desiredTotalWidth - sum(roundedWidths);
 
   // 4. 대상 목록을 순회하며 필요한 값을 처리한다.

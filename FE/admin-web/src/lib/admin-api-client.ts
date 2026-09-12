@@ -21,12 +21,12 @@ export async function adminApiClient<TResponse>(
   path: string,
   options: AdminApiClientOptions = {}
 ): Promise<TResponse> {
-  // 1. 이후 처리에 사용할 headers을 계산한다.
+  // 1. 이후 단계에서 사용할 headers 값을 준비한다.
   const headers = new Headers(options.headers);
-  // 2. 현재 단계에서 필요한 side effect를 실행한다.
+  // 2. 현재 단계에서 필요한 동작을 실행한다.
   headers.set("Content-Type", "application/json");
 
-  // 3. 이후 처리에 사용할 accessToken을 계산한다.
+  // 3. 이후 단계에서 사용할 accessToken 값을 준비한다.
   const accessToken = options.accessToken ?? adminAccessToken;
 
   // 4. 조건을 확인해 필요한 분기 처리를 수행한다.

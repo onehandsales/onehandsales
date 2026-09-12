@@ -123,7 +123,7 @@ export class ErrorReportApplicationService {
 
   // 기능 : 현재 화면 주소를 trim하고 필수/길이 조건을 검증합니다.
   private normalizePageUrl(value: string | undefined): string {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = value?.trim() ?? "";
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

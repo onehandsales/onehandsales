@@ -111,7 +111,7 @@ class FakeAuthRepository implements AuthRepository {
     oauthAccountId: string,
     providerUserId: string
   ): Promise<AuthOAuthAccountRecord> {
-    // 1. 이후 처리에 사용할 account을 계산한다.
+    // 1. 이후 단계에서 사용할 account 값을 준비한다.
     const account = this.oauthAccounts.find((item) => item.id === oauthAccountId);
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -119,12 +119,12 @@ class FakeAuthRepository implements AuthRepository {
       throw new Error(`Missing fake OAuth account: ${oauthAccountId}`);
     }
 
-    // 3. 이후 처리에 사용할 updated을 계산한다.
+    // 3. 이후 단계에서 사용할 updated 값을 준비한다.
     const updated: AuthOAuthAccountRecord = {
       ...account,
       providerUserId,
     };
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     this.oauthAccounts = this.oauthAccounts.map((item) =>
       item.id === oauthAccountId ? updated : item
     );
@@ -159,7 +159,7 @@ class FakeAuthRepository implements AuthRepository {
   async createUserWithOAuthAccount(
     input: CreateAuthUserInput
   ): Promise<AuthUserRecord> {
-    // 1. 이후 처리에 사용할 user을 계산한다.
+    // 1. 이후 단계에서 사용할 user 값을 준비한다.
     const user: AuthUserRecord = {
       id: `user-${this.users.length + 1}`,
       email: input.email,
@@ -178,9 +178,9 @@ class FakeAuthRepository implements AuthRepository {
       lastLoginTimeZone: input.lastLoginTimeZone,
       deletedAt: null,
     };
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     this.users.push(user);
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     this.oauthAccounts.push({
       id: `oauth-${this.oauthAccounts.length + 1}`,
       userId: user.id,
@@ -194,9 +194,9 @@ class FakeAuthRepository implements AuthRepository {
 
   // 기능 : fake 사용자의 이메일과 역할을 로그인 결과로 갱신합니다.
   async updateUserAfterLogin(input: UpdateUserLoginInput): Promise<AuthUserRecord> {
-    // 1. 이후 처리에 사용할 user을 계산한다.
+    // 1. 이후 단계에서 사용할 user 값을 준비한다.
     const user = this.getUser(input.userId);
-    // 2. 이후 처리에 사용할 updated을 계산한다.
+    // 2. 이후 단계에서 사용할 updated 값을 준비한다.
     const updated: AuthUserRecord = {
       ...user,
       email: input.email,
@@ -206,7 +206,7 @@ class FakeAuthRepository implements AuthRepository {
       lastLoginTimeZone: input.lastLoginTimeZone,
     };
     // 기능 : 갱신 대상 사용자만 교체한 fake 사용자 목록을 만듭니다.
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     this.users = this.users.map((item) => (item.id === user.id ? updated : item));
 
     // 4. 계산된 결과를 호출자에게 반환한다.
@@ -216,7 +216,7 @@ class FakeAuthRepository implements AuthRepository {
   // 기능 : fake 사용자 목록에서 내 정보 응답용 사용자와 OAuth 계정을 조회합니다.
   async getMe(userId: string): Promise<AuthMeRecord | null> {
     // 기능 : userId와 일치하는 fake 사용자를 찾습니다.
-    // 1. 이후 처리에 사용할 user을 계산한다.
+    // 1. 이후 단계에서 사용할 user 값을 준비한다.
     const user = this.users.find((item) => item.id === userId);
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -224,7 +224,7 @@ class FakeAuthRepository implements AuthRepository {
       return null;
     }
 
-    // 3. 이후 처리에 사용할 oauthAccount을 계산한다.
+    // 3. 이후 단계에서 사용할 oauthAccount 값을 준비한다.
     const oauthAccount = this.oauthAccounts.find(
       // 기능 : fake 사용자에 연결된 OAuth 계정을 찾습니다.
       (account) => account.userId === user.id
@@ -268,14 +268,14 @@ class FakeAuthRepository implements AuthRepository {
     authDeviceId: string,
     label: string | null
   ): Promise<AuthDeviceRecord> {
-    // 1. 이후 처리에 사용할 device을 계산한다.
+    // 1. 이후 단계에서 사용할 device 값을 준비한다.
     const device = this.getDevice(authDeviceId);
-    // 2. 이후 처리에 사용할 updated을 계산한다.
+    // 2. 이후 단계에서 사용할 updated 값을 준비한다.
     const updated: AuthDeviceRecord = {
       ...device,
       label,
     };
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     this.devices = this.devices.map(
       // 기능 : 갱신 대상 기기만 교체한 fake 기기 목록을 만듭니다.
       (item) => (item.id === authDeviceId ? updated : item)
@@ -429,17 +429,17 @@ function makeExchangeCommand(
 // 기능 : ExchangeExternalAuthTokenUseCase의 사용자, 기기, 세션 생성 시나리오를 테스트합니다.
 describe("ExchangeExternalAuthTokenUseCase", () => {
   // 기능 : 초기 관리자 사용자의 첫 로그인 시 생성 흐름을 검증합니다.
-  // 1. 현재 단계에서 필요한 side effect를 실행한다.
+  // 1. 테스트 시나리오를 실행한다.
   it("creates an initial admin user, device, and session", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: "Admin@Example.com",
       name: "Admin User",
     });
 
-    // 3. 화면 상태와 동작에 필요한 result 값을 준비한다.
+    // 3. 처리 흐름에 필요한 result 값을 준비한다.
     const result = await useCase.execute(makeExchangeCommand());
 
     // 4. 테스트 기대 조건을 검증한다.
@@ -469,7 +469,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : 로그인 exchange locale을 현재 지원 시장 기준 값으로 정규화합니다.
-  // 2. 현재 단계에서 필요한 side effect를 실행한다.
+  // 2. 테스트 시나리오를 실행한다.
   it.each([
     ["ko", "ko-KR"],
     ["ko_KR", "ko-KR"],
@@ -477,15 +477,15 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     ["en-x-test", "en"],
     ["unsupported-locale", "ko-KR"],
   ])("normalizes login locale %s to %s", async (inputLocale, expectedLocale) => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: "user@example.com",
       name: "User",
     });
 
-    // 3. 화면 상태와 동작에 필요한 result 값을 준비한다.
+    // 3. 처리 흐름에 필요한 result 값을 준비한다.
     const result = await useCase.execute(
       makeExchangeCommand({
         locale: inputLocale,
@@ -503,17 +503,17 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : 신규 가입 기본 국가와 통화를 프록시 국가 기준으로 저장합니다.
-  // 3. 현재 단계에서 필요한 side effect를 실행한다.
+  // 3. 테스트 시나리오를 실행한다.
   it("sets user country and currency defaults for a US signup", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: "user@example.com",
       name: "User",
     });
 
-    // 3. 화면 상태와 동작에 필요한 result 값을 준비한다.
+    // 3. 처리 흐름에 필요한 result 값을 준비한다.
     const result = await useCase.execute(
       makeExchangeCommand({
         locale: "en-US",
@@ -539,25 +539,25 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : 동일 슬롯에 다른 활성 기기가 있을 때 교체 옵션 없이는 거부되는지 검증합니다.
-  // 4. 현재 단계에서 필요한 side effect를 실행한다.
+  // 4. 테스트 시나리오를 실행한다.
   it("rejects a different active device in the same slot without replacement", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     repository.users.push(
       makeAuthUser({
         email: "user@example.com",
         displayName: "User",
       })
     );
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     repository.oauthAccounts.push({
       id: "oauth-1",
       userId: "user-1",
       provider: "google",
       providerUserId: "external-user-1",
     });
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     repository.devices.push({
       id: "device-1",
       userId: "user-1",
@@ -565,7 +565,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
       deviceIdHash: "hash:device:other-device-id",
       label: "회사 노트북",
     });
-    // 5. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 5. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: "user@example.com",
       name: "User",
@@ -585,21 +585,21 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : 같은 기기의 반복 token exchange가 AuthSession row를 늘리지 않는지 검증합니다.
-  // 5. 현재 단계에서 필요한 side effect를 실행한다.
+  // 5. 테스트 시나리오를 실행한다.
   it("reuses the active session for repeated exchanges from the same device", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: "user@example.com",
       name: "User",
     });
-    // 3. 이후 처리에 사용할 command을 계산한다.
+    // 3. 이후 단계에서 사용할 command 값을 준비한다.
     const command = makeExchangeCommand();
 
-    // 4. 화면 상태와 동작에 필요한 first 값을 준비한다.
+    // 4. 처리 흐름에 필요한 first 값을 준비한다.
     const first = await useCase.execute(command);
-    // 5. 화면 상태와 동작에 필요한 second 값을 준비한다.
+    // 5. 처리 흐름에 필요한 second 값을 준비한다.
     const second = await useCase.execute(command);
 
     // 6. 테스트 기대 조건을 검증한다.
@@ -615,11 +615,11 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : 기존 사용자의 명시 설정 시간대는 로그인 환경 메타데이터로 덮어쓰지 않습니다.
-  // 6. 현재 단계에서 필요한 side effect를 실행한다.
+  // 6. 테스트 시나리오를 실행한다.
   it("preserves the existing user timezone while updating last login metadata", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     repository.users.push(
       makeAuthUser({
         email: "user@example.com",
@@ -630,20 +630,20 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
         lastLoginTimeZone: "America/New_York",
       })
     );
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     repository.oauthAccounts.push({
       id: "oauth-1",
       userId: "user-1",
       provider: "google",
       providerUserId: "external-user-1",
     });
-    // 4. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 4. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: "user@example.com",
       name: "User",
     });
 
-    // 5. 화면 상태와 동작에 필요한 result 값을 준비한다.
+    // 5. 처리 흐름에 필요한 result 값을 준비한다.
     const result = await useCase.execute(
       makeExchangeCommand({
         locale: "ko-KR",
@@ -673,25 +673,25 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : 기존 Supabase user id 기반 OAuth 매핑을 provider 계정 ID 기반 매핑으로 승격합니다.
-  // 7. 현재 단계에서 필요한 side effect를 실행한다.
+  // 7. 테스트 시나리오를 실행한다.
   it("upgrades a legacy Supabase auth id OAuth mapping to the provider account id", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     repository.users.push(
       makeAuthUser({
         email: "user@example.com",
         displayName: "User",
       })
     );
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     repository.oauthAccounts.push({
       id: "oauth-1",
       userId: "user-1",
       provider: "google",
       providerUserId: "supabase-auth-user-1",
     });
-    // 4. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 4. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(
       repository,
       {
@@ -718,13 +718,13 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : LINE과 Apple provider도 신규 사용자 생성 흐름에서 OAuth 계정으로 저장되는지 검증합니다.
-  // 8. 현재 단계에서 필요한 side effect를 실행한다.
+  // 8. 테스트 시나리오를 실행한다.
   it.each(["line", "apple"] as const)(
     "creates a user with %s OAuth account",
     async (provider) => {
-      // 1. 이후 처리에 사용할 repository을 계산한다.
+      // 1. 이후 단계에서 사용할 repository 값을 준비한다.
       const repository = new FakeAuthRepository();
-      // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+      // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
       const useCase = createUseCase(repository, {
         email: "user@example.com",
         name: "User",
@@ -744,11 +744,11 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   );
 
   // 기능 : provider 계정이 없으면 verified email로 기존 사용자를 찾아 OAuth 계정을 연결합니다.
-  // 9. 현재 단계에서 필요한 side effect를 실행한다.
+  // 9. 테스트 시나리오를 실행한다.
   it("links a new provider account to an existing user by normalized verified email", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     repository.users.push(
       makeAuthUser({
         id: "user-1",
@@ -756,7 +756,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
         displayName: "Owner",
       })
     );
-    // 3. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 3. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(
       repository,
       {
@@ -770,7 +770,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
       }
     );
 
-    // 4. 화면 상태와 동작에 필요한 result 값을 준비한다.
+    // 4. 처리 흐름에 필요한 result 값을 준비한다.
     const result = await useCase.execute(
       makeExchangeCommand({
         locale: "en-US",
@@ -797,11 +797,11 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : provider가 검증 이메일을 제공하지 않으면 신규 사용자 생성이나 연결을 차단합니다.
-  // 10. 현재 단계에서 필요한 side effect를 실행한다.
+  // 10. 테스트 시나리오를 실행한다.
   it("rejects provider exchange when verified email is missing", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCase(repository, {
       email: null,
       name: "Apple User",
@@ -826,11 +826,11 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
   });
 
   // 기능 : Supabase/provider 검증 실패 원문은 안전한 exchange 실패 오류로 축소합니다.
-  // 11. 현재 단계에서 필요한 side effect를 실행한다.
+  // 11. 테스트 시나리오를 실행한다.
   it("redacts raw provider verifier failures", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeAuthRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = createUseCaseWithVerifierResult(
       repository,
       new Error("raw provider quota secret")

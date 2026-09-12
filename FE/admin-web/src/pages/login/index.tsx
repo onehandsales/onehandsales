@@ -4,7 +4,7 @@ import { useAdminAuthSession } from "@/features/auth";
 
 // 기능 : access token을 받아 /admin/api/me 권한 확인을 요청합니다.
 export function LoginPage() {
-  // 1. 화면 상태와 동작에 필요한 객체 구조분해 값을 준비한다.
+  // 1. 처리 흐름에 필요한 객체 구조분해 값을 준비한다.
   const {
     clearError,
     error,
@@ -12,16 +12,16 @@ export function LoginPage() {
     loginWithAccessToken,
     role,
   } = useAdminAuthSession();
-  // 2. 화면 상태와 동작에 필요한 location 값을 준비한다.
+  // 2. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
-  // 3. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
+  // 3. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
-  // 4. 이후 처리에 사용할 redirectTo을 계산한다.
+  // 4. 이후 단계에서 사용할 redirectTo 값을 준비한다.
   const redirectTo = getRedirectPath(location.state);
-  // 5. 화면 상태와 동작에 필요한 [accessToken, setAccessToken] 값을 준비한다.
+  // 5. 처리 흐름에 필요한 [accessToken, setAccessToken] 값을 준비한다.
   const [accessToken, setAccessToken] = useState("");
 
-  // 6. 현재 단계에서 필요한 side effect를 실행한다.
+  // 6. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
     if (role === "ADMIN") {
       navigate(redirectTo, { replace: true });
@@ -29,19 +29,19 @@ export function LoginPage() {
   }, [navigate, redirectTo, role]);
 
   // 기능 : token 입력값을 갱신하고 이전 오류를 지웁니다.
-  // 7. 이후 처리에 사용할 onAccessTokenChange을 계산한다.
+  // 7. 이후 단계에서 사용할 onAccessTokenChange 값을 준비한다.
   const onAccessTokenChange = (event: ChangeEvent<HTMLInputElement>) => {
     clearError();
     setAccessToken(event.currentTarget.value);
   };
 
   // 기능 : 입력된 access token으로 관리자 권한 확인을 시작합니다.
-  // 8. 이후 처리에 사용할 onTokenSubmit을 계산한다.
+  // 8. 이후 단계에서 사용할 onTokenSubmit 값을 준비한다.
   const onTokenSubmit = (event: FormEvent<HTMLFormElement>) => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 브라우저 기본 동작을 막는다.
     event.preventDefault();
 
-    // 2. 이후 처리에 사용할 token을 계산한다.
+    // 2. 이후 단계에서 사용할 token 값을 준비한다.
     const token = accessToken.trim();
 
     // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -49,7 +49,7 @@ export function LoginPage() {
       return;
     }
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     void loginWithAccessToken(token);
   };
 

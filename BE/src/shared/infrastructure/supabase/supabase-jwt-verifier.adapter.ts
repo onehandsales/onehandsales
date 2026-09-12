@@ -33,15 +33,15 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
 
   // 기능 : Supabase access token을 검증하고 외부 인증 사용자 정보로 변환합니다.
   async verifyAccessToken(accessToken: string): Promise<VerifiedExternalUser> {
-    // 1. 이후 처리에 사용할 issuer을 계산한다.
+    // 1. 이후 단계에서 사용할 issuer 값을 준비한다.
     const issuer = getRequiredConfig(this.configService, "SUPABASE_JWT_ISSUER");
     // 2. 비동기 결과를 받아 payload에 저장한다.
     const payload = await this.verifyJwt(accessToken, issuer);
-    // 3. 이후 처리에 사용할 provider을 계산한다.
+    // 3. 이후 단계에서 사용할 provider 값을 준비한다.
     const provider = this.getProvider(payload);
-    // 4. 이후 처리에 사용할 email을 계산한다.
+    // 4. 이후 단계에서 사용할 email 값을 준비한다.
     const email = this.getVerifiedEmail(payload);
-    // 5. 이후 처리에 사용할 name을 계산한다.
+    // 5. 이후 단계에서 사용할 name 값을 준비한다.
     const name = this.getName(payload);
 
     // 6. 계산된 결과를 호출자에게 반환한다.
@@ -141,9 +141,9 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
 
   // 기능 : Supabase user id가 아니라 OAuth provider가 발급한 안정적인 계정 ID를 추출합니다.
   private getProviderAccountId(payload: SupabaseJwtPayload & { sub: string }): string {
-    // 1. 이후 처리에 사용할 metadata을 계산한다.
+    // 1. 이후 단계에서 사용할 metadata 값을 준비한다.
     const metadata = payload.user_metadata;
-    // 2. 이후 처리에 사용할 providerAccountId을 계산한다.
+    // 2. 이후 단계에서 사용할 providerAccountId 값을 준비한다.
     const providerAccountId =
       this.getString(metadata, "provider_id") ?? this.getString(metadata, "sub");
 
@@ -163,9 +163,9 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
       return null;
     }
 
-    // 2. 이후 처리에 사용할 provider을 계산한다.
+    // 2. 이후 단계에서 사용할 provider 값을 준비한다.
     const provider = value.trim().toLowerCase();
-    // 3. 이후 처리에 사용할 normalizedProvider을 계산한다.
+    // 3. 이후 단계에서 사용할 normalizedProvider 값을 준비한다.
     const normalizedProvider =
       provider === "custom:line" ? "line" : provider;
 

@@ -391,11 +391,11 @@ function waitForPopupLoginCompletion(popup: Window) {
         return;
       }
 
-      // 2. 현재 단계에서 필요한 side effect를 실행한다.
+      // 2. 현재 단계에서 필요한 동작을 실행한다.
       isSettled = true;
-      // 3. 현재 단계에서 필요한 side effect를 실행한다.
+      // 3. 현재 단계에서 필요한 동작을 실행한다.
       cleanup();
-      // 4. 현재 단계에서 필요한 side effect를 실행한다.
+      // 4. 현재 단계에서 필요한 동작을 실행한다.
       callback();
     };
 

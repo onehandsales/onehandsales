@@ -77,13 +77,13 @@ async function setupAdminApiMocks(page: Page) {
   }> = [];
 
   await page.route(isAdminApiRequest, async (route) => {
-    // 1. 이후 처리에 사용할 request을 계산한다.
+    // 1. 이후 단계에서 사용할 request 값을 준비한다.
     const request = route.request();
-    // 2. 이후 처리에 사용할 method을 계산한다.
+    // 2. 이후 단계에서 사용할 method 값을 준비한다.
     const method = request.method();
-    // 3. 이후 처리에 사용할 url을 계산한다.
+    // 3. 이후 단계에서 사용할 url 값을 준비한다.
     const url = new URL(request.url());
-    // 4. 이후 처리에 사용할 authorization을 계산한다.
+    // 4. 이후 단계에서 사용할 authorization 값을 준비한다.
     const authorization = request.headers().authorization ?? null;
 
     // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -92,7 +92,7 @@ async function setupAdminApiMocks(page: Page) {
       return;
     }
 
-    // 6. 현재 단계에서 필요한 side effect를 실행한다.
+    // 6. 현재 단계에서 필요한 동작을 실행한다.
     requests.push({
       authorization,
       method,

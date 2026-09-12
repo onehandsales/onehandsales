@@ -44,7 +44,7 @@ export class AppLogger implements LoggerService {
       ...(context ? { context } : {}),
       ...(trace ? { trace } : {}),
     };
-    // 2. 이후 처리에 사용할 line을 계산한다.
+    // 2. 이후 단계에서 사용할 line 값을 준비한다.
     const line = `${JSON.stringify(entry)}\n`;
 
     // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -53,7 +53,7 @@ export class AppLogger implements LoggerService {
       return;
     }
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     process.stdout.write(line);
   }
 }

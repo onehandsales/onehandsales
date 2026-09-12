@@ -849,12 +849,12 @@ export function FeatureDetailPage({
 }: {
   readonly featureId: PublicFeatureDetailId;
 }) {
-  // 1. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { language } 값을 준비한다.
   const { language } = usePublicSiteLanguage();
-  // 2. 이후 처리에 사용할 copy을 계산한다.
+  // 2. 이후 단계에서 사용할 copy 값을 준비한다.
   const copy =
     featureDetailCopyByLanguage[getPublicSiteCopyLanguage(language)][featureId];
-  // 3. 이후 처리에 사용할 tocItems을 계산한다.
+  // 3. 이후 단계에서 사용할 tocItems 값을 준비한다.
   const tocItems = copy.sections.map((section) => ({
     id: section.id,
     title: section.title,

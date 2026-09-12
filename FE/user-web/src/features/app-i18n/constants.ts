@@ -58,7 +58,7 @@ export function normalizeAppCurrencyCode(
 
 // 기능 : 사용자/브라우저 locale을 앱 지원 locale로 정규화합니다.
 export function normalizeAppLocale(value: string | null | undefined): AppLocale {
-  // 1. 이후 처리에 사용할 normalized을 계산한다.
+  // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
   const normalized = value?.trim().replace("_", "-").toLowerCase();
 
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

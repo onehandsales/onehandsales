@@ -31,14 +31,14 @@ const USER_SNAPSHOT: ErrorReportUserSnapshot = {
 
 // 기능 : ErrorReportApplicationService 테스트용 fixture를 생성합니다.
 function createFixture() {
-  // 1. 이후 처리에 사용할 repository을 계산한다.
+  // 1. 이후 단계에서 사용할 repository 값을 준비한다.
   const repository: jest.Mocked<ErrorReportRepository> = {
     createErrorReport: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000301",
     }),
     findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
   };
-  // 2. 이후 처리에 사용할 screenshotStorage을 계산한다.
+  // 2. 이후 단계에서 사용할 screenshotStorage 값을 준비한다.
   const screenshotStorage: jest.Mocked<ErrorReportScreenshotStorage> = {
     store: jest.fn().mockResolvedValue({
       checksum: "sha256-checksum",
@@ -49,7 +49,7 @@ function createFixture() {
       storageProvider: "SUPABASE",
     }),
   };
-  // 3. 이후 처리에 사용할 logger을 계산한다.
+  // 3. 이후 단계에서 사용할 logger 값을 준비한다.
   const logger: Pick<AppLogger, "error" | "log"> = {
     error: jest.fn(),
     log: jest.fn(),
@@ -111,7 +111,7 @@ describe("ErrorReportApplicationService", () => {
 
   // 3. 필요한 비동기 작업을 실행한다.
   it("creates an error report without screenshot", async () => {
-    // 1. 이후 처리에 사용할 fixture을 계산한다.
+    // 1. 이후 단계에서 사용할 fixture 값을 준비한다.
     const fixture = createFixture();
 
     // 2. 비동기 결과를 받아 response에 저장한다.
@@ -148,9 +148,9 @@ describe("ErrorReportApplicationService", () => {
 
   // 4. 필요한 비동기 작업을 실행한다.
   it("stores png screenshot metadata when user includes screenshot", async () => {
-    // 1. 이후 처리에 사용할 fixture을 계산한다.
+    // 1. 이후 단계에서 사용할 fixture 값을 준비한다.
     const fixture = createFixture();
-    // 2. 이후 처리에 사용할 screenshotBuffer을 계산한다.
+    // 2. 이후 단계에서 사용할 screenshotBuffer 값을 준비한다.
     const screenshotBuffer = Buffer.from("png");
 
     // 3. 필요한 비동기 작업을 실행한다.
@@ -192,11 +192,11 @@ describe("ErrorReportApplicationService", () => {
     );
   });
 
-  // 5. 현재 단계에서 필요한 side effect를 실행한다.
+  // 5. 테스트 시나리오를 실행한다.
   it("maps screenshot storage failures to a safe retryable error", async () => {
-    // 1. 이후 처리에 사용할 fixture을 계산한다.
+    // 1. 이후 단계에서 사용할 fixture 값을 준비한다.
     const fixture = createFixture();
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     fixture.screenshotStorage.store.mockRejectedValue(new Error("network"));
 
     // 3. 필요한 비동기 작업을 실행한다.

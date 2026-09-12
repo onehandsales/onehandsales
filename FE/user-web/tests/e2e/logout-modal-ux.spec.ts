@@ -20,7 +20,7 @@ test.describe("logout modal UX", () => {
     // 5. 필요한 비동기 작업을 실행한다.
     await page.getByRole("menuitem", { exact: true, name: "로그아웃" }).click();
 
-    // 6. 이후 처리에 사용할 logoutDialog을 계산한다.
+    // 6. 이후 단계에서 사용할 logoutDialog 값을 준비한다.
     const logoutDialog = page.getByRole("dialog");
     // 7. 필요한 비동기 작업을 실행한다.
     await expect(

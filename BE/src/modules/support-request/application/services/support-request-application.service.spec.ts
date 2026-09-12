@@ -26,16 +26,16 @@ const USER_SNAPSHOT: SupportRequestUserSnapshot = {
 
 // 기능 : SupportRequestApplicationService 테스트용 fixture를 생성합니다.
 function createFixture() {
-  // 1. 이후 처리에 사용할 repository을 계산한다.
+  // 1. 이후 단계에서 사용할 repository 값을 준비한다.
   const repository: jest.Mocked<SupportRequestRepository> = {
     createSupportRequest: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000301",
     }),
     findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
   };
-  // 2. 이후 처리에 사용할 logger을 계산한다.
+  // 2. 이후 단계에서 사용할 logger 값을 준비한다.
   const logger = new AppLogger();
-  // 3. 이후 처리에 사용할 logSpy을 계산한다.
+  // 3. 이후 단계에서 사용할 logSpy 값을 준비한다.
   const logSpy = jest.spyOn(logger, "log").mockImplementation(() => undefined);
 
   // 4. 계산된 결과를 호출자에게 반환한다.
@@ -131,7 +131,7 @@ describe("SupportRequestApplicationService", () => {
 
   // 5. 필요한 비동기 작업을 실행한다.
   it("creates a support request with user snapshot and safe logging", async () => {
-    // 1. 이후 처리에 사용할 fixture을 계산한다.
+    // 1. 이후 단계에서 사용할 fixture 값을 준비한다.
     const fixture = createFixture();
 
     // 2. 비동기 결과를 받아 response에 저장한다.
@@ -164,7 +164,7 @@ describe("SupportRequestApplicationService", () => {
       message: "지원 요청을 보냈어요.",
     });
 
-    // 6. 이후 처리에 사용할 logPayload을 계산한다.
+    // 6. 이후 단계에서 사용할 logPayload 값을 준비한다.
     const logPayload = String(fixture.logSpy.mock.calls[0]?.[0] ?? "");
     // 7. 테스트 기대 조건을 검증한다.
     expect(logPayload).toContain("supportRequest.created");

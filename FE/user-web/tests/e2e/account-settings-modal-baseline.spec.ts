@@ -16,7 +16,7 @@ test.describe("G01 account settings modal baseline", () => {
     // 3. 필요한 비동기 작업을 실행한다.
     await page.goto("/app?account=settings");
 
-    // 4. 이후 처리에 사용할 accountDialog을 계산한다.
+    // 4. 이후 단계에서 사용할 accountDialog 값을 준비한다.
     const accountDialog = page.getByRole("dialog").first();
     // 5. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\?account=settings$/);
@@ -42,7 +42,7 @@ test.describe("G01 account settings modal baseline", () => {
     // 13. 필요한 비동기 작업을 실행한다.
     await accountDialog.getByLabel("기본 통화").selectOption("USD");
 
-    // 14. 이후 처리에 사용할 profilePatchRequest을 계산한다.
+    // 14. 이후 단계에서 사용할 profilePatchRequest 값을 준비한다.
     const profilePatchRequest = page.waitForRequest((request) => {
       const url = new URL(request.url());
 
@@ -75,7 +75,7 @@ test.describe("G01 account settings modal baseline", () => {
     // 22. 필요한 비동기 작업을 실행한다.
     await page.getByRole("menuitem", { name: "설정" }).click();
 
-    // 23. 이후 처리에 사용할 reopenedDialog을 계산한다.
+    // 23. 이후 단계에서 사용할 reopenedDialog 값을 준비한다.
     const reopenedDialog = page.getByRole("dialog").first();
     // 24. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/account=settings/);

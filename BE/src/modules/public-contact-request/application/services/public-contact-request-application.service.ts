@@ -202,7 +202,7 @@ export class PublicContactRequestApplicationService {
     maxLength: number,
     tooLongMessage: string
   ): string {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = value?.trim() ?? "";
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -226,7 +226,7 @@ export class PublicContactRequestApplicationService {
     maxLength: number,
     tooLongMessage: string
   ): string | null {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = value?.trim() ?? "";
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -310,7 +310,7 @@ export class PublicContactRequestApplicationService {
   private normalizeLocale(
     value: string | undefined
   ): PublicContactRequestLocale | null {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = value?.trim() ?? "";
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

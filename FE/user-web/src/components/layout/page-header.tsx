@@ -124,11 +124,11 @@ export function PageHeader({
 // ── 툴팁 아이콘 버튼 ────────────────────────────────────────
 // 기능 : TooltipIconButton 버튼 UI를 렌더링합니다.
 function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
-  // 1. 이후 처리에 사용할 Icon을 계산한다.
+  // 1. 이후 단계에서 사용할 Icon 값을 준비한다.
   const Icon = action.icon;
 
   // variant별 스타일 — 테두리 + 배경을 넣어 눈에 잘 띄게
-  // 2. 이후 처리에 사용할 variantClass을 계산한다.
+  // 2. 이후 단계에서 사용할 variantClass 값을 준비한다.
   const variantClass = {
     primary:
       "border border-[#4880EE] bg-[#4880EE] text-white hover:bg-[#1D4ED8] hover:border-[#1D4ED8]",
@@ -138,7 +138,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
       "border border-[#FECACA] bg-white text-[#DC2626] hover:bg-red-50 hover:border-red-300",
   }[action.variant ?? "default"];
 
-  // 3. 이후 처리에 사용할 inner을 계산한다.
+  // 3. 이후 단계에서 사용할 inner 값을 준비한다.
   const inner = (
     <>
       <Icon className="h-[16px] w-[16px]" strokeWidth={2} />
@@ -151,7 +151,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
     </>
   );
 
-  // 4. 이후 처리에 사용할 commonClass을 계산한다.
+  // 4. 이후 단계에서 사용할 commonClass 값을 준비한다.
   const commonClass = cn(
     "group relative inline-flex h-8 w-8 items-center justify-center rounded-md shadow-sm transition-[background-color,border-color,color,opacity] duration-500",
     variantClass,
@@ -161,7 +161,7 @@ function TooltipIconButton({ action }: { readonly action: HeaderAction }) {
         ? "pointer-events-none opacity-40"
         : "opacity-100"
   );
-  // 5. 이후 처리에 사용할 hiddenProps을 계산한다.
+  // 5. 이후 단계에서 사용할 hiddenProps 값을 준비한다.
   const hiddenProps = action.hidden
     ? {
         "aria-hidden": true,

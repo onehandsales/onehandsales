@@ -15,17 +15,17 @@ export function createTimestampedXlsxFileName(
   prefix: string,
   now = new Date()
 ): string {
-  // 1. 이후 처리에 사용할 year을 계산한다.
+  // 1. 이후 단계에서 사용할 year 값을 준비한다.
   const year = now.getFullYear().toString();
-  // 2. 이후 처리에 사용할 month을 계산한다.
+  // 2. 이후 단계에서 사용할 month 값을 준비한다.
   const month = padDatePart(now.getMonth() + 1);
-  // 3. 이후 처리에 사용할 day을 계산한다.
+  // 3. 이후 단계에서 사용할 day 값을 준비한다.
   const day = padDatePart(now.getDate());
-  // 4. 이후 처리에 사용할 hour을 계산한다.
+  // 4. 이후 단계에서 사용할 hour 값을 준비한다.
   const hour = padDatePart(now.getHours());
-  // 5. 이후 처리에 사용할 minute을 계산한다.
+  // 5. 이후 단계에서 사용할 minute 값을 준비한다.
   const minute = padDatePart(now.getMinutes());
-  // 6. 이후 처리에 사용할 second을 계산한다.
+  // 6. 이후 단계에서 사용할 second 값을 준비한다.
   const second = padDatePart(now.getSeconds());
 
   // 7. 계산된 결과를 호출자에게 반환한다.

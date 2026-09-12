@@ -81,7 +81,7 @@ export class UpdateMyProfileUseCase {
       return null;
     }
 
-    // 3. 이후 처리에 사용할 trimmed을 계산한다.
+    // 3. 이후 단계에서 사용할 trimmed 값을 준비한다.
     const trimmed = name.trim();
     // 4. 계산된 결과를 호출자에게 반환한다.
     return trimmed.length > 0 ? trimmed : null;
@@ -89,7 +89,7 @@ export class UpdateMyProfileUseCase {
 
   // 기능 : 사용자가 선택한 표시 언어를 지원 locale 값으로 정규화합니다.
   private normalizePreferredLocale(locale: string | undefined): string | undefined {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = locale?.trim().replace("_", "-");
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -102,7 +102,7 @@ export class UpdateMyProfileUseCase {
       return normalized;
     }
 
-    // 4. 이후 처리에 사용할 normalizedLower을 계산한다.
+    // 4. 이후 단계에서 사용할 normalizedLower 값을 준비한다.
     const normalizedLower = normalized.toLowerCase();
 
     // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -130,7 +130,7 @@ export class UpdateMyProfileUseCase {
       return undefined;
     }
 
-    // 2. 이후 처리에 사용할 trimmed을 계산한다.
+    // 2. 이후 단계에서 사용할 trimmed 값을 준비한다.
     const trimmed = timeZone.trim();
 
     // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -148,7 +148,7 @@ export class UpdateMyProfileUseCase {
 
   // 기능 : 사용자 기본 국가 코드를 08 1차 지원 국가로 검증합니다.
   private normalizeCountryCode(countryCode: string | undefined): string | undefined {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = countryCode?.trim().toUpperCase();
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -173,7 +173,7 @@ export class UpdateMyProfileUseCase {
   private normalizeDefaultCurrencyCode(
     defaultCurrencyCode: string | undefined
   ): string | undefined {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = defaultCurrencyCode?.trim().toUpperCase();
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

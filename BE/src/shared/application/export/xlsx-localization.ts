@@ -44,7 +44,7 @@ export function normalizeXlsxLocale(
   value: string | null | undefined,
   fallback?: string | null
 ): XlsxSupportedLocale {
-  // 1. 이후 처리에 사용할 normalized을 계산한다.
+  // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
   const normalized = normalizeLocaleText(value);
 
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -52,7 +52,7 @@ export function normalizeXlsxLocale(
     return normalized as XlsxSupportedLocale;
   }
 
-  // 3. 이후 처리에 사용할 fallbackLocale을 계산한다.
+  // 3. 이후 단계에서 사용할 fallbackLocale 값을 준비한다.
   const fallbackLocale = normalizeLocaleText(fallback);
 
   // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -68,20 +68,20 @@ export function normalizeXlsxLocale(
 export function resolveXlsxLocalizationContext(
   input: ResolveXlsxLocalizationInput
 ): XlsxLocalizationContext {
-  // 1. 이후 처리에 사용할 locale을 계산한다.
+  // 1. 이후 단계에서 사용할 locale 값을 준비한다.
   const locale = normalizeXlsxLocale(input.locale, input.preferredLocale);
-  // 2. 이후 처리에 사용할 requestedTimeZone을 계산한다.
+  // 2. 이후 단계에서 사용할 requestedTimeZone 값을 준비한다.
   const requestedTimeZone = input.timeZone?.trim();
-  // 3. 이후 처리에 사용할 userTimeZone을 계산한다.
+  // 3. 이후 단계에서 사용할 userTimeZone 값을 준비한다.
   const userTimeZone = input.userTimeZone?.trim();
-  // 4. 이후 처리에 사용할 timeZone을 계산한다.
+  // 4. 이후 단계에서 사용할 timeZone 값을 준비한다.
   const timeZone =
     requestedTimeZone && isValidIanaTimeZone(requestedTimeZone)
       ? requestedTimeZone
       : userTimeZone && isValidIanaTimeZone(userTimeZone)
         ? userTimeZone
         : DEFAULT_USER_TIME_ZONE;
-  // 5. 이후 처리에 사용할 defaultCurrencyCode을 계산한다.
+  // 5. 이후 단계에서 사용할 defaultCurrencyCode 값을 준비한다.
   const defaultCurrencyCode = normalizeCurrencyCode(
     input.defaultCurrencyCode ?? DEFAULT_CURRENCY_CODE
   );
@@ -105,7 +105,7 @@ export function formatXlsxDateTime(
     return null;
   }
 
-  // 2. 이후 처리에 사용할 parts을 계산한다.
+  // 2. 이후 단계에서 사용할 parts 값을 준비한다.
   const parts = getZonedDateTimeParts(value, context.timeZone);
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -153,7 +153,7 @@ export function getXlsxLocalizedText(
 
 // 기능 : 다양한 locale 입력 표기를 앱 지원 locale 표기로 맞춥니다.
 function normalizeLocaleText(value: string | null | undefined): string | null {
-  // 1. 이후 처리에 사용할 normalized을 계산한다.
+  // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
   const normalized = value?.trim().replace("_", "-").toLowerCase();
 
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

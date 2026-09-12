@@ -299,39 +299,39 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
 
 // 기능 : 도입 문의를 단계형 Request Demo 흐름으로 렌더링합니다.
 export function ContactPage() {
-  // 1. 화면 상태와 동작에 필요한 { copy: publicSiteCopy, language } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { copy: publicSiteCopy, language } 값을 준비한다.
   const { copy: publicSiteCopy, language } = usePublicSiteLanguage();
-  // 2. 화면 상태와 동작에 필요한 publicSitePath 값을 준비한다.
+  // 2. 처리 흐름에 필요한 publicSitePath 값을 준비한다.
   const publicSitePath = usePublicSitePath();
-  // 3. 이후 처리에 사용할 copyLanguage을 계산한다.
+  // 3. 이후 단계에서 사용할 copyLanguage 값을 준비한다.
   const copyLanguage = getPublicSiteCopyLanguage(language);
-  // 4. 이후 처리에 사용할 copy을 계산한다.
+  // 4. 이후 단계에서 사용할 copy 값을 준비한다.
   const copy = contactFlowCopyByLanguage[copyLanguage];
-  // 5. 이후 처리에 사용할 regionOptions을 계산한다.
+  // 5. 이후 단계에서 사용할 regionOptions 값을 준비한다.
   const regionOptions = contactRegionOptionsByLanguage[copyLanguage];
-  // 6. 이후 처리에 사용할 regionPlaceholder을 계산한다.
+  // 6. 이후 단계에서 사용할 regionPlaceholder 값을 준비한다.
   const regionPlaceholder = contactRegionPlaceholderByLanguage[copyLanguage];
-  // 7. 화면 상태와 동작에 필요한 [stepIndex, setStepIndex] 값을 준비한다.
+  // 7. 처리 흐름에 필요한 [stepIndex, setStepIndex] 값을 준비한다.
   const [stepIndex, setStepIndex] = useState(0);
-  // 8. 화면 상태와 동작에 필요한 [values, setValues] 값을 준비한다.
+  // 8. 처리 흐름에 필요한 [values, setValues] 값을 준비한다.
   const [values, setValues] = useState<ContactFormValues>(
     emptyContactFormValues
   );
-  // 9. 화면 상태와 동작에 필요한 [errorMessage, setErrorMessage] 값을 준비한다.
+  // 9. 처리 흐름에 필요한 [errorMessage, setErrorMessage] 값을 준비한다.
   const [errorMessage, setErrorMessage] = useState("");
-  // 10. 화면 상태와 동작에 필요한 [isSubmitted, setIsSubmitted] 값을 준비한다.
+  // 10. 처리 흐름에 필요한 [isSubmitted, setIsSubmitted] 값을 준비한다.
   const [isSubmitted, setIsSubmitted] = useState(false);
-  // 11. 화면 상태와 동작에 필요한 [isSubmitting, setIsSubmitting] 값을 준비한다.
+  // 11. 처리 흐름에 필요한 [isSubmitting, setIsSubmitting] 값을 준비한다.
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // 12. 이후 처리에 사용할 currentStep을 계산한다.
+  // 12. 이후 단계에서 사용할 currentStep 값을 준비한다.
   const currentStep = contactStepIds[stepIndex] ?? "email";
-  // 13. 이후 처리에 사용할 selectedSize을 계산한다.
+  // 13. 이후 단계에서 사용할 selectedSize 값을 준비한다.
   const selectedSize = copy.size.options.find(
     (option) => option.value === values.companySize
   );
 
   // 기능 : update Value 정보를 수정합니다.
-  // 14. 이후 처리에 사용할 updateValue을 계산한다.
+  // 14. 이후 단계에서 사용할 updateValue 값을 준비한다.
   const updateValue = <TField extends keyof ContactFormValues>(
     field: TField,
     value: ContactFormValues[TField]
@@ -341,16 +341,16 @@ export function ContactPage() {
   };
 
   // 기능 : go Next 기능을 수행합니다.
-  // 15. 이후 처리에 사용할 goNext을 계산한다.
+  // 15. 이후 단계에서 사용할 goNext 값을 준비한다.
   const goNext = () => {
     setErrorMessage("");
     setStepIndex((current) => Math.min(contactStepIds.length - 1, current + 1));
   };
 
   // 기능 : handle Email Next 이벤트를 처리합니다.
-  // 16. 이후 처리에 사용할 handleEmailNext을 계산한다.
+  // 16. 이후 단계에서 사용할 handleEmailNext 값을 준비한다.
   const handleEmailNext = (event: FormEvent<HTMLFormElement>) => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 브라우저 기본 동작을 막는다.
     event.preventDefault();
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -365,19 +365,19 @@ export function ContactPage() {
       return;
     }
 
-    // 4. 현재 단계에서 필요한 side effect를 실행한다.
+    // 4. 현재 단계에서 필요한 동작을 실행한다.
     goNext();
   };
 
   // 기능 : handle Size Select 이벤트를 처리합니다.
-  // 17. 이후 처리에 사용할 handleSizeSelect을 계산한다.
+  // 17. 이후 단계에서 사용할 handleSizeSelect 값을 준비한다.
   const handleSizeSelect = (option: ContactOption) => {
     updateValue("companySize", option.value);
     setStepIndex(2);
   };
 
   // 기능 : handle Profile Next 이벤트를 처리합니다.
-  // 18. 이후 처리에 사용할 handleProfileNext을 계산한다.
+  // 18. 이후 단계에서 사용할 handleProfileNext 값을 준비한다.
   const handleProfileNext = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -390,9 +390,9 @@ export function ContactPage() {
   };
 
   // 기능 : handle Submit 이벤트를 처리합니다.
-  // 19. 이후 처리에 사용할 handleSubmit을 계산한다.
+  // 19. 이후 단계에서 사용할 handleSubmit 값을 준비한다.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 브라우저 기본 동작을 막는다.
     event.preventDefault();
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -883,21 +883,21 @@ function RegionSelectField({
   readonly value: string;
   readonly onChange: (value: string) => void;
 }) {
-  // 1. 화면 상태와 동작에 필요한 detailsRef 값을 준비한다.
+  // 1. 처리 흐름에 필요한 detailsRef 값을 준비한다.
   const detailsRef = useRef<HTMLDetailsElement>(null);
-  // 2. 이후 처리에 사용할 selectedOption을 계산한다.
+  // 2. 이후 단계에서 사용할 selectedOption 값을 준비한다.
   const selectedOption = options.find((option) => option.value === value);
 
-  // 3. 현재 단계에서 필요한 side effect를 실행한다.
+  // 3. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
-    // 기능 : close Region Menu 창 또는 상태를 닫습니다.
-    // 1. 이후 처리에 사용할 closeRegionMenu을 계산한다.
+    // 기능 : 지역 선택 메뉴를 닫습니다.
+    // 1. 이후 단계에서 사용할 closeRegionMenu 값을 준비한다.
     const closeRegionMenu = () => {
       detailsRef.current?.removeAttribute("open");
     };
 
     // 기능 : on Pointer Down 기능을 수행합니다.
-    // 2. 이후 처리에 사용할 onPointerDown을 계산한다.
+    // 2. 이후 단계에서 사용할 onPointerDown 값을 준비한다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
 
@@ -907,7 +907,7 @@ function RegionSelectField({
     };
 
     // 기능 : on Key Down 기능을 수행합니다.
-    // 3. 이후 처리에 사용할 onKeyDown을 계산한다.
+    // 3. 이후 단계에서 사용할 onKeyDown 값을 준비한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeRegionMenu();
@@ -1076,7 +1076,7 @@ function isValidEmail(value: string) {
 
 // 기능 : format Contact Phone Number 표시 문자열을 생성합니다.
 function formatContactPhoneNumber(value: string) {
-  // 1. 이후 처리에 사용할 digits을 계산한다.
+  // 1. 이후 단계에서 사용할 digits 값을 준비한다.
   const digits = value.replace(/\D/g, "").slice(0, 11);
 
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

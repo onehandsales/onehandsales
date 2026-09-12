@@ -32,7 +32,7 @@ export function ConfirmDialog({
     }
 
     // 기능 : handle Key Down 이벤트를 처리합니다.
-    // 2. 이후 처리에 사용할 handleKeyDown을 계산한다.
+    // 2. 이후 단계에서 사용할 handleKeyDown 값을 준비한다.
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCancel();

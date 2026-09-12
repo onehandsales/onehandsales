@@ -12,11 +12,11 @@ type ProtectedRouteProps = {
 
 // 기능 : ProtectedRoute route 보호 또는 전환 화면을 렌더링합니다.
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  // 1. 화면 상태와 동작에 필요한 { isAuthenticated, isInitializing, isPending } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { isAuthenticated, isInitializing, isPending } 값을 준비한다.
   const { isAuthenticated, isInitializing, isPending } = useAuthSession();
-  // 2. 화면 상태와 동작에 필요한 location 값을 준비한다.
+  // 2. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
-  // 3. 이후 처리에 사용할 loginPath을 계산한다.
+  // 3. 이후 단계에서 사용할 loginPath 값을 준비한다.
   const loginPath = toPublicSitePath(resolvePublicSiteLanguage(), "/login");
 
   // 4. 조건을 확인해 필요한 분기 처리를 수행한다.

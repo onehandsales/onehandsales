@@ -38,14 +38,14 @@ export class AuthCookieService {
 
   // 기능 : refresh token 쿠키에 적용할 공통 옵션을 계산합니다.
   private getBaseCookieOptions(): CookieOptions {
-    // 1. 이후 처리에 사용할 options을 계산한다.
+    // 1. 이후 단계에서 사용할 options 값을 준비한다.
     const options: CookieOptions = {
       httpOnly: true,
       sameSite: "lax",
       secure: this.isSecureCookie(),
       path: this.refreshCookiePath,
     };
-    // 2. 이후 처리에 사용할 domain을 계산한다.
+    // 2. 이후 단계에서 사용할 domain 값을 준비한다.
     const domain = this.configService.get<string>("APP_REFRESH_COOKIE_DOMAIN");
 
     // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -88,7 +88,7 @@ export class AuthCookieService {
       return null;
     }
 
-    // 2. 이후 처리에 사용할 cookie을 계산한다.
+    // 2. 이후 단계에서 사용할 cookie 값을 준비한다.
     const cookie = cookieHeader
       .split(";")
       // 기능 : Cookie 항목의 앞뒤 공백을 제거합니다.
@@ -101,7 +101,7 @@ export class AuthCookieService {
       return null;
     }
 
-    // 4. 이후 처리에 사용할 value을 계산한다.
+    // 4. 이후 단계에서 사용할 value 값을 준비한다.
     const value = cookie.slice(name.length + 1);
 
     // 5. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.

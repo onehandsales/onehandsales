@@ -14,18 +14,18 @@ let nextId = 0;
 
 // 기능 : Toast hook으로 상태와 동작을 제공합니다.
 export function useToast() {
-  // 1. 화면 상태와 동작에 필요한 [current, setCurrent] 값을 준비한다.
+  // 1. 처리 흐름에 필요한 [current, setCurrent] 값을 준비한다.
   const [current, setCurrent] = useState<ToastState | null>(null);
 
   // 기능 : toast 형식으로 변환합니다.
-  // 2. 이후 처리에 사용할 toast을 계산한다.
+  // 2. 이후 단계에서 사용할 toast 값을 준비한다.
   const toast = (options: ToastOptions) => {
     nextId += 1;
     setCurrent({ ...options, id: nextId });
   };
 
   // 기능 : dismiss 기능을 수행합니다.
-  // 3. 이후 처리에 사용할 dismiss을 계산한다.
+  // 3. 이후 단계에서 사용할 dismiss 값을 준비한다.
   const dismiss = () => {
     setCurrent(null);
   };
@@ -37,9 +37,9 @@ export function useToast() {
       return;
     }
 
-    // 2. 이후 처리에 사용할 duration을 계산한다.
+    // 2. 이후 단계에서 사용할 duration 값을 준비한다.
     const duration = current.duration ?? 3000;
-    // 3. 이후 처리에 사용할 timer을 계산한다.
+    // 3. 이후 단계에서 사용할 timer 값을 준비한다.
     const timer = setTimeout(() => {
       setCurrent(null);
     }, duration);
@@ -50,7 +50,7 @@ export function useToast() {
     };
   }, [current]);
 
-  // 5. 이후 처리에 사용할 node을 계산한다.
+  // 5. 이후 단계에서 사용할 node 값을 준비한다.
   const node = current ? (
     <Toast
       key={current.id}

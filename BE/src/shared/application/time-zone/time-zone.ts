@@ -34,7 +34,7 @@ export function normalizeOptionalIanaTimeZone(
     return undefined;
   }
 
-  // 2. 이후 처리에 사용할 trimmed을 계산한다.
+  // 2. 이후 단계에서 사용할 trimmed 값을 준비한다.
   const trimmed = timeZone.trim();
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.

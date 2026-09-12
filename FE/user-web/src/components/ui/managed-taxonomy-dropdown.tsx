@@ -44,44 +44,44 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   onDelete,
   onSelect,
 }: ManagedTaxonomyDropdownProps<TItem>) {
-  // 1. 화면 상태와 동작에 필요한 [isOpen, setIsOpen] 값을 준비한다.
+  // 1. 처리 흐름에 필요한 [isOpen, setIsOpen] 값을 준비한다.
   const [isOpen, setIsOpen] = useState(false);
-  // 2. 화면 상태와 동작에 필요한 [search, setSearch] 값을 준비한다.
+  // 2. 처리 흐름에 필요한 [search, setSearch] 값을 준비한다.
   const [search, setSearch] = useState("");
-  // 3. 화면 상태와 동작에 필요한 [addError, setAddError] 값을 준비한다.
+  // 3. 처리 흐름에 필요한 [addError, setAddError] 값을 준비한다.
   const [addError, setAddError] = useState<string | null>(null);
-  // 4. 화면 상태와 동작에 필요한 [deleteErrors, setDeleteErrors] 값을 준비한다.
+  // 4. 처리 흐름에 필요한 [deleteErrors, setDeleteErrors] 값을 준비한다.
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
-  // 5. 화면 상태와 동작에 필요한 wrapperRef 값을 준비한다.
+  // 5. 처리 흐름에 필요한 wrapperRef 값을 준비한다.
   const wrapperRef = useRef<HTMLDivElement>(null);
-  // 6. 화면 상태와 동작에 필요한 inputRef 값을 준비한다.
+  // 6. 처리 흐름에 필요한 inputRef 값을 준비한다.
   const inputRef = useRef<HTMLInputElement>(null);
-  // 7. 화면 상태와 동작에 필요한 placement 값을 준비한다.
+  // 7. 처리 흐름에 필요한 placement 값을 준비한다.
   const placement = useDropdownPlacement({
     estimatedHeight: 260,
     isOpen,
     triggerRef: wrapperRef,
   });
-  // 8. 이후 처리에 사용할 selectedItem을 계산한다.
+  // 8. 이후 단계에서 사용할 selectedItem 값을 준비한다.
   const selectedItem = items.find((item) => item.id === selectedId);
-  // 9. 이후 처리에 사용할 selectedLabel을 계산한다.
+  // 9. 이후 단계에서 사용할 selectedLabel 값을 준비한다.
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
-  // 10. 이후 처리에 사용할 query을 계산한다.
+  // 10. 이후 단계에서 사용할 query 값을 준비한다.
   const query = search.trim();
-  // 11. 이후 처리에 사용할 normalizedQuery을 계산한다.
+  // 11. 이후 단계에서 사용할 normalizedQuery 값을 준비한다.
   const normalizedQuery = normalizeText(query);
-  // 12. 이후 처리에 사용할 filteredItems을 계산한다.
+  // 12. 이후 단계에서 사용할 filteredItems 값을 준비한다.
   const filteredItems =
     query.length > 0
       ? items.filter((item) =>
           normalizeText(getLabel(item)).includes(normalizedQuery)
         )
       : items;
-  // 13. 이후 처리에 사용할 hasExactMatch을 계산한다.
+  // 13. 이후 단계에서 사용할 hasExactMatch 값을 준비한다.
   const hasExactMatch = items.some(
     (item) => normalizeText(getLabel(item)) === normalizedQuery
   );
-  // 14. 이후 처리에 사용할 canCreate을 계산한다.
+  // 14. 이후 단계에서 사용할 canCreate 값을 준비한다.
   const canCreate = query.length > 0 && !hasExactMatch;
 
   // 15. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -91,7 +91,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     }
   }, [selectedLabel]);
 
-  // 16. 현재 단계에서 필요한 side effect를 실행한다.
+  // 16. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
     // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isOpen) {
@@ -99,7 +99,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     }
 
     // 기능 : on Mouse Down 기능을 수행합니다.
-    // 2. 화면 상태와 동작에 필요한 onMouseDown 값을 준비한다.
+    // 2. 처리 흐름에 필요한 onMouseDown 값을 준비한다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -117,7 +117,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, [isOpen, selectedLabel]);
 
-  // 17. 현재 단계에서 필요한 side effect를 실행한다.
+  // 17. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
     // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isOpen) {
@@ -125,7 +125,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     }
 
     // 기능 : on Key Down 기능을 수행합니다.
-    // 2. 이후 처리에 사용할 onKeyDown을 계산한다.
+    // 2. 이후 단계에서 사용할 onKeyDown 값을 준비한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -141,9 +141,9 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   }, [isOpen, selectedLabel]);
 
   // 기능 : handle Create 이벤트를 처리합니다.
-  // 18. 이후 처리에 사용할 handleCreate을 계산한다.
+  // 18. 이후 단계에서 사용할 handleCreate 값을 준비한다.
   const handleCreate = async (options: { readonly promptWhenEmpty?: boolean } = {}) => {
-    // 1. 이후 처리에 사용할 name을 계산한다.
+    // 1. 이후 단계에서 사용할 name 값을 준비한다.
     const name = query;
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -241,7 +241,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
               setAddError(null);
               // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
               setIsOpen(true);
-              // 4. 현재 단계에서 필요한 side effect를 실행한다.
+              // 4. 현재 단계에서 필요한 동작을 실행한다.
               onSelect("");
             }}
             type="button"
@@ -303,7 +303,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
                     <button
                       className="flex min-w-0 flex-1 items-center gap-2 px-1 text-left text-[13px]"
                       onClick={() => {
-                        // 1. 현재 단계에서 필요한 side effect를 실행한다.
+                        // 1. 현재 단계에서 필요한 동작을 실행한다.
                         onSelect(item.id);
                         // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
                         setSearch(label);

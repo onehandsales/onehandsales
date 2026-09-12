@@ -90,15 +90,15 @@ const managementRows: ReadonlyArray<{
 
 // 기능 : 모바일 더보기 메뉴와 계정 Settings 모달 진입점을 렌더링합니다.
 export function MorePage() {
-  // 1. 화면 상태와 동작에 필요한 { user } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { user } 값을 준비한다.
   const { user } = useAuthSession();
-  // 2. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
+  // 2. 처리 흐름에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
-  // 3. 이후 처리에 사용할 name을 계산한다.
+  // 3. 이후 단계에서 사용할 name 값을 준비한다.
   const name = user?.name ?? t("more.user");
-  // 4. 이후 처리에 사용할 role을 계산한다.
+  // 4. 이후 단계에서 사용할 role 값을 준비한다.
   const role = user?.role ?? "";
-  // 5. 이후 처리에 사용할 initial을 계산한다.
+  // 5. 이후 단계에서 사용할 initial 값을 준비한다.
   const initial = name.charAt(0);
 
   // 6. 계산된 결과를 호출자에게 반환한다.

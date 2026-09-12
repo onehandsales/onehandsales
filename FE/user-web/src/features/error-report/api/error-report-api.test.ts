@@ -11,12 +11,12 @@ const apiClientMock = vi.mocked(apiClient);
 // 기능 : 에러 신고 API client의 multipart 요청 생성을 검증합니다.
 describe("createErrorReport", () => {
   it("sends description, pageUrl, and optional screenshot as FormData", async () => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 현재 단계에서 필요한 동작을 실행한다.
     apiClientMock.mockResolvedValue({
       id: "error-report-1",
       message: "문제를 빠르게 해결할게요.",
     });
-    // 2. 이후 처리에 사용할 screenshot을 계산한다.
+    // 2. 이후 단계에서 사용할 screenshot 값을 준비한다.
     const screenshot = new Blob(["png"], { type: "image/png" });
 
     // 3. 필요한 비동기 작업을 실행한다.
@@ -32,9 +32,9 @@ describe("createErrorReport", () => {
       body: expect.any(FormData),
     });
 
-    // 5. 이후 처리에 사용할 [, options]을 계산한다.
+    // 5. 이후 단계에서 사용할 배열 구조분해 값을 준비한다.
     const [, options] = apiClientMock.mock.calls[0] ?? [];
-    // 6. 이후 처리에 사용할 body을 계산한다.
+    // 6. 이후 단계에서 사용할 body 값을 준비한다.
     const body = options?.body;
     // 7. 테스트 기대 조건을 검증한다.
     expect(body).toBeInstanceOf(FormData);

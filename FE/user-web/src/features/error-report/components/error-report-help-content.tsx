@@ -179,7 +179,7 @@ export function ErrorReportHelpContent({
 
   // 기능 : 에러 내용과 선택 screenshot을 Backend API로 제출합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    // 1. 현재 단계에서 필요한 side effect를 실행한다.
+    // 1. 브라우저 기본 동작을 막는다.
     event.preventDefault();
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

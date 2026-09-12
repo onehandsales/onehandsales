@@ -14,12 +14,12 @@ describe("UpdateMyProfileUseCase", () => {
     ["en-US", "en"],
     ["en-x-test", "en"],
   ])("normalizes preferredLocale %s to %s", async (inputLocale, expectedLocale) => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeUserRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = new UpdateMyProfileUseCase(repository);
 
-    // 3. 화면 상태와 동작에 필요한 profile 값을 준비한다.
+    // 3. 처리 흐름에 필요한 profile 값을 준비한다.
     const profile = await useCase.execute(makeCurrentUser(), {
       preferredLocale: inputLocale,
     });
@@ -34,12 +34,12 @@ describe("UpdateMyProfileUseCase", () => {
 
   // 기능 : 기본 국가와 기본 통화 입력값을 대문자 지원값으로 정규화합니다.
   it("normalizes user country and currency settings", async () => {
-    // 1. 이후 처리에 사용할 repository을 계산한다.
+    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeUserRepository();
-    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
+    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = new UpdateMyProfileUseCase(repository);
 
-    // 3. 화면 상태와 동작에 필요한 profile 값을 준비한다.
+    // 3. 처리 흐름에 필요한 profile 값을 준비한다.
     const profile = await useCase.execute(makeCurrentUser(), {
       countryCode: "us",
       defaultCurrencyCode: "usd",
@@ -78,7 +78,7 @@ describe("UpdateMyProfileUseCase", () => {
 class FakeUserRepository implements UserRepository {
   lastUpdateInput: UpdateUserProfileInput | null = null;
 
-  // 기능 : get Profile 값을 조회합니다.
+  // 기능 : 프로필 정보를 조회합니다.
   async getProfile(): Promise<UserProfileRecord | null> {
     return makeProfile();
   }

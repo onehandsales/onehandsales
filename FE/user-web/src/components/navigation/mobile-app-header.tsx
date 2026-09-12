@@ -10,11 +10,11 @@ type MobileAppHeaderProps = {
 export function MobileAppHeader({
   logoColor = "#4880EE",
 }: MobileAppHeaderProps) {
-  // 1. 화면 상태와 동작에 필요한 { user } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { user } 값을 준비한다.
   const { user } = useAuthSession();
-  // 2. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
+  // 2. 처리 흐름에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
-  // 3. 이후 처리에 사용할 initial을 계산한다.
+  // 3. 이후 단계에서 사용할 initial 값을 준비한다.
   const initial = user?.name ? user.name.charAt(0) : "?";
 
   // 4. 계산된 결과를 호출자에게 반환한다.

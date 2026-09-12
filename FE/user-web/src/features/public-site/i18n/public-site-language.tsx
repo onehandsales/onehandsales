@@ -439,7 +439,7 @@ export function PublicSiteLanguageProvider({
 }: {
   readonly children: ReactNode;
 }) {
-  // 1. 화면 상태와 동작에 필요한 [language, setLanguageState] 값을 준비한다.
+  // 1. 처리 흐름에 필요한 [language, setLanguageState] 값을 준비한다.
   const [language, setLanguageState] = useState<PublicSiteLanguage>(() =>
     getInitialLanguage()
   );
@@ -451,7 +451,7 @@ export function PublicSiteLanguageProvider({
     window.localStorage.setItem(publicSiteLanguageStorageKey, language);
   }, [language]);
 
-  // 3. 화면 상태와 동작에 필요한 value 값을 준비한다.
+  // 3. 처리 흐름에 필요한 value 값을 준비한다.
   const value = useMemo<PublicSiteLanguageContextValue>(
     () => ({
       language,

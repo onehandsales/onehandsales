@@ -238,7 +238,7 @@ export class PrismaUserRepository implements UserRepository {
 
   // 기능 : 이전 locale 데이터를 현재 지원 locale 응답값으로 정규화합니다.
   private toSupportedPreferredLocale(preferredLocale: string): string {
-    // 1. 이후 처리에 사용할 normalized을 계산한다.
+    // 1. 이후 단계에서 사용할 normalized 값을 준비한다.
     const normalized = preferredLocale.trim().replace("_", "-").toLowerCase();
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

@@ -52,28 +52,28 @@ export function AuthSocialLoginModal({
   open,
   onOpenChange,
 }: AuthSocialLoginModalProps) {
-  // 1. 화면 상태와 동작에 필요한 객체 구조분해 값을 준비한다.
+  // 1. 처리 흐름에 필요한 객체 구조분해 값을 준비한다.
   const {
     clearError,
     error: authError,
     isPending,
     startProviderLogin,
   } = useAuthSession();
-  // 2. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
+  // 2. 처리 흐름에 필요한 { language } 값을 준비한다.
   const { language } = usePublicSiteLanguage();
-  // 3. 이후 처리에 사용할 copy을 계산한다.
+  // 3. 이후 단계에서 사용할 copy 값을 준비한다.
   const copy = authProviderModalCopy[getPublicSiteCopyLanguage(language)];
-  // 4. 화면 상태와 동작에 필요한 [providers, setProviders] 값을 준비한다.
+  // 4. 처리 흐름에 필요한 [providers, setProviders] 값을 준비한다.
   const [providers, setProviders] = useState<AuthProviderOption[]>([]);
-  // 5. 화면 상태와 동작에 필요한 [providersError, setProvidersError] 값을 준비한다.
+  // 5. 처리 흐름에 필요한 [providersError, setProvidersError] 값을 준비한다.
   const [providersError, setProvidersError] = useState<string | null>(null);
-  // 6. 화면 상태와 동작에 필요한 [isProvidersLoading, setIsProvidersLoading] 값을 준비한다.
+  // 6. 처리 흐름에 필요한 [isProvidersLoading, setIsProvidersLoading] 값을 준비한다.
   const [isProvidersLoading, setIsProvidersLoading] = useState(false);
-  // 7. 화면 상태와 동작에 필요한 [pendingProvider, setPendingProvider] 값을 준비한다.
+  // 7. 처리 흐름에 필요한 [pendingProvider, setPendingProvider] 값을 준비한다.
   const [pendingProvider, setPendingProvider] = useState<AuthProviderId | null>(
     null
   );
-  // 8. 화면 상태와 동작에 필요한 enabledProviders 값을 준비한다.
+  // 8. 처리 흐름에 필요한 enabledProviders 값을 준비한다.
   const enabledProviders = useMemo(
     () => providers.filter((provider) => provider.enabled),
     [providers]
@@ -87,7 +87,7 @@ export function AuthSocialLoginModal({
       return;
     }
 
-    // 2. 현재 단계에서 필요한 side effect를 실행한다.
+    // 2. 현재 단계에서 필요한 동작을 실행한다.
     clearError();
 
     // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -95,7 +95,7 @@ export function AuthSocialLoginModal({
       return;
     }
 
-    // 4. 이후 처리에 사용할 isMounted을 계산한다.
+    // 4. 이후 단계에서 사용할 isMounted 값을 준비한다.
     let isMounted = true;
     // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setIsProvidersLoading(true);
@@ -135,7 +135,7 @@ export function AuthSocialLoginModal({
   }, [isPending]);
 
   // 기능 : on Provider Login 기능을 수행합니다.
-  // 11. 이후 처리에 사용할 onProviderLogin을 계산한다.
+  // 11. 이후 단계에서 사용할 onProviderLogin 값을 준비한다.
   const onProviderLogin = (provider: AuthProviderId) => {
     setPendingProvider(provider);
     void startProviderLogin(provider).catch(() => {

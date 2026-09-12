@@ -8,9 +8,9 @@ type ProtectedAdminRouteProps = {
 
 // 기능 : 서버 검증을 통과한 관리자에게만 보호된 Admin route를 렌더링합니다.
 export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
-  // 1. 화면 상태와 동작에 필요한 { isAuthenticated, isInitializing, role } 값을 준비한다.
+  // 1. 처리 흐름에 필요한 { isAuthenticated, isInitializing, role } 값을 준비한다.
   const { isAuthenticated, isInitializing, role } = useAdminAuthSession();
-  // 2. 화면 상태와 동작에 필요한 location 값을 준비한다.
+  // 2. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
 
   // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -46,15 +46,15 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
 
 // 기능 : 관리자 권한이 없는 인증 상태에서 로그인 화면으로 돌아가는 안내를 렌더링합니다.
 function AdminAccessDenied() {
-  // 1. 화면 상태와 동작에 필요한 location 값을 준비한다.
+  // 1. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
-  // 2. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
+  // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
-  // 3. 화면 상태와 동작에 필요한 { logout } 값을 준비한다.
+  // 3. 처리 흐름에 필요한 { logout } 값을 준비한다.
   const { logout } = useAdminAuthSession();
 
   // 기능 : 현재 인증 상태를 초기화하고 로그인 화면으로 이동합니다.
-  // 4. 이후 처리에 사용할 onBackToLogin을 계산한다.
+  // 4. 이후 단계에서 사용할 onBackToLogin 값을 준비한다.
   const onBackToLogin = () => {
     navigate("/login", {
       replace: true,

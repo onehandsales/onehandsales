@@ -15,7 +15,7 @@ test.describe("help modal UX", () => {
 
     // 3. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
-    // 4. 이후 처리에 사용할 helpButton을 계산한다.
+    // 4. 이후 단계에서 사용할 helpButton 값을 준비한다.
     const helpButton = page.getByRole("button", { exact: true, name: "도움말" });
     // 5. 필요한 비동기 작업을 실행한다.
     await helpButton.hover();
@@ -51,7 +51,7 @@ test.describe("help modal UX", () => {
     // 13. 필요한 비동기 작업을 실행한다.
     await page.getByRole("menuitem", { exact: true, name: "사용 가이드" }).click();
 
-    // 14. 이후 처리에 사용할 helpDialog을 계산한다.
+    // 14. 이후 단계에서 사용할 helpDialog 값을 준비한다.
     const helpDialog = page.getByRole("dialog", { name: "도움말" });
     // 15. 필요한 비동기 작업을 실행한다.
     await expect(helpDialog).toBeVisible();
@@ -102,9 +102,9 @@ test.describe("help modal UX", () => {
       helpDialog.getByRole("heading", { exact: true, name: "에러신고" }),
     ).toBeVisible();
 
-    // 30. 이후 처리에 사용할 errorDescription을 계산한다.
+    // 30. 이후 단계에서 사용할 errorDescription 값을 준비한다.
     const errorDescription = helpDialog.getByLabel("에러 내용");
-    // 31. 이후 처리에 사용할 submitButton을 계산한다.
+    // 31. 이후 단계에서 사용할 submitButton 값을 준비한다.
     const submitButton = helpDialog.getByRole("button", {
       exact: true,
       name: "보내기",
@@ -115,12 +115,12 @@ test.describe("help modal UX", () => {
     await expectErrorDescriptionHeight(errorDescription);
     // 34. 필요한 비동기 작업을 실행한다.
     await expect(helpDialog.getByText("0/500")).toBeVisible();
-    // 35. 이후 처리에 사용할 screenshotPreviewButton을 계산한다.
+    // 35. 이후 단계에서 사용할 screenshotPreviewButton 값을 준비한다.
     const screenshotPreviewButton = helpDialog.getByRole("button", {
       exact: true,
       name: "스크린샷 크게 보기",
     });
-    // 36. 이후 처리에 사용할 screenshotSwitch을 계산한다.
+    // 36. 이후 단계에서 사용할 screenshotSwitch 값을 준비한다.
     const screenshotSwitch = helpDialog.getByRole("switch", {
       exact: true,
       name: "스크린샷 포함 여부",
@@ -134,7 +134,7 @@ test.describe("help modal UX", () => {
     );
     // 39. 필요한 비동기 작업을 실행한다.
     await screenshotPreviewButton.click();
-    // 40. 이후 처리에 사용할 screenshotPreviewDialog을 계산한다.
+    // 40. 이후 단계에서 사용할 screenshotPreviewDialog 값을 준비한다.
     const screenshotPreviewDialog = page.getByRole("dialog", {
       exact: true,
       name: "스크린샷 미리보기",
@@ -163,7 +163,7 @@ test.describe("help modal UX", () => {
     await expect(helpDialog.getByText("1/500")).toBeVisible();
     // 50. 필요한 비동기 작업을 실행한다.
     await expect(submitButton).toBeDisabled();
-    // 51. 이후 처리에 사용할 maximumDescription을 계산한다.
+    // 51. 이후 단계에서 사용할 maximumDescription 값을 준비한다.
     const maximumDescription = "가".repeat(500);
     // 52. 필요한 비동기 작업을 실행한다.
     await errorDescription.fill(`${maximumDescription}초과`);
@@ -234,7 +234,7 @@ async function expectErrorDescriptionHeight(textarea: Locator) {
 // 기능 : 에러 신고 제출 버튼이 도움말 모달 본문 우측 하단에 배치되는지 확인합니다.
 async function expectSubmitButtonRightAligned(button: Locator) {
   const alignment = await button.evaluate((buttonNode) => {
-    // 1. 이후 처리에 사용할 dialogNode을 계산한다.
+    // 1. 이후 단계에서 사용할 dialogNode 값을 준비한다.
     const dialogNode = buttonNode.closest('[role="dialog"]');
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -242,9 +242,9 @@ async function expectSubmitButtonRightAligned(button: Locator) {
       throw new Error("도움말 모달 dialog를 찾지 못했습니다.");
     }
 
-    // 3. 이후 처리에 사용할 dialogRect을 계산한다.
+    // 3. 이후 단계에서 사용할 dialogRect 값을 준비한다.
     const dialogRect = dialogNode.getBoundingClientRect();
-    // 4. 이후 처리에 사용할 buttonRect을 계산한다.
+    // 4. 이후 단계에서 사용할 buttonRect 값을 준비한다.
     const buttonRect = buttonNode.getBoundingClientRect();
 
     // 5. 계산된 결과를 호출자에게 반환한다.

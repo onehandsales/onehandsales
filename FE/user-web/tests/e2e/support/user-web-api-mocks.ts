@@ -46,14 +46,14 @@ export async function setupUserWebApiMocks(
   page: Page,
   options: SetupUserWebApiMockOptions = {},
 ) {
-  // 1. 이후 처리에 사용할 store을 계산한다.
+  // 1. 이후 단계에서 사용할 store 값을 준비한다.
   const store = options.store ?? createUserWebApiMockStore();
-  // 2. 이후 처리에 사용할 protectedRequests을 계산한다.
+  // 2. 이후 단계에서 사용할 protectedRequests 값을 준비한다.
   const protectedRequests: ApiRequestRecord[] = [];
 
   // 3. 필요한 비동기 작업을 실행한다.
   await page.route("**/*", async (route) => {
-    // 1. 이후 처리에 사용할 url을 계산한다.
+    // 1. 이후 단계에서 사용할 url 값을 준비한다.
     const url = new URL(route.request().url());
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -62,9 +62,9 @@ export async function setupUserWebApiMocks(
       return;
     }
 
-    // 3. 이후 처리에 사용할 method을 계산한다.
+    // 3. 이후 단계에서 사용할 method 값을 준비한다.
     const method = route.request().method().toUpperCase();
-    // 4. 이후 처리에 사용할 authorization을 계산한다.
+    // 4. 이후 단계에서 사용할 authorization 값을 준비한다.
     const authorization = route.request().headers().authorization ?? null;
 
     // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -125,7 +125,7 @@ async function handleApiRequest(
   method: string,
   url: URL,
 ): Promise<MockApiResponse> {
-  // 1. 이후 처리에 사용할 pathname을 계산한다.
+  // 1. 이후 단계에서 사용할 pathname 값을 준비한다.
   const pathname = url.pathname;
 
   // 2. 조건을 확인해 필요한 분기 처리를 수행한다.

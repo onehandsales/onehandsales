@@ -26,9 +26,9 @@ export function useDropdownPlacement({
     }
 
     // 기능 : update Placement 정보를 수정합니다.
-    // 2. 이후 처리에 사용할 updatePlacement을 계산한다.
+    // 2. 이후 단계에서 사용할 updatePlacement 값을 준비한다.
     const updatePlacement = () => {
-      // 1. 이후 처리에 사용할 trigger을 계산한다.
+      // 1. 이후 단계에서 사용할 trigger 값을 준비한다.
       const trigger = triggerRef.current;
 
       // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
@@ -36,19 +36,19 @@ export function useDropdownPlacement({
         return;
       }
 
-      // 3. 이후 처리에 사용할 boundary을 계산한다.
+      // 3. 이후 단계에서 사용할 boundary 값을 준비한다.
       const boundary = getScrollBoundary(trigger);
-      // 4. 이후 처리에 사용할 triggerRect을 계산한다.
+      // 4. 이후 단계에서 사용할 triggerRect 값을 준비한다.
       const triggerRect = trigger.getBoundingClientRect();
-      // 5. 이후 처리에 사용할 boundaryRect을 계산한다.
+      // 5. 이후 단계에서 사용할 boundaryRect 값을 준비한다.
       const boundaryRect = boundary
         ? boundary.getBoundingClientRect()
         : { top: 0, bottom: window.innerHeight };
-      // 6. 이후 처리에 사용할 availableBelow을 계산한다.
+      // 6. 이후 단계에서 사용할 availableBelow 값을 준비한다.
       const availableBelow = boundaryRect.bottom - triggerRect.bottom - gap;
-      // 7. 이후 처리에 사용할 availableAbove을 계산한다.
+      // 7. 이후 단계에서 사용할 availableAbove 값을 준비한다.
       const availableAbove = triggerRect.top - boundaryRect.top - gap;
-      // 8. 이후 처리에 사용할 shouldOpenUp을 계산한다.
+      // 8. 이후 단계에서 사용할 shouldOpenUp 값을 준비한다.
       const shouldOpenUp =
         availableBelow < estimatedHeight && availableAbove > availableBelow;
 
@@ -56,7 +56,7 @@ export function useDropdownPlacement({
       setPlacement(shouldOpenUp ? "up" : "down");
     };
 
-    // 3. 현재 단계에서 필요한 side effect를 실행한다.
+    // 3. 현재 단계에서 필요한 동작을 실행한다.
     updatePlacement();
     // 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("resize", updatePlacement);
