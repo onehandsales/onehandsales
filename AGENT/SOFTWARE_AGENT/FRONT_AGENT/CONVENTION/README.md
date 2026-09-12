@@ -17,11 +17,14 @@
 - `FE` 내부 Markdown 문서는 한국어로 작성한다.
 - User Web과 Admin Web은 API client와 feature 내부 구현을 공유하지 않는다.
 - 시간과 timezone 처리는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`를 따른다.
+- Frontend component/function/hook/API client function은 `COMMENT_AND_LOGGING.md`의 `// 기능 : ...` 한글 주석 규칙을 따른다.
+- 새로 작성하거나 수정한 주요 상태 전환, API 호출, redirect, storage 처리 흐름은 `COMMENT_AND_LOGGING.md`의 `// 1. ...`, `// 2. ...` numbered step comment 규칙을 따른다.
 
 ## 4. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/README.md`
+- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/DECISIONS/README.md`

@@ -16,7 +16,9 @@
 - Backend class/interface 선언은 `// 역할 : ...` 주석으로 책임과 계약을 설명하는가?
 - Backend HTTP API controller 메소드는 `// API : ...` 주석을 사용하는가?
 - 내부 service/helper/use case 메소드는 `// 기능 : ...` 주석을 사용하는가?
+- 새로 작성하거나 수정한 method/function에는 최소 1줄 한글 역할/기능 주석이 있는가?
 - API controller와 application orchestration 메소드의 주요 처리 흐름이 numbered step comment로 읽히는가?
+- transaction, provider 호출, repository 저장/갱신, token rotation 흐름이 `// 1. ...`, `// 2. ...` 형식으로 설명되어 있는가?
 - Application layer가 transaction 경계를 갖는가?
 - API가 포함된 작업이면 `COMMON/API-SPEC`의 계약 문서가 있는가?
 - API 계약 상태가 구현 전 최소 `confirmed`였는가?
@@ -57,4 +59,5 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
