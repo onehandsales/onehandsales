@@ -166,16 +166,22 @@ export function AuthLoginPage({
 }: AuthLoginPageProps) {
   const { language } = usePublicSiteLanguage();
   const publicSitePath = usePublicSitePath();
+  // 1. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
   const copy = loginCopy[getPublicSiteCopyLanguage(language)];
+  // 2. 화면 상태와 동작에 필요한 publicSitePath 값을 준비한다.
   const switchPath = publicSitePath(mode === "login" ? "/signup" : "/login");
+  // 3. 이후 처리에 사용할 copy을 계산한다.
   const visibleProviders = providerOrder
+    // 4. 이후 처리에 사용할 switchPath을 계산한다.
     .map((providerId) =>
+      // 5. 이후 처리에 사용할 visibleProviders을 계산한다.
       enabledProviders.find((provider) => provider.provider === providerId)
     )
     .filter((provider): provider is AuthProviderOption => Boolean(provider));
 
   if (isLoginLoading || isPending) {
     return (
+      // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
       <div className="grid min-h-dvh place-items-center bg-white text-[#191919]">
         <Loader2
           aria-label={copy.callbackLoading}
@@ -188,6 +194,7 @@ export function AuthLoginPage({
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-white text-[#191919]">
+      // 7. 계산된 결과를 호출자에게 반환한다.
       <main className="flex flex-1 items-center justify-center px-5 py-24">
         <section className="w-full max-w-[360px]" aria-labelledby="login-title">
           <div className="grid justify-items-center text-center">
@@ -327,23 +334,30 @@ function LoginLanguageSelect({
 }) {
   const switchLocale = usePublicSiteLocaleSwitcher();
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  // 1. 화면 상태와 동작에 필요한 switchLocale 값을 준비한다.
   const selectedOption = publicSiteLanguageOptions.find(
+    // 2. 화면 상태와 동작에 필요한 detailsRef 값을 준비한다.
     (option) => option.value === language
+  // 3. 이후 처리에 사용할 selectedOption을 계산한다.
   );
   const selectedLabel = getPublicSiteLanguageOptionLabel(
     selectedOption,
+    // 4. 이후 처리에 사용할 selectedLabel을 계산한다.
     language
   );
 
   useEffect(() => {
     // 기능 : 언어 선택 메뉴를 닫습니다.
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     const closeLanguageMenu = () => {
       detailsRef.current?.removeAttribute("open");
+    // 1. 이후 처리에 사용할 closeLanguageMenu을 계산한다.
     };
 
     // 기능 : 언어 선택 메뉴 외부 클릭을 처리합니다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
+// 2. 이후 처리에 사용할 onPointerDown을 계산한다.
 
       if (
         target instanceof Node &&
@@ -356,21 +370,26 @@ function LoginLanguageSelect({
     // 기능 : Escape 키로 언어 선택 메뉴를 닫습니다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        // 3. 이후 처리에 사용할 onKeyDown을 계산한다.
         closeLanguageMenu();
       }
     };
 
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+// 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
 
+    // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
+      // 6. 계산된 결과를 호출자에게 반환한다.
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
 
   return (
     <details className="group relative" ref={detailsRef}>
+      // 6. 계산된 결과를 호출자에게 반환한다.
       <summary
         className="inline-flex h-8 cursor-pointer list-none items-center gap-1.5 rounded-[6px] px-2 text-[14px] font-normal text-[#777770] transition-colors hover:bg-[#f2f2ef] hover:text-[#111111] [&::-webkit-details-marker]:hidden"
         aria-label={copy.languagePrefix}

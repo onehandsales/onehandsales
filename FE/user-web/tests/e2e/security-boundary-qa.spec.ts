@@ -8,28 +8,44 @@ test.describe("G04 User Web security boundary QA", () => {
   test("does not show protected data after session removal and browser back", async ({
     page,
   }) => {
+    // 1. 비동기 결과를 받아 api에 저장한다.
     const api = await setupUserWebApiMocks(page);
+    // 2. 이후 처리에 사용할 runtime을 계산한다.
     const runtime = collectRuntimeErrors(page);
 
+    // 3. 필요한 비동기 작업을 실행한다.
     await page.goto("/login");
+    // 4. 필요한 비동기 작업을 실행한다.
     await storeSession(page);
+    // 5. 필요한 비동기 작업을 실행한다.
     await page.reload();
+    // 6. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
+    // 7. 필요한 비동기 작업을 실행한다.
     await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
+    // 8. 필요한 비동기 작업을 실행한다.
     await clearStoredSession(page);
+    // 9. 필요한 비동기 작업을 실행한다.
     await page.reload();
+    // 10. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/login$/);
+    // 11. 필요한 비동기 작업을 실행한다.
     await expect(page.locator("body")).not.toContainText(
       MOBILE_LONG_FIXTURE.email,
     );
 
+    // 12. 필요한 비동기 작업을 실행한다.
     await page.goBack();
+    // 13. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/login$/);
+    // 14. 필요한 비동기 작업을 실행한다.
     await expect(page.locator("body")).not.toContainText(
       MOBILE_LONG_FIXTURE.email,
     );
+    // 15. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
+    // 16. 현재 단계에서 필요한 side effect를 실행한다.
     runtime.assertClean();
   });
 });
@@ -58,27 +74,36 @@ async function clearStoredSession(page: Page) {
 
 // 기능 : collect Runtime Errors 기능을 수행합니다.
 function collectRuntimeErrors(page: Page) {
+  // 1. 이후 처리에 사용할 consoleErrors을 계산한다.
   const consoleErrors: string[] = [];
+  // 2. 이후 처리에 사용할 pageErrors을 계산한다.
   const pageErrors: string[] = [];
 
+  // 3. 현재 단계에서 필요한 side effect를 실행한다.
   page.on("pageerror", (error) => {
     pageErrors.push(error.message);
   });
 
+  // 4. 현재 단계에서 필요한 side effect를 실행한다.
   page.on("console", (message) => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (message.type() !== "error") {
       return;
     }
 
+    // 2. 이후 처리에 사용할 text을 계산한다.
     const text = message.text();
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (text.includes("Failed to load resource")) {
       return;
     }
 
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     consoleErrors.push(text);
   });
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return {
     // 기능 : assert Clean 기능을 수행합니다.
     assertClean() {

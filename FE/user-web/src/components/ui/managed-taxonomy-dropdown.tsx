@@ -44,44 +44,62 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   onDelete,
   onSelect,
 }: ManagedTaxonomyDropdownProps<TItem>) {
+  // 1. 화면 상태와 동작에 필요한 [isOpen, setIsOpen] 값을 준비한다.
   const [isOpen, setIsOpen] = useState(false);
+  // 2. 화면 상태와 동작에 필요한 [search, setSearch] 값을 준비한다.
   const [search, setSearch] = useState("");
+  // 3. 화면 상태와 동작에 필요한 [addError, setAddError] 값을 준비한다.
   const [addError, setAddError] = useState<string | null>(null);
+  // 4. 화면 상태와 동작에 필요한 [deleteErrors, setDeleteErrors] 값을 준비한다.
   const [deleteErrors, setDeleteErrors] = useState<Record<string, string>>({});
+  // 5. 화면 상태와 동작에 필요한 wrapperRef 값을 준비한다.
   const wrapperRef = useRef<HTMLDivElement>(null);
+  // 6. 화면 상태와 동작에 필요한 inputRef 값을 준비한다.
   const inputRef = useRef<HTMLInputElement>(null);
+  // 7. 화면 상태와 동작에 필요한 placement 값을 준비한다.
   const placement = useDropdownPlacement({
     estimatedHeight: 260,
     isOpen,
     triggerRef: wrapperRef,
   });
+  // 8. 이후 처리에 사용할 selectedItem을 계산한다.
   const selectedItem = items.find((item) => item.id === selectedId);
+  // 9. 이후 처리에 사용할 selectedLabel을 계산한다.
   const selectedLabel = selectedItem ? getLabel(selectedItem) : "";
+  // 10. 이후 처리에 사용할 query을 계산한다.
   const query = search.trim();
+  // 11. 이후 처리에 사용할 normalizedQuery을 계산한다.
   const normalizedQuery = normalizeText(query);
+  // 12. 이후 처리에 사용할 filteredItems을 계산한다.
   const filteredItems =
     query.length > 0
       ? items.filter((item) =>
           normalizeText(getLabel(item)).includes(normalizedQuery)
         )
       : items;
+  // 13. 이후 처리에 사용할 hasExactMatch을 계산한다.
   const hasExactMatch = items.some(
     (item) => normalizeText(getLabel(item)) === normalizedQuery
   );
+  // 14. 이후 처리에 사용할 canCreate을 계산한다.
   const canCreate = query.length > 0 && !hasExactMatch;
 
+  // 15. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (selectedLabel) {
       setSearch(selectedLabel);
     }
   }, [selectedLabel]);
 
+  // 16. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isOpen) {
       return;
     }
 
     // 기능 : on Mouse Down 기능을 수행합니다.
+    // 2. 화면 상태와 동작에 필요한 onMouseDown 값을 준비한다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
@@ -93,16 +111,21 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
       }
     };
 
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("mousedown", onMouseDown);
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, [isOpen, selectedLabel]);
 
+  // 17. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isOpen) {
       return;
     }
 
     // 기능 : on Key Down 기능을 수행합니다.
+    // 2. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -111,14 +134,19 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
       }
     };
 
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", onKeyDown);
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, selectedLabel]);
 
   // 기능 : handle Create 이벤트를 처리합니다.
+  // 18. 이후 처리에 사용할 handleCreate을 계산한다.
   const handleCreate = async (options: { readonly promptWhenEmpty?: boolean } = {}) => {
+    // 1. 이후 처리에 사용할 name을 계산한다.
     const name = query;
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!name) {
       if (options.promptWhenEmpty) {
         setAddError("추가할 이름을 입력해 주세요.");
@@ -128,14 +156,17 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
       return;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (hasExactMatch) {
       setAddError("이미 있는 항목이에요.");
       inputRef.current?.focus();
       return;
     }
 
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAddError(null);
 
+    // 5. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
     try {
       await onCreate(name);
       setSearch(name);
@@ -146,6 +177,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
   };
 
   // 기능 : handle Delete 이벤트를 처리합니다.
+  // 19. 비동기 결과를 받아 handleDelete에 저장한다.
   const handleDelete = async (item: TItem) => {
     setDeleteErrors((prev) => ({ ...prev, [item.id]: "" }));
 
@@ -159,6 +191,7 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
     }
   };
 
+  // 20. 계산된 결과를 호출자에게 반환한다.
   return (
     <div ref={wrapperRef} className="relative">
       <div className="relative">
@@ -175,10 +208,14 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
           id={id}
           ref={inputRef}
           onChange={(event) => {
+            // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
             setSearch(event.target.value);
+            // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
             setAddError(null);
+            // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
             setIsOpen(true);
 
+            // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
             if (selectedId) {
               onSelect("");
             }
@@ -198,9 +235,13 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
             aria-label={`${title} 선택 지우기`}
             className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md text-muted-foreground hover:bg-muted"
             onClick={() => {
+              // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
               setSearch("");
+              // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
               setAddError(null);
+              // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
               setIsOpen(true);
+              // 4. 현재 단계에서 필요한 side effect를 실행한다.
               onSelect("");
             }}
             type="button"
@@ -262,9 +303,13 @@ export function ManagedTaxonomyDropdown<TItem extends ManagedTaxonomyItem>({
                     <button
                       className="flex min-w-0 flex-1 items-center gap-2 px-1 text-left text-[13px]"
                       onClick={() => {
+                        // 1. 현재 단계에서 필요한 side effect를 실행한다.
                         onSelect(item.id);
+                        // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
                         setSearch(label);
+                        // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
                         setAddError(null);
+                        // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
                         setIsOpen(false);
                       }}
                       type="button"

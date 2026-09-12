@@ -117,8 +117,10 @@ export class SupportRequestApplicationService {
 
   // 기능 : 지원 요청 내용을 trim하고 필수/길이 조건을 검증합니다.
   private normalizeDescription(value: string | undefined): string {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = value?.trim() ?? "";
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized.length === 0) {
       throw new SupportRequestValidationError(
         "SUPPORT_REQUEST_DESCRIPTION_REQUIRED",
@@ -127,6 +129,7 @@ export class SupportRequestApplicationService {
       );
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (Array.from(normalized).length > MAX_SUPPORT_REQUEST_DESCRIPTION_LENGTH) {
       throw new SupportRequestValidationError(
         "SUPPORT_REQUEST_DESCRIPTION_TOO_LONG",
@@ -135,13 +138,16 @@ export class SupportRequestApplicationService {
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return normalized;
   }
 
   // 기능 : 현재 화면 주소를 trim하고 필수/길이 조건을 검증합니다.
   private normalizePageUrl(value: string | undefined): string {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = value?.trim() ?? "";
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized.length === 0) {
       throw new SupportRequestValidationError(
         "SUPPORT_REQUEST_PAGE_URL_REQUIRED",
@@ -150,6 +156,7 @@ export class SupportRequestApplicationService {
       );
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (Array.from(normalized).length > MAX_SUPPORT_REQUEST_PAGE_URL_LENGTH) {
       throw new SupportRequestValidationError(
         "SUPPORT_REQUEST_PAGE_URL_TOO_LONG",
@@ -158,6 +165,7 @@ export class SupportRequestApplicationService {
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return normalized;
   }
 

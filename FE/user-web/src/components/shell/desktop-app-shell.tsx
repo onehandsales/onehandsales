@@ -23,17 +23,23 @@ export function DesktopAppShell({
   children,
   noPadding = false,
 }: DesktopAppShellProps) {
+  // 1. 화면 상태와 동작에 필요한 { pathname } 값을 준비한다.
   const { pathname } = useLocation();
+  // 2. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
+  // 3. 화면 상태와 동작에 필요한 { logout } 값을 준비한다.
   const { logout } = useAuthSession();
+  // 4. 이후 처리에 사용할 page을 계산한다.
   const page = PAGE_TITLES[pathname] ?? { title: "OneHand CRM" };
 
   // 기능 : handle Logout 이벤트를 처리합니다.
+  // 5. 비동기 결과를 받아 handleLogout에 저장한다.
   const handleLogout = async () => {
     await logout();
     navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
   };
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return (
     <div className="hidden min-h-screen md:flex">
       {/* Sidebar */}

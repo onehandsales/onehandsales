@@ -44,18 +44,23 @@ export function normalizeXlsxLocale(
   value: string | null | undefined,
   fallback?: string | null
 ): XlsxSupportedLocale {
+  // 1. 이후 처리에 사용할 normalized을 계산한다.
   const normalized = normalizeLocaleText(value);
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (normalized && XLSX_SUPPORTED_LOCALE_SET.has(normalized)) {
     return normalized as XlsxSupportedLocale;
   }
 
+  // 3. 이후 처리에 사용할 fallbackLocale을 계산한다.
   const fallbackLocale = normalizeLocaleText(fallback);
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (fallbackLocale && XLSX_SUPPORTED_LOCALE_SET.has(fallbackLocale)) {
     return fallbackLocale as XlsxSupportedLocale;
   }
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return "ko-KR";
 }
 
@@ -63,19 +68,25 @@ export function normalizeXlsxLocale(
 export function resolveXlsxLocalizationContext(
   input: ResolveXlsxLocalizationInput
 ): XlsxLocalizationContext {
+  // 1. 이후 처리에 사용할 locale을 계산한다.
   const locale = normalizeXlsxLocale(input.locale, input.preferredLocale);
+  // 2. 이후 처리에 사용할 requestedTimeZone을 계산한다.
   const requestedTimeZone = input.timeZone?.trim();
+  // 3. 이후 처리에 사용할 userTimeZone을 계산한다.
   const userTimeZone = input.userTimeZone?.trim();
+  // 4. 이후 처리에 사용할 timeZone을 계산한다.
   const timeZone =
     requestedTimeZone && isValidIanaTimeZone(requestedTimeZone)
       ? requestedTimeZone
       : userTimeZone && isValidIanaTimeZone(userTimeZone)
         ? userTimeZone
         : DEFAULT_USER_TIME_ZONE;
+  // 5. 이후 처리에 사용할 defaultCurrencyCode을 계산한다.
   const defaultCurrencyCode = normalizeCurrencyCode(
     input.defaultCurrencyCode ?? DEFAULT_CURRENCY_CODE
   );
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return {
     locale,
     intlLocale: locale === "en" ? "en-US" : "ko-KR",
@@ -89,16 +100,20 @@ export function formatXlsxDateTime(
   value: Date | null | undefined,
   context: XlsxLocalizationContext
 ): string | null {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!value || Number.isNaN(value.getTime())) {
     return null;
   }
 
+  // 2. 이후 처리에 사용할 parts을 계산한다.
   const parts = getZonedDateTimeParts(value, context.timeZone);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (context.locale === "en") {
     return `${parts.month}/${parts.day}/${parts.year} ${parts.hour}:${parts.minute}:${parts.second}`;
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
@@ -138,20 +153,25 @@ export function getXlsxLocalizedText(
 
 // 기능 : 다양한 locale 입력 표기를 앱 지원 locale 표기로 맞춥니다.
 function normalizeLocaleText(value: string | null | undefined): string | null {
+  // 1. 이후 처리에 사용할 normalized을 계산한다.
   const normalized = value?.trim().replace("_", "-").toLowerCase();
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!normalized) {
     return null;
   }
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (normalized === "ko" || normalized === "ko-kr") {
     return "ko-KR";
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (normalized === "en" || normalized.startsWith("en-")) {
     return "en";
   }
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return normalized;
 }
 

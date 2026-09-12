@@ -89,10 +89,14 @@ export function ErrorReportHelpContent({
 
   // 기능 : 에러 신고 섹션 진입 또는 재시도 시 현재 화면 screenshot을 자동으로 캡처합니다.
   const captureScreenshotForReport = useCallback(async () => {
+    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setIsCapturing(true);
+    // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setCaptureError(null);
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setSubmitError(null);
 
+    // 4. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
     try {
       const blob = await captureCurrentPageScreenshot();
       setScreenshotBlob(blob);
@@ -175,14 +179,18 @@ export function ErrorReportHelpContent({
 
   // 기능 : 에러 내용과 선택 screenshot을 Backend API로 제출합니다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     event.preventDefault();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!canSubmit) {
       return;
     }
 
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setSubmitError(null);
 
+    // 4. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
     try {
       const response = await createErrorReportMutation.mutateAsync({
         description: trimmedDescription,

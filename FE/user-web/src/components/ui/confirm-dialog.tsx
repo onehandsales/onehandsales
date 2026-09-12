@@ -26,18 +26,22 @@ export function ConfirmDialog({
   onConfirm,
 }: ConfirmDialogProps) {
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!open) {
       return;
     }
 
     // 기능 : handle Key Down 이벤트를 처리합니다.
+    // 2. 이후 처리에 사용할 handleKeyDown을 계산한다.
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCancel();
       }
     };
 
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("keydown", handleKeyDown);
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };

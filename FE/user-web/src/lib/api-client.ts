@@ -34,10 +34,15 @@ export class ApiClientError extends Error {
 
   // 기능 : 클래스 실행에 필요한 의존성과 초기 상태를 준비합니다.
   constructor(error: ApiErrorShape) {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     super(error.message);
+    // 2. 현재 단계에서 필요한 side effect를 실행한다.
     this.name = "ApiClientError";
+    // 3. 현재 단계에서 필요한 side effect를 실행한다.
     this.statusCode = error.statusCode;
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     this.code = error.code;
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     this.raw = error.raw;
   }
 
@@ -66,6 +71,7 @@ export async function apiClient<TResponse>(
   path: string,
   options: ApiClientOptions = {}
 ): Promise<TResponse> {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path.startsWith("/admin/api/")) {
     throw new ApiClientError({
       statusCode: 400,
@@ -75,8 +81,10 @@ export async function apiClient<TResponse>(
     });
   }
 
+  // 2. 비동기 결과를 받아 response에 저장한다.
   const response = await request(path, options);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (
     response.status === 401 &&
     !options.skipAuthRefresh &&
@@ -92,6 +100,7 @@ export async function apiClient<TResponse>(
     appAccessToken = null;
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return handleResponse<TResponse>(response);
 }
 
@@ -100,6 +109,7 @@ export async function apiBlobClient(
   path: string,
   options: ApiClientOptions = {}
 ): Promise<ApiBlobResponse> {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path.startsWith("/admin/api/")) {
     throw new ApiClientError({
       statusCode: 400,
@@ -109,8 +119,10 @@ export async function apiBlobClient(
     });
   }
 
+  // 2. 비동기 결과를 받아 response에 저장한다.
   const response = await request(path, options);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (
     response.status === 401 &&
     !options.skipAuthRefresh &&
@@ -126,6 +138,7 @@ export async function apiBlobClient(
     appAccessToken = null;
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return handleBlobResponse(response);
 }
 
@@ -170,19 +183,25 @@ export function isApiErrorRetryable(error: unknown): boolean {
 
 // 기능 : request 기능을 수행합니다.
 async function request(path: string, options: ApiClientOptions) {
+  // 1. 이후 처리에 사용할 headers을 계산한다.
   const headers = new Headers(options.headers);
+  // 2. 이후 처리에 사용할 body을 계산한다.
   const body = getRequestBody(options.body);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (body.shouldSetJsonContentType) {
     headers.set("Content-Type", "application/json");
   }
 
+  // 4. 이후 처리에 사용할 accessToken을 계산한다.
   const accessToken = options.accessToken ?? appAccessToken;
 
+  // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (accessToken) {
     headers.set("Authorization", `Bearer ${accessToken}`);
   }
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return fetch(buildUrl(path), {
     ...options,
     body: body.value,
@@ -193,21 +212,26 @@ async function request(path: string, options: ApiClientOptions) {
 
 // 기능 : handle Response 이벤트를 처리합니다.
 async function handleResponse<TResponse>(response: Response): Promise<TResponse> {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!response.ok) {
     const raw = await readResponseBody(response);
     throw new ApiClientError(normalizeError(response, raw));
   }
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (response.status === 204) {
     return undefined as TResponse;
   }
 
+  // 3. 비동기 결과를 받아 text에 저장한다.
   const text = await response.text();
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (text.length === 0) {
     return undefined as TResponse;
   }
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return JSON.parse(text) as TResponse;
 }
 
@@ -280,17 +304,21 @@ async function readResponseBody(response: Response): Promise<unknown> {
 
 // 기능 : normalize Error 값을 내부 기준으로 정규화합니다.
 function normalizeError(response: Response, raw: unknown): ApiErrorShape {
+  // 1. 이후 처리에 사용할 nestedError을 계산한다.
   const nestedError = getNestedError(raw);
+  // 2. 이후 처리에 사용할 code을 계산한다.
   const code =
     getStringField(raw, "error") ??
     getStringField(nestedError, "error") ??
     response.statusText ??
     "ApiError";
+  // 3. 이후 처리에 사용할 message을 계산한다.
   const message =
     getStringField(raw, "message") ??
     getStringField(nestedError, "message") ??
     code;
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return {
     statusCode: response.status,
     code,
@@ -301,16 +329,20 @@ function normalizeError(response: Response, raw: unknown): ApiErrorShape {
 
 // 기능 : parse Content Disposition File Name 값을 해석합니다.
 function parseContentDispositionFileName(value: string | null) {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!value) {
     return null;
   }
 
+  // 2. 이후 처리에 사용할 encodedFileName을 계산한다.
   const encodedFileName = value.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (encodedFileName) {
     return decodeURIComponent(encodedFileName);
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return value.match(/filename="?([^";]+)"?/i)?.[1] ?? null;
 }
 
@@ -325,20 +357,25 @@ function getNestedError(value: unknown): unknown {
 
 // 기능 : get String Field 값을 조회합니다.
 function getStringField(value: unknown, field: string): string | null {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!isRecord(value)) {
     return null;
   }
 
+  // 2. 이후 처리에 사용할 fieldValue을 계산한다.
   const fieldValue = value[field];
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (typeof fieldValue === "string") {
     return fieldValue;
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (Array.isArray(fieldValue)) {
     return fieldValue.filter((item) => typeof item === "string").join(", ");
   }
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return null;
 }
 

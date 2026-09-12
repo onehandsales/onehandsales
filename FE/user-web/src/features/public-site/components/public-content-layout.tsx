@@ -171,8 +171,11 @@ export function PublicInfoCard({
   titleClassName,
   to,
 }: PublicInfoCardProps) {
+  // 1. 화면 상태와 동작에 필요한 publicSitePath 값을 준비한다.
   const publicSitePath = usePublicSitePath();
+  // 2. 이후 처리에 사용할 TitleTag을 계산한다.
   const TitleTag = titleAs;
+  // 3. 이후 처리에 사용할 content을 계산한다.
   const content = (
     <>
       {Icon ? (
@@ -210,12 +213,14 @@ export function PublicInfoCard({
       ) : null}
     </>
   );
+  // 4. 이후 처리에 사용할 cardClassName을 계산한다.
   const cardClassName = cn(
     "group rounded-[8px] bg-[#FAFAF8] p-5 transition-colors",
     to ? "hover:bg-[#eeeeec]" : "",
     className,
   );
 
+  // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (to) {
     return (
       <Link className={cardClassName} to={publicSitePath(to)}>
@@ -224,6 +229,7 @@ export function PublicInfoCard({
     );
   }
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return <article className={cardClassName}>{content}</article>;
 }
 
@@ -234,9 +240,12 @@ export function PublicTableOfContents({
   label,
   numbered = false,
 }: PublicTableOfContentsProps) {
+  // 1. 이후 처리에 사용할 splitIndex을 계산한다.
   const splitIndex = Math.ceil(items.length / 2);
+  // 2. 이후 처리에 사용할 columns을 계산한다.
   const columns = [items.slice(0, splitIndex), items.slice(splitIndex)];
   // 기능 : render Item markup을 생성합니다.
+  // 3. 이후 처리에 사용할 renderItem을 계산한다.
   const renderItem = (item: PublicTableOfContentsItem, index: number) => (
     <a
       className="rounded-[6px] px-2 py-1.5 hover:bg-white hover:text-[#111111]"
@@ -247,6 +256,7 @@ export function PublicTableOfContents({
     </a>
   );
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <nav className={cn("rounded-[8px] bg-[#FAFAF8] p-4", className)}>
       {label ? (

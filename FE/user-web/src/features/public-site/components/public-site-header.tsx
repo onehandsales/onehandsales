@@ -331,36 +331,51 @@ function HeaderMobileMenuSection({
 
 // 기능 : 공개 사이트 상단 고정 헤더와 주요 내비게이션을 렌더링합니다.
 export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
+  // 1. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
+  // 2. 화면 상태와 동작에 필요한 { copy } 값을 준비한다.
   const { copy } = usePublicSiteLanguage();
+  // 3. 화면 상태와 동작에 필요한 publicSitePath 값을 준비한다.
   const publicSitePath = usePublicSitePath();
+  // 4. 화면 상태와 동작에 필요한 [isMobileMenuOpen, setIsMobileMenuOpen] 값을 준비한다.
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isMobileMenuOpen) {
       return;
     }
 
+    // 2. 이후 처리에 사용할 previousOverflow을 계산한다.
     const previousOverflow = document.body.style.overflow;
+    // 3. 이후 처리에 사용할 desktopMediaQuery을 계산한다.
     const desktopMediaQuery = window.matchMedia("(min-width: 1280px)");
     // 기능 : close On Escape 창 또는 상태를 닫습니다.
+    // 4. 이후 처리에 사용할 closeOnEscape을 계산한다.
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsMobileMenuOpen(false);
       }
     };
     // 기능 : close On Desktop 창 또는 상태를 닫습니다.
+    // 5. 이후 처리에 사용할 closeOnDesktop을 계산한다.
     const closeOnDesktop = () => {
       if (desktopMediaQuery.matches) {
         setIsMobileMenuOpen(false);
       }
     };
 
+    // 6. 현재 단계에서 필요한 side effect를 실행한다.
     document.body.style.overflow = "hidden";
+    // 7. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", closeOnEscape);
+    // 8. 브라우저 이벤트 listener를 등록하거나 정리한다.
     desktopMediaQuery.addEventListener("change", closeOnDesktop);
+    // 9. 현재 단계에서 필요한 side effect를 실행한다.
     closeOnDesktop();
 
+    // 10. 계산된 결과를 호출자에게 반환한다.
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
@@ -369,6 +384,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
   }, [isMobileMenuOpen]);
 
   // 기능 : 로그인 버튼 클릭 시 지정된 핸들러 또는 locale 로그인 페이지 이동을 실행합니다.
+  // 6. 이후 처리에 사용할 handleLogin을 계산한다.
   const handleLogin = () => {
     if (onLogin) {
       onLogin();
@@ -378,6 +394,7 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
     navigate(publicSitePath("/login"));
   };
 
+  // 7. 계산된 결과를 호출자에게 반환한다.
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
       <div className="flex h-14 w-full items-center justify-between px-[14px]">

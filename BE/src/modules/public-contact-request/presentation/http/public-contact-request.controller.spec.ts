@@ -38,12 +38,17 @@ function createServiceFake(): jest.Mocked<PublicContactRequestApplicationService
 
 // 기능 : PublicContactRequestController의 공개 HTTP 계약을 검증합니다.
 describe("PublicContactRequestController", () => {
+  // 1. 이후 처리에 사용할 app을 계산한다.
   let app: INestApplication;
+  // 2. 이후 처리에 사용할 service을 계산한다.
   let service: jest.Mocked<PublicContactRequestApplicationServiceFake>;
 
+  // 3. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     service = createServiceFake();
 
+    // 2. 비동기 결과를 받아 moduleRef에 저장한다.
     const moduleRef = await Test.createTestingModule({
       controllers: [PublicContactRequestController],
       providers: [
@@ -54,8 +59,11 @@ describe("PublicContactRequestController", () => {
       ],
     }).compile();
 
+    // 3. 현재 단계에서 필요한 side effect를 실행한다.
     app = moduleRef.createNestApplication();
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     app.use(attachRequestId);
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -63,13 +71,16 @@ describe("PublicContactRequestController", () => {
         transform: true,
       })
     );
+    // 6. 필요한 비동기 작업을 실행한다.
     await app.init();
   });
 
+  // 4. 필요한 비동기 작업을 실행한다.
   afterEach(async () => {
     await app.close();
   });
 
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   it("does not use AuthGuard for public contact request endpoints", () => {
     const guards =
       Reflect.getMetadata(GUARDS_METADATA, PublicContactRequestController) ?? [];
@@ -77,6 +88,7 @@ describe("PublicContactRequestController", () => {
     expect(guards).not.toContain(AuthGuard);
   });
 
+  // 6. 필요한 비동기 작업을 실행한다.
   it("accepts JSON public contact requests without authentication", async () => {
     await request(app.getHttpServer())
       .post("/api/public/contact-requests")

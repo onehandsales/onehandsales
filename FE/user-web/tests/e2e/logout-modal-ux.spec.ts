@@ -8,25 +8,37 @@ test.describe("logout modal UX", () => {
   test("opens the logout confirm modal with the shared modal transition", async ({
     page,
   }) => {
+    // 1. 비동기 결과를 받아 api에 저장한다.
     const api = await setupUserWebApiMocks(page);
+    // 2. 필요한 비동기 작업을 실행한다.
     await seedAuthenticatedSession(page);
 
+    // 3. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
+    // 4. 필요한 비동기 작업을 실행한다.
     await page.getByRole("button", { name: "모바일QA사용자" }).click();
+    // 5. 필요한 비동기 작업을 실행한다.
     await page.getByRole("menuitem", { exact: true, name: "로그아웃" }).click();
 
+    // 6. 이후 처리에 사용할 logoutDialog을 계산한다.
     const logoutDialog = page.getByRole("dialog");
+    // 7. 필요한 비동기 작업을 실행한다.
     await expect(
       logoutDialog.getByRole("heading", {
         exact: true,
         name: "계정에서 로그아웃하시겠습니까?",
       }),
     ).toBeVisible();
+    // 8. 필요한 비동기 작업을 실행한다.
     await expect(logoutDialog).toHaveClass(/transition-all/);
+    // 9. 필요한 비동기 작업을 실행한다.
     await expect(logoutDialog).toHaveClass(/duration-300/);
 
+    // 10. 필요한 비동기 작업을 실행한다.
     await logoutDialog.getByRole("button", { exact: true, name: "취소" }).click();
+    // 11. 필요한 비동기 작업을 실행한다.
     await expect(logoutDialog).toBeHidden();
+    // 12. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 });

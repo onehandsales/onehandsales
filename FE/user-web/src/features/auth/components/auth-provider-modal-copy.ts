@@ -70,16 +70,20 @@ export function getAuthProviderContinueLabel({
 }) {
   const configuredLabel =
     authProviderModalCopy[getPublicSiteCopyLanguage(language)].providerLabels[
+      // 1. 이후 처리에 사용할 configuredLabel을 계산한다.
       provider
     ];
 
   if (configuredLabel) {
     return configuredLabel;
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   }
 
   if (language === "ko") {
     return `${providerLabel}로 계속하기`;
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   }
 
   return `Continue with ${providerLabel}`;
 }
+// 4. 계산된 결과를 호출자에게 반환한다.

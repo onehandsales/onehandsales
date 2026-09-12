@@ -4,6 +4,7 @@ import { useAdminAuthSession } from "@/features/auth";
 
 // 기능 : access token을 받아 /admin/api/me 권한 확인을 요청합니다.
 export function LoginPage() {
+  // 1. 화면 상태와 동작에 필요한 객체 구조분해 값을 준비한다.
   const {
     clearError,
     error,
@@ -11,11 +12,16 @@ export function LoginPage() {
     loginWithAccessToken,
     role,
   } = useAdminAuthSession();
+  // 2. 화면 상태와 동작에 필요한 location 값을 준비한다.
   const location = useLocation();
+  // 3. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
+  // 4. 이후 처리에 사용할 redirectTo을 계산한다.
   const redirectTo = getRedirectPath(location.state);
+  // 5. 화면 상태와 동작에 필요한 [accessToken, setAccessToken] 값을 준비한다.
   const [accessToken, setAccessToken] = useState("");
 
+  // 6. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
     if (role === "ADMIN") {
       navigate(redirectTo, { replace: true });
@@ -23,24 +29,31 @@ export function LoginPage() {
   }, [navigate, redirectTo, role]);
 
   // 기능 : token 입력값을 갱신하고 이전 오류를 지웁니다.
+  // 7. 이후 처리에 사용할 onAccessTokenChange을 계산한다.
   const onAccessTokenChange = (event: ChangeEvent<HTMLInputElement>) => {
     clearError();
     setAccessToken(event.currentTarget.value);
   };
 
   // 기능 : 입력된 access token으로 관리자 권한 확인을 시작합니다.
+  // 8. 이후 처리에 사용할 onTokenSubmit을 계산한다.
   const onTokenSubmit = (event: FormEvent<HTMLFormElement>) => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     event.preventDefault();
 
+    // 2. 이후 처리에 사용할 token을 계산한다.
     const token = accessToken.trim();
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!token) {
       return;
     }
 
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     void loginWithAccessToken(token);
   };
 
+  // 9. 계산된 결과를 호출자에게 반환한다.
   return (
     <main className="flex min-h-screen items-center justify-center bg-muted px-5">
       <section className="w-full max-w-sm rounded-lg border bg-white p-6">

@@ -202,16 +202,20 @@ export class PublicContactRequestApplicationService {
     maxLength: number,
     tooLongMessage: string
   ): string {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = value?.trim() ?? "";
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized.length === 0) {
       throw new PublicContactRequestValidationError(field, requiredMessage);
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (Array.from(normalized).length > maxLength) {
       throw new PublicContactRequestValidationError(field, tooLongMessage);
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return normalized;
   }
 
@@ -222,16 +226,20 @@ export class PublicContactRequestApplicationService {
     maxLength: number,
     tooLongMessage: string
   ): string | null {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = value?.trim() ?? "";
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized.length === 0) {
       return null;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (Array.from(normalized).length > maxLength) {
       throw new PublicContactRequestValidationError(field, tooLongMessage);
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return normalized;
   }
 
@@ -302,16 +310,20 @@ export class PublicContactRequestApplicationService {
   private normalizeLocale(
     value: string | undefined
   ): PublicContactRequestLocale | null {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = value?.trim() ?? "";
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized.length === 0) {
       return null;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (this.isLocale(normalized)) {
       return normalized;
     }
 
+    // 4. 유효하지 않은 상태를 오류로 중단한다.
     throw new PublicContactRequestValidationError(
       "locale",
       "지원하지 않는 공개 사이트 언어입니다."

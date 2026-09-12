@@ -14,36 +14,47 @@ describe("UpdateMyProfileUseCase", () => {
     ["en-US", "en"],
     ["en-x-test", "en"],
   ])("normalizes preferredLocale %s to %s", async (inputLocale, expectedLocale) => {
+    // 1. 이후 처리에 사용할 repository을 계산한다.
     const repository = new FakeUserRepository();
+    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
     const useCase = new UpdateMyProfileUseCase(repository);
 
+    // 3. 화면 상태와 동작에 필요한 profile 값을 준비한다.
     const profile = await useCase.execute(makeCurrentUser(), {
       preferredLocale: inputLocale,
     });
 
+    // 4. 테스트 기대 조건을 검증한다.
     expect(repository.lastUpdateInput).toEqual({
       preferredLocale: expectedLocale,
     });
+    // 5. 테스트 기대 조건을 검증한다.
     expect(profile.preferredLocale).toBe(expectedLocale);
   });
 
   // 기능 : 기본 국가와 기본 통화 입력값을 대문자 지원값으로 정규화합니다.
   it("normalizes user country and currency settings", async () => {
+    // 1. 이후 처리에 사용할 repository을 계산한다.
     const repository = new FakeUserRepository();
+    // 2. 화면 상태와 동작에 필요한 useCase 값을 준비한다.
     const useCase = new UpdateMyProfileUseCase(repository);
 
+    // 3. 화면 상태와 동작에 필요한 profile 값을 준비한다.
     const profile = await useCase.execute(makeCurrentUser(), {
       countryCode: "us",
       defaultCurrencyCode: "usd",
       timeZone: "America/New_York",
     });
 
+    // 4. 테스트 기대 조건을 검증한다.
     expect(repository.lastUpdateInput).toEqual({
       timeZone: "America/New_York",
       countryCode: "US",
       defaultCurrencyCode: "USD",
     });
+    // 5. 테스트 기대 조건을 검증한다.
     expect(profile.countryCode).toBe("US");
+    // 6. 테스트 기대 조건을 검증한다.
     expect(profile.defaultCurrencyCode).toBe("USD");
   });
 

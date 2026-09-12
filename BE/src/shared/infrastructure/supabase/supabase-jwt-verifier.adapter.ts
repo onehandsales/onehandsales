@@ -33,12 +33,18 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
 
   // 기능 : Supabase access token을 검증하고 외부 인증 사용자 정보로 변환합니다.
   async verifyAccessToken(accessToken: string): Promise<VerifiedExternalUser> {
+    // 1. 이후 처리에 사용할 issuer을 계산한다.
     const issuer = getRequiredConfig(this.configService, "SUPABASE_JWT_ISSUER");
+    // 2. 비동기 결과를 받아 payload에 저장한다.
     const payload = await this.verifyJwt(accessToken, issuer);
+    // 3. 이후 처리에 사용할 provider을 계산한다.
     const provider = this.getProvider(payload);
+    // 4. 이후 처리에 사용할 email을 계산한다.
     const email = this.getVerifiedEmail(payload);
+    // 5. 이후 처리에 사용할 name을 계산한다.
     const name = this.getName(payload);
 
+    // 6. 계산된 결과를 호출자에게 반환한다.
     return {
       provider,
       providerAccountId: this.getProviderAccountId(payload),
@@ -53,16 +59,20 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
     accessToken: string,
     issuer: string
   ): Promise<SupabaseJwtPayload & { sub: string }> {
+    // 1. 비동기 결과를 받아 [{ jwtVerify }, jwks]에 저장한다.
     const [{ jwtVerify }, jwks] = await Promise.all([this.getJose(), this.getJwks()]);
+    // 2. 비동기 결과를 받아 { payload }에 저장한다.
     const { payload } = await jwtVerify(accessToken, jwks, {
       issuer,
       audience: this.getAudience(),
     });
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!payload.sub) {
       throw new Error("Supabase access token has no subject");
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return payload as SupabaseJwtPayload & { sub: string };
   }
 
@@ -131,27 +141,35 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
 
   // 기능 : Supabase user id가 아니라 OAuth provider가 발급한 안정적인 계정 ID를 추출합니다.
   private getProviderAccountId(payload: SupabaseJwtPayload & { sub: string }): string {
+    // 1. 이후 처리에 사용할 metadata을 계산한다.
     const metadata = payload.user_metadata;
+    // 2. 이후 처리에 사용할 providerAccountId을 계산한다.
     const providerAccountId =
       this.getString(metadata, "provider_id") ?? this.getString(metadata, "sub");
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (providerAccountId && providerAccountId.trim().length > 0) {
       return providerAccountId.trim();
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return payload.sub;
   }
 
   // 기능 : provider metadata 값을 런타임 지원 OAuth provider로 축소합니다.
   private normalizeProvider(value: unknown): ExternalAuthProvider | null {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (typeof value !== "string") {
       return null;
     }
 
+    // 2. 이후 처리에 사용할 provider을 계산한다.
     const provider = value.trim().toLowerCase();
+    // 3. 이후 처리에 사용할 normalizedProvider을 계산한다.
     const normalizedProvider =
       provider === "custom:line" ? "line" : provider;
 
+    // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (
       normalizedProvider === "google" ||
       normalizedProvider === "line" ||
@@ -160,6 +178,7 @@ export class SupabaseJwtVerifierAdapter implements ExternalAuthVerifier {
       return normalizedProvider;
     }
 
+    // 5. 계산된 결과를 호출자에게 반환한다.
     return null;
   }
 

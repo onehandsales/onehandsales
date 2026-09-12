@@ -138,93 +138,116 @@ export const router = createBrowserRouter([
 
 // 기능 : 공개 사이트 locale route가 렌더링할 page element를 선택합니다.
 function getPublicSiteElement(path: PublicSiteLocalizedPath) {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/pricing") {
     return <PricingPage />;
   }
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features") {
     return <FeaturesPage />;
   }
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features/customers") {
     return <CustomerManagementFeaturePage />;
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features/pipeline") {
     return <PipelineFeaturePage />;
   }
 
+  // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features/schedules-follow-up") {
     return <SchedulesFollowUpFeaturePage />;
   }
 
+  // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features/activity-records") {
     return <ActivityRecordsFeaturePage />;
   }
 
+  // 7. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features/ai-sales-assistant") {
     return <AiSalesAssistantFeaturePage />;
   }
 
+  // 8. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/features/reports") {
     return <ReportsFeaturePage />;
   }
 
+  // 9. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/product") {
     return <ProductPage />;
   }
 
+  // 10. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/solutions") {
     return <SolutionsPage />;
   }
 
+  // 11. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/solutions/personal") {
     return <PersonalSolutionPage />;
   }
 
+  // 12. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/solutions/real-estate") {
     return <RealEstateSolutionPage />;
   }
 
+  // 13. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/solutions/insurance-auto") {
     return <InsuranceAutoSolutionPage />;
   }
 
+  // 14. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/solutions/b2b-field") {
     return <B2bFieldSolutionPage />;
   }
 
+  // 15. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/download") {
     return <DownloadPage />;
   }
 
+  // 16. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/help") {
     return <HelpPage />;
   }
 
+  // 17. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/faq") {
     return <FaqPage />;
   }
 
+  // 18. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/contact") {
     return <ContactPage />;
   }
 
+  // 19. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/about") {
     return <AboutPage />;
   }
 
+  // 20. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/security") {
     return <SecurityPage />;
   }
 
+  // 21. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/terms") {
     return <TermsPage />;
   }
 
+  // 22. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (path === "/privacy") {
     return <PrivacyPage />;
   }
 
+  // 23. 계산된 결과를 호출자에게 반환한다.
   return <LoginPage />;
 }

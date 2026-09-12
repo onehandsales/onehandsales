@@ -52,40 +52,55 @@ export function AuthSocialLoginModal({
   open,
   onOpenChange,
 }: AuthSocialLoginModalProps) {
+  // 1. 화면 상태와 동작에 필요한 객체 구조분해 값을 준비한다.
   const {
     clearError,
     error: authError,
     isPending,
     startProviderLogin,
   } = useAuthSession();
+  // 2. 화면 상태와 동작에 필요한 { language } 값을 준비한다.
   const { language } = usePublicSiteLanguage();
+  // 3. 이후 처리에 사용할 copy을 계산한다.
   const copy = authProviderModalCopy[getPublicSiteCopyLanguage(language)];
+  // 4. 화면 상태와 동작에 필요한 [providers, setProviders] 값을 준비한다.
   const [providers, setProviders] = useState<AuthProviderOption[]>([]);
+  // 5. 화면 상태와 동작에 필요한 [providersError, setProvidersError] 값을 준비한다.
   const [providersError, setProvidersError] = useState<string | null>(null);
+  // 6. 화면 상태와 동작에 필요한 [isProvidersLoading, setIsProvidersLoading] 값을 준비한다.
   const [isProvidersLoading, setIsProvidersLoading] = useState(false);
+  // 7. 화면 상태와 동작에 필요한 [pendingProvider, setPendingProvider] 값을 준비한다.
   const [pendingProvider, setPendingProvider] = useState<AuthProviderId | null>(
     null
   );
+  // 8. 화면 상태와 동작에 필요한 enabledProviders 값을 준비한다.
   const enabledProviders = useMemo(
     () => providers.filter((provider) => provider.enabled),
     [providers]
   );
 
+  // 9. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!open) {
       setPendingProvider(null);
       return;
     }
 
+    // 2. 현재 단계에서 필요한 side effect를 실행한다.
     clearError();
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (providers.length > 0) {
       return;
     }
 
+    // 4. 이후 처리에 사용할 isMounted을 계산한다.
     let isMounted = true;
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setIsProvidersLoading(true);
 
+    // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
     void authService
       .listProviders()
       .then((response) => {
@@ -106,11 +121,13 @@ export function AuthSocialLoginModal({
         }
       });
 
+    // 7. 계산된 결과를 호출자에게 반환한다.
     return () => {
       isMounted = false;
     };
   }, [clearError, open, providers.length]);
 
+  // 10. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (!isPending) {
       setPendingProvider(null);
@@ -118,6 +135,7 @@ export function AuthSocialLoginModal({
   }, [isPending]);
 
   // 기능 : on Provider Login 기능을 수행합니다.
+  // 11. 이후 처리에 사용할 onProviderLogin을 계산한다.
   const onProviderLogin = (provider: AuthProviderId) => {
     setPendingProvider(provider);
     void startProviderLogin(provider).catch(() => {
@@ -125,6 +143,7 @@ export function AuthSocialLoginModal({
     });
   };
 
+  // 12. 계산된 결과를 호출자에게 반환한다.
   return (
     <ModalShell
       bodyClassName="flex flex-1 flex-col px-8 pb-6 pt-7 max-[460px]:px-6"

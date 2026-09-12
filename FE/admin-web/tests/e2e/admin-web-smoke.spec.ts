@@ -7,16 +7,23 @@ const USER_AUTHORIZATION_HEADER = `Bearer ${USER_ACCESS_TOKEN}`;
 
 test.describe("Admin Web smoke E2E", () => {
   test("verifies admin access only through /admin/api/me", async ({ page }) => {
+    // 1. 비동기 결과를 받아 requests에 저장한다.
     const requests = await setupAdminApiMocks(page);
 
+    // 2. 필요한 비동기 작업을 실행한다.
     await page.goto("/login");
+    // 3. 필요한 비동기 작업을 실행한다.
     await submitAccessToken(page, ADMIN_ACCESS_TOKEN);
 
+    // 4. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/$/);
+    // 5. 필요한 비동기 작업을 실행한다.
     await expect(
       page.getByRole("heading", { name: "Admin verified" })
     ).toBeVisible();
+    // 6. 필요한 비동기 작업을 실행한다.
     await expect(page.getByText("admin@example.com")).toBeVisible();
+    // 7. 테스트 기대 조건을 검증한다.
     expect(requests()).toEqual([
       {
         authorization: ADMIN_AUTHORIZATION_HEADER,
@@ -29,15 +36,22 @@ test.describe("Admin Web smoke E2E", () => {
   test("rejects a non-admin token without calling removed admin APIs", async ({
     page,
   }) => {
+    // 1. 비동기 결과를 받아 requests에 저장한다.
     const requests = await setupAdminApiMocks(page);
 
+    // 2. 필요한 비동기 작업을 실행한다.
     await page.goto("/");
+    // 3. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/login$/);
 
+    // 4. 필요한 비동기 작업을 실행한다.
     await submitAccessToken(page, USER_ACCESS_TOKEN);
 
+    // 5. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/login$/);
+    // 6. 필요한 비동기 작업을 실행한다.
     await expect(page.getByText("Admin API request failed: 403")).toBeVisible();
+    // 7. 테스트 기대 조건을 검증한다.
     expect(requests()).toEqual([
       {
         authorization: USER_AUTHORIZATION_HEADER,
@@ -63,37 +77,47 @@ async function setupAdminApiMocks(page: Page) {
   }> = [];
 
   await page.route(isAdminApiRequest, async (route) => {
+    // 1. 이후 처리에 사용할 request을 계산한다.
     const request = route.request();
+    // 2. 이후 처리에 사용할 method을 계산한다.
     const method = request.method();
+    // 3. 이후 처리에 사용할 url을 계산한다.
     const url = new URL(request.url());
+    // 4. 이후 처리에 사용할 authorization을 계산한다.
     const authorization = request.headers().authorization ?? null;
 
+    // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (method === "OPTIONS") {
       await fulfillJson(route, null, 204);
       return;
     }
 
+    // 6. 현재 단계에서 필요한 side effect를 실행한다.
     requests.push({
       authorization,
       method,
       path: `${url.pathname}${url.search}`,
     });
 
+    // 7. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (url.pathname !== "/admin/api/me") {
       await fulfillJson(route, { code: "ADMIN_API_REMOVED" }, 410);
       return;
     }
 
+    // 8. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (authorization === USER_AUTHORIZATION_HEADER) {
       await fulfillJson(route, { code: "ADMIN_FORBIDDEN" }, 403);
       return;
     }
 
+    // 9. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (authorization !== ADMIN_AUTHORIZATION_HEADER) {
       await fulfillJson(route, { code: "AUTH_UNAUTHORIZED" }, 401);
       return;
     }
 
+    // 10. 필요한 비동기 작업을 실행한다.
     await fulfillJson(route, {
       id: "admin-1",
       email: "admin@example.com",

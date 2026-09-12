@@ -852,28 +852,39 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
 
 // 기능 : 현재 공개 사이트 route에 맞는 브라우저 SEO 메타데이터를 적용합니다.
 export function PublicSiteSeo() {
+  // 1. 화면 상태와 동작에 필요한 location 값을 준비한다.
   const location = useLocation();
+  // 2. 화면 상태와 동작에 필요한 metadata 값을 준비한다.
   const metadata = useMemo(
     () => getPublicSiteSeoMetadata(location.pathname),
     [location.pathname]
   );
 
+  // 3. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
     applyPublicSiteSeo(metadata);
   }, [metadata]);
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return null;
 }
 
 // 기능 : 공개 사이트 pathname에서 SEO 메타데이터 입력값을 계산합니다.
 function getPublicSiteSeoMetadata(pathname: string): PublicSiteSeoMetadata {
+  // 1. 이후 처리에 사용할 language을 계산한다.
   const language = getPublicSiteLanguageFromPathname(pathname) ?? "ko";
+  // 2. 이후 처리에 사용할 publicPath을 계산한다.
   const publicPath = stripPublicSiteLocaleFromPathname(pathname);
+  // 3. 이후 처리에 사용할 routePath을 계산한다.
   const routePath = isPublicSiteLocalizedPath(publicPath) ? publicPath : "/";
+  // 4. 이후 처리에 사용할 copy을 계산한다.
   const copy = routeSeoCopy[routePath];
+  // 5. 이후 처리에 사용할 title을 계산한다.
   const title = getLocalizedSeoValue(copy.title, language);
+  // 6. 이후 처리에 사용할 description을 계산한다.
   const description = getLocalizedSeoValue(copy.description, language);
 
+  // 7. 계산된 결과를 호출자에게 반환한다.
   return {
     canonicalUrl: `${publicSiteOrigin}${toPublicSitePath(language, routePath)}`,
     description,
@@ -962,10 +973,14 @@ function getSoftwareFeatureList(language: PublicSiteLanguage) {
 
 // 기능 : 계산된 SEO 메타데이터를 document head에 반영합니다.
 function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
+  // 1. 현재 단계에서 필요한 side effect를 실행한다.
   document.documentElement.lang = metadata.htmlLang;
+  // 2. 현재 단계에서 필요한 side effect를 실행한다.
   document.title = metadata.title;
 
+  // 3. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "description", metadata.description);
+  // 4. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta(
     "name",
     "robots",
@@ -973,33 +988,56 @@ function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
       ? "noindex,nofollow,noarchive"
       : "index,follow,max-image-preview:large"
   );
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:type", "website");
+  // 6. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:site_name", "한손에 영업");
+  // 7. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:title", metadata.title);
+  // 8. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:description", metadata.description);
+  // 9. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:url", metadata.canonicalUrl);
+  // 10. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:locale", metadata.ogLocale);
+  // 11. 현재 단계에서 필요한 side effect를 실행한다.
   replaceOgLocaleAlternates(metadata.language);
+  // 12. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:image", publicSiteOgImageUrl);
+  // 13. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:image:width", "1200");
+  // 14. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:image:height", "630");
+  // 15. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("property", "og:image:alt", metadata.title);
+  // 16. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "twitter:card", "summary_large_image");
+  // 17. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "twitter:title", metadata.title);
+  // 18. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "twitter:description", metadata.description);
+  // 19. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "twitter:image", publicSiteOgImageUrl);
+  // 20. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "twitter:image:alt", metadata.title);
+  // 21. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "application-name", "한손에 영업");
+  // 22. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "apple-mobile-web-app-title", "한손에 영업");
+  // 23. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta(
     "name",
     "keywords",
     getLocalizedSeoKeywords(routeSeoCopy[metadata.routePath].keywords, metadata.language).join(", ")
   );
+  // 24. 현재 단계에서 필요한 side effect를 실행한다.
   upsertMeta("name", "theme-color", "#ffffff");
 
+  // 25. 현재 단계에서 필요한 side effect를 실행한다.
   upsertCanonical(metadata.canonicalUrl);
+  // 26. 현재 단계에서 필요한 side effect를 실행한다.
   replaceAlternateLinks(metadata.routePath);
+  // 27. 현재 단계에서 필요한 side effect를 실행한다.
   replaceJsonLd(metadata);
 }
 
@@ -1012,10 +1050,15 @@ function replaceOgLocaleAlternates(currentLanguage: PublicSiteLanguage) {
   publicSiteSeoLanguageValues
     .filter((language) => language !== currentLanguage)
     .forEach((language) => {
+      // 1. 이후 처리에 사용할 meta을 계산한다.
       const meta = document.createElement("meta");
+      // 2. 현재 단계에서 필요한 side effect를 실행한다.
       meta.dataset.onehandSeo = "og-locale-alternate";
+      // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
       meta.setAttribute("property", "og:locale:alternate");
+      // 4. 현재 단계에서 필요한 side effect를 실행한다.
       meta.content = ogLocaleByLanguage[language];
+      // 5. 현재 단계에서 필요한 side effect를 실행한다.
       document.head.appendChild(meta);
     });
 }
@@ -1041,58 +1084,83 @@ function upsertMeta(
 
 // 기능 : canonical link 태그를 하나만 유지하며 갱신합니다.
 function upsertCanonical(href: string) {
+  // 1. 이후 처리에 사용할 canonical을 계산한다.
   let canonical = document.head.querySelector<HTMLLinkElement>(
     'link[rel="canonical"]'
   );
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!canonical) {
     canonical = document.createElement("link");
     canonical.rel = "canonical";
     document.head.appendChild(canonical);
   }
 
+  // 3. 현재 단계에서 필요한 side effect를 실행한다.
   canonical.href = href;
 
+  // 4. 이후 처리에 사용할 extraCanonicals을 계산한다.
   const extraCanonicals = Array.from(
     document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]')
   ).slice(1);
 
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   extraCanonicals.forEach((link) => link.remove());
 }
 
 // 기능 : 현재 공개 사이트 route의 hreflang alternate link 태그를 교체합니다.
 function replaceAlternateLinks(routePath: PublicSiteLocalizedPath) {
+  // 1. 현재 단계에서 필요한 side effect를 실행한다.
   document.head
     .querySelectorAll<HTMLLinkElement>('link[data-onehand-seo="alternate"]')
     .forEach((link) => link.remove());
 
+  // 2. 현재 단계에서 필요한 side effect를 실행한다.
   publicSiteSeoLanguageValues.forEach((language) => {
+    // 1. 이후 처리에 사용할 link을 계산한다.
     const link = document.createElement("link");
+    // 2. 현재 단계에서 필요한 side effect를 실행한다.
     link.dataset.onehandSeo = "alternate";
+    // 3. 현재 단계에서 필요한 side effect를 실행한다.
     link.href = `${publicSiteOrigin}${toPublicSitePath(language, routePath)}`;
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     link.hreflang = htmlLangByLanguage[language];
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     link.rel = "alternate";
+    // 6. 현재 단계에서 필요한 side effect를 실행한다.
     document.head.appendChild(link);
   });
 
+  // 3. 이후 처리에 사용할 defaultLink을 계산한다.
   const defaultLink = document.createElement("link");
+  // 4. 현재 단계에서 필요한 side effect를 실행한다.
   defaultLink.dataset.onehandSeo = "alternate";
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   defaultLink.href = `${publicSiteOrigin}${toPublicSitePath("ko", routePath)}`;
+  // 6. 현재 단계에서 필요한 side effect를 실행한다.
   defaultLink.hreflang = "x-default";
+  // 7. 현재 단계에서 필요한 side effect를 실행한다.
   defaultLink.rel = "alternate";
+  // 8. 현재 단계에서 필요한 side effect를 실행한다.
   document.head.appendChild(defaultLink);
 }
 
 // 기능 : 현재 route의 JSON-LD 구조화 데이터를 교체합니다.
 function replaceJsonLd(metadata: PublicSiteSeoMetadata) {
+  // 1. 현재 단계에서 필요한 side effect를 실행한다.
   document.head
     .querySelectorAll<HTMLScriptElement>('script[data-onehand-seo="json-ld"]')
     .forEach((script) => script.remove());
 
+  // 2. 이후 처리에 사용할 script을 계산한다.
   const script = document.createElement("script");
+  // 3. 현재 단계에서 필요한 side effect를 실행한다.
   script.dataset.onehandSeo = "json-ld";
+  // 4. 현재 단계에서 필요한 side effect를 실행한다.
   script.type = "application/ld+json";
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   script.textContent = JSON.stringify(getJsonLd(metadata));
+  // 6. 현재 단계에서 필요한 side effect를 실행한다.
   document.head.appendChild(script);
 }
 

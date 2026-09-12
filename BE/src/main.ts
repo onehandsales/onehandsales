@@ -88,25 +88,33 @@ function loadEnvFile(
 
 // 기능 : dotenv 한 줄을 환경 변수 key/value 또는 무시 대상 null로 해석합니다.
 function parseEnvLine(line: string): { key: string; value: string } | null {
+  // 1. 이후 처리에 사용할 trimmed을 계산한다.
   const trimmed = line.trim();
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!trimmed || trimmed.startsWith("#")) {
     return null;
   }
 
+  // 3. 이후 처리에 사용할 separatorIndex을 계산한다.
   const separatorIndex = trimmed.indexOf("=");
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (separatorIndex <= 0) {
     return null;
   }
 
+  // 5. 이후 처리에 사용할 key을 계산한다.
   const key = trimmed.slice(0, separatorIndex).trim();
+  // 6. 이후 처리에 사용할 rawValue을 계산한다.
   const rawValue = trimmed.slice(separatorIndex + 1).trim();
 
+  // 7. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) {
     return null;
   }
 
+  // 8. 계산된 결과를 호출자에게 반환한다.
   return {
     key,
     value: unquoteEnvValue(rawValue),

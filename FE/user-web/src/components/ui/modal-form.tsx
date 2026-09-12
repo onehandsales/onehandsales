@@ -255,10 +255,14 @@ export function ModalFooterActions({
   onCancel,
   onSubmit,
 }: ModalFooterActionsProps) {
+  // 1. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
+  // 2. 이후 처리에 사용할 resolvedSubmitLabel을 계산한다.
   const resolvedSubmitLabel = submitLabel ?? t("common.save");
+  // 3. 이후 처리에 사용할 resolvedPendingLabel을 계산한다.
   const resolvedPendingLabel = pendingLabel ?? t("common.saving");
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <>
       <button

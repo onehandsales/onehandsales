@@ -18,8 +18,11 @@ const landingFinalSectionHeightClassName = "landing-final-section-height";
 
 // 기능 : 공개 랜딩의 마지막 섹션을 렌더링합니다.
 export function FinalSection({ copy: copyOverride }: FinalSectionProps) {
+  // 1. 화면 상태와 동작에 필요한 publicSitePath 값을 준비한다.
   const publicSitePath = usePublicSitePath();
+  // 2. 화면 상태와 동작에 필요한 { copy: publicSiteCopy } 값을 준비한다.
   const { copy: publicSiteCopy } = usePublicSiteLanguage();
+  // 3. 이후 처리에 사용할 copy을 계산한다.
   const copy = {
     title: publicSiteCopy.landing.finalCta,
     description: "",
@@ -28,6 +31,7 @@ export function FinalSection({ copy: copyOverride }: FinalSectionProps) {
     ...copyOverride,
   };
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <>
       <FinalSectionStyles />

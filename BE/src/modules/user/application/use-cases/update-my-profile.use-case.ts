@@ -71,40 +71,51 @@ export class UpdateMyProfileUseCase {
 
   // 기능 : 이름 입력값을 저장 가능한 공백 제거 값 또는 null로 정규화합니다.
   private normalizeName(name: string | null | undefined): string | null | undefined {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (name === undefined) {
       return undefined;
     }
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (name === null) {
       return null;
     }
 
+    // 3. 이후 처리에 사용할 trimmed을 계산한다.
     const trimmed = name.trim();
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return trimmed.length > 0 ? trimmed : null;
   }
 
   // 기능 : 사용자가 선택한 표시 언어를 지원 locale 값으로 정규화합니다.
   private normalizePreferredLocale(locale: string | undefined): string | undefined {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = locale?.trim().replace("_", "-");
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized === undefined) {
       return undefined;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (this.isSupportedValue(normalized, SUPPORTED_LOCALES)) {
       return normalized;
     }
 
+    // 4. 이후 처리에 사용할 normalizedLower을 계산한다.
     const normalizedLower = normalized.toLowerCase();
 
+    // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalizedLower === "ko" || normalizedLower === "ko-kr") {
       return "ko-KR";
     }
 
+    // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalizedLower === "en" || normalizedLower.startsWith("en-")) {
       return "en";
     }
 
+    // 7. 유효하지 않은 상태를 오류로 중단한다.
     throw new UserGlobalSettingValidationError(
       "USER_LOCALE_UNSUPPORTED",
       "preferredLocale",
@@ -114,12 +125,15 @@ export class UpdateMyProfileUseCase {
 
   // 기능 : 사용자 설정 timezone을 IANA timezone ID로 검증합니다.
   private normalizeTimeZone(timeZone: string | undefined): string | undefined {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (timeZone === undefined) {
       return undefined;
     }
 
+    // 2. 이후 처리에 사용할 trimmed을 계산한다.
     const trimmed = timeZone.trim();
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!trimmed || !isValidIanaTimeZone(trimmed)) {
       throw new UserGlobalSettingValidationError(
         "USER_TIMEZONE_INVALID",
@@ -128,21 +142,26 @@ export class UpdateMyProfileUseCase {
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return trimmed;
   }
 
   // 기능 : 사용자 기본 국가 코드를 08 1차 지원 국가로 검증합니다.
   private normalizeCountryCode(countryCode: string | undefined): string | undefined {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = countryCode?.trim().toUpperCase();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized === undefined) {
       return undefined;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (this.isSupportedValue(normalized, SUPPORTED_COUNTRY_CODES)) {
       return normalized;
     }
 
+    // 4. 유효하지 않은 상태를 오류로 중단한다.
     throw new UserGlobalSettingValidationError(
       "USER_COUNTRY_UNSUPPORTED",
       "countryCode",
@@ -154,16 +173,20 @@ export class UpdateMyProfileUseCase {
   private normalizeDefaultCurrencyCode(
     defaultCurrencyCode: string | undefined
   ): string | undefined {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = defaultCurrencyCode?.trim().toUpperCase();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized === undefined) {
       return undefined;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (this.isSupportedValue(normalized, SUPPORTED_CURRENCY_CODES)) {
       return normalized;
     }
 
+    // 4. 유효하지 않은 상태를 오류로 중단한다.
     throw new UserGlobalSettingValidationError(
       "USER_DEFAULT_CURRENCY_UNSUPPORTED",
       "defaultCurrencyCode",

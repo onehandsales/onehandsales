@@ -439,16 +439,19 @@ export function PublicSiteLanguageProvider({
 }: {
   readonly children: ReactNode;
 }) {
+  // 1. 화면 상태와 동작에 필요한 [language, setLanguageState] 값을 준비한다.
   const [language, setLanguageState] = useState<PublicSiteLanguage>(() =>
     getInitialLanguage()
   );
 
+  // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     document.documentElement.lang =
       publicSiteHtmlLangByLanguage[language] ?? "ko-KR";
     window.localStorage.setItem(publicSiteLanguageStorageKey, language);
   }, [language]);
 
+  // 3. 화면 상태와 동작에 필요한 value 값을 준비한다.
   const value = useMemo<PublicSiteLanguageContextValue>(
     () => ({
       language,
@@ -458,6 +461,7 @@ export function PublicSiteLanguageProvider({
     [language]
   );
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <PublicSiteLanguageContext.Provider value={value}>
       {children}

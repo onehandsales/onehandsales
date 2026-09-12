@@ -46,25 +46,34 @@ export async function setupUserWebApiMocks(
   page: Page,
   options: SetupUserWebApiMockOptions = {},
 ) {
+  // 1. 이후 처리에 사용할 store을 계산한다.
   const store = options.store ?? createUserWebApiMockStore();
+  // 2. 이후 처리에 사용할 protectedRequests을 계산한다.
   const protectedRequests: ApiRequestRecord[] = [];
 
+  // 3. 필요한 비동기 작업을 실행한다.
   await page.route("**/*", async (route) => {
+    // 1. 이후 처리에 사용할 url을 계산한다.
     const url = new URL(route.request().url());
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!url.pathname.startsWith("/api/")) {
       await route.continue();
       return;
     }
 
+    // 3. 이후 처리에 사용할 method을 계산한다.
     const method = route.request().method().toUpperCase();
+    // 4. 이후 처리에 사용할 authorization을 계산한다.
     const authorization = route.request().headers().authorization ?? null;
 
+    // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (method === "OPTIONS") {
       await route.fulfill({ headers: corsHeaders(), status: 204 });
       return;
     }
 
+    // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isPublicApiRequest(url.pathname) && authorization !== E2E_AUTHORIZATION) {
       protectedRequests.push({ authorization, method, pathname: url.pathname });
       await fulfillJson(
@@ -79,10 +88,13 @@ export async function setupUserWebApiMocks(
       return;
     }
 
+    // 7. 필요한 비동기 작업을 실행한다.
     await delayApiResponse(options.delayMs, { authorization, method, pathname: url.pathname });
+    // 8. 필요한 비동기 작업을 실행한다.
     await fulfill(route, await handleApiRequest(store, route, method, url));
   });
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return {
     // 기능 : protected Requests Without Authorization 기능을 수행합니다.
     protectedRequestsWithoutAuthorization() {
@@ -113,8 +125,10 @@ async function handleApiRequest(
   method: string,
   url: URL,
 ): Promise<MockApiResponse> {
+  // 1. 이후 처리에 사용할 pathname을 계산한다.
   const pathname = url.pathname;
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/auth/providers" && method === "GET") {
     return json({
       providers: [
@@ -125,22 +139,27 @@ async function handleApiRequest(
     });
   }
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/auth/exchange" && method === "POST") {
     return json(createAuthTokenResponse());
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/auth/refresh" && method === "POST") {
     return json(createAuthTokenResponse());
   }
 
+  // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/auth/logout" && method === "POST") {
     return json({ ok: true });
   }
 
+  // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/public/contact-requests" && method === "POST") {
     return json({ id: "public-contact-1", message: "received" }, 201);
   }
 
+  // 7. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/support-requests" && method === "POST") {
     return json({
       id: "support-request-1",
@@ -148,6 +167,7 @@ async function handleApiRequest(
     }, 201);
   }
 
+  // 8. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/error-reports" && method === "POST") {
     return json({
       id: "error-report-1",
@@ -156,19 +176,23 @@ async function handleApiRequest(
     }, 201);
   }
 
+  // 9. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/me" && method === "GET") {
     return json(createAuthUser());
   }
 
+  // 10. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/users/me/profile" && method === "GET") {
     return json(createUserProfile());
   }
 
+  // 11. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/users/me/profile" && method === "PATCH") {
     const overrides = recordField(await readJsonBody(route));
     return json(createUserProfile(overrides));
   }
 
+  // 12. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/users/me/devices" && method === "GET") {
     return json({
       devices: [
@@ -187,6 +211,7 @@ async function handleApiRequest(
     });
   }
 
+  // 13. 계산된 결과를 호출자에게 반환한다.
   return json(
     {
       code: "NotFound",

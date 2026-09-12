@@ -386,12 +386,16 @@ function waitForPopupLoginCompletion(popup: Window) {
     // 3. 최초 완료 이벤트만 처리하고 이후 이벤트는 무시한다.
     // 기능 : settle 값을 설정합니다.
     const settle = (callback: () => void) => {
+      // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
       if (isSettled) {
         return;
       }
 
+      // 2. 현재 단계에서 필요한 side effect를 실행한다.
       isSettled = true;
+      // 3. 현재 단계에서 필요한 side effect를 실행한다.
       cleanup();
+      // 4. 현재 단계에서 필요한 side effect를 실행한다.
       callback();
     };
 

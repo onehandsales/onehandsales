@@ -7,16 +7,22 @@ export function createXlsxDownloadResponse(
   response: Response,
   file: ExportedXlsxFileResponse
 ): StreamableFile {
+  // 1. 이후 처리에 사용할 asciiFileName을 계산한다.
   const asciiFileName = createAsciiDownloadFileName(file.fileName);
+  // 2. 이후 처리에 사용할 encodedFileName을 계산한다.
   const encodedFileName = encodeURIComponent(file.fileName);
 
+  // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
   response.setHeader("Content-Type", file.contentType);
+  // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
   response.setHeader(
     "Content-Disposition",
     `attachment; filename="${asciiFileName}"; filename*=UTF-8''${encodedFileName}`
   );
+  // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
   response.setHeader("Content-Length", file.content.length.toString());
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return new StreamableFile(file.content);
 }
 

@@ -299,25 +299,39 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
 
 // 기능 : 도입 문의를 단계형 Request Demo 흐름으로 렌더링합니다.
 export function ContactPage() {
+  // 1. 화면 상태와 동작에 필요한 { copy: publicSiteCopy, language } 값을 준비한다.
   const { copy: publicSiteCopy, language } = usePublicSiteLanguage();
+  // 2. 화면 상태와 동작에 필요한 publicSitePath 값을 준비한다.
   const publicSitePath = usePublicSitePath();
+  // 3. 이후 처리에 사용할 copyLanguage을 계산한다.
   const copyLanguage = getPublicSiteCopyLanguage(language);
+  // 4. 이후 처리에 사용할 copy을 계산한다.
   const copy = contactFlowCopyByLanguage[copyLanguage];
+  // 5. 이후 처리에 사용할 regionOptions을 계산한다.
   const regionOptions = contactRegionOptionsByLanguage[copyLanguage];
+  // 6. 이후 처리에 사용할 regionPlaceholder을 계산한다.
   const regionPlaceholder = contactRegionPlaceholderByLanguage[copyLanguage];
+  // 7. 화면 상태와 동작에 필요한 [stepIndex, setStepIndex] 값을 준비한다.
   const [stepIndex, setStepIndex] = useState(0);
+  // 8. 화면 상태와 동작에 필요한 [values, setValues] 값을 준비한다.
   const [values, setValues] = useState<ContactFormValues>(
     emptyContactFormValues
   );
+  // 9. 화면 상태와 동작에 필요한 [errorMessage, setErrorMessage] 값을 준비한다.
   const [errorMessage, setErrorMessage] = useState("");
+  // 10. 화면 상태와 동작에 필요한 [isSubmitted, setIsSubmitted] 값을 준비한다.
   const [isSubmitted, setIsSubmitted] = useState(false);
+  // 11. 화면 상태와 동작에 필요한 [isSubmitting, setIsSubmitting] 값을 준비한다.
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // 12. 이후 처리에 사용할 currentStep을 계산한다.
   const currentStep = contactStepIds[stepIndex] ?? "email";
+  // 13. 이후 처리에 사용할 selectedSize을 계산한다.
   const selectedSize = copy.size.options.find(
     (option) => option.value === values.companySize
   );
 
   // 기능 : update Value 정보를 수정합니다.
+  // 14. 이후 처리에 사용할 updateValue을 계산한다.
   const updateValue = <TField extends keyof ContactFormValues>(
     field: TField,
     value: ContactFormValues[TField]
@@ -327,35 +341,43 @@ export function ContactPage() {
   };
 
   // 기능 : go Next 기능을 수행합니다.
+  // 15. 이후 처리에 사용할 goNext을 계산한다.
   const goNext = () => {
     setErrorMessage("");
     setStepIndex((current) => Math.min(contactStepIds.length - 1, current + 1));
   };
 
   // 기능 : handle Email Next 이벤트를 처리합니다.
+  // 16. 이후 처리에 사용할 handleEmailNext을 계산한다.
   const handleEmailNext = (event: FormEvent<HTMLFormElement>) => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     event.preventDefault();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!values.email.trim()) {
       setErrorMessage("");
       return;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isValidEmail(values.email)) {
       setErrorMessage(copy.emailInvalid);
       return;
     }
 
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     goNext();
   };
 
   // 기능 : handle Size Select 이벤트를 처리합니다.
+  // 17. 이후 처리에 사용할 handleSizeSelect을 계산한다.
   const handleSizeSelect = (option: ContactOption) => {
     updateValue("companySize", option.value);
     setStepIndex(2);
   };
 
   // 기능 : handle Profile Next 이벤트를 처리합니다.
+  // 18. 이후 처리에 사용할 handleProfileNext을 계산한다.
   const handleProfileNext = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -368,21 +390,28 @@ export function ContactPage() {
   };
 
   // 기능 : handle Submit 이벤트를 처리합니다.
+  // 19. 이후 처리에 사용할 handleSubmit을 계산한다.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     event.preventDefault();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!values.plan.trim() || !values.source.trim()) {
       setErrorMessage(copy.required);
       return;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (isSubmitting) {
       return;
     }
 
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setErrorMessage("");
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setIsSubmitting(true);
 
+    // 6. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
     try {
       await createPublicContactRequest({
         email: values.email,
@@ -408,6 +437,7 @@ export function ContactPage() {
     }
   };
 
+  // 20. 계산된 결과를 호출자에게 반환한다.
   return (
     <main className="min-h-dvh overflow-x-hidden bg-white text-[#050505]">
       <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
@@ -853,16 +883,21 @@ function RegionSelectField({
   readonly value: string;
   readonly onChange: (value: string) => void;
 }) {
+  // 1. 화면 상태와 동작에 필요한 detailsRef 값을 준비한다.
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  // 2. 이후 처리에 사용할 selectedOption을 계산한다.
   const selectedOption = options.find((option) => option.value === value);
 
+  // 3. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
     // 기능 : close Region Menu 창 또는 상태를 닫습니다.
+    // 1. 이후 처리에 사용할 closeRegionMenu을 계산한다.
     const closeRegionMenu = () => {
       detailsRef.current?.removeAttribute("open");
     };
 
     // 기능 : on Pointer Down 기능을 수행합니다.
+    // 2. 이후 처리에 사용할 onPointerDown을 계산한다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
 
@@ -872,21 +907,26 @@ function RegionSelectField({
     };
 
     // 기능 : on Key Down 기능을 수행합니다.
+    // 3. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeRegionMenu();
       }
     };
 
+    // 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("pointerdown", onPointerDown);
+    // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", onKeyDown);
 
+    // 6. 계산된 결과를 호출자에게 반환한다.
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <div className="grid gap-2 text-[13px] font-normal text-[#111111]">
       <span>{label}</span>
@@ -1036,16 +1076,20 @@ function isValidEmail(value: string) {
 
 // 기능 : format Contact Phone Number 표시 문자열을 생성합니다.
 function formatContactPhoneNumber(value: string) {
+  // 1. 이후 처리에 사용할 digits을 계산한다.
   const digits = value.replace(/\D/g, "").slice(0, 11);
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (digits.length <= 3) {
     return digits;
   }
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (digits.length <= 7) {
     return `${digits.slice(0, 3)}-${digits.slice(3)}`;
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 }
 

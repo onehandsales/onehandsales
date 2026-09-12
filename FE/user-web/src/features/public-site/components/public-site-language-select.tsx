@@ -10,29 +10,38 @@ import {
 
 // 기능 : 공개 사이트 언어 선택 드롭다운을 렌더링합니다.
 export function PublicSiteLanguageSelect() {
+  // 1. 화면 상태와 동작에 필요한 { copy, language } 값을 준비한다.
   const { copy, language } = usePublicSiteLanguage();
+  // 2. 화면 상태와 동작에 필요한 switchLocale 값을 준비한다.
   const switchLocale = usePublicSiteLocaleSwitcher();
+  // 3. 화면 상태와 동작에 필요한 detailsRef 값을 준비한다.
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  // 4. 이후 처리에 사용할 selectedOption을 계산한다.
   const selectedOption = publicSiteLanguageOptions.find(
     (option) => option.value === language
   );
+  // 5. 이후 처리에 사용할 selectedLabel을 계산한다.
   const selectedLabel = getPublicSiteLanguageOptionLabel(
     selectedOption,
     language
   );
 
   // 기능 : 사용자가 선택한 언어로 공개 사이트 locale을 전환합니다.
+  // 6. 이후 처리에 사용할 onSelectLanguage을 계산한다.
   const onSelectLanguage = (nextLanguage: PublicSiteLanguage) => {
     switchLocale(nextLanguage);
   };
 
+  // 7. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
     // 기능 : 언어 선택 details 메뉴를 닫습니다.
+    // 1. 이후 처리에 사용할 closeLanguageMenu을 계산한다.
     const closeLanguageMenu = () => {
       detailsRef.current?.removeAttribute("open");
     };
 
     // 기능 : 언어 선택 메뉴 바깥 클릭을 감지해 메뉴를 닫습니다.
+    // 2. 이후 처리에 사용할 onPointerDown을 계산한다.
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target;
 
@@ -45,21 +54,26 @@ export function PublicSiteLanguageSelect() {
     };
 
     // 기능 : on Key Down 기능을 수행합니다.
+    // 3. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeLanguageMenu();
       }
     };
 
+    // 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("pointerdown", onPointerDown);
+    // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", onKeyDown);
 
+    // 6. 계산된 결과를 호출자에게 반환한다.
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
 
+  // 8. 계산된 결과를 호출자에게 반환한다.
   return (
     <details className="group relative mt-5 w-fit" ref={detailsRef}>
       <summary

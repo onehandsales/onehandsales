@@ -34,15 +34,19 @@ export function createAccountSettingsModalPath(
   pathname: string,
   currentSearch: string | URLSearchParams = ""
 ): string {
+  // 1. 이후 처리에 사용할 currentSearchParams을 계산한다.
   const currentSearchParams =
     typeof currentSearch === "string"
       ? new URLSearchParams(currentSearch)
       : currentSearch;
+  // 2. 이후 처리에 사용할 nextSearchParams을 계산한다.
   const nextSearchParams = createAccountModalSearchParams(
     currentSearchParams,
     ACCOUNT_MODAL_SETTINGS_QUERY_VALUE
   );
+  // 3. 이후 처리에 사용할 nextSearch을 계산한다.
   const nextSearch = nextSearchParams.toString();
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return nextSearch ? `${pathname}?${nextSearch}` : pathname;
 }

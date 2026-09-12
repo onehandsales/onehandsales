@@ -193,6 +193,7 @@ export class PrismaAuthRepository implements AuthRepository {
     input: UpdateUserLoginInput,
     now: Date
   ): Promise<AuthUserRecord> {
+    // 1. 이후 처리에 사용할 data을 계산한다.
     const data: Prisma.UserUpdateInput = {
       email: input.email,
       lastLoginLocale: input.lastLoginLocale,
@@ -201,15 +202,18 @@ export class PrismaAuthRepository implements AuthRepository {
       lastLoginAt: now,
     };
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (input.role) {
       data.role = input.role === "ADMIN" ? UserRole.ADMIN : UserRole.USER;
     }
 
+    // 3. 비동기 결과를 받아 user에 저장한다.
     const user = await this.client.user.update({
       where: { id: input.userId },
       data,
     });
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return this.mapUser(user);
   }
 
@@ -578,16 +582,20 @@ export class PrismaAuthRepository implements AuthRepository {
 
   // 기능 : 이전 locale 데이터를 현재 지원 locale 응답값으로 정규화합니다.
   private toSupportedPreferredLocale(preferredLocale: string): string {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = preferredLocale.trim().replace("_", "-").toLowerCase();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized === "ko" || normalized === "ko-kr") {
       return "ko-KR";
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized === "en" || normalized.startsWith("en-")) {
       return "en";
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return "ko-KR";
   }
 }

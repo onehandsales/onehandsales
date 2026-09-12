@@ -31,12 +31,14 @@ const USER_SNAPSHOT: ErrorReportUserSnapshot = {
 
 // 기능 : ErrorReportApplicationService 테스트용 fixture를 생성합니다.
 function createFixture() {
+  // 1. 이후 처리에 사용할 repository을 계산한다.
   const repository: jest.Mocked<ErrorReportRepository> = {
     createErrorReport: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000301",
     }),
     findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
   };
+  // 2. 이후 처리에 사용할 screenshotStorage을 계산한다.
   const screenshotStorage: jest.Mocked<ErrorReportScreenshotStorage> = {
     store: jest.fn().mockResolvedValue({
       checksum: "sha256-checksum",
@@ -47,11 +49,13 @@ function createFixture() {
       storageProvider: "SUPABASE",
     }),
   };
+  // 3. 이후 처리에 사용할 logger을 계산한다.
   const logger: Pick<AppLogger, "error" | "log"> = {
     error: jest.fn(),
     log: jest.fn(),
   };
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return {
     repository,
     screenshotStorage,
@@ -65,6 +69,7 @@ function createFixture() {
 
 // 기능 : 에러 신고 접수 use case 검증을 수행합니다.
 describe("ErrorReportApplicationService", () => {
+  // 1. 필요한 비동기 작업을 실행한다.
   it("rejects blank descriptions after trimming whitespace", async () => {
     const fixture = createFixture();
 
@@ -84,6 +89,7 @@ describe("ErrorReportApplicationService", () => {
     expect(fixture.repository.createErrorReport).not.toHaveBeenCalled();
   });
 
+  // 2. 필요한 비동기 작업을 실행한다.
   it("accepts a one-character description", async () => {
     const fixture = createFixture();
 
@@ -103,9 +109,12 @@ describe("ErrorReportApplicationService", () => {
     );
   });
 
+  // 3. 필요한 비동기 작업을 실행한다.
   it("creates an error report without screenshot", async () => {
+    // 1. 이후 처리에 사용할 fixture을 계산한다.
     const fixture = createFixture();
 
+    // 2. 비동기 결과를 받아 response에 저장한다.
     const response = await fixture.service.createErrorReport({
       currentUser: CURRENT_USER,
       description: "계정 화면에서 저장 버튼을 누르면 멈춰요.",
@@ -115,10 +124,13 @@ describe("ErrorReportApplicationService", () => {
       userAgent: "playwright",
     });
 
+    // 3. 테스트 기대 조건을 검증한다.
     expect(fixture.repository.findUserSnapshotById).toHaveBeenCalledWith(
       CURRENT_USER.id
     );
+    // 4. 테스트 기대 조건을 검증한다.
     expect(fixture.screenshotStorage.store).not.toHaveBeenCalled();
+    // 5. 테스트 기대 조건을 검증한다.
     expect(fixture.repository.createErrorReport).toHaveBeenCalledWith({
       user: USER_SNAPSHOT,
         description: "계정 화면에서 저장 버튼을 누르면 멈춰요.",
@@ -127,16 +139,21 @@ describe("ErrorReportApplicationService", () => {
       screenshot: null,
       userAgent: "playwright",
     });
+    // 6. 테스트 기대 조건을 검증한다.
     expect(response).toEqual({
       id: "00000000-0000-4000-8000-000000000301",
       message: "문제를 빠르게 해결할게요.",
     });
   });
 
+  // 4. 필요한 비동기 작업을 실행한다.
   it("stores png screenshot metadata when user includes screenshot", async () => {
+    // 1. 이후 처리에 사용할 fixture을 계산한다.
     const fixture = createFixture();
+    // 2. 이후 처리에 사용할 screenshotBuffer을 계산한다.
     const screenshotBuffer = Buffer.from("png");
 
+    // 3. 필요한 비동기 작업을 실행한다.
     await fixture.service.createErrorReport({
       currentUser: CURRENT_USER,
       description: "홈 화면에서 카드가 겹쳐 보이고 버튼이 눌리지 않아요.",
@@ -151,12 +168,14 @@ describe("ErrorReportApplicationService", () => {
       userAgent: "playwright",
     });
 
+    // 4. 테스트 기대 조건을 검증한다.
     expect(fixture.screenshotStorage.store).toHaveBeenCalledWith({
       userId: CURRENT_USER.id,
       buffer: screenshotBuffer,
       capturedAt: expect.any(Date),
       mimeType: "image/png",
     });
+    // 5. 테스트 기대 조건을 검증한다.
     expect(fixture.repository.createErrorReport).toHaveBeenCalledWith(
       expect.objectContaining({
         screenshot: {
@@ -173,10 +192,14 @@ describe("ErrorReportApplicationService", () => {
     );
   });
 
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   it("maps screenshot storage failures to a safe retryable error", async () => {
+    // 1. 이후 처리에 사용할 fixture을 계산한다.
     const fixture = createFixture();
+    // 2. 현재 단계에서 필요한 side effect를 실행한다.
     fixture.screenshotStorage.store.mockRejectedValue(new Error("network"));
 
+    // 3. 필요한 비동기 작업을 실행한다.
     await expect(
       fixture.service.createErrorReport({
         currentUser: CURRENT_USER,
@@ -193,6 +216,7 @@ describe("ErrorReportApplicationService", () => {
       })
     ).rejects.toBeInstanceOf(ErrorReportScreenshotStorageFailedError);
 
+    // 4. 테스트 기대 조건을 검증한다.
     expect(fixture.repository.createErrorReport).not.toHaveBeenCalled();
   });
 });

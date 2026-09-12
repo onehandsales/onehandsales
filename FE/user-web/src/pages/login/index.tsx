@@ -144,6 +144,7 @@ export function LoginPage() {
         // 8. 교환할 세션이 없으면 loading을 종료하고 popup callback 창은 닫는다.
         setIsCallbackLoginLoading(false);
 
+        // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
         if (isPopupCallbackRoute) {
           closeAuthPopupCallbackWindow();
         }

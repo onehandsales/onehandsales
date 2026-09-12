@@ -52,13 +52,17 @@ jest.mock("jose", () => {
 describe("AppModule", () => {
   // 기능 : AppModule을 테스트 모듈로 컴파일할 수 있는지 확인합니다.
   it("compiles the Nest module graph", async () => {
+    // 1. 비동기 결과를 받아 { AppModule }에 저장한다.
     const { AppModule } = await import("./app.module");
+    // 2. 비동기 결과를 받아 moduleRef에 저장한다.
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
+    // 3. 테스트 기대 조건을 검증한다.
     expect(moduleRef).toBeDefined();
 
+    // 4. 필요한 비동기 작업을 실행한다.
     await moduleRef.close();
   });
 });

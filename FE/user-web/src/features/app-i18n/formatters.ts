@@ -93,13 +93,17 @@ export function formatAppDateWithOptions(
   options: Intl.DateTimeFormatOptions &
     Pick<AppDateFormatOptions, "fallback" | "locale" | "timeZone">
 ) {
+  // 1. 이후 처리에 사용할 { fallback, locale, timeZone, ...intlOptions }을 계산한다.
   const { fallback, locale, timeZone, ...intlOptions } = options;
+  // 2. 이후 처리에 사용할 date을 계산한다.
   const date = toValidDate(value);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!date) {
     return fallback ?? DEFAULT_FALLBACK;
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return new Intl.DateTimeFormat(resolveIntlLocale(locale), {
     timeZone: timeZone ?? DEFAULT_APP_TIME_ZONE,
     ...intlOptions,
@@ -111,13 +115,17 @@ export function formatAppCurrency(
   amount: number | null | undefined,
   options: AppCurrencyFormatOptions = {}
 ) {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (amount === null || amount === undefined || Number.isNaN(amount)) {
     return options.fallback ?? DEFAULT_FALLBACK;
   }
 
+  // 2. 이후 처리에 사용할 currencyCode을 계산한다.
   const currencyCode = options.currencyCode ?? DEFAULT_APP_CURRENCY_CODE;
+  // 3. 이후 처리에 사용할 intlLocale을 계산한다.
   const intlLocale = resolveIntlLocale(options.locale);
 
+  // 4. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
   try {
     return new Intl.NumberFormat(intlLocale, {
       currency: currencyCode,
@@ -134,18 +142,23 @@ export function formatPhoneDisplay(
   value: string | null | undefined,
   options: AppPhoneFormatOptions = {}
 ) {
+  // 1. 이후 처리에 사용할 trimmed을 계산한다.
   const trimmed = value?.trim();
+  // 2. 이후 처리에 사용할 countryCode을 계산한다.
   const countryCode = normalizeAppPhoneCountryCode(options.countryCode);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!trimmed) {
     return options.fallback ?? DEFAULT_FALLBACK;
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (countryCode === "US" && /^\+?1\d{10}$/.test(trimmed)) {
     const digits = trimmed.replace(/^\+?1/, "");
     return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
   }
 
+  // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (countryCode === "KR") {
     const digits = trimmed.replace(/\D/g, "");
     const nationalNumber = digits.startsWith("82")
@@ -160,5 +173,6 @@ export function formatPhoneDisplay(
     }
   }
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return trimmed;
 }

@@ -123,8 +123,10 @@ export class ErrorReportApplicationService {
 
   // 기능 : 현재 화면 주소를 trim하고 필수/길이 조건을 검증합니다.
   private normalizePageUrl(value: string | undefined): string {
+    // 1. 이후 처리에 사용할 normalized을 계산한다.
     const normalized = value?.trim() ?? "";
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (normalized.length === 0) {
       throw new ErrorReportValidationError(
         "ERROR_REPORT_PAGE_URL_REQUIRED",
@@ -133,6 +135,7 @@ export class ErrorReportApplicationService {
       );
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (Array.from(normalized).length > MAX_ERROR_REPORT_PAGE_URL_LENGTH) {
       throw new ErrorReportValidationError(
         "ERROR_REPORT_PAGE_URL_TOO_LONG",
@@ -141,6 +144,7 @@ export class ErrorReportApplicationService {
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return normalized;
   }
 

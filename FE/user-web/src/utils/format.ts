@@ -19,16 +19,20 @@ export function formatDateWithOptions(
   value: DateValue,
   { fallback, locale, ...intlOptions }: CustomDateFormatOptions
 ) {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!value) {
     return fallback ?? DEFAULT_FALLBACK;
   }
 
+  // 2. 시간 계산에 필요한 기준 값을 준비한다.
   const date = new Date(value);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (Number.isNaN(date.getTime())) {
     return typeof value === "string" ? value : String(value);
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return new Intl.DateTimeFormat(locale ?? LOCALE, intlOptions).format(date);
 }
 

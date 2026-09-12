@@ -218,18 +218,23 @@ function normalizeLegacyText(value: string) {
 
 // 기능 : 한국어 앱 정적 문구를 locale에 맞게 변환합니다.
 export function translateLegacyAppStaticText(value: string, locale: AppLocale) {
+  // 1. 이후 처리에 사용할 normalized을 계산한다.
   const normalized = normalizeLegacyText(value);
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (locale !== "en" || normalized.length === 0) {
     return value;
   }
 
+  // 3. 이후 처리에 사용할 exact을 계산한다.
   const exact = LEGACY_KO_TO_EN[normalized];
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (exact) {
     return exact;
   }
 
+  // 5. 대상 목록을 순회하며 필요한 값을 처리한다.
   for (const { pattern, translate } of LEGACY_PATTERNS) {
     const match = normalized.match(pattern);
 
@@ -238,5 +243,6 @@ export function translateLegacyAppStaticText(value: string, locale: AppLocale) {
     }
   }
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return value;
 }

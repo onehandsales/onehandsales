@@ -38,18 +38,22 @@ export class AuthCookieService {
 
   // 기능 : refresh token 쿠키에 적용할 공통 옵션을 계산합니다.
   private getBaseCookieOptions(): CookieOptions {
+    // 1. 이후 처리에 사용할 options을 계산한다.
     const options: CookieOptions = {
       httpOnly: true,
       sameSite: "lax",
       secure: this.isSecureCookie(),
       path: this.refreshCookiePath,
     };
+    // 2. 이후 처리에 사용할 domain을 계산한다.
     const domain = this.configService.get<string>("APP_REFRESH_COOKIE_DOMAIN");
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (domain && domain.trim().length > 0) {
       options.domain = domain.trim();
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return options;
   }
 
@@ -79,10 +83,12 @@ export class AuthCookieService {
 
   // 기능 : Cookie 헤더 문자열에서 지정 이름의 쿠키 값을 추출합니다.
   private readCookie(cookieHeader: string | undefined, name: string): string | null {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!cookieHeader) {
       return null;
     }
 
+    // 2. 이후 처리에 사용할 cookie을 계산한다.
     const cookie = cookieHeader
       .split(";")
       // 기능 : Cookie 항목의 앞뒤 공백을 제거합니다.
@@ -90,12 +96,15 @@ export class AuthCookieService {
       // 기능 : 요청한 쿠키 이름으로 시작하는 항목을 찾습니다.
       .find((entry) => entry.startsWith(`${name}=`));
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!cookie) {
       return null;
     }
 
+    // 4. 이후 처리에 사용할 value을 계산한다.
     const value = cookie.slice(name.length + 1);
 
+    // 5. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
     try {
       return decodeURIComponent(value);
     } catch {

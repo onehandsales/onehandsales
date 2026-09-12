@@ -35,6 +35,7 @@ export class AppLogger implements LoggerService {
     context?: string,
     trace?: string
   ): void {
+    // 1. 시간 계산에 필요한 기준 값을 준비한다.
     const entry = {
       timestamp: new Date().toISOString(),
       service: "onehand-sales-backend",
@@ -43,13 +44,16 @@ export class AppLogger implements LoggerService {
       ...(context ? { context } : {}),
       ...(trace ? { trace } : {}),
     };
+    // 2. 이후 처리에 사용할 line을 계산한다.
     const line = `${JSON.stringify(entry)}\n`;
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (level === "error" || level === "warn") {
       process.stderr.write(line);
       return;
     }
 
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     process.stdout.write(line);
   }
 }

@@ -21,23 +21,30 @@ export async function adminApiClient<TResponse>(
   path: string,
   options: AdminApiClientOptions = {}
 ): Promise<TResponse> {
+  // 1. 이후 처리에 사용할 headers을 계산한다.
   const headers = new Headers(options.headers);
+  // 2. 현재 단계에서 필요한 side effect를 실행한다.
   headers.set("Content-Type", "application/json");
 
+  // 3. 이후 처리에 사용할 accessToken을 계산한다.
   const accessToken = options.accessToken ?? adminAccessToken;
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (accessToken) {
     headers.set("Authorization", `Bearer ${accessToken}`);
   }
 
+  // 5. 비동기 결과를 받아 response에 저장한다.
   const response = await fetch(`${env.apiUrl}/admin/api${path}`, {
     ...options,
     headers,
   });
 
+  // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!response.ok) {
     throw new Error(`Admin API request failed: ${response.status}`);
   }
 
+  // 7. 계산된 결과를 호출자에게 반환한다.
   return response.json() as Promise<TResponse>;
 }

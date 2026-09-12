@@ -29,15 +29,19 @@ export function isValidIanaTimeZone(timeZone: string): boolean {
 export function normalizeOptionalIanaTimeZone(
   timeZone: string | undefined
 ): string | undefined {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (timeZone === undefined) {
     return undefined;
   }
 
+  // 2. 이후 처리에 사용할 trimmed을 계산한다.
   const trimmed = timeZone.trim();
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!trimmed || !isValidIanaTimeZone(trimmed)) {
     throw new ValidationDomainError("timeZone must be a valid IANA timezone ID");
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return trimmed;
 }

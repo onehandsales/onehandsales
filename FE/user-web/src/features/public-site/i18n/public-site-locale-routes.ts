@@ -130,17 +130,22 @@ export function getPublicSiteLanguageFromPathname(
 
 // 기능 : 공개 사이트 pathname에서 locale prefix를 제거합니다.
 export function stripPublicSiteLocaleFromPathname(pathname: string) {
+  // 1. 이후 처리에 사용할 normalizedPathname을 계산한다.
   const normalizedPathname = normalizePathname(pathname);
+  // 2. 이후 처리에 사용할 [, firstSegment, ...restSegments]을 계산한다.
   const [, firstSegment, ...restSegments] = normalizedPathname.split("/");
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!getPublicSiteLanguageFromLocaleSlug(firstSegment)) {
     return normalizedPathname;
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (restSegments.length === 0) {
     return "/";
   }
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return normalizePathname(`/${restSegments.join("/")}`);
 }
 
@@ -149,19 +154,25 @@ export function toPublicSitePath(
   language: PublicSiteLanguage,
   pathname: PublicSiteLocalizedPath | string = "/"
 ) {
+  // 1. 이후 처리에 사용할 suffix을 계산한다.
   const suffix = getPathSuffix(pathname);
+  // 2. 이후 처리에 사용할 normalizedPathname을 계산한다.
   const normalizedPathname = normalizePathname(pathname);
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!isPublicSiteLocalizedPath(normalizedPathname)) {
     return `${normalizedPathname}${suffix}`;
   }
 
+  // 4. 이후 처리에 사용할 slug을 계산한다.
   const slug = getPublicSiteLocaleSlug(language);
 
+  // 5. 이후 처리에 사용할 localizedPath을 계산한다.
   const localizedPath = normalizedPathname === "/"
     ? `/${slug}`
     : `/${slug}${normalizedPathname}`;
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return `${localizedPath}${suffix}`;
 }
 
@@ -231,32 +242,41 @@ function getStoredPublicSiteLanguage(): PublicSiteLanguage | null {
 
 // 기능 : 브라우저 언어 설정에서 공개 사이트 기본 언어를 추론합니다.
 function getBrowserPublicSiteLanguage(): PublicSiteLanguage | null {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (typeof window === "undefined") {
     return null;
   }
 
+  // 2. 이후 처리에 사용할 browserLanguage을 계산한다.
   const browserLanguage = window.navigator.language.toLowerCase();
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (browserLanguage === "en-ca") {
     return "en-CA";
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (browserLanguage.startsWith("en")) {
     return "en-US";
   }
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return null;
 }
 
 // 기능 : 경로 비교를 위해 pathname의 query/hash와 trailing slash를 정리합니다.
 function normalizePathname(pathname: string) {
+  // 1. 이후 처리에 사용할 pathOnly을 계산한다.
   const pathOnly = pathname.split(/[?#]/)[0] ?? "/";
+  // 2. 이후 처리에 사용할 withLeadingSlash을 계산한다.
   const withLeadingSlash = pathOnly.startsWith("/") ? pathOnly : `/${pathOnly}`;
+  // 3. 이후 처리에 사용할 withoutTrailingSlash을 계산한다.
   const withoutTrailingSlash =
     withLeadingSlash.length > 1
       ? withLeadingSlash.replace(/\/+$/, "")
       : withLeadingSlash;
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return withoutTrailingSlash || "/";
 }
 

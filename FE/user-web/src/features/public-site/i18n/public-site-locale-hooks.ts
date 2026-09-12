@@ -23,10 +23,14 @@ export function usePublicSitePath() {
 
 // 기능 : Public Site Locale Switcher hook으로 상태와 동작을 제공합니다.
 export function usePublicSiteLocaleSwitcher() {
+  // 1. 화면 상태와 동작에 필요한 location 값을 준비한다.
   const location = useLocation();
+  // 2. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
+  // 3. 화면 상태와 동작에 필요한 { setLanguage } 값을 준비한다.
   const { setLanguage } = usePublicSiteLanguage();
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return useCallback(
     (nextLanguage: PublicSiteLanguage) => {
       setLanguage(nextLanguage);

@@ -34,17 +34,23 @@ export function CollapsibleDesktopSearch({
   onSubmit,
   onValueChange,
 }: CollapsibleDesktopSearchProps) {
+  // 1. 화면 상태와 동작에 필요한 [isOpen, setIsOpen] 값을 준비한다.
   const [isOpen, setIsOpen] = useState(false);
+  // 2. 화면 상태와 동작에 필요한 [expandedWidth, setExpandedWidth] 값을 준비한다.
   const [expandedWidth, setExpandedWidth] = useState(
     getDesktopSearchExpandedWidth,
   );
+  // 3. 화면 상태와 동작에 필요한 inputRef 값을 준비한다.
   const inputRef = useRef<HTMLInputElement>(null);
+  // 4. 화면 상태와 동작에 필요한 resetSignalRef 값을 준비한다.
   const resetSignalRef = useRef(resetSignal);
+  // 5. 이후 처리에 사용할 displayedExpandedWidth을 계산한다.
   const displayedExpandedWidth =
     maxExpandedWidth === undefined
       ? expandedWidth
       : Math.min(expandedWidth, maxExpandedWidth);
 
+  // 6. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -57,26 +63,33 @@ export function CollapsibleDesktopSearch({
     return () => window.cancelAnimationFrame(animationFrameId);
   }, [isOpen]);
 
+  // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (appliedValue || value) {
       setIsOpen(true);
     }
   }, [appliedValue, value]);
 
+  // 8. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     // 기능 : sync Expanded Width 기능을 수행합니다.
+    // 1. 이후 처리에 사용할 syncExpandedWidth을 계산한다.
     const syncExpandedWidth = () => {
       setExpandedWidth(getDesktopSearchExpandedWidth());
     };
 
+    // 2. 현재 단계에서 필요한 side effect를 실행한다.
     syncExpandedWidth();
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("resize", syncExpandedWidth);
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => {
       window.removeEventListener("resize", syncExpandedWidth);
     };
   }, []);
 
+  // 9. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (resetSignalRef.current === resetSignal) {
       return;
@@ -87,6 +100,7 @@ export function CollapsibleDesktopSearch({
   }, [resetSignal]);
 
   // 기능 : submit Search 제출 동작을 수행합니다.
+  // 10. 이후 처리에 사용할 submitSearch을 계산한다.
   const submitSearch = () => {
     const nextValue = value.trim();
 
@@ -97,11 +111,13 @@ export function CollapsibleDesktopSearch({
   };
 
   // 기능 : on Form Submit 기능을 수행합니다.
+  // 11. 이후 처리에 사용할 onFormSubmit을 계산한다.
   const onFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     submitSearch();
   };
 
+  // 12. 계산된 결과를 호출자에게 반환한다.
   return (
     <form
       className={cn(

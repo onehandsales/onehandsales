@@ -18,20 +18,31 @@ type WorksheetWithDataValidations = ExcelJS.Worksheet & {
 export class ExceljsXlsxWorkbookWriter implements XlsxWorkbookWriter {
   // 기능 : 단일 워크시트를 가진 xlsx 파일 Buffer를 생성합니다.
   async writeWorksheet(input: XlsxWorksheetInput): Promise<Buffer> {
+    // 1. 이후 처리에 사용할 workbook을 계산한다.
     const workbook = new ExcelJS.Workbook();
+    // 2. 현재 단계에서 필요한 side effect를 실행한다.
     workbook.creator = "onehand-sales-backend";
+    // 3. 현재 단계에서 필요한 side effect를 실행한다.
     workbook.created = new Date();
 
+    // 4. 이후 처리에 사용할 worksheet을 계산한다.
     const worksheet = workbook.addWorksheet(input.sheetName);
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     worksheet.columns = input.columns.map((column) =>
       this.toExcelColumn(column)
     );
+    // 6. 현재 단계에서 필요한 side effect를 실행한다.
     worksheet.addRows(input.rows.map((row) => ({ ...row })));
+    // 7. 현재 단계에서 필요한 side effect를 실행한다.
     worksheet.getRow(1).font = { bold: true };
+    // 8. 현재 단계에서 필요한 side effect를 실행한다.
     worksheet.views = [{ state: "frozen", ySplit: 1 }];
+    // 9. 현재 단계에서 필요한 side effect를 실행한다.
     this.applyListValidations(worksheet, input);
 
+    // 10. 비동기 결과를 받아 data에 저장한다.
     const data = await workbook.xlsx.writeBuffer();
+    // 11. 계산된 결과를 호출자에게 반환한다.
     return Buffer.isBuffer(data) ? data : Buffer.from(data);
   }
 
@@ -57,22 +68,32 @@ export class ExceljsXlsxWorkbookWriter implements XlsxWorkbookWriter {
     input: XlsxWorksheetInput
   ): void {
     input.columns.forEach((column, columnIndex) => {
+      // 1. 이후 처리에 사용할 validation을 계산한다.
       const validation = column.listValidation;
 
+      // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
       if (!validation || validation.values.length === 0) {
         return;
       }
 
+      // 3. 이후 처리에 사용할 worksheetWithValidations을 계산한다.
       const worksheetWithValidations = worksheet as WorksheetWithDataValidations;
+      // 4. 이후 처리에 사용할 excelColumnLetter을 계산한다.
       const excelColumnLetter = worksheet.getColumn(columnIndex + 1).letter;
+      // 5. 이후 처리에 사용할 rowStart을 계산한다.
       const rowStart = validation.rowStart ?? 2;
+      // 6. 이후 처리에 사용할 rowEnd을 계산한다.
       const rowEnd = validation.rowEnd ?? Math.max(input.rows.length + 1, 1000);
+      // 7. 이후 처리에 사용할 formula을 계산한다.
       const formula = `"${validation.values
         .map((value) => value.replaceAll("\"", "\"\""))
         .join(",")}"`;
+      // 8. 이후 처리에 사용할 hasPrompt을 계산한다.
       const hasPrompt = Boolean(validation.promptTitle || validation.prompt);
+      // 9. 이후 처리에 사용할 address을 계산한다.
       const address = `${excelColumnLetter}${rowStart}:${excelColumnLetter}${rowEnd}`;
 
+      // 10. 현재 단계에서 필요한 side effect를 실행한다.
       worksheetWithValidations.dataValidations.add(address, {
         type: "list",
         allowBlank: validation.allowBlank ?? false,

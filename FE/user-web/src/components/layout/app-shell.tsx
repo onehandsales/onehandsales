@@ -91,27 +91,44 @@ export type AppShellOutletContext = {
 
 // 기능 : 로그인 후 워크스페이스 shell과 공통 모달을 렌더링합니다.
 export function AppShell() {
+  // 1. 화면 상태와 동작에 필요한 { pathname } 값을 준비한다.
   const { pathname } = useLocation();
+  // 2. 화면 상태와 동작에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
+  // 3. 화면 상태와 동작에 필요한 [searchParams, setSearchParams] 값을 준비한다.
   const [searchParams, setSearchParams] = useSearchParams();
+  // 4. 화면 상태와 동작에 필요한 { logout, user } 값을 준비한다.
   const { logout, user } = useAuthSession();
+  // 5. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
+  // 6. 화면 상태와 동작에 필요한 [accountMenuOpen, setAccountMenuOpen] 값을 준비한다.
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  // 7. 화면 상태와 동작에 필요한 [helpMenuOpen, setHelpMenuOpen] 값을 준비한다.
   const [helpMenuOpen, setHelpMenuOpen] = useState(false);
+  // 8. 화면 상태와 동작에 필요한 [isSidebarManuallyCollapsed, setIsSidebarManuallyCollapsed] 값을 준비한다.
   const [isSidebarManuallyCollapsed, setIsSidebarManuallyCollapsed] =
     useState(false);
+  // 9. 화면 상태와 동작에 필요한 [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] 값을 준비한다.
   const [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] = useState(false);
+  // 10. 화면 상태와 동작에 필요한 [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] 값을 준비한다.
   const [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] =
     useState(false);
+  // 11. 화면 상태와 동작에 필요한 [accountModal, setAccountModal] 값을 준비한다.
   const [accountModal, setAccountModal] = useState<AccountModalSection | null>(
     null,
   );
+  // 12. 화면 상태와 동작에 필요한 [lastAccountModalSection, setLastAccountModalSection] 값을 준비한다.
   const [lastAccountModalSection, setLastAccountModalSection] =
     useState<AccountModalSection>("settings");
+  // 13. 화면 상태와 동작에 필요한 [helpModal, setHelpModal] 값을 준비한다.
   const [helpModal, setHelpModal] = useState<HelpModalSection | null>(null);
+  // 14. 화면 상태와 동작에 필요한 [logoutConfirmOpen, setLogoutConfirmOpen] 값을 준비한다.
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  // 15. 화면 상태와 동작에 필요한 accountMenuRef 값을 준비한다.
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  // 16. 화면 상태와 동작에 필요한 helpMenuRef 값을 준비한다.
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
+  // 17. 화면 상태와 동작에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
 
@@ -121,17 +138,23 @@ export function AppShell() {
 
     return querySection;
   }, [searchParams]);
+  // 18. 이후 처리에 사용할 isHome을 계산한다.
   const isHome = pathname === HOME_PATH;
+  // 19. 이후 처리에 사용할 userName을 계산한다.
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
+  // 20. 이후 처리에 사용할 userEmail을 계산한다.
   const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
+  // 21. 이후 처리에 사용할 isSidebarCollapsed을 계산한다.
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
+  // 22. 화면 상태와 동작에 필요한 outletContext 값을 준비한다.
   const outletContext = useMemo<AppShellOutletContext>(
     () => ({ setAutoSidebarCollapsed: setIsSidebarAutoCollapsed }),
     [],
   );
 
   // 기능 : 계정 Settings 모달 URL query를 현재 route 위에서 동기화합니다.
+  // 23. 화면 상태와 동작에 필요한 syncAccountModalSearchParams 값을 준비한다.
   const syncAccountModalSearchParams = useCallback(
     (section: AccountModalSection | null) => {
       const querySection: AccountModalQuerySection | null =
@@ -147,57 +170,78 @@ export function AppShell() {
   );
 
   // 기능 : 계정 모달을 열고 Settings 탭이면 URL query contract를 함께 반영합니다.
+  // 24. 화면 상태와 동작에 필요한 openAccountModal 값을 준비한다.
   const openAccountModal = useCallback(
     (section: AccountModalSection) => {
+      // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setAccountMenuOpen(false);
+      // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setHelpMenuOpen(false);
+      // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setHelpModal(null);
+      // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setLogoutConfirmOpen(false);
+      // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setAccountModal(section);
+      // 6. 현재 단계에서 필요한 side effect를 실행한다.
       syncAccountModalSearchParams(section);
     },
     [syncAccountModalSearchParams],
   );
 
   // 기능 : 계정 모달을 닫고 URL query contract를 정리합니다.
+  // 25. 화면 상태와 동작에 필요한 closeAccountModal 값을 준비한다.
   const closeAccountModal = useCallback(() => {
     setAccountModal(null);
     syncAccountModalSearchParams(null);
   }, [syncAccountModalSearchParams]);
 
   // 기능 : 도움말 메뉴에서 선택한 섹션을 중앙 도움말 모달로 엽니다.
+  // 26. 화면 상태와 동작에 필요한 openHelpModal 값을 준비한다.
   const openHelpModal = useCallback((section: HelpModalSection) => {
+    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAccountMenuOpen(false);
+    // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setHelpMenuOpen(false);
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setLogoutConfirmOpen(false);
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setHelpModal(section);
   }, []);
 
   // 기능 : 도움말 모달을 닫고 선택 상태를 초기화합니다.
+  // 27. 화면 상태와 동작에 필요한 closeHelpModal 값을 준비한다.
   const closeHelpModal = useCallback(() => {
     setHelpModal(null);
   }, []);
 
   // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+  // 28. 비동기 결과를 받아 handleLogout에 저장한다.
   const handleLogout = async () => {
     await logout();
     void navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
   };
 
+  // 29. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setIsSidebarOpenButtonVisible(false);
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!isSidebarCollapsed) {
       return;
     }
 
+    // 3. 이후 처리에 사용할 timerId을 계산한다.
     const timerId = window.setTimeout(() => {
       setIsSidebarOpenButtonVisible(true);
     }, SIDEBAR_COLLAPSE_TRANSITION_MS);
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => window.clearTimeout(timerId);
   }, [isSidebarCollapsed]);
 
+  // 30. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (!isSidebarCollapsed) {
       return;
@@ -207,12 +251,15 @@ export function AppShell() {
     setHelpMenuOpen(false);
   }, [isSidebarCollapsed]);
 
+  // 31. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!accountMenuOpen) {
       return;
     }
 
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    // 2. 화면 상태와 동작에 필요한 onMouseDown 값을 준비한다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         accountMenuRef.current &&
@@ -222,27 +269,34 @@ export function AppShell() {
       }
     };
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    // 3. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setAccountMenuOpen(false);
       }
     };
 
+    // 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("mousedown", onMouseDown);
+    // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", onKeyDown);
 
+    // 6. 계산된 결과를 호출자에게 반환한다.
     return () => {
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [accountMenuOpen]);
 
+  // 32. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!helpMenuOpen) {
       return;
     }
 
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    // 2. 화면 상태와 동작에 필요한 onMouseDown 값을 준비한다.
     const onMouseDown = (event: MouseEvent) => {
       if (
         helpMenuRef.current &&
@@ -252,15 +306,19 @@ export function AppShell() {
       }
     };
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    // 3. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setHelpMenuOpen(false);
       }
     };
 
+    // 4. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("mousedown", onMouseDown);
+    // 5. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", onKeyDown);
 
+    // 6. 계산된 결과를 호출자에게 반환한다.
     return () => {
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("keydown", onKeyDown);
@@ -268,15 +326,22 @@ export function AppShell() {
   }, [helpMenuOpen]);
 
   // 기능 : route 이동 시 계정 메뉴와 local 모달 상태를 닫습니다.
+  // 33. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAccountMenuOpen(false);
+    // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setHelpMenuOpen(false);
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setHelpModal(null);
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAccountModal(null);
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setLogoutConfirmOpen(false);
   }, [pathname]);
 
   // 기능 : URL query contract로 계정 Settings 모달을 열거나 닫습니다.
+  // 34. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (accountModalFromSearchParams) {
       setAccountMenuOpen(false);
@@ -292,23 +357,32 @@ export function AppShell() {
     );
   }, [accountModalFromSearchParams, pathname]);
 
+  // 35. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (accountModal) {
       setLastAccountModalSection(accountModal);
     }
   }, [accountModal]);
 
+  // 36. 이후 처리에 사용할 isFixedViewportPage을 계산한다.
   const isFixedViewportPage = isHome;
+  // 37. 이후 처리에 사용할 isMobileHeaderHidden을 계산한다.
   const isMobileHeaderHidden = false;
+  // 38. 이후 처리에 사용할 hideTopBar을 계산한다.
   const hideTopBar = false;
 
+  // 39. 이후 처리에 사용할 topBarContent을 계산한다.
   const topBarContent = (() => {
+    // 1. 현재 처리 흐름의 다음 단계를 수행한다.
     type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
+    // 2. 이후 처리에 사용할 pageMetaMap을 계산한다.
     const pageMetaMap: Record<string, PageMeta> = {
       "/app": { labelKey: "navigation.home", icon: House },
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
+    // 3. 이후 처리에 사용할 meta을 계산한다.
     const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return (
       <PageHeader
         breadcrumbs={[{ label: t(meta.labelKey), icon: meta.icon }]}
@@ -316,6 +390,7 @@ export function AppShell() {
     );
   })();
 
+  // 40. 이후 처리에 사용할 accountProfile을 계산한다.
   const accountProfile = (
     <div className="relative px-2 pb-1 pt-2" ref={accountMenuRef}>
       <div
@@ -386,9 +461,13 @@ export function AppShell() {
         aria-label={t("shell.sidebarClose")}
         className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
+          // 1. 현재 단계에서 필요한 side effect를 실행한다.
           event.stopPropagation();
+          // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
           setAccountMenuOpen(false);
+          // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
           setHelpMenuOpen(false);
+          // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
           setIsSidebarManuallyCollapsed(true);
         }}
         type="button"
@@ -401,6 +480,7 @@ export function AppShell() {
     </div>
   );
 
+  // 41. 이후 처리에 사용할 helpMenuItems을 계산한다.
   const helpMenuItems: Array<{
     readonly icon: LucideIcon;
     readonly label: string;
@@ -433,6 +513,7 @@ export function AppShell() {
     },
   ];
 
+  // 42. 이후 처리에 사용할 sidebarHelpMenu을 계산한다.
   const sidebarHelpMenu = (
     <div className="relative px-2 pb-3 pt-2" ref={helpMenuRef}>
       <div
@@ -495,6 +576,7 @@ export function AppShell() {
     </div>
   );
 
+  // 43. 계산된 결과를 호출자에게 반환한다.
   return (
     <div className="min-h-dvh bg-background text-foreground" data-app-i18n-root>
       {/* ── Desktop Shell ── */}
@@ -689,15 +771,22 @@ function LogoutConfirmModal({
   readonly onConfirm: () => void;
   readonly open: boolean;
 }) {
+  // 1. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
+  // 2. 화면 상태와 동작에 필요한 [shouldRender, setShouldRender] 값을 준비한다.
   const [shouldRender, setShouldRender] = useState(open);
+  // 3. 화면 상태와 동작에 필요한 [isVisible, setIsVisible] 값을 준비한다.
   const [isVisible, setIsVisible] = useState(false);
 
   // 기능 : 로그아웃 모달을 닫을 때 exit transition이 끝날 때까지 DOM 렌더를 유지합니다.
+  // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 이후 처리에 사용할 openTimerId을 계산한다.
     let openTimerId: number | null = null;
+    // 2. 이후 처리에 사용할 closeTimerId을 계산한다.
     let closeTimerId: number | null = null;
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (open) {
       setShouldRender(true);
       setIsVisible(false);
@@ -713,6 +802,7 @@ function LogoutConfirmModal({
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => {
       if (openTimerId !== null) {
         window.clearTimeout(openTimerId);
@@ -724,33 +814,41 @@ function LogoutConfirmModal({
     };
   }, [open]);
 
+  // 5. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!shouldRender) {
       return;
     }
 
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    // 2. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCancel();
       }
     };
 
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("keydown", onKeyDown);
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onCancel, shouldRender]);
 
   // 기능 : 로그아웃 모달 바깥 영역 클릭 시 모달을 닫습니다.
+  // 6. 화면 상태와 동작에 필요한 onBackdropMouseDown 값을 준비한다.
   const onBackdropMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onCancel();
     }
   };
 
+  // 7. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!shouldRender) {
     return null;
   }
 
+  // 8. 계산된 결과를 호출자에게 반환한다.
   return (
     <div
       className={`fixed inset-0 z-[80] flex items-center justify-center bg-black/20 px-4 py-6 transition-opacity duration-300 ease-out ${
@@ -811,14 +909,20 @@ function AccountModal({
   readonly onClose: () => void;
   readonly open: boolean;
 }) {
+  // 1. 화면 상태와 동작에 필요한 [shouldRender, setShouldRender] 값을 준비한다.
   const [shouldRender, setShouldRender] = useState(open);
+  // 2. 화면 상태와 동작에 필요한 [isVisible, setIsVisible] 값을 준비한다.
   const [isVisible, setIsVisible] = useState(false);
 
   // 기능 : 설정 모달을 닫을 때 exit transition이 끝날 때까지 DOM 렌더를 유지합니다.
+  // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 이후 처리에 사용할 openTimerId을 계산한다.
     let openTimerId: number | null = null;
+    // 2. 이후 처리에 사용할 closeTimerId을 계산한다.
     let closeTimerId: number | null = null;
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (open) {
       setShouldRender(true);
       setIsVisible(false);
@@ -834,6 +938,7 @@ function AccountModal({
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => {
       if (openTimerId !== null) {
         window.clearTimeout(openTimerId);
@@ -845,33 +950,41 @@ function AccountModal({
     };
   }, [open]);
 
+  // 4. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!shouldRender) {
       return;
     }
 
     // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
+    // 2. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
     };
 
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     window.addEventListener("keydown", onKeyDown);
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [onClose, shouldRender]);
 
   // 기능 : 설정 모달 바깥 영역 클릭 시 모달을 닫습니다.
+  // 5. 화면 상태와 동작에 필요한 onBackdropMouseDown 값을 준비한다.
   const onBackdropMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
+  // 6. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!shouldRender) {
     return null;
   }
 
+  // 7. 계산된 결과를 호출자에게 반환한다.
   return (
     <div
       className={`fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6 transition-opacity duration-300 ease-out ${
@@ -1027,10 +1140,15 @@ function HelpModal({
   readonly open: boolean;
   readonly section: HelpModalSection;
 }) {
+  // 1. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
+  // 2. 화면 상태와 동작에 필요한 [shouldRender, setShouldRender] 값을 준비한다.
   const [shouldRender, setShouldRender] = useState(open);
+  // 3. 화면 상태와 동작에 필요한 [isVisible, setIsVisible] 값을 준비한다.
   const [isVisible, setIsVisible] = useState(false);
+  // 4. 화면 상태와 동작에 필요한 [renderedSection, setRenderedSection] 값을 준비한다.
   const [renderedSection, setRenderedSection] = useState(section);
+  // 5. 이후 처리에 사용할 helpModalItems을 계산한다.
   const helpModalItems: HelpModalSidebarItemConfig[] = [
     { icon: BookOpen, label: t("shell.helpGuide"), section: "guide" },
     { icon: ScreenShare, label: t("shell.helpSupportRequest"), section: "support" },
@@ -1039,16 +1157,21 @@ function HelpModal({
     { icon: ShieldCheck, label: t("shell.privacy"), section: "privacy" },
   ];
 
+  // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (open) {
       setRenderedSection(section);
     }
   }, [open, section]);
 
+  // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 이후 처리에 사용할 openTimerId을 계산한다.
     let openTimerId: number | null = null;
+    // 2. 이후 처리에 사용할 closeTimerId을 계산한다.
     let closeTimerId: number | null = null;
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (open) {
       setShouldRender(true);
       setIsVisible(false);
@@ -1064,6 +1187,7 @@ function HelpModal({
       );
     }
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => {
       if (openTimerId !== null) {
         window.clearTimeout(openTimerId);
@@ -1075,33 +1199,41 @@ function HelpModal({
     };
   }, [open]);
 
+  // 8. 현재 단계에서 필요한 side effect를 실행한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!shouldRender) {
       return;
     }
 
     // 기능 : 도움말 모달이 열려 있을 때 Escape 입력으로 닫습니다.
+    // 2. 이후 처리에 사용할 onKeyDown을 계산한다.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
     };
 
+    // 3. 브라우저 이벤트 listener를 등록하거나 정리한다.
     document.addEventListener("keydown", onKeyDown);
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onClose, shouldRender]);
 
   // 기능 : 도움말 모달 바깥 영역 클릭 시 모달을 닫습니다.
+  // 9. 화면 상태와 동작에 필요한 onBackdropMouseDown 값을 준비한다.
   const onBackdropMouseDown = (event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
+  // 10. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (!shouldRender) {
     return null;
   }
 
+  // 11. 계산된 결과를 호출자에게 반환한다.
   return (
     <div
       className={`fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6 transition-opacity duration-300 ease-out ${
@@ -1200,8 +1332,10 @@ function HelpModalSectionContent({
   readonly onClose: () => void;
   readonly section: HelpModalSection;
 }) {
+  // 1. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
 
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (section === "terms") {
     return (
       <LegalDocumentModalContent
@@ -1211,6 +1345,7 @@ function HelpModalSectionContent({
     );
   }
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (section === "privacy") {
     return (
       <LegalDocumentModalContent
@@ -1220,14 +1355,17 @@ function HelpModalSectionContent({
     );
   }
 
+  // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (section === "support") {
     return <SupportRequestHelpContent onSubmitted={onClose} />;
   }
 
+  // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (section === "error") {
     return <ErrorReportHelpContent onSubmitted={onClose} />;
   }
 
+  // 6. 계산된 결과를 호출자에게 반환한다.
   return (
     <HelpModalStaticContent
       cards={[
@@ -1390,15 +1528,25 @@ const accountTimeZoneOptions = [
 
 // 기능 : 계정 설정 모달 콘텐츠 영역을 렌더링합니다.
 function AccountSettingsModalContent() {
+  // 1. 화면 상태와 동작에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
+  // 2. 화면 상태와 동작에 필요한 profileQuery 값을 준비한다.
   const profileQuery = useMyProfile();
+  // 3. 화면 상태와 동작에 필요한 updateProfileMutation 값을 준비한다.
   const updateProfileMutation = useUpdateMyProfileMutation();
+  // 4. 이후 처리에 사용할 profile을 계산한다.
   const profile = profileQuery.data ?? null;
+  // 5. 화면 상태와 동작에 필요한 [preferredLocale, setPreferredLocale] 값을 준비한다.
   const [preferredLocale, setPreferredLocale] = useState("ko-KR");
+  // 6. 화면 상태와 동작에 필요한 [timeZone, setTimeZone] 값을 준비한다.
   const [timeZone, setTimeZone] = useState("Asia/Seoul");
+  // 7. 화면 상태와 동작에 필요한 [countryCode, setCountryCode] 값을 준비한다.
   const [countryCode, setCountryCode] = useState("KR");
+  // 8. 화면 상태와 동작에 필요한 [defaultCurrencyCode, setDefaultCurrencyCode] 값을 준비한다.
   const [defaultCurrencyCode, setDefaultCurrencyCode] = useState("KRW");
+  // 9. 화면 상태와 동작에 필요한 [notice, setNotice] 값을 준비한다.
   const [notice, setNotice] = useState<AccountModalNotice | null>(null);
+  // 10. 이후 처리에 사용할 hasProfileChanges을 계산한다.
   const hasProfileChanges = profile
     ? preferredLocale !== profile.preferredLocale ||
       timeZone !== profile.timeZone ||
@@ -1408,27 +1556,38 @@ function AccountSettingsModalContent() {
 
   // 기능 : Settings 모달 안의 요청 섹션 성공 안내를 공통 notice에 연결합니다.
   // 기능 : 조회된 프로필 값을 앱 기본값 form 상태에 반영합니다.
+  // 11. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
+    // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!profile) {
       return;
     }
 
+    // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setPreferredLocale(profile.preferredLocale);
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setTimeZone(profile.timeZone);
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setCountryCode(profile.countryCode);
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setDefaultCurrencyCode(profile.defaultCurrencyCode);
   }, [profile]);
 
   // 기능 : 계정 Settings 모달에서 앱 기본값 저장 요청을 처리합니다.
+  // 12. 이후 처리에 사용할 onSubmit을 계산한다.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     event.preventDefault();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (!profile || !hasProfileChanges || updateProfileMutation.isPending) {
       return;
     }
 
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setNotice(null);
 
+    // 4. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
     try {
       await updateProfileMutation.mutateAsync({
         preferredLocale,
@@ -1442,6 +1601,7 @@ function AccountSettingsModalContent() {
     }
   };
 
+  // 13. 계산된 결과를 호출자에게 반환한다.
   return (
     <section className="min-h-full bg-white px-8 py-10 md:px-12">
       <div className="mx-auto w-full max-w-[800px]">
@@ -1574,8 +1734,10 @@ function AccountModalSettingRow({
   readonly interactive?: boolean;
   readonly label: string;
 }) {
+  // 1. 이후 처리에 사용할 className을 계산한다.
   const className =
     "grid min-h-[52px] gap-2 py-2 md:grid-cols-[220px_minmax(0,1fr)] md:items-center md:gap-6";
+  // 2. 이후 처리에 사용할 content을 계산한다.
   const content = (
     <>
       <span className="text-[13px] font-medium text-[#111827]">{label}</span>
@@ -1585,10 +1747,12 @@ function AccountModalSettingRow({
     </>
   );
 
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (interactive) {
     return <label className={className}>{content}</label>;
   }
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return <div className={className}>{content}</div>;
 }
 
@@ -2232,12 +2396,16 @@ function ProfileDeviceRow({
 }: {
   readonly device: ProfileDevice;
 }) {
+  // 1. 화면 상태와 동작에 필요한 { formatDateTime, t } 값을 준비한다.
   const { formatDateTime, t } = useAppI18n();
+  // 2. 이후 처리에 사용할 label을 계산한다.
   const label = device.label ?? formatDeviceSlotLabel(device.slot, t);
+  // 3. 이후 처리에 사용할 lastActive을 계산한다.
   const lastActive = device.isCurrentDevice
     ? t("settings.now")
     : formatDateTime(device.lastSeenAt, { fallback: t("common.noRecord") });
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(120px,0.8fr)] items-center border-b border-[#F0F2F6] px-1 py-3">
       <div className="flex min-w-0 items-start gap-2.5">
@@ -2325,9 +2493,13 @@ function ProfileEmptyText({ children }: { readonly children: ReactNode }) {
 
 // 기능 : 제공자 라벨 표시 문구를 생성합니다.
 function formatProviderLabel(provider: string) {
+  // 1. 이후 처리에 사용할 normalized을 계산한다.
   const normalized = provider.toLowerCase();
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (normalized === "google") return "Google";
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (normalized === "legacy_oauth") return "Legacy OAuth";
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return provider;
 }
 
@@ -2354,16 +2526,24 @@ function formatRoleLabel(role: string, t: (key: AppI18nKey) => string) {
 
 // 기능 : 상태 라벨 표시 문구를 생성합니다.
 function formatStatusLabel(status: string, t: (key: AppI18nKey) => string) {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (status === "ACTIVE") return t("settings.active");
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (status === "SUSPENDED") return t("settings.suspended");
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (status === "DELETED") return t("settings.deleted");
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return status;
 }
 
 // 기능 : 기기 슬롯 라벨 표시 문구를 생성합니다.
 function formatDeviceSlotLabel(slot: string, t: (key: AppI18nKey) => string) {
+  // 1. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (slot === "mobile") return t("settings.mobileSlot");
+  // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (slot === "personal_laptop") return t("settings.personalLaptopSlot");
+  // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (slot === "work_laptop") return t("settings.workLaptopSlot");
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return t("settings.device");
 }

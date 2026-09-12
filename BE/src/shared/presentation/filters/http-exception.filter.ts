@@ -14,8 +14,10 @@ import { DomainError } from "@/shared/domain/errors/domain-error";
 export class HttpExceptionFilter implements ExceptionFilter {
   // 기능 : 도메인 예외와 HTTP 예외를 API 오류 응답 형식으로 변환합니다.
   catch(exception: unknown, host: ArgumentsHost) {
+    // 1. 이후 처리에 사용할 response을 계산한다.
     const response = host.switchToHttp().getResponse<Response>();
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (exception instanceof DeletedResourceError) {
       const status =
         exception.operation === "read" ? HttpStatus.GONE : HttpStatus.CONFLICT;
@@ -27,12 +29,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (exception instanceof DomainError) {
       const status = this.getDomainErrorStatus(exception.code);
       response.status(status).json(this.createDomainErrorBody(status, exception));
       return;
     }
 
+    // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const body = exception.getResponse();
@@ -43,6 +47,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return;
     }
 
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       error: "InternalServerError",
@@ -64,20 +69,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   // 기능 : retryable, field, provider처럼 사용자 처리에 필요한 안전한 detail만 선별합니다.
   private pickSafeDetails(details: Record<string, unknown> | null) {
+    // 1. 이후 처리에 사용할 safeDetails을 계산한다.
     const safeDetails: Record<string, unknown> = {};
 
+    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (typeof details?.["retryable"] === "boolean") {
       safeDetails["retryable"] = details["retryable"];
     }
 
+    // 3. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (typeof details?.["field"] === "string") {
       safeDetails["field"] = details["field"];
     }
 
+    // 4. 조건을 확인해 필요한 분기 처리를 수행한다.
     if (typeof details?.["provider"] === "string") {
       safeDetails["provider"] = details["provider"];
     }
 
+    // 5. 계산된 결과를 호출자에게 반환한다.
     return safeDetails;
   }
 

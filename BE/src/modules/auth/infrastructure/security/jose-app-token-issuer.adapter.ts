@@ -44,8 +44,11 @@ export class JoseAppTokenIssuerAdapter implements AppTokenIssuer {
   async issueAccessToken(
     payload: AppAccessTokenPayload
   ): Promise<IssuedAppAccessToken> {
+    // 1. 비동기 결과를 받아 { SignJWT }에 저장한다.
     const { SignJWT } = await this.getJose();
+    // 2. 시간 계산에 필요한 기준 값을 준비한다.
     const expiresAt = this.addMinutes(new Date(), this.getAccessTokenTtlMinutes());
+    // 3. 비동기 결과를 받아 accessToken에 저장한다.
     const accessToken = await new SignJWT({ sessionId: payload.sessionId })
       .setProtectedHeader({ alg: "HS256" })
       .setSubject(payload.userId)
@@ -55,6 +58,7 @@ export class JoseAppTokenIssuerAdapter implements AppTokenIssuer {
       .setExpirationTime(Math.floor(expiresAt.getTime() / 1000))
       .sign(this.getSecret());
 
+    // 4. 계산된 결과를 호출자에게 반환한다.
     return {
       accessToken,
       accessTokenExpiresAt: expiresAt,

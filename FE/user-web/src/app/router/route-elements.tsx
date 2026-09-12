@@ -24,10 +24,14 @@ export function LegacyPublicSiteRedirect({
 }: {
   readonly to: PublicSiteLocalizedPath;
 }) {
+  // 1. 화면 상태와 동작에 필요한 location 값을 준비한다.
   const location = useLocation();
+  // 2. 이후 처리에 사용할 language을 계산한다.
   const language = resolvePublicSiteLanguage(location.pathname);
+  // 3. 이후 처리에 사용할 targetPath을 계산한다.
   const targetPath = toPublicSitePath(language, to);
 
+  // 4. 계산된 결과를 호출자에게 반환한다.
   return (
     <Navigate
       replace
@@ -44,10 +48,15 @@ export function LegacyAppRedirect({
   readonly paramName?: string;
   readonly to: string;
 }) {
+  // 1. 화면 상태와 동작에 필요한 location 값을 준비한다.
   const location = useLocation();
+  // 2. 화면 상태와 동작에 필요한 params 값을 준비한다.
   const params = useParams();
+  // 3. 이후 처리에 사용할 paramValue을 계산한다.
   const paramValue = paramName ? params[paramName] : undefined;
+  // 4. 이후 처리에 사용할 targetPath을 계산한다.
   const targetPath = paramValue ? `${to}/${encodeURIComponent(paramValue)}` : to;
 
+  // 5. 계산된 결과를 호출자에게 반환한다.
   return <Navigate replace to={`${targetPath}${location.search}`} />;
 }

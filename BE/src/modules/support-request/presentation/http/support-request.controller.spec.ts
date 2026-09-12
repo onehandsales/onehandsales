@@ -66,12 +66,17 @@ function createServiceFake(): jest.Mocked<SupportRequestApplicationServiceFake> 
 
 // 기능 : SupportRequestController의 HTTP 계약과 JSON body 연결을 검증합니다.
 describe("SupportRequestController", () => {
+  // 1. 이후 처리에 사용할 app을 계산한다.
   let app: INestApplication;
+  // 2. 이후 처리에 사용할 service을 계산한다.
   let service: jest.Mocked<SupportRequestApplicationServiceFake>;
 
+  // 3. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
+    // 1. 현재 단계에서 필요한 side effect를 실행한다.
     service = createServiceFake();
 
+    // 2. 비동기 결과를 받아 moduleRef에 저장한다.
     const moduleRef = await Test.createTestingModule({
       controllers: [SupportRequestController],
       providers: [
@@ -85,8 +90,11 @@ describe("SupportRequestController", () => {
       .useClass(FakeAuthGuard)
       .compile();
 
+    // 3. 현재 단계에서 필요한 side effect를 실행한다.
     app = moduleRef.createNestApplication();
+    // 4. 현재 단계에서 필요한 side effect를 실행한다.
     app.use(attachRequestId);
+    // 5. 현재 단계에서 필요한 side effect를 실행한다.
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -94,19 +102,23 @@ describe("SupportRequestController", () => {
         transform: true,
       })
     );
+    // 6. 필요한 비동기 작업을 실행한다.
     await app.init();
   });
 
+  // 4. 필요한 비동기 작업을 실행한다.
   afterEach(async () => {
     await app.close();
   });
 
+  // 5. 테스트 기대 조건을 검증한다.
   it("uses AuthGuard for support request endpoints", () => {
     expect(
       Reflect.getMetadata(GUARDS_METADATA, SupportRequestController)
     ).toContain(AuthGuard);
   });
 
+  // 6. 필요한 비동기 작업을 실행한다.
   it("accepts JSON support request requests", async () => {
     await request(app.getHttpServer())
       .post("/api/support-requests")
