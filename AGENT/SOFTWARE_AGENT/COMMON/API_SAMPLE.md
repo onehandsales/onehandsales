@@ -2,6 +2,8 @@
 
 현재 활성 API 문서 범위는 인증/사용자, 지원 접수, 공개 문의, 관리자 권한 확인, health check다.
 
+후속 CRM Core API는 아직 활성 API가 아니다. Workspace/Kit/Record API 후보는 `BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`에 draft로만 둔다.
+
 ## Auth / User
 
 | API | 설명 |

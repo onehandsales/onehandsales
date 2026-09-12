@@ -43,11 +43,11 @@ AuthDevice 1 ─ N AuthSession
 - `User` 영구 삭제 예정 시각 컬럼: 현재 두지 않는다.
 - 계정 삭제 API: 현재 만들지 않는다.
 - 등록 기기 수정/해제 API용 컬럼: 현재 조회만 제공한다.
-- 후속 영업 활동 통합 테이블: 이후 요청 순서대로 별도 설계한다.
+- 후속 CRM Core 테이블: Workspace/Kit/Record 구조로 별도 설계한다.
 
 참고:
 
-- 고정형 고객사/담당자/상품/딜 구조 문서는 현재 비활성 기록이다. 해당 모델은 현재 `BE/prisma/schema.prisma`에 없다.
+- 고정형 고객사/담당자/상품/딜 모델은 현재 `BE/prisma/schema.prisma`에 없다. 제거 기록은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`를 따른다.
 
 ## 4. Enum
 

@@ -7,6 +7,7 @@
 ## 2. 현재 문서
 
 - `FRONTEND_USER_WEB.md`
+- `CRM_CORE_FRONTEND.md`
 - `ADMIN_WEB.md`
 - `TESTING.md`
 - `DEPLOYMENT.md`

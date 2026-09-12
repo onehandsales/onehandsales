@@ -4,6 +4,8 @@
 
 도메인 feature 폴더는 단수형을 사용한다. 현재 활성 feature는 `auth`, `app-i18n`, `error-report`, `support-request`, `public-contact-request`, `public-site`다.
 
+후속 CRM Core feature 후보는 `kit`, `workspace`, `crm-object`, `record`, `record-relationship`이다. 실제 생성은 API 계약과 UXUI flow 확정 이후 진행한다.
+
 ## API State
 
 - TanStack Query key는 feature 단위 factory로 관리한다.
@@ -22,3 +24,4 @@
 - `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 현재 `/app`으로 redirect한다.
 - 고정형 고객사 관리 route는 현재 활성 route가 아니다.
 - 계정 설정은 보호 route 위 query modal로 제공한다.
+- 후속 CRM Core route는 고정형 `/app/contacts`, `/app/products`, `/app/deals` 복구가 아니라 Kit/Workspace/Record 구조로 설계한다.

@@ -8,6 +8,7 @@
 
 - `OVERVIEW.md`
 - `BACKEND.md`
+- `CRM_CORE_BACKEND.md`
 - `TESTING.md`
 - `DEPLOYMENT.md`
 

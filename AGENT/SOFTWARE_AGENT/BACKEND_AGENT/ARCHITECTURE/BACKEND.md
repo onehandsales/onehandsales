@@ -9,6 +9,19 @@
 - Health
 - Admin authority check
 
+## 후속 CRM Core
+
+후속 CRM Core는 현재 활성 Backend module이 아니다.
+
+구현 방향은 `CRM_CORE_BACKEND.md`를 기준으로 한다.
+
+원칙:
+
+- 고정형 Company/Product/Deal API를 복구하지 않는다.
+- Workspace ownership을 CRM Core data의 기본 경계로 둔다.
+- Kit 적용, 첫 Record 생성, 기본 List/View 조회를 MVP 우선 흐름으로 본다.
+- Object/Attribute/Relationship은 내부 구현 개념이며 사용자-facing API response에서는 Kit의 업무 언어와 함께 제공한다.
+
 ## 계층 구조
 
 - `domain`: repository port, domain type, domain error
@@ -39,12 +52,14 @@
 - 인증이 필요한 사용자 API는 current user ownership을 필수로 검증한다.
 - 공개 문의 API는 비로그인 접수 API로 유지한다.
 - 고정형 고객사 관리 API와 검색 API는 현재 제공하지 않는다.
+- CRM Core API는 구현 전 `COMMON/API-SPEC` 계약을 먼저 작성한다.
 
 ## DB 정책
 
 - 인증이 필요한 접수 row는 `userId`를 갖는다.
 - 공개 문의 row는 User FK 없이 독립 원장으로 저장한다.
 - schema 변경은 새 migration으로 추가한다.
+- 후속 CRM Core schema는 `DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`를 기준으로 검토하되, draft를 바로 migration으로 보지 않는다.
 
 ## 검증 정책
 
