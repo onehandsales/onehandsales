@@ -23,12 +23,26 @@
 - `025_product_domain_basic_scope.md` (비활성)
 - `026_time_timezone_policy.md`
 - `027_auth_session_and_provider_qa_policy.md`
-- `028_auth_provider_google_only_and_future_local_providers.md`
-- `029_global_b2c_series_a_priority.md`
-- `030_global_b2c_closeout_and_paddle_defer.md`
+- `028_auth_provider_runtime_policy.md`
+- `030_billing_paddle_defer_policy.md`
 - `031_kr_us_ca_priority_market.md`
+- `032_product_pivot_to_no_setup_crm.md`
+- `033_workspace_team_scope_policy.md`
+- `034_first_kit_selection_policy.md`
 
-## 3. 관련 문서
+## 3. 현재 우선 결정
+
+현재 제품 방향 판단에서는 아래 결정이 우선한다.
+
+1. `000_확정_결정.md`
+2. `032_product_pivot_to_no_setup_crm.md`
+3. `033_workspace_team_scope_policy.md`
+4. `034_first_kit_selection_policy.md`
+5. `030_billing_paddle_defer_policy.md`
+
+과거 Global B2C/Series A 관점의 우선순위 문서는 현재 PM 정본에서 제거했다. 현재 우선순위는 OneHand CRM의 No Setup CRM 피벗과 Kit 기반 MVP를 우선한다.
+
+## 4. 관련 문서
 
 - `AGENT/PM_AGENT/README.md`
 - `AGENT/PM_AGENT/OPERATING_MODEL.md`

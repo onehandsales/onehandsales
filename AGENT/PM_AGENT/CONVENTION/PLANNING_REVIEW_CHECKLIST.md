@@ -61,7 +61,7 @@ AI가 사용자의 의도에 맞춰 문서를 작성했더라도, 바로 구현�
 
 1. 검토 대상 문서 목록을 확정한다.
 2. 사용자의 원래 요청과 현재 계획 폴더의 목적을 확인한다.
-3. `AGENT` 정본 문서를 먼저 읽고 제품 범위, 용어, 아키텍처 기준을 확인한다.
+3. 루트 `README.md`와 `AGENT` 정본 문서를 먼저 읽고 제품 범위, 용어, 아키텍처 기준을 확인한다.
 4. `TODO/{PLAN_NAME}/README.md`에서 계획 목적과 폴더 구조를 확인한다.
 5. `COMMON/USER-FLOW.md`에서 사용자가 실제로 어떤 순서로 기능을 사용하는지 확인한다.
 6. `FE-TODO`에서 화면, 컴포넌트, 상태, 사용자 입력, 에러 상태가 흐름과 맞는지 확인한다.
@@ -80,6 +80,7 @@ TODO 계획 문서를 검토할 때는 단순히 문서 항목이 채워졌는�
 
 검토 시 반드시 함께 보는 기준 문서:
 
+- PM 기준: `README.md`, `AGENT/PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`, `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`, `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`, `AGENT/PM_AGENT/PLANNING/PRD.md`, `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`, `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`, `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - Backend 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - User Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - Admin Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
@@ -108,10 +109,14 @@ Frontend와 UX/UI 구체화 검토:
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
 - UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈, `/app/more`, 계정/도움말 모달의 역할을 구분하는가?
 - 화면/Frontend/API/DB 계획이 `Notion식 작업공간 UX + Attio식 CRM record UX` 기준을 반영해 workspace/page/database/detail과 record/memo 맥락을 함께 설명하는가?
-- Contact/Product/Deal처럼 현재 API에 없는 도메인은 후속 범위로 분리되어 있는가?
+- Company/Product/Deal처럼 현재 API에 없는 전역 도메인은 후속 범위 또는 특정 Kit 안의 업무 개념으로 분리되어 있는가?
+- 계획이 OneHand CRM의 핵심 문장인 "CRM을 배우거나 설계할 필요 없이, 내 일에 맞는 CRM이 바로 준비된다"와 연결되는가?
+- 새 CRM 기능이 Kit, CRM Core, Foundation, 운영 기능 중 어디에 속하는지 분류되어 있는가?
+- Workspace와 Team을 구분하고, Team/조직 권한을 MVP 확정 기능처럼 쓰지 않는가?
+- Kit이 단순 필드 템플릿이 아니라 관리 대상, 관계, 상태, 기본 보기, 다음 행동을 포함하는가?
 - 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
 - 모바일 User Web은 테이블이나 가로 칸반을 기본 UI로 쓰지 않고 카드형/리스트형 흐름을 따르는가?
-- 금지 표현인 `Customer`, `상품`, `오프더레코드`가 정본 의도와 다르게 쓰이지 않는가?
+- 금지 또는 주의 표현인 `Customer`, 전역 `Company/Product/Deal`, `오프더레코드`가 정본 의도와 다르게 쓰이지 않는가?
 - 장식적 hero, card-in-card, 과한 gradient/orb, 베이지/크림 또는 다크 네이비 지배 팔레트 같은 금지된 시각 방향을 전제로 하지 않는가?
 
 심각도 판정:

@@ -1,28 +1,34 @@
-# 030 Global B2C Closeout And Paddle Defer
+# 030 Billing Paddle Defer Policy
 
 Date: 2026-08-11
-Updated: 2026-09-03
+Updated: 2026-09-12
+
+Status: Current
 
 ## Decision
 
 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`과 `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`은 완료된 archive로 본다.
 
-Global B2C 01~11 기능 선구현 로드맵은 구현과 QA closeout 기준으로 닫았고, 기존 12 Billing/Subscription/Tax 작업은 즉시 구현하지 않는다. 결제/구독/세금/Paddle 관련 범위는 `TODO/PADDLE_PLAN`으로 분리해 Deferred / Draft 상태로 관리한다.
+과거 Global B2C 01~11 기능 선구현 로드맵은 구현과 QA closeout 기준으로 닫았고, 기존 12 Billing/Subscription/Tax 작업은 즉시 구현하지 않는다.
 
-현재 다음 순서는 Paddle checkout 구현이 아니다.
+결제/구독/세금/Paddle 관련 범위는 현재 활성 TODO 계획이 아니다. 결제 작업을 시작하려면 별도 TODO 계획을 새로 만들고, PM/UXUI/Software 기준을 다시 연결한다.
+
+현재 OneHand CRM의 다음 순서는 Paddle checkout 구현이 아니다.
 
 1. 현재 활성 기능 유지보수
-2. UX/UI 상품성 개선
-3. 결제창 없는 100명 베타 테스트
-4. 베타 피드백 반영
-5. 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책 확정
-6. Paddle Billing 구현 착수 여부와 범위 확정
+2. 첫 Kit 결정
+3. Workspace/Kit/Record 기반 CRM Core MVP 설계
+4. First Use Activation 구현
+5. 결제창 없는 100명 베타 테스트
+6. 베타 피드백 반영
+7. 가격/플랜/entitlement/AI 사용량 제한/환불/세금/인보이스 정책 확정
+8. Paddle Billing 구현 착수 여부와 범위 확정
 
 ## Reason
 
 구독 결제를 먼저 붙이면 가격, plan, trial, entitlement, AI 사용량 제한, 환불/해지/failed payment 정책이 바뀔 때 checkout, webhook, DB, User Web 범위를 다시 고칠 가능성이 높다.
 
-현재 제품은 인증/계정/지원 접수 foundation이 남아 있는 전환 상태이므로, 결제창을 붙이는 것보다 남은 기능의 품질을 안정화하고 다음 CRM 코어의 제품 가설을 검증하는 것이 우선이다.
+현재 제품은 인증/계정/지원 접수 foundation이 남아 있는 전환 상태이므로, 결제창을 붙이는 것보다 첫 Kit과 다음 CRM Core의 제품 가설을 검증하는 것이 우선이다.
 
 Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`는 분석 제품이고, 결제 구현의 중심은 `Paddle Billing`이다.
 
@@ -34,11 +40,7 @@ Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`
 - `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`
 - `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
-활성 보류 계획:
-
-- `TODO/PADDLE_PLAN`
-
-`TODO/PADDLE_PLAN`에는 다음 범위가 포함된다.
+향후 결제 계획을 만들 때 다뤄야 할 범위:
 
 - Paddle Billing/Checkout
 - subscription, plan, entitlement
@@ -58,14 +60,14 @@ Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`
 - plan/paywall/upgrade modal을 임시 UX로 고정
 - Paddle live 결제 활성화
 
-새 결제 작업을 시작하려면 `TODO/PADDLE_PLAN/COMMON/EXECUTION-GATES.md`의 gate를 먼저 confirmed 상태로 바꾼다.
+새 결제 작업을 시작하려면 `TODO/{BILLING_PLAN_NAME}` 계획을 먼저 만들고, PM 결정, UX/UI 흐름, Software API/DB 설계, QA gate를 confirmed 상태로 정리한다.
 
 ## Related Documents
 
-- `TODO/PADDLE_PLAN/README.md`
 - `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN/README.md`
 - `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN/README.md`
 - `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN/README.md`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
-- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
+- `AGENT/PM_AGENT/PLANNING/ROADMAP.md`
+- `AGENT/PM_AGENT/PLANNING/SUCCESS_METRICS.md`

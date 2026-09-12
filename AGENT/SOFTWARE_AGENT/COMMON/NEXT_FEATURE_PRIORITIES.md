@@ -3,16 +3,16 @@
 기준일: 2026-09-12
 전략 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 
-이 문서는 OneHand CRM 전환 상태의 다음 작업 우선순위를 정리한다. 현재 기준에서는 결제나 새 대형 기능보다 남은 foundation 안정화와 다음 CRM 코어 설계가 우선이다.
+이 문서는 OneHand CRM 전환 상태의 다음 작업 우선순위를 정리한다. 현재 기준에서는 결제나 새 대형 기능보다 남은 foundation 안정화, 첫 Kit 결정, 다음 CRM Core 설계가 우선이다.
 
 고정형 고객사 관리, 전용 검색, xlsx export는 현재 런타임 범위에서 제거됐다.
 
 현재 결론:
 
 - 현재 활성 기능 유지보수와 S0/S1/S2 버그 수정을 가장 먼저 한다.
-- 그 다음 `/app` foundation UX/UI 상품성 개선과 다음 CRM 코어 기획을 진행한다.
+- 그 다음 첫 Kit, 다음 CRM Core, `/app` foundation UX/UI 상품성 개선을 진행한다.
 - 베타 전에는 Paddle checkout, 결제 webhook/API/DB migration, AI 사용량 제한 billing source-of-truth 연결을 하지 않는다.
-- Paddle/Billing은 베타 피드백과 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격할 때 시작한다.
+- Paddle/Billing은 베타 피드백과 가격/플랜/entitlement/정책 확정 이후 별도 confirmed TODO 계획이 생길 때 시작한다.
 
 ## 1. 현재 제품 범위
 
@@ -171,7 +171,7 @@
 현재 실패로 처리하지 않고 `N/A` 또는 `Known limitation`으로 기록하는 항목은 다음이다.
 
 - B2B tenant/team 기능은 현재 범위에서 제외
-- 결제, 구독, 세금, invoice, refund, entitlement, paywall은 `TODO/PADDLE_PLAN` Deferred / Draft 범위
+- 결제, 구독, 세금, invoice, refund, entitlement, paywall은 현재 활성 구현 범위가 아니며 별도 TODO 계획 생성 전까지 deferred 상태
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
 - KR/US/CA 우선 전략에 맞춘 CAD, 캐나다 기본 설정, 가격/세금/정책 문구는 후속 구현 대상이다.
@@ -185,7 +185,7 @@
 | 3 | 모바일 브라우저/브라우저 확인 | 현재 Web 제품의 실제 사용성 확인 | 390px/360px, Chrome/Edge 핵심 흐름 사용 가능 |
 | 4 | 베타 준비 | 결제창 없는 100명 베타 운영 준비 | onboarding, feedback loop, 지원 흐름 정리 |
 | 5 | Paddle 의사결정 | 결제 구현 전 정책 확정 | 가격/플랜/entitlement/AI usage/refund/tax/invoice confirmed |
-| 6 | `TODO/PADDLE_PLAN` 승격 | 결제 구현 착수 조건 충족 | API/DB/User Web 범위가 confirmed 문서로 작성됨 |
+| 6 | Billing TODO 계획 생성 | 결제 구현 착수 조건 충족 | API/DB/User Web 범위가 confirmed 문서로 작성됨 |
 
 기능 추가 판단 기준:
 
@@ -213,7 +213,7 @@
 3. 발견 버그를 S0/S1/S2/S3/S4로 분류한다.
 4. S0/S1/S2를 Paddle/Billing보다 먼저 수정한다.
 5. 결제창 없는 100명 베타 운영 방식과 feedback loop를 정한다.
-6. 베타 이후 `TODO/PADDLE_PLAN` gate를 confirmed로 바꿀지 판단한다.
+6. 베타 이후 Billing TODO 계획을 만들지 판단한다.
 
 이 순서가 끝나기 전에는 Paddle checkout을 구현하지 않는다.
 
@@ -226,10 +226,9 @@
 
 ## 8. 관련 정본 문서
 
-- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`
-- `AGENT/PM_AGENT/DECISIONS/029_global_b2c_series_a_priority.md`
-- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`
+- `AGENT/PM_AGENT/PLANNING/ROADMAP.md`
+- `AGENT/PM_AGENT/DECISIONS/030_billing_paddle_defer_policy.md`
 - `AGENT/SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
 - `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
-- `TODO/PADDLE_PLAN/README.md`
