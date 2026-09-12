@@ -6,12 +6,12 @@ Frontend Agent는 User Web과 Admin Web의 현재 활성 범위를 기준으로 
 
 - Auth/User
 - Home(`/app`)
-- Company
-- Search
+- More(`/app/more`)
+- Account Settings Modal
 - Help Error Report
 - Help Support Request
 - Public Contact Request
-- Company xlsx export
+- Public Site
 
 ## Admin Web 활성 범위
 

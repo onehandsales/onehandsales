@@ -17,7 +17,7 @@
 - 액션 버튼이 명확하다.
 - 장식보다 업무 흐름이 우선이다.
 - 텍스트와 상태 표시가 읽기 쉽다.
-- 화면이 과하게 복잡하지 않지만, 회사 목록 비교에 필요한 정보 밀도는 유지한다.
+- 화면이 과하게 복잡하지 않지만, 업무 판단에 필요한 정보 밀도는 유지한다.
 
 ## 외부 UX reference 적용 규칙
 
@@ -26,8 +26,8 @@
 | Reference | 참고할 부분 | 복제하지 않을 부분 |
 |---|---|---|
 | Toss | 단순한 정보 위계, 명확한 CTA, 낮은 시각 소음, 읽기 쉬운 typography | 소비자 금융 앱처럼 너무 sparse한 화면 |
-| Pipedrive | 후속 딜 도메인을 다시 열 때 참고할 pipeline 중심성 | 현재 Company-only 화면을 pipeline으로 바꾸는 방식 |
-| Attio | 회사 record, property-first detail, notes/memo 맥락 | 팀 협업 CRM의 과한 custom object 복잡도 |
+| Pipedrive | 후속 딜 도메인을 다시 열 때 참고할 pipeline 중심성 | foundation 화면을 pipeline처럼 꾸미는 방식 |
+| Attio | CRM record, property-first detail, notes/memo 맥락 | 팀 협업 CRM의 과한 custom object 복잡도 |
 | Linear | list-first 탐색, 빠른 선택, peek/detail panel, command/search 감각 | 개발 도구 특유의 issue 중심 용어와 단축키 의존 UX |
 | Monday/Salesforce | 참고 우선순위 낮음. 복잡한 enterprise CRM의 위험 요소를 피하는 반례 | 화려한 dashboard, 무거운 CRM density, 과한 자동화/설정 노출 |
 
@@ -38,7 +38,7 @@ Reference URL:
 - Linear Peek: https://linear.app/docs/peek
 - Airtable Interface Designer: https://www.airtable.com/platform/interface-designer
 
-User Web은 `Toss식 정보 위계 + Attio식 회사 record 구조 + Linear식 빠른 탐색`을 조합한다.
+User Web은 `Toss식 정보 위계 + Attio식 CRM record 구조 + Linear식 빠른 탐색`을 조합한다.
 
 Admin Web은 현재 관리자 권한 확인 전용이므로 별도 관리 화면 reference를 적용하지 않는다.
 
@@ -47,7 +47,7 @@ Admin Web은 현재 관리자 권한 확인 전용이므로 별도 관리 화면
 중간 밀도로 간다.
 
 - 여유 있는 여백과 명확한 정보 위계를 유지한다.
-- 한 화면에서 회사를 비교할 수 있는 행 수와 필드는 확보한다.
+- 한 화면에서 업무 record를 비교할 수 있는 행 수와 필드는 확보한다.
 - 너무 sparse한 소비자 앱 화면은 피한다.
 - 너무 촘촘한 ERP/관리자툴 느낌도 피한다.
 
@@ -102,48 +102,49 @@ Admin Web은 현재 관리자 권한 확인 전용이므로 별도 관리 화면
 중간으로 간다.
 
 - 30~50대 사용자가 반복해서 봐도 피로하지 않게 한다.
-- 회사 비교에 필요한 정보량은 유지한다.
+- 업무 record 비교에 필요한 정보량은 유지한다.
 - 너무 작은 ERP형 테이블 폰트는 피한다.
 - 너무 큰 소비자 앱형 폰트도 피한다.
-- 회사명, 분야, 지역, 주소 같은 핵심 정보는 명확하게 보이게 한다.
+- 핵심 식별값, 상태, 다음 행동 같은 업무 판단 정보는 명확하게 보이게 한다.
 
-## 회사 리스트 정보 순서
+## 후속 record 리스트 정보 순서
 
-현재 활성 목록은 회사 목록이다.
+현재 활성 앱 도메인 목록은 없다.
+
+후속 CRM record 목록을 만들 때는 직업별 핵심 식별값과 상태를 먼저 보여준다.
 
 Desktop:
 
 ```text
-회사명 -> 분야 -> 지역 -> 주소 -> 등록일
+주요 식별값 -> 상태/분류 -> 지역/채널 -> 최근 업데이트
 ```
 
 Mobile:
 
 ```text
-회사명
-분야 · 지역
-주소
-등록일
+주요 식별값
+상태 · 분류
+최근 업데이트
 ```
 
 의도:
 
-- 회사 맥락을 먼저 인지한다.
-- 분야와 지역으로 빠르게 비교한다.
+- record 맥락을 먼저 인지한다.
+- 상태와 분류로 빠르게 비교한다.
 - 상세 확인과 수정으로 이어진다.
 
 현재 비활성 범위:
 
 - 딜 pipeline
-- 담당자/제품/딜 list/detail
+- 담당자/상품/딜 list/detail
 - 다음 행동과 가능성 표시
 
 ## 채택할 구조
 
 - 좌측 사이드바
 - 상단바
-- 검색/필터
-- 회사 리스트/테이블
+- 후속 검색/필터
+- 후속 record 리스트/테이블
 - 우측 상세 패널
 - 오른쪽 문서형 생성 패널
 - 상태 badge
@@ -152,7 +153,7 @@ Mobile:
 
 - 브랜드는 `한손에 영업 / onehand.sales`.
 - `오프더레코드` UI 표현은 사용하지 않는다.
-- 현재 Company 화면은 메모 입력 영역을 노출하지 않는다.
+- 현재 앱 foundation 화면은 삭제된 도메인이나 임시 record를 노출하지 않는다.
 - 가능성/다음 행동은 후속 API/FE 필드가 열린 뒤 표시한다.
 - 베이지/크림 계열이 화면 전체를 지배하지 않게 한다.
 

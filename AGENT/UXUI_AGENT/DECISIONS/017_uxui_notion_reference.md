@@ -37,10 +37,11 @@ Notion의 UX/UI는 다음 특징을 가진다.
 
 ### User Web
 
-- 홈과 회사 화면은 Notion database + CRM record view처럼 구성한다.
-- 회사 목록은 database view로 보고, row/card 클릭 시 detail page로 들어간다.
-- 회사 생성은 목록을 유지한 채 오른쪽 문서형 패널에서 처리한다. 패널은 데스크톱에서 화면 최상단~최하단에 고정되고 resize가 가능하며, 목록 컬럼은 숨기지 않는다.
-- Memo 기록은 page body의 section/block처럼 다룬다.
+- 현재 `/app` 홈과 `/app/more`는 조용한 workspace shell 안에서 구성한다.
+- 계정 설정과 도움말은 modal 안에서도 page/section/property 문법이 읽히게 한다.
+- 후속 CRM record 목록은 database view로 보고, row/card 클릭 시 detail page 또는 peek/detail panel로 들어간다.
+- 후속 record 생성은 목록을 유지한 채 오른쪽 문서형 패널에서 처리한다.
+- Memo 기록은 후속 CRM core가 확정된 뒤 page body의 section/block처럼 다룬다.
 - 모바일 브라우저에서도 같은 정보 구조를 유지하되, table은 card/list로 전환한다.
 
 ### Admin Web
@@ -54,7 +55,7 @@ Notion의 UX/UI는 다음 특징을 가진다.
 - Notion 화면을 픽셀 단위로 복사
 - 모든 것을 자유 편집 가능한 문서 편집기로 만드는 것
 - 영업 업무에 필요한 고정 필드와 검증을 약화하는 것
-- 현재 Company-only 화면을 딜 pipeline처럼 구성하는 것
+- foundation 화면을 딜 pipeline처럼 구성하는 것
 - 정보 밀도를 지나치게 낮춰 실제 영업 비교가 어려워지는 것
 
 ## 기존 reference 우선순위 변경

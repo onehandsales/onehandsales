@@ -12,7 +12,6 @@
 ## 테스트 기준
 
 - Auth/User session flow
-- Company create/read/update, option, export flow
-- Search ownership and target mapping
 - Error Report and Support Request intake
+- Public Contact Request intake
 - Admin authority check

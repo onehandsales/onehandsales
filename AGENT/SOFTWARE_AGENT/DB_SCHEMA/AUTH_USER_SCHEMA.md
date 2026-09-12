@@ -47,9 +47,7 @@ AuthDevice 1 ─ N AuthSession
 
 참고:
 
-- Company 도메인은 현재 `BE/prisma/schema.prisma`와 `BE/prisma/migrations/20260611000000_add_company_domain/migration.sql`에 포함되어 있다.
-- Company 구조는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`를 기준으로 확인한다.
-- Contact/Product/Deal 구조 문서는 현재 비활성 기록이다. 해당 모델은 현재 `BE/prisma/schema.prisma`에 없다.
+- 고정형 고객사/담당자/상품/딜 구조 문서는 현재 비활성 기록이다. 해당 모델은 현재 `BE/prisma/schema.prisma`에 없다.
 
 ## 4. Enum
 
@@ -101,7 +99,7 @@ AuthDevice 1 ─ N AuthSession
 |---|---|
 | `MOBILE` | 모바일 기기 slot |
 | `PERSONAL_LAPTOP` | 개인 노트북 slot |
-| `WORK_LAPTOP` | 회사 노트북 slot |
+| `WORK_LAPTOP` | 업무용 노트북 slot |
 
 현재 User Web은 화면 폭 기준으로 `MOBILE`과 `PERSONAL_LAPTOP`만 사용한다. `WORK_LAPTOP`은 Backend enum에는 있지만 현재 User Web payload에서는 보내지 않는다.
 
@@ -189,7 +187,7 @@ Indexes:
 |---|---|---:|---|---|
 | `id` | `String @db.Uuid` | 아니오 | `uuid()` | 기기 PK |
 | `userId` | `String @db.Uuid` | 아니오 | 없음 | 내부 `User.id` FK |
-| `deviceSlot` | `AuthDeviceSlot` | 아니오 | 없음 | 모바일/개인 노트북/회사 노트북 slot |
+| `deviceSlot` | `AuthDeviceSlot` | 아니오 | 없음 | 모바일/개인 노트북/업무용 노트북 slot |
 | `deviceIdHash` | `String` | 아니오 | 없음 | FE stable device id를 hash한 값. 원문은 저장하지 않는다. |
 | `label` | `String` | 예 | 없음 | 사용자가 볼 기기 이름. 로그인 exchange 때 갱신될 수 있다. |
 | `status` | `AuthDeviceStatus` | 아니오 | `ACTIVE` | 기기 상태 |
@@ -393,7 +391,8 @@ model AuthSession {
 ## 10. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CONTACT_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/ERROR_REPORT_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SUPPORT_REQUEST_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PUBLIC_CONTACT_REQUEST_SCHEMA.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
 - `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`

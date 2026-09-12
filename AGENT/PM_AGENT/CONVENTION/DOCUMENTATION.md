@@ -119,12 +119,11 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 프로젝트 정본 용어를 유지한다.
 
 - 서비스명: `한손에 영업 / onehand.sales`
-- 회사: `Company`
-- 회사 분야/지역: 현재 회사 분류와 필터의 기준 옵션
+- 공개 문의 회사명/회사 규모: 문의자가 입력한 원문 필드이며 CRM 도메인 record가 아니다.
 
 금지 또는 정리 대상 표현:
 
-- `Customer`를 회사와 담당자를 모두 포함하는 모호한 도메인 용어로 사용하지 않는다.
+- `Customer`를 조직과 담당자를 모두 포함하는 모호한 도메인 용어로 사용하지 않는다.
 - `담당자`, `제품`, `딜`은 현재 활성 도메인이 아니므로 현재 범위 문서에서 활성 기능처럼 쓰지 않는다.
 - MVP UI 문맥에서 `오프더레코드` 표현을 사용하지 않는다.
 - `상품`, `영업상품`은 현재 활성 도메인 용어로 쓰지 않는다.
@@ -294,7 +293,7 @@ TODO 계획 문서, 기획서, API 명세, DB 스키마, FE/BE 작업 문서를 
 - TODO 문서가 바로 실행 가능한 계획서 수준인지 확인한다.
 - 검토는 반드시 `PLANNING_REVIEW_CHECKLIST.md`의 `AGENT 정본 기반 구체화 검토`를 포함한다.
 - TODO 문서가 SOFTWARE_AGENT의 Clean Architecture, DDD, domain/application/infrastructure/presentation 계층, port/adapter, Prisma infrastructure-only, User API와 관리자 확인 API 분리, API contract, transaction, observability 규칙을 구체 문서로 옮겼는지 확인한다.
-- TODO 문서가 UXUI_AGENT와 Frontend 규칙의 회사 목록/상세/생성 패널 우선순위, 빠른 등록, 옵션 추가 흐름, 모바일 리스트 흐름, TanStack Query, React Hook Form + Zod, User Web/Admin Web API client 분리 기준을 구체 문서로 옮겼는지 확인한다.
+- TODO 문서가 UXUI_AGENT와 Frontend 규칙의 현재 활성 route, 계정/도움말 모달, 모바일 흐름, TanStack Query, React Hook Form + Zod, User Web/Admin Web API client 분리 기준을 구체 문서로 옮겼는지 확인한다.
 
 사용자 결정 질문 진행 규칙:
 
@@ -357,7 +356,7 @@ TODO 계획 문서, 기획서, API 명세, DB 스키마, FE/BE 작업 문서를 
 docs(agent): 문서 작업 규칙 보강
 docs(api): API 명세 작성 규칙 추가
 docs(todo): MVP 작업 순서 정리
-docs(uxui): 회사 상세 UX 기준 보강
+docs(uxui): 계정 설정 UX 기준 보강
 ```
 
 ## 16. 체크리스트

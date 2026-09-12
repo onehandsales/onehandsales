@@ -1,19 +1,18 @@
 # Next Feature Priorities
 
-기준일: 2026-08-11
-전략 보강: 2026-08-11 `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+기준일: 2026-09-12
+전략 기준: `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
 
-이 문서는 `onehand.sales`의 다음 작업 우선순위를 정리한다. 현재 기준에서는 새 기능 개발이나 Paddle checkout 구현보다 현재 활성 기능 유지보수, UX/UI 상품성 개선, 결제창 없는 100명 베타 준비가 우선이다.
+이 문서는 OneHand CRM 전환 상태의 다음 작업 우선순위를 정리한다. 현재 기준에서는 결제나 새 대형 기능보다 남은 foundation 안정화와 다음 CRM 코어 설계가 우선이다.
 
-2026-08-11 기준 `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`의 01~11 기능 선구현 로드맵은 완료 archive다. 기존 12 Billing/Subscription/Tax는 `TODO/PADDLE_PLAN`으로 이관했고 Deferred / Draft 상태로 둔다.
+고정형 고객사 관리, 전용 검색, xlsx export는 현재 런타임 범위에서 제거됐다.
 
 현재 결론:
 
 - 현재 활성 기능 유지보수와 S0/S1/S2 버그 수정을 가장 먼저 한다.
-- 그 다음 UX/UI 상품성 개선과 결제창 없는 100명 베타 준비를 진행한다.
+- 그 다음 `/app` foundation UX/UI 상품성 개선과 다음 CRM 코어 기획을 진행한다.
 - 베타 전에는 Paddle checkout, 결제 webhook/API/DB migration, AI 사용량 제한 billing source-of-truth 연결을 하지 않는다.
 - Paddle/Billing은 베타 피드백과 가격/플랜/entitlement/정책 확정 이후 `TODO/PADDLE_PLAN`을 confirmed 계획으로 승격할 때 시작한다.
-- 글로벌 B2C 유료 판매와 Series A급 제품 방향은 `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_SERIES_A_ROADMAP.md`를 따른다.
 
 ## 1. 현재 제품 범위
 
@@ -23,7 +22,10 @@
 - 반응형 Web
 - 모바일 브라우저 Web
 - 공개/인증 화면의 URL locale 지원
-- 앱 내부 관리 화면은 08_GLOBAL_DATA_I18N 완료 기준 `ko-KR`, `en` 1차 지원
+- 앱 내부는 `ko-KR`, `en` 1차 지원
+- 인증/세션/계정 설정
+- 오류 신고와 지원 문의
+- 공개 문의
 
 우선 판매/검토 대상 국가는 다음으로 본다.
 
@@ -46,6 +48,9 @@
 
 현재 범위가 아닌 항목은 다음과 같다.
 
+- 고정형 고객사 관리 재도입
+- 고정형 고객사 전용 검색과 xlsx export
+- Workspace/Object/Attribute/Record/List/View 기반 CRM 코어 구현
 - 결제/구독 자동화
 - 글로벌 세금/컴플라이언스 자동화
 - `/app` 내부 `ja` 등 후속 시장 언어 추가 번역
@@ -60,10 +65,11 @@
 아래 흐름은 현재 활성 범위 기준으로 우선 확인해야 한다.
 
 1. 로그인
-2. 회사 생성/조회/수정
-3. 검색
-4. 회사 XLSX Export
-5. 설정/더보기
+2. `/app` 빈 홈
+3. `/app/more`
+4. 계정 설정 모달
+5. 오류 신고와 지원 요청
+6. 공개 문의
 
 ### 2.2 자동 검증
 
@@ -109,12 +115,11 @@
 - 390px mobile
 - 360px mobile
 - 브라우저 확대 125%
-- 긴 회사명
 - 긴 주소/URL
-- 회사 생성 오른쪽 문서형 패널의 resize, 70% max 폭, 목록 컬럼 유지, 가로 스크롤
 - 모달/드롭다운/토스트 위치
 - Tab/Enter/Escape 기본 접근성
 - 에러 메시지와 입력 필드 연결
+- 공개 문의 폼의 회사명/회사 규모 입력 보존
 - Notion식 작업도구 UX 기준과의 차이
 
 ### 3.2 모바일 브라우저 QA
@@ -125,7 +130,7 @@
 
 - 모바일 로그인
 - 홈
-- 회사 목록
+- 더보기
 - 작은 화면 모달
 - 모바일 키보드가 올라온 상태의 저장 버튼 접근
 
@@ -149,8 +154,7 @@
 별도 계정 또는 DB 상태 조작이 필요하다.
 
 - 다른 사용자 UUID 추측 접근 불가
-- XLSX export에 다른 사용자 데이터 미포함
-- 다중 계정 검색 결과 격리
+- 지원 요청과 오류 신고가 현재 사용자 snapshot으로 저장되는지 확인
 - Admin/API 권한 침투성 확인
 
 ### 3.5 DB/운영 환경 정합성
@@ -159,7 +163,7 @@
 
 - Prisma generate가 실행 중 BE 프로세스의 query engine DLL lock 때문에 실패했던 기록 정리
 - migration 기록 정합성 확인
-- seed 실행 여부와 실제 Supabase OAuth/회사 QA 데이터 분리
+- seed 실행 여부와 실제 Supabase OAuth QA 데이터 분리
 - 배포 DB와 로컬 DB의 migration 상태 차이 정리
 
 ## 4. 알려진 한계
@@ -170,7 +174,7 @@
 - 결제, 구독, 세금, invoice, refund, entitlement, paywall은 `TODO/PADDLE_PLAN` Deferred / Draft 범위
 - Kakao OAuth는 로그인 기능에서 제거. 08_GLOBAL_DATA_I18N 완료 기준 Google/LINE/Apple은 runtime provider이며 실제 provider smoke는 운영 provider 설정과 secret 준비 후 별도 확인
 - 가입 국가/마지막 로그인 국가는 proxy geo header가 없으면 `KR` fallback 또는 `기록 없음`일 수 있음
-- KR/US/CA 우선 전략에 맞춘 CAD, 캐나다 회사 지역 정합성은 후속 구현 대상이다.
+- KR/US/CA 우선 전략에 맞춘 CAD, 캐나다 기본 설정, 가격/세금/정책 문구는 후속 구현 대상이다.
 
 ## 5. 실행 우선순위
 

@@ -7,7 +7,7 @@
 ## 2. 현재 문서
 
 - `USER_FLOW_AND_SCREENS.md`: 핵심 사용자 흐름과 화면 목록
-- `UX_UI_DIRECTION.md`: 홈 화면, 색상, 밀도, 입력 UX, 검색 UX 방향
+- `UX_UI_DIRECTION.md`: 홈 화면, 색상, 밀도, 입력 UX, 후속 record UX 방향
 - `UX_WRITING_GUIDE.md`: 사용자 노출 문구, 해요체, 상태/오류/validation 문구 기준
 
 ## 3. 작성 원칙

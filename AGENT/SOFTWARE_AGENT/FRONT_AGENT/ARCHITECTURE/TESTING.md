@@ -21,8 +21,8 @@
 
 - login
 - `/app` home
-- company core flow
-- search
-- company export
+- `/app/more`
 - account modal
+- error report/support request
+- public contact request
 - admin authority check

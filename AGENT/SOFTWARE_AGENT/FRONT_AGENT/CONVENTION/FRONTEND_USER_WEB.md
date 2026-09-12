@@ -2,7 +2,7 @@
 
 ## Feature Naming
 
-도메인 feature 폴더는 단수형을 사용한다. 현재 활성 도메인 예시는 `company`다. `contact`, `product`, `deal`은 현재 비활성이다.
+도메인 feature 폴더는 단수형을 사용한다. 현재 활성 feature는 `auth`, `app-i18n`, `error-report`, `support-request`, `public-contact-request`, `public-site`다.
 
 ## API State
 
@@ -18,6 +18,7 @@
 ## Route
 
 - 로그인 이후 업무 route는 `/app` 아래에 둔다.
-- 회사 생성은 `/app/companies/new`와 `/app/companies/new/full`을 함께 관리한다.
+- 현재 활성 route는 `/app`과 `/app/more`다.
 - `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 현재 `/app`으로 redirect한다.
+- 고정형 고객사 관리 route는 현재 활성 route가 아니다.
 - 계정 설정은 보호 route 위 query modal로 제공한다.

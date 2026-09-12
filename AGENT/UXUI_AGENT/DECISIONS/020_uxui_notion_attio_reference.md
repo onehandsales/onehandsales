@@ -46,8 +46,8 @@ Attio는 CRM record 구조의 1차 기준이다.
 - 목록은 Notion database처럼 조용하고 조밀하게 보이되, Attio처럼 record 속성과 업무 맥락을 분명히 보여준다.
 - 시각 톤은 Notion처럼 화이트/중립 그레이를 기본으로 한다. 선택 navigation/active tab은 회색 중심이며, 파랑은 전역 active identity로 쓰지 않는다.
 - 아이콘 컬러는 도메인/메뉴 인식 또는 상태 의미를 보조할 때만 제한적으로 사용한다.
-- 현재 핵심 workflow record는 회사다. 회사 목록과 상세에서 회사명, 분야, 지역, 주소가 즉시 보여야 한다.
-- 현재 Company 화면에는 메모 기록이나 민감 메모 입력을 노출하지 않는다.
+- 현재 활성 앱에는 CRM record 목록/상세 화면이 없다.
+- 후속 CRM core에서는 직업별 핵심 record 속성과 업무 맥락이 즉시 보여야 한다.
 - 생성은 목록 맥락이 중요하면 오른쪽 문서형 패널을 우선한다. 짧은 보조 입력, 삭제 확인, 위험 액션 확인은 modal/dialog를 사용할 수 있다.
 - 모바일에서는 desktop table을 억지로 유지하지 않고 compact list/detail 흐름으로 전환한다.
 
@@ -57,7 +57,7 @@ Attio는 CRM record 구조의 1차 기준이다.
 목록 UX 판단 기준:
 
 - 단순 조회 테이블이 아니라, 영업자가 목록에서 바로 판단하고 행동할 수 있는 record table이어야 한다.
-- 회사명, 분야, 지역, 주소 같은 업무 판단 정보가 우선이다.
+- 직업별 핵심 식별값, 상태, 분류, 다음 행동 같은 업무 판단 정보가 우선이다.
 - 최근 활동은 현재 목록 API 응답에 있는 데이터로 먼저 표현한다. 응답이 부족하면 FE에서 새 값을 꾸미지 말고 BE/API 후속으로 기록한다.
 - desktop 목록은 현재 15개 기본 표시 계약을 가진다.
 - page size는 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 테스트 계약과 연결되어 있으므로 FE에서 숫자만 바꾸지 않는다.
@@ -66,9 +66,7 @@ Attio는 CRM record 구조의 1차 기준이다.
 - 모바일도 15개 목록 계약을 사용하되, desktop table을 억지로 유지하지 않고 card/list로 표현한다.
 - 20개 기본 표시는 현재 row 높이와 layout에서는 과하다. 나중에 고밀도 보기 옵션으로만 검토한다.
 
-현재 도메인별 목록에서 우선할 정보:
-
-- 회사: 회사명, 분야, 지역, 주소
+현재 활성 도메인별 record 목록은 없다. 후속 목록에서 우선할 정보는 CRM core 설계 때 확정한다.
 
 ## 5. 가져오지 않을 것
 
@@ -76,8 +74,8 @@ Attio는 CRM record 구조의 1차 기준이다.
 - Notion처럼 모든 것을 자유 block editor로 만드는 것
 - Attio 브랜드, 문구, 화면 구조의 직접 복제
 - Attio의 custom object builder, 팀 CRM 설정, 이메일 동기화, 협업 권한 복잡도를 현재 MVP에 끌어오는 것
-- 현재 Company-only 화면을 pure Kanban으로 고정하는 것
-- 회사 분야/지역 같은 고정 도메인 필드를 자유 텍스트나 임의 속성으로 약화하는 것
+- foundation 화면을 pure Kanban으로 꾸미는 것
+- 직업별 필수 속성을 자유 텍스트나 임의 속성으로 약화하는 것
 
 ## 6. 작업 전 확인 규칙
 
@@ -99,7 +97,7 @@ UX/UI 또는 Frontend 리뷰 시 아래 질문을 반드시 포함한다.
 - Notion식 workspace/page/database/detail 문법이 살아 있는가?
 - Attio식 record 속성과 업무 맥락이 분명한가?
 - 이 화면이 사용자를 custom CRM builder로 밀어내지 않고, 고정된 개인 영업 workflow를 빠르게 처리하게 하는가?
-- 회사 기본 정보가 필요한 곳에서 1급 정보로 보이는가?
+- 직업별 핵심 record 정보가 필요한 곳에서 1급 정보로 보이는가?
 - 목록에서 record를 찾고, 열고, 생성하는 흐름이 끊기지 않는가?
 - reference 제품의 brand/copy/visual asset/layout을 그대로 복제하지 않았는가?
 

@@ -22,7 +22,7 @@ Global B2C 01~11 기능 선구현 로드맵은 구현과 QA closeout 기준으�
 
 구독 결제를 먼저 붙이면 가격, plan, trial, entitlement, AI 사용량 제한, 환불/해지/failed payment 정책이 바뀔 때 checkout, webhook, DB, User Web 범위를 다시 고칠 가능성이 높다.
 
-현재 제품은 회사 관리 중심의 핵심 기능이 구현된 상태이므로, 결제창을 붙이는 것보다 유지보수와 UX/UI 개선으로 상품성을 높이고 100명 베타에서 실제 반복 사용과 유료 전환 후보 기능을 확인하는 것이 우선이다.
+현재 제품은 인증/계정/지원 접수 foundation이 남아 있는 전환 상태이므로, 결제창을 붙이는 것보다 남은 기능의 품질을 안정화하고 다음 CRM 코어의 제품 가설을 검증하는 것이 우선이다.
 
 Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`는 분석 제품이고, 결제 구현의 중심은 `Paddle Billing`이다.
 

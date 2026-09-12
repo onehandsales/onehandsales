@@ -3,19 +3,19 @@
 ## 결정
 
 
-목록 페이지 필터는 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
+현재 활성 앱 도메인 목록은 없다.
+
+후속 CRM record 목록을 만들 때는 옵션 API를 초회 조회한 뒤 compact select로 제공한다.
 
 ## 적용 범위
 
-- 회사 목록
-  - `GET /api/company-fields`
-  - `GET /api/company-regions`
-  - `분야 ▾`, `지역 ▾` select
+- 현재 적용 대상 없음
+- 후속 Workspace/Object/Attribute/Record/List/View 기반 목록
 
 ## Pagination 규칙
 
 - 목록 페이지는 `totalPages`, `totalCount`를 사용한다.
-- 현재 목록 API는 15개 단위 page-number pagination을 계약으로 가진다.
+- 후속 목록 API는 page-number pagination을 우선 검토한다.
 - page size를 바꾸려면 Backend 도메인 서비스 상수, 응답 `pageSize`, API/DB 문서, 관련 테스트를 함께 갱신한다.
 - FE에서 page size 숫자만 바꾸거나, 응답 `pageSize`와 UI 표시가 어긋나게 만들지 않는다.
 - 모바일 record list도 15개 page 계약을 사용하되 desktop table 대신 card/list로 표현한다.
@@ -26,18 +26,19 @@
 
 ## Option 관리 UX
 
-회사 목록 필터 select에는 `+ 추가` 옵션을 제공한다.
+후속 record 목록에서 관리형 옵션 필드를 사용할 때는 필터 select에 `+ 추가` 옵션을 제공할 수 있다.
 
 예:
 
-- 회사 분야/지역 select의 `+ 추가` -> 회사 분류 관리 다이얼로그
+- 직업별 record 상태 select의 `+ 추가` -> 옵션 관리 다이얼로그
+
 분류 다이얼로그에서는 옵션 추가/삭제를 처리하고, 새로 추가된 옵션은 목록 필터로 바로 선택한다.
 
 ## 정렬 Select
 
 목록 정렬은 chip 나열보다 compact select를 기본으로 한다.
 
-- 회사 목록: `최신순`
+- 후속 record 목록: `최신순`
 
 ## Visual Grammar
 

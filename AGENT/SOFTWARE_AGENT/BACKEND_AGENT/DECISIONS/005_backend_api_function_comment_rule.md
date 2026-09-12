@@ -37,43 +37,48 @@ numbered step comment는 긴 use case에서 인증, 검증, transaction, reposit
 ## 4. 예시
 
 ```ts
-// 역할 : 회사 API 요청을 받아 application 계층으로 위임하는 controller입니다.
-@Controller('/api/companies')
-export class CompanyController {
-  constructor(private readonly createCompanyUseCase: CreateCompanyUseCase) {}
+// 역할 : 지원 요청 HTTP API 요청을 application 계층으로 위임합니다.
+@Controller("/api/support-requests")
+export class SupportRequestController {
+  constructor(private readonly supportRequestService: SupportRequestService) {}
 
-  // API : 회사, 회사 생성
+  // API : 사용자, 지원 요청 접수
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async createCompany(@Body() request: CreateCompanyRequestDto): Promise<void> {
+  async createSupportRequest(@Body() request: CreateSupportRequestDto): Promise<void> {
     // 1. 현재 사용자 인증 정보를 확인한다.
     const currentUser = this.getCurrentUser();
 
-    // 2. application 계층에 회사 생성을 위임한다.
-    await this.createCompanyUseCase.execute({
+    // 2. application 계층에 지원 요청 접수를 위임한다.
+    await this.supportRequestService.createSupportRequest({
       userId: currentUser.id,
-      companyName: request.companyName,
+      type: request.type,
+      description: request.description,
     });
   }
 }
 
-// 역할 : 회사 저장소가 구현해야 하는 영속성 계약을 정의합니다.
-export interface CompanyRepository {
-  findFieldById(companyFieldId: string, userId: string): Promise<CompanyField | null>;
-  findRegionById(companyRegionId: string, userId: string): Promise<CompanyRegion | null>;
+// 역할 : 지원 요청 저장소가 구현해야 하는 영속성 계약을 정의합니다.
+export interface SupportRequestRepository {
+  findUserSnapshotById(userId: string): Promise<SupportRequestUserSnapshot | null>;
+  createSupportRequest(input: CreateSupportRequestInput): Promise<SupportRequestRecord>;
 }
 
-// 역할 : 회사 생성 요청을 검증하고 저장하는 application use case입니다.
-export class CreateCompanyUseCase {
-  constructor(private readonly companyRepository: CompanyRepository) {}
+// 역할 : 지원 요청 입력을 검증하고 사용자 snapshot과 함께 저장하는 application service입니다.
+export class SupportRequestService {
+  constructor(private readonly supportRequestRepository: SupportRequestRepository) {}
 
-  // 기능 : 회사 생성 요청의 분야와 지역 소유권을 검증합니다.
-  private async validateCompanyReferences(command: CreateCompanyCommand): Promise<void> {
-    // 1. 회사 분야가 현재 사용자 소유인지 확인한다.
-    await this.companyRepository.findFieldById(command.companyFieldId, command.userId);
+  // 기능 : 지원 요청 저장에 사용할 사용자 snapshot을 조회합니다.
+  private async getUserSnapshot(userId: string): Promise<SupportRequestUserSnapshot> {
+    // 1. 인증 사용자 ID로 저장 시점 사용자 정보를 조회한다.
+    const userSnapshot = await this.supportRequestRepository.findUserSnapshotById(userId);
 
-    // 2. 회사 지역이 현재 사용자 소유인지 확인한다.
-    await this.companyRepository.findRegionById(command.companyRegionId, command.userId);
+    // 2. 사용자가 없으면 도메인 오류로 변환한다.
+    if (!userSnapshot) {
+      throw new SupportRequestUserNotFoundError();
+    }
+
+    return userSnapshot;
   }
 }
 ```

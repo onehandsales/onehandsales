@@ -1,64 +1,20 @@
-# Company DB Schema
+# 고정형 고객사 DB Schema 제거 기록
 
-이 문서는 현재 `BE/prisma/schema.prisma` 기준의 Company 관련 활성 모델만 설명한다.
+이 문서는 과거 고정형 고객사 schema 결정을 활성 기준으로 설명하지 않는다.
 
-## 활성 모델
+현재 `BE/prisma/schema.prisma`에는 고정형 고객사 관리 모델이 없다.
 
-- `Company`
-- `CompanyField`
-- `CompanyRegion`
+## 현재 상태
 
-## 관계
+- 고정형 고객사 record 모델 없음
+- 고객사 분야/지역 옵션 모델 없음
+- 고객사 전용 검색 모델 없음
+- 고객사 xlsx export용 schema 없음
 
-```text
-User 1 - N Company
-User 1 - N CompanyField
-User 1 - N CompanyRegion
-CompanyField 1 - N Company
-CompanyRegion 1 - N Company
-```
+## 보존해야 하는 예외
 
-현재 schema에는 Contact/Product/Deal 모델이 없으므로 Company에서 담당자, 제품, 딜로 이어지는 DB relation도 없다.
+`PublicContactRequest`에는 문의자가 입력하는 회사명과 회사 규모 필드가 남아 있다. 이는 공개 문의 원문 보존 필드이며 고정형 CRM record가 아니다.
 
-## Company
+## 후속 방향
 
-사용자가 등록한 회사의 기준 테이블이다.
-
-- `id`: 회사 PK
-- `userId`: 소유 사용자 FK
-- `companyName`: 회사명
-- `companyFieldId`: 회사 분야 FK
-- `companyRegionId`: 회사 지역 FK
-- `address`: 회사 상세 주소
-- `createdAt`, `updatedAt`: 생성/수정 시각
-
-모든 회사 조회와 변경은 `userId` ownership을 먼저 적용한다. 일반 목록, 상세, 검색, 옵션, export는 현재 사용자 소유 회사만 대상으로 한다.
-
-## CompanyField / CompanyRegion
-
-회사 목록 필터에 쓰는 사용자별 옵션이다.
-
-- `CompanyField.field`: 분야명
-- `CompanyRegion.region`: 지역명
-- `CompanyRegion.countryCode`: KR/US 등 국가 코드. legacy custom 지역은 `null`일 수 있다.
-- `CompanyRegion.regionCode`: KR 시/도 또는 US state code. mapping 실패 custom 지역은 `null`일 수 있다.
-
-이미 회사에 매핑된 분야/지역은 삭제할 수 없다. 수정 API는 제공하지 않는다.
-
-## 제외 범위
-
-회사 보조 로그와 복구 계열 모델/API는 현재 schema와 controller에 없다.
-
-## 현재 제공 API
-
-- `GET /api/companies`
-- `GET /api/companies/export/xlsx`
-- `GET /api/companies/:companyId`
-- `POST /api/companies`
-- `PATCH /api/companies/:companyId`
-- `GET /api/company-fields`
-- `POST /api/company-fields`
-- `DELETE /api/company-fields/:fieldId`
-- `GET /api/company-regions`
-- `POST /api/company-regions`
-- `DELETE /api/company-regions/:regionId`
+다음 CRM 코어는 Workspace/Object/Attribute/Record/List/View 기반으로 별도 설계한다.

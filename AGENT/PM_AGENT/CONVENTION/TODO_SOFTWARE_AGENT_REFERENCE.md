@@ -55,7 +55,9 @@
 
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/AUTH_USER_SCHEMA.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/COMPANY_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/ERROR_REPORT_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/SUPPORT_REQUEST_SCHEMA.md`
+- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/PUBLIC_CONTACT_REQUEST_SCHEMA.md`
 
 ## 3. TODO 문서 작성 필수 기준
 
@@ -116,7 +118,7 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - API 명세의 request 형태, response 형태, 내부 비즈니스 로직 작성 여부
 - API 계약 상태와 실제 Backend 구현 상태의 일치 여부
 - Frontend에 남은 작업의 목적
-- Frontend가 우선 처리해야 할 화면, API client, 상태 관리, 검색/필터/다운로드 흐름
+- Frontend가 우선 처리해야 할 화면, API client, 상태 관리, 검색/필터/다운로드 같은 현재 범위의 주요 사용자 행동
 - 발견한 문서 링크 오류와 상태 불일치
 
 활성 TODO 전체 재검토 결과는 기본적으로 `TODO/ACTIVE_BACKEND_API_FE_REVIEW.md`에 남긴다. 특정 계획 안의 세부 보완은 해당 계획의 `README.md`, `COMMON/WORK-SPLIT.md`, `FE-TODO`, `COMMON/API-SPEC`에 함께 반영한다.

@@ -11,12 +11,12 @@ Frontend에서는 사용자가 보는 화면과 상태 전환을 명확히 표�
 Frontend 함수와 컴포넌트에는 바로 위에 다음 형식의 1줄 주석을 단다.
 
 ```ts
-// 기능 : 회사 목록 화면을 렌더링합니다.
-export function CompanyListPage() {
+// 기능 : 더보기 화면을 렌더링합니다.
+export function MorePage() {
   // ...
 }
 
-// 기능 : 회사 생성 form 제출을 처리합니다.
+// 기능 : 지원 문의 form 제출을 처리합니다.
 function handleSubmit() {
   // ...
 }

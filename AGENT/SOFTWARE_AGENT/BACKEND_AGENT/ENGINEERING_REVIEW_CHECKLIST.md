@@ -33,14 +33,14 @@
 - 시간 필드는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md`의 UTC instant + IANA `timeZone` 기준을 따르는가?
 - 사용자가 입력한 현지 날짜/시간을 저장하는 업무 테이블은 같은 row에 `timeZone` 컬럼을 저장하는가?
 - API 계약에서 시간 필드가 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 무엇인지 명시되어 있는가?
-- Company API 변경 시 `FE/user-web/src/features/company/api/company-api.ts`의 요청/응답 필드가 Backend controller와 맞는가?
+- 구현한 API의 요청/응답 필드가 User Web/Admin Web의 실제 API client와 맞는가?
 - Admin Web용 API를 추가할 때 `FE/admin-web`의 현재 범위와 별도 제품 결정을 먼저 확인했는가?
 
 ## 3. 테스트 체크리스트
 
 - user ownership isolation 테스트가 있는가?
 - AdminGuard 테스트가 있는가?
-- Company 생성/조회/수정, 분야/지역 옵션, export ownership 테스트가 있는가?
+- 인증이 필요한 지원 접수 API가 현재 사용자 snapshot과 ownership을 검증하는 테스트가 있는가?
 - 외부 Provider는 기본 테스트에서 mock/stub 처리되는가?
 
 ## 4. 배포 체크리스트

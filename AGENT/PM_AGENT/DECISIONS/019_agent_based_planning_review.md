@@ -19,7 +19,7 @@ TODO 계획 문서, API 명세, DB 스키마, FE-TODO, BE-TODO, GOAL-SPECS를 �
 - Backend가 controller 중심 CRUD로 흐르고 domain/application 계층이 약해질 수 있다.
 - User API와 관리자 확인 API 경계가 흐려져 데이터 소유권과 권한 기준이 누락될 수 있다.
 - Frontend가 User Web/Admin Web 분리, TanStack Query, form validation, URL state 같은 기준을 놓칠 수 있다.
-- UX/UI가 회사 record 중심 업무 도구가 아니라 장식적 화면이나 단순 CRUD 화면으로 변할 수 있다.
+- UX/UI가 직업별 record 중심 업무 도구가 아니라 장식적 화면이나 단순 CRUD 화면으로 변할 수 있다.
 
 따라서 구현 전 검토는 `AGENT` 정본에서 `TODO` 실행 문서로 내려오는 추적성을 필수로 본다.
 

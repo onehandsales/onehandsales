@@ -106,7 +106,7 @@ Frontend와 UX/UI 구체화 검토:
 - User Web은 일반 `/api/*` 계약만 호출하는가?
 - Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, `GET /admin/api/me` 기준을 따르는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
-- UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈, `/app/companies` 회사 목록/상세/생성 패널의 역할을 구분하는가?
+- UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈, `/app/more`, 계정/도움말 모달의 역할을 구분하는가?
 - 화면/Frontend/API/DB 계획이 `Notion식 작업공간 UX + Attio식 CRM record UX` 기준을 반영해 workspace/page/database/detail과 record/memo 맥락을 함께 설명하는가?
 - Contact/Product/Deal처럼 현재 API에 없는 도메인은 후속 범위로 분리되어 있는가?
 - 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
