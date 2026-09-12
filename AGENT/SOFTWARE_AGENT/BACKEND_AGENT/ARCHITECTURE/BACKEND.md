@@ -16,6 +16,22 @@
 - `infrastructure`: Prisma repository, external adapter
 - `presentation`: controller, DTO, guard/filter
 
+## ORM / DB Adapter 원칙
+
+- 현재 Backend 표준 ORM은 Prisma다.
+- TypeORM, Prisma, raw SQL 중 어떤 기술을 쓰는지보다 중요한 기준은 특정 DB 기술 의존성이 `domain`/`application` 계층으로 새지 않는 것이다.
+- repository port는 `domain` 또는 `application` 계약으로 정의하고, Prisma 구현체는 `infrastructure` 계층에 둔다.
+- `PrismaClient`, Prisma model type, Prisma transaction client type은 controller, application use case, domain type의 공개 계약으로 노출하지 않는다.
+- ORM 교체 가능성 자체를 목표로 삼지 않는다. 핵심 목표는 비즈니스 규칙과 DB 접근 구현을 분리해 장기 유지보수 비용을 낮추는 것이다.
+- 복잡한 조회 최적화가 필요하면 read repository 또는 raw SQL을 사용할 수 있다. 이 경우 API contract, index 계획, 테스트, observability 기준을 함께 남긴다.
+
+## External Provider 독립성 원칙
+
+- Supabase는 현재 외부 인증 provider와 일부 storage adapter로 취급한다. Backend의 `User`, `AuthDevice`, `AuthSession`, refresh token, authorization check는 Backend가 소유한다.
+- `domain`/`application` 계층은 Supabase SDK나 Supabase 전용 타입에 직접 의존하지 않고, `ExternalAuthVerifier` 같은 provider port를 통해서만 외부 인증 결과를 사용한다.
+- Supabase에서 독립해야 할 때는 `infrastructure`의 Supabase auth/storage adapter를 다른 provider adapter로 교체하고, FE의 OAuth 시작 흐름과 환경 변수를 함께 이전한다.
+- 신규 인증/계정 연결 로직은 Supabase user id에 고정하지 말고 `provider + providerUserId` 기준을 우선한다. 기존 Supabase auth id 기반 데이터는 migration 또는 호환 레이어로 다룬다.
+
 ## API 정책
 
 - `GET /api/me`는 현재 로그인 사용자를 반환한다.
