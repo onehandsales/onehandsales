@@ -1,26 +1,51 @@
 # UX/UI Search Decision
 
-## 결정
+Date: 2026-09-12
 
-현재 비활성 결정이다.
+## 1. 결정
 
-고정형 고객사 검색 API와 화면은 현재 런타임 범위에서 제거됐다.
+OneHand CRM의 검색은 Kit에 적용된 Record를 사용자의 업무 언어로 찾는 경험이어야 한다.
 
-## 이유
+고정형 고객사 검색, 상품 검색, 딜 검색을 전역 기본으로 되살리지 않는다.
 
-현재 앱에는 검색 대상 record가 없다. 후속 CRM 코어에서 record와 view가 확정되면 통합검색과 화면별 검색/필터를 다시 설계한다.
+## 2. 검색 범위
 
-## 규칙
+후속 CRM Core에서 검색은 아래 범위를 단계적으로 검토한다.
 
-- 현재 통합검색 API를 만들지 않는다.
-- 삭제된 고정형 도메인을 검색 결과처럼 노출하지 않는다.
-- 후속 검색 결과는 확정된 record 유형별로 묶는다.
-- 화면별 검색/필터는 현재 화면 목록만 제어한다.
-- 모바일 통합검색은 전체 화면 검색 시트로 열 수 있다.
-- 모바일 필터는 필터 시트로 열 수 있다.
+- 현재 Workspace 안의 Record
+- Kit의 주요 관리 대상
+- 연결된 Record
+- 상태와 다음 행동
+- 공개 문의/계정 설정 등 현재 foundation 기능의 보조 검색은 별도 범위
 
-## 관련 문서
+## 3. UX 기준
 
-- `AGENT/UXUI_AGENT/DECISIONS/README.md`
-- `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`
-- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- 검색 입력은 현재 Workspace 맥락을 먼저 따른다.
+- 결과는 Kit의 관리 대상별로 묶을 수 있다.
+- 결과 row에는 이름, 상태, 연결된 핵심 Record, 최근 변경 또는 다음 행동을 보여준다.
+- 검색 결과가 없으면 검색어 조정 또는 첫 Record 생성으로 이어지게 한다.
+
+## 4. 사용자-facing 표현
+
+예:
+
+```text
+기록 검색
+고객, 매물, 방문을 검색해요.
+```
+
+```text
+검색 결과가 없어요.
+검색어를 바꾸거나 새 기록을 추가해 보세요.
+```
+
+## 5. 제외
+
+- 모든 테이블을 대상으로 하는 schema-level 검색 UI
+- 첫 MVP에서 고급 query builder 제공
+- API에 없는 최근 활동 값을 FE가 임의로 만들어 표시하는 것
+
+## 6. 관련 문서
+
+- `AGENT/UXUI_AGENT/PLANNING/RECORD_LIST_DETAIL_UX.md`
+- `AGENT/UXUI_AGENT/PLANNING/CRM_CORE_INTERACTION_MODEL.md`

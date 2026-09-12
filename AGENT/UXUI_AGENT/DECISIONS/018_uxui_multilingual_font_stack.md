@@ -1,63 +1,36 @@
 # UX/UI Multilingual Font Stack Decision
 
-Date: 2026-07-08
+Date: 2026-09-12
 
-`onehand.sales`의 User Web과 Admin Web은 앞으로 Notion-like typography 기준을 따른다.
+## 1. 결정
 
-이 결정은 Notion의 브랜드나 고유 폰트를 복제한다는 뜻이 아니다. Notion식 작업도구 UX에 맞는 조용하고 읽기 쉬운 타이포그래피 방향을 `onehand.sales`의 다국어 제품 범위에 맞게 적용한다는 뜻이다.
+OneHand CRM의 User Web과 Admin Web은 다국어 업무 도구에 맞는 조용하고 읽기 쉬운 typography를 기준으로 한다.
 
-## 결정
+Notion-like typography 방향을 참고하되, 특정 브랜드의 고유 폰트나 시각 자산을 복제하지 않는다.
 
-기본 UI 폰트는 `Inter`를 1순위로 사용한다.
+## 2. 기준
 
-다국어 fallback은 다음 순서를 따른다.
+- 한국어와 영어가 함께 보여도 행 높이와 자간이 어색하지 않아야 한다.
+- 숫자, 날짜, 상태, 이름이 반복되는 목록에서 가독성이 좋아야 한다.
+- 30~50대 사용자가 반복해서 읽기 편한 크기와 대비를 우선한다.
+- 작은 화면에서 form label, validation, 버튼 텍스트가 겹치지 않아야 한다.
 
-```text
-Inter
-Pretendard Variable
-Pretendard
-ui-sans-serif
-system-ui
--apple-system
-BlinkMacSystemFont
-Segoe UI
-Apple SD Gothic Neo
-Noto Sans KR
-Noto Sans CJK KR
-PingFang TC
-PingFang SC
-Microsoft JhengHei
-Microsoft YaHei
-Hiragino Sans
-Hiragino Kaku Gothic ProN
-Yu Gothic
-Meiryo
-Noto Sans TC
-Noto Sans SC
-Noto Sans JP
-sans-serif
-```
+## 3. 권장 방향
 
-## 적용 범위
+- Latin UI: Inter 계열 또는 시스템 sans
+- Korean UI: Pretendard 계열 또는 시스템 sans
+- fallback은 운영체제별 system font를 따른다.
+- letter spacing은 기본 0을 우선한다.
+- viewport width에 따라 font size를 과하게 scale하지 않는다.
 
-이 기준은 다음 모든 사용자 노출 언어에 적용한다.
+## 4. 검수 기준
 
-- 현재 노출 언어: 한국어, 영어 US, 영어 Canada
-- 추후 확장 후보: 일본어, 영어 UK, 영어 Singapore, 영어 Australia
+- 한국어 문장이 버튼 안에서 잘리지 않는가?
+- 긴 Kit 이름이나 관리 대상 이름이 layout을 깨지 않는가?
+- table/list row에서 숫자와 상태가 읽기 쉬운가?
+- validation message가 모바일에서 입력 영역을 가리지 않는가?
 
-영어와 라틴 문자는 `Inter`를 우선한다. 한국어는 `Pretendard` 계열을 우선 fallback으로 사용한다. 추후 확장 후보인 일본어는 OS별 CJK 시스템 폰트로 자연스럽게 fallback되도록 한다.
+## 5. 관련 문서
 
-## 구현 기준
-
-- `FE/user-web`과 `FE/admin-web`의 Tailwind `fontFamily.sans`는 같은 스택을 사용한다.
-- `Inter`와 `Pretendard Variable` 웹폰트는 각 Web 앱의 `index.html`에서 로드한다.
-- 새 화면, 새 컴포넌트, 새 landing/public page, Admin 화면은 모두 `font-sans` 또는 이 스택을 기준으로 한다.
-- 특정 장식 목적이 명확하지 않으면 별도 custom font를 추가하지 않는다.
-- `font-serif`, `font-mono`는 명시적 의도가 있을 때만 사용하고, 제품 전체 기본 폰트를 대체하지 않는다.
-
-## 금지
-
-- 한국어만 보고 `Pretendard` 단일 기준으로 새 폰트 정책을 작성하지 않는다.
-- 영어권 locale, 일본어 화면에서 별도 폰트 시스템을 만들지 않는다.
-- Notion의 브랜드, 로고, 문구, 고유 화면을 복제하지 않는다.
-- viewport width 기준으로 font size를 스케일링하지 않는다.
+- `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
+- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
