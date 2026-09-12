@@ -19,7 +19,7 @@ export interface AuthTokenResponse {
 // 역할 : MeResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface MeResponse {
   readonly id: string;
-  readonly supabaseUserId: string | null;
+  readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
   readonly role: string;
@@ -39,7 +39,7 @@ export interface MeResponse {
 // 역할 : AdminMeResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface AdminMeResponse {
   readonly id: string;
-  readonly supabaseUserId: string | null;
+  readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
   readonly role: "ADMIN";
@@ -56,6 +56,7 @@ export function createAuthTokenResponse(input: {
   readonly user: AuthMeRecord;
   readonly device?: AuthDeviceRecord;
 }): AuthTokenResponse {
+  // 1. 앱 토큰과 사용자 정보를 기본 응답 구조로 변환한다.
   const response: AuthTokenResponse = {
     accessToken: input.accessToken,
     accessTokenExpiresAt: input.accessTokenExpiresAt.toISOString(),
@@ -63,10 +64,12 @@ export function createAuthTokenResponse(input: {
     user: toMeResponse(input.user),
   };
 
+  // 2. 교환 과정에서 기기 정보가 없으면 기본 응답만 반환한다.
   if (!input.device) {
     return response;
   }
 
+  // 3. 기기 정보가 있으면 클라이언트 표시용 기기 요약을 응답에 포함한다.
   return {
     ...response,
     device: {
@@ -79,9 +82,10 @@ export function createAuthTokenResponse(input: {
 
 // 기능 : 인증 사용자 레코드를 일반 사용자 내 정보 응답으로 변환합니다.
 export function toMeResponse(user: AuthMeRecord): MeResponse {
+  // 1. 저장소 레코드의 내부 필드를 사용자 API 응답 필드로 매핑한다.
   return {
     id: user.id,
-    supabaseUserId: user.supabaseUserId,
+    externalAuthUserId: user.externalAuthUserId,
     name: user.displayName,
     email: user.email,
     role: user.role,
@@ -101,9 +105,10 @@ export function toMeResponse(user: AuthMeRecord): MeResponse {
 
 // 기능 : 인증 사용자 레코드를 관리자 내 정보 응답으로 변환합니다.
 export function toAdminMeResponse(user: AuthMeRecord): AdminMeResponse {
+  // 1. 저장소 레코드의 내부 필드를 관리자 권한 확인 응답 필드로 매핑한다.
   return {
     id: user.id,
-    supabaseUserId: user.supabaseUserId,
+    externalAuthUserId: user.externalAuthUserId,
     name: user.displayName,
     email: user.email,
     role: "ADMIN",

@@ -50,7 +50,7 @@ export class AuthController {
   ) {
     // 1. Authorization 헤더와 요청 body를 application 계층 입력으로 변환한다.
     const result = await this.exchangeExternalAuthTokenUseCase.execute({
-      supabaseAccessToken: this.getBearerToken(authorization),
+      externalAuthAccessToken: this.getBearerToken(authorization),
       deviceSlot: body.deviceSlot,
       deviceId: body.deviceId,
       deviceLabel: body.deviceLabel ?? null,
@@ -116,21 +116,26 @@ export class AuthController {
 
   // 기능 : Authorization 헤더에서 Bearer 토큰 값을 추출하고 형식을 검증합니다.
   private getBearerToken(authorization: string | undefined): string {
+    // 1. Authorization 헤더가 없으면 외부 인증 token 교환을 허용하지 않는다.
     if (!authorization) {
       throw new UnauthorizedException("Missing Authorization header");
     }
 
+    // 2. Bearer scheme과 token 값을 분리한다.
     const [scheme, token] = authorization.split(" ");
 
+    // 3. Bearer 형식이 아니거나 token이 비어 있으면 인증 오류로 처리한다.
     if (scheme !== "Bearer" || !token) {
       throw new UnauthorizedException("Invalid Authorization header");
     }
 
+    // 4. 검증된 bearer token 원문을 application 계층으로 전달한다.
     return token;
   }
 
   // 기능 : 배포 프록시가 제공하는 접속 국가 헤더를 읽습니다.
   private getCountryCode(request: Request): string | null {
+    // 1. CDN/Vercel/CloudFront 순서로 국가 헤더를 확인하고 없으면 null을 반환한다.
     return (
       request.header("cf-ipcountry") ??
       request.header("x-vercel-ip-country") ??
@@ -139,4 +144,3 @@ export class AuthController {
     );
   }
 }
-

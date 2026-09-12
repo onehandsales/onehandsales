@@ -99,7 +99,7 @@ async function setupAdminApiMocks(page: Page) {
       email: "admin@example.com",
       name: "Admin User",
       role: "ADMIN",
-      supabaseUserId: null,
+      externalAuthUserId: null,
     });
   });
 

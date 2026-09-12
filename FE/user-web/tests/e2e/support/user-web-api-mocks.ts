@@ -212,7 +212,7 @@ function createAuthUser(overrides: Partial<MutableRecord> = {}) {
     signupLocale: "ko-KR",
     signupTimeZone: "Asia/Seoul",
     status: "ACTIVE",
-    supabaseUserId: "supabase-e2e-001",
+    externalAuthUserId: "external-auth-e2e-001",
     timeZone: "Asia/Seoul",
     ...overrides,
   };

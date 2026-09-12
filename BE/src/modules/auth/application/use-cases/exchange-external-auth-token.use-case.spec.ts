@@ -216,7 +216,7 @@ class FakeAuthRepository implements AuthRepository {
 
     return {
       ...user,
-      supabaseUserId: oauthAccount?.providerUserId ?? null,
+      externalAuthUserId: oauthAccount?.providerUserId ?? null,
     };
   }
 
@@ -388,7 +388,7 @@ function makeExchangeCommand(
   overrides: Partial<ExchangeExternalAuthTokenCommand> = {}
 ): ExchangeExternalAuthTokenCommand {
   return {
-    supabaseAccessToken: "supabase-token",
+    externalAuthAccessToken: "supabase-token",
     deviceSlot: "personal_laptop",
     deviceId: "stable-device-id",
     deviceLabel: "개인 노트북 Chrome",

@@ -20,7 +20,7 @@ export type AuthProvidersResponse = {
 
 export type AuthUser = {
   readonly id: string;
-  readonly supabaseUserId: string | null;
+  readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
   readonly role: string;
@@ -56,7 +56,7 @@ export type AuthTokenResponse = {
 };
 
 export type ExchangeAuthTokenInput = {
-  readonly supabaseAccessToken: string;
+  readonly externalAuthAccessToken: string;
   readonly deviceSlot: DeviceSlot;
   readonly deviceId: string;
   readonly deviceLabel?: string;

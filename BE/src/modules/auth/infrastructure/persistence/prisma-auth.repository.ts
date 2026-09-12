@@ -215,6 +215,7 @@ export class PrismaAuthRepository implements AuthRepository {
 
   // 기능 : 사용자 ID로 인증 응답에 필요한 내 정보와 대표 OAuth 계정을 조회합니다.
   async getMe(userId: string): Promise<AuthMeRecord | null> {
+    // 1. 사용자 기본 정보와 대표 OAuth 계정 하나를 함께 조회한다.
     const user = await this.client.user.findUnique({
       where: { id: userId },
       include: {
@@ -225,15 +226,18 @@ export class PrismaAuthRepository implements AuthRepository {
       },
     });
 
+    // 2. 사용자가 없으면 인증 응답을 만들 수 없으므로 null을 반환한다.
     if (!user) {
       return null;
     }
 
+    // 3. 가장 먼저 연결된 OAuth 계정을 외부 인증 사용자 식별자로 사용한다.
     const firstOauthAccount = user.oauthAccounts[0];
 
+    // 4. Prisma row를 application record로 변환하고 외부 인증 사용자 ID를 포함한다.
     return {
       ...this.mapUser(user),
-      supabaseUserId: firstOauthAccount?.providerUserId ?? null,
+      externalAuthUserId: firstOauthAccount?.providerUserId ?? null,
     };
   }
 

@@ -29,7 +29,7 @@ export interface AuthUserRecord {
 
 // 역할 : AuthMeRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface AuthMeRecord extends AuthUserRecord {
-  readonly supabaseUserId: string | null;
+  readonly externalAuthUserId: string | null;
 }
 
 // 역할 : AuthOAuthAccountRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
