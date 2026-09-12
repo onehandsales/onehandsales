@@ -318,25 +318,95 @@ Kit은 최소한 아래를 포함해야 한다.
 
 내부 Backend/DB는 고정형 Company/Product/Deal 구조로 되돌아가지 않는다. 다음 CRM 코어는 유연한 데이터 모델을 전제로 별도 설계한다.
 
-후보 개념:
+Attio에서 사용하는 개념:
 
-- Workspace
-- WorkspaceMember
-- Kit
-- KitObjectTemplate
-- KitAttributeTemplate
-- Object
-- Attribute
-- Relationship
-- SelectOption
-- Status
-- Record
-- RecordValue
-- List
-- View
-- Automation
-- Trigger
-- Action
+Attio의 데이터 모델은 `Workspace` 안에서 `Object`를 정의하고, 각 `Object`에 `Attribute`를 붙이며, 실제 데이터는 `Record`와 `AttributeValue`로 저장되는 구조로 이해한다. `List`와 `ListEntry`는 기존 `Record`를 특정 업무 프로세스에 올려 list-specific attribute 값을 별도로 관리하는 계층이다. `View`는 `Object` 또는 `List` 데이터를 사용자가 일하기 좋은 방식으로 보여주는 저장된 보기다.
+
+OneHandCRM에서 참고할 Attio식 데이터 모델링 개념:
+
+- `Workspace`: Object, Record, List, Member, 권한, 설정이 속하는 최상위 작업공간/테넌트다.
+- `WorkspaceMember`: 한 Workspace에 속한 사용자 멤버십이다. 사용자별 권한, 소유자, 담당자, 생성자 맥락의 기준이 된다.
+- `Actor`: 데이터를 생성하거나 수정한 주체다. 사람 멤버, API token, system, app, automation 같은 행위자를 감사 추적에 남긴다.
+- `Object`: 관리 대상의 타입이다. DB table 또는 class에 가까우며, Record와 Attribute의 기준 scope가 된다.
+- `StandardObject`: Attio가 기본 제공하는 object 유형이다. People, Companies, Deals, Users, Workspaces 같은 기본 CRM 패턴을 이해하는 참고 대상이다.
+- `CustomObject`: 특정 업무에 맞게 새로 정의하는 object다. OneHandCRM에서는 직업별 관리 항목을 표현하는 핵심 모델 후보가 된다.
+- `ObjectPermission`: Object 단위로 누가 보고, 만들고, 수정하고, 삭제할 수 있는지 정하는 권한 규칙이다.
+- `WorkspaceAccess`: Workspace 전체 멤버에게 적용되는 기본 object/list 접근 수준이다.
+- `WorkspaceMemberAccess`: 특정 WorkspaceMember에게 따로 부여하는 접근 수준이다.
+- `AccessLevel`: 접근 권한의 단계다. 예를 들어 full access, read and write, read only 같은 정책 값이 된다.
+- `Attribute`: Object 또는 List에 붙는 정보 정의다. DB column에 가까우며 값의 타입, 필수 여부, 중복 허용 여부, 표시 이름을 가진다.
+- `ObjectAttribute`: Object에 속한 모든 Record가 공유하는 attribute다. 예를 들어 고객의 이름, 전화번호, 담당자 같은 기본 정보가 된다.
+- `ListAttribute`: 특정 List 안에서만 의미가 있는 attribute다. 예를 들어 영업 pipeline list 안의 stage, owner, 예상 금액처럼 프로세스 전용 값을 담는다.
+- `AttributeType`: Attribute가 어떤 형태의 값을 받을지 정하는 타입이다. 입력 UI, 검증, 필터, 정렬 방식에 영향을 준다.
+- `AttributeValue`: 특정 Attribute에 저장된 실제 값이다. 값 자체와 생성자, 유효 기간 같은 metadata를 포함할 수 있다.
+- `AttributeValueHistory`: AttributeValue의 변경 이력이다. `active_from`, `active_until` 같은 기간 정보로 과거 값을 추적한다.
+- `Relationship`: 두 Record 사이의 양방향 연결이다. 한쪽을 수정하면 반대쪽 연결도 함께 반영되는 관계를 표현한다.
+- `RecordReference`: 다른 Record를 가리키는 attribute 타입이다. 단방향 참조 또는 Relationship의 한쪽 끝으로 사용된다.
+- `SelectOption`: Select Attribute에서 고를 수 있는 선택지다. 라벨, 색상, 정렬, 보관 여부를 가진다.
+- `Status`: Status Attribute에서 고를 수 있는 상태값이다. Kanban column, 진행 단계, 목표 체류 시간 같은 업무 흐름 표현에 사용된다.
+- `Record`: Object의 실제 데이터 한 건이다. DB row에 가까우며, 업무에서 다루는 고객, 매물, 후보자, 계약 같은 개별 항목이 된다.
+- `RecordValue`: 특정 Record가 가진 attribute 값이다. Record 상세 화면과 목록 셀에 표시되는 실제 데이터 단위다.
+- `List`: Record를 특정 업무 프로세스나 프로젝트로 묶는 단위다. 원본 Record를 소유하지 않고, 업무 맥락과 list-specific 값을 얹는다.
+- `ListEntry`: Record가 List에 추가된 한 건의 항목이다. 같은 Record가 다른 List에 여러 번 들어가도 각각 다른 ListEntry가 될 수 있다.
+- `ListEntryValue`: ListEntry에 붙는 list-specific attribute 값이다. 같은 Record라도 List마다 다른 stage, owner, 평가값을 가질 수 있게 한다.
+- `View`: Object 또는 List 데이터를 특정 방식으로 보여주는 저장된 보기다. 필터, 정렬, 표시 attribute, layout을 담는다.
+- `TableView`: Record 또는 ListEntry를 행과 열로 보여주는 표 보기다.
+- `KanbanView`: Status Attribute를 기준으로 column을 만들고 Record/ListEntry를 card로 보여주는 보기다.
+- `Filter`: Record나 ListEntry를 조건에 맞게 좁히는 query 규칙이다.
+- `Sort`: 목록이나 view의 표시 순서를 정하는 규칙이다.
+- `Search`: 여러 Object 또는 Record를 대상으로 이름, 이메일, 도메인, 라벨 등을 빠르게 찾는 탐색 기능이다.
+- `AllRecordsPage`: 특정 Object의 모든 Record를 보여주는 기본 페이지다. List에 속하지 않은 Record까지 포함하는 원장 화면이다.
+- `Note`: Record에 붙는 업무 기록이다. 미팅 메모, 상담 기록, 내부 메모처럼 서술형 내용을 담는다.
+- `Task`: 특정 Record나 업무 맥락에 연결되는 할 일이다. 담당자, 마감일, 완료 여부를 가진다.
+- `Thread`: Record나 ListEntry에 붙는 댓글 대화 묶음이다.
+- `Comment`: Thread 안의 개별 댓글이다. 협업, 질문, 결정 기록에 사용된다.
+- `Email`: 연결된 mailbox에서 들어오는 이메일 metadata 또는 커뮤니케이션 활동이다.
+- `Meeting`: 캘린더 기반 미팅 기록이다. 참여자, 시간, 연결 Record를 가진다.
+- `CallRecording`: Meeting에 연결되는 통화 녹음과 transcript/summary 같은 후속 데이터를 표현한다.
+- `File`: Record에 연결되는 첨부 파일 또는 외부 저장소 파일 참조다.
+- `Folder`: Record에 연결된 File을 묶는 폴더 또는 외부 저장소 폴더 참조다.
+- `Report`: Record/List 데이터를 차트나 지표로 시각화한 분석 단위다.
+- `Dashboard`: 여러 Report를 업무 주제별로 모아 보여주는 화면이다.
+- `Template`: 반복 생성되는 구조를 미리 채워두는 재사용 단위다. list, email, note, record 생성 경험에 적용할 수 있다.
+- `Automation`: 반복 업무를 자동 처리하는 기능 영역이다.
+- `Workflow`: Trigger와 Action으로 구성되는 자동화 흐름이다.
+- `Trigger`: Workflow가 시작되는 조건이다. Record 생성, 값 변경, 일정 도래, webhook 수신 같은 이벤트가 된다.
+- `Action`: Trigger 이후 실행되는 작업이다. 값 변경, task 생성, 알림, 외부 API 호출 같은 동작이 된다.
+- `Webhook`: 외부 시스템에 변경 이벤트를 전달하거나 외부 이벤트를 받기 위한 HTTP 연결점이다.
+- `WebhookSubscription`: 어떤 이벤트를 어떤 Webhook으로 받을지 정하는 구독 설정이다.
+- `ApiToken`: API로 Workspace 데이터에 접근하는 통합 인증 주체다. Actor로도 기록될 수 있다.
+- `App`: Workspace에 설치되어 UI, automation, API 연동을 확장하는 애플리케이션 주체다.
+- `Team`: 여러 WorkspaceMember를 묶어 권한과 담당 범위를 관리하는 그룹이다.
+
+Attribute type 후보:
+
+- `ActorReference`: 생성자나 수정자처럼 행위자를 참조하는 값이다.
+- `Checkbox`: true/false 값을 저장하는 타입이다.
+- `Currency`: 금액과 통화 정보를 저장하는 타입이다.
+- `Date`: 시간대 없는 날짜를 저장하는 타입이다.
+- `Domain`: 인터넷 도메인을 저장하고 회사/웹사이트 식별에 사용하는 타입이다.
+- `EmailAddress`: 이메일 주소를 저장하는 타입이다.
+- `Interaction`: 이메일, 캘린더 이벤트 같은 커뮤니케이션 상호작용을 표현하는 타입이다.
+- `Location`: 주소, 도시, 지역, 우편번호, 국가 같은 위치 정보를 저장하는 타입이다.
+- `PersonalName`: 사람 이름을 구조화해 저장하는 타입이다.
+- `Number`: 수량, 점수, 비율 같은 숫자 값을 저장하는 타입이다.
+- `PhoneNumber`: 국제 전화번호를 저장하는 타입이다.
+- `Rating`: 별점이나 점수 평가를 저장하는 타입이다.
+- `RecordReference`: 다른 Record를 값으로 참조하는 타입이다.
+- `Select`: 미리 정한 선택지 중 하나 또는 여러 개를 고르는 타입이다.
+- `Status`: 미리 정한 상태값 중 하나를 고르는 타입이다. Kanban 단계와 프로세스 상태에 주로 사용한다.
+- `Text`: 자유 텍스트를 저장하는 타입이다.
+- `Timestamp`: UTC 기준 날짜와 시간을 함께 저장하는 타입이다.
+
+주의할 점은 `Workspace`가 두 의미로 쓰일 수 있다는 점이다. Attio에서는 서비스 최상위 계정/테넌트 의미의 workspace와, product-led growth CRM에서 고객사의 workspace를 표현하는 standard object `Workspaces`가 함께 등장한다. OneHandCRM에서는 우선 `Workspace`를 우리 서비스의 작업공간/테넌트 의미로 고정하고, 고객사의 workspace를 CRM record로 다루는 경우에는 후속 설계에서 별도 이름을 정한다.
+
+참고한 Attio 공식 문서:
+
+- https://docs.attio.com/docs/objects-and-lists
+- https://docs.attio.com/docs/users-and-workspaces
+- https://docs.attio.com/rest-api/attribute-types/attribute-types
+- https://docs.attio.com/docs/actors
+- https://docs.attio.com/docs/standard-objects/standard-objects
 
 이 용어들은 내부 설계와 AGENT/BE 문서에서는 사용할 수 있다. 그러나 사용자-facing FE 문구에서는 그대로 노출하지 않는다.
 
