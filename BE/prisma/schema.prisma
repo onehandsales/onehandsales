@@ -19,6 +19,42 @@ enum UserStatus {
   DELETED
 }
 
+/// 기능 : Workspace가 개인/개인사업자용인지 조직/회사용인지 구분합니다.
+enum WorkspaceKind {
+  /// 기능 : B2C 개인 또는 개인사업자 Workspace입니다.
+  PERSONAL
+  /// 기능 : B2B 회사 또는 조직 Workspace입니다.
+  ORGANIZATION
+}
+
+/// 기능 : Workspace 전체 범위에서 멤버가 가지는 역할입니다.
+enum WorkspaceMemberRole {
+  /// 기능 : Workspace 소유자입니다.
+  OWNER
+  /// 기능 : Workspace 관리 권한을 가진 관리자입니다.
+  ADMIN
+  /// 기능 : Workspace 일반 멤버입니다.
+  MEMBER
+}
+
+/// 기능 : Team이 Workspace 안에서 어떤 목적으로 쓰이는지 구분합니다.
+enum TeamType {
+  /// 기능 : B2C 또는 초기 Workspace에서 자동 생성되는 기본 Team입니다.
+  DEFAULT
+  /// 기능 : B2B 조직의 부서나 업무 조직 단위 Team입니다.
+  DEPARTMENT
+  /// 기능 : 특정 프로젝트나 임시 협업 단위 Team입니다.
+  PROJECT
+}
+
+/// 기능 : Team 안에서 WorkspaceMember가 가지는 역할입니다.
+enum TeamMemberRole {
+  /// 기능 : Team을 이끄는 팀장 또는 관리자 역할입니다.
+  MANAGER
+  /// 기능 : Team에 참여하는 일반 멤버 역할입니다.
+  MEMBER
+}
+
 enum OAuthProvider {
   /// 기능 : 기존 Kakao OAuth 계정 값을 보존하되 신규 런타임 로그인에서는 사용하지 않습니다.
   KAKAO
@@ -98,6 +134,7 @@ model User {
   oauthAccounts   UserOAuthAccount[]
   authDevices     AuthDevice[]
   authSessions    AuthSession[]
+  workspaceMembers WorkspaceMember[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
@@ -109,6 +146,124 @@ model User {
   @@index([role])
   @@index([status])
   @@index([createdAt])
+}
+
+/// 기능 : B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업공간입니다.
+model Workspace {
+  /// 기능 : Workspace row의 고유 식별자입니다.
+  id                 String        @id @default(uuid()) @db.Uuid
+  /// 기능 : 사용자에게 보이는 Workspace 이름입니다.
+  name               String
+  /// 기능 : PERSONAL 또는 ORGANIZATION으로 Workspace 성격을 구분합니다.
+  kind               WorkspaceKind
+  /// 기능 : B2B 조직 Workspace일 때 회사/조직 이름을 저장합니다.
+  organizationName   String?
+  /// 기능 : B2B 조직 Workspace일 때 회사 도메인을 저장합니다.
+  organizationDomain String?
+  /// 기능 : Workspace 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt          DateTime      @default(now()) @db.Timestamptz(3)
+  /// 기능 : Workspace row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt          DateTime      @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 이 Workspace에 속한 멤버십 목록입니다.
+  members     WorkspaceMember[]
+  /// 기능 : 이 Workspace 안에서 생성된 Team 목록입니다.
+  teams       Team[]
+  /// 기능 : 이 Workspace 안에서 생성된 TeamMember 연결 목록입니다.
+  teamMembers TeamMember[]
+
+  @@index([kind])
+}
+
+/// 기능 : User가 특정 Workspace에 참여한 멤버십과 워크스페이스 단위 역할을 저장합니다.
+model WorkspaceMember {
+  /// 기능 : WorkspaceMember row의 고유 식별자입니다.
+  id          String              @id @default(uuid()) @db.Uuid
+  /// 기능 : 참여한 Workspace ID입니다.
+  workspaceId String              @db.Uuid
+  /// 기능 : 참여한 User ID입니다.
+  userId      String              @db.Uuid
+  /// 기능 : Workspace 전체 범위에서의 역할입니다.
+  role        WorkspaceMemberRole @default(MEMBER)
+  /// 기능 : User가 Workspace에 참여한 시각입니다. UTC instant로 저장합니다.
+  joinedAt    DateTime            @default(now()) @db.Timestamptz(3)
+  /// 기능 : WorkspaceMember 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt   DateTime            @default(now()) @db.Timestamptz(3)
+  /// 기능 : WorkspaceMember row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt   DateTime            @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 이 멤버십이 속한 Workspace입니다.
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 이 멤버십과 연결된 User입니다.
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 이 WorkspaceMember가 참여한 TeamMember 연결 목록입니다.
+  teamMembers TeamMember[]
+
+  @@unique([workspaceId, userId])
+  @@unique([id, workspaceId])
+  @@index([workspaceId])
+  @@index([userId])
+}
+
+/// 기능 : Workspace 안에서 멤버를 부서, 프로젝트, 기본 업무공간 단위로 묶는 그룹입니다.
+model Team {
+  /// 기능 : Team row의 고유 식별자입니다.
+  id          String   @id @default(uuid()) @db.Uuid
+  /// 기능 : Team이 속한 Workspace ID입니다.
+  workspaceId String   @db.Uuid
+  /// 기능 : 사용자에게 보이는 Team 이름입니다.
+  name        String
+  /// 기능 : Team의 목적이나 범위를 설명하는 선택 입력값입니다.
+  description String?
+  /// 기능 : DEFAULT, DEPARTMENT, PROJECT로 Team 사용 목적을 구분합니다.
+  teamType    TeamType @default(DEPARTMENT)
+  /// 기능 : Workspace의 기본 Team 여부입니다. 한 Workspace에 하나만 둘 수 있습니다.
+  isDefault   Boolean  @default(false)
+  /// 기능 : Team 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : Team row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 이 Team이 속한 Workspace입니다.
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 이 Team에 참여한 TeamMember 연결 목록입니다.
+  teamMembers TeamMember[]
+
+  @@unique([workspaceId, name])
+  @@unique([id, workspaceId])
+  @@index([workspaceId])
+}
+
+/// 기능 : WorkspaceMember와 Team의 다대다 연결과 팀 안에서의 역할을 저장합니다.
+model TeamMember {
+  /// 기능 : TeamMember row의 고유 식별자입니다.
+  id                String         @id @default(uuid()) @db.Uuid
+  /// 기능 : TeamMember 연결이 속한 Workspace ID입니다.
+  workspaceId       String         @db.Uuid
+  /// 기능 : 참여한 Team ID입니다.
+  teamId            String         @db.Uuid
+  /// 기능 : Team에 참여한 WorkspaceMember ID입니다.
+  workspaceMemberId String         @db.Uuid
+  /// 기능 : Team 안에서의 역할입니다.
+  role              TeamMemberRole @default(MEMBER)
+  /// 기능 : WorkspaceMember가 Team에 참여한 시각입니다. UTC instant로 저장합니다.
+  joinedAt          DateTime       @default(now()) @db.Timestamptz(3)
+  /// 기능 : TeamMember 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt         DateTime       @default(now()) @db.Timestamptz(3)
+  /// 기능 : TeamMember row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt         DateTime       @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 이 TeamMember 연결이 속한 Workspace입니다.
+  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace 안에서 연결된 Team입니다.
+  team            Team            @relation(fields: [teamId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace 안에서 Team에 참여한 WorkspaceMember입니다.
+  workspaceMember WorkspaceMember @relation(fields: [workspaceMemberId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([teamId, workspaceMemberId])
+  @@index([workspaceId])
+  @@index([teamId])
+  @@index([workspaceMemberId])
 }
 
 /// 기능 : User Web 도움말 모달에서 접수된 에러 신고를 저장합니다.
