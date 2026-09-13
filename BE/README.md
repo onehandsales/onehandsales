@@ -27,7 +27,7 @@
 - `public-contact-request`: 로그인 전 공개 문의 접수
 - `health`: health check
 
-고정형 `company`/`search` 도메인은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Object/Attribute/Record/List/View 기반의 유연한 데이터 모델로 다시 설계한다.
+고정형 `company`/`search` 도메인은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 기반의 유연한 데이터 모델로 다시 설계한다.
 
 
 ## 로컬 실행
@@ -55,6 +55,8 @@ pnpm run start:dev
 ## 운영 배포
 
 현재 production API origin은 `https://onehandsales-production.up.railway.app`이다. User Web custom domain `https://www.onehandsales.com`은 Frontend Vercel project에 연결된 domain이며, Backend hosting이나 Supabase database region을 자동으로 바꾸지 않는다.
+
+제품명과 신규 slug/code 방향은 루트 README의 `OneHand CRM`/`onehandcrm`을 따른다. 실제 운영 URL과 provider 설정은 domain 연결이 완료되기 전까지 현재 `onehandsales` 계열 값을 유지한다.
 
 production 공개 origin 기준:
 

@@ -49,7 +49,7 @@ pnpm run build
 
 ## Production URL Configuration
 
-2026-08-25 기준 User Web production canonical domain은 `https://www.onehandsales.com`이다. Supabase Auth URL 설정은 다음 기준을 사용한다.
+2026-09-13 현재 User Web production canonical domain은 `https://www.onehandsales.com`이다. 제품명과 신규 slug/code 방향은 루트 README의 `OneHand CRM`/`onehandcrm`을 따르지만, Supabase Auth URL 설정은 실제 domain 연결이 완료되기 전까지 현재 `onehandsales` 계열 운영 URL을 기준으로 유지한다.
 
 Site URL:
 

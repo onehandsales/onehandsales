@@ -40,4 +40,4 @@ Layer rules:
 
 Business modules should continue to be added one module and one migration at a time, following the same layer boundaries.
 
-The fixed company/search domain has been removed for the OneHand CRM pivot. The next CRM core should be introduced as a flexible Workspace/Object/Attribute/Record/List/View model instead of extending the old company tables.
+The fixed company/search domain has been removed for the OneHand CRM pivot. The next CRM core should be introduced as a flexible Workspace/Kit/Object/Attribute/Relationship/Record/List/View model instead of extending the old company tables.

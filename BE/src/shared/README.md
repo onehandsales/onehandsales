@@ -17,4 +17,4 @@ shared/
 - `shared/infrastructure`: Prisma, logger, external auth provider adapter.
 - `shared/presentation`: filter, guard, decorator, DTO helper.
 
-비즈니스 기능 로직은 이곳에 두지 않는다. 코드가 특정 영업 도메인 workflow를 알고 있다면 해당 기능 모듈에 둔다.
+비즈니스 기능 로직은 이곳에 두지 않는다. 코드가 특정 CRM/업무 도메인 workflow를 알고 있다면 해당 기능 모듈에 둔다.

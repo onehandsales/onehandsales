@@ -20,6 +20,6 @@
 - `pnpm test:e2e:mobile`
 - `pnpm test:e2e:browsers`
 
-로그인 이후 활성 화면은 `/app`, `/app/more`다. Contact/Product/Deal의 `/app/*` 경로는 현재 `/app`으로 redirect한다. 공개 페이지는 locale 기반 라우팅을 유지한다.
+로그인 이후 활성 화면은 `/app`, `/app/more`다. 과거 `contact`/`product`/`deal`의 `/app/*` 경로와 legacy top-level 경로는 현재 `/app` 또는 `/app/more`로 redirect한다. 공개 페이지는 locale 기반 라우팅을 유지한다.
 
-고정형 회사 목록/생성/상세/수정 화면과 회사 검색은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 동적 Object/Attribute/Record 기반 화면으로 다시 추가한다.
+고정형 회사 목록/생성/상세/수정 화면과 회사 검색은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 기반 화면으로 다시 추가한다.

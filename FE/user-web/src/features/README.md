@@ -4,11 +4,9 @@
 
 - `app-i18n`
 - `auth`
-- `company`
 - `error-report`
 - `public-contact-request`
 - `public-site`
-- `search`
 - `support-request`
 
 자리만 남은 feature folder:

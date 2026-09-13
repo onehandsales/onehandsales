@@ -1,6 +1,6 @@
 # User Web Architecture
 
-User Web은 React Router, TanStack Query, i18n, Playwright/Vitest 기반으로 구성한다. 로그인 이후 `/app` 영역은 핵심 CRM 데이터 관리와 계정 모달에 집중한다.
+User Web은 React Router, TanStack Query, i18n, Playwright/Vitest 기반으로 구성한다. 로그인 이후 `/app` 영역은 현재 빈 홈, `/app/more`, 계정 설정, 도움말/문의 흐름을 제공한다.
 
 ## 활성 Route
 
@@ -13,6 +13,8 @@ Redirect-only:
 - `/app/products/*` -> `/app`
 - `/app/deals/*` -> `/app`
 - `/app/export` -> `/app`
+- legacy top-level `/contacts/*`, `/products/*`, `/deals/*` -> `/app`
+- legacy top-level `/more` -> `/app/more`
 
 ## Feature 구조
 
@@ -28,4 +30,5 @@ Redirect-only:
 
 - Backend ownership 검증을 전제로 access token을 `Authorization: Bearer`로 보낸다.
 - `401`은 세션 복구 또는 로그인 이동으로 처리한다.
-고정형 `company`/`search` feature는 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 화면은 동적 Object/Attribute/Record 구조가 확정된 뒤 새 feature로 추가한다.
+
+고정형 `company`/`search` feature는 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 화면은 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 구조가 확정된 뒤 새 feature로 추가한다.
