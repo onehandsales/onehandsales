@@ -109,39 +109,40 @@ enum PublicContactRequestStatus {
 }
 
 model User {
-  id                   String     @id @default(uuid()) @db.Uuid
-  email                String?
-  displayName          String?
-  role                 UserRole   @default(USER)
-  status               UserStatus @default(ACTIVE)
-  timeZone             String     @default("Asia/Seoul")
-  preferredLocale      String     @default("ko-KR")
+  id                             String     @id @default(uuid()) @db.Uuid
+  email                          String?
+  displayName                    String?
+  role                           UserRole   @default(USER)
+  status                         UserStatus @default(ACTIVE)
+  timeZone                       String     @default("Asia/Seoul")
+  preferredLocale                String     @default("ko-KR")
   /// 기능 : 사용자의 기본 국가 코드이며 글로벌 입력값 기본값에 사용합니다.
-  countryCode          String     @default("KR")
+  countryCode                    String     @default("KR")
   /// 기능 : 사용자의 기본 통화 코드이며 금액 입력 기본값에 사용합니다.
-  defaultCurrencyCode  String     @default("KRW")
-  signupLocale         String?
-  signupCountryCode    String?
-  signupTimeZone       String?
-  lastLoginLocale      String?
-  lastLoginCountryCode String?
-  lastLoginTimeZone    String?
-  lastLoginAt          DateTime?
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime   @updatedAt
-  deletedAt            DateTime?
+  defaultCurrencyCode            String     @default("KRW")
+  signupLocale                   String?
+  signupCountryCode              String?
+  signupTimeZone                 String?
+  lastLoginLocale                String?
+  lastLoginCountryCode           String?
+  lastLoginTimeZone              String?
+  lastLoginAt                    DateTime?  @db.Timestamptz(3)
+  jobSelectOnboardingCompletedAt DateTime?  @db.Timestamptz(3)
+  createdAt                      DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt                      DateTime   @updatedAt @db.Timestamptz(3)
+  deletedAt                      DateTime?  @db.Timestamptz(3)
 
-  oauthAccounts   UserOAuthAccount[]
-  authDevices     AuthDevice[]
-  authSessions    AuthSession[]
+  oauthAccounts    UserOAuthAccount[]
+  authDevices      AuthDevice[]
+  authSessions     AuthSession[]
   workspaceMembers WorkspaceMember[]
   /// 기능 : 사용자가 등록한 회사 목록이다.
   /// 기능 : 사용자가 만든 회사 분야 옵션 목록이다.
   /// 기능 : 사용자가 만든 회사 지역 옵션 목록이다.
   /// 기능 : 사용자가 접수한 에러 신고 목록입니다.
-  errorReports    ErrorReport[]
+  errorReports     ErrorReport[]
   /// 기능 : 사용자가 접수한 지원 요청 목록입니다.
-  supportRequests SupportRequest[]
+  supportRequests  SupportRequest[]
 
   @@index([role])
   @@index([status])
@@ -373,9 +374,9 @@ model UserOAuthAccount {
   providerEmail    String?
   accessTokenHash  String?
   refreshTokenHash String?
-  tokenExpiresAt   DateTime?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  tokenExpiresAt   DateTime?     @db.Timestamptz(3)
+  createdAt        DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime      @updatedAt @db.Timestamptz(3)
 
   user User @relation(fields: [userId], references: [id])
 
@@ -390,11 +391,11 @@ model AuthDevice {
   deviceIdHash String
   label        String?
   status       AuthDeviceStatus @default(ACTIVE)
-  lastSeenAt   DateTime?
-  replacedAt   DateTime?
-  revokedAt    DateTime?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  lastSeenAt   DateTime?        @db.Timestamptz(3)
+  replacedAt   DateTime?        @db.Timestamptz(3)
+  revokedAt    DateTime?        @db.Timestamptz(3)
+  createdAt    DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime         @updatedAt @db.Timestamptz(3)
 
   user     User          @relation(fields: [userId], references: [id])
   sessions AuthSession[]
@@ -412,11 +413,11 @@ model AuthSession {
   refreshTokenHash String?
   userAgent        String?
   ipAddressHash    String?
-  lastUsedAt       DateTime?
-  expiresAt        DateTime
-  revokedAt        DateTime?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  lastUsedAt       DateTime?         @db.Timestamptz(3)
+  expiresAt        DateTime          @db.Timestamptz(3)
+  revokedAt        DateTime?         @db.Timestamptz(3)
+  createdAt        DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime          @updatedAt @db.Timestamptz(3)
 
   user       User       @relation(fields: [userId], references: [id])
   authDevice AuthDevice @relation(fields: [authDeviceId], references: [id])
