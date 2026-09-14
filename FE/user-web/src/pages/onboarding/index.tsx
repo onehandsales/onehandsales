@@ -22,56 +22,57 @@ const jobOptions: readonly JobOption[] = [
   {
     label: "영업",
     description: "고객과 기회를 관리해요",
-    imageAlt: "악수하는 손을 그린 검정색 연필 스케치",
+    imageAlt: "영업 담당자들이 모니터를 함께 보는 검정색 라인 스케치",
     imageSrc:
-      "https://papik.pro/uploads/posts/2023-02/thumbs/1676131934_papik-pro-p-pozhimayut-ruki-risunok-48.jpg",
+      "https://static.vecteezy.com/system/resources/previews/003/592/676/non_2x/single-continuous-line-drawing-of-two-young-sales-manager-analyze-sales-growth-chart-on-screen-monitor-with-marketing-staff-sales-growth-evaluation-concept-one-line-draw-design-illustration-vector.jpg",
   },
   {
     label: "마케팅",
     description: "캠페인과 리드를 정리해요",
-    imageAlt: "메가폰을 그린 검정색 스케치",
+    imageAlt: "온라인 마케팅 화면과 확성기를 그린 검정색 라인 스케치",
     imageSrc:
-      "https://images.rawpixel.com/image_social_square/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI1LTA4L3NyLWltYWdlLTIyMDcyNS1taS1zLTY5Ni1tZTNuaTExMi5qcGc.jpg",
+      "https://static.vecteezy.com/system/resources/previews/024/211/247/non_2x/single-one-line-drawing-digital-marketing-social-media-market-digital-concept-continuous-line-drawing-illustration-vector.jpg",
   },
   {
     label: "부동산",
     description: "매물과 방문을 연결해요",
-    imageAlt: "집을 그린 검정색 스케치",
-    imageSrc: "https://paintingvalley.com/sketches/easy-house-sketch-1.png",
+    imageAlt: "주택과 건물을 한 줄로 그린 검정색 라인 스케치",
+    imageSrc:
+      "https://static.vecteezy.com/system/resources/previews/027/839/179/non_2x/continuous-line-drawing-of-housing-estate-building-single-line-vector.jpg",
   },
   {
     label: "헤드헌팅/채용",
     description: "후보자와 인터뷰를 추적해요",
-    imageAlt: "면접 장면을 그린 검정색 연필 스케치",
-    imageSrc: "https://v3b.fal.media/files/b/elephant/-8GGb0knw1EnqPNgeEbZH.jpg",
+    imageAlt: "쌍안경을 든 채용 담당자를 그린 검정색 라인 스케치",
+    imageSrc:
+      "https://static.vecteezy.com/system/resources/previews/043/178/770/non_2x/continuous-one-line-drawing-job-search-recruiting-hiring-concept-doodle-illustration-vector.jpg",
   },
   {
     label: "B2B 기술영업",
     description: "회사와 기술 이슈를 연결해요",
-    imageAlt: "회의실에서 기술 영업을 논의하는 검정색 연필 스케치",
+    imageAlt: "전화하며 영업 리포트를 논의하는 담당자를 그린 검정색 라인 스케치",
     imageSrc:
-      "https://csuxjmfbwmkxiegfpljm.supabase.co/storage/v1/object/public/blog-images/organization-5129/1769685564014_image.png",
+      "https://static.vecteezy.com/system/resources/previews/046/888/229/non_2x/single-one-line-drawing-young-marketing-manager-discussing-sales-report-from-sales-division-during-receiving-phone-call-company-report-modern-continuous-line-draw-design-graphic-illustration-vector.jpg",
   },
   {
     label: "보험/재무",
     description: "상담과 갱신을 챙겨요",
-    imageAlt: "재무 상담 장면을 그린 검정색 연필 스케치",
+    imageAlt: "보험 서류와 우산을 그린 검정색 라인 스케치",
     imageSrc:
-      "https://w7.pngwing.com/pngs/899/209/png-transparent-stylized-sketch-of-a-financial-advisor-reviewing-a-portfolio.png",
-  },
-  {
-    label: "프리랜서/컨설팅",
-    description: "프로젝트와 제안을 관리해요",
-    imageAlt: "업무 상담을 나누는 두 사람의 검정색 스케치",
-    imageSrc:
-      "https://ilus.ai/_next/image?q=75&url=%2Fexample-landing-2%2Fink%2F05.png&w=640",
+      "https://static.vecteezy.com/system/resources/previews/022/175/696/non_2x/continuous-one-line-drawing-health-insurance-clipboard-icon-insurance-concept-single-line-draws-design-graphic-illustration-vector.jpg",
   },
   {
     label: "교육/코칭",
     description: "수강생과 세션을 관리해요",
     imageAlt: "학생을 지도하는 선생님의 검정색 라인 스케치",
     imageSrc:
-      "https://i.pinimg.com/736x/56/e6/ed/56e6ed52aae9984980efcef07bcfe47e.jpg",
+      "https://static.vecteezy.com/system/resources/previews/003/592/481/non_2x/one-single-line-drawing-of-young-businessman-giving-business-coaching-to-class-members-at-the-office-group-training-and-meeting-concept-continuous-line-draw-design-illustration-graphic-vector.jpg",
+  },
+  {
+    label: "기타 등등",
+    description: "맞는 항목을 함께 찾아요",
+    imageAlt: "ETC 글자를 손그림으로 그린 검정색 스케치",
+    imageSrc: "/onboarding/etc-sketch.svg",
   },
 ];
 
@@ -239,29 +240,20 @@ export function OnboardingPage() {
                   loading="eager"
                   src={imageSrc}
                 />
-              </span>
-              <span className="relative flex h-[32%] items-center border-t border-[#EEEDEA] px-4">
-                <span className="text-[15px] font-medium leading-5 text-[#111111] transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0">
-                  {label}
-                </span>
-                <span className="pointer-events-none absolute inset-0 flex items-center px-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
-                  <span className="text-[13px] font-medium leading-5 text-[#37352F]">
+                <span className="pointer-events-none absolute inset-0 flex items-center justify-center px-5 text-center opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <span className="text-[13px] font-semibold leading-5 text-[#37352F]">
                     {description}
                   </span>
+                </span>
+              </span>
+              <span className="flex h-[32%] items-center border-t border-[#EEEDEA] px-4">
+                <span className="text-[15px] font-medium leading-5 text-[#111111]">
+                  {label}
                 </span>
               </span>
             </button>
           ))}
         </div>
-
-        <button
-          className="mx-auto mt-5 block text-[14px] font-medium text-[#787774] transition-colors hover:text-[#37352F] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={isSubmitting}
-          type="button"
-          onClick={onSelectJob}
-        >
-          보기에 없어요
-        </button>
 
         {completeJobSelectionMutation.error ? (
           <p className="mt-4 rounded-[6px] bg-[#FEF2F2] px-3 py-2 text-[13px] text-[#B91C1C]">

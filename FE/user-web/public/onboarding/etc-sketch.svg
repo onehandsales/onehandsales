@@ -1,0 +1,19 @@
+<svg width="640" height="500" viewBox="0 0 640 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="500" fill="#F7F6F3"/>
+  <path d="M128 336C182 371 269 388 352 372C439 356 505 309 523 248C543 180 493 119 411 97C330 75 228 91 171 145C111 201 76 303 128 336Z" fill="#FFFFFF" stroke="#141414" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M153 318C212 348 291 358 363 343C429 329 481 292 495 245" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 14"/>
+  <path d="M186 166C181 165 177 166 174 169C169 175 172 191 182 219C190 242 196 261 199 276C201 286 206 291 214 290C239 288 262 285 283 282" stroke="#141414" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M181 224C207 221 232 218 257 215" stroke="#141414" stroke-width="13" stroke-linecap="round"/>
+  <path d="M177 169C208 166 239 163 271 160" stroke="#141414" stroke-width="13" stroke-linecap="round"/>
+  <path d="M312 158C345 156 378 154 412 153" stroke="#141414" stroke-width="13" stroke-linecap="round"/>
+  <path d="M361 159C358 200 355 241 352 282" stroke="#141414" stroke-width="14" stroke-linecap="round"/>
+  <path d="M475 164C462 153 441 151 421 162C397 175 384 201 388 230C392 259 413 281 441 286C462 290 482 284 496 270" stroke="#141414" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M135 111C151 118 166 125 181 133" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+  <path d="M112 164C129 166 145 169 162 173" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+  <path d="M512 119C500 130 488 141 477 153" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+  <path d="M536 190C520 191 505 193 489 196" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+  <path d="M241 394C257 386 273 378 289 371" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+  <path d="M404 379C421 389 438 398 456 406" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+  <path d="M118 384C129 392 141 396 155 398" stroke="#141414" stroke-width="4" stroke-linecap="round"/>
+  <path d="M481 71C494 75 505 82 514 92" stroke="#141414" stroke-width="4" stroke-linecap="round"/>
+</svg>
