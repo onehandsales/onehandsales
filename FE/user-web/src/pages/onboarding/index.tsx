@@ -260,7 +260,7 @@ export function OnboardingPage() {
           type="button"
           onClick={onSelectJob}
         >
-          Skip
+          보기에 없어요
         </button>
 
         {completeJobSelectionMutation.error ? (
