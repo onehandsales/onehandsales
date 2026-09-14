@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import {
   useAuthSession,
@@ -74,6 +75,8 @@ const jobOptions: readonly JobOption[] = [
   },
 ];
 
+const CRM_BUILD_DURATION_MS = 5000;
+
 // 기능 : 첫 로그인 직업 선택 온보딩 화면을 렌더링합니다.
 export function OnboardingPage() {
   const { isAuthenticated, isInitializing, isPending, user } = useAuthSession();
@@ -81,7 +84,49 @@ export function OnboardingPage() {
     useCompleteJobSelectionOnboardingMutation();
   const navigate = useNavigate();
   const loginPath = toPublicSitePath(resolvePublicSiteLanguage(), "/login");
-  const isSubmitting = completeJobSelectionMutation.isPending;
+  const [isBuildingCrm, setIsBuildingCrm] = useState(false);
+  const [buildProgress, setBuildProgress] = useState(0);
+  const [isBuildAnimationDone, setIsBuildAnimationDone] = useState(false);
+  const [isJobSelectionSaved, setIsJobSelectionSaved] = useState(false);
+  const isSubmitting = completeJobSelectionMutation.isPending || isBuildingCrm;
+
+  useEffect(() => {
+    if (!isBuildingCrm) {
+      return;
+    }
+
+    const startedAt = performance.now();
+    let frameId = 0;
+
+    const updateProgress = (currentTime: number) => {
+      const elapsedMs = currentTime - startedAt;
+      const nextProgress = Math.min(
+        100,
+        Math.round((elapsedMs / CRM_BUILD_DURATION_MS) * 100)
+      );
+
+      setBuildProgress(nextProgress);
+
+      if (nextProgress < 100) {
+        frameId = requestAnimationFrame(updateProgress);
+        return;
+      }
+
+      setIsBuildAnimationDone(true);
+    };
+
+    frameId = requestAnimationFrame(updateProgress);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [isBuildingCrm]);
+
+  useEffect(() => {
+    if (isBuildingCrm && isBuildAnimationDone && isJobSelectionSaved) {
+      navigate("/app", { replace: true });
+    }
+  }, [isBuildAnimationDone, isBuildingCrm, isJobSelectionSaved, navigate]);
 
   // 1. 인증 상태 복원 중에는 흰 화면을 유지한다.
   if (isInitializing || isPending) {
@@ -104,19 +149,64 @@ export function OnboardingPage() {
   }
 
   // 3. 이미 온보딩을 완료한 사용자는 앱으로 보낸다.
-  if (user.jobSelectOnboardingCompletedAt !== null) {
+  if (user.jobSelectOnboardingCompletedAt !== null && !isBuildingCrm) {
     return <Navigate replace to="/app" />;
   }
 
   // 기능 : 선택한 텍스트와 무관하게 완료 시각만 저장합니다.
   const onSelectJob = () => {
-    // 1. 온보딩 완료 API를 호출한 뒤 앱 첫 화면으로 이동한다.
+    if (isSubmitting) {
+      return;
+    }
+
+    setBuildProgress(0);
+    setIsBuildAnimationDone(false);
+    setIsJobSelectionSaved(false);
+    setIsBuildingCrm(true);
+
+    // 1. 온보딩 완료 API와 구축 연출이 모두 끝난 뒤 앱 첫 화면으로 이동한다.
     completeJobSelectionMutation.mutate(undefined, {
       onSuccess: () => {
-        navigate("/app", { replace: true });
+        setIsJobSelectionSaved(true);
+      },
+      onError: () => {
+        setIsBuildingCrm(false);
+        setBuildProgress(0);
+        setIsBuildAnimationDone(false);
       },
     });
   };
+
+  if (isBuildingCrm) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-white px-5 text-[#111111]">
+        <section className="w-full max-w-[360px] text-center">
+          <h1 className="text-[24px] font-semibold leading-[1.25] tracking-normal text-[#111111]">
+            CRM 환경을 구축중이에요.
+          </h1>
+          <div
+            aria-label="CRM 환경 구축 진행률"
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={buildProgress}
+            className="mt-7 h-2 overflow-hidden rounded-full bg-[#EEEDEA]"
+            role="progressbar"
+          >
+            <div
+              className="h-full rounded-full bg-[#111111] transition-[width] duration-100 ease-linear"
+              style={{ width: `${buildProgress}%` }}
+            />
+          </div>
+          <p
+            aria-live="polite"
+            className="mt-3 text-[13px] font-medium text-[#787774]"
+          >
+            {buildProgress}%
+          </p>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-white px-5 text-[#111111]">
