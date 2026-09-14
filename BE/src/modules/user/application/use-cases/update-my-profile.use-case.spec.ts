@@ -2,6 +2,7 @@ import { UpdateMyProfileUseCase } from "./update-my-profile.use-case";
 import type {
   UpdateUserProfileInput,
   UserDeviceRecord,
+  UserJobSelectionOnboardingRecord,
   UserProfileRecord,
   UserRepository,
 } from "@/modules/user/application/ports/user.repository";
@@ -99,6 +100,13 @@ class FakeUserRepository implements UserRepository {
   }
 
   // 기능 : list Active Devices 목록을 조회합니다.
+  // 기능 : 직업 선택 온보딩 완료 시각을 저장합니다.
+  async completeJobSelectionOnboarding(): Promise<UserJobSelectionOnboardingRecord | null> {
+    return {
+      jobSelectOnboardingCompletedAt: new Date("2026-07-10T00:00:00.000Z"),
+    };
+  }
+
   async listActiveDevices(): Promise<UserDeviceRecord[]> {
     return [];
   }
@@ -140,6 +148,7 @@ function makeProfile(
     lastLoginCountryCode: "KR",
     lastLoginTimeZone: "Asia/Seoul",
     lastLoginAt: now,
+    jobSelectOnboardingCompletedAt: null,
     createdAt: now,
     updatedAt: now,
     oauthAccounts: [],

@@ -176,6 +176,7 @@ class FakeAuthRepository implements AuthRepository {
       lastLoginLocale: input.lastLoginLocale,
       lastLoginCountryCode: input.lastLoginCountryCode,
       lastLoginTimeZone: input.lastLoginTimeZone,
+      jobSelectOnboardingCompletedAt: null,
       deletedAt: null,
     };
     // 2. 현재 단계에서 필요한 동작을 실행한다.
@@ -401,6 +402,7 @@ function makeAuthUser(overrides: Partial<AuthUserRecord> = {}): AuthUserRecord {
     lastLoginLocale: "ko-KR",
     lastLoginCountryCode: "KR",
     lastLoginTimeZone: "Asia/Seoul",
+    jobSelectOnboardingCompletedAt: null,
     deletedAt: null,
     ...overrides,
   };

@@ -31,6 +31,7 @@ export interface UserProfileRecord {
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string | null;
   readonly lastLoginAt: Date | null;
+  readonly jobSelectOnboardingCompletedAt: Date | null;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly oauthAccounts: UserOAuthAccountSummary[];
@@ -58,6 +59,11 @@ export interface UserDeviceRecord {
   readonly isCurrentDevice: boolean;
 }
 
+// 역할 : UserJobSelectionOnboardingRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface UserJobSelectionOnboardingRecord {
+  readonly jobSelectOnboardingCompletedAt: Date;
+}
+
 // 역할 : UserRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface UserRepository {
   // 기능 : 사용자 ID로 개인 정보 프로필을 조회합니다.
@@ -67,6 +73,11 @@ export interface UserRepository {
     userId: string,
     input: UpdateUserProfileInput
   ): Promise<UserProfileRecord | null>;
+  // 기능 : 현재 사용자의 직업 선택 온보딩 완료 시각을 저장합니다.
+  completeJobSelectionOnboarding(
+    userId: string,
+    now: Date
+  ): Promise<UserJobSelectionOnboardingRecord | null>;
   // 기능 : 사용자의 활성 등록 기기 목록을 조회합니다.
   listActiveDevices(
     userId: string,

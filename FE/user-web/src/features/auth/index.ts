@@ -6,6 +6,7 @@ export { AuthLandingPage } from "./components/auth-landing-page";
 export { AuthLoginPage } from "./components/auth-login-page";
 export { AuthSocialLoginModal } from "./components/auth-social-login-modal";
 export {
+  useCompleteJobSelectionOnboardingMutation,
   useMyDevices,
   useMyProfile,
   useUpdateMyProfileMutation,
@@ -13,6 +14,7 @@ export {
 export type {
   AuthProviderId,
   AuthProviderOption,
+  AuthUser,
   MyDevice,
   UserProfileOAuthAccount,
   UserProfileResponse,

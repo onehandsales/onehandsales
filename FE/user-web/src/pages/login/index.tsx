@@ -6,6 +6,7 @@ import {
   AuthLoginPage,
   type AuthProviderId,
   type AuthProviderOption,
+  type AuthUser,
   isAuthPopupCallbackWindow,
   useAuthSession,
 } from "@/features/auth";
@@ -29,6 +30,7 @@ export function LoginPage() {
     isInitializing,
     isPending,
     startProviderLogin,
+    user,
   } = useAuthSession();
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ export function LoginPage() {
     null
   );
   const callbackExchangeRef = useRef<{
-    readonly promise: Promise<boolean>;
+    readonly promise: Promise<AuthUser | null>;
     readonly startedAt: number;
   } | null>(null);
   const redirectTo = getRedirectPath(location.state);
@@ -114,14 +116,14 @@ export function LoginPage() {
 
     // 4. 외부 인증 세션을 Backend 앱 세션으로 교환한 뒤 이동 여부를 결정한다.
     void exchangeState.promise
-      .then(async (exchanged) => {
+      .then(async (exchangedUser) => {
         // 5. unmount 이후에는 callback 결과를 화면에 반영하지 않는다.
         if (!isMounted) {
           return;
         }
 
         // 6. 교환 성공 시 popup callback이면 창을 닫고 일반 callback이면 앱으로 이동한다.
-        if (exchanged) {
+        if (exchangedUser) {
           if (isPopupCallbackRoute) {
             closeAuthPopupCallbackWindow();
             return;
@@ -137,7 +139,9 @@ export function LoginPage() {
             return;
           }
 
-          navigate(redirectTo, { replace: true });
+          navigate(getAuthenticatedRedirectPath(exchangedUser, redirectTo), {
+            replace: true,
+          });
           return;
         }
 
@@ -188,8 +192,8 @@ export function LoginPage() {
     }
 
     // 2. 이미 인증된 사용자가 로그인/회원가입 화면에 오면 원래 목적지로 보낸다.
-    if (isAuthenticated) {
-      navigate(redirectTo, { replace: true });
+    if (isAuthenticated && user) {
+      navigate(getAuthenticatedRedirectPath(user, redirectTo), { replace: true });
     }
   }, [
     isAuthenticated,
@@ -198,6 +202,7 @@ export function LoginPage() {
     isSignupRoute,
     navigate,
     redirectTo,
+    user,
   ]);
 
   // 기능 : 로그인 화면의 사용자 이벤트를 처리합니다.
@@ -271,4 +276,15 @@ function getRedirectPath(state: unknown) {
 
   // 3. 내부 절대 경로만 redirect 대상으로 허용하고 나머지는 앱 홈으로 보낸다.
   return typeof from === "string" && from.startsWith("/") ? from : "/app";
+}
+
+// 기능 : 로그인 완료 후 직업 선택 온보딩 필요 여부에 따라 이동 경로를 결정합니다.
+function getAuthenticatedRedirectPath(user: AuthUser, redirectTo: string) {
+  // 1. 직업 선택 온보딩 완료 시각이 없으면 전체 화면 온보딩으로 보낸다.
+  if (user.jobSelectOnboardingCompletedAt === null) {
+    return "/onboarding";
+  }
+
+  // 2. 이미 완료한 사용자는 기존 목적지로 이동한다.
+  return redirectTo;
 }

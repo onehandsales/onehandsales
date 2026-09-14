@@ -35,6 +35,7 @@ export type AuthUser = {
   readonly lastLoginLocale: string | null;
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string | null;
+  readonly jobSelectOnboardingCompletedAt: string | null;
   readonly settings: {
     readonly sensitiveWarningEnabled: boolean;
     readonly defaultReminderMinutes: number;
@@ -92,6 +93,7 @@ export type UserProfileResponse = {
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string | null;
   readonly lastLoginAt: string | null;
+  readonly jobSelectOnboardingCompletedAt: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
   readonly oauthAccounts: UserProfileOAuthAccount[];
@@ -119,4 +121,8 @@ export type MyDevice = {
 
 export type MyDeviceListResponse = {
   readonly devices: MyDevice[];
+};
+
+export type CompleteJobSelectionOnboardingResponse = {
+  readonly jobSelectOnboardingCompletedAt: string;
 };

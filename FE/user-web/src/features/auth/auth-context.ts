@@ -13,7 +13,7 @@ export type AuthContextValue = {
   readonly isPending: boolean;
   readonly user: AuthUser | null;
   readonly clearError: () => void;
-  readonly exchangeCurrentExternalAuthSession: () => Promise<boolean>;
+  readonly exchangeCurrentExternalAuthSession: () => Promise<AuthUser | null>;
   readonly updateAuthUser: (patch: Partial<AuthUser>) => void;
   readonly logout: () => Promise<void>;
   readonly startProviderLogin: (

@@ -122,9 +122,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
       user: session?.user ?? null,
       clearError: () => setError(null),
       exchangeCurrentExternalAuthSession: async () => {
-        // 1. callback route가 호출한 외부 인증 세션 교환 결과를 추적한다.
-        let exchanged = false;
-
+        // 1. callback route가 호출한 외부 인증 세션 교환을 시작한다.
         // 2. callback 교환 중 UI pending 상태와 이전 오류를 정리한다.
         setIsPending(true);
         setError(null);
@@ -133,12 +131,12 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
           // 3. 브라우저의 외부 인증 세션을 Backend 앱 세션으로 교환한다.
           const nextSession =
             await authService.exchangeCurrentExternalAuthSession();
-          exchanged = Boolean(nextSession);
-
           // 4. 교환 성공 시 새 앱 세션을 전역 상태에 저장한다.
           if (nextSession) {
             setSession(nextSession);
           }
+
+          return nextSession?.user ?? null;
         } catch (nextError) {
           // 5. 교환 실패 메시지를 저장하고 로그인 페이지가 후속 처리를 할 수 있게 다시 던진다.
           setError(
@@ -152,8 +150,6 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
           setIsPending(false);
         }
 
-        // 7. 로그인 callback에서 redirect 여부를 판단할 수 있도록 성공 여부를 반환한다.
-        return exchanged;
       },
       updateAuthUser: (patch) => {
         // 1. 현재 세션의 사용자 정보만 부분 갱신한다.

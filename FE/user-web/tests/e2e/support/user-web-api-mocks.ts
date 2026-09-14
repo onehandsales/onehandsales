@@ -193,6 +193,13 @@ async function handleApiRequest(
   }
 
   // 12. 조건을 확인해 필요한 분기 처리를 수행한다.
+  if (
+    pathname === "/api/users/me/onboarding/job-selection" &&
+    method === "POST"
+  ) {
+    return json({ jobSelectOnboardingCompletedAt: NOW });
+  }
+
   if (pathname === "/api/users/me/devices" && method === "GET") {
     return json({
       devices: [
@@ -229,6 +236,7 @@ function createAuthUser(overrides: Partial<MutableRecord> = {}) {
     defaultCurrencyCode: "KRW",
     email: MOBILE_LONG_FIXTURE.email,
     id: "user-e2e-001",
+    jobSelectOnboardingCompletedAt: NOW,
     lastLoginCountryCode: "KR",
     lastLoginLocale: "ko-KR",
     lastLoginTimeZone: "Asia/Seoul",

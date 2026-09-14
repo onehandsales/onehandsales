@@ -24,6 +24,7 @@ export interface AuthUserRecord {
   readonly lastLoginLocale: string | null;
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string | null;
+  readonly jobSelectOnboardingCompletedAt: Date | null;
   readonly deletedAt: Date | null;
 }
 

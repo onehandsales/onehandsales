@@ -3,6 +3,7 @@ import type {
   AuthProvidersResponse,
   AuthTokenResponse,
   AuthUser,
+  CompleteJobSelectionOnboardingResponse,
   ExchangeAuthTokenInput,
   MyDeviceListResponse,
   UpdateUserProfileInput,
@@ -75,6 +76,17 @@ export function updateMyProfile(input: UpdateUserProfileInput) {
     method: "PATCH",
     body: input,
   });
+}
+
+// 기능 : 현재 사용자의 직업 선택 온보딩 완료 시각을 저장합니다.
+export function completeJobSelectionOnboarding() {
+  // 1. 선택한 직업 값은 저장하지 않고 온보딩 완료 시각만 서버에 기록한다.
+  return apiClient<CompleteJobSelectionOnboardingResponse>(
+    "/api/users/me/onboarding/job-selection",
+    {
+      method: "POST",
+    }
+  );
 }
 
 // 기능 : 현재 사용자의 등록 기기 목록을 조회합니다.

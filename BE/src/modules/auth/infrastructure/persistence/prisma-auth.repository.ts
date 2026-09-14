@@ -45,6 +45,7 @@ type UserRow = {
   readonly lastLoginLocale: string | null;
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string | null;
+  readonly jobSelectOnboardingCompletedAt: Date | null;
   readonly deletedAt: Date | null;
 };
 
@@ -451,6 +452,7 @@ export class PrismaAuthRepository implements AuthRepository {
       lastLoginLocale: user.lastLoginLocale,
       lastLoginCountryCode: user.lastLoginCountryCode,
       lastLoginTimeZone: user.lastLoginTimeZone,
+      jobSelectOnboardingCompletedAt: user.jobSelectOnboardingCompletedAt,
       deletedAt: user.deletedAt,
     };
   }

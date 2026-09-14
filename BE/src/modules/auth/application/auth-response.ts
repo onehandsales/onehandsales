@@ -34,6 +34,7 @@ export interface MeResponse {
   readonly lastLoginLocale: string | null;
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string | null;
+  readonly jobSelectOnboardingCompletedAt: string | null;
 }
 
 // 역할 : AdminMeResponse 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -100,6 +101,8 @@ export function toMeResponse(user: AuthMeRecord): MeResponse {
     lastLoginLocale: user.lastLoginLocale,
     lastLoginCountryCode: user.lastLoginCountryCode,
     lastLoginTimeZone: user.lastLoginTimeZone,
+    jobSelectOnboardingCompletedAt:
+      user.jobSelectOnboardingCompletedAt?.toISOString() ?? null,
   };
 }
 

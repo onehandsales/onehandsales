@@ -13,7 +13,7 @@ type ProtectedRouteProps = {
 // 기능 : ProtectedRoute route 보호 또는 전환 화면을 렌더링합니다.
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   // 1. 처리 흐름에 필요한 { isAuthenticated, isInitializing, isPending } 값을 준비한다.
-  const { isAuthenticated, isInitializing, isPending } = useAuthSession();
+  const { isAuthenticated, isInitializing, isPending, user } = useAuthSession();
   // 2. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
   // 3. 이후 단계에서 사용할 loginPath 값을 준비한다.
@@ -39,6 +39,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // 6. 계산된 결과를 호출자에게 반환한다.
+  // 6. 직업 선택 온보딩을 완료하지 않은 사용자는 앱 진입 전에 온보딩 화면으로 보낸다.
+  if (user?.jobSelectOnboardingCompletedAt === null) {
+    return <Navigate replace to="/onboarding" />;
+  }
+
+  // 7. 계산된 결과를 호출자에게 반환한다.
   return children;
 }

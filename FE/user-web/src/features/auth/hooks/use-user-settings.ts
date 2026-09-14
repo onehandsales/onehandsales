@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  completeJobSelectionOnboarding,
   getMyProfile,
   listMyDevices,
   updateMyProfile,
@@ -49,6 +50,23 @@ export function useUpdateMyProfileMutation() {
         lastLoginLocale: profile.lastLoginLocale,
         lastLoginCountryCode: profile.lastLoginCountryCode,
         lastLoginTimeZone: profile.lastLoginTimeZone,
+        jobSelectOnboardingCompletedAt: profile.jobSelectOnboardingCompletedAt,
+      });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.profile() });
+    },
+  });
+}
+
+// 기능 : Complete Job Selection Onboarding Mutation hook으로 온보딩 완료 상태를 저장합니다.
+export function useCompleteJobSelectionOnboardingMutation() {
+  const queryClient = useQueryClient();
+  const { updateAuthUser } = useAuthSession();
+
+  return useMutation({
+    mutationFn: completeJobSelectionOnboarding,
+    onSuccess: (response) => {
+      updateAuthUser({
+        jobSelectOnboardingCompletedAt: response.jobSelectOnboardingCompletedAt,
       });
       void queryClient.invalidateQueries({ queryKey: authQueryKeys.profile() });
     },

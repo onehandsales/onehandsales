@@ -35,6 +35,7 @@ import { SolutionsPage } from "@/pages/solutions";
 import { PersonalSolutionPage } from "@/pages/solutions/personal";
 import { RealEstateSolutionPage } from "@/pages/solutions/real-estate";
 import { MorePage } from "@/pages/more";
+import { OnboardingPage } from "@/pages/onboarding";
 import { TermsPage } from "@/pages/terms";
 
 const localizedPublicSiteRoutes = publicSiteLocaleSlugs.flatMap((localeSlug) =>
@@ -103,6 +104,7 @@ export const router = createBrowserRouter([
   { path: "/terms", element: <LegacyPublicSiteRedirect to="/terms" /> },
   { path: "/privacy", element: <LegacyPublicSiteRedirect to="/privacy" /> },
   { path: "/auth/callback", element: <LoginPage /> },
+  { path: "/onboarding", element: <OnboardingPage /> },
   ...localizedPublicSiteRoutes,
   { path: "/contacts", element: <LegacyAppRedirect to="/app" /> },
   { path: "/contacts/scan", element: <LegacyAppRedirect to="/app" /> },

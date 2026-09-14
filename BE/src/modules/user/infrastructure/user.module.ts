@@ -3,6 +3,7 @@ import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { USER_REPOSITORY } from "../application/ports/user.repository";
+import { CompleteJobSelectionOnboardingUseCase } from "../application/use-cases/complete-job-selection-onboarding.use-case";
 import { GetMyProfileUseCase } from "../application/use-cases/get-my-profile.use-case";
 import { ListMyDevicesUseCase } from "../application/use-cases/list-my-devices.use-case";
 import { UpdateMyProfileUseCase } from "../application/use-cases/update-my-profile.use-case";
@@ -14,6 +15,7 @@ import { PrismaUserRepository } from "./persistence/prisma-user.repository";
   imports: [AuthModule, PrismaInfrastructureModule],
   controllers: [UserMeController],
   providers: [
+    CompleteJobSelectionOnboardingUseCase,
     GetMyProfileUseCase,
     UpdateMyProfileUseCase,
     ListMyDevicesUseCase,

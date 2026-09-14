@@ -11,6 +11,7 @@ import {
   type UserDeviceRecord,
   type UserDeviceSlot,
   type UserDeviceStatus,
+  type UserJobSelectionOnboardingRecord,
   type UserOAuthAccountSummary,
   type UserProfileRecord,
   type UserProfileRole,
@@ -59,6 +60,50 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     return this.getProfile(userId);
+  }
+
+  // 기능 : 현재 사용자의 직업 선택 온보딩 완료 시각을 저장합니다.
+  async completeJobSelectionOnboarding(
+    userId: string,
+    now: Date
+  ): Promise<UserJobSelectionOnboardingRecord | null> {
+    // 1. 사용자 활성 상태와 기존 완료 시각을 조회한다.
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        status: true,
+        jobSelectOnboardingCompletedAt: true,
+      },
+    });
+
+    // 2. 존재하지 않거나 활성 사용자가 아니면 처리할 수 없음을 반환한다.
+    if (!user || user.status !== UserStatus.ACTIVE) {
+      return null;
+    }
+
+    // 3. 이미 완료된 사용자는 기존 완료 시각을 그대로 반환한다.
+    if (user.jobSelectOnboardingCompletedAt) {
+      return {
+        jobSelectOnboardingCompletedAt: user.jobSelectOnboardingCompletedAt,
+      };
+    }
+
+    // 4. 최초 완료 사용자는 현재 UTC instant를 완료 시각으로 저장한다.
+    const updatedUser = await this.prismaService.user.update({
+      where: { id: userId },
+      data: {
+        jobSelectOnboardingCompletedAt: now,
+      },
+      select: {
+        jobSelectOnboardingCompletedAt: true,
+      },
+    });
+
+    // 5. 저장된 완료 시각을 응답 레코드로 반환한다.
+    return {
+      jobSelectOnboardingCompletedAt:
+        updatedUser.jobSelectOnboardingCompletedAt ?? now,
+    };
   }
 
   // 기능 : 현재 사용자의 활성 등록 기기 목록과 현재 세션 포함 여부를 조회합니다.
@@ -124,6 +169,7 @@ export class PrismaUserRepository implements UserRepository {
     readonly lastLoginCountryCode: string | null;
     readonly lastLoginTimeZone: string | null;
     readonly lastLoginAt: Date | null;
+    readonly jobSelectOnboardingCompletedAt: Date | null;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly oauthAccounts: Array<{
@@ -150,6 +196,7 @@ export class PrismaUserRepository implements UserRepository {
       lastLoginCountryCode: user.lastLoginCountryCode,
       lastLoginTimeZone: user.lastLoginTimeZone,
       lastLoginAt: user.lastLoginAt,
+      jobSelectOnboardingCompletedAt: user.jobSelectOnboardingCompletedAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       oauthAccounts: user.oauthAccounts.map(
