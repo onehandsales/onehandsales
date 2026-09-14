@@ -97,6 +97,15 @@ export const publicSiteLanguageBySlug: Record<
   "en-ca": "en-CA",
 };
 
+type PublicSiteLanguageUserProfile = {
+  readonly preferredLocale?: string | null;
+  readonly countryCode?: string | null;
+  readonly signupLocale?: string | null;
+  readonly signupCountryCode?: string | null;
+  readonly lastLoginLocale?: string | null;
+  readonly lastLoginCountryCode?: string | null;
+};
+
 // 기능 : 공개 사이트 언어 값을 URL locale slug로 변환합니다.
 export function getPublicSiteLocaleSlug(
   language: PublicSiteLanguage
@@ -176,6 +185,11 @@ export function toPublicSitePath(
   return `${localizedPath}${suffix}`;
 }
 
+// 기능 : 온보딩 화면의 locale prefix 경로를 계산합니다.
+export function toPublicSiteOnboardingPath(language: PublicSiteLanguage) {
+  return `/${getPublicSiteLocaleSlug(language)}/onboarding`;
+}
+
 // 기능 : 현재 공개 사이트 pathname의 locale prefix를 다른 언어로 교체합니다.
 export function replacePublicSiteLocaleInPathname(
   pathname: string,
@@ -204,6 +218,49 @@ export function resolvePublicSiteLanguage(pathname?: string): PublicSiteLanguage
     getBrowserPublicSiteLanguage() ??
     defaultPublicSiteLanguage
   );
+}
+
+// 기능 : 사용자 locale/country와 fallback으로 공개 사이트 언어를 결정합니다.
+export function resolvePublicSiteLanguageFromUserProfile(
+  user: PublicSiteLanguageUserProfile | null | undefined,
+  fallbackLanguage: PublicSiteLanguage = resolvePublicSiteLanguage()
+): PublicSiteLanguage {
+  const profileLocale = getUserProfileLocale(user);
+  const profileCountryCode = getUserProfileCountryCode(user);
+
+  if (
+    profileLocale === "ko" ||
+    profileLocale === "en-US" ||
+    profileLocale === "en-CA"
+  ) {
+    return profileLocale;
+  }
+
+  if (profileLocale === "en") {
+    if (profileCountryCode === "CA") {
+      return "en-CA";
+    }
+
+    if (profileCountryCode === "US") {
+      return "en-US";
+    }
+
+    return fallbackLanguage === "en-CA" ? "en-CA" : "en-US";
+  }
+
+  if (profileCountryCode === "KR") {
+    return "ko";
+  }
+
+  if (profileCountryCode === "CA") {
+    return "en-CA";
+  }
+
+  if (profileCountryCode === "US") {
+    return "en-US";
+  }
+
+  return fallbackLanguage;
 }
 
 // 기능 : 입력값이 지원하는 공개 사이트 언어인지 확인합니다.
@@ -261,6 +318,64 @@ function getBrowserPublicSiteLanguage(): PublicSiteLanguage | null {
   }
 
   // 5. 계산된 결과를 호출자에게 반환한다.
+  return null;
+}
+
+// 기능 : 사용자 프로필의 locale 값을 공개 사이트 언어군으로 축소합니다.
+function getUserProfileLocale(
+  user: PublicSiteLanguageUserProfile | null | undefined
+): PublicSiteLanguage | "en" | null {
+  const localeCandidates = [
+    user?.preferredLocale,
+    user?.lastLoginLocale,
+    user?.signupLocale,
+  ];
+
+  for (const locale of localeCandidates) {
+    const normalizedLocale = locale?.trim().replace("_", "-").toLowerCase();
+
+    if (normalizedLocale === "ko" || normalizedLocale === "ko-kr") {
+      return "ko";
+    }
+
+    if (normalizedLocale === "en-us") {
+      return "en-US";
+    }
+
+    if (normalizedLocale === "en-ca") {
+      return "en-CA";
+    }
+
+    if (normalizedLocale === "en" || normalizedLocale?.startsWith("en-")) {
+      return "en";
+    }
+  }
+
+  return null;
+}
+
+// 기능 : 사용자 프로필의 국가 코드를 공개 사이트 지원 국가로 축소합니다.
+function getUserProfileCountryCode(
+  user: PublicSiteLanguageUserProfile | null | undefined
+): "KR" | "US" | "CA" | null {
+  const countryCodeCandidates = [
+    user?.countryCode,
+    user?.lastLoginCountryCode,
+    user?.signupCountryCode,
+  ];
+
+  for (const countryCode of countryCodeCandidates) {
+    const normalizedCountryCode = countryCode?.trim().toUpperCase();
+
+    if (
+      normalizedCountryCode === "KR" ||
+      normalizedCountryCode === "US" ||
+      normalizedCountryCode === "CA"
+    ) {
+      return normalizedCountryCode;
+    }
+  }
+
   return null;
 }
 

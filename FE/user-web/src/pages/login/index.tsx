@@ -11,7 +11,13 @@ import {
   useAuthSession,
 } from "@/features/auth";
 import { usePublicSitePath } from "@/features/public-site/i18n/public-site-locale-hooks";
-import { stripPublicSiteLocaleFromPathname } from "@/features/public-site/i18n/public-site-locale-routes";
+import {
+  resolvePublicSiteLanguage,
+  resolvePublicSiteLanguageFromUserProfile,
+  stripPublicSiteLocaleFromPathname,
+  toPublicSiteOnboardingPath,
+} from "@/features/public-site/i18n/public-site-locale-routes";
+import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const fallbackProviders: AuthProviderOption[] = [
@@ -40,6 +46,7 @@ export function LoginPage() {
   const [isProvidersLoading, setIsProvidersLoading] = useState(true);
   const [isCallbackLoginLoading, setIsCallbackLoginLoading] = useState(false);
   const publicPathname = stripPublicSiteLocaleFromPathname(location.pathname);
+  const fallbackLanguage = resolvePublicSiteLanguage(location.pathname);
   const isCallbackRoute = location.pathname === "/auth/callback";
   const isPopupCallbackRoute =
     isCallbackRoute && isAuthPopupCallbackWindow();
@@ -139,9 +146,14 @@ export function LoginPage() {
             return;
           }
 
-          navigate(getAuthenticatedRedirectPath(exchangedUser, redirectTo), {
-            replace: true,
-          });
+          navigate(
+            getAuthenticatedRedirectPath(
+              exchangedUser,
+              redirectTo,
+              fallbackLanguage
+            ),
+            { replace: true }
+          );
           return;
         }
 
@@ -176,6 +188,7 @@ export function LoginPage() {
     isPopupCallbackRoute,
     navigate,
     redirectTo,
+    fallbackLanguage,
   ]);
 
   useEffect(() => {
@@ -193,7 +206,10 @@ export function LoginPage() {
 
     // 2. 이미 인증된 사용자가 로그인/회원가입 화면에 오면 원래 목적지로 보낸다.
     if (isAuthenticated && user) {
-      navigate(getAuthenticatedRedirectPath(user, redirectTo), { replace: true });
+      navigate(
+        getAuthenticatedRedirectPath(user, redirectTo, fallbackLanguage),
+        { replace: true }
+      );
     }
   }, [
     isAuthenticated,
@@ -202,6 +218,7 @@ export function LoginPage() {
     isSignupRoute,
     navigate,
     redirectTo,
+    fallbackLanguage,
     user,
   ]);
 
@@ -279,10 +296,16 @@ function getRedirectPath(state: unknown) {
 }
 
 // 기능 : 로그인 완료 후 직업 선택 온보딩 필요 여부에 따라 이동 경로를 결정합니다.
-function getAuthenticatedRedirectPath(user: AuthUser, redirectTo: string) {
+function getAuthenticatedRedirectPath(
+  user: AuthUser,
+  redirectTo: string,
+  fallbackLanguage: PublicSiteLanguage
+) {
   // 1. 직업 선택 온보딩 완료 시각이 없으면 전체 화면 온보딩으로 보낸다.
   if (user.jobSelectOnboardingCompletedAt === null) {
-    return "/onboarding";
+    return toPublicSiteOnboardingPath(
+      resolvePublicSiteLanguageFromUserProfile(user, fallbackLanguage)
+    );
   }
 
   // 2. 이미 완료한 사용자는 기존 목적지로 이동한다.

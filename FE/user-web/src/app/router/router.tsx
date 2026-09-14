@@ -6,6 +6,7 @@ import {
   PublicSiteRoute,
 } from "@/app/router/route-elements";
 import { ProtectedRoute } from "@/features/auth";
+import { PublicSiteLocaleSync } from "@/features/public-site/i18n/public-site-locale-sync";
 import {
   publicSiteLocalizedPaths,
   publicSiteLocaleSlugs,
@@ -46,6 +47,15 @@ const localizedPublicSiteRoutes = publicSiteLocaleSlugs.flatMap((localeSlug) =>
     ),
   }))
 );
+
+const localizedOnboardingRoutes = publicSiteLocaleSlugs.map((localeSlug) => ({
+  path: `/${localeSlug}/onboarding`,
+  element: (
+    <PublicSiteLocaleSync>
+      <OnboardingPage />
+    </PublicSiteLocaleSync>
+  ),
+}));
 
 export const router = createBrowserRouter([
   { path: "/", element: <LegacyPublicSiteRedirect to="/" /> },
@@ -104,7 +114,7 @@ export const router = createBrowserRouter([
   { path: "/terms", element: <LegacyPublicSiteRedirect to="/terms" /> },
   { path: "/privacy", element: <LegacyPublicSiteRedirect to="/privacy" /> },
   { path: "/auth/callback", element: <LoginPage /> },
-  { path: "/onboarding", element: <OnboardingPage /> },
+  ...localizedOnboardingRoutes,
   ...localizedPublicSiteRoutes,
   { path: "/contacts", element: <LegacyAppRedirect to="/app" /> },
   { path: "/contacts/scan", element: <LegacyAppRedirect to="/app" /> },

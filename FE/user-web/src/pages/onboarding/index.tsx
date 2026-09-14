@@ -1,90 +1,242 @@
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import {
   useAuthSession,
   useCompleteJobSelectionOnboardingMutation,
 } from "@/features/auth";
 import {
+  getPublicSiteLanguageFromPathname,
   resolvePublicSiteLanguage,
+  resolvePublicSiteLanguageFromUserProfile,
   toPublicSitePath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
+import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
+type JobOptionKey =
+  | "sales"
+  | "marketing"
+  | "realEstate"
+  | "recruiting"
+  | "technicalSales"
+  | "insuranceFinance"
+  | "educationCoaching"
+  | "other";
+
 type JobOption = {
+  readonly key: JobOptionKey;
   readonly label: string;
-  readonly description: string;
   readonly imageAlt: string;
   readonly imageSrc: string;
 };
 
-const jobOptions: readonly JobOption[] = [
-  {
-    label: "영업",
-    description: "고객과 기회를 관리해요",
-    imageAlt: "영업 담당자들이 모니터를 함께 보는 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/003/592/676/non_2x/single-continuous-line-drawing-of-two-young-sales-manager-analyze-sales-growth-chart-on-screen-monitor-with-marketing-staff-sales-growth-evaluation-concept-one-line-draw-design-illustration-vector.jpg",
+type OnboardingCopy = {
+  readonly logoAria: string;
+  readonly title: string;
+  readonly subtitle: string;
+  readonly buildingTitle: string;
+  readonly progressLabel: string;
+  readonly jobs: readonly Omit<JobOption, "imageSrc">[];
+};
+
+const jobImageSrcByKey: Record<JobOptionKey, string> = {
+  sales:
+    "https://static.vecteezy.com/system/resources/previews/003/592/676/non_2x/single-continuous-line-drawing-of-two-young-sales-manager-analyze-sales-growth-chart-on-screen-monitor-with-marketing-staff-sales-growth-evaluation-concept-one-line-draw-design-illustration-vector.jpg",
+  marketing:
+    "https://static.vecteezy.com/system/resources/previews/024/211/247/non_2x/single-one-line-drawing-digital-marketing-social-media-market-digital-concept-continuous-line-drawing-illustration-vector.jpg",
+  realEstate:
+    "https://static.vecteezy.com/system/resources/previews/027/839/179/non_2x/continuous-line-drawing-of-housing-estate-building-single-line-vector.jpg",
+  recruiting:
+    "https://static.vecteezy.com/system/resources/previews/043/178/770/non_2x/continuous-one-line-drawing-job-search-recruiting-hiring-concept-doodle-illustration-vector.jpg",
+  technicalSales:
+    "https://static.vecteezy.com/system/resources/previews/046/888/229/non_2x/single-one-line-drawing-young-marketing-manager-discussing-sales-report-from-sales-division-during-receiving-phone-call-company-report-modern-continuous-line-draw-design-graphic-illustration-vector.jpg",
+  insuranceFinance:
+    "https://static.vecteezy.com/system/resources/previews/022/175/696/non_2x/continuous-one-line-drawing-health-insurance-clipboard-icon-insurance-concept-single-line-draws-design-graphic-illustration-vector.jpg",
+  educationCoaching:
+    "https://static.vecteezy.com/system/resources/previews/003/592/481/non_2x/one-single-line-drawing-of-young-businessman-giving-business-coaching-to-class-members-at-the-office-group-training-and-meeting-concept-continuous-line-draw-design-illustration-graphic-vector.jpg",
+  other: "/onboarding/etc-sketch.svg",
+};
+
+const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
+  ko: {
+    logoAria: "OneHand 홈",
+    title: "어떤 일을 주로 하세요?",
+    subtitle: "하나를 선택하면 업무에 맞는 CRM을 빠르게 준비할게요.",
+    buildingTitle: "CRM 환경을 구축 중이에요.",
+    progressLabel: "CRM 환경 구축 진행률",
+    jobs: [
+      {
+        key: "sales",
+        label: "영업",
+        imageAlt: "영업 담당자들이 모니터를 함께 보는 검정색 라인 스케치",
+      },
+      {
+        key: "marketing",
+        label: "마케팅",
+        imageAlt: "온라인 마케팅 화면과 확성기를 그린 검정색 라인 스케치",
+      },
+      {
+        key: "realEstate",
+        label: "부동산",
+        imageAlt: "주택과 건물을 한 줄로 그린 검정색 라인 스케치",
+      },
+      {
+        key: "recruiting",
+        label: "헤드헌팅/채용",
+        imageAlt: "쌍안경을 든 채용 담당자를 그린 검정색 라인 스케치",
+      },
+      {
+        key: "technicalSales",
+        label: "B2B 기술영업",
+        imageAlt: "전화하며 영업 리포트를 논의하는 담당자의 검정색 라인 스케치",
+      },
+      {
+        key: "insuranceFinance",
+        label: "보험/재무",
+        imageAlt: "보험 서류와 우산을 그린 검정색 라인 스케치",
+      },
+      {
+        key: "educationCoaching",
+        label: "교육/코칭",
+        imageAlt: "학생을 지도하는 선생님의 검정색 라인 스케치",
+      },
+      {
+        key: "other",
+        label: "기타 등등",
+        imageAlt: "ETC 글자를 손그림으로 그린 검정색 스케치",
+      },
+    ],
   },
-  {
-    label: "마케팅",
-    description: "캠페인과 리드를 정리해요",
-    imageAlt: "온라인 마케팅 화면과 확성기를 그린 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/024/211/247/non_2x/single-one-line-drawing-digital-marketing-social-media-market-digital-concept-continuous-line-drawing-illustration-vector.jpg",
+  "en-US": {
+    logoAria: "OneHand home",
+    title: "What kind of work do you do?",
+    subtitle: "Choose one and we'll quickly prepare your CRM workspace.",
+    buildingTitle: "Preparing your CRM.",
+    progressLabel: "CRM setup progress",
+    jobs: [
+      {
+        key: "sales",
+        label: "Sales",
+        imageAlt: "Black line sketch of sales teammates reviewing a monitor",
+      },
+      {
+        key: "marketing",
+        label: "Marketing",
+        imageAlt: "Black line sketch of a digital marketing screen and megaphone",
+      },
+      {
+        key: "realEstate",
+        label: "Real estate",
+        imageAlt: "Black line sketch of houses and buildings",
+      },
+      {
+        key: "recruiting",
+        label: "Recruiting",
+        imageAlt: "Black line sketch of a recruiter holding binoculars",
+      },
+      {
+        key: "technicalSales",
+        label: "B2B technical sales",
+        imageAlt: "Black line sketch of a person discussing a sales report",
+      },
+      {
+        key: "insuranceFinance",
+        label: "Insurance/finance",
+        imageAlt: "Black line sketch of insurance documents and an umbrella",
+      },
+      {
+        key: "educationCoaching",
+        label: "Education/coaching",
+        imageAlt: "Black line sketch of a coach teaching students",
+      },
+      {
+        key: "other",
+        label: "Something else",
+        imageAlt: "Black hand-drawn sketch of the letters ETC",
+      },
+    ],
   },
-  {
-    label: "부동산",
-    description: "매물과 방문을 연결해요",
-    imageAlt: "주택과 건물을 한 줄로 그린 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/027/839/179/non_2x/continuous-line-drawing-of-housing-estate-building-single-line-vector.jpg",
+  "en-CA": {
+    logoAria: "OneHand home",
+    title: "What kind of work do you do?",
+    subtitle: "Choose one and we'll quickly prepare your CRM workspace.",
+    buildingTitle: "Preparing your CRM.",
+    progressLabel: "CRM setup progress",
+    jobs: [
+      {
+        key: "sales",
+        label: "Sales",
+        imageAlt: "Black line sketch of sales teammates reviewing a monitor",
+      },
+      {
+        key: "marketing",
+        label: "Marketing",
+        imageAlt: "Black line sketch of a digital marketing screen and megaphone",
+      },
+      {
+        key: "realEstate",
+        label: "Real estate",
+        imageAlt: "Black line sketch of houses and buildings",
+      },
+      {
+        key: "recruiting",
+        label: "Recruiting/search",
+        imageAlt: "Black line sketch of a recruiter holding binoculars",
+      },
+      {
+        key: "technicalSales",
+        label: "B2B technical sales",
+        imageAlt: "Black line sketch of a person discussing a sales report",
+      },
+      {
+        key: "insuranceFinance",
+        label: "Insurance/financial services",
+        imageAlt: "Black line sketch of insurance documents and an umbrella",
+      },
+      {
+        key: "educationCoaching",
+        label: "Education/coaching",
+        imageAlt: "Black line sketch of a coach teaching students",
+      },
+      {
+        key: "other",
+        label: "Something else",
+        imageAlt: "Black hand-drawn sketch of the letters ETC",
+      },
+    ],
   },
-  {
-    label: "헤드헌팅/채용",
-    description: "후보자와 인터뷰를 추적해요",
-    imageAlt: "쌍안경을 든 채용 담당자를 그린 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/043/178/770/non_2x/continuous-one-line-drawing-job-search-recruiting-hiring-concept-doodle-illustration-vector.jpg",
-  },
-  {
-    label: "B2B 기술영업",
-    description: "회사와 기술 이슈를 연결해요",
-    imageAlt: "전화하며 영업 리포트를 논의하는 담당자를 그린 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/046/888/229/non_2x/single-one-line-drawing-young-marketing-manager-discussing-sales-report-from-sales-division-during-receiving-phone-call-company-report-modern-continuous-line-draw-design-graphic-illustration-vector.jpg",
-  },
-  {
-    label: "보험/재무",
-    description: "상담과 갱신을 챙겨요",
-    imageAlt: "보험 서류와 우산을 그린 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/022/175/696/non_2x/continuous-one-line-drawing-health-insurance-clipboard-icon-insurance-concept-single-line-draws-design-graphic-illustration-vector.jpg",
-  },
-  {
-    label: "교육/코칭",
-    description: "수강생과 세션을 관리해요",
-    imageAlt: "학생을 지도하는 선생님의 검정색 라인 스케치",
-    imageSrc:
-      "https://static.vecteezy.com/system/resources/previews/003/592/481/non_2x/one-single-line-drawing-of-young-businessman-giving-business-coaching-to-class-members-at-the-office-group-training-and-meeting-concept-continuous-line-draw-design-illustration-graphic-vector.jpg",
-  },
-  {
-    label: "기타 등등",
-    description: "맞는 항목을 함께 찾아요",
-    imageAlt: "ETC 글자를 손그림으로 그린 검정색 스케치",
-    imageSrc: "/onboarding/etc-sketch.svg",
-  },
-];
+};
 
 const CRM_BUILD_DURATION_MS = 5000;
+
+const onboardingHtmlLangByLanguage: Record<PublicSiteLanguage, string> = {
+  ko: "ko-KR",
+  "en-US": "en-US",
+  "en-CA": "en-CA",
+};
 
 // 기능 : 첫 로그인 직업 선택 온보딩 화면을 렌더링합니다.
 export function OnboardingPage() {
   const { isAuthenticated, isInitializing, isPending, user } = useAuthSession();
   const completeJobSelectionMutation =
     useCompleteJobSelectionOnboardingMutation();
+  const location = useLocation();
   const navigate = useNavigate();
-  const loginPath = toPublicSitePath(resolvePublicSiteLanguage(), "/login");
+  const routeLanguage = getPublicSiteLanguageFromPathname(location.pathname);
+  const fallbackLanguage = resolvePublicSiteLanguage(location.pathname);
+  const onboardingLanguage =
+    routeLanguage ??
+    resolvePublicSiteLanguageFromUserProfile(user, fallbackLanguage);
+  const copy = onboardingCopyByLanguage[onboardingLanguage];
+  const htmlLang = onboardingHtmlLangByLanguage[onboardingLanguage];
+  const jobOptions = copy.jobs.map((job) => ({
+    ...job,
+    imageSrc: jobImageSrcByKey[job.key],
+  }));
+  const homePath = toPublicSitePath(onboardingLanguage, "/");
+  const loginPath = toPublicSitePath(onboardingLanguage, "/login");
   const [isBuildingCrm, setIsBuildingCrm] = useState(false);
   const [buildProgress, setBuildProgress] = useState(0);
   const [isBuildAnimationDone, setIsBuildAnimationDone] = useState(false);
@@ -139,7 +291,7 @@ export function OnboardingPage() {
     return (
       <Navigate
         replace
-        state={{ from: "/onboarding" }}
+        state={{ from: `${location.pathname}${location.search}` }}
         to={loginPath}
       />
     );
@@ -180,74 +332,101 @@ export function OnboardingPage() {
 
   if (isBuildingCrm) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-white px-5 text-[#111111]">
-        <section className="w-full max-w-[360px] text-center">
-          <h1 className="text-[24px] font-semibold leading-[1.25] tracking-normal text-[#111111]">
-            CRM 환경을 구축중이에요.
-          </h1>
-          <div
-            aria-label="CRM 환경 구축 진행률"
-            aria-valuemax={100}
-            aria-valuemin={0}
-            aria-valuenow={buildProgress}
-            className="mt-7 h-2 overflow-hidden rounded-full bg-[#EEEDEA]"
-            role="progressbar"
-          >
-            <div
-              className="h-full rounded-full bg-[#111111] transition-[width] duration-100 ease-linear"
-              style={{ width: `${buildProgress}%` }}
-            />
+      <main
+        className="min-h-screen overflow-x-hidden bg-white text-[#111111]"
+        lang={htmlLang}
+      >
+        <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
+          <div className="flex h-14 w-full items-center px-[14px]">
+            <Link
+              aria-label={copy.logoAria}
+              className="flex h-9 w-9 items-center justify-center text-[#111111]"
+              to={homePath}
+            >
+              <OneHandLogoMark className="h-9 w-9" />
+            </Link>
           </div>
-          <p
-            aria-live="polite"
-            className="mt-3 text-[13px] font-medium text-[#787774]"
-          >
-            {buildProgress}%
-          </p>
+        </header>
+
+        <section className="flex min-h-screen w-full items-center justify-center px-5">
+          <div className="w-full max-w-[360px] text-center">
+            <h1 className="text-[24px] font-semibold leading-[1.25] tracking-normal text-[#111111]">
+              {copy.buildingTitle}
+            </h1>
+            <div
+              aria-label={copy.progressLabel}
+              aria-valuemax={100}
+              aria-valuemin={0}
+              aria-valuenow={buildProgress}
+              className="mt-7 h-2 overflow-hidden rounded-full bg-[#EEEDEA]"
+              role="progressbar"
+            >
+              <div
+                className="h-full rounded-full bg-[#111111] transition-[width] duration-100 ease-linear"
+                style={{ width: `${buildProgress}%` }}
+              />
+            </div>
+            <p
+              aria-live="polite"
+              className="mt-3 text-[13px] font-medium text-[#787774]"
+            >
+              {buildProgress}%
+            </p>
+          </div>
         </section>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white px-5 text-[#111111]">
-      <section className="mx-auto flex min-h-screen w-full max-w-[1040px] flex-col justify-center py-10">
+    <main
+      className="min-h-screen overflow-x-hidden bg-white px-5 text-[#111111]"
+      lang={htmlLang}
+    >
+      <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
+        <div className="flex h-14 w-full items-center px-[14px]">
+          <Link
+            aria-label={copy.logoAria}
+            className="flex h-9 w-9 items-center justify-center text-[#111111]"
+            to={homePath}
+          >
+            <OneHandLogoMark className="h-9 w-9" />
+          </Link>
+        </div>
+      </header>
+
+      <section className="mx-auto flex min-h-screen w-full max-w-[720px] flex-col justify-center pb-10 pt-24">
         <header className="mb-8">
           <h1 className="text-[32px] font-semibold leading-[1.18] tracking-normal text-[#111111] sm:text-[40px]">
-            어떤 일을 주로 하세요?
+            {copy.title}
           </h1>
-          <p className="mt-3 max-w-[520px] text-[15px] leading-6 text-[#6B6A67]">
-            항목 1개를 선택하시면 CRM 환경을 바로 구축해드려요.
+          <p className="mt-3 text-[15px] leading-6 text-[#6B6A67]">
+            {copy.subtitle}
           </p>
         </header>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {jobOptions.map(({ description, imageAlt, imageSrc, label }) => (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {jobOptions.map(({ imageAlt, imageSrc, key, label }) => (
             <button
-              key={label}
+              key={key}
               className={cn(
-                "group relative flex aspect-[1.28] w-full flex-col overflow-hidden rounded-[8px] border border-[#E7E5E1] bg-white text-left shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-colors hover:border-[#D8D5D0] hover:bg-white focus-visible:border-[#D8D5D0] focus-visible:bg-white focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+                "group relative flex aspect-[1.28] w-full flex-col overflow-hidden rounded-[8px] border border-[#E7E5E1] bg-white text-left shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-[background-color,border-color,box-shadow] duration-150 ease-out hover:border-[#D8D5D0] hover:bg-[#F2F2EF] hover:shadow-[0_10px_28px_rgba(15,23,42,0.07)] focus-visible:border-[#D8D5D0] focus-visible:bg-[#F2F2EF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8D5D0]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-[0_8px_24px_rgba(15,23,42,0.04)]",
                 isSubmitting && "hover:bg-white"
               )}
               disabled={isSubmitting}
               type="button"
               onClick={onSelectJob}
             >
-              <span className="relative block h-[68%] w-full overflow-hidden bg-[#F7F6F3]">
+              <span className="relative block min-h-0 flex-1 overflow-hidden bg-[#F7F6F3] transition-colors duration-150 ease-out group-hover:bg-[#F2F2EF] group-focus-visible:bg-[#F2F2EF]">
                 <img
                   alt={imageAlt}
-                  className="h-full w-full object-cover grayscale transition duration-200 group-hover:scale-[1.04] group-hover:blur-[4px] group-hover:opacity-30 group-focus-visible:scale-[1.04] group-focus-visible:blur-[4px] group-focus-visible:opacity-30"
+                  className="h-full w-full object-cover grayscale"
                   loading="eager"
                   src={imageSrc}
                 />
-                <span className="pointer-events-none absolute inset-0 flex items-center justify-center px-5 text-center opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
-                  <span className="text-[13px] font-semibold leading-5 text-[#37352F]">
-                    {description}
-                  </span>
-                </span>
               </span>
-              <span className="flex h-[32%] items-center border-t border-[#EEEDEA] px-4">
-                <span className="text-[15px] font-medium leading-5 text-[#111111]">
+              <span className="flex h-11 shrink-0 items-center justify-center border-t border-[#EEEDEA] px-3 text-center transition-colors duration-150 ease-out group-hover:border-[#E2E0DC] group-focus-visible:border-[#E2E0DC]">
+                <span className="block max-w-full text-center text-[15px] font-medium leading-5 text-[#111111]">
                   {label}
                 </span>
               </span>
