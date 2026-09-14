@@ -112,7 +112,7 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
   "en-US": {
     logoAria: "OneHand home",
     title: "What kind of work do you do?",
-    subtitle: "Choose one and we'll quickly prepare your CRM workspace.",
+    subtitle: "Choose one and we will quickly prepare your CRM workspace.",
     buildingTitle: "Preparing your CRM.",
     progressLabel: "CRM setup progress",
     jobs: [
@@ -128,7 +128,7 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
       },
       {
         key: "realEstate",
-        label: "Real estate",
+        label: "Real Estate",
         imageAlt: "Black line sketch of houses and buildings",
       },
       {
@@ -138,22 +138,22 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
       },
       {
         key: "technicalSales",
-        label: "B2B technical sales",
+        label: "B2B Technical Sales",
         imageAlt: "Black line sketch of a person discussing a sales report",
       },
       {
         key: "insuranceFinance",
-        label: "Insurance/finance",
+        label: "Insurance/Finance",
         imageAlt: "Black line sketch of insurance documents and an umbrella",
       },
       {
         key: "educationCoaching",
-        label: "Education/coaching",
+        label: "Education/Coaching",
         imageAlt: "Black line sketch of a coach teaching students",
       },
       {
         key: "other",
-        label: "Something else",
+        label: "Something Else",
         imageAlt: "Black hand-drawn sketch of the letters ETC",
       },
     ],
@@ -161,7 +161,7 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
   "en-CA": {
     logoAria: "OneHand home",
     title: "What kind of work do you do?",
-    subtitle: "Choose one and we'll quickly prepare your CRM workspace.",
+    subtitle: "Choose one and we will quickly prepare your CRM workspace.",
     buildingTitle: "Preparing your CRM.",
     progressLabel: "CRM setup progress",
     jobs: [
@@ -177,32 +177,32 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
       },
       {
         key: "realEstate",
-        label: "Real estate",
+        label: "Real Estate",
         imageAlt: "Black line sketch of houses and buildings",
       },
       {
         key: "recruiting",
-        label: "Recruiting/search",
+        label: "Recruiting/Search",
         imageAlt: "Black line sketch of a recruiter holding binoculars",
       },
       {
         key: "technicalSales",
-        label: "B2B technical sales",
+        label: "B2B Technical Sales",
         imageAlt: "Black line sketch of a person discussing a sales report",
       },
       {
         key: "insuranceFinance",
-        label: "Insurance/financial services",
+        label: "Insurance/Financial Services",
         imageAlt: "Black line sketch of insurance documents and an umbrella",
       },
       {
         key: "educationCoaching",
-        label: "Education/coaching",
+        label: "Education/Coaching",
         imageAlt: "Black line sketch of a coach teaching students",
       },
       {
         key: "other",
-        label: "Something else",
+        label: "Something Else",
         imageAlt: "Black hand-drawn sketch of the letters ETC",
       },
     ],
