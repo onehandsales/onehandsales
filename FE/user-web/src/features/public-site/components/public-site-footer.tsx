@@ -113,7 +113,7 @@ export function PublicSiteFooter({
               return (
                 <a
                   aria-label={label}
-                  className="grid h-7 w-7 place-items-center rounded-[6px] transition-colors hover:bg-[#f4f4f1] hover:text-[#111111]"
+                  className="grid h-7 w-7 place-items-center rounded-[6px] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]"
                   href={href}
                   key={label}
                   rel={isExternalLink ? "noreferrer" : undefined}
