@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import type { AdminMe } from "@/features/auth/types/admin-auth";
 
 // 역할 : Admin Web이 서버 검증 결과에서 신뢰하는 관리자 역할 값을 정의합니다.
-export type AdminAuthRole = "ADMIN";
+export type AdminAuthPlatformRole = "ADMIN";
 
 // 역할 : Admin Web 인증 컨텍스트가 화면에 제공하는 상태와 동작 계약을 정의합니다.
 export type AdminAuthContextValue = {
@@ -10,7 +10,7 @@ export type AdminAuthContextValue = {
   readonly isInitializing: boolean;
   readonly isPending: boolean;
   readonly error: string | null;
-  readonly role: AdminAuthRole | null;
+  readonly platformRole: AdminAuthPlatformRole | null;
   readonly user: AdminMe | null;
   readonly loginWithAccessToken: (accessToken: string) => Promise<void>;
   readonly logout: () => void;

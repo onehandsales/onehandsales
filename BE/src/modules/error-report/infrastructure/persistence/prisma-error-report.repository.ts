@@ -1,11 +1,11 @@
-import { UserRole } from "@prisma/client";
+import { PlatformRole } from "@prisma/client";
 import type {
   CreateErrorReportInput,
   ErrorReportRecord,
   ErrorReportRepository,
   ErrorReportUserSnapshot,
 } from "@/modules/error-report/application/ports/error-report.repository";
-import type { CurrentUserRole } from "@/shared/application/context/current-user.context";
+import type { CurrentUserPlatformRole } from "@/shared/application/context/current-user.context";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 // 역할 : PrismaErrorReportRepository Prisma로 에러 신고 저장소 계약을 구현합니다.
@@ -23,7 +23,7 @@ export class PrismaErrorReportRepository implements ErrorReportRepository {
         id: true,
         email: true,
         displayName: true,
-        role: true,
+        platformRole: true,
       },
     });
 
@@ -35,7 +35,7 @@ export class PrismaErrorReportRepository implements ErrorReportRepository {
       id: user.id,
       email: user.email,
       displayName: user.displayName,
-      role: this.fromPrismaUserRole(user.role),
+      platformRole: this.fromPrismaPlatformRole(user.platformRole),
     };
   }
 
@@ -48,7 +48,7 @@ export class PrismaErrorReportRepository implements ErrorReportRepository {
         userId: input.user.id,
         userEmail: input.user.email,
         userDisplayName: input.user.displayName,
-        userRole: this.toPrismaUserRole(input.user.role),
+        userPlatformRole: this.toPrismaPlatformRole(input.user.platformRole),
         description: input.description,
         pageUrl: input.pageUrl,
         userAgent: input.userAgent,
@@ -69,19 +69,19 @@ export class PrismaErrorReportRepository implements ErrorReportRepository {
     return { id: created.id };
   }
 
-  // 기능 : Prisma UserRole enum을 application 계층 role 타입으로 변환합니다.
-  private fromPrismaUserRole(role: UserRole): CurrentUserRole {
+  // 기능 : Prisma PlatformRole enum을 application 계층 platformRole 타입으로 변환합니다.
+  private fromPrismaPlatformRole(role: PlatformRole): CurrentUserPlatformRole {
     switch (role) {
-      case UserRole.ADMIN:
+      case PlatformRole.ADMIN:
         return "ADMIN";
-      case UserRole.USER:
+      case PlatformRole.USER:
       default:
         return "USER";
     }
   }
 
-  // 기능 : application 계층 role 타입을 Prisma UserRole enum으로 변환합니다.
-  private toPrismaUserRole(role: CurrentUserRole): UserRole {
-    return role === "ADMIN" ? UserRole.ADMIN : UserRole.USER;
+  // 기능 : application 계층 platformRole 타입을 Prisma PlatformRole enum으로 변환합니다.
+  private toPrismaPlatformRole(role: CurrentUserPlatformRole): PlatformRole {
+    return role === "ADMIN" ? PlatformRole.ADMIN : PlatformRole.USER;
   }
 }

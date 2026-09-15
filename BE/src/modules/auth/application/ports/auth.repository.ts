@@ -3,7 +3,7 @@ import type { ExternalAuthProvider } from "@/shared/application/ports/external-a
 
 export const AUTH_REPOSITORY = Symbol("AUTH_REPOSITORY");
 
-export type AuthUserRole = "USER" | "ADMIN";
+export type AuthUserPlatformRole = "USER" | "ADMIN";
 export type AuthUserStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
 export type AuthDeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
 
@@ -12,7 +12,7 @@ export interface AuthUserRecord {
   readonly id: string;
   readonly email: string | null;
   readonly displayName: string | null;
-  readonly role: AuthUserRole;
+  readonly platformRole: AuthUserPlatformRole;
   readonly status: AuthUserStatus;
   readonly timeZone: string;
   readonly preferredLocale: string;
@@ -65,7 +65,7 @@ export interface AuthSessionRecord {
 export interface CreateAuthUserInput {
   readonly email: string;
   readonly displayName: string | null;
-  readonly role: AuthUserRole;
+  readonly platformRole: AuthUserPlatformRole;
   readonly timeZone: string;
   readonly preferredLocale: string;
   readonly countryCode: string;
@@ -96,7 +96,7 @@ export interface UpdateUserLoginInput {
   readonly lastLoginLocale: string;
   readonly lastLoginCountryCode: string | null;
   readonly lastLoginTimeZone: string;
-  readonly role?: AuthUserRole;
+  readonly platformRole?: AuthUserPlatformRole;
 }
 
 // 역할 : CreateAuthDeviceInput 데이터가 계층 사이에서 전달되는 구조를 정의합니다.

@@ -3,8 +3,8 @@ import {
   AuthDeviceSlot,
   AuthDeviceStatus,
   AuthSessionStatus,
+  PlatformRole,
   PrismaClient,
-  UserRole,
   UserStatus,
 } from "@prisma/client";
 
@@ -18,7 +18,7 @@ const localDemoUsers = [
     id: demoUserId,
     email: "local.user@example.com",
     displayName: "Local User",
-    role: UserRole.USER,
+    platformRole: PlatformRole.USER,
     deviceId: "00000000-0000-4000-8000-000000000011",
     sessions: [
       "00000000-0000-4000-8000-000000000101",
@@ -29,7 +29,7 @@ const localDemoUsers = [
     id: "00000000-0000-4000-8000-000000000002",
     email: "local.admin@example.com",
     displayName: "Local Admin",
-    role: UserRole.ADMIN,
+    platformRole: PlatformRole.ADMIN,
     deviceId: "00000000-0000-4000-8000-000000000021",
     sessions: ["00000000-0000-4000-8000-000000000201"],
   },
@@ -47,13 +47,13 @@ async function seedLocalMockAuth() {
         id: demoUser.id,
         email: demoUser.email,
         displayName: demoUser.displayName,
-        role: demoUser.role,
+        platformRole: demoUser.platformRole,
         status: UserStatus.ACTIVE,
       },
       update: {
         email: demoUser.email,
         displayName: demoUser.displayName,
-        role: demoUser.role,
+        platformRole: demoUser.platformRole,
         status: UserStatus.ACTIVE,
         timeZone: "Asia/Seoul",
         deletedAt: null,

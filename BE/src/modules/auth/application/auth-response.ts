@@ -22,7 +22,7 @@ export interface MeResponse {
   readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
-  readonly role: string;
+  readonly platformRole: string;
   readonly status: string;
   readonly timeZone: string;
   readonly preferredLocale: string;
@@ -43,7 +43,7 @@ export interface AdminMeResponse {
   readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
-  readonly role: "ADMIN";
+  readonly platformRole: "ADMIN";
   readonly timeZone: string;
   readonly preferredLocale: string;
   readonly countryCode: string;
@@ -89,7 +89,7 @@ export function toMeResponse(user: AuthMeRecord): MeResponse {
     externalAuthUserId: user.externalAuthUserId,
     name: user.displayName,
     email: user.email,
-    role: user.role,
+    platformRole: user.platformRole,
     status: user.status,
     timeZone: user.timeZone,
     preferredLocale: user.preferredLocale,
@@ -114,7 +114,7 @@ export function toAdminMeResponse(user: AuthMeRecord): AdminMeResponse {
     externalAuthUserId: user.externalAuthUserId,
     name: user.displayName,
     email: user.email,
-    role: "ADMIN",
+    platformRole: "ADMIN",
     timeZone: user.timeZone,
     preferredLocale: user.preferredLocale,
     countryCode: user.countryCode,

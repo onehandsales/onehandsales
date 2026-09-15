@@ -16,8 +16,8 @@ export function HomePage() {
         </div>
         <dl className="grid gap-2 rounded-md bg-muted p-3 text-sm">
           <div className="flex items-center justify-between gap-3">
-            <dt className="text-muted-foreground">Role</dt>
-            <dd className="font-medium">{user?.role ?? "ADMIN"}</dd>
+            <dt className="text-muted-foreground">Platform Role</dt>
+            <dd className="font-medium">{user?.platformRole ?? "ADMIN"}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="text-muted-foreground">Email</dt>

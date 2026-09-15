@@ -10,7 +10,7 @@ export function LoginPage() {
     error,
     isPending,
     loginWithAccessToken,
-    role,
+    platformRole,
   } = useAdminAuthSession();
   // 2. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
@@ -23,10 +23,10 @@ export function LoginPage() {
 
   // 6. 렌더링 이후 필요한 동작을 실행한다.
   useEffect(() => {
-    if (role === "ADMIN") {
+    if (platformRole === "ADMIN") {
       navigate(redirectTo, { replace: true });
     }
-  }, [navigate, redirectTo, role]);
+  }, [navigate, redirectTo, platformRole]);
 
   // 기능 : token 입력값을 갱신하고 이전 오류를 지웁니다.
   // 7. 이후 단계에서 사용할 onAccessTokenChange 값을 준비한다.

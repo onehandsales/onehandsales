@@ -28,7 +28,7 @@ PM 문서에서 데이터 모델을 다룰 때는 두 가지를 분리한다.
 
 ## 3. 현재 활성 Enum
 
-- UserRole
+- PlatformRole
 - UserStatus
 - OAuthProvider
 - AuthSessionStatus

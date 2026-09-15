@@ -51,7 +51,7 @@ AuthDevice 1 ─ N AuthSession
 
 ## 4. Enum
 
-### UserRole
+### PlatformRole
 
 | 값 | 주석 |
 |---|---|
@@ -112,7 +112,7 @@ AuthDevice 1 ─ N AuthSession
 | `id` | `String @db.Uuid` | 아니오 | `uuid()` | 내부 사용자 PK |
 | `email` | `String` | 예 | 없음 | provider에서 받은 이메일. 로그인 시 동기화된다. |
 | `displayName` | `String` | 예 | 없음 | 서비스에서 보여줄 이름. 기존 사용자 로그인 시 provider 이름으로 덮어쓰지 않는다. |
-| `role` | `UserRole` | 아니오 | `USER` | 사용자 권한 |
+| `platformRole` | `PlatformRole` | 아니오 | `USER` | 플랫폼 권한 |
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
 | `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이며, KR/US/CA 우선 전략에 맞춘 `CA` 지원은 후속 구현 범위다. |
@@ -136,7 +136,7 @@ Relations:
 
 Indexes:
 
-- `role`: Admin/User 조회 기준
+- `platformRole`: Admin/User 조회 기준
 - `status`: 활성/비활성 사용자 필터 기준
 - `createdAt`: 가입일 정렬/조회 기준
 
@@ -260,7 +260,7 @@ Indexes:
 ## 9. 주석 포함 Prisma 기준 구조
 
 ```prisma
-enum UserRole {
+enum PlatformRole {
   USER  // 일반 사용자
   ADMIN // 관리자 사용자
 }
@@ -296,10 +296,10 @@ enum AuthDeviceSlot {
 }
 
 model User {
-  id          String     @id @default(uuid()) @db.Uuid // 내부 사용자 PK
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid // 내부 사용자 PK
   email       String?                                      // provider 이메일
   displayName String?                                      // 서비스 표시 이름
-  role        UserRole   @default(USER)                    // USER/ADMIN 권한
+  platformRole PlatformRole @default(USER)                 // USER/ADMIN 플랫폼 권한
   status      UserStatus @default(ACTIVE)                  // 계정 상태
   timeZone    String     @default("Asia/Seoul")            // 사용자 기본 IANA timezone
   preferredLocale      String  @default("ko-KR")           // 사용자 기본 locale
@@ -320,7 +320,7 @@ model User {
   authDevices   AuthDevice[]       // 로그인 과정에서 등록된 기기들
   authSessions  AuthSession[]      // Backend refresh sessions
 
-  @@index([role])
+  @@index([platformRole])
   @@index([status])
   @@index([createdAt])
 }

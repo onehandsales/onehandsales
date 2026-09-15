@@ -23,7 +23,7 @@ export type AuthUser = {
   readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
-  readonly role: string;
+  readonly platformRole: string;
   readonly status: string;
   readonly timeZone: string;
   readonly preferredLocale: string;
@@ -66,7 +66,7 @@ export type ExchangeAuthTokenInput = {
   readonly timeZone?: string;
 };
 
-export type UserProfileRole = "USER" | "ADMIN";
+export type UserProfilePlatformRole = "USER" | "ADMIN";
 export type UserProfileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
 
 export type UserProfileOAuthAccount = {
@@ -80,7 +80,7 @@ export type UserProfileResponse = {
   readonly id: string;
   readonly email: string | null;
   readonly name: string | null;
-  readonly role: UserProfileRole | string;
+  readonly platformRole: UserProfilePlatformRole | string;
   readonly status: UserProfileStatus | string;
   readonly timeZone: string;
   readonly preferredLocale: string;

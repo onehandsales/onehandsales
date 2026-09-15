@@ -3,7 +3,7 @@ import { getAdminMe } from "@/features/auth/api/admin-auth-api";
 import {
   AdminAuthContext,
   type AdminAuthContextValue,
-  type AdminAuthRole,
+  type AdminAuthPlatformRole,
 } from "@/features/auth/auth-context";
 import type { AdminMe } from "@/features/auth/types/admin-auth";
 import {
@@ -19,8 +19,9 @@ export function AdminAuthProvider({
 }) {
   // 1. 처리 흐름에 필요한 [user, setUser] 값을 준비한다.
   const [user, setUser] = useState<AdminMe | null>(null);
-  // 2. 처리 흐름에 필요한 [role, setRole] 값을 준비한다.
-  const [role, setRole] = useState<AdminAuthRole | null>(null);
+  // 2. 처리 흐름에 필요한 [platformRole, setPlatformRole] 값을 준비한다.
+  const [platformRole, setPlatformRole] =
+    useState<AdminAuthPlatformRole | null>(null);
   // 3. 처리 흐름에 필요한 [isPending, setIsPending] 값을 준비한다.
   const [isPending, setIsPending] = useState(false);
   // 4. 처리 흐름에 필요한 [error, setError] 값을 준비한다.
@@ -41,11 +42,11 @@ export function AdminAuthProvider({
       try {
         const adminMe = await getAdminMe();
         setUser(adminMe);
-        setRole(adminMe.role);
+        setPlatformRole(adminMe.platformRole);
       } catch (nextError) {
         clearAdminApiAccessToken();
         setUser(null);
-        setRole(null);
+        setPlatformRole(null);
         setError(
           nextError instanceof Error
             ? nextError.message
@@ -66,7 +67,7 @@ export function AdminAuthProvider({
     // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setUser(null);
     // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
-    setRole(null);
+    setPlatformRole(null);
     // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setError(null);
   }, []);
@@ -88,17 +89,25 @@ export function AdminAuthProvider({
   // 9. 처리 흐름에 필요한 value 값을 준비한다.
   const value = useMemo<AdminAuthContextValue>(
     () => ({
-      isAuthenticated: role === "ADMIN",
+      isAuthenticated: platformRole === "ADMIN",
       isInitializing: false,
       isPending,
       error,
-      role,
+      platformRole,
       user,
       clearError,
       loginWithAccessToken,
       logout,
     }),
-    [clearError, error, isPending, loginWithAccessToken, logout, role, user]
+    [
+      clearError,
+      error,
+      isPending,
+      loginWithAccessToken,
+      logout,
+      platformRole,
+      user,
+    ]
   );
 
   // 10. 계산된 결과를 호출자에게 반환한다.

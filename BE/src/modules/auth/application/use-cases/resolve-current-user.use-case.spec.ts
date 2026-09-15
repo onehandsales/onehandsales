@@ -152,7 +152,7 @@ describe("ResolveCurrentUserUseCase", () => {
     await expect(useCase.resolveFromAccessToken("app-token")).resolves.toMatchObject({
       id: "user-1",
       sessionId: "session-1",
-      role: "USER",
+      platformRole: "USER",
     });
   });
 
@@ -195,7 +195,7 @@ function createUseCase(
     sessionId: "session-1",
     email: "user@example.com",
     displayName: "User",
-    role: "USER",
+    platformRole: "USER",
     status: userStatus,
     timeZone: "Asia/Seoul",
   };

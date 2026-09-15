@@ -3,8 +3,8 @@
   AuthDeviceStatus,
   AuthSessionStatus,
   OAuthProvider,
+  PlatformRole,
   Prisma,
-  UserRole,
   UserStatus,
 } from "@prisma/client";
 import {
@@ -15,7 +15,7 @@ import {
   type AuthRepository,
   type AuthSessionRecord,
   type AuthUserRecord,
-  type AuthUserRole,
+  type AuthUserPlatformRole,
   type AuthUserStatus,
   type CreateAuthDeviceInput,
   type CreateAuthSessionInput,
@@ -33,7 +33,7 @@ type UserRow = {
   readonly id: string;
   readonly email: string | null;
   readonly displayName: string | null;
-  readonly role: UserRole;
+  readonly platformRole: PlatformRole;
   readonly status: UserStatus;
   readonly timeZone: string;
   readonly preferredLocale: string;
@@ -163,7 +163,8 @@ export class PrismaAuthRepository implements AuthRepository {
       data: {
         email: input.email,
         displayName: input.displayName,
-        role: input.role === "ADMIN" ? UserRole.ADMIN : UserRole.USER,
+        platformRole:
+          input.platformRole === "ADMIN" ? PlatformRole.ADMIN : PlatformRole.USER,
         status: UserStatus.ACTIVE,
         timeZone: input.timeZone,
         preferredLocale: input.preferredLocale,
@@ -204,8 +205,9 @@ export class PrismaAuthRepository implements AuthRepository {
     };
 
     // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
-    if (input.role) {
-      data.role = input.role === "ADMIN" ? UserRole.ADMIN : UserRole.USER;
+    if (input.platformRole) {
+      data.platformRole =
+        input.platformRole === "ADMIN" ? PlatformRole.ADMIN : PlatformRole.USER;
     }
 
     // 3. 비동기 결과를 받아 user에 저장한다.
@@ -440,7 +442,7 @@ export class PrismaAuthRepository implements AuthRepository {
       id: user.id,
       email: user.email,
       displayName: user.displayName,
-      role: this.fromPrismaUserRole(user.role),
+      platformRole: this.fromPrismaPlatformRole(user.platformRole),
       status: this.fromPrismaUserStatus(user.status),
       timeZone: user.timeZone,
       preferredLocale: this.toSupportedPreferredLocale(user.preferredLocale),
@@ -464,7 +466,7 @@ export class PrismaAuthRepository implements AuthRepository {
       sessionId,
       email: user.email,
       displayName: user.displayName,
-      role: this.fromPrismaUserRole(user.role),
+      platformRole: this.fromPrismaPlatformRole(user.platformRole),
       status: this.fromPrismaUserStatus(user.status),
       preferredLocale: this.toSupportedPreferredLocale(user.preferredLocale),
       timeZone: user.timeZone,
@@ -560,12 +562,12 @@ export class PrismaAuthRepository implements AuthRepository {
     }
   }
 
-  // 기능 : Prisma 사용자 역할 enum을 인증 도메인 역할 값으로 변환합니다.
-  private fromPrismaUserRole(role: UserRole): AuthUserRole {
+  // 기능 : Prisma 플랫폼 역할 enum을 인증 도메인 플랫폼 역할 값으로 변환합니다.
+  private fromPrismaPlatformRole(role: PlatformRole): AuthUserPlatformRole {
     switch (role) {
-      case UserRole.USER:
+      case PlatformRole.USER:
         return "USER";
-      case UserRole.ADMIN:
+      case PlatformRole.ADMIN:
         return "ADMIN";
     }
   }

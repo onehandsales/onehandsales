@@ -38,7 +38,7 @@ export function useUpdateMyProfileMutation() {
         email: profile.email,
         id: profile.id,
         name: profile.name,
-        role: profile.role,
+        platformRole: profile.platformRole,
         status: profile.status,
         timeZone: profile.timeZone,
         preferredLocale: profile.preferredLocale,

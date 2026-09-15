@@ -17,7 +17,7 @@ const CURRENT_USER: CurrentUserContext = {
   sessionId: "00000000-0000-4000-8000-000000000201",
   email: "user@example.com",
   displayName: "User",
-  role: "USER",
+  platformRole: "USER",
   status: "ACTIVE",
   timeZone: "Asia/Seoul",
 };
@@ -26,7 +26,7 @@ const USER_SNAPSHOT: ErrorReportUserSnapshot = {
   id: CURRENT_USER.id,
   email: "snapshot@example.com",
   displayName: "Snapshot User",
-  role: "USER",
+  platformRole: "USER",
 };
 
 // 기능 : ErrorReportApplicationService 테스트용 fixture를 생성합니다.

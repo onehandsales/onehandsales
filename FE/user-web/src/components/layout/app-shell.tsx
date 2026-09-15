@@ -2150,7 +2150,7 @@ type ProfileModalContentProps = {
     readonly id: string;
     readonly email: string | null;
     readonly name: string | null;
-    readonly role: string;
+    readonly platformRole: string;
     readonly status: string;
     readonly timeZone: string;
     readonly preferredLocale: string;
@@ -2272,7 +2272,7 @@ function ProfileModalContent({
 
             <ProfileSection icon={ShieldCheck} title={t("settings.accountStatus")}>
               <div className="grid gap-1">
-                <ProfileInfoRow label={t("settings.role")} value={formatRoleLabel(profile.role, t)} />
+                <ProfileInfoRow label={t("settings.role")} value={formatPlatformRoleLabel(profile.platformRole, t)} />
                 <ProfileInfoRow label={t("settings.accountStatus")} value={formatStatusLabel(profile.status, t)} />
                 <ProfileInfoRow
                   label={t("settings.lastLogin")}
@@ -2518,10 +2518,13 @@ function formatCountryLabel(countryCode: string, t: (key: AppI18nKey) => string)
 }
 
 // 기능 : 역할 라벨 표시 문구를 생성합니다.
-function formatRoleLabel(role: string, t: (key: AppI18nKey) => string) {
-  if (role === "ADMIN") return t("settings.admin");
-  if (role === "USER") return t("settings.user");
-  return role;
+function formatPlatformRoleLabel(
+  platformRole: string,
+  t: (key: AppI18nKey) => string
+) {
+  if (platformRole === "ADMIN") return t("settings.admin");
+  if (platformRole === "USER") return t("settings.user");
+  return platformRole;
 }
 
 // 기능 : 상태 라벨 표시 문구를 생성합니다.

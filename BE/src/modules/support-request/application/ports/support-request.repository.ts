@@ -1,4 +1,4 @@
-import type { CurrentUserRole } from "@/shared/application/context/current-user.context";
+import type { CurrentUserPlatformRole } from "@/shared/application/context/current-user.context";
 
 export const SUPPORT_REQUEST_REPOSITORY = Symbol("SUPPORT_REQUEST_REPOSITORY");
 
@@ -17,7 +17,7 @@ export interface SupportRequestUserSnapshot {
   readonly id: string;
   readonly email: string | null;
   readonly displayName: string | null;
-  readonly role: CurrentUserRole;
+  readonly platformRole: CurrentUserPlatformRole;
 }
 
 // 역할 : CreateSupportRequestInput 지원 요청 row 생성에 필요한 값을 정의합니다.

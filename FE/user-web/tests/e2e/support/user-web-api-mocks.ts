@@ -242,7 +242,7 @@ function createAuthUser(overrides: Partial<MutableRecord> = {}) {
     lastLoginTimeZone: "Asia/Seoul",
     name: MOBILE_LONG_FIXTURE.name,
     preferredLocale: "ko-KR",
-    role: "USER",
+    platformRole: "USER",
     settings: {
       defaultReminderMinutes: 30,
       sensitiveWarningEnabled: true,

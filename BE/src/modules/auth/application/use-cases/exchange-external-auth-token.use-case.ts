@@ -222,7 +222,7 @@ export class ExchangeExternalAuthTokenUseCase {
       now
     );
     // 2. 초기 관리자 allowlist에 포함된 이메일이면 관리자 역할을 부여할 준비를 한다.
-    const adminRole = this.isInitialAdminEmail(email) ? "ADMIN" : undefined;
+    const adminPlatformRole = this.isInitialAdminEmail(email) ? "ADMIN" : undefined;
 
     // 3. 이미 연결된 OAuth 계정이 있으면 사용자 로그인 메타데이터만 갱신한다.
     if (oauthAccount) {
@@ -234,9 +234,9 @@ export class ExchangeExternalAuthTokenUseCase {
         lastLoginTimeZone: loginMetadata.timeZone,
       };
 
-      if (adminRole) {
+      if (adminPlatformRole) {
         return repository.updateUserAfterLogin(
-          { ...updateInput, role: adminRole },
+          { ...updateInput, platformRole: adminPlatformRole },
           now
         );
       }
@@ -270,9 +270,9 @@ export class ExchangeExternalAuthTokenUseCase {
         lastLoginTimeZone: loginMetadata.timeZone,
       };
 
-      if (adminRole) {
+      if (adminPlatformRole) {
         return repository.updateUserAfterLogin(
-          { ...updateInput, role: adminRole },
+          { ...updateInput, platformRole: adminPlatformRole },
           now
         );
       }
@@ -285,7 +285,7 @@ export class ExchangeExternalAuthTokenUseCase {
       {
         email,
         displayName: verifiedUser.name,
-        role: adminRole ?? "USER",
+        platformRole: adminPlatformRole ?? "USER",
         timeZone: loginMetadata.timeZone,
         preferredLocale: loginMetadata.locale,
         countryCode: loginMetadata.userCountryCode,

@@ -164,7 +164,7 @@ class FakeAuthRepository implements AuthRepository {
       id: `user-${this.users.length + 1}`,
       email: input.email,
       displayName: input.displayName,
-      role: input.role,
+      platformRole: input.platformRole,
       status: "ACTIVE",
       timeZone: input.timeZone,
       preferredLocale: input.preferredLocale,
@@ -201,7 +201,7 @@ class FakeAuthRepository implements AuthRepository {
     const updated: AuthUserRecord = {
       ...user,
       email: input.email,
-      role: input.role ?? user.role,
+      platformRole: input.platformRole ?? user.platformRole,
       lastLoginLocale: input.lastLoginLocale,
       lastLoginCountryCode: input.lastLoginCountryCode,
       lastLoginTimeZone: input.lastLoginTimeZone,
@@ -390,7 +390,7 @@ function makeAuthUser(overrides: Partial<AuthUserRecord> = {}): AuthUserRecord {
     id: "user-1",
     email: "user@example.com",
     displayName: "User",
-    role: "USER",
+    platformRole: "USER",
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
     preferredLocale: "ko-KR",
@@ -447,7 +447,7 @@ describe("ExchangeExternalAuthTokenUseCase", () => {
     // 4. 테스트 기대 조건을 검증한다.
     expect(result.response.accessToken).toBe("app-access-token");
     // 5. 테스트 기대 조건을 검증한다.
-    expect(result.response.user.role).toBe("ADMIN");
+    expect(result.response.user.platformRole).toBe("ADMIN");
     // 6. 테스트 기대 조건을 검증한다.
     expect(result.response.user.email).toBe("admin@example.com");
     // 7. 테스트 기대 조건을 검증한다.

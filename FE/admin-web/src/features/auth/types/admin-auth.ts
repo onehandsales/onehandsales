@@ -4,5 +4,5 @@ export type AdminMe = {
   readonly externalAuthUserId: string | null;
   readonly name: string | null;
   readonly email: string | null;
-  readonly role: "ADMIN";
+  readonly platformRole: "ADMIN";
 };

@@ -34,14 +34,16 @@ describe("AdminGuard", () => {
 });
 
 // 기능 : AdminGuard 테스트용 ExecutionContext를 생성합니다.
-function createContext(role: CurrentUserContext["role"]): ExecutionContext {
+function createContext(
+  platformRole: CurrentUserContext["platformRole"]
+): ExecutionContext {
   const request = {
     currentUser: {
       id: "user-1",
       sessionId: "session-1",
       email: "user@example.com",
       displayName: "User",
-      role,
+      platformRole,
       status: "ACTIVE",
       timeZone: "Asia/Seoul",
     } satisfies CurrentUserContext,

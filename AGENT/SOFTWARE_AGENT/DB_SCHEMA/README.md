@@ -12,7 +12,7 @@
 
 ### Enums
 
-- `UserRole`
+- `PlatformRole`
 - `UserStatus`
 - `OAuthProvider`
 - `AuthSessionStatus`

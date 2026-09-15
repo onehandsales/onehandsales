@@ -119,7 +119,7 @@ function makeCurrentUser(): CurrentUserContext {
     sessionId: "session-1",
     email: "user@example.com",
     displayName: "User",
-    role: "USER",
+    platformRole: "USER",
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
   };
@@ -135,7 +135,7 @@ function makeProfile(
     id: "user-1",
     email: "user@example.com",
     name: "User",
-    role: "USER",
+    platformRole: "USER",
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
     preferredLocale: "ko-KR",

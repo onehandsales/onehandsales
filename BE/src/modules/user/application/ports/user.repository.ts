@@ -1,6 +1,6 @@
 ﻿export const USER_REPOSITORY = Symbol("USER_REPOSITORY");
 
-export type UserProfileRole = "USER" | "ADMIN";
+export type UserProfilePlatformRole = "USER" | "ADMIN";
 export type UserProfileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
 export type UserDeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
 export type UserDeviceStatus = "ACTIVE" | "REPLACED" | "REVOKED";
@@ -18,7 +18,7 @@ export interface UserProfileRecord {
   readonly id: string;
   readonly email: string | null;
   readonly name: string | null;
-  readonly role: UserProfileRole;
+  readonly platformRole: UserProfilePlatformRole;
   readonly status: UserProfileStatus;
   readonly timeZone: string;
   readonly preferredLocale: string;

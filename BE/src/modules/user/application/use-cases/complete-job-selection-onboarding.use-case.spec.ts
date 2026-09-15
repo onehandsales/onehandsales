@@ -79,7 +79,7 @@ function makeCurrentUser(): CurrentUserContext {
     sessionId: "session-1",
     email: "user@example.com",
     displayName: "User",
-    role: "USER",
+    platformRole: "USER",
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
   };

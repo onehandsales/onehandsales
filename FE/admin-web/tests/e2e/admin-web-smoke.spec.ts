@@ -122,7 +122,7 @@ async function setupAdminApiMocks(page: Page) {
       id: "admin-1",
       email: "admin@example.com",
       name: "Admin User",
-      role: "ADMIN",
+      platformRole: "ADMIN",
       externalAuthUserId: null,
     });
   });

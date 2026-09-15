@@ -18,7 +18,7 @@ export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<RequestWithCurrentUser>();
 
-    if (!request.currentUser || request.currentUser.role !== "ADMIN") {
+    if (!request.currentUser || request.currentUser.platformRole !== "ADMIN") {
       throw new ForbiddenException({
         code: "ADMIN_FORBIDDEN",
         message: "관리자 권한이 필요해요",

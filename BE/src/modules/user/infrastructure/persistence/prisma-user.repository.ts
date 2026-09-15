@@ -3,7 +3,7 @@
   AuthDeviceStatus,
   AuthSessionStatus,
   OAuthProvider,
-  UserRole,
+  PlatformRole,
   UserStatus,
 } from "@prisma/client";
 import {
@@ -14,7 +14,7 @@ import {
   type UserJobSelectionOnboardingRecord,
   type UserOAuthAccountSummary,
   type UserProfileRecord,
-  type UserProfileRole,
+  type UserProfilePlatformRole,
   type UserProfileStatus,
   type UserRepository,
 } from "@/modules/user/application/ports/user.repository";
@@ -156,7 +156,7 @@ export class PrismaUserRepository implements UserRepository {
     readonly id: string;
     readonly email: string | null;
     readonly displayName: string | null;
-    readonly role: UserRole;
+    readonly platformRole: PlatformRole;
     readonly status: UserStatus;
     readonly timeZone: string;
     readonly preferredLocale: string;
@@ -183,7 +183,7 @@ export class PrismaUserRepository implements UserRepository {
       id: user.id,
       email: user.email,
       name: user.displayName,
-      role: this.fromPrismaUserRole(user.role),
+      platformRole: this.fromPrismaPlatformRole(user.platformRole),
       status: this.fromPrismaUserStatus(user.status),
       timeZone: user.timeZone,
       preferredLocale: this.toSupportedPreferredLocale(user.preferredLocale),
@@ -261,12 +261,12 @@ export class PrismaUserRepository implements UserRepository {
     }
   }
 
-  // 기능 : Prisma 사용자 역할 enum을 사용자 프로필 역할 값으로 변환합니다.
-  private fromPrismaUserRole(role: UserRole): UserProfileRole {
+  // 기능 : Prisma 플랫폼 역할 enum을 사용자 프로필 플랫폼 역할 값으로 변환합니다.
+  private fromPrismaPlatformRole(role: PlatformRole): UserProfilePlatformRole {
     switch (role) {
-      case UserRole.USER:
+      case PlatformRole.USER:
         return "USER";
-      case UserRole.ADMIN:
+      case PlatformRole.ADMIN:
         return "ADMIN";
     }
   }

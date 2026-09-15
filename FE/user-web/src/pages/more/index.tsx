@@ -96,8 +96,8 @@ export function MorePage() {
   const { t } = useAppI18n();
   // 3. 이후 단계에서 사용할 name 값을 준비한다.
   const name = user?.name ?? t("more.user");
-  // 4. 이후 단계에서 사용할 role 값을 준비한다.
-  const role = user?.role ?? "";
+  // 4. 이후 단계에서 사용할 platformRole 값을 준비한다.
+  const platformRole = user?.platformRole ?? "";
   // 5. 이후 단계에서 사용할 initial 값을 준비한다.
   const initial = name.charAt(0);
 
@@ -128,7 +128,7 @@ export function MorePage() {
               {name}
             </p>
             <p className="truncate text-[12px]" style={{ color: "#6B7280" }}>
-              {role}
+              {platformRole}
             </p>
           </div>
 

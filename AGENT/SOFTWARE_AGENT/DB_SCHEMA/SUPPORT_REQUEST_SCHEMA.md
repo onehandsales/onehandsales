@@ -44,7 +44,7 @@ DB table:
 | `userId` | no | 지원 요청을 남긴 사용자 ID |
 | `userEmail` | yes | 접수 당시 사용자 email snapshot |
 | `userDisplayName` | yes | 접수 당시 사용자 이름 snapshot |
-| `userRole` | no | 접수 당시 사용자 role snapshot |
+| `userPlatformRole` | no | 접수 당시 사용자 platform role snapshot |
 | `type` | no | 문의 유형. `SupportRequestType` |
 | `description` | no | 사용자가 입력한 지원 요청 본문. trim 후 비어 있지 않아야 하며 API에서 1000자 이하로 제한 |
 | `pageUrl` | no | User Web 현재 주소 |

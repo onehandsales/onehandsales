@@ -8,8 +8,9 @@ type ProtectedAdminRouteProps = {
 
 // 기능 : 서버 검증을 통과한 관리자에게만 보호된 Admin route를 렌더링합니다.
 export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
-  // 1. 처리 흐름에 필요한 { isAuthenticated, isInitializing, role } 값을 준비한다.
-  const { isAuthenticated, isInitializing, role } = useAdminAuthSession();
+  // 1. 처리 흐름에 필요한 { isAuthenticated, isInitializing, platformRole } 값을 준비한다.
+  const { isAuthenticated, isInitializing, platformRole } =
+    useAdminAuthSession();
   // 2. 처리 흐름에 필요한 location 값을 준비한다.
   const location = useLocation();
 
@@ -36,7 +37,7 @@ export function ProtectedAdminRoute({ children }: ProtectedAdminRouteProps) {
   }
 
   // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
-  if (role !== "ADMIN") {
+  if (platformRole !== "ADMIN") {
     return <AdminAccessDenied />;
   }
 

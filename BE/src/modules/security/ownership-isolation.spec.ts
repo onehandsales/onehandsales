@@ -8,7 +8,7 @@ const CURRENT_USER_A: CurrentUserContext = {
   sessionId: "rqa004-session-a",
   email: "rqa004-a@example.com",
   displayName: "RQA004 A",
-  role: "USER",
+  platformRole: "USER",
   status: "ACTIVE",
   timeZone: "Asia/Seoul",
 };

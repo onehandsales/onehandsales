@@ -1,4 +1,4 @@
-import type { CurrentUserRole } from "@/shared/application/context/current-user.context";
+import type { CurrentUserPlatformRole } from "@/shared/application/context/current-user.context";
 
 export const ERROR_REPORT_REPOSITORY = Symbol("ERROR_REPORT_REPOSITORY");
 
@@ -7,7 +7,7 @@ export interface ErrorReportUserSnapshot {
   readonly id: string;
   readonly email: string | null;
   readonly displayName: string | null;
-  readonly role: CurrentUserRole;
+  readonly platformRole: CurrentUserPlatformRole;
 }
 
 // 역할 : ErrorReportScreenshotMetadata 저장된 screenshot metadata를 정의합니다.
