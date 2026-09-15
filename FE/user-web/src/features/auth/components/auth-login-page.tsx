@@ -34,7 +34,7 @@ type AuthLoginPageProps = {
 type AuthPageMode = "login" | "signup";
 
 const sharedProviderButtonStyle =
-  "border-[#dededa] bg-white text-[#191919] hover:bg-[#f7f7f5]";
+  "border-[#dededa] bg-white text-[#191919] hover:bg-[#F2F2EF]";
 
 // 기능 : 모든 OAuth 버튼을 Google 버튼과 같은 흰 배경/회색 테두리 스타일로 통일합니다.
 const providerStyles: Record<AuthProviderId, string> = {
