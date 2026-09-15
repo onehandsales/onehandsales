@@ -197,7 +197,7 @@ async function handleApiRequest(
     pathname === "/api/users/me/onboarding/job-selection" &&
     method === "POST"
   ) {
-    return json({ jobSelectOnboardingCompletedAt: NOW });
+    return json(createJobSelectionOnboardingResponse());
   }
 
   if (pathname === "/api/users/me/devices" && method === "GET") {
@@ -287,6 +287,31 @@ function createUserProfile(overrides: Partial<MutableRecord> = {}) {
       },
     ],
     updatedAt: NOW,
+  };
+}
+
+// 기능 : 직업 선택 온보딩 완료 응답 fixture를 생성합니다.
+function createJobSelectionOnboardingResponse() {
+  return {
+    jobSelectOnboardingCompletedAt: NOW,
+    workspace: {
+      id: "workspace-e2e-001",
+      name: "E2E Workspace",
+      kind: "PERSONAL",
+      organizationName: null,
+      organizationDomain: null,
+      createdAt: NOW,
+      updatedAt: NOW,
+    },
+    workspaceMember: {
+      id: "workspace-member-e2e-001",
+      workspaceId: "workspace-e2e-001",
+      userId: "user-e2e-001",
+      role: "OWNER",
+      joinedAt: NOW,
+      createdAt: NOW,
+      updatedAt: NOW,
+    },
   };
 }
 

@@ -4,6 +4,8 @@ export type UserProfilePlatformRole = "USER" | "ADMIN";
 export type UserProfileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
 export type UserDeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
 export type UserDeviceStatus = "ACTIVE" | "REPLACED" | "REVOKED";
+export type WorkspaceKind = "PERSONAL" | "ORGANIZATION";
+export type WorkspaceMemberRole = "OWNER" | "ADMIN" | "MEMBER";
 
 // 역할 : UserOAuthAccountSummary 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserOAuthAccountSummary {
@@ -62,10 +64,36 @@ export interface UserDeviceRecord {
 // 역할 : UserJobSelectionOnboardingRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserJobSelectionOnboardingRecord {
   readonly jobSelectOnboardingCompletedAt: Date;
+  readonly workspace: UserJobSelectionOnboardingWorkspaceRecord;
+  readonly workspaceMember: UserJobSelectionOnboardingWorkspaceMemberRecord;
+}
+
+// 역할 : UserJobSelectionOnboardingWorkspaceRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface UserJobSelectionOnboardingWorkspaceRecord {
+  readonly id: string;
+  readonly name: string;
+  readonly kind: WorkspaceKind;
+  readonly organizationName: string | null;
+  readonly organizationDomain: string | null;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+}
+
+// 역할 : UserJobSelectionOnboardingWorkspaceMemberRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
+export interface UserJobSelectionOnboardingWorkspaceMemberRecord {
+  readonly id: string;
+  readonly workspaceId: string;
+  readonly userId: string;
+  readonly role: WorkspaceMemberRole;
+  readonly joinedAt: Date;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 }
 
 // 역할 : UserRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.
 export interface UserRepository {
+  // 기능 : 사용자 저장소 작업을 트랜잭션 경계 안에서 실행합니다.
+  runInTransaction<T>(work: (repository: UserRepository) => Promise<T>): Promise<T>;
   // 기능 : 사용자 ID로 개인 정보 프로필을 조회합니다.
   getProfile(userId: string): Promise<UserProfileRecord | null>;
   // 기능 : 사용자 프로필 수정 값을 저장하고 결과 프로필을 반환합니다.

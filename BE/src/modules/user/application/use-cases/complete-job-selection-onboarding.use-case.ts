@@ -16,25 +16,24 @@ export class CompleteJobSelectionOnboardingUseCase {
     private readonly userRepository: UserRepository
   ) {}
 
-  // 기능 : 현재 사용자의 직업 선택 온보딩 완료 시각을 저장합니다.
+  // 기능 : 현재 사용자의 직업 선택 완료와 OWNER 워크스페이스 멤버십을 보장합니다.
   async execute(
     currentUser: CurrentUserContext
   ): Promise<UserJobSelectionOnboardingRecord> {
     // 1. DB 저장용 현재 시각을 준비한다.
     const now = new Date();
 
-    // 2. 현재 사용자 ID로 직업 선택 온보딩 완료 시각을 저장한다.
-    const result = await this.userRepository.completeJobSelectionOnboarding(
-      currentUser.id,
-      now
+    // 2. 온보딩 완료 처리와 기본 Workspace 생성을 하나의 transaction 안에서 실행한다.
+    const result = await this.userRepository.runInTransaction((repository) =>
+      repository.completeJobSelectionOnboarding(currentUser.id, now)
     );
 
-    // 3. 사용자 존재 여부와 활성 상태를 검증한다.
+    // 3. 사용자가 없거나 활성 상태가 아니면 기존 인증 오류로 차단한다.
     if (!result) {
       throw new InactiveUserError();
     }
 
-    // 4. 완료 시각 응답 레코드를 반환한다.
+    // 4. 완료 시각과 OWNER 워크스페이스 정보를 반환한다.
     return result;
   }
 }

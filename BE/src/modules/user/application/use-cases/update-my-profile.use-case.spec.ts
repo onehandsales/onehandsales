@@ -15,47 +15,36 @@ describe("UpdateMyProfileUseCase", () => {
     ["en-US", "en"],
     ["en-x-test", "en"],
   ])("normalizes preferredLocale %s to %s", async (inputLocale, expectedLocale) => {
-    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeUserRepository();
-    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = new UpdateMyProfileUseCase(repository);
 
-    // 3. 처리 흐름에 필요한 profile 값을 준비한다.
     const profile = await useCase.execute(makeCurrentUser(), {
       preferredLocale: inputLocale,
     });
 
-    // 4. 테스트 기대 조건을 검증한다.
     expect(repository.lastUpdateInput).toEqual({
       preferredLocale: expectedLocale,
     });
-    // 5. 테스트 기대 조건을 검증한다.
     expect(profile.preferredLocale).toBe(expectedLocale);
   });
 
-  // 기능 : 기본 국가와 기본 통화 입력값을 대문자 지원값으로 정규화합니다.
+  // 기능 : 기본 국가와 기본 통화 입력값을 대문자 지정값으로 정규화합니다.
   it("normalizes user country and currency settings", async () => {
-    // 1. 이후 단계에서 사용할 repository 값을 준비한다.
     const repository = new FakeUserRepository();
-    // 2. 처리 흐름에 필요한 useCase 값을 준비한다.
     const useCase = new UpdateMyProfileUseCase(repository);
 
-    // 3. 처리 흐름에 필요한 profile 값을 준비한다.
     const profile = await useCase.execute(makeCurrentUser(), {
       countryCode: "us",
       defaultCurrencyCode: "usd",
       timeZone: "America/New_York",
     });
 
-    // 4. 테스트 기대 조건을 검증한다.
     expect(repository.lastUpdateInput).toEqual({
       timeZone: "America/New_York",
       countryCode: "US",
       defaultCurrencyCode: "USD",
     });
-    // 5. 테스트 기대 조건을 검증한다.
     expect(profile.countryCode).toBe("US");
-    // 6. 테스트 기대 조건을 검증한다.
     expect(profile.defaultCurrencyCode).toBe("USD");
   });
 
@@ -75,16 +64,23 @@ describe("UpdateMyProfileUseCase", () => {
   });
 });
 
-// 역할 : FakeUserRepository 영속성 계약 또는 구현 책임을 정의합니다.
+// 역할 : FakeUserRepository 영속성 계약을 구현합니다.
 class FakeUserRepository implements UserRepository {
   lastUpdateInput: UpdateUserProfileInput | null = null;
+
+  // 기능 : 테스트용 트랜잭션 경계를 같은 fake 저장소로 실행합니다.
+  async runInTransaction<T>(
+    work: (repository: UserRepository) => Promise<T>
+  ): Promise<T> {
+    return work(this);
+  }
 
   // 기능 : 프로필 정보를 조회합니다.
   async getProfile(): Promise<UserProfileRecord | null> {
     return makeProfile();
   }
 
-  // 기능 : update Profile 정보를 수정합니다.
+  // 기능 : update profile 정보를 수정합니다.
   async updateProfile(
     _userId: string,
     input: UpdateUserProfileInput
@@ -99,20 +95,40 @@ class FakeUserRepository implements UserRepository {
     });
   }
 
-  // 기능 : list Active Devices 목록을 조회합니다.
-  // 기능 : 직업 선택 온보딩 완료 시각을 저장합니다.
+  // 기능 : 현재 테스트에서 사용하지 않는 직업 선택 온보딩 응답을 반환합니다.
   async completeJobSelectionOnboarding(): Promise<UserJobSelectionOnboardingRecord | null> {
+    const now = new Date("2026-07-10T00:00:00.000Z");
+
     return {
-      jobSelectOnboardingCompletedAt: new Date("2026-07-10T00:00:00.000Z"),
+      jobSelectOnboardingCompletedAt: now,
+      workspace: {
+        id: "workspace-1",
+        name: "User Workspace",
+        kind: "PERSONAL",
+        organizationName: null,
+        organizationDomain: null,
+        createdAt: now,
+        updatedAt: now,
+      },
+      workspaceMember: {
+        id: "workspace-member-1",
+        workspaceId: "workspace-1",
+        userId: "user-1",
+        role: "OWNER",
+        joinedAt: now,
+        createdAt: now,
+        updatedAt: now,
+      },
     };
   }
 
+  // 기능 : list active devices 목록을 조회합니다.
   async listActiveDevices(): Promise<UserDeviceRecord[]> {
     return [];
   }
 }
 
-// 기능 : make Current User 테스트 fixture 값을 생성합니다.
+// 기능 : make current user 테스트 fixture 값을 생성합니다.
 function makeCurrentUser(): CurrentUserContext {
   return {
     id: "user-1",
@@ -125,7 +141,7 @@ function makeCurrentUser(): CurrentUserContext {
   };
 }
 
-// 기능 : make Profile 테스트 fixture 값을 생성합니다.
+// 기능 : make profile 테스트 fixture 값을 생성합니다.
 function makeProfile(
   overrides: Partial<UserProfileRecord> = {}
 ): UserProfileRecord {
