@@ -109,7 +109,7 @@ function HeaderTextDropdown({
                   {links.map((linkLabel, linkIndex) => (
                     <li key={linkLabel}>
                       <Link
-                        className="block rounded-[6px] px-2 py-1.5 text-[14px] font-normal text-[#111111] hover:bg-[#FAFAF8]"
+                        className="block rounded-[6px] px-2 py-1.5 text-[14px] font-normal text-[#111111] hover:bg-[#F2F2EF]"
                         to={toPublicPath(routes[linkIndex] ?? fallbackPath)}
                       >
                         {linkLabel}
