@@ -1,5 +1,6 @@
 import type {
   WorkspaceSidebarQuery,
+  WorkspaceSidebarWorkspaceListItem,
   WorkspaceSidebarWorkspaceSummary,
 } from "@/modules/workspace/application/ports/workspace-sidebar-query.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -20,7 +21,6 @@ describe("ListMySidebarWorkspacesUseCase", () => {
       {
         id: "00000000-0000-4000-8000-000000000301",
         name: "User Workspace",
-        kind: "PERSONAL",
       },
     ]);
   });
@@ -43,13 +43,12 @@ class FakeWorkspaceSidebarQuery implements WorkspaceSidebarQuery {
   // 기능 : 테스트용 Workspace 요약 목록을 반환합니다.
   async listMySidebarWorkspaces(
     userId: string
-  ): Promise<WorkspaceSidebarWorkspaceSummary[]> {
+  ): Promise<WorkspaceSidebarWorkspaceListItem[]> {
     this.lastListUserId = userId;
     return [
       {
         id: "00000000-0000-4000-8000-000000000301",
         name: "User Workspace",
-        kind: "PERSONAL",
       },
     ];
   }

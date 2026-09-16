@@ -1,10 +1,16 @@
 import { WorkspaceKind as PrismaWorkspaceKind } from "@prisma/client";
 import type {
   WorkspaceSidebarQuery,
+  WorkspaceSidebarWorkspaceListItem,
   WorkspaceSidebarWorkspaceKind,
   WorkspaceSidebarWorkspaceSummary,
 } from "@/modules/workspace/application/ports/workspace-sidebar-query.port";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+
+type WorkspaceSidebarWorkspaceListRow = {
+  readonly id: string;
+  readonly name: string;
+};
 
 type WorkspaceSidebarWorkspaceRow = {
   readonly id: string;
@@ -22,7 +28,7 @@ export class PrismaWorkspaceSidebarQueryRepository
   // 기능 : 현재 사용자가 멤버로 속한 Workspace 요약 목록을 조회합니다.
   async listMySidebarWorkspaces(
     userId: string
-  ): Promise<WorkspaceSidebarWorkspaceSummary[]> {
+  ): Promise<WorkspaceSidebarWorkspaceListItem[]> {
     // 1. 사용자 멤버십 기준으로 접근 가능한 Workspace만 조회한다.
     const workspaceMembers = await this.prismaService.workspaceMember.findMany({
       where: {
@@ -33,7 +39,6 @@ export class PrismaWorkspaceSidebarQueryRepository
           select: {
             id: true,
             name: true,
-            kind: true,
           },
         },
       },
@@ -42,9 +47,9 @@ export class PrismaWorkspaceSidebarQueryRepository
       },
     });
 
-    // 2. Prisma row를 API에 노출 가능한 Workspace 요약으로 변환한다.
+    // 2. Prisma row를 목록 API에 필요한 최소 Workspace 요약으로 변환한다.
     return workspaceMembers.map((workspaceMember) =>
-      this.mapWorkspaceSummary(workspaceMember.workspace)
+      this.mapWorkspaceListItem(workspaceMember.workspace)
     );
   }
 
@@ -131,6 +136,16 @@ export class PrismaWorkspaceSidebarQueryRepository
       id: workspace.id,
       name: workspace.name,
       kind: this.fromPrismaWorkspaceKind(workspace.kind),
+    };
+  }
+
+  // 기능 : Prisma Workspace row를 목록 API에 노출할 최소 Workspace 요약으로 변환합니다.
+  private mapWorkspaceListItem(
+    workspace: WorkspaceSidebarWorkspaceListRow
+  ): WorkspaceSidebarWorkspaceListItem {
+    return {
+      id: workspace.id,
+      name: workspace.name,
     };
   }
 }

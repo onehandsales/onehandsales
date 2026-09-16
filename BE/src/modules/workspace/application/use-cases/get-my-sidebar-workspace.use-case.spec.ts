@@ -1,5 +1,6 @@
 import type {
   WorkspaceSidebarQuery,
+  WorkspaceSidebarWorkspaceListItem,
   WorkspaceSidebarWorkspaceSummary,
 } from "@/modules/workspace/application/ports/workspace-sidebar-query.port";
 import { WorkspaceSidebarWorkspaceNotFoundError } from "@/modules/workspace/domain/workspace.errors";
@@ -63,7 +64,7 @@ class FakeWorkspaceSidebarQuery implements WorkspaceSidebarQuery {
   };
 
   // 기능 : 현재 테스트에서 사용하지 않는 목록 조회를 차단합니다.
-  async listMySidebarWorkspaces(): Promise<WorkspaceSidebarWorkspaceSummary[]> {
+  async listMySidebarWorkspaces(): Promise<WorkspaceSidebarWorkspaceListItem[]> {
     throw new Error("Not implemented in fake query");
   }
 

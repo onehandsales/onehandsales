@@ -56,6 +56,7 @@ export const enResource = {
     helpTooltip: "View help",
     homeAria: "Home",
     homeTooltip: "Go home",
+    inviteTeam: "Invite team",
     notificationsAria: "Notifications",
     notificationsTooltip: "View notifications",
     searchAria: "Search",
@@ -74,6 +75,8 @@ export const enResource = {
     terms: "Terms",
     userFallback: "User",
     workspaceKindFallback: "Workspace",
+    workspaceKindOrganization: "Organization Workspace",
+    workspaceKindPersonal: "Personal Workspace",
     workspaceLoading: "Loading workspace",
   },
   helpModal: {

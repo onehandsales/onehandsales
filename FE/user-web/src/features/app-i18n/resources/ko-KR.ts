@@ -56,6 +56,7 @@ export const koKRResource = {
     helpTooltip: "도움말 보기",
     homeAria: "홈",
     homeTooltip: "홈 이동하기",
+    inviteTeam: "팀원 초대",
     notificationsAria: "알림",
     notificationsTooltip: "알림 보기",
     searchAria: "검색",
@@ -74,6 +75,8 @@ export const koKRResource = {
     terms: "이용약관",
     userFallback: "사용자",
     workspaceKindFallback: "작업 공간",
+    workspaceKindOrganization: "조직 작업 공간",
+    workspaceKindPersonal: "개인 작업 공간",
     workspaceLoading: "작업 공간 불러오는 중",
   },
   helpModal: {

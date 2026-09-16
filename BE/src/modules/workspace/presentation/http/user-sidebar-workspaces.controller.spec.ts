@@ -64,7 +64,6 @@ function createListUseCaseFake(): jest.Mocked<ListMySidebarWorkspacesUseCaseFake
       {
         id: "00000000-0000-4000-8000-000000000301",
         name: "User Workspace",
-        kind: "PERSONAL",
       },
     ]),
   };
@@ -158,7 +157,6 @@ describe("UserSidebarWorkspacesController", () => {
         {
           id: "00000000-0000-4000-8000-000000000301",
           name: "User Workspace",
-          kind: "PERSONAL",
         },
       ]);
 

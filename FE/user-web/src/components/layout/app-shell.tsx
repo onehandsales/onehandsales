@@ -29,6 +29,7 @@ import {
   Search,
   Settings,
   ShieldCheck,
+  UserPlus,
   UserRound,
   type LucideIcon,
   X,
@@ -160,8 +161,10 @@ export function AppShell() {
   const currentWorkspaceName =
     defaultWorkspaceQuery.data?.name ?? t("shell.workspaceLoading");
   // 23. 이후 단계에서 사용할 currentWorkspaceKind 값을 준비한다.
-  const currentWorkspaceKind =
-    defaultWorkspaceQuery.data?.kind ?? t("shell.workspaceKindFallback");
+  const currentWorkspaceKind = formatWorkspaceKindLabel(
+    defaultWorkspaceQuery.data?.kind,
+    t
+  );
   // 24. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
   const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
   // 25. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
@@ -425,43 +428,50 @@ export function AppShell() {
           className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
           role="menu"
         >
-          <div className="flex items-center px-1 py-2">
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[14px] font-semibold leading-5 text-[#111827]">
-                {currentWorkspaceName}
-              </p>
-              <p className="truncate text-[12px] font-medium leading-4 text-[#6B7280]">
-                {currentWorkspaceKind}
-              </p>
-            </div>
+          <div className="grid gap-0.5 px-2 py-1">
+            <p className="truncate text-[14px] font-medium leading-5 text-[#111827]">
+              {currentWorkspaceName}
+            </p>
+            <p className="flex h-5 items-center truncate text-[12px] font-medium leading-4 text-[#6B7280]">
+              • {userEmail}
+            </p>
+            <p className="flex h-5 items-center truncate text-[12px] font-medium leading-4 text-[#6B7280]">
+              • {currentWorkspaceKind}
+            </p>
           </div>
           <div className="mt-1 grid gap-px">
-            <div className="flex h-9 w-full items-center rounded-lg px-2 text-[14px] font-medium text-[#6B7280]">
-              <span className="min-w-0 flex-1 truncate">{userEmail}</span>
-            </div>
             <div aria-hidden="true" className="my-1 border-t border-[#EEEDEA]" />
             <AccountMenuItem
+              dense
               icon={Settings}
               label={t("shell.accountProfile")}
               tabIndex={accountMenuOpen ? undefined : -1}
               onClick={() => openAccountModal("settings")}
             />
+            <AccountMenuItem
+              dense
+              icon={UserPlus}
+              label={t("shell.inviteTeam")}
+              tabIndex={accountMenuOpen ? undefined : -1}
+              onClick={() => setAccountMenuOpen(false)}
+            />
             {sidebarWorkspaces.length > 0 ? (
-              <div className="my-1 border-t border-[#EEEDEA] pt-1">
-                <p className="px-2 py-1 text-[12px] font-semibold leading-4 text-[#6B7280]">
+              <div className="my-1 border-t border-[#EEEDEA]">
+                <p className="flex h-8 items-center px-2 text-[12px] font-semibold leading-4 text-[#6B7280]">
                   {t("shell.myWorkspaces")}
                 </p>
                 {sidebarWorkspaces.map((workspace) => (
                   <div
-                    className="flex min-h-11 w-full items-center rounded-lg px-2 py-1.5"
+                    className="flex h-8 w-full items-center gap-2 rounded-lg px-2"
                     key={workspace.id}
                   >
+                    <span
+                      aria-hidden="true"
+                      className="h-5 w-5 shrink-0 rounded-full bg-[#E5E7EB]"
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[14px] font-medium leading-5 text-[#111827]">
-                        {workspace.name}
-                      </p>
-                      <p className="truncate text-[12px] font-medium leading-4 text-[#6B7280]">
-                        {workspace.kind}
+                        {formatSidebarWorkspaceListName(workspace.name)}
                       </p>
                     </div>
                   </div>
@@ -469,7 +479,7 @@ export function AppShell() {
               </div>
             ) : null}
             <button
-              className="my-1 flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+              className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
               onClick={() => setAccountMenuOpen(false)}
               role="menuitem"
               tabIndex={accountMenuOpen ? undefined : -1}
@@ -482,6 +492,7 @@ export function AppShell() {
             </button>
             <div aria-hidden="true" className="my-1 border-t border-[#EEEDEA]" />
             <AccountMenuItem
+              dense
               icon={LogOut}
               label={t("shell.logout")}
               tabIndex={accountMenuOpen ? undefined : -1}
@@ -509,9 +520,6 @@ export function AppShell() {
         <div className="min-w-0 flex-1">
           <p className="truncate text-[14px] font-medium text-[#111827]">
             {currentWorkspaceName}
-          </p>
-          <p className="truncate text-[12px] font-medium leading-4 text-[#6B7280]">
-            {currentWorkspaceKind}
           </p>
         </div>
         {!accountMenuOpen ? (
@@ -795,12 +803,14 @@ export function AppShell() {
 
 // 기능 : 계정 메뉴 항목을 렌더링합니다.
 function AccountMenuItem({
+  dense = false,
   endIcon: EndIcon,
   icon: Icon,
   label,
   onClick,
   tabIndex,
 }: {
+  readonly dense?: boolean;
   readonly endIcon?: LucideIcon;
   readonly icon: LucideIcon;
   readonly label: string;
@@ -809,7 +819,7 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className="group flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+      className={`group flex ${dense ? "h-8" : "h-9"} w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]`}
       onClick={onClick}
       role="menuitem"
       tabIndex={tabIndex}
@@ -2564,6 +2574,33 @@ function formatProviderLabel(provider: string) {
   if (normalized === "legacy_oauth") return "Legacy OAuth";
   // 4. 계산된 결과를 호출자에게 반환한다.
   return provider;
+}
+
+// 기능 : 사이드바 Workspace 목록에서 온보딩 기본 이름 suffix를 표시용으로 제거합니다.
+function formatSidebarWorkspaceListName(name: string) {
+  const defaultWorkspaceSuffix = "'s Workspace";
+
+  if (!name.endsWith(defaultWorkspaceSuffix)) {
+    return name;
+  }
+
+  return name.slice(0, -defaultWorkspaceSuffix.length);
+}
+
+// 기능 : Workspace kind enum 값을 현재 앱 언어의 표시 문구로 변환합니다.
+function formatWorkspaceKindLabel(
+  kind: string | undefined,
+  t: (key: AppI18nKey) => string
+) {
+  if (kind === "PERSONAL") {
+    return t("shell.workspaceKindPersonal");
+  }
+
+  if (kind === "ORGANIZATION") {
+    return t("shell.workspaceKindOrganization");
+  }
+
+  return t("shell.workspaceKindFallback");
 }
 
 // 기능 : 언어 라벨 표시 문구를 생성합니다.
