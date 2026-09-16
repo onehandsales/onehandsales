@@ -25,6 +25,24 @@
 - DTO는 class-validator로 외부 입력을 검증한다.
 - mutation은 application service에서 transaction boundary를 잡는다.
 
+## Module Boundary
+
+- Backend는 현재 단일 NestJS 서버지만 module 경계는 미래 MSA service 경계처럼 다룬다.
+- 각 module은 자기 `domain/application/infrastructure/presentation` 경계 안에서 책임을 닫는다.
+- 다른 module의 `infrastructure/persistence/prisma-*.repository.ts`를 직접 import하지 않는다.
+- 다른 module의 Prisma repository instance를 provider로 주입받지 않는다.
+- 다른 module 데이터가 필요하면 owning module이 공개한 application port, query port, use case facade를 사용한다.
+- module 간 mutation이 필요하면 API 계약에서 orchestration owner, transaction 범위, idempotency 기준을 먼저 정한다.
+- 아직 정식 owning module이 없는 foundation table은 임시 소유자를 문서에 명시한다.
+
+## Application Layer Dependency
+
+- application layer는 business orchestration, 권한 판단, transaction boundary를 담당한다.
+- 새 business logic은 Prisma, Supabase SDK, Express request/response, Nest `ConfigService`, concrete logger에 직접 의존하지 않는다.
+- 설정, 시간, token 발급, logger, 외부 provider는 application port 뒤에 둔다.
+- Nest DI를 위한 `@Injectable()`과 `@Inject()` 사용은 허용하지만, command/result/port 공개 계약에는 Nest type을 노출하지 않는다.
+- 기존 use case는 기능 변경 시 점진적으로 이 규칙에 맞춘다.
+
 ## ORM / Provider Boundary
 
 - Prisma import는 `infrastructure` 계층으로 제한한다.

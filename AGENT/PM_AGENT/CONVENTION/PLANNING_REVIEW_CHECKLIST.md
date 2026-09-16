@@ -81,7 +81,7 @@ TODO 계획 문서를 검토할 때는 단순히 문서 항목이 채워졌는�
 검토 시 반드시 함께 보는 기준 문서:
 
 - PM 기준: `README.md`, `AGENT/PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`, `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`, `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`, `AGENT/PM_AGENT/PLANNING/PRD.md`, `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`, `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`, `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
-- Backend 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
+- Backend 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - User Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - Admin Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
 - UX/UI 기준: `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`, `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`, `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`, `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`, `AGENT/UXUI_AGENT/DECISIONS/*`
@@ -92,11 +92,15 @@ Backend 구체화 검토:
 - TODO의 BE 작업이 `domain`, `application`, `infrastructure`, `presentation` 네 계층으로 나뉘는가?
 - 비즈니스 규칙은 domain/application 기준으로 설명되고, controller는 application service를 호출하는 얇은 계층으로 남는가?
 - repository interface, port, adapter 경계가 드러나며 Prisma는 infrastructure 전용으로 제한되는가?
+- 현재 단일 Backend 서버라도 module 경계를 미래 MSA service 경계처럼 다루는가?
+- 다른 module의 Prisma repository 구현체를 직접 공유하지 않고 owning module의 application/query port 또는 use case facade로 협력하는가?
 - User API와 관리자 권한 확인 API가 `/api/*`, `GET /admin/api/me` 경로와 guard 기준으로 분리되는가?
 - 사용자 소유권, `userId` 필터, 제거/보존 정책, 민감정보 masking이 API와 DB 스키마에 반영되는가?
 - 여러 테이블을 함께 쓰는 use case에 transaction 기준이 명시되는가?
 - transaction 필요 여부가 `필요`, `없음`, `보류` 중 하나로 API 계약에 적혀 있는가?
 - transaction model, rollback 범위, 외부 Provider 호출 위치가 명시되는가?
+- retry 가능한 mutation, 다중 row 생성 mutation, future MSA 분리 가능성이 있는 mutation에 idempotency/outbox 필요 여부가 검토되어 있는가?
+- 여러 module 소유 데이터가 관련되면 orchestration owner가 명시되어 있는가?
 - mutation, 민감정보, 외부 Provider API에 observability 항목이 있는가?
 - log event key, request id, redaction 기준이 문서화되어 있는가?
 - API 명세의 business flow가 도메인 의도를 설명하고, 단순 CRUD 절차나 controller 절차에 머물지 않는가?
@@ -121,7 +125,7 @@ Frontend와 UX/UI 구체화 검토:
 
 심각도 판정:
 
-- Clean Architecture 계층을 무너뜨리는 요구, controller의 Prisma 직접 접근, Domain의 외부 SDK 의존, 사용자 데이터 소유권 누락은 `Critical` 또는 `Major`로 본다.
+- Clean Architecture 계층을 무너뜨리는 요구, controller의 Prisma 직접 접근, Domain의 외부 SDK 의존, module boundary를 깨는 직접 repository 공유, 사용자 데이터 소유권 누락은 `Critical` 또는 `Major`로 본다.
 - FE가 서버 상태를 TanStack Query가 아닌 임의 fetch/useEffect 중심으로 전제하거나, Admin/User API 경계를 흐리면 `Major`로 본다.
 - UX/UI 정본과 충돌하는 화면 우선순위, 모바일 테이블/가로 칸반은 `Major`로 본다.
 - 관련 AGENT 기준 문서 링크 누락, 용어 일부 불일치, 완료 기준 구체성 부족은 `Minor`로 본다.
@@ -532,6 +536,7 @@ DB 스키마 문서는 아래 항목을 확인한다.
 - `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

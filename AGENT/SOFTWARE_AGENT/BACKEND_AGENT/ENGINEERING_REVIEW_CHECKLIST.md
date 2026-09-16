@@ -13,6 +13,9 @@
 - User API는 `/api/*`, 관리자 확인 API는 `GET /admin/api/me`로 분리되어 있는가?
 - 관리자 확인 API는 AuthGuard와 AdminGuard를 모두 사용하는가?
 - Controller가 repository나 Prisma를 직접 호출하지 않는가?
+- 다른 module의 Prisma repository 구현체를 직접 import하거나 주입받지 않는가?
+- module 간 협력이 owning module의 application/query port 또는 use case facade로 표현되는가?
+- 새 module이 `domain/application/infrastructure/presentation` 경계를 유지하는가?
 - Backend class/interface 선언은 `// 역할 : ...` 주석으로 책임과 계약을 설명하는가?
 - Backend HTTP API controller 메소드는 `// API : ...` 주석을 사용하는가?
 - 내부 service/helper/use case 메소드는 `// 기능 : ...` 주석을 사용하는가?
@@ -20,12 +23,17 @@
 - API controller와 application orchestration 메소드의 주요 처리 흐름이 numbered step comment로 읽히는가?
 - transaction, provider 호출, repository 저장/갱신, token rotation 흐름이 `// 1. ...`, `// 2. ...` 형식으로 설명되어 있는가?
 - Application layer가 transaction 경계를 갖는가?
+- application/domain 공개 계약에 Prisma model type, Prisma transaction client type, Supabase SDK type, Express request/response type이 노출되지 않는가?
+- 새 business logic이 Nest `ConfigService`, concrete logger, Prisma, Supabase SDK에 직접 의존하지 않는가?
 - API가 포함된 작업이면 `COMMON/API-SPEC`의 계약 문서가 있는가?
 - API 계약 상태가 구현 전 최소 `confirmed`였는가?
 - API 계약에 소비자, 호환성, request, response, error, DB 연결이 모두 적혀 있는가?
 - mutation, 민감정보, 외부 Provider API에 transaction 항목이 작성되어 있는가?
 - transaction이 필요한 use case는 application layer에서 경계를 잡고 rollback 범위를 명확히 하는가?
 - transaction이 필요 없는 API도 명세에 `transaction: 없음`과 이유가 적혀 있는가?
+- retry 가능한 mutation 또는 다중 row 생성 mutation은 idempotency 기준이 있는가?
+- 후속 처리나 미래 service 분리 가능성이 있는 mutation은 outbox 필요 여부가 검토됐는가?
+- 여러 module 소유 데이터가 관련된 mutation은 orchestration owner가 명확한가?
 - mutation, 민감정보, 외부 Provider API에 observability 항목이 작성되어 있는가?
 - structured log event key, request id, redaction 기준이 정의되어 있는가?
 - 외부 Provider 실패는 provider, retry 가능 여부, 안전한 error context로 남길 수 있는가?
@@ -41,6 +49,7 @@
 - CRM Core data 조회와 mutation이 Workspace ownership 경계를 검증하는가?
 - Kit 적용, Record 생성, Relationship 생성 같은 다중 row 변경이 transaction 기준을 갖는가?
 - DB schema draft, API 계약, FE feature 사용 방식이 같은 개념 이름을 바라보는가?
+- future MSA 분리 가능성이 있는 module boundary를 깨는 직접 repository 공유가 없는가?
 
 ## 3. 테스트 체크리스트
 
@@ -48,6 +57,9 @@
 - AdminGuard 테스트가 있는가?
 - 인증이 필요한 지원 접수 API가 현재 사용자 snapshot과 ownership을 검증하는 테스트가 있는가?
 - 외부 Provider는 기본 테스트에서 mock/stub 처리되는가?
+- application use case test가 orchestration, transaction 호출, idempotency 판단을 검증하는가?
+- repository integration test가 중요한 Prisma mapping과 unique/rollback 조건을 검증하는가?
+- module boundary를 깨는 금지 import를 발견할 수 있는 테스트 또는 정적 검토가 있는가?
 
 ## 4. 배포 체크리스트
 
@@ -58,6 +70,7 @@
 ## 5. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`

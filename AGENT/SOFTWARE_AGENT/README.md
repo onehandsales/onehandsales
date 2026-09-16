@@ -11,6 +11,7 @@ PM_AGENT가 제품 범위와 우선순위를 정하고, UXUI_AGENT가 화면 흐
 SOFTWARE_AGENT는 아래 질문에 답한다.
 
 - Backend module, application service, repository, controller를 어떻게 나눌 것인가?
+- 현재 단일 Backend 서버의 module 경계를 미래 MSA service 경계처럼 어떻게 유지할 것인가?
 - User Web과 Admin Web의 feature boundary를 어떻게 유지할 것인가?
 - API request/response, error, transaction, observability 계약은 어디에 남길 것인가?
 - Prisma schema와 제품 개념 모델은 어떻게 연결할 것인가?
@@ -33,7 +34,7 @@ SOFTWARE_AGENT/
 | 영역 | 책임 |
 | --- | --- |
 | `COMMON` | 공통 구현 경계, 환경 변수, API 샘플, QA 기준, 다음 구현 우선순위 |
-| `BACKEND_AGENT` | NestJS module, API, application/service/repository 구조, transaction, observability |
+| `BACKEND_AGENT` | NestJS module, API, application/service/repository 구조, modular monolith/MSA 대비, transaction, observability |
 | `FRONT_AGENT` | User Web/Admin Web 구조, route, feature, state, E2E, 배포 기준 |
 | `DB_SCHEMA` | 현재 Prisma schema 설명, 후속 CRM Core schema draft, 레거시 제거 기록 |
 
@@ -75,12 +76,13 @@ Software 문서에서는 이 개념을 DB schema, Backend module/API, Frontend f
 2. `COMMON/ENVIRONMENT.md`
 3. `COMMON/QA_CHECKLIST.md`
 4. `BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
-5. `BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
-6. `FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-7. `FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md`
-8. `DB_SCHEMA/README.md`
-9. `DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`
-10. `DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`
+5. `BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
+6. `BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
+7. `FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
+8. `FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md`
+9. `DB_SCHEMA/README.md`
+10. `DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`
+11. `DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`
 
 ## 8. 협업 원칙
 

@@ -6,6 +6,8 @@ Backend Agent는 NestJS, Prisma, Supabase 연동, 인증/사용자, 지원 접�
 
 후속 CRM Core는 고정형 Company/Product/Deal module 복구가 아니라 Workspace/Kit/Record 기반 module로 별도 설계한다.
 
+현재 Backend는 단일 NestJS 서버로 운영하되, module 경계는 미래 MSA service 경계처럼 다룬다. 다른 module의 Prisma repository 구현체를 직접 공유하지 않고, module 간 협력은 application/query port 또는 use case facade로 표현한다.
+
 ## 2. 현재 활성 모듈
 
 - `auth`
@@ -53,6 +55,7 @@ Backend Agent는 NestJS, Prisma, Supabase 연동, 인증/사용자, 지원 접�
 ## 6. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`

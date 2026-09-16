@@ -2,6 +2,8 @@
 
 `BE` is the single NestJS backend for the User API and admin auth verification API.
 
+This backend is a modular monolith. It runs as one NestJS server today, but module boundaries are treated like future service boundaries so the system can be split later without rewriting business flows.
+
 Routes:
 
 - User API: `/api/*`
@@ -38,6 +40,8 @@ Layer rules:
 - `infrastructure`: Prisma repositories and external provider adapters.
 - `presentation`: controllers, DTOs, guards, filters, decorators, and response mapping.
 
-Business modules should continue to be added one module and one migration at a time, following the same layer boundaries.
+Business modules should continue to be added one module and one migration at a time, following the same layer boundaries. A module must not import another module's Prisma repository implementation directly; cross-module cooperation should go through the owning module's application/query port or use case facade.
+
+Mutation APIs that may be retried, create multiple rows, or later cross a service boundary should document transaction ownership plus idempotency/outbox needs in the API contract.
 
 The fixed company/search domain has been removed for the OneHand CRM pivot. The next CRM core should be introduced as a flexible Workspace/Kit/Object/Attribute/Relationship/Record/List/View model instead of extending the old company tables.

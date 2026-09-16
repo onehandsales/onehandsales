@@ -80,6 +80,16 @@ API 계약은 `API_SPEC.md`의 항목을 따르며, 추가로 아래 항목을 �
 - 부수 로그/이력 transaction 포함 여부
 - 외부 Provider 호출 위치
 
+### Idempotency / Outbox 계약
+
+mutation API는 `TRANSACTION.md` 기준으로 아래 항목을 검토한다.
+
+- idempotency 필요 여부
+- idempotency key 출처와 scope
+- 중복 요청 응답 기준
+- outbox 또는 후속 처리 기록 필요 여부
+- future MSA 분리 시 동기 처리와 비동기 처리의 경계
+
 ### Observability 계약
 
 `OBSERVABILITY.md` 기준으로 아래 항목을 적는다.
@@ -159,6 +169,7 @@ API 계약을 변경하면 아래를 함께 확인한다.
 - 해당 goal이 참조하는 `COMMON/API-SPEC/*` 문서가 있다.
 - API 계약 상태가 최소 `confirmed`이다.
 - transaction 항목이 `필요`, `없음`, `보류` 중 하나로 표시되어 있다.
+- mutation이면 idempotency와 outbox 필요 여부가 검토되어 있다.
 - observability 항목이 mutation/민감정보/외부 Provider 범위에 맞게 작성되어 있다.
 - FE 영향 또는 BE-only 여부가 명시되어 있다.
 - DB schema 문서와 API request/response가 연결되어 있다.
@@ -181,6 +192,7 @@ API 계약이 없거나 draft 상태라면 먼저 계약 문서를 보완하는 
 - request와 response DTO 이름이 있는가?
 - success status와 body 유무가 명확한가?
 - transaction 계약이 `TRANSACTION.md` 기준으로 작성됐는가?
+- mutation API에 idempotency/outbox 필요 여부가 적혀 있는가?
 - observability 계약이 `OBSERVABILITY.md` 기준으로 작성됐는가?
 - error response와 FE 처리 기준이 연결되어 있는가?
 - FE API client와 BE controller/use case가 같은 계약을 바라보는가?

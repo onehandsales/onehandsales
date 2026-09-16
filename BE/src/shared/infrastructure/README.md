@@ -9,7 +9,7 @@ infrastructure 구현체를 이곳에 둔다.
 - Supabase Auth JWT verifier adapter
 - ExcelJS 기반 xlsx workbook writer adapter
 
-기능별 repository는 해당 기능 모듈의 infrastructure 폴더 아래에 둔다.
+기능별 repository는 해당 기능 모듈의 infrastructure 폴더 아래에 둔다. 다른 module은 그 Prisma repository 구현체를 직접 import하지 않는다.
 
 Supabase Cloud 연동 구현체는 `supabase/` 아래에 둔다. 현재는 Auth JWT 검증만 담당하며, application/domain 계층에는 provider 타입을 노출하지 않는다.
 

@@ -17,6 +17,7 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/DEPLOYMENT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/README.md`
@@ -32,6 +33,7 @@
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/004_backend_deployment_environment.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/005_backend_api_function_comment_rule.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/006_backend_transaction_observability_api_contract.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/007_modular_monolith_msa_boundary.md`
 
 ### Front Agent
 
@@ -71,10 +73,10 @@
 - 연결 DB: 생성/조회/수정/삭제 model, relation, transaction 대상, 제거/보존 정책 여부, 부수 로그/이력 model
 - 에러 응답: status, domain error code, 사용자가 보게 될 처리 기준
 - FE 처리 기준: body 없는 성공 응답 처리, 재조회 범위, optimistic update 여부, route guard, 권한 없음 처리
-- BE 처리 기준: Clean Architecture 계층, application use case, repository/port, infrastructure adapter, User API와 관리자 확인 API 분리, 구현 검증 범위
+- BE 처리 기준: Clean Architecture 계층, modular monolith/MSA 대비 module boundary, application use case, repository/port, infrastructure adapter, User API와 관리자 확인 API 분리, 구현 검증 범위
 - Backend 주석 기준: class/interface의 `// 역할 : ...`, API controller method의 `// API : ...`, 내부 method/function의 `// 기능 : ...`, 주요 orchestration의 numbered step comment
 - API 계약 기준: 계약 상태, 소비자, 호환성, request/response/error 계약, DB schema 연결
-- Transaction 기준: 필요 여부, 이유, transaction model, rollback 범위, 부수 로그/이력 포함 여부, 외부 Provider 호출 위치
+- Transaction 기준: 필요 여부, 이유, transaction model, rollback 범위, 부수 로그/이력 포함 여부, 외부 Provider 호출 위치, idempotency/outbox 필요 여부
 - Observability 기준: log event key, request id, redaction, provider error context
 
 ## 4. API 계약 작성 규칙
@@ -92,6 +94,7 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - 내부 비즈니스 로직 흐름
 - 연결된 DB 스키마
 - transaction 필요 여부와 rollback 범위
+- idempotency/outbox 필요 여부
 - observability event key, request id, redaction 기준
 - 에러 응답
 - FE가 성공/실패를 처리하는 방식
@@ -105,6 +108,7 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - FE/BE goal 문서의 `반드시 먼저 읽을 문서` 목록에는 이 문서를 포함한다.
 - API 계약 문서가 있으면 request, response, 내부 비즈니스 로직, DB 연결, 에러 응답을 누락 없이 보강한다.
 - 새 API가 포함된 goal은 구현 전에 API 계약 상태를 최소 `confirmed`로 만들고 transaction/observability 항목을 채운다.
+- mutation API가 포함된 goal은 idempotency/outbox 필요 여부와 module orchestration owner를 함께 확인한다.
 - API 계약이 없거나 `draft`이면 구현 goal로 들어가지 않고 계약 보완 goal을 먼저 둔다.
 
 ## 6. 활성 TODO 재검토 산출물 기준
@@ -129,5 +133,6 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
+- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - `TODO/README.md`

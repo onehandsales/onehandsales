@@ -11,6 +11,8 @@
 - Clean Architecture
 - Modular Monolith
 
+현재는 단일 NestJS 서버로 운영하지만, 모듈 경계는 나중에 MSA service로 분리될 수 있는 경계처럼 다룬다. 다른 모듈의 Prisma repository 구현체를 직접 가져다 쓰지 않고, 필요한 협력은 owning module의 application/query port 또는 use case facade로 표현한다.
+
 ## API 분리 기준
 
 - 사용자 API: `/api/*`
@@ -124,6 +126,9 @@ Auth runtime 기준:
 ## 정본 규칙
 
 - `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
+- `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
 - `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
+- `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
+- `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
 - `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
 - `../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`

@@ -29,6 +29,20 @@
 - `infrastructure`: Prisma repository, external adapter
 - `presentation`: controller, DTO, guard/filter
 
+## Modular Monolith / Future MSA 원칙
+
+현재 Backend는 단일 NestJS 서버다. 단일 서버 안에서도 module 경계는 나중에 service로 분리될 수 있는 경계처럼 다룬다.
+
+원칙:
+
+- 한 module의 Prisma repository 구현체는 해당 module의 `infrastructure` 내부 구현이다.
+- 다른 module은 Prisma repository 구현체를 직접 import하거나 주입받지 않는다.
+- module 간 협력이 필요하면 owning module의 application port, query port, use case facade를 통해 접근한다.
+- 여러 module 소유 데이터를 한 transaction에서 바꿔야 하면 ownership 또는 orchestration owner를 먼저 재검토한다.
+- future MSA 분리 가능성이 있는 mutation은 idempotency와 outbox 필요 여부를 API 계약에 남긴다.
+
+상세 기준은 `MODULAR_MONOLITH_AND_MSA.md`를 따른다.
+
 ## ORM / DB Adapter 원칙
 
 - 현재 Backend 표준 ORM은 Prisma다.
@@ -37,6 +51,13 @@
 - `PrismaClient`, Prisma model type, Prisma transaction client type은 controller, application use case, domain type의 공개 계약으로 노출하지 않는다.
 - ORM 교체 가능성 자체를 목표로 삼지 않는다. 핵심 목표는 비즈니스 규칙과 DB 접근 구현을 분리해 장기 유지보수 비용을 낮추는 것이다.
 - 복잡한 조회 최적화가 필요하면 read repository 또는 raw SQL을 사용할 수 있다. 이 경우 API contract, index 계획, 테스트, observability 기준을 함께 남긴다.
+
+## Application Dependency 원칙
+
+- application layer는 business orchestration, 권한 판단, transaction boundary를 담당한다.
+- 새 business logic은 `ConfigService`, concrete logger, Express request/response, Prisma, Supabase SDK에 직접 의존하지 않는다.
+- 설정, 시간, token, logger, 외부 provider는 application port 또는 adapter 뒤에 둔다.
+- Nest DI를 위한 최소 decorator 사용은 허용하되, command/result/port 공개 계약에는 Nest type을 노출하지 않는다.
 
 ## External Provider 독립성 원칙
 
