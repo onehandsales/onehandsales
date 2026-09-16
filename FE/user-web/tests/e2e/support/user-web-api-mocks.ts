@@ -208,6 +208,10 @@ async function handleApiRequest(
     return json(createDefaultSidebarWorkspace());
   }
 
+  if (pathname === "/api/users/me/sidebar/workspaces" && method === "GET") {
+    return json(createSidebarWorkspaces());
+  }
+
   if (pathname === "/api/users/me/devices" && method === "GET") {
     return json({
       devices: [
@@ -312,6 +316,11 @@ function createDefaultSidebarWorkspace() {
     name: "E2E Workspace",
     kind: "PERSONAL",
   };
+}
+
+// 기능 : sidebar Workspace 목록 응답 fixture를 생성합니다.
+function createSidebarWorkspaces() {
+  return [createDefaultSidebarWorkspace()];
 }
 
 // 기능 : read Json Body 값을 읽습니다.

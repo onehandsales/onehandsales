@@ -9,7 +9,7 @@
 ## 1. 목적
 
 `/app` 사이드바에서 로그인한 사용자가 접근 가능한 Workspace 요약 목록과 선택된 Workspace 요약을 조회한다.
-신규 사용자와 기존 사용자는 `/app` 진입 전 기본 Workspace 조회 API를 공통으로 호출해 열어야 할 Workspace를 결정한다.
+신규 사용자와 기존 사용자는 모두 `/app` 진입 후 사이드바에서 기본 Workspace 조회 API를 호출해 상단에 표시할 Workspace를 결정한다.
 
 ## 2. 공통 정책
 
@@ -72,7 +72,7 @@ Success:
 ### GET /api/users/me/sidebar/workspaces/default
 
 로그인한 사용자가 멤버로 속한 Workspace 중 `/app` 첫 진입 시 기본으로 열 Workspace 요약 하나를 반환한다.
-신규 사용자는 직업 선택 온보딩 완료 직후 이 API를 호출하고, 기존 사용자는 로그인 직후 Workspace loading 화면에서 이 API를 호출한다.
+신규 사용자는 직업 선택 온보딩 완료 후 `/app`으로 이동하고, 기존 사용자는 로그인 직후 `/app`으로 이동한다. `/app` 사이드바는 이 API를 호출해 상단 Workspace 이름과 종류를 표시한다.
 
 Request:
 
@@ -103,9 +103,10 @@ Error:
 
 FE 사용:
 
-- 신규 사용자: `POST /api/users/me/onboarding/job-selection` 성공 후 `GET /api/users/me/sidebar/workspaces/default`를 호출한다.
-- 기존 사용자: 로그인 성공 후 `/app/workspace-loading`에서 `GET /api/users/me/sidebar/workspaces/default`를 호출한다.
-- API 성공 후 `SidebarWorkspaceSummaryResponse.id`를 `/app?workspaceId=<id>`로 전달한다.
+- 신규 사용자: `POST /api/users/me/onboarding/job-selection` 성공 후 구축 연출을 마치고 `/app`으로 이동한다.
+- 기존 사용자: 로그인 성공 후 `/app`으로 이동한다.
+- `/app` 사이드바는 `GET /api/users/me/sidebar/workspaces/default`를 호출해 상단 Workspace 이름과 종류를 표시한다.
+- `/app` 사이드바 드롭다운은 `GET /api/users/me/sidebar/workspaces`를 호출해 Workspace 목록의 `name`, `kind`를 표시한다.
 
 ### GET /api/users/me/sidebar/workspaces/:workspaceId
 
@@ -142,7 +143,7 @@ Error:
 ## 5. 호환성
 
 - breaking change 여부: 직전 내부 계약 대비 있음
-- 기존 FE 영향: 온보딩 완료 응답에서 Workspace snapshot을 읽지 않고, default Workspace API 응답의 `id`를 `/app?workspaceId=<id>`로 사용한다.
+- 기존 FE 영향: 온보딩 완료 응답에서 Workspace snapshot을 읽지 않고, `/app` 사이드바가 default Workspace API 응답의 `name`, `kind`를 표시한다.
 - migration 또는 fallback: DB schema 변경 없음
 
 ## 6. 구현 상태
@@ -154,9 +155,10 @@ Error:
   - `BE/src/modules/workspace/application/use-cases/get-my-sidebar-workspace.use-case.ts`
 - Query port: `BE/src/modules/workspace/application/ports/workspace-sidebar-query.port.ts`
 - Prisma adapter: `BE/src/modules/workspace/infrastructure/persistence/prisma-workspace-sidebar-query.repository.ts`
-- Frontend Workspace loading flow:
+- Frontend sidebar Workspace flow:
+  - `FE/user-web/src/components/layout/app-shell.tsx`
   - `FE/user-web/src/pages/onboarding/index.tsx`
-  - `FE/user-web/src/pages/workspace-loading/index.tsx`
+  - `FE/user-web/src/pages/login/index.tsx`
   - `FE/user-web/src/features/workspace/api/sidebar-workspace-api.ts`
   - `FE/user-web/src/features/workspace/hooks/use-sidebar-workspace.ts`
   - `FE/user-web/src/features/workspace/components/crm-environment-building-screen.tsx`

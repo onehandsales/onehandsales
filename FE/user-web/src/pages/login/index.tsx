@@ -25,7 +25,6 @@ const fallbackProviders: AuthProviderOption[] = [
   { provider: "line", label: "LINE", enabled: true },
   { provider: "apple", label: "Apple", enabled: true },
 ];
-const WORKSPACE_LOADING_PATH = "/app/workspace-loading";
 const minimumLoginLoadingMs = 1500;
 
 // 기능 : 로그인 페이지를 렌더링합니다.
@@ -286,6 +285,6 @@ function getAuthenticatedRedirectPath(
     );
   }
 
-  // 2. 이미 완료한 사용자는 Workspace loading 화면에서 기본 Workspace를 먼저 준비한다.
-  return WORKSPACE_LOADING_PATH;
+  // 2. 이미 완료한 사용자는 앱 화면으로 이동해 기본 Workspace를 준비한다.
+  return "/app";
 }

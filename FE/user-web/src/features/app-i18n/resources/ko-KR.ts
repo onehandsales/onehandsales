@@ -71,6 +71,8 @@ export const koKRResource = {
     sidebarOpen: "사이드 바 열기",
     terms: "이용약관",
     userFallback: "사용자",
+    workspaceKindFallback: "작업공간",
+    workspaceLoading: "작업공간 불러오는 중",
   },
   helpModal: {
     errorCaptureFailed:

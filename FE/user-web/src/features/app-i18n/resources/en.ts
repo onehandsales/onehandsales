@@ -71,6 +71,8 @@ export const enResource = {
     sidebarOpen: "Open sidebar",
     terms: "Terms",
     userFallback: "User",
+    workspaceKindFallback: "Workspace",
+    workspaceLoading: "Loading workspace",
   },
   helpModal: {
     errorCaptureFailed:

@@ -25,7 +25,7 @@ No request body is required. The clicked label is intentionally not persisted in
 4. If `jobSelectOnboardingCompletedAt` is already set, keep the existing timestamp.
 5. If it is `null`, set it to the current UTC instant.
 6. Return only the completion timestamp.
-7. User Web then calls `GET /api/users/me/sidebar/workspaces/default` to resolve the Workspace that should be opened in `/app`.
+7. User Web then navigates to `/app`; the `/app` sidebar resolves the default Workspace through the sidebar Workspace API.
 
 ## Errors
 
@@ -42,7 +42,7 @@ No request body is required. The clicked label is intentionally not persisted in
 ## Compatibility
 
 - Breaking change versus the previous internal contract: response no longer includes `workspaceId`, `workspace`, or `workspaceMember`.
-- User Web must use `GET /api/users/me/sidebar/workspaces/default` after completion when it needs the default Workspace summary.
+- User Web must not depend on this endpoint for Workspace summary data; `/app` sidebar uses the sidebar Workspace API when it needs the default Workspace summary.
 
 ## Implementation
 

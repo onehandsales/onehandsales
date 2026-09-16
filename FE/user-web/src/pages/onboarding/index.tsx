@@ -15,7 +15,6 @@ import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site
 import {
   CrmEnvironmentBuildingScreen,
   useCrmEnvironmentBuildProgress,
-  useDefaultSidebarWorkspaceQuery,
 } from "@/features/workspace";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
@@ -243,25 +242,18 @@ export function OnboardingPage() {
   const [isBuildingCrm, setIsBuildingCrm] = useState(false);
   const [isJobSelectionSaved, setIsJobSelectionSaved] = useState(false);
   const buildProgress = useCrmEnvironmentBuildProgress(isBuildingCrm);
-  const defaultWorkspaceQuery = useDefaultSidebarWorkspaceQuery({
-    enabled: isJobSelectionSaved,
-  });
   const isSubmitting = completeJobSelectionMutation.isPending || isBuildingCrm;
 
   useEffect(() => {
     if (
       isBuildingCrm &&
       buildProgress.isDone &&
-      isJobSelectionSaved &&
-      defaultWorkspaceQuery.data
+      isJobSelectionSaved
     ) {
-      navigate(`/app?workspaceId=${encodeURIComponent(defaultWorkspaceQuery.data.id)}`, {
-        replace: true,
-      });
+      navigate("/app", { replace: true });
     }
   }, [
     buildProgress.isDone,
-    defaultWorkspaceQuery.data,
     isBuildingCrm,
     isJobSelectionSaved,
     navigate,
@@ -301,7 +293,7 @@ export function OnboardingPage() {
     setIsJobSelectionSaved(false);
     setIsBuildingCrm(true);
 
-    // 1. 온보딩 완료 후 default Workspace API와 구축 연출이 모두 끝난 뒤 앱 첫 화면으로 이동한다.
+    // 1. 온보딩 완료 후 구축 연출이 끝나면 앱 첫 화면으로 이동한다.
     completeJobSelectionMutation.mutate(undefined, {
       onSuccess: () => {
         setIsJobSelectionSaved(true);
@@ -315,11 +307,6 @@ export function OnboardingPage() {
   if (isBuildingCrm) {
     return (
       <CrmEnvironmentBuildingScreen
-        errorMessage={
-          defaultWorkspaceQuery.error
-            ? getApiErrorMessage(defaultWorkspaceQuery.error)
-            : null
-        }
         homePath={homePath}
         htmlLang={htmlLang}
         logoAria={copy.logoAria}

@@ -57,6 +57,10 @@ import { ErrorReportHelpContent } from "@/features/error-report";
 import { SupportRequestHelpContent } from "@/features/support-request";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
+  useDefaultSidebarWorkspaceQuery,
+  useSidebarWorkspacesQuery,
+} from "@/features/workspace";
+import {
   createAccountModalSearchParams,
   getAccountModalSectionFromSearchParams,
   type AccountModalQuerySection,
@@ -144,10 +148,25 @@ export function AppShell() {
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
   // 20. 이후 단계에서 사용할 userEmail 값을 준비한다.
   const userEmail = user?.email ?? t("shell.loggedInEmailMissing");
-  // 21. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
+  // 21. 현재 사용자의 기본 Workspace와 Workspace 목록 조회를 준비한다.
+  const defaultWorkspaceQuery = useDefaultSidebarWorkspaceQuery({
+    userId: user?.id ?? null,
+  });
+  const sidebarWorkspacesQuery = useSidebarWorkspacesQuery({
+    userId: user?.id ?? null,
+  });
+  // 22. 이후 단계에서 사용할 currentWorkspaceName 값을 준비한다.
+  const currentWorkspaceName =
+    defaultWorkspaceQuery.data?.name ?? t("shell.workspaceLoading");
+  // 23. 이후 단계에서 사용할 currentWorkspaceKind 값을 준비한다.
+  const currentWorkspaceKind =
+    defaultWorkspaceQuery.data?.kind ?? t("shell.workspaceKindFallback");
+  // 24. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
+  const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
+  // 25. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
-  // 22. 처리 흐름에 필요한 outletContext 값을 준비한다.
+  // 26. 처리 흐름에 필요한 outletContext 값을 준비한다.
   const outletContext = useMemo<AppShellOutletContext>(
     () => ({ setAutoSidebarCollapsed: setIsSidebarAutoCollapsed }),
     [],
@@ -407,14 +426,38 @@ export function AppShell() {
         >
           <div className="flex items-center gap-2.5 px-1 py-2">
             <OneHandLogoMark className="h-9 w-9 shrink-0" />
-            <p className="min-w-0 flex-1 truncate text-[14px] font-semibold leading-5 text-[#111827]">
-              {userName}
-            </p>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[14px] font-semibold leading-5 text-[#111827]">
+                {currentWorkspaceName}
+              </p>
+              <p className="truncate text-[12px] font-medium leading-4 text-[#6B7280]">
+                {currentWorkspaceKind}
+              </p>
+            </div>
           </div>
           <div className="mt-1 grid gap-px">
             <div className="flex h-9 w-full items-center rounded-lg px-2 text-[14px] font-medium text-[#6B7280]">
               <span className="min-w-0 flex-1 truncate">{userEmail}</span>
             </div>
+            {sidebarWorkspaces.length > 0 ? (
+              <div className="my-1 border-t border-[#EEEDEA] pt-1">
+                {sidebarWorkspaces.map((workspace) => (
+                  <div
+                    className="flex min-h-11 w-full items-center rounded-lg px-2 py-1.5"
+                    key={workspace.id}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[14px] font-medium leading-5 text-[#111827]">
+                        {workspace.name}
+                      </p>
+                      <p className="truncate text-[12px] font-medium leading-4 text-[#6B7280]">
+                        {workspace.kind}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
             <AccountMenuItem
               icon={Settings}
               label={t("shell.accountProfile")}
@@ -448,7 +491,10 @@ export function AppShell() {
         <OneHandLogoMark className="h-7 w-7 shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-[14px] font-medium text-[#111827]">
-            {userName}
+            {currentWorkspaceName}
+          </p>
+          <p className="truncate text-[12px] font-medium leading-4 text-[#6B7280]">
+            {currentWorkspaceKind}
           </p>
         </div>
         {!accountMenuOpen ? (

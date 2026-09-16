@@ -36,7 +36,6 @@ import { SolutionsPage } from "@/pages/solutions";
 import { PersonalSolutionPage } from "@/pages/solutions/personal";
 import { RealEstateSolutionPage } from "@/pages/solutions/real-estate";
 import { MorePage } from "@/pages/more";
-import { WorkspaceLoadingPage } from "@/pages/workspace-loading";
 import { OnboardingPage } from "@/pages/onboarding";
 import { TermsPage } from "@/pages/terms";
 
@@ -131,14 +130,6 @@ export const router = createBrowserRouter([
   { path: "/deals/new", element: <LegacyAppRedirect to="/app" /> },
   { path: "/deals/:dealId", element: <LegacyAppRedirect to="/app" /> },
   { path: "/more", element: <LegacyAppRedirect to="/app/more" /> },
-  {
-    path: "/app/workspace-loading",
-    element: (
-      <ProtectedRoute>
-        <WorkspaceLoadingPage />
-      </ProtectedRoute>
-    ),
-  },
   {
     path: "/app",
     element: (

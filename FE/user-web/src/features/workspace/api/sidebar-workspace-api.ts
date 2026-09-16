@@ -8,3 +8,11 @@ export function getDefaultSidebarWorkspace() {
     "/api/users/me/sidebar/workspaces/default"
   );
 }
+
+// 기능 : 현재 사용자가 사이드바에서 전환할 수 있는 Workspace 요약 목록을 조회합니다.
+export function listSidebarWorkspaces() {
+  // 1. 인증된 현재 사용자 기준 sidebar Workspace 목록 API를 호출한다.
+  return apiClient<SidebarWorkspaceSummary[]>(
+    "/api/users/me/sidebar/workspaces"
+  );
+}

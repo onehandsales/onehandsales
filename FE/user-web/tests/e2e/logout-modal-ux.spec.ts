@@ -16,7 +16,7 @@ test.describe("logout modal UX", () => {
     // 3. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
     // 4. 필요한 비동기 작업을 실행한다.
-    await page.getByRole("button", { name: "모바일QA사용자" }).click();
+    await page.getByRole("button", { name: "E2E Workspace" }).click();
     // 5. 필요한 비동기 작업을 실행한다.
     await page.getByRole("menuitem", { exact: true, name: "로그아웃" }).click();
 
