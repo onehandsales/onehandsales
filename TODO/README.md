@@ -131,6 +131,7 @@ Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 �
 - `MEETING_NOTE_MANUAL_PLAN`: MeetingNote 수동 Backend API와 User Web 회의록 목록/상세/생성/수정 화면
 - `MVP-STARTER_PLAN`: G00-G36 MVP starter 계획과 공통 계약 문서
 - `NEXT_BACKEND_API_BACKLOG_PLAN`: 다음 Backend API backlog 후보 정리와 이관
+- `ONBOARDING_JOB_SELECTION_PLAN`: 첫 로그인 직업 선택 온보딩 완료와 OWNER Workspace bootstrap
 - `PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: presentation repository port 타입 의존 정리
 - `PRODUCT_DOMAIN_PLAN`: Product Backend API와 User Web 제품 목록/상세/메모/export 화면
 - `PUBLIC_CONTACT_REQUEST_PLAN`: 공개 문의 요청 API 계약과 구현 범위
