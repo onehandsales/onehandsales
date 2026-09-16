@@ -16,6 +16,11 @@ export interface WorkspaceSidebarQuery {
     userId: string
   ): Promise<WorkspaceSidebarWorkspaceSummary[]>;
 
+  // 기능 : 현재 사용자가 멤버로 속한 기본 표시 Workspace 요약을 조회합니다.
+  getMyDefaultSidebarWorkspace(
+    userId: string
+  ): Promise<WorkspaceSidebarWorkspaceSummary | null>;
+
   // 기능 : 현재 사용자가 멤버로 속한 특정 Workspace 요약을 조회합니다.
   getMySidebarWorkspace(
     userId: string,

@@ -66,6 +66,7 @@ export interface UserDeviceRecord {
 // 역할 : UserJobSelectionOnboardingRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserJobSelectionOnboardingRecord {
   readonly jobSelectOnboardingCompletedAt: Date;
+  readonly workspaceId: string;
   readonly workspace: UserJobSelectionOnboardingWorkspaceRecord;
   readonly workspaceMember: UserJobSelectionOnboardingWorkspaceMemberRecord;
 }

@@ -35,6 +35,7 @@ describe("CompleteJobSelectionOnboardingUseCase", () => {
     expect(result.jobSelectOnboardingCompletedAt).toBe(
       fixture.repository.lastCompletedAt
     );
+    expect(result.workspaceId).toBe("workspace-1");
     expect(result.workspace.id).toBe("workspace-1");
     expect(result.workspace.kind).toBe("PERSONAL");
     expect(result.workspaceMember.role).toBe("OWNER");

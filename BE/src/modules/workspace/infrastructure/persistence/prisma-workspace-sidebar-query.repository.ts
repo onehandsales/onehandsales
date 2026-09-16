@@ -37,13 +37,47 @@ export class PrismaWorkspaceSidebarQueryRepository
           },
         },
       },
-      orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
+      orderBy: {
+        joinedAt: "desc",
+      },
     });
 
     // 2. Prisma row를 API에 노출 가능한 Workspace 요약으로 변환한다.
     return workspaceMembers.map((workspaceMember) =>
       this.mapWorkspaceSummary(workspaceMember.workspace)
     );
+  }
+
+  // 기능 : 현재 사용자가 멤버로 속한 최신 Workspace 요약을 기본값으로 조회합니다.
+  async getMyDefaultSidebarWorkspace(
+    userId: string
+  ): Promise<WorkspaceSidebarWorkspaceSummary | null> {
+    // 1. 사용자 멤버십 기준으로 가장 최근 참여 Workspace 하나를 조회한다.
+    const workspaceMember = await this.prismaService.workspaceMember.findFirst({
+      where: {
+        userId,
+      },
+      select: {
+        workspace: {
+          select: {
+            id: true,
+            name: true,
+            kind: true,
+          },
+        },
+      },
+      orderBy: {
+        joinedAt: "desc",
+      },
+    });
+
+    // 2. 사용자가 속한 Workspace가 없으면 호출자가 not found로 변환할 수 있게 null을 반환한다.
+    if (!workspaceMember) {
+      return null;
+    }
+
+    // 3. Prisma row를 API에 노출 가능한 Workspace 요약으로 변환한다.
+    return this.mapWorkspaceSummary(workspaceMember.workspace);
   }
 
   // 기능 : 현재 사용자가 멤버로 속한 특정 Workspace 요약을 조회합니다.

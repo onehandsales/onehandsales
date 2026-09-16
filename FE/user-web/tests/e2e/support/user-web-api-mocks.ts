@@ -294,6 +294,7 @@ function createUserProfile(overrides: Partial<MutableRecord> = {}) {
 function createJobSelectionOnboardingResponse() {
   return {
     jobSelectOnboardingCompletedAt: NOW,
+    workspaceId: "workspace-e2e-001",
     workspace: {
       id: "workspace-e2e-001",
       name: "E2E Workspace",

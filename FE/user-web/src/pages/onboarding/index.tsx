@@ -241,6 +241,9 @@ export function OnboardingPage() {
   const [buildProgress, setBuildProgress] = useState(0);
   const [isBuildAnimationDone, setIsBuildAnimationDone] = useState(false);
   const [isJobSelectionSaved, setIsJobSelectionSaved] = useState(false);
+  const [createdWorkspaceId, setCreatedWorkspaceId] = useState<string | null>(
+    null
+  );
   const isSubmitting = completeJobSelectionMutation.isPending || isBuildingCrm;
 
   useEffect(() => {
@@ -276,10 +279,23 @@ export function OnboardingPage() {
   }, [isBuildingCrm]);
 
   useEffect(() => {
-    if (isBuildingCrm && isBuildAnimationDone && isJobSelectionSaved) {
-      navigate("/app", { replace: true });
+    if (
+      isBuildingCrm &&
+      isBuildAnimationDone &&
+      isJobSelectionSaved &&
+      createdWorkspaceId
+    ) {
+      navigate(`/app?workspaceId=${encodeURIComponent(createdWorkspaceId)}`, {
+        replace: true,
+      });
     }
-  }, [isBuildAnimationDone, isBuildingCrm, isJobSelectionSaved, navigate]);
+  }, [
+    createdWorkspaceId,
+    isBuildAnimationDone,
+    isBuildingCrm,
+    isJobSelectionSaved,
+    navigate,
+  ]);
 
   // 1. 인증 상태 복원 중에는 흰 화면을 유지한다.
   if (isInitializing || isPending) {
@@ -315,17 +331,20 @@ export function OnboardingPage() {
     setBuildProgress(0);
     setIsBuildAnimationDone(false);
     setIsJobSelectionSaved(false);
+    setCreatedWorkspaceId(null);
     setIsBuildingCrm(true);
 
     // 1. 온보딩 완료 API와 구축 연출이 모두 끝난 뒤 앱 첫 화면으로 이동한다.
     completeJobSelectionMutation.mutate(undefined, {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        setCreatedWorkspaceId(response.workspaceId);
         setIsJobSelectionSaved(true);
       },
       onError: () => {
         setIsBuildingCrm(false);
         setBuildProgress(0);
         setIsBuildAnimationDone(false);
+        setCreatedWorkspaceId(null);
       },
     });
   };

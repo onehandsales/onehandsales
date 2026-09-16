@@ -14,6 +14,7 @@ No request body is required. The clicked label is intentionally not persisted in
 ```json
 {
   "jobSelectOnboardingCompletedAt": "2026-09-14T00:00:00.000Z",
+  "workspaceId": "workspace-id",
   "workspace": {
     "id": "workspace-id",
     "name": "User Workspace",
@@ -42,7 +43,7 @@ No request body is required. The clicked label is intentionally not persisted in
 3. If no OWNER workspace membership exists, create a PERSONAL `Workspace` and OWNER `WorkspaceMember`.
 4. If `jobSelectOnboardingCompletedAt` is already set, keep the existing timestamp.
 5. If it is `null`, set it to the current UTC instant.
-6. Return the completion timestamp, workspace, and workspace member.
+6. Return the completion timestamp, top-level workspace ID, workspace, and workspace member.
 
 ## Errors
 

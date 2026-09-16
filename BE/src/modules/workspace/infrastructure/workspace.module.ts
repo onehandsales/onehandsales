@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { WORKSPACE_ONBOARDING } from "@/modules/workspace/application/ports/workspace-onboarding.port";
 import { WORKSPACE_SIDEBAR_QUERY } from "@/modules/workspace/application/ports/workspace-sidebar-query.port";
+import { GetMyDefaultSidebarWorkspaceUseCase } from "@/modules/workspace/application/use-cases/get-my-default-sidebar-workspace.use-case";
 import { GetMySidebarWorkspaceUseCase } from "@/modules/workspace/application/use-cases/get-my-sidebar-workspace.use-case";
 import { ListMySidebarWorkspacesUseCase } from "@/modules/workspace/application/use-cases/list-my-sidebar-workspaces.use-case";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
@@ -16,6 +17,7 @@ import { UserSidebarWorkspacesController } from "../presentation/http/user-sideb
   controllers: [UserSidebarWorkspacesController],
   providers: [
     ListMySidebarWorkspacesUseCase,
+    GetMyDefaultSidebarWorkspaceUseCase,
     GetMySidebarWorkspaceUseCase,
     {
       provide: WORKSPACE_ONBOARDING,

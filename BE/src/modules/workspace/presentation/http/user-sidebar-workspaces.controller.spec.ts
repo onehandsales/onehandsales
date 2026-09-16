@@ -7,6 +7,7 @@ import { GUARDS_METADATA } from "@nestjs/common/constants";
 import { Test } from "@nestjs/testing";
 import type { Request } from "express";
 import * as request from "supertest";
+import { GetMyDefaultSidebarWorkspaceUseCase } from "@/modules/workspace/application/use-cases/get-my-default-sidebar-workspace.use-case";
 import { GetMySidebarWorkspaceUseCase } from "@/modules/workspace/application/use-cases/get-my-sidebar-workspace.use-case";
 import { ListMySidebarWorkspacesUseCase } from "@/modules/workspace/application/use-cases/list-my-sidebar-workspaces.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
@@ -30,6 +31,12 @@ type RequestWithCurrentUser = Request & {
 // 역할 : ListMySidebarWorkspacesUseCaseFake controller 테스트용 목록 유스케이스 계약을 정의합니다.
 type ListMySidebarWorkspacesUseCaseFake = Pick<
   ListMySidebarWorkspacesUseCase,
+  "execute"
+>;
+
+// 역할 : GetMyDefaultSidebarWorkspaceUseCaseFake controller 테스트용 기본 Workspace 유스케이스 계약을 정의합니다.
+type GetMyDefaultSidebarWorkspaceUseCaseFake = Pick<
+  GetMyDefaultSidebarWorkspaceUseCase,
   "execute"
 >;
 
@@ -63,6 +70,17 @@ function createListUseCaseFake(): jest.Mocked<ListMySidebarWorkspacesUseCaseFake
   };
 }
 
+// 기능 : 기본 Workspace 유스케이스 fake를 생성합니다.
+function createDefaultUseCaseFake(): jest.Mocked<GetMyDefaultSidebarWorkspaceUseCaseFake> {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      id: "00000000-0000-4000-8000-000000000302",
+      name: "Recent Workspace",
+      kind: "ORGANIZATION",
+    }),
+  };
+}
+
 // 기능 : 단건 유스케이스 fake를 생성합니다.
 function createGetUseCaseFake(): jest.Mocked<GetMySidebarWorkspaceUseCaseFake> {
   return {
@@ -80,13 +98,16 @@ describe("UserSidebarWorkspacesController", () => {
   let app: INestApplication;
   // 2. 이후 단계에서 사용할 listUseCase 값을 준비한다.
   let listUseCase: jest.Mocked<ListMySidebarWorkspacesUseCaseFake>;
-  // 3. 이후 단계에서 사용할 getUseCase 값을 준비한다.
+  // 3. 이후 단계에서 사용할 defaultUseCase 값을 준비한다.
+  let defaultUseCase: jest.Mocked<GetMyDefaultSidebarWorkspaceUseCaseFake>;
+  // 4. 이후 단계에서 사용할 getUseCase 값을 준비한다.
   let getUseCase: jest.Mocked<GetMySidebarWorkspaceUseCaseFake>;
 
-  // 4. 필요한 비동기 작업을 실행한다.
+  // 5. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
     // 1. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     listUseCase = createListUseCaseFake();
+    defaultUseCase = createDefaultUseCaseFake();
     getUseCase = createGetUseCaseFake();
 
     // 2. 비동기 결과를 받아 moduleRef에 저장한다.
@@ -96,6 +117,10 @@ describe("UserSidebarWorkspacesController", () => {
         {
           provide: ListMySidebarWorkspacesUseCase,
           useValue: listUseCase,
+        },
+        {
+          provide: GetMyDefaultSidebarWorkspaceUseCase,
+          useValue: defaultUseCase,
         },
         {
           provide: GetMySidebarWorkspaceUseCase,
@@ -141,6 +166,20 @@ describe("UserSidebarWorkspacesController", () => {
   });
 
   // 8. 필요한 비동기 작업을 실행한다.
+  it("returns the default sidebar workspace", async () => {
+    await request(app.getHttpServer())
+      .get("/api/users/me/sidebar/workspaces/default")
+      .expect(200)
+      .expect({
+        id: "00000000-0000-4000-8000-000000000302",
+        name: "Recent Workspace",
+        kind: "ORGANIZATION",
+      });
+
+    expect(defaultUseCase.execute).toHaveBeenCalledWith(CURRENT_USER);
+  });
+
+  // 9. 필요한 비동기 작업을 실행한다.
   it("returns a sidebar workspace detail", async () => {
     await request(app.getHttpServer())
       .get(

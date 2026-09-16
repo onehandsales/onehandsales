@@ -165,6 +165,7 @@ export type JobSelectionOnboardingWorkspaceMember = {
 // 역할 : 직업 선택 온보딩 완료 API 응답입니다.
 export type CompleteJobSelectionOnboardingResponse = {
   readonly jobSelectOnboardingCompletedAt: string;
+  readonly workspaceId: string;
   readonly workspace: JobSelectionOnboardingWorkspace;
   readonly workspaceMember: JobSelectionOnboardingWorkspaceMember;
 };

@@ -67,6 +67,11 @@ class FakeWorkspaceSidebarQuery implements WorkspaceSidebarQuery {
     throw new Error("Not implemented in fake query");
   }
 
+  // 기능 : 현재 테스트에서 사용하지 않는 기본 Workspace 조회를 차단합니다.
+  async getMyDefaultSidebarWorkspace(): Promise<WorkspaceSidebarWorkspaceSummary | null> {
+    throw new Error("Not implemented in fake query");
+  }
+
   // 기능 : 테스트용 Workspace 요약 또는 null을 반환합니다.
   async getMySidebarWorkspace(
     userId: string,

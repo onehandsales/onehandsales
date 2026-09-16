@@ -100,6 +100,7 @@ export class CompleteJobSelectionOnboardingUseCase {
   ): UserJobSelectionOnboardingRecord {
     return {
       jobSelectOnboardingCompletedAt,
+      workspaceId: workspaceOnboarding.workspace.id,
       workspace: workspaceOnboarding.workspace,
       workspaceMember: workspaceOnboarding.workspaceMember,
     };
