@@ -118,10 +118,10 @@ export class PrismaWorkspaceOnboardingRepository
     const normalizedDisplayName = displayName?.trim();
 
     if (normalizedDisplayName) {
-      return `${normalizedDisplayName} Workspace`;
+      return `${normalizedDisplayName}'s Workspace`;
     }
 
-    return "My Workspace";
+    return "Untitled Workspace";
   }
 
   // 기능 : Prisma WorkspaceMember row를 onboarding 결과 레코드로 변환합니다.
