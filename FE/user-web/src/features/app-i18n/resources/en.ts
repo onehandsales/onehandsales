@@ -66,6 +66,8 @@ export const enResource = {
     logoutConfirm: "Log out",
     logoutDescription: "To access your OneHand workspace,\nyou will need to log in again.",
     logoutQuestion: "Log out of your account?",
+    myWorkspaces: "My Workspaces",
+    newWorkspace: "New Workspace",
     privacy: "Privacy",
     sidebarClose: "Close sidebar",
     sidebarOpen: "Open sidebar",

@@ -24,6 +24,7 @@ import {
   LogOut,
   Menu,
   MoreHorizontal,
+  Plus,
   ScreenShare,
   Search,
   Settings,
@@ -424,8 +425,7 @@ export function AppShell() {
           className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
           role="menu"
         >
-          <div className="flex items-center gap-2.5 px-1 py-2">
-            <OneHandLogoMark className="h-9 w-9 shrink-0" />
+          <div className="flex items-center px-1 py-2">
             <div className="min-w-0 flex-1">
               <p className="truncate text-[14px] font-semibold leading-5 text-[#111827]">
                 {currentWorkspaceName}
@@ -441,6 +441,9 @@ export function AppShell() {
             </div>
             {sidebarWorkspaces.length > 0 ? (
               <div className="my-1 border-t border-[#EEEDEA] pt-1">
+                <p className="px-2 py-1 text-[12px] font-semibold leading-4 text-[#6B7280]">
+                  {t("shell.myWorkspaces")}
+                </p>
                 {sidebarWorkspaces.map((workspace) => (
                   <div
                     className="flex min-h-11 w-full items-center rounded-lg px-2 py-1.5"
@@ -458,6 +461,18 @@ export function AppShell() {
                 ))}
               </div>
             ) : null}
+            <button
+              className="my-1 flex h-9 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+              onClick={() => setAccountMenuOpen(false)}
+              role="menuitem"
+              tabIndex={accountMenuOpen ? undefined : -1}
+              type="button"
+            >
+              <Plus className="h-5 w-5 shrink-0" strokeWidth={2} />
+              <span className="min-w-0 flex-1 truncate">
+                {t("shell.newWorkspace")}
+              </span>
+            </button>
             <AccountMenuItem
               icon={Settings}
               label={t("shell.accountProfile")}
