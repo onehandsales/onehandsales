@@ -12,6 +12,11 @@ import {
   toPublicSitePath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
 import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
+import {
+  CrmEnvironmentBuildingScreen,
+  useCrmEnvironmentBuildProgress,
+  useDefaultSidebarWorkspaceQuery,
+} from "@/features/workspace";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -64,8 +69,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand 홈",
     title: "어떤 일을 주로 하세요?",
     subtitle: "하나를 선택하면 업무에 맞는 CRM을 빠르게 준비할게요.",
-    buildingTitle: "CRM 환경을 구축 중이에요.",
-    progressLabel: "CRM 환경 구축 진행률",
+    buildingTitle: "나의 작업공간을 생성중이에요.",
+    progressLabel: "나의 작업공간 생성 진행률",
     jobs: [
       {
         key: "sales",
@@ -113,8 +118,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand home",
     title: "What kind of work do you do?",
     subtitle: "Choose one and we will quickly prepare your CRM workspace.",
-    buildingTitle: "Preparing your CRM.",
-    progressLabel: "CRM setup progress",
+    buildingTitle: "Creating your Workspace.",
+    progressLabel: "Workspace creation progress",
     jobs: [
       {
         key: "sales",
@@ -162,8 +167,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand home",
     title: "What kind of work do you do?",
     subtitle: "Choose one and we will quickly prepare your CRM workspace.",
-    buildingTitle: "Preparing your CRM.",
-    progressLabel: "CRM setup progress",
+    buildingTitle: "Creating your Workspace.",
+    progressLabel: "Workspace creation progress",
     jobs: [
       {
         key: "sales",
@@ -209,8 +214,6 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
   },
 };
 
-const CRM_BUILD_DURATION_MS = 5000;
-
 const onboardingHtmlLangByLanguage: Record<PublicSiteLanguage, string> = {
   ko: "ko-KR",
   "en-US": "en-US",
@@ -238,60 +241,27 @@ export function OnboardingPage() {
   const homePath = toPublicSitePath(onboardingLanguage, "/");
   const loginPath = toPublicSitePath(onboardingLanguage, "/login");
   const [isBuildingCrm, setIsBuildingCrm] = useState(false);
-  const [buildProgress, setBuildProgress] = useState(0);
-  const [isBuildAnimationDone, setIsBuildAnimationDone] = useState(false);
   const [isJobSelectionSaved, setIsJobSelectionSaved] = useState(false);
-  const [createdWorkspaceId, setCreatedWorkspaceId] = useState<string | null>(
-    null
-  );
+  const buildProgress = useCrmEnvironmentBuildProgress(isBuildingCrm);
+  const defaultWorkspaceQuery = useDefaultSidebarWorkspaceQuery({
+    enabled: isJobSelectionSaved,
+  });
   const isSubmitting = completeJobSelectionMutation.isPending || isBuildingCrm;
-
-  useEffect(() => {
-    if (!isBuildingCrm) {
-      return;
-    }
-
-    const startedAt = performance.now();
-    let frameId = 0;
-
-    const updateProgress = (currentTime: number) => {
-      const elapsedMs = currentTime - startedAt;
-      const nextProgress = Math.min(
-        100,
-        Math.round((elapsedMs / CRM_BUILD_DURATION_MS) * 100)
-      );
-
-      setBuildProgress(nextProgress);
-
-      if (nextProgress < 100) {
-        frameId = requestAnimationFrame(updateProgress);
-        return;
-      }
-
-      setIsBuildAnimationDone(true);
-    };
-
-    frameId = requestAnimationFrame(updateProgress);
-
-    return () => {
-      cancelAnimationFrame(frameId);
-    };
-  }, [isBuildingCrm]);
 
   useEffect(() => {
     if (
       isBuildingCrm &&
-      isBuildAnimationDone &&
+      buildProgress.isDone &&
       isJobSelectionSaved &&
-      createdWorkspaceId
+      defaultWorkspaceQuery.data
     ) {
-      navigate(`/app?workspaceId=${encodeURIComponent(createdWorkspaceId)}`, {
+      navigate(`/app?workspaceId=${encodeURIComponent(defaultWorkspaceQuery.data.id)}`, {
         replace: true,
       });
     }
   }, [
-    createdWorkspaceId,
-    isBuildAnimationDone,
+    buildProgress.isDone,
+    defaultWorkspaceQuery.data,
     isBuildingCrm,
     isJobSelectionSaved,
     navigate,
@@ -328,72 +298,35 @@ export function OnboardingPage() {
       return;
     }
 
-    setBuildProgress(0);
-    setIsBuildAnimationDone(false);
     setIsJobSelectionSaved(false);
-    setCreatedWorkspaceId(null);
     setIsBuildingCrm(true);
 
-    // 1. 온보딩 완료 API와 구축 연출이 모두 끝난 뒤 앱 첫 화면으로 이동한다.
+    // 1. 온보딩 완료 후 default Workspace API와 구축 연출이 모두 끝난 뒤 앱 첫 화면으로 이동한다.
     completeJobSelectionMutation.mutate(undefined, {
-      onSuccess: (response) => {
-        setCreatedWorkspaceId(response.workspaceId);
+      onSuccess: () => {
         setIsJobSelectionSaved(true);
       },
       onError: () => {
         setIsBuildingCrm(false);
-        setBuildProgress(0);
-        setIsBuildAnimationDone(false);
-        setCreatedWorkspaceId(null);
       },
     });
   };
 
   if (isBuildingCrm) {
     return (
-      <main
-        className="min-h-screen overflow-x-hidden bg-white text-[#111111]"
-        lang={htmlLang}
-      >
-        <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
-          <div className="flex h-14 w-full items-center px-[14px]">
-            <Link
-              aria-label={copy.logoAria}
-              className="flex h-9 w-9 items-center justify-center text-[#111111]"
-              to={homePath}
-            >
-              <OneHandLogoMark className="h-9 w-9" />
-            </Link>
-          </div>
-        </header>
-
-        <section className="flex min-h-screen w-full items-center justify-center px-5">
-          <div className="w-full max-w-[360px] text-center">
-            <h1 className="text-[24px] font-semibold leading-[1.25] tracking-normal text-[#111111]">
-              {copy.buildingTitle}
-            </h1>
-            <div
-              aria-label={copy.progressLabel}
-              aria-valuemax={100}
-              aria-valuemin={0}
-              aria-valuenow={buildProgress}
-              className="mt-7 h-2 overflow-hidden rounded-full bg-[#EEEDEA]"
-              role="progressbar"
-            >
-              <div
-                className="h-full rounded-full bg-[#111111] transition-[width] duration-100 ease-linear"
-                style={{ width: `${buildProgress}%` }}
-              />
-            </div>
-            <p
-              aria-live="polite"
-              className="mt-3 text-[13px] font-medium text-[#787774]"
-            >
-              {buildProgress}%
-            </p>
-          </div>
-        </section>
-      </main>
+      <CrmEnvironmentBuildingScreen
+        errorMessage={
+          defaultWorkspaceQuery.error
+            ? getApiErrorMessage(defaultWorkspaceQuery.error)
+            : null
+        }
+        homePath={homePath}
+        htmlLang={htmlLang}
+        logoAria={copy.logoAria}
+        progress={buildProgress.progress}
+        progressLabel={copy.progressLabel}
+        title={copy.buildingTitle}
+      />
     );
   }
 

@@ -13,26 +13,7 @@ No request body is required. The clicked label is intentionally not persisted in
 
 ```json
 {
-  "jobSelectOnboardingCompletedAt": "2026-09-14T00:00:00.000Z",
-  "workspaceId": "workspace-id",
-  "workspace": {
-    "id": "workspace-id",
-    "name": "User Workspace",
-    "kind": "PERSONAL",
-    "organizationName": null,
-    "organizationDomain": null,
-    "createdAt": "2026-09-14T00:00:00.000Z",
-    "updatedAt": "2026-09-14T00:00:00.000Z"
-  },
-  "workspaceMember": {
-    "id": "workspace-member-id",
-    "workspaceId": "workspace-id",
-    "userId": "user-id",
-    "role": "OWNER",
-    "joinedAt": "2026-09-14T00:00:00.000Z",
-    "createdAt": "2026-09-14T00:00:00.000Z",
-    "updatedAt": "2026-09-14T00:00:00.000Z"
-  }
+  "jobSelectOnboardingCompletedAt": "2026-09-14T00:00:00.000Z"
 }
 ```
 
@@ -43,7 +24,8 @@ No request body is required. The clicked label is intentionally not persisted in
 3. If no OWNER workspace membership exists, create a PERSONAL `Workspace` and OWNER `WorkspaceMember`.
 4. If `jobSelectOnboardingCompletedAt` is already set, keep the existing timestamp.
 5. If it is `null`, set it to the current UTC instant.
-6. Return the completion timestamp, top-level workspace ID, workspace, and workspace member.
+6. Return only the completion timestamp.
+7. User Web then calls `GET /api/users/me/sidebar/workspaces/default` to resolve the Workspace that should be opened in `/app`.
 
 ## Errors
 
@@ -52,7 +34,26 @@ No request body is required. The clicked label is intentionally not persisted in
 
 ## Transaction / Observability
 
-- The completion timestamp and OWNER workspace bootstrap run in one application-level transaction.
+- The completion timestamp and OWNER workspace guarantee run in one application-level transaction.
 - The flow may write `User.jobSelectOnboardingCompletedAt`, `Workspace`, and `WorkspaceMember`.
 - `Team`, `TeamMember`, kit, object, record, product, and other domain records are not created by this endpoint.
 - Do not log the clicked job label because it is not stored.
+
+## Compatibility
+
+- Breaking change versus the previous internal contract: response no longer includes `workspaceId`, `workspace`, or `workspaceMember`.
+- User Web must use `GET /api/users/me/sidebar/workspaces/default` after completion when it needs the default Workspace summary.
+
+## Implementation
+
+- Backend use case: `BE/src/modules/user/application/use-cases/complete-job-selection-onboarding.use-case.ts`
+- Frontend API type: `FE/user-web/src/features/auth/types/auth.ts`
+- Frontend onboarding flow: `FE/user-web/src/pages/onboarding/index.tsx`
+- Verification:
+  - `pnpm.cmd -C BE typecheck`
+  - `pnpm.cmd -C BE lint`
+  - `pnpm.cmd -C BE test -- --runInBand`
+  - `pnpm.cmd -C BE prisma:validate`
+  - `pnpm.cmd -C BE build`
+  - `pnpm.cmd -C FE/user-web typecheck`
+  - `pnpm.cmd -C FE/user-web lint`

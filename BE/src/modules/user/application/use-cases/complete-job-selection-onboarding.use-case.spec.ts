@@ -17,8 +17,8 @@ import type {
 import { CompleteJobSelectionOnboardingUseCase } from "./complete-job-selection-onboarding.use-case";
 
 describe("CompleteJobSelectionOnboardingUseCase", () => {
-  // 기능 : 직업 선택 완료와 OWNER Workspace 보장을 같은 transaction 안에서 반환합니다.
-  it("stores the completion timestamp and returns the owner workspace", async () => {
+  // 기능 : 직업 선택 완료와 OWNER Workspace 보장을 같은 transaction 안에서 처리합니다.
+  it("stores the completion timestamp and ensures the owner workspace", async () => {
     const fixture = createFixture();
 
     const result = await fixture.useCase.execute(makeCurrentUser());
@@ -35,10 +35,9 @@ describe("CompleteJobSelectionOnboardingUseCase", () => {
     expect(result.jobSelectOnboardingCompletedAt).toBe(
       fixture.repository.lastCompletedAt
     );
-    expect(result.workspaceId).toBe("workspace-1");
-    expect(result.workspace.id).toBe("workspace-1");
-    expect(result.workspace.kind).toBe("PERSONAL");
-    expect(result.workspaceMember.role).toBe("OWNER");
+    expect(result).toEqual({
+      jobSelectOnboardingCompletedAt: fixture.repository.lastCompletedAt,
+    });
   });
 
   // 기능 : 비활성 사용자 또는 없는 사용자는 기존 사용자 오류로 차단합니다.

@@ -6,8 +6,6 @@ export type UserProfilePlatformRole = "USER" | "ADMIN";
 export type UserProfileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
 export type UserDeviceSlot = "mobile" | "personal_laptop" | "work_laptop";
 export type UserDeviceStatus = "ACTIVE" | "REPLACED" | "REVOKED";
-export type WorkspaceKind = "PERSONAL" | "ORGANIZATION";
-export type WorkspaceMemberRole = "OWNER" | "ADMIN" | "MEMBER";
 
 // 역할 : UserOAuthAccountSummary 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserOAuthAccountSummary {
@@ -66,9 +64,6 @@ export interface UserDeviceRecord {
 // 역할 : UserJobSelectionOnboardingRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserJobSelectionOnboardingRecord {
   readonly jobSelectOnboardingCompletedAt: Date;
-  readonly workspaceId: string;
-  readonly workspace: UserJobSelectionOnboardingWorkspaceRecord;
-  readonly workspaceMember: UserJobSelectionOnboardingWorkspaceMemberRecord;
 }
 
 // 역할 : UserJobSelectionOnboardingUserRecord가 직업 선택 온보딩 완료에 필요한 사용자 상태를 정의합니다.
@@ -77,28 +72,6 @@ export interface UserJobSelectionOnboardingUserRecord {
   readonly displayName: string | null;
   readonly status: UserProfileStatus;
   readonly jobSelectOnboardingCompletedAt: Date | null;
-}
-
-// 역할 : UserJobSelectionOnboardingWorkspaceRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface UserJobSelectionOnboardingWorkspaceRecord {
-  readonly id: string;
-  readonly name: string;
-  readonly kind: WorkspaceKind;
-  readonly organizationName: string | null;
-  readonly organizationDomain: string | null;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-}
-
-// 역할 : UserJobSelectionOnboardingWorkspaceMemberRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
-export interface UserJobSelectionOnboardingWorkspaceMemberRecord {
-  readonly id: string;
-  readonly workspaceId: string;
-  readonly userId: string;
-  readonly role: WorkspaceMemberRole;
-  readonly joinedAt: Date;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
 }
 
 // 역할 : UserRepository 저장소가 제공해야 하는 영속성 계약을 정의합니다.

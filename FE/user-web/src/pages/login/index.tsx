@@ -25,6 +25,7 @@ const fallbackProviders: AuthProviderOption[] = [
   { provider: "line", label: "LINE", enabled: true },
   { provider: "apple", label: "Apple", enabled: true },
 ];
+const WORKSPACE_LOADING_PATH = "/app/workspace-loading";
 const minimumLoginLoadingMs = 1500;
 
 // 기능 : 로그인 페이지를 렌더링합니다.
@@ -59,7 +60,6 @@ export function LoginPage() {
     readonly promise: Promise<AuthUser | null>;
     readonly startedAt: number;
   } | null>(null);
-  const redirectTo = getRedirectPath(location.state);
   const enabledProviders = useMemo(
     () => providers.filter((provider) => provider.enabled),
     [providers]
@@ -146,14 +146,9 @@ export function LoginPage() {
             return;
           }
 
-          navigate(
-            getAuthenticatedRedirectPath(
-              exchangedUser,
-              redirectTo,
-              fallbackLanguage
-            ),
-            { replace: true }
-          );
+          navigate(getAuthenticatedRedirectPath(exchangedUser, fallbackLanguage), {
+            replace: true,
+          });
           return;
         }
 
@@ -187,7 +182,6 @@ export function LoginPage() {
     isCallbackRoute,
     isPopupCallbackRoute,
     navigate,
-    redirectTo,
     fallbackLanguage,
   ]);
 
@@ -204,10 +198,10 @@ export function LoginPage() {
       return;
     }
 
-    // 2. 이미 인증된 사용자가 로그인/회원가입 화면에 오면 원래 목적지로 보낸다.
+    // 2. 이미 인증된 사용자가 로그인/회원가입 화면에 오면 앱 진입 경로로 보낸다.
     if (isAuthenticated && user) {
       navigate(
-        getAuthenticatedRedirectPath(user, redirectTo, fallbackLanguage),
+        getAuthenticatedRedirectPath(user, fallbackLanguage),
         { replace: true }
       );
     }
@@ -217,7 +211,6 @@ export function LoginPage() {
     isLoginRoute,
     isSignupRoute,
     navigate,
-    redirectTo,
     fallbackLanguage,
     user,
   ]);
@@ -281,24 +274,9 @@ function closeAuthPopupCallbackWindow() {
   }, 100);
 }
 
-// 기능 : 인증 완료 후 이동할 안전한 redirect 경로를 계산합니다.
-function getRedirectPath(state: unknown) {
-  // 1. 라우터 state가 객체가 아니면 기본 앱 홈으로 이동한다.
-  if (!state || typeof state !== "object" || Array.isArray(state)) {
-    return "/app";
-  }
-
-  // 2. 로그인 전 접근하려던 경로 후보를 읽는다.
-  const from = (state as Record<string, unknown>).from;
-
-  // 3. 내부 절대 경로만 redirect 대상으로 허용하고 나머지는 앱 홈으로 보낸다.
-  return typeof from === "string" && from.startsWith("/") ? from : "/app";
-}
-
 // 기능 : 로그인 완료 후 직업 선택 온보딩 필요 여부에 따라 이동 경로를 결정합니다.
 function getAuthenticatedRedirectPath(
   user: AuthUser,
-  redirectTo: string,
   fallbackLanguage: PublicSiteLanguage
 ) {
   // 1. 직업 선택 온보딩 완료 시각이 없으면 전체 화면 온보딩으로 보낸다.
@@ -308,6 +286,6 @@ function getAuthenticatedRedirectPath(
     );
   }
 
-  // 2. 이미 완료한 사용자는 기존 목적지로 이동한다.
-  return redirectTo;
+  // 2. 이미 완료한 사용자는 Workspace loading 화면에서 기본 Workspace를 먼저 준비한다.
+  return WORKSPACE_LOADING_PATH;
 }

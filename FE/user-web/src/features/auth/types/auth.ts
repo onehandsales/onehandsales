@@ -140,32 +140,7 @@ export type MyDeviceListResponse = {
   readonly devices: MyDevice[];
 };
 
-// 역할 : 직업 선택 온보딩 후 보장되는 Workspace 정보입니다.
-export type JobSelectionOnboardingWorkspace = {
-  readonly id: string;
-  readonly name: string;
-  readonly kind: "PERSONAL" | "ORGANIZATION" | string;
-  readonly organizationName: string | null;
-  readonly organizationDomain: string | null;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-};
-
-// 역할 : 직업 선택 온보딩 후 보장되는 OWNER 멤버십 정보입니다.
-export type JobSelectionOnboardingWorkspaceMember = {
-  readonly id: string;
-  readonly workspaceId: string;
-  readonly userId: string;
-  readonly role: "OWNER" | "ADMIN" | "MEMBER" | string;
-  readonly joinedAt: string;
-  readonly createdAt: string;
-  readonly updatedAt: string;
-};
-
 // 역할 : 직업 선택 온보딩 완료 API 응답입니다.
 export type CompleteJobSelectionOnboardingResponse = {
   readonly jobSelectOnboardingCompletedAt: string;
-  readonly workspaceId: string;
-  readonly workspace: JobSelectionOnboardingWorkspace;
-  readonly workspaceMember: JobSelectionOnboardingWorkspaceMember;
 };

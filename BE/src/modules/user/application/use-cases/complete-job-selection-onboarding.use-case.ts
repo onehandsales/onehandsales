@@ -8,7 +8,6 @@ import {
 import {
   WORKSPACE_ONBOARDING,
   type WorkspaceOnboardingPort,
-  type WorkspaceOnboardingResult,
 } from "@/modules/workspace/application/ports/workspace-onboarding.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import {
@@ -47,7 +46,7 @@ export class CompleteJobSelectionOnboardingUseCase {
       throw new InactiveUserError();
     }
 
-    // 4. 완료 시각과 OWNER Workspace 정보를 반환한다.
+    // 4. 완료 시각만 반환한다.
     return result;
   }
 
@@ -69,13 +68,12 @@ export class CompleteJobSelectionOnboardingUseCase {
     }
 
     // 3. Workspace 모듈에 온보딩용 OWNER Workspace 보장을 위임한다.
-    const workspaceOnboarding =
-      await this.workspaceOnboarding.ensureOwnerWorkspaceForOnboarding({
-        userId,
-        displayName: user.displayName,
-        now,
-        transactionContext: context,
-      });
+    await this.workspaceOnboarding.ensureOwnerWorkspaceForOnboarding({
+      userId,
+      displayName: user.displayName,
+      now,
+      transactionContext: context,
+    });
 
     // 4. 완료 시각이 없으면 저장하고, 있으면 기존 값을 유지한다.
     const jobSelectOnboardingCompletedAt =
@@ -87,22 +85,8 @@ export class CompleteJobSelectionOnboardingUseCase {
       ));
 
     // 5. User API 응답 record 형태로 변환해 반환한다.
-    return this.toUserJobSelectionOnboardingRecord(
-      jobSelectOnboardingCompletedAt,
-      workspaceOnboarding
-    );
-  }
-
-  // 기능 : Workspace onboarding 결과를 User 온보딩 응답 record로 변환합니다.
-  private toUserJobSelectionOnboardingRecord(
-    jobSelectOnboardingCompletedAt: Date,
-    workspaceOnboarding: WorkspaceOnboardingResult
-  ): UserJobSelectionOnboardingRecord {
     return {
       jobSelectOnboardingCompletedAt,
-      workspaceId: workspaceOnboarding.workspace.id,
-      workspace: workspaceOnboarding.workspace,
-      workspaceMember: workspaceOnboarding.workspaceMember,
     };
   }
 }

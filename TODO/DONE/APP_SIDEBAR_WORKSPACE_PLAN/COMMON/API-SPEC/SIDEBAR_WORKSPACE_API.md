@@ -9,7 +9,7 @@
 ## 1. 목적
 
 `/app` 사이드바에서 로그인한 사용자가 접근 가능한 Workspace 요약 목록과 선택된 Workspace 요약을 조회한다.
-직업 선택 온보딩 완료 직후에는 생성 또는 보장된 Workspace ID를 응답으로 받아 `/app` 진입 시 해당 Workspace를 선택할 수 있게 한다.
+신규 사용자와 기존 사용자는 `/app` 진입 전 기본 Workspace 조회 API를 공통으로 호출해 열어야 할 Workspace를 결정한다.
 
 ## 2. 공통 정책
 
@@ -72,6 +72,7 @@ Success:
 ### GET /api/users/me/sidebar/workspaces/default
 
 로그인한 사용자가 멤버로 속한 Workspace 중 `/app` 첫 진입 시 기본으로 열 Workspace 요약 하나를 반환한다.
+신규 사용자는 직업 선택 온보딩 완료 직후 이 API를 호출하고, 기존 사용자는 로그인 직후 Workspace loading 화면에서 이 API를 호출한다.
 
 Request:
 
@@ -99,6 +100,12 @@ Error:
 | --- | --- | --- | --- | --- |
 | 인증 토큰 없음/만료 | `Unauthorized` | 401 | 로그인 흐름으로 이동 | warn |
 | 현재 사용자가 속한 Workspace가 없음 | `WorkspaceSidebarWorkspaceNotFound` | 404 | 온보딩 또는 복구 흐름 검토 | info |
+
+FE 사용:
+
+- 신규 사용자: `POST /api/users/me/onboarding/job-selection` 성공 후 `GET /api/users/me/sidebar/workspaces/default`를 호출한다.
+- 기존 사용자: 로그인 성공 후 `/app/workspace-loading`에서 `GET /api/users/me/sidebar/workspaces/default`를 호출한다.
+- API 성공 후 `SidebarWorkspaceSummaryResponse.id`를 `/app?workspaceId=<id>`로 전달한다.
 
 ### GET /api/users/me/sidebar/workspaces/:workspaceId
 
@@ -132,48 +139,10 @@ Error:
 | `workspaceId`가 UUID 형식이 아님 | Nest validation error | 400 | 요청 버그로 처리 | warn |
 | 현재 사용자가 해당 Workspace 멤버가 아님 | `WorkspaceSidebarWorkspaceNotFound` | 404 | 선택 Workspace 초기화 또는 목록 재조회 | info |
 
-### POST /api/users/me/onboarding/job-selection 응답 보강
-
-직업 선택 온보딩 완료 API는 기존 응답에 top-level `workspaceId`를 함께 반환한다.
-
-Success:
-
-- Status: `200 OK`
-- Body: 기존 온보딩 완료 응답 + `workspaceId`
-
-```ts
-{
-  jobSelectOnboardingCompletedAt: string;
-  workspaceId: string;
-  workspace: {
-    id: string;
-    name: string;
-    kind: "PERSONAL" | "ORGANIZATION";
-    organizationName: string | null;
-    organizationDomain: string | null;
-    createdAt: string;
-    updatedAt: string;
-  };
-  workspaceMember: {
-    id: string;
-    workspaceId: string;
-    userId: string;
-    role: "OWNER" | "ADMIN" | "MEMBER";
-    joinedAt: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-```
-
-FE 사용:
-
-- 온보딩 완료 후 `workspaceId`를 `/app?workspaceId=<workspaceId>`로 전달한다.
-
 ## 5. 호환성
 
-- breaking change 여부: 없음
-- 기존 FE 영향: `CompleteJobSelectionOnboardingResponse`에 `workspaceId`가 추가된다. 기존 `workspace.id`는 유지한다.
+- breaking change 여부: 직전 내부 계약 대비 있음
+- 기존 FE 영향: 온보딩 완료 응답에서 Workspace snapshot을 읽지 않고, default Workspace API 응답의 `id`를 `/app?workspaceId=<id>`로 사용한다.
 - migration 또는 fallback: DB schema 변경 없음
 
 ## 6. 구현 상태
@@ -185,10 +154,12 @@ FE 사용:
   - `BE/src/modules/workspace/application/use-cases/get-my-sidebar-workspace.use-case.ts`
 - Query port: `BE/src/modules/workspace/application/ports/workspace-sidebar-query.port.ts`
 - Prisma adapter: `BE/src/modules/workspace/infrastructure/persistence/prisma-workspace-sidebar-query.repository.ts`
-- Onboarding response:
-  - `BE/src/modules/user/application/use-cases/complete-job-selection-onboarding.use-case.ts`
-  - `FE/user-web/src/features/auth/types/auth.ts`
+- Frontend Workspace loading flow:
   - `FE/user-web/src/pages/onboarding/index.tsx`
+  - `FE/user-web/src/pages/workspace-loading/index.tsx`
+  - `FE/user-web/src/features/workspace/api/sidebar-workspace-api.ts`
+  - `FE/user-web/src/features/workspace/hooks/use-sidebar-workspace.ts`
+  - `FE/user-web/src/features/workspace/components/crm-environment-building-screen.tsx`
 - 검증:
   - `pnpm.cmd -C BE typecheck`
   - `pnpm.cmd -C BE lint`

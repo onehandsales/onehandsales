@@ -200,6 +200,14 @@ async function handleApiRequest(
     return json(createJobSelectionOnboardingResponse());
   }
 
+  // 13. 조건을 확인해 필요한 분기 처리를 수행한다.
+  if (
+    pathname === "/api/users/me/sidebar/workspaces/default" &&
+    method === "GET"
+  ) {
+    return json(createDefaultSidebarWorkspace());
+  }
+
   if (pathname === "/api/users/me/devices" && method === "GET") {
     return json({
       devices: [
@@ -218,7 +226,7 @@ async function handleApiRequest(
     });
   }
 
-  // 13. 계산된 결과를 호출자에게 반환한다.
+  // 14. 계산된 결과를 호출자에게 반환한다.
   return json(
     {
       code: "NotFound",
@@ -294,25 +302,15 @@ function createUserProfile(overrides: Partial<MutableRecord> = {}) {
 function createJobSelectionOnboardingResponse() {
   return {
     jobSelectOnboardingCompletedAt: NOW,
-    workspaceId: "workspace-e2e-001",
-    workspace: {
-      id: "workspace-e2e-001",
-      name: "E2E Workspace",
-      kind: "PERSONAL",
-      organizationName: null,
-      organizationDomain: null,
-      createdAt: NOW,
-      updatedAt: NOW,
-    },
-    workspaceMember: {
-      id: "workspace-member-e2e-001",
-      workspaceId: "workspace-e2e-001",
-      userId: "user-e2e-001",
-      role: "OWNER",
-      joinedAt: NOW,
-      createdAt: NOW,
-      updatedAt: NOW,
-    },
+  };
+}
+
+// 기능 : 기본 sidebar Workspace 응답 fixture를 생성합니다.
+function createDefaultSidebarWorkspace() {
+  return {
+    id: "workspace-e2e-001",
+    name: "E2E Workspace",
+    kind: "PERSONAL",
   };
 }
 
