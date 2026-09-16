@@ -1,8 +1,9 @@
 import { Injectable, type LoggerService } from "@nestjs/common";
+import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
 
 // 역할 : AppLogger 백엔드 로그를 JSON 라인 형식으로 출력하는 logger wrapper입니다.
 @Injectable()
-export class AppLogger implements LoggerService {
+export class AppLogger implements ApplicationLogger, LoggerService {
   // 기능 : 일반 정보 로그를 JSON 라인으로 기록합니다.
   log(message: string, context?: string): void {
     this.write("log", message, context);

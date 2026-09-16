@@ -16,7 +16,14 @@ import {
   PublicContactRequestValidationError,
   type PublicContactRequestValidationField,
 } from "@/modules/public-contact-request/domain/public-contact-request.errors";
-import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
+import {
+  USER_QUERY,
+  type UserQuery,
+} from "@/modules/user/application/ports/user-query.port";
+import {
+  APPLICATION_LOGGER,
+  type ApplicationLogger,
+} from "@/shared/application/ports/application-logger.port";
 
 const MAX_PUBLIC_CONTACT_EMAIL_LENGTH = 254;
 const MAX_PUBLIC_CONTACT_NAME_LENGTH = 100;
@@ -60,7 +67,10 @@ export class PublicContactRequestApplicationService {
   constructor(
     @Inject(PUBLIC_CONTACT_REQUEST_REPOSITORY)
     private readonly publicContactRequestRepository: PublicContactRequestRepository,
-    private readonly logger: AppLogger
+    @Inject(USER_QUERY)
+    private readonly userQuery: UserQuery,
+    @Inject(APPLICATION_LOGGER)
+    private readonly logger: ApplicationLogger
   ) {}
 
   // 기능 : 공개 문의 입력을 검증하고 제출 시점 회원 여부 snapshot과 함께 저장합니다.
@@ -130,9 +140,7 @@ export class PublicContactRequestApplicationService {
 
     // 2. User row와 FK를 만들지 않고 이메일 기준 회원 여부만 snapshot으로 조회한다.
     const wasExistingUserAtSubmission =
-      await this.publicContactRequestRepository.existsActiveUserByEmail(
-        normalizedEmail
-      );
+      await this.userQuery.existsActiveUserByEmail(normalizedEmail);
 
     // 3. 공개 문의 row를 독립 테이블에 저장한다.
     const created =

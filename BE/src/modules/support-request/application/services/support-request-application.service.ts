@@ -9,8 +9,15 @@ import {
   SupportRequestUserNotFoundError,
   SupportRequestValidationError,
 } from "@/modules/support-request/domain/support-request.errors";
+import {
+  USER_QUERY,
+  type UserQuery,
+} from "@/modules/user/application/ports/user-query.port";
+import {
+  APPLICATION_LOGGER,
+  type ApplicationLogger,
+} from "@/shared/application/ports/application-logger.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const MAX_SUPPORT_REQUEST_DESCRIPTION_LENGTH = 1000;
 const MAX_SUPPORT_REQUEST_PAGE_URL_LENGTH = 2000;
@@ -39,7 +46,10 @@ export class SupportRequestApplicationService {
   constructor(
     @Inject(SUPPORT_REQUEST_REPOSITORY)
     private readonly supportRequestRepository: SupportRequestRepository,
-    private readonly logger: AppLogger
+    @Inject(USER_QUERY)
+    private readonly userQuery: UserQuery,
+    @Inject(APPLICATION_LOGGER)
+    private readonly logger: ApplicationLogger
   ) {}
 
   // 기능 : 지원 요청 입력을 검증하고 사용자 snapshot과 함께 저장합니다.
@@ -54,10 +64,9 @@ export class SupportRequestApplicationService {
     const userAgent = this.normalizeOptionalText(command.userAgent);
 
     // 2. 인증 context의 사용자 ID로 DB 사용자 snapshot을 다시 조회한다.
-    const userSnapshot =
-      await this.supportRequestRepository.findUserSnapshotById(
-        command.currentUser.id
-      );
+    const userSnapshot = await this.userQuery.findUserSnapshotById(
+      command.currentUser.id
+    );
 
     if (!userSnapshot) {
       throw new SupportRequestUserNotFoundError();

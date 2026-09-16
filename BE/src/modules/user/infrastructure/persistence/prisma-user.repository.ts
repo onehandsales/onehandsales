@@ -6,45 +6,24 @@
   PlatformRole,
   Prisma,
   UserStatus,
-  WorkspaceKind as PrismaWorkspaceKind,
-  WorkspaceMemberRole as PrismaWorkspaceMemberRole,
 } from "@prisma/client";
 import {
   type UpdateUserProfileInput,
   type UserDeviceRecord,
   type UserDeviceSlot,
   type UserDeviceStatus,
-  type UserJobSelectionOnboardingRecord,
+  type UserJobSelectionOnboardingUserRecord,
   type UserOAuthAccountSummary,
   type UserProfileRecord,
   type UserProfilePlatformRole,
   type UserProfileStatus,
   type UserRepository,
-  type WorkspaceKind,
-  type WorkspaceMemberRole,
 } from "@/modules/user/application/ports/user.repository";
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
+import { resolvePrismaTransactionalClient } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 type UserPrismaClient = PrismaService | Prisma.TransactionClient;
-
-type WorkspaceMemberWithWorkspaceRow = {
-  readonly id: string;
-  readonly workspaceId: string;
-  readonly userId: string;
-  readonly role: PrismaWorkspaceMemberRole;
-  readonly joinedAt: Date;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-  readonly workspace: {
-    readonly id: string;
-    readonly name: string;
-    readonly kind: PrismaWorkspaceKind;
-    readonly organizationName: string | null;
-    readonly organizationDomain: string | null;
-    readonly createdAt: Date;
-    readonly updatedAt: Date;
-  };
-};
 
 // 역할 : PrismaUserRepository 저장소 계약을 Prisma 기반 영속성 처리로 구현합니다.
 export class PrismaUserRepository implements UserRepository {
@@ -53,6 +32,15 @@ export class PrismaUserRepository implements UserRepository {
     private readonly client: UserPrismaClient,
     private readonly transactionRunner: PrismaService | null = null
   ) {}
+
+  // 기능 : 현재 transaction context에 맞는 Prisma client를 반환합니다.
+  private getClient(context?: TransactionContext | null): UserPrismaClient {
+    if (this.transactionRunner) {
+      return resolvePrismaTransactionalClient(this.transactionRunner, context);
+    }
+
+    return this.client;
+  }
 
   // 기능 : 사용자 저장소 작업을 트랜잭션 안에서 실행합니다.
   async runInTransaction<T>(
@@ -105,94 +93,50 @@ export class PrismaUserRepository implements UserRepository {
     return this.getProfile(userId);
   }
 
-  // 기능 : 현재 사용자의 직업 선택 완료 시각과 OWNER 워크스페이스 멤버십을 보장합니다.
-  async completeJobSelectionOnboarding(
+  // 기능 : 직업 선택 온보딩 완료에 필요한 사용자 상태를 조회합니다.
+  async findJobSelectionOnboardingUser(
     userId: string,
-    now: Date
-  ): Promise<UserJobSelectionOnboardingRecord | null> {
-    // 1. 사용자 활성 상태, 표시 이름, 기존 완료 시각을 조회한다.
-    const user = await this.client.user.findUnique({
+    transactionContext?: TransactionContext | null
+  ): Promise<UserJobSelectionOnboardingUserRecord | null> {
+    // 1. transaction context에 맞는 Prisma client를 준비한다.
+    const client = this.getClient(transactionContext);
+
+    // 2. 사용자 활성 상태, 표시 이름, 기존 완료 시각을 조회한다.
+    const user = await client.user.findUnique({
       where: { id: userId },
       select: {
+        id: true,
         displayName: true,
         status: true,
         jobSelectOnboardingCompletedAt: true,
       },
     });
 
-    // 2. 존재하지 않거나 활성 사용자가 아니면 처리할 수 없음을 반환한다.
-    if (!user || user.status !== UserStatus.ACTIVE) {
+    // 3. 사용자가 없으면 호출자가 도메인 오류로 변환할 수 있게 null을 반환한다.
+    if (!user) {
       return null;
     }
 
-    // 3. 현재 사용자가 OWNER로 가진 WorkspaceMember만 조회한다.
-    const ownerWorkspaceMember = await this.findOwnerWorkspaceMember(userId);
-
-    // 4. OWNER 멤버십이 없으면 개인 Workspace와 OWNER WorkspaceMember를 생성한다.
-    const workspaceMember =
-      ownerWorkspaceMember ??
-      (await this.createOwnerWorkspaceMember(userId, user.displayName, now));
-
-    // 5. 완료 시각이 없으면 현재 UTC instant를 저장하고, 있으면 기존 값을 유지한다.
-    const jobSelectOnboardingCompletedAt =
-      user.jobSelectOnboardingCompletedAt ??
-      (await this.completeJobSelectionForUser(userId, now));
-
-    // 6. 완료 시각과 OWNER 워크스페이스 정보를 응답 레코드로 반환한다.
-    return this.mapJobSelectionOnboardingRecord(
-      jobSelectOnboardingCompletedAt,
-      workspaceMember
-    );
-  }
-
-  // 기능 : 사용자가 OWNER로 참여한 첫 WorkspaceMember를 조회합니다.
-  private async findOwnerWorkspaceMember(
-    userId: string
-  ): Promise<WorkspaceMemberWithWorkspaceRow | null> {
-    return this.client.workspaceMember.findFirst({
-      where: {
-        userId,
-        role: PrismaWorkspaceMemberRole.OWNER,
-      },
-      include: {
-        workspace: true,
-      },
-      orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
-    });
-  }
-
-  // 기능 : 신규 개인 Workspace와 현재 사용자의 OWNER 멤버십을 생성합니다.
-  private async createOwnerWorkspaceMember(
-    userId: string,
-    displayName: string | null,
-    now: Date
-  ): Promise<WorkspaceMemberWithWorkspaceRow> {
-    const workspace = await this.client.workspace.create({
-      data: {
-        name: this.buildDefaultWorkspaceName(displayName),
-        kind: PrismaWorkspaceKind.PERSONAL,
-      },
-    });
-
-    return this.client.workspaceMember.create({
-      data: {
-        workspaceId: workspace.id,
-        userId,
-        role: PrismaWorkspaceMemberRole.OWNER,
-        joinedAt: now,
-      },
-      include: {
-        workspace: true,
-      },
-    });
+    // 4. Prisma 사용자 상태 enum을 application 상태 값으로 변환한다.
+    return {
+      id: user.id,
+      displayName: user.displayName,
+      status: this.fromPrismaUserStatus(user.status),
+      jobSelectOnboardingCompletedAt: user.jobSelectOnboardingCompletedAt,
+    };
   }
 
   // 기능 : 사용자 직업 선택 온보딩 완료 시각을 저장하고 저장된 값을 반환합니다.
-  private async completeJobSelectionForUser(
+  async completeJobSelectionForUser(
     userId: string,
-    now: Date
+    now: Date,
+    transactionContext?: TransactionContext | null
   ): Promise<Date> {
-    const updatedUser = await this.client.user.update({
+    // 1. transaction context에 맞는 Prisma client를 준비한다.
+    const client = this.getClient(transactionContext);
+
+    // 2. 사용자 직업 선택 온보딩 완료 시각을 저장한다.
+    const updatedUser = await client.user.update({
       where: { id: userId },
       data: {
         jobSelectOnboardingCompletedAt: now,
@@ -203,17 +147,6 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     return updatedUser.jobSelectOnboardingCompletedAt ?? now;
-  }
-
-  // 기능 : 사용자 이름 기반 기본 Workspace 표시 이름을 만듭니다.
-  private buildDefaultWorkspaceName(displayName: string | null): string {
-    const normalizedDisplayName = displayName?.trim();
-
-    if (normalizedDisplayName) {
-      return `${normalizedDisplayName} Workspace`;
-    }
-
-    return "My Workspace";
   }
 
   // 기능 : 현재 사용자의 활성 등록 기기 목록과 현재 세션 포함 여부를 조회합니다.
@@ -259,34 +192,6 @@ export class PrismaUserRepository implements UserRepository {
         (session) => session.id === currentSessionId
       ),
     }));
-  }
-
-  // 기능 : Prisma WorkspaceMember row를 직업 선택 온보딩 응답 레코드로 변환합니다.
-  private mapJobSelectionOnboardingRecord(
-    jobSelectOnboardingCompletedAt: Date,
-    workspaceMember: WorkspaceMemberWithWorkspaceRow
-  ): UserJobSelectionOnboardingRecord {
-    return {
-      jobSelectOnboardingCompletedAt,
-      workspace: {
-        id: workspaceMember.workspace.id,
-        name: workspaceMember.workspace.name,
-        kind: this.fromPrismaWorkspaceKind(workspaceMember.workspace.kind),
-        organizationName: workspaceMember.workspace.organizationName,
-        organizationDomain: workspaceMember.workspace.organizationDomain,
-        createdAt: workspaceMember.workspace.createdAt,
-        updatedAt: workspaceMember.workspace.updatedAt,
-      },
-      workspaceMember: {
-        id: workspaceMember.id,
-        workspaceId: workspaceMember.workspaceId,
-        userId: workspaceMember.userId,
-        role: this.fromPrismaWorkspaceMemberRole(workspaceMember.role),
-        joinedAt: workspaceMember.joinedAt,
-        createdAt: workspaceMember.createdAt,
-        updatedAt: workspaceMember.updatedAt,
-      },
-    };
   }
 
   // 기능 : Prisma 사용자 행을 사용자 프로필 응답 레코드로 변환합니다.
@@ -406,30 +311,6 @@ export class PrismaUserRepository implements UserRepository {
         return "USER";
       case PlatformRole.ADMIN:
         return "ADMIN";
-    }
-  }
-
-  // 기능 : Prisma WorkspaceKind enum을 사용자 응답 Workspace 종류 값으로 변환합니다.
-  private fromPrismaWorkspaceKind(kind: PrismaWorkspaceKind): WorkspaceKind {
-    switch (kind) {
-      case PrismaWorkspaceKind.PERSONAL:
-        return "PERSONAL";
-      case PrismaWorkspaceKind.ORGANIZATION:
-        return "ORGANIZATION";
-    }
-  }
-
-  // 기능 : Prisma WorkspaceMemberRole enum을 사용자 응답 Workspace 멤버 역할 값으로 변환합니다.
-  private fromPrismaWorkspaceMemberRole(
-    role: PrismaWorkspaceMemberRole
-  ): WorkspaceMemberRole {
-    switch (role) {
-      case PrismaWorkspaceMemberRole.OWNER:
-        return "OWNER";
-      case PrismaWorkspaceMemberRole.ADMIN:
-        return "ADMIN";
-      case PrismaWorkspaceMemberRole.MEMBER:
-        return "MEMBER";
     }
   }
 

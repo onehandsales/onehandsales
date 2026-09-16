@@ -1,7 +1,8 @@
 import type { PublicContactRequestRepository } from "@/modules/public-contact-request/application/ports/public-contact-request.repository";
 import { PublicContactRequestApplicationService } from "@/modules/public-contact-request/application/services/public-contact-request-application.service";
 import { PublicContactRequestValidationError } from "@/modules/public-contact-request/domain/public-contact-request.errors";
-import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
+import type { UserQuery } from "@/modules/user/application/ports/user-query.port";
+import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
 
 const VALID_COMMAND = {
   email: " Sales@Example.COM ",
@@ -28,19 +29,29 @@ function createFixture() {
     createPublicContactRequest: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000401",
     }),
-    existsActiveUserByEmail: jest.fn().mockResolvedValue(true),
   };
   // 2. 이후 단계에서 사용할 logger 값을 준비한다.
-  const logger = new AppLogger();
+  const userQuery: jest.Mocked<UserQuery> = {
+    findUserSnapshotById: jest.fn().mockResolvedValue(null),
+    existsActiveUserByEmail: jest.fn().mockResolvedValue(true),
+  };
+  const logger: jest.Mocked<ApplicationLogger> = {
+    error: jest.fn(),
+    log: jest.fn(),
+    warn: jest.fn(),
+  };
   // 3. 이후 단계에서 사용할 logSpy 값을 준비한다.
-  const logSpy = jest.spyOn(logger, "log").mockImplementation(() => undefined);
 
   // 4. 계산된 결과를 호출자에게 반환한다.
   return {
     logger,
-    logSpy,
     repository,
-    service: new PublicContactRequestApplicationService(repository, logger),
+    userQuery,
+    service: new PublicContactRequestApplicationService(
+      repository,
+      userQuery,
+      logger
+    ),
   };
 }
 
@@ -63,7 +74,7 @@ describe("PublicContactRequestApplicationService", () => {
     } satisfies Partial<PublicContactRequestValidationError>);
 
     // 3. 테스트 기대 조건을 검증한다.
-    expect(fixture.repository.existsActiveUserByEmail).not.toHaveBeenCalled();
+    expect(fixture.userQuery.existsActiveUserByEmail).not.toHaveBeenCalled();
     // 4. 테스트 기대 조건을 검증한다.
     expect(fixture.repository.createPublicContactRequest).not.toHaveBeenCalled();
   });
@@ -113,7 +124,7 @@ describe("PublicContactRequestApplicationService", () => {
     );
 
     // 3. 테스트 기대 조건을 검증한다.
-    expect(fixture.repository.existsActiveUserByEmail).toHaveBeenCalledWith(
+    expect(fixture.userQuery.existsActiveUserByEmail).toHaveBeenCalledWith(
       "sales@example.com"
     );
     // 4. 테스트 기대 조건을 검증한다.
@@ -143,7 +154,7 @@ describe("PublicContactRequestApplicationService", () => {
     });
 
     // 6. 이후 단계에서 사용할 logPayload 값을 준비한다.
-    const logPayload = String(fixture.logSpy.mock.calls[0]?.[0] ?? "");
+    const logPayload = String(fixture.logger.log.mock.calls[0]?.[0] ?? "");
     // 7. 테스트 기대 조건을 검증한다.
     expect(logPayload).toContain("publicContactRequest.created");
     // 8. 테스트 기대 조건을 검증한다.

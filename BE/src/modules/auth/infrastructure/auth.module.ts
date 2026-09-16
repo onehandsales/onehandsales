@@ -1,12 +1,14 @@
 ﻿import { Module } from "@nestjs/common";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { AdminGuard } from "@/shared/presentation/guards/admin.guard";
+import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logger.port";
 import { CURRENT_USER_RESOLVER } from "@/shared/application/ports/current-user-resolver.port";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { SupabaseInfrastructureModule } from "@/shared/infrastructure/supabase/supabase-infrastructure.module";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { AUTH_REPOSITORY } from "../application/ports/auth.repository";
+import { AUTH_RUNTIME_CONFIG } from "../application/ports/auth-runtime-config.port";
 import { APP_TOKEN_ISSUER } from "../application/ports/app-token.port";
 import { SECURE_TOKEN_SERVICE } from "../application/ports/secure-token.port";
 import { ExchangeExternalAuthTokenUseCase } from "../application/use-cases/exchange-external-auth-token.use-case";
@@ -18,6 +20,7 @@ import { ResolveCurrentUserUseCase } from "../application/use-cases/resolve-curr
 import { AuthCookieService } from "../presentation/http/auth-cookie.service";
 import { AuthController } from "../presentation/http/auth.controller";
 import { AdminMeController, MeController } from "../presentation/http/me.controller";
+import { NestAuthRuntimeConfigAdapter } from "./config/nest-auth-runtime-config.adapter";
 import { PrismaAuthRepository } from "./persistence/prisma-auth.repository";
 import { JoseAppTokenIssuerAdapter } from "./security/jose-app-token-issuer.adapter";
 import { NodeSecureTokenService } from "./security/node-secure-token.service";
@@ -33,6 +36,7 @@ import { NodeSecureTokenService } from "./security/node-secure-token.service";
     LogoutUseCase,
     GetMeUseCase,
     ResolveCurrentUserUseCase,
+    NestAuthRuntimeConfigAdapter,
     JoseAppTokenIssuerAdapter,
     NodeSecureTokenService,
     AuthCookieService,
@@ -51,8 +55,16 @@ import { NodeSecureTokenService } from "./security/node-secure-token.service";
       useExisting: JoseAppTokenIssuerAdapter,
     },
     {
+      provide: AUTH_RUNTIME_CONFIG,
+      useExisting: NestAuthRuntimeConfigAdapter,
+    },
+    {
       provide: SECURE_TOKEN_SERVICE,
       useExisting: NodeSecureTokenService,
+    },
+    {
+      provide: APPLICATION_LOGGER,
+      useExisting: AppLogger,
     },
     {
       provide: CURRENT_USER_RESOLVER,

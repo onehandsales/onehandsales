@@ -1,9 +1,12 @@
 ﻿import { Inject, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import {
   APP_TOKEN_ISSUER,
   type AppTokenIssuer,
 } from "@/modules/auth/application/ports/app-token.port";
+import {
+  AUTH_RUNTIME_CONFIG,
+  type AuthRuntimeConfig,
+} from "@/modules/auth/application/ports/auth-runtime-config.port";
 import {
   AUTH_REPOSITORY,
   type AuthRepository,
@@ -42,7 +45,8 @@ export class RefreshAppTokenUseCase {
     private readonly appTokenIssuer: AppTokenIssuer,
     @Inject(SECURE_TOKEN_SERVICE)
     private readonly secureTokenService: SecureTokenService,
-    private readonly configService: ConfigService
+    @Inject(AUTH_RUNTIME_CONFIG)
+    private readonly authRuntimeConfig: AuthRuntimeConfig
   ) {}
 
   // 기능 : refresh token을 검증하고 세션을 회전시킨 뒤 새 앱 토큰 응답을 반환합니다.
@@ -112,37 +116,14 @@ export class RefreshAppTokenUseCase {
 
   // 기능 : refresh 요청 Origin이 허용 목록에 있는지 검증합니다.
   private assertAllowedOrigin(origin: string | null): void {
-    if (!origin || !this.getAllowedOrigins().includes(origin)) {
+    if (!origin || !this.authRuntimeConfig.getAllowedRefreshOrigins().includes(origin)) {
       throw new InvalidRefreshOriginError();
     }
   }
 
-  // 기능 : 환경 변수 또는 웹 Origin 설정에서 refresh 허용 Origin 목록을 계산합니다.
-  private getAllowedOrigins(): string[] {
-    const explicit = this.configService.get<string>("APP_ALLOWED_ORIGINS");
-
-    if (explicit && explicit.trim().length > 0) {
-      return explicit
-        .split(",")
-        // 기능 : Origin 목록 항목의 앞뒤 공백을 제거합니다.
-        .map((item) => item.trim())
-        // 기능 : 빈 Origin 항목을 제외합니다.
-        .filter((item) => item.length > 0);
-    }
-
-    return [
-      this.configService.get<string>("USER_WEB_ORIGIN") ?? "http://localhost:5173",
-      this.configService.get<string>("ADMIN_WEB_ORIGIN") ?? "http://localhost:5174",
-    ];
-  }
-
   // 기능 : 세션 만료 기간 설정값을 일 단위 숫자로 반환합니다.
   private getSessionTtlDays(): number {
-    const value = Number(
-      this.configService.get<string>("APP_SESSION_TTL_DAYS") ?? "7"
-    );
-
-    return Number.isFinite(value) && value > 0 ? value : 7;
+    return this.authRuntimeConfig.getSessionTtlDays();
   }
 
   // 기능 : 기준 날짜에 지정한 일수를 더한 날짜를 반환합니다.

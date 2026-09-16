@@ -1,4 +1,6 @@
-﻿export const USER_REPOSITORY = Symbol("USER_REPOSITORY");
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
+
+export const USER_REPOSITORY = Symbol("USER_REPOSITORY");
 
 export type UserProfilePlatformRole = "USER" | "ADMIN";
 export type UserProfileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
@@ -68,6 +70,14 @@ export interface UserJobSelectionOnboardingRecord {
   readonly workspaceMember: UserJobSelectionOnboardingWorkspaceMemberRecord;
 }
 
+// 역할 : UserJobSelectionOnboardingUserRecord가 직업 선택 온보딩 완료에 필요한 사용자 상태를 정의합니다.
+export interface UserJobSelectionOnboardingUserRecord {
+  readonly id: string;
+  readonly displayName: string | null;
+  readonly status: UserProfileStatus;
+  readonly jobSelectOnboardingCompletedAt: Date | null;
+}
+
 // 역할 : UserJobSelectionOnboardingWorkspaceRecord 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
 export interface UserJobSelectionOnboardingWorkspaceRecord {
   readonly id: string;
@@ -102,10 +112,16 @@ export interface UserRepository {
     input: UpdateUserProfileInput
   ): Promise<UserProfileRecord | null>;
   // 기능 : 현재 사용자의 직업 선택 온보딩 완료 시각을 저장합니다.
-  completeJobSelectionOnboarding(
+  findJobSelectionOnboardingUser(
     userId: string,
-    now: Date
-  ): Promise<UserJobSelectionOnboardingRecord | null>;
+    transactionContext?: TransactionContext | null
+  ): Promise<UserJobSelectionOnboardingUserRecord | null>;
+  // 기능 : 현재 사용자의 직업 선택 온보딩 완료 시각을 저장합니다.
+  completeJobSelectionForUser(
+    userId: string,
+    now: Date,
+    transactionContext?: TransactionContext | null
+  ): Promise<Date>;
   // 기능 : 사용자의 활성 등록 기기 목록을 조회합니다.
   listActiveDevices(
     userId: string,

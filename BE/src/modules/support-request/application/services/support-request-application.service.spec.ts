@@ -4,8 +4,9 @@ import type {
 } from "@/modules/support-request/application/ports/support-request.repository";
 import { SupportRequestApplicationService } from "@/modules/support-request/application/services/support-request-application.service";
 import { SupportRequestValidationError } from "@/modules/support-request/domain/support-request.errors";
+import type { UserQuery } from "@/modules/user/application/ports/user-query.port";
+import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const CURRENT_USER: CurrentUserContext = {
   id: "00000000-0000-4000-8000-000000000101",
@@ -31,19 +32,25 @@ function createFixture() {
     createSupportRequest: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000301",
     }),
-    findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
   };
   // 2. 이후 단계에서 사용할 logger 값을 준비한다.
-  const logger = new AppLogger();
+  const userQuery: jest.Mocked<UserQuery> = {
+    findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
+    existsActiveUserByEmail: jest.fn().mockResolvedValue(true),
+  };
+  const logger: jest.Mocked<ApplicationLogger> = {
+    error: jest.fn(),
+    log: jest.fn(),
+    warn: jest.fn(),
+  };
   // 3. 이후 단계에서 사용할 logSpy 값을 준비한다.
-  const logSpy = jest.spyOn(logger, "log").mockImplementation(() => undefined);
 
   // 4. 계산된 결과를 호출자에게 반환한다.
   return {
     logger,
-    logSpy,
     repository,
-    service: new SupportRequestApplicationService(repository, logger),
+    userQuery,
+    service: new SupportRequestApplicationService(repository, userQuery, logger),
   };
 }
 
@@ -145,7 +152,7 @@ describe("SupportRequestApplicationService", () => {
     });
 
     // 3. 테스트 기대 조건을 검증한다.
-    expect(fixture.repository.findUserSnapshotById).toHaveBeenCalledWith(
+    expect(fixture.userQuery.findUserSnapshotById).toHaveBeenCalledWith(
       CURRENT_USER.id
     );
     // 4. 테스트 기대 조건을 검증한다.
@@ -165,7 +172,7 @@ describe("SupportRequestApplicationService", () => {
     });
 
     // 6. 이후 단계에서 사용할 logPayload 값을 준비한다.
-    const logPayload = String(fixture.logSpy.mock.calls[0]?.[0] ?? "");
+    const logPayload = String(fixture.logger.log.mock.calls[0]?.[0] ?? "");
     // 7. 테스트 기대 조건을 검증한다.
     expect(logPayload).toContain("supportRequest.created");
     // 8. 테스트 기대 조건을 검증한다.

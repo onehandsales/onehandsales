@@ -7,7 +7,6 @@ import type {
   SupportRequestRecord,
   SupportRequestRepository,
   SupportRequestType,
-  SupportRequestUserSnapshot,
 } from "@/modules/support-request/application/ports/support-request.repository";
 import type { CurrentUserPlatformRole } from "@/shared/application/context/current-user.context";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
@@ -18,31 +17,6 @@ export class PrismaSupportRequestRepository implements SupportRequestRepository 
   constructor(private readonly prismaService: PrismaService) {}
 
   // 기능 : 사용자 ID로 지원 요청 저장용 사용자 snapshot을 조회합니다.
-  async findUserSnapshotById(
-    userId: string
-  ): Promise<SupportRequestUserSnapshot | null> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        displayName: true,
-        platformRole: true,
-      },
-    });
-
-    if (!user) {
-      return null;
-    }
-
-    return {
-      id: user.id,
-      email: user.email,
-      displayName: user.displayName,
-      platformRole: this.fromPrismaPlatformRole(user.platformRole),
-    };
-  }
-
   // 기능 : 사용자 snapshot과 문의 유형, 본문을 지원 요청 row로 저장합니다.
   async createSupportRequest(
     input: CreateSupportRequestInput
@@ -68,16 +42,6 @@ export class PrismaSupportRequestRepository implements SupportRequestRepository 
   }
 
   // 기능 : Prisma PlatformRole enum을 application 계층 platformRole 타입으로 변환합니다.
-  private fromPrismaPlatformRole(role: PlatformRole): CurrentUserPlatformRole {
-    switch (role) {
-      case PlatformRole.ADMIN:
-        return "ADMIN";
-      case PlatformRole.USER:
-      default:
-        return "USER";
-    }
-  }
-
   // 기능 : application 계층 platformRole 타입을 Prisma PlatformRole enum으로 변환합니다.
   private toPrismaPlatformRole(role: CurrentUserPlatformRole): PlatformRole {
     return role === "ADMIN" ? PlatformRole.ADMIN : PlatformRole.USER;

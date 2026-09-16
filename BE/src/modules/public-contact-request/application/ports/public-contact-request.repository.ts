@@ -70,8 +70,6 @@ export interface PublicContactRequestRecord {
 
 // 역할 : PublicContactRequestRepository 공개 문의 저장소가 구현해야 하는 영속성 계약을 정의합니다.
 export interface PublicContactRequestRepository {
-  // 기능 : 정규화 이메일과 일치하는 삭제되지 않은 회원이 있는지 조회합니다.
-  existsActiveUserByEmail(normalizedEmail: string): Promise<boolean>;
   // 기능 : 공개 문의 row를 저장합니다.
   createPublicContactRequest(
     input: CreatePublicContactRequestInput

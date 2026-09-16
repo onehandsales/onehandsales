@@ -13,21 +13,6 @@ export class PrismaPublicContactRequestRepository
   constructor(private readonly prismaService: PrismaService) {}
 
   // 기능 : 정규화 이메일과 일치하는 삭제되지 않은 회원이 있는지 조회합니다.
-  async existsActiveUserByEmail(normalizedEmail: string): Promise<boolean> {
-    const user = await this.prismaService.user.findFirst({
-      where: {
-        email: normalizedEmail,
-        deletedAt: null,
-      },
-      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-      select: {
-        id: true,
-      },
-    });
-
-    return user !== null;
-  }
-
   // 기능 : 공개 문의 row를 FK 없는 독립 테이블에 저장합니다.
   async createPublicContactRequest(
     input: CreatePublicContactRequestInput

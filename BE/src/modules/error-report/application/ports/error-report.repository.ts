@@ -38,8 +38,6 @@ export interface ErrorReportRecord {
 
 // 역할 : ErrorReportRepository 에러 신고 영속성 계약을 정의합니다.
 export interface ErrorReportRepository {
-  // 기능 : 인증 사용자 ID로 에러 신고 저장용 사용자 snapshot을 조회합니다.
-  findUserSnapshotById(userId: string): Promise<ErrorReportUserSnapshot | null>;
   // 기능 : 에러 신고 row와 선택 screenshot metadata를 저장합니다.
   createErrorReport(input: CreateErrorReportInput): Promise<ErrorReportRecord>;
 }

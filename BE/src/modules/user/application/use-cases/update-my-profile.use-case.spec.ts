@@ -2,7 +2,7 @@ import { UpdateMyProfileUseCase } from "./update-my-profile.use-case";
 import type {
   UpdateUserProfileInput,
   UserDeviceRecord,
-  UserJobSelectionOnboardingRecord,
+  UserJobSelectionOnboardingUserRecord,
   UserProfileRecord,
   UserRepository,
 } from "@/modules/user/application/ports/user.repository";
@@ -96,30 +96,13 @@ class FakeUserRepository implements UserRepository {
   }
 
   // 기능 : 현재 테스트에서 사용하지 않는 직업 선택 온보딩 응답을 반환합니다.
-  async completeJobSelectionOnboarding(): Promise<UserJobSelectionOnboardingRecord | null> {
-    const now = new Date("2026-07-10T00:00:00.000Z");
+  async findJobSelectionOnboardingUser(): Promise<UserJobSelectionOnboardingUserRecord | null> {
+    throw new Error("Not implemented in fake repository");
+  }
 
-    return {
-      jobSelectOnboardingCompletedAt: now,
-      workspace: {
-        id: "workspace-1",
-        name: "User Workspace",
-        kind: "PERSONAL",
-        organizationName: null,
-        organizationDomain: null,
-        createdAt: now,
-        updatedAt: now,
-      },
-      workspaceMember: {
-        id: "workspace-member-1",
-        workspaceId: "workspace-1",
-        userId: "user-1",
-        role: "OWNER",
-        joinedAt: now,
-        createdAt: now,
-        updatedAt: now,
-      },
-    };
+  // 기능 : 현재 테스트에서 사용하지 않는 온보딩 완료 시각 저장을 차단합니다.
+  async completeJobSelectionForUser(): Promise<Date> {
+    throw new Error("Not implemented in fake repository");
   }
 
   // 기능 : list active devices 목록을 조회합니다.

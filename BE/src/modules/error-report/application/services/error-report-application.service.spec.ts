@@ -9,8 +9,9 @@ import {
   ErrorReportScreenshotStorageFailedError,
   ErrorReportValidationError,
 } from "@/modules/error-report/domain/error-report.errors";
+import type { UserQuery } from "@/modules/user/application/ports/user-query.port";
+import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import type { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const CURRENT_USER: CurrentUserContext = {
   id: "00000000-0000-4000-8000-000000000101",
@@ -36,7 +37,6 @@ function createFixture() {
     createErrorReport: jest.fn().mockResolvedValue({
       id: "00000000-0000-4000-8000-000000000301",
     }),
-    findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
   };
   // 2. 이후 단계에서 사용할 screenshotStorage 값을 준비한다.
   const screenshotStorage: jest.Mocked<ErrorReportScreenshotStorage> = {
@@ -50,19 +50,27 @@ function createFixture() {
     }),
   };
   // 3. 이후 단계에서 사용할 logger 값을 준비한다.
-  const logger: Pick<AppLogger, "error" | "log"> = {
+  const userQuery: jest.Mocked<UserQuery> = {
+    findUserSnapshotById: jest.fn().mockResolvedValue(USER_SNAPSHOT),
+    existsActiveUserByEmail: jest.fn().mockResolvedValue(true),
+  };
+  // 4. 이후 단계에서 사용할 logger 값을 준비한다.
+  const logger: jest.Mocked<ApplicationLogger> = {
     error: jest.fn(),
     log: jest.fn(),
+    warn: jest.fn(),
   };
 
   // 4. 계산된 결과를 호출자에게 반환한다.
   return {
     repository,
     screenshotStorage,
+    userQuery,
     service: new ErrorReportApplicationService(
       repository,
       screenshotStorage,
-      logger as AppLogger
+      userQuery,
+      logger
     ),
   };
 }
@@ -125,7 +133,7 @@ describe("ErrorReportApplicationService", () => {
     });
 
     // 3. 테스트 기대 조건을 검증한다.
-    expect(fixture.repository.findUserSnapshotById).toHaveBeenCalledWith(
+    expect(fixture.userQuery.findUserSnapshotById).toHaveBeenCalledWith(
       CURRENT_USER.id
     );
     // 4. 테스트 기대 조건을 검증한다.

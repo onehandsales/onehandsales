@@ -15,8 +15,15 @@ import {
   ErrorReportUserNotFoundError,
   ErrorReportValidationError,
 } from "@/modules/error-report/domain/error-report.errors";
+import {
+  USER_QUERY,
+  type UserQuery,
+} from "@/modules/user/application/ports/user-query.port";
+import {
+  APPLICATION_LOGGER,
+  type ApplicationLogger,
+} from "@/shared/application/ports/application-logger.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
-import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 
 const MAX_ERROR_REPORT_PAGE_URL_LENGTH = 2000;
 const MAX_ERROR_REPORT_SCREENSHOT_SIZE_BYTES = 10 * 1024 * 1024;
@@ -56,7 +63,10 @@ export class ErrorReportApplicationService {
     private readonly errorReportRepository: ErrorReportRepository,
     @Inject(ERROR_REPORT_SCREENSHOT_STORAGE)
     private readonly screenshotStorage: ErrorReportScreenshotStorage,
-    private readonly logger: AppLogger
+    @Inject(USER_QUERY)
+    private readonly userQuery: UserQuery,
+    @Inject(APPLICATION_LOGGER)
+    private readonly logger: ApplicationLogger
   ) {}
 
   // 기능 : 에러 신고 입력을 검증하고 사용자 snapshot, optional screenshot과 함께 저장합니다.
@@ -68,10 +78,9 @@ export class ErrorReportApplicationService {
     const pageUrl = this.normalizePageUrl(command.pageUrl);
 
     // 2. 인증 context의 사용자 ID로 DB 사용자 snapshot을 다시 조회한다.
-    const userSnapshot =
-      await this.errorReportRepository.findUserSnapshotById(
-        command.currentUser.id
-      );
+    const userSnapshot = await this.userQuery.findUserSnapshotById(
+      command.currentUser.id
+    );
 
     if (!userSnapshot) {
       throw new ErrorReportUserNotFoundError();

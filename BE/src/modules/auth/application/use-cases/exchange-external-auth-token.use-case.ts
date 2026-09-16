@@ -1,5 +1,4 @@
 ﻿import { Inject, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import {
   type AuthDeviceRecord,
   type AuthDeviceSlot,
@@ -8,6 +7,10 @@ import {
   type AuthSessionRecord,
   type AuthUserRecord,
 } from "@/modules/auth/application/ports/auth.repository";
+import {
+  AUTH_RUNTIME_CONFIG,
+  type AuthRuntimeConfig,
+} from "@/modules/auth/application/ports/auth-runtime-config.port";
 import {
   APP_TOKEN_ISSUER,
   type AppTokenIssuer,
@@ -29,8 +32,11 @@ import {
   type ExternalAuthVerifier,
   type VerifiedExternalUser,
 } from "@/shared/application/ports/external-auth-verifier.port";
+import {
+  APPLICATION_LOGGER,
+  type ApplicationLogger,
+} from "@/shared/application/ports/application-logger.port";
 import { isValidIanaTimeZone } from "@/shared/application/time-zone/time-zone";
-import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { createAuthTokenResponse, type AuthTokenResponse } from "../auth-response";
 
 // 역할 : ExchangeExternalAuthTokenCommand 데이터가 계층 사이에서 전달되는 구조를 정의합니다.
@@ -80,8 +86,10 @@ export class ExchangeExternalAuthTokenUseCase {
     private readonly appTokenIssuer: AppTokenIssuer,
     @Inject(SECURE_TOKEN_SERVICE)
     private readonly secureTokenService: SecureTokenService,
-    private readonly configService: ConfigService,
-    private readonly logger?: AppLogger
+    @Inject(AUTH_RUNTIME_CONFIG)
+    private readonly authRuntimeConfig: AuthRuntimeConfig,
+    @Inject(APPLICATION_LOGGER)
+    private readonly logger?: ApplicationLogger
   ) {}
 
   // 기능 : 외부 인증 토큰을 검증하고 사용자/기기/세션을 생성한 뒤 앱 토큰 응답을 반환합니다.
@@ -568,30 +576,13 @@ export class ExchangeExternalAuthTokenUseCase {
   // 기능 : 초기 관리자 이메일 목록에 포함되는지 확인합니다.
   private isInitialAdminEmail(email: string): boolean {
     // 1. 정규화된 초기 관리자 이메일 목록에서 로그인 이메일을 찾는다.
-    return this.getInitialAdminEmails().includes(email);
-  }
-
-  // 기능 : 환경 변수에서 초기 관리자 이메일 목록을 읽어 정규화합니다.
-  private getInitialAdminEmails(): string[] {
-    // 1. 쉼표로 구분된 초기 관리자 이메일 환경 변수를 읽는다.
-    const value = this.configService.get<string>("INITIAL_ADMIN_EMAILS") ?? "";
-
-    // 2. 공백과 대소문자를 정리하고 빈 항목을 제거한다.
-    return value
-      .split(",")
-      .map((item) => item.trim().toLowerCase())
-      .filter((item) => item.length > 0);
+    return this.authRuntimeConfig.getInitialAdminEmails().includes(email);
   }
 
   // 기능 : 세션 만료 기간 설정값을 일 단위 숫자로 반환합니다.
   private getSessionTtlDays(): number {
-    // 1. 환경 변수에서 세션 TTL 일수를 읽고 숫자로 변환한다.
-    const value = Number(
-      this.configService.get<string>("APP_SESSION_TTL_DAYS") ?? "7"
-    );
-
-    // 2. 유효한 양수만 사용하고 잘못된 값은 7일로 대체한다.
-    return Number.isFinite(value) && value > 0 ? value : 7;
+    // 1. 인증 runtime config 포트에서 세션 TTL 값을 읽는다.
+    return this.authRuntimeConfig.getSessionTtlDays();
   }
 
   // 기능 : 기준 날짜에 지정한 일수를 더한 날짜를 반환합니다.

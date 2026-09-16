@@ -3,6 +3,8 @@ import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { SUPPORT_REQUEST_REPOSITORY } from "@/modules/support-request/application/ports/support-request.repository";
 import { SupportRequestApplicationService } from "@/modules/support-request/application/services/support-request-application.service";
 import { SupportRequestController } from "@/modules/support-request/presentation/http/support-request.controller";
+import { UserModule } from "@/modules/user/infrastructure/user.module";
+import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logger.port";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
@@ -10,11 +12,15 @@ import { PrismaSupportRequestRepository } from "./persistence/prisma-support-req
 
 // 역할 : SupportRequestModule 지원 요청 controller와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, PrismaInfrastructureModule],
+  imports: [AuthModule, UserModule, PrismaInfrastructureModule],
   controllers: [SupportRequestController],
   providers: [
     SupportRequestApplicationService,
     AppLogger,
+    {
+      provide: APPLICATION_LOGGER,
+      useExisting: AppLogger,
+    },
     {
       provide: SUPPORT_REQUEST_REPOSITORY,
       // 기능 : Prisma 서비스로 지원 요청 저장소 구현체를 생성합니다.

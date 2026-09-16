@@ -1,4 +1,3 @@
-﻿import { ConfigService } from "@nestjs/config";
 import {
   type AuthDeviceRecord,
   type AuthDeviceSlot,
@@ -13,6 +12,7 @@ import {
   type CreateOAuthAccountForUserInput,
   type UpdateUserLoginInput,
 } from "@/modules/auth/application/ports/auth.repository";
+import type { AuthRuntimeConfig } from "@/modules/auth/application/ports/auth-runtime-config.port";
 import type { AppTokenIssuer } from "@/modules/auth/application/ports/app-token.port";
 import type { SecureTokenService } from "@/modules/auth/application/ports/secure-token.port";
 import {
@@ -880,14 +880,20 @@ function createUseCaseWithVerifierResult(
   repository: FakeAuthRepository,
   result: VerifiedExternalUser | Error
 ): ExchangeExternalAuthTokenUseCase {
+  const authRuntimeConfig: AuthRuntimeConfig = {
+    getAllowedRefreshOrigins: () => [
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ],
+    getInitialAdminEmails: () => ["admin@example.com"],
+    getSessionTtlDays: () => 7,
+  };
+
   return new ExchangeExternalAuthTokenUseCase(
     new FakeExternalAuthVerifier(result),
     repository,
     new FakeAppTokenIssuer(),
     new FakeSecureTokenService(),
-    new ConfigService({
-      INITIAL_ADMIN_EMAILS: "admin@example.com",
-      APP_SESSION_TTL_DAYS: "7",
-    })
+    authRuntimeConfig
   );
 }

@@ -3,7 +3,6 @@ import type {
   CreateErrorReportInput,
   ErrorReportRecord,
   ErrorReportRepository,
-  ErrorReportUserSnapshot,
 } from "@/modules/error-report/application/ports/error-report.repository";
 import type { CurrentUserPlatformRole } from "@/shared/application/context/current-user.context";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
@@ -14,31 +13,6 @@ export class PrismaErrorReportRepository implements ErrorReportRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   // 기능 : 사용자 ID로 신고 저장용 사용자 snapshot을 조회합니다.
-  async findUserSnapshotById(
-    userId: string
-  ): Promise<ErrorReportUserSnapshot | null> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        displayName: true,
-        platformRole: true,
-      },
-    });
-
-    if (!user) {
-      return null;
-    }
-
-    return {
-      id: user.id,
-      email: user.email,
-      displayName: user.displayName,
-      platformRole: this.fromPrismaPlatformRole(user.platformRole),
-    };
-  }
-
   // 기능 : 사용자 snapshot과 optional screenshot metadata를 에러 신고 row로 저장합니다.
   async createErrorReport(
     input: CreateErrorReportInput
@@ -70,16 +44,6 @@ export class PrismaErrorReportRepository implements ErrorReportRepository {
   }
 
   // 기능 : Prisma PlatformRole enum을 application 계층 platformRole 타입으로 변환합니다.
-  private fromPrismaPlatformRole(role: PlatformRole): CurrentUserPlatformRole {
-    switch (role) {
-      case PlatformRole.ADMIN:
-        return "ADMIN";
-      case PlatformRole.USER:
-      default:
-        return "USER";
-    }
-  }
-
   // 기능 : application 계층 platformRole 타입을 Prisma PlatformRole enum으로 변환합니다.
   private toPrismaPlatformRole(role: CurrentUserPlatformRole): PlatformRole {
     return role === "ADMIN" ? PlatformRole.ADMIN : PlatformRole.USER;

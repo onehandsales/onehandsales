@@ -37,10 +37,6 @@ export interface SupportRequestRecord {
 
 // 역할 : SupportRequestRepository 지원 요청 영속성 계약을 정의합니다.
 export interface SupportRequestRepository {
-  // 기능 : 인증 사용자 ID로 지원 요청 저장용 사용자 snapshot을 조회합니다.
-  findUserSnapshotById(
-    userId: string
-  ): Promise<SupportRequestUserSnapshot | null>;
   // 기능 : 지원 요청 row를 저장합니다.
   createSupportRequest(
     input: CreateSupportRequestInput
