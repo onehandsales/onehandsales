@@ -16,5 +16,5 @@
 - 서버 상태는 TanStack Query로 유지한다.
 - form은 React Hook Form과 Zod 기준을 유지한다.
 - 새 기능보다 layout, 상태, 문구, 접근성, 입력 UX 정리를 우선한다.
-- 모든 화면 작업은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 기준으로 한다.
+- 모든 화면 작업은 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`를 기준으로 한다.
 - row/card/list/detail/create flow는 고정 sales record와 linked record 맥락을 약화하지 않는다.

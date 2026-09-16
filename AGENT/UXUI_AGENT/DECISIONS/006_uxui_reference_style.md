@@ -7,7 +7,7 @@ Date: 2026-09-12
 OneHand CRM의 UX/UI reference는 아래 조합을 기준으로 한다.
 
 ```text
-Notion식 작업공간 UX + Attio식 CRM record UX
+Notion식 작업 공간 UX + Attio식 CRM record UX
 ```
 
 단, reference 제품의 브랜드, 문구, 시각 자산, 화면 구조를 그대로 복제하지 않는다.

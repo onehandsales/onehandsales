@@ -112,7 +112,7 @@ Frontend와 UX/UI 구체화 검토:
 - Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, `GET /admin/api/me` 기준을 따르는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
 - UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈, `/app/more`, 계정/도움말 모달의 역할을 구분하는가?
-- 화면/Frontend/API/DB 계획이 `Notion식 작업공간 UX + Attio식 CRM record UX` 기준을 반영해 workspace/page/database/detail과 record/memo 맥락을 함께 설명하는가?
+- 화면/Frontend/API/DB 계획이 `Notion식 작업 공간 UX + Attio식 CRM record UX` 기준을 반영해 workspace/page/database/detail과 record/memo 맥락을 함께 설명하는가?
 - Company/Product/Deal처럼 현재 API에 없는 전역 도메인은 후속 범위 또는 특정 Kit 안의 업무 개념으로 분리되어 있는가?
 - 계획이 OneHand CRM의 핵심 문장인 "CRM을 배우거나 설계할 필요 없이, 내 일에 맞는 CRM이 바로 준비된다"와 연결되는가?
 - 새 CRM 기능이 Kit, CRM Core, Foundation, 운영 기능 중 어디에 속하는지 분류되어 있는가?

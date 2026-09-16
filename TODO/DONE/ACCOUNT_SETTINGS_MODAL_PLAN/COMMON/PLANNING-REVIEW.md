@@ -59,7 +59,7 @@
 ## 5. 충돌 사항
 
 - `AGENT` 정본과 충돌 없음
-- `Notion식 작업공간 UX + Attio식 CRM record 관계 UX` 기준과 충돌 없음
+- `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX` 기준과 충돌 없음
 - User/Admin API 분리 기준과 충돌 없음
 
 ## 6. 사용자의 결정

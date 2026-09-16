@@ -187,7 +187,7 @@
 
 ### 적용 기준
 
-- 모든 후속 goal은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 기준으로 시작한다.
+- 모든 후속 goal은 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`를 기준으로 시작한다.
 - 목록은 Notion database-like table/list로 조용하고 조밀하게 읽혀야 한다.
 - row/card는 열 수 있는 sales record처럼 동작해야 한다.
 - 상세는 Attio record처럼 property-first, linked record, activity/Memo 맥락을 보여야 한다.

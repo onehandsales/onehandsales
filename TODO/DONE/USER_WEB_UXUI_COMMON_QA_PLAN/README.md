@@ -12,7 +12,7 @@
 
 이 계획은 그중 1번인 `UX/UI 공통 QA`만 다룬다.
 
-2026-07-18 기준 UX/UI 방향성은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`로 고정됐다. 따라서 이 계획의 모든 goal은 단순 반응형/문구 QA가 아니라, 앱 내부 화면이 Notion식 workspace/page/database/detail 문법과 Attio식 CRM record/linked record/activity 문법을 따르는지 함께 검토한다.
+2026-07-18 기준 UX/UI 방향성은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`로 고정됐다. 따라서 이 계획의 모든 goal은 단순 반응형/문구 QA가 아니라, 앱 내부 화면이 Notion식 workspace/page/database/detail 문법과 Attio식 CRM record/linked record/activity 문법을 따르는지 함께 검토한다.
 
 목록 UX는 새 record table 전환이 아니라 기존 record table/list를 더 조용하고 조밀하게 다듬는 방향이다. 데스크톱은 52~56px row와 15개 기본 표시를 장기 목표로 보되, page size 숫자는 Backend/API/test 계약과 함께 바꿀 때만 수정한다. 모바일은 10개 내외 card/list를 유지한다.
 

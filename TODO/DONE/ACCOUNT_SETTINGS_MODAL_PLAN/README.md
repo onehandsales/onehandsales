@@ -8,7 +8,7 @@
 
 이 폴더는 `FE/user-web`의 기존 `/app/settings` 화면에 흩어진 설정 기능을 계정 드롭다운에서 여는 모달의 `Settings` 섹션으로 단계별 이관하기 위한 실행 계획이다.
 
-사용자는 좌측 사이드바나 별도 설정 페이지로 이동하지 않고, 현재 업무 맥락을 유지한 채 계정 메뉴 안에서 앱 기본값, 연동 설정, 데이터 요청을 확인하고 수정할 수 있어야 한다. 계정 모달 `Profile`에 이미 있는 읽기 전용 계정 정보, linked providers, devices, user id는 `Settings`에 다시 복제하지 않는다. 이 방향은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX` 중 조용한 workspace navigation, 낮은 시각 소음, 현재 맥락 유지 원칙을 따른다.
+사용자는 좌측 사이드바나 별도 설정 페이지로 이동하지 않고, 현재 업무 맥락을 유지한 채 계정 메뉴 안에서 앱 기본값, 연동 설정, 데이터 요청을 확인하고 수정할 수 있어야 한다. 계정 모달 `Profile`에 이미 있는 읽기 전용 계정 정보, linked providers, devices, user id는 `Settings`에 다시 복제하지 않는다. 이 방향은 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX` 중 조용한 workspace navigation, 낮은 시각 소음, 현재 맥락 유지 원칙을 따른다.
 
 ## 2. 현재 결정과 구현 상태
 

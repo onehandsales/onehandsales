@@ -14,7 +14,7 @@
 
 - 현재 `G01`부터 `G06`까지 완료됐다.
 - 이번 계획은 FE/user-web UX/UI 공통 QA다.
-- 전역 UX/UI reference는 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
+- 전역 UX/UI reference는 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`다.
 - 모든 goal은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`를 먼저 읽고, workspace/page/database/detail과 CRM record/linked record/activity 기준을 함께 적용한다.
 - 목록은 이미 record table 구조로 보고, 새 구조 전환보다 row density와 linked record/다음 행동/현재 응답에서 가능한 최근 활동 같은 업무 판단 정보 표현을 우선 개선한다.
 - 새 Backend API나 DB schema 변경은 기본 범위가 아니다.

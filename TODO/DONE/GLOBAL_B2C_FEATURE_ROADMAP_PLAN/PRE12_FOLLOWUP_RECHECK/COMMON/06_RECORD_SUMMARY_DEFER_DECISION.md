@@ -9,7 +9,7 @@
 ## 1. 판단 근거
 
 - 서비스 방향은 Global B2C first-sale이며, 현재 우선순위는 개인 영업자가 딜 중심으로 업무를 이어갈 수 있는 최소 신뢰/운영/결제 gate를 닫는 것이다.
-- UX/UI 기준은 Notion식 작업공간과 Attio식 CRM record/activity 방향을 따른다. 다만 Attio식 record-level activity 확장은 최종 방향으로 유효하지만, 첫 판매 전 필수 구현 범위로 확정된 것은 아니다.
+- UX/UI 기준은 Notion식 작업 공간과 Attio식 CRM record/activity 방향을 따른다. 다만 Attio식 record-level activity 확장은 최종 방향으로 유효하지만, 첫 판매 전 필수 구현 범위로 확정된 것은 아니다.
 - 실제 BE/FE 구현 상태상 06은 `DealActivity` 정본, 딜 상세 timeline, Deal list `products/latestActivity`, Contact list `dealCount`, page size 15 계약을 구현하고 QA closeout했다.
 - `NEXT_BACKEND_API_BACKLOG_PLAN`과 `USER_WEB_PRODUCTIZATION_GAP_PLAN`에 남아 있는 `NBA-003` 잔여는 `GLOBAL_B2C_FEATURE_ROADMAP_PLAN/06_DEAL_ACTIVITY_TIMELINE`에서 confirmed로 승격되지 않은 후속 후보다.
 - `01_IMPORT_JOB_PERSISTENCE`처럼 완료 슬롯은 구현 완료 의미를 보존하고, 잔여 후보는 기존 완료 폴더를 재개하지 않고 별도 TODO 후보로 다시 판단한다는 원칙을 유지한다.

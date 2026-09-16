@@ -15,7 +15,7 @@
 - [x] `PRE12_FOLLOWUP_RECHECK/COMMON/FINAL-CLASSIFICATION.md` 기준 12 전에 할 항목만 포함했다.
 - [x] goal은 `PRE12-F04`, `PRE12-F31`, `PRE12-F32`, `PRE12-F33`, `PRE12-F34`와 최종 handoff로만 나눴다.
 - [x] 새 API, 새 DB migration, 새 User Web route, 새 Admin Web route, 새 Billing 기능은 이번 계획에서 제외했다.
-- [x] UX/UI 판단 기준은 `AGENT/UXUI_AGENT`의 Notion식 작업공간 UX와 Attio식 CRM record 관계 UX로 고정했다.
+- [x] UX/UI 판단 기준은 `AGENT/UXUI_AGENT`의 Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX로 고정했다.
 - [x] 소프트웨어 아키텍처, API 계약, transaction, observability, frontend/backend 컨벤션은 `AGENT/SOFTWARE_AGENT` 기준으로 고정했다.
 - [x] request, response, business logic, user flow, DB/Prisma 영향이 생기면 `BE/prisma`와 관련 API 계약을 먼저 확인하도록 각 goal에 gate를 넣었다.
 - [x] 코드 작업이 발생하면 Backend/Frontend 모두 한글 주석 규칙을 따르도록 명시했다.

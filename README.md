@@ -333,7 +333,7 @@ Attio의 데이터 모델은 `Workspace` 안에서 `Object`를 정의하고, 각
 
 OneHandCRM에서 참고할 Attio식 데이터 모델링 개념:
 
-- `Workspace`: Object, Record, List, Member, 권한, 설정이 속하는 최상위 작업공간/테넌트다.
+- `Workspace`: Object, Record, List, Member, 권한, 설정이 속하는 최상위 작업 공간/테넌트다.
 - `WorkspaceMember`: 한 Workspace에 속한 사용자 멤버십이다. 사용자별 권한, 소유자, 담당자, 생성자 맥락의 기준이 된다.
 - `Actor`: 데이터를 생성하거나 수정한 주체다. 사람 멤버, API token, system, app, automation 같은 행위자를 감사 추적에 남긴다.
 - `Object`: 관리 대상의 타입이다. DB table 또는 class에 가까우며, Record와 Attribute의 기준 scope가 된다.
@@ -407,7 +407,7 @@ Attribute type 후보:
 - `Text`: 자유 텍스트를 저장하는 타입이다.
 - `Timestamp`: UTC 기준 날짜와 시간을 함께 저장하는 타입이다.
 
-주의할 점은 `Workspace`가 두 의미로 쓰일 수 있다는 점이다. Attio에서는 서비스 최상위 계정/테넌트 의미의 workspace와, product-led growth CRM에서 고객사의 workspace를 표현하는 standard object `Workspaces`가 함께 등장한다. OneHandCRM에서는 우선 `Workspace`를 우리 서비스의 작업공간/테넌트 의미로 고정하고, 고객사의 workspace를 CRM record로 다루는 경우에는 후속 설계에서 별도 이름을 정한다.
+주의할 점은 `Workspace`가 두 의미로 쓰일 수 있다는 점이다. Attio에서는 서비스 최상위 계정/테넌트 의미의 workspace와, product-led growth CRM에서 고객사의 workspace를 표현하는 standard object `Workspaces`가 함께 등장한다. OneHandCRM에서는 우선 `Workspace`를 우리 서비스의 작업 공간/테넌트 의미로 고정하고, 고객사의 workspace를 CRM record로 다루는 경우에는 후속 설계에서 별도 이름을 정한다.
 
 참고한 Attio 공식 문서:
 

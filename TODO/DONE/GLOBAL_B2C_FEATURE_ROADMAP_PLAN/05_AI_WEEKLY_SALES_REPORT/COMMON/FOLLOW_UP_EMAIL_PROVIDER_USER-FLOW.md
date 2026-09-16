@@ -6,7 +6,7 @@
 
 ## 1. UX/UI 기준
 
-G10 화면은 `AGENT/UXUI_AGENT`의 Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 따른다.
+G10 화면은 `AGENT/UXUI_AGENT`의 Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX를 따른다.
 
 적용 방식:
 

@@ -38,7 +38,7 @@
 
 | 결정 | 내용 |
 |---|---|
-| UX 기준 | Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 함께 따른다. |
+| UX 기준 | Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX를 함께 따른다. |
 | 사용 편의성 | 설정을 많이 요구하지 않고, 강한 기본값과 짧은 action으로 사용자가 바로 업무를 이어가게 한다. |
 | Record 관계 | 회사, 담당자, 제품, 딜, 일정, 회의록은 linked record로 정확히 연결한다. |
 | AI 원칙 | AI는 자동 mutation하지 않고, 사용자가 확인할 수 있는 제안과 초안을 만든다. |

@@ -16,7 +16,7 @@
 - `any`를 사용하지 않는다.
 - 사용자 노출 문구는 `UX_WRITING_GUIDE.md`를 따른다.
 - icon-only button에는 `aria-label` 또는 tooltip을 둔다.
-- 화면 UX/UI 기준은 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
+- 화면 UX/UI 기준은 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`다.
 - Company/Contact/Product/Deal/Schedule/MeetingNote는 custom object가 아니라 고정 sales record로 다룬다.
 - list row/card는 열 수 있는 record처럼 동작하고, detail은 property-first와 linked record 맥락을 보여준다.
 - 현재 목록은 이미 record table 구조에 가깝다. 새 구조로 갈아엎기보다 row density와 연결 record/업무 판단 정보 표현을 강화한다.
@@ -35,7 +35,7 @@
 
 - [x] `/app` 홈 정보 우선순위 정리
 - [x] Sidebar/TopBar/MobileAppHeader/BottomTabBar 기본 상태 확인
-- [x] workspace/sidebar/page 구조가 Notion식 작업공간 기준을 따르는지 확인
+- [x] workspace/sidebar/page 구조가 Notion식 작업 공간 기준을 따르는지 확인
 - [x] 홈의 딜/일정/회의록 항목이 linked record entry point처럼 동작하는지 확인
 - [x] 빠른 실행 link가 보호 앱 route로 이어지는지 확인
 - [x] icon-only action 접근성 확인

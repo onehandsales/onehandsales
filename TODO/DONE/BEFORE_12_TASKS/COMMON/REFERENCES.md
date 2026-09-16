@@ -49,7 +49,7 @@
 
 적용 기준:
 
-- Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 따른다.
+- Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX를 따른다.
 - stale 문서에 맞추기 위해 현재 활성 route를 rollback하지 않는다.
 - 사용자 노출 문구를 바꾸는 경우 해요체와 짧은 행동 중심 문구를 사용한다.
 

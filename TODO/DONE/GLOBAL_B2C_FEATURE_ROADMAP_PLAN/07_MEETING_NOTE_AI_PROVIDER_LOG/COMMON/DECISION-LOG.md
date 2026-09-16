@@ -8,7 +8,7 @@
 | 항목 | 결정 |
 |---|---|
 | 최상위 목표 | Global B2C에서 실제 판매 가능한 제품을 만든다. 기능은 구매 이유와 연결되어야 한다. |
-| UX/UI 기준 | `AGENT/UXUI_AGENT`를 따른다. Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 참고한다. |
+| UX/UI 기준 | `AGENT/UXUI_AGENT`를 따른다. Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX를 참고한다. |
 | Software 기준 | `AGENT/SOFTWARE_AGENT`를 따른다. API/DB/BE/FE 계약, transaction, observability, 주석 규칙을 지킨다. |
 | AI/STT log | 기존 공통 `AiProviderCallLog`를 확장한다. 회의록 전용 log table은 만들지 않는다. |
 | STT transcript | 기본 저장하지 않는다. 사용자 확인 전 임시 표시만 허용한다. |

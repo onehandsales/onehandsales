@@ -13,7 +13,7 @@
 - `TODO/NEXT_BACKEND_API_BACKLOG_PLAN`
 - `TODO/USER_WEB_PRODUCTIZATION_GAP_PLAN`
 
-06은 위 두 문서를 기반으로 만든 구현 계획이지만, 모든 후보를 한 번에 구현하지 않는다. Global B2C, Notion식 작업공간, Attio식 CRM record/activity 방향에 맞는 Deal 중심 activity와 그 위의 최소 record summary만 06 범위로 승격한다.
+06은 위 두 문서를 기반으로 만든 구현 계획이지만, 모든 후보를 한 번에 구현하지 않는다. Global B2C, Notion식 작업 공간, Attio식 CRM record/activity 방향에 맞는 Deal 중심 activity와 그 위의 최소 record summary만 06 범위로 승격한다.
 
 ## 2. NEXT_BACKEND_API_BACKLOG_PLAN 반영
 

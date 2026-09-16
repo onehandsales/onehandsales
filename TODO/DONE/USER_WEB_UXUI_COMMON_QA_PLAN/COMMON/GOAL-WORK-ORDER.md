@@ -6,7 +6,7 @@
 
 이 문서는 `USER_WEB_UXUI_COMMON_QA_PLAN`을 `/goal`로 실행할 때의 작업 순서를 고정한다.
 
-모든 goal은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`를 전역 기준으로 적용한다.
+모든 goal은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`를 전역 기준으로 적용한다.
 
 ## 2. 실행 순서
 

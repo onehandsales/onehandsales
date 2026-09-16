@@ -149,7 +149,7 @@ model User {
   @@index([createdAt])
 }
 
-/// 기능 : B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업공간입니다.
+/// 기능 : B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업 공간입니다.
 model Workspace {
   /// 기능 : Workspace row의 고유 식별자입니다.
   id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

@@ -23,7 +23,7 @@
 | 수동 기록 | 포함 |
 | 수동 기록 수정 | 포함 |
 | 수동 기록 삭제 | 1차 제외 |
-| UX 기준 | Notion식 작업공간 UX + Attio식 CRM record 관계 UX |
+| UX 기준 | Notion식 작업 공간 UX + Attio식 CRM record 관계 UX |
 | 구현 전략 | 기능 구현 우선, 전체 UX polish는 후속 |
 | 2026-08-06 후속 재검토 | A 결정: 06은 Completed 유지. Company/Contact/Product latest summary, generic summary endpoint, record별 상세 timeline은 12 전 계약화/구현하지 않고 post-12 전략 후보로 둔다. |
 

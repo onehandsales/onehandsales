@@ -7,14 +7,14 @@ Date: 2026-09-12
 OneHand CRM의 선호 UX/UI 기준은 다음 조합으로 둔다.
 
 ```text
-Notion식 작업공간 UX + Attio식 CRM record UX
+Notion식 작업 공간 UX + Attio식 CRM record UX
 ```
 
 이 결정은 화면 설계, Frontend 구현, 사용자 노출 문구, UX/UI QA, 화면이 연결된 API/DB 계약에서 함께 참고한다.
 
 ## 2. Notion에서 가져올 것
 
-Notion은 전체 작업공간 문법의 1차 reference다.
+Notion은 전체 작업 공간 문법의 1차 reference다.
 
 - sidebar 중심 navigation
 - page 중심 화면 구조

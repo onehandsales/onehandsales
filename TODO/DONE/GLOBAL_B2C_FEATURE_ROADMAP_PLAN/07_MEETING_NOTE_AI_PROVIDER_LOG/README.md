@@ -30,7 +30,7 @@ Global B2C에서 실제 구매를 이끌어낼 수 있도록, 회의록 AI/STT�
 | AI 원칙 | AI는 후보와 초안만 만들고, 실제 업무 데이터 저장은 사용자가 확인한 뒤 실행한다. |
 | 운영 신뢰 | provider raw/prompt/transcript 원문은 저장하지 않고, 비용/latency/실패 상태만 추적한다. |
 
-UX/UI는 반드시 `AGENT/UXUI_AGENT`를 따른다. 특히 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 우선한다.
+UX/UI는 반드시 `AGENT/UXUI_AGENT`를 따른다. 특히 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`의 Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX를 우선한다.
 
 Software/API/DB/FE/BE 구현은 반드시 `AGENT/SOFTWARE_AGENT`를 따른다.
 

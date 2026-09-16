@@ -61,7 +61,7 @@
 - API request/response가 화면의 record 관계나 상세 표시 방식에 영향을 주는 작업
 - DB schema 변경이 화면의 record 관계, 상세 속성, activity/Memo 흐름에 영향을 주는 작업
 
-이 기준은 `Notion식 작업공간 UX + Attio식 CRM record UX`를 제품의 선호 방향으로 고정한다. 단, reference 제품의 brand, copy, visual asset, pixel-level layout은 복제하지 않는다.
+이 기준은 `Notion식 작업 공간 UX + Attio식 CRM record UX`를 제품의 선호 방향으로 고정한다. 단, reference 제품의 brand, copy, visual asset, pixel-level layout은 복제하지 않는다.
 
 ## 4. 활성 TODO 재검토 요청 처리 규칙
 

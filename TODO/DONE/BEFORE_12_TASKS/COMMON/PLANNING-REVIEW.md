@@ -94,7 +94,7 @@ Frontend/UX:
 
 - User Web은 `/api/*`만 호출한다.
 - Admin Web은 `/admin/api/*`만 호출한다.
-- Notion식 작업공간 UX와 Attio식 CRM record 관계 UX를 유지한다.
+- Notion식 작업 공간 UX와 Attio식 CRM record 관계 UX를 유지한다.
 - 사용자 노출 문구 변경이 생기면 해요체와 짧은 행동 중심 문구를 따른다.
 - stale 문서를 기준으로 실제 route를 rollback하지 않는다.
 

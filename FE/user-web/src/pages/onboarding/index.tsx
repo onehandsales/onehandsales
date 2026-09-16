@@ -68,8 +68,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand 홈",
     title: "어떤 일을 주로 하세요?",
     subtitle: "하나를 선택하면 업무에 맞는 CRM을 빠르게 준비할게요.",
-    buildingTitle: "나의 작업공간을 생성중이에요.",
-    progressLabel: "나의 작업공간 생성 진행률",
+    buildingTitle: "나의 작업 공간을 생성중이에요.",
+    progressLabel: "나의 작업 공간 생성 진행률",
     jobs: [
       {
         key: "sales",

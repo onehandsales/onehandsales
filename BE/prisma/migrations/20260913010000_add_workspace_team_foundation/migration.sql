@@ -21,7 +21,7 @@ CREATE TYPE "TeamMemberRole" AS ENUM (
   'MEMBER'
 );
 
--- 기능 : B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업공간을 저장한다.
+-- 기능 : B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업 공간을 저장한다.
 CREATE TABLE "Workspace" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
   "name" TEXT NOT NULL,
@@ -154,7 +154,7 @@ COMMENT ON TYPE "WorkspaceMemberRole" IS 'Workspace 전체 단위 멤버 역할.
 COMMENT ON TYPE "TeamType" IS 'Workspace 안 Team의 사용 목적.';
 COMMENT ON TYPE "TeamMemberRole" IS 'Team 안에서의 멤버 역할.';
 
-COMMENT ON TABLE "Workspace" IS 'B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업공간.';
+COMMENT ON TABLE "Workspace" IS 'B2C 개인/개인사업자 또는 B2B 조직이 사용하는 최상위 작업 공간.';
 COMMENT ON COLUMN "Workspace"."id" IS 'Workspace row의 고유 식별자.';
 COMMENT ON COLUMN "Workspace"."name" IS '사용자에게 보이는 Workspace 이름.';
 COMMENT ON COLUMN "Workspace"."kind" IS 'PERSONAL 또는 ORGANIZATION.';

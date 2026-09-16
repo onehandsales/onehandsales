@@ -77,7 +77,7 @@ G02는 새 API를 만들지 않는다.
 - offline/PWA는 현재 완료 범위로 오해되지 않는다.
 - server draft/raw media storage는 현재 완료 범위로 오해되지 않는다.
 - Notification 확장 후보는 post-12 후보로 남긴다.
-- UX/UI는 Notion식 작업공간과 Attio식 record 흐름을 해치지 않는다.
+- UX/UI는 Notion식 작업 공간과 Attio식 record 흐름을 해치지 않는다.
 
 ## 7. DB/Prisma 체크
 

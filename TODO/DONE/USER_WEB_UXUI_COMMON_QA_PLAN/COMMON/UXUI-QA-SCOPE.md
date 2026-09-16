@@ -17,7 +17,7 @@
 
 ## 1A. 전역 UX/UI Reference 범위
 
-이번 QA의 1차 reference는 `Notion식 작업공간 UX + Attio식 CRM record 관계 UX`다.
+이번 QA의 1차 reference는 `Notion식 작업 공간 UX + Attio식 CRM record 관계 UX`다.
 
 반드시 가져올 기준:
 
