@@ -67,7 +67,7 @@ export const koKRResource = {
     logoutDescription: "OneHand 워크스페이스에 액세스하려면\n다시 로그인해야 합니다.",
     logoutQuestion: "계정에서 로그아웃하시겠습니까?",
     myWorkspaces: "나의 작업 공간들",
-    newWorkspace: "새 워크스페이스",
+    newWorkspace: "새 작업 공간",
     privacy: "개인정보",
     sidebarClose: "사이드 바 닫기",
     sidebarOpen: "사이드 바 열기",

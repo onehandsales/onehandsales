@@ -439,6 +439,13 @@ export function AppShell() {
             <div className="flex h-9 w-full items-center rounded-lg px-2 text-[14px] font-medium text-[#6B7280]">
               <span className="min-w-0 flex-1 truncate">{userEmail}</span>
             </div>
+            <div aria-hidden="true" className="my-1 border-t border-[#EEEDEA]" />
+            <AccountMenuItem
+              icon={Settings}
+              label={t("shell.accountProfile")}
+              tabIndex={accountMenuOpen ? undefined : -1}
+              onClick={() => openAccountModal("settings")}
+            />
             {sidebarWorkspaces.length > 0 ? (
               <div className="my-1 border-t border-[#EEEDEA] pt-1">
                 <p className="px-2 py-1 text-[12px] font-semibold leading-4 text-[#6B7280]">
@@ -473,12 +480,7 @@ export function AppShell() {
                 {t("shell.newWorkspace")}
               </span>
             </button>
-            <AccountMenuItem
-              icon={Settings}
-              label={t("shell.accountProfile")}
-              tabIndex={accountMenuOpen ? undefined : -1}
-              onClick={() => openAccountModal("settings")}
-            />
+            <div aria-hidden="true" className="my-1 border-t border-[#EEEDEA]" />
             <AccountMenuItem
               icon={LogOut}
               label={t("shell.logout")}
