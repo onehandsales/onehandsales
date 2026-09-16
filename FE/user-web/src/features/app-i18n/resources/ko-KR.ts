@@ -56,7 +56,7 @@ export const koKRResource = {
     helpTooltip: "도움말 보기",
     homeAria: "홈",
     homeTooltip: "홈 이동하기",
-    inviteTeam: "팀원 초대",
+    inviteTeam: "멤버 초대",
     notificationsAria: "알림",
     notificationsTooltip: "알림 보기",
     searchAria: "검색",

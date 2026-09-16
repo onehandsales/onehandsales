@@ -22,6 +22,7 @@ import {
   Link,
   Loader2,
   LogOut,
+  MailPlus,
   Menu,
   MoreHorizontal,
   Plus,
@@ -29,7 +30,6 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  UserPlus,
   UserRound,
   type LucideIcon,
   X,
@@ -62,6 +62,7 @@ import {
   useDefaultSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
+import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
 import {
   createAccountModalSearchParams,
   getAccountModalSectionFromSearchParams,
@@ -175,6 +176,11 @@ export function AppShell() {
     () => ({ setAutoSidebarCollapsed: setIsSidebarAutoCollapsed }),
     [],
   );
+
+  // 기능 : 사이드바 Workspace 목록 항목 클릭 시 단건 Workspace API만 호출합니다.
+  const handleSidebarWorkspaceClick = useCallback((workspaceId: string) => {
+    void getSidebarWorkspace(workspaceId).catch(() => undefined);
+  }, []);
 
   // 기능 : 계정 Settings 모달 URL query를 현재 route 위에서 동기화합니다.
   // 23. 처리 흐름에 필요한 syncAccountModalSearchParams 값을 준비한다.
@@ -450,7 +456,7 @@ export function AppShell() {
             />
             <AccountMenuItem
               dense
-              icon={UserPlus}
+              icon={MailPlus}
               label={t("shell.inviteTeam")}
               tabIndex={accountMenuOpen ? undefined : -1}
               onClick={() => setAccountMenuOpen(false)}
@@ -461,9 +467,13 @@ export function AppShell() {
                   {t("shell.myWorkspaces")}
                 </p>
                 {sidebarWorkspaces.map((workspace) => (
-                  <div
-                    className="flex h-8 w-full items-center gap-2 rounded-lg px-2"
+                  <button
+                    className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
                     key={workspace.id}
+                    role="menuitem"
+                    tabIndex={accountMenuOpen ? undefined : -1}
+                    type="button"
+                    onClick={() => handleSidebarWorkspaceClick(workspace.id)}
                   >
                     <span
                       aria-hidden="true"
@@ -474,7 +484,7 @@ export function AppShell() {
                         {formatSidebarWorkspaceListName(workspace.name)}
                       </p>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             ) : null}

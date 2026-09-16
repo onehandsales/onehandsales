@@ -56,7 +56,7 @@ export const enResource = {
     helpTooltip: "View help",
     homeAria: "Home",
     homeTooltip: "Go home",
-    inviteTeam: "Invite team",
+    inviteTeam: "Invite member",
     notificationsAria: "Notifications",
     notificationsTooltip: "View notifications",
     searchAria: "Search",

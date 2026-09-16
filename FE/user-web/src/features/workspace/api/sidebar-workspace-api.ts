@@ -19,3 +19,11 @@ export function listSidebarWorkspaces() {
     "/api/users/me/sidebar/workspaces"
   );
 }
+
+// 기능 : 현재 사용자가 접근할 수 있는 사이드바 Workspace 단건 요약을 조회합니다.
+export function getSidebarWorkspace(workspaceId: string) {
+  // 1. 인증된 현재 사용자 기준 sidebar Workspace 단건 API를 호출한다.
+  return apiClient<SidebarWorkspaceSummary>(
+    `/api/users/me/sidebar/workspaces/${encodeURIComponent(workspaceId)}`
+  );
+}
