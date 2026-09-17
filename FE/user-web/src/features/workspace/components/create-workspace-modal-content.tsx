@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import {
   type FormEvent,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -35,14 +36,17 @@ type WorkspaceJobOption = {
 
 type WorkspaceCreateModalCopy = {
   readonly back: string;
+  readonly creatingTitle: string;
   readonly jobDescription: string;
-  readonly jobTitle: string;
+  readonly jobTitleSuffix: string;
   readonly nameInputLabel: string;
   readonly namePlaceholder: string;
   readonly nameTitle: string;
   readonly next: string;
   readonly jobs: readonly Omit<WorkspaceJobOption, "imageSrc">[];
 };
+
+const WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS = 5000;
 
 const workspaceJobImageSrcByKey: Record<WorkspaceJobOptionKey, string> = {
   sales:
@@ -68,8 +72,9 @@ const workspaceCreateModalCopyByLocale: Record<
 > = {
   "ko-KR": {
     back: "이전",
+    creatingTitle: "새로운 작업 공간을 생성하고 있어요.",
     jobDescription: "하나를 선택하면 업무에 맞는 CRM 준비 흐름으로 이어갈게요.",
-    jobTitle: "어떤 일을 위한 공간인가요?",
+    jobTitleSuffix: "는 어떤 일을 위한 공간인가요?",
     nameInputLabel: "작업 공간 이름",
     namePlaceholder: "예: 부동산 매물 관리",
     nameTitle: "새 작업 공간 이름을 작성해 주세요.",
@@ -119,8 +124,9 @@ const workspaceCreateModalCopyByLocale: Record<
   },
   en: {
     back: "Back",
+    creatingTitle: "Creating your new workspace.",
     jobDescription: "Choose one so this workspace can continue with the right CRM setup.",
-    jobTitle: "What kind of work is this for?",
+    jobTitleSuffix: " is for what kind of work?",
     nameInputLabel: "Workspace name",
     namePlaceholder: "Example: Real estate listings",
     nameTitle: "Name your new workspace.",
@@ -186,6 +192,7 @@ export function CreateWorkspaceModalContent({
     useState<WorkspaceJobOptionKey | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [hasCreatedWorkspace, setHasCreatedWorkspace] = useState(false);
+  const [createLoadingModalOpen, setCreateLoadingModalOpen] = useState(false);
   const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(
     null,
   );
@@ -199,6 +206,20 @@ export function CreateWorkspaceModalContent({
     [copy.jobs],
   );
   const canMoveNext = workspaceName.trim().length > 0;
+
+  // 4. Workspace 생성 완료 안내 모달이 열리면 일정 시간 뒤 전체 모달을 닫는다.
+  useEffect(() => {
+    if (!createLoadingModalOpen) {
+      return;
+    }
+
+    const closeTimerId = window.setTimeout(
+      onClose,
+      WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS,
+    );
+
+    return () => window.clearTimeout(closeTimerId);
+  }, [createLoadingModalOpen, onClose]);
 
   // 기능 : 이름 입력 단계에서 업무 선택 단계로 이동합니다.
   const onSubmitName = (event: FormEvent<HTMLFormElement>) => {
@@ -238,6 +259,7 @@ export function CreateWorkspaceModalContent({
       });
       setHasCreatedWorkspace(true);
       setIsCreating(false);
+      setCreateLoadingModalOpen(true);
     } catch (error) {
       setCreateErrorMessage(getApiErrorMessage(error));
       setIsCreating(false);
@@ -255,10 +277,10 @@ export function CreateWorkspaceModalContent({
   };
 
   return (
-    <div className="relative h-[min(76vh,720px)] overflow-hidden bg-white">
+    <div className="relative h-full overflow-hidden bg-white">
       <button
         aria-label={t("common.close")}
-        className="absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]"
+        className="absolute right-4 top-4 z-10 grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#64748B] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
         onClick={onClose}
         type="button"
       >
@@ -287,6 +309,34 @@ export function CreateWorkspaceModalContent({
           />
         )}
       </div>
+      {createLoadingModalOpen ? (
+        <WorkspaceCreateLoadingDialog title={copy.creatingTitle} />
+      ) : null}
+    </div>
+  );
+}
+
+// 기능 : Workspace 생성 완료 후 잠시 보여줄 로딩 모달을 렌더링합니다.
+function WorkspaceCreateLoadingDialog({
+  title,
+}: {
+  readonly title: string;
+}) {
+  return (
+    <div className="absolute inset-0 z-20 grid place-items-center bg-black/25 px-6">
+      <section
+        aria-modal="true"
+        className="grid w-full max-w-[360px] justify-items-center rounded-[8px] bg-white px-8 py-9 text-center shadow-[0_18px_50px_rgba(15,23,42,0.18)]"
+        role="dialog"
+      >
+        <span
+          aria-hidden="true"
+          className="h-9 w-9 rounded-full border-[3px] border-[#E4E2DC] border-t-[#4880EE] animate-spin"
+        />
+        <h2 className="mt-5 break-keep text-[20px] font-normal leading-[1.3] text-[#050505]">
+          {title}
+        </h2>
+      </section>
     </div>
   );
 }
@@ -311,8 +361,7 @@ function WorkspaceNameStep({
         className="mx-auto min-w-0 w-full max-w-[508px]"
         onSubmit={onSubmit}
       >
-        <p className="mb-5 text-[13px] font-normal text-[#777770]">1 / 2</p>
-        <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+        <h1 className="break-keep text-[20px] font-normal leading-[1.2] tracking-normal text-[#050505]">
           {copy.nameTitle}
         </h1>
 
@@ -375,7 +424,7 @@ function WorkspaceJobStep({
     <section className="flex min-h-full items-center bg-white px-8 py-10 md:px-12">
       <button
         className={cn(
-          "absolute left-4 top-4 z-10 inline-flex h-8 items-center gap-1.5 rounded-[6px] px-2 text-[13px] font-medium text-[#64748B] transition hover:bg-[#F3F6FB] hover:text-[#111827] active:bg-[#E4E8F0]",
+          "absolute left-4 top-4 z-10 inline-flex h-8 items-center gap-1.5 rounded-[6px] px-2 text-[13px] font-medium text-[#64748B] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]",
           isSelectionLocked ? "cursor-not-allowed opacity-55" : "",
         )}
         disabled={isSelectionLocked}
@@ -387,16 +436,10 @@ function WorkspaceJobStep({
       </button>
       <div className="mx-auto min-w-0 w-full max-w-[508px]">
         <div>
-          <p className="mb-5 text-[13px] font-normal text-[#777770]">2 / 2</p>
-          <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
-            {copy.jobTitle}
+          <h1 className="break-keep text-[20px] font-normal leading-[1.2] tracking-normal text-[#050505]">
+            <span className="text-[#9CA3AF]">{workspaceName}</span>
+            {copy.jobTitleSuffix}
           </h1>
-          <p className="mt-5 truncate text-[13px] font-medium text-[#6B7280]">
-            {workspaceName}
-          </p>
-          <p className="mt-3 text-[14px] leading-6 text-[#64748B]">
-            {copy.jobDescription}
-          </p>
           {createErrorMessage ? (
             <p
               className="mt-4 rounded-[6px] border border-[#F8D7DA] bg-[#FFF5F5] px-3 py-2 text-[13px] leading-5 text-[#B42318]"
@@ -407,7 +450,7 @@ function WorkspaceJobStep({
           ) : null}
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {jobOptions.map(({ imageAlt, imageSrc, key, label }) => {
             const selected = selectedJobKey === key;
 

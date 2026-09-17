@@ -24,9 +24,8 @@ test.describe("create workspace modal UX", () => {
     const createWorkspaceDialog = page.getByRole("dialog").first();
     // 7. 필요한 비동기 작업을 실행한다.
     await expect(createWorkspaceDialog).toBeVisible();
+    await expect(createWorkspaceDialog).toHaveCSS("max-width", "520px");
     // 8. 필요한 비동기 작업을 실행한다.
-    await expect(createWorkspaceDialog.getByText("1 / 2")).toBeVisible();
-    // 9. 필요한 비동기 작업을 실행한다.
     await expect(
       createWorkspaceDialog.getByRole("heading", {
         exact: true,
@@ -34,47 +33,57 @@ test.describe("create workspace modal UX", () => {
       }),
     ).toBeVisible();
 
-    // 10. 이후 단계에서 사용할 nextButton 값을 준비한다.
+    // 9. 이후 단계에서 사용할 nextButton 값을 준비한다.
     const nextButton = createWorkspaceDialog.getByRole("button", {
       exact: true,
       name: "다음",
     });
-    // 11. 필요한 비동기 작업을 실행한다.
+    // 10. 필요한 비동기 작업을 실행한다.
     await expect(nextButton).toBeDisabled();
-    // 12. 필요한 비동기 작업을 실행한다.
+    // 11. 필요한 비동기 작업을 실행한다.
     await expect(nextButton).toHaveCSS("background-color", "rgb(72, 128, 238)");
 
-    // 13. 필요한 비동기 작업을 실행한다.
+    // 12. 필요한 비동기 작업을 실행한다.
     await createWorkspaceDialog
       .getByLabel("작업 공간 이름")
       .fill("부동산 매물 관리");
-    // 14. 필요한 비동기 작업을 실행한다.
+    // 13. 필요한 비동기 작업을 실행한다.
     await expect(nextButton).toBeEnabled();
-    // 15. 필요한 비동기 작업을 실행한다.
+    // 14. 필요한 비동기 작업을 실행한다.
     await nextButton.click();
 
+    // 15. 필요한 비동기 작업을 실행한다.
+    const jobStepHeading = createWorkspaceDialog.getByRole("heading", {
+      exact: true,
+      name: "부동산 매물 관리는 어떤 일을 위한 공간인가요?",
+    });
+    await expect(jobStepHeading).toBeVisible();
+    await expect(jobStepHeading.getByText("부동산 매물 관리")).toHaveCSS(
+      "color",
+      "rgb(156, 163, 175)",
+    );
     // 16. 필요한 비동기 작업을 실행한다.
-    await expect(
-      createWorkspaceDialog.getByRole("heading", {
-        exact: true,
-        name: "어떤 일을 위한 공간인가요?",
-      }),
-    ).toBeVisible();
-    await expect(createWorkspaceDialog.getByText("2 / 2")).toBeVisible();
-    // 17. 필요한 비동기 작업을 실행한다.
     await expect(createWorkspaceDialog.getByText("부동산 매물 관리")).toBeVisible();
-    // 18. 필요한 비동기 작업을 실행한다.
+    // 17. 필요한 비동기 작업을 실행한다.
     await createWorkspaceDialog
       .getByRole("button", { name: /부동산$/ })
       .click();
-    // 19. 필요한 비동기 작업을 실행한다.
+    // 18. 필요한 비동기 작업을 실행한다.
     await expect(
       createWorkspaceDialog.getByRole("button", {
         name: /부동산$/,
       }),
     ).toHaveAttribute("aria-pressed", "true");
+    // 19. 필요한 비동기 작업을 실행한다.
+    await expect(
+      createWorkspaceDialog.getByText("새로운 작업 공간을 생성하고 있어요."),
+    ).toBeVisible();
+    // 20. 필요한 비동기 작업을 실행한다.
+    await expect(page.getByRole("dialog")).toHaveCount(0, {
+      timeout: 8_000,
+    });
 
-    // 20. 테스트 기대 조건을 검증한다.
+    // 21. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
   });
 });

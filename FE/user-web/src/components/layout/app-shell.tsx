@@ -826,6 +826,7 @@ export function AppShell() {
 
       <AccountModal
         open={createWorkspaceModalOpen}
+        panelSize="compact"
         onClose={closeCreateWorkspaceModal}
       >
         <CreateWorkspaceModalContent onClose={closeCreateWorkspaceModal} />
@@ -1030,10 +1031,12 @@ function AccountModal({
   children,
   onClose,
   open,
+  panelSize = "default",
 }: {
   readonly children: ReactNode;
   readonly onClose: () => void;
   readonly open: boolean;
+  readonly panelSize?: "compact" | "default";
 }) {
   // 1. 처리 흐름에 필요한 [shouldRender, setShouldRender] 값을 준비한다.
   const [shouldRender, setShouldRender] = useState(open);
@@ -1110,7 +1113,13 @@ function AccountModal({
     return null;
   }
 
-  // 7. 계산된 결과를 호출자에게 반환한다.
+  // 7. 현재 모달 용도에 맞는 panel 크기 클래스를 계산한다.
+  const panelSizeClass =
+    panelSize === "compact"
+      ? "h-[min(72vh,560px)] w-full max-w-[520px]"
+      : "max-h-full w-full max-w-4xl";
+
+  // 8. 계산된 결과를 호출자에게 반환한다.
   return (
     <div
       className={`fixed inset-0 z-[70] flex items-center justify-center bg-black/35 px-4 py-6 transition-opacity duration-300 ease-out ${
@@ -1121,7 +1130,7 @@ function AccountModal({
     >
       <section
         aria-modal="true"
-        className={`max-h-full w-full max-w-4xl origin-center overflow-hidden rounded-xl bg-white shadow-2xl transition-all duration-300 ease-out ${
+        className={`${panelSizeClass} origin-center overflow-hidden rounded-xl bg-white shadow-2xl transition-all duration-300 ease-out ${
           isVisible
             ? "translate-y-0 scale-100 opacity-100"
             : "-translate-y-3 scale-[0.97] opacity-0"
