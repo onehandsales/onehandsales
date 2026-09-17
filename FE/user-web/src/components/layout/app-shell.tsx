@@ -59,6 +59,7 @@ import { ErrorReportHelpContent } from "@/features/error-report";
 import { SupportRequestHelpContent } from "@/features/support-request";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
+  CreateWorkspaceModalContent,
   useDefaultSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
@@ -131,11 +132,14 @@ export function AppShell() {
   const [helpModal, setHelpModal] = useState<HelpModalSection | null>(null);
   // 14. 처리 흐름에 필요한 [logoutConfirmOpen, setLogoutConfirmOpen] 값을 준비한다.
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
-  // 15. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
+  // 15. 처리 흐름에 필요한 [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] 값을 준비한다.
+  const [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] =
+    useState(false);
+  // 16. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  // 16. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
+  // 17. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
-  // 17. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
+  // 18. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
 
@@ -211,8 +215,10 @@ export function AppShell() {
       // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setLogoutConfirmOpen(false);
       // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
+      setCreateWorkspaceModalOpen(false);
+      // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setAccountModal(section);
-      // 6. 현재 단계에서 필요한 동작을 실행한다.
+      // 7. 현재 단계에서 필요한 동작을 실행한다.
       syncAccountModalSearchParams(section);
     },
     [syncAccountModalSearchParams],
@@ -235,6 +241,8 @@ export function AppShell() {
     // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setLogoutConfirmOpen(false);
     // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setCreateWorkspaceModalOpen(false);
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setHelpModal(section);
   }, []);
 
@@ -244,8 +252,33 @@ export function AppShell() {
     setHelpModal(null);
   }, []);
 
+  // 기능 : 사이드바 새 작업 공간 버튼에서 생성 모달을 엽니다.
+  // 28. 처리 흐름에 필요한 openCreateWorkspaceModal 값을 준비한다.
+  const openCreateWorkspaceModal = useCallback(() => {
+    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setAccountMenuOpen(false);
+    // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setHelpMenuOpen(false);
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setHelpModal(null);
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setAccountModal(null);
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    syncAccountModalSearchParams(null);
+    // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setLogoutConfirmOpen(false);
+    // 7. 새 작업 공간 생성 모달을 연다.
+    setCreateWorkspaceModalOpen(true);
+  }, [syncAccountModalSearchParams]);
+
+  // 기능 : 새 작업 공간 생성 모달을 닫습니다.
+  // 29. 처리 흐름에 필요한 closeCreateWorkspaceModal 값을 준비한다.
+  const closeCreateWorkspaceModal = useCallback(() => {
+    setCreateWorkspaceModalOpen(false);
+  }, []);
+
   // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
-  // 28. 비동기 결과를 받아 handleLogout에 저장한다.
+  // 30. 비동기 결과를 받아 handleLogout에 저장한다.
   const handleLogout = async () => {
     await logout();
     void navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
@@ -367,6 +400,8 @@ export function AppShell() {
     setAccountModal(null);
     // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setLogoutConfirmOpen(false);
+    // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setCreateWorkspaceModalOpen(false);
   }, [pathname]);
 
   // 기능 : URL query contract로 계정 Settings 모달을 열거나 닫습니다.
@@ -377,6 +412,7 @@ export function AppShell() {
       setHelpMenuOpen(false);
       setHelpModal(null);
       setLogoutConfirmOpen(false);
+      setCreateWorkspaceModalOpen(false);
       setAccountModal(accountModalFromSearchParams);
       return;
     }
@@ -490,7 +526,7 @@ export function AppShell() {
             ) : null}
             <button
               className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
-              onClick={() => setAccountMenuOpen(false)}
+              onClick={openCreateWorkspaceModal}
               role="menuitem"
               tabIndex={accountMenuOpen ? undefined : -1}
               type="button"
@@ -786,6 +822,13 @@ export function AppShell() {
           section={accountModal ?? lastAccountModalSection}
           onSectionChange={openAccountModal}
         />
+      </AccountModal>
+
+      <AccountModal
+        open={createWorkspaceModalOpen}
+        onClose={closeCreateWorkspaceModal}
+      >
+        <CreateWorkspaceModalContent onClose={closeCreateWorkspaceModal} />
       </AccountModal>
 
       <LogoutConfirmModal

@@ -212,6 +212,10 @@ async function handleApiRequest(
     return json(createSidebarWorkspaces());
   }
 
+  if (pathname === "/api/users/me/workspaces" && method === "POST") {
+    return json(createWorkspaceResponse(), 201);
+  }
+
   if (pathname === "/api/users/me/devices" && method === "GET") {
     return json({
       devices: [
@@ -321,6 +325,28 @@ function createDefaultSidebarWorkspace() {
 // 기능 : sidebar Workspace 목록 응답 fixture를 생성합니다.
 function createSidebarWorkspaces() {
   return [createDefaultSidebarWorkspace()];
+}
+
+// 기능 : Workspace 생성 API 응답 fixture를 생성합니다.
+function createWorkspaceResponse() {
+  return {
+    workspace: {
+      id: "workspace-e2e-002",
+      name: "E2E New Workspace's Workspace",
+      kind: "PERSONAL",
+      createdAt: NOW,
+      updatedAt: NOW,
+    },
+    workspaceMember: {
+      id: "workspace-member-e2e-002",
+      workspaceId: "workspace-e2e-002",
+      userId: "user-e2e-001",
+      role: "OWNER",
+      joinedAt: NOW,
+      createdAt: NOW,
+      updatedAt: NOW,
+    },
+  };
 }
 
 // 기능 : read Json Body 값을 읽습니다.

@@ -120,6 +120,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "USER_TIMEZONE_INVALID":
       case "USER_COUNTRY_UNSUPPORTED":
       case "USER_DEFAULT_CURRENCY_UNSUPPORTED":
+      case "WORKSPACE_NAME_REQUIRED":
+      case "WORKSPACE_NAME_TOO_LONG":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
       case "ERROR_REPORT_DESCRIPTION_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_REQUIRED":
