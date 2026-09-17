@@ -14,7 +14,7 @@ test.describe("create workspace modal UX", () => {
     await seedAuthenticatedSession(page);
 
     // 3. 필요한 비동기 작업을 실행한다.
-    await page.goto("/app");
+    await page.goto("/app/more");
     // 4. 필요한 비동기 작업을 실행한다.
     await page.getByRole("button", { name: "E2E Workspace" }).click();
     // 5. 필요한 비동기 작업을 실행한다.
@@ -82,6 +82,10 @@ test.describe("create workspace modal UX", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0, {
       timeout: 8_000,
     });
+    await expect(page).toHaveURL(/\/app$/);
+    await expect(
+      page.getByText("부동산 매물 관리's Workspace").first(),
+    ).toBeVisible();
 
     // 21. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);

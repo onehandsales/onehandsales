@@ -4,6 +4,7 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
@@ -60,10 +61,14 @@ import { SupportRequestHelpContent } from "@/features/support-request";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
   CreateWorkspaceModalContent,
+  type CreatedWorkspaceResponse,
+  type SidebarWorkspaceSummary,
   useDefaultSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
+import { sidebarWorkspaceQueryKeys } from "@/features/workspace/api/sidebar-workspace-query-keys";
+import type { SidebarWorkspaceListItem } from "@/features/workspace/types/sidebar-workspace";
 import {
   createAccountModalSearchParams,
   getAccountModalSectionFromSearchParams,
@@ -103,6 +108,8 @@ export function AppShell() {
   const { pathname } = useLocation();
   // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
+  // 3. 처리 흐름에 필요한 queryClient 값을 준비한다.
+  const queryClient = useQueryClient();
   // 3. 처리 흐름에 필요한 [searchParams, setSearchParams] 값을 준비한다.
   const [searchParams, setSearchParams] = useSearchParams();
   // 4. 처리 흐름에 필요한 { logout, user } 값을 준비한다.
@@ -135,9 +142,12 @@ export function AppShell() {
   // 15. 처리 흐름에 필요한 [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] 값을 준비한다.
   const [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] =
     useState(false);
-  // 16. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
+  // 16. 처리 흐름에 필요한 [selectedSidebarWorkspace, setSelectedSidebarWorkspace] 값을 준비한다.
+  const [selectedSidebarWorkspace, setSelectedSidebarWorkspace] =
+    useState<SidebarWorkspaceSummary | null>(null);
+  // 17. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  // 17. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
+  // 18. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
   // 18. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
@@ -162,12 +172,14 @@ export function AppShell() {
   const sidebarWorkspacesQuery = useSidebarWorkspacesQuery({
     userId: user?.id ?? null,
   });
+  // 22. 이후 단계에서 사용할 currentWorkspace 값을 준비한다.
+  const currentWorkspace = selectedSidebarWorkspace ?? defaultWorkspaceQuery.data;
   // 22. 이후 단계에서 사용할 currentWorkspaceName 값을 준비한다.
   const currentWorkspaceName =
-    defaultWorkspaceQuery.data?.name ?? t("shell.workspaceLoading");
+    currentWorkspace?.name ?? t("shell.workspaceLoading");
   // 23. 이후 단계에서 사용할 currentWorkspaceKind 값을 준비한다.
   const currentWorkspaceKind = formatWorkspaceKindLabel(
-    defaultWorkspaceQuery.data?.kind,
+    currentWorkspace?.kind,
     t
   );
   // 24. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
@@ -182,9 +194,18 @@ export function AppShell() {
   );
 
   // 기능 : 사이드바 Workspace 목록 항목 클릭 시 단건 Workspace API만 호출합니다.
-  const handleSidebarWorkspaceClick = useCallback((workspaceId: string) => {
-    void getSidebarWorkspace(workspaceId).catch(() => undefined);
-  }, []);
+  const handleSidebarWorkspaceClick = useCallback(
+    (workspaceId: string) => {
+      void getSidebarWorkspace(workspaceId)
+        .then((workspace) => {
+          setSelectedSidebarWorkspace(workspace);
+          setAccountMenuOpen(false);
+          void navigate(HOME_PATH);
+        })
+        .catch(() => undefined);
+    },
+    [navigate],
+  );
 
   // 기능 : 계정 Settings 모달 URL query를 현재 route 위에서 동기화합니다.
   // 23. 처리 흐름에 필요한 syncAccountModalSearchParams 값을 준비한다.
@@ -276,6 +297,67 @@ export function AppShell() {
   const closeCreateWorkspaceModal = useCallback(() => {
     setCreateWorkspaceModalOpen(false);
   }, []);
+
+  // 기능 : 새로 생성된 Workspace를 현재 sidebar Workspace 상태와 query cache에 반영합니다.
+  const handleWorkspaceCreated = useCallback(
+    (response: CreatedWorkspaceResponse) => {
+      // 1. 생성 API 응답을 sidebar 표시 형식으로 변환한다.
+      const createdWorkspace: SidebarWorkspaceSummary = {
+        id: response.workspace.id,
+        name: response.workspace.name,
+        kind: response.workspace.kind,
+      };
+      const createdWorkspaceListItem: SidebarWorkspaceListItem = {
+        id: response.workspace.id,
+        name: response.workspace.name,
+      };
+      const ownerUserId = user?.id ?? response.workspaceMember.userId;
+
+      // 2. 화면 상단에 보이는 현재 Workspace를 생성한 Workspace로 즉시 바꾼다.
+      setSelectedSidebarWorkspace(createdWorkspace);
+
+      // 3. sidebar default Workspace query cache를 생성 결과로 갱신한다.
+      queryClient.setQueryData(
+        sidebarWorkspaceQueryKeys.default(ownerUserId),
+        createdWorkspace,
+      );
+
+      // 4. sidebar Workspace 목록 cache 앞에 생성한 Workspace를 추가한다.
+      queryClient.setQueryData<SidebarWorkspaceListItem[]>(
+        sidebarWorkspaceQueryKeys.list(ownerUserId),
+        (currentWorkspaces = []) => [
+          createdWorkspaceListItem,
+          ...currentWorkspaces.filter(
+            (workspace) => workspace.id !== createdWorkspaceListItem.id,
+          ),
+        ],
+      );
+
+      // 5. 서버 기준 목록과 기본 Workspace를 다시 가져오도록 명시적으로 갱신한다.
+      void queryClient.invalidateQueries({
+        queryKey: sidebarWorkspaceQueryKeys.default(ownerUserId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: sidebarWorkspaceQueryKeys.list(ownerUserId),
+      });
+    },
+    [queryClient, user?.id],
+  );
+
+  // 기능 : 새 Workspace 생성 로딩 흐름이 끝나면 모달을 닫고 /app으로 이동합니다.
+  const completeCreateWorkspaceFlow = useCallback(() => {
+    // 1. 새 작업 공간 생성 모달을 닫는다.
+    closeCreateWorkspaceModal();
+
+    // 2. 생성된 Workspace를 보는 기본 앱 화면으로 이동한다.
+    void navigate(HOME_PATH);
+  }, [closeCreateWorkspaceModal, navigate]);
+
+  // 기능 : 로그인 사용자가 바뀌면 local Workspace 선택 상태를 초기화합니다.
+  useEffect(() => {
+    // 1. 이전 사용자의 Workspace 선택 상태가 남지 않게 비운다.
+    setSelectedSidebarWorkspace(null);
+  }, [user?.id]);
 
   // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   // 30. 비동기 결과를 받아 handleLogout에 저장한다.
@@ -829,7 +911,11 @@ export function AppShell() {
         panelSize="compact"
         onClose={closeCreateWorkspaceModal}
       >
-        <CreateWorkspaceModalContent onClose={closeCreateWorkspaceModal} />
+        <CreateWorkspaceModalContent
+          onClose={closeCreateWorkspaceModal}
+          onCreated={handleWorkspaceCreated}
+          onCreationComplete={completeCreateWorkspaceFlow}
+        />
       </AccountModal>
 
       <LogoutConfirmModal

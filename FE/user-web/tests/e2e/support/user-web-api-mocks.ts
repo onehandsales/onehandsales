@@ -27,7 +27,30 @@ type MockApiResponse = {
 
 type MutableRecord = Record<string, unknown>;
 
-export type UserWebApiMockStore = Record<string, never>;
+type MockWorkspaceKind = "ORGANIZATION" | "PERSONAL";
+
+type MockCreatedWorkspaceResponse = {
+  readonly workspace: {
+    readonly id: string;
+    readonly name: string;
+    readonly kind: MockWorkspaceKind;
+    readonly createdAt: string;
+    readonly updatedAt: string;
+  };
+  readonly workspaceMember: {
+    readonly id: string;
+    readonly workspaceId: string;
+    readonly userId: string;
+    readonly role: "ADMIN" | "MEMBER" | "OWNER";
+    readonly joinedAt: string;
+    readonly createdAt: string;
+    readonly updatedAt: string;
+  };
+};
+
+export type UserWebApiMockStore = {
+  createdWorkspace?: MockCreatedWorkspaceResponse;
+};
 
 type ApiDelayResolver = (request: ApiRequestRecord) => number;
 
@@ -120,7 +143,7 @@ export async function seedAuthenticatedSession(page: Page) {
 
 // 기능 : handle Api Request 이벤트를 처리합니다.
 async function handleApiRequest(
-  _store: UserWebApiMockStore,
+  store: UserWebApiMockStore,
   route: Route,
   method: string,
   url: URL,
@@ -205,15 +228,21 @@ async function handleApiRequest(
     pathname === "/api/users/me/sidebar/workspaces/default" &&
     method === "GET"
   ) {
-    return json(createDefaultSidebarWorkspace());
+    return json(createDefaultSidebarWorkspace(store.createdWorkspace));
   }
 
   if (pathname === "/api/users/me/sidebar/workspaces" && method === "GET") {
-    return json(createSidebarWorkspaces());
+    return json(createSidebarWorkspaces(store.createdWorkspace));
   }
 
   if (pathname === "/api/users/me/workspaces" && method === "POST") {
-    return json(createWorkspaceResponse(), 201);
+    const body = recordField(await readJsonBody(route));
+    const workspaceName =
+      typeof body["workspaceName"] === "string" && body["workspaceName"].trim()
+        ? body["workspaceName"].trim()
+        : "E2E New Workspace";
+    store.createdWorkspace = createWorkspaceResponse(workspaceName);
+    return json(store.createdWorkspace, 201);
   }
 
   if (pathname === "/api/users/me/devices" && method === "GET") {
@@ -314,7 +343,17 @@ function createJobSelectionOnboardingResponse() {
 }
 
 // 기능 : 기본 sidebar Workspace 응답 fixture를 생성합니다.
-function createDefaultSidebarWorkspace() {
+function createDefaultSidebarWorkspace(
+  createdWorkspace?: MockCreatedWorkspaceResponse,
+) {
+  if (createdWorkspace) {
+    return {
+      id: createdWorkspace.workspace.id,
+      name: createdWorkspace.workspace.name,
+      kind: createdWorkspace.workspace.kind,
+    };
+  }
+
   return {
     id: "workspace-e2e-001",
     name: "E2E Workspace",
@@ -323,16 +362,28 @@ function createDefaultSidebarWorkspace() {
 }
 
 // 기능 : sidebar Workspace 목록 응답 fixture를 생성합니다.
-function createSidebarWorkspaces() {
-  return [createDefaultSidebarWorkspace()];
+function createSidebarWorkspaces(createdWorkspace?: MockCreatedWorkspaceResponse) {
+  const defaultWorkspace = createDefaultSidebarWorkspace();
+
+  if (!createdWorkspace) {
+    return [defaultWorkspace];
+  }
+
+  return [
+    {
+      id: createdWorkspace.workspace.id,
+      name: createdWorkspace.workspace.name,
+    },
+    defaultWorkspace,
+  ];
 }
 
 // 기능 : Workspace 생성 API 응답 fixture를 생성합니다.
-function createWorkspaceResponse() {
+function createWorkspaceResponse(workspaceName: string): MockCreatedWorkspaceResponse {
   return {
     workspace: {
       id: "workspace-e2e-002",
-      name: "E2E New Workspace's Workspace",
+      name: `${workspaceName}'s Workspace`,
       kind: "PERSONAL",
       createdAt: NOW,
       updatedAt: NOW,

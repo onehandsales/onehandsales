@@ -10,7 +10,10 @@ import {
   useMemo,
   useState,
 } from "react";
-import { createWorkspace } from "@/features/workspace/api/workspace-api";
+import {
+  createWorkspace,
+  type CreatedWorkspaceResponse,
+} from "@/features/workspace/api/workspace-api";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
@@ -178,8 +181,12 @@ const workspaceCreateModalCopyByLocale: Record<
 
 // 기능 : 새 작업 공간 생성 모달의 이름 입력과 업무 선택 단계를 렌더링합니다.
 export function CreateWorkspaceModalContent({
+  onCreated,
+  onCreationComplete,
   onClose,
 }: {
+  readonly onCreated: (response: CreatedWorkspaceResponse) => void;
+  readonly onCreationComplete: () => void;
   readonly onClose: () => void;
 }) {
   // 1. 처리 흐름에 필요한 앱 언어와 화면 문구를 준비한다.
@@ -214,12 +221,12 @@ export function CreateWorkspaceModalContent({
     }
 
     const closeTimerId = window.setTimeout(
-      onClose,
+      onCreationComplete,
       WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS,
     );
 
     return () => window.clearTimeout(closeTimerId);
-  }, [createLoadingModalOpen, onClose]);
+  }, [createLoadingModalOpen, onCreationComplete]);
 
   // 기능 : 이름 입력 단계에서 업무 선택 단계로 이동합니다.
   const onSubmitName = (event: FormEvent<HTMLFormElement>) => {
@@ -254,9 +261,10 @@ export function CreateWorkspaceModalContent({
     setIsCreating(true);
 
     try {
-      await createWorkspace({
+      const response = await createWorkspace({
         workspaceName: normalizedWorkspaceName,
       });
+      onCreated(response);
       setHasCreatedWorkspace(true);
       setIsCreating(false);
       setCreateLoadingModalOpen(true);
