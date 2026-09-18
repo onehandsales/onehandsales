@@ -2,6 +2,7 @@ import {
   Outlet,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
 } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -60,11 +61,15 @@ import { ErrorReportHelpContent } from "@/features/error-report";
 import { SupportRequestHelpContent } from "@/features/support-request";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
+  APP_ENTRY_PATH,
   CreateWorkspaceModalContent,
   type CreatedWorkspaceResponse,
+  isWorkspaceHomePath,
   type SidebarWorkspaceSummary,
+  toWorkspaceHomePath,
   WorkspaceLoadingDialog,
   useDefaultSidebarWorkspaceQuery,
+  useSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
@@ -78,7 +83,6 @@ import {
 import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
 
-const HOME_PATH = "/app";
 const SIDEBAR_COLLAPSE_TRANSITION_MS = 500;
 const ACCOUNT_MODAL_TRANSITION_MS = 300;
 const ACCOUNT_MODAL_OPEN_DELAY_MS = 20;
@@ -110,13 +114,17 @@ export function AppShell() {
   const { pathname } = useLocation();
   // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
-  // 3. 처리 흐름에 필요한 queryClient 값을 준비한다.
+  // 3. 처리 흐름에 필요한 route params 값을 준비한다.
+  const { workspaceId: routeWorkspaceId } = useParams<{
+    readonly workspaceId?: string;
+  }>();
+  // 4. 처리 흐름에 필요한 queryClient 값을 준비한다.
   const queryClient = useQueryClient();
-  // 3. 처리 흐름에 필요한 [searchParams, setSearchParams] 값을 준비한다.
+  // 5. 처리 흐름에 필요한 [searchParams, setSearchParams] 값을 준비한다.
   const [searchParams, setSearchParams] = useSearchParams();
-  // 4. 처리 흐름에 필요한 { logout, user } 값을 준비한다.
+  // 6. 처리 흐름에 필요한 { logout, user } 값을 준비한다.
   const { logout, user } = useAuthSession();
-  // 5. 처리 흐름에 필요한 { t } 값을 준비한다.
+  // 7. 처리 흐름에 필요한 { t } 값을 준비한다.
   const { t } = useAppI18n();
   // 6. 처리 흐름에 필요한 [accountMenuOpen, setAccountMenuOpen] 값을 준비한다.
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -165,8 +173,11 @@ export function AppShell() {
 
     return querySection;
   }, [searchParams]);
+  // 18. 이후 단계에서 사용할 normalizedRouteWorkspaceId 값을 준비한다.
+  const normalizedRouteWorkspaceId = routeWorkspaceId ?? null;
   // 18. 이후 단계에서 사용할 isHome 값을 준비한다.
-  const isHome = pathname === HOME_PATH;
+  const isHome =
+    pathname === APP_ENTRY_PATH || isWorkspaceHomePath(pathname);
   // 19. 이후 단계에서 사용할 userName 값을 준비한다.
   const userName = user?.name ?? user?.email?.split("@")[0] ?? t("shell.userFallback");
   // 20. 이후 단계에서 사용할 userEmail 값을 준비한다.
@@ -175,11 +186,28 @@ export function AppShell() {
   const defaultWorkspaceQuery = useDefaultSidebarWorkspaceQuery({
     userId: user?.id ?? null,
   });
+  const routeWorkspaceQuery = useSidebarWorkspaceQuery({
+    userId: user?.id ?? null,
+    workspaceId: normalizedRouteWorkspaceId,
+  });
   const sidebarWorkspacesQuery = useSidebarWorkspacesQuery({
     userId: user?.id ?? null,
   });
   // 22. 이후 단계에서 사용할 currentWorkspace 값을 준비한다.
-  const currentWorkspace = selectedSidebarWorkspace ?? defaultWorkspaceQuery.data;
+  const currentWorkspace = normalizedRouteWorkspaceId
+    ? routeWorkspaceQuery.data ??
+      (selectedSidebarWorkspace?.id === normalizedRouteWorkspaceId
+        ? selectedSidebarWorkspace
+        : null)
+    : selectedSidebarWorkspace ?? defaultWorkspaceQuery.data;
+  // 22. 이후 단계에서 사용할 currentWorkspaceHomePath 값을 준비한다.
+  const currentWorkspaceHomePath = currentWorkspace
+    ? toWorkspaceHomePath(currentWorkspace.id)
+    : normalizedRouteWorkspaceId
+      ? toWorkspaceHomePath(normalizedRouteWorkspaceId)
+      : defaultWorkspaceQuery.data
+        ? toWorkspaceHomePath(defaultWorkspaceQuery.data.id)
+        : APP_ENTRY_PATH;
   // 22. 이후 단계에서 사용할 currentWorkspaceName 값을 준비한다.
   const currentWorkspaceName =
     currentWorkspace?.name ?? t("shell.workspaceLoading");
@@ -202,13 +230,20 @@ export function AppShell() {
   // 기능 : 사이드바 Workspace 목록 항목 클릭 시 전환 로딩 모달 후 단건 조회 결과로 현재 Workspace를 변경합니다.
   const handleSidebarWorkspaceClick = useCallback(
     (workspaceId: string) => {
-      // 1. 현재 전환 요청을 식별하고 계정 메뉴를 닫는다.
+      // 1. 이미 보고 있는 Workspace면 메뉴만 닫고 Workspace 홈 URL로 이동한다.
+      if (currentWorkspace?.id === workspaceId) {
+        setAccountMenuOpen(false);
+        void navigate(toWorkspaceHomePath(workspaceId));
+        return;
+      }
+
+      // 2. 현재 전환 요청을 식별하고 계정 메뉴를 닫는다.
       const requestId = workspaceSwitchRequestIdRef.current + 1;
       workspaceSwitchRequestIdRef.current = requestId;
       setAccountMenuOpen(false);
       setWorkspaceSwitchLoading(true);
 
-      // 2. Workspace 단건 조회와 최소 로딩 표시 시간을 함께 기다린다.
+      // 3. Workspace 단건 조회와 최소 로딩 표시 시간을 함께 기다린다.
       void (async () => {
         const [workspace] = await Promise.all([
           getSidebarWorkspace(workspaceId).catch(() => null),
@@ -219,17 +254,23 @@ export function AppShell() {
           return;
         }
 
-        // 3. 단건 조회가 성공한 경우에만 현재 Workspace를 변경하고 기본 앱 화면으로 이동한다.
+        // 4. 단건 조회가 성공한 경우에만 현재 Workspace를 변경하고 Workspace 홈으로 이동한다.
         if (workspace) {
           setSelectedSidebarWorkspace(workspace);
-          void navigate(HOME_PATH);
+          if (user?.id) {
+            queryClient.setQueryData(
+              sidebarWorkspaceQueryKeys.detail(user.id, workspace.id),
+              workspace,
+            );
+          }
+          void navigate(toWorkspaceHomePath(workspace.id));
         }
 
-        // 4. 전환 로딩 모달을 닫는다.
+        // 5. 전환 로딩 모달을 닫는다.
         setWorkspaceSwitchLoading(false);
       })();
     },
-    [navigate],
+    [currentWorkspace?.id, navigate, queryClient, user?.id],
   );
 
   // 기능 : 계정 Settings 모달 URL query를 현재 route 위에서 동기화합니다.
@@ -343,55 +384,76 @@ export function AppShell() {
         setSelectedSidebarWorkspace(null);
       }
 
-      if (!ownerUserId) {
-        return;
+      if (ownerUserId) {
+        // 3. 단건 조회 결과가 있으면 sidebar Workspace cache에 생성한 Workspace를 즉시 반영한다.
+        if (createdWorkspace) {
+          queryClient.setQueryData(
+            sidebarWorkspaceQueryKeys.detail(ownerUserId, createdWorkspace.id),
+            createdWorkspace,
+          );
+          queryClient.setQueryData(
+            sidebarWorkspaceQueryKeys.default(ownerUserId),
+            createdWorkspace,
+          );
+          queryClient.setQueryData<SidebarWorkspaceListItem[]>(
+            sidebarWorkspaceQueryKeys.list(ownerUserId),
+            (currentWorkspaces = []) => [
+              {
+                id: createdWorkspace.id,
+                name: createdWorkspace.name,
+              },
+              ...currentWorkspaces.filter(
+                (workspace) => workspace.id !== createdWorkspace.id,
+              ),
+            ],
+          );
+        }
+
+        // 4. 서버 기준 default와 목록을 다시 가져오도록 명시적으로 갱신한다.
+        void queryClient.invalidateQueries({
+          queryKey: sidebarWorkspaceQueryKeys.default(ownerUserId),
+        });
+        void queryClient.invalidateQueries({
+          queryKey: sidebarWorkspaceQueryKeys.list(ownerUserId),
+        });
       }
 
-      // 3. 단건 조회 결과가 있으면 sidebar Workspace cache에 생성한 Workspace를 즉시 반영한다.
-      if (createdWorkspace) {
-        queryClient.setQueryData(
-          sidebarWorkspaceQueryKeys.default(ownerUserId),
-          createdWorkspace,
-        );
-        queryClient.setQueryData<SidebarWorkspaceListItem[]>(
-          sidebarWorkspaceQueryKeys.list(ownerUserId),
-          (currentWorkspaces = []) => [
-            {
-              id: createdWorkspace.id,
-              name: createdWorkspace.name,
-            },
-            ...currentWorkspaces.filter(
-              (workspace) => workspace.id !== createdWorkspace.id,
-            ),
-          ],
-        );
-      }
-
-      // 4. 서버 기준 default와 목록을 다시 가져오도록 명시적으로 갱신한다.
-      void queryClient.invalidateQueries({
-        queryKey: sidebarWorkspaceQueryKeys.default(ownerUserId),
-      });
-      void queryClient.invalidateQueries({
-        queryKey: sidebarWorkspaceQueryKeys.list(ownerUserId),
-      });
+      // 5. 생성된 Workspace 홈 route로 이동한다.
+      void navigate(toWorkspaceHomePath(response.workspaceId));
     },
-    [queryClient, user?.id],
+    [navigate, queryClient, user?.id],
   );
 
-  // 기능 : 새 Workspace 생성 로딩 흐름이 끝나면 모달을 닫고 /app으로 이동합니다.
+  // 기능 : 새 Workspace 생성 로딩 흐름이 끝나면 모달을 닫습니다.
   const completeCreateWorkspaceFlow = useCallback(() => {
     // 1. 새 작업 공간 생성 모달을 닫는다.
     closeCreateWorkspaceModal();
-
-    // 2. 생성된 Workspace를 보는 기본 앱 화면으로 이동한다.
-    void navigate(HOME_PATH);
-  }, [closeCreateWorkspaceModal, navigate]);
+  }, [closeCreateWorkspaceModal]);
 
   // 기능 : 로그인 사용자가 바뀌면 local Workspace 선택 상태를 초기화합니다.
   useEffect(() => {
     // 1. 이전 사용자의 Workspace 선택 상태가 남지 않게 비운다.
     setSelectedSidebarWorkspace(null);
   }, [user?.id]);
+
+  // 기능 : URL Workspace 조회 결과를 local Workspace 선택 상태와 동기화합니다.
+  useEffect(() => {
+    if (!routeWorkspaceQuery.data) {
+      return;
+    }
+
+    setSelectedSidebarWorkspace(routeWorkspaceQuery.data);
+  }, [routeWorkspaceQuery.data]);
+
+  // 기능 : URL Workspace에 접근할 수 없으면 앱 진입점으로 돌아가 default Workspace를 다시 찾습니다.
+  useEffect(() => {
+    if (!normalizedRouteWorkspaceId || !routeWorkspaceQuery.isError) {
+      return;
+    }
+
+    setSelectedSidebarWorkspace(null);
+    void navigate(APP_ENTRY_PATH, { replace: true });
+  }, [navigate, normalizedRouteWorkspaceId, routeWorkspaceQuery.isError]);
 
   // 기능 : 프론트엔드 화면의 사용자 이벤트를 처리합니다.
   // 30. 비동기 결과를 받아 handleLogout에 저장한다.
@@ -558,11 +620,12 @@ export function AppShell() {
     type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
     // 2. 이후 단계에서 사용할 pageMetaMap 값을 준비한다.
     const pageMetaMap: Record<string, PageMeta> = {
-      "/app": { labelKey: "navigation.home", icon: House },
       "/app/more": { labelKey: "navigation.more", icon: MoreHorizontal },
     };
     // 3. 이후 단계에서 사용할 meta 값을 준비한다.
-    const meta = pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
+    const meta: PageMeta = isHome
+      ? { labelKey: "navigation.home", icon: House }
+      : pageMetaMap[pathname] ?? { labelKey: "shell.appFallbackTitle", icon: House };
     // 4. 계산된 결과를 호출자에게 반환한다.
     return (
       <PageHeader
@@ -840,7 +903,7 @@ export function AppShell() {
               }`}
               onClick={() => {
                 setHelpMenuOpen(false);
-                void navigate(HOME_PATH);
+                void navigate(currentWorkspaceHomePath);
               }}
               type="button"
             >
@@ -975,7 +1038,7 @@ export function AppShell() {
         <main className="pb-24">
           <Outlet context={outletContext} />
         </main>
-        <BottomTabBar />
+        <BottomTabBar homePath={currentWorkspaceHomePath} />
       </div>
     </div>
   );

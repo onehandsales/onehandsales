@@ -8,11 +8,22 @@ import {
 const MOBILE_ROUTES: ReadonlyArray<{
   readonly path: string;
   readonly expectedText?: string;
+  readonly expectedUrl?: RegExp;
   readonly expectsEmptyHome?: boolean;
   readonly hasMobileHeader: boolean;
 }> = [
-  { path: "/app", expectsEmptyHome: true, hasMobileHeader: true },
-  { path: "/app?account=settings", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
+  {
+    path: "/app",
+    expectedUrl: /\/app\/workspaces\/workspace-e2e-001$/,
+    expectsEmptyHome: true,
+    hasMobileHeader: true,
+  },
+  {
+    path: "/app?account=settings",
+    expectedText: MOBILE_LONG_FIXTURE.email,
+    expectedUrl: /\/app\/workspaces\/workspace-e2e-001\?account=settings$/,
+    hasMobileHeader: true,
+  },
   { path: "/app/more", expectedText: MOBILE_LONG_FIXTURE.email, hasMobileHeader: true },
 ];
 
@@ -47,6 +58,9 @@ test.describe("G02 mobile browser release QA", () => {
     // 4. 대상 목록을 순회하며 필요한 값을 처리한다.
     for (const route of MOBILE_ROUTES) {
       await page.goto(route.path);
+      if (route.expectedUrl) {
+        await expect(page).toHaveURL(route.expectedUrl);
+      }
       if (route.expectsEmptyHome) {
         await expect(page.getByTestId("app-home-empty")).toBeVisible();
       }

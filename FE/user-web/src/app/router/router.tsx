@@ -1,5 +1,9 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
 import { AppShell } from "@/components/layout/app-shell";
+import { AppWorkspaceRedirect } from "@/app/router/app-workspace-redirect";
 import {
   LegacyAppRedirect,
   LegacyPublicSiteRedirect,
@@ -138,7 +142,8 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <AppWorkspaceRedirect /> },
+      { path: "workspaces/:workspaceId", element: <HomePage /> },
       { path: "contacts/*", element: <Navigate replace to="/app" /> },
       { path: "products/*", element: <Navigate replace to="/app" /> },
       { path: "deals/*", element: <Navigate replace to="/app" /> },

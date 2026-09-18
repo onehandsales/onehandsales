@@ -66,7 +66,7 @@ test.describe("help modal UX", () => {
       helpDialog.getByRole("button", { exact: true, name: "사용 가이드" }),
     );
     // 19. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/app$/);
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 20. 필요한 비동기 작업을 실행한다.
     await expect(
       page.getByRole("heading", { exact: true, name: "설정" }),

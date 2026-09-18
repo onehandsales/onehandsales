@@ -22,30 +22,32 @@ test.describe("G04 User Web security boundary QA", () => {
     // 6. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
     // 7. 필요한 비동기 작업을 실행한다.
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
+    // 8. 필요한 비동기 작업을 실행한다.
     await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
-    // 8. 필요한 비동기 작업을 실행한다.
-    await clearStoredSession(page);
     // 9. 필요한 비동기 작업을 실행한다.
-    await page.reload();
+    await clearStoredSession(page);
     // 10. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/login$/);
+    await page.reload();
     // 11. 필요한 비동기 작업을 실행한다.
+    await expect(page).toHaveURL(/\/login$/);
+    // 12. 필요한 비동기 작업을 실행한다.
     await expect(page.locator("body")).not.toContainText(
       MOBILE_LONG_FIXTURE.email,
     );
 
-    // 12. 필요한 비동기 작업을 실행한다.
-    await page.goBack();
     // 13. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/login$/);
+    await page.goBack();
     // 14. 필요한 비동기 작업을 실행한다.
+    await expect(page).toHaveURL(/\/login$/);
+    // 15. 필요한 비동기 작업을 실행한다.
     await expect(page.locator("body")).not.toContainText(
       MOBILE_LONG_FIXTURE.email,
     );
-    // 15. 테스트 기대 조건을 검증한다.
+    // 16. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
-    // 16. 현재 단계에서 필요한 동작을 실행한다.
+    // 17. 현재 단계에서 필요한 동작을 실행한다.
     runtime.assertClean();
   });
 });

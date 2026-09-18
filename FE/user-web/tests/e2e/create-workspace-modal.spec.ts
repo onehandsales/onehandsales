@@ -82,7 +82,7 @@ test.describe("create workspace modal UX", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0, {
       timeout: 8_000,
     });
-    await expect(page).toHaveURL(/\/app$/);
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-002$/);
     await expect(
       page.getByText("부동산 매물 관리's Workspace").first(),
     ).toBeVisible();

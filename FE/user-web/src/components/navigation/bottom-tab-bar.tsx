@@ -1,6 +1,7 @@
 import { House, MoreHorizontal } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
+import { APP_ENTRY_PATH } from "@/features/workspace";
 
 const items: ReadonlyArray<{
   readonly labelKey: AppI18nKey;
@@ -9,12 +10,16 @@ const items: ReadonlyArray<{
   readonly end?: boolean;
   readonly activeColor: string;
 }> = [
-  { labelKey: "navigation.home", to: "/app", icon: House, end: true, activeColor: "#4880EE" },
+  { labelKey: "navigation.home", to: APP_ENTRY_PATH, icon: House, end: true, activeColor: "#4880EE" },
   { labelKey: "navigation.more", to: "/app/more", icon: MoreHorizontal, activeColor: "#4880EE" },
 ];
 
 // 기능 : BottomTabBar 컴포넌트를 렌더링합니다.
-export function BottomTabBar() {
+export function BottomTabBar({
+  homePath = APP_ENTRY_PATH,
+}: {
+  readonly homePath?: string;
+}) {
   const { t } = useAppI18n();
 
   return (
@@ -28,7 +33,7 @@ export function BottomTabBar() {
             <NavLink
               className="flex min-h-[56px] flex-col items-center justify-center gap-1 text-[10px] font-normal text-gray-400 transition"
               end={item.end ?? false}
-              to={item.to}
+              to={item.labelKey === "navigation.home" ? homePath : item.to}
               style={({ isActive }) =>
                 isActive ? { color: item.activeColor } : undefined
               }

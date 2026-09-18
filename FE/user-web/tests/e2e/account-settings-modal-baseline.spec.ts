@@ -19,7 +19,9 @@ test.describe("G01 account settings modal baseline", () => {
     // 4. 이후 단계에서 사용할 accountDialog 값을 준비한다.
     const accountDialog = page.getByRole("dialog").first();
     // 5. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/app\?account=settings$/);
+    await expect(page).toHaveURL(
+      /\/app\/workspaces\/workspace-e2e-001\?account=settings$/,
+    );
     // 6. 필요한 비동기 작업을 실행한다.
     await expect(accountDialog.getByText("지역 설정")).toBeVisible();
     // 7. 필요한 비동기 작업을 실행한다.

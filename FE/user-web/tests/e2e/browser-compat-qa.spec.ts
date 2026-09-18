@@ -46,16 +46,18 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 4. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
     // 5. 필요한 비동기 작업을 실행한다.
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
+    // 6. 필요한 비동기 작업을 실행한다.
     await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
-    // 6. 필요한 비동기 작업을 실행한다.
-    await page.goto("/app/more");
     // 7. 필요한 비동기 작업을 실행한다.
+    await page.goto("/app/more");
+    // 8. 필요한 비동기 작업을 실행한다.
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
-    // 8. 테스트 기대 조건을 검증한다.
+    // 9. 테스트 기대 조건을 검증한다.
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
-    // 9. 현재 단계에서 필요한 동작을 실행한다.
+    // 10. 현재 단계에서 필요한 동작을 실행한다.
     runtime.assertClean();
   });
 
@@ -71,37 +73,39 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 4. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
     // 5. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
-
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 6. 필요한 비동기 작업을 실행한다.
-    await page.reload();
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+
     // 7. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/app$/);
+    await page.reload();
     // 8. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
-
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 9. 필요한 비동기 작업을 실행한다.
-    await page.goto("/app/more");
-    // 10. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/app\/more$/);
-    // 11. 필요한 비동기 작업을 실행한다.
-    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
-
-    // 12. 필요한 비동기 작업을 실행한다.
-    await page.goBack();
-    // 13. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/app$/);
-    // 14. 필요한 비동기 작업을 실행한다.
     await expect(page.getByTestId("app-home-empty")).toBeVisible();
 
-    // 15. 필요한 비동기 작업을 실행한다.
-    await page.goForward();
-    // 16. 필요한 비동기 작업을 실행한다.
+    // 10. 필요한 비동기 작업을 실행한다.
+    await page.goto("/app/more");
+    // 11. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/more$/);
-    // 17. 필요한 비동기 작업을 실행한다.
+    // 12. 필요한 비동기 작업을 실행한다.
     await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
 
-    // 18. 현재 단계에서 필요한 동작을 실행한다.
+    // 13. 필요한 비동기 작업을 실행한다.
+    await page.goBack();
+    // 14. 필요한 비동기 작업을 실행한다.
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
+    // 15. 필요한 비동기 작업을 실행한다.
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+
+    // 16. 필요한 비동기 작업을 실행한다.
+    await page.goForward();
+    // 17. 필요한 비동기 작업을 실행한다.
+    await expect(page).toHaveURL(/\/app\/more$/);
+    // 18. 필요한 비동기 작업을 실행한다.
+    await expect(page.locator("body")).toContainText(MOBILE_LONG_FIXTURE.email);
+
+    // 19. 현재 단계에서 필요한 동작을 실행한다.
     runtime.assertClean();
   });
 
@@ -120,11 +124,13 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 4. 필요한 비동기 작업을 실행한다.
     await page.goto("/app");
     // 5. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 6. 필요한 비동기 작업을 실행한다.
+    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    // 7. 필요한 비동기 작업을 실행한다.
     await expect(page.locator(".animate-pulse")).toHaveCount(0);
 
-    // 7. 현재 단계에서 필요한 동작을 실행한다.
+    // 8. 현재 단계에서 필요한 동작을 실행한다.
     runtime.assertClean();
   });
 });
