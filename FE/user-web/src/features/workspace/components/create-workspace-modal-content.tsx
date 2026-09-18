@@ -199,6 +199,8 @@ export function CreateWorkspaceModalContent({
     useState<WorkspaceJobOptionKey | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [hasCreatedWorkspace, setHasCreatedWorkspace] = useState(false);
+  const [createdWorkspaceResponse, setCreatedWorkspaceResponse] =
+    useState<CreatedWorkspaceResponse | null>(null);
   const [createLoadingModalOpen, setCreateLoadingModalOpen] = useState(false);
   const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(
     null,
@@ -214,19 +216,24 @@ export function CreateWorkspaceModalContent({
   );
   const canMoveNext = workspaceName.trim().length > 0;
 
-  // 4. Workspace 생성 완료 안내 모달이 열리면 일정 시간 뒤 전체 모달을 닫는다.
+  // 4. Workspace 생성 완료 안내 모달이 열리면 일정 시간 뒤 생성 결과를 반영하고 전체 모달을 닫는다.
   useEffect(() => {
-    if (!createLoadingModalOpen) {
+    if (!createLoadingModalOpen || !createdWorkspaceResponse) {
       return;
     }
 
-    const closeTimerId = window.setTimeout(
-      onCreationComplete,
-      WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS,
-    );
+    const closeTimerId = window.setTimeout(() => {
+      onCreated(createdWorkspaceResponse);
+      onCreationComplete();
+    }, WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS);
 
     return () => window.clearTimeout(closeTimerId);
-  }, [createLoadingModalOpen, onCreationComplete]);
+  }, [
+    createLoadingModalOpen,
+    createdWorkspaceResponse,
+    onCreated,
+    onCreationComplete,
+  ]);
 
   // 기능 : 이름 입력 단계에서 업무 선택 단계로 이동합니다.
   const onSubmitName = (event: FormEvent<HTMLFormElement>) => {
@@ -258,13 +265,14 @@ export function CreateWorkspaceModalContent({
 
     setSelectedJobKey(key);
     setCreateErrorMessage(null);
+    setCreatedWorkspaceResponse(null);
     setIsCreating(true);
 
     try {
       const response = await createWorkspace({
         workspaceName: normalizedWorkspaceName,
       });
-      onCreated(response);
+      setCreatedWorkspaceResponse(response);
       setHasCreatedWorkspace(true);
       setIsCreating(false);
       setCreateLoadingModalOpen(true);
