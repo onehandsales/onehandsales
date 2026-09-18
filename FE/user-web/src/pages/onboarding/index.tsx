@@ -68,8 +68,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand 홈",
     title: "어떤 일을 주로 하세요?",
     subtitle: "하나를 선택하면 업무에 맞는 CRM을 빠르게 준비할게요.",
-    buildingTitle: "나의 작업 공간을 생성중이에요.",
-    progressLabel: "나의 작업 공간 생성 진행률",
+    buildingTitle: "작업 공간을 준비하고 있어요.",
+    progressLabel: "작업 공간 준비 진행률",
     jobs: [
       {
         key: "sales",
@@ -117,8 +117,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand home",
     title: "What kind of work do you do?",
     subtitle: "Choose one and we will quickly prepare your CRM workspace.",
-    buildingTitle: "Creating your Workspace.",
-    progressLabel: "Workspace creation progress",
+    buildingTitle: "Preparing your workspace.",
+    progressLabel: "Workspace preparation progress",
     jobs: [
       {
         key: "sales",
@@ -166,8 +166,8 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     logoAria: "OneHand home",
     title: "What kind of work do you do?",
     subtitle: "Choose one and we will quickly prepare your CRM workspace.",
-    buildingTitle: "Creating your Workspace.",
-    progressLabel: "Workspace creation progress",
+    buildingTitle: "Preparing your workspace.",
+    progressLabel: "Workspace preparation progress",
     jobs: [
       {
         key: "sales",
@@ -307,9 +307,7 @@ export function OnboardingPage() {
   if (isBuildingCrm) {
     return (
       <CrmEnvironmentBuildingScreen
-        homePath={homePath}
         htmlLang={htmlLang}
-        logoAria={copy.logoAria}
         progress={buildProgress.progress}
         progressLabel={copy.progressLabel}
         title={copy.buildingTitle}

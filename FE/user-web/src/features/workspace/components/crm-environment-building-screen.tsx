@@ -1,11 +1,6 @@
-import { Link } from "react-router-dom";
-import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
-
 type CrmEnvironmentBuildingScreenProps = {
   readonly errorMessage?: string | null;
-  readonly homePath: string;
   readonly htmlLang: string;
-  readonly logoAria: string;
   readonly progress: number;
   readonly progressLabel: string;
   readonly title: string;
@@ -14,9 +9,7 @@ type CrmEnvironmentBuildingScreenProps = {
 // 기능 : CRM 환경을 준비하는 전체 화면 진행률 UI를 렌더링합니다.
 export function CrmEnvironmentBuildingScreen({
   errorMessage = null,
-  homePath,
   htmlLang,
-  logoAria,
   progress,
   progressLabel,
   title,
@@ -26,18 +19,6 @@ export function CrmEnvironmentBuildingScreen({
       className="min-h-screen overflow-x-hidden bg-white text-[#111111]"
       lang={htmlLang}
     >
-      <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur">
-        <div className="flex h-14 w-full items-center px-[14px]">
-          <Link
-            aria-label={logoAria}
-            className="flex h-9 w-9 items-center justify-center text-[#111111]"
-            to={homePath}
-          >
-            <OneHandLogoMark className="h-9 w-9" />
-          </Link>
-        </div>
-      </header>
-
       <section className="flex min-h-screen w-full items-center justify-center px-5">
         <div className="w-full max-w-[360px] text-center">
           <h1 className="text-[24px] font-semibold leading-[1.25] tracking-normal text-[#111111]">

@@ -18,6 +18,10 @@ import {
   toPublicSiteOnboardingPath,
 } from "@/features/public-site/i18n/public-site-locale-routes";
 import type { PublicSiteLanguage } from "@/features/public-site/i18n/public-site-language";
+import {
+  CrmEnvironmentBuildingScreen,
+  useCrmEnvironmentBuildProgress,
+} from "@/features/workspace";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 const fallbackProviders: AuthProviderOption[] = [
@@ -26,6 +30,31 @@ const fallbackProviders: AuthProviderOption[] = [
   { provider: "apple", label: "Apple", enabled: true },
 ];
 const minimumLoginLoadingMs = 1500;
+
+type ExistingUserWorkspacePreparation = {
+  readonly language: PublicSiteLanguage;
+};
+
+const existingUserWorkspacePreparationCopy: Record<
+  PublicSiteLanguage,
+  {
+    readonly progressLabel: string;
+    readonly title: string;
+  }
+> = {
+  ko: {
+    progressLabel: "작업 공간 불러오기 진행률",
+    title: "작업 공간을 불러오고 있어요.",
+  },
+  "en-US": {
+    progressLabel: "Workspace loading progress",
+    title: "Loading your workspace.",
+  },
+  "en-CA": {
+    progressLabel: "Workspace loading progress",
+    title: "Loading your workspace.",
+  },
+};
 
 // 기능 : 로그인 페이지를 렌더링합니다.
 export function LoginPage() {
@@ -45,6 +74,8 @@ export function LoginPage() {
   const [providersError, setProvidersError] = useState<string | null>(null);
   const [isProvidersLoading, setIsProvidersLoading] = useState(true);
   const [isCallbackLoginLoading, setIsCallbackLoginLoading] = useState(false);
+  const [workspacePreparation, setWorkspacePreparation] =
+    useState<ExistingUserWorkspacePreparation | null>(null);
   const publicPathname = stripPublicSiteLocaleFromPathname(location.pathname);
   const fallbackLanguage = resolvePublicSiteLanguage(location.pathname);
   const isCallbackRoute = location.pathname === "/auth/callback";
@@ -63,6 +94,22 @@ export function LoginPage() {
     () => providers.filter((provider) => provider.enabled),
     [providers]
   );
+  const workspacePreparationProgress = useCrmEnvironmentBuildProgress(
+    workspacePreparation !== null
+  );
+
+  useEffect(() => {
+    // 1. 기존 사용자의 작업 공간 준비 연출이 끝나면 앱으로 이동한다.
+    if (!workspacePreparation || !workspacePreparationProgress.isDone) {
+      return;
+    }
+
+    navigate("/app", { replace: true });
+  }, [
+    navigate,
+    workspacePreparation,
+    workspacePreparationProgress.isDone,
+  ]);
 
   useEffect(() => {
     // 1. provider 목록 요청이 끝난 뒤 unmount된 컴포넌트 상태를 바꾸지 않도록 flag를 둔다.
@@ -145,8 +192,10 @@ export function LoginPage() {
             return;
           }
 
-          navigate(getAuthenticatedRedirectPath(exchangedUser, fallbackLanguage), {
-            replace: true,
+          moveAuthenticatedUser(exchangedUser, fallbackLanguage, {
+            navigate,
+            setIsCallbackLoginLoading,
+            setWorkspacePreparation,
           });
           return;
         }
@@ -180,8 +229,8 @@ export function LoginPage() {
     isInitializing,
     isCallbackRoute,
     isPopupCallbackRoute,
-    navigate,
     fallbackLanguage,
+    navigate,
   ]);
 
   useEffect(() => {
@@ -193,16 +242,21 @@ export function LoginPage() {
 
   useEffect(() => {
     // 1. callback/login/signup 이외의 라우트에서는 인증 redirect를 처리하지 않는다.
-    if (isCallbackRoute || (!isLoginRoute && !isSignupRoute)) {
+    if (
+      workspacePreparation ||
+      isCallbackRoute ||
+      (!isLoginRoute && !isSignupRoute)
+    ) {
       return;
     }
 
     // 2. 이미 인증된 사용자가 로그인/회원가입 화면에 오면 앱 진입 경로로 보낸다.
     if (isAuthenticated && user) {
-      navigate(
-        getAuthenticatedRedirectPath(user, fallbackLanguage),
-        { replace: true }
-      );
+      moveAuthenticatedUser(user, fallbackLanguage, {
+        navigate,
+        setIsCallbackLoginLoading,
+        setWorkspacePreparation,
+      });
     }
   }, [
     isAuthenticated,
@@ -212,6 +266,7 @@ export function LoginPage() {
     navigate,
     fallbackLanguage,
     user,
+    workspacePreparation,
   ]);
 
   // 기능 : 로그인 화면의 사용자 이벤트를 처리합니다.
@@ -223,6 +278,20 @@ export function LoginPage() {
       setPendingProvider(null);
     });
   };
+
+  if (workspacePreparation) {
+    const copy =
+      existingUserWorkspacePreparationCopy[workspacePreparation.language];
+
+    return (
+      <CrmEnvironmentBuildingScreen
+        htmlLang={getHtmlLang(workspacePreparation.language)}
+        progress={workspacePreparationProgress.progress}
+        progressLabel={copy.progressLabel}
+        title={copy.title}
+      />
+    );
+  }
 
   if (isLoginRoute || isSignupRoute || isCallbackRoute) {
     return (
@@ -251,6 +320,45 @@ export function LoginPage() {
   );
 }
 
+// 기능 : 인증된 사용자를 온보딩 또는 작업 공간 준비 화면으로 보냅니다.
+function moveAuthenticatedUser(
+  user: AuthUser,
+  fallbackLanguage: PublicSiteLanguage,
+  options: {
+    readonly navigate: ReturnType<typeof useNavigate>;
+    readonly setIsCallbackLoginLoading: (value: boolean) => void;
+    readonly setWorkspacePreparation: (
+      value: ExistingUserWorkspacePreparation | null
+    ) => void;
+  }
+) {
+  // 1. 직업 선택 온보딩 완료 시각이 없으면 전체 화면 온보딩으로 보낸다.
+  if (user.jobSelectOnboardingCompletedAt === null) {
+    options.navigate(
+      toPublicSiteOnboardingPath(
+        resolvePublicSiteLanguageFromUserProfile(user, fallbackLanguage)
+      ),
+      { replace: true }
+    );
+    return;
+  }
+
+  // 2. 기존 사용자는 앱 진입 전에 작업 공간 준비 화면을 보여준다.
+  options.setIsCallbackLoginLoading(false);
+  options.setWorkspacePreparation({
+    language: resolvePublicSiteLanguageFromUserProfile(user, fallbackLanguage),
+  });
+}
+
+// 기능 : 공개 사이트 언어 값을 전체 화면 준비 UI의 html lang 값으로 변환합니다.
+function getHtmlLang(language: PublicSiteLanguage) {
+  if (language === "ko") {
+    return "ko-KR";
+  }
+
+  return language;
+}
+
 // 기능 : 로그인 전환 화면의 최소 표시 시간을 보장합니다.
 async function waitForMinimumDuration(startedAt: number, minimumMs: number) {
   // 1. callback 교환 시작 이후 지난 시간을 계산한다.
@@ -271,20 +379,4 @@ function closeAuthPopupCallbackWindow() {
     // 2. popup callback 창을 닫아 부모 창으로 흐름을 돌려준다.
     window.close();
   }, 100);
-}
-
-// 기능 : 로그인 완료 후 직업 선택 온보딩 필요 여부에 따라 이동 경로를 결정합니다.
-function getAuthenticatedRedirectPath(
-  user: AuthUser,
-  fallbackLanguage: PublicSiteLanguage
-) {
-  // 1. 직업 선택 온보딩 완료 시각이 없으면 전체 화면 온보딩으로 보낸다.
-  if (user.jobSelectOnboardingCompletedAt === null) {
-    return toPublicSiteOnboardingPath(
-      resolvePublicSiteLanguageFromUserProfile(user, fallbackLanguage)
-    );
-  }
-
-  // 2. 이미 완료한 사용자는 앱 화면으로 이동해 기본 Workspace를 준비한다.
-  return "/app";
 }
