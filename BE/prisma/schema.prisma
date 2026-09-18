@@ -55,6 +55,14 @@ enum TeamMemberRole {
   MEMBER
 }
 
+/// 기능 : Workspace 안에서 데이터 생성/수정 주체가 어떤 종류인지 구분합니다.
+enum ActorType {
+  WORKSPACE_MEMBER
+  SYSTEM
+  API_TOKEN
+  AUTOMATION
+}
+
 enum OAuthProvider {
   /// 기능 : 기존 Kakao OAuth 계정 값을 보존하되 신규 런타임 로그인에서는 사용하지 않습니다.
   KAKAO
@@ -265,6 +273,28 @@ model TeamMember {
   @@index([workspaceId])
   @@index([teamId])
   @@index([workspaceMemberId])
+}
+
+/// 기능 : Workspace 안에서 데이터 생성/수정 주체를 저장합니다.
+model Actor {
+  /// 기능 : Actor row의 고유 식별자입니다.
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : Actor가 속한 Workspace ID입니다.
+  workspaceId         String    @db.Uuid
+  /// 기능 : Actor의 주체 종류입니다.
+  type                ActorType
+  /// 기능 : WORKSPACE_MEMBER Actor일 때 연결되는 WorkspaceMember ID입니다.
+  workspaceMemberId   String?   @db.Uuid
+  /// 기능 : SYSTEM Actor일 때 시스템 주체를 식별하는 key입니다.
+  systemKey           String?
+  /// 기능 : 감사 표시용 이름 snapshot입니다.
+  displayNameSnapshot String?
+  /// 기능 : 감사 표시용 email snapshot입니다.
+  emailSnapshot       String?
+  /// 기능 : Actor 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt           DateTime  @default(now()) @db.Timestamptz(3)
+  /// 기능 : Actor row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(3)
 }
 
 /// 기능 : User Web 도움말 모달에서 접수된 에러 신고를 저장합니다.
