@@ -185,7 +185,7 @@ export function CreateWorkspaceModalContent({
   onCreationComplete,
   onClose,
 }: {
-  readonly onCreated: (response: CreatedWorkspaceResponse) => void;
+  readonly onCreated: (response: CreatedWorkspaceResponse) => Promise<void> | void;
   readonly onCreationComplete: () => void;
   readonly onClose: () => void;
 }) {
@@ -223,8 +223,10 @@ export function CreateWorkspaceModalContent({
     }
 
     const closeTimerId = window.setTimeout(() => {
-      onCreated(createdWorkspaceResponse);
-      onCreationComplete();
+      void (async () => {
+        await onCreated(createdWorkspaceResponse);
+        onCreationComplete();
+      })();
     }, WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS);
 
     return () => window.clearTimeout(closeTimerId);

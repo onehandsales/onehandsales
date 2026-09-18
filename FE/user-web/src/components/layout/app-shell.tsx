@@ -298,45 +298,42 @@ export function AppShell() {
     setCreateWorkspaceModalOpen(false);
   }, []);
 
-  // 기능 : 새로 생성된 Workspace를 현재 sidebar Workspace 상태와 query cache에 반영합니다.
+  // 기능 : 새로 생성된 Workspace를 단건 조회한 뒤 현재 sidebar Workspace 상태와 목록 cache에 반영합니다.
   const handleWorkspaceCreated = useCallback(
-    (response: CreatedWorkspaceResponse) => {
-      // 1. 생성 API 응답을 sidebar 표시 형식으로 변환한다.
-      const createdWorkspace: SidebarWorkspaceSummary = {
-        id: response.workspace.id,
-        name: response.workspace.name,
-        kind: response.workspace.kind,
-      };
-      const createdWorkspaceListItem: SidebarWorkspaceListItem = {
-        id: response.workspace.id,
-        name: response.workspace.name,
-      };
+    async (response: CreatedWorkspaceResponse) => {
+      // 1. 생성 API 응답의 Workspace ID로 sidebar 단건 조회 API를 호출한다.
+      let createdWorkspace: SidebarWorkspaceSummary;
+
+      try {
+        createdWorkspace = await getSidebarWorkspace(response.workspace.id);
+      } catch {
+        createdWorkspace = {
+          id: response.workspace.id,
+          name: response.workspace.name,
+          kind: response.workspace.kind,
+        };
+      }
+
       const ownerUserId = user?.id ?? response.workspaceMember.userId;
 
-      // 2. 화면 상단에 보이는 현재 Workspace를 생성한 Workspace로 즉시 바꾼다.
+      // 2. 화면 상단에 보이는 현재 Workspace를 단건 조회 결과로 바꾼다.
       setSelectedSidebarWorkspace(createdWorkspace);
 
-      // 3. sidebar default Workspace query cache를 생성 결과로 갱신한다.
-      queryClient.setQueryData(
-        sidebarWorkspaceQueryKeys.default(ownerUserId),
-        createdWorkspace,
-      );
-
-      // 4. sidebar Workspace 목록 cache 앞에 생성한 Workspace를 추가한다.
+      // 3. sidebar Workspace 목록 cache 앞에 생성한 Workspace를 추가한다.
       queryClient.setQueryData<SidebarWorkspaceListItem[]>(
         sidebarWorkspaceQueryKeys.list(ownerUserId),
         (currentWorkspaces = []) => [
-          createdWorkspaceListItem,
+          {
+            id: createdWorkspace.id,
+            name: createdWorkspace.name,
+          },
           ...currentWorkspaces.filter(
-            (workspace) => workspace.id !== createdWorkspaceListItem.id,
+            (workspace) => workspace.id !== createdWorkspace.id,
           ),
         ],
       );
 
-      // 5. 서버 기준 목록과 기본 Workspace를 다시 가져오도록 명시적으로 갱신한다.
-      void queryClient.invalidateQueries({
-        queryKey: sidebarWorkspaceQueryKeys.default(ownerUserId),
-      });
+      // 4. 서버 기준 목록을 다시 가져오도록 명시적으로 갱신한다.
       void queryClient.invalidateQueries({
         queryKey: sidebarWorkspaceQueryKeys.list(ownerUserId),
       });
@@ -584,26 +581,28 @@ export function AppShell() {
                 <p className="flex h-8 items-center px-2 text-[12px] font-semibold leading-4 text-[#6B7280]">
                   {t("shell.myWorkspaces")}
                 </p>
-                {sidebarWorkspaces.map((workspace) => (
-                  <button
-                    className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
-                    key={workspace.id}
-                    role="menuitem"
-                    tabIndex={accountMenuOpen ? undefined : -1}
-                    type="button"
-                    onClick={() => handleSidebarWorkspaceClick(workspace.id)}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="h-5 w-5 shrink-0 rounded-full bg-[#E5E7EB]"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[14px] font-medium leading-5 text-[#111827]">
-                        {formatSidebarWorkspaceListName(workspace.name)}
-                      </p>
-                    </div>
-                  </button>
-                ))}
+                <div className="notion-scrollbar max-h-40 overflow-y-auto pr-1">
+                  {sidebarWorkspaces.map((workspace) => (
+                    <button
+                      className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+                      key={workspace.id}
+                      role="menuitem"
+                      tabIndex={accountMenuOpen ? undefined : -1}
+                      type="button"
+                      onClick={() => handleSidebarWorkspaceClick(workspace.id)}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="h-5 w-5 shrink-0 rounded-full bg-[#E5E7EB]"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[14px] font-medium leading-5 text-[#111827]">
+                          {formatSidebarWorkspaceListName(workspace.name)}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : null}
             <button
