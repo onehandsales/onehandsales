@@ -63,6 +63,7 @@ import {
   CreateWorkspaceModalContent,
   type CreatedWorkspaceResponse,
   type SidebarWorkspaceSummary,
+  WorkspaceLoadingDialog,
   useDefaultSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
@@ -85,6 +86,7 @@ const HELP_MODAL_TRANSITION_MS = 300;
 const HELP_MODAL_OPEN_DELAY_MS = 20;
 const LOGOUT_MODAL_TRANSITION_MS = 300;
 const LOGOUT_MODAL_OPEN_DELAY_MS = 20;
+const WORKSPACE_SWITCH_LOADING_DELAY_MS = 4000;
 
 type AccountModalSection =
   | AccountModalQuerySection
@@ -145,11 +147,15 @@ export function AppShell() {
   // 16. 처리 흐름에 필요한 [selectedSidebarWorkspace, setSelectedSidebarWorkspace] 값을 준비한다.
   const [selectedSidebarWorkspace, setSelectedSidebarWorkspace] =
     useState<SidebarWorkspaceSummary | null>(null);
-  // 17. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
+  // 17. 처리 흐름에 필요한 [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] 값을 준비한다.
+  const [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] = useState(false);
+  // 18. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  // 18. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
+  // 19. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
-  // 18. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
+  // 20. 처리 흐름에 필요한 workspaceSwitchRequestIdRef 값을 준비한다.
+  const workspaceSwitchRequestIdRef = useRef(0);
+  // 21. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
 
@@ -193,16 +199,35 @@ export function AppShell() {
     [],
   );
 
-  // 기능 : 사이드바 Workspace 목록 항목 클릭 시 단건 Workspace API만 호출합니다.
+  // 기능 : 사이드바 Workspace 목록 항목 클릭 시 전환 로딩 모달 후 단건 조회 결과로 현재 Workspace를 변경합니다.
   const handleSidebarWorkspaceClick = useCallback(
     (workspaceId: string) => {
-      void getSidebarWorkspace(workspaceId)
-        .then((workspace) => {
+      // 1. 현재 전환 요청을 식별하고 계정 메뉴를 닫는다.
+      const requestId = workspaceSwitchRequestIdRef.current + 1;
+      workspaceSwitchRequestIdRef.current = requestId;
+      setAccountMenuOpen(false);
+      setWorkspaceSwitchLoading(true);
+
+      // 2. Workspace 단건 조회와 최소 로딩 표시 시간을 함께 기다린다.
+      void (async () => {
+        const [workspace] = await Promise.all([
+          getSidebarWorkspace(workspaceId).catch(() => null),
+          waitForWorkspaceSwitchLoadingDelay(),
+        ]);
+
+        if (workspaceSwitchRequestIdRef.current !== requestId) {
+          return;
+        }
+
+        // 3. 단건 조회가 성공한 경우에만 현재 Workspace를 변경하고 기본 앱 화면으로 이동한다.
+        if (workspace) {
           setSelectedSidebarWorkspace(workspace);
-          setAccountMenuOpen(false);
           void navigate(HOME_PATH);
-        })
-        .catch(() => undefined);
+        }
+
+        // 4. 전환 로딩 모달을 닫는다.
+        setWorkspaceSwitchLoading(false);
+      })();
     },
     [navigate],
   );
@@ -928,6 +953,10 @@ export function AppShell() {
           onCreationComplete={completeCreateWorkspaceFlow}
         />
       </AccountModal>
+
+      {isWorkspaceSwitchLoading ? (
+        <WorkspaceLoadingDialog title={t("shell.workspaceSwitchLoading")} />
+      ) : null}
 
       <LogoutConfirmModal
         onCancel={() => setLogoutConfirmOpen(false)}
@@ -2744,6 +2773,13 @@ function formatSidebarWorkspaceListName(name: string) {
   }
 
   return name.slice(0, -defaultWorkspaceSuffix.length);
+}
+
+// 기능 : Workspace 전환 로딩 모달을 최소 표시 시간만큼 유지합니다.
+function waitForWorkspaceSwitchLoadingDelay() {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, WORKSPACE_SWITCH_LOADING_DELAY_MS);
+  });
 }
 
 // 기능 : Workspace kind enum 값을 현재 앱 언어의 표시 문구로 변환합니다.

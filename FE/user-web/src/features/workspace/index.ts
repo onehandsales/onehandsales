@@ -1,5 +1,6 @@
 export { CrmEnvironmentBuildingScreen } from "./components/crm-environment-building-screen";
 export { CreateWorkspaceModalContent } from "./components/create-workspace-modal-content";
+export { WorkspaceLoadingDialog } from "./components/workspace-loading-dialog";
 export { createWorkspace } from "./api/workspace-api";
 export type {
   CreatedWorkspaceResponse,

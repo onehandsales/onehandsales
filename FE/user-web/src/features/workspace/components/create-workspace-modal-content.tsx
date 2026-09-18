@@ -14,6 +14,7 @@ import {
   createWorkspace,
   type CreatedWorkspaceResponse,
 } from "@/features/workspace/api/workspace-api";
+import { WorkspaceLoadingDialog } from "@/features/workspace/components/workspace-loading-dialog";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
@@ -49,7 +50,7 @@ type WorkspaceCreateModalCopy = {
   readonly jobs: readonly Omit<WorkspaceJobOption, "imageSrc">[];
 };
 
-const WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS = 5000;
+const WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS = 4000;
 
 const workspaceJobImageSrcByKey: Record<WorkspaceJobOptionKey, string> = {
   sales:
@@ -328,33 +329,11 @@ export function CreateWorkspaceModalContent({
         )}
       </div>
       {createLoadingModalOpen ? (
-        <WorkspaceCreateLoadingDialog title={copy.creatingTitle} />
-      ) : null}
-    </div>
-  );
-}
-
-// 기능 : Workspace 생성 완료 후 잠시 보여줄 로딩 모달을 렌더링합니다.
-function WorkspaceCreateLoadingDialog({
-  title,
-}: {
-  readonly title: string;
-}) {
-  return (
-    <div className="absolute inset-0 z-20 grid place-items-center bg-black/25 px-6">
-      <section
-        aria-modal="true"
-        className="grid w-full max-w-[360px] justify-items-center rounded-[8px] bg-white px-8 py-9 text-center shadow-[0_18px_50px_rgba(15,23,42,0.18)]"
-        role="dialog"
-      >
-        <span
-          aria-hidden="true"
-          className="h-9 w-9 rounded-full border-[3px] border-[#E4E2DC] border-t-[#4880EE] animate-spin"
+        <WorkspaceLoadingDialog
+          overlayClassName="absolute z-20"
+          title={copy.creatingTitle}
         />
-        <h2 className="mt-5 break-keep text-[20px] font-normal leading-[1.3] text-[#050505]">
-          {title}
-        </h2>
-      </section>
+      ) : null}
     </div>
   );
 }

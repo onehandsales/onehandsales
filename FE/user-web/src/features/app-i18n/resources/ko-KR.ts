@@ -78,6 +78,7 @@ export const koKRResource = {
     workspaceKindOrganization: "조직 작업 공간",
     workspaceKindPersonal: "개인 작업 공간",
     workspaceLoading: "작업 공간 불러오는 중",
+    workspaceSwitchLoading: "작업 공간을 불러오고 있어요.",
   },
   helpModal: {
     errorCaptureFailed:

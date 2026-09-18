@@ -78,6 +78,7 @@ export const enResource = {
     workspaceKindOrganization: "Organization Workspace",
     workspaceKindPersonal: "Personal Workspace",
     workspaceLoading: "Loading workspace",
+    workspaceSwitchLoading: "Loading workspace.",
   },
   helpModal: {
     errorCaptureFailed:
