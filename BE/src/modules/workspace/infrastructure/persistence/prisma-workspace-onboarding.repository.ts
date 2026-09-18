@@ -1,4 +1,5 @@
 import {
+  ActorType as PrismaActorType,
   WorkspaceKind as PrismaWorkspaceKind,
   WorkspaceMemberRole as PrismaWorkspaceMemberRole,
 } from "@prisma/client";
@@ -86,7 +87,7 @@ export class PrismaWorkspaceOnboardingRepository
     });
   }
 
-  // 기능 : 신규 기본 Workspace와 현재 사용자의 OWNER 멤버십을 생성합니다.
+  // 기능 : 신규 기본 Workspace, OWNER 멤버십, WORKSPACE_MEMBER Actor를 생성합니다.
   private async createOwnerWorkspaceMember(
     client: WorkspaceOnboardingClient,
     input: EnsureOwnerWorkspaceForOnboardingInput
@@ -100,7 +101,7 @@ export class PrismaWorkspaceOnboardingRepository
     });
 
     // 2. 생성된 Workspace에 현재 사용자를 OWNER로 연결한다.
-    return client.workspaceMember.create({
+    const workspaceMember = await client.workspaceMember.create({
       data: {
         workspaceId: workspace.id,
         userId: input.userId,
@@ -109,6 +110,39 @@ export class PrismaWorkspaceOnboardingRepository
       },
       include: {
         workspace: true,
+      },
+    });
+
+    // 3. OWNER WorkspaceMember에 대응하는 WORKSPACE_MEMBER Actor를 생성한다.
+    await this.createWorkspaceMemberActor(client, {
+      workspaceId: workspace.id,
+      workspaceMemberId: workspaceMember.id,
+      displayName: input.displayName,
+      email: input.email,
+    });
+
+    // 4. 생성된 WorkspaceMember row를 반환한다.
+    return workspaceMember;
+  }
+
+  // 기능 : WorkspaceMember가 데이터 생성/수정 주체로 기록될 Actor row를 생성합니다.
+  private async createWorkspaceMemberActor(
+    client: WorkspaceOnboardingClient,
+    input: {
+      readonly workspaceId: string;
+      readonly workspaceMemberId: string;
+      readonly displayName: string | null;
+      readonly email: string | null;
+    }
+  ): Promise<void> {
+    // 1. WorkspaceMember 주체를 감사용 Actor로 저장한다.
+    await client.actor.create({
+      data: {
+        workspaceId: input.workspaceId,
+        type: PrismaActorType.WORKSPACE_MEMBER,
+        workspaceMemberId: input.workspaceMemberId,
+        displayNameSnapshot: input.displayName,
+        emailSnapshot: input.email,
       },
     });
   }

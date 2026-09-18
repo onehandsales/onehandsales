@@ -6,6 +6,11 @@ import {
 } from "@/modules/workspace/application/ports/workspace-command.repository";
 import { WorkspaceValidationError } from "@/modules/workspace/domain/workspace.errors";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import {
+  TRANSACTION_MANAGER,
+  type TransactionContext,
+  type TransactionManager,
+} from "@/shared/application/ports/transaction-manager.port";
 
 const MAX_WORKSPACE_NAME_LENGTH = 80;
 
@@ -17,10 +22,12 @@ export interface CreateMyWorkspaceCommand {
 // 역할 : CreateMyWorkspaceUseCase가 현재 사용자의 새 Workspace 생성을 담당합니다.
 @Injectable()
 export class CreateMyWorkspaceUseCase {
-  // 기능 : Workspace 쓰기 저장소를 주입받습니다.
+  // 기능 : Workspace 쓰기 저장소와 transaction manager를 주입받습니다.
   constructor(
     @Inject(WORKSPACE_COMMAND_REPOSITORY)
-    private readonly workspaceCommandRepository: WorkspaceCommandRepository
+    private readonly workspaceCommandRepository: WorkspaceCommandRepository,
+    @Inject(TRANSACTION_MANAGER)
+    private readonly transactionManager: TransactionManager
   ) {}
 
   // 기능 : 입력 이름을 검증하고 현재 사용자를 OWNER로 연결한 Workspace를 생성합니다.
@@ -34,11 +41,28 @@ export class CreateMyWorkspaceUseCase {
     // 2. 화면 표시용 Workspace 이름을 생성한다.
     const displayName = this.buildWorkspaceDisplayName(workspaceName);
 
-    // 3. Workspace와 OWNER 멤버십 생성을 저장소에 위임한다.
+    // 3. Workspace, OWNER 멤버십, Actor 생성을 하나의 transaction 안에서 처리한다.
+    const now = new Date();
+    return this.transactionManager.runInTransaction((context) =>
+      this.createWorkspaceInTransaction(currentUser, displayName, now, context)
+    );
+  }
+
+  // 기능 : Workspace 생성에 필요한 row들을 같은 transaction context로 저장합니다.
+  private createWorkspaceInTransaction(
+    currentUser: CurrentUserContext,
+    displayName: string,
+    now: Date,
+    context: TransactionContext
+  ): Promise<CreateWorkspaceWithOwnerResult> {
+    // 1. Workspace 저장소에 현재 사용자 snapshot과 transaction context를 함께 전달한다.
     return this.workspaceCommandRepository.createWorkspaceWithOwner({
       name: displayName,
       ownerUserId: currentUser.id,
-      now: new Date(),
+      ownerDisplayName: currentUser.displayName,
+      ownerEmail: currentUser.email,
+      now,
+      transactionContext: context,
     });
   }
 

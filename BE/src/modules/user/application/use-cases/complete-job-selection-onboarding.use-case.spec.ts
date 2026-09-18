@@ -76,6 +76,7 @@ class FakeUserRepository implements UserRepository {
   lastContext: TransactionContext | null = null;
   user: UserJobSelectionOnboardingUserRecord | null = {
     id: "user-1",
+    email: "user@example.com",
     displayName: "User",
     status: "ACTIVE",
     jobSelectOnboardingCompletedAt: null,
@@ -131,6 +132,7 @@ class FakeWorkspaceOnboarding implements WorkspaceOnboardingPort {
   async ensureOwnerWorkspaceForOnboarding(input: {
     readonly userId: string;
     readonly displayName: string | null;
+    readonly email: string | null;
     readonly now: Date;
     readonly transactionContext?: TransactionContext | null;
   }): Promise<WorkspaceOnboardingResult> {

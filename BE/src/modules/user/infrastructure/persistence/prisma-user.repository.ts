@@ -101,11 +101,12 @@ export class PrismaUserRepository implements UserRepository {
     // 1. transaction context에 맞는 Prisma client를 준비한다.
     const client = this.getClient(transactionContext);
 
-    // 2. 사용자 활성 상태, 표시 이름, 기존 완료 시각을 조회한다.
+    // 2. 사용자 활성 상태, 이메일, 표시 이름, 기존 완료 시각을 조회한다.
     const user = await client.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
+        email: true,
         displayName: true,
         status: true,
         jobSelectOnboardingCompletedAt: true,
@@ -120,6 +121,7 @@ export class PrismaUserRepository implements UserRepository {
     // 4. Prisma 사용자 상태 enum을 application 상태 값으로 변환한다.
     return {
       id: user.id,
+      email: user.email,
       displayName: user.displayName,
       status: this.fromPrismaUserStatus(user.status),
       jobSelectOnboardingCompletedAt: user.jobSelectOnboardingCompletedAt,

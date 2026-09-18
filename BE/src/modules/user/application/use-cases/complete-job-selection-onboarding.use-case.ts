@@ -71,6 +71,7 @@ export class CompleteJobSelectionOnboardingUseCase {
     await this.workspaceOnboarding.ensureOwnerWorkspaceForOnboarding({
       userId,
       displayName: user.displayName,
+      email: user.email,
       now,
       transactionContext: context,
     });

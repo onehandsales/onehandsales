@@ -37,6 +37,7 @@ export interface WorkspaceOnboardingResult {
 export interface EnsureOwnerWorkspaceForOnboardingInput {
   readonly userId: string;
   readonly displayName: string | null;
+  readonly email: string | null;
   readonly now: Date;
   readonly transactionContext?: TransactionContext | null;
 }

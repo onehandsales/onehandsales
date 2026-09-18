@@ -69,6 +69,7 @@ export interface UserJobSelectionOnboardingRecord {
 // 역할 : UserJobSelectionOnboardingUserRecord가 직업 선택 온보딩 완료에 필요한 사용자 상태를 정의합니다.
 export interface UserJobSelectionOnboardingUserRecord {
   readonly id: string;
+  readonly email: string | null;
   readonly displayName: string | null;
   readonly status: UserProfileStatus;
   readonly jobSelectOnboardingCompletedAt: Date | null;
