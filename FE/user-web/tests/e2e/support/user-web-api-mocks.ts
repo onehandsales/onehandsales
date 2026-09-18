@@ -29,27 +29,14 @@ type MutableRecord = Record<string, unknown>;
 
 type MockWorkspaceKind = "ORGANIZATION" | "PERSONAL";
 
-type MockCreatedWorkspaceResponse = {
-  readonly workspace: {
-    readonly id: string;
-    readonly name: string;
-    readonly kind: MockWorkspaceKind;
-    readonly createdAt: string;
-    readonly updatedAt: string;
-  };
-  readonly workspaceMember: {
-    readonly id: string;
-    readonly workspaceId: string;
-    readonly userId: string;
-    readonly role: "ADMIN" | "MEMBER" | "OWNER";
-    readonly joinedAt: string;
-    readonly createdAt: string;
-    readonly updatedAt: string;
-  };
+type MockSidebarWorkspaceSummary = {
+  readonly id: string;
+  readonly name: string;
+  readonly kind: MockWorkspaceKind;
 };
 
 export type UserWebApiMockStore = {
-  createdWorkspace?: MockCreatedWorkspaceResponse;
+  createdWorkspace?: MockSidebarWorkspaceSummary;
 };
 
 type ApiDelayResolver = (request: ApiRequestRecord) => number;
@@ -235,6 +222,29 @@ async function handleApiRequest(
     return json(createSidebarWorkspaces(store.createdWorkspace));
   }
 
+  if (
+    pathname.startsWith("/api/users/me/sidebar/workspaces/") &&
+    method === "GET"
+  ) {
+    const workspaceId = decodeURIComponent(
+      pathname.slice("/api/users/me/sidebar/workspaces/".length),
+    );
+    const workspace = findSidebarWorkspace(store.createdWorkspace, workspaceId);
+
+    if (workspace) {
+      return json(workspace);
+    }
+
+    return json(
+      {
+        code: "WorkspaceSidebarWorkspaceNotFound",
+        message: "Workspace not found",
+        statusCode: 404,
+      },
+      404,
+    );
+  }
+
   if (pathname === "/api/users/me/workspaces" && method === "POST") {
     const body = recordField(await readJsonBody(route));
     const workspaceName =
@@ -242,7 +252,7 @@ async function handleApiRequest(
         ? body["workspaceName"].trim()
         : "E2E New Workspace";
     store.createdWorkspace = createWorkspaceResponse(workspaceName);
-    return json(store.createdWorkspace, 201);
+    return json({ workspaceId: store.createdWorkspace.id }, 201);
   }
 
   if (pathname === "/api/users/me/devices" && method === "GET") {
@@ -344,14 +354,10 @@ function createJobSelectionOnboardingResponse() {
 
 // 기능 : 기본 sidebar Workspace 응답 fixture를 생성합니다.
 function createDefaultSidebarWorkspace(
-  createdWorkspace?: MockCreatedWorkspaceResponse,
-) {
+  createdWorkspace?: MockSidebarWorkspaceSummary,
+): MockSidebarWorkspaceSummary {
   if (createdWorkspace) {
-    return {
-      id: createdWorkspace.workspace.id,
-      name: createdWorkspace.workspace.name,
-      kind: createdWorkspace.workspace.kind,
-    };
+    return createdWorkspace;
   }
 
   return {
@@ -362,7 +368,7 @@ function createDefaultSidebarWorkspace(
 }
 
 // 기능 : sidebar Workspace 목록 응답 fixture를 생성합니다.
-function createSidebarWorkspaces(createdWorkspace?: MockCreatedWorkspaceResponse) {
+function createSidebarWorkspaces(createdWorkspace?: MockSidebarWorkspaceSummary) {
   const defaultWorkspace = createDefaultSidebarWorkspace();
 
   if (!createdWorkspace) {
@@ -371,32 +377,39 @@ function createSidebarWorkspaces(createdWorkspace?: MockCreatedWorkspaceResponse
 
   return [
     {
-      id: createdWorkspace.workspace.id,
-      name: createdWorkspace.workspace.name,
+      id: createdWorkspace.id,
+      name: createdWorkspace.name,
     },
     defaultWorkspace,
   ];
 }
 
+// 기능 : sidebar Workspace 단건 응답 fixture를 찾습니다.
+function findSidebarWorkspace(
+  createdWorkspace: MockSidebarWorkspaceSummary | undefined,
+  workspaceId: string,
+): MockSidebarWorkspaceSummary | null {
+  const defaultWorkspace = createDefaultSidebarWorkspace();
+
+  if (createdWorkspace?.id === workspaceId) {
+    return createdWorkspace;
+  }
+
+  if (defaultWorkspace.id === workspaceId) {
+    return defaultWorkspace;
+  }
+
+  return null;
+}
+
 // 기능 : Workspace 생성 API 응답 fixture를 생성합니다.
-function createWorkspaceResponse(workspaceName: string): MockCreatedWorkspaceResponse {
+function createWorkspaceResponse(
+  workspaceName: string,
+): MockSidebarWorkspaceSummary {
   return {
-    workspace: {
-      id: "workspace-e2e-002",
-      name: `${workspaceName}'s Workspace`,
-      kind: "PERSONAL",
-      createdAt: NOW,
-      updatedAt: NOW,
-    },
-    workspaceMember: {
-      id: "workspace-member-e2e-002",
-      workspaceId: "workspace-e2e-002",
-      userId: "user-e2e-001",
-      role: "OWNER",
-      joinedAt: NOW,
-      createdAt: NOW,
-      updatedAt: NOW,
-    },
+    id: "workspace-e2e-002",
+    name: `${workspaceName}'s Workspace`,
+    kind: "PERSONAL",
   };
 }
 

@@ -302,38 +302,50 @@ export function AppShell() {
   const handleWorkspaceCreated = useCallback(
     async (response: CreatedWorkspaceResponse) => {
       // 1. 생성 API 응답의 Workspace ID로 sidebar 단건 조회 API를 호출한다.
-      let createdWorkspace: SidebarWorkspaceSummary;
+      const ownerUserId = user?.id;
+      let createdWorkspace: SidebarWorkspaceSummary | null = null;
 
       try {
-        createdWorkspace = await getSidebarWorkspace(response.workspace.id);
+        createdWorkspace = await getSidebarWorkspace(response.workspaceId);
       } catch {
-        createdWorkspace = {
-          id: response.workspace.id,
-          name: response.workspace.name,
-          kind: response.workspace.kind,
-        };
+        createdWorkspace = null;
       }
 
-      const ownerUserId = user?.id ?? response.workspaceMember.userId;
+      // 2. 단건 조회 결과가 있으면 화면 상단에 보이는 현재 Workspace를 바로 바꾼다.
+      if (createdWorkspace) {
+        setSelectedSidebarWorkspace(createdWorkspace);
+      } else {
+        setSelectedSidebarWorkspace(null);
+      }
 
-      // 2. 화면 상단에 보이는 현재 Workspace를 단건 조회 결과로 바꾼다.
-      setSelectedSidebarWorkspace(createdWorkspace);
+      if (!ownerUserId) {
+        return;
+      }
 
-      // 3. sidebar Workspace 목록 cache 앞에 생성한 Workspace를 추가한다.
-      queryClient.setQueryData<SidebarWorkspaceListItem[]>(
-        sidebarWorkspaceQueryKeys.list(ownerUserId),
-        (currentWorkspaces = []) => [
-          {
-            id: createdWorkspace.id,
-            name: createdWorkspace.name,
-          },
-          ...currentWorkspaces.filter(
-            (workspace) => workspace.id !== createdWorkspace.id,
-          ),
-        ],
-      );
+      // 3. 단건 조회 결과가 있으면 sidebar Workspace cache에 생성한 Workspace를 즉시 반영한다.
+      if (createdWorkspace) {
+        queryClient.setQueryData(
+          sidebarWorkspaceQueryKeys.default(ownerUserId),
+          createdWorkspace,
+        );
+        queryClient.setQueryData<SidebarWorkspaceListItem[]>(
+          sidebarWorkspaceQueryKeys.list(ownerUserId),
+          (currentWorkspaces = []) => [
+            {
+              id: createdWorkspace.id,
+              name: createdWorkspace.name,
+            },
+            ...currentWorkspaces.filter(
+              (workspace) => workspace.id !== createdWorkspace.id,
+            ),
+          ],
+        );
+      }
 
-      // 4. 서버 기준 목록을 다시 가져오도록 명시적으로 갱신한다.
+      // 4. 서버 기준 default와 목록을 다시 가져오도록 명시적으로 갱신한다.
+      void queryClient.invalidateQueries({
+        queryKey: sidebarWorkspaceQueryKeys.default(ownerUserId),
+      });
       void queryClient.invalidateQueries({
         queryKey: sidebarWorkspaceQueryKeys.list(ownerUserId),
       });

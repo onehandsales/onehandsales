@@ -42,26 +42,9 @@ class FakeAuthGuard implements CanActivate {
 
 // 기능 : 생성 유스케이스 fake를 생성합니다.
 function createWorkspaceUseCaseFake(): jest.Mocked<CreateMyWorkspaceUseCaseFake> {
-  const now = new Date("2026-09-17T00:00:00.000Z");
-
   return {
     execute: jest.fn().mockResolvedValue({
-      workspace: {
-        id: "00000000-0000-4000-8000-000000000301",
-        name: "부동산's Workspace",
-        kind: "PERSONAL",
-        createdAt: now,
-        updatedAt: now,
-      },
-      workspaceMember: {
-        id: "00000000-0000-4000-8000-000000000401",
-        workspaceId: "00000000-0000-4000-8000-000000000301",
-        userId: CURRENT_USER.id,
-        role: "OWNER",
-        joinedAt: now,
-        createdAt: now,
-        updatedAt: now,
-      },
+      workspaceId: "00000000-0000-4000-8000-000000000301",
     }),
   };
 }
@@ -118,22 +101,7 @@ describe("UserWorkspacesController", () => {
       })
       .expect(201)
       .expect({
-        workspace: {
-          id: "00000000-0000-4000-8000-000000000301",
-          name: "부동산's Workspace",
-          kind: "PERSONAL",
-          createdAt: "2026-09-17T00:00:00.000Z",
-          updatedAt: "2026-09-17T00:00:00.000Z",
-        },
-        workspaceMember: {
-          id: "00000000-0000-4000-8000-000000000401",
-          workspaceId: "00000000-0000-4000-8000-000000000301",
-          userId: CURRENT_USER.id,
-          role: "OWNER",
-          joinedAt: "2026-09-17T00:00:00.000Z",
-          createdAt: "2026-09-17T00:00:00.000Z",
-          updatedAt: "2026-09-17T00:00:00.000Z",
-        },
+        workspaceId: "00000000-0000-4000-8000-000000000301",
       });
 
     expect(createUseCase.execute).toHaveBeenCalledWith(CURRENT_USER, {

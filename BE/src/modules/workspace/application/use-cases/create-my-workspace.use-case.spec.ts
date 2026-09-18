@@ -22,9 +22,9 @@ describe("CreateMyWorkspaceUseCase", () => {
       ownerUserId: "00000000-0000-4000-8000-000000000101",
       now: expect.any(Date),
     });
-    expect(result.workspace.name).toBe("부동산's Workspace");
-    expect(result.workspace.kind).toBe("PERSONAL");
-    expect(result.workspaceMember.role).toBe("OWNER");
+    expect(result).toEqual({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+    });
   });
 
   // 기능 : 공백 이름은 Workspace 생성을 차단합니다.
@@ -75,22 +75,7 @@ class FakeWorkspaceCommandRepository implements WorkspaceCommandRepository {
     this.lastInput = input;
 
     return {
-      workspace: {
-        id: "00000000-0000-4000-8000-000000000301",
-        name: input.name,
-        kind: "PERSONAL",
-        createdAt: input.now,
-        updatedAt: input.now,
-      },
-      workspaceMember: {
-        id: "00000000-0000-4000-8000-000000000401",
-        workspaceId: "00000000-0000-4000-8000-000000000301",
-        userId: input.ownerUserId,
-        role: "OWNER",
-        joinedAt: input.now,
-        createdAt: input.now,
-        updatedAt: input.now,
-      },
+      workspaceId: "00000000-0000-4000-8000-000000000301",
     };
   }
 }

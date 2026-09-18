@@ -8,9 +8,9 @@
 
 호환성:
 
-- breaking change 여부: 없음. 신규 API 추가다.
-- 기존 FE 영향: 없음. 새 작업 공간 모달에서만 호출한다.
-- migration 또는 fallback: DB schema 변경 없음. 실패 시 모달에서 재시도한다.
+- breaking change 여부: 있음. 생성 성공 응답이 Workspace/WorkspaceMember snapshot에서 `workspaceId` 단일 필드로 축소된다.
+- 기존 FE 영향: 있음. User Web은 생성 응답의 `workspaceId`로 sidebar Workspace 단건 조회 API를 호출해 화면 상태를 갱신한다.
+- migration 또는 fallback: DB schema 변경 없음. FE 응답 fallback 없이 단건 조회 결과를 기준으로 전환한다.
 
 ## 1. 목적
 
@@ -78,24 +78,15 @@ Success:
 
 ```json
 {
-  "workspace": {
-    "id": "00000000-0000-4000-8000-000000000301",
-    "name": "부동산's Workspace",
-    "kind": "PERSONAL",
-    "createdAt": "2026-09-17T00:00:00.000Z",
-    "updatedAt": "2026-09-17T00:00:00.000Z"
-  },
-  "workspaceMember": {
-    "id": "00000000-0000-4000-8000-000000000401",
-    "workspaceId": "00000000-0000-4000-8000-000000000301",
-    "userId": "00000000-0000-4000-8000-000000000101",
-    "role": "OWNER",
-    "joinedAt": "2026-09-17T00:00:00.000Z",
-    "createdAt": "2026-09-17T00:00:00.000Z",
-    "updatedAt": "2026-09-17T00:00:00.000Z"
-  }
+  "workspaceId": "00000000-0000-4000-8000-000000000301"
 }
 ```
+
+후속 FE 흐름:
+
+- User Web은 성공 응답의 `workspaceId`로 `GET /api/users/me/sidebar/workspaces/:workspaceId`를 호출한다.
+- 단건 조회 응답으로 현재 sidebar Workspace를 전환한다.
+- Workspace 목록 query는 생성된 Workspace를 cache에 반영한 뒤 서버 기준으로 refetch한다.
 
 Error:
 
@@ -109,12 +100,11 @@ Error:
 ## 4. 이번 구현 범위
 
 - Backend 생성 API 구현
+- 생성 성공 응답을 `workspaceId` 단일 필드로 축소
 - User Web 새 작업 공간 모달 2단계 카드 클릭 시 API 호출
+- 생성 후 `workspaceId` 기반 sidebar Workspace 단건 조회와 목록 refetch
 
 ## 5. 제외 범위
 
-- 5초 하얀색 구축 화면
-- 생성 후 사이드바 현재 Workspace 전환
-- Workspace 목록 refetch
 - 업무 카드 값 저장
 - 기본 Team 생성
