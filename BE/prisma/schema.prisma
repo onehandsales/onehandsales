@@ -180,6 +180,8 @@ model Workspace {
   teams       Team[]
   /// 기능 : 이 Workspace 안에서 생성된 TeamMember 연결 목록입니다.
   teamMembers TeamMember[]
+  /// 기능 : 이 Workspace 안에서 생성된 Actor 목록입니다.
+  actors      Actor[]
 
   @@index([kind])
 }
@@ -207,6 +209,8 @@ model WorkspaceMember {
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : 이 WorkspaceMember가 참여한 TeamMember 연결 목록입니다.
   teamMembers TeamMember[]
+  /// 기능 : 이 WorkspaceMember에 연결된 Actor 목록입니다.
+  actors      Actor[]
 
   @@unique([workspaceId, userId])
   @@unique([id, workspaceId])
@@ -284,7 +288,7 @@ model Actor {
   /// 기능 : Actor의 주체 종류입니다.
   type                ActorType
   /// 기능 : WORKSPACE_MEMBER Actor일 때 연결되는 WorkspaceMember ID입니다.
-  workspaceMemberId   String?   @db.Uuid
+  workspaceMemberId   String    @db.Uuid
   /// 기능 : SYSTEM Actor일 때 시스템 주체를 식별하는 key입니다.
   systemKey           String?
   /// 기능 : 감사 표시용 이름 snapshot입니다.
@@ -295,6 +299,11 @@ model Actor {
   createdAt           DateTime  @default(now()) @db.Timestamptz(3)
   /// 기능 : Actor row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
   updatedAt           DateTime  @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : Actor가 속한 Workspace입니다.
+  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace 안에서 Actor에 연결된 WorkspaceMember입니다.
+  workspaceMember WorkspaceMember @relation(fields: [workspaceMemberId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 기능 : User Web 도움말 모달에서 접수된 에러 신고를 저장합니다.
