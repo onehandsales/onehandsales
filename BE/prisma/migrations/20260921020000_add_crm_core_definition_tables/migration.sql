@@ -67,8 +67,8 @@ CREATE TABLE "RecordDefinition" (
   CONSTRAINT "RecordDefinition_pkey" PRIMARY KEY ("id")
 );
 
--- 기능 : SELECT Attribute에서 선택 가능한 옵션을 저장한다.
-CREATE TABLE "SelectOption" (
+-- 기능 : SELECT Attribute에서 선택 가능한 옵션 정의를 저장한다.
+CREATE TABLE "SelectOptionDefinition" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
   "workspaceId" UUID NOT NULL,
   "attributeDefinitionId" UUID NOT NULL,
@@ -79,11 +79,11 @@ CREATE TABLE "SelectOption" (
   "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
-  CONSTRAINT "SelectOption_pkey" PRIMARY KEY ("id")
+  CONSTRAINT "SelectOptionDefinition_pkey" PRIMARY KEY ("id")
 );
 
--- 기능 : STATUS Attribute에서 선택 가능한 상태 옵션을 저장한다.
-CREATE TABLE "StatusOption" (
+-- 기능 : STATUS Attribute에서 선택 가능한 상태 옵션 정의를 저장한다.
+CREATE TABLE "StatusOptionDefinition" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
   "workspaceId" UUID NOT NULL,
   "attributeDefinitionId" UUID NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE "StatusOption" (
   "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
-  CONSTRAINT "StatusOption_pkey" PRIMARY KEY ("id")
+  CONSTRAINT "StatusOptionDefinition_pkey" PRIMARY KEY ("id")
 );
 
 -- 기능 : ObjectDefinition 사이의 관계 정의를 저장한다.
@@ -122,8 +122,8 @@ CREATE TABLE "RecordAttributeValueDefinition" (
   "attributeDefinitionId" UUID NOT NULL,
   "createdByActorId" UUID NOT NULL,
   "updatedByActorId" UUID,
-  "selectOptionId" UUID,
-  "statusOptionId" UUID,
+  "selectOptionDefinitionId" UUID,
+  "statusOptionDefinitionId" UUID,
   "targetRecordDefinitionId" UUID,
   "targetObjectDefinitionId" UUID,
   "targetActorId" UUID,
@@ -180,38 +180,38 @@ ALTER TABLE "RecordDefinition"
   ADD CONSTRAINT "RecordDefinition_updatedByActorId_fkey"
   FOREIGN KEY ("updatedByActorId") REFERENCES "Actor"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- 기능 : SelectOption은 Workspace와 AttributeDefinition 안에서 Actor가 생성/수정한다.
-ALTER TABLE "SelectOption"
-  ADD CONSTRAINT "SelectOption_workspaceId_fkey"
+-- 기능 : SelectOptionDefinition은 Workspace와 AttributeDefinition 안에서 Actor가 생성/수정한다.
+ALTER TABLE "SelectOptionDefinition"
+  ADD CONSTRAINT "SelectOptionDefinition_workspaceId_fkey"
   FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "SelectOption"
-  ADD CONSTRAINT "SelectOption_attributeDefinitionId_fkey"
+ALTER TABLE "SelectOptionDefinition"
+  ADD CONSTRAINT "SelectOptionDefinition_attributeDefinitionId_fkey"
   FOREIGN KEY ("attributeDefinitionId") REFERENCES "AttributeDefinition"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "SelectOption"
-  ADD CONSTRAINT "SelectOption_createdByActorId_fkey"
+ALTER TABLE "SelectOptionDefinition"
+  ADD CONSTRAINT "SelectOptionDefinition_createdByActorId_fkey"
   FOREIGN KEY ("createdByActorId") REFERENCES "Actor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE "SelectOption"
-  ADD CONSTRAINT "SelectOption_updatedByActorId_fkey"
+ALTER TABLE "SelectOptionDefinition"
+  ADD CONSTRAINT "SelectOptionDefinition_updatedByActorId_fkey"
   FOREIGN KEY ("updatedByActorId") REFERENCES "Actor"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- 기능 : StatusOption은 Workspace와 AttributeDefinition 안에서 Actor가 생성/수정한다.
-ALTER TABLE "StatusOption"
-  ADD CONSTRAINT "StatusOption_workspaceId_fkey"
+-- 기능 : StatusOptionDefinition은 Workspace와 AttributeDefinition 안에서 Actor가 생성/수정한다.
+ALTER TABLE "StatusOptionDefinition"
+  ADD CONSTRAINT "StatusOptionDefinition_workspaceId_fkey"
   FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "StatusOption"
-  ADD CONSTRAINT "StatusOption_attributeDefinitionId_fkey"
+ALTER TABLE "StatusOptionDefinition"
+  ADD CONSTRAINT "StatusOptionDefinition_attributeDefinitionId_fkey"
   FOREIGN KEY ("attributeDefinitionId") REFERENCES "AttributeDefinition"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "StatusOption"
-  ADD CONSTRAINT "StatusOption_createdByActorId_fkey"
+ALTER TABLE "StatusOptionDefinition"
+  ADD CONSTRAINT "StatusOptionDefinition_createdByActorId_fkey"
   FOREIGN KEY ("createdByActorId") REFERENCES "Actor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE "StatusOption"
-  ADD CONSTRAINT "StatusOption_updatedByActorId_fkey"
+ALTER TABLE "StatusOptionDefinition"
+  ADD CONSTRAINT "StatusOptionDefinition_updatedByActorId_fkey"
   FOREIGN KEY ("updatedByActorId") REFERENCES "Actor"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- 기능 : RelationshipDefinition은 source/target ObjectDefinition과 AttributeDefinition을 연결한다.
@@ -269,12 +269,12 @@ ALTER TABLE "RecordAttributeValueDefinition"
   FOREIGN KEY ("updatedByActorId") REFERENCES "Actor"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "RecordAttributeValueDefinition"
-  ADD CONSTRAINT "RecordAttributeValueDefinition_selectOptionId_fkey"
-  FOREIGN KEY ("selectOptionId") REFERENCES "SelectOption"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT "RecordAttributeValueDefinition_selectOptionDefinitionId_fkey"
+  FOREIGN KEY ("selectOptionDefinitionId") REFERENCES "SelectOptionDefinition"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "RecordAttributeValueDefinition"
-  ADD CONSTRAINT "RecordAttributeValueDefinition_statusOptionId_fkey"
-  FOREIGN KEY ("statusOptionId") REFERENCES "StatusOption"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT "RecordAttributeValueDefinition_statusOptionDefinitionId_fkey"
+  FOREIGN KEY ("statusOptionDefinitionId") REFERENCES "StatusOptionDefinition"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "RecordAttributeValueDefinition"
   ADD CONSTRAINT "RecordAttributeValueDefinition_targetRecordDefinitionId_fkey"
@@ -326,27 +326,27 @@ COMMENT ON COLUMN "RecordDefinition"."updatedByActorId" IS 'RecordDefinition을 
 COMMENT ON COLUMN "RecordDefinition"."createdAt" IS 'RecordDefinition 생성 시각.';
 COMMENT ON COLUMN "RecordDefinition"."updatedAt" IS 'RecordDefinition row 수정 시각.';
 
-COMMENT ON TABLE "SelectOption" IS 'SELECT Attribute에서 선택 가능한 옵션.';
-COMMENT ON COLUMN "SelectOption"."id" IS 'SelectOption row의 고유 식별자.';
-COMMENT ON COLUMN "SelectOption"."workspaceId" IS 'SelectOption이 속한 Workspace ID.';
-COMMENT ON COLUMN "SelectOption"."attributeDefinitionId" IS 'SelectOption이 속한 AttributeDefinition ID.';
-COMMENT ON COLUMN "SelectOption"."createdByActorId" IS 'SelectOption을 생성한 Actor ID.';
-COMMENT ON COLUMN "SelectOption"."updatedByActorId" IS 'SelectOption을 마지막으로 수정한 Actor ID.';
-COMMENT ON COLUMN "SelectOption"."title" IS '사용자에게 보여줄 옵션 이름.';
-COMMENT ON COLUMN "SelectOption"."sortOrder" IS '옵션 표시 순서.';
-COMMENT ON COLUMN "SelectOption"."createdAt" IS 'SelectOption 생성 시각.';
-COMMENT ON COLUMN "SelectOption"."updatedAt" IS 'SelectOption row 수정 시각.';
+COMMENT ON TABLE "SelectOptionDefinition" IS 'SELECT Attribute에서 선택 가능한 옵션 정의.';
+COMMENT ON COLUMN "SelectOptionDefinition"."id" IS 'SelectOptionDefinition row의 고유 식별자.';
+COMMENT ON COLUMN "SelectOptionDefinition"."workspaceId" IS 'SelectOptionDefinition이 속한 Workspace ID.';
+COMMENT ON COLUMN "SelectOptionDefinition"."attributeDefinitionId" IS 'SelectOptionDefinition이 속한 AttributeDefinition ID.';
+COMMENT ON COLUMN "SelectOptionDefinition"."createdByActorId" IS 'SelectOptionDefinition을 생성한 Actor ID.';
+COMMENT ON COLUMN "SelectOptionDefinition"."updatedByActorId" IS 'SelectOptionDefinition을 마지막으로 수정한 Actor ID.';
+COMMENT ON COLUMN "SelectOptionDefinition"."title" IS '사용자에게 보여줄 옵션 이름.';
+COMMENT ON COLUMN "SelectOptionDefinition"."sortOrder" IS '옵션 표시 순서.';
+COMMENT ON COLUMN "SelectOptionDefinition"."createdAt" IS 'SelectOptionDefinition 생성 시각.';
+COMMENT ON COLUMN "SelectOptionDefinition"."updatedAt" IS 'SelectOptionDefinition row 수정 시각.';
 
-COMMENT ON TABLE "StatusOption" IS 'STATUS Attribute에서 선택 가능한 상태 옵션.';
-COMMENT ON COLUMN "StatusOption"."id" IS 'StatusOption row의 고유 식별자.';
-COMMENT ON COLUMN "StatusOption"."workspaceId" IS 'StatusOption이 속한 Workspace ID.';
-COMMENT ON COLUMN "StatusOption"."attributeDefinitionId" IS 'StatusOption이 속한 AttributeDefinition ID.';
-COMMENT ON COLUMN "StatusOption"."createdByActorId" IS 'StatusOption을 생성한 Actor ID.';
-COMMENT ON COLUMN "StatusOption"."updatedByActorId" IS 'StatusOption을 마지막으로 수정한 Actor ID.';
-COMMENT ON COLUMN "StatusOption"."title" IS '사용자에게 보여줄 상태 이름.';
-COMMENT ON COLUMN "StatusOption"."sortOrder" IS '상태 표시 순서.';
-COMMENT ON COLUMN "StatusOption"."createdAt" IS 'StatusOption 생성 시각.';
-COMMENT ON COLUMN "StatusOption"."updatedAt" IS 'StatusOption row 수정 시각.';
+COMMENT ON TABLE "StatusOptionDefinition" IS 'STATUS Attribute에서 선택 가능한 상태 옵션 정의.';
+COMMENT ON COLUMN "StatusOptionDefinition"."id" IS 'StatusOptionDefinition row의 고유 식별자.';
+COMMENT ON COLUMN "StatusOptionDefinition"."workspaceId" IS 'StatusOptionDefinition이 속한 Workspace ID.';
+COMMENT ON COLUMN "StatusOptionDefinition"."attributeDefinitionId" IS 'StatusOptionDefinition이 속한 AttributeDefinition ID.';
+COMMENT ON COLUMN "StatusOptionDefinition"."createdByActorId" IS 'StatusOptionDefinition을 생성한 Actor ID.';
+COMMENT ON COLUMN "StatusOptionDefinition"."updatedByActorId" IS 'StatusOptionDefinition을 마지막으로 수정한 Actor ID.';
+COMMENT ON COLUMN "StatusOptionDefinition"."title" IS '사용자에게 보여줄 상태 이름.';
+COMMENT ON COLUMN "StatusOptionDefinition"."sortOrder" IS '상태 표시 순서.';
+COMMENT ON COLUMN "StatusOptionDefinition"."createdAt" IS 'StatusOptionDefinition 생성 시각.';
+COMMENT ON COLUMN "StatusOptionDefinition"."updatedAt" IS 'StatusOptionDefinition row 수정 시각.';
 
 COMMENT ON TABLE "RelationshipDefinition" IS 'ObjectDefinition 사이의 관계 정의.';
 COMMENT ON COLUMN "RelationshipDefinition"."id" IS 'RelationshipDefinition row의 고유 식별자.';
@@ -368,8 +368,8 @@ COMMENT ON COLUMN "RecordAttributeValueDefinition"."objectDefinitionId" IS '값�
 COMMENT ON COLUMN "RecordAttributeValueDefinition"."attributeDefinitionId" IS '값이 저장되는 AttributeDefinition ID.';
 COMMENT ON COLUMN "RecordAttributeValueDefinition"."createdByActorId" IS 'RecordAttributeValueDefinition을 생성한 Actor ID.';
 COMMENT ON COLUMN "RecordAttributeValueDefinition"."updatedByActorId" IS 'RecordAttributeValueDefinition을 마지막으로 수정한 Actor ID.';
-COMMENT ON COLUMN "RecordAttributeValueDefinition"."selectOptionId" IS 'SELECT 값일 때 선택된 SelectOption ID.';
-COMMENT ON COLUMN "RecordAttributeValueDefinition"."statusOptionId" IS 'STATUS 값일 때 선택된 StatusOption ID.';
+COMMENT ON COLUMN "RecordAttributeValueDefinition"."selectOptionDefinitionId" IS 'SELECT 값일 때 선택된 SelectOptionDefinition ID.';
+COMMENT ON COLUMN "RecordAttributeValueDefinition"."statusOptionDefinitionId" IS 'STATUS 값일 때 선택된 StatusOptionDefinition ID.';
 COMMENT ON COLUMN "RecordAttributeValueDefinition"."targetRecordDefinitionId" IS 'RECORD_REFERENCE 값일 때 참조 대상 RecordDefinition ID.';
 COMMENT ON COLUMN "RecordAttributeValueDefinition"."targetObjectDefinitionId" IS 'RECORD_REFERENCE 값일 때 참조 대상 ObjectDefinition ID.';
 COMMENT ON COLUMN "RecordAttributeValueDefinition"."targetActorId" IS 'ACTOR 값일 때 참조 대상 Actor ID.';

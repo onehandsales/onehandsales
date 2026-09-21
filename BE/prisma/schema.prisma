@@ -228,10 +228,10 @@ model Workspace {
   recordDefinitions               RecordDefinition[]
   /// 기능 : 이 Workspace 안에서 생성된 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
-  /// 기능 : 이 Workspace 안에서 정의된 SelectOption 목록입니다.
-  selectOptions                   SelectOption[]
-  /// 기능 : 이 Workspace 안에서 정의된 StatusOption 목록입니다.
-  statusOptions                   StatusOption[]
+  /// 기능 : 이 Workspace 안에서 정의된 SelectOptionDefinition 목록입니다.
+  selectOptionDefinitions         SelectOptionDefinition[]
+  /// 기능 : 이 Workspace 안에서 정의된 StatusOptionDefinition 목록입니다.
+  statusOptionDefinitions         StatusOptionDefinition[]
   /// 기능 : 이 Workspace 안에서 정의된 RelationshipDefinition 목록입니다.
   relationshipDefinitions         RelationshipDefinition[]
 
@@ -375,14 +375,14 @@ model Actor {
   updatedRecordAttributeValueDefinitions RecordAttributeValueDefinition[] @relation("RecordAttributeValueDefinitionUpdatedByActor")
   /// 기능 : 이 Actor를 대상으로 참조하는 RecordAttributeValueDefinition 목록입니다.
   targetRecordAttributeValueDefinitions  RecordAttributeValueDefinition[] @relation("RecordAttributeValueDefinitionTargetActor")
-  /// 기능 : 이 Actor가 생성한 SelectOption 목록입니다.
-  createdSelectOptions                   SelectOption[]                   @relation("SelectOptionCreatedByActor")
-  /// 기능 : 이 Actor가 마지막으로 수정한 SelectOption 목록입니다.
-  updatedSelectOptions                   SelectOption[]                   @relation("SelectOptionUpdatedByActor")
-  /// 기능 : 이 Actor가 생성한 StatusOption 목록입니다.
-  createdStatusOptions                   StatusOption[]                   @relation("StatusOptionCreatedByActor")
-  /// 기능 : 이 Actor가 마지막으로 수정한 StatusOption 목록입니다.
-  updatedStatusOptions                   StatusOption[]                   @relation("StatusOptionUpdatedByActor")
+  /// 기능 : 이 Actor가 생성한 SelectOptionDefinition 목록입니다.
+  createdSelectOptionDefinitions         SelectOptionDefinition[]         @relation("SelectOptionDefinitionCreatedByActor")
+  /// 기능 : 이 Actor가 마지막으로 수정한 SelectOptionDefinition 목록입니다.
+  updatedSelectOptionDefinitions         SelectOptionDefinition[]         @relation("SelectOptionDefinitionUpdatedByActor")
+  /// 기능 : 이 Actor가 생성한 StatusOptionDefinition 목록입니다.
+  createdStatusOptionDefinitions         StatusOptionDefinition[]         @relation("StatusOptionDefinitionCreatedByActor")
+  /// 기능 : 이 Actor가 마지막으로 수정한 StatusOptionDefinition 목록입니다.
+  updatedStatusOptionDefinitions         StatusOptionDefinition[]         @relation("StatusOptionDefinitionUpdatedByActor")
   /// 기능 : 이 Actor가 생성한 RelationshipDefinition 목록입니다.
   createdRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionCreatedByActor")
   /// 기능 : 이 Actor가 마지막으로 수정한 RelationshipDefinition 목록입니다.
@@ -473,10 +473,10 @@ model AttributeDefinition {
 
   /// 기능 : 이 AttributeDefinition에 저장된 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
-  /// 기능 : 이 AttributeDefinition에서 사용할 SelectOption 목록입니다.
-  selectOptions                   SelectOption[]
-  /// 기능 : 이 AttributeDefinition에서 사용할 StatusOption 목록입니다.
-  statusOptions                   StatusOption[]
+  /// 기능 : 이 AttributeDefinition에서 사용할 SelectOptionDefinition 목록입니다.
+  selectOptionDefinitions         SelectOptionDefinition[]
+  /// 기능 : 이 AttributeDefinition에서 사용할 StatusOptionDefinition 목록입니다.
+  statusOptionDefinitions         StatusOptionDefinition[]
   /// 기능 : 이 AttributeDefinition이 source인 RelationshipDefinition 목록입니다.
   sourceRelationshipDefinitions   RelationshipDefinition[]         @relation("RelationshipDefinitionSourceAttribute")
   /// 기능 : 이 AttributeDefinition이 target인 RelationshipDefinition 목록입니다.
@@ -531,10 +531,10 @@ model RecordAttributeValueDefinition {
   createdByActorId         String   @db.Uuid
   /// 기능 : RecordAttributeValueDefinition을 마지막으로 수정한 Actor ID입니다.
   updatedByActorId         String?  @db.Uuid
-  /// 기능 : SELECT 값일 때 선택된 SelectOption ID입니다.
-  selectOptionId           String?  @db.Uuid
-  /// 기능 : STATUS 값일 때 선택된 StatusOption ID입니다.
-  statusOptionId           String?  @db.Uuid
+  /// 기능 : SELECT 값일 때 선택된 SelectOptionDefinition ID입니다.
+  selectOptionDefinitionId String?  @db.Uuid
+  /// 기능 : STATUS 값일 때 선택된 StatusOptionDefinition ID입니다.
+  statusOptionDefinitionId String?  @db.Uuid
   /// 기능 : RECORD_REFERENCE 값일 때 참조 대상 RecordDefinition ID입니다.
   targetRecordDefinitionId String?  @db.Uuid
   /// 기능 : RECORD_REFERENCE 값일 때 참조 대상 ObjectDefinition ID입니다.
@@ -547,92 +547,92 @@ model RecordAttributeValueDefinition {
   updatedAt                DateTime @updatedAt @db.Timestamptz(3)
 
   /// 기능 : RecordAttributeValueDefinition이 속한 Workspace입니다.
-  workspace              Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  workspace              Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : 값이 속한 RecordDefinition입니다.
-  recordDefinition       RecordDefinition    @relation("RecordAttributeValueDefinitionRecord", fields: [recordDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  recordDefinition       RecordDefinition        @relation("RecordAttributeValueDefinitionRecord", fields: [recordDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : 값이 속한 ObjectDefinition입니다.
-  objectDefinition       ObjectDefinition    @relation("RecordAttributeValueDefinitionObject", fields: [objectDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  objectDefinition       ObjectDefinition        @relation("RecordAttributeValueDefinitionObject", fields: [objectDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : 값이 저장되는 AttributeDefinition입니다.
-  attributeDefinition    AttributeDefinition @relation(fields: [attributeDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  attributeDefinition    AttributeDefinition     @relation(fields: [attributeDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : RecordAttributeValueDefinition을 생성한 Actor입니다.
-  createdByActor         Actor               @relation("RecordAttributeValueDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdByActor         Actor                   @relation("RecordAttributeValueDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   /// 기능 : RecordAttributeValueDefinition을 마지막으로 수정한 Actor입니다.
-  updatedByActor         Actor?              @relation("RecordAttributeValueDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  /// 기능 : SELECT 값일 때 선택된 SelectOption입니다.
-  selectOption           SelectOption?       @relation(fields: [selectOptionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  /// 기능 : STATUS 값일 때 선택된 StatusOption입니다.
-  statusOption           StatusOption?       @relation(fields: [statusOptionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  updatedByActor         Actor?                  @relation("RecordAttributeValueDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : SELECT 값일 때 선택된 SelectOptionDefinition입니다.
+  selectOptionDefinition SelectOptionDefinition? @relation(fields: [selectOptionDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : STATUS 값일 때 선택된 StatusOptionDefinition입니다.
+  statusOptionDefinition StatusOptionDefinition? @relation(fields: [statusOptionDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   /// 기능 : RECORD_REFERENCE 값일 때 참조 대상 RecordDefinition입니다.
-  targetRecordDefinition RecordDefinition?   @relation("RecordAttributeValueDefinitionTargetRecord", fields: [targetRecordDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  targetRecordDefinition RecordDefinition?       @relation("RecordAttributeValueDefinitionTargetRecord", fields: [targetRecordDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   /// 기능 : RECORD_REFERENCE 값일 때 참조 대상 ObjectDefinition입니다.
-  targetObjectDefinition ObjectDefinition?   @relation("RecordAttributeValueDefinitionTargetObject", fields: [targetObjectDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  targetObjectDefinition ObjectDefinition?       @relation("RecordAttributeValueDefinitionTargetObject", fields: [targetObjectDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   /// 기능 : ACTOR 값일 때 참조 대상 Actor입니다.
-  targetActor            Actor?              @relation("RecordAttributeValueDefinitionTargetActor", fields: [targetActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  targetActor            Actor?                  @relation("RecordAttributeValueDefinitionTargetActor", fields: [targetActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
-/// 기능 : SELECT Attribute에서 선택 가능한 옵션을 저장합니다.
-model SelectOption {
-  /// 기능 : SelectOption row의 고유 식별자입니다.
+/// 기능 : SELECT Attribute에서 선택 가능한 옵션 정의를 저장합니다.
+model SelectOptionDefinition {
+  /// 기능 : SelectOptionDefinition row의 고유 식별자입니다.
   id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  /// 기능 : SelectOption이 속한 Workspace ID입니다.
+  /// 기능 : SelectOptionDefinition이 속한 Workspace ID입니다.
   workspaceId           String   @db.Uuid
-  /// 기능 : SelectOption이 속한 AttributeDefinition ID입니다.
+  /// 기능 : SelectOptionDefinition이 속한 AttributeDefinition ID입니다.
   attributeDefinitionId String   @db.Uuid
-  /// 기능 : SelectOption을 생성한 Actor ID입니다.
+  /// 기능 : SelectOptionDefinition을 생성한 Actor ID입니다.
   createdByActorId      String   @db.Uuid
-  /// 기능 : SelectOption을 마지막으로 수정한 Actor ID입니다.
+  /// 기능 : SelectOptionDefinition을 마지막으로 수정한 Actor ID입니다.
   updatedByActorId      String?  @db.Uuid
   /// 기능 : 사용자에게 보여줄 옵션 이름입니다.
   title                 String
   /// 기능 : 옵션 표시 순서입니다.
   sortOrder             Int
-  /// 기능 : SelectOption 생성 시각입니다. UTC instant로 저장합니다.
+  /// 기능 : SelectOptionDefinition 생성 시각입니다. UTC instant로 저장합니다.
   createdAt             DateTime @default(now()) @db.Timestamptz(3)
-  /// 기능 : SelectOption row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  /// 기능 : SelectOptionDefinition row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
   updatedAt             DateTime @updatedAt @db.Timestamptz(3)
 
-  /// 기능 : SelectOption이 속한 Workspace입니다.
+  /// 기능 : SelectOptionDefinition이 속한 Workspace입니다.
   workspace                       Workspace                        @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  /// 기능 : SelectOption이 속한 AttributeDefinition입니다.
+  /// 기능 : SelectOptionDefinition이 속한 AttributeDefinition입니다.
   attributeDefinition             AttributeDefinition              @relation(fields: [attributeDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  /// 기능 : SelectOption을 생성한 Actor입니다.
-  createdByActor                  Actor                            @relation("SelectOptionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  /// 기능 : SelectOption을 마지막으로 수정한 Actor입니다.
-  updatedByActor                  Actor?                           @relation("SelectOptionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  /// 기능 : 이 SelectOption을 값으로 사용하는 RecordAttributeValueDefinition 목록입니다.
+  /// 기능 : SelectOptionDefinition을 생성한 Actor입니다.
+  createdByActor                  Actor                            @relation("SelectOptionDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : SelectOptionDefinition을 마지막으로 수정한 Actor입니다.
+  updatedByActor                  Actor?                           @relation("SelectOptionDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 이 SelectOptionDefinition을 값으로 사용하는 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
 }
 
-/// 기능 : STATUS Attribute에서 선택 가능한 상태 옵션을 저장합니다.
-model StatusOption {
-  /// 기능 : StatusOption row의 고유 식별자입니다.
+/// 기능 : STATUS Attribute에서 선택 가능한 상태 옵션 정의를 저장합니다.
+model StatusOptionDefinition {
+  /// 기능 : StatusOptionDefinition row의 고유 식별자입니다.
   id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  /// 기능 : StatusOption이 속한 Workspace ID입니다.
+  /// 기능 : StatusOptionDefinition이 속한 Workspace ID입니다.
   workspaceId           String   @db.Uuid
-  /// 기능 : StatusOption이 속한 AttributeDefinition ID입니다.
+  /// 기능 : StatusOptionDefinition이 속한 AttributeDefinition ID입니다.
   attributeDefinitionId String   @db.Uuid
-  /// 기능 : StatusOption을 생성한 Actor ID입니다.
+  /// 기능 : StatusOptionDefinition을 생성한 Actor ID입니다.
   createdByActorId      String   @db.Uuid
-  /// 기능 : StatusOption을 마지막으로 수정한 Actor ID입니다.
+  /// 기능 : StatusOptionDefinition을 마지막으로 수정한 Actor ID입니다.
   updatedByActorId      String?  @db.Uuid
   /// 기능 : 사용자에게 보여줄 상태 이름입니다.
   title                 String
   /// 기능 : 상태 표시 순서입니다.
   sortOrder             Int
-  /// 기능 : StatusOption 생성 시각입니다. UTC instant로 저장합니다.
+  /// 기능 : StatusOptionDefinition 생성 시각입니다. UTC instant로 저장합니다.
   createdAt             DateTime @default(now()) @db.Timestamptz(3)
-  /// 기능 : StatusOption row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  /// 기능 : StatusOptionDefinition row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
   updatedAt             DateTime @updatedAt @db.Timestamptz(3)
 
-  /// 기능 : StatusOption이 속한 Workspace입니다.
+  /// 기능 : StatusOptionDefinition이 속한 Workspace입니다.
   workspace                       Workspace                        @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  /// 기능 : StatusOption이 속한 AttributeDefinition입니다.
+  /// 기능 : StatusOptionDefinition이 속한 AttributeDefinition입니다.
   attributeDefinition             AttributeDefinition              @relation(fields: [attributeDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  /// 기능 : StatusOption을 생성한 Actor입니다.
-  createdByActor                  Actor                            @relation("StatusOptionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  /// 기능 : StatusOption을 마지막으로 수정한 Actor입니다.
-  updatedByActor                  Actor?                           @relation("StatusOptionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  /// 기능 : 이 StatusOption을 값으로 사용하는 RecordAttributeValueDefinition 목록입니다.
+  /// 기능 : StatusOptionDefinition을 생성한 Actor입니다.
+  createdByActor                  Actor                            @relation("StatusOptionDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : StatusOptionDefinition을 마지막으로 수정한 Actor입니다.
+  updatedByActor                  Actor?                           @relation("StatusOptionDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 이 StatusOptionDefinition을 값으로 사용하는 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
 }
 
