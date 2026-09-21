@@ -19,7 +19,6 @@ export function SidebarNav({ className }: SidebarNavProps) {
       className={cn("flex flex-col gap-3", className)}
     >
       <SidebarSection
-        addLabelKey="navigation.quickWorkGroupAdd"
         closeLabelKey="navigation.quickWorkGroupClose"
         isOpen={isQuickWorkOpen}
         labelKey="navigation.quickWorkGroup"
@@ -27,7 +26,6 @@ export function SidebarNav({ className }: SidebarNavProps) {
         onToggle={() => setQuickWorkOpen((current) => !current)}
       />
       <SidebarSection
-        addLabelKey="navigation.mainGroupAdd"
         closeLabelKey="navigation.mainGroupClose"
         isOpen={isMainGroupOpen}
         labelKey="navigation.mainGroup"
@@ -35,7 +33,6 @@ export function SidebarNav({ className }: SidebarNavProps) {
         onToggle={() => setMainGroupOpen((current) => !current)}
       />
       <SidebarSection
-        addLabelKey="navigation.workListsGroupAdd"
         closeLabelKey="navigation.workListsGroupClose"
         isOpen={isWorkListsOpen}
         labelKey="navigation.workListsGroup"
@@ -47,7 +44,6 @@ export function SidebarNav({ className }: SidebarNavProps) {
 }
 
 type SidebarSectionProps = {
-  readonly addLabelKey: AppI18nKey;
   readonly closeLabelKey: AppI18nKey;
   readonly isOpen: boolean;
   readonly labelKey: AppI18nKey;
@@ -56,7 +52,6 @@ type SidebarSectionProps = {
 };
 
 function SidebarSection({
-  addLabelKey,
   closeLabelKey,
   isOpen,
   labelKey,
@@ -89,12 +84,9 @@ function SidebarSection({
       </button>
       {isOpen ? (
         <div className="flex flex-col gap-px">
-          <div className="flex h-6 w-full items-center rounded-md pl-8 pr-2 text-[14px] font-medium text-[#9CA3AF]">
-            {t("common.noData")}
-          </div>
           <button
-            aria-label={t(addLabelKey)}
-            className="flex h-6 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+            aria-label={t("common.createData")}
+            className="group/sidebar-add-tooltip relative flex h-6 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
             type="button"
           >
             <Plus
@@ -102,6 +94,9 @@ function SidebarSection({
               className="h-4 w-4 shrink-0"
               strokeWidth={2}
             />
+            <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-add-tooltip:opacity-100">
+              {t("common.createData")}
+            </span>
           </button>
         </div>
       ) : null}
