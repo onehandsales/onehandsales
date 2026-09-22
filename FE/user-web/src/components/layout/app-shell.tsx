@@ -690,7 +690,7 @@ export function AppShell() {
                 <div className="notion-scrollbar max-h-40 overflow-y-auto pr-1">
                   {sidebarWorkspaces.map((workspace) => (
                     <button
-                      className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+                      className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
                       key={workspace.id}
                       role="menuitem"
                       tabIndex={accountMenuOpen ? undefined : -1}
@@ -702,7 +702,7 @@ export function AppShell() {
                         className="h-5 w-5 shrink-0 rounded-full bg-[#E5E7EB]"
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[14px] font-medium leading-5 text-[#111827]">
+                        <p className="truncate text-[14px] font-medium leading-5">
                           {formatSidebarWorkspaceListName(workspace.name)}
                         </p>
                       </div>
@@ -919,7 +919,9 @@ export function AppShell() {
                 }`}
                 strokeWidth={2}
               />
-              <span className="text-[#4B5563]">{t("navigation.home")}</span>
+              <span className="text-[#4B5563] group-hover/sidebar-tooltip:text-[#111827]">
+                {t("navigation.home")}
+              </span>
               <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
                 {t("shell.homeTooltip")}
               </span>
@@ -1068,7 +1070,7 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className={`group flex ${dense ? "h-8" : "h-9"} w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#374151] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]`}
+      className={`group flex ${dense ? "h-8" : "h-9"} w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]`}
       onClick={onClick}
       role="menuitem"
       tabIndex={tabIndex}
