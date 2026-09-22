@@ -102,12 +102,12 @@ function SidebarSection({
           {children}
           <button
             aria-label={t(addLabelKey)}
-            className="group/sidebar-add-tooltip relative flex h-6 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+            className="group/sidebar-add-tooltip relative flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
             type="button"
           >
             <Plus
               aria-hidden="true"
-              className="h-4 w-4 shrink-0"
+              className="h-5 w-5 shrink-0"
               strokeWidth={2}
             />
             <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-add-tooltip:opacity-100">
@@ -146,9 +146,9 @@ function SidebarCrmObjectItem({
   readonly object: SidebarCrmObjectListItem;
 }) {
   return (
-    <div className="group/sidebar-object-tooltip relative flex h-7 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
+    <div className="group/sidebar-object-tooltip relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
       <SidebarCrmObjectIcon
-        className="h-4 w-4 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-tooltip:text-[#6B7280]"
+        className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-tooltip:text-[#6B7280]"
         name={object.icon}
         strokeWidth={2}
       />
