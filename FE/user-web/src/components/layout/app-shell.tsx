@@ -838,6 +838,7 @@ export function AppShell() {
           <div className="grid gap-px">
             {helpMenuItems.map((item) => (
               <AccountMenuItem
+                dense
                 icon={item.icon}
                 key={item.label}
                 label={item.label}
