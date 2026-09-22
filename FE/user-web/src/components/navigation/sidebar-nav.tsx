@@ -10,10 +10,15 @@ import { cn } from "@/utils/cn";
 type SidebarNavProps = {
   readonly className?: string;
   readonly crmObjects?: readonly SidebarCrmObjectListItem[];
+  readonly isCrmObjectsLoading?: boolean;
 };
 
 // 기능 : SidebarNav 컴포넌트를 렌더링합니다.
-export function SidebarNav({ className, crmObjects = [] }: SidebarNavProps) {
+export function SidebarNav({
+  className,
+  crmObjects = [],
+  isCrmObjectsLoading = false,
+}: SidebarNavProps) {
   const [isQuickWorkOpen, setQuickWorkOpen] = useState(true);
   const [isMainGroupOpen, setMainGroupOpen] = useState(true);
   const [isWorkListsOpen, setWorkListsOpen] = useState(true);
@@ -39,7 +44,11 @@ export function SidebarNav({ className, crmObjects = [] }: SidebarNavProps) {
         openLabelKey="navigation.mainGroupOpen"
         onToggle={() => setMainGroupOpen((current) => !current)}
       >
-        <SidebarCrmObjectList objects={crmObjects} />
+        {isCrmObjectsLoading ? (
+          <SidebarCrmObjectSkeletonList />
+        ) : (
+          <SidebarCrmObjectList objects={crmObjects} />
+        )}
       </SidebarSection>
       <SidebarSection
         addLabelKey="navigation.workListsGroupAdd"
@@ -116,6 +125,43 @@ function SidebarSection({
           </button>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+const SIDEBAR_CRM_OBJECT_SKELETON_WIDTHS = ["w-20", "w-28", "w-24"] as const;
+
+// 기능 : 관리 항목 목록이 불러와지는 동안 사이드바 자리 표시 row를 렌더링합니다.
+function SidebarCrmObjectSkeletonList() {
+  return (
+    <div aria-hidden="true" className="contents">
+      {SIDEBAR_CRM_OBJECT_SKELETON_WIDTHS.map((widthClassName) => (
+        <SidebarCrmObjectSkeletonItem
+          key={widthClassName}
+          textWidthClassName={widthClassName}
+        />
+      ))}
+    </div>
+  );
+}
+
+// 기능 : 관리 항목 데이터 row와 같은 크기의 skeleton 한 줄을 렌더링합니다.
+function SidebarCrmObjectSkeletonItem({
+  textWidthClassName,
+}: {
+  readonly textWidthClassName: string;
+}) {
+  return (
+    <div className="flex h-8 w-full items-center gap-2 rounded-md px-2">
+      <span
+        className="h-5 w-5 shrink-0 rounded-md bg-[#E4E2DC] opacity-80 animate-pulse"
+      />
+      <span
+        className={cn(
+          "h-2.5 rounded-full bg-[#E4E2DC] opacity-80 animate-pulse",
+          textWidthClassName,
+        )}
+      />
     </div>
   );
 }

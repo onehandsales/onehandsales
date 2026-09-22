@@ -224,6 +224,9 @@ export function AppShell() {
   // 24. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
   const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
   const sidebarCrmObjects = sidebarCrmObjectsQuery.data ?? [];
+  const isSidebarCrmObjectsLoading =
+    sidebarCrmObjectsQuery.isLoading ||
+    (sidebarCrmObjectsQuery.isFetching && sidebarCrmObjects.length === 0);
   // 25. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
@@ -949,7 +952,10 @@ export function AppShell() {
           </div>
           {/* Nav */}
           <div className="flex-1 px-2 py-1">
-            <SidebarNav crmObjects={sidebarCrmObjects} />
+            <SidebarNav
+              crmObjects={sidebarCrmObjects}
+              isCrmObjectsLoading={isSidebarCrmObjectsLoading}
+            />
           </div>
           {sidebarHelpMenu}
         </aside>
