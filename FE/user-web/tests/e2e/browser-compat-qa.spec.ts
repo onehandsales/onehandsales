@@ -48,7 +48,9 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 5. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 6. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
 
     // 7. 필요한 비동기 작업을 실행한다.
     await page.goto("/app/more");
@@ -75,14 +77,18 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 5. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 6. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
 
     // 7. 필요한 비동기 작업을 실행한다.
     await page.reload();
     // 8. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 9. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
 
     // 10. 필요한 비동기 작업을 실행한다.
     await page.goto("/app/more");
@@ -96,7 +102,9 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 14. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 15. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
 
     // 16. 필요한 비동기 작업을 실행한다.
     await page.goForward();
@@ -126,7 +134,9 @@ test.describe("G03 Chrome/Edge desktop browser compatibility QA", () => {
     // 5. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 6. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
     // 7. 필요한 비동기 작업을 실행한다.
     await expect(page.locator(".animate-pulse")).toHaveCount(0);
 

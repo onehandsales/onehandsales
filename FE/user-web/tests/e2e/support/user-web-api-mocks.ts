@@ -35,6 +35,13 @@ type MockSidebarWorkspaceSummary = {
   readonly kind: MockWorkspaceKind;
 };
 
+type MockSidebarCrmObjectListItem = {
+  readonly id: string;
+  readonly icon: string | null;
+  readonly pluralName: string;
+  readonly singularName: string;
+};
+
 export type UserWebApiMockStore = {
   createdWorkspace?: MockSidebarWorkspaceSummary;
 };
@@ -224,6 +231,32 @@ async function handleApiRequest(
 
   if (
     pathname.startsWith("/api/users/me/sidebar/workspaces/") &&
+    pathname.endsWith("/objects") &&
+    method === "GET"
+  ) {
+    const workspaceId = decodeURIComponent(
+      pathname
+        .slice("/api/users/me/sidebar/workspaces/".length)
+        .slice(0, -"/objects".length),
+    );
+    const workspace = findSidebarWorkspace(store.createdWorkspace, workspaceId);
+
+    if (workspace) {
+      return json(createSidebarCrmObjects());
+    }
+
+    return json(
+      {
+        code: "ObjectDefinitionSidebarWorkspaceNotFound",
+        message: "Workspace not found",
+        statusCode: 404,
+      },
+      404,
+    );
+  }
+
+  if (
+    pathname.startsWith("/api/users/me/sidebar/workspaces/") &&
     method === "GET"
   ) {
     const workspaceId = decodeURIComponent(
@@ -400,6 +433,24 @@ function findSidebarWorkspace(
   }
 
   return null;
+}
+
+// 기능 : sidebar 관리 항목 목록 응답 fixture를 생성합니다.
+function createSidebarCrmObjects(): readonly MockSidebarCrmObjectListItem[] {
+  return [
+    {
+      id: "object-definition-company",
+      icon: "building-2",
+      pluralName: "Companies",
+      singularName: "Company",
+    },
+    {
+      id: "object-definition-person",
+      icon: "user-round",
+      pluralName: "People",
+      singularName: "Person",
+    },
+  ];
 }
 
 // 기능 : Workspace 생성 API 응답 fixture를 생성합니다.

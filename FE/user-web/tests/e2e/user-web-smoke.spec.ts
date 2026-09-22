@@ -17,7 +17,9 @@ test.describe("User Web smoke E2E", () => {
     // 4. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 5. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
 
     // 6. 필요한 비동기 작업을 실행한다.
     await page.goto("/app/more");

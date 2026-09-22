@@ -72,6 +72,7 @@ import {
   useSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
+import { useSidebarCrmObjectsQuery } from "@/features/crm-object";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
 import { sidebarWorkspaceQueryKeys } from "@/features/workspace/api/sidebar-workspace-query-keys";
 import type { SidebarWorkspaceListItem } from "@/features/workspace/types/sidebar-workspace";
@@ -216,8 +217,13 @@ export function AppShell() {
     currentWorkspace?.kind,
     t
   );
+  const sidebarCrmObjectsQuery = useSidebarCrmObjectsQuery({
+    userId: user?.id ?? null,
+    workspaceId: currentWorkspace?.id ?? null,
+  });
   // 24. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
   const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
+  const sidebarCrmObjects = sidebarCrmObjectsQuery.data ?? [];
   // 25. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
@@ -941,7 +947,7 @@ export function AppShell() {
           </div>
           {/* Nav */}
           <div className="flex-1 px-2 py-1">
-            <SidebarNav />
+            <SidebarNav crmObjects={sidebarCrmObjects} />
           </div>
           {sidebarHelpMenu}
         </aside>

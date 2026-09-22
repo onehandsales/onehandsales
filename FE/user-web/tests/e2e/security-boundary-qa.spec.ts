@@ -24,7 +24,9 @@ test.describe("G04 User Web security boundary QA", () => {
     // 7. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 8. 필요한 비동기 작업을 실행한다.
-    await expect(page.getByTestId("app-home-empty")).toBeVisible();
+    await expect(
+      page.getByRole("main").getByTestId("app-home-empty"),
+    ).toBeVisible();
 
     // 9. 필요한 비동기 작업을 실행한다.
     await clearStoredSession(page);

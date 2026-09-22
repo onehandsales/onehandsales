@@ -1,14 +1,19 @@
 import { ChevronRight, Plus } from "lucide-react";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
+import {
+  SidebarCrmObjectIcon,
+  type SidebarCrmObjectListItem,
+} from "@/features/crm-object";
 import { cn } from "@/utils/cn";
 
 type SidebarNavProps = {
   readonly className?: string;
+  readonly crmObjects?: readonly SidebarCrmObjectListItem[];
 };
 
 // 기능 : SidebarNav 컴포넌트를 렌더링합니다.
-export function SidebarNav({ className }: SidebarNavProps) {
+export function SidebarNav({ className, crmObjects = [] }: SidebarNavProps) {
   const [isQuickWorkOpen, setQuickWorkOpen] = useState(true);
   const [isMainGroupOpen, setMainGroupOpen] = useState(true);
   const [isWorkListsOpen, setWorkListsOpen] = useState(true);
@@ -33,7 +38,9 @@ export function SidebarNav({ className }: SidebarNavProps) {
         labelKey="navigation.mainGroup"
         openLabelKey="navigation.mainGroupOpen"
         onToggle={() => setMainGroupOpen((current) => !current)}
-      />
+      >
+        <SidebarCrmObjectList objects={crmObjects} />
+      </SidebarSection>
       <SidebarSection
         addLabelKey="navigation.workListsGroupAdd"
         closeLabelKey="navigation.workListsGroupClose"
@@ -53,10 +60,13 @@ type SidebarSectionProps = {
   readonly labelKey: AppI18nKey;
   readonly openLabelKey: AppI18nKey;
   readonly onToggle: () => void;
+  readonly children?: ReactNode;
 };
 
+// 기능 : 사이드바 섹션의 접힘 상태와 추가 버튼 영역을 렌더링합니다.
 function SidebarSection({
   addLabelKey,
+  children,
   closeLabelKey,
   isOpen,
   labelKey,
@@ -89,6 +99,7 @@ function SidebarSection({
       </button>
       {isOpen ? (
         <div className="flex flex-col gap-px">
+          {children}
           <button
             aria-label={t(addLabelKey)}
             className="group/sidebar-add-tooltip relative flex h-6 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
@@ -105,6 +116,43 @@ function SidebarSection({
           </button>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+// 기능 : 현재 Workspace의 관리 항목 목록을 사이드바 섹션 안에 렌더링합니다.
+function SidebarCrmObjectList({
+  objects,
+}: {
+  readonly objects: readonly SidebarCrmObjectListItem[];
+}) {
+  if (objects.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      {objects.map((object) => (
+        <SidebarCrmObjectItem key={object.id} object={object} />
+      ))}
+    </>
+  );
+}
+
+// 기능 : 사이드바 관리 항목 한 줄에 아이콘과 단수 이름을 표시합니다.
+function SidebarCrmObjectItem({
+  object,
+}: {
+  readonly object: SidebarCrmObjectListItem;
+}) {
+  return (
+    <div className="group/sidebar-object-tooltip relative flex h-7 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
+      <SidebarCrmObjectIcon
+        className="h-4 w-4 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-tooltip:text-[#6B7280]"
+        name={object.icon}
+        strokeWidth={2}
+      />
+      <span className="min-w-0 flex-1 truncate">{object.singularName}</span>
     </div>
   );
 }

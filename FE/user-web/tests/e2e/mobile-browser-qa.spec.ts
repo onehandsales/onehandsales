@@ -62,7 +62,9 @@ test.describe("G02 mobile browser release QA", () => {
         await expect(page).toHaveURL(route.expectedUrl);
       }
       if (route.expectsEmptyHome) {
-        await expect(page.getByTestId("app-home-empty")).toBeVisible();
+        await expect(
+          page.getByRole("main").getByTestId("app-home-empty"),
+        ).toBeVisible();
       }
       if (route.expectedText) {
         await expect(page.locator("body")).toContainText(route.expectedText);
