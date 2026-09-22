@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { WORKSPACE_ACCESS_QUERY } from "@/modules/workspace/application/ports/workspace-access-query.port";
 import { WORKSPACE_COMMAND_REPOSITORY } from "@/modules/workspace/application/ports/workspace-command.repository";
 import { WORKSPACE_ONBOARDING } from "@/modules/workspace/application/ports/workspace-onboarding.port";
 import { WORKSPACE_SIDEBAR_QUERY } from "@/modules/workspace/application/ports/workspace-sidebar-query.port";
@@ -9,6 +10,7 @@ import { ListMySidebarWorkspacesUseCase } from "@/modules/workspace/application/
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaWorkspaceAccessQueryRepository } from "./persistence/prisma-workspace-access-query.repository";
 import { PrismaWorkspaceCommandRepository } from "./persistence/prisma-workspace-command.repository";
 import { PrismaWorkspaceOnboardingRepository } from "./persistence/prisma-workspace-onboarding.repository";
 import { PrismaWorkspaceSidebarQueryRepository } from "./persistence/prisma-workspace-sidebar-query.repository";
@@ -24,6 +26,13 @@ import { UserWorkspacesController } from "../presentation/http/user-workspaces.c
     ListMySidebarWorkspacesUseCase,
     GetMyDefaultSidebarWorkspaceUseCase,
     GetMySidebarWorkspaceUseCase,
+    {
+      provide: WORKSPACE_ACCESS_QUERY,
+      // 기능 : Prisma 서비스로 Workspace 접근 확인 구현체를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaWorkspaceAccessQueryRepository(prismaService),
+      inject: [PrismaService],
+    },
     {
       provide: WORKSPACE_COMMAND_REPOSITORY,
       // 기능 : Prisma 서비스로 Workspace 쓰기 저장소 구현체를 생성합니다.
@@ -46,6 +55,6 @@ import { UserWorkspacesController } from "../presentation/http/user-workspaces.c
       inject: [PrismaService],
     },
   ],
-  exports: [WORKSPACE_ONBOARDING],
+  exports: [WORKSPACE_ONBOARDING, WORKSPACE_ACCESS_QUERY],
 })
 export class WorkspaceModule {}

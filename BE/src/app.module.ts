@@ -7,6 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
+import { ObjectDefinitionModule } from "./modules/object-definition/infrastructure/object-definition.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
@@ -23,6 +24,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     HealthModule,
     AuthModule,
     UserModule,
+    ObjectDefinitionModule,
     PublicContactRequestModule,
     ErrorReportModule,
     SupportRequestModule,
