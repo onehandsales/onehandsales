@@ -421,7 +421,7 @@ function WorkspaceJobStep({
     <section className="flex min-h-full items-center bg-white px-8 py-10 md:px-12">
       <button
         className={cn(
-          "absolute left-4 top-4 z-10 inline-flex h-8 items-center gap-1.5 rounded-[6px] px-2 text-[13px] font-medium text-[#64748B] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]",
+          "absolute left-4 top-4 z-10 inline-flex h-8 items-center gap-1.5 rounded-[6px] px-2 text-[13px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]",
           isSelectionLocked ? "cursor-not-allowed opacity-55" : "",
         )}
         disabled={isSelectionLocked}

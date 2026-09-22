@@ -11,6 +11,7 @@ type SidebarNavProps = {
   readonly className?: string;
   readonly crmObjects?: readonly SidebarCrmObjectListItem[];
   readonly isCrmObjectsLoading?: boolean;
+  readonly onCreateObjectDefinition?: () => void;
 };
 
 // 기능 : SidebarNav 컴포넌트를 렌더링합니다.
@@ -18,6 +19,7 @@ export function SidebarNav({
   className,
   crmObjects = [],
   isCrmObjectsLoading = false,
+  onCreateObjectDefinition,
 }: SidebarNavProps) {
   const [isQuickWorkOpen, setQuickWorkOpen] = useState(true);
   const [isMainGroupOpen, setMainGroupOpen] = useState(true);
@@ -42,6 +44,7 @@ export function SidebarNav({
         isOpen={isMainGroupOpen}
         labelKey="navigation.mainGroup"
         openLabelKey="navigation.mainGroupOpen"
+        onAdd={onCreateObjectDefinition}
         onToggle={() => setMainGroupOpen((current) => !current)}
       >
         {isCrmObjectsLoading ? (
@@ -67,6 +70,7 @@ type SidebarSectionProps = {
   readonly closeLabelKey: AppI18nKey;
   readonly isOpen: boolean;
   readonly labelKey: AppI18nKey;
+  readonly onAdd?: () => void;
   readonly openLabelKey: AppI18nKey;
   readonly onToggle: () => void;
   readonly children?: ReactNode;
@@ -79,6 +83,7 @@ function SidebarSection({
   closeLabelKey,
   isOpen,
   labelKey,
+  onAdd,
   openLabelKey,
   onToggle,
 }: SidebarSectionProps) {
@@ -112,6 +117,7 @@ function SidebarSection({
           <button
             aria-label={t(addLabelKey)}
             className="group/sidebar-add-tooltip relative flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+            onClick={onAdd}
             type="button"
           >
             <Plus

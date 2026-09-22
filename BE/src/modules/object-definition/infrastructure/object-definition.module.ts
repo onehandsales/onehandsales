@@ -7,11 +7,15 @@ import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prism
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaObjectDefinitionSidebarQueryRepository } from "./persistence/prisma-object-definition-sidebar-query.repository";
 import { UserSidebarWorkspaceObjectsController } from "../presentation/http/user-sidebar-workspace-objects.controller";
+import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/user-workspace-object-definitions.controller";
 
 // 역할 : ObjectDefinitionModule이 ObjectDefinition API와 provider 의존성을 조립합니다.
 @Module({
   imports: [AuthModule, WorkspaceModule, PrismaInfrastructureModule],
-  controllers: [UserSidebarWorkspaceObjectsController],
+  controllers: [
+    UserSidebarWorkspaceObjectsController,
+    UserWorkspaceObjectDefinitionsController,
+  ],
   providers: [
     ListSidebarObjectDefinitionsUseCase,
     {

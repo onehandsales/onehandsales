@@ -42,7 +42,14 @@ type MockSidebarCrmObjectListItem = {
   readonly singularName: string;
 };
 
+type MockCreatedObjectDefinitionRequest = {
+  readonly attributeNames: readonly string[];
+  readonly objectDefinitionName: string;
+  readonly workspaceId: string;
+};
+
 export type UserWebApiMockStore = {
+  createdObjectDefinitionRequests?: MockCreatedObjectDefinitionRequest[];
   createdWorkspace?: MockSidebarWorkspaceSummary;
 };
 
@@ -286,6 +293,52 @@ async function handleApiRequest(
         : "E2E New Workspace";
     store.createdWorkspace = createWorkspaceResponse(workspaceName);
     return json({ workspaceId: store.createdWorkspace.id }, 201);
+  }
+
+  if (
+    pathname.startsWith("/api/users/me/workspaces/") &&
+    pathname.endsWith("/object-definitions") &&
+    method === "POST"
+  ) {
+    const workspaceId = decodeURIComponent(
+      pathname
+        .slice("/api/users/me/workspaces/".length)
+        .slice(0, -"/object-definitions".length),
+    );
+    const workspace = findSidebarWorkspace(store.createdWorkspace, workspaceId);
+
+    if (!workspace) {
+      return json(
+        {
+          code: "WorkspaceObjectDefinitionWorkspaceNotFound",
+          message: "Workspace not found",
+          statusCode: 404,
+        },
+        404,
+      );
+    }
+
+    const body = recordField(await readJsonBody(route));
+    const attributeNames = Array.isArray(body["attributeNames"])
+      ? body["attributeNames"].filter(
+          (value): value is string => typeof value === "string",
+        )
+      : [];
+    const objectDefinitionName =
+      typeof body["objectDefinitionName"] === "string"
+        ? body["objectDefinitionName"]
+        : "";
+
+    store.createdObjectDefinitionRequests = [
+      ...(store.createdObjectDefinitionRequests ?? []),
+      {
+        attributeNames,
+        objectDefinitionName,
+        workspaceId,
+      },
+    ];
+
+    return json({ ok: true });
   }
 
   if (pathname === "/api/users/me/devices" && method === "GET") {

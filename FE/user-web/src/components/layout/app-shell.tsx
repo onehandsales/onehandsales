@@ -72,7 +72,10 @@ import {
   useSidebarWorkspaceQuery,
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
-import { useSidebarCrmObjectsQuery } from "@/features/crm-object";
+import {
+  CreateObjectDefinitionModalContent,
+  useSidebarCrmObjectsQuery,
+} from "@/features/crm-object";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
 import { sidebarWorkspaceQueryKeys } from "@/features/workspace/api/sidebar-workspace-query-keys";
 import type { SidebarWorkspaceListItem } from "@/features/workspace/types/sidebar-workspace";
@@ -153,18 +156,23 @@ export function AppShell() {
   // 15. 처리 흐름에 필요한 [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] 값을 준비한다.
   const [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] =
     useState(false);
-  // 16. 처리 흐름에 필요한 [selectedSidebarWorkspace, setSelectedSidebarWorkspace] 값을 준비한다.
+  // 16. 새 관리 항목 생성 모달의 열림 상태를 준비한다.
+  const [
+    createObjectDefinitionModalOpen,
+    setCreateObjectDefinitionModalOpen,
+  ] = useState(false);
+  // 17. 처리 흐름에 필요한 [selectedSidebarWorkspace, setSelectedSidebarWorkspace] 값을 준비한다.
   const [selectedSidebarWorkspace, setSelectedSidebarWorkspace] =
     useState<SidebarWorkspaceSummary | null>(null);
-  // 17. 처리 흐름에 필요한 [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] 값을 준비한다.
+  // 18. 처리 흐름에 필요한 [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] 값을 준비한다.
   const [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] = useState(false);
-  // 18. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
+  // 19. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  // 19. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
+  // 20. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
-  // 20. 처리 흐름에 필요한 workspaceSwitchRequestIdRef 값을 준비한다.
+  // 21. 처리 흐름에 필요한 workspaceSwitchRequestIdRef 값을 준비한다.
   const workspaceSwitchRequestIdRef = useRef(0);
-  // 21. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
+  // 22. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
 
@@ -313,8 +321,10 @@ export function AppShell() {
       // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setCreateWorkspaceModalOpen(false);
       // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
+      setCreateObjectDefinitionModalOpen(false);
+      // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setAccountModal(section);
-      // 7. 현재 단계에서 필요한 동작을 실행한다.
+      // 8. 현재 단계에서 필요한 동작을 실행한다.
       syncAccountModalSearchParams(section);
     },
     [syncAccountModalSearchParams],
@@ -339,6 +349,8 @@ export function AppShell() {
     // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setCreateWorkspaceModalOpen(false);
     // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setCreateObjectDefinitionModalOpen(false);
+    // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setHelpModal(section);
   }, []);
 
@@ -363,7 +375,9 @@ export function AppShell() {
     syncAccountModalSearchParams(null);
     // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setLogoutConfirmOpen(false);
-    // 7. 새 작업 공간 생성 모달을 연다.
+    // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setCreateObjectDefinitionModalOpen(false);
+    // 8. 새 작업 공간 생성 모달을 연다.
     setCreateWorkspaceModalOpen(true);
   }, [syncAccountModalSearchParams]);
 
@@ -371,6 +385,34 @@ export function AppShell() {
   // 29. 처리 흐름에 필요한 closeCreateWorkspaceModal 값을 준비한다.
   const closeCreateWorkspaceModal = useCallback(() => {
     setCreateWorkspaceModalOpen(false);
+  }, []);
+
+  // 기능 : 사이드바 관리 항목 추가 버튼에서 새 관리 항목 생성 모달을 엽니다.
+  // 30. 처리 흐름에 필요한 openCreateObjectDefinitionModal 값을 준비한다.
+  const openCreateObjectDefinitionModal = useCallback(() => {
+    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setAccountMenuOpen(false);
+    // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setHelpMenuOpen(false);
+    // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setHelpModal(null);
+    // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setAccountModal(null);
+    // 5. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    syncAccountModalSearchParams(null);
+    // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setLogoutConfirmOpen(false);
+    // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setCreateWorkspaceModalOpen(false);
+    // 8. 새 관리 항목 생성 모달을 연다.
+    setCreateObjectDefinitionModalOpen(true);
+  }, [syncAccountModalSearchParams]);
+
+  // 기능 : 새 관리 항목 생성 모달을 닫습니다.
+  // 31. 처리 흐름에 필요한 closeCreateObjectDefinitionModal 값을 준비한다.
+  const closeCreateObjectDefinitionModal = useCallback(() => {
+    // 1. 새 관리 항목 생성 모달을 닫아 현재 shell 화면으로 돌아간다.
+    setCreateObjectDefinitionModalOpen(false);
   }, []);
 
   // 기능 : 새로 생성된 Workspace를 단건 조회한 뒤 현재 sidebar Workspace 상태와 목록 cache에 반영합니다.
@@ -589,6 +631,8 @@ export function AppShell() {
     setLogoutConfirmOpen(false);
     // 6. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setCreateWorkspaceModalOpen(false);
+    // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
+    setCreateObjectDefinitionModalOpen(false);
   }, [pathname]);
 
   // 기능 : URL query contract로 계정 Settings 모달을 열거나 닫습니다.
@@ -600,6 +644,7 @@ export function AppShell() {
       setHelpModal(null);
       setLogoutConfirmOpen(false);
       setCreateWorkspaceModalOpen(false);
+      setCreateObjectDefinitionModalOpen(false);
       setAccountModal(accountModalFromSearchParams);
       return;
     }
@@ -956,6 +1001,7 @@ export function AppShell() {
             <SidebarNav
               crmObjects={sidebarCrmObjects}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
+              onCreateObjectDefinition={openCreateObjectDefinitionModal}
             />
           </div>
           {sidebarHelpMenu}
@@ -1029,6 +1075,17 @@ export function AppShell() {
           onClose={closeCreateWorkspaceModal}
           onCreated={handleWorkspaceCreated}
           onCreationComplete={completeCreateWorkspaceFlow}
+        />
+      </AccountModal>
+
+      <AccountModal
+        open={createObjectDefinitionModalOpen}
+        panelSize="compact"
+        onClose={closeCreateObjectDefinitionModal}
+      >
+        <CreateObjectDefinitionModalContent
+          onClose={closeCreateObjectDefinitionModal}
+          workspaceId={currentWorkspace?.id ?? normalizedRouteWorkspaceId}
         />
       </AccountModal>
 
