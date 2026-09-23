@@ -212,7 +212,7 @@ function ObjectDefinitionNameStep({
           {copy.nameTitle}
         </h1>
 
-        <label className="mt-8 grid gap-2 text-[13px] font-normal text-[#111111]">
+        <label className="mt-8 grid gap-2 text-[13px] font-normal text-[#4B5563]">
           {copy.nameInputLabel}
           <input
             autoFocus
@@ -229,7 +229,7 @@ function ObjectDefinitionNameStep({
 
         <button
           className={cn(
-            "mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white transition-colors sm:mt-14",
+            "mt-14 inline-flex h-12 w-full items-center justify-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white transition-colors",
             canMoveNext
               ? "hover:bg-[#336FE0] active:bg-[#2B63CB]"
               : "cursor-not-allowed opacity-45 hover:bg-[#4880EE]",
@@ -296,7 +296,10 @@ function ObjectDefinitionDetailsStep({
         ) : null}
 
         <div className="mt-8 grid gap-2 text-[13px] font-normal text-[#111111]">
-          <span id="objectDefinitionDescriptionLabel">
+          <span
+            className="text-[#9CA3AF]"
+            id="objectDefinitionDescriptionLabel"
+          >
             {copy.descriptionInputLabel}
           </span>
           <div className="flex min-w-0 items-center gap-2">
@@ -328,7 +331,7 @@ function ObjectDefinitionDetailsStep({
 
         <button
           className={cn(
-            "mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white transition-colors",
+            "mt-14 inline-flex h-12 w-full items-center justify-center gap-2 rounded-[6px] bg-[#4880EE] px-5 text-[15px] font-normal text-white transition-colors",
             canCreate
               ? "hover:bg-[#336FE0] active:bg-[#2B63CB]"
               : "cursor-not-allowed opacity-45 hover:bg-[#4880EE]",

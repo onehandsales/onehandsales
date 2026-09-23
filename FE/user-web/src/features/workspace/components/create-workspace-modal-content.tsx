@@ -361,7 +361,7 @@ function WorkspaceNameStep({
           {copy.nameTitle}
         </h1>
 
-        <label className="mt-8 grid gap-2 text-[13px] font-normal text-[#111111]">
+        <label className="mt-8 grid gap-2 text-[13px] font-normal text-[#4B5563]">
           {copy.nameInputLabel}
           <input
             autoFocus
