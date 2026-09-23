@@ -51,9 +51,18 @@ const compactEmojiPickerStyle: CompactEmojiPickerStyle = {
     "calc(var(--epr-emoji-size) + var(--epr-emoji-padding) * 2)",
   "--epr-emoji-padding": "2px",
   "--epr-emoji-size": "18px",
-  "--epr-header-padding": "6px var(--epr-horizontal-padding)",
-  "--epr-horizontal-padding": "5px",
+  "--epr-header-padding": "8px var(--epr-horizontal-padding)",
+  "--epr-horizontal-padding": "8px",
+  "--epr-search-border-color": "#dededa",
+  "--epr-search-border-color-active": "#dededa",
+  "--epr-search-input-bg-color": "#ffffff",
+  "--epr-search-input-bg-color-active": "#ffffff",
+  "--epr-search-input-border-radius": "5px",
   "--epr-search-input-height": "28px",
+  "--epr-search-input-padding": "0 26px 0 28px",
+  "--epr-search-input-placeholder-color": "#aaa9a3",
+  "--epr-search-input-text-color": "#111111",
+  fontSize: 12,
   border: 0,
   borderRadius: 0,
   boxShadow: "none",
@@ -190,12 +199,9 @@ export function ObjectDefinitionIconPicker({
         aria-expanded={isOpen}
         aria-label={label}
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-[6px] border border-[#dededa] bg-white p-0 text-[#4B5563] transition-colors",
-          isOpen
-            ? "border-[#4880EE] bg-[#EFF5FF] text-[#1D4ED8]"
-            : "hover:bg-[#F5F4F1] active:bg-[#E4E2DC]",
+          "group/object-icon-tooltip relative flex h-10 w-10 items-center justify-center rounded-[6px] bg-white p-0 text-[#4B5563] transition-colors hover:bg-[#E4E2DC] active:bg-[#D3D1CB]",
+          isOpen ? "bg-[#E4E2DC]" : null,
         )}
-        title={label}
         type="button"
         onClick={() => setIsOpen((current) => !current)}
       >
@@ -204,6 +210,9 @@ export function ObjectDefinitionIconPicker({
           name={value}
           strokeWidth={1.9}
         />
+        <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-icon-tooltip:opacity-100">
+          {label}
+        </span>
       </button>
 
       {isOpen ? (
@@ -215,7 +224,7 @@ export function ObjectDefinitionIconPicker({
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute left-0 top-12 z-30 w-[232px] overflow-hidden rounded-[8px] border border-[#dededa] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.14)]">
-            <div className="grid grid-cols-2 border-b border-[#E7E5E1] bg-white p-1">
+            <div className="grid grid-cols-2 gap-1 border-b border-[#E7E5E1] bg-white px-2 py-1.5">
               <ObjectDefinitionIconPickerTabButton
                 isSelected={activeTab === "emoji"}
                 label={emojiTabLabel}
@@ -231,6 +240,7 @@ export function ObjectDefinitionIconPicker({
             {activeTab === "emoji" ? (
               <EmojiPicker
                 autoFocusSearch={false}
+                className="object-definition-emoji-picker"
                 emojiStyle={EmojiStyle.NATIVE}
                 height={188}
                 lazyLoadEmojis
@@ -244,8 +254,8 @@ export function ObjectDefinitionIconPicker({
                 onEmojiClick={onEmojiClick}
               />
             ) : (
-              <div className="p-2">
-                <label className="flex h-7 items-center gap-1.5 rounded-[5px] border border-[#dededa] bg-white px-2 text-[#64748B]">
+              <div className="p-2 text-[12px]">
+                <label className="flex h-7 items-center gap-1.5 rounded-[5px] border border-[#dededa] bg-white px-2 text-[#64748B] transition-colors focus-within:border-[#dededa]">
                   <Search className="h-3.5 w-3.5 shrink-0" strokeWidth={1.9} />
                   <input
                     autoComplete="off"
@@ -297,10 +307,10 @@ function ObjectDefinitionIconPickerTabButton({
     <button
       aria-pressed={isSelected}
       className={cn(
-        "h-7 rounded-[5px] text-[12px] font-normal transition-colors",
+        "h-7 rounded-[5px] text-[12px] font-normal transition-colors hover:bg-[#E4E2DC] active:bg-[#D3D1CB]",
         isSelected
-          ? "bg-[#EFF5FF] text-[#1D4ED8]"
-          : "text-[#6B7280] hover:bg-[#F5F4F1] hover:text-[#111111]",
+          ? "bg-[#E4E2DC] text-[#111111]"
+          : "text-[#6B7280] hover:text-[#111111]",
       )}
       type="button"
       onClick={onSelect}
@@ -324,10 +334,10 @@ function ObjectDefinitionIconOptionButton({
     <button
       aria-pressed={isSelected}
       className={cn(
-        "grid h-7 w-7 place-items-center rounded-[5px] text-[#4B5563] transition-colors",
+        "grid h-7 w-7 place-items-center rounded-[5px] text-[#4B5563] transition-colors hover:bg-[#E4E2DC] active:bg-[#D3D1CB]",
         isSelected
-          ? "bg-[#EFF5FF] text-[#1D4ED8]"
-          : "bg-white hover:bg-[#F5F4F1] active:bg-[#E4E2DC]",
+          ? "bg-[#E4E2DC] text-[#111111]"
+          : "bg-white",
       )}
       title={getIconLabel(iconName, "en")}
       type="button"
