@@ -17,6 +17,7 @@ type ObjectDefinitionCreateStep = "name" | "details";
 type ObjectDefinitionCreateModalCopy = {
   readonly back: string;
   readonly createButtonLabel: string;
+  readonly creatingTitle: string;
   readonly descriptionInputLabel: string;
   readonly descriptionPlaceholder: string;
   readonly detailsTitle: string;
@@ -34,6 +35,7 @@ type ObjectDefinitionCreateModalCopy = {
 };
 
 const DESCRIPTION_MAX_LENGTH = 300;
+const OBJECT_DEFINITION_CREATE_LOADING_CLOSE_DELAY_MS = 2000;
 
 const objectDefinitionCreateModalCopyByLocale: Record<
   AppLocale,
@@ -42,6 +44,7 @@ const objectDefinitionCreateModalCopyByLocale: Record<
   "ko-KR": {
     back: "이전",
     createButtonLabel: "생성",
+    creatingTitle: "관리 항목을 생성하고 있어요.",
     descriptionInputLabel: "관리 항목 설명 (선택)",
     descriptionPlaceholder: "예: 거래처와 잠재 고객 회사를 관리해요.",
     detailsTitle: "아이콘과 설명을 정해 주세요.",
@@ -60,6 +63,7 @@ const objectDefinitionCreateModalCopyByLocale: Record<
   en: {
     back: "Back",
     createButtonLabel: "Create",
+    creatingTitle: "Creating your new item.",
     descriptionInputLabel: "Description (optional)",
     descriptionPlaceholder: "Example: Manage accounts and target companies.",
     detailsTitle: "Choose an icon and description.",
@@ -101,6 +105,9 @@ export function CreateObjectDefinitionModalContent({
   );
   const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [hasCreatedObjectDefinition, setHasCreatedObjectDefinition] =
+    useState(false);
+  const [createLoadingModalOpen, setCreateLoadingModalOpen] = useState(false);
   const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(
     null,
   );
@@ -108,7 +115,10 @@ export function CreateObjectDefinitionModalContent({
   const trimmedObjectDefinitionName = objectDefinitionName.trim();
   const canMoveNext = trimmedObjectDefinitionName.length > 0;
   const canCreateObjectDefinition =
-    Boolean(workspaceId) && canMoveNext && !isCreating;
+    Boolean(workspaceId) &&
+    canMoveNext &&
+    !isCreating &&
+    !hasCreatedObjectDefinition;
 
   // 기능 : 이름 입력을 마친 사용자를 관리 항목 세부 정보 단계로 이동시킵니다.
   const onSubmitName = (event: FormEvent<HTMLFormElement>) => {
@@ -126,6 +136,10 @@ export function CreateObjectDefinitionModalContent({
 
   // 기능 : 관리 항목 세부 정보 단계에서 이름 입력 단계로 돌아갑니다.
   const onBackToNameStep = () => {
+    if (isCreating || hasCreatedObjectDefinition) {
+      return;
+    }
+
     // 1. 사용자가 입력한 값을 유지한 채 이름 입력 단계로 돌아간다.
     setStep("name");
   };
@@ -133,24 +147,35 @@ export function CreateObjectDefinitionModalContent({
   // 기능 : 입력한 관리 항목 이름과 세부 정보로 생성 API를 호출합니다.
   const onCreateObjectDefinition = async () => {
     // 1. 생성에 필요한 Workspace와 입력값이 준비되지 않았으면 호출하지 않는다.
-    if (!workspaceId || !canMoveNext || isCreating) {
+    if (
+      !workspaceId ||
+      !canMoveNext ||
+      isCreating ||
+      hasCreatedObjectDefinition
+    ) {
       return;
     }
 
     // 2. 현재 입력된 ObjectDefinition 값으로 Backend 생성 API를 호출한다.
     setCreateErrorMessage(null);
     setIsCreating(true);
+    setCreateLoadingModalOpen(true);
 
     try {
-      const response = await createObjectDefinition({
-        description: description.length > 0 ? description : undefined,
-        icon: selectedIcon,
-        objectDefinitionName: trimmedObjectDefinitionName,
-        workspaceId,
-      });
+      const [response] = await Promise.all([
+        createObjectDefinition({
+          description: description.length > 0 ? description : undefined,
+          icon: selectedIcon,
+          objectDefinitionName: trimmedObjectDefinitionName,
+          workspaceId,
+        }),
+        waitForObjectDefinitionCreateLoadingDelay(),
+      ]);
+      setHasCreatedObjectDefinition(true);
       await onCreated?.(response);
       onClose();
     } catch (error) {
+      setCreateLoadingModalOpen(false);
       setCreateErrorMessage(getApiErrorMessage(error));
     } finally {
       setIsCreating(false);
@@ -192,8 +217,53 @@ export function CreateObjectDefinitionModalContent({
           />
         )}
       </div>
+      {createLoadingModalOpen ? (
+        <ObjectDefinitionLoadingDialog
+          overlayClassName="absolute z-20"
+          title={copy.creatingTitle}
+        />
+      ) : null}
     </div>
   );
+}
+
+// 기능 : 관리 항목 생성 중 표시하는 로딩 다이얼로그를 렌더링합니다.
+function ObjectDefinitionLoadingDialog({
+  overlayClassName,
+  title,
+}: {
+  readonly overlayClassName?: string;
+  readonly title: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "fixed inset-0 z-[90] grid place-items-center bg-black/25 px-6",
+        overlayClassName,
+      )}
+    >
+      <section
+        aria-modal="true"
+        className="grid w-full max-w-[360px] justify-items-center rounded-[8px] bg-white px-8 py-9 text-center shadow-[0_18px_50px_rgba(15,23,42,0.18)]"
+        role="dialog"
+      >
+        <span
+          aria-hidden="true"
+          className="h-9 w-9 animate-spin rounded-full border-[3px] border-[#E4E2DC] border-t-[#4880EE]"
+        />
+        <h2 className="mt-5 break-keep text-[20px] font-normal leading-[1.3] text-[#050505]">
+          {title}
+        </h2>
+      </section>
+    </div>
+  );
+}
+
+// 기능 : 관리 항목 생성 로딩 모달을 최소 표시 시간만큼 유지합니다.
+function waitForObjectDefinitionCreateLoadingDelay() {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, OBJECT_DEFINITION_CREATE_LOADING_CLOSE_DELAY_MS);
+  });
 }
 
 // 기능 : 새 관리 항목 이름 입력 단계를 렌더링합니다.

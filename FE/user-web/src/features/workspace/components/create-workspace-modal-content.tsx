@@ -1,11 +1,6 @@
-import {
-  ArrowLeft,
-  Check,
-  X,
-} from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import {
   type FormEvent,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -195,12 +190,8 @@ export function CreateWorkspaceModalContent({
   // 2. 처리 흐름에 필요한 입력값과 단계 상태를 준비한다.
   const [workspaceName, setWorkspaceName] = useState("");
   const [step, setStep] = useState<WorkspaceCreateStep>("name");
-  const [selectedJobKey, setSelectedJobKey] =
-    useState<WorkspaceJobOptionKey | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [hasCreatedWorkspace, setHasCreatedWorkspace] = useState(false);
-  const [createdWorkspaceResponse, setCreatedWorkspaceResponse] =
-    useState<CreatedWorkspaceResponse | null>(null);
   const [createLoadingModalOpen, setCreateLoadingModalOpen] = useState(false);
   const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(
     null,
@@ -215,27 +206,6 @@ export function CreateWorkspaceModalContent({
     [copy.jobs],
   );
   const canMoveNext = workspaceName.trim().length > 0;
-
-  // 4. Workspace 생성 완료 안내 모달이 열리면 일정 시간 뒤 생성 결과를 반영하고 전체 모달을 닫는다.
-  useEffect(() => {
-    if (!createLoadingModalOpen || !createdWorkspaceResponse) {
-      return;
-    }
-
-    const closeTimerId = window.setTimeout(() => {
-      void (async () => {
-        await onCreated(createdWorkspaceResponse);
-        onCreationComplete();
-      })();
-    }, WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS);
-
-    return () => window.clearTimeout(closeTimerId);
-  }, [
-    createLoadingModalOpen,
-    createdWorkspaceResponse,
-    onCreated,
-    onCreationComplete,
-  ]);
 
   // 기능 : 이름 입력 단계에서 업무 선택 단계로 이동합니다.
   const onSubmitName = (event: FormEvent<HTMLFormElement>) => {
@@ -253,7 +223,7 @@ export function CreateWorkspaceModalContent({
 
   // 기능 : 업무 선택 단계에서 이름 입력 단계로 돌아갑니다.
   // 기능 : 업무 카드 클릭 시 현재 입력 이름으로 새 Workspace 생성 API를 호출합니다.
-  const onSelectJob = async (key: WorkspaceJobOptionKey) => {
+  const onSelectJob = async () => {
     if (isCreating || hasCreatedWorkspace) {
       return;
     }
@@ -265,21 +235,24 @@ export function CreateWorkspaceModalContent({
       return;
     }
 
-    setSelectedJobKey(key);
     setCreateErrorMessage(null);
-    setCreatedWorkspaceResponse(null);
     setIsCreating(true);
+    setCreateLoadingModalOpen(true);
 
     try {
-      const response = await createWorkspace({
-        workspaceName: normalizedWorkspaceName,
-      });
-      setCreatedWorkspaceResponse(response);
+      const [response] = await Promise.all([
+        createWorkspace({
+          workspaceName: normalizedWorkspaceName,
+        }),
+        waitForWorkspaceCreateLoadingDelay(),
+      ]);
       setHasCreatedWorkspace(true);
-      setIsCreating(false);
-      setCreateLoadingModalOpen(true);
+      await onCreated(response);
+      onCreationComplete();
     } catch (error) {
+      setCreateLoadingModalOpen(false);
       setCreateErrorMessage(getApiErrorMessage(error));
+    } finally {
       setIsCreating(false);
     }
   };
@@ -320,7 +293,6 @@ export function CreateWorkspaceModalContent({
             isCreating={isCreating}
             isSelectionLocked={isCreating || hasCreatedWorkspace}
             jobOptions={jobOptions}
-            selectedJobKey={selectedJobKey}
             workspaceName={workspaceName.trim()}
             onBack={onBackToNameStep}
             onSelectJob={onSelectJob}
@@ -335,6 +307,13 @@ export function CreateWorkspaceModalContent({
       ) : null}
     </div>
   );
+}
+
+// 기능 : Workspace 생성 로딩 모달을 최소 표시 시간만큼 유지합니다.
+function waitForWorkspaceCreateLoadingDelay() {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS);
+  });
 }
 
 // 기능 : 새 작업 공간 이름 입력 단계를 렌더링합니다.
@@ -402,7 +381,6 @@ function WorkspaceJobStep({
   jobOptions,
   onBack,
   onSelectJob,
-  selectedJobKey,
   workspaceName,
 }: {
   readonly copy: WorkspaceCreateModalCopy;
@@ -411,8 +389,7 @@ function WorkspaceJobStep({
   readonly isSelectionLocked: boolean;
   readonly jobOptions: readonly WorkspaceJobOption[];
   readonly onBack: () => void;
-  readonly onSelectJob: (key: WorkspaceJobOptionKey) => Promise<void>;
-  readonly selectedJobKey: WorkspaceJobOptionKey | null;
+  readonly onSelectJob: () => Promise<void>;
   readonly workspaceName: string;
 }) {
   return (
@@ -447,16 +424,11 @@ function WorkspaceJobStep({
 
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {jobOptions.map(({ imageAlt, imageSrc, key, label }) => {
-            const selected = selectedJobKey === key;
-
             return (
               <button
-                aria-pressed={selected}
                 className={cn(
                   "group relative flex aspect-[1.28] w-full flex-col overflow-hidden rounded-[8px] border bg-white text-left shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition-[background-color,border-color,box-shadow] duration-150 ease-out hover:border-[#D8D5D0] hover:bg-[#F2F2EF] hover:shadow-[0_10px_28px_rgba(15,23,42,0.07)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                  selected
-                    ? "border-[#4880EE] shadow-[0_10px_28px_rgba(72,128,238,0.14)]"
-                    : "border-[#E7E5E1]",
+                  "border-[#E7E5E1]",
                   isCreating ? "cursor-wait opacity-70" : "",
                   isSelectionLocked && !isCreating
                     ? "cursor-not-allowed opacity-70"
@@ -465,13 +437,8 @@ function WorkspaceJobStep({
                 disabled={isSelectionLocked}
                 key={key}
                 type="button"
-                onClick={() => void onSelectJob(key)}
+                onClick={() => void onSelectJob()}
               >
-                {selected ? (
-                  <span className="absolute right-2 top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-[#4880EE] text-white shadow-sm">
-                    <Check className="h-4 w-4" strokeWidth={2.3} />
-                  </span>
-                ) : null}
                 <span className="relative block min-h-0 flex-1 overflow-hidden bg-[#F7F6F3] transition-colors duration-150 ease-out group-hover:bg-[#F2F2EF] group-focus-visible:bg-[#F2F2EF]">
                   <img
                     alt={imageAlt}
