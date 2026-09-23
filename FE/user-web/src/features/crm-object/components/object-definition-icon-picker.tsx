@@ -43,6 +43,7 @@ export const DEFAULT_OBJECT_DEFINITION_ICON =
   createLucideObjectIconValue("box");
 
 const ICON_SEARCH_RESULT_LIMIT = 42;
+const RECOMMENDED_ICON_RESULT_LIMIT = 400;
 
 const compactEmojiPickerStyle: CompactEmojiPickerStyle = {
   "--epr-category-label-height": "22px",
@@ -151,13 +152,123 @@ const recommendedIconLabels: readonly RecommendedIconLabel[] = [
   },
 ];
 
-const recommendedIconNames = recommendedIconLabels.map(({ name }) => name);
-const recommendedIconLabelByName = new Map(
-  recommendedIconLabels.map((icon) => [icon.name, icon]),
-);
+const prioritizedRecommendedIconNames = [
+  "box",
+  "boxes",
+  "package",
+  "archive",
+  "database",
+  "table",
+  "layout-grid",
+  "list",
+  "building",
+  "building-2",
+  "factory",
+  "warehouse",
+  "store",
+  "landmark",
+  "school",
+  "hospital",
+  "hotel",
+  "house",
+  "briefcase-business",
+  "handshake",
+  "network",
+  "workflow",
+  "user",
+  "users",
+  "users-round",
+  "contact",
+  "id-card",
+  "badge-check",
+  "circle-user-round",
+  "user-check",
+  "user-plus",
+  "user-search",
+  "mail",
+  "mails",
+  "mail-check",
+  "mail-plus",
+  "mail-search",
+  "message-circle",
+  "message-square-text",
+  "messages-square",
+  "phone",
+  "phone-call",
+  "smartphone",
+  "file",
+  "file-text",
+  "files",
+  "folder",
+  "folders",
+  "folder-open",
+  "clipboard",
+  "clipboard-list",
+  "clipboard-check",
+  "notebook",
+  "book-open",
+  "sheet",
+  "banknote",
+  "wallet",
+  "receipt",
+  "receipt-text",
+  "credit-card",
+  "circle-dollar-sign",
+  "hand-coins",
+  "chart-bar",
+  "chart-column",
+  "chart-line",
+  "chart-pie",
+  "trending-up",
+  "activity",
+  "gauge",
+  "goal",
+  "shopping-bag",
+  "shopping-cart",
+  "tag",
+  "tags",
+  "barcode",
+  "scan-barcode",
+  "ticket",
+  "truck",
+  "package-check",
+  "package-plus",
+  "calendar",
+  "calendar-days",
+  "calendar-check",
+  "clock",
+  "alarm-clock",
+  "history",
+  "timer",
+  "settings",
+  "cog",
+  "wrench",
+  "sliders-horizontal",
+  "filter",
+  "search",
+  "square-pen",
+  "shield",
+  "shield-check",
+  "lock",
+  "key-round",
+  "map-pin",
+  "map",
+] satisfies readonly DynamicLucideIconName[];
 const allIconNames = Object.keys(
   dynamicIconImports,
 ).sort() as DynamicLucideIconName[];
+const prioritizedRecommendedIconNameSet = new Set<DynamicLucideIconName>(
+  prioritizedRecommendedIconNames,
+);
+const recommendedIconNames = [
+  ...prioritizedRecommendedIconNames,
+  ...allIconNames.filter(
+    (iconName) => !prioritizedRecommendedIconNameSet.has(iconName),
+  ),
+].slice(0, RECOMMENDED_ICON_RESULT_LIMIT);
+const recommendedIconLabelByName = new Map(
+  recommendedIconLabels.map((icon) => [icon.name, icon]),
+);
 
 // 기능 : 관리 항목 이모지와 lucide 아이콘을 작은 팝오버 picker로 선택합니다.
 export function ObjectDefinitionIconPicker({
