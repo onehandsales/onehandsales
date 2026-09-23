@@ -1,6 +1,5 @@
 import {
   ArrowLeft,
-  ArrowRight,
   Check,
   X,
 } from "lucide-react";
@@ -388,7 +387,6 @@ function WorkspaceNameStep({
           type="submit"
         >
           {copy.next}
-          <ArrowRight className="h-4 w-4" strokeWidth={2} />
         </button>
       </form>
     </section>
@@ -434,7 +432,7 @@ function WorkspaceJobStep({
       <div className="mx-auto min-w-0 w-full max-w-[508px]">
         <div>
           <h1 className="break-keep text-[20px] font-normal leading-[1.2] tracking-normal text-[#050505]">
-            <span className="text-[#9CA3AF]">{workspaceName}</span>
+            <span className="text-[#4880EE]">{workspaceName}</span>
             {copy.jobTitleSuffix}
           </h1>
           {createErrorMessage ? (

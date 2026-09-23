@@ -14,7 +14,8 @@ describe("createObjectDefinition", () => {
     apiClientMock.mockResolvedValue({ ok: true });
 
     const result = await createObjectDefinition({
-      attributeNames: ["회사명", "주소"],
+      description: "거래처와 잠재 고객 회사를 관리합니다.",
+      icon: "emoji:🏢",
       objectDefinitionName: "회사",
       workspaceId: "workspace/1",
     });
@@ -25,7 +26,8 @@ describe("createObjectDefinition", () => {
       {
         method: "POST",
         body: {
-          attributeNames: ["회사명", "주소"],
+          description: "거래처와 잠재 고객 회사를 관리합니다.",
+          icon: "emoji:🏢",
           objectDefinitionName: "회사",
         },
       },

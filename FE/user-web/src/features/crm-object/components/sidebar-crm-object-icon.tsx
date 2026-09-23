@@ -1,8 +1,12 @@
 import { Box, type LucideIcon } from "lucide-react";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { useEffect, useState } from "react";
-
-type DynamicLucideIconName = keyof typeof dynamicIconImports;
+import {
+  getEmojiObjectIconValue,
+  getLucideObjectIconName,
+  type DynamicLucideIconName,
+} from "@/features/crm-object/utils/object-definition-icon-value";
+import { cn } from "@/utils/cn";
 
 type LoadedLucideIcon = {
   readonly Icon: LucideIcon;
@@ -15,7 +19,7 @@ type SidebarCrmObjectIconProps = {
   readonly strokeWidth?: number;
 };
 
-// 기능 : CRM Object에 저장된 lucide icon 이름을 사이드바 아이콘으로 렌더링합니다.
+// 기능 : CRM Object에 저장된 이모지 또는 lucide icon 이름을 사이드바 아이콘으로 렌더링합니다.
 export function SidebarCrmObjectIcon({
   className,
   name,
@@ -23,11 +27,11 @@ export function SidebarCrmObjectIcon({
 }: SidebarCrmObjectIconProps) {
   // 1. 이후 단계에서 사용할 loadedIcon 상태를 준비한다.
   const [loadedIcon, setLoadedIcon] = useState<LoadedLucideIcon | null>(null);
+  const emojiIcon = getEmojiObjectIconValue(name);
+  const iconName = getLucideObjectIconName(name);
 
   // 2. icon 이름이 바뀌면 해당 lucide icon만 동적으로 불러온다.
   useEffect(() => {
-    const iconName = getDynamicLucideIconName(name);
-
     if (!iconName) {
       setLoadedIcon(null);
       return;
@@ -54,11 +58,25 @@ export function SidebarCrmObjectIcon({
     return () => {
       isActive = false;
     };
-  }, [name]);
+  }, [iconName]);
+
+  if (emojiIcon) {
+    return (
+      <span
+        aria-hidden="true"
+        className={cn(
+          "inline-flex items-center justify-center text-center text-base leading-none",
+          className,
+        )}
+      >
+        {emojiIcon}
+      </span>
+    );
+  }
 
   // 3. 아직 로딩되지 않았거나 유효하지 않은 icon이면 기본 아이콘을 사용한다.
   const Icon =
-    loadedIcon !== null && loadedIcon.name === name ? loadedIcon.Icon : Box;
+    loadedIcon !== null && loadedIcon.name === iconName ? loadedIcon.Icon : Box;
 
   // 4. 계산된 결과를 호출자에게 반환한다.
   return (
@@ -68,18 +86,4 @@ export function SidebarCrmObjectIcon({
       strokeWidth={strokeWidth}
     />
   );
-}
-
-// 기능 : Backend에서 내려온 icon 문자열이 lucide 동적 아이콘 이름인지 확인합니다.
-function getDynamicLucideIconName(
-  name: string | null | undefined
-): DynamicLucideIconName | null {
-  if (
-    typeof name === "string" &&
-    Object.prototype.hasOwnProperty.call(dynamicIconImports, name)
-  ) {
-    return name as DynamicLucideIconName;
-  }
-
-  return null;
 }
