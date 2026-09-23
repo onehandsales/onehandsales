@@ -49,7 +49,7 @@ type WorkspaceCreateModalCopy = {
   readonly jobs: readonly Omit<WorkspaceJobOption, "imageSrc">[];
 };
 
-const WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS = 4000;
+const WORKSPACE_CREATE_LOADING_CLOSE_DELAY_MS = 2000;
 
 const workspaceJobImageSrcByKey: Record<WorkspaceJobOptionKey, string> = {
   sales:

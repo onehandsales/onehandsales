@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const CRM_ENVIRONMENT_BUILD_DURATION_MS = 4000;
+const CRM_ENVIRONMENT_BUILD_DURATION_MS = 2000;
 
 // 기능 : CRM 환경 구축 화면의 진행률 연출 상태를 제공합니다.
 export function useCrmEnvironmentBuildProgress(isRunning: boolean) {
