@@ -1014,7 +1014,7 @@ export function AppShell() {
             </button>
           </div>
           {/* Nav */}
-          <div className="flex-1 px-2 py-1">
+          <div className="notion-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 py-1">
             <SidebarNav
               crmObjects={sidebarCrmObjects}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
