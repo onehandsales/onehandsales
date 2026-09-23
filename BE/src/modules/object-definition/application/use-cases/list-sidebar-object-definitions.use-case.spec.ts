@@ -4,6 +4,7 @@ import type {
 } from "@/modules/object-definition/application/ports/object-definition-sidebar-query.port";
 import { ObjectDefinitionSidebarWorkspaceNotFoundError } from "@/modules/object-definition/domain/object-definition.errors";
 import type { WorkspaceAccessQuery } from "@/modules/workspace/application/ports/workspace-access-query.port";
+import type { WorkspaceMemberAccess } from "@/modules/workspace/application/ports/workspace-access-query.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { ListSidebarObjectDefinitionsUseCase } from "./list-sidebar-object-definitions.use-case";
 
@@ -79,6 +80,11 @@ class FakeWorkspaceAccessQuery implements WorkspaceAccessQuery {
   ): Promise<boolean> {
     this.lastInput = { userId, workspaceId };
     return this.hasMembership;
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 생성 감사 Actor 조회 호출을 차단합니다.
+  async getWorkspaceMemberAccess(): Promise<WorkspaceMemberAccess | null> {
+    throw new Error("Not implemented in fake query");
   }
 }
 

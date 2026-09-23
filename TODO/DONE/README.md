@@ -37,3 +37,4 @@
 - `BE_SOFTWARE_AGENT_RULE_RECHECK_FIX_PLAN`: Backend Agent rule recheck G01~G08과 G99 최종 검토 완료
 - `PRESENTATION_CONTRACT_TYPE_BOUNDARY_PLAN`: presentation repository port 타입 의존 G01~G02 정리와 G99 최종 검토 완료
 - `API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: API-SPEC 템플릿 정규화 G01~G06과 G99 최종 검토 완료
+- `OBJECT_DEFINITION_CREATE_PLAN`: ObjectDefinition 생성 API 계약, Backend 생성 유스케이스, User Web 생성 연동, DB unique index 검증 완료

@@ -107,6 +107,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case "OAuthAccountConflict":
       case "DeviceSlotAlreadyRegistered":
+      case "ObjectDefinitionApiSlugAlreadyExists":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":
@@ -122,6 +123,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "USER_DEFAULT_CURRENCY_UNSUPPORTED":
       case "WORKSPACE_NAME_REQUIRED":
       case "WORKSPACE_NAME_TOO_LONG":
+      case "OBJECT_DEFINITION_NAME_REQUIRED":
+      case "OBJECT_DEFINITION_NAME_TOO_LONG":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
       case "ERROR_REPORT_DESCRIPTION_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_REQUIRED":

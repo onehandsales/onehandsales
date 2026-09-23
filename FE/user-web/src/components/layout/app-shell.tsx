@@ -76,6 +76,7 @@ import {
   CreateObjectDefinitionModalContent,
   useSidebarCrmObjectsQuery,
 } from "@/features/crm-object";
+import { sidebarCrmObjectQueryKeys } from "@/features/crm-object/api/sidebar-crm-object-query-keys";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
 import { sidebarWorkspaceQueryKeys } from "@/features/workspace/api/sidebar-workspace-query-keys";
 import type { SidebarWorkspaceListItem } from "@/features/workspace/types/sidebar-workspace";
@@ -414,6 +415,22 @@ export function AppShell() {
     // 1. 새 관리 항목 생성 모달을 닫아 현재 shell 화면으로 돌아간다.
     setCreateObjectDefinitionModalOpen(false);
   }, []);
+
+  // 기능 : 새로 생성된 관리 항목을 사이드바 ObjectDefinition 목록에 반영합니다.
+  const handleObjectDefinitionCreated = useCallback(() => {
+    // 1. 현재 사용자와 Workspace가 준비되지 않았으면 cache 갱신을 건너뛴다.
+    const ownerUserId = user?.id;
+    const workspaceId = currentWorkspace?.id ?? normalizedRouteWorkspaceId;
+
+    if (!ownerUserId || !workspaceId) {
+      return;
+    }
+
+    // 2. 서버 기준 관리 항목 목록을 다시 가져오도록 명시적으로 갱신한다.
+    void queryClient.invalidateQueries({
+      queryKey: sidebarCrmObjectQueryKeys.list(ownerUserId, workspaceId),
+    });
+  }, [currentWorkspace?.id, normalizedRouteWorkspaceId, queryClient, user?.id]);
 
   // 기능 : 새로 생성된 Workspace를 단건 조회한 뒤 현재 sidebar Workspace 상태와 목록 cache에 반영합니다.
   const handleWorkspaceCreated = useCallback(
@@ -1085,6 +1102,7 @@ export function AppShell() {
       >
         <CreateObjectDefinitionModalContent
           onClose={closeCreateObjectDefinitionModal}
+          onCreated={handleObjectDefinitionCreated}
           workspaceId={currentWorkspace?.id ?? normalizedRouteWorkspaceId}
         />
       </AccountModal>

@@ -1,7 +1,10 @@
 import { ArrowLeft, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
-import { createObjectDefinition } from "@/features/crm-object/api/object-definition-api";
+import {
+  createObjectDefinition,
+  type CreateObjectDefinitionResponse,
+} from "@/features/crm-object/api/object-definition-api";
 import {
   DEFAULT_OBJECT_DEFINITION_ICON,
   ObjectDefinitionIconPicker,
@@ -77,9 +80,13 @@ const objectDefinitionCreateModalCopyByLocale: Record<
 // 기능 : 새 관리 항목 생성 모달의 이름 입력과 세부 정보 입력 단계를 렌더링합니다.
 export function CreateObjectDefinitionModalContent({
   onClose,
+  onCreated,
   workspaceId,
 }: {
   readonly onClose: () => void;
+  readonly onCreated?: (
+    response: CreateObjectDefinitionResponse,
+  ) => Promise<void> | void;
   readonly workspaceId: string | null;
 }) {
   // 1. 처리 흐름에 필요한 앱 언어와 화면 문구를 준비한다.
@@ -99,7 +106,6 @@ export function CreateObjectDefinitionModalContent({
   );
 
   const trimmedObjectDefinitionName = objectDefinitionName.trim();
-  const trimmedDescription = description.trim();
   const canMoveNext = trimmedObjectDefinitionName.length > 0;
   const canCreateObjectDefinition =
     Boolean(workspaceId) && canMoveNext && !isCreating;
@@ -136,12 +142,14 @@ export function CreateObjectDefinitionModalContent({
     setIsCreating(true);
 
     try {
-      await createObjectDefinition({
-        description: trimmedDescription.length > 0 ? trimmedDescription : null,
+      const response = await createObjectDefinition({
+        description: description.length > 0 ? description : undefined,
         icon: selectedIcon,
         objectDefinitionName: trimmedObjectDefinitionName,
         workspaceId,
       });
+      await onCreated?.(response);
+      onClose();
     } catch (error) {
       setCreateErrorMessage(getApiErrorMessage(error));
     } finally {

@@ -433,6 +433,9 @@ model ObjectDefinition {
   sourceRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionSourceObject")
   /// 기능 : 이 ObjectDefinition이 target인 RelationshipDefinition 목록입니다.
   targetRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionTargetObject")
+
+  /// 기능 : 하나의 Workspace 안에서 같은 apiSlug를 가진 ObjectDefinition 중복 생성을 차단합니다.
+  @@unique([workspaceId, apiSlug])
 }
 
 /// 기능 : ObjectDefinition에 붙는 필드 정의를 저장합니다.
