@@ -92,31 +92,41 @@ function SidebarSection({
 
   return (
     <div>
-      <button
-        aria-label={t(toggleLabelKey)}
-        aria-expanded={isOpen}
-        className="group/sidebar-tooltip relative mb-1 flex h-6 w-full items-center gap-1 rounded-md px-2 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-        onClick={onToggle}
-        type="button"
-      >
-        <ChevronRight
-          className={cn(
-            "h-5 w-5 shrink-0 transition-transform",
-            isOpen ? "rotate-90" : "rotate-0"
-          )}
-          strokeWidth={2}
-        />
-        <span>{t(labelKey)}</span>
-        <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-1 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
-          {t(toggleLabelKey)}
-        </span>
-      </button>
+      <div className="group/sidebar-section relative mb-1 h-6 w-full">
+        <button
+          aria-label={t(toggleLabelKey)}
+          aria-expanded={isOpen}
+          className="flex h-6 w-full min-w-0 items-center gap-1 rounded-md px-2 pr-8 text-left text-[14px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+          onClick={onToggle}
+          type="button"
+        >
+          <ChevronRight
+            className={cn(
+              "h-5 w-5 shrink-0 transition-transform",
+              isOpen ? "rotate-90" : "rotate-0"
+            )}
+            strokeWidth={2}
+          />
+          <span className="min-w-0 flex-1 truncate">{t(labelKey)}</span>
+        </button>
+        <button
+          aria-label={t(addLabelKey)}
+          className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:opacity-100"
+          onClick={(event) => {
+            event.stopPropagation();
+            onAdd?.();
+          }}
+          type="button"
+        >
+          <Plus aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={2} />
+        </button>
+      </div>
       {isOpen ? (
         <div className="flex flex-col gap-px">
           {children}
           <button
             aria-label={t(addLabelKey)}
-            className="group/sidebar-add-tooltip relative flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+            className="flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
             onClick={onAdd}
             type="button"
           >
@@ -125,9 +135,6 @@ function SidebarSection({
               className="h-5 w-5 shrink-0"
               strokeWidth={2}
             />
-            <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-1 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-add-tooltip:opacity-100">
-              {t(addLabelKey)}
-            </span>
           </button>
         </div>
       ) : null}
@@ -198,9 +205,9 @@ function SidebarCrmObjectItem({
   readonly object: SidebarCrmObjectListItem;
 }) {
   return (
-    <div className="group/sidebar-object-tooltip relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
+    <div className="group/sidebar-object-row relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
       <SidebarCrmObjectIcon
-        className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-tooltip:text-[#6B7280]"
+        className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-row:text-[#6B7280]"
         name={object.icon}
         strokeWidth={2}
       />
