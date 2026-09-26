@@ -965,7 +965,7 @@ export function AppShell() {
         >
           {accountProfile}
           {/* Shortcut buttons */}
-          <div className="flex gap-1 px-2 pb-1">
+          <div className="flex gap-1 px-2 py-2">
             <button
               aria-label={t("shell.homeAria")}
               className={`group/sidebar-tooltip relative flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
