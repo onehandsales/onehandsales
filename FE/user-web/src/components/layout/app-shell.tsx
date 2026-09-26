@@ -707,10 +707,10 @@ export function AppShell() {
 
   // 40. 이후 단계에서 사용할 accountProfile 값을 준비한다.
   const accountProfile = (
-    <div className="relative px-2 pb-1 pt-2" ref={accountMenuRef}>
+    <div className="relative" ref={accountMenuRef}>
       <div
         aria-hidden={!accountMenuOpen}
-        className={`absolute left-2 right-2 top-[calc(100%+4px)] z-50 origin-top transition-all duration-150 ease-out ${
+        className={`absolute left-0 right-0 top-[calc(100%+4px)] z-50 origin-top transition-all duration-150 ease-out ${
           accountMenuOpen
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
@@ -828,7 +828,7 @@ export function AppShell() {
       </button>
       <button
         aria-label={t("shell.sidebarClose")}
-        className="group/collapse pointer-events-none absolute right-3 top-4 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+        className="group/collapse pointer-events-none absolute right-3 top-2.5 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           // 1. 현재 단계에서 필요한 동작을 실행한다.
           event.stopPropagation();
@@ -884,7 +884,7 @@ export function AppShell() {
 
   // 42. 이후 단계에서 사용할 sidebarHelpMenu 값을 준비한다.
   const sidebarHelpMenu = (
-    <div className="relative px-2 pb-3 pt-2" ref={helpMenuRef}>
+    <div className="relative px-2 pb-2 pt-2" ref={helpMenuRef}>
       <div
         aria-hidden={!helpMenuOpen}
         className={`absolute bottom-[calc(100%+4px)] left-2 right-2 z-50 origin-bottom transition-all duration-150 ease-out ${
