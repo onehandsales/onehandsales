@@ -707,10 +707,10 @@ export function AppShell() {
 
   // 40. 이후 단계에서 사용할 accountProfile 값을 준비한다.
   const accountProfile = (
-    <div className="relative" ref={accountMenuRef}>
+    <div className="relative px-2 py-1.5" ref={accountMenuRef}>
       <div
         aria-hidden={!accountMenuOpen}
-        className={`absolute left-0 right-0 top-[calc(100%+4px)] z-50 origin-top transition-all duration-150 ease-out ${
+        className={`absolute left-2 right-2 top-[calc(100%+4px)] z-50 origin-top transition-all duration-150 ease-out ${
           accountMenuOpen
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
@@ -806,7 +806,11 @@ export function AppShell() {
       <button
         aria-expanded={accountMenuOpen}
         aria-haspopup="menu"
-        className="group/sidebar-tooltip relative flex h-12 w-full items-center gap-2.5 rounded-xl px-2 pr-10 text-left transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] data-[open=true]:bg-[#E4E2DC] data-[open=true]:active:bg-[#D3D1CB]"
+        className={`group/sidebar-tooltip relative flex h-8 w-full items-center gap-2.5 rounded-md px-2 pr-10 text-left text-[14px] font-medium transition-colors ${
+          accountMenuOpen
+            ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
+            : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+        }`}
         data-open={accountMenuOpen}
         onClick={() => {
           setHelpMenuOpen(false);
@@ -814,11 +818,9 @@ export function AppShell() {
         }}
         type="button"
       >
-        <OneHandLogoMark className="h-7 w-7 shrink-0" />
+        <OneHandLogoMark className="h-5 w-5 shrink-0" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[14px] font-medium text-[#111827]">
-            {currentWorkspaceName}
-          </p>
+          <p className="truncate">{currentWorkspaceName}</p>
         </div>
         {!accountMenuOpen ? (
           <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
@@ -828,7 +830,7 @@ export function AppShell() {
       </button>
       <button
         aria-label={t("shell.sidebarClose")}
-        className="group/collapse pointer-events-none absolute right-3 top-2.5 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+        className="group/collapse pointer-events-none absolute right-3 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
         onClick={(event) => {
           // 1. 현재 단계에서 필요한 동작을 실행한다.
           event.stopPropagation();
@@ -884,7 +886,7 @@ export function AppShell() {
 
   // 42. 이후 단계에서 사용할 sidebarHelpMenu 값을 준비한다.
   const sidebarHelpMenu = (
-    <div className="relative px-2 pb-2 pt-2" ref={helpMenuRef}>
+    <div className="relative px-2 py-1.5" ref={helpMenuRef}>
       <div
         aria-hidden={!helpMenuOpen}
         className={`absolute bottom-[calc(100%+4px)] left-2 right-2 z-50 origin-bottom transition-all duration-150 ease-out ${
@@ -965,7 +967,7 @@ export function AppShell() {
         >
           {accountProfile}
           {/* Shortcut buttons */}
-          <div className="flex gap-1 px-2 py-2">
+          <div className="flex gap-1 px-2 py-1.5">
             <button
               aria-label={t("shell.homeAria")}
               className={`group/sidebar-tooltip relative flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
