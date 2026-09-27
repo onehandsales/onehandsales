@@ -32,6 +32,14 @@ export const koKRResource = {
   entities: {
     settings: "설정",
   },
+  objectList: {
+    createTooltip: "생성하기",
+    fallbackObjectLabel: "관리 항목",
+    openFilterTooltip: "필터 열기",
+    openSearchTooltip: "검색창 열기",
+    searchPlaceholder: "검색할 내용을 입력해주세요.",
+    viewSortTooltip: "정렬 보기",
+  },
   navigation: {
     appName: "기타",
     appNameClose: "기타 닫기",

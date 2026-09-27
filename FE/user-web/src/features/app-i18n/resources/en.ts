@@ -32,6 +32,14 @@ export const enResource = {
   entities: {
     settings: "Settings",
   },
+  objectList: {
+    createTooltip: "Create",
+    fallbackObjectLabel: "Item",
+    openFilterTooltip: "Open filter",
+    openSearchTooltip: "Open search",
+    searchPlaceholder: "Enter search text.",
+    viewSortTooltip: "View sorting",
+  },
   navigation: {
     appName: "Other",
     appNameClose: "Close other",

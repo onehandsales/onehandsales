@@ -1005,7 +1005,7 @@ export function AppShell() {
           <div className="flex gap-1 px-2 py-1.5">
             <button
               aria-label={t("shell.homeAria")}
-              className={`group/sidebar-tooltip relative flex h-8 shrink-0 items-center gap-2 rounded-md px-2 text-[14px] transition ${
+              className={`group/sidebar-tooltip relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition ${
                 isHome
                   ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
@@ -1022,9 +1022,6 @@ export function AppShell() {
                 }`}
                 strokeWidth={2}
               />
-              <span className="text-[#4B5563] group-hover/sidebar-tooltip:text-[#111827]">
-                {t("navigation.home")}
-              </span>
               <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
                 {t("shell.homeTooltip")}
               </span>
