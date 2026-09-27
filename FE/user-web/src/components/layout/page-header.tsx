@@ -1,4 +1,5 @@
 import { type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/utils/cn";
 
@@ -25,6 +26,7 @@ type PageHeaderProps = {
   readonly actions?: readonly HeaderAction[];
   readonly actionsPlacement?: "end" | "start";
   readonly className?: string;
+  readonly leading?: ReactNode;
 };
 
 // 기능 : PageHeader 컴포넌트를 렌더링합니다.
@@ -33,6 +35,7 @@ export function PageHeader({
   actions = [],
   actionsPlacement = "end",
   className,
+  leading,
 }: PageHeaderProps) {
   const actionsNode =
     actions.length > 0 ? (
@@ -67,6 +70,8 @@ export function PageHeader({
         className
       )}
     >
+      {leading}
+
       {/* 브레드크럼 */}
       <nav className="flex min-w-0 items-center gap-1.5" aria-label="breadcrumb">
         {breadcrumbs.map((crumb, index) => {

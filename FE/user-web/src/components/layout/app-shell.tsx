@@ -91,7 +91,6 @@ import {
 import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
 
-const SIDEBAR_COLLAPSE_TRANSITION_MS = 500;
 const ACCOUNT_MODAL_TRANSITION_MS = 300;
 const ACCOUNT_MODAL_OPEN_DELAY_MS = 20;
 const HELP_MODAL_TRANSITION_MS = 300;
@@ -147,36 +146,33 @@ export function AppShell() {
     useState(false);
   // 9. 처리 흐름에 필요한 [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] 값을 준비한다.
   const [isSidebarAutoCollapsed, setIsSidebarAutoCollapsed] = useState(false);
-  // 10. 처리 흐름에 필요한 [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] 값을 준비한다.
-  const [isSidebarOpenButtonVisible, setIsSidebarOpenButtonVisible] =
-    useState(false);
-  // 11. 처리 흐름에 필요한 [accountModal, setAccountModal] 값을 준비한다.
+  // 10. 처리 흐름에 필요한 [accountModal, setAccountModal] 값을 준비한다.
   const [accountModal, setAccountModal] = useState<AccountModalSection | null>(
     null,
   );
-  // 12. 처리 흐름에 필요한 [lastAccountModalSection, setLastAccountModalSection] 값을 준비한다.
+  // 11. 처리 흐름에 필요한 [lastAccountModalSection, setLastAccountModalSection] 값을 준비한다.
   const [lastAccountModalSection, setLastAccountModalSection] =
     useState<AccountModalSection>("settings");
-  // 13. 처리 흐름에 필요한 [helpModal, setHelpModal] 값을 준비한다.
+  // 12. 처리 흐름에 필요한 [helpModal, setHelpModal] 값을 준비한다.
   const [helpModal, setHelpModal] = useState<HelpModalSection | null>(null);
-  // 14. 처리 흐름에 필요한 [logoutConfirmOpen, setLogoutConfirmOpen] 값을 준비한다.
+  // 13. 처리 흐름에 필요한 [logoutConfirmOpen, setLogoutConfirmOpen] 값을 준비한다.
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
-  // 15. 처리 흐름에 필요한 [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] 값을 준비한다.
+  // 14. 처리 흐름에 필요한 [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] 값을 준비한다.
   const [createWorkspaceModalOpen, setCreateWorkspaceModalOpen] =
     useState(false);
-  // 16. 새 관리 항목 생성 모달의 열림 상태를 준비한다.
+  // 15. 새 관리 항목 생성 모달의 열림 상태를 준비한다.
   const [
     createObjectDefinitionModalOpen,
     setCreateObjectDefinitionModalOpen,
   ] = useState(false);
-  // 17. 처리 흐름에 필요한 [selectedSidebarWorkspace, setSelectedSidebarWorkspace] 값을 준비한다.
+  // 16. 처리 흐름에 필요한 [selectedSidebarWorkspace, setSelectedSidebarWorkspace] 값을 준비한다.
   const [selectedSidebarWorkspace, setSelectedSidebarWorkspace] =
     useState<SidebarWorkspaceSummary | null>(null);
-  // 18. 처리 흐름에 필요한 [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] 값을 준비한다.
+  // 17. 처리 흐름에 필요한 [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] 값을 준비한다.
   const [isWorkspaceSwitchLoading, setWorkspaceSwitchLoading] = useState(false);
-  // 19. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
+  // 18. 처리 흐름에 필요한 accountMenuRef 값을 준비한다.
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  // 20. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
+  // 19. 처리 흐름에 필요한 helpMenuRef 값을 준비한다.
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
   // 21. 처리 흐름에 필요한 workspaceSwitchRequestIdRef 값을 준비한다.
   const workspaceSwitchRequestIdRef = useRef(0);
@@ -546,24 +542,11 @@ export function AppShell() {
     void navigate(toPublicSitePath(resolvePublicSiteLanguage(), "/login"));
   };
 
-  // 29. 화면 상태를 현재 흐름에 맞게 갱신한다.
-  useEffect(() => {
-    // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
-    setIsSidebarOpenButtonVisible(false);
-
-    // 2. 조건을 확인해 필요한 분기 처리를 수행한다.
-    if (!isSidebarCollapsed) {
-      return;
-    }
-
-    // 3. 이후 단계에서 사용할 timerId 값을 준비한다.
-    const timerId = window.setTimeout(() => {
-      setIsSidebarOpenButtonVisible(true);
-    }, SIDEBAR_COLLAPSE_TRANSITION_MS);
-
-    // 4. 계산된 결과를 호출자에게 반환한다.
-    return () => window.clearTimeout(timerId);
-  }, [isSidebarCollapsed]);
+  // 기능 : 접힌 데스크톱 사이드바를 다시 엽니다.
+  const openDesktopSidebar = useCallback(() => {
+    setIsSidebarManuallyCollapsed(false);
+    setIsSidebarAutoCollapsed(false);
+  }, []);
 
   // 30. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
@@ -701,8 +684,22 @@ export function AppShell() {
   const isMobileHeaderHidden = false;
   // 38. 이후 단계에서 사용할 hideTopBar 값을 준비한다.
   const hideTopBar = false;
+  // 39. 이후 단계에서 사용할 sidebarOpenButton 값을 준비한다.
+  const sidebarOpenButton = isSidebarCollapsed ? (
+    <button
+      aria-label={t("shell.sidebarOpen")}
+      className="group/sidebar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+      type="button"
+      onClick={openDesktopSidebar}
+    >
+      <Menu className="h-5 w-5" strokeWidth={2} />
+      <span className="pointer-events-none absolute left-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+        {t("shell.sidebarOpen")}
+      </span>
+    </button>
+  ) : null;
 
-  // 39. 이후 단계에서 사용할 topBarContent 값을 준비한다.
+  // 40. 이후 단계에서 사용할 topBarContent 값을 준비한다.
   const topBarContent = (() => {
     if (isWorkspaceObject) {
       const objectLabel =
@@ -710,6 +707,7 @@ export function AppShell() {
 
       return (
         <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3">
+          {sidebarOpenButton}
           <SidebarCrmObjectIcon
             className="h-5 w-5 shrink-0 text-[#6B7280]"
             name={selectedSidebarCrmObject?.icon}
@@ -736,11 +734,12 @@ export function AppShell() {
     return (
       <PageHeader
         breadcrumbs={[{ label: t(meta.labelKey), icon: meta.icon }]}
+        leading={sidebarOpenButton}
       />
     );
   })();
 
-  // 40. 이후 단계에서 사용할 accountProfile 값을 준비한다.
+  // 41. 이후 단계에서 사용할 accountProfile 값을 준비한다.
   const accountProfile = (
     <div className="relative px-2 py-1.5" ref={accountMenuRef}>
       <div
@@ -1058,23 +1057,6 @@ export function AppShell() {
           </div>
           {sidebarHelpMenu}
         </aside>
-        <button
-          aria-label={t("shell.sidebarOpen")}
-          className={`fixed left-3 top-2.5 z-50 inline-flex h-9 w-9 items-center justify-center rounded-md text-[#9CA3AF] transition-opacity duration-500 hover:bg-[#FAFAFB] hover:text-[#6B7280] active:bg-[#D3D1CB] ${
-            isSidebarOpenButtonVisible
-              ? "pointer-events-auto opacity-100"
-              : "pointer-events-none opacity-0"
-          }`}
-          onClick={() => {
-            setIsSidebarManuallyCollapsed(false);
-            setIsSidebarAutoCollapsed(false);
-          }}
-          title={t("shell.sidebarOpen")}
-          type="button"
-        >
-          <Menu className="h-5 w-5" strokeWidth={2} />
-        </button>
-
         {/* Main */}
         <div
           className={`flex min-w-0 flex-1 flex-col transition-[padding-left] duration-500 ease-out ${
