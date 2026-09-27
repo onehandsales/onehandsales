@@ -2,11 +2,14 @@ import {
   ArrowUpDown,
   CalendarDays,
   CircleDot,
+  Download,
   FileText,
   MessageSquareText,
+  MoreHorizontal,
   Plus,
   Search,
   SlidersHorizontal,
+  Upload,
   UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -173,7 +176,9 @@ const MOCK_OBJECT_LIST_ROWS = MOCK_OBJECT_LIST_RECORD_NAMES.map(
 // 기능 : Workspace 관리 항목의 공통 목록 화면 UX를 렌더링합니다.
 export function WorkspaceObjectListPage() {
   const [isSearchOpen, setSearchOpen] = useState(false);
+  const [isMoreActionsOpen, setMoreActionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const { t } = useAppI18n();
   const { objectDefinitionId } = useParams<{
@@ -212,12 +217,48 @@ export function WorkspaceObjectListPage() {
     }
   }, [isSearchOpen]);
 
+  // 기능 : 더보기 메뉴 바깥 입력과 Escape 키로 메뉴를 닫습니다.
+  useEffect(() => {
+    if (!isMoreActionsOpen) {
+      return;
+    }
+
+    // 기능 : 더보기 메뉴 바깥 pointer 입력을 처리합니다.
+    const handleDocumentPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (
+        target instanceof Node &&
+        moreActionsRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setMoreActionsOpen(false);
+    };
+
+    // 기능 : 더보기 메뉴 닫기 키 입력을 처리합니다.
+    const handleDocumentKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMoreActionsOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleDocumentPointerDown);
+    document.addEventListener("keydown", handleDocumentKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleDocumentPointerDown);
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+    };
+  }, [isMoreActionsOpen]);
+
   return (
     <section
       className="flex h-[calc(100dvh-var(--topbar-height))] min-h-0 flex-col overflow-hidden bg-white"
       data-testid="workspace-object-list-page"
     >
-      <div className="flex h-11 shrink-0 items-center gap-2 bg-white px-5">
+      <div className="flex h-11 shrink-0 items-center gap-2 bg-white px-3">
         {isSearchOpen ? (
           <label className="relative flex h-8 w-full max-w-[360px] items-center">
             <Search
@@ -285,10 +326,77 @@ export function WorkspaceObjectListPage() {
           type="button"
         >
           <Plus className="h-5 w-5" strokeWidth={2} />
-          <span className="pointer-events-none absolute right-[calc(100%+6px)] top-1/2 z-50 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
+          <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
             {t("objectList.createTooltip")}
           </span>
         </button>
+        <div className="relative" ref={moreActionsRef}>
+          <button
+            aria-expanded={isMoreActionsOpen}
+            aria-haspopup="menu"
+            aria-label={t("objectList.moreActionsTooltip")}
+            className={`group/object-toolbar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition ${
+              isMoreActionsOpen
+                ? "bg-[#E4E2DC] text-[#6B7280] active:bg-[#D3D1CB]"
+                : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+            }`}
+            type="button"
+            onClick={() => setMoreActionsOpen((open) => !open)}
+          >
+            <MoreHorizontal className="h-5 w-5" strokeWidth={2} />
+            {!isMoreActionsOpen ? (
+              <span className="pointer-events-none absolute right-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
+                {t("objectList.moreActionsTooltip")}
+              </span>
+            ) : null}
+          </button>
+          <div
+            aria-hidden={!isMoreActionsOpen}
+            className={`absolute right-0 top-[calc(100%+6px)] z-50 w-40 origin-top-right transition-all duration-150 ease-out ${
+              isMoreActionsOpen
+                ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+                : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
+            }`}
+          >
+            <div
+              className="overflow-hidden rounded-xl bg-white p-2 text-[#111827] shadow-[0_14px_36px_rgba(15,23,42,0.16)]"
+              role="menu"
+            >
+              <div className="grid gap-px">
+                <button
+                  className="group flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+                  role="menuitem"
+                  tabIndex={isMoreActionsOpen ? undefined : -1}
+                  type="button"
+                  onClick={() => setMoreActionsOpen(false)}
+                >
+                  <Download
+                    className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"
+                    strokeWidth={2}
+                  />
+                  <span className="min-w-0 flex-1 truncate">
+                    {t("objectList.exportDataAction")}
+                  </span>
+                </button>
+                <button
+                  className="group flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+                  role="menuitem"
+                  tabIndex={isMoreActionsOpen ? undefined : -1}
+                  type="button"
+                  onClick={() => setMoreActionsOpen(false)}
+                >
+                  <Upload
+                    className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"
+                    strokeWidth={2}
+                  />
+                  <span className="min-w-0 flex-1 truncate">
+                    {t("objectList.importDataAction")}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="min-h-0 flex-1 overflow-hidden bg-white">
         <div className="notion-scrollbar h-full overflow-auto">

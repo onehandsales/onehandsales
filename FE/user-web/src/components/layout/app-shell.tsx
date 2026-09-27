@@ -709,7 +709,7 @@ export function AppShell() {
         selectedSidebarCrmObject?.singularName ?? t("navigation.mainGroup");
 
       return (
-        <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-5">
+        <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3">
           <SidebarCrmObjectIcon
             className="h-5 w-5 shrink-0 text-[#6B7280]"
             name={selectedSidebarCrmObject?.icon}
