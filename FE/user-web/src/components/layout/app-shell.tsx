@@ -708,11 +708,13 @@ export function AppShell() {
       return (
         <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3">
           {sidebarOpenButton}
-          <SidebarCrmObjectIcon
-            className="h-5 w-5 shrink-0 text-[#6B7280]"
-            name={selectedSidebarCrmObject?.icon}
-            strokeWidth={2}
-          />
+          <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center">
+            <SidebarCrmObjectIcon
+              className="h-5 w-5 shrink-0 text-[#6B7280]"
+              name={selectedSidebarCrmObject?.icon}
+              strokeWidth={2}
+            />
+          </span>
           <h1 className="min-w-0 truncate text-[14px] font-semibold text-[#4B5563]">
             {objectLabel}
           </h1>
