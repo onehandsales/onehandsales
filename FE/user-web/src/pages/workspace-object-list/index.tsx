@@ -557,28 +557,24 @@ export function WorkspaceObjectListPage() {
                 </div>
               ) : null}
               <div
-                className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-10 items-stretch bg-white text-[14px] text-[#6B7280]`}
+                className="flex h-10 items-center justify-center bg-white"
                 role="row"
               >
-                <div className="border-r border-[#F1F0EC]" role="cell" />
                 <div
-                  className="col-span-6 flex h-full min-w-0 items-center px-3"
+                  className="flex h-full items-center justify-center"
                   role="cell"
                 >
                   <button
-                    className="inline-flex h-8 min-w-0 items-center gap-1.5 rounded-md px-2 font-medium transition hover:bg-[#F3F2EF] hover:text-[#111827] active:bg-[#E4E2DC]"
+                    aria-label={`새 ${objectLabel}`}
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-2.5 text-[14px] font-medium text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0]"
                     type="button"
                   >
                     <Plus
                       aria-hidden="true"
-                      className="h-4 w-4 shrink-0"
+                      className="h-5 w-5 shrink-0"
                       strokeWidth={2}
                     />
-                    <span className="truncate">
-                      {t("objectList.addRowLabel", {
-                        values: { name: objectLabel },
-                      })}
-                    </span>
+                    <span className="truncate">{t("objectList.addDataAction")}</span>
                   </button>
                 </div>
               </div>

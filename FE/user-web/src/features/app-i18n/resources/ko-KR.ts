@@ -33,7 +33,7 @@ export const koKRResource = {
     settings: "설정",
   },
   objectList: {
-    addRowLabel: "새 {name}",
+    addDataAction: "생성하기",
     createdAtColumn: "생성일",
     createTooltip: "생성하기",
     exportDataAction: "내보내기",
