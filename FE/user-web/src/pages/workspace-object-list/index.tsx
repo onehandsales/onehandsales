@@ -295,7 +295,7 @@ export function WorkspaceObjectListPage() {
             onClick={() => setSearchOpen(true)}
           >
             <Search className="h-5 w-5" strokeWidth={2} />
-            <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
+            <span className="pointer-events-none absolute left-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
               {t("objectList.openSearchTooltip")}
             </span>
           </button>
