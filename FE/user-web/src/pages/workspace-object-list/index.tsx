@@ -23,7 +23,6 @@ const OBJECT_LIST_TABLE_GRID_CLASS_NAME =
 type MockObjectListRow = {
   readonly id: string;
   readonly name: string;
-  readonly description: string;
   readonly status: string;
   readonly statusClassName: string;
   readonly owner: string;
@@ -83,17 +82,6 @@ const MOCK_OBJECT_LIST_RECORD_NAMES = [
   "넥스트샵",
   "정다은",
   "플랜비솔루션",
-] as const;
-
-const MOCK_OBJECT_LIST_DESCRIPTIONS = [
-  "다음 연락 필요",
-  "견적 재검토",
-  "신규 문의",
-  "갱신 확인",
-  "연락 대기",
-  "자료 전달",
-  "미팅 일정 조율",
-  "계약 조건 확인",
 ] as const;
 
 const MOCK_OBJECT_LIST_STATUS_OPTIONS = [
@@ -158,7 +146,6 @@ function createMockObjectListRow(
   return {
     id: `mock-${String(index + 1).padStart(3, "0")}`,
     name,
-    description: getRepeatingMockValue(MOCK_OBJECT_LIST_DESCRIPTIONS, index),
     status: status.label,
     statusClassName: status.statusClassName,
     owner: getRepeatingMockValue(MOCK_OBJECT_LIST_OWNERS, index),
@@ -201,7 +188,6 @@ export function WorkspaceObjectListPage() {
     return MOCK_OBJECT_LIST_ROWS.filter((row) =>
       [
         row.name,
-        row.description,
         row.status,
         row.owner,
         row.updatedAt,
@@ -519,14 +505,9 @@ export function WorkspaceObjectListPage() {
                     className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
                     role="cell"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate font-medium text-[#111827]">
-                        {row.name}
-                      </p>
-                      <p className="truncate text-[12px] font-medium text-[#9CA3AF]">
-                        {row.description}
-                      </p>
-                    </div>
+                    <span className="min-w-0 truncate font-medium text-[#111827]">
+                      {row.name}
+                    </span>
                   </div>
                   <div
                     className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
