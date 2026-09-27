@@ -214,7 +214,7 @@ export function WorkspaceObjectListPage() {
 
   return (
     <section
-      className="flex min-h-[calc(100dvh-var(--topbar-height))] flex-col bg-white"
+      className="flex h-[calc(100dvh-var(--topbar-height))] min-h-0 flex-col overflow-hidden bg-white"
       data-testid="workspace-object-list-page"
     >
       <div className="flex h-11 shrink-0 items-center gap-2 bg-white px-5">
@@ -290,7 +290,7 @@ export function WorkspaceObjectListPage() {
           </span>
         </button>
       </div>
-      <div className="min-h-0 flex-1 bg-white">
+      <div className="min-h-0 flex-1 overflow-hidden bg-white">
         <div className="notion-scrollbar h-full overflow-auto">
           <div
             aria-label={objectLabel}

@@ -1091,7 +1091,7 @@ export function AppShell() {
           <main
             className={
               isFixedViewportPage
-                ? "flex min-h-[calc(100dvh-var(--topbar-height))] flex-col"
+                ? "flex h-[calc(100dvh-var(--topbar-height))] min-h-0 flex-col overflow-hidden"
                 : hideTopBar
                   ? "min-h-dvh"
                   : "min-h-[calc(100dvh-var(--topbar-height))]"
