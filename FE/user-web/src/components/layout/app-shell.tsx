@@ -715,7 +715,7 @@ export function AppShell() {
             name={selectedSidebarCrmObject?.icon}
             strokeWidth={2}
           />
-          <h1 className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+          <h1 className="min-w-0 truncate text-[14px] font-semibold text-[#4B5563]">
             {objectLabel}
           </h1>
         </header>
