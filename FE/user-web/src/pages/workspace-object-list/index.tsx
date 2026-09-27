@@ -499,7 +499,7 @@ export function WorkspaceObjectListPage() {
             <div role="rowgroup">
               {visibleRows.map((row) => (
                 <div
-                  className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-11 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]`}
+                  className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-10 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]`}
                   key={row.id}
                   role="row"
                 >
@@ -576,7 +576,7 @@ export function WorkspaceObjectListPage() {
                 </div>
               ) : null}
               <div
-                className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-11 items-stretch bg-white text-[14px] text-[#6B7280]`}
+                className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-10 items-stretch bg-white text-[14px] text-[#6B7280]`}
                 role="row"
               >
                 <div className="border-r border-[#F1F0EC]" role="cell" />
