@@ -65,6 +65,7 @@ import {
   CreateWorkspaceModalContent,
   type CreatedWorkspaceResponse,
   isWorkspaceHomePath,
+  isWorkspaceObjectPath,
   type SidebarWorkspaceSummary,
   toWorkspaceHomePath,
   WorkspaceLoadingDialog,
@@ -74,6 +75,8 @@ import {
 } from "@/features/workspace";
 import {
   CreateObjectDefinitionModalContent,
+  SidebarCrmObjectIcon,
+  type SidebarCrmObjectListItem,
   useSidebarCrmObjectsQuery,
 } from "@/features/crm-object";
 import { sidebarCrmObjectQueryKeys } from "@/features/crm-object/api/sidebar-crm-object-query-keys";
@@ -110,7 +113,10 @@ type AccountModalNotice = {
 };
 
 export type AppShellOutletContext = {
+  readonly isSidebarCrmObjectsLoading: boolean;
+  readonly selectedSidebarCrmObject: SidebarCrmObjectListItem | null;
   readonly setAutoSidebarCollapsed: (collapsed: boolean) => void;
+  readonly sidebarCrmObjects: readonly SidebarCrmObjectListItem[];
 };
 
 // 기능 : 로그인 후 워크스페이스 shell과 공통 모달을 렌더링합니다.
@@ -120,7 +126,8 @@ export function AppShell() {
   // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
   // 3. 처리 흐름에 필요한 route params 값을 준비한다.
-  const { workspaceId: routeWorkspaceId } = useParams<{
+  const { objectDefinitionId: routeObjectDefinitionId, workspaceId: routeWorkspaceId } = useParams<{
+    readonly objectDefinitionId?: string;
     readonly workspaceId?: string;
   }>();
   // 4. 처리 흐름에 필요한 queryClient 값을 준비한다.
@@ -236,13 +243,22 @@ export function AppShell() {
   const isSidebarCrmObjectsLoading =
     sidebarCrmObjectsQuery.isLoading ||
     (sidebarCrmObjectsQuery.isFetching && sidebarCrmObjects.length === 0);
+  const selectedSidebarCrmObject = routeObjectDefinitionId
+    ? sidebarCrmObjects.find((object) => object.id === routeObjectDefinitionId) ??
+      null
+    : null;
   // 25. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
   // 26. 처리 흐름에 필요한 outletContext 값을 준비한다.
   const outletContext = useMemo<AppShellOutletContext>(
-    () => ({ setAutoSidebarCollapsed: setIsSidebarAutoCollapsed }),
-    [],
+    () => ({
+      isSidebarCrmObjectsLoading,
+      selectedSidebarCrmObject,
+      setAutoSidebarCollapsed: setIsSidebarAutoCollapsed,
+      sidebarCrmObjects,
+    }),
+    [isSidebarCrmObjectsLoading, selectedSidebarCrmObject, sidebarCrmObjects],
   );
 
   // 기능 : 사이드바 Workspace 목록 항목 클릭 시 전환 로딩 모달 후 단건 조회 결과로 현재 Workspace를 변경합니다.
@@ -679,7 +695,8 @@ export function AppShell() {
   }, [accountModal]);
 
   // 36. 이후 단계에서 사용할 isFixedViewportPage 값을 준비한다.
-  const isFixedViewportPage = isHome;
+  const isWorkspaceObject = isWorkspaceObjectPath(pathname);
+  const isFixedViewportPage = isHome || isWorkspaceObject;
   // 37. 이후 단계에서 사용할 isMobileHeaderHidden 값을 준비한다.
   const isMobileHeaderHidden = false;
   // 38. 이후 단계에서 사용할 hideTopBar 값을 준비한다.
@@ -687,6 +704,24 @@ export function AppShell() {
 
   // 39. 이후 단계에서 사용할 topBarContent 값을 준비한다.
   const topBarContent = (() => {
+    if (isWorkspaceObject) {
+      const objectLabel =
+        selectedSidebarCrmObject?.singularName ?? t("navigation.mainGroup");
+
+      return (
+        <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-5">
+          <SidebarCrmObjectIcon
+            className="h-5 w-5 shrink-0 text-[#6B7280]"
+            name={selectedSidebarCrmObject?.icon}
+            strokeWidth={2}
+          />
+          <h1 className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+            {objectLabel}
+          </h1>
+        </header>
+      );
+    }
+
     // 1. 현재 처리 흐름의 다음 단계를 수행한다.
     type PageMeta = { labelKey: AppI18nKey; icon: typeof House };
     // 2. 이후 단계에서 사용할 pageMetaMap 값을 준비한다.
@@ -1020,6 +1055,7 @@ export function AppShell() {
             <SidebarNav
               crmObjects={sidebarCrmObjects}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
+              workspaceId={currentWorkspace?.id ?? normalizedRouteWorkspaceId}
               onCreateObjectDefinition={openCreateObjectDefinitionModal}
             />
           </div>

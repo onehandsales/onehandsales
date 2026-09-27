@@ -42,6 +42,7 @@ import { RealEstateSolutionPage } from "@/pages/solutions/real-estate";
 import { MorePage } from "@/pages/more";
 import { OnboardingPage } from "@/pages/onboarding";
 import { TermsPage } from "@/pages/terms";
+import { WorkspaceObjectListPage } from "@/pages/workspace-object-list";
 
 const localizedPublicSiteRoutes = publicSiteLocaleSlugs.flatMap((localeSlug) =>
   publicSiteLocalizedPaths.map((publicPath) => ({
@@ -144,6 +145,10 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <AppWorkspaceRedirect /> },
       { path: "workspaces/:workspaceId", element: <HomePage /> },
+      {
+        path: "workspaces/:workspaceId/objects/:objectDefinitionId",
+        element: <WorkspaceObjectListPage />,
+      },
       { path: "contacts/*", element: <Navigate replace to="/app" /> },
       { path: "products/*", element: <Navigate replace to="/app" /> },
       { path: "deals/*", element: <Navigate replace to="/app" /> },

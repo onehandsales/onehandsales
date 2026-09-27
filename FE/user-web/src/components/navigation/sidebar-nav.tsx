@@ -1,10 +1,12 @@
 import { ChevronRight, Plus } from "lucide-react";
 import { type ReactNode, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import {
   SidebarCrmObjectIcon,
   type SidebarCrmObjectListItem,
 } from "@/features/crm-object";
+import { toWorkspaceObjectPath } from "@/features/workspace";
 import { cn } from "@/utils/cn";
 
 type SidebarNavProps = {
@@ -12,6 +14,7 @@ type SidebarNavProps = {
   readonly crmObjects?: readonly SidebarCrmObjectListItem[];
   readonly isCrmObjectsLoading?: boolean;
   readonly onCreateObjectDefinition?: () => void;
+  readonly workspaceId?: string | null;
 };
 
 // 기능 : SidebarNav 컴포넌트를 렌더링합니다.
@@ -20,6 +23,7 @@ export function SidebarNav({
   crmObjects = [],
   isCrmObjectsLoading = false,
   onCreateObjectDefinition,
+  workspaceId = null,
 }: SidebarNavProps) {
   const [isQuickWorkOpen, setQuickWorkOpen] = useState(true);
   const [isMainGroupOpen, setMainGroupOpen] = useState(true);
@@ -50,7 +54,7 @@ export function SidebarNav({
         {isCrmObjectsLoading ? (
           <SidebarCrmObjectSkeletonList />
         ) : (
-          <SidebarCrmObjectList objects={crmObjects} />
+          <SidebarCrmObjectList objects={crmObjects} workspaceId={workspaceId} />
         )}
       </SidebarSection>
       <SidebarSection
@@ -182,8 +186,10 @@ function SidebarCrmObjectSkeletonItem({
 // 기능 : 현재 Workspace의 관리 항목 목록을 사이드바 섹션 안에 렌더링합니다.
 function SidebarCrmObjectList({
   objects,
+  workspaceId,
 }: {
   readonly objects: readonly SidebarCrmObjectListItem[];
+  readonly workspaceId: string | null;
 }) {
   if (objects.length === 0) {
     return null;
@@ -192,7 +198,11 @@ function SidebarCrmObjectList({
   return (
     <>
       {objects.map((object) => (
-        <SidebarCrmObjectItem key={object.id} object={object} />
+        <SidebarCrmObjectItem
+          key={object.id}
+          object={object}
+          workspaceId={workspaceId}
+        />
       ))}
     </>
   );
@@ -201,17 +211,51 @@ function SidebarCrmObjectList({
 // 기능 : 사이드바 관리 항목 한 줄에 아이콘과 단수 이름을 표시합니다.
 function SidebarCrmObjectItem({
   object,
+  workspaceId,
 }: {
   readonly object: SidebarCrmObjectListItem;
+  readonly workspaceId: string | null;
 }) {
+  if (!workspaceId) {
+    return (
+      <div className="group/sidebar-object-row relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
+        <SidebarCrmObjectIcon
+          className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-row:text-[#6B7280]"
+          name={object.icon}
+          strokeWidth={2}
+        />
+        <span className="min-w-0 flex-1 truncate">{object.singularName}</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="group/sidebar-object-row relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
-      <SidebarCrmObjectIcon
-        className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-row:text-[#6B7280]"
-        name={object.icon}
-        strokeWidth={2}
-      />
-      <span className="min-w-0 flex-1 truncate">{object.singularName}</span>
-    </div>
+    <NavLink
+      className={({ isActive }) =>
+        cn(
+          "group/sidebar-object-row relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors",
+          isActive
+            ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
+            : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+        )
+      }
+      to={toWorkspaceObjectPath(workspaceId, object.id)}
+    >
+      {({ isActive }) => (
+        <>
+          <SidebarCrmObjectIcon
+            className={cn(
+              "h-5 w-5 shrink-0",
+              isActive
+                ? "text-[#6B7280]"
+                : "text-[#9CA3AF] group-hover/sidebar-object-row:text-[#6B7280]"
+            )}
+            name={object.icon}
+            strokeWidth={2}
+          />
+          <span className="min-w-0 flex-1 truncate">{object.singularName}</span>
+        </>
+      )}
+    </NavLink>
   );
 }

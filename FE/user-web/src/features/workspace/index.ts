@@ -5,7 +5,9 @@ export { createWorkspace } from "./api/workspace-api";
 export {
   APP_ENTRY_PATH,
   isWorkspaceHomePath,
+  isWorkspaceObjectPath,
   toWorkspaceHomePath,
+  toWorkspaceObjectPath,
 } from "./workspace-routes";
 export type {
   CreatedWorkspaceResponse,
