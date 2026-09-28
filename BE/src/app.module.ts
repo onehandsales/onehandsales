@@ -10,6 +10,7 @@ import { ErrorReportModule } from "./modules/error-report/infrastructure/error-r
 import { HealthModule } from "./modules/health/infrastructure/health.module";
 import { ObjectDefinitionModule } from "./modules/object-definition/infrastructure/object-definition.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
+import { RecordDefinitionModule } from "./modules/record-definition/infrastructure/record-definition.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
@@ -27,6 +28,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     UserModule,
     ObjectDefinitionModule,
     AttributeDefinitionModule,
+    RecordDefinitionModule,
     PublicContactRequestModule,
     ErrorReportModule,
     SupportRequestModule,
