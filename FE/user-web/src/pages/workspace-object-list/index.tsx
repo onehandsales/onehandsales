@@ -11,9 +11,21 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { useAppI18n } from "@/features/app-i18n";
+import { useAuthSession } from "@/features/auth";
+import {
+  type WorkspaceObjectAttributeDefinitionListItem,
+  useWorkspaceObjectAttributeDefinitionsQuery,
+} from "@/features/crm-object";
 
-const OBJECT_LIST_TABLE_GRID_CLASS_NAME =
-  "[grid-template-columns:44px_minmax(240px,1.45fr)_140px_156px_176px_132px_minmax(240px,1fr)]";
+const OBJECT_LIST_SELECT_COLUMN_WIDTH_PX = 44;
+const OBJECT_LIST_DATA_COLUMN_TEMPLATES = [
+  "minmax(240px,1.45fr)",
+  "140px",
+  "156px",
+  "176px",
+  "132px",
+  "minmax(240px,1fr)",
+] as const;
 
 type MockObjectListRow = {
   readonly id: string;
@@ -25,6 +37,11 @@ type MockObjectListRow = {
   readonly createdAt: string;
   readonly memo: string;
 };
+
+type RenderedObjectListAttributeColumn =
+  Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "title"> & {
+    readonly isLoadingPlaceholder: boolean;
+  };
 
 const MOCK_OBJECT_LIST_RECORD_NAMES = [
   "김민수",
@@ -155,6 +172,89 @@ const MOCK_OBJECT_LIST_ROWS = MOCK_OBJECT_LIST_RECORD_NAMES.map(
   createMockObjectListRow,
 );
 
+// 기능 : AttributeDefinition 컬럼 개수에 맞는 Object 목록 grid template을 생성합니다.
+function buildObjectListTableGridTemplate(columnCount: number) {
+  const dataColumns = Array.from({ length: columnCount }, (_, index) => {
+    return OBJECT_LIST_DATA_COLUMN_TEMPLATES[index] ?? "minmax(160px,1fr)";
+  });
+
+  if (dataColumns.length === 0) {
+    return `${OBJECT_LIST_SELECT_COLUMN_WIDTH_PX}px`;
+  }
+
+  return `${OBJECT_LIST_SELECT_COLUMN_WIDTH_PX}px ${dataColumns.join(" ")}`;
+}
+
+// 기능 : API 로딩 중에도 header row 높이와 column 구조를 유지할 임시 컬럼을 생성합니다.
+function createLoadingAttributeColumn(): RenderedObjectListAttributeColumn {
+  return {
+    id: "attribute-definition-loading",
+    title: "",
+    isLoadingPlaceholder: true,
+  };
+}
+
+// 기능 : AttributeDefinition API 응답을 header row 렌더링용 컬럼 값으로 변환합니다.
+function toRenderedAttributeColumns(
+  attributeDefinitions: readonly WorkspaceObjectAttributeDefinitionListItem[],
+  isLoading: boolean,
+): readonly RenderedObjectListAttributeColumn[] {
+  if (attributeDefinitions.length > 0) {
+    return attributeDefinitions.map((attributeDefinition) => ({
+      id: attributeDefinition.id,
+      title: attributeDefinition.title,
+      isLoadingPlaceholder: false,
+    }));
+  }
+
+  if (isLoading) {
+    return [createLoadingAttributeColumn()];
+  }
+
+  return [];
+}
+
+// 기능 : 기존 mock row 값을 현재 header column index에 맞는 cell 내용으로 변환합니다.
+function renderMockObjectListCellValue(row: MockObjectListRow, columnIndex: number) {
+  if (columnIndex === 0) {
+    return (
+      <span className="min-w-0 truncate font-medium text-[#111827]">
+        {row.name}
+      </span>
+    );
+  }
+
+  if (columnIndex === 1) {
+    return (
+      <span
+        className={`${row.statusClassName} inline-flex h-6 max-w-full items-center rounded-md px-2 text-[12px] font-semibold leading-none`}
+      >
+        <span className="truncate">{row.status}</span>
+      </span>
+    );
+  }
+
+  if (columnIndex === 2) {
+    return (
+      <span className="truncate font-medium text-[#4B5563]">{row.owner}</span>
+    );
+  }
+
+  if (columnIndex === 3) {
+    return <span className="truncate text-[#6B7280]">{row.updatedAt}</span>;
+  }
+
+  if (columnIndex === 4) {
+    return <span className="truncate text-[#6B7280]">{row.createdAt}</span>;
+  }
+
+  if (columnIndex === 5) {
+    return <span className="truncate text-[#6B7280]">{row.memo}</span>;
+  }
+
+  return <span aria-hidden="true" className="truncate text-[#6B7280]" />;
+}
+
 // 기능 : Workspace 관리 항목의 공통 목록 화면 UX를 렌더링합니다.
 export function WorkspaceObjectListPage() {
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -163,16 +263,41 @@ export function WorkspaceObjectListPage() {
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const { t } = useAppI18n();
-  const { objectDefinitionId } = useParams<{
+  const { user } = useAuthSession();
+  const { objectDefinitionId, workspaceId } = useParams<{
     readonly objectDefinitionId?: string;
+    readonly workspaceId?: string;
   }>();
   const { selectedSidebarCrmObject, sidebarCrmObjects } =
     useOutletContext<AppShellOutletContext>();
+  const attributeDefinitionsQuery = useWorkspaceObjectAttributeDefinitionsQuery({
+    userId: user?.id ?? null,
+    workspaceId: workspaceId ?? null,
+    objectDefinitionId: objectDefinitionId ?? null,
+  });
   const object =
     selectedSidebarCrmObject ??
     sidebarCrmObjects.find((item) => item.id === objectDefinitionId) ??
     null;
   const objectLabel = object?.singularName ?? t("objectList.fallbackObjectLabel");
+  const renderedAttributeColumns = useMemo(
+    () =>
+      toRenderedAttributeColumns(
+        attributeDefinitionsQuery.data ?? [],
+        attributeDefinitionsQuery.isLoading ||
+          (attributeDefinitionsQuery.isFetching &&
+            !attributeDefinitionsQuery.data),
+      ),
+    [
+      attributeDefinitionsQuery.data,
+      attributeDefinitionsQuery.isFetching,
+      attributeDefinitionsQuery.isLoading,
+    ],
+  );
+  const tableGridTemplateColumns = useMemo(
+    () => buildObjectListTableGridTemplate(renderedAttributeColumns.length),
+    [renderedAttributeColumns.length],
+  );
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const searchLabel = t("common.searchName", { values: { name: objectLabel } });
   const visibleRows = useMemo(() => {
@@ -387,8 +512,9 @@ export function WorkspaceObjectListPage() {
             role="table"
           >
             <div
-              className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} sticky top-0 z-10 grid h-9 items-stretch border-b border-[#EEEDEA] bg-white text-[14px] font-medium text-[#111827]`}
+              className="sticky top-0 z-10 grid h-9 items-stretch border-b border-[#EEEDEA] bg-white text-[14px] font-medium text-[#111827]"
               role="row"
+              style={{ gridTemplateColumns: tableGridTemplateColumns }}
             >
               <div
                 className="flex h-full items-center justify-center border-r border-white"
@@ -400,59 +526,34 @@ export function WorkspaceObjectListPage() {
                   type="checkbox"
                 />
               </div>
-              <div
-                className="flex h-full min-w-0 items-center border-r border-white px-3"
-                role="columnheader"
-              >
-                <span className="min-w-0 truncate">{objectLabel}</span>
-              </div>
-              <div
-                className="flex h-full min-w-0 items-center border-r border-white px-3"
-                role="columnheader"
-              >
-                <span className="min-w-0 truncate">
-                  {t("objectList.statusColumn")}
-                </span>
-              </div>
-              <div
-                className="flex h-full min-w-0 items-center border-r border-white px-3"
-                role="columnheader"
-              >
-                <span className="min-w-0 truncate">
-                  {t("objectList.ownerColumn")}
-                </span>
-              </div>
-              <div
-                className="flex h-full min-w-0 items-center border-r border-white px-3"
-                role="columnheader"
-              >
-                <span className="min-w-0 truncate">
-                  {t("objectList.updatedColumn")}
-                </span>
-              </div>
-              <div
-                className="flex h-full min-w-0 items-center border-r border-white px-3"
-                role="columnheader"
-              >
-                <span className="min-w-0 truncate">
-                  {t("objectList.createdAtColumn")}
-                </span>
-              </div>
-              <div
-                className="flex h-full min-w-0 items-center px-3"
-                role="columnheader"
-              >
-                <span className="min-w-0 truncate">
-                  {t("objectList.memoColumn")}
-                </span>
-              </div>
+              {renderedAttributeColumns.map((column, index) => (
+                <div
+                  className={`flex h-full min-w-0 items-center px-3 ${
+                    index === renderedAttributeColumns.length - 1
+                      ? ""
+                      : "border-r border-white"
+                  }`}
+                  key={column.id}
+                  role="columnheader"
+                >
+                  {column.isLoadingPlaceholder ? (
+                    <span
+                      aria-hidden="true"
+                      className="h-3 w-20 rounded bg-[#F3F2EF]"
+                    />
+                  ) : (
+                    <span className="min-w-0 truncate">{column.title}</span>
+                  )}
+                </div>
+              ))}
             </div>
             <div role="rowgroup">
               {visibleRows.map((row) => (
                 <div
-                  className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-10 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]`}
+                  className="grid h-10 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]"
                   key={row.id}
                   role="row"
+                  style={{ gridTemplateColumns: tableGridTemplateColumns }}
                 >
                   <div
                     className="flex h-full items-center justify-center border-r border-[#F1F0EC]"
@@ -466,54 +567,19 @@ export function WorkspaceObjectListPage() {
                       type="checkbox"
                     />
                   </div>
-                  <div
-                    className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
-                    role="cell"
-                  >
-                    <span className="min-w-0 truncate font-medium text-[#111827]">
-                      {row.name}
-                    </span>
-                  </div>
-                  <div
-                    className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
-                    role="cell"
-                  >
-                    <span
-                      className={`${row.statusClassName} inline-flex h-6 max-w-full items-center rounded-md px-2 text-[12px] font-semibold leading-none`}
+                  {renderedAttributeColumns.map((column, index) => (
+                    <div
+                      className={`flex h-full min-w-0 items-center px-3 ${
+                        index === renderedAttributeColumns.length - 1
+                          ? ""
+                          : "border-r border-[#F1F0EC]"
+                      }`}
+                      key={column.id}
+                      role="cell"
                     >
-                      <span className="truncate">{row.status}</span>
-                    </span>
-                  </div>
-                  <div
-                    className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
-                    role="cell"
-                  >
-                    <span className="truncate font-medium text-[#4B5563]">
-                      {row.owner}
-                    </span>
-                  </div>
-                  <div
-                    className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
-                    role="cell"
-                  >
-                    <span className="truncate text-[#6B7280]">
-                      {row.updatedAt}
-                    </span>
-                  </div>
-                  <div
-                    className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
-                    role="cell"
-                  >
-                    <span className="truncate text-[#6B7280]">
-                      {row.createdAt}
-                    </span>
-                  </div>
-                  <div
-                    className="flex h-full min-w-0 items-center px-3"
-                    role="cell"
-                  >
-                    <span className="truncate text-[#6B7280]">{row.memo}</span>
-                  </div>
+                      {renderMockObjectListCellValue(row, index)}
+                    </div>
+                  ))}
                 </div>
               ))}
               {visibleRows.length === 0 ? (
