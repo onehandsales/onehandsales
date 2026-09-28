@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { OBJECT_DEFINITION_ACCESS_QUERY } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
 import { OBJECT_DEFINITION_COMMAND_REPOSITORY } from "@/modules/object-definition/application/ports/object-definition-command.repository";
 import { OBJECT_DEFINITION_SIDEBAR_QUERY } from "@/modules/object-definition/application/ports/object-definition-sidebar-query.port";
 import { CreateWorkspaceObjectDefinitionUseCase } from "@/modules/object-definition/application/use-cases/create-workspace-object-definition.use-case";
@@ -9,6 +10,7 @@ import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logge
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaObjectDefinitionAccessQueryRepository } from "./persistence/prisma-object-definition-access-query.repository";
 import { PrismaObjectDefinitionCommandRepository } from "./persistence/prisma-object-definition-command.repository";
 import { PrismaObjectDefinitionSidebarQueryRepository } from "./persistence/prisma-object-definition-sidebar-query.repository";
 import { UserSidebarWorkspaceObjectsController } from "../presentation/http/user-sidebar-workspace-objects.controller";
@@ -30,6 +32,13 @@ import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/u
       useExisting: AppLogger,
     },
     {
+      provide: OBJECT_DEFINITION_ACCESS_QUERY,
+      // 기능 : Prisma 서비스로 ObjectDefinition 접근 확인 구현체를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaObjectDefinitionAccessQueryRepository(prismaService),
+      inject: [PrismaService],
+    },
+    {
       provide: OBJECT_DEFINITION_COMMAND_REPOSITORY,
       // 기능 : Prisma 서비스로 ObjectDefinition 쓰기 저장소 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
@@ -44,5 +53,6 @@ import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/u
       inject: [PrismaService],
     },
   ],
+  exports: [OBJECT_DEFINITION_ACCESS_QUERY],
 })
 export class ObjectDefinitionModule {}

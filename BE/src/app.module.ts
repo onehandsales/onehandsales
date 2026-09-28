@@ -4,6 +4,7 @@ import {
   type NestModule,
 } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { AttributeDefinitionModule } from "./modules/attribute-definition/infrastructure/attribute-definition.module";
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
@@ -25,6 +26,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     AuthModule,
     UserModule,
     ObjectDefinitionModule,
+    AttributeDefinitionModule,
     PublicContactRequestModule,
     ErrorReportModule,
     SupportRequestModule,
