@@ -387,11 +387,11 @@ export function WorkspaceObjectListPage() {
             role="table"
           >
             <div
-              className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-9 items-stretch border-b border-[#EEEDEA] bg-[#E4E2DC] text-[14px] font-medium text-[#111827]`}
+              className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} sticky top-0 z-10 grid h-9 items-stretch border-b border-[#EEEDEA] bg-white text-[14px] font-medium text-[#111827]`}
               role="row"
             >
               <div
-                className="flex h-full items-center justify-center border-r border-[#E4E2DC]"
+                className="flex h-full items-center justify-center border-r border-white"
                 role="columnheader"
               >
                 <input
@@ -401,13 +401,13 @@ export function WorkspaceObjectListPage() {
                 />
               </div>
               <div
-                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
+                className="flex h-full min-w-0 items-center border-r border-white px-3"
                 role="columnheader"
               >
                 <span className="min-w-0 truncate">{objectLabel}</span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
+                className="flex h-full min-w-0 items-center border-r border-white px-3"
                 role="columnheader"
               >
                 <span className="min-w-0 truncate">
@@ -415,7 +415,7 @@ export function WorkspaceObjectListPage() {
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
+                className="flex h-full min-w-0 items-center border-r border-white px-3"
                 role="columnheader"
               >
                 <span className="min-w-0 truncate">
@@ -423,7 +423,7 @@ export function WorkspaceObjectListPage() {
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
+                className="flex h-full min-w-0 items-center border-r border-white px-3"
                 role="columnheader"
               >
                 <span className="min-w-0 truncate">
@@ -431,7 +431,7 @@ export function WorkspaceObjectListPage() {
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
+                className="flex h-full min-w-0 items-center border-r border-white px-3"
                 role="columnheader"
               >
                 <span className="min-w-0 truncate">
