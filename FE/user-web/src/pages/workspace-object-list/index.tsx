@@ -1,16 +1,11 @@
 import {
   ArrowUpDown,
-  CalendarDays,
-  CircleDot,
   Download,
-  FileText,
-  MessageSquareText,
   MoreHorizontal,
   Plus,
   Search,
   SlidersHorizontal,
   Upload,
-  UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -392,11 +387,11 @@ export function WorkspaceObjectListPage() {
             role="table"
           >
             <div
-              className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-9 items-stretch border-b border-[#EEEDEA] bg-white text-[12px] font-medium text-[#6B7280]`}
+              className={`${OBJECT_LIST_TABLE_GRID_CLASS_NAME} grid h-9 items-stretch border-b border-[#EEEDEA] bg-[#E4E2DC] text-[14px] font-medium text-[#111827]`}
               role="row"
             >
               <div
-                className="flex h-full items-center justify-center border-r border-[#EEEDEA]"
+                className="flex h-full items-center justify-center border-r border-[#E4E2DC]"
                 role="columnheader"
               >
                 <input
@@ -406,77 +401,47 @@ export function WorkspaceObjectListPage() {
                 />
               </div>
               <div
-                className="flex h-full min-w-0 items-center gap-1.5 border-r border-[#EEEDEA] px-3"
+                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
                 role="columnheader"
               >
-                <FileText
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                  strokeWidth={1.8}
-                />
                 <span className="min-w-0 truncate">{objectLabel}</span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center gap-1.5 border-r border-[#EEEDEA] px-3"
+                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
                 role="columnheader"
               >
-                <CircleDot
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                  strokeWidth={1.8}
-                />
                 <span className="min-w-0 truncate">
                   {t("objectList.statusColumn")}
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center gap-1.5 border-r border-[#EEEDEA] px-3"
+                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
                 role="columnheader"
               >
-                <UserRound
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                  strokeWidth={1.8}
-                />
                 <span className="min-w-0 truncate">
                   {t("objectList.ownerColumn")}
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center gap-1.5 border-r border-[#EEEDEA] px-3"
+                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
                 role="columnheader"
               >
-                <ArrowUpDown
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                  strokeWidth={1.8}
-                />
                 <span className="min-w-0 truncate">
                   {t("objectList.updatedColumn")}
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center gap-1.5 border-r border-[#EEEDEA] px-3"
+                className="flex h-full min-w-0 items-center border-r border-[#E4E2DC] px-3"
                 role="columnheader"
               >
-                <CalendarDays
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                  strokeWidth={1.8}
-                />
                 <span className="min-w-0 truncate">
                   {t("objectList.createdAtColumn")}
                 </span>
               </div>
               <div
-                className="flex h-full min-w-0 items-center gap-1.5 px-3"
+                className="flex h-full min-w-0 items-center px-3"
                 role="columnheader"
               >
-                <MessageSquareText
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                  strokeWidth={1.8}
-                />
                 <span className="min-w-0 truncate">
                   {t("objectList.memoColumn")}
                 </span>
