@@ -50,6 +50,7 @@ export const koKRResource = {
     ownerColumn: "담당자",
     openFilterTooltip: "필터 열기",
     openSearchTooltip: "검색창 열기",
+    resizeAttributeDefinitionColumnLabel: "{name} 폭 조절",
     searchPlaceholder: "검색할 내용을 입력해주세요.",
     selectAllRowsLabel: "전체 선택",
     selectRowLabel: "{name} 선택",

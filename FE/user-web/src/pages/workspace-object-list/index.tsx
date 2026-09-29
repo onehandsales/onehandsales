@@ -7,7 +7,13 @@ import {
   SlidersHorizontal,
   Upload,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { useAppI18n } from "@/features/app-i18n";
@@ -22,28 +28,42 @@ import {
 
 const OBJECT_LIST_SELECT_COLUMN_WIDTH_PX = 44;
 const OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX = 44;
-const OBJECT_LIST_DATA_COLUMN_TEMPLATES = [
-  "minmax(240px,1.45fr)",
-  "140px",
-  "156px",
-  "176px",
-  "132px",
-  "minmax(240px,1fr)",
-] as const;
+const OBJECT_LIST_ATTRIBUTE_MIN_WIDTH_PX = 170;
+const OBJECT_LIST_ATTRIBUTE_DEFAULT_WIDTH_PX = 170;
 
 type RenderedObjectListAttributeColumn =
   Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "title"> & {
     readonly isLoadingPlaceholder: boolean;
   };
 
+type ObjectListAttributeColumnWidthsById = Readonly<Record<string, number>>;
+
+// 기능 : AttributeDefinition 컬럼 폭을 허용 범위 안으로 보정합니다.
+function clampObjectListAttributeColumnWidth(width: number) {
+  return Math.max(OBJECT_LIST_ATTRIBUTE_MIN_WIDTH_PX, Math.round(width));
+}
+
+// 기능 : AttributeDefinition 컬럼별 현재 폭 또는 기본 시작 폭을 조회합니다.
+function getObjectListAttributeColumnWidth(
+  columnId: string,
+  columnWidthsById: ObjectListAttributeColumnWidthsById,
+) {
+  return (
+    columnWidthsById[columnId] ?? OBJECT_LIST_ATTRIBUTE_DEFAULT_WIDTH_PX
+  );
+}
+
 // 기능 : AttributeDefinition 컬럼 개수에 맞는 Object 목록 grid template을 생성합니다.
-function buildObjectListTableGridTemplate(columnCount: number) {
-  const dataColumns = Array.from({ length: columnCount }, (_, index) => {
-    return OBJECT_LIST_DATA_COLUMN_TEMPLATES[index] ?? "minmax(160px,1fr)";
+function buildObjectListTableGridTemplate(
+  columns: readonly RenderedObjectListAttributeColumn[],
+  columnWidthsById: ObjectListAttributeColumnWidthsById,
+) {
+  const dataColumns = columns.map((column) => {
+    return `${getObjectListAttributeColumnWidth(column.id, columnWidthsById)}px`;
   });
 
   const fixedColumns = `${OBJECT_LIST_SELECT_COLUMN_WIDTH_PX}px`;
-  const addAttributeColumn = `${OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX}px`;
+  const addAttributeColumn = `minmax(${OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX}px,1fr)`;
 
   if (dataColumns.length === 0) {
     return `${fixedColumns} ${addAttributeColumn}`;
@@ -189,6 +209,9 @@ export function WorkspaceObjectListPage() {
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [isMoreActionsOpen, setMoreActionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [attributeColumnWidthsById, setAttributeColumnWidthsById] =
+    useState<Record<string, number>>({});
+  const columnResizeCleanupRef = useRef<(() => void) | null>(null);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const { t, formatDate, formatDateTime } = useAppI18n();
@@ -233,8 +256,12 @@ export function WorkspaceObjectListPage() {
     ],
   );
   const tableGridTemplateColumns = useMemo(
-    () => buildObjectListTableGridTemplate(renderedAttributeColumns.length),
-    [renderedAttributeColumns.length],
+    () =>
+      buildObjectListTableGridTemplate(
+        renderedAttributeColumns,
+        attributeColumnWidthsById,
+      ),
+    [attributeColumnWidthsById, renderedAttributeColumns],
   );
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const searchLabel = t("common.searchName", { values: { name: objectLabel } });
@@ -275,6 +302,75 @@ export function WorkspaceObjectListPage() {
     // 1. Backend가 내려준 cursor를 사용해 다음 RecordDefinition page를 요청한다.
     void recordDefinitionsQuery.fetchNextPage();
   }
+
+  // 기능 : header resize handle 드래그로 AttributeDefinition 컬럼 폭을 조절합니다.
+  function handleAttributeColumnResizePointerDown(
+    columnId: string,
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    // 1. 마우스 보조 버튼 입력은 컬럼 resize 시작으로 처리하지 않는다.
+    if (event.pointerType === "mouse" && event.button !== 0) {
+      return;
+    }
+
+    // 2. header cell 선택이나 상위 클릭 동작으로 전파되지 않게 막는다.
+    event.preventDefault();
+    event.stopPropagation();
+
+    // 3. 기존 resize listener가 남아 있으면 새 drag 시작 전에 정리한다.
+    columnResizeCleanupRef.current?.();
+
+    const startX = event.clientX;
+    const startWidth = getObjectListAttributeColumnWidth(
+      columnId,
+      attributeColumnWidthsById,
+    );
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    // 기능 : pointer 이동 거리만큼 현재 컬럼 폭을 갱신합니다.
+    const handlePointerMove = (pointerEvent: PointerEvent) => {
+      // 1. drag 시작점과 현재 pointer 위치 차이를 계산한다.
+      const deltaX = pointerEvent.clientX - startX;
+      // 2. 최소/최대 폭 기준 안에서 다음 컬럼 폭을 계산한다.
+      const nextWidth = clampObjectListAttributeColumnWidth(
+        startWidth + deltaX,
+      );
+
+      // 3. 계산된 폭을 컬럼 ID 기준 state에 반영한다.
+      setAttributeColumnWidthsById((currentWidths) => ({
+        ...currentWidths,
+        [columnId]: nextWidth,
+      }));
+    };
+
+    // 기능 : resize drag가 끝나면 전역 pointer listener와 body style을 정리합니다.
+    const cleanupResize = () => {
+      // 1. resize 중에 등록한 전역 pointer listener를 제거한다.
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", cleanupResize);
+      window.removeEventListener("pointercancel", cleanupResize);
+      // 2. drag 중에 잠시 바꾼 body cursor와 selection style을 복원한다.
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      // 3. unmount cleanup에서 중복 실행하지 않도록 ref를 비운다.
+      columnResizeCleanupRef.current = null;
+    };
+
+    columnResizeCleanupRef.current = cleanupResize;
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", cleanupResize);
+    window.addEventListener("pointercancel", cleanupResize);
+  }
+
+  useEffect(() => {
+    return () => {
+      columnResizeCleanupRef.current?.();
+    };
+  }, []);
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -487,7 +583,7 @@ export function WorkspaceObjectListPage() {
               </div>
               {renderedAttributeColumns.map((column) => (
                 <div
-                  className="flex h-full min-w-0 items-center border-r border-white px-3"
+                  className="relative flex h-full min-w-0 items-center border-r border-white px-3"
                   key={column.id}
                   role="columnheader"
                 >
@@ -499,10 +595,22 @@ export function WorkspaceObjectListPage() {
                   ) : (
                     <span className="min-w-0 truncate">{column.title}</span>
                   )}
+                  <button
+                    aria-label={t("objectList.resizeAttributeDefinitionColumnLabel", {
+                      values: {
+                        name: column.title || t("common.unknown"),
+                      },
+                    })}
+                    className="absolute right-[-4px] top-0 z-20 h-full w-2 cursor-col-resize touch-none bg-transparent transition hover:bg-[#4880EE]/35 focus-visible:bg-[#4880EE]/50 focus-visible:outline-none"
+                    type="button"
+                    onPointerDown={(event) =>
+                      handleAttributeColumnResizePointerDown(column.id, event)
+                    }
+                  />
                 </div>
               ))}
               <div
-                className="flex h-full items-center justify-center"
+                className="flex h-full items-center justify-start px-2"
                 role="columnheader"
               >
                 <button

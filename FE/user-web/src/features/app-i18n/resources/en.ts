@@ -50,6 +50,7 @@ export const enResource = {
     ownerColumn: "Owner",
     openFilterTooltip: "Open Filter",
     openSearchTooltip: "Open Search",
+    resizeAttributeDefinitionColumnLabel: "Resize {name}",
     searchPlaceholder: "Enter search text.",
     selectAllRowsLabel: "Select all",
     selectRowLabel: "Select {name}",
