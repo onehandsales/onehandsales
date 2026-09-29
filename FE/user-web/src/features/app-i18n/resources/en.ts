@@ -35,7 +35,7 @@ export const enResource = {
     settings: "Settings",
   },
   objectList: {
-    addAttributeDefinitionTooltip: "Add information",
+    addAttributeDefinitionTooltip: "Add Property",
     addDataAction: "Create Data",
     createdAtColumn: "Created",
     createTooltip: "Create Data",
