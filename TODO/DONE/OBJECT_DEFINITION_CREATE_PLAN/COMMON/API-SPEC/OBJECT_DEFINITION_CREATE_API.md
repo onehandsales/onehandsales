@@ -8,7 +8,7 @@
 
 호환성:
 
-- breaking change 여부: 있음. 기존 더미 성공 응답 `{ ok: true }`를 실제 생성 응답 `{ id }`로 변경한다.
+- breaking change 여부: 있음. 기존 더미 성공 응답 `{ ok: true }`를 실제 생성 응답 `{ objectDefinitionId }`로 변경한다.
 - 기존 FE 영향: 있음. User Web 생성 API client의 response type과 선택 필드 전송 방식을 변경한다.
 - migration 또는 fallback: `ObjectDefinition.workspaceId + apiSlug` unique index를 추가한다. 기존 중복 데이터가 있으면 migration 전 정리가 필요하다.
 
@@ -58,7 +58,7 @@
 
 ```ts
 {
-  id: string;
+  objectDefinitionId: string;
 }
 ```
 
@@ -120,14 +120,14 @@ Success:
 
 ```json
 {
-  "id": "00000000-0000-4000-8000-000000000501"
+  "objectDefinitionId": "00000000-0000-4000-8000-000000000501"
 }
 ```
 
 후속 FE 흐름:
 
 - User Web은 생성 성공 후 현재 Workspace의 사이드바 ObjectDefinition 목록을 다시 조회할 수 있다.
-- 현재 생성 모달은 응답의 `id`를 직접 화면에 표시하지 않는다.
+- 현재 생성 모달은 응답의 `objectDefinitionId`를 직접 화면에 표시하지 않는다.
 
 Error:
 

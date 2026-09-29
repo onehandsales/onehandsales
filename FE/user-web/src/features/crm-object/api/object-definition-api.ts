@@ -8,7 +8,7 @@ export type CreateObjectDefinitionInput = {
 };
 
 export type CreateObjectDefinitionResponse = {
-  readonly id: string;
+  readonly objectDefinitionId: string;
 };
 
 // 기능 : 현재 Workspace에 새 관리 항목 생성 API를 호출합니다.

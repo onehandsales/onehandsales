@@ -29,7 +29,7 @@ export interface CreateWorkspaceObjectDefinitionCommand {
 
 // 역할 : CreateWorkspaceObjectDefinitionResponse가 관리 항목 생성 응답 값을 정의합니다.
 export interface CreateWorkspaceObjectDefinitionResponse {
-  readonly id: string;
+  readonly objectDefinitionId: string;
 }
 
 // 역할 : CreateWorkspaceObjectDefinitionUseCase가 현재 Workspace의 ObjectDefinition 생성을 담당합니다.
@@ -101,7 +101,9 @@ export class CreateWorkspaceObjectDefinitionUseCase {
       objectDefinitionId: created.id,
     });
 
-    return created;
+    return {
+      objectDefinitionId: created.id,
+    };
   }
 
   // 기능 : ObjectDefinition 이름 입력값을 trim하고 필수/길이 조건을 검증합니다.

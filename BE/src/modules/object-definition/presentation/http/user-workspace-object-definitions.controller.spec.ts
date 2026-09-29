@@ -47,7 +47,7 @@ class FakeAuthGuard implements CanActivate {
 function createObjectDefinitionUseCaseFake(): jest.Mocked<CreateWorkspaceObjectDefinitionUseCaseFake> {
   return {
     execute: jest.fn().mockResolvedValue({
-      id: "00000000-0000-4000-8000-000000000501",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
     }),
   };
 }
@@ -111,7 +111,7 @@ describe("UserWorkspaceObjectDefinitionsController", () => {
       })
       .expect(201)
       .expect({
-        id: "00000000-0000-4000-8000-000000000501",
+        objectDefinitionId: "00000000-0000-4000-8000-000000000501",
       });
 
     expect(createUseCase.execute).toHaveBeenCalledWith(

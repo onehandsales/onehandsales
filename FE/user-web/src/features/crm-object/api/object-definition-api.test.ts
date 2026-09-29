@@ -12,7 +12,7 @@ const apiClientMock = vi.mocked(apiClient);
 describe("createObjectDefinition", () => {
   it("posts object definition values for the selected workspace", async () => {
     apiClientMock.mockResolvedValue({
-      id: "00000000-0000-4000-8000-000000000501",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
     });
 
     const result = await createObjectDefinition({
@@ -23,7 +23,7 @@ describe("createObjectDefinition", () => {
     });
 
     expect(result).toEqual({
-      id: "00000000-0000-4000-8000-000000000501",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
     });
     expect(apiClientMock).toHaveBeenCalledWith(
       "/api/users/me/workspaces/workspace%2F1/object-definitions",
@@ -40,7 +40,7 @@ describe("createObjectDefinition", () => {
 
   it("omits empty optional values from the request body", async () => {
     apiClientMock.mockResolvedValue({
-      id: "00000000-0000-4000-8000-000000000502",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000502",
     });
 
     await createObjectDefinition({
