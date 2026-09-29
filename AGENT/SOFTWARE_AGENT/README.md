@@ -10,7 +10,7 @@ PM_AGENT가 제품 범위와 우선순위를 정하고, UXUI_AGENT가 화면 흐
 
 SOFTWARE_AGENT는 아래 질문에 답한다.
 
-- Backend module, application service, repository, controller를 어떻게 나눌 것인가?
+- Backend module, application service, repository, controller를 어떻게 나눌 것인가? 
 - 현재 단일 Backend 서버의 module 경계를 미래 MSA service 경계처럼 어떻게 유지할 것인가?
 - User Web과 Admin Web의 feature boundary를 어떻게 유지할 것인가?
 - API request/response, error, transaction, observability 계약은 어디에 남길 것인가?
