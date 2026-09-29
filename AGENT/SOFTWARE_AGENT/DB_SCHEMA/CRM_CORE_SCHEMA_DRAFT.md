@@ -35,6 +35,11 @@ Date: 2026-09-13
 | `RecordRelationship` | Record 간 연결 저장 후보 |
 | `ViewDefinition` | 기본 목록/상태별 보기/예정 보기 정의 |
 
+구현 메모:
+
+- `ObjectDefinition.icon`은 화면 표시용 nullable 문자열이다.
+- `AttributeDefinition.icon`도 화면 표시용 nullable 문자열로 둔다.
+
 ## 4. Kit snapshot 원칙
 
 Kit은 단순 템플릿 파일이 아니다.

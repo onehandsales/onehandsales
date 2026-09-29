@@ -456,6 +456,8 @@ model AttributeDefinition {
   title              String
   /// 기능 : Attribute 값 타입입니다.
   type               AttributeType
+  /// 기능 : 화면 표시용 아이콘입니다.
+  icon               String?
   /// 기능 : SELECT 계열 Attribute에서 여러 값을 허용하는지 여부입니다.
   isMultiselect      Boolean       @default(false)
   /// 기능 : AttributeDefinition 설명입니다.
