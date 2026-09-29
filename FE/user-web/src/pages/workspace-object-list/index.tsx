@@ -72,6 +72,25 @@ function buildObjectListTableGridTemplate(
   return `${fixedColumns} ${dataColumns.join(" ")} ${addAttributeColumn}`;
 }
 
+// 기능 : 현재 컬럼 폭 합계로 Object 목록 table의 최소 가로 폭을 계산합니다.
+function getObjectListTableMinWidth(
+  columns: readonly RenderedObjectListAttributeColumn[],
+  columnWidthsById: ObjectListAttributeColumnWidthsById,
+) {
+  // 1. 선택 컬럼과 필요한 정보 추가 컬럼처럼 고정으로 필요한 폭을 먼저 더한다.
+  const fixedWidth =
+    OBJECT_LIST_SELECT_COLUMN_WIDTH_PX +
+    OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX;
+
+  // 2. AttributeDefinition 컬럼별 현재 폭을 더해 실제 table 최소 폭을 만든다.
+  return columns.reduce((totalWidth, column) => {
+    return (
+      totalWidth +
+      getObjectListAttributeColumnWidth(column.id, columnWidthsById)
+    );
+  }, fixedWidth);
+}
+
 // 기능 : API 로딩 중에도 header row 높이와 column 구조를 유지할 임시 컬럼을 생성합니다.
 function createLoadingAttributeColumn(): RenderedObjectListAttributeColumn {
   return {
@@ -258,6 +277,14 @@ export function WorkspaceObjectListPage() {
   const tableGridTemplateColumns = useMemo(
     () =>
       buildObjectListTableGridTemplate(
+        renderedAttributeColumns,
+        attributeColumnWidthsById,
+      ),
+    [attributeColumnWidthsById, renderedAttributeColumns],
+  );
+  const tableMinWidthPx = useMemo(
+    () =>
+      getObjectListTableMinWidth(
         renderedAttributeColumns,
         attributeColumnWidthsById,
       ),
@@ -563,8 +590,9 @@ export function WorkspaceObjectListPage() {
         <div className="notion-scrollbar h-full overflow-auto">
           <div
             aria-label={objectLabel}
-            className="min-w-[1080px]"
+            className="min-w-full"
             role="table"
+            style={{ minWidth: tableMinWidthPx }}
           >
             <div
               className="sticky top-0 z-10 grid h-9 items-stretch border-b border-[#EEEDEA] bg-white text-[14px] font-medium text-[#111827]"
