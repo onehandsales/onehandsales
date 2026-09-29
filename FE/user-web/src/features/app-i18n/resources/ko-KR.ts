@@ -35,6 +35,7 @@ export const koKRResource = {
     settings: "설정",
   },
   objectList: {
+    addAttributeDefinitionTooltip: "필요한 정보 추가",
     addDataAction: "생성하기",
     createdAtColumn: "생성일",
     createTooltip: "생성하기",

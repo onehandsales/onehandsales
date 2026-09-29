@@ -21,6 +21,7 @@ import {
 } from "@/features/crm-object";
 
 const OBJECT_LIST_SELECT_COLUMN_WIDTH_PX = 44;
+const OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX = 44;
 const OBJECT_LIST_DATA_COLUMN_TEMPLATES = [
   "minmax(240px,1.45fr)",
   "140px",
@@ -41,11 +42,14 @@ function buildObjectListTableGridTemplate(columnCount: number) {
     return OBJECT_LIST_DATA_COLUMN_TEMPLATES[index] ?? "minmax(160px,1fr)";
   });
 
+  const fixedColumns = `${OBJECT_LIST_SELECT_COLUMN_WIDTH_PX}px`;
+  const addAttributeColumn = `${OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX}px`;
+
   if (dataColumns.length === 0) {
-    return `${OBJECT_LIST_SELECT_COLUMN_WIDTH_PX}px`;
+    return `${fixedColumns} ${addAttributeColumn}`;
   }
 
-  return `${OBJECT_LIST_SELECT_COLUMN_WIDTH_PX}px ${dataColumns.join(" ")}`;
+  return `${fixedColumns} ${dataColumns.join(" ")} ${addAttributeColumn}`;
 }
 
 // 기능 : API 로딩 중에도 header row 높이와 column 구조를 유지할 임시 컬럼을 생성합니다.
@@ -481,13 +485,9 @@ export function WorkspaceObjectListPage() {
                   type="checkbox"
                 />
               </div>
-              {renderedAttributeColumns.map((column, index) => (
+              {renderedAttributeColumns.map((column) => (
                 <div
-                  className={`flex h-full min-w-0 items-center px-3 ${
-                    index === renderedAttributeColumns.length - 1
-                      ? ""
-                      : "border-r border-white"
-                  }`}
+                  className="flex h-full min-w-0 items-center border-r border-white px-3"
                   key={column.id}
                   role="columnheader"
                 >
@@ -501,6 +501,21 @@ export function WorkspaceObjectListPage() {
                   )}
                 </div>
               ))}
+              <div
+                className="flex h-full items-center justify-center"
+                role="columnheader"
+              >
+                <button
+                  aria-label={t("objectList.addAttributeDefinitionTooltip")}
+                  className="group/object-add-attribute-tooltip relative inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+                  type="button"
+                >
+                  <Plus className="h-5 w-5" strokeWidth={2} />
+                  <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-add-attribute-tooltip:opacity-100">
+                    {t("objectList.addAttributeDefinitionTooltip")}
+                  </span>
+                </button>
+              </div>
             </div>
             <div role="rowgroup">
               {visibleRows.map((row) => {
@@ -539,11 +554,7 @@ export function WorkspaceObjectListPage() {
 
                       return (
                         <div
-                          className={`flex h-full min-w-0 items-center px-3 ${
-                            index === renderedAttributeColumns.length - 1
-                              ? ""
-                              : "border-r border-[#F1F0EC]"
-                          }`}
+                          className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
                           key={column.id}
                           role="cell"
                         >
@@ -563,6 +574,11 @@ export function WorkspaceObjectListPage() {
                         </div>
                       );
                     })}
+                    <div
+                      aria-hidden="true"
+                      className="flex h-full items-center justify-center"
+                      role="cell"
+                    />
                   </div>
                 );
               })}
