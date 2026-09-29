@@ -28,6 +28,8 @@ export const enResource = {
     searchName: "Search {name}",
     today: "Today",
     unknown: "Unknown",
+    yes: "Yes",
+    no: "No",
   },
   entities: {
     settings: "Settings",
@@ -36,6 +38,9 @@ export const enResource = {
     addDataAction: "Create Data",
     createdAtColumn: "Created",
     createTooltip: "Create Data",
+    emptyRecords: "No records yet.",
+    loadRecordsFailed: "Could not load records.",
+    loadingRecords: "Loading records.",
     exportDataAction: "Export",
     fallbackObjectLabel: "Item",
     importDataAction: "Import",

@@ -28,6 +28,8 @@ export const koKRResource = {
     searchName: "{name} 검색",
     today: "오늘",
     unknown: "알 수 없음",
+    yes: "예",
+    no: "아니요",
   },
   entities: {
     settings: "설정",
@@ -36,6 +38,9 @@ export const koKRResource = {
     addDataAction: "생성하기",
     createdAtColumn: "생성일",
     createTooltip: "생성하기",
+    emptyRecords: "아직 생성된 기록이 없어요.",
+    loadRecordsFailed: "기록을 불러오지 못했어요.",
+    loadingRecords: "기록을 불러오고 있어요.",
     exportDataAction: "내보내기",
     fallbackObjectLabel: "관리 항목",
     importDataAction: "가져오기",

@@ -14,7 +14,10 @@ import { useAppI18n } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import {
   type WorkspaceObjectAttributeDefinitionListItem,
+  type WorkspaceObjectRecordAttributeValueListItem,
+  type WorkspaceObjectRecordDefinitionListItem,
   useWorkspaceObjectAttributeDefinitionsQuery,
+  useWorkspaceObjectRecordDefinitionsQuery,
 } from "@/features/crm-object";
 
 const OBJECT_LIST_SELECT_COLUMN_WIDTH_PX = 44;
@@ -27,150 +30,10 @@ const OBJECT_LIST_DATA_COLUMN_TEMPLATES = [
   "minmax(240px,1fr)",
 ] as const;
 
-type MockObjectListRow = {
-  readonly id: string;
-  readonly name: string;
-  readonly status: string;
-  readonly statusClassName: string;
-  readonly owner: string;
-  readonly updatedAt: string;
-  readonly createdAt: string;
-  readonly memo: string;
-};
-
 type RenderedObjectListAttributeColumn =
   Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "title"> & {
     readonly isLoadingPlaceholder: boolean;
   };
-
-const MOCK_OBJECT_LIST_RECORD_NAMES = [
-  "김민수",
-  "라온상사",
-  "프라임 오피스",
-  "정기 계약",
-  "박서연",
-  "에이원 솔루션",
-  "한빛테크",
-  "윤도현",
-  "더블유파트너스",
-  "노바리빙",
-  "스타트랩",
-  "세종물류",
-  "이서윤",
-  "오션브릿지",
-  "마루디자인",
-  "강하늘",
-  "브라이트웍스",
-  "클라우드나인",
-  "정우진",
-  "리버스톤",
-  "서린컴퍼니",
-  "로컬푸드랩",
-  "이지훈",
-  "더케이상사",
-  "모먼트스튜디오",
-  "태성건설",
-  "김하린",
-  "펄스마켓",
-  "비전오피스",
-  "그린에너지랩",
-  "오렌지팩토리",
-  "박지우",
-  "유니온메디",
-  "다온교육",
-  "코어플랜",
-  "새봄렌탈",
-  "마켓온",
-  "블루핀",
-  "케이브릿지",
-  "스튜디오오름",
-  "더나은세무",
-  "리드컴퍼니",
-  "오픈웨어",
-  "라이트하우스",
-  "포인트랩",
-  "앤드파트너스",
-  "아워스페이스",
-  "넥스트샵",
-  "정다은",
-  "플랜비솔루션",
-] as const;
-
-const MOCK_OBJECT_LIST_STATUS_OPTIONS = [
-  {
-    label: "진행 중",
-    statusClassName: "bg-[#DBEAFE] text-[#1D4ED8]",
-  },
-  {
-    label: "검토 중",
-    statusClassName: "bg-[#FEF3C7] text-[#92400E]",
-  },
-  {
-    label: "대기",
-    statusClassName: "bg-[#F3F4F6] text-[#4B5563]",
-  },
-  {
-    label: "완료",
-    statusClassName: "bg-[#DCFCE7] text-[#166534]",
-  },
-] as const;
-
-const MOCK_OBJECT_LIST_OWNERS = [
-  "이재희",
-  "송재근",
-  "박서연",
-  "김도윤",
-  "정유진",
-  "최민재",
-] as const;
-
-const MOCK_OBJECT_LIST_MEMOS = [
-  "견적 범위 확인 후 회신 예정",
-  "의사결정자 정보 보강 필요",
-  "초기 상담 일정을 조율 중",
-  "계약서 전달 완료",
-  "다음 주 재연락",
-  "제품 소개 자료 전달 필요",
-  "요청 사항을 내부 검토 중",
-  "추가 자료 수신 대기",
-] as const;
-
-// 기능 : mock 목록에서 index에 맞는 반복 값을 안전하게 가져옵니다.
-function getRepeatingMockValue<T>(items: readonly T[], index: number): T {
-  const item = items[index % items.length];
-
-  if (item === undefined) {
-    throw new Error("Missing mock list value");
-  }
-
-  return item;
-}
-
-// 기능 : 관리 항목 목록 UX 확인용 mock row를 생성합니다.
-function createMockObjectListRow(
-  name: string,
-  index: number,
-): MockObjectListRow {
-  const status = getRepeatingMockValue(MOCK_OBJECT_LIST_STATUS_OPTIONS, index);
-  const updatedDay = 27 - (index % 24);
-  const createdDay = Math.max(1, updatedDay - 3);
-
-  return {
-    id: `mock-${String(index + 1).padStart(3, "0")}`,
-    name,
-    status: status.label,
-    statusClassName: status.statusClassName,
-    owner: getRepeatingMockValue(MOCK_OBJECT_LIST_OWNERS, index),
-    updatedAt:
-      index === 0 ? "오늘 14:20" : index === 1 ? "어제 18:05" : `9월 ${updatedDay}일`,
-    createdAt: `9월 ${createdDay}일`,
-    memo: getRepeatingMockValue(MOCK_OBJECT_LIST_MEMOS, index),
-  };
-}
-
-const MOCK_OBJECT_LIST_ROWS = MOCK_OBJECT_LIST_RECORD_NAMES.map(
-  createMockObjectListRow,
-);
 
 // 기능 : AttributeDefinition 컬럼 개수에 맞는 Object 목록 grid template을 생성합니다.
 function buildObjectListTableGridTemplate(columnCount: number) {
@@ -214,45 +77,107 @@ function toRenderedAttributeColumns(
   return [];
 }
 
-// 기능 : 기존 mock row 값을 현재 header column index에 맞는 cell 내용으로 변환합니다.
-function renderMockObjectListCellValue(row: MockObjectListRow, columnIndex: number) {
-  if (columnIndex === 0) {
-    return (
-      <span className="min-w-0 truncate font-medium text-[#111827]">
-        {row.name}
-      </span>
-    );
+type RecordAttributeBooleanLabels = {
+  readonly falseLabel: string;
+  readonly trueLabel: string;
+};
+
+// 기능 : RecordAttributeValue 응답에서 화면에 표시할 문자열을 계산합니다.
+function getRecordAttributeValueDisplayText(
+  value: WorkspaceObjectRecordAttributeValueListItem | null | undefined,
+  booleanLabels: RecordAttributeBooleanLabels,
+) {
+  if (!value) {
+    return "";
   }
 
-  if (columnIndex === 1) {
-    return (
-      <span
-        className={`${row.statusClassName} inline-flex h-6 max-w-full items-center rounded-md px-2 text-[12px] font-semibold leading-none`}
-      >
-        <span className="truncate">{row.status}</span>
-      </span>
-    );
+  if (value.textValue) {
+    return value.textValue;
   }
 
-  if (columnIndex === 2) {
-    return (
-      <span className="truncate font-medium text-[#4B5563]">{row.owner}</span>
-    );
+  if (value.numberValue) {
+    return value.numberValue;
   }
 
-  if (columnIndex === 3) {
-    return <span className="truncate text-[#6B7280]">{row.updatedAt}</span>;
+  if (value.booleanValue !== null) {
+    return value.booleanValue ? booleanLabels.trueLabel : booleanLabels.falseLabel;
   }
 
-  if (columnIndex === 4) {
-    return <span className="truncate text-[#6B7280]">{row.createdAt}</span>;
+  if (value.dateValue) {
+    return value.dateValue;
   }
 
-  if (columnIndex === 5) {
-    return <span className="truncate text-[#6B7280]">{row.memo}</span>;
+  if (value.timestampValue) {
+    return value.timestampValue;
   }
 
-  return <span aria-hidden="true" className="truncate text-[#6B7280]" />;
+  if (value.jsonValue !== null) {
+    return typeof value.jsonValue === "string"
+      ? value.jsonValue
+      : JSON.stringify(value.jsonValue);
+  }
+
+  return (
+    value.selectOptionId ??
+    value.statusOptionId ??
+    value.targetRecordDefinitionId ??
+    value.targetObjectDefinitionId ??
+    value.targetActorId ??
+    ""
+  );
+}
+
+// 기능 : RecordDefinition row의 attribute 값을 attributeDefinitionId 기준 Map으로 변환합니다.
+function getRecordAttributeValueMap(
+  row: WorkspaceObjectRecordDefinitionListItem,
+) {
+  return new Map(
+    row.recordAttributeValues.map((value) => [
+      value.attributeDefinitionId,
+      value,
+    ]),
+  );
+}
+
+// 기능 : RecordDefinition row에서 선택 checkbox 접근성 이름으로 사용할 대표 값을 찾습니다.
+function getRecordRowLabel(
+  row: WorkspaceObjectRecordDefinitionListItem,
+  attributeColumns: readonly RenderedObjectListAttributeColumn[],
+  booleanLabels: RecordAttributeBooleanLabels,
+) {
+  const valuesByAttributeId = getRecordAttributeValueMap(row);
+
+  for (const column of attributeColumns) {
+    const displayText = getRecordAttributeValueDisplayText(
+      valuesByAttributeId.get(column.id),
+      booleanLabels,
+    ).trim();
+
+    if (displayText.length > 0) {
+      return displayText;
+    }
+  }
+
+  return row.id;
+}
+
+// 기능 : RecordDefinition row가 현재 검색어와 일치하는지 확인합니다.
+function doesRecordRowMatchSearch(
+  row: WorkspaceObjectRecordDefinitionListItem,
+  searchQuery: string,
+  booleanLabels: RecordAttributeBooleanLabels,
+) {
+  if (searchQuery.length === 0) {
+    return true;
+  }
+
+  return [
+    row.createdAt,
+    row.updatedAt,
+    ...row.recordAttributeValues.map((value) =>
+      getRecordAttributeValueDisplayText(value, booleanLabels),
+    ),
+  ].some((value) => value.toLowerCase().includes(searchQuery));
 }
 
 // 기능 : Workspace 관리 항목의 공통 목록 화면 UX를 렌더링합니다.
@@ -262,7 +187,7 @@ export function WorkspaceObjectListPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const { t } = useAppI18n();
+  const { t, formatDate, formatDateTime } = useAppI18n();
   const { user } = useAuthSession();
   const { objectDefinitionId, workspaceId } = useParams<{
     readonly objectDefinitionId?: string;
@@ -270,7 +195,16 @@ export function WorkspaceObjectListPage() {
   }>();
   const { selectedSidebarCrmObject, sidebarCrmObjects } =
     useOutletContext<AppShellOutletContext>();
+
+  // 1. 현재 관리 항목의 header AttributeDefinition 목록을 조회한다.
   const attributeDefinitionsQuery = useWorkspaceObjectAttributeDefinitionsQuery({
+    userId: user?.id ?? null,
+    workspaceId: workspaceId ?? null,
+    objectDefinitionId: objectDefinitionId ?? null,
+  });
+
+  // 2. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
+  const recordDefinitionsQuery = useWorkspaceObjectRecordDefinitionsQuery({
     userId: user?.id ?? null,
     workspaceId: workspaceId ?? null,
     objectDefinitionId: objectDefinitionId ?? null,
@@ -300,22 +234,43 @@ export function WorkspaceObjectListPage() {
   );
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const searchLabel = t("common.searchName", { values: { name: objectLabel } });
-  const visibleRows = useMemo(() => {
-    if (normalizedSearchQuery.length === 0) {
-      return MOCK_OBJECT_LIST_ROWS;
-    }
+  const booleanLabels = useMemo(
+    () => ({
+      falseLabel: t("common.no"),
+      trueLabel: t("common.yes"),
+    }),
+    [t],
+  );
 
-    return MOCK_OBJECT_LIST_ROWS.filter((row) =>
-      [
-        row.name,
-        row.status,
-        row.owner,
-        row.updatedAt,
-        row.createdAt,
-        row.memo,
-      ].some((value) => value.toLowerCase().includes(normalizedSearchQuery)),
+  // 3. cursor pagination으로 받은 RecordDefinition page들을 화면 row 목록으로 합친다.
+  const recordRows = useMemo(
+    () => recordDefinitionsQuery.data?.pages.flatMap((page) => page.items) ?? [],
+    [recordDefinitionsQuery.data?.pages],
+  );
+
+  // 4. 현재 검색어와 일치하는 RecordDefinition row만 화면에 남긴다.
+  const visibleRows = useMemo(() => {
+    return recordRows.filter((row) =>
+      doesRecordRowMatchSearch(row, normalizedSearchQuery, booleanLabels),
     );
-  }, [normalizedSearchQuery]);
+  }, [booleanLabels, normalizedSearchQuery, recordRows]);
+
+  // 5. 초기 로딩과 background refetch를 분리해 빈 화면 깜빡임을 막는다.
+  const isRecordDefinitionsLoading =
+    recordDefinitionsQuery.isLoading ||
+    (recordDefinitionsQuery.isFetching && !recordDefinitionsQuery.data);
+
+  // 기능 : 실패한 RecordDefinition 목록 조회를 다시 요청합니다.
+  function handleRetryLoadRecords() {
+    // 1. 현재 query key 기준으로 RecordDefinition 목록을 다시 가져온다.
+    void recordDefinitionsQuery.refetch();
+  }
+
+  // 기능 : RecordDefinition 목록의 다음 page를 이어서 불러옵니다.
+  function handleLoadMoreRecords() {
+    // 1. Backend가 내려준 cursor를 사용해 다음 RecordDefinition page를 요청한다.
+    void recordDefinitionsQuery.fetchNextPage();
+  }
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -548,43 +503,117 @@ export function WorkspaceObjectListPage() {
               ))}
             </div>
             <div role="rowgroup">
-              {visibleRows.map((row) => (
-                <div
-                  className="grid h-10 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]"
-                  key={row.id}
-                  role="row"
-                  style={{ gridTemplateColumns: tableGridTemplateColumns }}
-                >
+              {visibleRows.map((row) => {
+                const valuesByAttributeId = getRecordAttributeValueMap(row);
+                const rowLabel = getRecordRowLabel(
+                  row,
+                  renderedAttributeColumns,
+                  booleanLabels,
+                );
+
+                return (
                   <div
-                    className="flex h-full items-center justify-center border-r border-[#F1F0EC]"
-                    role="cell"
+                    className="grid h-10 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]"
+                    key={row.id}
+                    role="row"
+                    style={{ gridTemplateColumns: tableGridTemplateColumns }}
                   >
-                    <input
-                      aria-label={t("objectList.selectRowLabel", {
-                        values: { name: row.name },
-                      })}
-                      className="h-4 w-4 rounded border-[#D6D3CD] accent-[#4880EE]"
-                      type="checkbox"
-                    />
-                  </div>
-                  {renderedAttributeColumns.map((column, index) => (
                     <div
-                      className={`flex h-full min-w-0 items-center px-3 ${
-                        index === renderedAttributeColumns.length - 1
-                          ? ""
-                          : "border-r border-[#F1F0EC]"
-                      }`}
-                      key={column.id}
+                      className="flex h-full items-center justify-center border-r border-[#F1F0EC]"
                       role="cell"
                     >
-                      {renderMockObjectListCellValue(row, index)}
+                      <input
+                        aria-label={t("objectList.selectRowLabel", {
+                          values: { name: rowLabel },
+                        })}
+                        className="h-4 w-4 rounded border-[#D6D3CD] accent-[#4880EE]"
+                        type="checkbox"
+                      />
                     </div>
-                  ))}
-                </div>
-              ))}
-              {visibleRows.length === 0 ? (
+                    {renderedAttributeColumns.map((column, index) => {
+                      const cellValue = valuesByAttributeId.get(column.id);
+                      const displayText = getRecordAttributeValueDisplayText(
+                        cellValue,
+                        booleanLabels,
+                      );
+
+                      return (
+                        <div
+                          className={`flex h-full min-w-0 items-center px-3 ${
+                            index === renderedAttributeColumns.length - 1
+                              ? ""
+                              : "border-r border-[#F1F0EC]"
+                          }`}
+                          key={column.id}
+                          role="cell"
+                        >
+                          <span
+                            className={`min-w-0 truncate ${
+                              index === 0
+                                ? "font-medium text-[#111827]"
+                                : "text-[#6B7280]"
+                            }`}
+                          >
+                            {cellValue?.timestampValue
+                              ? formatDateTime(cellValue.timestampValue)
+                              : cellValue?.dateValue
+                                ? formatDate(cellValue.dateValue)
+                                : displayText}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+              {isRecordDefinitionsLoading ? (
                 <div className="flex h-20 items-center px-4 text-[14px] font-medium text-[#6B7280]">
-                  {t("common.searchEmpty")}
+                  {t("objectList.loadingRecords")}
+                </div>
+              ) : null}
+              {!isRecordDefinitionsLoading && recordDefinitionsQuery.isError ? (
+                <div className="flex h-20 items-center gap-3 px-4 text-[14px] font-medium text-[#6B7280]">
+                  <span>{t("objectList.loadRecordsFailed")}</span>
+                  <button
+                    className="h-8 rounded-md bg-[#F3F2EF] px-2.5 text-[14px] font-medium text-[#374151] transition hover:bg-[#EDEBE6] active:bg-[#D3D1CB]"
+                    type="button"
+                    onClick={handleRetryLoadRecords}
+                  >
+                    {t("common.retry")}
+                  </button>
+                </div>
+              ) : null}
+              {!isRecordDefinitionsLoading &&
+              !recordDefinitionsQuery.isError &&
+              visibleRows.length === 0 ? (
+                <div className="flex h-20 items-center px-4 text-[14px] font-medium text-[#6B7280]">
+                  {normalizedSearchQuery.length > 0
+                    ? t("common.searchEmpty")
+                    : t("objectList.emptyRecords")}
+                </div>
+              ) : null}
+              {!isRecordDefinitionsLoading &&
+              !recordDefinitionsQuery.isError &&
+              recordDefinitionsQuery.hasNextPage ? (
+                <div
+                  className="flex h-12 items-center justify-center bg-white"
+                  role="row"
+                >
+                  <div
+                    className="flex h-full items-center justify-center"
+                    role="cell"
+                  >
+                    <button
+                      className="h-8 rounded-md bg-[#F3F2EF] px-2.5 text-[14px] font-medium text-[#374151] transition hover:bg-[#EDEBE6] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={recordDefinitionsQuery.isFetchingNextPage}
+                      type="button"
+                      onClick={handleLoadMoreRecords}
+                    >
+                      {recordDefinitionsQuery.isFetchingNextPage
+                        ? t("common.loading")
+                        : t("common.loadMore")}
+                    </button>
+                  </div>
                 </div>
               ) : null}
               <div
