@@ -11,6 +11,17 @@ type RecordAttributeValueFormatters = {
   readonly formatDateTime: (value: string) => string;
 };
 
+const CURRENCY_SYMBOL_BY_CODE: Readonly<Record<string, string>> = {
+  AUD: "A$",
+  CAD: "C$",
+  CNY: "¥",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  KRW: "₩",
+  USD: "$",
+};
+
 // 기능 : RecordAttributeValue 응답에서 화면에 표시할 문자열을 계산합니다.
 export function getRecordAttributeValueDisplayText(
   value: WorkspaceObjectRecordAttributeValueListItem | null | undefined,
@@ -104,12 +115,13 @@ function getCurrencyDisplayText(
     value.numberValue ??
     "";
   const currencyCode = getJsonStringField(value.jsonValue, "currencyCode") ?? "";
+  const currencySymbol = getCurrencySymbol(currencyCode);
 
   if (amount.length === 0) {
-    return currencyCode;
+    return currencySymbol;
   }
 
-  return currencyCode.length > 0 ? `${amount} ${currencyCode}` : amount;
+  return currencySymbol.length > 0 ? `${currencySymbol} ${amount}` : amount;
 }
 
 // 기능 : PersonalName cell 표시 문자열을 계산합니다.
@@ -158,6 +170,17 @@ function getInteractionDisplayText(
 // 기능 : JSON object에서 문자열 필드를 안전하게 꺼냅니다.
 function getJsonStringField(value: unknown, key: string) {
   return getStringField(getJsonObject(value), key);
+}
+
+// 기능 : Currency code를 셀에서 읽기 쉬운 통화 기호로 변환합니다.
+function getCurrencySymbol(currencyCode: string) {
+  const normalizedCurrencyCode = currencyCode.trim().toUpperCase();
+
+  if (normalizedCurrencyCode.length === 0) {
+    return "";
+  }
+
+  return CURRENCY_SYMBOL_BY_CODE[normalizedCurrencyCode] ?? normalizedCurrencyCode;
 }
 
 // 기능 : JSON object 후보에서 문자열 필드를 안전하게 꺼냅니다.

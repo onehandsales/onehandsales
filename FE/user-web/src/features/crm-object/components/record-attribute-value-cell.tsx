@@ -1,5 +1,6 @@
 import { Check, Trash2, X } from "lucide-react";
 import {
+  type FocusEvent as ReactFocusEvent,
   type InputHTMLAttributes,
   type KeyboardEvent as ReactKeyboardEvent,
   type RefObject,
@@ -68,7 +69,6 @@ const INLINE_TEXT_ATTRIBUTE_TYPES = new Set<AttributeDefinitionValueType>([
 
 const POPOVER_ATTRIBUTE_TYPES = new Set<AttributeDefinitionValueType>([
   "ActorReference",
-  "Currency",
   "Interaction",
   "Location",
   "PersonalName",
@@ -78,15 +78,21 @@ const POPOVER_ATTRIBUTE_TYPES = new Set<AttributeDefinitionValueType>([
 ]);
 
 const CURRENCY_CODE_OPTIONS = [
-  { code: "KRW", label: "KRW - Korean won" },
-  { code: "USD", label: "USD - US dollar" },
-  { code: "JPY", label: "JPY - Japanese yen" },
-  { code: "EUR", label: "EUR - Euro" },
-  { code: "CNY", label: "CNY - Chinese yuan" },
-  { code: "GBP", label: "GBP - Pound sterling" },
-  { code: "CAD", label: "CAD - Canadian dollar" },
-  { code: "AUD", label: "AUD - Australian dollar" },
+  { code: "KRW", label: "Korean won", symbol: "₩" },
+  { code: "USD", label: "US dollar", symbol: "$" },
+  { code: "JPY", label: "Japanese yen", symbol: "¥" },
+  { code: "EUR", label: "Euro", symbol: "€" },
+  { code: "CNY", label: "Chinese yuan", symbol: "¥" },
+  { code: "GBP", label: "Pound sterling", symbol: "£" },
+  { code: "CAD", label: "Canadian dollar", symbol: "C$" },
+  { code: "AUD", label: "Australian dollar", symbol: "A$" },
 ] as const;
+
+type CurrencyCodeOption = {
+  readonly code: string;
+  readonly label: string;
+  readonly symbol: string;
+};
 
 // 기능 : record table cell 하나의 표시와 inline 편집 UX를 렌더링합니다.
 export function RecordAttributeValueCell({
@@ -101,6 +107,7 @@ export function RecordAttributeValueCell({
 }: RecordAttributeValueCellProps) {
   const [isEditing, setEditing] = useState(false);
   const [isSaving, setSaving] = useState(false);
+  const [isCurrencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [draft, setDraft] = useState(() => createDraftFromValue(value));
   const editorRootRef = useRef<HTMLDivElement | null>(null);
@@ -117,6 +124,7 @@ export function RecordAttributeValueCell({
   const isInlineTextEditor = INLINE_TEXT_ATTRIBUTE_TYPES.has(attributeType);
   const isPopoverEditor = POPOVER_ATTRIBUTE_TYPES.has(attributeType);
   const isCheckboxEditor = attributeType === "Checkbox";
+  const isCurrencyEditor = attributeType === "Currency";
 
   const currentDraft = useMemo(() => createDraftFromValue(value), [value]);
 
@@ -127,11 +135,11 @@ export function RecordAttributeValueCell({
   }, [currentDraft, isEditing]);
 
   useEffect(() => {
-    if (isEditing && isInlineTextEditor) {
+    if (isEditing && (isInlineTextEditor || isCurrencyEditor)) {
       inlineInputRef.current?.focus();
       inlineInputRef.current?.select();
     }
-  }, [isEditing, isInlineTextEditor]);
+  }, [isCurrencyEditor, isEditing, isInlineTextEditor]);
 
   useEffect(() => {
     if (!isEditing || !isPopoverEditor) {
@@ -178,6 +186,7 @@ export function RecordAttributeValueCell({
 
     setDraft(createDraftFromValue(value));
     setErrorMessage(null);
+    setCurrencyMenuOpen(false);
     setEditing(true);
   }
 
@@ -195,8 +204,26 @@ export function RecordAttributeValueCell({
       event.preventDefault();
       setDraft(createDraftFromValue(value));
       setErrorMessage(null);
+      setCurrencyMenuOpen(false);
       setEditing(false);
     }
+  }
+
+  // 기능 : Currency inline editor 바깥으로 focus가 나가면 현재 draft 저장을 시도합니다.
+  function handleCurrencyEditorBlur(
+    event: ReactFocusEvent<HTMLDivElement>,
+  ) {
+    const nextTarget = event.relatedTarget;
+
+    if (
+      nextTarget instanceof Node &&
+      editorRootRef.current?.contains(nextTarget)
+    ) {
+      return;
+    }
+
+    setCurrencyMenuOpen(false);
+    void commitDraft();
   }
 
   // 기능 : 현재 draft 값을 Backend request value 형태로 저장합니다.
@@ -211,6 +238,7 @@ export function RecordAttributeValueCell({
     if (nextValue === null || arePatchValuesEqual(nextValue, currentValue)) {
       setDraft(createDraftFromValue(value));
       setErrorMessage(null);
+      setCurrencyMenuOpen(false);
       setEditing(false);
       return;
     }
@@ -224,6 +252,7 @@ export function RecordAttributeValueCell({
         value: nextValue,
       });
       setEditing(false);
+      setCurrencyMenuOpen(false);
     } catch (error) {
       setErrorMessage(getApiErrorMessage(error));
     } finally {
@@ -350,6 +379,67 @@ export function RecordAttributeValueCell({
     );
   }
 
+  if (isEditing && isCurrencyEditor) {
+    return (
+      <div
+        className="relative flex h-full w-full min-w-0 items-center"
+        ref={editorRootRef}
+        onBlur={handleCurrencyEditorBlur}
+      >
+        <div
+          className={cn(
+            "flex h-full w-full min-w-0 items-center bg-white text-[#111827] ring-2 ring-inset ring-[#4880EE]/50",
+            isPrimary ? "font-medium" : "font-normal",
+          )}
+        >
+          <button
+            aria-expanded={isCurrencyMenuOpen}
+            aria-haspopup="listbox"
+            aria-label="통화 선택"
+            className="inline-flex h-full w-10 shrink-0 items-center justify-center text-[14px] text-[#111827] transition hover:bg-[#F7F6F2] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={isSaving}
+            type="button"
+            onClick={() => setCurrencyMenuOpen((open) => !open)}
+          >
+            {getCurrencySymbol(draft.currencyCode)}
+          </button>
+          <input
+            aria-label={attributeTitle}
+            aria-invalid={Boolean(errorMessage)}
+            className="h-full min-w-0 flex-1 bg-transparent pl-1 pr-3 text-[14px] text-[#111827] outline-none placeholder:text-[#9CA3AF] disabled:cursor-wait"
+            disabled={isSaving}
+            inputMode="decimal"
+            placeholder=""
+            ref={inlineInputRef}
+            type="text"
+            value={draft.amount}
+            onChange={(event) =>
+              setDraft((currentDraftValue) => ({
+                ...currentDraftValue,
+                amount: event.target.value,
+              }))
+            }
+            onKeyDown={handleInlineEditorKeyDown}
+          />
+        </div>
+        {isCurrencyMenuOpen ? (
+          <CurrencyCodeMenu
+            selectedCurrencyCode={draft.currencyCode}
+            onSelect={(currencyCode) => {
+              setDraft((currentDraftValue) => ({
+                ...currentDraftValue,
+                currencyCode,
+              }));
+              setCurrencyMenuOpen(false);
+              inlineInputRef.current?.focus();
+            }}
+          />
+        ) : null}
+        {errorMessage ? <CellErrorMessage message={errorMessage} /> : null}
+      </div>
+    );
+  }
+
   return (
     <div
       className="relative flex h-full w-full min-w-0 items-center"
@@ -378,6 +468,7 @@ export function RecordAttributeValueCell({
           onCancel={() => {
             setDraft(createDraftFromValue(value));
             setErrorMessage(null);
+            setCurrencyMenuOpen(false);
             setEditing(false);
           }}
           onChange={setDraft}
@@ -558,34 +649,6 @@ function renderPopoverFields({
           }
         />
       );
-    case "Currency":
-      return (
-        <div className="grid grid-cols-[minmax(0,1fr)_116px] gap-2">
-          <CellTextField
-            inputMode="decimal"
-            inputRef={firstInputRef}
-            label="amount"
-            value={draft.amount}
-            onChange={(amount) =>
-              onChange({
-                ...draft,
-                amount,
-              })
-            }
-          />
-          <CellSelectField
-            label="currencyCode"
-            options={getCurrencyCodeOptions(draft.currencyCode)}
-            value={draft.currencyCode}
-            onChange={(currencyCode) =>
-              onChange({
-                ...draft,
-                currencyCode,
-              })
-            }
-          />
-        </div>
-      );
     case "Location":
       return (
         <CellTextField
@@ -678,42 +741,51 @@ function renderPopoverFields({
   }
 }
 
-type CellSelectFieldOption = {
-  readonly label: string;
-  readonly value: string;
+type CurrencyCodeMenuProps = {
+  readonly onSelect: (currencyCode: string) => void;
+  readonly selectedCurrencyCode: string;
 };
 
-type CellSelectFieldProps = {
-  readonly label: string;
-  readonly onChange: (value: string) => void;
-  readonly options: readonly CellSelectFieldOption[];
-  readonly value: string;
-};
+// 기능 : Currency inline editor 안에서 통화 코드 선택 메뉴를 렌더링합니다.
+function CurrencyCodeMenu({
+  onSelect,
+  selectedCurrencyCode,
+}: CurrencyCodeMenuProps) {
+  const currencyCodeOptions = getCurrencyCodeOptions(selectedCurrencyCode);
 
-// 기능 : popover 안에서 사용하는 compact select input을 렌더링합니다.
-function CellSelectField({
-  label,
-  onChange,
-  options,
-  value,
-}: CellSelectFieldProps) {
   return (
-    <label className="grid gap-1">
-      <span className="text-[12px] font-medium text-[#6B7280]">
-        {label}
-      </span>
-      <select
-        className="h-8 min-w-0 rounded-md border border-[#E5E1D8] bg-white px-2 text-[14px] text-[#111827] outline-none transition focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
+    <div
+      className="absolute left-1 top-[calc(100%+4px)] z-50 grid w-[112px] gap-px rounded-lg border border-[#E5E1D8] bg-white p-1 shadow-[0_14px_34px_rgba(15,23,42,0.16)]"
+      role="listbox"
+    >
+      {currencyCodeOptions.map((option) => {
+        const isSelected = option.code === normalizeCurrencyCode(selectedCurrencyCode);
+
+        return (
+          <button
+            aria-selected={isSelected}
+            className={cn(
+              "flex h-8 items-center gap-2 rounded-md px-2 text-left text-[14px] transition",
+              isSelected
+                ? "bg-[#EEF4FF] text-[#1D4ED8]"
+                : "text-[#374151] hover:bg-[#F3F2EF]",
+            )}
+            key={option.code}
+            role="option"
+            type="button"
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => onSelect(option.code)}
+          >
+            <span className="flex w-6 shrink-0 justify-center font-medium text-[#111827]">
+              {option.symbol}
+            </span>
+            <span className="min-w-0 flex-1 truncate">
+              {option.code}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -983,8 +1055,18 @@ function arePatchValuesEqual(
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
-// 기능 : 기존 저장 값이 기본 목록 밖의 통화 코드여도 select에서 보존되도록 option 목록을 계산합니다.
-function getCurrencyCodeOptions(currencyCode: string): readonly CellSelectFieldOption[] {
+// 기능 : 통화 코드에 맞는 셀 표시 기호를 계산합니다.
+function getCurrencySymbol(currencyCode: string) {
+  const normalizedCurrencyCode = normalizeCurrencyCode(currencyCode);
+  const option = CURRENCY_CODE_OPTIONS.find(
+    (currencyOption) => currencyOption.code === normalizedCurrencyCode,
+  );
+
+  return option?.symbol ?? normalizedCurrencyCode;
+}
+
+// 기능 : 기존 저장 값이 기본 목록 밖의 통화 코드여도 메뉴에서 보존되도록 option 목록을 계산합니다.
+function getCurrencyCodeOptions(currencyCode: string): readonly CurrencyCodeOption[] {
   const normalizedCurrencyCode = currencyCode.trim().toUpperCase();
 
   if (
@@ -992,19 +1074,22 @@ function getCurrencyCodeOptions(currencyCode: string): readonly CellSelectFieldO
     CURRENCY_CODE_OPTIONS.some((option) => option.code === normalizedCurrencyCode)
   ) {
     return CURRENCY_CODE_OPTIONS.map((option) => ({
+      code: option.code,
       label: option.label,
-      value: option.code,
+      symbol: option.symbol,
     }));
   }
 
   return [
     {
+      code: normalizedCurrencyCode,
       label: normalizedCurrencyCode,
-      value: normalizedCurrencyCode,
+      symbol: normalizedCurrencyCode,
     },
     ...CURRENCY_CODE_OPTIONS.map((option) => ({
+      code: option.code,
       label: option.label,
-      value: option.code,
+      symbol: option.symbol,
     })),
   ];
 }
