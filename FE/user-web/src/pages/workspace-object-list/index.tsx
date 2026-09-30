@@ -1262,7 +1262,6 @@ export function WorkspaceObjectListPage() {
                     aria-label={`새 ${objectLabel}`}
                     className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-2.5 text-[14px] font-medium text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0]"
                     type="button"
-                    onClick={openCreateRecordDefinitionModal}
                   >
                     <Plus
                       aria-hidden="true"
