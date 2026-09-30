@@ -46,16 +46,24 @@ import {
   SidebarCrmObjectIcon,
   createWorkspaceObjectRecordDefinition,
   createWorkspaceObjectAttributeDefinition,
+  updateWorkspaceObjectRecordAttributeValueDefinition,
   type AttributeDefinitionValueType,
   type CreateWorkspaceObjectAttributeDefinitionResponse,
   type WorkspaceObjectAttributeDefinitionListItem,
-  type WorkspaceObjectRecordAttributeValueListItem,
   type WorkspaceObjectRecordDefinitionListItem,
   useWorkspaceObjectAttributeDefinitionsQuery,
   useWorkspaceObjectRecordDefinitionsQuery,
   workspaceObjectAttributeDefinitionQueryKeys,
   workspaceObjectRecordDefinitionQueryKeys,
 } from "@/features/crm-object";
+import {
+  RecordAttributeValueCell,
+  type RecordAttributeValueCellSaveInput,
+} from "@/features/crm-object/components/record-attribute-value-cell";
+import {
+  getRecordAttributeValueDisplayText,
+  type RecordAttributeValueBooleanLabels,
+} from "@/features/crm-object/utils/record-attribute-value-display";
 import {
   createLucideIconValue,
   type DynamicLucideIconName,
@@ -448,7 +456,10 @@ const ATTRIBUTE_DEFINITION_ICON_BY_TYPE: Record<
 };
 
 type RenderedObjectListAttributeColumn =
-  Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "icon" | "title"> & {
+  Pick<
+    WorkspaceObjectAttributeDefinitionListItem,
+    "id" | "icon" | "title" | "type"
+  > & {
     readonly isLoadingPlaceholder: boolean;
   };
 
@@ -513,6 +524,7 @@ function createLoadingAttributeColumn(): RenderedObjectListAttributeColumn {
     id: "attribute-definition-loading",
     icon: null,
     title: "",
+    type: "Text",
     isLoadingPlaceholder: true,
   };
 }
@@ -527,6 +539,7 @@ function toRenderedAttributeColumns(
       id: attributeDefinition.id,
       icon: attributeDefinition.icon,
       title: attributeDefinition.title,
+      type: attributeDefinition.type,
       isLoadingPlaceholder: false,
     }));
   }
@@ -536,56 +549,6 @@ function toRenderedAttributeColumns(
   }
 
   return [];
-}
-
-type RecordAttributeBooleanLabels = {
-  readonly falseLabel: string;
-  readonly trueLabel: string;
-};
-
-// 기능 : RecordAttributeValue 응답에서 화면에 표시할 문자열을 계산합니다.
-function getRecordAttributeValueDisplayText(
-  value: WorkspaceObjectRecordAttributeValueListItem | null | undefined,
-  booleanLabels: RecordAttributeBooleanLabels,
-) {
-  if (!value) {
-    return "";
-  }
-
-  if (value.textValue) {
-    return value.textValue;
-  }
-
-  if (value.numberValue) {
-    return value.numberValue;
-  }
-
-  if (value.booleanValue !== null) {
-    return value.booleanValue ? booleanLabels.trueLabel : booleanLabels.falseLabel;
-  }
-
-  if (value.dateValue) {
-    return value.dateValue;
-  }
-
-  if (value.timestampValue) {
-    return value.timestampValue;
-  }
-
-  if (value.jsonValue !== null) {
-    return typeof value.jsonValue === "string"
-      ? value.jsonValue
-      : JSON.stringify(value.jsonValue);
-  }
-
-  return (
-    value.selectOptionId ??
-    value.statusOptionId ??
-    value.targetRecordDefinitionId ??
-    value.targetObjectDefinitionId ??
-    value.targetActorId ??
-    ""
-  );
 }
 
 // 기능 : RecordDefinition row의 attribute 값을 attributeDefinitionId 기준 Map으로 변환합니다.
@@ -604,7 +567,7 @@ function getRecordAttributeValueMap(
 function getRecordRowLabel(
   row: WorkspaceObjectRecordDefinitionListItem,
   attributeColumns: readonly RenderedObjectListAttributeColumn[],
-  booleanLabels: RecordAttributeBooleanLabels,
+  booleanLabels: RecordAttributeValueBooleanLabels,
 ) {
   const valuesByAttributeId = getRecordAttributeValueMap(row);
 
@@ -626,7 +589,7 @@ function getRecordRowLabel(
 function doesRecordRowMatchSearch(
   row: WorkspaceObjectRecordDefinitionListItem,
   searchQuery: string,
-  booleanLabels: RecordAttributeBooleanLabels,
+  booleanLabels: RecordAttributeValueBooleanLabels,
 ) {
   if (searchQuery.length === 0) {
     return true;
@@ -807,6 +770,40 @@ export function WorkspaceObjectListPage() {
     } finally {
       setCreatingRecordDefinitionRow(false);
     }
+  }
+
+  // 기능 : RecordDefinition 목록 cell 하나의 value 수정 API를 호출하고 목록 query를 갱신합니다.
+  async function handleRecordAttributeValueSave(
+    row: WorkspaceObjectRecordDefinitionListItem,
+    input: RecordAttributeValueCellSaveInput,
+  ) {
+    // 1. 수정에 필요한 사용자/Workspace/ObjectDefinition 경계 값이 없으면 요청하지 않는다.
+    const ownerUserId = user?.id ?? null;
+    const currentWorkspaceId = workspaceId ?? null;
+    const currentObjectDefinitionId = objectDefinitionId ?? null;
+
+    if (!ownerUserId || !currentWorkspaceId || !currentObjectDefinitionId) {
+      return;
+    }
+
+    // 2. 현재 cell에 입력된 draft value를 Backend PATCH API 계약 형태로 전달한다.
+    await updateWorkspaceObjectRecordAttributeValueDefinition({
+      workspaceId: currentWorkspaceId,
+      objectDefinitionId: currentObjectDefinitionId,
+      recordDefinitionId: row.id,
+      recordAttributeValueDefinitionId:
+        input.recordAttributeValueDefinitionId,
+      value: input.value,
+    });
+
+    // 3. 서버 저장값과 RecordDefinition updatedAt을 다시 화면에 반영한다.
+    await queryClient.invalidateQueries({
+      queryKey: workspaceObjectRecordDefinitionQueryKeys.list(
+        ownerUserId,
+        currentWorkspaceId,
+        currentObjectDefinitionId,
+      ),
+    });
   }
 
   // 기능 : header resize handle 드래그로 AttributeDefinition 컬럼 폭을 조절합니다.
@@ -1219,30 +1216,25 @@ export function WorkspaceObjectListPage() {
                     </div>
                     {renderedAttributeColumns.map((column, index) => {
                       const cellValue = valuesByAttributeId.get(column.id);
-                      const displayText = getRecordAttributeValueDisplayText(
-                        cellValue,
-                        booleanLabels,
-                      );
 
                       return (
                         <div
-                          className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
+                          className="flex h-full min-w-0 items-center border-r border-[#F1F0EC]"
                           key={column.id}
                           role="cell"
                         >
-                          <span
-                            className={`min-w-0 truncate ${
-                              index === 0
-                                ? "font-medium text-[#111827]"
-                                : "text-[#111827]"
-                            }`}
-                          >
-                            {cellValue?.timestampValue
-                              ? formatDateTime(cellValue.timestampValue)
-                              : cellValue?.dateValue
-                                ? formatDate(cellValue.dateValue)
-                                : displayText}
-                          </span>
+                          <RecordAttributeValueCell
+                            attributeTitle={column.title}
+                            attributeType={column.type}
+                            booleanLabels={booleanLabels}
+                            formatDate={formatDate}
+                            formatDateTime={formatDateTime}
+                            isPrimary={index === 0}
+                            value={cellValue}
+                            onSave={(input) =>
+                              handleRecordAttributeValueSave(row, input)
+                            }
+                          />
                         </div>
                       );
                     })}

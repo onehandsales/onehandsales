@@ -18,6 +18,13 @@ export type WorkspaceObjectRecordAttributeValueListItem = {
   readonly targetActorId: string | null;
 };
 
+export type WorkspaceObjectRecordAttributeValuePatchValue =
+  | boolean
+  | null
+  | number
+  | string
+  | Record<string, unknown>;
+
 export type WorkspaceObjectRecordDefinitionListItem = {
   readonly id: string;
   readonly createdAt: string;
@@ -52,6 +59,20 @@ export type ListWorkspaceObjectRecordDefinitionsInput = {
   readonly workspaceId: string;
 };
 
+// 역할 : RecordAttributeValueDefinition 수정 API 요청에 필요한 경계 값과 새 cell 값을 정의합니다.
+export type UpdateWorkspaceObjectRecordAttributeValueDefinitionInput = {
+  readonly objectDefinitionId: string;
+  readonly recordAttributeValueDefinitionId: string;
+  readonly recordDefinitionId: string;
+  readonly value: WorkspaceObjectRecordAttributeValuePatchValue;
+  readonly workspaceId: string;
+};
+
+// 역할 : RecordAttributeValueDefinition 수정 API가 반환하는 수정된 cell ID를 정의합니다.
+export type UpdateWorkspaceObjectRecordAttributeValueDefinitionResponse = {
+  readonly recordAttributeValueDefinitionId: string;
+};
+
 // 기능 : 현재 Workspace ObjectDefinition에 빈 RecordDefinition 생성 API를 호출합니다.
 export function createWorkspaceObjectRecordDefinition(
   input: CreateWorkspaceObjectRecordDefinitionInput,
@@ -77,5 +98,21 @@ export function listWorkspaceObjectRecordDefinitions(
   // 2. 현재 Workspace ObjectDefinition 기준 RecordDefinition 목록 API를 호출한다.
   return apiClient<WorkspaceObjectRecordDefinitionListResponse>(
     `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/record-definitions${queryString}`,
+  );
+}
+
+// 기능 : 현재 Workspace ObjectDefinition의 RecordAttributeValueDefinition 값을 수정합니다.
+export function updateWorkspaceObjectRecordAttributeValueDefinition(
+  input: UpdateWorkspaceObjectRecordAttributeValueDefinitionInput,
+) {
+  // 1. cell value 값만 Backend 공통 request body 형태로 감싸 전달한다.
+  return apiClient<UpdateWorkspaceObjectRecordAttributeValueDefinitionResponse>(
+    `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/record-definitions/${encodeURIComponent(input.recordDefinitionId)}/record-attribute-values-definitions/${encodeURIComponent(input.recordAttributeValueDefinitionId)}`,
+    {
+      method: "PATCH",
+      body: {
+        value: input.value,
+      },
+    },
   );
 }

@@ -10,6 +10,7 @@ export { workspaceObjectAttributeDefinitionQueryKeys } from "./api/attribute-def
 export {
   createWorkspaceObjectRecordDefinition,
   listWorkspaceObjectRecordDefinitions,
+  updateWorkspaceObjectRecordAttributeValueDefinition,
 } from "./api/record-definition-api";
 export { workspaceObjectRecordDefinitionQueryKeys } from "./api/record-definition-query-keys";
 export { useWorkspaceObjectAttributeDefinitionsQuery } from "./hooks/use-workspace-object-attribute-definitions";
@@ -21,6 +22,8 @@ export type {
 } from "./api/attribute-definition-api";
 export type {
   CreateWorkspaceObjectRecordDefinitionResponse,
+  UpdateWorkspaceObjectRecordAttributeValueDefinitionResponse,
+  WorkspaceObjectRecordAttributeValuePatchValue,
   WorkspaceObjectRecordAttributeValueListItem,
   WorkspaceObjectRecordDefinitionListItem,
   WorkspaceObjectRecordDefinitionListResponse,
