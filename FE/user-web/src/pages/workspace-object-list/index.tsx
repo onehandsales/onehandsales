@@ -44,6 +44,7 @@ import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import {
   SidebarCrmObjectIcon,
+  createWorkspaceObjectRecordDefinition,
   createWorkspaceObjectAttributeDefinition,
   type AttributeDefinitionValueType,
   type CreateWorkspaceObjectAttributeDefinitionResponse,
@@ -53,6 +54,7 @@ import {
   useWorkspaceObjectAttributeDefinitionsQuery,
   useWorkspaceObjectRecordDefinitionsQuery,
   workspaceObjectAttributeDefinitionQueryKeys,
+  workspaceObjectRecordDefinitionQueryKeys,
 } from "@/features/crm-object";
 import {
   createLucideIconValue,
@@ -651,6 +653,16 @@ export function WorkspaceObjectListPage() {
     isCreateRecordDefinitionModalOpen,
     setCreateRecordDefinitionModalOpen,
   ] = useState(false);
+  // 상태 : 테이블 하단 생성하기 버튼의 빈 RecordDefinition 생성 진행 여부입니다.
+  const [
+    isCreatingRecordDefinitionRow,
+    setCreatingRecordDefinitionRow,
+  ] = useState(false);
+  // 상태 : 테이블 하단 생성하기 버튼의 빈 RecordDefinition 생성 실패 메시지입니다.
+  const [
+    createRecordDefinitionRowErrorMessage,
+    setCreateRecordDefinitionRowErrorMessage,
+  ] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [attributeColumnWidthsById, setAttributeColumnWidthsById] =
     useState<Record<string, number>>({});
@@ -753,6 +765,48 @@ export function WorkspaceObjectListPage() {
   function handleLoadMoreRecords() {
     // 1. Backend가 내려준 cursor를 사용해 다음 RecordDefinition page를 요청한다.
     void recordDefinitionsQuery.fetchNextPage();
+  }
+
+  // 기능 : 테이블 하단 생성하기 버튼에서 빈 RecordDefinition row를 생성합니다.
+  async function handleCreateRecordDefinitionRow() {
+    // 1. 생성에 필요한 사용자/Workspace/ObjectDefinition 경계 값이 없으면 요청하지 않는다.
+    const ownerUserId = user?.id ?? null;
+    const currentWorkspaceId = workspaceId ?? null;
+    const currentObjectDefinitionId = objectDefinitionId ?? null;
+
+    if (
+      !ownerUserId ||
+      !currentWorkspaceId ||
+      !currentObjectDefinitionId ||
+      isCreatingRecordDefinitionRow
+    ) {
+      return;
+    }
+
+    // 2. 중복 클릭을 막고 빈 RecordDefinition 생성 API를 호출한다.
+    setCreateRecordDefinitionRowErrorMessage(null);
+    setCreatingRecordDefinitionRow(true);
+
+    try {
+      await createWorkspaceObjectRecordDefinition({
+        workspaceId: currentWorkspaceId,
+        objectDefinitionId: currentObjectDefinitionId,
+      });
+
+      // 3. 서버 기준 RecordDefinition 목록을 다시 가져오도록 현재 object list query를 갱신한다.
+      await queryClient.invalidateQueries({
+        queryKey: workspaceObjectRecordDefinitionQueryKeys.list(
+          ownerUserId,
+          currentWorkspaceId,
+          currentObjectDefinitionId,
+        ),
+      });
+    } catch (error) {
+      // 4. 실패하면 API 오류 메시지를 테이블 하단에 표시한다.
+      setCreateRecordDefinitionRowErrorMessage(getApiErrorMessage(error));
+    } finally {
+      setCreatingRecordDefinitionRow(false);
+    }
   }
 
   // 기능 : header resize handle 드래그로 AttributeDefinition 컬럼 폭을 조절합니다.
@@ -1251,7 +1305,7 @@ export function WorkspaceObjectListPage() {
                 </div>
               ) : null}
               <div
-                className="flex h-10 items-center justify-center bg-white"
+                className="flex h-10 items-center justify-center border-b border-[#F1F0EC] bg-white"
                 role="row"
               >
                 <div
@@ -1260,18 +1314,35 @@ export function WorkspaceObjectListPage() {
                 >
                   <button
                     aria-label={`새 ${objectLabel}`}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-2.5 text-[14px] font-medium text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0]"
+                    aria-busy={isCreatingRecordDefinitionRow}
+                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-2.5 text-[14px] font-medium text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0] disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={isCreatingRecordDefinitionRow}
                     type="button"
+                    onClick={handleCreateRecordDefinitionRow}
                   >
                     <Plus
                       aria-hidden="true"
                       className="h-5 w-5 shrink-0"
                       strokeWidth={2}
                     />
-                    <span className="truncate">{t("objectList.addDataAction")}</span>
+                    <span className="truncate">
+                      {isCreatingRecordDefinitionRow
+                        ? t("common.loading")
+                        : t("objectList.addDataAction")}
+                    </span>
                   </button>
                 </div>
               </div>
+              {createRecordDefinitionRowErrorMessage ? (
+                <div
+                  className="flex h-8 items-center justify-center bg-white px-4 text-[13px] font-medium text-[#DC2626]"
+                  role="row"
+                >
+                  <div className="min-w-0 truncate" role="cell">
+                    {createRecordDefinitionRowErrorMessage}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

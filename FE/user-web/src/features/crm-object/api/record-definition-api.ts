@@ -35,11 +35,35 @@ export type WorkspaceObjectRecordDefinitionListResponse = {
   readonly pageInfo: WorkspaceObjectRecordDefinitionListPageInfo;
 };
 
+// 역할 : 빈 RecordDefinition 생성 API 요청에 필요한 Workspace/ObjectDefinition 경계 값을 정의합니다.
+export type CreateWorkspaceObjectRecordDefinitionInput = {
+  readonly objectDefinitionId: string;
+  readonly workspaceId: string;
+};
+
+// 역할 : 빈 RecordDefinition 생성 API가 반환하는 생성된 RecordDefinition ID를 정의합니다.
+export type CreateWorkspaceObjectRecordDefinitionResponse = {
+  readonly recordDefinitionId: string;
+};
+
 export type ListWorkspaceObjectRecordDefinitionsInput = {
   readonly cursor?: string | null;
   readonly objectDefinitionId: string;
   readonly workspaceId: string;
 };
+
+// 기능 : 현재 Workspace ObjectDefinition에 빈 RecordDefinition 생성 API를 호출합니다.
+export function createWorkspaceObjectRecordDefinition(
+  input: CreateWorkspaceObjectRecordDefinitionInput,
+) {
+  // 1. 현재 Workspace ObjectDefinition 기준으로 새 RecordDefinition 생성 요청을 전달한다.
+  return apiClient<CreateWorkspaceObjectRecordDefinitionResponse>(
+    `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/record-definitions`,
+    {
+      method: "POST",
+    },
+  );
+}
 
 // 기능 : 현재 Workspace ObjectDefinition의 body row RecordDefinition 목록 API를 호출합니다.
 export function listWorkspaceObjectRecordDefinitions(

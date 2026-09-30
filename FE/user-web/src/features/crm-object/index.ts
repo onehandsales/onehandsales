@@ -7,7 +7,11 @@ export {
   listWorkspaceObjectAttributeDefinitions,
 } from "./api/attribute-definition-api";
 export { workspaceObjectAttributeDefinitionQueryKeys } from "./api/attribute-definition-query-keys";
-export { listWorkspaceObjectRecordDefinitions } from "./api/record-definition-api";
+export {
+  createWorkspaceObjectRecordDefinition,
+  listWorkspaceObjectRecordDefinitions,
+} from "./api/record-definition-api";
+export { workspaceObjectRecordDefinitionQueryKeys } from "./api/record-definition-query-keys";
 export { useWorkspaceObjectAttributeDefinitionsQuery } from "./hooks/use-workspace-object-attribute-definitions";
 export { useWorkspaceObjectRecordDefinitionsQuery } from "./hooks/use-workspace-object-record-definitions";
 export type {
@@ -16,6 +20,7 @@ export type {
   WorkspaceObjectAttributeDefinitionListItem,
 } from "./api/attribute-definition-api";
 export type {
+  CreateWorkspaceObjectRecordDefinitionResponse,
   WorkspaceObjectRecordAttributeValueListItem,
   WorkspaceObjectRecordDefinitionListItem,
   WorkspaceObjectRecordDefinitionListResponse,
