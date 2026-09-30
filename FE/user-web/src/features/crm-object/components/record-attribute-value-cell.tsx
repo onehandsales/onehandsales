@@ -77,6 +77,17 @@ const POPOVER_ATTRIBUTE_TYPES = new Set<AttributeDefinitionValueType>([
   "Status",
 ]);
 
+const CURRENCY_CODE_OPTIONS = [
+  { code: "KRW", label: "KRW - Korean won" },
+  { code: "USD", label: "USD - US dollar" },
+  { code: "JPY", label: "JPY - Japanese yen" },
+  { code: "EUR", label: "EUR - Euro" },
+  { code: "CNY", label: "CNY - Chinese yuan" },
+  { code: "GBP", label: "GBP - Pound sterling" },
+  { code: "CAD", label: "CAD - Canadian dollar" },
+  { code: "AUD", label: "AUD - Australian dollar" },
+] as const;
+
 // 기능 : record table cell 하나의 표시와 inline 편집 UX를 렌더링합니다.
 export function RecordAttributeValueCell({
   attributeTitle,
@@ -549,7 +560,7 @@ function renderPopoverFields({
       );
     case "Currency":
       return (
-        <>
+        <div className="grid grid-cols-[minmax(0,1fr)_116px] gap-2">
           <CellTextField
             inputMode="decimal"
             inputRef={firstInputRef}
@@ -562,8 +573,9 @@ function renderPopoverFields({
               })
             }
           />
-          <CellTextField
+          <CellSelectField
             label="currencyCode"
+            options={getCurrencyCodeOptions(draft.currencyCode)}
             value={draft.currencyCode}
             onChange={(currencyCode) =>
               onChange({
@@ -572,7 +584,7 @@ function renderPopoverFields({
               })
             }
           />
-        </>
+        </div>
       );
     case "Location":
       return (
@@ -666,6 +678,45 @@ function renderPopoverFields({
   }
 }
 
+type CellSelectFieldOption = {
+  readonly label: string;
+  readonly value: string;
+};
+
+type CellSelectFieldProps = {
+  readonly label: string;
+  readonly onChange: (value: string) => void;
+  readonly options: readonly CellSelectFieldOption[];
+  readonly value: string;
+};
+
+// 기능 : popover 안에서 사용하는 compact select input을 렌더링합니다.
+function CellSelectField({
+  label,
+  onChange,
+  options,
+  value,
+}: CellSelectFieldProps) {
+  return (
+    <label className="grid gap-1">
+      <span className="text-[12px] font-medium text-[#6B7280]">
+        {label}
+      </span>
+      <select
+        className="h-8 min-w-0 rounded-md border border-[#E5E1D8] bg-white px-2 text-[14px] text-[#111827] outline-none transition focus:border-[#4880EE] focus:ring-2 focus:ring-[#4880EE]/20"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 type CellTextFieldProps = {
   readonly inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
   readonly inputRef?: RefObject<HTMLInputElement | null>;
@@ -727,7 +778,9 @@ function createDraftFromValue(
       getStringField(jsonValue, "amount") ??
       value.numberValue ??
       "",
-    currencyCode: getStringField(jsonValue, "currencyCode") ?? "KRW",
+    currencyCode: normalizeCurrencyCode(
+      getStringField(jsonValue, "currencyCode"),
+    ),
     displayName:
       getStringField(jsonValue, "displayName") ??
       value.textValue ??
@@ -850,7 +903,7 @@ function toPatchValue(
 
       return {
         amount: draft.amount.trim(),
-        currencyCode: draft.currencyCode.trim() || "KRW",
+        currencyCode: normalizeCurrencyCode(draft.currencyCode),
       };
     case "Location":
       return draft.locationText.trim().length > 0
@@ -915,12 +968,45 @@ function normalizeEmptyString(value: string) {
   return value.trim().length > 0 ? value : null;
 }
 
+// 기능 : 통화 코드를 ISO code 표시 기준에 맞게 정규화합니다.
+function normalizeCurrencyCode(value: string | null | undefined) {
+  const normalized = value?.trim().toUpperCase() ?? "";
+
+  return normalized.length > 0 ? normalized : "KRW";
+}
+
 // 기능 : 저장 요청을 보내기 전에 draft value가 현재 저장 값과 같은지 비교합니다.
 function arePatchValuesEqual(
   left: WorkspaceObjectRecordAttributeValuePatchValue,
   right: WorkspaceObjectRecordAttributeValuePatchValue,
 ) {
   return JSON.stringify(left) === JSON.stringify(right);
+}
+
+// 기능 : 기존 저장 값이 기본 목록 밖의 통화 코드여도 select에서 보존되도록 option 목록을 계산합니다.
+function getCurrencyCodeOptions(currencyCode: string): readonly CellSelectFieldOption[] {
+  const normalizedCurrencyCode = currencyCode.trim().toUpperCase();
+
+  if (
+    normalizedCurrencyCode.length === 0 ||
+    CURRENCY_CODE_OPTIONS.some((option) => option.code === normalizedCurrencyCode)
+  ) {
+    return CURRENCY_CODE_OPTIONS.map((option) => ({
+      label: option.label,
+      value: option.code,
+    }));
+  }
+
+  return [
+    {
+      label: normalizedCurrencyCode,
+      value: normalizedCurrencyCode,
+    },
+    ...CURRENCY_CODE_OPTIONS.map((option) => ({
+      label: option.label,
+      value: option.code,
+    })),
+  ];
 }
 
 // 기능 : AttributeType에 맞는 HTML input type 값을 반환합니다.
