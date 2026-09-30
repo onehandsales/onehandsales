@@ -55,7 +55,7 @@ describe("createWorkspaceObjectAttributeDefinition", () => {
       attributeDefinitionName: "company email",
       attributeType: "EmailAddress",
       description: "Primary email address.",
-      icon: "mail",
+      icon: "lucide:mail",
       objectDefinitionId: "object/1",
       workspaceId: "workspace/1",
     });
@@ -71,7 +71,7 @@ describe("createWorkspaceObjectAttributeDefinition", () => {
           attributeDefinitionName: "company email",
           attributeType: "EmailAddress",
           description: "Primary email address.",
-          icon: "mail",
+          icon: "lucide:mail",
         },
       },
     );

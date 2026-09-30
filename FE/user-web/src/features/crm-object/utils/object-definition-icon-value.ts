@@ -10,9 +10,14 @@ export function createEmojiObjectIconValue(emoji: string) {
   return `${EMOJI_ICON_VALUE_PREFIX}${emoji}`;
 }
 
-// 기능 : 선택한 lucide 아이콘을 ObjectDefinition icon 컬럼에 저장할 문자열로 변환합니다.
-export function createLucideObjectIconValue(iconName: DynamicLucideIconName) {
+// 기능 : 선택한 lucide 아이콘을 icon 컬럼에 저장할 문자열로 변환합니다.
+export function createLucideIconValue(iconName: DynamicLucideIconName) {
   return `${LUCIDE_ICON_VALUE_PREFIX}${iconName}`;
+}
+
+// 기능 : 기존 ObjectDefinition icon picker 호출부를 위한 lucide icon 저장 문자열 별칭입니다.
+export function createLucideObjectIconValue(iconName: DynamicLucideIconName) {
+  return createLucideIconValue(iconName);
 }
 
 // 기능 : ObjectDefinition icon 문자열에서 이모지 값을 추출합니다.

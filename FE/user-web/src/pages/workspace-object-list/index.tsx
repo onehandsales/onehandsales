@@ -54,6 +54,10 @@ import {
   useWorkspaceObjectRecordDefinitionsQuery,
   workspaceObjectAttributeDefinitionQueryKeys,
 } from "@/features/crm-object";
+import {
+  createLucideIconValue,
+  type DynamicLucideIconName,
+} from "@/features/crm-object/utils/object-definition-icon-value";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -420,7 +424,7 @@ function getAttributeDefinitionTypeIcon(
 
 const ATTRIBUTE_DEFINITION_ICON_BY_TYPE: Record<
   AttributeDefinitionTypeKey,
-  string
+  DynamicLucideIconName
 > = {
   ActorReference: "user",
   Checkbox: "square-check",
@@ -1864,7 +1868,9 @@ function AddAttributeDefinitionCreateModalContent({
           attributeDefinitionName: trimmedAttributeDefinitionName,
           attributeType: selectedAttributeType,
           description: description.length > 0 ? description : undefined,
-          icon: ATTRIBUTE_DEFINITION_ICON_BY_TYPE[selectedAttributeType],
+          icon: createLucideIconValue(
+            ATTRIBUTE_DEFINITION_ICON_BY_TYPE[selectedAttributeType],
+          ),
           objectDefinitionId,
           workspaceId,
         }),
