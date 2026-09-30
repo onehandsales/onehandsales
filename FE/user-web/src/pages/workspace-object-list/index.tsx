@@ -1119,7 +1119,7 @@ export function WorkspaceObjectListPage() {
             style={{ minWidth: tableMinWidthPx }}
           >
             <div
-              className="sticky top-0 z-10 grid h-9 items-stretch border-b border-[#EEEDEA] bg-white text-[14px] font-medium text-[#111827]"
+              className="sticky top-0 z-10 grid h-[36px] items-stretch bg-white text-[14px] font-medium text-[#111827] shadow-[inset_0_-1px_0_#EEEDEA]"
               role="row"
               style={{ gridTemplateColumns: tableGridTemplateColumns }}
             >
@@ -1200,7 +1200,7 @@ export function WorkspaceObjectListPage() {
 
                 return (
                   <div
-                    className="grid h-10 items-stretch border-b border-[#F1F0EC] bg-white text-[14px] text-[#374151] transition hover:bg-[#FAFAF8]"
+                    className="grid h-[40px] items-stretch bg-white text-[14px] text-[#374151] shadow-[inset_0_-1px_0_#F1F0EC] transition hover:bg-[#FAFAF8]"
                     key={row.id}
                     role="row"
                     style={{ gridTemplateColumns: tableGridTemplateColumns }}
@@ -1255,12 +1255,12 @@ export function WorkspaceObjectListPage() {
                 );
               })}
               {isRecordDefinitionsLoading ? (
-                <div className="flex h-20 items-center px-4 text-[14px] font-medium text-[#6B7280]">
+                <div className="flex h-[80px] items-center px-4 text-[14px] font-medium text-[#6B7280]">
                   {t("objectList.loadingRecords")}
                 </div>
               ) : null}
               {!isRecordDefinitionsLoading && recordDefinitionsQuery.isError ? (
-                <div className="flex h-20 items-center gap-3 px-4 text-[14px] font-medium text-[#6B7280]">
+                <div className="flex h-[80px] items-center gap-3 px-4 text-[14px] font-medium text-[#6B7280]">
                   <span>{t("objectList.loadRecordsFailed")}</span>
                   <button
                     className="h-8 rounded-md bg-[#F3F2EF] px-2.5 text-[14px] font-medium text-[#374151] transition hover:bg-[#EDEBE6] active:bg-[#D3D1CB]"
@@ -1274,7 +1274,7 @@ export function WorkspaceObjectListPage() {
               {!isRecordDefinitionsLoading &&
               !recordDefinitionsQuery.isError &&
               visibleRows.length === 0 ? (
-                <div className="flex h-20 items-center px-4 text-[14px] font-medium text-[#6B7280]">
+                <div className="flex h-[80px] items-center px-4 text-[14px] font-medium text-[#6B7280]">
                   {normalizedSearchQuery.length > 0
                     ? t("common.searchEmpty")
                     : t("objectList.emptyRecords")}
@@ -1284,7 +1284,7 @@ export function WorkspaceObjectListPage() {
               !recordDefinitionsQuery.isError &&
               recordDefinitionsQuery.hasNextPage ? (
                 <div
-                  className="flex h-12 items-center justify-center bg-white"
+                  className="flex h-[48px] items-center justify-center bg-white"
                   role="row"
                 >
                   <div
@@ -1305,7 +1305,7 @@ export function WorkspaceObjectListPage() {
                 </div>
               ) : null}
               <div
-                className="flex h-10 items-center justify-center border-b border-[#F1F0EC] bg-white"
+                className="flex h-[40px] items-center justify-center bg-white shadow-[inset_0_-1px_0_#F1F0EC]"
                 role="row"
               >
                 <div
@@ -1335,7 +1335,7 @@ export function WorkspaceObjectListPage() {
               </div>
               {createRecordDefinitionRowErrorMessage ? (
                 <div
-                  className="flex h-8 items-center justify-center bg-white px-4 text-[13px] font-medium text-[#DC2626]"
+                  className="flex h-[32px] items-center justify-center bg-white px-4 text-[13px] font-medium text-[#DC2626]"
                   role="row"
                 >
                   <div className="min-w-0 truncate" role="cell">
