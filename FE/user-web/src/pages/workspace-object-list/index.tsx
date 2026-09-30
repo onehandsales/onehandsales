@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ArrowUpDown,
@@ -43,12 +44,17 @@ import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import {
   SidebarCrmObjectIcon,
+  createWorkspaceObjectAttributeDefinition,
+  type AttributeDefinitionValueType,
+  type CreateWorkspaceObjectAttributeDefinitionResponse,
   type WorkspaceObjectAttributeDefinitionListItem,
   type WorkspaceObjectRecordAttributeValueListItem,
   type WorkspaceObjectRecordDefinitionListItem,
   useWorkspaceObjectAttributeDefinitionsQuery,
   useWorkspaceObjectRecordDefinitionsQuery,
+  workspaceObjectAttributeDefinitionQueryKeys,
 } from "@/features/crm-object";
+import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
 const OBJECT_LIST_SELECT_COLUMN_WIDTH_PX = 44;
@@ -64,27 +70,10 @@ const CREATE_RECORD_DEFINITION_MODAL_OPEN_DELAY_MS = 20;
 const CREATE_RECORD_DEFINITION_MODAL_LOADING_CLOSE_DELAY_MS = 2000;
 const CREATE_RECORD_DEFINITION_DESCRIPTION_MAX_LENGTH = 300;
 
-type AddAttributeDefinitionObjectCreateStep = "name" | "type" | "details";
+type AddAttributeDefinitionCreateStep = "name" | "type" | "details";
 type CreateRecordDefinitionStep = "name" | "details";
 
-type AttributeDefinitionTypeKey =
-  | "ActorReference"
-  | "Checkbox"
-  | "Currency"
-  | "Date"
-  | "Domain"
-  | "EmailAddress"
-  | "Interaction"
-  | "Location"
-  | "PersonalName"
-  | "Number"
-  | "PhoneNumber"
-  | "Rating"
-  | "RecordReference"
-  | "Select"
-  | "Status"
-  | "Text"
-  | "Timestamp";
+type AttributeDefinitionTypeKey = AttributeDefinitionValueType;
 
 type AttributeDefinitionTypeIconKind =
   | "actor"
@@ -116,7 +105,7 @@ type AttributeDefinitionTypeOptionGroup = {
   readonly title: string;
 };
 
-type AddAttributeDefinitionObjectCreateModalCopy = {
+type AddAttributeDefinitionCreateModalCopy = {
   readonly back: string;
   readonly createButtonLabel: string;
   readonly creatingTitle: string;
@@ -144,9 +133,9 @@ type CreateRecordDefinitionModalCopy = {
   readonly next: string;
 };
 
-const addAttributeDefinitionObjectCreateModalCopyByLocale: Record<
+const addAttributeDefinitionCreateModalCopyByLocale: Record<
   AppLocale,
-  AddAttributeDefinitionObjectCreateModalCopy
+  AddAttributeDefinitionCreateModalCopy
 > = {
   "ko-KR": {
     back: "이전",
@@ -429,6 +418,29 @@ function getAttributeDefinitionTypeIcon(
   return iconByKind[kind];
 }
 
+const ATTRIBUTE_DEFINITION_ICON_BY_TYPE: Record<
+  AttributeDefinitionTypeKey,
+  string
+> = {
+  ActorReference: "user",
+  Checkbox: "square-check",
+  Currency: "circle-dollar-sign",
+  Date: "calendar",
+  Domain: "globe",
+  EmailAddress: "mail",
+  Interaction: "messages-square",
+  Location: "map-pin",
+  Number: "hash",
+  PersonalName: "contact",
+  PhoneNumber: "phone",
+  Rating: "star",
+  RecordReference: "link-2",
+  Select: "list-checks",
+  Status: "kanban",
+  Text: "type",
+  Timestamp: "calendar-clock",
+};
+
 type RenderedObjectListAttributeColumn =
   Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "icon" | "title"> & {
     readonly isLoadingPlaceholder: boolean;
@@ -641,6 +653,7 @@ export function WorkspaceObjectListPage() {
   const columnResizeCleanupRef = useRef<(() => void) | null>(null);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
   const { t, formatDate, formatDateTime } = useAppI18n();
   const { user } = useAuthSession();
   const { objectDefinitionId, workspaceId } = useParams<{
@@ -813,7 +826,28 @@ export function WorkspaceObjectListPage() {
     }
   }, [isSearchOpen]);
 
-  // 기능 : 필요한 정보 추가 버튼에서 임시 AttributeDefinition 생성 모달을 엽니다.
+  // 기능 : 새로 생성된 AttributeDefinition을 header row 목록 query에 반영합니다.
+  async function handleAttributeDefinitionCreated() {
+    // 1. 현재 사용자가 선택한 Workspace와 ObjectDefinition이 준비되지 않았으면 갱신을 건너뛴다.
+    const ownerUserId = user?.id ?? null;
+    const currentWorkspaceId = workspaceId ?? null;
+    const currentObjectDefinitionId = objectDefinitionId ?? null;
+
+    if (!ownerUserId || !currentWorkspaceId || !currentObjectDefinitionId) {
+      return;
+    }
+
+    // 2. 서버 기준 AttributeDefinition 목록을 다시 가져오도록 query cache를 무효화한다.
+    await queryClient.invalidateQueries({
+      queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(
+        ownerUserId,
+        currentWorkspaceId,
+        currentObjectDefinitionId,
+      ),
+    });
+  }
+
+  // 기능 : 필요한 정보 추가 버튼에서 AttributeDefinition 생성 모달을 엽니다.
   function openAddAttributeDefinitionModal() {
     setMoreActionsOpen(false);
     setAddAttributeDefinitionModalOpen(true);
@@ -1245,8 +1279,11 @@ export function WorkspaceObjectListPage() {
         open={isAddAttributeDefinitionModalOpen}
         onClose={closeAddAttributeDefinitionModal}
       >
-        <AddAttributeDefinitionObjectCreateModalContent
+        <AddAttributeDefinitionCreateModalContent
+          objectDefinitionId={objectDefinitionId ?? null}
           onClose={closeAddAttributeDefinitionModal}
+          onCreated={handleAttributeDefinitionCreated}
+          workspaceId={workspaceId ?? null}
         />
       </AddAttributeDefinitionModal>
 
@@ -1718,83 +1755,131 @@ function AddAttributeDefinitionModal({
   );
 }
 
-// 기능 : ObjectDefinition 생성 모달과 같은 화면을 필요한 정보 추가 버튼용으로 임시 렌더링합니다.
-function AddAttributeDefinitionObjectCreateModalContent({
+// 기능 : AttributeDefinition 생성 모달의 이름, 타입, 설명 입력 흐름을 렌더링합니다.
+function AddAttributeDefinitionCreateModalContent({
+  objectDefinitionId,
   onClose,
+  onCreated,
+  workspaceId,
 }: {
+  readonly objectDefinitionId: string | null;
   readonly onClose: () => void;
+  readonly onCreated?: (
+    response: CreateWorkspaceObjectAttributeDefinitionResponse,
+  ) => Promise<void> | void;
+  readonly workspaceId: string | null;
 }) {
   const { locale, t } = useAppI18n();
-  const copy = addAttributeDefinitionObjectCreateModalCopyByLocale[locale];
-  const [objectDefinitionName, setObjectDefinitionName] = useState("");
-  const [step, setStep] =
-    useState<AddAttributeDefinitionObjectCreateStep>("name");
+  const copy = addAttributeDefinitionCreateModalCopyByLocale[locale];
+  const [attributeDefinitionName, setAttributeDefinitionName] = useState("");
+  const [step, setStep] = useState<AddAttributeDefinitionCreateStep>("name");
   const [selectedAttributeType, setSelectedAttributeType] =
     useState<AttributeDefinitionTypeKey | null>(null);
   const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
-  const [hasCreatedObjectDefinition, setHasCreatedObjectDefinition] =
+  const [hasCreatedAttributeDefinition, setHasCreatedAttributeDefinition] =
     useState(false);
   const [createLoadingModalOpen, setCreateLoadingModalOpen] = useState(false);
+  const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(
+    null,
+  );
 
-  const trimmedObjectDefinitionName = objectDefinitionName.trim();
-  const canMoveNext = trimmedObjectDefinitionName.length > 0;
-  const canCreateObjectDefinition =
+  const trimmedAttributeDefinitionName = attributeDefinitionName.trim();
+  const canMoveNext = trimmedAttributeDefinitionName.length > 0;
+  const canCreateAttributeDefinition =
+    Boolean(workspaceId && objectDefinitionId) &&
     canMoveNext &&
     selectedAttributeType !== null &&
     !isCreating &&
-    !hasCreatedObjectDefinition;
+    !hasCreatedAttributeDefinition;
 
+  // 기능 : 이름 입력 제출 시 AttributeDefinition 타입 선택 단계로 이동합니다.
   const onSubmitName = (event: FormEvent<HTMLFormElement>) => {
+    // 1. 브라우저 기본 제출 동작을 막는다.
     event.preventDefault();
 
+    // 2. 이름이 비어 있으면 다음 단계로 넘어가지 않는다.
     if (!canMoveNext) {
       return;
     }
 
+    // 3. 입력한 이름을 유지한 채 타입 선택 단계로 이동한다.
     setStep("type");
   };
 
+  // 기능 : 타입 선택 단계에서 이름 입력 단계로 돌아갑니다.
   const onBackToNameStep = () => {
-    if (isCreating || hasCreatedObjectDefinition) {
+    if (isCreating || hasCreatedAttributeDefinition) {
       return;
     }
 
+    // 1. 사용자가 입력한 값을 유지한 채 이름 입력 단계로 돌아간다.
     setStep("name");
   };
 
+  // 기능 : 선택한 AttributeDefinition 타입을 저장하고 설명 입력 단계로 이동합니다.
   const onSelectAttributeType = (type: AttributeDefinitionTypeKey) => {
-    if (isCreating || hasCreatedObjectDefinition) {
+    if (isCreating || hasCreatedAttributeDefinition) {
       return;
     }
 
+    // 1. 선택한 타입을 request에 사용할 값으로 저장한다.
     setSelectedAttributeType(type);
+    // 2. 선택 직후 설명 입력 단계로 이동한다.
     setStep("details");
   };
 
+  // 기능 : 설명 입력 단계에서 타입 선택 단계로 돌아갑니다.
   const onBackToTypeStep = () => {
-    if (isCreating || hasCreatedObjectDefinition) {
+    if (isCreating || hasCreatedAttributeDefinition) {
       return;
     }
 
+    // 1. 선택한 타입과 입력값을 유지한 채 타입 선택 단계로 돌아간다.
     setStep("type");
   };
 
-  const onCreateObjectDefinition = async () => {
-    if (!canCreateObjectDefinition) {
+  // 기능 : 입력한 AttributeDefinition 값으로 Backend 생성 API를 호출합니다.
+  const onCreateAttributeDefinition = async () => {
+    // 1. 생성에 필요한 route 값과 입력값이 준비되지 않았으면 요청하지 않는다.
+    if (
+      !workspaceId ||
+      !objectDefinitionId ||
+      !selectedAttributeType ||
+      !canMoveNext ||
+      isCreating ||
+      hasCreatedAttributeDefinition
+    ) {
       return;
     }
 
+    // 2. 선택한 타입에 대응하는 header row icon 값을 포함해 생성 요청을 시작한다.
+    setCreateErrorMessage(null);
     setIsCreating(true);
     setCreateLoadingModalOpen(true);
 
     try {
-      await waitForAddAttributeDefinitionModalLoadingDelay();
-      setHasCreatedObjectDefinition(true);
+      const [response] = await Promise.all([
+        createWorkspaceObjectAttributeDefinition({
+          attributeDefinitionName: trimmedAttributeDefinitionName,
+          attributeType: selectedAttributeType,
+          description: description.length > 0 ? description : undefined,
+          icon: ATTRIBUTE_DEFINITION_ICON_BY_TYPE[selectedAttributeType],
+          objectDefinitionId,
+          workspaceId,
+        }),
+        waitForAddAttributeDefinitionModalLoadingDelay(),
+      ]);
+      // 3. 생성 성공 후 header row 목록 query 갱신을 실행하고 모달을 닫는다.
+      setHasCreatedAttributeDefinition(true);
+      await onCreated?.(response);
       onClose();
+    } catch (error) {
+      // 4. 생성 실패 시 로딩을 닫고 API 에러 메시지를 표시한다.
+      setCreateLoadingModalOpen(false);
+      setCreateErrorMessage(getApiErrorMessage(error));
     } finally {
       setIsCreating(false);
-      setCreateLoadingModalOpen(false);
     }
   };
 
@@ -1810,39 +1895,39 @@ function AddAttributeDefinitionObjectCreateModalContent({
       </button>
       <div className="h-full min-h-0 overflow-y-auto">
         {step === "name" ? (
-          <AddAttributeDefinitionObjectNameStep
+          <AddAttributeDefinitionNameStep
             canMoveNext={canMoveNext}
             copy={copy}
-            objectDefinitionName={objectDefinitionName}
-            onNameChange={setObjectDefinitionName}
+            attributeDefinitionName={attributeDefinitionName}
+            onNameChange={setAttributeDefinitionName}
             onSubmit={onSubmitName}
           />
         ) : step === "type" ? (
           <AddAttributeDefinitionTypeStep
             copy={copy}
-            isSelectionLocked={isCreating || hasCreatedObjectDefinition}
+            isSelectionLocked={isCreating || hasCreatedAttributeDefinition}
             locale={locale}
-            objectDefinitionName={trimmedObjectDefinitionName}
+            attributeDefinitionName={trimmedAttributeDefinitionName}
             selectedAttributeType={selectedAttributeType}
             onBack={onBackToNameStep}
             onSelectType={onSelectAttributeType}
           />
         ) : (
-          <AddAttributeDefinitionObjectDetailsStep
-            canCreate={canCreateObjectDefinition}
+          <AddAttributeDefinitionDetailsStep
+            canCreate={canCreateAttributeDefinition}
             copy={copy}
-            createErrorMessage={null}
+            createErrorMessage={createErrorMessage}
             description={description}
             locale={locale}
-            objectDefinitionName={trimmedObjectDefinitionName}
+            attributeDefinitionName={trimmedAttributeDefinitionName}
             onBack={onBackToTypeStep}
-            onCreate={onCreateObjectDefinition}
+            onCreate={onCreateAttributeDefinition}
             onDescriptionChange={setDescription}
           />
         )}
       </div>
       {createLoadingModalOpen ? (
-        <AddAttributeDefinitionObjectLoadingDialog
+        <AddAttributeDefinitionLoadingDialog
           overlayClassName="absolute z-20"
           title={copy.creatingTitle}
         />
@@ -1852,7 +1937,7 @@ function AddAttributeDefinitionObjectCreateModalContent({
 }
 
 // 기능 : 임시 필요한 정보 추가 모달의 로딩 다이얼로그를 렌더링합니다.
-function AddAttributeDefinitionObjectLoadingDialog({
+function AddAttributeDefinitionLoadingDialog({
   overlayClassName,
   title,
 }: {
@@ -1883,24 +1968,24 @@ function AddAttributeDefinitionObjectLoadingDialog({
   );
 }
 
-// 기능 : ObjectDefinition 생성 모달과 같은 최소 로딩 시간을 유지합니다.
+// 기능 : AttributeDefinition 생성 모달의 최소 로딩 시간을 유지합니다.
 function waitForAddAttributeDefinitionModalLoadingDelay() {
   return new Promise<void>((resolve) => {
     window.setTimeout(resolve, ADD_ATTRIBUTE_DEFINITION_MODAL_LOADING_CLOSE_DELAY_MS);
   });
 }
 
-// 기능 : ObjectDefinition 생성 모달의 이름 입력 단계를 필요한 정보 추가 버튼용으로 복사해 렌더링합니다.
-function AddAttributeDefinitionObjectNameStep({
+// 기능 : AttributeDefinition 생성 모달의 이름 입력 단계를 렌더링합니다.
+function AddAttributeDefinitionNameStep({
   canMoveNext,
   copy,
-  objectDefinitionName,
+  attributeDefinitionName,
   onNameChange,
   onSubmit,
 }: {
   readonly canMoveNext: boolean;
-  readonly copy: AddAttributeDefinitionObjectCreateModalCopy;
-  readonly objectDefinitionName: string;
+  readonly copy: AddAttributeDefinitionCreateModalCopy;
+  readonly attributeDefinitionName: string;
   readonly onNameChange: (value: string) => void;
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }) {
@@ -1921,10 +2006,10 @@ function AddAttributeDefinitionObjectNameStep({
             autoComplete="off"
             className="h-10 rounded-[6px] border border-[#dededa] bg-transparent px-3 text-[15px] font-normal text-[#111111] outline-none transition-colors placeholder:text-[#aaa9a3] focus:border-[#dededa] [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_white] [&:-webkit-autofill]:[-webkit-text-fill-color:#111111]"
             maxLength={80}
-            name="objectDefinitionName"
+            name="attributeDefinitionName"
             placeholder={copy.namePlaceholder}
             type="text"
-            value={objectDefinitionName}
+            value={attributeDefinitionName}
             onChange={(event) => onNameChange(event.target.value)}
           />
         </label>
@@ -1951,15 +2036,15 @@ function AddAttributeDefinitionTypeStep({
   copy,
   isSelectionLocked,
   locale,
-  objectDefinitionName,
+  attributeDefinitionName,
   selectedAttributeType,
   onBack,
   onSelectType,
 }: {
-  readonly copy: AddAttributeDefinitionObjectCreateModalCopy;
+  readonly copy: AddAttributeDefinitionCreateModalCopy;
   readonly isSelectionLocked: boolean;
   readonly locale: AppLocale;
-  readonly objectDefinitionName: string;
+  readonly attributeDefinitionName: string;
   readonly selectedAttributeType: AttributeDefinitionTypeKey | null;
   readonly onBack: () => void;
   readonly onSelectType: (type: AttributeDefinitionTypeKey) => void;
@@ -1980,7 +2065,7 @@ function AddAttributeDefinitionTypeStep({
       </button>
       <div className="mx-auto min-w-0 w-full max-w-[508px]">
         <h1 className="break-keep text-[20px] font-normal leading-[1.2] tracking-normal text-[#050505]">
-          <span className="text-[#4880EE]">{objectDefinitionName}</span>
+          <span className="text-[#4880EE]">{attributeDefinitionName}</span>
           {locale === "ko-KR" ? "의 " : " "}
           {copy.typeTitle}
         </h1>
@@ -2041,23 +2126,23 @@ function AddAttributeDefinitionTypeStep({
 }
 
 // 기능 : AttributeDefinition 생성 모달의 설명 입력 단계를 렌더링합니다.
-function AddAttributeDefinitionObjectDetailsStep({
+function AddAttributeDefinitionDetailsStep({
   canCreate,
   copy,
   createErrorMessage,
   description,
   locale,
-  objectDefinitionName,
+  attributeDefinitionName,
   onBack,
   onCreate,
   onDescriptionChange,
 }: {
   readonly canCreate: boolean;
-  readonly copy: AddAttributeDefinitionObjectCreateModalCopy;
+  readonly copy: AddAttributeDefinitionCreateModalCopy;
   readonly createErrorMessage: string | null;
   readonly description: string;
   readonly locale: AppLocale;
-  readonly objectDefinitionName: string;
+  readonly attributeDefinitionName: string;
   readonly onBack: () => void;
   readonly onCreate: () => Promise<void>;
   readonly onDescriptionChange: (value: string) => void;
@@ -2074,7 +2159,7 @@ function AddAttributeDefinitionObjectDetailsStep({
       </button>
       <div className="mx-auto min-w-0 w-full max-w-[508px]">
         <h1 className="break-keep text-[20px] font-normal leading-[1.2] tracking-normal text-[#050505]">
-          <span className="text-[#4880EE]">{objectDefinitionName}</span>
+          <span className="text-[#4880EE]">{attributeDefinitionName}</span>
           {locale === "ko-KR" ? "의 " : " "}
           {copy.detailsTitle}
         </h1>
@@ -2090,16 +2175,16 @@ function AddAttributeDefinitionObjectDetailsStep({
         <div className="mt-8 grid gap-2 text-[13px] font-normal text-[#111111]">
           <span
             className="text-[#9CA3AF]"
-            id="objectDefinitionDescriptionLabel"
+            id="attributeDefinitionDescriptionLabel"
           >
             {copy.descriptionInputLabel}
           </span>
           <input
-            aria-labelledby="objectDefinitionDescriptionLabel"
+            aria-labelledby="attributeDefinitionDescriptionLabel"
             autoComplete="off"
             className="h-10 min-w-0 rounded-[6px] border border-[#dededa] bg-transparent px-3 text-[15px] font-normal text-[#111111] outline-none transition-colors placeholder:text-[#aaa9a3] focus:border-[#dededa] [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_white] [&:-webkit-autofill]:[-webkit-text-fill-color:#111111]"
             maxLength={ADD_ATTRIBUTE_DEFINITION_DESCRIPTION_MAX_LENGTH}
-            name="objectDefinitionDescription"
+            name="attributeDefinitionDescription"
             placeholder={copy.descriptionPlaceholder}
             type="text"
             value={description}
