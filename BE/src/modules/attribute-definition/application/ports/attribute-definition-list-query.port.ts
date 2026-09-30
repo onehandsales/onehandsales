@@ -1,26 +1,11 @@
+import type { AttributeDefinitionType } from "@/modules/attribute-definition/application/attribute-definition-type";
+
 export const ATTRIBUTE_DEFINITION_LIST_QUERY = Symbol(
   "ATTRIBUTE_DEFINITION_LIST_QUERY"
 );
 
 // 역할 : AttributeDefinitionValueType이 AttributeDefinition 값 타입 응답 범위를 정의합니다.
-export type AttributeDefinitionValueType =
-  | "ActorReference"
-  | "Checkbox"
-  | "Currency"
-  | "Date"
-  | "Domain"
-  | "EmailAddress"
-  | "Interaction"
-  | "Location"
-  | "PersonalName"
-  | "Number"
-  | "PhoneNumber"
-  | "Rating"
-  | "RecordReference"
-  | "Select"
-  | "Status"
-  | "Text"
-  | "Timestamp";
+export type AttributeDefinitionValueType = AttributeDefinitionType;
 
 // 역할 : WorkspaceObjectAttributeDefinitionListItem이 Object 목록 header row에 표시할 AttributeDefinition 요약을 정의합니다.
 export interface WorkspaceObjectAttributeDefinitionListItem {

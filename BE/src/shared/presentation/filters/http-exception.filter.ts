@@ -108,6 +108,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "OAuthAccountConflict":
       case "DeviceSlotAlreadyRegistered":
       case "ObjectDefinitionApiSlugAlreadyExists":
+      case "AttributeDefinitionApiSlugAlreadyExists":
         return HttpStatus.CONFLICT;
       case "InactiveUser":
       case "OwnershipViolation":
@@ -125,6 +126,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "WORKSPACE_NAME_TOO_LONG":
       case "OBJECT_DEFINITION_NAME_REQUIRED":
       case "OBJECT_DEFINITION_NAME_TOO_LONG":
+      case "ATTRIBUTE_DEFINITION_NAME_REQUIRED":
+      case "ATTRIBUTE_DEFINITION_NAME_TOO_LONG":
+      case "ATTRIBUTE_DEFINITION_TYPE_UNKNOWN":
       case "TRASH_TARGET_TYPE_UNSUPPORTED":
       case "ERROR_REPORT_DESCRIPTION_REQUIRED":
       case "ERROR_REPORT_PAGE_URL_REQUIRED":

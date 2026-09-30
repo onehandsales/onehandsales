@@ -486,6 +486,9 @@ model AttributeDefinition {
   sourceRelationshipDefinitions   RelationshipDefinition[]         @relation("RelationshipDefinitionSourceAttribute")
   /// 기능 : 이 AttributeDefinition이 target인 RelationshipDefinition 목록입니다.
   targetRelationshipDefinitions   RelationshipDefinition[]         @relation("RelationshipDefinitionTargetAttribute")
+
+  /// 기능 : 하나의 ObjectDefinition 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
+  @@unique([objectDefinitionId, apiSlug])
 }
 
 /// 기능 : ObjectDefinition의 실제 레코드 인스턴스를 저장합니다.
