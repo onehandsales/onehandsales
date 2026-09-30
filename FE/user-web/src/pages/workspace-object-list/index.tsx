@@ -1061,7 +1061,9 @@ export function WorkspaceObjectListPage() {
                           strokeWidth={2}
                         />
                       ) : null}
-                      <span className="min-w-0 truncate">{column.title}</span>
+                      <span className="min-w-0 truncate text-[#9CA3AF]">
+                        {column.title}
+                      </span>
                     </>
                   )}
                   <button
