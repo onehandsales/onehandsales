@@ -36,7 +36,7 @@ export class UserWorkspaceObjectRecordDefinitionsController {
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
     @Param("objectDefinitionId", new ParseUUIDPipe()) objectDefinitionId: string
   ) {
-    // 1. application 계층에 현재 사용자의 빈 RecordDefinition 생성을 위임한다.
+    // 1. application 계층에 현재 사용자의 빈 RecordDefinition과 null cell value row 생성을 위임한다.
     return this.createWorkspaceObjectRecordDefinitionUseCase.execute(
       currentUser,
       workspaceId,

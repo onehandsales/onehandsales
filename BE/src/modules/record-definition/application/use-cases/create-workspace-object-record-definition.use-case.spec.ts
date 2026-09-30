@@ -17,11 +17,15 @@ import type {
 } from "@/modules/workspace/application/ports/workspace-access-query.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
+import type {
+  TransactionContext,
+  TransactionManager,
+} from "@/shared/application/ports/transaction-manager.port";
 import { CreateWorkspaceObjectRecordDefinitionUseCase } from "./create-workspace-object-record-definition.use-case";
 
 // 기능 : CreateWorkspaceObjectRecordDefinitionUseCase 동작을 검증합니다.
 describe("CreateWorkspaceObjectRecordDefinitionUseCase", () => {
-  // 기능 : 접근 가능한 Workspace ObjectDefinition에 빈 RecordDefinition을 생성합니다.
+  // 기능 : 접근 가능한 Workspace ObjectDefinition에 빈 RecordDefinition과 null cell value row를 생성합니다.
   it("creates a record definition for an accessible workspace object", async () => {
     const fixture = createFixture();
 
@@ -43,7 +47,9 @@ describe("CreateWorkspaceObjectRecordDefinitionUseCase", () => {
       workspaceId: "00000000-0000-4000-8000-000000000301",
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
       createdByActorId: "00000000-0000-4000-8000-000000000401",
+      transactionContext: fixture.transactionManager.context,
     });
+    expect(fixture.transactionManager.runCount).toBe(1);
     expect(fixture.logger.log).toHaveBeenCalledWith(
       expect.stringContaining("crm.recordDefinition.created"),
       "CreateWorkspaceObjectRecordDefinitionUseCase"
@@ -68,6 +74,7 @@ describe("CreateWorkspaceObjectRecordDefinitionUseCase", () => {
 
     expect(fixture.objectDefinitionAccessQuery.lastInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : WorkspaceMember에 연결된 Actor가 없으면 내부 정합성 오류로 중단합니다.
@@ -88,6 +95,7 @@ describe("CreateWorkspaceObjectRecordDefinitionUseCase", () => {
 
     expect(fixture.objectDefinitionAccessQuery.lastInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 요청 ObjectDefinition이 Workspace에 속하지 않으면 생성을 차단합니다.
@@ -104,6 +112,7 @@ describe("CreateWorkspaceObjectRecordDefinitionUseCase", () => {
     ).rejects.toBeInstanceOf(RecordDefinitionObjectDefinitionNotFoundError);
 
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 });
 
@@ -112,20 +121,39 @@ function createFixture() {
   const workspaceAccessQuery = new FakeWorkspaceAccessQuery();
   const objectDefinitionAccessQuery = new FakeObjectDefinitionAccessQuery();
   const repository = new FakeRecordDefinitionCommandRepository();
+  const transactionManager = new FakeTransactionManager();
   const logger = createLoggerFake();
 
   return {
     workspaceAccessQuery,
     objectDefinitionAccessQuery,
     repository,
+    transactionManager,
     logger,
     useCase: new CreateWorkspaceObjectRecordDefinitionUseCase(
       workspaceAccessQuery,
       objectDefinitionAccessQuery,
       repository,
+      transactionManager,
       logger
     ),
   };
+}
+
+// 역할 : FakeTransactionManager 생성 유스케이스 테스트용 transaction manager입니다.
+class FakeTransactionManager implements TransactionManager {
+  readonly context: TransactionContext = {
+    transactionId: Symbol("recordDefinitionCreateTransaction"),
+  };
+  runCount = 0;
+
+  // 기능 : 전달받은 작업을 테스트용 transaction context로 실행합니다.
+  async runInTransaction<T>(
+    work: (context: TransactionContext) => Promise<T>
+  ): Promise<T> {
+    this.runCount += 1;
+    return work(this.context);
+  }
 }
 
 // 역할 : FakeWorkspaceAccessQuery RecordDefinition 생성 테스트용 Workspace 접근 확인 구현체입니다.

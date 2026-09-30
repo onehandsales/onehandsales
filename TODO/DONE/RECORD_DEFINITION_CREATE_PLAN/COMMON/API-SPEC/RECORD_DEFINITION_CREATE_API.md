@@ -10,13 +10,13 @@
 
 - breaking change 여부: 없음. 기존 목록 조회 API와 같은 route path에 `POST` method를 추가한다.
 - 기존 FE 영향: 있음. Object 목록 화면의 하단 `생성하기` 버튼과 toolbar `+` 버튼이 이 API를 호출할 수 있다.
-- migration 또는 fallback: 없음. 현재 Prisma schema의 `RecordDefinition` model을 그대로 사용한다.
+- migration 또는 fallback: 없음. 현재 Prisma schema의 `RecordDefinition`, `RecordAttributeValueDefinition` model을 그대로 사용한다.
 
 ## 1. 목적
 
 ObjectDefinition 목록 화면에서 사용자가 새 row를 만들 때 현재 Workspace의 특정 ObjectDefinition에 빈 RecordDefinition을 생성한다.
 
-RecordAttributeValueDefinition은 이 API에서 생성하지 않는다. 사용자가 cell 값을 입력하거나 수정하는 후속 API에서 별도로 생성/수정한다.
+생성 시점의 AttributeDefinition 목록을 기준으로 RecordAttributeValueDefinition row도 함께 생성한다. 각 cell value row는 attributeType snapshot만 보유하고 실제 값 컬럼은 모두 null 상태로 시작한다.
 
 ## 2. 공통 정책
 
@@ -27,11 +27,11 @@ RecordAttributeValueDefinition은 이 API에서 생성하지 않는다. 사용�
 - ObjectDefinition 없음과 다른 Workspace 소속은 클라이언트에 구분해서 노출하지 않고 not found로 처리한다.
 - role 제한: 없음. 현재 범위에서는 `OWNER`, `ADMIN`, `MEMBER` 모두 생성할 수 있다.
 - Actor 검증: 생성 감사 주체 저장을 위해 `WorkspaceMember`에 연결된 `WORKSPACE_MEMBER` Actor가 필요하다.
-- DB schema 연결: `WorkspaceMember`, `Actor`, `ObjectDefinition`, `RecordDefinition`
+- DB schema 연결: `WorkspaceMember`, `Actor`, `ObjectDefinition`, `AttributeDefinition`, `RecordDefinition`, `RecordAttributeValueDefinition`
 - request body: 없음. User Web은 body를 보내지 않는다.
-- transaction: 없음. 최종 변경 model은 `RecordDefinition` 1개다.
-- 변경 model: `RecordDefinition`
-- rollback 범위: `RecordDefinition` 생성 실패 시 생성 row 없음
+- transaction: 필요. `RecordDefinition`과 하위 `RecordAttributeValueDefinition` row 생성은 같은 transaction 안에서 처리한다.
+- 변경 model: `RecordDefinition`, `RecordAttributeValueDefinition`
+- rollback 범위: `RecordDefinition` 또는 `RecordAttributeValueDefinition` 생성 실패 시 두 model 변경을 모두 rollback한다.
 - 외부 Provider 호출: 없음
 - 부수 로그/이력 transaction 포함 여부: 없음
 - idempotency: 없음. 같은 요청을 반복하면 새 RecordDefinition row가 추가로 생성된다.
@@ -98,9 +98,11 @@ Validation:
 3. WorkspaceMember에 연결된 Actor가 없으면 내부 정합성 오류로 중단한다.
 4. `workspaceId + objectDefinitionId`로 ObjectDefinition이 Workspace 경계 안에 있는지 확인한다.
 5. ObjectDefinition이 없거나 다른 Workspace에 속하면 not found로 응답한다.
-6. RecordDefinition을 생성한다.
-7. 생성 성공 event를 사용자 입력 원문 없이 구조화 로그로 남긴다.
-8. 생성된 RecordDefinition ID를 반환한다.
+6. 생성 대상 ObjectDefinition에 속한 AttributeDefinition 목록을 조회한다.
+7. 같은 transaction 안에서 RecordDefinition을 생성한다.
+8. 같은 transaction 안에서 AttributeDefinition마다 값이 비어 있는 RecordAttributeValueDefinition row를 생성한다.
+9. 생성 성공 event를 사용자 입력 원문 없이 구조화 로그로 남긴다.
+10. 생성된 RecordDefinition ID를 반환한다.
 
 생성 매핑:
 
@@ -113,6 +115,31 @@ Validation:
 ```
 
 `updatedByActorId`는 생성 시점에 저장하지 않는다.
+
+RecordAttributeValueDefinition 생성 매핑:
+
+```ts
+{
+  workspaceId,
+  recordDefinitionId,
+  objectDefinitionId,
+  attributeDefinitionId: attributeDefinition.id,
+  createdByActorId: workspaceAccess.actorId,
+  attributeType: attributeDefinition.type,
+  textValue: null,
+  numberValue: null,
+  booleanValue: null,
+  dateValue: null,
+  timestampValue: null,
+  selectOptionId: null,
+  statusOptionId: null,
+  targetRecordDefinitionId: null,
+  targetObjectDefinitionId: null,
+  targetActorId: null
+}
+```
+
+`jsonValue`는 nullable JSON 컬럼이며 Prisma create 입력에서는 생략해 DB NULL로 시작한다.
 
 ## 6. Response
 
@@ -131,8 +158,9 @@ Body: 있음
 후속 FE 흐름:
 
 - User Web은 생성 성공 후 현재 ObjectDefinition의 RecordDefinition 목록을 다시 조회한다.
-- 새 row는 RecordAttributeValueDefinition이 없으므로 모든 cell이 빈 값으로 렌더링된다.
-- 생성 API 응답의 `recordDefinitionId`는 optimistic row, focus 이동, 후속 cell 저장 API 호출에 사용할 수 있다.
+- 새 row는 현재 AttributeDefinition마다 값이 null인 RecordAttributeValueDefinition을 가진다.
+- 생성 API 응답의 `recordDefinitionId`는 optimistic row, focus 이동, 후속 cell 수정 API 호출에 사용할 수 있다.
+- 후속 cell 수정 API는 목록 조회 응답의 `recordAttributeValueDefinitionId`를 기준으로 단건 cell row를 수정한다.
 
 ## 7. Error Contract
 
@@ -144,7 +172,7 @@ Body: 있음
 | Workspace가 없거나 현재 사용자가 해당 Workspace 멤버가 아님 | `RecordDefinitionWorkspaceNotFound` | 404 | 현재 Object 화면을 비우거나 Workspace 목록 재조회 | info |
 | ObjectDefinition이 없거나 요청 Workspace에 속하지 않음 | `RecordDefinitionObjectDefinitionNotFound` | 404 | 현재 Object 화면을 비우거나 Object 목록 재조회 | info |
 | WorkspaceMember Actor가 없음 | `InternalServerError` | 500 | 일반 실패 메시지 표시, 재시도 가능 | error |
-| RecordDefinition 생성 중 예상하지 못한 DB 오류 | `InternalServerError` | 500 | 일반 실패 메시지 표시, 재시도 가능 | error |
+| RecordDefinition 또는 RecordAttributeValueDefinition 생성 중 예상하지 못한 DB 오류 | `InternalServerError` | 500 | 일반 실패 메시지 표시, 재시도 가능 | error |
 
 권한 없음과 소유권 없음은 404로 응답해 다른 Workspace/Object 존재 여부를 노출하지 않는다.
 
@@ -158,21 +186,22 @@ Body: 있음
 
 transaction 필요 여부:
 
-- 없음
+- 필요
 
 이유:
 
-- API의 런타임 변경 model은 `RecordDefinition` 1개다.
+- API의 런타임 변경 model은 `RecordDefinition` 1개와 현재 AttributeDefinition 개수만큼의 `RecordAttributeValueDefinition` row다.
 - Workspace membership과 ObjectDefinition 소속 확인은 선행 조회다.
-- RecordAttributeValueDefinition 생성은 후속 cell 값 저장 API에서 처리한다.
+- 부모 RecordDefinition만 생성되고 하위 cell value row 생성이 실패하는 중간 상태를 막아야 한다.
 
 변경 model:
 
 - `RecordDefinition`
+- `RecordAttributeValueDefinition`
 
 rollback 범위:
 
-- `RecordDefinition` 생성 실패 시 생성 row 없음
+- `RecordDefinition` 또는 `RecordAttributeValueDefinition` 생성 실패 시 두 model 변경을 모두 rollback한다.
 
 외부 Provider 호출:
 
@@ -222,7 +251,7 @@ provider error context:
 
 ## 10. DB / Index
 
-Prisma model:
+주요 Prisma model:
 
 ```prisma
 model RecordDefinition {
@@ -234,17 +263,39 @@ model RecordDefinition {
   createdAt          DateTime @default(now()) @db.Timestamptz(3)
   updatedAt          DateTime @updatedAt @db.Timestamptz(3)
 }
+
+model RecordAttributeValueDefinition {
+  id                       String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workspaceId              String        @db.Uuid
+  recordDefinitionId       String        @db.Uuid
+  objectDefinitionId       String        @db.Uuid
+  attributeDefinitionId    String        @db.Uuid
+  createdByActorId         String        @db.Uuid
+  updatedByActorId         String?       @db.Uuid
+  attributeType            AttributeType
+  jsonValue                Json?
+  textValue                String?
+  numberValue              Decimal?      @db.Decimal(30, 10)
+  booleanValue             Boolean?
+  dateValue                DateTime?     @db.Date
+  timestampValue           DateTime?     @db.Timestamptz(3)
+  selectOptionId           String?       @db.Uuid
+  statusOptionId           String?       @db.Uuid
+  targetRecordDefinitionId String?       @db.Uuid
+  targetObjectDefinitionId String?       @db.Uuid
+  targetActorId            String?       @db.Uuid
+  createdAt                DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt                DateTime      @updatedAt @db.Timestamptz(3)
+}
 ```
 
 DB schema 변경:
 
 - 없음
 
-기존 목록 조회 성능 index:
+추가 index:
 
-```prisma
-@@index([workspaceId, objectDefinitionId, createdAt, id])
-```
+- 없음. 이 작업에서는 schema 변경을 포함하지 않는다.
 
 ## 11. 구현 범위
 
@@ -253,15 +304,17 @@ DB schema 변경:
 - RecordDefinition command repository port 추가
 - Prisma RecordDefinition command repository adapter 추가
 - RecordDefinition 생성 use case 추가
+- RecordDefinition 생성 시 null RecordAttributeValueDefinition row 생성 추가
 - 기존 RecordDefinition controller에 `POST` API 추가
 - RecordDefinition module provider 조립 추가
 - RecordDefinition error 주석을 목록 조회 전용에서 요청/접근 범위로 정리
 - application use case test 추가
+- Prisma command repository integration test 추가
 - controller/API contract test 추가
 
 ## 12. 제외 범위
 
-- RecordAttributeValueDefinition 생성/수정 API
+- RecordAttributeValueDefinition 수정 API
 - cell 값 타입별 validation/mapping
 - frontend API client 연결
 - row 생성 후 자동 cell focus UX
