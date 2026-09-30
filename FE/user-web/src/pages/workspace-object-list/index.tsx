@@ -1176,7 +1176,7 @@ export function WorkspaceObjectListPage() {
                             className={`min-w-0 truncate ${
                               index === 0
                                 ? "font-medium text-[#111827]"
-                                : "text-[#6B7280]"
+                                : "text-[#111827]"
                             }`}
                           >
                             {cellValue?.timestampValue
