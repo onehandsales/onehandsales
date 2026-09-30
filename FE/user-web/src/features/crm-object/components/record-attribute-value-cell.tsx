@@ -1,4 +1,4 @@
-import { Check, Loader2, Trash2, X } from "lucide-react";
+import { Check, Trash2, X } from "lucide-react";
 import {
   type InputHTMLAttributes,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -195,6 +195,14 @@ export function RecordAttributeValueCell({
     }
 
     const nextValue = toPatchValue(attributeType, draft);
+    const currentValue = toPatchValue(attributeType, createDraftFromValue(value));
+
+    if (nextValue === null || arePatchValuesEqual(nextValue, currentValue)) {
+      setDraft(createDraftFromValue(value));
+      setErrorMessage(null);
+      setEditing(false);
+      return;
+    }
 
     setSaving(true);
     setErrorMessage(null);
@@ -287,13 +295,6 @@ export function RecordAttributeValueCell({
           <span className="min-w-0 truncate">
             {displayText}
           </span>
-          {isSaving ? (
-            <Loader2
-              aria-hidden="true"
-              className="ml-auto h-3.5 w-3.5 shrink-0 animate-spin text-[#9CA3AF]"
-              strokeWidth={2}
-            />
-          ) : null}
         </button>
         {errorMessage ? <CellErrorMessage message={errorMessage} /> : null}
       </div>
@@ -333,13 +334,6 @@ export function RecordAttributeValueCell({
           }
           onKeyDown={handleInlineEditorKeyDown}
         />
-        {isSaving ? (
-          <Loader2
-            aria-hidden="true"
-            className="pointer-events-none absolute right-2 h-3.5 w-3.5 animate-spin text-[#9CA3AF]"
-            strokeWidth={2}
-          />
-        ) : null}
         {errorMessage ? <CellErrorMessage message={errorMessage} /> : null}
       </div>
     );
@@ -363,13 +357,6 @@ export function RecordAttributeValueCell({
         <span className="min-w-0 truncate">
           {displayText}
         </span>
-        {isSaving ? (
-          <Loader2
-            aria-hidden="true"
-            className="ml-auto h-3.5 w-3.5 shrink-0 animate-spin text-[#9CA3AF]"
-            strokeWidth={2}
-          />
-        ) : null}
       </button>
       {isEditing && isPopoverEditor ? (
         <CellPopoverEditor
@@ -482,11 +469,7 @@ function CellPopoverEditor({
           type="button"
           onClick={onSave}
         >
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-          ) : (
-            <Check className="h-4 w-4" strokeWidth={2} />
-          )}
+          <Check className="h-4 w-4" strokeWidth={2} />
         </button>
       </div>
     </div>
@@ -930,6 +913,14 @@ function createInteractionPatchValue(
 // 기능 : 빈 문자열은 null로, 값이 있는 문자열은 원문으로 정규화합니다.
 function normalizeEmptyString(value: string) {
   return value.trim().length > 0 ? value : null;
+}
+
+// 기능 : 저장 요청을 보내기 전에 draft value가 현재 저장 값과 같은지 비교합니다.
+function arePatchValuesEqual(
+  left: WorkspaceObjectRecordAttributeValuePatchValue,
+  right: WorkspaceObjectRecordAttributeValuePatchValue,
+) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 // 기능 : AttributeType에 맞는 HTML input type 값을 반환합니다.
