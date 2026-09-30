@@ -212,6 +212,21 @@ class FakeRecordDefinitionCommandRepository
       id: "00000000-0000-4000-8000-000000000701",
     };
   }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 RecordDefinition 소속 확인 호출을 차단합니다.
+  async hasRecordDefinitionInWorkspaceObject(): Promise<boolean> {
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 cell value row 조회 호출을 차단합니다.
+  async findRecordAttributeValueDefinitionForUpdate(): Promise<null> {
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 cell value row 수정 호출을 차단합니다.
+  async updateRecordAttributeValueDefinition(): Promise<{ readonly id: string }> {
+    throw new Error("Not implemented in fake repository");
+  }
 }
 
 // 기능 : 테스트용 application logger fake를 생성합니다.

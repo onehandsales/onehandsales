@@ -5,6 +5,7 @@ import { RECORD_DEFINITION_COMMAND_REPOSITORY } from "@/modules/record-definitio
 import { RECORD_DEFINITION_LIST_QUERY } from "@/modules/record-definition/application/ports/record-definition-list-query.port";
 import { CreateWorkspaceObjectRecordDefinitionUseCase } from "@/modules/record-definition/application/use-cases/create-workspace-object-record-definition.use-case";
 import { ListWorkspaceObjectRecordDefinitionsUseCase } from "@/modules/record-definition/application/use-cases/list-workspace-object-record-definitions.use-case";
+import { UpdateWorkspaceObjectRecordAttributeValueDefinitionUseCase } from "@/modules/record-definition/application/use-cases/update-workspace-object-record-attribute-value-definition.use-case";
 import { WorkspaceModule } from "@/modules/workspace/infrastructure/workspace.module";
 import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logger.port";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -26,6 +27,7 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
   providers: [
     CreateWorkspaceObjectRecordDefinitionUseCase,
     ListWorkspaceObjectRecordDefinitionsUseCase,
+    UpdateWorkspaceObjectRecordAttributeValueDefinitionUseCase,
     AppLogger,
     {
       provide: APPLICATION_LOGGER,

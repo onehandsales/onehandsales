@@ -1,8 +1,18 @@
+import { Prisma } from "@prisma/client";
 import type {
   CreateRecordDefinitionInput,
   CreateRecordDefinitionResult,
+  RecordAttributeValueDefinitionForUpdate,
+  RecordAttributeValueDefinitionLookupInput,
   RecordDefinitionCommandRepository,
+  RecordDefinitionWorkspaceObjectLookupInput,
+  UpdateRecordAttributeValueDefinitionInput,
+  UpdateRecordAttributeValueDefinitionResult,
 } from "@/modules/record-definition/application/ports/record-definition-command.repository";
+import {
+  RecordAttributeValueDefinitionNotFoundError,
+  RecordDefinitionRecordNotFoundError,
+} from "@/modules/record-definition/domain/record-definition.errors";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { resolvePrismaTransactionalClient } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 
@@ -75,6 +85,124 @@ export class PrismaRecordDefinitionCommandRepository
     };
   }
 
+  // 기능 : 특정 RecordDefinition이 요청 Workspace와 ObjectDefinition에 속하는지 확인합니다.
+  async hasRecordDefinitionInWorkspaceObject(
+    input: RecordDefinitionWorkspaceObjectLookupInput
+  ): Promise<boolean> {
+    // 1. Workspace/ObjectDefinition/RecordDefinition 경계 안의 row 존재 여부를 조회한다.
+    const recordDefinition = await this.prismaService.recordDefinition.findFirst({
+      where: {
+        id: input.recordDefinitionId,
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    // 2. 조회 결과 존재 여부를 RecordDefinition 접근 가능 여부로 반환한다.
+    return recordDefinition !== null;
+  }
+
+  // 기능 : 수정 대상 cell value row와 AttributeDefinition 정합성을 조회합니다.
+  async findRecordAttributeValueDefinitionForUpdate(
+    input: RecordAttributeValueDefinitionLookupInput
+  ): Promise<RecordAttributeValueDefinitionForUpdate | null> {
+    // 1. 요청 경계와 AttributeDefinition 소속 조건을 함께 사용해 cell value row를 조회한다.
+    const recordAttributeValueDefinition =
+      await this.prismaService.recordAttributeValueDefinition.findFirst({
+        where: {
+          id: input.recordAttributeValueDefinitionId,
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          recordDefinitionId: input.recordDefinitionId,
+          attributeDefinition: {
+            workspaceId: input.workspaceId,
+            objectDefinitionId: input.objectDefinitionId,
+          },
+        },
+        select: {
+          id: true,
+          attributeDefinitionId: true,
+          attributeType: true,
+        },
+      });
+
+    // 2. Prisma row가 없으면 호출자가 not found로 변환할 수 있게 null을 반환한다.
+    if (!recordAttributeValueDefinition) {
+      return null;
+    }
+
+    // 3. 수정 값 매핑에 필요한 AttributeDefinition ID와 type snapshot을 반환한다.
+    return {
+      id: recordAttributeValueDefinition.id,
+      attributeDefinitionId:
+        recordAttributeValueDefinition.attributeDefinitionId,
+      attributeType: recordAttributeValueDefinition.attributeType,
+    };
+  }
+
+  // 기능 : cell value row와 부모 RecordDefinition 수정 감사 정보를 같은 작업으로 저장합니다.
+  async updateRecordAttributeValueDefinition(
+    input: UpdateRecordAttributeValueDefinitionInput
+  ): Promise<UpdateRecordAttributeValueDefinitionResult> {
+    // 1. 현재 transaction context에 맞는 Prisma client를 준비한다.
+    const client = resolvePrismaTransactionalClient(
+      this.prismaService,
+      input.transactionContext
+    );
+
+    // 2. 요청 경계 안의 cell value row만 수정하고 감사 Actor를 기록한다.
+    const updatedCell = await client.recordAttributeValueDefinition.updateMany({
+      where: {
+        id: input.recordAttributeValueDefinitionId,
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+        recordDefinitionId: input.recordDefinitionId,
+      },
+      data: {
+        updatedByActorId: input.updatedByActorId,
+        jsonValue: this.toPrismaNullableJson(input.values.jsonValue),
+        textValue: input.values.textValue,
+        numberValue: input.values.numberValue,
+        booleanValue: input.values.booleanValue,
+        dateValue: input.values.dateValue,
+        timestampValue: input.values.timestampValue,
+        selectOptionId: input.values.selectOptionId,
+        statusOptionId: input.values.statusOptionId,
+        targetRecordDefinitionId: input.values.targetRecordDefinitionId,
+        targetObjectDefinitionId: input.values.targetObjectDefinitionId,
+        targetActorId: input.values.targetActorId,
+      },
+    });
+
+    if (updatedCell.count !== 1) {
+      throw new RecordAttributeValueDefinitionNotFoundError();
+    }
+
+    // 3. 부모 RecordDefinition도 같은 사용자 행동으로 수정된 row로 보고 updatedAt을 갱신한다.
+    const updatedRecord = await client.recordDefinition.updateMany({
+      where: {
+        id: input.recordDefinitionId,
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+      },
+      data: {
+        updatedByActorId: input.updatedByActorId,
+      },
+    });
+
+    if (updatedRecord.count !== 1) {
+      throw new RecordDefinitionRecordNotFoundError();
+    }
+
+    // 4. 수정 결과를 application 계층 응답 계약으로 반환한다.
+    return {
+      id: input.recordAttributeValueDefinitionId,
+    };
+  }
+
   // 기능 : 현재 ObjectDefinition에 속한 AttributeDefinition 목록을 조회합니다.
   private listAttributeDefinitions(
     client: RecordDefinitionCommandClient,
@@ -95,5 +223,16 @@ export class PrismaRecordDefinitionCommandRepository
         type: true,
       },
     });
+  }
+
+  // 기능 : application의 JSON 값을 Prisma nullable JSON 입력값으로 변환합니다.
+  private toPrismaNullableJson(
+    value: unknown | null
+  ): Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput {
+    if (value === null) {
+      return Prisma.DbNull;
+    }
+
+    return value as Prisma.InputJsonValue;
   }
 }

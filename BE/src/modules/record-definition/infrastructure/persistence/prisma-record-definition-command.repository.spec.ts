@@ -20,6 +20,9 @@ const TEST_TEXT_ATTRIBUTE_DEFINITION_ID =
   "00000000-0000-4000-8000-000000019601";
 const TEST_NUMBER_ATTRIBUTE_DEFINITION_ID =
   "00000000-0000-4000-8000-000000019602";
+const TEST_RECORD_DEFINITION_ID = "00000000-0000-4000-8000-000000019701";
+const TEST_RECORD_ATTRIBUTE_VALUE_DEFINITION_ID =
+  "00000000-0000-4000-8000-000000019801";
 
 // 기능 : RecordDefinition Prisma 쓰기 저장소의 RecordDefinition과 null cell value row 생성을 검증합니다.
 describeWithTestDatabase("PrismaRecordDefinitionCommandRepository", () => {
@@ -215,6 +218,133 @@ describeWithTestDatabase("PrismaRecordDefinitionCommandRepository", () => {
         targetActorId: null,
       },
     ]);
+  });
+
+  // 9. 필요한 비동기 작업을 실행한다.
+  it("updates a record attribute value and parent record audit", async () => {
+    if (
+      !databaseAvailable ||
+      !prismaService ||
+      !repository ||
+      !transactionManager
+    ) {
+      return;
+    }
+
+    const commandRepository = repository;
+
+    // 1. cell value update 대상 AttributeDefinition과 RecordDefinition fixture를 준비한다.
+    await prismaService.attributeDefinition.create({
+      data: {
+        id: TEST_TEXT_ATTRIBUTE_DEFINITION_ID,
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        createdByActorId: TEST_ACTOR_ID,
+        apiSlug: "name",
+        title: "name",
+        type: PrismaAttributeType.Text,
+      },
+    });
+    await prismaService.recordDefinition.create({
+      data: {
+        id: TEST_RECORD_DEFINITION_ID,
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        createdByActorId: TEST_ACTOR_ID,
+      },
+    });
+    await prismaService.recordAttributeValueDefinition.create({
+      data: {
+        id: TEST_RECORD_ATTRIBUTE_VALUE_DEFINITION_ID,
+        workspaceId: TEST_WORKSPACE_ID,
+        recordDefinitionId: TEST_RECORD_DEFINITION_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: TEST_TEXT_ATTRIBUTE_DEFINITION_ID,
+        createdByActorId: TEST_ACTOR_ID,
+        attributeType: PrismaAttributeType.Text,
+      },
+    });
+
+    // 2. 실제 transaction context 안에서 cell value와 부모 record audit update를 실행한다.
+    const updated = await transactionManager.runInTransaction(
+      (transactionContext) =>
+        commandRepository.updateRecordAttributeValueDefinition({
+          workspaceId: TEST_WORKSPACE_ID,
+          objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+          recordDefinitionId: TEST_RECORD_DEFINITION_ID,
+          recordAttributeValueDefinitionId:
+            TEST_RECORD_ATTRIBUTE_VALUE_DEFINITION_ID,
+          updatedByActorId: TEST_ACTOR_ID,
+          values: {
+            jsonValue: null,
+            textValue: "회사명",
+            numberValue: null,
+            booleanValue: null,
+            dateValue: null,
+            timestampValue: null,
+            selectOptionId: null,
+            statusOptionId: null,
+            targetRecordDefinitionId: null,
+            targetObjectDefinitionId: null,
+            targetActorId: null,
+          },
+          transactionContext,
+        })
+    );
+
+    expect(updated).toEqual({
+      id: TEST_RECORD_ATTRIBUTE_VALUE_DEFINITION_ID,
+    });
+
+    // 3. cell value row가 textValue만 채우고 나머지 value 컬럼을 비웠는지 확인한다.
+    await expect(
+      prismaService.recordAttributeValueDefinition.findUniqueOrThrow({
+        where: {
+          id: TEST_RECORD_ATTRIBUTE_VALUE_DEFINITION_ID,
+        },
+        select: {
+          updatedByActorId: true,
+          jsonValue: true,
+          textValue: true,
+          numberValue: true,
+          booleanValue: true,
+          dateValue: true,
+          timestampValue: true,
+          selectOptionId: true,
+          statusOptionId: true,
+          targetRecordDefinitionId: true,
+          targetObjectDefinitionId: true,
+          targetActorId: true,
+        },
+      })
+    ).resolves.toEqual({
+      updatedByActorId: TEST_ACTOR_ID,
+      jsonValue: null,
+      textValue: "회사명",
+      numberValue: null,
+      booleanValue: null,
+      dateValue: null,
+      timestampValue: null,
+      selectOptionId: null,
+      statusOptionId: null,
+      targetRecordDefinitionId: null,
+      targetObjectDefinitionId: null,
+      targetActorId: null,
+    });
+
+    // 4. 부모 RecordDefinition도 같은 수정 감사 Actor로 갱신되었는지 확인한다.
+    await expect(
+      prismaService.recordDefinition.findUniqueOrThrow({
+        where: {
+          id: TEST_RECORD_DEFINITION_ID,
+        },
+        select: {
+          updatedByActorId: true,
+        },
+      })
+    ).resolves.toEqual({
+      updatedByActorId: TEST_ACTOR_ID,
+    });
   });
 });
 
