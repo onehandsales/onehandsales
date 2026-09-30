@@ -1,9 +1,11 @@
-import { RequestMethod } from "@nestjs/common";
+import { HttpStatus, RequestMethod } from "@nestjs/common";
 import {
   GUARDS_METADATA,
+  HTTP_CODE_METADATA,
   METHOD_METADATA,
   PATH_METADATA,
 } from "@nestjs/common/constants";
+import { CreateWorkspaceObjectRecordDefinitionUseCase } from "@/modules/record-definition/application/use-cases/create-workspace-object-record-definition.use-case";
 import { ListWorkspaceObjectRecordDefinitionsUseCase } from "@/modules/record-definition/application/use-cases/list-workspace-object-record-definitions.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
@@ -19,11 +21,26 @@ const CURRENT_USER: CurrentUserContext = {
   timeZone: "Asia/Seoul",
 };
 
+// 역할 : CreateWorkspaceObjectRecordDefinitionUseCaseFake controller 테스트용 RecordDefinition 생성 유스케이스 계약을 정의합니다.
+type CreateWorkspaceObjectRecordDefinitionUseCaseFake = Pick<
+  CreateWorkspaceObjectRecordDefinitionUseCase,
+  "execute"
+>;
+
 // 역할 : ListWorkspaceObjectRecordDefinitionsUseCaseFake controller 테스트용 RecordDefinition 목록 유스케이스 계약을 정의합니다.
 type ListWorkspaceObjectRecordDefinitionsUseCaseFake = Pick<
   ListWorkspaceObjectRecordDefinitionsUseCase,
   "execute"
 >;
+
+// 기능 : RecordDefinition 생성 유스케이스 fake를 생성합니다.
+function createCreateUseCaseFake(): jest.Mocked<CreateWorkspaceObjectRecordDefinitionUseCaseFake> {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      recordDefinitionId: "00000000-0000-4000-8000-000000000701",
+    }),
+  };
+}
 
 // 기능 : RecordDefinition 목록 유스케이스 fake를 생성합니다.
 function createListUseCaseFake(): jest.Mocked<ListWorkspaceObjectRecordDefinitionsUseCaseFake> {
@@ -66,21 +83,26 @@ function createListUseCaseFake(): jest.Mocked<ListWorkspaceObjectRecordDefinitio
 describe("UserWorkspaceObjectRecordDefinitionsController", () => {
   // 1. 이후 단계에서 사용할 controller 값을 준비한다.
   let controller: UserWorkspaceObjectRecordDefinitionsController;
-  // 2. 이후 단계에서 사용할 listUseCase 값을 준비한다.
+  // 2. 이후 단계에서 사용할 createUseCase 값을 준비한다.
+  let createUseCase: jest.Mocked<CreateWorkspaceObjectRecordDefinitionUseCaseFake>;
+  // 3. 이후 단계에서 사용할 listUseCase 값을 준비한다.
   let listUseCase: jest.Mocked<ListWorkspaceObjectRecordDefinitionsUseCaseFake>;
 
-  // 3. 테스트마다 필요한 객체를 초기화한다.
+  // 4. 테스트마다 필요한 객체를 초기화한다.
   beforeEach(() => {
     // 1. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
+    createUseCase = createCreateUseCaseFake();
+    // 2. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     listUseCase = createListUseCaseFake();
 
-    // 2. controller에 fake 유스케이스를 직접 주입한다.
+    // 3. controller에 fake 유스케이스를 직접 주입한다.
     controller = new UserWorkspaceObjectRecordDefinitionsController(
+      createUseCase as unknown as CreateWorkspaceObjectRecordDefinitionUseCase,
       listUseCase as unknown as ListWorkspaceObjectRecordDefinitionsUseCase
     );
   });
 
-  // 4. 테스트 기대 조건을 검증한다.
+  // 5. 테스트 기대 조건을 검증한다.
   it("uses AuthGuard for workspace object record definition endpoints", () => {
     expect(
       Reflect.getMetadata(
@@ -90,7 +112,30 @@ describe("UserWorkspaceObjectRecordDefinitionsController", () => {
     ).toContain(AuthGuard);
   });
 
-  // 5. 테스트 기대 조건을 검증한다.
+  // 6. 테스트 기대 조건을 검증한다.
+  it("exposes the workspace object record definition create route metadata", () => {
+    const handler =
+      UserWorkspaceObjectRecordDefinitionsController.prototype
+        .createWorkspaceObjectRecordDefinition;
+
+    expect(
+      Reflect.getMetadata(
+        PATH_METADATA,
+        UserWorkspaceObjectRecordDefinitionsController
+      )
+    ).toBe(
+      "api/users/me/workspaces/:workspaceId/object-definitions/:objectDefinitionId/record-definitions"
+    );
+    expect(Reflect.getMetadata(PATH_METADATA, handler)).toBe("/");
+    expect(Reflect.getMetadata(METHOD_METADATA, handler)).toBe(
+      RequestMethod.POST
+    );
+    expect(Reflect.getMetadata(HTTP_CODE_METADATA, handler)).toBe(
+      HttpStatus.CREATED
+    );
+  });
+
+  // 7. 테스트 기대 조건을 검증한다.
   it("exposes the workspace object record definition list route metadata", () => {
     const handler =
       UserWorkspaceObjectRecordDefinitionsController.prototype
@@ -110,7 +155,26 @@ describe("UserWorkspaceObjectRecordDefinitionsController", () => {
     );
   });
 
-  // 6. 필요한 비동기 작업을 실행한다.
+  // 8. 필요한 비동기 작업을 실행한다.
+  it("creates a workspace object record definition", async () => {
+    await expect(
+      controller.createWorkspaceObjectRecordDefinition(
+        CURRENT_USER,
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501"
+      )
+    ).resolves.toEqual({
+      recordDefinitionId: "00000000-0000-4000-8000-000000000701",
+    });
+
+    expect(createUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501"
+    );
+  });
+
+  // 9. 필요한 비동기 작업을 실행한다.
   it("returns workspace object record definition list", async () => {
     await expect(
       controller.listWorkspaceObjectRecordDefinitions(
@@ -159,7 +223,7 @@ describe("UserWorkspaceObjectRecordDefinitionsController", () => {
     );
   });
 
-  // 7. 필요한 비동기 작업을 실행한다.
+  // 10. 필요한 비동기 작업을 실행한다.
   it("passes cursor query to the use case", async () => {
     await controller.listWorkspaceObjectRecordDefinitions(
       CURRENT_USER,

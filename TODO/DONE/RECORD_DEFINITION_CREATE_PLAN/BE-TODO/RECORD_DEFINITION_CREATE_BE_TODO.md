@@ -1,12 +1,12 @@
 # RecordDefinition Create Backend TODO
 
-상태: confirmed
+상태: implemented
 
 ## 1. 목적
 
 사용자가 ObjectDefinition 목록 화면에서 새 row 생성을 요청하면 현재 Workspace의 특정 ObjectDefinition에 빈 RecordDefinition을 생성한다.
 
-세부 API path, request, response, error 계약은 `TODO/RECORD_DEFINITION_CREATE_PLAN/COMMON/API-SPEC/RECORD_DEFINITION_CREATE_API.md`를 기준으로 한다.
+세부 API path, request, response, error 계약은 `TODO/DONE/RECORD_DEFINITION_CREATE_PLAN/COMMON/API-SPEC/RECORD_DEFINITION_CREATE_API.md`를 기준으로 한다.
 
 ## 2. 구현 범위
 
@@ -142,4 +142,3 @@ Controller/API contract:
 - `pnpm -C BE build`
 
 Prisma schema 변경이 없으므로 `prisma:validate`는 필수 범위가 아니다.
-

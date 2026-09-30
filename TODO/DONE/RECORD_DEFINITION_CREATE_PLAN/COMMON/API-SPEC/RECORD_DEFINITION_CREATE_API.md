@@ -1,6 +1,6 @@
 # RecordDefinition Create API
 
-계약 상태: confirmed
+계약 상태: implemented
 
 소비자:
 
@@ -276,4 +276,3 @@ DB schema 변경:
 - 관련 Backend test 통과
 - User Web이 호출할 path, method, response 계약 확인
 - 기존 RecordDefinition 목록 조회 API가 계속 통과하는지 확인
-

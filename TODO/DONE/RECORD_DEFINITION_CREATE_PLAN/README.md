@@ -1,6 +1,6 @@
 # RecordDefinition Create Plan
 
-상태: confirmed
+상태: implemented
 
 ## 1. 목적
 
@@ -43,4 +43,3 @@ ObjectDefinition 목록 화면에서 사용자가 `생성하기` 버튼을 눌�
 - Workspace 접근은 `WorkspaceAccessQuery` 공개 port를 사용한다.
 - ObjectDefinition 소속 확인은 `ObjectDefinitionAccessQuery` 공개 port를 사용한다.
 - controller는 HTTP route 연결과 application use case 위임만 담당한다.
-
