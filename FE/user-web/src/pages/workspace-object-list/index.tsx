@@ -1325,11 +1325,7 @@ export function WorkspaceObjectListPage() {
                       className="h-5 w-5 shrink-0"
                       strokeWidth={2}
                     />
-                    <span className="truncate">
-                      {isCreatingRecordDefinitionRow
-                        ? t("common.loading")
-                        : t("objectList.addDataAction")}
-                    </span>
+                    <span className="truncate">{t("objectList.addDataAction")}</span>
                   </button>
                 </div>
               </div>
