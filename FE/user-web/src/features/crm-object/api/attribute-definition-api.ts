@@ -21,6 +21,7 @@ export type AttributeDefinitionValueType =
 
 export type WorkspaceObjectAttributeDefinitionListItem = {
   readonly id: string;
+  readonly icon: string | null;
   readonly title: string;
   readonly type: AttributeDefinitionValueType;
   readonly isMultiselect: boolean;

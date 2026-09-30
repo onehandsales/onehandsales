@@ -27,6 +27,7 @@ export class PrismaAttributeDefinitionListQueryRepository
         orderBy: [{ createdAt: "asc" }, { id: "asc" }],
         select: {
           id: true,
+          icon: true,
           title: true,
           type: true,
           isMultiselect: true,
@@ -36,6 +37,7 @@ export class PrismaAttributeDefinitionListQueryRepository
     // 2. Prisma row를 Object 목록 header row 응답 형태로 변환한다.
     return attributeDefinitions.map((attributeDefinition) => ({
       id: attributeDefinition.id,
+      icon: attributeDefinition.icon,
       title: attributeDefinition.title,
       type: attributeDefinition.type as AttributeDefinitionValueType,
       isMultiselect: attributeDefinition.isMultiselect,

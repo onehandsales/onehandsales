@@ -14,6 +14,7 @@ describe("listWorkspaceObjectAttributeDefinitions", () => {
     apiClientMock.mockResolvedValue([
       {
         id: "attribute-definition-1",
+        icon: "type",
         title: "company",
         type: "Text",
         isMultiselect: false,
@@ -28,6 +29,7 @@ describe("listWorkspaceObjectAttributeDefinitions", () => {
     expect(result).toEqual([
       {
         id: "attribute-definition-1",
+        icon: "type",
         title: "company",
         type: "Text",
         isMultiselect: false,

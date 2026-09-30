@@ -25,6 +25,7 @@ export type AttributeDefinitionValueType =
 // 역할 : WorkspaceObjectAttributeDefinitionListItem이 Object 목록 header row에 표시할 AttributeDefinition 요약을 정의합니다.
 export interface WorkspaceObjectAttributeDefinitionListItem {
   readonly id: string;
+  readonly icon: string | null;
   readonly title: string;
   readonly type: AttributeDefinitionValueType;
   readonly isMultiselect: boolean;

@@ -45,12 +45,14 @@ describe("ListWorkspaceObjectAttributeDefinitionsUseCase", () => {
     expect(result).toEqual([
       {
         id: "00000000-0000-4000-8000-000000000601",
+        icon: "type",
         title: "company",
         type: "Text",
         isMultiselect: false,
       },
       {
         id: "00000000-0000-4000-8000-000000000602",
+        icon: "kanban",
         title: "상태",
         type: "Status",
         isMultiselect: false,
@@ -165,12 +167,14 @@ class FakeAttributeDefinitionListQuery implements AttributeDefinitionListQuery {
   items: WorkspaceObjectAttributeDefinitionListItem[] = [
     {
       id: "00000000-0000-4000-8000-000000000601",
+      icon: "type",
       title: "company",
       type: "Text",
       isMultiselect: false,
     },
     {
       id: "00000000-0000-4000-8000-000000000602",
+      icon: "kanban",
       title: "상태",
       type: "Status",
       isMultiselect: false,

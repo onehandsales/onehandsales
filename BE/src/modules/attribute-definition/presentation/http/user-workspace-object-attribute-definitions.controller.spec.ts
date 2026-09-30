@@ -49,12 +49,14 @@ function createListUseCaseFake(): jest.Mocked<ListWorkspaceObjectAttributeDefini
     execute: jest.fn().mockResolvedValue([
       {
         id: "00000000-0000-4000-8000-000000000601",
+        icon: "type",
         title: "company",
         type: "Text",
         isMultiselect: false,
       },
       {
         id: "00000000-0000-4000-8000-000000000602",
+        icon: "kanban",
         title: "상태",
         type: "Status",
         isMultiselect: false,
@@ -119,12 +121,14 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       .expect([
         {
           id: "00000000-0000-4000-8000-000000000601",
+          icon: "type",
           title: "company",
           type: "Text",
           isMultiselect: false,
         },
         {
           id: "00000000-0000-4000-8000-000000000602",
+          icon: "kanban",
           title: "상태",
           type: "Status",
           isMultiselect: false,

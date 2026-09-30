@@ -42,6 +42,7 @@ import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import {
+  SidebarCrmObjectIcon,
   type WorkspaceObjectAttributeDefinitionListItem,
   type WorkspaceObjectRecordAttributeValueListItem,
   type WorkspaceObjectRecordDefinitionListItem,
@@ -429,7 +430,7 @@ function getAttributeDefinitionTypeIcon(
 }
 
 type RenderedObjectListAttributeColumn =
-  Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "title"> & {
+  Pick<WorkspaceObjectAttributeDefinitionListItem, "id" | "icon" | "title"> & {
     readonly isLoadingPlaceholder: boolean;
   };
 
@@ -492,6 +493,7 @@ function getObjectListTableMinWidth(
 function createLoadingAttributeColumn(): RenderedObjectListAttributeColumn {
   return {
     id: "attribute-definition-loading",
+    icon: null,
     title: "",
     isLoadingPlaceholder: true,
   };
@@ -505,6 +507,7 @@ function toRenderedAttributeColumns(
   if (attributeDefinitions.length > 0) {
     return attributeDefinitions.map((attributeDefinition) => ({
       id: attributeDefinition.id,
+      icon: attributeDefinition.icon,
       title: attributeDefinition.title,
       isLoadingPlaceholder: false,
     }));
@@ -1040,7 +1043,7 @@ export function WorkspaceObjectListPage() {
               </div>
               {renderedAttributeColumns.map((column) => (
                 <div
-                  className="relative flex h-full min-w-0 items-center border-r border-white px-3"
+                  className="relative flex h-full min-w-0 items-center gap-2 border-r border-white px-3"
                   key={column.id}
                   role="columnheader"
                 >
@@ -1050,7 +1053,16 @@ export function WorkspaceObjectListPage() {
                       className="h-3 w-20 rounded bg-[#F3F2EF]"
                     />
                   ) : (
-                    <span className="min-w-0 truncate">{column.title}</span>
+                    <>
+                      {column.icon ? (
+                        <SidebarCrmObjectIcon
+                          className="h-4 w-4 shrink-0 text-[#9CA3AF]"
+                          name={column.icon}
+                          strokeWidth={2}
+                        />
+                      ) : null}
+                      <span className="min-w-0 truncate">{column.title}</span>
+                    </>
                   )}
                   <button
                     aria-label={t("objectList.resizeAttributeDefinitionColumnLabel", {
