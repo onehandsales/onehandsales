@@ -639,6 +639,7 @@ export function WorkspaceObjectListPage() {
   const [attributeColumnWidthsById, setAttributeColumnWidthsById] =
     useState<Record<string, number>>({});
   const columnResizeCleanupRef = useRef<(() => void) | null>(null);
+  const isCreatingRecordDefinitionRowRef = useRef(false);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
@@ -763,13 +764,14 @@ export function WorkspaceObjectListPage() {
       !ownerUserId ||
       !currentWorkspaceId ||
       !currentObjectDefinitionId ||
-      isCreatingRecordDefinitionRow
+      isCreatingRecordDefinitionRowRef.current
     ) {
       return;
     }
 
     // 2. 중복 클릭을 막고 빈 RecordDefinition 생성 API를 호출한다.
     setCreateRecordDefinitionRowErrorMessage(null);
+    isCreatingRecordDefinitionRowRef.current = true;
     setCreatingRecordDefinitionRow(true);
 
     try {
@@ -790,6 +792,7 @@ export function WorkspaceObjectListPage() {
       // 4. 실패하면 API 오류 메시지를 테이블 하단에 표시한다.
       setCreateRecordDefinitionRowErrorMessage(getApiErrorMessage(error));
     } finally {
+      isCreatingRecordDefinitionRowRef.current = false;
       setCreatingRecordDefinitionRow(false);
     }
   }
@@ -1344,14 +1347,12 @@ export function WorkspaceObjectListPage() {
                               {columnIndex === 0 ? (
                                 <button
                                   aria-label={`새 ${objectLabel}`}
-                                  aria-busy={isCreatingRecordDefinitionRow}
                                   className={cn(
-                                    "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40",
+                                    "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]",
                                     isPlaceholderActionVisible
                                       ? "opacity-100"
                                       : "opacity-0 group-hover/empty-record-row:opacity-100 group-focus-within/empty-record-row:opacity-100",
                                   )}
-                                  disabled={isCreatingRecordDefinitionRow}
                                   type="button"
                                   onClick={handleCreateRecordDefinitionRow}
                                 >
@@ -1375,14 +1376,12 @@ export function WorkspaceObjectListPage() {
                           {renderedAttributeColumns.length === 0 ? (
                             <button
                               aria-label={`새 ${objectLabel}`}
-                              aria-busy={isCreatingRecordDefinitionRow}
                               className={cn(
-                                "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40",
+                                "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]",
                                 isPlaceholderActionVisible
                                   ? "opacity-100"
                                   : "opacity-0 group-hover/empty-record-row:opacity-100 group-focus-within/empty-record-row:opacity-100",
                               )}
-                              disabled={isCreatingRecordDefinitionRow}
                               type="button"
                               onClick={handleCreateRecordDefinitionRow}
                             >
