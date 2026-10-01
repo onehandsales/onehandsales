@@ -741,6 +741,12 @@ export function WorkspaceObjectListPage() {
     recordRows.length > 0 &&
     visibleRows.length === 0;
 
+  // 8. 실제 RecordDefinition row가 있을 때만 하단 생성 row를 보여준다.
+  const shouldShowCreateRecordDefinitionRow =
+    !isRecordDefinitionsLoading &&
+    !recordDefinitionsQuery.isError &&
+    recordRows.length > 0;
+
   // 기능 : 실패한 RecordDefinition 목록 조회를 다시 요청합니다.
   function handleRetryLoadRecords() {
     // 1. 현재 query key 기준으로 RecordDefinition 목록을 다시 가져온다.
@@ -1424,7 +1430,7 @@ export function WorkspaceObjectListPage() {
                   </div>
                 </div>
               ) : null}
-              {!shouldShowEmptyRecordPlaceholders ? (
+              {shouldShowCreateRecordDefinitionRow ? (
                 <div
                   className="flex h-[40px] items-center justify-center bg-white shadow-[inset_0_-1px_0_#F1F0EC]"
                   role="row"
