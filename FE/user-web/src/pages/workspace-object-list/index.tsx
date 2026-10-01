@@ -1192,17 +1192,21 @@ export function WorkspaceObjectListPage() {
                 </div>
               ))}
               <div
-                className="flex h-full items-center justify-start px-2"
+                className="flex h-full min-w-0 items-center justify-start px-2"
                 role="columnheader"
               >
                 <button
                   aria-label={t("objectList.addAttributeDefinitionTooltip")}
-                  className="group/object-add-attribute-tooltip relative inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+                  className="inline-flex h-7 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
                   type="button"
                   onClick={openAddAttributeDefinitionModal}
                 >
-                  <Plus className="h-5 w-5" strokeWidth={2} />
-                  <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-add-attribute-tooltip:opacity-100">
+                  <Plus
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0"
+                    strokeWidth={2}
+                  />
+                  <span className="min-w-0 truncate">
                     {t("objectList.addAttributeDefinitionTooltip")}
                   </span>
                 </button>
@@ -1342,7 +1346,7 @@ export function WorkspaceObjectListPage() {
                                   aria-label={`새 ${objectLabel}`}
                                   aria-busy={isCreatingRecordDefinitionRow}
                                   className={cn(
-                                    "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2.5 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40",
+                                    "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40",
                                     isPlaceholderActionVisible
                                       ? "opacity-100"
                                       : "opacity-0 group-hover/empty-record-row:opacity-100 group-focus-within/empty-record-row:opacity-100",
@@ -1373,7 +1377,7 @@ export function WorkspaceObjectListPage() {
                               aria-label={`새 ${objectLabel}`}
                               aria-busy={isCreatingRecordDefinitionRow}
                               className={cn(
-                                "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2.5 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40",
+                                "inline-flex h-8 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40",
                                 isPlaceholderActionVisible
                                   ? "opacity-100"
                                   : "opacity-0 group-hover/empty-record-row:opacity-100 group-focus-within/empty-record-row:opacity-100",
