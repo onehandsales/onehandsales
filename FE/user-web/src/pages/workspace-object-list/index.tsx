@@ -616,12 +616,18 @@ export function WorkspaceObjectListPage() {
     activeEmptyRecordPlaceholderRowIndex,
     setActiveEmptyRecordPlaceholderRowIndex,
   ] = useState<number | null>(null);
+  // 상태 : 헤더 row가 가로로 넘칠 때 속성 추가 버튼을 아이콘형으로 접을지 여부입니다.
+  const [
+    isAddAttributeDefinitionActionCompact,
+    setAddAttributeDefinitionActionCompact,
+  ] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [attributeColumnWidthsById, setAttributeColumnWidthsById] =
     useState<Record<string, number>>({});
   const columnResizeCleanupRef = useRef<(() => void) | null>(null);
   const isCreatingRecordDefinitionRowRef = useRef(false);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
+  const objectListScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
   const { t, formatDate, formatDateTime } = useAppI18n();
@@ -672,6 +678,54 @@ export function WorkspaceObjectListPage() {
       ),
     [attributeColumnWidthsById, renderedAttributeColumns],
   );
+
+  useEffect(() => {
+    const scrollContainer = objectListScrollContainerRef.current;
+
+    if (!scrollContainer) {
+      setAddAttributeDefinitionActionCompact(false);
+      return;
+    }
+
+    const scrollContainerElement = scrollContainer;
+
+    // 기능 : 테이블이 현재 스크롤 영역보다 넓은지 확인해 속성 추가 버튼 표시 방식을 갱신합니다.
+    function syncAddAttributeDefinitionActionCompactState() {
+      // 1. 실제 가로 viewport 역할을 하는 scroll container 너비를 읽는다.
+      const containerWidth = scrollContainerElement.clientWidth;
+
+      // 2. 테이블 최소 너비가 container보다 크면 텍스트를 숨긴 icon-only 상태로 전환한다.
+      setAddAttributeDefinitionActionCompact(tableMinWidthPx > containerWidth);
+    }
+
+    // 1. 첫 렌더와 컬럼 폭 변경 직후의 overflow 상태를 즉시 반영한다.
+    syncAddAttributeDefinitionActionCompactState();
+
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener(
+        "resize",
+        syncAddAttributeDefinitionActionCompactState,
+      );
+
+      return () => {
+        window.removeEventListener(
+          "resize",
+          syncAddAttributeDefinitionActionCompactState,
+        );
+      };
+    }
+
+    // 2. 사이드바 접힘, viewport 변경처럼 container 너비가 바뀌는 흐름을 감지한다.
+    const resizeObserver = new ResizeObserver(
+      syncAddAttributeDefinitionActionCompactState,
+    );
+    resizeObserver.observe(scrollContainerElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [tableMinWidthPx]);
+
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const searchLabel = t("common.searchName", { values: { name: objectLabel } });
   const booleanLabels = useMemo(
@@ -1111,7 +1165,10 @@ export function WorkspaceObjectListPage() {
         </div>
       </div>
       <div className="min-h-0 flex-1 overflow-hidden bg-white">
-        <div className="notion-scrollbar h-full overflow-auto">
+        <div
+          className="notion-scrollbar h-full overflow-auto"
+          ref={objectListScrollContainerRef}
+        >
           <div
             aria-label={objectLabel}
             className="min-w-full"
@@ -1169,7 +1226,12 @@ export function WorkspaceObjectListPage() {
               >
                 <button
                   aria-label={t("objectList.addAttributeDefinitionTooltip")}
-                  className="inline-flex h-7 max-w-full items-center justify-center gap-1.5 rounded-md px-2 text-[14px] font-medium text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+                  className={cn(
+                    "inline-flex h-7 max-w-full items-center justify-center gap-1.5 rounded-md text-[14px] font-medium text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]",
+                    isAddAttributeDefinitionActionCompact
+                      ? "w-7 px-0"
+                      : "px-2",
+                  )}
                   type="button"
                   onClick={openAddAttributeDefinitionModal}
                 >
@@ -1178,9 +1240,11 @@ export function WorkspaceObjectListPage() {
                     className="h-5 w-5 shrink-0"
                     strokeWidth={2}
                   />
-                  <span className="min-w-0 truncate">
-                    {t("objectList.addAttributeDefinitionTooltip")}
-                  </span>
+                  {isAddAttributeDefinitionActionCompact ? null : (
+                    <span className="min-w-0 truncate">
+                      {t("objectList.addAttributeDefinitionTooltip")}
+                    </span>
+                  )}
                 </button>
               </div>
             </div>
