@@ -16,6 +16,7 @@ export { workspaceObjectRecordDefinitionQueryKeys } from "./api/record-definitio
 export { useWorkspaceObjectAttributeDefinitionsQuery } from "./hooks/use-workspace-object-attribute-definitions";
 export { useWorkspaceObjectRecordDefinitionsQuery } from "./hooks/use-workspace-object-record-definitions";
 export type {
+  AttributeDefinitionConfig,
   AttributeDefinitionValueType,
   CreateWorkspaceObjectAttributeDefinitionResponse,
   WorkspaceObjectAttributeDefinitionListItem,

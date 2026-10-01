@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 
+// 역할 : AttributeDefinitionValueType이 Object 목록과 cell에서 지원하는 Attribute 타입 범위를 정의합니다.
 export type AttributeDefinitionValueType =
   | "ActorReference"
   | "Checkbox"
@@ -19,19 +20,37 @@ export type AttributeDefinitionValueType =
   | "Text"
   | "Timestamp";
 
+// 역할 : AttributeDefinitionCurrencyDisplayType이 Currency 설정의 표시 방식 범위를 정의합니다.
+export type AttributeDefinitionCurrencyDisplayType = "symbol";
+
+// 역할 : AttributeDefinitionCurrencyConfig가 Currency AttributeDefinition 표시 설정을 정의합니다.
+export type AttributeDefinitionCurrencyConfig = {
+  readonly defaultCurrencyCode: string;
+  readonly displayType: AttributeDefinitionCurrencyDisplayType;
+};
+
+// 역할 : AttributeDefinitionConfig가 AttributeType별 설정 객체를 정의합니다.
+export type AttributeDefinitionConfig = {
+  readonly currency: AttributeDefinitionCurrencyConfig;
+};
+
+// 역할 : WorkspaceObjectAttributeDefinitionListItem이 Object 목록 header row의 AttributeDefinition 응답 값을 정의합니다.
 export type WorkspaceObjectAttributeDefinitionListItem = {
   readonly id: string;
   readonly icon: string | null;
   readonly title: string;
   readonly type: AttributeDefinitionValueType;
   readonly isMultiselect: boolean;
+  readonly config: AttributeDefinitionConfig | null;
 };
 
+// 역할 : ListWorkspaceObjectAttributeDefinitionsInput이 AttributeDefinition 목록 조회 경계 값을 정의합니다.
 export type ListWorkspaceObjectAttributeDefinitionsInput = {
   readonly objectDefinitionId: string;
   readonly workspaceId: string;
 };
 
+// 역할 : CreateWorkspaceObjectAttributeDefinitionInput이 AttributeDefinition 생성 요청 값을 정의합니다.
 export type CreateWorkspaceObjectAttributeDefinitionInput = {
   readonly attributeDefinitionName: string;
   readonly attributeType: AttributeDefinitionValueType;
@@ -41,6 +60,7 @@ export type CreateWorkspaceObjectAttributeDefinitionInput = {
   readonly workspaceId: string;
 };
 
+// 역할 : CreateWorkspaceObjectAttributeDefinitionResponse가 AttributeDefinition 생성 응답 값을 정의합니다.
 export type CreateWorkspaceObjectAttributeDefinitionResponse = {
   readonly attributeDefinitionId: string;
 };

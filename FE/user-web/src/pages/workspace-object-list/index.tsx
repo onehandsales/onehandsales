@@ -63,6 +63,7 @@ import {
 import {
   getRecordAttributeValueDisplayText,
   type RecordAttributeValueBooleanLabels,
+  type RecordAttributeValueFormatters,
 } from "@/features/crm-object/utils/record-attribute-value-display";
 import {
   createLucideIconValue,
@@ -460,10 +461,11 @@ const ATTRIBUTE_DEFINITION_ICON_BY_TYPE: Record<
   Timestamp: "calendar-clock",
 };
 
+// 역할 : RenderedObjectListAttributeColumn이 table header/body에서 공유하는 AttributeDefinition 컬럼 값을 정의합니다.
 type RenderedObjectListAttributeColumn =
   Pick<
     WorkspaceObjectAttributeDefinitionListItem,
-    "id" | "icon" | "title" | "type"
+    "config" | "id" | "icon" | "title" | "type"
   >;
 
 type ObjectListAttributeColumnWidthsById = Readonly<Record<string, number>>;
@@ -528,6 +530,7 @@ function toRenderedAttributeColumns(
   if (attributeDefinitions.length > 0) {
     return attributeDefinitions.map((attributeDefinition) => ({
       id: attributeDefinition.id,
+      config: attributeDefinition.config,
       icon: attributeDefinition.icon,
       title: attributeDefinition.title,
       type: attributeDefinition.type,
@@ -554,6 +557,7 @@ function getRecordRowLabel(
   row: WorkspaceObjectRecordDefinitionListItem,
   attributeColumns: readonly RenderedObjectListAttributeColumn[],
   booleanLabels: RecordAttributeValueBooleanLabels,
+  formatters: RecordAttributeValueFormatters,
 ) {
   const valuesByAttributeId = getRecordAttributeValueMap(row);
 
@@ -561,6 +565,8 @@ function getRecordRowLabel(
     const displayText = getRecordAttributeValueDisplayText(
       valuesByAttributeId.get(column.id),
       booleanLabels,
+      formatters,
+      column.config,
     ).trim();
 
     if (displayText.length > 0) {
@@ -574,18 +580,27 @@ function getRecordRowLabel(
 // 기능 : RecordDefinition row가 현재 검색어와 일치하는지 확인합니다.
 function doesRecordRowMatchSearch(
   row: WorkspaceObjectRecordDefinitionListItem,
+  attributeColumns: readonly RenderedObjectListAttributeColumn[],
   searchQuery: string,
   booleanLabels: RecordAttributeValueBooleanLabels,
+  formatters: RecordAttributeValueFormatters,
 ) {
   if (searchQuery.length === 0) {
     return true;
   }
 
+  const valuesByAttributeId = getRecordAttributeValueMap(row);
+
   return [
     row.createdAt,
     row.updatedAt,
-    ...row.recordAttributeValues.map((value) =>
-      getRecordAttributeValueDisplayText(value, booleanLabels),
+    ...attributeColumns.map((column) =>
+      getRecordAttributeValueDisplayText(
+        valuesByAttributeId.get(column.id),
+        booleanLabels,
+        formatters,
+        column.config,
+      ),
     ),
   ].some((value) => value.toLowerCase().includes(searchQuery));
 }
@@ -630,7 +645,7 @@ export function WorkspaceObjectListPage() {
   const objectListScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
-  const { t, formatDate, formatDateTime } = useAppI18n();
+  const { t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
   const { user } = useAuthSession();
   const { objectDefinitionId, workspaceId } = useParams<{
     readonly objectDefinitionId?: string;
@@ -735,6 +750,15 @@ export function WorkspaceObjectListPage() {
     }),
     [t],
   );
+  // 기능 : row label, 검색, cell 표시가 같은 통화/날짜 포맷 기준을 쓰도록 formatter 묶음을 준비합니다.
+  const recordAttributeValueFormatters = useMemo(
+    () => ({
+      formatCurrency,
+      formatDate,
+      formatDateTime,
+    }),
+    [formatCurrency, formatDate, formatDateTime],
+  );
 
   // 3. cursor pagination으로 받은 RecordDefinition page들을 화면 row 목록으로 합친다.
   const recordRows = useMemo(
@@ -745,9 +769,21 @@ export function WorkspaceObjectListPage() {
   // 4. 현재 검색어와 일치하는 RecordDefinition row만 화면에 남긴다.
   const visibleRows = useMemo(() => {
     return recordRows.filter((row) =>
-      doesRecordRowMatchSearch(row, normalizedSearchQuery, booleanLabels),
+      doesRecordRowMatchSearch(
+        row,
+        renderedAttributeColumns,
+        normalizedSearchQuery,
+        booleanLabels,
+        recordAttributeValueFormatters,
+      ),
     );
-  }, [booleanLabels, normalizedSearchQuery, recordRows]);
+  }, [
+    booleanLabels,
+    normalizedSearchQuery,
+    recordAttributeValueFormatters,
+    recordRows,
+    renderedAttributeColumns,
+  ]);
 
   // 5. 초기 로딩과 background refetch를 분리해 빈 화면 깜빡임을 막는다.
   const isRecordDefinitionsLoading =
@@ -1255,6 +1291,7 @@ export function WorkspaceObjectListPage() {
                   row,
                   renderedAttributeColumns,
                   booleanLabels,
+                  recordAttributeValueFormatters,
                 );
 
                 return (
@@ -1286,9 +1323,11 @@ export function WorkspaceObjectListPage() {
                           role="cell"
                         >
                           <RecordAttributeValueCell
+                            attributeConfig={column.config}
                             attributeTitle={column.title}
                             attributeType={column.type}
                             booleanLabels={booleanLabels}
+                            formatCurrency={formatCurrency}
                             formatDate={formatDate}
                             formatDateTime={formatDateTime}
                             isPrimary={index === 0}

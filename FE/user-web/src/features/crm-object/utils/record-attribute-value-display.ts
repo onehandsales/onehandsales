@@ -1,4 +1,9 @@
-import type { WorkspaceObjectRecordAttributeValueListItem } from "@/features/crm-object";
+import { DEFAULT_APP_CURRENCY_CODE } from "@/features/app-i18n/constants";
+import type { AppCurrencyFormatOptions } from "@/features/app-i18n/formatters";
+import type {
+  AttributeDefinitionConfig,
+  WorkspaceObjectRecordAttributeValueListItem,
+} from "@/features/crm-object";
 
 // 역할 : boolean cell 값을 사용자 표시 문구로 바꾸는 label 묶음입니다.
 export type RecordAttributeValueBooleanLabels = {
@@ -6,7 +11,12 @@ export type RecordAttributeValueBooleanLabels = {
   readonly trueLabel: string;
 };
 
-type RecordAttributeValueFormatters = {
+// 역할 : RecordAttributeValueFormatters가 cell 표시 문자열 계산에 사용할 앱 포맷터 묶음을 정의합니다.
+export type RecordAttributeValueFormatters = {
+  readonly formatCurrency?: (
+    amount: number | null | undefined,
+    options?: AppCurrencyFormatOptions,
+  ) => string;
   readonly formatDate: (value: string) => string;
   readonly formatDateTime: (value: string) => string;
 };
@@ -27,6 +37,7 @@ export function getRecordAttributeValueDisplayText(
   value: WorkspaceObjectRecordAttributeValueListItem | null | undefined,
   booleanLabels: RecordAttributeValueBooleanLabels,
   formatters?: RecordAttributeValueFormatters,
+  attributeConfig?: AttributeDefinitionConfig | null,
 ) {
   if (!value) {
     return "";
@@ -42,7 +53,7 @@ export function getRecordAttributeValueDisplayText(
         ? booleanLabels.trueLabel
         : booleanLabels.falseLabel;
     case "Currency":
-      return getCurrencyDisplayText(value);
+      return getCurrencyDisplayText(value, attributeConfig, formatters);
     case "Date":
       return value.dateValue
         ? formatters?.formatDate(value.dateValue) ?? value.dateValue
@@ -109,19 +120,40 @@ export function getRecordAttributeValueDisplayText(
 // 기능 : Currency cell 표시 문자열을 계산합니다.
 function getCurrencyDisplayText(
   value: WorkspaceObjectRecordAttributeValueListItem,
+  attributeConfig: AttributeDefinitionConfig | null | undefined,
+  formatters?: RecordAttributeValueFormatters,
 ) {
+  // 1. 현재 저장값을 scalar Currency 값 기준으로 읽고, 구버전 JSON amount도 fallback으로 허용한다.
   const amount =
     getJsonStringField(value.jsonValue, "amount") ??
     value.numberValue ??
     "";
-  const currencyCode = getJsonStringField(value.jsonValue, "currencyCode") ?? "";
+  // 2. 통화 표시는 cell 값이 아니라 AttributeDefinition config 기준으로 결정한다.
+  const currencyCode = getCurrencyCodeFromAttributeConfig(attributeConfig);
   const currencySymbol = getCurrencySymbol(currencyCode);
 
+  // 3. 저장된 금액이 없으면 currency symbol만 노출하지 않고 비어 있는 cell로 둔다.
   if (amount.length === 0) {
-    return currencySymbol;
+    return "";
   }
 
-  return currencySymbol.length > 0 ? `${currencySymbol} ${amount}` : amount;
+  // 4. Decimal 문자열의 소수 자릿수를 보존해 앱 통화 formatter에 전달한다.
+  const numericAmount = Number(amount);
+  const fractionDigits = getCurrencyFractionDigits(amount);
+
+  // 5. 숫자로 변환 가능한 값은 locale-aware formatter를 우선 사용하고, 실패하면 안전한 문자열 표시로 돌아간다.
+  if (Number.isFinite(numericAmount)) {
+    return (
+      formatters?.formatCurrency?.(numericAmount, {
+        currencyCode,
+        fallback: createCurrencyFallbackText(amount, currencySymbol),
+        maximumFractionDigits: fractionDigits,
+        minimumFractionDigits: fractionDigits,
+      }) ?? createCurrencyFallbackText(amount, currencySymbol)
+    );
+  }
+
+  return createCurrencyFallbackText(amount, currencySymbol);
 }
 
 // 기능 : PersonalName cell 표시 문자열을 계산합니다.
@@ -181,6 +213,29 @@ function getCurrencySymbol(currencyCode: string) {
   }
 
   return CURRENCY_SYMBOL_BY_CODE[normalizedCurrencyCode] ?? normalizedCurrencyCode;
+}
+
+// 기능 : AttributeDefinition 설정에서 Currency 표시 기준 통화 코드를 가져옵니다.
+function getCurrencyCodeFromAttributeConfig(
+  attributeConfig: AttributeDefinitionConfig | null | undefined,
+) {
+  const currencyCode = attributeConfig?.currency.defaultCurrencyCode.trim();
+
+  return currencyCode && currencyCode.length > 0
+    ? currencyCode
+    : DEFAULT_APP_CURRENCY_CODE;
+}
+
+// 기능 : Intl 통화 표시를 사용할 수 없을 때 읽을 수 있는 Currency 문자열을 만듭니다.
+function createCurrencyFallbackText(amount: string, currencySymbol: string) {
+  return currencySymbol.length > 0 ? `${currencySymbol}${amount}` : amount;
+}
+
+// 기능 : Decimal 문자열의 소수 자리수를 통화 표시 옵션으로 변환합니다.
+function getCurrencyFractionDigits(amount: string) {
+  const [, fractionPart = ""] = amount.split(".");
+
+  return Math.min(fractionPart.length, 20);
 }
 
 // 기능 : JSON object 후보에서 문자열 필드를 안전하게 꺼냅니다.

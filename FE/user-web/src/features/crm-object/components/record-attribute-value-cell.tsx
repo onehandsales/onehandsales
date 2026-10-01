@@ -9,7 +9,9 @@ import {
   useRef,
   useState,
 } from "react";
+import type { AppCurrencyFormatOptions } from "@/features/app-i18n/formatters";
 import type {
+  AttributeDefinitionConfig,
   AttributeDefinitionValueType,
   WorkspaceObjectRecordAttributeValueListItem,
   WorkspaceObjectRecordAttributeValuePatchValue,
@@ -21,6 +23,7 @@ import {
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
+// 역할 : RecordAttributeValueCellDraft가 cell 편집 UI의 임시 입력 상태를 정의합니다.
 type RecordAttributeValueCellDraft = {
   readonly actorId: string;
   readonly amount: string;
@@ -44,10 +47,16 @@ export type RecordAttributeValueCellSaveInput = {
   readonly value: WorkspaceObjectRecordAttributeValuePatchValue;
 };
 
+// 역할 : RecordAttributeValueCellProps가 record table cell 렌더링과 저장에 필요한 값을 정의합니다.
 type RecordAttributeValueCellProps = {
+  readonly attributeConfig: AttributeDefinitionConfig | null;
   readonly attributeTitle: string;
   readonly attributeType: AttributeDefinitionValueType;
   readonly booleanLabels: RecordAttributeValueBooleanLabels;
+  readonly formatCurrency: (
+    amount: number | null | undefined,
+    options?: AppCurrencyFormatOptions,
+  ) => string;
   readonly formatDate: (value: string) => string;
   readonly formatDateTime: (value: string) => string;
   readonly isPrimary: boolean;
@@ -78,9 +87,11 @@ const POPOVER_ATTRIBUTE_TYPES = new Set<AttributeDefinitionValueType>([
 
 // 기능 : record table cell 하나의 표시와 inline 편집 UX를 렌더링합니다.
 export function RecordAttributeValueCell({
+  attributeConfig,
   attributeTitle,
   attributeType,
   booleanLabels,
+  formatCurrency,
   formatDate,
   formatDateTime,
   isPrimary,
@@ -98,9 +109,11 @@ export function RecordAttributeValueCell({
     value,
     booleanLabels,
     {
+      formatCurrency,
       formatDate,
       formatDateTime,
     },
+    attributeConfig,
   );
   const isInlineTextEditor = INLINE_TEXT_ATTRIBUTE_TYPES.has(attributeType);
   const isPopoverEditor = POPOVER_ATTRIBUTE_TYPES.has(attributeType);

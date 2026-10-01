@@ -18,10 +18,13 @@ export type AppDateFormatOptions = {
   readonly year?: "2-digit" | "numeric";
 };
 
+// 역할 : AppCurrencyFormatOptions가 앱 통화 표시 함수의 locale, fallback, 소수 자리 옵션을 정의합니다.
 export type AppCurrencyFormatOptions = {
   readonly currencyCode?: string;
   readonly fallback?: string;
   readonly locale?: AppLocale | string;
+  readonly maximumFractionDigits?: number;
+  readonly minimumFractionDigits?: number;
 };
 
 export type AppPhoneFormatOptions = {
@@ -124,12 +127,22 @@ export function formatAppCurrency(
   const currencyCode = options.currencyCode ?? DEFAULT_APP_CURRENCY_CODE;
   // 3. 이후 단계에서 사용할 intlLocale 값을 준비한다.
   const intlLocale = resolveIntlLocale(options.locale);
+  // 4. 호출자가 지정한 소수 자리 표시 범위를 Intl 옵션으로 보정한다.
+  const maximumFractionDigits = Math.max(
+    0,
+    options.maximumFractionDigits ?? 0,
+  );
+  const minimumFractionDigits = Math.min(
+    maximumFractionDigits,
+    Math.max(0, options.minimumFractionDigits ?? 0),
+  );
 
-  // 4. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
+  // 5. 실패 가능성이 있는 작업을 실행하고 오류를 처리한다.
   try {
     return new Intl.NumberFormat(intlLocale, {
       currency: currencyCode,
-      maximumFractionDigits: 0,
+      maximumFractionDigits,
+      minimumFractionDigits,
       style: "currency",
     }).format(amount);
   } catch {

@@ -17,6 +17,7 @@ describe("listWorkspaceObjectAttributeDefinitions", () => {
     apiClientMock.mockResolvedValue([
       {
         id: "attribute-definition-1",
+        config: null,
         icon: "type",
         title: "company",
         type: "Text",
@@ -32,6 +33,7 @@ describe("listWorkspaceObjectAttributeDefinitions", () => {
     expect(result).toEqual([
       {
         id: "attribute-definition-1",
+        config: null,
         icon: "type",
         title: "company",
         type: "Text",
