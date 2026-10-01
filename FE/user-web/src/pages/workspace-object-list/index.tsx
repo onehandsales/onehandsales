@@ -464,9 +464,7 @@ type RenderedObjectListAttributeColumn =
   Pick<
     WorkspaceObjectAttributeDefinitionListItem,
     "id" | "icon" | "title" | "type"
-  > & {
-    readonly isLoadingPlaceholder: boolean;
-  };
+  >;
 
 type ObjectListAttributeColumnWidthsById = Readonly<Record<string, number>>;
 
@@ -523,21 +521,9 @@ function getObjectListTableMinWidth(
   }, fixedWidth);
 }
 
-// 기능 : API 로딩 중에도 header row 높이와 column 구조를 유지할 임시 컬럼을 생성합니다.
-function createLoadingAttributeColumn(): RenderedObjectListAttributeColumn {
-  return {
-    id: "attribute-definition-loading",
-    icon: null,
-    title: "",
-    type: "Text",
-    isLoadingPlaceholder: true,
-  };
-}
-
 // 기능 : AttributeDefinition API 응답을 header row 렌더링용 컬럼 값으로 변환합니다.
 function toRenderedAttributeColumns(
   attributeDefinitions: readonly WorkspaceObjectAttributeDefinitionListItem[],
-  isLoading: boolean,
 ): readonly RenderedObjectListAttributeColumn[] {
   if (attributeDefinitions.length > 0) {
     return attributeDefinitions.map((attributeDefinition) => ({
@@ -545,12 +531,7 @@ function toRenderedAttributeColumns(
       icon: attributeDefinition.icon,
       title: attributeDefinition.title,
       type: attributeDefinition.type,
-      isLoadingPlaceholder: false,
     }));
-  }
-
-  if (isLoading) {
-    return [createLoadingAttributeColumn()];
   }
 
   return [];
@@ -672,17 +653,8 @@ export function WorkspaceObjectListPage() {
   const objectLabel = object?.singularName ?? t("objectList.fallbackObjectLabel");
   const renderedAttributeColumns = useMemo(
     () =>
-      toRenderedAttributeColumns(
-        attributeDefinitionsQuery.data ?? [],
-        attributeDefinitionsQuery.isLoading ||
-          (attributeDefinitionsQuery.isFetching &&
-            !attributeDefinitionsQuery.data),
-      ),
-    [
-      attributeDefinitionsQuery.data,
-      attributeDefinitionsQuery.isFetching,
-      attributeDefinitionsQuery.isLoading,
-    ],
+      toRenderedAttributeColumns(attributeDefinitionsQuery.data ?? []),
+    [attributeDefinitionsQuery.data],
   );
   const tableGridTemplateColumns = useMemo(
     () =>
@@ -1167,25 +1139,16 @@ export function WorkspaceObjectListPage() {
                   key={column.id}
                   role="columnheader"
                 >
-                  {column.isLoadingPlaceholder ? (
-                    <span
-                      aria-hidden="true"
-                      className="h-3 w-20 rounded bg-[#F3F2EF]"
+                  {column.icon ? (
+                    <SidebarCrmObjectIcon
+                      className="h-4 w-4 shrink-0 text-[#9CA3AF]"
+                      name={column.icon}
+                      strokeWidth={2}
                     />
-                  ) : (
-                    <>
-                      {column.icon ? (
-                        <SidebarCrmObjectIcon
-                          className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                          name={column.icon}
-                          strokeWidth={2}
-                        />
-                      ) : null}
-                      <span className="min-w-0 truncate text-[#9CA3AF]">
-                        {column.title}
-                      </span>
-                    </>
-                  )}
+                  ) : null}
+                  <span className="min-w-0 truncate text-[#9CA3AF]">
+                    {column.title}
+                  </span>
                   <button
                     aria-label={t("objectList.resizeAttributeDefinitionColumnLabel", {
                       values: {
@@ -1282,9 +1245,38 @@ export function WorkspaceObjectListPage() {
                 );
               })}
               {isRecordDefinitionsLoading ? (
-                <div className="flex h-[80px] items-center px-4 text-[14px] font-medium text-[#6B7280]">
-                  {t("objectList.loadingRecords")}
-                </div>
+                EMPTY_RECORD_PLACEHOLDER_ROW_INDEXES.map((rowIndex) => (
+                  <div
+                    aria-hidden="true"
+                    className="grid h-[40px] items-stretch bg-white shadow-[inset_0_-1px_0_#F1F0EC]"
+                    key={`record-loading-skeleton-${rowIndex}`}
+                    role="row"
+                    style={{ gridTemplateColumns: tableGridTemplateColumns }}
+                  >
+                    <div
+                      className="border-r border-[#F1F0EC]"
+                      role="cell"
+                    />
+                    {renderedAttributeColumns.map((column, columnIndex) => (
+                      <div
+                        className="flex h-full min-w-0 items-center border-r border-[#F1F0EC] px-3"
+                        key={column.id}
+                        role="cell"
+                      >
+                        <span
+                          className={cn(
+                            "h-3 rounded bg-[#F3F2EF] motion-safe:animate-pulse",
+                            columnIndex === 0 ? "w-24" : "w-16",
+                          )}
+                        />
+                      </div>
+                    ))}
+                    <div
+                      className="flex h-full min-w-0 items-center px-3"
+                      role="cell"
+                    />
+                  </div>
+                ))
               ) : null}
               {!isRecordDefinitionsLoading && recordDefinitionsQuery.isError ? (
                 <div className="flex h-[80px] items-center gap-3 px-4 text-[14px] font-medium text-[#6B7280]">
