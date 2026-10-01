@@ -6,6 +6,7 @@ import type {
   CreateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
 import { AttributeDefinitionApiSlugAlreadyExistsError } from "@/modules/attribute-definition/domain/attribute-definition.errors";
+import { resolvePrismaTransactionalClient } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 // 역할 : PrismaAttributeDefinitionCommandRepository가 AttributeDefinition 쓰기 저장소 계약을 Prisma로 구현합니다.
@@ -41,9 +42,15 @@ export class PrismaAttributeDefinitionCommandRepository
     input: CreateAttributeDefinitionInput
   ): Promise<CreateAttributeDefinitionResult> {
     try {
-      // 1. AttributeDefinition row를 생성하고 생성된 ID만 조회한다.
+      // 1. 현재 transaction context에 맞는 Prisma client를 준비한다.
+      const client = resolvePrismaTransactionalClient(
+        this.prismaService,
+        input.transactionContext
+      );
+
+      // 2. AttributeDefinition row를 생성하고 생성된 ID만 조회한다.
       const attributeDefinition =
-        await this.prismaService.attributeDefinition.create({
+        await client.attributeDefinition.create({
           data: {
             workspaceId: input.workspaceId,
             objectDefinitionId: input.objectDefinitionId,
@@ -61,12 +68,12 @@ export class PrismaAttributeDefinitionCommandRepository
           },
         });
 
-      // 2. 생성 결과를 application 계층 응답 계약으로 반환한다.
+      // 3. 생성 결과를 application 계층 응답 계약으로 반환한다.
       return {
         id: attributeDefinition.id,
       };
     } catch (error) {
-      // 3. 동시 요청 등으로 DB unique 제약에 걸리면 domain conflict로 변환한다.
+      // 4. 동시 요청 등으로 DB unique 제약에 걸리면 domain conflict로 변환한다.
       if (this.isUniqueConstraintError(error)) {
         throw new AttributeDefinitionApiSlugAlreadyExistsError();
       }

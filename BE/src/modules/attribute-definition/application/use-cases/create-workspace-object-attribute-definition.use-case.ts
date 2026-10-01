@@ -22,6 +22,10 @@ import {
   type ObjectDefinitionAccessQuery,
 } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
 import {
+  RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER,
+  type RecordAttributeValueDefinitionMaterializer,
+} from "@/modules/record-definition/application/ports/record-attribute-value-definition-materializer.port";
+import {
   type WorkspaceAccessQuery,
   WORKSPACE_ACCESS_QUERY,
 } from "@/modules/workspace/application/ports/workspace-access-query.port";
@@ -31,6 +35,11 @@ import {
   APPLICATION_LOGGER,
   type ApplicationLogger,
 } from "@/shared/application/ports/application-logger.port";
+import {
+  TRANSACTION_MANAGER,
+  type TransactionContext,
+  type TransactionManager,
+} from "@/shared/application/ports/transaction-manager.port";
 
 const MAX_ATTRIBUTE_DEFINITION_NAME_LENGTH = 80;
 const CURRENCY_DISPLAY_TYPE_SYMBOL: AttributeDefinitionCurrencyDisplayType =
@@ -52,10 +61,16 @@ export interface CreateWorkspaceObjectAttributeDefinitionResponse {
   readonly attributeDefinitionId: string;
 }
 
+// 역할 : CreatedAttributeDefinitionWithMaterializedCells가 AttributeDefinition 생성과 기존 record cell row 보강 결과를 정의합니다.
+interface CreatedAttributeDefinitionWithMaterializedCells {
+  readonly id: string;
+  readonly recordAttributeValueDefinitionCount: number;
+}
+
 // 역할 : CreateWorkspaceObjectAttributeDefinitionUseCase가 현재 ObjectDefinition의 AttributeDefinition 생성을 담당합니다.
 @Injectable()
 export class CreateWorkspaceObjectAttributeDefinitionUseCase {
-  // 기능 : Workspace 접근 포트, ObjectDefinition 접근 포트, AttributeDefinition 쓰기 저장소, logger를 주입받습니다.
+  // 기능 : Workspace/ObjectDefinition 접근 포트, AttributeDefinition 저장소, cell materializer, transaction manager, logger를 주입받습니다.
   constructor(
     @Inject(WORKSPACE_ACCESS_QUERY)
     private readonly workspaceAccessQuery: WorkspaceAccessQuery,
@@ -63,6 +78,10 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     private readonly objectDefinitionAccessQuery: ObjectDefinitionAccessQuery,
     @Inject(ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY)
     private readonly attributeDefinitionCommandRepository: AttributeDefinitionCommandRepository,
+    @Inject(RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER)
+    private readonly recordAttributeValueDefinitionMaterializer: RecordAttributeValueDefinitionMaterializer,
+    @Inject(TRANSACTION_MANAGER)
+    private readonly transactionManager: TransactionManager,
     @Inject(APPLICATION_LOGGER)
     private readonly logger: ApplicationLogger
   ) {}
@@ -102,6 +121,8 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
       throw new Error("Workspace member actor is missing");
     }
 
+    const createdByActorId = workspaceAccess.actorId;
+
     // 3. 요청 ObjectDefinition이 Workspace 경계 안에 있는지 확인한다.
     const hasObjectDefinition =
       await this.objectDefinitionAccessQuery.hasObjectDefinitionInWorkspace({
@@ -127,12 +148,12 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
       throw new AttributeDefinitionApiSlugAlreadyExistsError();
     }
 
-    // 5. AttributeDefinition을 생성하고 생성된 ID를 반환한다.
-    const created =
-      await this.attributeDefinitionCommandRepository.createAttributeDefinition({
+    // 5. AttributeDefinition과 기존 RecordDefinition의 null cell value row를 하나의 transaction 안에서 생성한다.
+    const created = await this.transactionManager.runInTransaction((context) =>
+      this.createAttributeDefinitionInTransaction({
         workspaceId,
         objectDefinitionId,
-        createdByActorId: workspaceAccess.actorId,
+        createdByActorId,
         apiSlug: attributeDefinitionName,
         title: attributeDefinitionName,
         type: attributeType,
@@ -140,7 +161,9 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
         isMultiselect: false,
         description,
         config,
-      });
+        transactionContext: context,
+      })
+    );
 
     // 6. 원문 이름과 설명 없이 생성 이벤트만 구조화 로그로 남긴다.
     this.logCreatedEvent({
@@ -148,10 +171,52 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
       workspaceId,
       objectDefinitionId,
       attributeDefinitionId: created.id,
+      recordAttributeValueDefinitionCount:
+        created.recordAttributeValueDefinitionCount,
     });
 
     return {
       attributeDefinitionId: created.id,
+    };
+  }
+
+  // 기능 : AttributeDefinition과 기존 record의 null cell value row 생성을 같은 transaction context로 저장합니다.
+  private async createAttributeDefinitionInTransaction(input: {
+    readonly workspaceId: string;
+    readonly objectDefinitionId: string;
+    readonly createdByActorId: string;
+    readonly apiSlug: string;
+    readonly title: string;
+    readonly type: AttributeDefinitionType;
+    readonly icon: string | null;
+    readonly isMultiselect: boolean;
+    readonly description: string | null;
+    readonly config: AttributeDefinitionConfig | null;
+    readonly transactionContext: TransactionContext;
+  }): Promise<CreatedAttributeDefinitionWithMaterializedCells> {
+    // 1. 새 AttributeDefinition row를 먼저 생성해 기존 record cell row의 FK 기준을 확보한다.
+    const created =
+      await this.attributeDefinitionCommandRepository.createAttributeDefinition(
+        input
+      );
+
+    // 2. 이미 존재하는 RecordDefinition마다 새 AttributeDefinition에 대응하는 null cell value row를 생성한다.
+    const materialized =
+      await this.recordAttributeValueDefinitionMaterializer.materializeForAttributeDefinition(
+        {
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          attributeDefinitionId: created.id,
+          attributeType: input.type,
+          createdByActorId: input.createdByActorId,
+          transactionContext: input.transactionContext,
+        }
+      );
+
+    // 3. API 응답에 필요한 AttributeDefinition ID와 관측용 cell 생성 수를 함께 반환한다.
+    return {
+      id: created.id,
+      recordAttributeValueDefinitionCount: materialized.createdCount,
     };
   }
 
@@ -358,6 +423,7 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     readonly workspaceId: string;
     readonly objectDefinitionId: string;
     readonly attributeDefinitionId: string;
+    readonly recordAttributeValueDefinitionCount: number;
   }): void {
     this.logger.log(
       JSON.stringify({

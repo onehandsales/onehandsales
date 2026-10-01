@@ -974,7 +974,7 @@ export function WorkspaceObjectListPage() {
     }
   }, [isSearchOpen]);
 
-  // 기능 : 새로 생성된 AttributeDefinition을 header row 목록 query에 반영합니다.
+  // 기능 : 새로 생성된 AttributeDefinition과 기존 row cell value를 object list query에 반영합니다.
   async function handleAttributeDefinitionCreated() {
     // 1. 현재 사용자가 선택한 Workspace와 ObjectDefinition이 준비되지 않았으면 갱신을 건너뛴다.
     const ownerUserId = user?.id ?? null;
@@ -985,14 +985,23 @@ export function WorkspaceObjectListPage() {
       return;
     }
 
-    // 2. 서버 기준 AttributeDefinition 목록을 다시 가져오도록 query cache를 무효화한다.
-    await queryClient.invalidateQueries({
-      queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(
-        ownerUserId,
-        currentWorkspaceId,
-        currentObjectDefinitionId,
-      ),
-    });
+    // 2. 서버 기준 header AttributeDefinition과 body RecordDefinition 목록을 함께 다시 가져오도록 query cache를 무효화한다.
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(
+          ownerUserId,
+          currentWorkspaceId,
+          currentObjectDefinitionId,
+        ),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: workspaceObjectRecordDefinitionQueryKeys.list(
+          ownerUserId,
+          currentWorkspaceId,
+          currentObjectDefinitionId,
+        ),
+      }),
+    ]);
   }
 
   // 기능 : 필요한 정보 추가 버튼에서 AttributeDefinition 생성 모달을 엽니다.

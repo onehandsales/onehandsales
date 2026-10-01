@@ -5,6 +5,7 @@ import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attri
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructure/object-definition.module";
+import { RecordDefinitionModule } from "@/modules/record-definition/infrastructure/record-definition.module";
 import { WorkspaceModule } from "@/modules/workspace/infrastructure/workspace.module";
 import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logger.port";
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
@@ -20,6 +21,7 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
     AuthModule,
     WorkspaceModule,
     ObjectDefinitionModule,
+    RecordDefinitionModule,
     PrismaInfrastructureModule,
   ],
   controllers: [UserWorkspaceObjectAttributeDefinitionsController],

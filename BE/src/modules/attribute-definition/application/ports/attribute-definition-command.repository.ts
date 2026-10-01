@@ -1,5 +1,6 @@
 import type { AttributeDefinitionType } from "@/modules/attribute-definition/application/attribute-definition-type";
 import type { AttributeDefinitionConfig } from "@/modules/attribute-definition/application/attribute-definition-config";
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
 
 export const ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY = Symbol(
   "ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY"
@@ -24,6 +25,7 @@ export interface CreateAttributeDefinitionInput {
   readonly isMultiselect: boolean;
   readonly description: string | null;
   readonly config: AttributeDefinitionConfig | null;
+  readonly transactionContext?: TransactionContext | null;
 }
 
 // 역할 : CreateAttributeDefinitionResult가 AttributeDefinition 생성 결과를 정의합니다.

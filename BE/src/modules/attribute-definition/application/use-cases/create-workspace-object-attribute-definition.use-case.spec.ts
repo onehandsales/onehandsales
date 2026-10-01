@@ -15,11 +15,20 @@ import type {
   ObjectDefinitionWorkspaceLookupInput,
 } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
 import type {
+  MaterializeRecordAttributeValuesForAttributeDefinitionInput,
+  MaterializeRecordAttributeValuesForAttributeDefinitionResult,
+  RecordAttributeValueDefinitionMaterializer,
+} from "@/modules/record-definition/application/ports/record-attribute-value-definition-materializer.port";
+import type {
   WorkspaceAccessQuery,
   WorkspaceMemberAccess,
 } from "@/modules/workspace/application/ports/workspace-access-query.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
+import type {
+  TransactionContext,
+  TransactionManager,
+} from "@/shared/application/ports/transaction-manager.port";
 import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "./create-workspace-object-attribute-definition.use-case";
 
 // 기능 : CreateWorkspaceObjectAttributeDefinitionUseCase 동작을 검증합니다.
@@ -64,7 +73,17 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
       isMultiselect: false,
       description: " 대표 전화번호를 저장해요. ",
       config: null,
+      transactionContext: fixture.transactionManager.context,
     });
+    expect(fixture.materializer.lastInput).toEqual({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+      attributeType: "PhoneNumber",
+      createdByActorId: "00000000-0000-4000-8000-000000000401",
+      transactionContext: fixture.transactionManager.context,
+    });
+    expect(fixture.transactionManager.runCount).toBe(1);
     expect(fixture.logger.log).toHaveBeenCalledWith(
       expect.stringContaining("crm.attributeDefinition.created"),
       "CreateWorkspaceObjectAttributeDefinitionUseCase"
@@ -197,6 +216,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 지원하지 않는 Currency config 값은 DB 조회 전에 생성을 차단합니다.
@@ -225,6 +246,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 현재 지원하지 않는 Currency 표시 방식은 DB 조회 전에 생성을 차단합니다.
@@ -253,6 +276,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 공백 이름은 DB 조회 전에 AttributeDefinition 생성을 차단합니다.
@@ -275,6 +300,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 너무 긴 이름은 AttributeDefinition 생성을 차단합니다.
@@ -297,6 +324,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 알 수 없는 AttributeType은 DB 조회 전에 AttributeDefinition 생성을 차단합니다.
@@ -319,6 +348,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 현재 사용자가 Workspace 멤버가 아니면 생성을 차단합니다.
@@ -340,6 +371,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.objectDefinitionAccessQuery.lastInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : WorkspaceMember에 연결된 Actor가 없으면 내부 정합성 오류로 중단합니다.
@@ -364,6 +397,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.objectDefinitionAccessQuery.lastInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 요청 ObjectDefinition이 Workspace에 속하지 않으면 생성을 차단합니다.
@@ -385,6 +420,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
 
     expect(fixture.repository.lastLookupInput).toBeNull();
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 
   // 기능 : 같은 ObjectDefinition 안의 중복 apiSlug 생성을 차단합니다.
@@ -405,6 +442,8 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
     ).rejects.toBeInstanceOf(AttributeDefinitionApiSlugAlreadyExistsError);
 
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
   });
 });
 
@@ -413,20 +452,42 @@ function createFixture() {
   const workspaceAccessQuery = new FakeWorkspaceAccessQuery();
   const objectDefinitionAccessQuery = new FakeObjectDefinitionAccessQuery();
   const repository = new FakeAttributeDefinitionCommandRepository();
+  const materializer = new FakeRecordAttributeValueDefinitionMaterializer();
+  const transactionManager = new FakeTransactionManager();
   const logger = createLoggerFake();
 
   return {
     workspaceAccessQuery,
     objectDefinitionAccessQuery,
     repository,
+    materializer,
+    transactionManager,
     logger,
     useCase: new CreateWorkspaceObjectAttributeDefinitionUseCase(
       workspaceAccessQuery,
       objectDefinitionAccessQuery,
       repository,
+      materializer,
+      transactionManager,
       logger
     ),
   };
+}
+
+// 역할 : FakeTransactionManager 생성 유스케이스 테스트용 transaction manager입니다.
+class FakeTransactionManager implements TransactionManager {
+  readonly context: TransactionContext = {
+    transactionId: Symbol("attributeDefinitionCreateTransaction"),
+  };
+  runCount = 0;
+
+  // 기능 : 전달받은 작업을 테스트용 transaction context로 실행합니다.
+  async runInTransaction<T>(
+    work: (context: TransactionContext) => Promise<T>
+  ): Promise<T> {
+    this.runCount += 1;
+    return work(this.context);
+  }
 }
 
 // 역할 : FakeWorkspaceAccessQuery AttributeDefinition 생성 테스트용 Workspace 접근 확인 구현체입니다.
@@ -494,6 +555,25 @@ class FakeAttributeDefinitionCommandRepository
     return {
       id: "00000000-0000-4000-8000-000000000601",
     };
+  }
+}
+
+// 역할 : FakeRecordAttributeValueDefinitionMaterializer 생성 유스케이스 테스트용 cell row materializer입니다.
+class FakeRecordAttributeValueDefinitionMaterializer
+  implements RecordAttributeValueDefinitionMaterializer
+{
+  lastInput: MaterializeRecordAttributeValuesForAttributeDefinitionInput | null =
+    null;
+  result: MaterializeRecordAttributeValuesForAttributeDefinitionResult = {
+    createdCount: 2,
+  };
+
+  // 기능 : 테스트용 RecordAttributeValueDefinition materialize 결과를 반환합니다.
+  async materializeForAttributeDefinition(
+    input: MaterializeRecordAttributeValuesForAttributeDefinitionInput
+  ): Promise<MaterializeRecordAttributeValuesForAttributeDefinitionResult> {
+    this.lastInput = input;
+    return this.result;
   }
 }
 

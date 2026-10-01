@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructure/object-definition.module";
+import { RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER } from "@/modules/record-definition/application/ports/record-attribute-value-definition-materializer.port";
 import { RECORD_DEFINITION_COMMAND_REPOSITORY } from "@/modules/record-definition/application/ports/record-definition-command.repository";
 import { RECORD_DEFINITION_LIST_QUERY } from "@/modules/record-definition/application/ports/record-definition-list-query.port";
 import { CreateWorkspaceObjectRecordDefinitionUseCase } from "@/modules/record-definition/application/use-cases/create-workspace-object-record-definition.use-case";
@@ -11,6 +12,7 @@ import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logge
 import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaRecordAttributeValueDefinitionMaterializer } from "./persistence/prisma-record-attribute-value-definition-materializer";
 import { PrismaRecordDefinitionCommandRepository } from "./persistence/prisma-record-definition-command.repository";
 import { PrismaRecordDefinitionListQueryRepository } from "./persistence/prisma-record-definition-list-query.repository";
 import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/http/user-workspace-object-record-definitions.controller";
@@ -41,6 +43,13 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
       inject: [PrismaService],
     },
     {
+      provide: RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER,
+      // 기능 : Prisma 서비스로 RecordAttributeValueDefinition materializer 구현체를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaRecordAttributeValueDefinitionMaterializer(prismaService),
+      inject: [PrismaService],
+    },
+    {
       provide: RECORD_DEFINITION_LIST_QUERY,
       // 기능 : Prisma 서비스로 RecordDefinition 목록 조회 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
@@ -48,5 +57,6 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
       inject: [PrismaService],
     },
   ],
+  exports: [RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER],
 })
 export class RecordDefinitionModule {}
