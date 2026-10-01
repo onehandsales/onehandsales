@@ -86,6 +86,7 @@ describeWithTestDatabase("PrismaAttributeDefinitionCommandRepository", () => {
       icon: "phone",
       isMultiselect: false,
       description: null,
+      config: null,
     };
 
     await repository.createAttributeDefinition(input);
@@ -127,6 +128,7 @@ describeWithTestDatabase("PrismaAttributeDefinitionCommandRepository", () => {
       icon: "phone",
       isMultiselect: false,
       description: null,
+      config: null,
     });
 
     await expect(
@@ -140,6 +142,7 @@ describeWithTestDatabase("PrismaAttributeDefinitionCommandRepository", () => {
         icon: "phone",
         isMultiselect: false,
         description: null,
+        config: null,
       })
     ).resolves.toEqual({
       id: expect.any(String),

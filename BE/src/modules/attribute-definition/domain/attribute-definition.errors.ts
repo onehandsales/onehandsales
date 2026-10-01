@@ -3,7 +3,8 @@ import { DomainError } from "@/shared/domain/errors/domain-error";
 export type AttributeDefinitionValidationErrorCode =
   | "ATTRIBUTE_DEFINITION_NAME_REQUIRED"
   | "ATTRIBUTE_DEFINITION_NAME_TOO_LONG"
-  | "ATTRIBUTE_DEFINITION_TYPE_UNKNOWN";
+  | "ATTRIBUTE_DEFINITION_TYPE_UNKNOWN"
+  | "ATTRIBUTE_DEFINITION_CONFIG_INVALID";
 
 // 역할 : AttributeDefinitionWorkspaceNotFoundError AttributeDefinition을 다룰 수 없는 Workspace 상태를 표현합니다.
 export class AttributeDefinitionWorkspaceNotFoundError extends DomainError {
@@ -29,7 +30,7 @@ export class AttributeDefinitionValidationError extends DomainError {
   // 기능 : 클라이언트가 처리할 AttributeDefinition 필드 단위 검증 오류를 생성합니다.
   constructor(
     code: AttributeDefinitionValidationErrorCode,
-    field: "attributeDefinitionName" | "attributeType",
+    field: "attributeDefinitionName" | "attributeType" | "config",
     message: string
   ) {
     super(code, message, { field });

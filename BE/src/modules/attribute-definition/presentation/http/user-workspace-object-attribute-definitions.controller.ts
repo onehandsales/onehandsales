@@ -46,6 +46,7 @@ export class UserWorkspaceObjectAttributeDefinitionsController {
       attributeType: body.attributeType,
       ...(body.icon !== undefined ? { icon: body.icon } : {}),
       ...(body.description !== undefined ? { description: body.description } : {}),
+      ...(body.config !== undefined ? { config: body.config } : {}),
     };
 
     // 2. request body를 application 계층 입력으로 전달한다.

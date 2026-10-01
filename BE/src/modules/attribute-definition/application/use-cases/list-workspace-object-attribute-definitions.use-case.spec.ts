@@ -49,6 +49,7 @@ describe("ListWorkspaceObjectAttributeDefinitionsUseCase", () => {
         title: "company",
         type: "Text",
         isMultiselect: false,
+        config: null,
       },
       {
         id: "00000000-0000-4000-8000-000000000602",
@@ -56,6 +57,7 @@ describe("ListWorkspaceObjectAttributeDefinitionsUseCase", () => {
         title: "상태",
         type: "Status",
         isMultiselect: false,
+        config: null,
       },
     ]);
   });
@@ -171,6 +173,7 @@ class FakeAttributeDefinitionListQuery implements AttributeDefinitionListQuery {
       title: "company",
       type: "Text",
       isMultiselect: false,
+      config: null,
     },
     {
       id: "00000000-0000-4000-8000-000000000602",
@@ -178,6 +181,7 @@ class FakeAttributeDefinitionListQuery implements AttributeDefinitionListQuery {
       title: "상태",
       type: "Status",
       isMultiselect: false,
+      config: null,
     },
   ];
 

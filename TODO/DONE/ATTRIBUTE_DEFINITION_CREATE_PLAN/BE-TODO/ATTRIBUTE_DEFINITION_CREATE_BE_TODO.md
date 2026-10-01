@@ -16,11 +16,13 @@
 - Repository port: `AttributeDefinitionCommandRepository`
 - Prisma adapter: `PrismaAttributeDefinitionCommandRepository`
 - Type helper: `ATTRIBUTE_DEFINITION_TYPES`, `isAttributeDefinitionType`
+- Config helper: AttributeType별 `config`를 검증하고 `AttributeDefinition.configJson` 저장값으로 정규화
 - DB migration: `AttributeDefinition.objectDefinitionId + apiSlug` unique constraint
 - Error mapping:
   - `ATTRIBUTE_DEFINITION_NAME_REQUIRED` -> 400
   - `ATTRIBUTE_DEFINITION_NAME_TOO_LONG` -> 400
   - `ATTRIBUTE_DEFINITION_TYPE_UNKNOWN` -> 400
+  - `ATTRIBUTE_DEFINITION_CONFIG_INVALID` -> 400
   - `AttributeDefinitionApiSlugAlreadyExists` -> 409
 
 ## 3. Transaction
@@ -32,8 +34,8 @@
   - `WorkspaceAccessQuery.getWorkspaceMemberAccess`
   - `ObjectDefinitionAccessQuery.hasObjectDefinitionInWorkspace`
   - `AttributeDefinitionCommandRepository.hasAttributeDefinitionApiSlug`
-- application 경계: `CreateWorkspaceObjectAttributeDefinitionUseCase`가 입력 검증, ownership 검증, 중복 확인, 생성 명령을 순서대로 orchestration한다.
-- infrastructure 구현: Prisma adapter가 `AttributeDefinition` row를 생성하고 생성 ID만 반환한다.
+- application 경계: `CreateWorkspaceObjectAttributeDefinitionUseCase`가 입력 검증, 타입별 config 정규화, ownership 검증, 중복 확인, 생성 명령을 순서대로 orchestration한다.
+- infrastructure 구현: Prisma adapter가 `AttributeDefinition` row를 생성하면서 정규화된 config를 `configJson`에 저장하고 생성 ID만 반환한다.
 - rollback 범위: `AttributeDefinition` 생성 실패 시 생성 row 없음
 - race condition 방어: `@@unique([objectDefinitionId, apiSlug])` DB 제약과 Prisma `P2002` -> `AttributeDefinitionApiSlugAlreadyExists` 변환
 - 외부 Provider 호출: 없음

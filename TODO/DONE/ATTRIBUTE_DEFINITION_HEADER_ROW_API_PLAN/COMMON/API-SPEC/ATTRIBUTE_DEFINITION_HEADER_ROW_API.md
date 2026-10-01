@@ -41,10 +41,23 @@
 ```ts
 {
   id: string;
+  icon: string | null;
   title: string;
   type: AttributeDefinitionValueType;
   isMultiselect: boolean;
+  config: AttributeDefinitionConfig | null;
 }
+```
+
+### AttributeDefinitionConfig
+
+```ts
+type AttributeDefinitionConfig = {
+  currency: {
+    defaultCurrencyCode: "KRW" | "USD";
+    displayType: "symbol";
+  };
+};
 ```
 
 ### AttributeDefinitionValueType
@@ -109,13 +122,27 @@ Success:
     "id": "00000000-0000-4000-8000-000000000601",
     "title": "company",
     "type": "Text",
-    "isMultiselect": false
+    "isMultiselect": false,
+    "config": null
   },
   {
     "id": "00000000-0000-4000-8000-000000000602",
     "title": "상태",
     "type": "Status",
-    "isMultiselect": false
+    "isMultiselect": false,
+    "config": null
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000603",
+    "title": "금액",
+    "type": "Currency",
+    "isMultiselect": false,
+    "config": {
+      "currency": {
+        "defaultCurrencyCode": "KRW",
+        "displayType": "symbol"
+      }
+    }
   }
 ]
 ```

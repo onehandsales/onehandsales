@@ -4,6 +4,7 @@ import type {
   WorkspaceObjectAttributeDefinitionListInput,
   WorkspaceObjectAttributeDefinitionListItem,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-list-query.port";
+import type { AttributeDefinitionConfig } from "@/modules/attribute-definition/application/attribute-definition-config";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
 // 역할 : PrismaAttributeDefinitionListQueryRepository가 AttributeDefinition 목록 조회를 Prisma로 구현합니다.
@@ -31,6 +32,7 @@ export class PrismaAttributeDefinitionListQueryRepository
           title: true,
           type: true,
           isMultiselect: true,
+          configJson: true,
         },
       });
 
@@ -41,6 +43,7 @@ export class PrismaAttributeDefinitionListQueryRepository
       title: attributeDefinition.title,
       type: attributeDefinition.type as AttributeDefinitionValueType,
       isMultiselect: attributeDefinition.isMultiselect,
+      config: attributeDefinition.configJson as AttributeDefinitionConfig | null,
     }));
   }
 }

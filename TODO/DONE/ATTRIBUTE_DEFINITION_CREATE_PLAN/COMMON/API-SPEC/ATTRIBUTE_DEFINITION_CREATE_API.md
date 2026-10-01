@@ -10,7 +10,7 @@
 
 - breaking change 여부: 없음. 신규 API를 추가한다.
 - 기존 FE 영향: 있음. Attribute 생성 UX가 이 API를 호출하고, 성공 후 AttributeDefinition 목록과 Object 목록 화면 header row를 갱신해야 한다.
-- migration 또는 fallback: `AttributeDefinition.objectDefinitionId + apiSlug` unique index를 추가한다. 같은 ObjectDefinition 안에 기존 중복 `apiSlug`가 있으면 migration 전 정리가 필요하다.
+- migration 또는 fallback: `AttributeDefinition.objectDefinitionId + apiSlug` unique index와 `AttributeDefinition.configJson` nullable JSON 컬럼을 사용한다. 같은 ObjectDefinition 안에 기존 중복 `apiSlug`가 있으면 migration 전 정리가 필요하다.
 
 ## 1. 목적
 
@@ -35,6 +35,11 @@ ObjectDefinition 목록 화면에서 사용자가 새 AttributeDefinition 이름
 - `isMultiselect`: 초기 생성 API에서는 항상 `false`로 저장한다.
 - `icon`: User Web은 값이 있을 때만 request에 포함한다. request에 없거나 `null` 또는 빈 문자열이면 DB에는 `null`을 저장한다. 값이 있으면 trim 없이 그대로 저장한다.
 - `description`: User Web은 값이 있을 때만 request에 포함한다. request에 없거나 `null` 또는 빈 문자열이면 DB에는 `null`을 저장한다. 값이 있으면 trim 없이 그대로 저장한다.
+- `config`: API request/response 계약의 타입별 설정 객체다. DB에는 `AttributeDefinition.configJson`으로 저장한다.
+- `config.currency.defaultCurrencyCode`: `Currency` 타입에서만 허용하며 trim + upper-case 후 서비스 지원 통화 코드로 저장한다. 현재 지원 통화는 `KRW`, `USD`다.
+- `config.currency.displayType`: `Currency` 타입에서만 허용하며 현재는 `symbol`만 저장한다.
+- `Currency` 타입에서 `config`가 없으면 `currentUser.defaultCurrencyCode ?? "KRW"`와 `displayType: "symbol"`로 기본 설정을 만든다.
+- `Currency`가 아닌 타입에서 `config`가 있으면 validation error로 차단한다.
 - transaction: 없음. 최종 변경 model은 `AttributeDefinition` 1개이며, 중복 race condition은 DB unique index로 방어한다.
 - 변경 model: `AttributeDefinition`
 - rollback 범위: `AttributeDefinition` 생성 실패 시 생성 row 없음
@@ -88,7 +93,19 @@ Backend는 `Select`, `Status`, `RecordReference`, `ActorReference`를 별도 uns
   attributeType: AttributeType;
   icon?: string;
   description?: string;
+  config?: AttributeDefinitionConfig | null;
 }
+```
+
+### AttributeDefinitionConfig
+
+```ts
+type AttributeDefinitionConfig = {
+  currency: {
+    defaultCurrencyCode: "KRW" | "USD";
+    displayType: "symbol";
+  };
+};
 ```
 
 ### CreateWorkspaceObjectAttributeDefinitionResponse
@@ -128,10 +145,16 @@ Body:
 
 ```json
 {
-  "attributeDefinitionName": "회사번호",
-  "attributeType": "PhoneNumber",
-  "icon": "phone",
-  "description": "대표 전화번호를 저장해요."
+  "attributeDefinitionName": "금액",
+  "attributeType": "Currency",
+  "icon": "circle-dollar-sign",
+  "description": "계약 금액을 저장해요.",
+  "config": {
+    "currency": {
+      "defaultCurrencyCode": "KRW",
+      "displayType": "symbol"
+    }
+  }
 }
 ```
 
@@ -156,19 +179,27 @@ Validation:
 - `attributeType`: Prisma `AttributeType` enum에 없는 값은 `ATTRIBUTE_DEFINITION_TYPE_UNKNOWN`
 - `icon`: string optional, User Web 전송 계약에서는 null을 보내지 않고 필드를 생략한다.
 - `description`: string optional, User Web 전송 계약에서는 null을 보내지 않고 필드를 생략한다.
+- `config`: object optional, `null` 가능
+- `config`: `Currency` 타입에서만 허용한다.
+- `config.currency`: `Currency` 타입에서 required. 단, `config` 자체가 생략되거나 `null`이면 Backend가 기본 currency config를 만든다.
+- `config.currency.defaultCurrencyCode`: string optional, trim + upper-case 후 `KRW | USD`만 허용
+- `config.currency.displayType`: string optional, 현재 `symbol`만 허용
+- `config`에 타입별 계약 외 key가 있으면 `ATTRIBUTE_DEFINITION_CONFIG_INVALID`
 - request body에 계약 외 필드가 있으면 Nest validation error
 
 ## 6. Business Logic
 
-1. request body의 `attributeDefinitionName`, `attributeType`, `icon`, `description`을 검증하고 저장 기준 값으로 정규화한다.
-2. `currentUser.id + workspaceId`로 WorkspaceMember를 확인하고 생성 감사용 Actor ID를 조회한다.
-3. Workspace membership이 없으면 정보 노출을 막기 위해 not found로 응답한다.
-4. WorkspaceMember에 연결된 Actor가 없으면 내부 정합성 오류로 중단한다.
-5. `workspaceId + objectDefinitionId`로 ObjectDefinition이 Workspace 경계 안에 있는지 확인한다.
-6. ObjectDefinition이 없거나 다른 Workspace에 속하면 not found로 응답한다.
-7. `workspaceId + objectDefinitionId + apiSlug` 기준으로 같은 ObjectDefinition 안의 apiSlug 중복을 확인한다.
-8. 중복이 있으면 conflict로 응답한다.
-9. AttributeDefinition을 생성한다.
+1. request body의 `attributeDefinitionName`, `attributeType`, `icon`, `description`, `config`를 검증하고 저장 기준 값으로 정규화한다.
+2. `Currency` 타입이면 `config.currency`를 canonical config로 정규화한다. `config`가 없으면 현재 사용자 기본 통화와 `symbol` 표시 방식을 사용한다.
+3. `Currency`가 아닌 타입이면 `config` 입력을 차단하고 저장값은 `null`로 둔다.
+4. `currentUser.id + workspaceId`로 WorkspaceMember를 확인하고 생성 감사용 Actor ID를 조회한다.
+5. Workspace membership이 없으면 정보 노출을 막기 위해 not found로 응답한다.
+6. WorkspaceMember에 연결된 Actor가 없으면 내부 정합성 오류로 중단한다.
+7. `workspaceId + objectDefinitionId`로 ObjectDefinition이 Workspace 경계 안에 있는지 확인한다.
+8. ObjectDefinition이 없거나 다른 Workspace에 속하면 not found로 응답한다.
+9. `workspaceId + objectDefinitionId + apiSlug` 기준으로 같은 ObjectDefinition 안의 apiSlug 중복을 확인한다.
+10. 중복이 있으면 conflict로 응답한다.
+11. AttributeDefinition을 생성한다.
 
 생성 매핑:
 
@@ -182,7 +213,8 @@ Validation:
   type: normalizedAttributeType,
   icon: normalizedIcon,
   isMultiselect: false,
-  description: normalizedDescription
+  description: normalizedDescription,
+  configJson: normalizedConfig
 }
 ```
 
@@ -220,6 +252,7 @@ Body: 있음
 | `attributeDefinitionName` trim 후 빈 값 | `ATTRIBUTE_DEFINITION_NAME_REQUIRED` | 400 | 생성 UX에서 재입력 유도 | info |
 | `attributeDefinitionName` trim 후 80자 초과 | `ATTRIBUTE_DEFINITION_NAME_TOO_LONG` | 400 | 생성 UX에서 재입력 유도 | info |
 | `attributeType`이 Prisma enum에 없음 | `ATTRIBUTE_DEFINITION_TYPE_UNKNOWN` | 400 | 타입 목록 재동기화 또는 생성 차단 | info |
+| `config`가 AttributeType별 계약과 맞지 않음 | `ATTRIBUTE_DEFINITION_CONFIG_INVALID` | 400 | 설정 UI 재입력 유도 | info |
 | Workspace가 없거나 현재 사용자가 해당 Workspace 멤버가 아님 | `AttributeDefinitionWorkspaceNotFound` | 404 | 선택 Workspace 초기화 또는 Workspace 목록 재조회 | info |
 | ObjectDefinition이 없거나 요청 Workspace에 속하지 않음 | `AttributeDefinitionObjectDefinitionNotFound` | 404 | 현재 Object 화면을 비우거나 Object 목록 재조회 | info |
 | 같은 ObjectDefinition 안에 동일 apiSlug가 이미 있음 | `AttributeDefinitionApiSlugAlreadyExists` | 409 | 이름 재입력 유도 | info |
@@ -239,6 +272,7 @@ Body: 있음
 - `ATTRIBUTE_DEFINITION_NAME_REQUIRED`
 - `ATTRIBUTE_DEFINITION_NAME_TOO_LONG`
 - `ATTRIBUTE_DEFINITION_TYPE_UNKNOWN`
+- `ATTRIBUTE_DEFINITION_CONFIG_INVALID`
 
 409 Conflict:
 
@@ -318,6 +352,7 @@ provider error context:
 model AttributeDefinition {
   objectDefinitionId String @db.Uuid
   apiSlug            String
+  configJson         Json?
 
   @@unique([objectDefinitionId, apiSlug])
 }
@@ -340,6 +375,7 @@ Migration 주의:
 - `AttributeDefinition.objectDefinitionId + apiSlug` unique index migration 추가
 - AttributeDefinition 생성 DTO 추가
 - AttributeDefinition 생성 use case 추가
+- AttributeDefinition 타입별 `config` validation/normalization 추가
 - AttributeDefinition command repository port 추가
 - Prisma AttributeDefinition command repository adapter 추가
 - 기존 AttributeDefinition controller에 `POST` API 추가

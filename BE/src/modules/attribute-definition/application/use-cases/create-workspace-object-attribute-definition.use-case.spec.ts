@@ -63,6 +63,7 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
       icon: "phone",
       isMultiselect: false,
       description: " 대표 전화번호를 저장해요. ",
+      config: null,
     });
     expect(fixture.logger.log).toHaveBeenCalledWith(
       expect.stringContaining("crm.attributeDefinition.created"),
@@ -111,7 +112,147 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
     expect(fixture.repository.lastCreateInput).toMatchObject({
       type: "Status",
       isMultiselect: false,
+      config: null,
     });
+  });
+
+  // 기능 : Currency AttributeDefinition config를 저장 가능한 canonical 설정으로 정규화합니다.
+  it("normalizes currency attribute definition config", async () => {
+    const fixture = createFixture();
+
+    await fixture.useCase.execute(
+      makeCurrentUser(),
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      {
+        attributeDefinitionName: "금액",
+        attributeType: "Currency",
+        config: {
+          currency: {
+            defaultCurrencyCode: " usd ",
+            displayType: "symbol",
+          },
+        },
+      }
+    );
+
+    expect(fixture.repository.lastCreateInput).toMatchObject({
+      type: "Currency",
+      config: {
+        currency: {
+          defaultCurrencyCode: "USD",
+          displayType: "symbol",
+        },
+      },
+    });
+  });
+
+  // 기능 : Currency config가 없으면 현재 사용자 기본 통화와 symbol 표시 방식을 사용합니다.
+  it("uses current user default currency for missing currency config", async () => {
+    const fixture = createFixture();
+
+    await fixture.useCase.execute(
+      makeCurrentUser({ defaultCurrencyCode: "USD" }),
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      {
+        attributeDefinitionName: "금액",
+        attributeType: "Currency",
+      }
+    );
+
+    expect(fixture.repository.lastCreateInput).toMatchObject({
+      config: {
+        currency: {
+          defaultCurrencyCode: "USD",
+          displayType: "symbol",
+        },
+      },
+    });
+  });
+
+  // 기능 : Currency가 아닌 AttributeType의 config 입력을 차단합니다.
+  it("rejects config for non-currency attribute types", async () => {
+    const fixture = createFixture();
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        {
+          attributeDefinitionName: "회사번호",
+          attributeType: "PhoneNumber",
+          config: {
+            currency: {
+              defaultCurrencyCode: "KRW",
+              displayType: "symbol",
+            },
+          },
+        }
+      )
+    ).rejects.toMatchObject({
+      code: "ATTRIBUTE_DEFINITION_CONFIG_INVALID",
+    } satisfies Partial<AttributeDefinitionValidationError>);
+
+    expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
+    expect(fixture.repository.lastCreateInput).toBeNull();
+  });
+
+  // 기능 : 지원하지 않는 Currency config 값은 DB 조회 전에 생성을 차단합니다.
+  it("rejects invalid currency config values before workspace lookup", async () => {
+    const fixture = createFixture();
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        {
+          attributeDefinitionName: "금액",
+          attributeType: "Currency",
+          config: {
+            currency: {
+              defaultCurrencyCode: "EUR",
+              displayType: "symbol",
+            },
+          },
+        }
+      )
+    ).rejects.toMatchObject({
+      code: "ATTRIBUTE_DEFINITION_CONFIG_INVALID",
+    } satisfies Partial<AttributeDefinitionValidationError>);
+
+    expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
+    expect(fixture.repository.lastCreateInput).toBeNull();
+  });
+
+  // 기능 : 현재 지원하지 않는 Currency 표시 방식은 DB 조회 전에 생성을 차단합니다.
+  it("rejects unsupported currency display types before workspace lookup", async () => {
+    const fixture = createFixture();
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        {
+          attributeDefinitionName: "금액",
+          attributeType: "Currency",
+          config: {
+            currency: {
+              defaultCurrencyCode: "KRW",
+              displayType: "code",
+            },
+          },
+        }
+      )
+    ).rejects.toMatchObject({
+      code: "ATTRIBUTE_DEFINITION_CONFIG_INVALID",
+    } satisfies Partial<AttributeDefinitionValidationError>);
+
+    expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
+    expect(fixture.repository.lastCreateInput).toBeNull();
   });
 
   // 기능 : 공백 이름은 DB 조회 전에 AttributeDefinition 생성을 차단합니다.
@@ -366,7 +507,9 @@ function createLoggerFake(): jest.Mocked<ApplicationLogger> {
 }
 
 // 기능 : 테스트용 현재 사용자 컨텍스트를 생성합니다.
-function makeCurrentUser(): CurrentUserContext {
+function makeCurrentUser(
+  overrides: Partial<CurrentUserContext> = {}
+): CurrentUserContext {
   return {
     id: "00000000-0000-4000-8000-000000000101",
     sessionId: "00000000-0000-4000-8000-000000000201",
@@ -375,5 +518,6 @@ function makeCurrentUser(): CurrentUserContext {
     platformRole: "USER",
     status: "ACTIVE",
     timeZone: "Asia/Seoul",
+    ...overrides,
   };
 }

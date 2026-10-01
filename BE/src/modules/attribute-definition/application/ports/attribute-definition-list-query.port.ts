@@ -1,4 +1,5 @@
 import type { AttributeDefinitionType } from "@/modules/attribute-definition/application/attribute-definition-type";
+import type { AttributeDefinitionConfig } from "@/modules/attribute-definition/application/attribute-definition-config";
 
 export const ATTRIBUTE_DEFINITION_LIST_QUERY = Symbol(
   "ATTRIBUTE_DEFINITION_LIST_QUERY"
@@ -14,6 +15,7 @@ export interface WorkspaceObjectAttributeDefinitionListItem {
   readonly title: string;
   readonly type: AttributeDefinitionValueType;
   readonly isMultiselect: boolean;
+  readonly config: AttributeDefinitionConfig | null;
 }
 
 // 역할 : WorkspaceObjectAttributeDefinitionListInput이 AttributeDefinition 목록 조회 입력을 정의합니다.

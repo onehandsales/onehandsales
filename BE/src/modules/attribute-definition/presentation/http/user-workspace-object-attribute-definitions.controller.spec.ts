@@ -70,6 +70,7 @@ function createListUseCaseFake(): jest.Mocked<ListWorkspaceObjectAttributeDefini
         title: "company",
         type: "Text",
         isMultiselect: false,
+        config: null,
       },
       {
         id: "00000000-0000-4000-8000-000000000602",
@@ -77,6 +78,7 @@ function createListUseCaseFake(): jest.Mocked<ListWorkspaceObjectAttributeDefini
         title: "상태",
         type: "Status",
         isMultiselect: false,
+        config: null,
       },
     ]),
   };
@@ -150,10 +152,16 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
         "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions"
       )
       .send({
-        attributeDefinitionName: "회사번호",
-        attributeType: "PhoneNumber",
-        icon: "phone",
-        description: "대표 전화번호를 저장해요.",
+        attributeDefinitionName: "금액",
+        attributeType: "Currency",
+        icon: "circle-dollar-sign",
+        description: "계약 금액을 저장해요.",
+        config: {
+          currency: {
+            defaultCurrencyCode: "KRW",
+            displayType: "symbol",
+          },
+        },
       })
       .expect(201)
       .expect({
@@ -165,10 +173,16 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       "00000000-0000-4000-8000-000000000301",
       "00000000-0000-4000-8000-000000000501",
       {
-        attributeDefinitionName: "회사번호",
-        attributeType: "PhoneNumber",
-        icon: "phone",
-        description: "대표 전화번호를 저장해요.",
+        attributeDefinitionName: "금액",
+        attributeType: "Currency",
+        icon: "circle-dollar-sign",
+        description: "계약 금액을 저장해요.",
+        config: {
+          currency: {
+            defaultCurrencyCode: "KRW",
+            displayType: "symbol",
+          },
+        },
       }
     );
   });
@@ -241,6 +255,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
           title: "company",
           type: "Text",
           isMultiselect: false,
+          config: null,
         },
         {
           id: "00000000-0000-4000-8000-000000000602",
@@ -248,6 +263,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
           title: "상태",
           type: "Status",
           isMultiselect: false,
+          config: null,
         },
       ]);
 

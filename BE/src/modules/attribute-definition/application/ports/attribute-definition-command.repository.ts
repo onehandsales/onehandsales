@@ -1,4 +1,5 @@
 import type { AttributeDefinitionType } from "@/modules/attribute-definition/application/attribute-definition-type";
+import type { AttributeDefinitionConfig } from "@/modules/attribute-definition/application/attribute-definition-config";
 
 export const ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY = Symbol(
   "ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY"
@@ -22,6 +23,7 @@ export interface CreateAttributeDefinitionInput {
   readonly icon: string | null;
   readonly isMultiselect: boolean;
   readonly description: string | null;
+  readonly config: AttributeDefinitionConfig | null;
 }
 
 // 역할 : CreateAttributeDefinitionResult가 AttributeDefinition 생성 결과를 정의합니다.

@@ -51,6 +51,7 @@ export class PrismaAttributeDefinitionCommandRepository
             apiSlug: input.apiSlug,
             title: input.title,
             type: input.type,
+            configJson: this.toPrismaNullableJson(input.config),
             icon: input.icon,
             isMultiselect: input.isMultiselect,
             description: input.description,
@@ -80,5 +81,16 @@ export class PrismaAttributeDefinitionCommandRepository
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     );
+  }
+
+  // 기능 : application의 config 값을 Prisma nullable JSON 입력값으로 변환합니다.
+  private toPrismaNullableJson(
+    value: unknown | null
+  ): Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput {
+    if (value === null) {
+      return Prisma.DbNull;
+    }
+
+    return value as Prisma.InputJsonValue;
   }
 }

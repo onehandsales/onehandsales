@@ -15,4 +15,7 @@ export class CreateWorkspaceObjectAttributeDefinitionDto {
   @IsOptional()
   @IsString()
   description?: string | null;
+
+  @IsOptional()
+  config?: unknown | null;
 }
