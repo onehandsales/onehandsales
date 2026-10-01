@@ -83,6 +83,11 @@ const CREATE_RECORD_DEFINITION_MODAL_TRANSITION_MS = 300;
 const CREATE_RECORD_DEFINITION_MODAL_OPEN_DELAY_MS = 20;
 const CREATE_RECORD_DEFINITION_MODAL_LOADING_CLOSE_DELAY_MS = 2000;
 const CREATE_RECORD_DEFINITION_DESCRIPTION_MAX_LENGTH = 300;
+const EMPTY_RECORD_PLACEHOLDER_ROW_COUNT = 3;
+const EMPTY_RECORD_PLACEHOLDER_ROW_INDEXES = Array.from(
+  { length: EMPTY_RECORD_PLACEHOLDER_ROW_COUNT },
+  (_, index) => index,
+);
 
 type AddAttributeDefinitionCreateStep = "name" | "type" | "details";
 type CreateRecordDefinitionStep = "name" | "details";
@@ -718,6 +723,19 @@ export function WorkspaceObjectListPage() {
     recordDefinitionsQuery.isLoading ||
     (recordDefinitionsQuery.isFetching && !recordDefinitionsQuery.data);
 
+  // 6. 실제 데이터가 없을 때는 생성되지 않은 placeholder row를 먼저 보여준다.
+  const shouldShowEmptyRecordPlaceholders =
+    !isRecordDefinitionsLoading &&
+    !recordDefinitionsQuery.isError &&
+    recordRows.length === 0;
+
+  // 7. 검색으로 인해 보이는 row만 사라진 경우는 별도의 빈 검색 상태로 다룬다.
+  const shouldShowSearchEmptyState =
+    !isRecordDefinitionsLoading &&
+    !recordDefinitionsQuery.isError &&
+    recordRows.length > 0 &&
+    visibleRows.length === 0;
+
   // 기능 : 실패한 RecordDefinition 목록 조회를 다시 요청합니다.
   function handleRetryLoadRecords() {
     // 1. 현재 query key 기준으로 RecordDefinition 목록을 다시 가져온다.
@@ -1263,15 +1281,52 @@ export function WorkspaceObjectListPage() {
                   </button>
                 </div>
               ) : null}
-              {!isRecordDefinitionsLoading &&
-              !recordDefinitionsQuery.isError &&
-              visibleRows.length === 0 ? (
+              {shouldShowSearchEmptyState ? (
                 <div className="flex h-[80px] items-center px-4 text-[14px] font-medium text-[#6B7280]">
-                  {normalizedSearchQuery.length > 0
-                    ? t("common.searchEmpty")
-                    : t("objectList.emptyRecords")}
+                  {t("common.searchEmpty")}
                 </div>
               ) : null}
+              {shouldShowEmptyRecordPlaceholders
+                ? EMPTY_RECORD_PLACEHOLDER_ROW_INDEXES.map((rowIndex) => (
+                    <div
+                      className="group/empty-record-row relative grid h-[40px] items-stretch bg-white text-[14px] text-[#374151] shadow-[inset_0_-1px_0_#F1F0EC] transition hover:bg-[#FAFAF8]"
+                      key={`empty-record-placeholder-${rowIndex}`}
+                      role="row"
+                      style={{ gridTemplateColumns: tableGridTemplateColumns }}
+                    >
+                      <div
+                        className="relative border-r border-[#F1F0EC]"
+                        role="cell"
+                      >
+                        <button
+                          aria-label={`새 ${objectLabel}`}
+                          aria-busy={isCreatingRecordDefinitionRow}
+                          className="absolute left-3 top-1/2 z-10 inline-flex h-8 -translate-y-1/2 items-center justify-center gap-1.5 rounded-md px-2.5 text-[14px] font-medium text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#4880EE] active:bg-[#D3D1CB] disabled:cursor-not-allowed disabled:opacity-40 group-hover/empty-record-row:opacity-100 group-focus-within/empty-record-row:opacity-100"
+                          disabled={isCreatingRecordDefinitionRow}
+                          type="button"
+                          onClick={handleCreateRecordDefinitionRow}
+                        >
+                          <Plus
+                            aria-hidden="true"
+                            className="h-5 w-5 shrink-0"
+                            strokeWidth={2}
+                          />
+                          <span className="truncate">
+                            {t("objectList.addDataAction")}
+                          </span>
+                        </button>
+                      </div>
+                      {renderedAttributeColumns.map((column) => (
+                        <div
+                          className="border-r border-[#F1F0EC]"
+                          key={column.id}
+                          role="cell"
+                        />
+                      ))}
+                      <div role="cell" />
+                    </div>
+                  ))
+                : null}
               {!isRecordDefinitionsLoading &&
               !recordDefinitionsQuery.isError &&
               recordDefinitionsQuery.hasNextPage ? (
@@ -1296,31 +1351,35 @@ export function WorkspaceObjectListPage() {
                   </div>
                 </div>
               ) : null}
-              <div
-                className="flex h-[40px] items-center justify-center bg-white shadow-[inset_0_-1px_0_#F1F0EC]"
-                role="row"
-              >
+              {!shouldShowEmptyRecordPlaceholders ? (
                 <div
-                  className="flex h-full items-center justify-center"
-                  role="cell"
+                  className="flex h-[40px] items-center justify-center bg-white shadow-[inset_0_-1px_0_#F1F0EC]"
+                  role="row"
                 >
-                  <button
-                    aria-label={`새 ${objectLabel}`}
-                    aria-busy={isCreatingRecordDefinitionRow}
-                    className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-2.5 text-[14px] font-medium text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0] disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={isCreatingRecordDefinitionRow}
-                    type="button"
-                    onClick={handleCreateRecordDefinitionRow}
+                  <div
+                    className="flex h-full items-center justify-center"
+                    role="cell"
                   >
-                    <Plus
-                      aria-hidden="true"
-                      className="h-5 w-5 shrink-0"
-                      strokeWidth={2}
-                    />
-                    <span className="truncate">{t("objectList.addDataAction")}</span>
-                  </button>
+                    <button
+                      aria-label={`새 ${objectLabel}`}
+                      aria-busy={isCreatingRecordDefinitionRow}
+                      className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md bg-[#4880EE] px-2.5 text-[14px] font-medium text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0] disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={isCreatingRecordDefinitionRow}
+                      type="button"
+                      onClick={handleCreateRecordDefinitionRow}
+                    >
+                      <Plus
+                        aria-hidden="true"
+                        className="h-5 w-5 shrink-0"
+                        strokeWidth={2}
+                      />
+                      <span className="truncate">
+                        {t("objectList.addDataAction")}
+                      </span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : null}
               {createRecordDefinitionRowErrorMessage ? (
                 <div
                   className="flex h-[32px] items-center justify-center bg-white px-4 text-[13px] font-medium text-[#DC2626]"
