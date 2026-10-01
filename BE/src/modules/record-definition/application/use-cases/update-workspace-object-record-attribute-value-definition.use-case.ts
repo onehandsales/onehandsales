@@ -215,6 +215,7 @@ export class UpdateWorkspaceObjectRecordAttributeValueDefinitionUseCase {
         };
       case "Number":
       case "Rating":
+      case "Currency":
         return {
           ...this.createEmptyValuePatch(),
           numberValue: this.assertDecimalStringValue(value),
@@ -234,14 +235,6 @@ export class UpdateWorkspaceObjectRecordAttributeValueDefinitionUseCase {
           ...this.createEmptyValuePatch(),
           timestampValue: this.assertTimestampValue(value),
         };
-      case "Currency": {
-        const objectValue = this.assertObjectValue(value);
-        return {
-          ...this.createEmptyValuePatch(),
-          numberValue: this.assertDecimalStringValue(objectValue["amount"]),
-          jsonValue: objectValue,
-        };
-      }
       case "Location": {
         const objectValue = this.assertObjectValue(value);
         return {

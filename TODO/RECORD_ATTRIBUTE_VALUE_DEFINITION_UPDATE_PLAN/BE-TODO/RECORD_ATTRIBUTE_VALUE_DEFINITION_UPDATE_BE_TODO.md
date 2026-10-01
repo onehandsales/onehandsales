@@ -91,7 +91,7 @@
 - Checkbox는 `booleanValue`만 저장한다.
 - Date는 `dateValue`만 저장한다.
 - Timestamp는 timezone 정보가 있는 ISO datetime 문자열만 받아 `timestampValue`로 저장한다.
-- Currency는 `numberValue`와 `jsonValue`를 저장한다.
+- Currency는 `numberValue`만 저장한다.
 - Location/PersonalName/Interaction은 표시용 text 또는 timestamp와 `jsonValue`를 저장한다.
 - Select/Status/RecordReference/ActorReference는 참조 의미를 해석하지 않고 `jsonValue`에 object를 그대로 저장한다.
 - FK 컬럼인 `selectOptionId`, `statusOptionId`, `targetRecordDefinitionId`, `targetObjectDefinitionId`, `targetActorId`는 이번 범위에서 저장하지 않는다.

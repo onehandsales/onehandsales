@@ -8,9 +8,9 @@
 
 호환성:
 
-- breaking change 여부: 없음. 기존 RecordDefinition 목록/생성 API route에 `PATCH` method를 추가한다.
-- 기존 FE 영향: 있음. Object 목록 화면의 cell 편집 저장 동작이 이 API를 호출한다.
-- migration 또는 fallback: 없음. 현재 Prisma schema의 `RecordDefinition`, `RecordAttributeValueDefinition` model을 그대로 사용한다.
+- breaking change 여부: 있음. `Currency` cell 수정 request는 object가 아니라 Decimal 문자열 scalar를 보낸다.
+- 기존 FE 영향: 있음. Object 목록 화면의 Currency cell editor는 통화 코드를 보내지 않고 금액 문자열만 보낸다.
+- migration 또는 fallback: 없음. 현재 Prisma schema의 `RecordDefinition`, `RecordAttributeValueDefinition` model을 그대로 사용하며, Currency 재저장 시 `jsonValue`는 비운다.
 
 ## 1. 목적
 
@@ -134,7 +134,7 @@ Body:
 | `Status` | `{ "value": { "statusOptionId": "uuid" } }` | `jsonValue`에 object 그대로 저장 |
 | `RecordReference` | `{ "value": { "targetRecordDefinitionId": "uuid" } }` | `jsonValue`에 object 그대로 저장 |
 | `ActorReference` | `{ "value": { "targetActorId": "uuid" } }` | `jsonValue`에 object 그대로 저장 |
-| `Currency` | `{ "value": { "amount": "1200000", "currencyCode": "KRW" } }` | `numberValue`, `jsonValue` |
+| `Currency` | `{ "value": "1200000" }` | `numberValue` |
 | `Location` | `{ "value": { "text": "서울 강남구", "raw": { "...": "..." } } }` | `textValue`, `jsonValue` |
 | `PersonalName` | `{ "value": { "displayName": "홍길동", "givenName": "길동", "familyName": "홍" } }` | `textValue`, `jsonValue` |
 | `Interaction` | `{ "value": { "type": "email", "summary": "첫 미팅", "occurredAt": "2026-09-30T10:30:00.000Z" } }` | `textValue`, `timestampValue`, `jsonValue` |
@@ -143,7 +143,7 @@ Body:
 
 - 저장 시 대상 타입에 필요한 컬럼 외 value 컬럼은 모두 `null`로 정리한다.
 - `jsonValue`에 저장하는 object는 request의 `value` object를 그대로 사용한다.
-- `Number`, `Rating`, `Currency.amount`는 Decimal 변환 가능한 문자열이어야 한다.
+- `Number`, `Rating`, `Currency`는 Decimal 변환 가능한 문자열이어야 한다.
 - `Date`는 `YYYY-MM-DD` 문자열이어야 한다.
 - `Timestamp`, `Interaction.occurredAt`은 `Z` 또는 timezone offset이 포함된 유효한 ISO datetime 문자열이어야 한다.
 - `Location.text`, `PersonalName.displayName`, `Interaction.summary`는 표시용 `textValue`로 함께 저장한다.

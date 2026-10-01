@@ -251,6 +251,74 @@ describe("UpdateWorkspaceObjectRecordAttributeValueDefinitionUseCase", () => {
     expect(fixture.transactionManager.runCount).toBe(0);
   });
 
+  // 기능 : Currency value는 단일 Decimal 문자열로 받아 numberValue에만 저장합니다.
+  it("stores a currency value as a decimal string without json payload", async () => {
+    const fixture = createFixture();
+    fixture.repository.recordAttributeValueDefinition = {
+      id: "00000000-0000-4000-8000-000000000801",
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+      attributeType: "Currency",
+    };
+
+    await fixture.useCase.execute(
+      makeCurrentUser(),
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      "00000000-0000-4000-8000-000000000701",
+      "00000000-0000-4000-8000-000000000801",
+      {
+        hasValue: true,
+        value: "1200000.50",
+      }
+    );
+
+    expect(fixture.repository.lastUpdateInput?.values).toEqual({
+      jsonValue: null,
+      textValue: null,
+      numberValue: "1200000.50",
+      booleanValue: null,
+      dateValue: null,
+      timestampValue: null,
+      selectOptionId: null,
+      statusOptionId: null,
+      targetRecordDefinitionId: null,
+      targetObjectDefinitionId: null,
+      targetActorId: null,
+    });
+  });
+
+  // 기능 : Currency value object는 AttributeDefinition 통화 설정 분리 전까지 받지 않습니다.
+  it("rejects a currency object value", async () => {
+    const fixture = createFixture();
+    fixture.repository.recordAttributeValueDefinition = {
+      id: "00000000-0000-4000-8000-000000000801",
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+      attributeType: "Currency",
+    };
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        "00000000-0000-4000-8000-000000000701",
+        "00000000-0000-4000-8000-000000000801",
+        {
+          hasValue: true,
+          value: {
+            amount: "1200000",
+            currencyCode: "KRW",
+          },
+        }
+      )
+    ).rejects.toMatchObject({
+      code: "RECORD_ATTRIBUTE_VALUE_DEFINITION_VALUE_INVALID",
+    } satisfies Partial<RecordAttributeValueDefinitionValidationError>);
+
+    expect(fixture.repository.lastUpdateInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
+  });
+
   // 기능 : timezone 정보가 없는 timestamp 값이면 cell 수정을 차단합니다.
   it("rejects timestamp values without timezone information", async () => {
     const fixture = createFixture();

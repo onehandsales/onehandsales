@@ -24,7 +24,6 @@ import { cn } from "@/utils/cn";
 type RecordAttributeValueCellDraft = {
   readonly actorId: string;
   readonly amount: string;
-  readonly currencyCode: string;
   readonly displayName: string;
   readonly familyName: string;
   readonly givenName: string;
@@ -77,23 +76,6 @@ const POPOVER_ATTRIBUTE_TYPES = new Set<AttributeDefinitionValueType>([
   "Status",
 ]);
 
-const CURRENCY_CODE_OPTIONS = [
-  { code: "KRW", label: "Korean won", symbol: "₩" },
-  { code: "USD", label: "US dollar", symbol: "$" },
-  { code: "JPY", label: "Japanese yen", symbol: "¥" },
-  { code: "EUR", label: "Euro", symbol: "€" },
-  { code: "CNY", label: "Chinese yuan", symbol: "¥" },
-  { code: "GBP", label: "Pound sterling", symbol: "£" },
-  { code: "CAD", label: "Canadian dollar", symbol: "C$" },
-  { code: "AUD", label: "Australian dollar", symbol: "A$" },
-] as const;
-
-type CurrencyCodeOption = {
-  readonly code: string;
-  readonly label: string;
-  readonly symbol: string;
-};
-
 // 기능 : record table cell 하나의 표시와 inline 편집 UX를 렌더링합니다.
 export function RecordAttributeValueCell({
   attributeTitle,
@@ -107,7 +89,6 @@ export function RecordAttributeValueCell({
 }: RecordAttributeValueCellProps) {
   const [isEditing, setEditing] = useState(false);
   const [isSaving, setSaving] = useState(false);
-  const [isCurrencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [draft, setDraft] = useState(() => createDraftFromValue(value));
   const editorRootRef = useRef<HTMLDivElement | null>(null);
@@ -186,7 +167,6 @@ export function RecordAttributeValueCell({
 
     setDraft(createDraftFromValue(value));
     setErrorMessage(null);
-    setCurrencyMenuOpen(false);
     setEditing(true);
   }
 
@@ -204,7 +184,6 @@ export function RecordAttributeValueCell({
       event.preventDefault();
       setDraft(createDraftFromValue(value));
       setErrorMessage(null);
-      setCurrencyMenuOpen(false);
       setEditing(false);
     }
   }
@@ -222,7 +201,6 @@ export function RecordAttributeValueCell({
       return;
     }
 
-    setCurrencyMenuOpen(false);
     void commitDraft();
   }
 
@@ -238,7 +216,6 @@ export function RecordAttributeValueCell({
     if (nextValue === null || arePatchValuesEqual(nextValue, currentValue)) {
       setDraft(createDraftFromValue(value));
       setErrorMessage(null);
-      setCurrencyMenuOpen(false);
       setEditing(false);
       return;
     }
@@ -252,7 +229,6 @@ export function RecordAttributeValueCell({
         value: nextValue,
       });
       setEditing(false);
-      setCurrencyMenuOpen(false);
     } catch (error) {
       setErrorMessage(getApiErrorMessage(error));
     } finally {
@@ -392,21 +368,10 @@ export function RecordAttributeValueCell({
             isPrimary ? "font-medium" : "font-normal",
           )}
         >
-          <button
-            aria-expanded={isCurrencyMenuOpen}
-            aria-haspopup="listbox"
-            aria-label="통화 선택"
-            className="inline-flex h-full w-10 shrink-0 items-center justify-center text-[14px] text-[#111827] transition hover:bg-[#F7F6F2] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={isSaving}
-            type="button"
-            onClick={() => setCurrencyMenuOpen((open) => !open)}
-          >
-            {getCurrencySymbol(draft.currencyCode)}
-          </button>
           <input
             aria-label={attributeTitle}
             aria-invalid={Boolean(errorMessage)}
-            className="h-full min-w-0 flex-1 bg-transparent pl-1 pr-3 text-[14px] text-[#111827] outline-none placeholder:text-[#9CA3AF] disabled:cursor-wait"
+            className="h-full min-w-0 flex-1 bg-transparent px-3 text-[14px] text-[#111827] outline-none placeholder:text-[#9CA3AF] disabled:cursor-wait"
             disabled={isSaving}
             inputMode="decimal"
             placeholder=""
@@ -422,19 +387,6 @@ export function RecordAttributeValueCell({
             onKeyDown={handleInlineEditorKeyDown}
           />
         </div>
-        {isCurrencyMenuOpen ? (
-          <CurrencyCodeMenu
-            selectedCurrencyCode={draft.currencyCode}
-            onSelect={(currencyCode) => {
-              setDraft((currentDraftValue) => ({
-                ...currentDraftValue,
-                currencyCode,
-              }));
-              setCurrencyMenuOpen(false);
-              inlineInputRef.current?.focus();
-            }}
-          />
-        ) : null}
         {errorMessage ? <CellErrorMessage message={errorMessage} /> : null}
       </div>
     );
@@ -468,7 +420,6 @@ export function RecordAttributeValueCell({
           onCancel={() => {
             setDraft(createDraftFromValue(value));
             setErrorMessage(null);
-            setCurrencyMenuOpen(false);
             setEditing(false);
           }}
           onChange={setDraft}
@@ -741,54 +692,6 @@ function renderPopoverFields({
   }
 }
 
-type CurrencyCodeMenuProps = {
-  readonly onSelect: (currencyCode: string) => void;
-  readonly selectedCurrencyCode: string;
-};
-
-// 기능 : Currency inline editor 안에서 통화 코드 선택 메뉴를 렌더링합니다.
-function CurrencyCodeMenu({
-  onSelect,
-  selectedCurrencyCode,
-}: CurrencyCodeMenuProps) {
-  const currencyCodeOptions = getCurrencyCodeOptions(selectedCurrencyCode);
-
-  return (
-    <div
-      className="absolute left-1 top-[calc(100%+4px)] z-50 grid w-[112px] gap-px rounded-lg border border-[#E5E1D8] bg-white p-1 shadow-[0_14px_34px_rgba(15,23,42,0.16)]"
-      role="listbox"
-    >
-      {currencyCodeOptions.map((option) => {
-        const isSelected = option.code === normalizeCurrencyCode(selectedCurrencyCode);
-
-        return (
-          <button
-            aria-selected={isSelected}
-            className={cn(
-              "flex h-8 items-center gap-2 rounded-md px-2 text-left text-[14px] transition",
-              isSelected
-                ? "bg-[#EEF4FF] text-[#1D4ED8]"
-                : "text-[#374151] hover:bg-[#F3F2EF]",
-            )}
-            key={option.code}
-            role="option"
-            type="button"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={() => onSelect(option.code)}
-          >
-            <span className="flex w-6 shrink-0 justify-center font-medium text-[#111827]">
-              {option.symbol}
-            </span>
-            <span className="min-w-0 flex-1 truncate">
-              {option.code}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 type CellTextFieldProps = {
   readonly inputMode?: InputHTMLAttributes<HTMLInputElement>["inputMode"];
   readonly inputRef?: RefObject<HTMLInputElement | null>;
@@ -850,9 +753,6 @@ function createDraftFromValue(
       getStringField(jsonValue, "amount") ??
       value.numberValue ??
       "",
-    currencyCode: normalizeCurrencyCode(
-      getStringField(jsonValue, "currencyCode"),
-    ),
     displayName:
       getStringField(jsonValue, "displayName") ??
       value.textValue ??
@@ -893,7 +793,6 @@ function createEmptyDraft(): RecordAttributeValueCellDraft {
   return {
     actorId: "",
     amount: "",
-    currencyCode: "KRW",
     displayName: "",
     familyName: "",
     givenName: "",
@@ -969,14 +868,7 @@ function toPatchValue(
           }
         : null;
     case "Currency":
-      if (draft.amount.trim().length === 0) {
-        return null;
-      }
-
-      return {
-        amount: draft.amount.trim(),
-        currencyCode: normalizeCurrencyCode(draft.currencyCode),
-      };
+      return normalizeEmptyString(draft.amount);
     case "Location":
       return draft.locationText.trim().length > 0
         ? {
@@ -1040,58 +932,12 @@ function normalizeEmptyString(value: string) {
   return value.trim().length > 0 ? value : null;
 }
 
-// 기능 : 통화 코드를 ISO code 표시 기준에 맞게 정규화합니다.
-function normalizeCurrencyCode(value: string | null | undefined) {
-  const normalized = value?.trim().toUpperCase() ?? "";
-
-  return normalized.length > 0 ? normalized : "KRW";
-}
-
 // 기능 : 저장 요청을 보내기 전에 draft value가 현재 저장 값과 같은지 비교합니다.
 function arePatchValuesEqual(
   left: WorkspaceObjectRecordAttributeValuePatchValue,
   right: WorkspaceObjectRecordAttributeValuePatchValue,
 ) {
   return JSON.stringify(left) === JSON.stringify(right);
-}
-
-// 기능 : 통화 코드에 맞는 셀 표시 기호를 계산합니다.
-function getCurrencySymbol(currencyCode: string) {
-  const normalizedCurrencyCode = normalizeCurrencyCode(currencyCode);
-  const option = CURRENCY_CODE_OPTIONS.find(
-    (currencyOption) => currencyOption.code === normalizedCurrencyCode,
-  );
-
-  return option?.symbol ?? normalizedCurrencyCode;
-}
-
-// 기능 : 기존 저장 값이 기본 목록 밖의 통화 코드여도 메뉴에서 보존되도록 option 목록을 계산합니다.
-function getCurrencyCodeOptions(currencyCode: string): readonly CurrencyCodeOption[] {
-  const normalizedCurrencyCode = currencyCode.trim().toUpperCase();
-
-  if (
-    normalizedCurrencyCode.length === 0 ||
-    CURRENCY_CODE_OPTIONS.some((option) => option.code === normalizedCurrencyCode)
-  ) {
-    return CURRENCY_CODE_OPTIONS.map((option) => ({
-      code: option.code,
-      label: option.label,
-      symbol: option.symbol,
-    }));
-  }
-
-  return [
-    {
-      code: normalizedCurrencyCode,
-      label: normalizedCurrencyCode,
-      symbol: normalizedCurrencyCode,
-    },
-    ...CURRENCY_CODE_OPTIONS.map((option) => ({
-      code: option.code,
-      label: option.label,
-      symbol: option.symbol,
-    })),
-  ];
 }
 
 // 기능 : AttributeType에 맞는 HTML input type 값을 반환합니다.
