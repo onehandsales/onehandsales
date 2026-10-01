@@ -28,6 +28,8 @@ export function SidebarNav({
   const [isQuickWorkOpen, setQuickWorkOpen] = useState(true);
   const [isMainGroupOpen, setMainGroupOpen] = useState(true);
   const [isWorkListsOpen, setWorkListsOpen] = useState(true);
+  // 1. 관리 항목 로딩 중에는 추가 버튼보다 skeleton row를 먼저 유지한다.
+  const shouldShowMainGroupAddAction = !isCrmObjectsLoading;
 
   return (
     <nav
@@ -49,6 +51,7 @@ export function SidebarNav({
         labelKey="navigation.mainGroup"
         openLabelKey="navigation.mainGroupOpen"
         onAdd={onCreateObjectDefinition}
+        showAddAction={shouldShowMainGroupAddAction}
         onToggle={() => setMainGroupOpen((current) => !current)}
       >
         {isCrmObjectsLoading ? (
@@ -76,6 +79,7 @@ type SidebarSectionProps = {
   readonly labelKey: AppI18nKey;
   readonly onAdd?: () => void;
   readonly openLabelKey: AppI18nKey;
+  readonly showAddAction?: boolean;
   readonly onToggle: () => void;
   readonly children?: ReactNode;
 };
@@ -89,9 +93,12 @@ function SidebarSection({
   labelKey,
   onAdd,
   openLabelKey,
+  showAddAction = true,
   onToggle,
 }: SidebarSectionProps) {
   const { t } = useAppI18n();
+  // 1. 로딩 중인 섹션에서는 추가 버튼이 먼저 노출되지 않도록 렌더링 여부를 고정한다.
+  const shouldShowAddAction = showAddAction;
   const toggleLabelKey = isOpen ? closeLabelKey : openLabelKey;
 
   return (
@@ -113,33 +120,41 @@ function SidebarSection({
           />
           <span className="min-w-0 flex-1 truncate">{t(labelKey)}</span>
         </button>
-        <button
-          aria-label={t(addLabelKey)}
-          className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:opacity-100"
-          onClick={(event) => {
-            event.stopPropagation();
-            onAdd?.();
-          }}
-          type="button"
-        >
-          <Plus aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={2} />
-        </button>
-      </div>
-      {isOpen ? (
-        <div className="flex flex-col gap-px">
-          {children}
+        {shouldShowAddAction ? (
           <button
             aria-label={t(addLabelKey)}
-            className="flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
-            onClick={onAdd}
+            className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:opacity-100"
+            onClick={(event) => {
+              event.stopPropagation();
+              onAdd?.();
+            }}
             type="button"
           >
             <Plus
               aria-hidden="true"
-              className="h-5 w-5 shrink-0"
+              className="h-4 w-4 shrink-0"
               strokeWidth={2}
             />
           </button>
+        ) : null}
+      </div>
+      {isOpen ? (
+        <div className="flex flex-col gap-px">
+          {children}
+          {shouldShowAddAction ? (
+            <button
+              aria-label={t(addLabelKey)}
+              className="flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+              onClick={onAdd}
+              type="button"
+            >
+              <Plus
+                aria-hidden="true"
+                className="h-5 w-5 shrink-0"
+                strokeWidth={2}
+              />
+            </button>
+          ) : null}
         </div>
       ) : null}
     </div>

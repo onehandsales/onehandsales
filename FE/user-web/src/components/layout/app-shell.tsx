@@ -98,6 +98,8 @@ const HELP_MODAL_OPEN_DELAY_MS = 20;
 const LOGOUT_MODAL_TRANSITION_MS = 300;
 const LOGOUT_MODAL_OPEN_DELAY_MS = 20;
 const WORKSPACE_SWITCH_LOADING_DELAY_MS = 2000;
+// 상태 : 사이드바 관리 항목 목록이 없을 때 참조가 흔들리지 않도록 공유 빈 배열을 사용합니다.
+const EMPTY_SIDEBAR_CRM_OBJECTS: readonly SidebarCrmObjectListItem[] = [];
 
 type AccountModalSection =
   | AccountModalQuerySection
@@ -229,24 +231,37 @@ export function AppShell() {
     currentWorkspace?.kind,
     t
   );
+  // 24. 관리 항목 query가 route Workspace ID를 먼저 사용할 수 있도록 fallback ID를 준비한다.
+  const sidebarCrmObjectsWorkspaceId =
+    currentWorkspace?.id ?? normalizedRouteWorkspaceId;
   const sidebarCrmObjectsQuery = useSidebarCrmObjectsQuery({
     userId: user?.id ?? null,
-    workspaceId: currentWorkspace?.id ?? null,
+    workspaceId: sidebarCrmObjectsWorkspaceId,
   });
-  // 24. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
+  // 25. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
   const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
-  const sidebarCrmObjects = sidebarCrmObjectsQuery.data ?? [];
+  const sidebarCrmObjects =
+    sidebarCrmObjectsQuery.data ?? EMPTY_SIDEBAR_CRM_OBJECTS;
+  // 26. Workspace가 확정되기 전에는 관리 항목 섹션 skeleton으로 사이드바 구조를 유지한다.
+  const isSidebarCrmObjectsWaitingForWorkspace =
+    Boolean(user?.id) &&
+    !sidebarCrmObjectsWorkspaceId &&
+    (normalizedRouteWorkspaceId
+      ? routeWorkspaceQuery.isLoading || routeWorkspaceQuery.isFetching
+      : defaultWorkspaceQuery.isLoading || defaultWorkspaceQuery.isFetching);
+  // 27. 관리 항목 목록이 비어 있는 초기 fetch 동안에만 skeleton을 표시한다.
   const isSidebarCrmObjectsLoading =
+    isSidebarCrmObjectsWaitingForWorkspace ||
     sidebarCrmObjectsQuery.isLoading ||
     (sidebarCrmObjectsQuery.isFetching && sidebarCrmObjects.length === 0);
   const selectedSidebarCrmObject = routeObjectDefinitionId
     ? sidebarCrmObjects.find((object) => object.id === routeObjectDefinitionId) ??
       null
     : null;
-  // 25. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
+  // 28. 이후 단계에서 사용할 isSidebarCollapsed 값을 준비한다.
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
-  // 26. 처리 흐름에 필요한 outletContext 값을 준비한다.
+  // 29. 처리 흐름에 필요한 outletContext 값을 준비한다.
   const outletContext = useMemo<AppShellOutletContext>(
     () => ({
       isSidebarCrmObjectsLoading,
@@ -1053,8 +1068,8 @@ export function AppShell() {
             <SidebarNav
               crmObjects={sidebarCrmObjects}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
-              workspaceId={currentWorkspace?.id ?? normalizedRouteWorkspaceId}
               onCreateObjectDefinition={openCreateObjectDefinitionModal}
+              workspaceId={sidebarCrmObjectsWorkspaceId}
             />
           </div>
           {sidebarHelpMenu}
