@@ -40,6 +40,7 @@ Date: 2026-09-13
 - `ObjectDefinition.icon`은 화면 표시용 nullable 문자열이다.
 - `AttributeDefinition.icon`도 화면 표시용 nullable 문자열로 둔다.
 - `AttributeDefinition.configJson`은 타입별 설정을 담는 nullable JSON 값으로 둔다.
+- `AttributeDefinition.sortOrder`는 AttributeDefinition 정렬 순서를 저장하는 정수 값으로 둔다.
 
 ## 4. Kit snapshot 원칙
 
