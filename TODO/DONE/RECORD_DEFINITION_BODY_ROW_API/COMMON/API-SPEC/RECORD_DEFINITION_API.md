@@ -48,7 +48,7 @@ Pagination:
 
 Sorting:
 - RecordDefinition: `createdAt asc`, `id asc`
-- RecordAttributeValueDefinition: AttributeDefinition 생성 순서에 맞게 `attributeDefinition.createdAt asc`, `attributeDefinition.id asc`, 이후 `createdAt asc`, `id asc`
+- RecordAttributeValueDefinition: AttributeDefinition 정렬 순서에 맞게 `attributeDefinition.sortOrder asc`
 
 ## 4. Business Logic
 

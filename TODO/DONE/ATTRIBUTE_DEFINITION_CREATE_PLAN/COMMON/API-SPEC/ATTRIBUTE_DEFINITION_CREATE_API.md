@@ -10,7 +10,7 @@
 
 - breaking change 여부: 없음. 신규 API를 추가한다.
 - 기존 FE 영향: 있음. Attribute 생성 UX가 이 API를 호출하고, 성공 후 AttributeDefinition 목록과 Object 목록 화면 header row를 갱신해야 한다.
-- migration 또는 fallback: `AttributeDefinition.objectDefinitionId + apiSlug` unique index와 `AttributeDefinition.configJson` nullable JSON 컬럼을 사용한다. 같은 ObjectDefinition 안에 기존 중복 `apiSlug`가 있으면 migration 전 정리가 필요하다.
+- migration 또는 fallback: `AttributeDefinition.objectDefinitionId + apiSlug` unique index, `AttributeDefinition.configJson` nullable JSON 컬럼, `AttributeDefinition.sortOrder` 컬럼을 사용한다. 같은 ObjectDefinition 안에 기존 중복 `apiSlug`가 있으면 migration 전 정리가 필요하다. 기존 `sortOrder`는 ObjectDefinition별 생성 순서 기준으로 backfill되어 있다.
 
 ## 1. 목적
 
@@ -25,7 +25,7 @@ ObjectDefinition 목록 화면에서 사용자가 새 AttributeDefinition 이름
 - ObjectDefinition 없음과 다른 Workspace 소속은 클라이언트에 구분해서 노출하지 않고 not found로 처리한다.
 - role 제한: 없음. 현재 범위에서는 `OWNER`, `ADMIN`, `MEMBER` 모두 생성할 수 있다.
 - Actor 검증: 생성 감사 주체 저장을 위해 `WorkspaceMember`에 연결된 `WORKSPACE_MEMBER` Actor가 필요하다.
-- DB schema 연결: `WorkspaceMember`, `Actor`, `ObjectDefinition`, `AttributeDefinition`
+- DB schema 연결: `WorkspaceMember`, `Actor`, `ObjectDefinition`, `AttributeDefinition`, `RecordDefinition`, `RecordAttributeValueDefinition`
 - 중복 기준: 같은 ObjectDefinition 안에서 `AttributeDefinition.apiSlug`는 중복될 수 없다.
 - DB unique 기준: `@@unique([objectDefinitionId, apiSlug])`
 - 중복 조회 조건: 보안 경계 확인을 위해 application/repository 조회는 `workspaceId + objectDefinitionId + apiSlug`를 함께 사용한다.
@@ -33,6 +33,7 @@ ObjectDefinition 목록 화면에서 사용자가 새 AttributeDefinition 이름
 - `apiSlug`, `title`: trim된 `attributeDefinitionName` 값을 동일하게 저장한다.
 - `type`: request의 `attributeType` 값을 저장한다.
 - `isMultiselect`: 초기 생성 API에서는 항상 `false`로 저장한다.
+- `sortOrder`: 같은 ObjectDefinition 안의 현재 최대 `sortOrder + 1`로 저장한다. 기존 AttributeDefinition이 없으면 `0`으로 저장한다.
 - `icon`: User Web은 값이 있을 때만 request에 포함한다. request에 없거나 `null` 또는 빈 문자열이면 DB에는 `null`을 저장한다. 값이 있으면 trim 없이 그대로 저장한다.
 - `description`: User Web은 값이 있을 때만 request에 포함한다. request에 없거나 `null` 또는 빈 문자열이면 DB에는 `null`을 저장한다. 값이 있으면 trim 없이 그대로 저장한다.
 - `config`: API request/response 계약의 타입별 설정 객체다. DB에는 `AttributeDefinition.configJson`으로 저장한다.
@@ -40,9 +41,9 @@ ObjectDefinition 목록 화면에서 사용자가 새 AttributeDefinition 이름
 - `config.currency.displayType`: `Currency` 타입에서만 허용하며 현재는 `symbol`만 저장한다.
 - `Currency` 타입에서 `config`가 없으면 `currentUser.defaultCurrencyCode ?? "KRW"`와 `displayType: "symbol"`로 기본 설정을 만든다.
 - `Currency`가 아닌 타입에서 `config`가 있으면 validation error로 차단한다.
-- transaction: 없음. 최종 변경 model은 `AttributeDefinition` 1개이며, 중복 race condition은 DB unique index로 방어한다.
-- 변경 model: `AttributeDefinition`
-- rollback 범위: `AttributeDefinition` 생성 실패 시 생성 row 없음
+- transaction: 필요. `AttributeDefinition` 생성과 기존 RecordDefinition별 `RecordAttributeValueDefinition` null cell row 생성은 같은 transaction 안에서 처리한다.
+- 변경 model: `AttributeDefinition`, `RecordAttributeValueDefinition`
+- rollback 범위: `AttributeDefinition` 또는 `RecordAttributeValueDefinition` 생성 실패 시 두 model 변경을 모두 rollback한다.
 - 외부 Provider 호출: 없음
 - 부수 로그/이력 transaction 포함 여부: 없음
 - idempotency: 없음. 같은 `objectDefinitionId + apiSlug` 중복 요청은 `409 Conflict`로 응답한다.
@@ -199,7 +200,9 @@ Validation:
 8. ObjectDefinition이 없거나 다른 Workspace에 속하면 not found로 응답한다.
 9. `workspaceId + objectDefinitionId + apiSlug` 기준으로 같은 ObjectDefinition 안의 apiSlug 중복을 확인한다.
 10. 중복이 있으면 conflict로 응답한다.
-11. AttributeDefinition을 생성한다.
+11. 같은 ObjectDefinition 안의 다음 `sortOrder`를 조회한다.
+12. AttributeDefinition을 생성한다.
+13. 기존 RecordDefinition마다 새 AttributeDefinition에 대응하는 값이 비어 있는 RecordAttributeValueDefinition row를 생성한다.
 
 생성 매핑:
 
@@ -210,11 +213,36 @@ Validation:
   createdByActorId: workspaceAccess.actorId,
   apiSlug: normalizedAttributeDefinitionName,
   title: normalizedAttributeDefinitionName,
+  sortOrder: maxSortOrderInObjectDefinition + 1,
   type: normalizedAttributeType,
   icon: normalizedIcon,
   isMultiselect: false,
   description: normalizedDescription,
   configJson: normalizedConfig
+}
+```
+
+RecordAttributeValueDefinition 생성 매핑:
+
+```ts
+{
+  workspaceId,
+  recordDefinitionId,
+  objectDefinitionId,
+  attributeDefinitionId,
+  createdByActorId: workspaceAccess.actorId,
+  attributeType: normalizedAttributeType,
+  jsonValue: null,
+  textValue: null,
+  numberValue: null,
+  booleanValue: null,
+  dateValue: null,
+  timestampValue: null,
+  selectOptionId: null,
+  statusOptionId: null,
+  targetRecordDefinitionId: null,
+  targetObjectDefinitionId: null,
+  targetActorId: null
 }
 ```
 
@@ -234,8 +262,9 @@ Body: 있음
 
 후속 FE 흐름:
 
-- User Web은 생성 성공 후 현재 ObjectDefinition의 AttributeDefinition 목록을 다시 조회한다.
+- User Web은 생성 성공 후 현재 ObjectDefinition의 AttributeDefinition 목록과 RecordDefinition 목록을 다시 조회한다.
 - Object 목록 화면 header row는 새 AttributeDefinition 목록 응답을 기준으로 다시 렌더링한다.
+- Object 목록 화면 body row는 새 AttributeDefinition에 대응하는 null cell row를 포함한 RecordDefinition 목록 응답을 기준으로 다시 렌더링한다.
 - 생성 API 응답의 `attributeDefinitionId`는 후속 optimistic update 또는 생성 완료 추적에 사용할 수 있다.
 
 ## 8. Error Contract
@@ -282,21 +311,22 @@ Body: 있음
 
 transaction 필요 여부:
 
-- 없음
+- 필요
 
 이유:
 
-- API의 런타임 변경 model은 `AttributeDefinition` 1개다.
-- Workspace membership과 ObjectDefinition 소속 확인은 선행 조회다.
+- API의 런타임 변경 model은 `AttributeDefinition` 1개와 기존 RecordDefinition 개수만큼의 `RecordAttributeValueDefinition` row다.
+- 새 AttributeDefinition만 생성되고 기존 RecordDefinition의 cell row 생성이 실패하는 중간 상태를 막아야 한다.
 - 중복 race condition은 DB unique index `objectDefinitionId + apiSlug`로 방어한다.
 
 변경 model:
 
 - `AttributeDefinition`
+- `RecordAttributeValueDefinition`
 
 rollback 범위:
 
-- `AttributeDefinition` 생성 실패 시 생성 row 없음
+- `AttributeDefinition` 또는 `RecordAttributeValueDefinition` 생성 실패 시 두 model 변경을 모두 rollback한다.
 
 외부 Provider 호출:
 
@@ -330,6 +360,7 @@ log event key:
 - `workspaceId`
 - `objectDefinitionId`
 - `attributeDefinitionId`
+- `recordAttributeValueDefinitionCount`
 
 request id:
 
@@ -352,8 +383,10 @@ provider error context:
 model AttributeDefinition {
   objectDefinitionId String @db.Uuid
   apiSlug            String
+  sortOrder          Int
   configJson         Json?
 
+  @@index([objectDefinitionId, sortOrder, id])
   @@unique([objectDefinitionId, apiSlug])
 }
 ```
@@ -364,6 +397,7 @@ model AttributeDefinition {
 - 다른 ObjectDefinition에서는 같은 `apiSlug`를 만들 수 있다.
 - `objectDefinitionId`는 전역 고유 PK를 참조하므로 unique 제약에 `workspaceId`를 포함하지 않는다.
 - application 조회는 Workspace 경계 확인을 위해 `workspaceId` 조건을 함께 사용한다.
+- 같은 ObjectDefinition 안의 AttributeDefinition 조회는 `sortOrder ASC`만 사용한다.
 
 Migration 주의:
 
@@ -376,6 +410,8 @@ Migration 주의:
 - AttributeDefinition 생성 DTO 추가
 - AttributeDefinition 생성 use case 추가
 - AttributeDefinition 타입별 `config` validation/normalization 추가
+- AttributeDefinition 생성 시 `sortOrder`를 현재 ObjectDefinition의 마지막 순서 다음 값으로 저장
+- 기존 RecordDefinition에 새 AttributeDefinition의 null cell row materialize
 - AttributeDefinition command repository port 추가
 - Prisma AttributeDefinition command repository adapter 추가
 - 기존 AttributeDefinition controller에 `POST` API 추가
@@ -389,7 +425,7 @@ Migration 주의:
 
 - SelectOption/StatusOption 생성 또는 초기 옵션 저장
 - RelationshipDefinition 생성
-- RecordAttributeValueDefinition 생성/수정
+- RecordAttributeValueDefinition 값 수정
 - AttributeDefinition 수정/삭제
 - AttributeDefinition 표시 순서 변경
 - FE Attribute 생성 API client 연결

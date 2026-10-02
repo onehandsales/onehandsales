@@ -1,5 +1,6 @@
 import type {
   AttributeDefinitionApiSlugLookupInput,
+  AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionCommandRepository,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
@@ -62,12 +63,18 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
       apiSlug: "회사번호",
     });
+    expect(fixture.repository.lastSortOrderInput).toEqual({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      transactionContext: fixture.transactionManager.context,
+    });
     expect(fixture.repository.lastCreateInput).toEqual({
       workspaceId: "00000000-0000-4000-8000-000000000301",
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
       createdByActorId: "00000000-0000-4000-8000-000000000401",
       apiSlug: "회사번호",
       title: "회사번호",
+      sortOrder: 0,
       type: "PhoneNumber",
       icon: "phone",
       isMultiselect: false,
@@ -536,7 +543,9 @@ class FakeAttributeDefinitionCommandRepository
 {
   hasSameApiSlug = false;
   lastLookupInput: AttributeDefinitionApiSlugLookupInput | null = null;
+  lastSortOrderInput: AttributeDefinitionSortOrderLookupInput | null = null;
   lastCreateInput: CreateAttributeDefinitionInput | null = null;
+  nextSortOrder = 0;
 
   // 기능 : 테스트용 AttributeDefinition apiSlug 중복 여부를 반환합니다.
   async hasAttributeDefinitionApiSlug(
@@ -544,6 +553,14 @@ class FakeAttributeDefinitionCommandRepository
   ): Promise<boolean> {
     this.lastLookupInput = input;
     return this.hasSameApiSlug;
+  }
+
+  // 기능 : 테스트용 AttributeDefinition 다음 정렬 순서를 반환합니다.
+  async getNextAttributeDefinitionSortOrder(
+    input: AttributeDefinitionSortOrderLookupInput
+  ): Promise<number> {
+    this.lastSortOrderInput = input;
+    return this.nextSortOrder;
   }
 
   // 기능 : 테스트용 AttributeDefinition 생성 결과를 반환합니다.

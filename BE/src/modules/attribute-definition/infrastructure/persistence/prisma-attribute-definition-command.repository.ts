@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import type {
   AttributeDefinitionApiSlugLookupInput,
+  AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionCommandRepository,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
@@ -37,6 +38,31 @@ export class PrismaAttributeDefinitionCommandRepository
     return attributeDefinition !== null;
   }
 
+  // 기능 : 같은 ObjectDefinition 안에서 다음 AttributeDefinition 정렬 순서를 조회합니다.
+  async getNextAttributeDefinitionSortOrder(
+    input: AttributeDefinitionSortOrderLookupInput
+  ): Promise<number> {
+    // 1. 현재 transaction context에 맞는 Prisma client를 준비한다.
+    const client = resolvePrismaTransactionalClient(
+      this.prismaService,
+      input.transactionContext
+    );
+
+    // 2. Workspace/ObjectDefinition 경계 안의 가장 큰 sortOrder 값을 조회한다.
+    const aggregate = await client.attributeDefinition.aggregate({
+      where: {
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+      },
+      _max: {
+        sortOrder: true,
+      },
+    });
+
+    // 3. 기존 AttributeDefinition이 없으면 첫 정렬 순서 0을 반환한다.
+    return (aggregate._max.sortOrder ?? -1) + 1;
+  }
+
   // 기능 : ObjectDefinition에 AttributeDefinition row를 생성합니다.
   async createAttributeDefinition(
     input: CreateAttributeDefinitionInput
@@ -57,6 +83,7 @@ export class PrismaAttributeDefinitionCommandRepository
             createdByActorId: input.createdByActorId,
             apiSlug: input.apiSlug,
             title: input.title,
+            sortOrder: input.sortOrder,
             type: input.type,
             configJson: this.toPrismaNullableJson(input.config),
             icon: input.icon,

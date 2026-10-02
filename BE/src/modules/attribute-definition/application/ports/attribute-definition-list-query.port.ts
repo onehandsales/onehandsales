@@ -13,6 +13,7 @@ export interface WorkspaceObjectAttributeDefinitionListItem {
   readonly id: string;
   readonly icon: string | null;
   readonly title: string;
+  readonly sortOrder: number;
   readonly type: AttributeDefinitionValueType;
   readonly isMultiselect: boolean;
   readonly config: AttributeDefinitionConfig | null;

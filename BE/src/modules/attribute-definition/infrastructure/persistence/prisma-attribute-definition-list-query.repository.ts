@@ -14,22 +14,23 @@ export class PrismaAttributeDefinitionListQueryRepository
   // 기능 : PrismaService를 주입받아 AttributeDefinition 조회에 사용합니다.
   constructor(private readonly prismaService: PrismaService) {}
 
-  // 기능 : 특정 Workspace ObjectDefinition에 속한 AttributeDefinition 요약 목록을 생성순으로 조회합니다.
+  // 기능 : 특정 Workspace ObjectDefinition에 속한 AttributeDefinition 요약 목록을 정렬 순서대로 조회합니다.
   async listWorkspaceObjectAttributeDefinitions(
     input: WorkspaceObjectAttributeDefinitionListInput
   ): Promise<WorkspaceObjectAttributeDefinitionListItem[]> {
-    // 1. Workspace와 ObjectDefinition 경계 안의 AttributeDefinition을 생성 시각과 ID 오름차순으로 조회한다.
+    // 1. Workspace와 ObjectDefinition 경계 안의 AttributeDefinition을 정렬 순서 오름차순으로 조회한다.
     const attributeDefinitions =
       await this.prismaService.attributeDefinition.findMany({
         where: {
           workspaceId: input.workspaceId,
           objectDefinitionId: input.objectDefinitionId,
         },
-        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        orderBy: [{ sortOrder: "asc" }],
         select: {
           id: true,
           icon: true,
           title: true,
+          sortOrder: true,
           type: true,
           isMultiselect: true,
           configJson: true,
@@ -41,6 +42,7 @@ export class PrismaAttributeDefinitionListQueryRepository
       id: attributeDefinition.id,
       icon: attributeDefinition.icon,
       title: attributeDefinition.title,
+      sortOrder: attributeDefinition.sortOrder,
       type: attributeDefinition.type as AttributeDefinitionValueType,
       isMultiselect: attributeDefinition.isMultiselect,
       config: attributeDefinition.configJson as AttributeDefinitionConfig | null,

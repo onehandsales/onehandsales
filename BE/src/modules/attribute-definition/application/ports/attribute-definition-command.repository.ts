@@ -13,6 +13,13 @@ export interface AttributeDefinitionApiSlugLookupInput {
   readonly apiSlug: string;
 }
 
+// 역할 : AttributeDefinitionSortOrderLookupInput이 ObjectDefinition 안의 다음 정렬 순서 조회 입력을 정의합니다.
+export interface AttributeDefinitionSortOrderLookupInput {
+  readonly workspaceId: string;
+  readonly objectDefinitionId: string;
+  readonly transactionContext?: TransactionContext | null;
+}
+
 // 역할 : CreateAttributeDefinitionInput이 AttributeDefinition 생성에 필요한 값을 정의합니다.
 export interface CreateAttributeDefinitionInput {
   readonly workspaceId: string;
@@ -20,6 +27,7 @@ export interface CreateAttributeDefinitionInput {
   readonly createdByActorId: string;
   readonly apiSlug: string;
   readonly title: string;
+  readonly sortOrder: number;
   readonly type: AttributeDefinitionType;
   readonly icon: string | null;
   readonly isMultiselect: boolean;
@@ -39,6 +47,11 @@ export interface AttributeDefinitionCommandRepository {
   hasAttributeDefinitionApiSlug(
     input: AttributeDefinitionApiSlugLookupInput
   ): Promise<boolean>;
+
+  // 기능 : 같은 ObjectDefinition 안에서 다음 AttributeDefinition 정렬 순서를 조회합니다.
+  getNextAttributeDefinitionSortOrder(
+    input: AttributeDefinitionSortOrderLookupInput
+  ): Promise<number>;
 
   // 기능 : ObjectDefinition에 AttributeDefinition row를 생성합니다.
   createAttributeDefinition(

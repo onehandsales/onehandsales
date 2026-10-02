@@ -77,12 +77,7 @@ export class PrismaRecordDefinitionListQueryRepository
             objectDefinitionId: input.objectDefinitionId,
           },
         },
-        orderBy: [
-          { attributeDefinition: { createdAt: "asc" } },
-          { attributeDefinition: { id: "asc" } },
-          { createdAt: "asc" },
-          { id: "asc" },
-        ],
+        orderBy: [{ attributeDefinition: { sortOrder: "asc" } }],
         select: {
           id: true,
           recordDefinitionId: true,

@@ -194,13 +194,26 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     readonly config: AttributeDefinitionConfig | null;
     readonly transactionContext: TransactionContext;
   }): Promise<CreatedAttributeDefinitionWithMaterializedCells> {
-    // 1. 새 AttributeDefinition row를 먼저 생성해 기존 record cell row의 FK 기준을 확보한다.
-    const created =
-      await this.attributeDefinitionCommandRepository.createAttributeDefinition(
-        input
+    // 1. 같은 ObjectDefinition 안의 다음 AttributeDefinition 정렬 순서를 조회한다.
+    const sortOrder =
+      await this.attributeDefinitionCommandRepository.getNextAttributeDefinitionSortOrder(
+        {
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          transactionContext: input.transactionContext,
+        }
       );
 
-    // 2. 이미 존재하는 RecordDefinition마다 새 AttributeDefinition에 대응하는 null cell value row를 생성한다.
+    // 2. 새 AttributeDefinition row를 먼저 생성해 기존 record cell row의 FK 기준을 확보한다.
+    const created =
+      await this.attributeDefinitionCommandRepository.createAttributeDefinition(
+        {
+          ...input,
+          sortOrder,
+        }
+      );
+
+    // 3. 이미 존재하는 RecordDefinition마다 새 AttributeDefinition에 대응하는 null cell value row를 생성한다.
     const materialized =
       await this.recordAttributeValueDefinitionMaterializer.materializeForAttributeDefinition(
         {
@@ -213,7 +226,7 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
         }
       );
 
-    // 3. API 응답에 필요한 AttributeDefinition ID와 관측용 cell 생성 수를 함께 반환한다.
+    // 4. API 응답에 필요한 AttributeDefinition ID와 관측용 cell 생성 수를 함께 반환한다.
     return {
       id: created.id,
       recordAttributeValueDefinitionCount: materialized.createdCount,

@@ -217,7 +217,7 @@ export class PrismaRecordDefinitionCommandRepository
         workspaceId: input.workspaceId,
         objectDefinitionId: input.objectDefinitionId,
       },
-      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      orderBy: [{ sortOrder: "asc" }],
       select: {
         id: true,
         type: true,

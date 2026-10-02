@@ -17,6 +17,7 @@
 ObjectDefinition 목록 화면에서 사용자가 새 row를 만들 때 현재 Workspace의 특정 ObjectDefinition에 빈 RecordDefinition을 생성한다.
 
 생성 시점의 AttributeDefinition 목록을 기준으로 RecordAttributeValueDefinition row도 함께 생성한다. 각 cell value row는 attributeType snapshot만 보유하고 실제 값 컬럼은 모두 null 상태로 시작한다.
+AttributeDefinition 목록은 `sortOrder ASC` 기준으로 조회해 header row와 body cell 생성 기준을 맞춘다.
 
 ## 2. 공통 정책
 

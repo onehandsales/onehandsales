@@ -10,7 +10,7 @@
 
 - breaking change 여부: 없음. 신규 API다.
 - 기존 FE 영향: 없음. 후속 User Web API client 연결 작업에서 Object list header row가 이 API를 호출한다.
-- migration 또는 fallback: DB schema 변경 없음. 기존 `WorkspaceMember`, `ObjectDefinition`, `AttributeDefinition`을 사용한다.
+- migration 또는 fallback: `AttributeDefinition.sortOrder` 컬럼을 사용한다. 기존 row는 ObjectDefinition별 생성 순서 기준으로 backfill되어 있다.
 
 ## 1. 목적
 
@@ -24,7 +24,7 @@
 - ObjectDefinition 소속: `objectDefinitionId`와 `workspaceId` 조합이 `ObjectDefinition`에 존재해야 한다.
 - role 제한: 없음. 현재 범위에서는 `OWNER`, `ADMIN`, `MEMBER` 모두 조회할 수 있다.
 - Actor 검증: 없음. Actor는 생성/수정 감사 주체이며 조회 권한 판단에 사용하지 않는다.
-- DB schema 연결: `WorkspaceMember`, `ObjectDefinition`, `AttributeDefinition`
+- DB schema 연결: `WorkspaceMember`, `ObjectDefinition`, `AttributeDefinition.sortOrder`
 - transaction: 없음. read-only API다.
 - 변경 model: 없음
 - rollback 범위: 해당 없음
@@ -43,6 +43,7 @@
   id: string;
   icon: string | null;
   title: string;
+  sortOrder: number;
   type: AttributeDefinitionValueType;
   isMultiselect: boolean;
   config: AttributeDefinitionConfig | null;
@@ -114,27 +115,33 @@ Success:
 - Body: 있음
 - Pagination: 없음
 - Filtering: 없음
-- Sorting: `AttributeDefinition.createdAt ASC`, 동률이면 `AttributeDefinition.id ASC`
+- Sorting: `AttributeDefinition.sortOrder ASC`
 
 ```json
 [
   {
     "id": "00000000-0000-4000-8000-000000000601",
+    "icon": "type",
     "title": "company",
+    "sortOrder": 0,
     "type": "Text",
     "isMultiselect": false,
     "config": null
   },
   {
     "id": "00000000-0000-4000-8000-000000000602",
+    "icon": "kanban",
     "title": "상태",
+    "sortOrder": 1,
     "type": "Status",
     "isMultiselect": false,
     "config": null
   },
   {
     "id": "00000000-0000-4000-8000-000000000603",
+    "icon": "circle-dollar-sign",
     "title": "금액",
+    "sortOrder": 2,
     "type": "Currency",
     "isMultiselect": false,
     "config": {
@@ -169,6 +176,8 @@ Error:
 - ObjectDefinition 소속 확인용 공개 query port 추가
 - `attribute-definition` Backend module 구현
 - AttributeDefinition header row 목록 조회 use case, repository, controller 추가
+- AttributeDefinition 목록 응답에 `sortOrder` 포함
+- AttributeDefinition 목록 정렬을 `sortOrder ASC` 기준으로 유지
 - application/controller 테스트 추가
 
 ## 6. 제외 범위
@@ -178,7 +187,7 @@ Error:
 - AttributeDefinition 순서 변경 API
 - SelectOptionDefinition 또는 StatusOptionDefinition 상세 옵션 조회
 - ObjectDefinition별 Record 목록 조회
-- DB schema/migration 변경
+- AttributeDefinition 순서 변경 API용 drag/drop mutation
 
 ## 7. 완료 검증
 
