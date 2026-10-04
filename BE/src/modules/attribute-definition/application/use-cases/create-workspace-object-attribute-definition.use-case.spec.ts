@@ -1,16 +1,19 @@
 import type {
   AttributeDefinitionApiSlugLookupInput,
+  AttributeDefinitionSortOrderByIdLookupInput,
   AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionCommandRepository,
   AttributeDefinitionForUpdate,
   AttributeDefinitionWorkspaceObjectLookupInput,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
+  IncrementAttributeDefinitionSortOrdersFromInput,
   UpdateAttributeDefinitionInput,
   UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
 import {
   AttributeDefinitionApiSlugAlreadyExistsError,
+  AttributeDefinitionNotFoundError,
   AttributeDefinitionObjectDefinitionNotFoundError,
   AttributeDefinitionValidationError,
   AttributeDefinitionWorkspaceNotFoundError,
@@ -123,6 +126,85 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
       icon: null,
       description: null,
     });
+  });
+
+  // 기능 : 기준 속성 왼쪽에 새 AttributeDefinition을 삽입합니다.
+  it("inserts an attribute definition before the reference attribute definition", async () => {
+    const fixture = createFixture();
+    fixture.repository.referenceSortOrder = 2;
+    fixture.repository.shiftedCount = 2;
+
+    await fixture.useCase.execute(
+      makeCurrentUser(),
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      {
+        attributeDefinitionName: "예산",
+        attributeType: "Number",
+        insertPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000622",
+          side: "before",
+        },
+      }
+    );
+
+    expect(fixture.repository.lastSortOrderInput).toBeNull();
+    expect(fixture.repository.lastSortOrderByIdInput).toEqual({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000622",
+      transactionContext: fixture.transactionManager.context,
+    });
+    expect(fixture.repository.lastIncrementInput).toEqual({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+      objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      fromSortOrder: 2,
+      updatedByActorId: "00000000-0000-4000-8000-000000000401",
+      transactionContext: fixture.transactionManager.context,
+    });
+    expect(fixture.repository.lastCreateInput).toMatchObject({
+      sortOrder: 2,
+    });
+    expect(String(fixture.logger.log.mock.calls[0]?.[0])).toContain(
+      "\"insertPositionSide\":\"before\""
+    );
+    expect(String(fixture.logger.log.mock.calls[0]?.[0])).toContain(
+      "\"shiftedAttributeDefinitionCount\":2"
+    );
+  });
+
+  // 기능 : 기준 속성 오른쪽에 새 AttributeDefinition을 삽입합니다.
+  it("inserts an attribute definition after the reference attribute definition", async () => {
+    const fixture = createFixture();
+    fixture.repository.referenceSortOrder = 2;
+    fixture.repository.shiftedCount = 1;
+
+    await fixture.useCase.execute(
+      makeCurrentUser(),
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      {
+        attributeDefinitionName: "상담 메모",
+        attributeType: "Text",
+        insertPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000622",
+          side: "after",
+        },
+      }
+    );
+
+    expect(fixture.repository.lastIncrementInput).toMatchObject({
+      fromSortOrder: 3,
+      updatedByActorId: "00000000-0000-4000-8000-000000000401",
+    });
+    expect(fixture.repository.lastCreateInput).toMatchObject({
+      sortOrder: 3,
+    });
+    expect(String(fixture.logger.log.mock.calls[0]?.[0])).toContain(
+      "\"insertPositionSide\":\"after\""
+    );
   });
 
   // 기능 : Prisma enum에 있는 AttributeType은 별도 미지원 오류 없이 생성 대상으로 받습니다.
@@ -363,6 +445,64 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
     expect(fixture.transactionManager.runCount).toBe(0);
   });
 
+  // 기능 : 잘못된 insertPosition 입력은 DB 조회 전에 AttributeDefinition 생성을 차단합니다.
+  it("rejects invalid insert positions before workspace lookup", async () => {
+    const fixture = createFixture();
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        {
+          attributeDefinitionName: "회사번호",
+          attributeType: "PhoneNumber",
+          insertPosition: {
+            referenceAttributeDefinitionId: "not-a-uuid",
+            side: "before",
+          },
+        }
+      )
+    ).rejects.toMatchObject({
+      code: "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID",
+      details: { field: "insertPosition" },
+    } satisfies Partial<AttributeDefinitionValidationError>);
+
+    expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
+    expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
+  });
+
+  // 기능 : 계약에 없는 insertPosition 하위 필드는 DB 조회 전에 AttributeDefinition 생성을 차단합니다.
+  it("rejects insert positions with unknown fields before workspace lookup", async () => {
+    const fixture = createFixture();
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        {
+          attributeDefinitionName: "회사번호",
+          attributeType: "PhoneNumber",
+          insertPosition: {
+            referenceAttributeDefinitionId:
+              "00000000-0000-4000-8000-000000000622",
+            side: "before",
+            unknownNestedField: "not allowed",
+          },
+        }
+      )
+    ).rejects.toMatchObject({
+      code: "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID",
+      details: { field: "insertPosition" },
+    } satisfies Partial<AttributeDefinitionValidationError>);
+
+    expect(fixture.workspaceAccessQuery.lastAccessInput).toBeNull();
+    expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(0);
+  });
+
   // 기능 : 현재 사용자가 Workspace 멤버가 아니면 생성을 차단합니다.
   it("throws not found when the current user is not a workspace member", async () => {
     const fixture = createFixture();
@@ -456,6 +596,37 @@ describe("CreateWorkspaceObjectAttributeDefinitionUseCase", () => {
     expect(fixture.materializer.lastInput).toBeNull();
     expect(fixture.transactionManager.runCount).toBe(0);
   });
+
+  // 기능 : 기준 AttributeDefinition이 Workspace/ObjectDefinition 경계 안에 없으면 전체 생성을 rollback합니다.
+  it("throws not found when the reference attribute definition is outside the object definition", async () => {
+    const fixture = createFixture();
+    fixture.repository.referenceSortOrder = null;
+
+    await expect(
+      fixture.useCase.execute(
+        makeCurrentUser(),
+        "00000000-0000-4000-8000-000000000301",
+        "00000000-0000-4000-8000-000000000501",
+        {
+          attributeDefinitionName: "예산",
+          attributeType: "Number",
+          insertPosition: {
+            referenceAttributeDefinitionId:
+              "00000000-0000-4000-8000-000000000699",
+            side: "before",
+          },
+        }
+      )
+    ).rejects.toBeInstanceOf(AttributeDefinitionNotFoundError);
+
+    expect(fixture.repository.lastSortOrderByIdInput).toMatchObject({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000699",
+    });
+    expect(fixture.repository.lastIncrementInput).toBeNull();
+    expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.materializer.lastInput).toBeNull();
+    expect(fixture.transactionManager.runCount).toBe(1);
+  });
 });
 
 // 기능 : CreateWorkspaceObjectAttributeDefinitionUseCase 테스트 fixture를 생성합니다.
@@ -548,8 +719,14 @@ class FakeAttributeDefinitionCommandRepository
   hasSameApiSlug = false;
   lastLookupInput: AttributeDefinitionApiSlugLookupInput | null = null;
   lastSortOrderInput: AttributeDefinitionSortOrderLookupInput | null = null;
+  lastSortOrderByIdInput: AttributeDefinitionSortOrderByIdLookupInput | null =
+    null;
+  lastIncrementInput: IncrementAttributeDefinitionSortOrdersFromInput | null =
+    null;
   lastCreateInput: CreateAttributeDefinitionInput | null = null;
   nextSortOrder = 0;
+  referenceSortOrder: number | null = 0;
+  shiftedCount = 0;
 
   // 기능 : 테스트용 AttributeDefinition apiSlug 중복 여부를 반환합니다.
   async hasAttributeDefinitionApiSlug(
@@ -565,6 +742,22 @@ class FakeAttributeDefinitionCommandRepository
   ): Promise<number> {
     this.lastSortOrderInput = input;
     return this.nextSortOrder;
+  }
+
+  // 기능 : 테스트용 기준 AttributeDefinition 정렬 순서를 반환합니다.
+  async findAttributeDefinitionSortOrder(
+    input: AttributeDefinitionSortOrderByIdLookupInput
+  ): Promise<number | null> {
+    this.lastSortOrderByIdInput = input;
+    return this.referenceSortOrder;
+  }
+
+  // 기능 : 테스트용 AttributeDefinition 정렬 순서 밀기 결과를 반환합니다.
+  async incrementAttributeDefinitionSortOrdersFrom(
+    input: IncrementAttributeDefinitionSortOrdersFromInput
+  ): Promise<number> {
+    this.lastIncrementInput = input;
+    return this.shiftedCount;
   }
 
   // 기능 : 테스트용 AttributeDefinition 생성 결과를 반환합니다.

@@ -64,12 +64,19 @@ export type GetWorkspaceObjectAttributeDefinitionInput = {
   readonly workspaceId: string;
 };
 
+// 역할 : CreateWorkspaceObjectAttributeDefinitionInsertPosition이 AttributeDefinition 생성 위치 요청 값을 정의합니다.
+export type CreateWorkspaceObjectAttributeDefinitionInsertPosition = {
+  readonly referenceAttributeDefinitionId: string;
+  readonly side: "before" | "after";
+};
+
 // 역할 : CreateWorkspaceObjectAttributeDefinitionInput이 AttributeDefinition 생성 요청 값을 정의합니다.
 export type CreateWorkspaceObjectAttributeDefinitionInput = {
   readonly attributeDefinitionName: string;
   readonly attributeType: AttributeDefinitionValueType;
   readonly description?: string;
   readonly icon?: string;
+  readonly insertPosition?: CreateWorkspaceObjectAttributeDefinitionInsertPosition;
   readonly objectDefinitionId: string;
   readonly workspaceId: string;
 };
@@ -109,6 +116,7 @@ export function createWorkspaceObjectAttributeDefinition(
     attributeType: AttributeDefinitionValueType;
     icon?: string;
     description?: string;
+    insertPosition?: CreateWorkspaceObjectAttributeDefinitionInsertPosition;
   } = {
     attributeDefinitionName: input.attributeDefinitionName,
     attributeType: input.attributeType,
@@ -120,6 +128,10 @@ export function createWorkspaceObjectAttributeDefinition(
 
   if (input.description !== undefined && input.description.length > 0) {
     body.description = input.description;
+  }
+
+  if (input.insertPosition !== undefined) {
+    body.insertPosition = input.insertPosition;
   }
 
   // 2. 현재 Workspace ObjectDefinition에 새 AttributeDefinition 생성 요청을 전달한다.

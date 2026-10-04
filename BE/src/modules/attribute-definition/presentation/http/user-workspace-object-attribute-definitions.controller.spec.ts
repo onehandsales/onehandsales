@@ -9,10 +9,12 @@ import { Test } from "@nestjs/testing";
 import type { Request } from "express";
 import * as request from "supertest";
 import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/create-workspace-object-attribute-definition.use-case";
+import { AttributeDefinitionValidationError } from "@/modules/attribute-definition/domain/attribute-definition.errors";
 import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
 import { UpdateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/update-workspace-object-attribute-definition.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
+import { HttpExceptionFilter } from "@/shared/presentation/filters/http-exception.filter";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { UserWorkspaceObjectAttributeDefinitionsController } from "./user-workspace-object-attribute-definitions.controller";
 
@@ -189,6 +191,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
         transform: true,
       })
     );
+    app.useGlobalFilters(new HttpExceptionFilter());
     await app.init();
   });
 
@@ -273,6 +276,39 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
   });
 
   // 10. 필요한 비동기 작업을 실행한다.
+  it("passes create insert position to the use case", async () => {
+    await request(app.getHttpServer())
+      .post(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions"
+      )
+      .send({
+        attributeDefinitionName: "예산",
+        attributeType: "Number",
+        insertPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000602",
+          side: "before",
+        },
+      })
+      .expect(201);
+
+    expect(createUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      {
+        attributeDefinitionName: "예산",
+        attributeType: "Number",
+        insertPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000602",
+          side: "before",
+        },
+      }
+    );
+  });
+
+  // 10. 필요한 비동기 작업을 실행한다.
   it("rejects non-string create fields before calling the use case", async () => {
     await request(app.getHttpServer())
       .post(
@@ -301,6 +337,53 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       .expect(400);
 
     expect(createUseCase.execute).not.toHaveBeenCalled();
+  });
+
+  // 12. 필요한 비동기 작업을 실행한다.
+  it("returns domain validation error for invalid create insert position", async () => {
+    createUseCase.execute.mockRejectedValueOnce(
+      new AttributeDefinitionValidationError(
+        "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID",
+        "insertPosition",
+        "Attribute definition insert position is invalid"
+      )
+    );
+
+    const response = await request(app.getHttpServer())
+      .post(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions"
+      )
+      .send({
+        attributeDefinitionName: "회사번호",
+        attributeType: "PhoneNumber",
+        insertPosition: {
+          referenceAttributeDefinitionId: "not-a-uuid",
+          side: "left",
+          unknownNestedField: "not allowed",
+        },
+      })
+      .expect(400);
+
+    expect(response.body).toMatchObject({
+      statusCode: 400,
+      error: "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID",
+      code: "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID",
+      field: "insertPosition",
+    });
+    expect(createUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      {
+        attributeDefinitionName: "회사번호",
+        attributeType: "PhoneNumber",
+        insertPosition: {
+          referenceAttributeDefinitionId: "not-a-uuid",
+          side: "left",
+          unknownNestedField: "not allowed",
+        },
+      }
+    );
   });
 
   // 12. 필요한 비동기 작업을 실행한다.

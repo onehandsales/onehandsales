@@ -28,6 +28,32 @@ export interface AttributeDefinitionSortOrderLookupInput {
   readonly transactionContext?: TransactionContext | null;
 }
 
+// 역할 : AttributeDefinitionSortOrderByIdLookupInput이 기준 AttributeDefinition의 정렬 순서 조회 입력을 정의합니다.
+export interface AttributeDefinitionSortOrderByIdLookupInput {
+  // 기능 : 조회할 AttributeDefinition의 Workspace 경계를 지정합니다.
+  readonly workspaceId: string;
+  // 기능 : 조회할 AttributeDefinition의 ObjectDefinition 경계를 지정합니다.
+  readonly objectDefinitionId: string;
+  // 기능 : 정렬 순서를 조회할 기준 AttributeDefinition 식별자를 지정합니다.
+  readonly attributeDefinitionId: string;
+  // 기능 : 생성 흐름에서 같은 트랜잭션으로 조회해야 할 때 전달합니다.
+  readonly transactionContext?: TransactionContext | null;
+}
+
+// 역할 : IncrementAttributeDefinitionSortOrdersFromInput이 정렬 순서 밀기 입력을 정의합니다.
+export interface IncrementAttributeDefinitionSortOrdersFromInput {
+  // 기능 : 순서를 변경할 AttributeDefinition의 Workspace 경계를 지정합니다.
+  readonly workspaceId: string;
+  // 기능 : 순서를 변경할 AttributeDefinition의 ObjectDefinition 경계를 지정합니다.
+  readonly objectDefinitionId: string;
+  // 기능 : 이 값 이상인 sortOrder를 가진 AttributeDefinition을 뒤로 밀도록 지정합니다.
+  readonly fromSortOrder: number;
+  // 기능 : 순서 변경 감사 컬럼에 기록할 Actor 식별자를 지정합니다.
+  readonly updatedByActorId: string;
+  // 기능 : 생성 흐름을 묶는 트랜잭션 컨텍스트를 전달합니다.
+  readonly transactionContext?: TransactionContext | null;
+}
+
 // 역할 : CreateAttributeDefinitionInput이 AttributeDefinition 생성에 필요한 값을 정의합니다.
 export interface CreateAttributeDefinitionInput {
   // 기능 : 생성할 AttributeDefinition의 Workspace 경계를 지정합니다.
@@ -119,6 +145,16 @@ export interface AttributeDefinitionCommandRepository {
   // 기능 : 같은 ObjectDefinition 안에서 다음 AttributeDefinition 정렬 순서를 조회합니다.
   getNextAttributeDefinitionSortOrder(
     input: AttributeDefinitionSortOrderLookupInput
+  ): Promise<number>;
+
+  // 기능 : 기준 AttributeDefinition이 요청 Workspace/ObjectDefinition에 속하는지 확인하고 정렬 순서를 조회합니다.
+  findAttributeDefinitionSortOrder(
+    input: AttributeDefinitionSortOrderByIdLookupInput
+  ): Promise<number | null>;
+
+  // 기능 : 같은 ObjectDefinition 안에서 기준 정렬 순서 이상인 AttributeDefinition들을 뒤로 밉니다.
+  incrementAttributeDefinitionSortOrdersFrom(
+    input: IncrementAttributeDefinitionSortOrdersFromInput
   ): Promise<number>;
 
   // 기능 : ObjectDefinition에 AttributeDefinition row를 생성합니다.

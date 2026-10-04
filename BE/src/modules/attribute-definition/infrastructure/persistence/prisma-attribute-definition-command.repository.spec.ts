@@ -153,6 +153,133 @@ describeWithTestDatabase("PrismaAttributeDefinitionCommandRepository", () => {
   });
 
   // 9. 필요한 비동기 작업을 실행한다.
+  it("finds an attribute definition sort order inside the workspace object boundary", async () => {
+    if (!databaseAvailable || !repository) {
+      return;
+    }
+
+    const created = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "budget",
+      title: "Budget",
+      sortOrder: 2,
+      type: "Number",
+      icon: "hash",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    await expect(
+      repository.findAttributeDefinitionSortOrder({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: created.id,
+      })
+    ).resolves.toBe(2);
+
+    await expect(
+      repository.findAttributeDefinitionSortOrder({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: "00000000-0000-4000-8000-000000009699",
+      })
+    ).resolves.toBeNull();
+  });
+
+  // 10. 필요한 비동기 작업을 실행한다.
+  it("increments attribute definition sort orders from the target order with audit actor", async () => {
+    if (!databaseAvailable || !prismaService || !repository) {
+      return;
+    }
+
+    const first = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "name",
+      title: "Name",
+      sortOrder: 0,
+      type: "Text",
+      icon: "type",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const second = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "budget",
+      title: "Budget",
+      sortOrder: 1,
+      type: "Number",
+      icon: "hash",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const third = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "memo",
+      title: "Memo",
+      sortOrder: 2,
+      type: "Text",
+      icon: "sticky-note",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    await expect(
+      repository.incrementAttributeDefinitionSortOrdersFrom({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        fromSortOrder: 1,
+        updatedByActorId: TEST_ACTOR_ID,
+      })
+    ).resolves.toBe(2);
+
+    const rows = await prismaService.attributeDefinition.findMany({
+      where: {
+        id: {
+          in: [first.id, second.id, third.id],
+        },
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+      select: {
+        id: true,
+        sortOrder: true,
+        updatedByActorId: true,
+      },
+    });
+
+    expect(rows).toEqual([
+      {
+        id: first.id,
+        sortOrder: 0,
+        updatedByActorId: null,
+      },
+      {
+        id: second.id,
+        sortOrder: 2,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+      {
+        id: third.id,
+        sortOrder: 3,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+    ]);
+  });
+
+  // 9. 필요한 비동기 작업을 실행한다.
   it("updates only requested attribute definition fields inside the workspace object boundary", async () => {
     if (!databaseAvailable || !prismaService || !repository) {
       return;

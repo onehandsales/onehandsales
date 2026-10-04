@@ -2,10 +2,20 @@
 
 ## 1. 문서 상태
 
-- 상태: Draft
+- 계약 상태: implemented
 - 대상 API: `POST /api/users/me/workspaces/:workspaceId/object-definitions/:objectDefinitionId/attribute-definitions`
 - 목적: 기존 속성 추가 API를 유지하면서, 특정 속성의 왼쪽 또는 오른쪽에 새 속성을 삽입할 수 있도록 요청 계약과 비즈니스 로직을 확장한다.
 - 주요 Consumer: `FE/user-web`
+
+소비자:
+
+- User Web
+
+호환성:
+
+- breaking change 여부: 없음. 기존 path, 기존 request field, response body를 유지한다.
+- 기존 FE 영향: 있음. User Web 속성 header menu에서 `insertPosition`을 optional field로 추가 전송한다.
+- migration 또는 fallback: 없음. `insertPosition`이 없으면 기존처럼 마지막에 추가한다.
 
 ## 2. 배경
 
@@ -29,12 +39,24 @@
 
 ## 4. Request
 
+Request DTO: `CreateWorkspaceObjectAttributeDefinitionDto`
+
 ### 4.1 Path Parameters
 
-| 이름 | 타입 | 필수 | 설명 |
-| --- | --- | --- | --- |
-| `workspaceId` | string | Y | Workspace ID |
-| `objectDefinitionId` | string | Y | ObjectDefinition ID |
+| 이름 | 타입 | 필수 | nullable | validation | 설명 |
+| --- | --- | --- | --- | --- | --- |
+| `workspaceId` | UUID string | Y | N | UUID | Workspace ID |
+| `objectDefinitionId` | UUID string | Y | N | UUID | ObjectDefinition ID |
+
+Query: 없음
+
+Header:
+
+- `Authorization: Bearer <accessToken>` 필수
+
+Cookie:
+
+- refresh cookie는 이 API request 계약에 사용하지 않음
 
 ### 4.2 Body
 
@@ -52,18 +74,37 @@ type CreateWorkspaceObjectAttributeDefinitionRequest = {
 };
 ```
 
+Body field:
+
+| 이름 | 타입 | 필수 | nullable | validation | 설명 |
+| --- | --- | --- | --- | --- | --- |
+| `attributeDefinitionName` | string | Y | N | 빈 문자열 불가, 최대 80자 | 속성 이름 |
+| `attributeType` | string | Y | N | 지원 AttributeDefinition type enum | 속성 값 타입 |
+| `icon` | string | N | Y | DTO string 검증, application에서 빈 문자열은 null | UI 표시 icon |
+| `description` | string | N | Y | DTO string 검증, application에서 빈 문자열은 null | 속성 설명 |
+| `config` | unknown | N | Y | application에서 attributeType별 검증 | 타입별 설정 |
+| `insertPosition` | object | N | N | application에서 계약 검증 | 생성 위치 |
+
+`undefined`와 `null` 의미:
+
+- `insertPosition: undefined`: 기존 append 생성
+- `insertPosition: null`: invalid, `ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID`
+- `icon`, `description`: `undefined`는 미전송, `null` 또는 빈 문자열은 저장 기준 `null`
+- `config`: `undefined` 또는 `null`은 타입별 기본 설정 또는 설정 없음
+
 ### 4.3 `insertPosition`
 
-| 이름 | 타입 | 필수 | 설명 |
-| --- | --- | --- | --- |
-| `referenceAttributeDefinitionId` | string | Y | 기준이 되는 AttributeDefinition ID |
-| `side` | `"before" \| "after"` | Y | 기준 속성의 왼쪽 또는 오른쪽 삽입 방향 |
+| 이름 | 타입 | 필수 | nullable | validation | 설명 |
+| --- | --- | --- | --- | --- | --- |
+| `referenceAttributeDefinitionId` | UUID string | Y | N | UUID v4 | 기준이 되는 AttributeDefinition ID |
+| `side` | `"before" \| "after"` | Y | N | enum | 기준 속성의 왼쪽 또는 오른쪽 삽입 방향 |
 
 `insertPosition`은 optional이다.
 
 - 없으면 마지막에 추가한다.
 - 있으면 `referenceAttributeDefinitionId`를 기준으로 `side` 방향에 새 속성을 삽입한다.
 - `referenceAttributeDefinitionId`는 반드시 현재 `workspaceId`와 `objectDefinitionId`에 속해야 한다.
+- `insertPosition` 하위 field는 `referenceAttributeDefinitionId`, `side`만 허용한다.
 
 ## 5. Request Examples
 
@@ -72,7 +113,7 @@ type CreateWorkspaceObjectAttributeDefinitionRequest = {
 ```json
 {
   "attributeDefinitionName": "전화번호",
-  "attributeType": "TEXT",
+  "attributeType": "Text",
   "icon": null,
   "description": null,
   "config": null
@@ -84,9 +125,9 @@ type CreateWorkspaceObjectAttributeDefinitionRequest = {
 ```json
 {
   "attributeDefinitionName": "예산",
-  "attributeType": "NUMBER",
+  "attributeType": "Number",
   "insertPosition": {
-    "referenceAttributeDefinitionId": "attr_2",
+    "referenceAttributeDefinitionId": "00000000-0000-4000-8000-000000000602",
     "side": "before"
   }
 }
@@ -97,9 +138,9 @@ type CreateWorkspaceObjectAttributeDefinitionRequest = {
 ```json
 {
   "attributeDefinitionName": "상담 메모",
-  "attributeType": "TEXT",
+  "attributeType": "Text",
   "insertPosition": {
-    "referenceAttributeDefinitionId": "attr_2",
+    "referenceAttributeDefinitionId": "00000000-0000-4000-8000-000000000602",
     "side": "after"
   }
 }
@@ -224,6 +265,10 @@ type CreateWorkspaceObjectAttributeDefinitionRequest = {
 
 ## 9. Transaction 계약
 
+transaction 필요 여부:
+
+- 필요
+
 이 API는 반드시 Application Layer에서 `TransactionManager`를 통해 트랜잭션을 시작한다.
 
 트랜잭션에 포함되는 작업:
@@ -238,31 +283,77 @@ type CreateWorkspaceObjectAttributeDefinitionRequest = {
 
 Repository 구현은 Prisma transaction client를 직접 새로 열지 않고 `TransactionContext`를 전달받아 사용한다.
 
-## 10. Error Contract
+외부 Provider 호출:
 
-| 상황 | HTTP Status | Error Code | 설명 |
-| --- | ---: | --- | --- |
-| 인증 없음 또는 인증 실패 | 401 | 기존 인증 에러 | Bearer 인증 실패 |
-| Workspace 접근 권한 없음 | 403 | 기존 Workspace 접근 에러 | 사용자가 Workspace에 접근할 수 없음 |
-| Workspace actor 없음 | 403 | 기존 Workspace actor 에러 | 요청 사용자에 대응되는 actor가 없음 |
-| ObjectDefinition 없음 또는 Workspace 불일치 | 404 | 기존 ObjectDefinition Not Found | 대상 ObjectDefinition이 없음 |
-| AttributeDefinition 이름이 비어 있음 | 400 | 기존 validation 에러 | 기존 생성 API 정책 유지 |
-| AttributeType이 지원되지 않음 | 400 | 기존 validation 에러 | 기존 생성 API 정책 유지 |
-| `apiSlug` 중복 | 409 | 기존 중복 에러 | 같은 ObjectDefinition 안에서 중복 |
-| `insertPosition` 형태가 잘못됨 | 400 | `ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID` | object가 아니거나 필수 값 누락 |
-| `insertPosition.side`가 `before`/`after`가 아님 | 400 | `ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID` | 지원하지 않는 삽입 방향 |
-| 기준 AttributeDefinition 없음 | 404 | `AttributeDefinitionNotFound` | 기준 속성이 없거나 다른 Workspace/Object에 속함 |
-| DB 쓰기 실패 | 500 | 기존 Internal Error | rollback 필요 |
+- 없음
 
-## 11. Response
+부수 로그/이력 transaction 포함 여부:
+
+- 없음. 생성 성공 후 구조화 로그만 남긴다.
+
+## 10. Idempotency / Outbox 계약
+
+- idempotency 필요 여부: 별도 key 없음
+- idempotency key 출처와 scope: 해당 없음
+- 중복 요청 응답 기준: 같은 요청이 반복되면 별도 생성 요청으로 처리될 수 있다.
+- outbox 또는 후속 처리 기록 필요 여부: 없음
+- future MSA 분리 시 경계: `AttributeDefinition` 생성, sortOrder shift, `RecordAttributeValueDefinition` materialize는 현재 Attribute/Record core 같은 DB transaction으로 처리한다. 향후 service 분리 시 materialize는 owning service event/outbox 후보로 재검토한다.
+
+## 11. Error Contract
+
+| 상황 | error code | HTTP status | FE 처리 | log level |
+| --- | --- | ---: | --- | --- |
+| 인증 없음 또는 인증 실패 | `Unauthorized` | 401 | 로그인 갱신 또는 로그인 화면 이동 | warn |
+| path param UUID 형식 오류 | Nest validation error | 400 | 요청 버그로 처리 | warn |
+| Workspace 접근 권한 없음 | `AttributeDefinitionWorkspaceNotFound` | 404 | 현재 Object 화면을 비우거나 Workspace 목록 재조회 | info |
+| Workspace actor 없음 | `InternalServerError` | 500 | 일반 실패 메시지 표시, 재시도 가능 | error |
+| ObjectDefinition 없음 또는 Workspace 불일치 | `AttributeDefinitionObjectDefinitionNotFound` | 404 | 현재 Object 화면을 비우거나 Object 목록 재조회 | info |
+| AttributeDefinition 이름이 비어 있음 | `ATTRIBUTE_DEFINITION_NAME_REQUIRED` | 400 | 속성 이름 field error 표시 | info |
+| AttributeDefinition 이름이 너무 김 | `ATTRIBUTE_DEFINITION_NAME_TOO_LONG` | 400 | 속성 이름 field error 표시 | info |
+| AttributeType이 지원되지 않음 | `ATTRIBUTE_DEFINITION_TYPE_UNKNOWN` | 400 | 생성 실패 표시, 타입 선택 상태 재확인 | warn |
+| AttributeDefinition config가 잘못됨 | `ATTRIBUTE_DEFINITION_CONFIG_INVALID` | 400 | 생성 실패 표시 | info |
+| `apiSlug` 중복 | `AttributeDefinitionApiSlugAlreadyExists` | 409 | 중복 이름 안내 | info |
+| `insertPosition` 형태가 잘못됨 | `ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID` | 400 | 생성 실패 표시 후 목록 재조회 가능 | info |
+| `insertPosition.side`가 `before`/`after`가 아님 | `ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID` | 400 | 생성 실패 표시 후 목록 재조회 가능 | info |
+| 기준 AttributeDefinition 없음 | `AttributeDefinitionNotFound` | 404 | 기준 컬럼이 사라진 것으로 보고 목록 재조회 | info |
+| DB 쓰기 실패 | `InternalServerError` | 500 | 일반 실패 메시지 표시, 재시도 가능 | error |
+
+validation error와 domain error 구분:
+
+- DTO 수준 path/body primitive validation 실패는 Nest validation error를 반환할 수 있다.
+- `insertPosition` 계약 검증 실패는 application domain error인 `ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID`를 반환한다.
+
+## 12. Response
+
+Response DTO: `CreateWorkspaceObjectAttributeDefinitionResponse`
+
+성공 status:
+
+- `201 Created`
+
+Body: 있음
+
+```json
+{
+  "attributeDefinitionId": "00000000-0000-4000-8000-000000000603"
+}
+```
 
 응답은 기존 생성 API와 동일하게 유지한다.
 
 응답에 `insertPosition`, `shiftedAttributeDefinitionCount` 등 신규 필드는 추가하지 않는다.
 
-## 12. Observability / Logging
+## 13. Observability / Logging
 
 기존 생성 이벤트 로그인 `crm.attributeDefinition.created`를 유지한다.
+
+구조화 로그 필요 여부:
+
+- 생성 성공 시 필요
+
+request id:
+
+- 전역 middleware의 request id를 사용한다.
 
 추가로 안전한 메타데이터만 남긴다.
 
@@ -283,10 +374,25 @@ Repository 구현은 Prisma transaction client를 직접 새로 열지 않고 `T
 - `config`
 - 사용자 입력 원문
 - 토큰 또는 인증 정보
+- provider error context: 외부 Provider 호출 없음
 
-## 13. DB / Repository 변경 범위
+## 14. DB / Repository 변경 범위
 
 DB schema 변경은 하지 않는다.
+
+DB schema 연결:
+
+- `WorkspaceMember`
+- `Actor`
+- `ObjectDefinition`
+- `AttributeDefinition`
+- `RecordDefinition`
+- `RecordAttributeValueDefinition`
+
+변경 model:
+
+- `AttributeDefinition`
+- `RecordAttributeValueDefinition`
 
 `AttributeDefinitionCommandRepository`에 필요한 동작:
 
@@ -313,7 +419,7 @@ incrementAttributeDefinitionSortOrdersFrom(input: {
 }): Promise<number>;
 ```
 
-## 14. 구현 범위
+## 15. 구현 범위
 
 Backend:
 
@@ -362,6 +468,6 @@ Frontend:
 
 ## 17. 확인 필요 사항
 
-- `referenceAttributeDefinitionId` 형식 검증을 UUID로 강제할지, 현재 ID 정책에 맞춰 단순 string으로 둘지 결정이 필요하다.
-- `AttributeDefinitionNotFound`의 외부 에러 코드 표기를 현재 에러 필터 정책과 맞춰 확인해야 한다.
-- 기존 `sortOrder`에 중복이나 gap이 있는 데이터가 있을 경우, 이번 삽입 API에서 정규화까지 수행할지는 별도 결정한다.
+- `referenceAttributeDefinitionId`는 현재 DB ID 정책에 맞춰 UUID로 검증한다.
+- `AttributeDefinitionNotFound`는 현재 에러 필터 정책에 따라 404로 응답한다.
+- 기존 `sortOrder`에 중복이나 gap이 있는 데이터가 있을 경우, 이번 삽입 API에서는 정규화하지 않는다.

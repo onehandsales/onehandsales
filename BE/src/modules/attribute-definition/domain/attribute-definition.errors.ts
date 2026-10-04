@@ -9,13 +9,15 @@ export type AttributeDefinitionValidationErrorCode =
   | "ATTRIBUTE_DEFINITION_TITLE_TOO_LONG"
   | "ATTRIBUTE_DEFINITION_MULTISELECT_INVALID"
   | "ATTRIBUTE_DEFINITION_TYPE_UNKNOWN"
-  | "ATTRIBUTE_DEFINITION_CONFIG_INVALID";
+  | "ATTRIBUTE_DEFINITION_CONFIG_INVALID"
+  | "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID";
 
 // 역할 : AttributeDefinitionValidationField가 AttributeDefinition API 검증 오류 대상 필드를 정의합니다.
 export type AttributeDefinitionValidationField =
   | "attributeDefinitionName"
   | "attributeType"
   | "config"
+  | "insertPosition"
   | "body"
   | "title"
   | "isMultiselect";

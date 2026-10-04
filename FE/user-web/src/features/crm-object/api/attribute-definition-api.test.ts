@@ -151,4 +151,38 @@ describe("createWorkspaceObjectAttributeDefinition", () => {
       },
     );
   });
+
+  it("includes insert position in the request body when provided", async () => {
+    apiClientMock.mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000603",
+    });
+
+    await createWorkspaceObjectAttributeDefinition({
+      attributeDefinitionName: "budget",
+      attributeType: "Number",
+      insertPosition: {
+        referenceAttributeDefinitionId:
+          "00000000-0000-4000-8000-000000000602",
+        side: "before",
+      },
+      objectDefinitionId: "object-1",
+      workspaceId: "workspace-1",
+    });
+
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace-1/object-definitions/object-1/attribute-definitions",
+      {
+        method: "POST",
+        body: {
+          attributeDefinitionName: "budget",
+          attributeType: "Number",
+          insertPosition: {
+            referenceAttributeDefinitionId:
+              "00000000-0000-4000-8000-000000000602",
+            side: "before",
+          },
+        },
+      },
+    );
+  });
 });

@@ -2,10 +2,12 @@ import type {
   AttributeDefinitionApiSlugLookupInput,
   AttributeDefinitionCommandRepository,
   AttributeDefinitionForUpdate,
+  AttributeDefinitionSortOrderByIdLookupInput,
   AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionWorkspaceObjectLookupInput,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
+  IncrementAttributeDefinitionSortOrdersFromInput,
   UpdateAttributeDefinitionInput,
   UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
@@ -415,6 +417,22 @@ class FakeAttributeDefinitionCommandRepository
   // 기능 : 현재 테스트에서 사용하지 않는 다음 정렬 순서 조회 호출을 차단합니다.
   async getNextAttributeDefinitionSortOrder(
     _input: AttributeDefinitionSortOrderLookupInput
+  ): Promise<number> {
+    void _input;
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 기준 정렬 순서 조회 호출을 차단합니다.
+  async findAttributeDefinitionSortOrder(
+    _input: AttributeDefinitionSortOrderByIdLookupInput
+  ): Promise<number | null> {
+    void _input;
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 정렬 순서 밀기 호출을 차단합니다.
+  async incrementAttributeDefinitionSortOrdersFrom(
+    _input: IncrementAttributeDefinitionSortOrdersFromInput
   ): Promise<number> {
     void _input;
     throw new Error("Not implemented in fake repository");

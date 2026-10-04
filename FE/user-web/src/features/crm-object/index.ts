@@ -22,6 +22,7 @@ export { useWorkspaceObjectRecordDefinitionsQuery } from "./hooks/use-workspace-
 export type {
   AttributeDefinitionConfig,
   AttributeDefinitionValueType,
+  CreateWorkspaceObjectAttributeDefinitionInsertPosition,
   CreateWorkspaceObjectAttributeDefinitionResponse,
   WorkspaceObjectAttributeDefinitionDetail,
   WorkspaceObjectAttributeDefinitionListItem,

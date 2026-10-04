@@ -61,6 +61,7 @@ import {
   createWorkspaceObjectAttributeDefinition,
   updateWorkspaceObjectRecordAttributeValueDefinition,
   type AttributeDefinitionValueType,
+  type CreateWorkspaceObjectAttributeDefinitionInsertPosition,
   type CreateWorkspaceObjectAttributeDefinitionResponse,
   type WorkspaceObjectAttributeDefinitionDetail,
   type WorkspaceObjectAttributeDefinitionListItem,
@@ -590,10 +591,14 @@ function AttributeColumnHeaderPopover({
   attributeDefinitionDetail,
   column,
   isAttributeDefinitionDetailFetching,
+  onInsertLeft,
+  onInsertRight,
 }: {
   readonly attributeDefinitionDetail: WorkspaceObjectAttributeDefinitionDetail | null;
   readonly column: RenderedObjectListAttributeColumn;
   readonly isAttributeDefinitionDetailFetching: boolean;
+  readonly onInsertLeft: (columnId: string) => void;
+  readonly onInsertRight: (columnId: string) => void;
 }) {
   const { locale, t } = useAppI18n();
   const iconPickerCopy = iconValuePickerCopyByLocale[locale];
@@ -620,6 +625,7 @@ function AttributeColumnHeaderPopover({
     readonly Icon: LucideIcon;
     readonly label: string;
     readonly hasSubmenu?: boolean;
+    readonly onSelect?: () => void;
   }>> = [
     [
       {
@@ -664,10 +670,12 @@ function AttributeColumnHeaderPopover({
       {
         Icon: ArrowLeftToLine,
         label: t("objectList.attributeDefinitionInsertLeftAction"),
+        onSelect: () => onInsertLeft(column.id),
       },
       {
         Icon: ArrowRightToLine,
         label: t("objectList.attributeDefinitionInsertRightAction"),
+        onSelect: () => onInsertRight(column.id),
       },
       {
         Icon: Copy,
@@ -803,12 +811,13 @@ function AttributeColumnHeaderPopover({
         {menuSections.map((menuItems, sectionIndex) => (
           <div className="grid gap-1" key={`attribute-menu-section-${sectionIndex}`}>
             {sectionIndex > 0 ? <div className="my-1 h-px bg-[#EEEDEA]" /> : null}
-            {menuItems.map(({ Icon, label, hasSubmenu }) => (
+            {menuItems.map(({ Icon, label, hasSubmenu, onSelect }) => (
               <button
                 className="group flex h-7 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[14px] font-medium text-[#2F2F2F] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
                 key={label}
                 role="menuitem"
                 type="button"
+                onClick={onSelect}
               >
                 <Icon
                   className="h-5 w-5 shrink-0 text-[#2F2F2F]"
@@ -904,6 +913,12 @@ export function WorkspaceObjectListPage() {
     isAddAttributeDefinitionModalOpen,
     setAddAttributeDefinitionModalOpen,
   ] = useState(false);
+  const [
+    addAttributeDefinitionInsertPosition,
+    setAddAttributeDefinitionInsertPosition,
+  ] = useState<CreateWorkspaceObjectAttributeDefinitionInsertPosition | null>(
+    null,
+  );
   const [
     isCreateRecordDefinitionModalOpen,
     setCreateRecordDefinitionModalOpen,
@@ -1325,11 +1340,41 @@ export function WorkspaceObjectListPage() {
   function openAddAttributeDefinitionModal() {
     setMoreActionsOpen(false);
     setActiveAttributeColumnMenuId(null);
+    setAddAttributeDefinitionInsertPosition(null);
     setAddAttributeDefinitionModalOpen(true);
+  }
+
+  // 기능 : AttributeDefinition header 메뉴에서 기준 속성 옆 생성 모달을 엽니다.
+  function openAddAttributeDefinitionModalByInsertPosition(
+    insertPosition: CreateWorkspaceObjectAttributeDefinitionInsertPosition,
+  ) {
+    // 1. 기준 속성 ID와 삽입 방향을 저장해 생성 요청 body에 반영할 준비를 한다.
+    setAddAttributeDefinitionInsertPosition(insertPosition);
+    // 2. header popover와 더보기 메뉴를 닫고 기존 속성 추가 모달을 연다.
+    setActiveAttributeColumnMenuId(null);
+    setMoreActionsOpen(false);
+    setAddAttributeDefinitionModalOpen(true);
+  }
+
+  // 기능 : AttributeDefinition header 메뉴에서 기준 속성 왼쪽 생성 모달을 엽니다.
+  function openAddAttributeDefinitionModalOnLeft(columnId: string) {
+    openAddAttributeDefinitionModalByInsertPosition({
+      referenceAttributeDefinitionId: columnId,
+      side: "before",
+    });
+  }
+
+  // 기능 : AttributeDefinition header 메뉴에서 기준 속성 오른쪽 생성 모달을 엽니다.
+  function openAddAttributeDefinitionModalOnRight(columnId: string) {
+    openAddAttributeDefinitionModalByInsertPosition({
+      referenceAttributeDefinitionId: columnId,
+      side: "after",
+    });
   }
 
   // 기능 : 임시 AttributeDefinition 생성 모달을 닫습니다.
   function closeAddAttributeDefinitionModal() {
+    setAddAttributeDefinitionInsertPosition(null);
     setAddAttributeDefinitionModalOpen(false);
   }
 
@@ -1657,6 +1702,8 @@ export function WorkspaceObjectListPage() {
                         isAttributeDefinitionDetailFetching={
                           attributeDefinitionDetailQuery.isFetching
                         }
+                        onInsertLeft={openAddAttributeDefinitionModalOnLeft}
+                        onInsertRight={openAddAttributeDefinitionModalOnRight}
                       />
                     ) : null}
                   </div>
@@ -1981,6 +2028,7 @@ export function WorkspaceObjectListPage() {
         onClose={closeAddAttributeDefinitionModal}
       >
         <AddAttributeDefinitionCreateModalContent
+          insertPosition={addAttributeDefinitionInsertPosition}
           objectDefinitionId={objectDefinitionId ?? null}
           onClose={closeAddAttributeDefinitionModal}
           onCreated={handleAttributeDefinitionCreated}
@@ -2458,11 +2506,13 @@ function AddAttributeDefinitionModal({
 
 // 기능 : AttributeDefinition 생성 모달의 이름, 타입, 설명 입력 흐름을 렌더링합니다.
 function AddAttributeDefinitionCreateModalContent({
+  insertPosition,
   objectDefinitionId,
   onClose,
   onCreated,
   workspaceId,
 }: {
+  readonly insertPosition: CreateWorkspaceObjectAttributeDefinitionInsertPosition | null;
   readonly objectDefinitionId: string | null;
   readonly onClose: () => void;
   readonly onCreated?: (
@@ -2568,6 +2618,7 @@ function AddAttributeDefinitionCreateModalContent({
           icon: createLucideIconValue(
             ATTRIBUTE_DEFINITION_ICON_BY_TYPE[selectedAttributeType],
           ),
+          insertPosition: insertPosition ?? undefined,
           objectDefinitionId,
           workspaceId,
         }),

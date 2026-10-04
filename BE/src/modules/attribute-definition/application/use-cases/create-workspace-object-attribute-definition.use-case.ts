@@ -13,6 +13,7 @@ import {
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
 import {
   AttributeDefinitionApiSlugAlreadyExistsError,
+  AttributeDefinitionNotFoundError,
   AttributeDefinitionObjectDefinitionNotFoundError,
   AttributeDefinitionValidationError,
   AttributeDefinitionWorkspaceNotFoundError,
@@ -44,8 +45,19 @@ import {
 const MAX_ATTRIBUTE_DEFINITION_NAME_LENGTH = 80;
 const CURRENCY_DISPLAY_TYPE_SYMBOL: AttributeDefinitionCurrencyDisplayType =
   "symbol";
+const UUID_V4_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const INSERT_POSITION_ALLOWED_KEYS = new Set([
+  "referenceAttributeDefinitionId",
+  "side",
+]);
 
 type JsonObject = Record<string, unknown>;
+
+// 역할 : CreateWorkspaceObjectAttributeDefinitionInsertPositionSide가 기준 속성 대비 삽입 방향을 정의합니다.
+export type CreateWorkspaceObjectAttributeDefinitionInsertPositionSide =
+  | "before"
+  | "after";
 
 // 역할 : CreateWorkspaceObjectAttributeDefinitionCommand가 속성 생성 요청 값을 정의합니다.
 export interface CreateWorkspaceObjectAttributeDefinitionCommand {
@@ -54,6 +66,7 @@ export interface CreateWorkspaceObjectAttributeDefinitionCommand {
   readonly icon?: string | null;
   readonly description?: string | null;
   readonly config?: unknown | null;
+  readonly insertPosition?: unknown | null;
 }
 
 // 역할 : CreateWorkspaceObjectAttributeDefinitionResponse가 속성 생성 응답 값을 정의합니다.
@@ -65,6 +78,24 @@ export interface CreateWorkspaceObjectAttributeDefinitionResponse {
 interface CreatedAttributeDefinitionWithMaterializedCells {
   readonly id: string;
   readonly recordAttributeValueDefinitionCount: number;
+  readonly insertPositionSide: CreateWorkspaceObjectAttributeDefinitionInsertPositionSide | null;
+  readonly referenceAttributeDefinitionId: string | null;
+  readonly targetSortOrder: number;
+  readonly shiftedAttributeDefinitionCount: number;
+}
+
+// 역할 : NormalizedCreateAttributeDefinitionInsertPosition이 검증된 생성 위치 입력을 정의합니다.
+interface NormalizedCreateAttributeDefinitionInsertPosition {
+  readonly referenceAttributeDefinitionId: string;
+  readonly side: CreateWorkspaceObjectAttributeDefinitionInsertPositionSide;
+}
+
+// 역할 : AttributeDefinitionSortOrderPlacement가 새 속성 생성 위치 계산 결과를 정의합니다.
+interface AttributeDefinitionSortOrderPlacement {
+  readonly insertPositionSide: CreateWorkspaceObjectAttributeDefinitionInsertPositionSide | null;
+  readonly referenceAttributeDefinitionId: string | null;
+  readonly sortOrder: number;
+  readonly shiftedAttributeDefinitionCount: number;
 }
 
 // 역할 : CreateWorkspaceObjectAttributeDefinitionUseCase가 현재 ObjectDefinition의 AttributeDefinition 생성을 담당합니다.
@@ -104,6 +135,9 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
       attributeType,
       command.config,
       currentUser.defaultCurrencyCode
+    );
+    const insertPosition = this.normalizeInsertPosition(
+      command.insertPosition
     );
 
     // 2. 현재 사용자가 요청 Workspace의 멤버인지 확인하고 감사 주체 Actor를 조회한다.
@@ -161,6 +195,7 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
         isMultiselect: false,
         description,
         config,
+        insertPosition,
         transactionContext: context,
       })
     );
@@ -171,6 +206,10 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
       workspaceId,
       objectDefinitionId,
       attributeDefinitionId: created.id,
+      insertPositionSide: created.insertPositionSide,
+      referenceAttributeDefinitionId: created.referenceAttributeDefinitionId,
+      targetSortOrder: created.targetSortOrder,
+      shiftedAttributeDefinitionCount: created.shiftedAttributeDefinitionCount,
       recordAttributeValueDefinitionCount:
         created.recordAttributeValueDefinitionCount,
     });
@@ -192,24 +231,34 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     readonly isMultiselect: boolean;
     readonly description: string | null;
     readonly config: AttributeDefinitionConfig | null;
+    readonly insertPosition: NormalizedCreateAttributeDefinitionInsertPosition | null;
     readonly transactionContext: TransactionContext;
   }): Promise<CreatedAttributeDefinitionWithMaterializedCells> {
-    // 1. 같은 ObjectDefinition 안의 다음 AttributeDefinition 정렬 순서를 조회한다.
-    const sortOrder =
-      await this.attributeDefinitionCommandRepository.getNextAttributeDefinitionSortOrder(
-        {
-          workspaceId: input.workspaceId,
-          objectDefinitionId: input.objectDefinitionId,
-          transactionContext: input.transactionContext,
-        }
-      );
+    // 1. 요청 생성 위치에 맞는 sortOrder를 계산하고, 중간 삽입이면 기존 속성들을 뒤로 민다.
+    const placement = await this.resolveSortOrderPlacement({
+      workspaceId: input.workspaceId,
+      objectDefinitionId: input.objectDefinitionId,
+      createdByActorId: input.createdByActorId,
+      insertPosition: input.insertPosition,
+      transactionContext: input.transactionContext,
+    });
 
     // 2. 새 AttributeDefinition row를 먼저 생성해 기존 record cell row의 FK 기준을 확보한다.
     const created =
       await this.attributeDefinitionCommandRepository.createAttributeDefinition(
         {
-          ...input,
-          sortOrder,
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          createdByActorId: input.createdByActorId,
+          apiSlug: input.apiSlug,
+          title: input.title,
+          sortOrder: placement.sortOrder,
+          type: input.type,
+          icon: input.icon,
+          isMultiselect: input.isMultiselect,
+          description: input.description,
+          config: input.config,
+          transactionContext: input.transactionContext,
         }
       );
 
@@ -229,7 +278,134 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     // 4. API 응답에 필요한 AttributeDefinition ID와 관측용 cell 생성 수를 함께 반환한다.
     return {
       id: created.id,
+      insertPositionSide: placement.insertPositionSide,
+      referenceAttributeDefinitionId: placement.referenceAttributeDefinitionId,
+      targetSortOrder: placement.sortOrder,
+      shiftedAttributeDefinitionCount:
+        placement.shiftedAttributeDefinitionCount,
       recordAttributeValueDefinitionCount: materialized.createdCount,
+    };
+  }
+
+  // 기능 : insertPosition 입력값을 지원하는 삽입 위치 계약으로 검증하고 정규화합니다.
+  private normalizeInsertPosition(
+    insertPosition: unknown | undefined
+  ): NormalizedCreateAttributeDefinitionInsertPosition | null {
+    // 1. 위치 입력이 없으면 기존처럼 마지막 추가 흐름으로 처리한다.
+    if (insertPosition === undefined) {
+      return null;
+    }
+
+    // 2. application 계층 호출자가 DTO를 우회하더라도 객체 형태가 아니면 차단한다.
+    if (
+      typeof insertPosition !== "object" ||
+      insertPosition === null ||
+      Array.isArray(insertPosition)
+    ) {
+      throw this.createInvalidInsertPositionError();
+    }
+
+    const insertPositionRecord = insertPosition as Record<string, unknown>;
+
+    // 3. 생성 위치 객체는 계약에 포함된 key만 허용한다.
+    if (
+      Object.keys(insertPositionRecord).some(
+        (key) => !INSERT_POSITION_ALLOWED_KEYS.has(key)
+      )
+    ) {
+      throw this.createInvalidInsertPositionError();
+    }
+
+    const referenceAttributeDefinitionId =
+      insertPositionRecord["referenceAttributeDefinitionId"];
+    const side = insertPositionRecord["side"];
+
+    // 4. 기준 AttributeDefinition ID가 현재 DB ID 정책에 맞는 UUID v4인지 확인한다.
+    if (
+      typeof referenceAttributeDefinitionId !== "string" ||
+      !UUID_V4_PATTERN.test(referenceAttributeDefinitionId)
+    ) {
+      throw this.createInvalidInsertPositionError();
+    }
+
+    // 5. 지원하는 좌우 삽입 방향만 허용한다.
+    if (side !== "before" && side !== "after") {
+      throw this.createInvalidInsertPositionError();
+    }
+
+    return {
+      referenceAttributeDefinitionId,
+      side,
+    };
+  }
+
+  // 기능 : 새 AttributeDefinition의 sortOrder를 계산하고 중간 삽입 시 기존 속성들을 뒤로 밉니다.
+  private async resolveSortOrderPlacement(input: {
+    readonly workspaceId: string;
+    readonly objectDefinitionId: string;
+    readonly createdByActorId: string;
+    readonly insertPosition: NormalizedCreateAttributeDefinitionInsertPosition | null;
+    readonly transactionContext: TransactionContext;
+  }): Promise<AttributeDefinitionSortOrderPlacement> {
+    // 1. 위치 입력이 없으면 같은 ObjectDefinition 안의 마지막 다음 순서를 사용한다.
+    if (!input.insertPosition) {
+      const sortOrder =
+        await this.attributeDefinitionCommandRepository.getNextAttributeDefinitionSortOrder(
+          {
+            workspaceId: input.workspaceId,
+            objectDefinitionId: input.objectDefinitionId,
+            transactionContext: input.transactionContext,
+          }
+        );
+
+      return {
+        insertPositionSide: null,
+        referenceAttributeDefinitionId: null,
+        sortOrder,
+        shiftedAttributeDefinitionCount: 0,
+      };
+    }
+
+    // 2. 기준 AttributeDefinition이 같은 Workspace/ObjectDefinition 안에 있는지 조회한다.
+    const referenceSortOrder =
+      await this.attributeDefinitionCommandRepository.findAttributeDefinitionSortOrder(
+        {
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          attributeDefinitionId:
+            input.insertPosition.referenceAttributeDefinitionId,
+          transactionContext: input.transactionContext,
+        }
+      );
+
+    if (referenceSortOrder === null) {
+      throw new AttributeDefinitionNotFoundError();
+    }
+
+    // 3. 왼쪽 삽입은 기준 순서, 오른쪽 삽입은 기준 다음 순서를 target으로 계산한다.
+    const sortOrder =
+      input.insertPosition.side === "before"
+        ? referenceSortOrder
+        : referenceSortOrder + 1;
+
+    // 4. target sortOrder 이상인 기존 속성을 한 칸씩 뒤로 밀고 현재 사용자 Actor를 감사 컬럼에 남긴다.
+    const shiftedAttributeDefinitionCount =
+      await this.attributeDefinitionCommandRepository.incrementAttributeDefinitionSortOrdersFrom(
+        {
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          fromSortOrder: sortOrder,
+          updatedByActorId: input.createdByActorId,
+          transactionContext: input.transactionContext,
+        }
+      );
+
+    return {
+      insertPositionSide: input.insertPosition.side,
+      referenceAttributeDefinitionId:
+        input.insertPosition.referenceAttributeDefinitionId,
+      sortOrder,
+      shiftedAttributeDefinitionCount,
     };
   }
 
@@ -430,12 +606,25 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     );
   }
 
+  // 기능 : insertPosition 입력값 검증 실패 오류를 생성합니다.
+  private createInvalidInsertPositionError(): AttributeDefinitionValidationError {
+    return new AttributeDefinitionValidationError(
+      "ATTRIBUTE_DEFINITION_INSERT_POSITION_INVALID",
+      "insertPosition",
+      "Attribute definition insert position is invalid"
+    );
+  }
+
   // 기능 : AttributeDefinition 생성 이벤트를 사용자 입력 원문 없이 구조화 로그로 남깁니다.
   private logCreatedEvent(fields: {
     readonly userId: string;
     readonly workspaceId: string;
     readonly objectDefinitionId: string;
     readonly attributeDefinitionId: string;
+    readonly insertPositionSide: CreateWorkspaceObjectAttributeDefinitionInsertPositionSide | null;
+    readonly referenceAttributeDefinitionId: string | null;
+    readonly targetSortOrder: number;
+    readonly shiftedAttributeDefinitionCount: number;
     readonly recordAttributeValueDefinitionCount: number;
   }): void {
     this.logger.log(

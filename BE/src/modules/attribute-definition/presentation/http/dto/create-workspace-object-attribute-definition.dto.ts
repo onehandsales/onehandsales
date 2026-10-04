@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { Allow, IsOptional, IsString } from "class-validator";
 
 // 역할 : CreateWorkspaceObjectAttributeDefinitionDto HTTP 요청 값을 검증하기 위한 DTO입니다.
 export class CreateWorkspaceObjectAttributeDefinitionDto {
@@ -18,4 +18,7 @@ export class CreateWorkspaceObjectAttributeDefinitionDto {
 
   @IsOptional()
   config?: unknown | null;
+
+  @Allow()
+  insertPosition?: unknown | null;
 }

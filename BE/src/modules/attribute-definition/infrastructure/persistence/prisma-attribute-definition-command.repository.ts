@@ -2,11 +2,13 @@ import { Prisma } from "@prisma/client";
 import type {
   AttributeDefinitionApiSlugLookupInput,
   AttributeDefinitionForUpdate,
+  AttributeDefinitionSortOrderByIdLookupInput,
   AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionCommandRepository,
   AttributeDefinitionWorkspaceObjectLookupInput,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
+  IncrementAttributeDefinitionSortOrdersFromInput,
   UpdateAttributeDefinitionInput,
   UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
@@ -71,6 +73,63 @@ export class PrismaAttributeDefinitionCommandRepository
 
     // 3. 기존 AttributeDefinition이 없으면 첫 정렬 순서 0을 반환한다.
     return (aggregate._max.sortOrder ?? -1) + 1;
+  }
+
+  // 기능 : 기준 AttributeDefinition이 요청 Workspace/ObjectDefinition에 속하는지 확인하고 정렬 순서를 조회합니다.
+  async findAttributeDefinitionSortOrder(
+    input: AttributeDefinitionSortOrderByIdLookupInput
+  ): Promise<number | null> {
+    // 1. 현재 transaction context에 맞는 Prisma client를 준비한다.
+    const client = resolvePrismaTransactionalClient(
+      this.prismaService,
+      input.transactionContext
+    );
+
+    // 2. Workspace/ObjectDefinition/AttributeDefinition 경계 기준으로 기준 속성을 조회한다.
+    const attributeDefinition = await client.attributeDefinition.findFirst({
+      where: {
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+        id: input.attributeDefinitionId,
+      },
+      select: {
+        sortOrder: true,
+      },
+    });
+
+    // 3. 기준 속성이 없으면 null을 반환해 application 계층에서 not found로 처리하게 한다.
+    return attributeDefinition?.sortOrder ?? null;
+  }
+
+  // 기능 : 같은 ObjectDefinition 안에서 기준 정렬 순서 이상인 AttributeDefinition들을 뒤로 밉니다.
+  async incrementAttributeDefinitionSortOrdersFrom(
+    input: IncrementAttributeDefinitionSortOrdersFromInput
+  ): Promise<number> {
+    // 1. 현재 transaction context에 맞는 Prisma client를 준비한다.
+    const client = resolvePrismaTransactionalClient(
+      this.prismaService,
+      input.transactionContext
+    );
+
+    // 2. target sortOrder 이상인 기존 AttributeDefinition을 한 칸 뒤로 밀고 감사 Actor를 기록한다.
+    const result = await client.attributeDefinition.updateMany({
+      where: {
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+        sortOrder: {
+          gte: input.fromSortOrder,
+        },
+      },
+      data: {
+        sortOrder: {
+          increment: 1,
+        },
+        updatedByActorId: input.updatedByActorId,
+      },
+    });
+
+    // 3. 관측 로그에서 사용할 변경 row 수를 반환한다.
+    return result.count;
   }
 
   // 기능 : ObjectDefinition에 AttributeDefinition row를 생성합니다.
