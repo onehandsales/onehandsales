@@ -52,6 +52,7 @@ import {
 } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
+import { IconValuePicker } from "@/components/ui/icon-value-picker";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
 import {
@@ -166,6 +167,34 @@ type CreateRecordDefinitionModalCopy = {
   readonly namePlaceholder: string;
   readonly nameTitle: string;
   readonly next: string;
+};
+
+type IconValuePickerCopy = {
+  readonly emojiSearchClearButtonLabel: string;
+  readonly emojiSearchPlaceholder: string;
+  readonly emojiTabLabel: string;
+  readonly iconNoResultsLabel: string;
+  readonly iconSearchPlaceholder: string;
+  readonly iconTabLabel: string;
+};
+
+const iconValuePickerCopyByLocale: Record<AppLocale, IconValuePickerCopy> = {
+  "ko-KR": {
+    emojiSearchClearButtonLabel: "검색어 지우기",
+    emojiSearchPlaceholder: "이모지 검색",
+    emojiTabLabel: "이모지",
+    iconNoResultsLabel: "검색 결과가 없어요.",
+    iconSearchPlaceholder: "아이콘 검색",
+    iconTabLabel: "아이콘",
+  },
+  en: {
+    emojiSearchClearButtonLabel: "Clear search",
+    emojiSearchPlaceholder: "Search emojis",
+    emojiTabLabel: "Emoji",
+    iconNoResultsLabel: "No icons found.",
+    iconSearchPlaceholder: "Search icons",
+    iconTabLabel: "Icon",
+  },
 };
 
 const addAttributeDefinitionCreateModalCopyByLocale: Record<
@@ -566,10 +595,15 @@ function AttributeColumnHeaderPopover({
   readonly column: RenderedObjectListAttributeColumn;
   readonly isAttributeDefinitionDetailFetching: boolean;
 }) {
-  const { t } = useAppI18n();
+  const { locale, t } = useAppI18n();
+  const iconPickerCopy = iconValuePickerCopyByLocale[locale];
   const detailTitle = attributeDefinitionDetail?.title ?? column.title;
   const detailType = attributeDefinitionDetail?.type ?? column.type;
   const detailDescription = attributeDefinitionDetail?.description ?? "";
+  const detailIcon =
+    attributeDefinitionDetail?.icon ??
+    column.icon ??
+    ATTRIBUTE_DEFINITION_ICON_BY_TYPE[detailType];
   const [titleDraft, setTitleDraft] = useState(detailTitle);
   const [isTitleDraftDirty, setTitleDraftDirty] = useState(false);
   const [isTitleInputFocused, setTitleInputFocused] = useState(false);
@@ -578,11 +612,10 @@ function AttributeColumnHeaderPopover({
     useState(false);
   const [descriptionDraft, setDescriptionDraft] = useState(detailDescription);
   const [isDescriptionDraftDirty, setDescriptionDraftDirty] = useState(false);
+  const [iconDraft, setIconDraft] = useState(detailIcon);
+  const [isIconDraftDirty, setIconDraftDirty] = useState(false);
   const descriptionInputRef = useRef<HTMLTextAreaElement | null>(null);
-  const displayIcon =
-    attributeDefinitionDetail?.icon ??
-    column.icon ??
-    ATTRIBUTE_DEFINITION_ICON_BY_TYPE[detailType];
+  const displayIcon = iconDraft;
   const menuSections: Array<Array<{
     readonly Icon: LucideIcon;
     readonly label: string;
@@ -664,6 +697,14 @@ function AttributeColumnHeaderPopover({
   }, [detailDescription, isDescriptionDraftDirty]);
 
   useEffect(() => {
+    if (isIconDraftDirty) {
+      return;
+    }
+
+    setIconDraft(detailIcon);
+  }, [detailIcon, isIconDraftDirty]);
+
+  useEffect(() => {
     if (!isDescriptionEditorOpen) {
       setDescriptionInputFocused(false);
       return;
@@ -681,18 +722,24 @@ function AttributeColumnHeaderPopover({
       style={{ width: ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX }}
     >
       <div className="flex min-w-0 items-center gap-2">
-        <button
-          aria-label={t("objectList.attributeDefinitionIconAction")}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white text-[#6B7280] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
-          role="menuitem"
-          type="button"
-        >
-          <SidebarCrmObjectIcon
-            className="h-5 w-5"
-            name={displayIcon}
-            strokeWidth={2}
-          />
-        </button>
+        <IconValuePicker
+          {...iconPickerCopy}
+          label={t("objectList.attributeDefinitionIconAction")}
+          locale={locale}
+          openTriggerClassName="bg-[#E4E2DC] text-[#111111]"
+          popoverClassName="top-[calc(100%+6px)] z-[70]"
+          searchInputName="attributeDefinitionLucideIconSearch"
+          showTooltip={false}
+          triggerClassName="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white p-0 text-[#6B7280] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+          triggerIconClassName="h-5 w-5"
+          triggerRole="menuitem"
+          triggerStrokeWidth={2}
+          value={displayIcon}
+          onChange={(nextIcon) => {
+            setIconDraft(nextIcon);
+            setIconDraftDirty(true);
+          }}
+        />
         <div
           className={cn(
             "flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[8px] border bg-white px-2 text-left transition",
