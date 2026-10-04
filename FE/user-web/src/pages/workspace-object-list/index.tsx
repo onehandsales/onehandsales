@@ -61,8 +61,10 @@ import {
   updateWorkspaceObjectRecordAttributeValueDefinition,
   type AttributeDefinitionValueType,
   type CreateWorkspaceObjectAttributeDefinitionResponse,
+  type WorkspaceObjectAttributeDefinitionDetail,
   type WorkspaceObjectAttributeDefinitionListItem,
   type WorkspaceObjectRecordDefinitionListItem,
+  useWorkspaceObjectAttributeDefinitionQuery,
   useWorkspaceObjectAttributeDefinitionsQuery,
   useWorkspaceObjectRecordDefinitionsQuery,
   workspaceObjectAttributeDefinitionQueryKeys,
@@ -556,19 +558,31 @@ function toRenderedAttributeColumns(
 
 // 기능 : AttributeDefinition header 클릭 시 열리는 속성 메뉴 popover를 렌더링합니다.
 function AttributeColumnHeaderPopover({
+  attributeDefinitionDetail,
   column,
+  isAttributeDefinitionDetailFetching,
 }: {
+  readonly attributeDefinitionDetail: WorkspaceObjectAttributeDefinitionDetail | null;
   readonly column: RenderedObjectListAttributeColumn;
+  readonly isAttributeDefinitionDetailFetching: boolean;
 }) {
   const { t } = useAppI18n();
-  const [titleDraft, setTitleDraft] = useState(column.title);
+  const detailTitle = attributeDefinitionDetail?.title ?? column.title;
+  const detailType = attributeDefinitionDetail?.type ?? column.type;
+  const detailDescription = attributeDefinitionDetail?.description ?? "";
+  const [titleDraft, setTitleDraft] = useState(detailTitle);
+  const [isTitleDraftDirty, setTitleDraftDirty] = useState(false);
   const [isTitleInputFocused, setTitleInputFocused] = useState(false);
   const [isDescriptionEditorOpen, setDescriptionEditorOpen] = useState(false);
   const [isDescriptionInputFocused, setDescriptionInputFocused] =
     useState(false);
-  const [descriptionDraft, setDescriptionDraft] = useState("");
+  const [descriptionDraft, setDescriptionDraft] = useState(detailDescription);
+  const [isDescriptionDraftDirty, setDescriptionDraftDirty] = useState(false);
   const descriptionInputRef = useRef<HTMLTextAreaElement | null>(null);
-  const displayIcon = column.icon ?? ATTRIBUTE_DEFINITION_ICON_BY_TYPE[column.type];
+  const displayIcon =
+    attributeDefinitionDetail?.icon ??
+    column.icon ??
+    ATTRIBUTE_DEFINITION_ICON_BY_TYPE[detailType];
   const menuSections: Array<Array<{
     readonly Icon: LucideIcon;
     readonly label: string;
@@ -634,8 +648,20 @@ function AttributeColumnHeaderPopover({
   ];
 
   useEffect(() => {
-    setTitleDraft(column.title);
-  }, [column.title]);
+    if (isTitleDraftDirty) {
+      return;
+    }
+
+    setTitleDraft(detailTitle);
+  }, [detailTitle, isTitleDraftDirty]);
+
+  useEffect(() => {
+    if (isDescriptionDraftDirty) {
+      return;
+    }
+
+    setDescriptionDraft(detailDescription);
+  }, [detailDescription, isDescriptionDraftDirty]);
 
   useEffect(() => {
     if (!isDescriptionEditorOpen) {
@@ -649,6 +675,7 @@ function AttributeColumnHeaderPopover({
 
   return (
     <div
+      aria-busy={isAttributeDefinitionDetailFetching}
       className="absolute left-1 top-[calc(100%+6px)] z-50 rounded-[14px] border border-[#E5E1D8] bg-white p-2 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
       role="menu"
       style={{ width: ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX }}
@@ -678,7 +705,10 @@ function AttributeColumnHeaderPopover({
             aria-label={t("objectList.attributeDefinitionTitleAction")}
             className="min-w-0 flex-1 bg-transparent text-[14px] font-semibold leading-none text-[#111827] outline-none"
             onBlur={() => setTitleInputFocused(false)}
-            onChange={(event) => setTitleDraft(event.target.value)}
+            onChange={(event) => {
+              setTitleDraft(event.target.value);
+              setTitleDraftDirty(true);
+            }}
             onFocus={() => setTitleInputFocused(true)}
             value={titleDraft}
           />
@@ -712,7 +742,10 @@ function AttributeColumnHeaderPopover({
               : "border-[#E5E1D8]",
           )}
           onBlur={() => setDescriptionInputFocused(false)}
-          onChange={(event) => setDescriptionDraft(event.target.value)}
+          onChange={(event) => {
+            setDescriptionDraft(event.target.value);
+            setDescriptionDraftDirty(true);
+          }}
           onFocus={() => setDescriptionInputFocused(true)}
           placeholder={t("objectList.attributeDefinitionDescriptionPlaceholder")}
           ref={descriptionInputRef}
@@ -877,7 +910,16 @@ export function WorkspaceObjectListPage() {
     objectDefinitionId: objectDefinitionId ?? null,
   });
 
-  // 2. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
+  // 2. 열려 있는 header popover의 AttributeDefinition 상세 정보를 조회한다.
+  const attributeDefinitionDetailQuery = useWorkspaceObjectAttributeDefinitionQuery({
+    enabled: Boolean(activeAttributeColumnMenuId),
+    userId: user?.id ?? null,
+    workspaceId: workspaceId ?? null,
+    objectDefinitionId: objectDefinitionId ?? null,
+    attributeDefinitionId: activeAttributeColumnMenuId,
+  });
+
+  // 3. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
   const recordDefinitionsQuery = useWorkspaceObjectRecordDefinitionsQuery({
     userId: user?.id ?? null,
     workspaceId: workspaceId ?? null,
@@ -1561,7 +1603,13 @@ export function WorkspaceObjectListPage() {
                     />
                     {isAttributeColumnMenuOpen ? (
                       <AttributeColumnHeaderPopover
+                        attributeDefinitionDetail={
+                          attributeDefinitionDetailQuery.data ?? null
+                        }
                         column={column}
+                        isAttributeDefinitionDetailFetching={
+                          attributeDefinitionDetailQuery.isFetching
+                        }
                       />
                     ) : null}
                   </div>

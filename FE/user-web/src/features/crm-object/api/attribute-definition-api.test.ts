@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   createWorkspaceObjectAttributeDefinition,
+  getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
 } from "@/features/crm-object/api/attribute-definition-api";
 import { apiClient } from "@/lib/api-client";
@@ -42,6 +43,52 @@ describe("listWorkspaceObjectAttributeDefinitions", () => {
     ]);
     expect(apiClientMock).toHaveBeenCalledWith(
       "/api/users/me/workspaces/workspace%2F1/object-definitions/object%2F1/attribute-definitions",
+    );
+  });
+});
+
+// 기능 : AttributeDefinition 단건 조회 API client의 요청 경로 생성을 검증합니다.
+describe("getWorkspaceObjectAttributeDefinition", () => {
+  it("requests an attribute definition detail for the selected workspace object", async () => {
+    apiClientMock.mockResolvedValue({
+      id: "attribute-definition-1",
+      config: {
+        currency: {
+          defaultCurrencyCode: "KRW",
+          displayType: "symbol",
+        },
+      },
+      description: "Primary amount.",
+      icon: "circle-dollar-sign",
+      title: "amount",
+      type: "Currency",
+      isMultiselect: false,
+      sortOrder: 2,
+    });
+
+    const result = await getWorkspaceObjectAttributeDefinition({
+      attributeDefinitionId: "attribute/1",
+      objectDefinitionId: "object/1",
+      workspaceId: "workspace/1",
+    });
+
+    expect(result).toEqual({
+      id: "attribute-definition-1",
+      config: {
+        currency: {
+          defaultCurrencyCode: "KRW",
+          displayType: "symbol",
+        },
+      },
+      description: "Primary amount.",
+      icon: "circle-dollar-sign",
+      title: "amount",
+      type: "Currency",
+      isMultiselect: false,
+      sortOrder: 2,
+    });
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace%2F1/object-definitions/object%2F1/attribute-definitions/attribute%2F1",
     );
   });
 });

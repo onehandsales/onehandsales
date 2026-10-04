@@ -4,6 +4,7 @@ export { listSidebarCrmObjects } from "./api/sidebar-crm-object-api";
 export { useSidebarCrmObjectsQuery } from "./hooks/use-sidebar-crm-objects";
 export {
   createWorkspaceObjectAttributeDefinition,
+  getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
 } from "./api/attribute-definition-api";
 export { workspaceObjectAttributeDefinitionQueryKeys } from "./api/attribute-definition-query-keys";
@@ -13,12 +14,16 @@ export {
   updateWorkspaceObjectRecordAttributeValueDefinition,
 } from "./api/record-definition-api";
 export { workspaceObjectRecordDefinitionQueryKeys } from "./api/record-definition-query-keys";
-export { useWorkspaceObjectAttributeDefinitionsQuery } from "./hooks/use-workspace-object-attribute-definitions";
+export {
+  useWorkspaceObjectAttributeDefinitionQuery,
+  useWorkspaceObjectAttributeDefinitionsQuery,
+} from "./hooks/use-workspace-object-attribute-definitions";
 export { useWorkspaceObjectRecordDefinitionsQuery } from "./hooks/use-workspace-object-record-definitions";
 export type {
   AttributeDefinitionConfig,
   AttributeDefinitionValueType,
   CreateWorkspaceObjectAttributeDefinitionResponse,
+  WorkspaceObjectAttributeDefinitionDetail,
   WorkspaceObjectAttributeDefinitionListItem,
 } from "./api/attribute-definition-api";
 export type {

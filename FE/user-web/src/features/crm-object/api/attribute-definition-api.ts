@@ -44,8 +44,22 @@ export type WorkspaceObjectAttributeDefinitionListItem = {
   readonly config: AttributeDefinitionConfig | null;
 };
 
+// 역할 : WorkspaceObjectAttributeDefinitionDetail이 Object 목록 header popover의 AttributeDefinition 상세 응답 값을 정의합니다.
+export type WorkspaceObjectAttributeDefinitionDetail =
+  WorkspaceObjectAttributeDefinitionListItem & {
+    readonly description: string | null;
+    readonly sortOrder: number;
+  };
+
 // 역할 : ListWorkspaceObjectAttributeDefinitionsInput이 AttributeDefinition 목록 조회 경계 값을 정의합니다.
 export type ListWorkspaceObjectAttributeDefinitionsInput = {
+  readonly objectDefinitionId: string;
+  readonly workspaceId: string;
+};
+
+// 역할 : GetWorkspaceObjectAttributeDefinitionInput이 AttributeDefinition 단건 조회 경계 값을 정의합니다.
+export type GetWorkspaceObjectAttributeDefinitionInput = {
+  readonly attributeDefinitionId: string;
   readonly objectDefinitionId: string;
   readonly workspaceId: string;
 };
@@ -72,6 +86,16 @@ export function listWorkspaceObjectAttributeDefinitions(
   // 1. 인증된 현재 사용자와 Workspace ObjectDefinition 기준 AttributeDefinition 목록 API를 호출한다.
   return apiClient<WorkspaceObjectAttributeDefinitionListItem[]>(
     `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/attribute-definitions`,
+  );
+}
+
+// 기능 : 현재 Workspace ObjectDefinition의 AttributeDefinition 단건 조회 API를 호출합니다.
+export function getWorkspaceObjectAttributeDefinition(
+  input: GetWorkspaceObjectAttributeDefinitionInput,
+) {
+  // 1. 인증된 현재 사용자와 Workspace ObjectDefinition 기준 AttributeDefinition 단건 API를 호출한다.
+  return apiClient<WorkspaceObjectAttributeDefinitionDetail>(
+    `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/attribute-definitions/${encodeURIComponent(input.attributeDefinitionId)}`,
   );
 }
 
