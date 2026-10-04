@@ -438,7 +438,7 @@ Frontend:
 - 일반 `+ 속성 추가`에서는 `insertPosition`을 보내지 않는다.
 - 성공 후 기존 목록 refetch 또는 optimistic update 정책을 따른다.
 
-## 15. 제외 범위
+## 16. 제외 범위
 
 - 새 API endpoint 추가
 - DB migration
@@ -447,26 +447,36 @@ Frontend:
 - Relationship, Select, Status 구현
 - View 저장 구조 변경
 
-## 16. 검증 계획
+## 17. 검증 결과
+
+완료일: 2026-10-04
+
+완료 커밋:
+
+- `121503fa feat: support attribute definition insert position`
 
 Backend:
 
-- `pnpm -C BE typecheck`
-- `pnpm -C BE lint`
-- AttributeDefinition create use case unit test
-- AttributeDefinition controller unit test
-- Prisma AttributeDefinition command repository test
-- `pnpm -C BE build`
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE typecheck` 통과
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE lint` 통과
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE prisma:validate` 통과
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE test -- --runInBand` 통과
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE build` 통과
 
 Frontend:
 
-- `FE/user-web`에서 속성 헤더 메뉴 동작 확인
-- 일반 속성 추가는 마지막에 추가되는지 확인
-- 왼쪽 삽입 시 기준 속성 포함 오른쪽 속성들이 밀리는지 확인
-- 오른쪽 삽입 시 기준 속성 오른쪽 속성들만 밀리는지 확인
-- 생성 후 테이블 컬럼 순서가 API 결과와 일치하는지 확인
+- `pnpm -C FE/user-web typecheck` 통과
+- `pnpm -C FE/user-web lint` 통과
+- `pnpm -C FE/user-web build` 통과
+- `pnpm -C FE/user-web test` 통과
 
-## 17. 확인 필요 사항
+공통:
+
+- `git diff --check` 통과
+- Backend health check `GET /api/health` 200 OK 확인
+- Frontend typecheck/lint 실행 시 local 기본 Node v22로 engine warning이 표시됐으나 명령은 통과했다.
+
+## 18. 확인 필요 사항
 
 - `referenceAttributeDefinitionId`는 현재 DB ID 정책에 맞춰 UUID로 검증한다.
 - `AttributeDefinitionNotFound`는 현재 에러 필터 정책에 따라 404로 응답한다.
