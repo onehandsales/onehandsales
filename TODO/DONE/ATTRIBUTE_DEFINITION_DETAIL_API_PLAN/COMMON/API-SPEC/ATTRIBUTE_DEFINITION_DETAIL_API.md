@@ -308,12 +308,25 @@ model AttributeDefinition {
 
 ## 12. 완료 검증
 
+완료일: 2026-10-04
+
+구현 커밋:
+
+- `b42dd64a feat(be): add attribute definition detail api`
+
+완료 당시 검증:
+
 - `pnpm -C BE typecheck`
 - `pnpm -C BE lint`
 - `pnpm -C BE test -- --runInBand BE/src/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case.spec.ts BE/src/modules/attribute-definition/presentation/http/user-workspace-object-attribute-definitions.controller.spec.ts BE/src/modules/attribute-definition/infrastructure/persistence/prisma-attribute-definition-detail-query.repository.spec.ts`
 - `pnpm -C BE test -- --runInBand`
 - `pnpm -C BE prisma:validate`
 - `pnpm -C BE build`
+
+DONE 이동 전 재확인:
+
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE typecheck` 통과
+- `PATH=/opt/homebrew/bin:$PATH pnpm -C BE test -- --runInBand BE/src/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case.spec.ts BE/src/modules/attribute-definition/infrastructure/persistence/prisma-attribute-definition-detail-query.repository.spec.ts BE/src/modules/attribute-definition/presentation/http/user-workspace-object-attribute-definitions.controller.spec.ts` 통과
 
 ## 13. 구현 상태
 
@@ -323,7 +336,7 @@ model AttributeDefinition {
 - Prisma adapter: `BE/src/modules/attribute-definition/infrastructure/persistence/prisma-attribute-definition-detail-query.repository.ts`
 - Domain error: `BE/src/modules/attribute-definition/domain/attribute-definition.errors.ts`
 - Module provider: `BE/src/modules/attribute-definition/infrastructure/attribute-definition.module.ts`
-- 검증:
+- 완료 당시 검증:
   - `pnpm -C BE typecheck`
   - `pnpm -C BE lint`
   - `pnpm -C BE test -- --runInBand BE/src/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case.spec.ts BE/src/modules/attribute-definition/infrastructure/persistence/prisma-attribute-definition-detail-query.repository.spec.ts BE/src/modules/attribute-definition/presentation/http/user-workspace-object-attribute-definitions.controller.spec.ts`
