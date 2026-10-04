@@ -1,31 +1,42 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  ArrowLeftToLine,
+  ArrowRightToLine,
   ArrowLeft,
   ArrowUpDown,
   Calendar,
   CalendarClock,
+  ChevronRight,
   CircleDollarSign,
   Contact,
+  Copy,
   Download,
+  EyeOff,
   Globe,
   Hash,
   Info,
   Kanban,
   Link2,
+  ListFilter,
   ListChecks,
+  LockKeyhole,
   Mail,
   MapPin,
   MessagesSquare,
   MoreHorizontal,
   Phone,
+  Pin,
   Plus,
   Search,
+  Sigma,
   SlidersHorizontal,
   SquareCheck,
   Star,
+  Trash2,
   Type,
   Upload,
   User,
+  WrapText,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -525,24 +536,6 @@ function getObjectListTableMinWidth(
   }, fixedWidth);
 }
 
-// 기능 : AttributeDefinition 타입을 현재 언어의 화면 표시 이름으로 변환합니다.
-function getAttributeDefinitionTypeLabel(
-  type: AttributeDefinitionTypeKey,
-  locale: AppLocale,
-) {
-  const copy = addAttributeDefinitionCreateModalCopyByLocale[locale];
-
-  for (const group of copy.typeOptionGroups) {
-    const option = group.options.find((item) => item.key === type);
-
-    if (option) {
-      return option.label;
-    }
-  }
-
-  return type;
-}
-
 // 기능 : AttributeDefinition API 응답을 header row 렌더링용 컬럼 값으로 변환합니다.
 function toRenderedAttributeColumns(
   attributeDefinitions: readonly WorkspaceObjectAttributeDefinitionListItem[],
@@ -564,88 +557,136 @@ function toRenderedAttributeColumns(
 // 기능 : AttributeDefinition header 클릭 시 열리는 속성 메뉴 popover를 렌더링합니다.
 function AttributeColumnHeaderPopover({
   column,
-  typeLabel,
 }: {
   readonly column: RenderedObjectListAttributeColumn;
-  readonly typeLabel: string;
 }) {
   const { t } = useAppI18n();
   const displayIcon = column.icon ?? ATTRIBUTE_DEFINITION_ICON_BY_TYPE[column.type];
-  const multiselectLabel = column.isMultiselect ? t("common.yes") : t("common.no");
-  const menuItems: Array<{
+  const menuSections: Array<Array<{
     readonly Icon: LucideIcon;
     readonly label: string;
-    readonly trailing?: string;
-  }> = [
-    {
-      Icon: Star,
-      label: t("objectList.attributeDefinitionIconAction"),
-    },
-    {
-      Icon: Type,
-      label: t("objectList.attributeDefinitionTitleAction"),
-    },
-    {
-      Icon: MessagesSquare,
-      label: t("objectList.attributeDefinitionDescriptionAction"),
-    },
-    {
-      Icon: SquareCheck,
-      label: t("objectList.attributeDefinitionMultiselectAction"),
-      trailing: multiselectLabel,
-    },
+    readonly hasSubmenu?: boolean;
+  }>> = [
+    [
+      {
+        Icon: LockKeyhole,
+        label: t("objectList.attributeDefinitionPermissionAction"),
+      },
+      {
+        Icon: ArrowUpDown,
+        label: t("objectList.attributeDefinitionTypeAction"),
+        hasSubmenu: true,
+      },
+    ],
+    [
+      {
+        Icon: ListFilter,
+        label: t("objectList.attributeDefinitionFilterAction"),
+      },
+      {
+        Icon: ArrowUpDown,
+        label: t("objectList.attributeDefinitionSortAction"),
+        hasSubmenu: true,
+      },
+      {
+        Icon: Sigma,
+        label: t("objectList.attributeDefinitionCalculateAction"),
+        hasSubmenu: true,
+      },
+      {
+        Icon: Pin,
+        label: t("objectList.attributeDefinitionPinAction"),
+      },
+      {
+        Icon: EyeOff,
+        label: t("objectList.attributeDefinitionHideAction"),
+      },
+      {
+        Icon: WrapText,
+        label: t("objectList.attributeDefinitionWrapAction"),
+      },
+    ],
+    [
+      {
+        Icon: ArrowLeftToLine,
+        label: t("objectList.attributeDefinitionInsertLeftAction"),
+      },
+      {
+        Icon: ArrowRightToLine,
+        label: t("objectList.attributeDefinitionInsertRightAction"),
+      },
+      {
+        Icon: Copy,
+        label: t("objectList.attributeDefinitionDuplicateAction"),
+      },
+      {
+        Icon: Trash2,
+        label: t("objectList.attributeDefinitionDeleteAction"),
+      },
+    ],
   ];
 
   return (
     <div
-      className="absolute left-1 top-[calc(100%+6px)] z-50 overflow-hidden rounded-lg border border-[#E5E1D8] bg-white p-1.5 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
+      className="absolute left-1 top-[calc(100%+6px)] z-50 overflow-hidden rounded-[14px] border border-[#E5E1D8] bg-white p-2 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
       role="menu"
       style={{ width: ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX }}
     >
-      <div className="flex h-10 min-w-0 items-center gap-2 rounded-md bg-[#F8F7F4] px-2">
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-[#E5E1D8] bg-white text-[#6B7280]">
+      <div className="flex min-w-0 items-center gap-2">
+        <button
+          aria-label={t("objectList.attributeDefinitionIconAction")}
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white text-[#6B7280] transition hover:bg-[#F4F3EF] active:bg-[#E4E2DC]"
+          role="menuitem"
+          type="button"
+        >
           <SidebarCrmObjectIcon
-            className="h-4 w-4"
+            className="h-5 w-5"
             name={displayIcon}
             strokeWidth={2}
           />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[14px] font-semibold leading-4 text-[#111827]">
+        </button>
+        <button
+          aria-label={t("objectList.attributeDefinitionTitleAction")}
+          className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[8px] border-2 border-[#2383E2] bg-white px-2 text-left shadow-[0_0_0_1px_rgba(35,131,226,0.16)]"
+          role="menuitem"
+          type="button"
+        >
+          <span className="min-w-0 flex-1 truncate text-[15px] font-semibold leading-none text-[#111827]">
             {column.title}
           </span>
-          <span className="mt-0.5 block truncate text-[12px] font-medium leading-3 text-[#9CA3AF]">
-            {typeLabel}
-          </span>
-        </span>
-        <Info
-          aria-hidden="true"
-          className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-          strokeWidth={2}
-        />
+          <Info
+            aria-hidden="true"
+            className="h-5 w-5 shrink-0 fill-[#8B8984] text-[#8B8984]"
+            strokeWidth={2}
+          />
+        </button>
       </div>
-      <div className="my-1 h-px bg-[#EEEDEA]" />
-      <div className="grid gap-px">
-        {menuItems.map(({ Icon, label, trailing }) => (
-          <button
-            aria-disabled="true"
-            className="group flex h-8 w-full min-w-0 items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-default disabled:opacity-100"
-            disabled
-            key={label}
-            role="menuitem"
-            type="button"
-          >
-            <Icon
-              className="h-4 w-4 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"
-              strokeWidth={2}
-            />
-            <span className="min-w-0 flex-1 truncate">{label}</span>
-            {trailing ? (
-              <span className="shrink-0 text-[12px] font-medium text-[#9CA3AF]">
-                {trailing}
-              </span>
-            ) : null}
-          </button>
+      <div className="mt-2 grid gap-1">
+        {menuSections.map((menuItems, sectionIndex) => (
+          <div className="grid gap-1" key={`attribute-menu-section-${sectionIndex}`}>
+            {sectionIndex > 0 ? <div className="my-1 h-px bg-[#EEEDEA]" /> : null}
+            {menuItems.map(({ Icon, label, hasSubmenu }) => (
+              <button
+                className="group flex h-9 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[15px] font-medium text-[#2F2F2F] transition hover:bg-[#F1F0EE] active:bg-[#E4E2DC]"
+                key={label}
+                role="menuitem"
+                type="button"
+              >
+                <Icon
+                  className="h-5 w-5 shrink-0 text-[#2F2F2F]"
+                  strokeWidth={1.9}
+                />
+                <span className="min-w-0 flex-1 truncate">{label}</span>
+                {hasSubmenu ? (
+                  <ChevronRight
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 text-[#8B8984]"
+                    strokeWidth={2.2}
+                  />
+                ) : null}
+              </button>
+            ))}
+          </div>
         ))}
       </div>
     </div>
@@ -762,7 +803,7 @@ export function WorkspaceObjectListPage() {
   const objectListScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
-  const { locale, t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
+  const { t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
   const { user } = useAuthSession();
   const { objectDefinitionId, workspaceId } = useParams<{
     readonly objectDefinitionId?: string;
@@ -1405,10 +1446,6 @@ export function WorkspaceObjectListPage() {
               {renderedAttributeColumns.map((column) => {
                 const isAttributeColumnMenuOpen =
                   activeAttributeColumnMenuId === column.id;
-                const typeLabel = getAttributeDefinitionTypeLabel(
-                  column.type,
-                  locale,
-                );
 
                 return (
                   <div
@@ -1467,7 +1504,6 @@ export function WorkspaceObjectListPage() {
                     {isAttributeColumnMenuOpen ? (
                       <AttributeColumnHeaderPopover
                         column={column}
-                        typeLabel={typeLabel}
                       />
                     ) : null}
                   </div>
