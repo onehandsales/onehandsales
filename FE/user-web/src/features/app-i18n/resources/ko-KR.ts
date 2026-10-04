@@ -47,6 +47,7 @@ export const koKRResource = {
     attributeDefinitionIconAction: "아이콘 변경",
     attributeDefinitionInsertLeftAction: "왼쪽에 삽입",
     attributeDefinitionInsertRightAction: "오른쪽에 삽입",
+    attributeDefinitionMultiselectAction: "여러 값 허용",
     attributeDefinitionPermissionAction: "속성 사용 권한",
     attributeDefinitionPinAction: "고정",
     attributeDefinitionSortAction: "정렬",

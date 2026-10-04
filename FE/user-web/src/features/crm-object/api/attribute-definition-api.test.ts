@@ -1,8 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createWorkspaceObjectAttributeDefinition,
   getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
+  updateWorkspaceObjectAttributeDefinition,
 } from "@/features/crm-object/api/attribute-definition-api";
 import { apiClient } from "@/lib/api-client";
 
@@ -11,6 +12,10 @@ vi.mock("@/lib/api-client", () => ({
 }));
 
 const apiClientMock = vi.mocked(apiClient);
+
+beforeEach(() => {
+  apiClientMock.mockReset();
+});
 
 // 기능 : AttributeDefinition API client의 요청 경로 생성을 검증합니다.
 describe("listWorkspaceObjectAttributeDefinitions", () => {
@@ -181,6 +186,104 @@ describe("createWorkspaceObjectAttributeDefinition", () => {
               "00000000-0000-4000-8000-000000000602",
             side: "before",
           },
+        },
+      },
+    );
+  });
+});
+
+// 기능 : AttributeDefinition 수정 API client의 sparse PATCH 요청 생성을 검증합니다.
+describe("updateWorkspaceObjectAttributeDefinition", () => {
+  it("patches only the provided attribute definition title", async () => {
+    apiClientMock.mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+    });
+
+    const result = await updateWorkspaceObjectAttributeDefinition({
+      attributeDefinitionId: "attribute/1",
+      objectDefinitionId: "object/1",
+      title: "계약 금액",
+      workspaceId: "workspace/1",
+    });
+
+    expect(result).toEqual({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+    });
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace%2F1/object-definitions/object%2F1/attribute-definitions/attribute%2F1",
+      {
+        method: "PATCH",
+        body: {
+          title: "계약 금액",
+        },
+      },
+    );
+  });
+
+  it("patches only the provided attribute definition description", async () => {
+    apiClientMock.mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000602",
+    });
+
+    await updateWorkspaceObjectAttributeDefinition({
+      attributeDefinitionId: "attribute-2",
+      description: null,
+      objectDefinitionId: "object-2",
+      workspaceId: "workspace-2",
+    });
+
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace-2/object-definitions/object-2/attribute-definitions/attribute-2",
+      {
+        method: "PATCH",
+        body: {
+          description: null,
+        },
+      },
+    );
+  });
+
+  it("patches only the provided attribute definition icon", async () => {
+    apiClientMock.mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000603",
+    });
+
+    await updateWorkspaceObjectAttributeDefinition({
+      attributeDefinitionId: "attribute-3",
+      icon: "circle-dollar-sign",
+      objectDefinitionId: "object-3",
+      workspaceId: "workspace-3",
+    });
+
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace-3/object-definitions/object-3/attribute-definitions/attribute-3",
+      {
+        method: "PATCH",
+        body: {
+          icon: "circle-dollar-sign",
+        },
+      },
+    );
+  });
+
+  it("patches only the provided attribute definition multiselect flag", async () => {
+    apiClientMock.mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000604",
+    });
+
+    await updateWorkspaceObjectAttributeDefinition({
+      attributeDefinitionId: "attribute-4",
+      isMultiselect: true,
+      objectDefinitionId: "object-4",
+      workspaceId: "workspace-4",
+    });
+
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace-4/object-definitions/object-4/attribute-definitions/attribute-4",
+      {
+        method: "PATCH",
+        body: {
+          isMultiselect: true,
         },
       },
     );

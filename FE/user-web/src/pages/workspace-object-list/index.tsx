@@ -63,9 +63,11 @@ import {
   type AttributeDefinitionValueType,
   type CreateWorkspaceObjectAttributeDefinitionInsertPosition,
   type CreateWorkspaceObjectAttributeDefinitionResponse,
+  type UpdateWorkspaceObjectAttributeDefinitionInput,
   type WorkspaceObjectAttributeDefinitionDetail,
   type WorkspaceObjectAttributeDefinitionListItem,
   type WorkspaceObjectRecordDefinitionListItem,
+  useUpdateWorkspaceObjectAttributeDefinitionMutation,
   useWorkspaceObjectAttributeDefinitionQuery,
   useWorkspaceObjectAttributeDefinitionsQuery,
   useWorkspaceObjectRecordDefinitionsQuery,
@@ -515,6 +517,29 @@ type RenderedObjectListAttributeColumn =
 
 type ObjectListAttributeColumnWidthsById = Readonly<Record<string, number>>;
 
+// 역할 : AttributeDefinitionPopoverPatch가 header popover에서 보내는 단일 필드 수정 요청 값을 정의합니다.
+type AttributeDefinitionPopoverPatch =
+  | {
+      readonly description: NonNullable<
+        UpdateWorkspaceObjectAttributeDefinitionInput["description"]
+      > | null;
+    }
+  | {
+      readonly icon: NonNullable<
+        UpdateWorkspaceObjectAttributeDefinitionInput["icon"]
+      > | null;
+    }
+  | {
+      readonly isMultiselect: NonNullable<
+        UpdateWorkspaceObjectAttributeDefinitionInput["isMultiselect"]
+      >;
+    }
+  | {
+      readonly title: NonNullable<
+        UpdateWorkspaceObjectAttributeDefinitionInput["title"]
+      >;
+    };
+
 // 기능 : AttributeDefinition 컬럼 폭을 허용 범위 안으로 보정합니다.
 function clampObjectListAttributeColumnWidth(width: number) {
   return Math.max(OBJECT_LIST_ATTRIBUTE_MIN_WIDTH_PX, Math.round(width));
@@ -591,20 +616,29 @@ function AttributeColumnHeaderPopover({
   attributeDefinitionDetail,
   column,
   isAttributeDefinitionDetailFetching,
+  isAttributeDefinitionUpdating,
   onInsertLeft,
   onInsertRight,
+  onPatchAttributeDefinition,
 }: {
   readonly attributeDefinitionDetail: WorkspaceObjectAttributeDefinitionDetail | null;
   readonly column: RenderedObjectListAttributeColumn;
   readonly isAttributeDefinitionDetailFetching: boolean;
+  readonly isAttributeDefinitionUpdating: boolean;
   readonly onInsertLeft: (columnId: string) => void;
   readonly onInsertRight: (columnId: string) => void;
+  readonly onPatchAttributeDefinition: (
+    attributeDefinitionId: string,
+    patch: AttributeDefinitionPopoverPatch,
+  ) => Promise<void>;
 }) {
   const { locale, t } = useAppI18n();
   const iconPickerCopy = iconValuePickerCopyByLocale[locale];
   const detailTitle = attributeDefinitionDetail?.title ?? column.title;
   const detailType = attributeDefinitionDetail?.type ?? column.type;
   const detailDescription = attributeDefinitionDetail?.description ?? "";
+  const detailIsMultiselect =
+    attributeDefinitionDetail?.isMultiselect ?? column.isMultiselect;
   const detailIcon =
     attributeDefinitionDetail?.icon ??
     column.icon ??
@@ -619,6 +653,13 @@ function AttributeColumnHeaderPopover({
   const [isDescriptionDraftDirty, setDescriptionDraftDirty] = useState(false);
   const [iconDraft, setIconDraft] = useState(detailIcon);
   const [isIconDraftDirty, setIconDraftDirty] = useState(false);
+  const [isMultiselectDraft, setMultiselectDraft] =
+    useState(detailIsMultiselect);
+  const [isMultiselectDraftDirty, setMultiselectDraftDirty] = useState(false);
+  const [
+    attributeDefinitionUpdateErrorMessage,
+    setAttributeDefinitionUpdateErrorMessage,
+  ] = useState<string | null>(null);
   const descriptionInputRef = useRef<HTMLTextAreaElement | null>(null);
   const displayIcon = iconDraft;
   const menuSections: Array<Array<{
@@ -688,6 +729,101 @@ function AttributeColumnHeaderPopover({
     ],
   ];
 
+  // 기능 : AttributeDefinition popover에서 단일 필드 수정 요청을 실행합니다.
+  async function commitAttributeDefinitionPatch(
+    patch: AttributeDefinitionPopoverPatch,
+    rollback: () => void,
+  ) {
+    // 1. 이전 오류 메시지를 비우고 현재 필드의 sparse PATCH만 전달한다.
+    setAttributeDefinitionUpdateErrorMessage(null);
+
+    try {
+      await onPatchAttributeDefinition(column.id, patch);
+    } catch (error) {
+      // 2. 실패하면 화면 draft를 서버에서 알고 있던 값으로 되돌리고 오류 메시지를 표시한다.
+      rollback();
+      setAttributeDefinitionUpdateErrorMessage(getApiErrorMessage(error));
+    }
+  }
+
+  // 기능 : AttributeDefinition title draft를 단일 PATCH 요청으로 저장합니다.
+  async function commitTitleDraft() {
+    // 1. 공백만 입력된 이름은 저장하지 않고 현재 서버 값을 다시 보여준다.
+    const nextTitle = titleDraft.trim();
+
+    if (nextTitle.length === 0) {
+      setTitleDraft(detailTitle);
+      setTitleDraftDirty(false);
+      return;
+    }
+
+    if (nextTitle === detailTitle) {
+      setTitleDraft(nextTitle);
+      setTitleDraftDirty(false);
+      return;
+    }
+
+    // 2. title 필드 하나만 PATCH body에 포함해 저장한다.
+    setTitleDraft(nextTitle);
+    await commitAttributeDefinitionPatch(
+      { title: nextTitle },
+      () => setTitleDraft(detailTitle),
+    );
+    setTitleDraftDirty(false);
+  }
+
+  // 기능 : AttributeDefinition description draft를 단일 PATCH 요청으로 저장합니다.
+  async function commitDescriptionDraft() {
+    // 1. 빈 설명은 null로 변환해 서버에 제거 의도를 전달한다.
+    const nextDescription = descriptionDraft.trim();
+    const nextDescriptionValue =
+      nextDescription.length > 0 ? nextDescription : null;
+
+    if ((nextDescriptionValue ?? "") === detailDescription) {
+      setDescriptionDraft(nextDescription);
+      setDescriptionDraftDirty(false);
+      return;
+    }
+
+    // 2. description 필드 하나만 PATCH body에 포함해 저장한다.
+    setDescriptionDraft(nextDescription);
+    await commitAttributeDefinitionPatch(
+      { description: nextDescriptionValue },
+      () => setDescriptionDraft(detailDescription),
+    );
+    setDescriptionDraftDirty(false);
+  }
+
+  // 기능 : AttributeDefinition icon 선택값을 단일 PATCH 요청으로 저장합니다.
+  async function commitIconDraft(nextIcon: string) {
+    if (nextIcon === detailIcon) {
+      setIconDraftDirty(false);
+      return;
+    }
+
+    // 1. icon 필드 하나만 PATCH body에 포함해 저장한다.
+    await commitAttributeDefinitionPatch(
+      { icon: nextIcon },
+      () => setIconDraft(detailIcon),
+    );
+    setIconDraftDirty(false);
+  }
+
+  // 기능 : AttributeDefinition 다중 선택 여부를 단일 PATCH 요청으로 저장합니다.
+  async function commitMultiselectDraft(nextIsMultiselect: boolean) {
+    if (nextIsMultiselect === detailIsMultiselect) {
+      setMultiselectDraftDirty(false);
+      return;
+    }
+
+    // 1. isMultiselect 필드 하나만 PATCH body에 포함해 저장한다.
+    await commitAttributeDefinitionPatch(
+      { isMultiselect: nextIsMultiselect },
+      () => setMultiselectDraft(detailIsMultiselect),
+    );
+    setMultiselectDraftDirty(false);
+  }
+
   useEffect(() => {
     if (isTitleDraftDirty) {
       return;
@@ -713,6 +849,18 @@ function AttributeColumnHeaderPopover({
   }, [detailIcon, isIconDraftDirty]);
 
   useEffect(() => {
+    if (isMultiselectDraftDirty) {
+      return;
+    }
+
+    setMultiselectDraft(detailIsMultiselect);
+  }, [detailIsMultiselect, isMultiselectDraftDirty]);
+
+  useEffect(() => {
+    setAttributeDefinitionUpdateErrorMessage(null);
+  }, [column.id]);
+
+  useEffect(() => {
     if (!isDescriptionEditorOpen) {
       setDescriptionInputFocused(false);
       return;
@@ -724,7 +872,9 @@ function AttributeColumnHeaderPopover({
 
   return (
     <div
-      aria-busy={isAttributeDefinitionDetailFetching}
+      aria-busy={
+        isAttributeDefinitionDetailFetching || isAttributeDefinitionUpdating
+      }
       className="absolute left-1 top-[calc(100%+6px)] z-50 rounded-[14px] border border-[#E5E1D8] bg-white p-2 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
       role="menu"
       style={{ width: ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX }}
@@ -736,6 +886,11 @@ function AttributeColumnHeaderPopover({
           locale={locale}
           openTriggerClassName="bg-[#E4E2DC] text-[#111111]"
           popoverClassName="top-[calc(100%+6px)] z-[70]"
+          rootClassName={
+            isAttributeDefinitionUpdating
+              ? "pointer-events-none opacity-60"
+              : undefined
+          }
           searchInputName="attributeDefinitionLucideIconSearch"
           showTooltip={false}
           triggerClassName="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white p-0 text-[#6B7280] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
@@ -746,6 +901,7 @@ function AttributeColumnHeaderPopover({
           onChange={(nextIcon) => {
             setIconDraft(nextIcon);
             setIconDraftDirty(true);
+            void commitIconDraft(nextIcon);
           }}
         />
         <div
@@ -759,17 +915,27 @@ function AttributeColumnHeaderPopover({
           <input
             aria-label={t("objectList.attributeDefinitionTitleAction")}
             className="min-w-0 flex-1 bg-transparent text-[14px] font-semibold leading-none text-[#111827] outline-none"
-            onBlur={() => setTitleInputFocused(false)}
+            disabled={isAttributeDefinitionUpdating}
+            onBlur={() => {
+              setTitleInputFocused(false);
+              void commitTitleDraft();
+            }}
             onChange={(event) => {
               setTitleDraft(event.target.value);
               setTitleDraftDirty(true);
             }}
             onFocus={() => setTitleInputFocused(true)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.currentTarget.blur();
+              }
+            }}
             value={titleDraft}
           />
           <button
             aria-label={t("objectList.attributeDefinitionDescriptionAction")}
             className="group relative grid h-5 w-5 shrink-0 place-items-center rounded-full text-[#8B8984] outline-none transition hover:bg-[#E4E2DC] hover:text-[#2F2F2F] active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-[#4880EE] focus-visible:ring-offset-1"
+            disabled={isAttributeDefinitionUpdating}
             onClick={() => setDescriptionEditorOpen(true)}
             type="button"
           >
@@ -796,7 +962,11 @@ function AttributeColumnHeaderPopover({
               ? "border-[#4880EE] shadow-[0_0_0_1px_rgba(72,128,238,0.16)]"
               : "border-[#E5E1D8]",
           )}
-          onBlur={() => setDescriptionInputFocused(false)}
+          disabled={isAttributeDefinitionUpdating}
+          onBlur={() => {
+            setDescriptionInputFocused(false);
+            void commitDescriptionDraft();
+          }}
           onChange={(event) => {
             setDescriptionDraft(event.target.value);
             setDescriptionDraftDirty(true);
@@ -806,6 +976,50 @@ function AttributeColumnHeaderPopover({
           ref={descriptionInputRef}
           value={descriptionDraft}
         />
+      ) : null}
+      <div className="mt-2 flex h-8 items-center gap-2 rounded-[8px] border border-[#E5E1D8] bg-white px-2">
+        <ListChecks
+          aria-hidden="true"
+          className="h-4 w-4 shrink-0 text-[#8B8984]"
+          strokeWidth={1.9}
+        />
+        <span className="min-w-0 flex-1 truncate text-[14px] font-medium text-[#2F2F2F]">
+          {t("objectList.attributeDefinitionMultiselectAction")}
+        </span>
+        <button
+          aria-label={t("objectList.attributeDefinitionMultiselectAction")}
+          aria-pressed={isMultiselectDraft}
+          className={cn(
+            "relative h-5 w-9 shrink-0 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE] focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60",
+            isMultiselectDraft ? "bg-[#4880EE]" : "bg-[#D6D3CD]",
+          )}
+          disabled={isAttributeDefinitionUpdating}
+          type="button"
+          onClick={() => {
+            const nextIsMultiselect = !isMultiselectDraft;
+
+            setMultiselectDraft(nextIsMultiselect);
+            setMultiselectDraftDirty(true);
+            void commitMultiselectDraft(nextIsMultiselect);
+          }}
+        >
+          <span
+            className={cn(
+              "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-[0_1px_3px_rgba(15,23,42,0.22)] transition-transform",
+              isMultiselectDraft
+                ? "translate-x-[18px]"
+                : "translate-x-0.5",
+            )}
+          />
+        </button>
+      </div>
+      {attributeDefinitionUpdateErrorMessage ? (
+        <p
+          className="mt-2 rounded-[8px] bg-[#FEF2F2] px-2 py-1.5 text-[12px] font-medium leading-4 text-[#B91C1C]"
+          role="alert"
+        >
+          {attributeDefinitionUpdateErrorMessage}
+        </p>
       ) : null}
       <div className="mt-2 grid gap-1">
         {menuSections.map((menuItems, sectionIndex) => (
@@ -981,7 +1195,13 @@ export function WorkspaceObjectListPage() {
     attributeDefinitionId: activeAttributeColumnMenuId,
   });
 
-  // 3. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
+  // 3. AttributeDefinition popover의 단일 필드 수정을 처리할 mutation을 준비한다.
+  const updateAttributeDefinitionMutation =
+    useUpdateWorkspaceObjectAttributeDefinitionMutation({
+      userId: user?.id ?? null,
+    });
+
+  // 4. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
   const recordDefinitionsQuery = useWorkspaceObjectRecordDefinitionsQuery({
     userId: user?.id ?? null,
     workspaceId: workspaceId ?? null,
@@ -1304,6 +1524,29 @@ export function WorkspaceObjectListPage() {
     setActiveAttributeColumnMenuId((currentColumnId) =>
       currentColumnId === columnId ? null : columnId,
     );
+  }
+
+  // 기능 : AttributeDefinition header popover에서 단일 필드 수정 API를 호출합니다.
+  async function handleAttributeDefinitionPatch(
+    attributeDefinitionId: string,
+    patch: AttributeDefinitionPopoverPatch,
+  ) {
+    // 1. 수정에 필요한 사용자/Workspace/ObjectDefinition 경계 값이 없으면 요청하지 않는다.
+    const ownerUserId = user?.id ?? null;
+    const currentWorkspaceId = workspaceId ?? null;
+    const currentObjectDefinitionId = objectDefinitionId ?? null;
+
+    if (!ownerUserId || !currentWorkspaceId || !currentObjectDefinitionId) {
+      return;
+    }
+
+    // 2. popover에서 넘긴 단일 필드 patch만 Backend PATCH API 계약으로 전달한다.
+    await updateAttributeDefinitionMutation.mutateAsync({
+      workspaceId: currentWorkspaceId,
+      objectDefinitionId: currentObjectDefinitionId,
+      attributeDefinitionId,
+      ...patch,
+    });
   }
 
   // 기능 : 새로 생성된 AttributeDefinition과 기존 row cell value를 object list query에 반영합니다.
@@ -1702,8 +1945,14 @@ export function WorkspaceObjectListPage() {
                         isAttributeDefinitionDetailFetching={
                           attributeDefinitionDetailQuery.isFetching
                         }
+                        isAttributeDefinitionUpdating={
+                          updateAttributeDefinitionMutation.isPending
+                        }
                         onInsertLeft={openAddAttributeDefinitionModalOnLeft}
                         onInsertRight={openAddAttributeDefinitionModalOnRight}
+                        onPatchAttributeDefinition={
+                          handleAttributeDefinitionPatch
+                        }
                       />
                     ) : null}
                   </div>

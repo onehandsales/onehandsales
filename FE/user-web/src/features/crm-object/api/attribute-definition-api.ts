@@ -86,6 +86,22 @@ export type CreateWorkspaceObjectAttributeDefinitionResponse = {
   readonly attributeDefinitionId: string;
 };
 
+// 역할 : UpdateWorkspaceObjectAttributeDefinitionInput이 AttributeDefinition 수정 요청 값을 정의합니다.
+export type UpdateWorkspaceObjectAttributeDefinitionInput = {
+  readonly attributeDefinitionId: string;
+  readonly description?: string | null;
+  readonly icon?: string | null;
+  readonly isMultiselect?: boolean;
+  readonly objectDefinitionId: string;
+  readonly title?: string;
+  readonly workspaceId: string;
+};
+
+// 역할 : UpdateWorkspaceObjectAttributeDefinitionResponse가 AttributeDefinition 수정 응답 값을 정의합니다.
+export type UpdateWorkspaceObjectAttributeDefinitionResponse = {
+  readonly attributeDefinitionId: string;
+};
+
 // 기능 : 현재 Workspace ObjectDefinition의 header row AttributeDefinition 목록 API를 호출합니다.
 export function listWorkspaceObjectAttributeDefinitions(
   input: ListWorkspaceObjectAttributeDefinitionsInput,
@@ -139,6 +155,44 @@ export function createWorkspaceObjectAttributeDefinition(
     `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/attribute-definitions`,
     {
       method: "POST",
+      body,
+    },
+  );
+}
+
+// 기능 : 현재 Workspace ObjectDefinition의 AttributeDefinition 일부 값을 수정합니다.
+export function updateWorkspaceObjectAttributeDefinition(
+  input: UpdateWorkspaceObjectAttributeDefinitionInput,
+) {
+  // 1. request에 포함된 수정 필드만 sparse PATCH body에 담는다.
+  const body: {
+    description?: string | null;
+    icon?: string | null;
+    isMultiselect?: boolean;
+    title?: string;
+  } = {};
+
+  if (input.title !== undefined) {
+    body.title = input.title;
+  }
+
+  if (input.description !== undefined) {
+    body.description = input.description;
+  }
+
+  if (input.icon !== undefined) {
+    body.icon = input.icon;
+  }
+
+  if (input.isMultiselect !== undefined) {
+    body.isMultiselect = input.isMultiselect;
+  }
+
+  // 2. 현재 Workspace ObjectDefinition 기준 AttributeDefinition 수정 요청을 전달한다.
+  return apiClient<UpdateWorkspaceObjectAttributeDefinitionResponse>(
+    `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/attribute-definitions/${encodeURIComponent(input.attributeDefinitionId)}`,
+    {
+      method: "PATCH",
       body,
     },
   );

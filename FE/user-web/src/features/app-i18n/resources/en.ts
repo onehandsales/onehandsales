@@ -47,6 +47,7 @@ export const enResource = {
     attributeDefinitionIconAction: "Change icon",
     attributeDefinitionInsertLeftAction: "Insert left",
     attributeDefinitionInsertRightAction: "Insert right",
+    attributeDefinitionMultiselectAction: "Allow multiple values",
     attributeDefinitionPermissionAction: "Property permissions",
     attributeDefinitionPinAction: "Pin",
     attributeDefinitionSortAction: "Sort",

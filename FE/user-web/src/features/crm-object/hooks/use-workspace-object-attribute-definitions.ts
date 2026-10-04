@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
+  updateWorkspaceObjectAttributeDefinition,
 } from "@/features/crm-object/api/attribute-definition-api";
 import { workspaceObjectAttributeDefinitionQueryKeys } from "@/features/crm-object/api/attribute-definition-query-keys";
 
@@ -16,6 +17,11 @@ type UseWorkspaceObjectAttributeDefinitionQueryOptions =
   UseWorkspaceObjectAttributeDefinitionsQueryOptions & {
     readonly attributeDefinitionId?: string | null;
   };
+
+// 역할 : UseUpdateWorkspaceObjectAttributeDefinitionMutationOptions가 AttributeDefinition 수정 mutation 설정을 정의합니다.
+type UseUpdateWorkspaceObjectAttributeDefinitionMutationOptions = {
+  readonly userId?: string | null;
+};
 
 type FetchWorkspaceObjectAttributeDefinitionDetailInput = {
   readonly attributeDefinitionId: string | null;
@@ -122,5 +128,36 @@ export function useWorkspaceObjectAttributeDefinitionQuery(
       Boolean(userId && workspaceId && objectDefinitionId && attributeDefinitionId),
     refetchOnMount: "always",
     staleTime: 0,
+  });
+}
+
+// 기능 : 현재 Workspace ObjectDefinition의 AttributeDefinition 수정 mutation을 제공합니다.
+export function useUpdateWorkspaceObjectAttributeDefinitionMutation(
+  options: UseUpdateWorkspaceObjectAttributeDefinitionMutationOptions = {},
+) {
+  // 1. mutation 성공 후 AttributeDefinition list/detail query를 갱신할 준비를 한다.
+  const queryClient = useQueryClient();
+  const userId = options.userId ?? null;
+
+  // 2. PATCH API 호출과 관련 query invalidation 규칙을 호출자에게 제공한다.
+  return useMutation({
+    mutationFn: updateWorkspaceObjectAttributeDefinition,
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(
+          userId,
+          variables.workspaceId,
+          variables.objectDefinitionId,
+        ),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: workspaceObjectAttributeDefinitionQueryKeys.detail(
+          userId,
+          variables.workspaceId,
+          variables.objectDefinitionId,
+          variables.attributeDefinitionId,
+        ),
+      });
+    },
   });
 }
