@@ -14,7 +14,6 @@ import {
   EyeOff,
   Globe,
   Hash,
-  Info,
   Kanban,
   Link2,
   ListFilter,
@@ -22,6 +21,7 @@ import {
   LockKeyhole,
   Mail,
   MapPin,
+  MessageSquarePlus,
   MessagesSquare,
   MoreHorizontal,
   Phone,
@@ -561,6 +561,11 @@ function AttributeColumnHeaderPopover({
   readonly column: RenderedObjectListAttributeColumn;
 }) {
   const { t } = useAppI18n();
+  const [titleDraft, setTitleDraft] = useState(column.title);
+  const [isTitleInputFocused, setTitleInputFocused] = useState(false);
+  const [isDescriptionEditorOpen, setDescriptionEditorOpen] = useState(false);
+  const [descriptionDraft, setDescriptionDraft] = useState("");
+  const descriptionInputRef = useRef<HTMLTextAreaElement | null>(null);
   const displayIcon = column.icon ?? ATTRIBUTE_DEFINITION_ICON_BY_TYPE[column.type];
   const menuSections: Array<Array<{
     readonly Icon: LucideIcon;
@@ -626,16 +631,28 @@ function AttributeColumnHeaderPopover({
     ],
   ];
 
+  useEffect(() => {
+    setTitleDraft(column.title);
+  }, [column.title]);
+
+  useEffect(() => {
+    if (!isDescriptionEditorOpen) {
+      return;
+    }
+
+    descriptionInputRef.current?.focus();
+  }, [isDescriptionEditorOpen]);
+
   return (
     <div
-      className="absolute left-1 top-[calc(100%+6px)] z-50 overflow-hidden rounded-[14px] border border-[#E5E1D8] bg-white p-2 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
+      className="absolute left-1 top-[calc(100%+6px)] z-50 rounded-[14px] border border-[#E5E1D8] bg-white p-2 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
       role="menu"
       style={{ width: ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX }}
     >
       <div className="flex min-w-0 items-center gap-2">
         <button
           aria-label={t("objectList.attributeDefinitionIconAction")}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white text-[#6B7280] transition hover:bg-[#F4F3EF] active:bg-[#E4E2DC]"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white text-[#6B7280] transition hover:bg-[#F4F3EF] active:bg-[#D3D1CB]"
           role="menuitem"
           type="button"
         >
@@ -645,29 +662,59 @@ function AttributeColumnHeaderPopover({
             strokeWidth={2}
           />
         </button>
-        <button
-          aria-label={t("objectList.attributeDefinitionTitleAction")}
-          className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-[8px] border-2 border-[#2383E2] bg-white px-2 text-left shadow-[0_0_0_1px_rgba(35,131,226,0.16)]"
-          role="menuitem"
-          type="button"
+        <div
+          className={cn(
+            "flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[8px] border bg-white px-2 text-left transition",
+            isTitleInputFocused
+              ? "border-[#4880EE] shadow-[0_0_0_1px_rgba(72,128,238,0.16)]"
+              : "border-[#E5E1D8] hover:bg-[#E4E2DC] active:bg-[#E4E2DC]",
+          )}
         >
-          <span className="min-w-0 flex-1 truncate text-[15px] font-semibold leading-none text-[#111827]">
-            {column.title}
-          </span>
-          <Info
-            aria-hidden="true"
-            className="h-5 w-5 shrink-0 fill-[#8B8984] text-[#8B8984]"
-            strokeWidth={2}
+          <input
+            aria-label={t("objectList.attributeDefinitionTitleAction")}
+            className="min-w-0 flex-1 bg-transparent text-[14px] font-semibold leading-none text-[#111827] outline-none"
+            onBlur={() => setTitleInputFocused(false)}
+            onChange={(event) => setTitleDraft(event.target.value)}
+            onFocus={() => setTitleInputFocused(true)}
+            value={titleDraft}
           />
-        </button>
+          <button
+            aria-label={t("objectList.attributeDefinitionDescriptionAction")}
+            className="group relative grid h-5 w-5 shrink-0 place-items-center rounded-full text-[#8B8984] outline-none transition hover:text-[#2F2F2F] active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-[#4880EE] focus-visible:ring-offset-1"
+            onClick={() => setDescriptionEditorOpen(true)}
+            type="button"
+          >
+            <MessageSquarePlus
+              aria-hidden="true"
+              className="h-[15px] w-[15px]"
+              strokeWidth={2}
+            />
+            <span
+              className="pointer-events-none absolute bottom-[calc(100%+8px)] right-[-56px] z-[60] whitespace-nowrap rounded-[8px] bg-[#2F2F2F] px-3 py-2 text-[14px] font-medium leading-none text-white opacity-0 shadow-[0_8px_18px_rgba(15,23,42,0.22)] transition group-hover:opacity-100 group-focus-visible:opacity-100"
+              role="tooltip"
+            >
+              {t("objectList.attributeDefinitionDescriptionAction")}
+            </span>
+          </button>
+        </div>
       </div>
+      {isDescriptionEditorOpen ? (
+        <textarea
+          aria-label={t("objectList.attributeDefinitionDescriptionPlaceholder")}
+          className="mt-2 h-7 w-full resize-none overflow-hidden rounded-[8px] border border-[#4880EE] bg-white px-2 py-1 text-[14px] font-medium leading-5 text-[#111827] outline-none placeholder:text-[#9CA3AF] shadow-[0_0_0_1px_rgba(72,128,238,0.16)]"
+          onChange={(event) => setDescriptionDraft(event.target.value)}
+          placeholder={t("objectList.attributeDefinitionDescriptionPlaceholder")}
+          ref={descriptionInputRef}
+          value={descriptionDraft}
+        />
+      ) : null}
       <div className="mt-2 grid gap-1">
         {menuSections.map((menuItems, sectionIndex) => (
           <div className="grid gap-1" key={`attribute-menu-section-${sectionIndex}`}>
             {sectionIndex > 0 ? <div className="my-1 h-px bg-[#EEEDEA]" /> : null}
             {menuItems.map(({ Icon, label, hasSubmenu }) => (
               <button
-                className="group flex h-9 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[15px] font-medium text-[#2F2F2F] transition hover:bg-[#F1F0EE] active:bg-[#E4E2DC]"
+                className="group flex h-9 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[14px] font-medium text-[#2F2F2F] transition hover:bg-[#F1F0EE] active:bg-[#D3D1CB]"
                 key={label}
                 role="menuitem"
                 type="button"
@@ -680,7 +727,7 @@ function AttributeColumnHeaderPopover({
                 {hasSubmenu ? (
                   <ChevronRight
                     aria-hidden="true"
-                    className="h-4 w-4 shrink-0 text-[#8B8984]"
+                    className="h-5 w-5 shrink-0 text-[#8B8984]"
                     strokeWidth={2.2}
                   />
                 ) : null}
@@ -1471,7 +1518,7 @@ export function WorkspaceObjectListPage() {
                           name: column.title || t("common.unknown"),
                         },
                       })}
-                      className="flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45"
+                      className="flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left outline-none active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45"
                       type="button"
                       onClick={() => handleAttributeColumnHeaderClick(column.id)}
                     >

@@ -39,6 +39,8 @@ export const koKRResource = {
     addDataAction: "생성하기",
     attributeDefinitionCalculateAction: "계산",
     attributeDefinitionDeleteAction: "속성 삭제",
+    attributeDefinitionDescriptionAction: "속성 설명 추가",
+    attributeDefinitionDescriptionPlaceholder: "설명 추가...",
     attributeDefinitionDuplicateAction: "속성 복제",
     attributeDefinitionFilterAction: "필터",
     attributeDefinitionHideAction: "숨기기",

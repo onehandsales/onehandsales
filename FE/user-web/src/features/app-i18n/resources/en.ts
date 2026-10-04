@@ -39,6 +39,8 @@ export const enResource = {
     addDataAction: "Create Data",
     attributeDefinitionCalculateAction: "Calculate",
     attributeDefinitionDeleteAction: "Delete property",
+    attributeDefinitionDescriptionAction: "Add property description",
+    attributeDefinitionDescriptionPlaceholder: "Add description...",
     attributeDefinitionDuplicateAction: "Duplicate property",
     attributeDefinitionFilterAction: "Filter",
     attributeDefinitionHideAction: "Hide",
