@@ -37,6 +37,10 @@ export const enResource = {
   objectList: {
     addAttributeDefinitionTooltip: "Add Property",
     addDataAction: "Create Data",
+    attributeDefinitionDescriptionAction: "Change description",
+    attributeDefinitionIconAction: "Change icon",
+    attributeDefinitionMultiselectAction: "Multi-select",
+    attributeDefinitionTitleAction: "Rename property",
     createdAtColumn: "Created",
     createTooltip: "Create Data",
     emptyRecords: "No records yet.",
@@ -48,6 +52,7 @@ export const enResource = {
     memoColumn: "Memo",
     moreActionsTooltip: "More Actions",
     ownerColumn: "Owner",
+    openAttributeDefinitionMenuLabel: "Open {name} property menu",
     openFilterTooltip: "Open Filter",
     openSearchTooltip: "Open Search",
     resizeAttributeDefinitionColumnLabel: "Resize {name}",

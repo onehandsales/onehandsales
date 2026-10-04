@@ -37,6 +37,10 @@ export const koKRResource = {
   objectList: {
     addAttributeDefinitionTooltip: "속성 추가",
     addDataAction: "생성하기",
+    attributeDefinitionDescriptionAction: "설명 변경",
+    attributeDefinitionIconAction: "아이콘 변경",
+    attributeDefinitionMultiselectAction: "다중 선택",
+    attributeDefinitionTitleAction: "이름 변경",
     createdAtColumn: "생성일",
     createTooltip: "생성하기",
     emptyRecords: "아직 생성된 기록이 없어요.",
@@ -48,6 +52,7 @@ export const koKRResource = {
     memoColumn: "메모",
     moreActionsTooltip: "더보기",
     ownerColumn: "담당자",
+    openAttributeDefinitionMenuLabel: "{name} 속성 메뉴 열기",
     openFilterTooltip: "필터 열기",
     openSearchTooltip: "검색창 열기",
     resizeAttributeDefinitionColumnLabel: "{name} 폭 조절",

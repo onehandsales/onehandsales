@@ -9,6 +9,7 @@ import {
   Download,
   Globe,
   Hash,
+  Info,
   Kanban,
   Link2,
   ListChecks,
@@ -76,6 +77,7 @@ const OBJECT_LIST_SELECT_COLUMN_WIDTH_PX = 44;
 const OBJECT_LIST_ADD_ATTRIBUTE_COLUMN_WIDTH_PX = 44;
 const OBJECT_LIST_ATTRIBUTE_MIN_WIDTH_PX = 100;
 const OBJECT_LIST_ATTRIBUTE_DEFAULT_WIDTH_PX = 150;
+const ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX = 220;
 const ADD_ATTRIBUTE_DEFINITION_MODAL_TRANSITION_MS = 300;
 const ADD_ATTRIBUTE_DEFINITION_MODAL_OPEN_DELAY_MS = 20;
 const ADD_ATTRIBUTE_DEFINITION_MODAL_LOADING_CLOSE_DELAY_MS = 2000;
@@ -465,7 +467,7 @@ const ATTRIBUTE_DEFINITION_ICON_BY_TYPE: Record<
 type RenderedObjectListAttributeColumn =
   Pick<
     WorkspaceObjectAttributeDefinitionListItem,
-    "config" | "id" | "icon" | "title" | "type"
+    "config" | "id" | "icon" | "isMultiselect" | "title" | "type"
   >;
 
 type ObjectListAttributeColumnWidthsById = Readonly<Record<string, number>>;
@@ -523,6 +525,24 @@ function getObjectListTableMinWidth(
   }, fixedWidth);
 }
 
+// 기능 : AttributeDefinition 타입을 현재 언어의 화면 표시 이름으로 변환합니다.
+function getAttributeDefinitionTypeLabel(
+  type: AttributeDefinitionTypeKey,
+  locale: AppLocale,
+) {
+  const copy = addAttributeDefinitionCreateModalCopyByLocale[locale];
+
+  for (const group of copy.typeOptionGroups) {
+    const option = group.options.find((item) => item.key === type);
+
+    if (option) {
+      return option.label;
+    }
+  }
+
+  return type;
+}
+
 // 기능 : AttributeDefinition API 응답을 header row 렌더링용 컬럼 값으로 변환합니다.
 function toRenderedAttributeColumns(
   attributeDefinitions: readonly WorkspaceObjectAttributeDefinitionListItem[],
@@ -532,12 +552,104 @@ function toRenderedAttributeColumns(
       id: attributeDefinition.id,
       config: attributeDefinition.config,
       icon: attributeDefinition.icon,
+      isMultiselect: attributeDefinition.isMultiselect,
       title: attributeDefinition.title,
       type: attributeDefinition.type,
     }));
   }
 
   return [];
+}
+
+// 기능 : AttributeDefinition header 클릭 시 열리는 속성 메뉴 popover를 렌더링합니다.
+function AttributeColumnHeaderPopover({
+  column,
+  typeLabel,
+}: {
+  readonly column: RenderedObjectListAttributeColumn;
+  readonly typeLabel: string;
+}) {
+  const { t } = useAppI18n();
+  const displayIcon = column.icon ?? ATTRIBUTE_DEFINITION_ICON_BY_TYPE[column.type];
+  const multiselectLabel = column.isMultiselect ? t("common.yes") : t("common.no");
+  const menuItems: Array<{
+    readonly Icon: LucideIcon;
+    readonly label: string;
+    readonly trailing?: string;
+  }> = [
+    {
+      Icon: Star,
+      label: t("objectList.attributeDefinitionIconAction"),
+    },
+    {
+      Icon: Type,
+      label: t("objectList.attributeDefinitionTitleAction"),
+    },
+    {
+      Icon: MessagesSquare,
+      label: t("objectList.attributeDefinitionDescriptionAction"),
+    },
+    {
+      Icon: SquareCheck,
+      label: t("objectList.attributeDefinitionMultiselectAction"),
+      trailing: multiselectLabel,
+    },
+  ];
+
+  return (
+    <div
+      className="absolute left-1 top-[calc(100%+6px)] z-50 overflow-hidden rounded-lg border border-[#E5E1D8] bg-white p-1.5 text-[#111827] shadow-[0_18px_42px_rgba(15,23,42,0.18)]"
+      role="menu"
+      style={{ width: ATTRIBUTE_COLUMN_HEADER_POPOVER_WIDTH_PX }}
+    >
+      <div className="flex h-10 min-w-0 items-center gap-2 rounded-md bg-[#F8F7F4] px-2">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-[#E5E1D8] bg-white text-[#6B7280]">
+          <SidebarCrmObjectIcon
+            className="h-4 w-4"
+            name={displayIcon}
+            strokeWidth={2}
+          />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[14px] font-semibold leading-4 text-[#111827]">
+            {column.title}
+          </span>
+          <span className="mt-0.5 block truncate text-[12px] font-medium leading-3 text-[#9CA3AF]">
+            {typeLabel}
+          </span>
+        </span>
+        <Info
+          aria-hidden="true"
+          className="h-4 w-4 shrink-0 text-[#9CA3AF]"
+          strokeWidth={2}
+        />
+      </div>
+      <div className="my-1 h-px bg-[#EEEDEA]" />
+      <div className="grid gap-px">
+        {menuItems.map(({ Icon, label, trailing }) => (
+          <button
+            aria-disabled="true"
+            className="group flex h-8 w-full min-w-0 items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB] disabled:cursor-default disabled:opacity-100"
+            disabled
+            key={label}
+            role="menuitem"
+            type="button"
+          >
+            <Icon
+              className="h-4 w-4 shrink-0 text-[#9CA3AF] group-hover:text-[#6B7280]"
+              strokeWidth={2}
+            />
+            <span className="min-w-0 flex-1 truncate">{label}</span>
+            {trailing ? (
+              <span className="shrink-0 text-[12px] font-medium text-[#9CA3AF]">
+                {trailing}
+              </span>
+            ) : null}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // 기능 : RecordDefinition row의 attribute 값을 attributeDefinitionId 기준 Map으로 변환합니다.
@@ -631,6 +743,10 @@ export function WorkspaceObjectListPage() {
     activeEmptyRecordPlaceholderRowIndex,
     setActiveEmptyRecordPlaceholderRowIndex,
   ] = useState<number | null>(null);
+  const [
+    activeAttributeColumnMenuId,
+    setActiveAttributeColumnMenuId,
+  ] = useState<string | null>(null);
   // 상태 : 헤더 row가 가로로 넘칠 때 속성 추가 버튼을 아이콘형으로 접을지 여부입니다.
   const [
     isAddAttributeDefinitionActionCompact,
@@ -639,13 +755,14 @@ export function WorkspaceObjectListPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [attributeColumnWidthsById, setAttributeColumnWidthsById] =
     useState<Record<string, number>>({});
+  const activeAttributeColumnMenuRef = useRef<HTMLDivElement | null>(null);
   const columnResizeCleanupRef = useRef<(() => void) | null>(null);
   const isCreatingRecordDefinitionRowRef = useRef(false);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const objectListScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
-  const { t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
+  const { locale, t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
   const { user } = useAuthSession();
   const { objectDefinitionId, workspaceId } = useParams<{
     readonly objectDefinitionId?: string;
@@ -914,6 +1031,7 @@ export function WorkspaceObjectListPage() {
     event.stopPropagation();
 
     // 3. 기존 resize listener가 남아 있으면 새 drag 시작 전에 정리한다.
+    setActiveAttributeColumnMenuId(null);
     columnResizeCleanupRef.current?.();
 
     const startX = event.clientX;
@@ -974,6 +1092,17 @@ export function WorkspaceObjectListPage() {
     }
   }, [isSearchOpen]);
 
+  // 기능 : AttributeDefinition header click으로 속성 메뉴 popover를 열거나 닫습니다.
+  function handleAttributeColumnHeaderClick(columnId: string) {
+    // 1. 헤더 속성 메뉴와 상단 더보기 메뉴가 동시에 열리지 않도록 기존 메뉴를 닫는다.
+    setMoreActionsOpen(false);
+
+    // 2. 같은 컬럼을 다시 누르면 닫고, 다른 컬럼을 누르면 해당 컬럼 메뉴로 전환한다.
+    setActiveAttributeColumnMenuId((currentColumnId) =>
+      currentColumnId === columnId ? null : columnId,
+    );
+  }
+
   // 기능 : 새로 생성된 AttributeDefinition과 기존 row cell value를 object list query에 반영합니다.
   async function handleAttributeDefinitionCreated() {
     // 1. 현재 사용자가 선택한 Workspace와 ObjectDefinition이 준비되지 않았으면 갱신을 건너뛴다.
@@ -1007,6 +1136,7 @@ export function WorkspaceObjectListPage() {
   // 기능 : 필요한 정보 추가 버튼에서 AttributeDefinition 생성 모달을 엽니다.
   function openAddAttributeDefinitionModal() {
     setMoreActionsOpen(false);
+    setActiveAttributeColumnMenuId(null);
     setAddAttributeDefinitionModalOpen(true);
   }
 
@@ -1018,6 +1148,7 @@ export function WorkspaceObjectListPage() {
   // 기능 : 생성하기 버튼에서 임시 RecordDefinition 생성 모달을 엽니다.
   function openCreateRecordDefinitionModal() {
     setMoreActionsOpen(false);
+    setActiveAttributeColumnMenuId(null);
     setCreateRecordDefinitionModalOpen(true);
   }
 
@@ -1061,6 +1192,42 @@ export function WorkspaceObjectListPage() {
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
   }, [isMoreActionsOpen]);
+
+  // 기능 : AttributeDefinition header 메뉴 바깥 입력과 Escape 키로 popover를 닫습니다.
+  useEffect(() => {
+    if (!activeAttributeColumnMenuId) {
+      return;
+    }
+
+    // 기능 : header 메뉴 바깥 pointer 입력을 처리합니다.
+    const handleDocumentPointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (
+        target instanceof Node &&
+        activeAttributeColumnMenuRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setActiveAttributeColumnMenuId(null);
+    };
+
+    // 기능 : header 메뉴 닫기 키 입력을 처리합니다.
+    const handleDocumentKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveAttributeColumnMenuId(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleDocumentPointerDown);
+    document.addEventListener("keydown", handleDocumentKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleDocumentPointerDown);
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+    };
+  }, [activeAttributeColumnMenuId]);
 
   return (
     <>
@@ -1235,36 +1402,77 @@ export function WorkspaceObjectListPage() {
                   type="checkbox"
                 />
               </div>
-              {renderedAttributeColumns.map((column) => (
-                <div
-                  className="relative flex h-full min-w-0 items-center gap-2 border-r border-white px-3"
-                  key={column.id}
-                  role="columnheader"
-                >
-                  {column.icon ? (
-                    <SidebarCrmObjectIcon
-                      className="h-4 w-4 shrink-0 text-[#9CA3AF]"
-                      name={column.icon}
-                      strokeWidth={2}
-                    />
-                  ) : null}
-                  <span className="min-w-0 truncate text-[#9CA3AF]">
-                    {column.title}
-                  </span>
-                  <button
-                    aria-label={t("objectList.resizeAttributeDefinitionColumnLabel", {
-                      values: {
-                        name: column.title || t("common.unknown"),
-                      },
-                    })}
-                    className="absolute right-[-4px] top-0 z-20 h-full w-2 cursor-col-resize touch-none bg-transparent transition hover:bg-[#4880EE]/35 focus-visible:bg-[#4880EE]/50 focus-visible:outline-none"
-                    type="button"
-                    onPointerDown={(event) =>
-                      handleAttributeColumnResizePointerDown(column.id, event)
+              {renderedAttributeColumns.map((column) => {
+                const isAttributeColumnMenuOpen =
+                  activeAttributeColumnMenuId === column.id;
+                const typeLabel = getAttributeDefinitionTypeLabel(
+                  column.type,
+                  locale,
+                );
+
+                return (
+                  <div
+                    className={cn(
+                      "relative flex h-full min-w-0 items-center border-r border-white transition-colors",
+                      isAttributeColumnMenuOpen
+                        ? "bg-[#E4E2DC]"
+                        : "hover:bg-[#E4E2DC]",
+                    )}
+                    key={column.id}
+                    ref={
+                      isAttributeColumnMenuOpen
+                        ? activeAttributeColumnMenuRef
+                        : null
                     }
-                  />
-                </div>
-              ))}
+                    role="columnheader"
+                  >
+                    <button
+                      aria-expanded={isAttributeColumnMenuOpen}
+                      aria-haspopup="menu"
+                      aria-label={t("objectList.openAttributeDefinitionMenuLabel", {
+                        values: {
+                          name: column.title || t("common.unknown"),
+                        },
+                      })}
+                      className="flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45"
+                      type="button"
+                      onClick={() => handleAttributeColumnHeaderClick(column.id)}
+                    >
+                      {column.icon ? (
+                        <SidebarCrmObjectIcon
+                          className="h-4 w-4 shrink-0 text-[#9CA3AF]"
+                          name={column.icon}
+                          strokeWidth={2}
+                        />
+                      ) : null}
+                      <span className="min-w-0 truncate text-[#9CA3AF]">
+                        {column.title}
+                      </span>
+                    </button>
+                    <button
+                      aria-label={t(
+                        "objectList.resizeAttributeDefinitionColumnLabel",
+                        {
+                          values: {
+                            name: column.title || t("common.unknown"),
+                          },
+                        },
+                      )}
+                      className="absolute right-[-4px] top-0 z-20 h-full w-2 cursor-col-resize touch-none bg-transparent transition hover:bg-[#4880EE]/35 focus-visible:bg-[#4880EE]/50 focus-visible:outline-none"
+                      type="button"
+                      onPointerDown={(event) =>
+                        handleAttributeColumnResizePointerDown(column.id, event)
+                      }
+                    />
+                    {isAttributeColumnMenuOpen ? (
+                      <AttributeColumnHeaderPopover
+                        column={column}
+                        typeLabel={typeLabel}
+                      />
+                    ) : null}
+                  </div>
+                );
+              })}
               <div
                 className="flex h-full min-w-0 items-center justify-start px-2"
                 role="columnheader"
