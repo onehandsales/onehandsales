@@ -9,6 +9,7 @@ import { Test } from "@nestjs/testing";
 import type { Request } from "express";
 import * as request from "supertest";
 import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/create-workspace-object-attribute-definition.use-case";
+import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
@@ -37,6 +38,12 @@ type CreateWorkspaceObjectAttributeDefinitionUseCaseFake = Pick<
 // 역할 : ListWorkspaceObjectAttributeDefinitionsUseCaseFake controller 테스트용 AttributeDefinition 목록 유스케이스 계약을 정의합니다.
 type ListWorkspaceObjectAttributeDefinitionsUseCaseFake = Pick<
   ListWorkspaceObjectAttributeDefinitionsUseCase,
+  "execute"
+>;
+
+// 역할 : GetWorkspaceObjectAttributeDefinitionUseCaseFake controller 테스트용 AttributeDefinition 단건 조회 유스케이스 계약을 정의합니다.
+type GetWorkspaceObjectAttributeDefinitionUseCaseFake = Pick<
+  GetWorkspaceObjectAttributeDefinitionUseCase,
   "execute"
 >;
 
@@ -86,6 +93,27 @@ function createListUseCaseFake(): jest.Mocked<ListWorkspaceObjectAttributeDefini
   };
 }
 
+// 기능 : AttributeDefinition 단건 조회 유스케이스 fake를 생성합니다.
+function createGetUseCaseFake(): jest.Mocked<GetWorkspaceObjectAttributeDefinitionUseCaseFake> {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      id: "00000000-0000-4000-8000-000000000603",
+      title: "금액",
+      type: "Currency",
+      isMultiselect: false,
+      description: "계약 금액을 저장해요.",
+      icon: "circle-dollar-sign",
+      config: {
+        currency: {
+          defaultCurrencyCode: "KRW",
+          displayType: "symbol",
+        },
+      },
+      sortOrder: 2,
+    }),
+  };
+}
+
 // 기능 : UserWorkspaceObjectAttributeDefinitionsController의 HTTP 계약을 검증합니다.
 describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
   // 1. 이후 단계에서 사용할 app 값을 준비한다.
@@ -94,15 +122,19 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
   let createUseCase: jest.Mocked<CreateWorkspaceObjectAttributeDefinitionUseCaseFake>;
   // 3. 이후 단계에서 사용할 listUseCase 값을 준비한다.
   let listUseCase: jest.Mocked<ListWorkspaceObjectAttributeDefinitionsUseCaseFake>;
+  // 4. 이후 단계에서 사용할 getUseCase 값을 준비한다.
+  let getUseCase: jest.Mocked<GetWorkspaceObjectAttributeDefinitionUseCaseFake>;
 
-  // 4. 필요한 비동기 작업을 실행한다.
+  // 5. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
     // 1. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     createUseCase = createCreateUseCaseFake();
     // 2. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     listUseCase = createListUseCaseFake();
+    // 3. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
+    getUseCase = createGetUseCaseFake();
 
-    // 3. 비동기 결과를 받아 moduleRef에 저장한다.
+    // 4. 비동기 결과를 받아 moduleRef에 저장한다.
     const moduleRef = await Test.createTestingModule({
       controllers: [UserWorkspaceObjectAttributeDefinitionsController],
       providers: [
@@ -114,13 +146,17 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
           provide: ListWorkspaceObjectAttributeDefinitionsUseCase,
           useValue: listUseCase,
         },
+        {
+          provide: GetWorkspaceObjectAttributeDefinitionUseCase,
+          useValue: getUseCase,
+        },
       ],
     })
       .overrideGuard(AuthGuard)
       .useClass(FakeAuthGuard)
       .compile();
 
-    // 4. 테스트 Nest application을 초기화한다.
+    // 5. 테스트 Nest application을 초기화한다.
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
@@ -132,12 +168,12 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     await app.init();
   });
 
-  // 5. 필요한 비동기 작업을 실행한다.
+  // 6. 필요한 비동기 작업을 실행한다.
   afterEach(async () => {
     await app.close();
   });
 
-  // 6. 테스트 기대 조건을 검증한다.
+  // 7. 테스트 기대 조건을 검증한다.
   it("uses AuthGuard for workspace object attribute definition endpoints", () => {
     expect(
       Reflect.getMetadata(
@@ -147,7 +183,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     ).toContain(AuthGuard);
   });
 
-  // 7. 필요한 비동기 작업을 실행한다.
+  // 8. 필요한 비동기 작업을 실행한다.
   it("creates a workspace object attribute definition", async () => {
     await request(app.getHttpServer())
       .post(
@@ -189,7 +225,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     );
   });
 
-  // 8. 필요한 비동기 작업을 실행한다.
+  // 9. 필요한 비동기 작업을 실행한다.
   it("omits missing optional create fields from the command", async () => {
     await request(app.getHttpServer())
       .post(
@@ -212,7 +248,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     );
   });
 
-  // 9. 필요한 비동기 작업을 실행한다.
+  // 10. 필요한 비동기 작업을 실행한다.
   it("rejects non-string create fields before calling the use case", async () => {
     await request(app.getHttpServer())
       .post(
@@ -227,7 +263,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     expect(createUseCase.execute).not.toHaveBeenCalled();
   });
 
-  // 10. 필요한 비동기 작업을 실행한다.
+  // 11. 필요한 비동기 작업을 실행한다.
   it("rejects unknown create fields before calling the use case", async () => {
     await request(app.getHttpServer())
       .post(
@@ -243,7 +279,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     expect(createUseCase.execute).not.toHaveBeenCalled();
   });
 
-  // 11. 필요한 비동기 작업을 실행한다.
+  // 12. 필요한 비동기 작업을 실행한다.
   it("returns workspace object attribute definition list", async () => {
     await request(app.getHttpServer())
       .get(
@@ -275,6 +311,37 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       CURRENT_USER,
       "00000000-0000-4000-8000-000000000301",
       "00000000-0000-4000-8000-000000000501"
+    );
+  });
+
+  // 13. 필요한 비동기 작업을 실행한다.
+  it("returns a workspace object attribute definition detail", async () => {
+    await request(app.getHttpServer())
+      .get(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603"
+      )
+      .expect(200)
+      .expect({
+        id: "00000000-0000-4000-8000-000000000603",
+        title: "금액",
+        type: "Currency",
+        isMultiselect: false,
+        description: "계약 금액을 저장해요.",
+        icon: "circle-dollar-sign",
+        config: {
+          currency: {
+            defaultCurrencyCode: "KRW",
+            displayType: "symbol",
+          },
+        },
+        sortOrder: 2,
+      });
+
+    expect(getUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      "00000000-0000-4000-8000-000000000603"
     );
   });
 });

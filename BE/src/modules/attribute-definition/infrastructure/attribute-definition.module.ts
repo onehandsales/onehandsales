@@ -1,7 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
+import { ATTRIBUTE_DEFINITION_DETAIL_QUERY } from "@/modules/attribute-definition/application/ports/attribute-definition-detail-query.port";
 import { ATTRIBUTE_DEFINITION_LIST_QUERY } from "@/modules/attribute-definition/application/ports/attribute-definition-list-query.port";
 import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/create-workspace-object-attribute-definition.use-case";
+import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructure/object-definition.module";
@@ -12,6 +14,7 @@ import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaAttributeDefinitionCommandRepository } from "./persistence/prisma-attribute-definition-command.repository";
+import { PrismaAttributeDefinitionDetailQueryRepository } from "./persistence/prisma-attribute-definition-detail-query.repository";
 import { PrismaAttributeDefinitionListQueryRepository } from "./persistence/prisma-attribute-definition-list-query.repository";
 import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentation/http/user-workspace-object-attribute-definitions.controller";
 
@@ -28,6 +31,7 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
   providers: [
     CreateWorkspaceObjectAttributeDefinitionUseCase,
     ListWorkspaceObjectAttributeDefinitionsUseCase,
+    GetWorkspaceObjectAttributeDefinitionUseCase,
     AppLogger,
     {
       provide: APPLICATION_LOGGER,
@@ -45,6 +49,13 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
       // 기능 : Prisma 서비스로 AttributeDefinition 목록 조회 구현체를 생성합니다.
       useFactory: (prismaService: PrismaService) =>
         new PrismaAttributeDefinitionListQueryRepository(prismaService),
+      inject: [PrismaService],
+    },
+    {
+      provide: ATTRIBUTE_DEFINITION_DETAIL_QUERY,
+      // 기능 : Prisma 서비스로 AttributeDefinition 단건 조회 구현체를 생성합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaAttributeDefinitionDetailQueryRepository(prismaService),
       inject: [PrismaService],
     },
   ],

@@ -13,6 +13,7 @@ import {
   type CreateWorkspaceObjectAttributeDefinitionCommand,
   CreateWorkspaceObjectAttributeDefinitionUseCase,
 } from "@/modules/attribute-definition/application/use-cases/create-workspace-object-attribute-definition.use-case";
+import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
@@ -25,10 +26,11 @@ import { CreateWorkspaceObjectAttributeDefinitionDto } from "./dto/create-worksp
   "api/users/me/workspaces/:workspaceId/object-definitions/:objectDefinitionId/attribute-definitions"
 )
 export class UserWorkspaceObjectAttributeDefinitionsController {
-  // 기능 : AttributeDefinition 생성/목록 조회 유스케이스를 주입받습니다.
+  // 기능 : AttributeDefinition 생성/목록/단건 조회 유스케이스를 주입받습니다.
   constructor(
     private readonly createWorkspaceObjectAttributeDefinitionUseCase: CreateWorkspaceObjectAttributeDefinitionUseCase,
-    private readonly listWorkspaceObjectAttributeDefinitionsUseCase: ListWorkspaceObjectAttributeDefinitionsUseCase
+    private readonly listWorkspaceObjectAttributeDefinitionsUseCase: ListWorkspaceObjectAttributeDefinitionsUseCase,
+    private readonly getWorkspaceObjectAttributeDefinitionUseCase: GetWorkspaceObjectAttributeDefinitionUseCase
   ) {}
 
   // API : 사용자, Workspace ObjectDefinition AttributeDefinition 생성
@@ -70,6 +72,24 @@ export class UserWorkspaceObjectAttributeDefinitionsController {
       currentUser,
       workspaceId,
       objectDefinitionId
+    );
+  }
+
+  // API : 사용자, Workspace ObjectDefinition AttributeDefinition 단건 조회
+  @Get(":attributeDefinitionId")
+  getWorkspaceObjectAttributeDefinition(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
+    @Param("objectDefinitionId", new ParseUUIDPipe()) objectDefinitionId: string,
+    @Param("attributeDefinitionId", new ParseUUIDPipe())
+    attributeDefinitionId: string
+  ) {
+    // 1. application 계층에 현재 사용자의 AttributeDefinition 단건 조회를 위임한다.
+    return this.getWorkspaceObjectAttributeDefinitionUseCase.execute(
+      currentUser,
+      workspaceId,
+      objectDefinitionId,
+      attributeDefinitionId
     );
   }
 }

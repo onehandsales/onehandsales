@@ -25,6 +25,14 @@ export class AttributeDefinitionObjectDefinitionNotFoundError extends DomainErro
   }
 }
 
+// 역할 : AttributeDefinitionNotFoundError 조회할 수 없는 AttributeDefinition 상태를 표현합니다.
+export class AttributeDefinitionNotFoundError extends DomainError {
+  // 기능 : 요청 Workspace/ObjectDefinition에 속하지 않는 AttributeDefinition 요청 오류를 생성합니다.
+  constructor() {
+    super("AttributeDefinitionNotFound", "Attribute definition not found");
+  }
+}
+
 // 역할 : AttributeDefinitionValidationError AttributeDefinition 입력 검증 실패를 안전한 API 오류로 표현합니다.
 export class AttributeDefinitionValidationError extends DomainError {
   // 기능 : 클라이언트가 처리할 AttributeDefinition 필드 단위 검증 오류를 생성합니다.

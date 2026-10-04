@@ -1,6 +1,6 @@
 # AttributeDefinition Detail API
 
-계약 상태: confirmed
+계약 상태: implemented
 
 소비자:
 
@@ -314,3 +314,19 @@ model AttributeDefinition {
 - `pnpm -C BE test -- --runInBand`
 - `pnpm -C BE prisma:validate`
 - `pnpm -C BE build`
+
+## 13. 구현 상태
+
+- Backend controller: `BE/src/modules/attribute-definition/presentation/http/user-workspace-object-attribute-definitions.controller.ts`
+- Application use case: `BE/src/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case.ts`
+- Query port: `BE/src/modules/attribute-definition/application/ports/attribute-definition-detail-query.port.ts`
+- Prisma adapter: `BE/src/modules/attribute-definition/infrastructure/persistence/prisma-attribute-definition-detail-query.repository.ts`
+- Domain error: `BE/src/modules/attribute-definition/domain/attribute-definition.errors.ts`
+- Module provider: `BE/src/modules/attribute-definition/infrastructure/attribute-definition.module.ts`
+- 검증:
+  - `pnpm -C BE typecheck`
+  - `pnpm -C BE lint`
+  - `pnpm -C BE test -- --runInBand BE/src/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case.spec.ts BE/src/modules/attribute-definition/infrastructure/persistence/prisma-attribute-definition-detail-query.repository.spec.ts BE/src/modules/attribute-definition/presentation/http/user-workspace-object-attribute-definitions.controller.spec.ts`
+  - `pnpm -C BE test -- --runInBand`
+  - `pnpm -C BE prisma:validate`
+  - `pnpm -C BE build`
