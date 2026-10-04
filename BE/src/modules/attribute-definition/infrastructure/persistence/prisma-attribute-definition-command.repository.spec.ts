@@ -151,6 +151,161 @@ describeWithTestDatabase("PrismaAttributeDefinitionCommandRepository", () => {
       id: expect.any(String),
     });
   });
+
+  // 9. 필요한 비동기 작업을 실행한다.
+  it("updates only requested attribute definition fields inside the workspace object boundary", async () => {
+    if (!databaseAvailable || !prismaService || !repository) {
+      return;
+    }
+
+    const created = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "amount",
+      title: "Amount",
+      sortOrder: 0,
+      type: "Currency",
+      icon: "circle-dollar-sign",
+      isMultiselect: false,
+      description: "Amount field",
+      config: {
+        currency: {
+          defaultCurrencyCode: "KRW",
+          displayType: "symbol",
+        },
+      },
+    });
+
+    await expect(
+      repository.updateAttributeDefinition({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: created.id,
+        updatedByActorId: TEST_ACTOR_ID,
+        patch: {
+          title: "Contract Amount",
+          apiSlug: "contract_amount",
+          description: null,
+          icon: null,
+          isMultiselect: true,
+        },
+      })
+    ).resolves.toEqual({
+      id: created.id,
+    });
+
+    const updated = await prismaService.attributeDefinition.findUniqueOrThrow({
+      where: {
+        id: created.id,
+      },
+      select: {
+        title: true,
+        apiSlug: true,
+        description: true,
+        icon: true,
+        isMultiselect: true,
+        updatedByActorId: true,
+        type: true,
+      },
+    });
+
+    expect(updated).toEqual({
+      title: "Contract Amount",
+      apiSlug: "contract_amount",
+      description: null,
+      icon: null,
+      isMultiselect: true,
+      updatedByActorId: TEST_ACTOR_ID,
+      type: "Currency",
+    });
+  });
+
+  // 10. 필요한 비동기 작업을 실행한다.
+  it("excludes the current attribute definition from apiSlug duplicate lookup", async () => {
+    if (!databaseAvailable || !repository) {
+      return;
+    }
+
+    const created = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "phone",
+      title: "Phone",
+      sortOrder: 0,
+      type: "PhoneNumber",
+      icon: "phone",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    await expect(
+      repository.hasAttributeDefinitionApiSlug({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        apiSlug: "phone",
+        excludeAttributeDefinitionId: created.id,
+      })
+    ).resolves.toBe(false);
+
+    await expect(
+      repository.hasAttributeDefinitionApiSlug({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        apiSlug: "phone",
+      })
+    ).resolves.toBe(true);
+  });
+
+  // 11. 필요한 비동기 작업을 실행한다.
+  it("maps duplicate apiSlug update DB constraint to domain conflict", async () => {
+    if (!databaseAvailable || !repository) {
+      return;
+    }
+
+    await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "phone",
+      title: "Phone",
+      sortOrder: 0,
+      type: "PhoneNumber",
+      icon: "phone",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    const created = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "mobile",
+      title: "Mobile",
+      sortOrder: 1,
+      type: "PhoneNumber",
+      icon: "smartphone",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    await expect(
+      repository.updateAttributeDefinition({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: created.id,
+        updatedByActorId: TEST_ACTOR_ID,
+        patch: {
+          title: "Phone",
+          apiSlug: "phone",
+        },
+      })
+    ).rejects.toBeInstanceOf(AttributeDefinitionApiSlugAlreadyExistsError);
+  });
 });
 
 // 기능 : 명시적으로 주입된 테스트 DB URL을 반환합니다.

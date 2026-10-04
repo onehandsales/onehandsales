@@ -493,6 +493,8 @@ model AttributeDefinition {
 
   /// 기능 : AttributeDefinition 정렬 조회를 지원합니다.
   @@index([objectDefinitionId, sortOrder, id])
+  /// 기능 : Workspace/ObjectDefinition 경계 안의 AttributeDefinition 수정 대상 조회를 지원합니다.
+  @@index([workspaceId, objectDefinitionId, id])
   /// 기능 : 하나의 ObjectDefinition 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
   @@unique([objectDefinitionId, apiSlug])
 }

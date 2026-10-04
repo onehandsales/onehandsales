@@ -2,8 +2,12 @@ import type {
   AttributeDefinitionApiSlugLookupInput,
   AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionCommandRepository,
+  AttributeDefinitionForUpdate,
+  AttributeDefinitionWorkspaceObjectLookupInput,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
+  UpdateAttributeDefinitionInput,
+  UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
 import {
   AttributeDefinitionApiSlugAlreadyExistsError,
@@ -572,6 +576,22 @@ class FakeAttributeDefinitionCommandRepository
     return {
       id: "00000000-0000-4000-8000-000000000601",
     };
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 수정 대상 조회 호출을 차단합니다.
+  async findAttributeDefinitionForUpdate(
+    _input: AttributeDefinitionWorkspaceObjectLookupInput
+  ): Promise<AttributeDefinitionForUpdate | null> {
+    void _input;
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 AttributeDefinition 수정 호출을 차단합니다.
+  async updateAttributeDefinition(
+    _input: UpdateAttributeDefinitionInput
+  ): Promise<UpdateAttributeDefinitionResult> {
+    void _input;
+    throw new Error("Not implemented in fake repository");
   }
 }
 

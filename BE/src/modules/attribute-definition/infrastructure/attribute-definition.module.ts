@@ -5,6 +5,7 @@ import { ATTRIBUTE_DEFINITION_LIST_QUERY } from "@/modules/attribute-definition/
 import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/create-workspace-object-attribute-definition.use-case";
 import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
+import { UpdateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/update-workspace-object-attribute-definition.use-case";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructure/object-definition.module";
 import { RecordDefinitionModule } from "@/modules/record-definition/infrastructure/record-definition.module";
@@ -32,6 +33,7 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
     CreateWorkspaceObjectAttributeDefinitionUseCase,
     ListWorkspaceObjectAttributeDefinitionsUseCase,
     GetWorkspaceObjectAttributeDefinitionUseCase,
+    UpdateWorkspaceObjectAttributeDefinitionUseCase,
     AppLogger,
     {
       provide: APPLICATION_LOGGER,

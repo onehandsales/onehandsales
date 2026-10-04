@@ -1,12 +1,19 @@
 import { Prisma } from "@prisma/client";
 import type {
   AttributeDefinitionApiSlugLookupInput,
+  AttributeDefinitionForUpdate,
   AttributeDefinitionSortOrderLookupInput,
   AttributeDefinitionCommandRepository,
+  AttributeDefinitionWorkspaceObjectLookupInput,
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
+  UpdateAttributeDefinitionInput,
+  UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
-import { AttributeDefinitionApiSlugAlreadyExistsError } from "@/modules/attribute-definition/domain/attribute-definition.errors";
+import {
+  AttributeDefinitionApiSlugAlreadyExistsError,
+  AttributeDefinitionNotFoundError,
+} from "@/modules/attribute-definition/domain/attribute-definition.errors";
 import { resolvePrismaTransactionalClient } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 
@@ -28,6 +35,9 @@ export class PrismaAttributeDefinitionCommandRepository
           workspaceId: input.workspaceId,
           objectDefinitionId: input.objectDefinitionId,
           apiSlug: input.apiSlug,
+          ...(input.excludeAttributeDefinitionId !== undefined
+            ? { id: { not: input.excludeAttributeDefinitionId } }
+            : {}),
         },
         select: {
           id: true,
@@ -101,6 +111,78 @@ export class PrismaAttributeDefinitionCommandRepository
       };
     } catch (error) {
       // 4. 동시 요청 등으로 DB unique 제약에 걸리면 domain conflict로 변환한다.
+      if (this.isUniqueConstraintError(error)) {
+        throw new AttributeDefinitionApiSlugAlreadyExistsError();
+      }
+
+      throw error;
+    }
+  }
+
+  // 기능 : 수정 대상 AttributeDefinition이 요청 Workspace/ObjectDefinition 경계 안에 있는지 조회합니다.
+  async findAttributeDefinitionForUpdate(
+    input: AttributeDefinitionWorkspaceObjectLookupInput
+  ): Promise<AttributeDefinitionForUpdate | null> {
+    // 1. Workspace/ObjectDefinition/AttributeDefinition 경계 기준으로 수정 대상을 조회한다.
+    const attributeDefinition =
+      await this.prismaService.attributeDefinition.findFirst({
+        where: {
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          id: input.attributeDefinitionId,
+        },
+        select: {
+          id: true,
+          apiSlug: true,
+        },
+      });
+
+    // 2. 조회 결과를 application 계층 수정 기준 정보로 반환한다.
+    return attributeDefinition;
+  }
+
+  // 기능 : AttributeDefinition row를 Workspace/ObjectDefinition 경계 안에서 부분 수정합니다.
+  async updateAttributeDefinition(
+    input: UpdateAttributeDefinitionInput
+  ): Promise<UpdateAttributeDefinitionResult> {
+    try {
+      // 1. 포함된 patch 필드만 Prisma update data에 담는다.
+      const data: Prisma.AttributeDefinitionUncheckedUpdateManyInput = {
+        updatedByActorId: input.updatedByActorId,
+        ...(input.patch.title !== undefined ? { title: input.patch.title } : {}),
+        ...(input.patch.apiSlug !== undefined
+          ? { apiSlug: input.patch.apiSlug }
+          : {}),
+        ...(input.patch.description !== undefined
+          ? { description: input.patch.description }
+          : {}),
+        ...(input.patch.icon !== undefined ? { icon: input.patch.icon } : {}),
+        ...(input.patch.isMultiselect !== undefined
+          ? { isMultiselect: input.patch.isMultiselect }
+          : {}),
+      };
+
+      // 2. Workspace/ObjectDefinition/AttributeDefinition 경계를 모두 걸어 row를 수정한다.
+      const result = await this.prismaService.attributeDefinition.updateMany({
+        where: {
+          workspaceId: input.workspaceId,
+          objectDefinitionId: input.objectDefinitionId,
+          id: input.attributeDefinitionId,
+        },
+        data,
+      });
+
+      // 3. 경계 조건에 맞는 row가 사라졌으면 not found로 변환한다.
+      if (result.count === 0) {
+        throw new AttributeDefinitionNotFoundError();
+      }
+
+      // 4. API 응답에 필요한 AttributeDefinition ID를 반환한다.
+      return {
+        id: input.attributeDefinitionId,
+      };
+    } catch (error) {
+      // 5. 동시 요청 등으로 DB unique 제약에 걸리면 domain conflict로 변환한다.
       if (this.isUniqueConstraintError(error)) {
         throw new AttributeDefinitionApiSlugAlreadyExistsError();
       }

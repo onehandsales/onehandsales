@@ -11,6 +11,7 @@ import * as request from "supertest";
 import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/create-workspace-object-attribute-definition.use-case";
 import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
+import { UpdateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/update-workspace-object-attribute-definition.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { UserWorkspaceObjectAttributeDefinitionsController } from "./user-workspace-object-attribute-definitions.controller";
@@ -44,6 +45,12 @@ type ListWorkspaceObjectAttributeDefinitionsUseCaseFake = Pick<
 // 역할 : GetWorkspaceObjectAttributeDefinitionUseCaseFake controller 테스트용 AttributeDefinition 단건 조회 유스케이스 계약을 정의합니다.
 type GetWorkspaceObjectAttributeDefinitionUseCaseFake = Pick<
   GetWorkspaceObjectAttributeDefinitionUseCase,
+  "execute"
+>;
+
+// 역할 : UpdateWorkspaceObjectAttributeDefinitionUseCaseFake controller 테스트용 AttributeDefinition 수정 유스케이스 계약을 정의합니다.
+type UpdateWorkspaceObjectAttributeDefinitionUseCaseFake = Pick<
+  UpdateWorkspaceObjectAttributeDefinitionUseCase,
   "execute"
 >;
 
@@ -114,6 +121,15 @@ function createGetUseCaseFake(): jest.Mocked<GetWorkspaceObjectAttributeDefiniti
   };
 }
 
+// 기능 : AttributeDefinition 수정 유스케이스 fake를 생성합니다.
+function createUpdateUseCaseFake(): jest.Mocked<UpdateWorkspaceObjectAttributeDefinitionUseCaseFake> {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000603",
+    }),
+  };
+}
+
 // 기능 : UserWorkspaceObjectAttributeDefinitionsController의 HTTP 계약을 검증합니다.
 describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
   // 1. 이후 단계에서 사용할 app 값을 준비한다.
@@ -124,6 +140,8 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
   let listUseCase: jest.Mocked<ListWorkspaceObjectAttributeDefinitionsUseCaseFake>;
   // 4. 이후 단계에서 사용할 getUseCase 값을 준비한다.
   let getUseCase: jest.Mocked<GetWorkspaceObjectAttributeDefinitionUseCaseFake>;
+  // 4. 이후 단계에서 사용할 updateUseCase 값을 준비한다.
+  let updateUseCase: jest.Mocked<UpdateWorkspaceObjectAttributeDefinitionUseCaseFake>;
 
   // 5. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
@@ -133,8 +151,10 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     listUseCase = createListUseCaseFake();
     // 3. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     getUseCase = createGetUseCaseFake();
+    // 4. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
+    updateUseCase = createUpdateUseCaseFake();
 
-    // 4. 비동기 결과를 받아 moduleRef에 저장한다.
+    // 5. 비동기 결과를 받아 moduleRef에 저장한다.
     const moduleRef = await Test.createTestingModule({
       controllers: [UserWorkspaceObjectAttributeDefinitionsController],
       providers: [
@@ -150,13 +170,17 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
           provide: GetWorkspaceObjectAttributeDefinitionUseCase,
           useValue: getUseCase,
         },
+        {
+          provide: UpdateWorkspaceObjectAttributeDefinitionUseCase,
+          useValue: updateUseCase,
+        },
       ],
     })
       .overrideGuard(AuthGuard)
       .useClass(FakeAuthGuard)
       .compile();
 
-    // 5. 테스트 Nest application을 초기화한다.
+    // 6. 테스트 Nest application을 초기화한다.
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
@@ -343,5 +367,94 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       "00000000-0000-4000-8000-000000000501",
       "00000000-0000-4000-8000-000000000603"
     );
+  });
+
+  // 14. 필요한 비동기 작업을 실행한다.
+  it("updates a workspace object attribute definition with sparse patch fields", async () => {
+    await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603"
+      )
+      .send({
+        title: "계약 금액",
+        icon: null,
+        isMultiselect: true,
+      })
+      .expect(200)
+      .expect({
+        attributeDefinitionId: "00000000-0000-4000-8000-000000000603",
+      });
+
+    expect(updateUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      "00000000-0000-4000-8000-000000000603",
+      {
+        hasTitle: true,
+        title: "계약 금액",
+        hasDescription: false,
+        hasIcon: true,
+        icon: null,
+        hasIsMultiselect: true,
+        isMultiselect: true,
+      }
+    );
+  });
+
+  // 15. 필요한 비동기 작업을 실행한다.
+  it("passes false presence flags for missing update fields", async () => {
+    await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603"
+      )
+      .send({
+        description: null,
+      })
+      .expect(200);
+
+    expect(updateUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      "00000000-0000-4000-8000-000000000603",
+      {
+        hasTitle: false,
+        hasDescription: true,
+        description: null,
+        hasIcon: false,
+        hasIsMultiselect: false,
+      }
+    );
+  });
+
+  // 16. 필요한 비동기 작업을 실행한다.
+  it("rejects unknown update fields before calling the use case", async () => {
+    await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603"
+      )
+      .send({
+        title: "계약 금액",
+        unknownField: "not allowed",
+      })
+      .expect(400);
+
+    expect(updateUseCase.execute).not.toHaveBeenCalled();
+  });
+
+  // 17. 필요한 비동기 작업을 실행한다.
+  it("rejects invalid update field types before calling the use case", async () => {
+    await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603"
+      )
+      .send({
+        title: null,
+        isMultiselect: "true",
+      })
+      .expect(400);
+
+    expect(updateUseCase.execute).not.toHaveBeenCalled();
   });
 });

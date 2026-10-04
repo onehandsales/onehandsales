@@ -213,6 +213,7 @@ Success:
 | `description`이 string/null이 아님 | Nest validation error | 400 | 요청 버그로 처리 | warn |
 | `icon`이 string/null이 아님 | Nest validation error | 400 | 요청 버그로 처리 | warn |
 | `isMultiselect`가 boolean이 아님 | Nest validation error | 400 | 요청 버그로 처리 | warn |
+| application 계층에 `isMultiselect`가 boolean 외 값으로 전달됨 | `ATTRIBUTE_DEFINITION_MULTISELECT_INVALID` | 400 | 요청 버그로 처리 | warn |
 | Workspace가 없거나 현재 사용자가 해당 Workspace 멤버가 아님 | `AttributeDefinitionWorkspaceNotFound` | 404 | 선택 Workspace 초기화 또는 Workspace 목록 재조회 | info |
 | ObjectDefinition이 없거나 요청 Workspace에 속하지 않음 | `AttributeDefinitionObjectDefinitionNotFound` | 404 | 선택 ObjectDefinition 초기화 또는 Object 목록 재조회 | info |
 | AttributeDefinition이 없거나 요청 ObjectDefinition에 속하지 않음 | `AttributeDefinitionNotFound` | 404 | popover를 닫고 AttributeDefinition 목록 재조회 | info |
@@ -225,7 +226,7 @@ Success:
 
 - `AttributeDefinitionWorkspaceNotFound`, `AttributeDefinitionObjectDefinitionNotFound`, `AttributeDefinitionNotFound`는 error code가 `NotFound`로 끝나므로 현재 `HttpExceptionFilter`의 not found 규칙을 재사용한다.
 - `AttributeDefinitionApiSlugAlreadyExists`는 conflict 규칙으로 `409 Conflict`를 반환한다.
-- `ATTRIBUTE_DEFINITION_UPDATE_FIELD_REQUIRED`, `ATTRIBUTE_DEFINITION_TITLE_REQUIRED`, `ATTRIBUTE_DEFINITION_TITLE_TOO_LONG`은 `400 Bad Request` validation error로 반환한다.
+- `ATTRIBUTE_DEFINITION_UPDATE_FIELD_REQUIRED`, `ATTRIBUTE_DEFINITION_TITLE_REQUIRED`, `ATTRIBUTE_DEFINITION_TITLE_TOO_LONG`, `ATTRIBUTE_DEFINITION_MULTISELECT_INVALID`는 `400 Bad Request` validation error로 반환한다.
 
 ## 7. Transaction Contract
 
