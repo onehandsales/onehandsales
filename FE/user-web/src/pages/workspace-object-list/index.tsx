@@ -564,6 +564,8 @@ function AttributeColumnHeaderPopover({
   const [titleDraft, setTitleDraft] = useState(column.title);
   const [isTitleInputFocused, setTitleInputFocused] = useState(false);
   const [isDescriptionEditorOpen, setDescriptionEditorOpen] = useState(false);
+  const [isDescriptionInputFocused, setDescriptionInputFocused] =
+    useState(false);
   const [descriptionDraft, setDescriptionDraft] = useState("");
   const descriptionInputRef = useRef<HTMLTextAreaElement | null>(null);
   const displayIcon = column.icon ?? ATTRIBUTE_DEFINITION_ICON_BY_TYPE[column.type];
@@ -637,9 +639,11 @@ function AttributeColumnHeaderPopover({
 
   useEffect(() => {
     if (!isDescriptionEditorOpen) {
+      setDescriptionInputFocused(false);
       return;
     }
 
+    setDescriptionInputFocused(true);
     descriptionInputRef.current?.focus();
   }, [isDescriptionEditorOpen]);
 
@@ -652,7 +656,7 @@ function AttributeColumnHeaderPopover({
       <div className="flex min-w-0 items-center gap-2">
         <button
           aria-label={t("objectList.attributeDefinitionIconAction")}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white text-[#6B7280] transition hover:bg-[#F4F3EF] active:bg-[#D3D1CB]"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] border border-[#E5E1D8] bg-white text-[#6B7280] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
           role="menuitem"
           type="button"
         >
@@ -667,7 +671,7 @@ function AttributeColumnHeaderPopover({
             "flex h-7 min-w-0 flex-1 items-center gap-2 rounded-[8px] border bg-white px-2 text-left transition",
             isTitleInputFocused
               ? "border-[#4880EE] shadow-[0_0_0_1px_rgba(72,128,238,0.16)]"
-              : "border-[#E5E1D8] hover:bg-[#E4E2DC] active:bg-[#E4E2DC]",
+              : "border-[#E5E1D8]",
           )}
         >
           <input
@@ -680,7 +684,7 @@ function AttributeColumnHeaderPopover({
           />
           <button
             aria-label={t("objectList.attributeDefinitionDescriptionAction")}
-            className="group relative grid h-5 w-5 shrink-0 place-items-center rounded-full text-[#8B8984] outline-none transition hover:text-[#2F2F2F] active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-[#4880EE] focus-visible:ring-offset-1"
+            className="group relative grid h-5 w-5 shrink-0 place-items-center rounded-full text-[#8B8984] outline-none transition hover:bg-[#E4E2DC] hover:text-[#2F2F2F] active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-[#4880EE] focus-visible:ring-offset-1"
             onClick={() => setDescriptionEditorOpen(true)}
             type="button"
           >
@@ -701,8 +705,15 @@ function AttributeColumnHeaderPopover({
       {isDescriptionEditorOpen ? (
         <textarea
           aria-label={t("objectList.attributeDefinitionDescriptionPlaceholder")}
-          className="mt-2 h-7 w-full resize-none overflow-hidden rounded-[8px] border border-[#4880EE] bg-white px-2 py-1 text-[14px] font-medium leading-5 text-[#111827] outline-none placeholder:text-[#9CA3AF] shadow-[0_0_0_1px_rgba(72,128,238,0.16)]"
+          className={cn(
+            "mt-2 h-7 w-full resize-none overflow-hidden rounded-[8px] border bg-white px-2 py-1 text-[14px] font-medium leading-5 text-[#111827] outline-none placeholder:text-[#9CA3AF] transition",
+            isDescriptionInputFocused
+              ? "border-[#4880EE] shadow-[0_0_0_1px_rgba(72,128,238,0.16)]"
+              : "border-[#E5E1D8]",
+          )}
+          onBlur={() => setDescriptionInputFocused(false)}
           onChange={(event) => setDescriptionDraft(event.target.value)}
+          onFocus={() => setDescriptionInputFocused(true)}
           placeholder={t("objectList.attributeDefinitionDescriptionPlaceholder")}
           ref={descriptionInputRef}
           value={descriptionDraft}
@@ -714,7 +725,7 @@ function AttributeColumnHeaderPopover({
             {sectionIndex > 0 ? <div className="my-1 h-px bg-[#EEEDEA]" /> : null}
             {menuItems.map(({ Icon, label, hasSubmenu }) => (
               <button
-                className="group flex h-9 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[14px] font-medium text-[#2F2F2F] transition hover:bg-[#F1F0EE] active:bg-[#D3D1CB]"
+                className="group flex h-7 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[14px] font-medium text-[#2F2F2F] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
                 key={label}
                 role="menuitem"
                 type="button"
