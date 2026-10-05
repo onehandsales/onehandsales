@@ -64,11 +64,18 @@ export type GetWorkspaceObjectAttributeDefinitionInput = {
   readonly workspaceId: string;
 };
 
-// 역할 : CreateWorkspaceObjectAttributeDefinitionInsertPosition이 AttributeDefinition 생성 위치 요청 값을 정의합니다.
-export type CreateWorkspaceObjectAttributeDefinitionInsertPosition = {
+// 역할 : AttributeDefinition 위치 기준 방향 값을 정의합니다.
+export type AttributeDefinitionPlacementSide = "before" | "after";
+
+// 역할 : AttributeDefinition 위치 변경 요청의 기준 위치 값을 정의합니다.
+export type AttributeDefinitionTargetPlacementPosition = {
   readonly referenceAttributeDefinitionId: string;
-  readonly side: "before" | "after";
+  readonly side: AttributeDefinitionPlacementSide;
 };
+
+// 역할 : CreateWorkspaceObjectAttributeDefinitionInsertPosition이 AttributeDefinition 생성 위치 요청 값을 정의합니다.
+export type CreateWorkspaceObjectAttributeDefinitionInsertPosition =
+  AttributeDefinitionTargetPlacementPosition;
 
 // 역할 : CreateWorkspaceObjectAttributeDefinitionInput이 AttributeDefinition 생성 요청 값을 정의합니다.
 export type CreateWorkspaceObjectAttributeDefinitionInput = {
@@ -99,6 +106,19 @@ export type UpdateWorkspaceObjectAttributeDefinitionInput = {
 
 // 역할 : UpdateWorkspaceObjectAttributeDefinitionResponse가 AttributeDefinition 수정 응답 값을 정의합니다.
 export type UpdateWorkspaceObjectAttributeDefinitionResponse = {
+  readonly attributeDefinitionId: string;
+};
+
+// 역할 : MoveWorkspaceObjectAttributeDefinitionPositionInput이 AttributeDefinition 위치 변경 요청 값을 정의합니다.
+export type MoveWorkspaceObjectAttributeDefinitionPositionInput = {
+  readonly attributeDefinitionId: string;
+  readonly objectDefinitionId: string;
+  readonly targetPlacementPosition: AttributeDefinitionTargetPlacementPosition;
+  readonly workspaceId: string;
+};
+
+// 역할 : MoveWorkspaceObjectAttributeDefinitionPositionResponse가 AttributeDefinition 위치 변경 응답 값을 정의합니다.
+export type MoveWorkspaceObjectAttributeDefinitionPositionResponse = {
   readonly attributeDefinitionId: string;
 };
 
@@ -194,6 +214,22 @@ export function updateWorkspaceObjectAttributeDefinition(
     {
       method: "PATCH",
       body,
+    },
+  );
+}
+
+// 기능 : 현재 Workspace ObjectDefinition의 AttributeDefinition 위치를 변경합니다.
+export function moveWorkspaceObjectAttributeDefinitionPosition(
+  input: MoveWorkspaceObjectAttributeDefinitionPositionInput,
+) {
+  // 1. Backend 위치 변경 계약에 맞춰 기준 AttributeDefinition과 배치 방향을 전달한다.
+  return apiClient<MoveWorkspaceObjectAttributeDefinitionPositionResponse>(
+    `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/attribute-definitions/${encodeURIComponent(input.attributeDefinitionId)}/position`,
+    {
+      method: "PATCH",
+      body: {
+        targetPlacementPosition: input.targetPlacementPosition,
+      },
     },
   );
 }

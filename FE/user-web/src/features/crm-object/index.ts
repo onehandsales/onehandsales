@@ -6,6 +6,7 @@ export {
   createWorkspaceObjectAttributeDefinition,
   getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
+  moveWorkspaceObjectAttributeDefinitionPosition,
   updateWorkspaceObjectAttributeDefinition,
 } from "./api/attribute-definition-api";
 export { workspaceObjectAttributeDefinitionQueryKeys } from "./api/attribute-definition-query-keys";
@@ -16,6 +17,7 @@ export {
 } from "./api/record-definition-api";
 export { workspaceObjectRecordDefinitionQueryKeys } from "./api/record-definition-query-keys";
 export {
+  useMoveWorkspaceObjectAttributeDefinitionPositionMutation,
   useUpdateWorkspaceObjectAttributeDefinitionMutation,
   useWorkspaceObjectAttributeDefinitionQuery,
   useWorkspaceObjectAttributeDefinitionsQuery,
@@ -23,9 +25,13 @@ export {
 export { useWorkspaceObjectRecordDefinitionsQuery } from "./hooks/use-workspace-object-record-definitions";
 export type {
   AttributeDefinitionConfig,
+  AttributeDefinitionPlacementSide,
+  AttributeDefinitionTargetPlacementPosition,
   AttributeDefinitionValueType,
   CreateWorkspaceObjectAttributeDefinitionInsertPosition,
   CreateWorkspaceObjectAttributeDefinitionResponse,
+  MoveWorkspaceObjectAttributeDefinitionPositionInput,
+  MoveWorkspaceObjectAttributeDefinitionPositionResponse,
   UpdateWorkspaceObjectAttributeDefinitionInput,
   UpdateWorkspaceObjectAttributeDefinitionResponse,
   WorkspaceObjectAttributeDefinitionDetail,

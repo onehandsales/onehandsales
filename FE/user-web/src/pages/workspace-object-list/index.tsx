@@ -67,6 +67,7 @@ import {
   type WorkspaceObjectAttributeDefinitionDetail,
   type WorkspaceObjectAttributeDefinitionListItem,
   type WorkspaceObjectRecordDefinitionListItem,
+  useMoveWorkspaceObjectAttributeDefinitionPositionMutation,
   useUpdateWorkspaceObjectAttributeDefinitionMutation,
   useWorkspaceObjectAttributeDefinitionQuery,
   useWorkspaceObjectAttributeDefinitionsQuery,
@@ -87,6 +88,7 @@ import {
   createLucideIconValue,
   type DynamicLucideIconName,
 } from "@/features/crm-object/utils/object-definition-icon-value";
+import { getAttributeDefinitionTargetPlacementPosition } from "@/features/crm-object/utils/attribute-definition-placement";
 import { getApiErrorMessage } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 
@@ -104,6 +106,7 @@ const CREATE_RECORD_DEFINITION_MODAL_OPEN_DELAY_MS = 20;
 const CREATE_RECORD_DEFINITION_MODAL_LOADING_CLOSE_DELAY_MS = 2000;
 const CREATE_RECORD_DEFINITION_DESCRIPTION_MAX_LENGTH = 300;
 const EMPTY_RECORD_PLACEHOLDER_ROW_COUNT = 3;
+const ATTRIBUTE_COLUMN_DRAG_START_THRESHOLD_PX = 6;
 const EMPTY_RECORD_PLACEHOLDER_ROW_INDEXES = Array.from(
   { length: EMPTY_RECORD_PLACEHOLDER_ROW_COUNT },
   (_, index) => index,
@@ -517,6 +520,28 @@ type RenderedObjectListAttributeColumn =
 
 type ObjectListAttributeColumnWidthsById = Readonly<Record<string, number>>;
 
+// 역할 : AttributeDefinition header drag 중 표시할 삽입선 방향을 정의합니다.
+type AttributeColumnDropIndicatorSide = "before" | "after";
+
+// 역할 : AttributeDefinition header drag 화면 상태를 정의합니다.
+type AttributeColumnDragState = {
+  readonly sourceColumnId: string;
+  readonly targetIndex: number;
+};
+
+// 역할 : AttributeDefinition header drag 세션에서 전역 pointer listener가 공유하는 값을 정의합니다.
+type AttributeColumnDragSession = {
+  readonly columns: readonly RenderedObjectListAttributeColumn[];
+  readonly pointerId: number;
+  readonly previousCursor: string;
+  readonly previousUserSelect: string;
+  readonly sourceColumnId: string;
+  readonly startX: number;
+  readonly startY: number;
+  hasStartedDragging: boolean;
+  targetIndex: number;
+};
+
 // 역할 : AttributeDefinitionPopoverPatch가 header popover에서 보내는 단일 필드 수정 요청 값을 정의합니다.
 type AttributeDefinitionPopoverPatch =
   | {
@@ -609,6 +634,78 @@ function toRenderedAttributeColumns(
   }
 
   return [];
+}
+
+// 기능 : pointer x 좌표 기준으로 source 제거 후 AttributeDefinition 삽입 index를 계산합니다.
+function getAttributeColumnInsertionIndexFromPointerX(
+  columns: readonly RenderedObjectListAttributeColumn[],
+  sourceColumnId: string,
+  headerElementsById: ReadonlyMap<string, HTMLDivElement>,
+  pointerClientX: number,
+) {
+  // 1. 이동 중인 source를 제외한 실제 drop 기준 컬럼 목록을 준비한다.
+  const remainingColumns = columns.filter(
+    (column) => column.id !== sourceColumnId,
+  );
+
+  // 2. pointer가 각 컬럼 중심선보다 왼쪽이면 해당 컬럼 앞 삽입으로 계산한다.
+  for (const [index, column] of remainingColumns.entries()) {
+    const headerElement = headerElementsById.get(column.id);
+
+    if (!headerElement) {
+      continue;
+    }
+
+    const rect = headerElement.getBoundingClientRect();
+
+    if (pointerClientX < rect.left + rect.width / 2) {
+      return index;
+    }
+  }
+
+  // 3. 모든 중심선보다 오른쪽이면 마지막 뒤 삽입으로 계산한다.
+  return remainingColumns.length;
+}
+
+// 기능 : 현재 컬럼에 표시할 AttributeDefinition drop 삽입선 방향을 계산합니다.
+function getAttributeColumnDropIndicatorSide({
+  columnId,
+  columns,
+  sourceColumnId,
+  targetIndex,
+}: {
+  readonly columnId: string;
+  readonly columns: readonly RenderedObjectListAttributeColumn[];
+  readonly sourceColumnId: string;
+  readonly targetIndex: number;
+}): AttributeColumnDropIndicatorSide | null {
+  // 1. source를 제외한 목록에서 targetIndex가 가리키는 삽입 위치를 계산한다.
+  const remainingColumns = columns.filter(
+    (column) => column.id !== sourceColumnId,
+  );
+
+  if (remainingColumns.length === 0) {
+    return null;
+  }
+
+  const boundedTargetIndex = Math.min(
+    Math.max(Math.round(targetIndex), 0),
+    remainingColumns.length,
+  );
+
+  // 2. 중간 삽입은 기준 컬럼 왼쪽, 마지막 삽입은 마지막 컬럼 오른쪽에 표시한다.
+  if (remainingColumns[boundedTargetIndex]?.id === columnId) {
+    return "before";
+  }
+
+  if (
+    boundedTargetIndex === remainingColumns.length &&
+    remainingColumns[remainingColumns.length - 1]?.id === columnId
+  ) {
+    return "after";
+  }
+
+  return null;
 }
 
 // 기능 : AttributeDefinition header 클릭 시 열리는 속성 메뉴 popover를 렌더링합니다.
@@ -1163,12 +1260,24 @@ export function WorkspaceObjectListPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [attributeColumnWidthsById, setAttributeColumnWidthsById] =
     useState<Record<string, number>>({});
+  const [attributeColumnDragState, setAttributeColumnDragState] =
+    useState<AttributeColumnDragState | null>(null);
+  // 상태 : AttributeDefinition 위치 변경 실패 메시지입니다.
+  const [
+    attributeColumnMoveErrorMessage,
+    setAttributeColumnMoveErrorMessage,
+  ] = useState<string | null>(null);
   const activeAttributeColumnMenuRef = useRef<HTMLDivElement | null>(null);
+  const attributeColumnDragCleanupRef = useRef<(() => void) | null>(null);
+  const attributeColumnHeaderElementsByIdRef = useRef<
+    Map<string, HTMLDivElement>
+  >(new Map());
   const columnResizeCleanupRef = useRef<(() => void) | null>(null);
   const isCreatingRecordDefinitionRowRef = useRef(false);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const objectListScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const suppressAttributeColumnHeaderClickRef = useRef(false);
   const queryClient = useQueryClient();
   const { t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
   const { user } = useAuthSession();
@@ -1201,7 +1310,13 @@ export function WorkspaceObjectListPage() {
       userId: user?.id ?? null,
     });
 
-  // 4. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
+  // 4. AttributeDefinition header 위치 변경 mutation을 준비한다.
+  const moveAttributeDefinitionPositionMutation =
+    useMoveWorkspaceObjectAttributeDefinitionPositionMutation({
+      userId: user?.id ?? null,
+    });
+
+  // 5. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
   const recordDefinitionsQuery = useWorkspaceObjectRecordDefinitionsQuery({
     userId: user?.id ?? null,
     workspaceId: workspaceId ?? null,
@@ -1439,6 +1554,194 @@ export function WorkspaceObjectListPage() {
     });
   }
 
+  // 기능 : AttributeDefinition header drag 결과를 위치 변경 API로 저장합니다.
+  async function commitAttributeColumnMove(
+    sourceColumnId: string,
+    targetIndex: number,
+    columns: readonly RenderedObjectListAttributeColumn[],
+  ) {
+    // 1. 이동에 필요한 사용자/Workspace/ObjectDefinition 경계 값이 없으면 요청하지 않는다.
+    const ownerUserId = user?.id ?? null;
+    const currentWorkspaceId = workspaceId ?? null;
+    const currentObjectDefinitionId = objectDefinitionId ?? null;
+
+    if (
+      !ownerUserId ||
+      !currentWorkspaceId ||
+      !currentObjectDefinitionId ||
+      moveAttributeDefinitionPositionMutation.isPending
+    ) {
+      return;
+    }
+
+    // 2. 최종 drop index를 Backend targetPlacementPosition 계약으로 변환한다.
+    const targetPlacementPosition =
+      getAttributeDefinitionTargetPlacementPosition(
+        columns,
+        sourceColumnId,
+        targetIndex,
+      );
+
+    if (!targetPlacementPosition) {
+      return;
+    }
+
+    // 3. 위치 변경 API를 호출하고 실패 메시지를 화면에 반영한다.
+    setAttributeColumnMoveErrorMessage(null);
+
+    try {
+      await moveAttributeDefinitionPositionMutation.mutateAsync({
+        workspaceId: currentWorkspaceId,
+        objectDefinitionId: currentObjectDefinitionId,
+        attributeDefinitionId: sourceColumnId,
+        targetPlacementPosition,
+      });
+    } catch (error) {
+      setAttributeColumnMoveErrorMessage(getApiErrorMessage(error));
+    }
+  }
+
+  // 기능 : AttributeDefinition header pointer 입력으로 컬럼 위치 변경 drag를 시작합니다.
+  function handleAttributeColumnDragPointerDown(
+    columnId: string,
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    // 1. 마우스 보조 버튼과 이동 불가능한 상태에서는 drag listener를 만들지 않는다.
+    if (
+      (event.pointerType === "mouse" && event.button !== 0) ||
+      renderedAttributeColumns.length < 2 ||
+      moveAttributeDefinitionPositionMutation.isPending
+    ) {
+      return;
+    }
+
+    const sourceIndex = renderedAttributeColumns.findIndex(
+      (column) => column.id === columnId,
+    );
+
+    if (sourceIndex < 0) {
+      return;
+    }
+
+    // 2. 이전 drag listener가 남아 있으면 새 drag 시작 전에 정리한다.
+    attributeColumnDragCleanupRef.current?.();
+
+    const dragSession: AttributeColumnDragSession = {
+      columns: renderedAttributeColumns,
+      hasStartedDragging: false,
+      pointerId: event.pointerId,
+      previousCursor: document.body.style.cursor,
+      previousUserSelect: document.body.style.userSelect,
+      sourceColumnId: columnId,
+      startX: event.clientX,
+      startY: event.clientY,
+      targetIndex: sourceIndex,
+    };
+
+    // 기능 : pointer 이동이 drag 임계값을 넘으면 drop 위치를 갱신합니다.
+    function handlePointerMove(pointerEvent: PointerEvent) {
+      // 1. 시작한 pointer와 다른 입력은 현재 drag 세션에서 무시한다.
+      if (pointerEvent.pointerId !== dragSession.pointerId) {
+        return;
+      }
+
+      const deltaX = pointerEvent.clientX - dragSession.startX;
+      const deltaY = pointerEvent.clientY - dragSession.startY;
+
+      // 2. 작은 움직임은 header 클릭으로 남겨 메뉴 UX를 보존한다.
+      if (
+        !dragSession.hasStartedDragging &&
+        Math.hypot(deltaX, deltaY) < ATTRIBUTE_COLUMN_DRAG_START_THRESHOLD_PX
+      ) {
+        return;
+      }
+
+      if (!dragSession.hasStartedDragging) {
+        dragSession.hasStartedDragging = true;
+        setActiveAttributeColumnMenuId(null);
+        setMoreActionsOpen(false);
+        setAttributeColumnMoveErrorMessage(null);
+        document.body.style.cursor = "grabbing";
+        document.body.style.userSelect = "none";
+      }
+
+      pointerEvent.preventDefault();
+      dragSession.targetIndex = getAttributeColumnInsertionIndexFromPointerX(
+        dragSession.columns,
+        dragSession.sourceColumnId,
+        attributeColumnHeaderElementsByIdRef.current,
+        pointerEvent.clientX,
+      );
+      setAttributeColumnDragState({
+        sourceColumnId: dragSession.sourceColumnId,
+        targetIndex: dragSession.targetIndex,
+      });
+    }
+
+    // 기능 : drag 중 등록한 전역 pointer listener와 body style을 정리합니다.
+    function cleanupAttributeColumnDrag() {
+      // 1. 전역 pointer listener를 제거한다.
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerCancel);
+      // 2. drag 중 바꾼 body cursor와 selection style을 복원한다.
+      document.body.style.cursor = dragSession.previousCursor;
+      document.body.style.userSelect = dragSession.previousUserSelect;
+      // 3. 화면 drag 상태와 cleanup ref를 비운다.
+      setAttributeColumnDragState(null);
+      attributeColumnDragCleanupRef.current = null;
+    }
+
+    // 기능 : AttributeDefinition header drag가 끝난 위치를 저장합니다.
+    function handlePointerUp(pointerEvent: PointerEvent) {
+      // 1. 시작한 pointer와 다른 입력은 현재 drag 세션에서 무시한다.
+      if (pointerEvent.pointerId !== dragSession.pointerId) {
+        return;
+      }
+
+      const shouldCommitMove = dragSession.hasStartedDragging;
+
+      if (shouldCommitMove) {
+        pointerEvent.preventDefault();
+        suppressAttributeColumnHeaderClickRef.current = true;
+        window.setTimeout(() => {
+          suppressAttributeColumnHeaderClickRef.current = false;
+        }, 0);
+        dragSession.targetIndex = getAttributeColumnInsertionIndexFromPointerX(
+          dragSession.columns,
+          dragSession.sourceColumnId,
+          attributeColumnHeaderElementsByIdRef.current,
+          pointerEvent.clientX,
+        );
+      }
+
+      cleanupAttributeColumnDrag();
+
+      if (shouldCommitMove) {
+        void commitAttributeColumnMove(
+          dragSession.sourceColumnId,
+          dragSession.targetIndex,
+          dragSession.columns,
+        );
+      }
+    }
+
+    // 기능 : AttributeDefinition header drag가 취소되면 임시 상태를 정리합니다.
+    function handlePointerCancel(pointerEvent: PointerEvent) {
+      // 1. 시작한 pointer와 다른 입력은 현재 drag 세션에서 무시한다.
+      if (pointerEvent.pointerId !== dragSession.pointerId) {
+        return;
+      }
+
+      cleanupAttributeColumnDrag();
+    }
+
+    attributeColumnDragCleanupRef.current = cleanupAttributeColumnDrag;
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerCancel);
+  }
+
   // 기능 : header resize handle 드래그로 AttributeDefinition 컬럼 폭을 조절합니다.
   function handleAttributeColumnResizePointerDown(
     columnId: string,
@@ -1506,6 +1809,7 @@ export function WorkspaceObjectListPage() {
   useEffect(() => {
     return () => {
       columnResizeCleanupRef.current?.();
+      attributeColumnDragCleanupRef.current?.();
     };
   }, []);
 
@@ -1517,10 +1821,16 @@ export function WorkspaceObjectListPage() {
 
   // 기능 : AttributeDefinition header click으로 속성 메뉴 popover를 열거나 닫습니다.
   function handleAttributeColumnHeaderClick(columnId: string) {
-    // 1. 헤더 속성 메뉴와 상단 더보기 메뉴가 동시에 열리지 않도록 기존 메뉴를 닫는다.
+    // 1. drag 직후 발생하는 click은 메뉴 토글로 처리하지 않는다.
+    if (suppressAttributeColumnHeaderClickRef.current) {
+      suppressAttributeColumnHeaderClickRef.current = false;
+      return;
+    }
+
+    // 2. 헤더 속성 메뉴와 상단 더보기 메뉴가 동시에 열리지 않도록 기존 메뉴를 닫는다.
     setMoreActionsOpen(false);
 
-    // 2. 같은 컬럼을 다시 누르면 닫고, 다른 컬럼을 누르면 해당 컬럼 메뉴로 전환한다.
+    // 3. 같은 컬럼을 다시 누르면 닫고, 다른 컬럼을 누르면 해당 컬럼 메뉴로 전환한다.
     setActiveAttributeColumnMenuId((currentColumnId) =>
       currentColumnId === columnId ? null : columnId,
     );
@@ -1852,6 +2162,14 @@ export function WorkspaceObjectListPage() {
           </div>
         </div>
       </div>
+      {attributeColumnMoveErrorMessage ? (
+        <div
+          className="border-t border-[#F1F0EC] bg-[#FFF8F7] px-4 py-2 text-[13px] font-medium text-[#B42318]"
+          role="alert"
+        >
+          {attributeColumnMoveErrorMessage}
+        </div>
+      ) : null}
       <div className="min-h-0 flex-1 overflow-hidden bg-white">
         <div
           className="notion-scrollbar h-full overflow-auto"
@@ -1881,23 +2199,55 @@ export function WorkspaceObjectListPage() {
               {renderedAttributeColumns.map((column) => {
                 const isAttributeColumnMenuOpen =
                   activeAttributeColumnMenuId === column.id;
+                const isAttributeColumnBeingDragged =
+                  attributeColumnDragState?.sourceColumnId === column.id;
+                const dropIndicatorSide = attributeColumnDragState
+                  ? getAttributeColumnDropIndicatorSide({
+                      columnId: column.id,
+                      columns: renderedAttributeColumns,
+                      sourceColumnId: attributeColumnDragState.sourceColumnId,
+                      targetIndex: attributeColumnDragState.targetIndex,
+                    })
+                  : null;
 
                 return (
                   <div
                     className={cn(
                       "relative flex h-full min-w-0 items-center border-r border-white transition-colors",
-                      isAttributeColumnMenuOpen
-                        ? "bg-[#E4E2DC]"
-                        : "hover:bg-[#E4E2DC]",
+                      isAttributeColumnBeingDragged &&
+                        "bg-[#F3F2EF] opacity-70",
+                      !isAttributeColumnBeingDragged &&
+                        isAttributeColumnMenuOpen &&
+                        "bg-[#E4E2DC]",
+                      !isAttributeColumnBeingDragged &&
+                        !isAttributeColumnMenuOpen &&
+                        "hover:bg-[#E4E2DC]",
                     )}
                     key={column.id}
-                    ref={
-                      isAttributeColumnMenuOpen
-                        ? activeAttributeColumnMenuRef
-                        : null
-                    }
+                    ref={(element) => {
+                      if (element) {
+                        attributeColumnHeaderElementsByIdRef.current.set(
+                          column.id,
+                          element,
+                        );
+                      } else {
+                        attributeColumnHeaderElementsByIdRef.current.delete(
+                          column.id,
+                        );
+                      }
+
+                      if (isAttributeColumnMenuOpen) {
+                        activeAttributeColumnMenuRef.current = element;
+                      }
+                    }}
                     role="columnheader"
                   >
+                    {dropIndicatorSide === "before" ? (
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute left-[-1px] top-1 z-30 h-[calc(100%-8px)] w-0.5 rounded-full bg-[#4880EE] shadow-[0_0_0_1px_rgba(72,128,238,0.18)]"
+                      />
+                    ) : null}
                     <button
                       aria-expanded={isAttributeColumnMenuOpen}
                       aria-haspopup="menu"
@@ -1906,9 +2256,17 @@ export function WorkspaceObjectListPage() {
                           name: column.title || t("common.unknown"),
                         },
                       })}
-                      className="flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left outline-none active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45"
+                      className={cn(
+                        "flex h-full min-w-0 flex-1 touch-none items-center gap-2 px-3 text-left outline-none active:bg-[#D3D1CB] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45",
+                        isAttributeColumnBeingDragged
+                          ? "cursor-grabbing"
+                          : "cursor-grab",
+                      )}
                       type="button"
                       onClick={() => handleAttributeColumnHeaderClick(column.id)}
+                      onPointerDown={(event) =>
+                        handleAttributeColumnDragPointerDown(column.id, event)
+                      }
                     >
                       {column.icon ? (
                         <SidebarCrmObjectIcon
@@ -1936,6 +2294,12 @@ export function WorkspaceObjectListPage() {
                         handleAttributeColumnResizePointerDown(column.id, event)
                       }
                     />
+                    {dropIndicatorSide === "after" ? (
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute right-[-1px] top-1 z-30 h-[calc(100%-8px)] w-0.5 rounded-full bg-[#4880EE] shadow-[0_0_0_1px_rgba(72,128,238,0.18)]"
+                      />
+                    ) : null}
                     {isAttributeColumnMenuOpen ? (
                       <AttributeColumnHeaderPopover
                         attributeDefinitionDetail={

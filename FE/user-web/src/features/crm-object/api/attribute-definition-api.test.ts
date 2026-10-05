@@ -3,6 +3,7 @@ import {
   createWorkspaceObjectAttributeDefinition,
   getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
+  moveWorkspaceObjectAttributeDefinitionPosition,
   updateWorkspaceObjectAttributeDefinition,
 } from "@/features/crm-object/api/attribute-definition-api";
 import { apiClient } from "@/lib/api-client";
@@ -284,6 +285,43 @@ describe("updateWorkspaceObjectAttributeDefinition", () => {
         method: "PATCH",
         body: {
           isMultiselect: true,
+        },
+      },
+    );
+  });
+});
+
+// 기능 : AttributeDefinition 위치 변경 API client의 PATCH 요청 생성을 검증합니다.
+describe("moveWorkspaceObjectAttributeDefinitionPosition", () => {
+  it("patches the target placement position for the selected attribute definition", async () => {
+    apiClientMock.mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+    });
+
+    const result = await moveWorkspaceObjectAttributeDefinitionPosition({
+      attributeDefinitionId: "attribute/1",
+      objectDefinitionId: "object/1",
+      targetPlacementPosition: {
+        referenceAttributeDefinitionId:
+          "00000000-0000-4000-8000-000000000602",
+        side: "after",
+      },
+      workspaceId: "workspace/1",
+    });
+
+    expect(result).toEqual({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000601",
+    });
+    expect(apiClientMock).toHaveBeenCalledWith(
+      "/api/users/me/workspaces/workspace%2F1/object-definitions/object%2F1/attribute-definitions/attribute%2F1/position",
+      {
+        method: "PATCH",
+        body: {
+          targetPlacementPosition: {
+            referenceAttributeDefinitionId:
+              "00000000-0000-4000-8000-000000000602",
+            side: "after",
+          },
         },
       },
     );

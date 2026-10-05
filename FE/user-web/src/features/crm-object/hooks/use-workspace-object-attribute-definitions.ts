@@ -2,9 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getWorkspaceObjectAttributeDefinition,
   listWorkspaceObjectAttributeDefinitions,
+  moveWorkspaceObjectAttributeDefinitionPosition,
   updateWorkspaceObjectAttributeDefinition,
+  type WorkspaceObjectAttributeDefinitionListItem,
 } from "@/features/crm-object/api/attribute-definition-api";
 import { workspaceObjectAttributeDefinitionQueryKeys } from "@/features/crm-object/api/attribute-definition-query-keys";
+import { workspaceObjectRecordDefinitionQueryKeys } from "@/features/crm-object/api/record-definition-query-keys";
+import { reorderAttributeDefinitionsByTargetPlacementPosition } from "@/features/crm-object/utils/attribute-definition-placement";
 
 type UseWorkspaceObjectAttributeDefinitionsQueryOptions = {
   readonly enabled?: boolean;
@@ -20,6 +24,11 @@ type UseWorkspaceObjectAttributeDefinitionQueryOptions =
 
 // 역할 : UseUpdateWorkspaceObjectAttributeDefinitionMutationOptions가 AttributeDefinition 수정 mutation 설정을 정의합니다.
 type UseUpdateWorkspaceObjectAttributeDefinitionMutationOptions = {
+  readonly userId?: string | null;
+};
+
+// 역할 : UseMoveWorkspaceObjectAttributeDefinitionPositionMutationOptions가 AttributeDefinition 위치 변경 mutation 설정을 정의합니다.
+type UseMoveWorkspaceObjectAttributeDefinitionPositionMutationOptions = {
   readonly userId?: string | null;
 };
 
@@ -156,6 +165,87 @@ export function useUpdateWorkspaceObjectAttributeDefinitionMutation(
           variables.workspaceId,
           variables.objectDefinitionId,
           variables.attributeDefinitionId,
+        ),
+      });
+    },
+  });
+}
+
+// 기능 : 현재 Workspace ObjectDefinition의 AttributeDefinition 위치 변경 mutation을 제공합니다.
+export function useMoveWorkspaceObjectAttributeDefinitionPositionMutation(
+  options: UseMoveWorkspaceObjectAttributeDefinitionPositionMutationOptions = {},
+) {
+  // 1. 위치 변경 직후 header/body 목록을 갱신할 query client와 사용자 경계를 준비한다.
+  const queryClient = useQueryClient();
+  const userId = options.userId ?? null;
+
+  // 2. PATCH API 호출, optimistic reorder, 관련 query invalidation 규칙을 호출자에게 제공한다.
+  return useMutation({
+    mutationFn: moveWorkspaceObjectAttributeDefinitionPosition,
+    onMutate: async (variables) => {
+      const listQueryKey = workspaceObjectAttributeDefinitionQueryKeys.list(
+        userId,
+        variables.workspaceId,
+        variables.objectDefinitionId,
+      );
+
+      await queryClient.cancelQueries({ queryKey: listQueryKey });
+
+      const previousAttributeDefinitions =
+        queryClient.getQueryData<
+          readonly WorkspaceObjectAttributeDefinitionListItem[]
+        >(listQueryKey);
+
+      queryClient.setQueryData<
+        readonly WorkspaceObjectAttributeDefinitionListItem[]
+      >(listQueryKey, (currentAttributeDefinitions) => {
+        if (!currentAttributeDefinitions) {
+          return currentAttributeDefinitions;
+        }
+
+        return reorderAttributeDefinitionsByTargetPlacementPosition(
+          currentAttributeDefinitions,
+          variables.attributeDefinitionId,
+          variables.targetPlacementPosition,
+        );
+      });
+
+      return {
+        listQueryKey,
+        previousAttributeDefinitions,
+      };
+    },
+    onError: (_error, _variables, context) => {
+      if (!context?.previousAttributeDefinitions) {
+        return;
+      }
+
+      queryClient.setQueryData(
+        context.listQueryKey,
+        context.previousAttributeDefinitions,
+      );
+    },
+    onSettled: (_data, _error, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(
+          userId,
+          variables.workspaceId,
+          variables.objectDefinitionId,
+        ),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: workspaceObjectAttributeDefinitionQueryKeys.detail(
+          userId,
+          variables.workspaceId,
+          variables.objectDefinitionId,
+          variables.attributeDefinitionId,
+        ),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: workspaceObjectRecordDefinitionQueryKeys.list(
+          userId,
+          variables.workspaceId,
+          variables.objectDefinitionId,
         ),
       });
     },
