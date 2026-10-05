@@ -1070,6 +1070,12 @@ function AttributeColumnHeaderPopover({
             setDescriptionDraftDirty(true);
           }}
           onFocus={() => setDescriptionInputFocused(true)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              event.currentTarget.blur();
+            }
+          }}
           placeholder={t("objectList.attributeDefinitionDescriptionPlaceholder")}
           ref={descriptionInputRef}
           value={descriptionDraft}
@@ -1994,7 +2000,7 @@ export function WorkspaceObjectListPage() {
     }
 
     // 기능 : header 메뉴 바깥 pointer 입력을 처리합니다.
-    const handleDocumentPointerDown = (event: PointerEvent) => {
+    const handleDocumentPointerUp = (event: PointerEvent) => {
       const target = event.target;
 
       if (
@@ -2014,11 +2020,11 @@ export function WorkspaceObjectListPage() {
       }
     };
 
-    document.addEventListener("pointerdown", handleDocumentPointerDown);
+    document.addEventListener("pointerup", handleDocumentPointerUp);
     document.addEventListener("keydown", handleDocumentKeyDown);
 
     return () => {
-      document.removeEventListener("pointerdown", handleDocumentPointerDown);
+      document.removeEventListener("pointerup", handleDocumentPointerUp);
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
   }, [activeAttributeColumnMenuId]);
