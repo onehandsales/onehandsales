@@ -8,6 +8,8 @@ import type {
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
   IncrementAttributeDefinitionSortOrdersFromInput,
+  MoveAttributeDefinitionSortOrderInput,
+  MoveAttributeDefinitionSortOrderResult,
   UpdateAttributeDefinitionInput,
   UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
@@ -434,6 +436,14 @@ class FakeAttributeDefinitionCommandRepository
   async incrementAttributeDefinitionSortOrdersFrom(
     _input: IncrementAttributeDefinitionSortOrdersFromInput
   ): Promise<number> {
+    void _input;
+    throw new Error("Not implemented in fake repository");
+  }
+
+  // 기능 : 현재 테스트에서 사용하지 않는 위치 변경 호출을 차단합니다.
+  async moveAttributeDefinitionSortOrder(
+    _input: MoveAttributeDefinitionSortOrderInput
+  ): Promise<MoveAttributeDefinitionSortOrderResult> {
     void _input;
     throw new Error("Not implemented in fake repository");
   }

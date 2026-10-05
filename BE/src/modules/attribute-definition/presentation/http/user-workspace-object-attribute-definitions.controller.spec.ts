@@ -12,6 +12,7 @@ import { CreateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attri
 import { AttributeDefinitionValidationError } from "@/modules/attribute-definition/domain/attribute-definition.errors";
 import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
+import { MoveWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/move-workspace-object-attribute-definition.use-case";
 import { UpdateWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/update-workspace-object-attribute-definition.use-case";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { HttpExceptionFilter } from "@/shared/presentation/filters/http-exception.filter";
@@ -47,6 +48,12 @@ type ListWorkspaceObjectAttributeDefinitionsUseCaseFake = Pick<
 // 역할 : GetWorkspaceObjectAttributeDefinitionUseCaseFake controller 테스트용 AttributeDefinition 단건 조회 유스케이스 계약을 정의합니다.
 type GetWorkspaceObjectAttributeDefinitionUseCaseFake = Pick<
   GetWorkspaceObjectAttributeDefinitionUseCase,
+  "execute"
+>;
+
+// 역할 : MoveWorkspaceObjectAttributeDefinitionUseCaseFake controller 테스트용 AttributeDefinition 위치 변경 유스케이스 계약을 정의합니다.
+type MoveWorkspaceObjectAttributeDefinitionUseCaseFake = Pick<
+  MoveWorkspaceObjectAttributeDefinitionUseCase,
   "execute"
 >;
 
@@ -123,6 +130,15 @@ function createGetUseCaseFake(): jest.Mocked<GetWorkspaceObjectAttributeDefiniti
   };
 }
 
+// 기능 : AttributeDefinition 위치 변경 유스케이스 fake를 생성합니다.
+function createMoveUseCaseFake(): jest.Mocked<MoveWorkspaceObjectAttributeDefinitionUseCaseFake> {
+  return {
+    execute: jest.fn().mockResolvedValue({
+      attributeDefinitionId: "00000000-0000-4000-8000-000000000603",
+    }),
+  };
+}
+
 // 기능 : AttributeDefinition 수정 유스케이스 fake를 생성합니다.
 function createUpdateUseCaseFake(): jest.Mocked<UpdateWorkspaceObjectAttributeDefinitionUseCaseFake> {
   return {
@@ -142,10 +158,12 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
   let listUseCase: jest.Mocked<ListWorkspaceObjectAttributeDefinitionsUseCaseFake>;
   // 4. 이후 단계에서 사용할 getUseCase 값을 준비한다.
   let getUseCase: jest.Mocked<GetWorkspaceObjectAttributeDefinitionUseCaseFake>;
-  // 4. 이후 단계에서 사용할 updateUseCase 값을 준비한다.
+  // 4. 이후 단계에서 사용할 moveUseCase 값을 준비한다.
+  let moveUseCase: jest.Mocked<MoveWorkspaceObjectAttributeDefinitionUseCaseFake>;
+  // 5. 이후 단계에서 사용할 updateUseCase 값을 준비한다.
   let updateUseCase: jest.Mocked<UpdateWorkspaceObjectAttributeDefinitionUseCaseFake>;
 
-  // 5. 필요한 비동기 작업을 실행한다.
+  // 6. 필요한 비동기 작업을 실행한다.
   beforeEach(async () => {
     // 1. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     createUseCase = createCreateUseCaseFake();
@@ -154,9 +172,11 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
     // 3. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     getUseCase = createGetUseCaseFake();
     // 4. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
+    moveUseCase = createMoveUseCaseFake();
+    // 5. 현재 단계에서 필요한 fake 유스케이스를 생성한다.
     updateUseCase = createUpdateUseCaseFake();
 
-    // 5. 비동기 결과를 받아 moduleRef에 저장한다.
+    // 6. 비동기 결과를 받아 moduleRef에 저장한다.
     const moduleRef = await Test.createTestingModule({
       controllers: [UserWorkspaceObjectAttributeDefinitionsController],
       providers: [
@@ -173,6 +193,10 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
           useValue: getUseCase,
         },
         {
+          provide: MoveWorkspaceObjectAttributeDefinitionUseCase,
+          useValue: moveUseCase,
+        },
+        {
           provide: UpdateWorkspaceObjectAttributeDefinitionUseCase,
           useValue: updateUseCase,
         },
@@ -182,7 +206,7 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       .useClass(FakeAuthGuard)
       .compile();
 
-    // 6. 테스트 Nest application을 초기화한다.
+    // 7. 테스트 Nest application을 초기화한다.
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(
       new ValidationPipe({
@@ -449,6 +473,102 @@ describe("UserWorkspaceObjectAttributeDefinitionsController", () => {
       "00000000-0000-4000-8000-000000000301",
       "00000000-0000-4000-8000-000000000501",
       "00000000-0000-4000-8000-000000000603"
+    );
+  });
+
+  // 14. 필요한 비동기 작업을 실행한다.
+  it("moves a workspace object attribute definition position", async () => {
+    await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603/position"
+      )
+      .send({
+        targetPlacementPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000602",
+          side: "after",
+        },
+      })
+      .expect(200)
+      .expect({
+        attributeDefinitionId: "00000000-0000-4000-8000-000000000603",
+      });
+
+    expect(moveUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      "00000000-0000-4000-8000-000000000603",
+      {
+        targetPlacementPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000602",
+          side: "after",
+        },
+      }
+    );
+  });
+
+  // 15. 필요한 비동기 작업을 실행한다.
+  it("rejects unknown move position fields before calling the use case", async () => {
+    await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603/position"
+      )
+      .send({
+        targetPlacementPosition: {
+          referenceAttributeDefinitionId:
+            "00000000-0000-4000-8000-000000000602",
+          side: "after",
+        },
+        unknownField: "not allowed",
+      })
+      .expect(400);
+
+    expect(moveUseCase.execute).not.toHaveBeenCalled();
+  });
+
+  // 16. 필요한 비동기 작업을 실행한다.
+  it("returns domain validation error for invalid move target placement position", async () => {
+    moveUseCase.execute.mockRejectedValueOnce(
+      new AttributeDefinitionValidationError(
+        "ATTRIBUTE_DEFINITION_POSITION_INVALID",
+        "targetPlacementPosition",
+        "Attribute definition target placement position is invalid"
+      )
+    );
+
+    const response = await request(app.getHttpServer())
+      .patch(
+        "/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions/00000000-0000-4000-8000-000000000501/attribute-definitions/00000000-0000-4000-8000-000000000603/position"
+      )
+      .send({
+        targetPlacementPosition: {
+          referenceAttributeDefinitionId: "not-a-uuid",
+          side: "left",
+          unknownNestedField: "not allowed",
+        },
+      })
+      .expect(400);
+
+    expect(response.body).toMatchObject({
+      statusCode: 400,
+      error: "ATTRIBUTE_DEFINITION_POSITION_INVALID",
+      code: "ATTRIBUTE_DEFINITION_POSITION_INVALID",
+      field: "targetPlacementPosition",
+    });
+    expect(moveUseCase.execute).toHaveBeenCalledWith(
+      CURRENT_USER,
+      "00000000-0000-4000-8000-000000000301",
+      "00000000-0000-4000-8000-000000000501",
+      "00000000-0000-4000-8000-000000000603",
+      {
+        targetPlacementPosition: {
+          referenceAttributeDefinitionId: "not-a-uuid",
+          side: "left",
+          unknownNestedField: "not allowed",
+        },
+      }
     );
   });
 

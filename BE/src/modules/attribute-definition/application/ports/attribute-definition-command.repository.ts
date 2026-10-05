@@ -54,6 +54,32 @@ export interface IncrementAttributeDefinitionSortOrdersFromInput {
   readonly transactionContext?: TransactionContext | null;
 }
 
+// 역할 : MoveAttributeDefinitionSortOrderInput이 AttributeDefinition 위치 변경 입력을 정의합니다.
+export interface MoveAttributeDefinitionSortOrderInput {
+  // 기능 : 순서를 변경할 AttributeDefinition의 Workspace 경계를 지정합니다.
+  readonly workspaceId: string;
+  // 기능 : 순서를 변경할 AttributeDefinition의 ObjectDefinition 경계를 지정합니다.
+  readonly objectDefinitionId: string;
+  // 기능 : 위치를 변경할 AttributeDefinition 식별자를 지정합니다.
+  readonly attributeDefinitionId: string;
+  // 기능 : 이동 전 현재 sortOrder 값을 지정합니다.
+  readonly fromSortOrder: number;
+  // 기능 : 이동 후 목표 sortOrder 값을 지정합니다.
+  readonly toSortOrder: number;
+  // 기능 : 위치 변경 감사 컬럼에 기록할 Actor 식별자를 지정합니다.
+  readonly updatedByActorId: string;
+  // 기능 : 위치 변경 흐름을 묶는 트랜잭션 컨텍스트를 전달합니다.
+  readonly transactionContext?: TransactionContext | null;
+}
+
+// 역할 : MoveAttributeDefinitionSortOrderResult가 AttributeDefinition 위치 변경 결과를 정의합니다.
+export interface MoveAttributeDefinitionSortOrderResult {
+  // 기능 : 위치를 변경한 AttributeDefinition 식별자를 반환합니다.
+  readonly id: string;
+  // 기능 : 이동 대상 외에 sortOrder가 함께 조정된 AttributeDefinition 수를 반환합니다.
+  readonly shiftedAttributeDefinitionCount: number;
+}
+
 // 역할 : CreateAttributeDefinitionInput이 AttributeDefinition 생성에 필요한 값을 정의합니다.
 export interface CreateAttributeDefinitionInput {
   // 기능 : 생성할 AttributeDefinition의 Workspace 경계를 지정합니다.
@@ -156,6 +182,11 @@ export interface AttributeDefinitionCommandRepository {
   incrementAttributeDefinitionSortOrdersFrom(
     input: IncrementAttributeDefinitionSortOrdersFromInput
   ): Promise<number>;
+
+  // 기능 : 같은 ObjectDefinition 안에서 AttributeDefinition을 목표 정렬 순서로 이동합니다.
+  moveAttributeDefinitionSortOrder(
+    input: MoveAttributeDefinitionSortOrderInput
+  ): Promise<MoveAttributeDefinitionSortOrderResult>;
 
   // 기능 : ObjectDefinition에 AttributeDefinition row를 생성합니다.
   createAttributeDefinition(

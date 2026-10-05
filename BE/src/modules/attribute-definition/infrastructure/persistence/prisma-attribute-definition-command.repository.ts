@@ -9,6 +9,8 @@ import type {
   CreateAttributeDefinitionInput,
   CreateAttributeDefinitionResult,
   IncrementAttributeDefinitionSortOrdersFromInput,
+  MoveAttributeDefinitionSortOrderInput,
+  MoveAttributeDefinitionSortOrderResult,
   UpdateAttributeDefinitionInput,
   UpdateAttributeDefinitionResult,
 } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
@@ -130,6 +132,76 @@ export class PrismaAttributeDefinitionCommandRepository
 
     // 3. 관측 로그에서 사용할 변경 row 수를 반환한다.
     return result.count;
+  }
+
+  // 기능 : 같은 ObjectDefinition 안에서 이동 대상 AttributeDefinition을 목표 정렬 순서로 재배치합니다.
+  async moveAttributeDefinitionSortOrder(
+    input: MoveAttributeDefinitionSortOrderInput
+  ): Promise<MoveAttributeDefinitionSortOrderResult> {
+    // 1. 현재 transaction context에 맞는 Prisma client를 준비한다.
+    const client = resolvePrismaTransactionalClient(
+      this.prismaService,
+      input.transactionContext
+    );
+
+    // 2. 이동 방향에 맞는 bounded range 조건과 증감 연산을 계산한다.
+    const moveEarlier = input.toSortOrder < input.fromSortOrder;
+    const rangeWhere = moveEarlier
+      ? {
+          gte: input.toSortOrder,
+          lt: input.fromSortOrder,
+        }
+      : {
+          gt: input.fromSortOrder,
+          lte: input.toSortOrder,
+        };
+    const sortOrderUpdate = moveEarlier
+      ? {
+          increment: 1,
+        }
+      : {
+          decrement: 1,
+        };
+
+    // 3. 이동 대상 자신을 제외한 bounded range 안의 AttributeDefinition sortOrder를 조정한다.
+    const shifted = await client.attributeDefinition.updateMany({
+      where: {
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+        id: {
+          not: input.attributeDefinitionId,
+        },
+        sortOrder: rangeWhere,
+      },
+      data: {
+        sortOrder: sortOrderUpdate,
+        updatedByActorId: input.updatedByActorId,
+      },
+    });
+
+    // 4. 이동 대상 AttributeDefinition을 목표 sortOrder로 수정하고 감사 Actor를 기록한다.
+    const moved = await client.attributeDefinition.updateMany({
+      where: {
+        workspaceId: input.workspaceId,
+        objectDefinitionId: input.objectDefinitionId,
+        id: input.attributeDefinitionId,
+      },
+      data: {
+        sortOrder: input.toSortOrder,
+        updatedByActorId: input.updatedByActorId,
+      },
+    });
+
+    // 5. 경계 조건에 맞는 이동 대상 row가 사라졌으면 not found로 변환한다.
+    if (moved.count === 0) {
+      throw new AttributeDefinitionNotFoundError();
+    }
+
+    // 6. API 응답과 관측 로그에 필요한 이동 결과를 반환한다.
+    return {
+      id: input.attributeDefinitionId,
+      shiftedAttributeDefinitionCount: shifted.count,
+    };
   }
 
   // 기능 : ObjectDefinition에 AttributeDefinition row를 생성합니다.

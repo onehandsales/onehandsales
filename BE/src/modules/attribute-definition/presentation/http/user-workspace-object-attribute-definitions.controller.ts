@@ -17,6 +17,10 @@ import {
 import { GetWorkspaceObjectAttributeDefinitionUseCase } from "@/modules/attribute-definition/application/use-cases/get-workspace-object-attribute-definition.use-case";
 import { ListWorkspaceObjectAttributeDefinitionsUseCase } from "@/modules/attribute-definition/application/use-cases/list-workspace-object-attribute-definitions.use-case";
 import {
+  type MoveWorkspaceObjectAttributeDefinitionCommand,
+  MoveWorkspaceObjectAttributeDefinitionUseCase,
+} from "@/modules/attribute-definition/application/use-cases/move-workspace-object-attribute-definition.use-case";
+import {
   type UpdateWorkspaceObjectAttributeDefinitionCommand,
   UpdateWorkspaceObjectAttributeDefinitionUseCase,
 } from "@/modules/attribute-definition/application/use-cases/update-workspace-object-attribute-definition.use-case";
@@ -24,6 +28,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { CreateWorkspaceObjectAttributeDefinitionDto } from "./dto/create-workspace-object-attribute-definition.dto";
+import { MoveWorkspaceObjectAttributeDefinitionDto } from "./dto/move-workspace-object-attribute-definition.dto";
 import { UpdateWorkspaceObjectAttributeDefinitionDto } from "./dto/update-workspace-object-attribute-definition.dto";
 
 // 역할 : UserWorkspaceObjectAttributeDefinitionsController 사용자 Workspace ObjectDefinition AttributeDefinition HTTP 요청을 application 계층으로 위임합니다.
@@ -32,11 +37,12 @@ import { UpdateWorkspaceObjectAttributeDefinitionDto } from "./dto/update-worksp
   "api/users/me/workspaces/:workspaceId/object-definitions/:objectDefinitionId/attribute-definitions"
 )
 export class UserWorkspaceObjectAttributeDefinitionsController {
-  // 기능 : AttributeDefinition 생성/목록/단건 조회/수정 유스케이스를 주입받습니다.
+  // 기능 : AttributeDefinition 생성/목록/단건 조회/위치 변경/수정 유스케이스를 주입받습니다.
   constructor(
     private readonly createWorkspaceObjectAttributeDefinitionUseCase: CreateWorkspaceObjectAttributeDefinitionUseCase,
     private readonly listWorkspaceObjectAttributeDefinitionsUseCase: ListWorkspaceObjectAttributeDefinitionsUseCase,
     private readonly getWorkspaceObjectAttributeDefinitionUseCase: GetWorkspaceObjectAttributeDefinitionUseCase,
+    private readonly moveWorkspaceObjectAttributeDefinitionUseCase: MoveWorkspaceObjectAttributeDefinitionUseCase,
     private readonly updateWorkspaceObjectAttributeDefinitionUseCase: UpdateWorkspaceObjectAttributeDefinitionUseCase
   ) {}
 
@@ -100,6 +106,32 @@ export class UserWorkspaceObjectAttributeDefinitionsController {
       workspaceId,
       objectDefinitionId,
       attributeDefinitionId
+    );
+  }
+
+  // API : 사용자, Workspace ObjectDefinition AttributeDefinition 위치 변경
+  @Patch(":attributeDefinitionId/position")
+  @HttpCode(HttpStatus.OK)
+  moveWorkspaceObjectAttributeDefinition(
+    @CurrentUser() currentUser: CurrentUserContext,
+    @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
+    @Param("objectDefinitionId", new ParseUUIDPipe()) objectDefinitionId: string,
+    @Param("attributeDefinitionId", new ParseUUIDPipe())
+    attributeDefinitionId: string,
+    @Body() body: MoveWorkspaceObjectAttributeDefinitionDto
+  ) {
+    // 1. 위치 변경 계약 필드를 application command에 담는다.
+    const command: MoveWorkspaceObjectAttributeDefinitionCommand = {
+      targetPlacementPosition: body.targetPlacementPosition,
+    };
+
+    // 2. application 계층에 현재 사용자의 AttributeDefinition 위치 변경을 위임한다.
+    return this.moveWorkspaceObjectAttributeDefinitionUseCase.execute(
+      currentUser,
+      workspaceId,
+      objectDefinitionId,
+      attributeDefinitionId,
+      command
     );
   }
 

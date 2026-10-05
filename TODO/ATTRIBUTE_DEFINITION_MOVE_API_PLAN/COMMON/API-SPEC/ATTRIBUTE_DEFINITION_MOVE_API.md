@@ -1,6 +1,6 @@
 # AttributeDefinition Move Position API
 
-계약 상태: confirmed
+계약 상태: implemented
 
 API 식별자: `ATTRIBUTE_DEFINITION_MOVE_POSITION`
 

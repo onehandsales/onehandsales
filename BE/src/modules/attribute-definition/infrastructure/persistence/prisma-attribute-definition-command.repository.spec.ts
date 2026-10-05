@@ -279,6 +279,276 @@ describeWithTestDatabase("PrismaAttributeDefinitionCommandRepository", () => {
     ]);
   });
 
+  // 11. 필요한 비동기 작업을 실행한다.
+  it("moves a later attribute definition before the reference range with audit actor", async () => {
+    if (!databaseAvailable || !prismaService || !repository) {
+      return;
+    }
+
+    const first = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "name",
+      title: "Name",
+      sortOrder: 0,
+      type: "Text",
+      icon: "type",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const second = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "budget",
+      title: "Budget",
+      sortOrder: 1,
+      type: "Number",
+      icon: "hash",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const third = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "memo",
+      title: "Memo",
+      sortOrder: 2,
+      type: "Text",
+      icon: "sticky-note",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const fourth = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "email",
+      title: "Email",
+      sortOrder: 3,
+      type: "EmailAddress",
+      icon: "mail",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    await expect(
+      repository.moveAttributeDefinitionSortOrder({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: fourth.id,
+        fromSortOrder: 3,
+        toSortOrder: 1,
+        updatedByActorId: TEST_ACTOR_ID,
+      })
+    ).resolves.toEqual({
+      id: fourth.id,
+      shiftedAttributeDefinitionCount: 2,
+    });
+
+    const rows = await prismaService.attributeDefinition.findMany({
+      where: {
+        id: {
+          in: [first.id, second.id, third.id, fourth.id],
+        },
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+      select: {
+        id: true,
+        sortOrder: true,
+        updatedByActorId: true,
+      },
+    });
+
+    expect(rows).toEqual([
+      {
+        id: first.id,
+        sortOrder: 0,
+        updatedByActorId: null,
+      },
+      {
+        id: fourth.id,
+        sortOrder: 1,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+      {
+        id: second.id,
+        sortOrder: 2,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+      {
+        id: third.id,
+        sortOrder: 3,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+    ]);
+  });
+
+  // 12. 필요한 비동기 작업을 실행한다.
+  it("moves an earlier attribute definition after the reference range without touching another object", async () => {
+    if (!databaseAvailable || !prismaService || !repository) {
+      return;
+    }
+
+    const otherObjectDefinition = await prismaService.objectDefinition.create({
+      data: {
+        workspaceId: TEST_WORKSPACE_ID,
+        createdByActorId: TEST_ACTOR_ID,
+        apiSlug: "contact",
+        singularName: "contact",
+        pluralName: "contacts",
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const first = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "name",
+      title: "Name",
+      sortOrder: 0,
+      type: "Text",
+      icon: "type",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const second = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "budget",
+      title: "Budget",
+      sortOrder: 1,
+      type: "Number",
+      icon: "hash",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const third = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "memo",
+      title: "Memo",
+      sortOrder: 2,
+      type: "Text",
+      icon: "sticky-note",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const fourth = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "email",
+      title: "Email",
+      sortOrder: 3,
+      type: "EmailAddress",
+      icon: "mail",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+    const otherObjectAttribute = await repository.createAttributeDefinition({
+      workspaceId: TEST_WORKSPACE_ID,
+      objectDefinitionId: otherObjectDefinition.id,
+      createdByActorId: TEST_ACTOR_ID,
+      apiSlug: "name",
+      title: "Name",
+      sortOrder: 2,
+      type: "Text",
+      icon: "type",
+      isMultiselect: false,
+      description: null,
+      config: null,
+    });
+
+    await expect(
+      repository.moveAttributeDefinitionSortOrder({
+        workspaceId: TEST_WORKSPACE_ID,
+        objectDefinitionId: TEST_OBJECT_DEFINITION_ID,
+        attributeDefinitionId: second.id,
+        fromSortOrder: 1,
+        toSortOrder: 3,
+        updatedByActorId: TEST_ACTOR_ID,
+      })
+    ).resolves.toEqual({
+      id: second.id,
+      shiftedAttributeDefinitionCount: 2,
+    });
+
+    const rows = await prismaService.attributeDefinition.findMany({
+      where: {
+        id: {
+          in: [first.id, second.id, third.id, fourth.id],
+        },
+      },
+      orderBy: {
+        sortOrder: "asc",
+      },
+      select: {
+        id: true,
+        sortOrder: true,
+        updatedByActorId: true,
+      },
+    });
+    const otherObjectRow =
+      await prismaService.attributeDefinition.findUniqueOrThrow({
+        where: {
+          id: otherObjectAttribute.id,
+        },
+        select: {
+          id: true,
+          objectDefinitionId: true,
+          sortOrder: true,
+          updatedByActorId: true,
+        },
+      });
+
+    expect(rows).toEqual([
+      {
+        id: first.id,
+        sortOrder: 0,
+        updatedByActorId: null,
+      },
+      {
+        id: third.id,
+        sortOrder: 1,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+      {
+        id: fourth.id,
+        sortOrder: 2,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+      {
+        id: second.id,
+        sortOrder: 3,
+        updatedByActorId: TEST_ACTOR_ID,
+      },
+    ]);
+    expect(otherObjectRow).toEqual({
+      id: otherObjectAttribute.id,
+      objectDefinitionId: otherObjectDefinition.id,
+      sortOrder: 2,
+      updatedByActorId: null,
+    });
+  });
+
   // 9. 필요한 비동기 작업을 실행한다.
   it("updates only requested attribute definition fields inside the workspace object boundary", async () => {
     if (!databaseAvailable || !prismaService || !repository) {
