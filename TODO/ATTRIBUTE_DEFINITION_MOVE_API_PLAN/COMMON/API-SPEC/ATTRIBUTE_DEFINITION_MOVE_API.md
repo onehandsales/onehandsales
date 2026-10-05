@@ -54,7 +54,7 @@ ObjectDefinition 목록 화면에서 사용자가 AttributeDefinition header col
 
 ```ts
 {
-  position: {
+  targetPlacementPosition: {
     referenceAttributeDefinitionId: string;
     side: "before" | "after";
   };
@@ -63,9 +63,9 @@ ObjectDefinition 목록 화면에서 사용자가 AttributeDefinition header col
 
 규칙:
 
-- `position`은 필수다.
-- `position`은 plain object여야 한다.
-- `position`에 허용되는 key는 `referenceAttributeDefinitionId`, `side`뿐이다.
+- `targetPlacementPosition`은 필수다.
+- `targetPlacementPosition`은 plain object여야 한다.
+- `targetPlacementPosition`에 허용되는 key는 `referenceAttributeDefinitionId`, `side`뿐이다.
 - `referenceAttributeDefinitionId`는 UUID v4 문자열이어야 한다.
 - `side`는 `"before"` 또는 `"after"`만 허용한다.
 - path의 `attributeDefinitionId`와 `referenceAttributeDefinitionId`가 같으면 validation error로 처리한다.
@@ -111,7 +111,7 @@ Body 예시:
 
 ```json
 {
-  "position": {
+  "targetPlacementPosition": {
     "referenceAttributeDefinitionId": "00000000-0000-4000-8000-000000000602",
     "side": "before"
   }
@@ -120,7 +120,7 @@ Body 예시:
 
 ```json
 {
-  "position": {
+  "targetPlacementPosition": {
     "referenceAttributeDefinitionId": "00000000-0000-4000-8000-000000000602",
     "side": "after"
   }
@@ -131,9 +131,9 @@ Body field:
 
 | 이름 | 타입 | 필수 | nullable | validation | 설명 |
 | --- | --- | --- | --- | --- | --- |
-| position | object | 예 | 아니오 | application 계약 검증 | 이동 목표 위치 |
-| position.referenceAttributeDefinitionId | UUID string | 예 | 아니오 | UUID v4 | 기준 AttributeDefinition ID |
-| position.side | `"before" \| "after"` | 예 | 아니오 | enum | 기준 속성의 앞 또는 뒤 |
+| targetPlacementPosition | object | 예 | 아니오 | application 계약 검증 | 이동 목표 위치 |
+| targetPlacementPosition.referenceAttributeDefinitionId | UUID string | 예 | 아니오 | UUID v4 | 기준 AttributeDefinition ID |
+| targetPlacementPosition.side | `"before" \| "after"` | 예 | 아니오 | enum | 기준 속성의 앞 또는 뒤 |
 
 Success:
 
@@ -148,8 +148,8 @@ Success:
 
 ## 6. Business Logic
 
-1. request body의 `position` 구조를 DB 조회 전에 검증한다.
-2. `position.referenceAttributeDefinitionId`와 `position.side`를 정규화한다.
+1. request body의 `targetPlacementPosition` 구조를 DB 조회 전에 검증한다.
+2. `targetPlacementPosition.referenceAttributeDefinitionId`와 `targetPlacementPosition.side`를 정규화한다.
 3. path의 `attributeDefinitionId`와 `referenceAttributeDefinitionId`가 같으면 `ATTRIBUTE_DEFINITION_POSITION_INVALID`로 차단한다.
 4. `currentUser.id + workspaceId`로 WorkspaceMember를 확인하고 수정 감사용 Actor ID를 조회한다.
 5. Workspace membership이 없으면 정보 노출을 막기 위해 not found로 응답한다.
@@ -186,7 +186,7 @@ Success:
 
 ```json
 {
-  "position": {
+  "targetPlacementPosition": {
     "referenceAttributeDefinitionId": "B",
     "side": "before"
   }
@@ -216,7 +216,7 @@ Success:
 
 ```json
 {
-  "position": {
+  "targetPlacementPosition": {
     "referenceAttributeDefinitionId": "D",
     "side": "after"
   }
@@ -261,8 +261,8 @@ if (sourceSortOrder < targetSortOrder) {
 | `objectDefinitionId`가 UUID 형식이 아님 | Nest validation error | 400 | 요청 버그로 처리 | warn |
 | `attributeDefinitionId`가 UUID 형식이 아님 | Nest validation error | 400 | 요청 버그로 처리 | warn |
 | request body에 계약 외 top-level field가 있음 | Nest validation error | 400 | 요청 버그로 처리 | warn |
-| `position`이 없거나 객체가 아님 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | drag/drop 상태를 되돌리고 목록 재조회 가능 | warn |
-| `position`에 계약 외 하위 field가 있음 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | 요청 버그로 처리 | warn |
+| `targetPlacementPosition`이 없거나 객체가 아님 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | drag/drop 상태를 되돌리고 목록 재조회 가능 | warn |
+| `targetPlacementPosition`에 계약 외 하위 field가 있음 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | 요청 버그로 처리 | warn |
 | `referenceAttributeDefinitionId`가 UUID v4가 아님 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | 요청 버그로 처리 | warn |
 | `side`가 `before`/`after`가 아님 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | 요청 버그로 처리 | warn |
 | 이동 대상과 기준 대상이 같은 AttributeDefinition임 | `ATTRIBUTE_DEFINITION_POSITION_INVALID` | 400 | no-op UI로 처리하고 목록 재조회 가능 | info |
@@ -280,7 +280,7 @@ if (sourceSortOrder < targetSortOrder) {
 - `AttributeDefinitionWorkspaceNotFound`, `AttributeDefinitionObjectDefinitionNotFound`, `AttributeDefinitionNotFound`는 error code가 `NotFound`로 끝나므로 현재 not found 규칙을 재사용한다.
 - `ATTRIBUTE_DEFINITION_POSITION_INVALID`는 `400 Bad Request` validation error로 반환한다.
 - `ATTRIBUTE_DEFINITION_POSITION_INVALID`는 신규 코드이므로 구현 시 `AttributeDefinitionValidationErrorCode` union과 `HttpExceptionFilter.getDomainErrorStatus`의 `400 Bad Request` 매핑에 추가한다.
-- `AttributeDefinitionValidationField`에는 신규 field `"position"`을 추가하고, 위치 입력 검증 실패는 `new AttributeDefinitionValidationError("ATTRIBUTE_DEFINITION_POSITION_INVALID", "position", "Attribute definition position is invalid")` 형식으로 생성한다.
+- `AttributeDefinitionValidationField`에는 신규 field `"targetPlacementPosition"`을 추가하고, 위치 입력 검증 실패는 `new AttributeDefinitionValidationError("ATTRIBUTE_DEFINITION_POSITION_INVALID", "targetPlacementPosition", "Attribute definition target placement position is invalid")` 형식으로 생성한다.
 
 ## 9. Transaction Contract
 
@@ -451,7 +451,7 @@ interface MoveAttributeDefinitionSortOrderResult {
 
 - User Web은 header column drag 종료 시 기존 순서와 새 순서가 다를 때만 API를 호출한다.
 - FE는 `sortOrder` 숫자를 request body에 포함하지 않는다.
-- request body는 `position.referenceAttributeDefinitionId`와 `position.side`만 포함한다.
+- request body는 `targetPlacementPosition.referenceAttributeDefinitionId`와 `targetPlacementPosition.side`만 포함한다.
 - 성공 시 AttributeDefinition 목록/header row query와 RecordDefinition 목록/body row query를 재조회한다.
 - optimistic update를 적용한 경우 실패 시 이전 순서로 되돌리고 목록을 재조회한다.
 - `404` 계열 오류는 현재 Object/Attribute 목록이 바뀐 것으로 보고 header/record 목록을 재조회한다.
@@ -475,12 +475,12 @@ interface MoveAttributeDefinitionSortOrderResult {
 
 Application use case:
 
-- `position` 누락/`null`/객체 아님 validation error
-- `position` 하위 unknown field validation error
+- `targetPlacementPosition` 누락/`null`/객체 아님 validation error
+- `targetPlacementPosition` 하위 unknown field validation error
 - `referenceAttributeDefinitionId` UUID v4 형식 오류 validation error
 - `side`가 `before`/`after`가 아니면 validation error
 - 이동 대상과 기준 대상이 같으면 validation error
-- 위치 입력 validation error는 `ATTRIBUTE_DEFINITION_POSITION_INVALID`, field `position`으로 응답
+- 위치 입력 validation error는 `ATTRIBUTE_DEFINITION_POSITION_INVALID`, field `targetPlacementPosition`으로 응답
 - Workspace membership 없음은 workspace not found
 - WorkspaceMember actor 없음은 내부 정합성 오류
 - ObjectDefinition 경계 밖이면 object definition not found
@@ -497,8 +497,8 @@ Controller:
 - AuthGuard 적용
 - path param UUID validation
 - request body unknown top-level field validation
-- `ATTRIBUTE_DEFINITION_POSITION_INVALID` domain error가 `400 Bad Request`와 `code`, `field: "position"`으로 변환됨
-- body의 `position`을 use case command로 전달
+- `ATTRIBUTE_DEFINITION_POSITION_INVALID` domain error가 `400 Bad Request`와 `code`, `field: "targetPlacementPosition"`으로 변환됨
+- body의 `targetPlacementPosition`을 use case command로 전달
 
 Repository integration:
 
