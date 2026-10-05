@@ -13,6 +13,7 @@ import {
   Download,
   EyeOff,
   Globe,
+  Group,
   Hash,
   Kanban,
   Link2,
@@ -1074,31 +1075,37 @@ function AttributeColumnHeaderPopover({
           value={descriptionDraft}
         />
       ) : null}
-      <div className="mt-2 flex h-8 items-center gap-2 rounded-[8px] border border-[#E5E1D8] bg-white px-2">
-        <ListChecks
+      <button
+        aria-label={t("objectList.attributeDefinitionMultiselectAction")}
+        aria-pressed={isMultiselectDraft}
+        className="mt-2 flex h-7 w-full min-w-0 items-center gap-2 rounded-[8px] px-2 text-left text-[14px] font-medium text-[#2F2F2F] disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={isAttributeDefinitionUpdating}
+        role="menuitem"
+        type="button"
+        onClick={() => {
+          const nextIsMultiselect = !isMultiselectDraft;
+
+          setMultiselectDraft(nextIsMultiselect);
+          setMultiselectDraftDirty(true);
+          void commitMultiselectDraft(nextIsMultiselect);
+        }}
+      >
+        <Group
           aria-hidden="true"
-          className="h-4 w-4 shrink-0 text-[#8B8984]"
+          className="h-5 w-5 shrink-0 text-[#2F2F2F]"
           strokeWidth={1.9}
         />
-        <span className="min-w-0 flex-1 truncate text-[14px] font-medium text-[#2F2F2F]">
+        <span className="min-w-0 flex-1 truncate">
           {t("objectList.attributeDefinitionMultiselectAction")}
         </span>
-        <button
-          aria-label={t("objectList.attributeDefinitionMultiselectAction")}
-          aria-pressed={isMultiselectDraft}
+        <span
+          aria-hidden="true"
           className={cn(
-            "relative h-5 w-9 shrink-0 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE] focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60",
-            isMultiselectDraft ? "bg-[#4880EE]" : "bg-[#D6D3CD]",
+            "relative h-5 w-9 shrink-0 rounded-full transition-colors",
+            isMultiselectDraft
+              ? "bg-[#4880EE] hover:bg-[#3F73DA]"
+              : "bg-[#E4E2DC] hover:bg-[#D6D3CD]",
           )}
-          disabled={isAttributeDefinitionUpdating}
-          type="button"
-          onClick={() => {
-            const nextIsMultiselect = !isMultiselectDraft;
-
-            setMultiselectDraft(nextIsMultiselect);
-            setMultiselectDraftDirty(true);
-            void commitMultiselectDraft(nextIsMultiselect);
-          }}
         >
           <span
             className={cn(
@@ -1108,8 +1115,8 @@ function AttributeColumnHeaderPopover({
                 : "translate-x-0.5",
             )}
           />
-        </button>
-      </div>
+        </span>
+      </button>
       {attributeDefinitionUpdateErrorMessage ? (
         <p
           className="mt-2 rounded-[8px] bg-[#FEF2F2] px-2 py-1.5 text-[12px] font-medium leading-4 text-[#B91C1C]"
@@ -1119,6 +1126,7 @@ function AttributeColumnHeaderPopover({
         </p>
       ) : null}
       <div className="mt-2 grid gap-1">
+        <div className="my-1 h-px bg-[#EEEDEA]" />
         {menuSections.map((menuItems, sectionIndex) => (
           <div className="grid gap-1" key={`attribute-menu-section-${sectionIndex}`}>
             {sectionIndex > 0 ? <div className="my-1 h-px bg-[#EEEDEA]" /> : null}
