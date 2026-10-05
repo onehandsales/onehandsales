@@ -1,6 +1,6 @@
 # AttributeDefinition Update API
 
-계약 상태: confirmed
+계약 상태: implemented
 
 소비자:
 
