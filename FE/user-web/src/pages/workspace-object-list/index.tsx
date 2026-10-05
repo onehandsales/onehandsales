@@ -13,7 +13,6 @@ import {
   Download,
   EyeOff,
   Globe,
-  Group,
   Hash,
   Kanban,
   Link2,
@@ -25,6 +24,7 @@ import {
   MessageSquarePlus,
   MessagesSquare,
   MoreHorizontal,
+  Network,
   Phone,
   Pin,
   Plus,
@@ -1090,7 +1090,7 @@ function AttributeColumnHeaderPopover({
           void commitMultiselectDraft(nextIsMultiselect);
         }}
       >
-        <Group
+        <Network
           aria-hidden="true"
           className="h-5 w-5 shrink-0 text-[#2F2F2F]"
           strokeWidth={1.9}
