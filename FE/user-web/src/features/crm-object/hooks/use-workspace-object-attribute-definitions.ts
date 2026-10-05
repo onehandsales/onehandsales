@@ -4,6 +4,8 @@ import {
   listWorkspaceObjectAttributeDefinitions,
   moveWorkspaceObjectAttributeDefinitionPosition,
   updateWorkspaceObjectAttributeDefinition,
+  type UpdateWorkspaceObjectAttributeDefinitionInput,
+  type WorkspaceObjectAttributeDefinitionDetail,
   type WorkspaceObjectAttributeDefinitionListItem,
 } from "@/features/crm-object/api/attribute-definition-api";
 import { workspaceObjectAttributeDefinitionQueryKeys } from "@/features/crm-object/api/attribute-definition-query-keys";
@@ -37,6 +39,38 @@ type FetchWorkspaceObjectAttributeDefinitionDetailInput = {
   readonly objectDefinitionId: string | null;
   readonly workspaceId: string | null;
 };
+
+// 기능 : AttributeDefinition list item cache에 수정 요청 값을 즉시 반영합니다.
+function patchWorkspaceObjectAttributeDefinitionListItem(
+  attributeDefinition: WorkspaceObjectAttributeDefinitionListItem,
+  input: UpdateWorkspaceObjectAttributeDefinitionInput,
+): WorkspaceObjectAttributeDefinitionListItem {
+  // 1. PATCH body에 포함된 필드만 기존 cache 값 위에 덮어쓴다.
+  return {
+    ...attributeDefinition,
+    ...(input.icon !== undefined ? { icon: input.icon } : null),
+    ...(input.isMultiselect !== undefined
+      ? { isMultiselect: input.isMultiselect }
+      : null),
+    ...(input.title !== undefined ? { title: input.title } : null),
+  };
+}
+
+// 기능 : AttributeDefinition detail cache에 수정 요청 값을 즉시 반영합니다.
+function patchWorkspaceObjectAttributeDefinitionDetail(
+  attributeDefinition: WorkspaceObjectAttributeDefinitionDetail,
+  input: UpdateWorkspaceObjectAttributeDefinitionInput,
+): WorkspaceObjectAttributeDefinitionDetail {
+  // 1. detail에만 존재하는 description까지 포함해 수정 요청 값을 덮어쓴다.
+  return {
+    ...patchWorkspaceObjectAttributeDefinitionListItem(attributeDefinition, input),
+    description:
+      input.description !== undefined
+        ? input.description
+        : attributeDefinition.description,
+    sortOrder: attributeDefinition.sortOrder,
+  };
+}
 
 // 기능 : AttributeDefinition 단건 조회에 필요한 입력을 검증하고 API를 호출합니다.
 function fetchWorkspaceObjectAttributeDefinitionDetail(
@@ -148,9 +182,91 @@ export function useUpdateWorkspaceObjectAttributeDefinitionMutation(
   const queryClient = useQueryClient();
   const userId = options.userId ?? null;
 
-  // 2. PATCH API 호출과 관련 query invalidation 규칙을 호출자에게 제공한다.
+  // 2. PATCH API 호출, optimistic patch, 관련 query invalidation 규칙을 호출자에게 제공한다.
   return useMutation({
     mutationFn: updateWorkspaceObjectAttributeDefinition,
+    onMutate: async (variables) => {
+      const listQueryKey = workspaceObjectAttributeDefinitionQueryKeys.list(
+        userId,
+        variables.workspaceId,
+        variables.objectDefinitionId,
+      );
+      const detailQueryKey = workspaceObjectAttributeDefinitionQueryKeys.detail(
+        userId,
+        variables.workspaceId,
+        variables.objectDefinitionId,
+        variables.attributeDefinitionId,
+      );
+
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: listQueryKey }),
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+      ]);
+
+      const previousAttributeDefinitions =
+        queryClient.getQueryData<
+          readonly WorkspaceObjectAttributeDefinitionListItem[]
+        >(listQueryKey);
+      const previousAttributeDefinitionDetail =
+        queryClient.getQueryData<WorkspaceObjectAttributeDefinitionDetail>(
+          detailQueryKey,
+        );
+
+      queryClient.setQueryData<
+        readonly WorkspaceObjectAttributeDefinitionListItem[]
+      >(listQueryKey, (currentAttributeDefinitions) => {
+        if (!currentAttributeDefinitions) {
+          return currentAttributeDefinitions;
+        }
+
+        return currentAttributeDefinitions.map((attributeDefinition) => {
+          if (attributeDefinition.id !== variables.attributeDefinitionId) {
+            return attributeDefinition;
+          }
+
+          return patchWorkspaceObjectAttributeDefinitionListItem(
+            attributeDefinition,
+            variables,
+          );
+        });
+      });
+
+      queryClient.setQueryData<WorkspaceObjectAttributeDefinitionDetail>(
+        detailQueryKey,
+        (currentAttributeDefinitionDetail) => {
+          if (!currentAttributeDefinitionDetail) {
+            return currentAttributeDefinitionDetail;
+          }
+
+          return patchWorkspaceObjectAttributeDefinitionDetail(
+            currentAttributeDefinitionDetail,
+            variables,
+          );
+        },
+      );
+
+      return {
+        detailQueryKey,
+        listQueryKey,
+        previousAttributeDefinitionDetail,
+        previousAttributeDefinitions,
+      };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousAttributeDefinitions !== undefined) {
+        queryClient.setQueryData(
+          context.listQueryKey,
+          context.previousAttributeDefinitions,
+        );
+      }
+
+      if (context?.previousAttributeDefinitionDetail !== undefined) {
+        queryClient.setQueryData(
+          context.detailQueryKey,
+          context.previousAttributeDefinitionDetail,
+        );
+      }
+    },
     onSuccess: (_data, variables) => {
       void queryClient.invalidateQueries({
         queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(
