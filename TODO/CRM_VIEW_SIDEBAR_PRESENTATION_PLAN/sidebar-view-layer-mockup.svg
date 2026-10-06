@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 1440 1080">
+  <defs>
+    <style>
+      .bg { fill: #f6f7f9; }
+      .panel { fill: #ffffff; stroke: #d8dde6; stroke-width: 1; }
+      .soft { fill: #f9fafb; stroke: #d8dde6; stroke-width: 1; }
+      .active { fill: #eef4ff; stroke: #bdd3ff; stroke-width: 1; }
+      .blue { fill: #dbeafe; }
+      .green { fill: #dcfce7; }
+      .yellow { fill: #fef3c7; }
+      .purple { fill: #ede9fe; }
+      .pink { fill: #fce7f3; }
+      .line { stroke: #d8dde6; stroke-width: 1; }
+      .arrow { stroke: #2563eb; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .title { fill: #0f172a; font-family: Arial, sans-serif; font-size: 28px; font-weight: 700; }
+      .subtitle { fill: #64748b; font-family: Arial, sans-serif; font-size: 21px; }
+      .section { fill: #64748b; font-family: Arial, sans-serif; font-size: 16px; font-weight: 700; letter-spacing: .08em; }
+      .label { fill: #111827; font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+      .text { fill: #1f2937; font-family: Arial, sans-serif; font-size: 20px; }
+      .small { fill: #64748b; font-family: Arial, sans-serif; font-size: 17px; }
+      .tiny { fill: #64748b; font-family: Arial, sans-serif; font-size: 15px; }
+      .chipText { fill: #0f172a; font-family: Arial, sans-serif; font-size: 17px; font-weight: 700; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1440" height="1080"/>
+
+  <text x="64" y="64" class="title">OneHand CRM: Attio식 Sidebar / Kit / View 구조</text>
+  <text x="64" y="100" class="subtitle">Records는 관리항목, Lists는 업무 맥락, Views는 보는 방식이다. Kit은 직종별로 세 가지를 함께 설치한다.</text>
+
+  <rect x="64" y="142" width="314" height="866" rx="18" class="panel"/>
+  <text x="96" y="196" class="label">내 CRM</text>
+  <text x="96" y="246" class="text">홈</text>
+  <text x="96" y="288" class="text">검색</text>
+  <text x="96" y="330" class="text">할 일</text>
+  <text x="96" y="372" class="text">대시보드</text>
+
+  <line x1="96" y1="416" x2="346" y2="416" class="line"/>
+
+  <text x="96" y="462" class="section">RECORDS</text>
+  <text x="116" y="506" class="text">회사</text>
+  <text x="116" y="548" class="text">사람</text>
+  <text x="116" y="590" class="text">딜</text>
+  <text x="116" y="632" class="text">매물</text>
+  <text x="116" y="674" class="text">사건</text>
+
+  <text x="96" y="742" class="section">LISTS</text>
+  <rect x="88" y="766" width="258" height="48" rx="12" class="active"/>
+  <text x="116" y="797" class="text">인바운드 리드</text>
+  <text x="116" y="852" class="text">채용 파이프라인</text>
+  <text x="116" y="894" class="text">방문 예정</text>
+  <text x="116" y="936" class="text">진행 중 사건</text>
+
+  <text x="96" y="982" class="section">FAVORITES</text>
+
+  <rect x="424" y="142" width="416" height="866" rx="18" class="panel"/>
+  <text x="464" y="198" class="label">직종별 Kit</text>
+  <text x="464" y="234" class="small">Kit은 Records만 만들지 않는다.</text>
+
+  <rect x="464" y="278" width="336" height="162" rx="16" class="soft"/>
+  <rect x="488" y="304" width="94" height="34" rx="17" class="blue"/>
+  <text x="510" y="327" class="chipText">영업</text>
+  <text x="488" y="372" class="text">Records: 회사, 사람, 딜</text>
+  <text x="488" y="408" class="text">Lists: 인바운드 리드</text>
+
+  <rect x="464" y="472" width="336" height="162" rx="16" class="soft"/>
+  <rect x="488" y="498" width="112" height="34" rx="17" class="green"/>
+  <text x="509" y="521" class="chipText">부동산</text>
+  <text x="488" y="566" class="text">Records: 고객, 매물, 계약</text>
+  <text x="488" y="602" class="text">Lists: 방문 예정</text>
+
+  <rect x="464" y="666" width="336" height="162" rx="16" class="soft"/>
+  <rect x="488" y="692" width="94" height="34" rx="17" class="purple"/>
+  <text x="510" y="715" class="chipText">법률</text>
+  <text x="488" y="760" class="text">Records: 의뢰인, 사건</text>
+  <text x="488" y="796" class="text">Lists: 진행 중 사건</text>
+
+  <rect x="464" y="876" width="336" height="74" rx="16" class="blue"/>
+  <text x="488" y="908" class="text">같은 엔진, 다른 기본 세팅</text>
+  <text x="488" y="938" class="small">Records + Lists + Views를 함께 설치</text>
+
+  <rect x="888" y="142" width="488" height="866" rx="18" class="panel"/>
+  <text x="928" y="198" class="label">Lists &amp; Views</text>
+  <text x="928" y="234" class="small">선택된 List: 인바운드 리드</text>
+
+  <rect x="928" y="278" width="126" height="42" rx="21" class="blue"/>
+  <text x="957" y="306" class="chipText">Pipeline</text>
+  <rect x="1070" y="278" width="98" height="42" rx="21" class="soft"/>
+  <text x="1100" y="306" class="chipText">Table</text>
+  <rect x="1184" y="278" width="152" height="42" rx="21" class="soft"/>
+  <text x="1206" y="306" class="chipText">내 팔로업</text>
+
+  <rect x="928" y="370" width="122" height="42" rx="21" class="yellow"/>
+  <text x="955" y="398" class="text">신규</text>
+  <rect x="1080" y="370" width="122" height="42" rx="21" class="purple"/>
+  <text x="1108" y="398" class="text">상담</text>
+  <rect x="1232" y="370" width="122" height="42" rx="21" class="green"/>
+  <text x="1260" y="398" class="text">계약</text>
+
+  <rect x="928" y="456" width="184" height="142" rx="14" class="soft"/>
+  <circle cx="960" cy="492" r="18" class="blue"/>
+  <text x="992" y="500" class="text">Acme Korea</text>
+  <text x="960" y="542" class="small">Record: 회사</text>
+  <text x="960" y="572" class="small">List 속성: 소스</text>
+
+  <rect x="1140" y="456" width="184" height="142" rx="14" class="soft"/>
+  <circle cx="1172" cy="492" r="18" class="green"/>
+  <text x="1204" y="500" class="text">김민준</text>
+  <text x="1172" y="542" class="small">Record: 사람</text>
+  <text x="1172" y="572" class="small">List 속성: 단계</text>
+
+  <rect x="928" y="642" width="396" height="164" rx="16" class="soft"/>
+  <text x="956" y="690" class="label">View 설정</text>
+  <text x="956" y="732" class="text">표시 필드, 필터, 정렬, 그룹 기준</text>
+  <text x="956" y="772" class="text">고급 설정에서 Object / Attribute 확인</text>
+
+  <rect x="928" y="856" width="396" height="74" rx="16" class="pink"/>
+  <text x="956" y="888" class="text">테이블은 삭제하지 않고 View 중 하나로 둔다.</text>
+  <text x="956" y="918" class="small">기본 경험은 List와 Pipeline 중심</text>
+
+  <path d="M378 790 C404 790, 400 790, 420 790" class="arrow"/>
+  <path d="M840 554 C864 554, 862 554, 884 554" class="arrow"/>
+
+  <rect x="64" y="1030" width="1312" height="1" class="line"/>
+  <text x="64" y="1058" class="tiny">Rule: Records = 관리항목 / Lists = 업무 맥락 / Views = 보는 방식 / Kit = 직종별 초기 설치 패키지</text>
+</svg>
+
