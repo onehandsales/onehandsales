@@ -18,6 +18,12 @@ CRM 업무 표현: folk 참고
 
 folk는 `Leads`, `Clients`, `Partners` 같은 관계 관리 표현을 참고하는 대상이다. 하지만 OneHand CRM의 구조 기준은 folk식 Group이 아니라 Attio식 `Records / Lists / Views`로 잡는다.
 
+추가 결정 문서:
+
+- `ATTIO_FOLK_MODELING_AND_PRESENTATION_DECISION.md`
+
+핵심 결정은 내부 데이터 모델링은 Attio식으로 유지하고, 실제 사이드바와 첫 화면 표현은 folk처럼 업무 이름 중심으로 번역한다는 것이다.
+
 ## 핵심 개념
 
 ### Records
@@ -233,4 +239,3 @@ Favorites
 - Records는 관리항목, Lists는 업무 맥락, Views는 보는 방식이다.
 - 직종별 Kit은 Records뿐 아니라 Lists와 Views까지 함께 설치한다.
 - 내부 데이터 구조는 기본 노출하지 않는다.
-
