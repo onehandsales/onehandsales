@@ -102,11 +102,112 @@ OneHand는 이 중간 지점을 선택한다.
 
 - `ListDefinition`
 - `ListEntry`
+- List 전용 Attribute 지원
+- `ListEntryAttributeValue`
 - `ViewDefinition`
 - `KitDefinition`
 - `WorkspaceKit` 또는 Kit snapshot 구조
 
 즉 현재 단계는 Attio식 기본 원장 엔진은 잡혀 있고, 다음으로 업무 맥락과 보기 저장 구조를 추가해야 하는 상태다.
+
+## List 데이터 모델 구성안
+
+확인 기준일: 2026-10-07
+
+List에는 `List`, `ListEntry`, `ListAttribute`, `ListEntryValue` 네 가지 개념이 필요하다. 현재 우리 구조에서는 **핵심 신규 테이블 3개 + 기존 AttributeDefinition 확장**을 권장한다. 아래 이름과 구성은 설계 제안이며, 실제 Prisma schema 또는 migration에 반영된 상태는 아니다.
+
+Attio 공식 문서는 Object와 List가 각각 Attribute를 가질 수 있고, Record를 List에 추가하면 그 Record를 참조하는 ListEntry가 생성된다고 설명한다. 이 공개 개념과 API를 우리 DB 구조로 옮긴 제안이며, Attio 내부의 실제 물리 테이블 구성을 의미하지 않는다. [Attio Objects and lists](https://docs.attio.com/docs/objects-and-lists)
+
+### 필요한 개념과 테이블
+
+| 필요한 개념 | 테이블 구성안 | 저장 책임 | 영업 예시 |
+| --- | --- | --- | --- |
+| List | `ListDefinition` 신규 | Workspace 안의 업무 묶음 정의 | 신규 영업 |
+| ListEntry | `ListEntry` 신규 | 특정 List에 특정 Record가 참여한 한 건 | 김민수가 신규 영업에 참여한 항목 |
+| ListAttribute | 기존 `AttributeDefinition` 확장 | 해당 업무에서 관리할 정보의 이름과 타입 | 영업 단계: Status, 관심 상품: Select |
+| ListEntryValue | `ListEntryAttributeValue` 신규 | 각 참여 항목의 List 전용 Attribute 실제 값 | 김민수의 영업 단계 = 상담 중 |
+
+`ListDefinition`은 업무 자체를 정의하고, `ListEntry`는 그 업무에 참여한 항목을 저장한다. `ListEntryAttributeValue`는 각 참여 항목이 가진 업무 전용 값을 저장한다.
+
+### 현재 스키마에서 확장할 부분
+
+현재 [Prisma schema](../../BE/prisma/schema.prisma)의 AttributeDefinition은 `objectDefinitionId`가 필수이므로 Object 소속만 지원한다. RecordAttributeValueDefinition도 `recordDefinitionId`가 필수이므로 Record의 값을 저장한다.
+
+권장안을 채택할 경우의 방향은 다음과 같다.
+
+- AttributeDefinition에 List 소속을 표현할 수 있게 한다. Attribute 하나는 Object 또는 List 중 정확히 한 곳에 속하도록 설계한다.
+- Object 전용 값은 기존 RecordAttributeValueDefinition에 저장한다.
+- List 전용 값은 신규 ListEntryAttributeValue에 저장한다.
+- ListEntry는 `listDefinitionId`와 `recordDefinitionId`로 업무와 원본 Record를 연결한다.
+- SelectOption과 StatusOption은 기존 AttributeDefinition 참조 구조를 활용한다. 각 Attribute마다 자기 옵션 row를 갖는다.
+
+이 구조에서는 `ListAttribute`라는 개념을 위해 반드시 별도 테이블을 만들 필요는 없다. List에 속한 AttributeDefinition이 ListAttribute 역할을 한다. Attio의 Attribute 생성 API도 Object 또는 List를 대상으로 같은 Attribute 개념을 사용한다. [Attio Create an attribute](https://docs.attio.com/rest-api/endpoint-reference/attributes/create-an-attribute)
+
+Attribute를 두 소속에 사용할 수 있게 바꾸면 소속별 apiSlug 중복 규칙, 인덱스, 기존 API의 Object 범위 검증도 함께 검토해야 한다. 값의 Entry와 Attribute, 선택한 옵션이 같은 List 및 Workspace 범위에 속하는지 검증해야 한다. Object용 양방향 Relationship의 범위를 List로 확대할지는 별도 설계 대상이다.
+
+### 영업 예시: ListEntry 두 개
+
+고객 Object에 김민수와 이영희라는 Record가 이미 있다고 가정한다. 두 고객을 신규 영업 List에 추가하면 화면에서 다음처럼 볼 수 있다.
+
+| 고객 | 영업 단계 | 관심 상품 |
+| --- | --- | --- |
+| 김민수 | 상담 중 | 기본형 |
+| 이영희 | 계약 완료 | 프리미엄 |
+
+각 데이터의 저장 위치는 다음과 같다. 아래 ID는 이해를 위한 예시다.
+
+```text
+ListDefinition
+  L1: 신규 영업
+
+AttributeDefinition
+  A1: L1의 영업 단계 → 타입: Status
+  A2: L1의 관심 상품 → 타입: Select
+
+ListEntry
+  E1: L1 + 김민수 Record 참조
+  E2: L1 + 이영희 Record 참조
+
+ListEntryAttributeValue
+  E1 + A1 → 상담 중의 statusOptionId
+  E1 + A2 → 기본형의 selectOptionId
+  E2 + A1 → 계약 완료의 statusOptionId
+  E2 + A2 → 프리미엄의 selectOptionId
+```
+
+김민수의 이름과 전화번호는 기존 Record의 Attribute 값에서 가져온다. 신규 영업에서의 단계와 관심 상품은 E1의 List 전용 값에서 가져온다. Attio도 Object Attribute 값은 Record에, List Attribute 값은 ListEntry에 저장한다고 구분한다. [Attio Understanding lists](https://attio.com/help/reference/attio-101/attios-data-model/understanding-lists)
+
+김민수를 파트너 모집 List에도 추가하면 같은 김민수 Record를 참조하는 별도 ListEntry가 생긴다. 신규 영업의 단계와 파트너 모집의 단계는 각 업무에서 독립적으로 관리할 수 있다.
+
+### Select와 Status를 활용하는 방식
+
+Select와 Status는 Attribute의 타입이다. 이 타입을 List에 속한 Attribute에서도 사용한다.
+
+```text
+AttributeDefinition A1: 영업 단계, 타입 = Status
+  StatusOption: 상담 전 / 상담 중 / 계약 완료
+
+AttributeDefinition A2: 관심 상품, 타입 = Select
+  SelectOption: 기본형 / 프리미엄
+
+ListEntryAttributeValue
+  E1의 A1 값 → 상담 중의 StatusOption 참조
+  E1의 A2 값 → 기본형의 SelectOption 참조
+```
+
+따라서 권장안에서는 List 전용 SelectOption 테이블이나 StatusOption 테이블을 추가하지 않는다. 기존 테이블에 해당 List Attribute의 옵션 row를 만들고, ListEntryAttributeValue가 선택한 옵션을 참조한다. 단계의 값은 각 ListEntry에 저장되며, View는 그 값을 표나 단계별 화면으로 보여준다.
+
+### 대안과 구현 전 결정할 정책
+
+List 전용 필드 정의를 별도 `ListAttributeDefinition` 테이블로 분리하는 방식도 가능하다. 이 경우 핵심 신규 테이블은 네 개가 되고, SelectOption과 StatusOption이 List 전용 필드를 어떻게 참조할지도 함께 설계해야 한다. 기존 Attribute와 옵션 구조를 활용할 수 있다는 이유로 현재는 AttributeDefinition 확장안을 권장하지만, 최종 schema 선택은 확정하지 않는다.
+
+다음 정책은 구현 전에 정한다.
+
+- List에 담을 Object 범위: Attio는 새 List를 생성할 때 하나의 기준 Object를 선택한다. OneHand의 최종 범위는 별도 결정한다. [Attio Create a list](https://docs.attio.com/rest-api/endpoint-reference/lists/create-a-list)
+- 같은 Record가 같은 List에 여러 ListEntry로 참여할 수 있는지: 현재 Attio는 허용한다. OneHand에서도 허용한다면 `listDefinitionId + recordDefinitionId` 조합에 중복 금지 제약을 걸면 안 된다. [Attio Create an entry](https://docs.attio.com/rest-api/endpoint-reference/entries/create-an-entry-add-record-to-list)
+- ListEntry 값의 변경 이력과 삭제·복구 정책: 현재 값 저장과 과거 이력 저장 범위를 구분해서 설계한다. Attio는 ListEntry Attribute 값의 과거 이력을 조회하는 API를 제공한다. [Attio List entry attribute values](https://docs.attio.com/rest-api/endpoint-reference/entries/list-attribute-values-for-a-list-entry)
+
+List, Entry, Attribute, 옵션, 값의 연결 범위와 기존 Record 보존 동작을 검토한 뒤 API 계약과 migration 계획을 작성한다.
 
 ## 구현 순서 판단
 
@@ -115,10 +216,12 @@ OneHand는 이 중간 지점을 선택한다.
 1. `SelectOption` 최소 사용 흐름을 마무리한다.
 2. `StatusOption` 최소 사용 흐름을 마무리한다.
 3. `RelationshipDefinition` 최소 사용 흐름을 마무리한다.
-4. `ListDefinition`과 `ListEntry`를 설계한다.
+4. `ListDefinition`, `ListEntry`, List 전용 Attribute, `ListEntryAttributeValue`를 함께 설계한다.
 5. `ViewDefinition`을 설계한다.
 6. 첫 `KitDefinition` 또는 Kit snapshot 전략을 정한다.
 7. 사이드바 API는 내부 모델명이 아니라 presentation 모델로 응답한다.
+
+사용자가 정한 작업 순서는 `Select → Status → Relationship → List → View → Kit`이다. 직종별 Kit에서 서로 다른 List와 View를 제공할 수 있도록 공통 기능을 먼저 마련한다.
 
 `Select`, `Status`, `Relationship`을 먼저 끝내야 하는 이유는 `List`와 `View`가 결국 이 값들을 기준으로 필터링, 그룹핑, 파이프라인 표시를 하기 때문이다.
 
@@ -246,8 +349,9 @@ Relationship: 딜 -> 회사, 딜 -> 사람
 
 - 한 Workspace에 여러 Kit을 적용할 수 있는지
 - Kit 업데이트가 기존 Workspace에 어떻게 반영되는지
-- `ListEntry`에 list 안에서만 쓰는 상태/메타데이터를 어디까지 둘지
-- List 전용 필드를 `AttributeDefinition`으로 볼지, 별도 list-scoped field로 볼지
+- List에 담을 Object 범위와 같은 Record의 같은 List 내 중복 참여 허용 여부
+- ListEntry 값의 변경 이력과 삭제·복구 범위
+- List 전용 필드를 기존 AttributeDefinition 확장으로 구현할지, 별도 ListAttributeDefinition으로 구현할지: 위 구성안에서는 확장을 권장하며 최종 선택은 보류
 - Favorite이 List와 View를 모두 가리킬 수 있는지
 - 사이드바 정렬을 모델별 `sortOrder`로 둘지, 별도 presentation 설정으로 둘지
 

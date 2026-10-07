@@ -20,7 +20,8 @@ folk는 `Leads`, `Clients`, `Partners` 같은 관계 관리 표현을 참고하�
 
 추가 결정 문서:
 
-- `ATTIO_FOLK_MODELING_AND_PRESENTATION_DECISION.md`
+- [Attio 모델링과 화면 표현 결정](./ATTIO_FOLK_MODELING_AND_PRESENTATION_DECISION.md)
+- [List 테이블 구성안과 영업 예시](./ATTIO_FOLK_MODELING_AND_PRESENTATION_DECISION.md#list-데이터-모델-구성안)
 
 핵심 결정은 내부 데이터 모델링은 Attio식으로 유지하고, 실제 사이드바와 첫 화면 표현은 folk처럼 업무 이름 중심으로 번역한다는 것이다.
 
@@ -195,8 +196,19 @@ Favorites
 
 - `ListEntry`
   - List에 들어간 Record
-  - List 안에서만 쓰는 상태와 메타데이터
+  - 업무 참여 항목마다 독립적인 ID를 갖고 원본 Record를 참조
   - 같은 Record가 여러 List에 들어갈 수 있는 구조
+
+- List 전용 `AttributeDefinition`
+  - 업무별 정보의 이름과 타입을 정의
+  - 예: 영업 단계(Status), 관심 상품(Select), 다음 연락일(Date)
+  - 현재 Object 소속만 지원하는 AttributeDefinition을 Object 또는 List 소속으로 확장하는 안을 권장
+  - 별도 ListAttributeDefinition 테이블을 만드는 대안과 최종 선택은 후속 설계에서 검토
+
+- `ListEntryAttributeValue`
+  - 각 ListEntry의 List 전용 Attribute 실제 값
+  - 예: 김민수의 신규 영업 참여 항목에 영업 단계 = 상담 중
+  - SelectOption과 StatusOption을 참조하고, 원본 Record의 값과 구분하여 저장
 
 - `ViewDefinition`
   - 이름
@@ -218,10 +230,12 @@ Favorites
   - 기본 Status/Select options
   - 기본 사이드바 순서
 
+List의 핵심 개념은 `List / ListEntry / ListAttribute / ListEntryValue` 네 가지다. 기존 AttributeDefinition을 확장하는 안에서는 핵심 신규 테이블을 `ListDefinition`, `ListEntry`, `ListEntryAttributeValue` 세 개로 구성할 수 있다. 이 이름과 테이블 구성은 설계 제안이며, 실제 Prisma schema 또는 migration에 반영된 상태는 아니다.
+
 ## 첫 구현 우선순위
 
-1. Select, Status, Relationship의 최소 사용 흐름을 마무리한다.
-2. `ListDefinition`과 `ListEntry` 초안을 설계한다.
+1. Select → Status → Relationship 순서로 최소 사용 흐름을 마무리한다.
+2. `ListDefinition`, `ListEntry`, List 전용 Attribute, `ListEntryAttributeValue`를 함께 설계한다.
 3. `ViewDefinition` 초안을 설계한다.
 4. 첫 Kit은 하나만 선택해서 Records, Lists, Views를 함께 생성하게 한다.
 5. 사이드바를 `Records / Lists / Favorites` 구조로 바꾼다.
