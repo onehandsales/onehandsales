@@ -222,6 +222,12 @@ model Workspace {
   actors                          Actor[]
   /// 기능 : 이 Workspace 안에서 정의된 Object 목록입니다.
   objectDefinitions               ObjectDefinition[]
+  /// 기능 : 이 Workspace 안에서 정의된 업무 List 목록입니다.
+  listDefinitions                 ListDefinition[]
+  /// 기능 : 이 Workspace 안에서 생성된 List 참여 항목 목록입니다.
+  listEntryDefinitions            ListEntryDefinition[]
+  /// 기능 : 이 Workspace 안에서 저장된 List 참여 항목의 값 목록입니다.
+  listEntryValueDefinitions       ListEntryValueDefinition[]
   /// 기능 : 이 Workspace 안에서 정의된 Attribute 목록입니다.
   attributeDefinitions            AttributeDefinition[]
   /// 기능 : 이 Workspace 안에서 생성된 RecordDefinition 목록입니다.
@@ -361,6 +367,20 @@ model Actor {
   createdObjectDefinitions               ObjectDefinition[]               @relation("ObjectDefinitionCreatedByActor")
   /// 기능 : 이 Actor가 마지막으로 수정한 ObjectDefinition 목록입니다.
   updatedObjectDefinitions               ObjectDefinition[]               @relation("ObjectDefinitionUpdatedByActor")
+  /// 기능 : 이 Actor가 생성한 ListDefinition 목록입니다.
+  createdListDefinitions                 ListDefinition[]                 @relation("ListDefinitionCreatedByActor")
+  /// 기능 : 이 Actor가 마지막으로 수정한 ListDefinition 목록입니다.
+  updatedListDefinitions                 ListDefinition[]                 @relation("ListDefinitionUpdatedByActor")
+  /// 기능 : 이 Actor가 생성한 ListEntryDefinition 목록입니다.
+  createdListEntryDefinitions            ListEntryDefinition[]            @relation("ListEntryDefinitionCreatedByActor")
+  /// 기능 : 이 Actor가 마지막으로 수정한 ListEntryDefinition 목록입니다.
+  updatedListEntryDefinitions            ListEntryDefinition[]            @relation("ListEntryDefinitionUpdatedByActor")
+  /// 기능 : 이 Actor가 생성한 ListEntryValueDefinition 목록입니다.
+  createdListEntryValueDefinitions       ListEntryValueDefinition[]       @relation("ListEntryValueDefinitionCreatedByActor")
+  /// 기능 : 이 Actor가 마지막으로 수정한 ListEntryValueDefinition 목록입니다.
+  updatedListEntryValueDefinitions       ListEntryValueDefinition[]       @relation("ListEntryValueDefinitionUpdatedByActor")
+  /// 기능 : 이 Actor를 값으로 참조하는 ListEntryValueDefinition 목록입니다.
+  targetListEntryValueDefinitions        ListEntryValueDefinition[]       @relation("ListEntryValueDefinitionTargetActor")
   /// 기능 : 이 Actor가 생성한 AttributeDefinition 목록입니다.
   createdAttributeDefinitions            AttributeDefinition[]            @relation("AttributeDefinitionCreatedByActor")
   /// 기능 : 이 Actor가 마지막으로 수정한 AttributeDefinition 목록입니다.
@@ -387,6 +407,9 @@ model Actor {
   createdRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionCreatedByActor")
   /// 기능 : 이 Actor가 마지막으로 수정한 RelationshipDefinition 목록입니다.
   updatedRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionUpdatedByActor")
+
+  /// 기능 : 같은 Workspace 안의 List 값에서 Actor를 참조할 수 있도록 복합 FK 기준을 제공합니다.
+  @@unique([id, workspaceId])
 }
 
 /// 기능 : Workspace 안에서 회사, 고객, 매물 같은 관리 대상 타입을 정의합니다.
@@ -429,6 +452,8 @@ model ObjectDefinition {
   recordAttributeValueDefinitions       RecordAttributeValueDefinition[] @relation("RecordAttributeValueDefinitionObject")
   /// 기능 : 이 ObjectDefinition을 대상으로 참조하는 RecordAttributeValueDefinition 목록입니다.
   targetRecordAttributeValueDefinitions RecordAttributeValueDefinition[] @relation("RecordAttributeValueDefinitionTargetObject")
+  /// 기능 : 이 Object를 참조 대상으로 사용하는 ListEntryValueDefinition 목록입니다.
+  targetListEntryValueDefinitions       ListEntryValueDefinition[]       @relation("ListEntryValueDefinitionTargetObject")
   /// 기능 : 이 ObjectDefinition이 source인 RelationshipDefinition 목록입니다.
   sourceRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionSourceObject")
   /// 기능 : 이 ObjectDefinition이 target인 RelationshipDefinition 목록입니다.
@@ -436,16 +461,178 @@ model ObjectDefinition {
 
   /// 기능 : 하나의 Workspace 안에서 같은 apiSlug를 가진 ObjectDefinition 중복 생성을 차단합니다.
   @@unique([workspaceId, apiSlug])
+  /// 기능 : 같은 Workspace의 Object만 List 값에서 참조하도록 복합 FK 기준을 제공합니다.
+  @@unique([id, workspaceId])
 }
 
-/// 기능 : ObjectDefinition에 붙는 필드 정의를 저장합니다.
+/// 기능 : Workspace 안에서 Record를 업무 맥락으로 묶는 List를 정의합니다.
+model ListDefinition {
+  /// 기능 : ListDefinition row의 고유 식별자입니다.
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : ListDefinition이 속한 Workspace ID입니다.
+  workspaceId      String   @db.Uuid
+  /// 기능 : 코드에서 사용하는 List 고유 이름입니다.
+  apiSlug          String
+  /// 기능 : 사용자에게 보여줄 List 이름입니다.
+  name             String
+  /// 기능 : List의 업무 목적을 설명하는 선택 입력값입니다.
+  description      String?
+  /// 기능 : 화면 표시용 아이콘입니다.
+  icon             String?
+  /// 기능 : ListDefinition을 생성한 Actor ID입니다.
+  createdByActorId String   @db.Uuid
+  /// 기능 : ListDefinition을 마지막으로 수정한 Actor ID입니다.
+  updatedByActorId String?  @db.Uuid
+  /// 기능 : ListDefinition 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt        DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : ListDefinition row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt        DateTime @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : ListDefinition이 속한 Workspace입니다.
+  workspace                 Workspace                  @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : ListDefinition을 생성한 Actor입니다.
+  createdByActor            Actor                      @relation("ListDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : ListDefinition을 마지막으로 수정한 Actor입니다.
+  updatedByActor            Actor?                     @relation("ListDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 이 List에 속한 공용 AttributeDefinition 목록입니다.
+  attributeDefinitions      AttributeDefinition[]
+  /// 기능 : 이 List에 등록된 Record 참여 항목 목록입니다.
+  listEntryDefinitions      ListEntryDefinition[]
+  /// 기능 : 이 List의 참여 항목에 저장된 값 목록입니다.
+  listEntryValueDefinitions ListEntryValueDefinition[]
+
+  /// 기능 : 같은 Workspace의 List만 참조하도록 복합 FK 기준을 제공합니다.
+  @@unique([id, workspaceId])
+  /// 기능 : 한 Workspace 안에서 List apiSlug 중복을 차단합니다.
+  @@unique([workspaceId, apiSlug])
+}
+
+/// 기능 : 기존 Record가 특정 List에 등록된 개별 참여 항목을 저장합니다.
+model ListEntryDefinition {
+  /// 기능 : ListEntryDefinition row의 고유 식별자입니다.
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : ListEntryDefinition이 속한 Workspace ID입니다.
+  workspaceId        String   @db.Uuid
+  /// 기능 : 참여 항목이 등록된 ListDefinition ID입니다.
+  listDefinitionId   String   @db.Uuid
+  /// 기능 : 참여 항목이 참조하는 원본 RecordDefinition ID입니다.
+  recordDefinitionId String   @db.Uuid
+  /// 기능 : ListEntryDefinition을 생성한 Actor ID입니다.
+  createdByActorId   String   @db.Uuid
+  /// 기능 : ListEntryDefinition을 마지막으로 수정한 Actor ID입니다.
+  updatedByActorId   String?  @db.Uuid
+  /// 기능 : Record가 List에 등록된 시각입니다. UTC instant로 저장합니다.
+  createdAt          DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : ListEntryDefinition row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt          DateTime @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 참여 항목이 속한 Workspace입니다.
+  workspace                 Workspace                  @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace에서 참여 항목이 속한 List입니다.
+  listDefinition            ListDefinition             @relation(fields: [listDefinitionId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace의 원본 Record입니다. 원본 값은 복사하지 않습니다.
+  recordDefinition          RecordDefinition           @relation("ListEntryDefinitionRecord", fields: [recordDefinitionId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 참여 항목을 생성한 Actor입니다.
+  createdByActor            Actor                      @relation("ListEntryDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 참여 항목을 마지막으로 수정한 Actor입니다.
+  updatedByActor            Actor?                     @relation("ListEntryDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 이 참여 항목에 저장된 List 전용 값 목록입니다.
+  listEntryValueDefinitions ListEntryValueDefinition[]
+
+  /// 기능 : 값의 Entry/List/Workspace 소속 일치를 보장하는 복합 FK 기준입니다.
+  @@unique([id, listDefinitionId, workspaceId])
+  /// 기능 : List의 참여 항목을 등록 시각순으로 조회합니다.
+  @@index([workspaceId, listDefinitionId, createdAt, id])
+  /// 기능 : 원본 Record가 참여한 List를 조회합니다. List/Record 중복 등록 정책은 아직 고정하지 않습니다.
+  @@index([workspaceId, recordDefinitionId])
+}
+
+/// 기능 : List 참여 항목의 Attribute별 실제 값을 저장합니다. 다중값은 같은 Entry/Attribute의 여러 row로 표현할 수 있습니다.
+/// 기능 : 참조 Record/Object 쌍 CHECK와 복합 FK의 참조 ID만 비우는 SET NULL은 20261008030000 migration SQL에서 관리합니다.
+model ListEntryValueDefinition {
+  /// 기능 : ListEntryValueDefinition row의 고유 식별자입니다.
+  id                       String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 값이 속한 Workspace ID입니다.
+  workspaceId              String        @db.Uuid
+  /// 기능 : 값의 Entry와 Attribute가 함께 속한 ListDefinition ID입니다.
+  listDefinitionId         String        @db.Uuid
+  /// 기능 : 값을 가진 ListEntryDefinition ID입니다.
+  listEntryDefinitionId    String        @db.Uuid
+  /// 기능 : 값이 저장되는 List 소속 AttributeDefinition ID입니다.
+  attributeDefinitionId    String        @db.Uuid
+  /// 기능 : 값 생성 당시 Attribute 타입 snapshot입니다.
+  attributeType            AttributeType
+  /// 기능 : 주소, 통화, 이름 등 복합 값 원본입니다.
+  jsonValue                Json?
+  /// 기능 : 검색과 정렬에 사용하는 문자열 값입니다.
+  textValue                String?
+  /// 기능 : 필터와 정렬에 사용하는 숫자 값입니다.
+  numberValue              Decimal?      @db.Decimal(30, 10)
+  /// 기능 : 체크박스 true 또는 false 값입니다.
+  booleanValue             Boolean?
+  /// 기능 : 시간대 없는 날짜 값입니다.
+  dateValue                DateTime?     @db.Date
+  /// 기능 : UTC instant로 저장하는 날짜와 시간 값입니다.
+  timestampValue           DateTime?     @db.Timestamptz(3)
+  /// 기능 : 같은 Attribute에서 선택한 SelectOption ID입니다.
+  selectOptionId           String?       @db.Uuid
+  /// 기능 : 같은 Attribute에서 선택한 StatusOption ID입니다.
+  statusOptionId           String?       @db.Uuid
+  /// 기능 : 같은 Workspace에서 참조하는 RecordDefinition ID입니다.
+  targetRecordDefinitionId String?       @db.Uuid
+  /// 기능 : 참조 대상 Record가 속한 ObjectDefinition ID입니다.
+  targetObjectDefinitionId String?       @db.Uuid
+  /// 기능 : 같은 Workspace에서 참조하는 Actor ID입니다.
+  targetActorId            String?       @db.Uuid
+  /// 기능 : 값을 생성한 Actor ID입니다.
+  createdByActorId         String        @db.Uuid
+  /// 기능 : 값을 마지막으로 수정한 Actor ID입니다.
+  updatedByActorId         String?       @db.Uuid
+  /// 기능 : 값 생성 시각입니다. UTC instant로 저장합니다.
+  createdAt                DateTime      @default(now()) @db.Timestamptz(3)
+  /// 기능 : 값 row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
+  updatedAt                DateTime      @updatedAt @db.Timestamptz(3)
+
+  /// 기능 : 값이 속한 Workspace입니다.
+  workspace              Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 값이 속한 같은 Workspace의 List입니다.
+  listDefinition         ListDefinition      @relation(fields: [listDefinitionId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 값이 속한 같은 List/Workspace의 참여 항목입니다.
+  listEntryDefinition    ListEntryDefinition @relation(fields: [listEntryDefinitionId, listDefinitionId, workspaceId], references: [id, listDefinitionId, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 List/Workspace의 Attribute입니다. Object 소속 Attribute는 참조할 수 없습니다.
+  attributeDefinition    AttributeDefinition @relation(fields: [attributeDefinitionId, listDefinitionId, workspaceId], references: [id, listDefinitionId, workspaceId], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 값을 생성한 Actor입니다.
+  createdByActor         Actor               @relation("ListEntryValueDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 값을 마지막으로 수정한 Actor입니다.
+  updatedByActor         Actor?              @relation("ListEntryValueDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 선택한 같은 Attribute/Workspace의 옵션입니다. SQL의 SET NULL은 selectOptionId만 대상으로 합니다.
+  selectOption           SelectOption?       @relation(fields: [selectOptionId, attributeDefinitionId, workspaceId], references: [id, attributeDefinitionId, workspaceId], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 선택한 같은 Attribute/Workspace의 상태입니다. SQL의 SET NULL은 statusOptionId만 대상으로 합니다.
+  statusOption           StatusOption?       @relation(fields: [statusOptionId, attributeDefinitionId, workspaceId], references: [id, attributeDefinitionId, workspaceId], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 같은 Object/Workspace의 참조 Record입니다. SQL의 SET NULL은 target Record/Object ID 두 컬럼만 대상으로 합니다.
+  targetRecordDefinition RecordDefinition?   @relation("ListEntryValueDefinitionTargetRecord", fields: [targetRecordDefinitionId, targetObjectDefinitionId, workspaceId], references: [id, objectDefinitionId, workspaceId], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace의 참조 Object입니다. SQL에서 NoAction 검사를 transaction 종료까지 지연해 Record 삭제 cascade의 참조 해제를 먼저 처리합니다.
+  targetObjectDefinition ObjectDefinition?   @relation("ListEntryValueDefinitionTargetObject", fields: [targetObjectDefinitionId, workspaceId], references: [id, workspaceId], onDelete: NoAction, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace의 참조 Actor입니다. SQL의 SET NULL은 targetActorId만 대상으로 합니다.
+  targetActor            Actor?              @relation("ListEntryValueDefinitionTargetActor", fields: [targetActorId, workspaceId], references: [id, workspaceId], onDelete: SetNull, onUpdate: Cascade)
+
+  /// 기능 : 참여 항목의 Attribute별 값을 조회합니다. 다중값을 위해 Entry/Attribute UNIQUE는 두지 않습니다.
+  @@index([workspaceId, listEntryDefinitionId, attributeDefinitionId])
+  /// 기능 : List의 특정 Attribute 값을 조회합니다.
+  @@index([workspaceId, listDefinitionId, attributeDefinitionId])
+}
+
+/// 기능 : Object 또는 List에 속한 공용 필드 정의를 저장합니다.
+/// 기능 : 두 소속 ID 중 정확히 하나만 값이 있어야 합니다. 소속 CHECK는 migration SQL로 관리합니다.
 model AttributeDefinition {
   /// 기능 : AttributeDefinition row의 고유 식별자입니다.
   id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   /// 기능 : AttributeDefinition이 속한 Workspace ID입니다.
   workspaceId        String        @db.Uuid
-  /// 기능 : AttributeDefinition이 속한 ObjectDefinition ID입니다.
-  objectDefinitionId String        @db.Uuid
+  /// 기능 : Object 소속 Attribute의 ObjectDefinition ID입니다. List 소속이면 null입니다.
+  objectDefinitionId String?       @db.Uuid
+  /// 기능 : List 소속 Attribute의 ListDefinition ID입니다. Object 소속이면 null입니다.
+  listDefinitionId   String?       @db.Uuid
   /// 기능 : AttributeDefinition을 생성한 Actor ID입니다.
   createdByActorId   String        @db.Uuid
   /// 기능 : AttributeDefinition을 마지막으로 수정한 Actor ID입니다.
@@ -472,16 +659,20 @@ model AttributeDefinition {
   updatedAt          DateTime      @updatedAt @db.Timestamptz(3)
 
   /// 기능 : AttributeDefinition이 속한 Workspace입니다.
-  workspace        Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  workspace        Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : AttributeDefinition이 속한 ObjectDefinition입니다.
-  objectDefinition ObjectDefinition @relation(fields: [objectDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  objectDefinition ObjectDefinition? @relation(fields: [objectDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 같은 Workspace에서 AttributeDefinition이 속한 List입니다.
+  listDefinition   ListDefinition?   @relation(fields: [listDefinitionId, workspaceId], references: [id, workspaceId], onDelete: Cascade, onUpdate: Cascade)
   /// 기능 : AttributeDefinition을 생성한 Actor입니다.
-  createdByActor   Actor            @relation("AttributeDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdByActor   Actor             @relation("AttributeDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   /// 기능 : AttributeDefinition을 마지막으로 수정한 Actor입니다.
-  updatedByActor   Actor?           @relation("AttributeDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  updatedByActor   Actor?            @relation("AttributeDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   /// 기능 : 이 AttributeDefinition에 저장된 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
+  /// 기능 : 이 List 소속 Attribute에 저장된 ListEntryValueDefinition 목록입니다.
+  listEntryValueDefinitions       ListEntryValueDefinition[]
   /// 기능 : 이 AttributeDefinition에서 사용할 SelectOption 목록입니다.
   selectOptions                   SelectOption[]
   /// 기능 : 이 AttributeDefinition에서 사용할 StatusOption 목록입니다.
@@ -491,12 +682,20 @@ model AttributeDefinition {
   /// 기능 : 이 AttributeDefinition이 target인 RelationshipDefinition 목록입니다.
   targetRelationshipDefinitions   RelationshipDefinition[]         @relation("RelationshipDefinitionTargetAttribute")
 
+  /// 기능 : 하나의 ObjectDefinition 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
+  @@unique([objectDefinitionId, apiSlug])
+  /// 기능 : 하나의 List 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
+  @@unique([listDefinitionId, apiSlug])
+  /// 기능 : Entry 값과 Attribute의 List/Workspace 일치를 보장하는 복합 FK 기준입니다.
+  @@unique([id, listDefinitionId, workspaceId])
   /// 기능 : AttributeDefinition 정렬 조회를 지원합니다.
   @@index([objectDefinitionId, sortOrder, id])
   /// 기능 : Workspace/ObjectDefinition 경계 안의 AttributeDefinition 수정 대상 조회를 지원합니다.
   @@index([workspaceId, objectDefinitionId, id])
-  /// 기능 : 하나의 ObjectDefinition 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
-  @@unique([objectDefinitionId, apiSlug])
+  /// 기능 : List 소속 AttributeDefinition을 정렬 순서대로 조회하도록 지원합니다.
+  @@index([listDefinitionId, sortOrder, id])
+  /// 기능 : Workspace/List 경계 안의 AttributeDefinition 조회를 지원합니다.
+  @@index([workspaceId, listDefinitionId, id])
 }
 
 /// 기능 : ObjectDefinition의 실제 레코드 인스턴스를 저장합니다.
@@ -529,7 +728,15 @@ model RecordDefinition {
   recordAttributeValueDefinitions       RecordAttributeValueDefinition[] @relation("RecordAttributeValueDefinitionRecord")
   /// 기능 : 이 RecordDefinition을 대상으로 참조하는 RecordAttributeValueDefinition 목록입니다.
   targetRecordAttributeValueDefinitions RecordAttributeValueDefinition[] @relation("RecordAttributeValueDefinitionTargetRecord")
+  /// 기능 : 이 원본 Record가 등록된 List 참여 항목 목록입니다.
+  listEntryDefinitions                  ListEntryDefinition[]            @relation("ListEntryDefinitionRecord")
+  /// 기능 : 이 Record를 참조 대상으로 사용하는 List 값 목록입니다.
+  targetListEntryValueDefinitions       ListEntryValueDefinition[]       @relation("ListEntryValueDefinitionTargetRecord")
 
+  /// 기능 : 같은 Workspace의 원본 Record만 List에 등록하도록 복합 FK 기준을 제공합니다.
+  @@unique([id, workspaceId])
+  /// 기능 : List의 Record 참조가 Record/Object/Workspace를 함께 검증하도록 복합 FK 기준을 제공합니다.
+  @@unique([id, objectDefinitionId, workspaceId])
 }
 
 /// 기능 : RecordDefinition의 Attribute별 값을 저장합니다.
@@ -599,7 +806,6 @@ model RecordAttributeValueDefinition {
   targetObjectDefinition ObjectDefinition?   @relation("RecordAttributeValueDefinitionTargetObject", fields: [targetObjectDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   /// 기능 : ACTOR 값일 때 참조 대상 Actor입니다.
   targetActor            Actor?              @relation("RecordAttributeValueDefinitionTargetActor", fields: [targetActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
 }
 
 /// 기능 : SELECT Attribute에서 선택 가능한 옵션을 저장합니다.
@@ -633,6 +839,11 @@ model SelectOption {
   updatedByActor                  Actor?                           @relation("SelectOptionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   /// 기능 : 이 SelectOption을 값으로 사용하는 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
+  /// 기능 : 이 옵션을 선택한 List 값 목록입니다.
+  listEntryValueDefinitions       ListEntryValueDefinition[]
+
+  /// 기능 : List 값이 같은 Attribute/Workspace의 옵션만 선택하도록 복합 FK 기준을 제공합니다.
+  @@unique([id, attributeDefinitionId, workspaceId])
 }
 
 /// 기능 : STATUS Attribute에서 선택 가능한 상태 옵션을 저장합니다.
@@ -666,6 +877,11 @@ model StatusOption {
   updatedByActor                  Actor?                           @relation("StatusOptionUpdatedByActor", fields: [updatedByActorId], onDelete: SetNull, references: [id], onUpdate: Cascade)
   /// 기능 : 이 StatusOption을 값으로 사용하는 RecordAttributeValueDefinition 목록입니다.
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
+  /// 기능 : 이 상태를 선택한 List 값 목록입니다.
+  listEntryValueDefinitions       ListEntryValueDefinition[]
+
+  /// 기능 : List 값이 같은 Attribute/Workspace의 상태만 선택하도록 복합 FK 기준을 제공합니다.
+  @@unique([id, attributeDefinitionId, workspaceId])
 }
 
 /// 기능 : ObjectDefinition 사이의 관계 정의를 저장합니다.
