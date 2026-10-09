@@ -1,7 +1,7 @@
 # CRM Core Schema Draft
 
 Status: Partially Implemented / Remaining Design Draft
-Date: 2026-10-08
+Date: 2026-10-09
 
 ## 1. 목적
 
@@ -198,7 +198,25 @@ FK 컬럼은 `@db.Uuid`를 사용하지만 랜덤 UUID 기본값을 넣지 않�
 
 적용 검증: 전체 71개 migration이 적용된 상태이고 실제 DB와 Prisma schema의 diff는 없다. rollback 검증 30건으로 UUID 생성, Workspace/List/Attribute 소속 격리, 옵션/참조 삭제와 cascade를 확인했다. 기존 Attribute 4건, Record 4건과 Record 값 16건은 적용 전후 건수와 전체 row checksum이 같으며 검증 데이터는 남기지 않았다. Backend typecheck/lint/build와 43개 suite의 테스트 212개도 통과했다. Prisma validate는 성공하며 위에 설명한 복합 FK SetNull 경고 4건은 유지된다.
 
-## 11. 관련 문서
+## 11. 현재 구현: Select/Status 옵션 색상
+
+2026-10-09 사용자 요청에 따라 두 옵션 테이블에 `color` 컬럼을 추가했다.
+
+| 테이블 | 컬럼 | Prisma / DB 타입 | NULL | 역할 |
+| --- | --- | --- | --- | --- |
+| `SelectOption` | `color` | `String?` / `TEXT` | 허용 | 선택 옵션의 화면 표시용 색상 |
+| `StatusOption` | `color` | `String?` / `TEXT` | 허용 | 상태 옵션의 화면 표시용 색상 |
+
+- 기본값은 없다. 기존 옵션 row와 색상을 지정하지 않은 신규 row는 `null`을 사용한다. 기존 데이터 backfill이나 row 갱신은 하지 않는다.
+- 색상 코드·토큰 등의 저장 형식, 허용 팔레트, 미지정 시 화면 표시는 아직 확정하지 않는다. 이번 DB 변경에서는 형식 CHECK나 enum을 추가하지 않는다.
+- 새 migration은 `20261009010000_add_select_and_status_option_color`다. 두 `ADD COLUMN`과 DB 주석을 하나의 DDL transaction으로 적용한다.
+- 기존 FK, UNIQUE, 인덱스와 List 값의 컬럼 지정 `SET NULL`, 참조 Object FK 지연 검사, CHECK는 변경하지 않는다.
+- HTTP API와 FE는 이번 범위에 포함하지 않는다. 색상 입력·조회 계약과 렌더링은 후속 화면/API 설계에서 정한다.
+- 되돌림이 필요하면 두 색상 컬럼의 데이터 유무와 보존 방식을 먼저 확인하고 별도 후속 migration으로 처리한다. 이미 적용된 migration 이력은 수정하지 않는다.
+
+적용 검증: 연결된 Supabase DB에 새 migration을 적용하여 전체 72개 migration이 완료된 상태다. 두 컬럼의 nullable `TEXT`와 기본값 없음, 색상 생략·명시적 null·문자열 생성·갱신·null 해제를 rollback 검증 17건으로 확인했다. 검증 데이터는 남기지 않았으며 기존 CRM 10개 테이블의 건수와 row checksum, 기존 constraint 97개와 인덱스 78개가 적용 전후 동일하다. Prisma validate/generate, Backend typecheck/lint/build와 43개 suite의 테스트 212개가 통과했다. 기존 List 복합 FK의 Prisma SetNull 경고 4건은 유지된다.
+
+## 12. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`

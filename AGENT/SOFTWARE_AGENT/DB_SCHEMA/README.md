@@ -8,7 +8,7 @@
 
 ## 2. 현재 활성 Prisma 범위
 
-기준일: 2026-10-08
+기준일: 2026-10-09
 
 현재 `BE/prisma/schema.prisma`의 활성 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접수, Workspace/Team/Actor, 유연한 CRM 코어와 List 기반이다.
 
@@ -70,6 +70,7 @@
 - 세 신규 테이블의 PK는 `@default(dbgenerated("gen_random_uuid()")) @db.Uuid`로 DB에서 생성한다. FK에는 UUID 생성 기본값을 넣지 않는다.
 - 복합 FK의 선택 참조 삭제는 migration SQL의 컬럼 지정 `SET NULL`로 관리한다. 필수 소속 ID를 비우지 않는다. 자세한 설명과 Prisma 경고는 `CRM_CORE_SCHEMA_DRAFT.md` 10절을 따른다.
 - `SelectOption`과 `StatusOption`은 계속 특정 `AttributeDefinition`을 참조하는 공용 테이블로 사용한다.
+- `SelectOption.color`와 `StatusOption.color`는 화면 표시용 nullable 문자열(`String?` / PostgreSQL `TEXT`)이다. 기본값과 색상 형식 제약은 두지 않으며, 미지정 값은 `null`로 저장한다.
 
 ## 4. 현재 CRM Core와 후속 범위
 
