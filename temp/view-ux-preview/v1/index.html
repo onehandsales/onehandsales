@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>OneHand CRM · 보기 UX 미리보기</title>
+  <meta name="description" content="OneHand CRM의 표, 칸반, 차트, 대시보드와 타임라인을 직접 사용해 보는 인터랙티브 UX 목업입니다.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <aside id="sidebar" class="sidebar"></aside>
+    <main class="main-shell">
+      <header id="page-header" class="page-header"></header>
+      <div id="view-bar" class="view-bar"></div>
+      <div id="toolbar" class="toolbar"></div>
+      <section id="workspace" class="workspace" aria-label="업무 기록"></section>
+      <footer id="status-bar" class="status-bar"></footer>
+    </main>
+  </div>
+  <div id="popover-root"></div>
+  <div id="detail-root"></div>
+  <dialog id="dialog" class="modal"></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
