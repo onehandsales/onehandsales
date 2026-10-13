@@ -1,0 +1,126 @@
+테이블,컬럼,check,Prisma타입,DB타입,null,기본값,FK,역할,제약과검증,설계상태
+ViewDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewDefinition,objectDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,ObjectDefinition.id,일반 보기의 원본 Object 또는 대시보드의 선택적 소속 맥락,동일 Workspace 복합 FK; 일반 보기의 Object/List는 정확히 하나,draft
+ViewDefinition,listDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,ListDefinition.id,일반 보기의 원본 List 또는 대시보드의 선택적 소속 맥락,동일 Workspace 복합 FK; 대시보드는 두 ID 모두 NULL도 허용하는 제안,draft
+ViewDefinition,name,TRUE,String,TEXT,불가,없음,-,보기 탭과 메뉴의 표시 이름,비어 있지 않은 이름; 업무 이름의 중복 금지 정책은 부과하지 않음,draft
+ViewDefinition,type,TRUE,ViewTypeEnum,ViewTypeEnum,불가,없음,-,표현 방식 11종; CHART의 다섯 형태는 configJson에서 구분,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewDefinition,description,TRUE,String?,TEXT,가능,없음,-,보기의 목적과 사용 방법 설명,,draft
+ViewDefinition,icon,TRUE,String?,TEXT,가능,없음,-,보기 표시 아이콘 식별자,기존 아이콘 값 계약을 재사용,draft
+ViewDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewDefinition,configJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,타입별 표현 옵션; 차트 형태·집계와 간트 의존 관계 표시 옵션 등,NULL 또는 객체; 공통 표시·필터·정렬·그룹을 중복 저장하지 않음,draft
+ViewAttributeSettingDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewAttributeSettingDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewAttributeSettingDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewAttributeSettingDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewAttributeSettingDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewAttributeSettingDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewAttributeSettingDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewAttributeSettingDefinition,sourceScope,TRUE,ViewSourceScopeEnum,ViewSourceScopeEnum,불가,없음,-,값 조회 시작점: 원본 Record 또는 ListEntry,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewAttributeSettingDefinition,attributeDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,AttributeDefinition.id,조회 경로 끝에서 읽을 기존 Attribute,동일 Workspace FK 및 조회 원본·참조 경로의 Attribute 소속 검증,draft
+ViewAttributeSettingDefinition,referenceAttributeIdPathJson,TRUE,Json @db.JsonB,JSONB,불가,[],-,RecordReference Attribute ID를 따라가는 순서 배열; 직접 속성은 [],DB 배열 CHECK; 각 ID의 타입·방향·소속과 다중값 처리 검증,draft
+ViewAttributeSettingDefinition,attributeDisplayRole,TRUE,ViewAttributeDisplayRoleEnum,ViewAttributeDisplayRoleEnum,불가,없음,-,DISPLAY·TITLE·BODY·IMAGE·START_DATE·END_DATE·LOCATION·PROGRESS·MEASURE 역할,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewAttributeSettingDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewAttributeSettingDefinition,labelOverride,TRUE,String?,TEXT,가능,없음,-,현재 보기에서만 사용하는 표시 이름,,draft
+ViewAttributeSettingDefinition,width,TRUE,Int?,INTEGER,가능,없음,-,표 열의 표시 너비; 미지정이면 renderer 기본 너비,양의 정수 제안; 단위는 px 제안,draft
+ViewAttributeSettingDefinition,isHidden,TRUE,Boolean,BOOLEAN,불가,FALSE,-,현재 보기에서 속성 표시를 숨길지 여부; 원본 값과 레이아웃 계산 역할은 유지,,draft
+ViewAttributeSettingDefinition,formatJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,보기별 날짜·숫자·금액의 표시 형식,NULL 또는 객체; 원본 값과 Attribute 정의를 변경하지 않음,draft
+ViewFilterGroupDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewFilterGroupDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewFilterGroupDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewFilterGroupDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewFilterGroupDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewFilterGroupDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewFilterGroupDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewFilterGroupDefinition,parentViewFilterGroupDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,ViewFilterGroupDefinition.id,상위 AND/OR 그룹; NULL이면 루트 그룹,같은 View/Workspace 복합 FK; 자기 참조 CHECK 및 전체 순환 검증,draft
+ViewFilterGroupDefinition,conditionGroupOperator,TRUE,ViewConditionGroupOperatorEnum,ViewConditionGroupOperatorEnum,불가,없음,-,개별 조건과 하위 그룹을 AND 또는 OR로 결합,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewFilterGroupDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewFilterConditionDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewFilterConditionDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewFilterConditionDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewFilterConditionDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewFilterConditionDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewFilterConditionDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewFilterConditionDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewFilterConditionDefinition,viewFilterGroupDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewFilterGroupDefinition.id,조건이 소속된 필터 그룹,동일 View/Workspace 복합 FK,draft
+ViewFilterConditionDefinition,sourceScope,TRUE,ViewSourceScopeEnum,ViewSourceScopeEnum,불가,없음,-,값 조회 시작점: 원본 Record 또는 ListEntry,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewFilterConditionDefinition,attributeDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,AttributeDefinition.id,조회 경로 끝에서 읽을 기존 Attribute,동일 Workspace FK 및 조회 원본·참조 경로의 Attribute 소속 검증,draft
+ViewFilterConditionDefinition,referenceAttributeIdPathJson,TRUE,Json @db.JsonB,JSONB,불가,[],-,RecordReference Attribute ID를 따라가는 순서 배열; 직접 속성은 [],DB 배열 CHECK; 각 ID의 타입·방향·소속과 다중값 처리 검증,draft
+ViewFilterConditionDefinition,comparisonOperator,TRUE,ViewComparisonOperatorEnum,ViewComparisonOperatorEnum,불가,없음,-,Attribute 값의 비교 연산자,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewFilterConditionDefinition,comparisonValueJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,비교 대상 또는 현재 사용자·상대 날짜 같은 동적 표현,비교값이 없는 연산자는 SQL NULL; 값 타입·내부 참조·timezone 검증,draft
+ViewFilterConditionDefinition,multiValueMatchMode,TRUE,ViewMultiValueMatchModeEnum,ViewMultiValueMatchModeEnum,불가,ANY,-,여러 값 또는 참조 결과에 대한 ANY/ALL 비교 방식,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewFilterConditionDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewSortDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewSortDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewSortDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewSortDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewSortDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewSortDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewSortDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewSortDefinition,sourceScope,TRUE,ViewSourceScopeEnum,ViewSourceScopeEnum,불가,없음,-,값 조회 시작점: 원본 Record 또는 ListEntry,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewSortDefinition,attributeDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,AttributeDefinition.id,조회 경로 끝에서 읽을 기존 Attribute,동일 Workspace FK 및 조회 원본·참조 경로의 Attribute 소속 검증,draft
+ViewSortDefinition,referenceAttributeIdPathJson,TRUE,Json @db.JsonB,JSONB,불가,[],-,RecordReference Attribute ID를 따라가는 순서 배열; 직접 속성은 [],DB 배열 CHECK; 각 ID의 타입·방향·소속과 다중값 처리 검증,draft
+ViewSortDefinition,sortDirection,TRUE,ViewSortDirectionEnum,ViewSortDirectionEnum,불가,없음,-,항목 정렬 방향 ASC 또는 DESC,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewSortDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewSortDefinition,configJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,NULL 위치와 다중값의 정렬 값 선택 등 정렬 세부 규칙,NULL 또는 객체; Attribute와 direction 및 sortOrder를 중복 저장하지 않음,draft
+ViewGroupDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewGroupDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewGroupDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewGroupDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewGroupDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewGroupDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewGroupDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewGroupDefinition,sourceScope,TRUE,ViewSourceScopeEnum,ViewSourceScopeEnum,불가,없음,-,값 조회 시작점: 원본 Record 또는 ListEntry,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewGroupDefinition,attributeDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,AttributeDefinition.id,조회 경로 끝에서 읽을 기존 Attribute,동일 Workspace FK 및 조회 원본·참조 경로의 Attribute 소속 검증,draft
+ViewGroupDefinition,referenceAttributeIdPathJson,TRUE,Json @db.JsonB,JSONB,불가,[],-,RecordReference Attribute ID를 따라가는 순서 배열; 직접 속성은 [],DB 배열 CHECK; 각 ID의 타입·방향·소속과 다중값 처리 검증,draft
+ViewGroupDefinition,groupRole,TRUE,ViewGroupRoleEnum,ViewGroupRoleEnum,불가,GROUP,-,일반 그룹·칸반 열 GROUP 또는 차트 계열 SERIES,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewGroupDefinition,sortDirection,TRUE,ViewSortDirectionEnum,ViewSortDirectionEnum,불가,없음,-,그룹 자체의 기본 정렬 방향,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewGroupDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewGroupDefinition,configJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,날짜 버킷·숫자 구간·집계 결과 기준 그룹 정렬,NULL 또는 객체; 그룹 Attribute를 중복 저장하지 않음,draft
+ViewGroupSettingDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewGroupSettingDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewGroupSettingDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewGroupSettingDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewGroupSettingDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewGroupSettingDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewGroupSettingDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewGroupSettingDefinition,viewGroupDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewGroupDefinition.id,표시 설정을 적용할 그룹 기준,View/Attribute/Workspace를 함께 연결하는 복합 FK,draft
+ViewGroupSettingDefinition,attributeDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,AttributeDefinition.id,그룹 기준의 Attribute ID; 옵션 소속을 DB에서 검증하는 보조 키,ViewGroupDefinition에서 도출; group 및 option 복합 FK에 함께 사용,draft
+ViewGroupSettingDefinition,statusOptionId,TRUE,String? @db.Uuid,UUID,가능,없음,StatusOption.id,표시할 Status 옵션 그룹,같은 Attribute/Workspace 복합 FK,draft
+ViewGroupSettingDefinition,selectOptionId,TRUE,String? @db.Uuid,UUID,가능,없음,SelectOption.id,표시할 Select 옵션 그룹,같은 Attribute/Workspace 복합 FK,draft
+ViewGroupSettingDefinition,groupKeyJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,옵션 외 그룹의 식별 키; 담당자·날짜·숫자 구간·문자열과 EMPTY 그룹 등,옵션 ID 두 개와 정확히 하나만 지정; JSON 객체와 값 타입·정규화 검증,draft
+ViewGroupSettingDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewGroupSettingDefinition,labelOverride,TRUE,String?,TEXT,가능,없음,-,현재 보기에서만 사용할 그룹 이름,,draft
+ViewGroupSettingDefinition,isHidden,TRUE,Boolean,BOOLEAN,불가,FALSE,-,그룹을 화면에서 숨김; 원본 데이터와 옵션은 유지,,draft
+ViewGroupSettingDefinition,isFold,TRUE,Boolean,BOOLEAN,불가,FALSE,-,그룹을 접어서 표시할지 여부,,draft
+ViewGroupSettingDefinition,configJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,그룹별 표현 옵션과 향후 확장 설정,NULL 또는 객체; 이름·숨김·접힘·순서를 중복 저장하지 않음,draft
+ViewWidgetDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewWidgetDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewWidgetDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewWidgetDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewWidgetDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewWidgetDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewWidgetDefinition,viewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,설정이 소속된 View,workspaceId를 포함한 복합 FK,draft
+ViewWidgetDefinition,contentViewDefinitionId,TRUE,String @db.Uuid,UUID,불가,없음,ViewDefinition.id,위젯 안에서 표시할 기존 View,부모와 자식 View의 동일 Workspace 복합 FK; 직접 자기 참조와 전체 순환 검증,draft
+ViewWidgetDefinition,titleOverride,TRUE,String?,TEXT,가능,없음,-,이 위젯에서만 사용할 제목,,draft
+ViewWidgetDefinition,sortOrder,TRUE,Int,INTEGER,불가,0,-,같은 소속 안의 배치 순서 또는 기준 적용 우선순위,동일 순서 값은 id로 안정적으로 정렬; 순서 UNIQUE는 부과하지 않음,draft
+ViewWidgetDefinition,isHidden,TRUE,Boolean,BOOLEAN,불가,FALSE,-,대시보드에서 위젯을 숨길지 여부,,draft
+ViewWidgetDefinition,layoutJson,TRUE,Json @db.JsonB,JSONB,불가,없음,-,위젯의 위치·너비·높이와 화면 크기별 배치,JSON 객체; 격자 단위와 범위 및 반응형 배치 규칙은 UI 계약에서 확정,draft
+ViewWidgetDefinition,configJson,TRUE,Json? @db.JsonB,JSONB,가능,없음,-,위젯의 제목 표시 등 표현 옵션,NULL 또는 객체; 연결된 View의 표시·필터·집계 설정은 그 View가 소유,draft
+ViewWorkDependencyDefinition,id,TRUE,String @db.Uuid,UUID,불가,"dbgenerated(""gen_random_uuid()"")",-,행의 UUID PK,"PK; @default(dbgenerated(""gen_random_uuid()"")); FK에는 생성 기본값 없음",draft
+ViewWorkDependencyDefinition,workspaceId,TRUE,String @db.Uuid,UUID,불가,없음,Workspace.id,데이터와 설정이 속하는 Workspace 경계,모든 다른 FK의 Workspace 일치 검증에 사용,draft
+ViewWorkDependencyDefinition,createdByActorId,TRUE,String @db.Uuid,UUID,불가,없음,Actor.id,이 행을 생성한 Actor,동일 Workspace 복합 FK; 삭제 RESTRICT,draft
+ViewWorkDependencyDefinition,updatedByActorId,TRUE,String? @db.Uuid,UUID,가능,없음,Actor.id,이 행을 마지막으로 수정한 Actor,동일 Workspace 복합 FK; 삭제 시 updatedByActorId만 SET NULL,draft
+ViewWorkDependencyDefinition,createdAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,now(),-,UTC 생성 시각,DB 기본값 CURRENT_TIMESTAMP,draft
+ViewWorkDependencyDefinition,updatedAt,TRUE,DateTime @db.Timestamptz(3),TIMESTAMPTZ(3),불가,Prisma @updatedAt,-,UTC 마지막 수정 시각,현재 CRM/List 규약과 일치하는 제안; raw SQL 변경은 직접 갱신,draft
+ViewWorkDependencyDefinition,sourceRecordDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,RecordDefinition.id,선행 업무의 원본 Record,동일 Workspace 복합 FK; 선행 Record/ListEntry 중 정확히 하나,draft
+ViewWorkDependencyDefinition,sourceListEntryDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,ListEntryDefinition.id,선행 업무의 특정 List 참여 항목,동일 Workspace 복합 FK,draft
+ViewWorkDependencyDefinition,targetRecordDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,RecordDefinition.id,후행 업무의 원본 Record,동일 Workspace 복합 FK; 후행 Record/ListEntry 중 정확히 하나,draft
+ViewWorkDependencyDefinition,targetListEntryDefinitionId,TRUE,String? @db.Uuid,UUID,가능,없음,ListEntryDefinition.id,후행 업무의 특정 List 참여 항목,동일 Workspace 복합 FK,draft
+ViewWorkDependencyDefinition,type,TRUE,ViewWorkDependencyTypeEnum,ViewWorkDependencyTypeEnum,불가,없음,-,선후행 업무의 시작/종료 중 어느 시점을 연결할지 정의,타입별 허용 값과 동작은 application 계약에서 검증,draft
+ViewWorkDependencyDefinition,dependencyTimeOffsetValue,TRUE,"Decimal @db.Decimal(30,10)","NUMERIC(30,10)",불가,0,-,의존 관계의 시간 간격 크기,음수·업무일·날짜 자동 이동 정책은 보류; 임의의 비음수 CHECK를 추가하지 않음,draft
+ViewWorkDependencyDefinition,dependencyTimeOffsetUnit,TRUE,ViewWorkDependencyUnitEnum,ViewWorkDependencyUnitEnum,불가,없음,-,간격의 단위 MINUTE/HOUR/DAY,타입별 허용 값과 동작은 application 계약에서 검증,draft
