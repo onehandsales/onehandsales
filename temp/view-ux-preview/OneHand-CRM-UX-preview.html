@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
-  <title>OneHand CRM · 보기 UX 미리보기</title>
-  <meta name="description" content="OneHand CRM의 표, 칸반, 차트, 대시보드와 타임라인을 직접 사용해 보는 인터랙티브 UX 목업입니다.">
+  <title>OneHand CRM · 5개 워크스페이스 UX 미리보기</title>
+  <meta name="description" content="영업, 부동산, 마케팅, 보험·금융, 커머스의 고객관리 업무를 11가지 보기로 체험하는 OneHand CRM UX 목업입니다.">
   <style>:root{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#26272b;background:#fff;font-synthesis:none;font-size:13px;--line:#eaecef;--muted:#8a8d96;--blue:#4773e4;--sidebar:#fafafb;--dark:#25262c;--shadow:0 12px 44px rgba(25,30,45,.12),0 2px 8px rgba(25,30,45,.04)}
 *{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}button:disabled{cursor:default;opacity:.45}button,select,input,textarea{outline:none}button:focus-visible,a:focus-visible{outline:3px solid #b4c6ff;outline-offset:2px}input:focus,select:focus,textarea:focus{border-color:#8da6ee!important;box-shadow:0 0 0 3px #eaf0ff}button{border:0;background:none}a{color:var(--blue);text-decoration:none}svg{vertical-align:middle;flex-shrink:0}h1,h2,h3,p{margin:0}input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px;cursor:pointer}input[type=checkbox]:focus{box-shadow:none}select{background:#fff}::selection{background:#e6edff}::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-thumb{background:#dfe1e6;border-radius:8px}
 .app-shell{height:100dvh;display:grid;grid-template-columns:232px minmax(0,1fr)}.sidebar{background:var(--sidebar);border-right:1px solid var(--line);padding:0 12px;display:flex;flex-direction:column;overflow-y:auto}.brand{height:68px;display:flex;align-items:center;gap:10px;padding:0 7px;flex-shrink:0}.brand-mark{width:29px;height:29px;background:#202127;border-radius:9px;color:#fff;display:grid;place-items:center;font-size:19px;font-weight:650;letter-spacing:-3px;padding-right:3px}.brand-name{font-weight:650;font-size:15px;letter-spacing:-.35px}.brand svg{margin-left:auto;color:#999}.workspace-name{font-size:11px;color:#94969f;margin-top:3px}.quick-search{height:33px;border:1px solid #e5e7ec;border-radius:7px;background:#fff;display:flex;align-items:center;gap:8px;padding:0 9px;margin-bottom:17px;text-align:left;width:100%;color:#747780;box-shadow:0 1px 2px #00000003}.kbd{margin-left:auto;border:1px solid #e8e9ec;background:#fafafb;color:#999ca4;border-radius:4px;font-size:10px;padding:1px 4px}.nav-section{margin:15px 7px 8px;font-size:10px;font-weight:550;letter-spacing:.03em;color:#9b9ea6;display:flex;align-items:center;justify-content:space-between}.nav-item{height:35px;width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:0 10px;border-radius:6px;color:#6d707a;margin:2px 0;font-size:12px}.nav-item:hover{background:#eff0f3}.nav-item.active{background:#eceef3;color:#282b35;font-weight:600}.nav-icon{color:#9296a1}.nav-item.active .nav-icon{color:#6080d5}.nav-item .nav-count{margin-left:auto;color:#999ea8;font-size:10px}.nav-inset{padding-left:18px}.nav-spacer{flex:1;min-height:30px}.preview-note{padding:14px 10px;border-top:1px solid var(--line);color:#9497a0;font-size:10px;line-height:1.8;display:flex;align-items:center;gap:6px}.preview-note .dot{background:#76b095;width:5px;height:5px;border-radius:50%}.profile{border-top:1px solid var(--line);display:flex;gap:9px;align-items:center;padding:15px 6px}.profile-info{line-height:1.7;font-size:11px}.profile-info small{display:block;color:#9ba0aa;font-size:10px}.profile button{margin-left:auto;color:#9396a0}.avatar{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#e8e9fc;color:#6b61b1;font-size:8px;font-weight:600;flex-shrink:0}.avatar.large{width:30px;height:30px;font-size:10px}.main-shell{min-width:0;display:flex;flex-direction:column;overflow:hidden}.page-header{height:65px;display:flex;align-items:center;gap:10px;padding:0 27px;border-bottom:1px solid var(--line);flex-shrink:0}.page-heading{font-size:14px;font-weight:600;letter-spacing:-.2px}.source-badge{padding:3px 7px;background:#f5f6f8;border:1px solid #ededef;border-radius:5px;color:#969aa5;font-size:10px;display:flex;align-items:center;gap:4px}.header-right{margin-left:auto;display:flex;align-items:center;gap:13px}.saved-indicator{color:#9599a2;font-size:10px;display:flex;align-items:center;gap:5px}.saved-indicator svg{color:#9faa9e}.subtle-label{font-size:10px;color:#9295a0;background:#f7f8fa;padding:4px 7px;border:1px solid var(--line);border-radius:5px}.icon-btn{width:28px;height:28px;display:inline-grid;place-items:center;border-radius:5px;color:#8b909b;flex-shrink:0}.icon-btn:hover{background:#f0f2f5;color:#3f4756}.view-bar{height:54px;display:flex;align-items:center;gap:7px;padding:0 25px;border-bottom:1px solid var(--line);flex-shrink:0}.view-tabs{display:flex;align-items:stretch;height:100%;gap:7px;min-width:0;overflow-x:auto;scrollbar-width:none}.view-tab{white-space:nowrap;display:flex;align-items:center;gap:6px;padding:0 9px;color:#9296a1;border-bottom:2px solid transparent;font-size:11px}.view-tab:hover{color:#454a55}.view-tab.active{color:#3a4050;font-weight:600;border-bottom-color:#677fed}.view-tab.active svg{color:#6884d9}.bar-actions{margin-left:auto;display:flex;align-items:center;gap:7px}.button{height:31px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #e4e7ec;border-radius:6px;padding:0 10px;background:#fff;font-size:11px;white-space:nowrap;box-shadow:0 1px 2px #00000002}.button:hover{background:#f9fafc}.button.primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 2px 3px #4773e421}.button.primary:hover{background:#3762d0}.button.quiet{border-color:transparent;background:transparent;color:#818795;box-shadow:none}.button.quiet:hover{background:#f3f4f7}.button.active{background:#eff3ff;color:#5171cb;border-color:#dce5fe}.button.small{height:26px;padding:0 7px;font-size:10px}.toolbar{height:50px;display:flex;align-items:center;gap:7px;padding:0 25px;flex-shrink:0}.toolbar .search-box{margin-left:auto;position:relative;display:flex;align-items:center;gap:6px;color:#969baa}.search-box input{width:165px;height:28px;border:1px solid transparent;background:transparent;border-radius:5px;padding:0 8px;font-size:11px}.search-box input:hover{border-color:#eceef2}.filter-summary{font-size:10px;color:#7d8da7;display:flex;gap:5px;align-items:center;max-width:350px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.workspace{flex:1;min-height:0;overflow:auto;position:relative}.status-bar{height:34px;border-top:1px solid var(--line);display:flex;align-items:center;padding:0 27px;color:#a0a4ad;font-size:10px;gap:14px;flex-shrink:0;background:#fff}.status-bar .right{margin-left:auto}.status-bar button{padding:3px;color:#8d929d;font-size:10px}.status-bar button:hover{color:var(--blue)}
@@ -25,6 +25,7 @@
 </style>
   <style>:root{--accent-tint:#eef3ff}
 .popover{z-index:65}
+.customer-cover{height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden;padding:21px 24px;background:var(--accent-tint);color:var(--blue)}.customer-cover-head{display:flex;align-items:center;gap:8px;font-size:10px;z-index:1}.customer-cover strong{font-size:27px;letter-spacing:-.7px;margin-top:19px;font-weight:600;z-index:1}.customer-cover p{font-size:11px;margin-top:9px;max-width:260px;line-height:1.6;z-index:1}.customer-cover small{font-size:9px;margin-top:auto;z-index:1}.customer-cover:after{content:'';position:absolute;width:170px;height:170px;border:25px solid #ffffff80;border-radius:50%;right:-30px;top:28px}.list-record-name small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .workspace-switcher{height:78px;display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:0 7px;flex-shrink:0}
 .workspace-symbol{width:32px;height:32px;border-radius:9px;display:inline-grid;place-items:center;font-size:15px;font-weight:650;flex-shrink:0}
 .workspace-switcher>span:nth-child(2){min-width:0;flex:1}.workspace-switcher strong{display:block;font-size:12px;color:#353a46;white-space:nowrap}.workspace-switcher small{display:block;font-size:10px;color:#98a0ae;margin-top:5px}.workspace-switcher>svg{color:#a1a7b2}
@@ -212,9 +213,120 @@ const marketing = {
   viewNames: {table: '전체 캠페인', board: '캠페인 진행 보드', list: '캠페인 업무 목록', gallery: '크리에이티브 카드', calendar: '캠페인 캘린더', timeline: '집행 일정', gantt: '런칭 준비 일정', chart: '캠페인 예산 분석', pivot: '채널별 예산 집계', map: '행사·타깃 지역', dashboard: '마케팅 업무 요약'},
 };
 
-const workspaceSeeds = [sales, realestate, marketing];
+// 아래 업무와 단계는 인터뷰를 위한 예시이며 실제 업종 정책을 확정하지 않습니다.
+const insurance = {
+  id: 'insurance', name: '보험·금융 워크스페이스', team: '든든 파트너스', initial: 'F',
+  accent: '#b38332', tint: '#fff6e7', icon: 'shield', entityIcon: 'people',
+  description: '첫 상담부터 다음 연락, 만기와 갱신까지',
+  greeting: '오늘 연락할 고객부터 챙겨보세요',
+  labels: {record: '상담 건', entity: '고객', amount: '월 예상 납입액', stage: '상담 단계',
+    category: '상담 유형', entityCategory: '관심 분야', location: '상담 지역', end: '다음 연락일',
+    entityNote: '연락 메모', entityTags: '관심 분야', entityContact: '상담 메모',
+    mainObject: '상담 기록', primaryList: '상담·가입 진행', secondaryList: '만기·갱신 관리',
+    secondaryStage: '갱신 상태', secondaryStages: ['확인 전', '연락 예정', '조건 검토', '갱신 완료', '보류']},
+  defaultLayout: 'list', metricNote: '현재 상담 목록의 유형별 건수', filterAmount: 50000,
+  recordPlaceholder: '예: 김지우 보장 상담', entityPlaceholder: '예: 김지우',
+  tableFields: ['name', 'company', 'category', 'nextAction', 'end', 'renewal', 'amount', 'stage', 'owner'],
+  cardFields: ['name', 'company', 'category', 'nextAction', 'amount', 'end'],
+  detailFields: ['product', 'nextAction', 'lastContact', 'renewal'], listHintField: 'nextAction',
+  formFields: ['category', 'product', 'nextAction', 'renewal'], secondaryDateField: 'renewal',
+  extraFields: [{id: 'product', label: '상담 상품', type: 'text', icon: 'shield'},
+    {id: 'nextAction', label: '다음 할 일', type: 'text', icon: 'check'},
+    {id: 'lastContact', label: '최근 연락일', type: 'date', icon: 'date'},
+    {id: 'renewal', label: '만기·갱신일', type: 'date', icon: 'date'}],
+  viewDefaults: {list: {sorts: [{fieldId: 'end', direction: 'ASC'}], conditions: [
+    {fieldId: 'end', op: 'gte', value: '2026-10-12'}, {fieldId: 'end', op: 'lte', value: '2026-10-18'}, {fieldId: 'stage', op: 'neq', value: 'won'}]},
+    chart: {aggregate: 'count', chartGroup: 'category'}, pivot: {aggregate: 'count', pivotRow: 'category'}},
+  stages: stageOptions(['상담 접수', '보장 검토', '가입 협의', '가입 완료', '보류']),
+  owners: staff(['한지윤', '오민석', '서유진']),
+  entities: [
+    entity('ic1', '김지우', '평일 오후 연락 선호', ['건강 보장', '가족 보장'], '제안서 확인 후 전화 상담', '#f2e6cc'),
+    entity('ic2', '이서준', '점심시간 전화 가능', ['연금', '재무 상담'], '일정 먼저 문자로 안내', '#e2e6f8'),
+    entity('ic3', '박하린', '퇴근 후 연락 선호', ['운전자 보장'], '온라인 상담 요청', '#dcefe6'),
+    entity('ic4', '최도윤', '토요일 방문 상담', ['가족 보장'], '배우자와 함께 상담', '#f5dfe7'),
+    entity('ic5', '정수빈', '이메일 자료 선호', ['건강 보장'], '가입 서류 전달 완료', '#e2ecf6'),
+    entity('ic6', '윤민재', '오전 연락 가능', ['연금'], '기존 상담 내용 확인', '#e9e3f6'),
+    entity('ic7', '송예린', '문자 안내 선호', ['자동차 보장'], '만기 일정 확인 필요', '#e6efdb'),
+    entity('ic8', '강현우', '평일 방문 상담', ['사업자 보장'], '필요 서류 목록 요청', '#f6e5d9'),
+  ],
+  records: [
+    record('i1', '김지우 건강 보장 상담', 'ic1', 85000, 'proposal', 'jason', '2026-10-08', '2026-10-14', {category: '보장 상담', product: '건강 보장 플랜', nextAction: '제안서 확인 후 전화하기', lastContact: '2026-10-11', renewal: '2027-10-21', location: '서울 강남구 역삼동', lat: 37.5006, lng: 127.0365, notes: '고객이 요청한 비교 항목을 먼저 확인하고 다음 연락 일정을 잡습니다.', tags: ['다음 연락', '제안서 전달']}),
+    record('i2', '이서준 연금 상담', 'ic2', 250000, 'negotiation', 'min', '2026-10-05', '2026-10-15', {category: '연금 상담', product: '연금 상담 예시', nextAction: '추가 질문 정리해 전달하기', lastContact: '2026-10-12', renewal: '2027-10-25', location: '서울 성동구 성수동', lat: 37.5447, lng: 127.0558, tags: ['질문 확인', '상담 진행']}),
+    record('i3', '박하린 운전자 보장 문의', 'ic3', 32000, 'new', 'jun', '2026-10-13', '2026-10-13', {category: '보장 상담', product: '운전자 보장 플랜', nextAction: '첫 상담 시간 확정하기', lastContact: '2026-10-12', renewal: '2027-10-30', location: '서울 마포구 서교동', lat: 37.5531, lng: 126.9219, tags: ['신규 문의']}),
+    record('i4', '최도윤 가족 보장 상담', 'ic4', 145000, 'proposal', 'jason', '2026-10-12', '2026-10-16', {category: '가족 상담', product: '가족 보장 플랜', nextAction: '방문 상담 준비하기', lastContact: '2026-10-10', renewal: '2027-10-28', location: '서울 서초구 서초동', lat: 37.4877, lng: 127.0126, tags: ['방문 상담']}),
+    record('i5', '정수빈 가입 서류 확인', 'ic5', 68000, 'won', 'min', '2026-10-03', '2026-10-12', {category: '가입 안내', product: '건강 보장 플랜', nextAction: '가입 후 안내 보내기', lastContact: '2026-10-12', renewal: '2027-10-12', location: '서울 중구 을지로', lat: 37.5664, lng: 126.9943, tags: ['가입 완료']}),
+    record('i6', '윤민재 재무 상담 일정', 'ic6', 180000, 'proposal', 'jun', '2026-10-10', '2026-10-17', {category: '재무 상담', product: '재무 상담 예시', nextAction: '요청 자료와 상담 일정 확인', lastContact: '2026-10-09', renewal: '2027-10-23', location: '서울 종로구 효자동', lat: 37.5816, lng: 126.9705, tags: ['자료 요청']}),
+    record('i7', '강현우 사업자 보장 검토', 'ic8', 210000, 'hold', 'min', '2026-10-14', '2026-10-26', {category: '사업자 상담', product: '사업자 보장 플랜', nextAction: '고객 회신 후 재연락', lastContact: '2026-10-08', renewal: '2027-10-29', location: '서울 강서구 마곡동', lat: 37.5657, lng: 126.8295, tags: ['회신 대기']}),
+    record('i8', '김지우 가입 준비 안내', 'ic1', 85000, 'negotiation', 'jason', '2026-10-15', '2026-10-21', {category: '가입 안내', product: '건강 보장 플랜', nextAction: '필요 서류 안내 보내기', lastContact: '2026-10-11', renewal: '2027-10-21', location: '서울 강남구 역삼동', lat: 37.5006, lng: 127.0365, tags: ['후속 업무']}),
+    record('i9', '송예린 자동차 보장 갱신', 'ic7', 75000, 'proposal', 'jun', '2026-10-09', '2026-10-16', {category: '갱신 상담', product: '자동차 보장 플랜', nextAction: '만기 전 갱신 의사 확인', lastContact: '2026-10-09', renewal: '2026-10-20', location: '서울 관악구 봉천동', lat: 37.4820, lng: 126.9514, tags: ['이번 달 만기']}),
+    record('i10', '이서준 기존 계약 확인', 'ic2', 125000, 'negotiation', 'min', '2026-10-07', '2026-10-19', {category: '갱신 상담', product: '기존 계약 예시', nextAction: '변경 요청 항목 확인하기', lastContact: '2026-10-10', renewal: '2026-10-24', location: '서울 성동구 성수동', lat: 37.5447, lng: 127.0558, tags: ['조건 확인']}),
+    record('i11', '정수빈 갱신 일정 안내', 'ic5', 68000, 'new', 'jason', '2026-10-13', '2026-10-20', {category: '갱신 상담', product: '기존 계약 예시', nextAction: '안내 문자 발송하기', lastContact: '2026-10-08', renewal: '2026-10-27', location: '서울 중구 을지로', lat: 37.5664, lng: 126.9943, tags: ['문자 안내']}),
+    record('i12', '강현우 갱신 완료 확인', 'ic8', 210000, 'won', 'min', '2026-10-04', '2026-10-15', {category: '갱신 상담', product: '사업자 보장 플랜', nextAction: '완료 내역 전달하기', lastContact: '2026-10-12', renewal: '2026-10-31', location: '서울 강서구 마곡동', lat: 37.5657, lng: 126.8295, tags: ['갱신 완료']}),
+  ],
+  primaryIds: ['i1', 'i2', 'i3', 'i4', 'i5', 'i6', 'i7', 'i8'], secondaryIds: ['i9', 'i10', 'i11', 'i12'],
+  dependencies: [{id: 'idep1', sourceId: 'i1', targetId: 'i8', type: 'FS', offset: 1, unit: 'DAY'}],
+  viewNames: {table: '전체 상담', board: '상담 진행 보드', list: '이번 주 연락할 고객', gallery: '고객 상담 카드', calendar: '다음 연락 캘린더', timeline: '상담 일정', gantt: '가입 준비 일정', chart: '상담 유형 분석', pivot: '담당자별 상담 집계', map: '상담 지역 지도', dashboard: '보험·금융 업무 요약'},
+};
+
+const commerce = {
+  id: 'commerce', name: '커머스 워크스페이스', team: '모먼트 스토어', initial: 'C',
+  accent: '#ce6b59', tint: '#fff0eb', icon: 'bag', entityIcon: 'people',
+  description: '첫 구매 이후의 관계와 고객 문의를 함께',
+  greeting: '다시 찾아올 고객과 다음 응대를 준비해요',
+  labels: {record: '고객관리 건', entity: '고객', amount: '예상 구매액', stage: '관리 단계',
+    category: '관리 유형', entityCategory: '고객 관심 분야', location: '고객 지역', end: '다음 응대일',
+    entityNote: '고객 메모', entityTags: '관심 분야', entityContact: '응대 메모',
+    mainObject: '고객관리 기록', primaryList: '재구매·휴면 관리', secondaryList: '문의·반품 처리',
+    secondaryStage: '문의 상태', secondaryStages: ['접수', '확인 중', '처리 중', '해결', '대기']},
+  defaultLayout: 'table', metricNote: '현재 관리 목록의 고객 유형별 건수', filterAmount: 50000,
+  recordPlaceholder: '예: 김하은 재구매 안내', entityPlaceholder: '예: 김하은',
+  tableFields: ['name', 'category', 'nextAction', 'end', 'lastOrder', 'orderCount', 'amount', 'stage', 'owner'],
+  cardFields: ['name', 'company', 'category', 'product', 'nextAction', 'amount', 'end'],
+  detailFields: ['product', 'nextAction', 'lastOrder', 'orderCount', 'channel'], listHintField: 'nextAction',
+  formFields: ['category', 'product', 'nextAction', 'lastOrder', 'orderCount', 'channel'],
+  extraFields: [{id: 'product', label: '관심 상품', type: 'text', icon: 'bag'},
+    {id: 'nextAction', label: '다음 할 일', type: 'text', icon: 'check'},
+    {id: 'lastOrder', label: '최근 구매일', type: 'date', icon: 'date'},
+    {id: 'orderCount', label: '구매 횟수', type: 'number', icon: 'number'},
+    {id: 'channel', label: '유입 채널', type: 'text', icon: 'megaphone'}],
+  viewDefaults: {table: {sorts: [{fieldId: 'end', direction: 'ASC'}]}, list: {sorts: [{fieldId: 'end', direction: 'ASC'}]},
+    chart: {aggregate: 'count', chartGroup: 'category'}, pivot: {aggregate: 'count', pivotRow: 'category'}},
+  stages: stageOptions(['대상 확인', '연락 예정', '응답 대기', '구매 전환', '보류']),
+  owners: staff(['김나연', '이준서', '박예은']),
+  entities: [
+    entity('ec1', '김하은', '첫 구매 후 상품 안내 희망', ['리빙', '수납'], '채팅 상담 선호', '#f3e3d7'),
+    entity('ec2', '이도현', '정기 구매 고객', ['식품', '정기 구독'], '상품 소진 전 안내 요청', '#dceee4'),
+    entity('ec3', '박서아', '최근 방문은 있으나 구매 없음', ['뷰티'], '관심 상품 문의 이력 있음', '#f4dde5'),
+    entity('ec4', '최민준', '배송 일정 확인 희망', ['리빙', '조명'], '오후에 답변 확인 가능', '#e1eaf8'),
+    entity('ec5', '정유나', 'VIP 고객', ['뷰티', '선물'], '신상품 먼저 안내 요청', '#e9e2f6'),
+    entity('ec6', '윤지호', '한동안 구매 이력 없음', ['스포츠'], '사이즈 문의 이력 있음', '#e5efda'),
+    entity('ec7', '송수아', '장바구니 상품 상담 요청', ['패션'], '문자보다 채팅 선호', '#f6e7d9'),
+    entity('ec8', '강예준', '상품 교환 요청', ['리빙'], '교환 절차 안내 필요', '#e1edf2'),
+  ],
+  records: [
+    record('e1', '김하은 첫 구매 후속 안내', 'ec1', 65000, 'proposal', 'jason', '2026-10-08', '2026-10-14', {category: '첫 구매', product: '데일리 수납 세트', nextAction: '사용 경험 확인하고 관련 상품 안내', lastOrder: '2026-10-07', orderCount: 1, channel: 'Instagram', location: '서울 강남구 역삼동', lat: 37.5006, lng: 127.0365, notes: '첫 주문을 받은 고객입니다. 불편한 점부터 확인하고 고객이 원하면 관련 상품을 안내합니다.', tags: ['첫 구매', '후속 연락']}),
+    record('e2', '이도현 정기 구매 안내', 'ec2', 89000, 'negotiation', 'min', '2026-10-05', '2026-10-15', {category: '재구매', product: '그린테이블 정기 박스', nextAction: '다음 구매 일정 확인하기', lastOrder: '2026-09-18', orderCount: 6, channel: 'Naver', location: '서울 성동구 성수동', lat: 37.5447, lng: 127.0558, tags: ['재구매', '정기 고객']}),
+    record('e3', '박서아 휴면 고객 재연락', 'ec3', 48000, 'new', 'jun', '2026-10-13', '2026-10-13', {category: '휴면 고객', product: '온유 데일리 케어', nextAction: '최근 관심 상품과 문의 확인', lastOrder: '2026-06-12', orderCount: 2, channel: 'Meta Ads', location: '서울 마포구 서교동', lat: 37.5531, lng: 126.9219, tags: ['휴면', '관심 확인']}),
+    record('e4', '최민준 관심 상품 안내', 'ec4', 120000, 'proposal', 'jason', '2026-10-12', '2026-10-16', {category: '구매 상담', product: '모먼트 테이블 조명', nextAction: '상품 옵션과 배송 일정 안내', lastOrder: '2026-09-22', orderCount: 2, channel: '검색', location: '서울 서초구 서초동', lat: 37.4877, lng: 127.0126, tags: ['상품 상담']}),
+    record('e5', '정유나 VIP 신상품 안내', 'ec5', 156000, 'won', 'min', '2026-10-03', '2026-10-12', {category: 'VIP', product: '온유 기프트 컬렉션', nextAction: '주문 후 만족도 확인하기', lastOrder: '2026-10-12', orderCount: 12, channel: '직접 방문', location: '서울 중구 을지로', lat: 37.5664, lng: 126.9943, tags: ['VIP', '구매 전환']}),
+    record('e6', '윤지호 재방문 상담', 'ec6', 78000, 'hold', 'jun', '2026-10-10', '2026-10-23', {category: '휴면 고객', product: '런클럽 러닝 키트', nextAction: '고객 회신 후 사이즈 상담', lastOrder: '2026-05-20', orderCount: 3, channel: 'Email', location: '서울 종로구 효자동', lat: 37.5816, lng: 126.9705, tags: ['재방문', '회신 대기']}),
+    record('e7', '송수아 장바구니 상품 상담', 'ec7', 98000, 'negotiation', 'jason', '2026-10-14', '2026-10-17', {category: '구매 상담', product: '데이브레이크 가을 셔츠', nextAction: '상품 사이즈 질문에 답변', lastOrder: '2026-08-16', orderCount: 2, channel: 'Instagram', location: '서울 관악구 봉천동', lat: 37.4820, lng: 126.9514, tags: ['장바구니', '문의 답변']}),
+    record('e8', '김하은 두 번째 구매 준비', 'ec1', 72000, 'new', 'jason', '2026-10-15', '2026-10-21', {category: '재구매', product: '데일리 정리 컬렉션', nextAction: '관심 상품 재입고 일정 안내', lastOrder: '2026-10-07', orderCount: 1, channel: '자사몰', location: '서울 강남구 역삼동', lat: 37.5006, lng: 127.0365, tags: ['재입고', '후속 업무']}),
+    record('e9', '최민준 배송 일정 문의', 'ec4', 0, 'proposal', 'min', '2026-10-09', '2026-10-14', {category: '배송 문의', product: '모먼트 테이블 조명', nextAction: '배송 예정일 확인해 답변', lastOrder: '2026-10-09', orderCount: 3, channel: '채팅', location: '서울 서초구 서초동', lat: 37.4877, lng: 127.0126, tags: ['배송 문의']}),
+    record('e10', '강예준 상품 교환 요청', 'ec8', 0, 'negotiation', 'jun', '2026-10-07', '2026-10-15', {category: '교환 요청', product: '모먼트 리빙 트레이', nextAction: '교환 수거 일정 확정하기', lastOrder: '2026-10-06', orderCount: 2, channel: '채팅', location: '서울 강서구 마곡동', lat: 37.5657, lng: 126.8295, tags: ['교환', '수거 일정']}),
+    record('e11', '박서아 상품 사용 문의', 'ec3', 0, 'new', 'jason', '2026-10-13', '2026-10-16', {category: '상품 문의', product: '온유 데일리 케어', nextAction: '상품 사용 안내 전달하기', lastOrder: '2026-06-12', orderCount: 2, channel: '채팅', location: '서울 마포구 서교동', lat: 37.5531, lng: 126.9219, tags: ['상품 문의']}),
+    record('e12', '송수아 반품 처리 확인', 'ec7', 0, 'won', 'min', '2026-10-04', '2026-10-15', {category: '반품 요청', product: '데이브레이크 베이직 셔츠', nextAction: '처리 결과 안내하기', lastOrder: '2026-10-02', orderCount: 3, channel: '채팅', location: '서울 관악구 봉천동', lat: 37.4820, lng: 126.9514, tags: ['반품', '처리 완료']}),
+  ],
+  primaryIds: ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8'], secondaryIds: ['e9', 'e10', 'e11', 'e12'],
+  dependencies: [{id: 'edep1', sourceId: 'e1', targetId: 'e8', type: 'FS', offset: 1, unit: 'DAY'}],
+  viewNames: {table: '고객별 다음 응대', board: '재구매 진행 보드', list: '응대할 고객 목록', gallery: '고객 관계 카드', calendar: '고객 응대 캘린더', timeline: '고객관리 일정', gantt: '후속 응대 일정', chart: '고객 유형 분석', pivot: '유형별 관리 집계', map: '고객 지역 지도', dashboard: '커머스 업무 요약'},
+};
+
+const workspaceSeeds = [sales, realestate, marketing, insurance, commerce];
 
 const paths = {
+  shield: '<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
+  bag: '<path d="M4 7h16l1 14H3L4 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/>',
   home: '<path d="m3 10 9-7 9 7v11H3V10ZM9 21v-8h6v8"/>',
   megaphone: '<path d="M3 9v6h5l12 5V4L8 9H3ZM8 15l2 6h4l-2-5M20 9h2v6h-2"/>',
   list: '<path d="M8 5h13M8 12h13M8 19h13"/><circle cx="3" cy="5" r="1"/><circle cx="3" cy="12" r="1"/><circle cx="3" cy="19" r="1"/>',
@@ -299,7 +411,7 @@ function fieldsFor(seed){
  const l=seed.labels,scopes=['records','pipeline','secondary'];
  const field=(id,label,type,icon='text',extra={})=>({id,label,type,icon,source:'기본 정보',scopes,...extra});
  const fields=[
-  field('name',l.record,'text'),field('company',l.entity,'relation','company',{source:`연결된 ${l.entity} 정보`}),
+  field('name',l.record,'text'),field('company',l.entity,'relation',seed.entityIcon||'company',{source:`연결된 ${l.entity} 정보`}),
   field('industry',l.entityCategory,'multiselect','layers',{source:`연결된 ${l.entity} 정보`}),
   field('amount',l.amount,'currency','number'),field('category',l.category,'text','layers'),
   field('stage',l.stage,'status','board',{scopes:['pipeline','secondary'],source:'이 목록의 정보',scope:'LIST_ENTRY',options:seed.stages}),
@@ -307,13 +419,14 @@ function fieldsFor(seed){
   field('start','시작일','date','date'),field('end',l.end,'date','date'),
   field('progress','진행률','number','progress'),field('priority','우선순위','text','flag'),
   field('location',l.location,'text','pin'),field('lat','위도','number','pin'),field('lng','경도','number','pin'),field('tags','태그','multiselect','tag'),
-  field('companyName',l.entity,'text','company',{scopes:['companies'],source:`${l.entity} 정보`}),
-  field('domain',seed.id==='realestate'?'고객 메모':'웹사이트','text','link',{scopes:['companies']}),
-  field('companyIndustry',seed.id==='realestate'?'관심 유형':seed.id==='marketing'?'브랜드 분야':'업종','multiselect','layers',{scopes:['companies']}),
-  field('contact',seed.id==='realestate'?'상담 요청':'연락 담당자','text','people',{scopes:['companies']}),
+  field('companyName',l.entity,'text',seed.entityIcon||'company',{scopes:['companies'],source:`${l.entity} 정보`}),
+  field('domain',l.entityNote||(seed.id==='realestate'?'고객 메모':'웹사이트'),'text',l.entityNote?'text':'link',{scopes:['companies']}),
+  field('companyIndustry',l.entityTags||(seed.id==='realestate'?'관심 유형':seed.id==='marketing'?'브랜드 분야':'업종'),'multiselect','layers',{scopes:['companies']}),
+  field('contact',l.entityContact||(seed.id==='realestate'?'상담 요청':'연락 담당자'),'text','people',{scopes:['companies']}),
  ];
  if(seed.id==='realestate')fields.push(field('dealType','거래 유형','text','tag'),field('area','전용 면적 · ㎡','number','area'),field('rooms','방 수','number'),field('floor','층수','text','home'),field('deposit','보증금','currency','number'),field('monthlyRent','월세','currency','number'));
  if(seed.id==='marketing')fields.push(field('spend','집행 금액','currency','number'),field('impressions','노출 수','number','eye'),field('leads','리드 수','number','people'));
+ fields.push(...(seed.extraFields||[]).map(f=>field(f.id,f.label,f.type,f.icon)));
  return fields;
 }
 function getField(ws,id,sourceId){const field=ws.fields.find(f=>f.id===id);if(!field)return null;const source=sourceFor(ws,sourceId);return source?.fieldOverrides?.[id]?{...field,...source.fieldOverrides[id]}:field;}
@@ -337,8 +450,8 @@ function setValue(ws,record,fieldId,raw,sourceId){
 }
 function makeView(ws,name,layout,sourceId){
  const available=ws.fields.filter(f=>f.scopes.includes(sourceId)).map(f=>f.id);
- let ids=sourceId==='companies'?['companyName','domain','companyIndustry','contact']:['name','company','amount',...(ws.id==='realestate'?['category','area']:[]),'stage','owner','end'];
- if(sourceId!=='companies'&&['board','gallery','list'].includes(layout))ids=['name','company','amount',...(ws.id==='realestate'?['area','location']:ws.id==='marketing'?['category']:[]),'end'];
+ let ids=sourceId==='companies'?['companyName','domain','companyIndustry','contact']:ws.tableFields||['name','company','amount',...(ws.id==='realestate'?['category','area']:[]),'stage','owner','end'];
+ if(sourceId!=='companies'&&['board','gallery','list'].includes(layout))ids=ws.cardFields||['name','company','amount',...(ws.id==='realestate'?['area','location']:ws.id==='marketing'?['category']:[]),'end'];
  return {id:newId('view'),name,layout,sourceId:layout==='dashboard'?null:sourceId,
   props:ids.filter(id=>available.includes(id)).map((fieldId,i)=>({fieldId,hidden:false,role:i===0?'TITLE':'BODY',width:i===0?280:fieldId==='location'?240:170})),
   filter:{id:newId('group'),operator:'AND',rules:[]},sorts:[],groupBy:'stage',groupOrder:ws.stages.map(s=>s.id),groupSettings:{},
@@ -349,11 +462,11 @@ function createWorkspace(seed){
  const ws={...structuredClone(seed),records:structuredClone(seed.records),entities:structuredClone(seed.entities),fields:fieldsFor(seed),sources:[],entries:{},views:[],activeView:null};
  ws.sources=[
   {id:'records',name:seed.labels.mainObject,type:'OBJECT',icon:seed.icon},
-  {id:'companies',name:seed.labels.entity,type:'OBJECT',icon:seed.id==='realestate'?'people':'company'},
+  {id:'companies',name:seed.labels.entity,type:'OBJECT',icon:seed.entityIcon||(seed.id==='realestate'?'people':'company')},
   {id:'pipeline',name:seed.labels.primaryList,type:'LIST',icon:'layers'},
   {id:'secondary',name:seed.labels.secondaryList,type:'LIST',icon:'check',fieldOverrides:{stage:{label:seed.labels.secondaryStage,options:stageOptions(seed.labels.secondaryStages)}}},
  ];
- ws.entries.pipeline=Object.fromEntries(ws.records.map(r=>[r.id,{stage:r.stage,owner:r.owner}]));
+ ws.entries.pipeline=Object.fromEntries(ws.records.filter(r=>!seed.primaryIds||seed.primaryIds.includes(r.id)).map(r=>[r.id,{stage:r.stage,owner:r.owner}]));
  ws.entries.secondary=Object.fromEntries(seed.secondaryIds.map((id,i)=>[id,{stage:['proposal','negotiation','new','won'][i%4],owner:ws.records.find(r=>r.id===id)?.owner||'jason'}]));
  ws.views=layouts.map(layout=>{
   const view=makeView(ws,seed.viewNames[layout.id],layout.id,'pipeline');view.id=`${seed.id}_${layout.id}`;
@@ -361,16 +474,27 @@ function createWorkspace(seed){
   if(seed.id==='realestate'&&['chart','pivot'].includes(layout.id)){view.aggregate='count';view.chartGroup='category';view.pivotRow='category';}
   if(seed.id==='marketing'&&layout.id==='pivot')view.pivotRow='category';
   if(seed.id==='sales'&&layout.id==='list')view.filter.rules=[{id:newId('condition'),fieldId:'end',op:'gte',value:'2026-10-12'},{id:newId('condition'),fieldId:'end',op:'lte',value:'2026-10-18'},{id:newId('condition'),fieldId:'stage',op:'neq',value:'won'}];
+  const defaults=seed.viewDefaults?.[layout.id];
+  if(defaults){const {conditions,sorts,...settings}=defaults;Object.assign(view,structuredClone(settings));if(sorts)view.sorts=sorts.map(s=>({id:newId('sort'),...s}));if(conditions)view.filter.rules=conditions.map(r=>({id:newId('condition'),...r}));}
   return view;
  });
  ws.views.push(makeView(ws,`전체 ${seed.labels.mainObject}`,'table','records'),makeView(ws,`전체 ${seed.labels.entity}`,'table','companies'),makeView(ws,seed.labels.secondaryList,'board','secondary'),makeView(ws,`${seed.labels.secondaryList} 일정`,'calendar','secondary'));
+ if(seed.secondaryDateField)ws.views.find(v=>v.sourceId==='secondary'&&v.layout==='calendar').dateField=seed.secondaryDateField;
  const dashboard=ws.views.find(v=>v.layout==='dashboard');
  dashboard.widgets=[{id:newId('widget'),viewId:`${seed.id}_board`,title:seed.id==='marketing'?'현재 캠페인 진행 상황':seed.labels.primaryList,wide:true},{id:newId('widget'),viewId:`${seed.id}_chart`,title:seed.viewNames.chart,wide:false},{id:newId('widget'),viewId:`${seed.id}_list`,title:'다음 일정',wide:false}];
  ws.activeView=`${seed.id}_${seed.defaultLayout}`;return ws;
 }
 function initialStore(){return {version:2,activeWorkspaceId:'sales',workspaces:workspaceSeeds.map(createWorkspace)};}
 function loadStore(){
- try{const stored=JSON.parse(localStorage.getItem(STORAGE_KEY));if(stored?.version===2&&stored.workspaces?.length===3)return stored;}catch{}
+ try{
+  const stored=JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if(stored?.version===2&&Array.isArray(stored.workspaces)&&stored.workspaces.length){
+   // 워크스페이스가 늘어나도 기존 기록과 사용자 보기 설정은 그대로 이어갑니다.
+   for(const seed of workspaceSeeds)if(!stored.workspaces.some(w=>w.id===seed.id))stored.workspaces.push(createWorkspace(seed));
+   if(!stored.workspaces.some(w=>w.id===stored.activeWorkspaceId))stored.activeWorkspaceId=stored.workspaces[0].id;
+   return stored;
+  }
+ }catch{}
  const store=initialStore();
  // 기존 목업에서 입력한 영업 데이터와 보기 설정을 새 영업 공간으로 옮깁니다.
  try{const old=JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY));if(old?.version===1&&Array.isArray(old.deals)){
@@ -413,7 +537,7 @@ const ruleCount=group=>(group.rules||[]).reduce((n,r)=>n+(r.rules?ruleCount(r):1
 function addRecord(ws,sourceId,data){
  const id=newId(sourceId==='companies'?'entity':'record');
  if(sourceId==='companies')ws.entities.push({id,companyName:data.name,domain:data.domain||'',companyIndustry:[],contact:'',initial:data.name[0],color:'#e8ebf6'});
- else{ws.records.push({id,name:data.name,companyId:data.companyId||ws.entities[0]?.id,amount:Number(data.amount)||0,category:data.category||'',start:data.start||'2026-10-13',end:data.end||'2026-10-27',notes:'',tags:[],progress:0});if(sourceFor(ws,sourceId)?.type==='LIST')ws.entries[sourceId][id]={stage:data.stage||'new',owner:data.owner||'jason'};}
+ else{const record={id,name:data.name,companyId:data.companyId||ws.entities[0]?.id,amount:Number(data.amount)||0,category:data.category||'',start:data.start||'2026-10-13',end:data.end||'2026-10-27',notes:'',tags:[],progress:0};ws.records.push(record);if(sourceFor(ws,sourceId)?.type==='LIST')ws.entries[sourceId][id]={stage:data.stage||'new',owner:data.owner||'jason'};for(const field of ws.extraFields||[])if(data[field.id]!==undefined)setValue(ws,record,field.id,data[field.id],sourceId);}
  return id;
 }
 
@@ -442,7 +566,7 @@ function display(ws,record,fieldId,view,prop={}){
  if(field?.type==='date')return raw?`${shortDate(raw)}`:'<span class="cell-muted">날짜 없음</span>';
  if(fieldId==='progress')return `<span class="progress-value"><span style="width:${Math.max(0,Math.min(100,Number(raw)||0))}%"></span></span><span>${money(raw)}%</span>`;
  if(fieldId==='area')return `${money(raw)}㎡`;
- return `<span class="${fieldId==='domain'?'cell-link':''}">${esc(labelValue(ws,record,fieldId,view.sourceId))||'<span class="cell-muted">—</span>'}</span>`;
+ return `<span class="${fieldId==='domain'&&field?.icon==='link'?'cell-link':''}">${esc(labelValue(ws,record,fieldId,view.sourceId))||'<span class="cell-muted">—</span>'}</span>`;
 }
 function editor(ws,record,fieldId,sourceId,action='detail-value'){
  const field=getField(ws,fieldId,sourceId);if(!field)return '';
@@ -455,6 +579,7 @@ function editor(ws,record,fieldId,sourceId,action='detail-value'){
 const detailButton=(record,sourceId,className='')=>`<button class="${className}" data-action="detail" data-id="${record.id}" data-source="${sourceId}">${esc(record.name||record.companyName)}</button>`;
 function coverArt(ws,record){
  const color=entityFor(ws,record)?.color||ws.tint;
+ if(['insurance','commerce'].includes(ws.id))return `<div class="customer-cover"><div class="customer-cover-head">${icon(ws.icon,17)}${esc(record.category||ws.labels.record)}</div><strong>${esc(entityFor(ws,record)?.companyName||'새 고객')}</strong><p>${esc(record.product||record.nextAction||ws.description)}</p><small>${esc(record.tags?.join(' · ')||ws.team)}</small></div>`;
  if(ws.id==='realestate'){
   const kind=record.cover||'apartment';
   const windows=Array.from({length:kind==='house'?8:24},(_,i)=>`<rect x="${82+i%6*30}" y="${kind==='house'?96+Math.floor(i/6)*30:54+Math.floor(i/6)*31}" width="15" height="20" rx="1" fill="${i%4===0?'#edddbc':'#9ab3b2'}"/>`).join('');
@@ -485,7 +610,7 @@ function renderList(ws,view,ui,embedded=false){
  if(!records.length)return emptyView(view);
  return `<div class="record-list">${groups.filter(g=>!g.hidden).map(g=>{
   const rows=records.filter(r=>value(ws,r,view.groupBy,view.sourceId)===g.id);if(!rows.length)return '';
-  return `<section class="list-section"><header><span class="stage-dot" style="background:${g.color}"></span>${esc(g.label)}<span>${rows.length}</span></header>${rows.map(r=>`<div class="list-row">${embedded?'':`<input type="checkbox" data-action="select-record" data-id="${r.id}" aria-label="${esc(r.name)} 선택" ${ui.selected.has(r.id)?'checked':''}>`}${mark(ws,r)}<div class="list-record-name">${detailButton(r,view.sourceId)}<small>${esc(entityFor(ws,r)?.companyName||'')}</small></div><div class="list-row-amount">${compact(r.amount)}원</div><span class="list-row-date">${icon('date',12)}${shortDate(r.end)}</span>${avatar(ws,value(ws,r,'owner',view.sourceId))}<button class="icon-btn" data-action="detail" data-id="${r.id}" data-source="${view.sourceId}" aria-label="${esc(r.name)} 상세 열기">${icon('right',14)}</button></div>`).join('')}</section>`;
+  return `<section class="list-section"><header><span class="stage-dot" style="background:${g.color}"></span>${esc(g.label)}<span>${rows.length}</span></header>${rows.map(r=>`<div class="list-row">${embedded?'':`<input type="checkbox" data-action="select-record" data-id="${r.id}" aria-label="${esc(r.name)} 선택" ${ui.selected.has(r.id)?'checked':''}>`}${mark(ws,r)}<div class="list-record-name">${detailButton(r,view.sourceId)}<small>${esc(entityFor(ws,r)?.companyName||'')}${ws.listHintField&&r[ws.listHintField]?` · ${esc(r[ws.listHintField])}`:''}</small></div><div class="list-row-amount">${compact(r.amount)}원</div><span class="list-row-date">${icon('date',12)}${shortDate(r.end)}</span>${avatar(ws,value(ws,r,'owner',view.sourceId))}<button class="icon-btn" data-action="detail" data-id="${r.id}" data-source="${view.sourceId}" aria-label="${esc(r.name)} 상세 열기">${icon('right',14)}</button></div>`).join('')}</section>`;
  }).join('')}${embedded?'':`<button class="button quiet" data-action="new-record">${icon('plus',14)}${esc(ws.labels.record)} 추가</button>`}</div>`;
 }
 function renderGallery(ws,view,ui,embedded=false){
@@ -636,7 +761,7 @@ function renderPopover(){
 function openDetail(id,sourceId,linked=false){if(!recordFor(ws,id))return;if(linked&&ui.detailId)ui.detailStack.push({id:ui.detailId,source:ui.detailSource});ui.detailId=id;ui.detailSource=sourceId||currentView().sourceId||'pipeline';closePopover();renderDetail();}
 function renderDetail(){
  const record=recordFor(ws,ui.detailId);if(!record){closeDetail();return;}const sourceId=ui.detailSource,view=ws.views.find(v=>v.sourceId===sourceId)||currentView(),related=entityFor(ws,record);
- const fields=getFields(ws,view).filter(f=>!['name','companyName','industry'].includes(f.id)),important=fields.filter(f=>['company','amount','stage','owner','end','category','location','area'].includes(f.id)),more=fields.filter(f=>!important.includes(f));
+ const fields=getFields(ws,view).filter(f=>!['name','companyName','industry'].includes(f.id)),important=fields.filter(f=>['company','amount','stage','owner','end','category','location','area',...(ws.detailFields||[])].includes(f.id)),more=fields.filter(f=>!important.includes(f));
  const row=f=>`<div class="detail-property"><label>${icon(f.icon,14)}${esc(f.label)}</label>${editor(ws,record,f.id,sourceId)}</div>`;
  $('#detail-root').innerHTML=`<aside class="detail-panel" aria-label="기록 상세"><div class="detail-head">${ui.detailStack.length?`<button class="icon-btn" data-action="detail-back" aria-label="이전 기록">${icon('left',15)}</button>`:''}<span>${esc(sourceId==='companies'?ws.labels.entity:ws.labels.record)} 상세 · ${esc(ws.team)}</span><button class="icon-btn" data-action="close-detail" aria-label="상세 닫기">${icon('close',16)}</button></div><div class="detail-body"><div class="detail-company">${mark(ws,record)}${related?`<button data-action="related-detail" data-id="${related.id}">${esc(related.companyName)} ${icon('arrow',12)}</button>`:esc(ws.labels.entity)}</div><textarea class="detail-title" aria-label="기록 이름" data-action="detail-value" data-id="${record.id}" data-field="${sourceId==='companies'?'companyName':'name'}" data-source="${sourceId}">${esc(record.name||record.companyName)}</textarea>${important.map(row).join('')}<details class="detail-more"><summary>더 많은 정보 <span>${more.length}</span></summary>${more.map(row).join('')}</details><div class="detail-section"><h3>메모</h3><textarea class="detail-notes" aria-label="메모" data-action="detail-notes" data-id="${record.id}" placeholder="다음에 확인할 내용이나 대화를 남겨 보세요.">${esc(record.notes||'')}</textarea></div>${sourceId!=='companies'?`<div class="detail-section"><h3>선행 업무</h3>${ws.dependencies.filter(d=>d.targetId===record.id).map(d=>`<div class="dependency-chip">${icon('link',13)}<span>${esc(recordFor(ws,d.sourceId)?.name||'')}<br><small>완료 후 ${d.offset} ${d.unit==='DAY'?'일':d.unit==='HOUR'?'시간':'분'} · 시작 연결</small></span><button class="icon-btn" data-action="remove-dependency" data-id="${d.id}" aria-label="업무 연결 제거">${icon('close',12)}</button></div>`).join('')}<button class="button quiet small" data-action="add-dependency" data-id="${record.id}">${icon('plus',12)}선행 업무 연결</button></div>`:''}</div></aside>`;
 }
@@ -647,9 +772,10 @@ function openDialog(kind,extra={}){
  closePopover();ui.dialogKind=kind;ui.dialogExtra=extra;const view=currentView();let title='',description='',body='',submit='저장';
  if(kind==='catalog'){title='같은 기록, 11가지 보기';description=`${ws.name}에 준비된 보기입니다. 업무에 맞는 화면을 선택해 보세요.`;body=layoutGrid('catalog','pipeline',view.layout);submit=null;}
  if(kind==='new-view'||kind==='change-type'){ui.newLayout=kind==='change-type'?view.layout:'table';ui.newSource=view.sourceId||'pipeline';title=kind==='change-type'?'보기 방식 변경':'새 보기 만들기';description='기록은 함께 사용하고, 표시 방식과 조건은 따로 저장해요.';submit=kind==='change-type'?'변경':'보기 만들기';body=(kind==='new-view'?formRow('보기 이름',input('name','예: 이번 주 집중할 업무','required maxlength="80"'))+formRow('어떤 기록을 볼까요?',`<select class="form-input" name="sourceId" data-action="new-source">${options(ws.sources.map(s=>({id:s.id,label:s.name})),ui.newSource)}</select>`):'')+layoutGrid('new-view',ui.newSource,ui.newLayout);}
- if(kind==='new-record'){const sourceId=extra.sourceId||view.sourceId||'pipeline',isEntity=sourceId==='companies',recordLabel=isEntity?ws.labels.entity:ws.labels.record;ui.dialogExtra.sourceId=sourceId;title=`${recordLabel} 추가`;description='필요한 정보부터 입력하고 나머지는 나중에 채워도 돼요.';submit='추가';body=formRow(`${recordLabel} 이름`,input('name',ws.id==='realestate'?'예: 반포 리버뷰 84㎡':ws.id==='marketing'?'예: 11월 신제품 캠페인':'예: 새봄 연간 도입','required'));
-  if(isEntity)body+=formRow(ws.id==='realestate'?'고객 메모':'웹사이트',input('domain'));
+ if(kind==='new-record'){const sourceId=extra.sourceId||view.sourceId||'pipeline',isEntity=sourceId==='companies',recordLabel=isEntity?ws.labels.entity:ws.labels.record;ui.dialogExtra.sourceId=sourceId;title=`${recordLabel} 추가`;description='필요한 정보부터 입력하고 나머지는 나중에 채워도 돼요.';submit='추가';body=formRow(`${recordLabel} 이름`,input('name',isEntity?(ws.entityPlaceholder||'예: 새 고객'):(ws.recordPlaceholder||(ws.id==='realestate'?'예: 반포 리버뷰 84㎡':ws.id==='marketing'?'예: 11월 신제품 캠페인':'예: 새봄 연간 도입')),'required'));
+  if(isEntity)body+=formRow(getField(ws,'domain','companies').label,input('domain'));
   else body+=formRow(ws.labels.entity,`<select class="form-input" name="companyId">${options(ws.entities.map(e=>({id:e.id,label:e.companyName})),ws.entities[0]?.id)}</select>`)+`<div class="form-grid">${formRow(`${ws.labels.amount} · 원`,input('amount','금액 입력','type="number"'))}${sourceFor(ws,sourceId)?.type==='LIST'?formRow(getField(ws,'stage',sourceId).label,`<select class="form-input" name="stage">${options(getField(ws,'stage',sourceId).options,extra.stage||'new')}</select>`):formRow(ws.labels.category,input('category'))}</div>`+formRow(ws.labels.end,input('end','','type="date" value="'+(extra.date||'2026-10-27')+'"'))+(ws.id==='realestate'?formRow('매물 주소',input('location','예: 서울 서초구 반포동')):'')+(sourceFor(ws,sourceId)?.type==='LIST'?formRow('담당자',`<select class="form-input" name="owner">${options(ws.owners,ws.owners[0].id)}</select>`):'');
+  if(!isEntity)body+=(ws.formFields||[]).filter(id=>id!=='category'||sourceFor(ws,sourceId)?.type==='LIST').map(id=>{const field=getField(ws,id,sourceId);return formRow(field.label,input(id,'',field.type==='date'?`type="date"${extra.date&&view.layout==='calendar'&&view.dateField===id?` value="${esc(extra.date)}"`:''}`:['number','currency'].includes(field.type)?'type="number" step="any"':''));}).join('');
  }
  if(kind==='new-field'){title='필요한 정보 추가';description='현재 업무에 필요한 정보를 만들어요.';submit='정보 추가';body=formRow('정보 이름',input('name','예: 다음 연락일','required maxlength="80"'))+formRow('정보 유형','<select class="form-input" name="type"><option value="text">텍스트</option><option value="number">숫자</option><option value="currency">금액</option><option value="date">날짜</option></select>')+formRow('어디에 저장할까요?',`<select class="form-input" name="scope"><option value="OBJECT">${esc(ws.labels.record)}의 기본 정보</option>${sourceFor(ws,view.sourceId)?.type==='LIST'?'<option value="LIST_ENTRY">이 업무 목록에서 사용하는 정보</option>':''}</select>`);}
  if(kind==='add-stage'){title='새 진행 단계';description='이 목록에서 사용할 단계를 추가합니다.';submit='단계 추가';body=formRow('단계 이름',input('name','예: 검토 중','required maxlength="40"'));}
@@ -657,16 +783,16 @@ function openDialog(kind,extra={}){
  if(kind==='widget-title'){title='위젯 제목 변경';body=formRow('제목',input('name','','required value="'+esc(view.widgets.find(w=>w.id===extra.id)?.title)+'"'));}
  if(kind==='add-dependency'){title='선행 업무 연결';description='선행 업무가 끝난 뒤 시작할 업무의 연결과 시간 간격을 지정합니다.';submit='연결';body=formRow('선행 업무',`<select class="form-input" name="sourceId">${options(ws.records.filter(r=>r.id!==extra.id).map(r=>({id:r.id,label:r.name})),ws.records.find(r=>r.id!==extra.id)?.id)}</select>`)+`<div class="form-grid">${formRow('완료 후 시간 간격',input('offset','','type="number" step="any" value="0"'))}${formRow('단위','<select class="form-input" name="unit"><option value="DAY">일</option><option value="HOUR">시간</option><option value="MINUTE">분</option></select>')}</div>`;}
  if(kind==='quick-search'){title=`${ws.team}에서 찾기`;description='현재 워크스페이스의 기록을 검색해요.';body='<input class="form-input" id="quick-query" aria-label="워크스페이스 기록 검색" placeholder="이름이나 위치로 검색"><div id="quick-results" class="search-results"></div>';submit=null;}
- if(kind==='help'){title='업무 공간을 직접 사용해 보세요';description='영업·부동산·마케팅의 데이터와 보기는 각각 따로 저장돼요.';body='<ol class="help-list"><li>왼쪽 위에서 워크스페이스를 전환하세요.</li><li>11가지 보기 둘러보기에서 원하는 화면을 선택하세요.</li><li>목록에서 표·칸반·캘린더처럼 보기를 바꿔보세요.</li><li>기록을 열어 수정하거나 새 기록을 추가하세요.</li><li>보기 설정에서 표시 정보와 조건을 바꾸세요.</li><li>업무 요약에 기존 보기를 모아보세요.</li></ol><div class="tip">예시 데이터를 사용하는 로컬 UX 목업입니다. 변경은 이 브라우저에 저장됩니다. 지도는 서울 지역 개략도입니다.</div>';submit=null;}
+ if(kind==='help'){title='업무 공간을 직접 사용해 보세요';description=`${store.workspaces.length}개 워크스페이스의 데이터와 보기는 각각 따로 저장돼요.`;body='<ol class="help-list"><li>왼쪽 위에서 워크스페이스를 전환하세요.</li><li>11가지 보기 둘러보기에서 원하는 화면을 선택하세요.</li><li>목록에서 표·칸반·캘린더처럼 보기를 바꿔보세요.</li><li>기록을 열어 수정하거나 새 기록을 추가하세요.</li><li>보기 설정에서 표시 정보와 조건을 바꾸세요.</li><li>업무 요약에 기존 보기를 모아보세요.</li></ol><div class="tip">예시 데이터를 사용하는 로컬 UX 목업입니다. 변경은 이 브라우저에 저장됩니다. 지도는 서울 지역 개략도입니다.</div>';submit=null;}
  if(kind==='delete-view'){title='이 보기를 삭제할까요?';description='기록은 유지되고 보기 설정만 삭제됩니다. 되돌리기로 복구할 수 있어요.';body=`<div class="help-card"><h3>${esc(view.name)}</h3></div>`;submit='보기 삭제';}
  const dialog=$('#dialog');dialog.classList.toggle('modal-large',['catalog','new-view','change-type'].includes(kind));dialog.innerHTML=`<form id="modal-form"><header class="modal-head"><div><h2>${title}</h2><p>${description}</p></div><button class="icon-btn" type="button" data-action="close-dialog" aria-label="닫기">${icon('close',16)}</button></header><div class="modal-body">${body}<p id="form-error" class="form-error" role="alert"></p></div><footer class="modal-foot"><button class="button" type="button" data-action="close-dialog">${submit?'취소':'닫기'}</button>${submit?`<button class="button primary" type="submit">${submit}</button>`:''}</footer></form>`;dialog.showModal();dialog.querySelectorAll('label.form-label').forEach((label,i)=>{const control=label.parentElement.querySelector('input,select');if(control){control.id=`modal-control-${i}`;label.htmlFor=control.id;}});if(kind==='quick-search'){$('#quick-query').addEventListener('input',e=>renderQuickResults(e.target.value));renderQuickResults('');}requestAnimationFrame(()=>dialog.querySelector('input')?.focus());
 }
-function renderQuickResults(query){const q=query.toLocaleLowerCase(),records=[...ws.records.map(r=>({...r,source:'pipeline',title:r.name,subtitle:entityFor(ws,r)?.companyName||r.location})),...ws.entities.map(e=>({...e,source:'companies',title:e.companyName,subtitle:e.domain}))].filter(r=>!q||`${r.title} ${r.subtitle} ${r.location||''}`.toLocaleLowerCase().includes(q)).slice(0,9);$('#quick-results').innerHTML=records.map(r=>`<button type="button" class="search-result" data-action="search-detail" data-id="${r.id}" data-source="${r.source}">${mark(ws,r)}<span>${esc(r.title)}<small>${esc(r.subtitle)}</small></span></button>`).join('')||'<p class="popover-sub">검색 결과가 없어요.</p>';}
+function renderQuickResults(query){const q=query.toLocaleLowerCase(),records=[...ws.records.map(r=>({...r,source:ws.sources.find(s=>s.type==='LIST'&&r.id in(ws.entries[s.id]||{}))?.id||'records',title:r.name,subtitle:entityFor(ws,r)?.companyName||r.location})),...ws.entities.map(e=>({...e,source:'companies',title:e.companyName,subtitle:e.domain}))].filter(r=>!q||`${r.title} ${r.subtitle} ${r.location||''}`.toLocaleLowerCase().includes(q)).slice(0,9);$('#quick-results').innerHTML=records.map(r=>`<button type="button" class="search-result" data-action="search-detail" data-id="${r.id}" data-source="${r.source}">${mark(ws,r)}<span>${esc(r.title)}<small>${esc(r.subtitle)}</small></span></button>`).join('')||'<p class="popover-sub">검색 결과가 없어요.</p>';}
 function submitDialog(event){
  event.preventDefault();const data=Object.fromEntries(new FormData(event.target)),kind=ui.dialogKind,extra=ui.dialogExtra,view=currentView();if('name'in data&&kind!=='add-widget'&&!data.name.trim()){$('#form-error').textContent='이름을 입력해 주세요.';return;}
  if(kind==='new-view'){mutate(()=>{const added=makeView(ws,data.name.trim(),ui.newLayout,data.sourceId);normalizeView(added);ws.views.push(added);ws.activeView=added.id;},'새 보기를 만들었어요.');}
  if(kind==='change-type'){mutate(()=>{view.layout=ui.newLayout;if(ui.newLayout==='dashboard'){view.sourceId=null;view.widgets||=[];}else if(!view.sourceId)view.sourceId='pipeline';normalizeView(view);},'보기 방식을 바꿨어요.');}
- if(kind==='new-record'){let id;mutate(()=>{id=addRecord(ws,extra.sourceId,{...data,name:data.name.trim()});if(data.location)recordFor(ws,id).location=data.location;},'새 기록을 추가했어요.');}
+ if(kind==='new-record'){let id;mutate(()=>{id=addRecord(ws,extra.sourceId,{...data,name:data.name.trim()});const record=recordFor(ws,id);if(data.location)record.location=data.location;if(extra.date&&view.layout==='calendar')setValue(ws,record,view.dateField,view.dateField in data?data[view.dateField]:extra.date,extra.sourceId);},'새 기록을 추가했어요.');}
  if(kind==='new-field'){mutate(()=>{const id=newId('field'),scope=data.scope,sourceId=view.sourceId;ws.fields.push({id,label:data.name.trim(),type:data.type,icon:data.type==='date'?'date':['number','currency'].includes(data.type)?'number':'text',source:scope==='LIST_ENTRY'?'이 목록의 정보':'기본 정보',scope,scopes:scope==='LIST_ENTRY'?[sourceId]:sourceId==='companies'?['companies']:['records','pipeline','secondary']});view.props.push({fieldId:id,role:'BODY',width:180,hidden:false});},'새 정보를 추가했어요.');}
  if(kind==='add-stage'){mutate(()=>{const option={id:newId('stage'),label:data.name.trim(),color:'#7b9ac6',tint:'#eef3fc'};const source=sourceFor(ws,view.sourceId);if(source.fieldOverrides?.stage)source.fieldOverrides.stage.options.push(option);else ws.fields.find(f=>f.id==='stage').options.push(option);view.groupOrder.push(option.id);},'새 단계를 추가했어요.');}
  if(kind==='add-widget')mutate(()=>view.widgets.push({id:newId('widget'),viewId:data.viewId,title:data.name.trim()||ws.views.find(v=>v.id===data.viewId)?.name,wide:false}),'보기를 연결했어요.');
@@ -704,7 +830,7 @@ document.addEventListener('click',event=>{
  if(a==='remove-sort'){mutate(()=>view.sorts=view.sorts.filter(s=>s.id!==d.id));renderPopover();return;}
  if(a==='clear-sort'){mutate(()=>view.sorts=[]);renderPopover();return;}
  if(a==='sort-up'){const i=view.sorts.findIndex(s=>s.id===d.id);if(i>0)mutate(()=>[view.sorts[i-1],view.sorts[i]]=[view.sorts[i],view.sorts[i-1]]);renderPopover();return;}
- if(a==='add-filter'){const fieldId=view.sourceId==='companies'?'companyName':'amount';mutate(()=>findRule(view.filter,d.parent).rules.push({id:newId('condition'),fieldId,op:fieldId==='amount'?'gte':'contains',value:fieldId==='amount'?1000000:'',matchMode:'ANY'}));renderPopover();return;}
+ if(a==='add-filter'){const fieldId=view.sourceId==='companies'?'companyName':'amount';mutate(()=>findRule(view.filter,d.parent).rules.push({id:newId('condition'),fieldId,op:fieldId==='amount'?'gte':'contains',value:fieldId==='amount'?(ws.filterAmount??1000000):'',matchMode:'ANY'}));renderPopover();return;}
  if(a==='add-filter-group'){const fieldId=getFields(ws,view).some(f=>f.id==='stage')?'stage':view.sourceId==='companies'?'companyName':'category';mutate(()=>findRule(view.filter,d.parent).rules.push({id:newId('group'),operator:'OR',rules:[{id:newId('condition'),fieldId,op:'eq',value:getField(ws,fieldId,view.sourceId)?.options?.[1]?.id||'',matchMode:'ANY'}]}));renderPopover();return;}
  if(a==='remove-filter'){mutate(()=>removeRule(view.filter,d.id));renderPopover();return;}
  if(a==='clear-filters'){mutate(()=>{view.filter.rules=[];ui.search='';});if(ui.popover)renderPopover();return;}
