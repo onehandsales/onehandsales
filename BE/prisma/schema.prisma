@@ -101,6 +101,86 @@ enum AttributeType {
   Timestamp
 }
 
+/// 기능 : View의 화면 표현 방식을 구분합니다.
+enum ViewTypeEnum {
+  TABLE
+  KANBAN
+  LIST
+  GALLERY
+  CALENDAR
+  TIMELINE
+  GANTT
+  CHART
+  PIVOT
+  MAP
+  DASHBOARD
+}
+
+/// 기능 : 속성 조회의 시작점을 원본 Record 또는 ListEntry로 구분합니다.
+enum ViewSourceScopeEnum {
+  RECORD
+  LIST_ENTRY
+}
+
+/// 기능 : 속성을 제목, 날짜, 위치 또는 집계값 등으로 사용하는 역할입니다.
+enum ViewAttributeDisplayRoleEnum {
+  DISPLAY
+  TITLE
+  BODY
+  IMAGE
+  START_DATE
+  END_DATE
+  LOCATION
+  PROGRESS
+  MEASURE
+}
+
+/// 기능 : 필터 그룹의 조건 결합 방식을 구분합니다.
+enum ViewConditionGroupOperatorEnum {
+  AND
+  OR
+}
+
+/// 기능 : 여러 값의 조건을 하나 이상 또는 전체 일치로 평가합니다.
+enum ViewMultiValueMatchModeEnum {
+  ANY
+  ALL
+}
+
+/// 기능 : 값과 그룹의 정렬 방향을 구분합니다.
+enum ViewSortDirectionEnum {
+  ASC
+  DESC
+}
+
+/// 기능 : 그룹 기준을 일반 그룹, 차트 계열 또는 피벗 축으로 구분합니다.
+enum ViewGroupRoleEnum {
+  GROUP
+  SERIES
+  PIVOT_ROW
+  PIVOT_COLUMN
+}
+
+/// 기능 : 선행 업무와 후행 업무의 시작 및 종료 연결 방식을 구분합니다.
+/// 기능 : 각 값의 앞부분은 선행 업무, 뒷부분은 후행 업무의 시점을 뜻합니다.
+enum ViewWorkDependencyTypeEnum {
+  /// 기능 : 선행 업무의 종료와 후행 업무의 시작을 연결합니다.
+  FINISH_TO_START
+  /// 기능 : 선행 업무의 시작과 후행 업무의 시작을 연결합니다.
+  START_TO_START
+  /// 기능 : 선행 업무의 종료와 후행 업무의 종료를 연결합니다.
+  FINISH_TO_FINISH
+  /// 기능 : 선행 업무의 시작과 후행 업무의 종료를 연결합니다.
+  START_TO_FINISH
+}
+
+/// 기능 : 업무 의존 관계 시간 간격의 단위를 구분합니다.
+enum ViewWorkDependencyUnitEnum {
+  MINUTE
+  HOUR
+  DAY
+}
+
 enum OAuthProvider {
   /// 기능 : 기존 Kakao OAuth 계정 값을 보존하되 신규 런타임 로그인에서는 사용하지 않습니다.
   KAKAO
@@ -241,6 +321,27 @@ model Workspace {
   /// 기능 : 이 Workspace 안에서 정의된 RelationshipDefinition 목록입니다.
   relationshipDefinitions         RelationshipDefinition[]
 
+  /// 기능 : ViewDefinition에서 이 행을 참조하는 목록입니다.
+  viewDefinitions                 ViewDefinition[]
+  /// 기능 : ViewAttributeSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewAttributeSettingDefinitions ViewAttributeSettingDefinition[]
+  /// 기능 : ViewFilterGroupDefinition에서 이 행을 참조하는 목록입니다.
+  viewFilterGroupDefinitions      ViewFilterGroupDefinition[]
+  /// 기능 : ViewFilterConditionDefinition에서 이 행을 참조하는 목록입니다.
+  viewFilterConditionDefinitions  ViewFilterConditionDefinition[]
+  /// 기능 : ViewSortDefinition에서 이 행을 참조하는 목록입니다.
+  viewSortDefinitions             ViewSortDefinition[]
+  /// 기능 : ViewGroupDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupDefinitions            ViewGroupDefinition[]
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupSettingDefinitions     ViewGroupSettingDefinition[]
+  /// 기능 : ViewWidgetDefinition에서 이 행을 참조하는 목록입니다.
+  viewWidgetDefinitions           ViewWidgetDefinition[]
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  viewWorkDependencyDefinitions   ViewWorkDependencyDefinition[]
+  /// 기능 : ViewFavoriteDefinition에서 이 행을 참조하는 목록입니다.
+  viewFavoriteDefinitions         ViewFavoriteDefinition[]
+
   @@index([kind])
 }
 
@@ -269,6 +370,9 @@ model WorkspaceMember {
   teamMembers TeamMember[]
   /// 기능 : 이 WorkspaceMember에 연결된 Actor 목록입니다.
   actors      Actor[]
+
+  /// 기능 : ViewFavoriteDefinition에서 이 행을 참조하는 목록입니다.
+  viewFavoriteDefinitions ViewFavoriteDefinition[]
 
   @@unique([workspaceId, userId])
   @@unique([id, workspaceId])
@@ -408,6 +512,47 @@ model Actor {
   /// 기능 : 이 Actor가 마지막으로 수정한 RelationshipDefinition 목록입니다.
   updatedRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionUpdatedByActor")
 
+  /// 기능 : ViewDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewDefinitions                 ViewDefinition[]                 @relation("ViewDefinitionCreatedByActor")
+  /// 기능 : ViewDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewDefinitions                 ViewDefinition[]                 @relation("ViewDefinitionUpdatedByActor")
+  /// 기능 : ViewAttributeSettingDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewAttributeSettingDefinitions ViewAttributeSettingDefinition[] @relation("ViewAttributeSettingDefinitionCreatedByActor")
+  /// 기능 : ViewAttributeSettingDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewAttributeSettingDefinitions ViewAttributeSettingDefinition[] @relation("ViewAttributeSettingDefinitionUpdatedByActor")
+  /// 기능 : ViewFilterGroupDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewFilterGroupDefinitions      ViewFilterGroupDefinition[]      @relation("ViewFilterGroupDefinitionCreatedByActor")
+  /// 기능 : ViewFilterGroupDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewFilterGroupDefinitions      ViewFilterGroupDefinition[]      @relation("ViewFilterGroupDefinitionUpdatedByActor")
+  /// 기능 : ViewFilterConditionDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewFilterConditionDefinitions  ViewFilterConditionDefinition[]  @relation("ViewFilterConditionDefinitionCreatedByActor")
+  /// 기능 : ViewFilterConditionDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewFilterConditionDefinitions  ViewFilterConditionDefinition[]  @relation("ViewFilterConditionDefinitionUpdatedByActor")
+  /// 기능 : ViewSortDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewSortDefinitions             ViewSortDefinition[]             @relation("ViewSortDefinitionCreatedByActor")
+  /// 기능 : ViewSortDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewSortDefinitions             ViewSortDefinition[]             @relation("ViewSortDefinitionUpdatedByActor")
+  /// 기능 : ViewGroupDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewGroupDefinitions            ViewGroupDefinition[]            @relation("ViewGroupDefinitionCreatedByActor")
+  /// 기능 : ViewGroupDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewGroupDefinitions            ViewGroupDefinition[]            @relation("ViewGroupDefinitionUpdatedByActor")
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewGroupSettingDefinitions     ViewGroupSettingDefinition[]     @relation("ViewGroupSettingDefinitionCreatedByActor")
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewGroupSettingDefinitions     ViewGroupSettingDefinition[]     @relation("ViewGroupSettingDefinitionUpdatedByActor")
+  /// 기능 : ViewWidgetDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewWidgetDefinitions           ViewWidgetDefinition[]           @relation("ViewWidgetDefinitionCreatedByActor")
+  /// 기능 : ViewWidgetDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewWidgetDefinitions           ViewWidgetDefinition[]           @relation("ViewWidgetDefinitionUpdatedByActor")
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewWorkDependencyDefinitions   ViewWorkDependencyDefinition[]   @relation("ViewWorkDependencyDefinitionCreatedByActor")
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewWorkDependencyDefinitions   ViewWorkDependencyDefinition[]   @relation("ViewWorkDependencyDefinitionUpdatedByActor")
+  /// 기능 : ViewFavoriteDefinition에서 이 행을 참조하는 목록입니다.
+  createdViewFavoriteDefinitions         ViewFavoriteDefinition[]         @relation("ViewFavoriteDefinitionCreatedByActor")
+  /// 기능 : ViewFavoriteDefinition에서 이 행을 참조하는 목록입니다.
+  updatedViewFavoriteDefinitions         ViewFavoriteDefinition[]         @relation("ViewFavoriteDefinitionUpdatedByActor")
+
   /// 기능 : 같은 Workspace 안의 List 값에서 Actor를 참조할 수 있도록 복합 FK 기준을 제공합니다.
   @@unique([id, workspaceId])
 }
@@ -459,6 +604,9 @@ model ObjectDefinition {
   /// 기능 : 이 ObjectDefinition이 target인 RelationshipDefinition 목록입니다.
   targetRelationshipDefinitions         RelationshipDefinition[]         @relation("RelationshipDefinitionTargetObject")
 
+  /// 기능 : ViewDefinition에서 이 행을 참조하는 목록입니다.
+  viewDefinitions ViewDefinition[]
+
   /// 기능 : 하나의 Workspace 안에서 같은 apiSlug를 가진 ObjectDefinition 중복 생성을 차단합니다.
   @@unique([workspaceId, apiSlug])
   /// 기능 : 같은 Workspace의 Object만 List 값에서 참조하도록 복합 FK 기준을 제공합니다.
@@ -501,6 +649,9 @@ model ListDefinition {
   /// 기능 : 이 List의 참여 항목에 저장된 값 목록입니다.
   listEntryValueDefinitions ListEntryValueDefinition[]
 
+  /// 기능 : ViewDefinition에서 이 행을 참조하는 목록입니다.
+  viewDefinitions ViewDefinition[]
+
   /// 기능 : 같은 Workspace의 List만 참조하도록 복합 FK 기준을 제공합니다.
   @@unique([id, workspaceId])
   /// 기능 : 한 Workspace 안에서 List apiSlug 중복을 차단합니다.
@@ -539,8 +690,15 @@ model ListEntryDefinition {
   /// 기능 : 이 참여 항목에 저장된 List 전용 값 목록입니다.
   listEntryValueDefinitions ListEntryValueDefinition[]
 
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  sourceViewWorkDependencyDefinitions ViewWorkDependencyDefinition[] @relation("ViewWorkDependencyDefinitionSourceListEntry")
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  targetViewWorkDependencyDefinitions ViewWorkDependencyDefinition[] @relation("ViewWorkDependencyDefinitionTargetListEntry")
+
   /// 기능 : 값의 Entry/List/Workspace 소속 일치를 보장하는 복합 FK 기준입니다.
   @@unique([id, listDefinitionId, workspaceId])
+  /// 기능 : 기존 DB에 이미 존재하는 Workspace 복합 참조 키를 보존합니다.
+  @@unique([id, workspaceId])
   /// 기능 : List의 참여 항목을 등록 시각순으로 조회합니다.
   @@index([workspaceId, listDefinitionId, createdAt, id])
   /// 기능 : 원본 Record가 참여한 List를 조회합니다. List/Record 중복 등록 정책은 아직 고정하지 않습니다.
@@ -682,12 +840,25 @@ model AttributeDefinition {
   /// 기능 : 이 AttributeDefinition이 target인 RelationshipDefinition 목록입니다.
   targetRelationshipDefinitions   RelationshipDefinition[]         @relation("RelationshipDefinitionTargetAttribute")
 
+  /// 기능 : ViewAttributeSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewAttributeSettingDefinitions ViewAttributeSettingDefinition[]
+  /// 기능 : ViewFilterConditionDefinition에서 이 행을 참조하는 목록입니다.
+  viewFilterConditionDefinitions  ViewFilterConditionDefinition[]
+  /// 기능 : ViewSortDefinition에서 이 행을 참조하는 목록입니다.
+  viewSortDefinitions             ViewSortDefinition[]
+  /// 기능 : ViewGroupDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupDefinitions            ViewGroupDefinition[]
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupSettingDefinitions     ViewGroupSettingDefinition[]
+
   /// 기능 : 하나의 ObjectDefinition 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
   @@unique([objectDefinitionId, apiSlug])
   /// 기능 : 하나의 List 안에서 같은 apiSlug를 가진 AttributeDefinition 중복 생성을 차단합니다.
   @@unique([listDefinitionId, apiSlug])
   /// 기능 : Entry 값과 Attribute의 List/Workspace 일치를 보장하는 복합 FK 기준입니다.
   @@unique([id, listDefinitionId, workspaceId])
+  /// 기능 : 기존 DB에 이미 존재하는 Workspace 복합 참조 키를 보존합니다.
+  @@unique([id, workspaceId])
   /// 기능 : AttributeDefinition 정렬 조회를 지원합니다.
   @@index([objectDefinitionId, sortOrder, id])
   /// 기능 : Workspace/ObjectDefinition 경계 안의 AttributeDefinition 수정 대상 조회를 지원합니다.
@@ -732,6 +903,11 @@ model RecordDefinition {
   listEntryDefinitions                  ListEntryDefinition[]            @relation("ListEntryDefinitionRecord")
   /// 기능 : 이 Record를 참조 대상으로 사용하는 List 값 목록입니다.
   targetListEntryValueDefinitions       ListEntryValueDefinition[]       @relation("ListEntryValueDefinitionTargetRecord")
+
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  sourceViewWorkDependencyDefinitions ViewWorkDependencyDefinition[] @relation("ViewWorkDependencyDefinitionSourceRecord")
+  /// 기능 : ViewWorkDependencyDefinition에서 이 행을 참조하는 목록입니다.
+  targetViewWorkDependencyDefinitions ViewWorkDependencyDefinition[] @relation("ViewWorkDependencyDefinitionTargetRecord")
 
   /// 기능 : 같은 Workspace의 원본 Record만 List에 등록하도록 복합 FK 기준을 제공합니다.
   @@unique([id, workspaceId])
@@ -844,6 +1020,9 @@ model SelectOption {
   /// 기능 : 이 옵션을 선택한 List 값 목록입니다.
   listEntryValueDefinitions       ListEntryValueDefinition[]
 
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupSettingDefinitions ViewGroupSettingDefinition[]
+
   /// 기능 : List 값이 같은 Attribute/Workspace의 옵션만 선택하도록 복합 FK 기준을 제공합니다.
   @@unique([id, attributeDefinitionId, workspaceId])
 }
@@ -883,6 +1062,9 @@ model StatusOption {
   recordAttributeValueDefinitions RecordAttributeValueDefinition[]
   /// 기능 : 이 상태를 선택한 List 값 목록입니다.
   listEntryValueDefinitions       ListEntryValueDefinition[]
+
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupSettingDefinitions ViewGroupSettingDefinition[]
 
   /// 기능 : List 값이 같은 Attribute/Workspace의 상태만 선택하도록 복합 FK 기준을 제공합니다.
   @@unique([id, attributeDefinitionId, workspaceId])
@@ -1086,4 +1268,468 @@ model AuthSession {
   @@index([authDeviceId])
   @@index([status])
   @@index([expiresAt])
+}
+
+/// 기능 : Object/List의 View와 대시보드의 기본 정의를 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewDefinition {
+  /// 기능 : View PK
+  id                 String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId        String       @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId   String       @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId   String?      @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt          DateTime     @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt          DateTime     @updatedAt @db.Timestamptz(3)
+  /// 기능 : Object 기반 View의 원본 또는 대시보드의 선택적 소속
+  objectDefinitionId String?      @db.Uuid
+  /// 기능 : List 기반 View의 원본 또는 대시보드의 선택적 소속
+  listDefinitionId   String?      @db.Uuid
+  /// 기능 : View 선택 메뉴의 표시 이름
+  name               String
+  /// 기능 : 표현 방식
+  type               ViewTypeEnum
+  /// 기능 : 목적과 사용 방법
+  description        String?
+  /// 기능 : 기존 아이콘 값 계약을 사용하는 표시 아이콘
+  icon               String?
+  /// 기능 : 같은 소속의 View 순서
+  sortOrder          Int          @default(0)
+  /// 기능 : 타입별 표현·집계 설정
+  configJson         Json?        @db.JsonB
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace                       Workspace                        @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor                  Actor                            @relation("ViewDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor                  Actor?                           @relation("ViewDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : Object 기반 View의 원본 또는 대시보드의 선택적 소속의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  objectDefinition                ObjectDefinition?                @relation(fields: [objectDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : List 기반 View의 원본 또는 대시보드의 선택적 소속의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  listDefinition                  ListDefinition?                  @relation(fields: [listDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : ViewAttributeSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewAttributeSettingDefinitions ViewAttributeSettingDefinition[]
+  /// 기능 : ViewFilterGroupDefinition에서 이 행을 참조하는 목록입니다.
+  viewFilterGroupDefinitions      ViewFilterGroupDefinition[]
+  /// 기능 : ViewFilterConditionDefinition에서 이 행을 참조하는 목록입니다.
+  viewFilterConditionDefinitions  ViewFilterConditionDefinition[]
+  /// 기능 : ViewSortDefinition에서 이 행을 참조하는 목록입니다.
+  viewSortDefinitions             ViewSortDefinition[]
+  /// 기능 : ViewGroupDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupDefinitions            ViewGroupDefinition[]
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupSettingDefinitions     ViewGroupSettingDefinition[]
+  /// 기능 : ViewWidgetDefinition에서 이 행을 참조하는 목록입니다.
+  ownedViewWidgetDefinitions      ViewWidgetDefinition[]           @relation("ViewWidgetDefinitionOwner")
+  /// 기능 : ViewFavoriteDefinition에서 이 행을 참조하는 목록입니다.
+  viewFavoriteDefinitions         ViewFavoriteDefinition[]
+  /// 기능 : ViewWidgetDefinition에서 이 행을 참조하는 목록입니다.
+  contentViewWidgetDefinitions    ViewWidgetDefinition[]           @relation("ViewWidgetDefinitionContent")
+}
+
+/// 기능 : View에 표시할 속성의 참조 경로, 역할과 표시 방법을 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewAttributeSettingDefinition {
+  /// 기능 : 설정 PK
+  id                           String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId                  String                       @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId             String                       @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId             String?                      @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt                    DateTime                     @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt                    DateTime                     @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소속 View
+  viewDefinitionId             String                       @db.Uuid
+  /// 기능 : 원본 Record 또는 ListEntry에서 조회를 시작할지 구분
+  sourceScope                  ViewSourceScopeEnum
+  /// 기능 : 경로 끝에서 읽을 기존 Attribute
+  attributeDefinitionId        String                       @db.Uuid
+  /// 기능 : RecordReference Attribute ID의 순서 배열
+  referenceAttributeIdPathJson Json                         @default("[]") @db.JsonB
+  /// 기능 : 일반 표시·제목·본문·날짜·위치·집계값 역할
+  attributeDisplayRole         ViewAttributeDisplayRoleEnum
+  /// 기능 : 표시 순서
+  sortOrder                    Int                          @default(0)
+  /// 기능 : 해당 View에서만 사용할 표시 이름
+  labelOverride                String?
+  /// 기능 : 표 열 너비. 단위는 px 제안
+  width                        Int?
+  /// 기능 : 화면에서 숨길지 여부
+  isHidden                     Boolean                      @default(false)
+  /// 기능 : View별 날짜·숫자·금액 표시 형식
+  formatJson                   Json?                        @db.JsonB
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace           Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor      Actor               @relation("ViewAttributeSettingDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor      Actor?              @relation("ViewAttributeSettingDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소속 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition      ViewDefinition      @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 경로 끝에서 읽을 기존 Attribute의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  attributeDefinition AttributeDefinition @relation(fields: [attributeDefinitionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+}
+
+/// 기능 : View의 AND/OR 필터 그룹과 부모 그룹 연결을 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewFilterGroupDefinition {
+  /// 기능 : 그룹 PK
+  id                                String                         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId                       String                         @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId                  String                         @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId                  String?                        @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt                         DateTime                       @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt                         DateTime                       @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소속 View
+  viewDefinitionId                  String                         @db.Uuid
+  /// 기능 : 상위 그룹. NULL이면 루트
+  parentViewFilterGroupDefinitionId String?                        @db.Uuid
+  /// 기능 : AND 또는 OR
+  conditionGroupOperator            ViewConditionGroupOperatorEnum
+  /// 기능 : 같은 부모 안의 순서
+  sortOrder                         Int                            @default(0)
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace                       Workspace                       @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor                  Actor                           @relation("ViewFilterGroupDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor                  Actor?                          @relation("ViewFilterGroupDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소속 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition                  ViewDefinition                  @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 상위 그룹. NULL이면 루트의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  parentViewFilterGroupDefinition ViewFilterGroupDefinition?      @relation("ViewFilterGroupDefinitionTree", fields: [parentViewFilterGroupDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : ViewFilterGroupDefinition에서 이 행을 참조하는 목록입니다.
+  childViewFilterGroupDefinitions ViewFilterGroupDefinition[]     @relation("ViewFilterGroupDefinitionTree")
+  /// 기능 : ViewFilterConditionDefinition에서 이 행을 참조하는 목록입니다.
+  viewFilterConditionDefinitions  ViewFilterConditionDefinition[]
+}
+
+/// 기능 : 필터 그룹에 속하는 개별 비교 조건을 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewFilterConditionDefinition {
+  /// 기능 : 조건 PK
+  id                           String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId                  String                      @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId             String                      @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId             String?                     @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt                    DateTime                    @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt                    DateTime                    @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소속 View
+  viewDefinitionId             String                      @db.Uuid
+  /// 기능 : 조건이 속하는 필터 그룹
+  viewFilterGroupDefinitionId  String                      @db.Uuid
+  /// 기능 : Record / ListEntry 시작점
+  sourceScope                  ViewSourceScopeEnum
+  /// 기능 : 비교할 최종 Attribute
+  attributeDefinitionId        String                      @db.Uuid
+  /// 기능 : 참조 경로
+  referenceAttributeIdPathJson Json                        @default("[]") @db.JsonB
+  /// 기능 : 속성 타입에 맞는 비교 연산자입니다. 연산자 목록이 미정이므로 문자열로 두고 API 검증은 후속 작업으로 남깁니다.
+  comparisonOperator           String
+  /// 기능 : 비교값 또는 현재 사용자·상대 날짜 표현
+  comparisonValueJson          Json?                       @db.JsonB
+  /// 기능 : 여러 값·참조 결과의 ANY/ALL 평가
+  multiValueMatchMode          ViewMultiValueMatchModeEnum @default(ANY)
+  /// 기능 : 그룹 안의 조건 순서
+  sortOrder                    Int                         @default(0)
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace                 Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor            Actor                     @relation("ViewFilterConditionDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor            Actor?                    @relation("ViewFilterConditionDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소속 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition            ViewDefinition            @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 비교할 최종 Attribute의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  attributeDefinition       AttributeDefinition       @relation(fields: [attributeDefinitionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  /// 기능 : 조건이 속하는 필터 그룹의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewFilterGroupDefinition ViewFilterGroupDefinition @relation(fields: [viewFilterGroupDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 기능 : View의 정렬 기준과 우선순위를 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewSortDefinition {
+  /// 기능 : 정렬 설정 PK
+  id                           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId                  String                @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId             String                @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId             String?               @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt                    DateTime              @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt                    DateTime              @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소속 View
+  viewDefinitionId             String                @db.Uuid
+  /// 기능 : Record / ListEntry 시작점
+  sourceScope                  ViewSourceScopeEnum
+  /// 기능 : 정렬할 최종 Attribute
+  attributeDefinitionId        String                @db.Uuid
+  /// 기능 : 참조 경로
+  referenceAttributeIdPathJson Json                  @default("[]") @db.JsonB
+  /// 기능 : ASC 또는 DESC
+  sortDirection                ViewSortDirectionEnum
+  /// 기능 : 정렬 기준의 우선순위
+  sortOrder                    Int                   @default(0)
+  /// 기능 : NULL 위치·다중값 정렬값 선택 방식
+  configJson                   Json?                 @db.JsonB
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace           Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor      Actor               @relation("ViewSortDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor      Actor?              @relation("ViewSortDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소속 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition      ViewDefinition      @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 정렬할 최종 Attribute의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  attributeDefinition AttributeDefinition @relation(fields: [attributeDefinitionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+}
+
+/// 기능 : 칸반, 차트와 피벗에서 데이터를 묶는 기준을 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewGroupDefinition {
+  /// 기능 : 그룹 기준 PK
+  id                           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId                  String                @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId             String                @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId             String?               @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt                    DateTime              @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt                    DateTime              @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소속 View
+  viewDefinitionId             String                @db.Uuid
+  /// 기능 : Record / ListEntry 시작점
+  sourceScope                  ViewSourceScopeEnum
+  /// 기능 : 그룹 기준 Attribute
+  attributeDefinitionId        String                @db.Uuid
+  /// 기능 : 참조 경로
+  referenceAttributeIdPathJson Json                  @default("[]") @db.JsonB
+  /// 기능 : 일반 그룹·계열·피벗 행/열 역할
+  groupRole                    ViewGroupRoleEnum     @default(GROUP)
+  /// 기능 : 그룹의 기본 정렬 방향
+  sortDirection                ViewSortDirectionEnum
+  /// 기능 : 그룹 기준의 우선순위
+  sortOrder                    Int                   @default(0)
+  /// 기능 : 날짜 버킷·숫자 구간·집계 기준 정렬
+  configJson                   Json?                 @db.JsonB
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace                   Workspace                    @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor              Actor                        @relation("ViewGroupDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor              Actor?                       @relation("ViewGroupDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소속 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition              ViewDefinition               @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 그룹 기준 Attribute의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  attributeDefinition         AttributeDefinition          @relation(fields: [attributeDefinitionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  /// 기능 : ViewGroupSettingDefinition에서 이 행을 참조하는 목록입니다.
+  viewGroupSettingDefinitions ViewGroupSettingDefinition[]
+}
+
+/// 기능 : 개별 그룹의 순서, 이름, 숨김과 접힘 상태를 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewGroupSettingDefinition {
+  /// 기능 : 그룹 설정 PK
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId           String   @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId      String   @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId      String?  @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt             DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt             DateTime @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소속 View
+  viewDefinitionId      String   @db.Uuid
+  /// 기능 : 표시 설정을 적용하는 그룹 기준
+  viewGroupDefinitionId String   @db.Uuid
+  /// 기능 : 그룹 기준에서 도출한 Attribute. 옵션 소속 검증용
+  attributeDefinitionId String   @db.Uuid
+  /// 기능 : Status 옵션 그룹
+  statusOptionId        String?  @db.Uuid
+  /// 기능 : Select 옵션 그룹
+  selectOptionId        String?  @db.Uuid
+  /// 기능 : 옵션 외 그룹의 정규화 식별 키
+  groupKeyJson          Json?    @db.JsonB
+  /// 기능 : 개별 그룹 표시 순서
+  sortOrder             Int      @default(0)
+  /// 기능 : 해당 View에서 사용할 그룹 이름
+  labelOverride         String?
+  /// 기능 : 그룹 숨김
+  isHidden              Boolean  @default(false)
+  /// 기능 : 그룹 접힘
+  isFold                Boolean  @default(false)
+  /// 기능 : 추가 표현 설정
+  configJson            Json?    @db.JsonB
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace           Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor      Actor               @relation("ViewGroupSettingDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor      Actor?              @relation("ViewGroupSettingDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소속 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition      ViewDefinition      @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 그룹 기준에서 도출한 Attribute. 옵션 소속 검증용의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  attributeDefinition AttributeDefinition @relation(fields: [attributeDefinitionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  /// 기능 : 표시 설정을 적용하는 그룹 기준의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewGroupDefinition ViewGroupDefinition @relation(fields: [viewGroupDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : Status 옵션 그룹의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  statusOption        StatusOption?       @relation(fields: [statusOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : Select 옵션 그룹의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  selectOption        SelectOption?       @relation(fields: [selectOptionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 기능 : 대시보드 안에 배치할 기존 View와 배치 설정을 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewWidgetDefinition {
+  /// 기능 : 위젯 PK
+  id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId             String   @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId        String   @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId        String?  @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt               DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt               DateTime @updatedAt @db.Timestamptz(3)
+  /// 기능 : 소유 대시보드 View
+  viewDefinitionId        String   @db.Uuid
+  /// 기능 : 위젯에 표시하는 기존 View
+  contentViewDefinitionId String   @db.Uuid
+  /// 기능 : 위젯 제목
+  titleOverride           String?
+  /// 기능 : 위젯 순서
+  sortOrder               Int      @default(0)
+  /// 기능 : 위젯 숨김
+  isHidden                Boolean  @default(false)
+  /// 기능 : 위치·너비·높이·화면별 배치
+  layoutJson              Json     @db.JsonB
+  /// 기능 : 제목 표시 등 위젯 표현 옵션
+  configJson              Json?    @db.JsonB
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace             Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor        Actor          @relation("ViewWidgetDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor        Actor?         @relation("ViewWidgetDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 소유 대시보드 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition        ViewDefinition @relation("ViewWidgetDefinitionOwner", fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 위젯에 표시하는 기존 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  contentViewDefinition ViewDefinition @relation("ViewWidgetDefinitionContent", fields: [contentViewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 기능 : Record 또는 ListEntry 사이의 업무 선후행 관계를 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewWorkDependencyDefinition {
+  /// 기능 : 의존 관계 PK
+  id                          String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId                 String                     @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId            String                     @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId            String?                    @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt                   DateTime                   @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt                   DateTime                   @updatedAt @db.Timestamptz(3)
+  /// 기능 : 선행 Record
+  sourceRecordDefinitionId    String?                    @db.Uuid
+  /// 기능 : 선행 ListEntry
+  sourceListEntryDefinitionId String?                    @db.Uuid
+  /// 기능 : 후행 Record
+  targetRecordDefinitionId    String?                    @db.Uuid
+  /// 기능 : 후행 ListEntry
+  targetListEntryDefinitionId String?                    @db.Uuid
+  /// 기능 : 선행·후행 업무의 시작·종료 연결 방식
+  type                        ViewWorkDependencyTypeEnum
+  /// 기능 : 선후행 사이의 시간 간격
+  dependencyTimeOffsetValue   Decimal                    @default(0) @db.Decimal(30, 10)
+  /// 기능 : MINUTE·HOUR·DAY
+  dependencyTimeOffsetUnit    ViewWorkDependencyUnitEnum
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace                 Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor            Actor                @relation("ViewWorkDependencyDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor            Actor?               @relation("ViewWorkDependencyDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 선행 Record의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  sourceRecordDefinition    RecordDefinition?    @relation("ViewWorkDependencyDefinitionSourceRecord", fields: [sourceRecordDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 후행 Record의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  targetRecordDefinition    RecordDefinition?    @relation("ViewWorkDependencyDefinitionTargetRecord", fields: [targetRecordDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 선행 ListEntry의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  sourceListEntryDefinition ListEntryDefinition? @relation("ViewWorkDependencyDefinitionSourceListEntry", fields: [sourceListEntryDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 후행 ListEntry의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  targetListEntryDefinition ListEntryDefinition? @relation("ViewWorkDependencyDefinitionTargetListEntry", fields: [targetListEntryDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 기능 : Workspace 구성원이 등록한 View 즐겨찾기를 저장합니다.
+/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+model ViewFavoriteDefinition {
+  /// 기능 : 즐겨찾기 PK
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// 기능 : 소속 Workspace
+  workspaceId       String   @db.Uuid
+  /// 기능 : 생성 Actor
+  createdByActorId  String   @db.Uuid
+  /// 기능 : 마지막 수정 Actor
+  updatedByActorId  String?  @db.Uuid
+  /// 기능 : 생성 시각
+  createdAt         DateTime @default(now()) @db.Timestamptz(3)
+  /// 기능 : 수정 시각
+  updatedAt         DateTime @updatedAt @db.Timestamptz(3)
+  /// 기능 : 즐겨찾기 소유 구성원
+  workspaceMemberId String   @db.Uuid
+  /// 기능 : 바로 여는 View
+  viewDefinitionId  String   @db.Uuid
+  /// 기능 : 개인 사이드바 순서
+  sortOrder         Int      @default(0)
+
+  /// 기능 : 소속 Workspace의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 생성 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  createdByActor  Actor           @relation("ViewFavoriteDefinitionCreatedByActor", fields: [createdByActorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// 기능 : 마지막 수정 Actor의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  updatedByActor  Actor?          @relation("ViewFavoriteDefinitionUpdatedByActor", fields: [updatedByActorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  /// 기능 : 바로 여는 View의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  viewDefinition  ViewDefinition  @relation(fields: [viewDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  /// 기능 : 즐겨찾기 소유 구성원의 기본 ID FK 연결입니다. 복합 소속 검증은 후속 검토 대상입니다.
+  workspaceMember WorkspaceMember @relation(fields: [workspaceMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

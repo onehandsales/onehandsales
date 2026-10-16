@@ -8,9 +8,9 @@
 
 ## 2. 현재 활성 Prisma 범위
 
-기준일: 2026-10-09
+DB 적용 기준일: 2026-10-09 / View 스키마 초안 작성일: 2026-10-16
 
-현재 `BE/prisma/schema.prisma`의 활성 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접수, Workspace/Team/Actor, 유연한 CRM 코어와 List 기반이다.
+기존 DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접수, Workspace/Team/Actor, 유연한 CRM 코어와 List 기반이다. 아래 Enum/Models 목록은 이 DB 적용 범위이며, Prisma 파일에만 추가한 View 초안은 2.1절에서 구분한다.
 
 ### Enums
 
@@ -56,6 +56,27 @@
 - `SupportRequest`
 - `PublicContactRequest`
 
+### 2.1 Prisma 파일에만 작성한 View 초안
+
+2026-10-16 사용자 요청에 따라 View 관련 10개 모델의 저장 컬럼 134개와 기본 ID FK 56개를 `BE/prisma/schema.prisma`에 작성했다. migration 생성·DB 적용·API/FE 구현·커밋은 수행하지 않는다.
+
+- `ViewDefinition`
+- `ViewAttributeSettingDefinition`
+- `ViewFilterGroupDefinition`
+- `ViewFilterConditionDefinition`
+- `ViewSortDefinition`
+- `ViewGroupDefinition`
+- `ViewGroupSettingDefinition`
+- `ViewWidgetDefinition`
+- `ViewWorkDependencyDefinition`
+- `ViewFavoriteDefinition`
+
+확인된 값의 Enum 9개는 View 타입·조회 시작점·표시 역할·필터 결합·다중값 평가·정렬 방향·그룹 역할·업무 연결 타입·시간 단위를 표현한다. `comparisonOperator`는 허용 목록이 미정이므로 현재 `String`이며, 비교 연산자 Enum은 임의로 확정하지 않았다.
+
+`revision`과 `groupKeyHash`는 제외하고 `groupKeyJson`은 유지한다. 신규 모델에는 PK 외 추가 UNIQUE·조회 인덱스·CHECK를 작성하지 않는다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. API 소속 검증도 아직 미구현이다.
+
+후속 복합 FK·필요 UNIQUE·CHECK·조회 인덱스와 Object/List 영역 보완 후보는 [검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 이유와 함께 기록한다. 기존 Object/List의 제약과 migration SQL은 그대로 유지한다.
+
 ## 3. 현재 schema 원칙
 
 - 인증이 필요한 접수 row는 `userId` ownership과 제출 시점 사용자 snapshot을 가진다.
@@ -76,7 +97,7 @@
 
 `ObjectDefinition`, `AttributeDefinition`, `RecordDefinition`, `RecordAttributeValueDefinition`, `SelectOption`, `StatusOption`, `RelationshipDefinition`은 현재 schema에 있다.
 
-List, ListEntry, ListEntryValue의 DB 기반은 구현했다. List API/FE, View와 Kit 모델은 후속 범위다. List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책은 아직 고정하지 않는다.
+List, ListEntry, ListEntryValue의 DB 기반은 구현했다. View 10개 모델은 2.1절의 Prisma 파일 초안으로만 작성했으며 실제 DB 모델은 아직 없다. List API/FE, View API/FE와 Kit 모델은 후속 범위다. List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책은 아직 고정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다. View는 List 이후 별도 작업이다.
 

@@ -216,7 +216,32 @@ FK 컬럼은 `@db.Uuid`를 사용하지만 랜덤 UUID 기본값을 넣지 않�
 
 적용 검증: 연결된 Supabase DB에 새 migration을 적용하여 전체 72개 migration이 완료된 상태다. 두 컬럼의 nullable `TEXT`와 기본값 없음, 색상 생략·명시적 null·문자열 생성·갱신·null 해제를 rollback 검증 17건으로 확인했다. 검증 데이터는 남기지 않았으며 기존 CRM 10개 테이블의 건수와 row checksum, 기존 constraint 97개와 인덱스 78개가 적용 전후 동일하다. Prisma validate/generate, Backend typecheck/lint/build와 43개 suite의 테스트 212개가 통과했다. 기존 List 복합 FK의 Prisma SetNull 경고 4건은 유지된다.
 
-## 12. 관련 문서
+## 12. Prisma 파일 초안: View 10개 모델
+
+2026-10-16 사용자 요청에 따라 `BE/prisma/schema.prisma`에 View 관련 10개 모델의 컬럼과 기본 ID FK를 작성했다. 이 절은 Prisma 파일의 변경 상태이며 실제 DB 적용이나 기능 구현 완료를 뜻하지 않는다.
+
+| 구분 | 이번 반영 범위 |
+| --- | --- |
+| 모델 | ViewDefinition, ViewAttributeSettingDefinition, ViewFilterGroupDefinition, ViewFilterConditionDefinition, ViewSortDefinition, ViewGroupDefinition, ViewGroupSettingDefinition, ViewWidgetDefinition, ViewWorkDependencyDefinition, ViewFavoriteDefinition |
+| 저장 컬럼 | 기존 CSV의 136개 중 revision·groupKeyHash를 제외한 134개. groupKeyJson 유지 |
+| 기본 식별·타입 | DB 생성 UUID PK, UUID FK, 필수·선택 컬럼, 기존 기본값, UTC Timestamptz(3), Decimal(30,10), JSONB |
+| Enum | 값이 제안된 9개 Enum. 비교 연산자는 목록 미정이므로 comparisonOperator를 String으로 작성 |
+| FK | 부모 PK id를 참조하는 단일 FK 56개. Workspace/View/Attribute 소속을 묶는 복합 FK 강화는 보류 |
+| 기존 모델 변경 | Prisma 역방향 relation 배열 추가만 수행. 기존 저장 컬럼·FK·UNIQUE·인덱스 유지 |
+| 신규 추가 제약 | 별도 조회 인덱스·추가 UNIQUE·CHECK 없음. PK가 자동 생성하는 인덱스와 구분 |
+| 실행 제외 | migration 생성·수정, DB 적용, seed·검증 row 삽입, API/FE 구현, 커밋 |
+
+기본 FK는 참조 행의 존재만 확인한다. 신규 View 관계의 같은 Workspace/View/Attribute 검증과 API 권한·소속 검증은 아직 구현되지 않았다. 기존 List의 복합 FK, 컬럼 지정 SetNull, 지연 FK와 소속 CHECK를 단일 FK로 되돌리는 작업은 하지 않는다.
+
+스키마 초안의 임시 소유 영역은 CRM core다. 비교 연산자·그룹 키 규격·대시보드 소속·기본 View·삭제·업무 관계 정책과 API 트랜잭션은 후속 계약에서 판단한다. ViewWorkDependencyDefinition은 실제 업무 관계이므로 ViewDefinition FK가 없다.
+
+ViewWorkDependencyTypeEnum의 값은 약어 대신 FINISH_TO_START, START_TO_START, FINISH_TO_FINISH, START_TO_FINISH를 사용한다. 앞부분은 선행 업무, 뒷부분은 후행 업무의 시점이며 각 값에 한글 주석을 둔다. 아직 DB에 적용하지 않은 초안이므로 기존 약어를 유지하기 위한 매핑이나 migration은 추가하지 않는다.
+
+후속 복합 FK와 필요한 UNIQUE, CHECK, 조회 인덱스, 기존 Object/List 보완 후보 및 의도적으로 제외한 Record 인덱스 이력은 [TODO 검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 기록했다. 사용자 판단 전에는 이 목록을 자동 적용하지 않는다.
+
+검증: Prisma format/validate, Backend typecheck/lint/build와 43개 suite의 테스트 212개가 통과했다. 신규 모델 10개·저장 컬럼 134개·기본 FK 56개를 CSV와 대조하고 기존 모델의 저장 컬럼·관계·UNIQUE·인덱스가 보존된 것을 정적으로 확인했다. 기존 List SetNull 경고 4건은 유지된다. Prisma Client 생성은 Windows query_engine DLL 교체 시 EPERM 오류로 완료하지 못했으며, 실행 중인 프로세스를 종료하거나 기존 DLL을 삭제하지 않았다. DB 접속·migration 생성·적용 검증은 수행하지 않았다.
+
+## 13. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`
