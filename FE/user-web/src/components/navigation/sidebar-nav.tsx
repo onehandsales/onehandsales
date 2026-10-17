@@ -111,14 +111,16 @@ function SidebarSection({
           onClick={onToggle}
           type="button"
         >
+          <span className="min-w-0 truncate">{t(labelKey)}</span>
           <ChevronRight
             className={cn(
-              "h-5 w-5 shrink-0 transition-transform",
-              isOpen ? "rotate-90" : "rotate-0"
+              "h-5 w-5 shrink-0 transition-[transform,opacity]",
+              isOpen
+                ? "rotate-90 opacity-100"
+                : "rotate-0 opacity-0 group-hover/sidebar-section:opacity-100"
             )}
             strokeWidth={2}
           />
-          <span className="min-w-0 flex-1 truncate">{t(labelKey)}</span>
         </button>
         {shouldShowAddAction ? (
           <button
