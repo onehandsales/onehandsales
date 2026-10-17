@@ -1,7 +1,7 @@
 # CRM Core Schema Draft
 
 Status: Partially Implemented / Remaining Design Draft
-Date: 2026-10-09
+Date: 2026-10-17
 
 ## 1. 목적
 
@@ -216,9 +216,9 @@ FK 컬럼은 `@db.Uuid`를 사용하지만 랜덤 UUID 기본값을 넣지 않�
 
 적용 검증: 연결된 Supabase DB에 새 migration을 적용하여 전체 72개 migration이 완료된 상태다. 두 컬럼의 nullable `TEXT`와 기본값 없음, 색상 생략·명시적 null·문자열 생성·갱신·null 해제를 rollback 검증 17건으로 확인했다. 검증 데이터는 남기지 않았으며 기존 CRM 10개 테이블의 건수와 row checksum, 기존 constraint 97개와 인덱스 78개가 적용 전후 동일하다. Prisma validate/generate, Backend typecheck/lint/build와 43개 suite의 테스트 212개가 통과했다. 기존 List 복합 FK의 Prisma SetNull 경고 4건은 유지된다.
 
-## 12. Prisma 파일 초안: View 10개 모델
+## 12. DB 적용 완료: View 10개 모델
 
-2026-10-16 사용자 요청에 따라 `BE/prisma/schema.prisma`에 View 관련 10개 모델의 컬럼과 기본 ID FK를 작성했다. 이 절은 Prisma 파일의 변경 상태이며 실제 DB 적용이나 기능 구현 완료를 뜻하지 않는다.
+2026-10-16 사용자 요청에 따라 `BE/prisma/schema.prisma`에 View 관련 10개 모델의 컬럼과 기본 ID FK를 작성했다. 2026-10-17 해당 파일을 기준으로 Supabase DB에 적용했다. DB 기반 적용과 View API/FE 기능 구현은 구분한다.
 
 | 구분 | 이번 반영 범위 |
 | --- | --- |
@@ -229,17 +229,22 @@ FK 컬럼은 `@db.Uuid`를 사용하지만 랜덤 UUID 기본값을 넣지 않�
 | FK | 부모 PK id를 참조하는 단일 FK 56개. Workspace/View/Attribute 소속을 묶는 복합 FK 강화는 보류 |
 | 기존 모델 변경 | Prisma 역방향 relation 배열 추가만 수행. 기존 저장 컬럼·FK·UNIQUE·인덱스 유지 |
 | 신규 추가 제약 | 별도 조회 인덱스·추가 UNIQUE·CHECK 없음. PK가 자동 생성하는 인덱스와 구분 |
-| 실행 제외 | migration 생성·수정, DB 적용, seed·검증 row 삽입, API/FE 구현, 커밋 |
+| DB 적용 | 20261017050000_rebuild_view_tables_from_current_schema. 비어 있던 구형 View 9개 테이블을 현재 10개 모델로 교체 |
+| 실행 제외 | Supabase seed·검증 row 삽입, API/FE 구현, 커밋 |
 
 기본 FK는 참조 행의 존재만 확인한다. 신규 View 관계의 같은 Workspace/View/Attribute 검증과 API 권한·소속 검증은 아직 구현되지 않았다. 기존 List의 복합 FK, 컬럼 지정 SetNull, 지연 FK와 소속 CHECK를 단일 FK로 되돌리는 작업은 하지 않는다.
 
-스키마 초안의 임시 소유 영역은 CRM core다. 비교 연산자·그룹 키 규격·대시보드 소속·기본 View·삭제·업무 관계 정책과 API 트랜잭션은 후속 계약에서 판단한다. ViewWorkDependencyDefinition은 실제 업무 관계이므로 ViewDefinition FK가 없다.
+View DB 기반의 임시 소유 영역은 CRM core다. 비교 연산자·그룹 키 규격·대시보드 소속·기본 View·삭제·업무 관계 정책과 API 트랜잭션은 후속 계약에서 판단한다. ViewWorkDependencyDefinition은 실제 업무 관계이므로 ViewDefinition FK가 없다.
 
-ViewWorkDependencyTypeEnum의 값은 약어 대신 FINISH_TO_START, START_TO_START, FINISH_TO_FINISH, START_TO_FINISH를 사용한다. 앞부분은 선행 업무, 뒷부분은 후행 업무의 시점이며 각 값에 한글 주석을 둔다. 아직 DB에 적용하지 않은 초안이므로 기존 약어를 유지하기 위한 매핑이나 migration은 추가하지 않는다.
+ViewWorkDependencyTypeEnum의 값은 약어 대신 FINISH_TO_START, START_TO_START, FINISH_TO_FINISH, START_TO_FINISH를 사용한다. 앞부분은 선행 업무, 뒷부분은 후행 업무의 시점이며 각 값에 한글 주석을 둔다. 기존 View 데이터가 없음을 확인하고 현재 Enum 값으로 재생성했으며 약어 매핑은 두지 않았다.
 
 후속 복합 FK와 필요한 UNIQUE, CHECK, 조회 인덱스, 기존 Object/List 보완 후보 및 의도적으로 제외한 Record 인덱스 이력은 [TODO 검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 기록했다. 사용자 판단 전에는 이 목록을 자동 적용하지 않는다.
 
-검증: Prisma format/validate, Backend typecheck/lint/build와 43개 suite의 테스트 212개가 통과했다. 신규 모델 10개·저장 컬럼 134개·기본 FK 56개를 CSV와 대조하고 기존 모델의 저장 컬럼·관계·UNIQUE·인덱스가 보존된 것을 정적으로 확인했다. 기존 List SetNull 경고 4건은 유지된다. Prisma Client 생성은 Windows query_engine DLL 교체 시 EPERM 오류로 완료하지 못했으며, 실행 중인 프로세스를 종료하거나 기존 DLL을 삭제하지 않았다. DB 접속·migration 생성·적용 검증은 수행하지 않았다.
+DB 적용: Docker 없이 Supabase 세션 연결을 사용했다. View가 비어 있는지 잠금 안에서 재확인하고 하나의 DDL transaction으로 교체했다. 구형 View의 추가 UNIQUE 11개·CHECK 22개를 제거했으며, 현재 View 인덱스는 PK 10개뿐이다. 기존 RLS·권한을 보존하고 새 ViewFavoriteDefinition에도 RLS와 기존 ViewDefinition의 권한을 적용했다. 기존 22개 업무 테이블의 구조·데이터 건수·row checksum·권한과 SQL 전용 List 제약은 전후 비교에서 동일했다.
+
+검증: 실제 Supabase에서 생성·검증 후 rollback하는 사전 검증과 최종 적용 후 카탈로그 검증이 통과했다. 모델 10개·컬럼 134개·Enum 9개·기본 FK 56개를 확인했고, 전체 Prisma diff는 비어 있으며 migrate status는 최신 상태다. Prisma validate/generate, Backend typecheck/lint/build도 통과했다. 로컬 테스트 DB의 테이블 부재로 최초 DB 연동 테스트 13개가 실패했으나, 현재 Prisma 스키마로 격리된 임시 스키마를 준비한 뒤 43개 suite의 테스트 212개가 모두 통과했다. 임시 테스트 스키마는 제거했다. 기존 List SetNull 경고 4건은 유지된다.
+
+이력: DB에는 migration 75건, 로컬에는 SQL 73건이 있다. `20261013050000_create_view_definitions`와 `20261013060000_remove_view_query_indexes`는 DB에만 이력이 있고 원본 SQL을 찾지 못했다. 기존 이력과 checksum은 보존했으며 원본을 추정 생성하지 않았다. 과거 원본 SQL 복구는 별도 이력 정리 사항이다. 적용 전후 스냅샷과 이전 View 구조 복구 SQL은 로컬 `TEMP/view-schema-apply-20261017/`에 보관하며 Git 추적 대상은 아니다. 복구 SQL은 실행하지 않았고, 적용된 migration을 되돌려야 한다면 데이터 상태를 확인한 후 별도 후속 migration으로 처리한다.
 
 ## 13. 관련 문서
 

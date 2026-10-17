@@ -1,9 +1,10 @@
 # Object·List·View 스키마 후속 제약·인덱스 검토
 
 - 작성일: 2026-10-16
+- DB 적용 확인일: 2026-10-17
 - 상태: 후속 판단용 목록. 아래 제약과 인덱스의 추가 실행을 승인한 문서가 아님
-- 현재 작업: View 10개 모델의 컬럼·기본 ID FK를 Prisma 스키마에만 작성
-- 제외: 별도 조회 인덱스, 추가 UNIQUE, CHECK, 복합 소속 FK 강화, migration 생성, DB 적용, 커밋
+- 현재 상태: View 10개 모델의 컬럼·기본 ID FK를 현재 Prisma 스키마 기준으로 Supabase에 적용 완료
+- 제외: 별도 조회 인덱스, 추가 UNIQUE, CHECK, 복합 소속 FK 강화, API/FE 구현, 커밋
 - 기준: [Prisma 스키마](../BE/prisma/schema.prisma), [DB 규칙](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md), [현재 Object·List 규칙](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md), [사용자 흐름](SIDEBAR_AND_VIEW_USER_FLOW.md)
 - 컬럼 대조 원본: TEMP/VIEW_TABLE_SCHEMA_DESIGN.csv. 이 CSV는 기존 검토본이며 이번 변경으로 수정하지 않음
 
@@ -11,7 +12,7 @@
 
 | 구분 | 현재 처리 | 이유 |
 | --- | --- | --- |
-| View 모델·컬럼 | 10개 모델, 저장 컬럼 134개를 schema.prisma에 작성 | 연결 구조와 실제 값의 저장 위치를 먼저 검토하기 위함 |
+| View 모델·컬럼 | 10개 모델, 저장 컬럼 134개를 schema.prisma와 Supabase에 반영 | 사용자가 지정한 현재 스키마를 DB 기준으로 적용 |
 | 기본 FK | 실제 참조 ID를 부모의 PK인 id에 연결 | 추가 UNIQUE 없이 Prisma 관계를 표현할 수 있음 |
 | 기본 PK·타입·기본값 | id의 PK와 UUID 기본값, 필수 컬럼, 알려진 Enum, 시간 타입·기본값 유지 | 기본 모델의 식별과 타입을 표현하는 데 필요. PK의 자동 인덱스는 별도 조회 인덱스와 구분 |
 | 추가 UNIQUE·조회 인덱스·CHECK | 새로 작성하지 않음 | 사용자 판단 후 채택할 대상 |
@@ -20,9 +21,10 @@
 | revision·groupKeyHash | 신규 모델에서 제외 | 사용자 확정 사항. 이 문서의 후속 자동 추가 대상에도 포함하지 않음 |
 | groupKeyJson | 유지 | 옵션 ID가 없는 담당자·텍스트·날짜·미지정 그룹의 표시 설정을 식별하기 위함 |
 | comparisonOperator | 현재 String / PostgreSQL TEXT | 기존 CSV는 Enum 이름만 있고 값 목록은 미정. 임의의 연산자 목록을 확정하지 않음 |
-| migration·DB·API·FE | 작업하지 않음 | 스키마 초안 작성과 실제 서비스 적용을 구분 |
+| migration·DB | 20261017050000_rebuild_view_tables_from_current_schema 적용 | 비어 있던 구형 View 9개 테이블을 현재 스키마로 교체. 기존 업무 데이터·제약·권한 보존 |
+| API·FE | 미구현 | DB 기반 적용과 서비스 기능 완성을 구분 |
 
-기본 ID FK는 참조 행의 존재만 보장한다. 예를 들어 View와 Attribute가 각각 존재하더라도 서로 다른 Workspace에 속하는 조합을 현재 신규 FK만으로는 막지 못한다. View API의 소속 검증도 아직 구현하지 않았다. 후속 복합 FK와 API 검증을 마치기 전에 이 초안을 서비스 구현 완료 상태로 취급하지 않는다.
+기본 ID FK는 참조 행의 존재만 보장한다. 예를 들어 View와 Attribute가 각각 존재하더라도 서로 다른 Workspace에 속하는 조합을 현재 신규 FK만으로는 막지 못한다. View API의 소속 검증도 아직 구현하지 않았다. DB 기반 적용을 서비스 기능 구현 완료 상태로 취급하지 않는다.
 
 기존 설계 문서 TODO/VIEW_TABLE_SCHEMA_DESIGN.md는 작업 시작 시 삭제된 상태였으며 복원하지 않는다. 삭제된 설계 파일에 의존하지 않고 이 문서에 후속 항목과 이유를 기록한다.
 
@@ -47,7 +49,7 @@ ViewWorkDependencyDefinition에는 viewDefinitionId를 추가하지 않는다. �
 
 ### 1.2 현재 기본 FK의 삭제 동작
 
-| 참조 | 스키마 초안의 onDelete | 이유·후속 판단 |
+| 참조 | 현재 적용된 onDelete | 이유·후속 판단 |
 | --- | --- | --- |
 | 모든 신규 모델 → Workspace | Cascade | Workspace가 소유하는 행을 정리 |
 | 생성 Actor | Restrict | 생성 감사 주체의 무단 소실 방지 |
@@ -61,7 +63,7 @@ ViewWorkDependencyDefinition에는 viewDefinitionId를 추가하지 않는다. �
 | 업무 관계 → Record/ListEntry | Cascade | 없어진 업무 노드의 연결 정리 |
 | 즐겨찾기 → WorkspaceMember | Cascade | 구성원의 개인 즐겨찾기 정리 |
 
-이는 스키마 초안의 연결 동작이다. 실제 migration을 만들기 전에 삭제 API 계약과 함께 다시 판단한다. 기존 ListEntryValueDefinition의 옵션 삭제 SetNull을 Cascade로 바꾸는 의미가 아니다.
+이는 2026-10-17 DB에 적용한 기본 연결 동작이다. 후속 변경은 삭제 API 계약과 함께 판단한다. 기존 ListEntryValueDefinition의 옵션 삭제 SetNull은 그대로 보존한다.
 
 ### 1.3 업무 선후행 연결 타입의 명확한 이름
 
@@ -78,15 +80,15 @@ dependencyTimeOffsetValue와 dependencyTimeOffsetUnit은 이 두 시점 사이�
 
 ## 2. 후속 복합 FK에 필요한 참조 UNIQUE
 
-아래 UNIQUE는 같은 이름의 업무 데이터를 금지하려는 규칙이 아니다. PostgreSQL에서 해당 컬럼 조합을 복합 FK의 부모 키로 참조하기 위한 기술적 키다. 이번에는 하나도 추가하지 않는다.
+아래 UNIQUE는 같은 이름의 업무 데이터를 금지하려는 규칙이 아니다. PostgreSQL에서 해당 컬럼 조합을 복합 FK의 부모 키로 참조하기 위한 기술적 키다. View 부모 키는 아직 추가하지 않았으며, 이미 있는 공용 부모 키는 보존한다.
 
 | 부모 테이블 | 검토할 UNIQUE | 필요한 자식 연결 | 이유 |
 | --- | --- | --- | --- |
 | ViewDefinition | (id, workspaceId) | 하위 설정, 위젯, 즐겨찾기 | View와 자식의 Workspace 일치 |
 | ViewFilterGroupDefinition | (id, viewDefinitionId, workspaceId) | 부모 필터 그룹, 필터 조건 | 같은 Workspace의 같은 View 안에서만 필터 연결 |
 | ViewGroupDefinition | (id, viewDefinitionId, attributeDefinitionId, workspaceId) | ViewGroupSettingDefinition | 그룹 기준·View·Attribute·Workspace 일치 |
-| AttributeDefinition | (id, workspaceId) | View 표시·필터·정렬·그룹·그룹 설정 | 공용 Attribute의 Workspace 일치 |
-| ListEntryDefinition | (id, workspaceId) | 업무 선후행 관계 | List ID를 따로 저장하지 않는 의존 관계의 Workspace 일치 |
+| AttributeDefinition | (id, workspaceId), 이미 존재 | View 표시·필터·정렬·그룹·그룹 설정 | 공용 Attribute의 Workspace 일치. 현재 View FK에서는 사용하지 않음 |
+| ListEntryDefinition | (id, workspaceId), 이미 존재 | 업무 선후행 관계 | List ID를 따로 저장하지 않는 의존 관계의 Workspace 일치. 현재 View FK에서는 사용하지 않음 |
 | AttributeDefinition | (id, objectDefinitionId, workspaceId) | 기존 Record 값과 Relationship의 Object 속성 연결 강화 후보 | 해당 Attribute가 같은 Object에 속하는지까지 보장. 기존 Object 영역 보완을 채택할 때만 검토 |
 
 ObjectDefinition, ListDefinition, RecordDefinition, Actor, WorkspaceMember의 (id, workspaceId)와 RecordDefinition의 (id, objectDefinitionId, workspaceId), 옵션의 (id, attributeDefinitionId, workspaceId)는 이미 존재하므로 재생성하지 않는다.
@@ -272,4 +274,4 @@ PK·UNIQUE가 만드는 인덱스와 중복되는 일반 인덱스는 만들지 
 5. 사용자 지시 후에만 새 migration을 작성한다. 이미 적용된 migration은 수정하지 않고 SQL 전용 CHECK·부분 인덱스·컬럼 지정 SetNull·지연 FK를 보존한다.
 6. DB 적용 전 rollback, 기존 데이터 보존, API 소속 검증, 삭제 결과와 순환·중복 처리를 검증한다.
 
-이번 작업은 위 순서의 후속 실행을 시작하지 않는다. 스키마 초안의 임시 소유 영역은 CRM core이며, 실제 View/List module과 API를 만들 때 application 계층이 권한·트랜잭션 경계를 소유하도록 별도 계약을 작성한다.
+현재 Prisma 스키마의 DB 적용은 완료했지만, 이 문서의 추가 제약·인덱스 후보는 자동 적용하지 않았다. View DB 기반의 임시 소유 영역은 CRM core이며, 실제 View/List module과 API를 만들 때 application 계층이 권한·트랜잭션 경계를 소유하도록 별도 계약을 작성한다.

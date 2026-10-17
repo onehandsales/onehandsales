@@ -1271,7 +1271,7 @@ model AuthSession {
 }
 
 /// 기능 : Object/List의 View와 대시보드의 기본 정의를 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewDefinition {
   /// 기능 : View PK
   id                 String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1333,7 +1333,7 @@ model ViewDefinition {
 }
 
 /// 기능 : View에 표시할 속성의 참조 경로, 역할과 표시 방법을 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewAttributeSettingDefinition {
   /// 기능 : 설정 PK
   id                           String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1381,7 +1381,7 @@ model ViewAttributeSettingDefinition {
 }
 
 /// 기능 : View의 AND/OR 필터 그룹과 부모 그룹 연결을 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewFilterGroupDefinition {
   /// 기능 : 그룹 PK
   id                                String                         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1421,7 +1421,7 @@ model ViewFilterGroupDefinition {
 }
 
 /// 기능 : 필터 그룹에 속하는 개별 비교 조건을 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewFilterConditionDefinition {
   /// 기능 : 조건 PK
   id                           String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1469,7 +1469,7 @@ model ViewFilterConditionDefinition {
 }
 
 /// 기능 : View의 정렬 기준과 우선순위를 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewSortDefinition {
   /// 기능 : 정렬 설정 PK
   id                           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1511,7 +1511,7 @@ model ViewSortDefinition {
 }
 
 /// 기능 : 칸반, 차트와 피벗에서 데이터를 묶는 기준을 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewGroupDefinition {
   /// 기능 : 그룹 기준 PK
   id                           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1557,7 +1557,7 @@ model ViewGroupDefinition {
 }
 
 /// 기능 : 개별 그룹의 순서, 이름, 숨김과 접힘 상태를 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewGroupSettingDefinition {
   /// 기능 : 그룹 설정 PK
   id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1613,7 +1613,7 @@ model ViewGroupSettingDefinition {
 }
 
 /// 기능 : 대시보드 안에 배치할 기존 View와 배치 설정을 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewWidgetDefinition {
   /// 기능 : 위젯 PK
   id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1655,7 +1655,7 @@ model ViewWidgetDefinition {
 }
 
 /// 기능 : Record 또는 ListEntry 사이의 업무 선후행 관계를 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewWorkDependencyDefinition {
   /// 기능 : 의존 관계 PK
   id                          String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1701,7 +1701,7 @@ model ViewWorkDependencyDefinition {
 }
 
 /// 기능 : Workspace 구성원이 등록한 View 즐겨찾기를 저장합니다.
-/// 기능 : 컬럼과 기본 FK만 작성한 스키마 초안이며 DB에는 미적용입니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
+/// 기능 : 컬럼과 기본 FK를 2026-10-17 Supabase DB에 적용했습니다. 복합 FK와 추가 제약은 TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md에서 검토합니다.
 model ViewFavoriteDefinition {
   /// 기능 : 즐겨찾기 PK
   id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
