@@ -1311,14 +1311,14 @@ function LogoutConfirmModal({
 
         <div className="mt-4 grid gap-2">
           <button
-            className="h-8 rounded-md bg-[#EB5750] px-4 text-[14px] font-medium text-white transition hover:bg-[#E04F49] active:bg-[#D94741]"
+            className="h-[30px] rounded-md bg-[#EB5750] px-4 text-[14px] font-medium text-white transition hover:bg-[#E04F49] active:bg-[#D94741]"
             onClick={onConfirm}
             type="button"
           >
             {t("shell.logoutConfirm")}
           </button>
           <button
-            className="h-8 rounded-md bg-white px-4 text-[14px] font-medium text-[#444444] shadow-[inset_0_0_0_1px_#DDDDDD] transition hover:bg-[#F8F8F8] active:bg-[#EFEFEF]"
+            className="h-[30px] rounded-md bg-white px-4 text-[14px] font-medium text-[#444444] shadow-[inset_0_0_0_1px_#DDDDDD] transition hover:bg-[#F8F8F8] active:bg-[#EFEFEF]"
             onClick={onCancel}
             type="button"
           >
