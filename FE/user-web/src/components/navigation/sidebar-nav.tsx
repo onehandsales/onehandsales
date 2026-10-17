@@ -114,7 +114,7 @@ function SidebarSection({
           <span className="min-w-0 truncate">{t(labelKey)}</span>
           <ChevronRight
             className={cn(
-              "h-5 w-5 shrink-0 transition-[transform,opacity]",
+              "h-4 w-4 shrink-0 transition-[transform,opacity]",
               isOpen
                 ? "rotate-90 opacity-100"
                 : "rotate-0 opacity-0 group-hover/sidebar-section:opacity-100"
@@ -125,7 +125,7 @@ function SidebarSection({
         {shouldShowAddAction ? (
           <button
             aria-label={t(addLabelKey)}
-            className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#D3D1CB] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:text-[#6B7280] group-hover/sidebar-section:opacity-100"
+            className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-[18px] w-[18px] -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#D3D1CB] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:text-[#6B7280] group-hover/sidebar-section:opacity-100"
             onClick={(event) => {
               event.stopPropagation();
               onAdd?.();
