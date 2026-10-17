@@ -20,7 +20,7 @@ export function SidebarToolsNav() {
     >
       {SIDEBAR_TOOL_ITEMS.map(({ icon: Icon, labelKey }) => (
         <button
-          className="group/sidebar-tool-row relative flex h-8 w-full max-w-[213px] items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45 active:bg-[#D3D1CB] active:text-[#111827]"
+          className="group/sidebar-tool-row relative flex h-[30px] w-full max-w-[213px] items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45 active:bg-[#D3D1CB] active:text-[#111827]"
           key={labelKey}
           type="button"
         >

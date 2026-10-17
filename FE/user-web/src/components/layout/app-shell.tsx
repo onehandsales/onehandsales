@@ -800,13 +800,13 @@ export function AppShell() {
             />
             {sidebarWorkspaces.length > 0 ? (
               <div className="my-1 border-t border-[#EEEDEA]">
-                <p className="flex h-8 items-center px-2 text-[12px] font-semibold leading-4 text-[#6B7280]">
+                <p className="flex h-[30px] items-center px-2 text-[12px] font-semibold leading-4 text-[#6B7280]">
                   {t("shell.myWorkspaces")}
                 </p>
                 <div className="notion-scrollbar max-h-40 overflow-y-auto pr-1">
                   {sidebarWorkspaces.map((workspace) => (
                     <button
-                      className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+                      className="flex h-[30px] w-full items-center gap-2 rounded-lg px-2 text-left text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
                       key={workspace.id}
                       role="menuitem"
                       tabIndex={accountMenuOpen ? undefined : -1}
@@ -828,7 +828,7 @@ export function AppShell() {
               </div>
             ) : null}
             <button
-              className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+              className="flex h-[30px] w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
               onClick={openCreateWorkspaceModal}
               role="menuitem"
               tabIndex={accountMenuOpen ? undefined : -1}
@@ -857,7 +857,7 @@ export function AppShell() {
       <button
         aria-expanded={accountMenuOpen}
         aria-haspopup="menu"
-        className={`group/sidebar-tooltip relative flex h-8 w-full items-center gap-2.5 rounded-md px-2 pr-10 text-left text-[14px] font-medium transition-colors ${
+        className={`group/sidebar-tooltip relative flex h-[30px] w-full items-center gap-2.5 rounded-md px-2 pr-10 text-left text-[14px] font-medium transition-colors ${
           accountMenuOpen
             ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
             : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
@@ -969,7 +969,7 @@ export function AppShell() {
         aria-expanded={helpMenuOpen}
         aria-haspopup="menu"
         aria-label={t("shell.help")}
-        className={`group/sidebar-tooltip relative flex h-8 w-full items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
+        className={`group/sidebar-tooltip relative flex h-[30px] w-full items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
           helpMenuOpen
             ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
             : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
@@ -1021,7 +1021,7 @@ export function AppShell() {
           <div className="flex gap-1 px-2 py-1.5">
             <button
               aria-label={t("shell.homeAria")}
-              className={`group/sidebar-tooltip relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition ${
+              className={`group/sidebar-tooltip relative flex h-[30px] w-8 shrink-0 items-center justify-center rounded-md transition ${
                 isHome
                   ? "text-[#374151] hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
@@ -1044,7 +1044,7 @@ export function AppShell() {
             </button>
             <button
               aria-label={t("shell.searchAria")}
-              className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+              className="group/sidebar-tooltip relative ml-auto flex h-[30px] w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               type="button"
             >
               <Search className="h-5 w-5 shrink-0" strokeWidth={2} />
@@ -1177,7 +1177,7 @@ function AccountMenuItem({
 }) {
   return (
     <button
-      className={`group flex ${dense ? "h-8" : "h-9"} w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]`}
+      className={`group flex ${dense ? "h-[30px]" : "h-9"} w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] font-medium text-[#4B5563] transition hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]`}
       onClick={onClick}
       role="menuitem"
       tabIndex={tabIndex}
@@ -1520,7 +1520,7 @@ function AccountModalSidebarItem({
 }) {
   return (
     <button
-      className={`group flex h-8 items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
+      className={`group flex h-[30px] items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
         active
           ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
           : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
@@ -1744,7 +1744,7 @@ function HelpModalSidebarItem({
   return (
     <button
       aria-current={active ? "page" : undefined}
-      className={`group flex h-8 items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
+      className={`group flex h-[30px] items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors ${
         active
           ? "bg-[#E4E2DC] font-semibold text-[#111827] active:bg-[#D3D1CB]"
           : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"

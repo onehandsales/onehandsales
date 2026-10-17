@@ -144,7 +144,7 @@ function SidebarSection({
           {shouldShowAddAction ? (
             <button
               aria-label={t(addLabelKey)}
-              className="flex h-8 w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
+              className="flex h-[30px] w-full items-center justify-center rounded-md px-2 text-[#4880EE] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
               onClick={onAdd}
               type="button"
             >
@@ -184,7 +184,7 @@ function SidebarCrmObjectSkeletonItem({
   readonly textWidthClassName: string;
 }) {
   return (
-    <div className="flex h-8 w-full items-center gap-2 rounded-md px-2">
+    <div className="flex h-[30px] w-full items-center gap-2 rounded-md px-2">
       <span
         className="h-5 w-5 shrink-0 rounded-md bg-[#E4E2DC] opacity-80 animate-pulse"
       />
@@ -233,7 +233,7 @@ function SidebarCrmObjectItem({
 }) {
   if (!workspaceId) {
     return (
-      <div className="group/sidebar-object-row relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
+      <div className="group/sidebar-object-row relative flex h-[30px] w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827]">
         <SidebarCrmObjectIcon
           className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-object-row:text-[#6B7280]"
           name={object.icon}
@@ -248,7 +248,7 @@ function SidebarCrmObjectItem({
     <NavLink
       className={({ isActive }) =>
         cn(
-          "group/sidebar-object-row relative flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors",
+          "group/sidebar-object-row relative flex h-[30px] w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors",
           isActive
             ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
             : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
