@@ -19,7 +19,9 @@ test.describe("create object definition modal UX", () => {
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
     // 5. 필요한 비동기 작업을 실행한다.
     await page
-      .getByRole("button", { exact: true, name: "관리 항목 추가" })
+      .getByRole("navigation", { name: "Workspace navigation" })
+      .getByRole("button", { exact: true, name: "관리 대상 추가" })
+      .last()
       .click();
 
     // 6. 이후 단계에서 사용할 createObjectDialog 값을 준비한다.

@@ -17,7 +17,7 @@ type SidebarNavProps = {
   readonly workspaceId?: string | null;
 };
 
-// 기능 : SidebarNav 컴포넌트를 렌더링합니다.
+// 기능 : 즐겨찾기, 업무 목록, 관리 대상 순서로 사이드바를 렌더링합니다.
 export function SidebarNav({
   className,
   crmObjects = [],
@@ -25,11 +25,11 @@ export function SidebarNav({
   onCreateObjectDefinition,
   workspaceId = null,
 }: SidebarNavProps) {
-  const [isQuickWorkOpen, setQuickWorkOpen] = useState(true);
-  const [isMainGroupOpen, setMainGroupOpen] = useState(true);
+  const [isFavoritesOpen, setFavoritesOpen] = useState(true);
   const [isWorkListsOpen, setWorkListsOpen] = useState(true);
-  // 1. 관리 항목 로딩 중에는 추가 버튼보다 skeleton row를 먼저 유지한다.
-  const shouldShowMainGroupAddAction = !isCrmObjectsLoading;
+  const [isManagedItemsOpen, setManagedItemsOpen] = useState(true);
+  // 1. 관리 대상 로딩 중에는 추가 버튼보다 skeleton row를 먼저 유지한다.
+  const shouldShowManagedItemsAddAction = !isCrmObjectsLoading;
 
   return (
     <nav
@@ -39,27 +39,11 @@ export function SidebarNav({
       <SidebarSection
         addLabelKey="navigation.quickWorkGroupAdd"
         closeLabelKey="navigation.quickWorkGroupClose"
-        isOpen={isQuickWorkOpen}
+        isOpen={isFavoritesOpen}
         labelKey="navigation.quickWorkGroup"
         openLabelKey="navigation.quickWorkGroupOpen"
-        onToggle={() => setQuickWorkOpen((current) => !current)}
+        onToggle={() => setFavoritesOpen((current) => !current)}
       />
-      <SidebarSection
-        addLabelKey="navigation.mainGroupAdd"
-        closeLabelKey="navigation.mainGroupClose"
-        isOpen={isMainGroupOpen}
-        labelKey="navigation.mainGroup"
-        openLabelKey="navigation.mainGroupOpen"
-        onAdd={onCreateObjectDefinition}
-        showAddAction={shouldShowMainGroupAddAction}
-        onToggle={() => setMainGroupOpen((current) => !current)}
-      >
-        {isCrmObjectsLoading ? (
-          <SidebarCrmObjectSkeletonList />
-        ) : (
-          <SidebarCrmObjectList objects={crmObjects} workspaceId={workspaceId} />
-        )}
-      </SidebarSection>
       <SidebarSection
         addLabelKey="navigation.workListsGroupAdd"
         closeLabelKey="navigation.workListsGroupClose"
@@ -68,6 +52,22 @@ export function SidebarNav({
         openLabelKey="navigation.workListsGroupOpen"
         onToggle={() => setWorkListsOpen((current) => !current)}
       />
+      <SidebarSection
+        addLabelKey="navigation.mainGroupAdd"
+        closeLabelKey="navigation.mainGroupClose"
+        isOpen={isManagedItemsOpen}
+        labelKey="navigation.mainGroup"
+        openLabelKey="navigation.mainGroupOpen"
+        onAdd={onCreateObjectDefinition}
+        showAddAction={shouldShowManagedItemsAddAction}
+        onToggle={() => setManagedItemsOpen((current) => !current)}
+      >
+        {isCrmObjectsLoading ? (
+          <SidebarCrmObjectSkeletonList />
+        ) : (
+          <SidebarCrmObjectList objects={crmObjects} workspaceId={workspaceId} />
+        )}
+      </SidebarSection>
     </nav>
   );
 }
@@ -163,7 +163,7 @@ function SidebarSection({
 
 const SIDEBAR_CRM_OBJECT_SKELETON_WIDTHS = ["w-20", "w-28", "w-24"] as const;
 
-// 기능 : 관리 항목 목록이 불러와지는 동안 사이드바 자리 표시 row를 렌더링합니다.
+// 기능 : 관리 대상 목록이 불러와지는 동안 사이드바 자리 표시 row를 렌더링합니다.
 function SidebarCrmObjectSkeletonList() {
   return (
     <div aria-hidden="true" className="contents">
@@ -177,7 +177,7 @@ function SidebarCrmObjectSkeletonList() {
   );
 }
 
-// 기능 : 관리 항목 데이터 row와 같은 크기의 skeleton 한 줄을 렌더링합니다.
+// 기능 : 관리 대상 데이터 row와 같은 크기의 skeleton 한 줄을 렌더링합니다.
 function SidebarCrmObjectSkeletonItem({
   textWidthClassName,
 }: {
@@ -198,7 +198,7 @@ function SidebarCrmObjectSkeletonItem({
   );
 }
 
-// 기능 : 현재 Workspace의 관리 항목 목록을 사이드바 섹션 안에 렌더링합니다.
+// 기능 : 현재 Workspace의 관리 대상 목록을 사이드바 섹션 안에 렌더링합니다.
 function SidebarCrmObjectList({
   objects,
   workspaceId,
@@ -223,7 +223,7 @@ function SidebarCrmObjectList({
   );
 }
 
-// 기능 : 사이드바 관리 항목 한 줄에 아이콘과 단수 이름을 표시합니다.
+// 기능 : 사이드바 관리 대상 한 줄에 아이콘과 단수 이름을 표시합니다.
 function SidebarCrmObjectItem({
   object,
   workspaceId,
