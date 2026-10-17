@@ -854,51 +854,55 @@ export function AppShell() {
         </div>
       </div>
 
-      <button
-        aria-expanded={accountMenuOpen}
-        aria-haspopup="menu"
-        className={`group/sidebar-tooltip relative flex h-[30px] w-full items-center gap-2.5 rounded-md px-2 pr-10 text-left text-[14px] font-medium transition-colors ${
+      <div
+        className={`relative flex h-[30px] w-full items-center rounded-md transition-colors ${
           accountMenuOpen
-            ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
-            : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+            ? "bg-[#E4E2DC] text-[#111827]"
+            : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827]"
         }`}
-        data-open={accountMenuOpen}
-        onClick={() => {
-          setHelpMenuOpen(false);
-          setAccountMenuOpen((open) => !open);
-        }}
-        type="button"
       >
-        <OneHandLogoMark className="h-5 w-5 shrink-0" />
-        <div className="min-w-0 flex-1">
-          <p className="truncate">{currentWorkspaceName}</p>
-        </div>
-        {!accountMenuOpen ? (
-          <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
-            {t("shell.accountMenuTooltip")}
+        <button
+          aria-expanded={accountMenuOpen}
+          aria-haspopup="menu"
+          className="group/sidebar-tooltip flex h-full min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 text-left text-[14px] font-medium transition-colors active:bg-[#D3D1CB]"
+          data-open={accountMenuOpen}
+          onClick={() => {
+            setHelpMenuOpen(false);
+            setAccountMenuOpen((open) => !open);
+          }}
+          type="button"
+        >
+          <OneHandLogoMark className="h-5 w-5 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="truncate">{currentWorkspaceName}</p>
+          </div>
+          {!accountMenuOpen ? (
+            <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
+              {t("shell.accountMenuTooltip")}
+            </span>
+          ) : null}
+        </button>
+        <button
+          aria-label={t("shell.sidebarClose")}
+          className="group/collapse pointer-events-none relative mr-1 inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#D3D1CB] hover:text-[#6B7280] focus-visible:pointer-events-auto focus-visible:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
+          onClick={(event) => {
+            // 1. 현재 단계에서 필요한 동작을 실행한다.
+            event.stopPropagation();
+            // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
+            setAccountMenuOpen(false);
+            // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
+            setHelpMenuOpen(false);
+            // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
+            setIsSidebarManuallyCollapsed(true);
+          }}
+          type="button"
+        >
+          <ChevronsLeft className="h-5 w-5" strokeWidth={2} />
+          <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
+            {t("shell.sidebarClose")}
           </span>
-        ) : null}
-      </button>
-      <button
-        aria-label={t("shell.sidebarClose")}
-        className="group/collapse pointer-events-none absolute right-3 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB] group-hover/sidebar:pointer-events-auto group-hover/sidebar:opacity-100"
-        onClick={(event) => {
-          // 1. 현재 단계에서 필요한 동작을 실행한다.
-          event.stopPropagation();
-          // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
-          setAccountMenuOpen(false);
-          // 3. 화면 상태를 현재 흐름에 맞게 갱신한다.
-          setHelpMenuOpen(false);
-          // 4. 화면 상태를 현재 흐름에 맞게 갱신한다.
-          setIsSidebarManuallyCollapsed(true);
-        }}
-        type="button"
-      >
-        <ChevronsLeft className="h-5 w-5" strokeWidth={2} />
-        <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/collapse:opacity-100">
-          {t("shell.sidebarClose")}
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
   );
 
