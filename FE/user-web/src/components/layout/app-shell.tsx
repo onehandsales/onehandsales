@@ -10,9 +10,9 @@ import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
+import { SidebarToolsNav } from "@/components/navigation/sidebar-tools-nav";
 import {
   BookOpen,
-  Bell,
   Bug,
   Check,
   ChevronsLeft,
@@ -1043,16 +1043,6 @@ export function AppShell() {
               </span>
             </button>
             <button
-              aria-label={t("shell.notificationsAria")}
-              className="group/sidebar-tooltip relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-              type="button"
-            >
-              <Bell className="h-5 w-5 shrink-0" strokeWidth={2} />
-              <span className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
-                {t("shell.notificationsTooltip")}
-              </span>
-            </button>
-            <button
               aria-label={t("shell.searchAria")}
               className="group/sidebar-tooltip relative ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               type="button"
@@ -1063,6 +1053,7 @@ export function AppShell() {
               </span>
             </button>
           </div>
+          <SidebarToolsNav />
           {/* Nav */}
           <div className="notion-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 py-1 [scrollbar-gutter:stable]">
             <SidebarNav
