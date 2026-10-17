@@ -20,13 +20,13 @@ export function SidebarToolsNav() {
     >
       {SIDEBAR_TOOL_ITEMS.map(({ icon: Icon, labelKey }) => (
         <button
-          className="group/sidebar-tool-row relative flex h-8 w-full max-w-[213px] items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#111827] transition-colors hover:bg-[#E4E2DC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45 active:bg-[#D3D1CB]"
+          className="group/sidebar-tool-row relative flex h-8 w-full max-w-[213px] items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563] transition-colors hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45 active:bg-[#D3D1CB] active:text-[#111827]"
           key={labelKey}
           type="button"
         >
           <Icon
             aria-hidden="true"
-            className="h-5 w-5 shrink-0 text-[#111827]"
+            className="h-5 w-5 shrink-0 text-[#9CA3AF] group-hover/sidebar-tool-row:text-[#6B7280]"
             strokeWidth={2}
           />
           <span className="min-w-0 flex-1 truncate">{t(labelKey)}</span>
