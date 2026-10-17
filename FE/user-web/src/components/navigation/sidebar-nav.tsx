@@ -107,7 +107,7 @@ function SidebarSection({
         <button
           aria-label={t(toggleLabelKey)}
           aria-expanded={isOpen}
-          className="flex h-6 w-full min-w-0 items-center gap-1 rounded-md px-2 pr-8 text-left text-[12px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+          className="flex h-6 w-full min-w-0 items-center gap-1 rounded-md px-2 pr-8 text-left text-[12px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition hover:bg-[#E4E2DC] active:bg-[#D3D1CB] group-hover/sidebar-section:text-[#6B7280]"
           onClick={onToggle}
           type="button"
         >
@@ -125,7 +125,7 @@ function SidebarSection({
         {shouldShowAddAction ? (
           <button
             aria-label={t(addLabelKey)}
-            className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] hover:text-[#6B7280] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:opacity-100"
+            className="pointer-events-none absolute right-1 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-[#9CA3AF] opacity-0 transition hover:bg-[#E4E2DC] focus:pointer-events-auto focus:opacity-100 active:bg-[#D3D1CB] group-hover/sidebar-section:pointer-events-auto group-hover/sidebar-section:text-[#6B7280] group-hover/sidebar-section:opacity-100"
             onClick={(event) => {
               event.stopPropagation();
               onAdd?.();
