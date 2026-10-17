@@ -758,7 +758,7 @@ export function AppShell() {
 
   // 41. 이후 단계에서 사용할 accountProfile 값을 준비한다.
   const accountProfile = (
-    <div className="relative px-2 py-1.5" ref={accountMenuRef}>
+    <div className="relative px-2 py-1" ref={accountMenuRef}>
       <div
         aria-hidden={!accountMenuOpen}
         className={`absolute left-2 right-2 top-[calc(100%+4px)] z-50 origin-top transition-all duration-150 ease-out ${
@@ -937,7 +937,7 @@ export function AppShell() {
 
   // 42. 이후 단계에서 사용할 sidebarHelpMenu 값을 준비한다.
   const sidebarHelpMenu = (
-    <div className="relative px-2 py-1.5" ref={helpMenuRef}>
+    <div className="relative px-2 py-1" ref={helpMenuRef}>
       <div
         aria-hidden={!helpMenuOpen}
         className={`absolute bottom-[calc(100%+4px)] left-2 right-2 z-50 origin-bottom transition-all duration-150 ease-out ${
@@ -1018,7 +1018,7 @@ export function AppShell() {
         >
           {accountProfile}
           {/* Shortcut buttons */}
-          <div className="flex gap-1 px-2 py-1.5">
+          <div className="flex gap-1 px-2 py-1">
             <button
               aria-label={t("shell.homeAria")}
               className={`group/sidebar-tooltip relative flex h-[30px] w-8 shrink-0 items-center justify-center rounded-md transition ${
