@@ -1044,7 +1044,7 @@ export function AppShell() {
             </button>
             <button
               aria-label={t("shell.searchAria")}
-              className="group/sidebar-tooltip relative ml-auto flex h-[30px] w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+              className="group/sidebar-tooltip relative flex h-[30px] w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
               type="button"
             >
               <Search className="h-5 w-5 shrink-0" strokeWidth={2} />
