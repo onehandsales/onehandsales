@@ -1023,7 +1023,7 @@ export function AppShell() {
               aria-label={t("shell.homeAria")}
               className={`group/sidebar-tooltip relative flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition ${
                 isHome
-                  ? "bg-[#E4E2DC] text-[#374151] active:bg-[#D3D1CB]"
+                  ? "text-[#374151] hover:bg-[#E4E2DC] active:bg-[#D3D1CB]"
                   : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#374151] active:bg-[#D3D1CB]"
               }`}
               onClick={() => {
