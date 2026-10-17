@@ -110,7 +110,7 @@ export const enResource = {
     freePlan: "Free Plan",
     help: "Help",
     helpErrorReport: "Error",
-    helpGuide: "User Guide",
+    helpGuide: "Guide",
     helpSupportRequest: "Support",
     helpTooltip: "View Help",
     homeAria: "Home",

@@ -29,7 +29,7 @@ test.describe("help modal UX", () => {
 
     // 8. 필요한 비동기 작업을 실행한다.
     await expect(
-      page.getByRole("menuitem", { exact: true, name: "사용 가이드" }),
+      page.getByRole("menuitem", { exact: true, name: "가이드" }),
     ).toBeVisible();
     // 9. 필요한 비동기 작업을 실행한다.
     await expect(
@@ -49,7 +49,7 @@ test.describe("help modal UX", () => {
     ).toBeVisible();
 
     // 13. 필요한 비동기 작업을 실행한다.
-    await page.getByRole("menuitem", { exact: true, name: "사용 가이드" }).click();
+    await page.getByRole("menuitem", { exact: true, name: "가이드" }).click();
 
     // 14. 이후 단계에서 사용할 helpDialog 값을 준비한다.
     const helpDialog = page.getByRole("dialog", { name: "도움말" });
@@ -63,7 +63,7 @@ test.describe("help modal UX", () => {
     await expectHelpDialogWidth(helpDialog);
     // 18. 필요한 비동기 작업을 실행한다.
     await expectHelpSidebarIconSize(
-      helpDialog.getByRole("button", { exact: true, name: "사용 가이드" }),
+      helpDialog.getByRole("button", { exact: true, name: "가이드" }),
     );
     // 19. 필요한 비동기 작업을 실행한다.
     await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);

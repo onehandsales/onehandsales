@@ -110,7 +110,7 @@ export const koKRResource = {
     freePlan: "무료 요금제",
     help: "도움말",
     helpErrorReport: "에러신고",
-    helpGuide: "사용 가이드",
+    helpGuide: "가이드",
     helpSupportRequest: "지원요청",
     helpTooltip: "도움말 보기",
     homeAria: "홈",
