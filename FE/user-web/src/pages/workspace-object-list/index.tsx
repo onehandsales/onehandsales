@@ -28,9 +28,7 @@ import {
   Phone,
   Pin,
   Plus,
-  Search,
   Sigma,
-  SlidersHorizontal,
   SquareCheck,
   Star,
   Trash2,
@@ -52,7 +50,9 @@ import {
   useState,
 } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
+import { createPortal } from "react-dom";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
+import { ViewHeaderToolbar } from "@/components/layout/view-header-toolbar";
 import { IconValuePicker } from "@/components/ui/icon-value-picker";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
@@ -1232,7 +1232,6 @@ function doesRecordRowMatchSearch(
 
 // 기능 : Workspace 관리 항목의 공통 목록 화면 UX를 렌더링합니다.
 export function WorkspaceObjectListPage() {
-  const [isSearchOpen, setSearchOpen] = useState(false);
   const [isMoreActionsOpen, setMoreActionsOpen] = useState(false);
   const [
     isAddAttributeDefinitionModalOpen,
@@ -1290,7 +1289,6 @@ export function WorkspaceObjectListPage() {
   const isCreatingRecordDefinitionRowRef = useRef(false);
   const moreActionsRef = useRef<HTMLDivElement | null>(null);
   const objectListScrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const suppressAttributeColumnHeaderClickRef = useRef(false);
   const queryClient = useQueryClient();
   const { t, formatCurrency, formatDate, formatDateTime } = useAppI18n();
@@ -1299,7 +1297,7 @@ export function WorkspaceObjectListPage() {
     readonly objectDefinitionId?: string;
     readonly workspaceId?: string;
   }>();
-  const { selectedSidebarCrmObject, sidebarCrmObjects } =
+  const { headerToolbarElement, selectedSidebarCrmObject, sidebarCrmObjects } =
     useOutletContext<AppShellOutletContext>();
 
   // 1. 현재 관리 항목의 header AttributeDefinition 목록을 조회한다.
@@ -1827,12 +1825,6 @@ export function WorkspaceObjectListPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isSearchOpen) {
-      searchInputRef.current?.focus();
-    }
-  }, [isSearchOpen]);
-
   // 기능 : AttributeDefinition header click으로 속성 메뉴 popover를 열거나 닫습니다.
   function handleAttributeColumnHeaderClick(columnId: string) {
     // 1. drag 직후 발생하는 click은 메뉴 토글로 처리하지 않는다.
@@ -2029,91 +2021,22 @@ export function WorkspaceObjectListPage() {
     };
   }, [activeAttributeColumnMenuId]);
 
-  return (
-    <>
-      <section
-        className="flex h-[calc(100dvh-var(--topbar-height))] min-h-0 flex-col overflow-hidden bg-white"
-        data-testid="workspace-object-list-page"
-      >
-        <div className="flex h-11 shrink-0 items-center gap-2 bg-white px-3">
-        {isSearchOpen ? (
-          <label className="relative flex h-8 w-full max-w-[360px] items-center">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute left-2 h-5 w-5 text-[#9CA3AF]"
-              strokeWidth={2}
-            />
-            <input
-              aria-label={searchLabel}
-              className="h-8 w-full rounded-md bg-[#F3F2EF] pl-9 pr-2 text-[14px] font-medium text-[#111827] outline-none transition placeholder:text-[#9CA3AF] hover:bg-[#EDEBE6] focus:bg-[#EDEBE6]"
-              placeholder={t("objectList.searchPlaceholder")}
-              ref={searchInputRef}
-              type="search"
-              value={searchQuery}
-              onBlur={() => {
-                if (searchQuery.trim().length === 0) {
-                  setSearchOpen(false);
-                }
-              }}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  setSearchQuery("");
-                  setSearchOpen(false);
-                }
-              }}
-            />
-          </label>
-        ) : (
-          <button
-            aria-label={searchLabel}
-            className="group/object-toolbar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-            type="button"
-            onClick={() => setSearchOpen(true)}
-          >
-            <Search className="h-5 w-5" strokeWidth={2} />
-            <span className="pointer-events-none absolute left-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
-              {t("objectList.openSearchTooltip")}
-            </span>
-          </button>
-        )}
-        <button
-          aria-label={t("common.filter")}
-          className="group/object-toolbar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-          type="button"
-        >
-          <SlidersHorizontal className="h-5 w-5" strokeWidth={2} />
-          <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
-            {t("objectList.openFilterTooltip")}
-          </span>
-        </button>
-        <button
-          aria-label={t("objectList.viewSortTooltip")}
-          className="group/object-toolbar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
-          type="button"
-        >
-          <ArrowUpDown className="h-5 w-5" strokeWidth={2} />
-          <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
-            {t("objectList.viewSortTooltip")}
-          </span>
-        </button>
-        <button
-          aria-label={`새 ${objectLabel}`}
-          className="group/object-toolbar-tooltip relative ml-auto inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#4880EE] text-white transition hover:bg-[#3B6FDA] active:bg-[#315FC0]"
-          type="button"
-          onClick={openCreateRecordDefinitionModal}
-        >
-          <Plus className="h-5 w-5" strokeWidth={2} />
-          <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-50 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
-            {t("objectList.createTooltip")}
-          </span>
-        </button>
+  // 화면 : 기존 검색과 기록 추가는 유지하고 View 설정은 헤더 안에서 미리 제공합니다.
+  const headerToolbar = (
+    <ViewHeaderToolbar
+      attributes={renderedAttributeColumns}
+      key={`${workspaceId}:${objectDefinitionId}`}
+      onCreateRecord={openCreateRecordDefinitionModal}
+      onSearchChange={setSearchQuery}
+      searchLabel={searchLabel}
+      searchValue={searchQuery}
+      secondaryActions={
         <div className="relative" ref={moreActionsRef}>
           <button
             aria-expanded={isMoreActionsOpen}
             aria-haspopup="menu"
             aria-label={t("objectList.moreActionsTooltip")}
-            className={`group/object-toolbar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition ${
+            className={`group/object-toolbar-tooltip relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded transition ${
               isMoreActionsOpen
                 ? "bg-[#E4E2DC] text-[#6B7280] active:bg-[#D3D1CB]"
                 : "text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
@@ -2121,7 +2044,7 @@ export function WorkspaceObjectListPage() {
             type="button"
             onClick={() => setMoreActionsOpen((open) => !open)}
           >
-            <MoreHorizontal className="h-5 w-5" strokeWidth={2} />
+            <MoreHorizontal className="h-3.5 w-3.5" strokeWidth={2} />
             {!isMoreActionsOpen ? (
               <span className="pointer-events-none absolute right-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/object-toolbar-tooltip:opacity-100">
                 {t("objectList.moreActionsTooltip")}
@@ -2175,7 +2098,23 @@ export function WorkspaceObjectListPage() {
             </div>
           </div>
         </div>
-      </div>
+      }
+    />
+  );
+
+  return (
+    <>
+      <section
+        className="flex h-[calc(100dvh-var(--topbar-height))] min-h-0 flex-col overflow-hidden bg-white"
+        data-testid="workspace-object-list-page"
+      >
+        {headerToolbarElement ? (
+          createPortal(headerToolbar, headerToolbarElement)
+        ) : (
+          <div className="flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3 lg:hidden">
+            {headerToolbar}
+          </div>
+        )}
       {attributeColumnMoveErrorMessage ? (
         <div
           className="border-t border-[#F1F0EC] bg-[#FFF8F7] px-4 py-2 text-[13px] font-medium text-[#B42318]"

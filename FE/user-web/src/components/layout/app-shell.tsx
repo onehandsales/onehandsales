@@ -114,6 +114,7 @@ type AccountModalNotice = {
 };
 
 export type AppShellOutletContext = {
+  readonly headerToolbarElement?: HTMLDivElement | null;
   readonly isSidebarCrmObjectsLoading: boolean;
   readonly selectedSidebarCrmObject: SidebarCrmObjectListItem | null;
   readonly setAutoSidebarCollapsed: (collapsed: boolean) => void;
@@ -122,6 +123,9 @@ export type AppShellOutletContext = {
 
 // 기능 : 로그인 후 워크스페이스 shell과 공통 모달을 렌더링합니다.
 export function AppShell() {
+  // 상태 : 목록 페이지의 도구를 데스크톱 공통 헤더 한 줄에 배치할 위치입니다.
+  const [headerToolbarElement, setHeaderToolbarElement] =
+    useState<HTMLDivElement | null>(null);
   // 1. 처리 흐름에 필요한 { pathname } 값을 준비한다.
   const { pathname } = useLocation();
   // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
@@ -264,12 +268,13 @@ export function AppShell() {
   // 29. 처리 흐름에 필요한 outletContext 값을 준비한다.
   const outletContext = useMemo<AppShellOutletContext>(
     () => ({
+      headerToolbarElement,
       isSidebarCrmObjectsLoading,
       selectedSidebarCrmObject,
       setAutoSidebarCollapsed: setIsSidebarAutoCollapsed,
       sidebarCrmObjects,
     }),
-    [isSidebarCrmObjectsLoading, selectedSidebarCrmObject, sidebarCrmObjects],
+    [headerToolbarElement, isSidebarCrmObjectsLoading, selectedSidebarCrmObject, sidebarCrmObjects],
   );
 
   // 기능 : 사이드바 Workspace 목록 항목 클릭 시 전환 로딩 모달 후 단건 조회 결과로 현재 Workspace를 변경합니다.
@@ -723,16 +728,17 @@ export function AppShell() {
       return (
         <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3">
           {sidebarOpenButton}
-          <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center">
+          <span className="inline-flex h-7 w-6 shrink-0 items-center justify-center">
             <SidebarCrmObjectIcon
-              className="h-5 w-5 shrink-0 text-[#6B7280]"
+              className="h-4 w-4 shrink-0 text-[#6B7280]"
               name={selectedSidebarCrmObject?.icon}
               strokeWidth={2}
             />
           </span>
-          <h1 className="min-w-0 truncate text-[14px] font-semibold text-[#111827]">
+          <h1 className="min-w-0 max-w-[140px] shrink truncate text-[13px] font-semibold text-[#37352F]" title={objectLabel}>
             {objectLabel}
           </h1>
+          <div className="flex min-w-0 flex-1 items-center" ref={setHeaderToolbarElement} />
         </header>
       );
     }
@@ -1155,7 +1161,7 @@ export function AppShell() {
           <MobileAppHeader />
         ) : null}
         <main className="pb-24">
-          <Outlet context={outletContext} />
+          <Outlet context={{ ...outletContext, headerToolbarElement: null }} />
         </main>
         <BottomTabBar homePath={currentWorkspaceHomePath} />
       </div>
