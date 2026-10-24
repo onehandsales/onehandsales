@@ -1,7 +1,9 @@
 import { ChevronRight, Plus } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { IconValueGlyph } from "@/components/ui/icon-value-glyph";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
+import type { SidebarCrmListItem } from "@/features/crm-list";
 import {
   SidebarCrmObjectIcon,
   type SidebarCrmObjectListItem,
@@ -11,18 +13,26 @@ import { cn } from "@/utils/cn";
 
 type SidebarNavProps = {
   readonly className?: string;
+  readonly crmLists?: readonly SidebarCrmListItem[];
   readonly crmObjects?: readonly SidebarCrmObjectListItem[];
+  readonly hasCrmListsError?: boolean;
+  readonly isCrmListsLoading?: boolean;
   readonly isCrmObjectsLoading?: boolean;
   readonly onCreateObjectDefinition?: () => void;
+  readonly onRetryCrmLists?: () => void;
   readonly workspaceId?: string | null;
 };
 
 // 기능 : 즐겨찾기, 업무 목록, 관리 대상 순서로 사이드바를 렌더링합니다.
 export function SidebarNav({
   className,
+  crmLists = [],
   crmObjects = [],
+  hasCrmListsError = false,
+  isCrmListsLoading = false,
   isCrmObjectsLoading = false,
   onCreateObjectDefinition,
+  onRetryCrmLists,
   workspaceId = null,
 }: SidebarNavProps) {
   const [isFavoritesOpen, setFavoritesOpen] = useState(true);
@@ -50,8 +60,16 @@ export function SidebarNav({
         isOpen={isWorkListsOpen}
         labelKey="navigation.workListsGroup"
         openLabelKey="navigation.workListsGroupOpen"
+        showAddAction={!isCrmListsLoading}
         onToggle={() => setWorkListsOpen((current) => !current)}
-      />
+      >
+        <SidebarCrmLists
+          hasError={hasCrmListsError}
+          isLoading={isCrmListsLoading}
+          lists={crmLists}
+          onRetry={onRetryCrmLists}
+        />
+      </SidebarSection>
       <SidebarSection
         addLabelKey="navigation.mainGroupAdd"
         closeLabelKey="navigation.mainGroupClose"
@@ -63,7 +81,7 @@ export function SidebarNav({
         onToggle={() => setManagedItemsOpen((current) => !current)}
       >
         {isCrmObjectsLoading ? (
-          <SidebarCrmObjectSkeletonList />
+          <SidebarItemSkeletonList />
         ) : (
           <SidebarCrmObjectList objects={crmObjects} workspaceId={workspaceId} />
         )}
@@ -163,14 +181,14 @@ function SidebarSection({
   );
 }
 
-const SIDEBAR_CRM_OBJECT_SKELETON_WIDTHS = ["w-20", "w-28", "w-24"] as const;
+const SIDEBAR_ITEM_SKELETON_WIDTHS = ["w-20", "w-28", "w-24"] as const;
 
-// 기능 : 관리 대상 목록이 불러와지는 동안 사이드바 자리 표시 row를 렌더링합니다.
-function SidebarCrmObjectSkeletonList() {
+// 기능 : 업무 목록과 관리 대상에 공통으로 사용할 로딩 Skeleton을 렌더링합니다.
+function SidebarItemSkeletonList() {
   return (
     <div aria-hidden="true" className="contents">
-      {SIDEBAR_CRM_OBJECT_SKELETON_WIDTHS.map((widthClassName) => (
-        <SidebarCrmObjectSkeletonItem
+      {SIDEBAR_ITEM_SKELETON_WIDTHS.map((widthClassName) => (
+        <SidebarItemSkeleton
           key={widthClassName}
           textWidthClassName={widthClassName}
         />
@@ -179,8 +197,8 @@ function SidebarCrmObjectSkeletonList() {
   );
 }
 
-// 기능 : 관리 대상 데이터 row와 같은 크기의 skeleton 한 줄을 렌더링합니다.
-function SidebarCrmObjectSkeletonItem({
+// 기능 : 사이드바 데이터 행과 같은 크기의 Skeleton 한 줄을 렌더링합니다.
+function SidebarItemSkeleton({
   textWidthClassName,
 }: {
   readonly textWidthClassName: string;
@@ -196,6 +214,78 @@ function SidebarCrmObjectSkeletonItem({
           textWidthClassName,
         )}
       />
+    </div>
+  );
+}
+
+// 기능 : 현재 Workspace의 업무 목록과 로딩·빈 목록·오류 상태를 표시합니다.
+function SidebarCrmLists({
+  hasError,
+  isLoading,
+  lists,
+  onRetry,
+}: {
+  readonly hasError: boolean;
+  readonly isLoading: boolean;
+  readonly lists: readonly SidebarCrmListItem[];
+  readonly onRetry: (() => void) | undefined;
+}) {
+  const { t } = useAppI18n();
+
+  // 1. 조회 중에는 빈 목록 안내 대신 공통 Skeleton을 표시한다.
+  if (isLoading) {
+    return (
+      <div aria-label={t("navigation.workListsLoading")} role="status">
+        <SidebarItemSkeletonList />
+      </div>
+    );
+  }
+
+  // 2. 실패는 성공한 빈 배열과 구분하고 사용자가 재시도할 수 있게 한다.
+  if (hasError) {
+    return (
+      <div className="px-2 py-1 text-[12px] leading-5 text-[#9CA3AF]" role="alert">
+        <p>{t("navigation.workListsLoadFailed")}</p>
+        <button
+          className="rounded text-[#4880EE] hover:underline"
+          onClick={onRetry}
+          type="button"
+        >
+          {t("common.retry")}
+        </button>
+      </div>
+    );
+  }
+
+  if (lists.length === 0) {
+    return (
+      <p className="px-2 py-1 text-[12px] leading-5 text-[#9CA3AF]">
+        {t("navigation.workListsEmpty")}
+      </p>
+    );
+  }
+
+  // 3. 서버 정렬을 유지하고 공통 아이콘으로 업무 목록 이름을 표시한다.
+  return (
+    <div
+      aria-label={t("navigation.workListsGroup")}
+      className="flex flex-col gap-px"
+      role="list"
+    >
+      {lists.map((list) => (
+        <div
+          className="flex h-[30px] w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium text-[#4B5563]"
+          key={list.id}
+          role="listitem"
+        >
+          <IconValueGlyph
+            className="h-5 w-5 shrink-0 text-[#9CA3AF]"
+            name={list.icon}
+            strokeWidth={2}
+          />
+          <span className="min-w-0 flex-1 truncate">{list.name}</span>
+        </div>
+      ))}
     </div>
   );
 }

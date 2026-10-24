@@ -105,7 +105,9 @@ DB에만 적용 이력이 남아 있는 `20261013050000_create_view_definitions`
 
 List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했다. 2026-10-24 `list-definition` Backend 모듈에 사이드바 업무 목록 조회 API를 추가했다. 현재 사용자의 Workspace 멤버십 확인 후 ListDefinition의 `id`, `icon`, `name`을 `createdAt ASC`, `id ASC`로 반환한다. [API 계약](../../../TODO/DONE/LIST_DEFINITION_SIDEBAR_LISTS_PLAN/COMMON/API-SPEC/SIDEBAR_LIST_DEFINITION_API.md)을 따른다.
 
-List Frontend 연결, List 생성·수정·삭제와 ListEntry/값 API, View API/FE와 Kit 모델은 후속 범위다. 이번 조회 API는 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
+2026-10-24 User Web의 `crm-list` feature를 통해 사이드바 업무 목록에 이름·아이콘을 표시하도록 연결했다. 사용자/Workspace별 Query와 로딩·빈 목록·오류 재시도를 처리한다. [Frontend 완료 범위](../../../TODO/DONE/SIDEBAR_WORK_LISTS_FRONTEND_PLAN/README.md)를 따른다.
+
+개별 List 화면으로 이동, List 생성·수정·삭제와 ListEntry/값 API, View API/FE와 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 

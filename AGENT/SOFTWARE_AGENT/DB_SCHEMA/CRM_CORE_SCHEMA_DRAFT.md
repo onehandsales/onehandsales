@@ -134,7 +134,9 @@ Migration 이력과 범위 정정:
 
 세 테이블의 기본 컬럼과 관계는 사용자가 확인한 설계안에 맞춰 생성하고 2026-10-08에 실제 DB에 적용했다. 당시 DB 작업에는 신규 API/FE/View를 포함하지 않았으며 DB 기반의 임시 소유 영역은 CRM core였다.
 
-2026-10-24 `list-definition` 모듈에 ListDefinition 사이드바 목록 조회 책임과 공개 Query Port를 추가했다. `GET /api/users/me/sidebar/workspaces/:workspaceId/lists`는 Workspace module의 공개 접근 확인 Port로 멤버십을 검증한 후 `id`, `icon`, `name`을 생성순으로 반환한다. [API 계약](../../../TODO/DONE/LIST_DEFINITION_SIDEBAR_LISTS_PLAN/COMMON/API-SPEC/SIDEBAR_LIST_DEFINITION_API.md)을 따른다. 이 조회 추가는 schema/migration/기존 데이터를 변경하지 않는다. ListEntry/값 API와 해당 application 소유권 구체화, List CRUD와 Frontend 연결은 후속 범위다.
+2026-10-24 `list-definition` 모듈에 ListDefinition 사이드바 목록 조회 책임과 공개 Query Port를 추가했다. `GET /api/users/me/sidebar/workspaces/:workspaceId/lists`는 Workspace module의 공개 접근 확인 Port로 멤버십을 검증한 후 `id`, `icon`, `name`을 생성순으로 반환한다. [API 계약](../../../TODO/DONE/LIST_DEFINITION_SIDEBAR_LISTS_PLAN/COMMON/API-SPEC/SIDEBAR_LIST_DEFINITION_API.md)을 따른다. 이 조회 추가는 schema/migration/기존 데이터를 변경하지 않는다.
+
+같은 날 User Web `crm-list` feature에서 조회 API를 연결해 사이드바에 List 이름과 아이콘을 표시하고 사용자/Workspace 캐시 분리와 상태 처리를 추가했다. [Frontend 완료 범위](../../../TODO/DONE/SIDEBAR_WORK_LISTS_FRONTEND_PLAN/README.md)를 따른다. ListEntry/값 API와 application 소유권 구체화, List CRUD, 개별 List 화면과 View 연동은 후속 범위다.
 
 ### 공통 컬럼
 

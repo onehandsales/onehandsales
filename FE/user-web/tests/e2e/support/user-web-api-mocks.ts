@@ -42,6 +42,12 @@ type MockSidebarCrmObjectListItem = {
   readonly singularName: string;
 };
 
+type MockSidebarCrmListItem = {
+  readonly id: string;
+  readonly icon: string | null;
+  readonly name: string;
+};
+
 type MockCreatedObjectDefinitionRequest = {
   readonly attributeNames: readonly string[];
   readonly objectDefinitionName: string;
@@ -51,6 +57,8 @@ type MockCreatedObjectDefinitionRequest = {
 export type UserWebApiMockStore = {
   createdObjectDefinitionRequests?: MockCreatedObjectDefinitionRequest[];
   createdWorkspace?: MockSidebarWorkspaceSummary;
+  sidebarCrmLists?: readonly MockSidebarCrmListItem[];
+  sidebarCrmListsError?: boolean;
 };
 
 type ApiDelayResolver = (request: ApiRequestRecord) => number;
@@ -260,6 +268,37 @@ async function handleApiRequest(
       },
       404,
     );
+  }
+
+  // 14. 업무 목록 경로가 일반 Workspace 단건 조회로 해석되지 않게 먼저 처리한다.
+  if (
+    pathname.startsWith("/api/users/me/sidebar/workspaces/") &&
+    pathname.endsWith("/lists") &&
+    method === "GET"
+  ) {
+    const workspaceId = decodeURIComponent(
+      pathname
+        .slice("/api/users/me/sidebar/workspaces/".length)
+        .slice(0, -"/lists".length),
+    );
+    const workspace = findSidebarWorkspace(store.createdWorkspace, workspaceId);
+
+    if (!workspace) {
+      return json(
+        {
+          error: "ListDefinitionSidebarWorkspaceNotFound",
+          message: "Workspace not found",
+          statusCode: 404,
+        },
+        404,
+      );
+    }
+
+    if (store.sidebarCrmListsError) {
+      return json({ error: "InternalServerError", statusCode: 500 }, 500);
+    }
+
+    return json(store.sidebarCrmLists ?? createSidebarCrmLists(workspaceId));
   }
 
   if (
@@ -502,6 +541,32 @@ function createSidebarCrmObjects(): readonly MockSidebarCrmObjectListItem[] {
       icon: "user-round",
       pluralName: "People",
       singularName: "Person",
+    },
+  ];
+}
+
+// 기능 : Workspace별로 구분되는 업무 목록 응답 fixture를 생성합니다.
+function createSidebarCrmLists(workspaceId: string): readonly MockSidebarCrmListItem[] {
+  if (workspaceId !== "workspace-e2e-001") {
+    return [
+      {
+        id: `list-definition-${workspaceId}`,
+        icon: "clipboard-list",
+        name: "새 공간 업무",
+      },
+    ];
+  }
+
+  return [
+    {
+      id: "list-definition-pipeline",
+      icon: "kanban",
+      name: "영업 파이프라인",
+    },
+    {
+      id: "list-definition-onboarding",
+      icon: null,
+      name: "고객 도입",
     },
   ];
 }

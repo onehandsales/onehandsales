@@ -74,6 +74,10 @@ import {
   useSidebarWorkspacesQuery,
 } from "@/features/workspace";
 import {
+  type SidebarCrmListItem,
+  useSidebarCrmListsQuery,
+} from "@/features/crm-list";
+import {
   CreateObjectDefinitionModalContent,
   SidebarCrmObjectIcon,
   type SidebarCrmObjectListItem,
@@ -100,6 +104,7 @@ const LOGOUT_MODAL_OPEN_DELAY_MS = 20;
 const WORKSPACE_SWITCH_LOADING_DELAY_MS = 2000;
 // 상태 : 사이드바 관리 항목 목록이 없을 때 참조가 흔들리지 않도록 공유 빈 배열을 사용합니다.
 const EMPTY_SIDEBAR_CRM_OBJECTS: readonly SidebarCrmObjectListItem[] = [];
+const EMPTY_SIDEBAR_CRM_LISTS: readonly SidebarCrmListItem[] = [];
 
 type AccountModalSection =
   | AccountModalQuerySection
@@ -235,29 +240,46 @@ export function AppShell() {
     currentWorkspace?.kind,
     t
   );
-  // 24. 관리 항목 query가 route Workspace ID를 먼저 사용할 수 있도록 fallback ID를 준비한다.
-  const sidebarCrmObjectsWorkspaceId =
+  // 24. 관리 항목과 업무 목록이 같은 현재 Workspace를 조회하도록 fallback ID를 준비한다.
+  const sidebarWorkspaceId =
     currentWorkspace?.id ?? normalizedRouteWorkspaceId;
   const sidebarCrmObjectsQuery = useSidebarCrmObjectsQuery({
     userId: user?.id ?? null,
-    workspaceId: sidebarCrmObjectsWorkspaceId,
+    workspaceId: sidebarWorkspaceId,
+  });
+  const sidebarCrmListsQuery = useSidebarCrmListsQuery({
+    userId: user?.id ?? null,
+    workspaceId: sidebarWorkspaceId,
   });
   // 25. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
   const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
   const sidebarCrmObjects =
     sidebarCrmObjectsQuery.data ?? EMPTY_SIDEBAR_CRM_OBJECTS;
-  // 26. Workspace가 확정되기 전에는 관리 항목 섹션 skeleton으로 사이드바 구조를 유지한다.
-  const isSidebarCrmObjectsWaitingForWorkspace =
+  const sidebarCrmLists =
+    sidebarCrmListsQuery.data ?? EMPTY_SIDEBAR_CRM_LISTS;
+  // 26. Workspace가 확정되기 전에는 두 목록 모두 Skeleton으로 사이드바 구조를 유지한다.
+  const isSidebarWaitingForWorkspace =
     Boolean(user?.id) &&
-    !sidebarCrmObjectsWorkspaceId &&
+    !sidebarWorkspaceId &&
     (normalizedRouteWorkspaceId
       ? routeWorkspaceQuery.isLoading || routeWorkspaceQuery.isFetching
       : defaultWorkspaceQuery.isLoading || defaultWorkspaceQuery.isFetching);
   // 27. 관리 항목 목록이 비어 있는 초기 fetch 동안에만 skeleton을 표시한다.
   const isSidebarCrmObjectsLoading =
-    isSidebarCrmObjectsWaitingForWorkspace ||
+    isSidebarWaitingForWorkspace ||
     sidebarCrmObjectsQuery.isLoading ||
     (sidebarCrmObjectsQuery.isFetching && sidebarCrmObjects.length === 0);
+  const isSidebarCrmListsLoading =
+    isSidebarWaitingForWorkspace ||
+    sidebarCrmListsQuery.isLoading ||
+    (sidebarCrmListsQuery.isFetching && sidebarCrmLists.length === 0);
+  const refetchSidebarCrmLists = sidebarCrmListsQuery.refetch;
+
+  // 기능 : 현재 Workspace의 업무 목록 조회를 다시 시도합니다.
+  const handleRetrySidebarCrmLists = useCallback(() => {
+    // 1. 현재 Query Key에 속한 업무 목록만 다시 조회한다.
+    void refetchSidebarCrmLists();
+  }, [refetchSidebarCrmLists]);
   const selectedSidebarCrmObject = routeObjectDefinitionId
     ? sidebarCrmObjects.find((object) => object.id === routeObjectDefinitionId) ??
       null
@@ -1067,10 +1089,14 @@ export function AppShell() {
           {/* Nav */}
           <div className="notion-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 py-1 [scrollbar-gutter:stable]">
             <SidebarNav
+              crmLists={sidebarCrmLists}
               crmObjects={sidebarCrmObjects}
+              hasCrmListsError={sidebarCrmListsQuery.isError}
+              isCrmListsLoading={isSidebarCrmListsLoading}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
               onCreateObjectDefinition={openCreateObjectDefinitionModal}
-              workspaceId={sidebarCrmObjectsWorkspaceId}
+              onRetryCrmLists={handleRetrySidebarCrmLists}
+              workspaceId={sidebarWorkspaceId}
             />
           </div>
           {sidebarHelpMenu}
