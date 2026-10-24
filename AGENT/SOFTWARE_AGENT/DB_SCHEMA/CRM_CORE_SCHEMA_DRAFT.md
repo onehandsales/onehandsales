@@ -132,7 +132,9 @@ Migration 이력과 범위 정정:
 
 ## 10. 현재 구현: List, Entry와 Entry 값
 
-세 테이블의 기본 컬럼과 관계는 사용자가 확인한 설계안에 맞춰 생성하고 2026-10-08에 실제 DB에 적용했다. 신규 API/FE/View는 추가하지 않는다. 아직 owning List module이 없으므로 DB 기반의 임시 소유자는 CRM core이며, 후속 List module에서 application port와 API 계약을 정의한다.
+세 테이블의 기본 컬럼과 관계는 사용자가 확인한 설계안에 맞춰 생성하고 2026-10-08에 실제 DB에 적용했다. 당시 DB 작업에는 신규 API/FE/View를 포함하지 않았으며 DB 기반의 임시 소유 영역은 CRM core였다.
+
+2026-10-24 `list-definition` 모듈에 ListDefinition 사이드바 목록 조회 책임과 공개 Query Port를 추가했다. `GET /api/users/me/sidebar/workspaces/:workspaceId/lists`는 Workspace module의 공개 접근 확인 Port로 멤버십을 검증한 후 `id`, `icon`, `name`을 생성순으로 반환한다. [API 계약](../../../TODO/DONE/LIST_DEFINITION_SIDEBAR_LISTS_PLAN/COMMON/API-SPEC/SIDEBAR_LIST_DEFINITION_API.md)을 따른다. 이 조회 추가는 schema/migration/기존 데이터를 변경하지 않는다. ListEntry/값 API와 해당 application 소유권 구체화, List CRUD와 Frontend 연결은 후속 범위다.
 
 ### 공통 컬럼
 

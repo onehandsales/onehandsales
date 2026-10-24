@@ -16,6 +16,7 @@
 
 ## 3. 현재 보관 목록
 
+- `LIST_DEFINITION_SIDEBAR_LISTS_PLAN`: Workspace 멤버십 기반 사이드바 업무 목록 조회 Backend API와 계약·검증 완료. Frontend 연결은 후속 범위
 - `ACCOUNT_SETTINGS_MODAL_PLAN`: 계정 설정 모달 이관, `/app/settings` 사용자-facing route 제거, `/app?account=settings` modal-open 흐름 정리
 - `MVP-STARTER_PLAN`: G00-G36 MVP starter 계획과 공통 계약 문서
 - `AUTH_FE_INTEGRATION_PLAN`: Auth/User Backend API와 User/Admin Web 인증/설정 FE 연동

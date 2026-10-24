@@ -8,6 +8,7 @@ import { AttributeDefinitionModule } from "./modules/attribute-definition/infras
 import { AuthModule } from "./modules/auth/infrastructure/auth.module";
 import { ErrorReportModule } from "./modules/error-report/infrastructure/error-report.module";
 import { HealthModule } from "./modules/health/infrastructure/health.module";
+import { ListDefinitionModule } from "./modules/list-definition/infrastructure/list-definition.module";
 import { ObjectDefinitionModule } from "./modules/object-definition/infrastructure/object-definition.module";
 import { PublicContactRequestModule } from "./modules/public-contact-request/infrastructure/public-contact-request.module";
 import { RecordDefinitionModule } from "./modules/record-definition/infrastructure/record-definition.module";
@@ -27,6 +28,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     AuthModule,
     UserModule,
     ObjectDefinitionModule,
+    ListDefinitionModule,
     AttributeDefinitionModule,
     RecordDefinitionModule,
     PublicContactRequestModule,
