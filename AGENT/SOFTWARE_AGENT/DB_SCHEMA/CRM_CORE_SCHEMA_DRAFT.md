@@ -236,9 +236,9 @@ FK 컬럼은 `@db.Uuid`를 사용하지만 랜덤 UUID 기본값을 넣지 않�
 | DB 적용 | 20261017050000_rebuild_view_tables_from_current_schema. 비어 있던 구형 View 9개 테이블을 현재 10개 모델로 교체 |
 | 실행 제외 | Supabase seed·검증 row 삽입, API/FE 구현, 커밋 |
 
-기본 FK는 참조 행의 존재만 확인한다. 신규 View 관계의 같은 Workspace/View/Attribute 검증과 API 권한·소속 검증은 아직 구현되지 않았다. 기존 List의 복합 FK, 컬럼 지정 SetNull, 지연 FK와 소속 CHECK를 단일 FK로 되돌리는 작업은 하지 않는다.
+기본 FK는 참조 행의 존재만 확인한다. 2026-10-24 사이드바 즐겨찾기 조회에는 현재 사용자 멤버십, 즐겨찾기의 Workspace·멤버와 연결 View의 Workspace 조건을 구현했다. 나머지 View 관계의 같은 Workspace/View/Attribute 검증과 API 권한·소속 검증은 후속 범위다. 기존 List의 복합 FK, 컬럼 지정 SetNull, 지연 FK와 소속 CHECK를 단일 FK로 되돌리는 작업은 하지 않는다.
 
-View DB 기반의 임시 소유 영역은 CRM core다. 비교 연산자·그룹 키 규격·대시보드 소속·기본 View·삭제·업무 관계 정책과 API 트랜잭션은 후속 계약에서 판단한다. ViewWorkDependencyDefinition은 실제 업무 관계이므로 ViewDefinition FK가 없다.
+View DB 기반의 임시 소유 영역은 CRM core로 시작했다. 2026-10-24 `view-definition` 모듈이 ViewDefinition/ViewFavoriteDefinition의 사이드바 즐겨찾기 읽기를 맡도록 추가했다. WorkspaceMember 확인은 Workspace 모듈의 공개 Port를 사용한다. User Web `view-favorite` feature가 응답 4개 필드를 받아 기존 공통 사이드바에 이름·아이콘을 표시한다. [즐겨찾기 조회 API 계약](../../../TODO/DONE/SIDEBAR_VIEW_FAVORITES_PLAN/COMMON/API-SPEC/SIDEBAR_VIEW_FAVORITE_API.md)을 따른다. View 상세·쓰기 기능, 비교 연산자·그룹 키 규격·대시보드 소속·기본 View·삭제·업무 관계 정책과 API 트랜잭션은 후속 계약에서 판단한다. ViewWorkDependencyDefinition은 실제 업무 관계이므로 ViewDefinition FK가 없다.
 
 ViewWorkDependencyTypeEnum의 값은 약어 대신 FINISH_TO_START, START_TO_START, FINISH_TO_FINISH, START_TO_FINISH를 사용한다. 앞부분은 선행 업무, 뒷부분은 후행 업무의 시점이며 각 값에 한글 주석을 둔다. 기존 View 데이터가 없음을 확인하고 현재 Enum 값으로 재생성했으며 약어 매핑은 두지 않았다.
 

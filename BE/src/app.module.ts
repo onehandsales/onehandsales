@@ -14,6 +14,7 @@ import { PublicContactRequestModule } from "./modules/public-contact-request/inf
 import { RecordDefinitionModule } from "./modules/record-definition/infrastructure/record-definition.module";
 import { SupportRequestModule } from "./modules/support-request/infrastructure/support-request.module";
 import { UserModule } from "./modules/user/infrastructure/user.module";
+import { ViewDefinitionModule } from "./modules/view-definition/infrastructure/view-definition.module";
 import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id.middleware";
 
 // 역할 : AppModule 애플리케이션의 루트 모듈 의존성을 조립합니다.
@@ -29,6 +30,7 @@ import { RequestIdMiddleware } from "./shared/presentation/middleware/request-id
     UserModule,
     ObjectDefinitionModule,
     ListDefinitionModule,
+    ViewDefinitionModule,
     AttributeDefinitionModule,
     RecordDefinitionModule,
     PublicContactRequestModule,

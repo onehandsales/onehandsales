@@ -48,6 +48,13 @@ type MockSidebarCrmListItem = {
   readonly name: string;
 };
 
+type MockSidebarViewFavoriteItem = {
+  readonly id: string;
+  readonly viewDefinitionId: string;
+  readonly name: string;
+  readonly icon: string | null;
+};
+
 type MockCreatedObjectDefinitionRequest = {
   readonly attributeNames: readonly string[];
   readonly objectDefinitionName: string;
@@ -59,6 +66,8 @@ export type UserWebApiMockStore = {
   createdWorkspace?: MockSidebarWorkspaceSummary;
   sidebarCrmLists?: readonly MockSidebarCrmListItem[];
   sidebarCrmListsError?: boolean;
+  sidebarViewFavorites?: readonly MockSidebarViewFavoriteItem[];
+  sidebarViewFavoritesError?: boolean;
 };
 
 type ApiDelayResolver = (request: ApiRequestRecord) => number;
@@ -299,6 +308,33 @@ async function handleApiRequest(
     }
 
     return json(store.sidebarCrmLists ?? createSidebarCrmLists(workspaceId));
+  }
+
+  // 15. 개인 즐겨찾기 경로를 일반 Workspace 단건 조회보다 먼저 처리한다.
+  if (
+    pathname.startsWith("/api/users/me/sidebar/workspaces/") &&
+    pathname.endsWith("/view-favorites") &&
+    method === "GET"
+  ) {
+    const workspaceId = decodeURIComponent(
+      pathname
+        .slice("/api/users/me/sidebar/workspaces/".length)
+        .slice(0, -"/view-favorites".length),
+    );
+
+    if (!findSidebarWorkspace(store.createdWorkspace, workspaceId)) {
+      return json({
+        error: "ViewFavoriteSidebarWorkspaceNotFound",
+        message: "Workspace not found",
+        statusCode: 404,
+      }, 404);
+    }
+
+    if (store.sidebarViewFavoritesError) {
+      return json({ error: "InternalServerError", statusCode: 500 }, 500);
+    }
+
+    return json(store.sidebarViewFavorites ?? createSidebarViewFavorites(workspaceId));
   }
 
   if (
@@ -568,6 +604,23 @@ function createSidebarCrmLists(workspaceId: string): readonly MockSidebarCrmList
       icon: null,
       name: "고객 도입",
     },
+  ];
+}
+
+// 기능 : 최소 응답 4개 필드로 Workspace별 즐겨찾기 fixture를 생성합니다.
+function createSidebarViewFavorites(workspaceId: string): readonly MockSidebarViewFavoriteItem[] {
+  if (workspaceId !== "workspace-e2e-001") {
+    return [{
+      id: `favorite-${workspaceId}`,
+      viewDefinitionId: `view-${workspaceId}`,
+      name: "새 공간 즐겨찾기",
+      icon: "star",
+    }];
+  }
+
+  return [
+    { id: "favorite-monthly", viewDefinitionId: "view-monthly", name: "이번 달 마감", icon: "calendar-days" },
+    { id: "favorite-seoul", viewDefinitionId: "view-seoul", name: "서울 회사", icon: null },
   ];
 }
 

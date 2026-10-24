@@ -78,6 +78,10 @@ import {
   useSidebarCrmListsQuery,
 } from "@/features/crm-list";
 import {
+  type SidebarViewFavoriteItem,
+  useSidebarViewFavoritesQuery,
+} from "@/features/view-favorite";
+import {
   CreateObjectDefinitionModalContent,
   SidebarCrmObjectIcon,
   type SidebarCrmObjectListItem,
@@ -105,6 +109,7 @@ const WORKSPACE_SWITCH_LOADING_DELAY_MS = 2000;
 // 상태 : 사이드바 관리 항목 목록이 없을 때 참조가 흔들리지 않도록 공유 빈 배열을 사용합니다.
 const EMPTY_SIDEBAR_CRM_OBJECTS: readonly SidebarCrmObjectListItem[] = [];
 const EMPTY_SIDEBAR_CRM_LISTS: readonly SidebarCrmListItem[] = [];
+const EMPTY_SIDEBAR_VIEW_FAVORITES: readonly SidebarViewFavoriteItem[] = [];
 
 type AccountModalSection =
   | AccountModalQuerySection
@@ -251,13 +256,19 @@ export function AppShell() {
     userId: user?.id ?? null,
     workspaceId: sidebarWorkspaceId,
   });
+  const sidebarViewFavoritesQuery = useSidebarViewFavoritesQuery({
+    userId: user?.id ?? null,
+    workspaceId: sidebarWorkspaceId,
+  });
   // 25. 이후 단계에서 사용할 sidebarWorkspaces 값을 준비한다.
   const sidebarWorkspaces = sidebarWorkspacesQuery.data ?? [];
   const sidebarCrmObjects =
     sidebarCrmObjectsQuery.data ?? EMPTY_SIDEBAR_CRM_OBJECTS;
   const sidebarCrmLists =
     sidebarCrmListsQuery.data ?? EMPTY_SIDEBAR_CRM_LISTS;
-  // 26. Workspace가 확정되기 전에는 두 목록 모두 Skeleton으로 사이드바 구조를 유지한다.
+  const sidebarViewFavorites =
+    sidebarViewFavoritesQuery.data ?? EMPTY_SIDEBAR_VIEW_FAVORITES;
+  // 26. Workspace가 확정되기 전에는 세 목록 모두 Skeleton으로 사이드바 구조를 유지한다.
   const isSidebarWaitingForWorkspace =
     Boolean(user?.id) &&
     !sidebarWorkspaceId &&
@@ -273,6 +284,10 @@ export function AppShell() {
     isSidebarWaitingForWorkspace ||
     sidebarCrmListsQuery.isLoading ||
     (sidebarCrmListsQuery.isFetching && sidebarCrmLists.length === 0);
+  const isSidebarViewFavoritesLoading =
+    isSidebarWaitingForWorkspace ||
+    sidebarViewFavoritesQuery.isLoading ||
+    (sidebarViewFavoritesQuery.isFetching && sidebarViewFavorites.length === 0);
   const selectedSidebarCrmObject = routeObjectDefinitionId
     ? sidebarCrmObjects.find((object) => object.id === routeObjectDefinitionId) ??
       null
@@ -1086,7 +1101,9 @@ export function AppShell() {
               crmObjects={sidebarCrmObjects}
               isCrmListsLoading={isSidebarCrmListsLoading}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
+              isViewFavoritesLoading={isSidebarViewFavoritesLoading}
               onCreateObjectDefinition={openCreateObjectDefinitionModal}
+              viewFavorites={sidebarViewFavorites}
               workspaceId={sidebarWorkspaceId}
             />
           </div>

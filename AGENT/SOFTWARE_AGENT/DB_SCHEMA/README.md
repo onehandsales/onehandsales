@@ -58,7 +58,7 @@ DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접
 
 ### 2.1 Supabase에 적용한 View 기반
 
-2026-10-16 작성한 `BE/prisma/schema.prisma`를 기준으로, 2026-10-17 사용자 요청에 따라 View 관련 10개 모델의 저장 컬럼 134개와 기본 ID FK 56개를 Supabase에 적용했다. 적용 migration은 `20261017050000_rebuild_view_tables_from_current_schema`다. View API/FE는 아직 구현하지 않았다.
+2026-10-16 작성한 `BE/prisma/schema.prisma`를 기준으로, 2026-10-17 사용자 요청에 따라 View 관련 10개 모델의 저장 컬럼 134개와 기본 ID FK 56개를 Supabase에 적용했다. 적용 migration은 `20261017050000_rebuild_view_tables_from_current_schema`다. 2026-10-24 사이드바 개인 View 즐겨찾기 조회 API와 User Web 표시를 연결했다. 나머지 View API/화면은 후속 범위다.
 
 - `ViewDefinition`
 - `ViewAttributeSettingDefinition`
@@ -75,7 +75,7 @@ DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접
 
 Enum 이름은 `ViewTypeEnum`, `ViewSourceScopeEnum`, `ViewAttributeDisplayRoleEnum`, `ViewConditionGroupOperatorEnum`, `ViewMultiValueMatchModeEnum`, `ViewSortDirectionEnum`, `ViewGroupRoleEnum`, `ViewWorkDependencyTypeEnum`, `ViewWorkDependencyUnitEnum`이다.
 
-`revision`과 `groupKeyHash`는 제외하고 `groupKeyJson`은 유지한다. 신규 모델에는 PK 외 추가 UNIQUE·조회 인덱스·CHECK를 작성하지 않는다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. API 소속 검증도 아직 미구현이다.
+`revision`과 `groupKeyHash`는 제외하고 `groupKeyJson`은 유지한다. 신규 모델에는 PK 외 추가 UNIQUE·조회 인덱스·CHECK를 작성하지 않는다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. 즐겨찾기 조회는 현재 멤버·Workspace와 연결 View의 Workspace를 확인한다. 나머지 View API의 소속 검증은 후속 범위다.
 
 후속 복합 FK·필요 UNIQUE·CHECK·조회 인덱스와 Object/List 영역 보완 후보는 [검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 이유와 함께 기록한다. 기존 Object/List의 제약과 migration SQL은 그대로 유지한다.
 
@@ -107,7 +107,9 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 2026-10-24 User Web의 `crm-list` feature를 통해 사이드바 업무 목록에 이름·아이콘을 표시하도록 연결했다. 사용자/Workspace별 Query를 사용하며, 이후 사용자 요청에 따라 로딩·빈 목록·조회 실패 표시를 관리 항목과 동일하게 통일했다. 빈 목록이나 최초 조회 실패에는 안내·재시도 UI 없이 기존 추가 버튼만 표시한다. [최초 Frontend 연동](../../../TODO/DONE/SIDEBAR_WORK_LISTS_FRONTEND_PLAN/README.md)과 [최신 UX 통일 기준](../../../TODO/DONE/SIDEBAR_WORK_LISTS_UX_PARITY_PLAN/README.md)을 따른다.
 
-개별 List 화면으로 이동, List 생성·수정·삭제와 ListEntry/값 API, View API/FE와 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
+2026-10-24 `view-definition` Backend 모듈이 사이드바 개인 View 즐겨찾기 읽기를 담당하도록 추가했다. Workspace 공개 접근 Port로 현재 사용자의 멤버 ID를 구한 후 ViewFavoriteDefinition과 연결 ViewDefinition을 조회한다. 응답은 `id`, `viewDefinitionId`, `name`, `icon`이며 Favorite의 `sortOrder ASC`, `createdAt ASC`, `id ASC` 순서다. User Web의 `view-favorite` feature를 통해 기존 공통 `SidebarDataSection`으로 표시한다. [API 계약과 완료 범위](../../../TODO/DONE/SIDEBAR_VIEW_FAVORITES_PLAN/README.md)를 따른다.
+
+개별 List/View 화면으로 이동, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 등록·해제·순서 변경, 나머지 View API/FE와 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 

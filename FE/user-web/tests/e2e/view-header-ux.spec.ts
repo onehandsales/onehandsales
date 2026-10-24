@@ -17,7 +17,11 @@ test("keeps the 38px header in one row and previews view controls without networ
   const writes: string[] = [];
   const errors: string[] = [];
   page.on("request", (request) => {
-    if (/view-definitions|view-favorites/.test(request.url())) viewRequests.push(request.url());
+    // 1. 공통 사이드바의 읽기 요청만 허용하고 헤더 미리보기의 View API 호출은 계속 검증한다.
+    const pathname = new URL(request.url()).pathname;
+    const isSidebarFavoriteRead = request.method() === "GET" &&
+      /^\/api\/users\/me\/sidebar\/workspaces\/[^/]+\/view-favorites$/.test(pathname);
+    if (pathname.startsWith("/api/") && !isSidebarFavoriteRead && /view-definitions|view-favorites/.test(pathname)) viewRequests.push(request.url());
     if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method())) writes.push(request.url());
   });
   page.on("pageerror", (error) => errors.push(error.message));

@@ -27,7 +27,7 @@ type SidebarDataSectionProps = Omit<
   readonly isLoading: boolean;
 };
 
-// 기능 : 두 데이터 영역의 섹션·목록·추가 버튼·로딩 표시를 공통으로 구성합니다.
+// 기능 : 사이드바 데이터 영역의 섹션·목록·추가 버튼·로딩 표시를 공통으로 구성합니다.
 export function SidebarDataSection({
   items,
   isLoading,

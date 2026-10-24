@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { IconValueGlyph } from "@/components/ui/icon-value-glyph";
 import { cn } from "@/utils/cn";
 
-// 역할 : 두 사이드바 영역이 같은 목록·행 UI에 전달할 데이터를 정의합니다.
+// 역할 : 사이드바 데이터 영역이 같은 목록·행 UI에 전달할 데이터를 정의합니다.
 export type SidebarDataItem = {
   readonly id: string;
   readonly label: string;
@@ -16,9 +16,9 @@ type SidebarDataListProps = {
   readonly label: string;
 };
 
-// 기능 : 두 사이드바 영역의 로딩·빈 목록·데이터 행을 같은 코드로 표시합니다.
+// 기능 : 사이드바 데이터 영역의 로딩·빈 목록·행을 같은 코드로 표시합니다.
 export function SidebarDataList({ items, isLoading, label }: SidebarDataListProps) {
-  // 1. 두 영역에 동일한 로딩 Skeleton을 표시한다.
+  // 1. 모든 데이터 영역에 동일한 로딩 Skeleton을 표시한다.
   if (isLoading) {
     return <SidebarDataSkeletonList />;
   }
@@ -71,7 +71,7 @@ function SidebarDataRow({ item }: { readonly item: SidebarDataItem }) {
   );
 }
 
-// 기능 : 두 영역의 아이콘과 이름을 하나의 JSX로 렌더링합니다.
+// 기능 : 모든 데이터 영역의 아이콘과 이름을 하나의 JSX로 렌더링합니다.
 function SidebarDataRowContent({
   item,
   isActive,
