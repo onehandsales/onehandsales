@@ -16,6 +16,7 @@
 
 ## 3. 현재 보관 목록
 
+- `SIDEBAR_WORK_LISTS_UX_PARITY_PLAN`: 업무 목록의 로딩·빈 목록·조회 실패·행 스타일을 현재 관리 항목과 통일. 업무 목록 전용 안내·재시도 UI 제거
 - `SIDEBAR_WORK_LISTS_FRONTEND_PLAN`: 업무 목록 조회 API의 User Web 사이드바 표시·상태·Workspace 전환 연결 완료. 기존 생성 모달 E2E 2건의 불일치는 검증 기록에 분리
 - `LIST_DEFINITION_SIDEBAR_LISTS_PLAN`: Workspace 멤버십 기반 사이드바 업무 목록 조회 Backend API와 계약·검증 완료. Frontend 연결은 후속 범위
 - `ACCOUNT_SETTINGS_MODAL_PLAN`: 계정 설정 모달 이관, `/app/settings` 사용자-facing route 제거, `/app?account=settings` modal-open 흐름 정리

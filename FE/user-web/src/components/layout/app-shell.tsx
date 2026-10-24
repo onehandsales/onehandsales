@@ -273,13 +273,6 @@ export function AppShell() {
     isSidebarWaitingForWorkspace ||
     sidebarCrmListsQuery.isLoading ||
     (sidebarCrmListsQuery.isFetching && sidebarCrmLists.length === 0);
-  const refetchSidebarCrmLists = sidebarCrmListsQuery.refetch;
-
-  // 기능 : 현재 Workspace의 업무 목록 조회를 다시 시도합니다.
-  const handleRetrySidebarCrmLists = useCallback(() => {
-    // 1. 현재 Query Key에 속한 업무 목록만 다시 조회한다.
-    void refetchSidebarCrmLists();
-  }, [refetchSidebarCrmLists]);
   const selectedSidebarCrmObject = routeObjectDefinitionId
     ? sidebarCrmObjects.find((object) => object.id === routeObjectDefinitionId) ??
       null
@@ -1091,11 +1084,9 @@ export function AppShell() {
             <SidebarNav
               crmLists={sidebarCrmLists}
               crmObjects={sidebarCrmObjects}
-              hasCrmListsError={sidebarCrmListsQuery.isError}
               isCrmListsLoading={isSidebarCrmListsLoading}
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
               onCreateObjectDefinition={openCreateObjectDefinitionModal}
-              onRetryCrmLists={handleRetrySidebarCrmLists}
               workspaceId={sidebarWorkspaceId}
             />
           </div>
