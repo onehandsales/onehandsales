@@ -16,6 +16,7 @@
 
 ## 3. 현재 보관 목록
 
+- [VIEW_HEADER_DETAIL_API_PLAN](VIEW_HEADER_DETAIL_API_PLAN/README.md): Object/List 클릭 시 초기 View 헤더 조회 Backend API 구현·검증·G99 완료. 전체 53 suites/267 tests 통과. Frontend·View 목록·생성/저장은 후속 범위
 - `SIDEBAR_VIEW_FAVORITES_PLAN`: 개인 View 즐겨찾기 조회 GET API와 공통 User Web 사이드바 표시 연결 완료. 실제 DB 격리·정렬 테스트는 로컬 테스트 DB 미가동으로 확인하지 못한 상태를 기록
 - `SIDEBAR_WORK_LISTS_UX_PARITY_PLAN`: 업무 목록의 로딩·빈 목록·조회 실패·행 스타일을 현재 관리 항목과 통일. 업무 목록 전용 안내·재시도 UI 제거
 - `SIDEBAR_WORK_LISTS_FRONTEND_PLAN`: 업무 목록 조회 API의 User Web 사이드바 표시·상태·Workspace 전환 연결 완료. 기존 생성 모달 E2E 2건의 불일치는 검증 기록에 분리

@@ -52,3 +52,7 @@
 - 커밋 대상은 역할별 계획 문서 13개, TODO/README.md와 이 작업 로그다. API/Frontend/DB 실행 코드는 포함하지 않는다.
 - 커밋 전 문서 검사 재실행: 상대 링크 134개, JSON 예시 2개, 합의한 응답 필드, View 타입 11개, 계약 상태와 활성 목차 확인 통과.
 - `git diff --check`: 통과. 문서 전용 변경이므로 BE/FE 런타임 테스트는 실행하지 않았다.
+
+## 후속 구현 완료 포인터
+
+위 내용은 계획 작성 당시의 이력이다. 이후 사용자 요청에 따라 Object/List 대상 ID 기반 ③ 헤더 GET으로 계약을 갱신하고 Backend 구현·검증·G99를 완료했다. 현재 계획은 [DONE 보관](../../../TODO/DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md), 실제 실행 결과는 [후속 구현 로그](../VIEW_HEADER_TARGET_GET/WORK_LOG.md)를 참고한다.

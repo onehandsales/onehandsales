@@ -14,23 +14,18 @@
 
 검토 기준일: 2026-10-25
 
-사용자 요청으로 [View 헤더 단건 조회 API 계획](VIEW_HEADER_DETAIL_API_PLAN/README.md)을 추가했다. 계약은 confirmed, 실제 API 구현은 미착수다. COMPANY_DOMAIN_PLAN처럼 README·COMMON·BE-TODO·FE-TODO로 나누고 API 계약·사용 흐름·작업 분담·구현·검증·최종 규칙 검토를 역할별 문서로 관리한다.
+사용자가 요청한 [Object/List 클릭 시 View 헤더 조회 API](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)의 Backend 구현·검증·G99 규칙 검토를 완료하고 DONE에 보관했다. 전체 53 suites/267 tests와 typecheck·lint·build·Prisma 검증이 통과했다. 현재 활성 계획은 없다. Frontend 연결·View 목록·생성/저장은 후속 요청 시 별도 계획으로 진행한다.
 
 ```text
 TODO/
   README.md
-  VIEW_HEADER_DETAIL_API_PLAN/
-    README.md
-    COMMON/
-      API-SPEC/VIEW_HEADER_DETAIL_API.md
-    BE-TODO/
-    FE-TODO/
   DONE/
     README.md
+    VIEW_HEADER_DETAIL_API_PLAN/
     <완료 보관 계획>
 ```
 
-활성 TODO를 재검토할 때는 위 계획을 포함하고 `TODO/DONE/**`은 제외한다. 새 요구사항, QA 후속 조치, 결함 수정, API-SPEC 보강, UX/UI 개선, Paddle/Billing 착수는 `TODO` 바로 아래에 새 계획 폴더를 만든 뒤 진행한다.
+활성 TODO를 재검토할 때는 `TODO/DONE/**`을 제외한다. 새 요구사항, QA 후속 조치, 결함 수정, API-SPEC 보강, UX/UI 개선, Paddle/Billing 착수는 `TODO` 바로 아래에 새 계획 폴더를 만든 뒤 진행한다.
 
 완료된 계획의 구현 결과나 과거 의사결정 근거가 필요할 때만 `TODO/DONE/<PLAN_NAME>`을 참고한다. 완료 보관 문서는 현재 남은 작업 목록이 아니며, 후속 구현이 필요하면 완료 문서를 직접 수정하지 않고 새 활성 계획으로 승격한다.
 
@@ -104,7 +99,7 @@ TODO/
 
 ## 6. 현재 우선순위
 
-현재 사용자 요청에 따른 다음 구현 단위는 `VIEW_HEADER_DETAIL_API_PLAN`의 View 헤더 단건 조회 Backend API 1개다. 지금은 계획 작성 단계이며 실제 구현은 후속 요청으로 진행한다.
+현재 사용자 요청 범위인 ③ 대상 기반 View 헤더 조회 Backend API는 완료했다. ① Object 소속 View 목록·② List 소속 View 목록, Frontend 연결과 View 생성/저장은 사용자의 후속 요청에 따라 새 활성 계획으로 진행한다.
 
 그 밖의 후속 작업이 생기면 아래 순서로 판단한다.
 
@@ -119,6 +114,7 @@ Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 �
 
 현재 완료 보관 폴더와 단일 문서는 다음과 같다.
 
+- [VIEW_HEADER_DETAIL_API_PLAN](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md): Object/List 대상 기반 초기 View 헤더 GET, 개인 즐겨찾기 상태, View 없는 정상 상태와 Backend 검증·G99 완료
 - `ACCOUNT_SETTINGS_MODAL_PLAN`: 계정 설정 모달 이관, `/app/settings` 사용자-facing route 제거, `/app?account=settings` modal-open 흐름 정리
 - `ADDITIONAL_WORK_PLAN`: count, linked list, xlsx export, dealCount, product dealCount sort 추가 유지보수 범위
 - `API_SPEC_TEMPLATE_NORMALIZATION_PLAN`: API-SPEC 템플릿 정규화 G01~G06과 G99 최종 검토

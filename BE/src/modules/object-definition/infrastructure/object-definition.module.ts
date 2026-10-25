@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { OBJECT_DEFINITION_ACCESS_QUERY } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
 import { OBJECT_DEFINITION_COMMAND_REPOSITORY } from "@/modules/object-definition/application/ports/object-definition-command.repository";
 import { OBJECT_DEFINITION_SIDEBAR_QUERY } from "@/modules/object-definition/application/ports/object-definition-sidebar-query.port";
+import { OBJECT_DEFINITION_SUMMARY_QUERY } from "@/modules/object-definition/application/ports/object-definition-summary-query.port";
 import { CreateWorkspaceObjectDefinitionUseCase } from "@/modules/object-definition/application/use-cases/create-workspace-object-definition.use-case";
 import { ListSidebarObjectDefinitionsUseCase } from "@/modules/object-definition/application/use-cases/list-sidebar-object-definitions.use-case";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
@@ -13,6 +14,7 @@ import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { PrismaObjectDefinitionAccessQueryRepository } from "./persistence/prisma-object-definition-access-query.repository";
 import { PrismaObjectDefinitionCommandRepository } from "./persistence/prisma-object-definition-command.repository";
 import { PrismaObjectDefinitionSidebarQueryRepository } from "./persistence/prisma-object-definition-sidebar-query.repository";
+import { PrismaObjectDefinitionSummaryQueryRepository } from "./persistence/prisma-object-definition-summary-query.repository";
 import { UserSidebarWorkspaceObjectsController } from "../presentation/http/user-sidebar-workspace-objects.controller";
 import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/user-workspace-object-definitions.controller";
 
@@ -24,6 +26,13 @@ import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/u
     UserWorkspaceObjectDefinitionsController,
   ],
   providers: [
+    {
+      provide: OBJECT_DEFINITION_SUMMARY_QUERY,
+      // 기능 : 소유 모듈의 Workspace 단건 요약 조회 구현체를 조립합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaObjectDefinitionSummaryQueryRepository(prismaService),
+      inject: [PrismaService],
+    },
     CreateWorkspaceObjectDefinitionUseCase,
     ListSidebarObjectDefinitionsUseCase,
     AppLogger,
@@ -53,6 +62,6 @@ import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/u
       inject: [PrismaService],
     },
   ],
-  exports: [OBJECT_DEFINITION_ACCESS_QUERY],
+  exports: [OBJECT_DEFINITION_ACCESS_QUERY, OBJECT_DEFINITION_SUMMARY_QUERY],
 })
 export class ObjectDefinitionModule {}

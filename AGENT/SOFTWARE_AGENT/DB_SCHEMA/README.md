@@ -109,7 +109,9 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 2026-10-24 `view-definition` Backend 모듈이 사이드바 개인 View 즐겨찾기 읽기를 담당하도록 추가했다. Workspace 공개 접근 Port로 현재 사용자의 멤버 ID를 구한 후 ViewFavoriteDefinition과 연결 ViewDefinition을 조회한다. 응답은 `id`, `viewDefinitionId`, `name`, `icon`이며 Favorite의 `sortOrder ASC`, `createdAt ASC`, `id ASC` 순서다. User Web의 `view-favorite` feature를 통해 기존 공통 `SidebarDataSection`으로 표시한다. [API 계약과 완료 범위](../../../TODO/DONE/SIDEBAR_VIEW_FAVORITES_PLAN/README.md)를 따른다.
 
-개별 List/View 화면으로 이동, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 등록·해제·순서 변경, 나머지 View API/FE와 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
+2026-10-25 Object/List 클릭 시 헤더를 먼저 조회하는 Backend GET /api/users/me/workspaces/:workspaceId/view-header를 구현했다. targetType=OBJECT/LIST와 targetId를 받고 같은 Workspace의 대상 요약, sortOrder/createdAt/id 오름차순 첫 View, 현재 멤버의 isFavorite를 반환한다. View가 없으면 대상 요약과 null View를 반환하며 자동 생성하지 않는다. Object/List는 각 모듈의 공개 단건 Summary Port, View/Favorite는 view-definition이 조회한다. [API 계약과 완료 범위](../../../TODO/DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)를 따른다. 임시 PostgreSQL 17에서 실제 격리·정렬·rollback을 포함한 전체 53 suites/267 tests가 실패·skip 없이 통과했다. 스키마·migration·실제 업무 DB 데이터 변경은 없다.
+
+개별 List/View 화면과 헤더의 FE 연결, Object/List별 View 드롭다운 목록, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 클릭·등록·해제·순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 
