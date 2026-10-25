@@ -12,15 +12,16 @@
 
 ## 2. 현재 상태
 
-검토 기준일: 2026-10-25
+검토 기준일: 2026-10-26
 
-사용자가 요청한 [Object/List 클릭 시 View 헤더 조회 API](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)의 Backend 구현·검증·G99 규칙 검토를 완료하고 DONE에 보관했다. 전체 53 suites/267 tests와 typecheck·lint·build·Prisma 검증이 통과했다. 현재 활성 계획은 없다. Frontend 연결·View 목록·생성/저장은 후속 요청 시 별도 계획으로 진행한다.
+기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)에 이어 [① Object·② List 소속 View 목록 API](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md)의 Backend 구현·검증·G99 검토를 완료했다. 전체 58 suites/341 tests와 typecheck/lint/build·Prisma 검증이 통과했다. 현재 활성 계획은 없다. Frontend·생성/저장은 후속 요청 범위다.
 
 ```text
 TODO/
   README.md
   DONE/
     README.md
+    OBJECT_LIST_VIEW_LIST_API_PLAN/
     VIEW_HEADER_DETAIL_API_PLAN/
     <완료 보관 계획>
 ```
@@ -99,7 +100,7 @@ TODO/
 
 ## 6. 현재 우선순위
 
-현재 사용자 요청 범위인 ③ 대상 기반 View 헤더 조회 Backend API는 완료했다. ① Object 소속 View 목록·② List 소속 View 목록, Frontend 연결과 View 생성/저장은 사용자의 후속 요청에 따라 새 활성 계획으로 진행한다.
+현재 사용자 요청 범위인 ③ 대상 기반 View 헤더 조회와 ① Object·② List 소속 View 목록 Backend API를 완료했다. Frontend 연결과 View 생성/저장은 사용자의 후속 요청에 따라 새 활성 계획으로 진행한다.
 
 그 밖의 후속 작업이 생기면 아래 순서로 판단한다.
 
@@ -114,6 +115,7 @@ Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 �
 
 현재 완료 보관 폴더와 단일 문서는 다음과 같다.
 
+- [OBJECT_LIST_VIEW_LIST_API_PLAN](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md): Object/List 소속 View 목록 GET 두 개, 정렬·선택 표시·격리·정상 빈 목록·실제 DB 및 G99 검토 완료
 - [VIEW_HEADER_DETAIL_API_PLAN](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md): Object/List 대상 기반 초기 View 헤더 GET, 개인 즐겨찾기 상태, View 없는 정상 상태와 Backend 검증·G99 완료
 - `ACCOUNT_SETTINGS_MODAL_PLAN`: 계정 설정 모달 이관, `/app/settings` 사용자-facing route 제거, `/app?account=settings` modal-open 흐름 정리
 - `ADDITIONAL_WORK_PLAN`: count, linked list, xlsx export, dealCount, product dealCount sort 추가 유지보수 범위

@@ -242,6 +242,8 @@ View DB 기반의 임시 소유 영역은 CRM core로 시작했다. 2026-10-24 `
 
 2026-10-25 view-definition에 대상 기반 헤더 GET을 구현했다. Workspace 멤버 확인 후 Object/List 소유 모듈의 공개 Summary Port로 대상 이름·아이콘을 조회하고, 같은 Workspace와 대상 FK의 저장 순서 첫 View 및 개인 즐겨찾기 상태를 반환한다. 대상이 있지만 View가 없으면 null View를 반환한다. [확정 API](../../../TODO/DONE/VIEW_HEADER_DETAIL_API_PLAN/COMMON/API-SPEC/VIEW_HEADER_DETAIL_API.md)를 따른다. 초기 조회를 위해 별도 기본 View·최근 선택 이력을 저장하거나 View를 자동 생성하지 않는다. schema/migration/업무 DB 변경 없이 임시 PG17에서 전체 53 suites/267 tests와 실제 Repository 격리·정렬 검증을 통과했다. View 드롭다운 목록·생성/저장·FE·즐겨찾기 클릭/쓰기는 후속 범위다.
 
+2026-10-26 Object/List 소속 View 목록 GET 두 개를 view-definition에 각각 구현했다. Workspace 공개 멤버십·Object/List 공개 Summary Port를 재사용하고 View 조회는 workspaceId+대상 FK와 sortOrder/createdAt/id 순서를 적용한다. 선택 viewId는 isSelected 계산에만 사용하고 빈 목록·목록 밖 선택을 정상 상태로 반환한다. [API 계약과 검토 결과](../../../TODO/DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md)를 따른다. 두 소속 View·11종 type·최소 select·실제 격리/정렬·rollback을 포함해 임시 PostgreSQL 17에서 전체 58 suites/341 tests를 통과했다. schema/migration/업무 DB 변경 없이 조회만 구현했으며 FE·생성/저장·즐겨찾기 쓰기는 후속 범위다.
+
 ViewWorkDependencyTypeEnum의 값은 약어 대신 FINISH_TO_START, START_TO_START, FINISH_TO_FINISH, START_TO_FINISH를 사용한다. 앞부분은 선행 업무, 뒷부분은 후행 업무의 시점이며 각 값에 한글 주석을 둔다. 기존 View 데이터가 없음을 확인하고 현재 Enum 값으로 재생성했으며 약어 매핑은 두지 않았다.
 
 후속 복합 FK와 필요한 UNIQUE, CHECK, 조회 인덱스, 기존 Object/List 보완 후보 및 의도적으로 제외한 Record 인덱스 이력은 [TODO 검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 기록했다. 사용자 판단 전에는 이 목록을 자동 적용하지 않는다.

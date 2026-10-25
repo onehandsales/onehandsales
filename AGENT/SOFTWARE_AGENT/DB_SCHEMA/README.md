@@ -111,7 +111,9 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 2026-10-25 Object/List 클릭 시 헤더를 먼저 조회하는 Backend GET /api/users/me/workspaces/:workspaceId/view-header를 구현했다. targetType=OBJECT/LIST와 targetId를 받고 같은 Workspace의 대상 요약, sortOrder/createdAt/id 오름차순 첫 View, 현재 멤버의 isFavorite를 반환한다. View가 없으면 대상 요약과 null View를 반환하며 자동 생성하지 않는다. Object/List는 각 모듈의 공개 단건 Summary Port, View/Favorite는 view-definition이 조회한다. [API 계약과 완료 범위](../../../TODO/DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)를 따른다. 임시 PostgreSQL 17에서 실제 격리·정렬·rollback을 포함한 전체 53 suites/267 tests가 실패·skip 없이 통과했다. 스키마·migration·실제 업무 DB 데이터 변경은 없다.
 
-개별 List/View 화면과 헤더의 FE 연결, Object/List별 View 드롭다운 목록, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 클릭·등록·해제·순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
+2026-10-26 view-definition에 Object/List 소속 View 드롭다운 목록 Backend GET 두 개를 구현했다. 각 API는 인증 사용자 멤버십과 대상의 Workspace 소속을 기존 공개 Port로 확인하고, ViewDefinition을 workspaceId+대상 FK로 조회한다. sortOrder/createdAt/id 오름차순 전체 요약과 선택적 viewId의 isSelected를 반환한다. 빈 목록·선택 ID 누락/불일치·UUID 대소문자를 처리하며 두 소속 View를 임의 XOR로 제외하지 않는다. [계약·검증·완료 범위](../../../TODO/DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md)를 따른다. 임시 PG17의 전체 58 suites/341 tests와 typecheck/lint/build·Prisma 검증이 통과했다. schema/migration/업무 DB·환경 파일 변경은 없다.
+
+개별 List/View 화면과 헤더·View 드롭다운의 FE 연결, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 클릭·등록·해제·순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 

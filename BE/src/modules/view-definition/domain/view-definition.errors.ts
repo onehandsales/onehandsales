@@ -31,3 +31,35 @@ export class ViewHeaderListDefinitionNotFoundError extends DomainError {
     super("ViewHeaderListDefinitionNotFound", "List definition not found");
   }
 }
+
+// 역할 : Object View 목록에 접근할 수 없는 Workspace 상태를 표현합니다.
+export class ObjectViewsWorkspaceNotFoundError extends DomainError {
+  // 기능 : Workspace 부재와 비멤버를 동일한 조회 오류로 처리합니다.
+  constructor() {
+    super("ObjectViewsWorkspaceNotFound", "Workspace not found");
+  }
+}
+
+// 역할 : Object View 목록의 대상이 요청 Workspace에 없는 상태를 표현합니다.
+export class ObjectViewsObjectDefinitionNotFoundError extends DomainError {
+  // 기능 : 대상 부재와 다른 Workspace의 Object를 동일한 조회 오류로 처리합니다.
+  constructor() {
+    super("ObjectViewsObjectDefinitionNotFound", "Object definition not found");
+  }
+}
+
+// 역할 : List View 목록에 접근할 수 없는 Workspace 상태를 표현합니다.
+export class ListViewsWorkspaceNotFoundError extends DomainError {
+  // 기능 : Workspace 부재와 비멤버를 동일한 조회 오류로 처리합니다.
+  constructor() {
+    super("ListViewsWorkspaceNotFound", "Workspace not found");
+  }
+}
+
+// 역할 : List View 목록의 대상이 요청 Workspace에 없는 상태를 표현합니다.
+export class ListViewsListDefinitionNotFoundError extends DomainError {
+  // 기능 : 대상 부재와 다른 Workspace의 List를 동일한 조회 오류로 처리합니다.
+  constructor() {
+    super("ListViewsListDefinitionNotFound", "List definition not found");
+  }
+}
