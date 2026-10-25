@@ -12,19 +12,25 @@
 
 ## 2. 현재 상태
 
-검토 기준일: 2026-09-08
+검토 기준일: 2026-10-25
 
-현재 `TODO` 바로 아래에는 활성 계획 폴더가 없다.
+사용자 요청으로 [View 헤더 단건 조회 API 계획](VIEW_HEADER_DETAIL_API_PLAN/README.md)을 추가했다. 계약은 confirmed, 실제 API 구현은 미착수다. COMPANY_DOMAIN_PLAN처럼 README·COMMON·BE-TODO·FE-TODO로 나누고 API 계약·사용 흐름·작업 분담·구현·검증·최종 규칙 검토를 역할별 문서로 관리한다.
 
 ```text
 TODO/
   README.md
+  VIEW_HEADER_DETAIL_API_PLAN/
+    README.md
+    COMMON/
+      API-SPEC/VIEW_HEADER_DETAIL_API.md
+    BE-TODO/
+    FE-TODO/
   DONE/
     README.md
     <완료 보관 계획>
 ```
 
-따라서 활성 TODO 전체를 재검토할 때는 `TODO/DONE/**`을 제외하면 검토할 활성 계획 문서가 없다. 새 요구사항, QA 후속 조치, 결함 수정, API-SPEC 보강, UX/UI 개선, Paddle/Billing 착수는 `TODO` 바로 아래에 새 계획 폴더를 만든 뒤 진행한다.
+활성 TODO를 재검토할 때는 위 계획을 포함하고 `TODO/DONE/**`은 제외한다. 새 요구사항, QA 후속 조치, 결함 수정, API-SPEC 보강, UX/UI 개선, Paddle/Billing 착수는 `TODO` 바로 아래에 새 계획 폴더를 만든 뒤 진행한다.
 
 완료된 계획의 구현 결과나 과거 의사결정 근거가 필요할 때만 `TODO/DONE/<PLAN_NAME>`을 참고한다. 완료 보관 문서는 현재 남은 작업 목록이 아니며, 후속 구현이 필요하면 완료 문서를 직접 수정하지 않고 새 활성 계획으로 승격한다.
 
@@ -94,13 +100,13 @@ TODO/
 - API 명세는 request 형태, response 형태, 내부 비즈니스 로직, 연결 DB, transaction, observability, 에러 응답, FE/BE 처리 기준이 있는지 확인한다.
 - Frontend 남은 작업은 화면 목적, 사용 API, 상태 관리, 검색/필터/페이지네이션/다운로드, loading/empty/error/success 처리 기준으로 정리한다.
 - 재검토 결과에는 검토 기준일, 검토 대상, Backend API 구현 근거, API 계약 상태와 실제 구현 상태의 일치 여부, Frontend 남은 작업 목적, 문서 링크 오류와 상태 불일치를 남긴다.
-- 현재처럼 활성 계획이 없으면 새 작업을 위해 `TODO/<PLAN_NAME>`을 먼저 만들거나, 사용자가 지정한 새 요구사항을 계획 폴더로 작성한다.
+- 새 작업은 `TODO/<PLAN_NAME>`에 목적과 계약을 기록하거나, 사용자가 지정한 새 요구사항을 계획 폴더로 작성한다.
 
 ## 6. 현재 우선순위
 
-현재 즉시 실행 가능한 활성 계획은 없다.
+현재 사용자 요청에 따른 다음 구현 단위는 `VIEW_HEADER_DETAIL_API_PLAN`의 View 헤더 단건 조회 Backend API 1개다. 지금은 계획 작성 단계이며 실제 구현은 후속 요청으로 진행한다.
 
-다음 작업이 생기면 아래 순서로 판단한다.
+그 밖의 후속 작업이 생기면 아래 순서로 판단한다.
 
 1. S0/S1/S2 결함, 보안, ownership, 데이터 손상 위험을 최우선으로 새 계획화한다.
 2. Global B2C 01~11 완료 범위의 유지보수와 UX/UI 상품성 개선을 우선한다.
