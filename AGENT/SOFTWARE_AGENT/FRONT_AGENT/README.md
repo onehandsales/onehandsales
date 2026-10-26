@@ -14,9 +14,9 @@ Frontend Agent는 User Web과 Admin Web의 구현 구조, route, feature boundar
 - Help Support Request
 - Public Contact Request
 - Public Site
-- CRM Core 공통 View 헤더·보기 선택
+- CRM Core 공통 View 헤더·보기 선택·개인 즐겨찾기 등록/해제
 
-2026-10-26 User Web의 crm-view feature에 Object/List 공통 헤더의 서버 조회·보기 목록·선택 표시를 연결했다. AppShell이 헤더 모델을 한 번 만들고 두 반응형 헤더가 동일 선택 상태를 공유한다. 업무목록 경로와 Sidebar 링크를 추가했으며, 기존 Object 본문과 오른쪽 도구는 유지한다. [소비 계약·구현·검증](../../../TODO/DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md)을 따른다. View 생성/설정 저장·즐겨찾기 쓰기·타입별 본문은 후속 범위다.
+2026-10-26 User Web의 crm-view feature에 Object/List 공통 헤더의 서버 조회·보기 목록·선택 표시를 연결했다. AppShell이 헤더 모델을 한 번 만들고 두 반응형 헤더가 동일 선택 상태를 공유한다. 업무목록 경로와 Sidebar 링크를 추가했으며, 기존 Object 본문과 오른쪽 도구는 유지한다. [기존 조회 연결](../../../TODO/DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md)에 이어 [개인 즐겨찾기 등록/해제](../../../TODO/DONE/VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md)를 연결했다. 공통 별표가 서버 응답을 반영하고 헤더·개인 목록을 갱신하며 중복/실패/늦은 응답·모바일 상태를 처리한다. View 생성/설정 저장·즐겨찾기 행 클릭 이동/정렬·타입별 본문은 후속 범위다.
 
 ## 3. Admin Web 현재 활성 범위
 

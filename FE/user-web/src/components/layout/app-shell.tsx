@@ -743,6 +743,7 @@ export function AppShell() {
     targetType: viewHeaderTargetType,
     targetId: viewHeaderTargetId,
     favorites: sidebarViewFavoritesQuery.data,
+    favoritesUpdatedAt: sidebarViewFavoritesQuery.dataUpdatedAt,
   });
   // 37. 이후 단계에서 사용할 isMobileHeaderHidden 값을 준비한다.
   const isMobileHeaderHidden = false;

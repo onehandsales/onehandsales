@@ -16,6 +16,7 @@
 
 ## 3. 현재 보관 목록
 
+- [VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN](VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md): 공통 별표의 개인 View 즐겨찾기 등록/해제 API 연결과 헤더·사이드바 갱신, 캐시/중복/실패/늦은 응답·모바일·G99 검토 완료. 단위 58건·Chromium E2E 33건 통과. 즐겨찾기 행 클릭 이동/정렬은 후속 범위
 - [VIEW_FAVORITE_MUTATION_API_PLAN](VIEW_FAVORITE_MUTATION_API_PLAN/README.md): 개인 View 즐겨찾기 POST/DELETE Backend API와 멱등성·동시 요청·순서·생성/삭제 rollback·요청 ID 로그·G99 검토 완료. 전체 61 suites/400 tests 통과. 별표 클릭 Frontend 연결은 후속 범위
 - [VIEW_HEADER_FRONTEND_INTEGRATION_PLAN](VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md): 공통 헤더·View 목록/선택·읽기 별표·업무목록 경로 연결 완료. 단위 41건·고유 E2E 20건과 정적/빌드·G99 검증. 타입별 본문·생성/저장은 후속 범위
 - [OBJECT_LIST_VIEW_LIST_API_PLAN](OBJECT_LIST_VIEW_LIST_API_PLAN/README.md): Object/List 소속 View 목록 Backend API 두 개와 G99 검토 완료. 전체 58 suites/341 tests 통과. FE 연결·생성/저장은 후속 범위

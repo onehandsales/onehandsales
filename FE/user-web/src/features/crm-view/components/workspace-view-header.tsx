@@ -25,7 +25,7 @@ const TYPE_LABELS: Record<WorkspaceViewType, AppI18nKey> = {
   MAP: "viewHeader.map", DASHBOARD: "viewHeader.dashboard",
 };
 
-// 기능 : 관리항목과 업무목록의 대상·현재 보기·읽기 전용 별표를 공통 표시합니다.
+// 기능 : 관리항목과 업무목록의 대상·현재 보기·개인 별표 변경을 공통 제공합니다.
 export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHeaderModel }) {
   const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +34,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
   const triggerRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const panelId = useId();
+  const favoriteErrorId = useId();
   const viewsQuery = useWorkspaceViews({
     userId: model.userId, workspaceId: model.workspaceId, targetType: model.targetType,
     targetId: model.target?.id ?? null, viewId: model.currentView?.viewId ?? null,
@@ -114,6 +115,12 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     void viewsQuery.refetch();
   }
 
+  // 기능 : 실패 안내를 닫고 보기 선택 버튼으로 초점을 돌려 다음 조작을 이어갑니다.
+  function handleDismissFavoriteError() {
+    model.onDismissFavoriteError();
+    triggerRef.current?.focus();
+  }
+
   if (model.isLoading) {
     return <div aria-label={t("viewHeader.loadingHeader")} className="flex min-w-0 items-center gap-2" role="status">
       <span className="h-4 w-20 animate-pulse rounded bg-[#EEEDE9]" />
@@ -129,7 +136,9 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
 
   const favoriteLabel = !model.currentView ? "viewHeader.noCurrentView"
     : model.isFavorite === null ? "viewHeader.favoriteUnknown"
-    : model.isFavorite ? "viewHeader.favorited" : "viewHeader.notFavorited";
+    : model.isFavorite ? "viewHeader.removeFavorite" : "viewHeader.addFavorite";
+  const favoriteErrorLabel = model.favoriteError === "UNAVAILABLE" ? "viewHeader.favoriteUnavailable"
+    : model.favoriteError === "UNAUTHORIZED" ? "viewHeader.favoriteUnauthorized" : "viewHeader.favoriteSaveError";
 
   return <div className="relative flex min-w-0 shrink items-center gap-1.5" data-testid="workspace-view-header" ref={rootRef}>
     <IconValueGlyph className="h-4 w-4 shrink-0 text-[#6B7280]" name={model.target.icon} />
@@ -150,11 +159,26 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       <span className="truncate">{model.currentView?.viewName ?? t("viewHeader.noCurrentView")}</span>
       <ChevronDown aria-hidden="true" className="h-3 w-3 shrink-0 text-[#A4A39E]" />
     </button>
-    <span
+    <button
+      aria-busy={model.isFavoritePending}
+      aria-describedby={model.favoriteError && !isOpen ? favoriteErrorId : undefined}
       aria-label={t(favoriteLabel)}
-      className={cn("inline-flex h-7 w-6 shrink-0 items-center justify-center text-[#9B9A97]", model.isFavorite === true && "text-[#CF9B2B]", !model.currentView && "opacity-40")}
-      role="img"
-    ><Star aria-hidden="true" className={cn("h-[15px] w-[15px]", model.isFavorite === true && "fill-current")} /></span>
+      aria-pressed={model.isFavorite ?? undefined}
+      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#F0EFEC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#CF9B2B]")}
+      disabled={!model.canToggleFavorite}
+      onClick={model.onToggleFavorite}
+      title={t(model.isFavoritePending ? "viewHeader.changingFavorite" : favoriteLabel)}
+      type="button"
+    ><Star aria-hidden="true" className={cn("h-[15px] w-[15px]", model.isFavorite === true && "fill-current")} /></button>
+    {model.isFavoritePending && <span className="sr-only" role="status">{t("viewHeader.changingFavorite")}</span>}
+    {model.favoriteError && !isOpen && <div
+      className="absolute left-0 top-[calc(100%+6px)] z-50 flex w-[280px] max-w-[calc(100vw-32px)] items-start gap-2 rounded-lg border border-[#E7E6E2] bg-white p-3 text-[12px] leading-relaxed text-[#65645F] shadow-lg"
+      id={favoriteErrorId}
+      role="alert"
+    >
+      <span className="flex-1">{t(favoriteErrorLabel)}</span>
+      <button className="shrink-0 rounded px-1 text-[#787774] hover:bg-[#F0EFEC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50" onClick={handleDismissFavoriteError} type="button">{t("common.close")}</button>
+    </div>}
     {isOpen && <div
       aria-label={t("viewHeader.selectView")}
       className="absolute left-0 top-[calc(100%+6px)] z-50 w-[300px] max-w-[calc(100vw-24px)] rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)]"

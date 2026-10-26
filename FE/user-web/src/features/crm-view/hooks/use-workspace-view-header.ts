@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ApiClientError } from "@/lib/api-client";
 import { getWorkspaceViewHeader } from "../api/workspace-view-api";
 import { workspaceViewQueryKeys } from "../api/workspace-view-query-keys";
+import { useWorkspaceViewFavorite, type ViewFavoriteError } from "./use-workspace-view-favorite";
 import type {
   WorkspaceViewListItem, WorkspaceViewTarget, WorkspaceViewTargetType,
 } from "../types/workspace-view";
@@ -13,6 +14,7 @@ type HeaderOptions = {
   readonly targetType: WorkspaceViewTargetType | null;
   readonly targetId: string | null;
   readonly favorites: readonly { readonly viewDefinitionId: string }[] | undefined;
+  readonly favoritesUpdatedAt: number;
 };
 
 export type WorkspaceViewHeaderModel = {
@@ -25,13 +27,18 @@ export type WorkspaceViewHeaderModel = {
   readonly isLoading: boolean;
   readonly isError: boolean;
   readonly isUnavailable: boolean;
+  readonly isFavoritePending: boolean;
+  readonly canToggleFavorite: boolean;
+  readonly favoriteError: ViewFavoriteError | null;
+  readonly onToggleFavorite: () => void;
+  readonly onDismissFavoriteError: () => void;
   readonly onSelect: (view: WorkspaceViewListItem) => void;
   readonly onRetry: () => void;
 };
 
 // 기능 : 두 반응형 헤더가 같은 서버 응답과 현재 보기 선택을 사용하도록 관리합니다.
 export function useWorkspaceViewHeader({
-  userId, workspaceId, targetType, targetId, favorites,
+  userId, workspaceId, targetType, targetId, favorites, favoritesUpdatedAt,
 }: HeaderOptions): WorkspaceViewHeaderModel {
   // 1. 현재 사용자와 경로의 대상이 모두 확정된 경우만 초기 헤더를 조회한다.
   const enabled = Boolean(userId && workspaceId && targetType && targetId);
@@ -66,9 +73,15 @@ export function useWorkspaceViewHeader({
           viewType: header.viewType, isSelected: true }
       : null;
   const currentView = selection?.scope === scope ? selection.view : initialView;
-  const isFavorite = !currentView ? false
+  const serverIsFavorite = !currentView ? false
     : currentView.viewId === header?.viewId ? header.isFavorite
     : favorites?.some(item => item.viewDefinitionId === currentView.viewId) ?? null;
+  const favorite = useWorkspaceViewFavorite({
+    userId, workspaceId, viewId: currentView?.viewId ?? null,
+    serverIsFavorite,
+    serverUpdatedAt: currentView?.viewId === header?.viewId ? query.dataUpdatedAt : favoritesUpdatedAt,
+    enabled: enabled && !query.isPending && !query.isError && Boolean(target && currentView),
+  });
 
   // 기능 : 선택한 보기의 표시 정보만 현재 화면에 반영합니다.
   function handleSelect(view: WorkspaceViewListItem) {
@@ -82,10 +95,13 @@ export function useWorkspaceViewHeader({
 
   // 3. 다른 대상의 응답이나 조회 실패를 정상 빈 상태로 표시하지 않는다.
   return {
-    userId, workspaceId, targetType, target, currentView, isFavorite,
+    userId, workspaceId, targetType, target, currentView, isFavorite: favorite.isFavorite,
     isLoading: enabled && query.isPending,
     isError: query.isError || (query.isSuccess && !target),
     isUnavailable: query.error instanceof ApiClientError && query.error.statusCode === 404,
+    isFavoritePending: favorite.isPending, canToggleFavorite: favorite.canToggle,
+    favoriteError: favorite.error, onToggleFavorite: favorite.onToggle,
+    onDismissFavoriteError: favorite.onDismissError,
     onSelect: handleSelect, onRetry: handleRetry,
   };
 }

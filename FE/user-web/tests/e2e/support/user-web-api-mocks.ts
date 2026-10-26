@@ -108,9 +108,9 @@ export async function setupUserWebApiMocks(
     // 4. 이후 단계에서 사용할 authorization 값을 준비한다.
     const authorization = route.request().headers().authorization ?? null;
 
-    // 5. 조건을 확인해 필요한 분기 처리를 수행한다.
+    // 5. 브라우저 origin에 맞춘 preflight로 cookie 기반 인증 갱신도 테스트한다.
     if (method === "OPTIONS") {
-      await route.fulfill({ headers: corsHeaders(), status: 204 });
+      await route.fulfill({ headers: corsHeaders(route.request().headers().origin), status: 204 });
       return;
     }
 
@@ -677,8 +677,9 @@ function json(body: unknown, status = 200): MockApiResponse {
   return { body, contentType: "application/json", status };
 }
 
-// 기능 : fulfill 기능을 수행합니다.
+// 기능 : 요청 origin과 서버 응답 형식을 보존해 테스트 API 결과를 반환합니다.
 async function fulfill(route: Route, response: MockApiResponse) {
+  // 1. JSON 응답은 공통 직렬화 경로로 전달하고 나머지 본문 형식은 그대로 보존한다.
   if (response.contentType === "application/json") {
     await fulfillJson(route, response.body ?? null, response.status ?? 200, response.headers);
     return;
@@ -687,7 +688,7 @@ async function fulfill(route: Route, response: MockApiResponse) {
   await route.fulfill({
     body: String(response.body ?? ""),
     headers: {
-      ...corsHeaders(),
+      ...corsHeaders(route.request().headers().origin),
       ...(response.contentType ? { "content-type": response.contentType } : {}),
       ...(response.headers ?? {}),
     },
@@ -695,17 +696,18 @@ async function fulfill(route: Route, response: MockApiResponse) {
   });
 }
 
-// 기능 : Playwright route에 JSON mock 응답을 반환합니다.
+// 기능 : 요청 origin에서 인증 정보를 포함해 읽을 수 있는 JSON mock 응답을 반환합니다.
 async function fulfillJson(
   route: Route,
   body: unknown,
   status = 200,
   headers: Record<string, string> = {},
 ) {
+  // 1. 실제 브라우저 origin과 합의한 상태 코드를 함께 반환한다.
   await route.fulfill({
     body: JSON.stringify(body),
     headers: {
-      ...corsHeaders(),
+      ...corsHeaders(route.request().headers().origin),
       "content-type": "application/json",
       ...headers,
     },
@@ -713,13 +715,13 @@ async function fulfillJson(
   });
 }
 
-// 기능 : cors Headers 기능을 수행합니다.
-function corsHeaders() {
+// 기능 : refresh cookie를 사용하는 요청도 실제 브라우저 origin으로 테스트할 수 있게 합니다.
+function corsHeaders(origin = "http://127.0.0.1:5175") {
   return {
     "access-control-allow-credentials": "true",
     "access-control-allow-headers": "authorization, content-type",
     "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS",
-    "access-control-allow-origin": "*",
+    "access-control-allow-origin": origin,
   };
 }
 

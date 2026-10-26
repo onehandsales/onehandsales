@@ -110,7 +110,7 @@ test("loads an Object header first and its view list only when opened", async ({
   expect(state.headers[0]!.searchParams.get("targetType")).toBe("OBJECT");
   expect(state.headers[0]!.searchParams.get("targetId")).toBe("object-definition-company");
   expect(state.lists).toHaveLength(0);
-  await expect(header(page).getByRole("img", { name: "즐겨찾기에 등록되지 않은 보기" })).toBeVisible();
+  await expect(header(page).getByRole("button", { name: "현재 보기 즐겨찾기 등록" })).toHaveAttribute("aria-pressed", "false");
 
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   const menu = header(page).getByRole("dialog");
@@ -120,7 +120,7 @@ test("loads an Object header first and its view list only when opened", async ({
   await expect(menu.getByRole("option").first()).toHaveAttribute("aria-selected", "true");
   await menu.getByRole("option", { name: /단계별 회사/ }).click();
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("단계별 회사");
-  await expect(header(page).getByRole("img", { name: "즐겨찾기에 등록된 보기", exact: true })).toBeVisible();
+  await expect(header(page).getByRole("button", { name: "현재 보기 즐겨찾기 해제", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(menu).not.toBeVisible();
 
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
@@ -155,7 +155,7 @@ test("connects List navigation and calls only its own view-list API", async ({ p
   expect(state.lists[0]!.pathname).toContain("/list-definitions/pipeline-from-header/view-definitions");
   await header(page).getByRole("option").last().click();
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("단계별 영업");
-  await expect(header(page).getByRole("img", { name: "즐겨찾기에 등록된 보기", exact: true })).toBeVisible();
+  await expect(header(page).getByRole("button", { name: "현재 보기 즐겨찾기 해제", exact: true })).toHaveAttribute("aria-pressed", "true");
   expect(state.lists.every(url => !url.pathname.includes("/object-definitions/"))).toBe(true);
   expect(state.writes).toEqual([]);
 });
@@ -262,10 +262,10 @@ test("keeps initial favorite state authoritative and distinguishes unknown state
     route.fulfill({ status: 500, json: { error: "InternalServerError" } }),
   );
   await page.goto(OBJECT_PATH);
-  await expect(header(page).getByRole("img", { name: "즐겨찾기에 등록된 보기", exact: true })).toBeVisible();
+  await expect(header(page).getByRole("button", { name: "현재 보기 즐겨찾기 해제", exact: true })).toHaveAttribute("aria-pressed", "true");
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await header(page).getByRole("option").last().click();
-  await expect(header(page).getByRole("img", { name: "즐겨찾기 상태 미확인", exact: true })).toBeVisible();
+  await expect(header(page).getByRole("button", { name: "즐겨찾기 상태 미확인", exact: true })).toBeDisabled();
   expect(state.writes).toEqual([]);
 });
 
