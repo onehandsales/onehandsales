@@ -16,6 +16,7 @@
 
 ## 3. 현재 보관 목록
 
+- [VIEW_FAVORITE_MUTATION_API_PLAN](VIEW_FAVORITE_MUTATION_API_PLAN/README.md): 개인 View 즐겨찾기 POST/DELETE Backend API와 멱등성·동시 요청·순서·생성/삭제 rollback·요청 ID 로그·G99 검토 완료. 전체 61 suites/400 tests 통과. 별표 클릭 Frontend 연결은 후속 범위
 - [VIEW_HEADER_FRONTEND_INTEGRATION_PLAN](VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md): 공통 헤더·View 목록/선택·읽기 별표·업무목록 경로 연결 완료. 단위 41건·고유 E2E 20건과 정적/빌드·G99 검증. 타입별 본문·생성/저장은 후속 범위
 - [OBJECT_LIST_VIEW_LIST_API_PLAN](OBJECT_LIST_VIEW_LIST_API_PLAN/README.md): Object/List 소속 View 목록 Backend API 두 개와 G99 검토 완료. 전체 58 suites/341 tests 통과. FE 연결·생성/저장은 후속 범위
 - [VIEW_HEADER_DETAIL_API_PLAN](VIEW_HEADER_DETAIL_API_PLAN/README.md): Object/List 클릭 시 초기 View 헤더 조회 Backend API 구현·검증·G99 완료. 전체 53 suites/267 tests 통과. Frontend·View 목록·생성/저장은 후속 범위

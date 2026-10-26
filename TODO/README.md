@@ -14,13 +14,14 @@
 
 검토 기준일: 2026-10-26
 
-기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md)에 이어 [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md)을 완료했다. 조회·드롭다운 선택·별표 상태 표시를 연결하고 단위 41건·고유 E2E 20건과 typecheck/lint/build를 검증했다. 현재 활성 계획은 없다. 생성/저장·타입별 본문은 후속 범위다.
+기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md), [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md)에 이어 [View 즐겨찾기 추가·삭제 Backend API](DONE/VIEW_FAVORITE_MUTATION_API_PLAN/README.md)를 완료했다. 신규 등록·재요청·해제의 멱등성과 개인 순서·동시 요청·rollback·요청 ID 로그를 검증했고 전체 61 suites/400 tests·typecheck/lint/build를 통과했다. 현재 활성 계획은 없다. 별표 클릭의 Frontend 연결·생성/저장·타입별 본문은 후속 범위다.
 
 ```text
 TODO/
   README.md
   DONE/
     README.md
+    VIEW_FAVORITE_MUTATION_API_PLAN/
     VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/
     OBJECT_LIST_VIEW_LIST_API_PLAN/
     VIEW_HEADER_DETAIL_API_PLAN/

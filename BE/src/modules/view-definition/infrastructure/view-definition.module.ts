@@ -1,4 +1,9 @@
 import { Module } from "@nestjs/common";
+import { VIEW_FAVORITE_COMMAND_REPOSITORY } from "@/modules/view-definition/application/ports/view-favorite-command.repository";
+import { CreateWorkspaceViewFavoriteUseCase } from "@/modules/view-definition/application/use-cases/create-workspace-view-favorite.use-case";
+import { DeleteWorkspaceViewFavoriteUseCase } from "@/modules/view-definition/application/use-cases/delete-workspace-view-favorite.use-case";
+import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logger.port";
+import { AppLogger } from "@/shared/infrastructure/logger/app-logger.service";
 import { OBJECT_DEFINITION_VIEWS_QUERY } from "@/modules/view-definition/application/ports/object-definition-views-query.port";
 import { LIST_DEFINITION_VIEWS_QUERY } from "@/modules/view-definition/application/ports/list-definition-views-query.port";
 import { ListWorkspaceObjectViewsUseCase } from "@/modules/view-definition/application/use-cases/list-workspace-object-views.use-case";
@@ -13,6 +18,7 @@ import { ListSidebarViewFavoritesUseCase } from "@/modules/view-definition/appli
 import { WorkspaceModule } from "@/modules/workspace/infrastructure/workspace.module";
 import { PrismaInfrastructureModule } from "@/shared/infrastructure/prisma/prisma-infrastructure.module";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import { PrismaViewFavoriteCommandRepository } from "./persistence/prisma-view-favorite-command.repository";
 import { PrismaViewFavoriteSidebarQueryRepository } from "./persistence/prisma-view-favorite-sidebar-query.repository";
 import { PrismaViewDefinitionHeaderQueryRepository } from "./persistence/prisma-view-definition-header-query.repository";
 import { PrismaObjectDefinitionViewsQueryRepository } from "./persistence/prisma-object-definition-views-query.repository";
@@ -21,8 +27,9 @@ import { UserWorkspaceObjectViewsController } from "../presentation/http/user-wo
 import { UserWorkspaceListViewsController } from "../presentation/http/user-workspace-list-views.controller";
 import { UserWorkspaceViewHeaderController } from "../presentation/http/user-workspace-view-header.controller";
 import { UserSidebarWorkspaceViewFavoritesController } from "../presentation/http/user-sidebar-workspace-view-favorites.controller";
+import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-workspace-view-favorite.controller";
 
-// 역할 : View 헤더·대상별 보기 목록·즐겨찾기 조회와 공개 Port 의존성을 조립합니다.
+// 역할 : View 헤더·보기 목록·개인 즐겨찾기 조회·변경과 공개 Port 의존성을 조립합니다.
 @Module({
   imports: [
     AuthModule,
@@ -36,8 +43,20 @@ import { UserSidebarWorkspaceViewFavoritesController } from "../presentation/htt
     UserWorkspaceListViewsController,
     UserSidebarWorkspaceViewFavoritesController,
     UserWorkspaceViewHeaderController,
+    UserWorkspaceViewFavoriteController,
   ],
   providers: [
+    AppLogger,
+    { provide: APPLICATION_LOGGER, useExisting: AppLogger },
+    CreateWorkspaceViewFavoriteUseCase,
+    DeleteWorkspaceViewFavoriteUseCase,
+    {
+      provide: VIEW_FAVORITE_COMMAND_REPOSITORY,
+      // 기능 : View 소유 데이터의 transaction 기반 즐겨찾기 쓰기 구현체를 조립합니다.
+      useFactory: (prismaService: PrismaService) =>
+        new PrismaViewFavoriteCommandRepository(prismaService),
+      inject: [PrismaService],
+    },
     ListWorkspaceObjectViewsUseCase,
     ListWorkspaceListViewsUseCase,
     {
