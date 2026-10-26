@@ -38,8 +38,10 @@ test.describe("sidebar work lists", () => {
     await expect(firstRow).toHaveCSS("color", managedColors.text);
     await expect(firstRow.locator("svg")).toHaveCSS("color", "rgb(107, 114, 128)");
 
-    // 4. 기존 섹션 접기·펼치기를 유지하고 미구현 List 링크를 만들지 않는다.
-    await expect(lists.getByRole("link")).toHaveCount(0);
+    // 4. 업무목록 경로를 연결하면서 기존 섹션 접기·펼치기를 유지한다.
+    await expect(lists.getByRole("link")).toHaveCount(2);
+    await expect(lists.getByRole("link", { name: "영업 파이프라인", exact: true }))
+      .toHaveAttribute("href", "/app/workspaces/workspace-e2e-001/lists/list-definition-pipeline");
     await navigation.getByRole("button", { name: "업무 목록 닫기", exact: true }).click();
     await expect(lists).toHaveCount(0);
     await navigation.getByRole("button", { name: "업무 목록 열기", exact: true }).click();

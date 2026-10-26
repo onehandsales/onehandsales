@@ -4,6 +4,7 @@
 
 - `app-i18n`
 - `auth`
+- `crm-view`: 관리항목/업무목록의 공통 헤더·View 목록 조회와 화면 선택 상태
 - `error-report`
 - `public-contact-request`
 - `public-site`

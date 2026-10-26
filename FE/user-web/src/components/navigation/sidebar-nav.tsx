@@ -4,7 +4,7 @@ import { SidebarDataSection } from "@/components/navigation/sidebar-section";
 import type { SidebarCrmListItem } from "@/features/crm-list";
 import type { SidebarCrmObjectListItem } from "@/features/crm-object";
 import type { SidebarViewFavoriteItem } from "@/features/view-favorite";
-import { toWorkspaceObjectPath } from "@/features/workspace";
+import { toWorkspaceListPath, toWorkspaceObjectPath } from "@/features/workspace";
 import { cn } from "@/utils/cn";
 
 type SidebarNavProps = {
@@ -45,6 +45,7 @@ export function SidebarNav({
     id: list.id,
     label: list.name,
     icon: list.icon,
+    ...(workspaceId ? { to: toWorkspaceListPath(workspaceId, list.id) } : {}),
   }));
   const managedItems: readonly SidebarDataItem[] = crmObjects.map((object) => ({
     id: object.id,

@@ -65,6 +65,7 @@ import {
   CreateWorkspaceModalContent,
   type CreatedWorkspaceResponse,
   isWorkspaceHomePath,
+  isWorkspaceListPath,
   isWorkspaceObjectPath,
   type SidebarWorkspaceSummary,
   toWorkspaceHomePath,
@@ -83,7 +84,6 @@ import {
 } from "@/features/view-favorite";
 import {
   CreateObjectDefinitionModalContent,
-  SidebarCrmObjectIcon,
   type SidebarCrmObjectListItem,
   useSidebarCrmObjectsQuery,
 } from "@/features/crm-object";
@@ -98,6 +98,7 @@ import {
 } from "@/components/layout/account-modal-route";
 import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { WorkspaceViewHeader, useWorkspaceViewHeader } from "@/features/crm-view";
 
 const ACCOUNT_MODAL_TRANSITION_MS = 300;
 const ACCOUNT_MODAL_OPEN_DELAY_MS = 20;
@@ -141,8 +142,9 @@ export function AppShell() {
   // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
   // 3. 처리 흐름에 필요한 route params 값을 준비한다.
-  const { objectDefinitionId: routeObjectDefinitionId, workspaceId: routeWorkspaceId } = useParams<{
+  const { objectDefinitionId: routeObjectDefinitionId, listDefinitionId: routeListDefinitionId, workspaceId: routeWorkspaceId } = useParams<{
     readonly objectDefinitionId?: string;
+    readonly listDefinitionId?: string;
     readonly workspaceId?: string;
   }>();
   // 4. 처리 흐름에 필요한 queryClient 값을 준비한다.
@@ -729,7 +731,19 @@ export function AppShell() {
 
   // 36. 이후 단계에서 사용할 isFixedViewportPage 값을 준비한다.
   const isWorkspaceObject = isWorkspaceObjectPath(pathname);
-  const isFixedViewportPage = isHome || isWorkspaceObject;
+  const isWorkspaceList = isWorkspaceListPath(pathname);
+  const isWorkspaceViewTarget = isWorkspaceObject || isWorkspaceList;
+  const isFixedViewportPage = isHome || isWorkspaceViewTarget;
+  const viewHeaderTargetType = isWorkspaceObject ? "OBJECT" : isWorkspaceList ? "LIST" : null;
+  const viewHeaderTargetId = isWorkspaceObject ? routeObjectDefinitionId ?? null : routeListDefinitionId ?? null;
+  const viewHeaderScope = JSON.stringify([user?.id, normalizedRouteWorkspaceId, viewHeaderTargetType, viewHeaderTargetId]);
+  const viewHeaderModel = useWorkspaceViewHeader({
+    userId: user?.id ?? null,
+    workspaceId: normalizedRouteWorkspaceId,
+    targetType: viewHeaderTargetType,
+    targetId: viewHeaderTargetId,
+    favorites: sidebarViewFavoritesQuery.data,
+  });
   // 37. 이후 단계에서 사용할 isMobileHeaderHidden 값을 준비한다.
   const isMobileHeaderHidden = false;
   // 38. 이후 단계에서 사용할 hideTopBar 값을 준비한다.
@@ -751,23 +765,11 @@ export function AppShell() {
 
   // 40. 이후 단계에서 사용할 topBarContent 값을 준비한다.
   const topBarContent = (() => {
-    if (isWorkspaceObject) {
-      const objectLabel =
-        selectedSidebarCrmObject?.singularName ?? t("navigation.mainGroup");
-
+    if (isWorkspaceViewTarget) {
       return (
         <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3">
           {sidebarOpenButton}
-          <span className="inline-flex h-7 w-6 shrink-0 items-center justify-center">
-            <SidebarCrmObjectIcon
-              className="h-4 w-4 shrink-0 text-[#6B7280]"
-              name={selectedSidebarCrmObject?.icon}
-              strokeWidth={2}
-            />
-          </span>
-          <h1 className="min-w-0 max-w-[140px] shrink truncate text-[13px] font-semibold text-[#37352F]" title={objectLabel}>
-            {objectLabel}
-          </h1>
+          <WorkspaceViewHeader key={viewHeaderScope} model={viewHeaderModel} />
           <div className="flex min-w-0 flex-1 items-center" ref={setHeaderToolbarElement} />
         </header>
       );
@@ -1191,7 +1193,11 @@ export function AppShell() {
 
       {/* ── Mobile Shell ── */}
       <div className="min-h-dvh lg:hidden">
-        {!isMobileHeaderHidden ? (
+        {isWorkspaceViewTarget ? (
+          <header className="app-page-header flex h-[var(--topbar-height)] items-center gap-2 bg-white px-3">
+            <WorkspaceViewHeader key={viewHeaderScope} model={viewHeaderModel} />
+          </header>
+        ) : !isMobileHeaderHidden ? (
           <MobileAppHeader />
         ) : null}
         <main className="pb-24">

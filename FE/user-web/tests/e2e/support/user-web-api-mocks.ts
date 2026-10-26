@@ -370,6 +370,31 @@ async function handleApiRequest(
     return json({ workspaceId: store.createdWorkspace.id }, 201);
   }
 
+  // 16. 기본 헤더 fixture는 실제 대상 이름과 View 없는 정상 상태를 제공한다.
+  const viewHeaderMatch = pathname.match(/^\/api\/users\/me\/workspaces\/([^/]+)\/view-header$/);
+  if (viewHeaderMatch && method === "GET") {
+    const workspaceId = decodeURIComponent(viewHeaderMatch[1] ?? "");
+    const targetId = url.searchParams.get("targetId");
+    const targetType = url.searchParams.get("targetType");
+    const object = targetType === "OBJECT" ? createSidebarCrmObjects().find(item => item.id === targetId) : null;
+    const list = targetType === "LIST"
+      ? (store.sidebarCrmLists ?? createSidebarCrmLists(workspaceId)).find(item => item.id === targetId)
+      : null;
+    if (!findSidebarWorkspace(store.createdWorkspace, workspaceId) || (!object && !list)) {
+      return json({ statusCode: 404, error: "ViewHeaderTargetNotFound", message: "Target not found" }, 404);
+    }
+    return json({
+      viewId: null, viewName: null, viewIcon: null, viewType: null, isFavorite: false,
+      objectDefinition: object ? { id: object.id, name: object.singularName, icon: object.icon } : null,
+      listDefinition: list ? { id: list.id, name: list.name, icon: list.icon } : null,
+    });
+  }
+
+  // 17. 원래 Sidebar 회귀에서는 임의 View를 만들지 않고 빈 목록을 반환한다.
+  if (/^\/api\/users\/me\/workspaces\/[^/]+\/(object|list)-definitions\/[^/]+\/view-definitions$/.test(pathname) && method === "GET") {
+    return json({ items: [] });
+  }
+
   if (
     pathname.startsWith("/api/users/me/workspaces/") &&
     pathname.endsWith("/object-definitions") &&

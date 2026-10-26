@@ -43,6 +43,7 @@ import { MorePage } from "@/pages/more";
 import { OnboardingPage } from "@/pages/onboarding";
 import { TermsPage } from "@/pages/terms";
 import { WorkspaceObjectListPage } from "@/pages/workspace-object-list";
+import { WorkspaceListPage } from "@/pages/workspace-list";
 
 const localizedPublicSiteRoutes = publicSiteLocaleSlugs.flatMap((localeSlug) =>
   publicSiteLocalizedPaths.map((publicPath) => ({
@@ -148,6 +149,10 @@ export const router = createBrowserRouter([
       {
         path: "workspaces/:workspaceId/objects/:objectDefinitionId",
         element: <WorkspaceObjectListPage />,
+      },
+      {
+        path: "workspaces/:workspaceId/lists/:listDefinitionId",
+        element: <WorkspaceListPage />,
       },
       { path: "contacts/*", element: <Navigate replace to="/app" /> },
       { path: "products/*", element: <Navigate replace to="/app" /> },

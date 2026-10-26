@@ -5,8 +5,10 @@ export { createWorkspace } from "./api/workspace-api";
 export {
   APP_ENTRY_PATH,
   isWorkspaceHomePath,
+  isWorkspaceListPath,
   isWorkspaceObjectPath,
   toWorkspaceHomePath,
+  toWorkspaceListPath,
   toWorkspaceObjectPath,
 } from "./workspace-routes";
 export type {
