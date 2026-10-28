@@ -11,6 +11,7 @@ type SidebarSectionProps = {
   readonly addLabelKey: AppI18nKey;
   readonly closeLabelKey: AppI18nKey;
   readonly isOpen: boolean;
+  readonly labelIcon?: ReactNode;
   readonly labelKey: AppI18nKey;
   readonly onAdd?: () => void;
   readonly openLabelKey: AppI18nKey;
@@ -19,10 +20,7 @@ type SidebarSectionProps = {
   readonly children?: ReactNode;
 };
 
-type SidebarDataSectionProps = Omit<
-  SidebarSectionProps,
-  "children" | "showAddAction"
-> & {
+type SidebarDataSectionProps = Omit<SidebarSectionProps, "children"> & {
   readonly items: readonly SidebarDataItem[];
   readonly isLoading: boolean;
 };
@@ -31,13 +29,14 @@ type SidebarDataSectionProps = Omit<
 export function SidebarDataSection({
   items,
   isLoading,
+  showAddAction = true,
   ...sectionProps
 }: SidebarDataSectionProps) {
   const { t } = useAppI18n();
 
-  // 1. 관리 항목 기준으로 로딩 중에는 추가 버튼을 숨기고 같은 목록을 렌더링한다.
+  // 1. 섹션 설정과 로딩 상태에 따라 추가 버튼 표시 여부를 결정한다.
   return (
-    <SidebarSection {...sectionProps} showAddAction={!isLoading}>
+    <SidebarSection {...sectionProps} showAddAction={showAddAction && !isLoading}>
       <SidebarDataList
         items={items}
         isLoading={isLoading}
@@ -47,12 +46,13 @@ export function SidebarDataSection({
   );
 }
 
-// 기능 : 사이드바 섹션의 접힘 상태와 추가 버튼 영역을 렌더링합니다.
+// 기능 : 사이드바 섹션의 제목 아이콘, 접힘 상태와 추가 버튼 영역을 렌더링합니다.
 export function SidebarSection({
   addLabelKey,
   children,
   closeLabelKey,
   isOpen,
+  labelIcon,
   labelKey,
   onAdd,
   openLabelKey,
@@ -72,6 +72,7 @@ export function SidebarSection({
           onClick={onToggle}
           type="button"
         >
+          {labelIcon}
           <span className="min-w-0 truncate">{t(labelKey)}</span>
           <ChevronRight
             className={cn(

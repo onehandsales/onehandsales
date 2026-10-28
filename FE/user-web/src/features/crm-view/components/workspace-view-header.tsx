@@ -1,6 +1,6 @@
 import {
-  CalendarDays, ChartNoAxesCombined, Check, ChevronDown, Columns3, GanttChart,
-  Layers, LayoutDashboard, LayoutGrid, List, Map, Search, Star, Table2,
+  CalendarDays, ChartNoAxesCombined, Check, ChevronDown, Columns3, GanttChart, Heart,
+  Layers, LayoutDashboard, LayoutGrid, List, Map, Search, Table2,
   TableProperties, type LucideIcon,
 } from "lucide-react";
 import {
@@ -25,7 +25,7 @@ const TYPE_LABELS: Record<WorkspaceViewType, AppI18nKey> = {
   MAP: "viewHeader.map", DASHBOARD: "viewHeader.dashboard",
 };
 
-// 기능 : 관리항목과 업무목록의 대상·현재 보기·개인 별표 변경을 공통 제공합니다.
+// 기능 : 관리항목과 업무목록의 대상·현재 보기·개인 즐겨찾기 변경을 공통 제공합니다.
 export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHeaderModel }) {
   const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
@@ -164,12 +164,12 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       aria-describedby={model.favoriteError && !isOpen ? favoriteErrorId : undefined}
       aria-label={t(favoriteLabel)}
       aria-pressed={model.isFavorite ?? undefined}
-      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#F0EFEC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#CF9B2B]")}
+      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#F0EFEC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444]")}
       disabled={!model.canToggleFavorite}
       onClick={model.onToggleFavorite}
       title={t(model.isFavoritePending ? "viewHeader.changingFavorite" : favoriteLabel)}
       type="button"
-    ><Star aria-hidden="true" className={cn("h-[15px] w-[15px]", model.isFavorite === true && "fill-current")} /></button>
+    ><Heart aria-hidden="true" className={cn("h-4 w-4 shrink-0", model.isFavorite === true && "fill-current")} /></button>
     {model.isFavoritePending && <span className="sr-only" role="status">{t("viewHeader.changingFavorite")}</span>}
     {model.favoriteError && !isOpen && <div
       className="absolute left-0 top-[calc(100%+6px)] z-50 flex w-[280px] max-w-[calc(100vw-32px)] items-start gap-2 rounded-lg border border-[#E7E6E2] bg-white p-3 text-[12px] leading-relaxed text-[#65645F] shadow-lg"

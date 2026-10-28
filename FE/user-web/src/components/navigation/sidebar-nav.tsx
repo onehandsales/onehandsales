@@ -1,3 +1,4 @@
+import { Heart } from "lucide-react";
 import { useState } from "react";
 import type { SidebarDataItem } from "@/components/navigation/sidebar-data-list";
 import { SidebarDataSection } from "@/components/navigation/sidebar-section";
@@ -66,8 +67,10 @@ export function SidebarNav({
         isLoading={isViewFavoritesLoading}
         isOpen={isFavoritesOpen}
         items={favoriteItems}
+        labelIcon={<Heart aria-hidden="true" className="h-4 w-4 shrink-0 fill-current text-[#EF4444]" strokeWidth={2} />}
         labelKey="navigation.quickWorkGroup"
         openLabelKey="navigation.quickWorkGroupOpen"
+        showAddAction={false}
         onToggle={() => setFavoritesOpen((current) => !current)}
       />
       <SidebarDataSection

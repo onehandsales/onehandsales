@@ -22,6 +22,7 @@ test.describe("sidebar view favorites", () => {
     await expect(favorites.getByRole("listitem").last().locator("svg")).toHaveClass(/lucide-box/);
     await expect(navigation.getByRole("list", { name: "업무 목록" })).toBeVisible();
     await expect(navigation.getByRole("link", { name: "Company", exact: true })).toBeVisible();
+    await expect(navigation.getByRole("button", { name: "즐겨찾기 추가", exact: true })).toHaveCount(0);
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
 
     // 2. 기존 접힘 동작을 유지하고 아직 없는 View 화면으로 링크하지 않는다.
@@ -33,7 +34,7 @@ test.describe("sidebar view favorites", () => {
   });
 
   for (const mode of ["empty", "failure"] as const) {
-    // 기능 : 빈 응답과 최초 조회 실패 모두 공통 UX로 로딩 후 추가 버튼만 표시합니다.
+    // 기능 : 빈 응답과 최초 조회 실패 모두 추가 버튼 없이 빈 목록을 표시합니다.
     test(`uses the shared loading and empty UI for ${mode}`, async ({ page }) => {
       await setupUserWebApiMocks(page, {
         delayMs: (request) => request.pathname.endsWith("/view-favorites") ? 2000 : 0,
@@ -45,7 +46,7 @@ test.describe("sidebar view favorites", () => {
       );
       await page.goto("/app");
 
-      // 1. 세 영역이 같은 Skeleton과 추가 버튼 표시 조건을 사용한다.
+      // 1. 공통 Skeleton을 사용하고 즐겨찾기 추가 버튼은 표시하지 않는다.
       const navigation = page.getByRole("navigation", { name: "Workspace navigation" });
       const section = navigation.getByRole("button", { name: "즐겨찾기 닫기", exact: true }).locator("../..");
       await expect(section.locator(".animate-pulse")).toHaveCount(6);
@@ -53,7 +54,7 @@ test.describe("sidebar view favorites", () => {
       await response;
 
       // 2. 성공한 빈 배열과 실패 모두 안내·재시도 UI를 추가하지 않는다.
-      await expect(section.getByRole("button", { name: "즐겨찾기 추가", exact: true }).last()).toBeVisible();
+      await expect(section.getByRole("button", { name: "즐겨찾기 추가", exact: true })).toHaveCount(0);
       await expect(section.locator(".animate-pulse")).toHaveCount(0);
       await expect(section.locator(":scope > div").last()).toHaveText("");
       await expect(navigation.getByRole("list", { name: "즐겨찾기", exact: true })).toHaveCount(0);
