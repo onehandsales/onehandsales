@@ -1,0 +1,402 @@
+{
+  "workspaceId": "99c91c59-04f0-4549-b1b1-956692030cb4",
+  "workspaceName": "영업",
+  "views": [
+    {
+      "id": "0f062a7d-22d9-408d-83af-49b7aae3f2c3",
+      "name": "전체 핵심 타깃 계정",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "fbe8167e-4414-4aa8-97e3-d29f652f7a0c"
+    },
+    {
+      "id": "0faeff8f-2023-4402-881e-faa3753c09cf",
+      "name": "전체 보안·법무 검토",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "fb10d8db-d2cc-4ec2-95e7-137edb054e31"
+    },
+    {
+      "id": "10b38a8f-9245-4451-b5c0-0fa18e37101b",
+      "name": "전체 영업기회",
+      "type": "TABLE",
+      "objectDefinitionId": "5d4e0a99-6ba8-490f-b748-8cbb76682789",
+      "listDefinitionId": null
+    },
+    {
+      "id": "14ca47cb-a8f3-49c5-a6db-f892ea778070",
+      "name": "전체 회사",
+      "type": "TABLE",
+      "objectDefinitionId": "7045b1f3-bd82-4d96-af16-0ba13597f116",
+      "listDefinitionId": null
+    },
+    {
+      "id": "274ce5e1-ec81-48a1-8c7b-da42d596ec51",
+      "name": "전체 영업 파이프라인",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "6ff9ffc9-d2fa-4218-abf6-bec82b0644c7"
+    },
+    {
+      "id": "4f451532-9ad4-4e0a-b707-6a452d682c4e",
+      "name": "전체 영업 실행 업무",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "a2691934-c0e2-40d9-94db-4ba76cd4647f"
+    },
+    {
+      "id": "651771f1-fc4b-4001-9a90-49ac05edfa93",
+      "name": "전체 제안·견적 제출",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "45df07be-2d93-4d8b-a8a0-d9dc167273f0"
+    },
+    {
+      "id": "664fa7ba-93ef-49ec-99c0-c584060d6376",
+      "name": "전체 계약 갱신·확장",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "78d21077-ae2c-4872-b9a7-bc7881f57177"
+    },
+    {
+      "id": "6b06f6ee-7746-41c8-90fb-95869f24a615",
+      "name": "전체 핵심 관계자 관리",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "4a9a3ee6-b883-4e03-a2e4-c83b1f6c11c1"
+    },
+    {
+      "id": "76a6bdae-4877-4958-895b-b722117c2dca",
+      "name": "전체 영업업무",
+      "type": "TABLE",
+      "objectDefinitionId": "5383cdf9-6820-4135-9e94-5f9558bb216c",
+      "listDefinitionId": null
+    },
+    {
+      "id": "89f456f6-920c-4214-bc4d-063d1333e7ab",
+      "name": "전체 계약",
+      "type": "TABLE",
+      "objectDefinitionId": "dfa97968-d428-4aa7-8e77-7d61a76a6f93",
+      "listDefinitionId": null
+    },
+    {
+      "id": "da9be3c1-0fe7-4d7c-b031-75d8ff7f15ae",
+      "name": "전체 고객·담당자",
+      "type": "TABLE",
+      "objectDefinitionId": "84102cf9-ae9f-487c-85a4-d467837587a2",
+      "listDefinitionId": null
+    },
+    {
+      "id": "f99596c6-7eda-48d0-aece-f00b50f68519",
+      "name": "전체 제품",
+      "type": "TABLE",
+      "objectDefinitionId": "1cf53a47-629a-45e8-bab3-8ee0ea5156fe",
+      "listDefinitionId": null
+    },
+    {
+      "id": "fc443a82-8abd-4ffa-b9c4-21a33b39e8fb",
+      "name": "전체 데모·제품 평가·PoC",
+      "type": "TABLE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "741181bb-0f9e-4c2c-bddd-972bb4c83d22"
+    },
+    {
+      "id": "17ac8486-0c98-4450-a5df-1c6633356e4e",
+      "name": "제품 평가 일정",
+      "type": "TIMELINE",
+      "objectDefinitionId": null,
+      "listDefinitionId": "741181bb-0f9e-4c2c-bddd-972bb4c83d22"
+    },
+    {
+      "id": "4cd3c5b5-ea58-484c-a6b3-cb628be72a2c",
+      "name": "영업 단계별",
+      "type": "KANBAN",
+      "objectDefinitionId": null,
+      "listDefinitionId": "6ff9ffc9-d2fa-4218-abf6-bec82b0644c7"
+    },
+    {
+      "id": "7d211dc9-6431-4193-ad4f-fda1c1f0ce64",
+      "name": "제품 카드",
+      "type": "GALLERY",
+      "objectDefinitionId": "1cf53a47-629a-45e8-bab3-8ee0ea5156fe",
+      "listDefinitionId": null
+    },
+    {
+      "id": "871f800f-0067-4507-a32f-d528ac71f120",
+      "name": "영업 일정",
+      "type": "CALENDAR",
+      "objectDefinitionId": null,
+      "listDefinitionId": "a2691934-c0e2-40d9-94db-4ba76cd4647f"
+    },
+    {
+      "id": "dbbe011a-cce6-4dd6-9269-c1a6cb4ea243",
+      "name": "타깃 계정 지도",
+      "type": "MAP",
+      "objectDefinitionId": null,
+      "listDefinitionId": "fbe8167e-4414-4aa8-97e3-d29f652f7a0c"
+    },
+    {
+      "id": "fec614b1-e7b7-45c1-b2f6-df70129e997b",
+      "name": "핵심 관계자",
+      "type": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "4a9a3ee6-b883-4e03-a2e4-c83b1f6c11c1"
+    },
+    {
+      "id": "026950ca-02b3-4984-b8b8-af02c28bbd48",
+      "name": "업무 진행 계획",
+      "type": "GANTT",
+      "objectDefinitionId": null,
+      "listDefinitionId": "a2691934-c0e2-40d9-94db-4ba76cd4647f"
+    },
+    {
+      "id": "290cb7db-abed-4fbb-aab5-35e12caf13d2",
+      "name": "단계별 예상 금액",
+      "type": "CHART",
+      "objectDefinitionId": null,
+      "listDefinitionId": "6ff9ffc9-d2fa-4218-abf6-bec82b0644c7"
+    },
+    {
+      "id": "950e0b0d-c5ec-40f1-971a-e3d5e212fd73",
+      "name": "회사·단계별 집계",
+      "type": "PIVOT",
+      "objectDefinitionId": null,
+      "listDefinitionId": "6ff9ffc9-d2fa-4218-abf6-bec82b0644c7"
+    },
+    {
+      "id": "fbb10880-bf54-40ed-b9d9-b72de995f47a",
+      "name": "영업 현황",
+      "type": "DASHBOARD",
+      "objectDefinitionId": null,
+      "listDefinitionId": "6ff9ffc9-d2fa-4218-abf6-bec82b0644c7"
+    }
+  ],
+  "configs": {
+    "TABLE": {
+      "rowDensity": "COMFORTABLE"
+    },
+    "KANBAN": {
+      "cardDensity": "COMFORTABLE",
+      "showEmptyGroups": true
+    },
+    "LIST": {
+      "rowDensity": "COMFORTABLE"
+    },
+    "GALLERY": {
+      "cardSize": "MEDIUM",
+      "imageFit": "CONTAIN"
+    },
+    "CALENDAR": {
+      "initialMode": "MONTH",
+      "weekStartsOn": "MONDAY"
+    },
+    "TIMELINE": {
+      "timeScale": "WEEK"
+    },
+    "GANTT": {
+      "timeScale": "WEEK",
+      "showDependencies": true
+    },
+    "CHART": {
+      "chartType": "BAR",
+      "aggregation": "SUM",
+      "showLegend": true
+    },
+    "PIVOT": {
+      "aggregation": "SUM",
+      "showRowTotals": true,
+      "showColumnTotals": true
+    },
+    "MAP": {
+      "fitToData": true,
+      "showLabels": true
+    },
+    "DASHBOARD": {
+      "gridColumns": 12
+    }
+  },
+  "formats": {
+    "Date": {
+      "dateFormat": "YYYY-MM-DD"
+    },
+    "Currency": {
+      "useGrouping": true,
+      "fractionDigits": 0
+    },
+    "progress": {
+      "style": "PERCENT",
+      "valueScale": 100,
+      "fractionDigits": 0
+    }
+  },
+  "progressAttributeId": "d712ffb2-01eb-41f6-95fb-8c458897894c",
+  "filters": [
+    {
+      "viewDefinitionId": "4cd3c5b5-ea58-484c-a6b3-cb628be72a2c",
+      "attributeDefinitionId": "efcfd3b5-ee1b-4831-b569-6afba0975a94",
+      "sourceScope": "RECORD",
+      "comparisonOperator": "gte",
+      "comparisonValueJson": {
+        "value": "180000"
+      }
+    },
+    {
+      "viewDefinitionId": "290cb7db-abed-4fbb-aab5-35e12caf13d2",
+      "attributeDefinitionId": "efcfd3b5-ee1b-4831-b569-6afba0975a94",
+      "sourceScope": "RECORD",
+      "comparisonOperator": "gte",
+      "comparisonValueJson": {
+        "value": "180000"
+      }
+    },
+    {
+      "viewDefinitionId": "950e0b0d-c5ec-40f1-971a-e3d5e212fd73",
+      "attributeDefinitionId": "efcfd3b5-ee1b-4831-b569-6afba0975a94",
+      "sourceScope": "RECORD",
+      "comparisonOperator": "gte",
+      "comparisonValueJson": {
+        "value": "180000"
+      }
+    },
+    {
+      "viewDefinitionId": "17ac8486-0c98-4450-a5df-1c6633356e4e",
+      "attributeDefinitionId": "c45d9db5-c019-415f-9965-126d854d79f9",
+      "sourceScope": "LIST_ENTRY",
+      "comparisonOperator": "gte",
+      "comparisonValueJson": {
+        "value": "2026-11-09"
+      }
+    }
+  ],
+  "existingSorts": [
+    {
+      "id": "11995501-1c2c-49da-a993-1ff0ce35c324",
+      "viewDefinitionId": "274ce5e1-ec81-48a1-8c7b-da42d596ec51",
+      "attributeDefinitionId": "a8c40b92-ac7c-45b2-880b-6e8d053f9f88",
+      "sourceScope": "RECORD",
+      "sortDirection": "ASC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    },
+    {
+      "id": "8a056368-b4a6-41b0-8500-5a8f9ecaf18e",
+      "viewDefinitionId": "871f800f-0067-4507-a32f-d528ac71f120",
+      "attributeDefinitionId": "e9a3e5ed-6403-47d6-bd64-8f87bfb821e5",
+      "sourceScope": "RECORD",
+      "sortDirection": "ASC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    },
+    {
+      "id": "44a12659-1c93-4f42-ae54-0de6a1052400",
+      "viewDefinitionId": "026950ca-02b3-4984-b8b8-af02c28bbd48",
+      "attributeDefinitionId": "e9a3e5ed-6403-47d6-bd64-8f87bfb821e5",
+      "sourceScope": "RECORD",
+      "sortDirection": "ASC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    },
+    {
+      "id": "fdeec114-6ac8-43da-ac9c-a60246d9146c",
+      "viewDefinitionId": "17ac8486-0c98-4450-a5df-1c6633356e4e",
+      "attributeDefinitionId": "c45d9db5-c019-415f-9965-126d854d79f9",
+      "sourceScope": "LIST_ENTRY",
+      "sortDirection": "ASC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    }
+  ],
+  "newSorts": [
+    {
+      "viewDefinitionId": "14ca47cb-a8f3-49c5-a6db-f892ea778070",
+      "attributeDefinitionId": "3a317eec-623a-4335-897f-b9f72bd11d5a",
+      "sourceScope": "RECORD",
+      "sortDirection": "ASC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    },
+    {
+      "viewDefinitionId": "f99596c6-7eda-48d0-aece-f00b50f68519",
+      "attributeDefinitionId": "dfc75939-4146-48d6-8316-234c3d32ea15",
+      "sourceScope": "RECORD",
+      "sortDirection": "ASC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    },
+    {
+      "viewDefinitionId": "4cd3c5b5-ea58-484c-a6b3-cb628be72a2c",
+      "attributeDefinitionId": "efcfd3b5-ee1b-4831-b569-6afba0975a94",
+      "sourceScope": "RECORD",
+      "sortDirection": "DESC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    },
+    {
+      "viewDefinitionId": "7d211dc9-6431-4193-ad4f-fda1c1f0ce64",
+      "attributeDefinitionId": "a94c5e21-f165-4e74-90d7-8dffb329719d",
+      "sourceScope": "RECORD",
+      "sortDirection": "DESC",
+      "sortOrder": 0,
+      "referenceAttributeIdPathJson": []
+    }
+  ],
+  "sortConfig": {
+    "nulls": "LAST"
+  },
+  "widgets": [
+    {
+      "id": "b35587b8-e63a-4e74-be28-5ee93a0b9d82",
+      "viewDefinitionId": "fbb10880-bf54-40ed-b9d9-b72de995f47a",
+      "contentViewDefinitionId": "290cb7db-abed-4fbb-aab5-35e12caf13d2",
+      "layoutJson": {
+        "x": 0,
+        "y": 0,
+        "width": 6,
+        "height": 4
+      },
+      "configJson": {
+        "showTitle": true
+      }
+    },
+    {
+      "id": "a858e227-6b1c-47f8-8d29-513aa9479096",
+      "viewDefinitionId": "fbb10880-bf54-40ed-b9d9-b72de995f47a",
+      "contentViewDefinitionId": "950e0b0d-c5ec-40f1-971a-e3d5e212fd73",
+      "layoutJson": {
+        "x": 6,
+        "y": 0,
+        "width": 6,
+        "height": 4
+      },
+      "configJson": {
+        "showTitle": true
+      }
+    },
+    {
+      "id": "9fe5751c-f8ae-4594-80e5-c64e603991c0",
+      "viewDefinitionId": "fbb10880-bf54-40ed-b9d9-b72de995f47a",
+      "contentViewDefinitionId": "4cd3c5b5-ea58-484c-a6b3-cb628be72a2c",
+      "layoutJson": {
+        "x": 0,
+        "y": 4,
+        "width": 6,
+        "height": 4
+      },
+      "configJson": {
+        "showTitle": true
+      }
+    }
+  ],
+  "expected": {
+    "views": 24,
+    "attributeSettings": 113,
+    "formats": 30,
+    "filterGroups": 4,
+    "filterConditions": 4,
+    "sorts": 8,
+    "widgets": 3,
+    "filteredPipelineEntries": 4,
+    "filteredPipelineAmount": "950000",
+    "filteredTimelineEntries": 2
+  }
+}
