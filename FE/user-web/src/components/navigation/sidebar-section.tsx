@@ -68,7 +68,7 @@ export function SidebarSection({
         <button
           aria-label={t(toggleLabelKey)}
           aria-expanded={isOpen}
-          className="flex h-6 w-full min-w-0 items-center gap-1 rounded-md px-2 pr-8 text-left text-[12px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition active:bg-[#D3D1CB] group-hover/sidebar-section:text-[#6B7280]"
+          className="flex h-6 w-full min-w-0 items-center gap-2 rounded-md px-2 pr-8 text-left text-[12px] font-semibold tracking-[0.02em] text-[#9CA3AF] transition active:bg-[#D3D1CB] group-hover/sidebar-section:text-[#6B7280]"
           onClick={onToggle}
           type="button"
         >

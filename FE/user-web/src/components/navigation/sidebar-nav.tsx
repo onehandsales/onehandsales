@@ -80,7 +80,7 @@ export function SidebarNav({
         isLoading={isCrmListsLoading}
         isOpen={isWorkListsOpen}
         items={workListItems}
-        labelIcon={<Briefcase aria-hidden="true" className="h-4 w-4 shrink-0 fill-current text-black" strokeWidth={2} />}
+        labelIcon={<Briefcase aria-hidden="true" className="h-4 w-4 shrink-0 text-black" strokeWidth={2} />}
         labelKey="navigation.workListsGroup"
         openLabelKey="navigation.workListsGroupOpen"
         onToggle={() => setWorkListsOpen((current) => !current)}
