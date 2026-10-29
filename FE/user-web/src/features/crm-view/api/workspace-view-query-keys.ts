@@ -20,8 +20,8 @@ export const workspaceViewQueryKeys = {
   views(
     userId: string | null, workspaceId: string | null,
     targetType: WorkspaceViewTargetType | null, targetId: string | null,
-    viewId: string | null,
+    viewDefinitionId: string | null,
   ) {
-    return ["crm-view", userId?.toLowerCase() ?? null, workspaceId?.toLowerCase() ?? null, "views", targetType, targetId?.toLowerCase() ?? null, viewId?.toLowerCase() ?? null] as const;
+    return ["crm-view", userId?.toLowerCase() ?? null, workspaceId?.toLowerCase() ?? null, "views", targetType, targetId?.toLowerCase() ?? null, viewDefinitionId?.toLowerCase() ?? null] as const;
   },
 };

@@ -47,9 +47,9 @@ describe("ListWorkspaceListViewsUseCase", () => {
     const fixture = createFixture();
     const result = await fixture.useCase.execute(CURRENT_USER, WORKSPACE_ID, TARGET_ID, VIEWS[1]!.id);
     expect(result).toEqual({ items: [
-      { viewId: VIEWS[0]!.id, viewName: "첫 보기", viewIcon: null, viewType: "TABLE", isSelected: false },
-      { viewId: VIEWS[1]!.id, viewName: "선택한 보기", viewIcon: "kanban", viewType: "KANBAN", isSelected: true },
-      { viewId: VIEWS[2]!.id, viewName: "마지막 보기", viewIcon: null, viewType: "GALLERY", isSelected: false },
+      { viewDefinitionId: VIEWS[0]!.id, viewName: "첫 보기", viewIcon: null, viewType: "TABLE", isSelected: false },
+      { viewDefinitionId: VIEWS[1]!.id, viewName: "선택한 보기", viewIcon: "kanban", viewType: "KANBAN", isSelected: true },
+      { viewDefinitionId: VIEWS[2]!.id, viewName: "마지막 보기", viewIcon: null, viewType: "GALLERY", isSelected: false },
     ] });
     expect(fixture.workspace.hasWorkspaceMembership).toHaveBeenCalledTimes(1);
     expect(fixture.workspace.hasWorkspaceMembership).toHaveBeenCalledWith(CURRENT_USER.id, WORKSPACE_ID);
@@ -68,9 +68,9 @@ describe("ListWorkspaceListViewsUseCase", () => {
 
   // 기능 : 생략되거나 삭제·다른 범위에 있는 선택 ID는 전체 미선택으로 표현합니다.
   it.each([undefined, "00000000-0000-4000-8000-000000000fff"])(
-    "keeps all views unselected for missing or unmatched selection %s", async (viewId) => {
+    "keeps all views unselected for missing or unmatched selection %s", async (viewDefinitionId) => {
       const fixture = createFixture();
-      const response = await fixture.useCase.execute(CURRENT_USER, WORKSPACE_ID, TARGET_ID, viewId);
+      const response = await fixture.useCase.execute(CURRENT_USER, WORKSPACE_ID, TARGET_ID, viewDefinitionId);
       expect(response.items).toHaveLength(3);
       expect(response.items.every(item => !item.isSelected)).toBe(true);
     }

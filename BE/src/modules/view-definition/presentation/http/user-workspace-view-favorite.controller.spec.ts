@@ -26,7 +26,7 @@ class ViewFavoriteTestAuthModule {}
 // 기능 : 실제 모듈·Workspace Port·TransactionManager·Repository와 HTTP 계약을 검증합니다.
 describe("Workspace view favorite HTTP and module wiring", () => {
   let app: INestApplication;
-  const endpoint = `/api/users/me/workspaces/${WORKSPACE_ID}/view-definitions/${VIEW_ID}/favorite`;
+  const endpoint = `/api/users/me/workspaces/${WORKSPACE_ID}/view-header/view-definitions/${VIEW_ID}/favorite`;
   const tx = {
     $queryRaw: jest.fn(),
     viewFavoriteDefinition: { findFirst: jest.fn(), aggregate: jest.fn(), create: jest.fn(), deleteMany: jest.fn() },
@@ -66,7 +66,7 @@ describe("Workspace view favorite HTTP and module wiring", () => {
 
   // 기능 : 신규 생성은 201이며 서버 소유 필드와 정확한 응답 필드를 사용합니다.
   it("creates with 201 through real ports and strips internal result fields", async () => {
-    await request(app.getHttpServer()).post(endpoint).set("Authorization", "Bearer valid").expect(201).expect({ viewId: VIEW_ID, isFavorite: true });
+    await request(app.getHttpServer()).post(endpoint).set("Authorization", "Bearer valid").expect(201).expect({ viewDefinitionId: VIEW_ID, isFavorite: true });
     expect(prisma.workspaceMember.findFirst).toHaveBeenCalledWith(expect.objectContaining({ where: { userId: USER.id, workspaceId: WORKSPACE_ID } }));
     expect(tx.viewFavoriteDefinition.create).toHaveBeenCalledWith({ data: { workspaceId: WORKSPACE_ID, workspaceMemberId: MEMBER_ID, viewDefinitionId: VIEW_ID, createdByActorId: ACTOR_ID, sortOrder: 0 }, select: { id: true } });
     expect(prisma.$transaction).toHaveBeenCalledTimes(1);
@@ -77,7 +77,7 @@ describe("Workspace view favorite HTTP and module wiring", () => {
   it("returns 200 for an existing favorite without an actor", async () => {
     prisma.workspaceMember.findFirst.mockResolvedValue({ id: MEMBER_ID, actors: [] });
     tx.viewFavoriteDefinition.findFirst.mockResolvedValue({ id: "existing" });
-    await request(app.getHttpServer()).post(endpoint).set("Authorization", "Bearer valid").expect(200).expect({ viewId: VIEW_ID, isFavorite: true });
+    await request(app.getHttpServer()).post(endpoint).set("Authorization", "Bearer valid").expect(200).expect({ viewDefinitionId: VIEW_ID, isFavorite: true });
     expect(tx.viewFavoriteDefinition.create).not.toHaveBeenCalled();
     expect(logger.log).not.toHaveBeenCalled();
   });
@@ -86,7 +86,7 @@ describe("Workspace view favorite HTTP and module wiring", () => {
   it.each([0, 2])("returns 200 after deleting %i personal rows", async count => {
     prisma.workspaceMember.findFirst.mockResolvedValue({ id: MEMBER_ID, actors: [] });
     tx.viewFavoriteDefinition.deleteMany.mockResolvedValue({ count });
-    await request(app.getHttpServer()).delete(endpoint).set("Authorization", "Bearer valid").expect(200).expect({ viewId: VIEW_ID, isFavorite: false });
+    await request(app.getHttpServer()).delete(endpoint).set("Authorization", "Bearer valid").expect(200).expect({ viewDefinitionId: VIEW_ID, isFavorite: false });
     expect(tx.viewFavoriteDefinition.deleteMany).toHaveBeenCalledWith({ where: { workspaceId: WORKSPACE_ID, workspaceMemberId: MEMBER_ID, viewDefinitionId: VIEW_ID } });
   });
 

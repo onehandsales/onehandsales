@@ -72,19 +72,19 @@ async function setupScenario(page: Page) {
     if (state.listStatus !== 200) return respond(route, { statusCode: state.listStatus, error: "Unavailable" }, state.listStatus);
     const object = url.pathname.includes("/object-definitions/");
     const rows = object ? [
-      { viewId: "view-all", viewName: "전체 회사", viewIcon: null, viewType: "TABLE" },
-      { viewId: "view-seoul", viewName: "단계별 회사", viewIcon: null, viewType: "KANBAN" },
+      { viewDefinitionId: "view-all", viewName: "전체 회사", viewIcon: null, viewType: "TABLE" },
+      { viewDefinitionId: "view-seoul", viewName: "단계별 회사", viewIcon: null, viewType: "KANBAN" },
     ] : [
-      { viewId: "view-list-all", viewName: "담당자별 업무", viewIcon: null, viewType: "TABLE" },
-      { viewId: "view-monthly", viewName: "단계별 영업", viewIcon: null, viewType: "KANBAN" },
+      { viewDefinitionId: "view-list-all", viewName: "담당자별 업무", viewIcon: null, viewType: "TABLE" },
+      { viewDefinitionId: "view-monthly", viewName: "단계별 영업", viewIcon: null, viewType: "KANBAN" },
     ];
     return respond(route, { items: state.noViews ? [] : rows.map(row => ({
-      ...row, isSelected: row.viewId === url.searchParams.get("viewId"),
+      ...row, isSelected: row.viewDefinitionId === url.searchParams.get("viewDefinitionId"),
     })) });
   }
 
   await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/view-header(?:\?.*)?$/, handleHeader);
-  await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/(object|list)-definitions\/[^/]+\/view-definitions(?:\?.*)?$/, handleViews);
+  await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/view-header\/(object|list)-definitions\/[^/]+\/view-definitions(?:\?.*)?$/, handleViews);
   return state;
 }
 
@@ -115,8 +115,8 @@ test("loads an Object header first and its view list only when opened", async ({
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   const menu = header(page).getByRole("dialog");
   await expect(menu.getByRole("option")).toHaveText(["전체 회사표", "단계별 회사칸반"]);
-  expect(state.lists[0]!.pathname).toContain("/object-definitions/company-from-header/view-definitions");
-  expect(state.lists[0]!.searchParams.get("viewId")).toBe("view-all");
+  expect(state.lists[0]!.pathname).toContain("/view-header/object-definitions/company-from-header/view-definitions");
+  expect(state.lists[0]!.searchParams.get("viewDefinitionId")).toBe("view-all");
   await expect(menu.getByRole("option").first()).toHaveAttribute("aria-selected", "true");
   await menu.getByRole("option", { name: /단계별 회사/ }).click();
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("단계별 회사");
@@ -125,7 +125,7 @@ test("loads an Object header first and its view list only when opened", async ({
 
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await expect(menu.getByRole("option").last()).toHaveAttribute("aria-selected", "true");
-  expect(state.lists.at(-1)!.searchParams.get("viewId")).toBe("view-seoul");
+  expect(state.lists.at(-1)!.searchParams.get("viewDefinitionId")).toBe("view-seoul");
   const count = state.lists.length;
   await menu.getByRole("textbox", { name: "보기 검색" }).fill("전체");
   await expect(menu.getByRole("option")).toHaveCount(1);
@@ -152,7 +152,7 @@ test("connects List navigation and calls only its own view-list API", async ({ p
   expect(state.lists).toHaveLength(0);
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await expect(header(page).getByRole("option")).toHaveCount(2);
-  expect(state.lists[0]!.pathname).toContain("/list-definitions/pipeline-from-header/view-definitions");
+  expect(state.lists[0]!.pathname).toContain("/view-header/list-definitions/pipeline-from-header/view-definitions");
   await header(page).getByRole("option").last().click();
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("단계별 영업");
   await expect(header(page).getByRole("button", { name: "현재 보기 즐겨찾기 해제", exact: true })).toHaveAttribute("aria-pressed", "true");
@@ -168,7 +168,7 @@ test("keeps the target name and omits selection query when no views exist", asyn
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("보기 없음");
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await expect(header(page).getByRole("dialog")).toContainText("저장된 보기가 없어요.");
-  expect(state.lists[0]!.searchParams.has("viewId")).toBe(false);
+  expect(state.lists[0]!.searchParams.has("viewDefinitionId")).toBe(false);
   await expect(header(page).getByRole("button", { name: "새 보기 만들기", exact: true })).toHaveCount(0);
   expect(state.writes).toEqual([]);
 });
@@ -284,5 +284,5 @@ test("closes an old dropdown and isolates its late response after a target switc
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("담당자별 업무");
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await expect(header(page).getByRole("option")).toHaveText(["담당자별 업무표", "단계별 영업칸반"]);
-  expect(state.lists.at(-1)!.pathname).toContain("/list-definitions/");
+  expect(state.lists.at(-1)!.pathname).toContain("/view-header/list-definitions/");
 });

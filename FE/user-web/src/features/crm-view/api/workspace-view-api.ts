@@ -18,26 +18,26 @@ export function getWorkspaceViewHeader(
 
 // 기능 : 관리항목의 전체 View와 현재 선택 표시를 조회합니다.
 export function listWorkspaceObjectViews(
-  workspaceId: string, objectDefinitionId: string, viewId: string | null,
+  workspaceId: string, objectDefinitionId: string, viewDefinitionId: string | null,
   signal?: AbortSignal,
 ) {
   // 1. 선택한 View가 없으면 query를 생략하고 Object 범위만 전달한다.
-  const query = viewId ? "?" + new URLSearchParams({ viewId }) : "";
+  const query = viewDefinitionId ? "?" + new URLSearchParams({ viewDefinitionId }) : "";
   return apiClient<WorkspaceViewsResponse>(
-    `/api/users/me/workspaces/${encodeURIComponent(workspaceId)}/object-definitions/${encodeURIComponent(objectDefinitionId)}/view-definitions${query}`,
+    `/api/users/me/workspaces/${encodeURIComponent(workspaceId)}/view-header/object-definitions/${encodeURIComponent(objectDefinitionId)}/view-definitions${query}`,
     signal ? { signal } : {},
   );
 }
 
 // 기능 : 업무목록의 전체 View와 현재 선택 표시를 조회합니다.
 export function listWorkspaceListViews(
-  workspaceId: string, listDefinitionId: string, viewId: string | null,
+  workspaceId: string, listDefinitionId: string, viewDefinitionId: string | null,
   signal?: AbortSignal,
 ) {
   // 1. 선택한 View가 없으면 query를 생략하고 List 범위만 전달한다.
-  const query = viewId ? "?" + new URLSearchParams({ viewId }) : "";
+  const query = viewDefinitionId ? "?" + new URLSearchParams({ viewDefinitionId }) : "";
   return apiClient<WorkspaceViewsResponse>(
-    `/api/users/me/workspaces/${encodeURIComponent(workspaceId)}/list-definitions/${encodeURIComponent(listDefinitionId)}/view-definitions${query}`,
+    `/api/users/me/workspaces/${encodeURIComponent(workspaceId)}/view-header/list-definitions/${encodeURIComponent(listDefinitionId)}/view-definitions${query}`,
     signal ? { signal } : {},
   );
 }

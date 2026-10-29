@@ -18,7 +18,7 @@ import { ListWorkspaceObjectViewsQueryDto } from "./dto/list-workspace-object-vi
 // 역할 : Object의 보기 드롭다운 조회를 전용 application 유스케이스에 위임합니다.
 @UseGuards(AuthGuard)
 @Controller(
-  "api/users/me/workspaces/:workspaceId/object-definitions/:objectDefinitionId/view-definitions"
+  "api/users/me/workspaces/:workspaceId/view-header/object-definitions/:objectDefinitionId/view-definitions"
 )
 export class UserWorkspaceObjectViewsController {
   // 기능 : Object 소속 View 목록 유스케이스를 주입받습니다.
@@ -39,7 +39,7 @@ export class UserWorkspaceObjectViewsController {
       currentUser,
       workspaceId,
       objectDefinitionId,
-      query.viewId
+      query.viewDefinitionId
     );
   }
 }

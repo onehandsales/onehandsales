@@ -391,7 +391,7 @@ async function handleApiRequest(
   }
 
   // 17. 원래 Sidebar 회귀에서는 임의 View를 만들지 않고 빈 목록을 반환한다.
-  if (/^\/api\/users\/me\/workspaces\/[^/]+\/(object|list)-definitions\/[^/]+\/view-definitions$/.test(pathname) && method === "GET") {
+  if (/^\/api\/users\/me\/workspaces\/[^/]+\/view-header\/(object|list)-definitions\/[^/]+\/view-definitions$/.test(pathname) && method === "GET") {
     return json({ items: [] });
   }
 

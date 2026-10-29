@@ -52,7 +52,7 @@ describe("Workspace view favorite use cases", () => {
   // 기능 : 빈 목록과 기존 개인 순서를 구분해 서버 Actor로 맨 뒤에 저장합니다.
   it.each([[null, 0], [7, 8], [-3, -2]] as const)("appends after %s with sortOrder %s", async (last, next) => {
     repository.findLastMemberFavoriteSortOrder.mockResolvedValue(last);
-    expect(await create.execute(USER, WORKSPACE_ID.toUpperCase(), VIEW_ID.toUpperCase())).toEqual({ viewId: VIEW_ID, isFavorite: true, created: true });
+    expect(await create.execute(USER, WORKSPACE_ID.toUpperCase(), VIEW_ID.toUpperCase())).toEqual({ viewDefinitionId: VIEW_ID, isFavorite: true, created: true });
     expect(access.getWorkspaceMemberAccess).toHaveBeenCalledWith(USER.id, WORKSPACE_ID);
     expect(repository.createMemberFavorite).toHaveBeenCalledWith({ ...SCOPE, createdByActorId: ACTOR_ID, sortOrder: next }, context);
     expect(logger.log).toHaveBeenCalledWith(JSON.stringify({ event: "crm.viewFavorite.created", requestId: null, userId: USER.id, ...SCOPE, favoriteId: "favorite-id" }), "CreateWorkspaceViewFavoriteUseCase");
@@ -64,7 +64,7 @@ describe("Workspace view favorite use cases", () => {
   it("returns an existing favorite without requiring an actor or reordering", async () => {
     access.getWorkspaceMemberAccess.mockResolvedValue({ workspaceMemberId: MEMBER_ID, actorId: null });
     repository.findMemberFavorite.mockResolvedValue({ id: "old-favorite" });
-    expect(await create.execute(USER, WORKSPACE_ID, VIEW_ID)).toEqual({ viewId: VIEW_ID, isFavorite: true, created: false });
+    expect(await create.execute(USER, WORKSPACE_ID, VIEW_ID)).toEqual({ viewDefinitionId: VIEW_ID, isFavorite: true, created: false });
     expect(repository.findMemberFavorite).toHaveBeenCalledWith(SCOPE, context);
     expect(repository.findLastMemberFavoriteSortOrder).not.toHaveBeenCalled();
     expect(repository.createMemberFavorite).not.toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe("Workspace view favorite use cases", () => {
   it.each([0, 1, 3])("deletes %i scoped rows and always returns false", async count => {
     access.getWorkspaceMemberAccess.mockResolvedValue({ workspaceMemberId: MEMBER_ID, actorId: null });
     repository.deleteMemberFavorites.mockResolvedValue(count);
-    expect(await remove.execute(USER, WORKSPACE_ID.toUpperCase(), VIEW_ID.toUpperCase())).toEqual({ viewId: VIEW_ID, isFavorite: false });
+    expect(await remove.execute(USER, WORKSPACE_ID.toUpperCase(), VIEW_ID.toUpperCase())).toEqual({ viewDefinitionId: VIEW_ID, isFavorite: false });
     expect(repository.deleteMemberFavorites).toHaveBeenCalledWith(SCOPE, context);
     expect(repository.findLastMemberFavoriteSortOrder).not.toHaveBeenCalled();
     expect(logger.log).toHaveBeenCalledTimes(count > 0 ? 1 : 0);

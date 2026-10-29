@@ -1,8 +1,10 @@
 # ② List 소속 View 목록 조회
 
+> 2026-10-29: 경로·식별자 명칭은 [View 헤더 API 변경 계약](../../../../VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)으로 대체했다. 아래 내용은 변경 이전 계약의 기록이다.
+
 - API명: List 소속 View 목록 조회
 - API 식별자: WORKSPACE_LIST_VIEWS_GET
-- 계약 상태: implemented
+- 계약 상태: superseded (기존 구현 기록)
 - 소비자: User Web, 현재는 Backend 구현·검토만 수행
 - 일자: 2026-10-26
 - 호환성: 신규 GET. 기존 Sidebar·③ 헤더 계약/FE 변경 없음. 마이그레이션·fallback 없음.

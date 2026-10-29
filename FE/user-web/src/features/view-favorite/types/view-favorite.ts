@@ -1,4 +1,4 @@
 export type ViewFavoriteResponse = {
-  readonly viewId: string;
+  readonly viewDefinitionId: string;
   readonly isFavorite: boolean;
 };

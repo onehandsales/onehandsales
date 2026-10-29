@@ -30,7 +30,7 @@ import { EmptyViewFavoriteRequestPipe } from "./pipes/empty-view-favorite-reques
 
 // 역할 : 현재 사용자의 View 즐겨찾기 등록·해제 HTTP 계약을 application에 연결합니다.
 @UseGuards(AuthGuard)
-@Controller("api/users/me/workspaces/:workspaceId/view-definitions/:viewId/favorite")
+@Controller("api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefinitionId/favorite")
 export class UserWorkspaceViewFavoriteController {
   // 기능 : 등록과 해제를 각각 전담하는 유스케이스를 주입받습니다.
   constructor(
@@ -46,16 +46,16 @@ export class UserWorkspaceViewFavoriteController {
     @CurrentUser() currentUser: CurrentUserContext,
     @Req() request: RequestWithRequestId,
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
-    @Param("viewId", new ParseUUIDPipe()) viewId: string,
+    @Param("viewDefinitionId", new ParseUUIDPipe()) viewDefinitionId: string,
     @Res({ passthrough: true }) response: Response
   ): Promise<CreateWorkspaceViewFavoriteResponse> {
     // 1. 검증된 경로·인증 사용자·middleware 요청 ID를 전달하고 신규 여부를 HTTP 상태로 변환한다.
     const result = await this.createFavorite.execute(
-      currentUser, workspaceId, viewId, request.requestId
+      currentUser, workspaceId, viewDefinitionId, request.requestId
     );
     response.status(result.created ? HttpStatus.CREATED : HttpStatus.OK);
     // 2. 내부 생성 판정은 제외하고 공개 응답 필드만 반환한다.
-    return { viewId: result.viewId, isFavorite: result.isFavorite };
+    return { viewDefinitionId: result.viewDefinitionId, isFavorite: result.isFavorite };
   }
 
   // API : 사용자, Workspace View 즐겨찾기 해제
@@ -67,11 +67,11 @@ export class UserWorkspaceViewFavoriteController {
     @CurrentUser() currentUser: CurrentUserContext,
     @Req() request: RequestWithRequestId,
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
-    @Param("viewId", new ParseUUIDPipe()) viewId: string
+    @Param("viewDefinitionId", new ParseUUIDPipe()) viewDefinitionId: string
   ): Promise<DeleteWorkspaceViewFavoriteResponse> {
     // 1. 검증된 요청과 middleware 요청 ID를 전달하고 기존 유무와 무관하게 200을 반환한다.
     return this.deleteFavorite.execute(
-      currentUser, workspaceId, viewId, request.requestId
+      currentUser, workspaceId, viewDefinitionId, request.requestId
     );
   }
 }

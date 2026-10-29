@@ -29,7 +29,7 @@ describe("workspace view API contracts", () => {
     const signal = new AbortController().signal;
     await request("space/one", "target/one", "view/one", signal);
     expect(client).toHaveBeenCalledWith(
-      "/api/users/me/workspaces/space%2Fone/" + slug + "-definitions/target%2Fone/view-definitions?viewId=view%2Fone",
+      "/api/users/me/workspaces/space%2Fone/view-header/" + slug + "-definitions/target%2Fone/view-definitions?viewDefinitionId=view%2Fone",
       { signal },
     );
   });

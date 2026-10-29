@@ -14,11 +14,11 @@ describe("view favorite API", () => {
     [createWorkspaceViewFavorite, "POST", true],
     [deleteWorkspaceViewFavorite, "DELETE", false],
   ] as const)("uses %s with method %s", async (request, method, isFavorite) => {
-    const response = { viewId: "view/one", isFavorite };
+    const response = { viewDefinitionId: "view/one", isFavorite };
     client.mockResolvedValue(response);
     expect(await request("space/one", "view/one")).toBe(response);
     expect(client).toHaveBeenCalledWith(
-      "/api/users/me/workspaces/space%2Fone/view-definitions/view%2Fone/favorite",
+      "/api/users/me/workspaces/space%2Fone/view-header/view-definitions/view%2Fone/favorite",
       { method },
     );
   });

@@ -24,7 +24,7 @@ import {
 
 // 역할 : 즐겨찾기 해제의 공개 응답 필드를 정의합니다.
 export interface DeleteWorkspaceViewFavoriteResponse {
-  readonly viewId: string;
+  readonly viewDefinitionId: string;
   readonly isFavorite: false;
 }
 
@@ -47,7 +47,7 @@ export class DeleteWorkspaceViewFavoriteUseCase {
   async execute(
     currentUser: CurrentUserContext,
     workspaceId: string,
-    viewId: string,
+    viewDefinitionId: string,
     requestId: string | null = null
   ): Promise<DeleteWorkspaceViewFavoriteResponse> {
     // 1. 현재 사용자의 멤버 소속을 확인하고 client의 소유자 입력을 사용하지 않는다.
@@ -62,7 +62,7 @@ export class DeleteWorkspaceViewFavoriteUseCase {
     const scope: ViewFavoriteScope = {
       workspaceId: normalizedWorkspaceId,
       workspaceMemberId: member.workspaceMemberId.toLowerCase(),
-      viewId: viewId.toLowerCase(),
+      viewId: viewDefinitionId.toLowerCase(),
     };
 
     // 2. 등록과 같은 개인 잠금 안에서 View 검증과 범위 삭제를 원자적으로 실행한다.
@@ -96,6 +96,6 @@ export class DeleteWorkspaceViewFavoriteUseCase {
         "DeleteWorkspaceViewFavoriteUseCase"
       );
     }
-    return { viewId: scope.viewId, isFavorite: false };
+    return { viewDefinitionId: scope.viewId, isFavorite: false };
   }
 }

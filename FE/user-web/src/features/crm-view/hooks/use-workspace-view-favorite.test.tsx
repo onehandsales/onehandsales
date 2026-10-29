@@ -17,7 +17,7 @@ vi.mock("@/features/view-favorite", async importOriginal => ({
 }));
 const create = vi.mocked(createWorkspaceViewFavorite), remove = vi.mocked(deleteWorkspaceViewFavorite);
 type Options = Parameters<typeof useWorkspaceViewFavorite>[0];
-const OPTIONS: Options = { userId: "user", workspaceId: "space", viewId: "view", serverIsFavorite: false, serverUpdatedAt: 1, enabled: true };
+const OPTIONS: Options = { userId: "user", workspaceId: "space", viewDefinitionId: "view", serverIsFavorite: false, serverUpdatedAt: 1, enabled: true };
 const HEADER: WorkspaceViewHeaderResponse = { viewId: "view", viewName: "All", viewIcon: null, viewType: "TABLE", isFavorite: false, objectDefinition: { id: "target", name: "Company", icon: null }, listDefinition: null };
 
 // 기능 : 제어 가능한 API 응답으로 실제 React hook·QueryClient의 상태 경계를 검증합니다.
@@ -27,8 +27,8 @@ describe("useWorkspaceViewFavorite", () => {
 
   // 기능 : 각 사례의 실제 Query 캐시와 React 렌더링 자원을 분리합니다.
   beforeEach(() => {
-    create.mockReset().mockResolvedValue({ viewId: "view", isFavorite: true });
-    remove.mockReset().mockResolvedValue({ viewId: "view", isFavorite: false });
+    create.mockReset().mockResolvedValue({ viewDefinitionId: "view", isFavorite: true });
+    remove.mockReset().mockResolvedValue({ viewDefinitionId: "view", isFavorite: false });
     client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
     container = document.createElement("div"); document.body.append(container); root = createRoot(container);
   });
@@ -87,12 +87,12 @@ describe("useWorkspaceViewFavorite", () => {
 
   // 기능 : 경로 UUID가 대문자여도 canonical 응답과 개인 목록 캐시를 같은 범위로 처리합니다.
   it("uses canonical UUID scopes for response application and personal invalidation", async () => {
-    const workspaceId = "00000000-0000-4000-8000-000000000abc", viewId = "00000000-0000-4000-8000-000000000def";
+    const workspaceId = "00000000-0000-4000-8000-000000000abc", viewDefinitionId = "00000000-0000-4000-8000-000000000def";
     const headerKey = workspaceViewQueryKeys.header("user", workspaceId, "OBJECT", "target");
     const favoriteKey = sidebarViewFavoriteQueryKeys.list("user", workspaceId);
-    client.setQueryData(headerKey, { ...HEADER, viewId }); client.setQueryData(favoriteKey, []);
-    create.mockResolvedValue({ viewId, isFavorite: true });
-    await render({ ...OPTIONS, workspaceId: workspaceId.toUpperCase(), viewId: viewId.toUpperCase() });
+    client.setQueryData(headerKey, { ...HEADER, viewId: viewDefinitionId }); client.setQueryData(favoriteKey, []);
+    create.mockResolvedValue({ viewDefinitionId, isFavorite: true });
+    await render({ ...OPTIONS, workspaceId: workspaceId.toUpperCase(), viewDefinitionId: viewDefinitionId.toUpperCase() });
     await act(async () => { model.onToggle(); }); await flush();
     expect(model.isFavorite).toBe(true);
     expect(client.getQueryData(headerKey)).toMatchObject({ isFavorite: true });
@@ -101,7 +101,7 @@ describe("useWorkspaceViewFavorite", () => {
 
   // 기능 : 빈 보기·미확인 상태·접근 불가한 헤더는 API 요청을 시작하지 않습니다.
   it.each([
-    { viewId: null }, { serverIsFavorite: null }, { enabled: false }, { userId: null },
+    { viewDefinitionId: null }, { serverIsFavorite: null }, { enabled: false }, { userId: null },
   ])("does not mutate unavailable input %j", async change => {
     await render({ ...OPTIONS, ...change });
     await act(async () => { model.onToggle(); }); await flush();
@@ -122,12 +122,12 @@ describe("useWorkspaceViewFavorite", () => {
   });
 
   // 기능 : 사용자·Workspace·View가 바뀐 뒤 늦은 성공/실패가 새 화면을 바꾸지 않습니다.
-  it.each(["userId", "workspaceId", "viewId"] as const)("isolates a late response after changing %s", async field => {
+  it.each(["userId", "workspaceId", "viewDefinitionId"] as const)("isolates a late response after changing %s", async field => {
     const pending = gate(); create.mockReturnValue(pending.promise);
     const old = workspaceViewQueryKeys.header("user", "space", "OBJECT", "target"); client.setQueryData(old, HEADER);
     await render(); await act(async () => { model.onToggle(); }); await flush();
     await render({ ...OPTIONS, [field]: "other" });
-    await act(async () => { pending.resolve({ viewId: "view", isFavorite: true }); }); await flush();
+    await act(async () => { pending.resolve({ viewDefinitionId: "view", isFavorite: true }); }); await flush();
     expect(model.isFavorite).toBe(false); expect(model.error).toBeNull(); expect(model.isPending).toBe(false);
     expect(client.getQueryData(old)).toMatchObject({ isFavorite: true });
   });

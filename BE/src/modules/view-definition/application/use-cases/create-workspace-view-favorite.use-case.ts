@@ -25,7 +25,7 @@ import {
 
 // 역할 : 즐겨찾기 등록의 공개 응답 필드를 정의합니다.
 export interface CreateWorkspaceViewFavoriteResponse {
-  readonly viewId: string;
+  readonly viewDefinitionId: string;
   readonly isFavorite: true;
 }
 
@@ -54,7 +54,7 @@ export class CreateWorkspaceViewFavoriteUseCase {
   async execute(
     currentUser: CurrentUserContext,
     workspaceId: string,
-    viewId: string,
+    viewDefinitionId: string,
     requestId: string | null = null
   ): Promise<CreateWorkspaceViewFavoriteResult> {
     // 1. 서버의 Workspace Port로 멤버·Actor를 확인하고 UUID 표기를 통일한다.
@@ -69,7 +69,7 @@ export class CreateWorkspaceViewFavoriteUseCase {
     const scope: ViewFavoriteScope = {
       workspaceId: normalizedWorkspaceId,
       workspaceMemberId: member.workspaceMemberId.toLowerCase(),
-      viewId: viewId.toLowerCase(),
+      viewId: viewDefinitionId.toLowerCase(),
     };
 
     // 2. 개인 쓰기 잠금·View 검증·중복 확인·생성을 하나의 transaction으로 묶는다.
@@ -96,7 +96,7 @@ export class CreateWorkspaceViewFavoriteUseCase {
         "CreateWorkspaceViewFavoriteUseCase"
       );
     }
-    return { viewId: scope.viewId, isFavorite: true, created: favoriteId !== null };
+    return { viewDefinitionId: scope.viewId, isFavorite: true, created: favoriteId !== null };
   }
 
   // 기능 : 개인 순서와 동일 View 중복을 보호하면서 신규 행만 저장합니다.

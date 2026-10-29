@@ -1,6 +1,8 @@
 # View 즐겨찾기 등록·해제 API 계약
 
-- 계약 상태: implemented (코드 구현 전 confirmed 작성)
+> 2026-10-29: 경로·식별자 명칭은 [View 헤더 API 변경 계약](../../../../VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)으로 대체했다. 아래 내용은 변경 이전 계약의 기록이다.
+
+- 계약 상태: superseded (기존 구현 기록, 코드 구현 전 confirmed 작성)
 - 소비자: User Web. Admin Web/Backend internal 공개 API 아님.
 - 기준: [TODO Software 정본](../../../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md), [API 계약](../../../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md), [DB 정본](../../../../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md), [현재 Prisma](../../../../../BE/prisma/schema.prisma)
 - 호환성: 새 endpoint 추가, breaking change 없음. 기존 헤더·View 목록·사이드바 GET 계약 유지. DB migration/fallback 없음. FE 연결은 후속.

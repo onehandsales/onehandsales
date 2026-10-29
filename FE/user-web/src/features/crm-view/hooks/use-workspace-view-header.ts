@@ -67,19 +67,20 @@ export function useWorkspaceViewHeader({
 
   const header = query.data;
   const target = (targetType === "OBJECT" ? header?.objectDefinition : header?.listDefinition) ?? null;
+  // 3. 초기 헤더의 viewId를 보기 목록·즐겨찾기와 같은 선택 모델로 변환한다.
   const initialView: WorkspaceViewListItem | null =
     header?.viewId && header.viewName !== null && header.viewType !== null
-      ? { viewId: header.viewId, viewName: header.viewName, viewIcon: header.viewIcon,
+      ? { viewDefinitionId: header.viewId, viewName: header.viewName, viewIcon: header.viewIcon,
           viewType: header.viewType, isSelected: true }
       : null;
   const currentView = selection?.scope === scope ? selection.view : initialView;
   const serverIsFavorite = !currentView ? false
-    : currentView.viewId === header?.viewId ? header.isFavorite
-    : favorites?.some(item => item.viewDefinitionId === currentView.viewId) ?? null;
+    : currentView.viewDefinitionId === header?.viewId ? header.isFavorite
+    : favorites?.some(item => item.viewDefinitionId === currentView.viewDefinitionId) ?? null;
   const favorite = useWorkspaceViewFavorite({
-    userId, workspaceId, viewId: currentView?.viewId ?? null,
+    userId, workspaceId, viewDefinitionId: currentView?.viewDefinitionId ?? null,
     serverIsFavorite,
-    serverUpdatedAt: currentView?.viewId === header?.viewId ? query.dataUpdatedAt : favoritesUpdatedAt,
+    serverUpdatedAt: currentView?.viewDefinitionId === header?.viewId ? query.dataUpdatedAt : favoritesUpdatedAt,
     enabled: enabled && !query.isPending && !query.isError && Boolean(target && currentView),
   });
 
@@ -93,7 +94,7 @@ export function useWorkspaceViewHeader({
     void query.refetch();
   }
 
-  // 3. 다른 대상의 응답이나 조회 실패를 정상 빈 상태로 표시하지 않는다.
+  // 4. 다른 대상의 응답이나 조회 실패를 정상 빈 상태로 표시하지 않는다.
   return {
     userId, workspaceId, targetType, target, currentView, isFavorite: favorite.isFavorite,
     isLoading: enabled && query.isPending,

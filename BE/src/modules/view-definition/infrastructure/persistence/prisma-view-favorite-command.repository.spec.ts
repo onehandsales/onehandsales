@@ -125,8 +125,8 @@ describeWithDatabase("Prisma view favorite mutations", () => {
     expect(await prisma.viewFavoriteDefinition.count({ where: { workspaceId: { in: workspaceIds } } })).toBe(6);
     await create.execute(user, workspaceId, viewIds[2]!);
     expect(await prisma.viewFavoriteDefinition.findFirst({ where: { workspaceId, workspaceMemberId: memberId, viewDefinitionId: viewIds[2]! } })).toMatchObject({ sortOrder: 10 });
-    expect(await remove.execute(user, workspaceId, viewId)).toEqual({ viewId, isFavorite: false });
-    expect(await remove.execute(user, workspaceId, viewId)).toEqual({ viewId, isFavorite: false });
+    expect(await remove.execute(user, workspaceId, viewId)).toEqual({ viewDefinitionId: viewId, isFavorite: false });
+    expect(await remove.execute(user, workspaceId, viewId)).toEqual({ viewDefinitionId: viewId, isFavorite: false });
     const remaining = await prisma.viewFavoriteDefinition.findMany({ where: { workspaceId: { in: workspaceIds } } });
     expect(remaining).toHaveLength(5);
     expect(remaining.filter(row => row.workspaceId === workspaceId && row.workspaceMemberId === memberId).map(row => row.sortOrder).sort((a, b) => a - b)).toEqual([9, 10]);
@@ -161,7 +161,7 @@ describeWithDatabase("Prisma view favorite mutations", () => {
     await expect(failingRemove.execute(user, workspaceId, viewId)).rejects.toBe(rollback);
     expect(await prisma.viewFavoriteDefinition.count({ where: { workspaceId } })).toBe(1);
     expect(logger.log).toHaveBeenCalledTimes(1);
-    expect(await remove.execute(user, workspaceId, viewId)).toEqual({ viewId, isFavorite: false });
+    expect(await remove.execute(user, workspaceId, viewId)).toEqual({ viewDefinitionId: viewId, isFavorite: false });
   });
 
   // 기능 : 등록이 아직 commit되지 않았을 때 해제가 동일 잠금을 기다리고 최종 false로 수렴합니다.
@@ -186,7 +186,7 @@ describeWithDatabase("Prisma view favorite mutations", () => {
     const removal = remove.execute(user, workspaceId, viewId);
     try { await deletion; } finally { releaseCreate(); }
     expect((await creation).created).toBe(true);
-    expect(await removal).toEqual({ viewId, isFavorite: false });
+    expect(await removal).toEqual({ viewDefinitionId: viewId, isFavorite: false });
     expect(await prisma.viewFavoriteDefinition.count({ where: { workspaceId } })).toBe(0);
   }, 15000);
 

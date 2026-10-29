@@ -20,7 +20,7 @@ export type WorkspaceViewHeaderResponse = {
 };
 
 export type WorkspaceViewListItem = {
-  readonly viewId: string;
+  readonly viewDefinitionId: string;
   readonly viewName: string;
   readonly viewIcon: string | null;
   readonly viewType: WorkspaceViewType;

@@ -17,7 +17,7 @@ async function setupScenario(page: Page) {
     noViews: false, favoriteReadStatus: 200, writeStatus: 200,
     writeStatuses: [] as number[], commitBeforeFailure: false,
     gate: null as Promise<void> | null,
-    writes: [] as { method: string; workspaceId: string; viewId: string; body: string | null; authorization: string | undefined; status: number }[],
+    writes: [] as { method: string; workspaceId: string; viewDefinitionId: string; body: string | null; authorization: string | undefined; status: number }[],
     headerReads: [] as string[], favoriteReads: [] as string[],
     favorites: new Map<string, Favorite[]>([
       [WORKSPACE, [{ id: "keep-first", viewDefinitionId: "keep-view", name: "먼저 등록한 보기", icon: null }]],
@@ -43,11 +43,11 @@ async function setupScenario(page: Page) {
     const url = new URL(route.request().url()), workspaceId = url.pathname.split("/")[5]!;
     state.headerReads.push(workspaceId);
     const object = url.searchParams.get("targetType") === "OBJECT";
-    const viewId = object ? "view-all" : "view-pipeline";
+    const viewDefinitionId = object ? "view-all" : "view-pipeline";
     const target = { id: url.searchParams.get("targetId"), name: object ? "회사" : "영업 파이프라인", icon: null };
     return respond(route, {
-      viewId: state.noViews ? null : viewId, viewName: state.noViews ? null : names[viewId], viewIcon: null,
-      viewType: state.noViews ? null : "TABLE", isFavorite: state.favorites.get(workspaceId)?.some(row => row.viewDefinitionId === viewId) ?? false,
+      viewId: state.noViews ? null : viewDefinitionId, viewName: state.noViews ? null : names[viewDefinitionId], viewIcon: null,
+      viewType: state.noViews ? null : "TABLE", isFavorite: state.favorites.get(workspaceId)?.some(row => row.viewDefinitionId === viewDefinitionId) ?? false,
       objectDefinition: object ? target : null, listDefinition: object ? null : target,
     });
   }
@@ -57,7 +57,7 @@ async function setupScenario(page: Page) {
     if (route.request().method() === "OPTIONS") return respond(route, null);
     const url = new URL(route.request().url());
     const ids = url.pathname.includes("/object-definitions/") ? ["view-all", "view-seoul"] : ["view-pipeline", "view-stage"];
-    return respond(route, { items: state.noViews ? [] : ids.map((viewId, index) => ({ viewId, viewName: names[viewId], viewIcon: null, viewType: index ? "KANBAN" : "TABLE", isSelected: url.searchParams.get("viewId") === viewId })) });
+    return respond(route, { items: state.noViews ? [] : ids.map((viewDefinitionId, index) => ({ viewDefinitionId, viewName: names[viewDefinitionId], viewIcon: null, viewType: index ? "KANBAN" : "TABLE", isSelected: url.searchParams.get("viewDefinitionId") === viewDefinitionId })) });
   }
 
   // 기능 : 서버 순서·식별자를 보존한 개인 즐겨찾기 목록을 재조회합니다.
@@ -72,27 +72,27 @@ async function setupScenario(page: Page) {
   async function handleMutation(route: Route) {
     if (route.request().method() === "OPTIONS") return respond(route, null);
     const request = route.request(), parts = new URL(request.url()).pathname.split("/");
-    const workspaceId = parts[5]!, viewId = parts[7]!, method = request.method();
+    const workspaceId = parts[5]!, viewDefinitionId = parts[8]!, method = request.method();
     const status = state.writeStatuses.shift() ?? state.writeStatus;
-    const record = { method, workspaceId, viewId, body: request.postData(), authorization: request.headers().authorization, status };
+    const record = { method, workspaceId, viewDefinitionId, body: request.postData(), authorization: request.headers().authorization, status };
     state.writes.push(record);
     if (state.gate) await state.gate;
     const rows = state.favorites.get(workspaceId) ?? [];
-    const existing = rows.some(row => row.viewDefinitionId === viewId);
+    const existing = rows.some(row => row.viewDefinitionId === viewDefinitionId);
     if (status < 400 || state.commitBeforeFailure) {
-      if (method === "POST" && !existing) rows.push({ id: "server-favorite-" + viewId, viewDefinitionId: viewId, name: names[viewId]!, icon: null });
-      if (method === "DELETE") state.favorites.set(workspaceId, rows.filter(row => row.viewDefinitionId !== viewId));
+      if (method === "POST" && !existing) rows.push({ id: "server-favorite-" + viewDefinitionId, viewDefinitionId, name: names[viewDefinitionId]!, icon: null });
+      if (method === "DELETE") state.favorites.set(workspaceId, rows.filter(row => row.viewDefinitionId !== viewDefinitionId));
       else state.favorites.set(workspaceId, rows);
     }
     if (status >= 400) return respond(route, { statusCode: status, error: "private mutation failure", message: "private mutation failure" }, status);
     record.status = method === "POST" && !existing ? 201 : 200;
-    return respond(route, { viewId, isFavorite: method === "POST" }, record.status);
+    return respond(route, { viewDefinitionId, isFavorite: method === "POST" }, record.status);
   }
 
   await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/view-header(?:\?.*)?$/, handleHeader);
-  await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/(object|list)-definitions\/[^/]+\/view-definitions(?:\?.*)?$/, handleViews);
+  await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/view-header\/(object|list)-definitions\/[^/]+\/view-definitions(?:\?.*)?$/, handleViews);
   await page.route(/\/api\/users\/me\/sidebar\/workspaces\/[^/]+\/view-favorites$/, handleFavorites);
-  await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/view-definitions\/[^/]+\/favorite$/, handleMutation);
+  await page.route(/\/api\/users\/me\/workspaces\/[^/]+\/view-header\/view-definitions\/[^/]+\/favorite$/, handleMutation);
   return state;
 }
 
@@ -114,7 +114,7 @@ for (const scenario of [{ name: "Object", path: OBJECT_PATH, id: "view-all", tit
     await header(page).getByRole("button", { name: REMOVE, exact: true }).click();
     await expect(header(page).getByRole("button", { name: ADD, exact: true })).toHaveAttribute("aria-pressed", "false");
     await expect(favorites(page).getByRole("listitem")).toHaveText(["먼저 등록한 보기"]);
-    expect(state.writes.map(row => [row.method, row.viewId, row.status])).toEqual([["POST", scenario.id, 201], ["DELETE", scenario.id, 200]]);
+    expect(state.writes.map(row => [row.method, row.viewDefinitionId, row.status])).toEqual([["POST", scenario.id, 201], ["DELETE", scenario.id, 200]]);
     expect(state.writes.every(row => row.body === null && row.workspaceId === WORKSPACE && row.authorization === "Bearer e2e-user-web-access-token")).toBe(true);
     expect(state.headerReads.length).toBeGreaterThan(1); expect(state.favoriteReads.length).toBeGreaterThan(1);
   });
@@ -130,7 +130,7 @@ test("keeps a noninitial selection after registering and unregistering its own V
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toContainText("단계별 회사");
   await header(page).getByRole("button", { name: REMOVE, exact: true }).click();
   await expect(favorites(page).getByRole("listitem")).toHaveText(["먼저 등록한 보기"]);
-  expect(state.writes.map(row => row.viewId)).toEqual(["view-seoul", "view-seoul"]);
+  expect(state.writes.map(row => row.viewDefinitionId)).toEqual(["view-seoul", "view-seoul"]);
 });
 
 // 기능 : 이미 다른 요청에서 등록된 View의 POST 200도 중복 행 없이 성공으로 반영합니다.
@@ -258,6 +258,6 @@ test("reuses the shared auth refresh after a 401", async ({ page }) => {
   const state = await setupScenario(page); state.writeStatuses = [401, 200]; await page.goto(OBJECT_PATH);
   await header(page).getByRole("button", { name: ADD, exact: true }).click();
   await expect(header(page).getByRole("button", { name: REMOVE, exact: true })).toBeEnabled();
-  expect(state.writes.map(row => row.viewId)).toEqual(["view-all", "view-all"]);
+  expect(state.writes.map(row => row.viewDefinitionId)).toEqual(["view-all", "view-all"]);
   await expect(favorites(page).getByRole("listitem")).toHaveText(["먼저 등록한 보기", "전체 회사"]);
 });

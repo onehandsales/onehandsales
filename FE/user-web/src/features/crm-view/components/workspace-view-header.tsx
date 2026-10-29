@@ -37,7 +37,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
   const favoriteErrorId = useId();
   const viewsQuery = useWorkspaceViews({
     userId: model.userId, workspaceId: model.workspaceId, targetType: model.targetType,
-    targetId: model.target?.id ?? null, viewId: model.currentView?.viewId ?? null,
+    targetId: model.target?.id ?? null, viewDefinitionId: model.currentView?.viewDefinitionId ?? null,
     enabled: isOpen && !model.isLoading && !model.isError,
   });
   const visibleItems = (viewsQuery.data?.items ?? []).filter(
@@ -199,8 +199,8 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
           {visibleItems.map(view => <button
             aria-selected={view.isSelected}
             className="flex h-8 w-full items-center gap-2 rounded px-2 text-left hover:bg-[#F3F2EF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/40"
-            data-view-id={view.viewId}
-            key={view.viewId}
+            data-view-id={view.viewDefinitionId}
+            key={view.viewDefinitionId}
             onClick={() => handleSelect(view)}
             role="option"
             type="button"

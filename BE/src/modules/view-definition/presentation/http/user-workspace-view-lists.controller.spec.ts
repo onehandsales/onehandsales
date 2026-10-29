@@ -38,7 +38,7 @@ describe.each([
   { entity: "List", slug: "list", key: "listDefinitionId" },
 ] as const)("Workspace $entity views HTTP and module wiring", ({ entity, slug, key }) => {
   let app: INestApplication;
-  const endpoint = "/api/users/me/workspaces/" + WORKSPACE_ID + "/" + slug + "-definitions/" + TARGET_ID + "/view-definitions";
+  const endpoint = "/api/users/me/workspaces/" + WORKSPACE_ID + "/view-header/" + slug + "-definitions/" + TARGET_ID + "/view-definitions";
   const prisma = {
     workspaceMember: { findFirst: jest.fn() },
     objectDefinition: { findFirst: jest.fn() },
@@ -71,10 +71,10 @@ describe.each([
 
   // 기능 : 중간 View 선택을 표시하면서 정렬·정확한 응답·각 소유 Port 조회를 보존합니다.
   it("serves the list through real owner ports without requiring a preceding header request", async () => {
-    await request(app.getHttpServer()).get(endpoint).query({ viewId: SELECTED_ID })
+    await request(app.getHttpServer()).get(endpoint).query({ viewDefinitionId: SELECTED_ID })
       .set("Authorization", "Bearer valid-token").expect(200).expect({ items: [
-        { viewId: VIEWS[0]!.id, viewName: "전체 보기", viewIcon: null, viewType: "TABLE", isSelected: false },
-        { viewId: SELECTED_ID, viewName: "단계별 보기", viewIcon: "kanban", viewType: "KANBAN", isSelected: true },
+        { viewDefinitionId: VIEWS[0]!.id, viewName: "전체 보기", viewIcon: null, viewType: "TABLE", isSelected: false },
+        { viewDefinitionId: SELECTED_ID, viewName: "단계별 보기", viewIcon: "kanban", viewType: "KANBAN", isSelected: true },
       ] });
     expect(prisma.workspaceMember.findFirst).toHaveBeenCalledTimes(1);
     expect(prisma.workspaceMember.findFirst).toHaveBeenCalledWith({
@@ -95,7 +95,7 @@ describe.each([
   });
 
   // 기능 : 선택 ID가 없거나 목록 밖이어도 대상 전체 목록을 반환합니다.
-  it.each([{}, { viewId: "00000000-0000-4000-8000-000000000fff" }])(
+  it.each([{}, { viewDefinitionId: "00000000-0000-4000-8000-000000000fff" }])(
     "returns all items unselected for query %j", async (query) => {
       const response = await request(app.getHttpServer()).get(endpoint).query(query)
         .set("Authorization", "Bearer valid-token").expect(200);
@@ -107,7 +107,7 @@ describe.each([
   // 기능 : 유효한 UUID의 대문자 표기 역시 현재 선택으로 표시합니다.
   it("accepts uppercase selection UUIDs", async () => {
     const response = await request(app.getHttpServer()).get(endpoint)
-      .query({ viewId: SELECTED_ID.toUpperCase() })
+      .query({ viewDefinitionId: SELECTED_ID.toUpperCase() })
       .set("Authorization", "Bearer valid-token").expect(200);
     expect(response.body.items[1].isSelected).toBe(true);
   });
@@ -121,8 +121,9 @@ describe.each([
 
   // 기능 : 현재 선택 외 추가 입력·배열·null·빈 값을 application 조회 전에 차단합니다.
   it.each([
-    { viewId: "" }, { viewId: "null" }, { viewId: "undefined" }, { viewId: "invalid" },
-    { viewId: [SELECTED_ID, SELECTED_ID] },
+    { viewDefinitionId: "" }, { viewDefinitionId: "null" }, { viewDefinitionId: "undefined" }, { viewDefinitionId: "invalid" },
+    { viewDefinitionId: [SELECTED_ID, SELECTED_ID] },
+    { viewId: SELECTED_ID },
     { userId: TARGET_ID }, { workspaceMemberId: TARGET_ID }, { actorId: TARGET_ID },
     { workspaceId: WORKSPACE_ID }, { targetType: "OBJECT" }, { page: 1 }, { sort: "name" },
   ])("rejects invalid or extra query %j", async (query) => {
@@ -133,7 +134,7 @@ describe.each([
 
   // 기능 : 동일한 UUID라도 중복 query로 들어오면 배열로 거부합니다.
   it("rejects duplicate selection query keys", async () => {
-    await request(app.getHttpServer()).get(endpoint + "?viewId=" + SELECTED_ID + "&viewId=" + SELECTED_ID)
+    await request(app.getHttpServer()).get(endpoint + "?viewDefinitionId=" + SELECTED_ID + "&viewDefinitionId=" + SELECTED_ID)
       .set("Authorization", "Bearer valid-token").expect(400);
     expect(prisma.viewDefinition.findMany).not.toHaveBeenCalled();
   });

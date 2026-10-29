@@ -4,5 +4,5 @@ import { IsUUID, ValidateIf } from "class-validator";
 export class ListWorkspaceObjectViewsQueryDto {
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @IsUUID()
-  viewId?: string;
+  viewDefinitionId?: string;
 }

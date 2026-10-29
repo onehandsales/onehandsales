@@ -20,7 +20,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 
 // 역할 : Object 보기 선택 메뉴의 표시 정보와 현재 선택 여부를 정의합니다.
 export interface WorkspaceObjectViewListItem {
-  readonly viewId: string;
+  readonly viewDefinitionId: string;
   readonly viewName: string;
   readonly viewIcon: string | null;
   readonly viewType: ViewDefinitionType;
@@ -50,7 +50,7 @@ export class ListWorkspaceObjectViewsUseCase {
     currentUser: CurrentUserContext,
     workspaceId: string,
     objectDefinitionId: string,
-    viewId?: string
+    viewDefinitionId?: string
   ): Promise<WorkspaceObjectViewsResponse> {
     // 1. 헤더 조회 여부와 관계없이 현재 사용자의 멤버십을 한 번 확인한다.
     const isMember = await this.workspaceAccessQuery.hasWorkspaceMembership(
@@ -77,14 +77,14 @@ export class ListWorkspaceObjectViewsUseCase {
     });
 
     // 4. UUID 대소문자를 정규화해 선택만 표시하고 순서와 빈 목록을 보존한다.
-    const selectedViewId = viewId?.toLowerCase();
+    const selectedViewDefinitionId = viewDefinitionId?.toLowerCase();
     return {
       items: views.map((view) => ({
-        viewId: view.id,
+        viewDefinitionId: view.id,
         viewName: view.name,
         viewIcon: view.icon,
         viewType: view.type,
-        isSelected: view.id.toLowerCase() === selectedViewId,
+        isSelected: view.id.toLowerCase() === selectedViewDefinitionId,
       })),
     };
   }
