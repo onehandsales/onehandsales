@@ -1,6 +1,10 @@
 import type { WorkspaceViewTargetType } from "../types/workspace-view";
 
 export const workspaceViewQueryKeys = {
+  // 기능 : 메뉴 캐시를 사용자·Workspace·보기·메뉴별로 격리합니다.
+  menu(userId: string | null, workspaceId: string | null, viewDefinitionId: string | null, menu: string) {
+    return ["crm-view", userId?.toLowerCase() ?? null, workspaceId?.toLowerCase() ?? null, "menu", viewDefinitionId?.toLowerCase() ?? null, menu] as const;
+  },
   // 기능 : 쓰기 결과를 요청한 사용자·Workspace의 보기 캐시에만 반영합니다.
   workspace(userId: string | null, workspaceId: string | null) {
     return ["crm-view", userId?.toLowerCase() ?? null, workspaceId?.toLowerCase() ?? null] as const;

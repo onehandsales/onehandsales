@@ -98,7 +98,7 @@ import {
 } from "@/components/layout/account-modal-route";
 import { PageHeader } from "@/components/layout/page-header";
 import { getApiErrorMessage } from "@/lib/api-client";
-import { WorkspaceViewHeader, useWorkspaceViewHeader } from "@/features/crm-view";
+import { WorkspaceViewHeader, useWorkspaceViewHeader, useViewMenus, type WorkspaceViewHeaderModel, type ViewMenusModel } from "@/features/crm-view";
 
 const ACCOUNT_MODAL_TRANSITION_MS = 300;
 const ACCOUNT_MODAL_OPEN_DELAY_MS = 20;
@@ -125,6 +125,8 @@ type AccountModalNotice = {
 };
 
 export type AppShellOutletContext = {
+  readonly viewHeaderModel: WorkspaceViewHeaderModel;
+  readonly viewMenus: ViewMenusModel;
   readonly headerToolbarElement?: HTMLDivElement | null;
   readonly isSidebarCrmObjectsLoading: boolean;
   readonly selectedSidebarCrmObject: SidebarCrmObjectListItem | null;
@@ -298,7 +300,7 @@ export function AppShell() {
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
   // 29. 처리 흐름에 필요한 outletContext 값을 준비한다.
-  const outletContext = useMemo<AppShellOutletContext>(
+  const outletContext = useMemo<Omit<AppShellOutletContext, "viewHeaderModel" | "viewMenus">>(
     () => ({
       headerToolbarElement,
       isSidebarCrmObjectsLoading,
@@ -745,6 +747,7 @@ export function AppShell() {
     favorites: sidebarViewFavoritesQuery.data,
     favoritesUpdatedAt: sidebarViewFavoritesQuery.dataUpdatedAt,
   });
+  const viewMenus = useViewMenus(viewHeaderModel);
   // 37. 이후 단계에서 사용할 isMobileHeaderHidden 값을 준비한다.
   const isMobileHeaderHidden = false;
   // 38. 이후 단계에서 사용할 hideTopBar 값을 준비한다.
@@ -1134,7 +1137,7 @@ export function AppShell() {
                   : "min-h-[calc(100dvh-var(--topbar-height))]"
             }
           >
-            <Outlet context={outletContext} />
+            <Outlet context={{ ...outletContext, viewHeaderModel, viewMenus }} />
           </main>
         </div>
       </div>
@@ -1202,7 +1205,7 @@ export function AppShell() {
           <MobileAppHeader />
         ) : null}
         <main className="pb-24">
-          <Outlet context={{ ...outletContext, headerToolbarElement: null }} />
+          <Outlet context={{ ...outletContext, viewHeaderModel, viewMenus, headerToolbarElement: null }} />
         </main>
         <BottomTabBar homePath={currentWorkspaceHomePath} />
       </div>

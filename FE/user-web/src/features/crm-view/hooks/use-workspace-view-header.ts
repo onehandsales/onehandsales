@@ -91,6 +91,8 @@ export function useWorkspaceViewHeader({
 
   // 기능 : 조회 실패 시 같은 대상의 헤더를 다시 요청합니다.
   function handleRetry() {
+    // 1. 더 이상 열 수 없는 선택을 해제하고 현재 대상의 초기 보기를 다시 읽는다.
+    setSelection(null);
     void query.refetch();
   }
 

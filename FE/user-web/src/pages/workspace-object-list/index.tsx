@@ -1297,8 +1297,13 @@ export function WorkspaceObjectListPage() {
     readonly objectDefinitionId?: string;
     readonly workspaceId?: string;
   }>();
-  const { headerToolbarElement, selectedSidebarCrmObject, sidebarCrmObjects } =
+  const { headerToolbarElement, selectedSidebarCrmObject, sidebarCrmObjects, viewHeaderModel, viewMenus } =
     useOutletContext<AppShellOutletContext>();
+
+  useEffect(() => {
+    // 1. 보기 전환 후 숨겨진 검색 입력이 기존 본문을 계속 제한하지 않게 한다.
+    setSearchQuery("");
+  }, [viewMenus.scope]);
 
   // 1. 현재 관리 항목의 header AttributeDefinition 목록을 조회한다.
   const attributeDefinitionsQuery = useWorkspaceObjectAttributeDefinitionsQuery({
@@ -2024,6 +2029,8 @@ export function WorkspaceObjectListPage() {
   // 화면 : 기존 검색과 기록 추가는 유지하고 View 설정은 헤더 안에서 미리 제공합니다.
   const headerToolbar = (
     <ViewHeaderToolbar
+      header={viewHeaderModel}
+      menus={viewMenus}
       attributes={renderedAttributeColumns}
       key={`${workspaceId}:${objectDefinitionId}`}
       onCreateRecord={openCreateRecordDefinitionModal}

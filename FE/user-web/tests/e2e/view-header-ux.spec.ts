@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { seedAuthenticatedSession, setupUserWebApiMocks } from "./support/user-web-api-mocks";
+import { setupViewMenuScenario } from "./support/view-menu-scenario";
 
-test("keeps the 38px header and right tools with server-backed read-only view controls", async ({ page }, testInfo) => {
+test("keeps the 38px header and original editable popovers with saved view settings", async ({ page }, testInfo) => {
   await setupUserWebApiMocks(page);
   await seedAuthenticatedSession(page);
   await page.route("**/api/users/me/workspaces/*/object-definitions/*/attribute-definitions", (route) =>
@@ -43,10 +44,14 @@ test("keeps the 38px header and right tools with server-backed read-only view co
   await page.keyboard.press("Escape");
   await expect(commonHeader.getByRole("button", { name: "보기 선택", exact: true })).toBeFocused();
 
+  await expect(toolbar.getByRole("button", { name: "보기 설정", exact: true })).toBeDisabled();
+  await setupViewMenuScenario(page);
+  await page.reload();
+
   await toolbar.getByRole("button", { name: "필터", exact: true }).click();
   const filterDialog = toolbar.getByRole("dialog", { name: "필터", exact: true });
-  await filterDialog.getByRole("button", { name: "필터 추가", exact: true }).click();
-  await filterDialog.getByLabel("조건 값 입력", { exact: true }).fill("미리보기");
+  await filterDialog.getByRole("button", { name: "필터 추가", exact: true }).last().click();
+  await filterDialog.getByLabel("조건 값 입력", { exact: true }).first().fill("미리보기");
   await page.keyboard.press("Escape");
   await expect(filterDialog).not.toBeVisible();
   await expect(toolbar.getByRole("button", { name: "필터", exact: true })).toBeFocused();
@@ -54,11 +59,11 @@ test("keeps the 38px header and right tools with server-backed read-only view co
   await toolbar.getByRole("button", { name: "정렬", exact: true }).click();
   const sortDialog = toolbar.getByRole("dialog", { name: "정렬", exact: true });
   await sortDialog.getByRole("button", { name: "정렬 추가", exact: true }).click();
-  await sortDialog.getByLabel("정렬 방향", { exact: true }).selectOption("DESC");
+  await sortDialog.getByLabel("정렬 방향", { exact: true }).last().selectOption("DESC");
   await page.keyboard.press("Escape");
 
   await toolbar.getByRole("button", { name: "보기 설정", exact: true }).click();
-  await toolbar.getByRole("dialog", { name: "보기 설정", exact: true }).getByLabel("이름", { exact: true }).uncheck();
+  await toolbar.getByRole("dialog", { name: "보기 설정", exact: true }).getByLabel("계약명", { exact: true }).uncheck();
   await page.keyboard.press("Escape");
   for (const width of [1440, 1024]) {
     await page.setViewportSize({ width, height: 900 });
@@ -71,7 +76,7 @@ test("keeps the 38px header and right tools with server-backed read-only view co
   }
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: testInfo.outputPath("header-ux.png") });
-  expect(viewRequests).toHaveLength(1);
+  expect(viewRequests).toHaveLength(4);
   expect(writes).toEqual([]);
   expect(errors).toEqual([]);
 });
