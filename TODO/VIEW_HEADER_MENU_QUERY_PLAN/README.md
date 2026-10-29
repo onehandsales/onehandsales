@@ -92,6 +92,7 @@
 - [API 계약 규칙](../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md)
 - [모듈 경계](../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md)
 - [DB 기준](../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md), [Prisma 스키마](../../BE/prisma/schema.prisma)
+- [View 제약 검토](../VIEW_인덱스관련검토문서.md): 현재 기본 ID FK와 후속 복합 소속 FK·CHECK 후보의 차이.
 - [11개 View 텍스트 UX](../VIEW_TWO_AREA_TEXT_UX.md)
 - [Notion·Attio 적용 기준](../../AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md)
 
@@ -100,3 +101,21 @@
 - 문서 완료: API 초안과 Backend 작업·검증 순서가 연결되어 있다.
 - 구현 착수: Backend 작업 문서 G00에서 남은 계약 항목을 검토하고 `confirmed`로 갱신한다.
 - Backend 완료: 세 API 구현과 관련 검증 결과가 기록되어 있다. 문서만 작성한 상태를 `implemented`로 표시하지 않는다.
+
+## 9. 스키마 재검토와 보완 결과
+
+- 검토일: 2026-10-29.
+- 근거: 현재 `schema.prisma`의 View 관련 모델, Attribute/SelectOption/StatusOption/List 관계, 현재 `view-definition`과 공개 query Port.
+- 판정: 문서 보완 완료 / 계약 `draft` 유지. G00 계약 검토에 착수할 수 있으며 G01 구현은 `confirmed` 전환 후 진행한다.
+- 이유: 읽기 흐름은 현재 구조에 맞지만, 같은 Workspace의 다른 Object/List 속성을 SourceScope별로 어디까지 거부할지는 스키마만으로 확정할 수 없다. 새 도메인 제약을 임의 도입하지 않는다.
+
+| 검토에서 확인한 빈틈 | 보완한 기준 / 후속 확인 |
+| --- | --- |
+| ID FK만으로 소속 일치를 보장한다고 오해할 수 있음 | API 계약 7.2절에 Application의 검증 조건을 연결별로 명시 |
+| GroupSetting과 부모 그룹/옵션이 같은 속성인지 불명확 | 부모 그룹 존재, 그룹과 설정의 Attribute 일치, 명시 옵션의 Workspace·Attribute 일치 확인 |
+| 범위 밖 행 제외와 저장 설정 오류의 구분 부족 | 7.3절에 스코프 밖 행은 제외, 조회된 행의 필수 참조 오류는 500으로 구분. 전체 DB 진단 보장 없음 |
+| 경로 JSON·그룹 순환의 구체적인 실패 기준 부족 | UUID 배열·모든 참조 ID 존재, 모든 그룹의 부모/순환 검사, 여러 루트 보존 기준 추가 |
+| SourceScope 소속 검증과 전체 실행 가능성의 경계 불명확 | 7.4절에 직접 속성 판정안을 사례별로 작성. G00에서 포함/후속 분리 여부를 확인하고 전체 경로 실행기와 구분 |
+| batch Port가 실제로 어떤 소속 정보를 제공해야 하는지 부족 | Backend 문서 4.1~4.3절에 입력/결과, 명시 옵션 조회, 호출 수 기준, 검증 순서 추가 |
+
+이번 보완은 저장 메뉴 상태의 안전한 읽기를 구체화한 것이다. 실제 필터 평가·다중값 처리·정렬·집계 로직, View 원본 XOR, 옵션 식별 방식 XOR, 위젯 소유 타입·중첩 허용 정책을 확정하지 않는다. 문서 정적 대조만 수행했으며 코드 구현·실제 DB 데이터 정상 여부·실행 테스트 통과는 보장하지 않는다.
