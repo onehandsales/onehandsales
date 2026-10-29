@@ -25,8 +25,7 @@ import type { CurrentUserContext } from "@/shared/application/context/current-us
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
-import { EmptyViewFavoriteRequestDto } from "./dto/empty-view-favorite-request.dto";
-import { EmptyViewFavoriteRequestPipe } from "./pipes/empty-view-favorite-request.pipe";
+import { EmptyRequestPipe } from "@/shared/presentation/pipes/empty-request.pipe";
 
 // 역할 : 현재 사용자의 View 즐겨찾기 등록·해제 HTTP 계약을 application에 연결합니다.
 @UseGuards(AuthGuard)
@@ -41,8 +40,8 @@ export class UserWorkspaceViewFavoriteController {
   // API : 사용자, Workspace View 즐겨찾기 등록
   @Post()
   async create(
-    @Query(new EmptyViewFavoriteRequestPipe()) _query: EmptyViewFavoriteRequestDto,
-    @Body(new EmptyViewFavoriteRequestPipe()) _body: EmptyViewFavoriteRequestDto,
+    @Query(new EmptyRequestPipe()) _query: unknown,
+    @Body(new EmptyRequestPipe()) _body: unknown,
     @CurrentUser() currentUser: CurrentUserContext,
     @Req() request: RequestWithRequestId,
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
@@ -62,8 +61,8 @@ export class UserWorkspaceViewFavoriteController {
   @Delete()
   @HttpCode(HttpStatus.OK)
   delete(
-    @Query(new EmptyViewFavoriteRequestPipe()) _query: EmptyViewFavoriteRequestDto,
-    @Body(new EmptyViewFavoriteRequestPipe()) _body: EmptyViewFavoriteRequestDto,
+    @Query(new EmptyRequestPipe()) _query: unknown,
+    @Body(new EmptyRequestPipe()) _body: unknown,
     @CurrentUser() currentUser: CurrentUserContext,
     @Req() request: RequestWithRequestId,
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,

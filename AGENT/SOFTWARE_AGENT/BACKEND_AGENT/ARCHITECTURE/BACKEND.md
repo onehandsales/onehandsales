@@ -27,7 +27,9 @@
 - `domain`: repository port, domain type, domain error
 - `application`: use case service, transaction boundary
 - `infrastructure`: Prisma repository, external adapter
-- `presentation`: controller, DTO, guard/filter
+- `presentation`: controller, DTO, guard/pipe/filter, HTTP 응답 변환
+
+여러 모듈이 공유하는 HTTP 처리는 `BE/src/shared/presentation`에 둔다. 구성 요소별 책임·등록 위치와 전역 DTO 검증/공통 Pipe 사용법은 [Shared Presentation Architecture](SHARED_PRESENTATION.md)를 따른다. Workspace 접근 권한과 비즈니스 규칙은 application에 유지한다.
 
 ## Modular Monolith / Future MSA 원칙
 

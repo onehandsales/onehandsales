@@ -1,9 +1,9 @@
-# View 헤더 메뉴 조회 Backend 작업 문서 작성
+# View 헤더 메뉴 조회 Backend 작업 기록
 
 - 작업일: 2026-10-29
-- 상태: 문서 작성·검토 완료 / API 계약 draft / Backend 구현 미착수
+- 현재 상태: Backend G00~G99 구현·검증·검토 완료 / API 계약 implemented
 - 사용자 요청: TODO 아래에 필터·정렬·보기 설정 버튼을 눌렀을 때 필요한 Backend 조회 API 작업 문서를 작성한다.
-- 관련 계획: `TODO/VIEW_HEADER_MENU_QUERY_PLAN/`
+- 관련 계획: [완료 계획](../../../TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)
 - 예정 범위: 계획 README, 공통 API 계약, Backend 구현 순서·검증 기준, TODO 색인.
 - 시작 시 Git 작업 트리는 깨끗했다.
 
@@ -28,9 +28,9 @@
 ## 적용 범위
 
 - 이번 작업은 문서 작성이다. Backend/Frontend 소스, DB, 환경 파일과 실행 중 서버는 변경하지 않는다.
-- `TODO/VIEW_HEADER_MENU_QUERY_PLAN/README.md`
-- `TODO/VIEW_HEADER_MENU_QUERY_PLAN/COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md`
-- `TODO/VIEW_HEADER_MENU_QUERY_PLAN/BE-TODO/IMPLEMENTATION.md`
+- `TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md`
+- `TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md`
+- `TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/BE-TODO/IMPLEMENTATION.md`
 - `TODO/README.md`
 - 이 `WORK_LOG.md`
 
@@ -68,3 +68,23 @@
 - 계약은 draft, Backend 구현은 미착수로 유지한다. 문서 보완 후 사용자가 Git 커밋을 요청하여 관련 문서 4개만 검증 후 커밋한다.
 - 검증 결과: 계획 문서 3개의 로컬 링크 31개(앵커 포함), JSON 코드 블록 6개 파싱, 예시의 고유 모델·필드 조합 44개와 경로 배열 3개, ViewType 11개 대응 확인 통과. `git diff --check` 통과.
 - 실행 테스트·빌드·DB 조회/변경은 이번 문서 작업에서 수행하지 않았다. 수정 파일은 계획 문서 3개와 이 작업 기록이며 코드·스키마·ENV 변경은 없다.
+
+## 2026-10-29 Backend Agent 학습 후 구현·최종 검토
+
+- 사용자 요청: Backend Agent 문서를 먼저 학습하고 비즈니스 로직·컨벤션·주석 규칙을 준수해 구현 및 검토한다.
+- 착수 상태: 이전 문서 보완 커밋 `d1f2df53` 이후 깨끗한 작업 트리. 위의 draft/미착수 기록은 구현 전 이력이며 현재 상태는 이 절을 따른다.
+- 사전 학습: root/BE AGENTS, Software README, Backend Agent 23개 문서, 관련 DB·시간 정책, 현재 View 코드/schema·API 계획을 확인했다.
+- G00: 저장 설정 복원 범위와 참조 검증을 confirmed로 정리한 뒤 구현했다. 직접 SourceScope 소속 판정과 전체 경로 실행, 혼합 Object 정책은 저장/실행 API로 후속 분리했다.
+- G01~G03: filters/sorts/settings GET, 공통 Reader·mapper, View query adapter, Attribute 소유 모듈의 공개 메타데이터 batch Port와 DI를 구현했다.
+- 조회 흐름: 멤버십 → Workspace 내 선택 View·Object/List 참조 → 해당 메뉴 행 → 속성/옵션/위젯 batch → 참조 검증 → 공개 응답. Actor·기본 설정 생성, Record 값 조회, 보정 쓰기는 없다.
+- G99: 신규 application 36개, HTTP·모듈 연결 23개, 실제 PostgreSQL adapter 1개 테스트를 포함한 전체 **64 suites / 462 tests 통과**, 실패·skip 0. typecheck/lint/build/Prisma validate 통과.
+- DB 검증: 저장소 밖 임시 PostgreSQL 17 사용. 현재 schema와 기존 복합 FK·CHECK를 테스트 DB에만 준비했다. 세 메뉴/메타데이터 adapter SELECT 합계 12회, 빈 batch 0회, 교차 Workspace 제외, 결정적 정렬, 전체 옵션·JSON·숨김·반복 위젯 보존과 fixture rollback을 확인했다.
+- 규칙 검토: 변경 TS 20개 파일의 선언 117개에 필요한 역할/API/기능 주석 존재. application/domain 금지 의존성과 다른 모듈의 구체 repository 직접 import 없음. 주요 흐름 번호 주석과 안전한 오류 로그 확인.
+- 알려진 제한: Prisma의 기존 복합 FK SetNull 경고 4개. 실제 Supabase 데이터·성능과 배포, Frontend·설정 저장·본문 쿼리 실행은 이번 검증 대상이 아니다.
+- [최종 검토](../../../TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/BE-TODO/REVIEW.md)에 항목별 근거를 남기고 계약을 implemented로 갱신했다. 계획 전체는 TODO 완료 규칙에 따라 `TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN`으로 보관한다.
+- FE·schema/migration·package/lockfile·ENV 파일과 실제 업무 DB는 변경하지 않았다. 이번 Backend 구현 커밋은 수행하지 않는다.
+- 마무리 검증: 보관 후 계획·검토·작업 기록 링크 44개, JSON 블록 6개, 응답 배열의 모델/필드 38개, 경로 배열 3개, ViewType/config 예시 11개 대조 통과. 테스트용 임시 PostgreSQL만 정상 종료하고 pid 파일 제거를 확인했다.
+
+## 후속 규칙 재검토·수정
+
+예약 키 입력의 검증 누락과 일부 모델에 없는 숨김 상태를 설명한 주석을 추가로 발견했다. 사용자 요청에 따라 공통 빈 요청 검증과 주석을 수정했으며 [후속 작업 기록](../VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/WORK_LOG.md)에 수정 전 재현과 수정 후 관련 103개 테스트·정적/빌드 검증을 분리해 남겼다. 초기 주석 AST 검사는 주석의 의미까지 보장하는 증거가 아니다.

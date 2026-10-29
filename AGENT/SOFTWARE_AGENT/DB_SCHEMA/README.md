@@ -58,7 +58,7 @@ DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접
 
 ### 2.1 Supabase에 적용한 View 기반
 
-2026-10-16 작성한 `BE/prisma/schema.prisma`를 기준으로, 2026-10-17 사용자 요청에 따라 View 관련 10개 모델의 저장 컬럼 134개와 기본 ID FK 56개를 Supabase에 적용했다. 적용 migration은 `20261017050000_rebuild_view_tables_from_current_schema`다. 2026-10-24 사이드바 개인 View 즐겨찾기 조회 API와 User Web 표시를 연결했다. 나머지 View API/화면은 후속 범위다.
+2026-10-16 작성한 `BE/prisma/schema.prisma`를 기준으로, 2026-10-17 사용자 요청에 따라 View 관련 10개 모델의 저장 컬럼 134개와 기본 ID FK 56개를 Supabase에 적용했다. 적용 migration은 `20261017050000_rebuild_view_tables_from_current_schema`다. 2026-10-24 사이드바 개인 View 즐겨찾기 조회 API와 User Web 표시를 연결했다. 이후 헤더·View 목록·즐겨찾기 등록/해제와 저장 메뉴 조회를 구현했으며 아래 구현 기록과 각 완료 계약을 따른다.
 
 - `ViewDefinition`
 - `ViewAttributeSettingDefinition`
@@ -75,7 +75,7 @@ DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접
 
 Enum 이름은 `ViewTypeEnum`, `ViewSourceScopeEnum`, `ViewAttributeDisplayRoleEnum`, `ViewConditionGroupOperatorEnum`, `ViewMultiValueMatchModeEnum`, `ViewSortDirectionEnum`, `ViewGroupRoleEnum`, `ViewWorkDependencyTypeEnum`, `ViewWorkDependencyUnitEnum`이다.
 
-`revision`과 `groupKeyHash`는 제외하고 `groupKeyJson`은 유지한다. 신규 모델에는 PK 외 추가 UNIQUE·조회 인덱스·CHECK를 작성하지 않는다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. 즐겨찾기 조회는 현재 멤버·Workspace와 연결 View의 Workspace를 확인한다. 나머지 View API의 소속 검증은 후속 범위다.
+`revision`과 `groupKeyHash`는 제외하고 `groupKeyJson`은 유지한다. 신규 모델에는 PK 외 추가 UNIQUE·조회 인덱스·CHECK를 작성하지 않는다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. 즐겨찾기 조회는 현재 멤버·Workspace와 연결 View의 Workspace를 확인한다. 헤더 메뉴 조회도 Workspace/View 범위와 조회된 설정의 Attribute·그룹·옵션·위젯 참조를 application에서 검증한다.
 
 후속 복합 FK·필요 UNIQUE·CHECK·조회 인덱스와 Object/List 영역 보완 후보는 [검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 이유와 함께 기록한다. 기존 Object/List의 제약과 migration SQL은 그대로 유지한다.
 
@@ -113,7 +113,9 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 2026-10-26 view-definition에 Object/List 소속 View 드롭다운 목록 Backend GET 두 개를 구현했다. 각 API는 인증 사용자 멤버십과 대상의 Workspace 소속을 기존 공개 Port로 확인하고, ViewDefinition을 workspaceId+대상 FK로 조회한다. sortOrder/createdAt/id 오름차순 전체 요약과 선택적 viewId의 isSelected를 반환한다. 빈 목록·선택 ID 누락/불일치·UUID 대소문자를 처리하며 두 소속 View를 임의 XOR로 제외하지 않는다. [계약·검증·완료 범위](../../../TODO/DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md)를 따른다. 임시 PG17의 전체 58 suites/341 tests와 typecheck/lint/build·Prisma 검증이 통과했다. schema/migration/업무 DB·환경 파일 변경은 없다.
 
-개별 List/View 화면과 헤더·View 드롭다운의 FE 연결, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 클릭·등록·해제·순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
+2026-10-29 선택 View의 필터·정렬·보기 설정 GET 3개를 구현했다. View 소유 adapter와 Attribute 공개 메타데이터 Port를 통해 저장 메뉴를 복원하며 경로 UUID·참조 Workspace·전체 필터 순환·그룹/옵션 연결·위젯 원본을 확인한다. [계약과 최종 검토](../../../TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)를 따른다. 격리 PostgreSQL 17을 포함한 전체 64 suites / 462 tests 및 typecheck/lint/build·Prisma validate가 통과했다. schema/migration·실제 업무 DB·ENV 변경은 없다.
+
+헤더·View 드롭다운의 FE 연결과 즐겨찾기 등록/해제는 각 완료 계획을 따른다. 개별 List/View 본문, 이번 메뉴의 FE 연결, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 

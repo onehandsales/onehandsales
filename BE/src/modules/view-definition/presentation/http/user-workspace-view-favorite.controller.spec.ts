@@ -115,7 +115,23 @@ describe("Workspace view favorite HTTP and module wiring", () => {
       }
     });
 
-    // 기능 : 객체가 아닌 JSON 배열을 빈 요청 DTO로 받아들이지 않습니다.
+    // 기능 : 전역 DTO 변환에서 사라지는 키도 등록·삭제 transaction 전에 거부합니다.
+    it("rejects reserved request keys before accessing the database", async () => {
+      for (const body of ['{"constructor":"unexpected"}', '{"__proto__":{"extra":true}}']) {
+        await request(app.getHttpServer())[method](endpoint).set("Authorization", "Bearer valid").set("Content-Type", "application/json").send(body).expect(400);
+      }
+      await request(app.getHttpServer())[method](endpoint + "?constructor=unexpected").set("Authorization", "Bearer valid").expect(400);
+      expect(prisma.workspaceMember.findFirst).not.toHaveBeenCalled();
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+
+    // 기능 : 빈 객체를 명시해도 등록·삭제의 기존 성공 상태와 응답을 유지합니다.
+    it("accepts an explicit empty object body", async () => {
+      await request(app.getHttpServer())[method](endpoint).set("Authorization", "Bearer valid").send({})
+        .expect(method === "post" ? 201 : 200).expect({ viewDefinitionId: VIEW_ID, isFavorite: method === "post" });
+    });
+
+    // 기능 : 객체가 아닌 JSON 배열을 빈 요청으로 받아들이지 않습니다.
     it.each([{ body: [] }, { body: [{}] }])("rejects an array body $body", async ({ body }) => {
       await request(app.getHttpServer())[method](endpoint).send(body).set("Authorization", "Bearer valid").expect(400);
       expect(prisma.workspaceMember.findFirst).not.toHaveBeenCalled();

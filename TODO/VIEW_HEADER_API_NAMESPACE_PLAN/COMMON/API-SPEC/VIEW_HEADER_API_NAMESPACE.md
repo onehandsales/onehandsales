@@ -25,7 +25,7 @@
 - 목록 query viewDefinitionId?: 선택 UUID string. undefined는 선택 표시 없음이다. null/빈 문자열/UUID가 아닌 값/중복·배열 값은 기존 검증 기준으로 거부한다.
 - 이 query는 목록 필터가 아니며 목록 내 일치하는 View의 isSelected만 결정한다.
 - 즐겨찾기 path viewDefinitionId: 필수 UUID. 같은 Workspace의 View와 현재 멤버 범위를 기존 로직으로 검증한다.
-- 즐겨찾기 Query/Body DTO: EmptyViewFavoriteRequestDto/기존 pipe. 추가 입력 없음.
+- 즐겨찾기 Query/Body: 추가 입력 없음. `unknown` 입력을 공통 `EmptyRequestPipe`로 검사하여 전역 DTO 변환으로 키가 제거되기 전에 추가 필드를 거부한다. 미전송·빈 객체만 허용하고 `constructor`·`__proto__`를 포함한 파싱된 추가 키는 400이다.
 - 사용자·Actor·Favorite PK·순서는 client 입력으로 받지 않는다.
 
 ## 3. Response

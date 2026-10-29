@@ -1,17 +1,17 @@
 # Backend 구현 순서와 검증 기준
 
-- 상태: 계획 / 구현 미착수
+- 상태: G00~G99 구현·검증·검토 완료 (2026-10-29)
 - 범위: 현재 View의 헤더 필터·정렬·보기 설정 조회 API 3개.
 - 계약 정본: [VIEW_HEADER_MENU_QUERY_API.md](../COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md). Request/Response를 이 문서에 중복 정의하지 않는다.
 
 ## 1. 반드시 먼저 읽을 문서
 
-- [TODO Software Agent Reference](../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md)
-- [BE/AGENTS.md](../../../BE/AGENTS.md)
-- [Backend Agent](../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md)의 CONVENTION / ARCHITECTURE / DECISIONS
-- [DB 기준](../../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md)
-- [View 제약 검토](../../VIEW_인덱스관련검토문서.md): 기본 ID FK와 미적용 복합 소속 FK 후보를 구분한다.
-- [View 텍스트 UX](../../VIEW_TWO_AREA_TEXT_UX.md)
+- [TODO Software Agent Reference](../../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md)
+- [BE/AGENTS.md](../../../../BE/AGENTS.md)
+- [Backend Agent](../../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md)의 CONVENTION / ARCHITECTURE / DECISIONS
+- [DB 기준](../../../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md)
+- [View 제약 검토](../../../VIEW_인덱스관련검토문서.md): 기본 ID FK와 미적용 복합 소속 FK 후보를 구분한다.
+- [View 텍스트 UX](../../../VIEW_TWO_AREA_TEXT_UX.md)
 - [계획 범위](../README.md)
 
 ## 2. 현재 코드 확인 결과
@@ -23,11 +23,11 @@
 | `BE/src/modules/view-definition/infrastructure/view-definition.module.ts` | 신규 controller/use case/query port 바인딩을 조립할 위치. |
 | `BE/src/modules/view-definition/domain/view-definition.errors.ts` | Workspace NotFound 재사용과 신규 오류를 정의할 위치. |
 | `BE/src/modules/attribute-definition/application/ports/attribute-definition-detail-query.port.ts` | 현재 Object 한정 단건 계약. List 및 여러 참조 속성 batch 조회에 그대로 사용할 수 없다. |
-| `BE/src/modules/attribute-definition/infrastructure/attribute-definition.module.ts` | 현재 조회 Port가 exports에 공개되어 있지 않다. 새 batch Port를 공개한다. |
+| `BE/src/modules/attribute-definition/infrastructure/attribute-definition.module.ts` | 신규 `ATTRIBUTE_DEFINITION_METADATA_QUERY`를 exports에 공개했다. 기존 단건 계약은 유지한다. |
 | `BE/src/shared/presentation/filters/http-exception.filter.ts` | 기존 오류 envelope/상태 매핑 보존. |
 | `BE/prisma/schema.prisma` | 데이터 출처·nullable·Enum의 실제 기준. |
 
-문서의 오래된 활성 모듈 목록으로 현재 소스의 기능을 미구현이라고 판정하지 않는다. 이번 세 메뉴 endpoint가 없는 사실과 초기 헤더가 존재하는 사실을 구분한다.
+위 표는 착수 시 확인한 구조와 재사용 지점이다. 현재 세 메뉴 endpoint도 구현되어 있으며 초기 헤더 endpoint를 유지한다.
 
 ## 3. 계층·모듈 책임
 
@@ -36,6 +36,7 @@ UserWorkspaceViewHeaderMenusController
   → GetWorkspaceViewFiltersUseCase
   → GetWorkspaceViewSortsUseCase
   → GetWorkspaceViewSettingsUseCase
+      → ViewHeaderMenuReader                 (공통 읽기 검증)
       → WorkspaceAccessQuery                 (workspace 공개 계약)
       → Object/ListDefinitionSummaryQuery    (각 소유 모듈 공개 계약)
       → ViewHeaderConfigurationQuery         (view-definition 자체 계약)
@@ -43,7 +44,7 @@ UserWorkspaceViewHeaderMenusController
           → 각 모듈 infrastructure의 Prisma adapter
 ```
 
-위 신규 이름은 구현 예정 이름이다. 파일을 이미 생성했다는 뜻이 아니다.
+위 이름의 controller/use case/Port를 구현했다. 공통 접근·참조 검증은 `ViewHeaderMenuReader`, 공개 필드 매핑은 `view-header-menu.mapper.ts`가 담당한다.
 
 - 현재 구조는 단일 NestJS modular monolith + Clean Architecture다.
 - Controller: AuthGuard/UUID/빈 입력 검증, use case 호출, presentation DTO 매핑.
@@ -72,7 +73,7 @@ UserWorkspaceViewHeaderMenusController
 - 참조 경로는 저장된 순서 그대로 읽는다. 빈 경로도 정상이다.
 - List의 첫 ListEntry를 조회해 전체 List의 Object 타입으로 확정하지 않는다. 이번에는 저장된 속성 참조 메타데이터를 읽는다.
 - 소속 검증과 미래 쿼리 실행기용 관계 경로 해석을 구분한다. 경로의 전체 실행 가능성, 다중값 비교, 지원 연산자·집계 방식은 현재 응답 읽기에 임의 제약으로 추가하지 않는다.
-- 같은 Workspace에 있다는 사실만으로 최종 속성의 Object/List 소속까지 올바르다고 판정하지 않는다. 직접 속성의 SourceScope별 판정은 API 계약 7.4절 안을 G00에서 확인한 뒤 적용하거나 명시적으로 후속 분리한다.
+- 같은 Workspace에 있다는 사실만으로 최종 속성의 Object/List 소속까지 올바르다고 판정하지 않는다. 직접 속성의 SourceScope별 판정은 G00에서 저장/실행 API로 후속 분리했다.
 - 숨김 row, 중복 역할 row, 동일 원본을 참조하는 여러 위젯을 누락하지 않는다.
 - 위젯 원본 요약은 1단계만 조회한다. 재귀 렌더링이나 자기/순환 참조 금지 도메인 규칙은 이번에 확정하지 않는다.
 - 원본 Record/RecordAttributeValue/ListEntryValue와 ViewWorkDependency는 읽지 않는다. 본문 결과 건수도 계산하지 않는다.
@@ -81,7 +82,7 @@ UserWorkspaceViewHeaderMenusController
 
 ### 4.1. 공개 batch Port의 입력/결과 설계
 
-아래는 G00에서 실제 interface로 옮길 내부 계약안이다. HTTP 응답과 달리 검증용 소속 필드를 유지하고, Prisma model/`Prisma.JsonValue`/외부 HTTP DTO는 공개 Port에 노출하지 않는다. 기존 단건 Attribute Port의 가공된 `config`를 원본 `configJson` 대용으로 쓰지 않는다.
+아래 내부 계약을 실제 interface로 구현했다. HTTP 응답과 달리 검증용 소속 필드를 유지하고, Prisma model/`Prisma.JsonValue`/외부 HTTP DTO는 공개 Port에 노출하지 않는다. 기존 단건 Attribute Port의 가공된 `config`를 원본 `configJson` 대용으로 쓰지 않는다.
 
 | 소유 Port / 조회 | 입력 | 결과와 누락의 의미 |
 | --- | --- | --- |
@@ -109,7 +110,7 @@ UserWorkspaceViewHeaderMenusController
 | Select/Status 옵션 | 필요한 경우 각 테이블 batch 최대 1회. 정렬에서는 조회하지 않음 |
 | 위젯 원본 View | 원본 ID 집합으로 batch 최대 1회. 필터/정렬 또는 위젯이 없으면 생략 |
 
-이 표는 Port 호출과 테이블 batch의 설계 기준이며 AuthGuard의 인증 조회를 포함한 실제 DB 총 query 수를 측정한 결과가 아니다. G00/G99에서 adapter와 통합 증거로 확인한다. 설정 행/속성/옵션/위젯 개수에 비례해 조회 횟수가 증가하는 단건 반복을 만들지 않는다.
+이 표는 Port 호출과 테이블 batch의 기준이며 AuthGuard의 인증 조회를 포함한 실제 DB 총 query 수가 아니다. G99에서 세 메뉴와 메타데이터 adapter를 차례로 호출하는 통합 테스트의 SELECT 12회와 빈 batch의 SQL 생략을 확인했다. 단일 HTTP 요청의 총 query 수를 12회로 의미하지 않는다. 설정 행/속성/옵션/위젯 개수에 비례하는 단건 반복은 없다.
 
 ### 4.3. Application 검증 순서
 
@@ -202,12 +203,14 @@ git diff --check
 
 ## 8. 완료 체크리스트
 
-- [ ] API 계약 confirmed, Request/Response/Error 구현 일치.
-- [ ] 신규 API 3개와 필요한 public port/module wiring 구현.
-- [ ] 설정 메뉴 조회 외 데이터 계산·저장이 추가되지 않음.
-- [ ] 현재 View 소속과 참조 데이터 격리 검증.
-- [ ] 필터 순환·경로 형식·그룹/속성/옵션 연결을 검증하고, 스코프 밖 행까지 전체 진단한다고 표시하지 않음.
-- [ ] SourceScope의 G00 결정과 미래 실행기/저장 API의 미확정 정책이 혼동되지 않음.
-- [ ] 관련 검증 실행 결과와 DB 통합 환경 한계 기록.
-- [ ] API 계약 상태와 TODO_LOG를 실제 완료 수준에 맞게 갱신.
-- [ ] Frontend·DB·ENV 변경 없음 확인. commit은 명시적 요청 시에만 수행.
+- [x] API 계약을 confirmed로 확정 후 구현하고, Request/Response/Error 대조 후 implemented로 갱신.
+- [x] 신규 API 3개와 필요한 public port/module wiring 구현.
+- [x] 설정 메뉴 조회 외 데이터 계산·저장이 추가되지 않음.
+- [x] 현재 View 소속과 참조 데이터 격리 검증.
+- [x] 필터 순환·경로 형식·그룹/속성/옵션 연결을 검증하고, 스코프 밖 행까지 전체 진단한다고 표시하지 않음.
+- [x] SourceScope의 G00 결정과 미래 실행기/저장 API의 미확정 정책이 혼동되지 않음.
+- [x] 전체 64 suites / 462 tests, typecheck/lint/build/Prisma validate 통과. 격리 PostgreSQL 검증과 실제 Supabase 미검증 구분.
+- [x] API 계약 상태와 TODO_LOG를 실제 완료 수준에 맞게 갱신.
+- [x] Frontend·schema/migration·실제 업무 DB·ENV 변경 없음 확인. 이번 구현은 커밋하지 않음.
+
+검토 근거와 알려진 제한: [최종 검토](REVIEW.md).

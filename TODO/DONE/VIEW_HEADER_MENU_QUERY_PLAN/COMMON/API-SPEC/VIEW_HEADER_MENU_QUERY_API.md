@@ -1,10 +1,10 @@
 # View 헤더 메뉴 조회 API 계약
 
 - 작성일: 2026-10-29
-- 계약 상태: `draft` — 구현 전 초안. 구현 완료를 의미하지 않는다.
-- 스키마 재검토: 2026-10-29. 7절의 조회 무결성 기준을 보완했다. SourceScope별 원본 소속 판정안은 7.4절과 G00에서 확인하며, 문서 보완을 정책 확정이나 구현 완료로 취급하지 않는다.
+- 계약 상태: `implemented` — G00에서 조회 범위를 confirmed로 확정한 뒤 세 GET 구현과 로컬 검증을 완료했다.
+- 스키마 재검토 및 구현 검토: 2026-10-29. 7절의 읽기 무결성을 구현했다. SourceScope의 실행·직접 원본 소속 판정은 저장/실행 API로 후속 분리했다. 검증 근거는 Backend 검토 문서를 따른다.
 - 소비자: User Web. 이번 실행 범위는 Backend만이다.
-- 작성 기준: [TODO Software Agent Reference](../../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md), [API 계약 규칙](../../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md).
+- 작성 기준: [TODO Software Agent Reference](../../../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md), [API 계약 규칙](../../../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md).
 - 호환성: 신규 GET 3개 추가. 기존 초기 헤더·View 목록·즐겨찾기·사이드바 API 변경 없음. migration/fallback 없음.
 - 공식 UX와 우리 설계의 구분은 [계획 README](../../README.md)의 Attio 근거를 따른다.
 
@@ -22,7 +22,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 | `VIEW_HEADER_SORTS_GET` | 현재 View 정렬 설정 조회 | `GetWorkspaceViewSortsRequestDto` | `WorkspaceViewSortsResponse` |
 | `VIEW_HEADER_SETTINGS_GET` | 현재 View 보기 설정 조회 | `GetWorkspaceViewSettingsRequestDto` | `WorkspaceViewSettingsResponse` |
 
-세 Request DTO는 동일한 두 경로 필드를 표현하는 계약명이다. 실제 presentation에서 공통 Params DTO 또는 기존 `ParseUUIDPipe`로 재사용할 수 있다. 빈 Query 검증은 별도 공통 DTO/pipe로 처리한다.
+세 Request DTO는 동일한 두 경로 필드를 표현하는 계약명이다. 실제 presentation에서 공통 Params DTO 또는 기존 `ParseUUIDPipe`로 재사용할 수 있다. 필드가 없는 Query/Body는 공통 `EmptyRequestPipe`로 검사한다.
 
 | 위치 | 필드 | 타입 | 필수 / nullable | 검증 |
 | --- | --- | --- | --- | --- |
@@ -38,7 +38,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 - `sortDirection`은 요청으로 받아 덮어쓰는 값이 아니다. 저장된 값을 응답한다.
 - 현재 선택 View가 없으면 후속 소비자는 요청하지 않는다. 문자열 `null`을 경로에 넣지 않는다.
 - `userId`, `workspaceMemberId`, Actor ID는 클라이언트로부터 받지 않는다.
-- 빈 입력은 presentation의 공통 pipe/DTO로 검사한다. 기존 즐겨찾기의 빈 요청 검증 방식을 참고하되 기능 전용 pipe를 다른 기능의 의존성으로 만들지 않는다. 잘못된 JSON 문법은 기존 HTTP parser의 400 처리를 따른다.
+- 빈 입력은 `BE/src/shared/presentation/pipes/empty-request.pipe.ts`의 `EmptyRequestPipe`로 검사한다. Controller의 Query/Body 타입은 `unknown`으로 두어 전역 DTO 변환이 검사 전에 `constructor`·`__proto__` 같은 입력 키를 제거하지 않게 한다. 파싱된 객체의 추가 키는 이름에 관계없이 400이며 잘못된 JSON 문법은 기존 HTTP parser의 400 처리를 따른다.
 
 ## 2. 공통 응답 규칙과 메타데이터
 
@@ -129,7 +129,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 | `multiValueMatchMode` | `ANY` / `ALL` | 아니오 | 저장된 다중값 매칭 방식 |
 | `sortOrder` | integer | 아니오 | 같은 그룹 안의 표시 순서 |
 
-`comparisonOperator`는 현재 DB가 String이다. 예시 `gte`를 전체 지원 연산자로 확정하거나 Attio의 `$gte`로 자동 변경하지 않는다. 이 API는 조건을 평가하지 않는다. 비교값에 들어 있는 Actor/Record ID의 표시명 해석은 10절의 계약 검토 항목이다.
+`comparisonOperator`는 현재 DB가 String이다. 예시 `gte`를 전체 지원 연산자로 확정하거나 Attio의 `$gte`로 자동 변경하지 않는다. 이 API는 조건을 평가하지 않는다. 비교값에 들어 있는 Actor/Record ID의 표시명 해석은 후속 범위다.
 
 ### 3.2. 응답 예시
 
@@ -326,7 +326,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 
 ### 5.4. 11개 타입의 보기 설정 대응
 
-아래 JSON은 [더미 설정 문서](../../../../BE/prisma/VIEW_DEMO_SETTINGS.md)와 [fixture](../../../../BE/prisma/view-demo-settings.fixture.json)의 예시다. 지원 가능한 모든 값·필수 키·자동 기본값 계약은 아니다. 실제 응답은 해당 View의 저장값을 따른다.
+아래 JSON은 [더미 설정 문서](../../../../../BE/prisma/VIEW_DEMO_SETTINGS.md)와 [fixture](../../../../../BE/prisma/view-demo-settings.fixture.json)의 예시다. 지원 가능한 모든 값·필수 키·자동 기본값 계약은 아니다. 실제 응답은 해당 View의 저장값을 따른다.
 
 | ViewType | 메뉴에서 읽을 설정 | 주요 저장 위치 | `ViewDefinition.configJson` 예시 |
 | --- | --- | --- | --- |
@@ -350,7 +350,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 - GANTT의 `showDependencies` 설정만 읽는다. `ViewWorkDependencyDefinition` 업무 관계 행은 조회하지 않는다.
 - CHART/PIVOT 집계 결과, MAP 좌표 변환, CALENDAR 날짜 이동, DASHBOARD 전역 필터는 만들지 않는다.
 - 현재 텍스트 UX는 CALENDAR에 헤더 정렬, CHART/PIVOT에 일반 정렬, DASHBOARD에 전역 필터·정렬을 공통 노출하지 않는다. 이 메뉴 조회 API의 존재만으로 버튼을 모든 타입에 강제하지 않는다.
-- 조회 API는 ViewType만으로 임의 400을 만들지 않고 저장된 해당 설정을 반환하는 초안이다. 저장 설정이 없으면 배열은 비어 있다.
+- 조회 API는 ViewType만으로 임의 400을 만들지 않고 저장된 해당 설정을 반환한다. 저장 설정이 없으면 배열은 비어 있다.
 
 ## 6. 목록 정렬 계약
 
@@ -367,7 +367,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 | `attributeDefinitions`, `contentViewDefinitions` | `id ASC` |
 
 - 필터 계층은 부모/그룹 ID로 연결한다. 배열에 앞서 나온 항목을 부모로 추측하지 않는다.
-- 같은 부모 안의 하위 그룹과 조건을 하나의 메뉴로 섞는 표시 순서는 G00에서 확인한다. 두 배열을 각각 반환하는 계약이므로 배열 위치만으로 두 종류 사이의 동률 순서를 보장하지 않는다.
+- 같은 부모 안의 하위 그룹과 조건은 각각의 배열로 반환한다. 두 종류를 합치는 소비자의 동률 표시 순서는 후속 범위이며, 배열 위치만으로 두 종류 사이의 동률 순서를 보장하지 않는다.
 - `referenceAttributeIdPathJson`은 경로 순서 그대로이며 정렬하지 않는다.
 - `sortDirection`은 각 조건 또는 그룹의 저장 방향을 표시하는 값이다. 설정 목록 배열의 ASC 정렬을 바꾸는 인자가 아니다.
 - 동률을 위한 `createdAt/id` 순서는 우리 API의 결정적 반환 규칙이며 Attio 내부 구현을 확인한 사실이 아니다.
@@ -396,7 +396,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 
 ### 7.2. 스키마가 보장하는 것과 Application이 확인할 것
 
-`schema.prisma`의 View 설정 관계는 대부분 `references: [id]`인 단일 ID FK다. 참조 행이 존재해도 Workspace, View, Attribute가 서로 맞는다는 보장은 없다. JSON 경로는 FK가 없는 `Json` 컬럼이다. [View 제약 검토 문서](../../../VIEW_인덱스관련검토문서.md)의 복합 FK 후보는 현재 적용된 제약으로 간주하지 않는다.
+`schema.prisma`의 View 설정 관계는 대부분 `references: [id]`인 단일 ID FK다. 참조 행이 존재해도 Workspace, View, Attribute가 서로 맞는다는 보장은 없다. JSON 경로는 FK가 없는 `Json` 컬럼이다. [View 제약 검토 문서](../../../../VIEW_인덱스관련검토문서.md)의 복합 FK 후보는 현재 적용된 제약으로 간주하지 않는다.
 
 | 연결 | 이번 읽기에서 확인할 조건 |
 | --- | --- |
@@ -426,7 +426,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 3. UUID의 동일성 비교에는 대소문자를 정규화한 키를 사용한다. 저장된 경로의 문자열·순서·중복은 응답에서 변경하지 않는다. UUID 대소문자 차이를 누락 참조로 오판하지 않는다.
 4. 같은 Workspace에 속한다는 사실만으로 최종 속성이 올바른 Object/List에서 도출되었다거나 전체 관계 경로를 실행할 수 있다고 판단하지 않는다.
 
-다음은 **G00에서 확인할 직접 속성의 원본 소속 판정안**이다. 현재 문서 보완으로 새 거부 정책을 확정한 것은 아니며, 구현자가 임의 적용하지 않는다.
+다음은 **G00에서 저장/실행 API로 후속 분리한 직접 속성의 원본 소속 판정안**이다. 이 읽기 API의 새 거부 정책으로 적용하지 않는다.
 
 | 사례 | 확인할 판정안과 이유 |
 | --- | --- |
@@ -436,7 +436,7 @@ GET /api/users/me/workspaces/:workspaceId/view-header/view-definitions/:viewDefi
 | View의 원본 ID가 없거나 두 ID가 모두 있음 | SourceScope의 시작점 판정과 저장 상태 읽기 허용 범위를 명시. Object/List XOR나 DASHBOARD 제한을 자동 도입하지 않음 |
 | 비어 있지 않은 참조 경로 | 이번 조회는 JSON 모양·ID 존재·Workspace를 검사. RecordReference 타입, 각 hop의 출발/도착 Object, 최종 속성의 도달 가능성은 미래 실행기 계약과 구분 |
 
-G00은 앞의 직접 소속 판정안을 이번 읽기에 포함할지, 읽기는 메타데이터 복원까지만 보장하고 해당 판정은 실행기/저장 API로 미룰지 문서에 명시한 뒤 `confirmed`로 전환한다. 저장 비교값의 Actor/Record ID는 경로 Attribute ID와 다른 데이터다. 임의로 비교값 JSON을 순회해 원본 Record나 Actor를 조회하지 않는다.
+G00에서 이번 읽기는 메타데이터 복원과 명시된 참조 무결성까지만 보장하도록 확정했다. 앞의 직접 소속 판정안은 실행기/저장 API로 분리한다. 저장 비교값의 Actor/Record ID는 경로 Attribute ID와 다른 데이터다. 임의로 비교값 JSON을 순회해 원본 Record나 Actor를 조회하지 않는다.
 
 ### 7.5. 필터 그룹 계층
 
@@ -468,9 +468,9 @@ groupSetting.attributeDefinitionId == parentGroup.attributeDefinitionId
 - 자기 참조·중첩 DASHBOARD·위젯 소유 ViewType의 허용 여부는 이번 읽기에서 새 금지 정책으로 확정하지 않는다. 1단계 요약 조회에는 재귀 순환 검사가 필요하지 않다.
 - 검증 후에만 최종 응답을 만든다. 빈 설정, 숨김 상태, 반복 역할, `null`, 원본 JSON과 이름 override를 계약대로 보존한다. 누락 참조를 가짜 이름/기본 옵션/빈 배열로 숨기지 않는다.
 
-## 8. 오류 계약 초안
+## 8. 오류 계약
 
-신규 코드명은 아직 구현되지 않았다. 기존 `HttpExceptionFilter`의 형식과 `NotFound → 404` 매핑을 따른다.
+신규 오류는 기존 `HttpExceptionFilter`의 형식과 `NotFound → 404`, 그 외 설정 오류 → 500 매핑을 따른다. 실제 HTTP 테스트로 검증했다.
 
 | 상황 | error code / 구분 | HTTP | 소비자 처리 기준 | 로그 |
 | --- | --- | --- | --- | --- |
@@ -503,7 +503,7 @@ Domain error 예시:
 
 400은 기존 필터의 `{statusCode, error: HttpException.getResponse()}` 구조를 유지한다. 이 작업 때문에 전역 오류 envelope를 바꾸지 않는다. 설정 무결성 오류 message는 `View configuration is invalid`처럼 고정하고 비교값·고객명·다른 Workspace의 식별자를 노출하지 않는다.
 
-저장 설정 읽기 무결성 오류의 예정 응답:
+저장 설정 읽기 무결성 오류 응답:
 
 ```json
 {
@@ -513,7 +513,7 @@ Domain error 예시:
 }
 ```
 
-요청 UUID/입력 형식의 400, 접근 대상 View의 404, 조회된 저장 설정의 500을 구분한다. 새 domain error와 전역 filter의 실제 매핑은 G00/G01에서 대조한다. 저장된 경로 JSON이 잘못된 경우를 클라이언트 입력 오류인 400으로 돌리지 않는다.
+요청 UUID/입력 형식의 400, 접근 대상 View의 404, 조회된 저장 설정의 500을 구분한다. 새 domain error와 전역 filter의 실제 매핑을 검증했다. 저장된 경로 JSON이 잘못된 경우를 클라이언트 입력 오류인 400으로 돌리지 않는다.
 
 ## 9. Transaction / Observability / 소비자 계약
 
@@ -523,14 +523,14 @@ Domain error 예시:
 - 변경 모델·rollback 범위·부수 이력 저장: 없음.
 - idempotency key/outbox: 불필요. 반복 GET은 쓰기를 만들지 않는다.
 - 외부 Provider 호출: 신규 호출 없음. 기존 인증은 유지하며 메뉴를 읽기 위해 Attio API를 호출하지 않는다.
-- 여러 읽기 사이에 다른 요청이 설정을 바꿀 수 있다. 현재 초안은 단일 시점 snapshot을 보장하지 않는다. 엄격한 snapshot이 필요하면 application 주도의 read transaction 계약과 격리 수준을 별도로 검토한다.
+- 여러 읽기 사이에 다른 요청이 설정을 바꿀 수 있다. 이 API는 단일 시점 snapshot을 보장하지 않는다. 엄격한 snapshot이 필요하면 application 주도의 read transaction 계약과 격리 수준을 별도로 검토한다.
 - 따라서 참조 누락으로 500이 발생해도 영구적인 DB 손상이라고 단정하지 않는다. 동시 수정/삭제 가능성을 포함한 해당 읽기 실패이며, 여러 번 읽어 값을 합치거나 임의 재시도로 다른 시점의 응답을 조립하지 않는다.
 
 ### 관측성
 
 - 신규 오류 event: `view.header.filters.read_failed`, `view.header.sorts.read_failed`, `view.header.settings.read_failed`.
 - 저장 참조 문제는 해당 event에 `errorCode=ViewHeaderConfigurationInvalid`와 안전한 `reason`을 넣는다.
-- `reason`은 `view_target_unavailable`, `attribute_unavailable`, `reference_path_invalid`, `filter_parent_invalid`, `filter_cycle`, `group_attribute_mismatch`, `group_option_invalid`, `widget_content_unavailable`처럼 고정 코드로 남긴다. 원본 JSON/이름/다른 Workspace ID를 reason 문자열에 삽입하지 않는다. 이 코드들은 내부 로그 기준이며 HTTP 오류 필드를 늘리지 않는다.
+- `reason`은 `view_target_unavailable`, `attribute_unavailable`, `reference_path_invalid`, `filter_parent_invalid`, `filter_cycle`, `group_attribute_mismatch`, `group_option_invalid`, `widget_content_unavailable`, `configuration_scope_invalid`처럼 고정 코드로 남긴다. 원본 JSON/이름/다른 Workspace ID를 reason 문자열에 삽입하지 않는다. 이 코드들은 내부 로그 기준이며 HTTP 오류 필드를 늘리지 않는다.
 - request id, current user id, workspace id, view id, 메뉴 종류, duration, 안전한 결과 건수를 추적한다. request context의 기존 주입 경로를 사용하고 임의 request id를 만들지 않는다.
 - application은 `APPLICATION_LOGGER` port를 사용한다. 구체 logger나 Express request를 주입하지 않는다.
 - token, comparisonValueJson, 사용자 입력 원문, 전체 configJson, 원본 DB/Provider 오류 문자열을 로그에 넣지 않는다.
@@ -546,6 +546,15 @@ Domain error 예시:
 
 ## 10. 구현 전 계약 검토 항목
 
+### G00 처리 결과 — 2026-10-29
+
+- 이번 GET은 저장 상태 복원을 담당한다. 7.4절의 직접 속성 Object/List 일치 판정, 관계 경로의 실행 가능성, 혼합 Object List의 평가 정책은 저장/실행 API로 후속 분리한다. 이 읽기는 UUID 배열·참조 존재·Workspace 및 그룹/옵션 연결까지만 검증한다.
+- 그룹/조건은 별도 배열로 반환한다. 두 종류를 합친 동률 표시 순서와 여러 루트의 평가 방식은 후속 소비자/실행기 계약이다.
+- Actor/Record 비교값은 JSON 원본을 반환하며 표시명 조회는 포함하지 않는다. KANBAN 카드 접기·MAP 표시 구분 등의 새 저장 키도 추가하지 않는다.
+- Backend 4.1절의 공개 batch Port를 사용한다. 원본 JSON과 내부 소속 필드를 보존하고, 선택 옵션 ID는 속성의 전체 옵션과 함께 조회한다.
+- 잘못된 요청은 기존 400 envelope, 접근 대상 부재는 404, 저장 참조 오류는 고정 메시지의 500으로 처리한다. 기존 전역 filter의 NotFound/default 분기를 사용한다.
+- 현재 구현 범위는 이 처리 결과와 7절의 읽기 검증 조건을 따른다.
+
 ### 문서에서 보완한 기준
 
 아래 체크는 문서에 기준을 적었다는 뜻이며 구현/테스트 통과 표시가 아니다.
@@ -555,11 +564,12 @@ Domain error 예시:
 - [x] 스코프 밖 행의 제외와 조회된 행의 무결성 오류를 구분했다. 전체 DB 진단을 보장하지 않는다.
 - [x] 전체 경로 실행 가능성, 연산자 whitelist, 다중값·집계, XOR/유일성 정책을 임의 확정하지 않았다.
 
-### G00에서 마무리할 항목
+### G00~G99 완료 근거
 
-- [ ] 7.4절 SourceScope 판정안의 읽기 검증 포함/후속 분리 여부를 정하고 남은 정책이 없도록 명시한다.
-- [ ] 필터 하위 그룹·조건의 혼합 표시 동률과 ActorReference/RecordReference 비교값 라벨이 이번 소비자 계약에 필요한지 확인한다. 필요하면 계약을 보완하고, 제외하면 각각 분리 배열/원본 JSON만 보장함을 유지한다. 전체 루트를 하나로 제한하거나 라벨을 합성하지 않는다.
-- [ ] KANBAN 카드 접기·MAP 표시 구분 등 저장 계약이 없는 설정은 이번 응답 보장 범위에서 제외됨을 확인한다.
-- [ ] batch Port의 원본 JSON/소속 필드/명시 옵션 ID 결과와 DI 공개 범위를 실제 코드에 맞춰 확정한다.
-- [ ] 모든 JSON 예시와 실제 fixture/schema를 재대조하고 UUID 대소문자·옵션 소속·경로 형식의 검증 사례를 맞춘다. 실 DB 조회 없이 현재 운영 데이터가 정상이라고 표시하지 않는다.
-- [ ] 빈 입력 400 및 신규 오류 매핑의 구현 계획을 확인한 뒤, 구현 가능한 계약만 `confirmed`로 갱신한다. 미확정 도메인 정책은 사용자 확인 없이 거부 규칙으로 구현하지 않는다.
+- [x] SourceScope의 직접 원본 소속 판정, 혼합 표시 순서, 비교값 라벨 및 새 타입별 저장 키를 후속 분리했다.
+- [x] 공개 batch Port와 실제 module DI를 구현하고 HTTP 테스트로 연결을 확인했다.
+- [x] UUID 대소문자·JSON 형식·필터 순환·그룹/옵션 소속·빈 입력·오류 계약을 검증했다.
+- [x] 로컬 격리 PostgreSQL에서 실제 조회 순서·JSON·Workspace 범위·SELECT 수·롤백을 확인했다.
+- [x] 전체 Backend 64 suites / 462 tests, typecheck/lint/build, Prisma validate가 통과했다. 실제 Supabase 운영 데이터/배포 검증은 수행하지 않았다.
+
+상세 검토: [비즈니스 로직·규칙 준수 검토](../../BE-TODO/REVIEW.md).

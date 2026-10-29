@@ -47,7 +47,7 @@ Date: 2026-09-16
 - `shared/domain`: 공통 domain error, 공통 value 기준
 - `shared/application`: current user context, time/currency 같은 순수 application helper, 공통 port
 - `shared/infrastructure`: PrismaService, 외부 provider adapter module, logger 등 cross-cutting adapter
-- `shared/presentation`: guard, filter, middleware, decorator
+- `shared/presentation`: guard, pipe, filter, middleware, decorator, 공통 HTTP 응답 helper. 책임과 사용법은 [Shared Presentation 기준](SHARED_PRESENTATION.md)을 따른다.
 
 금지되는 공유 범위:
 

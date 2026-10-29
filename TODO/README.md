@@ -16,19 +16,24 @@
 
 기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md), [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md), [View 즐겨찾기 추가·삭제 Backend API](DONE/VIEW_FAVORITE_MUTATION_API_PLAN/README.md)에 이어 [즐겨찾기 Frontend 연결](DONE/VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md)을 완료했다. 공통 별표의 등록/해제·헤더/개인 사이드바 갱신·중복/오류/지연 응답·반응형을 연결했고 단위 58건·Chromium E2E 33건·typecheck/lint/build를 통과했다. 즐겨찾기 행 클릭 이동/정렬·생성/저장·타입별 본문은 후속 범위다.
 
-현재 활성 계획은 [View 헤더 메뉴 조회 Backend 계획](VIEW_HEADER_MENU_QUERY_PLAN/README.md)이다. 필터·정렬·보기 설정 버튼에서 현재 View의 저장된 설정을 읽는 신규 GET 3개의 계약 초안과 구현 순서를 작성했다. Backend 구현은 아직 시작하지 않았으며 Frontend 연결·주 화면 데이터 조회·설정 저장은 이 계획에 포함하지 않는다. 기존 View 선택/즐겨찾기의 최신 경로는 [2026-10-29 API 경로·식별자 계약](VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.
+[View 헤더 메뉴 조회 Backend 계획](DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)을 완료 보관했다. 현재 View의 저장된 필터·정렬·보기 설정을 읽는 GET 3개를 구현했고 전체 Backend 64 suites / 462 tests와 typecheck/lint/build·Prisma validate를 통과했다. Frontend 연결·주 화면 데이터 조회·설정 저장은 후속 범위다. 기존 View 선택/즐겨찾기의 최신 경로는 [2026-10-29 API 경로·식별자 계약](VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.
+
+[View 헤더 빈 요청 검증 보완](DONE/VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/README.md)도 완료했다. 메뉴·즐겨찾기 다섯 endpoint의 예약 키 입력을 DB 접근 전에 거부하고 중복 Pipe·부정확한 주석을 정리했다. 후속 검증은 관련 3 suites / 103 tests와 typecheck/lint/build 통과다.
 
 ```text
 TODO/
   README.md
-  VIEW_HEADER_MENU_QUERY_PLAN/
-    README.md
-    COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md
-    BE-TODO/IMPLEMENTATION.md
   VIEW_HEADER_API_NAMESPACE_PLAN/
     COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md
   DONE/
     README.md
+    VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/
+      README.md
+    VIEW_HEADER_MENU_QUERY_PLAN/
+      README.md
+      COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md
+      BE-TODO/IMPLEMENTATION.md
+      BE-TODO/REVIEW.md
     VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/
     VIEW_FAVORITE_MUTATION_API_PLAN/
     VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/
@@ -111,7 +116,7 @@ TODO/
 
 ## 6. 현재 우선순위
 
-현재 우선 작업은 [View 헤더 메뉴 조회 Backend 계획](VIEW_HEADER_MENU_QUERY_PLAN/README.md)의 필터·정렬·보기 설정 조회다. 먼저 API 계약 초안을 검토한 뒤 Backend 3개 API를 구현한다. 기존 헤더·View 목록·즐겨찾기 등록/해제와 Frontend 연결은 유지한다. 타입별 본문·설정 생성/저장·이번 메뉴의 Frontend 연결은 후속 범위다.
+[View 헤더 메뉴 조회 Backend 계획](DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)의 필터·정렬·보기 설정 조회와 G99 검토를 완료했다. 기존 헤더·View 목록·즐겨찾기 등록/해제 API도 전체 회귀 테스트를 통과했다. 타입별 본문·설정 생성/저장·이번 메뉴의 Frontend 연결은 후속 범위이며 새 작업 착수 시 별도 계획으로 정리한다.
 
 그 밖의 후속 작업이 생기면 아래 순서로 판단한다.
 
@@ -126,6 +131,8 @@ Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 �
 
 현재 완료 보관 폴더와 단일 문서는 다음과 같다.
 
+- [VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN](DONE/VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/README.md): 메뉴·즐겨찾기 입력 키 검증, 공통 EmptyRequestPipe와 주석 수정. 관련 103개 테스트·typecheck/lint/build 통과
+- [VIEW_HEADER_MENU_QUERY_PLAN](DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md): 저장 필터·정렬·보기 설정 GET 3개, 공개 batch Port, 참조 무결성·규칙 검토 완료. 전체 64 suites / 462 tests와 격리 PostgreSQL 검증 통과
 - [VIEW_HEADER_FRONTEND_INTEGRATION_PLAN](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md): Object/List 공통 헤더·서버 View 목록/선택·읽기 별표·List 경로와 반응형/기존 기능 검증·G99 완료
 - [OBJECT_LIST_VIEW_LIST_API_PLAN](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md): Object/List 소속 View 목록 GET 두 개, 정렬·선택 표시·격리·정상 빈 목록·실제 DB 및 G99 검토 완료
 - [VIEW_HEADER_DETAIL_API_PLAN](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md): Object/List 대상 기반 초기 View 헤더 GET, 개인 즐겨찾기 상태, View 없는 정상 상태와 Backend 검증·G99 완료

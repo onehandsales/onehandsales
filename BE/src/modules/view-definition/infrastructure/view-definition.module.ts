@@ -1,4 +1,12 @@
 import { Module } from "@nestjs/common";
+import { AttributeDefinitionModule } from "@/modules/attribute-definition/infrastructure/attribute-definition.module";
+import { VIEW_HEADER_CONFIGURATION_QUERY, VIEW_HEADER_CLOCK } from "../application/ports/view-header-configuration-query.port";
+import { ViewHeaderMenuReader } from "../application/view-header-menu-reader";
+import { GetWorkspaceViewFiltersUseCase } from "../application/use-cases/get-workspace-view-filters.use-case";
+import { GetWorkspaceViewSortsUseCase } from "../application/use-cases/get-workspace-view-sorts.use-case";
+import { GetWorkspaceViewSettingsUseCase } from "../application/use-cases/get-workspace-view-settings.use-case";
+import { PrismaViewHeaderConfigurationQueryRepository } from "./persistence/prisma-view-header-configuration-query.repository";
+import { UserWorkspaceViewHeaderMenusController } from "../presentation/http/user-workspace-view-header-menus.controller";
 import { VIEW_FAVORITE_COMMAND_REPOSITORY } from "@/modules/view-definition/application/ports/view-favorite-command.repository";
 import { CreateWorkspaceViewFavoriteUseCase } from "@/modules/view-definition/application/use-cases/create-workspace-view-favorite.use-case";
 import { DeleteWorkspaceViewFavoriteUseCase } from "@/modules/view-definition/application/use-cases/delete-workspace-view-favorite.use-case";
@@ -32,6 +40,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
 // 역할 : View 헤더·보기 목록·개인 즐겨찾기 조회·변경과 공개 Port 의존성을 조립합니다.
 @Module({
   imports: [
+    AttributeDefinitionModule,
     AuthModule,
     WorkspaceModule,
     ObjectDefinitionModule,
@@ -39,6 +48,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     PrismaInfrastructureModule,
   ],
   controllers: [
+    UserWorkspaceViewHeaderMenusController,
     UserWorkspaceObjectViewsController,
     UserWorkspaceListViewsController,
     UserSidebarWorkspaceViewFavoritesController,
@@ -46,6 +56,21 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     UserWorkspaceViewFavoriteController,
   ],
   providers: [
+    ViewHeaderMenuReader,
+    GetWorkspaceViewFiltersUseCase,
+    GetWorkspaceViewSortsUseCase,
+    GetWorkspaceViewSettingsUseCase,
+    {
+      provide: VIEW_HEADER_CONFIGURATION_QUERY,
+      // 기능 : View 소유 설정의 Prisma 읽기 구현체를 조립합니다.
+      useFactory: (prisma: PrismaService) => new PrismaViewHeaderConfigurationQueryRepository(prisma),
+      inject: [PrismaService],
+    },
+    {
+      provide: VIEW_HEADER_CLOCK,
+      // 기능 : application에 현재 경과 시간 측정 수단을 제공합니다.
+      useValue: () => Date.now(),
+    },
     AppLogger,
     { provide: APPLICATION_LOGGER, useExisting: AppLogger },
     CreateWorkspaceViewFavoriteUseCase,

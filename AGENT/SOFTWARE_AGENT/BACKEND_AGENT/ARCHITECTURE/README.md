@@ -8,6 +8,7 @@
 
 - `OVERVIEW.md`
 - `BACKEND.md`
+- [SHARED_PRESENTATION.md](SHARED_PRESENTATION.md): 공통 HTTP 경계, Guard/Pipe/Filter/Middleware 책임·등록 위치, 빈 요청 검증 사용법
 - `MODULAR_MONOLITH_AND_MSA.md`
 - `CRM_CORE_BACKEND.md`
 - `TESTING.md`

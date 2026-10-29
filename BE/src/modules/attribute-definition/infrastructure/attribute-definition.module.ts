@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { ATTRIBUTE_DEFINITION_METADATA_QUERY } from "../application/ports/attribute-definition-metadata-query.port";
+import { PrismaAttributeDefinitionMetadataQueryRepository } from "./persistence/prisma-attribute-definition-metadata-query.repository";
 import { ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
 import { ATTRIBUTE_DEFINITION_DETAIL_QUERY } from "@/modules/attribute-definition/application/ports/attribute-definition-detail-query.port";
 import { ATTRIBUTE_DEFINITION_LIST_QUERY } from "@/modules/attribute-definition/application/ports/attribute-definition-list-query.port";
@@ -31,6 +33,12 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
   ],
   controllers: [UserWorkspaceObjectAttributeDefinitionsController],
   providers: [
+    {
+      provide: ATTRIBUTE_DEFINITION_METADATA_QUERY,
+      // 기능 : 다른 모듈에 공개할 속성·옵션 batch 조회를 조립합니다.
+      useFactory: (prisma: PrismaService) => new PrismaAttributeDefinitionMetadataQueryRepository(prisma),
+      inject: [PrismaService],
+    },
     CreateWorkspaceObjectAttributeDefinitionUseCase,
     ListWorkspaceObjectAttributeDefinitionsUseCase,
     GetWorkspaceObjectAttributeDefinitionUseCase,
@@ -63,5 +71,6 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
       inject: [PrismaService],
     },
   ],
+  exports: [ATTRIBUTE_DEFINITION_METADATA_QUERY],
 })
 export class AttributeDefinitionModule {}

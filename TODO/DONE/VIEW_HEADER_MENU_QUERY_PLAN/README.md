@@ -1,7 +1,7 @@
 # View 헤더 필터·정렬·보기 설정 조회 Backend 계획
 
 - 작성일: 2026-10-29
-- 상태: 작업 문서 작성 완료 / API 계약 `draft` / Backend 구현 미착수
+- 상태: Backend 구현·검증·검토 완료 / API 계약 `implemented` (2026-10-29)
 - 작업 대상: Backend 조회 API 3개. Frontend 구현은 별도 작업이다.
 - 사용자 요청: 헤더의 필터·정렬·보기 설정 버튼을 눌렀을 때 현재 View의 저장된 설정을 조회한다.
 
@@ -60,13 +60,14 @@
 
 1. [API 계약](COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md): Request/Response, DB 출처, 정렬, 타입별 설정, 오류·transaction·observability.
 2. [Backend 작업 순서](BE-TODO/IMPLEMENTATION.md): 실제 코드 기준, 공개 Port, 내부 로직, 단계별 완료 조건, 검증.
-3. [작업 기록](../../TODO_LOG/2026-10-29/VIEW_HEADER_MENU_QUERY_PLAN/WORK_LOG.md): 이번 문서 작성의 변경·검토 결과.
+3. [작업 기록](../../../TODO_LOG/2026-10-29/VIEW_HEADER_MENU_QUERY_PLAN/WORK_LOG.md): 계약 작성부터 Backend 구현·검증까지의 기록.
+4. [최종 검토](BE-TODO/REVIEW.md): 비즈니스 로직, 컨벤션, 주석, 계층 경계, 실제 검증 결과.
 
 ## 5. 현재 구현과 근거
 
 - 초기 헤더는 `GET /api/users/me/workspaces/:workspaceId/view-header`이며, 현재 응답 필드는 `viewId`다. 후속 소비자는 현재 선택 ID를 이 계획의 `viewDefinitionId` 경로에 전달한다. 기존 응답 이름 변경은 이번 범위가 아니다.
-- View 선택/즐겨찾기는 [기존 경로·식별자 계약](../VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.
-- 현재 `view-definition` controller/module에는 이번 `/filters`, `/sorts`, `/settings` API가 없다.
+- View 선택/즐겨찾기는 [기존 경로·식별자 계약](../../VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.
+- 현재 `view-definition`의 `UserWorkspaceViewHeaderMenusController`에 `/filters`, `/sorts`, `/settings` API를 구현했다. 공개 Attribute batch Port와 모듈 조립을 HTTP 테스트로 검증했다.
 - `BE/prisma/schema.prisma`에 View 설정 테이블이 존재한다. 테이블 존재는 조회 API 구현 완료를 뜻하지 않는다.
 - `BE/prisma/VIEW_DEMO_SETTINGS.md`와 fixture는 저장 예시다. 이번 문서 작성에서 실제 Supabase 값을 재조회하거나 변경하지 않았다.
 - 오래된 아키텍처 문서의 활성 모듈 목록과 현재 코드는 차이가 있다. 계층 규칙은 정본을 따르고, 구현 여부는 현재 소스로 판정한다.
@@ -85,16 +86,16 @@
 
 ## 7. 반드시 먼저 읽을 문서
 
-- [TODO Software Agent Reference](../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md)
-- [BE 작업 규칙](../../BE/AGENTS.md)
-- [Software Agent](../../AGENT/SOFTWARE_AGENT/README.md)
-- [Backend Agent](../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md)의 CONVENTION / ARCHITECTURE / DECISIONS
-- [API 계약 규칙](../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md)
-- [모듈 경계](../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md)
-- [DB 기준](../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md), [Prisma 스키마](../../BE/prisma/schema.prisma)
-- [View 제약 검토](../VIEW_인덱스관련검토문서.md): 현재 기본 ID FK와 후속 복합 소속 FK·CHECK 후보의 차이.
-- [11개 View 텍스트 UX](../VIEW_TWO_AREA_TEXT_UX.md)
-- [Notion·Attio 적용 기준](../../AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md)
+- [TODO Software Agent Reference](../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md)
+- [BE 작업 규칙](../../../BE/AGENTS.md)
+- [Software Agent](../../../AGENT/SOFTWARE_AGENT/README.md)
+- [Backend Agent](../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md)의 CONVENTION / ARCHITECTURE / DECISIONS
+- [API 계약 규칙](../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md)
+- [모듈 경계](../../../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md)
+- [DB 기준](../../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md), [Prisma 스키마](../../../BE/prisma/schema.prisma)
+- [View 제약 검토](../../VIEW_인덱스관련검토문서.md): 현재 기본 ID FK와 후속 복합 소속 FK·CHECK 후보의 차이.
+- [11개 View 텍스트 UX](../../VIEW_TWO_AREA_TEXT_UX.md)
+- [Notion·Attio 적용 기준](../../../AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md)
 
 ## 8. 완료 구분
 
@@ -106,7 +107,7 @@
 
 - 검토일: 2026-10-29.
 - 근거: 현재 `schema.prisma`의 View 관련 모델, Attribute/SelectOption/StatusOption/List 관계, 현재 `view-definition`과 공개 query Port.
-- 판정: 문서 보완 완료 / 계약 `draft` 유지. G00 계약 검토에 착수할 수 있으며 G01 구현은 `confirmed` 전환 후 진행한다.
+- 최종 판정: G00에서 저장 상태 복원 범위를 confirmed로 확정하고 G01~G99 구현·검증을 완료했다. API 계약은 implemented다.
 - 이유: 읽기 흐름은 현재 구조에 맞지만, 같은 Workspace의 다른 Object/List 속성을 SourceScope별로 어디까지 거부할지는 스키마만으로 확정할 수 없다. 새 도메인 제약을 임의 도입하지 않는다.
 
 | 검토에서 확인한 빈틈 | 보완한 기준 / 후속 확인 |
@@ -115,7 +116,9 @@
 | GroupSetting과 부모 그룹/옵션이 같은 속성인지 불명확 | 부모 그룹 존재, 그룹과 설정의 Attribute 일치, 명시 옵션의 Workspace·Attribute 일치 확인 |
 | 범위 밖 행 제외와 저장 설정 오류의 구분 부족 | 7.3절에 스코프 밖 행은 제외, 조회된 행의 필수 참조 오류는 500으로 구분. 전체 DB 진단 보장 없음 |
 | 경로 JSON·그룹 순환의 구체적인 실패 기준 부족 | UUID 배열·모든 참조 ID 존재, 모든 그룹의 부모/순환 검사, 여러 루트 보존 기준 추가 |
-| SourceScope 소속 검증과 전체 실행 가능성의 경계 불명확 | 7.4절에 직접 속성 판정안을 사례별로 작성. G00에서 포함/후속 분리 여부를 확인하고 전체 경로 실행기와 구분 |
+| SourceScope 소속 검증과 전체 실행 가능성의 경계 불명확 | 7.4절에 직접 속성 판정안을 사례별로 작성. G00에서 저장/실행 API로 후속 분리하고 이번 참조 복원 범위와 구분 |
 | batch Port가 실제로 어떤 소속 정보를 제공해야 하는지 부족 | Backend 문서 4.1~4.3절에 입력/결과, 명시 옵션 조회, 호출 수 기준, 검증 순서 추가 |
 
-이번 보완은 저장 메뉴 상태의 안전한 읽기를 구체화한 것이다. 실제 필터 평가·다중값 처리·정렬·집계 로직, View 원본 XOR, 옵션 식별 방식 XOR, 위젯 소유 타입·중첩 허용 정책을 확정하지 않는다. 문서 정적 대조만 수행했으며 코드 구현·실제 DB 데이터 정상 여부·실행 테스트 통과는 보장하지 않는다.
+저장 메뉴 상태의 안전한 읽기를 구현했다. 실제 필터 평가·다중값 처리·정렬·집계 로직, View 원본 XOR, 옵션 식별 방식 XOR, 위젯 소유 타입·중첩 허용 정책은 후속 범위다. 전체 64 suites / 462 tests와 typecheck/lint/build·Prisma validate가 통과했고, 격리 PostgreSQL에서 실제 조회를 검증했다. Frontend 연결과 실제 Supabase 운영 데이터·배포 검증은 이번 완료 범위에 포함하지 않는다.
+
+같은 날 재검토에서 발견한 예약 키 입력 검증·주석 오류는 [후속 보완](../VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/README.md)에서 수정했다. 후속 검증은 관련 3 suites / 103 tests와 typecheck/lint/build 통과이며, 위 전체 테스트·DB 결과는 초기 구현 기록이다.
