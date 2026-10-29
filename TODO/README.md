@@ -12,13 +12,21 @@
 
 ## 2. 현재 상태
 
-검토 기준일: 2026-10-26
+검토 기준일: 2026-10-29
 
-기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md), [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md), [View 즐겨찾기 추가·삭제 Backend API](DONE/VIEW_FAVORITE_MUTATION_API_PLAN/README.md)에 이어 [즐겨찾기 Frontend 연결](DONE/VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md)을 완료했다. 공통 별표의 등록/해제·헤더/개인 사이드바 갱신·중복/오류/지연 응답·반응형을 연결했고 단위 58건·Chromium E2E 33건·typecheck/lint/build를 통과했다. 현재 활성 계획은 없다. 즐겨찾기 행 클릭 이동/정렬·생성/저장·타입별 본문은 후속 범위다.
+기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md), [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md), [View 즐겨찾기 추가·삭제 Backend API](DONE/VIEW_FAVORITE_MUTATION_API_PLAN/README.md)에 이어 [즐겨찾기 Frontend 연결](DONE/VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md)을 완료했다. 공통 별표의 등록/해제·헤더/개인 사이드바 갱신·중복/오류/지연 응답·반응형을 연결했고 단위 58건·Chromium E2E 33건·typecheck/lint/build를 통과했다. 즐겨찾기 행 클릭 이동/정렬·생성/저장·타입별 본문은 후속 범위다.
+
+현재 활성 계획은 [View 헤더 메뉴 조회 Backend 계획](VIEW_HEADER_MENU_QUERY_PLAN/README.md)이다. 필터·정렬·보기 설정 버튼에서 현재 View의 저장된 설정을 읽는 신규 GET 3개의 계약 초안과 구현 순서를 작성했다. Backend 구현은 아직 시작하지 않았으며 Frontend 연결·주 화면 데이터 조회·설정 저장은 이 계획에 포함하지 않는다. 기존 View 선택/즐겨찾기의 최신 경로는 [2026-10-29 API 경로·식별자 계약](VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.
 
 ```text
 TODO/
   README.md
+  VIEW_HEADER_MENU_QUERY_PLAN/
+    README.md
+    COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md
+    BE-TODO/IMPLEMENTATION.md
+  VIEW_HEADER_API_NAMESPACE_PLAN/
+    COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md
   DONE/
     README.md
     VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/
@@ -103,7 +111,7 @@ TODO/
 
 ## 6. 현재 우선순위
 
-현재 사용자 요청 범위인 헤더·View 목록 Backend API와 Object/List 공통 헤더 Frontend 연결을 완료했다. 타입별 본문·View 생성/저장·즐겨찾기 쓰기는 사용자의 후속 요청에 따라 새 활성 계획으로 진행한다.
+현재 우선 작업은 [View 헤더 메뉴 조회 Backend 계획](VIEW_HEADER_MENU_QUERY_PLAN/README.md)의 필터·정렬·보기 설정 조회다. 먼저 API 계약 초안을 검토한 뒤 Backend 3개 API를 구현한다. 기존 헤더·View 목록·즐겨찾기 등록/해제와 Frontend 연결은 유지한다. 타입별 본문·설정 생성/저장·이번 메뉴의 Frontend 연결은 후속 범위다.
 
 그 밖의 후속 작업이 생기면 아래 순서로 판단한다.
 
