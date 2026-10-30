@@ -98,6 +98,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     switch (code) {
+      case "ViewDataCursorStale":
+        return HttpStatus.CONFLICT;
+      case "ViewDataQueryLimitExceeded":
+        return HttpStatus.UNPROCESSABLE_ENTITY;
+      case "ViewDataQueryTimedOut":
+        return HttpStatus.SERVICE_UNAVAILABLE;
       case "Unauthorized":
         return HttpStatus.UNAUTHORIZED;
       case "Forbidden":

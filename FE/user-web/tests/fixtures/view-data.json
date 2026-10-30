@@ -1,0 +1,2270 @@
+{
+  "TABLE": {
+    "viewDefinitionId": "view-table",
+    "viewName": "TABLE",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "ywoi2dGXannu5pX7vDNLHcrPf9pbebpXSJ6CjTigNl4",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "TABLE",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "rowDensity": "COMFORTABLE"
+      },
+      "columnBindingIds": [
+        "00000000-0000-4000-8000-000000000040",
+        "00000000-0000-4000-8000-000000000041"
+      ],
+      "groups": [],
+      "items": [
+        {
+          "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+          "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+          "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+          "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+          "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+          "title": "Record 1",
+          "cells": [
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "Record 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000041",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "0.1"
+                }
+              ]
+            }
+          ],
+          "groupPath": []
+        },
+        {
+          "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+          "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+          "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+          "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+          "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+          "title": "Record 1",
+          "cells": [
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "Record 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000041",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "0.1"
+                }
+              ]
+            }
+          ],
+          "groupPath": []
+        },
+        {
+          "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+          "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+          "recordDefinitionId": "00000000-0000-4000-8000-000000000071",
+          "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+          "listEntryDefinitionId": "00000000-0000-4000-8000-000000000082",
+          "title": "Record 2",
+          "cells": [
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000110",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000071"
+                  },
+                  "value": "Record 2"
+                }
+              ]
+            },
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000041",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000111",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000071"
+                  },
+                  "value": "0.2"
+                }
+              ]
+            }
+          ],
+          "groupPath": []
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    }
+  },
+  "KANBAN": {
+    "viewDefinitionId": "view-kanban",
+    "viewName": "KANBAN",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "BBMV_CkfNqBR8kMOlYPvqUrphoVXs5lJ1n4MB70V9cw",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "KANBAN",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "cardDensity": "COMFORTABLE",
+        "showEmptyGroups": true
+      },
+      "groupDefinitionId": "00000000-0000-4000-8000-000000000050",
+      "columns": [
+        {
+          "key": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+          "parentKey": null,
+          "label": "Stage 1",
+          "color": null,
+          "count": 2,
+          "isHidden": false,
+          "isFold": false,
+          "groupToken": "foDaO5GVzqql9XVr2tGoLtT4xd8DeTRREHka8MbLSbk0MZevOuyhnhLN4FJVf7R8IZUVJIUOmq9G9Z6AnW7OmcQug6EOx13QWz7o2DaWdIga02ym8uX9ADWqkFzHEDlSbytI51wB-baHilTpk0t9m1EJJIdTOADvEF_8GGrqgIQ4lWwooRZXlByzrAeoICQzQW_-LgwePtI3RRT-1m3eN1YBBC5KMUaJ1DlOQW4mneHUbMQG7WbzLvgPLKFUHkCaSsYtiZ96Muu-S8fY_QfB94cFk0eqKregTW7nkAJCEOoMLuR6K0OYywCyWLASykL_G7FDe8Pw6wvJj5fhNm9tfg",
+          "items": [
+            {
+              "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+              "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080:ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+              "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+              "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+              "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+              "title": "Record 1",
+              "cells": [
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000040",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "Record 1"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000041",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "0.1"
+                    }
+                  ]
+                }
+              ],
+              "groupPath": [
+                "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY"
+              ]
+            },
+            {
+              "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+              "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081:ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+              "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+              "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+              "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+              "title": "Record 1",
+              "cells": [
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000040",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "Record 1"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000041",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "0.1"
+                    }
+                  ]
+                }
+              ],
+              "groupPath": [
+                "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY"
+              ]
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false,
+            "nextCursor": null
+          },
+          "calculations": []
+        },
+        {
+          "key": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+          "parentKey": null,
+          "label": "Stage 2",
+          "color": null,
+          "count": 1,
+          "isHidden": false,
+          "isFold": false,
+          "groupToken": "Mr1lPrg9xsJEIkCVEuv0nDr5P6ApzRwcB44RlVRP9Vm6fj63I91FRkyeJ0Heprgdiov5Ue3xXyxuD1PYgzYsRKAjfGNFqiNfVWNe0Y0GagrMWOtGq8K7KEvfTUjAtgqJG-zrPp7WpJESYVgfSCYvs0efYM55tj7ZCizeNcH0AcasZ02sZ4keJMK1ANlEuLvzdfxXerlB-qN3xg_OhIoFefULx4e4L1hyhyjAC7Q1r0iUHin_MuchGAyTX1C25tb9-chlP4YhlZ6Jvnqj2jUTW7TUoxjAt9AVZTe0w0sBBU2T_yYZqpVwdgLWaOo5z4xGSTTEpqyRej7uQmA6IkYQ1g",
+          "items": [
+            {
+              "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+              "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082:lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+              "recordDefinitionId": "00000000-0000-4000-8000-000000000071",
+              "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+              "listEntryDefinitionId": "00000000-0000-4000-8000-000000000082",
+              "title": "Record 2",
+              "cells": [
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000040",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000110",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000071"
+                      },
+                      "value": "Record 2"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000041",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000111",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000071"
+                      },
+                      "value": "0.2"
+                    }
+                  ]
+                }
+              ],
+              "groupPath": [
+                "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE"
+              ]
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false,
+            "nextCursor": null
+          },
+          "calculations": []
+        }
+      ],
+      "unassignedCount": 0
+    }
+  },
+  "LIST": {
+    "viewDefinitionId": "view-list",
+    "viewName": "LIST",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "X-PmHUonpGl5RvtsiT4_f3dJkpxSbeThvnebItIvMnU",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "LIST",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "rowDensity": "COMFORTABLE"
+      },
+      "groups": [],
+      "items": [
+        {
+          "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+          "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+          "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+          "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+          "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+          "title": "Record 1",
+          "cells": [
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "Record 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000041",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "0.1"
+                }
+              ]
+            }
+          ],
+          "groupPath": []
+        },
+        {
+          "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+          "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+          "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+          "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+          "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+          "title": "Record 1",
+          "cells": [
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "Record 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000041",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000070"
+                  },
+                  "value": "0.1"
+                }
+              ]
+            }
+          ],
+          "groupPath": []
+        },
+        {
+          "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+          "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+          "recordDefinitionId": "00000000-0000-4000-8000-000000000071",
+          "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+          "listEntryDefinitionId": "00000000-0000-4000-8000-000000000082",
+          "title": "Record 2",
+          "cells": [
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000110",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000071"
+                  },
+                  "value": "Record 2"
+                }
+              ]
+            },
+            {
+              "bindingId": "00000000-0000-4000-8000-000000000041",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "00000000-0000-4000-8000-000000000111",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "00000000-0000-4000-8000-000000000071"
+                  },
+                  "value": "0.2"
+                }
+              ]
+            }
+          ],
+          "groupPath": []
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    }
+  },
+  "GALLERY": {
+    "viewDefinitionId": "view-gallery",
+    "viewName": "GALLERY",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "gWaV7D4l2dC0HGwt1ISO1S_F07KRWQvS96qotU8YY0c",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "GALLERY",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "cardSize": "MEDIUM",
+        "imageFit": "CONTAIN"
+      },
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      },
+      "cards": [
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "body": null,
+          "image": null
+        },
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "body": null,
+          "image": null
+        },
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000071",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000082",
+            "title": "Record 2",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000110",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000071"
+                    },
+                    "value": "Record 2"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000111",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000071"
+                    },
+                    "value": "0.2"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "body": null,
+          "image": null
+        }
+      ]
+    }
+  },
+  "CALENDAR": {
+    "viewDefinitionId": "view-calendar",
+    "viewName": "CALENDAR",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "XLfovRLWsUKYeZC7HeuNUaNFGrGv7saLC91yfI17VyQ",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000043",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000013",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "START_DATE",
+        "label": "attribute-3",
+        "attributeType": "Date",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000044",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000014",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "END_DATE",
+        "label": "attribute-4",
+        "attributeType": "Date",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "CALENDAR",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "initialMode": "MONTH",
+        "weekStartsOn": "MONDAY"
+      },
+      "range": {
+        "startDate": "2026-11-01",
+        "endDateExclusive": "2026-12-01",
+        "timeZone": "Asia/Seoul"
+      },
+      "events": [
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000103",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000104",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-11"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": "2026-11-11",
+          "endInclusive": true
+        },
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000103",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000104",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-11"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": "2026-11-11",
+          "endInclusive": true
+        },
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000071",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000082",
+            "title": "Record 2",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000110",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000071"
+                    },
+                    "value": "Record 2"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000111",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000071"
+                    },
+                    "value": "0.2"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000113",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000071"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "EMPTY",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000114",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000071"
+                    },
+                    "value": null
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": null,
+          "endInclusive": true
+        }
+      ],
+      "unscheduledCount": 0,
+      "invalidDateCount": 0,
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    }
+  },
+  "TIMELINE": {
+    "viewDefinitionId": "view-timeline",
+    "viewName": "TIMELINE",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "INmj65Ao3cF_-jb4Kl_zBvnnM49myA-PfXWo-Jbezq8",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000043",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000013",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "START_DATE",
+        "label": "attribute-3",
+        "attributeType": "Date",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000044",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000014",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "END_DATE",
+        "label": "attribute-4",
+        "attributeType": "Date",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 2
+    },
+    "state": "READY",
+    "viewType": "TIMELINE",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "timeScale": "WEEK"
+      },
+      "range": {
+        "startDate": "2026-11-01",
+        "endDateExclusive": "2026-12-01",
+        "timeZone": "Asia/Seoul"
+      },
+      "bars": [
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000103",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000104",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-11"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": "2026-11-11",
+          "endInclusive": true
+        },
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000103",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000104",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-11"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": "2026-11-11",
+          "endInclusive": true
+        }
+      ],
+      "groups": [],
+      "unscheduledCount": 1,
+      "invalidDateCount": 0,
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    }
+  },
+  "GANTT": {
+    "viewDefinitionId": "view-gantt",
+    "viewName": "GANTT",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "kdYDfmmcOajvTTpc3b5LiMXJDQP0U-r5oocLQyI-PiA",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000043",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000013",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "START_DATE",
+        "label": "attribute-3",
+        "attributeType": "Date",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000044",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000014",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "END_DATE",
+        "label": "attribute-4",
+        "attributeType": "Date",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000046",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000016",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "PROGRESS",
+        "label": "attribute-6",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": {
+          "valueScale": 100
+        },
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 2
+    },
+    "state": "READY",
+    "viewType": "GANTT",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "timeScale": "WEEK",
+        "showDependencies": true
+      },
+      "range": {
+        "startDate": "2026-11-01",
+        "endDateExclusive": "2026-12-01",
+        "timeZone": "Asia/Seoul"
+      },
+      "tasks": [
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000103",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000104",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-11"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000046",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000106",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "50"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": "2026-11-11",
+          "endInclusive": true,
+          "progress": {
+            "rawValue": "50",
+            "valueScale": "100",
+            "ratio": "0.5"
+          }
+        },
+        {
+          "item": {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000043",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000103",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-09"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000044",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000104",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "2026-11-11"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000046",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000106",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "50"
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          "dateKind": "DATE",
+          "start": "2026-11-09",
+          "end": "2026-11-11",
+          "endInclusive": true,
+          "progress": {
+            "rawValue": "50",
+            "valueScale": "100",
+            "ratio": "0.5"
+          }
+        }
+      ],
+      "dependencies": [],
+      "groups": [],
+      "unscheduledCount": 1,
+      "invalidDateCount": 0,
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    }
+  },
+  "CHART": {
+    "viewDefinitionId": "view-chart",
+    "viewName": "CHART",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "IhYhiElCFJyUqkJPrE1vEqiKRP9RS3oFsVx7sS8mpzk",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "MEASURE",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "CHART",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "chartType": "BAR",
+        "showLegend": true,
+        "aggregation": "SUM"
+      },
+      "metric": {
+        "aggregation": "SUM",
+        "bindingId": "00000000-0000-4000-8000-000000000041",
+        "currencyCode": null,
+        "missingValueItemCount": 0
+      },
+      "categories": [
+        {
+          "key": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+          "label": "Stage 1",
+          "reference": {
+            "kind": "STATUS_OPTION",
+            "id": "00000000-0000-4000-8000-000000000030"
+          }
+        },
+        {
+          "key": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+          "label": "Stage 2",
+          "reference": {
+            "kind": "STATUS_OPTION",
+            "id": "00000000-0000-4000-8000-000000000031"
+          }
+        }
+      ],
+      "series": [],
+      "points": [
+        {
+          "categoryKey": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+          "seriesKey": null,
+          "result": {
+            "value": "0.2",
+            "itemCount": 2,
+            "valueCount": 2
+          }
+        },
+        {
+          "categoryKey": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+          "seriesKey": null,
+          "result": {
+            "value": "0.2",
+            "itemCount": 1,
+            "valueCount": 1
+          }
+        }
+      ],
+      "total": {
+        "value": "0.4",
+        "itemCount": 3,
+        "valueCount": 3
+      }
+    }
+  },
+  "PIVOT": {
+    "viewDefinitionId": "view-pivot",
+    "viewName": "PIVOT",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "xqVS-awKG3Uc3MQsYS-uC9hVOdUIcovTAMCl5Z09TI0",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "MEASURE",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 3
+    },
+    "state": "READY",
+    "viewType": "PIVOT",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "aggregation": "SUM",
+        "showRowTotals": true,
+        "showColumnTotals": true
+      },
+      "metric": {
+        "aggregation": "SUM",
+        "bindingId": "00000000-0000-4000-8000-000000000041",
+        "currencyCode": null,
+        "missingValueItemCount": 0
+      },
+      "rowDimensions": [
+        {
+          "key": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+          "label": "Stage 1",
+          "reference": {
+            "kind": "STATUS_OPTION",
+            "id": "00000000-0000-4000-8000-000000000030"
+          }
+        },
+        {
+          "key": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+          "label": "Stage 2",
+          "reference": {
+            "kind": "STATUS_OPTION",
+            "id": "00000000-0000-4000-8000-000000000031"
+          }
+        }
+      ],
+      "columnDimensions": [
+        {
+          "key": "_OpMCPPKR-VvzSAMTO-taoDaZ1eIprbBUUhf4KpQiOw",
+          "label": "Stage 1",
+          "reference": {
+            "kind": "STATUS_OPTION",
+            "id": "00000000-0000-4000-8000-000000000030"
+          }
+        },
+        {
+          "key": "qEPywNwb1pbmaToRlL6qFPeLSkl8TJ39mt9AcfMuXvc",
+          "label": "Stage 2",
+          "reference": {
+            "kind": "STATUS_OPTION",
+            "id": "00000000-0000-4000-8000-000000000031"
+          }
+        }
+      ],
+      "cells": [
+        {
+          "rowKey": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+          "columnKey": "_OpMCPPKR-VvzSAMTO-taoDaZ1eIprbBUUhf4KpQiOw",
+          "result": {
+            "value": "0.2",
+            "itemCount": 2,
+            "valueCount": 2
+          }
+        },
+        {
+          "rowKey": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+          "columnKey": "qEPywNwb1pbmaToRlL6qFPeLSkl8TJ39mt9AcfMuXvc",
+          "result": {
+            "value": "0.2",
+            "itemCount": 1,
+            "valueCount": 1
+          }
+        }
+      ],
+      "rowTotals": [
+        {
+          "key": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+          "result": {
+            "value": "0.2",
+            "itemCount": 2,
+            "valueCount": 2
+          }
+        },
+        {
+          "key": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+          "result": {
+            "value": "0.2",
+            "itemCount": 1,
+            "valueCount": 1
+          }
+        }
+      ],
+      "columnTotals": [
+        {
+          "key": "_OpMCPPKR-VvzSAMTO-taoDaZ1eIprbBUUhf4KpQiOw",
+          "result": {
+            "value": "0.2",
+            "itemCount": 2,
+            "valueCount": 2
+          }
+        },
+        {
+          "key": "qEPywNwb1pbmaToRlL6qFPeLSkl8TJ39mt9AcfMuXvc",
+          "result": {
+            "value": "0.2",
+            "itemCount": 1,
+            "valueCount": 1
+          }
+        }
+      ],
+      "grandTotal": {
+        "value": "0.4",
+        "itemCount": 3,
+        "valueCount": 3
+      }
+    }
+  },
+  "MAP": {
+    "viewDefinitionId": "view-map",
+    "viewName": "MAP",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "_5pGPpM5ZHIwjOP1kPgwtL92ikMAXHYHrLY7W1HiBrg",
+    "issues": [],
+    "bindings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "TITLE",
+        "label": "attribute-0",
+        "attributeType": "Text",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000041",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "DISPLAY",
+        "label": "attribute-1",
+        "attributeType": "Number",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000045",
+        "attributeDefinitionId": "00000000-0000-4000-8000-000000000015",
+        "sourceScope": "RECORD",
+        "referenceAttributeIdPath": [],
+        "role": "LOCATION",
+        "label": "attribute-5",
+        "attributeType": "Location",
+        "isMultiselect": false,
+        "isHidden": false,
+        "width": 180,
+        "format": null,
+        "currencyCode": null
+      }
+    ],
+    "summary": {
+      "sourceItemCount": 3,
+      "matchedItemCount": 3,
+      "eligibleItemCount": 2
+    },
+    "state": "READY",
+    "viewType": "MAP",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "fitToData": true,
+        "showLabels": true
+      },
+      "bounds": {
+        "west": 0,
+        "east": 0,
+        "south": 0,
+        "north": 0
+      },
+      "markers": {
+        "items": [
+          {
+            "key": "LIST_ENTRY:00000000-0000-4000-8000-000000000080:00000000-0000-4000-8000-000000000105",
+            "item": {
+              "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+              "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+              "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+              "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+              "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+              "title": "Record 1",
+              "cells": [
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000040",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "Record 1"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000041",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "0.1"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000045",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000105",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": {
+                        "text": "Origin",
+                        "latitude": 0,
+                        "longitude": 0
+                      }
+                    }
+                  ]
+                }
+              ],
+              "groupPath": []
+            },
+            "latitude": 0,
+            "longitude": 0
+          },
+          {
+            "key": "LIST_ENTRY:00000000-0000-4000-8000-000000000081:00000000-0000-4000-8000-000000000105",
+            "item": {
+              "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+              "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+              "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+              "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+              "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+              "title": "Record 1",
+              "cells": [
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000040",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "Record 1"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000041",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": "0.1"
+                    }
+                  ]
+                },
+                {
+                  "bindingId": "00000000-0000-4000-8000-000000000045",
+                  "state": "VALUE",
+                  "values": [
+                    {
+                      "valueDefinitionId": "00000000-0000-4000-8000-000000000105",
+                      "sourceEntity": {
+                        "kind": "RECORD",
+                        "id": "00000000-0000-4000-8000-000000000070"
+                      },
+                      "value": {
+                        "text": "Origin",
+                        "latitude": 0,
+                        "longitude": 0
+                      }
+                    }
+                  ]
+                }
+              ],
+              "groupPath": []
+            },
+            "latitude": 0,
+            "longitude": 0
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": false,
+          "nextCursor": null
+        }
+      },
+      "list": {
+        "items": [
+          {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000045",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000105",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": {
+                      "text": "Origin",
+                      "latitude": 0,
+                      "longitude": 0
+                    }
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          },
+          {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000045",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000105",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": {
+                      "text": "Origin",
+                      "latitude": 0,
+                      "longitude": 0
+                    }
+                  }
+                ]
+              }
+            ],
+            "groupPath": []
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": false,
+          "nextCursor": null
+        }
+      },
+      "unlocatedCount": 1
+    }
+  },
+  "DASHBOARD": {
+    "viewDefinitionId": "view-dashboard",
+    "viewName": "DASHBOARD",
+    "source": {
+      "kind": "LIST",
+      "objectDefinitionId": null,
+      "listDefinitionId": "00000000-0000-4000-8000-000000000006",
+      "itemKind": "LIST_ENTRY"
+    },
+    "configurationFingerprint": "ruJXK-Dmkj6hhe7iPdMWcPzohdD0zlJ20B7MPY8UMgk",
+    "issues": [],
+    "bindings": [],
+    "summary": null,
+    "state": "READY",
+    "viewType": "DASHBOARD",
+    "part": "MAIN",
+    "data": {
+      "presentation": {
+        "gridColumns": 12
+      },
+      "widgets": [
+        {
+          "id": "00000000-0000-4000-8000-000000000090",
+          "title": "Child",
+          "showTitle": true,
+          "layout": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 4
+          },
+          "content": {
+            "viewDefinitionId": "view-table",
+            "viewType": "TABLE",
+            "sourceType": "LIST"
+          },
+          "state": "READY"
+        }
+      ],
+      "visibleWidgetCount": 1
+    }
+  }
+}

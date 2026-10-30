@@ -4,7 +4,7 @@
 - 상태: **설계 문서 작성 및 자체 검토 완료 / API 계약 draft / 구현 전**
 - 대상: User Web, Backend, 현재 Supabase의 영업 목 데이터
 - 방향: **Attio의 데이터 모델·업무 의미 + Notion 스타일의 화면 표현**
-- 현재 구현 대상: **Backend 주 화면 조회 endpoint 1개와 11개 타입의 응답·처리**. 프론트 11개 컴포넌트 설계는 후속 연결 참고다.
+- 현재 구현 대상: **Backend 주 화면 조회 endpoint 1개와 User Web 11개 타입 본문 구현·연결·검증**. 최신 사용자 요청에 따라 BE/FE를 함께 진행한다. [통합 구현 기준](COMMON/IMPLEMENTATION_BASELINE.md)을 우선한다.
 - 사용자 확정: 필터·정렬 저장 API는 후속. 현재 GET은 DB의 저장 설정을 실행한다. List 집계는 Entry 기준, 종료일 없는 표시는 앞선 A안을 따른다.
 
 ## 읽는 순서

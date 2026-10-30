@@ -53,6 +53,7 @@ import { useOutletContext, useParams } from "react-router-dom";
 import { createPortal } from "react-dom";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { ViewHeaderToolbar } from "@/components/layout/view-header-toolbar";
+import { WorkspaceViewContent, viewDataQueryKeys, type ViewCellRenderer } from "@/features/crm-view";
 import { IconValuePicker } from "@/components/ui/icon-value-picker";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import { useAuthSession } from "@/features/auth";
@@ -1335,6 +1336,7 @@ export function WorkspaceObjectListPage() {
 
   // 5. 현재 관리 항목의 body row RecordDefinition 목록을 조회한다.
   const recordDefinitionsQuery = useWorkspaceObjectRecordDefinitionsQuery({
+    enabled: !viewHeaderModel.currentView && !viewHeaderModel.isLoading,
     userId: user?.id ?? null,
     workspaceId: workspaceId ?? null,
     objectDefinitionId: objectDefinitionId ?? null,
@@ -1528,6 +1530,7 @@ export function WorkspaceObjectListPage() {
           currentObjectDefinitionId,
         ),
       });
+      await queryClient.invalidateQueries({ queryKey: viewDataQueryKeys.all });
     } catch (error) {
       // 4. 실패하면 API 오류 메시지를 테이블 하단에 표시한다.
       setCreateRecordDefinitionRowErrorMessage(getApiErrorMessage(error));
@@ -1569,7 +1572,27 @@ export function WorkspaceObjectListPage() {
         currentObjectDefinitionId,
       ),
     });
+    await queryClient.invalidateQueries({ queryKey: viewDataQueryKeys.all });
   }
+
+  // 기능 : 직접 단일 원본 셀의 기존 편집기를 유지하고 관계·다중값은 읽기 전용으로 표시합니다.
+  const renderViewCell: ViewCellRenderer = (item, binding, cell) => {
+    const column = renderedAttributeColumns.find(column => column.id === binding.attributeDefinitionId);
+    if (!column || binding.sourceScope !== "RECORD" || binding.referenceAttributeIdPath.length || binding.isMultiselect || !cell || !["VALUE", "EMPTY"].includes(cell.state) || cell.values.length !== 1 || !["Text", "Date", "Timestamp", "Checkbox", "Number", "Currency", "Rating", "EmailAddress", "PhoneNumber", "Domain"].includes(binding.attributeType)) return undefined;
+    const source = cell.values[0]!;
+    if (source.sourceEntity.id !== item.recordDefinitionId || item.objectDefinitionId !== objectDefinitionId) return undefined;
+    const raw = source.value;
+    const value = {
+      id: source.valueDefinitionId, attributeDefinitionId: binding.attributeDefinitionId, attributeType: binding.attributeType,
+      textValue: typeof raw === "string" && ["Text", "EmailAddress", "PhoneNumber", "Domain"].includes(binding.attributeType) ? raw : null,
+      numberValue: typeof raw === "string" && ["Number", "Currency", "Rating"].includes(binding.attributeType) ? raw : null,
+      booleanValue: typeof raw === "boolean" ? raw : null,
+      dateValue: binding.attributeType === "Date" && typeof raw === "string" ? raw : null,
+      timestampValue: binding.attributeType === "Timestamp" && typeof raw === "string" ? raw : null,
+      jsonValue: null, selectOptionId: null, statusOptionId: null, targetRecordDefinitionId: null, targetObjectDefinitionId: null, targetActorId: null,
+    };
+    return <RecordAttributeValueCell attributeConfig={column.config} attributeTitle={binding.label} attributeType={binding.attributeType} booleanLabels={booleanLabels} formatCurrency={formatCurrency} formatDate={formatDate} formatDateTime={formatDateTime} isPrimary={binding.role === "TITLE"} value={value} onSave={input => handleRecordAttributeValueSave({ id: item.recordDefinitionId, createdAt: "", updatedAt: "", recordAttributeValues: [value] }, input)} />;
+  };
 
   // 기능 : AttributeDefinition header drag 결과를 위치 변경 API로 저장합니다.
   async function commitAttributeColumnMove(
@@ -2130,7 +2153,7 @@ export function WorkspaceObjectListPage() {
           {attributeColumnMoveErrorMessage}
         </div>
       ) : null}
-      <div className="min-h-0 flex-1 overflow-hidden bg-white">
+      {viewHeaderModel.currentView || viewHeaderModel.isLoading || viewHeaderModel.isError ? <div className="min-h-0 flex-1"><WorkspaceViewContent header={viewHeaderModel} search={searchQuery} renderCell={renderViewCell} /></div> : <div className="min-h-0 flex-1 overflow-hidden bg-white">
         <div
           className="notion-scrollbar h-full overflow-auto"
           ref={objectListScrollContainerRef}
@@ -2593,7 +2616,7 @@ export function WorkspaceObjectListPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
       </section>
 
       <AddAttributeDefinitionModal

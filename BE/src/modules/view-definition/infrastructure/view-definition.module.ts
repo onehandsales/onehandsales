@@ -1,4 +1,13 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { RecordDefinitionModule } from "@/modules/record-definition/infrastructure/record-definition.module";
+import { VIEW_DATA_CONFIGURATION_QUERY } from "../application/ports/view-data-configuration-query.port";
+import { VIEW_DATA_TOKEN_CODEC } from "../application/ports/view-data-token-codec.port";
+import { ViewDataLoader } from "../application/view-data/view-data-loader";
+import { GetWorkspaceViewMainContentUseCase } from "../application/use-cases/get-workspace-view-main-content.use-case";
+import { PrismaViewDataConfigurationQueryRepository } from "./persistence/prisma-view-data-configuration-query.repository";
+import { EncryptedViewDataTokenCodec } from "./view-data-token-codec";
+import { UserWorkspaceViewMainContentController } from "../presentation/http/user-workspace-view-main-content.controller";
 import { AttributeDefinitionModule } from "@/modules/attribute-definition/infrastructure/attribute-definition.module";
 import { VIEW_HEADER_CONFIGURATION_QUERY, VIEW_HEADER_CLOCK } from "../application/ports/view-header-configuration-query.port";
 import { ViewHeaderMenuReader } from "../application/view-header-menu-reader";
@@ -40,6 +49,8 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
 // 역할 : View 헤더·보기 목록·개인 즐겨찾기 조회·변경과 공개 Port 의존성을 조립합니다.
 @Module({
   imports: [
+    ConfigModule,
+    RecordDefinitionModule,
     AttributeDefinitionModule,
     AuthModule,
     WorkspaceModule,
@@ -48,6 +59,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     PrismaInfrastructureModule,
   ],
   controllers: [
+    UserWorkspaceViewMainContentController,
     UserWorkspaceViewHeaderMenusController,
     UserWorkspaceObjectViewsController,
     UserWorkspaceListViewsController,
@@ -56,6 +68,15 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     UserWorkspaceViewFavoriteController,
   ],
   providers: [
+    ViewDataLoader,
+    GetWorkspaceViewMainContentUseCase,
+    { provide: VIEW_DATA_CONFIGURATION_QUERY, useClass: PrismaViewDataConfigurationQueryRepository },
+    {
+      provide: VIEW_DATA_TOKEN_CODEC,
+      // 기능 : 서버 설정에서 cursor 전용 암호화 adapter를 조립합니다.
+      useFactory: (config: ConfigService) => new EncryptedViewDataTokenCodec(() => config.getOrThrow<string>("APP_JWT_SECRET")),
+      inject: [ConfigService],
+    },
     ViewHeaderMenuReader,
     GetWorkspaceViewFiltersUseCase,
     GetWorkspaceViewSortsUseCase,

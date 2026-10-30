@@ -2,6 +2,21 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
+  viewContent: {
+    previousWeek: "Previous week", nextWeek: "Next week",
+    loading: "Loading view…", loadError: "Could not load this view.", retry: "Try again", refresh: "Refresh",
+    noView: "No view is available.", empty: "No records match this view.", untitled: "Untitled record",
+    invalidValue: "This value cannot be displayed.", unavailableValue: "This reference is unavailable.", firstPage: "First page", nextPage: "Next page",
+    total: "Grand total", group: "Group", record: "Record", values: "View aggregate values", noMeasure: "No measured value", noCombination: "No records in this combination",
+    chartRange: "These values cannot be plotted. See the aggregate values below.", dependencies: "Task dependencies",
+    unscheduled: "Unscheduled", invalidDates: "Invalid dates", searchMapArea: "Search this map area", located: "Located records", unlocated: "Unlocated records", map: "Record locations",
+    mapTileError: "The basemap could not load. The record list is still available.",
+    cycle: "This widget contains a circular reference.", nestingLimit: "The nested dashboard display limit was reached.", unavailable: "This view is unavailable.",
+    needsConfiguration: "Check the view settings to display this view.", datePolicyRequired: "The end-date inclusion policy must be confirmed to display these events.",
+    limitExceeded: "This view contains too much data. Narrow the view conditions and try again.", timedOut: "The query timed out. Please try again.", staleCursor: "View settings changed. Restart from the first page.",
+    matched: "{count} matching records · {total} total", previousMonth: "Previous month", nextMonth: "Next month", month: "Display month",
+    mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun",
+  },
   common: {
     add: "Add",
     cancel: "Cancel",
@@ -404,7 +419,7 @@ export const enResource = {
     settings: "View settings",
     layout: "Layout",
     visibleAttributes: "Visible attributes",
-    previewNote: "These settings are a preview for this screen.",
+    previewNote: "Temporary edits. Saving and applying them to the view are not available yet.",
   },
   errors: {
     CURRENCY_UNSUPPORTED: "Choose a supported currency.",

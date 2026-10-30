@@ -1,5 +1,7 @@
 import type { AttributeDefinitionMetadataQuery, AttributeOptionsInput } from "@/modules/attribute-definition/application/ports/attribute-definition-metadata-query.port";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
+import { resolvePrismaReadContext } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 
 const optionSelect = { id: true, workspaceId: true, attributeDefinitionId: true, title: true, color: true, sortOrder: true, createdAt: true } as const;
 const optionOrder = [{ attributeDefinitionId: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }, { id: "asc" }] as const;
@@ -10,27 +12,28 @@ export class PrismaAttributeDefinitionMetadataQueryRepository implements Attribu
   constructor(private readonly prisma: Pick<PrismaService, "attributeDefinition" | "selectOption" | "statusOption">) {}
 
   // 기능 : 요청 Workspace에 속하는 속성 원본만 일괄 반환합니다.
-  async findAttributes(workspaceId: string, ids: string[]) {
+  async findAttributes(workspaceId: string, ids: string[], context?: TransactionContext) {
     // 1. 빈 ID 집합은 전체 조회로 바꾸지 않는다.
     if (!ids.length) return [];
-    return this.prisma.attributeDefinition.findMany({
+    return (context ? resolvePrismaReadContext(context) : this.prisma).attributeDefinition.findMany({
       where: { workspaceId, id: { in: ids } }, orderBy: { id: "asc" },
       select: { id: true, workspaceId: true, objectDefinitionId: true, listDefinitionId: true, title: true, type: true, icon: true, isMultiselect: true, configJson: true },
     });
   }
 
   // 기능 : 전체 후보와 명시 ID의 합집합을 Workspace 안에서 읽습니다.
-  async findOptions(input: AttributeOptionsInput) {
+  async findOptions(input: AttributeOptionsInput, context?: TransactionContext) {
+    const prisma = context ? resolvePrismaReadContext(context) : this.prisma;
     // 1. 옵션 종류별로 빈 집합을 생략하고 독립된 조회를 함께 실행한다.
     const [selectOptions, statusOptions] = await Promise.all([
       input.selectAttributeIds.length || input.selectOptionIds.length
-        ? this.prisma.selectOption.findMany({
+        ? prisma.selectOption.findMany({
             where: { workspaceId: input.workspaceId, OR: [
               { attributeDefinitionId: { in: input.selectAttributeIds } }, { id: { in: input.selectOptionIds } },
             ] }, select: optionSelect, orderBy: [...optionOrder],
           }) : Promise.resolve([]),
       input.statusAttributeIds.length || input.statusOptionIds.length
-        ? this.prisma.statusOption.findMany({
+        ? prisma.statusOption.findMany({
             where: { workspaceId: input.workspaceId, OR: [
               { attributeDefinitionId: { in: input.statusAttributeIds } }, { id: { in: input.statusOptionIds } },
             ] }, select: optionSelect, orderBy: [...optionOrder],

@@ -2,6 +2,21 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
+  viewContent: {
+    previousWeek: "이전 주", nextWeek: "다음 주",
+    loading: "보기를 불러오는 중…", loadError: "보기를 불러오지 못했습니다.", retry: "다시 시도", refresh: "새로고침",
+    noView: "선택할 보기가 없습니다.", empty: "조건에 맞는 기록이 없습니다.", untitled: "이름 없는 기록",
+    invalidValue: "값을 표시할 수 없습니다.", unavailableValue: "참조를 사용할 수 없습니다.", firstPage: "처음", nextPage: "다음",
+    total: "전체 합계", group: "그룹", record: "기록", values: "집계값 보기", noMeasure: "측정값 없음", noCombination: "해당 조합의 기록 없음",
+    chartRange: "이 값은 차트로 표시할 수 없습니다. 아래 집계값을 확인해 주세요.", dependencies: "업무 의존 관계",
+    unscheduled: "기간 미설정", invalidDates: "잘못된 기간", searchMapArea: "현재 지도 영역 검색", located: "위치 있는 기록", unlocated: "위치 없는 기록", map: "기록 위치 지도",
+    mapTileError: "배경 지도를 불러오지 못했습니다. 기록 목록은 계속 사용할 수 있습니다.",
+    cycle: "순환 참조로 이 위젯을 표시할 수 없습니다.", nestingLimit: "중첩된 대시보드의 표시 깊이를 초과했습니다.", unavailable: "이 보기에 접근할 수 없습니다.",
+    needsConfiguration: "이 보기를 표시하려면 보기 설정을 확인해야 합니다.", datePolicyRequired: "종료일 포함 여부가 정해지면 일정을 표시할 수 있습니다.",
+    limitExceeded: "조회할 데이터가 너무 많습니다. 보기 조건을 좁힌 뒤 다시 시도해 주세요.", timedOut: "조회 시간이 초과됐습니다. 다시 시도해 주세요.", staleCursor: "보기 설정이 변경됐습니다. 처음부터 다시 조회해 주세요.",
+    matched: "조건에 맞는 기록 {count}개 · 전체 {total}개", previousMonth: "이전 달", nextMonth: "다음 달", month: "조회 월",
+    mon: "월", tue: "화", wed: "수", thu: "목", fri: "금", sat: "토", sun: "일",
+  },
   common: {
     add: "추가",
     cancel: "취소",
@@ -403,7 +418,7 @@ export const koKRResource = {
     settings: "보기 설정",
     layout: "레이아웃",
     visibleAttributes: "표시 정보",
-    previewNote: "설정은 현재 화면에서 미리보기로만 유지돼요.",
+    previewNote: "임시 편집 중입니다. 저장과 본문 반영은 아직 지원하지 않아요.",
   },
   errors: {
     CURRENCY_UNSUPPORTED: "지원하는 통화를 선택해 주세요.",

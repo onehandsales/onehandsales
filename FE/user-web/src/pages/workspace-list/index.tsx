@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { useOutletContext } from "react-router-dom";
 import type { AppShellOutletContext } from "@/components/layout/app-shell";
 import { ViewHeaderToolbar } from "@/components/layout/view-header-toolbar";
+import { WorkspaceViewContent } from "@/features/crm-view";
 
 // 기능 : 업무목록의 공통 헤더가 연결되는 화면 영역을 제공합니다.
 export function WorkspaceListPage() {
@@ -15,7 +16,8 @@ export function WorkspaceListPage() {
     setSearch("");
   }, [viewMenus.scope]);
   const toolbar = <ViewHeaderToolbar header={viewHeaderModel} menus={viewMenus} searchLabel={t("common.search")} searchValue={search} onSearchChange={setSearch} />;
-  return <section aria-label={t("navigation.workListsGroup")} className="min-h-0 flex-1" data-testid="workspace-list-page">
+  return <section aria-label={t("navigation.workListsGroup")} className="flex h-[calc(100dvh-var(--topbar-height))] min-h-0 flex-1 flex-col" data-testid="workspace-list-page">
     {headerToolbarElement ? createPortal(toolbar, headerToolbarElement) : <div className="flex h-[var(--topbar-height)] items-center gap-2 bg-white px-3 lg:hidden">{toolbar}</div>}
+    <div className="min-h-0 flex-1"><WorkspaceViewContent header={viewHeaderModel} search={search} /></div>
   </section>;
 }

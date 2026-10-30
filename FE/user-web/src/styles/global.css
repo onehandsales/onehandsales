@@ -1,4 +1,10 @@
 @tailwind base;
+
+/* 기능 : 작은 화면에서는 저장된 위젯 순서를 유지하고 세로로 재배치합니다. */
+@media (max-width: 767px) {
+  .view-dashboard-grid { display: flex !important; flex-direction: column; }
+  .view-dashboard-widget { min-height: 280px; max-height: 600px; }
+}
 @tailwind components;
 @tailwind utilities;
 
