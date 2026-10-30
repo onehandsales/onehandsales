@@ -1,0 +1,283 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-00000000005b",
+  "viewType": "GANTT",
+  "viewName": "GANTT 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-00000000005a",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-gantt-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-00000000005c",
+      "attributeDefinitionId": "10000000-0000-4000-8000-00000000005d",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "TITLE",
+      "label": "이름",
+      "attributeType": "Text",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-00000000005e",
+      "attributeDefinitionId": "10000000-0000-4000-8000-00000000005f",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "START_DATE",
+      "label": "START_DATE",
+      "attributeType": "Date",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000060",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000061",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "END_DATE",
+      "label": "END_DATE",
+      "attributeType": "Date",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000062",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000063",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "PROGRESS",
+      "label": "PROGRESS",
+      "attributeType": "Number",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": {
+        "style": "PERCENT",
+        "valueScale": 100,
+        "fractionDigits": 0
+      },
+      "currencyCode": null
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 2,
+    "matchedItemCount": 2,
+    "eligibleItemCount": 2
+  },
+  "data": {
+    "presentation": {
+      "timeScale": "WEEK",
+      "showDependencies": true
+    },
+    "range": {
+      "startDate": "2026-11-01",
+      "endDateExclusive": "2026-12-01",
+      "timeZone": "Asia/Seoul"
+    },
+    "tasks": [
+      {
+        "item": {
+          "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000065",
+          "recordDefinitionId": "10000000-0000-4000-8000-000000000064",
+          "objectDefinitionId": "10000000-0000-4000-8000-000000000059",
+          "listEntryDefinitionId": "10000000-0000-4000-8000-000000000065",
+          "title": "업무 1",
+          "cells": [
+            {
+              "bindingId": "10000000-0000-4000-8000-00000000005c",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000066",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000064"
+                  },
+                  "value": "업무 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-00000000005e",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000067",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000064"
+                  },
+                  "value": "2026-11-01"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000060",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000068",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000064"
+                  },
+                  "value": "2026-11-03"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000062",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000069",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000064"
+                  },
+                  "value": "50"
+                }
+              ]
+            }
+          ],
+          "groupPath": [],
+          "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000065"
+        },
+        "dateKind": "DATE",
+        "start": "2026-11-01",
+        "end": "2026-11-03",
+        "endInclusive": true,
+        "progress": {
+          "rawValue": "50",
+          "valueScale": "100",
+          "ratio": "0.5"
+        }
+      },
+      {
+        "item": {
+          "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000006b",
+          "recordDefinitionId": "10000000-0000-4000-8000-00000000006a",
+          "objectDefinitionId": "10000000-0000-4000-8000-000000000059",
+          "listEntryDefinitionId": "10000000-0000-4000-8000-00000000006b",
+          "title": "업무 2",
+          "cells": [
+            {
+              "bindingId": "10000000-0000-4000-8000-00000000005c",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000006c",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-00000000006a"
+                  },
+                  "value": "업무 2"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-00000000005e",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000006d",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-00000000006a"
+                  },
+                  "value": "2026-11-04"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000060",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000006e",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-00000000006a"
+                  },
+                  "value": "2026-11-06"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000062",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000006f",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-00000000006a"
+                  },
+                  "value": "20"
+                }
+              ]
+            }
+          ],
+          "groupPath": [],
+          "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000006b"
+        },
+        "dateKind": "DATE",
+        "start": "2026-11-04",
+        "end": "2026-11-06",
+        "endInclusive": true,
+        "progress": {
+          "rawValue": "20",
+          "valueScale": "100",
+          "ratio": "0.2"
+        }
+      }
+    ],
+    "unscheduledCount": 0,
+    "invalidDateCount": 0,
+    "pageInfo": {
+      "hasNextPage": false,
+      "nextCursor": null
+    },
+    "groups": [],
+    "dependencies": [
+      {
+        "id": "10000000-0000-4000-8000-000000000070",
+        "type": "FINISH_TO_START",
+        "source": {
+          "kind": "RECORD",
+          "id": "10000000-0000-4000-8000-000000000064",
+          "itemKeys": [
+            "LIST_ENTRY:10000000-0000-4000-8000-000000000065"
+          ]
+        },
+        "target": {
+          "kind": "RECORD",
+          "id": "10000000-0000-4000-8000-00000000006a",
+          "itemKeys": [
+            "LIST_ENTRY:10000000-0000-4000-8000-00000000006b"
+          ]
+        },
+        "offset": {
+          "value": "0",
+          "unit": "DAY"
+        },
+        "renderable": true
+      }
+    ]
+  }
+}

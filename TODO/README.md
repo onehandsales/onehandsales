@@ -14,6 +14,8 @@
 
 검토 기준일: 2026-10-29
 
+2026-10-30 신규 설계: [11개 View 주 화면 조회 계획과 검토](VIEW_MAIN_CONTENT_QUERY_PLAN/README.md). 현재 구현 대상은 Backend 조회 API 1개이며, 필터·정렬 저장 API와 FE 연결은 [후속 작업](VIEW_MAIN_CONTENT_QUERY_PLAN/COMMON/SCOPE_AND_DEFERRED_WORK.md)으로 분리했다. 타입별 응답·비즈니스 로직·프론트 설계 참고, 실제 Supabase 목 데이터 조사와 자체 검토를 정리했다. API 계약은 draft이며 구현 전이다.
+
 기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md), [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md), [View 즐겨찾기 추가·삭제 Backend API](DONE/VIEW_FAVORITE_MUTATION_API_PLAN/README.md)에 이어 [즐겨찾기 Frontend 연결](DONE/VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md)을 완료했다. 공통 별표의 등록/해제·헤더/개인 사이드바 갱신·중복/오류/지연 응답·반응형을 연결했고 단위 58건·Chromium E2E 33건·typecheck/lint/build를 통과했다. 즐겨찾기 행 클릭 이동/정렬·생성/저장·타입별 본문은 후속 범위다.
 
 [View 헤더 메뉴 조회 Backend 계획](DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)을 완료 보관했다. 현재 View의 저장된 필터·정렬·보기 설정을 읽는 GET 3개를 구현했고 전체 Backend 64 suites / 462 tests와 typecheck/lint/build·Prisma validate를 통과했다. Frontend 연결·주 화면 데이터 조회·설정 저장은 후속 범위다. 기존 View 선택/즐겨찾기의 최신 경로는 [2026-10-29 API 경로·식별자 계약](VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.

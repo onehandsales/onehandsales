@@ -1,0 +1,76 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-000000000091",
+  "viewType": "DASHBOARD",
+  "viewName": "DASHBOARD 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-000000000090",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-dashboard-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [],
+  "summary": null,
+  "data": {
+    "presentation": {
+      "gridColumns": 12
+    },
+    "widgets": [
+      {
+        "id": "10000000-0000-4000-8000-000000000092",
+        "title": "예시 CHART 위젯",
+        "showTitle": true,
+        "layout": {
+          "x": 0,
+          "y": 0,
+          "width": 6,
+          "height": 4
+        },
+        "content": {
+          "viewDefinitionId": "10000000-0000-4000-8000-000000000073",
+          "viewType": "CHART",
+          "sourceType": "LIST"
+        },
+        "state": "READY"
+      },
+      {
+        "id": "10000000-0000-4000-8000-000000000094",
+        "title": "예시 PIVOT 위젯",
+        "showTitle": true,
+        "layout": {
+          "x": 6,
+          "y": 0,
+          "width": 6,
+          "height": 4
+        },
+        "content": {
+          "viewDefinitionId": "10000000-0000-4000-8000-00000000007a",
+          "viewType": "PIVOT",
+          "sourceType": "LIST"
+        },
+        "state": "READY"
+      },
+      {
+        "id": "10000000-0000-4000-8000-000000000096",
+        "title": "예시 KANBAN 위젯",
+        "showTitle": true,
+        "layout": {
+          "x": 0,
+          "y": 4,
+          "width": 6,
+          "height": 4
+        },
+        "content": {
+          "viewDefinitionId": "10000000-0000-4000-8000-00000000000f",
+          "viewType": "KANBAN",
+          "sourceType": "LIST"
+        },
+        "state": "READY"
+      }
+    ],
+    "visibleWidgetCount": 3
+  }
+}

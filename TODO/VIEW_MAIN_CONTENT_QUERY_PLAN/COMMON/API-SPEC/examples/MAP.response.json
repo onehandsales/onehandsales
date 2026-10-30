@@ -1,0 +1,261 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-000000000082",
+  "viewType": "MAP",
+  "viewName": "MAP 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-000000000081",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-map-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-000000000083",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000084",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "TITLE",
+      "label": "이름",
+      "attributeType": "Text",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000085",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000086",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "LOCATION",
+      "label": "LOCATION",
+      "attributeType": "Location",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 3,
+    "matchedItemCount": 3,
+    "eligibleItemCount": 2
+  },
+  "data": {
+    "presentation": {
+      "fitToData": true,
+      "showLabels": true
+    },
+    "bounds": {
+      "west": 126.95,
+      "south": 37.55,
+      "east": 126.99,
+      "north": 37.59
+    },
+    "markers": {
+      "items": [
+        {
+          "key": "LIST_ENTRY:10000000-0000-4000-8000-000000000088:location:10000000-0000-4000-8000-00000000008a",
+          "item": {
+            "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000088",
+            "recordDefinitionId": "10000000-0000-4000-8000-000000000087",
+            "objectDefinitionId": "10000000-0000-4000-8000-000000000080",
+            "listEntryDefinitionId": "10000000-0000-4000-8000-000000000088",
+            "title": "회사 A",
+            "cells": [
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000083",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-000000000089",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-000000000087"
+                    },
+                    "value": "회사 A"
+                  }
+                ]
+              },
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000085",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-00000000008a",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-000000000087"
+                    },
+                    "value": {
+                      "text": "예시 위치 1",
+                      "latitude": 37.55,
+                      "longitude": 126.95
+                    }
+                  }
+                ]
+              }
+            ],
+            "groupPath": [],
+            "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000088"
+          },
+          "latitude": 37.55,
+          "longitude": 126.95
+        },
+        {
+          "key": "LIST_ENTRY:10000000-0000-4000-8000-00000000008c:location:10000000-0000-4000-8000-00000000008e",
+          "item": {
+            "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000008c",
+            "recordDefinitionId": "10000000-0000-4000-8000-00000000008b",
+            "objectDefinitionId": "10000000-0000-4000-8000-000000000080",
+            "listEntryDefinitionId": "10000000-0000-4000-8000-00000000008c",
+            "title": "회사 B",
+            "cells": [
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000083",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-00000000008d",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-00000000008b"
+                    },
+                    "value": "회사 B"
+                  }
+                ]
+              },
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000085",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-00000000008e",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-00000000008b"
+                    },
+                    "value": {
+                      "text": "예시 위치 2",
+                      "latitude": 37.59,
+                      "longitude": 126.99
+                    }
+                  }
+                ]
+              }
+            ],
+            "groupPath": [],
+            "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000008c"
+          },
+          "latitude": 37.59,
+          "longitude": 126.99
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    },
+    "list": {
+      "items": [
+        {
+          "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000088",
+          "recordDefinitionId": "10000000-0000-4000-8000-000000000087",
+          "objectDefinitionId": "10000000-0000-4000-8000-000000000080",
+          "listEntryDefinitionId": "10000000-0000-4000-8000-000000000088",
+          "title": "회사 A",
+          "cells": [
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000083",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000089",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000087"
+                  },
+                  "value": "회사 A"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000085",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000008a",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000087"
+                  },
+                  "value": {
+                    "text": "예시 위치 1",
+                    "latitude": 37.55,
+                    "longitude": 126.95
+                  }
+                }
+              ]
+            }
+          ],
+          "groupPath": [],
+          "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000088"
+        },
+        {
+          "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000008c",
+          "recordDefinitionId": "10000000-0000-4000-8000-00000000008b",
+          "objectDefinitionId": "10000000-0000-4000-8000-000000000080",
+          "listEntryDefinitionId": "10000000-0000-4000-8000-00000000008c",
+          "title": "회사 B",
+          "cells": [
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000083",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000008d",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-00000000008b"
+                  },
+                  "value": "회사 B"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000085",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000008e",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-00000000008b"
+                  },
+                  "value": {
+                    "text": "예시 위치 2",
+                    "latitude": 37.59,
+                    "longitude": 126.99
+                  }
+                }
+              ]
+            }
+          ],
+          "groupPath": [],
+          "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000008c"
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": false,
+        "nextCursor": null
+      }
+    },
+    "unlocatedCount": 1
+  }
+}

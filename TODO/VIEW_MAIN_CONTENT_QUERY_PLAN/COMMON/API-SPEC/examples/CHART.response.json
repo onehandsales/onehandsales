@@ -1,0 +1,92 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-000000000073",
+  "viewType": "CHART",
+  "viewName": "CHART 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-000000000072",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-chart-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-000000000074",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000075",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "MEASURE",
+      "label": "MEASURE",
+      "attributeType": "Currency",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": "USD"
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 2,
+    "matchedItemCount": 2,
+    "eligibleItemCount": 2
+  },
+  "data": {
+    "presentation": {
+      "chartType": "BAR",
+      "showLegend": true
+    },
+    "metric": {
+      "aggregation": "SUM",
+      "bindingId": "10000000-0000-4000-8000-000000000074",
+      "currencyCode": "USD",
+      "missingValueItemCount": 0
+    },
+    "categories": [
+      {
+        "key": "status:10000000-0000-4000-8000-000000000076",
+        "label": "검토",
+        "reference": {
+          "kind": "STATUS_OPTION",
+          "id": "10000000-0000-4000-8000-000000000076"
+        }
+      },
+      {
+        "key": "status:10000000-0000-4000-8000-000000000077",
+        "label": "제안",
+        "reference": {
+          "kind": "STATUS_OPTION",
+          "id": "10000000-0000-4000-8000-000000000077"
+        }
+      }
+    ],
+    "series": [],
+    "points": [
+      {
+        "categoryKey": "status:10000000-0000-4000-8000-000000000076",
+        "seriesKey": null,
+        "result": {
+          "value": "200",
+          "itemCount": 1,
+          "valueCount": 1
+        }
+      },
+      {
+        "categoryKey": "status:10000000-0000-4000-8000-000000000077",
+        "seriesKey": null,
+        "result": {
+          "value": "300",
+          "itemCount": 1,
+          "valueCount": 1
+        }
+      }
+    ],
+    "total": {
+      "value": "500",
+      "itemCount": 2,
+      "valueCount": 2
+    }
+  }
+}

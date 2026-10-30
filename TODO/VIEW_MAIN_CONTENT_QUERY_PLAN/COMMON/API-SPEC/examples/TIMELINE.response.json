@@ -1,0 +1,142 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-00000000004d",
+  "viewType": "TIMELINE",
+  "viewName": "TIMELINE 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-00000000004c",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-timeline-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-00000000004e",
+      "attributeDefinitionId": "10000000-0000-4000-8000-00000000004f",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "TITLE",
+      "label": "이름",
+      "attributeType": "Text",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000050",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000051",
+      "sourceScope": "LIST_ENTRY",
+      "referenceAttributeIdPath": [],
+      "role": "START_DATE",
+      "label": "START_DATE",
+      "attributeType": "Date",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000052",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000053",
+      "sourceScope": "LIST_ENTRY",
+      "referenceAttributeIdPath": [],
+      "role": "END_DATE",
+      "label": "END_DATE",
+      "attributeType": "Date",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 1,
+    "matchedItemCount": 1,
+    "eligibleItemCount": 1
+  },
+  "data": {
+    "presentation": {
+      "timeScale": "WEEK"
+    },
+    "range": {
+      "startDate": "2026-11-01",
+      "endDateExclusive": "2026-12-01",
+      "timeZone": "Asia/Seoul"
+    },
+    "bars": [
+      {
+        "item": {
+          "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000055",
+          "recordDefinitionId": "10000000-0000-4000-8000-000000000054",
+          "objectDefinitionId": "10000000-0000-4000-8000-00000000004b",
+          "listEntryDefinitionId": "10000000-0000-4000-8000-000000000055",
+          "title": "업무 1",
+          "cells": [
+            {
+              "bindingId": "10000000-0000-4000-8000-00000000004e",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000056",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000054"
+                  },
+                  "value": "업무 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000050",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000057",
+                  "sourceEntity": {
+                    "kind": "LIST_ENTRY",
+                    "id": "10000000-0000-4000-8000-000000000055"
+                  },
+                  "value": "2026-11-01"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000052",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000058",
+                  "sourceEntity": {
+                    "kind": "LIST_ENTRY",
+                    "id": "10000000-0000-4000-8000-000000000055"
+                  },
+                  "value": "2026-11-03"
+                }
+              ]
+            }
+          ],
+          "groupPath": [],
+          "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000055"
+        },
+        "dateKind": "DATE",
+        "start": "2026-11-01",
+        "end": "2026-11-03",
+        "endInclusive": true
+      }
+    ],
+    "unscheduledCount": 0,
+    "invalidDateCount": 0,
+    "pageInfo": {
+      "hasNextPage": false,
+      "nextCursor": null
+    },
+    "groups": []
+  }
+}

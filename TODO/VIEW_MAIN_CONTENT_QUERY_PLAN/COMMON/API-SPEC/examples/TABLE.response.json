@@ -1,0 +1,144 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-000000000002",
+  "viewType": "TABLE",
+  "viewName": "TABLE 응답 구조 예제",
+  "source": {
+    "kind": "OBJECT",
+    "objectDefinitionId": "10000000-0000-4000-8000-000000000001",
+    "listDefinitionId": null,
+    "itemKind": "RECORD"
+  },
+  "configurationFingerprint": "example-table-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-000000000003",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000004",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "TITLE",
+      "label": "회사명",
+      "attributeType": "Text",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": 240,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000005",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000006",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "DISPLAY",
+      "label": "직원 수",
+      "attributeType": "Number",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": 120,
+      "format": null,
+      "currencyCode": null
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 2,
+    "matchedItemCount": 2,
+    "eligibleItemCount": 2
+  },
+  "data": {
+    "presentation": {
+      "rowDensity": "COMFORTABLE"
+    },
+    "columnBindingIds": [
+      "10000000-0000-4000-8000-000000000003",
+      "10000000-0000-4000-8000-000000000005"
+    ],
+    "items": [
+      {
+        "itemKey": "RECORD:10000000-0000-4000-8000-000000000007",
+        "recordDefinitionId": "10000000-0000-4000-8000-000000000007",
+        "objectDefinitionId": "10000000-0000-4000-8000-000000000001",
+        "listEntryDefinitionId": null,
+        "title": "회사 A",
+        "cells": [
+          {
+            "bindingId": "10000000-0000-4000-8000-000000000003",
+            "state": "VALUE",
+            "values": [
+              {
+                "valueDefinitionId": "10000000-0000-4000-8000-000000000008",
+                "sourceEntity": {
+                  "kind": "RECORD",
+                  "id": "10000000-0000-4000-8000-000000000007"
+                },
+                "value": "회사 A"
+              }
+            ]
+          },
+          {
+            "bindingId": "10000000-0000-4000-8000-000000000005",
+            "state": "VALUE",
+            "values": [
+              {
+                "valueDefinitionId": "10000000-0000-4000-8000-000000000009",
+                "sourceEntity": {
+                  "kind": "RECORD",
+                  "id": "10000000-0000-4000-8000-000000000007"
+                },
+                "value": "20"
+              }
+            ]
+          }
+        ],
+        "groupPath": [],
+        "occurrenceKey": "RECORD:10000000-0000-4000-8000-000000000007"
+      },
+      {
+        "itemKey": "RECORD:10000000-0000-4000-8000-00000000000a",
+        "recordDefinitionId": "10000000-0000-4000-8000-00000000000a",
+        "objectDefinitionId": "10000000-0000-4000-8000-000000000001",
+        "listEntryDefinitionId": null,
+        "title": "회사 B",
+        "cells": [
+          {
+            "bindingId": "10000000-0000-4000-8000-000000000003",
+            "state": "VALUE",
+            "values": [
+              {
+                "valueDefinitionId": "10000000-0000-4000-8000-00000000000b",
+                "sourceEntity": {
+                  "kind": "RECORD",
+                  "id": "10000000-0000-4000-8000-00000000000a"
+                },
+                "value": "회사 B"
+              }
+            ]
+          },
+          {
+            "bindingId": "10000000-0000-4000-8000-000000000005",
+            "state": "VALUE",
+            "values": [
+              {
+                "valueDefinitionId": "10000000-0000-4000-8000-00000000000c",
+                "sourceEntity": {
+                  "kind": "RECORD",
+                  "id": "10000000-0000-4000-8000-00000000000a"
+                },
+                "value": "40"
+              }
+            ]
+          }
+        ],
+        "groupPath": [],
+        "occurrenceKey": "RECORD:10000000-0000-4000-8000-00000000000a"
+      }
+    ],
+    "groups": [],
+    "pageInfo": {
+      "hasNextPage": false,
+      "nextCursor": null
+    }
+  }
+}

@@ -992,6 +992,7 @@
 
 ### 8.1. 프로젝트 기준
 
+- [11개 View 주 화면 조회 API·프론트 설계와 검토](VIEW_MAIN_CONTENT_QUERY_PLAN/README.md)
 - [기존 사이드바·View 이동 흐름](SIDEBAR_AND_VIEW_USER_FLOW.md)
 - [현재 Prisma 스키마](../BE/prisma/schema.prisma)
 - [Object·List·View 제약·인덱스 후속 검토](VIEW_인덱스관련검토문서.md)

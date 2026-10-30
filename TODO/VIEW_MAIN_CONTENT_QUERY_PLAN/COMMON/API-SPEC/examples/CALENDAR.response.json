@@ -1,0 +1,142 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-00000000003f",
+  "viewType": "CALENDAR",
+  "viewName": "CALENDAR 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-00000000003e",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-calendar-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-000000000040",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000041",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "TITLE",
+      "label": "이름",
+      "attributeType": "Text",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000042",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000043",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "START_DATE",
+      "label": "START_DATE",
+      "attributeType": "Date",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000044",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000045",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "END_DATE",
+      "label": "END_DATE",
+      "attributeType": "Date",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 1,
+    "matchedItemCount": 1,
+    "eligibleItemCount": 1
+  },
+  "data": {
+    "presentation": {
+      "initialMode": "MONTH",
+      "weekStartsOn": "MONDAY"
+    },
+    "range": {
+      "startDate": "2026-11-01",
+      "endDateExclusive": "2026-12-01",
+      "timeZone": "Asia/Seoul"
+    },
+    "events": [
+      {
+        "item": {
+          "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000047",
+          "recordDefinitionId": "10000000-0000-4000-8000-000000000046",
+          "objectDefinitionId": "10000000-0000-4000-8000-00000000003d",
+          "listEntryDefinitionId": "10000000-0000-4000-8000-000000000047",
+          "title": "업무 1",
+          "cells": [
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000040",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000048",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000046"
+                  },
+                  "value": "업무 1"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000042",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-000000000049",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000046"
+                  },
+                  "value": "2026-11-01"
+                }
+              ]
+            },
+            {
+              "bindingId": "10000000-0000-4000-8000-000000000044",
+              "state": "VALUE",
+              "values": [
+                {
+                  "valueDefinitionId": "10000000-0000-4000-8000-00000000004a",
+                  "sourceEntity": {
+                    "kind": "RECORD",
+                    "id": "10000000-0000-4000-8000-000000000046"
+                  },
+                  "value": "2026-11-03"
+                }
+              ]
+            }
+          ],
+          "groupPath": [],
+          "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000047"
+        },
+        "dateKind": "DATE",
+        "start": "2026-11-01",
+        "end": "2026-11-03",
+        "endInclusive": true
+      }
+    ],
+    "unscheduledCount": 0,
+    "invalidDateCount": 0,
+    "pageInfo": {
+      "hasNextPage": false,
+      "nextCursor": null
+    }
+  }
+}

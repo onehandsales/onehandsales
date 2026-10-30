@@ -1,0 +1,172 @@
+{
+  "viewDefinitionId": "10000000-0000-4000-8000-00000000000f",
+  "viewType": "KANBAN",
+  "viewName": "KANBAN 응답 구조 예제",
+  "source": {
+    "kind": "LIST",
+    "objectDefinitionId": null,
+    "listDefinitionId": "10000000-0000-4000-8000-00000000000e",
+    "itemKind": "LIST_ENTRY"
+  },
+  "configurationFingerprint": "example-kanban-v1",
+  "part": "MAIN",
+  "state": "READY",
+  "issues": [],
+  "bindings": [
+    {
+      "id": "10000000-0000-4000-8000-000000000010",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000011",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "TITLE",
+      "label": "이름",
+      "attributeType": "Text",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": null
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000012",
+      "attributeDefinitionId": "10000000-0000-4000-8000-000000000013",
+      "sourceScope": "RECORD",
+      "referenceAttributeIdPath": [],
+      "role": "DISPLAY",
+      "label": "DISPLAY",
+      "attributeType": "Currency",
+      "isMultiselect": false,
+      "isHidden": false,
+      "width": null,
+      "format": null,
+      "currencyCode": "USD"
+    }
+  ],
+  "summary": {
+    "sourceItemCount": 2,
+    "matchedItemCount": 2,
+    "eligibleItemCount": 2
+  },
+  "data": {
+    "presentation": {
+      "cardDensity": "COMFORTABLE",
+      "showEmptyGroups": true
+    },
+    "groupDefinitionId": "10000000-0000-4000-8000-000000000014",
+    "columns": [
+      {
+        "key": "status:10000000-0000-4000-8000-000000000015",
+        "parentKey": null,
+        "label": "검토",
+        "color": "gray",
+        "count": 1,
+        "isHidden": false,
+        "isFold": false,
+        "groupToken": "example-group-1",
+        "items": [
+          {
+            "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000017",
+            "recordDefinitionId": "10000000-0000-4000-8000-000000000016",
+            "objectDefinitionId": "10000000-0000-4000-8000-00000000000d",
+            "listEntryDefinitionId": "10000000-0000-4000-8000-000000000017",
+            "title": "기회 1",
+            "cells": [
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000010",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-000000000018",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-000000000016"
+                    },
+                    "value": "기회 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000012",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-000000000019",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-000000000016"
+                    },
+                    "value": "100"
+                  }
+                ]
+              }
+            ],
+            "groupPath": [],
+            "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000017"
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": false,
+          "nextCursor": null
+        },
+        "calculations": []
+      },
+      {
+        "key": "status:10000000-0000-4000-8000-00000000001a",
+        "parentKey": null,
+        "label": "제안",
+        "color": "blue",
+        "count": 1,
+        "isHidden": false,
+        "isFold": false,
+        "groupToken": "example-group-2",
+        "items": [
+          {
+            "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000001c",
+            "recordDefinitionId": "10000000-0000-4000-8000-00000000001b",
+            "objectDefinitionId": "10000000-0000-4000-8000-00000000000d",
+            "listEntryDefinitionId": "10000000-0000-4000-8000-00000000001c",
+            "title": "기회 2",
+            "cells": [
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000010",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-00000000001d",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-00000000001b"
+                    },
+                    "value": "기회 2"
+                  }
+                ]
+              },
+              {
+                "bindingId": "10000000-0000-4000-8000-000000000012",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "10000000-0000-4000-8000-00000000001e",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "10000000-0000-4000-8000-00000000001b"
+                    },
+                    "value": "200"
+                  }
+                ]
+              }
+            ],
+            "groupPath": [],
+            "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000001c"
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": false,
+          "nextCursor": null
+        },
+        "calculations": []
+      }
+    ],
+    "unassignedCount": 0
+  }
+}
