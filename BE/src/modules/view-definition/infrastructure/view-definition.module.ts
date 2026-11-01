@@ -30,6 +30,7 @@ import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructu
 import { ListDefinitionModule } from "@/modules/list-definition/infrastructure/list-definition.module";
 import { VIEW_DEFINITION_HEADER_QUERY } from "@/modules/view-definition/application/ports/view-definition-header-query.port";
 import { GetWorkspaceViewHeaderUseCase } from "@/modules/view-definition/application/use-cases/get-workspace-view-header.use-case";
+import { GetWorkspaceViewHeaderByViewIdUseCase } from "../application/use-cases/get-workspace-view-header-by-view-id.use-case";
 import { VIEW_FAVORITE_SIDEBAR_QUERY } from "@/modules/view-definition/application/ports/view-favorite-sidebar-query.port";
 import { ListSidebarViewFavoritesUseCase } from "@/modules/view-definition/application/use-cases/list-sidebar-view-favorites.use-case";
 import { WorkspaceModule } from "@/modules/workspace/infrastructure/workspace.module";
@@ -120,6 +121,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
       inject: [PrismaService],
     },
     GetWorkspaceViewHeaderUseCase,
+    GetWorkspaceViewHeaderByViewIdUseCase,
     {
       provide: VIEW_DEFINITION_HEADER_QUERY,
       // 기능 : View 소유 모듈의 초기 헤더 조회 구현체를 조립합니다.

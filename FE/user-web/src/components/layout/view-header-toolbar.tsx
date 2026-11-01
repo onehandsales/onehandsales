@@ -32,7 +32,7 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
   const panelId = useId();
   const type = header.currentView?.viewType;
   const tools = getViewTools(type);
-  const ready = Boolean(header.currentView) && !header.isLoading && !header.isError;
+  const ready = Boolean(header.currentView && header.target) && !header.isLoading && !header.isError;
 
   // 기능 : 팝오버 조회를 종료하고 원래 버튼으로 초점을 복원합니다.
   function closePanel() {
@@ -128,7 +128,7 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
   }
   return <div className="flex min-w-0 flex-1 items-center gap-1" data-testid="view-header-toolbar" ref={rootRef}>
     <div className="min-w-1 flex-1" />
-    {tools.search && <div className="relative shrink-0"><ToolbarButton active={Boolean(searchValue) || panel === "search"} controls={panel === "search" ? panelId : undefined} expanded={panel === "search"} icon={Search} label={searchLabel} text={t("common.search")} onClick={event => togglePanel("search", event)} />
+    {tools.search && <div className="relative shrink-0"><ToolbarButton disabled={!ready} active={Boolean(searchValue) || panel === "search"} controls={panel === "search" ? panelId : undefined} expanded={panel === "search"} icon={Search} label={searchLabel} text={t("common.search")} onClick={event => togglePanel("search", event)} />
       {renderPopover("search", t("common.search"), <><input aria-label={searchLabel} className="mx-1 h-8 w-[calc(100%-8px)] rounded bg-[#F4F3F0] px-2 outline-none focus:ring-1 focus:ring-[#A9C5FA]" type="search" maxLength={200} placeholder={searchLabel} value={searchValue} onChange={event => onSearchChange(event.target.value)} />{searchValue && <button className="mt-1 w-full rounded px-2 py-2 text-left text-[#787774] hover:bg-[#F3F2EF]" type="button" onClick={() => onSearchChange("")}>{t("common.clear")}</button>}</>)}
     </div>}
     {tools.filters && menuButton("filters", t("common.filter"), Filter, menus.filters.data?.viewFilterConditionDefinitions.length)}

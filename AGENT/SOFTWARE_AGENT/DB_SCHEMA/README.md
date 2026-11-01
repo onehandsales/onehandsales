@@ -123,6 +123,8 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 
+2026-11-01 즐겨찾기의 특정 View를 여는 헤더 GET을 기존 view-definition 모듈에 추가하고 User Web에서 같은 헤더·본문으로 연결했다. 멤버십과 Workspace/View ID를 확인하고 실제 개인 즐겨찾기 상태·Object/List 요약을 반환한다. 기존 FK의 이중/무소속을 보존하며 schema·migration·업무 DB 데이터는 변경하지 않는다. [계약·Backend 검토·Frontend 연결 결과](../../../TODO/VIEW_HEADER_BY_VIEW_ID_API_PLAN/README.md)를 따른다. 격리 PostgreSQL을 포함한 Backend582개·Frontend 단위94개·Chromium64개 테스트가 통과했고 실제 Supabase View24개의 헤더·본문·메뉴를 읽기 전용으로 확인했다.
+
 ## 5. 제거된 도메인
 
 고정형 고객사/담당자/상품/딜/일정/회의록/검색/Product Analytics 계열 모델은 현재 schema에 없다.

@@ -20,10 +20,26 @@ export interface WorkspaceViewHeaderRecord {
   readonly isFavorite: boolean;
 }
 
+// 역할 : 인증으로 얻은 멤버와 Workspace 안에서 특정 View를 조회할 범위입니다.
+export interface WorkspaceViewHeaderByIdQueryInput {
+  readonly workspaceId: string;
+  readonly workspaceMemberId: string;
+  readonly viewDefinitionId: string;
+}
+
+// 역할 : 단건 View의 연결 소속을 원래 스키마 그대로 보존한 조회 결과입니다.
+export interface WorkspaceViewHeaderByIdRecord extends WorkspaceViewHeaderRecord {
+  readonly objectDefinitionId: string | null;
+  readonly listDefinitionId: string | null;
+}
+
 // 역할 : 클릭 대상에 속한 초기 View와 개인 상태를 조회하는 계약을 정의합니다.
 export interface ViewDefinitionHeaderQuery {
   // 기능 : 저장 순서의 첫 View를 조회하며 해당 대상에 View가 없으면 null을 반환합니다.
   findFirstWorkspaceViewHeader(
     input: WorkspaceViewHeaderQueryInput
   ): Promise<WorkspaceViewHeaderRecord | null>;
+
+  // 기능 : 요청한 View만 조회하고 소속과 현재 멤버의 즐겨찾기 상태를 반환합니다.
+  findWorkspaceViewHeaderById(input: WorkspaceViewHeaderByIdQueryInput): Promise<WorkspaceViewHeaderByIdRecord | null>;
 }

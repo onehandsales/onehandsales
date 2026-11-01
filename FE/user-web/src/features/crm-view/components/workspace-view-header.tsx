@@ -127,7 +127,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       <span className="h-6 w-28 animate-pulse rounded bg-[#EEEDE9]" />
     </div>;
   }
-  if (model.isError || !model.target) {
+  if (model.isError || !model.target && !model.isTargetSelectionRequired && !model.isTargetMissing) {
     return <div className="flex min-w-0 items-center gap-2 text-[12px]" role="alert">
       <span className="truncate text-[#787774]">{t(model.isUnavailable ? "viewHeader.unavailable" : "viewHeader.headerError")}</span>
       <button className="shrink-0 rounded px-2 py-1 text-[#326ACD] hover:bg-[#F0EFEC]" onClick={model.onRetry} type="button">{t("viewHeader.retry")}</button>
@@ -141,14 +141,15 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     : model.favoriteError === "UNAUTHORIZED" ? "viewHeader.favoriteUnauthorized" : "viewHeader.favoriteSaveError";
 
   return <div className="relative flex min-w-0 shrink items-center gap-1.5" data-testid="workspace-view-header" ref={rootRef}>
-    <IconValueGlyph className="h-4 w-4 shrink-0 text-[#6B7280]" name={model.target.icon} />
-    <h1 className="max-w-[80px] shrink truncate text-[13px] font-semibold text-[#37352F] xl:max-w-[140px]" title={model.target.name}>{model.target.name}</h1>
+    <IconValueGlyph className="h-4 w-4 shrink-0 text-[#6B7280]" name={model.target?.icon ?? null} />
+    <h1 className="max-w-[80px] shrink truncate text-[13px] font-semibold text-[#37352F] xl:max-w-[140px]" title={model.target?.name ?? t("viewHeader.targetLabel")}>{model.target?.name ?? t("viewHeader.targetLabel")}</h1>
     <span aria-hidden="true" className="mx-0.5 h-3.5 w-px shrink-0 bg-[#E7E6E2]" />
     <button
       aria-controls={isOpen ? panelId : undefined}
       aria-expanded={isOpen}
       aria-haspopup="dialog"
       aria-label={t("viewHeader.selectView")}
+      disabled={!model.target}
       className={cn("inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 text-[12px] font-medium text-[#65645F] hover:bg-[#F0EFEC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
       onClick={handleToggle}
       ref={triggerRef}

@@ -49,6 +49,7 @@ function createFixture() {
     }),
   };
   const views: jest.Mocked<ViewDefinitionHeaderQuery> = {
+    findWorkspaceViewHeaderById: jest.fn(),
     findFirstWorkspaceViewHeader: jest.fn().mockResolvedValue({
       id: VIEW_ID,
       name: "전체 보기",

@@ -92,6 +92,18 @@ describeWithTestDatabase("PrismaViewDefinitionHeaderQueryRepository", () => {
       expect((await repository.findFirstWorkspaceViewHeader(input))?.isFavorite).toBe(true);
       expect(await tx.viewFavoriteDefinition.count({ where: { workspaceId, workspaceMemberId: memberId } })).toBe(2);
       expect(await tx.viewDefinition.count({ where: { workspaceId } })).toBe(6);
+      // 5. 단건은 저장 순서를 무시하고 요청한 View와 원래 두 소속을 보존한다.
+      const exact = { workspaceId, workspaceMemberId: memberId, viewDefinitionId: viewId(4) };
+      expect(await repository.findWorkspaceViewHeaderById(exact)).toEqual({ id: viewId(4), name: "Header view", icon: null,
+        type: "TABLE", isFavorite: false, objectDefinitionId: objectId, listDefinitionId: null });
+      expect((await repository.findWorkspaceViewHeaderById({ ...exact, viewDefinitionId: viewId(6) }))?.listDefinitionId).toBe(listId);
+      expect(await repository.findWorkspaceViewHeaderById({ ...exact, viewDefinitionId: viewId(7) })).toMatchObject({ objectDefinitionId: bothObjectId, listDefinitionId: bothListId });
+      expect(await repository.findWorkspaceViewHeaderById({ ...exact, viewDefinitionId: viewId(5) })).toBeNull();
+      expect(await repository.findWorkspaceViewHeaderById({ ...exact, viewDefinitionId: randomUUID() })).toBeNull();
+      expect((await repository.findWorkspaceViewHeaderById({ ...exact, viewDefinitionId: viewId(1) }))?.isFavorite).toBe(true);
+      expect((await repository.findWorkspaceViewHeaderById({ ...exact, viewDefinitionId: viewId(1), workspaceMemberId: foreignMemberId }))?.isFavorite).toBe(false);
+      expect((await repository.findWorkspaceViewHeaderById({ ...exact, workspaceId: workspaceId.toUpperCase(), viewDefinitionId: viewId(4).toUpperCase() }))?.id).toBe(viewId(4));
+      expect(await tx.viewFavoriteDefinition.count({ where: { workspaceId, workspaceMemberId: memberId } })).toBe(2);
       throw rollback;
     }, { timeout: 15000 })).rejects.toBe(rollback);
 

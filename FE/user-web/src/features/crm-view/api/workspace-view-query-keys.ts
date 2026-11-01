@@ -1,6 +1,10 @@
 import type { WorkspaceViewTargetType } from "../types/workspace-view";
 
 export const workspaceViewQueryKeys = {
+  // 기능 : 단건 헤더도 즐겨찾기 갱신 prefix 안에서 사용자·Workspace·View별로 격리합니다.
+  headerByView(userId: string | null, workspaceId: string | null, viewDefinitionId: string | null) {
+    return ["crm-view", userId?.toLowerCase() ?? null, workspaceId?.toLowerCase() ?? null, "header", "VIEW", viewDefinitionId?.toLowerCase() ?? null] as const;
+  },
   // 기능 : 메뉴 캐시를 사용자·Workspace·보기·메뉴별로 격리합니다.
   menu(userId: string | null, workspaceId: string | null, viewDefinitionId: string | null, menu: string) {
     return ["crm-view", userId?.toLowerCase() ?? null, workspaceId?.toLowerCase() ?? null, "menu", viewDefinitionId?.toLowerCase() ?? null, menu] as const;

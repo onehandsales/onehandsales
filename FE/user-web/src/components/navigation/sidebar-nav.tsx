@@ -6,7 +6,7 @@ import { GraphStar } from "@/components/ui/graph-star-icon";
 import type { SidebarCrmListItem } from "@/features/crm-list";
 import type { SidebarCrmObjectListItem } from "@/features/crm-object";
 import type { SidebarViewFavoriteItem } from "@/features/view-favorite";
-import { toWorkspaceListPath, toWorkspaceObjectPath } from "@/features/workspace";
+import { toWorkspaceListPath, toWorkspaceObjectPath, toWorkspaceViewPath } from "@/features/workspace";
 import { cn } from "@/utils/cn";
 
 type SidebarNavProps = {
@@ -42,6 +42,7 @@ export function SidebarNav({
     id: favorite.id,
     label: favorite.name,
     icon: favorite.icon,
+    ...(workspaceId ? { to: toWorkspaceViewPath(workspaceId, favorite.viewDefinitionId) } : {}),
   }));
   const workListItems: readonly SidebarDataItem[] = crmLists.map((list) => ({
     id: list.id,

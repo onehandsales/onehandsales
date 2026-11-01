@@ -373,6 +373,11 @@ export const enResource = {
     emptySettings: "No saved settings.",
   },
   viewHeader: {
+    targetLabel: "View",
+    targetChoiceTitle: "Choose where to open this view.",
+    targetMissing: "This view has no linked items.",
+    objectTarget: "Managed items",
+    listTarget: "Work lists",
     noCurrentView: "No view",
     noSavedViews: "There are no saved views.",
     loadingHeader: "Loading header.",

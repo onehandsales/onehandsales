@@ -22,6 +22,8 @@ Frontend Agent는 User Web과 Admin Web의 구현 구조, route, feature boundar
 
 2026-11-01 사용자가 승인한 텍스트 UX에 따라 관리항목/업무목록 route를 공통 View 본문 GET에 연결했다. TABLE은 기존 관리항목 표와 셀 편집 UX를 재사용하며 KANBAN/LIST를 추가했다. 검색·일반/열별 페이지·그룹·오류 복구와 직접 Record 값 수정/생성은 연결하고, View 저장·ListEntry 쓰기·카드 이동·상세·다른8타입은 후속으로 유지한다. 현재 책임과 검증은 crm-view README를 따른다.
 
+같은 날 [View ID 헤더 API 계획](../../../TODO/VIEW_HEADER_BY_VIEW_ID_API_PLAN/README.md)의 Backend 구현·검토 통과 후 즐겨찾기 행 클릭을 공통 화면에 연결했다. View ID route와 신규 헤더 GET으로 정확한 View부터 표시하고 기존 검색·본문·메뉴·하트 API를 재사용한다. URL 복원·늦은 응답 격리·모바일 상태·이중 소속의 명시 선택을 처리한다. schema·ENV·Admin Web 변경은 없다.
+
 ## 3. Admin Web 현재 활성 범위
 
 - access token 입력

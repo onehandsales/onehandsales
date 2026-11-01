@@ -153,6 +153,10 @@ export const router = createBrowserRouter([
         path: "workspaces/:workspaceId/lists/:listDefinitionId",
         element: <WorkspaceViewPage />,
       },
+      {
+        path: "workspaces/:workspaceId/view-definitions/:viewDefinitionId",
+        element: <WorkspaceViewPage />,
+      },
       { path: "contacts/*", element: <Navigate replace to="/app" /> },
       { path: "products/*", element: <Navigate replace to="/app" /> },
       { path: "deals/*", element: <Navigate replace to="/app" /> },

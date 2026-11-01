@@ -67,8 +67,10 @@ import {
   isWorkspaceHomePath,
   isWorkspaceListPath,
   isWorkspaceObjectPath,
+  isWorkspaceViewPath,
   type SidebarWorkspaceSummary,
   toWorkspaceHomePath,
+  toWorkspaceViewPath,
   WorkspaceLoadingDialog,
   useDefaultSidebarWorkspaceQuery,
   useSidebarWorkspaceQuery,
@@ -146,10 +148,11 @@ export function AppShell() {
   // 2. 처리 흐름에 필요한 navigate 값을 준비한다.
   const navigate = useNavigate();
   // 3. 처리 흐름에 필요한 route params 값을 준비한다.
-  const { objectDefinitionId: routeObjectDefinitionId, listDefinitionId: routeListDefinitionId, workspaceId: routeWorkspaceId } = useParams<{
+  const { objectDefinitionId: routeObjectDefinitionId, listDefinitionId: routeListDefinitionId, workspaceId: routeWorkspaceId, viewDefinitionId: routeViewDefinitionId } = useParams<{
     readonly objectDefinitionId?: string;
     readonly listDefinitionId?: string;
     readonly workspaceId?: string;
+    readonly viewDefinitionId?: string;
   }>();
   // 4. 처리 흐름에 필요한 queryClient 값을 준비한다.
   const queryClient = useQueryClient();
@@ -736,11 +739,14 @@ export function AppShell() {
   // 36. 이후 단계에서 사용할 isFixedViewportPage 값을 준비한다.
   const isWorkspaceObject = isWorkspaceObjectPath(pathname);
   const isWorkspaceList = isWorkspaceListPath(pathname);
-  const isWorkspaceViewTarget = isWorkspaceObject || isWorkspaceList;
+  const isWorkspaceView = isWorkspaceViewPath(pathname);
+  const isWorkspaceViewTarget = isWorkspaceObject || isWorkspaceList || isWorkspaceView;
   const isFixedViewportPage = isHome || isWorkspaceViewTarget;
   const viewHeaderTargetType = isWorkspaceObject ? "OBJECT" : isWorkspaceList ? "LIST" : null;
   const viewHeaderTargetId = isWorkspaceObject ? routeObjectDefinitionId ?? null : routeListDefinitionId ?? null;
-  const viewHeaderScope = JSON.stringify([user?.id, normalizedRouteWorkspaceId, viewHeaderTargetType, viewHeaderTargetId]);
+  const sourceValues = searchParams.getAll("sourceType");
+  const sourceType = sourceValues.length === 0 ? null : sourceValues.length === 1 && (sourceValues[0] === "OBJECT" || sourceValues[0] === "LIST") ? sourceValues[0] : "INVALID";
+  const viewHeaderScope = JSON.stringify([user?.id, normalizedRouteWorkspaceId, viewHeaderTargetType, viewHeaderTargetId, routeViewDefinitionId, sourceType]);
   const viewHeaderModel = useWorkspaceViewHeader({
     userId: user?.id ?? null,
     workspaceId: normalizedRouteWorkspaceId,
@@ -748,7 +754,15 @@ export function AppShell() {
     targetId: viewHeaderTargetId,
     favorites: sidebarViewFavoritesQuery.data,
     favoritesUpdatedAt: sidebarViewFavoritesQuery.dataUpdatedAt,
+    viewDefinitionId: isWorkspaceView ? routeViewDefinitionId ?? null : null,
+    sourceType: isWorkspaceView ? sourceType : null,
+    onViewSelect: handleDirectViewSelect,
   });
+  // 기능 : 직접 연 보기의 선택을 같은 원본과 URL에 반영합니다.
+  function handleDirectViewSelect(viewDefinitionId: string) {
+    // 1. 실제 선택한 소속이 있으면 이중 소속에서도 같은 열 위치를 유지한다.
+    if (normalizedRouteWorkspaceId) void navigate(toWorkspaceViewPath(normalizedRouteWorkspaceId, viewDefinitionId, viewHeaderModel.targetType ?? undefined));
+  }
   const viewMenus = useViewMenus(viewHeaderModel);
   const [viewSearchState, setViewSearchState] = useState({ scope: "", value: "" });
   const viewSearch = viewSearchState.scope === viewMenus.scope ? viewSearchState.value : "";

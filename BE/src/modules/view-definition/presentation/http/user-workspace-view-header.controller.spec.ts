@@ -3,7 +3,8 @@ import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { GetWorkspaceViewHeaderUseCase, type WorkspaceViewHeaderResponse } from "@/modules/view-definition/application/use-cases/get-workspace-view-header.use-case";
-import { ViewHeaderListDefinitionNotFoundError, ViewHeaderObjectDefinitionNotFoundError, ViewHeaderWorkspaceNotFoundError } from "@/modules/view-definition/domain/view-definition.errors";
+import { GetWorkspaceViewHeaderByViewIdUseCase } from "../../application/use-cases/get-workspace-view-header-by-view-id.use-case";
+import { ViewHeaderListDefinitionNotFoundError, ViewHeaderObjectDefinitionNotFoundError, ViewHeaderWorkspaceNotFoundError, ViewHeaderViewDefinitionNotFoundError } from "@/modules/view-definition/domain/view-definition.errors";
 import { ViewDefinitionModule } from "@/modules/view-definition/infrastructure/view-definition.module";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CURRENT_USER_RESOLVER, type CurrentUserResolver } from "@/shared/application/ports/current-user-resolver.port";
@@ -41,17 +42,20 @@ describe("UserWorkspaceViewHeaderController", () => {
   let app: INestApplication;
   let useCase: jest.Mocked<Pick<GetWorkspaceViewHeaderUseCase, "execute">>;
   let resolver: jest.Mocked<CurrentUserResolver>;
+  let byId: jest.Mocked<Pick<GetWorkspaceViewHeaderByViewIdUseCase, "execute">>;
 
   // 기능 : 인증 해석과 UseCase 결과만 대체한 실제 HTTP 앱을 준비합니다.
   beforeEach(async () => {
     resolver = { resolveFromAccessToken: jest.fn().mockResolvedValue(CURRENT_USER) };
     useCase = { execute: jest.fn().mockResolvedValue(HEADER) };
+    byId = { execute: jest.fn().mockResolvedValue(HEADER) };
     const moduleRef = await Test.createTestingModule({
       controllers: [UserWorkspaceViewHeaderController],
       providers: [
         AuthGuard,
         { provide: CURRENT_USER_RESOLVER, useValue: resolver },
         { provide: GetWorkspaceViewHeaderUseCase, useValue: useCase },
+        { provide: GetWorkspaceViewHeaderByViewIdUseCase, useValue: byId },
       ],
     }).compile();
     app = moduleRef.createNestApplication();
@@ -61,6 +65,37 @@ describe("UserWorkspaceViewHeaderController", () => {
 
   // 기능 : 테스트 HTTP 앱 자원을 해제합니다.
   afterEach(async () => { await app.close(); });
+
+  // 기능 : 같은 Controller의 신규 경로가 특정 View만 요청하는지 확인합니다.
+  it("serves an exact View header without calling the target-default use case", async () => {
+    await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/" + VIEW_ID)
+      .set("Authorization", "Bearer valid-token").expect(200).expect(HEADER);
+    expect(byId.execute).toHaveBeenCalledWith(CURRENT_USER, WORKSPACE_ID, VIEW_ID);
+    expect(useCase.execute).not.toHaveBeenCalled();
+  });
+
+  // 기능 : 신규 경로에서도 인증과 UUID 형식을 application 호출 전에 검증합니다.
+  it("checks authentication and both UUIDs on the exact View endpoint", async () => {
+    await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/" + VIEW_ID).expect(401);
+    await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/invalid").set("Authorization", "Bearer valid-token").expect(400);
+    await request(app.getHttpServer()).get("/api/users/me/workspaces/invalid/view-header/view-definitions/" + VIEW_ID).set("Authorization", "Bearer valid-token").expect(400);
+    expect(byId.execute).not.toHaveBeenCalled();
+  });
+
+  // 기능 : 빈 요청의 예약 키와 일반 추가 입력을 모두 거부합니다.
+  it.each(["sourceType=LIST", "userId=other", "constructor=x", "x=", "x=1&x=2"])("rejects exact View query %s", async query => {
+    await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/" + VIEW_ID + "?" + query).set("Authorization", "Bearer valid-token").expect(400);
+    expect(byId.execute).not.toHaveBeenCalled();
+  });
+  it.each(['{"x":true}', '{"constructor":{}}', '{"__proto__":{}}', '[]', 'null'])("rejects exact View body %s", async body => {
+    await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/" + VIEW_ID).set("Authorization", "Bearer valid-token").set("Content-Type", "application/json").send(body).expect(400);
+    expect(byId.execute).not.toHaveBeenCalled();
+  });
+  it("returns a safe 404 for a missing exact View", async () => {
+    const failure = new ViewHeaderViewDefinitionNotFoundError(); byId.execute.mockRejectedValue(failure);
+    await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/" + VIEW_ID).set("Authorization", "Bearer valid-token").expect(404)
+      .expect({ statusCode: 404, error: failure.code, message: failure.message });
+  });
 
   // 기능 : 사전 View ID 없이 인증 사용자와 검증된 클릭 대상만 전달합니다.
   it("returns an object header using only the clicked target", async () => {
@@ -177,6 +212,7 @@ describe("ViewDefinitionModule header wiring", () => {
       objectDefinition: { findFirst: jest.fn().mockResolvedValue({ id: TARGET_ID, singularName: "회사", icon: null }) },
       viewDefinition: { findFirst: jest.fn().mockResolvedValue({
         id: VIEW_ID, name: "전체 회사", icon: null, type: "TABLE", viewFavoriteDefinitions: [],
+        objectDefinitionId: TARGET_ID, listDefinitionId: null,
       }) },
     };
     const moduleRef = await Test.createTestingModule({ imports: [ViewDefinitionModule] })
@@ -191,6 +227,10 @@ describe("ViewDefinitionModule header wiring", () => {
         .set("Authorization", "Bearer valid-token").expect(200).expect(HEADER);
       expect(prisma.workspaceMember.findFirst).toHaveBeenCalledTimes(1);
       expect(prisma.viewDefinition.findFirst).toHaveBeenCalledTimes(1);
+      await request(app.getHttpServer()).get(ENDPOINT + "/view-definitions/" + VIEW_ID)
+        .set("Authorization", "Bearer valid-token").expect(200).expect(HEADER);
+      expect(prisma.workspaceMember.findFirst).toHaveBeenCalledTimes(2);
+      expect(prisma.viewDefinition.findFirst.mock.calls[1]?.[0]).toMatchObject({ where: { workspaceId: WORKSPACE_ID, id: VIEW_ID } });
     } finally {
       await app.close();
     }

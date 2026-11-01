@@ -12,14 +12,17 @@ export async function setupViewDataScenario(page: Page) {
   await setupUserWebApiMocks(page); await seedAuthenticatedSession(page);
   const state = { requests: [] as URL[], writes: [] as { method: string; path: string; body: unknown }[], legacyReads: [] as string[],
     pagination: false, folded: false, hidden: false, noView: false, needsConfiguration: false, empty: false,
-    mainError: 0, groupError: 0, nextError: 0, version: 1, added: 0, delayObject: false, delayList: false, delayWrite: false, titles: {} as Record<string, string> };
+    mainError: 0, groupError: 0, nextError: 0, version: 1, added: 0, delayObject: false, delayList: false, delayWrite: false, titles: {} as Record<string, string>,
+    headers: [] as URL[], menuReads: [] as URL[], favorites: [] as SupportedViewDataType[],
+    sources: {} as Record<string, "OBJECT" | "LIST" | "BOTH" | "NONE">, directError: 0, mismatchedHeader: false, delayedViews: [] as string[] };
   page.on("request", request => {
     const url = new URL(request.url());
     if (request.method() === "GET" && /\/object-definitions\/[^/]+\/record-definitions/.test(url.pathname)) state.legacyReads.push(url.pathname);
+    if (request.method() === "GET" && /\/view-definitions\/[^/]+\/(filters|sorts|settings)$/.test(url.pathname)) state.menuReads.push(url);
   });
   // 기능 : 개발 서버와 API origin 사이의 실제 preflight 조건을 재현합니다.
   async function respond(route: Route, body: unknown, status = 200) {
-    const headers = { "access-control-allow-origin": route.request().headers().origin ?? "http://127.0.0.1:5175", "access-control-allow-credentials": "true", "access-control-allow-methods": "GET, POST, PATCH, OPTIONS", "access-control-allow-headers": "Authorization, Content-Type, X-Request-Id" };
+    const headers = { "access-control-allow-origin": route.request().headers().origin ?? "http://127.0.0.1:5175", "access-control-allow-credentials": "true", "access-control-allow-methods": "GET, POST, PATCH, DELETE, OPTIONS", "access-control-allow-headers": "Authorization, Content-Type, X-Request-Id" };
     await route.fulfill(route.request().method() === "OPTIONS" ? { status: 204, headers } : { json: body, status, headers });
   }
   // 기능 : 같은 Record의 여러 Entry와 큰 Decimal·빈 값을 포함한 표시 항목을 만듭니다.
@@ -63,10 +66,41 @@ export async function setupViewDataScenario(page: Page) {
         pageInfo: { hasNextPage: rows.length > 25 && index === 0, nextCursor: rows.length > 25 && index === 0 ? "stage-next" : null }, calculations: [] })) } };
   }
   await page.route(/\/view-header(?:\?.*)?$/, async route => {
-    const list = new URL(route.request().url()).searchParams.get("targetType") === "LIST";
-    await respond(route, { viewId: state.noView ? null : "view-table", viewType: state.noView ? null : "TABLE", viewName: state.noView ? null : names.TABLE, viewIcon: null, isFavorite: false,
+    const url = new URL(route.request().url()); if (route.request().method() === "GET") state.headers.push(url);
+    const list = url.searchParams.get("targetType") === "LIST";
+    await respond(route, { viewId: state.noView ? null : "view-table", viewType: state.noView ? null : "TABLE", viewName: state.noView ? null : names.TABLE, viewIcon: null, isFavorite: state.favorites.includes("TABLE"),
       objectDefinition: list ? null : { id: "object-definition-company", name: "회사", icon: null },
       listDefinition: list ? { id: "list-definition-pipeline", name: "영업 파이프라인", icon: null } : null });
+  });
+  await page.route(/\/view-header\/view-definitions\/[^/]+$/, async route => {
+    if (route.request().method() === "OPTIONS") return respond(route, null);
+    const url = new URL(route.request().url()); state.headers.push(url);
+    const id = url.pathname.split("/").at(-1)!;
+    if (state.delayedViews.includes(id)) await new Promise(resolve => setTimeout(resolve, 700));
+    if (state.directError) return respond(route, { statusCode: state.directError, error: "ViewHeaderViewDefinitionNotFound" }, state.directError);
+    const type = id.replace("view-", "").toUpperCase() as SupportedViewDataType;
+    const source = state.sources[id] ?? "LIST";
+    return respond(route, { viewId: state.mismatchedHeader ? "other-view" : id, viewName: names[type], viewType: type, viewIcon: null,
+      isFavorite: state.favorites.includes(type), objectDefinition: source === "OBJECT" || source === "BOTH" ? { id: "object-definition-company", name: "회사", icon: null } : null,
+      listDefinition: source === "LIST" || source === "BOTH" ? { id: "list-definition-pipeline", name: "영업 파이프라인", icon: null } : null });
+  });
+  await page.route(/\/sidebar\/workspaces\/[^/]+\/view-favorites$/, route => respond(route, state.favorites.map(type => ({ id: "favorite-" + type, viewDefinitionId: "view-" + type.toLowerCase(), name: names[type], icon: null }))));
+  await page.route(/\/view-header\/view-definitions\/[^/]+\/favorite$/, async route => {
+    const method = route.request().method(); if (method === "OPTIONS") return respond(route, null);
+    const url = new URL(route.request().url()); const id = url.pathname.split("/").at(-2)!;
+    const type = id.replace("view-", "").toUpperCase() as SupportedViewDataType;
+    state.writes.push({ method, path: url.pathname, body: null });
+    state.favorites = method === "DELETE" ? state.favorites.filter(value => value !== type) : [...new Set([...state.favorites, type])];
+    return respond(route, { viewDefinitionId: id, isFavorite: state.favorites.includes(type) });
+  });
+  await page.route(/\/view-header\/view-definitions\/[^/]+\/(filters|sorts|settings)$/, route => {
+    const path = new URL(route.request().url()).pathname, id = path.split("/").at(-2)!;
+    const type = id.replace("view-", "").toUpperCase() as SupportedViewDataType;
+    const base = { viewDefinitionId: id, viewType: type, attributeDefinitions: [], selectOptions: [], statusOptions: [] };
+    if (path.endsWith("/filters")) return respond(route, { ...base, viewFilterGroupDefinitions: [], viewFilterConditionDefinitions: [] });
+    if (path.endsWith("/sorts")) return respond(route, { ...base, viewSortDefinitions: [] });
+    return respond(route, { ...base, viewName: names[type], objectDefinitionId: null, listDefinitionId: "list-definition-pipeline", configJson: null,
+      viewAttributeSettingDefinitions: [], viewGroupDefinitions: [], viewGroupSettingDefinitions: [], viewWidgetDefinitions: [], contentViewDefinitions: [] });
   });
   await page.route(/\/view-header\/(object|list)-definitions\/[^/]+\/view-definitions(?:\?.*)?$/, route => respond(route, { items: (["TABLE", "KANBAN", "LIST"] as const).map(viewType => ({ viewDefinitionId: "view-" + viewType.toLowerCase(), viewName: names[viewType], viewType, viewIcon: null, isSelected: false })) }));
   await page.route(/\/view-definitions\/[^/]+\/data(?:\?.*)?$/, async route => {

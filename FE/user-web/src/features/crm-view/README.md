@@ -4,6 +4,8 @@
 
 2026-11-01 사용자가 승인한 텍스트 UX에 따라 두 route를 `pages/workspace-view`의 공통 본문에 연결했다. 정본은 `TODO/VIEW_MAIN_CONTENT_QUERY_PLAN/COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md`다. 기존 Object 전용 페이지는 보존하며 활성 route에서는 사용하지 않는다.
 
+같은 날 Backend 선행 구현·검토 후 즐겨찾기 View ID 진입도 같은 페이지에 연결했다. `/app/workspaces/:workspaceId/view-definitions/:viewDefinitionId`의 새 단건 헤더 GET으로 소속과 정확한 View를 확인하고 기존 본문/메뉴 API를 사용한다. 기존 대상 기준 기본 헤더를 중복 호출하지 않으며 View 선택을 URL에 보존한다. [계약과 검토](../../../../../TODO/VIEW_HEADER_BY_VIEW_ID_API_PLAN/README.md)를 따른다.
+
 ## 본문 조회와 조작
 
 - `api/view-data-api`: 현재 헤더의 View ID와 명시적 OBJECT/LIST source로 같은 `/data` GET을 사용한다. MAIN과 GROUP_ITEMS를 구분하고 응답 View/type/source/part와 그룹 token을 확인한다. 기존 인증 client·AbortSignal을 사용한다.
@@ -19,7 +21,7 @@
 
 ## 책임
 
-- api: 기존 apiClient를 통한 ③ 헤더, ① Object 목록, ② List 목록 조회와 사용자/Workspace/대상/선택 ID별 Query key
+- api: 기존 apiClient를 통한 대상 기준/특정 View 기준 헤더, Object/List 보기 목록 조회와 사용자/Workspace/대상/선택 ID별 Query key
 - hooks/use-workspace-view-header: 초기 헤더·화면 선택·대상 전환 초기화·초기/전환 후 별표 상태
 - hooks/use-workspace-view-favorite: view-favorite 공개 client로 등록/해제, 중복 쓰기 차단, 요청 당시 사용자/Workspace/View의 헤더·개인 목록 갱신
 - hooks/use-workspace-views: 드롭다운이 열린 동안만 헤더 응답의 대상 ID로 목록 조회
@@ -30,7 +32,7 @@
 - components/workspace-view-header: 대상 이름/아이콘, 현재 보기, aria-pressed 별표 버튼·처리 중/접근 불가/오류 안내와 검색/선택 메뉴
 - types: 기존 Backend 계약의 순수 Frontend 응답 타입
 
-신규 화면은 feature 내부 구현을 직접 import하지 않고 index를 사용한다. 공통 아이콘은 components/ui의 IconValueGlyph를 재사용한다. 설정/선택 저장·보기 생성·즐겨찾기 행 클릭 이동·순서 저장은 후속 범위다.
+신규 화면은 feature 내부 구현을 직접 import하지 않고 index를 사용한다. 공통 아이콘은 components/ui의 IconValueGlyph를 재사용한다. 설정/최근 선택 DB 저장·보기 생성·순서 저장은 후속 범위다.
 
 별표는 초기 헤더의 isFavorite를 사용하며 다른 View로 전환하면 shell이 전달한 기존 개인 즐겨찾기 조회 결과를 사용한다. 조회 결과가 없으면 미확인으로 표시하고 쓰기를 막는다. 대상 변경은 최근 선택 이력 저장으로 해석하지 않는다.
 

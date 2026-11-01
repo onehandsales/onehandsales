@@ -372,6 +372,11 @@ export const koKRResource = {
     emptySettings: "저장된 설정이 없어요.",
   },
   viewHeader: {
+    targetLabel: "보기",
+    targetChoiceTitle: "이 보기를 열 위치를 선택해 주세요.",
+    targetMissing: "이 보기에 연결된 항목이 없어요.",
+    objectTarget: "관리항목",
+    listTarget: "업무목록",
     noCurrentView: "보기 없음",
     noSavedViews: "저장된 보기가 없어요.",
     loadingHeader: "상단 정보를 불러오고 있어요.",

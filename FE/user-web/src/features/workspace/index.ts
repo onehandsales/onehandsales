@@ -22,3 +22,4 @@ export {
   useSidebarWorkspacesQuery,
 } from "./hooks/use-sidebar-workspace";
 export type { SidebarWorkspaceSummary } from "./types/sidebar-workspace";
+export { toWorkspaceViewPath, isWorkspaceViewPath } from "./workspace-routes";

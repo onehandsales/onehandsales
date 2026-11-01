@@ -1,4 +1,6 @@
 import { useAppI18n } from "@/features/app-i18n";
+import { Link } from "react-router-dom";
+import { toWorkspaceViewPath } from "@/features/workspace";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiClientError } from "@/lib/api-client";
 import type { WorkspaceViewHeaderModel } from "../hooks/use-workspace-view-header";
@@ -18,6 +20,8 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   const client = useQueryClient();
   const { query, scope } = model;
   const response = query.data?.pages[0];
+  const entryWorkspaceId = header.workspaceId;
+  const entryViewId = header.currentView?.viewDefinitionId;
   // 기능 : 원본 Record 수정 후 같은 원본을 포함할 수 있는 본문 캐시를 무효화합니다.
   async function refreshValues() {
     // 1. 원본의 캐시를 무효화하고 요청 당시 보기의 첫 페이지를 갱신한다.
@@ -33,6 +37,12 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   }
   if (header.isLoading) return <ViewDataLoading />;
   if (header.isError) return <ViewDataMessage text={t("viewData.unavailable")} onRetry={header.onRetry} />;
+  if (header.isTargetSelectionRequired) return <div className="flex flex-col items-center gap-3 px-4 py-12 text-[13px] text-[#787774]" data-testid="view-target-choice">
+    <p>{t("viewHeader.targetChoiceTitle")}</p>
+    {entryWorkspaceId && entryViewId && header.targetChoices?.map(target => <Link className="max-w-full rounded bg-[#F3F2EF] px-3 py-2 text-[#326ACD]" key={target.type}
+      to={toWorkspaceViewPath(entryWorkspaceId, entryViewId, target.type)}>{t(target.type === "OBJECT" ? "viewHeader.objectTarget" : "viewHeader.listTarget")} · {target.name}</Link>)}
+  </div>;
+  if (header.isTargetMissing) return <ViewDataMessage text={t("viewHeader.targetMissing")} onRetry={header.onRetry} />;
   if (!header.currentView) return <ViewDataMessage text={t("viewData.noView")} />;
   if (!isSupportedViewDataType(header.currentView.viewType)) return <ViewDataMessage text={t("viewData.unsupported")} />;
   if (query.isPending || searching && !response) return <ViewDataLoading />;
