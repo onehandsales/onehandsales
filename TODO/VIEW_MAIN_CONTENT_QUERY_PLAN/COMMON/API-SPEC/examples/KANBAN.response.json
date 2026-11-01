@@ -1,107 +1,150 @@
 {
-  "viewDefinitionId": "10000000-0000-4000-8000-00000000000f",
-  "viewType": "KANBAN",
-  "viewName": "KANBAN 응답 구조 예제",
+  "viewDefinitionId": "00000000-0000-4000-8000-000000000004",
+  "viewName": "Fixture",
   "source": {
     "kind": "LIST",
     "objectDefinitionId": null,
-    "listDefinitionId": "10000000-0000-4000-8000-00000000000e",
+    "listDefinitionId": "00000000-0000-4000-8000-000000000006",
     "itemKind": "LIST_ENTRY"
   },
-  "configurationFingerprint": "example-kanban-v1",
-  "part": "MAIN",
-  "state": "READY",
+  "configurationFingerprint": "5C4y3rlME9zJQneDdNeNdaLLNEfOmHUkhyucJg5D3QM",
   "issues": [],
   "bindings": [
     {
-      "id": "10000000-0000-4000-8000-000000000010",
-      "attributeDefinitionId": "10000000-0000-4000-8000-000000000011",
+      "id": "00000000-0000-4000-8000-000000000040",
+      "attributeDefinitionId": "00000000-0000-4000-8000-000000000010",
       "sourceScope": "RECORD",
       "referenceAttributeIdPath": [],
       "role": "TITLE",
-      "label": "이름",
+      "label": "attribute-0",
       "attributeType": "Text",
       "isMultiselect": false,
       "isHidden": false,
-      "width": null,
+      "width": 180,
       "format": null,
       "currencyCode": null
     },
     {
-      "id": "10000000-0000-4000-8000-000000000012",
-      "attributeDefinitionId": "10000000-0000-4000-8000-000000000013",
+      "id": "00000000-0000-4000-8000-000000000041",
+      "attributeDefinitionId": "00000000-0000-4000-8000-000000000011",
       "sourceScope": "RECORD",
       "referenceAttributeIdPath": [],
       "role": "DISPLAY",
-      "label": "DISPLAY",
-      "attributeType": "Currency",
+      "label": "attribute-1",
+      "attributeType": "Number",
       "isMultiselect": false,
       "isHidden": false,
-      "width": null,
+      "width": 180,
       "format": null,
-      "currencyCode": "USD"
+      "currencyCode": null
     }
   ],
   "summary": {
-    "sourceItemCount": 2,
-    "matchedItemCount": 2,
-    "eligibleItemCount": 2
+    "sourceItemCount": 3,
+    "matchedItemCount": 3,
+    "eligibleItemCount": 3
   },
+  "state": "READY",
+  "viewType": "KANBAN",
+  "part": "MAIN",
   "data": {
     "presentation": {
-      "cardDensity": "COMFORTABLE",
-      "showEmptyGroups": true
+      "cardDensity": null,
+      "showEmptyGroups": null
     },
-    "groupDefinitionId": "10000000-0000-4000-8000-000000000014",
+    "groupDefinitionId": "00000000-0000-4000-8000-000000000050",
     "columns": [
       {
-        "key": "status:10000000-0000-4000-8000-000000000015",
+        "key": "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
         "parentKey": null,
-        "label": "검토",
-        "color": "gray",
-        "count": 1,
+        "label": "Stage 1",
+        "color": null,
+        "count": 2,
         "isHidden": false,
         "isFold": false,
         "groupToken": "example-group-1",
         "items": [
           {
-            "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000017",
-            "recordDefinitionId": "10000000-0000-4000-8000-000000000016",
-            "objectDefinitionId": "10000000-0000-4000-8000-00000000000d",
-            "listEntryDefinitionId": "10000000-0000-4000-8000-000000000017",
-            "title": "기회 1",
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000080:ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000080",
+            "title": "Record 1",
             "cells": [
               {
-                "bindingId": "10000000-0000-4000-8000-000000000010",
+                "bindingId": "00000000-0000-4000-8000-000000000040",
                 "state": "VALUE",
                 "values": [
                   {
-                    "valueDefinitionId": "10000000-0000-4000-8000-000000000018",
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
                     "sourceEntity": {
                       "kind": "RECORD",
-                      "id": "10000000-0000-4000-8000-000000000016"
+                      "id": "00000000-0000-4000-8000-000000000070"
                     },
-                    "value": "기회 1"
+                    "value": "Record 1"
                   }
                 ]
               },
               {
-                "bindingId": "10000000-0000-4000-8000-000000000012",
+                "bindingId": "00000000-0000-4000-8000-000000000041",
                 "state": "VALUE",
                 "values": [
                   {
-                    "valueDefinitionId": "10000000-0000-4000-8000-000000000019",
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
                     "sourceEntity": {
                       "kind": "RECORD",
-                      "id": "10000000-0000-4000-8000-000000000016"
+                      "id": "00000000-0000-4000-8000-000000000070"
                     },
-                    "value": "100"
+                    "value": "0.1"
                   }
                 ]
               }
             ],
-            "groupPath": [],
-            "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-000000000017"
+            "groupPath": [
+              "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY"
+            ]
+          },
+          {
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000081:ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000070",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000081",
+            "title": "Record 1",
+            "cells": [
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000040",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000100",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "Record 1"
+                  }
+                ]
+              },
+              {
+                "bindingId": "00000000-0000-4000-8000-000000000041",
+                "state": "VALUE",
+                "values": [
+                  {
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000101",
+                    "sourceEntity": {
+                      "kind": "RECORD",
+                      "id": "00000000-0000-4000-8000-000000000070"
+                    },
+                    "value": "0.1"
+                  }
+                ]
+              }
+            ],
+            "groupPath": [
+              "ETjKbM0jIVK79lz_5IKw7S6P6UATqru6BazA1sl29ZY"
+            ]
           }
         ],
         "pageInfo": {
@@ -111,53 +154,55 @@
         "calculations": []
       },
       {
-        "key": "status:10000000-0000-4000-8000-00000000001a",
+        "key": "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
         "parentKey": null,
-        "label": "제안",
-        "color": "blue",
+        "label": "Stage 2",
+        "color": null,
         "count": 1,
         "isHidden": false,
         "isFold": false,
         "groupToken": "example-group-2",
         "items": [
           {
-            "itemKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000001c",
-            "recordDefinitionId": "10000000-0000-4000-8000-00000000001b",
-            "objectDefinitionId": "10000000-0000-4000-8000-00000000000d",
-            "listEntryDefinitionId": "10000000-0000-4000-8000-00000000001c",
-            "title": "기회 2",
+            "itemKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082",
+            "occurrenceKey": "LIST_ENTRY:00000000-0000-4000-8000-000000000082:lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE",
+            "recordDefinitionId": "00000000-0000-4000-8000-000000000071",
+            "objectDefinitionId": "00000000-0000-4000-8000-000000000005",
+            "listEntryDefinitionId": "00000000-0000-4000-8000-000000000082",
+            "title": "Record 2",
             "cells": [
               {
-                "bindingId": "10000000-0000-4000-8000-000000000010",
+                "bindingId": "00000000-0000-4000-8000-000000000040",
                 "state": "VALUE",
                 "values": [
                   {
-                    "valueDefinitionId": "10000000-0000-4000-8000-00000000001d",
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000110",
                     "sourceEntity": {
                       "kind": "RECORD",
-                      "id": "10000000-0000-4000-8000-00000000001b"
+                      "id": "00000000-0000-4000-8000-000000000071"
                     },
-                    "value": "기회 2"
+                    "value": "Record 2"
                   }
                 ]
               },
               {
-                "bindingId": "10000000-0000-4000-8000-000000000012",
+                "bindingId": "00000000-0000-4000-8000-000000000041",
                 "state": "VALUE",
                 "values": [
                   {
-                    "valueDefinitionId": "10000000-0000-4000-8000-00000000001e",
+                    "valueDefinitionId": "00000000-0000-4000-8000-000000000111",
                     "sourceEntity": {
                       "kind": "RECORD",
-                      "id": "10000000-0000-4000-8000-00000000001b"
+                      "id": "00000000-0000-4000-8000-000000000071"
                     },
-                    "value": "200"
+                    "value": "0.2"
                   }
                 ]
               }
             ],
-            "groupPath": [],
-            "occurrenceKey": "LIST_ENTRY:10000000-0000-4000-8000-00000000001c"
+            "groupPath": [
+              "lcviPFPUriFi6qEfoUhISy2ccZFTTqzhVEfDppod7hE"
+            ]
           }
         ],
         "pageInfo": {

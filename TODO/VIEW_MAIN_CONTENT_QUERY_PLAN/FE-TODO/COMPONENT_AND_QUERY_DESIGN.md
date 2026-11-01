@@ -1,5 +1,7 @@
 # 프론트 컴포넌트·상태·조회 연결 설계
 
+> 2026-11-01 범위 갱신: 이번 구현은 TABLE·KANBAN·LIST의 Backend 조회만 대상으로 한다. 아래 11타입 설계/과거 조사/FE 연결은 확장 참고 자료다. 현재 지원 범위·기본값·오류·한도·페이지 의미는 [현재 API 계약](../COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)과 현재 구현 검토를 우선한다.
+
 상태: **설계 초안 / FE 코드 변경 전**. [Front 규칙](../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md), [User Web 구조](../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md), [CRM 구조](../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md), [API 계약](../COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)을 기준으로 한다. User Web 대상이며 Admin Web 변경은 없다.
 
 사용자 범위 지정에 따라 **현재는 Backend 주 화면 GET만 구현 대상**이다. 이 문서는 후속 FE 연결 설계로 보존하며, 이번 BE 완료 기준에 FE 구현·자동 저장·지도 공급자 선정을 넣지 않는다. [현재 범위와 후속 저장 작업](../COMMON/SCOPE_AND_DEFERRED_WORK.md)을 우선한다.

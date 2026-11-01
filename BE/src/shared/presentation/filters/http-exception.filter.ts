@@ -109,7 +109,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "DeviceSlotAlreadyRegistered":
       case "ObjectDefinitionApiSlugAlreadyExists":
       case "AttributeDefinitionApiSlugAlreadyExists":
+      case "ViewDataCursorStale":
         return HttpStatus.CONFLICT;
+      case "ViewDataTypeUnsupported":
+      case "ViewDataQueryLimitExceeded":
+        return HttpStatus.UNPROCESSABLE_ENTITY;
+      case "ViewDataQueryTimedOut":
+        return HttpStatus.SERVICE_UNAVAILABLE;
       case "InactiveUser":
       case "OwnershipViolation":
         return HttpStatus.FORBIDDEN;

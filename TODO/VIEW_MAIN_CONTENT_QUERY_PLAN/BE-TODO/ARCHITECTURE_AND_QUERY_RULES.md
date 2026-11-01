@@ -1,5 +1,7 @@
 # Backend 구조와 공통 조회 규칙
 
+> 2026-11-01 범위 갱신: 이번 구현은 TABLE·KANBAN·LIST의 Backend 조회만 대상으로 한다. 아래 11타입 설계/과거 조사/FE 연결은 확장 참고 자료다. 현재 지원 범위·기본값·오류·한도·페이지 의미는 [현재 API 계약](../COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)과 현재 구현 검토를 우선한다.
+
 상태: draft. [API 계약](../COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)과 [검토 결정](../COMMON/PLANNING-REVIEW.md)을 함께 적용한다. 필수 선행 기준은 [TODO 작성 규칙](../../../AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md), [BE 지침](../../../BE/AGENTS.md)이다.
 
 현재 구현 범위는 [주 화면 조회 GET만](../COMMON/SCOPE_AND_DEFERRED_WORK.md)이다. 저장된 필터·정렬을 실행하는 query와 후속 설정 저장 command를 분리한다. 필터·정렬 저장 use case/controller/repository 또는 임시 override를 이번 구현에 추가하지 않는다.

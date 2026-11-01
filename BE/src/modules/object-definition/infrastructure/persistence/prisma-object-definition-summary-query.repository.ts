@@ -4,6 +4,8 @@ import type {
   ObjectDefinitionSummaryQuery,
 } from "@/modules/object-definition/application/ports/object-definition-summary-query.port";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
+import { resolvePrismaReadContext } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 
 // 역할 : Object 소유 모듈 안에서 Workspace로 제한한 단건 요약을 조회합니다.
 export class PrismaObjectDefinitionSummaryQueryRepository
@@ -16,10 +18,10 @@ export class PrismaObjectDefinitionSummaryQueryRepository
 
   // 기능 : 대상 ID와 Workspace가 모두 일치하는 Object 요약을 반환합니다.
   async findObjectDefinitionSummary(
-    input: ObjectDefinitionSummaryInput
+    input: ObjectDefinitionSummaryInput, context?: TransactionContext
   ): Promise<ObjectDefinitionSummary | null> {
     // 1. 다른 Workspace의 Object가 섞이지 않도록 두 식별자를 함께 제한한다.
-    return this.prismaService.objectDefinition.findFirst({
+    return (context ? resolvePrismaReadContext(context) : this.prismaService).objectDefinition.findFirst({
       where: {
         id: input.objectDefinitionId,
         workspaceId: input.workspaceId,

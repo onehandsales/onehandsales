@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { RECORD_DATA_QUERY } from "../application/ports/record-data-query.port";
+import { PrismaRecordDataQueryRepository } from "./persistence/prisma-record-data-query.repository";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructure/object-definition.module";
 import { RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER } from "@/modules/record-definition/application/ports/record-attribute-value-definition-materializer.port";
@@ -27,6 +29,12 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
   ],
   controllers: [UserWorkspaceObjectRecordDefinitionsController],
   providers: [
+    {
+      provide: RECORD_DATA_QUERY,
+      // 기능 : Record 소유 조회 구현체를 공개 batch Port에 연결합니다.
+      useFactory: (prisma: PrismaService) => new PrismaRecordDataQueryRepository(prisma),
+      inject: [PrismaService],
+    },
     CreateWorkspaceObjectRecordDefinitionUseCase,
     ListWorkspaceObjectRecordDefinitionsUseCase,
     UpdateWorkspaceObjectRecordAttributeValueDefinitionUseCase,
@@ -57,6 +65,6 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
       inject: [PrismaService],
     },
   ],
-  exports: [RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER],
+  exports: [RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER, RECORD_DATA_QUERY],
 })
 export class RecordDefinitionModule {}

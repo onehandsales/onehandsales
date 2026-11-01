@@ -1,3 +1,4 @@
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
 export const OBJECT_DEFINITION_SUMMARY_QUERY = Symbol(
   "OBJECT_DEFINITION_SUMMARY_QUERY"
 );
@@ -19,6 +20,6 @@ export interface ObjectDefinitionSummaryInput {
 export interface ObjectDefinitionSummaryQuery {
   // 기능 : 같은 Workspace에 속한 Object의 표시 정보만 조회합니다.
   findObjectDefinitionSummary(
-    input: ObjectDefinitionSummaryInput
+    input: ObjectDefinitionSummaryInput, context?: TransactionContext
   ): Promise<ObjectDefinitionSummary | null>;
 }

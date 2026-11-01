@@ -115,7 +115,9 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 2026-10-29 선택 View의 필터·정렬·보기 설정 GET 3개를 구현했다. View 소유 adapter와 Attribute 공개 메타데이터 Port를 통해 저장 메뉴를 복원하며 경로 UUID·참조 Workspace·전체 필터 순환·그룹/옵션 연결·위젯 원본을 확인한다. [계약과 최종 검토](../../../TODO/DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)를 따른다. 격리 PostgreSQL 17을 포함한 전체 64 suites / 462 tests 및 typecheck/lint/build·Prisma validate가 통과했다. schema/migration·실제 업무 DB·ENV 변경은 없다.
 
-헤더·View 드롭다운의 FE 연결과 즐겨찾기 등록/해제는 각 완료 계획을 따른다. 개별 List/View 본문, 이번 메뉴의 FE 연결, List 생성·수정·삭제와 ListEntry/값 API, 즐겨찾기 순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
+2026-11-01 TABLE/KANBAN/LIST 주 화면 Backend GET /api/users/me/workspaces/:workspaceId/view-definitions/:viewDefinitionId/data를 구현했다. 저장 표시/필터/정렬/그룹을 실행하고 Object는 Record, List는 Entry 단위로 조회한다. Record/Entry 두 scope와 다중값·옵션·참조 정보를 보존하며 전체 조건 평가·정렬 후 페이지를 나누고 칸반은 열별 페이지를 지원한다. 소유 모듈의 공개 Query Port와 application 주도 read-only RepeatableRead를 사용한다. 독립 relationship 모듈 전까지 RelationshipDefinition 읽기의 임시 소유자는 attribute-definition이다. [API 계약](../../../TODO/VIEW_MAIN_CONTENT_QUERY_PLAN/COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)과 [Backend 규칙 재검토](../../../TODO/VIEW_MAIN_CONTENT_QUERY_PLAN/BE-TODO/BACKEND_RULE_COMPLIANCE_REVIEW.md)를 따른다. 격리 PostgreSQL17.10을 포함한 전체69 suites/551 tests가 실패/skip 없이 통과했으며 schema/migration·업무 DB 데이터·환경·프로젝트 의존성을 변경하지 않았다.
+
+헤더·View 드롭다운의 FE 연결과 즐겨찾기 등록/해제는 각 완료 계획을 따른다. 개별 List/View 본문의 FE 구현, 이번 메뉴의 FE 연결, List 생성·수정·삭제와 ListEntry/값 쓰기 API, 즐겨찾기 순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 

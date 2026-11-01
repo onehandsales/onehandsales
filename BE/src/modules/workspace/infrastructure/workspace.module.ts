@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { WORKSPACE_SNAPSHOT_QUERY } from "../application/ports/workspace-snapshot-query.port";
+import { PrismaWorkspaceSnapshotQueryRepository } from "./persistence/prisma-workspace-snapshot-query.repository";
 import { WORKSPACE_ACCESS_QUERY } from "@/modules/workspace/application/ports/workspace-access-query.port";
 import { WORKSPACE_COMMAND_REPOSITORY } from "@/modules/workspace/application/ports/workspace-command.repository";
 import { WORKSPACE_ONBOARDING } from "@/modules/workspace/application/ports/workspace-onboarding.port";
@@ -22,6 +24,7 @@ import { UserWorkspacesController } from "../presentation/http/user-workspaces.c
   imports: [AuthModule, PrismaInfrastructureModule],
   controllers: [UserSidebarWorkspacesController, UserWorkspacesController],
   providers: [
+    { provide: WORKSPACE_SNAPSHOT_QUERY, useClass: PrismaWorkspaceSnapshotQueryRepository },
     CreateMyWorkspaceUseCase,
     ListMySidebarWorkspacesUseCase,
     GetMyDefaultSidebarWorkspaceUseCase,
@@ -55,6 +58,6 @@ import { UserWorkspacesController } from "../presentation/http/user-workspaces.c
       inject: [PrismaService],
     },
   ],
-  exports: [WORKSPACE_ONBOARDING, WORKSPACE_ACCESS_QUERY],
+  exports: [WORKSPACE_ONBOARDING, WORKSPACE_ACCESS_QUERY, WORKSPACE_SNAPSHOT_QUERY],
 })
 export class WorkspaceModule {}

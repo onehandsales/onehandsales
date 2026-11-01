@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { LIST_ENTRY_DATA_QUERY } from "../application/ports/list-entry-data-query.port";
+import { PrismaListEntryDataQueryRepository } from "./persistence/prisma-list-entry-data-query.repository";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { LIST_DEFINITION_SIDEBAR_QUERY } from "@/modules/list-definition/application/ports/list-definition-sidebar-query.port";
 import { LIST_DEFINITION_SUMMARY_QUERY } from "@/modules/list-definition/application/ports/list-definition-summary-query.port";
@@ -16,6 +18,12 @@ import { UserSidebarWorkspaceListsController } from "../presentation/http/user-s
   controllers: [UserSidebarWorkspaceListsController],
   providers: [
     {
+      provide: LIST_ENTRY_DATA_QUERY,
+      // 기능 : List·Entry 소유 조회 구현체를 공개 batch Port에 연결합니다.
+      useFactory: (prisma: PrismaService) => new PrismaListEntryDataQueryRepository(prisma),
+      inject: [PrismaService],
+    },
+    {
       provide: LIST_DEFINITION_SUMMARY_QUERY,
       // 기능 : 소유 모듈의 Workspace 단건 요약 조회 구현체를 조립합니다.
       useFactory: (prismaService: PrismaService) =>
@@ -31,6 +39,6 @@ import { UserSidebarWorkspaceListsController } from "../presentation/http/user-s
       inject: [PrismaService],
     },
   ],
-  exports: [LIST_DEFINITION_SUMMARY_QUERY],
+  exports: [LIST_DEFINITION_SUMMARY_QUERY, LIST_ENTRY_DATA_QUERY],
 })
 export class ListDefinitionModule {}

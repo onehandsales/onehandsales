@@ -1,5 +1,7 @@
 # 11개 View 타입별 조회 비즈니스 로직
 
+> 2026-11-01 범위 갱신: 이번 구현은 TABLE·KANBAN·LIST의 Backend 조회만 대상으로 한다. 아래 11타입 설계/과거 조사/FE 연결은 확장 참고 자료다. 현재 지원 범위·기본값·오류·한도·페이지 의미는 [현재 API 계약](../COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)과 현재 구현 검토를 우선한다.
+
 상태: **설계 초안, 구현 전**. 공통 인증·소속·값 정규화·필터·정렬·snapshot·한도는 [공통 처리 규칙](ARCHITECTURE_AND_QUERY_RULES.md), 정확한 필드는 [API 계약](../COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md)을 따른다. 이 문서는 타입별 처리 차이를 정의한다. 아래 필수 역할과 기본 동작은 P01~P10에서 확정할 **실행 계약 제안**이며 schema에 새로운 필수/XOR 제약을 추가하는 뜻이 아니다.
 
 [현재 범위 결정](../COMMON/SCOPE_AND_DEFERRED_WORK.md)에 따라 구현 대상은 저장 설정을 읽는 GET뿐이다. List의 Entry 단위와 종료일 없는 항목의 A안 표시는 사용자 선택을 반영했다. 나머지 세부 의미는 확정 여부를 구분하며 필터·정렬 저장과 FE 연결은 후속이다.
