@@ -58,6 +58,6 @@ export function useViewMenus(header: WorkspaceViewHeaderModel) {
   function open(menu: ViewMenu | null) {
     setOpened(menu ? { scope, menu } : null);
   }
-  return { scope, filters, sorts, settings, open };
+  return { scope, active, filters, sorts, settings, open };
 }
 export type ViewMenusModel = ReturnType<typeof useViewMenus>;

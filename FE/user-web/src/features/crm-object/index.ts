@@ -1,4 +1,5 @@
 export { CreateObjectDefinitionModalContent } from "./components/create-object-definition-modal-content";
+export { RecordAttributeValueCell, type RecordAttributeValueCellSaveInput } from "./components/record-attribute-value-cell";
 export { SidebarCrmObjectIcon } from "./components/sidebar-crm-object-icon";
 export { listSidebarCrmObjects } from "./api/sidebar-crm-object-api";
 export { useSidebarCrmObjectsQuery } from "./hooks/use-sidebar-crm-objects";

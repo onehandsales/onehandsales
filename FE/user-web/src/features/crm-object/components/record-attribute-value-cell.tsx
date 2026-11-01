@@ -60,6 +60,7 @@ type RecordAttributeValueCellProps = {
   readonly formatDate: (value: string) => string;
   readonly formatDateTime: (value: string) => string;
   readonly isPrimary: boolean;
+  readonly displayTextOverride?: string;
   readonly onSave: (input: RecordAttributeValueCellSaveInput) => Promise<void>;
   readonly value: WorkspaceObjectRecordAttributeValueListItem | null | undefined;
 };
@@ -95,6 +96,7 @@ export function RecordAttributeValueCell({
   formatDate,
   formatDateTime,
   isPrimary,
+  displayTextOverride,
   onSave,
   value,
 }: RecordAttributeValueCellProps) {
@@ -105,7 +107,7 @@ export function RecordAttributeValueCell({
   const editorRootRef = useRef<HTMLDivElement | null>(null);
   const inlineInputRef = useRef<HTMLInputElement | null>(null);
   const canEdit = Boolean(value?.id);
-  const displayText = getRecordAttributeValueDisplayText(
+  const displayText = displayTextOverride ?? getRecordAttributeValueDisplayText(
     value,
     booleanLabels,
     {

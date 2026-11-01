@@ -15,12 +15,14 @@ type ViewHeaderToolbarProps = {
   readonly searchValue: string;
   readonly onSearchChange: (value: string) => void;
   readonly onCreateRecord?: () => void;
+  readonly isCreatingRecord?: boolean;
+  readonly createUnavailable?: boolean;
   readonly secondaryActions?: ReactNode;
 };
 const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 text-[12px] font-medium text-[#65645F] transition hover:bg-[#F0EFEC] hover:text-[#292824] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
 
 // 기능 : 기존 헤더 모양으로 현재 보기의 도구와 설정 미리보기를 제공합니다.
-export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel, searchValue, onSearchChange, onCreateRecord, secondaryActions }: ViewHeaderToolbarProps) {
+export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel, searchValue, onSearchChange, onCreateRecord, isCreatingRecord = false, createUnavailable = false, secondaryActions }: ViewHeaderToolbarProps) {
   const { t } = useAppI18n();
   const [panel, setPanel] = useState<Panel | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -127,12 +129,12 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
   return <div className="flex min-w-0 flex-1 items-center gap-1" data-testid="view-header-toolbar" ref={rootRef}>
     <div className="min-w-1 flex-1" />
     {tools.search && <div className="relative shrink-0"><ToolbarButton active={Boolean(searchValue) || panel === "search"} controls={panel === "search" ? panelId : undefined} expanded={panel === "search"} icon={Search} label={searchLabel} text={t("common.search")} onClick={event => togglePanel("search", event)} />
-      {renderPopover("search", t("common.search"), <><input aria-label={searchLabel} className="mx-1 h-8 w-[calc(100%-8px)] rounded bg-[#F4F3F0] px-2 outline-none focus:ring-1 focus:ring-[#A9C5FA]" type="search" placeholder={searchLabel} value={searchValue} onChange={event => onSearchChange(event.target.value)} />{searchValue && <button className="mt-1 w-full rounded px-2 py-2 text-left text-[#787774] hover:bg-[#F3F2EF]" type="button" onClick={() => onSearchChange("")}>{t("common.clear")}</button>}</>)}
+      {renderPopover("search", t("common.search"), <><input aria-label={searchLabel} className="mx-1 h-8 w-[calc(100%-8px)] rounded bg-[#F4F3F0] px-2 outline-none focus:ring-1 focus:ring-[#A9C5FA]" type="search" maxLength={200} placeholder={searchLabel} value={searchValue} onChange={event => onSearchChange(event.target.value)} />{searchValue && <button className="mt-1 w-full rounded px-2 py-2 text-left text-[#787774] hover:bg-[#F3F2EF]" type="button" onClick={() => onSearchChange("")}>{t("common.clear")}</button>}</>)}
     </div>}
     {tools.filters && menuButton("filters", t("common.filter"), Filter, menus.filters.data?.viewFilterConditionDefinitions.length)}
     {tools.sorts && menuButton("sorts", t(type === "MAP" ? "viewMenu.listSort" : "viewHeader.sort"), ArrowUpDown, menus.sorts.data?.viewSortDefinitions.length)}
     <button className={cn(CONTROL_CLASS, "hidden text-[#B5B3AE] disabled:cursor-default disabled:hover:bg-transparent 2xl:inline-flex")} disabled title={t("viewHeader.comingSoon")} type="button">{t("viewHeader.extraTools")}<ChevronDown className="h-3 w-3" /></button>
-    {tools.create && onCreateRecord && <><span aria-hidden="true" className="mx-1 h-3.5 w-px shrink-0 bg-[#E7E6E2]" /><button aria-label={t("viewHeader.addRecord")} className="inline-flex h-7 shrink-0 items-center gap-1 rounded bg-[#4880EE] px-2 text-[12px] font-medium text-white transition hover:bg-[#3B6FDA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 focus-visible:ring-offset-1" onClick={onCreateRecord} type="button"><Plus aria-hidden="true" className="h-3.5 w-3.5" /><span className="hidden xl:inline">{t("viewHeader.addRecord")}</span></button></>}
+    {tools.create && (onCreateRecord || createUnavailable) && <><span aria-hidden="true" className="mx-1 h-3.5 w-px shrink-0 bg-[#E7E6E2]" /><button aria-label={t("viewHeader.addRecord")} aria-busy={isCreatingRecord} disabled={createUnavailable || isCreatingRecord} title={createUnavailable ? t("viewHeader.comingSoon") : undefined} className="inline-flex h-7 shrink-0 items-center gap-1 rounded bg-[#4880EE] px-2 text-[12px] font-medium text-white transition hover:bg-[#3B6FDA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 focus-visible:ring-offset-1 disabled:cursor-default disabled:opacity-40" onClick={onCreateRecord} type="button"><Plus aria-hidden="true" className="h-3.5 w-3.5" /><span className="hidden xl:inline">{t("viewHeader.addRecord")}</span></button></>}
     {secondaryActions && <div onClickCapture={() => { setPanel(null); menus.open(null); }}>{secondaryActions}</div>}
     {menuButton("settings", t("viewHeader.settings"), Settings2)}
   </div>;

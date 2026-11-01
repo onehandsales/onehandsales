@@ -1,5 +1,7 @@
 # 현재 범위와 후속 작업
 
+2026-11-01 추가 승인: 기존 관리항목 표 UX를 유지하는 TABLE·KANBAN·LIST의 User Web 본문 연결을 구현한다. 관리항목/업무목록 route, 검색·페이지·칸반 열 조회, 오류 복구, 기존 직접 Record 값 수정/빈 Record 생성 재사용이 포함된다. 아래 FE 후속 목록은 최초 Backend 작업 시점의 이력이며 현재 프론트 연결은 crm-view README를 따른다. View 생성/설정 저장, ListEntry 값 쓰기와 카드 이동, 상세, 미저장 조건 실행, 나머지8타입은 계속 후속이다.
+
 2026-11-01 사용자 요청 반영. 이번 범위는 GET /api/users/me/workspaces/:workspaceId/view-definitions/:viewDefinitionId/data 하나와 TABLE·KANBAN·LIST의 Backend 구현·검증이다. 과거 11타입 전체 구현 요구는 이번 작업에 적용하지 않는다.
 
 ## 포함

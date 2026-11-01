@@ -20,6 +20,8 @@ Frontend Agent는 User Web과 Admin Web의 구현 구조, route, feature boundar
 
 2026-10-29 User Web의 [crm-view](../../../FE/user-web/src/features/crm-view/README.md)에 필터·정렬·보기 설정 GET과 11개 View 타입별 메뉴를 연결했다. 기존 264px 설정 팝업과 체크박스·입력 UX를 유지하며, AppShell이 반응형 화면의 조회·임시 편집을 공유한다. 메뉴 편집은 화면 미리보기이며 설정 저장과 타입별 본문 실행은 후속 범위다.
 
+2026-11-01 사용자가 승인한 텍스트 UX에 따라 관리항목/업무목록 route를 공통 View 본문 GET에 연결했다. TABLE은 기존 관리항목 표와 셀 편집 UX를 재사용하며 KANBAN/LIST를 추가했다. 검색·일반/열별 페이지·그룹·오류 복구와 직접 Record 값 수정/생성은 연결하고, View 저장·ListEntry 쓰기·카드 이동·상세·다른8타입은 후속으로 유지한다. 현재 책임과 검증은 crm-view README를 따른다.
+
 ## 3. Admin Web 현재 활성 범위
 
 - access token 입력

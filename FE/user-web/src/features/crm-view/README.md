@@ -1,6 +1,20 @@
-# 공통 View 헤더
+# 공통 View 헤더·본문
 
-이 feature는 관리항목과 업무목록의 헤더·보기 선택·개인 즐겨찾기·메뉴 설정 조회와 화면 임시 편집을 담당한다. AppShell은 공개 index의 useWorkspaceViewHeader와 useViewMenus를 한 번 호출하고 동일 모델을 데스크톱/모바일에 전달한다.
+이 feature는 관리항목과 업무목록의 헤더·보기 선택·개인 즐겨찾기·메뉴 설정 조회와 TABLE/KANBAN/LIST 본문을 담당한다. AppShell은 공개 index의 useWorkspaceViewHeader와 useViewMenus를 한 번 호출하고 동일 모델과 검색 입력을 데스크톱/모바일에 전달한다.
+
+2026-11-01 사용자가 승인한 텍스트 UX에 따라 두 route를 `pages/workspace-view`의 공통 본문에 연결했다. 정본은 `TODO/VIEW_MAIN_CONTENT_QUERY_PLAN/COMMON/API-SPEC/VIEW_MAIN_CONTENT_API.md`다. 기존 Object 전용 페이지는 보존하며 활성 route에서는 사용하지 않는다.
+
+## 본문 조회와 조작
+
+- `api/view-data-api`: 현재 헤더의 View ID와 명시적 OBJECT/LIST source로 같은 `/data` GET을 사용한다. MAIN과 GROUP_ITEMS를 구분하고 응답 View/type/source/part와 그룹 token을 확인한다. 기존 인증 client·AbortSignal을 사용한다.
+- `hooks/use-view-main-data`: 사용자/Workspace/원본 종류·대상/보기/타입/시간대/검색/limit별 infinite query다. 검색은 250ms debounce, 일반 행은 서버 cursor, 칸반은 열별 cursor를 사용한다. 다른 보기의 결과를 placeholder로 남기지 않는다.
+- `components/view-data-table`: 기존 관리항목의 36px 고정 열 헤더·40px 행·셀/구분선·체크박스·가로세로 스크롤과 셀 편집 컴포넌트를 재사용한다. 열 순서/너비/표시명/숨김은 현재 화면 미리보기이며 View 저장이나 원본 AttributeDefinition의 순서 변경 API를 호출하지 않는다.
+- `components/view-data-list`, `view-data-kanban`: 저장된 표시 속성·그룹과 열별 건수·접힘·숨김을 반영한다. 접힌 칸반 열은 펼칠 때 GROUP_ITEMS를 조회하고 숨긴 열은 표시하지 않는다. 합계와 카드 이동을 임의로 추가하지 않는다.
+- `components/view-data-cell`: 다중값을 배열로 유지하고 itemKey와 occurrenceKey를 구분한다. 직접 RECORD 값의 기존 편집·PATCH를 재사용한다. 참조 경로 말단·LIST_ENTRY 값은 읽기 전용이며 다른 소유자의 ID를 Record ID로 전용하지 않는다.
+- Decimal은 문자열·BigInt로 표시 배율/반올림을 적용한다. 날짜 전용 값은 UTC 날짜를 유지하고 Timestamp는 사용자 시간대로 표시한다. 참조는 라벨만 표시한다.
+- Object의 빈 Record 추가는 기존 POST를 사용하고 저장 조건으로 본문을 다시 조회한다. List 기록 추가·Entry 값 변경·View 생성/저장·상세·카드 이동은 후속이다. List의 기록 추가 버튼은 준비 중 상태다.
+- 409/이어 읽기의 token 오류는 MAIN부터 복구한다. 다음 페이지 실패는 이미 받은 행/카드와 구분한다. 빈 결과, View 없음, 미지원8타입, NEEDS_CONFIGURATION, 접근 불가와 서버 실패를 각각 표시한다.
+- Object 속성 전체 목록은 메뉴를 열 때 후보용으로만 읽는다. 본문은 기존 Object Record 목록 GET 대신 View GET의 bindings와 값을 사용한다. 저장 설정 메뉴의 임시 변경은 본문 override로 전송하지 않는다.
 
 ## 책임
 
@@ -15,13 +29,13 @@
 - components/workspace-view-header: 대상 이름/아이콘, 현재 보기, aria-pressed 별표 버튼·처리 중/접근 불가/오류 안내와 검색/선택 메뉴
 - types: 기존 Backend 계약의 순수 Frontend 응답 타입
 
-신규 화면은 feature 내부 구현을 직접 import하지 않고 index를 사용한다. 공통 아이콘은 components/ui의 IconValueGlyph를 재사용한다. 본문·설정/선택 저장·보기 생성·즐겨찾기 행 클릭 이동·순서 변경은 이 feature의 현재 연결 범위가 아니다.
+신규 화면은 feature 내부 구현을 직접 import하지 않고 index를 사용한다. 공통 아이콘은 components/ui의 IconValueGlyph를 재사용한다. 설정/선택 저장·보기 생성·즐겨찾기 행 클릭 이동·순서 저장은 후속 범위다.
 
 별표는 초기 헤더의 isFavorite를 사용하며 다른 View로 전환하면 shell이 전달한 기존 개인 즐겨찾기 조회 결과를 사용한다. 조회 결과가 없으면 미확인으로 표시하고 쓰기를 막는다. 대상 변경은 최근 선택 이력 저장으로 해석하지 않는다.
 
 등록/해제는 성공 응답 뒤 표시하며 새 사이드바 행의 PK를 임의 생성하지 않는다. 이전 GET을 취소하고 같은 Workspace의 일치하는 View 헤더만 갱신한 뒤 개인 목록/헤더를 invalidate한다. 서버의 다음 성공한 조회는 임시 확인 상태보다 우선한다. UUID 대소문자는 cache factory와 확인 scope에서 통일한다. 실패·지연 응답은 다른 사용자/Workspace/View에 적용하지 않고, 401 refresh는 기존 apiClient를 사용한다.
 
-기존 오른쪽 도구와 Object 본문은 별도 컴포넌트에 남긴다. 목록의 서버 순서를 변경하지 않고 검색만 받은 목록에서 수행한다. 새로운 View 목록/저장 정책을 추가할 때는 API 계약과 Query key·오류/빈 상태·E2E를 함께 검토한다.
+공통 헤더 도구를 유지하고 본문 검색은 서버 q로 실행한다. 보기 드롭다운의 이름 검색은 받은 View 목록에서 수행한다. 새로운 View 목록/저장 정책을 추가할 때는 API 계약과 Query key·오류/빈 상태·E2E를 함께 검토한다.
 
 ## 메뉴 UX와 상태 경계
 
@@ -37,7 +51,7 @@
 - 카드 크기·차트 종류·집계 방식·형식·배치는 저장값 표시만 제공한다. 이미지 선택, MAP 핀/목록 개별 속성, GANTT 관계 편집, 위젯 이동/크기 변경은 후속 계약 대상이다.
 - 필터의 저장된 연산자를 표시하며 새 조건에는 비교 연산자를 임의 생성하지 않는다. 연산자 전체 선택 규격은 후속이다. 문자열·숫자·불리언·Select/Status 옵션은 값 편집을 지원하며 그 밖의 복합 JSON은 보존하고 미지원 안내를 표시한다.
 - 단계 기준을 임시 변경해도 기존 단계 설정은 데이터에 보존한다. 현재 기준과 일치하는 단계만 세부 화면에 표시한다.
-- 날짜·칸반·차트 등의 본문, View 설정 저장, 실제 필터·정렬 실행, 원본 데이터 이동·대시보드 편집은 이번 메뉴 연결에 포함하지 않는다. 모든 편집 메뉴에 기존 미리보기 안내를 유지한다.
+- TABLE/KANBAN/LIST 본문은 저장된 필터·정렬을 실행한다. 메뉴의 임시 필터·정렬 실행과 View 설정 저장, 나머지8타입, 원본 이동·대시보드 편집은 후속이다. 모든 설정 편집 메뉴에 기존 미리보기 안내를 유지한다.
 
 ## 관련 검증
 
@@ -52,3 +66,12 @@
 - 메뉴·기존 헤더·즐겨찾기 Chromium 39개 통과.
 - 역할 숨김 편집의 가역성과 이벤트 함수 분리 보완 후, 영향받는 메뉴·기존 팝업 17개 재검증 통과. 추가한 예약 이름 설정값 사례를 포함한다.
 - 최종 수정 파일 lint와 최종 build(tsc 포함) 통과. TABLE/KANBAN 팝업 캡처를 확인했다.
+
+2026-11-01 본문 연결 검증 결과:
+
+- `pnpm typecheck`, `pnpm lint`, `pnpm build`, `git diff --check` 통과. 빌드는 기존 청크 크기 안내를 출력한다.
+- 전체 단위 테스트 17 files / 81 tests 통과. source/응답 검증, 취소 전달, query key 분리, Decimal 정밀도·날짜·참조 표시를 포함한다.
+- 본문·기존 헤더·메뉴·즐겨찾기 Chromium 회귀 52개 통과. 사이드바 전환, 세 타입, 검색, 행/열별 페이지, 접힌 열, 오류 복구, 직접 Record 수정·추가, 열 순서·너비·숨김, 모바일 가로 스크롤을 확인했다.
+- 저장 완료가 늦게 도착해도 새 대상의 조회를 취소하지 않도록 보완한 뒤, 해당 추가 사례와 기존 수정·추가 흐름 3개를 재검증해 통과했다. 서로 다른 브라우저 사례는 총 53개다.
+- TABLE/KANBAN/LIST 데스크톱 및 390px 모바일 화면을 캡처해 확인했다. 브라우저 검증은 제어된 API 응답을 사용하며 실제 사용자 인증·운영 DB 통합 검증을 대신하지 않는다.
+- 기존 ENV 파일 해시와 백엔드·사용자/관리자 로컬 서버의 응답을 확인했다. ENV·Backend 코드·DB 스키마는 변경하지 않았다.

@@ -2,6 +2,30 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
+  viewData: {
+    count: "{count} items",
+    selected: "{count} loaded items selected",
+    emptyValue: "No value",
+    unavailableValue: "Unavailable",
+    emptyGroup: "No records to display.",
+    visibleColumns: "Display attributes",
+    attributeType: "Type",
+    layoutPreview: "Column changes preview this screen. Saving the view is coming soon.",
+    expandGroup: "Expand {name}",
+    collapseGroup: "Collapse {name}",
+    unassigned: "{count} unassigned",
+    noView: "There are no saved views.",
+    unsupported: "This view type is coming soon. Choose a table, kanban, or list view.",
+    needsConfiguration: "Check the view settings to display this view.",
+    unavailable: "This view is unavailable. Check the selected item.",
+    failed: "Could not load records. Please try again.",
+    loadMoreFailed: "Could not load the next records.",
+    stale: "The view or records changed. Reload from the beginning.",
+    restart: "Reload from beginning",
+    searching: "Searching…",
+    created: "Record created. The current view conditions may hide it.",
+    createFailed: "Could not create the record. Please try again.",
+  },
   common: {
     add: "Add",
     cancel: "Cancel",

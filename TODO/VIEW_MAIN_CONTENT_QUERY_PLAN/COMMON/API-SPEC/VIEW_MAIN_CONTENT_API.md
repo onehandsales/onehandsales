@@ -1,7 +1,7 @@
 # TABLE·KANBAN·LIST 주 화면 API
 
 계약 상태: implemented (2026-11-01, TABLE/KANBAN/LIST Backend). 단위·HTTP 및 격리 PostgreSQL17.10을 포함한 전체69 suites/551 tests 검증 완료. 대규모 실행 계획·부하 검증은 [구현 검토](../IMPLEMENTATION_REVIEW.md)에 구분한다.
-소비자: User Web(후속). 기존 endpoint/응답은 유지하는 추가 API이며 FE 변경·schema/migration은 없다.
+소비자: User Web. Backend는 기존 endpoint/응답을 유지하는 추가 API이며 schema/migration 변경은 없다. 2026-11-01 추가 승인으로 TABLE/KANBAN/LIST의 User Web 본문 연결을 구현했으며 기존 GET 계약을 그대로 소비한다.
 Request DTO: GetWorkspaceViewMainContentQueryDto. Response DTO: WorkspaceViewMainContentResponse.
 
 ## 1. 경로와 입력

@@ -2,6 +2,30 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
+  viewData: {
+    count: "{count}개 항목",
+    selected: "불러온 항목 중 {count}개 선택",
+    emptyValue: "값 없음",
+    unavailableValue: "표시할 수 없음",
+    emptyGroup: "표시할 기록이 없어요.",
+    visibleColumns: "표시할 속성",
+    attributeType: "유형",
+    layoutPreview: "열 표시 변경은 현재 화면의 미리보기예요. 보기 저장은 준비 중이에요.",
+    expandGroup: "{name} 펼치기",
+    collapseGroup: "{name} 접기",
+    unassigned: "단계 미지정 {count}건",
+    noView: "저장된 보기가 없어요.",
+    unsupported: "이 보기 형식은 준비 중이에요. 표·칸반·목록 보기를 선택해 주세요.",
+    needsConfiguration: "이 보기를 표시하려면 보기 설정을 확인해 주세요.",
+    unavailable: "이 보기에 접근할 수 없어요. 선택한 항목을 다시 확인해 주세요.",
+    failed: "기록을 불러오지 못했어요. 다시 시도해 주세요.",
+    loadMoreFailed: "다음 기록을 불러오지 못했어요.",
+    stale: "보기나 기록이 변경되었어요. 처음부터 다시 불러와 주세요.",
+    restart: "처음부터 다시 불러오기",
+    searching: "검색하고 있어요.",
+    created: "기록을 생성했어요. 현재 보기 조건에 따라 표시되지 않을 수 있어요.",
+    createFailed: "기록을 생성하지 못했어요. 다시 시도해 주세요.",
+  },
   common: {
     add: "추가",
     cancel: "취소",

@@ -127,6 +127,8 @@ type AccountModalNotice = {
 export type AppShellOutletContext = {
   readonly viewHeaderModel: WorkspaceViewHeaderModel;
   readonly viewMenus: ViewMenusModel;
+  readonly viewSearch: string;
+  readonly onViewSearchChange: (value: string) => void;
   readonly headerToolbarElement?: HTMLDivElement | null;
   readonly isSidebarCrmObjectsLoading: boolean;
   readonly selectedSidebarCrmObject: SidebarCrmObjectListItem | null;
@@ -300,7 +302,7 @@ export function AppShell() {
   const isSidebarCollapsed =
     isSidebarManuallyCollapsed || isSidebarAutoCollapsed;
   // 29. 처리 흐름에 필요한 outletContext 값을 준비한다.
-  const outletContext = useMemo<Omit<AppShellOutletContext, "viewHeaderModel" | "viewMenus">>(
+  const outletContext = useMemo<Omit<AppShellOutletContext, "viewHeaderModel" | "viewMenus" | "viewSearch" | "onViewSearchChange">>(
     () => ({
       headerToolbarElement,
       isSidebarCrmObjectsLoading,
@@ -748,6 +750,12 @@ export function AppShell() {
     favoritesUpdatedAt: sidebarViewFavoritesQuery.dataUpdatedAt,
   });
   const viewMenus = useViewMenus(viewHeaderModel);
+  const [viewSearchState, setViewSearchState] = useState({ scope: "", value: "" });
+  const viewSearch = viewSearchState.scope === viewMenus.scope ? viewSearchState.value : "";
+  // 기능 : 데스크톱과 모바일의 검색을 공유하고 다른 보기의 검색을 초기화합니다.
+  function handleViewSearchChange(value: string) {
+    setViewSearchState({ scope: viewMenus.scope, value });
+  }
   // 37. 이후 단계에서 사용할 isMobileHeaderHidden 값을 준비한다.
   const isMobileHeaderHidden = false;
   // 38. 이후 단계에서 사용할 hideTopBar 값을 준비한다.
@@ -1137,7 +1145,7 @@ export function AppShell() {
                   : "min-h-[calc(100dvh-var(--topbar-height))]"
             }
           >
-            <Outlet context={{ ...outletContext, viewHeaderModel, viewMenus }} />
+            <Outlet context={{ ...outletContext, viewHeaderModel, viewMenus, viewSearch, onViewSearchChange: handleViewSearchChange }} />
           </main>
         </div>
       </div>
@@ -1205,7 +1213,7 @@ export function AppShell() {
           <MobileAppHeader />
         ) : null}
         <main className="pb-24">
-          <Outlet context={{ ...outletContext, viewHeaderModel, viewMenus, headerToolbarElement: null }} />
+          <Outlet context={{ ...outletContext, viewHeaderModel, viewMenus, viewSearch, onViewSearchChange: handleViewSearchChange, headerToolbarElement: null }} />
         </main>
         <BottomTabBar homePath={currentWorkspaceHomePath} />
       </div>

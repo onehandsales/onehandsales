@@ -76,7 +76,8 @@ test("keeps the 38px header and original editable popovers with saved view setti
   }
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.screenshot({ path: testInfo.outputPath("header-ux.png") });
-  expect(viewRequests).toHaveLength(4);
+  expect(viewRequests.filter(url => new URL(url).pathname.includes("/view-header/"))).toHaveLength(4);
+  expect(viewRequests.filter(url => new URL(url).pathname.endsWith("/data"))).toHaveLength(1);
   expect(writes).toEqual([]);
   expect(errors).toEqual([]);
 });
