@@ -27,7 +27,8 @@ export function formatViewDecimal(value: string, binding: ViewDataBinding, local
   let decimal = (units % scale).toString().padStart(10, "0").slice(0, maximum);
   if (digits === null && !currency) decimal = decimal.replace(/0+$/, "");
   const decimalSeparator = new Intl.NumberFormat(locale).formatToParts(1.1).find(part => part.type === "decimal")?.value ?? ".";
-  const number = new Intl.NumberFormat(locale).format(units / scale) + (decimal ? decimalSeparator + decimal : "");
+  const grouping = typeof format.useGrouping === "boolean" ? { useGrouping: format.useGrouping } : {};
+  const number = new Intl.NumberFormat(locale, grouping).format(units / scale) + (decimal ? decimalSeparator + decimal : "");
   // 2. 통화·부호·퍼센트의 locale별 위치를 유지하고 정수 자리만 정확한 문자열로 교체한다.
   const formatter = new Intl.NumberFormat(locale, {
     ...(percent ? { style: "percent" as const } : currency ? { style: "currency" as const, currency,

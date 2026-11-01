@@ -62,3 +62,18 @@ Node24.21.0을 명령 범위에서 사용했다. 프로젝트 설치 패키지/�
 6. FE 본문, 후보 API, View 생성/저장, 기록 생성/수정, 카드 이동 저장, 임시 조건 실행은 후속이다.
 
 세 타입 예제 JSON은 단위 fixture로 생성했다. 나머지8타입 문서/예제에는 후속 자료라는 우선순위를 명시했다. 사용자 변경·업무 데이터 보존, schema/FE 변경 없음, 커밋 없음은 최종 diff로 확인한다.
+
+## 2026-11-01 저장된 숫자 표시 설정 호환성 보완
+
+Supabase의 제품·영업기회·계약·제안/견적·갱신/확장 TABLE 5개와 영업 단계별 KANBAN에 저장된 `formatJson.useGrouping`이 본문 계약의 허용 키에 없어 `FORMAT_UNSUPPORTED`로 처리됐다. 이번 보완에서는 기존 DB 설정을 유지하고 계약·Backend 허용 검증·Frontend Decimal 표시에 boolean `useGrouping`을 연결했다. false는 자리 구분자를 숨기며, 생략 시 기존 locale 기본 표시를 유지한다. 다른 미지원 키와 boolean이 아닌 값은 계속 설정 부족으로 처리한다.
+
+- 격리 PostgreSQL17.10에서 Backend 전체 69 suites / 559 tests 통과, 실패·skip 0. 테스트 종료 시 임시 업무 row 0건과 임시 DB 종료를 확인했다.
+- Frontend 전체 단위 테스트 17 files / 83 tests, 양쪽 lint·typecheck(Frontend build 포함)·build와 `git diff --check` 통과.
+- Supabase의 실제 저장 설정·원본을 공개 Query Port와 `PrismaReadSnapshotRunner`로 읽고, 같은 loader/reader를 실행해 지원 View 16개(TABLE14/KANBAN1/LIST1)의 READY를 확인했다. 로그인 HTTP/브라우저 검증과는 구분한다.
+- Supabase 업무 데이터·View 설정·스키마·ENV 파일은 변경하지 않았다. 나머지8타입 전환도 수행하지 않았다. 로컬 Backend는 수정 빌드를 재시작하여 health와 사용자/관리자 origin CORS 정상 응답을 확인했다.
+
+## 2026-11-01 후속 승인: 실제 저장 View8개 전환
+
+위 호환성 보완 이후 사용자가 나머지8타입 전환을 요청했다. 기존 View ID·원본 소속을 유지하고 TABLE18/KANBAN2/LIST4로 실제 DB를 전환했다. config·표시 역할·피벗 그룹 역할을 새 타입에 맞추고 제목/목록 표시5행을 보충했으며, 대시보드 위젯3행의 원본·배치는 백업 후 해제했다. 원본 Record54개/Entry56개·필터·정렬·단계 설정·업무 관계는 보존했다.
+
+실제 쓰기와 복구 SQL을 같은 transaction에서 검증한 뒤 전체 rollback하여 digest 원복을 확인했고, apply 후24개 READY와 재실행 쓰기0행을 확인했다. 같은 compiled application의 실제 멤버십 확인·본문24개와 메뉴72회도 통과했다. schema·enum·migration·RLS·권한·ENV는 유지한다. [전환 결과·백업·복구 절차](../../../BE/prisma/VIEW_TYPE_CONVERSION.md)를 따른다.

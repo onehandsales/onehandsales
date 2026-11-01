@@ -16,6 +16,15 @@ describe("View values and existing editor adaptation", () => {
     expect(formatViewDecimal("60", { ...binding, format: { style: "PERCENT", valueScale: 1 } }, "en")).toBe("60%");
     expect(formatViewDecimal("9007199254740992.12", { ...binding, attributeType: "Currency", currencyCode: "USD" }, "en")).toBe("$9,007,199,254,740,992.12");
   });
+  it("honors saved grouping while preserving large Decimal precision", () => {
+    expect(formatViewDecimal("9007199254740992.0000000002", { ...binding, format: { useGrouping: true } }, "en")).toBe("9,007,199,254,740,992.0000000002");
+    expect(formatViewDecimal("9007199254740992.0000000002", { ...binding, format: { useGrouping: false } }, "en")).toBe("9007199254740992.0000000002");
+    expect(formatViewDecimal("1234.56", { ...binding, format: { useGrouping: false } }, "de-DE")).toBe("1234,56");
+  });
+  it("honors disabled grouping for currency and scaled percentages", () => {
+    expect(formatViewDecimal("9007199254740992.12", { ...binding, attributeType: "Currency", currencyCode: "USD", format: { useGrouping: false } }, "en")).toBe("$9007199254740992.12");
+    expect(formatViewDecimal("12.345", { ...binding, format: { style: "PERCENT", valueScale: 100, useGrouping: false } }, "en")).toBe("1234.5%");
+  });
   it("preserves date-only values across timezones and uses the user's zone for instants", () => {
     const date = { ...binding, attributeType: "Date", format: { dateFormat: "YYYY-MM-DD" } };
     expect(formatViewValue("2026-11-01", date, "en", "America/Los_Angeles", "Yes", "No")).toBe("2026-11-01");

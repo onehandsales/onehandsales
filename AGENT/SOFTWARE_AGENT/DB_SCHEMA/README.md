@@ -119,6 +119,8 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 헤더·View 드롭다운의 FE 연결과 즐겨찾기 등록/해제는 각 완료 계획을 따른다. 개별 List/View 본문의 FE 구현, 이번 메뉴의 FE 연결, List 생성·수정·삭제와 ListEntry/값 쓰기 API, 즐겨찾기 순서 변경, View 생성/저장·기본 View 자동 생성과 Kit 모델은 후속 범위다. 조회와 사이드바 연결은 schema/migration을 변경하지 않으며, List 기준 Object와 같은 Record의 같은 List 내 중복 참여 정책도 확정하지 않는다.
 
+2026-11-01 추가 사용자 승인으로 실제 영업 Workspace의 보류8타입 View를 전환했다. 저장된 View는 TABLE18/KANBAN2/LIST4, 총24개이며, View ID·Object/List 소속·기본 선택 순서와 원본 Record54개/Entry56개를 보존했다. 표시 역할·타입별 config·피벗 그룹 역할을 맞추고 제목/목록 표시5행을 추가했으며 대시보드 위젯3행의 원본·배치는 로컬 백업 후 해제했다. 필터·정렬·단계 설정·업무 관계는 보존했다. 이는 저장 데이터 유지보수이며 ViewTypeEnum11종·schema·migration·RLS·권한·ENV는 유지한다. [전환 도구·검증·복구 절차](../../../BE/prisma/VIEW_TYPE_CONVERSION.md)를 따른다.
+
 `CRM_CORE_SCHEMA_DRAFT.md`에서 현재 Attribute/List/View DB 구현과 미구현 후보를 구분한다. 후속 기능/API 구현 전에는 관련 정책과 API 계약을 확인한다.
 
 ## 5. 제거된 도메인

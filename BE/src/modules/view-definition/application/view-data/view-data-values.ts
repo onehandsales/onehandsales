@@ -434,10 +434,11 @@ function safeFormat(value: JsonValue): JsonValue {
   if (value !== null && (typeof value !== "object" || Array.isArray(value))) throw new ViewDataNeedsConfiguration("FORMAT_UNSUPPORTED", "format");
   const result: { [key: string]: JsonValue } = {};
   const object = jsonObject(value);
-  const keys = ["style", "valueScale", "fractionDigits", "dateFormat", "timeFormat", "currencyDisplay"];
+  const keys = ["style", "valueScale", "fractionDigits", "dateFormat", "timeFormat", "currencyDisplay", "useGrouping"];
   if (Object.keys(object).some(key => !keys.includes(key)) ||
       ["style", "dateFormat", "timeFormat", "currencyDisplay"].some(key => object[key] !== undefined && typeof object[key] !== "string") ||
-      (object.valueScale !== undefined && object.valueScale !== 1 && object.valueScale !== 100))
+      (object.valueScale !== undefined && object.valueScale !== 1 && object.valueScale !== 100) ||
+      (object.useGrouping !== undefined && typeof object.useGrouping !== "boolean"))
     throw new ViewDataNeedsConfiguration("FORMAT_UNSUPPORTED", "format");
   if (object.style === "PERCENT" && object.valueScale !== 1 && object.valueScale !== 100) throw new ViewDataNeedsConfiguration("PERCENT_SCALE_REQUIRED", "format");
   if (object.fractionDigits !== undefined && (typeof object.fractionDigits !== "number" || !Number.isInteger(object.fractionDigits) || object.fractionDigits < 0 || object.fractionDigits > 10)) throw new ViewDataNeedsConfiguration("FRACTION_DIGITS_UNSUPPORTED", "format");

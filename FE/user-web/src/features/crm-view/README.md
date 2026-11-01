@@ -12,6 +12,7 @@
 - `components/view-data-list`, `view-data-kanban`: 저장된 표시 속성·그룹과 열별 건수·접힘·숨김을 반영한다. 접힌 칸반 열은 펼칠 때 GROUP_ITEMS를 조회하고 숨긴 열은 표시하지 않는다. 합계와 카드 이동을 임의로 추가하지 않는다.
 - `components/view-data-cell`: 다중값을 배열로 유지하고 itemKey와 occurrenceKey를 구분한다. 직접 RECORD 값의 기존 편집·PATCH를 재사용한다. 참조 경로 말단·LIST_ENTRY 값은 읽기 전용이며 다른 소유자의 ID를 Record ID로 전용하지 않는다.
 - Decimal은 문자열·BigInt로 표시 배율/반올림을 적용한다. 날짜 전용 값은 UTC 날짜를 유지하고 Timestamp는 사용자 시간대로 표시한다. 참조는 라벨만 표시한다.
+- 숫자·금액·비율의 저장된 `format.useGrouping` boolean을 반영한다. false는 자리 구분자를 숨기며 생략 시 기존 locale 표시를 유지한다. 2026-11-01 실제 저장 설정 호환성을 보완했고, 전체 단위 테스트 17 files / 83 tests와 lint·build(tsc 포함)를 통과했다.
 - Object의 빈 Record 추가는 기존 POST를 사용하고 저장 조건으로 본문을 다시 조회한다. List 기록 추가·Entry 값 변경·View 생성/저장·상세·카드 이동은 후속이다. List의 기록 추가 버튼은 준비 중 상태다.
 - 409/이어 읽기의 token 오류는 MAIN부터 복구한다. 다음 페이지 실패는 이미 받은 행/카드와 구분한다. 빈 결과, View 없음, 미지원8타입, NEEDS_CONFIGURATION, 접근 불가와 서버 실패를 각각 표시한다.
 - Object 속성 전체 목록은 메뉴를 열 때 후보용으로만 읽는다. 본문은 기존 Object Record 목록 GET 대신 View GET의 bindings와 값을 사용한다. 저장 설정 메뉴의 임시 변경은 본문 override로 전송하지 않는다.

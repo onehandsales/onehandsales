@@ -49,7 +49,7 @@ Group: key(string), parentKey(string 또는 null), label, color(nullable), count
 
 값: Decimal은 정밀도 보존 문자열, Date는 YYYY-MM-DD, Timestamp는 UTC ISO다. Checkbox false와 숫자0은 값이다. Select/Status는 {id,label,color}, RecordReference는 {recordDefinitionId,objectDefinitionId,label}, ActorReference는 {actorId,label}; label은 null 가능. Actor label은 Workspace 소유 Actor.displayNameSnapshot이며 현재 User 이름과 다를 수 있다. 불가 참조 ID/라벨을 노출하지 않는다. PersonalName은 displayName, Location은 text/latitude/longitude, Interaction은 summary/occurredAt의 허용 필드만 반환한다.
 
-format은 표시 힌트이며 원본 수치·날짜를 문자열로 꾸미지 않는다. 허용 키는 style/dateFormat/timeFormat/currencyDisplay(문자열), fractionDigits(0~10 정수), valueScale(1 또는100)다. style=PERCENT이면 valueScale 필수다. 그 외 키·중첩 형식은 NEEDS_CONFIGURATION이다. 날짜 형식 문자열을 실행하는 것은 후속 FE 책임이다.
+format은 표시 힌트이며 원본 수치·날짜를 문자열로 꾸미지 않는다. 허용 키는 style/dateFormat/timeFormat/currencyDisplay(문자열), fractionDigits(0~10 정수), valueScale(1 또는100), useGrouping(boolean)이다. useGrouping은 숫자·금액·비율의 locale별 자리 구분자 표시 여부이며, 생략 시 기존 locale 기본 표시를 유지하고 false이면 구분자를 표시하지 않는다. style=PERCENT이면 valueScale 필수다. 그 외 키·중첩 형식과 boolean이 아닌 useGrouping은 NEEDS_CONFIGURATION이다. 날짜 형식 문자열을 실행하는 것은 후속 FE 책임이다.
 
 ## 3. 타입별 data
 

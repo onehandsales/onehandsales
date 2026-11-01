@@ -105,6 +105,27 @@ describe("Three-type View execution", () => {
     if (result.state === "READY" && result.part === "MAIN" && result.viewType === "LIST")
       expect(result.data.presentation).toEqual({ rowDensity: null });
   });
+  it.each(["TABLE", "KANBAN", "LIST"] as const)("keeps saved numeric grouping hints and exact values in %s", type => {
+    for (const useGrouping of [true, false]) {
+      const snapshot = viewDataFixture(type);
+      const binding = snapshot.configuration.viewAttributeSettingDefinitions[1]!;
+      snapshot.configuration.viewAttributeSettingDefinitions[1] = { ...binding, formatJson: { fractionDigits: 2, useGrouping } };
+      const values = snapshot.values.get(valueKey("RECORD", fixtureId(70), binding.attributeDefinitionId))!;
+      values[0] = { ...values[0]!, numberValue: "9007199254740992.0000000002" };
+      const result = execute(snapshot);
+      expect(result.state).toBe("READY");
+      expect(result.bindings.find(row => row.id === binding.id)?.format).toEqual({ fractionDigits: 2, useGrouping });
+      if (result.state !== "READY" || result.part !== "MAIN") throw Error("MAIN expected");
+      const items = result.viewType === "KANBAN" ? result.data.columns.flatMap(column => column.items) : result.data.items;
+      expect(items.flatMap(item => item.cells).filter(cell => cell.bindingId === binding.id).flatMap(cell => cell.values).map(value => value.value)).toContain("9007199254740992.0000000002");
+    }
+  });
+  it.each(["true", 1, null, {}, []])("rejects non-boolean numeric grouping hint %p", useGrouping => {
+    const snapshot = viewDataFixture("TABLE");
+    const binding = snapshot.configuration.viewAttributeSettingDefinitions[1]!;
+    snapshot.configuration.viewAttributeSettingDefinitions[1] = { ...binding, formatJson: { useGrouping } };
+    expect(() => execute(snapshot)).toThrow(ViewDataNeedsConfiguration);
+  });
   it("rejects a broken filter tree and unsupported operator even on empty sources", () => {
     const s = viewDataFixture("TABLE"); numericFilter(s); s.items = [];
     s.configuration.viewFilterGroupDefinitions[0] = { ...s.configuration.viewFilterGroupDefinitions[0]!, parentViewFilterGroupDefinitionId: fixtureId(41) };
