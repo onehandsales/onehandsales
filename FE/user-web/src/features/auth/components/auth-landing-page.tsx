@@ -36,7 +36,6 @@ type IconType = typeof MessageCircle;
 
 type HeroRotatingItem = {
   readonly label: string;
-  readonly suffix: string;
 };
 
 type FeatureCopy = {
@@ -144,13 +143,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "고객 정보", suffix: "를 한곳에." },
-        { label: "업무 기록", suffix: "을 한곳에." },
-        { label: "회사 정보", suffix: "를 한곳에." },
-        { label: "담당자 정보", suffix: "를 한곳에." },
-        { label: "상담 내용", suffix: "을 한곳에." },
-        { label: "필요한 정보", suffix: "를 한곳에." },
-        { label: "내 업무", suffix: "를 한곳에." },
+        { label: "OneHand CRM" },
+        { label: "영업 CRM" },
+        { label: "마케팅 CRM" },
+        { label: "보험 CRM" },
+        { label: "부동산 CRM" },
+        { label: "간편한 CRM" },
       ],
     },
     realMoment: {
@@ -223,13 +221,12 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "Customer details", suffix: "in one place." },
-        { label: "Work records", suffix: "in one place." },
-        { label: "Company details", suffix: "in one place." },
-        { label: "Contact details", suffix: "in one place." },
-        { label: "Conversation notes", suffix: "in one place." },
-        { label: "Useful information", suffix: "in one place." },
-        { label: "Your work", suffix: "in one place." },
+        { label: "OneHand CRM" },
+        { label: "Sales CRM" },
+        { label: "Marketing CRM" },
+        { label: "Insurance CRM" },
+        { label: "Real Estate CRM" },
+        { label: "Simple CRM" },
       ],
     },
     realMoment: {
@@ -723,9 +720,6 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
               >
                 {activeHeroItem.label}
               </span>
-            </span>
-            <span className="inline-block leading-none">
-              {activeHeroItem.suffix}
             </span>
           </span>
         </h1>
