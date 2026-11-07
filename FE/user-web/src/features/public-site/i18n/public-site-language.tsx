@@ -206,7 +206,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         login: "로그인",
       },
       productMenuColumns: [
-        ["제품 소개", "OneHand란?", "제품 소개"],
+        ["제품 소개", "OneHand CRM이란?", "제품 소개"],
         ["주요 기능", "주요 기능 소개", "고객 관리", "영업 파이프라인", "일정/팔로업", "활동 기록"],
         ["AI/Data", "AI 영업 도우미", "리포트", "엑셀 가져오기/내보내기"],
       ],
@@ -220,7 +220,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
       footerColumns: [
         ["회사", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
-        ["제품", "제품 소개", "주요 기능", "요금제", "다운로드"],
+        [
+          "제품",
+          "제품 소개",
+          "주요 기능",
+          // 가격 정책 확정 후 footerColumnRoutes의 경로와 함께 복원합니다.
+          // "요금제",
+          "다운로드",
+        ],
         ["리소스", "도움말", "자주 묻는 질문", "문의하기"],
         ["용도별", "개인", "현장 B2B", "부동산 중개", "보험/자동차"],
       ],
@@ -685,11 +692,11 @@ function makeEnglishCopy(copy: {
       pricing: copy.pricing,
       contact: copy.contact,
       downloadApp: "Download App",
-      freeCta: "Get OneHand",
+      freeCta: "Get OneHand CRM",
       login: "Log in",
     },
     productMenuColumns: [
-      ["Products", "OneHand?", "Products Guide"],
+      ["Products", "OneHand CRM?", "Products Guide"],
       ["Core Features", "Feature overview", "Customer management", "Sales pipeline", "Schedule and follow-up", "Activity records"],
       ["AI/Data", "AI sales assistant", "Reports", "Excel download"],
     ],
@@ -703,7 +710,14 @@ function makeEnglishCopy(copy: {
     ],
     footerColumns: [
       ["Company", "About Us", "Security", "Terms of Service", "Your Privacy Policy"],
-      ["Products", "Products Guide", "Features", "Pricing", "Download"],
+      [
+        "Products",
+        "Products Guide",
+        "Features",
+        // 가격 정책 확정 후 footerColumnRoutes의 경로와 함께 복원합니다.
+        // "Pricing",
+        "Download",
+      ],
       ["Resources", "Help", "FAQ", "Contact Us"],
       ["OneHand for", "Personal", "B2B Field", "Real Estate", "Insurance/Automobile"],
     ],
@@ -719,7 +733,7 @@ function makeEnglishCopy(copy: {
       heroTitle: ["Where field sales", "keeps follow-up moving"],
       heroDescription:
         "Connect customers, contacts, meetings, schedules, deals, and follow-up for real estate, B2B, insurance, and car sales.",
-      primaryCta: "Get OneHand",
+      primaryCta: "Get OneHand CRM",
       secondaryCta: "See the flow",
       customerStrip: "A CRM designed for individual and field sales workflows",
       sectionWork: "Keep customer follow-up moving all day.",
@@ -728,7 +742,7 @@ function makeEnglishCopy(copy: {
       quote: "“Before AI, the sales flow gets organized.”",
       trustedTitle: "For sellers who manage relationships directly.",
       finalCta: "Get started today.",
-      finalPrimary: "Get OneHand",
+      finalPrimary: "Get OneHand CRM",
       finalSecondary: "Request a Demo",
     },
     pricing: makeTranslatedPricing({

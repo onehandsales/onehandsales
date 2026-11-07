@@ -215,6 +215,7 @@ function HeaderMobileMenuPanel({
             sectionId="resources"
             toPublicPath={toPublicPath}
           />
+          {/* 가격 정책 확정 전까지 Pricing 링크를 숨깁니다.
           <Link
             className="flex min-h-[64px] items-center rounded-[6px] px-2 py-4 text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]"
             onClick={onClose}
@@ -222,6 +223,7 @@ function HeaderMobileMenuPanel({
           >
             {copy.common.nav.pricing}
           </Link>
+          */}
           <Link
             className="flex min-h-[64px] items-center rounded-[6px] px-2 py-4 text-[24px] font-normal leading-tight text-[#111111] transition-colors hover:bg-[#F2F2EF] hover:text-[#111111]"
             onClick={onClose}
@@ -434,12 +436,14 @@ export function PublicSiteHeader({ onLogin }: PublicSiteHeaderProps) {
             toPublicPath={publicSitePath}
             widthClassName="w-[min(360px,calc(100vw-32px))]"
           />
+          {/* 가격 정책 확정 전까지 Pricing 링크를 숨깁니다.
           <Link
             className="inline-flex h-9 items-center rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
             to={publicSitePath("/pricing")}
           >
             {copy.common.nav.pricing}
           </Link>
+          */}
           <Link
             className="inline-flex h-9 items-center rounded-[6px] px-2 hover:bg-[#f2f2ef] hover:text-[#111111]"
             to={publicSitePath("/contact")}

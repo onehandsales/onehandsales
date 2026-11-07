@@ -50,7 +50,13 @@ const footerSocialLinks: readonly {
 
 const footerColumnRoutes: readonly (readonly string[])[] = [
   ["/about", "/security", "/terms", "/privacy"],
-  ["/product", "/features", "/pricing", "/download"],
+  [
+    "/product",
+    "/features",
+    // 가격 정책 확정 후 footerColumns의 문구와 함께 복원합니다.
+    // "/pricing",
+    "/download",
+  ],
   ["/help", "/faq", "/contact"],
   [
     "/solutions/personal",
@@ -100,7 +106,9 @@ export function PublicSiteFooter({
             to={publicSitePath("/")}
           >
             <OneHandLogoMark className="h-9 w-9" />
-            <span className="text-[26px] font-normal leading-none">OneHand</span>
+            <span className="text-[26px] font-normal leading-none">
+              OneHand CRM
+            </span>
           </Link>
 
           <div
