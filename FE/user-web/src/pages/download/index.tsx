@@ -64,8 +64,8 @@ const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
     title: "Start with OneHand CRM on the web.",
     description:
       "Sign in through your browser to manage records. The buttons below open general app stores, not OneHand CRM installation pages. Use the start button below to access the web product.",
-    iosLabel: "Browse the App Store",
-    androidLabel: "Browse Google Play",
+    iosLabel: "App Store",
+    androidLabel: "Google Play",
     ctaTitle: "Manage your records in a browser.",
     ctaDescription:
       "Create a OneHand CRM account or request a demo.",
