@@ -267,402 +267,434 @@ const homeEnglishSeoKeywords = [
 const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   "/": {
     title: {
-      ko: "한손에 영업 | 개인·현장 영업 CRM",
-      en: "OneHand CRM | Personal Field Sales CRM",
+      ko: "고객과 업무 기록을 한곳에 | OneHand CRM",
+      en: "Customer and work records, in one place | OneHand CRM"
     },
     description: {
-      ko: "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업의 고객관리, 미팅, 일정, 딜, 후속 연락을 한곳에서 관리하는 영업 CRM.",
-      en: "A personal field sales CRM for real estate agents, B2B salespeople, insurance agents, car salespeople, schedules, meeting notes, deals, and follow-up.",
+      ko: "고객과 업무 정보를 기록하고 수정하며, 검색과 이용 가능한 보기로 필요한 기록을 확인해요.",
+      en: "Record and update customer and work information. Find what you need with search and available views."
     },
     keywords: {
-      ko: homeKoreanSeoKeywords,
-      en: homeEnglishSeoKeywords,
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "고객과 업무 기록을 한곳에"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Customer and work records, in one place"
+      ]
     },
   },
   "/product": {
     title: {
-      ko: "제품 소개 | OneHand CRM",
-      en: "Products Guide | OneHand CRM",
+      ko: "고객과 업무 기록을 한곳에서 관리해요 | OneHand CRM",
+      en: "Customer and work records, in one place | OneHand CRM"
     },
     description: {
-      ko: "고객, 회사, 딜, 일정, 회의록, AI 초안을 한 흐름으로 연결하는 OneHand CRM 제품 소개를 확인하세요.",
-      en: "Explore the OneHand CRM product workflow for customers, companies, deals, schedules, meeting notes, and AI drafts.",
+      ko: "고객과 업무 정보를 기록하고, 필요한 화면에서 다시 확인하는 CRM이에요.",
+      en: "Record customer and work information, update it, and find it when you need it."
     },
     keywords: {
       ko: [
-        "OneHand CRM 제품 소개",
-        "OneHand CRM이란",
-        "영업 CRM 제품",
-        "개인 CRM 제품 소개",
-        "현장 영업 CRM",
-        "AI 영업 워크스페이스",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "고객과 업무 기록을 한곳에서 관리해요"
       ],
       en: [
-        "Products Guide",
         "OneHand CRM",
-        "sales CRM product",
-        "personal CRM overview",
-        "field sales CRM",
-        "AI sales workspace",
-      ],
+        "customer records",
+        "work records",
+        "Customer and work records, in one place"
+      ]
     },
   },
   "/features": {
     title: {
-      ko: "기능 | OneHand CRM",
-      en: "Features | OneHand CRM",
+      ko: "기록 관리에 필요한 기능 | OneHand CRM",
+      en: "Features for managing your records | OneHand CRM"
     },
     description: {
-      ko: "고객 관리, 영업 파이프라인, 일정/팔로업, 활동 기록, AI 영업 도우미, 리포트, 엑셀 기능을 확인하세요.",
-      en: "Explore OneHand CRM features for customer management, pipeline, schedules, follow-up, activity records, AI, reports, and Excel.",
+      ko: "지금 사용할 수 있는 기능과 아직 제공하지 않는 기능을 확인해 보세요.",
+      en: "See what you can use today and which features are not currently available."
     },
     keywords: {
       ko: [
-        "OneHand CRM 기능",
-        "영업 CRM 기능",
-        "고객 관리 기능",
-        "영업 파이프라인 기능",
-        "영업 리포트",
-        "엑셀 가져오기 CRM",
-        "AI 영업 도우미",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "기록 관리에 필요한 기능"
       ],
       en: [
-        "OneHand CRM features",
-        "sales CRM features",
-        "customer management features",
-        "sales pipeline features",
-        "sales reports",
-        "AI sales assistant",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Features for managing your records"
+      ]
     },
   },
   "/features/customers": {
     title: {
-      ko: "고객 관리 | OneHand CRM",
-      en: "Customer Management | OneHand CRM",
+      ko: "고객 정보를 남기고, 필요할 때 다시 찾아요 | OneHand CRM",
+      en: "Keep customer details ready to find again | OneHand CRM"
     },
     description: {
-      ko: "회사, 담당자, 연락처, 상담 메모를 고객 맥락 안에서 함께 관리하는 OneHand CRM 고객 관리 기능을 확인하세요.",
-      en: "See how OneHand CRM keeps companies, contacts, contact details, and consultation notes connected around each customer.",
+      ko: "고객 정보를 기록하고, 변경된 내용은 목록에서 바로 수정해요.",
+      en: "Record customer information and update supported details directly in the table."
     },
     keywords: {
-      ko: ["고객 관리 CRM", "회사 관리 CRM", "담당자 관리", "영업 고객관리", "개인 CRM 고객관리"],
-      en: ["customer management CRM", "company management CRM", "contact management", "sales customer management", "personal CRM"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "고객 정보를 남기고, 필요할 때 다시 찾아요"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Keep customer details ready to find again"
+      ]
     },
   },
   "/features/pipeline": {
     title: {
-      ko: "영업 파이프라인 | OneHand CRM",
-      en: "Sales Pipeline | OneHand CRM",
+      ko: "진행 중인 기록을 상태별로 살펴봐요 | OneHand CRM",
+      en: "Review records by their current status | OneHand CRM"
     },
     description: {
-      ko: "딜 단계, 금액, 마감일, 고객 맥락과 다음 행동을 함께 관리하는 OneHand CRM 영업 파이프라인 기능을 확인하세요.",
-      en: "Explore OneHand CRM pipeline features for deal stages, value, due dates, customer context, and next actions.",
+      ko: "이용 가능한 테이블과 칸반 보기에서 기록의 현재 상태를 확인해요.",
+      en: "See records in available table and board views."
     },
     keywords: {
-      ko: ["영업 파이프라인", "딜 관리 CRM", "거래 단계 관리", "영업 기회 관리", "후속 연락 관리"],
-      en: ["sales pipeline", "deal management CRM", "deal stage management", "opportunity management", "follow-up CRM"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "진행 중인 기록을 상태별로 살펴봐요"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Review records by their current status"
+      ]
     },
   },
   "/features/schedules-follow-up": {
     title: {
-      ko: "일정/팔로업 | OneHand CRM",
-      en: "Schedule and Follow-up | OneHand CRM",
+      ko: "일정·팔로업 제공 범위를 확인해요 | OneHand CRM",
+      en: "Schedule and follow-up availability | OneHand CRM"
     },
     description: {
-      ko: "방문, 통화, 미팅 일정과 다음 연락을 고객과 딜에 연결하는 OneHand CRM 일정/팔로업 기능을 확인하세요.",
-      en: "See how OneHand CRM connects visits, calls, meetings, and next follow-up timing to customers and deals.",
+      ko: "전용 캘린더, 일정 알림, 자동 후속 연락은 현재 제공하지 않아요.",
+      en: "A dedicated calendar, reminders, and automatic follow-up are not currently available."
     },
     keywords: {
-      ko: ["영업 일정 관리", "팔로업 관리", "후속 연락 CRM", "방문 일정 관리", "미팅 일정 관리"],
-      en: ["sales schedule management", "follow-up management", "sales follow-up CRM", "visit scheduling", "meeting scheduling"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "일정·팔로업 제공 범위를 확인해요"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Schedule and follow-up availability"
+      ]
     },
   },
   "/features/activity-records": {
     title: {
-      ko: "활동 기록 | OneHand CRM",
-      en: "Activity Records | OneHand CRM",
+      ko: "업무에서 확인한 내용을 기록으로 남겨요 | OneHand CRM",
+      en: "Keep the information your work depends on | OneHand CRM"
     },
     description: {
-      ko: "회의록, 메모, 고객 반응, 다음 행동을 고객과 딜에 연결하는 OneHand CRM 활동 기록 기능을 확인하세요.",
-      en: "Explore OneHand CRM activity records for meeting notes, memos, customer reactions, and next actions.",
+      ko: "필요한 정보를 입력하고 수정하며, 다음에 다시 확인할 기록을 관리해요.",
+      en: "Add and update information so you can return to it when you need it."
     },
     keywords: {
-      ko: ["영업 활동 기록", "회의록 CRM", "고객 메모", "상담 기록 관리", "미팅노트"],
-      en: ["sales activity records", "meeting notes CRM", "customer memos", "consultation notes", "sales notes"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "업무에서 확인한 내용을 기록으로 남겨요"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Keep the information your work depends on"
+      ]
     },
   },
   "/features/ai-sales-assistant": {
     title: {
-      ko: "AI 영업 도우미 | OneHand CRM",
-      en: "AI Sales Assistant | OneHand CRM",
+      ko: "AI 기능의 현재 제공 상태를 안내해요 | OneHand CRM",
+      en: "Current availability of AI features | OneHand CRM"
     },
     description: {
-      ko: "회의록 요약, 다음 행동 초안, 팔로업 정리를 사용자가 확인 가능한 방식으로 돕는 OneHand CRM AI 기능을 확인하세요.",
-      en: "See how OneHand CRM AI helps summarize meeting notes, draft next actions, and organize follow-up under user review.",
+      ko: "AI 요약, 메시지 초안, 다음 행동 추천은 현재 제공 기능에 포함되지 않아요.",
+      en: "AI summaries, message drafts, and next-action recommendations are not currently available."
     },
     keywords: {
-      ko: ["AI 영업 도우미", "AI CRM", "회의록 요약 AI", "팔로업 초안", "영업 AI"],
-      en: ["AI sales assistant", "AI CRM", "meeting summary AI", "follow-up drafts", "sales AI"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "AI 기능의 현재 제공 상태를 안내해요"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Current availability of AI features"
+      ]
     },
   },
   "/features/reports": {
     title: {
-      ko: "리포트 | OneHand CRM",
-      en: "Reports | OneHand CRM",
+      ko: "리포트의 현재 제공 범위를 안내해요 | OneHand CRM",
+      en: "Current availability of reports | OneHand CRM"
     },
     description: {
-      ko: "주간 일정, 딜 흐름, 후속 행동, AI 요약을 점검하는 OneHand CRM 리포트 기능을 확인하세요.",
-      en: "Explore OneHand CRM reports for weekly schedules, deal movement, follow-up, and AI summaries.",
+      ko: "자동 분석 대시보드, 주간 리포트, 리포트 다운로드는 현재 제공하지 않아요.",
+      en: "Automated dashboards, weekly reports, and report downloads are not currently available."
     },
     keywords: {
-      ko: ["영업 리포트", "주간 영업 리포트", "CRM 리포트", "일정 리포트", "AI 영업 리포트"],
-      en: ["sales reports", "weekly sales report", "CRM reports", "schedule report", "AI sales report"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "리포트의 현재 제공 범위를 안내해요"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Current availability of reports"
+      ]
     },
   },
   "/solutions": {
     title: {
-      ko: "솔루션 | OneHand CRM",
-      en: "Solutions | OneHand CRM",
+      ko: "내 업무에서는 어떻게 활용할 수 있을까요? | OneHand CRM",
+      en: "How could OneHand CRM fit your work? | OneHand CRM"
     },
     description: {
-      ko: "개인 영업, 부동산 중개, 보험·자동차 영업, B2B 현장 영업에 맞는 OneHand CRM 활용 방식을 확인하세요.",
-      en: "See how OneHand CRM fits personal sales, real estate, insurance, auto sales, and B2B field sales workflows.",
+      ko: "고객과 업무 정보를 정리하는 예시를 살펴보세요. 업종별 자동 설정이나 전용 기능의 제공을 뜻하지는 않아요.",
+      en: "Explore examples of organizing customer and work information. These examples do not imply industry-specific setup or dedicated features."
     },
     keywords: {
       ko: [
-        "OneHand CRM 솔루션",
-        "개인 영업 CRM",
-        "부동산 CRM",
-        "보험 영업 CRM",
-        "자동차 영업 고객관리",
-        "B2B 현장 영업 CRM",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "내 업무에서는 어떻게 활용할 수 있을까요?"
       ],
       en: [
-        "OneHand CRM solutions",
-        "personal sales CRM",
-        "real estate CRM",
-        "insurance agent CRM",
-        "auto sales CRM",
-        "B2B field sales CRM",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "How could OneHand CRM fit your work?"
+      ]
     },
   },
   "/solutions/personal": {
     title: {
-      ko: "개인 영업 CRM | OneHand CRM",
-      en: "Personal Sales CRM | OneHand CRM",
+      ko: "혼자 관리하는 고객과 업무 기록을 한곳에 | OneHand CRM",
+      en: "Your customer and work records, together | OneHand CRM"
     },
     description: {
-      ko: "혼자 고객, 일정, 딜, 후속 연락을 관리하는 개인 영업자를 위한 OneHand CRM 활용 방식을 확인하세요.",
-      en: "See how OneHand CRM helps personal sellers manage customers, schedules, deals, and follow-up on their own.",
+      ko: "기억에 의존하던 정보를 남기고, 필요할 때 다시 꺼내 확인하는 활용 예시예요.",
+      en: "Keep information you would otherwise rely on memory for, then find it when you need it."
     },
     keywords: {
       ko: [
-        "개인 영업 CRM",
-        "1인 영업 CRM",
-        "개인 고객관리",
-        "영업 후속 연락",
-        "개인 딜 관리",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "혼자 관리하는 고객과 업무 기록을 한곳에"
       ],
       en: [
-        "personal sales CRM",
-        "solo sales CRM",
-        "individual sales CRM",
-        "personal customer management",
-        "sales follow-up CRM",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Your customer and work records, together"
+      ]
     },
   },
   "/solutions/real-estate": {
     title: {
-      ko: "부동산 중개 CRM | OneHand CRM",
-      en: "Real Estate CRM | OneHand CRM",
+      ko: "고객과 매물 정보를 다시 찾기 쉽게 | OneHand CRM",
+      en: "Keep customer and property details easy to find | OneHand CRM"
     },
     description: {
-      ko: "부동산 중개 상담 고객, 관심 조건, 방문 일정, 계약 가능성을 고객별로 관리하는 OneHand CRM 활용 방식을 확인하세요.",
-      en: "See how OneHand CRM helps real estate agents manage clients, property interest, visits, and deal readiness.",
+      ko: "상담에서 확인할 고객·매물 정보를 기록으로 정리하는 활용 예시예요. 업종별 자동 설정 기능은 현재 제공하지 않아요.",
+      en: "An example of organizing information for property work. Automatic industry-specific setup is not currently available."
     },
     keywords: {
       ko: [
-        "부동산 CRM",
-        "부동산 중개 CRM",
-        "부동산 고객관리",
-        "매물 문의 관리",
-        "부동산 상담 관리",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "고객과 매물 정보를 다시 찾기 쉽게"
       ],
       en: [
-        "real estate CRM",
-        "real estate agent CRM",
-        "real estate client management",
-        "property inquiry tracking",
-        "real estate follow-up",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Keep customer and property details easy to find"
+      ]
     },
   },
   "/solutions/insurance-auto": {
     title: {
-      ko: "보험/자동차 영업 CRM | OneHand CRM",
-      en: "Insurance and Auto Sales CRM | OneHand CRM",
+      ko: "고객별로 다시 확인할 상담 정보를 정리해요 | OneHand CRM",
+      en: "Keep information for your next customer conversation | OneHand CRM"
     },
     description: {
-      ko: "보험과 자동차 영업의 상담 이력, 견적, 서류, 계약 전후 연락, 갱신과 재구매 흐름을 관리하는 방식을 확인하세요.",
-      en: "See how OneHand CRM helps insurance and auto sales teams manage consultations, quotes, documents, contracts, renewals, and repurchase timing.",
+      ko: "반복되는 상담에서 필요한 정보를 남기고 다시 확인하는 활용 예시예요. 전용 업무 자동화는 현재 제공하지 않아요.",
+      en: "An example of recording and reviewing consultation information. Dedicated industry automation is not currently available."
     },
     keywords: {
       ko: [
-        "보험 영업 CRM",
-        "자동차 영업 CRM",
-        "자동차 영업 고객관리",
-        "보험 설계사 고객관리",
-        "견적 후속 연락",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "고객별로 다시 확인할 상담 정보를 정리해요"
       ],
       en: [
-        "insurance agent CRM",
-        "auto sales CRM",
-        "car sales CRM",
-        "quote follow-up CRM",
-        "renewal follow-up CRM",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Keep information for your next customer conversation"
+      ]
     },
   },
   "/solutions/b2b-field": {
     title: {
-      ko: "B2B 현장 영업 CRM | OneHand CRM",
-      en: "B2B Field Sales CRM | OneHand CRM",
+      ko: "회사와 담당자 정보를 한곳에서 정리해요 | OneHand CRM",
+      en: "Keep company and contact information together | OneHand CRM"
     },
     description: {
-      ko: "B2B 현장 영업의 거래처, 담당자, 미팅 기록, 딜 단계, 다음 행동을 한곳에서 관리하는 OneHand CRM 활용 방식을 확인하세요.",
-      en: "See how OneHand CRM helps B2B field sellers connect accounts, contacts, meeting notes, deal stages, and next actions.",
+      ko: "업무에서 만나는 회사와 담당자 정보를 기록하고 다시 확인하는 활용 예시예요.",
+      en: "An example of recording and reviewing the companies and contacts you work with."
     },
     keywords: {
       ko: [
-        "B2B 현장 영업 CRM",
-        "B2B 영업 CRM",
-        "거래처 관리",
-        "담당자 관리",
-        "미팅 기록 CRM",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "회사와 담당자 정보를 한곳에서 정리해요"
       ],
       en: [
-        "B2B field sales CRM",
-        "B2B sales CRM",
-        "account management CRM",
-        "meeting notes CRM",
-        "field sales follow-up",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Keep company and contact information together"
+      ]
     },
   },
   "/download": {
     title: {
-      ko: "다운로드 | OneHand CRM",
-      en: "Download | OneHand CRM",
+      ko: "OneHand CRM을 웹에서 시작해요 | OneHand CRM",
+      en: "Start with OneHand CRM on the web | OneHand CRM"
     },
     description: {
-      ko: "iOS와 Android에서 OneHand CRM을 열고 모바일 영업 흐름을 확인하세요.",
-      en: "Download OneHand CRM for iOS and Android and keep sales work moving on mobile.",
+      ko: "브라우저에서 계정에 로그인해 기록을 관리해요. 아래 버튼은 일반 앱 스토어 링크이며 OneHand CRM 설치 링크가 아니에요. 웹 이용은 하단 시작 버튼을 이용해 주세요.",
+      en: "Sign in through your browser to manage records. The buttons below open general app stores, not OneHand CRM installation pages. Use the start button below to access the web product."
     },
     keywords: {
       ko: [
-        "OneHand CRM 다운로드",
-        "영업 CRM 앱",
-        "모바일 CRM 앱",
-        "iOS 영업 앱",
-        "Android 영업 앱",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "OneHand CRM을 웹에서 시작해요"
       ],
       en: [
-        "OneHand CRM download",
-        "sales CRM app",
-        "mobile CRM app",
-        "iOS sales app",
-        "Android sales app",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Start with OneHand CRM on the web"
+      ]
     },
   },
   "/help": {
     title: {
-      ko: "도움말 | OneHand CRM",
-      en: "Help | OneHand CRM",
+      ko: "첫 기록부터, 다시 찾는 방법까지 | OneHand CRM",
+      en: "From your first record to finding it again | OneHand CRM"
     },
     description: {
+      ko: "OneHand CRM에서 기록을 추가하고 관리하는 기본 순서를 안내해요.",
+      en: "Learn the basic steps for adding and managing records in OneHand CRM."
     },
     keywords: {
       ko: [
-        "OneHand CRM 도움말",
-        "OneHand CRM 사용법",
-        "영업 CRM 도움말",
-        "CRM 사용 가이드",
-        "CRM 엑셀 가져오기",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "첫 기록부터, 다시 찾는 방법까지"
       ],
       en: [
-        "OneHand CRM help",
-        "OneHand CRM guide",
-        "sales CRM help",
-        "CRM user guide",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "From your first record to finding it again"
+      ]
     },
   },
   "/faq": {
     title: {
-      ko: "자주 묻는 질문 | OneHand CRM",
-      en: "FAQ | OneHand CRM",
+      ko: "사용 전에 궁금한 점을 확인해요 | OneHand CRM",
+      en: "Questions before you get started | OneHand CRM"
     },
     description: {
-      ko: "OneHand CRM의 무료 사용, 모바일, AI, 엑셀 다운로드, 로그인, 팀 사용 FAQ를 확인하세요.",
-      en: "Find answers about OneHand CRM pricing, mobile use, AI, Excel export, sign-in, and team usage.",
+      ko: "이용 방식, 현재 기능, 계정에 관한 질문을 모았어요.",
+      en: "Answers about getting started, current features, and your account."
     },
     keywords: {
       ko: [
-        "OneHand CRM FAQ",
-        "OneHand CRM 자주 묻는 질문",
-        "CRM 엑셀 다운로드",
-        "AI CRM 도움말",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "사용 전에 궁금한 점을 확인해요"
       ],
       en: [
-        "OneHand CRM FAQ",
-        "OneHand CRM questions",
-        "sales CRM FAQ",
-        "CRM Excel export",
-        "AI CRM help",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Questions before you get started"
+      ]
     },
   },
   "/pricing": {
     title: {
-      ko: "가격 | 한손에 영업",
-      en: "Pricing | OneHand CRM",
+      ko: "가격 정책 안내 | OneHand CRM",
+      en: "Pricing availability | OneHand CRM"
     },
     description: {
-      ko: "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업에 맞는 한손에 영업 CRM 요금제와 기능을 확인하세요.",
-      en: "Compare OneHand CRM plans for personal sales, field sales, real estate agents, B2B salespeople, and customer follow-up workflows.",
+      ko: "가격과 과금 기준은 아직 미정이에요. 요금제별 가격·무료 제공 범위·한도·포함 기능은 확정되지 않았어요.",
+      en: "Pricing is not finalized. Plan prices, free access, limits, and included features remain unconfirmed."
     },
     keywords: {
       ko: [
-        "영업 CRM 가격",
-        "세일즈 CRM 가격",
-        "개인영업 CRM 가격",
-        "1인 영업 CRM 가격",
-        "부동산 CRM 가격",
-        "부동산 중개사 CRM 가격",
-        "B2B 영업 CRM 가격",
-        "현장 영업 CRM 가격",
-        "보험설계사 고객관리 가격",
-        "자동차 영업 고객관리 가격",
-        "개인 CRM 요금제",
-        "영업 관리 앱 가격",
-        "영업 관리 프로그램 가격",
-        "CRM 요금제",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "가격 정책 안내"
       ],
       en: [
-        "sales CRM pricing",
-        "personal sales CRM pricing",
-        "field sales CRM pricing",
-        "real estate CRM pricing",
-        "real estate agent CRM pricing",
-        "B2B sales CRM pricing",
-        "solo sales CRM pricing",
-        "small business CRM pricing",
-        "sales management software pricing",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Pricing availability"
+      ]
     },
   },
   "/contact": {
@@ -704,118 +736,99 @@ const routeSeoCopy: Record<PublicSiteLocalizedPath, PublicSiteSeoRouteCopy> = {
   },
   "/about": {
     title: {
-      ko: "소개 | 한손에 영업",
-      en: "About | OneHand CRM",
+      ko: "OneHand CRM 소개 | OneHand CRM",
+      en: "About OneHand CRM | OneHand CRM"
     },
     description: {
-      ko: "한손에 영업이 1인 영업자, 중소기업 B2B 영업, 부동산 중개사, 보험·자동차 영업자의 고객 관리와 후속 업무를 돕는 방식.",
-      en: "Learn how OneHand CRM helps solo sellers, B2B salespeople, real estate agents, insurance agents, and car salespeople manage customers and follow-ups.",
+      ko: "고객과 업무 기록의 관리 부담을 줄이고, 내 일에 맞는 CRM을 만들어가는 제품 방향을 소개해요.",
+      en: "Our direction: reduce the work of managing records and build a CRM shaped for the work you do."
     },
     keywords: {
       ko: [
-        "한손에 영업 소개",
-        "개인영업 관리",
-        "현장 영업 관리",
-        "B2B 영업 관리",
-        "부동산 영업 관리",
-        "보험 영업 관리",
-        "자동차 영업 관리",
-        "산업재 영업 관리",
-        "의료기기 영업 관리",
-        "무역 영업 관리",
-        "1인 사업자 고객관리",
-        "세일즈 후속 업무",
-        "고객 업무 관리",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "OneHand CRM 소개"
       ],
       en: [
-        "about OneHand CRM",
-        "personal sales management",
-        "field sales management",
-        "B2B sales management",
-        "real estate sales management",
-        "insurance sales management",
-        "car sales management",
-        "industrial sales management",
-        "sales follow-up management",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "About OneHand CRM"
+      ]
     },
     schemaType: "AboutPage",
   },
   "/security": {
     title: {
-      ko: "보안 | 한손에 영업",
-      en: "Security | OneHand CRM",
+      ko: "보안 및 제공 범위 | OneHand CRM",
+      en: "Security and current scope | OneHand CRM"
     },
     description: {
-      ko: "개인영업, 부동산, B2B 현장 영업의 고객 데이터, 미팅 메모, 개인정보, 접근 권한을 보호하기 위한 한손에 영업의 보안 기준.",
-      en: "Security and privacy practices for customer data, meeting notes, permissions, and field sales workflows.",
+      ko: "현재 계정·업무 공간 접근 기능과 개인정보·운영 범위를 확인하는 방법을 안내해요.",
+      en: "Review current account and workspace access features and how to confirm privacy and operating requirements."
     },
     keywords: {
       ko: [
-        "CRM 보안",
-        "영업 CRM 보안",
-        "개인영업 CRM 보안",
-        "부동산 CRM 보안",
-        "B2B 영업 CRM 보안",
-        "고객 데이터 보호",
-        "고객 정보 보호",
-        "미팅 메모 보안",
-        "CRM 개인정보 보호",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "보안 및 제공 범위"
       ],
       en: [
-        "CRM security",
-        "sales CRM security",
-        "personal sales CRM security",
-        "field sales CRM security",
-        "real estate CRM security",
-        "customer data protection",
-        "meeting notes security",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Security and current scope"
+      ]
     },
   },
   "/terms": {
     title: {
-      ko: "서비스 이용약관 | 한손에 영업",
-      en: "Terms of Service | OneHand CRM",
+      ko: "이용약관 | OneHand CRM",
+      en: "Terms of service | OneHand CRM"
     },
     description: {
-      ko: "한손에 영업 서비스 이용 조건과 사용자 책임을 확인하세요.",
-      en: "Review the OneHand CRM terms of service and user responsibilities.",
+      ko: "OneHand CRM 서비스 이용에 적용되는 조건과 관련 안내를 확인해 주세요.",
+      en: "Read the conditions and information that apply to the use of OneHand CRM."
     },
     keywords: {
-      ko: ["한손에 영업 이용약관", "OneHand CRM terms"],
-      en: ["OneHand CRM terms", "sales CRM terms"],
+      ko: [
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "이용약관"
+      ],
+      en: [
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Terms of service"
+      ]
     },
   },
   "/privacy": {
     title: {
-      ko: "개인정보 처리방침 | 한손에 영업",
-      en: "Privacy Policy | OneHand CRM",
+      ko: "개인정보 처리방침 | OneHand CRM",
+      en: "Privacy policy | OneHand CRM"
     },
     description: {
-      ko: "한손에 영업의 개인정보 수집, 이용, 보관, 보호 기준을 확인하세요.",
-      en: "Review how OneHand CRM collects, uses, stores, and protects personal information.",
+      ko: "OneHand CRM의 개인정보 수집·이용·처리 관련 안내를 확인해 주세요.",
+      en: "Read information about the collection, use, and processing of personal information by OneHand CRM."
     },
     keywords: {
       ko: [
-        "한손에 영업 개인정보 처리방침",
-        "영업 CRM 개인정보 보호",
-        "개인영업 CRM 개인정보 보호",
-        "부동산 CRM 개인정보 보호",
-        "B2B 영업 CRM 개인정보 보호",
-        "CRM 개인정보 보호",
-        "고객 데이터 개인정보",
-        "고객 정보 개인정보",
+        "OneHand CRM",
+        "고객 기록",
+        "업무 기록",
+        "개인정보 처리방침"
       ],
       en: [
-        "OneHand CRM privacy",
-        "CRM privacy",
-        "sales CRM privacy",
-        "personal sales CRM privacy",
-        "real estate CRM privacy",
-        "customer data privacy",
-        "client data privacy",
-      ],
+        "OneHand CRM",
+        "customer records",
+        "work records",
+        "Privacy policy"
+      ]
     },
   },
   "/login": {
@@ -973,6 +986,9 @@ function getSoftwareFeatureList(language: PublicSiteLanguage) {
 
 // 기능 : 계산된 SEO 메타데이터를 document head에 반영합니다.
 function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
+  const preserveCopy = ["/login", "/signup", "/contact"].includes(metadata.routePath);
+  const brandName = preserveCopy ? "한손에 영업" : "OneHand CRM";
+  const imageUrl = preserveCopy ? publicSiteOgImageUrl : `${publicSiteOrigin}/brand/og-onehand-crm-1200x630.png`;
   // 1. 현재 단계에서 필요한 동작을 실행한다.
   document.documentElement.lang = metadata.htmlLang;
   // 2. 현재 단계에서 필요한 동작을 실행한다.
@@ -991,7 +1007,7 @@ function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
   // 5. 현재 단계에서 필요한 동작을 실행한다.
   upsertMeta("property", "og:type", "website");
   // 6. 현재 단계에서 필요한 동작을 실행한다.
-  upsertMeta("property", "og:site_name", "한손에 영업");
+  upsertMeta("property", "og:site_name", brandName);
   // 7. 현재 단계에서 필요한 동작을 실행한다.
   upsertMeta("property", "og:title", metadata.title);
   // 8. 현재 단계에서 필요한 동작을 실행한다.
@@ -1003,7 +1019,7 @@ function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
   // 11. 현재 단계에서 필요한 동작을 실행한다.
   replaceOgLocaleAlternates(metadata.language);
   // 12. 현재 단계에서 필요한 동작을 실행한다.
-  upsertMeta("property", "og:image", publicSiteOgImageUrl);
+  upsertMeta("property", "og:image", imageUrl);
   // 13. 현재 단계에서 필요한 동작을 실행한다.
   upsertMeta("property", "og:image:width", "1200");
   // 14. 현재 단계에서 필요한 동작을 실행한다.
@@ -1017,13 +1033,13 @@ function applyPublicSiteSeo(metadata: PublicSiteSeoMetadata) {
   // 18. 현재 단계에서 필요한 동작을 실행한다.
   upsertMeta("name", "twitter:description", metadata.description);
   // 19. 현재 단계에서 필요한 동작을 실행한다.
-  upsertMeta("name", "twitter:image", publicSiteOgImageUrl);
+  upsertMeta("name", "twitter:image", imageUrl);
   // 20. 현재 단계에서 필요한 동작을 실행한다.
   upsertMeta("name", "twitter:image:alt", metadata.title);
   // 21. 현재 단계에서 필요한 동작을 실행한다.
-  upsertMeta("name", "application-name", "한손에 영업");
+  upsertMeta("name", "application-name", brandName);
   // 22. 현재 단계에서 필요한 동작을 실행한다.
-  upsertMeta("name", "apple-mobile-web-app-title", "한손에 영업");
+  upsertMeta("name", "apple-mobile-web-app-title", brandName);
   // 23. 현재 단계에서 필요한 동작을 실행한다.
   upsertMeta(
     "name",
@@ -1171,13 +1187,25 @@ function getJsonLd(metadata: PublicSiteSeoMetadata) {
     metadata.language
   );
 
+  const preserveCopy = ["/login", "/signup", "/contact"].includes(metadata.routePath);
+  const currentSoftware = {
+    "@id": `${publicSiteOrigin}/#software`,
+    "@type": "SoftwareApplication",
+    applicationCategory: "BusinessApplication",
+    applicationSubCategory: "Customer and work record management",
+    name: "OneHand CRM",
+    operatingSystem: "Web",
+    url: `${publicSiteOrigin}/ko`,
+    description: metadata.language === "ko" ? "고객과 업무 정보를 기록하고 수정하며, 검색과 보기로 확인하는 CRM이에요." : "A CRM for recording, updating, and finding customer and work information.",
+    featureList: metadata.language === "ko" ? ["업무 공간", "기록 추가와 수정", "테이블·칸반·리스트 조회", "목록 검색", "보기 즐겨찾기"] : ["Workspaces", "Record creation and editing", "Table, board, and list views", "Collection search", "View favorites"],
+  };
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@id": `${publicSiteOrigin}/#organization`,
         "@type": "Organization",
-        alternateName: "한손에 영업",
+        alternateName: preserveCopy ? "한손에 영업" : "OneHandCRM",
         contactPoint: {
           "@type": "ContactPoint",
           contactType: "customer support",
@@ -1195,7 +1223,7 @@ function getJsonLd(metadata: PublicSiteSeoMetadata) {
         publisher: { "@id": `${publicSiteOrigin}/#organization` },
         url: publicSiteOrigin,
       },
-      {
+      preserveCopy ? {
         "@id": `${publicSiteOrigin}/#software`,
         "@type": "SoftwareApplication",
         applicationCategory: "BusinessApplication",
@@ -1218,7 +1246,7 @@ function getJsonLd(metadata: PublicSiteSeoMetadata) {
         },
         operatingSystem: "Web",
         url: `${publicSiteOrigin}/ko`,
-      },
+      } : currentSoftware,
       {
         "@id": `${metadata.canonicalUrl}#webpage`,
         "@type": metadata.schemaType,

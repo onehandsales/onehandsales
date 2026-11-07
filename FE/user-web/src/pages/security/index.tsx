@@ -49,120 +49,120 @@ const sectionIcons: readonly LucideIcon[] = [
 const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   ko: {
     title: "보안",
-    finalTitle: "보안 기준을 확인하고 시작해요.",
+    finalTitle: "현재 제공 범위를 확인하고 시작해요.",
     sections: [
       {
         eyebrow: "보안",
-        title: "캡처부터 후속 업무까지 고객 맥락을 보호합니다.",
+        title: "계정과 업무 공간 접근",
         description:
-          "OneHand CRM은 계정 기록, 고객 대화, 세일즈 워크플로가 올바른 사람에게만 제공되어야 한다는 전제에서 설계됩니다.",
+          "로그인과 업무 공간 접근 기능을 중심으로 현재 제공 범위를 안내해요.",
         cards: [
           {
-            title: "워크스페이스 접근 제어",
+            title: "계정 로그인",
             description:
-              "팀은 워크스페이스, 역할, 계정 가시성을 분리해 고객 정보가 적절한 운영 그룹 안에 머물도록 관리할 수 있습니다.",
+              "로그인한 계정으로 업무 공간에 접근해요.",
           },
           {
-            title: "안전한 인프라",
+            title: "업무 공간 접근",
             description:
-              "애플리케이션 트래픽은 전송 중 보호되고, 민감한 플랫폼 데이터는 보안 우선 인프라 접근으로 관리됩니다.",
+              "계정이 접근할 수 있는 업무 공간의 기록을 사용해요.",
           },
           {
-            title: "제품 보안 검토",
+            title: "기기와 세션",
             description:
-              "새 워크플로 화면은 출시 전 권한, 감사 가능성, 고객 기록 처리 방식을 기준으로 검토됩니다.",
+              "계정 설정에서 제공하는 기기·세션 정보를 확인해요.",
           },
         ],
       },
       {
         eyebrow: "개인정보 보호",
-        title: "개인정보 보호 제어는 페이지가 아니라 데이터를 따라갑니다.",
+        title: "개인정보 처리 안내",
         description:
-          "고객 기록, 업로드 파일, 회의 노트에는 개인정보가 포함될 수 있습니다. OneHand CRM은 제품 수명주기 전반에서 개인정보 기대치를 명확히 유지합니다.",
+          "수집·이용·제공에 관한 내용은 개인정보 처리방침에서 확인해 주세요.",
         cards: [
           {
-            title: "목적 기반 처리",
+            title: "수집 정보",
             description:
-              "고객 데이터는 서비스 제공, 계정 지원, 플랫폼 보호, 사용자에게 설명된 워크플로 개선을 위해 사용됩니다.",
+              "계정과 기록, 문의에서 처리하는 정보의 범위를 확인해 주세요.",
           },
           {
-            title: "공급업체 검토",
+            title: "외부 서비스",
             description:
-              "하위 처리자와 서비스 제공자는 역할, 보안 수준, 고객 정보 보호 능력을 기준으로 검토됩니다.",
+              "처리 위탁과 외부 서비스 관련 내용은 개인정보 처리방침을 확인해 주세요.",
           },
           {
-            title: "사용자 선택권",
+            title: "사용자 요청",
             description:
-              "사용자는 적용 가능한 경우 개인정보 문의 절차를 통해 접근, 정정, 삭제 등 권리를 요청할 수 있습니다.",
+              "개인정보에 관한 질문은 공개 문의 경로로 남길 수 있어요.",
           },
         ],
       },
       {
         eyebrow: "컴플라이언스",
-        title: "신뢰할 수 있는 시스템이 필요한 팀을 위한 통제.",
+        title: "현재 권한 기능의 범위",
         description:
-          "OneHand CRM의 컴플라이언스 프로그램은 가용성, 접근 제어, 공급업체 관리, 데이터 처리 같은 실제 고객 요구를 중심으로 발전합니다.",
+          "업무 공간 접근과 조직 협업 기능은 구분해서 안내해요.",
         cards: [
           {
-            title: "정책 거버넌스",
+            title: "개인 사용",
             description:
-              "보안과 개인정보 정책은 내부 접근, 사고 대응, 보존, 고객 지원 워크플로 관리 방식을 정의합니다.",
+              "현재는 개인의 기록 관리 흐름을 중심으로 제공해요.",
           },
           {
-            title: "데이터 처리 지원",
+            title: "팀 권한",
             description:
-              "엔터프라이즈 고객은 구매와 계정 검토 과정에서 데이터 처리 및 보안 자료를 요청할 수 있습니다.",
+              "팀 초대와 역할별 권한은 현재 제공 범위에 포함되지 않아요.",
           },
           {
-            title: "운영 준비성",
+            title: "조직 운영",
             description:
-              "플랫폼 변경은 가동 시간, 복구 가능성, 예측 가능한 릴리스를 우선하는 검토 경로로 처리됩니다.",
+              "감사 기록과 조직 관리 기능의 제공 여부는 도입 전에 확인해 주세요.",
           },
         ],
       },
       {
         eyebrow: "AI 거버넌스",
-        title: "AI 지원은 책임 가능한 방식으로 남아야 합니다.",
+        title: "AI 기능의 현재 범위",
         description:
-          "OneHand CRM 에이전트는 승인된 워크스페이스 맥락에서 요약, 초안 작성, 라우팅, 검색을 돕습니다. 팀이 사람의 검토를 유지할 수 있도록 설계됩니다.",
+          "AI 요약·초안·자동 실행은 현재 제공하지 않아요.",
         cards: [
           {
-            title: "고객이 제어하는 맥락",
+            title: "요약",
             description:
-              "AI 기능은 사용자가 이미 접근 권한을 가진 워크스페이스 정보에 기반합니다.",
+              "AI가 상담이나 회의 내용을 요약하는 기능은 현재 미제공이에요.",
           },
           {
-            title: "숨겨진 위임 없음",
+            title: "초안",
             description:
-              "생성된 요약과 초안은 최종 고객 약속이 아니라 지원 결과로 표시됩니다.",
+              "AI 메시지 초안 작성은 현재 미제공이에요.",
           },
           {
-            title: "책임 있는 개선",
+            title: "자동 실행",
             description:
-              "AI 기능은 정확성 기대치, 권한 경계, 사용자 투명성을 기준으로 검토됩니다.",
+              "AI가 후속 업무를 자동 실행하는 기능은 현재 미제공이에요.",
           },
         ],
       },
       {
         eyebrow: "안정성",
-        title: "세일즈 업무는 고객이 준비된 순간에 사용할 수 있어야 합니다.",
+        title: "운영 범위 확인",
         description:
-          "안정성은 제품 품질로 다뤄집니다. 팀은 일상 업무 중 고객 데이터가 접근 가능하고 이해 가능한 상태로 유지되도록 워크플로를 설계합니다.",
+          "구체적인 운영 조건이 필요하다면 도입 전에 문의해 주세요.",
         cards: [
           {
             title: "백업과 복구",
             description:
-              "운영 데이터는 사고 발생 시 워크스페이스 기록을 복원할 수 있도록 복구 계획과 함께 관리됩니다.",
+              "백업 주기·보관 기간·복구 범위는 별도로 확인해 주세요.",
           },
           {
-            title: "모니터링",
+            title: "서비스 상태",
             description:
-              "서비스 상태와 플랫폼 동작을 모니터링해 문제를 빠르게 조사하고 해결합니다.",
+              "가용성 보장이나 대응 시간이 필요하면 적용 조건을 문의해 주세요.",
           },
           {
-            title: "지원 준비",
+            title: "문의",
             description:
-              "고객은 공개 문의 흐름을 통해 계정, 개인정보, 보안 질문을 OneHand CRM 팀에 전달할 수 있습니다.",
+              "계정·개인정보·보안 관련 질문을 공개 문의 경로로 전달할 수 있어요.",
           },
         ],
       },
@@ -170,120 +170,120 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   },
   "en-US": {
     title: "Security",
-    finalTitle: "Review security, then move forward with OneHand CRM.",
+    finalTitle: "Review the current scope before getting started.",
     sections: [
       {
         eyebrow: "Security",
-        title: "Protect customer context from capture to follow-up.",
+        title: "Account and workspace access",
         description:
-          "OneHand CRM is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
+          "Review the current scope of sign-in and workspace access features.",
         cards: [
           {
-            title: "Workspace access controls",
+            title: "Account sign-in",
             description:
-              "Teams can separate workspaces, roles, and account visibility so customer information stays within the right operating group.",
+              "Sign in to access your workspace.",
           },
           {
-            title: "Secure infrastructure",
+            title: "Workspace access",
             description:
-              "Application traffic is protected in transit and sensitive platform data is managed with a security-first infrastructure approach.",
+              "Use records in workspaces accessible to your account.",
           },
           {
-            title: "Product security reviews",
+            title: "Devices and sessions",
             description:
-              "New workflow surfaces are reviewed around permissions, auditability, and the handling of customer records before release.",
+              "Review the device and session information available in account settings.",
           },
         ],
       },
       {
         eyebrow: "Privacy",
-        title: "Privacy controls follow the data, not just the page.",
+        title: "Privacy information",
         description:
-          "Customer records, uploaded files, and meeting notes can include personal information. OneHand CRM keeps privacy expectations visible across the product lifecycle.",
+          "Read the privacy policy for information about collection, use, and disclosure.",
         cards: [
           {
-            title: "Purpose-based processing",
+            title: "Information collected",
             description:
-              "We use customer data to provide the service, support accounts, secure the platform, and improve workflows described to users.",
+              "Review the scope of information processed for accounts, records, and inquiries.",
           },
           {
-            title: "Vendor review",
+            title: "External services",
             description:
-              "Subprocessors and service providers are reviewed for their role, security posture, and ability to protect customer information.",
+              "Check the privacy policy for service provider and processing information.",
           },
           {
-            title: "User choices",
+            title: "User questions",
             description:
-              "Users can request access, correction, deletion, or other rights where applicable through the privacy contact process.",
+              "Submit privacy questions through the public contact flow.",
           },
         ],
       },
       {
         eyebrow: "Compliance",
-        title: "Controls built for teams that need a dependable system.",
+        title: "Current permission scope",
         description:
-          "As OneHand CRM grows, our compliance program is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
+          "Workspace access is separate from organization collaboration features.",
         cards: [
           {
-            title: "Policy governance",
+            title: "Individual use",
             description:
-              "Security and privacy policies define how we manage internal access, incidents, retention, and customer support workflows.",
+              "The current product focuses on individual record management.",
           },
           {
-            title: "Data processing support",
+            title: "Team permissions",
             description:
-              "Enterprise customers can request data processing and security materials during procurement and account review.",
+              "Team invitations and role-based permissions are not currently available.",
           },
           {
-            title: "Operational readiness",
+            title: "Organization controls",
             description:
-              "Platform changes are handled with review paths that prioritize uptime, recoverability, and predictable release behavior.",
+              "Confirm the availability of audit and organization administration features before adoption.",
           },
         ],
       },
       {
         eyebrow: "AI governance",
-        title: "AI assistance should stay accountable.",
+        title: "Current AI scope",
         description:
-          "OneHand CRM agents help summarize, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
+          "AI summaries, drafts, and automatic actions are not currently available.",
         cards: [
           {
-            title: "Customer controlled context",
+            title: "Summaries",
             description:
-              "AI features are grounded in workspace information the user is already allowed to access.",
+              "AI meeting and conversation summaries are not available.",
           },
           {
-            title: "No hidden handoff",
+            title: "Drafts",
             description:
-              "Generated summaries and drafts are presented as assistance, not as final customer commitments.",
+              "AI message drafts are not available.",
           },
           {
-            title: "Responsible improvement",
+            title: "Automatic actions",
             description:
-              "We review AI features for accuracy expectations, permission boundaries, and user-facing transparency.",
+              "AI-driven follow-up execution is not available.",
           },
         ],
       },
       {
         eyebrow: "Reliability",
-        title: "Sales work needs to be available when the customer is ready.",
+        title: "Confirm operating requirements",
         description:
-          "Reliability is treated as product quality. The team designs workflows so customer data remains reachable and understandable during daily work.",
+          "Contact us before adoption if you need specific operating commitments.",
         cards: [
           {
-            title: "Backups and recovery",
+            title: "Backup and recovery",
             description:
-              "Operational data is managed with recovery planning so workspace records can be restored when incidents occur.",
+              "Confirm backup frequency, retention, and recovery scope separately.",
           },
           {
-            title: "Monitoring",
+            title: "Service availability",
             description:
-              "Service health and platform behavior are monitored so issues can be investigated and resolved quickly.",
+              "Ask about applicable conditions if you require availability or response-time commitments.",
           },
           {
-            title: "Support readiness",
+            title: "Contact",
             description:
-              "Customers can contact the OneHand CRM team for account, privacy, and security questions through the public contact flow.",
+              "Send account, privacy, or security questions through the public contact flow.",
           },
         ],
       },

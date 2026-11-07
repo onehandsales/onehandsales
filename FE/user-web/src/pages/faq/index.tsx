@@ -71,184 +71,184 @@ const questionIcons: readonly LucideIcon[] = [
 
 const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
   ko: {
-    title: "자주 묻는 질문.",
+    title: "사용 전에 궁금한 점을 확인해요.",
     description:
-      "요금제, 모바일 사용, AI, 데이터, 로그인, 팀 사용처럼 OneHand CRM 도입 전에 자주 확인하는 질문을 모았어요.",
+      "이용 방식, 현재 기능, 계정에 관한 질문을 모았어요.",
     contentsLabel: "질문 카테고리",
     ctaTitle: "답을 찾지 못했나요?",
     ctaDescription:
-      "문의 페이지에서 현재 상황을 남겨주면 필요한 내용을 확인해드려요.",
+      "데모 요청에서 현재 업무와 궁금한 점을 알려주세요.",
     quickCards: [
       {
-        title: "도입 전 확인",
+        title: "시작하기",
         description:
-          "무료 사용, 모바일 환경, 어떤 영업 방식에 맞는지 확인해요.",
+          "개인 사용과 가격, 웹 이용을 확인해요.",
       },
       {
-        title: "데이터와 AI",
+        title: "기능과 데이터",
         description:
-          "AI 저장 기준, 엑셀 가져오기와 내보내기, 삭제 복구를 확인해요.",
+          "AI와 엑셀의 현재 제공 상태를 확인해요.",
       },
       {
-        title: "계정과 팀 사용",
+        title: "계정과 문의",
         description:
-          "소셜 로그인, 작은 팀 사용, 문의 흐름을 확인해요.",
+          "로그인과 팀 기능의 범위를 확인해요.",
       },
     ],
     sections: [
       {
         id: "before-adoption",
-        title: "도입 전 확인",
+        title: "시작하기",
         summary:
-          "처음 OneHand CRM을 검토할 때 많이 묻는 사용 범위와 시작 조건이에요.",
+          "개인 사용과 가격, 웹 이용을 확인해요.",
         questions: [
           {
-            question: "무료로 사용할 수 있나요?",
+            question: "혼자 사용해도 되나요?",
             answer:
-              "무료 요금제 또는 체험 흐름을 기준으로 시작할 수 있게 설계해요. 구체적인 제한과 포함 기능은 요금제 페이지에서 확인할 수 있어요.",
+              "혼자 고객과 업무 정보를 관리하는 흐름을 중심으로 만들고 있어요.",
           },
           {
-            question: "모바일에서 사용할 수 있나요?",
+            question: "가격은 어떻게 되나요?",
             answer:
-              "네. OneHand CRM은 현장 영업자가 이동 중에도 고객, 일정, 딜 흐름을 확인할 수 있도록 모바일 사용을 고려해요.",
+              "아직 가격 정책을 확정하지 않았어요. 무료 제공 범위나 장기 이용 조건도 미정이에요.",
           },
           {
-            question: "어떤 영업 방식에 맞나요?",
+            question: "앱을 설치해야 하나요?",
             answer:
-              "개인 영업, 부동산 중개, 보험/자동차 영업, B2B 현장 영업처럼 반복 상담과 후속 연락이 많은 흐름에 잘 맞아요.",
+              "현재 웹에서 시작할 수 있어요. 전용 앱 설치 경로는 확인된 정보가 있을 때 안내할게요.",
           },
         ],
       },
       {
         id: "data-ai",
-        title: "데이터와 AI",
+        title: "기능과 데이터",
         summary:
-          "고객 데이터, AI 초안, 엑셀, 삭제 복구처럼 기록 관리와 관련된 질문이에요.",
+          "AI와 엑셀의 현재 제공 상태를 확인해요.",
         questions: [
           {
-            question: "AI가 내 데이터를 자동으로 저장하나요?",
+            question: "AI가 기록을 요약해 주나요?",
             answer:
-              "AI는 요약과 초안 작성을 돕는 역할이에요. 중요한 기록은 사용자가 확인한 뒤 저장하는 흐름을 기준으로 해요.",
+              "AI 요약과 초안 작성은 현재 제공하지 않아요.",
           },
           {
-            question: "엑셀로 가져오거나 다운로드할 수 있나요?",
+            question: "엑셀을 가져오거나 내보낼 수 있나요?",
             answer:
-              "기존 데이터를 엑셀로 가져오고, 필요한 업무 기록을 XLSX 형태로 내보내는 흐름을 제공해요.",
+              "엑셀 가져오기와 내보내기는 현재 제공 기능에 포함되지 않아요.",
           },
         ],
       },
       {
         id: "account-team",
-        title: "계정과 팀 사용",
+        title: "계정과 문의",
         summary:
-          "로그인 방식, 개인과 팀 사용, 추가 문의가 필요한 상황을 정리했어요.",
+          "로그인과 팀 기능의 범위를 확인해요.",
         questions: [
           {
-            question: "Google/Apple/LINx으로 로그인할 수 있나요?",
+            question: "어떤 방법으로 로그인하나요?",
             answer:
-              "네. Google, Apple, LINx 기반 로그인 흐름을 지원하는 구조로 되어 있어요.",
+              "로그인 화면에 표시되는 사용 가능한 로그인 방식을 선택해 주세요.",
           },
           {
-            question: "팀이나 회사에서도 사용할 수 있나요?",
+            question: "팀원을 초대하고 권한을 나눌 수 있나요?",
             answer:
-              "개인 사용을 기본으로 하되, 작은 팀과 조직 사용도 고려해요. 보안, 권한, 도입 검토가 필요하면 문의를 통해 확인하는 것이 좋아요.",
+              "업무 공간과 팀 협업 기능은 구분돼요. 팀 초대와 역할별 권한은 현재 제공 범위에 포함되지 않아요.",
           },
           {
-            question: "문의는 어디로 하나요?",
+            question: "내 업무에 맞는지 어디에 물어보나요?",
             answer:
-              "공개 사이트의 문의 페이지에서 도입, 가격, 사용 방식에 대한 질문을 보낼 수 있어요.",
+              "데모 요청에서 관리하고 싶은 업무를 알려주세요. 현재 제품으로 가능한 범위를 확인할 수 있어요.",
           },
         ],
       },
     ],
   },
   "en-US": {
-    title: "Frequently asked questions.",
+    title: "Questions before you get started.",
     description:
-      "Answers for common questions about pricing, mobile use, AI, data, sign-in, and team usage before adopting OneHand CRM.",
+      "Answers about getting started, current features, and your account.",
     contentsLabel: "Question categories",
     ctaTitle: "Did not find the answer you need?",
     ctaDescription:
-      "Send your situation through the contact page and we can help clarify the right next step.",
+      "Tell us about your work and questions in a demo request.",
     quickCards: [
       {
-        title: "Before adoption",
+        title: "Getting started",
         description:
-          "Check free use, mobile access, and which sales workflows fit OneHand CRM.",
+          "Learn about individual use, pricing, and web access.",
       },
       {
-        title: "Data and AI",
+        title: "Features and data",
         description:
-          "Review AI save behavior, Excel download, and deleted record recovery.",
+          "Check current AI and Excel availability.",
       },
       {
-        title: "Accounts and teams",
+        title: "Account and questions",
         description:
-          "Check social sign-in, small team use, and when to contact us.",
+          "Review sign-in and team feature scope.",
       },
     ],
     sections: [
       {
         id: "before-adoption",
-        title: "Before adoption",
+        title: "Getting started",
         summary:
-          "Common questions about starting conditions and the scope of OneHand CRM.",
+          "Learn about individual use, pricing, and web access.",
         questions: [
           {
-            question: "Can I use OneHand CRM for free?",
+            question: "Can I use it on my own?",
             answer:
-              "OneHand CRM is designed to support a free or trial starting flow. Check the pricing page for exact limits and included features.",
+              "We are focusing on the experience of managing your own customer and work records.",
           },
           {
-            question: "Can I use it on mobile?",
+            question: "How much does it cost?",
             answer:
-              "Yes. OneHand CRM is designed for field sellers who need to check customers, schedules, and deal flow while moving.",
+              "Pricing has not been finalized. Long-term free access and free-plan limits are not confirmed.",
           },
           {
-            question: "Which sales workflows fit OneHand CRM?",
+            question: "Do I need to install an app?",
             answer:
-              "OneHand CRM fits workflows with repeated consultations and follow-up, including personal sales, real estate, insurance and auto sales, and B2B field sales.",
+              "You can start on the web. We will share dedicated app installation links when their availability is confirmed.",
           },
         ],
       },
       {
         id: "data-ai",
-        title: "Data and AI",
+        title: "Features and data",
         summary:
-          "Questions about customer data, AI drafts, Excel download, and deleted record recovery.",
+          "Check current AI and Excel availability.",
         questions: [
           {
-            question: "Does AI automatically save my data?",
+            question: "Can AI summarize my records?",
             answer:
-              "AI helps draft and summarize. Important records are designed to be reviewed by the user before they are saved.",
+              "AI summaries and drafts are not currently available.",
           },
           {
-            question: "Can I download Excel data?",
+            question: "Can I import or export Excel files?",
             answer:
-              "OneHand CRM supports downloading work records as XLSX.",
+              "Excel import and export are not currently available.",
           },
         ],
       },
       {
         id: "account-team",
-        title: "Accounts and teams",
+        title: "Account and questions",
         summary:
-          "Questions about sign-in methods, personal and team usage, and contacting OneHand CRM.",
+          "Review sign-in and team feature scope.",
         questions: [
           {
-            question: "Can I log in with Google, Apple, or LINx?",
+            question: "How do I sign in?",
             answer:
-              "Yes. OneHand CRM supports a sign-in structure based on Google, Apple, and LINx.",
+              "Choose from the sign-in methods currently displayed on the login screen.",
           },
           {
-            question: "Can teams or companies use OneHand CRM?",
+            question: "Can I invite teammates and assign roles?",
             answer:
-              "OneHand CRM starts from personal sales use, while also considering small teams and organizations that need security, access, and adoption review.",
+              "Workspaces and team collaboration are separate features. Team invitations and role-based permissions are not currently available.",
           },
           {
-            question: "Where do I contact you?",
+            question: "How can I check whether it fits my work?",
             answer:
-              "Use the public contact page for adoption, pricing, and workflow questions.",
+              "Describe the work you want to manage in a demo request. We can discuss the current product scope.",
           },
         ],
       },

@@ -62,213 +62,213 @@ const sectionIcons: readonly LucideIcon[] = [
 
 const productCopyByLanguage: Record<PublicSiteCopyLanguage, ProductCopy> = {
   ko: {
-    title: "OneHand CRM은 현장 영업을 위한 개인 CRM이에요.",
+    title: "고객과 업무 기록을 한곳에서 관리해요.",
     description:
-      "고객, 회사, 딜, 일정, 회의록, AI 초안을 한 흐름으로 연결해 반복 상담과 후속 연락을 놓치지 않게 돕는 영업 워크스페이스예요.",
+      "고객과 업무 정보를 기록하고, 필요한 화면에서 다시 확인하는 CRM이에요.",
     contentsLabel: "제품 소개 목차",
-    ctaTitle: "제품 흐름을 보고 바로 시작해볼까요?",
+    ctaTitle: "내 업무 기록부터 정리해 볼까요?",
     ctaDescription:
-      "흩어진 고객 기록과 다음 행동을 OneHand CRM에서 한 번에 정리해요.",
+      "지금 관리할 고객과 업무 정보를 OneHand CRM에 남겨보세요.",
     quickCards: [
       {
-        title: "고객 맥락",
+        title: "기록하기",
         description:
-          "회사, 담당자, 상담 기록, 일정이 고객 중심으로 이어져요.",
+          "필요한 정보를 기록으로 남겨요.",
       },
       {
-        title: "영업 파이프라인",
+        title: "살펴보기",
         description:
-          "진행 중인 딜과 다음 행동을 같은 흐름에서 확인해요.",
+          "이용 가능한 보기에서 기록을 확인해요.",
       },
       {
-        title: "AI/Data",
+        title: "다시 찾기",
         description:
-          "AI 초안과 엑셀 데이터를 사용자가 확인 가능한 기록으로 다뤄요.",
+          "검색과 즐겨찾기로 필요한 화면을 찾아요.",
       },
     ],
     sections: [
       {
         id: "overview",
-        title: "제품 소개",
+        title: "내 업무를 담는 공간",
         paragraphs: [
-          "OneHand CRM은 복잡한 팀 CRM을 먼저 도입하기 어려운 개인 영업자와 작은 영업팀을 위해 만든 CRM이에요.",
-          "엑셀, 메모앱, 연락처, 캘린더에 흩어진 고객 정보를 하나의 고객 흐름으로 묶고 다음 행동을 놓치지 않게 만드는 것이 핵심이에요.",
+          "고객과 업무 정보를 업무 공간 안에서 관리해요.",
+          "필요한 공간으로 전환하고, 관리할 항목에서 기록을 확인해요.",
         ],
         bullets: [
-          "고객과 회사 정보를 한곳에서 정리해요.",
-          "딜, 일정, 회의록을 고객 맥락과 연결해요.",
-          "AI는 자동 저장보다 확인 가능한 초안과 요약을 돕는 방식으로 사용해요.",
+          "업무 공간을 만들고 전환해요.",
+          "사이드바에서 관리할 항목을 찾아요.",
+          "기록을 추가하고 목록에서 확인해요.",
         ],
       },
       {
         id: "workspace",
-        title: "고객 중심 워크스페이스",
+        title: "관리할 항목 구분하기",
         paragraphs: [
-          "고객 관리는 이름과 연락처를 저장하는 일에서 끝나지 않아요. 이전 상담, 연결된 회사, 진행 중인 딜, 다음 일정이 함께 보여야 실제 영업에서 쓸 수 있어요.",
-          "OneHand CRM은 고객 기록을 중심으로 관련 업무가 이어지게 설계해요.",
+          "고객, 회사 등 내 업무에서 관리하는 대상을 구분해요.",
+          "모든 정보를 하나의 목록에 섞지 않고 항목별로 기록할 수 있어요.",
         ],
         bullets: [
-          "회사와 담당자 관계를 함께 확인해요.",
-          "고객별 메모와 미팅 기록을 같은 맥락에 남겨요.",
-          "다음 통화나 방문 전 필요한 정보를 빠르게 찾을 수 있어요.",
+          "업무에 맞는 이름으로 항목을 만들어요.",
+          "아이콘과 설명으로 항목을 알아보기 쉽게 해요.",
+          "항목을 만들면 기본 테이블에서 시작해요.",
         ],
       },
       {
         id: "pipeline",
-        title: "딜과 다음 행동을 함께 보는 구조",
+        title: "기록 추가와 수정",
         paragraphs: [
-          "영업 파이프라인은 단계만 옮기는 칸반이 아니라 고객에게 다음에 무엇을 해야 하는지 알려주는 운영 흐름이어야 해요.",
-          "OneHand CRM은 딜 단계, 금액, 마감일, 일정, 회의록을 연결해 거래의 현재 상태를 더 분명하게 보여줘요.",
+          "새 기록을 추가하고 화면에 마련된 정보 칸을 채워요.",
+          "변경된 정보는 목록에서 직접 수정할 수 있어요.",
         ],
         bullets: [
-          "진행 중인 딜을 단계별로 확인해요.",
-          "각 딜에 연결된 고객, 일정, 회의록을 함께 봐요.",
-          "마감일과 다음 연락 시점을 기준으로 우선순위를 잡아요.",
+          "관리할 기록을 추가해요.",
+          "수정할 수 있는 정보는 셀에서 고쳐요.",
+          "저장 결과를 확인하고 작업을 이어가요.",
         ],
       },
       {
         id: "assistant",
-        title: "AI 영업 도우미",
+        title: "기록을 보는 방식",
         paragraphs: [
-          "AI는 영업자의 판단을 대신하기보다 반복 정리의 시작점을 만들어주는 도구로 두는 것이 좋아요.",
-          "OneHand CRM의 AI 흐름은 회의록 요약, 다음 행동 초안, 팔로업 정리처럼 사용자가 검토하고 저장할 수 있는 결과를 만드는 방향이에요.",
+          "테이블·칸반·리스트 등 이용 가능한 보기에서 기록을 확인해요.",
+          "사용할 수 있는 보기 방식은 선택한 목록에 따라 달라요.",
         ],
         bullets: [
-          "회의 내용을 요약하고 후속 행동 초안을 만들어요.",
-          "AI 결과는 사용자 확인 후 기록으로 남겨요.",
-          "고객과 딜 맥락 안에서 필요한 정리를 돕는 방식이에요.",
+          "테이블에서 여러 기록을 함께 확인해요.",
+          "칸반 보기가 있으면 상태별로 살펴봐요.",
+          "새 보기 설정 저장과 카드 이동은 현재 제공하지 않아요.",
         ],
       },
       {
         id: "mobile",
-        title: "현장에서 바로 쓰는 모바일 기준",
+        title: "검색과 즐겨찾기",
         paragraphs: [
-          "개인 영업과 현장 영업은 책상 앞보다 이동 중에 더 많은 일이 생겨요.",
-          "OneHand CRM은 외근 중에도 고객을 찾고, 담당자 정보를 등록하고, 미팅 후 다음 연락을 남길 수 있는 흐름을 중요하게 봐요.",
+          "현재 목록에서 검색해 필요한 기록을 찾아요.",
+          "자주 사용하는 보기는 즐겨찾기에 모아두고 다시 열어요.",
         ],
         bullets: [
-          "이동 중에도 고객과 딜 정보를 빠르게 확인해요.",
-          "새 담당자를 기록으로 전환해요.",
-          "미팅 직후 일정과 팔로업을 바로 남겨요.",
+          "현재 보고 있는 목록에서 검색해요.",
+          "자주 사용하는 보기를 즐겨찾기에 추가해요.",
+          "브라우저에서 업무 공간으로 다시 접속해요.",
         ],
       },
       {
         id: "fit",
-        title: "OneHand CRM이 잘 맞는 상황",
+        title: "우리가 만들어가는 방향",
         paragraphs: [
-          "OneHand CRM은 모든 조직의 복잡한 업무를 한 번에 대체하는 대형 CRM보다, 반복 상담과 후속 연락을 놓치지 않아야 하는 영업 흐름에 더 집중해요.",
-          "개인 영업자, 부동산 중개, 보험/자동차 영업, B2B 현장 영업처럼 고객 맥락이 계속 이어지는 상황에 특히 잘 맞아요.",
+          "CRM을 배우거나 설계하지 않아도 내 일에 맞는 시작 화면이 준비되는 경험을 목표로 해요.",
+          "업무별 CRM 자동 준비는 현재 제공 기능과 구분해 안내해요.",
         ],
         bullets: [
-          "고객 기록이 엑셀, 메모, 사진, 캘린더에 흩어져 있어요.",
-          "상담 이후 다음 연락과 진행 상태를 자주 놓쳐요.",
-          "팀 CRM보다 바로 쓸 수 있는 가벼운 영업 워크스페이스가 필요해요.",
+          "사용자가 하는 일을 이해하는 CRM을 지향해요.",
+          "시작할 때 필요한 결정을 줄이려 해요.",
+          "현재 기능과 앞으로의 방향을 구분해요.",
         ],
       },
     ],
   },
   "en-US": {
-    title: "OneHand CRM is a personal CRM for field sales.",
+    title: "Customer and work records, in one place.",
     description:
-      "A sales workspace that connects customers, companies, deals, schedules, meeting notes, and AI drafts so repeated consultation and follow-up do not get lost.",
+      "Record customer and work information, update it, and find it when you need it.",
     contentsLabel: "Products Guide",
-    ctaTitle: "Ready to try the product workflow?",
+    ctaTitle: "Start with your first record.",
     ctaDescription:
-      "Bring scattered customer records and next actions into one OneHand CRM workflow.",
+      "Bring the customer and work information you manage into OneHand CRM.",
     quickCards: [
       {
-        title: "Customer context",
+        title: "Capture",
         description:
-          "Companies, contacts, notes, and schedules stay connected around each customer.",
+          "Keep the information you need in records.",
       },
       {
-        title: "Sales pipeline",
+        title: "Review",
         description:
-          "Track active deals and next actions in the same workflow.",
+          "See your records in available views.",
       },
       {
-        title: "AI/Data",
+        title: "Find again",
         description:
-          "Use AI drafts and structured records you can review and control.",
+          "Use search and favorites to return to your work.",
       },
     ],
     sections: [
       {
         id: "overview",
-        title: "Products Guide",
+        title: "A space for your work",
         paragraphs: [
-          "OneHand CRM is a CRM for personal sellers and small sales teams that need something lighter than a complex team rollout.",
-          "Its core job is to bring customer data scattered across spreadsheets, notes, card photos, and calendars into one customer workflow.",
+          "Manage customer and work information in a workspace.",
+          "Switch spaces and open the records you need from the sidebar.",
         ],
         bullets: [
-          "Organize customers and companies in one place.",
-          "Connect deals, schedules, and meeting notes to customer context.",
-          "Use AI for reviewable drafts and summaries instead of automatic saving.",
+          "Create and switch workspaces.",
+          "Find the items you manage in the sidebar.",
+          "Add records and review them in a table.",
         ],
       },
       {
         id: "workspace",
-        title: "A customer-centered workspace",
+        title: "Organize what you manage",
         paragraphs: [
-          "Customer management is not just storing names and contact details. Sales work needs previous conversations, company relationships, active deals, and next schedules to stay together.",
-          "OneHand CRM is designed so related work continues from the customer record.",
+          "Keep customers, companies, or other work items in their own collections.",
+          "Give each collection a name that makes sense for your work.",
         ],
         bullets: [
-          "Review companies and contacts together.",
-          "Keep notes and meeting records in the same customer context.",
-          "Find the right information quickly before the next call or visit.",
+          "Name the items you manage.",
+          "Use an icon and description to recognize them.",
+          "Start with the default table when you create a collection.",
         ],
       },
       {
         id: "pipeline",
-        title: "Deals and next actions together",
+        title: "Add and update records",
         paragraphs: [
-          "A sales pipeline should be more than moving cards between stages. It should show what needs to happen next for each customer.",
-          "OneHand CRM connects deal stage, value, due date, schedules, and meeting notes so the current state is easier to understand.",
+          "Add a record and fill in the information available on screen.",
+          "Update editable information directly in the table.",
         ],
         bullets: [
-          "Review active deals by stage.",
-          "See related customers, schedules, and notes beside each deal.",
-          "Prioritize work by due dates and next follow-up timing.",
+          "Add the records you need.",
+          "Edit supported values in their cells.",
+          "Check the save result before moving on.",
         ],
       },
       {
         id: "assistant",
-        title: "AI sales assistant",
+        title: "Choose how to view records",
         paragraphs: [
-          "AI should help create a starting point for repetitive cleanup, not replace the seller's judgment.",
-          "OneHand CRM's AI workflow is shaped around reviewable results such as meeting summaries, next-action drafts, and follow-up cleanup.",
+          "Review records in available table, board, or list views.",
+          "The views available depend on the collection you open.",
         ],
         bullets: [
-          "Summarize meeting notes and draft follow-up actions.",
-          "Save AI output only after user review.",
-          "Use customer and deal context to keep AI assistance close to the workflow.",
+          "Review multiple records in a table.",
+          "Use an available board to see records by status.",
+          "Saving new view settings and dragging cards are not currently available.",
         ],
       },
       {
         id: "mobile",
-        title: "Built around mobile field work",
+        title: "Search and favorites",
         paragraphs: [
-          "Personal and field sales work often happens away from a desk.",
-          "OneHand CRM emphasizes finding customers, saving contact details, and adding follow-up right after a meeting.",
+          "Search the current collection for a record.",
+          "Save frequently used views as favorites and return to them from the sidebar.",
         ],
         bullets: [
-          "Check customer and deal information while moving.",
-          "Turn new contact details into customer records.",
-          "Add schedules and follow-up shortly after meetings.",
+          "Search within the current collection.",
+          "Add frequently used views to favorites.",
+          "Return to your workspace in a browser.",
         ],
       },
       {
         id: "fit",
-        title: "Where OneHand CRM fits best",
+        title: "The experience we are building",
         paragraphs: [
-          "OneHand CRM is more focused on repeated consultation and follow-up than replacing every complex workflow in a large organization.",
-          "It fits personal sales, real estate, insurance and auto sales, and B2B field sales where customer context keeps carrying forward.",
+          "Our goal is a CRM that is ready for your work without having to learn or design it.",
+          "Automatic work-specific CRM setup is a product direction, separate from the features available today.",
         ],
         bullets: [
-          "Customer records are scattered across spreadsheets, notes, photos, and calendars.",
-          "Follow-up timing and deal status are easy to miss after consultations.",
-          "You need a lighter sales workspace that can be used without a heavy CRM rollout.",
+          "Start with an understanding of your work.",
+          "Reduce the decisions needed to get started.",
+          "Distinguish current features from future direction.",
         ],
       },
     ],

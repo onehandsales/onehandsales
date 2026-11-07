@@ -50,161 +50,161 @@ const quickCardIcons: readonly LucideIcon[] = [
 
 const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
   ko: {
-    title: "OneHand CRM을 쓰는 기본 흐름.",
+    title: "첫 기록부터, 다시 찾는 방법까지.",
     description:
-      "고객을 등록하고, 딜을 만들고, 일정과 회의록으로 다음 행동을 이어 가는 기본 사용 방법을 정리했어요.",
+      "OneHand CRM에서 기록을 추가하고 관리하는 기본 순서를 안내해요.",
     contentsLabel: "도움말 목차",
-    ctaTitle: "지금 쓰는 흐름에 맞춰 정리해볼까요?",
+    ctaTitle: "첫 기록을 추가해 볼까요?",
     ctaDescription:
-      "문의로 현재 업무 방식을 알려주면 시작 순서를 같이 잡아드려요.",
+      "현재 관리하는 고객과 업무 정보부터 시작해 보세요.",
     quickCards: [
       {
-        title: "처음 시작하기",
+        title: "처음 시작",
         description:
-          "회사, 담당자, 제품, 딜을 어떤 순서로 잡으면 좋은지 확인해요.",
+          "업무 공간과 관리할 항목을 열어요.",
       },
       {
-        title: "현장 업무 이어가기",
+        title: "기록 관리",
         description:
-          "일정, 회의록, 팔로업을 고객 기록과 연결해요.",
+          "새 기록을 추가하고 내용을 수정해요.",
       },
       {
-        title: "데이터 정리하기",
+        title: "다시 찾기",
         description:
-          "검색과 엑셀 내보내기 흐름을 확인해요.",
+          "검색과 즐겨찾기를 사용해요.",
       },
     ],
     sections: [
       {
         id: "start",
-        title: "처음 시작하기",
+        title: "내 업무 공간 열기",
         paragraphs: [
-          "OneHand CRM은 회사, 담당자, 제품, 딜을 먼저 정리하면 이후 일정과 회의록을 자연스럽게 연결할 수 있어요.",
-          "처음부터 모든 항목을 채우기보다 실제 영업에서 바로 쓰는 정보부터 입력하는 흐름이 좋아요.",
+          "계정에 로그인하고 업무 공간을 열어요.",
+          "여러 공간이 있다면 사용할 공간을 선택해 주세요.",
         ],
         bullets: [
-          "회사와 담당자를 먼저 만들고 연락처, 메모, 관계 정보를 남겨요.",
-          "판매하는 제품이나 서비스를 등록해 딜과 연결할 준비를 해요.",
-          "진행 중인 상담은 딜로 만들고 단계, 금액, 마감일을 정리해요.",
+          "로그인해 업무 공간으로 이동해요.",
+          "공간 선택 메뉴에서 사용할 공간을 골라요.",
+          "사이드바에서 관리할 항목을 찾아요.",
         ],
       },
       {
         id: "records",
-        title: "고객과 딜을 한 화면에서 이어 보기",
+        title: "관리할 항목과 기록",
         paragraphs: [
-          "고객 기록은 단순 연락처가 아니라 일정, 회의록, 딜이 쌓이는 기준점이에요.",
-          "회사와 담당자, 진행 중인 딜을 함께 보면 다음에 연락할 이유와 맥락을 더 빨리 찾을 수 있어요.",
+          "사이드바에서 관리할 항목을 선택해요.",
+          "항목이 없다면 관리할 항목을 추가하고 기본 테이블에서 시작할 수 있어요.",
         ],
         bullets: [
-          "회사 상세에서는 담당자와 관련 딜을 함께 확인해요.",
-          "담당자 상세에서는 연락처, 메모, 상담 맥락을 이어 봐요.",
-          "딜 상세에서는 단계 변경과 다음 행동을 같이 정리해요.",
+          "관리할 항목을 선택해요.",
+          "새 기록을 추가해요.",
+          "화면에 있는 정보 칸을 채워요.",
         ],
       },
       {
         id: "follow-up",
-        title: "일정과 팔로업 남기기",
+        title: "내용 수정과 보기",
         paragraphs: [
-          "방문, 통화, 재연락 일정은 고객이나 딜과 연결해 남기면 다시 찾기 쉬워요.",
-          "오늘 해야 할 일과 다음 미팅을 한 흐름으로 보면 고객 응대가 끊기지 않아요.",
+          "목록에서 수정할 수 있는 정보를 고쳐요.",
+          "다른 보기가 마련되어 있다면 필요한 보기로 전환해요.",
         ],
         bullets: [
-          "일정에는 날짜, 시간, 고객, 목적을 함께 남겨요.",
-          "미팅 후에는 다음 연락 시점과 해야 할 일을 바로 추가해요.",
-          "진행 중인 딜과 연결하면 팔로업이 거래 단계 안에 남아요.",
+          "편집 가능한 셀을 선택해요.",
+          "내용을 고치고 저장 결과를 확인해요.",
+          "보기 선택 메뉴에서 이용 가능한 화면을 골라요.",
         ],
       },
       {
         id: "meeting-notes",
-        title: "회의록과 AI 정리 사용하기",
+        title: "검색과 즐겨찾기",
         paragraphs: [
-          "상담 내용은 회의록으로 남기고 고객, 회사, 딜과 연결해두면 다음 대화에서 바로 이어갈 수 있어요.",
-          "AI는 요약과 다음 행동 초안을 돕고, 중요한 기록은 사용자가 확인한 뒤 저장하는 흐름을 기준으로 해요.",
+          "현재 목록에서 검색어를 입력해 기록을 찾아요.",
+          "자주 사용하는 보기는 즐겨찾기에 추가해 주세요.",
         ],
         bullets: [
-          "상담 배경, 요구사항, 결정사항, 다음 행동을 나눠서 기록해요.",
-          "AI 초안을 사용해도 저장 전에는 내용을 직접 확인해요.",
-          "회의록을 딜과 연결해 제안, 견적, 계약 흐름의 근거로 활용해요.",
+          "현재 목록의 검색을 사용해요.",
+          "자주 사용하는 보기를 즐겨찾기에 추가해요.",
+          "사이드바의 즐겨찾기에서 다시 열어요.",
         ],
       },
     ],
   },
   "en-US": {
-    title: "The basic workflow for using OneHand CRM.",
+    title: "From your first record to finding it again.",
     description:
-      "Learn how to add customers, create deals, and keep next actions moving through schedules and meeting notes.",
+      "Learn the basic steps for adding and managing records in OneHand CRM.",
     contentsLabel: "Help guide",
-    ctaTitle: "Want help mapping your current workflow?",
+    ctaTitle: "Ready to add your first record?",
     ctaDescription:
-      "Tell us how you work today and we can help you choose the right starting order.",
+      "Start with the customer and work information you manage today.",
     quickCards: [
       {
         title: "Get started",
         description:
-          "See the recommended order for companies, contacts, products, and deals.",
+          "Open your workspace and collection.",
       },
       {
-        title: "Keep field work moving",
+        title: "Manage records",
         description:
-          "Connect card scans, schedules, notes, and follow-up to customer records.",
+          "Add records and update their information.",
       },
       {
-        title: "Organize data",
+        title: "Find again",
         description:
-          "Review search and Excel export workflows.",
+          "Use search and favorites.",
       },
     ],
     sections: [
       {
         id: "start",
-        title: "Get started",
+        title: "Open your workspace",
         paragraphs: [
-          "OneHand CRM works best when companies, contacts, products, and deals are set up first. Schedules and meeting notes can then connect to that context.",
-          "You do not need to fill in every field on day one. Start with the information you use in real sales conversations.",
+          "Sign in and open your workspace.",
+          "If you have more than one space, choose the one you want to use.",
         ],
         bullets: [
-          "Create companies and contacts with contact details, notes, and relationship context.",
-          "Add the products or services you sell so deals can reference them.",
-          "Turn active opportunities into deals with stage, value, and due date.",
+          "Sign in to your workspace.",
+          "Choose a space from the workspace menu.",
+          "Find what you manage in the sidebar.",
         ],
       },
       {
         id: "records",
-        title: "Review customers and deals together",
+        title: "Choose a collection and add a record",
         paragraphs: [
-          "A customer record is more than a contact. It becomes the place where schedules, meeting notes, and deals stay connected.",
-          "When companies, contacts, and active deals are visible together, the reason for the next follow-up is easier to find.",
+          "Choose a collection from the sidebar.",
+          "If you do not have one, add a collection and start with its default table.",
         ],
         bullets: [
-          "Use company detail pages to review contacts and related deals.",
-          "Use contact detail pages to keep phone, email, notes, and context together.",
-          "Use deal detail pages to track stage changes and next actions.",
+          "Choose what you manage.",
+          "Add a record.",
+          "Fill in the information fields on screen.",
         ],
       },
       {
         id: "follow-up",
-        title: "Add schedules and follow-up",
+        title: "Edit information and switch views",
         paragraphs: [
-          "Visits, calls, and follow-up tasks are easier to find when they are connected to a customer or deal.",
-          "Keeping today's work and upcoming meetings in one flow reduces missed customer follow-up.",
+          "Update supported information in the table.",
+          "If other views are available, choose the one you need.",
         ],
         bullets: [
-          "Add date, time, customer, and purpose to each schedule.",
-          "After a meeting, add the next contact timing and task while the context is fresh.",
-          "Connect schedules to deals so follow-up stays inside the sales stage.",
+          "Select an editable cell.",
+          "Update the value and check the save result.",
+          "Choose an available view from the view menu.",
         ],
       },
       {
         id: "meeting-notes",
-        title: "Use meeting notes and AI drafts",
+        title: "Search and favorites",
         paragraphs: [
-          "Meeting notes keep consultation details connected to customers, companies, and deals, so the next conversation can continue from the same context.",
-          "AI helps with summaries and next-action drafts. Important records should be reviewed by the user before saving.",
+          "Enter a search term to find a record in the current collection.",
+          "Add frequently used views to favorites.",
         ],
         bullets: [
-          "Separate background, requirements, decisions, and next actions in the note.",
-          "Review AI drafts before saving them to your workspace.",
-          "Connect meeting notes to deals as evidence for proposals, quotes, and contracts.",
+          "Search the current collection.",
+          "Add a useful view to favorites.",
+          "Open it again from the sidebar.",
         ],
       },
     ],

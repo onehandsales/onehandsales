@@ -37,50 +37,50 @@ type DownloadCopy = {
 
 const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
   ko: {
-    title: "iOS와 Android에서 OneHand CRM을 바로 열어보세요.",
+    title: "OneHand CRM을 웹에서 시작해요.",
     description:
-      "앱 다운로드 흐름을 기준으로 안내합니다. 현장에서 고객을 만난 뒤에도 모바일에서 영업 흐름을 확인할 수 있게 설계합니다.",
-    iosLabel: "App Store에서 다운로드",
-    androidLabel: "Google Play에서 다운로드",
-    ctaTitle: "계정이 있으면 웹에서도 바로 쓸 수 있어요.",
+      "브라우저에서 계정에 로그인해 기록을 관리해요. 아래 버튼은 일반 앱 스토어 링크이며 OneHand CRM 설치 링크가 아니에요. 웹 이용은 하단 시작 버튼을 이용해 주세요.",
+    iosLabel: "App Store 둘러보기",
+    androidLabel: "Google Play 둘러보기",
+    ctaTitle: "브라우저에서 내 기록을 관리해요.",
     ctaDescription:
-      "모바일과 웹에서 같은 흐름으로 기록을 이어갈 수 있어요.",
+      "OneHand CRM 계정을 만들거나 데모를 요청해 보세요.",
     cards: [
       {
-        title: "모바일 우선 확인",
-        description: "외근 중에도 고객, 일정, 딜 흐름을 빠르게 확인합니다.",
+        title: "웹에서 시작",
+        description: "브라우저에서 업무 공간에 접속해요.",
       },
       {
-        title: "웹과 이어지는 작업",
-        description: "앱에서 본 기록을 웹에서도 이어서 정리할 수 있는 흐름입니다.",
+        title: "내 기록 확인",
+        description: "로그인한 계정의 업무 공간에서 기록을 확인해요.",
       },
       {
-        title: "안전한 계정 접근",
-        description: "Google, Apple, LINE 로그인 흐름을 기반으로 접근합니다.",
+        title: "앱 제공 안내",
+        description: "전용 앱 설치 경로는 확인된 정보가 있을 때 안내할게요.",
       },
     ],
   },
   "en-US": {
-    title: "Open OneHand CRM on iOS and Android.",
+    title: "Start with OneHand CRM on the web.",
     description:
-      "This page is structured around the app download flow, so sellers can check customer and deal context while they are in the field.",
-    iosLabel: "Download on the App Store",
-    androidLabel: "Get it on Google Play",
-    ctaTitle: "Already have an account? You can also start on the web.",
+      "Sign in through your browser to manage records. The buttons below open general app stores, not OneHand CRM installation pages. Use the start button below to access the web product.",
+    iosLabel: "Browse the App Store",
+    androidLabel: "Browse Google Play",
+    ctaTitle: "Manage your records in a browser.",
     ctaDescription:
-      "OneHand CRM is designed so mobile and web share the same workflow, helping you check and continue sales work while moving.",
+      "Create a OneHand CRM account or request a demo.",
     cards: [
       {
-        title: "Mobile-first checks",
-        description: "Review customers, schedules, and deal flow while working outside the office.",
+        title: "Start on the web",
+        description: "Open your workspace in a browser.",
       },
       {
-        title: "Continue on web",
-        description: "Pick up the same records on the web when you need a larger screen.",
+        title: "Review your records",
+        description: "Sign in to access your workspace records.",
       },
       {
-        title: "Secure account access",
-        description: "Access OneHand CRM through Google, Apple, and LINE login flows.",
+        title: "App availability",
+        description: "Dedicated app installation links will be shared when confirmed.",
       },
     ],
   },
@@ -104,10 +104,15 @@ export function DownloadPage() {
               {copy.description}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <DownloadLink href={IOS_DOWNLOAD_URL} label={copy.iosLabel} />
+              <DownloadLink
+                href={IOS_DOWNLOAD_URL}
+                label={copy.iosLabel}
+                platform="apple"
+              />
               <DownloadLink
                 href={ANDROID_DOWNLOAD_URL}
                 label={copy.androidLabel}
+                platform="android"
               />
             </div>
           </div>
@@ -143,9 +148,11 @@ export function DownloadPage() {
 function DownloadLink({
   href,
   label,
+  platform,
 }: {
   readonly href: string;
   readonly label: string;
+  readonly platform: "apple" | "android";
 }) {
   return (
     <a
@@ -154,7 +161,14 @@ function DownloadLink({
       rel="noreferrer"
       target="_blank"
     >
-      <Download className="h-4 w-4" />
+      <img
+        alt=""
+        aria-hidden="true"
+        className={`h-10 w-10 shrink-0 object-contain${platform === "apple" ? " invert" : ""}`}
+        height={40}
+        src={platform === "apple" ? "/auth/apple-logo.png" : "/brand/android-logo.svg"}
+        width={40}
+      />
       {label}
       <ExternalLink className="h-3.5 w-3.5" />
     </a>

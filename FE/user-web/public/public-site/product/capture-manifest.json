@@ -1,0 +1,17 @@
+{
+  "product": "OneHand CRM",
+  "capturedAt": "2026-11-07",
+  "source": "Current User Web /app/workspaces/:workspaceId/objects/:objectDefinitionId route rendered in Chromium",
+  "data": "Illustrative API fixtures supplied through Playwright; no production customer data or database writes",
+  "interface": "Unmodified application components; table and kanban views",
+  "locales": ["ko", "en"],
+  "scenes": ["overview", "personal", "real-estate", "insurance-auto", "b2b-field"],
+  "viewport": {
+    "overview": { "width": 1440, "height": 1000 },
+    "solutions": { "width": 1440, "height": 584 },
+    "overview-mobile": { "width": 390, "height": 844 },
+    "solutions-mobile": { "width": 390, "height": 300 }
+  },
+  "deviceScaleFactor": 2,
+  "limitations": "Industry examples do not represent shipped automatic Kit setup, native apps, or automated workflows. Visible navigation and controls do not imply every feature is available."
+}

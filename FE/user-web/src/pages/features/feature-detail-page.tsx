@@ -71,385 +71,385 @@ const featureDetailCopyByLanguage: Record<
 > = {
   ko: {
     customers: {
-      title: "고객 관리를 한 흐름으로 정리해요.",
+      title: "고객 정보를 남기고, 필요할 때 다시 찾아요.",
       description:
-        "회사, 담당자, 연락처, 상담 메모를 따로 보관하지 않고 고객 맥락 안에서 이어 볼 수 있게 정리해요.",
-      contentsLabel: "고객 관리 목차",
-      ctaTitle: "고객 기록부터 정리해볼까요?",
+        "고객 정보를 기록하고, 변경된 내용은 목록에서 바로 수정해요.",
+      contentsLabel: "고객 정보 관리 목차",
+      ctaTitle: "첫 고객 기록을 남겨볼까요?",
       ctaDescription:
-        "흩어진 연락처와 상담 메모를 OneHand CRM의 고객 흐름으로 옮겨요.",
+        "현재 제공 범위를 확인하고, 내 업무에 맞는 활용 방법을 살펴보세요.",
       quickCards: [
         {
-          title: "회사와 담당자",
+          title: "고객 기록 추가",
           description:
-            "거래처와 실제 연락하는 담당자를 나눠서 관리해요.",
+            "관리할 고객을 추가하고, 화면에 마련된 정보 칸을 채워요.",
         },
         {
-          title: "상담 맥락",
+          title: "정보 수정",
           description:
-            "메모, 일정, 딜, 회의록을 고객 기록과 함께 봐요.",
+            "바뀐 정보를 확인하면 현재 목록에서 내용을 고쳐요.",
         },
         {
-          title: "빠른 확인",
+          title: "필요한 고객 찾기",
           description:
-            "다음 통화나 방문 전에 필요한 정보를 바로 찾을 수 있어요.",
+            "현재 고객 목록에서 검색하고 자주 보는 화면을 즐겨찾기에 모아둬요.",
         },
       ],
       sections: [
         {
           id: "company-contact",
-          title: "회사와 담당자를 나눠 관리",
+          title: "고객 기록 추가",
           paragraphs: [
-            "영업에서는 회사와 담당자가 항상 같은 의미가 아니에요. 거래처는 회사로 남기고, 실제 대화하는 사람은 담당자로 관리해야 관계가 선명해져요.",
+            "관리할 고객을 추가하고, 화면에 마련된 정보 칸을 채워요.",
           ],
           bullets: [
-            "회사에는 업종, 주소, 대표 연락처, 거래 맥락을 남겨요.",
-            "담당자에는 이름, 직함, 전화번호, 이메일을 정리해요.",
-            "한 회사 안의 여러 담당자를 함께 볼 수 있어요.",
+            "고객을 기록으로 추가해요.",
+            "지원하는 정보 칸에 내용을 입력해요.",
+            "등록한 기록을 목록에서 확인해요.",
           ],
         },
         {
           id: "context",
-          title: "상담 기록을 고객 맥락에 연결",
+          title: "정보 수정",
           paragraphs: [
-            "고객을 다시 만날 때 중요한 것은 마지막 대화와 다음 약속이에요. OneHand CRM은 고객 기록 옆에 일정, 회의록, 딜을 연결해 이전 맥락을 다시 찾기 쉽게 해요.",
+            "바뀐 정보를 확인하면 현재 목록에서 내용을 고쳐요.",
           ],
           bullets: [
-            "고객별 메모와 회의록을 한곳에서 확인해요.",
-            "관련 딜과 일정이 고객 상세 안에 이어져요.",
-            "다음 연락 이유를 기록 안에서 바로 확인해요.",
+            "수정할 기록을 찾아요.",
+            "편집 가능한 셀의 값을 고쳐요.",
+            "저장 결과를 확인해요.",
           ],
         },
         {
           id: "field-check",
-          title: "현장 전에 빠르게 확인",
+          title: "필요한 고객 찾기",
           paragraphs: [
-            "외근이나 통화 직전에 고객 정보를 다시 확인할 수 있어야 후속 응대가 자연스러워요.",
+            "현재 고객 목록에서 검색하고 자주 보는 화면을 즐겨찾기에 모아둬요.",
           ],
           bullets: [
-            "최근 미팅 내용과 진행 중인 딜을 함께 확인해요.",
-            "고객명, 회사명, 연락처 기준으로 빠르게 찾아요.",
-            "방문 후에는 새 메모와 다음 일정을 바로 남겨요.",
+            "현재 목록 안에서 검색해요.",
+            "필요한 보기를 선택해요.",
+            "즐겨찾기로 자주 보는 화면을 열어요.",
           ],
         },
       ],
     },
     pipeline: {
-      title: "영업 파이프라인을 다음 행동까지 이어 봐요.",
+      title: "진행 중인 기록을 상태별로 살펴봐요.",
       description:
-        "딜 단계, 금액, 마감일, 고객 맥락을 함께 관리해 지금 어떤 거래를 먼저 챙겨야 하는지 확인해요.",
-      contentsLabel: "파이프라인 목차",
-      ctaTitle: "진행 중인 딜을 정리해볼까요?",
+        "이용 가능한 테이블과 칸반 보기에서 기록의 현재 상태를 확인해요.",
+      contentsLabel: "진행 상태 보기 목차",
+      ctaTitle: "내 기록을 보기 편한 화면에서 확인해요.",
       ctaDescription:
-        "상담, 견적, 계약 전환까지 이어지는 거래 흐름을 OneHand CRM에서 관리해요.",
+        "현재 제공 범위를 확인하고, 내 업무에 맞는 활용 방법을 살펴보세요.",
       quickCards: [
         {
-          title: "딜 단계",
+          title: "테이블로 확인",
           description:
-            "상담부터 계약까지 진행 상태를 단계별로 정리해요.",
+            "테이블에서 여러 기록과 정보를 함께 살펴봐요.",
         },
         {
-          title: "다음 행동",
+          title: "상태별로 보기",
           description:
-            "각 딜에서 다음에 해야 할 연락과 일정을 함께 봐요.",
+            "칸반 보기가 마련된 목록에서는 같은 상태의 기록을 모아서 확인해요.",
         },
         {
-          title: "거래 우선순위",
+          title: "현재 제공 범위",
           description:
-            "금액, 마감일, 고객 반응을 기준으로 먼저 볼 딜을 찾아요.",
+            "조회 기능과 아직 제공하지 않는 자동화 기능을 구분해 안내해요.",
         },
       ],
       sections: [
         {
           id: "stages",
-          title: "단계별로 딜 상태 확인",
+          title: "테이블로 확인",
           paragraphs: [
-            "파이프라인은 현재 거래가 어디까지 왔는지 보여주는 기준이에요. 단계가 분명하면 지금 막힌 딜과 곧 마감되는 딜을 빠르게 구분할 수 있어요.",
+            "테이블에서 여러 기록과 정보를 함께 살펴봐요.",
           ],
           bullets: [
-            "신규 상담, 제안, 견적, 계약 같은 단계를 정리해요.",
-            "딜마다 금액, 마감일, 담당 고객을 함께 남겨요.",
-            "진행 상태가 바뀌면 단계 변경으로 흐름을 업데이트해요.",
+            "목록에서 기록을 확인해요.",
+            "수정 가능한 정보는 셀에서 고쳐요.",
+            "필요한 기록을 검색해요.",
           ],
         },
         {
           id: "relationships",
-          title: "고객, 일정, 회의록과 연결",
+          title: "상태별로 보기",
           paragraphs: [
-            "딜은 혼자 존재하지 않아요. 어떤 고객과 연결됐고, 어떤 미팅에서 논의됐으며, 다음 일정이 무엇인지 함께 보여야 해요.",
+            "칸반 보기가 마련된 목록에서는 같은 상태의 기록을 모아서 확인해요.",
           ],
           bullets: [
-            "딜에서 관련 회사와 담당자를 바로 확인해요.",
-            "회의록과 일정을 딜 맥락 안에 남겨요.",
-            "제안 이후 후속 연락이 필요한 이유를 기록으로 확인해요.",
+            "저장된 칸반 보기를 선택해요.",
+            "상태별로 모인 기록을 살펴봐요.",
+            "보기 방식은 선택한 목록에 따라 달라요.",
           ],
         },
         {
           id: "priority",
-          title: "우선 챙길 거래 찾기",
+          title: "현재 제공 범위",
           paragraphs: [
-            "영업자는 모든 딜을 같은 강도로 볼 수 없어요. OneHand CRM은 마감일, 다음 행동, 고객 반응을 기준으로 챙길 거래를 찾는 흐름을 돕습니다.",
+            "조회 기능과 아직 제공하지 않는 자동화 기능을 구분해 안내해요.",
           ],
           bullets: [
-            "마감일이 가까운 딜을 먼저 확인해요.",
-            "후속 연락이 끊긴 딜을 다시 살펴봐요.",
-            "중요한 거래는 일정과 회의록을 함께 점검해요.",
+            "카드 드래그로 단계 변경은 현재 제공하지 않아요.",
+            "자동 우선순위 선정은 현재 제공하지 않아요.",
+            "후속 행동 자동화는 현재 제공하지 않아요.",
           ],
         },
       ],
     },
     "schedules-follow-up": {
-      title: "일정과 팔로업을 고객 맥락 안에 남겨요.",
+      title: "일정·팔로업 제공 범위를 확인해요.",
       description:
-        "방문, 통화, 재연락 일정을 고객과 딜에 연결해 미팅 이후 해야 할 일을 놓치지 않게 해요.",
-      contentsLabel: "일정/팔로업 목차",
-      ctaTitle: "다음 연락을 놓치지 않게 정리해볼까요?",
+        "전용 캘린더, 일정 알림, 자동 후속 연락은 현재 제공하지 않아요.",
+      contentsLabel: "일정·팔로업 안내 목차",
+      ctaTitle: "현재 제공하는 기록 관리부터 살펴봐요.",
       ctaDescription:
-        "고객 일정과 팔로업을 한 화면에서 이어 보세요.",
+        "현재 제공 범위를 확인하고, 내 업무에 맞는 활용 방법을 살펴보세요.",
       quickCards: [
         {
-          title: "방문과 통화",
+          title: "일정 관리 안내",
           description:
-            "현장 미팅과 전화 일정을 고객 기록과 함께 남겨요.",
+            "현재 전용 캘린더와 외부 캘린더 연결을 제공하지 않아요.",
         },
         {
-          title: "다음 연락",
+          title: "팔로업 안내",
           description:
-            "미팅 직후 재연락 시점과 해야 할 일을 바로 정리해요.",
+            "자동 연락과 연락 시점 알림은 현재 제공하지 않아요.",
         },
         {
-          title: "주간 흐름",
+          title: "지금 가능한 일",
           description:
-            "이번 주 일정과 진행 중인 딜을 함께 확인해요.",
+            "현재는 고객과 업무 정보의 기록·수정·조회를 중심으로 제공해요.",
         },
       ],
       sections: [
         {
           id: "schedule",
-          title: "고객과 연결된 일정",
+          title: "일정 관리 안내",
           paragraphs: [
-            "일정은 날짜와 시간만 있으면 다시 찾기 어려워요. 어떤 고객을 왜 만나는지까지 연결돼야 실제 영업 일정이 됩니다.",
+            "현재 전용 캘린더와 외부 캘린더 연결을 제공하지 않아요.",
           ],
           bullets: [
-            "일정에 고객, 회사, 딜을 함께 연결해요.",
-            "방문, 통화, 온라인 미팅 같은 목적을 구분해요.",
-            "미팅 전 필요한 고객 정보를 빠르게 확인해요.",
+            "전용 일정 화면은 미제공이에요.",
+            "외부 캘린더 연동은 미제공이에요.",
+            "일정 기능의 공개 시점은 미정이에요.",
           ],
         },
         {
           id: "follow-up",
-          title: "미팅 이후 팔로업",
+          title: "팔로업 안내",
           paragraphs: [
-            "상담이 끝난 직후 다음 행동을 남기면 후속 연락이 끊기지 않아요.",
+            "자동 연락과 연락 시점 알림은 현재 제공하지 않아요.",
           ],
           bullets: [
-            "다음 통화나 방문 일정을 바로 추가해요.",
-            "고객 요청사항과 약속한 내용을 회의록에 남겨요.",
-            "딜 단계와 연결해 거래 흐름 안에서 팔로업을 봐요.",
+            "자동 메시지 발송은 미제공이에요.",
+            "후속 연락 알림은 미제공이에요.",
+            "자동 업무 실행은 미제공이에요.",
           ],
         },
         {
           id: "weekly",
-          title: "주간 일정 점검",
+          title: "지금 가능한 일",
           paragraphs: [
-            "이번 주에 어떤 고객을 만나고 어떤 딜을 챙겨야 하는지 한 번에 볼 수 있으면 하루 계획이 빨라져요.",
+            "현재는 고객과 업무 정보의 기록·수정·조회를 중심으로 제공해요.",
           ],
           bullets: [
-            "주간 일정에서 고객과 딜 맥락을 함께 확인해요.",
-            "누락된 후속 연락을 다시 정리해요.",
-            "필요한 경우 일정 데이터를 XLSX로 내려받아요.",
+            "고객과 업무 정보를 기록해요.",
+            "목록에서 정보를 수정해요.",
+            "현재 목록의 기록을 검색해요.",
           ],
         },
       ],
     },
     "activity-records": {
-      title: "활동 기록으로 상담 이후를 이어 가요.",
+      title: "업무에서 확인한 내용을 기록으로 남겨요.",
       description:
-        "회의록, 메모, 통화 후속 내용을 고객과 딜에 연결해 다음 대화에서 같은 맥락으로 이어갈 수 있게 해요.",
-      contentsLabel: "활동 기록 목차",
-      ctaTitle: "상담 기록을 놓치지 않게 남겨볼까요?",
+        "필요한 정보를 입력하고 수정하며, 다음에 다시 확인할 기록을 관리해요.",
+      contentsLabel: "업무 기록 관리 목차",
+      ctaTitle: "다음에 다시 볼 기록을 남겨볼까요?",
       ctaDescription:
-        "고객별 활동과 회의록을 OneHand CRM에서 이어 보세요.",
+        "현재 제공 범위를 확인하고, 내 업무에 맞는 활용 방법을 살펴보세요.",
       quickCards: [
         {
-          title: "회의록",
+          title: "기록 추가",
           description:
-            "상담 내용, 결정사항, 다음 행동을 구조화해서 남겨요.",
+            "관리할 항목에 기록을 추가하고 지원하는 정보 칸을 채워요.",
         },
         {
-          title: "메모",
+          title: "내용 수정",
           description:
-            "작은 고객 힌트와 내부 확인 사항을 기록해요.",
+            "업무에서 새롭게 확인한 내용은 목록에서 수정해요.",
         },
         {
-          title: "활동 흐름",
+          title: "현재 제공 범위",
           description:
-            "고객, 딜, 일정 옆에 기록이 함께 쌓여요.",
+            "기본 기록 관리와 전용 미팅·활동 기능은 구분돼요.",
         },
       ],
       sections: [
         {
           id: "meeting-notes",
-          title: "회의록을 업무 기록으로 남기기",
+          title: "기록 추가",
           paragraphs: [
-            "미팅에서 나온 말은 시간이 지나면 흐려져요. 회의록은 고객 요구사항과 약속한 다음 행동을 다시 꺼내 보기 위한 기록이에요.",
+            "관리할 항목에 기록을 추가하고 지원하는 정보 칸을 채워요.",
           ],
           bullets: [
-            "상담 배경, 요구사항, 결정사항을 나눠서 남겨요.",
-            "회의록을 고객과 딜에 연결해요.",
-            "다음 미팅 전에 이전 회의록을 빠르게 확인해요.",
+            "관리할 항목을 선택해요.",
+            "새 기록을 추가해요.",
+            "화면에 있는 정보 칸을 채워요.",
           ],
         },
         {
           id: "memo",
-          title: "고객별 메모와 내부 기록",
+          title: "내용 수정",
           paragraphs: [
-            "짧은 메모도 고객 관계에서는 중요한 단서가 될 수 있어요. 연락 선호 시간, 관심 제품, 확인해야 할 이슈를 고객 기록에 남겨요.",
+            "업무에서 새롭게 확인한 내용은 목록에서 수정해요.",
           ],
           bullets: [
-            "고객별 메모로 작은 맥락을 잃지 않아요.",
-            "제품이나 제안과 관련된 내부 확인 내용을 남겨요.",
-            "사적인 메모가 필요한 경우 별도로 관리할 수 있어요.",
+            "필요한 기록을 찾아요.",
+            "편집 가능한 내용을 고쳐요.",
+            "현재 정보로 기록을 관리해요.",
           ],
         },
         {
           id: "continuity",
-          title: "다음 대화로 이어지는 기록",
+          title: "현재 제공 범위",
           paragraphs: [
-            "활동 기록의 목표는 많이 쓰는 것이 아니라 다음 대화를 쉽게 이어가는 것이에요.",
+            "기본 기록 관리와 전용 미팅·활동 기능은 구분돼요.",
           ],
           bullets: [
-            "미팅 후 다음 행동을 일정이나 딜에 연결해요.",
-            "고객 반응과 결정 지연 이유를 남겨요.",
-            "후속 연락 때 이전 맥락을 다시 확인해요.",
+            "기록 입력·수정·조회는 가능해요.",
+            "전용 미팅 노트와 통화 녹음은 미제공이에요.",
+            "자동 활동 타임라인은 미제공이에요.",
           ],
         },
       ],
     },
     "ai-sales-assistant": {
-      title: "AI 영업 도우미로 반복 정리를 줄여요.",
+      title: "AI 기능의 현재 제공 상태를 안내해요.",
       description:
-        "회의록 요약, 다음 행동 초안, 팔로업 정리를 AI가 돕고 사용자가 확인한 뒤 기록으로 남기는 흐름이에요.",
-      contentsLabel: "AI 영업 도우미 목차",
-      ctaTitle: "반복 정리를 AI와 줄여볼까요?",
+        "AI 요약, 메시지 초안, 다음 행동 추천은 현재 제공 기능에 포함되지 않아요.",
+      contentsLabel: "AI 기능 안내 목차",
+      ctaTitle: "현재 제품의 기록 관리 기능을 살펴봐요.",
       ctaDescription:
-        "중요한 판단은 직접 유지하고, 반복 기록의 시작점은 AI로 빠르게 만들어요.",
+        "현재 제공 범위를 확인하고, 내 업무에 맞는 활용 방법을 살펴보세요.",
       quickCards: [
         {
-          title: "요약",
+          title: "요약과 초안",
           description:
-            "긴 상담 내용을 읽기 쉬운 요약으로 정리해요.",
+            "상담 내용을 AI가 요약하거나 메시지 초안을 만드는 기능은 현재 제공하지 않아요.",
         },
         {
-          title: "다음 행동",
+          title: "추천과 자동 실행",
           description:
-            "미팅 이후 해야 할 팔로업 초안을 만들어요.",
+            "AI가 고객 우선순위를 정하거나 후속 업무를 자동 실행하지 않아요.",
         },
         {
-          title: "사용자 확인",
+          title: "지금 가능한 일",
           description:
-            "AI 결과는 자동 저장이 아니라 검토 후 저장해요.",
+            "정보를 직접 기록하고 수정하며, 검색과 보기로 확인할 수 있어요.",
         },
       ],
       sections: [
         {
           id: "summary",
-          title: "회의록 요약",
+          title: "요약과 초안",
           paragraphs: [
-            "AI는 긴 회의록에서 고객 요구사항, 결정사항, 다음 행동을 정리하는 출발점을 만들 수 있어요.",
+            "상담 내용을 AI가 요약하거나 메시지 초안을 만드는 기능은 현재 제공하지 않아요.",
           ],
           bullets: [
-            "상담 내용을 핵심 문장으로 요약해요.",
-            "고객 요청과 내부 확인 사항을 구분해요.",
-            "다음 미팅 전에 빠르게 다시 읽을 수 있게 정리해요.",
+            "회의 요약은 미제공이에요.",
+            "상담 요약은 미제공이에요.",
+            "메시지 초안 작성은 미제공이에요.",
           ],
         },
         {
           id: "drafts",
-          title: "팔로업 초안",
+          title: "추천과 자동 실행",
           paragraphs: [
-            "미팅 후 바로 정리해야 하는 다음 행동은 놓치기 쉬워요. AI는 후속 연락과 업무 항목의 초안을 만드는 데 도움을 줘요.",
+            "AI가 고객 우선순위를 정하거나 후속 업무를 자동 실행하지 않아요.",
           ],
           bullets: [
-            "연락해야 할 내용의 초안을 만들어요.",
-            "해야 할 일을 고객이나 딜 맥락에 맞춰 정리해요.",
-            "반복적인 기록 정리 시간을 줄여요.",
+            "자동 우선순위 선정은 미제공이에요.",
+            "다음 행동 추천은 미제공이에요.",
+            "자동 후속 연락은 미제공이에요.",
           ],
         },
         {
           id: "control",
-          title: "사용자가 확인하고 저장",
+          title: "지금 가능한 일",
           paragraphs: [
-            "AI가 만든 결과는 영업자의 판단을 거쳐야 해요. OneHand CRM은 자동 저장보다 검토 가능한 초안을 기준으로 설계해요.",
+            "정보를 직접 기록하고 수정하며, 검색과 보기로 확인할 수 있어요.",
           ],
           bullets: [
-            "AI 결과를 읽고 필요한 내용을 수정해요.",
-            "확인한 내용만 고객 기록에 저장해요.",
-            "민감한 고객 정보는 사용자가 직접 판단해요.",
+            "기록을 직접 입력해요.",
+            "목록에서 정보를 수정해요.",
+            "AI 기능 공개 시점은 미정이에요.",
           ],
         },
       ],
     },
     reports: {
-      title: "리포트로 이번 주 영업 흐름을 확인해요.",
+      title: "리포트의 현재 제공 범위를 안내해요.",
       description:
-        "일정, 딜, 후속 행동, AI 요약을 리포트로 정리해 현재 영업 상태와 다음 우선순위를 확인해요.",
-      contentsLabel: "리포트 목차",
-      ctaTitle: "이번 주 영업 상태를 정리해볼까요?",
+        "자동 분석 대시보드, 주간 리포트, 리포트 다운로드는 현재 제공하지 않아요.",
+      contentsLabel: "리포트 기능 안내 목차",
+      ctaTitle: "등록한 기록부터 확인해 보세요.",
       ctaDescription:
-        "흩어진 일정과 딜 흐름을 리포트로 확인해요.",
+        "현재 제공 범위를 확인하고, 내 업무에 맞는 활용 방법을 살펴보세요.",
       quickCards: [
         {
-          title: "주간 일정",
+          title: "기록 조회",
           description:
-            "이번 주 고객 미팅과 방문 일정을 한 번에 확인해요.",
+            "테이블과 이용 가능한 보기에서 등록한 기록을 확인할 수 있어요.",
         },
         {
-          title: "딜 점검",
+          title: "분석 리포트 안내",
           description:
-            "진행 중인 거래와 마감이 가까운 딜을 살펴봐요.",
+            "자동 집계와 성과 분석 리포트는 현재 제공하지 않아요.",
         },
         {
-          title: "AI 요약",
+          title: "공유와 다운로드 안내",
           description:
-            "중요한 흐름과 다음 행동을 요약해서 확인해요.",
+            "리포트 자동 발송과 파일 다운로드는 현재 제공 범위에 포함되지 않아요.",
         },
       ],
       sections: [
         {
           id: "weekly",
-          title: "주간 영업 흐름 보기",
+          title: "기록 조회",
           paragraphs: [
-            "리포트는 기록을 쌓는 것에서 끝나지 않고 이번 주에 무엇을 챙겨야 하는지 보여주는 역할을 해요.",
+            "테이블과 이용 가능한 보기에서 등록한 기록을 확인할 수 있어요.",
           ],
           bullets: [
-            "주간 일정과 고객 미팅을 함께 확인해요.",
-            "진행 중인 딜과 연결된 일정을 살펴봐요.",
-            "누락된 후속 행동을 다시 찾는 데 사용해요.",
+            "현재 목록의 기록을 확인해요.",
+            "이용 가능한 보기로 전환해요.",
+            "목록 안에서 검색해요.",
           ],
         },
         {
           id: "deal-review",
-          title: "딜과 후속 행동 점검",
+          title: "분석 리포트 안내",
           paragraphs: [
-            "영업 리포트는 어떤 딜이 멈췄는지, 어떤 고객에게 연락해야 하는지 확인하는 기준이 돼요.",
+            "자동 집계와 성과 분석 리포트는 현재 제공하지 않아요.",
           ],
           bullets: [
-            "마감일이 가까운 딜을 먼저 확인해요.",
-            "연락이 끊긴 고객과 거래를 다시 살펴봐요.",
-            "필요한 경우 다음 일정을 바로 정리해요.",
+            "매출 예측은 미제공이에요.",
+            "전환율 분석은 미제공이에요.",
+            "주간 보고서 자동 생성은 미제공이에요.",
           ],
         },
         {
           id: "export",
-          title: "공유와 다운로드",
+          title: "공유와 다운로드 안내",
           paragraphs: [
-            "리포트는 개인 점검뿐 아니라 팀 공유나 월간 검토에도 사용할 수 있어요.",
+            "리포트 자동 발송과 파일 다운로드는 현재 제공 범위에 포함되지 않아요.",
           ],
           bullets: [
-            "필요한 일정 데이터를 XLSX로 내려받아요.",
-            "AI 리포트로 핵심 흐름을 빠르게 확인해요.",
-            "반복 검토에 필요한 기록을 한곳에 모아요.",
+            "리포트 자동 발송은 미제공이에요.",
+            "리포트 다운로드는 미제공이에요.",
+            "리포트 기능 공개 시점은 미정이에요.",
           ],
         },
       ],
@@ -457,385 +457,385 @@ const featureDetailCopyByLanguage: Record<
   },
   "en-US": {
     customers: {
-      title: "Customer management that keeps context together.",
+      title: "Keep customer details ready to find again.",
       description:
-        "Keep companies, contacts, phone numbers, and consultation notes connected around the customer instead of scattering them across tools.",
-      contentsLabel: "Customer management guide",
-      ctaTitle: "Ready to organize customer records?",
+        "Record customer information and update supported details directly in the table.",
+      contentsLabel: "Customer records",
+      ctaTitle: "Start with your first customer record.",
       ctaDescription:
-        "Bring scattered contacts and notes into a OneHand CRM customer workflow.",
+        "Check the current feature scope and explore how it fits your work.",
       quickCards: [
         {
-          title: "Companies and contacts",
+          title: "Add customer records",
           description:
-            "Manage accounts and the people you actually talk to separately.",
+            "Add a customer and fill in the information available on screen.",
         },
         {
-          title: "Sales context",
+          title: "Update information",
           description:
-            "See notes, schedules, deals, and meeting records beside the customer.",
+            "Edit changed information in the collection you are viewing.",
         },
         {
-          title: "Fast review",
+          title: "Find a customer",
           description:
-            "Find what you need before the next call or visit.",
+            "Search the current customer collection and save frequently used views as favorites.",
         },
       ],
       sections: [
         {
           id: "company-contact",
-          title: "Separate companies and contacts",
+          title: "Add customer records",
           paragraphs: [
-            "In sales, a company and a contact are not the same thing. Keep the account as the company and manage real conversations through contacts.",
+            "Add a customer and fill in the information available on screen.",
           ],
           bullets: [
-            "Store industry, address, main phone, and relationship context on companies.",
-            "Store name, title, phone, and email on contacts.",
-            "Review multiple contacts under the same company.",
+            "Add the customers you manage.",
+            "Fill in the supported information fields.",
+            "Review saved records in the table.",
           ],
         },
         {
           id: "context",
-          title: "Connect notes to customer context",
+          title: "Update information",
           paragraphs: [
-            "The important thing before the next customer touch is the last conversation and the next promise. OneHand CRM keeps schedules, meeting notes, and deals near the customer record.",
+            "Edit changed information in the collection you are viewing.",
           ],
           bullets: [
-            "Review customer notes and meeting records in one place.",
-            "See related deals and schedules from customer detail.",
-            "Find the reason for the next follow-up inside the record.",
+            "Find the record you need.",
+            "Update an editable cell.",
+            "Check the save result.",
           ],
         },
         {
           id: "field-check",
-          title: "Check details before field work",
+          title: "Find a customer",
           paragraphs: [
-            "Customer information should be easy to reopen before a visit or call, so follow-up can continue naturally.",
+            "Search the current customer collection and save frequently used views as favorites.",
           ],
           bullets: [
-            "Review recent meetings and active deals together.",
-            "Search by customer, company, or contact detail.",
-            "Add new notes and the next schedule after the visit.",
+            "Search within the current collection.",
+            "Choose an available view.",
+            "Open frequently used views from favorites.",
           ],
         },
       ],
     },
     pipeline: {
-      title: "A sales pipeline connected to next actions.",
+      title: "Review records by their current status.",
       description:
-        "Track deal stages, value, due dates, and customer context so you know which opportunities need attention first.",
-      contentsLabel: "Pipeline guide",
-      ctaTitle: "Ready to organize active deals?",
+        "See records in available table and board views.",
+      contentsLabel: "Progress views",
+      ctaTitle: "Review your records in an available view.",
       ctaDescription:
-        "Manage the flow from consultation to proposal and close in OneHand CRM.",
+        "Check the current feature scope and explore how it fits your work.",
       quickCards: [
         {
-          title: "Deal stages",
+          title: "Review the table",
           description:
-            "Track progress from first consultation to contract.",
+            "See multiple records and their information together.",
         },
         {
-          title: "Next actions",
+          title: "Review by status",
           description:
-            "Keep follow-up and schedules beside each deal.",
+            "When a board view is available, see records grouped by status.",
         },
         {
-          title: "Priority",
+          title: "Current scope",
           description:
-            "Use value, due dates, and customer reaction to choose what to review first.",
+            "Record viewing is separate from automation that is not available today.",
         },
       ],
       sections: [
         {
           id: "stages",
-          title: "Review deal status by stage",
+          title: "Review the table",
           paragraphs: [
-            "A pipeline is the shared view of where each opportunity stands. Clear stages make blocked and soon-to-close deals easier to spot.",
+            "See multiple records and their information together.",
           ],
           bullets: [
-            "Track stages such as new consultation, proposal, quote, and contract.",
-            "Keep value, due date, and customer on each deal.",
-            "Update the stage as the opportunity moves.",
+            "Review records in the collection.",
+            "Edit supported values in the table.",
+            "Search for a record.",
           ],
         },
         {
           id: "relationships",
-          title: "Connect customers, schedules, and notes",
+          title: "Review by status",
           paragraphs: [
-            "A deal does not stand alone. It needs the related customer, meeting history, and next schedule to make sense.",
+            "When a board view is available, see records grouped by status.",
           ],
           bullets: [
-            "Open related companies and contacts from the deal.",
-            "Keep meeting notes and schedules in deal context.",
-            "Review why follow-up is needed after a proposal.",
+            "Choose a saved board view.",
+            "Review records in each status.",
+            "Available views depend on the collection.",
           ],
         },
         {
           id: "priority",
-          title: "Find the deals that need attention",
+          title: "Current scope",
           paragraphs: [
-            "Salespeople cannot review every deal with the same intensity. OneHand CRM helps identify work by due dates, next actions, and customer response.",
+            "Record viewing is separate from automation that is not available today.",
           ],
           bullets: [
-            "Check deals with approaching due dates first.",
-            "Revisit deals where follow-up has gone quiet.",
-            "Review schedules and notes for important opportunities.",
+            "Dragging cards between stages is not available.",
+            "Automatic prioritization is not available.",
+            "Follow-up automation is not available.",
           ],
         },
       ],
     },
     "schedules-follow-up": {
-      title: "Schedules and follow-up in customer context.",
+      title: "Schedule and follow-up availability.",
       description:
-        "Connect visits, calls, and next contact timing to customers and deals so post-meeting work is not missed.",
-      contentsLabel: "Schedule and follow-up guide",
-      ctaTitle: "Ready to protect the next follow-up?",
+        "A dedicated calendar, reminders, and automatic follow-up are not currently available.",
+      contentsLabel: "Schedule availability",
+      ctaTitle: "Explore the record management available today.",
       ctaDescription:
-        "Keep customer schedules and follow-up in one workflow.",
+        "Check the current feature scope and explore how it fits your work.",
       quickCards: [
         {
-          title: "Visits and calls",
+          title: "Calendar availability",
           description:
-            "Save field meetings and calls beside customer records.",
+            "A dedicated calendar and external calendar connections are not currently available.",
         },
         {
-          title: "Next contact",
+          title: "Follow-up availability",
           description:
-            "Add the next touch and task right after the meeting.",
+            "Automatic contact and reminders about when to follow up are not currently available.",
         },
         {
-          title: "Weekly flow",
+          title: "What you can do today",
           description:
-            "Review this week's schedules and active deals together.",
+            "Current features focus on recording, updating, and viewing customer and work information.",
         },
       ],
       sections: [
         {
           id: "schedule",
-          title: "Schedules connected to customers",
+          title: "Calendar availability",
           paragraphs: [
-            "A schedule with only date and time is hard to use later. It needs the customer and reason for the meeting.",
+            "A dedicated calendar and external calendar connections are not currently available.",
           ],
           bullets: [
-            "Connect schedules to customers, companies, and deals.",
-            "Classify visits, calls, and online meetings by purpose.",
-            "Review customer information before the meeting.",
+            "No dedicated calendar view.",
+            "No external calendar sync.",
+            "No confirmed calendar release date.",
           ],
         },
         {
           id: "follow-up",
-          title: "Follow-up after meetings",
+          title: "Follow-up availability",
           paragraphs: [
-            "Adding the next action right after a consultation helps keep follow-up from breaking.",
+            "Automatic contact and reminders about when to follow up are not currently available.",
           ],
           bullets: [
-            "Add the next call or visit timing immediately.",
-            "Record customer requests and promises in meeting notes.",
-            "Connect follow-up to the deal stage.",
+            "No automatic message sending.",
+            "No follow-up reminders.",
+            "No automatic task execution.",
           ],
         },
         {
           id: "weekly",
-          title: "Weekly schedule review",
+          title: "What you can do today",
           paragraphs: [
-            "Seeing who you meet this week and which deals are attached makes daily planning faster.",
+            "Current features focus on recording, updating, and viewing customer and work information.",
           ],
           bullets: [
-            "Review customer and deal context in the weekly schedule.",
-            "Find missing follow-up and add it back.",
-            "Export schedule data as XLSX when needed.",
+            "Add customer and work records.",
+            "Update information in a table.",
+            "Search the current collection.",
           ],
         },
       ],
     },
     "activity-records": {
-      title: "Activity records that carry work forward.",
+      title: "Keep the information your work depends on.",
       description:
-        "Connect meeting notes, memos, and follow-up details to customers and deals so the next conversation starts from the same context.",
-      contentsLabel: "Activity records guide",
-      ctaTitle: "Ready to keep consultation records organized?",
+        "Add and update information so you can return to it when you need it.",
+      contentsLabel: "Work records",
+      ctaTitle: "Keep a record for your next conversation.",
       ctaDescription:
-        "Keep customer activities and meeting notes connected in OneHand CRM.",
+        "Check the current feature scope and explore how it fits your work.",
       quickCards: [
         {
-          title: "Meeting notes",
+          title: "Add a record",
           description:
-            "Capture consultation details, decisions, and next actions.",
+            "Choose a collection and fill in the supported information fields.",
         },
         {
-          title: "Memos",
+          title: "Update information",
           description:
-            "Save small customer signals and internal checks.",
+            "Update supported details in the table as your work progresses.",
         },
         {
-          title: "Activity flow",
+          title: "Current scope",
           description:
-            "Keep records beside customers, deals, and schedules.",
+            "Basic record management is separate from dedicated meeting and activity features.",
         },
       ],
       sections: [
         {
           id: "meeting-notes",
-          title: "Turn meeting notes into work records",
+          title: "Add a record",
           paragraphs: [
-            "Meeting details fade quickly. Notes help you reopen customer requirements and promised next actions.",
+            "Choose a collection and fill in the supported information fields.",
           ],
           bullets: [
-            "Separate background, requirements, and decisions.",
-            "Connect meeting notes to customers and deals.",
-            "Review previous notes before the next meeting.",
+            "Choose what you manage.",
+            "Add a record.",
+            "Fill in the fields available on screen.",
           ],
         },
         {
           id: "memo",
-          title: "Customer memos and internal notes",
+          title: "Update information",
           paragraphs: [
-            "Short notes can become important relationship context, such as preferred contact time, product interest, or an issue to confirm.",
+            "Update supported details in the table as your work progresses.",
           ],
           bullets: [
-            "Keep small context by customer.",
-            "Record internal checks related to products or proposals.",
-            "Keep internal checks clear before the next follow-up.",
+            "Find the record you need.",
+            "Edit supported information.",
+            "Keep your records up to date.",
           ],
         },
         {
           id: "continuity",
-          title: "Records that support the next conversation",
+          title: "Current scope",
           paragraphs: [
-            "The goal is not writing more. The goal is making the next conversation easier to continue.",
+            "Basic record management is separate from dedicated meeting and activity features.",
           ],
           bullets: [
-            "Connect next actions to schedules or deals.",
-            "Record customer reactions and reasons for delay.",
-            "Review past context during follow-up.",
+            "Record creation, editing, and viewing are available.",
+            "Dedicated meeting notes and call recording are not available.",
+            "An automatic activity timeline is not available.",
           ],
         },
       ],
     },
     "ai-sales-assistant": {
-      title: "An AI sales assistant for reducing repetitive cleanup.",
+      title: "Current availability of AI features.",
       description:
-        "AI helps summarize meeting notes, draft next actions, and organize follow-up while users review before saving.",
-      contentsLabel: "AI sales assistant guide",
-      ctaTitle: "Ready to reduce repetitive cleanup with AI?",
+        "AI summaries, message drafts, and next-action recommendations are not currently available.",
+      contentsLabel: "AI availability",
+      ctaTitle: "Explore the record management available today.",
       ctaDescription:
-        "Keep important judgment with the seller and let AI create faster starting points.",
+        "Check the current feature scope and explore how it fits your work.",
       quickCards: [
         {
-          title: "Summaries",
+          title: "Summaries and drafts",
           description:
-            "Turn long consultation notes into easier summaries.",
+            "AI conversation summaries and message drafts are not currently available.",
         },
         {
-          title: "Next actions",
+          title: "Recommendations and actions",
           description:
-            "Draft follow-up tasks after each meeting.",
+            "AI does not currently prioritize customers or execute follow-up work.",
         },
         {
-          title: "User review",
+          title: "What you can do today",
           description:
-            "AI output is reviewed before it becomes a record.",
+            "Enter and edit information yourself, then use search and available views to review it.",
         },
       ],
       sections: [
         {
           id: "summary",
-          title: "Meeting note summaries",
+          title: "Summaries and drafts",
           paragraphs: [
-            "AI can create a starting point by pulling out customer requirements, decisions, and next actions from longer notes.",
+            "AI conversation summaries and message drafts are not currently available.",
           ],
           bullets: [
-            "Summarize consultation details into key points.",
-            "Separate customer requests from internal checks.",
-            "Make notes easier to review before the next meeting.",
+            "No AI meeting summaries.",
+            "No AI consultation summaries.",
+            "No AI message drafts.",
           ],
         },
         {
           id: "drafts",
-          title: "Follow-up drafts",
+          title: "Recommendations and actions",
           paragraphs: [
-            "Next actions are easy to miss after a meeting. AI can help draft follow-up and task cleanup.",
+            "AI does not currently prioritize customers or execute follow-up work.",
           ],
           bullets: [
-            "Draft what needs to be sent or checked next.",
-            "Organize tasks using customer and deal context.",
-            "Reduce time spent rewriting repetitive records.",
+            "No automatic prioritization.",
+            "No next-action recommendations.",
+            "No automatic follow-up.",
           ],
         },
         {
           id: "control",
-          title: "Review and save under user control",
+          title: "What you can do today",
           paragraphs: [
-            "AI output should pass through seller judgment. OneHand CRM is designed around reviewable drafts rather than automatic saving.",
+            "Enter and edit information yourself, then use search and available views to review it.",
           ],
           bullets: [
-            "Read and edit AI output before saving.",
-            "Save only confirmed content to customer records.",
-            "Let users make the final call on sensitive customer information.",
+            "Enter records directly.",
+            "Update supported information in the table.",
+            "There is no confirmed AI release date.",
           ],
         },
       ],
     },
     reports: {
-      title: "Reports for reviewing the week's sales flow.",
+      title: "Current availability of reports.",
       description:
-        "Use reports to review schedules, deals, follow-up, and AI summaries so current status and next priorities are easier to see.",
-      contentsLabel: "Reports guide",
-      ctaTitle: "Ready to review this week's sales flow?",
+        "Automated dashboards, weekly reports, and report downloads are not currently available.",
+      contentsLabel: "Report availability",
+      ctaTitle: "Start by reviewing your records.",
       ctaDescription:
-        "Turn scattered schedules and deal movement into a clearer report.",
+        "Check the current feature scope and explore how it fits your work.",
       quickCards: [
         {
-          title: "Weekly schedules",
+          title: "View your records",
           description:
-            "Review this week's customer meetings and visits together.",
+            "Review records in the table and other available views.",
         },
         {
-          title: "Deal review",
+          title: "Analysis availability",
           description:
-            "Check active opportunities and deals close to due dates.",
+            "Automatic reporting and performance analysis are not currently available.",
         },
         {
-          title: "AI summary",
+          title: "Sharing and downloads",
           description:
-            "Review key movement and next actions in a summary.",
+            "Automatic report delivery and file downloads are not currently available.",
         },
       ],
       sections: [
         {
           id: "weekly",
-          title: "Review the weekly sales flow",
+          title: "View your records",
           paragraphs: [
-            "Reports should not stop at showing records. They should clarify what needs attention this week.",
+            "Review records in the table and other available views.",
           ],
           bullets: [
-            "Review weekly schedules and customer meetings.",
-            "Check schedules connected to active deals.",
-            "Use reports to find missing follow-up.",
+            "Review records in the current collection.",
+            "Switch between available views.",
+            "Search within the collection.",
           ],
         },
         {
           id: "deal-review",
-          title: "Check deals and next actions",
+          title: "Analysis availability",
           paragraphs: [
-            "Sales reports help identify stalled deals and customers who need another touch.",
+            "Automatic reporting and performance analysis are not currently available.",
           ],
           bullets: [
-            "Review deals with approaching due dates.",
-            "Find customers where contact has gone quiet.",
-            "Add the next schedule when needed.",
+            "No revenue forecasting.",
+            "No conversion analysis.",
+            "No automatically generated weekly reports.",
           ],
         },
         {
           id: "export",
-          title: "Share and download",
+          title: "Sharing and downloads",
           paragraphs: [
-            "Reports can support personal review, team sharing, or monthly check-ins.",
+            "Automatic report delivery and file downloads are not currently available.",
           ],
           bullets: [
-            "Download schedule data as XLSX when needed.",
-            "Use AI reports to review key movement quickly.",
-            "Keep records for repeated review in one place.",
+            "No automatic report delivery.",
+            "No report downloads.",
+            "There is no confirmed reporting release date.",
           ],
         },
       ],

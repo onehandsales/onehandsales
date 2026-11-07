@@ -24,6 +24,7 @@ import {
   usePublicSiteLanguage,
   type PublicSiteCopyLanguage,
 } from "@/features/public-site/i18n/public-site-language";
+import { usePublicProductImage } from "@/features/public-site/use-public-product-image";
 
 type AuthLandingPageProps = {
   readonly children?: ReactNode;
@@ -92,8 +93,6 @@ const landingHeroSectionHeightClassName = "landing-hero-section-height";
 const landingSectionHeightClassName = "landing-section-height";
 const landingCenteredSectionClassName =
   `${landingSectionHeightClassName} flex items-center justify-center`;
-const realMomentImageUrl =
-  "https://images.pexels.com/photos/13801454/pexels-photo-13801454.jpeg?auto=compress&cs=tinysrgb&w=2400";
 
 const heroRotatingWordStyles = [
   {
@@ -145,76 +144,76 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "OneHand CRM", suffix: "이 간단해요." },
-        { label: "세일즈", suffix: "가 간단해요." },
-        { label: "AI", suffix: "가 간단해요." },
-        { label: "B2C", suffix: "가 간단해요." },
-        { label: "B2B", suffix: "가 간단해요." },
-        { label: "CRM", suffix: "이 간단해요." },
-        { label: "모든 것", suffix: "이 간단해요." },
+        { label: "고객 정보", suffix: "를 한곳에." },
+        { label: "업무 기록", suffix: "을 한곳에." },
+        { label: "회사 정보", suffix: "를 한곳에." },
+        { label: "담당자 정보", suffix: "를 한곳에." },
+        { label: "상담 내용", suffix: "을 한곳에." },
+        { label: "필요한 정보", suffix: "를 한곳에." },
+        { label: "내 업무", suffix: "를 한곳에." },
       ],
     },
     realMoment: {
-      title: "언제든 어디서든\n업무를 확인하세요.",
-      imageAlt: "도심에서 스마트폰으로 업무를 확인하는 영업자",
+      title: "고객과 업무 기록을\n한눈에 확인해요.",
+      imageAlt: "예시 데이터로 고객 기록을 확인하는 실제 OneHand CRM 테이블 화면",
     },
     flow: {
-      title: "흩어진 기록이 거래 성사까지 이어져요.",
+      title: "남긴 기록을, 다음 업무에서 다시 꺼내요.",
       description:
-        "연락처, 메모, 엑셀, 일정이 고객 흐름으로 모이고 후속 연락과 거래 성사로 이어집니다.",
-      inputs: ["연락처", "메모", "엑셀", "일정"],
-      recordLabel: "고객 흐름",
-      followUpLabel: "후속 연락",
-      resultLabel: "거래 성사",
+        "고객과 업무 정보를 기록하고, 필요할 때 찾아 확인해요.",
+      inputs: ["고객 정보", "회사 정보", "담당자", "상담 내용"],
+      recordLabel: "업무 기록",
+      followUpLabel: "기록 찾기",
+      resultLabel: "업무에 활용",
     },
     persona: {
-      title: "관계를 들고 움직이는 영업자를 위해 만들었어요.",
+      title: "고객과의 관계를 직접 챙기는 사람을 위해.",
       description:
-        "고객 앞에서 필요한 정보를 바로 찾고, 미팅 후 정리를 미루고 싶지 않은 사람에게 맞췄어요.",
+        "어떤 일을 하든, 다시 찾아볼 정보가 있다면 기록부터 정리해 보세요.",
       personas: [
         {
-          title: "B2B 영업",
-          description: "회사, 담당자, 제품, 딜을 함께 봐야 하는 영업자",
+          title: "B2B 고객 관리",
+          description: "회사와 담당자 정보를 정리하고 싶은 사람",
         },
         {
           title: "보험 · 부동산 · 자동차",
-          description: "상담 기록과 후속 연락을 놓치기 쉬운 영업자",
+          description: "고객별로 확인할 정보를 모아두고 싶은 사람",
         },
         {
-          title: "컨설턴트",
-          description: "고객별 맥락을 오래 기억해야 하는 전문가",
+          title: "프리랜서 · 컨설턴트",
+          description: "여러 고객의 업무 정보를 구분하고 싶은 사람",
         },
         {
-          title: "개인 영업자",
-          description: "회사 CRM보다 빠른 개인 정리가 필요한 사람",
+          title: "혼자 일하는 사람",
+          description: "기억에 의존하던 고객 관리를 정리하고 싶은 사람",
         },
       ],
     },
     trustProof: {
-      title: "기록은 가볍게 다루지 않아요.",
+      title: "기록하고, 고치고, 다시 찾는 일을 간단하게.",
       description:
-        "OneHand CRM은 개인 영업자의 고객 기록을 빠르게 다루되, 저장과 복구의 기준은 분명하게 둡니다.",
+        "자주 하는 기록 관리에 필요한 기능을 한곳에서 사용해요.",
       proofs: [
         {
-          title: "개인 데이터 기준",
-          description: "사용자 본인 기록만 다루고 관리자 영역은 분리해요.",
+          title: "목록에서 바로 수정",
+          description: "바뀐 내용을 현재 화면에서 고쳐요.",
         },
         {
-          title: "AI는 초안만",
-          description: "AI가 만든 내용은 사용자가 확인한 뒤 저장해요.",
+          title: "보기 전환",
+          description: "이용할 수 있는 보기 중 필요한 화면을 선택해요.",
         },
         {
-          title: "엑셀 다운로드",
-          description: "회사, 담당자, 제품, 딜 기록을 내려받을 수 있어요.",
+          title: "필요한 기록 검색",
+          description: "보고 있는 목록에서 원하는 기록을 찾아요.",
         },
         {
-          title: "통합 검색",
-          description: "등록한 회사 기록을 빠르게 다시 찾을 수 있어요.",
+          title: "즐겨찾기",
+          description: "자주 사용하는 보기를 다시 열기 쉽게 모아둬요.",
         },
       ],
     },
     final: {
-      title: "오늘 바로 시작하세요.",
+      title: "첫 기록부터 시작해 보세요.",
       description: "",
       primaryCta: "OneHand CRM 시작",
       secondaryCta: "데모 요청",
@@ -224,77 +223,77 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "OneHand CRM", suffix: "is Simple." },
-        { label: "Sales", suffix: "is Simple." },
-        { label: "AI", suffix: "is Simple." },
-        { label: "B2C", suffix: "is Simple." },
-        { label: "B2B", suffix: "is Simple." },
-        { label: "CRM", suffix: "is Simple." },
-        { label: "Everything", suffix: "is Simple." },
+        { label: "Customer details", suffix: "in one place." },
+        { label: "Work records", suffix: "in one place." },
+        { label: "Company details", suffix: "in one place." },
+        { label: "Contact details", suffix: "in one place." },
+        { label: "Conversation notes", suffix: "in one place." },
+        { label: "Useful information", suffix: "in one place." },
+        { label: "Your work", suffix: "in one place." },
       ],
     },
     realMoment: {
-      title: "Anytime, Anywhere.\nCheck your Work.",
-      imageAlt: "A salesperson checking work on a smartphone in the city",
+      title: "Your customers and work,\nat a glance.",
+      imageAlt: "Actual OneHand CRM customer table with illustrative sample data",
     },
     flow: {
-      title: "Scattered records become closed deals.",
+      title: "Keep records ready for your next conversation.",
       description:
-        "Cards, notes, Excel, and calendar moments become customer flow, follow-up, and closed deals.",
-      inputs: ["Cards", "Notes", "Excel", "Calendar"],
-      recordLabel: "Customer flow",
-      followUpLabel: "Follow-up",
-      resultLabel: "Closed deal",
+        "Record customer and work information, then find it when you need it.",
+      inputs: ["Customers", "Companies", "Contacts", "Notes"],
+      recordLabel: "Work records",
+      followUpLabel: "Find a record",
+      resultLabel: "Use it at work",
     },
     persona: {
-      title: "Made for relationship-driven sellers.",
+      title: "For people who look after customer relationships.",
       description:
-        "For people who need customer context and a clear next step after every meeting.",
+        "Keep the information you need to return to, whatever your work involves.",
       personas: [
         {
-          title: "B2B sales",
-          description: "Manage companies, contacts, products, and deals together.",
+          title: "B2B customer work",
+          description: "For people organizing company and contact information",
         },
         {
-          title: "Insurance, real estate, auto",
-          description: "Keep consultation notes and follow-ups close.",
+          title: "Property · Insurance · Auto",
+          description: "For people keeping information for each customer",
         },
         {
-          title: "Consultants",
-          description: "Keep long-running customer context in one place.",
+          title: "Freelancers · Consultants",
+          description: "For people managing information across clients",
         },
         {
-          title: "Independent sellers",
-          description: "Use a faster personal layer than company CRM.",
+          title: "Independent professionals",
+          description: "For people moving customer details out of memory",
         },
       ],
     },
     trustProof: {
-      title: "Your records stay intentional.",
+      title: "Capture, update, and find your records.",
       description:
-        "OneHand CRM helps you move fast without turning customer records into automatic guesswork.",
+        "Keep everyday record management close to the work.",
       proofs: [
         {
-          title: "Personal data boundary",
-          description: "User records stay scoped to the person who owns them.",
+          title: "Edit in the table",
+          description: "Update supported information in the current view.",
         },
         {
-          title: "AI drafts only",
-          description: "AI output is reviewed by the user before it is saved.",
+          title: "Switch views",
+          description: "Choose from the views available for your records.",
         },
         {
-          title: "Excel download",
+          title: "Search your records",
           description:
-            "Companies, contacts, products, and deals can be exported.",
+            "Find a record in the collection you are viewing.",
         },
         {
-          title: "Integrated search",
-          description: "Find registered company records quickly.",
+          title: "Favorites",
+          description: "Keep frequently used views easy to open again.",
         },
       ],
     },
     final: {
-      title: "Get started today.",
+      title: "Start with your first record.",
       description: "",
       primaryCta: "Get OneHand CRM",
       secondaryCta: "Request a Demo",
@@ -737,6 +736,8 @@ function HeroSection({ copy }: { readonly copy: LandingCopy }) {
 
 // 기능 : RealMomentSection section UI를 렌더링합니다.
 function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
+  const { language } = usePublicSiteLanguage();
+  const productImage = usePublicProductImage("/public-site/product/overview.jpg", language);
   return (
     <section
       className={`relative ${landingSectionHeightClassName} overflow-hidden bg-white`}
@@ -745,7 +746,7 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
         alt={copy.realMoment.imageAlt}
         className="absolute inset-0 h-full w-full object-cover"
         loading="lazy"
-        src={realMomentImageUrl}
+        src={productImage}
         style={{ objectPosition: "58% center" }}
       />
       <div

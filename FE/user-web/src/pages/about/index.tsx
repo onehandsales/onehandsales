@@ -61,127 +61,127 @@ const storyVisuals: readonly {
 
 const aboutCopyByLanguage: Record<PublicSiteCopyLanguage, AboutCopy> = {
   ko: {
-    title: "OneHand CRM 소개",
-    finalTitle: "OneHand CRM으로 고객 업무를 쉽게 관리해약.",
+    title: "OneHand CRM을 만드는 이유.",
+    finalTitle: "지금의 OneHand CRM을 살펴보세요.",
     intro: [
-      "통화를 끝낸 뒤 다음 액션은 다른 도구에 적고, 계정 정보는 또 다른 곳에 업데이트하고, 일주일 뒤 약속 내용을 다시 찾느라 시간을 쓴 적이 있다면 OneHand CRM이 왜 필약한지 이미 알고 있습니다.",
-      "우리는 기록, 업무, 제품 정보, AI 지원이 한곳에 있는 세일즈 워크스페이스를 만들고 있습니다. 팀이 맥락을 다시 조립하는 시간보다 고객과 보내는 시간을 늘리기 위해서입니다.",
+      "고객과 업무에 관한 정보를 남기고도 필요한 순간에 다시 찾기 어려울 때가 있어요. OneHand CRM은 기록을 관리하는 기본 경험에 집중해요.",
+      "CRM을 잘 다루는 일보다 내 일을 잘하는 데 집중할 수 있도록, 내 업무에 맞는 CRM을 만드는 것이 목표예요.",
     ],
     chapterLabel: "챕터",
     storyBlocks: [
       {
-        title: "세일즈 업무는 대화 속에서 시작됐습니다.",
+        title: "필요한 순간에 찾는 기록",
         description:
-          "고객 맥락은 통화, 채팅, 이메일, 메모에서 빠르게 움직였지만 오래 정리되어 남지는 못했습니다.",
-        detail: "팀은 거래를 성사시켜도 다음 후속 업무의 이유를 잃곤 했습니다.",
+          "기록은 남기는 것만큼 다시 찾을 수 있는 것이 중요해요.",
+        detail: "고객과 업무 정보를 확인하고 수정하는 기본 흐름부터 다듬어요.",
       },
       {
-        title: "이후 모든 도구가 또 하나의 검색 장소가 됐습니다.",
+        title: "일마다 다른 관리 방식",
         description:
-          "CRM, 스프레드시트, 회의록, 제안서, 업무, 위키가 각자 다른 사실을 담았습니다.",
-        detail: "업무는 기록됐지만 적절한 답을 찾는 일은 여전히 기억에 의존했습니다.",
+          "부동산 중개사와 컨설턴트가 관리하는 정보는 달라요.",
+        detail: "사용자가 하는 일을 이해하는 CRM을 지향해요.",
       },
       {
-        title: "AI는 사라진 맥락을 복구하기 쉽게 만들었습니다.",
+        title: "시작부터 복잡하지 않게",
         description:
-          "이미 일어난 업무에서 약약, 초안, 알림, 답변을 만들 수 있게 됐습니다.",
+          "CRM 구조를 공부하기보다 첫 기록을 남기는 일에 집중할 수 있어야 해요.",
         detail:
-          "OneHand CRM은 빈 프롬프트가 아니라 세일즈 기록을 이해하는 어시스턴트를 중심으로 설계됩니다.",
+          "시작할 때 필요한 결정을 줄이는 경험을 목표로 해요.",
       },
       {
-        title: "워크스페이스는 더 단순해져야 했습니다.",
+        title: "일이 바뀌어도 이어서",
         description:
-          "작은 팀이 어떤 계정이 바뀌었는지, 무엇을 약속했는지, 다음 일이 무엇인지 알기 위해 복잡한 스택을 가질 필약는 없습니다.",
+          "처음의 관리 방식이 나중의 업무를 제한하지 않아야 해요.",
         detail:
-          "OneHand CRM은 계정 업무, 고객 메모, 제품 정보, 다음 액션을 조용한 하나의 운영 공간에 모읍니다.",
+          "필요에 맞춰 확장되는 경험을 목표로 해요.",
       },
       {
-        title: "우리의 목표는 고객 순간 사이의 관리 업무를 줄이는 것입니다.",
+        title: "우리가 지향하는 OneHand CRM",
         description:
-          "좋은 세일즈 도구는 고객 관계를 지키고 그 주변의 반복 업무를 덜어야 합니다.",
+          "CRM을 배우거나 설계할 필요 없이, 내 일에 맞는 CRM이 바로 준비되는 것.",
         detail:
-          "그래서 OneHand CRM은 깔끔한 기록, 빠른 캡처, 실제 업무 흐름에 가까운 AI 지원에 집중합니다.",
+          "업무별 자동 준비는 현재 제공 기능과 구분되는 제품 방향이에요.",
       },
     ],
     joinTitle: "함께 만들기",
     joinDescription:
-      "OneHand CRM은 실용적인 소프트웨어, 세심한 제품 설계, 고객 업무를 가볍게 만드는 작은 디테일을 중약하게 여기는 사람들이 만듭니다.",
-    joinCardTitle: "세일즈 팀을 위한 집중된 도구를 함께 만들고 싶으신가약?",
-    joinCta: "OneHand CRM에 문의",
+      "고객과 업무 정보를 관리하는 실제 경험을 제품에 반영하고 싶어요.",
+    joinCardTitle: "어떤 일을 하고 계신가요?",
+    joinCta: "내 업무 이야기하기",
     newsTitle: "새 소식",
-    newsDescription: "OneHand CRM을 실제 팀과 함께 만들며 계속 공유하는 주제들입니다.",
+    newsDescription: "현재 제품에서 확인할 수 있는 기능과 활용 예시를 정리했어요.",
     newsItems: [
-      "반복 고객 업무에 맞춘 AI 워크스페이스를 소개합니다.",
-      "작은 세일즈 팀이 후속 업무, 메모, 딜 맥락을 맞추는 방법.",
-      "업무를 대신하지 않고 돕는 실용적인 AI 에이전트 설계.",
-      "고객 기억이 업무, 제품, 회의 옆에 있어야 하는 이유.",
-      "빠르게 움직이는 팀을 위한 더 조용한 CRM 경험 만들기.",
-      "흩어진 스프레드시트를 대체하는 팀에게서 배우는 것.",
+      "고객 정보를 기록하고 수정하는 현재 기능 안내",
+      "테이블·칸반·리스트 보기의 제공 범위 안내",
+      "현재 목록에서 필요한 기록을 검색하는 방법",
+      "자주 보는 화면을 즐겨찾기에 모으는 방법",
+      "개인 업무에서 기록을 정리하는 활용 예시",
+      "현재 기능과 앞으로의 제품 방향 안내",
     ],
-    sceneLabels: ["고객", "맥락", "어시스턴트"],
+    sceneLabels: ["고객", "기록", "내 업무"],
   },
   "en-US": {
-    title: "OneHand CRM Introduction",
-    finalTitle: "Get to know OneHand CRM, then start today.",
+    title: "Why we are building OneHand CRM.",
+    finalTitle: "Explore OneHand CRM today.",
     intro: [
-      "If you have ever finished a call, written the next step in one tool, updated the account in another, and then searched for the exact promise a week later, you already know why OneHand CRM exists.",
-      "We are building a sales workspace where records, tasks, product information, and AI assistance live together so teams can spend more time with customers and less time rebuilding context.",
+      "Information is only useful if you can find it again when you need it. OneHand CRM focuses on the everyday experience of managing records.",
+      "Our goal is a CRM shaped for your work, so you can focus on doing that work rather than learning how to design a CRM.",
     ],
     chapterLabel: "Chapter",
     storyBlocks: [
       {
-        title: "Sales work used to live in conversations.",
+        title: "Records you can return to",
         description:
-          "Customer context started in calls, chat, email, and notes. It moved fast, but it rarely stayed organized.",
+          "Finding a record again matters as much as capturing it.",
         detail:
-          "Teams could close deals, yet still lose the reason behind the next follow-up.",
+          "We are refining the basics of viewing and updating customer and work information.",
       },
       {
-        title: "Then every tool became another place to search.",
+        title: "Different work needs different information",
         description:
-          "CRMs, spreadsheets, call notes, proposals, tasks, and internal wikis each held a different part of the truth.",
+          "A property professional and a consultant manage different information.",
         detail:
-          "The work was documented, but finding the right answer still depended on memory.",
+          "We aim to build a CRM that understands the work you do.",
       },
       {
-        title: "AI made the missing context easier to recover.",
+        title: "A simpler start",
         description:
-          "Summaries, drafts, reminders, and answers can now be generated from the work that already happened.",
+          "Getting started should focus on your first record.",
         detail:
-          "OneHand CRM is built around that shift: assistants that understand the sales record, not a blank prompt.",
+          "Our goal is to reduce the decisions needed before useful work begins.",
       },
       {
-        title: "The workspace needed to become simpler.",
+        title: "Room for work to change",
         description:
-          "A small team should not need a complex stack just to know which account changed, what was promised, and what comes next.",
+          "Your starting structure should not limit the work you do later.",
         detail:
-          "OneHand CRM keeps account work, customer notes, product details, and next steps in one quiet operating space.",
+          "We aim for an experience that can grow with your needs.",
       },
       {
-        title: "Our goal is less admin between every customer moment.",
+        title: "The OneHand CRM we are building",
         description:
-          "The best sales tools should protect the customer relationship and remove repetitive work around it.",
+          "A CRM ready for your work, without having to learn or design it.",
         detail:
-          "That is why OneHand CRM focuses on clean records, fast capture, and AI help that stays close to the workflow.",
+          "Automatic work-specific setup is our direction, separate from the current feature set.",
       },
     ],
     joinTitle: "Join us",
     joinDescription:
-      "OneHand CRM is made by people who care about practical software, careful product design, and the day-to-day details that make customer work feel lighter.",
-    joinCardTitle: "Interested in building focused tools for sales teams?",
-    joinCta: "Talk to OneHand CRM",
+      "We want the product to reflect how people actually manage customer and work information.",
+    joinCardTitle: "What does your work involve?",
+    joinCta: "Tell us about your work",
     newsTitle: "In the news",
     newsDescription:
-      "A few themes we keep sharing as we build OneHand CRM with working teams.",
+      "Updates on the current feature scope and examples of how to use it.",
     newsItems: [
-      "OneHand CRM introduces an AI workspace shaped for recurring customer work.",
-      "How small sales teams keep follow-ups, notes, and deal context in sync.",
-      "Designing practical AI agents that help without taking over the workflow.",
-      "Why customer memory should live beside tasks, products, and meetings.",
-      "Building a quieter CRM experience for teams that move quickly.",
-      "What we are learning from teams replacing scattered spreadsheets.",
+      "Current features for adding and updating customer records",
+      "Availability of table, board, and list views",
+      "Finding a record in your current collection",
+      "Keeping useful views in favorites",
+      "An example of organizing records for individual work",
+      "Current features and the product direction ahead",
     ],
-    sceneLabels: ["Customers", "Context", "Assistants"],
+    sceneLabels: ["Customers", "Records", "Your work"],
   },
 };
 
