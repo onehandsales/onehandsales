@@ -2,6 +2,10 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
+  FileText,
+  Mail,
+  UsersRound,
+  type LucideIcon,
 } from "lucide-react";
 import {
   useEffect,
@@ -23,12 +27,12 @@ const contactStepIds = ["email", "size", "profile", "context"] as const;
 
 type ContactStepId = (typeof contactStepIds)[number];
 
-const contactIllustrationByStep: Record<ContactStepId | "done", string> = {
-  email: "/public-site/contact/request-email.svg",
-  size: "/public-site/contact/request-team-size.svg",
-  profile: "/public-site/contact/request-document.svg",
-  context: "/public-site/contact/request-document.svg",
-  done: "/public-site/contact/request-waiting.svg",
+const contactIconByStep: Record<ContactStepId | "done", LucideIcon> = {
+  email: Mail,
+  size: UsersRound,
+  profile: FileText,
+  context: FileText,
+  done: Check,
 };
 
 type ContactFormValues = {
@@ -221,7 +225,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
   "en-US": {
     next: "Next",
     submit: "Submit",
-    home: "Back to OneHand",
+    home: "Back to OneHand CRM",
     required: "This field is required.",
     emailInvalid: "Enter a valid work email address.",
     submitFailed: "We could not submit your request. Try again in a moment.",
@@ -232,7 +236,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
       placeholder: "you@company.com",
     },
     size: {
-      title: "How many people will use OneHand?",
+      title: "How many people will use OneHand CRM?",
       options: [
         { value: "1-9", label: "1-9 employees" },
         { value: "10-49", label: "10-49 employees" },
@@ -262,7 +266,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
         phone: "(123) 456-7890",
       },
       marketingAgreement:
-        "I agree to receive product updates and onboarding messages from OneHand.",
+        "I agree to receive product updates and onboarding messages from OneHand CRM.",
     },
     context: {
       title: "We will be in touch soon.",
@@ -290,7 +294,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
     done: {
       title: "Your request was received.",
       description:
-        "The OneHand team will review your details and contact you by work email.",
+        "The OneHand CRM Team will review your details and contact you by work email.",
       emailLabel: "Email",
       sizeLabel: "Team size",
     },
@@ -452,8 +456,10 @@ export function ContactPage() {
         </div>
       </header>
 
-      <section className="mx-auto grid min-h-dvh w-full max-w-[1100px] items-start gap-10 px-[14px] pb-10 pt-24 sm:px-6 lg:grid-cols-[minmax(0,520px)_minmax(300px,1fr)] lg:items-center lg:px-8 lg:py-24">
-        <div className="min-w-0 w-full max-w-[508px] justify-self-center lg:max-w-none lg:justify-self-auto">
+      <section className="mx-auto flex min-h-dvh w-full max-w-[572px] flex-col items-center justify-start gap-4 px-[14px] pb-10 pt-24 sm:px-8 sm:pb-16">
+        <ContactStepIcon step={isSubmitted ? "done" : currentStep} />
+
+        <div className="min-w-0 w-full max-w-[508px]">
           {isSubmitted ? (
             <ContactDone
               copy={copy}
@@ -463,7 +469,7 @@ export function ContactPage() {
             />
           ) : (
             <>
-              <p className="mb-5 text-[13px] font-normal text-[#777770]">
+              <p className="mb-5 text-center text-[13px] font-normal text-[#777770]">
                 {copy.progress(stepIndex + 1, contactStepIds.length)}
               </p>
 
@@ -511,8 +517,6 @@ export function ContactPage() {
             </>
           )}
         </div>
-
-        <ContactIllustration step={isSubmitted ? "done" : currentStep} />
       </section>
     </main>
   );
@@ -536,7 +540,7 @@ function EmailStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+      <h1 className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.email.title}
       </h1>
 
@@ -581,7 +585,7 @@ function SizeStep({
       aria-labelledby="contact-size-title"
     >
       <h1
-        className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
+        className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
         id="contact-size-title"
       >
         {copy.size.title}
@@ -633,12 +637,12 @@ function ProfileStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+      <h1 className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.profile.title}
       </h1>
-      <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
+      <p className="mx-auto mt-5 max-w-[500px] break-keep text-center text-[15px] font-normal leading-7 text-[#333330]">
         {copy.profile.descriptionPrefix}
-        <strong className="break-all font-normal text-[#050505]">
+        <strong className="break-all font-normal text-[#4880EE]">
           {values.email}
         </strong>
         {copy.profile.descriptionSuffix}
@@ -694,7 +698,7 @@ function ProfileStep({
         />
       </div>
 
-      <label className="mt-6 flex items-start gap-3 text-[13px] font-normal leading-6 text-[#333330]">
+      <label className="mt-6 flex items-start gap-3 text-[11px] font-normal leading-6 text-[#333330]">
         <input
           checked={values.marketingAgreement}
           className="mt-1 h-4 w-4 shrink-0 accent-[#111111]"
@@ -744,10 +748,10 @@ function ContextStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+      <h1 className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.context.title}
       </h1>
-      <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
+      <p className="mx-auto mt-5 max-w-[500px] break-keep text-center text-[15px] font-normal leading-7 text-[#333330]">
         {copy.context.descriptionPrefix}
         <strong className="break-all font-normal text-[#050505]">
           {email}
@@ -802,16 +806,13 @@ function ContactDone({
       className="min-w-0 w-full max-w-[508px]"
       aria-labelledby="contact-done-title"
     >
-      <div className="grid h-11 w-11 place-items-center rounded-full bg-[#4880EE] text-white">
-        <Check className="h-5 w-5" />
-      </div>
       <h1
-        className="mt-8 break-keep text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
+        className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
         id="contact-done-title"
       >
         {copy.done.title}
       </h1>
-      <p className="mt-5 max-w-[500px] break-keep text-[15px] font-normal leading-7 text-[#333330]">
+      <p className="mx-auto mt-5 max-w-[500px] break-keep text-center text-[15px] font-normal leading-7 text-[#333330]">
         {copy.done.description}
       </p>
 
@@ -826,7 +827,7 @@ function ContactDone({
         </p>
       </div>
 
-      <div className="mt-10 flex flex-wrap gap-3">
+      <div className="mt-10 flex flex-wrap justify-center gap-3">
         <Link
           className="inline-flex h-10 items-center justify-center rounded-[6px] bg-[#4880EE] px-4 text-[14px] font-normal text-white transition-colors hover:bg-[#336FE0]"
           to={homePath}
@@ -1045,26 +1046,22 @@ function FieldError({ message }: { readonly message: string }) {
   );
 }
 
-// 기능 : ContactIllustration 컴포넌트를 렌더링합니다.
-function ContactIllustration({
+// 기능 : 문의 단계마다 같은 스타일의 원형 아이콘을 표시합니다.
+function ContactStepIcon({
   step,
 }: {
   readonly step: ContactStepId | "done";
 }) {
-  const imageSrc = contactIllustrationByStep[step];
+  const Icon = contactIconByStep[step];
 
   return (
     <div
       aria-hidden="true"
-      className="hidden min-h-[360px] items-center justify-center lg:flex"
+      className="flex shrink-0 items-center justify-center"
     >
-      <img
-        alt=""
-        className="h-auto w-full max-w-[430px] object-contain"
-        decoding="async"
-        loading="eager"
-        src={imageSrc}
-      />
+      <div className="grid h-[60px] w-[60px] place-items-center rounded-full bg-[#4880EE] text-white">
+        <Icon className="h-[30px] w-[30px]" strokeWidth={2} />
+      </div>
     </div>
   );
 }

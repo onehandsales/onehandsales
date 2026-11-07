@@ -227,7 +227,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       cookieSettings: "쿠키 설정",
       languageAria: "지역 선택",
       footerSocialAria: "OneHand 소셜 링크",
-      copyright: "© 2026 OneHand Labs, Inc.",
+      copyright: "© 2026 OneHand CRM Labs",
     },
     landing: {
       heroTitle: ["현장 영업자가", "고객을 놓치지 않는 곳"],
@@ -710,7 +710,7 @@ function makeEnglishCopy(copy: {
     cookieSettings: "Cookie settings",
     languageAria: "Select region",
     footerSocialAria: "OneHand social links",
-    copyright: "© 2026 OneHand Labs, Inc.",
+    copyright: "© 2026 OneHand CRM Labs",
   };
 
   return {
