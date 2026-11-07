@@ -1,3 +1,5 @@
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
+
 export const OBJECT_DEFINITION_COMMAND_REPOSITORY = Symbol(
   "OBJECT_DEFINITION_COMMAND_REPOSITORY"
 );
@@ -33,6 +35,7 @@ export interface ObjectDefinitionCommandRepository {
 
   // 기능 : Workspace에 ObjectDefinition row를 생성합니다.
   createObjectDefinition(
-    input: CreateObjectDefinitionInput
+    input: CreateObjectDefinitionInput,
+    context: TransactionContext
   ): Promise<CreateObjectDefinitionResult>;
 }

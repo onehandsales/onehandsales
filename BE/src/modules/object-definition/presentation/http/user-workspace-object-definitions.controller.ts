@@ -6,6 +6,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 import {
@@ -15,6 +16,7 @@ import {
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import { CreateWorkspaceObjectDefinitionDto } from "./dto/create-workspace-object-definition.dto";
 
 // 역할 : UserWorkspaceObjectDefinitionsController 사용자 Workspace ObjectDefinition HTTP 요청의 route 연결을 담당합니다.
@@ -26,13 +28,14 @@ export class UserWorkspaceObjectDefinitionsController {
     private readonly createWorkspaceObjectDefinitionUseCase: CreateWorkspaceObjectDefinitionUseCase
   ) {}
 
-  // API : 사용자, Workspace ObjectDefinition 생성
+  // API : 사용자, Workspace 관리 항목과 첫 TABLE View 생성
   @Post()
   @HttpCode(HttpStatus.CREATED)
   createWorkspaceObjectDefinition(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
-    @Body() body: CreateWorkspaceObjectDefinitionDto
+    @Body() body: CreateWorkspaceObjectDefinitionDto,
+    @Req() request: RequestWithRequestId
   ) {
     // 1. undefined인 선택 필드는 application command에서 제외한다.
     const command: CreateWorkspaceObjectDefinitionCommand = {
@@ -45,7 +48,8 @@ export class UserWorkspaceObjectDefinitionsController {
     return this.createWorkspaceObjectDefinitionUseCase.execute(
       currentUser,
       workspaceId,
-      command
+      command,
+      request.requestId
     );
   }
 }

@@ -13,6 +13,7 @@ describe("createObjectDefinition", () => {
   it("posts object definition values for the selected workspace", async () => {
     apiClientMock.mockResolvedValue({
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      viewDefinitionId: "00000000-0000-4000-8000-000000000601",
     });
 
     const result = await createObjectDefinition({
@@ -24,6 +25,7 @@ describe("createObjectDefinition", () => {
 
     expect(result).toEqual({
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      viewDefinitionId: "00000000-0000-4000-8000-000000000601",
     });
     expect(apiClientMock).toHaveBeenCalledWith(
       "/api/users/me/workspaces/workspace%2F1/object-definitions",
@@ -41,6 +43,7 @@ describe("createObjectDefinition", () => {
   it("omits empty optional values from the request body", async () => {
     apiClientMock.mockResolvedValue({
       objectDefinitionId: "00000000-0000-4000-8000-000000000502",
+      viewDefinitionId: "00000000-0000-4000-8000-000000000602",
     });
 
     await createObjectDefinition({

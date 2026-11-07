@@ -56,7 +56,8 @@ type MockSidebarViewFavoriteItem = {
 };
 
 type MockCreatedObjectDefinitionRequest = {
-  readonly attributeNames: readonly string[];
+  readonly icon?: string;
+  readonly description?: string;
   readonly objectDefinitionName: string;
   readonly workspaceId: string;
 };
@@ -419,11 +420,6 @@ async function handleApiRequest(
     }
 
     const body = recordField(await readJsonBody(route));
-    const attributeNames = Array.isArray(body["attributeNames"])
-      ? body["attributeNames"].filter(
-          (value): value is string => typeof value === "string",
-        )
-      : [];
     const objectDefinitionName =
       typeof body["objectDefinitionName"] === "string"
         ? body["objectDefinitionName"]
@@ -432,13 +428,14 @@ async function handleApiRequest(
     store.createdObjectDefinitionRequests = [
       ...(store.createdObjectDefinitionRequests ?? []),
       {
-        attributeNames,
+        ...(typeof body["icon"] === "string" ? { icon: body["icon"] } : {}),
+        ...(typeof body["description"] === "string" ? { description: body["description"] } : {}),
         objectDefinitionName,
         workspaceId,
       },
     ];
 
-    return json({ ok: true });
+    return json({ objectDefinitionId: "object-definition-created", viewDefinitionId: "view-definition-created" }, 201);
   }
 
   if (pathname === "/api/users/me/devices" && method === "GET") {

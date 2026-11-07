@@ -15,6 +15,9 @@ import type {
 } from "@/modules/workspace/application/ports/workspace-access-query.port";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import type { ApplicationLogger } from "@/shared/application/ports/application-logger.port";
+import type { ObjectTextAttributeCreator } from "@/modules/attribute-definition/application/ports/object-text-attribute-creator.port";
+import type { ObjectTableViewCreator } from "@/modules/view-definition/application/ports/object-table-view-creator.port";
+import type { TransactionContext, TransactionManager } from "@/shared/application/ports/transaction-manager.port";
 import { CreateWorkspaceObjectDefinitionUseCase } from "./create-workspace-object-definition.use-case";
 
 // 기능 : CreateWorkspaceObjectDefinitionUseCase 동작을 검증합니다.
@@ -30,7 +33,8 @@ describe("CreateWorkspaceObjectDefinitionUseCase", () => {
         objectDefinitionName: "  회사  ",
         icon: "lucide:building-2",
         description: " 거래처를 관리해요. ",
-      }
+      },
+      "request-create-001"
     );
 
     expect(fixture.workspaceAccessQuery.lastAccessInput).toEqual({
@@ -56,7 +60,27 @@ describe("CreateWorkspaceObjectDefinitionUseCase", () => {
     );
     expect(result).toEqual({
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      viewDefinitionId: "00000000-0000-4000-8000-000000000601",
     });
+    expect(fixture.repository.lastCreateContext).toBe(fixture.transactions.context);
+    expect(fixture.attributes.create).toHaveBeenCalledWith({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+      createdByActorId: "00000000-0000-4000-8000-000000000401",
+      objectDefinitionId: result.objectDefinitionId,
+      apiSlug: "name", title: "이름",
+    }, fixture.transactions.context);
+    expect(fixture.views.create).toHaveBeenCalledWith({
+      workspaceId: "00000000-0000-4000-8000-000000000301",
+      createdByActorId: "00000000-0000-4000-8000-000000000401",
+      objectDefinitionId: result.objectDefinitionId,
+      titleAttributeDefinitionId: "00000000-0000-4000-8000-000000000701",
+      name: "전체 회사",
+    }, fixture.transactions.context);
+    expect(fixture.transactions.committed).toBe(true);
+    const logged = fixture.logger.log.mock.calls[0]![0];
+    expect(JSON.parse(logged)).toMatchObject({ requestId: "request-create-001", ...result });
+    expect(logged).not.toContain("회사");
+    expect(logged).not.toContain("거래처");
   });
 
   // 기능 : 선택 입력값이 없거나 빈 문자열이면 null로 저장합니다.
@@ -161,6 +185,43 @@ describe("CreateWorkspaceObjectDefinitionUseCase", () => {
     ).rejects.toBeInstanceOf(ObjectDefinitionApiSlugAlreadyExistsError);
 
     expect(fixture.repository.lastCreateInput).toBeNull();
+    expect(fixture.attributes.create).not.toHaveBeenCalled();
+    expect(fixture.views.create).not.toHaveBeenCalled();
+  });
+
+  // 기능 : 어느 하위 모듈이 실패해도 transaction에 실패를 전파하고 성공 로그를 기록하지 않습니다.
+  it.each(["attribute", "view", "commit"])("propagates %s failure through the transaction without success", async stage => {
+    const fixture = createFixture();
+    const error = new Error("private database error containing user input");
+    if (stage === "attribute") fixture.attributes.create.mockRejectedValueOnce(error);
+    if (stage === "view") fixture.views.create.mockRejectedValueOnce(error);
+    if (stage === "commit") fixture.transactions.commitError = error;
+
+    await expect(fixture.useCase.execute(makeCurrentUser(), "workspace-1", {
+      objectDefinitionName: "매물",
+    }, "request-failed")).rejects.toBe(error);
+
+    expect(fixture.transactions.rolledBack).toBe(true);
+    expect(fixture.transactions.committed).toBe(false);
+    expect(fixture.logger.log).not.toHaveBeenCalled();
+    expect(fixture.logger.error).toHaveBeenCalledWith(JSON.stringify({
+      event: "crm.objectDefinition.createFailed", requestId: "request-failed",
+      userId: makeCurrentUser().id, workspaceId: "workspace-1",
+    }), undefined, "CreateWorkspaceObjectDefinitionUseCase");
+    if (stage === "attribute") expect(fixture.views.create).not.toHaveBeenCalled();
+  });
+
+  // 기능 : 사전 중복 조회 이후 발생하는 unique 충돌도 초기화 없이 그대로 409 오류로 전파합니다.
+  it("preserves concurrent duplicate errors without invoking child creation", async () => {
+    const fixture = createFixture();
+    jest.spyOn(fixture.repository, "createObjectDefinition").mockRejectedValueOnce(new ObjectDefinitionApiSlugAlreadyExistsError());
+    await expect(fixture.useCase.execute(makeCurrentUser(), "workspace-1", { objectDefinitionName: "매물" }))
+      .rejects.toBeInstanceOf(ObjectDefinitionApiSlugAlreadyExistsError);
+    expect(fixture.attributes.create).not.toHaveBeenCalled();
+    expect(fixture.views.create).not.toHaveBeenCalled();
+    expect(fixture.transactions.rolledBack).toBe(true);
+    expect(fixture.logger.log).not.toHaveBeenCalled();
+    expect(fixture.logger.warn).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -169,14 +230,31 @@ function createFixture() {
   const workspaceAccessQuery = new FakeWorkspaceAccessQuery();
   const repository = new FakeObjectDefinitionCommandRepository();
   const logger = createLoggerFake();
+  const transactions = new FakeTransactionManager();
+  const attributes: jest.Mocked<ObjectTextAttributeCreator> = {
+    create: jest.fn().mockResolvedValue({ id: "00000000-0000-4000-8000-000000000701" }),
+  };
+  const views: jest.Mocked<ObjectTableViewCreator> = {
+    create: jest.fn().mockImplementation(async () => {
+      expect(logger.log).not.toHaveBeenCalled();
+      expect(transactions.committed).toBe(false);
+      return { id: "00000000-0000-4000-8000-000000000601" };
+    }),
+  };
 
   return {
     workspaceAccessQuery,
     repository,
     logger,
+    transactions,
+    attributes,
+    views,
     useCase: new CreateWorkspaceObjectDefinitionUseCase(
       workspaceAccessQuery,
       repository,
+      attributes,
+      views,
+      transactions,
       logger
     ),
   };
@@ -215,6 +293,7 @@ class FakeObjectDefinitionCommandRepository
   hasSameApiSlug = false;
   lastLookupInput: ObjectDefinitionApiSlugLookupInput | null = null;
   lastCreateInput: CreateObjectDefinitionInput | null = null;
+  lastCreateContext: TransactionContext | null = null;
 
   // 기능 : 테스트용 ObjectDefinition apiSlug 중복 여부를 반환합니다.
   async hasObjectDefinitionApiSlug(
@@ -226,13 +305,36 @@ class FakeObjectDefinitionCommandRepository
 
   // 기능 : 테스트용 ObjectDefinition 생성 결과를 반환합니다.
   async createObjectDefinition(
-    input: CreateObjectDefinitionInput
+    input: CreateObjectDefinitionInput,
+    context: TransactionContext
   ): Promise<CreateObjectDefinitionResult> {
     this.lastCreateInput = input;
+    this.lastCreateContext = context;
 
     return {
       id: "00000000-0000-4000-8000-000000000501",
     };
+  }
+}
+
+// 역할 : application 테스트에서 transaction 완료와 실패 전파를 관찰합니다. 실제 DB rollback 검증은 별도입니다.
+class FakeTransactionManager implements TransactionManager {
+  readonly context: TransactionContext = { transactionId: Symbol("test-transaction") };
+  committed = false;
+  rolledBack = false;
+  commitError: Error | null = null;
+
+  // 기능 : callback 이후 commit 실패까지 application이 성공으로 처리하지 않는지 검증합니다.
+  async runInTransaction<T>(work: (context: TransactionContext) => Promise<T>): Promise<T> {
+    try {
+      const result = await work(this.context);
+      if (this.commitError) throw this.commitError;
+      this.committed = true;
+      return result;
+    } catch (error) {
+      this.rolledBack = true;
+      throw error;
+    }
   }
 }
 

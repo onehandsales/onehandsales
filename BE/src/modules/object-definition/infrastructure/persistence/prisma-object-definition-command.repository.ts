@@ -7,6 +7,8 @@ import type {
 } from "@/modules/object-definition/application/ports/object-definition-command.repository";
 import { ObjectDefinitionApiSlugAlreadyExistsError } from "@/modules/object-definition/domain/object-definition.errors";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
+import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
+import { resolvePrismaTransactionalClient } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 
 // 역할 : PrismaObjectDefinitionCommandRepository가 ObjectDefinition 쓰기 저장소 계약을 Prisma로 구현합니다.
 export class PrismaObjectDefinitionCommandRepository
@@ -36,12 +38,14 @@ export class PrismaObjectDefinitionCommandRepository
 
   // 기능 : Workspace에 ObjectDefinition row를 생성합니다.
   async createObjectDefinition(
-    input: CreateObjectDefinitionInput
+    input: CreateObjectDefinitionInput,
+    context: TransactionContext
   ): Promise<CreateObjectDefinitionResult> {
     try {
-      // 1. ObjectDefinition row를 생성하고 생성된 ID만 조회한다.
+      // 1. 초기 속성·View와 같은 transaction에서 ObjectDefinition을 생성한다.
+      const client = resolvePrismaTransactionalClient(this.prismaService, context);
       const objectDefinition =
-        await this.prismaService.objectDefinition.create({
+        await client.objectDefinition.create({
           data: {
             workspaceId: input.workspaceId,
             createdByActorId: input.createdByActorId,

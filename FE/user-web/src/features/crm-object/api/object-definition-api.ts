@@ -9,9 +9,10 @@ export type CreateObjectDefinitionInput = {
 
 export type CreateObjectDefinitionResponse = {
   readonly objectDefinitionId: string;
+  readonly viewDefinitionId: string;
 };
 
-// 기능 : 현재 Workspace에 새 관리 항목 생성 API를 호출합니다.
+// 기능 : 현재 Workspace에 관리 항목과 첫 TABLE을 함께 생성하는 API를 호출합니다.
 export function createObjectDefinition(input: CreateObjectDefinitionInput) {
   // 1. 선택 입력값이 비어 있으면 request body에서 제외한다.
   const body: {

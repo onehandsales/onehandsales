@@ -32,6 +32,13 @@
 고정형 `company`/`search` 도메인은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 기반의 유연한 데이터 모델로 다시 설계한다.
 
 
+## 관리 항목과 첫 TABLE 생성
+
+`POST /api/users/me/workspaces/:workspaceId/object-definitions`는 관리 항목과 기본 `이름` Text 속성,
+첫 TABLE View, TITLE 표시 설정을 하나의 transaction으로 저장한다. 응답은 `{ objectDefinitionId, viewDefinitionId }`다.
+Object application use case가 transaction을 소유하고 Attribute/View 소유 모듈의 공개 port를 호출한다.
+자세한 요청·실패·호환성 기준은 [API 계약](../TODO/OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다.
+
 ## 로컬 실행
 
 백엔드는 별도 터미널에서 실행한다.

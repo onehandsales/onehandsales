@@ -1,5 +1,5 @@
 import { ArrowLeft, X } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useAppI18n, type AppLocale } from "@/features/app-i18n";
 import {
   createObjectDefinition,
@@ -86,12 +86,15 @@ export function CreateObjectDefinitionModalContent({
   onClose,
   onCreated,
   workspaceId,
+  isOpen,
 }: {
   readonly onClose: () => void;
   readonly onCreated?: (
     response: CreateObjectDefinitionResponse,
-  ) => Promise<void> | void;
+    shouldNavigate: boolean,
+  ) => void;
   readonly workspaceId: string | null;
+  readonly isOpen: boolean;
 }) {
   // 1. 처리 흐름에 필요한 앱 언어와 화면 문구를 준비한다.
   const { locale, t } = useAppI18n();
@@ -111,6 +114,16 @@ export function CreateObjectDefinitionModalContent({
   const [createErrorMessage, setCreateErrorMessage] = useState<string | null>(
     null,
   );
+  const submissionPendingRef = useRef(false);
+  const activeRef = useRef(false);
+  const generationRef = useRef(0);
+
+  // 기능 : 닫기·다시 열기·Workspace 전환 후 늦은 생성 응답이 현재 화면을 이동시키지 않게 합니다.
+  useEffect(() => {
+    generationRef.current += 1;
+    activeRef.current = isOpen;
+    return () => { activeRef.current = false; };
+  }, [isOpen, workspaceId]);
 
   const trimmedObjectDefinitionName = objectDefinitionName.trim();
   const canMoveNext = trimmedObjectDefinitionName.length > 0;
@@ -149,18 +162,24 @@ export function CreateObjectDefinitionModalContent({
     // 1. 생성에 필요한 Workspace와 입력값이 준비되지 않았으면 호출하지 않는다.
     if (
       !workspaceId ||
+      !isOpen ||
       !canMoveNext ||
-      isCreating ||
+      submissionPendingRef.current ||
       hasCreatedObjectDefinition
     ) {
       return;
     }
 
     // 2. 현재 입력된 ObjectDefinition 값으로 Backend 생성 API를 호출한다.
+    submissionPendingRef.current = true;
+    const generation = generationRef.current;
+    // 기능 : 요청이 시작된 모달이 아직 활성인지 확인합니다.
+    const isCurrentRequest = () => activeRef.current && generationRef.current === generation;
     setCreateErrorMessage(null);
     setIsCreating(true);
     setCreateLoadingModalOpen(true);
 
+    let created: CreateObjectDefinitionResponse;
     try {
       const [response] = await Promise.all([
         createObjectDefinition({
@@ -171,15 +190,22 @@ export function CreateObjectDefinitionModalContent({
         }),
         waitForObjectDefinitionCreateLoadingDelay(),
       ]);
-      setHasCreatedObjectDefinition(true);
-      await onCreated?.(response);
-      onClose();
+      created = response;
     } catch (error) {
-      setCreateLoadingModalOpen(false);
-      setCreateErrorMessage(getApiErrorMessage(error));
-    } finally {
-      setIsCreating(false);
+      submissionPendingRef.current = false;
+      if (isCurrentRequest()) {
+        setCreateLoadingModalOpen(false);
+        setCreateErrorMessage(getApiErrorMessage(error));
+        setIsCreating(false);
+      }
+      return;
     }
+
+    // 3. 성공 이후 cache/route 처리는 생성 오류 처리와 분리해 중복 POST를 허용하지 않는다.
+    const shouldNavigate = isCurrentRequest();
+    if (shouldNavigate) setHasCreatedObjectDefinition(true);
+    onCreated?.(created, shouldNavigate);
+    if (shouldNavigate) onClose();
   };
 
   return (

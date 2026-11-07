@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { ObjectTextAttributeModule } from "@/modules/attribute-definition/infrastructure/object-text-attribute.module";
+import { ObjectTableViewModule } from "@/modules/view-definition/infrastructure/object-table-view.module";
 import { OBJECT_DEFINITION_ACCESS_QUERY } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
 import { OBJECT_DEFINITION_COMMAND_REPOSITORY } from "@/modules/object-definition/application/ports/object-definition-command.repository";
 import { OBJECT_DEFINITION_SIDEBAR_QUERY } from "@/modules/object-definition/application/ports/object-definition-sidebar-query.port";
@@ -20,7 +22,7 @@ import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/u
 
 // 역할 : ObjectDefinitionModule이 ObjectDefinition API와 provider 의존성을 조립합니다.
 @Module({
-  imports: [AuthModule, WorkspaceModule, PrismaInfrastructureModule],
+  imports: [AuthModule, WorkspaceModule, PrismaInfrastructureModule, ObjectTextAttributeModule, ObjectTableViewModule],
   controllers: [
     UserSidebarWorkspaceObjectsController,
     UserWorkspaceObjectDefinitionsController,

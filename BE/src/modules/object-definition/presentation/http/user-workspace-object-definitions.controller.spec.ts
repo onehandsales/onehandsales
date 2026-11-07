@@ -2,6 +2,7 @@ import {
   type CanActivate,
   type ExecutionContext,
   type INestApplication,
+  ValidationPipe,
 } from "@nestjs/common";
 import { GUARDS_METADATA } from "@nestjs/common/constants";
 import { Test } from "@nestjs/testing";
@@ -24,6 +25,7 @@ const CURRENT_USER: CurrentUserContext = {
 
 type RequestWithCurrentUser = Request & {
   currentUser?: CurrentUserContext;
+  requestId?: string;
 };
 
 // 역할 : CreateWorkspaceObjectDefinitionUseCaseFake controller 테스트용 ObjectDefinition 생성 유스케이스 계약을 정의합니다.
@@ -38,6 +40,7 @@ class FakeAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<RequestWithCurrentUser>();
     request.currentUser = CURRENT_USER;
+    request.requestId = "request-create-http";
 
     return true;
   }
@@ -48,6 +51,7 @@ function createObjectDefinitionUseCaseFake(): jest.Mocked<CreateWorkspaceObjectD
   return {
     execute: jest.fn().mockResolvedValue({
       objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+      viewDefinitionId: "00000000-0000-4000-8000-000000000601",
     }),
   };
 }
@@ -80,6 +84,7 @@ describe("UserWorkspaceObjectDefinitionsController", () => {
 
     // 3. 테스트 Nest application을 초기화한다.
     app = moduleRef.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
     await app.init();
   });
 
@@ -112,6 +117,7 @@ describe("UserWorkspaceObjectDefinitionsController", () => {
       .expect(201)
       .expect({
         objectDefinitionId: "00000000-0000-4000-8000-000000000501",
+        viewDefinitionId: "00000000-0000-4000-8000-000000000601",
       });
 
     expect(createUseCase.execute).toHaveBeenCalledWith(
@@ -121,7 +127,22 @@ describe("UserWorkspaceObjectDefinitionsController", () => {
         objectDefinitionName: "회사",
         icon: "lucide:building-2",
         description: "거래처를 관리해요.",
-      }
+      },
+      "request-create-http"
     );
+  });
+
+  // 기능 : 클라이언트가 초기 View 타입/연결 ID를 지정하거나 필수 이름을 생략할 수 없습니다.
+  it.each([
+    {},
+    { objectDefinitionName: null },
+    { objectDefinitionName: "매물", viewType: "KANBAN" },
+    { objectDefinitionName: "매물", attributeNames: ["주소"] },
+    { objectDefinitionName: "매물", objectDefinitionId: "foreign-object" },
+  ])("rejects invalid creation body %j", async body => {
+    await request(app.getHttpServer())
+      .post("/api/users/me/workspaces/00000000-0000-4000-8000-000000000301/object-definitions")
+      .send(body).expect(400);
+    expect(createUseCase.execute).not.toHaveBeenCalled();
   });
 });

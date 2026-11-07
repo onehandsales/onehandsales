@@ -90,6 +90,7 @@ import {
   useSidebarCrmObjectsQuery,
 } from "@/features/crm-object";
 import { sidebarCrmObjectQueryKeys } from "@/features/crm-object/api/sidebar-crm-object-query-keys";
+import type { CreateObjectDefinitionResponse } from "@/features/crm-object/api/object-definition-api";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
 import { sidebarWorkspaceQueryKeys } from "@/features/workspace/api/sidebar-workspace-query-keys";
 import type { SidebarWorkspaceListItem } from "@/features/workspace/types/sidebar-workspace";
@@ -201,6 +202,7 @@ export function AppShell() {
   const helpMenuRef = useRef<HTMLDivElement | null>(null);
   // 21. 처리 흐름에 필요한 workspaceSwitchRequestIdRef 값을 준비한다.
   const workspaceSwitchRequestIdRef = useRef(0);
+  const [objectDefinitionCreateSession, setObjectDefinitionCreateSession] = useState(0);
   // 22. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
@@ -477,6 +479,7 @@ export function AppShell() {
     // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setCreateWorkspaceModalOpen(false);
     // 8. 새 관리 항목 생성 모달을 연다.
+    setObjectDefinitionCreateSession(session => session + 1);
     setCreateObjectDefinitionModalOpen(true);
   }, [syncAccountModalSearchParams]);
 
@@ -487,9 +490,9 @@ export function AppShell() {
     setCreateObjectDefinitionModalOpen(false);
   }, []);
 
-  // 기능 : 새로 생성된 관리 항목을 사이드바 ObjectDefinition 목록에 반영합니다.
-  const handleObjectDefinitionCreated = useCallback(() => {
-    // 1. 현재 사용자와 Workspace가 준비되지 않았으면 cache 갱신을 건너뛴다.
+  // 기능 : 생성 요청의 사이드바를 갱신하고 활성 모달의 응답이면 새 TABLE로 이동합니다.
+  const handleObjectDefinitionCreated = useCallback((response: CreateObjectDefinitionResponse, shouldNavigate: boolean) => {
+    // 1. 이 callback이 생성된 시점의 사용자/Workspace로 원래 요청의 cache 범위를 유지한다.
     const ownerUserId = user?.id;
     const workspaceId = currentWorkspace?.id ?? normalizedRouteWorkspaceId;
 
@@ -501,7 +504,11 @@ export function AppShell() {
     void queryClient.invalidateQueries({
       queryKey: sidebarCrmObjectQueryKeys.list(ownerUserId, workspaceId),
     });
-  }, [currentWorkspace?.id, normalizedRouteWorkspaceId, queryClient, user?.id]);
+    // 3. 닫히거나 다른 Workspace로 전환된 모달의 응답은 현재 route를 바꾸지 않는다.
+    if (shouldNavigate) {
+      void navigate(toWorkspaceViewPath(workspaceId, response.viewDefinitionId, "OBJECT"));
+    }
+  }, [currentWorkspace?.id, normalizedRouteWorkspaceId, navigate, queryClient, user?.id]);
 
   // 기능 : 새로 생성된 Workspace를 단건 조회한 뒤 현재 sidebar Workspace 상태와 목록 cache에 반영합니다.
   const handleWorkspaceCreated = useCallback(
@@ -1198,6 +1205,8 @@ export function AppShell() {
         onClose={closeCreateObjectDefinitionModal}
       >
         <CreateObjectDefinitionModalContent
+          key={`${user?.id ?? ""}:${sidebarWorkspaceId ?? ""}:${objectDefinitionCreateSession}`}
+          isOpen={createObjectDefinitionModalOpen}
           onClose={closeCreateObjectDefinitionModal}
           onCreated={handleObjectDefinitionCreated}
           workspaceId={currentWorkspace?.id ?? normalizedRouteWorkspaceId}

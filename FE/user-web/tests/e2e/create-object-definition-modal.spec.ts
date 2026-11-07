@@ -1,164 +1,117 @@
-import { expect, test } from "@playwright/test";
-import {
-  seedAuthenticatedSession,
-  setupUserWebApiMocks,
-} from "./support/user-web-api-mocks";
+import { expect, test, type Page, type Route } from "@playwright/test";
+import { seedAuthenticatedSession, setupUserWebApiMocks } from "./support/user-web-api-mocks";
 
-test.describe("create object definition modal UX", () => {
-  test("opens the object definition creation modal from the sidebar add button", async ({
-    page,
-  }) => {
-    // 1. 비동기 결과를 받아 api에 저장한다.
-    const api = await setupUserWebApiMocks(page);
-    // 2. 필요한 비동기 작업을 실행한다.
-    await seedAuthenticatedSession(page);
+const home = "/app/workspaces/workspace-e2e-001";
+const objectId = "object-definition-created";
+const viewId = "view-definition-created";
+const createdPath = `${home}/view-definitions/${viewId}?sourceType=OBJECT`;
 
-    // 3. 필요한 비동기 작업을 실행한다.
-    await page.goto("/app");
-    // 4. 필요한 비동기 작업을 실행한다.
-    await expect(page).toHaveURL(/\/app\/workspaces\/workspace-e2e-001$/);
-    // 5. 필요한 비동기 작업을 실행한다.
-    await page
-      .getByRole("navigation", { name: "Workspace navigation" })
-      .getByRole("button", { exact: true, name: "관리 대상 추가" })
-      .last()
-      .click();
+// 기능 : 실제 생성 UX와 헤더·TABLE을 유지하면서 모든 API를 mock해 실행 중 DB를 변경하지 않습니다.
+async function setupCreation(page: Page) {
+  const api = await setupUserWebApiMocks(page);
+  await seedAuthenticatedSession(page);
+  const state = { created: false, fail: false, delay: false, attempts: 0, sidebarReads: 0, writes: [] as Record<string, unknown>[] };
+  let release: (() => void) | undefined;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  const object = { id: objectId, name: "매물", icon: "lucide:box" };
 
-    // 6. 이후 단계에서 사용할 createObjectDialog 값을 준비한다.
-    const createObjectDialog = page.getByRole("dialog").first();
-    // 7. 필요한 비동기 작업을 실행한다.
-    await expect(createObjectDialog).toBeVisible();
-    await expect(createObjectDialog).toHaveCSS("max-width", "520px");
-    // 8. 필요한 비동기 작업을 실행한다.
-    await expect(
-      createObjectDialog.getByRole("heading", {
-        exact: true,
-        name: "새 관리 항목 이름을 작성해 주세요.",
-      }),
-    ).toBeVisible();
+  // 기능 : 기존 개발 서버의 API origin에 맞는 CORS 응답을 제공합니다.
+  async function respond(route: Route, body: unknown, status = 200) {
+    const headers = {
+      "access-control-allow-origin": route.request().headers().origin ?? "http://localhost:5173",
+      "access-control-allow-credentials": "true",
+      "access-control-allow-methods": "GET, POST, OPTIONS",
+      "access-control-allow-headers": "Authorization, Content-Type, X-Request-Id",
+    };
+    await route.fulfill(route.request().method() === "OPTIONS" ? { status: 204, headers } : { json: body, status, headers });
+  }
 
-    // 9. 이후 단계에서 사용할 nextButton 값을 준비한다.
-    const nextButton = createObjectDialog.getByRole("button", {
-      exact: true,
-      name: "다음",
-    });
-    // 10. 필요한 비동기 작업을 실행한다.
-    await expect(nextButton).toBeDisabled();
-    // 11. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog.getByLabel("관리 항목 이름").fill("회사");
-    // 12. 필요한 비동기 작업을 실행한다.
-    await expect(nextButton).toBeEnabled();
-    // 13. 필요한 비동기 작업을 실행한다.
-    await nextButton.click();
+  await page.route(/\/workspaces\/workspace-e2e-001\/object-definitions$/, async route => {
+    if (route.request().method() === "OPTIONS") return respond(route, null);
+    state.attempts += 1;
+    state.writes.push(route.request().postDataJSON() as Record<string, unknown>);
+    if (state.delay) await pending;
+    if (state.fail) return respond(route, { statusCode: 409, error: "ObjectDefinitionApiSlugAlreadyExists", message: "이미 존재하는 관리 항목 이름입니다." }, 409);
+    state.created = true;
+    return respond(route, { objectDefinitionId: objectId, viewDefinitionId: viewId }, 201);
+  });
+  await page.route(/\/sidebar\/workspaces\/workspace-e2e-001\/objects$/, route => {
+    state.sidebarReads += 1;
+    return respond(route, state.created ? [{ id: objectId, singularName: "매물", pluralName: "매물", icon: object.icon }] : []);
+  });
+  const header = { viewId, viewName: "전체 매물", viewType: "TABLE", viewIcon: null, isFavorite: false, objectDefinition: object, listDefinition: null };
+  await page.route(/\/view-header\/view-definitions\/view-definition-created$/, route => respond(route, header));
+  await page.route(/\/view-header\?.*targetId=object-definition-created/, route => respond(route, header));
+  await page.route(/\/view-header\/object-definitions\/object-definition-created\/view-definitions(?:\?.*)?$/, route => respond(route, {
+    items: [{ viewDefinitionId: viewId, viewName: "전체 매물", viewType: "TABLE", viewIcon: null, isSelected: true }],
+  }));
+  await page.route(/\/view-definitions\/view-definition-created\/data(?:\?.*)?$/, route => respond(route, {
+    viewDefinitionId: viewId, viewType: "TABLE", viewName: "전체 매물", state: "READY", part: "MAIN",
+    source: { kind: "OBJECT", objectDefinitionId: objectId, listDefinitionId: null, itemKind: "RECORD" },
+    configurationFingerprint: "created-configuration", issues: [],
+    bindings: [{ id: "name-binding", attributeDefinitionId: "name", sourceScope: "RECORD", referenceAttributeIdPath: [], role: "TITLE", label: "이름", attributeType: "Text", isMultiselect: false, isHidden: false, width: null, format: null, currencyCode: null }],
+    summary: { sourceItemCount: 0, matchedItemCount: 0, eligibleItemCount: 0 },
+    data: { presentation: { rowDensity: "COMFORTABLE" }, columnBindingIds: ["name-binding"], items: [], groups: [], pageInfo: { hasNextPage: false, nextCursor: null } },
+  }));
+  await page.goto(home);
+  await page.getByRole("navigation", { name: "Workspace navigation" }).getByRole("button", { name: "관리 대상 추가", exact: true }).last().click();
+  const dialog = page.getByRole("dialog").first();
+  await expect(dialog.getByRole("button", { name: "다음", exact: true })).toBeDisabled();
+  await dialog.getByLabel("관리 항목 이름").fill(" 매물 ");
+  await dialog.getByRole("button", { name: "다음", exact: true }).click();
+  await expect(dialog.getByRole("heading", { name: "매물의 아이콘과 설명을 정해 주세요.", exact: true })).toBeVisible();
+  await dialog.getByLabel("관리 항목 설명 (선택)").fill("매물 정보를 관리해요.");
+  return { api, state, dialog, release: () => release?.() };
+}
 
-    // 14. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog
-      .getByRole("button", { exact: true, name: "이전" })
-      .click();
-
-    // 15. 테스트 기대 조건을 검증한다.
-    await expect(createObjectDialog.getByLabel("관리 항목 이름")).toHaveValue(
-      "회사",
-    );
-
-    // 16. 필요한 비동기 작업을 실행한다.
-    await nextButton.click();
-
-    // 17. 테스트 기대 조건을 검증한다.
-    await expect(
-      createObjectDialog.getByRole("heading", {
-        exact: true,
-        name: "회사 에 필요한 정보를 작성해 주세요.",
-      }),
-    ).toBeVisible();
-    await expect(
-      createObjectDialog.getByText("EX)회사명, 주소, 인원수", {
-        exact: true,
-      }),
-    ).toHaveCount(0);
-    await expect(createObjectDialog.getByLabel("정보 1 이름")).toHaveAttribute(
-      "placeholder",
-      "Ex. 회사명",
-    );
-    await expect(createObjectDialog.getByLabel("정보 2 이름")).toHaveAttribute(
-      "placeholder",
-      "Ex. 주소",
-    );
-    await expect(createObjectDialog.getByLabel("정보 3 이름")).toHaveCount(0);
-
-    // 18. 이후 단계에서 사용할 createButton 값을 준비한다.
-    const createButton = createObjectDialog.getByRole("button", {
-      exact: true,
-      name: "생성하기",
-    });
-    // 19. 테스트 기대 조건을 검증한다.
-    await expect(createButton).toBeDisabled();
-
-    // 20. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog.getByLabel("정보 1 이름").fill("회사명");
-    await createObjectDialog.getByLabel("정보 2 이름").fill("주소");
-
-    // 21. 테스트 기대 조건을 검증한다.
-    await expect(createButton).toBeEnabled();
-
-    // 22. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog
-      .getByRole("button", { exact: true, name: "정보 추가" })
-      .click();
-
-    // 23. 테스트 기대 조건을 검증한다.
-    await expect(createObjectDialog.getByLabel("정보 3 이름")).toHaveAttribute(
-      "placeholder",
-      "필요한 정보",
-    );
-    await expect(createButton).toBeDisabled();
-
-    // 24. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog.getByLabel("정보 3 이름").fill("인원수");
-
-    // 25. 테스트 기대 조건을 검증한다.
-    await expect(createButton).toBeEnabled();
-
-    // 26. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog
-      .getByRole("button", { exact: true, name: "정보 3 삭제" })
-      .click();
-
-    // 27. 테스트 기대 조건을 검증한다.
-    await expect(createObjectDialog.getByLabel("정보 3 이름")).toHaveCount(0);
-    await expect(createButton).toBeEnabled();
-
-    // 28. 필요한 비동기 작업을 실행한다.
-    await createObjectDialog
-      .getByRole("button", { exact: true, name: "정보 2 삭제" })
-      .click();
-
-    // 29. 테스트 기대 조건을 검증한다.
-    await expect(createObjectDialog.getByLabel("정보 2 이름")).toHaveCount(0);
-    await expect(createButton).toBeEnabled();
-    await expect(
-      createObjectDialog.getByRole("button", {
-        exact: true,
-        name: "정보 1 삭제",
-      }),
-    ).toBeDisabled();
-
-    // 30. 필요한 비동기 작업을 실행한다.
-    await createButton.click();
-
-    // 31. 테스트 기대 조건을 검증한다.
-    await expect
-      .poll(() => api.store.createdObjectDefinitionRequests?.length ?? 0)
-      .toBe(1);
-    expect(api.store.createdObjectDefinitionRequests).toEqual([
-      {
-        attributeNames: ["회사명"],
-        objectDefinitionName: "회사",
-        workspaceId: "workspace-e2e-001",
-      },
-    ]);
-
-    // 32. 테스트 기대 조건을 검증한다.
+test.describe("관리 항목과 첫 TABLE 생성", () => {
+  test("기존 두 단계 입력을 유지하고 생성된 TABLE과 사이드바를 연다", async ({ page }) => {
+    const { state, dialog, api } = await setupCreation(page);
+    await dialog.getByRole("button", { name: "이전", exact: true }).click();
+    await expect(dialog.getByLabel("관리 항목 이름")).toHaveValue(" 매물 ");
+    await dialog.getByRole("button", { name: "다음", exact: true }).click();
+    await expect(dialog.getByLabel("관리 항목 설명 (선택)")).toHaveValue("매물 정보를 관리해요.");
+    const beforeReads = state.sidebarReads;
+    // 같은 이벤트 턴에 두 번 눌러도 mutation은 하나만 시작한다.
+    await dialog.getByRole("button", { name: "생성", exact: true }).evaluate((button: HTMLButtonElement) => { button.click(); button.click(); });
+    await expect(page).toHaveURL(createdPath);
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator(".app-page-header:visible").getByText("전체 매물", { exact: true })).toBeVisible();
+    await expect(page.getByRole("columnheader", { name: /^이름 속성 메뉴 열기/ })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Workspace navigation" }).getByText("매물", { exact: true })).toBeVisible();
+    expect(state.attempts).toBe(1);
+    expect(state.writes).toEqual([{ objectDefinitionName: "매물", icon: expect.any(String), description: "매물 정보를 관리해요." }]);
+    expect(state.sidebarReads).toBeGreaterThan(beforeReads);
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
+    await page.reload();
+    await expect(page.getByRole("columnheader", { name: /^이름 속성 메뉴 열기/ })).toBeVisible();
+  });
+
+  test("생성 실패 시 입력과 현재 경로를 보존하고 재시도한다", async ({ page }) => {
+    const { state, dialog } = await setupCreation(page);
+    state.fail = true;
+    await dialog.getByRole("button", { name: "생성", exact: true }).click();
+    await expect(dialog.getByText("이미 존재하는 관리 항목 이름입니다.", { exact: true })).toBeVisible();
+    await expect(page).toHaveURL(home);
+    await expect(dialog.getByLabel("관리 항목 설명 (선택)")).toHaveValue("매물 정보를 관리해요.");
+    state.fail = false;
+    await dialog.getByRole("button", { name: "생성", exact: true }).click();
+    await expect(page).toHaveURL(createdPath);
+    expect(state.attempts).toBe(2);
+  });
+
+  test("닫힌 모달의 늦은 성공 응답은 새 화면으로 이동하지 않는다", async ({ page }) => {
+    const { state, dialog, release } = await setupCreation(page);
+    state.delay = true;
+    await dialog.getByRole("button", { name: "생성", exact: true }).click();
+    await expect.poll(() => state.attempts).toBe(1);
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    const beforeReads = state.sidebarReads;
+    release();
+    // 원래 cache가 갱신될 때까지 기다려 늦은 성공 처리 자체가 실행됐음을 확인한다.
+    await expect.poll(() => state.sidebarReads).toBeGreaterThan(beforeReads);
+    await expect(page).toHaveURL(home);
+    await expect(page.getByRole("navigation", { name: "Workspace navigation" }).getByText("매물", { exact: true })).toBeVisible();
   });
 });
