@@ -1,0 +1,913 @@
+{
+  "description": "Fictional work-list kanban scenarios using recognizable real company names. All contacts, inquiries, properties and business relationships are invented; none represent OneHand CRM customers or endorsements.",
+  "ko": {
+    "overview": {
+      "title": "고객",
+      "viewName": "예시 칸반",
+      "labels": [
+        "회사",
+        "담당자",
+        "상담 주제",
+        "최근 기록"
+      ],
+      "rows": [
+        [
+          "삼성전자",
+          "윤서진",
+          "기술 소개 콘텐츠",
+          "기술 소개 범위 확인 예정"
+        ],
+        [
+          "SK하이닉스",
+          "김도윤",
+          "채용 행사 영상",
+          "인터뷰 인원과 희망 일정 문의"
+        ],
+        [
+          "LG에너지솔루션",
+          "박지연",
+          "전시용 제품 자료",
+          "국문 초안 검토 중. 영문판도 함께 요청"
+        ],
+        [
+          "현대자동차",
+          "이준호",
+          "브랜드 행사 촬영",
+          "행사장 답사 후 장비 목록 전달하기로"
+        ],
+        [
+          "NAVER",
+          "최유나",
+          "파트너 교육 자료",
+          "샘플 2종 전달. 온라인 교육용 규격 확인"
+        ],
+        [
+          "카카오",
+          "정수빈",
+          "서비스 소개 페이지",
+          "첫 시안 의견 수신. 모바일 화면 우선 수정"
+        ],
+        [
+          "LG전자",
+          "한지우",
+          "제품 활용 가이드",
+          "사진 원본 전달받음. 문구 수정 범위 협의"
+        ],
+        [
+          "포스코",
+          "장하린",
+          "현장 소개 영상",
+          "촬영 장소와 출입 절차 확인 예정"
+        ],
+        [
+          "삼성바이오로직스",
+          "오하은",
+          "기업 소개 자료",
+          "담당자 검토 후 추가 질문 받기로"
+        ]
+      ],
+      "listName": "신규 고객 상담",
+      "fieldScopes": [
+        "RECORD",
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "상담 전",
+          "rowIndexes": [
+            0,
+            1,
+            7
+          ]
+        },
+        {
+          "label": "상담 중",
+          "rowIndexes": [
+            2,
+            3,
+            5,
+            6
+          ]
+        },
+        {
+          "label": "회신 대기",
+          "rowIndexes": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    "personal": {
+      "title": "고객",
+      "viewName": "예시 칸반",
+      "labels": [
+        "고객",
+        "진행 업무",
+        "최근 기록",
+        "확인할 일"
+      ],
+      "rows": [
+        [
+          "삼성전자",
+          "기술 소개 원고",
+          "초안 피드백 수신",
+          "용어집 반영 후 수정본 전달"
+        ],
+        [
+          "LG에너지솔루션",
+          "전시 자료 편집",
+          "국문 구성 확정",
+          "영문 원고 전달일 확인"
+        ],
+        [
+          "SK하이닉스",
+          "인터뷰 영상 자막",
+          "1차 편집본 전달",
+          "이름·직함 표기 확인"
+        ],
+        [
+          "NAVER",
+          "교육 슬라이드",
+          "표지 시안 선택 완료",
+          "본문 예시 화면 요청"
+        ],
+        [
+          "현대자동차",
+          "행사 사진 정리",
+          "보정 대상 사진 협의",
+          "최종 셀렉 회신 대기"
+        ],
+        [
+          "카카오",
+          "서비스 소개 페이지",
+          "모바일 시안 수정 중",
+          "버튼 문구 확인"
+        ],
+        [
+          "LG전자",
+          "제품 가이드",
+          "최종 파일 전달 완료",
+          null
+        ],
+        [
+          "SK텔레콤",
+          "행사 포스터",
+          "행사 일정 변경",
+          "새 일정 확정 후 작업 재개"
+        ]
+      ],
+      "listName": "고객별 작업",
+      "fieldScopes": [
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "작업 예정",
+          "rowIndexes": [
+            3,
+            4,
+            7
+          ]
+        },
+        {
+          "label": "진행 중",
+          "rowIndexes": [
+            0,
+            1,
+            2,
+            5
+          ]
+        },
+        {
+          "label": "완료",
+          "rowIndexes": [
+            6
+          ]
+        }
+      ]
+    },
+    "real-estate": {
+      "title": "매물",
+      "viewName": "예시 칸반",
+      "labels": [
+        "매물명",
+        "문의 회사",
+        "유형",
+        "확인 내용"
+      ],
+      "rows": [
+        [
+          "강남역 인근 사무실",
+          "삼성전자",
+          "사무실 임대",
+          "프로젝트 공간 문의. 회의실 수 확인 중"
+        ],
+        [
+          "분당 소형 오피스",
+          "SK하이닉스",
+          "사무실 임대",
+          "단기 사용 검토. 주차 조건 자료 요청"
+        ],
+        [
+          "마곡 업무용 공간",
+          "LG에너지솔루션",
+          "사무실 임대",
+          "평면도 전달. 방문 가능한 날짜 조율"
+        ],
+        [
+          "성수동 쇼룸",
+          "현대자동차",
+          "상가 임대",
+          "전시 활용 검토. 차량 진입 동선 확인"
+        ],
+        [
+          "판교 독립 사무실",
+          "NAVER",
+          "사무실 임대",
+          "방문 완료. 내부 회의 후 회신 예정"
+        ],
+        [
+          "서교동 행사 공간",
+          "카카오",
+          "공간 대관",
+          "주말 이용 문의. 사용 시간 확인 필요"
+        ],
+        [
+          "여의도 오피스",
+          "LG전자",
+          "사무실 임대",
+          "예산 조건 다시 전달. 답변 대기"
+        ],
+        [
+          "을지로 회의 공간",
+          "SK텔레콤",
+          "공간 대관",
+          "장비 목록 전달. 이용 시간 회신 대기"
+        ]
+      ],
+      "listName": "매물 상담",
+      "fieldScopes": [
+        "RECORD",
+        "LIST_ENTRY",
+        "RECORD",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "조건 확인",
+          "rowIndexes": [
+            0,
+            1,
+            5
+          ]
+        },
+        {
+          "label": "방문 조율",
+          "rowIndexes": [
+            2,
+            3
+          ]
+        },
+        {
+          "label": "회신 대기",
+          "rowIndexes": [
+            4,
+            6,
+            7
+          ]
+        }
+      ]
+    },
+    "insurance-auto": {
+      "title": "고객",
+      "viewName": "예시 칸반",
+      "labels": [
+        "회사",
+        "담당자",
+        "상담 주제",
+        "메모"
+      ],
+      "groups": [
+        {
+          "label": "상담 전",
+          "rowIndexes": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "label": "상담 중",
+          "rowIndexes": [
+            3,
+            4
+          ]
+        },
+        {
+          "label": "회신 대기",
+          "rowIndexes": [
+            5
+          ]
+        }
+      ],
+      "rows": [
+        [
+          "삼성전자",
+          "윤서진",
+          "업무용 차량 검토",
+          "필요 대수와 이용 기간 확인 예정"
+        ],
+        [
+          "SK하이닉스",
+          "김도윤",
+          "직원 이동 차량",
+          "운행 거리와 주요 경로 문의"
+        ],
+        [
+          "LG에너지솔루션",
+          "박지연",
+          "전기차 도입 상담",
+          "주차장 충전 여건 먼저 확인"
+        ],
+        [
+          "현대자동차",
+          "이준호",
+          "행사 지원 차량",
+          "이용 날짜 협의. 운전자 범위 확인 중"
+        ],
+        [
+          "NAVER",
+          "최유나",
+          "업무용 차량 교체",
+          "현재 계약 종료일 전달받음"
+        ],
+        [
+          "카카오",
+          "정수빈",
+          "차량 이용 견적",
+          "두 가지 이용 조건 전달. 내부 검토 대기"
+        ]
+      ],
+      "listName": "차량 상담",
+      "fieldScopes": [
+        "RECORD",
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ]
+    },
+    "b2b-field": {
+      "title": "회사",
+      "viewName": "예시 칸반",
+      "labels": [
+        "회사",
+        "담당자",
+        "문의 내용",
+        "최근 기록"
+      ],
+      "rows": [
+        [
+          "삼성전자",
+          "윤서진",
+          "제품 소개 영상",
+          "견적 전달. 촬영할 제품 수 확인 필요"
+        ],
+        [
+          "SK하이닉스",
+          "김도윤",
+          "채용 행사 콘텐츠",
+          "참고 영상 공유. 인터뷰 일정 조율 중"
+        ],
+        [
+          "LG에너지솔루션",
+          "박지연",
+          "전시용 소개 자료",
+          "국문·영문 두 가지 버전으로 범위 협의"
+        ],
+        [
+          "현대자동차",
+          "이준호",
+          "브랜드 행사 촬영",
+          "답사 가능 날짜 회신. 현장 담당자 소개 예정"
+        ],
+        [
+          "NAVER",
+          "최유나",
+          "교육 자료 제작",
+          "이전 규격으로 추가 제작 문의"
+        ],
+        [
+          "카카오",
+          "정수빈",
+          "서비스 페이지 개편",
+          "수정안 전달. 추가 의견 회신 대기"
+        ],
+        [
+          "LG전자",
+          "한지우",
+          "제품 가이드 제작",
+          "원본 사진 수신. 납품 파일 형식 확인"
+        ],
+        [
+          "SK텔레콤",
+          "서민재",
+          "행사 콘텐츠 제작",
+          "제작 범위 전달. 행사 일정 회신 대기"
+        ]
+      ],
+      "listName": "거래처 제안",
+      "fieldScopes": [
+        "RECORD",
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "요청 접수",
+          "rowIndexes": [
+            1,
+            4
+          ]
+        },
+        {
+          "label": "제안 준비",
+          "rowIndexes": [
+            2,
+            3,
+            6
+          ]
+        },
+        {
+          "label": "회신 대기",
+          "rowIndexes": [
+            0,
+            5,
+            7
+          ]
+        }
+      ]
+    }
+  },
+  "en": {
+    "overview": {
+      "title": "Customers",
+      "viewName": "Sample board",
+      "labels": [
+        "Company",
+        "Contact",
+        "Topic",
+        "Note"
+      ],
+      "rows": [
+        [
+          "OpenAI",
+          "Maya Bennett",
+          "Developer workshop",
+          "Confirm the workshop format and audience"
+        ],
+        [
+          "Tesla",
+          "Ethan Brooks",
+          "Product launch content",
+          "Ask about launch dates and locations"
+        ],
+        [
+          "Microsoft",
+          "Sophie Reed",
+          "Partner training",
+          "Sample deck reviewed; accessibility notes to follow"
+        ],
+        [
+          "NVIDIA",
+          "Daniel Chen",
+          "Technical case study",
+          "Interview outline ready. Confirm speakers before scheduling"
+        ],
+        [
+          "Apple",
+          "Olivia Grant",
+          "Product photography",
+          "Reference shots received; agree final shot list"
+        ],
+        [
+          "Google",
+          "Noah Patel",
+          "Event materials",
+          "Print sizes confirmed. Revised copy requested"
+        ],
+        [
+          "Amazon",
+          "Chloe Hayes",
+          "Onboarding video",
+          "First cut shared; captions need a second review"
+        ],
+        [
+          "Adobe",
+          "Emma Carter",
+          "Creative tutorial",
+          "Confirm tutorial topics before planning"
+        ],
+        [
+          "Shopify",
+          "Isla Morgan",
+          "Merchant webinar",
+          "Reviewing the run of show with the project contact"
+        ]
+      ],
+      "listName": "New customer inquiries",
+      "fieldScopes": [
+        "RECORD",
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "New inquiry",
+          "rowIndexes": [
+            0,
+            1,
+            7
+          ]
+        },
+        {
+          "label": "In discussion",
+          "rowIndexes": [
+            2,
+            3,
+            5,
+            6
+          ]
+        },
+        {
+          "label": "Awaiting reply",
+          "rowIndexes": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    "personal": {
+      "title": "Customers",
+      "viewName": "Sample board",
+      "labels": [
+        "Client",
+        "Work",
+        "Update",
+        "Next step"
+      ],
+      "rows": [
+        [
+          "OpenAI",
+          "Workshop slides",
+          "Outline approved",
+          "Request code examples for the demo"
+        ],
+        [
+          "Tesla",
+          "Launch storyboards",
+          "Feedback received",
+          "Revise the opening sequence"
+        ],
+        [
+          "Microsoft",
+          "Training handout",
+          "Sample layout selected",
+          "Check accessible PDF requirements"
+        ],
+        [
+          "NVIDIA",
+          "Interview editing",
+          "Rough cut delivered",
+          "Confirm speaker names and titles"
+        ],
+        [
+          "Apple",
+          "Product photo edit",
+          "Selects received",
+          "Agree final retouching notes"
+        ],
+        [
+          "Google",
+          "Event materials",
+          "Copy update in progress",
+          "Confirm print deadline"
+        ],
+        [
+          "Adobe",
+          "Tutorial captions",
+          "Final files delivered",
+          null
+        ],
+        [
+          "Salesforce",
+          "Workshop graphics",
+          "Venue changed",
+          "Resume when the new format is confirmed"
+        ]
+      ],
+      "listName": "Client projects",
+      "fieldScopes": [
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "Planned",
+          "rowIndexes": [
+            2,
+            4,
+            7
+          ]
+        },
+        {
+          "label": "In progress",
+          "rowIndexes": [
+            0,
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "label": "Completed",
+          "rowIndexes": [
+            6
+          ]
+        }
+      ]
+    },
+    "real-estate": {
+      "title": "Properties",
+      "viewName": "Sample board",
+      "labels": [
+        "Property",
+        "Company",
+        "Type",
+        "Note"
+      ],
+      "rows": [
+        [
+          "SoMa project office",
+          "OpenAI",
+          "Office lease",
+          "Floor plan shared; confirm number of meeting rooms"
+        ],
+        [
+          "Austin showroom",
+          "Tesla",
+          "Retail lease",
+          "Review vehicle access before arranging a viewing"
+        ],
+        [
+          "Bellevue team suite",
+          "Microsoft",
+          "Office lease",
+          "Short-term use discussed; parking terms requested"
+        ],
+        [
+          "Santa Clara workspace",
+          "NVIDIA",
+          "Office lease",
+          "Tour requested. Check available dates with the owner"
+        ],
+        [
+          "Culver City studio",
+          "Apple",
+          "Studio lease",
+          "Lighting plan received; reviewing equipment access"
+        ],
+        [
+          "King's Cross office",
+          "Google",
+          "Office lease",
+          "Viewing complete. Waiting for internal feedback"
+        ],
+        [
+          "Seattle meeting space",
+          "Amazon",
+          "Venue hire",
+          "Access options shared; waiting for dates"
+        ],
+        [
+          "Shoreditch event space",
+          "Adobe",
+          "Venue hire",
+          "Quote shared; waiting for budget approval"
+        ]
+      ],
+      "listName": "Property inquiries",
+      "fieldScopes": [
+        "RECORD",
+        "LIST_ENTRY",
+        "RECORD",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "Requirements",
+          "rowIndexes": [
+            0,
+            1
+          ]
+        },
+        {
+          "label": "Arranging visits",
+          "rowIndexes": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "label": "Awaiting reply",
+          "rowIndexes": [
+            5,
+            6,
+            7
+          ]
+        }
+      ]
+    },
+    "insurance-auto": {
+      "title": "Customers",
+      "viewName": "Sample board",
+      "labels": [
+        "Company",
+        "Contact",
+        "Topic",
+        "Note"
+      ],
+      "groups": [
+        {
+          "label": "New inquiry",
+          "rowIndexes": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "label": "In discussion",
+          "rowIndexes": [
+            3,
+            4
+          ]
+        },
+        {
+          "label": "Awaiting reply",
+          "rowIndexes": [
+            5
+          ]
+        }
+      ],
+      "rows": [
+        [
+          "OpenAI",
+          "Maya Bennett",
+          "Business vehicle options",
+          "Confirm expected mileage and number of drivers"
+        ],
+        [
+          "Tesla",
+          "Ethan Brooks",
+          "Event transport",
+          "Dates received; passenger numbers still open"
+        ],
+        [
+          "Microsoft",
+          "Sophie Reed",
+          "Team shuttle inquiry",
+          "Review pickup points before preparing options"
+        ],
+        [
+          "NVIDIA",
+          "Daniel Chen",
+          "Vehicle lease review",
+          "Current lease end date received"
+        ],
+        [
+          "Apple",
+          "Olivia Grant",
+          "Production transport",
+          "Comparing two vehicle sizes for the shoot"
+        ],
+        [
+          "Google",
+          "Noah Patel",
+          "Business travel quote",
+          "Two options shared. Waiting for budget review"
+        ]
+      ],
+      "listName": "Vehicle consultations",
+      "fieldScopes": [
+        "RECORD",
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ]
+    },
+    "b2b-field": {
+      "title": "Companies",
+      "viewName": "Sample board",
+      "labels": [
+        "Company",
+        "Contact",
+        "Inquiry",
+        "Note"
+      ],
+      "rows": [
+        [
+          "OpenAI",
+          "Maya Bennett",
+          "Developer workshop",
+          "Proposal shared. Confirm format before final pricing"
+        ],
+        [
+          "Tesla",
+          "Ethan Brooks",
+          "Launch campaign content",
+          "Two concepts reviewed; location scouting next"
+        ],
+        [
+          "Microsoft",
+          "Sophie Reed",
+          "Partner training deck",
+          "Follow-on request using the previous slide format"
+        ],
+        [
+          "NVIDIA",
+          "Daniel Chen",
+          "Technical case study",
+          "Interview plan shared; speaker availability pending"
+        ],
+        [
+          "Apple",
+          "Olivia Grant",
+          "Product photography",
+          "References received. Scope the final shot list"
+        ],
+        [
+          "Google",
+          "Noah Patel",
+          "Event materials",
+          "Updated copy shared; waiting for approval"
+        ],
+        [
+          "Amazon",
+          "Chloe Hayes",
+          "Onboarding video",
+          "First cut reviewed. Caption changes requested"
+        ],
+        [
+          "Salesforce",
+          "Lucas Martin",
+          "Customer workshop",
+          "Scope shared; waiting for the new event date"
+        ]
+      ],
+      "listName": "Account proposals",
+      "fieldScopes": [
+        "RECORD",
+        "RECORD",
+        "LIST_ENTRY",
+        "LIST_ENTRY"
+      ],
+      "groups": [
+        {
+          "label": "New request",
+          "rowIndexes": [
+            1,
+            4
+          ]
+        },
+        {
+          "label": "Preparing proposal",
+          "rowIndexes": [
+            2,
+            3,
+            6
+          ]
+        },
+        {
+          "label": "Awaiting reply",
+          "rowIndexes": [
+            0,
+            5,
+            7
+          ]
+        }
+      ]
+    }
+  }
+}

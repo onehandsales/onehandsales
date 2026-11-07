@@ -82,7 +82,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "혼자 관리하는 고객과 업무 기록을 한곳에.",
       description:
         "기억에 의존하던 정보를 남기고, 필요할 때 다시 꺼내 확인하는 활용 예시예요.",
-      imageAlt: "예시 데이터로 개인 고객 기록을 관리하는 실제 OneHand CRM 화면",
+      imageAlt: "고객별 작업 업무 목록의 진행 상황을 보여주는 실제 OneHand CRM 칸반 예시",
       imageCaption: "실제 OneHand CRM 화면에 예시 데이터를 표시했어요. 업종별 자동 설정 화면은 아니에요.",
       cards: [
         {
@@ -148,7 +148,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "고객과 매물 정보를 다시 찾기 쉽게.",
       description:
         "상담에서 확인할 고객·매물 정보를 기록으로 정리하는 활용 예시예요. 업종별 자동 설정 기능은 현재 제공하지 않아요.",
-      imageAlt: "예시 매물명과 지역 정보를 표시한 실제 OneHand CRM 테이블",
+      imageAlt: "매물 상담 업무 목록의 단계별 기록을 보여주는 실제 OneHand CRM 칸반 예시",
       imageCaption: "실제 OneHand CRM 화면에 예시 데이터를 표시했어요. 업종별 자동 설정 화면은 아니에요.",
       cards: [
         {
@@ -214,7 +214,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "고객별로 다시 확인할 상담 정보를 정리해요.",
       description:
         "반복되는 상담에서 필요한 정보를 남기고 다시 확인하는 활용 예시예요. 전용 업무 자동화는 현재 제공하지 않아요.",
-      imageAlt: "예시 상담 기록을 상태별로 표시한 실제 OneHand CRM 칸반 화면",
+      imageAlt: "차량 상담 업무 목록의 진행 상황을 보여주는 실제 OneHand CRM 칸반 예시",
       imageCaption: "실제 OneHand CRM 화면에 예시 데이터를 표시했어요. 업종별 자동 설정 화면은 아니에요.",
       cards: [
         {
@@ -280,7 +280,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "회사와 담당자 정보를 한곳에서 정리해요.",
       description:
         "업무에서 만나는 회사와 담당자 정보를 기록하고 다시 확인하는 활용 예시예요.",
-      imageAlt: "예시 회사와 담당자 정보를 표시한 실제 OneHand CRM 테이블",
+      imageAlt: "거래처 제안 업무 목록의 단계별 카드를 보여주는 실제 OneHand CRM 칸반 예시",
       imageCaption: "실제 OneHand CRM 화면에 예시 데이터를 표시했어요. 업종별 자동 설정 화면은 아니에요.",
       cards: [
         {
@@ -348,7 +348,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "Your customer and work records, together.",
       description:
         "Keep information you would otherwise rely on memory for, then find it when you need it.",
-      imageAlt: "Actual OneHand CRM customer table using illustrative personal-work data",
+      imageAlt: "Actual OneHand CRM work-list kanban showing illustrative client projects by stage",
       imageCaption: "Actual OneHand CRM interface with illustrative sample data, not an automatically configured industry workspace.",
       cards: [
         {
@@ -414,7 +414,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "Keep customer and property details easy to find.",
       description:
         "An example of organizing information for property work. Automatic industry-specific setup is not currently available.",
-      imageAlt: "Actual OneHand CRM table showing illustrative property names and areas",
+      imageAlt: "Actual OneHand CRM work-list kanban showing illustrative property inquiries by stage",
       imageCaption: "Actual OneHand CRM interface with illustrative sample data, not an automatically configured industry workspace.",
       cards: [
         {
@@ -480,7 +480,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "Keep information for your next customer conversation.",
       description:
         "An example of recording and reviewing consultation information. Dedicated industry automation is not currently available.",
-      imageAlt: "Actual OneHand CRM board showing illustrative consultation records by status",
+      imageAlt: "Actual OneHand CRM work-list kanban showing illustrative vehicle consultations by stage",
       imageCaption: "Actual OneHand CRM interface with illustrative sample data, not an automatically configured industry workspace.",
       cards: [
         {
@@ -546,7 +546,7 @@ const solutionDetailCopyByLanguage: Record<
       title: "Keep company and contact information together.",
       description:
         "An example of recording and reviewing the companies and contacts you work with.",
-      imageAlt: "Actual OneHand CRM table with illustrative company and contact information",
+      imageAlt: "Actual OneHand CRM work-list kanban showing illustrative account proposals by stage",
       imageCaption: "Actual OneHand CRM interface with illustrative sample data, not an automatically configured industry workspace.",
       cards: [
         {

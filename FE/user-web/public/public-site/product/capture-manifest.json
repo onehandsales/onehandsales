@@ -1,17 +1,363 @@
 {
   "product": "OneHand CRM",
   "capturedAt": "2026-11-07",
-  "source": "Current User Web /app/workspaces/:workspaceId/objects/:objectDefinitionId route rendered in Chromium",
-  "data": "Illustrative API fixtures supplied through Playwright; no production customer data or database writes",
-  "interface": "Unmodified application components; table and kanban views",
-  "locales": ["ko", "en"],
-  "scenes": ["overview", "personal", "real-estate", "insurance-auto", "b2b-field"],
+  "source": "Current User Web /app/workspaces/:workspaceId/lists/:listDefinitionId route rendered in Chromium",
+  "data": "Fictional work-list kanban scenarios using recognizable real company names. All contacts, inquiries, properties and business relationships are invented; none represent OneHand CRM customers or endorsements.",
+  "interface": "Unmodified work-list navigation, selected list header and native kanban cards",
+  "locales": [
+    "ko",
+    "en"
+  ],
+  "scenes": [
+    "overview",
+    "personal",
+    "real-estate",
+    "insurance-auto",
+    "b2b-field"
+  ],
   "viewport": {
-    "overview": { "width": 1440, "height": 1000 },
-    "solutions": { "width": 1440, "height": 584 },
-    "overview-mobile": { "width": 390, "height": 844 },
-    "solutions-mobile": { "width": 390, "height": 300 }
+    "overview": {
+      "width": 1440,
+      "height": 1000
+    },
+    "solutions": {
+      "width": 1440,
+      "height": 584
+    },
+    "overview-mobile": {
+      "width": 390,
+      "height": 844
+    },
+    "solutions-mobile": {
+      "width": 390,
+      "height": 300
+    }
   },
   "deviceScaleFactor": 2,
-  "limitations": "Industry examples do not represent shipped automatic Kit setup, native apps, or automated workflows. Visible navigation and controls do not imply every feature is available."
+  "limitations": "Industry examples do not represent shipped automatic Kit setup, native apps, or automated workflows. Visible navigation and controls do not imply every feature is available.",
+  "fixtureSource": "scripts/fixtures/public-product-scenarios.json",
+  "captureScript": "scripts/capture-public-product.mjs",
+  "captureMode": "Existing E2E API mocks only; no database reads or writes; unchanged application UI",
+  "captures": [
+    {
+      "file": "overview-ko.jpg",
+      "locale": "ko",
+      "scene": "overview",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "recordCount": 9,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-overview",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "신규 고객 상담",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "overview-ko-mobile.jpg",
+      "locale": "ko",
+      "scene": "overview",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "recordCount": 9,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-overview",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "신규 고객 상담",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "personal-ko.jpg",
+      "locale": "ko",
+      "scene": "personal",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-personal",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "고객별 작업",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "personal-ko-mobile.jpg",
+      "locale": "ko",
+      "scene": "personal",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-personal",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "고객별 작업",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "real-estate-ko.jpg",
+      "locale": "ko",
+      "scene": "real-estate",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-real-estate",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "매물 상담",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "real-estate-ko-mobile.jpg",
+      "locale": "ko",
+      "scene": "real-estate",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-real-estate",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "매물 상담",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "insurance-auto-ko.jpg",
+      "locale": "ko",
+      "scene": "insurance-auto",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 6,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-insurance-auto",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "차량 상담",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "insurance-auto-ko-mobile.jpg",
+      "locale": "ko",
+      "scene": "insurance-auto",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 6,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-insurance-auto",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "차량 상담",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "b2b-field-ko.jpg",
+      "locale": "ko",
+      "scene": "b2b-field",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-b2b-field",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "거래처 제안",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "b2b-field-ko-mobile.jpg",
+      "locale": "ko",
+      "scene": "b2b-field",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-b2b-field",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "거래처 제안",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "overview-en.jpg",
+      "locale": "en",
+      "scene": "overview",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "recordCount": 9,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-overview",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "New customer inquiries",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "overview-en-mobile.jpg",
+      "locale": "en",
+      "scene": "overview",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "recordCount": 9,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-overview",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "New customer inquiries",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "personal-en.jpg",
+      "locale": "en",
+      "scene": "personal",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-personal",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Client projects",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "personal-en-mobile.jpg",
+      "locale": "en",
+      "scene": "personal",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-personal",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Client projects",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "real-estate-en.jpg",
+      "locale": "en",
+      "scene": "real-estate",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-real-estate",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Property inquiries",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "real-estate-en-mobile.jpg",
+      "locale": "en",
+      "scene": "real-estate",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-real-estate",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Property inquiries",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "insurance-auto-en.jpg",
+      "locale": "en",
+      "scene": "insurance-auto",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 6,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-insurance-auto",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Vehicle consultations",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "insurance-auto-en-mobile.jpg",
+      "locale": "en",
+      "scene": "insurance-auto",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 6,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-insurance-auto",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Vehicle consultations",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "b2b-field-en.jpg",
+      "locale": "en",
+      "scene": "b2b-field",
+      "viewport": {
+        "width": 1440,
+        "height": 584
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-b2b-field",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Account proposals",
+      "sidebarSelectionVerified": true,
+      "headerAndDataSourceVerified": true
+    },
+    {
+      "file": "b2b-field-en-mobile.jpg",
+      "locale": "en",
+      "scene": "b2b-field",
+      "viewport": {
+        "width": 390,
+        "height": 300
+      },
+      "recordCount": 8,
+      "routePath": "/app/workspaces/workspace-e2e-001/lists/capture-list-b2b-field",
+      "sourceType": "LIST",
+      "viewType": "KANBAN",
+      "listName": "Account proposals",
+      "sidebarSelectionVerified": false,
+      "headerAndDataSourceVerified": true
+    }
+  ]
 }

@@ -155,7 +155,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
     realMoment: {
       title: "고객과 업무 기록을\n한눈에 확인해요.",
-      imageAlt: "예시 데이터로 고객 기록을 확인하는 실제 OneHand CRM 테이블 화면",
+      imageAlt: "신규 고객 상담 업무 목록을 단계별로 보여주는 실제 OneHand CRM 칸반 예시",
     },
     flow: {
       title: "남긴 기록을, 다음 업무에서 다시 꺼내요.",
@@ -234,7 +234,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     },
     realMoment: {
       title: "Your customers and work,\nat a glance.",
-      imageAlt: "Actual OneHand CRM customer table with illustrative sample data",
+      imageAlt: "Actual OneHand CRM work-list kanban showing illustrative customer inquiries by stage",
     },
     flow: {
       title: "Keep records ready for your next conversation.",
