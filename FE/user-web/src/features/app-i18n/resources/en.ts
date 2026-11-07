@@ -148,7 +148,7 @@ export const enResource = {
     logout: "Log out",
     logoutCancel: "Cancel",
     logoutConfirm: "Log out",
-    logoutDescription: "To access your OneHand workspace,\nyou will need to log in again.",
+    logoutDescription: "To access your OneHand CRM workspace,\nyou will need to log in again.",
     logoutQuestion: "Log out of your account?",
     myWorkspaces: "My Workspaces",
     newWorkspace: "New Workspace",
@@ -193,7 +193,7 @@ export const enResource = {
     supportConsentNotice:
       "Shared information may be reviewed to handle your support request.",
     supportDescription:
-      "Send account, data, or integration issues to the OneHand team.",
+      "Send account, data, or integration issues to the OneHand CRM team.",
     supportDescriptionLabel: "Message",
     supportDescriptionPlaceholder: "Describe what you need help with.",
     supportDescriptionRequired: "Enter your message.",

@@ -33,13 +33,13 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
     contentsLabel: "목차",
     finalTitle: "정식 검토 자료가 필요한가요?",
     finalDescription:
-      "영업, 개인정보, 보안 검토는 OneHand 팀에 문의해 주세요.",
+      "영업, 개인정보, 보안 검토는 OneHand CRM 팀에 문의해 주세요.",
     sections: [
       {
         id: "using-onehand",
-        title: "1. OneHand 사용",
+        title: "1. OneHand CRM 사용",
         body: [
-          "OneHand는 세일즈 팀이 고객 기록, 딜 활동, 업무, 노트, AI 지원 워크플로를 관리하도록 돕는 워크스페이스를 제공합니다.",
+          "OneHand CRM은 세일즈 팀이 고객 기록, 딜 활동, 업무, 노트, AI 지원 워크플로를 관리하도록 돕는 워크스페이스를 제공합니다.",
           "사용자는 제출하는 정보와 계정 자격 증명의 보안을 책임지며, 관련 법률과 본 약관을 준수해야 합니다.",
         ],
       },
@@ -48,14 +48,14 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         title: "2. 계정과 워크스페이스",
         body: [
           "워크스페이스 소유자와 관리자는 초대 사용자, 권한, 청구 설정, 워크스페이스 데이터 제출을 관리합니다.",
-          "정확한 계정 정보를 제공해야 하며, 무단 접근이 의심되면 OneHand에 알려야 합니다.",
+          "정확한 계정 정보를 제공해야 하며, 무단 접근이 의심되면 OneHand CRM에 알려야 합니다.",
         ],
       },
       {
         id: "acceptable-use",
         title: "3. 허용되는 사용",
         body: [
-          "OneHand를 법률 위반, 권리 침해, 악성코드 배포, 무단 접근 시도, 서비스 운영 방해에 사용할 수 없습니다.",
+          "OneHand CRM을 법률 위반, 권리 침해, 악성코드 배포, 무단 접근 시도, 서비스 운영 방해에 사용할 수 없습니다.",
           "법에서 허용하는 경우를 제외하고 서비스를 역설계하거나, 자동 접근을 남용하거나, 경쟁 제품 개발에 사용할 수 없습니다.",
         ],
       },
@@ -63,7 +63,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "customer-data",
         title: "4. 고객 데이터와 개인정보",
         body: [
-          "고객 데이터는 이를 제출한 고객 또는 워크스페이스에 속합니다. OneHand는 개인정보 처리방침과 관련 계약에 따라 고객 데이터를 처리합니다.",
+          "고객 데이터는 이를 제출한 고객 또는 워크스페이스에 속합니다. OneHand CRM은 개인정보 처리방침과 관련 계약에 따라 고객 데이터를 처리합니다.",
           "워크스페이스에 개인정보가 포함되는 경우, 해당 정보를 제출할 권리와 고지를 확보할 책임은 고객에게 있습니다.",
         ],
       },
@@ -71,7 +71,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "ai-features",
         title: "5. AI 지원 기능",
         body: [
-          "OneHand에는 요약, 초안, 검색, 라우팅 등 AI 지원 기능이 포함될 수 있습니다.",
+          "OneHand CRM에는 요약, 초안, 검색, 라우팅 등 AI 지원 기능이 포함될 수 있습니다.",
           "AI 결과는 유용할 수 있지만 불완전하거나 부정확할 수 있으므로 고객 약속이나 비즈니스 판단 전에 검토해야 합니다.",
         ],
       },
@@ -87,7 +87,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "availability",
         title: "7. 서비스 가용성과 변경",
         body: [
-          "OneHand는 안정적인 서비스를 위해 노력하지만 유지보수, 업데이트, 보안 작업, 통제할 수 없는 사건으로 일시적으로 사용할 수 없을 수 있습니다.",
+          "OneHand CRM은 안정적인 서비스를 위해 노력하지만 유지보수, 업데이트, 보안 작업, 통제할 수 없는 사건으로 일시적으로 사용할 수 없을 수 있습니다.",
           "기능, 플랜, 서비스 일부는 변경되거나 중단될 수 있으며, 중요한 영향이 있는 경우 합리적인 통지를 제공합니다.",
         ],
       },
@@ -95,16 +95,16 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "liability",
         title: "8. 면책과 책임",
         body: [
-          "법이 허용하는 최대 범위에서 OneHand는 있는 그대로 제공되며, 중단 없음이나 오류 없음, AI 결과의 정확성을 보장하지 않습니다.",
-          "법이 허용하는 최대 범위에서 OneHand는 간접 손해, 특별 손해, 수익 손실, 데이터 손실 등에 책임지지 않습니다.",
+          "법이 허용하는 최대 범위에서 OneHand CRM은 있는 그대로 제공되며, 중단 없음이나 오류 없음, AI 결과의 정확성을 보장하지 않습니다.",
+          "법이 허용하는 최대 범위에서 OneHand CRM은 간접 손해, 특별 손해, 수익 손실, 데이터 손실 등에 책임지지 않습니다.",
         ],
       },
       {
         id: "changes-contact",
         title: "9. 변경과 문의",
         body: [
-          "OneHand는 본 약관을 수시로 업데이트할 수 있습니다. 중요한 변경은 관련 법률에 따라 통지합니다.",
-          "약관 관련 질문은 OneHand 문의 페이지를 통해 보낼 수 있습니다.",
+          "OneHand CRM은 본 약관을 수시로 업데이트할 수 있습니다. 중요한 변경은 관련 법률에 따라 통지합니다.",
+          "약관 관련 질문은 OneHand CRM 문의 페이지를 통해 보낼 수 있습니다.",
         ],
       },
     ],
@@ -113,14 +113,14 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
     contentsLabel: "Contents",
     finalTitle: "Need a formal review packet?",
     finalDescription:
-      "Contact the OneHand team for sales, privacy, and security questions related to your organization.",
+      "Contact the OneHand CRM team for sales, privacy, and security questions related to your organization.",
     sections: [
       {
         id: "using-onehand",
-        title: "1. Using OneHand",
+        title: "1. Using OneHand CRM",
         body: [
-          "OneHand provides a workspace for sales teams to manage customer records, deal activity, tasks, notes, and AI-assisted workflows.",
-          "You are responsible for the information you submit and for keeping your account credentials secure while using OneHand in compliance with applicable laws and these terms.",
+          "OneHand CRM provides a workspace for sales teams to manage customer records, deal activity, tasks, notes, and AI-assisted workflows.",
+          "You are responsible for the information you submit and for keeping your account credentials secure while using OneHand CRM in compliance with applicable laws and these terms.",
         ],
       },
       {
@@ -135,23 +135,23 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "acceptable-use",
         title: "3. Acceptable use",
         body: [
-          "You may not use OneHand to violate laws, infringe rights, distribute malware, attempt unauthorized access, or interfere with service operation.",
-          "You may not reverse engineer the service, abuse automated access, scrape platform content in a way that harms the service, or use OneHand to develop a competing product except where allowed by law.",
+          "You may not use OneHand CRM to violate laws, infringe rights, distribute malware, attempt unauthorized access, or interfere with service operation.",
+          "You may not reverse engineer the service, abuse automated access, scrape platform content in a way that harms the service, or use OneHand CRM to develop a competing product except where allowed by law.",
         ],
       },
       {
         id: "customer-data",
         title: "4. Customer data and privacy",
         body: [
-          "Customer data belongs to the customer or workspace that submitted it. OneHand processes customer data to provide, secure, support, and improve the service as described in the Privacy Policy and any applicable customer agreement.",
-          "If your workspace includes personal information, you are responsible for ensuring that you have the rights and notices needed to submit that information to OneHand.",
+          "Customer data belongs to the customer or workspace that submitted it. OneHand CRM processes customer data to provide, secure, support, and improve the service as described in the Privacy Policy and any applicable customer agreement.",
+          "If your workspace includes personal information, you are responsible for ensuring that you have the rights and notices needed to submit that information to OneHand CRM.",
         ],
       },
       {
         id: "ai-features",
         title: "5. AI-assisted features",
         body: [
-          "OneHand may include AI-assisted summaries, drafts, search, routing, and other workflow support.",
+          "OneHand CRM may include AI-assisted summaries, drafts, search, routing, and other workflow support.",
           "AI output can be useful but may be incomplete or inaccurate, so you should review generated content before relying on it for customer commitments or business decisions.",
         ],
       },
@@ -167,7 +167,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "availability",
         title: "7. Service availability and changes",
         body: [
-          "We work to keep OneHand reliable, but the service may occasionally be unavailable because of maintenance, updates, security work, or events outside our control.",
+          "We work to keep OneHand CRM reliable, but the service may occasionally be unavailable because of maintenance, updates, security work, or events outside our control.",
           "We may update features, modify plans, or discontinue parts of the service. When a change materially affects customers, we will use reasonable efforts to provide notice.",
         ],
       },
@@ -175,8 +175,8 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         id: "liability",
         title: "8. Disclaimers and liability",
         body: [
-          "OneHand is provided on an as-is and as-available basis to the fullest extent permitted by law. We do not guarantee that the service will be uninterrupted, error-free, or that AI-assisted content will always be accurate.",
-          "To the fullest extent permitted by law, OneHand is not liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, revenues, data, or business opportunities.",
+          "OneHand CRM is provided on an as-is and as-available basis to the fullest extent permitted by law. We do not guarantee that the service will be uninterrupted, error-free, or that AI-assisted content will always be accurate.",
+          "To the fullest extent permitted by law, OneHand CRM is not liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, revenues, data, or business opportunities.",
         ],
       },
       {
@@ -184,7 +184,7 @@ const termsCopyByLanguage: Record<PublicSiteCopyLanguage, TermsCopy> = {
         title: "9. Changes and contact",
         body: [
           "We may update these terms from time to time. If changes are material, we will provide notice as required by applicable law.",
-          "Questions about these terms can be sent through the OneHand contact page.",
+          "Questions about these terms can be sent through the OneHand CRM contact page.",
         ],
       },
     ],

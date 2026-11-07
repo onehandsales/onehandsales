@@ -65,7 +65,7 @@ const jobImageSrcByKey: Record<JobOptionKey, string> = {
 
 const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
   ko: {
-    logoAria: "OneHand 홈",
+    logoAria: "OneHand CRM 홈",
     title: "어떤 일을 주로 하세요?",
     subtitle: "하나를 선택하면 업무에 맞는 CRM을 빠르게 준비할게요.",
     buildingTitle: "작업 공간을 준비하고 있어요.",
@@ -114,7 +114,7 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     ],
   },
   "en-US": {
-    logoAria: "OneHand home",
+    logoAria: "OneHand CRM home",
     title: "What kind of work do you do?",
     subtitle: "Choose one and we will quickly prepare your CRM workspace.",
     buildingTitle: "Preparing your workspace.",
@@ -163,7 +163,7 @@ const onboardingCopyByLanguage: Record<PublicSiteLanguage, OnboardingCopy> = {
     ],
   },
   "en-CA": {
-    logoAria: "OneHand home",
+    logoAria: "OneHand CRM home",
     title: "What kind of work do you do?",
     subtitle: "Choose one and we will quickly prepare your CRM workspace.",
     buildingTitle: "Preparing your workspace.",

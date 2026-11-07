@@ -72,8 +72,8 @@ const loginCopy: Record<
     homeAria: "홈으로 이동",
     title: "나만의 AI 워크스페이스",
     subtitles: {
-      login: "OneHand 계정에 로그인",
-      signup: "OneHand 계정 만들기",
+      login: "OneHand CRM 계정에 로그인",
+      signup: "OneHand CRM 계정 만들기",
     },
     providerLead: {
       login: "다음으로 계속하기",
@@ -107,8 +107,8 @@ const loginCopy: Record<
     homeAria: "Go home",
     title: "Your AI workspace",
     subtitles: {
-      login: "Log in to OneHand",
-      signup: "Create your OneHand account",
+      login: "Log in to OneHand CRM",
+      signup: "Create your OneHand CRM account",
     },
     providerLead: {
       login: "Continue with",

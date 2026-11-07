@@ -55,7 +55,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "보안",
         title: "캡처부터 후속 업무까지 고객 맥락을 보호합니다.",
         description:
-          "OneHand는 계정 기록, 고객 대화, 세일즈 워크플로가 올바른 사람에게만 제공되어야 한다는 전제에서 설계됩니다.",
+          "OneHand CRM은 계정 기록, 고객 대화, 세일즈 워크플로가 올바른 사람에게만 제공되어야 한다는 전제에서 설계됩니다.",
         cards: [
           {
             title: "워크스페이스 접근 제어",
@@ -78,7 +78,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "개인정보 보호",
         title: "개인정보 보호 제어는 페이지가 아니라 데이터를 따라갑니다.",
         description:
-          "고객 기록, 업로드 파일, 회의 노트에는 개인정보가 포함될 수 있습니다. OneHand는 제품 수명주기 전반에서 개인정보 기대치를 명확히 유지합니다.",
+          "고객 기록, 업로드 파일, 회의 노트에는 개인정보가 포함될 수 있습니다. OneHand CRM은 제품 수명주기 전반에서 개인정보 기대치를 명확히 유지합니다.",
         cards: [
           {
             title: "목적 기반 처리",
@@ -101,7 +101,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "컴플라이언스",
         title: "신뢰할 수 있는 시스템이 필요한 팀을 위한 통제.",
         description:
-          "OneHand의 컴플라이언스 프로그램은 가용성, 접근 제어, 공급업체 관리, 데이터 처리 같은 실제 고객 요구를 중심으로 발전합니다.",
+          "OneHand CRM의 컴플라이언스 프로그램은 가용성, 접근 제어, 공급업체 관리, 데이터 처리 같은 실제 고객 요구를 중심으로 발전합니다.",
         cards: [
           {
             title: "정책 거버넌스",
@@ -124,7 +124,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AI 거버넌스",
         title: "AI 지원은 책임 가능한 방식으로 남아야 합니다.",
         description:
-          "OneHand 에이전트는 승인된 워크스페이스 맥락에서 요약, 초안 작성, 라우팅, 검색을 돕습니다. 팀이 사람의 검토를 유지할 수 있도록 설계됩니다.",
+          "OneHand CRM 에이전트는 승인된 워크스페이스 맥락에서 요약, 초안 작성, 라우팅, 검색을 돕습니다. 팀이 사람의 검토를 유지할 수 있도록 설계됩니다.",
         cards: [
           {
             title: "고객이 제어하는 맥락",
@@ -162,7 +162,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "지원 준비",
             description:
-              "고객은 공개 문의 흐름을 통해 계정, 개인정보, 보안 질문을 OneHand 팀에 전달할 수 있습니다.",
+              "고객은 공개 문의 흐름을 통해 계정, 개인정보, 보안 질문을 OneHand CRM 팀에 전달할 수 있습니다.",
           },
         ],
       },
@@ -170,13 +170,13 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
   },
   "en-US": {
     title: "Security",
-    finalTitle: "Review security, then move forward with OneHand.",
+    finalTitle: "Review security, then move forward with OneHand CRM.",
     sections: [
       {
         eyebrow: "Security",
         title: "Protect customer context from capture to follow-up.",
         description:
-          "OneHand is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
+          "OneHand CRM is designed around account records, customer conversations, and sales workflows that should only be available to the right people.",
         cards: [
           {
             title: "Workspace access controls",
@@ -199,7 +199,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Privacy",
         title: "Privacy controls follow the data, not just the page.",
         description:
-          "Customer records, uploaded files, and meeting notes can include personal information. OneHand keeps privacy expectations visible across the product lifecycle.",
+          "Customer records, uploaded files, and meeting notes can include personal information. OneHand CRM keeps privacy expectations visible across the product lifecycle.",
         cards: [
           {
             title: "Purpose-based processing",
@@ -222,7 +222,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "Compliance",
         title: "Controls built for teams that need a dependable system.",
         description:
-          "As OneHand grows, our compliance program is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
+          "As OneHand CRM grows, our compliance program is being shaped around practical customer requirements: availability, access control, vendor management, and data handling.",
         cards: [
           {
             title: "Policy governance",
@@ -245,7 +245,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
         eyebrow: "AI governance",
         title: "AI assistance should stay accountable.",
         description:
-          "OneHand agents help summarize, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
+          "OneHand CRM agents help summarize, draft, route, and search across approved workspace context. The product is designed so teams can keep humans in the workflow.",
         cards: [
           {
             title: "Customer controlled context",
@@ -283,7 +283,7 @@ const securityCopyByLanguage: Record<PublicSiteCopyLanguage, SecurityCopy> = {
           {
             title: "Support readiness",
             description:
-              "Customers can contact the OneHand team for account, privacy, and security questions through the public contact flow.",
+              "Customers can contact the OneHand CRM team for account, privacy, and security questions through the public contact flow.",
           },
         ],
       },

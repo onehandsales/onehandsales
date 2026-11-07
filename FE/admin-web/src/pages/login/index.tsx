@@ -57,7 +57,7 @@ export function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-muted px-5">
       <section className="w-full max-w-sm rounded-lg border bg-white p-6">
-        <p className="text-sm font-semibold text-primary">OneHand admin</p>
+        <p className="text-sm font-semibold text-primary">OneHand CRM admin</p>
         <h1 className="mt-3 text-2xl font-semibold">Admin login</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Enter a Backend App access token to verify /admin/api/me.

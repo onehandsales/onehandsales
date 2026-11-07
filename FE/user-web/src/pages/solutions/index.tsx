@@ -48,9 +48,9 @@ const solutionIcons: Record<SolutionSegmentCopy["id"], LucideIcon> = {
 
 const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
   ko: {
-    title: "용도별로 OneHand를 보는 방법.",
+    title: "용도별로 OneHand CRM을 보는 방법.",
     description:
-      "OneHand는 개인, 현장 B2B, 부동산 중개, 보험/자동차처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 다르게 사용할 수 있습니다.",
+      "OneHand CRM은 개인, 현장 B2B, 부동산 중개, 보험/자동차처럼 반복 상담과 후속 연락이 많은 흐름에 맞춰 다르게 사용할 수 있습니다.",
     actionLabel: "자세히 보기",
     contentsLabel: "용도별 선택 기준",
     ctaTitle: "어떤 용도가 가장 가까운지 함께 정리해볼까요?",
@@ -108,9 +108,9 @@ const solutionsCopyByLanguage: Record<PublicSiteCopyLanguage, SolutionsCopy> = {
     ],
   },
   "en-US": {
-    title: "Ways to use OneHand.",
+    title: "Ways to use OneHand CRM.",
     description:
-      "OneHand can adapt to personal, B2B field, real estate, and insurance/automobile workflows where repeated consultation and follow-up matter.",
+      "OneHand CRM can adapt to personal, B2B field, real estate, and insurance/automobile workflows where repeated consultation and follow-up matter.",
     actionLabel: "View details",
     contentsLabel: "Use case guide",
     ctaTitle: "Want to find the closest workflow?",

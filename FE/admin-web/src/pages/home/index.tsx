@@ -8,7 +8,7 @@ export function HomePage() {
     <main className="flex min-h-screen items-center justify-center bg-muted px-5">
       <section className="grid w-full max-w-md gap-5 rounded-lg border bg-white p-6">
         <div>
-          <p className="text-sm font-semibold text-primary">OneHand admin</p>
+          <p className="text-sm font-semibold text-primary">OneHand CRM admin</p>
           <h1 className="mt-3 text-2xl font-semibold">Admin verified</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             This app only verifies admin access with /admin/api/me.

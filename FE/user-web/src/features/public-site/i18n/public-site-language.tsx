@@ -192,7 +192,7 @@ const publicSiteHtmlLangByLanguage: Record<PublicSiteLanguage, string> = {
 const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
   ko: {
     common: {
-      logoAria: "OneHand 홈",
+      logoAria: "OneHand CRM 홈",
       menuAria: "메뉴 열기",
       menuCloseAria: "메뉴 닫기",
       nav: {
@@ -202,7 +202,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         pricing: "요금제",
         contact: "문의하기",
         downloadApp: "앱 다운로드",
-        freeCta: "OneHand 시작",
+        freeCta: "OneHand CRM 시작",
         login: "로그인",
       },
       productMenuColumns: [
@@ -219,7 +219,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         ["도움받기", "도움말", "자주 묻는 질문", "문의하기"],
       ],
       footerColumns: [
-        ["회사", "OneHand 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
+        ["회사", "OneHand CRM 소개", "보안", "서비스 이용약관", "개인정보 처리방침"],
         [
           "제품",
           "제품 소개",
@@ -233,14 +233,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
       cookieSettings: "쿠키 설정",
       languageAria: "지역 선택",
-      footerSocialAria: "OneHand 소셜 링크",
+      footerSocialAria: "OneHand CRM 소셜 링크",
       copyright: "© 2026 OneHand CRM Labs",
     },
     landing: {
       heroTitle: ["현장 영업자가", "고객을 놓치지 않는 곳"],
       heroDescription:
         "개인영업, 부동산 중개, B2B 외근, 보험·자동차 영업의 고객, 미팅, 일정, 딜, 팔로업을 한 화면에서 연결하세요.",
-      primaryCta: "OneHand 시작",
+      primaryCta: "OneHand CRM 시작",
       secondaryCta: "흐름 보기",
       customerStrip: "개인영업, 부동산 중개, B2B 현장 영업을 위해 설계한 CRM",
       sectionWork: "고객 미팅과 후속 연락을 하루 종일 놓치지 마세요.",
@@ -249,7 +249,7 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       quote: "“AI보다 먼저, 영업의 흐름이 정리됩니다.”",
       trustedTitle: "혼자서도 영업 흐름을 놓치지 않는 사람들을 위해.",
       finalCta: "오늘 바로 시작하세요.",
-      finalPrimary: "OneHand 시작",
+      finalPrimary: "OneHand CRM 시작",
       finalSecondary: "데모 요청",
     },
     pricing: {
@@ -359,14 +359,14 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
       ],
     },
     contact: {
-      title: ["OneHand", "도입 문의하기"],
+      title: ["OneHand CRM", "도입 문의하기"],
       description:
         "개인영업, 부동산 중개, B2B 현장 영업, 보험·자동차 영업에 맞는 요금제 상담, 데모 예약, 활용 사례 안내를 받아보세요.",
-      trustedLabel: "반복 고객 상담과 팔로업이 많은 영업자가 사용하는 OneHand",
+      trustedLabel: "반복 고객 상담과 팔로업이 많은 영업자가 사용하는 OneHand CRM",
       companies: ["LG AI Research", "Sendbird", "HYOSUNG"],
       quoteCompany: "OpenAI",
       quote:
-        "직원들은 같은 딜 목표와 고객 정보를 공유할 수 있는 단일 업무 공간이 필요합니다. OneHand는 영업 흐름을 한곳에서 처리할 수 있게 합니다.",
+        "직원들은 같은 딜 목표와 고객 정보를 공유할 수 있는 단일 업무 공간이 필요합니다. OneHand CRM은 영업 흐름을 한곳에서 처리할 수 있게 합니다.",
       quotePerson: "Nick Erdenberger",
       quoteRole: "GTM, OpenAI",
       labels: {
@@ -391,9 +391,9 @@ const publicSiteCopy: Record<PublicSiteLanguage, PublicSiteCopy> = {
         region: "대한민국",
         phone: "(010) 1234-5678",
         reason: "선택 항목",
-        detail: "OneHand를 어떻게 사용하고 싶은지 적어주세요.",
+        detail: "OneHand CRM을 어떻게 사용하고 싶은지 적어주세요.",
       },
-      marketingAgreement: "OneHand의 마케팅 메시지를 수신하는 데 동의합니다.",
+      marketingAgreement: "OneHand CRM의 마케팅 메시지를 수신하는 데 동의합니다.",
       submit: "도입 문의하기",
       finePrint:
         "언제든지 마케팅 메시지 수신을 거부할 수 있습니다. 제출된 정보는 문의 응대와 제품 도입 안내 목적으로 사용됩니다.",
@@ -628,7 +628,7 @@ function makeTranslatedContact(copy: {
     trustedLabel: copy.trustedLabel,
     companies: ["LG AI Research", "Sendbird", "HYOSUNG"],
     quoteCompany: "OpenAI",
-    quote: "Teams need one workspace where deal goals and customer context stay together. OneHand keeps the sales flow in one place.",
+    quote: "Teams need one workspace where deal goals and customer context stay together. OneHand CRM keeps the sales flow in one place.",
     quotePerson: "Nick Erdenberger",
     quoteRole: "GTM, OpenAI",
     labels: copy.labels,
@@ -682,7 +682,7 @@ function makeEnglishCopy(copy: {
   readonly languageRegion: "US" | "CA";
 }): PublicSiteCopy {
   const common: PublicSiteCopy["common"] = {
-    logoAria: "OneHand home",
+    logoAria: "OneHand CRM home",
     menuAria: "Open menu",
     menuCloseAria: "Close menu",
     nav: {
@@ -719,11 +719,11 @@ function makeEnglishCopy(copy: {
         "Download",
       ],
       ["Resources", "Help", "FAQ", "Contact Us"],
-      ["OneHand for", "Personal", "B2B Field", "Real Estate", "Insurance/Automobile"],
+      ["OneHand CRM for", "Personal", "B2B Field", "Real Estate", "Insurance/Automobile"],
     ],
     cookieSettings: "Cookie settings",
     languageAria: "Select region",
-    footerSocialAria: "OneHand social links",
+    footerSocialAria: "OneHand CRM social links",
     copyright: "© 2026 OneHand CRM Labs",
   };
 
@@ -769,7 +769,7 @@ function makeEnglishCopy(copy: {
       finalTitle: "Choose the plan that fits your sales work.",
     }),
     contact: makeTranslatedContact({
-      title: ["OneHand", copy.contactTitle],
+      title: ["OneHand CRM", copy.contactTitle],
       description:
         "Get help with pricing, demos, and use cases for personal, real estate, field, B2B, insurance, and car sales.",
       trustedLabel: "Used by sellers with repeat customer follow-up",
@@ -795,10 +795,10 @@ function makeEnglishCopy(copy: {
         region: getEnglishContactRegion(copy.languageRegion),
         phone: "(123) 456-7891",
         reason: "Select an option",
-        detail: "Tell us how you want to use OneHand.",
+        detail: "Tell us how you want to use OneHand CRM.",
       },
       submit: "Contact Us",
-      agreement: "I agree to receive marketing messages from OneHand.",
+      agreement: "I agree to receive marketing messages from OneHand CRM.",
       finePrint:
         "You can opt out of marketing messages at any time. Submitted information is used to respond to your request and guide product onboarding.",
       supportPrefix: "For technical or product support, email",

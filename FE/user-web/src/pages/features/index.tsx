@@ -59,7 +59,7 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
     contentsLabel: "주요 기능 목차",
     ctaTitle: "기능을 보고 바로 시작해볼까요?",
     ctaDescription:
-      "흩어진 영업 기록을 OneHand에서 정리해요.",
+      "흩어진 영업 기록을 OneHand CRM에서 정리해요.",
     items: [
       {
         id: "customers",
@@ -137,7 +137,7 @@ const featuresCopyByLanguage: Record<PublicSiteCopyLanguage, FeaturesCopy> = {
     contentsLabel: "Core Features",
     ctaTitle: "Ready to try the workflow?",
     ctaDescription:
-      "Organize scattered sales records in OneHand.",
+      "Organize scattered sales records in OneHand CRM.",
     items: [
       {
         id: "customers",

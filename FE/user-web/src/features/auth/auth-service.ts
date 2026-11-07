@@ -316,7 +316,7 @@ function openAuthPopupWindow() {
 
   try {
     // 3. 사용자가 빈 popup을 인지할 수 있도록 제목과 focus를 설정한다.
-    popup.document.title = "OneHand sign-in";
+    popup.document.title = "OneHand CRM sign-in";
     popup.focus();
   } catch {
     // The popup can become cross-origin as soon as navigation starts.

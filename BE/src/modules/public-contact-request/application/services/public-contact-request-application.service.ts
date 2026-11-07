@@ -120,9 +120,9 @@ export class PublicContactRequestApplicationService {
     const plan = this.normalizeRequiredText(
       command.plan,
       "plan",
-      "OneHand 사용 계획을 입력해 주세요.",
+      "OneHand CRM 사용 계획을 입력해 주세요.",
       MAX_PUBLIC_CONTACT_PLAN_LENGTH,
-      "OneHand 사용 계획은 2000자 이하로 입력해 주세요."
+      "OneHand CRM 사용 계획은 2000자 이하로 입력해 주세요."
     );
     const source = this.normalizeSource(command.source);
     const marketingAgreement = this.normalizeMarketingAgreement(
@@ -298,7 +298,7 @@ export class PublicContactRequestApplicationService {
 
     throw new PublicContactRequestValidationError(
       "source",
-      "OneHand를 알게 된 경로를 선택해 주세요."
+      "OneHand CRM을 알게 된 경로를 선택해 주세요."
     );
   }
 

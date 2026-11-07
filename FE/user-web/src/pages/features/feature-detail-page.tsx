@@ -77,7 +77,7 @@ const featureDetailCopyByLanguage: Record<
       contentsLabel: "고객 관리 목차",
       ctaTitle: "고객 기록부터 정리해볼까요?",
       ctaDescription:
-        "흩어진 연락처와 상담 메모를 OneHand의 고객 흐름으로 옮겨요.",
+        "흩어진 연락처와 상담 메모를 OneHand CRM의 고객 흐름으로 옮겨요.",
       quickCards: [
         {
           title: "회사와 담당자",
@@ -112,7 +112,7 @@ const featureDetailCopyByLanguage: Record<
           id: "context",
           title: "상담 기록을 고객 맥락에 연결",
           paragraphs: [
-            "고객을 다시 만날 때 중요한 것은 마지막 대화와 다음 약속이에요. OneHand는 고객 기록 옆에 일정, 회의록, 딜을 연결해 이전 맥락을 다시 찾기 쉽게 해요.",
+            "고객을 다시 만날 때 중요한 것은 마지막 대화와 다음 약속이에요. OneHand CRM은 고객 기록 옆에 일정, 회의록, 딜을 연결해 이전 맥락을 다시 찾기 쉽게 해요.",
           ],
           bullets: [
             "고객별 메모와 회의록을 한곳에서 확인해요.",
@@ -141,7 +141,7 @@ const featureDetailCopyByLanguage: Record<
       contentsLabel: "파이프라인 목차",
       ctaTitle: "진행 중인 딜을 정리해볼까요?",
       ctaDescription:
-        "상담, 견적, 계약 전환까지 이어지는 거래 흐름을 OneHand에서 관리해요.",
+        "상담, 견적, 계약 전환까지 이어지는 거래 흐름을 OneHand CRM에서 관리해요.",
       quickCards: [
         {
           title: "딜 단계",
@@ -188,7 +188,7 @@ const featureDetailCopyByLanguage: Record<
           id: "priority",
           title: "우선 챙길 거래 찾기",
           paragraphs: [
-            "영업자는 모든 딜을 같은 강도로 볼 수 없어요. OneHand는 마감일, 다음 행동, 고객 반응을 기준으로 챙길 거래를 찾는 흐름을 돕습니다.",
+            "영업자는 모든 딜을 같은 강도로 볼 수 없어요. OneHand CRM은 마감일, 다음 행동, 고객 반응을 기준으로 챙길 거래를 찾는 흐름을 돕습니다.",
           ],
           bullets: [
             "마감일이 가까운 딜을 먼저 확인해요.",
@@ -269,7 +269,7 @@ const featureDetailCopyByLanguage: Record<
       contentsLabel: "활동 기록 목차",
       ctaTitle: "상담 기록을 놓치지 않게 남겨볼까요?",
       ctaDescription:
-        "고객별 활동과 회의록을 OneHand에서 이어 보세요.",
+        "고객별 활동과 회의록을 OneHand CRM에서 이어 보세요.",
       quickCards: [
         {
           title: "회의록",
@@ -380,7 +380,7 @@ const featureDetailCopyByLanguage: Record<
           id: "control",
           title: "사용자가 확인하고 저장",
           paragraphs: [
-            "AI가 만든 결과는 영업자의 판단을 거쳐야 해요. OneHand는 자동 저장보다 검토 가능한 초안을 기준으로 설계해요.",
+            "AI가 만든 결과는 영업자의 판단을 거쳐야 해요. OneHand CRM은 자동 저장보다 검토 가능한 초안을 기준으로 설계해요.",
           ],
           bullets: [
             "AI 결과를 읽고 필요한 내용을 수정해요.",
@@ -463,7 +463,7 @@ const featureDetailCopyByLanguage: Record<
       contentsLabel: "Customer management guide",
       ctaTitle: "Ready to organize customer records?",
       ctaDescription:
-        "Bring scattered contacts and notes into a OneHand customer workflow.",
+        "Bring scattered contacts and notes into a OneHand CRM customer workflow.",
       quickCards: [
         {
           title: "Companies and contacts",
@@ -498,7 +498,7 @@ const featureDetailCopyByLanguage: Record<
           id: "context",
           title: "Connect notes to customer context",
           paragraphs: [
-            "The important thing before the next customer touch is the last conversation and the next promise. OneHand keeps schedules, meeting notes, and deals near the customer record.",
+            "The important thing before the next customer touch is the last conversation and the next promise. OneHand CRM keeps schedules, meeting notes, and deals near the customer record.",
           ],
           bullets: [
             "Review customer notes and meeting records in one place.",
@@ -527,7 +527,7 @@ const featureDetailCopyByLanguage: Record<
       contentsLabel: "Pipeline guide",
       ctaTitle: "Ready to organize active deals?",
       ctaDescription:
-        "Manage the flow from consultation to proposal and close in OneHand.",
+        "Manage the flow from consultation to proposal and close in OneHand CRM.",
       quickCards: [
         {
           title: "Deal stages",
@@ -574,7 +574,7 @@ const featureDetailCopyByLanguage: Record<
           id: "priority",
           title: "Find the deals that need attention",
           paragraphs: [
-            "Salespeople cannot review every deal with the same intensity. OneHand helps identify work by due dates, next actions, and customer response.",
+            "Salespeople cannot review every deal with the same intensity. OneHand CRM helps identify work by due dates, next actions, and customer response.",
           ],
           bullets: [
             "Check deals with approaching due dates first.",
@@ -655,7 +655,7 @@ const featureDetailCopyByLanguage: Record<
       contentsLabel: "Activity records guide",
       ctaTitle: "Ready to keep consultation records organized?",
       ctaDescription:
-        "Keep customer activities and meeting notes connected in OneHand.",
+        "Keep customer activities and meeting notes connected in OneHand CRM.",
       quickCards: [
         {
           title: "Meeting notes",
@@ -766,7 +766,7 @@ const featureDetailCopyByLanguage: Record<
           id: "control",
           title: "Review and save under user control",
           paragraphs: [
-            "AI output should pass through seller judgment. OneHand is designed around reviewable drafts rather than automatic saving.",
+            "AI output should pass through seller judgment. OneHand CRM is designed around reviewable drafts rather than automatic saving.",
           ],
           bullets: [
             "Read and edit AI output before saving.",

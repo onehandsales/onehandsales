@@ -37,7 +37,7 @@ type DownloadCopy = {
 
 const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
   ko: {
-    title: "iOS와 Android에서 OneHand를 바로 열어보세요.",
+    title: "iOS와 Android에서 OneHand CRM을 바로 열어보세요.",
     description:
       "앱 다운로드 흐름을 기준으로 안내합니다. 현장에서 고객을 만난 뒤에도 모바일에서 영업 흐름을 확인할 수 있게 설계합니다.",
     iosLabel: "App Store에서 다운로드",
@@ -61,14 +61,14 @@ const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
     ],
   },
   "en-US": {
-    title: "Open OneHand on iOS and Android.",
+    title: "Open OneHand CRM on iOS and Android.",
     description:
       "This page is structured around the app download flow, so sellers can check customer and deal context while they are in the field.",
     iosLabel: "Download on the App Store",
     androidLabel: "Get it on Google Play",
     ctaTitle: "Already have an account? You can also start on the web.",
     ctaDescription:
-      "OneHand is designed so mobile and web share the same workflow, helping you check and continue sales work while moving.",
+      "OneHand CRM is designed so mobile and web share the same workflow, helping you check and continue sales work while moving.",
     cards: [
       {
         title: "Mobile-first checks",
@@ -80,7 +80,7 @@ const downloadCopyByLanguage: Record<PublicSiteCopyLanguage, DownloadCopy> = {
       },
       {
         title: "Secure account access",
-        description: "Access OneHand through Google, Apple, and LINE login flows.",
+        description: "Access OneHand CRM through Google, Apple, and LINE login flows.",
       },
     ],
   },

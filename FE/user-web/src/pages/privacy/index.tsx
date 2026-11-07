@@ -43,7 +43,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     contentsLabel: "목차",
     finalTitle: "개인정보 관련 질문이 있나요?",
     finalDescription:
-      "처리방침이 궁금하면 OneHand 팀에 문의해 주세요.",
+      "처리방침이 궁금하면 OneHand CRM 팀에 문의해 주세요.",
     tableHeaders: ["범주", "비즈니스 목적 공개", "적용 시 판매/공유"],
     californiaRows: [
       ["식별자", "서비스 제공자, 계열사, 법적 수신자, 광고 파트너", "적용 가능한 광고 파트너"],
@@ -91,7 +91,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. 정보를 사용하는 방법",
         paragraphs: [
-          "우리는 OneHand 제공, 보호, 지원, 개선과 관련된 비즈니스 및 운영 목적을 위해 정보를 사용합니다.",
+          "우리는 OneHand CRM 제공, 보호, 지원, 개선과 관련된 비즈니스 및 운영 목적을 위해 정보를 사용합니다.",
         ],
         bullets: [
           "계정과 워크스페이스 생성, 인증, 관리.",
@@ -112,7 +112,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "international-transfers",
         title: "4. 국제 데이터 이전",
         paragraphs: [
-          "OneHand에서 처리되는 정보는 사용자가 거주하는 국가 외의 국가로 이전, 처리, 저장될 수 있습니다.",
+          "OneHand CRM에서 처리되는 정보는 사용자가 거주하는 국가 외의 국가로 이전, 처리, 저장될 수 있습니다.",
           "국제 이전 시 적용 법률이 요구하는 계약상 보호 또는 인정된 이전 메커니즘을 사용하려고 노력합니다.",
         ],
       },
@@ -183,7 +183,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         title: "13. 데이터 개인정보 프레임워크",
         paragraphs: [
           "고객 계약, 이전 메커니즘, 개인정보 인증이 적용되는 경우 해당 계약 또는 인증 자료의 조건이 우선합니다.",
-          "OneHand가 별도로 게시하거나 합의하지 않는 한 이 페이지는 특정 데이터 이전 인증을 주장하지 않습니다.",
+          "OneHand CRM이 별도로 게시하거나 합의하지 않는 한 이 페이지는 특정 데이터 이전 인증을 주장하지 않습니다.",
         ],
       },
       {
@@ -200,7 +200,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
     contentsLabel: "Contents",
     finalTitle: "Contact us",
     finalDescription:
-      "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand team.",
+      "If you have questions about this Privacy Policy or our privacy practices, contact the OneHand CRM team.",
     tableHeaders: ["Category", "Disclosed for business purposes", "Sold/shared where applicable"],
     californiaRows: [
       ["Identifiers", "Service providers, affiliates, legal recipients, advertising partners", "Advertising partners where applicable"],
@@ -248,7 +248,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "how-we-use",
         title: "2. How we use your information",
         paragraphs: [
-          "We use information for business and operational purposes related to providing, securing, supporting, and improving OneHand.",
+          "We use information for business and operational purposes related to providing, securing, supporting, and improving OneHand CRM.",
         ],
         bullets: [
           "Create, authenticate, and manage accounts and workspaces.",
@@ -262,14 +262,14 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "disclosing",
         title: "3. Disclosing your information",
         paragraphs: [
-          "Depending on how you use OneHand and the choices you make, we may disclose information to service providers, business partners, affiliates, advertising and analytics partners, workspace users, organizations that manage workspaces, legal recipients, or transaction parties.",
+          "Depending on how you use OneHand CRM and the choices you make, we may disclose information to service providers, business partners, affiliates, advertising and analytics partners, workspace users, organizations that manage workspaces, legal recipients, or transaction parties.",
         ],
       },
       {
         id: "international-transfers",
         title: "4. International data transfers",
         paragraphs: [
-          "Information processed by OneHand may be transferred to, processed in, and stored in countries other than where you live.",
+          "Information processed by OneHand CRM may be transferred to, processed in, and stored in countries other than where you live.",
           "When we transfer information internationally, we endeavor to use safeguards required by applicable law, such as contractual protections or other recognized transfer mechanisms.",
         ],
       },
@@ -310,7 +310,7 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "third-party-websites",
         title: "9. Third-party websites/applications",
         paragraphs: [
-          "The Website or Services may contain links to third-party websites, applications, integrations, or services. These third parties are not controlled by OneHand, and their privacy practices are governed by their own policies.",
+          "The Website or Services may contain links to third-party websites, applications, integrations, or services. These third parties are not controlled by OneHand CRM, and their privacy practices are governed by their own policies.",
         ],
       },
       {
@@ -339,8 +339,8 @@ const privacyCopyByLanguage: Record<PublicSiteCopyLanguage, PrivacyCopy> = {
         id: "data-privacy-framework",
         title: "13. Data privacy framework",
         paragraphs: [
-          "Where a customer agreement, transfer mechanism, or privacy certification applies to your use of OneHand, the controlling terms will be stated in that agreement or the related certification materials.",
-          "This policy page does not claim a specific data transfer certification unless OneHand has separately published or agreed to that certification.",
+          "Where a customer agreement, transfer mechanism, or privacy certification applies to your use of OneHand CRM, the controlling terms will be stated in that agreement or the related certification materials.",
+          "This policy page does not claim a specific data transfer certification unless OneHand CRM has separately published or agreed to that certification.",
         ],
       },
       {

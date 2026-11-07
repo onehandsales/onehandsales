@@ -54,7 +54,7 @@ export function DesktopAppShell({
               OneHand CRM
             </p>
             <p className="text-[14px] text-sidebar-foreground/45">
-              OneHand
+              OneHand CRM
             </p>
           </div>
         </div>
@@ -77,7 +77,7 @@ export function DesktopAppShell({
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[14px] font-medium text-sidebar-foreground">
-              OneHand User
+              OneHand CRM User
             </p>
             <p className="text-[14px] text-sidebar-foreground/45">
               Workspace

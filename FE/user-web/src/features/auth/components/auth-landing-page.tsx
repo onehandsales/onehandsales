@@ -145,7 +145,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "OneHand", suffix: "가 간단해요." },
+        { label: "OneHand CRM", suffix: "이 간단해요." },
         { label: "세일즈", suffix: "가 간단해요." },
         { label: "AI", suffix: "가 간단해요." },
         { label: "B2C", suffix: "가 간단해요." },
@@ -193,7 +193,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     trustProof: {
       title: "기록은 가볍게 다루지 않아요.",
       description:
-        "OneHand는 개인 영업자의 고객 기록을 빠르게 다루되, 저장과 복구의 기준은 분명하게 둡니다.",
+        "OneHand CRM은 개인 영업자의 고객 기록을 빠르게 다루되, 저장과 복구의 기준은 분명하게 둡니다.",
       proofs: [
         {
           title: "개인 데이터 기준",
@@ -216,7 +216,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     final: {
       title: "오늘 바로 시작하세요.",
       description: "",
-      primaryCta: "OneHand 시작",
+      primaryCta: "OneHand CRM 시작",
       secondaryCta: "데모 요청",
     },
   },
@@ -224,7 +224,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     hero: {
       eyebrow: "",
       rotatingItems: [
-        { label: "OneHand", suffix: "is Simple." },
+        { label: "OneHand CRM", suffix: "is Simple." },
         { label: "Sales", suffix: "is Simple." },
         { label: "AI", suffix: "is Simple." },
         { label: "B2C", suffix: "is Simple." },
@@ -272,7 +272,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
     trustProof: {
       title: "Your records stay intentional.",
       description:
-        "OneHand helps you move fast without turning customer records into automatic guesswork.",
+        "OneHand CRM helps you move fast without turning customer records into automatic guesswork.",
       proofs: [
         {
           title: "Personal data boundary",

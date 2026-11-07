@@ -50,7 +50,7 @@ const quickCardIcons: readonly LucideIcon[] = [
 
 const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
   ko: {
-    title: "OneHand를 쓰는 기본 흐름.",
+    title: "OneHand CRM을 쓰는 기본 흐름.",
     description:
       "고객을 등록하고, 딜을 만들고, 일정과 회의록으로 다음 행동을 이어 가는 기본 사용 방법을 정리했어요.",
     contentsLabel: "도움말 목차",
@@ -79,7 +79,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
         id: "start",
         title: "처음 시작하기",
         paragraphs: [
-          "OneHand는 회사, 담당자, 제품, 딜을 먼저 정리하면 이후 일정과 회의록을 자연스럽게 연결할 수 있어요.",
+          "OneHand CRM은 회사, 담당자, 제품, 딜을 먼저 정리하면 이후 일정과 회의록을 자연스럽게 연결할 수 있어요.",
           "처음부터 모든 항목을 채우기보다 실제 영업에서 바로 쓰는 정보부터 입력하는 흐름이 좋아요.",
         ],
         bullets: [
@@ -130,7 +130,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
     ],
   },
   "en-US": {
-    title: "The basic workflow for using OneHand.",
+    title: "The basic workflow for using OneHand CRM.",
     description:
       "Learn how to add customers, create deals, and keep next actions moving through schedules and meeting notes.",
     contentsLabel: "Help guide",
@@ -159,7 +159,7 @@ const helpCopyByLanguage: Record<PublicSiteCopyLanguage, HelpCopy> = {
         id: "start",
         title: "Get started",
         paragraphs: [
-          "OneHand works best when companies, contacts, products, and deals are set up first. Schedules and meeting notes can then connect to that context.",
+          "OneHand CRM works best when companies, contacts, products, and deals are set up first. Schedules and meeting notes can then connect to that context.",
           "You do not need to fill in every field on day one. Start with the information you use in real sales conversations.",
         ],
         bullets: [

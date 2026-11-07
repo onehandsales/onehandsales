@@ -73,7 +73,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
   ko: {
     title: "자주 묻는 질문.",
     description:
-      "요금제, 모바일 사용, AI, 데이터, 로그인, 팀 사용처럼 OneHand 도입 전에 자주 확인하는 질문을 모았어요.",
+      "요금제, 모바일 사용, AI, 데이터, 로그인, 팀 사용처럼 OneHand CRM 도입 전에 자주 확인하는 질문을 모았어요.",
     contentsLabel: "질문 카테고리",
     ctaTitle: "답을 찾지 못했나요?",
     ctaDescription:
@@ -100,7 +100,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
         id: "before-adoption",
         title: "도입 전 확인",
         summary:
-          "처음 OneHand를 검토할 때 많이 묻는 사용 범위와 시작 조건이에요.",
+          "처음 OneHand CRM을 검토할 때 많이 묻는 사용 범위와 시작 조건이에요.",
         questions: [
           {
             question: "무료로 사용할 수 있나요?",
@@ -110,7 +110,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
           {
             question: "모바일에서 사용할 수 있나요?",
             answer:
-              "네. OneHand는 현장 영업자가 이동 중에도 고객, 일정, 딜 흐름을 확인할 수 있도록 모바일 사용을 고려해요.",
+              "네. OneHand CRM은 현장 영업자가 이동 중에도 고객, 일정, 딜 흐름을 확인할 수 있도록 모바일 사용을 고려해요.",
           },
           {
             question: "어떤 영업 방식에 맞나요?",
@@ -165,7 +165,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
   "en-US": {
     title: "Frequently asked questions.",
     description:
-      "Answers for common questions about pricing, mobile use, AI, data, sign-in, and team usage before adopting OneHand.",
+      "Answers for common questions about pricing, mobile use, AI, data, sign-in, and team usage before adopting OneHand CRM.",
     contentsLabel: "Question categories",
     ctaTitle: "Did not find the answer you need?",
     ctaDescription:
@@ -174,7 +174,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
       {
         title: "Before adoption",
         description:
-          "Check free use, mobile access, and which sales workflows fit OneHand.",
+          "Check free use, mobile access, and which sales workflows fit OneHand CRM.",
       },
       {
         title: "Data and AI",
@@ -192,22 +192,22 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
         id: "before-adoption",
         title: "Before adoption",
         summary:
-          "Common questions about starting conditions and the scope of OneHand.",
+          "Common questions about starting conditions and the scope of OneHand CRM.",
         questions: [
           {
-            question: "Can I use OneHand for free?",
+            question: "Can I use OneHand CRM for free?",
             answer:
-              "OneHand is designed to support a free or trial starting flow. Check the pricing page for exact limits and included features.",
+              "OneHand CRM is designed to support a free or trial starting flow. Check the pricing page for exact limits and included features.",
           },
           {
             question: "Can I use it on mobile?",
             answer:
-              "Yes. OneHand is designed for field sellers who need to check customers, schedules, and deal flow while moving.",
+              "Yes. OneHand CRM is designed for field sellers who need to check customers, schedules, and deal flow while moving.",
           },
           {
-            question: "Which sales workflows fit OneHand?",
+            question: "Which sales workflows fit OneHand CRM?",
             answer:
-              "OneHand fits workflows with repeated consultations and follow-up, including personal sales, real estate, insurance and auto sales, and B2B field sales.",
+              "OneHand CRM fits workflows with repeated consultations and follow-up, including personal sales, real estate, insurance and auto sales, and B2B field sales.",
           },
         ],
       },
@@ -225,7 +225,7 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
           {
             question: "Can I download Excel data?",
             answer:
-              "OneHand supports downloading work records as XLSX.",
+              "OneHand CRM supports downloading work records as XLSX.",
           },
         ],
       },
@@ -233,17 +233,17 @@ const faqCopyByLanguage: Record<PublicSiteCopyLanguage, FaqCopy> = {
         id: "account-team",
         title: "Accounts and teams",
         summary:
-          "Questions about sign-in methods, personal and team usage, and contacting OneHand.",
+          "Questions about sign-in methods, personal and team usage, and contacting OneHand CRM.",
         questions: [
           {
             question: "Can I log in with Google, Apple, or LINx?",
             answer:
-              "Yes. OneHand supports a sign-in structure based on Google, Apple, and LINx.",
+              "Yes. OneHand CRM supports a sign-in structure based on Google, Apple, and LINx.",
           },
           {
-            question: "Can teams or companies use OneHand?",
+            question: "Can teams or companies use OneHand CRM?",
             answer:
-              "OneHand starts from personal sales use, while also considering small teams and organizations that need security, access, and adoption review.",
+              "OneHand CRM starts from personal sales use, while also considering small teams and organizations that need security, access, and adoption review.",
           },
           {
             question: "Where do I contact you?",

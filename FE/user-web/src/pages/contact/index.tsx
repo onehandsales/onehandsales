@@ -150,7 +150,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
   ko: {
     next: "다음",
     submit: "제출하기",
-    home: "OneHand로 돌아가기",
+    home: "OneHand CRM으로 돌아가기",
     required: "필수 입력 항목이에요.",
     emailInvalid: "업무용 이메일 주소를 정확히 입력해 주세요.",
     submitFailed: "문의 접수에 실패했습니다. 잠시 후 다시 시도해 주세요.",
@@ -190,16 +190,16 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
         region: "대한민국",
         phone: "010-1234-5678",
       },
-      marketingAgreement: "OneHand 제품 소식과 도입 안내를 받을게요.",
+      marketingAgreement: "OneHand CRM 제품 소식과 도입 안내를 받을게요.",
     },
     context: {
       title: "곧 연락드릴게요.",
       descriptionPrefix: "통화 일정을 잡기 위해 업무용 이메일 ",
       descriptionSuffix:
         "로 연락드릴게요. 기다리는 동안 아래 정보를 남겨주시면 다음 안내가 더 선명해져요.",
-      planLabel: "OneHand를 어떻게 사용할 계획인가요?",
+      planLabel: "OneHand CRM을 어떻게 사용할 계획인가요?",
       planPlaceholder: "예: 부동산 고객 상담과 팔로업을 한곳에서 관리하고 싶어요.",
-      sourceLabel: "OneHand를 알게 된 경로는 무엇인가요?",
+      sourceLabel: "OneHand CRM을 알게 된 경로는 무엇인가요?",
       sourcePlaceholder: "선택...",
       sourceOptions: [
         { value: "linkedin", label: "LinkedIn" },
@@ -217,7 +217,7 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
     done: {
       title: "문의가 접수됐어요.",
       description:
-        "남겨주신 내용을 확인한 뒤 OneHand 팀이 업무용 이메일로 연락드릴게요.",
+        "남겨주신 내용을 확인한 뒤 OneHand CRM 팀이 업무용 이메일로 연락드릴게요.",
       emailLabel: "이메일",
       sizeLabel: "규모",
     },
@@ -273,10 +273,10 @@ const contactFlowCopyByLanguage: Record<PublicSiteCopyLanguage, ContactFlowCopy>
       descriptionPrefix: "We will contact ",
       descriptionSuffix:
         " to schedule a call. Add a little more context while we prepare.",
-      planLabel: "How do you plan to use OneHand?",
+      planLabel: "How do you plan to use OneHand CRM?",
       planPlaceholder:
         "Example: I want to manage customer follow-up for field sales in one place.",
-      sourceLabel: "How did you hear about OneHand?",
+      sourceLabel: "How did you hear about OneHand CRM?",
       sourcePlaceholder: "Select...",
       sourceOptions: [
         { value: "linkedin", label: "LinkedIn" },

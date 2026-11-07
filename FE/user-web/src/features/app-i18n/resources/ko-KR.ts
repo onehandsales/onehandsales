@@ -148,7 +148,7 @@ export const koKRResource = {
     logout: "로그아웃",
     logoutCancel: "취소",
     logoutConfirm: "로그아웃",
-    logoutDescription: "OneHand 워크스페이스에 액세스하려면\n다시 로그인해야 합니다.",
+    logoutDescription: "OneHand CRM 워크스페이스에 액세스하려면\n다시 로그인해야 합니다.",
     logoutQuestion: "계정에서 로그아웃하시겠습니까?",
     myWorkspaces: "나의 작업 공간들",
     newWorkspace: "새 작업 공간",
@@ -191,7 +191,7 @@ export const koKRResource = {
     supportBodyTitle: "보내주면 좋은 내용",
     supportConsentNotice: "공유하는 정보는 서비스 개선에 사용되요.",
     supportDescription:
-      "계정, 데이터, 연동 문제는 OneHand 팀에 요청해 주세요.",
+      "계정, 데이터, 연동 문제는 OneHand CRM 팀에 요청해 주세요.",
     supportDescriptionLabel: "문의 내용",
     supportDescriptionPlaceholder: "문의 내용을 적어 주세요.",
     supportDescriptionRequired: "문의 내용을 입력해 주세요.",

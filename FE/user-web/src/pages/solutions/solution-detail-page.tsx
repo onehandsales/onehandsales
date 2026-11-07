@@ -106,7 +106,7 @@ const solutionDetailCopyByLanguage: Record<
           id: "customer-context",
           title: "고객 기록이 흩어지지 않게",
           paragraphs: [
-            "개인 영업은 고객 정보가 메신저, 메모앱, 엑셀에 나뉘기 쉽습니다. OneHand는 연락처와 상담 기록을 고객 중심으로 묶어 다음 대화에 필요한 맥락을 바로 찾게 합니다.",
+            "개인 영업은 고객 정보가 메신저, 메모앱, 엑셀에 나뉘기 쉽습니다. OneHand CRM은 연락처와 상담 기록을 고객 중심으로 묶어 다음 대화에 필요한 맥락을 바로 찾게 합니다.",
           ],
           bullets: [
             "고객별 연락처, 회사, 메모, 관심 내용을 한 화면에서 확인",
@@ -141,12 +141,12 @@ const solutionDetailCopyByLanguage: Record<
       ],
       ctaTitle: "개인 흐름부터 정리해볼까요?",
       ctaDescription:
-        "지금 쓰는 메모, 엑셀, 일정 방식에 맞춰 OneHand 시작 흐름을 잡아드려요.",
+        "지금 쓰는 메모, 엑셀, 일정 방식에 맞춰 OneHand CRM 시작 흐름을 잡아드려요.",
     },
     "real-estate": {
       title: "부동산 중개 상담과 매물 관심사를 이어서 관리.",
       description:
-        "부동산 중개는 고객 조건, 방문 일정, 매물 관심도, 계약 가능성이 계속 바뀝니다. OneHand는 고객별 진행 상황을 놓치지 않게 정리합니다.",
+        "부동산 중개는 고객 조건, 방문 일정, 매물 관심도, 계약 가능성이 계속 바뀝니다. OneHand CRM은 고객별 진행 상황을 놓치지 않게 정리합니다.",
       imageAlt: "수영장과 정원이 있는 단독주택 외관",
       imageCaption: "매물 조건과 방문 일정, 관심 고객을 집과 매물 단위로 정리합니다.",
       cards: [
@@ -212,7 +212,7 @@ const solutionDetailCopyByLanguage: Record<
     "insurance-auto": {
       title: "보험과 자동차 영업의 긴 상담 흐름을 고객별로 관리.",
       description:
-        "보험과 자동차 영업은 첫 상담 이후 견적, 비교, 서류, 계약, 갱신까지 이어지는 시간이 깁니다. OneHand는 다음 연락과 진행 상태를 고객별로 묶어 관리합니다.",
+        "보험과 자동차 영업은 첫 상담 이후 견적, 비교, 서류, 계약, 갱신까지 이어지는 시간이 깁니다. OneHand CRM은 다음 연락과 진행 상태를 고객별로 묶어 관리합니다.",
       imageAlt: "쇼룸 안에 전시된 흰색 자동차",
       imageCaption: "차량 상담과 견적, 계약 전후 연락을 고객별 흐름으로 관리합니다.",
       cards: [
@@ -250,7 +250,7 @@ const solutionDetailCopyByLanguage: Record<
           id: "quotes",
           title: "견적 이후의 다음 행동을 놓치지 않기",
           paragraphs: [
-            "견적을 보낸 뒤 언제 확인할지, 어떤 자료가 필요한지, 어떤 조건을 다시 설명해야 하는지가 중요합니다. OneHand는 견적 이후의 행동을 일정과 딜 단계로 이어줍니다.",
+            "견적을 보낸 뒤 언제 확인할지, 어떤 자료가 필요한지, 어떤 조건을 다시 설명해야 하는지가 중요합니다. OneHand CRM은 견적 이후의 행동을 일정과 딜 단계로 이어줍니다.",
           ],
           bullets: [
             "견적 발송, 조건 비교, 서류 요청 상태를 딜 단계로 관리",
@@ -278,7 +278,7 @@ const solutionDetailCopyByLanguage: Record<
     "b2b-field": {
       title: "B2B 현장 영업의 미팅, 담당자, 딜 단계를 한곳에.",
       description:
-        "B2B 현장 영업은 여러 회사와 담당자를 오가며 미팅을 반복합니다. OneHand는 미팅 기록과 다음 행동을 딜 흐름에 연결해 우선순위를 분명하게 만듭니다.",
+        "B2B 현장 영업은 여러 회사와 담당자를 오가며 미팅을 반복합니다. OneHand CRM은 미팅 기록과 다음 행동을 딜 흐름에 연결해 우선순위를 분명하게 만듭니다.",
       imageAlt: "사무실에서 악수하는 두 명의 비즈니스 담당자",
       imageCaption: "기업 담당자, 미팅 메모, 계약 단계를 하나의 흐름으로 봅니다.",
       cards: [
@@ -339,7 +339,7 @@ const solutionDetailCopyByLanguage: Record<
       ],
       ctaTitle: "현장 미팅과 딜 흐름을 함께 정리해볼까요?",
       ctaDescription:
-        "현재 거래처 관리 방식과 미팅 기록 방식을 기준으로 OneHand 적용 흐름을 잡아드려요.",
+        "현재 거래처 관리 방식과 미팅 기록 방식을 기준으로 OneHand CRM 적용 흐름을 잡아드려요.",
     },
   },
   "en-US": {
@@ -372,7 +372,7 @@ const solutionDetailCopyByLanguage: Record<
           id: "customer-context",
           title: "Keep customer records from scattering",
           paragraphs: [
-            "Personal customer records often split across messengers, notes, and spreadsheets. OneHand keeps the customer context close to the next conversation.",
+            "Personal customer records often split across messengers, notes, and spreadsheets. OneHand CRM keeps the customer context close to the next conversation.",
           ],
           bullets: [
             "Review contact, company, notes, and interests on one screen",
@@ -412,7 +412,7 @@ const solutionDetailCopyByLanguage: Record<
     "real-estate": {
       title: "Manage real estate clients, property interest, and visits together.",
       description:
-        "Real estate work changes constantly across client needs, visits, property interest, and deal timing. OneHand keeps every client status easy to reopen.",
+        "Real estate work changes constantly across client needs, visits, property interest, and deal timing. OneHand CRM keeps every client status easy to reopen.",
       imageAlt: "A detached house exterior with a pool and garden",
       imageCaption: "Organize property conditions, visit schedules, and interested clients around each listing.",
       cards: [
@@ -471,14 +471,14 @@ const solutionDetailCopyByLanguage: Record<
           ],
         },
       ],
-      ctaTitle: "Want to map OneHand to your brokerage flow?",
+      ctaTitle: "Want to map OneHand CRM to your brokerage flow?",
       ctaDescription:
         "We can start from your client conditions, visits, and follow-up process.",
     },
     "insurance-auto": {
       title: "Manage long insurance/automobile conversations by customer.",
       description:
-        "Insurance and automobile workflows often continue through quotes, comparison, documents, contracts, renewals, and repurchase. OneHand keeps the next contact and status connected by customer.",
+        "Insurance and automobile workflows often continue through quotes, comparison, documents, contracts, renewals, and repurchase. OneHand CRM keeps the next contact and status connected by customer.",
       imageAlt: "A white car displayed inside a showroom",
       imageCaption: "Manage vehicle consultations, quotes, and pre/post-contract follow-up by customer.",
       cards: [
@@ -539,12 +539,12 @@ const solutionDetailCopyByLanguage: Record<
       ],
       ctaTitle: "Want to connect consultation, quote, and renewal work?",
       ctaDescription:
-        "We can map OneHand to your quote, document, contract, and follow-up process.",
+        "We can map OneHand CRM to your quote, document, contract, and follow-up process.",
     },
     "b2b-field": {
       title: "Keep B2B field meetings, stakeholders, and deal stages together.",
       description:
-        "B2B field sellers move across many companies and contacts. OneHand connects meeting notes and next actions to deal progress so priorities stay clear.",
+        "B2B field sellers move across many companies and contacts. OneHand CRM connects meeting notes and next actions to deal progress so priorities stay clear.",
       imageAlt: "Two business stakeholders shaking hands in an office",
       imageCaption: "See company contacts, meeting notes, and contract stages in one flow.",
       cards: [
