@@ -230,7 +230,7 @@ const landingCopyByLanguage: Record<PublicSiteCopyLanguage, LandingCopy> = {
       ],
     },
     realMoment: {
-      title: "Your customers and work,\nat a glance.",
+      title: "Your work,\nat a glance.",
       imageAlt: "Actual OneHand CRM work-list kanban showing illustrative customer inquiries by stage",
     },
     flow: {
@@ -745,13 +745,13 @@ function RealMomentSection({ copy }: { readonly copy: LandingCopy }) {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.68)_0%,rgba(0,0,0,0.36)_43%,rgba(0,0,0,0.08)_100%)]"
+        className="absolute inset-0 bg-[linear-gradient(270deg,rgba(0,0,0,0.68)_0%,rgba(0,0,0,0.36)_43%,rgba(0,0,0,0.08)_100%)]"
       />
       <div
         className={`relative z-10 flex ${landingSectionHeightClassName} items-center`}
       >
         <div className="landing-container">
-          <div className="landing-real-copy text-white">
+          <div className="landing-real-copy ml-auto text-right text-white">
             <h2 className="whitespace-pre-line break-keep text-[36px] font-normal leading-[1.04] sm:text-[52px] md:text-[64px] lg:text-[76px] xl:text-[78px]">
               {copy.realMoment.title}
             </h2>
