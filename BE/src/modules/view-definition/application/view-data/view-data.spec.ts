@@ -21,6 +21,43 @@ function numericFilter(snapshot: ViewDataSnapshot, operator = "gte", input = "0.
     comparisonOperator: operator, comparisonValueJson: { value: input }, multiValueMatchMode: mode });
 }
 describe("Three-type View execution", () => {
+  // 기능 : 목록 생성 직후 제목만 있는 표·목록은 설정 오류 없이 빈 화면을 반환합니다.
+  it.each(["TABLE", "LIST"] as const)("reads a newly created empty %s list", type => {
+    const snapshot = viewDataFixture(type);
+    snapshot.items = [];
+    snapshot.records.clear();
+    snapshot.values.clear();
+    snapshot.configuration.view = { ...snapshot.configuration.view, configJson: { rowDensity: "COMFORTABLE" } };
+    snapshot.configuration.viewAttributeSettingDefinitions.splice(1);
+    const result = execute(snapshot);
+    expect(result).toMatchObject({ state: "READY", viewType: type,
+      summary: { sourceItemCount: 0, matchedItemCount: 0, eligibleItemCount: 0 },
+      data: { items: [], presentation: { rowDensity: "COMFORTABLE" } } });
+  });
+
+  // 기능 : 첫 보드는 별도 그룹 override가 없어도 기존 또는 목록 전용 상태의 빈 단계를 표시합니다.
+  it.each(["RECORD", "LIST_ENTRY"] as const)("reads empty initial board stages from %s", sourceScope => {
+    const snapshot = viewDataFixture("KANBAN");
+    snapshot.items = [];
+    snapshot.records.clear();
+    snapshot.values.clear();
+    snapshot.configuration.view = { ...snapshot.configuration.view, configJson: { cardDensity: "COMFORTABLE", showEmptyGroups: true } };
+    snapshot.configuration.viewAttributeSettingDefinitions.splice(1);
+    const group = snapshot.configuration.viewGroupDefinitions[0]!;
+    snapshot.configuration.viewGroupDefinitions[0] = { ...group, sourceScope };
+    if (sourceScope === "LIST_ENTRY") {
+      const attribute = snapshot.attributes.get(group.attributeDefinitionId)!;
+      snapshot.attributes.set(attribute.id, { ...attribute, objectDefinitionId: null, listDefinitionId: snapshot.source.listDefinitionId });
+    }
+    const result = execute(snapshot);
+    expect(result).toMatchObject({ state: "READY", viewType: "KANBAN", summary: { sourceItemCount: 0 } });
+    if (result.state === "READY" && result.part === "MAIN" && result.viewType === "KANBAN") {
+      expect(result.data.columns.map(column => column.label))
+        .toEqual(expect.arrayContaining(["Stage 1", "Stage 2"]));
+      expect(result.data.columns.every(column => column.items.length === 0)).toBe(true);
+    }
+  });
+
   it.each(["TABLE", "KANBAN", "LIST"] as const)("keeps duplicate Record entries for %s", type => {
     const result = execute(viewDataFixture(type));
     expect(result).toMatchObject({ state: "READY", viewType: type, part: "MAIN", summary: { sourceItemCount: 3, matchedItemCount: 3 } });

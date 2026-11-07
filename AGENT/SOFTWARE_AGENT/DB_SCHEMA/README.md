@@ -101,7 +101,9 @@ DB에만 적용 이력이 남아 있는 `20261013050000_create_view_definitions`
 
 ## 4. 현재 CRM Core와 후속 범위
 
-2026-11-07 관리 항목 생성 API는 `ObjectDefinition` → 기본 Text `AttributeDefinition`(이름) → 첫 TABLE `ViewDefinition` → RECORD/TITLE `ViewAttributeSettingDefinition`을 하나의 transaction으로 저장한다. Object application use case가 transaction을 소유하고 Attribute/View 공개 생성 포트를 호출한다. 기존 schema를 사용하며 migration이나 기존 데이터 보정은 없다. [API 계약](../../../TODO/OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다.
+2026-11-07 관리 항목 생성 API는 `ObjectDefinition` → 기본 Text `AttributeDefinition`(이름) → 첫 TABLE `ViewDefinition` → RECORD/TITLE `ViewAttributeSettingDefinition`을 하나의 transaction으로 저장한다. Object application use case가 transaction을 소유하고 Attribute/View 공개 생성 포트를 호출한다. 기존 schema를 사용하며 migration이나 기존 데이터 보정은 없다. [API 계약](../../../TODO/DONE/OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다.
+
+2026-11-07 업무 목록 생성 API는 `ListDefinition`과 첫 TABLE/LIST/KANBAN `ViewDefinition`, 제목 표시 설정을 원자적으로 저장한다. KANBAN은 기존 Object의 Status/Select를 RECORD scope로 참조하거나 List 소속 Status `AttributeDefinition`·`StatusOption`을 만들고 LIST_ENTRY scope로 그룹을 연결한다. `ViewGroupDefinition`도 같은 transaction에 포함한다. List 소유 application이 Attribute/View 공개 port를 조율하며 Record·Entry·값은 만들지 않는다. 선택 Object는 초기 표시 속성의 기준이며 List의 Object 고정 정책이나 schema 제약을 추가하지 않는다. [계약과 검증 범위](../../../TODO/LIST_VIEW_CREATE_PLAN/README.md)를 따른다.
 
 `ObjectDefinition`, `AttributeDefinition`, `RecordDefinition`, `RecordAttributeValueDefinition`, `SelectOption`, `StatusOption`, `RelationshipDefinition`은 현재 schema에 있다.
 

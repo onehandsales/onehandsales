@@ -108,6 +108,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "OAuthAccountConflict":
       case "DeviceSlotAlreadyRegistered":
       case "ObjectDefinitionApiSlugAlreadyExists":
+      case "ListDefinitionApiSlugAlreadyExists":
       case "AttributeDefinitionApiSlugAlreadyExists":
       case "ViewDataCursorStale":
         return HttpStatus.CONFLICT;

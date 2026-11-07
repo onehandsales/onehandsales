@@ -37,7 +37,15 @@
 `POST /api/users/me/workspaces/:workspaceId/object-definitions`는 관리 항목과 기본 `이름` Text 속성,
 첫 TABLE View, TITLE 표시 설정을 하나의 transaction으로 저장한다. 응답은 `{ objectDefinitionId, viewDefinitionId }`다.
 Object application use case가 transaction을 소유하고 Attribute/View 소유 모듈의 공개 port를 호출한다.
-자세한 요청·실패·호환성 기준은 [API 계약](../TODO/OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다.
+자세한 요청·실패·호환성 기준은 [API 계약](../TODO/DONE/OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다.
+
+## 업무 목록과 첫 보기 생성
+
+`POST /api/users/me/workspaces/:workspaceId/list-definitions`는 List와 첫 TABLE/LIST/KANBAN,
+제목 표시 설정을 함께 저장한다. 보드는 기존 Record의 상태를 재사용하거나 목록 전용 상태·단계를
+생성한다. List application이 하나의 transaction을 조율하며 Attribute/View 공개 port를 사용한다.
+응답은 `{ listDefinitionId, viewDefinitionId }`다. 기존 Record의 목록 등록은 별도 동작이다.
+[API 계약](../TODO/LIST_VIEW_CREATE_PLAN/COMMON/API-SPEC/LIST_VIEW_CREATE_API.md)을 따른다.
 
 ## 로컬 실행
 

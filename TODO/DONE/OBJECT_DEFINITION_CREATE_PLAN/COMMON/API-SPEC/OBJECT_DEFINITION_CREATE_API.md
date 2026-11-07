@@ -2,7 +2,7 @@
 
 계약 상태: implemented
 
-> 2026-11-07 이후 생성 동작과 응답은 [관리 항목 + 첫 TABLE 생성 계약](../../../../OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다. 아래는 Object 단독 생성 당시의 기록이다.
+> 2026-11-07 이후 생성 동작과 응답은 [관리 항목 + 첫 TABLE 생성 계약](../../../OBJECT_TABLE_CREATE_PLAN/COMMON/API-SPEC/OBJECT_TABLE_CREATE_API.md)을 따른다. 아래는 Object 단독 생성 당시의 기록이다.
 
 소비자:
 

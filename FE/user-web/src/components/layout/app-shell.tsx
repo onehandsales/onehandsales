@@ -91,6 +91,9 @@ import {
 } from "@/features/crm-object";
 import { sidebarCrmObjectQueryKeys } from "@/features/crm-object/api/sidebar-crm-object-query-keys";
 import type { CreateObjectDefinitionResponse } from "@/features/crm-object/api/object-definition-api";
+import { CreateListDefinitionModalContent } from "@/features/crm-list/components/create-list-definition-modal-content";
+import { sidebarCrmListQueryKeys } from "@/features/crm-list/api/sidebar-crm-list-query-keys";
+import type { CreateListDefinitionResponse } from "@/features/crm-list/api/list-definition-api";
 import { getSidebarWorkspace } from "@/features/workspace/api/sidebar-workspace-api";
 import { sidebarWorkspaceQueryKeys } from "@/features/workspace/api/sidebar-workspace-query-keys";
 import type { SidebarWorkspaceListItem } from "@/features/workspace/types/sidebar-workspace";
@@ -203,6 +206,8 @@ export function AppShell() {
   // 21. 처리 흐름에 필요한 workspaceSwitchRequestIdRef 값을 준비한다.
   const workspaceSwitchRequestIdRef = useRef(0);
   const [objectDefinitionCreateSession, setObjectDefinitionCreateSession] = useState(0);
+  const [createListDefinitionModalOpen, setCreateListDefinitionModalOpen] = useState(false);
+  const [listDefinitionCreateSession, setListDefinitionCreateSession] = useState(0);
   // 22. 처리 흐름에 필요한 accountModalFromSearchParams 값을 준비한다.
   const accountModalFromSearchParams = useMemo<AccountModalSection | null>(() => {
     const querySection = getAccountModalSectionFromSearchParams(searchParams);
@@ -384,6 +389,7 @@ export function AppShell() {
   // 24. 처리 흐름에 필요한 openAccountModal 값을 준비한다.
   const openAccountModal = useCallback(
     (section: AccountModalSection) => {
+      setCreateListDefinitionModalOpen(false);
       // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
       setAccountMenuOpen(false);
       // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -414,6 +420,7 @@ export function AppShell() {
   // 기능 : 도움말 메뉴에서 선택한 섹션을 중앙 도움말 모달로 엽니다.
   // 26. 처리 흐름에 필요한 openHelpModal 값을 준비한다.
   const openHelpModal = useCallback((section: HelpModalSection) => {
+    setCreateListDefinitionModalOpen(false);
     // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAccountMenuOpen(false);
     // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -437,6 +444,7 @@ export function AppShell() {
   // 기능 : 사이드바 새 작업 공간 버튼에서 생성 모달을 엽니다.
   // 28. 처리 흐름에 필요한 openCreateWorkspaceModal 값을 준비한다.
   const openCreateWorkspaceModal = useCallback(() => {
+    setCreateListDefinitionModalOpen(false);
     // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAccountMenuOpen(false);
     // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -464,6 +472,7 @@ export function AppShell() {
   // 기능 : 사이드바 관리 항목 추가 버튼에서 새 관리 항목 생성 모달을 엽니다.
   // 30. 처리 흐름에 필요한 openCreateObjectDefinitionModal 값을 준비한다.
   const openCreateObjectDefinitionModal = useCallback(() => {
+    setCreateListDefinitionModalOpen(false);
     // 1. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setAccountMenuOpen(false);
     // 2. 화면 상태를 현재 흐름에 맞게 갱신한다.
@@ -508,6 +517,37 @@ export function AppShell() {
     if (shouldNavigate) {
       void navigate(toWorkspaceViewPath(workspaceId, response.viewDefinitionId, "OBJECT"));
     }
+  }, [currentWorkspace?.id, normalizedRouteWorkspaceId, navigate, queryClient, user?.id]);
+
+  // 기능 : 업무 목록 추가 버튼에서 기존 생성 모달 패턴으로 새 입력 세션을 엽니다.
+  const openCreateListDefinitionModal = useCallback(() => {
+    // 1. 다른 모달을 정리하고 새 목록 입력 세션을 연다.
+    setAccountMenuOpen(false);
+    setHelpMenuOpen(false);
+    setHelpModal(null);
+    setAccountModal(null);
+    syncAccountModalSearchParams(null);
+    setLogoutConfirmOpen(false);
+    setCreateWorkspaceModalOpen(false);
+    setCreateObjectDefinitionModalOpen(false);
+    setListDefinitionCreateSession(session => session + 1);
+    setCreateListDefinitionModalOpen(true);
+  }, [syncAccountModalSearchParams]);
+
+  // 기능 : 업무 목록 생성 모달을 닫습니다.
+  const closeCreateListDefinitionModal = useCallback(() => {
+    setCreateListDefinitionModalOpen(false);
+  }, []);
+
+  // 기능 : 원래 요청의 목록 cache를 갱신하고 활성 모달의 성공 응답만 새 보기로 이동합니다.
+  const handleListDefinitionCreated = useCallback((response: CreateListDefinitionResponse, shouldNavigate: boolean) => {
+    // 1. 요청 시작 시점의 사용자/Workspace를 유지해 다른 공간의 cache를 건드리지 않는다.
+    const ownerUserId = user?.id;
+    const workspaceId = currentWorkspace?.id ?? normalizedRouteWorkspaceId;
+    if (!ownerUserId || !workspaceId) return;
+    void queryClient.invalidateQueries({ queryKey: sidebarCrmListQueryKeys.list(ownerUserId, workspaceId) });
+    // 2. 닫힌 모달의 응답은 현재 위치를 변경하지 않는다.
+    if (shouldNavigate) void navigate(toWorkspaceViewPath(workspaceId, response.viewDefinitionId, "LIST"));
   }, [currentWorkspace?.id, normalizedRouteWorkspaceId, navigate, queryClient, user?.id]);
 
   // 기능 : 새로 생성된 Workspace를 단건 조회한 뒤 현재 sidebar Workspace 상태와 목록 cache에 반영합니다.
@@ -715,12 +755,14 @@ export function AppShell() {
     setCreateWorkspaceModalOpen(false);
     // 7. 화면 상태를 현재 흐름에 맞게 갱신한다.
     setCreateObjectDefinitionModalOpen(false);
+    setCreateListDefinitionModalOpen(false);
   }, [pathname]);
 
   // 기능 : URL query contract로 계정 Settings 모달을 열거나 닫습니다.
   // 34. 화면 상태를 현재 흐름에 맞게 갱신한다.
   useEffect(() => {
     if (accountModalFromSearchParams) {
+      setCreateListDefinitionModalOpen(false);
       setAccountMenuOpen(false);
       setHelpMenuOpen(false);
       setHelpModal(null);
@@ -1138,6 +1180,7 @@ export function AppShell() {
               isCrmObjectsLoading={isSidebarCrmObjectsLoading}
               isViewFavoritesLoading={isSidebarViewFavoritesLoading}
               onCreateObjectDefinition={openCreateObjectDefinitionModal}
+              onCreateListDefinition={openCreateListDefinitionModal}
               viewFavorites={sidebarViewFavorites}
               workspaceId={sidebarWorkspaceId}
             />
@@ -1216,6 +1259,18 @@ export function AppShell() {
       {isWorkspaceSwitchLoading ? (
         <WorkspaceLoadingDialog title={t("shell.workspaceSwitchLoading")} />
       ) : null}
+
+      <AccountModal open={createListDefinitionModalOpen} panelSize="compact" onClose={closeCreateListDefinitionModal}>
+        <CreateListDefinitionModalContent
+          key={`${user?.id ?? ""}:${sidebarWorkspaceId ?? ""}:${listDefinitionCreateSession}`}
+          isOpen={createListDefinitionModalOpen}
+          userId={user?.id ?? null}
+          workspaceId={currentWorkspace?.id ?? normalizedRouteWorkspaceId}
+          onClose={closeCreateListDefinitionModal}
+          onCreated={handleListDefinitionCreated}
+          onCreateObject={openCreateObjectDefinitionModal}
+        />
+      </AccountModal>
 
       <LogoutConfirmModal
         onCancel={() => setLogoutConfirmOpen(false)}

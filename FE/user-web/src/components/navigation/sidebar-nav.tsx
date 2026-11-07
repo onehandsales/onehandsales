@@ -17,6 +17,7 @@ type SidebarNavProps = {
   readonly isCrmObjectsLoading?: boolean;
   readonly isViewFavoritesLoading?: boolean;
   readonly onCreateObjectDefinition?: () => void;
+  readonly onCreateListDefinition?: () => void;
   readonly viewFavorites?: readonly SidebarViewFavoriteItem[];
   readonly workspaceId?: string | null;
 };
@@ -30,6 +31,7 @@ export function SidebarNav({
   isCrmObjectsLoading = false,
   isViewFavoritesLoading = false,
   onCreateObjectDefinition,
+  onCreateListDefinition,
   viewFavorites = [],
   workspaceId = null,
 }: SidebarNavProps) {
@@ -83,6 +85,7 @@ export function SidebarNav({
         items={workListItems}
         labelIcon={<Briefcase aria-hidden="true" className="h-4 w-4 shrink-0 text-black" strokeWidth={2} />}
         labelKey="navigation.workListsGroup"
+        onAdd={onCreateListDefinition}
         openLabelKey="navigation.workListsGroupOpen"
         onToggle={() => setWorkListsOpen((current) => !current)}
       />
