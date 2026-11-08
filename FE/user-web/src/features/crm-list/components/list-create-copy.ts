@@ -17,7 +17,7 @@ export const listCreateCopy = {
     statusTitle: "단계 정보 이름", statusTitlePlaceholder: "예: 진행 단계",
     stages: "단계 이름 (한 줄에 하나씩)", stagesPlaceholder: "예: 상담 접수\n방문 협의\n계약 협의",
     stageHelp: "1~50개 단계를 입력해 주세요. 같은 이름은 사용할 수 없어요.",
-    description: "설명 (선택)", descriptionPlaceholder: "관리할 업무에 대해서 설명해주세요.",
+    description: "설명 (옵션)", descriptionPlaceholder: "관리할 업무에 대해서 설명해주세요.",
     failed: "목록을 만들지 못했어요. 입력을 확인하고 다시 시도해 주세요.",
     duplicate: "같은 이름의 업무 목록이 있어요. 다른 이름을 입력하거나 사이드바를 확인해 주세요.",
     sourceMissing: "선택한 관리 항목이나 정보가 바뀌었어요. 이전으로 돌아가 다시 선택해 주세요.",

@@ -93,7 +93,7 @@ test.describe("업무 목록과 첫 보기 생성", () => {
   test("표 기본 선택, 중복 제출 차단, sidebar 갱신과 새로고침 후 복원", async ({ page }) => {
     const { state, dialog, api } = await setupCreation(page);
     await enterDetails(page);
-    await dialog.getByLabel("설명 (선택)", { exact: true }).fill("매물 상담을 관리해요.");
+    await dialog.getByLabel("설명 (옵션)", { exact: true }).fill("매물 상담을 관리해요.");
     const reads = state.sidebarReads;
     await dialog.getByRole("button", { name: "생성", exact: true }).evaluate((button: HTMLButtonElement) => { button.click(); button.click(); });
     await expect(page).toHaveURL(createdPath);
