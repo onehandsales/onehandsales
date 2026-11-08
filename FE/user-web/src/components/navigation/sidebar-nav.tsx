@@ -1,8 +1,7 @@
-import { Briefcase, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useState } from "react";
 import type { SidebarDataItem } from "@/components/navigation/sidebar-data-list";
 import { SidebarDataSection } from "@/components/navigation/sidebar-section";
-import { GraphStar } from "@/components/ui/graph-star-icon";
 import type { SidebarCrmListItem } from "@/features/crm-list";
 import type { SidebarCrmObjectListItem } from "@/features/crm-object";
 import type { SidebarViewFavoriteItem } from "@/features/view-favorite";
@@ -83,7 +82,6 @@ export function SidebarNav({
         isLoading={isCrmListsLoading}
         isOpen={isWorkListsOpen}
         items={workListItems}
-        labelIcon={<Briefcase aria-hidden="true" className="h-4 w-4 shrink-0 text-black" strokeWidth={2} />}
         labelKey="navigation.workListsGroup"
         onAdd={onCreateListDefinition}
         openLabelKey="navigation.workListsGroupOpen"
@@ -95,7 +93,6 @@ export function SidebarNav({
         isLoading={isCrmObjectsLoading}
         isOpen={isManagedItemsOpen}
         items={managedItems}
-        labelIcon={<GraphStar aria-hidden="true" className="h-4 w-4 shrink-0 fill-current text-[#C4A078]" strokeWidth={2} />}
         labelKey="navigation.mainGroup"
         onAdd={onCreateObjectDefinition}
         openLabelKey="navigation.mainGroupOpen"
