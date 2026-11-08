@@ -540,7 +540,7 @@ function EmailStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+      <h1 className="break-keep text-left text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.email.title}
       </h1>
 
@@ -585,7 +585,7 @@ function SizeStep({
       aria-labelledby="contact-size-title"
     >
       <h1
-        className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
+        className="break-keep text-left text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
         id="contact-size-title"
       >
         {copy.size.title}
@@ -637,7 +637,7 @@ function ProfileStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+      <h1 className="break-keep text-left text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.profile.title}
       </h1>
       <p className="mx-auto mt-5 max-w-[500px] break-keep text-center text-[15px] font-normal leading-7 text-[#333330]">
@@ -748,7 +748,7 @@ function ContextStep({
 
   return (
     <form className="min-w-0 w-full max-w-[508px]" onSubmit={onSubmit}>
-      <h1 className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
+      <h1 className="break-keep text-left text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]">
         {copy.context.title}
       </h1>
       <p className="mx-auto mt-5 max-w-[500px] break-keep text-center text-[15px] font-normal leading-7 text-[#333330]">
@@ -807,7 +807,7 @@ function ContactDone({
       aria-labelledby="contact-done-title"
     >
       <h1
-        className="break-keep text-center text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
+        className="break-keep text-left text-[30px] font-normal leading-[1.12] tracking-normal text-[#050505] sm:text-[35px]"
         id="contact-done-title"
       >
         {copy.done.title}
