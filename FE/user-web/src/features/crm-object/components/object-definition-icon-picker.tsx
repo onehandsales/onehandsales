@@ -25,6 +25,7 @@ export function ObjectDefinitionIconPicker(
     <IconValuePicker
       {...props}
       searchInputName="objectDefinitionLucideIconSearch"
+      triggerClassName="border border-[#dededa]"
     />
   );
 }
