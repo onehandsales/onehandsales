@@ -11,6 +11,13 @@ import { DomainError } from "@/shared/domain/errors/domain-error";
 import { ListDefinitionSourceNotFoundError, ListDefinitionWorkspaceNotFoundError } from "../../domain/list-definition.errors";
 import { LIST_DEFINITION_COMMAND_REPOSITORY, type ListDefinitionCommandRepository } from "../ports/list-definition-command.repository";
 
+// 역할 : 첫 보기 방식에 대응하는 목록 생성 시 기본 아이콘을 정의합니다.
+const INITIAL_LIST_ICON_BY_VIEW_TYPE: Readonly<Record<ListInitialViewType, string>> = {
+  TABLE: "lucide:table-2",
+  LIST: "lucide:list",
+  KANBAN: "lucide:columns-3",
+};
+
 // 역할 : 새 목록의 이름·기준 속성·첫 보기와 선택적 단계 생성을 요청합니다.
 export interface CreateWorkspaceListDefinitionCommand {
   readonly listDefinitionName: string;
@@ -58,6 +65,8 @@ export class CreateWorkspaceListDefinitionUseCase {
       const titleAttributeDefinitionId = command.titleAttributeDefinitionId.toLowerCase();
       const name = this.requiredText(command.listDefinitionName, "listDefinitionName");
       const kanban = this.validateKanban(command);
+      // 아이콘 생략에만 기본값을 적용하고 명시적 아이콘·null·빈 문자열의 기존 의미를 보존한다.
+      const icon = command.icon === undefined ? INITIAL_LIST_ICON_BY_VIEW_TYPE[command.viewType] : command.icon || null;
       if (command.description && Array.from(command.description).length > 300) this.invalid("description");
       // 2. 현재 멤버십·Actor와 기준 관리 항목의 Workspace 소속을 확인한다.
       const access = await this.workspaceAccess.getWorkspaceMemberAccess(user.id, workspaceId);
@@ -83,7 +92,7 @@ export class CreateWorkspaceListDefinitionUseCase {
           group = { attributeDefinitionId: attribute.id, sourceScope: "RECORD" };
         }
         // 2. List 원장을 생성하고 필요한 경우에만 목록 전용 상태와 옵션을 만든다.
-        const list = await this.lists.create({ ...audit, name, icon: command.icon || null, description: command.description || null }, context);
+        const list = await this.lists.create({ ...audit, name, icon, description: command.description || null }, context);
         if (kanban?.newStatus) {
           const attribute = await this.statuses.create({ ...audit, listDefinitionId: list.id, ...kanban.newStatus }, context);
           group = { attributeDefinitionId: attribute.id, sourceScope: "LIST_ENTRY" };

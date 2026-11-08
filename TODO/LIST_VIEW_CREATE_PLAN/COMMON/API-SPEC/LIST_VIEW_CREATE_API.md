@@ -5,7 +5,8 @@
 
 ## 사용자 흐름
 
-사이드바 업무 목록 + → 이름·기준 관리 항목 → 아이콘·설명·첫 보기 → 생성.
+사이드바 업무 목록 + → 이름·기준 관리 항목 → 설명·첫 보기 → 생성.
+생성 화면은 아이콘을 입력받지 않으며 첫 보기 방식의 아이콘을 목록의 기본 아이콘으로 저장한다.
 첫 보기는 TABLE 기본 선택, LIST/KANBAN 선택 가능하다. 기준 관리 항목의 제목으로
 표시할 속성을 선택한다. 이 선택은 첫 보기의 RECORD 속성 바인딩이며 List의
 허용 Object 종류를 고정하는 정책이 아니다. 기존 Record를 자동 등록하거나 복제하지 않는다.
@@ -27,7 +28,7 @@ KANBAN은 기존 관리 항목의 단일값 Status/Select를 재사용하거나 
 | objectDefinitionId | 필수 UUID, 동일 Workspace의 관리 항목 |
 | titleAttributeDefinitionId | 필수 UUID, 위 Object의 속성. 첫 보기 TITLE로 사용 |
 | viewType | 필수 TABLE / LIST / KANBAN |
-| icon | 선택 string/null, 빈 문자열·null·생략은 null |
+| icon | 선택 string/null. 생략 시 viewType별 기본 아이콘, 명시한 문자열은 그대로 저장, 빈 문자열·null은 null |
 | description | 선택 string/null, 최대 300 문자. 빈 문자열·null·생략은 null |
 | kanban | KANBAN일 때 필수, 나머지 타입에서는 금지. null 불허 |
 | kanban.attributeDefinitionId | 기존 상태를 쓸 때 UUID. 위 Object의 단일값 Status/Select만 허용 |
@@ -46,6 +47,18 @@ KANBAN은 기존 관리 항목의 단일값 Status/Select를 재사용하거나 
 ```
 
 배열/문자 길이 제한은 이 생성 API 입력 한도이며 DB 도메인 전체의 제약은 아니다.
+
+### 초기 목록 아이콘 (2026-11-08)
+
+- `icon` 생략 시 application use case에서 TABLE=`lucide:table-2`, LIST=`lucide:list`,
+  KANBAN=`lucide:columns-3`으로 결정하고 `ListDefinition.icon`에 저장한다.
+- 기존 호출자가 명시한 아이콘 문자열·빈 문자열·null의 처리는 유지한다.
+- 생략 시 저장 결과가 기존 null에서 보기별 기본 아이콘으로 바뀐다. User Web은
+  아이콘 선택 UI와 별도 상태를 제거하고 `viewType`만 보내 서버 기본값을 사용한다.
+- 초기 아이콘은 List 생성 때만 결정한다. View 아이콘 설정이나 이후 보기 선택에
+  연동하지 않으며 기존 목록의 아이콘을 일괄 변경하지 않는다.
+- endpoint/응답/schema/transaction 범위는 유지한다. 기존 데이터 migration은 없다.
+  생성 이후 사용자의 목록 아이콘 변경 API/화면은 별도 후속 작업이다.
 
 ## 응답
 
@@ -71,6 +84,7 @@ KANBAN은 기존 관리 항목의 단일값 Status/Select를 재사용하거나 
 
 - orchestration owner: list-definition application use case.
 - ListDefinition: list-definition command repository.
+- List 초기 아이콘: list-definition application에서 결정하여 기존 List 생성 쓰기에 포함.
 - 신규 AttributeDefinition·StatusOption: attribute-definition 공개 생성 port.
 - ViewDefinition·ViewAttributeSettingDefinition·ViewGroupDefinition: view-definition 공개 생성 port.
 - 필요: TransactionManager/TransactionContext로 모든 쓰기를 같은 Prisma transaction에 묶는다.
@@ -103,6 +117,7 @@ KANBAN은 기존 관리 항목의 단일값 Status/Select를 재사용하거나 
 ## FE 상태
 
 - crm-list feature에서 요청. 기존 관리 항목/속성 조회 API와 사용자·Workspace별 Query key 재사용.
+- 생성 모달은 아이콘 선택 UI 없이 최종 `viewType`을 전송하며 `icon`은 생략한다.
 - 성공 시 원래 사용자/Workspace의 sidebarCrmListQueryKeys.list 무효화.
 - 활성 모달일 때 `/app/workspaces/:workspaceId/view-definitions/:viewId?sourceType=LIST`로 이동.
 - 닫기·재열기·사용자/Workspace/route 전환 뒤 늦은 응답은 현재 화면 이동 금지.
@@ -114,5 +129,7 @@ KANBAN은 기존 관리 항목의 단일값 Status/Select를 재사용하거나 
 권한/소속/조건부 입력/동시 중복, transaction 공통 client와 실패 전파, 실제 Nest DTO/오류 계약,
 TABLE/LIST/KANBAN 빈 보기 조회 호환, FE 기본값·보드 분기·중복 클릭·실패 재시도·늦은 응답을 확인한다.
 실제 DB를 사용하는 rollback 검증은 별도 test DB가 준비된 경우에만 실행한다.
+아이콘 생략 시 세 보기의 저장 값, 명시적 아이콘/null/빈 문자열의 호환성,
+생성 모달의 선택기 제거·요청 생략과 조회 응답 아이콘의 sidebar/header 표시를 검증한다.
 
 구현 검증 결과와 실행 범위는 [BE-TODO](../../BE-TODO.md), [FE-TODO](../../FE-TODO.md)에 기록한다.

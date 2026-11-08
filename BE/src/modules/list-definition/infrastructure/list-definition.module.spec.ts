@@ -73,11 +73,11 @@ describe("ListDefinitionModule creation", () => {
   afterEach(async () => { await module?.close(); });
 
   // 기능 : 단순 보기는 새 속성·Record·Entry 없이 제목만 연결합니다.
-  it.each(["TABLE", "LIST"] as const)("creates empty %s with a RECORD title in one transaction", async viewType => {
+  it.each([["TABLE", "lucide:table-2"], ["LIST", "lucide:list"]] as const)("creates empty %s with a RECORD title in one transaction", async (viewType, icon) => {
     await expect(useCase.execute(user, "workspace-1", { ...command, viewType }, "request-1"))
       .resolves.toEqual({ listDefinitionId: "list-1", viewDefinitionId: "view-1" });
     expect(tx.listDefinition.create).toHaveBeenCalledWith({ data: {
-      workspaceId: "workspace-1", createdByActorId: "actor-1", name: "매물 상담", apiSlug: "매물 상담", icon: null, description: null,
+      workspaceId: "workspace-1", createdByActorId: "actor-1", name: "매물 상담", apiSlug: "매물 상담", icon, description: null,
     }, select: { id: true } });
     expect(tx.viewDefinition.create).toHaveBeenCalledWith({ data: {
       workspaceId: "workspace-1", createdByActorId: "actor-1", objectDefinitionId: null,
@@ -94,6 +94,19 @@ describe("ListDefinitionModule creation", () => {
     expect(logger.log.mock.calls[0]![0]).not.toContain("매물");
   });
 
+  // 기능 : 명시한 아이콘과 아이콘 해제 입력은 보기 기본값으로 덮어쓰지 않습니다.
+  it.each([
+    { icon: "lucide:house", expected: "lucide:house" },
+    { icon: "emoji:🏠", expected: "emoji:🏠" },
+    { icon: null, expected: null },
+    { icon: "", expected: null },
+  ])("preserves explicit icon input $icon", async ({ icon, expected }) => {
+    await useCase.execute(user, "workspace-1", { ...command, icon });
+    expect(tx.listDefinition.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ icon: expected }), select: { id: true },
+    });
+  });
+
   // 기능 : UUID의 대소문자 차이가 동일 소속 속성을 잘못 거부하지 않도록 합니다.
   it("normalizes case-insensitive UUID input before comparing source metadata", async () => {
     await expect(useCase.execute(user, "WORKSPACE-1", { ...command, objectDefinitionId: "OBJECT-1",
@@ -105,6 +118,7 @@ describe("ListDefinitionModule creation", () => {
   it.each(["Status", "Select"])("reuses existing %s options for a board", async type => {
     tx.attributeDefinition.findMany.mockResolvedValue([attribute("title-1"), attribute("status-1", type)]);
     await useCase.execute(user, "workspace-1", { ...command, viewType: "KANBAN", kanban: { attributeDefinitionId: "status-1" } });
+    expect(tx.listDefinition.create).toHaveBeenCalledWith({ data: expect.objectContaining({ icon: "lucide:columns-3" }), select: { id: true } });
     expect(tx.attributeDefinition.create).not.toHaveBeenCalled();
     expect(tx.statusOption.createMany).not.toHaveBeenCalled();
     expect(tx.viewGroupDefinition.create).toHaveBeenCalledWith({ data: expect.objectContaining({
@@ -116,6 +130,7 @@ describe("ListDefinitionModule creation", () => {
   it("creates user-supplied stages in the same transaction and preserves order", async () => {
     await useCase.execute(user, "workspace-1", { ...command, viewType: "KANBAN",
       kanban: { newStatus: { title: " 진행 ", options: [" 상담 ", " 계약 "] } } });
+    expect(tx.listDefinition.create).toHaveBeenCalledWith({ data: expect.objectContaining({ icon: "lucide:columns-3" }), select: { id: true } });
     expect(tx.attributeDefinition.create).toHaveBeenCalledWith({ data: expect.objectContaining({
       objectDefinitionId: null, listDefinitionId: "list-1", type: "Status", title: "진행", apiSlug: "status", isMultiselect: false,
     }), select: { id: true } });

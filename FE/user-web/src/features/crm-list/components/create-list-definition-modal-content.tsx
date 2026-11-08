@@ -3,7 +3,6 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useAppI18n } from "@/features/app-i18n";
 import { useSidebarCrmObjectsQuery } from "@/features/crm-object/hooks/use-sidebar-crm-objects";
 import { useWorkspaceObjectAttributeDefinitionsQuery } from "@/features/crm-object/hooks/use-workspace-object-attribute-definitions";
-import { IconValuePicker } from "@/components/ui/icon-value-picker";
 import { ApiClientError } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { createListDefinition, type CreateListDefinitionInput, type CreateListDefinitionResponse, type ListInitialViewType } from "../api/list-definition-api";
@@ -29,7 +28,6 @@ export function CreateListDefinitionModalContent({ isOpen, workspaceId, userId, 
   const [objectId, setObjectId] = useState("");
   const [titleId, setTitleId] = useState("");
   const [viewType, setViewType] = useState<ListInitialViewType>("TABLE");
-  const [icon, setIcon] = useState("lucide:briefcase");
   const [description, setDescription] = useState("");
   const [statusMode, setStatusMode] = useState<"existing" | "new">("new");
   const [statusId, setStatusId] = useState("");
@@ -83,9 +81,9 @@ export function CreateListDefinitionModalContent({ isOpen, workspaceId, userId, 
         : { newStatus: { title: statusTitle.trim(), options: stages } };
     let result: CreateListDefinitionResponse;
     try {
-      // 2. 보드가 아니면 숨겨진 단계 입력은 보내지 않는다.
+      // 2. 아이콘은 서버가 첫 보기로 결정하며 보드가 아니면 숨겨진 단계 입력은 보내지 않는다.
       result = await createListDefinition({ workspaceId, listDefinitionName: name.trim(), objectDefinitionId: objectId,
-        titleAttributeDefinitionId: resolvedTitleId, viewType, icon,
+        titleAttributeDefinitionId: resolvedTitleId, viewType,
         ...(description ? { description } : {}), ...(kanban ? { kanban } : {}) });
     } catch (failure) {
       submitting.current = false;
@@ -117,20 +115,19 @@ export function CreateListDefinitionModalContent({ isOpen, workspaceId, userId, 
           {objects.isPending ? <p role="status" className="text-sm text-[#6B7280]">{copy.loading}</p>
             : objects.isError ? <p role="alert" className="text-sm">{copy.loadFailed} <button className="text-[#4880EE]" type="button" onClick={() => void objects.refetch()}>{copy.retry}</button></p>
               : !objects.data?.length ? <div className="rounded-md bg-[#F7F7F5] p-4 text-sm"><p>{copy.noObjects}</p><button className="mt-3 text-[#4880EE]" type="button" onClick={onCreateObject}>{copy.addObject}</button></div>
-                : <div className="grid gap-2 text-sm"><label htmlFor="list-source">{copy.source}</label><select id="list-source" aria-describedby="list-source-help" className={inputClass} value={objectId} onChange={event => changeObject(event.target.value)}><option value="">{copy.choose}</option>{objects.data.map(item => <option key={item.id} value={item.id}>{item.singularName}</option>)}</select><p id="list-source-help" className="text-xs text-[#6B7280]">{copy.sourceHelp}</p></div>}
+                : <div className="grid gap-2 text-sm"><label htmlFor="list-source">{copy.source}</label><select id="list-source" className={inputClass} value={objectId} onChange={event => changeObject(event.target.value)}><option value="">{copy.choose}</option>{objects.data.map(item => <option key={item.id} value={item.id}>{item.singularName}</option>)}</select></div>}
           {objectId && (attributes.isPending ? <p role="status" className="text-sm">{copy.loading}</p>
             : attributes.isError ? <p role="alert" className="text-sm">{copy.loadFailed} <button className="text-[#4880EE]" type="button" onClick={() => void attributes.refetch()}>{copy.retry}</button></p>
               : !fields.length ? <p className="text-sm text-[#6B7280]">{copy.noAttributes}</p>
                 : <label className="grid gap-2 text-sm">{copy.titleAttribute}<select className={inputClass} value={resolvedTitleId} onChange={event => setTitleId(event.target.value)}>{fields.map(field => <option key={field.id} value={field.id}>{field.title}</option>)}</select></label>)}
           <button className={cn(buttonClass, "mt-4")} disabled={!canNext} type="submit">{copy.next}</button>
         </div> : <fieldset className="grid min-w-0 gap-5" disabled={pending}>
-          <fieldset><legend className="mb-2 text-sm">{copy.viewType}</legend><div className="grid grid-cols-3 gap-2">{layouts.map(({ type, Icon }) => <label key={type} className={cn("relative cursor-pointer rounded-md border p-3 text-sm", viewType === type ? "border-[#4880EE] bg-blue-50" : "border-[#E4E2DC]")}><input className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0" type="radio" name="list-view-type" value={type} checked={viewType === type} onChange={() => setViewType(type)} /><div className="rounded-sm peer-focus-visible:ring-2 peer-focus-visible:ring-[#4880EE]"><Icon aria-hidden="true" className="mb-2 h-5 w-5" /><span>{copy[type]}</span><p className="mt-1 text-xs leading-5 text-[#6B7280]">{copy[`${type}Help`]}</p></div></label>)}</div></fieldset>
+          <fieldset><legend className="mb-2 text-sm">{copy.viewType}</legend><div className="grid grid-cols-3 gap-2">{layouts.map(({ type, Icon }) => <label key={type} className={cn("relative cursor-pointer rounded-md border p-3 text-[10px] leading-5", viewType === type ? "border-[#4880EE] bg-blue-50" : "border-[#E4E2DC]")}><input className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0" type="radio" name="list-view-type" value={type} checked={viewType === type} onChange={() => setViewType(type)} /><div className="rounded-sm peer-focus-visible:ring-2 peer-focus-visible:ring-[#4880EE]"><Icon aria-hidden="true" className="mb-2 h-5 w-5 text-[#9CA3AF]" /><span>{copy[type]}</span><p className="mt-1 text-[10px] leading-5 text-[#6B7280]">{copy[`${type}Help`]}</p></div></label>)}</div></fieldset>
           {viewType === "KANBAN" && <div className="grid gap-3 rounded-md bg-[#F7F7F5] p-4">
             <label className="grid gap-2 text-sm">{copy.grouping}<select className={inputClass} value={statusMode} onChange={event => setStatusMode(event.target.value as "existing" | "new")}><option value="existing" disabled={!statuses.length}>{copy.existing}</option><option value="new">{copy.newStatus}</option></select></label>
             {statusMode === "existing" ? <label className="grid gap-2 text-sm">{copy.chooseStatus}<select className={inputClass} value={resolvedStatusId} onChange={event => setStatusId(event.target.value)}>{statuses.map(field => <option key={field.id} value={field.id}>{field.title}</option>)}</select>{!statuses.length && <span>{copy.noStatus}</span>}</label>
               : <><label className="grid gap-2 text-sm">{copy.statusTitle}<input className={inputClass} value={statusTitle} placeholder={copy.statusTitlePlaceholder} onChange={event => setStatusTitle(event.target.value)} maxLength={160} /></label><label className="grid gap-2 text-sm">{copy.stages}<textarea className={cn(inputClass, "h-24 py-2")} value={stageText} placeholder={copy.stagesPlaceholder} onChange={event => setStageText(event.target.value)} /><span className="text-xs text-[#6B7280]">{copy.stageHelp}</span></label></>}
           </div>}
-          <div><IconValuePicker searchInputName="listDefinitionLucideIconSearch" locale={locale} value={icon} onChange={setIcon} label={copy.icon} emojiSearchClearButtonLabel={copy.emojiSearchClearButtonLabel} emojiSearchPlaceholder={copy.emojiSearchPlaceholder} emojiTabLabel={copy.emojiTabLabel} iconNoResultsLabel={copy.iconNoResultsLabel} iconSearchPlaceholder={copy.iconSearchPlaceholder} iconTabLabel={copy.iconTabLabel} /></div>
           <label className="grid gap-2 text-sm">{copy.description}<textarea className={cn(inputClass, "h-20 py-2")} maxLength={300} value={description} placeholder={copy.descriptionPlaceholder} onChange={event => setDescription(event.target.value)} /></label>
           <button className={buttonClass} disabled={!canCreate} type="submit">{pending ? copy.creating : copy.create}</button>
           {pending && <p role="status" className="text-center text-sm text-[#6B7280]">{copy.creating}</p>}

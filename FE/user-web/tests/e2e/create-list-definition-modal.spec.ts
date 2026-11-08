@@ -5,6 +5,7 @@ const home = "/app/workspaces/workspace-e2e-001";
 const listId = "created-list";
 const viewId = "created-list-view";
 const createdPath = `${home}/view-definitions/${viewId}?sourceType=LIST`;
+const listIcons: Record<string, string> = { TABLE: "lucide:table-2", LIST: "lucide:list", KANBAN: "lucide:columns-3" };
 
 // 기능 : 실제 목록 생성 화면을 사용하고 모든 API를 mock하여 사용자 DB를 변경하지 않습니다.
 async function setupCreation(page: Page, options: { noObjects?: boolean; failAttributes?: boolean } = {}) {
@@ -43,11 +44,11 @@ async function setupCreation(page: Page, options: { noObjects?: boolean; failAtt
   });
   await page.route(/\/sidebar\/workspaces\/workspace-e2e-001\/lists$/, route => {
     state.sidebarReads += 1;
-    return respond(route, state.created ? [{ id: listId, name: "매물 상담", icon: "lucide:briefcase" }] : []);
+    return respond(route, state.created ? [{ id: listId, name: "매물 상담", icon: listIcons[state.viewType] }] : []);
   });
   // 기능 : 새 List와 View의 저장 후 조회 응답을 현재 선택한 보기 타입으로 제공합니다.
   function header() { return { viewId, viewName: "전체 매물 상담", viewType: state.viewType, viewIcon: null, isFavorite: false,
-    objectDefinition: null, listDefinition: { id: listId, name: "매물 상담", icon: null } }; }
+    objectDefinition: null, listDefinition: { id: listId, name: "매물 상담", icon: listIcons[state.viewType] } }; }
   await page.route(/\/view-header\/view-definitions\/created-list-view$/, route => respond(route, header()));
   await page.route(/\/view-header\?.*targetId=created-list/, route => respond(route, header()));
   await page.route(/\/view-header\/list-definitions\/created-list\/view-definitions(?:\?.*)?$/, route => respond(route, {
@@ -78,6 +79,14 @@ async function enterDetails(page: Page) {
   await expect(dialog.getByRole("combobox", { name: "제목으로 표시할 정보", exact: true })).toHaveValue("name");
   await dialog.getByRole("button", { name: "다음", exact: true }).click();
   await expect(dialog.getByRole("radio", { name: /^표/ })).toBeChecked();
+  await expect(dialog.getByRole("button", { name: "아이콘 선택하기", exact: true })).toHaveCount(0);
+}
+
+// 기능 : 서버가 반환한 목록 아이콘이 sidebar와 header에 표시되는지 확인합니다.
+async function expectListIcon(page: Page, iconClass: string) {
+  await expect(page.getByRole("navigation", { name: "Workspace navigation" })
+    .getByRole("link", { name: "매물 상담", exact: true }).last().locator(`svg.${iconClass}`)).toBeVisible();
+  await expect(page.locator(".app-page-header:visible").locator(`svg.${iconClass}`).first()).toBeVisible();
 }
 
 test.describe("업무 목록과 첫 보기 생성", () => {
@@ -91,11 +100,13 @@ test.describe("업무 목록과 첫 보기 생성", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page.getByRole("columnheader", { name: /^매물명 속성 메뉴 열기/ })).toBeVisible();
     expect(state.attempts).toBe(1);
-    expect(state.writes[0]).toEqual({ listDefinitionName: "매물 상담", objectDefinitionId: "property", titleAttributeDefinitionId: "name", viewType: "TABLE", icon: expect.any(String), description: "매물 상담을 관리해요." });
+    expect(state.writes[0]).toEqual({ listDefinitionName: "매물 상담", objectDefinitionId: "property", titleAttributeDefinitionId: "name", viewType: "TABLE", description: "매물 상담을 관리해요." });
+    await expectListIcon(page, "lucide-table2");
     expect(state.sidebarReads).toBeGreaterThan(reads);
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
     await page.reload();
     await expect(page.getByRole("columnheader", { name: /^매물명 속성 메뉴 열기/ })).toBeVisible();
+    await expectListIcon(page, "lucide-table2");
   });
 
   test("기존 상태를 보드로 사용하고 새 상태 입력을 보내지 않는다", async ({ page }) => {
@@ -107,6 +118,8 @@ test.describe("업무 목록과 첫 보기 생성", () => {
     await dialog.getByRole("button", { name: "생성", exact: true }).click();
     await expect(page).toHaveURL(createdPath);
     expect(state.writes[0]).toMatchObject({ viewType: "KANBAN", kanban: { attributeDefinitionId: "status" } });
+    expect(state.writes[0]).not.toHaveProperty("icon");
+    await expectListIcon(page, "lucide-columns3");
     await expect(page.locator(".app-page-header:visible").getByText("전체 매물 상담", { exact: true })).toBeVisible();
   });
 
@@ -133,6 +146,8 @@ test.describe("업무 목록과 첫 보기 생성", () => {
     await expect(page).toHaveURL(createdPath);
     expect(state.writes[0]?.viewType).toBe("LIST");
     expect(state.writes[0]).not.toHaveProperty("kanban");
+    expect(state.writes[0]).not.toHaveProperty("icon");
+    await expectListIcon(page, "lucide-list");
   });
 
   test("중복 이름 오류 후 입력을 유지하고 재시도한다", async ({ page }) => {

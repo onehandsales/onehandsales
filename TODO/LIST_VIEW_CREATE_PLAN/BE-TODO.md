@@ -27,3 +27,15 @@
 기존 정상 요청 계약과 List/View/단계 저장 로직을 유지한다.
 소속 검증과 경계 사례13개를 추가했으며 상세 근거는 [재검토 기록](BE-REVIEW.md)을 따른다.
 재검토 후 전체61 suites/636 tests, typecheck/lint/build/prisma validate 통과. DB 테스트32개 미실행.
+
+## 생성 아이콘 변경 (2026-11-08)
+
+- 생성 application에서 `icon`이 생략된 경우에만 첫 `viewType`에 맞는 기본 아이콘을 결정한다.
+- TABLE=`lucide:table-2`, LIST=`lucide:list`, KANBAN=`lucide:columns-3`.
+- 기존 `ListDefinition.icon` 쓰기에 포함하며 List/View transaction 범위를 유지한다.
+- 명시적 아이콘/이모지는 보존하고 null/빈 문자열은 기존처럼 null로 저장한다.
+- endpoint/응답/schema 변경과 기존 데이터 보정은 없다. 아이콘 편집 API는 후속 범위다.
+- 검증: 전체 Jest 61 suites/640 tests 통과, 외부 DB 테스트 12 suites/32 tests 제외.
+  typecheck/lint/build/prisma validate 통과. 기존 복합 FK SET NULL 경고 4개 유지.
+- 실제 module wiring에서 세 보기의 기본 아이콘과 명시적 아이콘/이모지/null/빈 문자열
+  저장을 확인했다. DB client는 mock이며 실제 Supabase 쓰기나 migration은 실행하지 않았다.

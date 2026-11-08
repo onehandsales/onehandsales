@@ -20,6 +20,8 @@ Docker·서버 재시작·schema 변경·DB seed·커밋은 이번 코드 작업
 - 소속 검증, 중복 이름409, 부분 저장 rollback, 안전한 requestId 로그.
 - 모달 두 단계, 기본 TABLE, 상태 재사용/신규 단계, 한국어/영어, 조회 실패 재시도,
   중복 제출 차단과 늦은 응답 방어.
+- 2026-11-08 생성 모달의 아이콘 선택을 제거했다. `icon` 생략 시 첫 보기의 표·목록·보드
+  아이콘을 Backend가 `ListDefinition.icon`에 저장한다. 명시적 아이콘 입력은 보존한다.
 - DONE으로 이동한 OBJECT_TABLE_CREATE_PLAN의 외부 문서 참조 4곳도 수정했다.
 
 기준 관리 항목 선택은 첫 View의 제목/상태 참조를 위한 것이다. List의 허용 Object 종류나
