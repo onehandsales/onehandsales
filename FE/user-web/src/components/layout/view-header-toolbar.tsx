@@ -19,7 +19,7 @@ type ViewHeaderToolbarProps = {
   readonly createUnavailable?: boolean;
   readonly secondaryActions?: ReactNode;
 };
-const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 text-[12px] font-medium text-[#65645F] transition hover:bg-[#F0EFEC] hover:text-[#292824] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
+const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 text-[12px] font-medium text-[#65645F] transition hover:bg-[#E4E2DC] hover:text-[#292824] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
 
 // 기능 : 기존 헤더 모양으로 현재 보기의 도구와 설정 미리보기를 제공합니다.
 export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel, searchValue, onSearchChange, onCreateRecord, isCreatingRecord = false, createUnavailable = false, secondaryActions }: ViewHeaderToolbarProps) {
@@ -146,7 +146,7 @@ function ToolbarButton({ active, disabled = false, controls, count = 0, expanded
   readonly expanded: boolean; readonly icon: LucideIcon; readonly label: string;
   readonly onClick: (event: MouseEvent<HTMLButtonElement>) => void; readonly text: string;
 }) {
-  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} disabled={disabled} className={cn(CONTROL_CLASS, "disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE] text-[#326ACD] hover:bg-[#E4EDFD] hover:text-[#326ACD]")} onClick={onClick} type="button">
+  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} disabled={disabled} className={cn(CONTROL_CLASS, "disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE] text-[#326ACD] hover:text-[#326ACD]")} onClick={onClick} type="button">
     <Icon aria-hidden="true" className="h-3.5 w-3.5" /><span className="hidden xl:inline">{text}</span>{count > 0 && <span className="text-[10px]">{count}</span>}{Icon === Settings2 && <ChevronDown aria-hidden="true" className="hidden h-3 w-3 xl:block" />}
   </button>;
 }
