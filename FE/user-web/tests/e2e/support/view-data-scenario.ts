@@ -8,9 +8,10 @@ const names = { TABLE: "전체 업무", KANBAN: "단계별 진행", LIST: "담�
 const binding: ViewDataBinding = { id: "title", attributeDefinitionId: "name", sourceScope: "RECORD", referenceAttributeIdPath: [], role: "TITLE", label: "회사명", attributeType: "Text", isMultiselect: false, isHidden: false, width: 190, format: null, currencyCode: null };
 
 // 기능 : 실제 route·헤더·본문을 유지하고 원격 API 응답만 제어합니다.
-export async function setupViewDataScenario(page: Page) {
-  await setupUserWebApiMocks(page); await seedAuthenticatedSession(page);
+export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR" | "en" = "ko-KR") {
+  await setupUserWebApiMocks(page, { store: { preferredLocale } }); await seedAuthenticatedSession(page);
   const state = { requests: [] as URL[], writes: [] as { method: string; path: string; body: unknown }[], legacyReads: [] as string[],
+    columns: [] as { id: string; name: string; type: string }[], columnError: 0, columnErrorCode: "InternalServerError", delayColumn: false, columnResponseLost: false,
     pagination: false, folded: false, hidden: false, noView: false, needsConfiguration: false, empty: false,
     mainError: 0, groupError: 0, nextError: 0, version: 1, added: 0, delayObject: false, delayList: false, delayWrite: false, titles: {} as Record<string, string>,
     headers: [] as URL[], menuReads: [] as URL[], favorites: [] as SupportedViewDataType[],
@@ -51,7 +52,7 @@ export async function setupViewDataScenario(page: Page) {
       source: { kind: list ? "LIST" as const : "OBJECT" as const, objectDefinitionId: list ? null : "object-definition-company", listDefinitionId: list ? "list-definition-pipeline" : null, itemKind: list ? "LIST_ENTRY" as const : "RECORD" as const },
       configurationFingerprint: "configuration-" + state.version, issues: [], bindings: [binding,
         { ...binding, id: "amount", attributeDefinitionId: "amount", label: "금액", role: "DISPLAY", attributeType: "Number", isMultiselect: true, width: 320 },
-        ...(list ? [{ ...binding, id: "note", attributeDefinitionId: "note", label: "업무 메모", role: "DISPLAY", sourceScope: "LIST_ENTRY" as const }] : [])],
+        ...(list ? [{ ...binding, id: "note", attributeDefinitionId: "note", label: "업무 메모", role: "DISPLAY", sourceScope: "LIST_ENTRY" as const }] : state.columns.map(column => ({ ...binding, id: column.id, attributeDefinitionId: `attribute-${column.id}`, label: column.name, role: "DISPLAY", attributeType: column.type })))],
       summary: { sourceItemCount: all.length, matchedItemCount: filtered.length, eligibleItemCount: filtered.length } };
     if (state.needsConfiguration) return { ...base, viewType: type, state: "NEEDS_CONFIGURATION", part: "MAIN", summary: null, bindings: [], data: null };
     const offset = url.searchParams.has("cursor") ? 25 : 0;
@@ -122,6 +123,17 @@ export async function setupViewDataScenario(page: Page) {
       return respond(route, { ...board, part: "GROUP_ITEMS", data: { groupKey: column.key, groupToken: column.groupToken, items: candidates.slice(offset, offset + 25), pageInfo: { hasNextPage: false, nextCursor: null } } });
     }
     await respond(route, response);
+  });
+  await page.route(/\/view-definitions\/[^/]+\/columns$/, async route => {
+    if (route.request().method() === "OPTIONS") return respond(route, null);
+    const body = route.request().postDataJSON();
+    state.writes.push({ method: "POST", path: new URL(route.request().url()).pathname, body });
+    if (state.delayColumn) await new Promise(resolve => setTimeout(resolve, 600));
+    if (state.columnError) return respond(route, { statusCode: state.columnError, error: state.columnErrorCode }, state.columnError);
+    const existing = state.columns.some(column => column.id === body.creationId);
+    if (!existing) { state.columns.push({ id: body.creationId, name: body.attributeDefinitionName, type: body.attributeType }); state.version++; }
+    if (state.columnResponseLost) { state.columnResponseLost = false; await route.abort("failed"); return; }
+    return respond(route, { viewDefinitionId: "view-table", objectDefinitionId: "object-definition-company", attributeDefinitionId: `attribute-${body.creationId}`, viewAttributeSettingDefinitionId: body.creationId }, existing ? 200 : 201);
   });
   await page.route(/\/object-definitions\/[^/]+\/record-definitions(?:\/.*)?$/, async route => {
     const request = route.request(), method = request.method(), path = new URL(request.url()).pathname;

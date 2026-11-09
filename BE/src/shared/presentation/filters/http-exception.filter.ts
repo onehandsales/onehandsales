@@ -110,6 +110,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ObjectDefinitionApiSlugAlreadyExists":
       case "ListDefinitionApiSlugAlreadyExists":
       case "AttributeDefinitionApiSlugAlreadyExists":
+      case "ViewColumnTargetUnsupported":
+      case "ViewColumnCreationConflict":
+      case "ViewColumnLimitExceeded":
       case "ViewDataCursorStale":
         return HttpStatus.CONFLICT;
       case "ViewDataTypeUnsupported":

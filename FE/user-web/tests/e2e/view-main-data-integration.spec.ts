@@ -194,8 +194,7 @@ test("keeps column order and visibility changes in the current view preview", as
   await first.click();
   await body(page).getByRole("button", { name: "숨기기", exact: true }).click();
   await expect(first).toHaveCount(0);
-  await body(page).getByRole("button", { name: "속성 추가", exact: true }).click();
-  await body(page).getByRole("dialog", { name: "표시할 속성", exact: true }).getByLabel("회사명", { exact: true }).check();
+  await body(page).getByRole("button", { name: "초기화", exact: true }).click();
   await expect(first).toBeVisible();
   expect(state.writes).toEqual([]);
 });

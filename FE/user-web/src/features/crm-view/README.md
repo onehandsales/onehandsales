@@ -11,6 +11,8 @@
 - `api/view-data-api`: 현재 헤더의 View ID와 명시적 OBJECT/LIST source로 같은 `/data` GET을 사용한다. MAIN과 GROUP_ITEMS를 구분하고 응답 View/type/source/part와 그룹 token을 확인한다. 기존 인증 client·AbortSignal을 사용한다.
 - `hooks/use-view-main-data`: 사용자/Workspace/원본 종류·대상/보기/타입/시간대/검색/limit별 infinite query다. 검색은 250ms debounce, 일반 행은 서버 cursor, 칸반은 열별 cursor를 사용한다. 다른 보기의 결과를 placeholder로 남기지 않는다.
 - `components/view-data-table`: 기존 관리항목의 36px 고정 열 헤더·40px 행·셀/구분선·체크박스·가로세로 스크롤과 셀 편집 컴포넌트를 재사용한다. 열 순서/너비/표시명/숨김은 현재 화면 미리보기이며 View 저장이나 원본 AttributeDefinition의 순서 변경 API를 호출하지 않는다.
+- Object TABLE의 `+`는 `components/inline-attribute-column`을 표시한다. 이름과 17종 중 유형 하나를 입력하고 Enter/영역 밖 클릭으로 새 속성과 현재 View 컬럼을 저장한다. 모달·설명 입력은 없으며 유형별 아이콘을 고정 사용한다. 미완성은 유지하고 Esc/취소로 제거한다. 기존 숨김 미리보기는 `초기화`로 복원한다. List TABLE의 기존 표시 메뉴는 유지한다.
+- `api/view-column-api`는 View 소유 POST 계약을 사용한다. 같은 입력의 실패 재시도에는 같은 creationId를 보내고 저장 성공 후에는 해당 scope의 속성·메뉴·본문 캐시를 갱신한다. 조회 실패 복구는 재생성을 요청하지 않는다. [API 계약과 검토](../../../../../TODO/TABLE_ATTRIBUTE_CREATE_PLAN/README.md)를 따른다.
 - `components/view-data-list`, `view-data-kanban`: 저장된 표시 속성·그룹과 열별 건수·접힘·숨김을 반영한다. 접힌 칸반 열은 펼칠 때 GROUP_ITEMS를 조회하고 숨긴 열은 표시하지 않는다. 합계와 카드 이동을 임의로 추가하지 않는다.
 - `components/view-data-cell`: 다중값을 배열로 유지하고 itemKey와 occurrenceKey를 구분한다. 직접 RECORD 값의 기존 편집·PATCH를 재사용한다. 참조 경로 말단·LIST_ENTRY 값은 읽기 전용이며 다른 소유자의 ID를 Record ID로 전용하지 않는다.
 - Decimal은 문자열·BigInt로 표시 배율/반올림을 적용한다. 날짜 전용 값은 UTC 날짜를 유지하고 Timestamp는 사용자 시간대로 표시한다. 참조는 라벨만 표시한다.

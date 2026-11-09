@@ -1,4 +1,8 @@
 import { Module } from "@nestjs/common";
+import { VIEW_COLUMN_COMMAND_REPOSITORY } from "../application/ports/view-column-command.repository";
+import { CreateWorkspaceTableColumnUseCase } from "../application/use-cases/create-workspace-table-column.use-case";
+import { UserWorkspaceTableColumnsController } from "../presentation/http/user-workspace-table-columns.controller";
+import { PrismaViewColumnCommandRepository } from "./persistence/prisma-view-column-command.repository";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { RecordDefinitionModule } from "@/modules/record-definition/infrastructure/record-definition.module";
 import { VIEW_DATA_CONFIGURATION_QUERY } from "../application/ports/view-data-configuration-query.port";
@@ -60,6 +64,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     PrismaInfrastructureModule,
   ],
   controllers: [
+    UserWorkspaceTableColumnsController,
     UserWorkspaceViewMainContentController,
     UserWorkspaceViewHeaderMenusController,
     UserWorkspaceObjectViewsController,
@@ -69,6 +74,13 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     UserWorkspaceViewFavoriteController,
   ],
   providers: [
+    CreateWorkspaceTableColumnUseCase,
+    {
+      provide: VIEW_COLUMN_COMMAND_REPOSITORY,
+      // 기능 : View 모듈 소유 컬럼 쓰기 구현체를 조립합니다.
+      useFactory: (prisma: PrismaService) => new PrismaViewColumnCommandRepository(prisma),
+      inject: [PrismaService],
+    },
     ViewDataLoader,
     GetWorkspaceViewMainContentUseCase,
     { provide: VIEW_DATA_CONFIGURATION_QUERY, useClass: PrismaViewDataConfigurationQueryRepository },

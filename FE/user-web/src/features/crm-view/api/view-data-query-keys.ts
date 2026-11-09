@@ -7,6 +7,10 @@ function dataScope(scope: ViewDataScope | null) {
     scope?.viewType ?? null, scope?.timeZone ?? null] as const;
 }
 export const viewDataQueryKeys = {
+  // 기능 : 표시 설정 변경 후 선택 View의 모든 검색·페이지 캐시를 초기화합니다.
+  view(scope: ViewDataScope) {
+    return dataScope(scope);
+  },
   // 기능 : 검색·페이지 크기별 본문 조회를 구분합니다.
   main(scope: ViewDataScope | null, q: string, limit: number) {
     return [...dataScope(scope), "MAIN", q, limit] as const;

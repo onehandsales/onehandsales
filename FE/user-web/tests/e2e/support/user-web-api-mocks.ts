@@ -63,6 +63,7 @@ type MockCreatedObjectDefinitionRequest = {
 };
 
 export type UserWebApiMockStore = {
+  preferredLocale?: "ko-KR" | "en";
   createdObjectDefinitionRequests?: MockCreatedObjectDefinitionRequest[];
   createdWorkspace?: MockSidebarWorkspaceSummary;
   sidebarCrmLists?: readonly MockSidebarCrmListItem[];
@@ -220,7 +221,7 @@ async function handleApiRequest(
 
   // 9. 조건을 확인해 필요한 분기 처리를 수행한다.
   if (pathname === "/api/me" && method === "GET") {
-    return json(createAuthUser());
+    return json(createAuthUser({ preferredLocale: store.preferredLocale ?? "ko-KR" }));
   }
 
   // 10. 조건을 확인해 필요한 분기 처리를 수행한다.

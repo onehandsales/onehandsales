@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import type { ObjectAttributeCreator } from "../ports/object-attribute-creator.port";
 import {
   isAttributeDefinitionType,
   type AttributeDefinitionType,
@@ -100,7 +101,7 @@ interface AttributeDefinitionSortOrderPlacement {
 
 // 역할 : CreateWorkspaceObjectAttributeDefinitionUseCase가 현재 ObjectDefinition의 AttributeDefinition 생성을 담당합니다.
 @Injectable()
-export class CreateWorkspaceObjectAttributeDefinitionUseCase {
+export class CreateWorkspaceObjectAttributeDefinitionUseCase implements ObjectAttributeCreator {
   // 기능 : Workspace/ObjectDefinition 접근 포트, AttributeDefinition 저장소, cell materializer, transaction manager, logger를 주입받습니다.
   constructor(
     @Inject(WORKSPACE_ACCESS_QUERY)
@@ -117,12 +118,22 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     private readonly logger: ApplicationLogger
   ) {}
 
+  // 기능 : 외부 모듈의 트랜잭션에 참여하고 성공 로그는 commit 소유자에게 위임합니다.
+  create(input: Parameters<ObjectAttributeCreator["create"]>[0], context: TransactionContext) {
+    // 1. HTTP 전용 선택 필드를 노출하지 않고 기존 생성 검증과 materializer를 재사용한다.
+    return this.execute(input.currentUser, input.workspaceId, input.objectDefinitionId, {
+      attributeDefinitionName: input.attributeDefinitionName,
+      attributeType: input.attributeType,
+    }, context);
+  }
+
   // 기능 : 현재 사용자가 접근 가능한 Workspace ObjectDefinition에 AttributeDefinition을 생성합니다.
   async execute(
     currentUser: CurrentUserContext,
     workspaceId: string,
     objectDefinitionId: string,
-    command: CreateWorkspaceObjectAttributeDefinitionCommand
+    command: CreateWorkspaceObjectAttributeDefinitionCommand,
+    transactionContext?: TransactionContext
   ): Promise<CreateWorkspaceObjectAttributeDefinitionResponse> {
     // 1. 사용자가 입력한 속성 이름, 타입, 선택값, 타입별 설정을 DB 조회 전에 먼저 검증하고 정규화한다.
     const attributeDefinitionName = this.normalizeAttributeDefinitionName(
@@ -183,8 +194,8 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
     }
 
     // 5. AttributeDefinition과 기존 RecordDefinition의 null cell value row를 하나의 transaction 안에서 생성한다.
-    const created = await this.transactionManager.runInTransaction((context) =>
-      this.createAttributeDefinitionInTransaction({
+    // 기능 : 신규 트랜잭션 또는 외부 소유 트랜잭션에 동일한 쓰기 작업을 연결합니다.
+    const create = (context: TransactionContext) => this.createAttributeDefinitionInTransaction({
         workspaceId,
         objectDefinitionId,
         createdByActorId,
@@ -197,11 +208,12 @@ export class CreateWorkspaceObjectAttributeDefinitionUseCase {
         config,
         insertPosition,
         transactionContext: context,
-      })
-    );
+      });
+    const created = transactionContext ? await create(transactionContext)
+      : await this.transactionManager.runInTransaction(create);
 
     // 6. 원문 이름과 설명 없이 생성 이벤트만 구조화 로그로 남긴다.
-    this.logCreatedEvent({
+    if (!transactionContext) this.logCreatedEvent({
       userId: currentUser.id,
       workspaceId,
       objectDefinitionId,

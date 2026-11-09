@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { OBJECT_ATTRIBUTE_CREATOR } from "../application/ports/object-attribute-creator.port";
 import { LIST_STATUS_ATTRIBUTE_CREATOR } from "../application/ports/list-status-attribute-creator.port";
 import { PrismaListStatusAttributeCreator } from "./persistence/prisma-list-status-attribute-creator";
 import { ATTRIBUTE_RELATIONSHIP_QUERY } from "../application/ports/attribute-relationship-query.port";
@@ -46,6 +47,7 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
       inject: [PrismaService],
     },
     CreateWorkspaceObjectAttributeDefinitionUseCase,
+    { provide: OBJECT_ATTRIBUTE_CREATOR, useExisting: CreateWorkspaceObjectAttributeDefinitionUseCase },
     ListWorkspaceObjectAttributeDefinitionsUseCase,
     GetWorkspaceObjectAttributeDefinitionUseCase,
     MoveWorkspaceObjectAttributeDefinitionUseCase,
@@ -77,6 +79,6 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
       inject: [PrismaService],
     },
   ],
-  exports: [ATTRIBUTE_DEFINITION_METADATA_QUERY, ATTRIBUTE_RELATIONSHIP_QUERY, LIST_STATUS_ATTRIBUTE_CREATOR],
+  exports: [ATTRIBUTE_DEFINITION_METADATA_QUERY, ATTRIBUTE_RELATIONSHIP_QUERY, LIST_STATUS_ATTRIBUTE_CREATOR, OBJECT_ATTRIBUTE_CREATOR],
 })
 export class AttributeDefinitionModule {}

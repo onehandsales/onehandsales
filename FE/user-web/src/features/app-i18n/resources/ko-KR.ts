@@ -2,6 +2,13 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
+  attributeColumn: {
+    name: "속성 이름", type: "정보 유형 선택", failed: "속성을 추가하지 못했어요. 다시 저장해 주세요.",
+    duplicate: "같은 식별자의 속성이 있어요. 이름을 확인해 주세요.", conflict: "이미 처리된 요청과 입력이 달라요. 새로고침 후 확인해 주세요.",
+    unavailable: "이 보기에 속성을 추가할 수 없어요.", refreshFailed: "속성은 저장됐어요. 다시 시도를 눌러 화면을 갱신해 주세요.",
+    limit: "이 보기에 표시할 수 있는 속성 수에 도달했어요.",
+  },
+  attributeTypes: { Text: "텍스트", Number: "숫자", Currency: "금액", Checkbox: "체크박스", Date: "날짜", Timestamp: "날짜 및 시간", Select: "선택", Status: "상태", Rating: "평점", EmailAddress: "이메일", PhoneNumber: "전화번호", Domain: "도메인", Location: "위치·주소", PersonalName: "사람 이름", RecordReference: "기록 참조", ActorReference: "행위자 참조", Interaction: "상호작용" },
   viewData: {
     count: "{count}개 항목",
     selected: "불러온 항목 중 {count}개 선택",

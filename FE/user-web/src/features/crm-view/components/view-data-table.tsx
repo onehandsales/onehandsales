@@ -1,23 +1,21 @@
-import { Calendar, CheckSquare, ChevronDown, EyeOff, Hash, Link2, Plus, Type, User, X } from "lucide-react";
+import { ChevronDown, EyeOff, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useAppI18n } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
-import type { ViewDataBinding, ViewDataItem, ViewTableResponse } from "../types/view-data";
+import type { ViewDataBinding, ViewDataItem, ViewDataScope, ViewTableResponse } from "../types/view-data";
+import { AttributeTypeIcon } from "./attribute-type-icon";
+import { InlineAttributeColumn } from "./inline-attribute-column";
 import { ViewDataCell, type ViewCellEditing } from "./view-data-cell";
 import { ViewDataGroups } from "./view-data-groups";
 
 // 기능 : 기존 표의 속성 아이콘을 표시 타입에 맞게 제공합니다.
-function BindingIcon({ type }: { readonly type: string }) {
-  const Icon = type === "Checkbox" ? CheckSquare : type === "Date" || type === "Timestamp" ? Calendar
-    : type === "Number" || type === "Currency" || type === "Rating" ? Hash
-      : type === "ActorReference" ? User : type === "RecordReference" ? Link2 : Type;
-  return <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-[#9CA3AF]" strokeWidth={2} />;
-}
+function BindingIcon({ type }: { readonly type: string }) { return <AttributeTypeIcon type={type} />; }
 
 // 기능 : 기존 관리항목 표의 배치·셀 편집·열 조작 UX로 View 본문을 표시합니다.
-export function ViewDataTable({ response, items, editing, onCreate, creating }: {
+export function ViewDataTable({ response, items, editing, onCreate, creating, scope }: {
   readonly response: ViewTableResponse; readonly items: readonly ViewDataItem[];
   readonly editing: ViewCellEditing; readonly onCreate?: (() => void) | undefined; readonly creating: boolean;
+  readonly scope?: ViewDataScope;
 }) {
   const { t } = useAppI18n();
   const original = response.data.columnBindingIds.flatMap(id => response.bindings.find(binding => binding.id === id) ?? []);
@@ -27,6 +25,10 @@ export function ViewDataTable({ response, items, editing, onCreate, creating }: 
   const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
   const [menu, setMenu] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const addButton = useRef<HTMLButtonElement>(null);
+  const restoreAddFocus = useRef(false);
+  const canAdd = scope?.sourceType === "OBJECT" && response.source.kind === "OBJECT" && !response.source.listDefinitionId;
   const [drag, setDrag] = useState<{ source: string; target: string } | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const selectAll = useRef<HTMLInputElement>(null);
@@ -36,11 +38,17 @@ export function ViewDataTable({ response, items, editing, onCreate, creating }: 
   const columns = sorted.filter(binding => !hidden.has(binding.id));
   // 기능 : 저장 너비를 초기값으로 사용하고 현재 화면의 드래그 너비를 우선합니다.
   function width(binding: ViewDataBinding) { return widths[binding.id] ?? binding.width ?? 150; }
-  const template = `44px ${columns.map(binding => `${width(binding)}px`).join(" ")} minmax(44px,1fr)`;
-  const minimum = 88 + columns.reduce((total, binding) => total + width(binding), 0);
+  const template = `44px ${columns.map(binding => `${width(binding)}px`).join(" ")} ${adding ? "280px " : ""}minmax(44px,1fr)`;
+  const minimum = 88 + columns.reduce((total, binding) => total + width(binding), 0) + (adding ? 280 : 0);
   const preview = order !== null || Object.keys(widths).length > 0 || Object.keys(labels).length > 0 || hidden.size > 0;
   const itemKeys = useMemo(() => [...new Set(items.map(item => item.itemKey))], [items]);
   const allSelected = itemKeys.length > 0 && itemKeys.every(key => selected.has(key));
+
+  useEffect(() => {
+    if (!adding && restoreAddFocus.current) { restoreAddFocus.current = false; addButton.current?.focus(); }
+  }, [adding]);
+  // 기능 : 임시 컬럼 취소가 반영된 뒤 다시 활성화된 추가 버튼으로 포커스를 돌립니다.
+  function cancelAttribute() { restoreAddFocus.current = true; setAdding(false); }
 
   useEffect(() => {
     if (selectAll.current) selectAll.current.indeterminate = !allSelected && itemKeys.some(key => selected.has(key));
@@ -125,6 +133,7 @@ export function ViewDataTable({ response, items, editing, onCreate, creating }: 
       {columns.map((binding, index) => <div className="flex h-full min-w-0 items-center border-r border-[#F1F0EC]" role="cell" key={binding.id}>
         <ViewDataCell binding={{ ...binding, label: labels[binding.id] ?? binding.label }} item={item} editing={editing} primary={index === 0} />
       </div>)}
+      {adding && <div role="cell" className="border-r border-[#F1F0EC]" />}
       <div aria-hidden="true" role="cell" />
     </div>;
   }
@@ -153,8 +162,9 @@ export function ViewDataTable({ response, items, editing, onCreate, creating }: 
       <div role="row" className="sticky top-0 z-10 grid h-[36px] items-stretch bg-white text-[14px] font-medium text-[#111827] shadow-[inset_0_-1px_0_#EEEDEA]" style={{ gridTemplateColumns: template }}>
         <div className="flex h-full items-center justify-center" role="columnheader"><input ref={selectAll} type="checkbox" aria-label={t("objectList.selectAllRowsLabel")} checked={allSelected} onChange={toggleAll} className="h-4 w-4 rounded accent-[#4880EE]" /></div>
         {columns.map(renderColumn)}
+        {adding && scope && <InlineAttributeColumn scope={scope} onCancel={cancelAttribute} onCreated={() => { setAdding(false); }} />}
         <div className="relative flex h-full items-center px-2" role="columnheader">
-          <button aria-label={t("objectList.addAttributeDefinitionTooltip")} aria-expanded={menu === "+"} className="flex h-7 items-center gap-1.5 whitespace-nowrap rounded px-1 text-[#9CA3AF] hover:bg-[#E4E2DC]" type="button" onClick={() => setMenu(menu === "+" ? null : "+")}><Plus className="h-5 w-5" /></button>
+          <button ref={addButton} aria-label={t("objectList.addAttributeDefinitionTooltip")} aria-expanded={canAdd ? adding : menu === "+"} disabled={canAdd && adding} className="flex h-7 items-center gap-1.5 whitespace-nowrap rounded px-1 text-[#9CA3AF] hover:bg-[#E4E2DC] disabled:opacity-40" type="button" onClick={() => { if (canAdd) { setMenu(null); setAdding(true); } else setMenu(menu === "+" ? null : "+"); }}><Plus className="h-5 w-5" /></button>
           {menu === "+" && <div role="dialog" aria-label={t("viewData.visibleColumns")} className="absolute right-1 top-[calc(100%+6px)] z-50 w-[264px] rounded-lg border border-[#E7E6E2] bg-white p-2 text-[12px] text-[#37352F] shadow-lg">
             <div className="flex items-center justify-between px-1 pb-2 font-semibold">{t("viewData.visibleColumns")}<button aria-label={t("common.close")} type="button" onClick={() => setMenu(null)}><X className="h-4 w-4" /></button></div>
             {response.bindings.map(binding => <label key={binding.id} className="flex min-h-7 items-center gap-2 rounded px-1 hover:bg-[#F3F2EF]"><input className="accent-[#4880EE]" type="checkbox" disabled={!original.some(value => value.id === binding.id)} checked={!binding.isHidden && !hidden.has(binding.id)} onChange={() => toggleColumn(binding.id)} /><span className="truncate">{binding.label}</span></label>)}
@@ -164,7 +174,7 @@ export function ViewDataTable({ response, items, editing, onCreate, creating }: 
       </div>
       <div role="rowgroup"><ViewDataGroups items={items} groups={response.data.groups} renderItem={renderRow} table />
         {!items.length && [0, 1, 2].map(index => <div key={index} role="row" className="grid h-[40px] shadow-[inset_0_-1px_0_#F1F0EC]" style={{ gridTemplateColumns: template }}>
-          <div role="cell" />{columns.map(binding => <div key={binding.id} role="cell" className="border-r border-[#F1F0EC]" />)}<div role="cell" />
+          <div role="cell" />{columns.map(binding => <div key={binding.id} role="cell" className="border-r border-[#F1F0EC]" />)}{adding && <div role="cell" className="border-r border-[#F1F0EC]" />}<div role="cell" />
         </div>)}
       </div>
     </div>

@@ -56,7 +56,7 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   const stale = query.error instanceof ApiClientError && [400, 409].includes(query.error.statusCode);
   return <div aria-busy={query.isFetching || searching} data-testid="view-main-content">
     {searching && <p role="status" className="px-3 py-1 text-[11px] text-[#9B9A97]">{t("viewData.searching")}</p>}
-    {response.viewType === "TABLE" ? <ViewDataTable key={response.configurationFingerprint} response={response} items={items} editing={editing} onCreate={onCreate} creating={creating} />
+    {response.viewType === "TABLE" ? <ViewDataTable key={`${scope.userId}:${scope.workspaceId}:${scope.sourceType}:${scope.targetId}:${scope.viewDefinitionId}:${response.configurationFingerprint}`} scope={scope} response={response} items={items} editing={editing} onCreate={onCreate} creating={creating} />
       : response.viewType === "LIST" ? <ViewDataList key={response.configurationFingerprint} response={response} items={items} editing={editing} />
         : <ViewDataKanban response={response} input={{ ...scope, q: model.q, limit: VIEW_DATA_PAGE_SIZE }} onRestart={model.restart} />}
     {response.viewType !== "KANBAN" && !items.length && <p className="px-4 py-4 text-[13px] text-[#9B9A97]">{t(model.q ? "common.searchEmpty" : "objectList.emptyRecords")}</p>}
