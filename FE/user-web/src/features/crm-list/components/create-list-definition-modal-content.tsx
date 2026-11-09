@@ -7,6 +7,7 @@ import { ApiClientError } from "@/lib/api-client";
 import { cn } from "@/utils/cn";
 import { createListDefinition, type CreateListDefinitionInput, type CreateListDefinitionResponse, type ListInitialViewType } from "../api/list-definition-api";
 import { listCreateCopy } from "./list-create-copy";
+import { ListSourcePicker } from "./list-source-picker";
 
 const inputClass = "h-11 w-full rounded-md border border-[#E4E2DC] bg-white px-3 text-sm outline-none focus:border-[#4880EE] disabled:opacity-50";
 const buttonClass = "h-11 w-full rounded-md bg-[#4880EE] px-4 text-sm text-white transition hover:bg-[#336FE0] disabled:cursor-not-allowed disabled:opacity-45";
@@ -115,7 +116,7 @@ export function CreateListDefinitionModalContent({ isOpen, workspaceId, userId, 
           {objects.isPending ? <p role="status" className="text-sm text-[#6B7280]">{copy.loading}</p>
             : objects.isError ? <p role="alert" className="text-sm">{copy.loadFailed} <button className="text-[#4880EE]" type="button" onClick={() => void objects.refetch()}>{copy.retry}</button></p>
               : !objects.data?.length ? <div className="rounded-md bg-[#F7F7F5] p-4 text-sm"><p>{copy.noObjects}</p><button className="mt-3 text-[#4880EE]" type="button" onClick={onCreateObject}>{copy.addObject}</button></div>
-                : <div className="grid gap-2 text-sm"><label htmlFor="list-source">{copy.source}</label><select id="list-source" className={cn(inputClass, "focus:border-[#E4E2DC]")} value={objectId} onChange={event => changeObject(event.target.value)}><option value="">{copy.choose}</option>{objects.data.map(item => <option key={item.id} value={item.id}>{item.singularName}</option>)}</select></div>}
+                : <ListSourcePicker label={copy.source} placeholder={copy.choose} searchLabel={copy.sourceSearch} emptyLabel={copy.sourceSearchEmpty} items={objects.data} value={objectId} onChange={changeObject} />}
           {objectId && (attributes.isPending ? <p role="status" className="text-sm">{copy.loading}</p>
             : attributes.isError ? <p role="alert" className="text-sm">{copy.loadFailed} <button className="text-[#4880EE]" type="button" onClick={() => void attributes.refetch()}>{copy.retry}</button></p>
               : !fields.length ? <p className="text-sm text-[#6B7280]">{copy.noAttributes}</p>

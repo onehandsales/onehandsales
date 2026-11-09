@@ -75,7 +75,8 @@ async function enterDetails(page: Page) {
   const dialog = page.getByRole("dialog").first();
   await expect(dialog.getByRole("button", { name: "다음", exact: true })).toBeDisabled();
   await dialog.getByLabel("업무 목록 이름", { exact: true }).fill(" 매물 상담 ");
-  await dialog.getByRole("combobox", { name: "관리할 항목", exact: true }).selectOption("property");
+  await dialog.getByRole("combobox", { name: "관리할 항목", exact: true }).click();
+  await dialog.getByRole("option", { name: "매물", exact: true }).click();
   await expect(dialog.getByRole("combobox", { name: "제목으로 표시할 정보", exact: true })).toHaveValue("name");
   await dialog.getByRole("button", { name: "다음", exact: true }).click();
   await expect(dialog.getByRole("radio", { name: /^표/ })).toBeChecked();
@@ -90,6 +91,48 @@ async function expectListIcon(page: Page, iconClass: string) {
 }
 
 test.describe("업무 목록과 첫 보기 생성", () => {
+  test("관리 항목을 검색·키보드로 선택하고 모달을 유지하며 선택을 해제한다", async ({ page }) => {
+    const { dialog, state } = await setupCreation(page);
+    const trigger = dialog.getByRole("combobox", { name: "관리할 항목", exact: true });
+    const search = dialog.getByRole("textbox", { name: "관리할 항목 검색", exact: true });
+    await dialog.getByLabel("업무 목록 이름", { exact: true }).fill("매물 상담");
+    await trigger.focus();
+    await trigger.press("ArrowDown");
+    await expect(search).toBeFocused();
+    await search.fill("검색 결과 없음");
+    await expect(dialog.getByRole("status")).toHaveText("일치하는 항목이 없어요.");
+    await search.press("Enter");
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await search.fill("매물");
+    await search.press("ArrowDown");
+    const option = dialog.getByRole("option", { name: "매물", exact: true });
+    await expect(option).toBeFocused();
+    await option.press("Enter");
+    await expect(trigger).toContainText("매물");
+    await expect(trigger).toBeFocused();
+    await expect(dialog.getByRole("combobox", { name: "제목으로 표시할 정보", exact: true })).toHaveValue("name");
+    await expect(dialog.getByRole("button", { name: "다음", exact: true })).toBeEnabled();
+    await dialog.getByRole("combobox", { name: "제목으로 표시할 정보", exact: true }).selectOption("status");
+    await trigger.click();
+    await expect(option).toHaveAttribute("aria-selected", "true");
+    await option.click();
+    await expect(dialog.getByRole("combobox", { name: "제목으로 표시할 정보", exact: true })).toHaveValue("status");
+    await trigger.click();
+    await search.press("Escape");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(trigger).toBeFocused();
+    await expect(page.getByRole("dialog")).toHaveCount(1);
+    await trigger.click();
+    await dialog.getByRole("option", { name: "선택해 주세요", exact: true }).click();
+    await expect(trigger).toContainText("선택해 주세요");
+    await expect(dialog.getByRole("combobox", { name: "제목으로 표시할 정보", exact: true })).toHaveCount(0);
+    await expect(dialog.getByRole("button", { name: "다음", exact: true })).toBeDisabled();
+    await trigger.click();
+    await dialog.getByLabel("업무 목록 이름", { exact: true }).click();
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(state.attempts).toBe(0);
+  });
+
   test("표 기본 선택, 중복 제출 차단, sidebar 갱신과 새로고침 후 복원", async ({ page }) => {
     const { state, dialog, api } = await setupCreation(page);
     await enterDetails(page);
@@ -190,7 +233,8 @@ test.describe("업무 목록과 첫 보기 생성", () => {
   test("속성 조회 실패를 재시도하고 제목을 선택한다", async ({ page }) => {
     const { dialog, state } = await setupCreation(page, { failAttributes: true });
     await dialog.getByLabel("업무 목록 이름", { exact: true }).fill("매물 상담");
-    await dialog.getByRole("combobox", { name: "관리할 항목", exact: true }).selectOption("property");
+    await dialog.getByRole("combobox", { name: "관리할 항목", exact: true }).click();
+    await dialog.getByRole("option", { name: "매물", exact: true }).click();
     await expect(dialog.getByRole("button", { name: "다음", exact: true })).toBeDisabled();
     await expect(dialog.getByRole("alert")).toBeVisible();
     state.failAttributes = false;
