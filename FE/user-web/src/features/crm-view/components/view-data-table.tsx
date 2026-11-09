@@ -168,7 +168,7 @@ export function ViewDataTable({ response, items, editing, onCreate, creating }: 
         </div>)}
       </div>
     </div>
-    {onCreate && <button className="flex h-[40px] w-full items-center justify-center gap-1.5 border-b border-[#F1F0EC] text-[14px] text-[#65645F] hover:bg-[#FAFAF8] disabled:opacity-50" type="button" disabled={creating} onClick={onCreate}><Plus className="h-4 w-4" />{t(creating ? "common.saving" : "viewHeader.addRecord")}</button>}
+    {onCreate && <button aria-label={t(creating ? "common.saving" : "viewHeader.addRecord")} aria-busy={creating} className="flex h-[40px] w-full items-center justify-center gap-1.5 border-b border-[#F1F0EC] text-[14px] text-[#65645F] hover:bg-[#E4E2DC] disabled:opacity-50" type="button" disabled={creating} onClick={onCreate}><Plus aria-hidden="true" className="h-4 w-4" /></button>}
     {preview && <div className="flex items-center gap-2 border-b border-[#EEEDEA] px-3 py-2 text-[11px] text-[#9B9A97]"><span>{t("viewData.layoutPreview")}</span><button className="shrink-0 text-[#326ACD]" type="button" onClick={resetColumns}>{t("common.reset")}</button></div>}
     {selected.size > 0 && <p className="px-3 pt-2 text-[11px] text-[#9B9A97]">{t("viewData.selected", { values: { count: selected.size } })}</p>}
     {hidden.size > 0 && columns.length === 0 && <button className="m-3 text-[12px] text-[#326ACD]" type="button" onClick={() => setMenu("+")}>{t("viewData.visibleColumns")}<ChevronDown className="inline h-3 w-3" /></button>}
