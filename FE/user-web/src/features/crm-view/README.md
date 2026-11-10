@@ -26,6 +26,8 @@
 
 헤더의 `보기 설정`은 톱니바퀴(Settings) 아이콘을 사용하며 오른쪽 펼침 화살표는 표시하지 않는다.
 
+헤더의 보기 선택·즐겨찾기·검색·필터·정렬·보기 설정 버튼은 활성화된 버튼을 누르는 동안 배경 #D3D1CB를 사용한다. 누름 해제 후 기존 hover/선택 배경으로 복귀하며 `+` 기록 추가 버튼은 기존 파란색을 유지한다. disabled 버튼에는 누름 배경을 적용하지 않는다.
+
 - `api/view-data-api`: 현재 헤더의 View ID와 명시적 OBJECT/LIST source로 같은 `/data` GET을 사용한다. MAIN과 GROUP_ITEMS를 구분하고 응답 View/type/source/part와 그룹 token을 확인한다. 기존 인증 client·AbortSignal을 사용한다.
 - `hooks/use-view-main-data`: 사용자/Workspace/원본 종류·대상/보기/타입/시간대/검색/limit별 infinite query다. 검색은 250ms debounce, 일반 행은 서버 cursor, 칸반은 열별 cursor를 사용한다. 다른 보기의 결과를 placeholder로 남기지 않는다.
 - `components/view-data-table`: 기존 관리항목의 36px 고정 열 헤더·40px 행·셀/구분선·체크박스·가로세로 스크롤과 셀 편집 컴포넌트를 재사용한다. 열 순서/너비/표시명/숨김은 현재 화면 미리보기이며 View 저장이나 원본 AttributeDefinition의 순서 변경 API를 호출하지 않는다.

@@ -150,7 +150,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       aria-haspopup="dialog"
       aria-label={t("viewHeader.selectView")}
       disabled={!model.target}
-      className={cn("inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#65645F] hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
+      className={cn("inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#65645F] hover:bg-[#E4E2DC] hover:text-[#111827] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
       onClick={handleToggle}
       ref={triggerRef}
       title={model.currentView?.viewName ?? t("viewHeader.noCurrentView")}
@@ -165,7 +165,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       aria-describedby={model.favoriteError && !isOpen ? favoriteErrorId : undefined}
       aria-label={t(favoriteLabel)}
       aria-pressed={model.isFavorite ?? undefined}
-      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#E4E2DC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444]")}
+      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#E4E2DC] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444]")}
       disabled={!model.canToggleFavorite}
       onClick={model.onToggleFavorite}
       title={t(model.isFavoritePending ? "viewHeader.changingFavorite" : favoriteLabel)}
