@@ -1,4 +1,4 @@
-import { ArrowUpDown, ChevronDown, Filter, Plus, Search, Settings2, X, type LucideIcon } from "lucide-react";
+import { ArrowUpDown, ChevronDown, Filter, Plus, Search, Settings, X, type LucideIcon } from "lucide-react";
 import { type MouseEvent, type ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { useAppI18n } from "@/features/app-i18n";
 import { getViewTools, ViewFilterMenu, ViewSortMenu, ViewSettingsMenu, ViewPreviewNote,
@@ -136,7 +136,7 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
     <button className={cn(CONTROL_CLASS, "hidden text-[#4B5563] disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[#4B5563] 2xl:inline-flex")} disabled title={t("viewHeader.comingSoon")} type="button">{t("viewHeader.extraTools")}<ChevronDown className="h-[16px] w-[16px] shrink-0" /></button>
     {tools.create && (onCreateRecord || createUnavailable) && <><span aria-hidden="true" className="mx-1 h-3.5 w-px shrink-0 bg-[#E7E6E2]" /><button aria-label={t("viewHeader.addRecord")} aria-busy={isCreatingRecord} disabled={createUnavailable || isCreatingRecord} title={createUnavailable ? t("viewHeader.comingSoon") : undefined} className="inline-flex h-7 shrink-0 items-center gap-1 rounded bg-[#4880EE] px-2 text-[12px] font-medium text-white transition hover:bg-[#3B6FDA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 focus-visible:ring-offset-1 disabled:cursor-default disabled:opacity-40" onClick={onCreateRecord} type="button"><Plus aria-hidden="true" className="h-[16px] w-[16px] shrink-0" /></button></>}
     {secondaryActions && <div onClickCapture={() => { setPanel(null); menus.open(null); }}>{secondaryActions}</div>}
-    {menuButton("settings", t("viewHeader.settings"), Settings2)}
+    {menuButton("settings", t("viewHeader.settings"), Settings)}
   </div>;
 }
 
@@ -147,6 +147,6 @@ function ToolbarButton({ active, disabled = false, controls, count = 0, expanded
   readonly onClick: (event: MouseEvent<HTMLButtonElement>) => void; readonly text: string;
 }) {
   return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} disabled={disabled} className={cn(CONTROL_CLASS, "disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE]")} onClick={onClick} type="button">
-    <Icon aria-hidden="true" className={cn("h-[16px] w-[16px] shrink-0", active && "text-[#326ACD]")} /><span className="hidden xl:inline">{text}</span>{count > 0 && <span>{count}</span>}{Icon === Settings2 && <ChevronDown aria-hidden="true" className="hidden h-[16px] w-[16px] shrink-0 xl:block" />}
+    <Icon aria-hidden="true" className={cn("h-[16px] w-[16px] shrink-0", active && "text-[#326ACD]")} /><span className="hidden xl:inline">{text}</span>{count > 0 && <span>{count}</span>}
   </button>;
 }

@@ -160,7 +160,7 @@ export function InlineAttributeColumn({ scope, onCancel, onCreated }: {
     <input ref={input} aria-label={t("attributeColumn.name")} aria-invalid={Boolean(error)}
       aria-describedby={open && error ? panelId + "-error" : undefined}
       autoComplete="off" maxLength={80} disabled={saving || saved}
-      className="h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-[14px] font-normal text-[#37352F] outline-none placeholder:text-[#A3A3A0]"
+      className="h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-[14px] font-medium text-[#9CA3AF] outline-none placeholder:text-[#A3A3A0]"
       title={name || t("attributeColumn.namePlaceholder")}
       placeholder={t("attributeColumn.namePlaceholder")} value={name}
       onFocus={() => setOpen(true)} onClick={() => setOpen(true)}
