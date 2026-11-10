@@ -19,7 +19,7 @@ type ViewHeaderToolbarProps = {
   readonly createUnavailable?: boolean;
   readonly secondaryActions?: ReactNode;
 };
-const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 text-[12px] font-medium text-[#65645F] transition hover:bg-[#E4E2DC] hover:text-[#292824] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
+const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 font-sans text-[14px] font-medium text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
 
 // 기능 : 기존 헤더 모양으로 현재 보기의 도구와 설정 미리보기를 제공합니다.
 export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel, searchValue, onSearchChange, onCreateRecord, isCreatingRecord = false, createUnavailable = false, secondaryActions }: ViewHeaderToolbarProps) {
@@ -133,8 +133,8 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
     </div>}
     {tools.filters && menuButton("filters", t("common.filter"), Filter, menus.filters.data?.viewFilterConditionDefinitions.length)}
     {tools.sorts && menuButton("sorts", t(type === "MAP" ? "viewMenu.listSort" : "viewHeader.sort"), ArrowUpDown, menus.sorts.data?.viewSortDefinitions.length)}
-    <button className={cn(CONTROL_CLASS, "hidden text-[#B5B3AE] disabled:cursor-default disabled:hover:bg-transparent 2xl:inline-flex")} disabled title={t("viewHeader.comingSoon")} type="button">{t("viewHeader.extraTools")}<ChevronDown className="h-3 w-3" /></button>
-    {tools.create && (onCreateRecord || createUnavailable) && <><span aria-hidden="true" className="mx-1 h-3.5 w-px shrink-0 bg-[#E7E6E2]" /><button aria-label={t("viewHeader.addRecord")} aria-busy={isCreatingRecord} disabled={createUnavailable || isCreatingRecord} title={createUnavailable ? t("viewHeader.comingSoon") : undefined} className="inline-flex h-7 shrink-0 items-center gap-1 rounded bg-[#4880EE] px-2 text-[12px] font-medium text-white transition hover:bg-[#3B6FDA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 focus-visible:ring-offset-1 disabled:cursor-default disabled:opacity-40" onClick={onCreateRecord} type="button"><Plus aria-hidden="true" className="h-3.5 w-3.5" /></button></>}
+    <button className={cn(CONTROL_CLASS, "hidden text-[#4B5563] disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[#4B5563] 2xl:inline-flex")} disabled title={t("viewHeader.comingSoon")} type="button">{t("viewHeader.extraTools")}<ChevronDown className="h-[16px] w-[16px] shrink-0" /></button>
+    {tools.create && (onCreateRecord || createUnavailable) && <><span aria-hidden="true" className="mx-1 h-3.5 w-px shrink-0 bg-[#E7E6E2]" /><button aria-label={t("viewHeader.addRecord")} aria-busy={isCreatingRecord} disabled={createUnavailable || isCreatingRecord} title={createUnavailable ? t("viewHeader.comingSoon") : undefined} className="inline-flex h-7 shrink-0 items-center gap-1 rounded bg-[#4880EE] px-2 text-[12px] font-medium text-white transition hover:bg-[#3B6FDA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 focus-visible:ring-offset-1 disabled:cursor-default disabled:opacity-40" onClick={onCreateRecord} type="button"><Plus aria-hidden="true" className="h-[16px] w-[16px] shrink-0" /></button></>}
     {secondaryActions && <div onClickCapture={() => { setPanel(null); menus.open(null); }}>{secondaryActions}</div>}
     {menuButton("settings", t("viewHeader.settings"), Settings2)}
   </div>;
@@ -146,7 +146,7 @@ function ToolbarButton({ active, disabled = false, controls, count = 0, expanded
   readonly expanded: boolean; readonly icon: LucideIcon; readonly label: string;
   readonly onClick: (event: MouseEvent<HTMLButtonElement>) => void; readonly text: string;
 }) {
-  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} disabled={disabled} className={cn(CONTROL_CLASS, "disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE] text-[#326ACD] hover:text-[#326ACD]")} onClick={onClick} type="button">
-    <Icon aria-hidden="true" className="h-3.5 w-3.5" /><span className="hidden xl:inline">{text}</span>{count > 0 && <span className="text-[10px]">{count}</span>}{Icon === Settings2 && <ChevronDown aria-hidden="true" className="hidden h-3 w-3 xl:block" />}
+  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} disabled={disabled} className={cn(CONTROL_CLASS, "disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE]")} onClick={onClick} type="button">
+    <Icon aria-hidden="true" className={cn("h-[16px] w-[16px] shrink-0", active && "text-[#326ACD]")} /><span className="hidden xl:inline">{text}</span>{count > 0 && <span>{count}</span>}{Icon === Settings2 && <ChevronDown aria-hidden="true" className="hidden h-[16px] w-[16px] shrink-0 xl:block" />}
   </button>;
 }

@@ -141,8 +141,8 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     : model.favoriteError === "UNAUTHORIZED" ? "viewHeader.favoriteUnauthorized" : "viewHeader.favoriteSaveError";
 
   return <div className="relative flex min-w-0 shrink items-center gap-1.5" data-testid="workspace-view-header" ref={rootRef}>
-    <IconValueGlyph className="h-4 w-4 shrink-0 text-[#6B7280]" name={model.target?.icon ?? null} />
-    <h1 className="max-w-[80px] shrink truncate text-[13px] font-semibold text-[#37352F] xl:max-w-[140px]" title={model.target?.name ?? t("viewHeader.targetLabel")}>{model.target?.name ?? t("viewHeader.targetLabel")}</h1>
+    <IconValueGlyph className="h-[20px] w-[20px] shrink-0 text-[#6B7280]" name={model.target?.icon ?? null} />
+    <h1 className="max-w-[80px] shrink truncate font-sans text-[14px] font-medium text-[#4B5563] xl:max-w-[140px]" title={model.target?.name ?? t("viewHeader.targetLabel")}>{model.target?.name ?? t("viewHeader.targetLabel")}</h1>
     <span aria-hidden="true" className="mx-0.5 h-3.5 w-px shrink-0 bg-[#E7E6E2]" />
     <button
       aria-controls={isOpen ? panelId : undefined}
@@ -150,27 +150,27 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       aria-haspopup="dialog"
       aria-label={t("viewHeader.selectView")}
       disabled={!model.target}
-      className={cn("inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 text-[12px] font-medium text-[#65645F] hover:bg-[#E4E2DC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
+      className={cn("group/view-select inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
       onClick={handleToggle}
       ref={triggerRef}
       title={model.currentView?.viewName ?? t("viewHeader.noCurrentView")}
       type="button"
     >
-      <ViewGlyph icon={model.currentView?.viewIcon ?? null} type={model.currentView?.viewType ?? null} />
+      <ViewGlyph className="h-[16px] w-[16px] text-[#9CA3AF] group-hover/view-select:text-[#8E8D87]" icon={model.currentView?.viewIcon ?? null} type={model.currentView?.viewType ?? null} />
       <span className="truncate">{model.currentView?.viewName ?? t("viewHeader.noCurrentView")}</span>
-      <ChevronDown aria-hidden="true" className="h-3 w-3 shrink-0 text-[#A4A39E]" />
+      <ChevronDown aria-hidden="true" className="h-[16px] w-[16px] shrink-0 text-[#9CA3AF] group-hover/view-select:text-[#A4A39E]" />
     </button>
     <button
       aria-busy={model.isFavoritePending}
       aria-describedby={model.favoriteError && !isOpen ? favoriteErrorId : undefined}
       aria-label={t(favoriteLabel)}
       aria-pressed={model.isFavorite ?? undefined}
-      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#E4E2DC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444]")}
+      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#9B9A97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444] hover:text-[#EF4444]")}
       disabled={!model.canToggleFavorite}
       onClick={model.onToggleFavorite}
       title={t(model.isFavoritePending ? "viewHeader.changingFavorite" : favoriteLabel)}
       type="button"
-    ><Heart aria-hidden="true" className={cn("h-4 w-4 shrink-0", model.isFavorite === true && "fill-current")} /></button>
+    ><Heart aria-hidden="true" className={cn("h-[16px] w-[16px] shrink-0", model.isFavorite === true && "fill-current")} /></button>
     {model.isFavoritePending && <span className="sr-only" role="status">{t("viewHeader.changingFavorite")}</span>}
     {model.favoriteError && !isOpen && <div
       className="absolute left-0 top-[calc(100%+6px)] z-50 flex w-[280px] max-w-[calc(100vw-32px)] items-start gap-2 rounded-lg border border-[#E7E6E2] bg-white p-3 text-[12px] leading-relaxed text-[#65645F] shadow-lg"
@@ -218,8 +218,9 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
 }
 
 // 기능 : 저장된 보기 아이콘을 표시하고 아이콘이 없으면 타입에 맞는 기호를 사용합니다.
-function ViewGlyph({ icon, type }: { readonly icon: string | null; readonly type: WorkspaceViewType | null }) {
-  if (icon) return <IconValueGlyph className="h-3.5 w-3.5 shrink-0 text-[#8E8D87]" name={icon} />;
+function ViewGlyph({ icon, type, className }: { readonly icon: string | null; readonly type: WorkspaceViewType | null; readonly className?: string }) {
+  const glyphClassName = cn("h-3.5 w-3.5 shrink-0 text-[#8E8D87]", className);
+  if (icon) return <IconValueGlyph className={glyphClassName} name={icon} />;
   const Icon = type ? TYPE_ICONS[type] : Layers;
-  return <Icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#8E8D87]" />;
+  return <Icon aria-hidden="true" className={glyphClassName} />;
 }

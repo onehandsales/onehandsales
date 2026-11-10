@@ -831,7 +831,7 @@ export function AppShell() {
       type="button"
       onClick={openDesktopSidebar}
     >
-      <Menu className="h-5 w-5" strokeWidth={2} />
+      <Menu className="h-[16px] w-[16px] shrink-0" strokeWidth={2} />
       <span className="pointer-events-none absolute left-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
         {t("shell.sidebarOpen")}
       </span>

@@ -3,7 +3,9 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
   attributeColumn: {
-    name: "Attribute name", type: "Choose information type", failed: "Could not add the attribute. Try saving again.",
+    name: "Attribute name", namePlaceholder: "Enter a column name.", type: "Choose information type",
+    typeTitle: "Choose type", searchType: "Search types", searchPlaceholder: "Search for a type.", noTypes: "No matching types.",
+    failed: "Could not add the attribute. Try again.",
     duplicate: "An attribute with this identifier exists. Check the name.", conflict: "This request was already processed with different input. Refresh to check.",
     unavailable: "You cannot add attributes to this view.", refreshFailed: "The attribute was saved. Retry to refresh the view.",
     limit: "This view has reached its attribute limit.",

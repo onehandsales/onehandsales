@@ -8,10 +8,16 @@
 
 ## 본문 조회와 조작
 
+속성 생성 팝오버는 `유형 선택` 제목 옆 돋보기를 누르면 그 오른쪽 같은 줄에 검색창을 펼친다. 검색창은 기본 숨김이며, 펼치면 검색 입력에 포커스가 이동한다. placeholder는 `찾는 유형을 검색하세요.`이고 검색 버튼·접근성 이름은 `유형 검색`이다. 다시 누르면 검색어를 초기화하고 검색창을 닫는다.
+
+상단 대상 제목·현재 보기 이름·도구 버튼 텍스트는 왼쪽 사이드바 기본 항목과 같은 앱 공통 font-sans, 14px, font-medium(500)을 사용한다. 대상 제목은 #4B5563, 보기 선택·즐겨찾기·검색·필터·정렬·보기 설정 버튼의 기본 텍스트/아이콘은 #9CA3AF다. 기존 hover 배경·글자색은 유지하며 활성 도구는 배경과 아이콘, 등록된 즐겨찾기는 붉은 하트로 구분하고 비활성 도구는 opacity로 표시한다. 38px 헤더 높이와 반응형 도구 표시를 유지한다.
+
+상단 제목 앞 대상 아이콘은 desktop/mobile 모두 20×20px, 헤더의 나머지 아이콘(현재 보기·화살표·즐겨찾기·도구·사이드바 열기)은 16×16px이며 가로 공간이 좁아져도 축소하지 않는다.
+
 - `api/view-data-api`: 현재 헤더의 View ID와 명시적 OBJECT/LIST source로 같은 `/data` GET을 사용한다. MAIN과 GROUP_ITEMS를 구분하고 응답 View/type/source/part와 그룹 token을 확인한다. 기존 인증 client·AbortSignal을 사용한다.
 - `hooks/use-view-main-data`: 사용자/Workspace/원본 종류·대상/보기/타입/시간대/검색/limit별 infinite query다. 검색은 250ms debounce, 일반 행은 서버 cursor, 칸반은 열별 cursor를 사용한다. 다른 보기의 결과를 placeholder로 남기지 않는다.
 - `components/view-data-table`: 기존 관리항목의 36px 고정 열 헤더·40px 행·셀/구분선·체크박스·가로세로 스크롤과 셀 편집 컴포넌트를 재사용한다. 열 순서/너비/표시명/숨김은 현재 화면 미리보기이며 View 저장이나 원본 AttributeDefinition의 순서 변경 API를 호출하지 않는다.
-- Object TABLE의 `+`는 `components/inline-attribute-column`을 표시한다. 이름과 17종 중 유형 하나를 입력하고 Enter/영역 밖 클릭으로 새 속성과 현재 View 컬럼을 저장한다. 모달·설명 입력은 없으며 유형별 아이콘을 고정 사용한다. 미완성은 유지하고 Esc/취소로 제거한다. 기존 숨김 미리보기는 `초기화`로 복원한다. List TABLE의 기존 표시 메뉴는 유지한다.
+- Object TABLE의 `+`는 같은 추가 영역에서 `components/inline-attribute-column`의 220px 이름 입력으로 전환하고 `attribute-type-popover`를 함께 연다. 작성 중 별도의 +나 본문 임시 셀을 추가하지 않으며 저장 후 새 컬럼 다음에 +를 표시한다. 안내 문구는 `컬럼명을 작성해주세요.`이며 아이콘과 이름만 헤더에 둔다. 팝오버는 Portal로 표 스크롤 밖에 표시하고 17종을 검색 가능한 2열 목록으로 제공한다. 이름 입력 후 유형 선택, 또는 유형 선택 후 이름 입력·Enter/바깥 클릭으로 저장한다. 팝오버 내부 이동은 저장하지 않는다. 바깥 클릭 시 빈 이름·공백뿐인 이름은 취소하고 +로 복원하며, 이름이 있고 유형이 없는 초안은 유지한다. 바깥 클릭은 클릭 대상의 포커스를 유지한다. Esc는 취소 후 + 포커스 복귀, 실패는 팝오버에서 명시적으로 재시도한다. 기존 숨김 미리보기는 `초기화`로 복원한다. List TABLE의 기존 표시 메뉴는 유지한다.
 - `api/view-column-api`는 View 소유 POST 계약을 사용한다. 같은 입력의 실패 재시도에는 같은 creationId를 보내고 저장 성공 후에는 해당 scope의 속성·메뉴·본문 캐시를 갱신한다. 조회 실패 복구는 재생성을 요청하지 않는다. [API 계약과 검토](../../../../../TODO/TABLE_ATTRIBUTE_CREATE_PLAN/README.md)를 따른다.
 - `components/view-data-list`, `view-data-kanban`: 저장된 표시 속성·그룹과 열별 건수·접힘·숨김을 반영한다. 접힌 칸반 열은 펼칠 때 GROUP_ITEMS를 조회하고 숨긴 열은 표시하지 않는다. 합계와 카드 이동을 임의로 추가하지 않는다.
 - `components/view-data-cell`: 다중값을 배열로 유지하고 itemKey와 occurrenceKey를 구분한다. 직접 RECORD 값의 기존 편집·PATCH를 재사용한다. 참조 경로 말단·LIST_ENTRY 값은 읽기 전용이며 다른 소유자의 ID를 Record ID로 전용하지 않는다.

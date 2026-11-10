@@ -1,5 +1,5 @@
-import { Check, HelpCircle, Loader2, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { HelpCircle, Loader2 } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { workspaceObjectAttributeDefinitionQueryKeys, type AttributeDefinitionValueType } from "@/features/crm-object";
@@ -9,26 +9,45 @@ import { workspaceViewQueryKeys } from "../api/workspace-view-query-keys";
 import { viewDataQueryKeys } from "../api/view-data-query-keys";
 import type { ViewDataScope } from "../types/view-data";
 import { AttributeTypeIcon } from "./attribute-type-icon";
-import { ATTRIBUTE_TYPE_ICONS } from "./attribute-type-icons";
+import { AttributeTypePopover } from "./attribute-type-popover";
 
-// 기능 : 모달 없이 테이블 헤더 안에서 새 속성의 이름과 유형을 입력하고 저장합니다.
+// 기능 : 열 헤더에서 이름을 작성하고 연결된 유형 팝오버로 새 컬럼을 생성합니다.
 export function InlineAttributeColumn({ scope, onCancel, onCreated }: {
-  readonly scope: ViewDataScope; readonly onCancel: () => void; readonly onCreated: () => void;
+  readonly scope: ViewDataScope; readonly onCancel: (restoreFocus?: boolean) => void; readonly onCreated: () => void;
 }) {
   const { t } = useAppI18n();
   const client = useQueryClient();
   const root = useRef<HTMLDivElement>(null), input = useRef<HTMLInputElement>(null);
-  const mounted = useRef(true), busy = useRef(false), attempt = useRef<{ key: string; id: string } | null>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const focusTypesOnOpen = useRef(false);
+  const mounted = useRef(true), busy = useRef(false), composing = useRef(false);
+  const attempt = useRef<{ key: string; id: string } | null>(null);
+  const panelId = useId();
   const [name, setName] = useState("");
   const [type, setType] = useState<AttributeDefinitionValueType | "">("");
+  const [open, setOpen] = useState(true);
   const [saving, setSaving] = useState(false), [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     mounted.current = true;
-    input.current?.focus();
     root.current?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+    input.current?.focus({ preventScroll: true });
     return () => { mounted.current = false; };
   }, []);
+
+  useEffect(() => {
+    if (open && focusTypesOnOpen.current) {
+      panel.current?.querySelector<HTMLElement>('input, [role="option"]')?.focus({ preventScroll: true });
+      focusTypesOnOpen.current = false;
+    }
+  }, [open]);
+
+  // 기능 : 키보드로 유형 목록을 열고 검색창 또는 첫 유형으로 이동합니다.
+  function focusTypes() {
+    if (open) panel.current?.querySelector<HTMLElement>('input, [role="option"]')?.focus({ preventScroll: true });
+    else { focusTypesOnOpen.current = true; setOpen(true); }
+  }
 
   // 기능 : 저장 당시 사용자·Workspace의 속성·메뉴·본문 캐시를 갱신합니다.
   async function refresh() {
@@ -42,21 +61,21 @@ export function InlineAttributeColumn({ scope, onCancel, onCreated }: {
     ]);
   }
 
-  // 기능 : 완성된 입력만 한 번 저장하고 응답 유실 재시도에는 동일한 생성 ID를 사용합니다.
-  async function submit(explicit = false) {
-    if (busy.current || !name.trim() || !type || (!explicit && error)) return;
-    // 1. 다른 입력은 새 의도로 구분하고 동일 입력의 재시도는 같은 ID를 유지한다.
-    const key = JSON.stringify([name.trim(), type]);
+  // 기능 : 확정된 이름·유형을 저장하고 동일 입력 재시도는 같은 생성 ID를 사용합니다.
+  async function submit(explicit = false, selectedType = type) {
+    if (busy.current || composing.current || !name.trim() || !selectedType || (!explicit && error)) return;
+    // 1. 유형 클릭 직후에는 React 상태 반영을 기다리지 않고 선택값을 사용한다.
+    const key = JSON.stringify([name.trim(), selectedType]);
     if (!attempt.current || attempt.current.key !== key) attempt.current = { key, id: crypto.randomUUID() };
-    busy.current = true; setSaving(true); setError(null);
+    busy.current = true; setSaving(true); setError(null); setOpen(false);
     let committed = saved;
     try {
       if (!committed) {
-        await createViewColumn(scope, { creationId: attempt.current.id, attributeDefinitionName: name.trim(), attributeType: type });
+        await createViewColumn(scope, { creationId: attempt.current.id, attributeDefinitionName: name.trim(), attributeType: selectedType });
         committed = true;
         if (mounted.current) setSaved(true);
       }
-      // 2. API 성공 뒤 조회 실패는 생성 재요청 없이 조회만 재시도한다.
+      // 2. 저장 후 조회 실패는 POST를 반복하지 않고 조회만 복구한다.
       await refresh();
       if (mounted.current) onCreated();
     } catch (failure) {
@@ -68,46 +87,87 @@ export function InlineAttributeColumn({ scope, onCancel, onCreated }: {
       else if (code === "ViewColumnCreationConflict") message = "attributeColumn.conflict";
       else if (code === "ViewColumnLimitExceeded") message = "attributeColumn.limit";
       else if (code === "ViewColumnTargetUnsupported" || failure instanceof ApiClientError && failure.statusCode === 404) message = "attributeColumn.unavailable";
-      setError(t(message));
+      setError(t(message)); setOpen(true);
     } finally {
       busy.current = false;
       if (mounted.current) setSaving(false);
     }
   }
 
+  // 기능 : Portal의 유형 목록도 이름 입력과 같은 작성 영역으로 판별합니다.
+  function contains(target: EventTarget | null) {
+    return target instanceof Node && Boolean(root.current?.contains(target) || panel.current?.contains(target));
+  }
+
+  // 기능 : 이름 없는 초안은 취소하고 이름이 있는 입력은 기존 저장 흐름을 따릅니다.
+  function leaveEditor() {
+    if (busy.current || composing.current) return;
+    if (!name.trim() && !saved) { onCancel(false); return; }
+    setOpen(false);
+    void submit();
+  }
+
   useEffect(() => {
-    // 기능 : 입력 영역 밖 클릭은 완성된 초안만 확정하고 실패 뒤에는 자동 재시도하지 않습니다.
+    // 기능 : 팝오버 내부 선택은 바깥 클릭으로 처리하지 않습니다.
     function outside(event: PointerEvent) {
-      if (event.target instanceof Node && !root.current?.contains(event.target)) void submit();
+      if (event.target instanceof Node && !contains(event.target)) leaveEditor();
     }
     document.addEventListener("pointerdown", outside);
     return () => document.removeEventListener("pointerdown", outside);
   });
 
+  // 기능 : 이름이 있으면 유형 선택으로 생성하고 없으면 이름 입력을 이어갑니다.
+  function selectType(value: AttributeDefinitionValueType) {
+    if (busy.current || saved) return;
+    setType(value); setError(null);
+    if (name.trim()) void submit(true, value);
+    else {
+      input.current?.focus({ preventScroll: true });
+      setOpen(false);
+    }
+  }
+
   return <div ref={root} role="columnheader" data-testid="inline-attribute-column" aria-busy={saving}
-    className="relative flex h-full min-w-0 items-center gap-1 border-r border-[#EEEDEA] bg-[#FAFAF8] px-2"
-    onBlur={event => { if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) void submit(); }}
+    className="relative flex h-full min-w-0 items-center gap-0.5 bg-transparent pl-1.5 pr-3 font-sans font-normal"
+    onBlur={event => {
+      if (event.relatedTarget && !contains(event.relatedTarget)) leaveEditor();
+    }}
     onKeyDown={event => {
-      if (event.nativeEvent.isComposing || event.keyCode === 229) return;
-      if (event.key === "Escape" && !saving && !saved) { event.preventDefault(); event.stopPropagation(); onCancel(); }
-      if (event.key === "Enter" && event.target instanceof HTMLInputElement) { event.preventDefault(); void submit(true); }
+      if (composing.current || event.nativeEvent.isComposing || event.keyCode === 229) return;
+      if (event.key === "Escape" && !saving) {
+        event.preventDefault(); event.stopPropagation();
+        if (!saved) onCancel();
+        else setOpen(false);
+      }
+      if (event.key === "Enter" && event.target === input.current) {
+        event.preventDefault();
+        if (type) void submit(true);
+        else focusTypes();
+      }
+      if (event.key === "ArrowDown" && event.target === input.current) {
+        event.preventDefault();
+        focusTypes();
+      }
     }}>
-    <span className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded hover:bg-[#E4E2DC] focus-within:ring-2 focus-within:ring-[#4880EE]/45" title={t(type ? `attributeTypes.${type}` : "attributeColumn.type")}>
-      {type ? <AttributeTypeIcon type={type} /> : <HelpCircle aria-hidden="true" className="h-4 w-4 text-[#9CA3AF]" />}
-      <select aria-label={t("attributeColumn.type")} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" value={type} disabled={saving || saved}
-        onChange={event => { setType(event.target.value as AttributeDefinitionValueType); setError(null); }}>
-        <option value="" disabled>{t("attributeColumn.type")}</option>
-        {(Object.keys(ATTRIBUTE_TYPE_ICONS) as AttributeDefinitionValueType[]).map(value => <option key={value} value={value}>{t(`attributeTypes.${value}`)}</option>)}
-      </select>
-    </span>
-    <input ref={input} aria-label={t("attributeColumn.name")} aria-invalid={Boolean(error)} maxLength={80} disabled={saving || saved}
-      className="h-7 min-w-0 flex-1 rounded border border-[#E4E2DC] bg-white px-2 text-[12px] text-[#374151] outline-none focus:border-[#4880EE]"
-      placeholder={t("attributeColumn.name")} value={name} onChange={event => { setName(event.target.value); setError(null); }} />
-    <button type="button" aria-label={t(saved ? "common.retry" : "common.save")} disabled={saving || !name.trim() || !type}
-      className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#4880EE] hover:bg-[#E4E2DC] disabled:opacity-40" onClick={() => { void submit(true); }}>
-      {saving ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : <Check aria-hidden="true" className="h-4 w-4" />}
+    <button type="button" aria-label={t("attributeColumn.type")} aria-haspopup="dialog"
+      aria-controls={open ? panelId : undefined} aria-expanded={open} disabled={saving}
+      title={t(type ? "attributeTypes." + type as AppI18nKey : "attributeColumn.type")}
+      className="flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9CA3AF] outline-none hover:bg-[#F3F3F2] focus-visible:ring-2 focus-visible:ring-[#4880EE]/45 disabled:cursor-wait"
+      onClick={() => setOpen(current => !current)}>
+      {saving ? <Loader2 aria-label={t("common.saving")} className="h-4 w-4 animate-spin" />
+        : type ? <AttributeTypeIcon type={type} /> : <HelpCircle aria-hidden="true" className="h-4 w-4" />}
     </button>
-    {!saved && <button type="button" aria-label={t("common.cancel")} disabled={saving} className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#9CA3AF] hover:bg-[#E4E2DC] disabled:opacity-40" onClick={onCancel}><X aria-hidden="true" className="h-4 w-4" /></button>}
-    {error && <p role="alert" className="absolute left-0 top-full z-30 w-full rounded-b border border-[#E4E2DC] bg-white px-2 py-2 text-[12px] font-normal text-[#B91C1C] shadow">{error}</p>}
+    <input ref={input} aria-label={t("attributeColumn.name")} aria-invalid={Boolean(error)}
+      aria-describedby={open && error ? panelId + "-error" : undefined}
+      autoComplete="off" maxLength={80} disabled={saving || saved}
+      className="h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-[14px] font-normal text-[#37352F] outline-none placeholder:text-[#A3A3A0]"
+      title={name || t("attributeColumn.namePlaceholder")}
+      placeholder={t("attributeColumn.namePlaceholder")} value={name}
+      onFocus={() => setOpen(true)} onClick={() => setOpen(true)}
+      onCompositionStart={() => { composing.current = true; }}
+      onCompositionEnd={() => { composing.current = false; }}
+      onChange={event => { setName(event.target.value); setError(null); }} />
+    {open && <AttributeTypePopover id={panelId} anchorRef={root} panelRef={panel} value={type}
+      disabled={saving || saved} error={error} onSelect={selectType} onRetry={() => { void submit(true); }} />}
   </div>;
 }

@@ -8,6 +8,10 @@ import { InlineAttributeColumn } from "./inline-attribute-column";
 import { ViewDataCell, type ViewCellEditing } from "./view-data-cell";
 import { ViewDataGroups } from "./view-data-groups";
 
+// 저장된 컬럼의 기본 폭과 이름 작성 영역의 폭은 별도로 관리한다.
+const DEFAULT_COLUMN_WIDTH = 150;
+const ATTRIBUTE_EDITOR_WIDTH = 220;
+
 // 기능 : 기존 표의 속성 아이콘을 표시 타입에 맞게 제공합니다.
 function BindingIcon({ type }: { readonly type: string }) { return <AttributeTypeIcon type={type} />; }
 
@@ -37,9 +41,11 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
   const sorted = order ? [...original].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)) : original;
   const columns = sorted.filter(binding => !hidden.has(binding.id));
   // 기능 : 저장 너비를 초기값으로 사용하고 현재 화면의 드래그 너비를 우선합니다.
-  function width(binding: ViewDataBinding) { return widths[binding.id] ?? binding.width ?? 150; }
-  const template = `44px ${columns.map(binding => `${width(binding)}px`).join(" ")} ${adding ? "280px " : ""}minmax(44px,1fr)`;
-  const minimum = 88 + columns.reduce((total, binding) => total + width(binding), 0) + (adding ? 280 : 0);
+  function width(binding: ViewDataBinding) { return widths[binding.id] ?? binding.width ?? DEFAULT_COLUMN_WIDTH; }
+  // 추가 영역에서 버튼과 입력만 교체하며 초안 때문에 grid 열을 늘리지 않는다.
+  const actionWidth = canAdd ? ATTRIBUTE_EDITOR_WIDTH : 44;
+  const template = `44px ${columns.map(binding => `${width(binding)}px`).join(" ")} minmax(${actionWidth}px,1fr)`;
+  const minimum = 44 + columns.reduce((total, binding) => total + width(binding), 0) + actionWidth;
   const preview = order !== null || Object.keys(widths).length > 0 || Object.keys(labels).length > 0 || hidden.size > 0;
   const itemKeys = useMemo(() => [...new Set(items.map(item => item.itemKey))], [items]);
   const allSelected = itemKeys.length > 0 && itemKeys.every(key => selected.has(key));
@@ -47,8 +53,8 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
   useEffect(() => {
     if (!adding && restoreAddFocus.current) { restoreAddFocus.current = false; addButton.current?.focus(); }
   }, [adding]);
-  // 기능 : 임시 컬럼 취소가 반영된 뒤 다시 활성화된 추가 버튼으로 포커스를 돌립니다.
-  function cancelAttribute() { restoreAddFocus.current = true; setAdding(false); }
+  // 기능 : Esc 취소는 +로 복귀하고 바깥 클릭 취소는 클릭 대상의 포커스를 유지합니다.
+  function cancelAttribute(restoreFocus = true) { restoreAddFocus.current = restoreFocus; setAdding(false); }
 
   useEffect(() => {
     if (selectAll.current) selectAll.current.indeterminate = !allSelected && itemKeys.some(key => selected.has(key));
@@ -133,7 +139,6 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
       {columns.map((binding, index) => <div className="flex h-full min-w-0 items-center border-r border-[#F1F0EC]" role="cell" key={binding.id}>
         <ViewDataCell binding={{ ...binding, label: labels[binding.id] ?? binding.label }} item={item} editing={editing} primary={index === 0} />
       </div>)}
-      {adding && <div role="cell" className="border-r border-[#F1F0EC]" />}
       <div aria-hidden="true" role="cell" />
     </div>;
   }
@@ -162,19 +167,20 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
       <div role="row" className="sticky top-0 z-10 grid h-[36px] items-stretch bg-white text-[14px] font-medium text-[#111827] shadow-[inset_0_-1px_0_#EEEDEA]" style={{ gridTemplateColumns: template }}>
         <div className="flex h-full items-center justify-center" role="columnheader"><input ref={selectAll} type="checkbox" aria-label={t("objectList.selectAllRowsLabel")} checked={allSelected} onChange={toggleAll} className="h-4 w-4 rounded accent-[#4880EE]" /></div>
         {columns.map(renderColumn)}
-        {adding && scope && <InlineAttributeColumn scope={scope} onCancel={cancelAttribute} onCreated={() => { setAdding(false); }} />}
-        <div className="relative flex h-full items-center px-2" role="columnheader">
-          <button ref={addButton} aria-label={t("objectList.addAttributeDefinitionTooltip")} aria-expanded={canAdd ? adding : menu === "+"} disabled={canAdd && adding} className="flex h-7 items-center gap-1.5 whitespace-nowrap rounded px-1 text-[#9CA3AF] hover:bg-[#E4E2DC] disabled:opacity-40" type="button" onClick={() => { if (canAdd) { setMenu(null); setAdding(true); } else setMenu(menu === "+" ? null : "+"); }}><Plus className="h-5 w-5" /></button>
+        {adding && scope ? <div className="h-full min-w-0" style={{ width: ATTRIBUTE_EDITOR_WIDTH }}>
+          <InlineAttributeColumn scope={scope} onCancel={cancelAttribute} onCreated={() => { setAdding(false); }} />
+        </div> : <div className="relative flex h-full items-center px-2" role="columnheader">
+          <button ref={addButton} aria-label={t("objectList.addAttributeDefinitionTooltip")} aria-expanded={menu === "+"} className="flex h-7 items-center gap-1.5 whitespace-nowrap rounded px-1 text-[#9CA3AF] hover:bg-[#E4E2DC]" type="button" onClick={() => { if (canAdd) { setMenu(null); setAdding(true); } else setMenu(menu === "+" ? null : "+"); }}><Plus className="h-5 w-5" /></button>
           {menu === "+" && <div role="dialog" aria-label={t("viewData.visibleColumns")} className="absolute right-1 top-[calc(100%+6px)] z-50 w-[264px] rounded-lg border border-[#E7E6E2] bg-white p-2 text-[12px] text-[#37352F] shadow-lg">
             <div className="flex items-center justify-between px-1 pb-2 font-semibold">{t("viewData.visibleColumns")}<button aria-label={t("common.close")} type="button" onClick={() => setMenu(null)}><X className="h-4 w-4" /></button></div>
             {response.bindings.map(binding => <label key={binding.id} className="flex min-h-7 items-center gap-2 rounded px-1 hover:bg-[#F3F2EF]"><input className="accent-[#4880EE]" type="checkbox" disabled={!original.some(value => value.id === binding.id)} checked={!binding.isHidden && !hidden.has(binding.id)} onChange={() => toggleColumn(binding.id)} /><span className="truncate">{binding.label}</span></label>)}
             <p className="mt-2 border-t border-[#EEEDEA] pt-2 text-[11px] text-[#9B9A97]">{t("viewData.layoutPreview")}</p>
           </div>}
-        </div>
+        </div>}
       </div>
       <div role="rowgroup"><ViewDataGroups items={items} groups={response.data.groups} renderItem={renderRow} table />
         {!items.length && [0, 1, 2].map(index => <div key={index} role="row" className="grid h-[40px] shadow-[inset_0_-1px_0_#F1F0EC]" style={{ gridTemplateColumns: template }}>
-          <div role="cell" />{columns.map(binding => <div key={binding.id} role="cell" className="border-r border-[#F1F0EC]" />)}{adding && <div role="cell" className="border-r border-[#F1F0EC]" />}<div role="cell" />
+          <div role="cell" />{columns.map(binding => <div key={binding.id} role="cell" className="border-r border-[#F1F0EC]" />)}<div role="cell" />
         </div>)}
       </div>
     </div>
