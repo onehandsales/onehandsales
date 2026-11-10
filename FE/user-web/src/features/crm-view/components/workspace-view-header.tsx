@@ -150,22 +150,22 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
       aria-haspopup="dialog"
       aria-label={t("viewHeader.selectView")}
       disabled={!model.target}
-      className={cn("group/view-select inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
+      className={cn("inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#65645F] hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
       onClick={handleToggle}
       ref={triggerRef}
       title={model.currentView?.viewName ?? t("viewHeader.noCurrentView")}
       type="button"
     >
-      <ViewGlyph className="h-[16px] w-[16px] text-[#9CA3AF] group-hover/view-select:text-[#8E8D87]" icon={model.currentView?.viewIcon ?? null} type={model.currentView?.viewType ?? null} />
+      <ViewGlyph className="h-[16px] w-[16px]" icon={model.currentView?.viewIcon ?? null} type={model.currentView?.viewType ?? null} />
       <span className="truncate">{model.currentView?.viewName ?? t("viewHeader.noCurrentView")}</span>
-      <ChevronDown aria-hidden="true" className="h-[16px] w-[16px] shrink-0 text-[#9CA3AF] group-hover/view-select:text-[#A4A39E]" />
+      <ChevronDown aria-hidden="true" className="h-[16px] w-[16px] shrink-0 text-[#A4A39E]" />
     </button>
     <button
       aria-busy={model.isFavoritePending}
       aria-describedby={model.favoriteError && !isOpen ? favoriteErrorId : undefined}
       aria-label={t(favoriteLabel)}
       aria-pressed={model.isFavorite ?? undefined}
-      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#9B9A97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444] hover:text-[#EF4444]")}
+      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#E4E2DC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444]")}
       disabled={!model.canToggleFavorite}
       onClick={model.onToggleFavorite}
       title={t(model.isFavoritePending ? "viewHeader.changingFavorite" : favoriteLabel)}

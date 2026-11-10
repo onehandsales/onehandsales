@@ -19,7 +19,7 @@ type ViewHeaderToolbarProps = {
   readonly createUnavailable?: boolean;
   readonly secondaryActions?: ReactNode;
 };
-const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 font-sans text-[14px] font-medium text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
+const CONTROL_CLASS = "inline-flex h-7 shrink-0 items-center justify-center gap-1.5 rounded px-2 font-sans text-[14px] font-medium text-[#65645F] transition hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50";
 
 // 기능 : 기존 헤더 모양으로 현재 보기의 도구와 설정 미리보기를 제공합니다.
 export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel, searchValue, onSearchChange, onCreateRecord, isCreatingRecord = false, createUnavailable = false, secondaryActions }: ViewHeaderToolbarProps) {
