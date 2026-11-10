@@ -6,6 +6,8 @@ import type { AttributeDefinitionValueType } from "@/features/crm-object";
 import { AttributeTypeIcon } from "./attribute-type-icon";
 import { ATTRIBUTE_TYPE_ICONS } from "./attribute-type-icons";
 
+const POPOVER_WIDTH = 340;
+
 type AttributeTypePopoverProps = {
   readonly id: string;
   readonly anchorRef: RefObject<HTMLDivElement | null>;
@@ -45,7 +47,7 @@ export function AttributeTypePopover({ id, anchorRef, panelRef, value, disabled,
       const topEdge = (viewport?.offsetTop ?? 0) + 8;
       const rightEdge = leftEdge + (viewport?.width ?? window.innerWidth) - 16;
       const bottomEdge = topEdge + (viewport?.height ?? window.innerHeight) - 16;
-      const width = Math.min(408, rightEdge - leftEdge);
+      const width = Math.min(POPOVER_WIDTH, rightEdge - leftEdge);
       const below = Math.max(0, bottomEdge - rect.bottom - 4);
       const above = Math.max(0, rect.top - topEdge - 4);
       const up = below < 440 && above > below;
@@ -100,35 +102,35 @@ export function AttributeTypePopover({ id, anchorRef, panelRef, value, disabled,
 
   return createPortal(<div ref={panelRef} id={id} role="dialog" aria-label={t("attributeColumn.typeTitle")}
     data-testid="attribute-type-popover" onKeyDown={handleKeyDown}
-    className="fixed z-[100] flex flex-col overflow-hidden rounded-xl border border-[#E7E7E5] bg-white p-2 font-sans text-[14px] font-normal text-[#37352F] shadow-[0_8px_28px_rgba(0,0,0,0.12)]"
-    style={placement ?? { left: 0, top: 0, width: 408, maxHeight: 440, visibility: "hidden" }}>
-    <div className="flex min-w-0 shrink-0 items-center gap-2 px-2 pb-2 pt-1 text-[12px] text-[#8E8D87]">
+    className="fixed z-[100] flex flex-col overflow-hidden rounded-xl border border-[#E7E7E5] bg-white p-2 font-sans text-[12px] font-normal text-[#4B5563] shadow-[0_8px_28px_rgba(0,0,0,0.12)]"
+    style={placement ?? { left: 0, top: 0, width: POPOVER_WIDTH, maxHeight: 440, visibility: "hidden" }}>
+    <div className="flex min-w-0 shrink-0 items-center gap-2 px-2 pb-2 pt-1 text-[12px]">
       <span className="shrink-0 whitespace-nowrap">{t("attributeColumn.typeTitle")}</span>
       <button type="button" aria-label={t("attributeColumn.searchType")} title={t("attributeColumn.searchType")}
         aria-expanded={searchOpen} aria-controls={id + "-search"} disabled={disabled}
-        className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#F1F1EF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4880EE]/45 disabled:opacity-50"
+        className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#E4E2DC] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4880EE]/45 active:bg-[#D3D1CB] disabled:opacity-50"
         onClick={() => { setSearchOpen(current => !current); setSearch(""); }}>
-        <Search aria-hidden="true" className="h-3.5 w-3.5" />
+        <Search aria-hidden="true" className="h-4 w-4 shrink-0" />
       </button>
       {searchOpen && <input ref={searchRef} id={id + "-search"} type="search" aria-label={t("attributeColumn.searchType")} autoComplete="off"
         placeholder={t("attributeColumn.searchPlaceholder")} disabled={disabled} value={search}
         onChange={event => setSearch(event.target.value)}
-        className="h-5 min-w-0 flex-1 rounded bg-[#F5F5F4] px-2 text-[13px] text-[#37352F] outline-none placeholder:text-[#A3A3A0]" />}
+        className="h-5 min-w-0 flex-1 rounded bg-[#F5F5F4] px-2 text-[12px] text-[#4B5563] outline-none placeholder:text-[#A3A3A0]" />}
     </div>
     <div role="listbox" aria-label={t("attributeColumn.typeTitle")} className="grid min-h-0 grid-cols-2 content-start gap-x-1 overflow-y-auto overscroll-contain">
       {visible.map((type, index) => <button key={type} role="option" aria-selected={type === value}
         type="button" disabled={disabled} tabIndex={index === 0 ? 0 : -1}
-        className="flex min-h-9 min-w-0 items-center gap-2 rounded px-2 text-left hover:bg-[#F1F1EF] focus-visible:bg-[#F1F1EF] focus-visible:outline-none disabled:opacity-50"
+        className="flex min-h-9 min-w-0 items-center gap-2 rounded px-2 text-left hover:bg-[#E4E2DC] hover:text-[#111827] focus-visible:bg-[#E4E2DC] focus-visible:text-[#111827] focus-visible:outline-none active:bg-[#D3D1CB] disabled:opacity-50"
         onClick={() => onSelect(type)}>
         <AttributeTypeIcon type={type} />
         <span className="min-w-0 flex-1">{t("attributeTypes." + type as AppI18nKey)}</span>
-        {type === value && <Check aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[#8E8D87]" />}
+        {type === value && <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8E8D87]" />}
       </button>)}
     </div>
-    {visible.length === 0 && <p role="status" className="px-2 py-4 text-[13px] text-[#8E8D87]">{t("attributeColumn.noTypes")}</p>}
+    {visible.length === 0 && <p role="status" className="px-2 py-4 text-[12px]">{t("attributeColumn.noTypes")}</p>}
     {error && <div className="mt-2 shrink-0 border-t border-[#EEEDEA] px-2 pt-2 text-[12px]">
       <p id={id + "-error"} role="alert" className="text-[#B91C1C]">{error}</p>
-      <button type="button" onClick={onRetry} className="mt-1 rounded px-2 py-1 text-[#37352F] hover:bg-[#F1F1EF] focus-visible:outline focus-visible:outline-2">{t("common.retry")}</button>
+      <button type="button" onClick={onRetry} className="mt-1 rounded px-2 py-1 hover:bg-[#F1F1EF] hover:text-[#111827] focus-visible:text-[#111827] focus-visible:outline focus-visible:outline-2">{t("common.retry")}</button>
     </div>}
   </div>, document.body);
 }

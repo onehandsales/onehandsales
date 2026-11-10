@@ -3,6 +3,7 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
   attributeColumn: {
+    add: "컬럼 추가",
     name: "속성 이름", namePlaceholder: "컬럼명을 작성해주세요.", type: "정보 유형 선택",
     typeTitle: "유형 선택", searchType: "유형 검색", searchPlaceholder: "찾는 유형을 검색하세요.", noTypes: "일치하는 유형이 없어요.",
     failed: "속성을 추가하지 못했어요. 다시 시도해 주세요.",

@@ -6,12 +6,12 @@ function draft(page: Page) { return page.getByTestId("inline-attribute-column");
 function types(page: Page) { return page.getByTestId("attribute-type-popover"); }
 // 기능 : 실제 컬럼 추가 버튼으로 이름 입력과 유형 목록을 엽니다.
 async function start(page: Page) {
-  await page.getByRole("button", { name: "속성 추가", exact: true }).click();
+  await page.getByRole("button", { name: "컬럼 추가", exact: true }).click();
   await expect(draft(page).getByRole("textbox", { name: "속성 이름" })).toBeFocused();
   await expect(types(page)).toBeVisible();
   await expect(types(page)).toHaveAccessibleName("유형 선택");
   await expect(types(page).getByRole("searchbox")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "속성 추가", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "컬럼 추가", exact: true })).toHaveCount(0);
 }
 // 기능 : 유형을 먼저 고르면 저장 없이 이름 작성을 이어갑니다.
 async function chooseType(page: Page, label: string) {
@@ -32,7 +32,7 @@ async function openTypeSearch(page: Page) {
 test("creates an empty object's column by name then type and restores it after reload", async ({ page }, info) => {
   const state = await setupViewDataScenario(page); state.empty = true;
   await page.goto(DATA_OBJECT_PATH);
-  await expect(page.getByRole("button", { name: "속성 추가", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "컬럼 추가", exact: true })).toBeVisible();
   const addAreaBounds = await page.getByRole("columnheader").last().boundingBox();
   const headerCount = await page.getByRole("columnheader").count();
   const cellCount = await page.getByRole("cell").count();
@@ -55,7 +55,7 @@ test("creates an empty object's column by name then type and restores it after r
   await chooseType(page, "금액");
   await expect(draft(page)).toHaveCount(0);
   await expect(page.getByRole("columnheader").filter({ hasText: "매매가격" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "속성 추가", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "컬럼 추가", exact: true })).toBeVisible();
   await expect(page.getByRole("columnheader")).toHaveCount(headerCount + 1);
   expect(state.writes).toHaveLength(1);
   expect(state.writes[0]?.body).toEqual({ creationId: expect.any(String), attributeDefinitionName: "매매가격", attributeType: "Currency" });
@@ -77,14 +77,14 @@ test("chooses a type first, ignores IME Enter and cancels with Escape without wr
   await draft(page).getByRole("textbox").press("Escape");
   await expect(draft(page)).toHaveCount(0);
   await expect(types(page)).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "속성 추가", exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: "컬럼 추가", exact: true })).toBeFocused();
   expect(state.writes).toHaveLength(0);
 });
 
 test("cancels unnamed drafts on outside click and restores the original add area without writes", async ({ page }, info) => {
   const state = await setupViewDataScenario(page);
   await page.goto(DATA_OBJECT_PATH);
-  const add = page.getByRole("button", { name: "속성 추가", exact: true });
+  const add = page.getByRole("button", { name: "컬럼 추가", exact: true });
   await expect(add).toBeVisible();
   const originalBounds = await add.boundingBox();
   const headerCount = await page.getByRole("columnheader").count();
@@ -259,11 +259,11 @@ test("keeps English two-column types and the editor inside a narrow viewport", a
   await page.setViewportSize({ width: 390, height: 844 });
   const state = await setupViewDataScenario(page, "en");
   await page.goto(DATA_OBJECT_PATH);
-  await page.getByRole("button", { name: "Add Property", exact: true }).click();
+  await page.getByRole("button", { name: "Add column", exact: true }).click();
   await expect(draft(page).getByPlaceholder("Enter a column name.")).toBeFocused();
   await expect(types(page)).toHaveAccessibleName("Choose type");
   await expect(types(page).getByRole("searchbox")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Add Property", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Add column", exact: true })).toHaveCount(0);
   expect((await draft(page).boundingBox())!.width).toBe(220);
   await expect(types(page).getByRole("option")).toHaveCount(17);
   await draft(page).getByRole("textbox").fill("Visited");

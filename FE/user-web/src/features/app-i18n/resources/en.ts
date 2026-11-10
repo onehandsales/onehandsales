@@ -3,6 +3,7 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
   attributeColumn: {
+    add: "Add column",
     name: "Attribute name", namePlaceholder: "Enter a column name.", type: "Choose information type",
     typeTitle: "Choose type", searchType: "Search types", searchPlaceholder: "Search for a type.", noTypes: "No matching types.",
     failed: "Could not add the attribute. Try again.",
