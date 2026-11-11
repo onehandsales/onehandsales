@@ -37,7 +37,8 @@ describe("ListDefinitionModule creation", () => {
   let useCase: CreateWorkspaceListDefinitionUseCase;
   const logger = { log: jest.fn(), warn: jest.fn(), error: jest.fn() };
   const tx = {
-    listDefinition: { create: jest.fn() },
+    $queryRaw: jest.fn(),
+    listDefinition: { create: jest.fn(), aggregate: jest.fn() },
     attributeDefinition: { create: jest.fn(), findMany: jest.fn() },
     statusOption: { createMany: jest.fn() },
     viewDefinition: { create: jest.fn() },
@@ -49,6 +50,8 @@ describe("ListDefinitionModule creation", () => {
   // 기능 : DB 대신 하나의 transaction client를 제공하고 실제 모듈 간 공개 port를 사용합니다.
   beforeEach(async () => {
     jest.resetAllMocks();
+    tx.$queryRaw.mockResolvedValue([{ isolationLevel: "read committed" }]);
+    tx.listDefinition.aggregate.mockResolvedValue({ _max: { sortOrder: null } });
     access.getWorkspaceMemberAccess.mockResolvedValue({ actorId: "actor-1", workspaceMemberId: "member-1" });
     prisma.objectDefinition.findFirst.mockResolvedValue({ id: "object-1" });
     tx.listDefinition.create.mockResolvedValue({ id: "list-1" });
@@ -72,12 +75,21 @@ describe("ListDefinitionModule creation", () => {
   // 기능 : 실행 중 개발 서버와 독립된 테스트 모듈을 해제합니다.
   afterEach(async () => { await module?.close(); });
 
+  // 기능 : 잠금 이후 읽은 마지막 순서에 맞춰 application이 생성 순서를 지정합니다.
+  it("appends a new list after the locked current order", async () => {
+    tx.listDefinition.aggregate.mockResolvedValue({ _max: { sortOrder: 7 } });
+    await useCase.execute(user, "workspace-1", { ...command, viewType: "TABLE" });
+    expect(tx.listDefinition.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ sortOrder: 8 }) }));
+    expect(tx.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(tx.listDefinition.aggregate.mock.invocationCallOrder[0]!);
+    expect(tx.listDefinition.aggregate.mock.invocationCallOrder[0]).toBeLessThan(tx.listDefinition.create.mock.invocationCallOrder[0]!);
+  });
+
   // 기능 : 단순 보기는 새 속성·Record·Entry 없이 제목만 연결합니다.
   it.each([["TABLE", "lucide:table-2"], ["LIST", "lucide:list"]] as const)("creates empty %s with a RECORD title in one transaction", async (viewType, icon) => {
     await expect(useCase.execute(user, "workspace-1", { ...command, viewType }, "request-1"))
       .resolves.toEqual({ listDefinitionId: "list-1", viewDefinitionId: "view-1" });
     expect(tx.listDefinition.create).toHaveBeenCalledWith({ data: {
-      workspaceId: "workspace-1", createdByActorId: "actor-1", name: "매물 상담", apiSlug: "매물 상담", icon, description: null,
+      workspaceId: "workspace-1", createdByActorId: "actor-1", name: "매물 상담", apiSlug: "매물 상담", icon, description: null, sortOrder: 0,
     }, select: { id: true } });
     expect(tx.viewDefinition.create).toHaveBeenCalledWith({ data: {
       workspaceId: "workspace-1", createdByActorId: "actor-1", objectDefinitionId: null,

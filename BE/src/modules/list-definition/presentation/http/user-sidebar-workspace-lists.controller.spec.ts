@@ -1,5 +1,6 @@
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
+import { ReorderSidebarListDefinitionsUseCase } from "../../application/use-cases/reorder-sidebar-list-definitions.use-case";
 import * as request from "supertest";
 import { ListSidebarListDefinitionsUseCase } from "@/modules/list-definition/application/use-cases/list-sidebar-list-definitions.use-case";
 import { ListDefinitionSidebarWorkspaceNotFoundError } from "@/modules/list-definition/domain/list-definition.errors";
@@ -56,6 +57,7 @@ describe("UserSidebarWorkspaceListsController", () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [UserSidebarWorkspaceListsController],
       providers: [
+        { provide: ReorderSidebarListDefinitionsUseCase, useValue: { execute: jest.fn() } },
         AuthGuard,
         { provide: CURRENT_USER_RESOLVER, useValue: currentUserResolver },
         { provide: ListSidebarListDefinitionsUseCase, useValue: listUseCase },

@@ -107,9 +107,11 @@ export class CreateWorkspaceObjectDefinitionUseCase {
     let result: CreateWorkspaceObjectDefinitionResponse;
     try {
       result = await this.transactionManager.runInTransaction(async context => {
-        // 1. 관리 대상 자체를 생성한다. 동시 이름 중복은 저장소의 unique 오류 변환으로 차단한다.
+        // 1. 생성·재정렬을 직렬화한 현재 순서 뒤에 추가하도록 application에서 결정한다.
+        const lastSortOrder = await this.objectDefinitionCommandRepository.lockAndGetLastSortOrder(workspaceId, context);
         const object = await this.objectDefinitionCommandRepository.createObjectDefinition({
           ...audit,
+          sortOrder: (lastSortOrder ?? -1) + 1,
           apiSlug: objectDefinitionName,
           singularName: objectDefinitionName,
           pluralName: objectDefinitionName,

@@ -6,4 +6,4 @@
 - POST/DELETE는 기존 apiClient를 통해 경로의 Workspace/View ID만 보내고 body/query는 사용하지 않는다. 소유자·Actor·sortOrder는 서버가 정한다.
 - 개인 목록 key는 사용자/Workspace UUID 표기를 정규화한다. crm-view hook이 공통 헤더 조작과 관련 cache 갱신을 조합한다. UI가 Favorite PK를 임의 생성하지 않는다.
 
-실제 별표 동작은 `crm-view` 공통 헤더가 담당하며 두 반응형 헤더가 단일 모델을 공유한다. 즐겨찾기 행 클릭 이동·순서 변경은 후속 범위다.
+실제 즐겨찾기 버튼 동작은 `crm-view` 공통 헤더가 담당하며 두 반응형 헤더가 단일 모델을 공유한다. 행 클릭은 해당 View 화면으로 이동한다. 순서 변경은 `sidebar-order` feature가 Favorite PK 전체 배열을 PATCH하며 현재 사용자·Workspace 목록 query key를 재사용한다.

@@ -577,6 +577,8 @@ model ObjectDefinition {
   icon             String?
   /// 기능 : ObjectDefinition 설명입니다.
   description      String?
+  /// 기능 : 같은 Workspace 사이드바 관리 항목의 공통 표시 순서입니다.
+  sortOrder        Int      @default(0)
   /// 기능 : ObjectDefinition 생성 시각입니다. UTC instant로 저장합니다.
   createdAt        DateTime @default(now()) @db.Timestamptz(3)
   /// 기능 : ObjectDefinition row의 마지막 수정 시각입니다. UTC instant로 저장합니다.
@@ -625,6 +627,8 @@ model ListDefinition {
   name             String
   /// 기능 : List의 업무 목적을 설명하는 선택 입력값입니다.
   description      String?
+  /// 기능 : 같은 Workspace 사이드바 업무 목록의 공통 표시 순서입니다.
+  sortOrder        Int      @default(0)
   /// 기능 : 화면 표시용 아이콘입니다.
   icon             String?
   /// 기능 : ListDefinition을 생성한 Actor ID입니다.

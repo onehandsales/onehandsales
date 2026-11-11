@@ -2,6 +2,16 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
+  sidebarOrder: {
+    handle: "{name} 순서 이동",
+    help: "스페이스로 잡고 위아래 화살표로 이동하세요. Enter로 저장하고 Escape로 취소합니다.",
+    picked: "{name} 항목을 잡았어요.",
+    moved: "{position}번째 위치로 이동했어요.",
+    canceled: "순서 변경을 취소했어요.",
+    saving: "순서를 저장하고 있어요.",
+    failed: "순서를 저장하지 못했어요. 다시 시도해 주세요.",
+    conflict: "목록이 변경되었어요. 최신 목록에서 다시 이동해 주세요.",
+  },
   attributeColumn: {
     add: "컬럼 추가",
     name: "속성 이름", namePlaceholder: "컬럼명을 작성해주세요.", type: "정보 유형 선택",

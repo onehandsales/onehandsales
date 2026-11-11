@@ -11,17 +11,17 @@ export class PrismaObjectDefinitionSidebarQueryRepository
   // 기능 : PrismaService를 주입받아 ObjectDefinition 조회에 사용합니다.
   constructor(private readonly prismaService: PrismaService) {}
 
-  // 기능 : 특정 Workspace에 속한 ObjectDefinition 요약 목록을 생성순으로 조회합니다.
+  // 기능 : 특정 Workspace에 속한 ObjectDefinition 요약 목록을 저장된 순서로 조회합니다.
   async listSidebarObjectDefinitions(
     workspaceId: string
   ): Promise<SidebarObjectDefinitionListItem[]> {
-    // 1. Workspace 경계 안의 ObjectDefinition을 생성 시각과 ID 오름차순으로 조회한다.
+    // 1. Workspace 경계 안의 ObjectDefinition을 sortOrder 오름차순으로만 조회한다.
     const objectDefinitions =
       await this.prismaService.objectDefinition.findMany({
         where: {
           workspaceId,
         },
-        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        orderBy: [{ sortOrder: "asc" }],
         select: {
           id: true,
           icon: true,

@@ -53,6 +53,7 @@ describe("CreateWorkspaceObjectDefinitionUseCase", () => {
       pluralName: "회사",
       icon: "lucide:building-2",
       description: " 거래처를 관리해요. ",
+      sortOrder: 0,
     });
     expect(fixture.logger.log).toHaveBeenCalledWith(
       expect.stringContaining("crm.objectDefinition.created"),
@@ -81,6 +82,16 @@ describe("CreateWorkspaceObjectDefinitionUseCase", () => {
     expect(JSON.parse(logged)).toMatchObject({ requestId: "request-create-001", ...result });
     expect(logged).not.toContain("회사");
     expect(logged).not.toContain("거래처");
+  });
+
+  // 기능 : 첫 항목과 기존 목록의 다음 순서를 application에서 결정하고 동일 transaction을 사용합니다.
+  it.each([null, 7])("assigns append order from the locked last value %s", async lastSortOrder => {
+    const fixture = createFixture();
+    fixture.repository.lastSortOrder = lastSortOrder;
+    await fixture.useCase.execute(makeCurrentUser(), "00000000-0000-4000-8000-000000000301", { objectDefinitionName: "회사" });
+    expect(fixture.repository.lastCreateInput?.sortOrder).toBe(lastSortOrder === null ? 0 : 8);
+    expect(fixture.repository.lastSortContext).toBe(fixture.transactions.context);
+    expect(fixture.repository.lastCreateContext).toBe(fixture.transactions.context);
   });
 
   // 기능 : 선택 입력값이 없거나 빈 문자열이면 null로 저장합니다.
@@ -294,6 +305,14 @@ class FakeObjectDefinitionCommandRepository
   lastLookupInput: ObjectDefinitionApiSlugLookupInput | null = null;
   lastCreateInput: CreateObjectDefinitionInput | null = null;
   lastCreateContext: TransactionContext | null = null;
+  lastSortOrder: number | null = null;
+  lastSortContext: TransactionContext | null = null;
+
+  // 기능 : application이 동일 transaction에서 마지막 순서를 조회했는지 기록합니다.
+  async lockAndGetLastSortOrder(_workspaceId: string, context: TransactionContext): Promise<number | null> {
+    this.lastSortContext = context;
+    return this.lastSortOrder;
+  }
 
   // 기능 : 테스트용 ObjectDefinition apiSlug 중복 여부를 반환합니다.
   async hasObjectDefinitionApiSlug(

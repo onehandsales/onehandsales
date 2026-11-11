@@ -74,8 +74,8 @@ describeWithTestDatabase("PrismaViewFavoriteSidebarQueryRepository", () => {
       })) });
       await tx.viewFavoriteDefinition.createMany({ data: [
         { id: favoriteId(1), workspaceId, workspaceMemberId: memberId, createdByActorId: actorId, viewDefinitionId: viewIds[0], sortOrder: 20, createdAt: earlier },
-        { id: favoriteId(2), workspaceId, workspaceMemberId: memberId, createdByActorId: actorId, viewDefinitionId: viewIds[1], sortOrder: 10, createdAt: later },
-        { id: favoriteId(3), workspaceId, workspaceMemberId: memberId, createdByActorId: actorId, viewDefinitionId: viewIds[2], sortOrder: 10, createdAt: later },
+        { id: favoriteId(2), workspaceId, workspaceMemberId: memberId, createdByActorId: actorId, viewDefinitionId: viewIds[1], sortOrder: 11, createdAt: later },
+        { id: favoriteId(3), workspaceId, workspaceMemberId: memberId, createdByActorId: actorId, viewDefinitionId: viewIds[2], sortOrder: 12, createdAt: later },
         { id: favoriteId(4), workspaceId, workspaceMemberId: memberId, createdByActorId: actorId, viewDefinitionId: viewIds[3], sortOrder: 10, createdAt: earlier },
         { id: favoriteId(5), workspaceId, workspaceMemberId: otherMemberId, createdByActorId: actorId, viewDefinitionId: viewIds[0], sortOrder: 0 },
         { id: favoriteId(6), workspaceId: otherWorkspaceId, workspaceMemberId: otherWorkspaceMemberId, createdByActorId: otherActorId, viewDefinitionId: viewIds[4], sortOrder: 0 },

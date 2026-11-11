@@ -11,14 +11,14 @@ export class PrismaListDefinitionSidebarQueryRepository
   // 기능 : ListDefinition 조회에 사용할 Prisma 서비스를 주입받습니다.
   constructor(private readonly prismaService: PrismaService) {}
 
-  // 기능 : 요청 Workspace의 List 이름과 아이콘을 생성순으로 조회합니다.
+  // 기능 : 요청 Workspace의 List 이름과 아이콘을 저장된 순서로 조회합니다.
   async listSidebarListDefinitions(
     workspaceId: string
   ): Promise<SidebarListDefinitionListItem[]> {
-    // 1. Workspace 경계를 적용하고 생성 시각과 ID 오름차순으로 요약 필드만 조회한다.
+    // 1. Workspace 경계를 적용하고 sortOrder 오름차순으로만 요약 필드를 조회한다.
     return this.prismaService.listDefinition.findMany({
       where: { workspaceId },
-      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      orderBy: [{ sortOrder: "asc" }],
       select: {
         id: true,
         icon: true,

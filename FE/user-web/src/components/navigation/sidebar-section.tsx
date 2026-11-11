@@ -6,6 +6,7 @@ import {
 } from "@/components/navigation/sidebar-data-list";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
+import type { SidebarOrderControl } from "@/features/sidebar-order";
 
 type SidebarSectionProps = {
   readonly addLabelKey: AppI18nKey;
@@ -21,12 +22,14 @@ type SidebarSectionProps = {
 };
 
 type SidebarDataSectionProps = Omit<SidebarSectionProps, "children"> & {
+  readonly order?: SidebarOrderControl;
   readonly items: readonly SidebarDataItem[];
   readonly isLoading: boolean;
 };
 
 // 기능 : 사이드바 데이터 영역의 섹션·목록·추가 버튼·로딩 표시를 공통으로 구성합니다.
 export function SidebarDataSection({
+  order,
   items,
   isLoading,
   showAddAction = true,
@@ -38,6 +41,7 @@ export function SidebarDataSection({
   return (
     <SidebarSection {...sectionProps} showAddAction={showAddAction && !isLoading}>
       <SidebarDataList
+        order={order}
         items={items}
         isLoading={isLoading}
         label={t(sectionProps.labelKey)}

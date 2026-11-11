@@ -1,5 +1,6 @@
 import type { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
+import { ReorderSidebarViewFavoritesUseCase } from "../../application/use-cases/reorder-sidebar-view-favorites.use-case";
 import * as request from "supertest";
 import { ListSidebarViewFavoritesUseCase } from "@/modules/view-definition/application/use-cases/list-sidebar-view-favorites.use-case";
 import { ViewFavoriteSidebarWorkspaceNotFoundError } from "@/modules/view-definition/domain/view-definition.errors";
@@ -58,6 +59,7 @@ describe("UserSidebarWorkspaceViewFavoritesController", () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [UserSidebarWorkspaceViewFavoritesController],
       providers: [
+        { provide: ReorderSidebarViewFavoritesUseCase, useValue: { execute: jest.fn() } },
         AuthGuard,
         { provide: CURRENT_USER_RESOLVER, useValue: currentUserResolver },
         { provide: ListSidebarViewFavoritesUseCase, useValue: listUseCase },

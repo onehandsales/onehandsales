@@ -15,10 +15,10 @@ test.describe("sidebar work lists", () => {
     // 2. API가 반환한 순서와 nullable 아이콘의 기본 표시를 확인한다.
     const navigation = page.getByRole("navigation", { name: "Workspace navigation" });
     const lists = navigation.getByRole("list", { name: "업무 목록" });
-    const firstRow = lists.getByRole("listitem").first().locator(":scope > *");
+    const firstRow = lists.getByRole("listitem").first().getByRole("link");
     await expect(lists.getByRole("listitem")).toHaveText(["영업 파이프라인", "고객 도입"]);
-    await expect(lists.getByRole("listitem").first().locator("svg")).toHaveClass(/lucide-kanban/);
-    await expect(lists.getByRole("listitem").last().locator("svg")).toHaveClass(/lucide-box/);
+    await expect(firstRow.locator("svg")).toHaveClass(/lucide-kanban/);
+    await expect(lists.getByRole("listitem").last().getByRole("link").locator("svg")).toHaveClass(/lucide-box/);
     await expect(firstRow).toHaveCSS("height", "30px");
     await expect(firstRow).toHaveCSS("font-size", "14px");
     await expect(navigation.getByRole("list", { name: "관리 대상" }).getByRole("listitem")).toHaveText(["Company", "Person"]);

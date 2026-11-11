@@ -1,4 +1,7 @@
 import { Module } from "@nestjs/common";
+import { ReorderSidebarListDefinitionsUseCase } from "../application/use-cases/reorder-sidebar-list-definitions.use-case";
+import { SIDEBAR_LIST_ORDER_REPOSITORY } from "../application/ports/sidebar-list-order.repository";
+import { PrismaSidebarListOrderRepository } from "./persistence/prisma-sidebar-list-order.repository";
 import { AttributeDefinitionModule } from "@/modules/attribute-definition/infrastructure/attribute-definition.module";
 import { ObjectDefinitionModule } from "@/modules/object-definition/infrastructure/object-definition.module";
 import { ListInitialViewModule } from "@/modules/view-definition/infrastructure/list-initial-view.module";
@@ -26,6 +29,13 @@ import { UserSidebarWorkspaceListsController } from "../presentation/http/user-s
   imports: [AuthModule, WorkspaceModule, PrismaInfrastructureModule, ObjectDefinitionModule, AttributeDefinitionModule, ListInitialViewModule],
   controllers: [UserSidebarWorkspaceListsController, UserWorkspaceListDefinitionsController],
   providers: [
+    ReorderSidebarListDefinitionsUseCase,
+    {
+      provide: SIDEBAR_LIST_ORDER_REPOSITORY,
+      // 기능 : 소유 모듈의 순서 저장소를 기존 Prisma/잠금 구현으로 조립한다.
+      useFactory: (prisma: PrismaService) => new PrismaSidebarListOrderRepository(prisma),
+      inject: [PrismaService],
+    },
     CreateWorkspaceListDefinitionUseCase,
     AppLogger,
     { provide: APPLICATION_LOGGER, useExisting: AppLogger },

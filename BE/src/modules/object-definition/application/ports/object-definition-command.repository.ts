@@ -19,6 +19,7 @@ export interface CreateObjectDefinitionInput {
   readonly pluralName: string;
   readonly icon: string | null;
   readonly description: string | null;
+  readonly sortOrder: number;
 }
 
 // 역할 : CreateObjectDefinitionResult가 ObjectDefinition 생성 결과를 정의합니다.
@@ -28,6 +29,9 @@ export interface CreateObjectDefinitionResult {
 
 // 역할 : ObjectDefinitionCommandRepository가 ObjectDefinition 쓰기 저장소 계약을 정의합니다.
 export interface ObjectDefinitionCommandRepository {
+  // 기능 : 같은 Workspace의 생성·재정렬을 잠근 뒤 현재 마지막 순서를 조회합니다.
+  lockAndGetLastSortOrder(workspaceId: string, context: TransactionContext): Promise<number | null>;
+
   // 기능 : 같은 Workspace 안에 동일 apiSlug의 ObjectDefinition이 있는지 확인합니다.
   hasObjectDefinitionApiSlug(
     input: ObjectDefinitionApiSlugLookupInput

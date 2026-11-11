@@ -106,6 +106,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "AUTH_PROVIDER_EMAIL_REQUIRED":
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case "OAuthAccountConflict":
+      case "SidebarOrderConflict":
       case "DeviceSlotAlreadyRegistered":
       case "ObjectDefinitionApiSlugAlreadyExists":
       case "ListDefinitionApiSlugAlreadyExists":

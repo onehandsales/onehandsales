@@ -7,8 +7,12 @@ import type { SidebarCrmObjectListItem } from "@/features/crm-object";
 import type { SidebarViewFavoriteItem } from "@/features/view-favorite";
 import { toWorkspaceListPath, toWorkspaceObjectPath, toWorkspaceViewPath } from "@/features/workspace";
 import { cn } from "@/utils/cn";
+import type { SidebarOrderControl } from "@/features/sidebar-order";
 
 type SidebarNavProps = {
+  readonly objectsOrder?: SidebarOrderControl;
+  readonly listsOrder?: SidebarOrderControl;
+  readonly favoritesOrder?: SidebarOrderControl;
   readonly className?: string;
   readonly crmLists?: readonly SidebarCrmListItem[];
   readonly crmObjects?: readonly SidebarCrmObjectListItem[];
@@ -23,6 +27,7 @@ type SidebarNavProps = {
 
 // 기능 : 즐겨찾기·업무 목록·관리 항목을 같은 데이터 형식과 공통 섹션으로 표시합니다.
 export function SidebarNav({
+  objectsOrder, listsOrder, favoritesOrder,
   className,
   crmLists = [],
   crmObjects = [],
@@ -70,6 +75,7 @@ export function SidebarNav({
         isLoading={isViewFavoritesLoading}
         isOpen={isFavoritesOpen}
         items={favoriteItems}
+        order={favoritesOrder}
         labelIcon={<Heart aria-hidden="true" className="h-4 w-4 shrink-0 fill-current text-[#EF4444]" strokeWidth={2} />}
         labelKey="navigation.quickWorkGroup"
         openLabelKey="navigation.quickWorkGroupOpen"
@@ -82,6 +88,7 @@ export function SidebarNav({
         isLoading={isCrmListsLoading}
         isOpen={isWorkListsOpen}
         items={workListItems}
+        order={listsOrder}
         labelKey="navigation.workListsGroup"
         onAdd={onCreateListDefinition}
         openLabelKey="navigation.workListsGroupOpen"
@@ -93,6 +100,7 @@ export function SidebarNav({
         isLoading={isCrmObjectsLoading}
         isOpen={isManagedItemsOpen}
         items={managedItems}
+        order={objectsOrder}
         labelKey="navigation.mainGroup"
         onAdd={onCreateObjectDefinition}
         openLabelKey="navigation.mainGroupOpen"

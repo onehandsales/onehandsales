@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { GUARDS_METADATA } from "@nestjs/common/constants";
 import { Test } from "@nestjs/testing";
+import { ReorderSidebarObjectDefinitionsUseCase } from "../../application/use-cases/reorder-sidebar-object-definitions.use-case";
 import type { Request } from "express";
 import * as request from "supertest";
 import { ListSidebarObjectDefinitionsUseCase } from "@/modules/object-definition/application/use-cases/list-sidebar-object-definitions.use-case";
@@ -73,6 +74,7 @@ describe("UserSidebarWorkspaceObjectsController", () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [UserSidebarWorkspaceObjectsController],
       providers: [
+        { provide: ReorderSidebarObjectDefinitionsUseCase, useValue: { execute: jest.fn() } },
         {
           provide: ListSidebarObjectDefinitionsUseCase,
           useValue: listUseCase,

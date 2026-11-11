@@ -2,6 +2,16 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
+  sidebarOrder: {
+    handle: "Move {name}",
+    help: "Press Space to pick up, use arrow keys to move, Enter to save, or Escape to cancel.",
+    picked: "Picked up {name}.",
+    moved: "Moved to position {position}.",
+    canceled: "Reordering canceled.",
+    saving: "Saving order.",
+    failed: "Could not save the order. Please try again.",
+    conflict: "The list changed. Please reorder the latest list.",
+  },
   attributeColumn: {
     add: "Add column",
     name: "Attribute name", namePlaceholder: "Enter a column name.", type: "Choose information type",

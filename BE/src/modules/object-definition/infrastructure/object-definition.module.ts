@@ -1,4 +1,7 @@
 import { Module } from "@nestjs/common";
+import { ReorderSidebarObjectDefinitionsUseCase } from "../application/use-cases/reorder-sidebar-object-definitions.use-case";
+import { SIDEBAR_OBJECT_ORDER_REPOSITORY } from "../application/ports/sidebar-object-order.repository";
+import { PrismaSidebarObjectOrderRepository } from "./persistence/prisma-sidebar-object-order.repository";
 import { ObjectTextAttributeModule } from "@/modules/attribute-definition/infrastructure/object-text-attribute.module";
 import { ObjectTableViewModule } from "@/modules/view-definition/infrastructure/object-table-view.module";
 import { OBJECT_DEFINITION_ACCESS_QUERY } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
@@ -28,6 +31,13 @@ import { UserWorkspaceObjectDefinitionsController } from "../presentation/http/u
     UserWorkspaceObjectDefinitionsController,
   ],
   providers: [
+    ReorderSidebarObjectDefinitionsUseCase,
+    {
+      provide: SIDEBAR_OBJECT_ORDER_REPOSITORY,
+      // 기능 : 소유 모듈의 순서 저장소를 기존 Prisma/잠금 구현으로 조립한다.
+      useFactory: (prisma: PrismaService) => new PrismaSidebarObjectOrderRepository(prisma),
+      inject: [PrismaService],
+    },
     {
       provide: OBJECT_DEFINITION_SUMMARY_QUERY,
       // 기능 : 소유 모듈의 Workspace 단건 요약 조회 구현체를 조립합니다.

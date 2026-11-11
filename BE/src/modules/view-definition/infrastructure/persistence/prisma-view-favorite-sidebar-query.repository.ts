@@ -26,7 +26,7 @@ export class PrismaViewFavoriteSidebarQueryRepository
         workspaceMemberId,
         viewDefinition: { workspaceId },
       },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }, { id: "asc" }],
+      orderBy: [{ sortOrder: "asc" }],
       select: {
         id: true,
         viewDefinitionId: true,

@@ -32,7 +32,8 @@ describe("ObjectDefinitionModule creation transaction", () => {
   let useCase: CreateWorkspaceObjectDefinitionUseCase;
   const logger = { log: jest.fn(), warn: jest.fn(), error: jest.fn() };
   const transactionClient = {
-    objectDefinition: { create: jest.fn() },
+    $queryRaw: jest.fn(),
+    objectDefinition: { create: jest.fn(), aggregate: jest.fn() },
     attributeDefinition: { create: jest.fn() },
     viewDefinition: { create: jest.fn() },
     viewAttributeSettingDefinition: { create: jest.fn() },
@@ -48,6 +49,8 @@ describe("ObjectDefinitionModule creation transaction", () => {
   // 기능 : 생성 소유 모듈은 그대로 조립하고 DB 경계만 mock으로 대체합니다.
   beforeEach(async () => {
     jest.clearAllMocks();
+    transactionClient.$queryRaw.mockResolvedValue([{ isolationLevel: "read committed" }]);
+    transactionClient.objectDefinition.aggregate.mockResolvedValue({ _max: { sortOrder: null } });
     prisma.objectDefinition.findFirst.mockResolvedValue(null);
     transactionClient.objectDefinition.create.mockReset().mockResolvedValue({ id: "object-1" });
     transactionClient.attributeDefinition.create.mockReset().mockResolvedValue({ id: "attribute-1" });
@@ -77,7 +80,7 @@ describe("ObjectDefinitionModule creation transaction", () => {
       .resolves.toEqual({ objectDefinitionId: "object-1", viewDefinitionId: "view-1" });
     const audit = { workspaceId: "workspace-1", createdByActorId: "actor-1" };
     expect(transactionClient.objectDefinition.create).toHaveBeenCalledWith({
-      data: { ...audit, apiSlug: "매물", singularName: "매물", pluralName: "매물", icon: null, description: null }, select: { id: true },
+      data: { ...audit, apiSlug: "매물", singularName: "매물", pluralName: "매물", icon: null, description: null, sortOrder: 0 }, select: { id: true },
     });
     expect(transactionClient.attributeDefinition.create).toHaveBeenCalledWith({
       data: { ...audit, objectDefinitionId: "object-1", listDefinitionId: null, apiSlug: "name", title: "이름", type: "Text", sortOrder: 0, isMultiselect: false }, select: { id: true },
@@ -89,8 +92,10 @@ describe("ObjectDefinitionModule creation transaction", () => {
       data: { ...audit, viewDefinitionId: "view-1", attributeDefinitionId: "attribute-1", sourceScope: "RECORD", attributeDisplayRole: "TITLE", referenceAttributeIdPathJson: [], sortOrder: 0, isHidden: false }, select: { id: true },
     });
     expect(prisma.$transaction).toHaveBeenCalledTimes(1);
-    for (const model of Object.values(transactionClient)) expect(model.create).toHaveBeenCalledTimes(1);
-    for (const key of Object.keys(transactionClient) as (keyof typeof transactionClient)[]) expect(prisma[key].create).not.toHaveBeenCalled();
+    for (const key of ["objectDefinition", "attributeDefinition", "viewDefinition", "viewAttributeSettingDefinition"] as const) {
+      expect(transactionClient[key].create).toHaveBeenCalledTimes(1);
+      expect(prisma[key].create).not.toHaveBeenCalled();
+    }
     expect(logger.log).toHaveBeenCalledTimes(1);
   });
 

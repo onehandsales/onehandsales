@@ -254,7 +254,20 @@ DB 적용: Docker 없이 Supabase 세션 연결을 사용했다. View가 비어 
 
 이력: DB에는 migration 75건, 로컬에는 SQL 73건이 있다. `20261013050000_create_view_definitions`와 `20261013060000_remove_view_query_indexes`는 DB에만 이력이 있고 원본 SQL을 찾지 못했다. 기존 이력과 checksum은 보존했으며 원본을 추정 생성하지 않았다. 과거 원본 SQL 복구는 별도 이력 정리 사항이다. 적용 전후 스냅샷과 이전 View 구조 복구 SQL은 로컬 `TEMP/view-schema-apply-20261017/`에 보관하며 Git 추적 대상은 아니다. 복구 SQL은 실행하지 않았고, 적용된 migration을 되돌려야 한다면 데이터 상태를 확인한 후 별도 후속 migration으로 처리한다.
 
-## 13. 관련 문서
+## 13. 사이드바 순서 저장
+
+2026-11-11 사용자 요청으로 `ObjectDefinition.sortOrder`, `ListDefinition.sortOrder`를 추가한다. 두 컬럼은 Prisma `Int @default(0)`, PostgreSQL `INTEGER NOT NULL DEFAULT 0`이다. Workspace 공통 사이드바 표시 순서이며 즐겨찾기는 기존 `ViewFavoriteDefinition.sortOrder`로 WorkspaceMember별 개인 순서를 저장한다. `ViewDefinition.sortOrder`는 상단 보기 선택용으로 유지한다.
+
+- migration: `20261111060000_add_sidebar_definition_sort_order`. DDL·초기 데이터 보정을 하나의 transaction으로 적용하고 `lock_timeout=10s`로 무기한 대기를 막는다.
+- Object/List의 기존 `createdAt ASC, id ASC` 표시 순서를 Workspace별로 0부터 채운다. 즐겨찾기도 기존 `sortOrder ASC, createdAt ASC, id ASC` 표시 순서를 Workspace·멤버별로 보존해 연속 순서로 초기화한다. 원래 row ID·감사 필드·다른 업무 값은 변경하지 않는다.
+- 세 조회 API는 이후 `sortOrder ASC`만 사용한다. 신규 Object/List는 생성 transaction 안에서 재정렬과 동일한 범위의 잠금 후 `MAX(sortOrder)+1`로 마지막에 추가한다.
+- 순서 값에 임의 UNIQUE/CHECK/인덱스를 추가하지 않는다. 기존 SQL 전용 CHECK·복합 FK·컬럼 지정 SET NULL·DEFERRABLE·RLS·권한은 보존한다. 선언 모델 수·Enum은 유지한다.
+- 전체 ID 집합을 검증하는 PATCH 3개를 각 소유 모듈에 둔다. application이 transaction을 소유하고 infrastructure에서 advisory/row lock과 바인딩 SQL을 실행한다. 외부 provider·이벤트 발행이 없고 최종 상태 지정은 동일 요청에 no-op이므로 outbox·별도 idempotency key를 추가하지 않는다.
+- 적용 중 실패하면 DDL과 보정이 함께 rollback된다. 적용 완료 후 되돌림은 순서 값 보존·API/FE 의존성을 먼저 검토한 뒤 별도 후속 migration으로 수행한다. 기존 적용 migration은 수정하지 않는다.
+
+검증·실제 DB 적용 여부와 기존 migration 원본 누락 이력은 [작업 결과와 규칙 검토](../../../TODO/SIDEBAR_REORDER_PLAN/README.md)에 분리해 기록한다.
+
+## 14. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`

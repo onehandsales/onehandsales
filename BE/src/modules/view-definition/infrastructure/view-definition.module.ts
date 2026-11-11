@@ -1,4 +1,8 @@
 import { Module } from "@nestjs/common";
+import { ReorderSidebarViewFavoritesUseCase } from "../application/use-cases/reorder-sidebar-view-favorites.use-case";
+import { SIDEBAR_FAVORITE_ORDER_REPOSITORY } from "../application/ports/sidebar-favorite-order.repository";
+import { PrismaSidebarFavoriteOrderRepository } from "./persistence/prisma-sidebar-favorite-order.repository";
+import type { ViewFavoriteCommandRepository } from "../application/ports/view-favorite-command.repository";
 import { VIEW_COLUMN_COMMAND_REPOSITORY } from "../application/ports/view-column-command.repository";
 import { CreateWorkspaceTableColumnUseCase } from "../application/use-cases/create-workspace-table-column.use-case";
 import { UserWorkspaceTableColumnsController } from "../presentation/http/user-workspace-table-columns.controller";
@@ -74,6 +78,13 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     UserWorkspaceViewFavoriteController,
   ],
   providers: [
+    ReorderSidebarViewFavoritesUseCase,
+    {
+      provide: SIDEBAR_FAVORITE_ORDER_REPOSITORY,
+      // 기능 : 소유 모듈의 순서 저장소를 기존 Prisma/잠금 구현으로 조립한다.
+      useFactory: (prisma: PrismaService, favorites: ViewFavoriteCommandRepository) => new PrismaSidebarFavoriteOrderRepository(prisma, favorites),
+      inject: [PrismaService, VIEW_FAVORITE_COMMAND_REPOSITORY],
+    },
     CreateWorkspaceTableColumnUseCase,
     {
       provide: VIEW_COLUMN_COMMAND_REPOSITORY,

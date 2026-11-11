@@ -15,18 +15,19 @@ test.describe("sidebar view favorites", () => {
     const navigation = page.getByRole("navigation", { name: "Workspace navigation" });
     const favorites = navigation.getByRole("list", { name: "즐겨찾기", exact: true });
     await expect(favorites.getByRole("listitem")).toHaveText(["이번 달 마감", "서울 회사"]);
-    const row = favorites.getByRole("listitem").first().locator(":scope > *");
+    const row = favorites.getByRole("listitem").first().getByRole("link");
     await expect(row).toHaveCSS("height", "30px");
     await expect(row).toHaveCSS("font-size", "14px");
     await expect(row.locator("svg")).toHaveClass(/lucide-calendar-days/);
-    await expect(favorites.getByRole("listitem").last().locator("svg")).toHaveClass(/lucide-box/);
+    await expect(favorites.getByRole("listitem").last().getByRole("link").locator("svg")).toHaveClass(/lucide-box/);
     await expect(navigation.getByRole("list", { name: "업무 목록" })).toBeVisible();
     await expect(navigation.getByRole("link", { name: "Company", exact: true })).toBeVisible();
     await expect(navigation.getByRole("button", { name: "즐겨찾기 추가", exact: true })).toHaveCount(0);
     expect(api.protectedRequestsWithoutAuthorization()).toEqual([]);
 
-    // 2. 기존 접힘 동작을 유지하고 아직 없는 View 화면으로 링크하지 않는다.
-    await expect(favorites.getByRole("link")).toHaveCount(0);
+    // 2. 기존 View 링크와 접힘 동작을 유지한다.
+    await expect(favorites.getByRole("link")).toHaveCount(2);
+    await expect(row).toHaveAttribute("href", "/app/workspaces/workspace-e2e-001/view-definitions/view-monthly");
     await navigation.getByRole("button", { name: "즐겨찾기 닫기", exact: true }).click();
     await expect(favorites).toHaveCount(0);
     await navigation.getByRole("button", { name: "즐겨찾기 열기", exact: true }).click();

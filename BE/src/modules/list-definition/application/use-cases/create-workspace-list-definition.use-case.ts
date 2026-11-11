@@ -91,8 +91,10 @@ export class CreateWorkspaceListDefinitionUseCase {
           if (attribute.isMultiselect || (attribute.type !== "Status" && attribute.type !== "Select")) this.invalid("kanban.attributeDefinitionId");
           group = { attributeDefinitionId: attribute.id, sourceScope: "RECORD" };
         }
-        // 2. List 원장을 생성하고 필요한 경우에만 목록 전용 상태와 옵션을 만든다.
-        const list = await this.lists.create({ ...audit, name, icon, description: command.description || null }, context);
+        // 2. application이 잠금 안의 마지막 순서 다음을 지정하고 필요한 하위 상태를 생성한다.
+        const lastSortOrder = await this.lists.lockAndGetLastSortOrder(workspaceId, context);
+        const list = await this.lists.create({ ...audit, name, icon, description: command.description || null,
+          sortOrder: (lastSortOrder ?? -1) + 1 }, context);
         if (kanban?.newStatus) {
           const attribute = await this.statuses.create({ ...audit, listDefinitionId: list.id, ...kanban.newStatus }, context);
           group = { attributeDefinitionId: attribute.id, sourceScope: "LIST_ENTRY" };

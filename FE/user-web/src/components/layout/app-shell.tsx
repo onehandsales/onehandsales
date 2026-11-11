@@ -10,6 +10,8 @@ import { OneHandLogoMark } from "@/components/brand/onehand-logo-mark";
 import { BottomTabBar } from "@/components/navigation/bottom-tab-bar";
 import { MobileAppHeader } from "@/components/navigation/mobile-app-header";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
+import { useSidebarOrder } from "@/features/sidebar-order";
+import { sidebarViewFavoriteQueryKeys } from "@/features/view-favorite/api/sidebar-view-favorite-query-keys";
 import { SidebarToolsNav } from "@/components/navigation/sidebar-tools-nav";
 import {
   BookOpen,
@@ -284,6 +286,18 @@ export function AppShell() {
     sidebarCrmListsQuery.data ?? EMPTY_SIDEBAR_CRM_LISTS;
   const sidebarViewFavorites =
     sidebarViewFavoritesQuery.data ?? EMPTY_SIDEBAR_VIEW_FAVORITES;
+  const objectsOrder = useSidebarOrder({
+    userId: user?.id ?? null, workspaceId: sidebarWorkspaceId, section: "objects",
+    queryKey: sidebarCrmObjectQueryKeys.list(user?.id ?? null, sidebarWorkspaceId ?? null), items: sidebarCrmObjects,
+  });
+  const listsOrder = useSidebarOrder({
+    userId: user?.id ?? null, workspaceId: sidebarWorkspaceId, section: "lists",
+    queryKey: sidebarCrmListQueryKeys.list(user?.id ?? null, sidebarWorkspaceId ?? null), items: sidebarCrmLists,
+  });
+  const favoritesOrder = useSidebarOrder({
+    userId: user?.id ?? null, workspaceId: sidebarWorkspaceId, section: "view-favorites",
+    queryKey: sidebarViewFavoriteQueryKeys.list(user?.id ?? null, sidebarWorkspaceId ?? null), items: sidebarViewFavorites,
+  });
   // 26. Workspace가 확정되기 전에는 세 목록 모두 Skeleton으로 사이드바 구조를 유지한다.
   const isSidebarWaitingForWorkspace =
     Boolean(user?.id) &&
@@ -1174,6 +1188,10 @@ export function AppShell() {
           {/* Nav */}
           <div className="notion-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 py-1 [scrollbar-gutter:stable]">
             <SidebarNav
+              key={`${user?.id ?? ""}:${sidebarWorkspaceId ?? ""}`}
+              objectsOrder={objectsOrder}
+              listsOrder={listsOrder}
+              favoritesOrder={favoritesOrder}
               crmLists={sidebarCrmLists}
               crmObjects={sidebarCrmObjects}
               isCrmListsLoading={isSidebarCrmListsLoading}
