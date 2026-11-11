@@ -126,12 +126,8 @@ test("loads an Object header first and its view list only when opened", async ({
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await expect(menu.getByRole("option").last()).toHaveAttribute("aria-selected", "true");
   expect(state.lists.at(-1)!.searchParams.get("viewDefinitionId")).toBe("view-seoul");
-  const count = state.lists.length;
-  await menu.getByRole("textbox", { name: "보기 검색" }).fill("전체");
-  await expect(menu.getByRole("option")).toHaveCount(1);
-  expect(state.lists).toHaveLength(count);
-  await menu.getByRole("textbox", { name: "보기 검색" }).fill("찾을 수 없는 보기");
-  await expect(menu).toContainText("일치하는 보기가 없어요.");
+  await expect(menu.getByRole("textbox")).toHaveCount(0);
+  await expect(menu.getByRole("option")).toHaveCount(2);
   await expect(menu.getByText("저장된 보기가 없어요.")).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(header(page).getByRole("button", { name: "보기 선택", exact: true })).toBeFocused();
@@ -232,7 +228,7 @@ test("supports keyboard selection and shares selection across responsive headers
   await page.goto(OBJECT_PATH);
   await header(page).getByRole("button", { name: "보기 선택", exact: true }).click();
   await expect(header(page).getByRole("option")).toHaveCount(2);
-  await expect(header(page).getByRole("textbox", { name: "보기 검색" })).toBeFocused();
+  await expect(header(page).getByRole("dialog")).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("Enter");

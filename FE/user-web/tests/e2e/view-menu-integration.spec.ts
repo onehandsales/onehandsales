@@ -23,7 +23,7 @@ for (const type of VIEW_TYPES) {
     await toolbar(page).getByRole("button", { name: "보기 설정", exact: true }).click();
     const dialog = toolbar(page).getByRole("dialog");
     await expect(dialog.getByText("레이아웃", { exact: true })).toBeVisible();
-    await expect(dialog).toHaveCSS("width", "264px");
+    await expect(dialog).toHaveCSS("width", "260px");
     const markers = { TABLE: "표시 정보", KANBAN: "단계 기준", LIST: "제목 정보", GALLERY: "이미지", CALENDAR: "시작 날짜", TIMELINE: "막대 제목", GANTT: "진행률", CHART: "차트 종류", PIVOT: "행 기준", MAP: "위치 기준", DASHBOARD: "표시할 위젯" };
     await expect(dialog.getByText(markers[type], { exact: true })).toBeVisible();
     await expect(dialog.getByText("표시 정보", { exact: true })).toHaveCount(["CHART", "PIVOT", "DASHBOARD"].includes(type) ? 0 : 1);
@@ -83,7 +83,7 @@ test("edits nested filters and sort priorities inside the original inputs", asyn
   await dialog.getByLabel("정렬 방향").first().selectOption("ASC");
   await dialog.getByRole("button", { name: "정렬 추가", exact: true }).click();
   await expect(dialog.getByLabel("정렬 방향")).toHaveCount(3);
-  await expect(dialog).toHaveCSS("width", "340px");
+  await expect(dialog).toHaveCSS("width", "260px");
   expect(state.requests.map(item => item.menu)).toEqual(["filters", "sorts"]);
   expect(state.writes).toEqual([]);
 });

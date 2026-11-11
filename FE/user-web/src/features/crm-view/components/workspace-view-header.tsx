@@ -1,10 +1,10 @@
 import {
   CalendarDays, ChartNoAxesCombined, Check, ChevronDown, Columns3, GanttChart, Heart,
-  Layers, LayoutDashboard, LayoutGrid, List, Map, Search, Table2,
+  Layers, LayoutDashboard, LayoutGrid, List, Map, Table2,
   TableProperties, type LucideIcon,
 } from "lucide-react";
 import {
-  type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useRef, useState,
+  type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useLayoutEffect, useRef, useState,
 } from "react";
 import { IconValueGlyph } from "@/components/ui/icon-value-glyph";
 import { useAppI18n, type AppI18nKey } from "@/features/app-i18n";
@@ -29,10 +29,9 @@ const TYPE_LABELS: Record<WorkspaceViewType, AppI18nKey> = {
 export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHeaderModel }) {
   const { t } = useAppI18n();
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
   const favoriteErrorId = useId();
   const viewsQuery = useWorkspaceViews({
@@ -40,9 +39,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     targetId: model.target?.id ?? null, viewDefinitionId: model.currentView?.viewDefinitionId ?? null,
     enabled: isOpen && !model.isLoading && !model.isError,
   });
-  const visibleItems = (viewsQuery.data?.items ?? []).filter(
-    item => item.viewName.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
-  );
+  const items = viewsQuery.data?.items ?? [];
 
   // 기능 : 보기 메뉴를 닫고 선택을 시작한 버튼으로 초점을 복원합니다.
   const closeMenu = useCallback(() => {
@@ -50,10 +47,29 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     triggerRef.current?.focus();
   }, []);
 
+  // 기능 : 보기 버튼 아래에서 오른쪽으로 펼치고 좁은 화면에서만 좌우 위치를 보정합니다.
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    function positionPanel() {
+      const root = rootRef.current, trigger = triggerRef.current, panel = panelRef.current;
+      if (!root || !trigger || !panel) return;
+      const origin = root.getBoundingClientRect(), button = trigger.getBoundingClientRect();
+      const left = Math.max(12, Math.min(button.left, window.innerWidth - panel.offsetWidth - 12));
+      panel.style.left = `${left - origin.left}px`;
+      panel.style.top = `${button.bottom - origin.top + 6}px`;
+    }
+    positionPanel();
+    const observer = new ResizeObserver(positionPanel);
+    if (rootRef.current) observer.observe(rootRef.current);
+    if (triggerRef.current) observer.observe(triggerRef.current);
+    window.addEventListener("resize", positionPanel);
+    return () => { observer.disconnect(); window.removeEventListener("resize", positionPanel); };
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen) return;
-    // 1. 메뉴 오픈 시 검색 입력에 초점을 두고 바깥 클릭·Escape를 구독한다.
-    searchRef.current?.focus();
+    // 1. 메뉴 오픈 시 팝오버에 초점을 두고 바깥 클릭·Escape를 구독한다.
+    panelRef.current?.focus();
     const breakpoint = window.matchMedia("(min-width: 1024px)");
 
     // 기능 : 헤더 밖에서 다른 조작을 시작하면 보기 메뉴를 닫습니다.
@@ -80,10 +96,8 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     };
   }, [isOpen, closeMenu]);
 
-  // 기능 : 목록 요청은 열림 상태에 맡기고 메뉴 검색어를 초기화합니다.
+  // 기능 : 보기 메뉴를 열거나 닫고 열림 상태에 따라 목록을 요청합니다.
   function handleToggle() {
-    // 1. 이전 검색을 비우고 열림 상태로 목록 요청 여부를 결정한다.
-    setSearch("");
     setIsOpen(current => !current);
   }
 
@@ -94,12 +108,10 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     closeMenu();
   }
 
-  // 기능 : 검색 입력과 보기 항목 사이에서 방향키로 초점을 이동합니다.
+  // 기능 : 보기 항목 사이에서 방향키로 초점을 이동합니다.
   function handleMenuKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
-    // 1. 입력의 Home/End 동작은 보존하고 목록 탐색 키만 처리한다.
-    const fromInput = event.target instanceof HTMLInputElement;
+    // 1. 방향키와 Home/End로 목록을 탐색한다.
     if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
-    if (fromInput && (event.key === "Home" || event.key === "End")) return;
     const options = Array.from(rootRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]') ?? []);
     if (!options.length) return;
     event.preventDefault();
@@ -182,22 +194,20 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
     </div>}
     {isOpen && <div
       aria-label={t("viewHeader.selectView")}
-      className="absolute left-0 top-[calc(100%+6px)] z-50 w-[300px] max-w-[calc(100vw-24px)] rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)]"
+      className="absolute left-0 top-[calc(100%+6px)] z-50 w-[260px] max-w-[calc(100vw-24px)] rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)] outline-none"
       id={panelId}
+      ref={panelRef}
       onKeyDown={handleMenuKeyDown}
       role="dialog"
+      tabIndex={-1}
     >
-      <label className="m-1 mb-1.5 flex h-8 items-center gap-2 rounded bg-[#F4F3F0] px-2">
-        <Search aria-hidden="true" className="h-3.5 w-3.5 text-[#9B9A97]" />
-        <input aria-label={t("viewHeader.searchViews")} className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-[#9B9A97]" onChange={event => setSearch(event.target.value)} placeholder={t("viewHeader.searchViews")} ref={searchRef} value={search} />
-      </label>
       {viewsQuery.isPending ? <p className="p-3 text-[#787774]" role="status">{t("viewHeader.loadingViews")}</p>
         : viewsQuery.isError ? <div className="flex items-center justify-between gap-2 p-3" role="alert">
           <span>{t("viewHeader.listError")}</span>
           <button className="shrink-0 rounded px-1 py-1 text-[#326ACD] hover:bg-[#F0EFEC]" onClick={handleRetryViews} type="button">{t("viewHeader.retry")}</button>
         </div>
         : <div aria-busy={viewsQuery.isFetching} aria-label={t("viewHeader.viewList")} className="max-h-60 overflow-y-auto" role="listbox">
-          {visibleItems.map(view => <button
+          {items.map(view => <button
             aria-selected={view.isSelected}
             className="flex h-8 w-full items-center gap-2 rounded px-2 text-left hover:bg-[#F3F2EF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/40"
             data-view-id={view.viewDefinitionId}
@@ -211,7 +221,7 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
             <span className="shrink-0 text-[11px] text-[#A4A39E]">{t(TYPE_LABELS[view.viewType])}</span>
             {view.isSelected && <Check aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />}
           </button>)}
-          {!visibleItems.length && <p className="p-3 text-[#9B9A97]">{t(viewsQuery.data?.items.length ? "viewHeader.noViews" : "viewHeader.noSavedViews")}</p>}
+          {!items.length && <p className="p-3 text-[#9B9A97]">{t("viewHeader.noSavedViews")}</p>}
         </div>}
     </div>}
   </div>;

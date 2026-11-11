@@ -111,12 +111,9 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
     if (name === "settings" && menus.settings.data) return <ViewSettingsMenu data={menus.settings.data} candidates={attributes} onChange={menus.settings.change} />;
     return null;
   }
-  // 기능 : 설정 264px와 필터·정렬 340px의 기존 팝오버 형태를 유지합니다.
+  // 기능 : 검색·필터·정렬·설정 팝오버의 폭을 260px로 통일합니다.
   function renderPopover(name: Panel, title: string, children: ReactNode) {
-    return panel === name ? <div aria-label={title} className={cn(
-      "absolute right-0 top-[calc(100%+6px)] z-50 max-h-[calc(100dvh-100px)] max-w-[calc(100vw-24px)] overflow-y-auto rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)]",
-      name === "filters" || name === "sorts" ? "w-[340px]" : "w-[264px]",
-    )} data-header-popover="" id={panelId} role="dialog">
+    return panel === name ? <div aria-label={title} className="absolute right-0 top-[calc(100%+6px)] z-50 w-[260px] max-h-[calc(100dvh-100px)] max-w-[calc(100vw-24px)] overflow-y-auto rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)]" data-header-popover="" id={panelId} role="dialog">
       <div className="flex items-center justify-between px-2 pb-2 pt-1"><span className="font-semibold">{title}</span><button aria-label={t("common.close")} className="rounded p-1 text-[#9B9A97] hover:bg-[#F0EFEC]" onClick={closePanel} type="button"><X className="h-3.5 w-3.5" /></button></div>
       {children}{name !== "search" && <ViewPreviewNote />}
     </div> : null;
