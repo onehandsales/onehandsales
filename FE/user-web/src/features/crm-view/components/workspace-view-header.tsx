@@ -142,30 +142,30 @@ export function WorkspaceViewHeader({ model }: { readonly model: WorkspaceViewHe
 
   return <div className="relative flex min-w-0 shrink items-center gap-1.5" data-testid="workspace-view-header" ref={rootRef}>
     <IconValueGlyph className="h-[20px] w-[20px] shrink-0 text-[#6B7280]" name={model.target?.icon ?? null} />
-    <h1 className="max-w-[80px] shrink truncate font-sans text-[14px] font-medium text-[#4B5563] xl:max-w-[140px]" title={model.target?.name ?? t("viewHeader.targetLabel")}>{model.target?.name ?? t("viewHeader.targetLabel")}</h1>
-    <span aria-hidden="true" className="mx-0.5 h-3.5 w-px shrink-0 bg-[#E7E6E2]" />
+    <h1 className="max-w-[80px] shrink truncate font-sans text-[14px] font-medium text-[#111827] xl:max-w-[140px]" title={model.target?.name ?? t("viewHeader.targetLabel")}>{model.target?.name ?? t("viewHeader.targetLabel")}</h1>
+    <span aria-hidden="true" className="mx-0.5 shrink-0 select-none text-[14px] font-normal leading-none text-[#E7E6E2]">/</span>
     <button
       aria-controls={isOpen ? panelId : undefined}
       aria-expanded={isOpen}
       aria-haspopup="dialog"
       aria-label={t("viewHeader.selectView")}
       disabled={!model.target}
-      className={cn("inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#65645F] hover:bg-[#E4E2DC] hover:text-[#111827] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
+      className={cn("group/view-selector inline-flex h-7 min-w-0 max-w-[130px] shrink items-center gap-1.5 rounded px-1.5 font-sans text-[14px] font-medium text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 xl:max-w-[180px]", isOpen && "bg-[#F0EFEC]")}
       onClick={handleToggle}
       ref={triggerRef}
       title={model.currentView?.viewName ?? t("viewHeader.noCurrentView")}
       type="button"
     >
-      <ViewGlyph className="h-[16px] w-[16px]" icon={model.currentView?.viewIcon ?? null} type={model.currentView?.viewType ?? null} />
+      <ViewGlyph className="h-[16px] w-[16px] text-[#9CA3AF] group-hover/view-selector:text-[#6B7280]" icon={model.currentView?.viewIcon ?? null} type={model.currentView?.viewType ?? null} />
       <span className="truncate">{model.currentView?.viewName ?? t("viewHeader.noCurrentView")}</span>
-      <ChevronDown aria-hidden="true" className="h-[16px] w-[16px] shrink-0 text-[#A4A39E]" />
+      <ChevronDown aria-hidden="true" className="h-[16px] w-[16px] shrink-0 text-[#9CA3AF] group-hover/view-selector:text-[#6B7280]" />
     </button>
     <button
       aria-busy={model.isFavoritePending}
       aria-describedby={model.favoriteError && !isOpen ? favoriteErrorId : undefined}
       aria-label={t(favoriteLabel)}
       aria-pressed={model.isFavorite ?? undefined}
-      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9B9A97] hover:bg-[#E4E2DC] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444]")}
+      className={cn("inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-[#9CA3AF] hover:bg-[#E4E2DC] hover:text-[#6B7280] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4880EE]/50 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent", model.isFavorite === true && "text-[#EF4444] hover:text-[#EF4444]")}
       disabled={!model.canToggleFavorite}
       onClick={model.onToggleFavorite}
       title={t(model.isFavoritePending ? "viewHeader.changingFavorite" : favoriteLabel)}
