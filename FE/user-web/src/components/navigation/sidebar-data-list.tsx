@@ -91,7 +91,7 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
               className: cn("group/sidebar-sortable relative", drag?.source === item.id && "opacity-50"),
             }}
             indicator={drag?.mode === "mouse" && drag.source !== item.id && drag.target?.id === item.id ? (
-              <span aria-hidden="true" className={cn("pointer-events-none absolute inset-x-0 z-10 h-[4px] bg-[#4880EE]", drag.target.side === "before" ? "-top-px" : "-bottom-px")} />
+              <span aria-hidden="true" className={cn("pointer-events-none absolute inset-x-0 z-10 h-[4px] -translate-y-1/2 bg-[#4880EE]", drag.target.side === "before" ? "-top-[0.5px]" : "top-[calc(100%+0.5px)]")} />
             ) : null}
             handle={order && items.length > 1 ? (
               <button type="button" draggable={false} disabled={!enabled} aria-describedby={helpId}
