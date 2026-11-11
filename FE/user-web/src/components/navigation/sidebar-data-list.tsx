@@ -91,14 +91,14 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
               className: cn("group/sidebar-sortable relative", drag?.source === item.id && "opacity-50"),
             }}
             indicator={drag?.mode === "mouse" && drag.source !== item.id && drag.target?.id === item.id ? (
-              <span aria-hidden="true" className={cn("pointer-events-none absolute inset-x-0 z-10 h-0.5 bg-[#9CA3AF]", drag.target.side === "before" ? "-top-px" : "-bottom-px")} />
+              <span aria-hidden="true" className={cn("pointer-events-none absolute inset-x-0 z-10 h-[4px] bg-[#4880EE]", drag.target.side === "before" ? "-top-px" : "-bottom-px")} />
             ) : null}
             handle={order && items.length > 1 ? (
               <button type="button" draggable={false} disabled={!enabled} aria-describedby={helpId}
                 aria-label={t("sidebarOrder.handle", { values: { name: item.label } })}
                 aria-pressed={drag?.mode === "keyboard" && drag.source === item.id}
                 title={t("sidebarOrder.handle", { values: { name: item.label } })}
-                className="absolute right-1 top-1/2 flex h-6 w-5 -translate-y-1/2 cursor-grab items-center justify-center rounded bg-[#F8F7F5] text-[#9CA3AF] opacity-0 hover:bg-[#E4E2DC] hover:text-[#6B7280] focus:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9CA3AF] active:cursor-grabbing disabled:cursor-wait group-hover/sidebar-sortable:opacity-100"
+                className="absolute right-1 top-1/2 flex h-6 w-5 -translate-y-1/2 cursor-grab items-center justify-center rounded text-[#9CA3AF] opacity-0 focus:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9CA3AF] active:cursor-grabbing disabled:cursor-wait group-hover/sidebar-sortable:opacity-100"
                 onClick={event => { event.preventDefault(); event.stopPropagation(); }}
                 onKeyDown={event => {
                   if (!enabled) return;
@@ -139,7 +139,7 @@ function getSidebarDataRowClassName(isActive: boolean) {
     "group/sidebar-data-row relative flex h-[30px] w-full items-center gap-2 rounded-md px-2 text-left text-[14px] font-medium transition-colors",
     isActive
       ? "bg-[#E4E2DC] text-[#111827] active:bg-[#D3D1CB]"
-      : "text-[#4B5563] hover:bg-[#E4E2DC] hover:text-[#111827] active:bg-[#D3D1CB]"
+      : "text-[#4B5563] group-hover/sidebar-sortable:bg-[#E4E2DC] group-hover/sidebar-sortable:text-[#111827] active:bg-[#D3D1CB] group-hover/sidebar-sortable:active:bg-[#D3D1CB]"
   );
 }
 
@@ -184,7 +184,7 @@ function SidebarDataRowContent({
           "h-5 w-5 shrink-0",
           isActive
             ? "text-[#6B7280]"
-            : "text-[#9CA3AF] group-hover/sidebar-data-row:text-[#6B7280]"
+            : "text-[#9CA3AF] group-hover/sidebar-sortable:text-[#6B7280]"
         )}
         name={item.icon}
         strokeWidth={2}
