@@ -113,7 +113,7 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
               <button type="button" draggable={false} disabled={!enabled} aria-describedby={helpId}
                 aria-label={t("sidebarOrder.handle", { values: { name: item.label } })}
                 aria-pressed={drag?.mode === "keyboard" && drag.source === item.id}
-                className="absolute right-1 top-1/2 flex h-6 w-5 -translate-y-1/2 cursor-grab items-center justify-center rounded text-[#9CA3AF] opacity-0 focus:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9CA3AF] active:cursor-grabbing disabled:cursor-wait group-hover/sidebar-sortable:opacity-100"
+                className="absolute right-1 top-1/2 flex h-6 w-5 -translate-y-1/2 cursor-grab items-center justify-center rounded text-[#9CA3AF] opacity-0 focus:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9CA3AF] active:cursor-grabbing group-hover/sidebar-sortable:opacity-100"
                 onClick={event => { event.preventDefault(); event.stopPropagation(); }}
                 onKeyDown={event => {
                   if (!enabled) return;
