@@ -827,11 +827,11 @@ export function AppShell() {
   const sidebarOpenButton = isSidebarCollapsed ? (
     <button
       aria-label={t("shell.sidebarOpen")}
-      className="group/sidebar-tooltip relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
+      className="group/sidebar-tooltip relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#9CA3AF] transition hover:bg-[#E4E2DC] hover:text-[#6B7280] active:bg-[#D3D1CB]"
       type="button"
       onClick={openDesktopSidebar}
     >
-      <Menu className="h-[16px] w-[16px] shrink-0" strokeWidth={2} />
+      <Menu className="h-[20px] w-[20px] shrink-0" strokeWidth={2} />
       <span className="pointer-events-none absolute left-0 top-[calc(100%+6px)] z-50 whitespace-nowrap rounded-md bg-[#111827] px-2 py-1 text-[14px] font-medium leading-none text-white opacity-0 shadow-lg transition-opacity group-hover/sidebar-tooltip:opacity-100">
         {t("shell.sidebarOpen")}
       </span>
@@ -842,7 +842,7 @@ export function AppShell() {
   const topBarContent = (() => {
     if (isWorkspaceViewTarget) {
       return (
-        <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-3">
+        <header className="app-page-header flex h-[var(--topbar-height)] shrink-0 items-center gap-2 bg-white px-[10px]">
           {sidebarOpenButton}
           <WorkspaceViewHeader key={viewHeaderScope} model={viewHeaderModel} />
           <div className="flex min-w-0 flex-1 items-center" ref={setHeaderToolbarElement} />
@@ -1284,7 +1284,7 @@ export function AppShell() {
       {/* ── Mobile Shell ── */}
       <div className="min-h-dvh lg:hidden">
         {isWorkspaceViewTarget ? (
-          <header className="app-page-header flex h-[var(--topbar-height)] items-center gap-2 bg-white px-3">
+          <header className="app-page-header flex h-[var(--topbar-height)] items-center gap-2 bg-white px-[10px]">
             <WorkspaceViewHeader key={viewHeaderScope} model={viewHeaderModel} />
           </header>
         ) : !isMobileHeaderHidden ? (

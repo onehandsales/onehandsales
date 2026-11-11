@@ -146,7 +146,7 @@ function ToolbarButton({ active, disabled = false, controls, expanded, icon: Ico
   readonly expanded: boolean; readonly icon: LucideIcon; readonly label: string;
   readonly onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} title={label} disabled={disabled} className={cn(CONTROL_CLASS, "group/header-tool disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE]")} onClick={onClick} type="button">
+  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} title={label} disabled={disabled} className={cn(CONTROL_CLASS, "group/header-tool w-7 p-0 disabled:cursor-default disabled:opacity-40", active && "bg-[#EDF3FE]")} onClick={onClick} type="button">
     <Icon aria-hidden="true" className={cn("h-[16px] w-[16px] shrink-0 text-[#9CA3AF] group-hover/header-tool:text-[#6B7280]", active && "text-[#326ACD]")} />
   </button>;
 }
