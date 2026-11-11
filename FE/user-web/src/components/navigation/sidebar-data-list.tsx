@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { GripVertical } from "lucide-react";
-import { useId, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
+import { useId, useRef, useState, type DragEvent, type HTMLAttributes, type ReactNode } from "react";
 import { useAppI18n } from "@/features/app-i18n";
 import { moveSidebarItem, orderItems, type SidebarOrderControl } from "@/features/sidebar-order";
 import { IconValueGlyph } from "@/components/ui/icon-value-glyph";
@@ -39,6 +39,31 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
     if (ids) void order?.onReorder(ids);
     else setAnnouncement(t("sidebarOrder.canceled"));
   }
+
+  // 기능 : 같은 목록 안에서는 행과 1px 빈틈 모두 이동 가능한 드롭 영역으로 처리합니다.
+  function handleDragOver(event: DragEvent<HTMLDivElement>) {
+    const current = mouseDrag.current;
+    if (!current || !enabled) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    const target = findSidebarDropTarget(event.currentTarget, event.clientY);
+    if (target?.id === current.target?.id && target?.side === current.target?.side) return;
+    const next = { ...current, target };
+    mouseDrag.current = next;
+    setDrag(next);
+  }
+
+  // 기능 : 빈틈에 놓아도 실제 놓은 좌표로 최종 순서를 계산합니다.
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    const current = mouseDrag.current;
+    if (!current || !enabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    blockClickUntil.current = Date.now() + 250;
+    const target = findSidebarDropTarget(event.currentTarget, event.clientY);
+    finish(target ? moveSidebarItem(current.ids, current.source, target.id, target.side) : undefined);
+  }
+
   // 1. 모든 데이터 영역에 동일한 로딩 Skeleton을 표시한다.
   if (isLoading) {
     return <SidebarDataSkeletonList />;
@@ -53,6 +78,16 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
   return (
     <>
       <div aria-label={label} aria-busy={order?.isSaving || undefined} className="flex flex-col gap-px" role="list"
+        onDragEnter={handleDragOver}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        onDragLeave={event => {
+          const current = mouseDrag.current;
+          if (!current?.target || event.currentTarget.contains(document.elementFromPoint(event.clientX, event.clientY))) return;
+          const next = { ...current, target: undefined };
+          mouseDrag.current = next;
+          setDrag(next);
+        }}
         onKeyDown={event => { if (event.key === "Escape" && drag) { event.preventDefault(); finish(); } }}
         onClickCapture={event => { if (Date.now() < blockClickUntil.current) { event.preventDefault(); event.stopPropagation(); } }}>
         {visibleItems.map(item => (
@@ -68,36 +103,16 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
                 event.dataTransfer.effectAllowed = "move";
                 event.dataTransfer.setData("application/x-onehand-sidebar-item", item.id);
               },
-              onDragOver: event => {
-                const current = mouseDrag.current;
-                if (!current || !enabled) return;
-                event.preventDefault();
-                event.dataTransfer.dropEffect = "move";
-                const rect = event.currentTarget.getBoundingClientRect();
-                const target = { id: item.id, side: event.clientY < rect.top + rect.height / 2 ? "before" as const : "after" as const };
-                const next = { ...current, target };
-                mouseDrag.current = next;
-                setDrag(next);
-              },
-              onDrop: event => {
-                const current = mouseDrag.current;
-                if (!current || !enabled) return;
-                event.preventDefault();
-                event.stopPropagation();
-                blockClickUntil.current = Date.now() + 250;
-                finish(moveSidebarItem(current.ids, current.source, item.id, current.target?.side ?? "before"));
-              },
               onDragEnd: () => { mouseDrag.current = null; setDrag(null); },
               className: cn("group/sidebar-sortable relative", drag?.source === item.id && "opacity-50"),
             }}
             indicator={drag?.mode === "mouse" && drag.source !== item.id && drag.target?.id === item.id ? (
-              <span aria-hidden="true" className={cn("pointer-events-none absolute inset-x-0 z-10 h-[4px] -translate-y-1/2 bg-[#4880EE]", drag.target.side === "before" ? "-top-[0.5px]" : "top-[calc(100%+0.5px)]")} />
+              <span aria-hidden="true" data-testid="sidebar-order-indicator" className={cn("pointer-events-none absolute inset-x-0 z-10 h-[4px] -translate-y-1/2 bg-[#4880EE]", drag.target.side === "before" ? "-top-[0.5px]" : "top-[calc(100%+0.5px)]")} />
             ) : null}
             handle={order && items.length > 1 ? (
               <button type="button" draggable={false} disabled={!enabled} aria-describedby={helpId}
                 aria-label={t("sidebarOrder.handle", { values: { name: item.label } })}
                 aria-pressed={drag?.mode === "keyboard" && drag.source === item.id}
-                title={t("sidebarOrder.handle", { values: { name: item.label } })}
                 className="absolute right-1 top-1/2 flex h-6 w-5 -translate-y-1/2 cursor-grab items-center justify-center rounded text-[#9CA3AF] opacity-0 focus:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#9CA3AF] active:cursor-grabbing disabled:cursor-wait group-hover/sidebar-sortable:opacity-100"
                 onClick={event => { event.preventDefault(); event.stopPropagation(); }}
                 onKeyDown={event => {
@@ -131,6 +146,18 @@ export function SidebarDataList({ items, isLoading, label, order }: SidebarDataL
       </> : null}
     </>
   );
+}
+
+// 기능 : 행 중심을 기준으로 같은 빈틈에는 하나의 삽입 위치만 반환합니다.
+function findSidebarDropTarget(list: HTMLElement, clientY: number): { id: string; side: "before" | "after" } | undefined {
+  const rows = [...list.querySelectorAll<HTMLElement>("[data-sidebar-item-id]")];
+  const before = rows.find(row => {
+    const rect = row.getBoundingClientRect();
+    return clientY < rect.top + rect.height / 2;
+  });
+  const row = before ?? rows.at(-1);
+  const id = row?.dataset.sidebarItemId;
+  return id ? { id, side: before ? "before" : "after" } : undefined;
 }
 
 // 기능 : 관리 항목을 기준으로 모든 행의 기본·hover·선택 스타일을 결정합니다.

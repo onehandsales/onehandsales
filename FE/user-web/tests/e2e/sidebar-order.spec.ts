@@ -66,6 +66,62 @@ for (const section of sections) {
       await page.getByRole("navigation", { name: "Workspace navigation" }).screenshot({ path: test.info().outputPath("sidebar-after-reorder.png") });
     }
   });
+
+  test(`${section}: native drag accepts row gaps in both directions`, async ({ page }) => {
+    const api = await prepare(page);
+    const before = api.records[section].map(item => item.id);
+    const list = page.getByRole("list", { name: names[section], exact: true });
+    const rows = list.getByRole("listitem");
+    const line = page.getByTestId("sidebar-order-indicator");
+    // 실제 빈틈을 대상으로 받은 dragover가 React 처리 후 허용됐는지 관찰한다.
+    await list.evaluate(element => {
+      window.addEventListener("dragover", event => {
+        if (event.target !== element) return;
+        (element as HTMLElement).dataset.gapAccepted = String(event.defaultPrevented);
+        (element as HTMLElement).dataset.gapDropEffect = event.dataTransfer?.dropEffect;
+      });
+    });
+
+    // 기능 : 행이 아닌 1px 빈틈에 마우스를 놓아 실제 native drop을 검증합니다.
+    async function dropInGap(sourceIndex: number, upperIndex: number) {
+      const source = (await rows.nth(sourceIndex).boundingBox())!;
+      const upper = (await rows.nth(upperIndex).boundingBox())!;
+      const lower = (await rows.nth(upperIndex + 1).boundingBox())!;
+      // Chromium은 소수점 좌표를 다음 행으로 판정할 수 있어 빈틈의 실제 픽셀을 사용한다.
+      const gap = { x: upper.x + 60, y: upper.y + upper.height };
+      expect(await page.evaluate(({ x, y }) => document.elementFromPoint(x, y)?.getAttribute("role"), gap)).toBe("list");
+      await list.evaluate(element => {
+        delete (element as HTMLElement).dataset.gapAccepted;
+        delete (element as HTMLElement).dataset.gapDropEffect;
+      });
+      await page.mouse.move(source.x + 60, source.y + source.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(source.x + 68, source.y + source.height / 2, { steps: 2 });
+      await page.mouse.move(gap.x, upper.y + upper.height - 3, { steps: 8 });
+      await page.mouse.move(gap.x, gap.y);
+      await page.mouse.move(gap.x + 1, gap.y);
+      await expect(list).toHaveAttribute("data-gap-accepted", "true");
+      await expect(list).toHaveAttribute("data-gap-drop-effect", "move");
+      await expect(line).toHaveCount(1);
+      await expect(line).toHaveCSS("height", "4px");
+      await expect(line).toHaveCSS("background-color", "rgb(72, 128, 238)");
+      const gapY = (await line.boundingBox())!.y;
+      await page.mouse.move(gap.x, lower.y + 3);
+      expect((await line.boundingBox())!.y).toBe(gapY);
+      await page.mouse.move(gap.x, gap.y);
+      await page.mouse.up();
+    }
+
+    await dropInGap(0, 1);
+    await expect.poll(() => api.writes.length).toBe(1);
+    expect(api.writes[0]).toEqual({ section, ids: [before[1], before[0], before[2]] });
+    await expect(list).not.toHaveAttribute("aria-busy", "true");
+    await dropInGap(2, 0);
+    await expect.poll(() => api.writes.length).toBe(2);
+    expect(api.writes[1]).toEqual({ section, ids: [before[1], before[2], before[0]] });
+    await expect(line).toHaveCount(0);
+    expect(new URL(page.url()).pathname).toBe("/app/workspaces/workspace-e2e-001");
+  });
 }
 
 test("keyboard cancel does not save; keyboard move persists without navigation", async ({ page }) => {
