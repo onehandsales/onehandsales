@@ -26,13 +26,16 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
   const { t } = useAppI18n();
   const [panel, setPanel] = useState<Panel | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const openMenuRef = useRef(menus.open);
   openMenuRef.current = menus.open;
   const panelId = useId();
+  const searchId = useId();
   const type = header.currentView?.viewType;
   const tools = getViewTools(type);
   const ready = Boolean(header.currentView && header.target) && !header.isLoading && !header.isError;
+  const searchOpen = panel === "search";
 
   // 기능 : 팝오버 조회를 종료하고 원래 버튼으로 초점을 복원합니다.
   function closePanel() {
@@ -56,15 +59,17 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
   useEffect(() => {
     if (!panel) return;
     const root = rootRef.current;
-    root?.querySelector<HTMLElement>("[data-header-popover] input, [data-header-popover] select, [data-header-popover] button")?.focus();
+    // 1. 검색은 펼쳐지는 입력창에, 설정 메뉴는 팝오버의 첫 조작 요소에 초점을 둔다.
+    if (panel === "search") searchInputRef.current?.focus({ preventScroll: true });
+    else root?.querySelector<HTMLElement>("[data-header-popover] input, [data-header-popover] select, [data-header-popover] button")?.focus();
     const initialWidth = window.innerWidth;
-    // 기능 : 바깥 클릭 시 입력은 유지하고 팝오버만 닫습니다.
+    // 기능 : 바깥 클릭 시 검색어는 유지하고 입력창이나 팝오버를 닫습니다.
     function handlePointerDown(event: PointerEvent) {
       if (event.target instanceof Node && !root?.contains(event.target)) { setPanel(null); openMenuRef.current(null); }
     }
-    // 기능 : Escape로 팝오버를 닫고 버튼 초점을 복원합니다.
+    // 기능 : 문자 조합 중이 아닐 때 Escape로 검색·메뉴를 닫고 버튼 초점을 복원합니다.
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
+      if (event.key !== "Escape" || event.isComposing) return;
       event.preventDefault();
       setPanel(null); openMenuRef.current(null); triggerRef.current?.focus();
     }
@@ -111,11 +116,11 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
     if (name === "settings" && menus.settings.data) return <ViewSettingsMenu data={menus.settings.data} candidates={attributes} onChange={menus.settings.change} />;
     return null;
   }
-  // 기능 : 검색·필터·정렬·설정 팝오버의 폭을 260px로 통일합니다.
-  function renderPopover(name: Panel, title: string, children: ReactNode) {
+  // 기능 : 필터·정렬·설정 팝오버의 폭을 260px로 통일합니다.
+  function renderPopover(name: Exclude<Panel, "search">, title: string, children: ReactNode) {
     return panel === name ? <div aria-label={title} className="absolute right-0 top-[calc(100%+6px)] z-50 w-[260px] max-h-[calc(100dvh-100px)] max-w-[calc(100vw-24px)] overflow-y-auto rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)]" data-header-popover="" id={panelId} role="dialog">
       <div className="flex items-center justify-between px-2 pb-2 pt-1"><span className="font-semibold">{title}</span><button aria-label={t("common.close")} className="rounded p-1 text-[#9B9A97] hover:bg-[#F0EFEC]" onClick={closePanel} type="button"><X className="h-3.5 w-3.5" /></button></div>
-      {children}{name !== "search" && <ViewPreviewNote />}
+      {children}<ViewPreviewNote />
     </div> : null;
   }
   // 기능 : 메뉴 버튼과 현재 상태를 기존 헤더 스타일로 연결합니다.
@@ -125,8 +130,30 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
   }
   return <div className="flex min-w-0 flex-1 items-center gap-1" data-testid="view-header-toolbar" ref={rootRef}>
     <div className="min-w-1 flex-1" />
-    {tools.search && <div className="relative shrink-0"><ToolbarButton disabled={!ready} active={Boolean(searchValue) || panel === "search"} controls={panel === "search" ? panelId : undefined} expanded={panel === "search"} icon={Search} label={searchLabel} onClick={event => togglePanel("search", event)} />
-      {renderPopover("search", t("common.search"), <><input aria-label={searchLabel} className="mx-1 h-8 w-[calc(100%-8px)] rounded bg-[#F4F3F0] px-2 outline-none focus:ring-1 focus:ring-[#A9C5FA]" type="search" maxLength={200} placeholder={searchLabel} value={searchValue} onChange={event => onSearchChange(event.target.value)} />{searchValue && <button className="mt-1 w-full rounded px-2 py-2 text-left text-[#787774] hover:bg-[#F3F2EF]" type="button" onClick={() => onSearchChange("")}>{t("common.clear")}</button>}</>)}
+    {tools.search && <div
+      aria-label={searchLabel}
+      className={cn("flex h-7 min-w-7 shrink items-center rounded transition-[width] duration-200 ease-out motion-reduce:transition-none", searchOpen ? "w-[208px] bg-white ring-1 ring-inset ring-[#dededa] focus-within:ring-[#9CA3AF]" : "w-7")}
+      onBlur={event => {
+        if (searchOpen && !event.currentTarget.contains(event.relatedTarget)) setPanel(null);
+      }}
+      role="search"
+    >
+      <ToolbarButton disabled={!ready} active={Boolean(searchValue) && !searchOpen} controls={searchId} expanded={searchOpen} icon={Search} label={searchLabel} popup={false} onClick={event => togglePanel("search", event)} />
+      <div aria-hidden={!searchOpen} className={cn("flex min-w-0 flex-1 items-center overflow-hidden transition-opacity duration-200 motion-reduce:transition-none", searchOpen ? "visible opacity-100" : "invisible opacity-0")} id={searchId} inert={!searchOpen}>
+        <input
+          aria-label={searchLabel}
+          className="h-7 min-w-0 flex-1 bg-transparent pl-1 pr-2 font-sans text-[14px] font-normal text-[#37352F] outline-none placeholder:text-[#9CA3AF] [&::-webkit-search-cancel-button]:appearance-none"
+          disabled={!ready || !searchOpen}
+          maxLength={200}
+          onChange={event => onSearchChange(event.target.value)}
+          placeholder={searchLabel}
+          ref={searchInputRef}
+          tabIndex={searchOpen ? 0 : -1}
+          type="search"
+          value={searchValue}
+        />
+        {searchValue && <button aria-label={t("common.clear")} className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[#9CA3AF] transition-colors hover:bg-[#E4E2DC] hover:text-[#6B7280] enabled:active:bg-[#D3D1CB] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[#9CA3AF]" tabIndex={searchOpen ? 0 : -1} type="button" onClick={() => { onSearchChange(""); searchInputRef.current?.focus(); }}><X aria-hidden="true" className="h-4 w-4" /></button>}
+      </div>
     </div>}
     {tools.filters && menuButton("filters", t("common.filter"), SlidersHorizontal, menus.filters.data?.viewFilterConditionDefinitions.length)}
     {tools.sorts && menuButton("sorts", t(type === "MAP" ? "viewMenu.listSort" : "viewHeader.sort"), ArrowUpDown, menus.sorts.data?.viewSortDefinitions.length)}
@@ -138,12 +165,13 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
 }
 
 // 기능 : 공통 헤더 버튼의 표시·활성·접근성 상태를 표현합니다.
-function ToolbarButton({ active, disabled = false, controls, expanded, icon: Icon, label, onClick }: {
+function ToolbarButton({ active, disabled = false, controls, expanded, icon: Icon, label, popup = true, onClick }: {
   readonly active: boolean; readonly disabled?: boolean; readonly controls?: string;
   readonly expanded: boolean; readonly icon: LucideIcon; readonly label: string;
+  readonly popup?: boolean;
   readonly onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup="dialog" aria-label={label} title={label} disabled={disabled} className={cn(CONTROL_CLASS, "group/header-tool w-7 p-0 disabled:cursor-default disabled:opacity-40", active && "bg-[#E4E2DC] text-[#111827]")} onClick={onClick} type="button">
+  return <button aria-controls={controls} aria-expanded={expanded} aria-haspopup={popup ? "dialog" : undefined} aria-label={label} title={label} disabled={disabled} className={cn(CONTROL_CLASS, "group/header-tool w-7 p-0 disabled:cursor-default disabled:opacity-40", active && "bg-[#E4E2DC] text-[#111827]")} onClick={onClick} type="button">
     <Icon aria-hidden="true" className={cn("h-[16px] w-[16px] shrink-0 text-[#9CA3AF] group-hover/header-tool:text-[#6B7280]", active && "text-[#6B7280]")} />
   </button>;
 }
