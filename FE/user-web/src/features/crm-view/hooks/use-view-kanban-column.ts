@@ -14,7 +14,7 @@ export function useViewKanbanColumn(input: ViewDataRequest, column: ViewKanbanCo
     return response.data;
   }
   return useInfiniteQuery({
-    queryKey: viewDataQueryKeys.group(input, column.groupToken), queryFn: fetchPage,
+    queryKey: [...viewDataQueryKeys.group(input, column.groupToken), input.preview ? JSON.stringify(input.preview) : ""], queryFn: fetchPage,
     initialPageParam: null as string | null,
     ...(!column.isFold ? { initialData: { pages: [{ items: column.items, pageInfo: column.pageInfo }], pageParams: [null as string | null] } } : {}),
     // 기능 : 각 열이 마지막으로 받은 다음 cursor만 이어 읽습니다.

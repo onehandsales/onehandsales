@@ -11,8 +11,8 @@ type GroupField = readonly [ViewGroup["groupRole"], AppI18nKey];
 type ConfigField = readonly [string, AppI18nKey, "boolean" | "value"];
 type SettingsFields = { readonly roles: readonly RoleField[]; readonly groups: readonly GroupField[]; readonly configs: readonly ConfigField[]; readonly display: boolean };
 const FIELDS: Record<WorkspaceViewType, SettingsFields> = {
-  TABLE: { roles: [], groups: [], configs: [], display: true },
-  KANBAN: { roles: [], groups: [["GROUP", "viewMenu.stage"]], configs: [["showEmptyGroups", "viewMenu.showEmptyGroups", "boolean"]], display: true },
+  TABLE: { roles: [["TITLE", "viewMenu.titleAttribute"]], groups: [["GROUP", "viewMenu.group"]], configs: [], display: true },
+  KANBAN: { roles: [["TITLE", "viewMenu.titleAttribute"]], groups: [["GROUP", "viewMenu.stage"]], configs: [["showEmptyGroups", "viewMenu.showEmptyGroups", "boolean"]], display: true },
   LIST: { roles: [["TITLE", "viewMenu.titleAttribute"]], groups: [["GROUP", "viewMenu.group"]], configs: [], display: true },
   GALLERY: { roles: [["TITLE", "viewMenu.titleAttribute"], ["BODY", "viewMenu.bodyAttribute"], ["IMAGE", "viewMenu.imageAttribute"]], groups: [], configs: [["cardSize", "viewMenu.cardSize", "value"]], display: true },
   CALENDAR: { roles: [["START_DATE", "viewMenu.startDate"], ["END_DATE", "viewMenu.endDate"]], groups: [], configs: [], display: true },
@@ -79,15 +79,24 @@ export function ViewSettingsMenu({ data, candidates, onChange }: { readonly data
   function changeGroup(group: ViewGroup | null, role: ViewGroup["groupRole"], reference: ViewReference) {
     // 1. 명시적으로 변경한 그룹만 갱신하고 단계의 표시 여부는 현재 기준으로 판정한다.
     const id = group?.id ?? crypto.randomUUID();
-    onChange({ ...data, viewGroupDefinitions: group ? data.viewGroupDefinitions.map(item => item.id === id ? { ...item, ...reference } : item)
-      : [...data.viewGroupDefinitions, { ...reference, id, groupRole: role, sortDirection: "ASC", sortOrder: Math.max(-1, ...data.viewGroupDefinitions.map(item => item.sortOrder)) + 1, configJson: null }] });
+    const type = data.attributeDefinitions.find(item => item.id === reference.attributeDefinitionId)?.type;
+    const configJson = type === "Date" || type === "Timestamp" ? { dateUnit: "DAY" } : null;
+    const options = [...data.selectOptions, ...data.statusOptions].filter(item => item.attributeDefinitionId === reference.attributeDefinitionId);
+    onChange({ ...data, viewGroupDefinitions: group ? data.viewGroupDefinitions.map(item => item.id === id ? { ...item, ...reference, configJson } : item)
+      : [...data.viewGroupDefinitions, { ...reference, id, groupRole: role, sortDirection: "ASC", sortOrder: Math.max(-1, ...data.viewGroupDefinitions.map(item => item.sortOrder)) + 1, configJson }],
+      viewGroupSettingDefinitions: [...data.viewGroupSettingDefinitions.filter(item => item.viewGroupDefinitionId !== id), ...options.map((option, sortOrder) => ({
+        id: crypto.randomUUID(), viewGroupDefinitionId: id, attributeDefinitionId: reference.attributeDefinitionId,
+        selectOptionId: type === "Select" ? option.id : null, statusOptionId: type === "Status" ? option.id : null,
+        groupKeyJson: null, sortOrder, labelOverride: null, isHidden: false, isFold: false, configJson: null,
+      }))] });
   }
   // 기능 : 그룹 역할을 유지하면서 기준 속성을 선택합니다.
   function renderGroup([role, labelKey]: GroupField) {
     const groups = data.viewGroupDefinitions.filter(item => item.groupRole === role);
     return <div key={role}>{(groups.length ? groups : [null]).map((group, index) => <label className="flex min-h-9 items-center gap-2 px-2 py-1" key={group?.id ?? role}>
       <span className="w-[86px] shrink-0">{t(labelKey)}{groups.length > 1 ? ` ${index + 1}` : ""}</span>
-      <ViewReferenceSelect value={group} candidates={candidates} attributes={data.attributeDefinitions} label={t(labelKey)} onChange={reference => changeGroup(group, role, reference)} />
+      <ViewReferenceSelect value={group} candidates={candidates.filter(item => data.viewType === "KANBAN" ? ["Select", "Status"].includes(item.type ?? "") && !item.isMultiselect : !["Location", "Interaction"].includes(item.type ?? ""))} attributes={data.attributeDefinitions} label={t(labelKey)} onChange={reference => changeGroup(group, role, reference)} />
+      {group && ["TABLE", "LIST"].includes(data.viewType) && <button type="button" className="shrink-0 text-[#787774]" aria-label={`${t(labelKey)} · ${t("viewMenu.unset")}`} onClick={() => onChange({ ...data, viewGroupDefinitions: data.viewGroupDefinitions.filter(row => row.id !== group.id), viewGroupSettingDefinitions: data.viewGroupSettingDefinitions.filter(row => row.viewGroupDefinitionId !== group.id) })}>×</button>}
     </label>)}</div>;
   }
   // 기능 : 확정된 토글은 편집하고 선택 규격이 없는 값은 현재 설정으로 표시합니다.
@@ -142,12 +151,19 @@ export function ViewSettingsMenu({ data, candidates, onChange }: { readonly data
     </div>)}{!settings.length && <EmptySettings />}</>;
   } else {
     const displayRows = settings.filter(item => item.attributeDisplayRole === "DISPLAY" || data.viewType === "TABLE" && item.attributeDisplayRole === "TITLE");
-    const extraCandidates = candidates.filter(candidate => !displayRows.some(row => row.sourceScope === "RECORD" && !row.referenceAttributeIdPathJson.length && row.attributeDefinitionId === candidate.id));
+    const extraCandidates = candidates.filter(candidate => !displayRows.some(row => row.sourceScope === (candidate.listDefinitionId ? "LIST_ENTRY" : "RECORD") && !row.referenceAttributeIdPathJson.length && row.attributeDefinitionId === candidate.id));
     body = <>
       <div className="flex items-center gap-2 rounded px-2 py-2"><LayoutIcon className="h-3.5 w-3.5 text-[#9B9A97]" /><span className="flex-1">{t("viewHeader.layout")}</span><span className="text-[#9B9A97]">{t(VIEW_TYPE_LABELS[data.viewType])}</span></div>
       <div className="my-1 border-t border-[#EEEDE9]" />
       {fields.roles.map(renderRole)}
       {fields.groups.map(renderGroup)}
+      {data.viewGroupDefinitions.filter(group => ["Date", "Timestamp"].includes(data.attributeDefinitions.find(item => item.id === group.attributeDefinitionId)?.type ?? "")).map(group => <label className="flex min-h-8 items-center gap-2 px-2" key={group.id}>
+        <span>{t("viewConfiguration.dateUnit")}</span><select className={`${MENU_INPUT} flex-1`} aria-label={t("viewConfiguration.dateUnit")} value={String(readViewConfig(group.configJson, "dateUnit") ?? "DAY")} onChange={event => onChange({ ...data, viewGroupDefinitions: data.viewGroupDefinitions.map(row => row.id === group.id ? { ...row, configJson: { dateUnit: event.target.value } } : row) })}>
+          <option value="DAY">{t("viewConfiguration.day")}</option><option value="MONTH">{t("viewConfiguration.month")}</option><option value="YEAR">{t("viewConfiguration.year")}</option>
+        </select></label>)}
+      {["TABLE", "LIST", "KANBAN"].includes(data.viewType) && <label className="flex min-h-8 items-center gap-2 px-2"><span>{t("viewConfiguration.density")}</span>
+        <select className={`${MENU_INPUT} flex-1`} aria-label={t("viewConfiguration.density")} value={String(readViewConfig(data.configJson, data.viewType === "KANBAN" ? "cardDensity" : "rowDensity") ?? "")} onChange={event => onChange({ ...data, configJson: updateViewConfig(data.configJson, data.viewType === "KANBAN" ? "cardDensity" : "rowDensity", event.target.value || null) })}>
+          <option value="">{t("viewMenu.unset")}</option><option value="COMFORTABLE">{t("viewMenu.comfortable")}</option><option value="COMPACT">{t("viewMenu.compact")}</option></select></label>}
       {data.viewType === "KANBAN" && detailButton("stages", t("viewMenu.stages"))}
       {fields.configs.map(renderConfig)}
       {["CALENDAR", "TIMELINE", "CHART", "PIVOT"].includes(data.viewType) && detailButton("format", t("viewMenu.format"))}
@@ -158,7 +174,7 @@ export function ViewSettingsMenu({ data, candidates, onChange }: { readonly data
           <span className="truncate" title={referenceLabel(row, attributeLabels)}>{row.labelOverride ?? referenceLabel(row, attributeLabels)}{row.sourceScope === "LIST_ENTRY" ? ` · ${t("viewMenu.listValue")}` : ""}</span>
         </label>)}
         {extraCandidates.map(candidate => <label className="flex h-8 cursor-pointer items-center gap-2 rounded px-2 hover:bg-[#F3F2EF]" key={candidate.id}>
-          <input checked={false} className="h-3.5 w-3.5 accent-[#4880EE]" type="checkbox" onChange={() => addSetting("DISPLAY", { sourceScope: "RECORD", attributeDefinitionId: candidate.id, referenceAttributeIdPathJson: [] })} /><span className="truncate">{candidate.title}</span>
+          <input checked={false} className="h-3.5 w-3.5 accent-[#4880EE]" type="checkbox" onChange={() => addSetting("DISPLAY", { sourceScope: candidate.listDefinitionId ? "LIST_ENTRY" : "RECORD", attributeDefinitionId: candidate.id, referenceAttributeIdPathJson: [] })} /><span className="truncate">{candidate.title}{candidate.listDefinitionId ? ` · ${t("viewMenu.listValue")}` : ""}</span>
         </label>)}
         {!displayRows.length && !extraCandidates.length && <p className="px-2 py-2 text-[#9B9A97]">{t("viewHeader.noAttributes")}</p>}
       </>}

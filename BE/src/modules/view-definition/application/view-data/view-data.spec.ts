@@ -300,6 +300,20 @@ describe("Three-type View execution", () => {
       expect(JSON.stringify(result)).not.toContain(fixtureId(999));
     }
   });
+  it("keeps linked record names when the view title changes or is hidden", () => {
+    const snapshot = viewDataFixture("TABLE");
+    snapshot.attributes.set(fixtureId(11), { ...snapshot.attributes.get(fixtureId(11))!, type: "RecordReference" });
+    for (const recordId of [fixtureId(70), fixtureId(71)]) {
+      const rows = snapshot.values.get(valueKey("RECORD", recordId, fixtureId(11)))!;
+      rows[0] = { ...rows[0]!, attributeType: "RecordReference", numberValue: null, targetRecordDefinitionId: fixtureId(71), targetObjectDefinitionId: fixtureId(5) };
+    }
+    const title = snapshot.configuration.viewAttributeSettingDefinitions[0]!;
+    snapshot.configuration.viewAttributeSettingDefinitions[0] = { ...title, attributeDefinitionId: fixtureId(13), isHidden: true };
+    const result = execute(snapshot);
+    if (result.state !== "READY" || result.part !== "MAIN" || result.viewType !== "TABLE") throw new Error("TABLE expected");
+    expect(result.data.items[0]?.title).toBe("이름 없는 기록");
+    expect(result.data.items[0]?.cells.find(cell => cell.bindingId === fixtureId(41))?.values[0]?.value).toMatchObject({ recordDefinitionId: fixtureId(71), label: "Record 2" });
+  });
   it.each(["TABLE", "LIST"] as const)("preserves multivalue option groups and occurrence identity for %s", type => {
     const s = viewDataFixture(type);
     const group = viewDataFixture("KANBAN").configuration.viewGroupDefinitions[0]!;

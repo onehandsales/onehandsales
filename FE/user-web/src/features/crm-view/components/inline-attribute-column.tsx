@@ -54,6 +54,7 @@ export function InlineAttributeColumn({ scope, onCancel, onCreated }: {
     // 1. cursor가 이전 설정을 가리키지 않도록 해당 View의 본문 페이지를 처음부터 읽는다.
     await Promise.all([
       client.invalidateQueries({ queryKey: workspaceObjectAttributeDefinitionQueryKeys.list(scope.userId, scope.workspaceId, scope.targetId) }),
+      client.invalidateQueries({ queryKey: viewConfigurationQueryKeys.view(scope.userId, scope.workspaceId, scope.viewDefinitionId) }),
       client.invalidateQueries({ queryKey: workspaceViewQueryKeys.menu(scope.userId, scope.workspaceId, scope.viewDefinitionId, "settings") }),
       client.invalidateQueries({ queryKey: workspaceViewQueryKeys.menu(scope.userId, scope.workspaceId, scope.viewDefinitionId, "filters") }),
       client.invalidateQueries({ queryKey: workspaceViewQueryKeys.menu(scope.userId, scope.workspaceId, scope.viewDefinitionId, "sorts") }),
@@ -171,3 +172,4 @@ export function InlineAttributeColumn({ scope, onCancel, onCreated }: {
       disabled={saving || saved} error={error} onSelect={selectType} onRetry={() => { void submit(true); }} />}
   </div>;
 }
+import { viewConfigurationQueryKeys } from "../api/view-configuration-query-keys";

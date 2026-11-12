@@ -16,7 +16,9 @@ for (const type of VIEW_TYPES) {
     const state = await setupViewMenuScenario(page, type);
     await page.goto(MENU_OBJECT_PATH);
     await expect(toolbar(page).getByRole("button", { name: "보기 설정", exact: true })).toBeEnabled();
-    expect(state.requests).toEqual([]);
+    const saving = ["TABLE", "KANBAN", "LIST"].includes(type);
+    if (saving) await expect.poll(() => state.requests.length).toBe(1);
+    else expect(state.requests).toEqual([]);
     await expect(toolbar(page).getByRole("button", { name: "필터", exact: true })).toHaveCount(type === "DASHBOARD" ? 0 : 1);
     await expect(toolbar(page).getByRole("button", { name: /^(정렬|목록 정렬)$/ })).toHaveCount(["CALENDAR", "CHART", "PIVOT", "DASHBOARD"].includes(type) ? 0 : 1);
     await expect(toolbar(page).getByRole("button", { name: /검색/ })).toHaveCount(["CHART", "PIVOT", "DASHBOARD"].includes(type) ? 0 : 1);
@@ -27,7 +29,7 @@ for (const type of VIEW_TYPES) {
     const markers = { TABLE: "표시 정보", KANBAN: "단계 기준", LIST: "제목 정보", GALLERY: "이미지", CALENDAR: "시작 날짜", TIMELINE: "막대 제목", GANTT: "진행률", CHART: "차트 종류", PIVOT: "행 기준", MAP: "위치 기준", DASHBOARD: "표시할 위젯" };
     await expect(dialog.getByText(markers[type], { exact: true })).toBeVisible();
     await expect(dialog.getByText("표시 정보", { exact: true })).toHaveCount(["CHART", "PIVOT", "DASHBOARD"].includes(type) ? 0 : 1);
-    expect(state.requests).toEqual([{ view: "view-" + type.toLowerCase(), menu: "settings" }]);
+    expect(state.requests).toEqual([{ view: "view-" + type.toLowerCase(), menu: saving ? "configuration" : "settings" }]);
     expect(state.writes).toEqual([]);
     if (["TABLE", "KANBAN", "DASHBOARD"].includes(type)) await page.screenshot({ path: testInfo.outputPath(type.toLowerCase() + "-settings.png") });
   });
@@ -84,7 +86,7 @@ test("edits nested filters and sort priorities inside the original inputs", asyn
   await dialog.getByRole("button", { name: "정렬 추가", exact: true }).click();
   await expect(dialog.getByLabel("정렬 방향")).toHaveCount(3);
   await expect(dialog).toHaveCSS("width", "260px");
-  expect(state.requests.map(item => item.menu)).toEqual(["filters", "sorts"]);
+  expect(state.requests.map(item => item.menu)).toEqual(["configuration"]);
   expect(state.writes).toEqual([]);
 });
 

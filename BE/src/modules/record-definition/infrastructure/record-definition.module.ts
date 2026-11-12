@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ViewRecordTitleModule } from "@/modules/view-definition/infrastructure/view-record-title.module";
+import { ObjectRecordTitleModule } from "@/modules/object-definition/infrastructure/object-record-title.module";
 import { RECORD_OPTIONS_QUERY } from "../application/ports/record-options-query.port";
 import { PrismaRecordOptionsQueryRepository } from "./persistence/prisma-record-options-query.repository";
 import { GetRecordFormUseCase } from "../application/use-cases/get-record-form.use-case";
@@ -32,7 +32,7 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
 @Module({
   imports: [
     RecordAttributeSchemaModule,
-    ViewRecordTitleModule,
+    ObjectRecordTitleModule,
     AuthModule,
     WorkspaceModule,
     ObjectDefinitionModule,
@@ -80,6 +80,6 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
       inject: [PrismaService],
     },
   ],
-  exports: [RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER, RECORD_DATA_QUERY],
+  exports: [RECORD_ATTRIBUTE_VALUE_DEFINITION_MATERIALIZER, RECORD_DATA_QUERY, RECORD_OPTIONS_QUERY],
 })
 export class RecordDefinitionModule {}

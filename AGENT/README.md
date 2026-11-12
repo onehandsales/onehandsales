@@ -138,6 +138,8 @@ archive 또는 legacy 문서가 `AGENT` 문서와 충돌하면 `AGENT` 문서를
 
 ## 7. 관련 작업 문서
 
+2026-11-12 TABLE/KANBAN/LIST 필터·정렬·보기 설정 저장과 대표 이름 분리: [확정 API·구현·검증 기록](../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md). View 설정 저장은 기존7개 테이블을 사용하고, 대표 이름에는 `ObjectDefinition.recordTitleAttributeDefinitionId`를 추가했다. 이 기록은 이전 메뉴의 조회 전용/임시 편집 설명을 대체한다.
+
 실제 구현 실행 계획은 `TODO` 아래 계획 폴더에서 관리한다.
 
 예:

@@ -1,6 +1,7 @@
 import type { Page, Route } from "@playwright/test";
 import { seedAuthenticatedSession, setupUserWebApiMocks } from "./user-web-api-mocks";
 import type { SupportedViewDataType, ViewDataBinding, ViewDataItem, ViewMainResponse, ViewKanbanResponse } from "../../../src/features/crm-view/types/view-data";
+import type { ViewConfigurationChanges, ViewConfigurationResponse } from "../../../src/features/crm-view/types/view-configuration";
 
 export const DATA_OBJECT_PATH = "/app/workspaces/workspace-e2e-001/objects/object-definition-company";
 export const DATA_LIST_PATH = "/app/workspaces/workspace-e2e-001/lists/list-definition-pipeline";
@@ -11,6 +12,7 @@ const binding: ViewDataBinding = { id: "title", attributeDefinitionId: "name", s
 export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR" | "en" = "ko-KR") {
   await setupUserWebApiMocks(page, { store: { preferredLocale } }); await seedAuthenticatedSession(page);
   const state = { requests: [] as URL[], writes: [] as { method: string; path: string; body: unknown }[], legacyReads: [] as string[],
+    configurationChanges: {} as Record<string, ViewConfigurationChanges>, configurationError: 0, previews: [] as unknown[],
     columns: [] as { id: string; name: string; type: string }[], columnError: 0, columnErrorCode: "InternalServerError", delayColumn: false, columnResponseLost: false,
     columnLabels: {} as Record<string, string | null>, labelError: 0, delayLabel: false,
     pagination: false, folded: false, hidden: false, noView: false, needsConfiguration: false, empty: false,
@@ -107,6 +109,46 @@ export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR"
     if (path.endsWith("/sorts")) return respond(route, { ...base, viewSortDefinitions: [] });
     return respond(route, { ...base, viewName: names[type], objectDefinitionId: null, listDefinitionId: "list-definition-pipeline", configJson: null,
       viewAttributeSettingDefinitions: [], viewGroupDefinitions: [], viewGroupSettingDefinitions: [], viewWidgetDefinitions: [], contentViewDefinitions: [] });
+  });
+  // 기능 : 저장 메뉴와 본문이 같은 기준 상태를 사용하도록 편집 API를 재현합니다.
+  function configuration(url: URL): ViewConfigurationResponse {
+    const viewId = url.pathname.split("/").at(-2)!;
+    const type = viewId.replace("view-", "").toUpperCase() as SupportedViewDataType;
+    const response = data(url, type);
+    const attributes = response.bindings.map(row => ({ id: row.attributeDefinitionId, title: row.label, type: row.attributeType, icon: null, isMultiselect: row.isMultiselect, configJson: null, objectDefinitionId: row.sourceScope === "RECORD" ? "object-definition-company" : null, listDefinitionId: row.sourceScope === "LIST_ENTRY" ? "list-definition-pipeline" : null }));
+    const base = { viewDefinitionId: viewId, viewType: type, attributeDefinitions: attributes };
+    const saved = state.configurationChanges[viewId];
+    return { configurationVersion: String(state.version), candidates: attributes,
+      filters: { ...base, selectOptions: [], statusOptions: [], viewFilterGroupDefinitions: [], viewFilterConditionDefinitions: [], ...saved?.filters },
+      sorts: { ...base, viewSortDefinitions: [], ...saved?.sorts },
+      settings: { ...base, viewName: names[type], objectDefinitionId: response.source.objectDefinitionId, listDefinitionId: response.source.listDefinitionId, configJson: null,
+        selectOptions: [], statusOptions: [], viewGroupDefinitions: [], viewGroupSettingDefinitions: [], viewWidgetDefinitions: [], contentViewDefinitions: [],
+        viewAttributeSettingDefinitions: response.bindings.map((row, sortOrder) => ({ id: row.id, sourceScope: row.sourceScope, attributeDefinitionId: row.attributeDefinitionId, referenceAttributeIdPathJson: row.referenceAttributeIdPath, attributeDisplayRole: row.role, sortOrder, labelOverride: state.columnLabels[`${viewId}:${row.id}`] ?? null, width: row.width, isHidden: row.isHidden, formatJson: row.format })), ...saved?.settings },
+    };
+  }
+  await page.route(/\/view-definitions\/[^/]+\/configuration(?:\?.*)?$/, async route => {
+    if (route.request().method() === "OPTIONS") return respond(route, null);
+    const url = new URL(route.request().url()), viewId = url.pathname.split("/").at(-2)!;
+    if (route.request().method() === "PATCH") {
+      const body = route.request().postDataJSON();
+      state.writes.push({ method: "PATCH", path: url.pathname, body });
+      if (state.delayLabel) await new Promise(resolve => setTimeout(resolve, 800));
+      if (state.configurationError) return respond(route, { statusCode: state.configurationError, error: state.configurationError === 409 ? "ViewConfigurationConflict" : "InternalServerError", message: "Safe failure" }, state.configurationError);
+      state.configurationChanges[viewId] = { ...state.configurationChanges[viewId], ...body.changes };
+      const settings = state.configurationChanges[viewId]?.settings;
+      settings?.viewAttributeSettingDefinitions.forEach(row => { state.columnLabels[`${viewId}:${row.id}`] = row.labelOverride; });
+      state.version++;
+    }
+    return respond(route, configuration(url));
+  });
+  await page.route(/\/view-definitions\/[^/]+\/data\/preview(?:\?.*)?$/, route => {
+    if (route.request().method() === "OPTIONS") return respond(route, null);
+    const url = new URL(route.request().url()), body = route.request().postDataJSON();
+    state.previews.push(body);
+    for (const [key, value] of Object.entries(body.query ?? {})) if (value !== undefined) url.searchParams.set(key, String(value));
+    const type = url.pathname.split("/").at(-3)!.replace("view-", "").toUpperCase() as SupportedViewDataType;
+    const response = data(url, type);
+    return respond(route, { ...response, configurationFingerprint: `preview-${state.version}-${JSON.stringify(body.changes)}` });
   });
   await page.route(/\/view-header\/(object|list)-definitions\/[^/]+\/view-definitions(?:\?.*)?$/, route => respond(route, { items: (["TABLE", "KANBAN", "LIST"] as const).map(viewType => ({ viewDefinitionId: "view-" + viewType.toLowerCase(), viewName: names[viewType], viewType, viewIcon: null, isSelected: false })) }));
   await page.route(/\/view-definitions\/[^/]+\/data(?:\?.*)?$/, async route => {

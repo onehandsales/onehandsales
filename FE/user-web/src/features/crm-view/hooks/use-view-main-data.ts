@@ -1,10 +1,11 @@
-import { useInfiniteQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ApiClientError } from "@/lib/api-client";
 import { getViewMainData } from "../api/view-data-api";
 import { viewDataQueryKeys } from "../api/view-data-query-keys";
 import type { SupportedViewDataType, ViewDataScope, ViewMainResponse } from "../types/view-data";
 import type { WorkspaceViewHeaderModel } from "./use-workspace-view-header";
+import type { ViewConfigurationCommand } from "../types/view-configuration";
 
 export const VIEW_DATA_PAGE_SIZE = 25;
 
@@ -26,18 +27,26 @@ export function useViewSearch(value: string) {
 }
 
 // 기능 : 공통 헤더가 선택한 보기의 저장된 본문을 검색과 cursor로 조회합니다.
-export function useViewMainData(header: WorkspaceViewHeaderModel, q: string, timeZone: string) {
+export function useViewMainData(header: WorkspaceViewHeaderModel, q: string, timeZone: string, command?: ViewConfigurationCommand) {
   const client = useQueryClient();
   const view = header.currentView;
   const scope: ViewDataScope | null = header.userId && header.workspaceId && header.targetType && header.target && view
     ? { userId: header.userId, workspaceId: header.workspaceId, sourceType: header.targetType,
       targetId: header.target.id, viewDefinitionId: view.viewDefinitionId, viewType: view.viewType, timeZone } : null;
-  const queryKey = viewDataQueryKeys.main(scope, q, VIEW_DATA_PAGE_SIZE);
+  const serialized = command ? JSON.stringify(command) : "";
+  const [settled, setSettled] = useState(serialized);
+  useEffect(() => {
+    // 1. 빠른 입력을 묶고 다음 변경에서는 이전 예약을 취소한다.
+    const timer = window.setTimeout(() => setSettled(serialized), 250);
+    return () => window.clearTimeout(timer);
+  }, [serialized]);
+  const preview: ViewConfigurationCommand | undefined = serialized && settled ? JSON.parse(settled) as ViewConfigurationCommand : undefined;
+  const queryKey = [...viewDataQueryKeys.main(scope, q, VIEW_DATA_PAGE_SIZE), serialized ? settled : ""];
   // 기능 : 요청 취소 신호를 전달하고 설정이 다른 페이지의 병합을 막습니다.
   async function fetchPage({ pageParam, signal }: { readonly pageParam: string | null; readonly signal: AbortSignal }) {
     // 1. 헤더의 확정된 선택과 같은 조회 맥락만 요청한다.
     if (!scope) throw new Error("View data scope required");
-    const response = await getViewMainData({ ...scope, q, limit: VIEW_DATA_PAGE_SIZE, cursor: pageParam }, signal);
+    const response = await getViewMainData({ ...scope, q, limit: VIEW_DATA_PAGE_SIZE, cursor: pageParam, preview }, signal);
     const previous = client.getQueryData<InfiniteData<ViewMainResponse>>(queryKey)?.pages[0];
     if (pageParam && (response.state !== "READY" || previous && previous.configurationFingerprint !== response.configurationFingerprint))
       throw new ApiClientError({ statusCode: 409, code: "ViewDataCursorStale", message: "View data changed", raw: null });
@@ -45,6 +54,7 @@ export function useViewMainData(header: WorkspaceViewHeaderModel, q: string, tim
   }
   const query = useInfiniteQuery({
     queryKey, queryFn: fetchPage, initialPageParam: null as string | null,
+    placeholderData: keepPreviousData,
     // 기능 : 표·목록만 본문 cursor로 이어 읽고 칸반은 열별 조회에 맡깁니다.
     getNextPageParam(last: ViewMainResponse) {
       return last.state === "READY" && last.viewType !== "KANBAN" && last.data.pageInfo.hasNextPage
@@ -59,6 +69,6 @@ export function useViewMainData(header: WorkspaceViewHeaderModel, q: string, tim
     void client.cancelQueries({ queryKey: ["crm-view", header.userId?.toLowerCase(), header.workspaceId?.toLowerCase(), "data"] });
     void client.resetQueries({ queryKey, exact: true });
   }
-  return { query, scope, q, restart };
+  return { query, scope, q, restart, preview, isPreviewWaiting: serialized !== settled };
 }
 export type ViewMainDataModel = ReturnType<typeof useViewMainData>;

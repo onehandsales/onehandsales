@@ -79,7 +79,7 @@ describe("View loader owning-module boundaries", () => {
     s.records.set(target.id, target);
     const template = s.values.get(valueKey("RECORD", fixtureId(70), fixtureId(10)))![0]!;
     s.values.set(valueKey("RECORD", target.id, title.id), [{ ...template, id: fixtureId(503), ownerId: target.id, attributeDefinitionId: title.id, textValue: "Linked company" }]);
-    s.titles.push({ ...s.titles[0]!, id: fixtureId(504), attributeDefinitionId: title.id });
+    s.titles.push({ objectDefinitionId: target.objectDefinitionId, attributeDefinitionId: title.id });
     for (const id of [fixtureId(70), fixtureId(71)])
       s.values.set(valueKey("RECORD", id, reference.id), [{ ...template, id: id === fixtureId(70) ? fixtureId(505) : fixtureId(506),
         ownerId: id, attributeDefinitionId: reference.id, attributeType: "RecordReference", textValue: null,

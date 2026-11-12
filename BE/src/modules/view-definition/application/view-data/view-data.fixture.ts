@@ -184,7 +184,7 @@ export function viewDataFixture(type: SupportedViewDataType): ViewDataSnapshot {
       }),
     ),
     actors: new Map(),
-    titles: [bind(0, "TITLE")],
+    titles: [{ objectDefinitionId: fixtureId(5), attributeDefinitionId: fixtureId(10) }],
     relationships: [],
   };
 }

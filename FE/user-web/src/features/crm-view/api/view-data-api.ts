@@ -3,15 +3,15 @@ import type { ViewDataRequest, ViewDataResponse, ViewGroupResponse, ViewMainResp
 
 // 기능 : 기존 인증 흐름으로 본문을 조회하고 선택한 대상과 응답의 일치를 확인합니다.
 async function readViewData(input: ViewDataRequest, part: "MAIN" | "GROUP_ITEMS", signal: AbortSignal, groupToken?: string) {
-  // 1. 저장된 보기 실행에 허용된 입력만 보내며 임시 메뉴 편집은 전송하지 않는다.
+  // 1. 저장 상태는 GET으로 읽고 임시 편집은 별도 미리보기 POST로 전달한다.
   const query = new URLSearchParams({ sourceType: input.sourceType, limit: String(input.limit), part });
   if (input.q) query.set("q", input.q);
   if (input.cursor) query.set("cursor", input.cursor);
   if (groupToken) query.set("groupToken", groupToken);
-  const response = await apiClient<ViewDataResponse>(
-    `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/view-definitions/${encodeURIComponent(input.viewDefinitionId)}/data?${query}`,
-    { signal },
-  );
+  const base = `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/view-definitions/${encodeURIComponent(input.viewDefinitionId)}/data`;
+  const response = await apiClient<ViewDataResponse>(input.preview ? `${base}/preview?sourceType=${input.sourceType}` : `${base}?${query}`,
+    input.preview ? { signal, method: "POST", body: JSON.stringify({ ...input.preview, query: { part, q: input.q, limit: input.limit,
+      ...(input.cursor ? { cursor: input.cursor } : {}), ...(groupToken ? { groupToken } : {}) } }) } : { signal });
   // 2. 이전 대상·보기·타입의 응답을 현재 본문에 적용하지 않는다.
   const sourceId = input.sourceType === "OBJECT" ? response?.source?.objectDefinitionId : response?.source?.listDefinitionId;
   if (!response || typeof response.viewDefinitionId !== "string" || response.viewDefinitionId.toLowerCase() !== input.viewDefinitionId.toLowerCase() ||

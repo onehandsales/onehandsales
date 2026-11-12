@@ -4,6 +4,7 @@ import { getViewMenu } from "../api/view-menu-api";
 import { workspaceViewQueryKeys } from "../api/workspace-view-query-keys";
 import type { ViewMenu, ViewMenuResponses } from "../types/view-menu";
 import type { WorkspaceViewHeaderModel } from "./use-workspace-view-header";
+import { useViewConfiguration } from "./use-view-configuration";
 
 // 기능 : 메뉴 하나의 서버 상태와 저장하지 않은 화면 편집 상태를 분리합니다.
 function useMenuData<K extends ViewMenu>(header: WorkspaceViewHeaderModel, menu: K, active: ViewMenu | null, scope: string) {
@@ -47,9 +48,11 @@ export function useViewMenus(header: WorkspaceViewHeaderModel) {
   const scope = JSON.stringify([header.userId, header.workspaceId, header.targetType, header.target?.id, header.currentView?.viewDefinitionId, header.currentView?.viewType]);
   const [opened, setOpened] = useState<{ readonly scope: string; readonly menu: ViewMenu } | null>(null);
   const active = opened?.scope === scope ? opened.menu : null;
-  const filters = useMenuData(header, "filters", active, scope);
-  const sorts = useMenuData(header, "sorts", active, scope);
-  const settings = useMenuData(header, "settings", active, scope);
+  const supported = ["TABLE", "KANBAN", "LIST"].includes(header.currentView?.viewType ?? "");
+  const filters = useMenuData(header, "filters", supported ? null : active, scope);
+  const sorts = useMenuData(header, "sorts", supported ? null : active, scope);
+  const settings = useMenuData(header, "settings", supported ? null : active, scope);
+  const configuration = useViewConfiguration(header, scope, supported);
   useEffect(() => {
     // 1. 다른 보기에서는 메뉴도 닫힌 상태로 시작한다.
     setOpened(null);
@@ -58,6 +61,7 @@ export function useViewMenus(header: WorkspaceViewHeaderModel) {
   function open(menu: ViewMenu | null) {
     setOpened(menu ? { scope, menu } : null);
   }
-  return { scope, active, filters, sorts, settings, open };
+  return { ...configuration, scope, active, filters: supported ? configuration.filters : filters,
+    sorts: supported ? configuration.sorts : sorts, settings: supported ? configuration.settings : settings, open, supportsSaving: supported };
 }
 export type ViewMenusModel = ReturnType<typeof useViewMenus>;

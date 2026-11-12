@@ -295,6 +295,14 @@ function conditionTest(
           throw new ViewDataConfigurationError();
       } else if (type === "RecordReference" ? !values.snapshot.records.has(id) : !values.snapshot.actors.has(id))
         throw new ViewDataConfigurationError();
+      if (type === "RecordReference") {
+        const attribute = values.snapshot.attributes.get(row.attributeDefinitionId)!;
+        const configured = jsonObject(jsonObject(attribute.configJson).recordReference).objectDefinitionId;
+        const targets = new Set(values.snapshot.relationships.flatMap(link => link.sourceAttributeDefinitionId === attribute.id ? [link.targetObjectDefinitionId] : link.targetAttributeDefinitionId === attribute.id ? [link.sourceObjectDefinitionId] : []));
+        if (typeof configured === "string") targets.add(configured);
+        if (targets.size > 1 || targets.size === 1 && !targets.has(values.snapshot.records.get(id)!.objectDefinitionId))
+          throw new ViewDataConfigurationError();
+      }
       candidates[index] = id;
     }
   }

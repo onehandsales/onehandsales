@@ -3,7 +3,7 @@ import type { WorkspaceViewType } from "./workspace-view";
 export type ViewJson = null | string | number | boolean | readonly ViewJson[] | { readonly [key: string]: ViewJson };
 export type ViewMenu = "filters" | "sorts" | "settings";
 export type ViewSource = "RECORD" | "LIST_ENTRY";
-export type ViewAttributeCandidate = { readonly id: string; readonly title: string; readonly type?: string };
+export type ViewAttributeCandidate = { readonly id: string; readonly title: string; readonly type?: string; readonly listDefinitionId?: string | null; readonly isMultiselect?: boolean };
 export type ViewAttribute = ViewAttributeCandidate & {
   readonly type: string; readonly objectDefinitionId: string | null; readonly listDefinitionId: string | null;
   readonly icon: string | null; readonly isMultiselect: boolean; readonly configJson: ViewJson;

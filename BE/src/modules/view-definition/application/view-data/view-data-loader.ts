@@ -32,12 +32,10 @@ import {
 import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
 import { ValidationDomainError } from "@/shared/domain/errors/common.errors";
 import {
-  VIEW_DATA_CONFIGURATION_QUERY,
-  type ViewDataConfigurationQuery,
   type ViewDataConfiguration,
 } from "../ports/view-data-configuration-query.port";
+import { OBJECT_RECORD_TITLE_QUERY, type ObjectRecordTitleQuery, type ObjectRecordTitle } from "@/modules/object-definition/application/ports/object-record-title-query.port";
 import type {
-  ViewAttributeSettingRow,
   ViewHeaderDefinition,
 } from "../view-header-configuration";
 import type { ViewDataRequest, ViewDataSource } from "./view-data.types";
@@ -64,7 +62,7 @@ export interface ViewDataSnapshot {
   records: Map<string, RecordDataSnapshot>;
   values: Map<string, AttributeValueSnapshot[]>;
   actors: Map<string, string | null>;
-  titles: ViewAttributeSettingRow[];
+  titles: ObjectRecordTitle[];
   relationships: AttributeRelationshipSnapshot[];
 }
 
@@ -96,8 +94,8 @@ export function resolveViewSource(
 export class ViewDataLoader {
   // 기능 : 설정과 소유 모듈의 읽기 계약을 주입받습니다.
   constructor(
-    @Inject(VIEW_DATA_CONFIGURATION_QUERY)
-    private readonly views: ViewDataConfigurationQuery,
+    @Inject(OBJECT_RECORD_TITLE_QUERY)
+    private readonly titles: ObjectRecordTitleQuery,
     @Inject(RECORD_DATA_QUERY) private readonly records: RecordDataQuery,
     @Inject(LIST_ENTRY_DATA_QUERY) private readonly entries: ListEntryDataQuery,
     @Inject(OBJECT_DEFINITION_SUMMARY_QUERY)
@@ -208,7 +206,7 @@ export class ViewDataLoader {
       }
     }
     // 3. 필터·정렬·그룹 경로와 명시 TITLE의 메타데이터만 모은다.
-    snapshot.titles = await this.views.titles(workspaceId, context);
+    snapshot.titles = await this.titles.titles(workspaceId, context);
     const configured = [
       ...configuration.viewAttributeSettingDefinitions,
       ...configuration.viewFilterConditionDefinitions,

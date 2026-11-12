@@ -2,6 +2,18 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
+  viewConfiguration: {
+    unsupportedNote: "Saving settings for this view type is coming soon.",
+    unsaved: "You have unsaved changes.", saved: "View settings saved.",
+    save: "Save view settings", discard: "Discard changes", apply: "Apply",
+    shared: "These settings apply to everyone who uses this view.",
+    conflict: "This view changed elsewhere. Your draft has been kept.", latest: "Discard my changes and use latest settings",
+    failed: "Could not save. Check your settings and try again.", previewFailed: "Could not preview. Check the conditions or try again.",
+    noMatch: "No records match. Try changing the conditions.", operator: "Comparison", startsWith: "Starts with", endsWith: "Ends with", in: "Is one of", notIn: "Is not one of",
+    empty: "Is empty", notEmpty: "Is not empty", optionsSearch: "Search values", loadOptions: "Could not load values.",
+    reducer: "Sort multiple values by", minimum: "Minimum", maximum: "Maximum", moveUp: "Move priority up", moveDown: "Move priority down",
+    density: "Spacing", dateUnit: "Group dates by", day: "Day", month: "Month", year: "Year",
+  },
   columnLabel: {
     name: "Column label", scope: "This name applies to this view.", clear: "Restore original name",
     failed: "Could not save the label. Please try again.",
@@ -55,7 +67,7 @@ export const enResource = {
     emptyGroup: "No records to display.",
     visibleColumns: "Display attributes",
     attributeType: "Type",
-    layoutPreview: "Column width, order and visibility preview this screen.",
+    layoutPreview: "Save view settings to keep column widths, order and visibility.",
     expandGroup: "Expand {name}",
     collapseGroup: "Collapse {name}",
     unassigned: "{count} unassigned",
@@ -478,7 +490,7 @@ export const enResource = {
     settings: "View settings",
     layout: "Layout",
     visibleAttributes: "Visible attributes",
-    previewNote: "These settings are a preview for this screen.",
+    previewNote: "Preview your changes, then choose Save view settings to keep them.",
   },
   errors: {
     CURRENCY_UNSUPPORTED: "Choose a supported currency.",

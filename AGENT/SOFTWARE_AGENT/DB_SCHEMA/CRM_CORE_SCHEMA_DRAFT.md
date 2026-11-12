@@ -267,7 +267,15 @@ DB 적용: Docker 없이 Supabase 세션 연결을 사용했다. View가 비어 
 
 검증·실제 DB 적용 여부와 기존 migration 원본 누락 이력은 [작업 결과와 규칙 검토](../../../TODO/SIDEBAR_REORDER_PLAN/README.md)에 분리해 기록한다.
 
-## 14. 관련 문서
+## 14. 보기 설정과 대표 이름 분리
+
+2026-11-12 `ObjectDefinition.recordTitleAttributeDefinitionId`를 nullable UUID로 추가했다. `AttributeDefinition`으로 연결되며 삭제 시 포인터를 null로 만든다. 기존 단순 ID FK 정책을 유지하고, 조회/생성 공개 port에서 Workspace·Object 소속과 Text/PersonalName 타입을 확인한다. 새 Object는 초기 이름 속성을 지정하고 기존 Object는 직접 RECORD/TITLE 후보가 하나로 일치할 때만 연결한다. 모호한 후보는 null로 남긴다. View별 TITLE·표시명·숨김 변경은 대표 이름을 변경하지 않는다.
+
+마이그레이션 `20261112090000_object_record_title`은 Supabase에 적용됐다. View 설정 저장은 위 포인터를 쓰지 않고 기존7개 View 테이블만 변경한다. 읽기는 같은 read-only RepeatableRead, 저장은 application 주도의 READ COMMITTED View 행 잠금과 버전 검증으로 묶는다. ID 충돌은 다른 View의 행을 덮어쓰지 않고409로 처리한다. 모든 새 설정은 기존 본문 실행기로 검증하고 오류 시 전체 rollback한다.
+
+스키마 복구가 필요하면 새 코드 의존성과 기존 포인터를 먼저 보존한 뒤 별도 후속 migration으로 처리한다. 적용된 migration을 수정하거나 DB reset하지 않는다. [API 및 실제 DB 검증](../../../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md)을 따른다.
+
+## 15. 관련 문서
 
 - `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`

@@ -33,7 +33,7 @@ describe("ObjectDefinitionModule creation transaction", () => {
   const logger = { log: jest.fn(), warn: jest.fn(), error: jest.fn() };
   const transactionClient = {
     $queryRaw: jest.fn(),
-    objectDefinition: { create: jest.fn(), aggregate: jest.fn() },
+    objectDefinition: { create: jest.fn(), aggregate: jest.fn(), update: jest.fn() },
     attributeDefinition: { create: jest.fn() },
     viewDefinition: { create: jest.fn() },
     viewAttributeSettingDefinition: { create: jest.fn() },
@@ -85,6 +85,7 @@ describe("ObjectDefinitionModule creation transaction", () => {
     expect(transactionClient.attributeDefinition.create).toHaveBeenCalledWith({
       data: { ...audit, objectDefinitionId: "object-1", listDefinitionId: null, apiSlug: "name", title: "이름", type: "Text", sortOrder: 0, isMultiselect: false }, select: { id: true },
     });
+    expect(transactionClient.objectDefinition.update).toHaveBeenCalledWith({ where: { id: "object-1", workspaceId: "workspace-1" }, data: { recordTitleAttributeDefinitionId: "attribute-1" } });
     expect(transactionClient.viewDefinition.create).toHaveBeenCalledWith({
       data: { ...audit, objectDefinitionId: "object-1", listDefinitionId: null, name: "전체 매물", type: "TABLE", sortOrder: 0, configJson: { rowDensity: "COMFORTABLE" } }, select: { id: true },
     });

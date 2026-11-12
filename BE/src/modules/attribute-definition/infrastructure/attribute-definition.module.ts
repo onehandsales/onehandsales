@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
+import { VIEW_ATTRIBUTE_CATALOG_QUERY } from "../application/ports/view-attribute-catalog-query.port";
+import { PrismaViewAttributeCatalogQueryRepository } from "./persistence/prisma-view-attribute-catalog-query.repository";
 import { OBJECT_ATTRIBUTE_CREATOR } from "../application/ports/object-attribute-creator.port";
 import { LIST_STATUS_ATTRIBUTE_CREATOR } from "../application/ports/list-status-attribute-creator.port";
 import { PrismaListStatusAttributeCreator } from "./persistence/prisma-list-status-attribute-creator";
 import { ATTRIBUTE_RELATIONSHIP_QUERY } from "../application/ports/attribute-relationship-query.port";
 import { PrismaAttributeRelationshipQueryRepository } from "./persistence/prisma-attribute-relationship-query.repository";
-import { ATTRIBUTE_DEFINITION_METADATA_QUERY } from "../application/ports/attribute-definition-metadata-query.port";
-import { PrismaAttributeDefinitionMetadataQueryRepository } from "./persistence/prisma-attribute-definition-metadata-query.repository";
+import { AttributeMetadataModule } from "./attribute-metadata.module";
 import { ATTRIBUTE_DEFINITION_COMMAND_REPOSITORY } from "@/modules/attribute-definition/application/ports/attribute-definition-command.repository";
 import { ATTRIBUTE_DEFINITION_DETAIL_QUERY } from "@/modules/attribute-definition/application/ports/attribute-definition-detail-query.port";
 import { ATTRIBUTE_DEFINITION_LIST_QUERY } from "@/modules/attribute-definition/application/ports/attribute-definition-list-query.port";
@@ -30,6 +31,7 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
 // 역할 : AttributeDefinitionModule이 AttributeDefinition API와 provider 의존성을 조립합니다.
 @Module({
   imports: [
+    AttributeMetadataModule,
     AuthModule,
     WorkspaceModule,
     ObjectDefinitionModule,
@@ -38,14 +40,9 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
   ],
   controllers: [UserWorkspaceObjectAttributeDefinitionsController],
   providers: [
+    { provide: VIEW_ATTRIBUTE_CATALOG_QUERY, useClass: PrismaViewAttributeCatalogQueryRepository },
     { provide: LIST_STATUS_ATTRIBUTE_CREATOR, useClass: PrismaListStatusAttributeCreator },
     { provide: ATTRIBUTE_RELATIONSHIP_QUERY, useClass: PrismaAttributeRelationshipQueryRepository },
-    {
-      provide: ATTRIBUTE_DEFINITION_METADATA_QUERY,
-      // 기능 : 다른 모듈에 공개할 속성·옵션 batch 조회를 조립합니다.
-      useFactory: (prisma: PrismaService) => new PrismaAttributeDefinitionMetadataQueryRepository(prisma),
-      inject: [PrismaService],
-    },
     CreateWorkspaceObjectAttributeDefinitionUseCase,
     { provide: OBJECT_ATTRIBUTE_CREATOR, useExisting: CreateWorkspaceObjectAttributeDefinitionUseCase },
     ListWorkspaceObjectAttributeDefinitionsUseCase,
@@ -79,6 +76,6 @@ import { UserWorkspaceObjectAttributeDefinitionsController } from "../presentati
       inject: [PrismaService],
     },
   ],
-  exports: [ATTRIBUTE_DEFINITION_METADATA_QUERY, ATTRIBUTE_RELATIONSHIP_QUERY, LIST_STATUS_ATTRIBUTE_CREATOR, OBJECT_ATTRIBUTE_CREATOR],
+  exports: [VIEW_ATTRIBUTE_CATALOG_QUERY, AttributeMetadataModule, ATTRIBUTE_RELATIONSHIP_QUERY, LIST_STATUS_ATTRIBUTE_CREATOR, OBJECT_ATTRIBUTE_CREATOR],
 })
 export class AttributeDefinitionModule {}

@@ -8,6 +8,8 @@
 
 ## 2. 현재 활성 Prisma 범위
 
+2026-11-12 보기 설정 저장: `ViewDefinition`, `ViewFilterGroupDefinition`, `ViewFilterConditionDefinition`, `ViewSortDefinition`, `ViewAttributeSettingDefinition`, `ViewGroupDefinition`, `ViewGroupSettingDefinition`의7개 기존 테이블을 View 행 잠금+한 transaction으로 변경한다. 미리보기는 읽기 전용 snapshot이다. Object 대표 이름 포인터를 별도로 추가한 `20261112090000_object_record_title`을 Supabase에 적용했으며, 기존1개 Object의 명확한 이름 속성을 연결했다. 회사3개/Entry4개/Record 속성값30개는 보존했다. 새 Object 생성은 이름 속성 생성 직후 같은 transaction에서 포인터를 지정한다. [계약·검증·한계](../../../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md), [스키마 상세](CRM_CORE_SCHEMA_DRAFT.md#14-보기-설정과-대표-이름-분리)를 따른다.
+
 DB 적용 기준일: 2026-10-17 / View 스키마 초안 작성일: 2026-10-16
 
 DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접수, Workspace/Team/Actor, 유연한 CRM 코어, List와 View 기반이다. 아래는 기존 Enum 16개와 모델 22개이며, 2.1절의 View Enum 9개와 모델 10개를 포함하면 전체 Enum 25개·모델 32개다.

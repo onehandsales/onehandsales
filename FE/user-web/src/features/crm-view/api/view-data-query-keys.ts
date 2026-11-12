@@ -7,6 +7,13 @@ function dataScope(scope: ViewDataScope | null) {
     scope?.viewType ?? null, scope?.timeZone ?? null] as const;
 }
 export const viewDataQueryKeys = {
+  // 기능 : 다른 원본·시간대를 포함하여 같은 사용자/Workspace/View의 본문만 선택합니다.
+  forView(scope: Pick<ViewDataScope, "userId" | "workspaceId" | "viewDefinitionId">) {
+    return {
+      queryKey: ["crm-view", scope.userId.toLowerCase(), scope.workspaceId.toLowerCase(), "data"] as const,
+      predicate: (query: { queryKey: readonly unknown[] }) => query.queryKey[6] === scope.viewDefinitionId.toLowerCase(),
+    };
+  },
   // 기능 : 표시 설정 변경 후 선택 View의 모든 검색·페이지 캐시를 초기화합니다.
   view(scope: ViewDataScope) {
     return dataScope(scope);

@@ -40,10 +40,10 @@ export async function setupViewMenuScenario(page: Page, initialType: WorkspaceVi
   await page.route("**/api/users/me/workspaces/*/object-definitions/*/record-definitions*", route => route.fulfill({ json: { items: [], pageInfo: { hasNextPage: false, nextCursor: null } } }));
   const state = { initialType, noView: false, status: 200, requests: [] as { view: string; menu: string }[], writes: [] as string[],
     gate: null as Promise<void> | null, transform: (data: ViewSettingsResponse) => data };
-  page.on("request", request => { if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method()) && new URL(request.url()).pathname.startsWith("/api/")) state.writes.push(request.url()); });
+  page.on("request", request => { if (["POST", "PUT", "PATCH", "DELETE"].includes(request.method()) && new URL(request.url()).pathname.startsWith("/api/") && !new URL(request.url()).pathname.endsWith("/data/preview")) state.writes.push(request.url()); });
   // 기능 : 인증 API origin과 OPTIONS 요청에 맞는 응답을 제공합니다.
   async function respond(route: Route, body: unknown, status = 200) {
-    const headers = { "access-control-allow-origin": route.request().headers().origin ?? "http://127.0.0.1:5175", "access-control-allow-credentials": "true", "access-control-allow-methods": "GET, OPTIONS", "access-control-allow-headers": "Authorization, Content-Type, X-Request-Id" };
+    const headers = { "access-control-allow-origin": route.request().headers().origin ?? "http://127.0.0.1:5175", "access-control-allow-credentials": "true", "access-control-allow-methods": "GET, POST, OPTIONS", "access-control-allow-headers": "Authorization, Content-Type, X-Request-Id" };
     return route.request().method() === "OPTIONS" ? route.fulfill({ status: 204, headers }) : route.fulfill({ status, json: body, headers });
   }
   await page.route(/\/view-header\?/, route => {
@@ -52,10 +52,10 @@ export async function setupViewMenuScenario(page: Page, initialType: WorkspaceVi
       objectDefinition: list ? null : { id: "object-definition-company", name: "계약", icon: null }, listDefinition: list ? { id: "list-definition-pipeline", name: "업무목록", icon: null } : null });
   });
   await page.route(/\/view-header\/(object|list)-definitions\/[^/]+\/view-definitions/, route => respond(route, { items: VIEW_TYPES.map(viewType => ({ viewDefinitionId: "view-" + viewType.toLowerCase(), viewName: viewType, viewIcon: null, viewType, isSelected: false })) }));
-  await page.route(/\/view-header\/view-definitions\/[^/]+\/(filters|sorts|settings)$/, async route => {
+  await page.route(/\/(?:view-header\/)?view-definitions\/[^/]+\/(filters|sorts|settings|configuration)(?:\?.*)?$/, async route => {
     if (route.request().method() === "OPTIONS") return respond(route, null);
     const parts = new URL(route.request().url()).pathname.split("/");
-    const menu = parts.at(-1) as ViewMenu;
+    const menu = parts.at(-1) as ViewMenu | "configuration";
     const view = parts.at(-2)!;
     state.requests.push({ view, menu });
     const status = state.status;
@@ -73,7 +73,7 @@ export async function setupViewMenuScenario(page: Page, initialType: WorkspaceVi
         viewFilterConditionDefinitions: [{ id: "condition", viewFilterGroupDefinitionId: "child", sourceScope: "RECORD", attributeDefinitionId: "amount", referenceAttributeIdPathJson: [], comparisonOperator: "gte", comparisonValueJson: 500, multiValueMatchMode: "ANY", sortOrder: 0 }],
       },
     };
-    return respond(route, responses[menu]);
+    return respond(route, menu === "configuration" ? { ...responses, configurationVersion: "v1", candidates: attributes } : responses[menu]);
   });
   return state;
 }

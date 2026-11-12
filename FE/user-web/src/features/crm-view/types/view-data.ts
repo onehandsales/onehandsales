@@ -1,4 +1,5 @@
 import type { ViewJson, ViewSource } from "./view-menu";
+import type { ViewConfigurationCommand } from "./view-configuration";
 import type { WorkspaceViewTargetType, WorkspaceViewType } from "./workspace-view";
 
 export type SupportedViewDataType = "TABLE" | "KANBAN" | "LIST";
@@ -60,4 +61,4 @@ export type ViewDataScope = {
   readonly userId: string; readonly workspaceId: string; readonly sourceType: WorkspaceViewTargetType;
   readonly targetId: string; readonly viewDefinitionId: string; readonly viewType: WorkspaceViewType; readonly timeZone: string;
 };
-export type ViewDataRequest = ViewDataScope & { readonly q: string; readonly limit: number; readonly cursor?: string | null };
+export type ViewDataRequest = ViewDataScope & { readonly q: string; readonly limit: number; readonly cursor?: string | null; readonly preview?: ViewConfigurationCommand | undefined };

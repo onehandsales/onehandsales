@@ -9,11 +9,13 @@ import type { ViewDataItem, ViewMainResponse } from "../types/view-data";
 import { ViewDataTable } from "./view-data-table";
 import { ViewDataList } from "./view-data-list";
 import { ViewDataKanban } from "./view-data-kanban";
+import type { ViewMenusModel } from "../hooks/use-view-menus";
 
 // 기능 : 본문의 로딩·빈 상태·설정 부족·오류와 세 타입 화면을 공통으로 관리합니다.
-export function ViewMainContent({ header, model, searching, onCreate, creating }: {
+export function ViewMainContent({ header, model, searching, onCreate, creating, menus }: {
   readonly header: WorkspaceViewHeaderModel; readonly model: ViewMainDataModel; readonly searching: boolean;
   readonly onCreate?: (() => void) | undefined; readonly creating: boolean;
+  readonly menus?: ViewMenusModel;
 }) {
   const { t } = useAppI18n();
   const client = useQueryClient();
@@ -44,6 +46,7 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   if (!header.currentView) return <ViewDataMessage text={t("viewData.noView")} />;
   if (!isSupportedViewDataType(header.currentView.viewType)) return <ViewDataMessage text={t("viewData.unsupported")} />;
   if (query.isPending || searching && !response) return <ViewDataLoading />;
+  if (query.isError && model.preview) return <ViewDataMessage text={t(query.error instanceof ApiClientError && query.error.statusCode === 409 ? "viewConfiguration.conflict" : "viewConfiguration.previewFailed")} onRetry={model.restart} />;
   if (!response || !scope) return <ViewDataMessage text={t(query.error instanceof ApiClientError && [403, 404].includes(query.error.statusCode) ? "viewData.unavailable" : "viewData.failed")} onRetry={recover} />;
   if (response.state === "NEEDS_CONFIGURATION") return <ViewDataMessage text={t("viewData.needsConfiguration")} onRetry={model.restart} />;
   // 2. 같은 Record의 여러 Entry를 보존하고 같은 표시 occurrence만 중복 제거한다.
@@ -54,9 +57,9 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   const stale = query.error instanceof ApiClientError && [400, 409].includes(query.error.statusCode);
   return <div aria-busy={query.isFetching || searching} data-testid="view-main-content">
     {searching && <p role="status" className="px-3 py-1 text-[11px] text-[#9B9A97]">{t("viewData.searching")}</p>}
-    {response.viewType === "TABLE" ? <ViewDataTable key={`${scope.userId}:${scope.workspaceId}:${scope.sourceType}:${scope.targetId}:${scope.viewDefinitionId}:${response.configurationFingerprint}`} scope={scope} response={response} items={items} editing={editing} onCreate={onCreate} creating={creating} />
+    {response.viewType === "TABLE" ? <ViewDataTable key={`${scope.userId}:${scope.workspaceId}:${scope.sourceType}:${scope.targetId}:${scope.viewDefinitionId}:${response.configurationFingerprint}`} scope={scope} response={response} items={items} editing={editing} onCreate={onCreate} creating={creating} menus={menus} />
       : response.viewType === "LIST" ? <ViewDataList key={response.configurationFingerprint} response={response} items={items} editing={editing} />
-        : <ViewDataKanban response={response} input={{ ...scope, q: model.q, limit: VIEW_DATA_PAGE_SIZE }} onRestart={model.restart} editing={{ ...editing, userId: header.userId ?? undefined }} />}
+        : <ViewDataKanban response={response} input={{ ...scope, q: model.q, limit: VIEW_DATA_PAGE_SIZE, preview: model.preview }} onRestart={model.restart} editing={{ ...editing, userId: header.userId ?? undefined }} />}
     {response.viewType !== "KANBAN" && !items.length && <p className="px-4 py-4 text-[13px] text-[#9B9A97]">{t(model.q ? "common.searchEmpty" : "objectList.emptyRecords")}</p>}
     {query.isError && <div role="alert" className="flex flex-wrap items-center justify-center gap-2 px-4 py-4 text-[12px] text-[#787774]">
       <span>{t(stale ? "viewData.stale" : "viewData.loadMoreFailed")}</span><button className="text-[#326ACD]" type="button" onClick={recover}>{t(stale ? "viewData.restart" : "common.retry")}</button>

@@ -10,15 +10,15 @@ import { useViewMenus } from "./use-view-menus";
 
 vi.mock("../api/view-menu-api", () => ({ getViewMenu: vi.fn() }));
 const request = vi.mocked(getViewMenu);
-const settings: ViewSettingsResponse = { viewDefinitionId: "a", viewType: "TABLE", viewName: "A", objectDefinitionId: "target", listDefinitionId: null, configJson: null,
+const settings: ViewSettingsResponse = { viewDefinitionId: "a", viewType: "GALLERY", viewName: "A", objectDefinitionId: "target", listDefinitionId: null, configJson: null,
   attributeDefinitions: [], selectOptions: [], statusOptions: [], viewAttributeSettingDefinitions: [], viewGroupDefinitions: [], viewGroupSettingDefinitions: [], viewWidgetDefinitions: [], contentViewDefinitions: [] };
 const initialHeader: WorkspaceViewHeaderModel = { userId: "user", workspaceId: "space", targetType: "OBJECT", target: { id: "target", name: "Target", icon: null },
-  currentView: { viewDefinitionId: "a", viewType: "TABLE", viewName: "A", viewIcon: null, isSelected: true },
+  currentView: { viewDefinitionId: "a", viewType: "GALLERY", viewName: "A", viewIcon: null, isSelected: true },
   isFavorite: false, isLoading: false, isError: false, isUnavailable: false, isFavoritePending: false, canToggleFavorite: true, favoriteError: null,
   onToggleFavorite: vi.fn(), onDismissFavoriteError: vi.fn(), onSelect: vi.fn(), onRetry: vi.fn() };
 
 // 기능 : 실제 QueryClient와 StrictMode에서 조회 시점과 임시 입력의 수명을 검증합니다.
-describe("useViewMenus", () => {
+describe("useViewMenus for views without configuration saving", () => {
   let client: QueryClient, root: Root, container: HTMLDivElement, model: ReturnType<typeof useViewMenus>;
   // 기능 : 각 사례의 캐시와 렌더링 자원을 초기화합니다.
   beforeEach(() => {

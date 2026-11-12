@@ -82,6 +82,7 @@ describeDatabase("View main data PostgreSQL integration", () => {
           { ...audit, listDefinitionId: listId, listEntryDefinitionId: id, attributeDefinitionId: assigneeId, attributeType: "ActorReference", targetActorId: actorId },
         ] });
       }
+      await tx.objectDefinition.update({ where: { id: objectId }, data: { recordTitleAttributeDefinitionId: titleId } });
       // 2. 세 타입의 저장 표시·조건·정렬·그룹과 Object 원본 보기를 구성한다.
       for (const [id, type] of [[tableId, "TABLE"], [listViewId, "LIST"], [kanbanId, "KANBAN"], [objectViewId, "TABLE"]] as const) {
         await tx.viewDefinition.create({ data: { ...audit, id, name: type, type, ...(id === objectViewId ? { objectDefinitionId: objectId } : { listDefinitionId: listId }) } });

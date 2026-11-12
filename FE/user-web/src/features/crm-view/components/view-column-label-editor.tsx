@@ -7,9 +7,10 @@ import { refreshViewColumnLabel } from "../api/refresh-view-column-label";
 import type { ViewDataBinding, ViewDataScope } from "../types/view-data";
 
 // 기능 : 현재 보기의 컬럼 표시명을 명시적으로 저장하고 원본 이름 복원을 제공합니다.
-export function ViewColumnLabelEditor({ scope, binding, onClose, onBusyChange }: {
+export function ViewColumnLabelEditor({ scope, binding, onClose, onBusyChange, onApply }: {
   readonly scope: ViewDataScope; readonly binding: ViewDataBinding;
   readonly onClose: () => void; readonly onBusyChange: (busy: boolean) => void;
+  readonly onApply?: (labelOverride: string | null) => void;
 }) {
   const { t } = useAppI18n();
   const client = useQueryClient();
@@ -28,6 +29,8 @@ export function ViewColumnLabelEditor({ scope, binding, onClose, onBusyChange }:
   // 기능 : 저장 성공 후 조회가 실패해도 PATCH를 반복하지 않고 조회만 복구합니다.
   async function submit(labelOverride: string | null) {
     if (busy.current || composing.current || !committed.current && labelOverride !== null && !labelOverride.trim()) return;
+    // 1. 공통 편집 화면에서는 DB에 쓰지 않고 보기 설정 임시 상태에 적용한다.
+    if (onApply) { onApply(labelOverride === null ? null : labelOverride.trim()); onClose(); return; }
     busy.current = true; onBusyChange(true); setSaving(true); setError(null);
     try {
       // 1. 더블 클릭을 막고 서버가 저장한 뒤에만 새 이름을 화면에 반영한다.
@@ -63,8 +66,8 @@ export function ViewColumnLabelEditor({ scope, binding, onClose, onBusyChange }:
     <p className="px-1 text-[11px] font-normal text-[#9B9A97]">{t("columnLabel.scope")}</p>
     {error && <p id={errorId} role="alert" className="px-1 text-[12px] font-normal text-[#B42318]">{error}</p>}
     <div className="flex gap-2">
-      <button type="submit" disabled={saving || !saved && !name.trim()} className="h-7 flex-1 rounded bg-[#4880EE] px-2 text-[12px] text-white disabled:opacity-50">{t(saving ? "common.saving" : saved ? "common.retry" : "common.save")}</button>
-      <button type="button" disabled={saving} onClick={onClose} className="h-7 rounded px-2 text-[12px] text-[#65645F] hover:bg-[#E4E2DC] disabled:opacity-50">{t(saved ? "common.close" : "common.cancel")}</button>
+      <button type="submit" disabled={saving || !saved && !name.trim()} className="h-7 flex-1 rounded bg-[#4880EE] px-2 text-[12px] text-white disabled:opacity-50">{t(onApply ? "viewConfiguration.apply" : saving ? "common.saving" : saved ? "common.retry" : "common.save")}</button>
+      <button type="button" disabled={saving} onClick={onClose} className="h-7 rounded px-2 text-[12px] text-[#65645F] hover:bg-[#E4E2DC] disabled:opacity-50">{t("common.close")}</button>
     </div>
     <button type="button" disabled={saving || saved} onClick={() => { void submit(null); }} className="w-full rounded px-1 py-1 text-left text-[12px] font-normal text-[#326ACD] hover:bg-[#E4E2DC] disabled:opacity-50">{t("columnLabel.clear")}</button>
   </form>;

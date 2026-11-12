@@ -8,6 +8,7 @@ import { InlineAttributeColumn } from "./inline-attribute-column";
 import { ViewColumnLabelEditor } from "./view-column-label-editor";
 import { ViewDataCell, type ViewCellEditing } from "./view-data-cell";
 import { ViewDataGroups } from "./view-data-groups";
+import type { ViewMenusModel } from "../hooks/use-view-menus";
 
 // 저장된 컬럼의 기본 폭과 이름 작성 영역의 폭은 별도로 관리한다.
 const DEFAULT_COLUMN_WIDTH = 150;
@@ -17,13 +18,19 @@ const ATTRIBUTE_EDITOR_WIDTH = 220;
 function BindingIcon({ type }: { readonly type: string }) { return <AttributeTypeIcon type={type} />; }
 
 // 기능 : 기존 관리항목 표의 배치·셀 편집·열 조작 UX로 View 본문을 표시합니다.
-export function ViewDataTable({ response, items, editing, onCreate, creating, scope }: {
+export function ViewDataTable({ response, items, editing, onCreate, creating, scope, menus }: {
   readonly response: ViewTableResponse; readonly items: readonly ViewDataItem[];
   readonly editing: ViewCellEditing; readonly onCreate?: (() => void) | undefined; readonly creating: boolean;
   readonly scope?: ViewDataScope;
+  readonly menus?: ViewMenusModel | undefined;
 }) {
   const { t } = useAppI18n();
-  const original = response.data.columnBindingIds.flatMap(id => response.bindings.find(binding => binding.id === id) ?? []);
+  const settings = menus?.settings.data;
+  const original = settings ? [...response.bindings].map(binding => {
+    const row = settings.viewAttributeSettingDefinitions.find(item => item.id === binding.id);
+    return row ? { ...binding, isHidden: row.isHidden, width: row.width, label: row.labelOverride ?? settings.attributeDefinitions.find(item => item.id === row.attributeDefinitionId)?.title ?? binding.label } : binding;
+  }).filter(binding => !binding.isHidden).sort((a, b) => (settings.viewAttributeSettingDefinitions.find(row => row.id === a.id)?.sortOrder ?? 0) - (settings.viewAttributeSettingDefinitions.find(row => row.id === b.id)?.sortOrder ?? 0))
+    : response.data.columnBindingIds.flatMap(id => response.bindings.find(binding => binding.id === id) ?? []);
   const [order, setOrder] = useState<readonly string[] | null>(null);
   const [widths, setWidths] = useState<Record<string, number>>({});
   const labelBusy = useRef(false);
@@ -78,22 +85,23 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
     const ids = sorted.map(binding => binding.id);
     const from = ids.indexOf(source), to = ids.indexOf(target);
     if (from < 0 || to < 0) return;
-    ids.splice(from, 1); ids.splice(to, 0, source); setOrder(ids);
+    ids.splice(from, 1); ids.splice(to, 0, source);
+    if (menus) menus.reorderColumns(ids); else setOrder(ids);
   }
   // 기능 : 경계 드래그와 헤더 드래그에 기존 pointer 조작감을 적용합니다.
   function startPointer(binding: ViewDataBinding, event: ReactPointerEvent<HTMLButtonElement>, resize: boolean) {
-    if (event.button !== 0 || labelBusy.current) return;
+    if (event.button !== 0 || labelBusy.current || menus && (!menus.isConfigurationReady || menus.isSaving)) return;
     if (resize) { event.preventDefault(); event.stopPropagation(); }
     cleanup.current?.();
     const startX = event.clientX, startWidth = width(binding), pointerId = event.pointerId;
-    let moved = false, target = binding.id;
+    let moved = false, target = binding.id, resizedWidth = startWidth;
     const previousCursor = document.body.style.cursor, previousSelect = document.body.style.userSelect;
     // 기능 : 작은 움직임은 클릭으로 유지하고 너비 또는 삽입 위치를 갱신합니다.
     function move(pointer: PointerEvent) {
       if (pointer.pointerId !== pointerId || (!resize && Math.abs(pointer.clientX - startX) < 6 && !moved)) return;
       pointer.preventDefault(); moved = true; setMenu(null);
       document.body.style.cursor = resize ? "col-resize" : "grabbing"; document.body.style.userSelect = "none";
-      if (resize) setWidths(current => ({ ...current, [binding.id]: Math.max(100, Math.round(startWidth + pointer.clientX - startX)) }));
+      if (resize) { resizedWidth = Math.min(2000, Math.max(100, Math.round(startWidth + pointer.clientX - startX))); setWidths(current => ({ ...current, [binding.id]: resizedWidth })); }
       else {
         const elements = root.current?.querySelectorAll<HTMLElement>("[data-column-id]") ?? [];
         let nearest = Infinity;
@@ -110,11 +118,13 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
       window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", finish); window.removeEventListener("pointercancel", stop);
       document.body.style.cursor = previousCursor; document.body.style.userSelect = previousSelect;
       setDrag(null); cleanup.current = null;
+      if (menus && resize) setWidths({});
     }
     // 기능 : 실제 드래그 이후 메뉴 클릭을 억제하고 화면 열 순서를 확정합니다.
     function finish(pointer: PointerEvent) {
       if (pointer.pointerId !== pointerId) return;
-      if (moved) { suppressClick.current = true; window.setTimeout(() => { suppressClick.current = false; }, 0); if (!resize) moveColumn(binding.id, target); }
+      if (moved) { suppressClick.current = true; window.setTimeout(() => { suppressClick.current = false; }, 0); if (!resize) moveColumn(binding.id, target);
+        else if (menus) { menus.changeColumn(binding.id, { width: resizedWidth }); setWidths({}); } }
       stop();
     }
     cleanup.current = stop;
@@ -128,6 +138,7 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
   function toggleAll() { setSelected(allSelected ? new Set() : new Set(itemKeys)); }
   // 기능 : 숨긴 열의 현재 화면 표시를 복원하거나 미리 숨깁니다.
   function toggleColumn(id: string) {
+    if (menus) { menus.changeColumn(id, { isHidden: !settings?.viewAttributeSettingDefinitions.find(row => row.id === id)?.isHidden }); return; }
     setHidden(current => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
   }
   // 기능 : 저장된 보기의 표시 상태로 열 조작 미리보기를 되돌립니다.
@@ -139,7 +150,7 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
   }
   // 기능 : 기존 40px 행과 동일 셀 편집 컴포넌트로 각 occurrence를 표시합니다.
   function renderRow(item: ViewDataItem) {
-    return <div className="grid h-[40px] items-stretch bg-white text-[14px] text-[#374151] shadow-[inset_0_-1px_0_#F1F0EC] transition hover:bg-[#FAFAF8]" role="row" key={item.occurrenceKey} style={{ gridTemplateColumns: template }}>
+    return <div className="grid items-stretch bg-white text-[14px] text-[#374151] shadow-[inset_0_-1px_0_#F1F0EC] transition hover:bg-[#FAFAF8]" role="row" key={item.occurrenceKey} style={{ gridTemplateColumns: template, height: response.data.presentation.rowDensity === "COMPACT" ? 32 : 40 }}>
       <div className="flex h-full items-center justify-center border-r border-[#F1F0EC]" role="cell">
         <input aria-label={t("objectList.selectRowLabel", { values: { name: item.title } })} className="h-4 w-4 rounded border-[#D6D3CD] accent-[#4880EE]" type="checkbox" checked={selected.has(item.itemKey)} onChange={() => toggleItem(item.itemKey)} />
       </div>
@@ -155,13 +166,13 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
           className={cn("relative flex h-full min-w-0 border-r border-[#EEEDEA]", drag?.target === binding.id && "shadow-[inset_2px_0_0_#4880EE]", drag?.source === binding.id && "opacity-50")}>
           <button className="flex h-full min-w-0 flex-1 touch-none items-center gap-2 px-3 text-left text-[#9CA3AF] outline-none hover:bg-[#E4E2DC] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#4880EE]/45 cursor-grab" type="button"
             aria-label={t("objectList.openAttributeDefinitionMenuLabel", { values: { name: binding.label } })} aria-expanded={menu === binding.id}
-            onPointerDown={event => startPointer(binding, event, false)} onClick={() => { if (!suppressClick.current && !labelBusy.current) setMenu(menu === binding.id ? null : binding.id); }}>
+            disabled={menus && (!menus.isConfigurationReady || menus.isSaving)} onPointerDown={event => startPointer(binding, event, false)} onClick={() => { if (!suppressClick.current && !labelBusy.current) setMenu(menu === binding.id ? null : binding.id); }}>
             <BindingIcon type={binding.attributeType} /><span className="truncate">{binding.label}</span>
           </button>
           <button className="absolute right-[-4px] top-0 z-20 h-full w-2 cursor-col-resize touch-none hover:bg-[#4880EE]/35 focus-visible:bg-[#4880EE]/50" type="button"
             aria-label={t("objectList.resizeAttributeDefinitionColumnLabel", { values: { name: binding.label } })} onPointerDown={event => startPointer(binding, event, true)} />
           {menu === binding.id && <div className="absolute left-1 top-[calc(100%+6px)] z-50 w-[220px] rounded-[14px] border border-[#E5E1D8] bg-white p-2 shadow-[0_18px_42px_rgba(15,23,42,0.18)]" role="dialog" aria-label={binding.label}>
-            {scope && <ViewColumnLabelEditor scope={scope} binding={binding} onClose={() => closeLabelEditor(binding.id)} onBusyChange={busy => { labelBusy.current = busy; }} />}
+            {scope && <ViewColumnLabelEditor scope={scope} binding={binding} onClose={() => closeLabelEditor(binding.id)} onBusyChange={busy => { labelBusy.current = busy; }} {...(menus ? { onApply: (labelOverride: string | null) => menus.changeColumn(binding.id, { labelOverride }) } : {})} />}
             <p className="px-2 py-2 text-[12px] text-[#9B9A97]">{t("viewData.attributeType")} · {binding.attributeType}</p>
             <button className="flex h-7 w-full items-center gap-2 rounded px-2 text-[14px] text-[#2F2F2F] hover:bg-[#E4E2DC]" type="button" onClick={() => { if (!labelBusy.current) { toggleColumn(binding.id); setMenu(null); } }}><EyeOff className="h-4 w-4" />{t("objectList.attributeDefinitionHideAction")}</button>
             <p className="mt-2 border-t border-[#EEEDEA] px-2 pt-2 text-[11px] font-normal text-[#9B9A97]">{t("viewData.layoutPreview")}</p>
@@ -191,7 +202,7 @@ export function ViewDataTable({ response, items, editing, onCreate, creating, sc
       </div>
     </div>
     {onCreate && <button aria-label={t(creating ? "common.saving" : "viewHeader.addRecord")} aria-busy={creating} className="flex h-[40px] w-full items-center justify-center gap-1.5 border-b border-[#F1F0EC] text-[14px] text-[#65645F] hover:bg-[#E4E2DC] disabled:opacity-50" type="button" disabled={creating} onClick={onCreate}><Plus aria-hidden="true" className="h-5 w-5 shrink-0 text-[#4880EE]" strokeWidth={2} /></button>}
-    {preview && <div className="flex items-center gap-2 border-b border-[#EEEDEA] px-3 py-2 text-[11px] text-[#9B9A97]"><span>{t("viewData.layoutPreview")}</span><button className="shrink-0 text-[#326ACD]" type="button" onClick={resetColumns}>{t("common.reset")}</button></div>}
+    {preview && !menus && <div className="flex items-center gap-2 border-b border-[#EEEDEA] px-3 py-2 text-[11px] text-[#9B9A97]"><span>{t("viewData.layoutPreview")}</span><button className="shrink-0 text-[#326ACD]" type="button" onClick={resetColumns}>{t("common.reset")}</button></div>}
     {selected.size > 0 && <p className="px-3 pt-2 text-[11px] text-[#9B9A97]">{t("viewData.selected", { values: { count: selected.size } })}</p>}
     {hidden.size > 0 && columns.length === 0 && <button className="m-3 text-[12px] text-[#326ACD]" type="button" onClick={() => setMenu("+")}>{t("viewData.visibleColumns")}<ChevronDown className="inline h-3 w-3" /></button>}
   </div>;

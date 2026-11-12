@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { RECORD_ATTRIBUTE_SCHEMA_QUERY, type RecordAttributeSchemaQuery } from "@/modules/attribute-definition/application/ports/record-attribute-schema-query.port";
 import { ATTRIBUTE_DEFINITION_METADATA_QUERY, type AttributeDefinitionMetadataQuery } from "@/modules/attribute-definition/application/ports/attribute-definition-metadata-query.port";
-import { VIEW_DATA_CONFIGURATION_QUERY, type ViewDataConfigurationQuery } from "@/modules/view-definition/application/ports/view-data-configuration-query.port";
+import { OBJECT_RECORD_TITLE_QUERY, type ObjectRecordTitleQuery } from "@/modules/object-definition/application/ports/object-record-title-query.port";
 import { WORKSPACE_SNAPSHOT_QUERY, type WorkspaceSnapshotQuery } from "@/modules/workspace/application/ports/workspace-snapshot-query.port";
 import { WORKSPACE_ACTOR_OPTIONS_QUERY, type WorkspaceActorOptionsQuery } from "@/modules/workspace/application/ports/workspace-actor-options-query.port";
 import { OBJECT_DEFINITION_ACCESS_QUERY, type ObjectDefinitionAccessQuery } from "@/modules/object-definition/application/ports/object-definition-access-query.port";
@@ -18,7 +18,7 @@ export class GetRecordFormUseCase {
   constructor(
     @Inject(RECORD_ATTRIBUTE_SCHEMA_QUERY) private readonly schemas: RecordAttributeSchemaQuery,
     @Inject(ATTRIBUTE_DEFINITION_METADATA_QUERY) private readonly metadata: AttributeDefinitionMetadataQuery,
-    @Inject(VIEW_DATA_CONFIGURATION_QUERY) private readonly views: ViewDataConfigurationQuery,
+    @Inject(OBJECT_RECORD_TITLE_QUERY) private readonly views: ObjectRecordTitleQuery,
     @Inject(WORKSPACE_SNAPSHOT_QUERY) private readonly workspace: WorkspaceSnapshotQuery,
     @Inject(WORKSPACE_ACTOR_OPTIONS_QUERY) private readonly actors: WorkspaceActorOptionsQuery,
     @Inject(OBJECT_DEFINITION_ACCESS_QUERY) private readonly objects: ObjectDefinitionAccessQuery,

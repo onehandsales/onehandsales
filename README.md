@@ -585,7 +585,9 @@ OneHand CRM은 사용자가 CRM을 직접 설계하게 만드는 서비스가 �
 
 ## Current Implementation
 
-현재 구현은 새 CRM 코어를 만들기 전 foundation 상태다.
+2026-11-12 추가: Workspace의 관리 항목/속성/기록과 업무 목록, TABLE/KANBAN/LIST 조회에 이어 필터·정렬·보기 설정 저장을 연결했다. 컬럼 표시명·너비·순서·숨김도 같은 임시 상태에서 편집하고 `보기 설정 저장`으로 반영한다. `변경 되돌리기`, 저장 실패 시 입력 유지, 버전 충돌 처리를 지원한다. 연결 기록 이름은 View 제목 설정과 독립적인 Object 대표 속성을 사용한다. [API와 구현·검증 기록](TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md)을 따른다.
+
+아래 foundation 목록은 초기 구현 기록이며 현재 전체 CRM 구현 범위는 아니다.
 
 Backend:
 

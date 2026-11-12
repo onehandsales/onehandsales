@@ -1,4 +1,9 @@
 import { Module } from "@nestjs/common";
+import { ViewConfigurationService } from "../application/view-configuration-application.service";
+import { VIEW_CONFIGURATION_COMMAND } from "../application/ports/view-configuration-command.repository";
+import { PrismaViewConfigurationCommandRepository } from "./persistence/prisma-view-configuration-command.repository";
+import { UserWorkspaceViewConfigurationController } from "../presentation/http/user-workspace-view-configuration.controller";
+import { ObjectRecordTitleModule } from "@/modules/object-definition/infrastructure/object-record-title.module";
 import { ReorderSidebarViewFavoritesUseCase } from "../application/use-cases/reorder-sidebar-view-favorites.use-case";
 import { SIDEBAR_FAVORITE_ORDER_REPOSITORY } from "../application/ports/sidebar-favorite-order.repository";
 import { PrismaSidebarFavoriteOrderRepository } from "./persistence/prisma-sidebar-favorite-order.repository";
@@ -59,6 +64,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
 // 역할 : View 헤더·본문·보기 목록·개인 즐겨찾기와 공개 Port 의존성을 조립합니다.
 @Module({
   imports: [
+    ObjectRecordTitleModule,
     ConfigModule,
     RecordDefinitionModule,
     AttributeDefinitionModule,
@@ -69,6 +75,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     PrismaInfrastructureModule,
   ],
   controllers: [
+    UserWorkspaceViewConfigurationController,
     UserWorkspaceTableColumnsController,
     UserWorkspaceViewMainContentController,
     UserWorkspaceViewHeaderMenusController,
@@ -79,6 +86,8 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
     UserWorkspaceViewFavoriteController,
   ],
   providers: [
+    ViewConfigurationService,
+    { provide: VIEW_CONFIGURATION_COMMAND, useClass: PrismaViewConfigurationCommandRepository },
     ReorderSidebarViewFavoritesUseCase,
     {
       provide: SIDEBAR_FAVORITE_ORDER_REPOSITORY,

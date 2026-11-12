@@ -93,6 +93,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   // 기능 : 도메인 오류 코드에 맞는 HTTP 상태 코드를 결정합니다.
   private getDomainErrorStatus(code: string): HttpStatus {
+    if (code === "ViewConfigurationNotFound") return HttpStatus.NOT_FOUND;
+    if (code === "ViewConfigurationConflict") return HttpStatus.CONFLICT;
+    if (code === "ViewConfigurationInvalid") return HttpStatus.UNPROCESSABLE_ENTITY;
     if (code.endsWith("NotFound")) {
       return HttpStatus.NOT_FOUND;
     }

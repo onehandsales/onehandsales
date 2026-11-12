@@ -301,6 +301,8 @@ class FakeWorkspaceAccessQuery implements WorkspaceAccessQuery {
 class FakeObjectDefinitionCommandRepository
   implements ObjectDefinitionCommandRepository
 {
+  // 기능 : 생성 흐름의 대표 이름 지정 호출을 기록합니다.
+  async setRecordTitle(): Promise<void> {}
   hasSameApiSlug = false;
   lastLookupInput: ObjectDefinitionApiSlugLookupInput | null = null;
   lastCreateInput: CreateObjectDefinitionInput | null = null;

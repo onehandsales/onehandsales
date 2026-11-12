@@ -9,9 +9,15 @@ export class PrismaRecordOptionsQueryRepository implements RecordOptionsQuery {
     const rows = await resolvePrismaReadContext(context).recordDefinition.findMany({ where: {
       workspaceId: input.workspaceId, ...(input.objectId ? { objectDefinitionId: input.objectId } : {}),
       ...(input.cursor ? { id: { gt: input.cursor } } : {}),
-      ...(input.q ? { recordAttributeValueDefinitions: { some: { ...titles, textValue: { contains: input.q, mode: "insensitive" as const } } } } : {}),
+      ...(input.q ? { recordAttributeValueDefinitions: { some: { ...titles, OR: [
+        { textValue: { contains: input.q, mode: "insensitive" as const } },
+        { jsonValue: { path: ["displayName"], string_contains: input.q } },
+      ] } } } : {}),
     }, orderBy: { id: "asc" }, take: input.take, select: { id: true,
-      recordAttributeValueDefinitions: { where: titles, orderBy: [{ attributeDefinitionId: "asc" }, { id: "asc" }], select: { attributeDefinitionId: true, textValue: true } } } });
-    return rows.map(row => ({ id: row.id, label: input.titleAttributeIds.map(id => row.recordAttributeValueDefinitions.find(value => value.attributeDefinitionId === id && value.textValue)?.textValue).find(Boolean) ?? "이름 없는 기록" }));
+      recordAttributeValueDefinitions: { where: titles, orderBy: [{ attributeDefinitionId: "asc" }, { id: "asc" }], select: { attributeDefinitionId: true, textValue: true, jsonValue: true } } } });
+    return rows.map(row => ({ id: row.id, label: row.recordAttributeValueDefinitions.map(value => {
+      const json = value.jsonValue;
+      return value.textValue || (json && typeof json === "object" && !Array.isArray(json) && typeof json.displayName === "string" ? json.displayName : null);
+    }).find(Boolean) ?? "이름 없는 기록" }));
   }
 }

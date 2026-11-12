@@ -1,7 +1,9 @@
 # Implementation Status
 
 Status: Current Runtime Baseline
-Date: 2026-09-12
+Date: 2026-11-12 (아래 초기 foundation 기록은 2026-09-12)
+
+2026-11-12 현재 코드에는 Workspace, Object/Attribute/Record, List/Entry/View와 TABLE/KANBAN/LIST 본문이 존재한다. 이번 작업으로 필터·정렬·표시 설정·컬럼 표시명을 같은 임시 상태에서 편집하고 미리보기/저장/되돌리기를 연결했다. 설정 저장은 View 공통이며 낙관적 버전 충돌을 확인한다. 회사 연결 이름은 Object 대표 이름 속성을 사용한다. [구현 및 검증 범위](../../../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md)를 따른다. 아래 2~3절의 “미구현” 항목은 초기 기록이며 이 추가 기록과 현재 코드가 우선한다. Kit 자동 구성·나머지8개 View 본문·대표 이름 속성 변경 UI까지 구현했다는 의미는 아니다.
 
 ## 1. 목적
 

@@ -29,6 +29,8 @@ export interface CreateObjectDefinitionResult {
 
 // 역할 : ObjectDefinitionCommandRepository가 ObjectDefinition 쓰기 저장소 계약을 정의합니다.
 export interface ObjectDefinitionCommandRepository {
+  // 기능 : 같은 생성 작업에서 만든 이름 속성을 관리 항목의 대표 이름으로 지정합니다.
+  setRecordTitle(workspaceId: string, objectId: string, attributeId: string, context: TransactionContext): Promise<void>;
   // 기능 : 같은 Workspace의 생성·재정렬을 잠근 뒤 현재 마지막 순서를 조회합니다.
   lockAndGetLastSortOrder(workspaceId: string, context: TransactionContext): Promise<number | null>;
 

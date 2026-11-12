@@ -111,16 +111,17 @@ export function ViewHeaderToolbar({ attributes = [], header, menus, searchLabel,
         <button className="mt-2 rounded px-2 py-1 text-[#326ACD] hover:bg-[#EDF3FE]" type="button" onClick={() => retryMenu(name, unavailable)}>{t("common.retry")}</button></div>;
     }
     if (state.isPending || !state.data) return <div role="status" className="space-y-2 px-2 py-3"><p className="text-[#9B9A97]">{t("common.loading")}</p><div className="h-6 animate-pulse rounded bg-[#F4F3F0]" /><div className="h-6 animate-pulse rounded bg-[#F4F3F0]" /></div>;
-    if (name === "filters" && menus.filters.data) return <ViewFilterMenu data={menus.filters.data} candidates={attributes} onChange={menus.filters.change} />;
-    if (name === "sorts" && menus.sorts.data) return <ViewSortMenu data={menus.sorts.data} candidates={attributes} onChange={menus.sorts.change} />;
-    if (name === "settings" && menus.settings.data) return <ViewSettingsMenu data={menus.settings.data} candidates={attributes} onChange={menus.settings.change} />;
+    const candidates = menus.supportsSaving ? menus.candidates : attributes;
+    if (name === "filters" && menus.filters.data) return <ViewFilterMenu data={menus.filters.data} candidates={candidates} onChange={menus.filters.change} optionsScope={menus.configurationScope} />;
+    if (name === "sorts" && menus.sorts.data) return <ViewSortMenu data={menus.sorts.data} candidates={candidates} onChange={menus.sorts.change} />;
+    if (name === "settings" && menus.settings.data) return <ViewSettingsMenu data={menus.settings.data} candidates={candidates} onChange={menus.settings.change} />;
     return null;
   }
   // 기능 : 필터·정렬·설정 팝오버의 폭을 260px로 통일합니다.
   function renderPopover(name: Exclude<Panel, "search">, title: string, children: ReactNode) {
     return panel === name ? <div aria-label={title} className="absolute right-0 top-[calc(100%+6px)] z-50 w-[260px] max-h-[calc(100dvh-100px)] max-w-[calc(100vw-24px)] overflow-y-auto rounded-lg border border-[#E7E6E2] bg-white p-1.5 text-[12px] text-[#37352F] shadow-[0_8px_28px_rgba(15,23,42,0.12)]" data-header-popover="" id={panelId} role="dialog">
       <div className="flex items-center justify-between px-2 pb-2 pt-1"><span className="font-semibold">{title}</span><button aria-label={t("common.close")} className="rounded p-1 text-[#9B9A97] hover:bg-[#F0EFEC]" onClick={closePanel} type="button"><X className="h-3.5 w-3.5" /></button></div>
-      {children}<ViewPreviewNote />
+      <fieldset disabled={menus.isSaving}>{children}</fieldset><ViewPreviewNote supportsSaving={menus.supportsSaving} />
     </div> : null;
   }
   // 기능 : 메뉴 버튼과 현재 상태를 기존 헤더 스타일로 연결합니다.

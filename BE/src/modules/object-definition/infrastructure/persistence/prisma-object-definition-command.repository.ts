@@ -18,6 +18,13 @@ export class PrismaObjectDefinitionCommandRepository
   // 기능 : PrismaService를 주입받아 ObjectDefinition 쓰기 DB 작업에 사용합니다.
   constructor(private readonly prismaService: PrismaService) {}
 
+  // 기능 : 생성 transaction 안에서 대표 이름 포인터를 저장합니다.
+  async setRecordTitle(workspaceId: string, objectId: string, attributeId: string, context: TransactionContext): Promise<void> {
+    // 1. 호출자는 같은 transaction에서 소유 모듈이 생성한 속성 ID만 전달한다.
+    const client = resolvePrismaTransactionalClient(this.prismaService, context);
+    await client.objectDefinition.update({ where: { id: objectId, workspaceId }, data: { recordTitleAttributeDefinitionId: attributeId } });
+  }
+
   // 기능 : application이 생성 순서를 결정할 수 있도록 잠금 안의 마지막 값을 반환합니다.
   async lockAndGetLastSortOrder(workspaceId: string, context: TransactionContext): Promise<number | null> {
     // 1. application의 transaction에서 생성·재정렬이 공유하는 잠금을 얻는다.

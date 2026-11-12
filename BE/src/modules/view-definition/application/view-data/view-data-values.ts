@@ -246,7 +246,7 @@ export class ViewDataValues {
     };
   }
 
-  // 기능 : 같은 Object의 명시 TITLE가 한 속성으로 수렴할 때만 참조 이름을 제공합니다.
+  // 기능 : 보기의 제목·숨김과 독립적인 관리 항목의 대표 이름을 제공합니다.
   private recordTitle(id: string): string | null {
     const record = this.snapshot.records.get(id);
     if (!record) return null;
@@ -254,9 +254,7 @@ export class ViewDataValues {
       ...new Set(
         this.snapshot.titles
           .filter(
-            (title) =>
-              !title.isHidden && title.sourceScope === "RECORD" && referencePath(title.referenceAttributeIdPathJson).length === 0 && this.snapshot.attributes.get(title.attributeDefinitionId)
-                ?.objectDefinitionId === record.objectDefinitionId,
+            (title) => title.objectDefinitionId === record.objectDefinitionId,
           )
           .map((title) => title.attributeDefinitionId),
       ),

@@ -125,7 +125,9 @@ export class CreateWorkspaceObjectDefinitionUseCase {
           apiSlug: "name",
           title: "이름",
         }, context);
-        // 3. 첫 TABLE과 제목 열 표시 설정이 모두 저장되어야 전체 생성이 성공한다.
+        // 3. 대표 이름은 보기 제목과 독립적으로 보존한다.
+        await this.objectDefinitionCommandRepository.setRecordTitle(workspaceId, object.id, attribute.id, context);
+        // 4. 첫 TABLE과 제목 열 표시 설정이 모두 저장되어야 전체 생성이 성공한다.
         const view = await this.objectTableViewCreator.create({
           ...audit,
           objectDefinitionId: object.id,

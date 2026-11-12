@@ -2,6 +2,20 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
+  viewConfiguration: {
+    unsupportedNote: "이 보기 유형의 설정 저장은 준비 중이에요.",
+    unsaved: "저장하지 않은 변경사항이 있어요.", saved: "보기 설정을 저장했어요.",
+    save: "보기 설정 저장", discard: "변경 되돌리기", apply: "적용",
+    shared: "이 보기를 함께 사용하는 사람에게도 적용돼요.",
+    conflict: "보기 설정이 다른 곳에서 변경됐어요. 입력한 변경은 유지하고 있어요.",
+    latest: "내 변경을 버리고 최신 설정 사용", failed: "저장하지 못했어요. 입력한 설정을 확인하고 다시 시도해 주세요.",
+    previewFailed: "미리보기를 불러오지 못했어요. 조건을 확인하거나 다시 시도해 주세요.",
+    noMatch: "조건에 맞는 기록이 없어요. 조건을 바꿔 보세요.",
+    operator: "비교 방법", startsWith: "시작하는 값", endsWith: "끝나는 값", in: "다음 중 하나", notIn: "다음에 포함되지 않음",
+    empty: "값이 비어 있음", notEmpty: "값이 있음", optionsSearch: "선택할 값 검색", loadOptions: "선택할 값을 불러오지 못했어요.",
+    reducer: "여러 값의 정렬 기준", minimum: "가장 작은 값", maximum: "가장 큰 값", moveUp: "우선순위 올리기", moveDown: "우선순위 내리기",
+    density: "표시 간격", dateUnit: "날짜 묶음", day: "일별", month: "월별", year: "연도별",
+  },
   columnLabel: {
     name: "컬럼 표시명", scope: "이 보기에서 사용하는 이름이에요.", clear: "원본 이름으로 되돌리기",
     failed: "표시명을 저장하지 못했어요. 다시 시도해 주세요.",
@@ -55,7 +69,7 @@ export const koKRResource = {
     emptyGroup: "표시할 기록이 없어요.",
     visibleColumns: "표시할 속성",
     attributeType: "유형",
-    layoutPreview: "열 너비·순서·숨김은 현재 화면의 미리보기예요.",
+    layoutPreview: "열 너비·순서·숨김도 보기 설정 저장으로 함께 저장해요.",
     expandGroup: "{name} 펼치기",
     collapseGroup: "{name} 접기",
     unassigned: "단계 미지정 {count}건",
@@ -477,7 +491,7 @@ export const koKRResource = {
     settings: "보기 설정",
     layout: "레이아웃",
     visibleAttributes: "표시 정보",
-    previewNote: "설정은 현재 화면에서 미리보기로만 유지돼요.",
+    previewNote: "변경한 설정은 미리보기로 확인하고, 보기 설정 저장으로 저장해요.",
   },
   errors: {
     CURRENCY_UNSUPPORTED: "지원하는 통화를 선택해 주세요.",
