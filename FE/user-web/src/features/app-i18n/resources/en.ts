@@ -2,6 +2,12 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 영어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const enResource = {
+  columnLabel: {
+    name: "Column label", scope: "This name applies to this view.", clear: "Restore original name",
+    failed: "Could not save the label. Please try again.",
+    unavailable: "This column cannot be edited. Please refresh the view.",
+    refreshFailed: "The label was saved. Retry to refresh the view.",
+  },
   sidebarOrder: {
     handle: "Move {name}",
     help: "Press Space to pick up, use arrow keys to move, Enter to save, or Escape to cancel.",
@@ -49,7 +55,7 @@ export const enResource = {
     emptyGroup: "No records to display.",
     visibleColumns: "Display attributes",
     attributeType: "Type",
-    layoutPreview: "Column changes preview this screen. Saving the view is coming soon.",
+    layoutPreview: "Column width, order and visibility preview this screen.",
     expandGroup: "Expand {name}",
     collapseGroup: "Collapse {name}",
     unassigned: "{count} unassigned",

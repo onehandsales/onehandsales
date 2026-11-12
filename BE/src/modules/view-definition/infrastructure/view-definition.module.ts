@@ -5,6 +5,7 @@ import { PrismaSidebarFavoriteOrderRepository } from "./persistence/prisma-sideb
 import type { ViewFavoriteCommandRepository } from "../application/ports/view-favorite-command.repository";
 import { VIEW_COLUMN_COMMAND_REPOSITORY } from "../application/ports/view-column-command.repository";
 import { CreateWorkspaceTableColumnUseCase } from "../application/use-cases/create-workspace-table-column.use-case";
+import { UpdateWorkspaceViewColumnLabelUseCase } from "../application/use-cases/update-workspace-view-column-label.use-case";
 import { UserWorkspaceTableColumnsController } from "../presentation/http/user-workspace-table-columns.controller";
 import { PrismaViewColumnCommandRepository } from "./persistence/prisma-view-column-command.repository";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -86,6 +87,7 @@ import { UserWorkspaceViewFavoriteController } from "../presentation/http/user-w
       inject: [PrismaService, VIEW_FAVORITE_COMMAND_REPOSITORY],
     },
     CreateWorkspaceTableColumnUseCase,
+    UpdateWorkspaceViewColumnLabelUseCase,
     {
       provide: VIEW_COLUMN_COMMAND_REPOSITORY,
       // 기능 : View 모듈 소유 컬럼 쓰기 구현체를 조립합니다.

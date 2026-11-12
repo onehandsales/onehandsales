@@ -116,7 +116,7 @@ test("preserves table resizing, column menus and existing direct Record cell edi
   const handle = body(page).getByRole("button", { name: "회사명 폭 조절", exact: true });
   const bounds = (await handle.boundingBox())!;
   await page.mouse.move(bounds.x + 3, bounds.y + 12); await page.mouse.down(); await page.mouse.move(bounds.x + 65, bounds.y + 12); await page.mouse.up();
-  await expect(body(page)).toContainText("열 표시 변경은 현재 화면의 미리보기");
+  await expect(body(page)).toContainText("열 너비·순서·숨김은 현재 화면의 미리보기");
   await body(page).getByRole("button", { name: "회사명 속성 메뉴 열기", exact: true }).click();
   await expect(body(page).getByRole("dialog", { name: "회사명", exact: true })).toBeVisible();
   await page.keyboard.press("Escape");

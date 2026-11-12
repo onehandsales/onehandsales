@@ -2,6 +2,12 @@ import type { AppI18nResource } from "@/features/app-i18n/constants";
 
 // 기능 : 한국어 앱 화면 문구 resource를 namespace별로 정의합니다.
 export const koKRResource = {
+  columnLabel: {
+    name: "컬럼 표시명", scope: "이 보기에서 사용하는 이름이에요.", clear: "원본 이름으로 되돌리기",
+    failed: "표시명을 저장하지 못했어요. 다시 시도해 주세요.",
+    unavailable: "이 컬럼을 수정할 수 없어요. 보기를 새로고침해 주세요.",
+    refreshFailed: "표시명은 저장됐어요. 다시 시도를 눌러 화면을 갱신해 주세요.",
+  },
   sidebarOrder: {
     handle: "{name} 순서 이동",
     help: "스페이스로 잡고 위아래 화살표로 이동하세요. Enter로 저장하고 Escape로 취소합니다.",
@@ -49,7 +55,7 @@ export const koKRResource = {
     emptyGroup: "표시할 기록이 없어요.",
     visibleColumns: "표시할 속성",
     attributeType: "유형",
-    layoutPreview: "열 표시 변경은 현재 화면의 미리보기예요. 보기 저장은 준비 중이에요.",
+    layoutPreview: "열 너비·순서·숨김은 현재 화면의 미리보기예요.",
     expandGroup: "{name} 펼치기",
     collapseGroup: "{name} 접기",
     unassigned: "단계 미지정 {count}건",

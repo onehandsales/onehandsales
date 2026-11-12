@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
-import type { ViewColumnCommandRepository, ColumnTargetView } from "../../application/ports/view-column-command.repository";
+import type { ViewColumnCommandRepository, ColumnTargetView, ViewColumnScope } from "../../application/ports/view-column-command.repository";
 import { ViewColumnError } from "../../domain/view-column.errors";
 import type { TransactionContext } from "@/shared/application/ports/transaction-manager.port";
 import type { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { resolvePrismaTransactionalClient } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 
-// 역할 : View 컬럼 생성의 잠금·멱등성 조회·저장을 PostgreSQL 트랜잭션으로 구현합니다.
+// 역할 : View 컬럼 생성·표시명 수정의 잠금과 저장을 PostgreSQL 트랜잭션으로 구현합니다.
 export class PrismaViewColumnCommandRepository implements ViewColumnCommandRepository {
   // 기능 : View 소유 테이블을 조회할 Prisma 연결을 받습니다.
   constructor(private readonly prisma: PrismaService) {}
@@ -30,6 +30,23 @@ export class PrismaViewColumnCommandRepository implements ViewColumnCommandRepos
       where: { id }, select: { id: true, workspaceId: true, viewDefinitionId: true, createdByActorId: true,
         attributeDefinitionId: true, sourceScope: true, attributeDisplayRole: true, referenceAttributeIdPathJson: true },
     });
+  }
+
+  // 기능 : 설정 ID와 Workspace·View가 모두 일치하는 표시명만 읽습니다.
+  findColumnLabel(scope: ViewColumnScope, context: TransactionContext) {
+    return resolvePrismaTransactionalClient(this.prisma, context).viewAttributeSettingDefinition.findFirst({
+      where: { id: scope.viewAttributeSettingDefinitionId, workspaceId: scope.workspaceId, viewDefinitionId: scope.viewDefinitionId },
+      select: { labelOverride: true },
+    });
+  }
+
+  // 기능 : 다른 View의 설정이나 원본 속성을 변경하지 않고 표시명과 감사 정보를 저장합니다.
+  async updateColumnLabel(scope: ViewColumnScope, labelOverride: string | null, actorId: string, context: TransactionContext) {
+    const result = await resolvePrismaTransactionalClient(this.prisma, context).viewAttributeSettingDefinition.updateMany({
+      where: { id: scope.viewAttributeSettingDefinitionId, workspaceId: scope.workspaceId, viewDefinitionId: scope.viewDefinitionId },
+      data: { labelOverride, updatedByActorId: actorId },
+    });
+    if (result.count !== 1) throw new ViewColumnError("ViewColumnNotFound");
   }
 
   // 기능 : 잠긴 View의 표시 설정 수와 최대 순서를 같은 트랜잭션으로 집계합니다.

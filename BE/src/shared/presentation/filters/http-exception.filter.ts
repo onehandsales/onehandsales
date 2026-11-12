@@ -112,6 +112,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ListDefinitionApiSlugAlreadyExists":
       case "AttributeDefinitionApiSlugAlreadyExists":
       case "ViewColumnTargetUnsupported":
+      case "ViewColumnLabelTargetUnsupported":
       case "ViewColumnCreationConflict":
       case "ViewColumnLimitExceeded":
       case "ViewDataCursorStale":
@@ -128,6 +129,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "InvalidDeviceId":
       case "InvalidRefreshOrigin":
       case "ValidationError":
+      case "ViewColumnLabelInvalid":
       case "CURRENCY_UNSUPPORTED":
       case "USER_LOCALE_UNSUPPORTED":
       case "USER_TIMEZONE_INVALID":

@@ -10,6 +10,9 @@ import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 import { PrismaService } from "@/shared/infrastructure/prisma/prisma.service";
 import { resolvePrismaReadContext } from "@/shared/infrastructure/prisma/prisma-transaction-manager";
 import { GetWorkspaceViewMainContentUseCase } from "../application/use-cases/get-workspace-view-main-content.use-case";
+import { UpdateWorkspaceViewColumnLabelUseCase } from "../application/use-cases/update-workspace-view-column-label.use-case";
+import { TRANSACTION_MANAGER, type TransactionManager } from "@/shared/application/ports/transaction-manager.port";
+import { VIEW_COLUMN_COMMAND_REPOSITORY, type ViewColumnCommandRepository } from "../application/ports/view-column-command.repository";
 import { VIEW_DATA_TOKEN_CODEC } from "../application/ports/view-data-token-codec.port";
 import { fixtureUser } from "../application/view-data/view-data.fixture";
 import { ViewDefinitionModule } from "./view-definition.module";
@@ -154,6 +157,39 @@ describeDatabase("View main data PostgreSQL integration", () => {
     expect(item.cells.flatMap(cell => cell.values).some(value => typeof value.value === "object" && value.value !== null && "label" in value.value && value.value.label === "Second")).toBe(true);
     expect(sql.some(statement => /^\s*(INSERT|UPDATE|DELETE)/i.test(statement))).toBe(false);
     expect(sql.length).toBeLessThan(80);
+  });
+
+  // 기능 : 실제 DB에서 View별 격리·표시명 fallback·감사 정보·실패 rollback을 확인합니다.
+  it("persists and clears one label without changing attributes, values or another View", async () => {
+    const update = module.get(UpdateWorkspaceViewColumnLabelUseCase);
+    const column = await prisma.viewAttributeSettingDefinition.findFirstOrThrow({ where: { viewDefinitionId: objectViewId, attributeDefinitionId: amountId } });
+    const where = { workspaceId };
+    const attributesBefore = await prisma.attributeDefinition.findMany({ where, orderBy: { id: "asc" } });
+    const valuesBefore = await prisma.recordAttributeValueDefinition.findMany({ where, orderBy: { id: "asc" } });
+    const otherBefore = await prisma.viewAttributeSettingDefinition.findMany({ where: { workspaceId, id: { not: column.id } }, orderBy: { id: "asc" } });
+    await update.execute(user, workspaceId, objectViewId, column.id, { labelOverride: "예상 매출" });
+    const saved = await prisma.viewAttributeSettingDefinition.findUniqueOrThrow({ where: { id: column.id } });
+    expect(saved).toMatchObject({ labelOverride: "예상 매출", updatedByActorId: actorId });
+    expect(saved.updatedAt.getTime()).toBeGreaterThanOrEqual(column.updatedAt.getTime());
+    const response = await query.execute(user, workspaceId, objectViewId, {});
+    expect(response.bindings.find(binding => binding.id === column.id)?.label).toBe("예상 매출");
+    await update.execute(user, workspaceId, objectViewId, column.id, { labelOverride: " 예상 매출 " });
+    expect(await prisma.viewAttributeSettingDefinition.findUnique({ where: { id: column.id } })).toEqual(saved);
+    await expect(update.execute(user, workspaceId, tableId, column.id, { labelOverride: "잘못된 보기" })).rejects.toMatchObject({ code: "ViewColumnNotFound" });
+    const transactions = module.get<TransactionManager>(TRANSACTION_MANAGER);
+    const repository = module.get<ViewColumnCommandRepository>(VIEW_COLUMN_COMMAND_REPOSITORY);
+    await expect(transactions.runInTransaction(async context => {
+      await repository.lockView(workspaceId, objectViewId, context);
+      await repository.updateColumnLabel({ workspaceId, viewDefinitionId: objectViewId, viewAttributeSettingDefinitionId: column.id }, "rollback", actorId, context);
+      throw new Error("rollback test");
+    })).rejects.toThrow("rollback test");
+    expect(await prisma.viewAttributeSettingDefinition.findUnique({ where: { id: column.id } })).toEqual(saved);
+    await update.execute(user, workspaceId, objectViewId, column.id, { labelOverride: null });
+    const cleared = await query.execute(user, workspaceId, objectViewId, {});
+    expect(cleared.bindings.find(binding => binding.id === column.id)?.label).toBe(attributesBefore.find(attribute => attribute.id === amountId)!.title);
+    expect(await prisma.attributeDefinition.findMany({ where, orderBy: { id: "asc" } })).toEqual(attributesBefore);
+    expect(await prisma.recordAttributeValueDefinition.findMany({ where, orderBy: { id: "asc" } })).toEqual(valuesBefore);
+    expect(await prisma.viewAttributeSettingDefinition.findMany({ where: { workspaceId, id: { not: column.id } }, orderBy: { id: "asc" } })).toEqual(otherBefore);
   });
 
   it("returns List groups and independent Kanban column pages without merging duplicate Record entries", async () => {

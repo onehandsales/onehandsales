@@ -21,6 +21,22 @@ function numericFilter(snapshot: ViewDataSnapshot, operator = "gte", input = "0.
     comparisonOperator: operator, comparisonValueJson: { value: input }, multiValueMatchMode: mode });
 }
 describe("Three-type View execution", () => {
+  // 기능 : 같은 원본 속성도 View별 표시명을 사용하고 해제하면 원본 제목으로 돌아갑니다.
+  it.each(["TABLE", "KANBAN", "LIST"] as const)("reads and clears a local label without changing another %s view", type => {
+    const snapshot = viewDataFixture(type), other = viewDataFixture(type);
+    const row = snapshot.configuration.viewAttributeSettingDefinitions[1]!;
+    const original = execute(snapshot), otherBefore = execute(other);
+    snapshot.configuration.viewAttributeSettingDefinitions[1] = { ...row, labelOverride: "예상 매출" };
+    const changed = execute(snapshot);
+    expect(changed.bindings.find(binding => binding.id === row.id)?.label).toBe("예상 매출");
+    expect(changed.configurationFingerprint).not.toBe(original.configurationFingerprint);
+    expect(snapshot.attributes.get(row.attributeDefinitionId)?.title).toBe("attribute-1");
+    const otherAfter = execute(other);
+    expect(otherAfter.bindings).toEqual(otherBefore.bindings);
+    expect(otherAfter.configurationFingerprint).toBe(otherBefore.configurationFingerprint);
+    snapshot.configuration.viewAttributeSettingDefinitions[1] = { ...row, labelOverride: null };
+    expect(execute(snapshot).bindings.find(binding => binding.id === row.id)?.label).toBe("attribute-1");
+  });
   // 기능 : 목록 생성 직후 제목만 있는 표·목록은 설정 오류 없이 빈 화면을 반환합니다.
   it.each(["TABLE", "LIST"] as const)("reads a newly created empty %s list", type => {
     const snapshot = viewDataFixture(type);

@@ -29,7 +29,7 @@ describe("Object TABLE column creation", () => {
   const expected = { viewDefinitionId: view, objectDefinitionId: object, attributeDefinitionId: attr, viewAttributeSettingDefinitionId: creation };
   const tx = { $queryRaw: jest.fn(), attributeDefinition: { aggregate: jest.fn(), create: jest.fn(), findMany: jest.fn() },
     recordDefinition: { findMany: jest.fn() }, recordAttributeValueDefinition: { createMany: jest.fn() },
-    viewAttributeSettingDefinition: { findUnique: jest.fn(), aggregate: jest.fn(), create: jest.fn() } };
+    viewAttributeSettingDefinition: { findUnique: jest.fn(), aggregate: jest.fn(), create: jest.fn(), findFirst: jest.fn(), updateMany: jest.fn() } };
   const prisma = { workspaceMember: { findFirst: jest.fn() }, objectDefinition: { findFirst: jest.fn() }, attributeDefinition: { findFirst: jest.fn() }, $transaction: jest.fn() };
   const logger = { log: jest.fn(), warn: jest.fn(), error: jest.fn() };
 
@@ -57,6 +57,8 @@ describe("Object TABLE column creation", () => {
     tx.viewAttributeSettingDefinition.findUnique.mockResolvedValue(null);
     tx.viewAttributeSettingDefinition.aggregate.mockResolvedValue({ _count: 1, _max: { sortOrder: 4 } });
     tx.viewAttributeSettingDefinition.create.mockResolvedValue({ id: creation });
+    tx.viewAttributeSettingDefinition.findFirst.mockResolvedValue({ labelOverride: null });
+    tx.viewAttributeSettingDefinition.updateMany.mockResolvedValue({ count: 1 });
     tx.attributeDefinition.aggregate.mockResolvedValue({ _max: { sortOrder: 9 } });
     tx.attributeDefinition.create.mockResolvedValue({ id: attr });
     tx.recordDefinition.findMany.mockResolvedValue([{ id: "record-a" }, { id: "record-b" }]);
@@ -67,6 +69,86 @@ describe("Object TABLE column creation", () => {
   afterAll(async () => { await app.close(); });
   // 기능 : 인증된 새 컬럼 생성 요청을 전송합니다.
   function post(body: object = input, endpoint = path) { return request(app.getHttpServer()).post(endpoint).set("Authorization", "Bearer valid").send(body); }
+
+  // 기능 : 기존 표시 설정의 이름 수정 HTTP 요청을 실제 의존성 조립에 전달합니다.
+  function patch(body: object = { labelOverride: "  예상 매출  " }, endpoint = `${path}/${creation}`) {
+    return request(app.getHttpServer()).patch(endpoint).set("Authorization", "Bearer valid").send(body);
+  }
+
+  describe("View column label update", () => {
+    it("updates only the scoped display setting and its server audit actor", async () => {
+      await patch().expect(200).expect({ viewDefinitionId: view, viewAttributeSettingDefinitionId: creation, labelOverride: "예상 매출" });
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+      const where = { id: creation, workspaceId: ws, viewDefinitionId: view };
+      expect(tx.viewAttributeSettingDefinition.findFirst).toHaveBeenCalledWith({ where, select: { labelOverride: true } });
+      expect(tx.viewAttributeSettingDefinition.updateMany).toHaveBeenCalledWith({ where, data: { labelOverride: "예상 매출", updatedByActorId: actor } });
+      expect(tx.attributeDefinition.create).not.toHaveBeenCalled();
+      expect(tx.recordAttributeValueDefinition.createMany).not.toHaveBeenCalled();
+      expect(JSON.stringify(logger.log.mock.calls)).not.toContain("예상 매출");
+    });
+    it.each(["TABLE", "KANBAN", "LIST"])("supports %s labels without an Object-only source restriction", async type => {
+      tx.$queryRaw.mockImplementation(async (parts: TemplateStringsArray) => parts.join("").includes("transaction_isolation")
+        ? [{ level: "read committed" }] : [{ type, objectDefinitionId: null, listDefinitionId: "list" }]);
+      await patch().expect(200);
+    });
+    it("clears an override and leaves already cleared labels untouched", async () => {
+      tx.viewAttributeSettingDefinition.findFirst.mockResolvedValueOnce({ labelOverride: "현재 이름" });
+      await patch({ labelOverride: null }).expect(200).expect({ viewDefinitionId: view, viewAttributeSettingDefinitionId: creation, labelOverride: null });
+      expect(tx.viewAttributeSettingDefinition.updateMany).toHaveBeenCalledWith(expect.objectContaining({ data: { labelOverride: null, updatedByActorId: actor } }));
+      await patch({ labelOverride: null }).expect(200);
+      expect(tx.viewAttributeSettingDefinition.updateMany).toHaveBeenCalledTimes(1);
+    });
+    it("does not update audit fields for the same normalized label", async () => {
+      tx.viewAttributeSettingDefinition.findFirst.mockResolvedValue({ labelOverride: "예상 매출" });
+      await patch().expect(200);
+      expect(tx.viewAttributeSettingDefinition.updateMany).not.toHaveBeenCalled();
+      expect(logger.log).not.toHaveBeenCalled();
+    });
+    it("requires authentication and Workspace membership before a transaction", async () => {
+      await request(app.getHttpServer()).patch(`${path}/${creation}`).send({ labelOverride: null }).expect(401);
+      prisma.workspaceMember.findFirst.mockResolvedValue(null);
+      await patch().expect(404);
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+    it("rejects a missing View and a missing or foreign display setting", async () => {
+      tx.$queryRaw.mockImplementation(async (parts: TemplateStringsArray) => parts.join("").includes("transaction_isolation") ? [{ level: "read committed" }] : []);
+      await patch().expect(404);
+      expect(tx.viewAttributeSettingDefinition.findFirst).not.toHaveBeenCalled();
+      tx.$queryRaw.mockImplementation(async (parts: TemplateStringsArray) => parts.join("").includes("transaction_isolation") ? [{ level: "read committed" }] : [{ type: "TABLE" }]);
+      tx.viewAttributeSettingDefinition.findFirst.mockResolvedValue(null);
+      await patch().expect(404);
+      expect(tx.viewAttributeSettingDefinition.updateMany).not.toHaveBeenCalled();
+    });
+    it("rejects unsupported View types without changing a setting", async () => {
+      tx.$queryRaw.mockImplementation(async (parts: TemplateStringsArray) => parts.join("").includes("transaction_isolation") ? [{ level: "read committed" }] : [{ type: "CALENDAR" }]);
+      const result = await patch().expect(409);
+      expect(result.body.error).toBe("ViewColumnLabelTargetUnsupported");
+      expect(tx.viewAttributeSettingDefinition.updateMany).not.toHaveBeenCalled();
+    });
+    it.each([{}, { labelOverride: "" }, { labelOverride: " \n " }, { labelOverride: 1 }, { labelOverride: [] }, { labelOverride: {} },
+      { labelOverride: null, title: "원본 변경" }, { labelOverride: null, updatedByActorId: actor }, { labelOverride: null, width: 100 }])("rejects invalid or unrelated fields %j", async body => {
+      await patch(body).expect(400);
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+    it("rejects invalid UUIDs and unknown query keys", async () => {
+      await patch({ labelOverride: null }, `${path}/bad`).expect(400);
+      await patch({ labelOverride: null }, `${path}/${creation}?extra=1`).expect(400);
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+    it("propagates persistence failures for rollback without leaking private input", async () => {
+      tx.viewAttributeSettingDefinition.updateMany.mockRejectedValue(new Error("private database failure"));
+      const result = await patch().expect(500);
+      expect(result.body).toEqual({ statusCode: 500, error: "InternalServerError" });
+      await expect(prisma.$transaction.mock.results[0]!.value).rejects.toThrow();
+      expect(logger.log).not.toHaveBeenCalled();
+      expect(JSON.stringify(logger.warn.mock.calls)).not.toMatch(/예상 매출|private database failure/);
+    });
+    it("does not claim success if the scoped row disappears before writing", async () => {
+      tx.viewAttributeSettingDefinition.updateMany.mockResolvedValue({ count: 0 });
+      await patch().expect(404);
+      expect(logger.log).not.toHaveBeenCalled();
+    });
+  });
 
   it("creates attribute, blank cells and one DISPLAY binding in a single transaction", async () => {
     await post().expect(201).expect(expected);
