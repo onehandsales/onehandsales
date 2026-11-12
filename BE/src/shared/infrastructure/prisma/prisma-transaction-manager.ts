@@ -63,7 +63,8 @@ export class PrismaTransactionManager implements TransactionManager {
 
   // 기능 : 같은 Prisma transaction context 안에서 비동기 작업을 실행합니다.
   async runInTransaction<T>(
-    work: (context: TransactionContext) => Promise<T>
+    work: (context: TransactionContext) => Promise<T>,
+    options?: { readonly timeoutMs: number }
   ): Promise<T> {
     // 1. Prisma transaction client를 application에 노출하지 않는 context로 감싼다.
     return this.prismaService.$transaction(async (transaction) => {
@@ -75,7 +76,7 @@ export class PrismaTransactionManager implements TransactionManager {
 
       // 2. 호출자가 같은 context를 repository/adapter에 전달해 하나의 원자적 작업으로 묶는다.
       return work(context);
-    });
+    }, options ? { timeout: options.timeoutMs } : undefined);
   }
 }
 

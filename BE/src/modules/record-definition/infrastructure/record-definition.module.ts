@@ -1,4 +1,13 @@
 import { Module } from "@nestjs/common";
+import { ViewRecordTitleModule } from "@/modules/view-definition/infrastructure/view-record-title.module";
+import { RECORD_OPTIONS_QUERY } from "../application/ports/record-options-query.port";
+import { PrismaRecordOptionsQueryRepository } from "./persistence/prisma-record-options-query.repository";
+import { GetRecordFormUseCase } from "../application/use-cases/get-record-form.use-case";
+import { UserWorkspaceRecordFormController } from "../presentation/http/user-workspace-record-form.controller";
+import { RecordAttributeSchemaModule } from "@/modules/attribute-definition/infrastructure/record-attribute-schema.module";
+import { RecordWriteService } from "../application/record-write.service";
+import { RECORD_WRITE_REPOSITORY } from "../application/ports/record-write.repository";
+import { PrismaRecordWriteRepository } from "./persistence/prisma-record-write.repository";
 import { RECORD_DATA_QUERY } from "../application/ports/record-data-query.port";
 import { PrismaRecordDataQueryRepository } from "./persistence/prisma-record-data-query.repository";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
@@ -22,13 +31,19 @@ import { UserWorkspaceObjectRecordDefinitionsController } from "../presentation/
 // 역할 : RecordDefinitionModule이 RecordDefinition API와 provider 의존성을 조립합니다.
 @Module({
   imports: [
+    RecordAttributeSchemaModule,
+    ViewRecordTitleModule,
     AuthModule,
     WorkspaceModule,
     ObjectDefinitionModule,
     PrismaInfrastructureModule,
   ],
-  controllers: [UserWorkspaceObjectRecordDefinitionsController],
+  controllers: [UserWorkspaceObjectRecordDefinitionsController, UserWorkspaceRecordFormController],
   providers: [
+    RecordWriteService,
+    GetRecordFormUseCase,
+    { provide: RECORD_OPTIONS_QUERY, useClass: PrismaRecordOptionsQueryRepository },
+    { provide: RECORD_WRITE_REPOSITORY, useFactory: (prisma: PrismaService) => new PrismaRecordWriteRepository(prisma), inject: [PrismaService] },
     {
       provide: RECORD_DATA_QUERY,
       // 기능 : Record 소유 조회 구현체를 공개 batch Port에 연결합니다.

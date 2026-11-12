@@ -159,8 +159,9 @@ test("reuses Object record creation and leaves List creation unavailable", async
   await page.goto(DATA_OBJECT_PATH);
   await expect(body(page).getByRole("row")).toHaveCount(3);
   await toolbar(page).getByRole("button", { name: "기록 추가", exact: true }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "저장", exact: true }).click();
   await expect(body(page).getByRole("row")).toHaveCount(4);
-  expect(state.writes).toEqual([expect.objectContaining({ method: "POST", body: null, path: expect.stringContaining("/object-definitions/object-definition-company/record-definitions") })]);
+  expect(state.writes).toEqual([expect.objectContaining({ method: "POST", body: { creationId: expect.any(String), values: [] }, path: expect.stringContaining("/object-definitions/object-definition-company/record-definitions") })]);
   await page.getByRole("link", { name: "영업 파이프라인", exact: true }).click();
   await expect(toolbar(page).getByRole("button", { name: "기록 추가", exact: true })).toBeDisabled();
 });

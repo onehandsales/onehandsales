@@ -9,6 +9,7 @@ export interface TransactionContext {
 export interface TransactionManager {
   // 기능 : 전달받은 비동기 작업을 트랜잭션 안에서 실행합니다.
   runInTransaction<T>(
-    work: (context: TransactionContext) => Promise<T>
+    work: (context: TransactionContext) => Promise<T>,
+    options?: { readonly timeoutMs: number }
   ): Promise<T>;
 }

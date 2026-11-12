@@ -15,6 +15,7 @@ export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR"
     columnLabels: {} as Record<string, string | null>, labelError: 0, delayLabel: false,
     pagination: false, folded: false, hidden: false, noView: false, needsConfiguration: false, empty: false,
     mainError: 0, groupError: 0, nextError: 0, version: 1, added: 0, delayObject: false, delayList: false, delayWrite: false, titles: {} as Record<string, string>,
+    references: false, recordResponseLost: false, recordError: 0, creationIds: [] as string[],
     headers: [] as URL[], menuReads: [] as URL[], favorites: [] as SupportedViewDataType[],
     sources: {} as Record<string, "OBJECT" | "LIST" | "BOTH" | "NONE">, directError: 0, mismatchedHeader: false, delayedViews: [] as string[] };
   page.on("request", request => {
@@ -40,6 +41,7 @@ export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR"
         cells: [
           { bindingId: "title", state: "VALUE", values: [{ valueDefinitionId: "name-" + record, sourceEntity: { kind: "RECORD", id: record }, value: title }] },
           { bindingId: "amount", state: "VALUE", values: [{ valueDefinitionId: "amount-" + record, sourceEntity: { kind: "RECORD", id: record }, value: "9007199254740992.0000000002" }, { valueDefinitionId: "amount-second-" + record, sourceEntity: { kind: "RECORD", id: record }, value: "0" }] },
+          ...(state.references ? [{ bindingId: "company", state: "VALUE" as const, values: [{ valueDefinitionId: "company-" + record, sourceEntity: { kind: "RECORD" as const, id: record }, value: { recordDefinitionId: "company-openai", label: "OpenAI" } }] }] : []),
           ...(list ? [{ bindingId: "note", state: "VALUE" as const, values: [{ valueDefinitionId: "note-" + id, sourceEntity: { kind: "LIST_ENTRY" as const, id }, value: "업무 " + index }] }] : []),
         ] };
     });
@@ -55,6 +57,7 @@ export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR"
         { ...binding, id: "amount", attributeDefinitionId: "amount", label: "금액", role: "DISPLAY", attributeType: "Number", isMultiselect: true, width: 320 },
         ...(list ? [{ ...binding, id: "note", attributeDefinitionId: "note", label: "업무 메모", role: "DISPLAY", sourceScope: "LIST_ENTRY" as const }] : state.columns.map(column => ({ ...binding, id: column.id, attributeDefinitionId: `attribute-${column.id}`, label: column.name, role: "DISPLAY", attributeType: column.type })))],
       summary: { sourceItemCount: all.length, matchedItemCount: filtered.length, eligibleItemCount: filtered.length } };
+    if (state.references) base.bindings.push({ ...binding, id: "company", attributeDefinitionId: "company", label: "대상 회사", role: "DISPLAY", attributeType: "RecordReference" });
     base.bindings = base.bindings.map(value => ({ ...value, label: state.columnLabels[`${base.viewDefinitionId}:${value.id}`] ?? value.label }));
     if (state.needsConfiguration) return { ...base, viewType: type, state: "NEEDS_CONFIGURATION", part: "MAIN", summary: null, bindings: [], data: null };
     const offset = url.searchParams.has("cursor") ? 25 : 0;
@@ -151,11 +154,21 @@ export async function setupViewDataScenario(page: Page, preferredLocale: "ko-KR"
   await page.route(/\/object-definitions\/[^/]+\/record-definitions(?:\/.*)?$/, async route => {
     const request = route.request(), method = request.method(), path = new URL(request.url()).pathname;
     if (method === "OPTIONS") return respond(route, null);
+    if (method === "GET" && path.endsWith("/form") && new URL(request.url()).searchParams.has("attributeDefinitionId")) return respond(route, {
+      items: [{ id: "company-openai", label: "OpenAI" }, { id: "company-samsung", label: "SAMSUNG" }], pageInfo: { hasNextPage: false, nextCursor: null },
+    });
+    if (method === "GET" && path.endsWith("/form")) return respond(route, { attributes: [
+      { id: "name", title: "회사명", type: "Text", isMultiselect: false },
+      { id: "amount", title: "금액", type: "Number", isMultiselect: true },
+      ...(state.references ? [{ id: "company", title: "대상 회사", type: "RecordReference", isMultiselect: false }] : []),
+    ] });
     if (method === "GET") { state.legacyReads.push(path); return respond(route, { items: [], pageInfo: { hasNextPage: false, nextCursor: null } }); }
     const body = request.postData() ? request.postDataJSON() : null; state.writes.push({ method, path, body });
     if (state.delayWrite) await new Promise(resolve => setTimeout(resolve, 400));
-    if (method === "PATCH") state.titles[path.split("/").at(-3)!] = body.value;
-    if (method === "POST") state.added++;
+    if (state.recordError) return respond(route, { error: "InternalServerError" }, state.recordError);
+    if (method === "PATCH" && typeof body.value === "string") state.titles[path.split("/").at(-3)!] = body.value;
+    if (method === "POST" && !state.creationIds.includes(body.creationId)) { state.added++; state.creationIds.push(body.creationId); }
+    if (method === "POST" && state.recordResponseLost) { state.recordResponseLost = false; return route.abort("failed"); }
     return respond(route, method === "POST" ? { recordDefinitionId: "created-record" } : { recordAttributeValueDefinitionId: path.split("/").at(-1) });
   });
   return state;

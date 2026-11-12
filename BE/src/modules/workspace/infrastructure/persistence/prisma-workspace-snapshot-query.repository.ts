@@ -6,6 +6,13 @@ import { resolvePrismaReadContext } from "@/shared/infrastructure/prisma/prisma-
 export class PrismaWorkspaceSnapshotQueryRepository
   implements WorkspaceSnapshotQuery
 {
+  // 기능 : 입력 폼의 담당자 후보를 같은 Workspace에서 제한하여 조회합니다.
+  async actorOptions(workspaceId: string, q: string, cursor: string | null, take: number, context: TransactionContext) {
+    const rows = await resolvePrismaReadContext(context).actor.findMany({ where: { workspaceId,
+      ...(q ? { displayNameSnapshot: { contains: q, mode: "insensitive" as const } } : {}), ...(cursor ? { id: { gt: cursor } } : {}) },
+      select: { id: true, displayNameSnapshot: true }, orderBy: { id: "asc" }, take });
+    return rows.map(row => ({ id: row.id, label: row.displayNameSnapshot }));
+  }
   // 기능 : 읽기 권한 확인을 같은 transaction에서 재검증합니다.
   async hasMembership(
     userId: string,

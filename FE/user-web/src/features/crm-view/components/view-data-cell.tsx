@@ -1,10 +1,10 @@
-import { RecordAttributeValueCell, updateWorkspaceObjectRecordAttributeValueDefinition, type RecordAttributeValueCellSaveInput } from "@/features/crm-object";
+import { RecordAttributeValueCell, RecordReferenceValueEditor, updateWorkspaceObjectRecordAttributeValueDefinition, type AttributeDefinitionValueType, type RecordAttributeValueCellSaveInput } from "@/features/crm-object";
 import { useAppI18n } from "@/features/app-i18n";
 import { cn } from "@/utils/cn";
 import type { ViewCell, ViewCellValue, ViewDataBinding, ViewDataItem } from "../types/view-data";
 import { formatViewValue, toEditableRecordValue, viewValueObject } from "../utils/view-data-value";
 
-export type ViewCellEditing = { readonly workspaceId: string; readonly onSaved: () => Promise<unknown> };
+export type ViewCellEditing = { readonly userId?: string | undefined; readonly workspaceId: string; readonly onSaved: () => Promise<unknown> };
 
 // 기능 : 값의 출처를 유지하며 직접 Record 값에는 기존 셀 편집 UX를 제공합니다.
 function ViewDataValue({ binding, entry, item, editing, primary }: {
@@ -23,6 +23,15 @@ function ViewDataValue({ binding, entry, item, editing, primary }: {
       objectDefinitionId: item.objectDefinitionId, recordDefinitionId: item.recordDefinitionId, ...input });
     // 2. 같은 Record를 표시하는 여러 Entry·열과 필터 결과를 서버에서 다시 읽는다.
     await editing.onSaved();
+  }
+  if (editable && ["Select", "Status", "RecordReference", "ActorReference"].includes(binding.attributeType)) {
+    const raw = viewValueObject(entry.value);
+    const key = binding.attributeType === "Select" ? "selectOptionId" : binding.attributeType === "Status" ? "statusOptionId" : binding.attributeType === "RecordReference" ? "targetRecordDefinitionId" : "targetActorId";
+    const id = raw.id ?? raw.recordDefinitionId ?? raw.actorId;
+    return <RecordReferenceValueEditor scope={{ userId: editing.userId ?? "", workspaceId: editing.workspaceId, objectDefinitionId: item.objectDefinitionId }}
+      field={{ id: binding.attributeDefinitionId, title: binding.label, type: binding.attributeType as AttributeDefinitionValueType, isMultiselect: binding.isMultiselect }}
+      value={typeof id === "string" ? { [key]: id } : null} label={text}
+      onSave={value => save({ recordAttributeValueDefinitionId: entry.valueDefinitionId, value })} />;
   }
   if (editable) return <RecordAttributeValueCell attributeConfig={null} attributeTitle={binding.label}
     attributeType={toEditableRecordValue(binding, entry).attributeType} booleanLabels={{ trueLabel: t("common.yes"), falseLabel: t("common.no") }}

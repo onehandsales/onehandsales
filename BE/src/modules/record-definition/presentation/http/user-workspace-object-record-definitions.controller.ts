@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 import { CreateWorkspaceObjectRecordDefinitionUseCase } from "@/modules/record-definition/application/use-cases/create-workspace-object-record-definition.use-case";
@@ -21,6 +22,8 @@ import { ListWorkspaceObjectRecordDefinitionsQueryDto } from "@/modules/record-d
 import { UpdateWorkspaceObjectRecordAttributeValueDefinitionDto } from "@/modules/record-definition/presentation/http/dto/update-workspace-object-record-attribute-value-definition.dto";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { CurrentUser } from "@/shared/presentation/decorators/current-user.decorator";
+import { CreateWorkspaceObjectRecordDefinitionDto } from "./dto/create-workspace-object-record-definition.dto";
+import type { RequestWithRequestId } from "@/shared/presentation/middleware/request-id.middleware";
 import { AuthGuard } from "@/shared/presentation/guards/auth.guard";
 
 // 역할 : UserWorkspaceObjectRecordDefinitionsController 사용자 Workspace ObjectDefinition RecordDefinition HTTP 요청을 application 계층으로 위임합니다.
@@ -42,13 +45,17 @@ export class UserWorkspaceObjectRecordDefinitionsController {
   createWorkspaceObjectRecordDefinition(
     @CurrentUser() currentUser: CurrentUserContext,
     @Param("workspaceId", new ParseUUIDPipe()) workspaceId: string,
-    @Param("objectDefinitionId", new ParseUUIDPipe()) objectDefinitionId: string
+    @Param("objectDefinitionId", new ParseUUIDPipe()) objectDefinitionId: string,
+    @Body() body: CreateWorkspaceObjectRecordDefinitionDto = {},
+    @Req() request?: RequestWithRequestId,
   ) {
-    // 1. application 계층에 현재 사용자의 빈 RecordDefinition과 null cell value row 생성을 위임한다.
+    // 1. application 계층에 초기값·참조 관계를 포함한 기록 생성을 위임한다.
     return this.createWorkspaceObjectRecordDefinitionUseCase.execute(
       currentUser,
       workspaceId,
-      objectDefinitionId
+      objectDefinitionId,
+      body,
+      request?.requestId ?? null
     );
   }
 
@@ -81,7 +88,8 @@ export class UserWorkspaceObjectRecordDefinitionsController {
     @Param("recordDefinitionId", new ParseUUIDPipe()) recordDefinitionId: string,
     @Param("recordAttributeValueDefinitionId", new ParseUUIDPipe())
     recordAttributeValueDefinitionId: string,
-    @Body() body: UpdateWorkspaceObjectRecordAttributeValueDefinitionDto
+    @Body() body: UpdateWorkspaceObjectRecordAttributeValueDefinitionDto,
+    @Req() request?: RequestWithRequestId,
   ) {
     // 1. value key 존재 여부를 application 계층에서 검증할 수 있도록 command에 함께 담는다.
     const command: UpdateWorkspaceObjectRecordAttributeValueDefinitionCommand = {
@@ -96,7 +104,8 @@ export class UserWorkspaceObjectRecordDefinitionsController {
       objectDefinitionId,
       recordDefinitionId,
       recordAttributeValueDefinitionId,
-      command
+      command,
+      request?.requestId ?? null
     );
   }
 }

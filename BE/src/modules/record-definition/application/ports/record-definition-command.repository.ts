@@ -7,6 +7,8 @@ export const RECORD_DEFINITION_COMMAND_REPOSITORY = Symbol(
 
 // 역할 : CreateRecordDefinitionInput이 RecordDefinition과 null cell value row 생성에 필요한 값을 정의합니다.
 export interface CreateRecordDefinitionInput {
+  readonly recordDefinitionId?: string;
+  readonly attributes?: readonly { id: string; type: RecordAttributeValueType }[];
   readonly workspaceId: string;
   readonly objectDefinitionId: string;
   readonly createdByActorId: string;

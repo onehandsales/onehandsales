@@ -5,7 +5,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ApiClientError } from "@/lib/api-client";
 import type { WorkspaceViewHeaderModel } from "../hooks/use-workspace-view-header";
 import { isSupportedViewDataType, VIEW_DATA_PAGE_SIZE, type ViewMainDataModel } from "../hooks/use-view-main-data";
-import { viewDataQueryKeys } from "../api/view-data-query-keys";
 import type { ViewDataItem, ViewMainResponse } from "../types/view-data";
 import { ViewDataTable } from "./view-data-table";
 import { ViewDataList } from "./view-data-list";
@@ -26,8 +25,7 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   async function refreshValues() {
     // 1. 원본의 캐시를 무효화하고 요청 당시 보기의 첫 페이지를 갱신한다.
     const prefix = ["crm-view", header.userId?.toLowerCase(), header.workspaceId?.toLowerCase(), "data"];
-    await client.invalidateQueries({ queryKey: prefix, refetchType: "none" });
-    await client.resetQueries({ queryKey: viewDataQueryKeys.main(scope, model.q, VIEW_DATA_PAGE_SIZE), exact: true });
+    await client.resetQueries({ queryKey: prefix });
   }
   // 기능 : 페이지 맥락 오류는 처음부터, 접근 불가는 헤더부터 복구합니다.
   function recover() {
@@ -52,13 +50,13 @@ export function ViewMainContent({ header, model, searching, onCreate, creating }
   const pages: ViewMainResponse[] = query.data?.pages ?? [];
   const items = [...new Map(pages.flatMap(page => page.state === "READY" && page.viewType !== "KANBAN" ? page.data.items : [])
     .map(item => [item.occurrenceKey, item] as const)).values()] as ViewDataItem[];
-  const editing = { workspaceId: scope.workspaceId, onSaved: refreshValues };
+  const editing = { userId: header.userId ?? undefined, workspaceId: scope.workspaceId, onSaved: refreshValues };
   const stale = query.error instanceof ApiClientError && [400, 409].includes(query.error.statusCode);
   return <div aria-busy={query.isFetching || searching} data-testid="view-main-content">
     {searching && <p role="status" className="px-3 py-1 text-[11px] text-[#9B9A97]">{t("viewData.searching")}</p>}
     {response.viewType === "TABLE" ? <ViewDataTable key={`${scope.userId}:${scope.workspaceId}:${scope.sourceType}:${scope.targetId}:${scope.viewDefinitionId}:${response.configurationFingerprint}`} scope={scope} response={response} items={items} editing={editing} onCreate={onCreate} creating={creating} />
       : response.viewType === "LIST" ? <ViewDataList key={response.configurationFingerprint} response={response} items={items} editing={editing} />
-        : <ViewDataKanban response={response} input={{ ...scope, q: model.q, limit: VIEW_DATA_PAGE_SIZE }} onRestart={model.restart} />}
+        : <ViewDataKanban response={response} input={{ ...scope, q: model.q, limit: VIEW_DATA_PAGE_SIZE }} onRestart={model.restart} editing={{ ...editing, userId: header.userId ?? undefined }} />}
     {response.viewType !== "KANBAN" && !items.length && <p className="px-4 py-4 text-[13px] text-[#9B9A97]">{t(model.q ? "common.searchEmpty" : "objectList.emptyRecords")}</p>}
     {query.isError && <div role="alert" className="flex flex-wrap items-center justify-center gap-2 px-4 py-4 text-[12px] text-[#787774]">
       <span>{t(stale ? "viewData.stale" : "viewData.loadMoreFailed")}</span><button className="text-[#326ACD]" type="button" onClick={recover}>{t(stale ? "viewData.restart" : "common.retry")}</button>

@@ -44,6 +44,8 @@ export type WorkspaceObjectRecordDefinitionListResponse = {
 
 // 역할 : 빈 RecordDefinition 생성 API 요청에 필요한 Workspace/ObjectDefinition 경계 값을 정의합니다.
 export type CreateWorkspaceObjectRecordDefinitionInput = {
+  readonly creationId?: string;
+  readonly values?: readonly { attributeDefinitionId: string; values: readonly WorkspaceObjectRecordAttributeValuePatchValue[] }[];
   readonly objectDefinitionId: string;
   readonly workspaceId: string;
 };
@@ -82,6 +84,7 @@ export function createWorkspaceObjectRecordDefinition(
     `/api/users/me/workspaces/${encodeURIComponent(input.workspaceId)}/object-definitions/${encodeURIComponent(input.objectDefinitionId)}/record-definitions`,
     {
       method: "POST",
+      ...(input.creationId ? { body: { creationId: input.creationId, values: input.values ?? [] } } : {}),
     },
   );
 }

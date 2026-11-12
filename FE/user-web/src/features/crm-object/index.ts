@@ -1,4 +1,6 @@
 export { CreateObjectDefinitionModalContent } from "./components/create-object-definition-modal-content";
+export { CreateRecordDialog } from "./components/create-record-dialog";
+export { RecordReferenceValueEditor } from "./components/record-reference-value-editor";
 export { RecordAttributeValueCell, type RecordAttributeValueCellSaveInput } from "./components/record-attribute-value-cell";
 export { SidebarCrmObjectIcon } from "./components/sidebar-crm-object-icon";
 export { listSidebarCrmObjects } from "./api/sidebar-crm-object-api";

@@ -3,6 +3,8 @@ import { Test, type TestingModule } from "@nestjs/testing";
 import { Prisma } from "@prisma/client";
 import { AuthModule } from "@/modules/auth/infrastructure/auth.module";
 import { WORKSPACE_ACCESS_QUERY } from "@/modules/workspace/application/ports/workspace-access-query.port";
+import { WORKSPACE_SNAPSHOT_QUERY } from "@/modules/workspace/application/ports/workspace-snapshot-query.port";
+import { WORKSPACE_ACTOR_OPTIONS_QUERY } from "@/modules/workspace/application/ports/workspace-actor-options-query.port";
 import { WorkspaceModule } from "@/modules/workspace/infrastructure/workspace.module";
 import type { CurrentUserContext } from "@/shared/application/context/current-user.context";
 import { APPLICATION_LOGGER } from "@/shared/application/ports/application-logger.port";
@@ -22,7 +24,9 @@ const command: CreateWorkspaceListDefinitionCommand = {
 class TestAuthModule {}
 
 // 역할 : 현재 멤버십을 제공하며 Workspace 구현의 외부 의존성을 제거합니다.
-@Module({ providers: [{ provide: WORKSPACE_ACCESS_QUERY, useValue: access }], exports: [WORKSPACE_ACCESS_QUERY] })
+@Module({ providers: [{ provide: WORKSPACE_ACCESS_QUERY, useValue: access },
+  { provide: WORKSPACE_SNAPSHOT_QUERY, useValue: {} }, { provide: WORKSPACE_ACTOR_OPTIONS_QUERY, useValue: {} }],
+  exports: [WORKSPACE_ACCESS_QUERY, WORKSPACE_SNAPSHOT_QUERY, WORKSPACE_ACTOR_OPTIONS_QUERY] })
 class TestWorkspaceModule {}
 
 // 기능 : 기준 Object의 속성 메타데이터를 구성합니다.

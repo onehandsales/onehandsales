@@ -38,7 +38,7 @@ export class PrismaRecordDefinitionCommandRepository
     );
 
     // 2. 현재 ObjectDefinition에 속한 AttributeDefinition 목록을 cell value 생성 기준으로 조회한다.
-    const attributeDefinitions = await this.listAttributeDefinitions(client, {
+    const attributeDefinitions = input.attributes ?? await this.listAttributeDefinitions(client, {
       workspaceId: input.workspaceId,
       objectDefinitionId: input.objectDefinitionId,
     });
@@ -46,6 +46,7 @@ export class PrismaRecordDefinitionCommandRepository
     // 3. RecordDefinition row를 생성하고 생성된 ID만 조회한다.
     const recordDefinition = await client.recordDefinition.create({
       data: {
+        ...(input.recordDefinitionId ? { id: input.recordDefinitionId } : {}),
         workspaceId: input.workspaceId,
         objectDefinitionId: input.objectDefinitionId,
         createdByActorId: input.createdByActorId,

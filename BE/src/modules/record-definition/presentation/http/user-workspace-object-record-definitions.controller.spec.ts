@@ -209,7 +209,7 @@ describe("UserWorkspaceObjectRecordDefinitionsController", () => {
     expect(createUseCase.execute).toHaveBeenCalledWith(
       CURRENT_USER,
       "00000000-0000-4000-8000-000000000301",
-      "00000000-0000-4000-8000-000000000501"
+      "00000000-0000-4000-8000-000000000501", {}, null
     );
   });
 
@@ -304,7 +304,7 @@ describe("UserWorkspaceObjectRecordDefinitionsController", () => {
       {
         hasValue: true,
         value: "회사명",
-      }
+      }, null
     );
   });
 
@@ -328,7 +328,7 @@ describe("UserWorkspaceObjectRecordDefinitionsController", () => {
       {
         hasValue: false,
         value: undefined,
-      }
+      }, null
     );
   });
 });

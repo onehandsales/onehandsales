@@ -116,6 +116,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       case "ViewColumnCreationConflict":
       case "ViewColumnLimitExceeded":
       case "ViewDataCursorStale":
+      case "RecordCreationConflict":
+      case "RecordValueConflict":
+      case "RecordRelationshipConflict":
         return HttpStatus.CONFLICT;
       case "ViewDataTypeUnsupported":
       case "ViewDataQueryLimitExceeded":
