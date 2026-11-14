@@ -1,5 +1,7 @@
 # Implementation Status
 
+2026-11-14 보존 상태: 신규 개발과 사업화를 일단 보류하고 현재 결과물을 포트폴리오로 남긴다. [보존 결정](../DECISIONS/035_project_pause_and_portfolio_preservation.md)과 [보존 시점 구현·구조·검증 기록](PROJECT_RETROSPECTIVE.md)을 우선 확인한다. 아래 날짜별 구현 이력은 유지한다.
+
 Status: Current Runtime Baseline
 Date: 2026-11-12 (아래 초기 foundation 기록은 2026-09-12)
 

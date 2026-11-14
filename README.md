@@ -2,6 +2,17 @@
 
 이 저장소는 `OneHand CRM`의 모노레포 루트다.
 
+## 현재 프로젝트 상태
+
+2026-11-14부터 서비스 사업화와 신규 기능 개발을 일단 보류하고, 현재 결과물을 포트폴리오와 기술 참고 자료로 보존한다. 향후 새로운 프로젝트에 필요한 기능이나 설계 경험을 활용할 가능성은 열어두며, 재개 일정은 정하지 않았다.
+
+- [개발 회고와 포트폴리오 보존 기록](AGENT/PM_AGENT/PLANNING/PROJECT_RETROSPECTIVE.md): 제품 목표, 실제 구현, 데이터 구조, 기술적 선택, 보류 이유 6가지, 검증 결과와 재사용 가능성.
+- [개발 보류 결정](AGENT/PM_AGENT/DECISIONS/035_project_pause_and_portfolio_preservation.md): 현재 상태와 보존 범위.
+
+아래 제품 방향과 기존 로드맵·TODO는 당시 목표와 설계 맥락을 설명하는 자료로 유지한다. 현재 구현은 Workspace와 유연한 기록·보기 관리까지 포함하며, 직업별 Kit 자동 구성은 미완성이다. 현재 상태의 상세 범위는 위 회고 기록을 따른다.
+
+## 제품 이름과 기존 방향
+
 브랜드 표기는 아래를 기준으로 한다.
 
 - 제품명: `OneHand CRM`
@@ -18,7 +29,7 @@ OneHand CRM은 고정된 영업 CRM도, 빈 CRM builder도 아니다. 사용자�
 
 ## Product Direction
 
-Status: Product Direction Draft / 후속 문서 갱신 기준 초안
+Status: Preserved Product Direction Draft / 개발 보류 이전 기획
 Date: 2026-09-12
 
 이 문서는 OneHand CRM 피벗의 제품 방향을 정리한다. 이후 `AGENT`, `BE`, `FE` 문서를 갱신할 때 이 README를 우선 기준으로 삼는다.

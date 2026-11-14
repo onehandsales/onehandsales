@@ -8,6 +8,7 @@ PM 관점에서 사용자 문제, 제품 가치, Kit 전략, 포함/제외 범�
 
 ## 2. 현재 정본 문서
 
+- [PROJECT_RETROSPECTIVE.md](PROJECT_RETROSPECTIVE.md): 2026-11-14 개발 보류와 포트폴리오 보존 시점의 목표·구현·데이터 구조·기술 선택·보류 이유·검증·재사용 기록
 - `PRODUCT_DIRECTION.md`: 루트 `README.md`의 제품 방향을 PM 관점으로 정리한 기준 문서
 - `SERVICE_OVERVIEW.md`: 서비스가 기획상 어떤 제품인지 한 문서로 이해하기 위한 개요
 - `PRD.md`: 제품 요구사항, 사용자 문제, 핵심 기능, 성공 기준
@@ -20,6 +21,8 @@ PM 관점에서 사용자 문제, 제품 가치, Kit 전략, 포함/제외 범�
 - `SUCCESS_METRICS.md`: PM 관점의 활성화, 리텐션, 품질 지표
 - `IMPLEMENTATION_STATUS.md`: 현재 BE/FE/Prisma 기준 활성 구현 상태
 - `DATA_MODEL.md`: 현재 구현 데이터 모델과 후속 CRM Core 개념 모델의 경계
+
+2026-11-14부터 신규 개발과 사업화는 보류한다. 기존 기획과 로드맵은 당시 목표를 보존한 자료이며, 자동으로 실행할 계획으로 해석하지 않는다. 현재 상태는 [035 결정](../DECISIONS/035_project_pause_and_portfolio_preservation.md)과 위 회고 기록을 따른다.
 
 ## 3. 제거한 과거 문서 기준
 

@@ -29,10 +29,13 @@
 - `032_product_pivot_to_no_setup_crm.md`
 - `033_workspace_team_scope_policy.md`
 - `034_first_kit_selection_policy.md`
+- [035_project_pause_and_portfolio_preservation.md](035_project_pause_and_portfolio_preservation.md)
 
 ## 3. 현재 우선 결정
 
-현재 제품 방향 판단에서는 아래 결정이 우선한다.
+현재 개발 상태는 [035 개발 보류와 포트폴리오 보존](035_project_pause_and_portfolio_preservation.md)을 우선한다. 신규 개발과 사업화를 일단 보류하며, 기존 제품 방향은 당시 목표와 설계의 참고 자료로 유지한다.
+
+기존 제품 방향을 이해할 때는 아래 결정을 함께 읽는다.
 
 1. `000_확정_결정.md`
 2. `032_product_pivot_to_no_setup_crm.md`
@@ -40,7 +43,7 @@
 4. `034_first_kit_selection_policy.md`
 5. `030_billing_paddle_defer_policy.md`
 
-과거 Global B2C/Series A 관점의 우선순위 문서는 현재 PM 정본에서 제거했다. 현재 우선순위는 OneHand CRM의 No Setup CRM 피벗과 Kit 기반 MVP를 우선한다.
+과거 Global B2C/Series A 관점의 우선순위 문서는 PM 정본에서 제거했다. 이후의 No Setup CRM 피벗과 Kit 기반 MVP 계획은 개발 보류 이전의 제품 방향 기록이다.
 
 ## 4. 관련 문서
 
