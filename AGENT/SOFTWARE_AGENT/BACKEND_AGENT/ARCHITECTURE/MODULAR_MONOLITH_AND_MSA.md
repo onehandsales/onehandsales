@@ -82,7 +82,7 @@ in-process port 구현은 허용한다. 단, 호출자는 구현체가 같은 pr
 
 - 인증 token 교환처럼 user, device, session을 함께 바꾸는 흐름은 `auth` ownership 안에서 transaction을 관리한다.
 - 공개 문의 저장처럼 독립 원장에 쓰는 흐름은 해당 module에서 끝낸다.
-- 향후 Kit 적용처럼 여러 definition row를 만드는 흐름은 owning module과 idempotency 기준을 먼저 정한다.
+- 그룹·기본 View·필드를 함께 만드는 흐름은 owning module과 idempotency 기준을 먼저 정한다.
 
 ## 6. Supabase Independence
 

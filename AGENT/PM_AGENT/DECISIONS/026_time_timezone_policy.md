@@ -15,3 +15,7 @@
 - `User.timeZone`은 기본 표시 timezone이다.
 - `createdAt`, `updatedAt`, `deletedAt`은 UTC instant로 본다. 현재 `deletedAt`은 User 계정 상태 필드에만 남는다.
 - Frontend formatter는 UTC string을 사용자 표시 기준으로 변환한다.
+
+## folk 전환 적용 범위
+
+2026-11-15: 위 원칙은 사용자 표시·인증·audit의 기본값이다. folk Tasks의 날짜·반복·기한 분류·알림은 Workspace 시간대와 사용자 시간대의 적용 범위를 별도로 확인한다. [시간대 정책의 전환 경계](../../SOFTWARE_AGENT/DB_SCHEMA/TIME_AND_TIMEZONE_POLICY.md)를 따르며, 날짜만 있는 값을 instant와 동일하게 다루지 않는다.

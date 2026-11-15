@@ -1,53 +1,29 @@
 # PM 결정 기록
 
-## 1. 목적
+현재 기준은 [000 확정 결정](000_확정_결정.md)과 [036 folk 전환](036_folk_benchmark_transition.md)이다. 역사 자료의 규칙은 새 작업의 선행 조건이 아니다.
 
-이 폴더는 제품 범위, 문서 운영, TODO 운영처럼 PM이 최종 관리하는 결정 기록을 둔다.
-
-역할 간 충돌이 생겼을 때 최종 결정은 이 폴더에 남긴다.
-
-## 2. 현재 문서
-
-- `000_확정_결정.md`
-- `001_문서_정리_정책.md`
-- `015_todo_goal_work_order.md`
-- `016_agent_role_structure.md`
-- `017_planning_review_gate.md`
-- `018_todo_common_contract_structure.md`
-- `019_agent_based_planning_review.md`
-- `020_todo_execution_plan_standard.md`
-- `021_user_decision_question_rule.md`
-- `022_goal_completion_review_todo_log.md`
-- `023_company_domain_basic_scope.md` (고정형 고객사 도메인 제거 기록)
-- `024_software_agent_front_backend_split.md`
-- `025_product_domain_basic_scope.md` (비활성)
-- `026_time_timezone_policy.md`
-- `027_auth_session_and_provider_qa_policy.md`
-- `028_auth_provider_runtime_policy.md`
-- `030_billing_paddle_defer_policy.md`
-- `031_kr_us_ca_priority_market.md`
-- `032_product_pivot_to_no_setup_crm.md`
-- `033_workspace_team_scope_policy.md`
-- `034_first_kit_selection_policy.md`
-- [035_project_pause_and_portfolio_preservation.md](035_project_pause_and_portfolio_preservation.md)
-
-## 3. 현재 우선 결정
-
-현재 개발 상태는 [035 개발 보류와 포트폴리오 보존](035_project_pause_and_portfolio_preservation.md)을 우선한다. 신규 개발과 사업화를 일단 보류하며, 기존 제품 방향은 당시 목표와 설계의 참고 자료로 유지한다.
-
-기존 제품 방향을 이해할 때는 아래 결정을 함께 읽는다.
-
-1. `000_확정_결정.md`
-2. `032_product_pivot_to_no_setup_crm.md`
-3. `033_workspace_team_scope_policy.md`
-4. `034_first_kit_selection_policy.md`
-5. `030_billing_paddle_defer_policy.md`
-
-과거 Global B2C/Series A 관점의 우선순위 문서는 PM 정본에서 제거했다. 이후의 No Setup CRM 피벗과 Kit 기반 MVP 계획은 개발 보류 이전의 제품 방향 기록이다.
-
-## 4. 관련 문서
-
-- `AGENT/PM_AGENT/README.md`
-- `AGENT/PM_AGENT/OPERATING_MODEL.md`
-- `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
-- `AGENT/PM_AGENT/PLANNING/README.md`
+| 문서 | 적용 상태 |
+| --- | --- |
+| [000_확정_결정.md](000_확정_결정.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [001_문서_정리_정책.md](001_문서_정리_정책.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [015_todo_goal_work_order.md](015_todo_goal_work_order.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [016_agent_role_structure.md](016_agent_role_structure.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [017_planning_review_gate.md](017_planning_review_gate.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [018_todo_common_contract_structure.md](018_todo_common_contract_structure.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [019_agent_based_planning_review.md](019_agent_based_planning_review.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [020_todo_execution_plan_standard.md](020_todo_execution_plan_standard.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [021_user_decision_question_rule.md](021_user_decision_question_rule.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [022_goal_completion_review_todo_log.md](022_goal_completion_review_todo_log.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [023_company_domain_basic_scope.md](023_company_domain_basic_scope.md) | Historical / 036으로 대체 |
+| [024_software_agent_front_backend_split.md](024_software_agent_front_backend_split.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [025_product_domain_basic_scope.md](025_product_domain_basic_scope.md) | Historical / 036으로 대체 |
+| [026_time_timezone_policy.md](026_time_timezone_policy.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [027_auth_session_and_provider_qa_policy.md](027_auth_session_and_provider_qa_policy.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [028_auth_provider_runtime_policy.md](028_auth_provider_runtime_policy.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [030_billing_paddle_defer_policy.md](030_billing_paddle_defer_policy.md) | 기존 기반 유지·036에 맞춰 범위 보충 |
+| [031_kr_us_ca_priority_market.md](031_kr_us_ca_priority_market.md) | 기존 기반 유지·036에 맞춰 범위 보충 |
+| [032_product_pivot_to_no_setup_crm.md](032_product_pivot_to_no_setup_crm.md) | Historical / 036으로 대체 |
+| [033_workspace_team_scope_policy.md](033_workspace_team_scope_policy.md) | Historical / 036으로 대체 |
+| [034_first_kit_selection_policy.md](034_first_kit_selection_policy.md) | Historical / 036으로 대체 |
+| [035_project_pause_and_portfolio_preservation.md](035_project_pause_and_portfolio_preservation.md) | Historical / 036으로 대체 |
+| [036_folk_benchmark_transition.md](036_folk_benchmark_transition.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |

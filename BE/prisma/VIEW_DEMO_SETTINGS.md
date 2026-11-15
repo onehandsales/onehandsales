@@ -1,5 +1,7 @@
 # View 더미 설정
 
+> 기존 View 엔진용 작업 문서다. folk 전환 목표와 구분하며, 문서 갱신 중 아래 스크립트·DB 변경을 자동 실행하지 않는다. 새 계획은 [FOLK_SCHEMA_PLAN](../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 따른다.
+
 기존 영업 샘플 Workspace의 화면 검증용 설정이다. 사용자 승인에 따라 2026-10-28 적용한다. API 계약이나 실제 상세조회/렌더러 구현 완료를 의미하지 않는다.
 
 2026-11-01 후속 사용자 승인으로 저장된 View8개를 TABLE/KANBAN/LIST로 전환했다. 이 문서와 fixture는 당시 11타입 설정 이력이며 현재 데이터의 타입/이름 기대값으로 재실행하지 않는다. 현재 전환 결과와 검증·복구 절차는 [기존 View 타입 전환](VIEW_TYPE_CONVERSION.md)을 따른다.

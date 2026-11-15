@@ -6,6 +6,8 @@
 
 AI가 사용자의 의도에 맞춰 문서를 작성했더라도, 바로 구현에 들어가면 누락된 요구사항, FE/BE 책임 불일치, API와 DB 스키마 불일치, 우선순위 오류가 뒤늦게 발견될 수 있다. 따라서 구현 전에는 이 문서를 기준으로 기획 문서 전체를 다시 추적하고, 구현 가능한 수준인지 확인한다.
 
+검토 요청과 제외 경로는 사용자 지시를 우선한다. 이미 요청된 검토는 재확인하지 않으며, 제외된 TODO/TODO_LOG의 내용은 읽거나 갱신하지 않는다.
+
 ## 2. 적용 대상
 
 이 검토 기준은 다음 문서에 적용한다.
@@ -80,11 +82,11 @@ TODO 계획 문서를 검토할 때는 단순히 문서 항목이 채워졌는�
 
 검토 시 반드시 함께 보는 기준 문서:
 
-- PM 기준: `README.md`, `AGENT/PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`, `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`, `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`, `AGENT/PM_AGENT/PLANNING/PRD.md`, `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`, `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`, `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
+- PM 기준: `README.md`, `AGENT/PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`, `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`, `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`, `AGENT/PM_AGENT/PLANNING/PRD.md`, `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`, `AGENT/PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md`, `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - Backend 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - User Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - Admin Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
-- UX/UI 기준: `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`, `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`, `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`, `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`, `AGENT/UXUI_AGENT/DECISIONS/*`
+- UX/UI 기준: `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`, `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`, `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`, `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`, `AGENT/UXUI_AGENT/DECISIONS/*`
 - 테스트/위험 흐름 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 
 Backend 구체화 검토:
@@ -112,16 +114,16 @@ Frontend와 UX/UI 구체화 검토:
 - Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, `GET /admin/api/me` 기준을 따르는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
 - UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈, `/app/more`, 계정/도움말 모달의 역할을 구분하는가?
-- 화면/Frontend/API/DB 계획이 `Notion식 작업 공간 UX + Attio식 CRM record UX` 기준을 반영해 workspace/page/database/detail과 record/memo 맥락을 함께 설명하는가?
-- Company/Product/Deal처럼 현재 API에 없는 전역 도메인은 후속 범위 또는 특정 Kit 안의 업무 개념으로 분리되어 있는가?
-- 계획이 OneHand CRM의 핵심 문장인 "CRM을 배우거나 설계할 필요 없이, 내 일에 맞는 CRM이 바로 준비된다"와 연결되는가?
-- 새 CRM 기능이 Kit, CRM Core, Foundation, 운영 기능 중 어디에 속하는지 분류되어 있는가?
-- Workspace와 Team을 구분하고, Team/조직 권한을 MVP 확정 기능처럼 쓰지 않는가?
-- Kit이 단순 필드 템플릿이 아니라 관리 대상, 관계, 상태, 기본 보기, 다음 행동을 포함하는가?
+- 화면·API·DB 계획이 folk 원본과 공식 근거를 연결하고 현재 구현·목표·미확인을 구분하는가?
+- People/Companies/Group/Custom object 개념과 기존 범용 Object/List/Record를 구분하는가?
+- 계획이 folk 전체 기능·UX 대응 목표와 연결되는가?
+- 기능 대응표의 어느 흐름·배치인지와 누락된 상태가 표시되어 있는가?
+- Workspace/Team의 현재 기반과 folk 그룹·역할 권한을 구분하고 공유·비공개 범위를 검증하는가?
+- 기본 정보 공유, 그룹별 필드 격리, Custom object 연결과 View 저장 계약이 있는가?
 - 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
-- 모바일 User Web은 테이블이나 가로 칸반을 기본 UI로 쓰지 않고 카드형/리스트형 흐름을 따르는가?
-- 금지 또는 주의 표현인 `Customer`, 전역 `Company/Product/Deal`, `오프더레코드`가 정본 의도와 다르게 쓰이지 않는가?
-- 장식적 hero, card-in-card, 과한 gradient/orb, 베이지/크림 또는 다크 네이비 지배 팔레트 같은 금지된 시각 방향을 전제로 하지 않는가?
+- 모바일 Table/Pipeline과 스크롤·포커스 동작을 실제 folk 화면에 대조했는가?
+- 사용자 용어와 번역이 원본 의미를 유지하며 미구현 기능을 제공 중이라고 쓰지 않는가?
+- 시각 요소의 근거가 folk 캡처에 있고 원본과 차이가 기록되어 있는가?
 
 심각도 판정:
 
@@ -323,7 +325,7 @@ API 명세는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`와
 - 실패 케이스가 HTTP status, error code, message 기준으로 정의되어 있는가?
 - API가 연결된 DB 모델과 필드를 명시하는가?
 - API 계약 상태가 구현 전 최소 `confirmed`인가?
-- API 계약이 `draft`이면 구현 goal이 아니라 계약 보완 goal로 분리되어 있는가?
+- API 계약이 draft인 mock 프로토타입을 실연동 완료로 표시하지 않고, 연동 구현 전 계약을 확정하는가?
 
 ## 12. DB 스키마 검토
 

@@ -1,18 +1,19 @@
 # User Web Features
 
-활성 feature는 실제 route/API가 연결된 범위만 기준으로 유지한다.
+현재 feature와 target을 구분한다.
 
-- `app-i18n`
-- `auth`
-- `crm-view`: 관리항목/업무목록의 공통 헤더·View 목록 조회와 화면 선택 상태
-- `error-report`
-- `public-contact-request`
-- `public-site`
-- `support-request`
+| Feature | 현재 책임 |
+| --- | --- |
+| auth / app-i18n | 인증·세션·locale·표시 형식 |
+| workspace | Workspace 탐색·진입 |
+| crm-object | Object·Attribute·Record 생성·조회·값 변경 |
+| crm-list | List 생성·조회 |
+| crm-view | 공통 헤더·본문·메뉴·설정 preview/save |
+| sidebar-order | 사이드바 순서 변경 |
+| view-favorite | 개인 View 즐겨찾기 |
+| error-report / support-request | 지원 접수 |
+| public-contact-request / public-site | 공개 문의·locale 공개 화면 |
 
-자리만 남은 feature folder:
+schedule, meeting-note, trash는 잔여 feature 경계이며 완성된 업무 기능이 아니다.
 
-- `schedule`
-- `meeting-note`
-
-새 feature를 추가할 때는 API client, query key, UI state, route ownership을 같은 feature 경계 안에서 관리한다.
+API client, query key, UI state, route ownership을 feature 경계에서 관리한다. folk 전환은 [CRM_CORE_FRONTEND](../../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md)를 따른다.

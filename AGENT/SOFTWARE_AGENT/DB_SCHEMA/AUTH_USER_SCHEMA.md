@@ -43,10 +43,10 @@ AuthDevice 1 ─ N AuthSession
 - `User` 영구 삭제 예정 시각 컬럼: 현재 두지 않는다.
 - 계정 삭제 API: 현재 만들지 않는다.
 - 등록 기기 수정/해제 API용 컬럼: 현재 조회만 제공한다.
-- 후속 CRM Core 테이블: Workspace/Kit/Record 구조로 별도 설계한다.
 
 참고:
 
+- Workspace/Team/Actor와 범용 CRM 테이블은 현재 존재한다. folk 전환은 [FOLK_SCHEMA_PLAN](FOLK_SCHEMA_PLAN.md)을 따르며 인증 기반을 임의 제거하지 않는다.
 - 고정형 고객사/담당자/상품/딜 모델은 현재 `BE/prisma/schema.prisma`에 없다. 제거 기록은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`를 따른다.
 
 ## 4. Enum
@@ -109,30 +109,35 @@ AuthDevice 1 ─ N AuthSession
 
 | 컬럼 | 타입 | Null | 기본값 | 주석 |
 |---|---|---:|---|---|
-| `id` | `String @db.Uuid` | 아니오 | `uuid()` | 내부 사용자 PK |
+| `id` | `String @db.Uuid` | 아니오 | `dbgenerated("gen_random_uuid()")` | 내부 사용자 PK |
 | `email` | `String` | 예 | 없음 | provider에서 받은 이메일. 로그인 시 동기화된다. |
 | `displayName` | `String` | 예 | 없음 | 서비스에서 보여줄 이름. 기존 사용자 로그인 시 provider 이름으로 덮어쓰지 않는다. |
 | `platformRole` | `PlatformRole` | 아니오 | `USER` | 플랫폼 권한 |
 | `status` | `UserStatus` | 아니오 | `ACTIVE` | 사용자 상태 |
+| `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone |
+| `jobSelectOnboardingCompletedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 기존 직업 선택 온보딩 완료 시각; 직업 값/Kit은 저장하지 않음 |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
-| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이며, KR/US/CA 우선 전략에 맞춘 `CA` 지원은 후속 구현 범위다. |
-| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 현재 구현은 `KRW/USD` 중심이며, `CAD` 지원은 후속 구현 범위다. |
+| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이다. 추가 국가와 출시 시장은 folk 전환에서 별도로 정한다. |
+| `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 현재 구현은 `KRW/USD` 중심이다. 추가 통화 지원은 별도 구현 범위다. |
 | `signupLocale` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 locale. |
 | `signupCountryCode` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 국가 코드. |
 | `signupTimeZone` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 timezone. |
 | `lastLoginLocale` | `String` | 예 | 없음 | 마지막 로그인/token exchange 시점의 locale. |
 | `lastLoginCountryCode` | `String` | 예 | 없음 | 마지막 로그인/token exchange 시점의 국가 코드. |
 | `lastLoginTimeZone` | `String` | 예 | 없음 | 마지막 로그인/token exchange 시점의 timezone. |
-| `lastLoginAt` | `DateTime` | 예 | 없음 | 마지막 token exchange 성공 시각 |
-| `createdAt` | `DateTime` | 아니오 | `now()` | 생성 시각 |
-| `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 수정 시각 |
-| `deletedAt` | `DateTime` | 예 | 없음 | 소프트 삭제 시각. 현재 계정 삭제 API는 없다. |
+| `lastLoginAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 마지막 token exchange 성공 시각 |
+| `createdAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `now()` | 생성 시각 |
+| `updatedAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `@updatedAt` | 수정 시각 |
+| `deletedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 소프트 삭제 시각. 현재 계정 삭제 API는 없다. |
 
 Relations:
 
 - `oauthAccounts`: `UserOAuthAccount[]`
 - `authDevices`: `AuthDevice[]`
 - `authSessions`: `AuthSession[]`
+- `workspaceMembers`: `WorkspaceMember[]`
+- `errorReports`: `ErrorReport[]`
+- `supportRequests`: `SupportRequest[]`
 
 Indexes:
 
@@ -157,13 +162,13 @@ Indexes:
 | `id` | `String @db.Uuid` | 아니오 | `uuid()` | OAuth 연결 PK |
 | `userId` | `String @db.Uuid` | 아니오 | 없음 | 내부 `User.id` FK |
 | `provider` | `OAuthProvider` | 아니오 | 없음 | 외부 인증 provider |
-| `providerUserId` | `String` | 아니오 | 없음 | provider가 발급한 사용자 ID. Supabase token의 subject 기준 |
+| `providerUserId` | `String` | 아니오 | 없음 | provider 계정 ID. JWT의 `user_metadata.provider_id`, `user_metadata.sub`, 최상위 `sub` 순서로 선택한다. |
 | `providerEmail` | `String` | 예 | 없음 | provider에서 받은 이메일 |
 | `accessTokenHash` | `String` | 예 | 없음 | 외부 provider access token hash. 현재는 저장하지 않을 수 있다. |
 | `refreshTokenHash` | `String` | 예 | 없음 | 외부 provider refresh token hash. 현재는 저장하지 않을 수 있다. |
-| `tokenExpiresAt` | `DateTime` | 예 | 없음 | 외부 provider token 만료 시각 |
-| `createdAt` | `DateTime` | 아니오 | `now()` | 연결 생성 시각 |
-| `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 연결 수정 시각 |
+| `tokenExpiresAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 외부 provider token 만료 시각 |
+| `createdAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `now()` | 연결 생성 시각 |
+| `updatedAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `@updatedAt` | 연결 수정 시각 |
 
 Constraints:
 
@@ -173,6 +178,7 @@ Constraints:
 
 - 같은 외부 계정은 내부 사용자 하나에만 연결된다.
 - 자동 회원가입/로그인 판단은 `provider + providerUserId`를 먼저 사용한다.
+- 과거 Supabase 사용자 ID(`sub`)로 저장된 연결은 로그인 시 확인되면 provider 계정 ID로 갱신한다.
 - 기존 provider 계정이 없고 같은 verified email의 기존 `User`가 있으면 새 `User`를 만들지 않고 이 테이블에 provider 계정을 추가한다.
 
 Indexes:
@@ -191,11 +197,11 @@ Indexes:
 | `deviceIdHash` | `String` | 아니오 | 없음 | FE stable device id를 hash한 값. 원문은 저장하지 않는다. |
 | `label` | `String` | 예 | 없음 | 사용자가 볼 기기 이름. 로그인 exchange 때 갱신될 수 있다. |
 | `status` | `AuthDeviceStatus` | 아니오 | `ACTIVE` | 기기 상태 |
-| `lastSeenAt` | `DateTime` | 예 | 없음 | 마지막 로그인 또는 같은 기기 재로그인 시각 |
-| `replacedAt` | `DateTime` | 예 | 없음 | 같은 slot의 새 기기로 교체된 시각 |
-| `revokedAt` | `DateTime` | 예 | 없음 | 기기가 폐기된 시각 |
-| `createdAt` | `DateTime` | 아니오 | `now()` | 등록 시각 |
-| `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | 수정 시각 |
+| `lastSeenAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 마지막 로그인 또는 같은 기기 재로그인 시각 |
+| `replacedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 같은 slot의 새 기기로 교체된 시각 |
+| `revokedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 기기가 폐기된 시각 |
+| `createdAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `now()` | 등록 시각 |
+| `updatedAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `@updatedAt` | 수정 시각 |
 
 Relations:
 
@@ -230,11 +236,11 @@ Backend refresh session과 access token 검증의 DB 기준이다.
 | `refreshTokenHash` | `String` | 예 | 없음 | Backend refresh token hash. 원문은 저장하지 않는다. |
 | `userAgent` | `String` | 예 | 없음 | 로그인 요청의 User-Agent |
 | `ipAddressHash` | `String` | 예 | 없음 | 로그인 요청 IP의 hash |
-| `lastUsedAt` | `DateTime` | 예 | 없음 | 마지막 refresh/session 사용 시각 |
-| `expiresAt` | `DateTime` | 아니오 | 없음 | refresh session 만료 시각 |
-| `revokedAt` | `DateTime` | 예 | 없음 | 로그아웃/기기 교체 등으로 폐기된 시각 |
-| `createdAt` | `DateTime` | 아니오 | `now()` | session 생성 시각 |
-| `updatedAt` | `DateTime` | 아니오 | `@updatedAt` | session 수정 시각 |
+| `lastUsedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 마지막 refresh/session 사용 시각 |
+| `expiresAt` | `DateTime @db.Timestamptz(3)` | 아니오 | 없음 | refresh session 만료 시각 |
+| `revokedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 로그아웃/기기 교체 등으로 폐기된 시각 |
+| `createdAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `now()` | session 생성 시각 |
+| `updatedAt` | `DateTime @db.Timestamptz(3)` | 아니오 | `@updatedAt` | session 수정 시각 |
 
 Relations:
 
@@ -257,136 +263,11 @@ Indexes:
 - 같은 active device에서 다시 로그인하면 기존 active session row를 재사용하고 refresh token만 rotation한다.
 - 로그아웃은 현재 session만 `REVOKED` 처리한다. 같은 사용자의 다른 slot session은 유지된다.
 
-## 9. 주석 포함 Prisma 기준 구조
+## 9. Prisma 정본
 
-```prisma
-enum PlatformRole {
-  USER  // 일반 사용자
-  ADMIN // 관리자 사용자
-}
+모델 정의를 문서에 중복 복사하지 않는다. 실제 컬럼·타입·관계·기본값은 [schema.prisma](../../../BE/prisma/schema.prisma)를 따른다.
 
-enum UserStatus {
-  ACTIVE    // 정상 사용 가능
-  SUSPENDED // 정지 상태
-  DELETED   // 소프트 삭제 상태
-}
-
-enum OAuthProvider {
-  KAKAO
-  GOOGLE
-  APPLE
-}
-
-enum AuthSessionStatus {
-  ACTIVE  // 사용 가능한 session
-  REVOKED // 로그아웃/기기 교체 등으로 폐기
-  EXPIRED // 만료 처리된 session
-}
-
-enum AuthDeviceStatus {
-  ACTIVE   // 현재 등록된 활성 기기
-  REPLACED // 다른 기기로 교체됨
-  REVOKED  // 정책상 폐기됨
-}
-
-enum AuthDeviceSlot {
-  MOBILE
-  PERSONAL_LAPTOP
-  WORK_LAPTOP
-}
-
-model User {
-  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid // 내부 사용자 PK
-  email       String?                                      // provider 이메일
-  displayName String?                                      // 서비스 표시 이름
-  platformRole PlatformRole @default(USER)                 // USER/ADMIN 플랫폼 권한
-  status      UserStatus @default(ACTIVE)                  // 계정 상태
-  timeZone    String     @default("Asia/Seoul")            // 사용자 기본 IANA timezone
-  preferredLocale      String  @default("ko-KR")           // 사용자 기본 locale
-  countryCode          String  @default("KR")              // 사용자 기본 국가 코드
-  defaultCurrencyCode  String  @default("KRW")             // 사용자 기본 통화 코드
-  signupLocale         String?                             // 최초 가입 시 locale
-  signupCountryCode    String?                             // 최초 가입 시 국가 코드
-  signupTimeZone       String?                             // 최초 가입 시 timezone
-  lastLoginLocale      String?                             // 마지막 로그인 시 locale
-  lastLoginCountryCode String?                             // 마지막 로그인 시 국가 코드
-  lastLoginTimeZone    String?                             // 마지막 로그인 시 timezone
-  lastLoginAt DateTime?                                    // 마지막 로그인 시각
-  createdAt   DateTime   @default(now())                   // 생성 시각
-  updatedAt   DateTime   @updatedAt                        // 수정 시각
-  deletedAt   DateTime?                                    // 소프트 삭제 시각
-
-  oauthAccounts UserOAuthAccount[] // 연결된 외부 provider 계정들
-  authDevices   AuthDevice[]       // 로그인 과정에서 등록된 기기들
-  authSessions  AuthSession[]      // Backend refresh sessions
-
-  @@index([platformRole])
-  @@index([status])
-  @@index([createdAt])
-}
-
-model UserOAuthAccount {
-  id               String        @id @default(uuid()) @db.Uuid // OAuth 연결 PK
-  userId           String        @db.Uuid                       // User FK
-  provider         OAuthProvider                                // provider 종류
-  providerUserId   String                                       // provider 사용자 ID
-  providerEmail    String?                                      // provider 이메일
-  accessTokenHash  String?                                      // 외부 access token hash
-  refreshTokenHash String?                                      // 외부 refresh token hash
-  tokenExpiresAt   DateTime?                                    // 외부 token 만료 시각
-  createdAt        DateTime      @default(now())                // 생성 시각
-  updatedAt        DateTime      @updatedAt                     // 수정 시각
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@unique([provider, providerUserId])
-  @@index([userId])
-}
-
-model AuthDevice {
-  id           String           @id @default(uuid()) @db.Uuid // 기기 PK
-  userId       String           @db.Uuid                      // User FK
-  deviceSlot   AuthDeviceSlot                                 // 기기 slot
-  deviceIdHash String                                         // stable device id hash
-  label        String?                                        // 표시용 기기 이름
-  status       AuthDeviceStatus @default(ACTIVE)              // 기기 상태
-  lastSeenAt   DateTime?                                      // 마지막 사용 시각
-  replacedAt   DateTime?                                      // 교체 시각
-  revokedAt    DateTime?                                      // 폐기 시각
-  createdAt    DateTime         @default(now())               // 생성 시각
-  updatedAt    DateTime         @updatedAt                    // 수정 시각
-
-  user     User          @relation(fields: [userId], references: [id])
-  sessions AuthSession[]
-
-  @@index([userId])
-  @@index([userId, deviceSlot, status])
-  @@index([userId, deviceIdHash])
-}
-
-model AuthSession {
-  id               String            @id @default(uuid()) @db.Uuid // session PK
-  userId           String            @db.Uuid                       // User FK
-  authDeviceId     String            @db.Uuid                       // AuthDevice FK
-  status           AuthSessionStatus @default(ACTIVE)               // session 상태
-  refreshTokenHash String?                                          // refresh token hash
-  userAgent        String?                                          // 요청 user-agent
-  ipAddressHash    String?                                          // 요청 IP hash
-  lastUsedAt       DateTime?                                        // 마지막 사용 시각
-  expiresAt        DateTime                                         // 만료 시각
-  revokedAt        DateTime?                                        // 폐기 시각
-  createdAt        DateTime          @default(now())                // 생성 시각
-  updatedAt        DateTime          @updatedAt                     // 수정 시각
-
-  user       User       @relation(fields: [userId], references: [id])
-  authDevice AuthDevice @relation(fields: [authDeviceId], references: [id])
-
-  @@index([userId])
-  @@index([authDeviceId])
-  @@index([status])
-  @@index([expiresAt])
-}
-```
+2026-11-15 대조: OAuthProvider에는 KAKAO/GOOGLE/APPLE/LINE이 있고 런타임 로그인 제공자는 Google/LINE/Apple이다. User의 timeZone, jobSelectOnboardingCompletedAt 및 WorkspaceMember·지원 접수 관계가 존재한다. 앞의 표는 인증 설명이며 전체 CRM schema 목록이 아니다.
 
 ## 10. 관련 문서
 

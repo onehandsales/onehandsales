@@ -129,9 +129,9 @@ MVP 또는 현재 단계에서 반드시 다루는 범위를 적는다.
 
 - `OneHand Sales`, `onehand.sales`는 과거 명칭 또는 역사적 문맥이 아니면 사용하지 않는다.
 - `Customer`를 조직과 담당자를 모두 포함하는 모호한 전역 도메인 용어로 사용하지 않는다.
-- `Company`, `Product`, `Deal`을 OneHand CRM 전체의 전역 기본 도메인처럼 쓰지 않는다.
-- `담당자`, `제품`, `딜`, `상품`은 현재 활성 구현 도메인이 아니므로 현재 구현 범위 문서에서 활성 기능처럼 쓰지 않는다.
-- 특정 직군 Kit 안에서는 `회사`, `상품`, `계약`, `딜` 같은 업무 언어를 사용할 수 있다.
+- 제품 개념은 folk의 People/Companies/Groups/Custom objects/Views를 기준으로 한다.
+- 현재 구현은 범용 Object/List/Record이며 목표 Person/Company/Group 모델과 구분한다.
+- 직군별 Kit이나 특정 산업을 임의 선행 조건으로 두지 않는다.
 - MVP UI 문맥에서 `오프더레코드` 표현을 사용하지 않는다.
 
 문서에서 내부 개념과 사용자-facing 표현을 구분한다.
@@ -293,8 +293,10 @@ TODO 계획 문서를 실행할 때는 우선순위를 지킨다.
 - 병렬 진행이 가능한 작업이라도 shared dependency가 있으면 dependency 작업을 먼저 끝낸다.
 - 우선순위를 바꿀 때는 PM/UXUI/SOFTWARE 영향 범위를 확인하고 관련 문서를 갱신한다.
 - 각 `/goal`은 `COMMON/GOAL-SPECS`의 해당 goal 상세 명세를 참조해야 한다.
-- 구현 전에는 해당 goal에 필요한 API 명세가 `COMMON/API-SPEC`에 있고, API 계약 상태가 최소 `confirmed`이며, 필요한 DB 스키마가 `BE-TODO/DB-SCHEMA.md`에 연결되어 있어야 한다.
+- 실제 API 연동 구현 전에는 해당 goal에 필요한 API 명세가 `COMMON/API-SPEC`에 있고, API 계약 상태가 최소 `confirmed`이며, 필요한 DB 스키마가 `BE-TODO/DB-SCHEMA.md`에 연결되어 있어야 한다.
 - API가 포함된 goal은 구현 전에 transaction 필요 여부와 observability 항목이 채워져 있어야 한다.
+
+mock 화면 프로토타입은 API 확정 전에도 작성할 수 있다. 실제 저장·권한 구현으로 표시하지 않고 같은 흐름의 데이터 요구를 함께 정리한다.
 
 ## 13. 기획 검토 규칙
 
@@ -325,6 +327,8 @@ TODO 계획 문서, 기획서, API 명세, DB 스키마, FE/BE 작업 문서를 
 - 세부 기준은 `AGENT/PM_AGENT/DECISIONS/021_user_decision_question_rule.md`를 따른다.
 
 ## 14. Goal 완료 후 검토와 TODO_LOG 기록 규칙
+
+사용자가 이미 작업 후 검토를 요청했다면 아래 질문을 반복하지 않고 검토한다. 사용자가 TODO 또는 TODO_LOG를 제외하면 해당 경로에 접근·기록하지 않고 허용된 문서나 최종 보고에 결과를 남긴다.
 
 특정 `/goal` 또는 명시적인 작업 단위가 끝나면 AI 작업자는 바로 다음 작업으로 넘어가기 전에 사용자에게 다음 질문을 한다.
 
@@ -395,8 +399,8 @@ docs(uxui): 계정 설정 UX 기준 보강
 - TODO 문서를 작성하거나 수정하기 전에 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`의 `AGENT/SOFTWARE_AGENT` 전체 문서 목록을 참고했는가?
 - 검토 시 `AGENT` 정본의 소프트웨어 아키텍처, Backend 컨벤션, Frontend 컨벤션, UX/UI 체크리스트가 TODO 문서에 구체화됐는지 확인했는가?
 - TODO 작업이라면 우선순위 순차 실행 규칙을 지켰는가?
-- 특정 `/goal` 또는 작업 단위가 끝났다면 사용자에게 검토 여부를 질문했는가?
-- 검토가 통과됐다면 `TODO_LOG/YYYY-MM-DD/` 아래에 작업 기록을 남겼는가?
+- 작업 후 검토 요청을 이행했는가? 이미 요청된 검토에 재확인을 요구하지 않았는가?
+- 검토 결과를 허용된 경로에 남겼는가? 사용자 제외 범위가 없다면 기존 TODO_LOG 기록 정책을 따랐는가?
 - API 명세라면 API 이름, request 이름, 비즈니스 로직 흐름, response 이름, 연결 DB 스키마를 모두 적었는가?
 - 커밋 요청을 받았다면 변경 문서 성격에 맞는 커밋 메시지를 판단했는가?
 - 필요한 경우 관련 역할의 `DECISIONS`에 결정 기록을 남겼는가?

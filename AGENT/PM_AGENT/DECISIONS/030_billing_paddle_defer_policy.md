@@ -16,8 +16,8 @@ Status: Current
 현재 OneHand CRM의 다음 순서는 Paddle checkout 구현이 아니다.
 
 1. 현재 활성 기능 유지보수
-2. 첫 Kit 결정
-3. Workspace/Kit/Record 기반 CRM Core MVP 설계
+2. folk 화면·기능 조사
+3. 연락처·Group·View 첫 흐름의 API/DB/UX 설계
 4. First Use Activation 구현
 5. 결제창 없는 100명 베타 테스트
 6. 베타 피드백 반영
@@ -28,7 +28,7 @@ Status: Current
 
 구독 결제를 먼저 붙이면 가격, plan, trial, entitlement, AI 사용량 제한, 환불/해지/failed payment 정책이 바뀔 때 checkout, webhook, DB, User Web 범위를 다시 고칠 가능성이 높다.
 
-현재 제품은 인증/계정/지원 접수 foundation이 남아 있는 전환 상태이므로, 결제창을 붙이는 것보다 첫 Kit과 다음 CRM Core의 제품 가설을 검증하는 것이 우선이다.
+2026-11-15 갱신: 현재 Workspace와 CRM 코어가 존재하며 folk 전환은 036 결정을 따른다. 실제 결제 제공자·사업 정책은 별도 확정한다. folk 요금제·설정 UX 조사를 제외한다는 의미는 아니다.
 
 Paddle은 Merchant of Record 후보로 유지한다. 다만 `ProfitWell Metrics`는 분석 제품이고, 결제 구현의 중심은 `Paddle Billing`이다.
 

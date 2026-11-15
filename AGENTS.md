@@ -10,6 +10,15 @@
 - 파일 수정은 가능하면 `apply_patch`를 사용한다.
 - 파괴적 명령은 사용자가 명시하지 않으면 실행하지 않는다.
 
+## 제품·UX 전환 기준
+
+- 현재 방향은 folk 기능·UX 벤치마킹이다.
+- 먼저 `AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md`와 `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`를 확인한다.
+- Nicelydone MCP 화면, folk 공식 문서, 실제 계정 관찰을 구분해 기록한다. 연결·조회하지 않은 자료를 확인했다고 쓰지 않는다.
+- 과거 Kit/Notion/Attio 결정은 역사 자료다. 현재 구현과 목표 설계를 구분한다.
+- DB 제거는 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md`의 후보와 API·FE 의존을 먼저 검토한다. 문서 변경을 DB 초기화 실행으로 확대하지 않는다.
+- 사용자가 제외한 폴더는 링크 대상으로도 읽거나 수정하지 않는다.
+
 ## Backend 작업
 
 `BE` 아래 코드를 수정하거나 백엔드 구조/DB/API/트랜잭션을 다루는 작업이면 먼저 다음을 읽고 따른다.

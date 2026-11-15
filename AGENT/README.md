@@ -1,165 +1,33 @@
 # AGENT
 
-## 1. 목적
+제품·UX·Software 문서의 정본 공간이다. 현재 방향은 **folk 기능·UX 벤치마킹**이며, 과거 Kit/Notion/Attio 결정은 역사 자료로 구분한다.
 
-이 폴더는 `OneHand CRM`의 제품 방향, UX/UI 방향, 소프트웨어 구현 방향을 정하는 정본 문서 공간이다.
+## 시작 순서
 
-`AGENT`는 한 사람이 혼자 쓰는 문서함이 아니라, PM, UX/UI 리드, Software 리드가 함께 모여 기획과 방향성을 맞추는 회의실로 본다. 각 역할은 자기 관점의 정본 문서를 관리하되, 서로의 결정이 충돌하지 않도록 연결한다.
+1. [사용 규칙](AGENT_USAGE_RULES.md)
+2. [현재 확정 결정](PM_AGENT/DECISIONS/000_확정_결정.md), [folk 전환 결정](PM_AGENT/DECISIONS/036_folk_benchmark_transition.md)
+3. [제품 방향](PM_AGENT/PLANNING/PRODUCT_DIRECTION.md), [기능 대응표](PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md)
+4. [현재 구현](PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)
+5. [UX 기준](UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md), [화면·근거 조사](UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md)
+6. [Software 기준](SOFTWARE_AGENT/README.md), [전환 영향](SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md), [DB 계획](SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)
+7. 해당 작업의 아키텍처·컨벤션·검토 기준.
 
-## 2. 역할별 폴더
+## 역할
 
-```text
-AGENT/
-  AGENT_USAGE_RULES.md
-  PM_AGENT/
-  UXUI_AGENT/
-  SOFTWARE_AGENT/
-```
+| 영역 | 책임 |
+| --- | --- |
+| [PM_AGENT](PM_AGENT/README.md) | 기능 범위·우선순위·제품 개념·수용 기준·결정 |
+| [UXUI_AGENT](UXUI_AGENT/README.md) | 원본 근거·화면·flow·상태·상호작용 |
+| [SOFTWARE_AGENT](SOFTWARE_AGENT/README.md) | API·DB·FE/BE 경계·검증·배포 |
 
-## 3. 역할 정의
+제품 범위와 UX, 기술 계약을 서로 연결한다. 모델 단순화가 제품 기능 삭제로 이어지거나, 화면만 닮고 데이터 의미가 달라지는 경우를 함께 검토한다.
 
-### PM_AGENT
+## 문서 사용
 
-제품의 문제 정의, MVP 범위, 도메인 개념, 우선순위, 문서 운영 규칙, 결정 기록을 관리한다.
+- 현재 구현 사실은 IMPLEMENTATION_STATUS와 실제 소스로 확인한다.
+- 목표 기능은 대응표, 미확인 사항은 조사 문서, DB 제안은 FOLK_SCHEMA_PLAN으로 구분한다.
+- Historical/Superseded 문서의 기존 금지·착수 조건은 현행 규칙이 아니다.
+- “AGENT 학습” 요청은 모든 Markdown 문서를 대상으로 하되 사용자 제외 범위를 우선한다.
+- 이번 문서 전환 검토는 TODO 및 TODO_LOG를 제외한다. 기존 링크의 대상도 읽지 않는다.
 
-주요 질문:
-
-- 누구의 어떤 문제를 해결하는가?
-- MVP에 포함할 것과 제외할 것은 무엇인가?
-- 어떤 순서로 만들 것인가?
-- 결정이 바뀌었을 때 어디에 기록할 것인가?
-
-### UXUI_AGENT
-
-사용자 흐름, 화면 구조, 정보 우선순위, UI 톤, 접근성, 모바일/데스크톱 사용성을 관리한다.
-
-주요 질문:
-
-- 사용자가 어떤 흐름으로 문제를 해결하는가?
-- 첫 화면에서 무엇이 가장 먼저 보여야 하는가?
-- 화면별 정보 우선순위는 무엇인가?
-- 사용자가 빠르게 입력하고 다시 찾을 수 있는가?
-
-### SOFTWARE_AGENT
-
-소프트웨어 구현 기준을 관리하되, 하위 구조는 `FRONT_AGENT`, `BACKEND_AGENT`, `DB_SCHEMA`로 나눈다.
-
-```text
-SOFTWARE_AGENT/
-  FRONT_AGENT/
-  BACKEND_AGENT/
-  DB_SCHEMA/
-```
-
-`FRONT_AGENT`는 User Web과 Admin Web의 화면 구현, 상태 관리, Frontend 컨벤션, E2E, 배포 기준을 관리한다.
-
-`BACKEND_AGENT`는 Backend 아키텍처, API, 계층 구조, Backend 컨벤션, 테스트, 배포, 보안 구현 기준을 관리한다.
-
-`DB_SCHEMA`는 DB schema와 테이블 설명을 관리한다.
-
-주요 질문:
-
-- 어떤 구조로 구현해야 변경에 견디는가?
-- User API와 관리자 확인 API는 어떻게 분리되는가?
-- 데이터 소유권과 민감정보는 어떻게 보호되는가?
-- 어떤 테스트로 회귀를 막을 것인가?
-
-## 4. 정본 문서 우선순위
-
-새 작업을 시작할 때는 아래 순서로 확인한다.
-
-1. `AGENT_USAGE_RULES.md`
-2. `PM_AGENT/DECISIONS/000_확정_결정.md`
-3. `PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`
-4. `PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`
-5. `PM_AGENT/PLANNING/SERVICE_OVERVIEW.md`
-6. `PM_AGENT/PLANNING/PRD.md`
-7. `PM_AGENT/PLANNING/MVP_SCOPE.md`
-8. `PM_AGENT/PLANNING/KIT_STRATEGY.md`
-9. `PM_AGENT/PLANNING/FIRST_USE_EXPERIENCE.md`
-10. `PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
-11. `PM_AGENT/PLANNING/ROADMAP.md`
-12. `PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
-13. `PM_AGENT/PLANNING/DATA_MODEL.md`
-14. `PM_AGENT/CONVENTION/DOCUMENTATION.md`
-15. `PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
-16. `UXUI_AGENT/PLANNING/FIRST_USE_FLOW.md`
-17. `UXUI_AGENT/PLANNING/KIT_SELECTION_UX.md`
-18. `UXUI_AGENT/PLANNING/WORKSPACE_HOME_UX.md`
-19. `UXUI_AGENT/PLANNING/RECORD_LIST_DETAIL_UX.md`
-20. `UXUI_AGENT/PLANNING/CRM_CORE_INTERACTION_MODEL.md`
-21. `UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`
-22. `UXUI_AGENT/PLANNING/UX_WRITING_GUIDE.md`
-23. `UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
-24. `SOFTWARE_AGENT/README.md`
-25. `SOFTWARE_AGENT/COMMON/IMPLEMENTATION_BOUNDARY.md`
-26. `SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`
-27. `SOFTWARE_AGENT/COMMON/QA_CHECKLIST.md`
-28. `SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`
-29. `SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
-30. `SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
-31. `SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
-32. `SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`
-33. `SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`
-34. `SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
-35. `SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`
-36. `SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
-37. `SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
-38. `SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-39. `SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md`
-40. `SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`
-41. `SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
-42. `SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
-43. `SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/COMMENT_AND_LOGGING.md`
-44. `SOFTWARE_AGENT/DB_SCHEMA/README.md`
-45. `SOFTWARE_AGENT/DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`
-46. `SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`
-
-전역 UX/UI reference는 `UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`다. 모든 작업자는 새 작업을 시작할 때 이 결정과 충돌하는 화면, API 표현, Kit/Record 관계, 사용자 흐름을 만들지 않는지 확인한다. 화면, Frontend, UX/UI, 사용자 노출 문구, 목록/상세/생성/검색/연결 Record에 영향이 있으면 반드시 이 문서를 먼저 읽고 작업한다.
-
-## 5. AGENT 학습 요청 처리
-
-사용자가 `AGENT 학습해줘` 또는 `AGENT 폴더를 학습해줘`라고 요청하면 `AGENT_USAGE_RULES.md`의 `AGENT 학습해줘 요청 처리 규칙`을 따른다.
-
-이 요청은 특정 역할 문서만 읽는 작업이 아니다. `AGENT` 아래의 모든 Markdown 문서를 학습 대상으로 본다.
-
-## 6. 충돌 처리
-
-문서가 충돌하면 다음 기준을 따른다.
-
-- 제품 범위와 우선순위는 `PM_AGENT` 결정이 우선한다.
-- 화면 흐름과 UI 정보 우선순위는 `UXUI_AGENT` 결정이 우선한다.
-- 구현 구조, API, DB, 테스트, 배포는 `SOFTWARE_AGENT` 결정이 우선한다.
-- 역할 간 충돌이 생기면 `PM_AGENT/DECISIONS`에 최종 결정을 남기고 관련 문서를 함께 갱신한다.
-
-archive 또는 legacy 문서가 `AGENT` 문서와 충돌하면 `AGENT` 문서를 우선한다.
-
-완료/미완성 구현 상태는 `PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`를 AGENT 정본으로 본다. `UX Design` 아래 구현 현황 문서는 보조 자료이며, 구현 상태 판단의 1차 근거로 쓰지 않는다.
-
-## 7. 관련 작업 문서
-
-2026-11-12 TABLE/KANBAN/LIST 필터·정렬·보기 설정 저장과 대표 이름 분리: [확정 API·구현·검증 기록](../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md). View 설정 저장은 기존7개 테이블을 사용하고, 대표 이름에는 `ObjectDefinition.recordTitleAttributeDefinitionId`를 추가했다. 이 기록은 이전 메뉴의 조회 전용/임시 편집 설명을 대체한다.
-
-실제 구현 실행 계획은 `TODO` 아래 계획 폴더에서 관리한다.
-
-예:
-
-- `TODO/DONE/AUTH_FE_INTEGRATION_PLAN`
-- `TODO/DONE/CONTACT_DOMAIN_PLAN`
-- `TODO/DONE/PRODUCT_DOMAIN_PLAN`
-- `TODO/DONE/DEAL_DOMAIN_PLAN`
-- `TODO/DONE/ADDITIONAL_WORK_PLAN`
-- `TODO/DONE/MVP-STARTER_PLAN`
-- `TODO/DONE/NEXT_BACKEND_API_BACKLOG_PLAN`
-- `TODO/DONE/USER_WEB_PRODUCTIZATION_GAP_PLAN`
-- `TODO/DONE/GLOBAL_B2C_FEATURE_ROADMAP_PLAN`
-
-TODO 문서 작성 방식은 `PM_AGENT/CONVENTION/DOCUMENTATION.md`를 따른다.
-
-2026-09-12 기준 과거 Global B2C planning 문서는 현재 정본에서 제거됐다. 현재 활성 foundation은 `PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`를 확인하고, 제품 로드맵은 `PM_AGENT/PLANNING/ROADMAP.md`를 따른다. 결제/구독/세금/Paddle 범위는 현재 활성 TODO 계획이 아니며, 제품 가설 검증 이후 별도 계획으로 만든다.
-
-TODO 기획서, 명세서, FE/BE 작업 문서를 구현 전에 검토할 때는 `PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`를 따른다.
-
-TODO 계획 폴더 안에서 FE/BE가 함께 보는 사용자 흐름, goal 작업 순서, API 명세, goal 상세 명세, 기획 검토 결과는 `PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`의 `COMMON` 구조를 따른다.
-
-활성 TODO 전체를 재검토할 때는 `TODO/DONE`을 제외하고, `AGENT_USAGE_RULES.md`의 `활성 TODO 재검토 요청 처리 규칙`과 `PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`의 `활성 TODO 재검토 기준`을 함께 따른다. 이때 Backend API 구현 여부, API 명세의 request/response/내부 비즈니스 로직 완성도, Frontend 남은 작업의 목적을 같은 산출물로 정리한다.
+[문서 작성 규칙](PM_AGENT/CONVENTION/DOCUMENTATION.md), [기획 검토 기준](PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md)을 따른다. 사용자 요청이 이미 검토를 포함하면 확인을 반복하지 않고 검토 결과를 남긴다.

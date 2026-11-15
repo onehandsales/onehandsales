@@ -2,9 +2,9 @@
 
 ## Feature Naming
 
-도메인 feature 폴더는 단수형을 사용한다. 현재 활성 feature는 `auth`, `app-i18n`, `error-report`, `support-request`, `public-contact-request`, `public-site`다.
+도메인 feature 폴더는 단수형을 사용한다. 현재 활성 feature에는 `auth`, `app-i18n`, `workspace`, `crm-object`, `crm-list`, `crm-view`, `sidebar-order`, `view-favorite`, 지원·공개 사이트 기능이 있다.
 
-후속 CRM Core feature 후보는 `kit`, `workspace`, `crm-object`, `record`, `record-relationship`이다. 실제 생성은 API 계약과 UXUI flow 확정 이후 진행한다.
+folk 전환 feature는 CRM_CORE_FRONTEND와 원본 화면을 기준으로 정한다. mock 프로토타입은 가능하며 실제 연동 전 API·권한·데이터 계약을 확정한다.
 
 ## API State
 
@@ -14,14 +14,14 @@
 
 ## Time Display
 
-- Backend가 내려주는 `createdAt`, `updatedAt`, `deletedAt` 같은 instant는 UTC ISO string으로 본다. 현재 `deletedAt`은 User 계정 상태 필드에만 남는다.
+- Backend가 내려주는 `createdAt`, `updatedAt`, `deletedAt` 같은 instant는 UTC ISO string으로 본다. 실제 필드·타입은 schema를 확인한다.
 - 화면에는 UTC string을 그대로 출력하지 않고 사용자 표시 기준으로 변환한다.
 
 ## Route
 
 - 로그인 이후 업무 route는 `/app` 아래에 둔다.
-- 현재 활성 route는 `/app`과 `/app/more`다.
+- 현재 route는 `/app`, `/app/more`, Workspace 홈과 Object/List/View ID 경로다. 실제 router와 IMPLEMENTATION_STATUS를 따른다.
 - `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 현재 `/app`으로 redirect한다.
 - 고정형 고객사 관리 route는 현재 활성 route가 아니다.
 - 계정 설정은 보호 route 위 query modal로 제공한다.
-- 후속 CRM Core route는 고정형 `/app/contacts`, `/app/products`, `/app/deals` 복구가 아니라 Kit/Workspace/Record 구조로 설계한다.
+- 목표 route는 folk의 Group·객체 탭·레코드 상세 흐름을 확인한 후 정한다.

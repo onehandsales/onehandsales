@@ -6,7 +6,7 @@ Date: 2026-09-12
 
 OneHand CRM의 User Web과 Admin Web은 다국어 업무 도구에 맞는 조용하고 읽기 쉬운 typography를 기준으로 한다.
 
-Notion-like typography 방향을 참고하되, 특정 브랜드의 고유 폰트나 시각 자산을 복제하지 않는다.
+기존 다국어 폰트 스택은 현재 코드의 fallback이다. folk 화면 실측 후 글꼴·크기·행간을 대조하며 025 기준을 우선한다.
 
 ## 2. 기준
 
@@ -26,7 +26,7 @@ Notion-like typography 방향을 참고하되, 특정 브랜드의 고유 폰트
 ## 4. 검수 기준
 
 - 한국어 문장이 버튼 안에서 잘리지 않는가?
-- 긴 Kit 이름이나 관리 대상 이름이 layout을 깨지 않는가?
+- 긴 Group·객체 이름이나 관리 대상 이름이 layout을 깨지 않는가?
 - table/list row에서 숫자와 상태가 읽기 쉬운가?
 - validation message가 모바일에서 입력 영역을 가리지 않는가?
 

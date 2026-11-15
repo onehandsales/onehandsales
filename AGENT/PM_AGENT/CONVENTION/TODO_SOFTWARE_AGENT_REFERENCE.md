@@ -6,9 +6,18 @@
 
 이 문서는 그 필수 선행 문서 목록과 TODO 문서 작성 시 반드시 구체화해야 하는 API/비즈니스 로직 기준을 고정한다.
 
+사용자가 제외한 경로에는 이 문서의 일반 작업 규칙보다 사용자 지시를 우선한다. 이번 folk 문서 정비는 TODO·TODO_LOG를 읽거나 수정하지 않는다.
+
 ## 2. 필수 선행 문서
 
 `TODO` 문서를 새로 만들거나 수정하는 작업자는 아래 `AGENT/SOFTWARE_AGENT` 문서를 모두 먼저 읽고, 해당 계획에 영향을 주는 기준을 TODO 문서에 반영한다.
+
+### 현재 전환 정본
+
+- [folk 전환 영향](../../SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)
+- [folk DB 계획](../../SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)
+- [현재 구현](../PLANNING/IMPLEMENTATION_STATUS.md)
+- [folk 근거·화면 조사](../../UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md)
 
 ### Backend Agent
 
@@ -109,7 +118,7 @@ API 계약 문서는 `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT
 - API 계약 문서가 있으면 request, response, 내부 비즈니스 로직, DB 연결, 에러 응답을 누락 없이 보강한다.
 - 새 API가 포함된 goal은 구현 전에 API 계약 상태를 최소 `confirmed`로 만들고 transaction/observability 항목을 채운다.
 - mutation API가 포함된 goal은 idempotency/outbox 필요 여부와 module orchestration owner를 함께 확인한다.
-- API 계약이 없거나 `draft`이면 구현 goal로 들어가지 않고 계약 보완 goal을 먼저 둔다.
+- API 계약이 없거나 draft이면 실제 연동 구현 전 계약을 보완한다. mock 화면 프로토타입은 가능하며 실제 저장되는 기능으로 표시하지 않는다.
 
 ## 6. 활성 TODO 재검토 산출물 기준
 

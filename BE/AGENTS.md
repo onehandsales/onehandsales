@@ -12,6 +12,13 @@
 - `../AGENT/SOFTWARE_AGENT/BACKEND_AGENT/DECISIONS/`
 - DB/API 관련 작업이면 `../AGENT/SOFTWARE_AGENT/DB_SCHEMA/`
 
+## folk 전환
+
+- 제품 방향은 `../AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md`를 따른다.
+- 현재 Object/List/View 코드는 이미 실행 중인 구현이다. folk 목표 모델과 혼동하지 않는다.
+- 새 데이터 구조와 제거 후보는 `../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md`를 따른다.
+- Workspace/인증 기반을 포함한 실제 데이터·권한·API·FE 의존을 확인한 후 migration을 설계한다.
+
 ## 현재 Backend 구조
 
 - 실제 MSA가 아니다.

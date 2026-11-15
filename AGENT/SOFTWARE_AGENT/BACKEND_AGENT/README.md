@@ -1,62 +1,23 @@
 # Backend Agent
 
-## 1. 목적
+NestJS/Prisma Backend의 계층·API·권한·트랜잭션·검증 기준을 관리한다. 현재 단일 서버의 modular monolith이며 다른 module의 Prisma repository를 직접 공유하지 않는다.
 
-Backend Agent는 NestJS, Prisma, Supabase 연동, 인증/사용자, 지원 접수, 공개 문의, 관리자 권한 확인의 구현 기준을 관리한다.
+## 현재 범위
 
-후속 CRM Core는 고정형 Company/Product/Deal module 복구가 아니라 Workspace/Kit/Record 기반 module로 별도 설계한다.
+Auth/User/Workspace, Object/List/Attribute/Record/View, 오류·지원·공개 문의, Health와 관리자 확인이 있다. [구현 현황](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md), [API 목록](../COMMON/API_SAMPLE.md)을 따른다.
 
-현재 Backend는 단일 NestJS 서버로 운영하되, module 경계는 미래 MSA service 경계처럼 다룬다. 다른 module의 Prisma repository 구현체를 직접 공유하지 않고, module 간 협력은 application/query port 또는 use case facade로 표현한다.
+## folk 전환
 
-## 2. 현재 활성 모듈
+[CRM_CORE_BACKEND](ARCHITECTURE/CRM_CORE_BACKEND.md), [DB 계획](../DB_SCHEMA/FOLK_SCHEMA_PLAN.md), [전환 영향](../COMMON/FOLK_TRANSITION_MATRIX.md)에 따라 기존 코어를 재편한다. 첫 Kit 선택은 선행 조건이 아니다. 새 endpoint와 모델은 실제 화면의 소유 범위·권한·오류를 확인한 후 정한다.
 
-- `auth`
-- `user`
-- `error-report`
-- `support-request`
-- `public-contact-request`
-- `health`
+## 반드시 확인
 
-관리자 확인은 `auth` 모듈의 `GET /admin/api/me` controller로 유지한다.
+- [Backend 구조](ARCHITECTURE/BACKEND.md)
+- [Module 경계](ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md)
+- [Shared HTTP](ARCHITECTURE/SHARED_PRESENTATION.md)
+- [API 계약](CONVENTION/API_CONTRACT.md)
+- [트랜잭션](CONVENTION/TRANSACTION.md)
+- [검토 기준](ENGINEERING_REVIEW_CHECKLIST.md)
+- [DB 문서](../DB_SCHEMA/README.md)
 
-## 3. 비활성 범위
-
-현재 활성 Backend 모듈이 아니다.
-
-- 고정형 고객사/담당자/상품/딜
-- 고정형 검색
-- xlsx export
-- analytics
-- billing/subscription
-- Team 권한
-
-## 4. 후속 CRM Core
-
-후속 Backend 설계는 `ARCHITECTURE/CRM_CORE_BACKEND.md`를 따른다.
-
-후보 module:
-
-- `workspace`
-- `kit`
-- `crm-core`
-- `record`
-
-실제 구현 전에는 PM의 첫 Kit 결정, UXUI flow, DB schema draft, API 계약이 필요하다.
-
-## 5. 검증
-
-- `pnpm prisma:validate`
-- `pnpm prisma:generate`
-- `pnpm typecheck`
-- `pnpm lint`
-- `pnpm test`
-- `pnpm build`
-
-## 6. 관련 문서
-
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
-- [Shared Presentation Architecture](ARCHITECTURE/SHARED_PRESENTATION.md): 공통 HTTP 경계 구성과 입력 검증 참고
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/README.md`
+검증은 BE/AGENTS.md와 변경 영향에 따른다. schema 변경 시 validate/generate, 실행 코드 변경 시 typecheck/lint/test 및 필요한 build를 수행한다. 실제 실행하지 않은 검증을 통과로 기록하지 않는다.

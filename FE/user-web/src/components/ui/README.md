@@ -5,14 +5,16 @@ user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 예시:
 
 - `button.tsx`
-- `input.tsx`
-- `dialog.tsx`
+- `search-input.tsx`
+- `confirm-dialog.tsx`
 - `badge.tsx`
-- `table.tsx`
+- `list-table-header-cell.tsx`
 
 비즈니스 기능에 특화된 component는 `src/features/<feature>/components`에 둔다.
 
-## 현재 확정된 공용 문법
+## 현재 구현된 공용 문법
+
+아래는 기존 primitive의 사용 계약이다. folk 화면의 생성 방식·배치·표현을 확정하는 UX 규칙은 아니다. 새 화면은 [UX 025](../../../../../AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)와 Nicelydone/공식 문서에서 확인한 상호작용에 맞춰 조합하거나 수정한다.
 
 - `button.tsx`
   - `Button`: variant(primary/secondary/danger/ghost), size(md/sm/lg/icon), isPending(spinner) 지원
@@ -30,12 +32,13 @@ user-web의 범용 shadcn-style primitive를 이곳에 둔다.
 - `page-header.tsx`
   - `PageHeader`: 페이지 title, description, actions 슬롯, 선택적 backHref/backLabel 링크
 - `toast.tsx`
-  - `Toast`: variant(success/error/info), 3초 자동 닫힘
-  - `useToast`: showToast(message, variant) hook
+  - `Toast`: variant(success/error/info), 메시지·설명·닫기 콜백 지원
+- `use-toast.tsx`
+  - `useToast`: `{ toast, dismiss, node }` 반환. `toast({ message, variant, description, duration })`으로 표시하며 기본 3초 후 닫힌다.
 - `modal-shell.tsx`
   - `ModalShell`은 overlay, dialog panel, header, body, footer를 담당한다.
   - 생성/수정 폼은 modal body에 `<form id="...">`를 두고 footer submit 버튼은 `form` 속성으로 연결한다.
-  - 로그인 모달과 회사 생성/수정 모달은 이 문법을 기준으로 한다.
+  - 현재 로그인 모달에서 사용한다. 예전 고정형 회사 생성/수정 화면은 제거되었으며, 새 folk 생성 UX를 모달로 미리 고정하지 않는다.
 - `modal-form.tsx`
   - Quick Create 계열 모달 내부 폼 문법을 담당한다.
   - `ModalFormSection`, `ModalSectionHeader`, `ModalFormRow`, `ModalFieldGroup`으로 섹션/행/필드 묶음을 고정한다.

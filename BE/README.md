@@ -20,16 +20,22 @@
 
 관리자 확인 API는 반드시 Admin guard로 보호한다.
 
+제품·UX 전환은 [folk 결정](../AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md)을 따른다. 아래는 기존 실행 코드 설명이며 folk 전체 구현 상태가 아니다.
+
 ## 현재 구현 모듈
 
 - `auth`: 외부 인증 토큰 교환, Backend App token refresh/logout, 현재 사용자 조회, 기기/session 관리, 로그인 locale/region 메타데이터 동기화
-- `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회
+- `user`: 현재 사용자 profile, 기본 timezone/locale 수정, 등록 기기 조회, 온보딩 완료
+- `workspace`: Workspace 생성·사이드바·기본 Workspace·접근/온보딩 port
+- `object-definition`, `list-definition`: 생성·사이드바·순서
+- `attribute-definition`, `record-definition`: 속성·레코드 생성/조회/값 변경
+- `view-definition`: 헤더·본문·설정 조회/미리보기/저장·컬럼·즐겨찾기
 - `error-report`: User Web 오류 신고 접수와 screenshot storage 연동
 - `support-request`: User Web 지원 문의 접수
 - `public-contact-request`: 로그인 전 공개 문의 접수
 - `health`: health check
 
-고정형 `company`/`search` 도메인은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 기반의 유연한 데이터 모델로 다시 설계한다.
+과거 고정형 company/search는 제거되었고 현재 범용 CRM 코어가 존재한다. 새 연락처·Group 구조와 제거 후보는 [FOLK_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 따른다.
 
 
 ## 관리 항목과 첫 TABLE 생성
@@ -67,7 +73,7 @@ pnpm run start:dev
 
 헬스 체크: `GET /api/health`
 
-환경 변수 정본은 `BE/.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 현재 Backend bootstrap은 로컬 편의를 위해 `BE/.env` 다음 `BE/.env.local`을 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 변수명만 기준으로 한다. 실제 secret 값은 문서나 로그에 기록하지 않는다.
+환경 변수 정본은 `BE/.env`와 `../AGENT/SOFTWARE_AGENT/COMMON/ENVIRONMENT.md`다. `.env.example` 또는 `.env.local`은 현재 정본이 아니다. 현재 Backend는 `.env.local`을 `.env`보다 우선하는 로컬 override로 읽을 수 있지만, 공유 환경 계약은 공통 환경 문서의 변수명만 기준으로 한다. 실제 secret 값은 문서나 로그에 기록하지 않는다.
 
 ## 운영 배포
 
@@ -117,7 +123,7 @@ pnpm test
 pnpm run build
 ```
 
-문서와 코드 변경 후에는 위 명령으로 다시 검증한다.
+실행 코드 변경 시 위 검증을 수행한다. 문서만 변경한 경우 링크·명령·소스 정합성과 diff를 검증하고 runtime 검증 실행 여부를 구분한다.
 
 ## 외부 Provider
 

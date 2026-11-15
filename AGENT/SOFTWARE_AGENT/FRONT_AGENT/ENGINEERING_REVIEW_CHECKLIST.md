@@ -9,9 +9,9 @@
 - access token 만료/복구 흐름이 깨지지 않는가?
 - 후속 list query key에는 검색, 필터, 정렬, 페이지가 포함되는가?
 - mutation 이후 관련 query invalidate가 충분한가?
-- 현재 활성 route가 `/app`과 `/app/more` 중심으로 유지되는가?
+- 현재 route가 IMPLEMENTATION_STATUS와 실제 router에 맞고 Workspace/Object/List/View 경로를 누락하지 않았는가?
 - 고정형 Contact/Product/Deal route가 현재 의도대로 `/app`으로 redirect되는가?
-- 후속 CRM Core 화면을 추가할 때 Kit/Workspace/Record 구조를 따르는가?
+- 전환 화면이 folk 원본 근거와 기능 대응표를 따르며 현재 코드와 목표를 구분하는가?
 - CRM Core query key에 workspace, object/view, page, search, filter, sort 같은 화면 상태가 포함되는가?
 - Record 생성 후 list/detail/workspace summary invalidate가 충분한가?
 - FE가 API에 없는 최근 활동, 상태, 관계 값을 임의 데이터처럼 꾸미지 않는가?

@@ -1,102 +1,23 @@
 # SOFTWARE_AGENT
 
-## 1. 목적
+folk 전환을 위한 API·DB·FE/BE 구조와 검증 기준을 관리한다. 현재 코드는 이미 Workspace와 범용 CRM 코어를 포함한다. [현재 구현](../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)을 기준으로 하고 목표를 완료 상태로 표현하지 않는다.
 
-`SOFTWARE_AGENT`는 OneHand CRM의 구현 구조, API/DB 계약, Frontend/Backend 경계, 검증 기준을 관리하는 문서 영역이다.
+## 정본
 
-PM_AGENT가 제품 범위와 우선순위를 정하고, UXUI_AGENT가 화면 흐름과 사용자 경험을 정하면, SOFTWARE_AGENT는 그 기준을 실제 코드로 안전하게 구현하기 위한 구조를 정의한다.
+- [현재/목표 경계](COMMON/IMPLEMENTATION_BOUNDARY.md)
+- [전환 의존·순서](COMMON/FOLK_TRANSITION_MATRIX.md)
+- [DB 계획](DB_SCHEMA/FOLK_SCHEMA_PLAN.md)
+- [DB 문서 목록](DB_SCHEMA/README.md)
+- [Backend](BACKEND_AGENT/README.md)
+- [Frontend](FRONT_AGENT/README.md)
+- [환경](COMMON/ENVIRONMENT.md), [API 목록](COMMON/API_SAMPLE.md), [QA](COMMON/QA_CHECKLIST.md)
 
-## 2. 역할
+## 기술 원칙
 
-SOFTWARE_AGENT는 아래 질문에 답한다.
+백엔드는 단일 NestJS modular monolith + Clean Architecture다. 다른 모듈의 Prisma repository를 직접 사용하지 않고 공개 application/query port로 협력한다. 트랜잭션 경계는 application이 소유한다.
 
-- Backend module, application service, repository, controller를 어떻게 나눌 것인가? 
-- 현재 단일 Backend 서버의 module 경계를 미래 MSA service 경계처럼 어떻게 유지할 것인가?
-- User Web과 Admin Web의 feature boundary를 어떻게 유지할 것인가?
-- API request/response, error, transaction, observability 계약은 어디에 남길 것인가?
-- Prisma schema와 제품 개념 모델은 어떻게 연결할 것인가?
-- 현재 활성 구현과 비활성 레거시 흔적을 어떻게 구분할 것인가?
-- 어떤 자동 검증과 수동 QA를 통과해야 변경을 완료로 볼 것인가?
+프런트는 User Web/Admin Web의 독립 앱 구조와 feature 경계를 유지한다. mock 화면 검토는 가능하나 실제 연동 전에 API·오류·권한 계약을 정한다.
 
-## 3. 폴더 구조
+DB는 기본 연락처와 Group 범위의 확장으로 단순화하는 안을 검토한다. 모든 동적 기능을 없애거나 기존 모델 이름만 바꾸지 않는다. 실제 제거는 데이터·API·FE·테스트 의존을 함께 처리한다.
 
-```text
-SOFTWARE_AGENT/
-  README.md
-  COMMON/
-  BACKEND_AGENT/
-  FRONT_AGENT/
-  DB_SCHEMA/
-```
-
-## 4. 역할별 범위
-
-| 영역 | 책임 |
-| --- | --- |
-| `COMMON` | 공통 구현 경계, 환경 변수, API 샘플, QA 기준, 다음 구현 우선순위 |
-| `BACKEND_AGENT` | NestJS module, API, application/service/repository 구조, modular monolith/MSA 대비, transaction, observability |
-| `FRONT_AGENT` | User Web/Admin Web 구조, route, feature, state, E2E, 배포 기준 |
-| `DB_SCHEMA` | 현재 Prisma schema 설명, 후속 CRM Core schema draft, 레거시 제거 기록 |
-
-## 5. 현재 구현 기준
-
-현재 활성 구현은 foundation 범위다.
-
-- Auth/User
-- Error Report
-- Support Request
-- Public Contact Request
-- Health
-- Admin authority check
-- User Web `/app`, `/app/more`, account/help/public contact
-- Admin Web `/login`, `/`
-
-고정형 Company/Product/Deal CRM은 활성 구현 기준이 아니다.
-
-## 6. 후속 CRM Core 기준
-
-후속 CRM Core는 고정형 영업 CRM 복구가 아니라 아래 개념을 구현하는 방향으로 설계한다.
-
-- Workspace
-- Kit
-- Object
-- Attribute
-- Relationship
-- Record
-- List
-- View
-- Status
-- Next Action
-
-Software 문서에서는 이 개념을 DB schema, Backend module/API, Frontend feature/route로 옮기는 기준을 관리한다.
-
-## 7. 우선 확인 문서
-
-1. `COMMON/IMPLEMENTATION_BOUNDARY.md`
-2. `COMMON/ENVIRONMENT.md`
-3. `COMMON/QA_CHECKLIST.md`
-4. `BACKEND_AGENT/ARCHITECTURE/BACKEND.md`
-5. `BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`
-6. `BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md`
-7. `FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-8. `FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md`
-9. `DB_SCHEMA/README.md`
-10. `DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`
-11. `DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`
-
-## 8. 협업 원칙
-
-- 제품 범위는 PM_AGENT를 따른다.
-- 사용자 흐름과 화면 우선순위는 UXUI_AGENT를 따른다.
-- Software 문서는 구현 구조와 검증 기준을 확정한다.
-- API가 포함된 작업은 구현 전에 API 계약을 먼저 작성한다.
-- DB schema 변경은 migration, API, FE 사용 방식, 테스트를 함께 검토한다.
-- 현재 코드에 없는 기능을 활성 구현처럼 문서화하지 않는다.
-
-## 9. 관련 문서
-
-- `README.md`
-- `AGENT/README.md`
-- `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`
-- `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
-- `AGENT/UXUI_AGENT/PLANNING/CRM_CORE_INTERACTION_MODEL.md`
+제품 범위는 [PM 036](../PM_AGENT/DECISIONS/036_folk_benchmark_transition.md), 화면 기준은 [UX 025](../UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)를 따른다.

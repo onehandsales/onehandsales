@@ -1,80 +1,33 @@
 # OneHand CRM QA 체크리스트
 
-Status: Current Software QA
-Date: 2026-09-13
+Date: 2026-11-15
 
-## 1. 목적
+## 검증 선택
 
-이 문서는 현재 구현된 foundation 기능과 후속 CRM Core 작업의 공통 QA 기준을 정의한다.
+변경한 파일과 실제 영향에 맞는 검증을 실행한다. 문서 변경은 링크·경로·구현 사실·이전 결정 충돌·diff 검사를 우선한다. runtime 검증을 실행하지 않았으면 명시한다.
 
-현재 코드에 없는 기능을 QA 완료 대상으로 보지 않는다.
+| 변경 | 검증 |
+| --- | --- |
+| Backend 실행 코드 | typecheck, lint, 관련 unit/integration test, 필요한 build |
+| Prisma | validate/generate, migration·데이터·무결성 검증 |
+| User Web 실행 코드 | typecheck, lint, 관련 test, build, 영향 흐름 E2E |
+| Admin 실행 코드 | typecheck, lint, build, 영향 흐름 E2E |
+| 문서·공개 텍스트만 | 링크, 내용, 소스 정합성, 문법·diff 검사 |
 
-## 2. 자동 점검
+명령은 각 package.json과 BE/FE README를 따른다. 테스트가 실제 외부 provider·원격 DB에 연결되는지 먼저 확인한다.
 
-### Backend
+## 현재 구현 회귀
 
-- `pnpm prisma:validate`
-- `pnpm prisma:generate`
-- `pnpm typecheck`
-- `pnpm lint`
-- `pnpm test`
-- `pnpm build`
+Auth·refresh·logout, Workspace 진입·접근 검사, Object/List 생성, Record 생성·값 수정, View 조회·미리보기·설정 저장·409 복구, 사이드바/즐겨찾기, 계정·지원·공개 문의를 변경 영향에 따라 확인한다.
 
-### User Web
+## folk 전환
 
-- `pnpm typecheck`
-- `pnpm lint`
-- `pnpm test`
-- `pnpm build`
-- `pnpm test:e2e`
-- 필요한 경우 `pnpm test:e2e:mobile`
-- 필요한 경우 `pnpm test:e2e:browsers`
-
-### Admin Web
-
-- `pnpm typecheck`
-- `pnpm lint`
-- `pnpm build`
-- `pnpm test:e2e`
-
-## 3. 현재 foundation 수동 QA
-
-- 로그인, refresh, logout
-- 권한 없는 API 차단
-- `/app` foundation 접근과 비로그인 redirect
-- `/app/more` 접근
-- account settings modal
-- 오류 신고와 지원 문의 접수
-- 공개 문의 접수와 필수 입력 검증
-- 관리자 화면의 access token 입력 후 `/admin/api/me` 확인
-
-## 4. 후속 CRM Core QA 후보
-
-CRM Core가 구현되면 아래 QA를 추가한다.
-
-- Kit 선택
-- Kit 미리보기
-- Workspace 준비
-- 첫 Record 생성
-- 기본 List/View에서 생성한 Record 확인
-- Record 상세 조회
-- Record 수정
-- Record 연결
-- 모바일 첫 Record 생성
-- ownership isolation
-- API 계약과 FE client response type 정합성
-
-## 5. 완료 기준
-
-- 자동 점검이 통과한다.
-- 현재 활성 기능의 happy path와 주요 error path가 확인됐다.
-- 사용자 소유 데이터는 현재 사용자 또는 Workspace 경계 안에서만 접근된다.
-- 삭제된 기능의 route, API, DB schema, 사용자 화면 참조가 활성 범위처럼 남아 있지 않다.
-- 문서에는 현재 코드에서 제공하는 기능과 후속 draft가 구분되어 있다.
-
-## 6. 관련 문서
-
-- `AGENT/SOFTWARE_AGENT/COMMON/IMPLEMENTATION_BOUNDARY.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
-- `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`
+- [ ] 연락처 기본 정보는 여러 Group에서 일관되며 그룹 필드 값은 분리된다.
+- [ ] Group/객체 탭/View/레코드의 소유 범위가 일치한다.
+- [ ] Table/Pipeline 이동·필터·정렬·자동 저장과 새로고침이 연결된다.
+- [ ] Custom object와 사람/회사 연결이 허용 범위 안에 있다.
+- [ ] 그룹 제외·그룹 삭제·레코드 삭제·View 삭제가 구분된다.
+- [ ] 메모·작업·동기화 데이터의 공개 범위와 권한이 유지된다.
+- [ ] 이전 데이터·옵션·연결·설정이 유실되지 않는다.
+- [ ] mock과 실제 기능, 미확인과 검증 완료가 구분된다.
+- [ ] [UX 검토](../../UXUI_AGENT/UX_REVIEW_CHECKLIST.md)와 [기능 대응표](../../PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md)가 갱신된다.

@@ -3,9 +3,9 @@
 Date: 2026-08-24
 Updated: 2026-09-12
 
-## Decision
+## 기존 결정과 현재 locale 기반
 
-OneHand CRM의 우선 타겟 국가는 한국, 미국, 캐나다로 확정한다.
+이전 결정에서 OneHand CRM의 우선 타겟 국가를 한국, 미국, 캐나다로 정했다. 현재 공개 locale 기반은 유지하지만, 이 기록을 folk 전환 제품의 타겟 시장을 새로 확정한 근거로 사용하지 않는다.
 
 공개 홈페이지와 인증 화면의 언어 선택 UI는 다음 3개만 노출한다.
 
@@ -27,13 +27,13 @@ OneHand CRM의 우선 타겟 국가는 한국, 미국, 캐나다로 확정한다
 - 로그인 이후 `/app` 내부 언어는 1차로 `ko-KR`, `en`을 유지한다.
 - `en-us`, `en-ca` 공개 사이트 문구가 내부 앱 언어를 별도 `en-US`, `en-CA`로 분리한다는 뜻은 아니다.
 - 현재 앱 데이터 설정 구현은 `KR/US`, `KRW/USD` 중심이다.
-- KR/US/CA 우선 전략에 맞추려면 후속 작업에서 `CA`, `CAD`, 캐나다 전화번호/지역/가격/세금/정책 문구를 확인해 반영한다.
+- 기존 KR/US/CA 전략을 데이터 설정까지 확장할 경우 `CA`, `CAD`, 캐나다 전화번호/지역/가격/세금/정책 문구를 함께 검토해야 한다. folk 전환의 필수 선행 구현으로 자동 확정하지 않는다.
 
 ## Product Direction Boundary
 
 이 시장 결정은 locale과 공개 사이트 노출 우선순위를 정하는 결정이다.
 
-첫 Kit, CRM Core, Workspace/Team 범위보다 우선하지 않는다. 새 제품 기능 범위는 `PRODUCT_DIRECTION.md`, `MVP_SCOPE.md`, `KIT_STRATEGY.md`를 기준으로 정한다.
+2026-11-15 갱신: 기존 locale 기반은 유지하되 타겟 시장·직군을 새로 확정하지 않는다. 기능 범위는 `PRODUCT_DIRECTION.md`, `FOLK_FEATURE_PARITY_MATRIX.md`와 036 전환 결정을 따른다.
 
 ## Future Expansion Rule
 

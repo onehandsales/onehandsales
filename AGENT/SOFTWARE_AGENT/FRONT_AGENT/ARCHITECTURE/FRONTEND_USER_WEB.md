@@ -1,41 +1,21 @@
 # Frontend User Web
 
-User Web은 로그인 이후 `/app` foundation 화면과 계정/도움말 모달을 제공한다.
+현재 React User Web은 공개/인증 화면, Workspace와 범용 CRM 화면, 계정·도움말 모달을 제공한다.
 
-후속 CRM Core 화면은 고정형 Contact/Product/Deal 화면 복구가 아니라 Kit 선택, Workspace home, Record list/detail/create 흐름으로 설계한다.
+## Route
 
-## Route 범위
+[구현 현황](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)의 route 표와 [실제 router](../../../../FE/user-web/src/app/router/router.tsx)를 따른다. `/app`은 기본 Workspace로 이동하고 Object/List/View ID 경로가 공통 화면을 사용한다. 과거 contacts/products/deals/export는 redirect다.
 
-- `/app`
-- `/app/more`
+## Feature와 상태
 
-Redirect-only:
+- API client·query key·response type은 feature 내부에서 관리한다.
+- 서버 상태는 TanStack Query, 입력은 React Hook Form/Zod 또는 local state를 사용한다.
+- 공통 UI는 components와 components/ui에 둔다.
+- Workspace/Group/View별 캐시·늦은 응답을 격리한다.
+- 기존 CRM feature는 동작 중이며 folk 대상 feature/route는 [전환 설계](CRM_CORE_FRONTEND.md)에서 별도로 정한다.
 
-- `/app/contacts/*` -> `/app`
-- `/app/products/*` -> `/app`
-- `/app/deals/*` -> `/app`
-- `/app/export` -> `/app`
+## 검증
 
-No active route:
+Auth·Workspace 진입, Object/List/View 조회·값 수정·설정 저장, 계정·지원 접수의 실제 변경 영향을 검증한다. folk 전환에서는 연락처 등록→Group→Table/Pipeline→상세, 그룹별 값 격리·권한·모바일 흐름을 추가한다.
 
-- 고정형 고객사 관리 route
-
-Future CRM Core route 후보는 `CRM_CORE_FRONTEND.md`에서 draft로 관리한다.
-
-## Feature 경계
-
-- API client와 query key는 feature 내부에 둔다.
-- list/detail mutation 이후 관련 query를 invalidate한다.
-- 공통 UI는 `components`와 `components/ui`에서만 공유한다.
-- 고정형 고객사 feature와 검색 feature는 현재 활성 범위가 아니다.
-- 후속 CRM Core feature는 API 계약과 UXUI flow가 확정된 뒤 추가한다.
-
-## E2E 기준
-
-- 로그인 후 `/app` 진입
-- `/app/more`와 계정 모달
-- 오류 신고와 지원 문의
-- 공개 문의
-- 모바일 주요 화면 smoke
-
-후속 CRM Core가 붙으면 Kit 선택, Workspace home, 첫 Record 생성, Record 목록/상세 smoke를 별도 추가한다.
+[UX 기준](../../../UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)과 [QA](../../COMMON/QA_CHECKLIST.md)를 따른다.

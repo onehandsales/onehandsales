@@ -1,26 +1,10 @@
 # Backend Architecture
 
-## 활성 도메인
+## 현재와 목표
 
-- Auth/User
-- Error Report
-- Support Request
-- Public Contact Request
-- Health
-- Admin authority check
+현재 Auth/User/Workspace, Object/List/Attribute/Record/View, 지원·공개 문의·Health가 있다. [구현 현황](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)과 [CRM 전환 설계](CRM_CORE_BACKEND.md)를 구분한다.
 
-## 후속 CRM Core
-
-후속 CRM Core는 현재 활성 Backend module이 아니다.
-
-구현 방향은 `CRM_CORE_BACKEND.md`를 기준으로 한다.
-
-원칙:
-
-- 고정형 Company/Product/Deal API를 복구하지 않는다.
-- Workspace ownership을 CRM Core data의 기본 경계로 둔다.
-- Kit 적용, 첫 Record 생성, 기본 List/View 조회를 MVP 우선 흐름으로 본다.
-- Object/Attribute/Relationship은 내부 구현 개념이며 사용자-facing API response에서는 Kit의 업무 언어와 함께 제공한다.
+folk 전환은 기본 연락처와 Group별 확장을 중심으로 검토한다. 기존 기술 계층·트랜잭션·API 계약 규칙은 유지한다. 첫 Kit 선택이나 고정 연락처 도메인 금지는 현행 제약이 아니다.
 
 ## 계층 구조
 
@@ -82,7 +66,7 @@
 - 인증이 필요한 접수 row는 `userId`를 갖는다.
 - 공개 문의 row는 User FK 없이 독립 원장으로 저장한다.
 - schema 변경은 새 migration으로 추가한다.
-- 후속 CRM Core schema는 `DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`를 기준으로 검토하되, draft를 바로 migration으로 보지 않는다.
+- 목표 schema는 [FOLK_SCHEMA_PLAN](../../DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 따른다. CRM_CORE_SCHEMA_DRAFT는 기존 적용 이력이며 새 목표와 구분한다.
 
 ## 검증 정책
 

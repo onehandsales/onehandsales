@@ -1,5 +1,7 @@
 # 공통 View 헤더·본문
 
+> 현재 범용 CRM 구현의 동작·검증 기록이다. 새 화면은 [folk UX 기준](../../../../../AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)과 [전환 영향](../../../../../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)을 따른다. 아래 기존 치수·메뉴·저장 방식은 folk 목표로 자동 승계하지 않는다.
+
 이 feature는 관리항목과 업무목록의 헤더·보기 선택·개인 즐겨찾기·메뉴 설정 조회와 TABLE/KANBAN/LIST 본문을 담당한다. AppShell은 공개 index의 useWorkspaceViewHeader와 useViewMenus를 한 번 호출하고 동일 모델과 검색 입력을 데스크톱/모바일에 전달한다.
 
 2026-11-12 TABLE/KANBAN/LIST에 필터·정렬·보기 설정의 공통 초안, 서버 미리보기, 명시 저장/되돌리기를 연결했다. 아래는 현재 상태이며 과거 날짜의 검증 내역은 당시 기록이다. [계약·검토](../../../../../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md)를 따른다.

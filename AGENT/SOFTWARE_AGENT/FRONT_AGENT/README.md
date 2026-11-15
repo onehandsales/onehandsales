@@ -1,72 +1,21 @@
 # Front Agent
 
-## 1. 목적
+User Web/Admin Web의 route·feature·상태·검증 기준을 관리한다.
 
-Frontend Agent는 User Web과 Admin Web의 구현 구조, route, feature boundary, 상태 관리, E2E, 배포 기준을 관리한다.
+## 현재 범위
 
-## 2. User Web 현재 활성 범위
+User Web은 Auth/Workspace, Object/List/View 화면, TABLE/KANBAN/LIST 본문, 인라인 값 수정, View 설정 미리보기·저장·되돌리기·충돌 복구, 사이드바·즐겨찾기와 계정/지원/공개 사이트를 포함한다.
 
-- Auth/User
-- Home(`/app`)
-- More(`/app/more`)
-- Account Settings Modal
-- Help Error Report
-- Help Support Request
-- Public Contact Request
-- Public Site
-- CRM Core 공통 View 헤더·보기 선택·개인 즐겨찾기 등록/해제
-- TABLE/KANBAN/LIST 본문·필터/정렬/보기 설정 미리보기 및 저장
+Admin Web은 로그인과 관리자 권한 확인이 중심이다. 현재 구현 상세는 [IMPLEMENTATION_STATUS](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다. 이전 날짜의 계획이나 테스트 결과를 현재 실행 결과로 대체하지 않는다.
 
-2026-11-12 [보기 설정 저장](../../../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md)을 구현하고 규칙 재검토를 반영했다. 세 타입의 메뉴와 컬럼 편집은 하나의 초안을 공유하며 미리보기·명시 저장/되돌리기·409 복구를 지원한다. 보기별 비동기 상태와 캐시 범위를 분리하고 늦은 응답으로 새 입력을 지우지 않는다. 아래 날짜별 기록에서 후속으로 적힌 View 설정 저장은 이 범위에 한해 완료됐다. 나머지 8개 타입·새 보기 생성·ListEntry 쓰기는 별도 범위다.
+## folk 전환
 
-2026-10-26 User Web의 crm-view feature에 Object/List 공통 헤더의 서버 조회·보기 목록·선택 표시를 연결했다. AppShell이 헤더 모델을 한 번 만들고 두 반응형 헤더가 동일 선택 상태를 공유한다. 업무목록 경로와 Sidebar 링크를 추가했으며, 기존 Object 본문과 오른쪽 도구는 유지한다. [기존 조회 연결](../../../TODO/DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md)에 이어 [개인 즐겨찾기 등록/해제](../../../FE/user-web/src/features/view-favorite/README.md)를 연결했다. 공통 별표가 서버 응답을 반영하고 헤더·개인 목록을 갱신하며 중복/실패/늦은 응답·모바일 상태를 처리한다. View 생성/설정 저장·즐겨찾기 행 클릭 이동/정렬·타입별 본문은 후속 범위다.
+[UX 025](../../UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md), [CRM_CORE_FRONTEND](ARCHITECTURE/CRM_CORE_FRONTEND.md), [전환 영향](../COMMON/FOLK_TRANSITION_MATRIX.md)을 따른다. Kit 선택과 기존 화면 제한은 현행 기준이 아니다.
 
-2026-10-29 User Web의 [crm-view](../../../FE/user-web/src/features/crm-view/README.md)에 필터·정렬·보기 설정 GET과 11개 View 타입별 메뉴를 연결했다. 기존 264px 설정 팝업과 체크박스·입력 UX를 유지하며, AppShell이 반응형 화면의 조회·임시 편집을 공유한다. 메뉴 편집은 화면 미리보기이며 설정 저장과 타입별 본문 실행은 후속 범위다.
+## 구현 기준
 
-2026-11-01 사용자가 승인한 텍스트 UX에 따라 관리항목/업무목록 route를 공통 View 본문 GET에 연결했다. TABLE은 기존 관리항목 표와 셀 편집 UX를 재사용하며 KANBAN/LIST를 추가했다. 검색·일반/열별 페이지·그룹·오류 복구와 직접 Record 값 수정/생성은 연결하고, View 저장·ListEntry 쓰기·카드 이동·상세·다른8타입은 후속으로 유지한다. 현재 책임과 검증은 crm-view README를 따른다.
+- [User Web 구조](ARCHITECTURE/FRONTEND_USER_WEB.md), [컨벤션](CONVENTION/FRONTEND_USER_WEB.md)
+- [Admin 구조](ARCHITECTURE/ADMIN_WEB.md), [컨벤션](CONVENTION/ADMIN_WEB.md)
+- [검토 기준](ENGINEERING_REVIEW_CHECKLIST.md), [QA](../COMMON/QA_CHECKLIST.md)
 
-같은 날 [View ID 헤더 API 계획](../../../TODO/DONE/VIEW_HEADER_BY_VIEW_ID_API_PLAN/README.md)의 Backend 구현·검토 통과 후 즐겨찾기 행 클릭을 공통 화면에 연결했다. View ID route와 신규 헤더 GET으로 정확한 View부터 표시하고 기존 검색·본문·메뉴·하트 API를 재사용한다. URL 복원·늦은 응답 격리·모바일 상태·이중 소속의 명시 선택을 처리한다. schema·ENV·Admin Web 변경은 없다.
-
-## 3. Admin Web 현재 활성 범위
-
-- access token 입력
-- `GET /admin/api/me` 권한 확인
-- 최소 보호 화면
-
-## 4. 비활성 범위
-
-현재 활성 User Web CRM 화면이 아니다.
-
-- 고정형 Contact/Product/Deal 화면
-- 고정형 통합 검색
-- xlsx export
-- schedule/meeting-note/trash 자리만 남은 feature folder
-
-## 5. 후속 CRM Core
-
-후속 Frontend 설계는 `ARCHITECTURE/CRM_CORE_FRONTEND.md`를 따른다.
-
-후보 feature:
-
-- `kit`
-- `workspace`
-- `crm-object`
-- `record`
-- `record-relationship`
-
-실제 구현 전에는 UXUI first use flow, record UX, API 계약이 먼저 필요하다.
-
-## 6. 검증
-
-- `pnpm typecheck`
-- `pnpm lint`
-- `pnpm test`
-- `pnpm build`
-- 필요한 Playwright smoke
-
-## 7. 관련 문서
-
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`
-- `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md`
-- `AGENT/UXUI_AGENT/PLANNING/FIRST_USE_FLOW.md`
-- `AGENT/UXUI_AGENT/PLANNING/RECORD_LIST_DETAIL_UX.md`
+실제 변경에 맞춰 typecheck/lint/test/build 및 필요한 E2E를 검증한다. 문서만 바꾼 경우 링크·내용·소스 정합성을 검증하고 실행하지 않은 runtime 검증을 명시한다.

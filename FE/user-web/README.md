@@ -4,8 +4,10 @@
 
 ## 활성 업무 범위
 
-- `/app` 홈
-- 빈 `/app` 홈과 계정 설정 모달
+- 기본 Workspace 진입과 Workspace 홈
+- Object/List/View ID의 공통 TABLE/KANBAN/LIST 화면
+- Record 인라인 편집, View 설정 미리보기·저장·되돌리기
+- 사이드바 순서·즐겨찾기, 계정 설정 모달
 - 오류 신고와 지원 문의
 - 계정 모달 기반 프로필/기기/세션 관리
 
@@ -33,6 +35,6 @@
 - `pnpm test:e2e:mobile`
 - `pnpm test:e2e:browsers`
 
-로그인 이후 활성 화면은 `/app`, `/app/more`다. 과거 `contact`/`product`/`deal`의 `/app/*` 경로와 legacy top-level 경로는 현재 `/app` 또는 `/app/more`로 redirect한다. 공개 페이지는 locale 기반 라우팅을 유지한다.
+로그인 이후 화면은 `/app`, `/app/more`, Workspace 홈과 Object/List/View ID 경로다. 과거 `contact`/`product`/`deal`의 `/app/*` 경로와 legacy top-level 경로는 현재 `/app` 또는 `/app/more`로 redirect한다. 공개 페이지는 locale 기반 라우팅을 유지한다.
 
-고정형 회사 목록/생성/상세/수정 화면과 회사 검색은 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM 코어는 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 기반 화면으로 다시 추가한다.
+고정형 회사 목록/생성/상세/수정 화면과 회사 검색은 OneHand CRM 방향 전환에 맞춰 제거했다. folk 기능·UX 전환 목표는 [UX 025](../../AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)를 따른다. 현재 구현과 목표는 다르다.

@@ -1,119 +1,38 @@
-# CRM Core Backend Architecture
+# CRM Core Backend — 현재와 folk 전환
 
-Status: Draft Architecture
-Date: 2026-09-13
+Date: 2026-11-15
+Status: 현재 소스 설명 + 전환 설계 방향
 
-## 1. 목적
+## 현재 구현
 
-이 문서는 OneHand CRM의 후속 CRM Core를 Backend 관점에서 어떻게 나눌지 정의하는 초안이다.
+`workspace`, `object-definition`, `attribute-definition`, `record-definition`, `list-definition`, `view-definition` 모듈이 있다. 현재 API 목록은 [API_SAMPLE](../../COMMON/API_SAMPLE.md), 런타임 범위는 [IMPLEMENTATION_STATUS](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다.
 
-현재 Backend에 CRM Core module은 없다. 이 문서는 구현 전 설계 기준이며, API 계약과 Prisma migration을 바로 의미하지 않는다.
+Object와 List 생성은 첫 View·표시 설정을 관련 모듈 port를 통해 같은 트랜잭션에 저장한다. View 설정 저장은 기존 7개 설정 테이블을 사용하며 미리보기와 명시적 저장, 낙관적 충돌 처리가 있다.
 
-## 2. 기본 원칙
+## 목표 경계 제안
 
-- 고정형 Company/Product/Deal module을 복구하지 않는다.
-- Workspace ownership을 모든 CRM Core data의 기본 경계로 둔다.
-- Kit은 단순 템플릿이 아니라 Object, Attribute, Relationship, View, Status, Next Action의 시작 구조다.
-- 사용자 화면의 업무 언어와 내부 model 용어를 분리한다.
-- MVP는 Kit 적용, 첫 Record 생성, 기본 List/View 조회를 우선한다.
-
-## 3. 후보 Module
-
-후속 Backend module 후보는 아래와 같다.
-
-| Module | 책임 |
+| 책임 | 제안 |
 | --- | --- |
-| `workspace` | 사용자의 CRM 공간 생성, 조회, ownership 검증 |
-| `kit` | 제품 제공 Kit 정의 조회, Workspace에 Kit 적용 |
-| `crm-core` | Object/Attribute/Relationship/View definition 관리 |
-| `record` | Record 생성, 조회, 수정, 연결, 기본 목록 조회 |
+| 연락처 | Person/Company 기본 정보·연락수단·소속·중복 처리 |
+| Group | 포함 관계·그룹 공유·객체 탭의 소스 |
+| 사용자 필드 | 그룹·대상 범위 정의/옵션/값 검증 |
+| Custom object | 그룹 객체 타입·레코드·연락처 연결 |
+| View | Table/Pipeline 설정·조회·자동 저장 |
+| 활동 | Notes/Tasks/Interactions 및 공개 범위 |
+| 연동·확장 | 캠페인·Dashboard·동기화 등 기능별 경계 |
 
-초기 MVP에서는 module을 더 작게 나누기보다 응집도와 API 계약 안정성을 우선한다.
+이는 모듈 분리 제안이다. 화면 단위마다 새 module을 만들거나 이 표의 이름을 확정 API 경로로 사용하지 않는다.
 
-## 4. Layer 기준
+## 계약 요구
 
-각 module은 기존 Backend 표준 구조를 따른다.
+- Workspace 및 Group 접근을 application에서 검증한다.
+- 기본 연락처 수정과 그룹별 값 변경을 구분한다.
+- 생성·그룹 포함·연결·옵션 생성의 원자성 및 재시도 계약을 정한다.
+- 자동 저장은 기존 save/undo 계약과 차이가 있다. 필드 단위/설정 단위 저장, debounce, 버전 충돌, 실패 복구를 결정한다.
+- 그룹 제외·그룹 삭제·레코드 삭제의 영향과 복구를 서로 다른 계약으로 정의한다.
+- 외부 동기화는 DB 트랜잭션 밖에서 처리하고 중복·재시도·부분 실패를 설계한다.
+- 다른 모듈의 repository를 직접 import하지 않는다.
 
-```text
-<module>/
-  domain/
-  application/
-  infrastructure/
-  presentation/
-```
+## 전환
 
-원칙:
-
-- controller는 application use case만 호출한다.
-- application layer가 transaction boundary를 갖는다.
-- Prisma repository는 infrastructure에 둔다.
-- domain/application 공개 계약에 Prisma model type을 노출하지 않는다.
-
-## 5. API 후보
-
-API 후보는 확정이 아니다. 실제 구현 전 `COMMON/API-SPEC` 계약이 필요하다.
-
-| API 후보 | 목적 |
-| --- | --- |
-| `GET /api/kits` | 선택 가능한 Kit 조회 |
-| `GET /api/kits/:kitId/preview` | Kit 미리보기 조회 |
-| `POST /api/workspaces` | 기본 Workspace 생성 또는 Kit 적용 |
-| `GET /api/workspaces/current` | 현재 Workspace 조회 |
-| `GET /api/workspaces/:workspaceId/objects` | 관리 대상 목록 조회 |
-| `GET /api/workspaces/:workspaceId/objects/:objectId/records` | Record 목록 조회 |
-| `POST /api/workspaces/:workspaceId/objects/:objectId/records` | Record 생성 |
-| `GET /api/workspaces/:workspaceId/records/:recordId` | Record 상세 조회 |
-| `PATCH /api/workspaces/:workspaceId/records/:recordId` | Record 수정 |
-| `POST /api/workspaces/:workspaceId/records/:recordId/relationships` | Record 연결 |
-
-## 6. Ownership / Authorization
-
-CRM Core API는 아래를 기본으로 한다.
-
-- 모든 사용자 API는 AuthGuard 이후 current user를 사용한다.
-- 모든 Workspace data는 current user ownership을 검증한다.
-- MVP에서는 Team 권한을 추가하지 않는다.
-- 후속 Team/WorkspaceMember가 생기면 ownership 검증을 membership 검증으로 확장한다.
-
-## 7. Transaction 기준
-
-transaction이 필요한 후보:
-
-- Workspace 생성 + Kit snapshot 적용
-- Object/Attribute/Relationship/View definition 일괄 생성
-- Record 생성 + 기본 relationship 생성
-- Record 상태 변경 + 다음 행동/활동 기록 생성
-
-외부 Provider 호출은 transaction 안에 넣지 않는다.
-
-## 8. Observability 기준
-
-CRM Core mutation은 구조화 로그 event key를 가진다.
-
-후보:
-
-- `crm.workspace.created`
-- `crm.kit.applied`
-- `crm.record.created`
-- `crm.record.updated`
-- `crm.relationship.created`
-
-로그에는 Record 원문 값, 개인정보, 자유 입력 memo를 남기지 않는다.
-
-## 9. 구현 전 필요한 문서
-
-구현 전 최소 필요 문서:
-
-- PM의 첫 Kit 확정
-- UXUI의 first use / record flow 확정
-- DB schema draft 확정 또는 migration 계획
-- `COMMON/API-SPEC` API 계약
-- transaction / observability / error 계약
-
-## 10. 관련 문서
-
-- `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
-- `AGENT/PM_AGENT/PLANNING/KIT_STRATEGY.md`
-- `AGENT/UXUI_AGENT/PLANNING/CRM_CORE_INTERACTION_MODEL.md`
-- `AGENT/SOFTWARE_AGENT/DB_SCHEMA/CRM_CORE_SCHEMA_DRAFT.md`
-- `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
+[DB 계획](../../DB_SCHEMA/FOLK_SCHEMA_PLAN.md), [의존·순서](../../COMMON/FOLK_TRANSITION_MATRIX.md)를 따른다. 기존 코어 제거는 새 계약·데이터 전환·FE 전환과 함께 한다. 첫 Kit 확정은 착수 조건이 아니다.

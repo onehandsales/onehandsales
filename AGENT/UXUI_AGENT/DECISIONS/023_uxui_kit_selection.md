@@ -1,5 +1,11 @@
 # UX/UI Kit Selection Decision
 
+> **Historical / Superseded — 2026-11-15**
+> 아래는 이전 방향의 기록이다. 기존 결정을 보존하기 위한 내용이며 새 작업의 요구사항·선행 조건으로 적용하지 않는다. 현재 기준은 [folk 전환 결정](025_uxui_folk_reference.md)이다.
+
+## 이전 기록
+
+
 Date: 2026-09-12
 
 ## 1. 결정

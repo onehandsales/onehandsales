@@ -1,6 +1,6 @@
 # Supabase Setup
 
-This backend currently uses Supabase only as an external Auth provider.
+This backend uses Supabase Auth as an external authentication provider and Supabase Storage for error-report screenshots. PostgreSQL is accessed through Prisma.
 
 ## Scope
 
@@ -94,10 +94,7 @@ Google Cloud OAuth authorized redirect URIs:
 https://<project-ref>.supabase.co/auth/v1/callback
 ```
 
-If Backend later moves to `https://api.onehandsales.com`, add these redirect URIs before switching production traffic:
-
-```text
-```
+If the Backend origin changes, review allowed origins and refresh-cookie configuration separately. Provider callbacks above belong to the frontend/Supabase flow and must be checked against the actual deployment.
 
 
 ## Locale And Country Metadata
@@ -112,4 +109,4 @@ If Backend later moves to `https://api.onehandsales.com`, add these redirect URI
 - Auth provider list: `src/modules/auth/application/use-cases/list-auth-providers.use-case.ts`
 - Supabase JWT adapter: `src/shared/infrastructure/supabase/supabase-jwt-verifier.adapter.ts`
 
-Business domain tables and migrations should be added later only when requested.
+Workspace and generic CRM tables already exist. New folk schema work follows [FOLK_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md); do not run migrations as part of documentation review.

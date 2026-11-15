@@ -2,6 +2,8 @@
 
 기준일: 2026-08-23
 
+2026-11-15 대조: 현재 Prisma schema와 에러 신고 접수 API에 반영된 모델이다. Admin 조회/처리는 아래 후속 범위로 구분한다.
+
 ## 1. 목적
 
 `ErrorReport`는 User Web 도움말 모달에서 접수된 사용자 에러 신고를 저장한다. 사용자가 작성한 에러 설명은 필수이며, 현재 화면 스크린샷은 선택 첨부다.
@@ -10,7 +12,7 @@
 
 ### `ErrorReport`
 
-Prisma model 예정 이름:
+Prisma model 이름:
 
 - `ErrorReport`
 

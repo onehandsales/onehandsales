@@ -1,5 +1,7 @@
 # UX/UI Writing Tone Decision
 
+> 2026-11-15 보충: 기존 문구의 보조 기준이다. folk 원문·맥락·locale 대응은 [025](025_uxui_folk_reference.md)와 [UX_WRITING_GUIDE](../PLANNING/UX_WRITING_GUIDE.md)를 우선하며 해요체를 모든 원문에 일괄 강제하지 않는다.
+
 Date: 2026-09-12
 
 ## 1. 결정

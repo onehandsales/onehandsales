@@ -1,5 +1,7 @@
 # 개인 View 즐겨찾기
 
+> 현재 범용 CRM 구현의 동작·검증 기록이다. 새 화면은 [folk UX 기준](../../../../../AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)과 [전환 영향](../../../../../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)을 따른다. 아래 기존 치수·메뉴·저장 방식은 folk 목표로 자동 승계하지 않는다.
+
 현재 사용자·Workspace의 사이드바 목록 조회와 View 즐겨찾기 등록/해제 API 계약을 제공한다. 외부 feature는 공개 `index.ts`의 hook·client·응답 타입·개인 목록 query key를 사용한다.
 
 - GET 목록은 서버가 반환한 Favorite PK·View ID·이름·아이콘과 순서를 보존한다.

@@ -98,10 +98,10 @@ Provider 현황:
 
 User Web:
 
-- 실제 API 연동 완료: Auth/User, Home(`/app`), More(`/app/more`), account settings, Help Error Report, Help Support Request, Public Contact Request.
+- 실제 API 연동: Auth/User/Workspace, Object/List/Attribute/Record/View, 사이드바·즐겨찾기, 계정·지원·공개 문의. 전체 제품 흐름 완료와는 구분한다.
 - 공개/인증 페이지: `/{locale}`, `/{locale}/login`, `/{locale}/signup`, `/{locale}/product`, `/{locale}/features`, `/{locale}/features/customers`, `/{locale}/features/pipeline`, `/{locale}/features/schedules-follow-up`, `/{locale}/features/activity-records`, `/{locale}/features/ai-sales-assistant`, `/{locale}/features/reports`, `/{locale}/pricing`, `/{locale}/solutions`, `/{locale}/solutions/personal`, `/{locale}/solutions/real-estate`, `/{locale}/solutions/insurance-auto`, `/{locale}/solutions/b2b-field`, `/{locale}/download`, `/{locale}/help`, `/{locale}/faq`, `/{locale}/contact`, `/{locale}/about`, `/{locale}/security`, `/{locale}/terms`, `/{locale}/privacy`. 현재 언어 선택 UI에 노출하는 locale은 KR/US/CA 우선 전략 기준 `ko`, `en-us`, `en-ca`다. `ja`, `en-gb`, `en-sg`, `en-au`는 추후 확장 후보로만 보류한다. 기존 locale 없는 공개 URL은 선호 locale URL로 redirect하고, `/auth/callback`은 locale prefix 없이 유지한다.
-- 보호 앱 route는 `/app/*` 아래에 있으며 현재 활성 route는 `/app`, `/app/more`다. `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 `/app`으로 redirect한다. legacy top-level `/contacts/*`, `/products/*`, `/deals/*`, `/more`도 현재 보호 앱 route로 redirect한다.
-- 고정형 `Company`/`Search`/`Company xlsx export` 화면과 API는 OneHand CRM 방향 전환에 맞춰 제거했다. 다음 CRM core는 Workspace/Kit/Object/Attribute/Relationship/Record/List/View 기반으로 새로 설계한다.
+- 보호 앱 route는 `/app/*` 아래에 있으며 현재 route에는 `/app`, `/app/more`, Workspace 홈과 Object/List/View ID 경로가 있다. `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 `/app`으로 redirect한다. legacy top-level `/contacts/*`, `/products/*`, `/deals/*`, `/more`도 현재 보호 앱 route로 redirect한다.
+- 고정형 `Company`/`Search`/`Company xlsx export` 화면과 API는 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 범용 CRM 코어는 존재하며 [folk 전환 계획](../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)에 따라 재편한다.
 
 Admin Web:
 

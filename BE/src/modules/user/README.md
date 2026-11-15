@@ -5,8 +5,9 @@ Current scope:
 - `GET /api/users/me/profile`
 - `PATCH /api/users/me/profile`
 - `GET /api/users/me/devices`
+- `POST /api/users/me/onboarding/job-selection`
 
-The module only keeps current-user profile and active registered device lookup.
+The module handles the current profile, device lookup, and onboarding completion. Onboarding stores its completion timestamp and calls the Workspace onboarding port; it does not store a job-specific Kit. The folk onboarding target is a separate transition.
 
 Locale/timezone policy:
 

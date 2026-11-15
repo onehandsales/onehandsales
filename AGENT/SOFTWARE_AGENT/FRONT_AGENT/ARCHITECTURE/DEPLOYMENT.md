@@ -24,7 +24,8 @@ Local Frontend 개발 서버 기본 origin:
 - Admin Web dev: `pnpm run dev` -> `vite --host 0.0.0.0 --port 5174`
 - User Web preview: `pnpm run preview` -> port `4173`
 - Admin Web preview: `pnpm run preview` -> port `4174`
-- 두 앱 모두 build는 `tsc -b && vite build`를 실행한다.
+- User Web build는 `tsc -b && vite build && node scripts/generate-static-seo-pages.mjs`다.
+- Admin Web build는 `tsc -b && vite build`다. 최종 명령은 각 package.json을 따른다.
 
 ## 3. Production
 

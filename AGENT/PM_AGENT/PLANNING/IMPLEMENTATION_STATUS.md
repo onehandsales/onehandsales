@@ -1,68 +1,59 @@
 # Implementation Status
 
-2026-11-14 보존 상태: 신규 개발과 사업화를 일단 보류하고 현재 결과물을 포트폴리오로 남긴다. [보존 결정](../DECISIONS/035_project_pause_and_portfolio_preservation.md)과 [보존 시점 구현·구조·검증 기록](PROJECT_RETROSPECTIVE.md)을 우선 확인한다. 아래 날짜별 구현 이력은 유지한다.
+Status: Current source baseline
+Checked: 2026-11-15
 
-Status: Current Runtime Baseline
-Date: 2026-11-12 (아래 초기 foundation 기록은 2026-09-12)
+현재 실행 코드와 folk 전환 목표를 분리한다. 이번 변경은 문서 정비이며 DB/API/FE 전환 완료를 뜻하지 않는다. 원격 DB 적용 상태와 배포 사이트는 이번 조사에서 확인하지 않았다.
 
-2026-11-12 현재 코드에는 Workspace, Object/Attribute/Record, List/Entry/View와 TABLE/KANBAN/LIST 본문이 존재한다. 이번 작업으로 필터·정렬·표시 설정·컬럼 표시명을 같은 임시 상태에서 편집하고 미리보기/저장/되돌리기를 연결했다. 설정 저장은 View 공통이며 낙관적 버전 충돌을 확인한다. 회사 연결 이름은 Object 대표 이름 속성을 사용한다. [구현 및 검증 범위](../../../TODO/VIEW_CONFIGURATION_SAVE_PLAN/README.md)를 따른다. 아래 2~3절의 “미구현” 항목은 초기 기록이며 이 추가 기록과 현재 코드가 우선한다. Kit 자동 구성·나머지8개 View 본문·대표 이름 속성 변경 UI까지 구현했다는 의미는 아니다.
+## Backend
 
-## 1. 목적
+단일 NestJS modular monolith + Clean Architecture다. 소스 모듈은 `auth`, `user`, `workspace`, `object-definition`, `list-definition`, `view-definition`, `attribute-definition`, `record-definition`, `error-report`, `support-request`, `public-contact-request`, `health`가 있다.
 
-이 문서는 현재 코드에 실제로 존재하는 활성 구현 범위를 기록한다.
+- 로그인 provider·교환·갱신·로그아웃, 사용자/관리자 권한 확인, 프로필·기기 관리.
+- 온보딩 완료 처리와 OWNER Workspace 보장, Workspace 생성·사이드바·기본 Workspace 조회.
+- Object/List 생성·사이드바 조회·순서 변경.
+- Attribute 생성·조회·수정·순서 변경.
+- Record 생성 폼·목록·생성·인라인 값 변경.
+- View 헤더·메뉴·TABLE/KANBAN/LIST 데이터, 설정 options/configuration/preview/save.
+- 컬럼 설정, 즐겨찾기 및 순서 변경.
+- 오류·지원·공개 문의 접수와 Health.
 
-PM 문서에서 제품 방향을 설명하더라도, 현재 구현 상태를 과장해서 쓰지 않는다. OneHand CRM의 No Setup CRM 방향은 현재 제품 방향이고, CRM Core와 Kit 기반 업무 화면은 아직 후속 구현 대상이다.
+다섯 CRM 정의 모듈의 HTTP handler는 Object 3 / List 3 / Attribute 5 / Record 4 / View 18개다. API 수는 제품 흐름 완성도를 의미하지 않는다.
 
-## 2. 현재 활성 범위
+## DB
 
-- Backend: Auth/User, Error Report, Support Request, Public Contact Request, Health, `GET /admin/api/me`
-- Frontend User Web: `/app` 빈 홈, `/app/more`, 계정 설정 모달, 도움말 접수, 공개 문의, locale 공개 사이트
-- Frontend Admin Web: access token 입력 후 관리자 권한 확인
-- Prisma: User/Auth session, ErrorReport, SupportRequest, PublicContactRequest 모델만 유지
+[schema.prisma](../../../BE/prisma/schema.prisma)에는 **32개 model, 25개 enum**이 있다. Workspace/Team/Actor와 Object/Attribute/Record/List/Entry/View는 이미 존재한다. Kit 모델은 없다.
 
-## 3. 아직 구현되지 않은 제품 핵심 범위
+현재 구조는 범용 정의·값 모델이다. folk 전용 Person/Company/Group 모델은 없다. 전체 모델별 설명과 전환 후보는 [FOLK_SCHEMA_PLAN](../../SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)에 있다.
 
-- Workspace
-- Kit
-- Object/Attribute/Relationship
-- Record
-- List/View
-- 직군별 CRM 생성 흐름
-- 첫 기록 생성 흐름
-- Kit 기반 업무 화면
-- Team/조직 권한
-- Billing/Subscription
+ViewType은 11종이지만 본문은 TABLE/KANBAN/LIST에 구현이 집중되어 있다. CHART/DASHBOARD enum과 Widget 테이블만으로 대시보드 기능이 완료됐다고 볼 수 없다.
 
-위 범위는 PM 제품 방향에서는 중요하지만 현재 런타임에 존재하지 않는다. 구현 계획을 만들 때는 TODO와 Software 문서에서 별도로 설계한다.
+## User Web
 
-## 4. 제거된 런타임 범위
+| route | 현재 역할 |
+| --- | --- |
+| `/app` | 기본 Workspace로 이동 |
+| `/app/workspaces/:workspaceId` | Workspace 홈; 업무 대시보드는 미완성 |
+| `/app/workspaces/:workspaceId/objects/:objectDefinitionId` | Object 소스의 View 화면 |
+| `/app/workspaces/:workspaceId/lists/:listDefinitionId` | List 소스의 View 화면 |
+| `/app/workspaces/:workspaceId/view-definitions/:viewDefinitionId` | 특정 View 화면 |
+| `/app/more` | 기존 더보기 |
+| `/:locale/onboarding` | 직업 선택 UI·완료 처리; 직업 기반 Kit 생성은 없음 |
 
-- 고정형 고객사 관리 도메인
-- 고정형 고객사 검색 API와 화면
-- 고정형 고객사 xlsx export
-- 고정형 고객사 앱 화면
-- 고정형 고객사/분류/지역 API
-- 통합검색 API
+계정 설정, 도움말, 지원/오류 접수, locale 공개 사이트가 있다. `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 과거 경로의 redirect다.
 
-위 범위는 현재 `BE`, `FE/user-web`, `BE/prisma/schema.prisma` 기준 런타임에 존재하지 않는다. 다음 CRM 코어는 기존 고정 테이블을 되살리지 않고 Workspace/Kit/Object/Attribute/Relationship/Record/View 계열의 유연한 모델로 별도 설계한다.
+View 설정은 임시 편집 → 미리보기 → 저장/되돌리기이며 낙관적 버전 충돌을 처리한다. folk의 자동 저장 목표와 구분한다. `schedule`, `meeting-note`, `trash`는 업무 기능 완성의 증거가 아닌 잔여 feature 경계다.
 
-## 5. 검증 기준
+## Admin Web
 
-- BE typecheck/lint/test/build
-- FE/user-web typecheck/lint/test/build/e2e
-- FE/admin-web typecheck/lint/build/e2e
-- Prisma validate/generate
+`/login`, `/`와 `GET /admin/api/me` 권한 확인이 중심이다. 운영 CRM 관리 화면 전체가 구현된 상태는 아니다.
 
-## 6. 문서 기준
+## 미완성 / 새로 필요한 범위
 
-문서는 현재 코드에 남아 있는 기능만 활성 구현 범위로 설명한다. 삭제된 고정형 고객사 도메인 문서는 활성 API, 화면, DB 모델처럼 쓰지 않는다.
+folk Group/People/Companies, 그룹별 필드·권한, 상세 흐름, 완전한 Group 멤버십 조작, Pipeline 카드 이동, view 생성·삭제 전체 흐름, 업무 메모·작업·상호작용, 가져오기/내보내기, 캠페인·연동·AI·대시보드 등은 [기능 대응표](FOLK_FEATURE_PARITY_MATRIX.md)로 관리한다.
 
-공개 문의의 회사명과 회사 규모 입력 필드는 실제 `PublicContactRequest` 모델에 남아 있으므로 삭제하지 않는다. 단, 이 필드는 CRM Company record가 아니라 문의 접수 원문 필드다.
+과거 고정형 Company/Contact/Product/Deal 구현은 제거된 이력이 있다. 그 사실이 새 folk 연락처 모델 도입 금지를 의미하지 않는다. [당시 제거 기록](../../SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md), [2026-11-14 회고](PROJECT_RETROSPECTIVE.md)는 역사 자료다.
 
-## 7. 관련 문서
+## 검증 범위 표시
 
-- `README.md`
-- `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`
-- `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`
-- `AGENT/PM_AGENT/PLANNING/DATA_MODEL.md`
-- `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`
+이 문서는 소스, Prisma, controller, route와 문서를 대조한 결과다. 이전 날짜의 테스트 통과를 이번 실행 결과로 재사용하지 않는다. 이번 문서 작업의 검증은 [검토 기록](../../SOFTWARE_AGENT/COMMON/DOCUMENTATION_REVIEW_20261115.md)에 기록한다.

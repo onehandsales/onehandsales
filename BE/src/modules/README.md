@@ -13,7 +13,9 @@
 | `workspace` | Workspace와 멤버십·Actor 접근 공개 포트 |
 | `object-definition` | 관리 항목 생성·요약/사이드바 조회·Workspace 공통 순서 변경 |
 | `list-definition` | 업무 목록 생성·요약/사이드바 조회·Workspace 공통 순서 변경 |
-| `view-definition` | View 헤더·본문/설정 조회·개인 즐겨찾기 및 순서 변경 |
+| `view-definition` | View 헤더·본문/설정 조회·미리보기/저장·컬럼·즐겨찾기 및 순서 변경 |
+| `attribute-definition` | Object 속성 생성·조회·수정·순서 변경 |
+| `record-definition` | Record 생성 폼·생성·목록·값 변경 |
 
 2026-11-11 사이드바 PATCH 3개는 각 소유 모듈의 presentation → application → repository port → infrastructure를 따른다. WorkspaceAccessQuery와 TransactionManager 공개 포트를 재사용하고, 다른 모듈 persistence를 직접 참조하지 않는다. 전체 ID 집합 검증·no-op·동시성·감사 필드·SQL migration 및 Frontend 계약은 [사이드바 순서 변경](../../../TODO/SIDEBAR_REORDER_PLAN/README.md)에 기록한다.
 
@@ -21,4 +23,4 @@
 
 관리자 영역은 `GET /admin/api/me` 권한 확인만 유지한다.
 
-과거 고정형 `company`/`contact`/`product`/`deal`/`search` 모듈은 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 CRM 도메인은 Workspace/Object/Attribute/Record/List/View 기반이며 Kit 등 후속 도메인은 별도 계약을 따른다.
+과거 고정형 `company`/`contact`/`product`/`deal`/`search` 모듈은 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 CRM은 Workspace/Object/Attribute/Record/List/View 기반이다. folk 목표와 제거 영향은 [전환 문서](../../../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)를 따른다.

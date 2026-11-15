@@ -18,7 +18,7 @@
 
 - `AGENT 학습해줘`
 - `AGENT 폴더 학습해줘`
-- `D:\workspace_repository\onehandsales\AGENT 여기를 학습해줘`
+- `현재 저장소의 AGENT를 학습해줘`
 
 처리 규칙:
 
@@ -51,7 +51,7 @@
 
 ## 3A. 전역 UX/UI reference 확인 규칙
 
-모든 작업자는 작업을 시작할 때 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`와 충돌하는 결과가 생기는지 확인한다.
+모든 작업자는 작업을 시작할 때 `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`와 충돌하는 결과가 생기는지 확인한다.
 
 특히 아래 범위가 포함되면 해당 문서를 반드시 먼저 읽고, 관련 UXUI/FRONT_AGENT 문서와 함께 적용한다.
 
@@ -61,7 +61,9 @@
 - API request/response가 화면의 record 관계나 상세 표시 방식에 영향을 주는 작업
 - DB schema 변경이 화면의 record 관계, 상세 속성, activity/Memo 흐름에 영향을 주는 작업
 
-이 기준은 `Notion식 작업 공간 UX + Attio식 CRM record UX`를 제품의 선호 방향으로 고정한다. 단, reference 제품의 brand, copy, visual asset, pixel-level layout은 복제하지 않는다.
+현재 제품·UX 기준은 folk다. Nicelydone MCP의 화면·flow·component, 실제 계정과 공식 문서를 대조한다. 출처·버전·미확인 상태를 기록하고 현재 구현과 목표를 구분한다.
+
+사용자가 제외한 폴더는 링크를 통해서도 읽거나 수정하지 않는다. 이번 folk 문서 전환은 TODO·TODO_LOG를 제외한다. 검토가 이미 요청된 작업은 검토 여부를 다시 묻지 않고 진행한다.
 
 ## 4. 활성 TODO 재검토 요청 처리 규칙
 
@@ -90,7 +92,7 @@
 ## 6. 관련 문서
 
 - `AGENT/README.md`
-- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

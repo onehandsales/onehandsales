@@ -12,7 +12,11 @@ Routes:
 Active modules:
 
 - `auth`: external auth token exchange, app token refresh/logout, current user lookup, device/session management, login locale/region metadata sync.
-- `user`: current user profile, timezone/locale metadata, and registered device lookup.
+- `user`: current profile, timezone/locale metadata, devices, and onboarding completion.
+- `workspace`: workspace creation, sidebar/default lookup, membership and onboarding ports.
+- `object-definition`, `list-definition`: creation, sidebar queries and ordering.
+- `attribute-definition`, `record-definition`: field and record contracts.
+- `view-definition`: view headers, data, configuration preview/save, columns and favorites.
 - `error-report`: User Web error report intake and optional screenshot storage.
 - `support-request`: authenticated support request intake.
 - `public-contact-request`: unauthenticated public contact request intake.
@@ -20,10 +24,10 @@ Active modules:
 
 Current intentional gaps:
 
-- Paddle/Billing, subscription/payment/tax/invoice/refund, entitlement/paywall, B2B tenant/team features, and paid recovery/hard purge policy are deferred.
+- Billing and complete collaboration/product workflows are not implemented. Workspace/Team database models already exist. Target scope follows the folk parity matrix; absence in current code does not exclude a target feature.
 - Current runtime auth providers are Google, LINE, and Apple. Kakao remains only as a legacy Prisma enum value and is not exposed for runtime exchange.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
-- Verification must be rerun after code or document contract changes: `prisma:validate`, `prisma:generate`, `typecheck`, `lint`, `test`, and `build`.
+- Validate changed runtime/schema contracts with appropriate typecheck/lint/tests/build and Prisma checks. Documentation-only changes require source, link and diff checks; report runtime checks separately.
 
 Auth/session policy:
 
@@ -44,4 +48,4 @@ Business modules should continue to be added one module and one migration at a t
 
 Mutation APIs that may be retried, create multiple rows, or later cross a service boundary should document transaction ownership plus idempotency/outbox needs in the API contract.
 
-The fixed company/search domain has been removed for the OneHand CRM pivot. The next CRM core should be introduced as a flexible Workspace/Kit/Object/Attribute/Relationship/Record/List/View model instead of extending the old company tables.
+The existing flexible CRM engine is active. The folk transition is planned in [FOLK_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md) and [FOLK_TRANSITION_MATRIX](../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md). These plans do not change the runtime by themselves.
