@@ -14,3 +14,4 @@ test-results/
 /IMAGE_SAMPLE
 .runtime-logs
 /TEMP
+.codex
