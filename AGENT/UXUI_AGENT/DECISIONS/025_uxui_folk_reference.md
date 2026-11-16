@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-11-15
 
-[PM 036](../../PM_AGENT/DECISIONS/036_folk_benchmark_transition.md)에 따라 제품 화면과 사용자 흐름의 기준을 folk로 통일한다. Notion과 Attio를 섞거나 기존 Kit 화면을 folk라는 이름으로 재사용하지 않는다.
+[PM 036](../../PM_AGENT/DECISIONS/036_folk_benchmark_transition.md)에 따라 제품 화면과 사용자 흐름의 기준을 folk로 통일한다. 제품·UX 문서에는 folk만 참고 제품으로 명시하고, 기존 Kit 화면을 원본 확인 없이 folk 화면으로 간주하지 않는다.
 
 ## 적용
 
@@ -17,7 +17,7 @@ Date: 2026-11-15
 
 ## 현재 조사 상태
 
-공식 문서 검토는 진행했다. 이 세션에서 Nicelydone 도구가 노출되지 않아 MCP 화면 조회는 수행하지 못했다. 사용자가 제공한 Capsule 이미지는 folk UX 근거로 사용하지 않는다. 실제 folk 화면 확인 전 수치·레이아웃·삭제 동작을 확정했다고 쓰지 않는다.
+공식 문서 검토는 진행했다. 이 세션에서 Nicelydone 도구가 노출되지 않아 MCP 화면 조회는 수행하지 못했다. 다른 제품의 이미지는 folk UX 근거로 사용하지 않는다. 실제 folk 화면 확인 전 수치·레이아웃·삭제 동작을 확정했다고 쓰지 않는다.
 
 ## 완료 기준
 

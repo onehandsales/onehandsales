@@ -10,7 +10,7 @@ AGENT의 현재 결정·기획·UX·Software 문서, BE와 FE의 문서 및 관�
 현재 방향은 folk 기능과 UX 벤치마킹이다.
 AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md와
 AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md를 기준으로 해.
-과거 Kit/Notion/Attio 및 개발 보류 문서는 역사 자료로 구분해.
+과거 Kit·이전 참고 및 개발 보류 문서는 역사 자료로 구분해.
 현재 구현, 목표, 미확인 외부 동작, DB 설계 제안을 섞지 마.
 사용자가 제외한 폴더는 링크로도 읽거나 수정하지 마.
 학습 요청만으로 실행 코드나 DB를 변경하지 마.

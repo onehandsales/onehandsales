@@ -3,6 +3,8 @@
 Date: 2026-11-15
 Status: 문서 전환 검토 통과 — folk 화면·DB 구현 검증은 별도
 
+> 2026-11-16 후속 정리: 사용자 요청으로 이전 참고 제품 표기와 UX 기준 문서의 파일명·본문·참조를 정리했다. 아래 181개·본문 보존·검증 수치는 2026-11-15 당시 기록이며 이번 검증 결과가 아니다. 현재 제품·UX 기준은 folk만 사용한다.
+
 ## 범위와 결과
 
 사용자가 지정한 AGENT, BE, FE, 루트 AGENTS.md/prompt.md/README.md를 검토했다. 기존 문서 **174개**의 본문을 확인했고 변경 후 신규 **7개**를 포함한 **181개**를 재검토했다.
@@ -28,7 +30,7 @@ Status: 문서 전환 검토 통과 — folk 화면·DB 구현 검증은 별도
 
 | 발견 | 반영 |
 | --- | --- |
-| 제품 기준이 No Setup/Kit, Notion/Attio, 개발 보류로 흩어짐 | PM 036·UX 025와 활성 planning/지침 통일 |
+| 제품 기준이 No Setup/Kit, 혼합 UX 기준, 개발 보류로 흩어짐 | PM 036·UX 025와 활성 planning/지침 통일 |
 | 현재 구현을 인증 foundation만으로 설명 | 32개 model·25개 enum, Workspace/CRM API·FE route 반영 |
 | API 목록에서 CRM·Workspace가 누락 | controller 51개 목록화; CRM 정의 모듈 33개 별도 표시 |
 | 동적 모델 전체 삭제와 기능 재현의 충돌 | 32개 모델별 유지·축소·대체·제거 후보와 의존 명시 |
@@ -195,7 +197,7 @@ Status: 문서 전환 검토 통과 — folk 화면·DB 구현 검증은 별도
 | [AGENT/UXUI_AGENT/DECISIONS/016_uxui_writing_tone.md](../../../AGENT/UXUI_AGENT/DECISIONS/016_uxui_writing_tone.md) | 갱신 | 결정의 적용 상태와 충돌 확인 |
 | [AGENT/UXUI_AGENT/DECISIONS/018_uxui_multilingual_font_stack.md](../../../AGENT/UXUI_AGENT/DECISIONS/018_uxui_multilingual_font_stack.md) | 갱신 | 결정의 적용 상태와 충돌 확인 |
 | [AGENT/UXUI_AGENT/DECISIONS/019_uxui_record_create_panel.md](../../../AGENT/UXUI_AGENT/DECISIONS/019_uxui_record_create_panel.md) | 역사 표시·본문 보존 | 이전 방향을 현행 규칙과 분리 |
-| [AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md](../../../AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md) | 역사 표시·본문 보존 | 이전 방향을 현행 규칙과 분리 |
+| [AGENT/UXUI_AGENT/DECISIONS/020_uxui_previous_reference_retired.md](../../../AGENT/UXUI_AGENT/DECISIONS/020_uxui_previous_reference_retired.md) | 역사 표시·본문 보존 | 이전 방향을 현행 규칙과 분리 |
 | [AGENT/UXUI_AGENT/DECISIONS/021_uxui_onehand_crm_pivot.md](../../../AGENT/UXUI_AGENT/DECISIONS/021_uxui_onehand_crm_pivot.md) | 역사 표시·본문 보존 | 이전 방향을 현행 규칙과 분리 |
 | [AGENT/UXUI_AGENT/DECISIONS/022_uxui_first_use_flow.md](../../../AGENT/UXUI_AGENT/DECISIONS/022_uxui_first_use_flow.md) | 역사 표시·본문 보존 | 이전 방향을 현행 규칙과 분리 |
 | [AGENT/UXUI_AGENT/DECISIONS/023_uxui_kit_selection.md](../../../AGENT/UXUI_AGENT/DECISIONS/023_uxui_kit_selection.md) | 역사 표시·본문 보존 | 이전 방향을 현행 규칙과 분리 |

@@ -14,7 +14,7 @@
 | [016_uxui_writing_tone.md](016_uxui_writing_tone.md) | 기존 구현 보조 기준 — folk 실측 후 조정 |
 | [018_uxui_multilingual_font_stack.md](018_uxui_multilingual_font_stack.md) | 기존 구현 보조 기준 — folk 실측 후 조정 |
 | [019_uxui_record_create_panel.md](019_uxui_record_create_panel.md) | Historical / 025로 대체 |
-| [020_uxui_notion_attio_reference.md](020_uxui_notion_attio_reference.md) | Historical / 025로 대체 |
+| [020_uxui_previous_reference_retired.md](020_uxui_previous_reference_retired.md) | Historical / 025로 대체 |
 | [021_uxui_onehand_crm_pivot.md](021_uxui_onehand_crm_pivot.md) | Historical / 025로 대체 |
 | [022_uxui_first_use_flow.md](022_uxui_first_use_flow.md) | Historical / 025로 대체 |
 | [023_uxui_kit_selection.md](023_uxui_kit_selection.md) | Historical / 025로 대체 |

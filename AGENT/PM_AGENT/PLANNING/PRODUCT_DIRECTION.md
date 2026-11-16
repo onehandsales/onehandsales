@@ -3,7 +3,7 @@
 Status: Current product direction
 Date: 2026-11-15
 
-OneHand CRM은 **folk의 제품 기능과 UX를 재현하는 CRM**을 목표로 한다. [036 결정](../DECISIONS/036_folk_benchmark_transition.md)에 따라 기존 No Setup CRM / 직군별 Kit / Notion·Attio 혼합 방향을 대체한다.
+OneHand CRM은 **folk의 제품 기능과 UX를 재현하는 CRM**을 목표로 한다. [036 결정](../DECISIONS/036_folk_benchmark_transition.md)에 따라 기존 No Setup CRM / 직군별 Kit / 이전 혼합 UX 방향을 대체한다.
 
 ## 판단 기준
 

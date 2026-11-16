@@ -2,7 +2,7 @@
 
 Date: 2026-11-15
 
-- [ ] [025 folk 기준](DECISIONS/025_uxui_folk_reference.md)을 사용하고 이전 Kit/Notion/Attio 결정을 현행으로 적용하지 않았는가.
+- [ ] [025 folk 기준](DECISIONS/025_uxui_folk_reference.md)을 사용하고 이전 Kit·이전 참고 결정을 현행으로 적용하지 않았는가.
 - [ ] 각 화면·flow에 출처, 날짜, 플랜·역할·기기·locale이 있는가.
 - [ ] 실제 관찰과 공식 문서, 우리 설계 제안을 구분했는가.
 - [ ] 객체 탭, Group, View, Pipeline 열의 의미가 구분되는가.

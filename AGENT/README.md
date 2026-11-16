@@ -1,6 +1,6 @@
 # AGENT
 
-제품·UX·Software 문서의 정본 공간이다. 현재 방향은 **folk 기능·UX 벤치마킹**이며, 과거 Kit/Notion/Attio 결정은 역사 자료로 구분한다.
+제품·UX·Software 문서의 정본 공간이다. 현재 방향은 **folk 기능·UX 벤치마킹**이며, 과거 Kit·이전 참고 결정은 역사 자료로 구분한다.
 
 ## 시작 순서
 

@@ -68,5 +68,5 @@ page size를 바꾸려면 아래를 함께 확인한다.
 ## 7. 관련 문서
 
 - `AGENT/UXUI_AGENT/PLANNING/RECORD_LIST_DETAIL_UX.md`
-- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`

@@ -1,10 +1,10 @@
 # TODO
 
-> 2026-09-11 문서 정리: 현재 BE/FE 기준과 충돌하는 과거 모델/API/페이지/부수 기록 언급은 제거했다.
+> 2026-11-16 갱신: 현재 제품·UX 기준은 folk이며, 실행 순서는 [FOLK_TRANSITION_PLAN.md](FOLK_TRANSITION_PLAN.md)를 따른다.
 
 ## 1. 목적
 
-이 폴더는 `한손에 영업 / onehand.sales`의 기획 또는 구현 계획을 `/goal`로 실행 가능한 작업 단위로 정리하는 공간이다.
+이 폴더는 `OneHand CRM`의 기획 또는 구현 계획을 `/goal`로 실행 가능한 작업 단위로 정리하는 공간이다.
 
 `AGENT` 문서가 제품 범위, UX/UI 방향, Software 아키텍처의 정본이라면, `TODO` 문서는 특정 요구사항을 실제 실행 순서, API 계약, FE/BE 작업, DB 영향, 검증 기준으로 쪼갠 실행 문서다.
 
@@ -12,41 +12,13 @@
 
 ## 2. 현재 상태
 
-검토 기준일: 2026-10-29
+현재 제품·UX는 folk 기준이다. [현재 구현](../AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)에 Workspace, Object/List/Attribute/Record/View API와 TABLE/KANBAN/LIST, 보기 설정 미리보기·명시적 저장이 정리되어 있다. 과거 계획의 “본문·설정 저장 미구현” 상태를 최신 구현 상태로 사용하지 않는다.
 
-2026-10-30 신규 설계: [11개 View 주 화면 조회 계획과 검토](VIEW_MAIN_CONTENT_QUERY_PLAN/README.md). 현재 구현 대상은 Backend 조회 API 1개이며, 필터·정렬 저장 API와 FE 연결은 [후속 작업](VIEW_MAIN_CONTENT_QUERY_PLAN/COMMON/SCOPE_AND_DEFERRED_WORK.md)으로 분리했다. 타입별 응답·비즈니스 로직·프론트 설계 참고, 실제 Supabase 목 데이터 조사와 자체 검토를 정리했다. API 계약은 draft이며 구현 전이다.
+현재 실행 계획은 [FOLK_TRANSITION_PLAN.md](FOLK_TRANSITION_PLAN.md)다. 다음 단계는 **G00: Nicelydone MCP 연결·folk 자료 접근 확인**이며, 화면 조사와 mock 프로토타입을 거쳐 해당 기능의 DB·API·권한을 설계한다. 기존 CRM 모델 교체는 대체 흐름과 데이터·의존 관계를 확인한 뒤 실행한다.
 
-기존 [③ 헤더 조회](DONE/VIEW_HEADER_DETAIL_API_PLAN/README.md)와 [① Object·② List View 목록](DONE/OBJECT_LIST_VIEW_LIST_API_PLAN/README.md), [공통 헤더 Frontend 연결](DONE/VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/README.md), [View 즐겨찾기 추가·삭제 Backend API](DONE/VIEW_FAVORITE_MUTATION_API_PLAN/README.md)에 이어 [즐겨찾기 Frontend 연결](DONE/VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/README.md)을 완료했다. 공통 별표의 등록/해제·헤더/개인 사이드바 갱신·중복/오류/지연 응답·반응형을 연결했고 단위 58건·Chromium E2E 33건·typecheck/lint/build를 통과했다. 즐겨찾기 행 클릭 이동/정렬·생성/저장·타입별 본문은 후속 범위다.
+이 전환 계획은 사용자 요청에 따라 **한 Markdown 파일**에서 관리한다. 아래 폴더 구조는 일반적인 새 계획의 기본값이며, folk 전환 계획을 여러 폴더·문서로 자동 분리하는 근거로 적용하지 않는다.
 
-[View 헤더 메뉴 조회 Backend 계획](DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)을 완료 보관했다. 현재 View의 저장된 필터·정렬·보기 설정을 읽는 GET 3개를 구현했고 전체 Backend 64 suites / 462 tests와 typecheck/lint/build·Prisma validate를 통과했다. Frontend 연결·주 화면 데이터 조회·설정 저장은 후속 범위다. 기존 View 선택/즐겨찾기의 최신 경로는 [2026-10-29 API 경로·식별자 계약](VIEW_HEADER_API_NAMESPACE_PLAN/COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md)을 따른다.
-
-[View 헤더 빈 요청 검증 보완](DONE/VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/README.md)도 완료했다. 메뉴·즐겨찾기 다섯 endpoint의 예약 키 입력을 DB 접근 전에 거부하고 중복 Pipe·부정확한 주석을 정리했다. 후속 검증은 관련 3 suites / 103 tests와 typecheck/lint/build 통과다.
-
-```text
-TODO/
-  README.md
-  VIEW_HEADER_API_NAMESPACE_PLAN/
-    COMMON/API-SPEC/VIEW_HEADER_API_NAMESPACE.md
-  DONE/
-    README.md
-    VIEW_HEADER_EMPTY_REQUEST_FIX_PLAN/
-      README.md
-    VIEW_HEADER_MENU_QUERY_PLAN/
-      README.md
-      COMMON/API-SPEC/VIEW_HEADER_MENU_QUERY_API.md
-      BE-TODO/IMPLEMENTATION.md
-      BE-TODO/REVIEW.md
-    VIEW_FAVORITE_FRONTEND_INTEGRATION_PLAN/
-    VIEW_FAVORITE_MUTATION_API_PLAN/
-    VIEW_HEADER_FRONTEND_INTEGRATION_PLAN/
-    OBJECT_LIST_VIEW_LIST_API_PLAN/
-    VIEW_HEADER_DETAIL_API_PLAN/
-    <완료 보관 계획>
-```
-
-활성 TODO를 재검토할 때는 `TODO/DONE/**`을 제외한다. 새 요구사항, QA 후속 조치, 결함 수정, API-SPEC 보강, UX/UI 개선, Paddle/Billing 착수는 `TODO` 바로 아래에 새 계획 폴더를 만든 뒤 진행한다.
-
-완료된 계획의 구현 결과나 과거 의사결정 근거가 필요할 때만 `TODO/DONE/<PLAN_NAME>`을 참고한다. 완료 보관 문서는 현재 남은 작업 목록이 아니며, 후속 구현이 필요하면 완료 문서를 직접 수정하지 않고 새 활성 계획으로 승격한다.
+완료 보관 문서는 당시 이력이며 현재 남은 작업 목록이 아니다. 기존 TODO 하위 계획과 과거 로그는 이번 정리에서 일괄 갱신하지 않았다.
 
 ## 3. 폴더 구조 기준
 
@@ -92,7 +64,7 @@ TODO/
 - 모든 TODO 문서는 한국어로 작성한다.
 - `TODO` 아래 문서를 새로 작성하거나 수정하기 전에는 `AGENT/PM_AGENT/CONVENTION/TODO_SOFTWARE_AGENT_REFERENCE.md`에 나열된 `AGENT/SOFTWARE_AGENT` 정본 문서를 먼저 참고한다.
 - TODO 문서에는 `AGENT/SOFTWARE_AGENT`의 Backend, Frontend, Admin, API 계약, DB schema, 테스트, 배포, 주석/로그 규칙 중 해당 작업에 영향을 주는 기준을 구체적으로 반영한다.
-- 화면 설계, route, navigation, 목록, 상세, 생성, 검색, 필터, pagination, record 관계에 영향을 주는 작업은 `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`를 함께 적용한다.
+- 화면 설계, route, navigation, 목록, 상세, 생성, 검색, 필터, pagination, record 관계에 영향을 주는 작업은 `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`를 함께 적용한다.
 - TODO 문서는 단순 메모가 아니라 구현자가 문서만 보고 첫 `/goal`을 실행할 수 있는 실행 계획서 수준으로 작성한다.
 - `GOAL-WORK-ORDER.md`의 각 작업은 목적, 포함 범위, 제외 범위, 완료 기준을 포함한다.
 - 한 번의 `/goal`에는 하나의 작업 단위만 넣는 것을 기본으로 한다.
@@ -118,16 +90,13 @@ TODO/
 
 ## 6. 현재 우선순위
 
-[View 헤더 메뉴 조회 Backend 계획](DONE/VIEW_HEADER_MENU_QUERY_PLAN/README.md)의 필터·정렬·보기 설정 조회와 G99 검토를 완료했다. 기존 헤더·View 목록·즐겨찾기 등록/해제 API도 전체 회귀 테스트를 통과했다. 타입별 본문·설정 생성/저장·이번 메뉴의 Frontend 연결은 후속 범위이며 새 작업 착수 시 별도 계획으로 정리한다.
+1. 현재 인증·Workspace·데이터 접근의 오류를 유지보수한다.
+2. Nicelydone MCP의 folk 화면·flow를 조회하고 공식 문서·실제 계정과 대조한다.
+3. 첫 흐름의 mock UX와 데이터 읽기·쓰기 요구를 정리한다.
+4. 같은 흐름의 DB·API·권한·오류 계약을 확정한 뒤 BE·FE 구현과 통합 검증을 진행한다.
+5. 기능별 대체를 검증한 뒤 기존 모델·API·FE 의존을 제거하고 전체 기능 대응을 확대한다.
 
-그 밖의 후속 작업이 생기면 아래 순서로 판단한다.
-
-1. S0/S1/S2 결함, 보안, ownership, 데이터 손상 위험을 최우선으로 새 계획화한다.
-2. Global B2C 01~11 완료 범위의 유지보수와 UX/UI 상품성 개선을 우선한다.
-3. 결제창 없는 100명 베타 준비, 실제 QA 결과, 운영 리스크를 별도 활성 계획으로 분리한다.
-4. Paddle/Billing은 베타 이후 가격, 플랜, entitlement, AI 사용량 제한, 환불, 세금, 인보이스 정책이 확정된 뒤 `PADDLE_PLAN` 같은 새 활성 계획으로 작성한다.
-
-Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 않는다. checkout, webhook, subscription, invoice, refund, entitlement, paywall, Billing Admin은 새 계획이 `confirmed`가 되기 전에는 구현하지 않는다.
+상세 단계와 완료 기준은 [FOLK_TRANSITION_PLAN.md](FOLK_TRANSITION_PLAN.md)를 따른다. folk 설정·요금제 UX 조사는 범위에 포함하며, 실제 결제 제공자·사업 정책과 구현은 [결제 보류 정책](../AGENT/PM_AGENT/DECISIONS/030_billing_paddle_defer_policy.md)에 따라 별도 확정한다.
 
 ## 7. 완료 보관 목록
 
@@ -198,10 +167,10 @@ Paddle/Billing은 현재 Prisma schema와 BE/FE 구현 범위에 포함하지 �
 - `AGENT/PM_AGENT/CONVENTION/DOCUMENTATION.md`
 - `AGENT/PM_AGENT/CONVENTION/PLANNING_REVIEW_CHECKLIST.md`
 - `AGENT/PM_AGENT/DECISIONS/018_todo_common_contract_structure.md`
-- `AGENT/PM_AGENT/DECISIONS/030_global_b2c_closeout_and_paddle_defer.md`
+- `AGENT/PM_AGENT/DECISIONS/030_billing_paddle_defer_policy.md`
 - `AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md`
-- `AGENT/PM_AGENT/PLANNING/GLOBAL_B2C_01_11_FEATURE_CATALOG.md`
-- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md`
+- `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/README.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`
 - `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`

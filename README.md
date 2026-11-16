@@ -1,14 +1,15 @@
 # OneHand CRM
 
-folk의 제품 기능과 UX를 기준으로 전환 중인 CRM 프로젝트다. 현재 코드는 Attio식 범용 CRM 코어를 포함하며, folk 구조로의 전환은 아직 계획 단계다.
+folk의 제품 기능과 UX를 기준으로 전환 중인 CRM 프로젝트다. 현재 코드는 범용 CRM 코어를 포함하며, folk 구조로의 전환은 아직 계획 단계다.
 
-2026-11-15 사용자 결정으로 기존 Notion·Attio 혼합 기준과 직군별 Kit 전략을 대체했다. 제품명과 저장소 이름은 유지한다. 2026-11-14 개발 보류 기록은 [당시 회고](AGENT/PM_AGENT/PLANNING/PROJECT_RETROSPECTIVE.md)로 보존한다.
+2026-11-15 사용자 결정으로 기존 이전 혼합 UX 기준과 직군별 Kit 전략을 대체했다. 제품명과 저장소 이름은 유지한다. 2026-11-14 개발 보류 기록은 [당시 회고](AGENT/PM_AGENT/PLANNING/PROJECT_RETROSPECTIVE.md)로 보존한다.
 
 ## 현재 방향
 
 - **제품·UX 기준**: folk. 기능, 화면 구조, 사용자 흐름과 상호작용을 대응시킨다.
 - **화면 조사**: Nicelydone MCP와 실제 folk 계정. 공식 도움말/API로 의미를 검증한다.
 - **데이터 설계**: 기본 연락처와 그룹별 확장을 중심으로 단순화한다. 불필요한 범용 구조는 의존·데이터 검토 후 제거한다.
+- **DB 교체 방향**: 인증·Workspace 기반을 유지 검토의 출발점으로 두고 기존 CRM 정의·값·관계·보기 테이블의 전면 교체를 검토한다. 화면 조사·mock UX·데이터 계약 이후 새 테이블과 컬럼을 설계한다.
 - **범위 관리**: 전체 대응이 목표이며 구현은 단계별로 진행한다. 타겟 직군이나 개인 전용 제품으로 임의 축소하지 않는다.
 
 Nicelydone 화면 수집은 아직 수행하지 않았다. 공개 문서는 folk의 실제 내부 DB를 보여주지 않으므로 데이터베이스 구조는 우리 구현을 위한 설계안으로 관리한다.
@@ -18,6 +19,7 @@ Nicelydone 화면 수집은 아직 수행하지 않았다. 공개 문서는 folk
 | 문서 | 목적 |
 | --- | --- |
 | [전환 결정](AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md) | 변경한 방향과 이전 결정의 적용 상태 |
+| [실행 순서](TODO/FOLK_TRANSITION_PLAN.md) | Nicelydone 접근 확인부터 화면·DB·API·FE 전환까지 |
 | [현재 구현](AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md) | 실제 코드·DB·route와 미완성 기능 |
 | [기능 대응표](AGENT/PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md) | 최종 범위와 구현 순서 |
 | [화면·공식 근거 조사](AGENT/UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md) | 출처, MCP 상태, 미확인 동작 |

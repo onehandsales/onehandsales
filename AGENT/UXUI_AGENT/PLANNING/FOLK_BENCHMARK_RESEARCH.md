@@ -58,7 +58,9 @@ F02의 현재 설명은 Group → 객체별 탭 → 여러 Table/Pipeline view�
 공식 제공 주소: `https://mcp.nicelydone.club/mcp`.
 F13은 Streamable HTTP, OAuth 2.1, 유료 계정 사용을 안내한다.
 
-이번 세션에서는 Nicelydone 도구가 발견되지 않았다. MCP 연결·로그인·화면 수집 완료로 기록하지 않는다. 문서 검토는 진행할 수 있으나 화면 재현 완료 판정은 수집 후에 한다. 연결 설정을 문서 변경 작업에 포함해 임의로 수정하지 않는다.
+2026-11-16 재확인: 현재 세션의 도구 목록에 Nicelydone 도구가 없고 플러그인 검색 결과에서도 해당 통합을 찾지 못했다. 공식 MCP 안내에서 위 주소와 OAuth·유료 접근 조건을 다시 확인했다. MCP 연결·로그인·화면 수집은 수행하지 않았다. 문서 검토는 진행할 수 있으나 화면 재현 완료 판정은 수집 후에 한다. 연결 설정을 문서 변경 작업에 포함해 임의로 수정하지 않는다.
+
+같은 날 F01 데이터 모델과 F11 Custom objects 공식 원문을 재조회했다. Workspace 연락처 기본 정보와 Group별 custom fields, 그룹별 object type을 구분해야 한다는 공개 계약을 확인했다. 실제 UI와 물리 DB 구조의 확인으로 확대하지 않는다. 기존 삭제·권한 충돌 항목은 실계정 대조 전까지 미확인으로 유지한다. Custom objects의 확장자 없는 주소는 조회에 실패했고 [Markdown 원문](https://developer.folk.app/core-concepts/custom-objects.md)으로 확인했다.
 
 ## 화면별 기록 형식
 

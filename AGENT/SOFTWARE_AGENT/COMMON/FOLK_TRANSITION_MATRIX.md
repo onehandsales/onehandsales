@@ -2,8 +2,11 @@
 
 Status: Plan / 실행 코드 미변경
 Date: 2026-11-15
+Updated: 2026-11-16
 
 [현재 구현](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)과 [DB 계획](../DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 연결하는 문서다. 이름 변경만으로 전환하지 않는다.
+
+2026-11-16 사용자 방향은 인증·Workspace를 유지 검토의 출발점으로 두고 기존 CRM 정의·값·관계·보기 테이블을 전면 교체하는 안이다. 현재 코어의 보존을 목표로 하지 않으며, folk 화면 조사와 mock UX 후 새 데이터·API 계약을 정한다. 최종 제거 목록과 데이터 이전 여부는 아직 미확정이다. [단일 전환 계획](../../../TODO/FOLK_TRANSITION_PLAN.md)의 기능별 순서를 따른다.
 
 ## 영향 범위
 

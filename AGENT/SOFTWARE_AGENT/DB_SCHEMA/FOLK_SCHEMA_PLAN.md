@@ -2,10 +2,21 @@
 
 Status: Proposed — 실제 schema / migration 미변경
 Date: 2026-11-15
+Updated: 2026-11-16
 
 이 문서는 folk 공개 기능을 재현하기 위한 **우리 구현안**이다. folk의 비공개 테이블 구조를 알아낸 문서가 아니다. [PM 결정](../../PM_AGENT/DECISIONS/036_folk_benchmark_transition.md)과 [공식 근거·미확인 항목](../../UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md)을 함께 읽는다.
 
 ## 1. 현재 구조
+
+### 2026-11-16 사용자 방향
+
+인증·사용자·Workspace를 유지 검토의 출발점으로 두고 `ObjectDefinition`, `ListDefinition`, `AttributeDefinition`, `ViewDefinition` 및 연결된 Record·값·옵션·관계·설정 테이블의 **전면 교체**를 검토한다. 현재 엔진의 추상화나 테이블 이름을 보존하는 것이 목표는 아니다. 아래 모델별 방향은 새 계약과 대조할 후보이며 확정된 삭제 목록이 아니다.
+
+순서는 Nicelydone의 folk 화면·flow 조사 → 작은 mock UX → 데이터 소유 범위·공식 동작·권한·삭제 의미 확인 → 새 테이블·컬럼·API 계약 → 구현·전환·기존 구조 제거다. 화면의 한 행·탭·컬럼을 물리 테이블에 그대로 대응시키지 않는다. folk가 제공하는 사용자 필드·커스텀 객체·보기 기능은 새 구조로 구현한다.
+
+Workspace와 연결된 멤버·팀·Actor 및 FK도 새 권한·감사 구조에 맞춰 재검토한다. 기존 데이터 이전 또는 초기화 여부, 실행 환경, 최종 테이블·컬럼은 아직 결정하지 않았다. 실제 삭제는 이 문서 수정에 포함하지 않는다. 단계별 실행은 [단일 전환 계획](../../../TODO/FOLK_TRANSITION_PLAN.md)을 따른다.
+
+### 현재 schema
 
 실제 정본은 [schema.prisma](../../../BE/prisma/schema.prisma)다. 현재 32개 모델이며 이름에 Definition이 붙은 CRM 코어가 실행 중이다.
 

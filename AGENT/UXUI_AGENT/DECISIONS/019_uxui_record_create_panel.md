@@ -54,4 +54,4 @@ modal/dialog를 사용할 수 있는 경우:
 
 - `AGENT/UXUI_AGENT/DECISIONS/007_uxui_record_create_flow.md`
 - `AGENT/UXUI_AGENT/PLANNING/RECORD_LIST_DETAIL_UX.md`
-- `AGENT/UXUI_AGENT/DECISIONS/020_uxui_notion_attio_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`
