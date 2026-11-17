@@ -1,11 +1,13 @@
 # API Sample — 현재 controller 목록
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 Checked: 2026-11-15
 Status: Current source inventory
 
 현재 controller의 HTTP handler 51개를 아래에 기록한다. endpoint 존재가 해당 제품 흐름의 완성을 의미하지 않는다. 상세 request/response·권한·오류는 연결된 controller와 DTO/application 계약을 확인한다.
 
-Object 3 / List 3 / Attribute 5 / Record 4 / View 18개로 CRM 정의 모듈은 33개다. folk 목표 API는 아직 확정하지 않았으며 [전환 설계](../BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md)와 구분한다.
+Object 3 / List 3 / Attribute 5 / Record 4 / View 18개로 CRM 정의 모듈은 33개다. Bonsai 목표 API는 아직 확정하지 않았으며 [전환 설계](../BACKEND_AGENT/ARCHITECTURE/CRM_CORE_BACKEND.md)와 구분한다.
 
 ## attribute-definition
 
@@ -118,4 +120,4 @@ Object 3 / List 3 / Attribute 5 / Record 4 / View 18개로 CRM 정의 모듈은 
 | `GET /api/users/me/sidebar/workspaces/:workspaceId` | [controller](../../../BE/src/modules/workspace/presentation/http/user-sidebar-workspaces.controller.ts) |
 | `POST /api/users/me/workspaces` | [controller](../../../BE/src/modules/workspace/presentation/http/user-workspaces.controller.ts) |
 
-공개 문의의 회사명/규모는 문의 원문이다. CRM Company 레코드와 혼동하지 않는다. API·DB 삭제는 [전환 영향](FOLK_TRANSITION_MATRIX.md)을 확인한 후 수행한다.
+공개 문의의 회사명/규모는 문의 원문이다. CRM Company 레코드와 혼동하지 않는다. API·DB 삭제는 [전환 영향](BONSAI_TRANSITION_MATRIX.md)을 확인한 후 수행한다.

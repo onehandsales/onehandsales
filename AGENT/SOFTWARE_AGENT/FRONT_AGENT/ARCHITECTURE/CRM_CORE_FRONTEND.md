@@ -1,24 +1,23 @@
-# CRM Core Frontend — 현재와 folk 전환
+# CRM Core Frontend — 기존 구현과 Bonsai 전환
 
-Date: 2026-11-15
+Updated: 2026-11-17
 
-## 현재
+## 기존 구현 기록
 
-User Web은 `workspace`, `crm-object`, `crm-list`, `crm-view`, `sidebar-order`, `view-favorite`를 사용한다. Object/List/View ID route가 공통 WorkspaceViewPage에 연결되어 있다. 현재 route와 미완성 범위는 [IMPLEMENTATION_STATUS](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)가 정본이다.
+User Web의 `workspace`, `crm-object`, `crm-list`, `crm-view`, `sidebar-order`, `view-favorite`와 Object/List/View ID route는 [구현 현황](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)의 기존 소스 기록이다. 이번 작업에서 실행 코드를 재검증하지 않았다.
 
-TABLE/KANBAN/LIST 본문과 설정의 미리보기·명시적 저장·되돌리기·충돌 복구가 있다. 이 UI를 folk 자동 저장이라고 설명하지 않는다.
+TABLE/KANBAN/LIST 본문과 설정의 preview/save/undo·충돌 복구는 기존 계약이다. Bonsai의 화면별 저장 방식은 별도 조사한다.
 
 ## 전환 방향
 
-- Group 탐색과 People/Companies/Custom object 탭을 분리한다.
-- Table/Pipeline이 동일 데이터와 필드 계약을 사용하게 한다.
-- 기본 연락처 정보와 그룹별 값을 상세·목록에서 같은 의미로 보여준다.
-- Notes/Tasks/Interactions, 공유·권한 제한, 메시지·Dashboard 등은 기능 대응표대로 확장한다.
-- mock 프로토타입은 실제 API 확정 전 가능하다. 저장 완료처럼 오인시키지 않고 전환 계약을 병행한다.
-- API client·query key·response type은 feature 경계를 지킨다.
-- Workspace/Group/View/레코드별 캐시 범위와 늦은 응답을 격리한다.
-- 원본 화면과 다른 패널·모달·반응형·스크롤 정책을 임의로 강제하지 않는다.
+- 고객·거래·견적·문서·프로젝트·작업·청구의 탐색과 상세 연결을 실제 화면으로 확인한다.
+- 발송·서명·청구·입금 상태를 단순 로컬 편집 상태와 구분한다.
+- 같은 업무의 목록·상세·관련 화면에서 값과 상태를 일관되게 표시한다.
+- 고객 포털과 내부 팀·재무·운영자 화면의 권한·정보 범위를 분리한다.
+- 기능별 mock은 API 확정 전 만들 수 있으며 실제 저장 상태와 구분한다.
+- API client·query key·응답 타입은 feature 경계를 지킨다.
+- 사용자·Workspace·업무 대상·View별 캐시와 늦은 응답을 격리한다.
+- 금액·날짜·기한의 입력·표시는 Backend 계약과 맞춘다.
+- 패널·모달·페이지·반응형·스크롤은 원본 근거와 접근성을 함께 검토한다.
 
-최종 route와 feature 이름은 화면 조사 후 확정한다. 기존 Object→People, List→Group의 단순 이름 변경만으로 전환하지 않는다.
-
-[UX 기준](../../../UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md), [전환 영향](../../COMMON/FOLK_TRANSITION_MATRIX.md)을 따른다.
+최종 route와 feature 이름은 조사 후 정한다. 기존 범용 화면의 이름만 바꿔 목표 기능으로 취급하지 않는다. [UX 기준](../../../UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md)과 [전환 영향](../../COMMON/BONSAI_TRANSITION_MATRIX.md)을 따른다.

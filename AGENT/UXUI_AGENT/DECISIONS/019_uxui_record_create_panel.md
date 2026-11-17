@@ -1,7 +1,9 @@
 # UX/UI Record Create Panel Decision
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 > **Historical / Superseded — 2026-11-15**
-> 아래는 이전 방향의 기록이다. 기존 결정을 보존하기 위한 내용이며 새 작업의 요구사항·선행 조건으로 적용하지 않는다. 현재 기준은 [folk 전환 결정](025_uxui_folk_reference.md)이다.
+> 아래는 이전 방향의 기록이다. 기존 결정을 보존하기 위한 내용이며 새 작업의 요구사항·선행 조건으로 적용하지 않는다. 현재 기준은 [Bonsai 전환 결정](025_uxui_bonsai_reference.md)이다.
 
 ## 이전 기록
 
@@ -54,4 +56,4 @@ modal/dialog를 사용할 수 있는 경우:
 
 - `AGENT/UXUI_AGENT/DECISIONS/007_uxui_record_create_flow.md`
 - `AGENT/UXUI_AGENT/PLANNING/RECORD_LIST_DETAIL_UX.md`
-- `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`
+- `AGENT/UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md`

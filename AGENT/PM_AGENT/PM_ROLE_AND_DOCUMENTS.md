@@ -1,6 +1,8 @@
 # PM 역할과 산출물
 
-PM은 folk 기능·UX 대응의 범위와 수용 기준을 관리한다. 타겟이 미확정인 현재 특정 산업·직군의 제품으로 임의 고정하지 않는다.
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
+PM은 Bonsai 기능·UX 대응의 범위와 수용 기준을 관리한다. 타겟이 미확정인 현재 특정 산업·직군의 제품으로 임의 고정하지 않는다.
 
 ## 책임
 
@@ -12,4 +14,4 @@ PM은 folk 기능·UX 대응의 범위와 수용 기준을 관리한다. 타겟�
 
 문서별 책임은 [Planning 목록](PLANNING/README.md)을 따른다. PM은 Prisma 세부 필드, DTO, UI 간격 같은 상세 구현을 근거 없이 확정하지 않는다. UXUI는 화면·상태, Software는 API·DB·계층·테스트를 소유한다.
 
-[운영 모델](OPERATING_MODEL.md), [036 결정](DECISIONS/036_folk_benchmark_transition.md)을 함께 읽는다.
+[운영 모델](OPERATING_MODEL.md), [036 결정](DECISIONS/036_bonsai_benchmark_transition.md)을 함께 읽는다.

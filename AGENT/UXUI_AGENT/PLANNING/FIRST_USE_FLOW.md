@@ -1,24 +1,18 @@
 # First Use Flow
 
-Status: folk flow research pending
-Date: 2026-11-15
+Status: Bonsai flow research pending
+Updated: 2026-11-17
 
-## 조사 대상
+## 조사 항목
 
-```text
-가입/로그인
-  → Workspace 생성 또는 초대 참여
-  → 초기 데이터 연결·가져오기 안내
-  → 첫 연락처/Group
-  → 저장된 기록 재조회
-```
+신규 가입, 로그인, 초대 참여, 계정·업무 공간 설정, 초기 안내·연동·가져오기, 첫 고객·거래·프로젝트 저장과 재조회 경로를 조사한다. 이 목록은 실제 필수 순서를 확인한 결과가 아니다.
 
-이는 조사 항목의 연결 예시다. 실제 folk 순서, 필수 단계, 건너뛰기, 기본 데이터는 Nicelydone/실계정 관찰 후 확정한다. 직군 선택 → Kit 미리보기 → Kit 적용은 현행 요구가 아니다.
+대표가 만드는 계정, 초대된 영업·실무자, 외부 고객 포털 진입을 구분한다. 직군 선택→Kit 적용을 강제하지 않는다.
 
-## 상태별 기록
+## 상태 기록
 
-신규 계정, 초대 사용자, 기존 Workspace 사용자, 연락처 0개, 연동 거절/실패, 중복 정보, 첫 저장 실패와 재시도를 확인한다. 각 단계의 입력·저장 시점·돌아가기·재진입·성공 후 위치를 기록한다.
+신규/기존 사용자, 초대 만료·권한 부족, 데이터 0개, 연결 거절·실패, 중복 입력, 첫 저장 실패·재시도, 뒤로가기·재진입을 확인한다. 필수 입력과 건너뛰기, 저장 시점, 성공 후 위치를 기록한다.
 
-기존 `/:locale/onboarding`은 직업 선택 UI와 온보딩 완료 처리가 있으나 folk 흐름은 아니다. 전환 시 기존 사용자 재진입 정책도 정의한다.
+현재 `/:locale/onboarding`은 기존 직업 선택 UI와 완료 처리다. 이를 Bonsai 흐름 확인이나 전환 완료로 보지 않는다.
 
-[근거 기록 형식](FOLK_BENCHMARK_RESEARCH.md)을 따르고, [현재 구현](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)과 구분한다.
+[Gummble 조사 절차](GUMMBLE_RESEARCH_GUIDE.md), [근거 기록 양식](BONSAI_BENCHMARK_RESEARCH.md), [현재 구현](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)을 따른다.

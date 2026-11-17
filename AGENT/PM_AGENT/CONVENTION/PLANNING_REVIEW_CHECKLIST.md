@@ -1,5 +1,7 @@
 # 기획 검토 체크리스트
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 ## 1. 목적
 
 이 문서는 `AGENT`와 `TODO`에 작성된 기획서, 요구사항 문서, API 명세, DB 스키마, FE/BE 작업 문서를 구현 전에 꼼꼼하게 검토하기 위한 기준이다.
@@ -82,11 +84,11 @@ TODO 계획 문서를 검토할 때는 단순히 문서 항목이 채워졌는�
 
 검토 시 반드시 함께 보는 기준 문서:
 
-- PM 기준: `README.md`, `AGENT/PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`, `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`, `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`, `AGENT/PM_AGENT/PLANNING/PRD.md`, `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`, `AGENT/PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md`, `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
+- PM 기준: `README.md`, `AGENT/PM_AGENT/PM_ROLE_AND_DOCUMENTS.md`, `AGENT/PM_AGENT/DECISIONS/000_확정_결정.md`, `AGENT/PM_AGENT/PLANNING/PRODUCT_DIRECTION.md`, `AGENT/PM_AGENT/PLANNING/PRD.md`, `AGENT/PM_AGENT/PLANNING/MVP_SCOPE.md`, `AGENT/PM_AGENT/PLANNING/BONSAI_FEATURE_PARITY_MATRIX.md`, `AGENT/PM_AGENT/PLANNING/CRM_CORE_CONCEPT_MODEL.md`
 - Backend 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/OVERVIEW.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/MODULAR_MONOLITH_AND_MSA.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/BACKEND.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_SPEC.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/API_CONTRACT.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/TRANSACTION.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/CONVENTION/OBSERVABILITY.md`
 - User Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/FRONTEND_USER_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/FRONTEND_USER_WEB.md`
 - Admin Web 기준: `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/ADMIN_WEB.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
-- UX/UI 기준: `AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md`, `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`, `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`, `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`, `AGENT/UXUI_AGENT/DECISIONS/*`
+- UX/UI 기준: `AGENT/UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md`, `AGENT/UXUI_AGENT/PLANNING/USER_FLOW_AND_SCREENS.md`, `AGENT/UXUI_AGENT/PLANNING/UX_UI_DIRECTION.md`, `AGENT/UXUI_AGENT/UX_REVIEW_CHECKLIST.md`, `AGENT/UXUI_AGENT/DECISIONS/*`
 - 테스트/위험 흐름 기준: `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/BACKEND_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/TESTING.md`, `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`
 
 Backend 구체화 검토:
@@ -114,22 +116,22 @@ Frontend와 UX/UI 구체화 검토:
 - Admin Web은 `FE/admin-web`의 별도 앱, `adminApiClient`, `GET /admin/api/me` 기준을 따르는가?
 - FE 문서는 화면, 컴포넌트, 사용자 입력, loading/empty/error/success/권한 없음 상태, optimistic update rollback 가능 여부를 설명하는가?
 - UX/UI 문서는 공개 `/`, 로그인 후 `/app` 홈, `/app/more`, 계정/도움말 모달의 역할을 구분하는가?
-- 화면·API·DB 계획이 folk 원본과 공식 근거를 연결하고 현재 구현·목표·미확인을 구분하는가?
-- People/Companies/Group/Custom object 개념과 기존 범용 Object/List/Record를 구분하는가?
-- 계획이 folk 전체 기능·UX 대응 목표와 연결되는가?
+- 화면·API·DB 계획이 Bonsai 원본과 공식 근거를 연결하고 현재 구현·목표·미확인을 구분하는가?
+- 고객·거래·견적·문서·프로젝트·청구·입금 개념과 기존 범용 Object/List/Record를 구분하는가?
+- 계획이 Bonsai 전체 기능·UX 대응 목표와 연결되는가?
 - 기능 대응표의 어느 흐름·배치인지와 누락된 상태가 표시되어 있는가?
-- Workspace/Team의 현재 기반과 folk 그룹·역할 권한을 구분하고 공유·비공개 범위를 검증하는가?
-- 기본 정보 공유, 그룹별 필드 격리, Custom object 연결과 View 저장 계약이 있는가?
+- Workspace/Team의 현재 기반과 Bonsai의 계정·프로젝트·재무·고객 포털 권한을 구분하고 공유·비공개 범위를 검증하는가?
+- 업무별 연결·수정·발송·금액·상태·권한과 모듈별 보기 저장 계약이 있는가?
 - 빠른 등록 modal과 inline creation을 포함한다면 전체 상세 form이 아니라 최소 입력 흐름으로 설계되어 있는가?
-- 모바일 Table/Pipeline과 스크롤·포커스 동작을 실제 folk 화면에 대조했는가?
+- 모바일 Table/Pipeline과 스크롤·포커스 동작을 실제 Bonsai 화면에 대조했는가?
 - 사용자 용어와 번역이 원본 의미를 유지하며 미구현 기능을 제공 중이라고 쓰지 않는가?
-- 시각 요소의 근거가 folk 캡처에 있고 원본과 차이가 기록되어 있는가?
+- 시각 요소의 근거가 Bonsai 캡처에 있고 원본과 차이가 기록되어 있는가?
 
 심각도 판정:
 
 - Clean Architecture 계층을 무너뜨리는 요구, controller의 Prisma 직접 접근, Domain의 외부 SDK 의존, module boundary를 깨는 직접 repository 공유, 사용자 데이터 소유권 누락은 `Critical` 또는 `Major`로 본다.
 - FE가 서버 상태를 TanStack Query가 아닌 임의 fetch/useEffect 중심으로 전제하거나, Admin/User API 경계를 흐리면 `Major`로 본다.
-- UX/UI 정본과 충돌하는 화면 우선순위, 모바일 테이블/가로 칸반은 `Major`로 본다.
+- UX/UI 정본·원본 근거와 충돌하는 화면 우선순위나 모바일 조작 불가·정보 접근 불가는 `Major`로 본다. 모바일 테이블·가로 칸반 자체를 일괄 금지하지 않고 근거와 접근성으로 판단한다.
 - 관련 AGENT 기준 문서 링크 누락, 용어 일부 불일치, 완료 기준 구체성 부족은 `Minor`로 본다.
 
 ## 5.2. 활성 TODO 재검토 기준

@@ -1,5 +1,7 @@
 # Auth/User DB Schema
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 ## 1. 기준
 
 이 문서는 현재 Backend의 Auth/User 데이터베이스 구조를 설명한다.
@@ -46,7 +48,7 @@ AuthDevice 1 ─ N AuthSession
 
 참고:
 
-- Workspace/Team/Actor와 범용 CRM 테이블은 현재 존재한다. folk 전환은 [FOLK_SCHEMA_PLAN](FOLK_SCHEMA_PLAN.md)을 따르며 인증 기반을 임의 제거하지 않는다.
+- Workspace/Team/Actor와 범용 CRM 테이블은 현재 존재한다. Bonsai 전환은 [BONSAI_SCHEMA_PLAN](BONSAI_SCHEMA_PLAN.md)을 따르며 인증 기반을 임의 제거하지 않는다.
 - 고정형 고객사/담당자/상품/딜 모델은 현재 `BE/prisma/schema.prisma`에 없다. 제거 기록은 `AGENT/SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md`를 따른다.
 
 ## 4. Enum
@@ -117,7 +119,7 @@ AuthDevice 1 ─ N AuthSession
 | `timeZone` | `String` | 아니오 | `Asia/Seoul` | 사용자 기본 IANA timezone |
 | `jobSelectOnboardingCompletedAt` | `DateTime @db.Timestamptz(3)` | 예 | 없음 | 기존 직업 선택 온보딩 완료 시각; 직업 값/Kit은 저장하지 않음 |
 | `preferredLocale` | `String` | 아니오 | `ko-KR` | 사용자 기본 UI/content locale. |
-| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이다. 추가 국가와 출시 시장은 folk 전환에서 별도로 정한다. |
+| `countryCode` | `String` | 아니오 | `KR` | 사용자 기본 국가 코드. 설정 화면과 글로벌 데이터 기본값 계산에 사용한다. 현재 구현은 `KR/US` 중심이다. 추가 국가와 출시 시장은 Bonsai 전환에서 별도로 정한다. |
 | `defaultCurrencyCode` | `String` | 아니오 | `KRW` | 사용자 기본 통화 코드. 현재 구현은 `KRW/USD` 중심이다. 추가 통화 지원은 별도 구현 범위다. |
 | `signupLocale` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 locale. |
 | `signupCountryCode` | `String` | 예 | 없음 | 최초 가입/token exchange 시점의 국가 코드. |

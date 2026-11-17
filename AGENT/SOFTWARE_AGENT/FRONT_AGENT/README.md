@@ -1,5 +1,7 @@
 # Front Agent
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 User Web/Admin Web의 route·feature·상태·검증 기준을 관리한다.
 
 ## 현재 범위
@@ -8,9 +10,9 @@ User Web은 Auth/Workspace, Object/List/View 화면, TABLE/KANBAN/LIST 본문, �
 
 Admin Web은 로그인과 관리자 권한 확인이 중심이다. 현재 구현 상세는 [IMPLEMENTATION_STATUS](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다. 이전 날짜의 계획이나 테스트 결과를 현재 실행 결과로 대체하지 않는다.
 
-## folk 전환
+## Bonsai 전환
 
-[UX 025](../../UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md), [CRM_CORE_FRONTEND](ARCHITECTURE/CRM_CORE_FRONTEND.md), [전환 영향](../COMMON/FOLK_TRANSITION_MATRIX.md)을 따른다. Kit 선택과 기존 화면 제한은 현행 기준이 아니다.
+[UX 025](../../UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md), [CRM_CORE_FRONTEND](ARCHITECTURE/CRM_CORE_FRONTEND.md), [전환 영향](../COMMON/BONSAI_TRANSITION_MATRIX.md)을 따른다. Kit 선택과 기존 화면 제한은 현행 기준이 아니다.
 
 ## 구현 기준
 

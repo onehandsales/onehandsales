@@ -1,9 +1,11 @@
 # Implementation Status
 
+> 기존 소스 확인 기준: 2026-11-15. 목표·참조 갱신: 2026-11-17. 아래 구현 기록은 이번 문서 변경에서 코드·DB·런타임으로 재검증하지 않았다.
+
 Status: Current source baseline
 Checked: 2026-11-15
 
-현재 실행 코드와 folk 전환 목표를 분리한다. 이번 변경은 문서 정비이며 DB/API/FE 전환 완료를 뜻하지 않는다. 원격 DB 적용 상태와 배포 사이트는 이번 조사에서 확인하지 않았다.
+현재 실행 코드와 Bonsai 전환 목표를 분리한다. 이번 변경은 문서 정비이며 DB/API/FE 전환 완료를 뜻하지 않는다. 원격 DB 적용 상태와 배포 사이트는 이번 조사에서 확인하지 않았다.
 
 ## Backend
 
@@ -24,7 +26,7 @@ Checked: 2026-11-15
 
 [schema.prisma](../../../BE/prisma/schema.prisma)에는 **32개 model, 25개 enum**이 있다. Workspace/Team/Actor와 Object/Attribute/Record/List/Entry/View는 이미 존재한다. Kit 모델은 없다.
 
-현재 구조는 범용 정의·값 모델이다. folk 전용 Person/Company/Group 모델은 없다. 전체 모델별 설명과 전환 후보는 [FOLK_SCHEMA_PLAN](../../SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)에 있다.
+현재 구조는 범용 정의·값 모델이다. Bonsai의 고객·거래·견적·문서·프로젝트·청구 기능으로 전환한 상태가 아니다. 전체 모델별 설명과 전환 후보는 [BONSAI_SCHEMA_PLAN](../../SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)에 있다.
 
 ViewType은 11종이지만 본문은 TABLE/KANBAN/LIST에 구현이 집중되어 있다. CHART/DASHBOARD enum과 Widget 테이블만으로 대시보드 기능이 완료됐다고 볼 수 없다.
 
@@ -42,7 +44,7 @@ ViewType은 11종이지만 본문은 TABLE/KANBAN/LIST에 구현이 집중되어
 
 계정 설정, 도움말, 지원/오류 접수, locale 공개 사이트가 있다. `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 과거 경로의 redirect다.
 
-View 설정은 임시 편집 → 미리보기 → 저장/되돌리기이며 낙관적 버전 충돌을 처리한다. folk의 자동 저장 목표와 구분한다. `schedule`, `meeting-note`, `trash`는 업무 기능 완성의 증거가 아닌 잔여 feature 경계다.
+View 설정은 임시 편집 → 미리보기 → 저장/되돌리기이며 낙관적 버전 충돌을 처리한다. Bonsai 화면별로 조사할 저장 방식과 구분한다. `schedule`, `meeting-note`, `trash`는 업무 기능 완성의 증거가 아닌 잔여 feature 경계다.
 
 ## Admin Web
 
@@ -50,9 +52,9 @@ View 설정은 임시 편집 → 미리보기 → 저장/되돌리기이며 낙�
 
 ## 미완성 / 새로 필요한 범위
 
-folk Group/People/Companies, 그룹별 필드·권한, 상세 흐름, 완전한 Group 멤버십 조작, Pipeline 카드 이동, view 생성·삭제 전체 흐름, 업무 메모·작업·상호작용, 가져오기/내보내기, 캠페인·연동·AI·대시보드 등은 [기능 대응표](FOLK_FEATURE_PARITY_MATRIX.md)로 관리한다.
+Bonsai의 고객·거래·견적·합의 문서·프로젝트·작업·시간·청구·수금·포털·인력·보고서·자동화·연동·설정 등의 전체 목표는 [기능 대응표](BONSAI_FEATURE_PARITY_MATRIX.md)로 관리한다.
 
-과거 고정형 Company/Contact/Product/Deal 구현은 제거된 이력이 있다. 그 사실이 새 folk 연락처 모델 도입 금지를 의미하지 않는다. [당시 제거 기록](../../SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md), [2026-11-14 회고](PROJECT_RETROSPECTIVE.md)는 역사 자료다.
+과거 고정형 Company/Contact/Product/Deal 구현은 제거된 이력이 있다. 그 사실이 새 Bonsai 연락처 모델 도입 금지를 의미하지 않는다. [당시 제거 기록](../../SOFTWARE_AGENT/DB_SCHEMA/LEGACY_REMOVED_DOMAINS.md), [2026-11-14 회고](PROJECT_RETROSPECTIVE.md)는 역사 자료다.
 
 ## 검증 범위 표시
 

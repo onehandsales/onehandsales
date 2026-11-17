@@ -1,23 +1,24 @@
 # UX Writing Guide
 
 Status: Current
-Date: 2026-11-15
+Updated: 2026-11-17
 
-folk 화면의 문구·맥락을 수집하고 OneHand CRM의 지원 locale에 대응시킨다. 번역으로 기능 의미가 바뀌지 않게 원문·번역·출처를 함께 관리한다.
+Bonsai 원문의 문구·맥락·화면 식별자와 번역 후보를 함께 기록한다. 아래는 학습용 대응이며 최종 locale 계약이 아니다.
 
-| 원문 개념 | 번역 후보 |
+| 원문 개념 | 번역 후보·주의 |
 | --- | --- |
-| People / Person | 사람 / 담당자 — 실제 맥락 확인 |
-| Companies / Company | 회사 |
-| Group | 그룹 |
-| View | 보기 |
-| Table / Pipeline | 테이블 / 파이프라인 |
-| Custom field | 사용자 지정 필드 |
-| Custom object | 사용자 지정 객체 — 실제 UI 노출 확인 |
-| Notes / Tasks | 메모 / 할 일 |
+| Client / Company / Contact | 고객 / 회사 / 담당자 — 계정 회사와 고객 회사를 구분 |
+| Deal / Pipeline | 거래 / 영업 단계 |
+| Estimate | 견적 계산·산정 |
+| Document / Agreement | 문서 / 합의·계약 문서 — 화면 맥락에 맞춰 확정 |
+| Project / Task | 프로젝트 / 작업 |
+| Time entry / Timesheet | 시간 기록 / 타임시트 |
+| Invoice / Payment | 청구서 / 결제·입금 — 서로 다른 상태 |
+| Retainer | 리테이너 — 과금 주기와 포함 업무 설명 필요 |
+| Budget / Expense | 예산 / 비용 |
+| Custom field / Custom view | 사용자 정의 필드 / 사용자 정의 보기 |
+| Client Portal | 고객 포털 |
 
-번역 후보는 구현 계약이 아니다. 원본의 사용자 노출 여부와 주변 문장을 확인한 후 확정한다. Kit에 맞춘 직군별 용어 치환은 적용하지 않는다.
+생성·저장·발송·서명·입금 완료를 구분한다. 성공하지 않은 저장이나 외부 동작을 완료로 표시하지 않는다. 삭제·취소·보관·연결 해제 문구에 영향과 가능한 다음 행동을 담는다.
 
-버튼은 수행할 행동을, 오류는 실패 원인과 가능한 다음 행동을 간결하게 설명한다. 성공하지 않은 저장·동기화를 완료했다고 표시하지 않는다. 삭제 문구는 Group 제외와 Workspace 삭제, View 삭제를 구분한다.
-
-제품명은 OneHand CRM을 유지하며 실제 구현되지 않은 기능을 공개 소개에서 제공 중이라고 쓰지 않는다.
+제품명은 OneHand CRM을 유지한다. Kit별 용어 치환을 적용하거나 미구현 기능을 제공 중이라고 소개하지 않는다.

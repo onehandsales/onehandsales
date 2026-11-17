@@ -1,6 +1,8 @@
 # Time And Timezone Policy
 
-현재 사용자 프로필·인증·시스템 audit의 시각 처리 기준이다. folk의 업무 날짜·기한 정책은 아래 전환 경계에 따라 별도로 확인한다.
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
+현재 사용자 프로필·인증·시스템 audit의 시각 처리 기준이다. Bonsai의 업무 날짜·기한 정책은 아래 전환 경계에 따라 별도로 확인한다.
 
 ## 저장 원칙
 
@@ -21,8 +23,8 @@
 - Frontend는 UTC string을 그대로 렌더링하지 않고 사용자 표시 기준으로 변환한다.
 - 세션 만료와 최근 활동 표시는 같은 formatter를 공유한다.
 
-## folk 전환 경계
+## Bonsai 전환 경계
 
-- `User.timeZone` 표시 기준을 Tasks의 오늘/지연 분류, 반복, 알림 계산에 일괄 적용하지 않는다. 공식 Tasks 문서에는 Workspace timezone을 사용하는 설명과 사용자 시간대 표현이 함께 있다.
-- [F16 조사 및 미확인 사항](../../UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md)에 따라 화면·알림 동작을 대조하고, [DB 전환안](FOLK_SCHEMA_PLAN.md)에서 업무별 시간대 계약을 정한다. 현재 Workspace에 시간대 설정이 구현되었다는 뜻은 아니다.
+- `User.timeZone` 표시 기준을 Tasks의 오늘/지연 분류, 반복, 알림 계산에 일괄 적용하지 않는다. 작업 기한·예약·반복·프로젝트 과금 주기의 기준 시간대는 기능별 공식 자료와 실제 계정으로 확인한다.
+- [B07·B08·B18·B27 및 시간대 미확인 사항](../../UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)에 따라 화면·알림 동작을 대조하고, [DB 전환안](BONSAI_SCHEMA_PLAN.md)에서 업무별 시간대 계약을 정한다. 현재 Workspace에 시간대 설정이 구현되었다는 뜻은 아니다.
 - 날짜만 있는 값과 특정 시점을 나타내는 instant를 구분한다. 모든 커스텀 날짜 필드·작업 기한을 UTC timestamp로 일괄 변환하는 설계를 이 문서만으로 확정하지 않는다.

@@ -1,6 +1,8 @@
 # PM 결정 기록
 
-현재 기준은 [000 확정 결정](000_확정_결정.md)과 [036 folk 전환](036_folk_benchmark_transition.md)이다. 역사 자료의 규칙은 새 작업의 선행 조건이 아니다.
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
+현재 기준은 [000 확정 결정](000_확정_결정.md)과 [036 Bonsai 전환](036_bonsai_benchmark_transition.md)이다. 역사 자료의 규칙은 새 작업의 선행 조건이 아니다.
 
 | 문서 | 적용 상태 |
 | --- | --- |
@@ -26,4 +28,4 @@
 | [033_workspace_team_scope_policy.md](033_workspace_team_scope_policy.md) | Historical / 036으로 대체 |
 | [034_first_kit_selection_policy.md](034_first_kit_selection_policy.md) | Historical / 036으로 대체 |
 | [035_project_pause_and_portfolio_preservation.md](035_project_pause_and_portfolio_preservation.md) | Historical / 036으로 대체 |
-| [036_folk_benchmark_transition.md](036_folk_benchmark_transition.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |
+| [036_bonsai_benchmark_transition.md](036_bonsai_benchmark_transition.md) | 현행 — 사용자 최신 지시와 036의 충돌 없는 범위 |

@@ -1,10 +1,12 @@
 # Backend Architecture
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 ## 현재와 목표
 
 현재 Auth/User/Workspace, Object/List/Attribute/Record/View, 지원·공개 문의·Health가 있다. [구현 현황](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)과 [CRM 전환 설계](CRM_CORE_BACKEND.md)를 구분한다.
 
-folk 전환은 기본 연락처와 Group별 확장을 중심으로 검토한다. 기존 기술 계층·트랜잭션·API 계약 규칙은 유지한다. 첫 Kit 선택이나 고정 연락처 도메인 금지는 현행 제약이 아니다.
+Bonsai 전환은 고객·거래·견적·문서·수행·청구와 권한을 중심으로 검토한다. 기존 기술 계층·트랜잭션·API 계약 규칙은 유지한다. 첫 Kit 선택이나 고정 연락처 도메인 금지는 현행 제약이 아니다.
 
 ## 계층 구조
 
@@ -66,7 +68,7 @@ folk 전환은 기본 연락처와 Group별 확장을 중심으로 검토한다.
 - 인증이 필요한 접수 row는 `userId`를 갖는다.
 - 공개 문의 row는 User FK 없이 독립 원장으로 저장한다.
 - schema 변경은 새 migration으로 추가한다.
-- 목표 schema는 [FOLK_SCHEMA_PLAN](../../DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 따른다. CRM_CORE_SCHEMA_DRAFT는 기존 적용 이력이며 새 목표와 구분한다.
+- 목표 schema는 [BONSAI_SCHEMA_PLAN](../../DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)을 따른다. CRM_CORE_SCHEMA_DRAFT는 기존 적용 이력이며 새 목표와 구분한다.
 
 ## 검증 정책
 

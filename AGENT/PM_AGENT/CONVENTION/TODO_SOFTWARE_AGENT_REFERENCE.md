@@ -1,12 +1,14 @@
 # TODO Software Agent Reference
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 ## 1. 목적
 
 `TODO` 아래에 작성되는 모든 계획 문서, API 계약 문서, FE/BE 작업 문서는 작성 전에 `AGENT/SOFTWARE_AGENT` 전체 정본을 먼저 참고해야 한다.
 
 이 문서는 그 필수 선행 문서 목록과 TODO 문서 작성 시 반드시 구체화해야 하는 API/비즈니스 로직 기준을 고정한다.
 
-사용자가 제외한 경로에는 이 문서의 일반 작업 규칙보다 사용자 지시를 우선한다. 이번 folk 문서 정비는 TODO·TODO_LOG를 읽거나 수정하지 않는다.
+사용자가 제외한 경로에는 이 문서의 일반 작업 규칙보다 사용자 지시를 우선한다. 이번 Bonsai 문서 정비는 TODO·TODO_LOG를 읽거나 수정하지 않는다.
 
 ## 2. 필수 선행 문서
 
@@ -14,10 +16,10 @@
 
 ### 현재 전환 정본
 
-- [folk 전환 영향](../../SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)
-- [folk DB 계획](../../SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)
+- [Bonsai 전환 영향](../../SOFTWARE_AGENT/COMMON/BONSAI_TRANSITION_MATRIX.md)
+- [Bonsai DB 계획](../../SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)
 - [현재 구현](../PLANNING/IMPLEMENTATION_STATUS.md)
-- [folk 근거·화면 조사](../../UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md)
+- [Bonsai 근거·화면 조사](../../UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)
 
 ### Backend Agent
 

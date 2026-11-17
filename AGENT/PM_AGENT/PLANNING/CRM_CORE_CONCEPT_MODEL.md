@@ -1,21 +1,24 @@
 # CRM Core Concept Model
 
-Status: folk target concepts
-Date: 2026-11-15
+Status: Bonsai 업무 개념 / 물리 모델 미확정
+Updated: 2026-11-17
 
-이 문서는 사용자 관점의 개념이다. 실제 테이블 이름은 [DB 설계안](../../SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)에서 정한다. 근거는 [공식 자료](../../UXUI_AGENT/PLANNING/FOLK_BENCHMARK_RESEARCH.md)를 따른다.
+공식 근거는 [조사 정본](../../UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md), 실제 테이블 제안은 [DB 계획](../../SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)에서 관리한다.
 
-| 개념 | 의미 | 기존 구현과 차이 |
-| --- | --- | --- |
-| Workspace | 연락처·멤버·접근의 경계 | 현재 기반은 있으나 folk 정책은 대조 필요 |
-| People / Companies | 기본 연락처 종류 | 사용자 임의 Object가 아닌 명시적 기반 |
-| Group | 연락처를 모으고 추가 정보·공유를 관리 | List의 행 집합과 완전히 같지 않음 |
-| Custom field | 그룹·대상에 속한 추가 정보 | 범용 Object/List Attribute의 범위를 좁힘 |
-| Custom object | 그룹 안에서 정의한 업무 대상 | Deals 등; Workspace 전체의 범용 Object와 구분 |
-| 객체 탭 | People/Companies/각 Custom object 유형의 화면 구분 | 물리 테이블과 1:1일 필요 없음 |
-| View | 같은 대상의 표시·필터·정렬 방식 | Group과 데이터 자체를 복제하지 않음 |
-| Table / Pipeline | 목록 표시 방식 | Dashboard와 구분 |
-| Notes / Tasks / Interactions | 기록·후속 행동·접촉 이력 | 공통 Next Action 필드 하나로 대체하지 않음 |
-| Dashboard | 그룹 데이터 집계·차트 | 일반 목록 View와 별도 기능 |
+| 개념 | 의미·구분 |
+| --- | --- |
+| 계정·Workspace·멤버 | 우리 서비스의 데이터·권한 경계. Bonsai 계정의 조직과 고객 회사를 구분 |
+| Client / Company / Contact | 일을 의뢰하는 고객 주체와 연락 담당자 |
+| Deal | 성사시키려는 영업 건. 고객이나 프로젝트와 같은 개념이 아님 |
+| Service / Rate card | 재사용할 서비스와 가격·역할별 단가 |
+| Estimate | 수행 범위·금액·원가 등을 산정하는 견적 |
+| Document / Agreement | 고객에게 전달·서명받는 문서와 그 상태 |
+| Project | 실제 수행할 업무와 과금·예산을 관리하는 단위 |
+| Task / Time entry | 해야 할 일과 실제 투입 시간. 완료와 청구 여부는 별도 |
+| Budget / Expense / Allocation | 예산, 발생 비용, 인력 배정 |
+| Invoice / Payment | 지급 요청과 실제 입금·결제. 부분 입금·잔액을 구분 |
+| Portal / Sharing | 외부 고객에게 노출하는 자료와 접근 범위 |
+| Custom field / View | 지원 업무 대상의 추가 필드와 모듈별 표시·필터 설정 |
+| Automation / Integration / Report | 업무 사건 처리, 외부 동기화, 의미가 정해진 집계 |
 
-같은 사람이 “거래처”와 “파트너” 두 그룹에 있으면 이름·연락처는 공유하면서 각 그룹의 상태는 다르게 관리할 수 있어야 한다. 이 예시는 우리 설계 검증 시나리오이며 folk 내부 DB 구조의 증거는 아니다.
+같은 고객에게 여러 거래와 프로젝트, 여러 청구가 생기는 사례를 검증한다. 정확한 카디널리티·필수 관계는 API와 실계정 근거로 정한다. 문서 전송이나 프로젝트 생성이 모든 흐름에서 자동이라고 가정하지 않는다.

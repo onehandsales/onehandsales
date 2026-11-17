@@ -1,6 +1,8 @@
 # Legacy Removed Domains
 
-> Historical removal record — 2026-11-15: 아래는 과거 고정형 도메인 제거 기록이다. folk의 People/Companies/Custom objects 도입을 금지하는 현재 규칙이 아니다. 새 목표는 [FOLK_SCHEMA_PLAN](FOLK_SCHEMA_PLAN.md)을 따른다.
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
+> Historical removal record — 2026-11-15: 아래는 과거 고정형 도메인 제거 기록이다. Bonsai 재현에 필요한 고객·거래·프로젝트 등 업무 모델 도입을 금지하는 현재 규칙이 아니다. 새 목표는 [BONSAI_SCHEMA_PLAN](BONSAI_SCHEMA_PLAN.md)을 따른다.
 
 Status: Removed Domain Record
 Date: 2026-09-13

@@ -1,21 +1,20 @@
 # Service Overview
 
 Status: Target product overview
-Date: 2026-11-15
+Updated: 2026-11-17
 
-OneHand CRM은 folk를 기준으로 연락처, 관계, 그룹별 업무 정보와 후속 활동을 관리하는 제품을 만든다. 전체 기능·UX 대응이 목표이며 현재 배포 기능의 소개문이 아니다.
+OneHand CRM은 Bonsai를 기준으로 고객 업무를 영업부터 수행·청구까지 연결하는 제품을 만든다. 아래는 목표 설명이며 현재 제공 중인 기능 소개가 아니다.
 
-## 사용자 흐름
+## 이해를 위한 업무 흐름
 
 ```text
-가입·Workspace 진입
- → 연락처 등록 또는 가져오기
- → Group에 People/Companies 포함
- → 객체별 탭에서 Table/Pipeline으로 확인
- → 필드·메모·작업·상호작용 기록
- → 검색·필터·후속 연락·공유
+고객·담당자 → 거래·견적 → 제안·계약 문서
+                         → 프로젝트·작업·시간·비용 → 청구서·입금
+고객 포털 · 팀 역할/권한 · 일정/인력 배정 · 보고서 · 자동화/연동
 ```
 
-Custom objects/Deals, 캠페인, 외부 연동, Dashboard 등도 최종 조사 범위다. 특정 산업이나 개인 사용자만을 전제로 제한하지 않는다.
+거래 없이 프로젝트나 청구서를 만드는 경로도 조사한다. 위 화살표는 필수 순서·일대일 관계·자동 생성 계약을 의미하지 않는다.
 
-[제품 방향](PRODUCT_DIRECTION.md), [기능 대응표](FOLK_FEATURE_PARITY_MATRIX.md), [현재 구현](IMPLEMENTATION_STATUS.md)을 구분해 사용한다.
+대표는 전체 현황, 영업 담당자는 거래와 후속 연락, 프로젝트 담당자는 수행과 예산, 실무자는 작업과 시간, 고객은 공유 문서와 청구를 확인하는 시나리오를 사용한다.
+
+[제품 방향](PRODUCT_DIRECTION.md), [전체 기능 대응표](BONSAI_FEATURE_PARITY_MATRIX.md), [현재 구현](IMPLEMENTATION_STATUS.md)을 함께 읽는다.

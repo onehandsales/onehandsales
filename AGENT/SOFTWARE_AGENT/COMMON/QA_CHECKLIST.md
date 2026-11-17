@@ -1,5 +1,7 @@
 # OneHand CRM QA 체크리스트
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 Date: 2026-11-15
 
 ## 검증 선택
@@ -20,14 +22,14 @@ Date: 2026-11-15
 
 Auth·refresh·logout, Workspace 진입·접근 검사, Object/List 생성, Record 생성·값 수정, View 조회·미리보기·설정 저장·409 복구, 사이드바/즐겨찾기, 계정·지원·공개 문의를 변경 영향에 따라 확인한다.
 
-## folk 전환
+## Bonsai 전환
 
-- [ ] 연락처 기본 정보는 여러 Group에서 일관되며 그룹 필드 값은 분리된다.
-- [ ] Group/객체 탭/View/레코드의 소유 범위가 일치한다.
-- [ ] Table/Pipeline 이동·필터·정렬·자동 저장과 새로고침이 연결된다.
-- [ ] Custom object와 사람/회사 연결이 허용 범위 안에 있다.
+- [ ] 고객·거래·견적·문서·프로젝트·청구의 연결과 수정 범위가 일관된다.
+- [ ] Workspace·업무 대상·멤버·고객 포털의 소유·공유 범위가 일치한다.
+- [ ] 목록·보드 이동·필터·정렬과 화면별 저장·새로고침이 연결된다.
+- [ ] 견적·발송 문서·청구·입금의 금액·통화·상태·중복 처리가 계약과 일치한다.
 - [ ] 그룹 제외·그룹 삭제·레코드 삭제·View 삭제가 구분된다.
 - [ ] 메모·작업·동기화 데이터의 공개 범위와 권한이 유지된다.
 - [ ] 이전 데이터·옵션·연결·설정이 유실되지 않는다.
 - [ ] mock과 실제 기능, 미확인과 검증 완료가 구분된다.
-- [ ] [UX 검토](../../UXUI_AGENT/UX_REVIEW_CHECKLIST.md)와 [기능 대응표](../../PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md)가 갱신된다.
+- [ ] [UX 검토](../../UXUI_AGENT/UX_REVIEW_CHECKLIST.md)와 [기능 대응표](../../PM_AGENT/PLANNING/BONSAI_FEATURE_PARITY_MATRIX.md)가 갱신된다.

@@ -1,9 +1,11 @@
 # 기존 CRM Core Schema — 적용 이력
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 Status: Historical implementation record
 Updated: 2026-11-15
 
-목표 DB 설계는 [FOLK_SCHEMA_PLAN](FOLK_SCHEMA_PLAN.md)이다. 실제 현재 구조는 [schema.prisma](../../../BE/prisma/schema.prisma)와 [DB README](README.md)를 따른다.
+목표 DB 설계는 [BONSAI_SCHEMA_PLAN](BONSAI_SCHEMA_PLAN.md)이다. 실제 현재 구조는 [schema.prisma](../../../BE/prisma/schema.prisma)와 [DB README](README.md)를 따른다.
 
 이 문서의 이전 1~8절은 Kit 기반 초안이었으며 현재 전환안으로 대체했다. 아래 9절 이후는 날짜별 실제 설계·적용 기록을 보존한다. 당시 “후속”·“현재”는 각 기록 시점 기준이다. 이번 문서 작업에서 원격 DB 적용 상태를 다시 확인하지 않았다.
 

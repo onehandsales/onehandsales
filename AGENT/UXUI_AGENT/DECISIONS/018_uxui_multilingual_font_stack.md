@@ -1,12 +1,14 @@
 # UX/UI Multilingual Font Stack Decision
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 Date: 2026-09-12
 
 ## 1. 결정
 
 OneHand CRM의 User Web과 Admin Web은 다국어 업무 도구에 맞는 조용하고 읽기 쉬운 typography를 기준으로 한다.
 
-기존 다국어 폰트 스택은 현재 코드의 fallback이다. folk 화면 실측 후 글꼴·크기·행간을 대조하며 025 기준을 우선한다.
+기존 다국어 폰트 스택은 현재 코드의 fallback이다. Bonsai 화면 실측 후 글꼴·크기·행간을 대조하며 025 기준을 우선한다.
 
 ## 2. 기준
 
@@ -26,7 +28,7 @@ OneHand CRM의 User Web과 Admin Web은 다국어 업무 도구에 맞는 조용
 ## 4. 검수 기준
 
 - 한국어 문장이 버튼 안에서 잘리지 않는가?
-- 긴 Group·객체 이름이나 관리 대상 이름이 layout을 깨지 않는가?
+- 긴 고객·거래·프로젝트·업무 이름이 layout을 깨지 않는가?
 - table/list row에서 숫자와 상태가 읽기 쉬운가?
 - validation message가 모바일에서 입력 영역을 가리지 않는가?
 

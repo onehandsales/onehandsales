@@ -1,10 +1,12 @@
 # DB Schema
 
-> 2026-11-15 현재 schema는 32개 model / 25개 enum이다. 목표 전환안은 [FOLK_SCHEMA_PLAN](FOLK_SCHEMA_PLAN.md), API/FE 상태는 [IMPLEMENTATION_STATUS](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다. 아래 날짜별 DB 적용 내역은 당시 기록이며 이번 작업에서 원격 DB를 재검증하지 않았다.
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
+> 2026-11-15 현재 schema는 32개 model / 25개 enum이다. 목표 전환안은 [BONSAI_SCHEMA_PLAN](BONSAI_SCHEMA_PLAN.md), API/FE 상태는 [IMPLEMENTATION_STATUS](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다. 아래 날짜별 DB 적용 내역은 당시 기록이며 이번 작업에서 원격 DB를 재검증하지 않았다.
 
 ## 1. 목적
 
-이 폴더는 OneHand CRM의 현재 Prisma schema, folk 전환 설계안, 제거된 레거시 도메인 기록을 관리한다.
+이 폴더는 OneHand CRM의 현재 Prisma schema, Bonsai 전환 설계안, 제거된 레거시 도메인 기록을 관리한다.
 
 현재 코드에 없는 모델을 활성 DB schema처럼 설명하지 않는다.
 
@@ -79,7 +81,7 @@ DB 적용 범위는 인증/세션, 사용자 프로필, 지원/공개 문의 접
 
 Enum 이름은 `ViewTypeEnum`, `ViewSourceScopeEnum`, `ViewAttributeDisplayRoleEnum`, `ViewConditionGroupOperatorEnum`, `ViewMultiValueMatchModeEnum`, `ViewSortDirectionEnum`, `ViewGroupRoleEnum`, `ViewWorkDependencyTypeEnum`, `ViewWorkDependencyUnitEnum`이다.
 
-2026-10-16 당시 View 설계는 `revision`과 `groupKeyHash`를 제외하고 `groupKeyJson`을 유지했으며, PK 외 추가 UNIQUE·조회 인덱스·CHECK를 넣지 않았다. 이는 folk 전환 schema의 제약·인덱스 금지 규칙이 아니다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. 즐겨찾기 조회는 현재 멤버·Workspace와 연결 View의 Workspace를 확인한다. 헤더 메뉴 조회도 Workspace/View 범위와 조회된 설정의 Attribute·그룹·옵션·위젯 참조를 application에서 검증한다.
+2026-10-16 당시 View 설계는 `revision`과 `groupKeyHash`를 제외하고 `groupKeyJson`을 유지했으며, PK 외 추가 UNIQUE·조회 인덱스·CHECK를 넣지 않았다. 이는 Bonsai 전환 schema의 제약·인덱스 금지 규칙이 아니다. 기본 FK는 단일 ID 참조이므로 같은 Workspace/View/Attribute 소속까지 보장하지 않는다. 즐겨찾기 조회는 현재 멤버·Workspace와 연결 View의 Workspace를 확인한다. 헤더 메뉴 조회도 Workspace/View 범위와 조회된 설정의 Attribute·그룹·옵션·위젯 참조를 application에서 검증한다.
 
 후속 복합 FK·필요 UNIQUE·CHECK·조회 인덱스와 Object/List 영역 보완 후보는 [검토 문서](../../../TODO/VIEW_SCHEMA_DEFERRED_CONSTRAINTS.md)에 이유와 함께 기록한다. 기존 Object/List의 제약과 migration SQL은 그대로 유지한다.
 
@@ -131,7 +133,7 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 
 2026-11-01 추가 사용자 승인으로 실제 영업 Workspace의 보류8타입 View를 전환했다. 저장된 View는 TABLE18/KANBAN2/LIST4, 총24개이며, View ID·Object/List 소속·기본 선택 순서와 원본 Record54개/Entry56개를 보존했다. 표시 역할·타입별 config·피벗 그룹 역할을 맞추고 제목/목록 표시5행을 추가했으며 대시보드 위젯3행의 원본·배치는 로컬 백업 후 해제했다. 필터·정렬·단계 설정·업무 관계는 보존했다. 이는 저장 데이터 유지보수이며 ViewTypeEnum11종·schema·migration·RLS·권한·ENV는 유지한다. [전환 도구·검증·복구 절차](../../../BE/prisma/VIEW_TYPE_CONVERSION.md)를 따른다.
 
-기존 Attribute/List/View 적용 이력은 `CRM_CORE_SCHEMA_DRAFT.md`에 보존한다. folk 목표와 미확정 설계는 `FOLK_SCHEMA_PLAN.md`에서 관리하며 구현 전 API·데이터 계약을 연결한다.
+기존 Attribute/List/View 적용 이력은 `CRM_CORE_SCHEMA_DRAFT.md`에 보존한다. Bonsai 목표와 미확정 설계는 `BONSAI_SCHEMA_PLAN.md`에서 관리하며 구현 전 API·데이터 계약을 연결한다.
 
 2026-11-01 즐겨찾기의 특정 View를 여는 헤더 GET을 기존 view-definition 모듈에 추가하고 User Web에서 같은 헤더·본문으로 연결했다. 멤버십과 Workspace/View ID를 확인하고 실제 개인 즐겨찾기 상태·Object/List 요약을 반환한다. 기존 FK의 이중/무소속을 보존하며 schema·migration·업무 DB 데이터는 변경하지 않는다. [계약·Backend 검토·Frontend 연결 결과](../../../TODO/VIEW_HEADER_BY_VIEW_ID_API_PLAN/README.md)를 따른다. 격리 PostgreSQL을 포함한 Backend582개·Frontend 단위94개·Chromium64개 테스트가 통과했고 실제 Supabase View24개의 헤더·본문·메뉴를 읽기 전용으로 확인했다.
 
@@ -151,7 +153,7 @@ List, ListEntry, ListEntryValue와 View 10개 모델의 DB 기반은 구현했�
 | `PUBLIC_CONTACT_REQUEST_SCHEMA.md` | 공개 문의 schema 설명 |
 | `TIME_AND_TIMEZONE_POLICY.md` | 시간/타임존 저장 정책 |
 | `CRM_CORE_SCHEMA_DRAFT.md` | 기존 코어의 날짜별 설계·SQL 적용 이력 |
-| [FOLK_SCHEMA_PLAN](FOLK_SCHEMA_PLAN.md) | folk 목표 모델과 32개 현재 모델의 처리 후보 |
+| [BONSAI_SCHEMA_PLAN](BONSAI_SCHEMA_PLAN.md) | Bonsai 목표 모델과 32개 현재 모델의 처리 후보 |
 | `LEGACY_REMOVED_DOMAINS.md` | 제거된 레거시 도메인 기록 |
 
 ## 7. 관련 문서

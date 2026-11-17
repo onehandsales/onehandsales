@@ -1,13 +1,17 @@
 # SOFTWARE_AGENT 구현 책임 분리 결정
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 Updated: 2026-09-08
 
 ## 1. 결정
 
-`AGENT/SOFTWARE_AGENT`의 직접 하위 구조는 다음 세 폴더를 기준으로 둔다.
+`AGENT/SOFTWARE_AGENT`의 직접 하위 구조는 다음 책임별 폴더와 공통 안내를 기준으로 둔다.
 
 ```text
 SOFTWARE_AGENT/
+  README.md
+  COMMON/
   FRONT_AGENT/
   BACKEND_AGENT/
   DB_SCHEMA/
@@ -29,7 +33,7 @@ Frontend와 Backend는 같은 제품 요구사항을 구현하지만 책임과 �
 
 ## 3. 적용 규칙
 
-- `SOFTWARE_AGENT` 직하에는 `FRONT_AGENT`, `BACKEND_AGENT`, `DB_SCHEMA` 외의 폴더나 문서를 두지 않는다.
+- `SOFTWARE_AGENT` 직하는 `README.md`, `COMMON`, `FRONT_AGENT`, `BACKEND_AGENT`, `DB_SCHEMA`로 관리한다. `COMMON`은 현재/목표 경계·API 목록·전환 의존·공통 QA·환경 안내를 담당하고 역할별 구현 규칙을 중복하지 않는다.
 - Backend 관련 문서는 `SOFTWARE_AGENT/BACKEND_AGENT` 아래에 둔다.
 - User Web/Admin Web 관련 문서는 `SOFTWARE_AGENT/FRONT_AGENT` 아래에 둔다.
 - DB schema 관련 문서는 `SOFTWARE_AGENT/DB_SCHEMA` 아래에 둔다.

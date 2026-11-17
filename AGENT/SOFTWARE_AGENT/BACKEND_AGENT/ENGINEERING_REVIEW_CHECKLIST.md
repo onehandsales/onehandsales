@@ -1,5 +1,7 @@
 # Backend 엔지니어링 리뷰 체크리스트
 
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
 ## 1. 목적
 
 이 문서는 Backend 구현 결과를 검토할 때 사용하는 품질 기준이다.
@@ -45,7 +47,7 @@
 - API 계약에서 시간 필드가 `UTC instant`, `local date-time + timeZone`, `날짜 전용` 중 무엇인지 명시되어 있는가?
 - 구현한 API의 요청/응답 필드가 User Web/Admin Web의 실제 API client와 맞는가?
 - Admin Web용 API를 추가할 때 `FE/admin-web`의 현재 범위와 별도 제품 결정을 먼저 확인했는가?
-- CRM API가 folk의 연락처·그룹·사용자 필드 의미와 현재 코드를 구분하고 전환 계약을 따르는가?
+- CRM API가 Bonsai의 고객·거래·견적·문서·수행·청구 의미와 현재 코드를 구분하고 전환 계약을 따르는가?
 - CRM Core data 조회와 mutation이 Workspace ownership 경계를 검증하는가?
 - 연락처·그룹 포함·기본 View·연결 같은 다중 row 변경이 transaction 기준을 갖는가?
 - DB schema draft, API 계약, FE feature 사용 방식이 같은 개념 이름을 바라보는가?

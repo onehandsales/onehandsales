@@ -1,18 +1,20 @@
 # User Flow and Screens
 
-Date: 2026-11-15
+Updated: 2026-11-17
 
-현재 route는 [IMPLEMENTATION_STATUS](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md), 목표 기능은 [대응표](../../PM_AGENT/PLANNING/FOLK_FEATURE_PARITY_MATRIX.md)를 따른다.
+현재 route는 [구현 기록](../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md), 목표 전체 범위는 [기능 대응표](../../PM_AGENT/PLANNING/BONSAI_FEATURE_PARITY_MATRIX.md)를 따른다.
 
-| 화면군 | 조사할 흐름 | 현재와의 차이 |
+| 화면군 | 조사할 흐름 | 주요 근거 |
 | --- | --- | --- |
-| 가입·Workspace | 생성·초대·전환·초기 연결 | 기존 직업 선택은 folk 기준 아님 |
-| 연락처 | 전체 People/Companies, 등록·검색·상세 | 범용 Object 화면만 있음 |
-| Group | 생성·포함·공유·삭제·객체 탭 | List 구조와 다른 의미 |
-| View | Table/Pipeline·필터·정렬·컬럼·저장 | 현재 명시적 저장 UI |
-| 업무 객체 | 타입 생성·레코드·연결 | 그룹 범위 재설계 필요 |
-| 활동 | Notes/Tasks/Interactions·알림 | 업무 구현 필요 |
-| 확장 기능 | 메시지·연동·AI·Dashboard·설정 | 상세 조사 및 구현 필요 |
-| Admin Web | 관리자 확인·운영 | 현재 권한 확인 앱 유지 |
+| 시작·팀 | 가입·초대·설정·역할별 첫 화면 | B01, B23; 화면 대기 |
+| 고객·영업 | 회사·담당자→거래→후속 작업·연락 이력 | B02, B19, B27 |
+| 견적·문서 | 서비스·단가→견적→문서 편집→전송·서명 | B03~B05, B14, B25~B26, B29 |
+| 수행 | 프로젝트→작업·하위 작업·일정→시간·비용·예산 | B06~B09, B13, B15 |
+| 청구 | 청구 항목→발행→결제/수동 입금→잔액·반복 | B10~B11, B16 |
+| 고객 측 | 포털 접근→문서·파일·작업·청구 확인 | B12 |
+| 유입·예약 | 양식→응답, 예약→캘린더·변경 | B17~B18 |
+| 공통·확장 | 필드·보기·검색·알림·보고서·자동화·연동·설정 | B20~B24, B27~B31 |
 
-각 화면은 정상·빈·로딩·실패·권한 제한 상태를 수집한다. 전체 기능 수집이 끝났다고 가정하지 않는다. 첫 조사 단위는 [FIRST_USE_FLOW](FIRST_USE_FLOW.md), 기준 양식은 [FOLK_BENCHMARK_RESEARCH](FOLK_BENCHMARK_RESEARCH.md)다.
+근거 ID는 [조사 정본](BONSAI_BENCHMARK_RESEARCH.md)에 있다. 각 화면은 정상·빈·로딩·실패·권한 제한·취소·재진입과 viewport를 기록한다. 화면군별 route·탭·패널 구성을 미리 고정하지 않는다.
+
+고객 포털과 OneHand 운영자용 Admin Web은 별개다. 현재 Admin은 로그인과 관리자 확인 중심이며 고객 포털 구현의 근거가 아니다.

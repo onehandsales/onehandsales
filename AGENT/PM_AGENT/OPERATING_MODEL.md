@@ -1,11 +1,13 @@
 # 역할별 문서 운영
 
-현재 기준은 [folk 전환 결정](DECISIONS/036_folk_benchmark_transition.md)이다.
+참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+
+현재 기준은 [Bonsai 전환 결정](DECISIONS/036_bonsai_benchmark_transition.md)이다.
 
 | 역할 | 책임 | 주요 산출물 |
 | --- | --- | --- |
 | PM | 최종 범위·단계·수용 기준 | PRD, 기능 대응표, 결정 |
-| UXUI | 원본 근거·흐름·화면·상태 | Nicelydone/실계정 조사, 화면 계약 |
+| UXUI | 원본 근거·흐름·화면·상태 | Gummble/실계정 조사, 화면 계약 |
 | Software | API·DB·FE/BE·검증 | 전환 영향, schema 제안, 기술 계약 |
 
 ## 작업 흐름
