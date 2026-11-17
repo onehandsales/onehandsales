@@ -1,0 +1,253 @@
+# Time Tracking 플로우 분석
+
+검토 상태: **R1 이미지 검토·문서 대조 완료 / R2 교차 검토 반영**. 실제 이미지 확인 **6/6단계**. 계정 재현은 수행하지 않았다.
+
+관찰은 Gummble 정적 이미지, 문서 확인은 공식 도움말·API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재와 실행 결과를 구분한다.
+
+## 1. 출처와 검토 상태
+
+| 항목 | 기록 |
+| --- | --- |
+| 앱 | Bonsai Web · `bonsai-web` · `c1026782-09a7-45fb-b2d0-7cc1909bf1f4` |
+| Flow ID | `525f8723-dca6-4932-ac6e-d159249090be` |
+| 원본 | [Gummble flow](https://gummble.com/apps/bonsai-web?tab=flows&flow=525f8723-dca6-4932-ac6e-d159249090be) |
+| 버전 | 앱 조회 결과 `Latest`, version ID `2146`. 개별 flow의 제품 빌드·캡처 시점은 응답에 없어 미확인 |
+| 조회일 / 이미지 검토일 | 2026-11-17 이후 세션 조회 / 2026-11-17~2026-11-18 KST (개별 이미지 시각 미기록) |
+| 캡처일 | 미확인. 화면 속 업무 날짜나 샘플 값은 캡처일이 아니다 |
+| 화면 수 / 이미지 검토 | 6단계 / 6단계 |
+| 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
+| 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+
+## 2. 플로우 목적과 연결
+
+시간 기록을 일별 목록으로 조회하고 Insights에서 프로젝트별 시간·금액과 청구 상태 합계를 확인하는 흐름이다.
+
+- 시작은 Dashboard, 종료는 프로젝트별 타임시트의 상세 행·합계다.
+- Starting time tracking 완료 기록과 연결할 수 있는 설명·시간 값이 있지만 정적 캡처에는 레코드 ID가 없다.
+- 수동 추가·행 편집·삭제·필터 내부는 이 루트의 캡처에 포함되지 않는다.
+- FE는 날짜 그룹 목록, 두 탭, 집계 도구, 그래프, 지표, 프로젝트별 보고서로 분리한다.
+
+
+## 3. 전체 단계표
+
+아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
+
+| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
+| --- | --- | --- | --- |
+| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 대시보드 — 프로젝트 타임라인과 손익 요약 | Time Tracking 목록으로 이동. |
+| 02 | [`sc_85b6b26a6c274e51a7f3989d128a3d7f`](https://gummble.com/screens/sc_85b6b26a6c274e51a7f3989d128a3d7f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 시간 기록 일별 목록 | 다음 날짜의 신규 기록이 위 그룹으로 추가된 캡처. 생성 동작은 생략됨. |
+| 03 | [`sc_162b7ea331ba46edb617186815199744`](https://gummble.com/screens/sc_162b7ea331ba46edb617186815199744?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 신규 날짜 그룹의 기록 추가 | Insights로 전환, 기간 Jan23–Feb6으로 표시. |
+| 04 | [`sc_d3f3489589a94070882db77f5ed59bb0`](https://gummble.com/screens/sc_d3f3489589a94070882db77f5ed59bb0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 시간 인사이트 상단 | 같은 값에서 그래프 막대 높이만 다른 캡처. |
+| 05 | [`sc_bdde553aba274d099836b4ff4dc93196`](https://gummble.com/screens/sc_bdde553aba274d099836b4ff4dc93196?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 동일 인사이트의 그래프 높이 차이 | 아래로 스크롤하여 프로젝트별 상세를 확인. |
+| 06 | [`sc_c4505575b3574c75830f11e5c5ec11e3`](https://gummble.com/screens/sc_c4505575b3574c75830f11e5c5ec11e3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 프로젝트별 타임시트 상세 | 조회 흐름 종료. 저장·추가 액션은 없다. |
+
+## 4. 화면별 상세 분석
+
+### 단계 01 — 대시보드 — 프로젝트 타임라인과 손익 요약
+
+- Screen ID: `sc_a333622d5e8c45e0b19ff4c249dc0aca`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3532c829-b612-4d64-8d26-7e96473aa0a8.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `플로우 시작` → 현재 → `sc_85b6b26a6c274e51a7f3989d128a3d7f`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 고정된 왼쪽 사이드바, 상단 Search·Track Time·New, 날짜와 인사말 아래 2열 본문. 왼쪽은 Project Timeline과 Profit & Loss, 오른쪽은 2×2 빠른 생성 카드와 Workflow Plus 홍보 카드다.
+- 입력 항목·필수 표시·기본값: Wednesday, February 14th / Good evening, Joe. 타임라인에 Consulting Project, Design Project with …, Rebranding Project가 있고 JAN 31·TODAY·FEB 28 축이 보인다. 손익 필터는 USD·Last 6 Months. 이 화면에 입력 폼이나 필수 표시는 없다.
+- 버튼·메뉴·안내 문구: 사이드바 Dashboard·Clients·Projects·Tasks, Tools 아래 Invoices·Proposals·Contracts·Time Tracking·Services·Forms·Scheduling, Finances 아래 Bookkeeping. 하단 Invite Team·Get 1 Month Free. 빠른 실행은 Send an invoice·Draft a proposal·Create a contract·Add a form. 홍보 카드에는 X·캐러셀 점·START 14-DAY FREE TRIAL, 우하단 도움말 버튼이 있다.
+- 확인된 상태: Dashboard가 선택되어 있으며 모달·오류·성공 토스트는 없다. 여러 플로우가 공유하는 동일한 시작 이미지다.
+- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다.
+
+#### 동작과 데이터
+
+- 화면 관찰: 프로젝트별 문서 아이콘과 손익 그래프를 한 화면에서 표시한다. 특정 메뉴를 실행했다는 근거는 다음 단계와 함께 판단한다. 홍보의 14일 문구를 계정 전체의 체험 기간으로 일반화하지 않는다.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 날짜와 집계의 기준 시간대, 그래프 산식, 타임라인 아이콘의 정확한 날짜 의미, 역할별 접근 권한, 홍보 노출 조건은 이 이미지로 확인할 수 없다.
+
+#### 모델링 영향
+
+- 후보와 근거: 프로젝트·문서 참조, 기간·통화별 재무 집계, 빠른 생성 진입점 및 공통 내비게이션 후보. 메뉴 노출은 서버 권한의 증거와 구분한다.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 02 — 시간 기록 일별 목록
+
+- Screen ID: `sc_85b6b26a6c274e51a7f3989d128a3d7f`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_85b6b26a6c274e51a7f3989d128a3d7f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/a23314d2-09f2-4807-9ad7-0c33d17ff69d.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_a333622d5e8c45e0b19ff4c249dc0aca` → 현재 → `sc_162b7ea331ba46edb617186815199744`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: Time Tracking 제목 아래 Time Entries/Insights 탭. 검색·Filters·List 도구와 우측 말줄임·Add Hours. 표 열 Task/Description, Project, Value, Member, Time.
+- 입력 항목·필수 표시·기본값: 검색은 비어 있고 Today 그룹 합계01:00:07. Initial Chat 두 행, 동일 프로젝트·고객, JD 아바타. 시간7초/$0.04와1시간/$20.00.
+- 버튼·메뉴·안내 문구: 날짜 그룹 접기 화살표, 각 행 말줄임, Add Hours.
+- 확인된 상태: 데이터가 있는 목록. 오류·로딩·빈 상태는 이 단계에 없음.
+- 단계 간 변화: Time Tracking 목록으로 이동.
+
+#### 동작과 데이터
+
+- 화면 관찰: 동일 작업의 서로 다른 시간기록 두 개를 표시한다. Today와 정확한 업무일자는 별개 표시값이다.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: List의 다른 모드·말줄임 내용·권한별 행 범위·그룹 시간대.
+
+#### 모델링 영향
+
+- 후보와 근거: TimeEntry 개별ID, 작업/설명, 프로젝트·멤버·금액·초 단위 시간; 날짜별 합계 투영 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 03 — 신규 날짜 그룹의 기록 추가
+
+- Screen ID: `sc_162b7ea331ba46edb617186815199744`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_162b7ea331ba46edb617186815199744?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/b744e561-68a5-46b2-aa28-9e6160638988.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_85b6b26a6c274e51a7f3989d128a3d7f` → 현재 → `sc_d3f3489589a94070882db77f5ed59bb0`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 같은 표에 Wed, 7 Feb 2024와 Tue, 6 Feb 2024 두 날짜 그룹.
+- 입력 항목·필수 표시·기본값: Feb7 Creating a proposal 00:01:16/$0.42; Feb6 Initial Chat 두 행 합계01:00:07.
+- 버튼·메뉴·안내 문구: 검색·필터·List·Add Hours·그룹 접기·행 메뉴.
+- 확인된 상태: 새 날짜 그룹이 위에 있고 기존 두 기록은 아래 날짜에 있다.
+- 단계 간 변화: 다음 날짜의 신규 기록이 위 그룹으로 추가된 캡처. 생성 동작은 생략됨.
+
+#### 동작과 데이터
+
+- 화면 관찰: Starting time tracking의 완료 요약과 같은 설명·프로젝트·시간을 가진 행이 보인다. 같은 레코드인지 ID연결은 미확인.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: $0.42 계산·반올림, 캡처간 날짜 경과 또는데이터변경.
+
+#### 모델링 영향
+
+- 후보와 근거: 일별 내림차순 그룹·기록별 금액/합계·기간 경계 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 04 — 시간 인사이트 상단
+
+- Screen ID: `sc_d3f3489589a94070882db77f5ed59bb0`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_d3f3489589a94070882db77f5ed59bb0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/25b6743a-8282-47a9-9910-a8003a0dcb41.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_162b7ea331ba46edb617186815199744` → 현재 → `sc_bdde553aba274d099836b4ff4dc93196`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: Insights 탭 선택, Search·Filters·By Project 도구. 기간별 막대 그래프 아래 Timesheet Report와 네 지표.
+- 입력 항목·필수 표시·기본값: 기간 Jan23–Feb6 2024. Unbilled Hours01:00:07, Amount$20.04, Billed Hours00:00:00, Amount$0.00.
+- 버튼·메뉴·안내 문구: By Project, Filters, 두 금액 지표의 정보 아이콘.
+- 확인된 상태: Feb6에 연한 회색 막대가 있고 다른 날짜는 비어 있다.
+- 단계 간 변화: Insights로 전환, 기간 Jan23–Feb6으로 표시.
+
+#### 동작과 데이터
+
+- 화면 관찰: 목록 Feb7 기록이 보고서 기간 밖이므로 보고서 합계에 빠진 것으로 해석 가능. 기간을 실제로 조작한 장면은 없다.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: Y축 단위·기본 기간·By Project의 다른 집계 선택지·청구 전환 시합계반영.
+
+#### 모델링 영향
+
+- 후보와 근거: 기간·그룹 기준·청구 상태별 시간과 금액 집계 후보; 시간기록 원본과 별도 조회 모델 가능.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 05 — 동일 인사이트의 그래프 높이 차이
+
+- Screen ID: `sc_bdde553aba274d099836b4ff4dc93196`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_bdde553aba274d099836b4ff4dc93196?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/52366872-b09b-426d-b78f-2c4eb61ce751.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_d3f3489589a94070882db77f5ed59bb0` → 현재 → `sc_c4505575b3574c75830f11e5c5ec11e3`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 직전과 같은 인사이트 구성·기간·합계. Feb6 막대가 더 높다.
+- 입력 항목·필수 표시·기본값: 지표 값은 앞 단계와 같다.
+- 버튼·메뉴·안내 문구: 동일 검색·Filters·By Project.
+- 확인된 상태: 막대 높이만 달라 보이며 기준 눈금 값은 없다.
+- 단계 간 변화: 같은 값에서 그래프 막대 높이만 다른 캡처.
+
+#### 동작과 데이터
+
+- 화면 관찰: 숫자 변화가 없으므로 데이터 증가로 단정할 수 없다. 렌더링·애니메이션 중간 상태 가능성은 가정이다.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 두 이미지의 막대 차이 원인·축 자동스케일·애니메이션.
+
+#### 모델링 영향
+
+- 후보와 근거: 그래프의 표시 상태와 집계 원본 값을 구분; 새 업무 상태로 모델링하지 않는다.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 06 — 프로젝트별 타임시트 상세
+
+- Screen ID: `sc_c4505575b3574c75830f11e5c5ec11e3`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_c4505575b3574c75830f11e5c5ec11e3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/f808245f-f66a-4af0-9877-ccd1a8f7ae44.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_bdde553aba274d099836b4ff4dc93196` → 현재 → `플로우 기록 종료`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 본문 아래로 스크롤. 왼쪽 사이드바는 유지, 상단 도구는 뷰포트 밖. 지표 아래 프로젝트 헤더와 Client:Doe Company.
+- 입력 항목·필수 표시·기본값: Initial Chat / Joe Doe 두 행, $20.00·01:00:00와$0.04·00:00:07, Feb6 2024. 합계$20.04·01:00:07.
+- 버튼·메뉴·안내 문구: 프로젝트 헤더와 고객명. 화면내 내보내기 버튼은 보이지 않는다.
+- 확인된 상태: By Project 보고서의 한 프로젝트 상세가 표시된다.
+- 단계 간 변화: 아래로 스크롤하여 프로젝트별 상세를 확인.
+
+#### 동작과 데이터
+
+- 화면 관찰: 목록 두 기록과 설명·금액·시간이 일치하며 보고서에서는 멤버 이름을 표시한다.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 내보내기 지원·권한별 멤버 정보·다중통화합산·고객/프로젝트 이동시 과거값.
+
+#### 모델링 영향
+
+- 후보와 근거: 시간기록의 프로젝트 그룹별 상세와 총합. 멤버 아바타/이름은같은멤버참조 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+## 5. 업무 규칙과 데이터 변화
+
+- 관찰: 같은 작업에 여러 시간 기록이 존재하며 그룹 합계는 초 단위로 표시한다.
+- 관찰: 미청구와 청구 합계가 나뉘며 시간과 금액을 각각 표시한다.
+- 관찰: 목록의 Feb7 기록과 보고서의 Jan23–Feb6 기간을 구분해야 한다. 보고서에서 누락됐다는 버그로 판정하지 않는다.
+- 미확인: 그래프 두 캡처의 높이 차이. 같은 지표 값이므로 원본 데이터 변화로확정하지않는다.
+
+## 6. 공식 도움말과 API 대조
+
+- [Time Entries API](https://docs.hellobonsai.com/api/tag/time-entries): GET `/public-api/v1/time_entries` 목록과 POST/PATCH 작업 존재. 필터·집계 응답 필드나 Insights 전용 endpoint는 이 그룹 페이지로 확인되지 않는다.
+- [Invoicing your tracked time](https://help.hellobonsai.com/en/articles/1898575-invoicing-your-tracked-time): Unbilled는 초안 인보이스에 있는 시간도 포함할 수 있고 Billed는 지급 완료와 같지 않다. 따라서 UI의 청구 구분을 결제 여부 한 필드로 대체하지 않는다.
+- [Tracking time internally](https://help.hellobonsai.com/en/articles/2548737-tracking-time-internally-with-bonsai): 수동 추가와 보고서·타임시트 기능을 설명한다. 현재 문서의 Reports/Timesheets 구성이 과거 캡처의 Insights 탭과 동일한 버전이라고 가정하지 않는다.
+
+## 7. 데이터 모델링 시사점
+
+- 설계 가정: 시간기록 원본과 목록/보고서 집계를 구분한다. 날짜·프로젝트·멤버·청구 상태로 조회하는 요구가 관찰된다.
+- 설계 가정: durationSeconds와 화폐 금액/통화를 정밀하게 보관하고 표시 반올림은 분리한다. 저장 단위는 API 스키마 확인 후 결정한다.
+- 설계 가정: 청구와 결제는 다른 상태축이며 인보이스 연결이 필요할 수 있다.
+- FE 후보: 고정 사이드바, 본문 스크롤, 날짜 그룹 접기, 조회상태·기간·집계 기준.
+
+## 8. 미확인 사항과 검토 질문
+
+- 기본조회기간과 날짜 그룹 시간대는 무엇인가? 자정 전후·지역 설정 변경으로 확인한다.
+- 초 단위 금액은 항목별 반올림 후합산인가? 7초 등작은기록여러개로 검증한다.
+- 다중통화 프로젝트의 보고서 합산은 어떻게 표시하는가? 통화별 프로젝트를 만들어 UI/API를대조한다.
+- By Project 외모드·빈보고서·오류·권한제한상태가 어떤가? 로컬추가이미지 또는 검증 계정으로 확인한다.
+
+## 9. 검토 이력
+
+| 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
+| --- | --- | --- | --- |
+| R1 | 2026-11-17 KST | MCP 단계 목록 6개와 실제 이미지 6개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| R2 | 2026-11-18 KST | 공유 화면의 설명을 진입 맥락과 분리하고 원본 이미지를 다시 대조 | 실제 계정 검증·8절 질문은 유지 |
+| 교정 | 2026-11-18 KST | 압축된 문장의 띄어쓰기 보완. 관찰·판단 내용은 변경하지 않음 | 이미지 재검토 횟수에 포함하지 않음 |

@@ -1,0 +1,553 @@
+# Completing account setup 플로우 분석
+
+검토 상태: **R1 이미지 검토 및 문서 대조**. 실제 이미지 확인 **16/16단계**. 계정 재현은 수행하지 않았다.
+
+관찰은 Gummble 정적 이미지, 문서 확인은 공식 도움말·API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재와 실행 결과를 구분한다.
+
+## 1. 출처와 검토 상태
+
+| 항목 | 기록 |
+| --- | --- |
+| 앱 | Bonsai Web · `bonsai-web` · `c1026782-09a7-45fb-b2d0-7cc1909bf1f4` |
+| Flow ID | `f004afc2-a8c5-4262-b2e4-941331047a84` |
+| 원본 | [Gummble flow](https://gummble.com/apps/bonsai-web?tab=flows&flow=f004afc2-a8c5-4262-b2e4-941331047a84) |
+| 버전 | 앱 조회 결과 `Latest`, version ID `2146`. 개별 flow의 제품 빌드·캡처 시점은 응답에 없어 미확인 |
+| 조회일 / 이미지 검토일 | 2026-11-17 이후 세션 조회 / 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록) |
+| 캡처일 | 미확인. 화면 속 업무 날짜나 샘플 값은 캡처일이 아니다 |
+| 화면 수 / 이미지 검토 | 16단계 / 16단계 |
+| 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
+| 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+
+## 2. 플로우 목적과 연결
+
+업종·회사명·국가·사업 형태·통화·매출 구간·팀 이메일·사용 목적을 설정하고 초기 대시보드로 이동한다.
+
+- 가입 후 맞춤 설문이며 기존 운영 회사 설정 변경 플로우와 연결된다.
+- 진행 표시5칸 중3번째에 해당하는 설문 캡처는 없다. 전체 문항을 모두 봤다고 주장하지 않는다.
+- 화면의 Malaysia/MYR와 뒤 대시보드 USD는 일치하지 않는다. 기본 통화 정책을 단정하지 않는다.
+
+- 상위 분석: [Onboarding](../ANALYSIS.md)
+
+## 3. 전체 단계표
+
+아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
+
+| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
+| --- | --- | --- | --- |
+| 01 | [`sc_33b333fba9d34edbbd66ddfadf29dcb4`](https://gummble.com/screens/sc_33b333fba9d34edbbd66ddfadf29dcb4?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 사업 설정 시작 | 업종 드롭다운 |
+| 02 | [`sc_f1b9643dfd4b420e865bbd7f26b6f2b1`](https://gummble.com/screens/sc_f1b9643dfd4b420e865bbd7f26b6f2b1?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 업종 선택 목록 상단 | 목록을Design으로 스크롤 |
+| 03 | [`sc_f53d0cb8a35c4c598710fef5aa7e4b1b`](https://gummble.com/screens/sc_f53d0cb8a35c4c598710fef5aa7e4b1b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 업종 목록 Design 위치 | Design 선택 후 회사명·국가 표시 |
+| 04 | [`sc_aee7229a31504349bca366b57683d09d`](https://gummble.com/screens/sc_aee7229a31504349bca366b57683d09d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Design 선택과 사업 기본정보 | 회사명입력 |
+| 05 | [`sc_ca3a704790554cda93aaed9d21fa8780`](https://gummble.com/screens/sc_ca3a704790554cda93aaed9d21fa8780?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Joe Studio 입력 | 사업형태·통화·매출 설문 |
+| 06 | [`sc_78103903d92d4ab796d6412ba804cc90`](https://gummble.com/screens/sc_78103903d92d4ab796d6412ba804cc90?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 사업 형태·통화·매출 설문 | Registered선택 |
+| 07 | [`sc_cff7a978591444b9974c2d54fd50762e`](https://gummble.com/screens/sc_cff7a978591444b9974c2d54fd50762e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Registered 사업 형태 선택 | Unregistered와매출구간으로 변경 |
+| 08 | [`sc_91aafda2760f434084cdfd0ce6e9c365`](https://gummble.com/screens/sc_91aafda2760f434084cdfd0ce6e9c365?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Unregistered와 매출구간 | 4번째 진행칸 팀초대;3번째화면 미수록 |
+| 09 | [`sc_b2c655c6a1c54534b43a1112ef93fb2d`](https://gummble.com/screens/sc_b2c655c6a1c54534b43a1112ef93fb2d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 팀 초대 빈 입력 | 팀이메일1개 입력 |
+| 10 | [`sc_732c37475b694d9e8e068e9330b1974b`](https://gummble.com/screens/sc_732c37475b694d9e8e068e9330b1974b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 팀 이메일1개 입력 | 5번째 진행칸 목적선택 |
+| 11 | [`sc_7f05cc123c5f4b0bab3f31a6e9141492`](https://gummble.com/screens/sc_7f05cc123c5f4b0bab3f31a6e9141492?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 사용 목적 선택 | 목적4개선택·처리시작 |
+| 12 | [`sc_e3d22238252b433d99746f13a11b29db`](https://gummble.com/screens/sc_e3d22238252b433d99746f13a11b29db?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 목적4개 선택 후 처리 | 대시보드 로딩 |
+| 13 | [`sc_64d7275eaa3a48cab57c9f3584c18b7a`](https://gummble.com/screens/sc_64d7275eaa3a48cab57c9f3584c18b7a?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 첫 대시보드 로딩 | 초기 체크리스트 표시 |
+| 14 | [`sc_7c8264e8239e464abd4219d7b9828199`](https://gummble.com/screens/sc_7c8264e8239e464abd4219d7b9828199?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 회사 정보 온보딩 | 손익·활동으로 스크롤 |
+| 15 | [`sc_009f5dc2c0194960ada61dac094422c3`](https://gummble.com/screens/sc_009f5dc2c0194960ada61dac094422c3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 초기 손익·활동 빈 상태 | 작업·시간 빈 상태 |
+| 16 | [`sc_4a22967ce5a64ba59d6fa95b98316852`](https://gummble.com/screens/sc_4a22967ce5a64ba59d6fa95b98316852?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 초기 작업·시간 빈 상태 | 초기 대시보드에서 종료 |
+
+## 4. 화면별 상세 분석
+
+### 단계 01 — 사업 설정 시작
+
+- Screen ID: `sc_33b333fba9d34edbbd66ddfadf29dcb4`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_33b333fba9d34edbbd66ddfadf29dcb4?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8887aa97-8db2-4046-b3c2-897983f8d066.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `플로우 시작` → 현재 → `sc_f1b9643dfd4b420e865bbd7f26b6f2b1`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 좌측 설문·5개 진행 표시, 우측 인물 사진·평점 소개.
+- 입력 항목·필수 표시·기본값: Welcome Joe, 업무 종류 Type or select an option 빈 선택.
+- 버튼·메뉴·안내 문구: Next 연한색.
+- 확인된 상태: 첫 진행 표시만 녹색.
+- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다.
+
+#### 동작과 데이터
+
+- 화면 관찰: 계정 가입 뒤 사업 맞춤 설정 진입.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 국가 초기값·설문 생략 여부 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 온보딩 진행 상태와 사업 분류 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 02 — 업종 선택 목록 상단
+
+- Screen ID: `sc_f1b9643dfd4b420e865bbd7f26b6f2b1`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_f1b9643dfd4b420e865bbd7f26b6f2b1?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/f5bc33c5-b974-4d6d-b3ab-cf627bc3a0b7.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_33b333fba9d34edbbd66ddfadf29dcb4` → 현재 → `sc_f53d0cb8a35c4c598710fef5aa7e4b1b`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 좌측 드롭다운 펼침, 오른쪽 신뢰 소개 고정.
+- 입력 항목·필수 표시·기본값: Accounting/Auditing,Acting,Analytics,Animation,Architecture,ArtDirection 보임.
+- 버튼·메뉴·안내 문구: 입력 가능한 선택 상자.
+- 확인된 상태: 목록 첫 행 강조.
+- 단계 간 변화: 업종 드롭다운
+
+#### 동작과 데이터
+
+- 화면 관찰: 업종 검색/선택 UI.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 자유 텍스트 허용 여부·전체 값 목록 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 업종 옵션 카탈로그 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 03 — 업종 목록 Design 위치
+
+- Screen ID: `sc_f53d0cb8a35c4c598710fef5aa7e4b1b`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_f53d0cb8a35c4c598710fef5aa7e4b1b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d5ed80e2-1135-48f0-a494-06302153b6ea.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_f1b9643dfd4b420e865bbd7f26b6f2b1` → 현재 → `sc_aee7229a31504349bca366b57683d09d`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 같은 드롭다운 내부 스크롤.
+- 입력 항목·필수 표시·기본값: Dentist,Design,DigitalMarketing,E-Commerce,Engineering,Esports. Design 강조.
+- 버튼·메뉴·안내 문구: 목록 선택.
+- 확인된 상태: 현재 값은 아직 Type or select.
+- 단계 간 변화: 목록을Design으로 스크롤
+
+#### 동작과 데이터
+
+- 화면 관찰: 선택 후보 hover/강조와 확정 값 구분.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 검색 동작 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 선택 상태 UI.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 04 — Design 선택과 사업 기본정보
+
+- Screen ID: `sc_aee7229a31504349bca366b57683d09d`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_aee7229a31504349bca366b57683d09d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/b61dd3d2-155c-445f-ae21-bc0a91f33496.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_f53d0cb8a35c4c598710fef5aa7e4b1b` → 현재 → `sc_ca3a704790554cda93aaed9d21fa8780`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 선택 상자 아래 회사명·국가 필드 추가.
+- 입력 항목·필수 표시·기본값: Design, 회사명 빈 값, 국가Malaysia. 법적으로 운영하는 국가 안내.
+- 버튼·메뉴·안내 문구: Next 연한색.
+- 확인된 상태: 업종 선택 후 추가 입력 노출.
+- 단계 간 변화: Design 선택 후 회사명·국가 표시
+
+#### 동작과 데이터
+
+- 화면 관찰: 순차 공개되는 입력.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 국가 추정 방식·회사명 필수 검증 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 온보딩 회사 정보 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 05 — Joe Studio 입력
+
+- Screen ID: `sc_ca3a704790554cda93aaed9d21fa8780`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_ca3a704790554cda93aaed9d21fa8780?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2ddfedfe-c254-4f45-ac96-6de6fc219c9e.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_aee7229a31504349bca366b57683d09d` → 현재 → `sc_78103903d92d4ab796d6412ba804cc90`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 동일 좌측 폼.
+- 입력 항목·필수 표시·기본값: Design,JoeStudio,Malaysia.
+- 버튼·메뉴·안내 문구: Next 녹색.
+- 확인된 상태: 첫 단계 입력 완료.
+- 단계 간 변화: 회사명입력
+
+#### 동작과 데이터
+
+- 화면 관찰: 회사명 입력 후 진행 가능해 보임.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 저장 시점 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 운영 회사 기본값 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 06 — 사업 형태·통화·매출 설문
+
+- Screen ID: `sc_78103903d92d4ab796d6412ba804cc90`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_78103903d92d4ab796d6412ba804cc90?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/7eb7761c-fb0d-484c-987d-75b6766b4c4f.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_ca3a704790554cda93aaed9d21fa8780` → 현재 → `sc_cff7a978591444b9974c2d54fd50762e`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 진행2번째,3개 드롭다운 세로.
+- 입력 항목·필수 표시·기본값: Business type 미선택,Currency MYR,Yearly revenue 미선택.
+- 버튼·메뉴·안내 문구: Next 연한색,Back.
+- 확인된 상태: 초기 상태.
+- 단계 간 변화: 사업형태·통화·매출 설문
+
+#### 동작과 데이터
+
+- 화면 관찰: 통화가MYR로 초기 표시.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 이전 국가에서 유도됐는지·전체 옵션 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 사업 형태·청구 통화·매출구간 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 07 — Registered 사업 형태 선택
+
+- Screen ID: `sc_cff7a978591444b9974c2d54fd50762e`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_cff7a978591444b9974c2d54fd50762e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/68c30dda-b755-4089-9af1-5c3a224154db.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_78103903d92d4ab796d6412ba804cc90` → 현재 → `sc_91aafda2760f434084cdfd0ce6e9c365`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 동일 설문.
+- 입력 항목·필수 표시·기본값: Registered/Incorporated Business,MYR,매출미선택.
+- 버튼·메뉴·안내 문구: Next 연한색,Back.
+- 확인된 상태: 사업 형태만 채움.
+- 단계 간 변화: Registered선택
+
+#### 동작과 데이터
+
+- 화면 관찰: 해당 사업 형태가 선택 가능.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 형태별 추가 필드·서류 요구 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 사업 형태 분류 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 08 — Unregistered와 매출구간
+
+- Screen ID: `sc_91aafda2760f434084cdfd0ce6e9c365`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_91aafda2760f434084cdfd0ce6e9c365?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d4c6d35b-3712-4e4e-b933-d22339a7b8d1.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_cff7a978591444b9974c2d54fd50762e` → 현재 → `sc_b2c655c6a1c54534b43a1112ef93fb2d`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 동일 설문.
+- 입력 항목·필수 표시·기본값: Unregistered Business,MYR,RM0–RM50,000.
+- 버튼·메뉴·안내 문구: Next 녹색,Back.
+- 확인된 상태: 최종 보이는 선택은미등록사업.
+- 단계 간 변화: Unregistered와매출구간으로 변경
+
+#### 동작과 데이터
+
+- 화면 관찰: 직전 Registered 선택에서 변경됨.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 매출구간 통화 연동·정확 매출 수집 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 금액구간 분류; 실매출 데이터와 구분.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 09 — 팀 초대 빈 입력
+
+- Screen ID: `sc_b2c655c6a1c54534b43a1112ef93fb2d`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_b2c655c6a1c54534b43a1112ef93fb2d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2eadc766-bfac-4881-9ae4-e4bde1b52c3b.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_91aafda2760f434084cdfd0ce6e9c365` → 현재 → `sc_732c37475b694d9e8e068e9330b1974b`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 진행4번째. Get started with your team.
+- 입력 항목·필수 표시·기본값: Email 입력3칸 모두빈값.
+- 버튼·메뉴·안내 문구: Next 녹색,Back.
+- 확인된 상태: 팀초대 제안.
+- 단계 간 변화: 4번째 진행칸 팀초대;3번째화면 미수록
+
+#### 동작과 데이터
+
+- 화면 관찰: 빈칸 상태에도 진행 버튼이 녹색.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 실제건너뛰기허용·기본역할미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 온보딩 초대 후보 목록.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 10 — 팀 이메일1개 입력
+
+- Screen ID: `sc_732c37475b694d9e8e068e9330b1974b`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_732c37475b694d9e8e068e9330b1974b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/e69eddf8-5daa-4cc6-a88c-84dee993c766.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_b2c655c6a1c54534b43a1112ef93fb2d` → 현재 → `sc_7f05cc123c5f4b0bab3f31a6e9141492`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 동일팀폼.
+- 입력 항목·필수 표시·기본값: 첫칸janesmith1.mobbin@gmail.com,나머지빈값.
+- 버튼·메뉴·안내 문구: Next,Back.
+- 확인된 상태: 초대대상1개 지정.
+- 단계 간 변화: 팀이메일1개 입력
+
+#### 동작과 데이터
+
+- 화면 관찰: 역할·프로젝트 입력 없음.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 메일즉시발송여부·선택역할미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 간소화된 초대 입력과 나중 권한 설정 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 11 — 사용 목적 선택
+
+- Screen ID: `sc_7f05cc123c5f4b0bab3f31a6e9141492`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_7f05cc123c5f4b0bab3f31a6e9141492?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8b18c66f-d6be-4f7c-85a8-8d40dc314e74.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_732c37475b694d9e8e068e9330b1974b` → 현재 → `sc_e3d22238252b433d99746f13a11b29db`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 진행5번째,목적버튼7개 세로.
+- 입력 항목·필수 표시·기본값: Client billing 녹색테두리. 나머지Client/lead,Time,Bookkeeping,Project/tasks,Contractor,Other.
+- 버튼·메뉴·안내 문구: Select all that apply,Next.
+- 확인된 상태: 다중 선택 안내.
+- 단계 간 변화: 5번째 진행칸 목적선택
+
+#### 동작과 데이터
+
+- 화면 관찰: 설문 목적과 제품 기능군 대응.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 기본 선택인지 사용자 선택인지 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 다중온보딩 목적후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 12 — 목적4개 선택 후 처리
+
+- Screen ID: `sc_e3d22238252b433d99746f13a11b29db`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_e3d22238252b433d99746f13a11b29db?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/161a0ca3-1914-4785-9fd8-dd8641e05d10.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_7f05cc123c5f4b0bab3f31a6e9141492` → 현재 → `sc_64d7275eaa3a48cab57c9f3584c18b7a`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: Client billing,Time tracking,Bookkeeping,Project/tasks4개녹색테두리.
+- 입력 항목·필수 표시·기본값: 다른3개 미선택.
+- 버튼·메뉴·안내 문구: Next 연한색,화면상단진행선 일부.
+- 확인된 상태: 선택 후 처리 중으로 보임.
+- 단계 간 변화: 목적4개선택·처리시작
+
+#### 동작과 데이터
+
+- 화면 관찰: 목적 선택 복수 지원.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 버튼연한색원인·설정효과미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 다중응답집합과제출상태.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 13 — 첫 대시보드 로딩
+
+- Screen ID: `sc_64d7275eaa3a48cab57c9f3584c18b7a`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_64d7275eaa3a48cab57c9f3584c18b7a?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8d8e544e-ec74-4197-96e2-6cf1fb137aaa.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_e3d22238252b433d99746f13a11b29db` → 현재 → `sc_7c8264e8239e464abd4219d7b9828199`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 전체 앱 사이드바,체험배너,타임라인·활동 점로딩.
+- 입력 항목·필수 표시·기본값: 7일남음,USD/Last6Months,Joe인사.
+- 버튼·메뉴·안내 문구: UpgradeNow,New,TrackTime,문서생성카드.
+- 확인된 상태: 로딩이며 타임라인레코드미표시.
+- 단계 간 변화: 대시보드 로딩
+
+#### 동작과 데이터
+
+- 화면 관찰: 가입설문뒤대시보드전환.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 초기 회사 설정 저장 결과 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 로딩상태·체험기간후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 14 — 회사 정보 온보딩
+
+- Screen ID: `sc_7c8264e8239e464abd4219d7b9828199`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_7c8264e8239e464abd4219d7b9828199?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/df97bb3b-81d2-4f09-b018-8ee967d02134.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_64d7275eaa3a48cab57c9f3584c18b7a` → 현재 → `sc_009f5dc2c0194960ada61dac094422c3`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 대시보드의5단계 안내,1번 선택.
+- 입력 항목·필수 표시·기본값: Add company details; 회사 정보·로고·브랜딩을 계약/제안/청구서에 자동 추가한다는 안내.팀초대는 완료표시.
+- 버튼·메뉴·안내 문구: Add Details, Next Step, Hide, Upgrade Now.
+- 확인된 상태: 자기 사업체 설정 안내.
+- 단계 간 변화: 초기 체크리스트 표시
+
+#### 동작과 데이터
+
+- 화면 관찰: 온보딩 진입점 확인.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 다른 단계 완료 기준 미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 자기 사업체와 고객사 분리 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 15 — 초기 손익·활동 빈 상태
+
+- Screen ID: `sc_009f5dc2c0194960ada61dac094422c3`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_009f5dc2c0194960ada61dac094422c3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/b2b4231e-7fe6-4af6-a4eb-f5c30a912bb7.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_7c8264e8239e464abd4219d7b9828199` → 현재 → `sc_4a22967ce5a64ba59d6fa95b98316852`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 대시보드중간.타임라인빈안내,손익평평한선,활동빈카드.
+- 입력 항목·필수 표시·기본값: USD/Last6Months,Outstanding/Overdue/PaidPending/OtherIncome모두0.
+- 버튼·메뉴·안내 문구: 문서생성카드4개,통화·기간 선택.
+- 확인된 상태: No current activity,No activity yet.
+- 단계 간 변화: 손익·활동으로 스크롤
+
+#### 동작과 데이터
+
+- 화면 관찰: 초기 집계0과빈활동.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: MYR설문과USD표시관계미확인.
+
+#### 모델링 영향
+
+- 후보와 근거: 표시통화와집계원천 분리후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+### 단계 16 — 초기 작업·시간 빈 상태
+
+- Screen ID: `sc_4a22967ce5a64ba59d6fa95b98316852`
+- 원본: [화면 페이지](https://gummble.com/screens/sc_4a22967ce5a64ba59d6fa95b98316852?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/02e7e5c8-29d1-4ca3-8104-99568ea574c5.png)
+- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- 이미지 크기: 1440 × 900
+- 이전·다음 단계: `sc_009f5dc2c0194960ada61dac094422c3` → 현재 → `플로우 기록 종료`
+
+#### 화면에서 직접 확인한 내용
+
+- 레이아웃: 대시보드 하단 작업 카드와 시간 그래프.
+- 입력 항목·필수 표시·기본값: No tasks yet,Unbilled/Billed시간00:00:00·금액0.
+- 버튼·메뉴·안내 문구: 작업추가+.
+- 확인된 상태: 시간그래프빈축,흐린작업샘플.
+- 단계 간 변화: 작업·시간 빈 상태
+
+#### 동작과 데이터
+
+- 화면 관찰: 초기 업무 데이터 없음을 안내.
+- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
+- 미확인: 플레이스홀더 그림은 실제 작업 아님.
+
+#### 모델링 영향
+
+- 후보와 근거: 빈목록·0집계 UX 후보.
+- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+
+## 5. 업무 규칙과 데이터 변화
+
+- 업종 선택 뒤 회사명과 국가가 나타난다. 회사명 입력 후 Next가 활성처럼 보인다.
+- 사업 형태는 Registered에서 Unregistered로 바뀌어 최종 선택을 구분해야 한다.
+- 초대 입력3칸 중1개만 채우며 역할 선택 UI는 없다.
+- 설문 목적은 다중 선택. 제출 후 체크리스트 Invite your team이 완료 표시되지만 초대 수락 완료를 뜻하지 않는다.
+- 로딩·빈 상태·실제0값을 구분한다. 흐린 타임라인/작업 그림은 실제 레코드가 아니다.
+
+## 6. 공식 도움말과 API 대조
+
+- [계정 설정 가이드](https://help.hellobonsai.com/en/articles/5588945-how-to-set-up-your-account-in-bonsai): 운영 회사·브랜딩·팀·고객·프로젝트 등 후속 설정을 안내한다. 캡처의 설문 단계·필수값·체험 일수와 동일한 현재 가입 계약을 제공하지는 않는다.
+- [사용자 권한](https://help.hellobonsai.com/en/articles/1894805-all-about-user-permissions-in-bonsai): 역할과 프로젝트 접근을 구분하며 초대 수락 후 접근한다. 현재 권한·요금 정책과 과거 캡처의 플랜 구성을 구분한다.
+- [공개 API 인증](https://docs.hellobonsai.com/api): API key/OAuth 인증 설명은 앱의 로그인·가입·비밀번호 재설정 endpoint 계약이 아니다. 해당 웹 인증 요청·응답 필드는 미확인.
+- [공개 API](https://docs.hellobonsai.com/api): 조회한 리소스 목록에서 내 프로필·회사 설정·알림·2FA·구독 변경 endpoint를 확인하지 못했다. CRM Companies API를 운영 회사 설정 API로 간주하지 않는다.
+
+## 7. 데이터 모델링 시사점
+
+- 운영 사업 프로필(업종/국가/이름/형태/통화), 설문 매출 구간·사용 목적, 가입 진행 단계를 별도 후보.
+- 초대 이메일 목록·발송·수락 상태와 체크리스트 완료를 구분.
+- 손익·시간 집계는 원천 데이터와 표시 통화가 별도일 가능성; 검증 필요.
+
+## 8. 미확인 사항과 검토 질문
+
+- 누락된3번째 설문 단계와 분기별 문항 확인.
+- Malaysia→MYR 기본 선택과 대시보드USD의 관계·설정 저장 여부 확인.
+- 팀초대 기본 역할·발송 시점·건너뛰기·새로고침 복구 확인.
+- 목적 선택이 메뉴/체크리스트를 변경하는지 실제 계정 비교 필요.
+
+## 9. 검토 이력
+
+| 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
+| --- | --- | --- | --- |
+| R1 | 2026-11-18 KST | MCP 단계 목록 16개와 실제 이미지 16개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 교정 | 2026-11-18 KST | 압축된 문장의 띄어쓰기 보완. 관찰·판단 내용은 변경하지 않음 | 이미지 재검토 횟수에 포함하지 않음 |
