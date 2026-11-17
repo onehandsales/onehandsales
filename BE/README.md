@@ -20,7 +20,7 @@
 
 관리자 확인 API는 반드시 Admin guard로 보호한다.
 
-제품·UX 전환은 [folk 결정](../AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md)을 따른다. 아래는 기존 실행 코드 설명이며 folk 전체 구현 상태가 아니다.
+제품·UX 전환은 [Bonsai 결정](../AGENT/PM_AGENT/DECISIONS/036_bonsai_benchmark_transition.md)을 따른다. 아래는 기존 실행 코드 설명이며 Bonsai 전체 구현 상태가 아니다.
 
 ## 현재 구현 모듈
 
@@ -35,7 +35,7 @@
 - `public-contact-request`: 로그인 전 공개 문의 접수
 - `health`: health check
 
-과거 고정형 company/search는 제거되었고 현재 범용 CRM 코어가 존재한다. 새 연락처·Group 구조와 제거 후보는 [FOLK_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 따른다.
+과거 고정형 company/search는 제거되었고 현재 범용 CRM 코어가 존재한다. 고객·거래·견적·문서·프로젝트·청구·입금의 업무 모델과 기존 코어의 교체·재설계 후보는 [BONSAI_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)을 따른다. 모델명·관계·삭제 정책은 아직 설계 후보이며 실제 API·DB 계약에서 확정한다.
 
 
 ## 관리 항목과 첫 TABLE 생성

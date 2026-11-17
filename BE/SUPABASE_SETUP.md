@@ -109,4 +109,4 @@ If the Backend origin changes, review allowed origins and refresh-cookie configu
 - Auth provider list: `src/modules/auth/application/use-cases/list-auth-providers.use-case.ts`
 - Supabase JWT adapter: `src/shared/infrastructure/supabase/supabase-jwt-verifier.adapter.ts`
 
-Workspace and generic CRM tables already exist. New folk schema work follows [FOLK_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md); do not run migrations as part of documentation review.
+Workspace와 범용 CRM 테이블은 이미 존재한다. Bonsai의 업무별 모델과 기존 구조의 전환은 [BONSAI_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)을 따른다. 문서 정비만으로 migration을 실행하지 않는다.

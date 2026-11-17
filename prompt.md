@@ -7,22 +7,25 @@
 ```text
 먼저 git 변경 상태와 AGENTS.md를 확인해.
 AGENT의 현재 결정·기획·UX·Software 문서, BE와 FE의 문서 및 관련 실행 코드를 대조해.
-현재 방향은 folk 기능과 UX 벤치마킹이다.
-AGENT/PM_AGENT/DECISIONS/036_folk_benchmark_transition.md와
-AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md를 기준으로 해.
+현재 방향은 Bonsai 기능과 UX 벤치마킹이다.
+전체 기능·UX를 재현한 뒤 차별화하며, 고객·거래·견적·문서·수행·청구·입금의 책임과 상태를 구분해.
+AGENT/PM_AGENT/DECISIONS/036_bonsai_benchmark_transition.md와
+AGENT/UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md를 기준으로 해.
 과거 Kit·이전 참고 및 개발 보류 문서는 역사 자료로 구분해.
 현재 구현, 목표, 미확인 외부 동작, DB 설계 제안을 섞지 마.
 사용자가 제외한 폴더는 링크로도 읽거나 수정하지 마.
 학습 요청만으로 실행 코드나 DB를 변경하지 마.
 ```
 
-## folk 화면 조사·구현
+## Bonsai 화면 조사·구현
 
 ```text
-Nicelydone MCP 도구가 사용 가능한지 확인하고 folk 화면·flow·component를 조사해.
+Gummble MCP 도구가 사용 가능한지 확인하고 Bonsai 화면·flow·component를 조사해.
 출처·캡처 날짜·계정 조건을 남기고 공식 문서 및 실제 계정과 대조해.
 연결되지 않았거나 관찰하지 않은 상태를 확인 완료로 표시하지 마.
 mock 화면 검토와 같은 흐름의 API·DB·권한 계약을 함께 준비해.
+확보한 원본을 바탕으로 기존 React 앱에서 화면 제작과 계약 초안을 병행할 수 있어.
+Figma나 전체 제품 조사 완료를 필수 선행 조건으로 두지 말고, 실제 API 연동 전에 해당 기능의 계약을 확정해.
 기존 Object/List/View 구조는 전환 영향과 데이터 보존 요구를 확인한 후 제거해.
 ```
 

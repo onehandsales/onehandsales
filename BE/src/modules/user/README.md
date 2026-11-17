@@ -7,7 +7,7 @@ Current scope:
 - `GET /api/users/me/devices`
 - `POST /api/users/me/onboarding/job-selection`
 
-The module handles the current profile, device lookup, and onboarding completion. Onboarding stores its completion timestamp and calls the Workspace onboarding port; it does not store a job-specific Kit. The folk onboarding target is a separate transition.
+이 모듈은 현재 프로필, 기기 조회, 온보딩 완료를 담당한다. 온보딩은 완료 시각을 저장하고 Workspace 공개 port를 호출하며 직군별 Kit을 저장하지 않는다. Bonsai의 온보딩·계정·팀 권한은 별도 전환 설계 대상이다.
 
 Locale/timezone policy:
 

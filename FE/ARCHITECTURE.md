@@ -60,7 +60,7 @@ Page는 route entry이며 feature public export를 조합한다. API 호출, sch
 
 ## 현재 구현 스냅샷
 
-스냅샷 기준일: 2026-11-15 소스 대조. 목표는 [folk UX](../AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md), 현재는 [IMPLEMENTATION_STATUS](../AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다.
+스냅샷 기준일: 2026-11-15 소스 대조. 목표는 [Bonsai UX](../AGENT/UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md), 현재는 [IMPLEMENTATION_STATUS](../AGENT/PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md)를 따른다.
 
 User Web 기준:
 
@@ -70,7 +70,7 @@ User Web 기준:
 - 보호 앱에는 `/app`, `/app/more`, `/app/workspaces/:workspaceId`와 하위 `objects/:objectDefinitionId`, `lists/:listDefinitionId`, `view-definitions/:viewDefinitionId`가 있다. `/app/settings` 사용자-facing route는 없으며 설정은 `/app?account=settings` 또는 현재 보호 앱 route 위의 `?account=settings` query로 계정 모달을 열어 제공한다. `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 `/app`으로 redirect한다. legacy top-level `/contacts/*`, `/products/*`, `/deals/*`, `/more`도 현재 보호 앱 route로 redirect한다.
 - 구현된 API 연동은 Auth/User/Workspace, Object/List/Attribute/Record/View, 사이드바·즐겨찾기, 계정·지원·공개 문의다.
 - auth runtime은 Supabase OAuth provider login -> `/auth/callback` -> Backend `POST /api/auth/exchange` -> app access token/localStorage + httpOnly refresh cookie 흐름이다. User Web login/signup provider button은 가능하면 OAuth를 browser popup으로 열고, popup이 차단되면 기존 full-page redirect로 fallback한다. 개발용 mock login은 제거되었고, 로그아웃 후 선호 locale의 login URL로 이동한다. 현재 runtime provider는 Google, LINE, Apple이며, Kakao는 runtime provider로 노출하지 않는다.
-- 고정형 `Company`/`Search`/`Company xlsx export` 화면과 API는 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 범용 CRM 화면은 존재하며 folk의 연락처·Group·View UX로 전환할 계획이다.
+- 고정형 `Company`/`Search`/`Company xlsx export` 화면과 API는 과거 방향 전환에서 제거했다. 현재 범용 CRM 화면은 존재하며 Bonsai의 고객·거래·견적·문서·수행·청구·입금과 관련 화면·상태·권한에 맞춰 전환할 계획이다. 과거 제거 이력을 목표 업무 기능의 제외 근거로 사용하지 않는다.
 - 실행 코드 변경은 관련 typecheck/lint/test/build/E2E로 검증한다. 문서만 변경하면 링크·소스 정합성·diff를 검증하고 실행하지 않은 runtime 검증을 명시한다.
 
 Admin Web:

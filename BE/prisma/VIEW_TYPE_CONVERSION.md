@@ -1,6 +1,6 @@
 # 기존 View를 TABLE·KANBAN·LIST로 전환
 
-> 기존 View 엔진용 작업 문서다. folk 전환 목표와 구분하며, 문서 갱신 중 아래 스크립트·DB 변경을 자동 실행하지 않는다. 새 계획은 [FOLK_SCHEMA_PLAN](../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md)을 따른다.
+> 기존 View 엔진용 작업 문서다. Bonsai 전환 목표와 구분하며, 문서 갱신 중 아래 스크립트·DB 변경을 자동 실행하지 않는다. 새 계획은 [BONSAI_SCHEMA_PLAN](../../AGENT/SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)을 따른다.
 
 2026-11-01 사용자 승인에 따른 실제 저장 데이터 전환이다. `schema.prisma`의 ViewDefinition과 표시·필터·정렬·그룹·위젯 FK를 검토하고, 기존 영업 샘플 Workspace의 24개 View 중 나머지8타입을 전환한다. 일반 사용자 설정 초기화나 전체 환경에 적용할 schema migration이 아니다.
 

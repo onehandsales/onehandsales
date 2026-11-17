@@ -1,6 +1,6 @@
 # 공통 View 헤더·본문
 
-> 현재 범용 CRM 구현의 동작·검증 기록이다. 새 화면은 [folk UX 기준](../../../../../AGENT/UXUI_AGENT/DECISIONS/025_uxui_folk_reference.md)과 [전환 영향](../../../../../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)을 따른다. 아래 기존 치수·메뉴·저장 방식은 folk 목표로 자동 승계하지 않는다.
+> 현재 범용 CRM 구현의 동작·검증 기록이다. 새 화면은 [Bonsai UX 기준](../../../../../AGENT/UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md)과 [전환 영향](../../../../../AGENT/SOFTWARE_AGENT/COMMON/BONSAI_TRANSITION_MATRIX.md)을 따른다. 아래 기존 치수·메뉴·저장 방식은 Bonsai 목표로 자동 승계하지 않는다.
 
 이 feature는 관리항목과 업무목록의 헤더·보기 선택·개인 즐겨찾기·메뉴 설정 조회와 TABLE/KANBAN/LIST 본문을 담당한다. AppShell은 공개 index의 useWorkspaceViewHeader와 useViewMenus를 한 번 호출하고 동일 모델과 검색 입력을 데스크톱/모바일에 전달한다.
 

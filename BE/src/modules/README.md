@@ -23,4 +23,4 @@
 
 관리자 영역은 `GET /admin/api/me` 권한 확인만 유지한다.
 
-과거 고정형 `company`/`contact`/`product`/`deal`/`search` 모듈은 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 CRM은 Workspace/Object/Attribute/Record/List/View 기반이다. folk 목표와 제거 영향은 [전환 문서](../../../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md)를 따른다.
+과거 고정형 `company`/`contact`/`product`/`deal`/`search` 모듈은 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 CRM은 Workspace/Object/Attribute/Record/List/View 기반이다. Bonsai 목표와 제거 영향은 [전환 문서](../../../AGENT/SOFTWARE_AGENT/COMMON/BONSAI_TRANSITION_MATRIX.md)를 따른다.

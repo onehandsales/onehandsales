@@ -16,4 +16,4 @@
 
 schedule, meeting-note, trash는 잔여 feature 경계이며 완성된 업무 기능이 아니다.
 
-API client, query key, UI state, route ownership을 feature 경계에서 관리한다. folk 전환은 [CRM_CORE_FRONTEND](../../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md)를 따른다.
+API client, query key, UI state, route ownership을 feature 경계에서 관리한다. Bonsai 전환은 [CRM_CORE_FRONTEND](../../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md)를 따른다.

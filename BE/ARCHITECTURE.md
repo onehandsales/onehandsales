@@ -24,7 +24,7 @@ Active modules:
 
 Current intentional gaps:
 
-- Billing and complete collaboration/product workflows are not implemented. Workspace/Team database models already exist. Target scope follows the folk parity matrix; absence in current code does not exclude a target feature.
+- 고객 청구·입금, OneHand 자체 과금과 완성된 협업 업무 흐름은 미구현이다. Workspace/Team DB 모델은 이미 존재한다. 목표 범위는 [Bonsai 기능 대응표](../AGENT/PM_AGENT/PLANNING/BONSAI_FEATURE_PARITY_MATRIX.md)를 따르며 현재 코드에 없다는 이유로 대상 기능에서 제외하지 않는다.
 - Current runtime auth providers are Google, LINE, and Apple. Kakao remains only as a legacy Prisma enum value and is not exposed for runtime exchange.
 - Login country metadata depends on proxy geo headers (`cf-ipcountry`, `x-vercel-ip-country`, `cloudfront-viewer-country`). Without those headers, country code fields remain null by design.
 - Validate changed runtime/schema contracts with appropriate typecheck/lint/tests/build and Prisma checks. Documentation-only changes require source, link and diff checks; report runtime checks separately.
@@ -48,4 +48,4 @@ Business modules should continue to be added one module and one migration at a t
 
 Mutation APIs that may be retried, create multiple rows, or later cross a service boundary should document transaction ownership plus idempotency/outbox needs in the API contract.
 
-The existing flexible CRM engine is active. The folk transition is planned in [FOLK_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/FOLK_SCHEMA_PLAN.md) and [FOLK_TRANSITION_MATRIX](../AGENT/SOFTWARE_AGENT/COMMON/FOLK_TRANSITION_MATRIX.md). These plans do not change the runtime by themselves.
+기존 범용 CRM 엔진은 활성 구현이다. 고객·거래·견적·문서·수행·청구·입금으로의 전환은 [BONSAI_SCHEMA_PLAN](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)과 [BONSAI_TRANSITION_MATRIX](../AGENT/SOFTWARE_AGENT/COMMON/BONSAI_TRANSITION_MATRIX.md)를 따른다. 설계안은 실행 코드나 실제 DB 적용 결과와 구분한다.

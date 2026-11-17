@@ -40,4 +40,4 @@ Redirect-only:
 - Backend ownership 검증을 전제로 access token을 `Authorization: Bearer`로 보낸다.
 - `401`은 세션 복구 또는 로그인 이동으로 처리한다.
 
-고정형 `company`/`search` feature는 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 코어와 folk 목표를 구분한다. [전환 설계](../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md)를 따른다.
+고정형 `company`/`search` feature는 OneHand CRM 방향 전환에 맞춰 제거했다. 현재 코어와 Bonsai 목표를 구분한다. [전환 설계](../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/CRM_CORE_FRONTEND.md)를 따른다.
