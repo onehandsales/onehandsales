@@ -13,6 +13,12 @@ Updated: 2026-11-17
 5. [제품 전환 결정](../AGENT/PM_AGENT/DECISIONS/036_bonsai_benchmark_transition.md), [전체 기능 대응표](../AGENT/PM_AGENT/PLANNING/BONSAI_FEATURE_PARITY_MATRIX.md).
 6. [Gummble 조사 절차](../AGENT/UXUI_AGENT/PLANNING/GUMMBLE_RESEARCH_GUIDE.md).
 
+## 다시 작업을 시작할 때
+
+확정한 방식은 **Bonsai 원본의 제품·UX 결정을 출발점으로 삼아 기능별로 구현하는 것**이다. Figma나 MCP로 Figma 화면을 먼저 만드는 단계는 필수가 아니다. 임시 데이터를 넣은 실제 프런트엔드 화면으로 검토하고 DB·API 계약을 구체화해 저장·조회까지 연결한다. [역할과 구현 착수 기준](../AGENT/UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md#figma와-구현-착수)을 먼저 확인한다.
+
+다음 시작점은 Bonsai에서 가상 고객 한 건의 업무를 직접 따라가고, Gummble의 Bonsai 화면 보유·버전·접근 상태를 확인하는 것이다. 확보한 기능부터 원본 확인 → 동작·권한 정리와 화면 제작 → DB·API 연결 → 비교 검증을 반복한다. 현재 조회·구현 상태는 아래 근거 문서에서 다시 확인한다.
+
 ## 과거 비교 자료
 
 [CRM 관련 제품 비교 이력](CRM_제품비교_이력.md)은 2026-11-16의 다른 제품 조사 기록이다. Bonsai 외 제품을 현재 구현 기준으로 추가하거나 참고 제품 선택을 다시 미정으로 돌리는 자료가 아니다. 이번 변경에서 타사 제품 기능을 재검증하지 않았다.
