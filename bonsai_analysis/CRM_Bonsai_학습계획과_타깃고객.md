@@ -49,4 +49,4 @@ Bonsai는 [공식 소개](https://www.hellobonsai.com/)에서 서비스 사업�
 
 ## 현재 확인 수준
 
-공식 주요 문서와 API 개요를 확인했다. Gummble의 Bonsai Web 분석 134개와 고유 화면 642개를 확보했고, 2026-11-18 전체 754단계의 원본 배치·문서 연결을 검증했다. [플로우 색인](README.md)·[검토 결과](FLOW_ASSET_REVIEW.md)를 먼저 확인한다. 실계정 테스트는 미수행이다. [기능 지도](CRM_Bonsai_기능지도와_확인사항.md), [공식 근거와 미확인](../AGENT/UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)을 함께 읽는다.
+공식 주요 문서와 API 개요를 확인했다. Gummble의 Bonsai Web 분석 134개와 고유 화면 642개를 확보했고, 2026-11-18 전체 754단계의 원본 배치·문서 연결을 검증했다. [플로우 색인](README.md)을 먼저 확인하고, 검토 상태와 이력은 각 분석의 1절·9절에서 확인한다. 실계정 테스트는 미수행이다. [기능 지도](CRM_Bonsai_기능지도와_확인사항.md), [공식 근거와 미확인](../AGENT/UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)을 함께 읽는다.
