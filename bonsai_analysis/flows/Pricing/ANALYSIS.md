@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 3단계 / 3단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 3개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -26,15 +27,18 @@
 - Subscribing과 Settings/Subscription 흐름의 구형 요금제에 연결해 비교한다.
 
 
+- 폴더 위치: `bonsai_analysis/flows/Pricing`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_6b53199f35cb4bc69306b8e615e55dd7`](https://gummble.com/screens/sc_6b53199f35cb4bc69306b8e615e55dd7?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 연간 가격 선택 | 연간 요금제 카드 아래 기능 목록으로 스크롤 |
-| 02 | [`sc_c435c9f093d34fddabe4fa83dd022786`](https://gummble.com/screens/sc_c435c9f093d34fddabe4fa83dd022786?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 요금제 포함 기능 비교 | 추가 상품 카드로 스크롤 |
-| 03 | [`sc_963ddd0939f7412cb81390d58c8cb401`](https://gummble.com/screens/sc_963ddd0939f7412cb81390d58c8cb401?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 추가 상품 2종 | 추가 상품 소개에서 종료; 플랜 선택·결제 없음 |
+| 01 | [`sc_6b53199f35cb4bc69306b8e615e55dd7`](https://gummble.com/screens/sc_6b53199f35cb4bc69306b8e615e55dd7?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [연간 가격 선택](<screens/01_sc_6b53199f35cb4bc69306b8e615e55dd7.png>) | 연간 요금제 카드 아래 기능 목록으로 스크롤 |
+| 02 | [`sc_c435c9f093d34fddabe4fa83dd022786`](https://gummble.com/screens/sc_c435c9f093d34fddabe4fa83dd022786?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [요금제 포함 기능 비교](<screens/02_sc_c435c9f093d34fddabe4fa83dd022786.png>) | 추가 상품 카드로 스크롤 |
+| 03 | [`sc_963ddd0939f7412cb81390d58c8cb401`](https://gummble.com/screens/sc_963ddd0939f7412cb81390d58c8cb401?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [추가 상품 2종](<screens/03_sc_963ddd0939f7412cb81390d58c8cb401.png>) | 추가 상품 소개에서 종료; 플랜 선택·결제 없음 |
 
 ## 4. 화면별 상세 분석
 
@@ -42,9 +46,9 @@
 
 - Screen ID: `sc_6b53199f35cb4bc69306b8e615e55dd7`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_6b53199f35cb4bc69306b8e615e55dd7?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3d55912c-c4fb-4c35-b78c-3c104ba0d318.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_6b53199f35cb4bc69306b8e615e55dd7.png](<screens/01_sc_6b53199f35cb4bc69306b8e615e55dd7.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_c435c9f093d34fddabe4fa83dd022786`
 
 #### 화면에서 직접 확인한 내용
@@ -71,9 +75,9 @@
 
 - Screen ID: `sc_c435c9f093d34fddabe4fa83dd022786`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c435c9f093d34fddabe4fa83dd022786?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8187e997-3fc5-41e0-ada7-92bab2b2e9f6.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_c435c9f093d34fddabe4fa83dd022786.png](<screens/02_sc_c435c9f093d34fddabe4fa83dd022786.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_6b53199f35cb4bc69306b8e615e55dd7` → 현재 → `sc_963ddd0939f7412cb81390d58c8cb401`
 
 #### 화면에서 직접 확인한 내용
@@ -100,9 +104,9 @@
 
 - Screen ID: `sc_963ddd0939f7412cb81390d58c8cb401`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_963ddd0939f7412cb81390d58c8cb401?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/bd117857-3118-489f-866a-657c08f82dc9.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_963ddd0939f7412cb81390d58c8cb401.png](<screens/03_sc_963ddd0939f7412cb81390d58c8cb401.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_c435c9f093d34fddabe4fa83dd022786` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -154,3 +158,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 3개와 실제 이미지 3개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 3단계 재조회 및 원본 3개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

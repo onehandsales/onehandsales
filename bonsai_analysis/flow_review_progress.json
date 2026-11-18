@@ -23,7 +23,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 7,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Deleting an income",
@@ -39,7 +41,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Bookkeeping overview",
@@ -57,7 +61,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Adding a bookkeeping category",
@@ -75,7 +81,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Bulk editing expenses",
@@ -94,7 +102,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 7,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Downloading expenses",
@@ -110,7 +120,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Filtering expenses",
@@ -132,7 +144,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Connect bank account",
@@ -147,7 +161,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Adding a recurring expense",
@@ -170,7 +186,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 11,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Bookkeeping/Adding a recurring expense/Adding an image and note",
@@ -187,7 +205,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Starting time tracking",
@@ -210,7 +230,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Copying referral link",
@@ -227,7 +249,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Accepting an invitation",
@@ -252,7 +276,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 13,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices",
@@ -269,7 +295,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice",
@@ -289,7 +317,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice/Record payment",
@@ -304,7 +334,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice/Enable auto-sending",
@@ -319,7 +351,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice/Preview invoice",
@@ -334,7 +368,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice/Editing invoice header",
@@ -348,7 +384,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice/Adding unbilled time",
@@ -365,7 +403,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Adding a new invoice/Editing an item",
@@ -382,7 +422,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Updating invoice settings",
@@ -399,7 +441,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Editing default values (Invoices)",
@@ -415,7 +459,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Connecting to Stripe",
@@ -437,7 +483,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoices/Connecting to Stripe/Turning off card payments",
@@ -451,7 +499,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Products (CRM)",
@@ -473,7 +523,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Services",
@@ -490,7 +542,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Services/Adding a service to library",
@@ -507,7 +561,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Using invoice generator",
@@ -524,7 +580,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Scheduling",
@@ -539,7 +597,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Scheduling/Copying a booking page",
@@ -555,7 +615,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Freelancers",
@@ -571,7 +633,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Careers",
@@ -587,7 +651,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Logging out",
@@ -601,7 +667,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Help Center",
@@ -615,7 +683,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Help Center/Help article detail",
@@ -631,7 +701,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Time Tracking",
@@ -650,7 +722,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Tasks",
@@ -666,7 +740,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Tasks/Creating a task template",
@@ -682,7 +758,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Tasks/Editing a template task",
@@ -702,7 +780,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Tasks/Adding a task (template)",
@@ -721,7 +801,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 7,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Contact Us",
@@ -736,7 +818,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal",
@@ -761,7 +845,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 12,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Sending a proposal",
@@ -781,7 +867,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Archiving a proposal",
@@ -799,7 +887,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Changing theme",
@@ -817,7 +907,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Marking as accepted",
@@ -835,7 +927,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Creating a new automation",
@@ -853,7 +947,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Setting proposal expiration date",
@@ -871,7 +967,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a proposal/Editing header style",
@@ -890,7 +988,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 7,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Inviting a member",
@@ -908,7 +1008,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail",
@@ -926,7 +1028,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Editing project name",
@@ -942,7 +1046,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Updating project status",
@@ -958,7 +1064,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Editing project settings",
@@ -974,7 +1082,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task",
@@ -992,7 +1102,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Adding a comment",
@@ -1007,7 +1119,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Adding a time entry",
@@ -1025,7 +1139,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Deleting a task",
@@ -1041,7 +1157,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Editing status settings",
@@ -1059,7 +1177,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Adding subtasks",
@@ -1081,7 +1201,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Continue tracking time",
@@ -1098,7 +1220,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Archiving a task",
@@ -1113,7 +1237,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Project detail/Adding a task/Editing a subtask",
@@ -1130,7 +1256,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a new contract",
@@ -1162,7 +1290,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 19,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a new contract/Contract guide tour",
@@ -1178,7 +1308,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a new contract/Converting contract type",
@@ -1193,7 +1325,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Creating a new contract/Signing a contract",
@@ -1210,7 +1344,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Privacy",
@@ -1224,7 +1360,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Industries (Consulting)",
@@ -1244,7 +1382,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Subscribing to Starter plan",
@@ -1268,7 +1408,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 12,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Subscribing to Starter plan/Canceling subscription",
@@ -1290,7 +1432,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Filtering all templates",
@@ -1307,7 +1451,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Filtering all templates/Template detail",
@@ -1324,7 +1470,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Terms & Conditions",
@@ -1337,7 +1485,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 1,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Pricing",
@@ -1352,7 +1502,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Invoice templates",
@@ -1375,7 +1527,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 11,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Logging in",
@@ -1393,7 +1547,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Logging in/Resetting password",
@@ -1416,7 +1572,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard",
@@ -1437,7 +1595,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Marking a task as complete",
@@ -1451,7 +1611,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Adding income manually",
@@ -1474,7 +1636,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 11,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Adding company details",
@@ -1494,7 +1658,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Adding company details/Uploading company logo",
@@ -1510,7 +1676,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Create a contact form (template)",
@@ -1527,7 +1695,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Create a contact form (template)/Using a template",
@@ -1544,7 +1714,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Create a contact form (template)/Filtering contact templates",
@@ -1560,7 +1732,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Create a contact form (template)/Searching templates",
@@ -1575,7 +1749,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar",
@@ -1595,7 +1771,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar/Adding event details",
@@ -1612,7 +1790,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar/Setting up availability",
@@ -1632,7 +1812,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar/Editing an event type",
@@ -1649,7 +1831,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar/Editing branding & design",
@@ -1671,7 +1855,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar/Editing advanced settings",
@@ -1688,7 +1874,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Connecting to Google Calendar/View booking page",
@@ -1704,7 +1892,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Dashboard/Hiding sidebar",
@@ -1720,7 +1910,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Adding a new client",
@@ -1739,7 +1931,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 7,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "404",
@@ -1753,7 +1947,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Blog",
@@ -1769,7 +1965,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Blog/Blog detail",
@@ -1785,7 +1983,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Blog/Searching blog",
@@ -1800,7 +2000,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Projects",
@@ -1817,7 +2019,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Projects/Adding a tag",
@@ -1838,7 +2042,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 9,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Projects/Reordering projects",
@@ -1853,7 +2059,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Projects/Switching to list view",
@@ -1868,7 +2076,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Projects/Creating a project (Projects)",
@@ -1886,7 +2096,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms",
@@ -1901,7 +2113,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms/Adding questions to a form",
@@ -1918,7 +2132,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms/Reordering questions",
@@ -1933,7 +2149,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms/Sharing a form",
@@ -1953,7 +2171,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 8,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms/Form responses",
@@ -1970,7 +2190,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms/Form responses/Response detail",
@@ -1986,7 +2208,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Forms/Form responses/Giving a response",
@@ -2007,7 +2231,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 9,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Reviews",
@@ -2023,7 +2249,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Perks",
@@ -2040,7 +2268,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Landing page",
@@ -2063,7 +2293,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 11,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Searching Bonsai",
@@ -2081,7 +2313,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Onboarding",
@@ -2103,7 +2337,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 10,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Onboarding/Completing account setup",
@@ -2131,7 +2367,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 16,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Clients",
@@ -2149,7 +2387,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Clients/Enabling portal access",
@@ -2163,7 +2403,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Clients/Uploading a client image",
@@ -2178,7 +2420,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Clients/Adding a client field",
@@ -2194,7 +2438,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Clients/Adding a new project (Clients)",
@@ -2211,7 +2457,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Affiliate Program",
@@ -2227,7 +2475,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings",
@@ -2251,7 +2501,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 12,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Deleting account",
@@ -2269,7 +2521,9 @@
       "review_rounds": [
         "R1",
         "R2"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Enable client mode",
@@ -2283,7 +2537,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 2,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Editing branding settings",
@@ -2301,7 +2557,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 6,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Uploading profile picture",
@@ -2318,7 +2576,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 5,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Editing notification settings",
@@ -2334,7 +2594,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Importing a CSV",
@@ -2357,7 +2619,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 11,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Removing a user",
@@ -2373,7 +2637,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 4,
+      "asset_verification_date": "2026-11-18"
     },
     {
       "folder": "Settings/Disabling public profile",
@@ -2388,7 +2654,9 @@
       ],
       "review_rounds": [
         "R1"
-      ]
+      ],
+      "local_images_placed": 3,
+      "asset_verification_date": "2026-11-18"
     }
   ],
   "last_review_date": "2026-11-18",
@@ -2400,7 +2668,7 @@
     "ordered_screen_references": 754,
     "official_help_and_api": "관련 문서와 대조; 각 ANALYSIS.md 6절에 확인 범위·버전 차이·미확인 계약 기록",
     "account_reproduction": "미수행",
-    "local_flow_images": "미배치; 사용자가 다운로드 후 추가 예정",
+    "local_flow_images": "2026-11-18 원본 642개를 전체 플로우 754단계에 배치; MCP 순서·로컬 링크·PNG 디코딩·크기·SHA-256 검증",
     "final_schema": "미확정; 흐름별 후보와 확인 질문만 기록"
   },
   "cross_flow_review": {
@@ -2442,6 +2710,57 @@
     "local_markdown_links_resolve": true,
     "pending_image_placeholders": 0,
     "errors": [],
-    "limitations": "문서 구조·근거 연결 검사이며 동작 재현 또는 모든 해석의 정확성을 보장하는 검증은 아님"
+    "limitations": "문서 구조·근거 연결 검사이며 동작 재현 또는 모든 해석의 정확성을 보장하는 검증은 아님",
+    "review_document": "FLOW_ASSET_REVIEW.md",
+    "original_pngs_verified": 754,
+    "status": "passed"
+  },
+  "asset_placement": {
+    "date": "2026-11-18",
+    "flow_count": 134,
+    "unique_images": 642,
+    "ordered_files": 754,
+    "flow_inventory": "flow_inventory.json",
+    "review_document": "FLOW_ASSET_REVIEW.md",
+    "scope": "원본 다운로드·단계 배치·문서 연결·무결성 검증. 새 시각 검토·공식 문서 재조회·실계정 재현과 구분"
+  },
+  "visual_overview_review": {
+    "date": "2026-11-18",
+    "unique_images": 642,
+    "sheets": 54,
+    "individual_originals_opened": 5,
+    "report": "FLOW_ASSET_REVIEW.md",
+    "scope": "All-screen thumbnail overview and 5 individual original checks; previous R1/R2 histories retained."
+  },
+  "content_preservation_check": {
+    "date": "2026-11-18",
+    "documents": 134,
+    "report": "FLOW_ASSET_REVIEW.md",
+    "baseline_commit": "095566a6fc52bb918d76cece9685f18f8461ef2e",
+    "scope": "Existing step observations and sections 5-8 unchanged from the initial Git baseline."
+  },
+  "post_completion_review": {
+    "checked_at_kst": "2026-11-18T15:11:30.068521+09:00",
+    "status": "passed",
+    "fresh_search_queries": 32,
+    "fresh_search_unique_flows": 134,
+    "readme_rows": 134,
+    "png_files": 754,
+    "local_links_checked": 1873,
+    "errors": [],
+    "review_document": "FLOW_ASSET_REVIEW.md",
+    "scope": "Fresh keyword discovery plus structural and file revalidation; no new all-screen visual review or live account actions."
+  },
+  "development_reference_cleanup": {
+    "checked_at_kst": "2026-11-18T15:40:50.093557+09:00",
+    "status": "passed",
+    "collection_files_removed": 11,
+    "flows": 134,
+    "png_files": 754,
+    "unique_screens": 642,
+    "local_links_checked": 1865,
+    "reference_files_unchanged": true,
+    "review_document": "FLOW_ASSET_REVIEW.md",
+    "errors": []
   }
 }

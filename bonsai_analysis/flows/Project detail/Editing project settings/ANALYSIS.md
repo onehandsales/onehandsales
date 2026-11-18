@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -28,16 +29,19 @@
 
 - 상위 분석: [Project detail](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Project detail/Editing project settings`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_b07eafa421cb44f3aa1081d935d5d1a3`](https://gummble.com/screens/sc_b07eafa421cb44f3aa1081d935d5d1a3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 프로젝트 설정 상단 | 설정 하단으로 스크롤해 Save Changes를 확인. 제목도 달라져 있으나 편집 장면 생략. |
-| 02 | [`sc_7db8a8c40f884b6190e313b59982d139`](https://gummble.com/screens/sc_7db8a8c40f884b6190e313b59982d139?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 프로젝트 설정의 저장 영역 | End Date를 Feb21 2024로 선택한 상태. |
-| 03 | [`sc_1c16855a408d4a3b882a3437563ec0cd`](https://gummble.com/screens/sc_1c16855a408d4a3b882a3437563ec0cd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 프로젝트 종료일 입력 | Overview로 전환되고 프로젝트 업데이트 성공 토스트. |
-| 04 | [`sc_64dc2598400849a39fef6452cbd49a62`](https://gummble.com/screens/sc_64dc2598400849a39fef6452cbd49a62?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 프로젝트 설정 저장 결과 | 기록 종료. 날짜 저장값 재조회는 미수록. |
+| 01 | [`sc_b07eafa421cb44f3aa1081d935d5d1a3`](https://gummble.com/screens/sc_b07eafa421cb44f3aa1081d935d5d1a3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [프로젝트 설정 상단](<screens/01_sc_b07eafa421cb44f3aa1081d935d5d1a3.png>) | 설정 하단으로 스크롤해 Save Changes를 확인. 제목도 달라져 있으나 편집 장면 생략. |
+| 02 | [`sc_7db8a8c40f884b6190e313b59982d139`](https://gummble.com/screens/sc_7db8a8c40f884b6190e313b59982d139?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [프로젝트 설정의 저장 영역](<screens/02_sc_7db8a8c40f884b6190e313b59982d139.png>) | End Date를 Feb21 2024로 선택한 상태. |
+| 03 | [`sc_1c16855a408d4a3b882a3437563ec0cd`](https://gummble.com/screens/sc_1c16855a408d4a3b882a3437563ec0cd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [프로젝트 종료일 입력](<screens/03_sc_1c16855a408d4a3b882a3437563ec0cd.png>) | Overview로 전환되고 프로젝트 업데이트 성공 토스트. |
+| 04 | [`sc_64dc2598400849a39fef6452cbd49a62`](https://gummble.com/screens/sc_64dc2598400849a39fef6452cbd49a62?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [프로젝트 설정 저장 결과](<screens/04_sc_64dc2598400849a39fef6452cbd49a62.png>) | 기록 종료. 날짜 저장값 재조회는 미수록. |
 
 ## 4. 화면별 상세 분석
 
@@ -45,9 +49,9 @@
 
 - Screen ID: `sc_b07eafa421cb44f3aa1081d935d5d1a3`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_b07eafa421cb44f3aa1081d935d5d1a3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/aef33650-ce6e-4eac-8ab6-28653117873e.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_b07eafa421cb44f3aa1081d935d5d1a3.png](<screens/01_sc_b07eafa421cb44f3aa1081d935d5d1a3.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_7db8a8c40f884b6190e313b59982d139`
 
 #### 화면에서 직접 확인한 내용
@@ -74,9 +78,9 @@
 
 - Screen ID: `sc_7db8a8c40f884b6190e313b59982d139`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_7db8a8c40f884b6190e313b59982d139?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/200c3c11-941a-4a30-95de-4a15c0689f13.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_7db8a8c40f884b6190e313b59982d139.png](<screens/02_sc_7db8a8c40f884b6190e313b59982d139.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_b07eafa421cb44f3aa1081d935d5d1a3` → 현재 → `sc_1c16855a408d4a3b882a3437563ec0cd`
 
 #### 화면에서 직접 확인한 내용
@@ -103,9 +107,9 @@
 
 - Screen ID: `sc_1c16855a408d4a3b882a3437563ec0cd`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_1c16855a408d4a3b882a3437563ec0cd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/9e0cf865-a0a6-4b47-954d-2e00d1d62420.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_1c16855a408d4a3b882a3437563ec0cd.png](<screens/03_sc_1c16855a408d4a3b882a3437563ec0cd.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_7db8a8c40f884b6190e313b59982d139` → 현재 → `sc_64dc2598400849a39fef6452cbd49a62`
 
 #### 화면에서 직접 확인한 내용
@@ -132,9 +136,9 @@
 
 - Screen ID: `sc_64dc2598400849a39fef6452cbd49a62`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_64dc2598400849a39fef6452cbd49a62?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8a8f7c44-1ccb-4849-8981-c6a10fa2f6a6.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_64dc2598400849a39fef6452cbd49a62.png](<screens/04_sc_64dc2598400849a39fef6452cbd49a62.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_1c16855a408d4a3b882a3437563ec0cd` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -188,3 +192,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-17 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

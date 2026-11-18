@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 5단계 / 5단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 5개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -26,17 +27,20 @@
 
 - 상위 분석: [Connecting to Google Calendar](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/Editing an event type`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_529048e78b304f66937c84b12cbc8a07`](https://gummble.com/screens/sc_529048e78b304f66937c84b12cbc8a07?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 생성된 유형 목록 | 유형 …를 연다. |
-| 02 | [`sc_9003a9b8ddee4c889190b4fb9e8550f5`](https://gummble.com/screens/sc_9003a9b8ddee4c889190b4fb9e8550f5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 유형 작업 메뉴 | Edit Event Type으로 진입한다. |
-| 03 | [`sc_e5a9ea1a0e4549dc927b0f9664b1c364`](https://gummble.com/screens/sc_e5a9ea1a0e4549dc927b0f9664b1c364?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 기존 유형 편집 | Send confirmation email to client를 해제한다. |
-| 04 | [`sc_ff29911c0069452ca90e8b5400798b4d`](https://gummble.com/screens/sc_ff29911c0069452ca90e8b5400798b4d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 확인 이메일 해제 | Save Changes로 저장한다. |
-| 05 | [`sc_0f2e7d66e08240f994eca182a98c2171`](https://gummble.com/screens/sc_0f2e7d66e08240f994eca182a98c2171?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 유형 수정 성공 | 목록의 업데이트 성공 안내를 확인한다. |
+| 01 | [`sc_529048e78b304f66937c84b12cbc8a07`](https://gummble.com/screens/sc_529048e78b304f66937c84b12cbc8a07?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [생성된 유형 목록](<screens/01_sc_529048e78b304f66937c84b12cbc8a07.png>) | 유형 …를 연다. |
+| 02 | [`sc_9003a9b8ddee4c889190b4fb9e8550f5`](https://gummble.com/screens/sc_9003a9b8ddee4c889190b4fb9e8550f5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [유형 작업 메뉴](<screens/02_sc_9003a9b8ddee4c889190b4fb9e8550f5.png>) | Edit Event Type으로 진입한다. |
+| 03 | [`sc_e5a9ea1a0e4549dc927b0f9664b1c364`](https://gummble.com/screens/sc_e5a9ea1a0e4549dc927b0f9664b1c364?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [기존 유형 편집](<screens/03_sc_e5a9ea1a0e4549dc927b0f9664b1c364.png>) | Send confirmation email to client를 해제한다. |
+| 04 | [`sc_ff29911c0069452ca90e8b5400798b4d`](https://gummble.com/screens/sc_ff29911c0069452ca90e8b5400798b4d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [확인 이메일 해제](<screens/04_sc_ff29911c0069452ca90e8b5400798b4d.png>) | Save Changes로 저장한다. |
+| 05 | [`sc_0f2e7d66e08240f994eca182a98c2171`](https://gummble.com/screens/sc_0f2e7d66e08240f994eca182a98c2171?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [유형 수정 성공](<screens/05_sc_0f2e7d66e08240f994eca182a98c2171.png>) | 목록의 업데이트 성공 안내를 확인한다. |
 
 ## 4. 화면별 상세 분석
 
@@ -44,9 +48,9 @@
 
 - Screen ID: `sc_529048e78b304f66937c84b12cbc8a07`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_529048e78b304f66937c84b12cbc8a07?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/6ba84c63-1167-41ca-9412-e3dbab548038.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_529048e78b304f66937c84b12cbc8a07.png](<screens/01_sc_529048e78b304f66937c84b12cbc8a07.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_9003a9b8ddee4c889190b4fb9e8550f5`
 
 #### 화면에서 직접 확인한 내용
@@ -73,9 +77,9 @@
 
 - Screen ID: `sc_9003a9b8ddee4c889190b4fb9e8550f5`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_9003a9b8ddee4c889190b4fb9e8550f5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2c42f062-877b-4590-a952-9f0a385e1621.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_9003a9b8ddee4c889190b4fb9e8550f5.png](<screens/02_sc_9003a9b8ddee4c889190b4fb9e8550f5.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_529048e78b304f66937c84b12cbc8a07` → 현재 → `sc_e5a9ea1a0e4549dc927b0f9664b1c364`
 
 #### 화면에서 직접 확인한 내용
@@ -102,9 +106,9 @@
 
 - Screen ID: `sc_e5a9ea1a0e4549dc927b0f9664b1c364`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_e5a9ea1a0e4549dc927b0f9664b1c364?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/b284b5ef-a935-4e8d-9b8b-458d7b1ec248.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_e5a9ea1a0e4549dc927b0f9664b1c364.png](<screens/03_sc_e5a9ea1a0e4549dc927b0f9664b1c364.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_9003a9b8ddee4c889190b4fb9e8550f5` → 현재 → `sc_ff29911c0069452ca90e8b5400798b4d`
 
 #### 화면에서 직접 확인한 내용
@@ -131,9 +135,9 @@
 
 - Screen ID: `sc_ff29911c0069452ca90e8b5400798b4d`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_ff29911c0069452ca90e8b5400798b4d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d4c6908f-4c07-4d50-a63b-d5568250f466.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_ff29911c0069452ca90e8b5400798b4d.png](<screens/04_sc_ff29911c0069452ca90e8b5400798b4d.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_e5a9ea1a0e4549dc927b0f9664b1c364` → 현재 → `sc_0f2e7d66e08240f994eca182a98c2171`
 
 #### 화면에서 직접 확인한 내용
@@ -160,9 +164,9 @@
 
 - Screen ID: `sc_0f2e7d66e08240f994eca182a98c2171`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_0f2e7d66e08240f994eca182a98c2171?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/fe32cb8d-542f-488a-a9fa-8b4fbfceeb6f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_0f2e7d66e08240f994eca182a98c2171.png](<screens/05_sc_0f2e7d66e08240f994eca182a98c2171.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_ff29911c0069452ca90e8b5400798b4d` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -210,3 +214,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 5개와 실제 이미지 5개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 5단계 재조회 및 원본 5개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

@@ -2,7 +2,7 @@
 
 ## 현재 Bonsai 조사 정본
 
-2026-11-17 확인 자료와 B01~B31·G01 출처, 문서 충돌·미확인은 [Bonsai 조사 정본](../AGENT/UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)에서 관리한다. [공식 REST API](https://docs.hellobonsai.com/api)와 [Gummble 절차](../AGENT/UXUI_AGENT/PLANNING/GUMMBLE_RESEARCH_GUIDE.md)를 함께 읽는다. Gummble 화면·실계정 검증은 미수행이다.
+2026-11-17 확인 자료와 B01~B31·G01 출처, 문서 충돌·미확인은 [Bonsai 조사 정본](../AGENT/UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)에서 관리한다. [공식 REST API](https://docs.hellobonsai.com/api)와 [Gummble 절차](../AGENT/UXUI_AGENT/PLANNING/GUMMBLE_RESEARCH_GUIDE.md)를 함께 읽는다. 2026-11-18 Gummble의 Bonsai Web 134개 플로우·754단계·고유 화면 642개를 재조회·배치한 상태는 [플로우 색인](README.md)과 [검토 결과](FLOW_ASSET_REVIEW.md)에 기록했다. 실계정 검증은 미수행이며 이번 원본 배치에서 공식 문서를 새로 조회하지 않았다.
 
 ## 과거 비교 조사 출처
 

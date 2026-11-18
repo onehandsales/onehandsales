@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 7단계 / 7단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 7개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -29,19 +30,22 @@
 
 - 상위 분석: [Bookkeeping](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Bookkeeping/Bulk editing expenses`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_762c1f934fdf40c0a61898b036cf4616`](https://gummble.com/screens/sc_762c1f934fdf40c0a61898b036cf4616?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Expenses 등록 목록 | 첫 행 체크박스 노출. 두 번째 행 분류의 중간 변경은 생략됨. |
-| 02 | [`sc_dfc7cc24d5e44970aef83904461fb9b3`](https://gummble.com/screens/sc_dfc7cc24d5e44970aef83904461fb9b3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 비용 행 선택 진입 | 첫 행 선택 후 선택 모드·하단 작업 바 표시. |
-| 03 | [`sc_f7e30f0ed4d948ceb5b3974adaad12dd`](https://gummble.com/screens/sc_f7e30f0ed4d948ceb5b3974adaad12dd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 비용 한 건 선택 | 두 번째 행도 선택되어 선택 수가 2로 변경. |
-| 04 | [`sc_60bd6b02cf7b4dfaa405d4420f1b0122`](https://gummble.com/screens/sc_60bd6b02cf7b4dfaa405d4420f1b0122?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 비용 두 건 선택 | Bulk Edit 2 Expenses 모달 표시. |
-| 05 | [`sc_8f3583b359d745948b724f5308184f7f`](https://gummble.com/screens/sc_8f3583b359d745948b724f5308184f7f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 비용 일괄 분류 수정 모달 | Personal 선택과 Category Personal 반영. |
-| 06 | [`sc_c29c33560d4f4e15bdf1c7771979b0a5`](https://gummble.com/screens/sc_c29c33560d4f4e15bdf1c7771979b0a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Personal 일괄 분류 선택 | 일반 목록 복귀, 두 행 Personal 변경과 성공 알림. |
-| 07 | [`sc_30a856c3cb1b43bbb51a56cffe5fd65e`](https://gummble.com/screens/sc_30a856c3cb1b43bbb51a56cffe5fd65e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 일괄 분류 수정 성공 | 선택 해제된 목록에서 기록 종료. |
+| 01 | [`sc_762c1f934fdf40c0a61898b036cf4616`](https://gummble.com/screens/sc_762c1f934fdf40c0a61898b036cf4616?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 등록 목록](<screens/01_sc_762c1f934fdf40c0a61898b036cf4616.png>) | 첫 행 체크박스 노출. 두 번째 행 분류의 중간 변경은 생략됨. |
+| 02 | [`sc_dfc7cc24d5e44970aef83904461fb9b3`](https://gummble.com/screens/sc_dfc7cc24d5e44970aef83904461fb9b3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [비용 행 선택 진입](<screens/02_sc_dfc7cc24d5e44970aef83904461fb9b3.png>) | 첫 행 선택 후 선택 모드·하단 작업 바 표시. |
+| 03 | [`sc_f7e30f0ed4d948ceb5b3974adaad12dd`](https://gummble.com/screens/sc_f7e30f0ed4d948ceb5b3974adaad12dd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [비용 한 건 선택](<screens/03_sc_f7e30f0ed4d948ceb5b3974adaad12dd.png>) | 두 번째 행도 선택되어 선택 수가 2로 변경. |
+| 04 | [`sc_60bd6b02cf7b4dfaa405d4420f1b0122`](https://gummble.com/screens/sc_60bd6b02cf7b4dfaa405d4420f1b0122?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [비용 두 건 선택](<screens/04_sc_60bd6b02cf7b4dfaa405d4420f1b0122.png>) | Bulk Edit 2 Expenses 모달 표시. |
+| 05 | [`sc_8f3583b359d745948b724f5308184f7f`](https://gummble.com/screens/sc_8f3583b359d745948b724f5308184f7f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [비용 일괄 분류 수정 모달](<screens/05_sc_8f3583b359d745948b724f5308184f7f.png>) | Personal 선택과 Category Personal 반영. |
+| 06 | [`sc_c29c33560d4f4e15bdf1c7771979b0a5`](https://gummble.com/screens/sc_c29c33560d4f4e15bdf1c7771979b0a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Personal 일괄 분류 선택](<screens/06_sc_c29c33560d4f4e15bdf1c7771979b0a5.png>) | 일반 목록 복귀, 두 행 Personal 변경과 성공 알림. |
+| 07 | [`sc_30a856c3cb1b43bbb51a56cffe5fd65e`](https://gummble.com/screens/sc_30a856c3cb1b43bbb51a56cffe5fd65e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [일괄 분류 수정 성공](<screens/07_sc_30a856c3cb1b43bbb51a56cffe5fd65e.png>) | 선택 해제된 목록에서 기록 종료. |
 
 ## 4. 화면별 상세 분석
 
@@ -49,9 +53,9 @@
 
 - Screen ID: `sc_762c1f934fdf40c0a61898b036cf4616`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_762c1f934fdf40c0a61898b036cf4616?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/549dc499-2f3b-4b0d-9534-73c488617a77.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_762c1f934fdf40c0a61898b036cf4616.png](<screens/01_sc_762c1f934fdf40c0a61898b036cf4616.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_dfc7cc24d5e44970aef83904461fb9b3`
 
 #### 화면에서 직접 확인한 내용
@@ -78,9 +82,9 @@
 
 - Screen ID: `sc_dfc7cc24d5e44970aef83904461fb9b3`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_dfc7cc24d5e44970aef83904461fb9b3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/4e9d4eb3-bb1b-48dc-9d43-ab5cd3cce437.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_dfc7cc24d5e44970aef83904461fb9b3.png](<screens/02_sc_dfc7cc24d5e44970aef83904461fb9b3.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_762c1f934fdf40c0a61898b036cf4616` → 현재 → `sc_f7e30f0ed4d948ceb5b3974adaad12dd`
 
 #### 화면에서 직접 확인한 내용
@@ -107,9 +111,9 @@
 
 - Screen ID: `sc_f7e30f0ed4d948ceb5b3974adaad12dd`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_f7e30f0ed4d948ceb5b3974adaad12dd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/4fc532eb-47c7-4f9f-8466-1c22b70da0f9.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_f7e30f0ed4d948ceb5b3974adaad12dd.png](<screens/03_sc_f7e30f0ed4d948ceb5b3974adaad12dd.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_dfc7cc24d5e44970aef83904461fb9b3` → 현재 → `sc_60bd6b02cf7b4dfaa405d4420f1b0122`
 
 #### 화면에서 직접 확인한 내용
@@ -136,9 +140,9 @@
 
 - Screen ID: `sc_60bd6b02cf7b4dfaa405d4420f1b0122`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_60bd6b02cf7b4dfaa405d4420f1b0122?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/6c0f1a71-28c8-48e2-8f3b-54a1462de18b.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_60bd6b02cf7b4dfaa405d4420f1b0122.png](<screens/04_sc_60bd6b02cf7b4dfaa405d4420f1b0122.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_f7e30f0ed4d948ceb5b3974adaad12dd` → 현재 → `sc_8f3583b359d745948b724f5308184f7f`
 
 #### 화면에서 직접 확인한 내용
@@ -165,9 +169,9 @@
 
 - Screen ID: `sc_8f3583b359d745948b724f5308184f7f`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_8f3583b359d745948b724f5308184f7f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/927a1108-3308-4167-94ab-1418a5a503aa.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_8f3583b359d745948b724f5308184f7f.png](<screens/05_sc_8f3583b359d745948b724f5308184f7f.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_60bd6b02cf7b4dfaa405d4420f1b0122` → 현재 → `sc_c29c33560d4f4e15bdf1c7771979b0a5`
 
 #### 화면에서 직접 확인한 내용
@@ -194,9 +198,9 @@
 
 - Screen ID: `sc_c29c33560d4f4e15bdf1c7771979b0a5`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c29c33560d4f4e15bdf1c7771979b0a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d66af5b9-eb87-43f5-a5f4-9326c7d9a7de.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [06_sc_c29c33560d4f4e15bdf1c7771979b0a5.png](<screens/06_sc_c29c33560d4f4e15bdf1c7771979b0a5.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_8f3583b359d745948b724f5308184f7f` → 현재 → `sc_30a856c3cb1b43bbb51a56cffe5fd65e`
 
 #### 화면에서 직접 확인한 내용
@@ -223,9 +227,9 @@
 
 - Screen ID: `sc_30a856c3cb1b43bbb51a56cffe5fd65e`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_30a856c3cb1b43bbb51a56cffe5fd65e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/0c9baa90-5260-4113-9566-a513f1379db9.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [07_sc_30a856c3cb1b43bbb51a56cffe5fd65e.png](<screens/07_sc_30a856c3cb1b43bbb51a56cffe5fd65e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_c29c33560d4f4e15bdf1c7771979b0a5` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -279,3 +283,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-17 KST | MCP 단계 목록 7개와 실제 이미지 7개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 7단계 재조회 및 원본 7개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

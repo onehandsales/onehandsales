@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 5단계 / 5단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 5개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,17 +28,20 @@
 
 - 상위 분석: [Adding a new invoice](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Invoices/Adding a new invoice/Editing an item`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_da340557d84c4add8ac139af9a629557`](https://gummble.com/screens/sc_da340557d84c4add8ac139af9a629557?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 인보이스 헤더 이미지 적용 | 일반 검증 오류 토스트가 나타난다. Studio→Foundation 변경 과정은 미수록. |
-| 02 | [`sc_17b08f7253554c8e9691e71faebf58de`](https://gummble.com/screens/sc_17b08f7253554c8e9691e71faebf58de?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 인보이스 일반 검증 오류 | 항목 위치로 이동하면 빈 이름에 빨간 테두리와 경고 아이콘이 보인다. |
-| 03 | [`sc_352b14335c44407885e9d014228f98ec`](https://gummble.com/screens/sc_352b14335c44407885e9d014228f98ec?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 빈 항목명 오류 | 이름 입력 아래 서비스 추천 목록을 연다. |
-| 04 | [`sc_c4c151b48433485587c49123d3cc56f6`](https://gummble.com/screens/sc_c4c151b48433485587c49123d3cc56f6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 서비스 라이브러리 추천 | Flyer Design 선택 후 이름·설명·가격이 채워지고 금액50으로 바뀐다. |
-| 05 | [`sc_3588b6b5ac2447fdbc7ecb2454855fcf`](https://gummble.com/screens/sc_3588b6b5ac2447fdbc7ecb2454855fcf?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Flyer Design 항목 적용 | 항목 작성 결과에서 종료. 발송 성공은 없음. |
+| 01 | [`sc_da340557d84c4add8ac139af9a629557`](https://gummble.com/screens/sc_da340557d84c4add8ac139af9a629557?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인보이스 헤더 이미지 적용](<screens/01_sc_da340557d84c4add8ac139af9a629557.png>) | 일반 검증 오류 토스트가 나타난다. Studio→Foundation 변경 과정은 미수록. |
+| 02 | [`sc_17b08f7253554c8e9691e71faebf58de`](https://gummble.com/screens/sc_17b08f7253554c8e9691e71faebf58de?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인보이스 일반 검증 오류](<screens/02_sc_17b08f7253554c8e9691e71faebf58de.png>) | 항목 위치로 이동하면 빈 이름에 빨간 테두리와 경고 아이콘이 보인다. |
+| 03 | [`sc_352b14335c44407885e9d014228f98ec`](https://gummble.com/screens/sc_352b14335c44407885e9d014228f98ec?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [빈 항목명 오류](<screens/03_sc_352b14335c44407885e9d014228f98ec.png>) | 이름 입력 아래 서비스 추천 목록을 연다. |
+| 04 | [`sc_c4c151b48433485587c49123d3cc56f6`](https://gummble.com/screens/sc_c4c151b48433485587c49123d3cc56f6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [서비스 라이브러리 추천](<screens/04_sc_c4c151b48433485587c49123d3cc56f6.png>) | Flyer Design 선택 후 이름·설명·가격이 채워지고 금액50으로 바뀐다. |
+| 05 | [`sc_3588b6b5ac2447fdbc7ecb2454855fcf`](https://gummble.com/screens/sc_3588b6b5ac2447fdbc7ecb2454855fcf?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Flyer Design 항목 적용](<screens/05_sc_3588b6b5ac2447fdbc7ecb2454855fcf.png>) | 항목 작성 결과에서 종료. 발송 성공은 없음. |
 
 ## 4. 화면별 상세 분석
 
@@ -45,9 +49,9 @@
 
 - Screen ID: `sc_da340557d84c4add8ac139af9a629557`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_da340557d84c4add8ac139af9a629557?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/57cf3a04-0854-47bd-b301-989752e8f621.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_da340557d84c4add8ac139af9a629557.png](<screens/01_sc_da340557d84c4add8ac139af9a629557.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_17b08f7253554c8e9691e71faebf58de`
 
 #### 화면에서 직접 확인한 내용
@@ -74,9 +78,9 @@
 
 - Screen ID: `sc_17b08f7253554c8e9691e71faebf58de`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_17b08f7253554c8e9691e71faebf58de?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/21e6fcb2-0e66-4b49-b0f6-a557a0758d49.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_17b08f7253554c8e9691e71faebf58de.png](<screens/02_sc_17b08f7253554c8e9691e71faebf58de.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_da340557d84c4add8ac139af9a629557` → 현재 → `sc_352b14335c44407885e9d014228f98ec`
 
 #### 화면에서 직접 확인한 내용
@@ -103,9 +107,9 @@
 
 - Screen ID: `sc_352b14335c44407885e9d014228f98ec`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_352b14335c44407885e9d014228f98ec?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/c02c938f-2189-42c2-b1a1-40573958bf50.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_352b14335c44407885e9d014228f98ec.png](<screens/03_sc_352b14335c44407885e9d014228f98ec.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_17b08f7253554c8e9691e71faebf58de` → 현재 → `sc_c4c151b48433485587c49123d3cc56f6`
 
 #### 화면에서 직접 확인한 내용
@@ -132,9 +136,9 @@
 
 - Screen ID: `sc_c4c151b48433485587c49123d3cc56f6`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c4c151b48433485587c49123d3cc56f6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/83e664e3-2939-4d27-9ac5-2ba1b3accf2a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_c4c151b48433485587c49123d3cc56f6.png](<screens/04_sc_c4c151b48433485587c49123d3cc56f6.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_352b14335c44407885e9d014228f98ec` → 현재 → `sc_3588b6b5ac2447fdbc7ecb2454855fcf`
 
 #### 화면에서 직접 확인한 내용
@@ -161,9 +165,9 @@
 
 - Screen ID: `sc_3588b6b5ac2447fdbc7ecb2454855fcf`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_3588b6b5ac2447fdbc7ecb2454855fcf?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/cce6a84f-0a83-4c8a-ade7-0a0cb700b762.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_3588b6b5ac2447fdbc7ecb2454855fcf.png](<screens/05_sc_3588b6b5ac2447fdbc7ecb2454855fcf.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_c4c151b48433485587c49123d3cc56f6` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -212,3 +216,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 5개와 실제 이미지 5개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 5단계 재조회 및 원본 5개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

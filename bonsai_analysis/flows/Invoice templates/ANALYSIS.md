@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 11단계 / 11단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 11개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -26,23 +27,26 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 - Using invoice generator와 앱 Invoicing 진입을 별도로 제공한다.
 
 
+- 폴더 위치: `bonsai_analysis/flows/Invoice templates`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_d68dbb7304bb45ac9755138b12ce3141`](https://gummble.com/screens/sc_d68dbb7304bb45ac9755138b12ce3141?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Templates 메가 메뉴 계약 기본 | Invoice Templates 메뉴 활성·추천 링크 교체 |
-| 02 | [`sc_eac8d5a2e97d47c496455da557912622`](https://gummble.com/screens/sc_eac8d5a2e97d47c496455da557912622?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Invoice Templates 메뉴 선택 | 청구서 템플릿 소개 페이지로 이동 |
-| 03 | [`sc_ef526e3912f44ce29bac28e00edbae28`](https://gummble.com/screens/sc_ef526e3912f44ce29bac28e00edbae28?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 청구서 템플릿 소개 hero | 용도 설명·생성기 CTA로 스크롤 |
-| 04 | [`sc_9cb41f708d1841bc9bb627e9adb69f59`](https://gummble.com/screens/sc_9cb41f708d1841bc9bb627e9adb69f59?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 청구서 템플릿 개념·생성기 링크 | 다운로드 유형 소개로 스크롤 |
-| 05 | [`sc_fb22ca5fac734f0bb6636d302b61fd2c`](https://gummble.com/screens/sc_fb22ca5fac734f0bb6636d302b61fd2c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 무료 템플릿 유형 설명 | 파일 형식별 카드 링크 노출 |
-| 06 | [`sc_c1cf0b18c5da456ba7c29ddc416eab45`](https://gummble.com/screens/sc_c1cf0b18c5da456ba7c29ddc416eab45?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 형식별 다운로드 카드 | 형식별 설명으로 스크롤; 일부 카드 제목 미수록 |
-| 07 | [`sc_0d63bd46b3304072b6f75589361c99b0`](https://gummble.com/screens/sc_0d63bd46b3304072b6f75589361c99b0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 파일 형식별 설명 | 업종별 템플릿으로 스크롤 |
-| 08 | [`sc_89b5c3a2a2be40109d8018d906853f1a`](https://gummble.com/screens/sc_89b5c3a2a2be40109d8018d906853f1a?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 업종별 청구서 템플릿 | 추가 템플릿 카드로 이동; 중간 섹션 누락 가능 |
-| 09 | [`sc_5902fc89beb849b4acb6be05de2f9f4c`](https://gummble.com/screens/sc_5902fc89beb849b4acb6be05de2f9f4c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 추가 청구서 템플릿 카드 | 장점 카드로 스크롤 |
-| 10 | [`sc_a094d29b4d2b453c8c46ee9ccb255d9f`](https://gummble.com/screens/sc_a094d29b4d2b453c8c46ee9ccb255d9f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 청구서 템플릿 장점 | Word 장단점으로 이동; 일부 설명 누락 |
-| 11 | [`sc_14cfb12034534421b6d0654f86236e3d`](https://gummble.com/screens/sc_14cfb12034534421b6d0654f86236e3d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Word 형식 장단점 | 비교 내용에서 기록 종료; 페이지 끝은 아님 |
+| 01 | [`sc_d68dbb7304bb45ac9755138b12ce3141`](https://gummble.com/screens/sc_d68dbb7304bb45ac9755138b12ce3141?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Templates 메가 메뉴 계약 기본](<screens/01_sc_d68dbb7304bb45ac9755138b12ce3141.png>) | Invoice Templates 메뉴 활성·추천 링크 교체 |
+| 02 | [`sc_eac8d5a2e97d47c496455da557912622`](https://gummble.com/screens/sc_eac8d5a2e97d47c496455da557912622?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Invoice Templates 메뉴 선택](<screens/02_sc_eac8d5a2e97d47c496455da557912622.png>) | 청구서 템플릿 소개 페이지로 이동 |
+| 03 | [`sc_ef526e3912f44ce29bac28e00edbae28`](https://gummble.com/screens/sc_ef526e3912f44ce29bac28e00edbae28?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [청구서 템플릿 소개 hero](<screens/03_sc_ef526e3912f44ce29bac28e00edbae28.png>) | 용도 설명·생성기 CTA로 스크롤 |
+| 04 | [`sc_9cb41f708d1841bc9bb627e9adb69f59`](https://gummble.com/screens/sc_9cb41f708d1841bc9bb627e9adb69f59?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [청구서 템플릿 개념·생성기 링크](<screens/04_sc_9cb41f708d1841bc9bb627e9adb69f59.png>) | 다운로드 유형 소개로 스크롤 |
+| 05 | [`sc_fb22ca5fac734f0bb6636d302b61fd2c`](https://gummble.com/screens/sc_fb22ca5fac734f0bb6636d302b61fd2c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [무료 템플릿 유형 설명](<screens/05_sc_fb22ca5fac734f0bb6636d302b61fd2c.png>) | 파일 형식별 카드 링크 노출 |
+| 06 | [`sc_c1cf0b18c5da456ba7c29ddc416eab45`](https://gummble.com/screens/sc_c1cf0b18c5da456ba7c29ddc416eab45?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [형식별 다운로드 카드](<screens/06_sc_c1cf0b18c5da456ba7c29ddc416eab45.png>) | 형식별 설명으로 스크롤; 일부 카드 제목 미수록 |
+| 07 | [`sc_0d63bd46b3304072b6f75589361c99b0`](https://gummble.com/screens/sc_0d63bd46b3304072b6f75589361c99b0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [파일 형식별 설명](<screens/07_sc_0d63bd46b3304072b6f75589361c99b0.png>) | 업종별 템플릿으로 스크롤 |
+| 08 | [`sc_89b5c3a2a2be40109d8018d906853f1a`](https://gummble.com/screens/sc_89b5c3a2a2be40109d8018d906853f1a?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [업종별 청구서 템플릿](<screens/08_sc_89b5c3a2a2be40109d8018d906853f1a.png>) | 추가 템플릿 카드로 이동; 중간 섹션 누락 가능 |
+| 09 | [`sc_5902fc89beb849b4acb6be05de2f9f4c`](https://gummble.com/screens/sc_5902fc89beb849b4acb6be05de2f9f4c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [추가 청구서 템플릿 카드](<screens/09_sc_5902fc89beb849b4acb6be05de2f9f4c.png>) | 장점 카드로 스크롤 |
+| 10 | [`sc_a094d29b4d2b453c8c46ee9ccb255d9f`](https://gummble.com/screens/sc_a094d29b4d2b453c8c46ee9ccb255d9f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [청구서 템플릿 장점](<screens/10_sc_a094d29b4d2b453c8c46ee9ccb255d9f.png>) | Word 장단점으로 이동; 일부 설명 누락 |
+| 11 | [`sc_14cfb12034534421b6d0654f86236e3d`](https://gummble.com/screens/sc_14cfb12034534421b6d0654f86236e3d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Word 형식 장단점](<screens/11_sc_14cfb12034534421b6d0654f86236e3d.png>) | 비교 내용에서 기록 종료; 페이지 끝은 아님 |
 
 ## 4. 화면별 상세 분석
 
@@ -50,9 +54,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_d68dbb7304bb45ac9755138b12ce3141`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_d68dbb7304bb45ac9755138b12ce3141?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/871c3613-2f38-4344-b6f2-eb6c4d9f233c.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_d68dbb7304bb45ac9755138b12ce3141.png](<screens/01_sc_d68dbb7304bb45ac9755138b12ce3141.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_eac8d5a2e97d47c496455da557912622`
 
 #### 화면에서 직접 확인한 내용
@@ -79,9 +83,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_eac8d5a2e97d47c496455da557912622`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_eac8d5a2e97d47c496455da557912622?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/378377d9-61d1-4c07-b2d2-2369596c5a43.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_eac8d5a2e97d47c496455da557912622.png](<screens/02_sc_eac8d5a2e97d47c496455da557912622.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_d68dbb7304bb45ac9755138b12ce3141` → 현재 → `sc_ef526e3912f44ce29bac28e00edbae28`
 
 #### 화면에서 직접 확인한 내용
@@ -108,9 +112,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_ef526e3912f44ce29bac28e00edbae28`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_ef526e3912f44ce29bac28e00edbae28?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/5a94889f-e43c-4cd8-ad95-81af2d9f873f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_ef526e3912f44ce29bac28e00edbae28.png](<screens/03_sc_ef526e3912f44ce29bac28e00edbae28.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_eac8d5a2e97d47c496455da557912622` → 현재 → `sc_9cb41f708d1841bc9bb627e9adb69f59`
 
 #### 화면에서 직접 확인한 내용
@@ -137,9 +141,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_9cb41f708d1841bc9bb627e9adb69f59`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_9cb41f708d1841bc9bb627e9adb69f59?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/f5c1ee78-1b82-49ad-a554-1cccec67d4ba.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_9cb41f708d1841bc9bb627e9adb69f59.png](<screens/04_sc_9cb41f708d1841bc9bb627e9adb69f59.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_ef526e3912f44ce29bac28e00edbae28` → 현재 → `sc_fb22ca5fac734f0bb6636d302b61fd2c`
 
 #### 화면에서 직접 확인한 내용
@@ -166,9 +170,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_fb22ca5fac734f0bb6636d302b61fd2c`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_fb22ca5fac734f0bb6636d302b61fd2c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/13789aa5-d9ce-4acd-b019-d8bf220cbfde.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_fb22ca5fac734f0bb6636d302b61fd2c.png](<screens/05_sc_fb22ca5fac734f0bb6636d302b61fd2c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_9cb41f708d1841bc9bb627e9adb69f59` → 현재 → `sc_c1cf0b18c5da456ba7c29ddc416eab45`
 
 #### 화면에서 직접 확인한 내용
@@ -195,9 +199,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_c1cf0b18c5da456ba7c29ddc416eab45`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c1cf0b18c5da456ba7c29ddc416eab45?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8c03f3ae-2c72-47fb-a894-6448327a41ee.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [06_sc_c1cf0b18c5da456ba7c29ddc416eab45.png](<screens/06_sc_c1cf0b18c5da456ba7c29ddc416eab45.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_fb22ca5fac734f0bb6636d302b61fd2c` → 현재 → `sc_0d63bd46b3304072b6f75589361c99b0`
 
 #### 화면에서 직접 확인한 내용
@@ -224,9 +228,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_0d63bd46b3304072b6f75589361c99b0`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_0d63bd46b3304072b6f75589361c99b0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/8a24e832-72d8-41d0-ab2c-656dc92c72d6.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [07_sc_0d63bd46b3304072b6f75589361c99b0.png](<screens/07_sc_0d63bd46b3304072b6f75589361c99b0.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_c1cf0b18c5da456ba7c29ddc416eab45` → 현재 → `sc_89b5c3a2a2be40109d8018d906853f1a`
 
 #### 화면에서 직접 확인한 내용
@@ -253,9 +257,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_89b5c3a2a2be40109d8018d906853f1a`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_89b5c3a2a2be40109d8018d906853f1a?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/6f5c227c-c8d0-44f0-9876-277de4914836.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [08_sc_89b5c3a2a2be40109d8018d906853f1a.png](<screens/08_sc_89b5c3a2a2be40109d8018d906853f1a.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_0d63bd46b3304072b6f75589361c99b0` → 현재 → `sc_5902fc89beb849b4acb6be05de2f9f4c`
 
 #### 화면에서 직접 확인한 내용
@@ -282,9 +286,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_5902fc89beb849b4acb6be05de2f9f4c`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_5902fc89beb849b4acb6be05de2f9f4c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d570bacb-c0f1-4f6c-a790-8e0aed0b9b23.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [09_sc_5902fc89beb849b4acb6be05de2f9f4c.png](<screens/09_sc_5902fc89beb849b4acb6be05de2f9f4c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_89b5c3a2a2be40109d8018d906853f1a` → 현재 → `sc_a094d29b4d2b453c8c46ee9ccb255d9f`
 
 #### 화면에서 직접 확인한 내용
@@ -311,9 +315,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_a094d29b4d2b453c8c46ee9ccb255d9f`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a094d29b4d2b453c8c46ee9ccb255d9f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/0c4b21d7-46b7-4417-b358-8361bf0e7b8a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [10_sc_a094d29b4d2b453c8c46ee9ccb255d9f.png](<screens/10_sc_a094d29b4d2b453c8c46ee9ccb255d9f.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_5902fc89beb849b4acb6be05de2f9f4c` → 현재 → `sc_14cfb12034534421b6d0654f86236e3d`
 
 #### 화면에서 직접 확인한 내용
@@ -340,9 +344,9 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 
 - Screen ID: `sc_14cfb12034534421b6d0654f86236e3d`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_14cfb12034534421b6d0654f86236e3d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/40f3c613-0c03-4333-92aa-c9a2260b013a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [11_sc_14cfb12034534421b6d0654f86236e3d.png](<screens/11_sc_14cfb12034534421b6d0654f86236e3d.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_a094d29b4d2b453c8c46ee9ccb255d9f` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -394,3 +398,4 @@ Templates 메뉴에서 공개 청구서 템플릿 페이지를 열어 파일 형
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 11개와 실제 이미지 11개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 11단계 재조회 및 원본 11개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

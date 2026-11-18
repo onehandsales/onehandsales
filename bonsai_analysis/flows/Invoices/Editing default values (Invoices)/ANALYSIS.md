@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,16 +28,19 @@
 
 - 상위 분석: [Invoices](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Invoices/Editing default values (Invoices)`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_22fa89558d47416c89104f9b96182708`](https://gummble.com/screens/sc_22fa89558d47416c89104f9b96182708?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 향후 인보이스 기본값 | 아래로 스크롤해 Tax ID와 Default Note를 확인한다. |
-| 02 | [`sc_1429ac3005b545e89627fc165c1bf87c`](https://gummble.com/screens/sc_1429ac3005b545e89627fc165c1bf87c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 인보이스 기본값 하단 | Late Fee를10.0, Tax를5.0으로 수정한다. |
-| 03 | [`sc_f0f1e695ecd84ecfa14c3110a6d1e97e`](https://gummble.com/screens/sc_f0f1e695ecd84ecfa14c3110a6d1e97e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 기본 연체료10·세율5 입력 | Save Changes 후 상단으로 돌아오고 저장 성공 알림이 나타난다. |
-| 04 | [`sc_faca016141424494ac9de7e2e0e9c66e`](https://gummble.com/screens/sc_faca016141424494ac9de7e2e0e9c66e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 기본값 저장 성공 | 새 기본값 저장으로 종료. 기존 문서 변경은 없음. |
+| 01 | [`sc_22fa89558d47416c89104f9b96182708`](https://gummble.com/screens/sc_22fa89558d47416c89104f9b96182708?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [향후 인보이스 기본값](<screens/01_sc_22fa89558d47416c89104f9b96182708.png>) | 아래로 스크롤해 Tax ID와 Default Note를 확인한다. |
+| 02 | [`sc_1429ac3005b545e89627fc165c1bf87c`](https://gummble.com/screens/sc_1429ac3005b545e89627fc165c1bf87c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인보이스 기본값 하단](<screens/02_sc_1429ac3005b545e89627fc165c1bf87c.png>) | Late Fee를10.0, Tax를5.0으로 수정한다. |
+| 03 | [`sc_f0f1e695ecd84ecfa14c3110a6d1e97e`](https://gummble.com/screens/sc_f0f1e695ecd84ecfa14c3110a6d1e97e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [기본 연체료10·세율5 입력](<screens/03_sc_f0f1e695ecd84ecfa14c3110a6d1e97e.png>) | Save Changes 후 상단으로 돌아오고 저장 성공 알림이 나타난다. |
+| 04 | [`sc_faca016141424494ac9de7e2e0e9c66e`](https://gummble.com/screens/sc_faca016141424494ac9de7e2e0e9c66e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [기본값 저장 성공](<screens/04_sc_faca016141424494ac9de7e2e0e9c66e.png>) | 새 기본값 저장으로 종료. 기존 문서 변경은 없음. |
 
 ## 4. 화면별 상세 분석
 
@@ -44,9 +48,9 @@
 
 - Screen ID: `sc_22fa89558d47416c89104f9b96182708`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_22fa89558d47416c89104f9b96182708?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/f3b7b5e8-47ff-4a4c-aeb2-e49289acad4f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_22fa89558d47416c89104f9b96182708.png](<screens/01_sc_22fa89558d47416c89104f9b96182708.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_1429ac3005b545e89627fc165c1bf87c`
 
 #### 화면에서 직접 확인한 내용
@@ -73,9 +77,9 @@
 
 - Screen ID: `sc_1429ac3005b545e89627fc165c1bf87c`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_1429ac3005b545e89627fc165c1bf87c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/99aeb4b0-851d-45b1-9942-9a4a7973a178.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_1429ac3005b545e89627fc165c1bf87c.png](<screens/02_sc_1429ac3005b545e89627fc165c1bf87c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_22fa89558d47416c89104f9b96182708` → 현재 → `sc_f0f1e695ecd84ecfa14c3110a6d1e97e`
 
 #### 화면에서 직접 확인한 내용
@@ -102,9 +106,9 @@
 
 - Screen ID: `sc_f0f1e695ecd84ecfa14c3110a6d1e97e`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_f0f1e695ecd84ecfa14c3110a6d1e97e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/54cb6cc1-8020-4e40-8845-ce875b423b96.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_f0f1e695ecd84ecfa14c3110a6d1e97e.png](<screens/03_sc_f0f1e695ecd84ecfa14c3110a6d1e97e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_1429ac3005b545e89627fc165c1bf87c` → 현재 → `sc_faca016141424494ac9de7e2e0e9c66e`
 
 #### 화면에서 직접 확인한 내용
@@ -131,9 +135,9 @@
 
 - Screen ID: `sc_faca016141424494ac9de7e2e0e9c66e`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_faca016141424494ac9de7e2e0e9c66e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/fec3aa98-ce9b-408a-933a-08ee3ccd56ba.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_faca016141424494ac9de7e2e0e9c66e.png](<screens/04_sc_faca016141424494ac9de7e2e0e9c66e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_f0f1e695ecd84ecfa14c3110a6d1e97e` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -183,3 +187,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,16 +28,19 @@ Resources에서 블로그로 이동해 일반 목록·분류·검색·기사 진
 
 - 하위 플로우: [Blog detail](Blog%20detail/ANALYSIS.md), [Searching blog](Searching%20blog/ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Blog`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_549a6fa823b74e3e8d826750df6f1f99`](https://gummble.com/screens/sc_549a6fa823b74e3e8d826750df6f1f99?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Resources 메뉴 | Blog 목록 페이지로 이동 |
-| 02 | [`sc_f784e647d4c44c448969e5641b1f3fd0`](https://gummble.com/screens/sc_f784e647d4c44c448969e5641b1f3fd0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 블로그 목록 초기 | General 활성 표시가 생김; 기사 목록은 동일 |
-| 03 | [`sc_ed1d234775a74b4bad3ca7f497d20970`](https://gummble.com/screens/sc_ed1d234775a74b4bad3ca7f497d20970?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | General 선택 | 아래로 스크롤해 저자와 다음 행 노출 |
-| 04 | [`sc_2c58d306a0c54343967cbe26160fc0cb`](https://gummble.com/screens/sc_2c58d306a0c54343967cbe26160fc0cb?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 글 카드 저자와 다음 행 | 목록에서 종료; 상세는 별도 하위 flow |
+| 01 | [`sc_549a6fa823b74e3e8d826750df6f1f99`](https://gummble.com/screens/sc_549a6fa823b74e3e8d826750df6f1f99?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Resources 메뉴](<screens/01_sc_549a6fa823b74e3e8d826750df6f1f99.png>) | Blog 목록 페이지로 이동 |
+| 02 | [`sc_f784e647d4c44c448969e5641b1f3fd0`](https://gummble.com/screens/sc_f784e647d4c44c448969e5641b1f3fd0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [블로그 목록 초기](<screens/02_sc_f784e647d4c44c448969e5641b1f3fd0.png>) | General 활성 표시가 생김; 기사 목록은 동일 |
+| 03 | [`sc_ed1d234775a74b4bad3ca7f497d20970`](https://gummble.com/screens/sc_ed1d234775a74b4bad3ca7f497d20970?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [General 선택](<screens/03_sc_ed1d234775a74b4bad3ca7f497d20970.png>) | 아래로 스크롤해 저자와 다음 행 노출 |
+| 04 | [`sc_2c58d306a0c54343967cbe26160fc0cb`](https://gummble.com/screens/sc_2c58d306a0c54343967cbe26160fc0cb?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [글 카드 저자와 다음 행](<screens/04_sc_2c58d306a0c54343967cbe26160fc0cb.png>) | 목록에서 종료; 상세는 별도 하위 flow |
 
 ## 4. 화면별 상세 분석
 
@@ -44,9 +48,9 @@ Resources에서 블로그로 이동해 일반 목록·분류·검색·기사 진
 
 - Screen ID: `sc_549a6fa823b74e3e8d826750df6f1f99`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_549a6fa823b74e3e8d826750df6f1f99?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/cd020105-7f11-4e27-bef0-5183f569d6bc.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_549a6fa823b74e3e8d826750df6f1f99.png](<screens/01_sc_549a6fa823b74e3e8d826750df6f1f99.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_f784e647d4c44c448969e5641b1f3fd0`
 
 #### 화면에서 직접 확인한 내용
@@ -73,9 +77,9 @@ Resources에서 블로그로 이동해 일반 목록·분류·검색·기사 진
 
 - Screen ID: `sc_f784e647d4c44c448969e5641b1f3fd0`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_f784e647d4c44c448969e5641b1f3fd0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/764b8fbf-501c-4046-96d6-143bccf0f20a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_f784e647d4c44c448969e5641b1f3fd0.png](<screens/02_sc_f784e647d4c44c448969e5641b1f3fd0.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_549a6fa823b74e3e8d826750df6f1f99` → 현재 → `sc_ed1d234775a74b4bad3ca7f497d20970`
 
 #### 화면에서 직접 확인한 내용
@@ -102,9 +106,9 @@ Resources에서 블로그로 이동해 일반 목록·분류·검색·기사 진
 
 - Screen ID: `sc_ed1d234775a74b4bad3ca7f497d20970`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_ed1d234775a74b4bad3ca7f497d20970?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/0098d8b2-48bd-4735-8909-85223ab00fd4.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_ed1d234775a74b4bad3ca7f497d20970.png](<screens/03_sc_ed1d234775a74b4bad3ca7f497d20970.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_f784e647d4c44c448969e5641b1f3fd0` → 현재 → `sc_2c58d306a0c54343967cbe26160fc0cb`
 
 #### 화면에서 직접 확인한 내용
@@ -131,9 +135,9 @@ Resources에서 블로그로 이동해 일반 목록·분류·검색·기사 진
 
 - Screen ID: `sc_2c58d306a0c54343967cbe26160fc0cb`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_2c58d306a0c54343967cbe26160fc0cb?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/fc1e606c-8a4b-4cab-8cb4-f38df04fe624.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_2c58d306a0c54343967cbe26160fc0cb.png](<screens/04_sc_2c58d306a0c54343967cbe26160fc0cb.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_ed1d234775a74b4bad3ca7f497d20970` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -181,3 +185,4 @@ Resources에서 블로그로 이동해 일반 목록·분류·검색·기사 진
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -26,16 +27,19 @@
 - 팀 초대와 추천 초대는 목적·보상·대상 접근권이 다르다. 이메일 발송은 수록되지 않았다.
 
 
+- 폴더 위치: `bonsai_analysis/flows/Copying referral link`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 대시보드 — 프로젝트 타임라인과 손익 요약 | 추천 화면 |
-| 02 | [`sc_859f6888e4b94f37a2aae444c3112490`](https://gummble.com/screens/sc_859f6888e4b94f37a2aae444c3112490?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 추천 링크와 현황 | 복사 후 토스트가 채팅 팝업에 가림 |
-| 03 | [`sc_048932cf6a2a422ebe3c4aad916d20fd`](https://gummble.com/screens/sc_048932cf6a2a422ebe3c4aad916d20fd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 추천 링크 복사 — 알림 가림 | 팝업이 사라져 복사 토스트 확인 |
-| 04 | [`sc_d6335d9364f0470bb3b2a2c08323fd66`](https://gummble.com/screens/sc_d6335d9364f0470bb3b2a2c08323fd66?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 추천 링크 복사 완료 | 복사 완료 |
+| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [대시보드 — 프로젝트 타임라인과 손익 요약](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>) | 추천 화면 |
+| 02 | [`sc_859f6888e4b94f37a2aae444c3112490`](https://gummble.com/screens/sc_859f6888e4b94f37a2aae444c3112490?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [추천 링크와 현황](<screens/02_sc_859f6888e4b94f37a2aae444c3112490.png>) | 복사 후 토스트가 채팅 팝업에 가림 |
+| 03 | [`sc_048932cf6a2a422ebe3c4aad916d20fd`](https://gummble.com/screens/sc_048932cf6a2a422ebe3c4aad916d20fd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [추천 링크 복사 — 알림 가림](<screens/03_sc_048932cf6a2a422ebe3c4aad916d20fd.png>) | 팝업이 사라져 복사 토스트 확인 |
+| 04 | [`sc_d6335d9364f0470bb3b2a2c08323fd66`](https://gummble.com/screens/sc_d6335d9364f0470bb3b2a2c08323fd66?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [추천 링크 복사 완료](<screens/04_sc_d6335d9364f0470bb3b2a2c08323fd66.png>) | 복사 완료 |
 
 ## 4. 화면별 상세 분석
 
@@ -43,9 +47,9 @@
 
 - Screen ID: `sc_a333622d5e8c45e0b19ff4c249dc0aca`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3532c829-b612-4d64-8d26-7e96473aa0a8.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_859f6888e4b94f37a2aae444c3112490`
 
 #### 화면에서 직접 확인한 내용
@@ -72,9 +76,9 @@
 
 - Screen ID: `sc_859f6888e4b94f37a2aae444c3112490`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_859f6888e4b94f37a2aae444c3112490?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/88c304ab-560c-4512-89cc-a4b7ffedb76c.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_859f6888e4b94f37a2aae444c3112490.png](<screens/02_sc_859f6888e4b94f37a2aae444c3112490.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_a333622d5e8c45e0b19ff4c249dc0aca` → 현재 → `sc_048932cf6a2a422ebe3c4aad916d20fd`
 
 #### 화면에서 직접 확인한 내용
@@ -101,9 +105,9 @@
 
 - Screen ID: `sc_048932cf6a2a422ebe3c4aad916d20fd`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_048932cf6a2a422ebe3c4aad916d20fd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/07e9803b-7a12-488f-b0e5-f2dbcf127f2d.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_048932cf6a2a422ebe3c4aad916d20fd.png](<screens/03_sc_048932cf6a2a422ebe3c4aad916d20fd.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_859f6888e4b94f37a2aae444c3112490` → 현재 → `sc_d6335d9364f0470bb3b2a2c08323fd66`
 
 #### 화면에서 직접 확인한 내용
@@ -130,9 +134,9 @@
 
 - Screen ID: `sc_d6335d9364f0470bb3b2a2c08323fd66`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_d6335d9364f0470bb3b2a2c08323fd66?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/63b724b8-a32c-4e51-a0f1-f73929446f49.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_d6335d9364f0470bb3b2a2c08323fd66.png](<screens/04_sc_d6335d9364f0470bb3b2a2c08323fd66.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_048932cf6a2a422ebe3c4aad916d20fd` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -182,3 +186,4 @@
 | R1 | 2026-11-18 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
 | R2 | 2026-11-18 KST | 공유 화면의 설명을 진입 맥락과 분리하고 원본 이미지를 다시 대조 | 실제 계정 검증·8절 질문은 유지 |
 | 교정 | 2026-11-18 KST | 압축된 문장의 띄어쓰기 보완. 관찰·판단 내용은 변경하지 않음 | 이미지 재검토 횟수에 포함하지 않음 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

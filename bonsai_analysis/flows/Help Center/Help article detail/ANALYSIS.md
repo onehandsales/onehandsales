@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,16 +28,19 @@
 
 - 상위 분석: [Help Center](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Help Center/Help article detail`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_2230bb5f099d482fb1f0ba9741d4b7e8`](https://gummble.com/screens/sc_2230bb5f099d482fb1f0ba9741d4b7e8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 인기 포털 도움말 강조 | 포털 도움말 상세로 이동 |
-| 02 | [`sc_e20cb01482774429b6136ac17d2039d7`](https://gummble.com/screens/sc_e20cb01482774429b6136ac17d2039d7?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 포털 도움말 상단 | 브랜딩 위치로 스크롤/목차 이동; 동작 원인 미수록 |
-| 03 | [`sc_2c564244ef024e9cb6b56810d545b154`](https://gummble.com/screens/sc_2c564244ef024e9cb6b56810d545b154?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 포털 브랜딩 설명 위치 | 마지막 질문·관련 문서·평가 영역으로 이동 |
-| 04 | [`sc_e244e36695a94b13b56282b9633d1d00`](https://gummble.com/screens/sc_e244e36695a94b13b56282b9633d1d00?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 문서 하단 질문·연관 문서·평가 | 피드백 선택 없이 종료 |
+| 01 | [`sc_2230bb5f099d482fb1f0ba9741d4b7e8`](https://gummble.com/screens/sc_2230bb5f099d482fb1f0ba9741d4b7e8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인기 포털 도움말 강조](<screens/01_sc_2230bb5f099d482fb1f0ba9741d4b7e8.png>) | 포털 도움말 상세로 이동 |
+| 02 | [`sc_e20cb01482774429b6136ac17d2039d7`](https://gummble.com/screens/sc_e20cb01482774429b6136ac17d2039d7?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [포털 도움말 상단](<screens/02_sc_e20cb01482774429b6136ac17d2039d7.png>) | 브랜딩 위치로 스크롤/목차 이동; 동작 원인 미수록 |
+| 03 | [`sc_2c564244ef024e9cb6b56810d545b154`](https://gummble.com/screens/sc_2c564244ef024e9cb6b56810d545b154?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [포털 브랜딩 설명 위치](<screens/03_sc_2c564244ef024e9cb6b56810d545b154.png>) | 마지막 질문·관련 문서·평가 영역으로 이동 |
+| 04 | [`sc_e244e36695a94b13b56282b9633d1d00`](https://gummble.com/screens/sc_e244e36695a94b13b56282b9633d1d00?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [문서 하단 질문·연관 문서·평가](<screens/04_sc_e244e36695a94b13b56282b9633d1d00.png>) | 피드백 선택 없이 종료 |
 
 ## 4. 화면별 상세 분석
 
@@ -44,9 +48,9 @@
 
 - Screen ID: `sc_2230bb5f099d482fb1f0ba9741d4b7e8`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_2230bb5f099d482fb1f0ba9741d4b7e8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/c3cbc903-3ec0-4e23-909a-e094b02fe74d.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_2230bb5f099d482fb1f0ba9741d4b7e8.png](<screens/01_sc_2230bb5f099d482fb1f0ba9741d4b7e8.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_e20cb01482774429b6136ac17d2039d7`
 
 #### 화면에서 직접 확인한 내용
@@ -73,9 +77,9 @@
 
 - Screen ID: `sc_e20cb01482774429b6136ac17d2039d7`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_e20cb01482774429b6136ac17d2039d7?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/64e56ce4-3edc-4ff2-aea8-2a1bfb6e8791.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_e20cb01482774429b6136ac17d2039d7.png](<screens/02_sc_e20cb01482774429b6136ac17d2039d7.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_2230bb5f099d482fb1f0ba9741d4b7e8` → 현재 → `sc_2c564244ef024e9cb6b56810d545b154`
 
 #### 화면에서 직접 확인한 내용
@@ -102,9 +106,9 @@
 
 - Screen ID: `sc_2c564244ef024e9cb6b56810d545b154`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_2c564244ef024e9cb6b56810d545b154?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/5652626e-c365-4cc1-90d9-164dbf185c9a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_2c564244ef024e9cb6b56810d545b154.png](<screens/03_sc_2c564244ef024e9cb6b56810d545b154.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_e20cb01482774429b6136ac17d2039d7` → 현재 → `sc_e244e36695a94b13b56282b9633d1d00`
 
 #### 화면에서 직접 확인한 내용
@@ -131,9 +135,9 @@
 
 - Screen ID: `sc_e244e36695a94b13b56282b9633d1d00`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_e244e36695a94b13b56282b9633d1d00?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/7f22d0da-40fc-41de-95fd-df0b0956a0aa.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_e244e36695a94b13b56282b9633d1d00.png](<screens/04_sc_e244e36695a94b13b56282b9633d1d00.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_2c564244ef024e9cb6b56810d545b154` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -186,3 +190,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

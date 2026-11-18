@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 10단계 / 10단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 10개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -29,22 +30,25 @@
 - 상위 분석: [Invoices](../ANALYSIS.md)
 - 하위 플로우: [Turning off card payments](Turning%20off%20card%20payments/ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Invoices/Connecting to Stripe`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_21f42247e22948b3b35d5313e9e315a5`](https://gummble.com/screens/sc_21f42247e22948b3b35d5313e9e315a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 인보이스 목록과 결제 연결 안내 | Payment Methods에서 Stripe/PayPal 연결 옵션을 표시한다. |
-| 02 | [`sc_1dc0c1e56d2549dab86354f2d4d8185e`](https://gummble.com/screens/sc_1dc0c1e56d2549dab86354f2d4d8185e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 결제 공급자 연결 선택 | Stripe 연결 시 Bonsai 이메일 코드 인증으로 전환한다. |
-| 03 | [`sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`](https://gummble.com/screens/sc_aaf4eb9dbbf5455f9a5e45c89dacbba8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Bonsai 이메일 인증 빈 코드 | 6자리 입력 후 로딩 상태로 진행한다. |
-| 04 | [`sc_8fc8e97d33d14f84a4c093109d5d5b8e`](https://gummble.com/screens/sc_8fc8e97d33d14f84a4c093109d5d5b8e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 이메일 코드 검증 진행 | Payment Methods로 돌아와 Connecting to Stripe 표시. |
-| 05 | [`sc_51e959da528e4eae935c3516a4993408`](https://gummble.com/screens/sc_51e959da528e4eae935c3516a4993408?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Stripe 연결 요청 진행 | Stripe의 인증앱 코드 입력 페이지로 이동. |
-| 06 | [`sc_558eb0c9495240fa912210e280b28e29`](https://gummble.com/screens/sc_558eb0c9495240fa912210e280b28e29?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Stripe 인증앱 코드 요청 | 6자리 입력 후 검증 스피너가 보인다. |
-| 07 | [`sc_4adbf874021e43bd88827a022ad24dde`](https://gummble.com/screens/sc_4adbf874021e43bd88827a022ad24dde?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Stripe 코드 검증 | Bonsai로 돌아간다는 리디렉션 화면. |
-| 08 | [`sc_fd88c0741acd4bb69320dae4adb1f012`](https://gummble.com/screens/sc_fd88c0741acd4bb69320dae4adb1f012?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Bonsai 복귀 리디렉션 | 연결 성공 토스트와 카드 결제 on 표시. |
-| 09 | [`sc_768646543beb434a8c8f132a6de4dd39`](https://gummble.com/screens/sc_768646543beb434a8c8f132a6de4dd39?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Stripe 연결 성공 | 토스트가 사라지고 연결 상태 유지. |
-| 10 | [`sc_c012403e6cdc45fd97c6f08848af4952`](https://gummble.com/screens/sc_c012403e6cdc45fd97c6f08848af4952?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 연결된 결제수단 유지 | 연결 완료 표시로 종료. 지급/결제 실행 없음. |
+| 01 | [`sc_21f42247e22948b3b35d5313e9e315a5`](https://gummble.com/screens/sc_21f42247e22948b3b35d5313e9e315a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인보이스 목록과 결제 연결 안내](<screens/01_sc_21f42247e22948b3b35d5313e9e315a5.png>) | Payment Methods에서 Stripe/PayPal 연결 옵션을 표시한다. |
+| 02 | [`sc_1dc0c1e56d2549dab86354f2d4d8185e`](https://gummble.com/screens/sc_1dc0c1e56d2549dab86354f2d4d8185e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [결제 공급자 연결 선택](<screens/02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png>) | Stripe 연결 시 Bonsai 이메일 코드 인증으로 전환한다. |
+| 03 | [`sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`](https://gummble.com/screens/sc_aaf4eb9dbbf5455f9a5e45c89dacbba8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bonsai 이메일 인증 빈 코드](<screens/03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png>) | 6자리 입력 후 로딩 상태로 진행한다. |
+| 04 | [`sc_8fc8e97d33d14f84a4c093109d5d5b8e`](https://gummble.com/screens/sc_8fc8e97d33d14f84a4c093109d5d5b8e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 코드 검증 진행](<screens/04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png>) | Payment Methods로 돌아와 Connecting to Stripe 표시. |
+| 05 | [`sc_51e959da528e4eae935c3516a4993408`](https://gummble.com/screens/sc_51e959da528e4eae935c3516a4993408?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 연결 요청 진행](<screens/05_sc_51e959da528e4eae935c3516a4993408.png>) | Stripe의 인증앱 코드 입력 페이지로 이동. |
+| 06 | [`sc_558eb0c9495240fa912210e280b28e29`](https://gummble.com/screens/sc_558eb0c9495240fa912210e280b28e29?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 인증앱 코드 요청](<screens/06_sc_558eb0c9495240fa912210e280b28e29.png>) | 6자리 입력 후 검증 스피너가 보인다. |
+| 07 | [`sc_4adbf874021e43bd88827a022ad24dde`](https://gummble.com/screens/sc_4adbf874021e43bd88827a022ad24dde?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 코드 검증](<screens/07_sc_4adbf874021e43bd88827a022ad24dde.png>) | Bonsai로 돌아간다는 리디렉션 화면. |
+| 08 | [`sc_fd88c0741acd4bb69320dae4adb1f012`](https://gummble.com/screens/sc_fd88c0741acd4bb69320dae4adb1f012?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bonsai 복귀 리디렉션](<screens/08_sc_fd88c0741acd4bb69320dae4adb1f012.png>) | 연결 성공 토스트와 카드 결제 on 표시. |
+| 09 | [`sc_768646543beb434a8c8f132a6de4dd39`](https://gummble.com/screens/sc_768646543beb434a8c8f132a6de4dd39?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 연결 성공](<screens/09_sc_768646543beb434a8c8f132a6de4dd39.png>) | 토스트가 사라지고 연결 상태 유지. |
+| 10 | [`sc_c012403e6cdc45fd97c6f08848af4952`](https://gummble.com/screens/sc_c012403e6cdc45fd97c6f08848af4952?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [연결된 결제수단 유지](<screens/10_sc_c012403e6cdc45fd97c6f08848af4952.png>) | 연결 완료 표시로 종료. 지급/결제 실행 없음. |
 
 ## 4. 화면별 상세 분석
 
@@ -52,9 +56,9 @@
 
 - Screen ID: `sc_21f42247e22948b3b35d5313e9e315a5`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_21f42247e22948b3b35d5313e9e315a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/350ed68e-021e-4ff8-9e83-3c90f3405098.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_21f42247e22948b3b35d5313e9e315a5.png](<screens/01_sc_21f42247e22948b3b35d5313e9e315a5.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_1dc0c1e56d2549dab86354f2d4d8185e`
 
 #### 화면에서 직접 확인한 내용
@@ -81,9 +85,9 @@
 
 - Screen ID: `sc_1dc0c1e56d2549dab86354f2d4d8185e`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_1dc0c1e56d2549dab86354f2d4d8185e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/fc113090-efb7-483a-9658-b3948512cc03.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png](<screens/02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_21f42247e22948b3b35d5313e9e315a5` → 현재 → `sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`
 
 #### 화면에서 직접 확인한 내용
@@ -110,9 +114,9 @@
 
 - Screen ID: `sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_aaf4eb9dbbf5455f9a5e45c89dacbba8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/6afd575e-d0e7-4d3c-bc6e-c99669a4c715.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png](<screens/03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_1dc0c1e56d2549dab86354f2d4d8185e` → 현재 → `sc_8fc8e97d33d14f84a4c093109d5d5b8e`
 
 #### 화면에서 직접 확인한 내용
@@ -139,9 +143,9 @@
 
 - Screen ID: `sc_8fc8e97d33d14f84a4c093109d5d5b8e`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_8fc8e97d33d14f84a4c093109d5d5b8e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/c475a1d5-1f9e-4198-b819-76309b1077c6.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png](<screens/04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_aaf4eb9dbbf5455f9a5e45c89dacbba8` → 현재 → `sc_51e959da528e4eae935c3516a4993408`
 
 #### 화면에서 직접 확인한 내용
@@ -168,9 +172,9 @@
 
 - Screen ID: `sc_51e959da528e4eae935c3516a4993408`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_51e959da528e4eae935c3516a4993408?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/81e98dd2-e8d7-444d-a018-d5ef77a7fa61.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_51e959da528e4eae935c3516a4993408.png](<screens/05_sc_51e959da528e4eae935c3516a4993408.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_8fc8e97d33d14f84a4c093109d5d5b8e` → 현재 → `sc_558eb0c9495240fa912210e280b28e29`
 
 #### 화면에서 직접 확인한 내용
@@ -197,9 +201,9 @@
 
 - Screen ID: `sc_558eb0c9495240fa912210e280b28e29`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_558eb0c9495240fa912210e280b28e29?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2e78438e-f93e-46ce-85e7-326aa22f16a6.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [06_sc_558eb0c9495240fa912210e280b28e29.png](<screens/06_sc_558eb0c9495240fa912210e280b28e29.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_51e959da528e4eae935c3516a4993408` → 현재 → `sc_4adbf874021e43bd88827a022ad24dde`
 
 #### 화면에서 직접 확인한 내용
@@ -226,9 +230,9 @@
 
 - Screen ID: `sc_4adbf874021e43bd88827a022ad24dde`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_4adbf874021e43bd88827a022ad24dde?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2f2cf4e4-120a-49f2-a87d-40c993a1da03.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [07_sc_4adbf874021e43bd88827a022ad24dde.png](<screens/07_sc_4adbf874021e43bd88827a022ad24dde.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_558eb0c9495240fa912210e280b28e29` → 현재 → `sc_fd88c0741acd4bb69320dae4adb1f012`
 
 #### 화면에서 직접 확인한 내용
@@ -255,9 +259,9 @@
 
 - Screen ID: `sc_fd88c0741acd4bb69320dae4adb1f012`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_fd88c0741acd4bb69320dae4adb1f012?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/a9e91951-3695-4d6c-a306-4498103c5184.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [08_sc_fd88c0741acd4bb69320dae4adb1f012.png](<screens/08_sc_fd88c0741acd4bb69320dae4adb1f012.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_4adbf874021e43bd88827a022ad24dde` → 현재 → `sc_768646543beb434a8c8f132a6de4dd39`
 
 #### 화면에서 직접 확인한 내용
@@ -284,9 +288,9 @@
 
 - Screen ID: `sc_768646543beb434a8c8f132a6de4dd39`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_768646543beb434a8c8f132a6de4dd39?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/95515115-d653-4543-ad40-f660e8e8f105.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [09_sc_768646543beb434a8c8f132a6de4dd39.png](<screens/09_sc_768646543beb434a8c8f132a6de4dd39.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_fd88c0741acd4bb69320dae4adb1f012` → 현재 → `sc_c012403e6cdc45fd97c6f08848af4952`
 
 #### 화면에서 직접 확인한 내용
@@ -313,9 +317,9 @@
 
 - Screen ID: `sc_c012403e6cdc45fd97c6f08848af4952`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c012403e6cdc45fd97c6f08848af4952?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/963610f4-7d6f-4b8a-bb84-af69a2e364c1.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [10_sc_c012403e6cdc45fd97c6f08848af4952.png](<screens/10_sc_c012403e6cdc45fd97c6f08848af4952.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_768646543beb434a8c8f132a6de4dd39` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -368,3 +372,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 10개와 실제 이미지 10개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 10단계 재조회 및 원본 10개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

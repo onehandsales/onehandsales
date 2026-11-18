@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 8단계 / 8단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 8개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -28,20 +29,23 @@
 - 상위 분석: [Dashboard](../ANALYSIS.md)
 - 하위 플로우: [Adding event details](Adding%20event%20details/ANALYSIS.md), [Setting up availability](Setting%20up%20availability/ANALYSIS.md), [Editing an event type](Editing%20an%20event%20type/ANALYSIS.md), [Editing branding & design](Editing%20branding%20%26%20design/ANALYSIS.md), [Editing advanced settings](Editing%20advanced%20settings/ANALYSIS.md), [View booking page](View%20booking%20page/ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Dashboard/Connecting to Google Calendar`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_855aa87503994667b3fd5b8d6be847e2`](https://gummble.com/screens/sc_855aa87503994667b3fd5b8d6be847e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 대시보드 예약 온보딩 | Get Started로 Scheduling 소개에 진입한다. |
-| 02 | [`sc_9c52561849c24f1e8b4fd6daf2016b27`](https://gummble.com/screens/sc_9c52561849c24f1e8b4fd6daf2016b27?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Scheduling 시작 소개 | Get Started로 캘린더 제공자를 선택한다. |
-| 03 | [`sc_23559b201a994c998c2050414bb56f5c`](https://gummble.com/screens/sc_23559b201a994c998c2050414bb56f5c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 캘린더 제공자 선택 | Google 타일을 선택한다. |
-| 04 | [`sc_e44ce588650b48e6ac157539ad004f32`](https://gummble.com/screens/sc_e44ce588650b48e6ac157539ad004f32?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Google 선택 | Cronofy 연결 안내로 이동한다. |
-| 05 | [`sc_1818bada85ad44d7ba17af8b4901d1f9`](https://gummble.com/screens/sc_1818bada85ad44d7ba17af8b4901d1f9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Cronofy 연결 동의 | 약관/개인정보 안내 동의 체크를 선택한다. |
-| 06 | [`sc_a3278727c2d44cc586c1a571c64bcacd`](https://gummble.com/screens/sc_a3278727c2d44cc586c1a571c64bcacd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Cronofy 동의 선택 | Link Google Account 이후 Bonsai로 복귀한다. Google 인증 중간 화면은 미수록. |
-| 07 | [`sc_a7ce80d93ce043648e5b13e30e8368cc`](https://gummble.com/screens/sc_a7ce80d93ce043648e5b13e30e8368cc?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 연결 후 비어 있는 예약 목록 | New Event Type 설정으로 이동한다. |
-| 08 | [`sc_547a933e0b3d47789feee75514074502`](https://gummble.com/screens/sc_547a933e0b3d47789feee75514074502?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 첫 이벤트 유형 설정·연결 성공 | 연결 성공 토스트 및 선택 가능한 캘린더를 확인한다. |
+| 01 | [`sc_855aa87503994667b3fd5b8d6be847e2`](https://gummble.com/screens/sc_855aa87503994667b3fd5b8d6be847e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [대시보드 예약 온보딩](<screens/01_sc_855aa87503994667b3fd5b8d6be847e2.png>) | Get Started로 Scheduling 소개에 진입한다. |
+| 02 | [`sc_9c52561849c24f1e8b4fd6daf2016b27`](https://gummble.com/screens/sc_9c52561849c24f1e8b4fd6daf2016b27?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Scheduling 시작 소개](<screens/02_sc_9c52561849c24f1e8b4fd6daf2016b27.png>) | Get Started로 캘린더 제공자를 선택한다. |
+| 03 | [`sc_23559b201a994c998c2050414bb56f5c`](https://gummble.com/screens/sc_23559b201a994c998c2050414bb56f5c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [캘린더 제공자 선택](<screens/03_sc_23559b201a994c998c2050414bb56f5c.png>) | Google 타일을 선택한다. |
+| 04 | [`sc_e44ce588650b48e6ac157539ad004f32`](https://gummble.com/screens/sc_e44ce588650b48e6ac157539ad004f32?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Google 선택](<screens/04_sc_e44ce588650b48e6ac157539ad004f32.png>) | Cronofy 연결 안내로 이동한다. |
+| 05 | [`sc_1818bada85ad44d7ba17af8b4901d1f9`](https://gummble.com/screens/sc_1818bada85ad44d7ba17af8b4901d1f9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Cronofy 연결 동의](<screens/05_sc_1818bada85ad44d7ba17af8b4901d1f9.png>) | 약관/개인정보 안내 동의 체크를 선택한다. |
+| 06 | [`sc_a3278727c2d44cc586c1a571c64bcacd`](https://gummble.com/screens/sc_a3278727c2d44cc586c1a571c64bcacd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Cronofy 동의 선택](<screens/06_sc_a3278727c2d44cc586c1a571c64bcacd.png>) | Link Google Account 이후 Bonsai로 복귀한다. Google 인증 중간 화면은 미수록. |
+| 07 | [`sc_a7ce80d93ce043648e5b13e30e8368cc`](https://gummble.com/screens/sc_a7ce80d93ce043648e5b13e30e8368cc?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [연결 후 비어 있는 예약 목록](<screens/07_sc_a7ce80d93ce043648e5b13e30e8368cc.png>) | New Event Type 설정으로 이동한다. |
+| 08 | [`sc_547a933e0b3d47789feee75514074502`](https://gummble.com/screens/sc_547a933e0b3d47789feee75514074502?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [첫 이벤트 유형 설정·연결 성공](<screens/08_sc_547a933e0b3d47789feee75514074502.png>) | 연결 성공 토스트 및 선택 가능한 캘린더를 확인한다. |
 
 ## 4. 화면별 상세 분석
 
@@ -49,9 +53,9 @@
 
 - Screen ID: `sc_855aa87503994667b3fd5b8d6be847e2`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_855aa87503994667b3fd5b8d6be847e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/1331e529-400c-493e-a630-49486471d7f0.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_855aa87503994667b3fd5b8d6be847e2.png](<screens/01_sc_855aa87503994667b3fd5b8d6be847e2.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_9c52561849c24f1e8b4fd6daf2016b27`
 
 #### 화면에서 직접 확인한 내용
@@ -78,9 +82,9 @@
 
 - Screen ID: `sc_9c52561849c24f1e8b4fd6daf2016b27`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_9c52561849c24f1e8b4fd6daf2016b27?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/bae33b22-dbaa-4562-9c30-605d5f0d84be.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_9c52561849c24f1e8b4fd6daf2016b27.png](<screens/02_sc_9c52561849c24f1e8b4fd6daf2016b27.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_855aa87503994667b3fd5b8d6be847e2` → 현재 → `sc_23559b201a994c998c2050414bb56f5c`
 
 #### 화면에서 직접 확인한 내용
@@ -107,9 +111,9 @@
 
 - Screen ID: `sc_23559b201a994c998c2050414bb56f5c`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_23559b201a994c998c2050414bb56f5c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/7e9119c3-8855-415e-bf80-f25b6329a336.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_23559b201a994c998c2050414bb56f5c.png](<screens/03_sc_23559b201a994c998c2050414bb56f5c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_9c52561849c24f1e8b4fd6daf2016b27` → 현재 → `sc_e44ce588650b48e6ac157539ad004f32`
 
 #### 화면에서 직접 확인한 내용
@@ -136,9 +140,9 @@
 
 - Screen ID: `sc_e44ce588650b48e6ac157539ad004f32`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_e44ce588650b48e6ac157539ad004f32?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/6f0fb0d1-6ab4-40aa-a54e-7d5cf0bcea42.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_e44ce588650b48e6ac157539ad004f32.png](<screens/04_sc_e44ce588650b48e6ac157539ad004f32.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_23559b201a994c998c2050414bb56f5c` → 현재 → `sc_1818bada85ad44d7ba17af8b4901d1f9`
 
 #### 화면에서 직접 확인한 내용
@@ -165,9 +169,9 @@
 
 - Screen ID: `sc_1818bada85ad44d7ba17af8b4901d1f9`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_1818bada85ad44d7ba17af8b4901d1f9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/a689378d-da0f-44fa-8d64-f0d77df298b2.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_1818bada85ad44d7ba17af8b4901d1f9.png](<screens/05_sc_1818bada85ad44d7ba17af8b4901d1f9.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_e44ce588650b48e6ac157539ad004f32` → 현재 → `sc_a3278727c2d44cc586c1a571c64bcacd`
 
 #### 화면에서 직접 확인한 내용
@@ -194,9 +198,9 @@
 
 - Screen ID: `sc_a3278727c2d44cc586c1a571c64bcacd`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a3278727c2d44cc586c1a571c64bcacd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/f860aa06-5568-413f-952f-3dd4cb04453a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [06_sc_a3278727c2d44cc586c1a571c64bcacd.png](<screens/06_sc_a3278727c2d44cc586c1a571c64bcacd.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_1818bada85ad44d7ba17af8b4901d1f9` → 현재 → `sc_a7ce80d93ce043648e5b13e30e8368cc`
 
 #### 화면에서 직접 확인한 내용
@@ -223,9 +227,9 @@
 
 - Screen ID: `sc_a7ce80d93ce043648e5b13e30e8368cc`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a7ce80d93ce043648e5b13e30e8368cc?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/140fa33b-ac0f-44cd-b5ce-d2c32aa3261a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [07_sc_a7ce80d93ce043648e5b13e30e8368cc.png](<screens/07_sc_a7ce80d93ce043648e5b13e30e8368cc.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_a3278727c2d44cc586c1a571c64bcacd` → 현재 → `sc_547a933e0b3d47789feee75514074502`
 
 #### 화면에서 직접 확인한 내용
@@ -252,9 +256,9 @@
 
 - Screen ID: `sc_547a933e0b3d47789feee75514074502`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_547a933e0b3d47789feee75514074502?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/a0072a5c-d3a6-4b16-b5b0-97a6d96395a9.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [08_sc_547a933e0b3d47789feee75514074502.png](<screens/08_sc_547a933e0b3d47789feee75514074502.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_a7ce80d93ce043648e5b13e30e8368cc` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -305,3 +309,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 8개와 실제 이미지 8개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 8단계 재조회 및 원본 8개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,16 +28,19 @@
 
 - 상위 분석: [Blog](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Blog/Blog detail`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_b52cd2aea5074f8d930af3171a2bd612`](https://gummble.com/screens/sc_b52cd2aea5074f8d930af3171a2bd612?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 기사 상세 제목·메타데이터 | 본문 시작으로 스크롤, 하단 고정 가입바 노출 |
-| 02 | [`sc_ea03e557975943e098cc09b234f20976`](https://gummble.com/screens/sc_ea03e557975943e098cc09b234f20976?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 본문·고정 목차·하단 가입바 | 2번 섹션으로 이동; 목차 활성·추천글 노출 |
-| 03 | [`sc_ece27efe36654187a391ca036a676353`](https://gummble.com/screens/sc_ece27efe36654187a391ca036a676353?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 두 번째 본문 섹션·추천글 | 글 끝으로 이동; 중간 본문 다수 미수록 |
-| 04 | [`sc_419cd6d4273041e4b60091cffb1f05e2`](https://gummble.com/screens/sc_419cd6d4273041e4b60091cffb1f05e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 기사 끝·CTA·푸터 | 마지막 CTA·푸터에서 종료; 가입 없음 |
+| 01 | [`sc_b52cd2aea5074f8d930af3171a2bd612`](https://gummble.com/screens/sc_b52cd2aea5074f8d930af3171a2bd612?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [기사 상세 제목·메타데이터](<screens/01_sc_b52cd2aea5074f8d930af3171a2bd612.png>) | 본문 시작으로 스크롤, 하단 고정 가입바 노출 |
+| 02 | [`sc_ea03e557975943e098cc09b234f20976`](https://gummble.com/screens/sc_ea03e557975943e098cc09b234f20976?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [본문·고정 목차·하단 가입바](<screens/02_sc_ea03e557975943e098cc09b234f20976.png>) | 2번 섹션으로 이동; 목차 활성·추천글 노출 |
+| 03 | [`sc_ece27efe36654187a391ca036a676353`](https://gummble.com/screens/sc_ece27efe36654187a391ca036a676353?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [두 번째 본문 섹션·추천글](<screens/03_sc_ece27efe36654187a391ca036a676353.png>) | 글 끝으로 이동; 중간 본문 다수 미수록 |
+| 04 | [`sc_419cd6d4273041e4b60091cffb1f05e2`](https://gummble.com/screens/sc_419cd6d4273041e4b60091cffb1f05e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [기사 끝·CTA·푸터](<screens/04_sc_419cd6d4273041e4b60091cffb1f05e2.png>) | 마지막 CTA·푸터에서 종료; 가입 없음 |
 
 ## 4. 화면별 상세 분석
 
@@ -44,9 +48,9 @@
 
 - Screen ID: `sc_b52cd2aea5074f8d930af3171a2bd612`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_b52cd2aea5074f8d930af3171a2bd612?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/ef6401db-c516-4b35-adb2-453b6184458a.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_b52cd2aea5074f8d930af3171a2bd612.png](<screens/01_sc_b52cd2aea5074f8d930af3171a2bd612.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_ea03e557975943e098cc09b234f20976`
 
 #### 화면에서 직접 확인한 내용
@@ -73,9 +77,9 @@
 
 - Screen ID: `sc_ea03e557975943e098cc09b234f20976`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_ea03e557975943e098cc09b234f20976?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/efc6c751-96f4-42a3-96e2-32cce094e3a2.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_ea03e557975943e098cc09b234f20976.png](<screens/02_sc_ea03e557975943e098cc09b234f20976.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_b52cd2aea5074f8d930af3171a2bd612` → 현재 → `sc_ece27efe36654187a391ca036a676353`
 
 #### 화면에서 직접 확인한 내용
@@ -102,9 +106,9 @@
 
 - Screen ID: `sc_ece27efe36654187a391ca036a676353`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_ece27efe36654187a391ca036a676353?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/e2e9cffa-e59e-4159-8623-f4db063bcc6f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_ece27efe36654187a391ca036a676353.png](<screens/03_sc_ece27efe36654187a391ca036a676353.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_ea03e557975943e098cc09b234f20976` → 현재 → `sc_419cd6d4273041e4b60091cffb1f05e2`
 
 #### 화면에서 직접 확인한 내용
@@ -131,9 +135,9 @@
 
 - Screen ID: `sc_419cd6d4273041e4b60091cffb1f05e2`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_419cd6d4273041e4b60091cffb1f05e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/5b3ca3ad-4173-4764-80aa-412023161777.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_419cd6d4273041e4b60091cffb1f05e2.png](<screens/04_sc_419cd6d4273041e4b60091cffb1f05e2.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_ece27efe36654187a391ca036a676353` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -183,3 +187,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

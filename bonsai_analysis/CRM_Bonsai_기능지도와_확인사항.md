@@ -1,6 +1,6 @@
 # Bonsai 기능 지도와 확인 사항
 
-Updated: 2026-11-17
+Updated: 2026-11-18
 
 Bonsai는 고객·영업, 프로젝트 수행, 재무 관리를 연결하는 제품으로 학습한다. 현재 목표는 전체 기능·UX 재현이며 일부 CRM 화면만 만드는 범위로 축소하지 않는다.
 
@@ -61,7 +61,7 @@ Bonsai는 고객·영업, 프로젝트 수행, 재무 관리를 연결하는 제
 | --- | --- |
 | [공식 도움말](https://help.hellobonsai.com/en/) | 주요 기능·제한을 조회했다. 전체 도움말 전수 검증은 아니다. |
 | [공식 REST API](https://docs.hellobonsai.com/api) | 개요·리소스 목록 확인. 모든 endpoint 검토·실호출은 미수행. |
-| [Gummble](https://docs.gummble.com/docs/mcp) | 화면 조사 도구로 선정. 현재 도구 호출·Bonsai 자료 검색 미수행. |
+| [Gummble](https://docs.gummble.com/docs/mcp) | Bonsai Web 134개 플로우·754단계 조회 및 고유 원본 642개 로컬 배치. [플로우 색인](README.md)·[검토 결과](FLOW_ASSET_REVIEW.md) 참조. |
 | 실제 Bonsai 계정 | 직접 조작·상태·권한 테스트 미수행. |
 | 가상 업무 예시 | 이해를 돕는 설명이며 화면이나 외부 동작 검증이 아님. |
 

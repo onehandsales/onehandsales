@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 4단계 / 4단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 4개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,16 +28,19 @@
 
 - 상위 분석: [Clients](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Clients/Adding a client field`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_cc68ecaccb72426b8573fca9ece52fc9`](https://gummble.com/screens/sc_cc68ecaccb72426b8573fca9ece52fc9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 고객 태그와 필드 설정 | Add New Field 후 빈 입력 행이 생기며 Fields 수가 3→4로 표시된다. |
-| 02 | [`sc_175d01279ca24ead910995ea1cc957d3`](https://gummble.com/screens/sc_175d01279ca24ead910995ea1cc957d3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 새 고객 필드 빈 행 | 새 필드명 Email을 입력한다. |
-| 03 | [`sc_c231351f09ab4afe865acaf6e68add0f`](https://gummble.com/screens/sc_c231351f09ab4afe865acaf6e68add0f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 고객 필드명 Email 입력 | Done 후 입력이 표시 행으로 바뀌고 Edit/Delete가 생긴다. |
-| 04 | [`sc_3d631d315dcb40969d26412f158df64c`](https://gummble.com/screens/sc_3d631d315dcb40969d26412f158df64c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 고객 필드 추가 완료 | 4개 필드가 나열된 설정 화면으로 종료. |
+| 01 | [`sc_cc68ecaccb72426b8573fca9ece52fc9`](https://gummble.com/screens/sc_cc68ecaccb72426b8573fca9ece52fc9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객 태그와 필드 설정](<screens/01_sc_cc68ecaccb72426b8573fca9ece52fc9.png>) | Add New Field 후 빈 입력 행이 생기며 Fields 수가 3→4로 표시된다. |
+| 02 | [`sc_175d01279ca24ead910995ea1cc957d3`](https://gummble.com/screens/sc_175d01279ca24ead910995ea1cc957d3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [새 고객 필드 빈 행](<screens/02_sc_175d01279ca24ead910995ea1cc957d3.png>) | 새 필드명 Email을 입력한다. |
+| 03 | [`sc_c231351f09ab4afe865acaf6e68add0f`](https://gummble.com/screens/sc_c231351f09ab4afe865acaf6e68add0f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객 필드명 Email 입력](<screens/03_sc_c231351f09ab4afe865acaf6e68add0f.png>) | Done 후 입력이 표시 행으로 바뀌고 Edit/Delete가 생긴다. |
+| 04 | [`sc_3d631d315dcb40969d26412f158df64c`](https://gummble.com/screens/sc_3d631d315dcb40969d26412f158df64c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객 필드 추가 완료](<screens/04_sc_3d631d315dcb40969d26412f158df64c.png>) | 4개 필드가 나열된 설정 화면으로 종료. |
 
 ## 4. 화면별 상세 분석
 
@@ -44,9 +48,9 @@
 
 - Screen ID: `sc_cc68ecaccb72426b8573fca9ece52fc9`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_cc68ecaccb72426b8573fca9ece52fc9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/72d1e44d-bf39-49eb-854c-fa4dadc4f851.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_cc68ecaccb72426b8573fca9ece52fc9.png](<screens/01_sc_cc68ecaccb72426b8573fca9ece52fc9.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_175d01279ca24ead910995ea1cc957d3`
 
 #### 화면에서 직접 확인한 내용
@@ -73,9 +77,9 @@
 
 - Screen ID: `sc_175d01279ca24ead910995ea1cc957d3`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_175d01279ca24ead910995ea1cc957d3?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/b196b978-81d3-4791-83ba-fb203dcc63c8.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_175d01279ca24ead910995ea1cc957d3.png](<screens/02_sc_175d01279ca24ead910995ea1cc957d3.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_cc68ecaccb72426b8573fca9ece52fc9` → 현재 → `sc_c231351f09ab4afe865acaf6e68add0f`
 
 #### 화면에서 직접 확인한 내용
@@ -102,9 +106,9 @@
 
 - Screen ID: `sc_c231351f09ab4afe865acaf6e68add0f`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c231351f09ab4afe865acaf6e68add0f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/5616ff68-6066-48c0-a43d-b57722872072.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_c231351f09ab4afe865acaf6e68add0f.png](<screens/03_sc_c231351f09ab4afe865acaf6e68add0f.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_175d01279ca24ead910995ea1cc957d3` → 현재 → `sc_3d631d315dcb40969d26412f158df64c`
 
 #### 화면에서 직접 확인한 내용
@@ -131,9 +135,9 @@
 
 - Screen ID: `sc_3d631d315dcb40969d26412f158df64c`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_3d631d315dcb40969d26412f158df64c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/50c0d99f-fe31-4896-8973-55112d45b136.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_3d631d315dcb40969d26412f158df64c.png](<screens/04_sc_3d631d315dcb40969d26412f158df64c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_c231351f09ab4afe865acaf6e68add0f` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -183,3 +187,4 @@
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 4개와 실제 이미지 4개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 4단계 재조회 및 원본 4개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

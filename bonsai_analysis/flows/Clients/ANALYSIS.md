@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 5단계 / 5단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 5개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -28,17 +29,20 @@
 
 - 하위 플로우: [Enabling portal access](Enabling%20portal%20access/ANALYSIS.md), [Uploading a client image](Uploading%20a%20client%20image/ANALYSIS.md), [Adding a client field](Adding%20a%20client%20field/ANALYSIS.md), [Adding a new project (Clients)](Adding%20a%20new%20project%20%28Clients%29/ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Clients`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 대시보드 — 프로젝트 타임라인과 손익 요약 | Clients 목록으로 이동. |
-| 02 | [`sc_7f0b669f27f248c9bc800df624d5a8ac`](https://gummble.com/screens/sc_7f0b669f27f248c9bc800df624d5a8ac?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 고객 목록 | Client Portal 설정 탭. |
-| 03 | [`sc_531ce252700c43088b29703be32726d6`](https://gummble.com/screens/sc_531ce252700c43088b29703be32726d6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 고객 포털 비활성 설정 | Automations 소개/빈 상태. |
-| 04 | [`sc_102bdc6203b741afb96bd13d81b43cd8`](https://gummble.com/screens/sc_102bdc6203b741afb96bd13d81b43cd8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 자동화 소개와 생성 진입 | Settings에서 태그·필드 정의 목록. |
-| 05 | [`sc_cc68ecaccb72426b8573fca9ece52fc9`](https://gummble.com/screens/sc_cc68ecaccb72426b8573fca9ece52fc9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 고객 태그와 필드 설정 | 설정 조회 종료. 포털활성화·필드추가는 하위플로우. |
+| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [대시보드 — 프로젝트 타임라인과 손익 요약](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>) | Clients 목록으로 이동. |
+| 02 | [`sc_7f0b669f27f248c9bc800df624d5a8ac`](https://gummble.com/screens/sc_7f0b669f27f248c9bc800df624d5a8ac?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객 목록](<screens/02_sc_7f0b669f27f248c9bc800df624d5a8ac.png>) | Client Portal 설정 탭. |
+| 03 | [`sc_531ce252700c43088b29703be32726d6`](https://gummble.com/screens/sc_531ce252700c43088b29703be32726d6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객 포털 비활성 설정](<screens/03_sc_531ce252700c43088b29703be32726d6.png>) | Automations 소개/빈 상태. |
+| 04 | [`sc_102bdc6203b741afb96bd13d81b43cd8`](https://gummble.com/screens/sc_102bdc6203b741afb96bd13d81b43cd8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [자동화 소개와 생성 진입](<screens/04_sc_102bdc6203b741afb96bd13d81b43cd8.png>) | Settings에서 태그·필드 정의 목록. |
+| 05 | [`sc_cc68ecaccb72426b8573fca9ece52fc9`](https://gummble.com/screens/sc_cc68ecaccb72426b8573fca9ece52fc9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객 태그와 필드 설정](<screens/05_sc_cc68ecaccb72426b8573fca9ece52fc9.png>) | 설정 조회 종료. 포털활성화·필드추가는 하위플로우. |
 
 ## 4. 화면별 상세 분석
 
@@ -46,9 +50,9 @@
 
 - Screen ID: `sc_a333622d5e8c45e0b19ff4c249dc0aca`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3532c829-b612-4d64-8d26-7e96473aa0a8.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_7f0b669f27f248c9bc800df624d5a8ac`
 
 #### 화면에서 직접 확인한 내용
@@ -75,9 +79,9 @@
 
 - Screen ID: `sc_7f0b669f27f248c9bc800df624d5a8ac`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_7f0b669f27f248c9bc800df624d5a8ac?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/4984a535-a602-4d29-a07c-6586bae60d1f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_7f0b669f27f248c9bc800df624d5a8ac.png](<screens/02_sc_7f0b669f27f248c9bc800df624d5a8ac.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_a333622d5e8c45e0b19ff4c249dc0aca` → 현재 → `sc_531ce252700c43088b29703be32726d6`
 
 #### 화면에서 직접 확인한 내용
@@ -104,9 +108,9 @@
 
 - Screen ID: `sc_531ce252700c43088b29703be32726d6`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_531ce252700c43088b29703be32726d6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/1cc4b534-e3d3-4969-ab1e-5a0eea2f2af6.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_531ce252700c43088b29703be32726d6.png](<screens/03_sc_531ce252700c43088b29703be32726d6.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_7f0b669f27f248c9bc800df624d5a8ac` → 현재 → `sc_102bdc6203b741afb96bd13d81b43cd8`
 
 #### 화면에서 직접 확인한 내용
@@ -133,9 +137,9 @@
 
 - Screen ID: `sc_102bdc6203b741afb96bd13d81b43cd8`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_102bdc6203b741afb96bd13d81b43cd8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/1ada6fa0-905f-4e04-9bfb-14e1c511da2f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_102bdc6203b741afb96bd13d81b43cd8.png](<screens/04_sc_102bdc6203b741afb96bd13d81b43cd8.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_531ce252700c43088b29703be32726d6` → 현재 → `sc_cc68ecaccb72426b8573fca9ece52fc9`
 
 #### 화면에서 직접 확인한 내용
@@ -162,9 +166,9 @@
 
 - Screen ID: `sc_cc68ecaccb72426b8573fca9ece52fc9`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_cc68ecaccb72426b8573fca9ece52fc9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/72d1e44d-bf39-49eb-854c-fa4dadc4f851.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_cc68ecaccb72426b8573fca9ece52fc9.png](<screens/05_sc_cc68ecaccb72426b8573fca9ece52fc9.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_102bdc6203b741afb96bd13d81b43cd8` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -223,3 +227,4 @@
 | R1 | 2026-11-18 KST | MCP 단계 목록 5개와 실제 이미지 5개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
 | R2 | 2026-11-18 KST | 공유 화면의 설명을 진입 맥락과 분리하고 원본 이미지를 다시 대조 | 실제 계정 검증·8절 질문은 유지 |
 | 교정 | 2026-11-18 KST | 압축된 문장의 띄어쓰기 보완. 관찰·판단 내용은 변경하지 않음 | 이미지 재검토 횟수에 포함하지 않음 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 5단계 재조회 및 원본 5개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |

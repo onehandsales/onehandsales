@@ -17,6 +17,7 @@
 | 화면 수 / 이미지 검토 | 11단계 / 11단계 |
 | 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
 | 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
+| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 11개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,23 +28,26 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - 상위 분석: [Settings](../ANALYSIS.md)
 
+- 폴더 위치: `bonsai_analysis/flows/Settings/Importing a CSV`
+- 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+
 ## 3. 전체 단계표
 
 아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
 
 | 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_b8ed116f56354559846a960779fa7c5d`](https://gummble.com/screens/sc_b8ed116f56354559846a960779fa7c5d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Integrations & Data 목록 | 연동 목록 아래 Import/Download로 스크롤 |
-| 02 | [`sc_accd4fe1e6974ff59056e24b0649aca9`](https://gummble.com/screens/sc_accd4fe1e6974ff59056e24b0649aca9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Import Data와 Download Data | 데이터 종류 드롭다운 |
-| 03 | [`sc_63958ac7978f4f1c976ca14ad3b1c23b`](https://gummble.com/screens/sc_63958ac7978f4f1c976ca14ad3b1c23b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Import 데이터 종류 | Expenses 선택 |
-| 04 | [`sc_16a0e32e940b4e469bddd73b2f20183c`](https://gummble.com/screens/sc_16a0e32e940b4e469bddd73b2f20183c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Expenses 가져오기 안내 | 업로드 영역으로 스크롤 |
-| 05 | [`sc_0079601b907a405192b5310a1664e1bc`](https://gummble.com/screens/sc_0079601b907a405192b5310a1664e1bc?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Expenses 파일 첨부 전 | balances.csv 첨부 |
-| 06 | [`sc_23b97421307c43e6ad64126e7a9ea0d4`](https://gummble.com/screens/sc_23b97421307c43e6ad64126e7a9ea0d4?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | balances.csv 첨부됨 | Import CSV 후 매핑 화면 |
-| 07 | [`sc_1d22b8916ef6427081db6777102d21fd`](https://gummble.com/screens/sc_1d22b8916ef6427081db6777102d21fd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | CSV 열 매핑 — 미선택 | Name에 Balance 연결 |
-| 08 | [`sc_02b45084653a46b0b78476cdf2aa0e4f`](https://gummble.com/screens/sc_02b45084653a46b0b78476cdf2aa0e4f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Name에 Balance 매핑 | 5개 필드 매핑 변경 |
-| 09 | [`sc_702a474b387e4f54b6144e1d9b8749c2`](https://gummble.com/screens/sc_702a474b387e4f54b6144e1d9b8749c2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | 매핑 완료 — 잘못된 Billable/Currency | Import Data 후 처리 중 |
-| 10 | [`sc_b68a35108dc4488ebf99c45e2fabf879`](https://gummble.com/screens/sc_b68a35108dc4488ebf99c45e2fabf879?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Expenses import 처리 중 | 행별 Billable 검증 오류 |
-| 11 | [`sc_7676681e981547a882d4b59fae1ac84f`](https://gummble.com/screens/sc_7676681e981547a882d4b59fae1ac84f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | Billable 행별 검증 실패 | 실패에서 종료; 수정·성공 후속 없음 |
+| 01 | [`sc_b8ed116f56354559846a960779fa7c5d`](https://gummble.com/screens/sc_b8ed116f56354559846a960779fa7c5d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Integrations & Data 목록](<screens/01_sc_b8ed116f56354559846a960779fa7c5d.png>) | 연동 목록 아래 Import/Download로 스크롤 |
+| 02 | [`sc_accd4fe1e6974ff59056e24b0649aca9`](https://gummble.com/screens/sc_accd4fe1e6974ff59056e24b0649aca9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Import Data와 Download Data](<screens/02_sc_accd4fe1e6974ff59056e24b0649aca9.png>) | 데이터 종류 드롭다운 |
+| 03 | [`sc_63958ac7978f4f1c976ca14ad3b1c23b`](https://gummble.com/screens/sc_63958ac7978f4f1c976ca14ad3b1c23b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Import 데이터 종류](<screens/03_sc_63958ac7978f4f1c976ca14ad3b1c23b.png>) | Expenses 선택 |
+| 04 | [`sc_16a0e32e940b4e469bddd73b2f20183c`](https://gummble.com/screens/sc_16a0e32e940b4e469bddd73b2f20183c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 가져오기 안내](<screens/04_sc_16a0e32e940b4e469bddd73b2f20183c.png>) | 업로드 영역으로 스크롤 |
+| 05 | [`sc_0079601b907a405192b5310a1664e1bc`](https://gummble.com/screens/sc_0079601b907a405192b5310a1664e1bc?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 파일 첨부 전](<screens/05_sc_0079601b907a405192b5310a1664e1bc.png>) | balances.csv 첨부 |
+| 06 | [`sc_23b97421307c43e6ad64126e7a9ea0d4`](https://gummble.com/screens/sc_23b97421307c43e6ad64126e7a9ea0d4?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [balances.csv 첨부됨](<screens/06_sc_23b97421307c43e6ad64126e7a9ea0d4.png>) | Import CSV 후 매핑 화면 |
+| 07 | [`sc_1d22b8916ef6427081db6777102d21fd`](https://gummble.com/screens/sc_1d22b8916ef6427081db6777102d21fd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [CSV 열 매핑 — 미선택](<screens/07_sc_1d22b8916ef6427081db6777102d21fd.png>) | Name에 Balance 연결 |
+| 08 | [`sc_02b45084653a46b0b78476cdf2aa0e4f`](https://gummble.com/screens/sc_02b45084653a46b0b78476cdf2aa0e4f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Name에 Balance 매핑](<screens/08_sc_02b45084653a46b0b78476cdf2aa0e4f.png>) | 5개 필드 매핑 변경 |
+| 09 | [`sc_702a474b387e4f54b6144e1d9b8749c2`](https://gummble.com/screens/sc_702a474b387e4f54b6144e1d9b8749c2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [매핑 완료 — 잘못된 Billable/Currency](<screens/09_sc_702a474b387e4f54b6144e1d9b8749c2.png>) | Import Data 후 처리 중 |
+| 10 | [`sc_b68a35108dc4488ebf99c45e2fabf879`](https://gummble.com/screens/sc_b68a35108dc4488ebf99c45e2fabf879?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses import 처리 중](<screens/10_sc_b68a35108dc4488ebf99c45e2fabf879.png>) | 행별 Billable 검증 오류 |
+| 11 | [`sc_7676681e981547a882d4b59fae1ac84f`](https://gummble.com/screens/sc_7676681e981547a882d4b59fae1ac84f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Billable 행별 검증 실패](<screens/11_sc_7676681e981547a882d4b59fae1ac84f.png>) | 실패에서 종료; 수정·성공 후속 없음 |
 
 ## 4. 화면별 상세 분석
 
@@ -51,9 +55,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_b8ed116f56354559846a960779fa7c5d`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_b8ed116f56354559846a960779fa7c5d?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/29e0bf0a-7762-4cc6-88b3-83f024820c4f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [01_sc_b8ed116f56354559846a960779fa7c5d.png](<screens/01_sc_b8ed116f56354559846a960779fa7c5d.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_accd4fe1e6974ff59056e24b0649aca9`
 
 #### 화면에서 직접 확인한 내용
@@ -80,9 +84,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_accd4fe1e6974ff59056e24b0649aca9`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_accd4fe1e6974ff59056e24b0649aca9?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/84cf5c6b-1a03-4301-862f-3bae6083b664.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [02_sc_accd4fe1e6974ff59056e24b0649aca9.png](<screens/02_sc_accd4fe1e6974ff59056e24b0649aca9.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_b8ed116f56354559846a960779fa7c5d` → 현재 → `sc_63958ac7978f4f1c976ca14ad3b1c23b`
 
 #### 화면에서 직접 확인한 내용
@@ -109,9 +113,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_63958ac7978f4f1c976ca14ad3b1c23b`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_63958ac7978f4f1c976ca14ad3b1c23b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d95e8edd-e4ec-4fb8-9dfe-545b14bc73e1.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [03_sc_63958ac7978f4f1c976ca14ad3b1c23b.png](<screens/03_sc_63958ac7978f4f1c976ca14ad3b1c23b.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_accd4fe1e6974ff59056e24b0649aca9` → 현재 → `sc_16a0e32e940b4e469bddd73b2f20183c`
 
 #### 화면에서 직접 확인한 내용
@@ -138,9 +142,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_16a0e32e940b4e469bddd73b2f20183c`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_16a0e32e940b4e469bddd73b2f20183c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/f141201d-d09e-4371-a3c3-d5322130991f.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [04_sc_16a0e32e940b4e469bddd73b2f20183c.png](<screens/04_sc_16a0e32e940b4e469bddd73b2f20183c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_63958ac7978f4f1c976ca14ad3b1c23b` → 현재 → `sc_0079601b907a405192b5310a1664e1bc`
 
 #### 화면에서 직접 확인한 내용
@@ -167,9 +171,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_0079601b907a405192b5310a1664e1bc`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_0079601b907a405192b5310a1664e1bc?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3add6bd2-9f9a-4b45-9610-36385d0e38fe.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [05_sc_0079601b907a405192b5310a1664e1bc.png](<screens/05_sc_0079601b907a405192b5310a1664e1bc.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_16a0e32e940b4e469bddd73b2f20183c` → 현재 → `sc_23b97421307c43e6ad64126e7a9ea0d4`
 
 #### 화면에서 직접 확인한 내용
@@ -196,9 +200,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_23b97421307c43e6ad64126e7a9ea0d4`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_23b97421307c43e6ad64126e7a9ea0d4?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/211cef00-7547-4744-a5c5-51e2976c9e49.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [06_sc_23b97421307c43e6ad64126e7a9ea0d4.png](<screens/06_sc_23b97421307c43e6ad64126e7a9ea0d4.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_0079601b907a405192b5310a1664e1bc` → 현재 → `sc_1d22b8916ef6427081db6777102d21fd`
 
 #### 화면에서 직접 확인한 내용
@@ -225,9 +229,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_1d22b8916ef6427081db6777102d21fd`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_1d22b8916ef6427081db6777102d21fd?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/36b6d454-614d-4083-9b38-242707e1b569.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [07_sc_1d22b8916ef6427081db6777102d21fd.png](<screens/07_sc_1d22b8916ef6427081db6777102d21fd.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_23b97421307c43e6ad64126e7a9ea0d4` → 현재 → `sc_02b45084653a46b0b78476cdf2aa0e4f`
 
 #### 화면에서 직접 확인한 내용
@@ -254,9 +258,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_02b45084653a46b0b78476cdf2aa0e4f`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_02b45084653a46b0b78476cdf2aa0e4f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/fe442be5-686e-40fa-a0b2-03d20002ac02.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [08_sc_02b45084653a46b0b78476cdf2aa0e4f.png](<screens/08_sc_02b45084653a46b0b78476cdf2aa0e4f.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_1d22b8916ef6427081db6777102d21fd` → 현재 → `sc_702a474b387e4f54b6144e1d9b8749c2`
 
 #### 화면에서 직접 확인한 내용
@@ -283,9 +287,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_702a474b387e4f54b6144e1d9b8749c2`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_702a474b387e4f54b6144e1d9b8749c2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/cc96d022-3e68-42d4-86c3-75d16e690be9.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [09_sc_702a474b387e4f54b6144e1d9b8749c2.png](<screens/09_sc_702a474b387e4f54b6144e1d9b8749c2.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_02b45084653a46b0b78476cdf2aa0e4f` → 현재 → `sc_b68a35108dc4488ebf99c45e2fabf879`
 
 #### 화면에서 직접 확인한 내용
@@ -312,9 +316,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_b68a35108dc4488ebf99c45e2fabf879`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_b68a35108dc4488ebf99c45e2fabf879?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/da410b33-692d-41f5-93a4-bfe14ff96d97.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [10_sc_b68a35108dc4488ebf99c45e2fabf879.png](<screens/10_sc_b68a35108dc4488ebf99c45e2fabf879.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_702a474b387e4f54b6144e1d9b8749c2` → 현재 → `sc_7676681e981547a882d4b59fae1ac84f`
 
 #### 화면에서 직접 확인한 내용
@@ -341,9 +345,9 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 
 - Screen ID: `sc_7676681e981547a882d4b59fae1ac84f`
 - 원본: [화면 페이지](https://gummble.com/screens/sc_7676681e981547a882d4b59fae1ac84f?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/9f9be7d2-1259-4f18-b953-9eb51a1748e8.png)
-- 로컬 이미지: 미배치. 다운로드 후 화면 ID와 순서를 대조해 연결한다.
+- 로컬 이미지: [11_sc_7676681e981547a882d4b59fae1ac84f.png](<screens/11_sc_7676681e981547a882d4b59fae1ac84f.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
-- 이미지 크기: 1440 × 900
+- 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_b68a35108dc4488ebf99c45e2fabf879` → 현재 → `플로우 기록 종료`
 
 #### 화면에서 직접 확인한 내용
@@ -395,3 +399,4 @@ Expenses CSV를 업로드하고 원본 열을 필드에 연결한 뒤, 잘못된
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 11개와 실제 이미지 11개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
+| 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 11단계 재조회 및 원본 11개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |
