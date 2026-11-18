@@ -27,7 +27,7 @@ Bonsai(hellobonsai.com)의 전체 제품 기능과 UX를 재현한 뒤 차별화
 | [Gummble 조사 안내](AGENT/UXUI_AGENT/PLANNING/GUMMBLE_RESEARCH_GUIDE.md) | 화면·flow의 수집 절차와 확인 수준 |
 | [DB 전환 설계안](AGENT/SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md) | 현재 32개 모델과 유지·교체·재설계 후보 |
 | [API·FE 전환 영향](AGENT/SOFTWARE_AGENT/COMMON/BONSAI_TRANSITION_MATRIX.md) | 코드 의존과 전환 절차 |
-| [도메인 학습 읽는 순서](ㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ/CRM_조사_읽는순서.md) | 고객별 작업 범위·가격에서 수행·수금까지의 학습 자료 |
+| [Bonsai 학습 안내·플로우 색인](bonsai_analysis/README.md) | 전체 기능·업무 개념·공식 근거와 플로우 원본을 연결하는 학습 자료 |
 | [문서 검토 기록](AGENT/SOFTWARE_AGENT/COMMON/DOCUMENTATION_REVIEW_20261117.md) | 최초 전환과 후속 정비의 범위·검증 결과 |
 
 ## 저장소

@@ -1,8 +1,18 @@
-# Bonsai 플로우 원본과 분석
+# Bonsai 학습 안내와 플로우 색인
 
 Updated: 2026-11-18 KST
 
 Bonsai Web의 Gummble 캡처를 플로우별로 탐색하고, 같은 폴더의 분석 문서와 원본 화면을 함께 읽는다.
+
+## 읽는 순서
+
+1. [기능·업무 개념과 DB 설계 확인 사항](CRM_Bonsai_기능지도와_확인사항.md): 사용자 역할, 전체 기능군, 데이터 개념, 버전 차이와 설계 질문을 확인한다.
+2. 아래 전체 플로우에서 `ANALYSIS.md`와 원본 이미지를 함께 읽고, [공식 도움말·API 근거](../AGENT/UXUI_AGENT/PLANNING/BONSAI_BENCHMARK_RESEARCH.md)와 대조한다. 해당 근거 문서의 확인 시점을 구분하고 추가 조사가 필요한 기능을 표시한다.
+3. [전체 기능 대응표](../AGENT/PM_AGENT/PLANNING/BONSAI_FEATURE_PARITY_MATRIX.md)로 누락을 확인하고, 파악한 관계·상태·권한·저장 규칙을 [DB 설계안](../AGENT/SOFTWARE_AGENT/DB_SCHEMA/BONSAI_SCHEMA_PLAN.md)에 연결한다.
+
+현재 작업 단계는 **전체 기능 학습과 DB 스키마 설계**다. 화면 관찰·공식 문서 확인·실계정 검증·우리 설계 판단을 구분한다.
+
+## 확보한 플로우
 
 | 항목 | 범위 |
 | --- | --- |
