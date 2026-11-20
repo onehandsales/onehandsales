@@ -1,0 +1,492 @@
+{
+  "pages": {
+    "crm": {
+      "id": "crm",
+      "title": "CRM Software to keep clients & projects organized",
+      "description": "From prospect to project and contract to payment, you can now manage everything all in one place.",
+      "heroImage": "/bonsai-introduction/642eec5303a2b84d50dfc4c7.webp",
+      "notifications": [],
+      "overviewTitle": "Save hours running your business by using powerful tools to keep it all organized",
+      "overviewImage": "",
+      "features": [
+        {
+          "title": "Client management",
+          "text": "Add leads, existing clients and internal notes to keep track of all your contacts.",
+          "icon": "/bonsai-introduction/6399b4a1f28d4c0c95012086.svg"
+        },
+        {
+          "title": "Project organization",
+          "text": "Fill your projects with all the documents, payments, tasks and timesheets you need.",
+          "icon": "/bonsai-introduction/6399b4a1b6020e4bb381b074.svg"
+        },
+        {
+          "title": "Project collaboration",
+          "text": "Invite teammates and contractors to your projects to manage tasks and track time together.",
+          "icon": "/bonsai-introduction/6399b4a12dd2d343fe121588.svg"
+        }
+      ],
+      "testimonial": {
+        "image": "/bonsai-introduction/639b283522e2325d4848602e.webp",
+        "paragraphs": [
+          "When I onboard a client, there are a lot of details I need to keep track of from contact details to the project rate.",
+          "All those details can be found in the client profile in Bonsai.",
+          "Mary, Graphic Designer"
+        ]
+      },
+      "banners": [
+        {
+          "title": "Build your client list",
+          "paragraphs": [
+            "Quit losing clients in your inbox and have a reliable client relationship management system to track them with your ongoing work together. Create unique clients profiles with all your notes, contacts, rates and tags."
+          ],
+          "images": [
+            "/bonsai-introduction/639a0684beb8fd182a984bd7.webp",
+            "/bonsai-introduction/639a0689b18a02e481536351.webp"
+          ],
+          "leaf": true
+        },
+        {
+          "title": "Keep it together",
+          "paragraphs": [
+            "Organize all the todos, files and documents for your projects. Your clients even get their own project view to manage payments and contracts you’ve sent."
+          ],
+          "images": [
+            "/bonsai-introduction/639ae63b214f0182b71b6ba2.webp",
+            "/bonsai-introduction/639a0693a8cd3c31f282419c.webp"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Work with others",
+          "paragraphs": [
+            "Whether they’re a subcontractor or a co-worker, you can freely collaborate on projects with other users to assign them tasks and track time together. Our built-in project collaboration tools make working together a seamless experience."
+          ],
+          "images": [
+            "/bonsai-introduction/639ae5e72346db110d7c0378.webp",
+            "/bonsai-introduction/639a06a088ff4ac5639ab378.webp"
+          ],
+          "leaf": false
+        }
+      ],
+      "tiles": [
+        {
+          "title": "Time tracking",
+          "text": "Keep track of the hours you work every day, on every project and on every device. Add notes and the task completed with each new entry.",
+          "image": "/bonsai-public/635eaa2970620b7e4dd73978_timer.svg",
+          "href": "/time-tracking"
+        },
+        {
+          "title": "Task management",
+          "text": "Use simple task lists and create task templates on your projects to see what needs to be done. Set due dates and get email reminders.",
+          "image": "/bonsai-public/635ea64cb165568d5eef83b5_Paper.svg",
+          "href": "/task-management"
+        }
+      ],
+      "templates": [
+        {
+          "id": "tax-intake-form",
+          "path": "/form-template/tax-intake-form",
+          "title": "Tax intake form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "recruiter-intake-form",
+          "path": "/form-template/recruiter-intake-form",
+          "title": "Recruiter intake form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "project-intake-form",
+          "path": "/form-template/project-intake-form",
+          "title": "Project Intake Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "portfolio-contact-page",
+          "path": "/form-template/portfolio-contact-page",
+          "title": "Free Portfolio Contact Page",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "life-coach-intake-form",
+          "path": "/form-template/life-coach-intake-form",
+          "title": "Life Coach Intake Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "life-coach-assessments",
+          "path": "/form-template/life-coach-assessments",
+          "title": "Life Coach Assessment Forms",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "interior-design-client-intake-form",
+          "path": "/form-template/interior-design-client-intake-form",
+          "title": "Interior Design Client Intake Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "event-planning-intake-form",
+          "path": "/form-template/event-planning-intake-form",
+          "title": "Event Planning Intake Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "consultant-intake-form",
+          "path": "/form-template/consultant-intake-form",
+          "title": "Consultant Intake Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "comprehensive-client-form",
+          "path": "/form-template/comprehensive-client-form",
+          "title": "Comprehensive Client Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "client-registration-form",
+          "path": "/form-template/client-registration-form",
+          "title": "Client Registration Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        },
+        {
+          "id": "client-intake-form",
+          "path": "/form-template/client-intake-form",
+          "title": "Client Intake Form",
+          "type": "Forms",
+          "icon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+        }
+      ],
+      "faq": [
+        {
+          "id": "crm-faq-1",
+          "question": "Does Bonsai offer lead generation automation?",
+          "paragraphs": [
+            [
+              {
+                "text": "Absolutely. By using the ",
+                "href": ""
+              },
+              {
+                "text": "Bonsai Forms",
+                "href": "https://www.hellobonsai.com/forms"
+              },
+              {
+                "text": " integration included in your account, you have the ability to automate leads, manage your client relationships, track project progress and much more with just a few clicks.",
+                "href": ""
+              }
+            ]
+          ]
+        },
+        {
+          "id": "crm-faq-2",
+          "question": "Can I qualify leads with Bonsai CRM?",
+          "paragraphs": [
+            [
+              {
+                "text": "Sure! With Bonsai’s custom tagging you have the ability to use your own lead scoring methodology and organize your lead prospects based on how likely they are to turn from prospects to paying customers.",
+                "href": ""
+              }
+            ]
+          ]
+        },
+        {
+          "id": "crm-faq-3",
+          "question": "Who is Bonsai CRM Best For?",
+          "paragraphs": [
+            [
+              {
+                "text": "Bonsai CRM is great for all businesses looking to deploy a client management solution that includes a CRM with client portal. ",
+                "href": ""
+              },
+              {
+                "text": "Coaches",
+                "href": "https://www.hellobonsai.com/software/coaching"
+              },
+              {
+                "text": ", ",
+                "href": ""
+              },
+              {
+                "text": "consultants",
+                "href": "https://www.hellobonsai.com/software/consulting"
+              },
+              {
+                "text": ", architects, lawyers, and accountants are just several of the businesses that use our CRM every day for managing clients and projects.",
+                "href": ""
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "consulting": {
+      "id": "consulting",
+      "title": "The business software for consultants",
+      "description": "Build a profitable, scalable, and strategic consulting business with Bonsai. Manage your clients, projects and finances in one place.",
+      "heroImage": "/bonsai-introduction/64f9d2ba906783b84203ee1c.webp",
+      "notifications": [
+        {
+          "icon": "/bonsai-public/638efda7d12d6b316c408c99_icon-2.svg",
+          "label": "$1,500",
+          "value": "Invoice paid"
+        },
+        {
+          "icon": "/bonsai-public/638efda8af44d4ca4a155818_icon.svg",
+          "label": "$500",
+          "value": "Expense deducted"
+        }
+      ],
+      "overviewTitle": "Everything you need in one place",
+      "overviewImage": "/bonsai-introduction/64f9d2cdba37986126b732ad.webp",
+      "features": [
+        {
+          "title": "Task management",
+          "text": "Set up recurring invoicing and get paid on time.",
+          "icon": "/bonsai-introduction/6399b4a12dd2d343fe121588.svg"
+        },
+        {
+          "title": "Time tracking",
+          "text": "Track all your working hours and bill accurately.",
+          "icon": "/bonsai-introduction/640a13b49c01f5b98f7bd8c1.svg"
+        },
+        {
+          "title": "Client portal",
+          "text": "Easily share files, billed hours, and more with your clients.",
+          "icon": "/bonsai-introduction/63947d325b9ac91d24ffc7c5.svg"
+        },
+        {
+          "title": "Contracts",
+          "text": "Secure your work with contracts clients can modify and e-Sign.",
+          "icon": "/bonsai-introduction/63947c7245b5d947c6abd7a4.svg"
+        },
+        {
+          "title": "Finance tracking",
+          "text": "Automate expense and income tracking for easier accounting.",
+          "icon": "/bonsai-introduction/63947d542ca72a5c12a3411c.svg"
+        },
+        {
+          "title": "Time tracking",
+          "text": "Invite a collaborator, or more, to work together on a project.",
+          "icon": "/bonsai-introduction/640a13b49c01f5b98f7bd8c1.svg"
+        }
+      ],
+      "testimonial": {
+        "image": "/bonsai-introduction/64f9d2e84c7741623a3ba279.webp",
+        "paragraphs": [
+          "Big fan. I run my consultancy and Bonsai cuts down on my admin time and makes me look slick and professional. I've tried other competitive platforms - Bonsai is the best.",
+          "Alison, Business Consultant"
+        ]
+      },
+      "banners": [
+        {
+          "title": "Bill on your terms and get paid on time",
+          "paragraphs": [
+            "✓ Secure your work with retainers.",
+            "✓ Choose to bill by the hour, or by project.",
+            "✓ Get paid on time with automatic reminders."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d30294aa4dcd0623a41c.webp"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Smooth client collaboration",
+          "paragraphs": [
+            "✓ Share all tasks and deadlines with your client.",
+            "✓ Time-track every task for clear reporting to your clients.",
+            "✓ Share important files and messages."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d3235680f66e247ae6b1.webp"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Secure new work with contracts",
+          "paragraphs": [
+            "✓ Send, modify and e-Sign contracts.",
+            "✓ Collect upfront deposits at the start of projects.",
+            "✓ Save time with our legally-vetted contract templates."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d336fa2eea610bffb8dd.webp"
+          ],
+          "leaf": false
+        }
+      ],
+      "tiles": [
+        {
+          "title": "Visualize your finances",
+          "text": "See where your business health stands and plan ahead by plugging your income and expense date into Bonsai.",
+          "image": "/bonsai-introduction/64f9d35f70fd556ff3081d13.webp",
+          "href": "https://app.hellobonsai.com/users/sign_up"
+        },
+        {
+          "title": "Master your time",
+          "text": "See exactly where you’ve spent your time and share your timesheets with your clients.",
+          "image": "/bonsai-introduction/64f9d369f2f7d6fba7b2d680.webp",
+          "href": "https://app.hellobonsai.com/users/sign_up"
+        }
+      ],
+      "templates": [],
+      "faq": []
+    },
+    "small-businesses": {
+      "id": "small-businesses",
+      "title": "Small business management software",
+      "description": "Bonsai helps you win new clients, get paid faster and manage your finances. You can now manage your business while saving time on admin.",
+      "heroImage": "/bonsai-introduction/64f9d2ba7ee45c611f83c697.png",
+      "notifications": [
+        {
+          "icon": "/bonsai-public/638efda7d12d6b316c408c99_icon-2.svg",
+          "label": "+ $3,000",
+          "value": "Invoice paid"
+        },
+        {
+          "icon": "/bonsai-public/638efda70cb055424da813c5_icon-1.svg",
+          "label": "New client",
+          "value": "Intake form completed"
+        }
+      ],
+      "overviewTitle": "Grow your business, stress-free",
+      "overviewImage": "/bonsai-introduction/64d374ede22e66acf4dfddc9.png",
+      "features": [
+        {
+          "title": "Invoices",
+          "text": "Simple invoicing that takes you seconds, not days.",
+          "icon": "/bonsai-introduction/637f3d334b36bc85405148e8.svg"
+        },
+        {
+          "title": "Contracts",
+          "text": "Secure new clients with lawyer-vetted, ready-to-use templates.",
+          "icon": "/bonsai-introduction/63947c7245b5d947c6abd7a4.svg"
+        },
+        {
+          "title": "Client billing",
+          "text": "Track all your billable hours and add them invoices.",
+          "icon": "/bonsai-introduction/65afeb78a58b75b19720d550.svg"
+        },
+        {
+          "title": "Time tracking",
+          "text": "Manage collaborators and assign each to projects and tasks.",
+          "icon": "/bonsai-introduction/640a13b49c01f5b98f7bd8c1.svg"
+        },
+        {
+          "title": "Client CRM",
+          "text": "Centralize and organize each client and project information.",
+          "icon": "/bonsai-introduction/63947d325b9ac91d24ffc7c5.svg"
+        },
+        {
+          "title": "Finance tracking",
+          "text": "Keep track of your business’s financial health.",
+          "icon": "/bonsai-introduction/63947d542ca72a5c12a3411c.svg"
+        }
+      ],
+      "testimonial": {
+        "image": "/bonsai-introduction/64f9d2d8f69ffba223053a8b.jpeg",
+        "paragraphs": [
+          "I have tried apps like Bonsai for my business but none stack up from the CRM to the invoicing. Between the cost and the features, it can't be beat. The customer service is outstanding as well.",
+          "I would 100% recommend Bonsai!",
+          "Kimberly, Small business owner"
+        ]
+      },
+      "banners": [
+        {
+          "title": "Professional and trusted contracts",
+          "paragraphs": [
+            "✓ Send, modify and e-Sign contracts.",
+            "✓ Collect upfront deposits at the start of projects.",
+            "✓ Fully integrated with the invoice creation process."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d30294c6c0bc8ade92f9.png"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Client and project management",
+          "paragraphs": [
+            "✓ Centralize project information in one place.",
+            "✓ Keep clients organized and up-to-date.",
+            "✓ Use task management to stay organized."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d310b73e84ee2ba88c83.png"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Simple, secure invoicing",
+          "paragraphs": [
+            "✓ Create and send invoices in minutes.",
+            "✓ Automatic gentle email reminders get you paid on time.",
+            "✓ Simple and secure payments for your clients."
+          ],
+          "images": [
+            "/bonsai-introduction/63876187c343f3709a4fbdc0.png"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Optimize for every billable minute",
+          "paragraphs": [
+            "✓ Keep tabs on time spent on each task.",
+            "✓ Share time tracking insights with your clients.",
+            "✓ Automatically add billable hours to invoices."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d35034cabe3866489c5e.png"
+          ],
+          "leaf": false
+        },
+        {
+          "title": "Integrated appointment booking",
+          "paragraphs": [
+            "✓ Let clients pick time slots according to your availabilities.",
+            "✓ Set reminder emails sent from your email to avoid confusion.",
+            "✓ Customize your availabilities for different types of sessions."
+          ],
+          "images": [
+            "/bonsai-introduction/64f9d303fb435ffaa6f87db9.png"
+          ],
+          "leaf": false
+        }
+      ],
+      "tiles": [
+        {
+          "title": "Business reporting",
+          "text": "Visualize your income and expense data and make informed business decisions for your agency.",
+          "image": "/bonsai-introduction/64f9d35d8edfe23bc1f0abe1.png",
+          "href": "https://app.hellobonsai.com/users/sign_up"
+        },
+        {
+          "title": "Expense tracking",
+          "text": "Keep track of all expenses made by every collaborator in your business and keep accounting and tax filing clean.",
+          "image": "/bonsai-introduction/64f9d3691e593eeabde473ed.png",
+          "href": "https://hellobonsai.webflow.io/software/agencies#"
+        }
+      ],
+      "templates": [],
+      "faq": []
+    }
+  },
+  "assets": {
+    "leaf": "/bonsai-introduction/636e3df10d7d5620fa6d293a.webp",
+    "branch": "/bonsai-introduction/636e402149cf125413320bca.webp",
+    "bannerLeaf": "/bonsai-introduction/635e8ff44cc38fcf8ea2ea06.webp",
+    "formIcon": "/bonsai-introduction/63947d118871b19e0379ec18.svg"
+  }
+}

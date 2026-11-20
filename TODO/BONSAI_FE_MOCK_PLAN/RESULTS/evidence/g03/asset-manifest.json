@@ -1,0 +1,260 @@
+[
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/642eec5303a2b84d50dfc4c7_Frame%20(7).webp",
+    "path": "/bonsai-introduction/642eec5303a2b84d50dfc4c7.webp",
+    "bytes": 147038,
+    "sha256": "882592bd745fdf603bcc5c0732b154347aea1685e2041298651133510d81ddd1"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6399b4a1f28d4c0c95012086_icon-projects.svg",
+    "path": "/bonsai-introduction/6399b4a1f28d4c0c95012086.svg",
+    "bytes": 968,
+    "sha256": "bb959e6092e5435eef87ebfcd12c84f57b06c33153f3df4945c8987f7a54a723"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6399b4a1b6020e4bb381b074_icon-folder.svg",
+    "path": "/bonsai-introduction/6399b4a1b6020e4bb381b074.svg",
+    "bytes": 716,
+    "sha256": "ed3355526fd3b10bb439f205b4e637acdabdc572cbe99170be9047104fbc0f00"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6399b4a12dd2d343fe121588_icon-add-user.svg",
+    "path": "/bonsai-introduction/6399b4a12dd2d343fe121588.svg",
+    "bytes": 1037,
+    "sha256": "d07d1df0a089c9157018fe0b08f4b56ec345d588dfa07e8d192472c356afe493"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639b283522e2325d4848602e_mary-mitchell%20(1).webp",
+    "path": "/bonsai-introduction/639b283522e2325d4848602e.webp",
+    "bytes": 69120,
+    "sha256": "83e15bdd2493b29ff17cec39fb2cf025725cc656d3f4d6d29a836a0e870f24f7"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639a0684beb8fd182a984bd7_crm_add_new_client.webp",
+    "path": "/bonsai-introduction/639a0684beb8fd182a984bd7.webp",
+    "bytes": 31772,
+    "sha256": "009091131c66562b766f3fee24d2c772b5f81491f2319a632faf8660b09c2295"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639a0689b18a02e481536351_crm_edit_client.webp",
+    "path": "/bonsai-introduction/639a0689b18a02e481536351.webp",
+    "bytes": 12794,
+    "sha256": "8f0882f919b781f1f9c3be7b0570da61aeb73ad8accff3c9b2e6c6635dee1e7f"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639ae63b214f0182b71b6ba2_crm_project_details.webp",
+    "path": "/bonsai-introduction/639ae63b214f0182b71b6ba2.webp",
+    "bytes": 29754,
+    "sha256": "446adf24b62d324b4fb94717b7fa77e4433a351b1a9443892c012d8608f38285"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639a0693a8cd3c31f282419c_crm_files_messages.webp",
+    "path": "/bonsai-introduction/639a0693a8cd3c31f282419c.webp",
+    "bytes": 18406,
+    "sha256": "b3b221206d1e5399eca143413e3373133dcec5636798a7903e120160f9756b0a"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639ae5e72346db110d7c0378_crm_add_collaborators.webp",
+    "path": "/bonsai-introduction/639ae5e72346db110d7c0378.webp",
+    "bytes": 29314,
+    "sha256": "66c141ed32d690036ee8e6965a2a460178a680b7ef890fac6dd2fe8d57b5c1a1"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/639a06a088ff4ac5639ab378_crm_invite_collaborators.webp",
+    "path": "/bonsai-introduction/639a06a088ff4ac5639ab378.webp",
+    "bytes": 6120,
+    "sha256": "830e3dbfc4299267b9e7dfdb2fea4d024be546b937dfc8c6360ce8a99cdd7105"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2970620b7e4dd73978_timer.svg",
+    "path": "/bonsai-public/635eaa2970620b7e4dd73978_timer.svg",
+    "bytes": 536,
+    "sha256": "ad7a0bc7c4911d997786f0d6e4acf4997204a8fff6c670424b849864f043c4c3"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635ea64cb165568d5eef83b5_Paper.svg",
+    "path": "/bonsai-public/635ea64cb165568d5eef83b5_Paper.svg",
+    "bytes": 863,
+    "sha256": "1c44699d2d1f6106e6b9f8ff978ab9ef106bd1a14c81f9655a7dd8c2aa478639"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/63947d118871b19e0379ec18_icon-forms.svg",
+    "path": "/bonsai-introduction/63947d118871b19e0379ec18.svg",
+    "bytes": 876,
+    "sha256": "dc956b773ac1d52e5067b62b1af506daa2b6756477cc3ef0274cf81d4fee6325"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d2ba906783b84203ee1c_20230907T0139-12f30633-ecf7-4f58-8c51-deae1a305992.webp",
+    "path": "/bonsai-introduction/64f9d2ba906783b84203ee1c.webp",
+    "bytes": 17566,
+    "sha256": "defe9e23f96e05df243cdbad76ccd03c5c314aecba076a712e98e0d3b955bfbf"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638efda7d12d6b316c408c99_icon%20(2).svg",
+    "path": "/bonsai-public/638efda7d12d6b316c408c99_icon-2.svg",
+    "bytes": 1769,
+    "sha256": "d6893458e68bd5bf9a10cf306ef3f8f9e2c192a48a2c388a9d1d53eb0b4b1154"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638efda8af44d4ca4a155818_icon.svg",
+    "path": "/bonsai-public/638efda8af44d4ca4a155818_icon.svg",
+    "bytes": 2296,
+    "sha256": "bf3db90523fc51e98d08723aab1176b81b93d7d3ff8bf699d5a88af2422e9e16"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d2cdba37986126b732ad_20230907T0140-06a11b80-6dce-49b8-951f-9f4b25456dda.webp",
+    "path": "/bonsai-introduction/64f9d2cdba37986126b732ad.webp",
+    "bytes": 73330,
+    "sha256": "d2adae599f1986f0cd1abd0e1ba4c714137183adc9ec33975cef3971badf62b2"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/640a13b49c01f5b98f7bd8c1_time-track-icon.svg",
+    "path": "/bonsai-introduction/640a13b49c01f5b98f7bd8c1.svg",
+    "bytes": 497,
+    "sha256": "851b26ed3ef6b6cec089576212d6ad60e78a0dedd1c6c4689425f309b408ac8d"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/63947d325b9ac91d24ffc7c5_icon-client-management.svg",
+    "path": "/bonsai-introduction/63947d325b9ac91d24ffc7c5.svg",
+    "bytes": 1590,
+    "sha256": "165d490934fd85ee0e7f4d84ceba1e55d0d9e223245311c6830404e212ac3db2"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/63947c7245b5d947c6abd7a4_icon-contracts.svg",
+    "path": "/bonsai-introduction/63947c7245b5d947c6abd7a4.svg",
+    "bytes": 864,
+    "sha256": "6a84d0ce9bf0eaa961d72464554587c9d3fc18de9bdf9cc0b8c93d9736e60af9"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/63947d542ca72a5c12a3411c_icon-accounting.svg",
+    "path": "/bonsai-introduction/63947d542ca72a5c12a3411c.svg",
+    "bytes": 654,
+    "sha256": "f3ea4d1225a20a3eb118e387ee9f54daf636dd2bef86d7680882be0c2f49c183"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/637f3d334b36bc85405148e8_Collaborators.svg",
+    "path": "/bonsai-introduction/637f3d334b36bc85405148e8.svg",
+    "bytes": 1020,
+    "sha256": "86746a72988bc9d3c79123122b3b94458e936c21bc9f1cba0bdc6e530fc80046"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d2e84c7741623a3ba279_20230907T0140-0913be0f-a250-4190-ad8e-1fd229e6b873.webp",
+    "path": "/bonsai-introduction/64f9d2e84c7741623a3ba279.webp",
+    "bytes": 30458,
+    "sha256": "e1f10a1a2e9c74ea5dd747a6f5dd23aadaa36926227dcbfc5b1347e17bce6be4"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d30294aa4dcd0623a41c_20230907T0141-a7f68fdf-fa9a-4b42-ad1e-368be991f618.webp",
+    "path": "/bonsai-introduction/64f9d30294aa4dcd0623a41c.webp",
+    "bytes": 31216,
+    "sha256": "bb32e48c744f406f287070180ce3d5e6109936c56b211c3a9168cacbd817cfe3"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d3235680f66e247ae6b1_20230907T0141-0393ea9b-b703-40ca-b4c4-b6fe1a5e6162.webp",
+    "path": "/bonsai-introduction/64f9d3235680f66e247ae6b1.webp",
+    "bytes": 19486,
+    "sha256": "d02e068ce062d1c8345e06c767083eb472003a4ba479c3fde79a6b1cce07716f"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d336fa2eea610bffb8dd_20230907T0142-1dbf93b9-d6ff-4ddb-bce3-a5ca1107700c.webp",
+    "path": "/bonsai-introduction/64f9d336fa2eea610bffb8dd.webp",
+    "bytes": 32084,
+    "sha256": "4dcc527221c41848940e61ffa9ce0683e65b6784ed3812668736f786c1e3dd80"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d35f70fd556ff3081d13_20230907T0142-df450adc-6ad7-4aae-af45-3ba9c0bb2610.webp",
+    "path": "/bonsai-introduction/64f9d35f70fd556ff3081d13.webp",
+    "bytes": 28626,
+    "sha256": "332c4d382e5d41b829b024cbc7bd74df06dd73107526f3e409a9dda9797fe7d1"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d369f2f7d6fba7b2d680_20230907T0143-ab04cd9f-1d0d-4992-82da-6d5fab117e31.webp",
+    "path": "/bonsai-introduction/64f9d369f2f7d6fba7b2d680.webp",
+    "bytes": 31724,
+    "sha256": "88415173c9c46bd9dbcc211fd90992050ab972ce6a31032fc6ff505e5239ab8c"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d2ba7ee45c611f83c697_20230907T0139-9db16f9f-347e-4580-870b-e97fb0bbbed7.png",
+    "path": "/bonsai-introduction/64f9d2ba7ee45c611f83c697.png",
+    "bytes": 314184,
+    "sha256": "c66841d95b3bc4886e4985d4c84ae3955260781f2f0896e18a6663f2671f9d3e"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64d374ede22e66acf4dfddc9_Dashboard_Small%20Business.png",
+    "path": "/bonsai-introduction/64d374ede22e66acf4dfddc9.png",
+    "bytes": 87713,
+    "sha256": "77ec12cb6a41e7c25de49338d86aa68bf9af3b01c644f2ae24f7e61a4054c9a7"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/65afeb78a58b75b19720d550_icon-invoicing.svg",
+    "path": "/bonsai-introduction/65afeb78a58b75b19720d550.svg",
+    "bytes": 1939,
+    "sha256": "78491850c01552aff673f2deda4c1a7b886da23d1fd9ec46bd0555a66ff02e9e"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d2d8f69ffba223053a8b_20230907T0140-8b17e85f-4dd8-48e6-b018-53e6736369a7.jpeg",
+    "path": "/bonsai-introduction/64f9d2d8f69ffba223053a8b.jpeg",
+    "bytes": 153441,
+    "sha256": "57c474e85f371f52bc1161378b87c17e5134da0754866defec9b96598009088e"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d30294c6c0bc8ade92f9_20230907T0141-be5d7d68-1f8a-43bf-9f18-8f239c1f3546.png",
+    "path": "/bonsai-introduction/64f9d30294c6c0bc8ade92f9.png",
+    "bytes": 32060,
+    "sha256": "19484ca441f58626e9cc75fc4b7747a5f945a2048fa0d6d737c8dfb2245c44dd"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d310b73e84ee2ba88c83_20230907T0141-3a3c66bd-c1b9-4462-a066-37082f2056ce.png",
+    "path": "/bonsai-introduction/64f9d310b73e84ee2ba88c83.png",
+    "bytes": 22970,
+    "sha256": "d3ecc63a1ed04adc2700a125c4ae68ced449fb7a9a114cc0de392d1d38f066af"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/63876187c343f3709a4fbdc0_accountant%20banner%201.png",
+    "path": "/bonsai-introduction/63876187c343f3709a4fbdc0.png",
+    "bytes": 49532,
+    "sha256": "ddfb0fbaafcc050206e2a9f12c0101f000401353df6f711c806cc0228a114a9d"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d35034cabe3866489c5e_20230907T0142-c00ada74-b1e0-404b-8d15-b4b9055795a5.png",
+    "path": "/bonsai-introduction/64f9d35034cabe3866489c5e.png",
+    "bytes": 24230,
+    "sha256": "a9ce4b01680ba24586093789fb1bf200fabd014a3bc23eb61918f859a907950c"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d303fb435ffaa6f87db9_20230907T0141-e639d4d3-bb67-417e-a9d5-f70f9e83b573.png",
+    "path": "/bonsai-introduction/64f9d303fb435ffaa6f87db9.png",
+    "bytes": 70571,
+    "sha256": "ef6939947a0628d37248049c071ace3aeff8d12f7fc61e0634b79c94e6b3783d"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d35d8edfe23bc1f0abe1_20230907T0142-495e39dc-787e-4512-8bbf-5b6945e066e0.png",
+    "path": "/bonsai-introduction/64f9d35d8edfe23bc1f0abe1.png",
+    "bytes": 30007,
+    "sha256": "351483563c0815149b89d495ba911bb0b43e85486ac843eb36b3d65358a42e0e"
+  },
+  {
+    "url": "https://assets-global.website-files.com/637e5892fb4b6db88a62cc0a/64f9d3691e593eeabde473ed_20230907T0143-a1ae0ada-e2ef-408e-b378-332eb868daee.png",
+    "path": "/bonsai-introduction/64f9d3691e593eeabde473ed.png",
+    "bytes": 56195,
+    "sha256": "bf027f8ed1c2bbdb48f2d74481ed31dd8c95e659178d67919e4080a339856113"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/636e3df10d7d5620fa6d293a_leave.webp",
+    "path": "/bonsai-introduction/636e3df10d7d5620fa6d293a.webp",
+    "bytes": 4572,
+    "sha256": "04007eb78edc33cac9d670334b712b05451345bc7149500f2e5637073351d5b4"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/636e402149cf125413320bca_branch%202.webp",
+    "path": "/bonsai-introduction/636e402149cf125413320bca.webp",
+    "bytes": 66744,
+    "sha256": "0e83d0ff7bd18ab2b4ac0f49d9f99ed8f95dcb283dd8cddaff40c5e72bdddf69"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635e8ff44cc38fcf8ea2ea06_leave.webp",
+    "path": "/bonsai-introduction/635e8ff44cc38fcf8ea2ea06.webp",
+    "bytes": 3864,
+    "sha256": "78b3aab05b4be9891c944b196448b5c104a6ff2080dfa9445f2e2ba1b5232782"
+  }
+]

@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-21",
+  "preservesExistingMap": "../r01-destination-map.json",
+  "links": [
+    {
+      "source": "https://www.g2.com/products/bonsai/reviews",
+      "local": "/outbound/reviews/g2",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.capterra.com/p/238825/Bonsai/",
+      "local": "/outbound/reviews/capterra",
+      "goal": "G04"
+    },
+    {
+      "source": "http://www.kimberlyschaney.com/",
+      "local": "/outbound/reviews/review-01-kimberly",
+      "goal": "G04"
+    },
+    {
+      "source": "https://ebbflowandgrow.com/",
+      "local": "/outbound/reviews/review-02-laura",
+      "goal": "G04"
+    },
+    {
+      "source": "https://equalseven.com/",
+      "local": "/outbound/reviews/review-03-nick",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.pfscommunications.com",
+      "local": "/outbound/reviews/review-04-phil",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.meganelizabethclark.com/",
+      "local": "/outbound/reviews/review-05-megan",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.raewynsangari.com/",
+      "local": "/outbound/reviews/review-06-raewyn",
+      "goal": "G04"
+    },
+    {
+      "source": "https://aiminity.com/",
+      "local": "/outbound/reviews/review-09-michael",
+      "goal": "G04"
+    },
+    {
+      "source": "https://bricocreative.com/",
+      "local": "/outbound/reviews/review-11-brianna",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.aleapofstyle.com/",
+      "local": "/outbound/reviews/review-12-karissa",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.omariallen.com/",
+      "local": "/outbound/reviews/review-13-omari",
+      "goal": "G04"
+    },
+    {
+      "source": "https://www.kevintudball.com/",
+      "local": "/outbound/reviews/review-23-kevin",
+      "goal": "G04"
+    },
+    {
+      "source": "/taxes",
+      "local": "/taxes",
+      "goal": "G03"
+    },
+    {
+      "source": null,
+      "observedLabel": "Professional services",
+      "local": "/software/professional-services",
+      "goal": "G03",
+      "note": "Local candidate only; source target unconfirmed. No body implementation."
+    },
+    {
+      "source": null,
+      "local": "/preview/subscription",
+      "goal": "G79",
+      "note": "Mock signed-in selection handoff only; not a confirmed source app URL."
+    }
+  ],
+  "signup": "/signup G10; source archive int_source=pricing and int_content=monthly_{plan}/annual_{plan}; locally stored selection snapshot, not real auth"
+}

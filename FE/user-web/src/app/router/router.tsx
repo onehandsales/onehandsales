@@ -5,6 +5,11 @@ import { PublicLayout } from "../layouts/public-layout";
 import { PublicPendingPage } from "@/pages/public-pending";
 import { publicDestinations } from "@/features/public-web";
 import { PublicPage } from "@/pages/public";
+import { IntroductionPage } from "@/pages/introduction";
+import { PricingPage } from "@/pages/pricing";
+import { ReviewsPage } from "@/pages/reviews";
+import { commercialPendingDestinations, commercialRoutes } from "@/features/public-commercial";
+import { introductionRoutes, introductionPendingDestinations } from "@/features/public-introduction";
 import { LoginPage } from "@/pages/login";
 import { WorkspacePage } from "@/pages/workspace";
 import { SharedPage } from "@/pages/shared";
@@ -17,7 +22,10 @@ export const router = createBrowserRouter([{
     { element: <PublicLayout />, children: [
       { path: "/", element: <PublicPage /> },
       { path: "/signup", element: <PublicPendingPage /> },
-      ...[...new Set(publicDestinations.map(item => item.path.split(/[?#]/)[0]))].map(path => ({ path, element: <PublicPendingPage /> })),
+      { path: "/pricing", element: <PricingPage /> },
+      { path: "/reviews", element: <ReviewsPage /> },
+      ...introductionRoutes.map(route => ({ path: route.path, element: <IntroductionPage key={route.id} id={route.id} /> })),
+      ...[...new Set([...publicDestinations, ...introductionPendingDestinations, ...commercialPendingDestinations].map(item => item.path.split(/[?#]/)[0]))].filter(path => ![...introductionRoutes, ...commercialRoutes].some(route => route.path === path)).map(path => ({ path, element: <PublicPendingPage /> })),
     ] },
     { element: <PreviewFrame />, children: [
     { path: "/login", element: <LoginPage /> },

@@ -1,0 +1,27 @@
+[
+  {
+    "path": "/bonsai-introduction/63947d722ca72ac9fca34274.svg",
+    "sha256": "78491850c01552aff673f2deda4c1a7b886da23d1fd9ec46bd0555a66ff02e9e",
+    "reason": "Downloaded candidate not referenced by adopted introduction content; removed before delivery."
+  },
+  {
+    "path": "/bonsai-introduction/63947c6649089d580e7088af.svg",
+    "sha256": "34bc40d0100f8ab8020a6ed9c9a6a60afc0b11f987831335002125574552ce9e",
+    "reason": "Downloaded candidate not referenced by adopted introduction content; removed before delivery."
+  },
+  {
+    "path": "/bonsai-introduction/63947d0ac3846f30ca287dd3.svg",
+    "sha256": "c02ec366fc58063421a0f3e9427570bfc95c92e7368c83be1628bdc4ae554ec9",
+    "reason": "Downloaded candidate not referenced by adopted introduction content; removed before delivery."
+  },
+  {
+    "path": "/bonsai-introduction/63947d22ea7b3a7134014646.svg",
+    "sha256": "344fbf7d8509cb430a963881323ddc8b44508284e886ce6a770ce37dc57190da",
+    "reason": "Downloaded candidate not referenced by adopted introduction content; removed before delivery."
+  },
+  {
+    "path": "/bonsai-introduction/63947d2b2c8cc33f3d403ab1.svg",
+    "sha256": "19f6a790436f00ced85bad29be649f796305d09e0ba4ecc9ee8a3fa827c8d033",
+    "reason": "Downloaded candidate not referenced by adopted introduction content; removed before delivery."
+  }
+]

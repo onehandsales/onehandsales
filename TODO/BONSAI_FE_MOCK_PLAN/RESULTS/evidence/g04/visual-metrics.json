@@ -1,0 +1,75 @@
+{
+  "method": "Lanczos normalization; no masking or correction; differences do not prove visual equivalence",
+  "frames": [
+    {
+      "name": "pricing-01",
+      "source": "bonsai_analysis/flows/Pricing/screens/01_sc_6b53199f35cb4bc69306b8e615e55dd7.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 3.3091,
+      "beforeRgbMeanAbsoluteError": 8.463
+    },
+    {
+      "name": "pricing-02",
+      "source": "bonsai_analysis/flows/Pricing/screens/02_sc_c435c9f093d34fddabe4fa83dd022786.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 6.0006,
+      "beforeRgbMeanAbsoluteError": 12.0037
+    },
+    {
+      "name": "pricing-03",
+      "source": "bonsai_analysis/flows/Pricing/screens/03_sc_963ddd0939f7412cb81390d58c8cb401.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 1.8338,
+      "beforeRgbMeanAbsoluteError": 5.9657
+    },
+    {
+      "name": "reviews-01",
+      "source": "bonsai_analysis/flows/Reviews/screens/01_sc_21f0e007e04d45edbd410a1dffdff04c.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 3.5092,
+      "beforeRgbMeanAbsoluteError": 4.8603
+    },
+    {
+      "name": "reviews-02",
+      "source": "bonsai_analysis/flows/Reviews/screens/02_sc_a605cb0e7e164a64b2707c0a110eafa6.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 6.8645,
+      "beforeRgbMeanAbsoluteError": 7.9723
+    },
+    {
+      "name": "reviews-03",
+      "source": "bonsai_analysis/flows/Reviews/screens/03_sc_7d668b0699a945e98ca3ccbe29066b7a.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 11.0716,
+      "beforeRgbMeanAbsoluteError": 13.5356
+    },
+    {
+      "name": "reviews-04",
+      "source": "bonsai_analysis/flows/Reviews/screens/04_sc_a6b1e7be914645e293f35918c57e4ee9.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 2.5811,
+      "beforeRgbMeanAbsoluteError": 9.9843
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "checked": "2026-11-21 KST",
+  "web_tool": "Archive open unavailable; Python urllib read-only fallback succeeded",
+  "sources": [
+    {
+      "name": "pricing",
+      "url": "https://web.archive.org/web/20240203174218id_/https://www.hellobonsai.com/pricing",
+      "resolved": "https://web.archive.org/web/20240118082727id_/https://www.hellobonsai.com/pricing",
+      "bytes": 23147,
+      "decoded_bytes": 130524,
+      "decoded_sha256": "3e8763f1733d25f3f7894828d8e8b5a0a429bfa8f9f25200a669b2d032a8abb7"
+    },
+    {
+      "name": "reviews",
+      "url": "https://web.archive.org/web/20240203174218id_/https://www.hellobonsai.com/reviews",
+      "resolved": "https://web.archive.org/web/20240118082751id_/https://www.hellobonsai.com/reviews",
+      "bytes": 23630,
+      "decoded_bytes": 116925,
+      "decoded_sha256": "b8bb719834fe2734928f44d8e416f75d0cfb37787162492693b2483b9c255535"
+    }
+  ],
+  "css": {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/css/hellobonsai.a39e1f9c1.min.css",
+    "provenance": "G03 downloaded file reused; both fresh archive HTMLs reference this URL",
+    "sha256": "e4ba480dcab95ea930f8d80cb8a5a14f0213bfe9be48980b7637ed4e4f9cfc88"
+  },
+  "monthly": [
+    25,
+    39,
+    79
+  ],
+  "yearly_monthly_equivalent": [
+    21,
+    32,
+    66
+  ],
+  "derived_annual_not_observed_invoice": [
+    252,
+    384,
+    792
+  ],
+  "video": "Archive links YouTube XWvK85AyeOA; no local video or captions in checked HTML/CSS/assets. External player not executed. Second archive video is outside observed G04 scope."
+}

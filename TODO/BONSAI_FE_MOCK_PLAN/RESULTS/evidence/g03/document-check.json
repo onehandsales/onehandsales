@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-11-20T15:28:51.775815+00:00",
+  "markdownFiles": 13,
+  "relativeLinksChecked": 419,
+  "brokenLinks": [],
+  "jsonParsed": 22,
+  "assetHashEntriesVerified": 65,
+  "uniqueAssetPaths": 65,
+  "contentIds": {
+    "related-articles.json": 12,
+    "crm_templates": 12
+  },
+  "planCounts": {
+    "goals": 85,
+    "research": 22,
+    "flows": 134,
+    "execution_order": 107
+  },
+  "unchangedOtherGoalsAndResearch": true,
+  "unchangedFlowAssignmentsAndOrder": true,
+  "gitDiffCheck": "passed",
+  "baselineCommit": "da60df02",
+  "newFeatureNetworkCodeMatches": 0,
+  "svgExternalReferences": 0,
+  "finalStatus": "G03 observed three pages verified; overall completion pending; G02/R01 pending retained; G04 unstarted"
+}

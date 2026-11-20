@@ -1,0 +1,15 @@
+{
+  "stats": {
+    "startTime": "2026-11-20T15:22:11.745Z",
+    "duration": 94468.57999999999,
+    "expected": 20,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  },
+  "failures": [
+    "Introduction flow: local image loads cancelled during subsequent direct navigation",
+    "FAQ: browser URL changed before Consulting UI committed; back ran against the still-mounted CRM view"
+  ],
+  "followUp": "Wait for destination heading and decoded artwork; preserve native Router and all network observations."
+}

@@ -1,0 +1,11 @@
+{
+  "stats": {
+    "startTime": "2026-11-20T15:13:32.750Z",
+    "duration": 28208.747,
+    "expected": 21,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "reason": "Local images aborted by immediate reload/direct navigation; no API requests. Full transient traces remain in ignored test-results until next run."
+}

@@ -110,3 +110,21 @@ hero MAE4.8180→4.7081. 메뉴5상태도 Expense 카드 보정으로 약0.11씩
 6. `/components`에서 Dialog를 키보드로 열고 닫는다. Preview controls→Reset preview로 normal/guest를 확인한다. DevTools Network에는 로컬 정적 리소스·개발 HMR만 있어야 한다.
 
 이번 작업은 여기서 종료한다. 커밋 해시 추가 없음. G03 자동 진행 없음.
+
+## 8. G03 공통 요소 변경과 회귀 — 2026-11-21
+
+위1~7절은 G02 재점검 당시 기록이며 재점검 커밋은 `da60df02`다. 이후 별도 요청한 [G03 작업](G03_RESULT.md)에서 다음 공통 부분만 확장·수정했다. 이번 G03에서는 커밋하지 않았다.
+
+- 랜딩 이메일 폼을 동일한 `SignupForm`으로 추출하고 pathname별 입력을 분리했다. 기존 랜딩 검증/합성 IME/중복 제출/뒤로/취소 정책은 유지한다.
+- 여러 소개 가입 인계를 오가면 단일 최신 intent가 이전 가입 이력을 덮는 문제를 수정했다. history에는 opaque ID만, source/email/returnTo는 메모리 snapshot으로 보관한다. source별 취소는 그 경로의 초안·인계를 폐기하고 다른 소개 초안을 유지한다.
+- PublicHeader는 사용자가 선택한 G01 가상 세션일 때 Go to dashboard를 표시한다. 익명 스크롤은 세션을 바꾸지 않는다. 소개 화면의 scrolled top:0 스타일은 G03 class로 한정했다.
+- `/crm`·`/software/consulting`·`/software/small-businesses`는 실제 G03 소개로 연결했다. G02 테스트의 기존 pending 기대만 현재 소유 화면에 맞춰 변경하고, 미수록 G03 목적지 검사는 `/scheduling`으로 유지했다.
+- 이번 typecheck/lint/build·unit9·dev/build Chromium각22 전체 검증에서 G01/G02도 다시 실행했다. 모바일 메뉴 닫기·짧은 높이 내부 스크롤·폭 전환 초점, 이메일 오류·합성 IME·중복 제출·뒤로/취소·Reset, 실제 navigation과 scope/경합 검증이 통과했다. 실제 API/외부 요청·실패·console 오류0. [현재 검증 기록](evidence/g03/verification-summary.json).
+
+G02 시각 잔여·원본 모바일/자동 전환·OS IME/AT 대기는 유지한다. G03에서 공유 메뉴2상태를 다시 비교했지만 G02 전체17상태의 잔여를 해소했다고 판정하지 않았다. G03 추가 구현을 G02/R01 전체 완료로 처리하지 않는다.
+
+## 9. G04 공통 인계·목적지 변경과 회귀 — 2026-11-21
+
+위 기록은 각 당시 실행 결과로 보존한다. 이후 별도 요청한 [G04 작업](G04_RESULT.md)에서 가격/후기 실제 화면을 연결하고 공개 인계에 선택 snapshot·sourcePath·query 포함 returnTo를 추가했다. 랜딩의 경로별 이메일·중복 제출·취소·뒤로 복귀 정책을 유지한다. G02 테스트의 Pricing/Reviews 미구현 기대만 새 실화면에 맞췄다. 공통 메뉴·푸터의 디자인과 다른 목적지는 교체하지 않았다.
+
+최종 typecheck/lint/build, unit 11/11, 개발/빌드 Chromium 각 29/29에서 G01/G02 회귀를 다시 실행했다. 모바일 메뉴 닫기·짧은 화면 내부 스크롤·폭 전환 초점·이메일 오류/합성 IME·중복 제출·입력 보존·취소/뒤로 복귀를 포함한다. 실제 API/외부 요청·요청 실패·console 오류는 0건이다. [G04 검증 기록](evidence/g04/verification-summary.json)을 근거로 하며 이전 통과 수치를 재사용하지 않았다. G02 전체 17상태를 다시 캡처한 것은 아니며 기존 시각·원본 동작·OS/추가 환경 대기는 그대로다. G04 변경을 G02/R01 전체 완료로 처리하지 않았다.

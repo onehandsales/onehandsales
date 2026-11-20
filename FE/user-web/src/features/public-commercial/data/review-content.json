@@ -1,0 +1,272 @@
+[
+  {
+    "id": "review-01-kimberly",
+    "name": "Kimberly",
+    "role": "Accountant",
+    "text": "\"I have tried apps like Bonsai for my business but none stack up from the CRM to the invoicing. Between the cost and the features, it can't be beat. The customer service is outstanding as well.\"",
+    "sourceHref": "http://www.kimberlyschaney.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-02-laura",
+    "name": "Laura",
+    "role": "Coach",
+    "text": "\"I love using Bonsai for my coaching business. I would really recommend it for anyone who is after an easy-to-use CRM system without hassle of complicated setups.\"",
+    "sourceHref": "https://ebbflowandgrow.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-03-nick",
+    "name": "Nick",
+    "role": "Creative Director",
+    "text": "\"Love the invoicing experience for my clients. It's easy to pay, looks great, and helps improve my brand. \nI've increased my take-home pay as most clients now pay their own processing fees.\"",
+    "sourceHref": "https://equalseven.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-04-phil",
+    "name": "Phil",
+    "role": "Communications Specialist",
+    "text": "\"Bonsai provides invoicing, accounting, project management, and client management in one handy platform.\n\nI focus less on the admin and more on the work that I love.\"",
+    "sourceHref": "https://www.pfscommunications.com",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-05-megan",
+    "name": "Megan",
+    "role": "Copywriter",
+    "text": "\"I currently use Bonsai to keep track of my hours, send invoices and contracts to clients, manage my project work. \n\nI use the banking to collect and bucket my profit into different folders.\"",
+    "sourceHref": "https://www.meganelizabethclark.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-06-raewyn",
+    "name": "Raewyn",
+    "role": "Virtual Assistant",
+    "text": "\"With Bonsai, everything is in the same place: contracts, invoices, time-tracking, finances. \n\nMy business is organized and I've been able to expand it, help more people, and make more money.\"",
+    "sourceHref": "https://www.raewynsangari.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-07-brandon",
+    "name": "Brandon",
+    "role": "Full Stack Developer",
+    "text": "\"Bonsai comes fully equipped to handle clients, projects, time tracking, contracts, invoices, finances and reporting. \n\nI focus on clients while invoices go out and come back paid.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-08-camila",
+    "name": "Camila",
+    "role": "Interior Designer",
+    "text": "\"Bonsai has helped take my interior design business to the next level. It handles international invoicing, payment reminders, contracts and scheduling. \n\nEverything that was hard before, Bonsai has solved.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-09-michael",
+    "name": "Michael",
+    "role": "CEO Digital Agency",
+    "text": "\"As CEO of a digital agency, I do not want to worry about the little, tedious, every day tasks. \n\nBonsai keeps my workflow streamlined, in check and simple.\"",
+    "sourceHref": "https://aiminity.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-10-alexandre",
+    "name": "Alexandre",
+    "role": "Consultant",
+    "text": "\"Contracting, invoicing, and even banking are all things Bonsai fixes in a simple, beautiful way.  \n\nThey're constantly adding new features and their support is super helpful.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-11-brianna",
+    "name": "Brianna",
+    "role": "Photographer",
+    "text": "\"Bonsai is an easy to use platform compared with other competitors. I like the options for invoicing and payments, as well as editing contracts. \n\nMy clients also like to use Bonsai.\"",
+    "sourceHref": "https://bricocreative.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-12-karissa",
+    "name": "Karissa",
+    "role": "Business Owner",
+    "text": "\"With Bonsai I am able to automate invoices. The reminders are really helpful, too. I struggled to keep up with invoicing previously, and left money on the table. Now I’m able to make sure I’m getting paid without as much thought.\"",
+    "sourceHref": "https://www.aleapofstyle.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-13-omari",
+    "name": "Omari",
+    "role": "Growth Marketer",
+    "text": "\"Been using Bonsai for a couple years now for my business of one. Great tool that's easy to understand. Great compliment to more complex platforms like QuickBooks or on it's own.\"",
+    "sourceHref": "https://www.omariallen.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-14-jess",
+    "name": "Jess",
+    "role": "Writer",
+    "text": "\"Within an hour, I had an account, a contract and a proposal template.\n\nHaving all my business admin in one spot makes me happier, including my time tracking, which integrates seamlessly into my invoicing.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-15-ravneet",
+    "name": "Ravneet",
+    "role": "Brand Consultant",
+    "text": "\"Super easy to use and makes admin a pleasant part of my business. I've been using it over a year now. \n\nI've loved designing my invoices and contracts to suit my brand image and my clients find it very easy to use too.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-16-leonardo",
+    "name": "Leonardo",
+    "role": "Illustrator",
+    "text": "\"As a business owner, there are way too many things to take care of at the same time. \n\nBonsai takes care of most of the administration processes so that I can focus on client work and business development.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-17-peter",
+    "name": "Peter",
+    "role": "Business Owner",
+    "text": "\"Bonsai strikes a perfect balance between easy and powerful. Tax reporting module is great. Invoicing is easy to customize. \n\nI looked at tons of similar products and Bonsai was the best. Finally, the team really communicates and listens to customers.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-18-taylor",
+    "name": "Taylor",
+    "role": "Product Designer",
+    "text": "\"Bonsai has taken a huge burden off my shoulders when it comes to managing my freelance clients. Particularly things like contracts, billing, and tracking expenses. Those alone have transformed my ability to focus on design and less on 'paperwork\".\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "partial-or-full"
+  },
+  {
+    "id": "review-19-rachael",
+    "name": "Rachael",
+    "role": "Marketer",
+    "text": "\"I've been with Bonsai since 2016, and it's impressive how much they have added and improved over the years. \n\nI'm a self-employed web designer and digital marketer and Bonsai is perfect for everything I need. From customer service to the actual products, I have zero complaints.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-20-amanda",
+    "name": "Amanda",
+    "role": "Business Owner",
+    "text": "\"I particularly love that the platform offers digitally-signable contracts and relatively low transaction fees. \n\nThe interface is simple and straightforward. Bonsai was recommended to me by small business owners in my industry and I'm happy to recommend it to others, too!\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-21-ashley",
+    "name": "Ashley",
+    "role": "Business Owner",
+    "text": "\"The other options I tried were so complex. I felt I needed to take a course just to use them properly. Bonsai was such a wonderful change of pace. \n\nThe design feels clean and my plan has everything I need and nothing I don't, which makes using it stress-free.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-22-david",
+    "name": "David",
+    "role": "Copywriter",
+    "text": "\"I'm a standalone, independent freelancer who needs that magic bit of all-in-one meets totally-flexible. Bonsai covers the bases I need and lets me scale when I need to.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-23-kevin",
+    "name": "Kevin",
+    "role": "Illustrator",
+    "text": "\"The accounting section helps me manage my quarterly taxes and expenses and the integrated online payments have made things much easier on my clients. They also have a very responsive customer service team.\"",
+    "sourceHref": "https://www.kevintudball.com/",
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-24-caleb",
+    "name": "Caleb",
+    "role": "Agency CEO",
+    "text": "\"Our favorite feature that we haven't seen anywhere else is the ability to edit subscriptions without having to cancel them or have the client update something on their end.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-25-sarah",
+    "name": "Sarah",
+    "role": "Consultant",
+    "text": "\"I've been using Bonsai for the past two years as a self-employed marketing consultant, and it's spot on. I can create a branded invoice in seconds, send it, and Bonsai sorts all the automated reminders for me.\n\nI love it because it's easy to use and my clients love it because it's easy to use.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-26-chris",
+    "name": "Chris",
+    "role": "Business Owner",
+    "text": "\"I've used Bonsai for years and it's always done exactly what I'd expect. \n\nIt keeps track of all my expenses, acts as a timing tool, sends invoices and knows how much is to be invoiced, acts as a simple CRM and best of all is the online contract submissions. The app really tidied up my sales process too!\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-27-jessica",
+    "name": "Jessica",
+    "role": "Product Designer",
+    "text": "\"Bonsai is the one subscription I can log into once a month and just forget about while I know my invoices are taken care of and reminders are sent on my behalf which is super handy. \n\nLots of flexibility to configure each invoice the way I need it and the contract templates have saved me countless hours.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-28-dean",
+    "name": "Dean",
+    "role": "Consultant",
+    "text": "\"I love the rapid pace of development that Bonsai delivers. They are constantly releasing new features, and they respond to feedback with actual changes. \n\nAs a developer myself, I appreciate the focus it takes to push out updates so quickly.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-29-taylor",
+    "name": "Taylor",
+    "role": "Business Owner",
+    "text": "\"I've been using Bonsai for a few months now to track my expenses and send invoices. \n\nThe platform is very user-friendly and really has transformed how I look at my expenses.\"",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  },
+  {
+    "id": "review-30-sam",
+    "name": "Sam",
+    "role": "Web Designer",
+    "text": "\"I don’t know how I would run my web design business without Bonsai. \n\nThe proposal, contract and invoicing features have made it so much easier to streamline the process with my clients. I’ve referred so many friends, it’s truly the best\".",
+    "sourceHref": null,
+    "source": "archive-20240118082751",
+    "captureVisibility": "archive-supplement"
+  }
+]

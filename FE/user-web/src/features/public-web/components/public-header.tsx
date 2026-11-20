@@ -52,7 +52,7 @@ function MegaMenu({ name }: { name: string }) {
 }
 
 // 기능 : 공개 원본 헤더에서 메뉴 열기·닫기와 익명 CTA를 제공한다.
-export function PublicHeader({ scrolled }: { scrolled: boolean }) {
+export function PublicHeader({ scrolled, signedIn = false }: { scrolled: boolean; signedIn?: boolean }) {
   const menu = usePublicMenu();
   return <header ref={menu.root} className={`public-header ${scrolled ? "is-scrolled" : ""}`}
     onBlur={menu.handleBlur} onFocus={menu.handleFocus} onPointerLeave={menu.leave}>
@@ -66,7 +66,8 @@ export function PublicHeader({ scrolled }: { scrolled: boolean }) {
           : <button type="button" key={name} aria-expanded={menu.open === name} aria-controls="public-mega-menu"
             onPointerEnter={event => menu.hover(name, event)} onClick={event => menu.toggle(name, event.currentTarget)}>{name}</button>)}
       </nav>
-      <div className="public-auth-links"><Link to="/login">Log in</Link><SignupLink source="header">Start free</SignupLink></div>
+      <div className="public-auth-links">{signedIn ? <Link className="public-button" to="/app">Go to dashboard</Link>
+        : <><Link to="/login">Log in</Link><SignupLink source="header">Start free</SignupLink></>}</div>
     </div>
     {menu.open && <div id="public-mega-menu" className="public-mega-menu"><div className="public-wide"><MegaMenu key={menu.open} name={menu.open} /></div></div>}
   </header>;

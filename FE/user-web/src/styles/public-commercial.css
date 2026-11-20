@@ -1,0 +1,102 @@
+/* 근거 : Gummble 7상태의 정규화 치수와 2024-01-18 보관 CSS. 원본 viewport/DPR은 미확인이다. */
+.public-commercial { font-weight: 400; }
+.public-commercial h1 { overflow-wrap: anywhere; }
+.public-commercial .public-header.is-scrolled { top: 0; }
+.public-commercial.is-pricing { --public-surface: #fff; --public-ink: #003c2f; --public-green: #16b000; }
+.public-commercial.is-pricing .public-auth-links a[href="/app"] { background: none; color: var(--public-ink) !important; padding-right: 20px; }
+.pricing-heading { padding-top: 118px; text-align: center; }
+.pricing-heading h1 { line-height: 1; }
+.pricing-cycle { display: inline-flex; border: 0; border-radius: 50px; background: #f1f5f1; margin: 30px 0 0; padding: 6px; min-width: 0; }
+.pricing-cycle label { position: relative; padding: 14px 26px; border-radius: 50px; font-size: 14px; line-height: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.pricing-cycle label:last-child { padding-inline: 40px 18px; }
+.pricing-cycle label.is-selected { color: #fff; background: #003c2f; }
+.pricing-cycle input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: pointer; }
+.pricing-cycle label:has(input:focus-visible) { outline: 2px solid var(--public-green); outline-offset: 4px; }
+.pricing-cycle span { background: #fff; color: var(--public-green); font-weight: 700; font-size: 10px; line-height: 16px; padding: 4px 12px; border-radius: 30px; white-space: nowrap; }
+.pricing-plans { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; margin-top: 89px; align-items: stretch; }
+.pricing-plan { position: relative; padding: 63px 35px 40px; border-radius: 22px; background: #fff; box-shadow: 0 0 20px #00000012; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.pricing-plan.is-recommended { outline: 7px solid #f4823e; border-radius: 16px; box-shadow: none; }
+.pricing-recommendation { position: absolute; top: -33px; left: -7px; right: -7px; background: #f4823e; color: #fff; border-radius: 22px 22px 0 0; height: 33px; text-align: center; font-size: 14px; padding-top: 3px; font-weight: 500; }
+.pricing-plan-summary { text-align: center; position: relative; width: 100%; }
+.pricing-plan h2 { font-size: 32px; line-height: 38px; }
+.pricing-plan .pricing-amount { display: flex; justify-content: center; align-items: baseline; gap: 7px; font-weight: 700; margin-top: 16px; line-height: 43px; }
+.pricing-amount > span { font-size: 20px; }
+.pricing-amount strong { font-size: 36px; }
+.pricing-amount small { font-size: 14px; color: #afc1b4; }
+.pricing-plan-summary .public-button { margin-top: 7px; }
+.pricing-plan-summary .pricing-description { color: #52795f; font-size: 14px; line-height: 17px; max-width: 250px; margin: 20px auto 0; min-height: 51px; }
+.pricing-features { border-top: 1px solid #d3dcd4; margin: 30px 0 32px; padding: 30px 0 0; list-style: none; width: 250px; max-width: 100%; display: grid; gap: 20px; }
+.pricing-features li { display: flex; gap: 20px; padding-left: 8px; align-items: baseline; font-size: 16px; line-height: 20px; }
+.pricing-features li > img { width: 13px; height: 9px; flex-shrink: 0; }
+.pricing-included { background: #d5f8c5; padding: 4px 2px; margin: -4px -2px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+.pricing-bottom-cta { margin-top: auto; }
+.pricing-addons { padding-top: 150px; padding-bottom: 200px; text-align: center; }
+.pricing-addons h2 { line-height: 1.3; }
+.pricing-addon-grid { margin: 70px auto 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 30px; max-width: 656px; }
+.pricing-addon-grid article { border: 1px solid #d3dcd4; border-radius: 20px; padding: 70px 40px 32px; min-height: 356px; display: flex; flex-direction: column; align-items: center; }
+.pricing-addon-grid h3 { font-size: 22px; line-height: 27px; }
+.pricing-addon-grid article > p:not(.pricing-addon-price) { margin-top: 14px; font-size: 16px; line-height: 19px; }
+.pricing-addon-grid article:last-child > p:not(.pricing-addon-price) { max-width: 200px; }
+.pricing-addon-grid .public-text-link { margin-top: 25px; font-weight: 500; font-size: 16px; }
+.pricing-addon-grid .pricing-addon-price { margin-top: auto; padding-top: 50px; font-weight: 700; }
+.pricing-addon-price strong { font-size: 36px; }
+.pricing-addon-price span { font-size: 16px; color: #83968e; }
+.reviews-heading { text-align: center; padding-top: 118px; }
+.reviews-heading > p { margin-top: 28px; line-height: 20px; }
+.reviews-ratings { display: flex; align-items: center; justify-content: center; margin: 40px auto; }
+.reviews-ratings a { display: block; }
+.reviews-ratings a:first-child { padding-right: 70px; margin-left: 40px; border-right: 1px solid #d3dcd4; }
+.reviews-ratings a:last-child { margin-left: 70px; }
+.reviews-ratings img { height: 51px; width: auto; display: block; }
+.reviews-ratings a:last-child img { width: 244px; height: auto; }
+.review-video { margin-top: 120px; }
+.review-video-poster { width: 100%; height: 500px; padding: 0; border: 0; border-radius: 22px; overflow: hidden; position: relative; display: block; background: #000; cursor: pointer; }
+.review-poster-image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.review-play { position: absolute; width: 60px; height: 60px; left: calc(50% - 30px); top: calc(50% - 30px); }
+.review-video-poster:hover .review-poster-image { filter: brightness(.8); }
+.review-section { padding-top: 60px; padding-bottom: 80px; }
+.review-section h2 { text-align: center; line-height: 1.3; }
+.review-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 60px; }
+.review-card { border: 1px solid #d0d6d2; border-radius: 20px; padding: 40px; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; }
+.review-card h3 { font-size: 20px; line-height: 20px; margin-bottom: 20px; }
+.review-card h3 a, .review-card h3 span { color: var(--public-green); }
+.review-card h3 a:hover { text-decoration: underline; }
+.review-card p { font-size: 16px; line-height: 19px; white-space: pre-line; margin-bottom: 20px; }
+.plan-handoff-summary { margin-block: 24px; }
+.public-pending .plan-handoff-summary dl { width: 100%; }
+.commercial-source-url, .plan-handoff-summary dd { overflow-wrap: anywhere; }
+@media (max-width: 1100px) {
+  .pricing-plan { padding-inline: 22px; }
+  .pricing-included { white-space: normal; }
+  .pricing-features li { gap: 12px; }
+  .review-card { padding: 28px; }
+}
+@media (max-width: 800px) {
+  .pricing-plans { grid-template-columns: 1fr; max-width: 480px; gap: 60px; }
+  .pricing-plan { padding-inline: 35px; }
+  .pricing-features { max-width: 320px; }
+  .review-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .review-video-poster { height: auto; aspect-ratio: 1064 / 500; }
+}
+@media (max-width: 600px) {
+  .pricing-heading, .reviews-heading { padding-top: 70px; }
+  .public-commercial h1 { font-size: 38px; line-height: 1.1; overflow-wrap: anywhere; }
+  .public-commercial h1 br { display: none; }
+  .pricing-cycle label { padding: 15px; }
+  .pricing-cycle label:last-child { padding-inline: 15px; gap: 6px; }
+  .pricing-cycle span { padding-inline: 6px; font-size: 9px; }
+  .pricing-plans { margin-top: 65px; }
+  .pricing-addons { padding-top: 85px; }
+  .public-commercial h2 { font-size: 32px; overflow-wrap: anywhere; }
+  .pricing-addon-grid { grid-template-columns: 1fr; margin-top: 40px; }
+  .pricing-addon-grid article { padding: 42px 28px 30px; }
+  .reviews-ratings { flex-wrap: wrap; gap: 25px; }
+  .reviews-ratings a:first-child { padding: 0; margin: 0; border: 0; }
+  .reviews-ratings a:last-child { margin: 0; }
+  .review-video { margin-top: 75px; }
+  .review-grid { grid-template-columns: 1fr; margin-top: 35px; }
+  .review-section h2 br { display: none; }
+  .review-card h3, .review-card p { overflow-wrap: anywhere; }
+  .review-play { width: 48px; height: 48px; left: calc(50% - 24px); top: calc(50% - 24px); }
+}
+@media (prefers-reduced-motion: reduce) { .review-video-poster * { transition: none; } }

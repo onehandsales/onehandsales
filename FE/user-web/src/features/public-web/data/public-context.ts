@@ -1,12 +1,24 @@
 import { createContext, useContext } from "react";
 
-export type PublicIntent = { source: string; email: string; returnTo: "/" };
+// 의미 : 공개 가격 시안의 선택 snapshot이며 실제 구독·청구·권한 계약이 아니다.
+export type PublicPlanSelection = Readonly<{
+  planId: "starter" | "professional" | "business";
+  planName: string;
+  billing: "monthly" | "yearly";
+  priceVersion: string;
+  currency: "USD";
+  displayedMonthlyAmount: number;
+  amountMeaning: "monthly-price" | "annual-monthly-equivalent";
+  derivedAnnualSubtotal: number | null;
+}>;
+export type PublicIntentOptions = { returnTo?: string; selection?: PublicPlanSelection };
+export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; selection?: PublicPlanSelection };
 export type PublicExperience = {
-  email: string;
-  intent: PublicIntent | null;
-  setEmail: (email: string) => void;
-  start: (source: string, includeEmail?: boolean) => void;
-  clear: () => void;
+  emails: Readonly<Record<string, string>>;
+  intents: Readonly<Record<string, PublicIntent>>;
+  setEmail: (path: string, email: string) => void;
+  start: (source: string, path: string, includeEmail?: boolean, options?: PublicIntentOptions) => string;
+  clear: (intentId: string | undefined) => void;
 };
 export const PublicContext = createContext<PublicExperience | null>(null);
 

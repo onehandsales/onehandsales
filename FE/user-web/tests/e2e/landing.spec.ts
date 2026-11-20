@@ -43,11 +43,11 @@ test("menus support hover, keyboard, Escape, outside click, template selection a
   await page.goBack();
   await expect(templates).toHaveAttribute("aria-expanded", "false");
   await page.getByRole("link", { name: "Pricing", exact: true }).first().click();
-  await expect(page.locator("main")).toContainText("G04");
+  await expect(page.getByRole("heading", { name: "Pick the best plan for your business" })).toBeVisible();
   await page.goBack(); await page.goForward();
   await expect(page).toHaveURL("/pricing");
   await page.reload();
-  await expect(page.locator("main")).toContainText("G04");
+  await expect(page.getByRole("heading", { name: "Pick the best plan for your business" })).toBeVisible();
 });
 
 test("email validation, IME, retry, back retention, cancel and refresh stay in memory", async ({ page, context }) => {
@@ -120,8 +120,9 @@ test("narrow widths, mobile menu, long Korean input, zoom and reduced motion kee
   const toggle = page.getByRole("button", { name: "Toggle navigation" });
   await toggle.click(); await page.getByRole("button", { name: "Industries", exact: true }).click();
   await page.locator("#public-mega-menu").getByRole("link", { name: "Consulting", exact: true }).click();
-  await expect(page.locator("main")).toContainText("G03");
-  await page.getByRole("link", { name: "Back to landing", exact: true }).click();
+  await expect(page.locator("h1")).toHaveText("The business software for consultants");
+  await page.waitForLoadState("networkidle");
+  await page.locator("header").getByRole("link", { name: "Bonsai home", exact: true }).click();
   await toggle.click(); await page.keyboard.press("Escape"); await expect(toggle).toBeFocused();
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   const input = page.getByRole("textbox", { name: "Email address" });
@@ -188,7 +189,7 @@ test("mobile close and breakpoint changes clear submenus and keep keyboard targe
 });
 
 test("each public destination family has an explicit local Goal boundary", async ({ page }) => {
-  for (const [path, goal] of [["/crm", "G03"], ["/reviews", "G04"], ["/resources", "G05"],
+  for (const [path, goal] of [["/scheduling", "G03"], ["/resources", "G05"],
     ["/resources/online-signature-maker", "G05"], ["/alternatives/freshbooks", "G05"],
     ["/a/online-contract-maker", "G05"], ["/templates/contracts", "G06"], ["/invoice-generator", "G07"],
     ["/help", "G08"], ["/support", "G08"], ["/affiliates", "G09"], ["/outbound/linkedin", "G09"]]) {

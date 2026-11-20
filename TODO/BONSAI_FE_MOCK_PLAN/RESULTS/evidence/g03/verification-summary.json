@@ -1,0 +1,146 @@
+{
+  "checkedAt": "2026-11-20T15:28:51.661305+00:00",
+  "baselineCommit": "da60df02",
+  "node": "24.18.0",
+  "pnpm": "8.14.1",
+  "typecheck": "passed",
+  "lint": "passed",
+  "unit": {
+    "passed": 9,
+    "failed": 0,
+    "command": "corepack pnpm test",
+    "runStartKst": "2026-11-21 00:13:20 KST"
+  },
+  "build": {
+    "status": "passed",
+    "modules": 1690,
+    "jsKB": 420.16,
+    "gzipJsKB": 129.7,
+    "cssKB": 51.28,
+    "gzipCssKB": 11.05
+  },
+  "e2e": {
+    "development": {
+      "stats": {
+        "startTime": "2026-11-20T15:25:20.398Z",
+        "duration": 93383.203,
+        "expected": 22,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "workers": 2,
+      "networkCounts": {
+        "requests": 114964,
+        "sockets": 70,
+        "violations": 0,
+        "failures": 0,
+        "consoleErrors": 0
+      },
+      "reportSha256": "17a100743f6e00f5989b5b6d1e5d0943f0882f4f0313934b8983551008ab2894"
+    },
+    "production": {
+      "stats": {
+        "startTime": "2026-11-20T15:24:48.130Z",
+        "duration": 31443.782,
+        "expected": 22,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "workers": 2,
+      "networkCounts": {
+        "requests": 2247,
+        "sockets": 0,
+        "violations": 0,
+        "failures": 0,
+        "consoleErrors": 0
+      },
+      "reportSha256": "46472998d49d0bd937b1a2e7eb1b038af1f5d9f824000b94100d2c6ce071c84f"
+    }
+  },
+  "capture": {
+    "checkedAt": "2026-11-20T15:27:26.136Z",
+    "browser": "148.0.7778.96",
+    "baseURL": "http://127.0.0.1:5173",
+    "frames": 22,
+    "additionalNarrowScreens": 3,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "deviceScaleFactor": 1,
+    "requestsByType": {
+      "document": 7,
+      "script": 11291,
+      "font": 36,
+      "image": 286
+    },
+    "sockets": 7,
+    "violations": [],
+    "errors": [],
+    "narrowFrames": [
+      {
+        "name": "crm",
+        "route": "/crm",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scrollY": 0,
+        "state": "anonymous"
+      },
+      {
+        "name": "consulting",
+        "route": "/software/consulting",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scrollY": 0,
+        "state": "anonymous"
+      },
+      {
+        "name": "small-businesses",
+        "route": "/software/small-businesses",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scrollY": 0,
+        "state": "anonymous"
+      }
+    ]
+  },
+  "notVerified": [
+    "original page 2 and other 30 G03 destination bodies",
+    "original responsive/FAQ initial or multiple-open behavior",
+    "native OS Korean IME, screen reader and physical touch",
+    "Firefox/WebKit/Safari",
+    "visual equivalence, original CSS viewport/DPR and product build"
+  ],
+  "commands": [
+    "corepack pnpm typecheck",
+    "corepack pnpm lint",
+    "corepack pnpm test",
+    "corepack pnpm build",
+    "corepack pnpm test:e2e:preview --workers=2",
+    "corepack pnpm test:e2e --workers=2"
+  ],
+  "mobileFixDesktopRegression": {
+    "comparedScreens": 22,
+    "unchangedScreenBytes": 22,
+    "changed": []
+  },
+  "finalStateCheck": {
+    "reset": {
+      "scenario": "normal",
+      "session": "guest"
+    },
+    "route": "http://127.0.0.1:5173/",
+    "requests": 1657,
+    "violations": 0,
+    "failures": 0,
+    "consoleErrors": 0
+  }
+}

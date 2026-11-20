@@ -23,3 +23,17 @@
 [G02 결과](../RESULTS/G02_RESULT.md): 이메일·CTA source/returnTo는 PublicProvider 메모리다. 뒤로 복귀는 유지, 취소·가상 사용자/workspace/시나리오 revision·Reset·새로고침·새 탭에서는 폐기한다. 이메일을 URL/storage/log에 넣지 않는다. 메뉴/후기/홍보 선택은 화면 수명이며 재진입 초기값이다. 실제 가입/발송은 없다. 가입 목적지는 G10, 로그인 전체는 G11 대기 표시다. Reset은 `/components`로 돌아가며 `/`의 공개 랜딩에 개발 도구를 표시하지 않는다.
 
 G02 재점검: 모바일 탐색 닫기·desktop/mobile 분기 전환은 하위 메뉴도 초기화한다. 숨겨지는 트리거 초점은 현재 보이는 탐색 트리거로 복구한다. 이메일 연속 제출은 인계를 한 번만 기록하여 뒤로 한 번으로 복귀한다. [현재 검증](../RESULTS/G02_RECHECK_RESULT.md).
+
+## G03 공개 소개·이력 정책
+
+[G03 결과](../RESULTS/G03_RESULT.md): 공개 이메일은 pathname별 메모리 초안이다. 가입 source/email/returnTo는 이력별 snapshot으로 보관하고 browser history에는 opaque ID만 넣는다. 이메일은 URL/storage/log에 넣지 않는다. back/forward는 해당 인계를 표시하며 취소는 출발 페이지의 초안과 그 페이지의 인계들을 폐기한다. 다른 페이지 초안은 유지한다. scope revision/Reset/reload/new tab은 모든 공개 메모리를 폐기한다.
+
+FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목 가정이다. 관련 글은 `contentPage` query로 목록1/미확인2페이지를 구분하고 실제 이력·스크롤 복원을 사용한다. demo는 외부 요청 없는 Dialog 인계이며 예약 완료 상태가 아니다. 소개 안 업무 이미지는 정적이다. 정적인 본문에 비동기 실패/로딩을 추가하지 않는다. Go to dashboard는 G01에서 명시적으로 선택한 가상 세션만 반영하며 스크롤로 세션을 바꾸지 않는다.
+
+## G04 가격·후기와 선택 인계
+
+[G04 결과](../RESULTS/G04_RESULT.md): 가격 주기는 URL `billing=monthly/yearly`가 소유하고 기본/잘못된 값은 Yearly다. 실제 history·새로고침으로 유지하며 다음 선택/CTA가 직전 값을 읽지 않도록 Router에 동기 반영한다. 선택 순간의 planId·주기·가격 근거 버전·표시 금액 의미·계산 소계를 기존 이력별 메모리 snapshot으로 복사한다. 과거 이력의 선택은 다른 플랜 제출로 덮이지 않는다.
+
+인계의 `sourcePath`는 초안을 식별하는 pathname이고 `returnTo`는 query 포함 복귀 주소다. 명시적 취소는 해당 pathname의 초안/인계를 폐기하고 가격 주기 query는 유지한다. G03의 다른 페이지 이메일·snapshot 격리와 revision/reset/reload/new tab 초기화는 그대로다. history에는 opaque ID만 저장한다. 익명은 G10, 명시적으로 선택한 가상 세션은 G79 로컬 인계이며 구독·역할·권한을 바꾸지 않는다.
+
+후기 영상은 파일 미확보로 미제공 Dialog이며 재생 성공·진행률이 없다. 닫기/Escape/초점 복귀를 제공하고 이탈·재진입은 닫힘 상태다. 외부 리뷰/작성자 주소는 로컬 안내에 문자열로만 표시한다. 정적 소개·후기에 가짜 실패/재시도 상태나 외부 요청을 추가하지 않는다.

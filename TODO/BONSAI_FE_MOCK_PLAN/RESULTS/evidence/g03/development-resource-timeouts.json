@@ -1,0 +1,48 @@
+{
+  "stats": {
+    "startTime": "2026-11-20T15:17:26.518Z",
+    "duration": 110580.02799999999,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "failures": [
+    {
+      "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+      "status": "unexpected",
+      "errors": [
+        {
+          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+      "status": "unexpected",
+      "errors": [
+        {
+          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "status": "unexpected",
+      "errors": [
+        {
+          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+        },
+        {
+          "location": {
+            "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/landing.spec.ts",
+            "column": 16,
+            "line": 199
+          },
+          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n  197 |     await expect(page.locator(\"main\")).toContainText(\"Local UI preview · Not implemented\");\n  198 |     await expect(page.locator(\"main\")).toContainText(goal!);\n> 199 |     await page.waitForLoadState(\"networkidle\");\n      |                ^\n  200 |   }\n  201 | });\n  202 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/landing.spec.ts:199:16"
+        }
+      ]
+    }
+  ],
+  "followUp": "Repeat with 2 workers; no assertions disabled and no timeout changes to existing G01/G02 tests."
+}

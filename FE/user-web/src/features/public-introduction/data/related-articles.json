@@ -1,0 +1,110 @@
+[
+  {
+    "id": "agency-project-management",
+    "path": "/blog/agency-project-management",
+    "title": "The 2024 Complete Guide for Agency Project Management",
+    "category": "Business structure",
+    "author": "Brian Hughes",
+    "image": "/bonsai-introduction/65bbdebd27239c841c9a3ebf.jpg",
+    "portrait": "/bonsai-introduction/65c0c058307c2aaf82e1cf13.png"
+  },
+  {
+    "id": "how-to-write-strong-invoice-email",
+    "path": "/blog/how-to-write-strong-invoice-email",
+    "title": "How to Write a Strong Invoice Email with Templates & Examples",
+    "category": "Finances",
+    "author": "Jessica Foster",
+    "image": "/bonsai-introduction/6598216a496882be7522854b.webp",
+    "portrait": ""
+  },
+  {
+    "id": "4-ways-technology-has-changed-employee-training",
+    "path": "/blog/4-ways-technology-has-changed-employee-training",
+    "title": "4 ways technology has changed employee training",
+    "category": "Others",
+    "author": "Colleen Kilday",
+    "image": "/bonsai-introduction/6596f53d260b027826d00a43.webp",
+    "portrait": ""
+  },
+  {
+    "id": "write-off-unpaid-invoices",
+    "path": "/blog/write-off-unpaid-invoices",
+    "title": "How to Write Off Unpaid Invoices: Best Invoicing Tips",
+    "category": "Finances",
+    "author": "Ken Braithwaite",
+    "image": "/bonsai-introduction/6596f6be56f633c7e9eb0fdc.webp",
+    "portrait": "/bonsai-introduction/64f9d3899a6887976168cc09.jpeg"
+  },
+  {
+    "id": "proforma-invoice",
+    "path": "/blog/proforma-invoice",
+    "title": "What is Proforma Invoice? Why and How to Use It?",
+    "category": "Finances",
+    "author": "Alexis Williams",
+    "image": "/bonsai-introduction/6596f63bab95cd8539cfa01d.webp",
+    "portrait": ""
+  },
+  {
+    "id": "what-does-net-30-mean-how-does-it-work",
+    "path": "/blog/what-does-net-30-mean-how-does-it-work",
+    "title": "What Does Net 30 Mean? How Does It Work?",
+    "category": "Finances",
+    "author": "Alexis Mooney",
+    "image": "/bonsai-introduction/6596f6b9500541df4e7b86db.webp",
+    "portrait": "/bonsai-introduction/64f9d39bb73e84ee2ba8fd43.png"
+  },
+  {
+    "id": "best-online-invoice-generator",
+    "path": "/blog/best-online-invoice-generator",
+    "title": "Best Online Invoice Generator",
+    "category": "Tools",
+    "author": "Chad Eschman",
+    "image": "/bonsai-introduction/6596f54aeb640dfb45d09832.webp",
+    "portrait": "/bonsai-introduction/6395f9ec3a8b11b0484760a3.jpeg"
+  },
+  {
+    "id": "s-signature",
+    "path": "/blog/s-signature",
+    "title": "S-Signature",
+    "category": "Legal",
+    "author": "Ashley Lipman",
+    "image": "/bonsai-introduction/6596f63e3dc6bb017ec12c1c.webp",
+    "portrait": "/bonsai-introduction/6395f9ea31576d77fc3f7abf.jpeg"
+  },
+  {
+    "id": "invoicing-software-for-small-business",
+    "path": "/blog/invoicing-software-for-small-business",
+    "title": "Invoicing Software for Small Business",
+    "category": "Finances",
+    "author": "",
+    "image": "/bonsai-introduction/6596f634750f745f326c8a8b.webp",
+    "portrait": ""
+  },
+  {
+    "id": "how-to-get-approved-for-a-small-business-loan",
+    "path": "/blog/how-to-get-approved-for-a-small-business-loan",
+    "title": "How entrepreneurs can best prepare to get approved for a small business loan",
+    "category": "Finances",
+    "author": "Dom DiFurio",
+    "image": "/bonsai-introduction/6596f6236abaab3cc84a9a6f.png",
+    "portrait": "/bonsai-introduction/64f9d3880fcc8729d5a9f05a.png"
+  },
+  {
+    "id": "choosing-the-right-crm-for-small-businesses",
+    "path": "/blog/choosing-the-right-crm-for-small-businesses",
+    "title": "6 must-have features to choosing the right CRM for small businesses",
+    "category": "Tools",
+    "author": "Linsey Knerl",
+    "image": "/bonsai-introduction/6596f54f49729872a728bb0d.png",
+    "portrait": "/bonsai-introduction/64f9d388b73e84ee2ba8f242.jpeg"
+  },
+  {
+    "id": "top-forms-for-accountants",
+    "path": "/blog/top-forms-for-accountants",
+    "title": "What are the top small business forms for accountants?",
+    "category": "Finding work",
+    "author": "Tom Smery",
+    "image": "/bonsai-introduction/6596f6b409141a29ec00e932.png",
+    "portrait": "/bonsai-introduction/64f9d3886aee2a9e95fb4fd2.jpeg"
+  }
+]
