@@ -2,6 +2,8 @@
 
 이 문서는 `FE/admin-web` 개발 시 지켜야 할 코드 작성 규칙을 정의한다. 모든 문서는 한글로 작성한다.
 
+2026-11-20 보완: [컴포넌트 설계](COMPONENT_DESIGN.md), [웹 접근성·레이아웃](WEB_ACCESSIBILITY_AND_LAYOUT.md), [한글 주석·로깅](COMMENT_AND_LOGGING.md)은 Admin에도 적용한다. 신규·동작 변경 컴포넌트마다 `// 기능 :` 한글 책임 주석을 작성한다. User Web의 query/form 라이브러리를 Admin에도 설치된 것으로 가정하지 않는다.
+
 ## 1. 기본 원칙
 
 - Admin Web은 User Web과 별도 앱으로 유지한다.
@@ -25,7 +27,7 @@
 ## 4. 데이터 호출
 
 - Admin Web의 API 호출은 `src/lib/admin-api-client.ts`를 통해서만 수행한다.
-- 현재 허용된 Backend 호출은 `GET /admin/api/me`뿐이다.
+- 현재 업무 Backend 호출 범위는 `GET /admin/api/me`다. 새 관리자 기능을 승인된 범위에서 추가할 때에는 호출 계약과 이 목록을 함께 갱신한다.
 - 사용자 웹의 `api-client.ts` 또는 feature API를 import하지 않는다.
 
 ## 5. 시간과 Timezone 표시
@@ -48,7 +50,9 @@
 - 관리자 웹에서 사용자 앱 라우트나 사용자 feature 내부 구현을 직접 import하지 않는다.
 - `/api/*` 일반 사용자 API로 관리자 권한을 확인하지 않는다.
 - 로그나 화면에 secret 값을 출력하지 않는다.
-- 로컬 가짜 역할 값으로 Backend 권한 확인을 대체하지 않는다.
+- 로컬 가짜 역할 값으로 실제 Backend 권한 확인을 대체하지 않는다.
+- 독립된 테스트에서는 mock 응답으로 권한 UI 분기를 검증할 수 있지만 실제 권한 검증 완료로 보고하지 않는다.
+- Bonsai 고객 포털을 내부 운영자 Admin Web의 권한이나 route에 자동 편입하지 않는다.
 
 ## 8. 관련 문서
 

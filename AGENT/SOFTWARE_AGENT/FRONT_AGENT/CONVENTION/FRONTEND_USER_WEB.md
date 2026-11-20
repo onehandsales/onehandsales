@@ -1,29 +1,57 @@
-# Frontend User Web Convention
+# User Web 코드 작성 규칙
 
-참고 기준 갱신: 2026-11-17. 과거 구현·검증 날짜는 아래 기록을 따른다.
+기준일: 2026-11-20 KST. [구조](../ARCHITECTURE/FRONTEND_USER_WEB.md)와 함께 적용한다.
 
-## Feature Naming
+## 1. 이름과 파일 경계
 
-도메인 feature 폴더는 단수형을 사용한다. 현재 활성 feature에는 `auth`, `app-i18n`, `workspace`, `crm-object`, `crm-list`, `crm-view`, `sidebar-order`, `view-favorite`, 지원·공개 사이트 기능이 있다.
+- 폴더·파일은 `kebab-case`, React 컴포넌트·타입은 `PascalCase`, 함수·변수·hook은 `camelCase`를 사용한다.
+- 도메인 feature는 단수형을 기본으로 한다. 이름은 실제 업무 책임으로 정하고 기존 범용 CRM 이름을 신규 기능의 필수 구조로 삼지 않는다.
+- hook은 `use`, 이벤트 함수는 `handle`, props callback은 `on`으로 역할을 드러낸다.
+- 한 파일은 함께 변경되는 책임을 담는다. 파일 크기 숫자만으로 분리하거나 무관한 기능을 `utils.ts`에 계속 추가하지 않는다.
+- 컴포넌트·함수 주석은 [한글 주석 규칙](COMMENT_AND_LOGGING.md), 공개 범위는 [컴포넌트 설계](COMPONENT_DESIGN.md)를 따른다.
 
-Bonsai 전환 feature는 CRM_CORE_FRONTEND와 원본 화면을 기준으로 정한다. mock 프로토타입은 가능하며 실제 연동 전 API·권한·데이터 계약을 확정한다.
+## 2. TypeScript
 
-## API State
+- 기존 strict·미사용·인덱스 접근 검사를 유지한다. 오류를 없애기 위해 설정을 약화하지 않는다.
+- 외부 응답·storage 복원·URL 입력은 신뢰 경계에서 검사한다. 타입 단언만으로 런타임 검증을 대신하지 않는다.
+- `any`, 근거 없는 non-null assertion, `as unknown as`로 계약을 우회하지 않는다. 알 수 없는 값은 `unknown`에서 좁힌다.
+- null·미존재·빈 결과·오류는 서로 다른 의미로 다룬다. 모든 필드를 optional로 만들어 불완전한 상태를 허용하지 않는다.
+- 타입 전용 import에는 `import type`을 사용한다. 같은 feature 안의 타입을 불필요하게 전역으로 이동하지 않는다.
+- 상태·이벤트의 가능한 값을 타입으로 드러내되, 화면에 나온 몇 개 값만으로 실제 서버 enum 전체를 확정하지 않는다.
 
-- TanStack Query key는 feature 단위 factory로 관리한다.
-- mutation 성공 후 list/detail key를 명시적으로 invalidate한다.
-- access token은 API client에서 일관되게 주입한다.
+## 3. React와 데이터 호출
 
-## Time Display
+- 렌더는 순수하게 유지한다. 렌더 중 fetch·storage 쓰기·toast·navigation을 실행하지 않는다.
+- state 객체·배열을 직접 수정하지 않는다. stable key와 명시적인 상태 소유자를 유지한다.
+- 신규 Bonsai 업무 데이터는 [mock 계약](../ARCHITECTURE/MOCK_FIRST_DEVELOPMENT.md)을 거친다. 실제 API 연동은 계약 확정 후 HTTP adapter에서 수행한다.
+- 기존 실제 API의 token 주입·refresh는 공통 API client 경계를 유지한다. 컴포넌트마다 인증 헤더 처리 코드를 복제하지 않는다.
+- 데이터 조회·경쟁 조건·캐시 갱신은 [상태·데이터](../ARCHITECTURE/STATE_AND_DATA.md)를 따른다.
+- 복잡한 폼은 설치된 React Hook Form/Zod를 활용한다. 단순한 임시 토글까지 폼 라이브러리에 넣지 않는다.
+- 요청 실패를 성공 데이터로 치환하거나 빈 catch로 삼키지 않는다. 사용자가 복구할 수 있는 오류와 개발 진단을 구분한다.
 
-- Backend가 내려주는 `createdAt`, `updatedAt`, `deletedAt` 같은 instant는 UTC ISO string으로 본다. 실제 필드·타입은 schema를 확인한다.
-- 화면에는 UTC string을 그대로 출력하지 않고 사용자 표시 기준으로 변환한다.
+## 4. 보안과 외부 입력
 
-## Route
+- Vite의 클라이언트 환경 값은 번들에 노출될 수 있다. `VITE_*`에 비밀 키·DB 자격 증명을 넣지 않는다. [Vite 7 환경 문서](https://v7.vite.dev/guide/env-and-mode)
+- 권한에 따른 버튼 숨김은 UX이며 서버의 접근 제어를 대체하지 않는다.
+- 사용자 입력을 `dangerouslySetInnerHTML`로 출력하지 않는다. rich text가 필요하면 신뢰 경계·허용 형식·검증된 정화 방식을 명시한다.
+- 외부 URL·redirect·다운로드 대상은 허용할 프로토콜과 목적지를 확인한다. 새 창 사용 시 opener 접근을 제한한다.
+- 파일 이름·MIME·확장자만으로 안전한 파일이라 판단하지 않는다. FE 검증과 서버 검증을 구분한다.
+- 사용자 토큰·개인정보·입력 본문을 URL·로그·fixture에 넣지 않는다. 기존 인증 저장 방식을 근거 없이 다른 storage로 복제하지 않는다.
+- 실제 외부 전송·결제·삭제를 mock 검증의 일부로 실행하지 않는다.
 
-- 로그인 이후 업무 route는 `/app` 아래에 둔다.
-- 현재 route는 `/app`, `/app/more`, Workspace 홈과 Object/List/View ID 경로다. 실제 router와 IMPLEMENTATION_STATUS를 따른다.
-- `/app/contacts/*`, `/app/products/*`, `/app/deals/*`, `/app/export`는 현재 `/app`으로 redirect한다.
-- 고정형 고객사 관리 route는 현재 활성 route가 아니다.
-- 계정 설정은 보호 route 위 query modal로 제공한다.
-- 목표 route는 Bonsai의 고객·거래·문서·프로젝트·청구·고객 포털 흐름을 확인한 후 정한다.
+## 5. 성능과 유지보수
+
+- 큰 목록·편집기·차트의 비용은 재현 가능한 데이터와 브라우저 도구로 확인한다. 근거 없이 모든 컴포넌트를 memo로 감싸지 않는다.
+- 목록 크기가 커질 때 페이지 처리 또는 가상화를 검토한다. 가상화는 키보드·선택·접근성·스크롤 복원까지 확인한다.
+- 무거운 의존성은 사용하는 경로에서 로딩하도록 검토한다. 이미 설치된 유틸리티로 해결할 수 있는 요구에 라이브러리를 중복 도입하지 않는다.
+- 이미지 크기 예약, 불필요한 재요청, effect 반복, 이벤트 정리 누락을 확인한다.
+- lazy loading 실패·오래 열린 탭의 chunk 갱신 실패에는 복구 경로를 둔다. 무한 reload로 숨기지 않는다.
+- 측정값은 URL·데이터 양·기기 또는 viewport·브라우저·빌드 모드를 함께 남긴다. 개발 서버 수치를 운영 성능으로 보고하지 않는다.
+
+## 6. 표시와 문구
+
+시간·금액·정렬은 [상태·데이터 규칙](../ARCHITECTURE/STATE_AND_DATA.md)을 따른다. 사용자 표시 문구는 기존 다국어 경계에서 관리하며 내부 오류 메시지와 stack을 그대로 노출하지 않는다.
+
+화면의 상태·간격·텍스트·상호작용은 Bonsai 출처와 대조한다. 실제 확인하지 못한 규칙은 가정으로 표시하고, 한국어 개발 주석과 제품에 표시할 언어를 혼동하지 않는다.
+
+검증은 [테스트 기준](../ARCHITECTURE/TESTING.md), 브라우저 동작과 반응형은 [웹 규칙](WEB_ACCESSIBILITY_AND_LAYOUT.md)을 따른다.

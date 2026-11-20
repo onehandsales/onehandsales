@@ -2,7 +2,7 @@
 
 이 문서는 `FE/admin-web`의 정본 frontend 아키텍처를 정의한다. 현재 Admin Web은 관리자 권한 확인 전용 앱이다.
 
-스냅샷 기준일: 2026-09-10 관리자 권한 확인 범위 반영
+기존 구조 기록: 2026-09-10 관리자 권한 확인 범위 반영. 2026-11-20 package·검증 script와 공통 웹 규칙을 대조했다. 실제 계정·운영 권한 검증을 다시 수행한 것은 아니다.
 
 ## 1. 기술 기준
 
@@ -53,9 +53,15 @@ Admin Web은 `GET /admin/api/me`로 관리자 권한을 확인한다. 보호 rou
 
 `FE/admin-web/tests/e2e/admin-web-smoke.spec.ts`는 관리자 token 통과, non-admin 차단, `GET /admin/api/me` 호출만 확인한다.
 
-필수 검증 gate는 `pnpm run typecheck`, `pnpm run lint`, `pnpm run build`, `pnpm run test:e2e`다.
+Admin 실행 코드 변경은 typecheck·lint를 기본으로 하며 변경에 맞는 build·auth/role E2E를 수행한다. 운영 배포 전에는 build와 auth/role smoke를 포함한 release gate를 통과해야 한다. 명령과 문서 전용 변경의 예외는 [테스트 기준](TESTING.md)을 따른다.
 
-## 8. 관련 문서
+## 8. 공통 웹 규칙과 확장
+
+[컴포넌트 설계](../CONVENTION/COMPONENT_DESIGN.md), [웹 접근성](../CONVENTION/WEB_ACCESSIBILITY_AND_LAYOUT.md), [한글 주석](../CONVENTION/COMMENT_AND_LOGGING.md)을 동일하게 적용한다. 상태 소유권 원칙은 공유하되 User Web의 TanStack Query·RHF·Zod·Vitest가 Admin에 설치되어 있다고 가정하지 않는다.
+
+신규 관리자 화면이 필요하면 승인된 기능 범위에 맞춰 route·feature·API 계약·권한 테스트를 함께 확장한다. User Web mock session으로 실제 관리자 권한 확인을 우회하지 않는다.
+
+## 9. 관련 문서
 
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/CONVENTION/ADMIN_WEB.md`
 - `AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md`

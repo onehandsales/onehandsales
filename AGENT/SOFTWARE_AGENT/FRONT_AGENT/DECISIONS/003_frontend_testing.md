@@ -17,8 +17,10 @@ User Web과 Admin Web은 별도 앱이며 package/workspace를 공유하지 않�
 
 ## 3. CI 실행 타이밍
 
-- PR마다 User Web 핵심 smoke E2E를 실행한다. Admin Web은 auth/role smoke E2E를 별도 gate로 실행할 수 있다.
-- `main` merge 후 User Web 전체 E2E를 실행한다.
+다음은 실행 정책이다. 현재 CI 구성 완료를 의미하지 않는다. 2026-11-20 보완으로 문서 전용 변경은 링크·내용·script 정합성을 확인하며, 실행 코드 변경은 [테스트 기준](../ARCHITECTURE/TESTING.md)의 영향 범위를 따른다.
+
+- User Web 실행 코드에 영향을 주는 PR은 핵심 smoke E2E를 실행한다. Admin Web은 auth/role에 영향이 있으면 해당 smoke E2E를 별도 gate로 실행한다.
+- User Web 실행 코드 변경을 `main`에 merge한 뒤 전체 E2E를 실행한다.
 - 배포 직전 User Web 전체 E2E를 한 번 더 실행한다.
 
 ## 4. 관련 문서
