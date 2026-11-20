@@ -1,6 +1,8 @@
 # Bookkeeping 플로우 분석
 
-검토 상태: **R2 누락·내용 재검토 완료(정적 캡처 범위)**. 실제 이미지 재확인 **7/7단계**. 계정 재현은 수행하지 않았다.
+기존 검토 기록: **R2 누락·내용 재검토 완료(정적 캡처 범위)**. 실제 이미지 재확인 **7/7단계**. 계정 재현은 수행하지 않았다.
+
+추가 검토: **R3 문서·MCP 목록 대조 완료 / FE 보완 항목 있음**. 이번 이미지 확인은 고유 이미지 기준 선택 검토이며 이 흐름에 해당하는 화면은 **1/7단계**다. 기존 R2 전수 시각 검토 이력과 구분한다. [플로우별 FE 보완표](<../../FLOW_REVIEW_MATRIX.md#flow-05c04967-f1be-4b73-b6e5-af6199228187>).
 
 관찰은 Gummble 캡처에서 직접 본 내용, 문서 확인은 현재 공식 도움말·공개 API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재·성공 안내·실제 서버 결과를 구분한다.
 
@@ -19,8 +21,8 @@
 | 이미지 검토 방식 | R1: 기존 단계별 확인 기록. R2: 원본 PNG를 장당 1280×800으로 축소한 번호 포함 2×2 비교 시트에서 시각 재검토. 전체 642개 고유 이미지·754단계 |
 | 크기·환경 | MCP 1440×900 / 원본 PNG 2880×1800 px. 기기·OS·브라우저·DPR·배율·국가·계정 권한은 별도 증거 없으면 미확인 |
 | 계정 재현 | 미수행. 로그인·생성·발송·서명·구매·삭제·외부 연결을 직접 실행하지 않음 |
-| 공식 문서 | 2026-11-20 KST 조회. 6절에서 기능별 직접 대조 범위·미확인 범위 및 [공통 출처](<../../SOURCES.md>) 연결 |
-| 원본·문서 무결성 | MCP 단계 ID·순서·원본 URL 대조, 로컬 PNG 디코딩·크기·CDN 원본과 SHA-256 대조. [전체 검토 기록](<../../review/2026-11-20/REPORT.md>) |
+| 공식 문서 | R2의 2026-11-20 조회 기록을 보존한다. 공통 상세 원문은 현재 체크아웃에 없으며 직접 URL은 6절에 남아 있다. [이번 재조회 범위](<../../FE_REVIEW.md#official-sources>) |
+| 원본·문서 무결성 | R2의 CDN 바이트 대조는 기존 기록이다. R3에서는 MCP 순서·원본 URL, 로컬 PNG 크기·중복 SHA-256을 대조했다. CDN 바이트 재다운로드는 하지 않았다. [이번 검증](<../../FE_REVIEW.md#verification>) |
 
 ## 2. 플로우 목적과 연결
 
@@ -53,7 +55,7 @@ MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단�
 | 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [대시보드 — 프로젝트 타임라인과 손익 요약](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>) | Bookkeeping Overview — Other Income 160, Expenses 165, Profit -5가 함께 보이며 수입·지출 그래프가 존재한다. |
 | 02 | [`sc_e5796a038be54dbea1a32dd215a1cbb6`](https://gummble.com/screens/sc_e5796a038be54dbea1a32dd215a1cbb6?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bookkeeping Overview](<screens/02_sc_e5796a038be54dbea1a32dd215a1cbb6.png>) | Bookkeeping Income 목록 — 수입이 한 건 존재하며 반복 형태의 아이콘이 이름 앞에 보인다. 오류·빈 목록은 없다. |
 | 03 | [`sc_4eb809c84e384bc98dd5ee91561a1483`](https://gummble.com/screens/sc_4eb809c84e384bc98dd5ee91561a1483?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bookkeeping Income 목록](<screens/03_sc_4eb809c84e384bc98dd5ee91561a1483.png>) | Expenses 시작 안내 — 비용 추적 시작 안내 상태. 실제 등록 비용 목록과 안내용 샘플을 구분해야 한다. |
-| 04 | [`sc_caa5fecb95834209b2da82d078b11ebb`](https://gummble.com/screens/sc_caa5fecb95834209b2da82d078b11ebb?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 시작 안내](<screens/04_sc_caa5fecb95834209b2da82d078b11ebb.png>) | Expenses 등록 목록 — 실데이터가 있는 목록. 이전 시작 안내와 달리 세 비용을 표시한다. |
+| 04 | [`sc_caa5fecb95834209b2da82d078b11ebb`](https://gummble.com/screens/sc_caa5fecb95834209b2da82d078b11ebb?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 시작 안내](<screens/04_sc_caa5fecb95834209b2da82d078b11ebb.png>) | Expenses 등록 목록 — 비용 세 행이 표시된 목록. 소개용 그림과 구분되지만 실제 거래·서버 데이터의 진위는 검증하지 않았다. |
 | 05 | [`sc_762c1f934fdf40c0a61898b036cf4616`](https://gummble.com/screens/sc_762c1f934fdf40c0a61898b036cf4616?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 등록 목록](<screens/05_sc_762c1f934fdf40c0a61898b036cf4616.png>) | Expenses 전체 작업 메뉴 — 목록 수준 메뉴 열린 상태. 행 수준 더보기와 구분된다. |
 | 06 | [`sc_b0236381fd3c41b5b432fea9dcc43093`](https://gummble.com/screens/sc_b0236381fd3c41b5b432fea9dcc43093?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Expenses 전체 작업 메뉴](<screens/06_sc_b0236381fd3c41b5b432fea9dcc43093.png>) | 비용 카테고리 관리 — 기존 분류가 있는 목록. 잠금은 보이지만 수정 제한의 정확한 조건은 미확인. |
 | 07 | [`sc_f0127ee4970e49ffbd910ddfac504812`](https://gummble.com/screens/sc_f0127ee4970e49ffbd910ddfac504812?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [비용 카테고리 관리](<screens/07_sc_f0127ee4970e49ffbd910ddfac504812.png>) | 이 흐름의 기록 종료; 2절의 종료 범위 참조 |
@@ -195,7 +197,7 @@ MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단�
 - 레이아웃: Expenses 탭, 검색·Filters·더보기·New Expense, Name/Date/Category/Amount 테이블.
 - 입력 항목·필수 표시·기본값: 비용 세 행, Non-billable 보조 문구, Personal/Advertising 분류 칩과 금액, 영수증·반복처럼 보이는 상태 아이콘.
 - 버튼·메뉴·안내 문구: 검색, Filters, New Expense, 목록 및 행의 더보기.
-- 확인된 상태: 실데이터가 있는 목록. 이전 시작 안내와 달리 세 비용을 표시한다.
+- 확인된 상태: 비용 세 행이 표시된 목록. 소개용 그림과 구분되지만 실제 거래·서버 데이터의 진위는 검증하지 않았다.
 - 단계 간 변화: 시작 안내에서 비용 세 건 목록으로 바뀐다. 중간 등록 과정은 생략돼 있다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
@@ -278,7 +280,7 @@ MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단�
 | 02 | Other Income 160, Expenses 165, Profit -5가 함께 보이며 수입·지출 그래프가 존재한다. — 범위 Jan 1–Feb 6 2024, 통화 USD. 샘플 값은 설정 기본값으로 확정하지 않는다. | 미수금 포함 여부, 집계 기준일·통화 변환·비용의 세금 처리. |
 | 03 | 수입이 한 건 존재하며 반복 형태의 아이콘이 이름 앞에 보인다. 오류·빈 목록은 없다. — Name / Amount / Date / Tax 열. 샘플 행은 Payout from Upwork, 100 USD, Feb 1 2024, Pre-Tax. | 반복 아이콘의 정확한 규칙과 수입 원장·입금의 관계. |
 | 04 | 비용 추적 시작 안내 상태. 실제 등록 비용 목록과 안내용 샘플을 구분해야 한다. — 실제 비용 입력 폼은 없고 안내용 예시 카드만 있다. | 어떤 조건에서 안내가 목록으로 전환되는지, 은행 연결의 국가별 지원. |
-| 05 | 실데이터가 있는 목록. 이전 시작 안내와 달리 세 비용을 표시한다. — 비용 세 행, Non-billable 보조 문구, Personal/Advertising 분류 칩과 금액, 영수증·반복처럼 보이는 상태 아이콘. | 아이콘의 정확한 의미, 정렬·검색 범위, 청구 연결과 세금. |
+| 05 | 비용 세 행이 표시된 목록. 소개용 그림과 구분되지만 실제 거래·서버 데이터의 진위는 검증하지 않았다. — 비용 세 행, Non-billable 보조 문구, Personal/Advertising 분류 칩과 금액, 영수증·반복처럼 보이는 상태 아이콘. | 아이콘의 정확한 의미, 정렬·검색 범위, 청구 연결과 세금. |
 | 06 | 목록 수준 메뉴 열린 상태. 행 수준 더보기와 구분된다. — 새 입력 항목 없음. | Delete All의 대상 범위·확인 단계·복구 정책, CSV 필터 반영, 대량 편집 원자성. |
 | 07 | 기존 분류가 있는 목록. 잠금은 보이지만 수정 제한의 정확한 조건은 미확인. — Personal 비용을 장부와 보고서에 포함하는 체크가 선택됨. Advertising, Cost of Labor, Materials & Supplies 등의 분류에 색과 잠금 아이콘. | 잠긴 기본 분류의 수정·삭제 범위, 사용자 분류가 사용 중일 때 삭제 정책. |
 
@@ -298,15 +300,15 @@ MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단�
 
 ## 6. 공식 도움말과 API 대조
 
-공식 자료는 **2026-11-20 KST** 조회한 현재 문서이며 과거 캡처와 시점이 다를 수 있다. 아래 출처의 제한된 범위를 대조했고, 실제 계정이나 내부 API를 실행하지 않았다.
+아래 URL과 5절의 문서 규칙은 **R2의 2026-11-20 대조 기록**이다. 공통 상세 대조 문서는 현재 체크아웃에 없다. R3에서 모든 URL을 다시 읽은 것은 아니며, 새로 확인한 자료와 적용 범위는 [이번 공식 자료 검토](<../../FE_REVIEW.md#official-sources>)에 구분했다. 과거 캡처에 현재 규칙을 소급 적용하지 않는다. 실제 계정이나 내부 API는 실행하지 않았다.
 
-- [공개 API](https://docs.hellobonsai.com/api): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S003 공통 대조](<../../SOURCES.md#s003>)에 기록했다.
-- [비용 금액의 의미](https://help.hellobonsai.com/en/articles/13159534-understanding-expense-amounts-after-tax-pre-tax-and-sales-price): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S015 공통 대조](<../../SOURCES.md#s015>)에 기록했다.
-- [은행 연결로 비용 가져오기](https://help.hellobonsai.com/en/articles/1865131-how-to-connect-a-payment-method-to-import-expenses): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S016 공통 대조](<../../SOURCES.md#s016>)에 기록했다.
+- [공개 API](https://docs.hellobonsai.com/api): R2 본문 대조 기록(S003). 공통 상세 원문은 현재 없으며, 이 문서에 남은 규칙·한계는 5·8절에서 확인한다.
+- [비용 금액의 의미](https://help.hellobonsai.com/en/articles/13159534-understanding-expense-amounts-after-tax-pre-tax-and-sales-price): R2 본문 대조 기록(S015). 공통 상세 원문은 현재 없으며, 이 문서에 남은 규칙·한계는 5·8절에서 확인한다.
+- [은행 연결로 비용 가져오기](https://help.hellobonsai.com/en/articles/1865131-how-to-connect-a-payment-method-to-import-expenses): R2 본문 대조 기록(S016). 공통 상세 원문은 현재 없으며, 이 문서에 남은 규칙·한계는 5·8절에서 확인한다.
 
 화면과 대조할 때는 5절의 R2 해석 및 8절의 미확인 항목을 함께 적용한다. 현재 문서에만 있는 필수값·요금제·역할·새 UI를 과거 화면의 동작으로 확정하지 않는다.
 
-- [API 검토 범위](<../../SOURCES.md#api>): 이 흐름의 내부 endpoint·실제 요청/응답·DB 스키마는 확인하지 않았다. 공개 API 목록에 없는 기능의 미지원 여부도 확정하지 않는다.
+- [API 검토 범위](<../../FE_REVIEW.md#api-boundary>): 이 흐름의 내부 endpoint·실제 요청/응답·DB 스키마는 확인하지 않았다. 공개 API 목록에 없는 기능의 미지원 여부도 확정하지 않는다.
 
 ## 7. 데이터 모델링 시사점
 
@@ -350,6 +352,12 @@ MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단�
 
 - 같은 계정·제품 빌드에서 시작 상태를 맞춘 뒤 해당 업무의 정상·취소·실패·재진입 결과를 검증해야 한다. 화면 목록과 이미지 검토 완료는 제품 전체 기능의 의미적 완전성이나 구현 검증 완료를 뜻하지 않는다.
 
+### FE 구현 전 보완 (R3)
+
+- 캡처 범위 분류: **조회**. 업무 전체의 완료 판정이 아니다.
+- 목 구현·수용 기준 후보: Overview·Expenses·Income을 공통 데이터로 연결한다. 목록의 중간 건수 차이를 삭제 효과로 넣지 않고 집계 기간·통화 계약을 정한다.
+- [이 흐름의 보완표](<../../FLOW_REVIEW_MATRIX.md#flow-05c04967-f1be-4b73-b6e5-af6199228187>)와 [공통 웹 상태·연결 기준](<../../FE_REVIEW.md#fe-acceptance>)을 함께 적용한다. 캡처에 없는 동작은 Bonsai 관찰 사실로 쓰지 않고 목 가정 또는 추가 조사로 표시한다.
+
 ## 9. 검토 이력
 
 | 차수 | 날짜 | 확인·수정 내용 | 남은 범위 |
@@ -358,4 +366,5 @@ MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단�
 | R2 | 2026-11-18 KST | 공유 화면의 설명을 진입 맥락과 분리하고 원본 이미지를 다시 대조 | 실제 계정 검증·8절 질문은 유지 |
 | 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 7단계 재조회 및 원본 7개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |
 | R2 전수 재검토 | 2026-11-20 KST | Gummble MCP 7단계 ID·순서·원본 URL 재조회 및 이미지 7/7단계 재검토. 진입·종료·단계별 상태표·미확인 사항과 5절 해석 보완. 현재 공식 자료 재대조 | 실제 계정·원본에 없는 분기·8절 항목 |
-| 문서·원본 무결성 점검 | 2026-11-20 KST | 전체 134문서·754단계의 9개 절, 단계 순서·화면 ID·로컬 링크·PNG 크기·SHA-256 및 고유 642개 CDN 원본 대조. [검토 기록](<../../review/2026-11-20/REPORT.md>) | 기계 점검이며 추가 시각 검토나 계정 재현으로 계산하지 않음 |
+| 문서·원본 무결성 점검 | 2026-11-20 KST | 전체 134문서·754단계의 9개 절, 단계 순서·화면 ID·로컬 링크·PNG 크기·SHA-256 및 고유 642개 CDN 원본 대조. R2 공통 검토 기록(현재 파일 없음; 기존 수행 이력으로만 보존) | 기계 점검이며 추가 시각 검토나 계정 재현으로 계산하지 않음 |
+| R3 FE 준비도 재검토 | 2026-11-20 KST | MCP 7단계 ID·순서·원본 URL, 문서 내용·링크 및 로컬 파일 대조. 선택 이미지 1/7단계 해당; 공통 이미지는 같은 확인을 재사용. 8절에 FE 보완 기준 추가. [검증 범위](<../../FE_REVIEW.md#verification>) | 미수록 동작·목 정책 결정·실제 계정·FE 실행 검증 |
