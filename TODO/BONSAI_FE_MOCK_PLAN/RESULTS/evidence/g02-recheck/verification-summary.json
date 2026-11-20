@@ -1,0 +1,266 @@
+{
+  "development": {
+    "stats": {
+      "startTime": "2026-11-20T13:45:37.987Z",
+      "duration": 68192.50899999999,
+      "expected": 15,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "scenarios": [
+      {
+        "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+        "status": "passed",
+        "requests": 11270,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+        "status": "passed",
+        "requests": 3208,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "query failure retries, empty and restricted states remain distinct",
+        "status": "passed",
+        "requests": 1604,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+        "status": "passed",
+        "requests": 1604,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+        "status": "passed",
+        "requests": 1604,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+        "status": "passed",
+        "requests": 1604,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+        "status": "passed",
+        "requests": 11232,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+        "status": "passed",
+        "requests": 3292,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+        "status": "passed",
+        "requests": 3260,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+        "status": "passed",
+        "requests": 4896,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+        "status": "passed",
+        "requests": 1650,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+        "status": "passed",
+        "requests": 13196,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "G01 reset clears public draft while session and component previews remain separate",
+        "status": "passed",
+        "requests": 1646,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+        "status": "passed",
+        "requests": 1649,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "each public destination family has an explicit local Goal boundary",
+        "status": "passed",
+        "requests": 19356,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      }
+    ]
+  },
+  "production": {
+    "stats": {
+      "startTime": "2026-11-20T13:46:59.138Z",
+      "duration": 22450.443,
+      "expected": 15,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "scenarios": [
+      {
+        "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+        "status": "passed",
+        "requests": 94,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+        "status": "passed",
+        "requests": 8,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "query failure retries, empty and restricted states remain distinct",
+        "status": "passed",
+        "requests": 4,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+        "status": "passed",
+        "requests": 4,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+        "status": "passed",
+        "requests": 4,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+        "status": "passed",
+        "requests": 4,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+        "status": "passed",
+        "requests": 28,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+        "status": "passed",
+        "requests": 92,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+        "status": "passed",
+        "requests": 60,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+        "status": "passed",
+        "requests": 96,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+        "status": "passed",
+        "requests": 50,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+        "status": "passed",
+        "requests": 368,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "G01 reset clears public draft while session and component previews remain separate",
+        "status": "passed",
+        "requests": 46,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+        "status": "passed",
+        "requests": 48,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      },
+      {
+        "title": "each public destination family has an explicit local Goal boundary",
+        "status": "passed",
+        "requests": 156,
+        "violations": [],
+        "failures": [],
+        "consoleErrors": []
+      }
+    ]
+  }
+}

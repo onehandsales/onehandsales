@@ -1,10 +1,11 @@
 """Gummble 원본과 실제 브라우저 캡처를 같은 크기로 비교한다. Pillow 필요."""
 from pathlib import Path
 import json
+import os
 from PIL import Image, ImageChops, ImageDraw, ImageStat
 
 ROOT = Path(__file__).resolve().parents[3]
-OUTPUT = ROOT / "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/evidence/g02"
+OUTPUT = Path(os.environ.get("CAPTURE_OUTPUT", ROOT / "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/evidence/g02"))
 FLOWS = ROOT / "bonsai_analysis/flows"
 SIZE = (1440, 900)
 

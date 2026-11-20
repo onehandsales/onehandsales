@@ -1,0 +1,243 @@
+{
+  "method": "RGB absolute difference; original resized Lanczos; no masks or color correction; metrics do not establish visual parity",
+  "frames": [
+    {
+      "name": "step-01",
+      "source": "bonsai_analysis/flows/Landing page/screens/01_sc_f832f286d2d74611a3f6486b79cb36ec.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 5.476,
+      "lumaDifferenceAbove16Percent": 4.053
+    },
+    {
+      "name": "step-02",
+      "source": "bonsai_analysis/flows/Landing page/screens/02_sc_337ce046f7184e07b2f841009066cf95.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 3.1043,
+      "lumaDifferenceAbove16Percent": 2.9
+    },
+    {
+      "name": "step-03",
+      "source": "bonsai_analysis/flows/Landing page/screens/03_sc_2acfdf88f60f4638b4f3f97b6023c9cc.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 4.5657,
+      "lumaDifferenceAbove16Percent": 3.211
+    },
+    {
+      "name": "step-04",
+      "source": "bonsai_analysis/flows/Landing page/screens/04_sc_fe9ef5d8bdf049cbabad33e42a6529c1.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 3.8264,
+      "lumaDifferenceAbove16Percent": 2.842
+    },
+    {
+      "name": "step-05",
+      "source": "bonsai_analysis/flows/Landing page/screens/05_sc_b36874f940ae40f085f0df38ee4a95cd.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 6.037,
+      "lumaDifferenceAbove16Percent": 4.444
+    },
+    {
+      "name": "step-06",
+      "source": "bonsai_analysis/flows/Landing page/screens/06_sc_b410b2592edd40b99c423c2af0f73f6f.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 6.4712,
+      "lumaDifferenceAbove16Percent": 3.953
+    },
+    {
+      "name": "step-07",
+      "source": "bonsai_analysis/flows/Landing page/screens/07_sc_c817e4443d78499394491227920ac96b.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 6.634,
+      "lumaDifferenceAbove16Percent": 6.115
+    },
+    {
+      "name": "step-08",
+      "source": "bonsai_analysis/flows/Landing page/screens/08_sc_81b8d00c272c4f709e9a04919113069b.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 4.2878,
+      "lumaDifferenceAbove16Percent": 3.567
+    },
+    {
+      "name": "step-09",
+      "source": "bonsai_analysis/flows/Landing page/screens/09_sc_33704472c1d54fda8c9605958d1af9d9.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 4.8455,
+      "lumaDifferenceAbove16Percent": 4.16
+    },
+    {
+      "name": "step-10",
+      "source": "bonsai_analysis/flows/Landing page/screens/10_sc_a1fa28afd409416f88fe3625082ddfac.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 3.6921,
+      "lumaDifferenceAbove16Percent": 3.389
+    },
+    {
+      "name": "step-11",
+      "source": "bonsai_analysis/flows/Landing page/screens/11_sc_f5d10f7c06c44873bf3b7048ad5e4566.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 4.7887,
+      "lumaDifferenceAbove16Percent": 4.473
+    },
+    {
+      "name": "hero",
+      "source": "bonsai_analysis/flows/Logging in/screens/01_sc_07904520440b4dc7ad7d6d31bf3a03e9.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 4.7081,
+      "lumaDifferenceAbove16Percent": 4.691
+    },
+    {
+      "name": "menu-product",
+      "source": "bonsai_analysis/flows/Products (CRM)/screens/01_sc_2ce9fd14ccb74e05977de48b5517e78c.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 5.0945,
+      "lumaDifferenceAbove16Percent": 5.264
+    },
+    {
+      "name": "menu-industries",
+      "source": "bonsai_analysis/flows/Industries (Consulting)/screens/01_sc_b71347cc8821454593507a2b9cb4a512.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 5.1484,
+      "lumaDifferenceAbove16Percent": 5.193
+    },
+    {
+      "name": "menu-resources",
+      "source": "bonsai_analysis/flows/Blog/screens/01_sc_549a6fa823b74e3e8d826750df6f1f99.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 4.3824,
+      "lumaDifferenceAbove16Percent": 4.541
+    },
+    {
+      "name": "menu-templates",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/01_sc_d68dbb7304bb45ac9755138b12ce3141.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 5.7734,
+      "lumaDifferenceAbove16Percent": 5.823
+    },
+    {
+      "name": "menu-invoice",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/02_sc_eac8d5a2e97d47c496455da557912622.png",
+      "originalPixels": [
+        2880,
+        1800
+      ],
+      "comparisonPixels": [
+        1440,
+        900
+      ],
+      "rgbMeanAbsoluteError": 5.6677,
+      "lumaDifferenceAbove16Percent": 5.453
+    }
+  ]
+}

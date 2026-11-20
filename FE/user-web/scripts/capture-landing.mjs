@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const output = path.join(repository, "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/evidence/g02");
+const output = process.env.CAPTURE_OUTPUT ? path.resolve(process.env.CAPTURE_OUTPUT) : path.join(repository, "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/evidence/g02");
 const baseURL = process.env.PREVIEW_URL ?? "http://127.0.0.1:5173";
 if (!["127.0.0.1", "localhost"].includes(new URL(baseURL).hostname)) throw new Error("Local preview URL required");
 await mkdir(output, { recursive: true });

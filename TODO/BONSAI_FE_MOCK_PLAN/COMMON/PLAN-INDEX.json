@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "G00 조사 완료; G01 기반 구현·검토 완료, 원본 자산 동일성 확인 대기; 나머지 미착수",
+  "status": "G00 조사 완료; G01 기반 검토·내부 자산 동일성 대기; R01 정적 분석·배정/미수록 대기; G02 재보완·2차 검토·Chromium 검증 완료; 17상태 비교 수행, 잔여 시각·원본 동작·추가 환경 검증 대기; G03 이후 미착수",
   "goals": [
     {
       "id": "G00",
@@ -69,7 +69,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "미착수",
+      "status": "G02 재보완·2차 검토·Chromium 검증 완료; 17상태 비교 수행, 잔여 시각·원본 동작·추가 환경 검증 대기",
       "flow_scope": [
         {
           "flow_number": 82,
@@ -77,7 +77,27 @@
           "first": 1,
           "last": 11
         }
-      ]
+      ],
+      "result": "../RESULTS/G02_RESULT.md",
+      "latest_result": "../RESULTS/G02_RECHECK_RESULT.md",
+      "verification": {
+        "implementation": "reproduced_defects_fixed",
+        "engineering_review": "two_passes_completed",
+        "source_comparison": "17 states compared; residual differences remain",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "9/9",
+        "build": "passed",
+        "development_e2e": "15/15",
+        "production_e2e": "15/15",
+        "real_api_requests": 0,
+        "pending": [
+          "remaining visual differences",
+          "source capture environment and asset variants",
+          "source mobile and automatic transitions",
+          "native IME, assistive technology, additional browsers and real devices"
+        ]
+      }
     },
     {
       "id": "G03",
@@ -2875,8 +2895,9 @@
         "G82",
         "G74"
       ],
-      "status": "미착수",
-      "first_gate": "G02"
+      "status": "정적 분석·후속 배정 수행; G02 근거 재확인; 미수록 동작·자산 조건·후속 소비 범위 대기",
+      "first_gate": "G02",
+      "result": "../RESULTS/R01_RESULT.md"
     },
     {
       "id": "R02",

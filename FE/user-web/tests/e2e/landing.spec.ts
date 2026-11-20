@@ -60,12 +60,14 @@ test("email validation, IME, retry, back retention, cancel and refresh stay in m
   await email.fill("preview@example.test");
   await email.dispatchEvent("compositionstart"); await email.press("Enter");
   await expect(page).toHaveURL("/");
-  await email.dispatchEvent("compositionend"); await submit.click();
+  await email.dispatchEvent("compositionend");
+  // 기능 : 같은 이벤트 주기의 연속 제출 뒤에도 뒤로 한 번이면 랜딩으로 복귀하는지 확인한다.
+  await page.locator("form").evaluate((form: HTMLFormElement) => { form.requestSubmit(); form.requestSubmit(); });
   await expect(page).toHaveURL("/signup");
   await expect(page.locator("main")).toContainText("preview@example.test");
   await expect(page.locator("main")).toContainText("hero-email");
   expect(await page.evaluate(() => JSON.stringify({ local: { ...localStorage }, session: { ...sessionStorage } }))).not.toContain("preview@example.test");
-  await page.goBack(); await expect(email).toHaveValue("preview@example.test");
+  await page.goBack(); await expect(page).toHaveURL("/"); await expect(email).toHaveValue("preview@example.test");
   await page.goForward();
   await page.getByRole("button", { name: "Cancel and clear draft" }).click();
   await expect(page).toHaveURL("/"); await expect(email).toHaveValue("");
@@ -145,6 +147,44 @@ test("G01 reset clears public draft while session and component previews remain 
   await expect(page).toHaveURL("/components");
   await page.getByRole("link", { name: "Public", exact: true }).click();
   await expect(page.getByRole("textbox", { name: "Email address" })).toHaveValue("");
+});
+
+test("mobile close and breakpoint changes clear submenus and keep keyboard targets reachable", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 390, height: 500 });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  const toggle = page.getByRole("button", { name: "Toggle navigation" });
+  const product = page.getByRole("button", { name: "Product", exact: true });
+  await toggle.click(); await product.click(); await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator("#public-mega-menu")).toHaveCount(0);
+  await toggle.click();
+  await expect(product).toHaveAttribute("aria-expanded", "false");
+  await product.click();
+  const navigation = await page.getByRole("navigation", { name: "Main navigation" }).boundingBox();
+  const submenu = await page.locator("#public-mega-menu").boundingBox();
+  if (!submenu || !navigation) throw new Error("Opened navigation and submenu must have visible bounds");
+  expect(submenu.y).toBeGreaterThanOrEqual(navigation.y + navigation.height);
+  await page.getByRole("button", { name: "Templates", exact: true }).click();
+  await page.getByRole("tab", { name: "Contract Templates" }).focus();
+  await page.keyboard.press("End");
+  await expect(page.getByRole("tab", { name: "Form Templates" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#public-mega-menu").getByRole("link", { name: "All Templates", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("tabpanel").getByRole("link").first()).toBeFocused();
+  await page.screenshot({ path: testInfo.outputPath("mobile-template-keyboard.png") });
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Templates", exact: true })).toBeFocused();
+  await page.keyboard.press("Escape"); await expect(toggle).toBeFocused();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(product).toBeFocused();
+  await product.press("Enter");
+  await expect(page.locator("#public-mega-menu")).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 500 });
+  await expect(page.locator("#public-mega-menu")).toHaveCount(0);
+  await expect(toggle).toBeFocused();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
 });
 
 test("each public destination family has an explicit local Goal boundary", async ({ page }) => {

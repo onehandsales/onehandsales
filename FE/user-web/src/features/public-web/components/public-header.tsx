@@ -55,11 +55,11 @@ function MegaMenu({ name }: { name: string }) {
 export function PublicHeader({ scrolled }: { scrolled: boolean }) {
   const menu = usePublicMenu();
   return <header ref={menu.root} className={`public-header ${scrolled ? "is-scrolled" : ""}`}
-    onBlur={menu.handleBlur} onPointerLeave={menu.leave}>
+    onBlur={menu.handleBlur} onFocus={menu.handleFocus} onPointerLeave={menu.leave}>
     <div className="public-header-row public-wide">
       <Link to="/" className="public-logo" aria-label="Bonsai home"><img src={publicAssets.logo} alt="bonsai" width="100" height="22" /></Link>
       <button className="public-mobile-toggle" type="button" aria-label="Toggle navigation" aria-expanded={menu.mobileOpen}
-        aria-controls="public-navigation" onClick={() => menu.setMobileOpen(!menu.mobileOpen)}><img src={publicAssets.menu} alt="" /></button>
+        aria-controls="public-navigation" onClick={menu.toggleMobile}><img src={publicAssets.menu} alt="" /></button>
       <nav id="public-navigation" aria-label="Main navigation" className={menu.mobileOpen ? "is-mobile-open" : ""}>
         {["Product", "Industries", "Templates", "Pricing", "Resources", "Reviews"].map(name => name === "Pricing" || name === "Reviews"
           ? <PublicLink key={name} href={`/${name.toLowerCase()}`}>{name}</PublicLink>

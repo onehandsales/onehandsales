@@ -21,3 +21,5 @@
 ## G02 공개 입력·메뉴 정책
 
 [G02 결과](../RESULTS/G02_RESULT.md): 이메일·CTA source/returnTo는 PublicProvider 메모리다. 뒤로 복귀는 유지, 취소·가상 사용자/workspace/시나리오 revision·Reset·새로고침·새 탭에서는 폐기한다. 이메일을 URL/storage/log에 넣지 않는다. 메뉴/후기/홍보 선택은 화면 수명이며 재진입 초기값이다. 실제 가입/발송은 없다. 가입 목적지는 G10, 로그인 전체는 G11 대기 표시다. Reset은 `/components`로 돌아가며 `/`의 공개 랜딩에 개발 도구를 표시하지 않는다.
+
+G02 재점검: 모바일 탐색 닫기·desktop/mobile 분기 전환은 하위 메뉴도 초기화한다. 숨겨지는 트리거 초점은 현재 보이는 탐색 트리거로 복구한다. 이메일 연속 제출은 인계를 한 번만 기록하여 뒤로 한 번으로 복귀한다. [현재 검증](../RESULTS/G02_RECHECK_RESULT.md).

@@ -18,17 +18,20 @@ function SignupForm() {
   const { email, setEmail, start } = usePublicExperience();
   const [error, setError] = useState("");
   const composing = useRef(false);
+  const submitted = useRef(false);
   const input = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   // 기능 : 조합 중 제출을 막고 잘못된 이메일은 보존하여 재입력하게 한다.
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // 1. 실제 폼 전송과 조합 중 Enter를 막아 로컬 입력을 보존한다.
     event.preventDefault();
-    if (composing.current) return;
+    if (composing.current || submitted.current) return;
     // 2. 검증 실패는 입력 초점을 돌리고 성공할 때만 메모리 인계를 고정한다.
     if (!email.trim() || !input.current?.validity.valid) {
       setError("Enter a valid email address."); input.current?.focus(); return;
     }
+    // 이유 : 같은 이벤트 주기의 연속 제출도 history에 가입 화면을 두 번 쌓지 않는다.
+    submitted.current = true;
     setError(""); start("hero-email", true); void navigate("/signup");
   }
   // 기능 : 수정한 초안을 보존하고 이전 검증 오류를 해제한다.

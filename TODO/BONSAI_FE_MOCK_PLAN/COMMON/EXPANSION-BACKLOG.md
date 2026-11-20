@@ -8,7 +8,7 @@
 
 | 분석 | 미수록·보완 구현 | 현재 소비/후속 배정 책임 | 상태 |
 | --- | --- | --- | --- |
-| [R01](<RESEARCH-GOALS/R01.md>) | 공개 유입과 인증 연결·미수록 공개 페이지 | [G02 랜딩·공통 메뉴](<GOAL-SPECS/G02.md>), [G03 고객군·업종·CRM 소개](<GOAL-SPECS/G03.md>), [G04 가격·후기](<GOAL-SPECS/G04.md>), [G05 블로그·검색·상세](<GOAL-SPECS/G05.md>), [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>), [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>), [G08 도움말·기사·문의](<GOAL-SPECS/G08.md>), [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>), [G82 제휴 혜택](<GOAL-SPECS/G82.md>) | 분석·후속 구현 배정 대기 |
+| [R01](<RESEARCH-GOALS/R01.md>) | 공개 유입과 인증 연결·미수록 공개 페이지 | [G02 랜딩·공통 메뉴](<GOAL-SPECS/G02.md>), [G03 고객군·업종·CRM 소개](<GOAL-SPECS/G03.md>), [G04 가격·후기](<GOAL-SPECS/G04.md>), [G05 블로그·검색·상세](<GOAL-SPECS/G05.md>), [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>), [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>), [G08 도움말·기사·문의](<GOAL-SPECS/G08.md>), [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>), [G82 제휴 혜택](<GOAL-SPECS/G82.md>) | [정적 분석·후속 배정 수행](../RESULTS/R01_RESULT.md); G02 재점검 반영, 원본 미수록/자산·후속 소비 범위 대기 |
 | [R02](<RESEARCH-GOALS/R02.md>) | 조직 전환·추가 인증·초대 예외 구현 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>), [G12 비밀번호 재설정](<GOAL-SPECS/G12.md>), [G10 회원가입](<GOAL-SPECS/G10.md>), [G13 사업 설정 온보딩](<GOAL-SPECS/G13.md>), [G17 멤버 초대·대기 초대 제거](<GOAL-SPECS/G17.md>), [G18 초대 수락·협업자 접근](<GOAL-SPECS/G18.md>) | 분석·후속 구현 배정 대기 |
 | [R03](<RESEARCH-GOALS/R03.md>) | 연락처·메모·고객 lifecycle 구현 | [G19 목록·신규 고객·상세](<GOAL-SPECS/G19.md>), [G20 고객 필드·이미지](<GOAL-SPECS/G20.md>), [G21 두 진입점의 프로젝트 생성](<GOAL-SPECS/G21.md>) | 분석·후속 구현 배정 대기 |
 | [R04](<RESEARCH-GOALS/R04.md>) | 거래 관리 / 견적 작성·수락 / 매출 예측의 개별 구현 Goal | 새 구현 Goal 필수; G83 이전 | 분석·후속 구현 배정 대기 |

@@ -1,0 +1,454 @@
+{
+  "checkedAt": "2026-11-20T13:45:35.369Z",
+  "appId": "c1026782-09a7-45fb-b2d0-7cc1909bf1f4",
+  "slug": "bonsai-web",
+  "catalogueVersion": "2146",
+  "appVersionSummary": [
+    {
+      "id": "2146",
+      "name": "Latest",
+      "totalScreens": 642,
+      "isSelected": true
+    }
+  ],
+  "scope": "G02 only. Landing 11; Logging in hero 01; Products/Industries/Blog menu 01; Invoice templates menu 01-02. Other returned steps are metadata only.",
+  "captureDate": null,
+  "productBuild": null,
+  "sourceDPR": null,
+  "flows": [
+    {
+      "flowId": "f1a89cc0-4dc8-4576-b912-78231a2a7b1a",
+      "flowName": "Landing page",
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=f1a89cc0-4dc8-4576-b912-78231a2a7b1a",
+      "screens": [
+        {
+          "step": 1,
+          "id": "sc_f832f286d2d74611a3f6486b79cb36ec",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/1e32d253-a982-4aa4-903e-bea367d455bd.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 2,
+          "id": "sc_337ce046f7184e07b2f841009066cf95",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/11685bf1-a4ee-4b25-b4f7-c163cebd5196.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 3,
+          "id": "sc_2acfdf88f60f4638b4f3f97b6023c9cc",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/5cdbf766-c3a3-4b99-8130-2c3631fc6dd5.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 4,
+          "id": "sc_fe9ef5d8bdf049cbabad33e42a6529c1",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/aa032748-07bc-4b02-9f11-4f6a8821de92.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 5,
+          "id": "sc_b36874f940ae40f085f0df38ee4a95cd",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/acedb8ff-c221-4f78-a96f-c2822a42cca3.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 6,
+          "id": "sc_b410b2592edd40b99c423c2af0f73f6f",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/a8601c14-af29-40ee-9424-6776828fa396.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 7,
+          "id": "sc_c817e4443d78499394491227920ac96b",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/ee5ad125-8449-4ba2-be92-6dd54330e203.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 8,
+          "id": "sc_81b8d00c272c4f709e9a04919113069b",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/f7d40e52-a0d4-4790-b65c-3b5d1d60613c.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 9,
+          "id": "sc_33704472c1d54fda8c9605958d1af9d9",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/cc73830d-c327-4882-a9ef-12efdee23187.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 10,
+          "id": "sc_a1fa28afd409416f88fe3625082ddfac",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/7596857b-7211-4fd2-9c3c-508c450becab.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 11,
+          "id": "sc_f5d10f7c06c44873bf3b7048ad5e4566",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/65ab2649-4eb9-4962-9956-2b1a32c74c84.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        }
+      ]
+    },
+    {
+      "flowId": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "flowName": "Logging in",
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "screens": [
+        {
+          "step": 1,
+          "id": "sc_07904520440b4dc7ad7d6d31bf3a03e9",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/d329f184-0b0c-43f3-b3d4-2cf6c78242f1.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 2,
+          "id": "sc_9d353458318e43e7b25ebbf88fefeaa9",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/b509948c-e5f3-488b-aa87-4b9c6560fb90.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 3,
+          "id": "sc_5c0fde91fbb34480b756c6eb10e63816",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/15507955-a5a9-4a1c-b60a-b2aecb05d187.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 4,
+          "id": "sc_4b4cf6491d4c4dd8993f4fe0b7caa7f9",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/9ccccae0-661c-483f-82af-e6a8e483918d.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 5,
+          "id": "sc_3982bd8e06b44860bdb8c4bac2592599",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/9e336661-7782-44d4-babc-0ae6b20489f8.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        }
+      ]
+    },
+    {
+      "flowId": "12ca870d-d929-4cc8-ab4c-60436c2eac13",
+      "flowName": "Products (CRM)",
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=12ca870d-d929-4cc8-ab4c-60436c2eac13",
+      "screens": [
+        {
+          "step": 1,
+          "id": "sc_2ce9fd14ccb74e05977de48b5517e78c",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/f39968a2-0980-43c9-8327-80c4e6f17d39.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 2,
+          "id": "sc_e887bc9463cc451fa88f9aef731b6eb3",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/1705edbe-20e7-4e26-89ad-502f64128755.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 3,
+          "id": "sc_4d7838a172d243b78e7c5e6f4fc9ffc9",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/2bb8387f-ea88-44a5-9fb8-de1218796745.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 4,
+          "id": "sc_bad21b14523b490288c7037d79ba03cd",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/ddf16ca3-9cc8-4175-b4f8-cc6d2c1915a2.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 5,
+          "id": "sc_d8a62347ff844766bc5b8997d289ba3c",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/f7475fbf-e1bb-4890-9cac-283bdc3bdc89.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 6,
+          "id": "sc_f2fd8490cf4d40d1b0c1ff5a104ce501",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/4c53e093-a97c-4651-bc22-afaf688a631a.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 7,
+          "id": "sc_e2fae02b9bf14ab6be504f53c3e490fb",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/9321e57c-2e8d-4abf-9c91-305cf63acefc.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 8,
+          "id": "sc_ac8d0e2583ea436ca9ce2ec0c94b4857",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/4dcfe6ab-82cf-4223-8b53-a7b16ebe616d.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 9,
+          "id": "sc_69e9686880f0449d86954e385ec98c11",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/a2ea356d-5879-4bee-8dc1-426195f30e11.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 10,
+          "id": "sc_a3545f7a7e324b7299d14f07150f6978",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/8bad8e40-43ba-4cdc-aae4-69c0a77edeea.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        }
+      ]
+    },
+    {
+      "flowId": "7fcadde8-35c9-4b36-9c76-ec2d4432f20e",
+      "flowName": "Industries (Consulting)",
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=7fcadde8-35c9-4b36-9c76-ec2d4432f20e",
+      "screens": [
+        {
+          "step": 1,
+          "id": "sc_b71347cc8821454593507a2b9cb4a512",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/85c22cc0-9f97-424b-be43-19cfaf6cc384.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 2,
+          "id": "sc_18d96f6f4370489881038eb5fd0ce939",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/4060de5c-80ac-4919-9df2-498d72145932.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 3,
+          "id": "sc_17109313d7c7495696383774136ec3d5",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/40d13472-72a3-4bc0-8a06-cb0f7733fffa.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 4,
+          "id": "sc_52e04cf0980e4d4fa09fd9ebf5030aad",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/83c22653-647d-4884-909a-486e5f0ba8b5.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 5,
+          "id": "sc_e334305ace2d4dd7af619fbd99c79394",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/eb49f20f-ec73-4d95-a0b4-1177710b650c.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 6,
+          "id": "sc_aefad7c41b8744a4a130c333ea3281ef",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/afe1e4e0-4c64-46d7-b426-59bc274cce1b.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 7,
+          "id": "sc_7fd1d40a6eba4e6ab8f3f7935b66a130",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/13fc1169-7cba-4c70-9944-d7f75d3591bf.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 8,
+          "id": "sc_3df44f1b73064a85abb348c9b25eb6f2",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/30247df3-62ff-4bbc-8b03-ca578d47e3c2.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        }
+      ]
+    },
+    {
+      "flowId": "be5bc5f4-c2fa-4ea2-a923-0250d6302fcb",
+      "flowName": "Blog",
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=be5bc5f4-c2fa-4ea2-a923-0250d6302fcb",
+      "screens": [
+        {
+          "step": 1,
+          "id": "sc_549a6fa823b74e3e8d826750df6f1f99",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/cd020105-7f11-4e27-bef0-5183f569d6bc.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 2,
+          "id": "sc_f784e647d4c44c448969e5641b1f3fd0",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/764b8fbf-501c-4046-96d6-143bccf0f20a.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 3,
+          "id": "sc_ed1d234775a74b4bad3ca7f497d20970",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/0098d8b2-48bd-4735-8909-85223ab00fd4.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 4,
+          "id": "sc_2c58d306a0c54343967cbe26160fc0cb",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/fc1e606c-8a4b-4cab-8cb4-f38df04fe624.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        }
+      ]
+    },
+    {
+      "flowId": "a0181c28-2521-46d3-a0e6-3ead4851b2f9",
+      "flowName": "Invoice templates",
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=a0181c28-2521-46d3-a0e6-3ead4851b2f9",
+      "screens": [
+        {
+          "step": 1,
+          "id": "sc_d68dbb7304bb45ac9755138b12ce3141",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/871c3613-2f38-4344-b6f2-eb6c4d9f233c.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 2,
+          "id": "sc_eac8d5a2e97d47c496455da557912622",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/378377d9-61d1-4c07-b2d2-2369596c5a43.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": true
+        },
+        {
+          "step": 3,
+          "id": "sc_ef526e3912f44ce29bac28e00edbae28",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/5a94889f-e43c-4cd8-ad95-81af2d9f873f.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 4,
+          "id": "sc_9cb41f708d1841bc9bb627e9adb69f59",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/f5c1ee78-1b82-49ad-a554-1cccec67d4ba.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 5,
+          "id": "sc_fb22ca5fac734f0bb6636d302b61fd2c",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/13789aa5-d9ce-4acd-b019-d8bf220cbfde.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 6,
+          "id": "sc_c1cf0b18c5da456ba7c29ddc416eab45",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/8c03f3ae-2c72-47fb-a894-6448327a41ee.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 7,
+          "id": "sc_0d63bd46b3304072b6f75589361c99b0",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/8a24e832-72d8-41d0-ab2c-656dc92c72d6.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 8,
+          "id": "sc_89b5c3a2a2be40109d8018d906853f1a",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/6f5c227c-c8d0-44f0-9876-277de4914836.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 9,
+          "id": "sc_5902fc89beb849b4acb6be05de2f9f4c",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/d570bacb-c0f1-4f6c-a790-8e0aed0b9b23.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 10,
+          "id": "sc_a094d29b4d2b453c8c46ee9ccb255d9f",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/0c4b21d7-46b7-4417-b358-8361bf0e7b8a.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        },
+        {
+          "step": 11,
+          "id": "sc_14cfb12034534421b6d0654f86236e3d",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/40f3c613-0c03-4333-92aa-c9a2260b013a.png",
+          "width": 1440,
+          "height": 900,
+          "usedForG02": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,16 +1,19 @@
 # User Web — Bonsai UX/UI 목 기반
 
-2026-11-20 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 구현·검토 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md).
+2026-11-20 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md).
 
 기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03 이후 페이지와 실제 인증·업무 API·Backend·DB 연결은 없다.
 
+이번 재점검에서 모바일 메뉴 닫기·짧은 화면 스크롤·폭 전환 초점, 이메일 중복 제출을 보완했다. typecheck/lint/build, unit 9개, dev/build Chromium E2E 각각 15개가 통과했다. 관찰한 흐름의 실제 API·외부 요청·console 오류는 0건이다. 원본 17상태 비교는 수행했으나 잔여 시각 차이·원본 모바일/자동 전환·실제 OS IME/AT 등은 대기다.
+
 ## 실행
 
-Node 24.x, pnpm 8.14.1. 저장소 루트에서 실행한다.
+Node 24.x, pnpm 8.14.1. 저장소 루트에서 `FE/user-web`으로 이동한 뒤 실행한다. Corepack은 현재 디렉터리의 packageManager를 사용하므로 이 경로에서 실행해야 한다.
 
-~~~powershell
-pnpm.cmd -C FE/user-web install --offline --ignore-scripts
-pnpm.cmd -C FE/user-web dev --host 127.0.0.1 --strictPort
+~~~sh
+cd FE/user-web
+corepack pnpm install --offline --ignore-scripts
+corepack pnpm dev --host 127.0.0.1 --strictPort
 ~~~
 
 미리보기: http://127.0.0.1:5173. 포트가 사용 중이면 해당 프로세스를 종료하지 말고 별도 포트를 명시한다. 오프라인 설치는 기존 패키지 캐시가 있을 때 가능하다.
@@ -43,18 +46,20 @@ pnpm.cmd -C FE/user-web dev --host 127.0.0.1 --strictPort
 
 ## 검증
 
-~~~powershell
-pnpm.cmd -C FE/user-web run typecheck
-pnpm.cmd -C FE/user-web run lint
-pnpm.cmd -C FE/user-web run test
-pnpm.cmd -C FE/user-web run test:e2e
-pnpm.cmd -C FE/user-web run build
-pnpm.cmd -C FE/user-web run test:e2e:preview
+`FE/user-web`에서 실행한다.
+
+~~~sh
+corepack pnpm run typecheck
+corepack pnpm run lint
+corepack pnpm run test
+corepack pnpm run test:e2e
+corepack pnpm run build
+corepack pnpm run test:e2e:preview
 ~~~
 
 E2E는 별도 dev5175·preview4175 서버를 사용한다. 실행 중인 다른 서버를 재사용하거나 종료하지 않는다. Chromium 설치가 필요한 새 환경은 Playwright 브라우저를 준비한다. 네트워크를 가로채지 않고 실제 요청을 관찰하여 API·외부 요청·console 오류 0건을 검사한다.
 
-5173 미리보기 실행 중 `FE/user-web`에서 `node scripts/capture-landing.mjs`, `python -X utf8 scripts/compare-landing.py`로 현재 캡처와 비교 이미지를 생성한다. Python/Pillow가 필요하다. `node scripts/capture-foundation.mjs`는 G01 회귀를 `evidence/g02-foundation-regression`에 별도 기록한다. 캡처/비교 결과는 계획의 RESULTS/evidence/g02에 저장한다. E2E dev/production 출력 폴더를 분리하여 다른 실행의 보고서를 삭제하지 않는다.
+5173 미리보기 실행 중 `FE/user-web`에서 `node scripts/capture-landing.mjs`, `python3 scripts/compare-landing.py`로 현재 캡처와 비교 이미지를 생성한다. Python/Pillow가 필요하다. 두 명령에 같은 `CAPTURE_OUTPUT` 절대 경로를 설정하면 과거 증거를 보존하면서 별도 폴더에 저장한다. 생략 시 계획의 `RESULTS/evidence/g02`를 사용하므로 기존 결과가 덮어써진다. 이번 증거는 `RESULTS/evidence/g02-recheck/before`와 `final`로 분리했다. `node scripts/capture-foundation.mjs`는 G01 회귀를 `evidence/g02-foundation-regression`에 별도 기록한다. E2E dev/production 출력 폴더도 분리한다.
 
 ## 규칙과 다음 작업
 

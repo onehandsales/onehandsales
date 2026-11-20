@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-20 KST",
+  "markdownFiles": 13,
+  "localLinksChecked": 392,
+  "missingLinks": [],
+  "jsonFilesParsed": 13,
+  "planCounts": {
+    "goals": 85,
+    "research": 22,
+    "flows": 134,
+    "executionOrder": 107
+  },
+  "unchanged": "flow assignments, execution order, all goals except G02, all research except R01"
+}

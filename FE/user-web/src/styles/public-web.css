@@ -91,7 +91,7 @@
 .public-notice strong { display: block; font-size: 16px; line-height: 22px; font-weight: 700; white-space: nowrap; }
 .notice-paid { position: absolute; bottom: 129px; right: 230px; }
 .notice-lead { position: absolute; top: 169px; right: -130px; }
-.notice-expense { position: absolute; bottom: 50px; right: -29px; }
+.notice-expense { position: absolute; bottom: 50px; right: -29px; width: 225px; }
 .public-overview { position: relative; height: 842px; background: url("/bonsai-public/635e8d2a61099e05c32ae3e6_background.webp") center top / 100% 456px no-repeat; }
 .public-dashboard-promo { position: absolute; top: 80px; width: 1000px; left: calc(50% - 500px); border-radius: 12px; box-shadow: 0 0 22px 8px #00000012; }
 .public-phone-promo { position: absolute; width: 350px; left: calc(50% + 350px); top: 260px; }
@@ -197,15 +197,17 @@
 @media (max-width: 991px) {
   .public-container, .public-wide { width: calc(100% - 40px); }
   .public-header.is-scrolled { top: 0; }
-  .public-header-row { height: 70px; flex-wrap: wrap; }
+  /* 이유 : 메뉴 높이를 고정하면 줄바꿈·확대 시 하위 메뉴가 탐색 버튼을 덮는다. 헤더 하나가 스크롤을 소유한다. */
+  .public-header { max-height: 100dvh; overflow-y: auto; }
+  .public-header-row { height: auto; min-height: 70px; flex-wrap: wrap; }
   .public-logo { margin-right: auto; }
-  .public-auth-links { margin-left: 24px; }
+  .public-auth-links { margin-left: 24px; min-height: 70px; }
   .public-mobile-toggle { display: flex; background: transparent; border: 0; padding: 10px; order: 3; margin-left: 12px; }
   .public-mobile-toggle img { width: 22px; height: 22px; }
   .public-header nav { display: none; }
-  .public-header nav.is-mobile-open { display: flex; position: absolute; width: 100%; left: 0; top: 70px; flex-wrap: wrap; background: var(--public-surface); padding: 10px 20px; box-shadow: 0 10px 16px #00000012; }
+  .public-header nav.is-mobile-open { display: flex; flex-basis: 100%; order: 4; flex-wrap: wrap; background: var(--public-surface); padding: 10px 0; }
   .public-header nav > a, .public-header nav > button { padding: 12px; }
-  .public-mega-menu { position: absolute; width: 100%; top: 132px; max-height: calc(100dvh - 140px); }
+  .public-mega-menu { position: static; width: 100%; max-height: none; overflow-y: visible; }
   .public-menu-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; padding: 24px 0; }
   .public-template-menu { grid-template-columns: 215px minmax(0,1fr); }
   .public-template-menu [role="tabpanel"] { padding: 20px; }
@@ -262,7 +264,6 @@
   .public-mobile-toggle { margin-left: 0; padding: 8px; }
   .public-header nav > a, .public-header nav > button { font-size: 14px; }
   .public-header nav.is-mobile-open { gap: 0; }
-  .public-mega-menu { top: 166px; max-height: calc(100dvh - 176px); }
   .public-menu-grid { gap: 24px 16px; }
   .public-menu-grid h2 { font-size: 16px; }
   .public-template-menu { display: block; }
