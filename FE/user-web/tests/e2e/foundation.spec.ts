@@ -3,7 +3,7 @@ import { test, expect, enterWorkspace, openEditor } from "./fixtures";
 test("public, protected deep link, history, refresh and shared boundaries use no APIs", async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("onehand.userWeb.accessToken", "non-secret-obsolete-preview-value"));
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "OneHand CRM" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Run your entire business in one place" })).toBeVisible();
   await page.goto("/app/items/sample-001");
   await expect(page).toHaveURL(/\/login\?returnTo=/);
   await page.getByRole("button", { name: "Continue as Alex" }).click();
@@ -104,7 +104,7 @@ test("cancelled slow save, actor/workspace changes and reset isolate all state",
   await page.getByRole("combobox", { name: "Workspace", exact: true }).selectOption("studio-a-two");
   await expect(page.getByRole("heading", { name: "Second studio sample" })).toBeVisible();
   await page.getByRole("button", { name: "Reset preview" }).click();
-  await expect(page).toHaveURL("/");
+  await expect(page).toHaveURL("/components");
   await expect(page.getByRole("combobox", { name: "Scenario", exact: true })).toHaveValue("normal");
   await expect(page.getByRole("combobox", { name: "Session", exact: true })).toHaveValue("guest");
 });

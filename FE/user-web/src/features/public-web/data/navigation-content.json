@@ -1,0 +1,1351 @@
+{
+  "menus": [
+    {
+      "name": "Product",
+      "groups": [
+        {
+          "title": "Client Management",
+          "links": [
+            {
+              "label": "CRM",
+              "sourceHref": "/crm"
+            },
+            {
+              "label": "Scheduling",
+              "sourceHref": "/scheduling"
+            },
+            {
+              "label": "Proposals",
+              "sourceHref": "/proposals"
+            },
+            {
+              "label": "Contracts",
+              "sourceHref": "/contracts"
+            },
+            {
+              "label": "Forms",
+              "sourceHref": "/forms"
+            }
+          ]
+        },
+        {
+          "title": "Project Management",
+          "links": [
+            {
+              "label": "Time tracking",
+              "sourceHref": "/time-tracking"
+            },
+            {
+              "label": "Tasks",
+              "sourceHref": "/task-management"
+            },
+            {
+              "label": "File sharing",
+              "sourceHref": "/crm"
+            },
+            {
+              "label": "Client portal",
+              "sourceHref": "/crm"
+            },
+            {
+              "label": "Collaboration",
+              "sourceHref": "/crm"
+            }
+          ]
+        },
+        {
+          "title": "Financial Management",
+          "links": [
+            {
+              "label": "Invoicing",
+              "sourceHref": "/invoicing"
+            },
+            {
+              "label": "Payments",
+              "sourceHref": "/payments"
+            },
+            {
+              "label": "Bookkeeping",
+              "sourceHref": "/bookkeeping"
+            },
+            {
+              "label": "Taxes",
+              "sourceHref": "/taxes"
+            },
+            {
+              "label": "Banking",
+              "sourceHref": "/banking"
+            }
+          ]
+        },
+        {
+          "title": "What’s new",
+          "links": [
+            {
+              "label": "Learn more",
+              "sourceHref": "/scheduling"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Industries",
+      "groups": [
+        {
+          "title": "Business Services",
+          "links": [
+            {
+              "label": "Consulting",
+              "sourceHref": "https://www.hellobonsai.com/software/consulting"
+            },
+            {
+              "label": "Marketing",
+              "sourceHref": "https://www.hellobonsai.com/software/marketing"
+            },
+            {
+              "label": "Recruiting",
+              "sourceHref": "https://www.hellobonsai.com/software/recruiting"
+            },
+            {
+              "label": "Virtual Assistant",
+              "sourceHref": "https://www.hellobonsai.com/software/virtual-assistant"
+            },
+            {
+              "label": "More...",
+              "sourceHref": "/software"
+            }
+          ]
+        },
+        {
+          "title": "Creative and Digital",
+          "links": [
+            {
+              "label": "Design",
+              "sourceHref": "https://www.hellobonsai.com/software/design"
+            },
+            {
+              "label": "Photography",
+              "sourceHref": "https://www.hellobonsai.com/software/photography"
+            },
+            {
+              "label": "Software Development",
+              "sourceHref": "https://www.hellobonsai.com/software/software-development"
+            },
+            {
+              "label": "Writing",
+              "sourceHref": "https://www.hellobonsai.com/software/writing"
+            },
+            {
+              "label": "More...",
+              "sourceHref": "https://www.hellobonsai.com/software"
+            }
+          ]
+        },
+        {
+          "title": "Professional Services",
+          "links": [
+            {
+              "label": "Coaching",
+              "sourceHref": "https://www.hellobonsai.com/software/coaching"
+            },
+            {
+              "label": "Architecture",
+              "sourceHref": "https://www.hellobonsai.com/software/architecture"
+            },
+            {
+              "label": "Accounting",
+              "sourceHref": "https://www.hellobonsai.com/software/accounting"
+            },
+            {
+              "label": "Legal",
+              "sourceHref": "https://www.hellobonsai.com/software/legal"
+            },
+            {
+              "label": "More...",
+              "sourceHref": "https://www.hellobonsai.com/software"
+            }
+          ]
+        },
+        {
+          "title": "Other services",
+          "links": [
+            {
+              "label": "Event Planning",
+              "sourceHref": "https://www.hellobonsai.com/software/event-planning"
+            },
+            {
+              "label": "Interior Design",
+              "sourceHref": "https://www.hellobonsai.com/software/interior-design"
+            },
+            {
+              "label": "Real-Estate",
+              "sourceHref": "https://www.hellobonsai.com/software/real-estate"
+            },
+            {
+              "label": "More...",
+              "sourceHref": "https://www.hellobonsai.com/software"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Resources",
+      "groups": [
+        {
+          "title": "Learn",
+          "links": [
+            {
+              "label": "Blog",
+              "sourceHref": "/blog"
+            },
+            {
+              "label": "Help Center",
+              "sourceHref": "https://help.hellobonsai.com/en/"
+            }
+          ]
+        },
+        {
+          "title": "Tools",
+          "links": [
+            {
+              "label": "Contract Maker",
+              "sourceHref": "https://www.hellobonsai.com/a/online-contract-maker"
+            },
+            {
+              "label": "Invoice Generator",
+              "sourceHref": "/invoice-generator"
+            },
+            {
+              "label": "Self-Employed Taxes Hub",
+              "sourceHref": "https://www.hellobonsai.com/self-employment-tax"
+            },
+            {
+              "label": "Freelance Rates Explorer",
+              "sourceHref": "/rates/freelance"
+            },
+            {
+              "label": "How to Bill a Client",
+              "sourceHref": "https://www.hellobonsai.com/blog/how-to-bill-a-client"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "templates": [
+    {
+      "name": "Contract Templates",
+      "hint": "Featured contract templates",
+      "links": [
+        {
+          "label": "Client Contract Template",
+          "sourceHref": "/contract-template/client"
+        },
+        {
+          "label": "Consulting Engagement Letter Sample",
+          "sourceHref": "/contract-template/consulting-engagement-letter-sample"
+        },
+        {
+          "label": "Free Freelance Contract Template",
+          "sourceHref": "/contract-template/freelance"
+        },
+        {
+          "label": "Free Hourly Rate Contract Template",
+          "sourceHref": "/contract-template/hourly-rate"
+        },
+        {
+          "label": "Free Independent Contractor Agreement Template",
+          "sourceHref": "/contract-template/independent-contractor-agreement"
+        },
+        {
+          "label": "Free Non-Disclosure Agreement Template",
+          "sourceHref": "/contract-template/non-disclosure-agreement"
+        },
+        {
+          "label": "Free Online Contract Maker",
+          "sourceHref": "/contract-template/online-contract-maker"
+        },
+        {
+          "label": "Free Project Management Agreement Template",
+          "sourceHref": "/contract-template/project-management-contract"
+        },
+        {
+          "label": "Free Service Agreement Template",
+          "sourceHref": "/contract-template/service"
+        },
+        {
+          "label": "Free Simple Contract Template",
+          "sourceHref": "/contract-template/simple"
+        },
+        {
+          "label": "Free Social Media Contract Sample for Your Business",
+          "sourceHref": "/contract-template/social-media"
+        },
+        {
+          "label": "Master Service Agreement Template",
+          "sourceHref": "/contract-template/master-service-agreement"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/templates/contracts"
+        }
+      ]
+    },
+    {
+      "name": "Proposal Templates",
+      "hint": "Featured proposal templates",
+      "links": [
+        {
+          "label": "Free Simple Proposal Template",
+          "sourceHref": "/proposal-template/simple"
+        },
+        {
+          "label": "Free Services Proposal Template",
+          "sourceHref": "/proposal-template/services"
+        },
+        {
+          "label": "Retainer Proposal Agreement Template",
+          "sourceHref": "/proposal-template/retainer"
+        },
+        {
+          "label": "Project Proposal Template",
+          "sourceHref": "/proposal-template/project"
+        },
+        {
+          "label": "Free Professional Proposal Template",
+          "sourceHref": "/proposal-template/professional"
+        },
+        {
+          "label": "Free Freelance Proposal Template",
+          "sourceHref": "/proposal-template/freelance"
+        },
+        {
+          "label": "Free Freelancer Bid Proposal Template",
+          "sourceHref": "/proposal-template/freelance-bid"
+        },
+        {
+          "label": "Free Creative Proposal Template",
+          "sourceHref": "/proposal-template/creative"
+        },
+        {
+          "label": "Free Contractor Proposal Template",
+          "sourceHref": "/proposal-template/contractor"
+        },
+        {
+          "label": "Free Collaboration Proposal Template",
+          "sourceHref": "/proposal-template/collaboration"
+        },
+        {
+          "label": "Free Bid Proposal Template",
+          "sourceHref": "/proposal-template/bid"
+        },
+        {
+          "label": "Accounting Request for Proposal",
+          "sourceHref": "/proposal-template/accounting-request-for-proposal"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/templates/proposals"
+        }
+      ]
+    },
+    {
+      "name": "Invoice Templates",
+      "hint": "Featured invoice templates",
+      "links": [
+        {
+          "label": "Free Basic Invoice Template",
+          "sourceHref": "/invoice-template/basic"
+        },
+        {
+          "label": "Free Blank Invoice Template - Create, Edit & Send",
+          "sourceHref": "/invoice-template/blank"
+        },
+        {
+          "label": "Free Contractor Invoice Templates",
+          "sourceHref": "/invoice-template/contractor"
+        },
+        {
+          "label": "Free Custom Invoice Template",
+          "sourceHref": "/invoice-template/custom"
+        },
+        {
+          "label": "Free Invoice Template for Email",
+          "sourceHref": "/invoice-template/email"
+        },
+        {
+          "label": "Free Microsoft Word Invoice Templates",
+          "sourceHref": "/invoice-template/word"
+        },
+        {
+          "label": "Free Pro Forma Invoice Templates",
+          "sourceHref": "/invoice-template/pro-forma"
+        },
+        {
+          "label": "Free Retainer Invoice Template",
+          "sourceHref": "/invoice-template/retainer"
+        },
+        {
+          "label": "Free Sample Invoice Template",
+          "sourceHref": "/invoice-template/sample"
+        },
+        {
+          "label": "Free Work Invoice Template",
+          "sourceHref": "/invoice-template/work"
+        },
+        {
+          "label": "Online Invoice Generator",
+          "sourceHref": "https://www.hellobonsai.com/invoice-generator"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/invoice-template"
+        }
+      ]
+    },
+    {
+      "name": "Quote Templates",
+      "hint": "Featured quote templates",
+      "links": [
+        {
+          "label": "Work Quote Template",
+          "sourceHref": "/quote-template/work"
+        },
+        {
+          "label": "Free Sample Quotation Template",
+          "sourceHref": "/quote-template/sample"
+        },
+        {
+          "label": "Simple Quotation Template",
+          "sourceHref": "/quote-template/simple"
+        },
+        {
+          "label": "Free Service Quote Template",
+          "sourceHref": "/quote-template/service"
+        },
+        {
+          "label": "Price Quote Template",
+          "sourceHref": "/quote-template/price"
+        },
+        {
+          "label": "Online Quote Template",
+          "sourceHref": "/quote-template/online"
+        },
+        {
+          "label": "Free Freelance Quotation Template",
+          "sourceHref": "/quote-template/freelance"
+        },
+        {
+          "label": "Editable Quotation Template",
+          "sourceHref": "/quote-template/editable"
+        },
+        {
+          "label": "Formal Quote Template",
+          "sourceHref": "/quote-template/formal"
+        },
+        {
+          "label": "Free Contractor Quote Template",
+          "sourceHref": "/quote-template/contractor"
+        },
+        {
+          "label": "Creative Quotation Template",
+          "sourceHref": "/quote-template/creative"
+        },
+        {
+          "label": "Blank Quote Template",
+          "sourceHref": "/quote-template/blank"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/templates/quotes"
+        }
+      ]
+    },
+    {
+      "name": "Scope of Work Templates",
+      "hint": "Featured scope of work templates",
+      "links": [
+        {
+          "label": "Free Website Development Scope of Work Template",
+          "sourceHref": "/scope-of-work-template/website-development"
+        },
+        {
+          "label": "Free Statement of Work Contract Template",
+          "sourceHref": "/scope-of-work-template/statement-of-work-contract"
+        },
+        {
+          "label": "Free Statement of Work (PDF)",
+          "sourceHref": "/scope-of-work-template/statement-of-work-pdf"
+        },
+        {
+          "label": "Free SOW for Software Development",
+          "sourceHref": "/scope-of-work-template/software-development-sow"
+        },
+        {
+          "label": "Free Consultant Statement of Work Template",
+          "sourceHref": "/scope-of-work-template/consulting-statement-of-work"
+        },
+        {
+          "label": "Remodel Scope Of Work Template",
+          "sourceHref": "/scope-of-work-template/remodel"
+        },
+        {
+          "label": "Project Scope Of Work Template",
+          "sourceHref": "/scope-of-work-template/project"
+        },
+        {
+          "label": "Free Digital Marketing Scope of Work Template",
+          "sourceHref": "/scope-of-work-template/marketing"
+        },
+        {
+          "label": "Interior Design Scope of Work Template",
+          "sourceHref": "/scope-of-work-template/interior-design"
+        },
+        {
+          "label": "Freelance Statement of Work Template",
+          "sourceHref": "/scope-of-work-template/freelance-statement-of-work"
+        },
+        {
+          "label": "Contractor Statement of Work Template",
+          "sourceHref": "/scope-of-work-template/contractor-statement-of-work"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/templates/scopes-of-work"
+        }
+      ]
+    },
+    {
+      "name": "Brief Templates",
+      "hint": "Featured brief Templates",
+      "links": [
+        {
+          "label": "Free Creative Brief Template (Word)",
+          "sourceHref": "/brief-template/word"
+        },
+        {
+          "label": "Free Strategy Brief",
+          "sourceHref": "/brief-template/strategy"
+        },
+        {
+          "label": "Free Social Media Brief Template",
+          "sourceHref": "/brief-template/social-media"
+        },
+        {
+          "label": "Free Project Brief Template",
+          "sourceHref": "/brief-template/project"
+        },
+        {
+          "label": "Free Product Brief Template",
+          "sourceHref": "/brief-template/product"
+        },
+        {
+          "label": "Free Graphic Design Brief Template",
+          "sourceHref": "/brief-template/graphic-design"
+        },
+        {
+          "label": "Free Creative Brief Sample",
+          "sourceHref": "/brief-template/creative"
+        },
+        {
+          "label": "Free Design Brief (with Generator)",
+          "sourceHref": "/brief-template/design"
+        },
+        {
+          "label": "Free Consulting Brief",
+          "sourceHref": "/brief-template/consulting"
+        },
+        {
+          "label": "Free Concept Brief Template",
+          "sourceHref": "/brief-template/concept"
+        },
+        {
+          "label": "Free Client Brief Template",
+          "sourceHref": "/brief-template/client"
+        },
+        {
+          "label": "Free Agency Brief Template",
+          "sourceHref": "/brief-template/agency"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/templates/briefs"
+        }
+      ]
+    },
+    {
+      "name": "Form Templates",
+      "hint": "Featured form templates",
+      "links": [
+        {
+          "label": "Website Intake Form",
+          "sourceHref": "/form-template/website-intake-form"
+        },
+        {
+          "label": "Project Intake Form",
+          "sourceHref": "/form-template/project-intake-form"
+        },
+        {
+          "label": "Free Portfolio Contact Page",
+          "sourceHref": "/form-template/portfolio-contact-page"
+        },
+        {
+          "label": "Marketing Client Intake Form",
+          "sourceHref": "/form-template/marketing-client-intake-form"
+        },
+        {
+          "label": "Comprehensive Client Form",
+          "sourceHref": "/form-template/comprehensive-client-form"
+        },
+        {
+          "label": "Client Intake Form",
+          "sourceHref": "/form-template/client-intake-form"
+        },
+        {
+          "label": "Client Info Form",
+          "sourceHref": "/form-template/client-info"
+        },
+        {
+          "label": "Client Feedback Form",
+          "sourceHref": "/form-template/client-feedback-form"
+        },
+        {
+          "label": "Client Enrollment Form",
+          "sourceHref": "/form-template/client-enrollment-form"
+        },
+        {
+          "label": "Client Contact Form Template",
+          "sourceHref": "/form-template/client-contact-form"
+        },
+        {
+          "label": "Business Intake Form",
+          "sourceHref": "/form-template/business-intake-form"
+        },
+        {
+          "label": "Business Client Intake Form",
+          "sourceHref": "/form-template/business-client-intake-form"
+        },
+        {
+          "label": "See all templates",
+          "sourceHref": "https://www.hellobonsai.com/templates/forms"
+        }
+      ]
+    }
+  ],
+  "footerGroups": [
+    {
+      "title": "Company",
+      "links": [
+        {
+          "label": "Help center",
+          "sourceHref": "https://help.hellobonsai.com/en/"
+        },
+        {
+          "label": "Contact us",
+          "sourceHref": "/support"
+        },
+        {
+          "label": "Privacy",
+          "sourceHref": "/legal/privacy"
+        },
+        {
+          "label": "Terms and conditions",
+          "sourceHref": "/legal/terms"
+        },
+        {
+          "label": "Careers",
+          "sourceHref": "/careers"
+        },
+        {
+          "label": "Affiliate Program",
+          "sourceHref": "/affiliates"
+        }
+      ],
+      "disclosures": []
+    },
+    {
+      "title": "Products",
+      "links": [
+        {
+          "label": "Proposals",
+          "sourceHref": "/proposals"
+        },
+        {
+          "label": "Contracts",
+          "sourceHref": "/contracts"
+        },
+        {
+          "label": "Invoicing",
+          "sourceHref": "/invoicing"
+        },
+        {
+          "label": "Client CRM",
+          "sourceHref": "/crm"
+        },
+        {
+          "label": "Scheduling",
+          "sourceHref": "/scheduling"
+        },
+        {
+          "label": "Time tracking",
+          "sourceHref": "/time-tracking"
+        },
+        {
+          "label": "Tasks management",
+          "sourceHref": "/task-management"
+        },
+        {
+          "label": "Forms",
+          "sourceHref": "/forms"
+        },
+        {
+          "label": "Bookkeeping",
+          "sourceHref": "/bookkeeping"
+        },
+        {
+          "label": "Taxes",
+          "sourceHref": "/taxes"
+        },
+        {
+          "label": "Banking",
+          "sourceHref": "/banking"
+        },
+        {
+          "label": "Reviews",
+          "sourceHref": "/reviews"
+        },
+        {
+          "label": "Pricing",
+          "sourceHref": "/pricing"
+        }
+      ],
+      "disclosures": []
+    },
+    {
+      "title": "Business Types",
+      "links": [
+        {
+          "label": "Accounting",
+          "sourceHref": "/software/accounting"
+        },
+        {
+          "label": "Agencies",
+          "sourceHref": "/software/agencies"
+        },
+        {
+          "label": "Architecture",
+          "sourceHref": "/software/architecture"
+        },
+        {
+          "label": "Beauty and Wellness",
+          "sourceHref": "/software/beauty-wellness"
+        },
+        {
+          "label": "Coaching",
+          "sourceHref": "/software/coaching"
+        },
+        {
+          "label": "Consulting",
+          "sourceHref": "/software/consulting"
+        },
+        {
+          "label": "Design",
+          "sourceHref": "/software/design"
+        },
+        {
+          "label": "Event Planning",
+          "sourceHref": "/software/event-planning"
+        },
+        {
+          "label": "Freelancers",
+          "sourceHref": "/software/freelancing"
+        },
+        {
+          "label": "Health",
+          "sourceHref": "/software/health"
+        },
+        {
+          "label": "Interior Design",
+          "sourceHref": "/software/interior-design"
+        },
+        {
+          "label": "Legal",
+          "sourceHref": "/software/legal"
+        },
+        {
+          "label": "Marketing",
+          "sourceHref": "/software/marketing"
+        },
+        {
+          "label": "Photography",
+          "sourceHref": "/software/photography"
+        },
+        {
+          "label": "Real-Estate",
+          "sourceHref": "/software/real-estate"
+        },
+        {
+          "label": "Recruiting",
+          "sourceHref": "/software/recruiting"
+        },
+        {
+          "label": "Small businesses",
+          "sourceHref": "/software/small-businesses"
+        },
+        {
+          "label": "Software Development",
+          "sourceHref": "/software/software-development"
+        },
+        {
+          "label": "Virtual Assistant",
+          "sourceHref": "/software/virtual-assistant"
+        },
+        {
+          "label": "Writing",
+          "sourceHref": "/software/writing"
+        },
+        {
+          "label": "View all business types",
+          "sourceHref": "/software"
+        }
+      ],
+      "disclosures": []
+    },
+    {
+      "title": "Resources",
+      "links": [
+        {
+          "label": "Freelance Resources",
+          "sourceHref": "/resources"
+        },
+        {
+          "label": "Blog",
+          "sourceHref": "/blog"
+        },
+        {
+          "label": "How to Write a Contract",
+          "sourceHref": "https://www.hellobonsai.com/contract-template/online-contract-maker"
+        },
+        {
+          "label": "How to Bill a Client",
+          "sourceHref": "https://www.hellobonsai.com/blog/how-to-bill-a-client"
+        },
+        {
+          "label": "Online Signature Maker",
+          "sourceHref": "/resources/online-signature-maker"
+        },
+        {
+          "label": "Online Invoice Generator",
+          "sourceHref": "/invoice-generator"
+        },
+        {
+          "label": "Self-Employed Taxes Hub",
+          "sourceHref": "/self-employment-tax"
+        },
+        {
+          "label": "Self-Employed Tax Deductions",
+          "sourceHref": "https://www.hellobonsai.com/blog/tax-deductions-for-self-employed"
+        }
+      ],
+      "disclosures": [
+        {
+          "label": "Comparisons",
+          "links": [
+            {
+              "label": "FreshBooks alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/freshbooks"
+            },
+            {
+              "label": "QuickBooks alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/quickbooks-alternative"
+            },
+            {
+              "label": "Wave vs. QuickBooks",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/wave-vs-quickbooks-vs-bonsai"
+            },
+            {
+              "label": "Xero vs. QuickBooks",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/xero-vs-quickbooks-vs-bonsai"
+            },
+            {
+              "label": "Stripe alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/zoho-books-vs-quickbooks"
+            },
+            {
+              "label": "FreshBooks vs. QuickBooks",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/freshbooks-vs-quickbooks-vs-bonsai"
+            },
+            {
+              "label": "HoneyBook alternatives",
+              "sourceHref": "https://www.hellobonsai.com/blog/honeybook-alternatives"
+            },
+            {
+              "label": "Dubsado alternatives",
+              "sourceHref": "https://www.hellobonsai.com/blog/dubsado-alternatives"
+            },
+            {
+              "label": "Proposify alternatives",
+              "sourceHref": "https://www.hellobonsai.com/blog/proposify-alternatives"
+            },
+            {
+              "label": "Xero alternatives",
+              "sourceHref": "https://www.hellobonsai.com/blog/xero-alternatives"
+            },
+            {
+              "label": "Calendly alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/calendly"
+            },
+            {
+              "label": "Acuity Scheduling alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/acuity-scheduling"
+            },
+            {
+              "label": "Monday alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/monday"
+            },
+            {
+              "label": "Asana vs Monday",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/asana-vs-monday"
+            },
+            {
+              "label": "Typeform alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/typeform"
+            },
+            {
+              "label": "Stripe alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/best-stripe-alternative-for-small-businesses"
+            },
+            {
+              "label": "Paperbell vs Honeybook",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/paperbell-vs-honeybook"
+            },
+            {
+              "label": "QuickBooks vs Excel",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/quickbooks-vs-excel"
+            },
+            {
+              "label": "QuickBooks vs Quicken",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/quicken-vs-quickbooks"
+            },
+            {
+              "label": "Mint alternatives",
+              "sourceHref": "https://www.hellobonsai.com/alternatives/7-best-mint-alternatives"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Templates",
+      "links": [],
+      "disclosures": [
+        {
+          "label": "Contracts",
+          "links": [
+            {
+              "label": "Contract templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/contracts"
+            },
+            {
+              "label": "Virtual Assistant Contract Template",
+              "sourceHref": "/contract-template/virtual-assistant"
+            },
+            {
+              "label": "Free Social Media Contract Sample for Your Business",
+              "sourceHref": "/contract-template/social-media"
+            },
+            {
+              "label": "Free Simple Contract Template",
+              "sourceHref": "/contract-template/simple"
+            },
+            {
+              "label": "Project Contract Template",
+              "sourceHref": "/contract-template/project"
+            },
+            {
+              "label": "Free Online Contract Maker",
+              "sourceHref": "/contract-template/online-contract-maker"
+            },
+            {
+              "label": "Free Hourly Rate Contract Template",
+              "sourceHref": "/contract-template/hourly-rate"
+            },
+            {
+              "label": "Free Freelance Contract Template",
+              "sourceHref": "/contract-template/freelance"
+            },
+            {
+              "label": "Web and Graphic Design Contract Template",
+              "sourceHref": "/contract-template/freelance-design"
+            },
+            {
+              "label": "Client Contract Template",
+              "sourceHref": "/contract-template/client"
+            }
+          ]
+        },
+        {
+          "label": "Proposals",
+          "links": [
+            {
+              "label": "Proposals templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/proposals"
+            },
+            {
+              "label": "Accounting Request for Proposal",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/accounting-request-for-proposal"
+            },
+            {
+              "label": "Bid Proposal template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/bid"
+            },
+            {
+              "label": "Collaboration Proposal template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/collaboration"
+            },
+            {
+              "label": "Free Contractor Proposal template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/contractor"
+            },
+            {
+              "label": "Free Creative Proposal template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/creative"
+            },
+            {
+              "label": "Free Freelance Proposal Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/freelance"
+            },
+            {
+              "label": "Free Freelance Bid Proposal Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/freelance-bid"
+            },
+            {
+              "label": "Free Professional Proposal Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/freelance-bid"
+            },
+            {
+              "label": "Free Services Proposal Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/freelance-bid"
+            },
+            {
+              "label": "Free Simple Proposal Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/freelance-bid"
+            },
+            {
+              "label": "Project Proposal Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/project"
+            },
+            {
+              "label": "Retainer Proposal Agreement Template",
+              "sourceHref": "https://www.hellobonsai.com/proposal-template/retainer"
+            }
+          ]
+        },
+        {
+          "label": "Invoices",
+          "links": [
+            {
+              "label": "Invoice templates",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template"
+            },
+            {
+              "label": "Invoice Generator",
+              "sourceHref": "/invoice-generator"
+            },
+            {
+              "label": "Free Basic Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/basic"
+            },
+            {
+              "label": "Free Blank Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/blank"
+            },
+            {
+              "label": "Free Contractor Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/contractor"
+            },
+            {
+              "label": "Free Custom Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/custom"
+            },
+            {
+              "label": "Free Invoice Template for Email",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/email"
+            },
+            {
+              "label": "Free Proforma Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/pro-forma"
+            },
+            {
+              "label": "Free Retainer Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/retainer"
+            },
+            {
+              "label": "Free Word Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/word"
+            },
+            {
+              "label": "Free Work Invoice Template",
+              "sourceHref": "https://www.hellobonsai.com/invoice-template/work"
+            }
+          ]
+        },
+        {
+          "label": "Forms",
+          "links": [
+            {
+              "label": "Form templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/forms"
+            },
+            {
+              "label": "Website Intake Form",
+              "sourceHref": "/form-template/website-intake-form"
+            },
+            {
+              "label": "Project Intake Form",
+              "sourceHref": "/form-template/project-intake-form"
+            },
+            {
+              "label": "Free Portfolio Contact Page",
+              "sourceHref": "/form-template/portfolio-contact-page"
+            },
+            {
+              "label": "Marketing Client Intake Form",
+              "sourceHref": "/form-template/marketing-client-intake-form"
+            },
+            {
+              "label": "Comprehensive Client Form",
+              "sourceHref": "/form-template/comprehensive-client-form"
+            },
+            {
+              "label": "Client Intake Form",
+              "sourceHref": "/form-template/client-intake-form"
+            },
+            {
+              "label": "Client Info Form",
+              "sourceHref": "/form-template/client-info"
+            },
+            {
+              "label": "Client Feedback Form",
+              "sourceHref": "/form-template/client-feedback-form"
+            },
+            {
+              "label": "Client Enrollment Form",
+              "sourceHref": "/form-template/client-enrollment-form"
+            },
+            {
+              "label": "Client Contact Form Template",
+              "sourceHref": "/form-template/client-contact-form"
+            },
+            {
+              "label": "Business Intake Form",
+              "sourceHref": "/form-template/business-intake-form"
+            },
+            {
+              "label": "Business Client Intake Form",
+              "sourceHref": "/form-template/business-client-intake-form"
+            }
+          ]
+        },
+        {
+          "label": "Quotes",
+          "links": [
+            {
+              "label": "Quote templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/quotes"
+            },
+            {
+              "label": "Blank Quote Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/blank"
+            },
+            {
+              "label": "Creative Quotation Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/creative"
+            },
+            {
+              "label": "Editable Quotation Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/editable"
+            },
+            {
+              "label": "Formal Quote Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/formal"
+            },
+            {
+              "label": "Free Contractor Quote Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/contractor"
+            },
+            {
+              "label": "Free Freelance Quotation Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/freelance"
+            },
+            {
+              "label": "Free Sample Quotation Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/sample"
+            },
+            {
+              "label": "Free Service Quote Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/service"
+            },
+            {
+              "label": "Online Quote Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/online"
+            },
+            {
+              "label": "Work Quote Template",
+              "sourceHref": "https://www.hellobonsai.com/quote-template/price"
+            }
+          ]
+        },
+        {
+          "label": "Scopes of work",
+          "links": [
+            {
+              "label": "Scopes of work templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/scopes-of-work"
+            },
+            {
+              "label": "Contractor Statement of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/contractor-statement-of-work"
+            },
+            {
+              "label": "Free Consultant Statement of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/consulting-statement-of-work"
+            },
+            {
+              "label": "Free Marketing Scope of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/marketing"
+            },
+            {
+              "label": "Free SOW for Software Development",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/software-development-sow"
+            },
+            {
+              "label": "Free Statement of Work (PDF)",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/statement-of-work-pdf"
+            },
+            {
+              "label": "Free Statement of Work Contract Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/software-development-sow"
+            },
+            {
+              "label": "Free Website Development Scope of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/website-development"
+            },
+            {
+              "label": "Freelance Statement of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/freelance-statement-of-work"
+            },
+            {
+              "label": "Interior Design Scope of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/interior-design"
+            },
+            {
+              "label": "Project Scope of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/project"
+            },
+            {
+              "label": "Remodel Scope of Work Template",
+              "sourceHref": "https://www.hellobonsai.com/scope-of-work-template/project"
+            }
+          ]
+        },
+        {
+          "label": "Agreements",
+          "links": [
+            {
+              "label": "Agreement templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/agreements"
+            },
+            {
+              "label": "Free Service Agreement Template",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/service-agreement-pdf"
+            },
+            {
+              "label": "Free Project Management Agreement template",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/project-management-contract"
+            },
+            {
+              "label": "Sample Lawyer Engagement Letter",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/sample-lawyer-engagement-letter"
+            },
+            {
+              "label": "Free Non-Disclosure Agreement Template",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/non-disclosure-agreement"
+            },
+            {
+              "label": "Master Service Agreement Template",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/master-service-agreement"
+            },
+            {
+              "label": "Free Independent Contractor Agreement Template",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/independent-contractor-agreement"
+            },
+            {
+              "label": "Consulting Engagement Letter Sample",
+              "sourceHref": "https://www.hellobonsai.com/contract-template/consulting-engagement-letter-sample"
+            }
+          ]
+        },
+        {
+          "label": "Briefs",
+          "links": [
+            {
+              "label": "Brief templates",
+              "sourceHref": "https://www.hellobonsai.com/templates/briefs"
+            },
+            {
+              "label": "Free Creative Brief Template (Word)",
+              "sourceHref": "/brief-template/word"
+            },
+            {
+              "label": "Free Strategy Brief",
+              "sourceHref": "/brief-template/strategy"
+            },
+            {
+              "label": "Free Social Media Brief Template",
+              "sourceHref": "/brief-template/social-media"
+            },
+            {
+              "label": "Free Project Brief Template",
+              "sourceHref": "/brief-template/project"
+            },
+            {
+              "label": "Free Product Brief Template",
+              "sourceHref": "/brief-template/product"
+            },
+            {
+              "label": "Free Graphic Design Brief Template",
+              "sourceHref": "/brief-template/graphic-design"
+            },
+            {
+              "label": "Free Creative Brief Sample",
+              "sourceHref": "/brief-template/creative"
+            },
+            {
+              "label": "Free Design Brief (with Generator)",
+              "sourceHref": "/brief-template/design"
+            },
+            {
+              "label": "Free Consulting Brief",
+              "sourceHref": "/brief-template/consulting"
+            },
+            {
+              "label": "Free Concept Brief Template",
+              "sourceHref": "/brief-template/concept"
+            },
+            {
+              "label": "Free Client Brief Template",
+              "sourceHref": "/brief-template/client"
+            },
+            {
+              "label": "Free Agency Brief Template",
+              "sourceHref": "/brief-template/agency"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

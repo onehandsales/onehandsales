@@ -17,3 +17,7 @@
 [G01 결과](../RESULTS/G01_RESULT.md) 기준으로 기본 앱 전체가 메모리 목이다. 새로고침·새 탭은 세션/데이터 초기화, 같은 탭 재로그인은 저장값 유지·초안/캐시 폐기다. Reset은 세션·seed·clock·장애를 초기화한다. 가상 actor/workspace/revision으로 늦은 조회·저장을 격리한다.
 
 정상180ms·slow1500ms·다음 읽기/저장 1회 실패·빈 상태·제한을 개발 도구에서 선택한다. source는 FE 내부 함수이며 HTTP 경로가 없다. ScrollRestoration의 sessionStorage는 스크롤 전용이다. 후속 업무의 저장 수명은 이 정책을 출발점으로 사용하되 원본과 다른 경우 근거·영향을 명시한다.
+
+## G02 공개 입력·메뉴 정책
+
+[G02 결과](../RESULTS/G02_RESULT.md): 이메일·CTA source/returnTo는 PublicProvider 메모리다. 뒤로 복귀는 유지, 취소·가상 사용자/workspace/시나리오 revision·Reset·새로고침·새 탭에서는 폐기한다. 이메일을 URL/storage/log에 넣지 않는다. 메뉴/후기/홍보 선택은 화면 수명이며 재진입 초기값이다. 실제 가입/발송은 없다. 가입 목적지는 G10, 로그인 전체는 G11 대기 표시다. Reset은 `/components`로 돌아가며 `/`의 공개 랜딩에 개발 도구를 표시하지 않는다.

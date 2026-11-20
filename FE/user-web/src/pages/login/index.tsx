@@ -5,7 +5,7 @@ import { SessionPicker } from "@/features/preview";
 export function LoginPage() {
   return <section className="auth-preview">
     <p className="eyebrow">Local preview</p><h1>Choose a preview session</h1>
-    <p>No account or password needed.</p><SessionPicker />
+    <p>No account or password needed. The Bonsai login screen is pending G11.</p><SessionPicker />
     <Link to="/">Back to public preview</Link>
   </section>;
 }

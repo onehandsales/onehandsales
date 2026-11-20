@@ -1,15 +1,6 @@
-import { Link } from "react-router-dom";
+import { ClientExperience, FinanceOverview, LandingHero, ProductOverview, ReviewHighlights, SupportAndTrial, Testimonials } from "@/features/public-web";
 
-// 기능 : 기존 앱 대신 새 공개 경계에서 최소 검증 진입점을 제공한다.
+// 기능 : G02 공개 랜딩의 원본 순서대로 독립적인 홍보 섹션과 CTA를 조합한다.
 export function PublicPage() {
-  return <div className="page-content">
-    <p className="eyebrow">G01 · Foundation preview</p>
-    <h1>OneHand CRM</h1>
-    <p className="intro">A local workspace for previewing the new interface.</p>
-    <div className="boundary-links">
-      <Link className="boundary-link" to="/login"><strong>Workspace preview</strong><span>Choose a sample session</span></Link>
-      <Link className="boundary-link" to="/components"><strong>Interface components</strong><span>Buttons, fields and dialogs</span></Link>
-      <Link className="boundary-link" to="/share/sample"><strong>Shared preview</strong><span>Open without a session</span></Link>
-    </div>
-  </div>;
+  return <><LandingHero /><ProductOverview /><Testimonials /><FinanceOverview /><ClientExperience /><ReviewHighlights /><SupportAndTrial /></>;
 }

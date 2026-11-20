@@ -1,6 +1,6 @@
 # User Web 구현 기준과 검증
 
-상태: [G00 조사](../RESULTS/G00_RESULT.md)·[G01 기반 구현/검토](../RESULTS/G01_RESULT.md) 수행. 원본 폰트/아이콘 동일성은 대기다. 나머지 화면은 후속 Goal 범위다.
+상태: [G00 조사](../RESULTS/G00_RESULT.md)·[G01 기반](../RESULTS/G01_RESULT.md)·[R01 분석](../RESULTS/R01_RESULT.md)·[G02 랜딩 구현/검토](../RESULTS/G02_RESULT.md) 수행. 공개 Gellix 확인, G02 픽셀 동일성과 내부 원본 자산은 대기다. G03 이후 화면은 미착수다.
 
 ## 기반과 책임
 

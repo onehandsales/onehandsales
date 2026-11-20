@@ -13,10 +13,10 @@ const scenarios: readonly { value: Scenario; label: string }[] = [
 export function PreviewTools() {
   const { runtime, state } = usePreviewEnvironment();
   const navigate = useNavigate();
-  // 기능 : 모든 목 상태를 초기화하고 공개 시작 화면으로 돌아간다.
+  // 기능 : 모든 목 상태를 초기화하고 초기화 결과를 확인할 수 있는 공통 UI 화면으로 돌아간다.
   async function handleReset() {
     // 이유 : 보호 화면의 로그인 redirect가 초기화 후 공개 이동을 덮지 않게 먼저 경계를 벗어난다.
-    await navigate("/", { replace: true, flushSync: true });
+    await navigate("/components", { replace: true, flushSync: true });
     runtime.reset();
   }
   // 기능 : 선택한 시나리오를 허용 목록에서 검증하고 새 실행 범위를 연다.

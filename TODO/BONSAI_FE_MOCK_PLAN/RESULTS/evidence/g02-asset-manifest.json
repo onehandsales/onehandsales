@@ -1,0 +1,415 @@
+[
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635b95cfdbc1e264b35486ad_Symbols.svg",
+    "local": "/bonsai-public/635b95cfdbc1e264b35486ad_Symbols.svg",
+    "bytes": 6868,
+    "sha256": "eb181ad104915cbc936faba75a9f5f6b35c2fe9456c3ac4e4591dc19b8db7194",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635e8d2a61099e05c32ae3e6_background.webp",
+    "local": "/bonsai-public/635e8d2a61099e05c32ae3e6_background.webp",
+    "bytes": 15890,
+    "sha256": "a964e87d74b21defc80272a027699b7f12c039af1af324649d6e21889adde5f2",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1440,
+      636
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635ea64c78332f0a763c1063_users.svg",
+    "local": "/bonsai-public/635ea64c78332f0a763c1063_users.svg",
+    "bytes": 1584,
+    "sha256": "ff10b7cba503de8b21ea558696845c10a107d1f55d9cd18674bd9d12fc758035",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635ea64cb165568d5eef83b5_Paper.svg",
+    "local": "/bonsai-public/635ea64cb165568d5eef83b5_Paper.svg",
+    "bytes": 863,
+    "sha256": "1c44699d2d1f6106e6b9f8ff978ab9ef106bd1a14c81f9655a7dd8c2aa478639",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635ea64cb16556a9c6ef83b6_icon.svg",
+    "local": "/bonsai-public/635ea64cb16556a9c6ef83b6_icon.svg",
+    "bytes": 1411,
+    "sha256": "6a25830b036343c4d1adfd2c752e053d20fe9f64d7d1600475f2749c10e8f278",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635ea64cc7a1a7fca876b7cc_Send.svg",
+    "local": "/bonsai-public/635ea64cc7a1a7fca876b7cc_Send.svg",
+    "bytes": 438,
+    "sha256": "a81f929bcf90fb4eb7ab8c30440df6bc880950ca828d926a7fe1cd5515548728",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2970620b7e4dd73978_timer.svg",
+    "local": "/bonsai-public/635eaa2970620b7e4dd73978_timer.svg",
+    "bytes": 536,
+    "sha256": "ad7a0bc7c4911d997786f0d6e4acf4997204a8fff6c670424b849864f043c4c3",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa29e5fc3d0061c35664_receipt.svg",
+    "local": "/bonsai-public/635eaa29e5fc3d0061c35664_receipt.svg",
+    "bytes": 986,
+    "sha256": "192171f2dfbbdfc6f148750eaaf0c2fa9fa62f1886ff492ac264aaabf3c34c72",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2a23db298fb18c620e_Document.svg",
+    "local": "/bonsai-public/635eaa2a23db298fb18c620e_Document.svg",
+    "bytes": 894,
+    "sha256": "a18a8d9c612c7b0b9b07ffcecb9cbaf586a358e00eb38064b71d56bd2513933a",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2a6c0ae085946555e1_Calendar.svg",
+    "local": "/bonsai-public/635eaa2a6c0ae085946555e1_Calendar.svg",
+    "bytes": 1521,
+    "sha256": "b862a6c8b4a2ebc65784c76ae25b56a9251f301102d499d66333929553be0f7a",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2abc9d9c4882eb064b_Activity.svg",
+    "local": "/bonsai-public/635eaa2abc9d9c4882eb064b_Activity.svg",
+    "bytes": 649,
+    "sha256": "018a015b2e586d07c905a6395abb26b2750cca9cdb3854c34aea9811458bb065",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2ac917933c88461916_Paper%20(1).svg",
+    "local": "/bonsai-public/635eaa2ac917933c88461916_Paper-1.svg",
+    "bytes": 1161,
+    "sha256": "81cf1d039cecdadeb3a3170a58425c8a141efe8884f36af1b528239138571385",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635eaa2ae5fc3dcbfbc35665_Tick%20Square.svg",
+    "local": "/bonsai-public/635eaa2ae5fc3dcbfbc35665_Tick-Square.svg",
+    "bytes": 585,
+    "sha256": "a331beffcd7903457f7d1e14d17c4975288de9bb0e48802be2acf8b4ba662411",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635fbb776c5db6f1eef72e9e_Rectangle%203578.svg",
+    "local": "/bonsai-public/635fbb776c5db6f1eef72e9e_Rectangle-3578.svg",
+    "bytes": 198,
+    "sha256": "503a74552792bfa843100bb69b05e359ad19946b905a49b0de694f87e977a518",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635fe4f6f27b8975b546ae40_Frame%2012620.svg",
+    "local": "/bonsai-public/635fe4f6f27b8975b546ae40_Frame-12620.svg",
+    "bytes": 1010,
+    "sha256": "e273e06ab5fe9bc690f79c3a173f7c8efec71dd34cae1743207356c1b96ad32b",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/635fe519af5055bb9acb73f3_Frame%2012620%20(1).svg",
+    "local": "/bonsai-public/635fe519af5055bb9acb73f3_Frame-12620-1.svg",
+    "bytes": 1295,
+    "sha256": "6af18bff405e427623e613a79df464e7cbc7411f727b2a928654030b9234fa4a",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6363a910018ea661db9d2000_Group%2012489.svg",
+    "local": "/bonsai-public/6363a910018ea661db9d2000_Group-12489.svg",
+    "bytes": 436,
+    "sha256": "258a10db5e8fa6462f8ba41a0e0e8e4ae803856d8be28400c40e6d2806e0aada",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6368c5d2b1ee1c2a30bc9e9c_Vector%2089%20(Stroke).svg",
+    "local": "/bonsai-public/6368c5d2b1ee1c2a30bc9e9c_Vector-89-Stroke.svg",
+    "bytes": 286,
+    "sha256": "4875170e7110176201de46f314879081ee95aebe9b43a537ca75738550d88d5a",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6389da1badcfdb837145a175_invoices%20no%20bg.webp",
+    "local": "/bonsai-public/6389da1badcfdb837145a175_invoices-no-bg.webp",
+    "bytes": 20924,
+    "sha256": "d63aa22e276920408edc2b731c453ac00f6888991aba84464fa9a65f3ad58a41",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      718,
+      984
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6389ee080e53ef8151ede964_phone%20no%20bg.webp",
+    "local": "/bonsai-public/6389ee080e53ef8151ede964_phone-no-bg.webp",
+    "bytes": 47352,
+    "sha256": "19e9540513a5d7f24f2566c33c03bf12694f86d25f28c8895de44d2ef206f5c3",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      898,
+      1022
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638efda70cb055424da813c5_icon%20(1).svg",
+    "local": "/bonsai-public/638efda70cb055424da813c5_icon-1.svg",
+    "bytes": 641,
+    "sha256": "8a7a1e8b00c436f96a7866925173f0a6f3aa9bf342097b45501958c902671bde",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638efda7d12d6b316c408c99_icon%20(2).svg",
+    "local": "/bonsai-public/638efda7d12d6b316c408c99_icon-2.svg",
+    "bytes": 1769,
+    "sha256": "d6893458e68bd5bf9a10cf306ef3f8f9e2c192a48a2c388a9d1d53eb0b4b1154",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638efda8af44d4ca4a155818_icon.svg",
+    "local": "/bonsai-public/638efda8af44d4ca4a155818_icon.svg",
+    "bytes": 2296,
+    "sha256": "bf3db90523fc51e98d08723aab1176b81b93d7d3ff8bf699d5a88af2422e9e16",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638f02d2a0a3536eca508822_icon%20(3).svg",
+    "local": "/bonsai-public/638f02d2a0a3536eca508822_icon-3.svg",
+    "bytes": 1849,
+    "sha256": "4b93e97f01e2bfdb399df34fc7794034b917a5f4d14caa6b01fa4e063dffaabd",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/638f45d98fe0830d8223e439_pattern%20(1)%20(1).png",
+    "local": "/bonsai-public/638f45d98fe0830d8223e439_pattern.png",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "bytes": 50816,
+    "sha256": "3d4b00b7dcd96116e91e55d535ccc528e1d6b5de518e935b57ebd1851ea351c9",
+    "pixel_size": [
+      1180,
+      549
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/6398d9d0935e08a732d0c785_scheduling-preview.webp",
+    "local": "/bonsai-public/6398d9d0935e08a732d0c785_scheduling-preview.webp",
+    "bytes": 5098,
+    "sha256": "aecc0455b9ea0d8e7dec53e89840aca3f79b55ad2ee6d26a021cadd67d8310a9",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      440,
+      330
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/63c11d0d6cbc4abd27f2a38b_accounting-hp-nobg.webp",
+    "local": "/bonsai-public/63c11d0d6cbc4abd27f2a38b_accounting-hp-nobg.webp",
+    "bytes": 57488,
+    "sha256": "f4cfabf98de997b98a59e7f606df532424a13adf64bb0e2e52fa28613b49112f",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1500,
+      2012
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/649ea61eea45dd5ebd303113_card.svg",
+    "local": "/bonsai-public/649ea61eea45dd5ebd303113_card.svg",
+    "bytes": 502,
+    "sha256": "86e0218d93d79af64391b601379205647c5c8b0a41cf19e9af7d36349ec44af8",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64ec9c668a24d740103b39ac_Hero%20home%20girl.webp",
+    "local": "/bonsai-public/64ec9c668a24d740103b39ac_Hero-home-girl.webp",
+    "bytes": 84802,
+    "sha256": "07b13256b499b2a234aa03074bb5fd9cad386bfeee5b49d68b0f3adf90573e23",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      690,
+      952
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64ec9cfc2661cc2d53ac8204_branch.webp",
+    "local": "/bonsai-public/64ec9cfc2661cc2d53ac8204_branch.webp",
+    "bytes": 99602,
+    "sha256": "085c22c5a5a440bbdcb0a62c9da340f45298fdb41bde4cf23055f6c667fbdf64",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1210,
+      1310
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64ec9dea06433233487f6cba_phone%20hr.webp",
+    "local": "/bonsai-public/64ec9dea06433233487f6cba_phone-hr.webp",
+    "bytes": 49066,
+    "sha256": "81a3f72a37c45a877f954c05aef34867184c4965af6e57a9aa39fb0f81410521",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      559,
+      908
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64ec9e9a51e36108384d60f7_testimonial_hp_3.webp",
+    "local": "/bonsai-public/64ec9e9a51e36108384d60f7_testimonial_hp_3.webp",
+    "bytes": 26318,
+    "sha256": "bd051d23fe8095c9614a1bbf84a1e9189eba952035212a3b6f2240daf9e85dd0",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      602,
+      602
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64ec9e9afeae94b961247db6_testimonial_hp_1.webp",
+    "local": "/bonsai-public/64ec9e9afeae94b961247db6_testimonial_hp_1.webp",
+    "bytes": 36774,
+    "sha256": "1a91eb3919d472c3261b3fa2338d22500c10ae3a084f4fda7de33251ba06c1a8",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      602,
+      602
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64ec9e9b21f40568e0696406_testimonial_hp_2.webp",
+    "local": "/bonsai-public/64ec9e9b21f40568e0696406_testimonial_hp_2.webp",
+    "bytes": 25812,
+    "sha256": "76c822da9bd06ad06a488a2e8e13314bb39c27df1120096ed8c8d7cc32126923",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      602,
+      602
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64eca02fbeacdc4daa96c320_client%20crm.webp",
+    "local": "/bonsai-public/64eca02fbeacdc4daa96c320_client-crm.webp",
+    "bytes": 42776,
+    "sha256": "c0f29a64468860087c11448dd88cff306710aabce88c6d68969a0d09da0d50db",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1744,
+      1054
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64eca02fce92e53fa685f8de_doc%20templates.webp",
+    "local": "/bonsai-public/64eca02fce92e53fa685f8de_doc-templates.webp",
+    "bytes": 52418,
+    "sha256": "0440af8cec1737b38131fe05a258c21c00735d3356bef152b095dcd8072b8350",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1744,
+      1054
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64eca030802d51cccbd82b5e_white%20labelled.webp",
+    "local": "/bonsai-public/64eca030802d51cccbd82b5e_white-labelled.webp",
+    "bytes": 46052,
+    "sha256": "4bf4c74b382ee11a9178e9de75d95da66e2be1999a0fd6ae95fbb05327844c72",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1744,
+      1054
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64eca0c51400178adcc26e7f_customer%20support.webp",
+    "local": "/bonsai-public/64eca0c51400178adcc26e7f_customer-support.webp",
+    "bytes": 197320,
+    "sha256": "cd10aa32a377fa2335bd835a7c3a5e18f94815f44df1007f0245712a3320d351",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1080,
+      958
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64eca0c573e65d3aa24f227c_leaf_1.webp",
+    "local": "/bonsai-public/64eca0c573e65d3aa24f227c_leaf_1.webp",
+    "bytes": 4704,
+    "sha256": "6b657e00b4295d84d7d207c4301847b45d809487db9240c44150f81d4f8ecd89",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      443,
+      376
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/64f727fca255a9bff1d0b7a0_pattern_dark_bg.webp",
+    "local": "/bonsai-public/64f727fca255a9bff1d0b7a0_pattern_dark_bg.webp",
+    "bytes": 163966,
+    "sha256": "19690aafe4e820ea84269710638cc2f31b9e2ad2de98f96bf7e93b73c4fb381a",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      1144,
+      409
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/651297985c35c5047a250f7c_dashboard_bonsai.webp",
+    "local": "/bonsai-public/651297985c35c5047a250f7c_dashboard_bonsai.webp",
+    "bytes": 96288,
+    "sha256": "d52a14f18ea3793a8b6ad94bb237be2aeb898b661a01c56cede0a7407e354f5f",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      2600,
+      1592
+    ]
+  },
+  {
+    "url": "https://assets.website-files.com/635ac9564cc3682ce1536786/653035911b1e714deefb4d4c_Gellix-Normal.woff",
+    "local": "/bonsai-public/653035911b1e714deefb4d4c_Gellix-Normal.woff",
+    "bytes": 80092,
+    "sha256": "af620d88477c5bca887b5af285a0cc0de4a552c7b870213827507c63fe9324f1",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets.website-files.com/635ac9564cc3682ce1536786/653035911f18ee35a2b1dd77_Gellix-SemiBold.woff",
+    "local": "/bonsai-public/653035911f18ee35a2b1dd77_Gellix-SemiBold.woff",
+    "bytes": 57664,
+    "sha256": "ed829fd4cc8caf9593942fa327a57300fd20e1634a0088a633a565439b609729",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets.website-files.com/635ac9564cc3682ce1536786/6530359128193f7f2d0d4b83_Gellix-Bold.woff",
+    "local": "/bonsai-public/6530359128193f7f2d0d4b83_Gellix-Bold.woff",
+    "bytes": 57588,
+    "sha256": "84133f01b23cc80d825b597fe1e3028e09fea06c90ee88696f6ce79d616ca2b6",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets.website-files.com/635ac9564cc3682ce1536786/65303591c2e1c7dcac40f9b0_Gellix-Medium.woff",
+    "local": "/bonsai-public/65303591c2e1c7dcac40f9b0_Gellix-Medium.woff",
+    "bytes": 57524,
+    "sha256": "449b9794df729ce7cf76ed02054effc2ad2486ff33e32e61df5a607559479283",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인"
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/65af91044f83460397ae579b_stars.png",
+    "local": "/bonsai-public/65af91044f83460397ae579b_stars.png",
+    "bytes": 2977,
+    "sha256": "7bc51f6b15d67ba3dcd206c791cb9a2d10e246d57fb435a9effd7e8866713655",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      289,
+      54
+    ]
+  },
+  {
+    "url": "https://assets-global.website-files.com/635ac9564cc3682ce1536786/65b1179c7ed23201de2d1eaa_Group%2040038.png",
+    "local": "/bonsai-public/65b1179c7ed23201de2d1eaa_Group-40038.png",
+    "bytes": 21256,
+    "sha256": "65dc458da420d3dd8b6c505007cf8355c6a0056af812fd8f9668d899f8083fec",
+    "rights": "공식 공개 CDN 출처; 별도 재배포/상업 사용 허락 미확인",
+    "pixel_size": [
+      664,
+      127
+    ]
+  }
+]

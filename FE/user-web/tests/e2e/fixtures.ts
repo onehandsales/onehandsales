@@ -5,7 +5,7 @@ type NetworkEvidence = { requests: string[]; sockets: string[]; violations: stri
 
 export const test = base.extend<{ networkEvidence: NetworkEvidence }>({
   // 기능 : 모든 실제 요청을 관찰하고 API·외부 요청·실패·콘솔 오류를 가로채지 않고 검증한다.
-  networkEvidence: [async function observeNetwork({ page, baseURL }, use, testInfo) {
+  networkEvidence: [async function observeNetwork({ context, baseURL }, use, testInfo) {
     const evidence: NetworkEvidence = { requests: [], sockets: [], violations: [], failures: [], consoleErrors: [] };
     const origin = new URL(baseURL ?? "").origin;
     // 기능 : 실제 요청의 주소·방법·종류를 기록하고 정적 리소스 외 호출을 분류한다.
@@ -30,12 +30,17 @@ export const test = base.extend<{ networkEvidence: NetworkEvidence }>({
     function handlePageError(error: Error) { evidence.consoleErrors.push(error.message); }
     // 기능 : 콘솔 오류를 모아 테스트 종료 시 실패로 판정한다.
     function handleConsole(message: ConsoleMessage) { if (message.type() === "error") evidence.consoleErrors.push(message.text()); }
-    page.on("request", handleRequest);
-    page.on("websocket", handleSocket);
-    page.on("requestfailed", handleRequestFailure);
-    page.on("response", handleResponse);
-    page.on("pageerror", handlePageError);
-    page.on("console", handleConsole);
+    // 기능 : 같은 브라우저 컨텍스트에서 추가한 새 탭의 소켓·예외도 관찰한다.
+    function observePage(page: Page) {
+      page.on("websocket", handleSocket);
+      page.on("pageerror", handlePageError);
+      page.on("console", handleConsole);
+    }
+    context.on("request", handleRequest);
+    context.on("requestfailed", handleRequestFailure);
+    context.on("response", handleResponse);
+    context.on("page", observePage);
+    context.pages().forEach(observePage);
     await use(evidence);
     await testInfo.attach("network-evidence", { body: JSON.stringify(evidence, null, 2), contentType: "application/json" });
     expect(evidence.violations).toEqual([]);

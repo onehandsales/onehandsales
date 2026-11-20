@@ -40,7 +40,7 @@
 
 ## 4. 현재 구현과 적용 방식
 
-User Web은 사용자 요청으로 전면 교체했다. 공개·가상 인증·내부·공유 경계, 메모리 저장소와 공통 UI만 구현했다. 실제 AuthProvider·Supabase·Object/List/View·API client·정적 SEO 생성기는 제거했다. [G01 결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)에 코드 검토와 브라우저 증거를 기록했다. 원본 폰트/아이콘 동일성은 대기이며 전체 Bonsai 구현 완료가 아니다. Admin은 이번 변경 대상이 아니다.
+User Web은 사용자 요청으로 전면 교체했다. G01의 공개·가상 인증·내부·공유 경계, 메모리 저장소·공통 UI 위에 G02 랜딩·공통 메뉴를 구현했다. 실제 AuthProvider·Supabase·Object/List/View·API client·정적 SEO 생성기는 제거했다. [G01 결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)와 [G02 결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)에 현재 검토·브라우저 증거가 있다. 공개 웹 Gellix WOFF는 확인했지만 내부 앱 폰트/아이콘 및 G02 픽셀 동일성은 대기이며 전체 Bonsai 구현 완료가 아니다. Admin은 이번 변경 대상이 아니다.
 
 새 규칙은 신규·수정 범위부터 적용한다. 기존 파일의 주석이나 폴더를 일괄 변경하려면 별도 작업 범위를 정한다. 파일 이동만으로 기능 완료를 보고하지 않는다.
 

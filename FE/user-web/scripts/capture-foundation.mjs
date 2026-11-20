@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const output = path.join(repository, "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/evidence");
+const output = path.join(repository, "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/evidence/g02-foundation-regression");
 const baseURL = process.env.PREVIEW_URL ?? "http://127.0.0.1:5173";
 if (!["127.0.0.1", "localhost"].includes(new URL(baseURL).hostname)) throw new Error("Local preview URL required");
 await mkdir(output, { recursive: true });
@@ -16,7 +16,7 @@ try {
   await page.goto(baseURL);
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: path.join(output, "g01-public.png") });
-  await page.getByRole("link", { name: "Components", exact: true }).click();
+  await page.goto(new URL("/components", baseURL).href);
   await page.screenshot({ path: path.join(output, "g01-components.png") });
   await page.getByRole("button", { name: "Add Client", exact: true }).click();
   const dialog = page.getByRole("dialog");
@@ -60,7 +60,7 @@ try {
   // 검증 도구의 장애·세션 상태는 캡처 종료 전에 정상 초기값으로 복원한다.
   await page.getByText("Preview controls", { exact: true }).click();
   await page.getByRole("button", { name: "Reset preview" }).click();
-  await page.waitForURL(baseURL + "/");
+  await page.waitForURL(baseURL + "/components");
   await writeFile(path.join(output, "g01-visual-metrics.json"), JSON.stringify({ ...metrics, errors }, null, 2));
   if (errors.length) throw new Error("Browser errors occurred");
   process.stdout.write(JSON.stringify({ output, ...metrics }) + "\n");

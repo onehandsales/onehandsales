@@ -1,0 +1,258 @@
+{
+  "browser": "148.0.7778.96",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "deviceScaleFactor": 1,
+  "frames": [
+    {
+      "name": "hero",
+      "selector": null,
+      "targetTop": 0,
+      "scrollY": 0,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-01",
+      "selector": ".public-dashboard-promo",
+      "targetTop": 130,
+      "scrollY": 726,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-02",
+      "selector": ".public-product-groups",
+      "targetTop": 237,
+      "scrollY": 1417,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-03",
+      "selector": ".public-testimonials",
+      "targetTop": 291,
+      "scrollY": 1851,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-04",
+      "selector": ".public-testimonials",
+      "targetTop": 291,
+      "scrollY": 1851,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-05",
+      "selector": ".public-finance-art",
+      "targetTop": 181,
+      "scrollY": 2669,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-06",
+      "selector": ".public-experience-art",
+      "targetTop": 172,
+      "scrollY": 3784,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-07",
+      "selector": ".public-reviews h2",
+      "targetTop": 150,
+      "scrollY": 4599,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-08",
+      "selector": ".public-support",
+      "targetTop": 242,
+      "scrollY": 5173,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-09",
+      "selector": ".public-trial-banner",
+      "targetTop": 409,
+      "scrollY": 5619,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-10",
+      "selector": ".public-footer",
+      "targetTop": 169,
+      "scrollY": 6161,
+      "heading": {
+        "font": "\"Bonsai Public Gellix\", Arial, sans-serif",
+        "size": "60px",
+        "line": "60px",
+        "weight": "700"
+      }
+    },
+    {
+      "name": "step-11",
+      "scrollY": 6269
+    }
+  ],
+  "requests": [
+    "GET document http://127.0.0.1:5173/",
+    "GET script http://127.0.0.1:5173/@vite/client",
+    "GET font http://127.0.0.1:5173/fonts/outfit-latin-variable.ttf",
+    "GET script http://127.0.0.1:5173/src/main.tsx?t=1795164267805",
+    "GET script http://127.0.0.1:5173/@react-refresh",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=6fae4612",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/react.js?v=6fae4612",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=940477be",
+    "GET script http://127.0.0.1:5173/src/app/app.tsx?t=1795164267805",
+    "GET script http://127.0.0.1:5173/src/styles/global.css?t=1795163855208",
+    "GET script http://127.0.0.1:5173/node_modules/.pnpm/vite@7.3.5_@types+node@24.13.0/node_modules/vite/dist/client/env.mjs",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/chunk-P7SXMSPO.js?v=cb3aa345",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/chunk-G3PMV62Z.js?v=cb3aa345",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/react-router-dom.js?v=721311b2",
+    "GET script http://127.0.0.1:5173/src/app/providers/app-providers.tsx?t=1795163855153",
+    "GET script http://127.0.0.1:5173/src/app/router/router.tsx?t=1795164267805",
+    "GET script http://127.0.0.1:5173/src/features/preview/data/preview-context.ts",
+    "GET script http://127.0.0.1:5173/src/mocks/create-preview-runtime.ts?t=1795160576639",
+    "GET script http://127.0.0.1:5173/src/features/public-web/index.ts",
+    "GET script http://127.0.0.1:5173/src/app/layouts/preview-frame.tsx?t=1795163855208",
+    "GET script http://127.0.0.1:5173/src/app/layouts/route-frame.tsx",
+    "GET script http://127.0.0.1:5173/src/app/layouts/public-layout.tsx?t=1795164267805",
+    "GET script http://127.0.0.1:5173/src/pages/public-pending/index.tsx",
+    "GET script http://127.0.0.1:5173/src/pages/public/index.tsx?t=1795163855141",
+    "GET script http://127.0.0.1:5173/src/pages/login/index.tsx?t=1795163855205",
+    "GET script http://127.0.0.1:5173/src/pages/workspace/index.tsx?t=1795163855205",
+    "GET script http://127.0.0.1:5173/src/pages/shared/index.tsx?t=1795163855205",
+    "GET script http://127.0.0.1:5173/src/pages/components/index.tsx?t=1795160576642",
+    "GET script http://127.0.0.1:5173/src/pages/not-found/index.tsx",
+    "GET script http://127.0.0.1:5173/src/app/router/route-boundaries.tsx?t=1795163855205",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/chunk-JVZ7DS6T.js?v=cb3aa345",
+    "GET script http://127.0.0.1:5173/src/features/preview/model/preview-types.ts",
+    "GET script http://127.0.0.1:5173/src/mocks/preview-seed.ts",
+    "GET script http://127.0.0.1:5173/src/features/public-web/components/public-provider.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/components/public-header.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/components/public-footer.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/components/landing-hero.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/components/landing-sections.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/model/public-destinations.ts",
+    "GET script http://127.0.0.1:5173/src/features/public-web/data/public-context.ts",
+    "GET script http://127.0.0.1:5173/src/features/preview/index.ts?t=1795163855205",
+    "GET script http://127.0.0.1:5173/src/styles/public-web.css?t=1795164267805",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/lucide-react.js?v=55db3f7b",
+    "GET script http://127.0.0.1:5173/src/components/ui/button.tsx",
+    "GET script http://127.0.0.1:5173/src/components/ui/status-panel.tsx",
+    "GET script http://127.0.0.1:5173/src/components/ui/dialog.tsx?t=1795160576642",
+    "GET script http://127.0.0.1:5173/src/components/ui/field.tsx",
+    "GET script http://127.0.0.1:5173/src/app/providers/query-scope.tsx?t=1795160576661",
+    "GET script http://127.0.0.1:5173/src/features/public-web/data/navigation-content.json?import",
+    "GET script http://127.0.0.1:5173/src/features/public-web/data/public-assets.ts",
+    "GET script http://127.0.0.1:5173/src/features/public-web/components/public-link.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/hooks/use-public-menu.ts",
+    "GET script http://127.0.0.1:5173/src/features/preview/hooks/use-preview-items.ts",
+    "GET script http://127.0.0.1:5173/src/features/preview/hooks/use-shared-preview.ts",
+    "GET script http://127.0.0.1:5173/src/features/preview/components/item-editor.tsx?t=1795160576678",
+    "GET script http://127.0.0.1:5173/src/features/preview/components/preview-tools.tsx?t=1795163855205",
+    "GET script http://127.0.0.1:5173/src/features/preview/components/session-picker.tsx",
+    "GET script http://127.0.0.1:5173/src/features/public-web/data/landing-content.ts",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/clsx.js?v=b0d0bd25",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/@tanstack_react-query.js?v=7a992f93",
+    "GET script http://127.0.0.1:5173/src/features/preview/data/preview-keys.ts",
+    "GET script http://127.0.0.1:5173/src/features/preview/hooks/use-preview-editor.ts?t=1795160576664",
+    "GET script http://127.0.0.1:5173/src/features/preview/model/preview-return-path.ts",
+    "GET script http://127.0.0.1:5173/node_modules/.vite/deps/chunk-RJIM3PZM.js?v=cb3aa345",
+    "GET image http://127.0.0.1:5173/bonsai-public/635b95cfdbc1e264b35486ad_Symbols.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/6363a910018ea661db9d2000_Group-12489.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/65af91044f83460397ae579b_stars.png",
+    "GET image http://127.0.0.1:5173/bonsai-public/65b1179c7ed23201de2d1eaa_Group-40038.png",
+    "GET image http://127.0.0.1:5173/bonsai-public/64ec9cfc2661cc2d53ac8204_branch.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/64ec9c668a24d740103b39ac_Hero-home-girl.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/638efda7d12d6b316c408c99_icon-2.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/638efda70cb055424da813c5_icon-1.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/638efda8af44d4ca4a155818_icon.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/651297985c35c5047a250f7c_dashboard_bonsai.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/64ec9dea06433233487f6cba_phone-hr.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/635ea64cc7a1a7fca876b7cc_Send.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa2a23db298fb18c620e_Document.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa2a6c0ae085946555e1_Calendar.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635ea64cb165568d5eef83b5_Paper.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635ea64c78332f0a763c1063_users.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635ea64cb16556a9c6ef83b6_icon.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa2970620b7e4dd73978_timer.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa2ae5fc3dcbfbc35665_Tick-Square.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa2ac917933c88461916_Paper-1.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa2abc9d9c4882eb064b_Activity.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635eaa29e5fc3d0061c35664_receipt.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/649ea61eea45dd5ebd303113_card.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/64ec9e9b21f40568e0696406_testimonial_hp_2.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/6389da1badcfdb837145a175_invoices-no-bg.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/638f02d2a0a3536eca508822_icon-3.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/6368c5d2b1ee1c2a30bc9e9c_Vector-89-Stroke.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/64eca02fbeacdc4daa96c320_client-crm.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/64eca02fce92e53fa685f8de_doc-templates.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/64eca030802d51cccbd82b5e_white-labelled.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/64eca0c51400178adcc26e7f_customer-support.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/64eca0c573e65d3aa24f227c_leaf_1.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/635fbb776c5db6f1eef72e9e_Rectangle-3578.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635fe4f6f27b8975b546ae40_Frame-12620.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635fe519af5055bb9acb73f3_Frame-12620-1.svg",
+    "GET image http://127.0.0.1:5173/bonsai-public/635e8d2a61099e05c32ae3e6_background.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/638f38e843bb2e65a299d56b_pattern.svg",
+    "GET font http://127.0.0.1:5173/bonsai-public/65303591c2e1c7dcac40f9b0_Gellix-Medium.woff",
+    "GET font http://127.0.0.1:5173/bonsai-public/6530359128193f7f2d0d4b83_Gellix-Bold.woff",
+    "GET font http://127.0.0.1:5173/bonsai-public/653035911b1e714deefb4d4c_Gellix-Normal.woff",
+    "GET font http://127.0.0.1:5173/bonsai-public/653035911f18ee35a2b1dd77_Gellix-SemiBold.woff",
+    "GET image http://127.0.0.1:5173/bonsai-public/64ec9e9a51e36108384d60f7_testimonial_hp_3.webp",
+    "GET image http://127.0.0.1:5173/bonsai-public/6398d9d0935e08a732d0c785_scheduling-preview.webp",
+    "GET font http://127.0.0.1:5173/fonts/outfit-latin-variable.ttf"
+  ],
+  "violations": [],
+  "errors": []
+}

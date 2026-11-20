@@ -1,6 +1,6 @@
 # User Web 구조
 
-2026-11-20 G01 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [실행 결과와 검토](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)를 기준으로 현재 구현과 후속 설계를 구분한다.
+2026-11-20 G02 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
 
 ## 책임과 의존
 
@@ -15,6 +15,7 @@ main → app/providers + router + layouts
 | --- | --- |
 | app | runtime 생성, scope별 QueryClient, 실제 Router, 화면 경계 조합 |
 | pages | route 해석·feature 조합·페이지 레이아웃 |
+| features/public-web | 공개 메뉴·랜딩·로컬 목적지·이메일 인계. provider가 초안, hook이 메뉴, 각 섹션이 선택 상태를 소유 |
 | features/preview/components | 가상 세션·편집 폼·개발 도구 |
 | features/preview/hooks | 조회·초안·변경 snapshot·취소·재시도 |
 | features/preview/data·model | FE 내부 공급자 타입·scope·query key·표시 타입 |
@@ -37,5 +38,7 @@ store가 저장값, Query가 조회 캐시, editor hook이 초안을 소유한�
 공개 /, 가상 인증 /login, 내부 /app, 외부 읽기 /share, 표본 /components를 실제 라우터로 분리했다. 주소를 보호한다는 것은 가상 UI 검증이며 보안 인증이 아니다.
 
 실제 인증 provider·Supabase·HTTP client·API env 연결은 없다. 개발 서버는 정적 리소스와 HMR, production은 정적 리소스만 요청한다. 테스트에서 요청을 가로채어 미연결을 주장하지 않는다.
+
+G02의 RouteFrame이 공개·기반 경계의 초점/스크롤을 조정한다. PublicLayout은 Gellix/CSS·공통 메뉴/푸터를 조합하고 PreviewFrame은 G01 개발 도구를 유지한다. PublicProvider의 메모리 이메일·CTA는 가상 scope revision에 따라 폐기한다. 공개 페이지에 업무 Query나 HTTP adapter를 도입하지 않았다. sourceHref와 local path/Goal은 목적지 색인에서 구분한다.
 
 Vitest는 저장소 수명·scope·취소·경합을, Playwright는 실제 navigation·폼·실패·초점·네트워크를 검증한다. 자세한 명령과 현재 범위는 [README](README.md)에 기록한다.
