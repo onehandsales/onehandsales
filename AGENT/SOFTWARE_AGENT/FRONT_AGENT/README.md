@@ -7,12 +7,12 @@
 ## 1. 지금 적용할 방향
 
 - 제품·UX 기준은 Bonsai다. [PM 036](../../PM_AGENT/DECISIONS/036_bonsai_benchmark_transition.md), [UX 025](../../UXUI_AGENT/DECISIONS/025_uxui_bonsai_reference.md)를 먼저 읽는다.
-- 신규 Bonsai 업무 화면은 **mock으로 전체 화면과 상호작용을 먼저 구현**한다. FE 검증과 공식 문서 대조 후 우리 DB/API 계약을 확정하여 연결한다.
+- 현재는 **Bonsai UX/UI만 전체 재현하는 단계**다. Gummble 시안을 기준으로 폰트·크기·색상·배치·플로우를 따르며, 인증을 포함한 모든 실제 API 연결과 Backend·DB 설계는 진행하지 않는다. [결정 006](DECISIONS/006_bonsai_uxui_only_phase.md)을 우선 적용한다.
 - 컴포넌트 책임, 상태 소유권, 데이터 접근 경계를 분리한다. 목록·상세·편집의 mock 데이터도 일관되게 동작해야 한다.
 - 새로 작성하거나 동작을 수정하는 컴포넌트·함수·hook은 **한글 책임 주석**을 작성한다.
 - 현재 구현과 목표를 구분한다. 문서 개정은 기존 FE의 실제 API 연결 해제나 DB 변경을 의미하지 않는다.
 
-적용 결정과 이전 규칙의 관계는 [결정 005](DECISIONS/005_web_mock_first_standard.md)를 따른다.
+웹 구조·목·한글 주석의 기본 규칙은 [결정 005](DECISIONS/005_web_mock_first_standard.md), 현재 UX/UI 전용 범위와 API 미연결 기준은 [결정 006](DECISIONS/006_bonsai_uxui_only_phase.md)을 따른다.
 
 ## 2. 작업 전 읽는 순서
 

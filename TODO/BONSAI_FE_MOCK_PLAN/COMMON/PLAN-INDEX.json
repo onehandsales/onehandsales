@@ -1,0 +1,6260 @@
+{
+  "date": "2026-11-20",
+  "status": "계획 문서 작성; 구현·추가 분석 미착수",
+  "goals": [
+    {
+      "id": "G00",
+      "group": "기반",
+      "title": "근거·버전·범위 대응표",
+      "flows": [],
+      "old_id": "G00",
+      "old_number": 0,
+      "dependencies": [],
+      "research": [],
+      "surface": "공통 기반",
+      "status": "미착수",
+      "flow_scope": []
+    },
+    {
+      "id": "G01",
+      "group": "기반",
+      "title": "독립 mock·공통 컴포넌트",
+      "flows": [],
+      "old_id": "G01",
+      "old_number": 1,
+      "dependencies": [
+        "G00"
+      ],
+      "research": [],
+      "surface": "공통 기반",
+      "status": "미착수",
+      "flow_scope": []
+    },
+    {
+      "id": "G02",
+      "group": "공개 웹",
+      "title": "랜딩·공통 메뉴",
+      "flows": [
+        82
+      ],
+      "old_id": "G75",
+      "old_number": 75,
+      "dependencies": [
+        "G01"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 82,
+          "goal": "G02",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "id": "G03",
+      "group": "공개 웹",
+      "title": "고객군·업종·CRM 소개",
+      "flows": [
+        64,
+        67,
+        91
+      ],
+      "old_id": "G76",
+      "old_number": 76,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 64,
+          "goal": "G03",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 67,
+          "goal": "G03",
+          "first": 1,
+          "last": 8
+        },
+        {
+          "flow_number": 91,
+          "goal": "G03",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G04",
+      "group": "공개 웹",
+      "title": "가격·후기",
+      "flows": [
+        89,
+        110
+      ],
+      "old_id": "G77",
+      "old_number": 77,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 89,
+          "goal": "G04",
+          "first": 1,
+          "last": 3
+        },
+        {
+          "flow_number": 110,
+          "goal": "G04",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G05",
+      "group": "공개 웹",
+      "title": "블로그·검색·상세",
+      "flows": [
+        5,
+        6,
+        7
+      ],
+      "old_id": "G78",
+      "old_number": 78,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 5,
+          "goal": "G05",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 6,
+          "goal": "G05",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 7,
+          "goal": "G05",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G06",
+      "group": "공개 웹",
+      "title": "공개 템플릿·상세·파일 형식",
+      "flows": [
+        55,
+        56,
+        69
+      ],
+      "old_id": "G79",
+      "old_number": 79,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 55,
+          "goal": "G06",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 56,
+          "goal": "G06",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 69,
+          "goal": "G06",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "id": "G07",
+      "group": "공개 웹",
+      "title": "공개 청구서 생성기",
+      "flows": [
+        134
+      ],
+      "old_id": "G80",
+      "old_number": 80,
+      "dependencies": [
+        "G01",
+        "G06"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 134,
+          "goal": "G07",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G08",
+      "group": "공개 웹",
+      "title": "도움말·기사·문의",
+      "flows": [
+        24,
+        65,
+        66
+      ],
+      "old_id": "G81",
+      "old_number": 81,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 24,
+          "goal": "G08",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 65,
+          "goal": "G08",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 66,
+          "goal": "G08",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G09",
+      "group": "공개 웹",
+      "title": "제휴·채용·정책 안내",
+      "flows": [
+        4,
+        18,
+        90,
+        132
+      ],
+      "old_id": "G82",
+      "old_number": 82,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "공개 웹",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 4,
+          "goal": "G09",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 18,
+          "goal": "G09",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 90,
+          "goal": "G09",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 132,
+          "goal": "G09",
+          "first": 1,
+          "last": 1
+        }
+      ]
+    },
+    {
+      "id": "G10",
+      "group": "인증",
+      "title": "회원가입",
+      "flows": [
+        86
+      ],
+      "old_id": "G05",
+      "old_number": 5,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R02"
+      ],
+      "surface": "인증·초대",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 86,
+          "goal": "G10",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G11",
+      "group": "인증",
+      "title": "로그인·로그아웃",
+      "flows": [
+        83,
+        85
+      ],
+      "old_id": "G03",
+      "old_number": 3,
+      "dependencies": [
+        "G01",
+        "G10"
+      ],
+      "research": [
+        "R02"
+      ],
+      "surface": "인증·초대",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 83,
+          "goal": "G11",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 85,
+          "goal": "G11",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "id": "G12",
+      "group": "인증",
+      "title": "비밀번호 재설정",
+      "flows": [
+        84
+      ],
+      "old_id": "G04",
+      "old_number": 4,
+      "dependencies": [
+        "G01",
+        "G11"
+      ],
+      "research": [
+        "R02"
+      ],
+      "surface": "인증·초대",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 84,
+          "goal": "G12",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G13",
+      "group": "인증",
+      "title": "사업 설정 온보딩",
+      "flows": [
+        87
+      ],
+      "old_id": "G06",
+      "old_number": 6,
+      "dependencies": [
+        "G01",
+        "G10"
+      ],
+      "research": [
+        "R02"
+      ],
+      "surface": "인증·초대",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 87,
+          "goal": "G13",
+          "first": 1,
+          "last": 16
+        }
+      ]
+    },
+    {
+      "id": "G14",
+      "group": "기반",
+      "title": "앱 셸·사이드바·404",
+      "flows": [
+        1,
+        53
+      ],
+      "old_id": "G02",
+      "old_number": 2,
+      "dependencies": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13"
+      ],
+      "research": [],
+      "surface": "공통 기반",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 1,
+          "goal": "G14",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 53,
+          "goal": "G14",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G15",
+      "group": "운영 회사",
+      "title": "회사 정보·로고·공개 프로필",
+      "flows": [
+        38,
+        39,
+        118
+      ],
+      "old_id": "G07",
+      "old_number": 7,
+      "dependencies": [
+        "G01",
+        "G13"
+      ],
+      "research": [],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 38,
+          "goal": "G15",
+          "first": 1,
+          "last": 8
+        },
+        {
+          "flow_number": 39,
+          "goal": "G15",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 118,
+          "goal": "G15",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G16",
+      "group": "운영 회사",
+      "title": "문서 브랜드 기본값",
+      "flows": [
+        119
+      ],
+      "old_id": "G08",
+      "old_number": 8,
+      "dependencies": [
+        "G01",
+        "G15"
+      ],
+      "research": [],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 119,
+          "goal": "G16",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G17",
+      "group": "팀",
+      "title": "멤버 초대·대기 초대 제거",
+      "flows": [
+        68,
+        123
+      ],
+      "old_id": "G09",
+      "old_number": 9,
+      "dependencies": [
+        "G01",
+        "G15"
+      ],
+      "research": [
+        "R02"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 68,
+          "goal": "G17",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 123,
+          "goal": "G17",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G18",
+      "group": "팀",
+      "title": "초대 수락·협업자 접근",
+      "flows": [
+        2
+      ],
+      "old_id": "G10",
+      "old_number": 10,
+      "dependencies": [
+        "G01",
+        "G17"
+      ],
+      "research": [
+        "R02"
+      ],
+      "surface": "인증·초대",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 2,
+          "goal": "G18",
+          "first": 1,
+          "last": 13
+        }
+      ]
+    },
+    {
+      "id": "G19",
+      "group": "고객",
+      "title": "목록·신규 고객·상세",
+      "flows": [
+        3,
+        21
+      ],
+      "old_id": "G11",
+      "old_number": 11,
+      "dependencies": [
+        "G01",
+        "G15"
+      ],
+      "research": [
+        "R03"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 3,
+          "goal": "G19",
+          "first": 1,
+          "last": 7
+        },
+        {
+          "flow_number": 21,
+          "goal": "G19",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G20",
+      "group": "고객",
+      "title": "고객 필드·이미지",
+      "flows": [
+        19,
+        23
+      ],
+      "old_id": "G12",
+      "old_number": 12,
+      "dependencies": [
+        "G01",
+        "G19"
+      ],
+      "research": [
+        "R03",
+        "R20"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 19,
+          "goal": "G20",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 23,
+          "goal": "G20",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G21",
+      "group": "프로젝트",
+      "title": "두 진입점의 프로젝트 생성",
+      "flows": [
+        20,
+        107
+      ],
+      "old_id": "G13",
+      "old_number": 13,
+      "dependencies": [
+        "G01",
+        "G17",
+        "G19"
+      ],
+      "research": [
+        "R03"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 20,
+          "goal": "G21",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 107,
+          "goal": "G21",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G22",
+      "group": "프로젝트",
+      "title": "보드·표 전환",
+      "flows": [
+        106,
+        109
+      ],
+      "old_id": "G14",
+      "old_number": 14,
+      "dependencies": [
+        "G01",
+        "G21"
+      ],
+      "research": [
+        "R20"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 106,
+          "goal": "G22",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 109,
+          "goal": "G22",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G23",
+      "group": "프로젝트",
+      "title": "단계 이동·태그",
+      "flows": [
+        104,
+        105,
+        108
+      ],
+      "old_id": "G15",
+      "old_number": 15,
+      "dependencies": [
+        "G01",
+        "G22"
+      ],
+      "research": [
+        "R05",
+        "R20"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 104,
+          "goal": "G23",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 105,
+          "goal": "G23",
+          "first": 1,
+          "last": 9
+        },
+        {
+          "flow_number": 108,
+          "goal": "G23",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G24",
+      "group": "프로젝트",
+      "title": "프로젝트 상세·이름·설정",
+      "flows": [
+        101,
+        102,
+        103
+      ],
+      "old_id": "G16",
+      "old_number": 16,
+      "dependencies": [
+        "G01",
+        "G21",
+        "G23"
+      ],
+      "research": [
+        "R05"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 101,
+          "goal": "G24",
+          "first": 1,
+          "last": 6
+        },
+        {
+          "flow_number": 102,
+          "goal": "G24",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 103,
+          "goal": "G24",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G25",
+      "group": "작업",
+      "title": "전체·프로젝트 작업 보드와 생성",
+      "flows": [
+        95,
+        129
+      ],
+      "old_id": "G17",
+      "old_number": 17,
+      "dependencies": [
+        "G01",
+        "G24"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 95,
+          "goal": "G25",
+          "first": 1,
+          "last": 6
+        },
+        {
+          "flow_number": 129,
+          "goal": "G25",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G26",
+      "group": "작업",
+      "title": "하위 작업·담당자",
+      "flows": [
+        94,
+        99
+      ],
+      "old_id": "G18",
+      "old_number": 18,
+      "dependencies": [
+        "G01",
+        "G25"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 94,
+          "goal": "G26",
+          "first": 1,
+          "last": 10
+        },
+        {
+          "flow_number": 99,
+          "goal": "G26",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G27",
+      "group": "작업",
+      "title": "댓글·활동",
+      "flows": [
+        92
+      ],
+      "old_id": "G19",
+      "old_number": 19,
+      "dependencies": [
+        "G01",
+        "G25"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 92,
+          "goal": "G27",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G28",
+      "group": "작업",
+      "title": "상태 정의·완료 표시",
+      "flows": [
+        54,
+        100
+      ],
+      "old_id": "G20",
+      "old_number": 20,
+      "dependencies": [
+        "G01",
+        "G25"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 54,
+          "goal": "G28",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 100,
+          "goal": "G28",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G29",
+      "group": "작업",
+      "title": "보관·삭제",
+      "flows": [
+        96,
+        98
+      ],
+      "old_id": "G21",
+      "old_number": 21,
+      "dependencies": [
+        "G01",
+        "G26",
+        "G27"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 96,
+          "goal": "G29",
+          "first": 1,
+          "last": 3
+        },
+        {
+          "flow_number": 98,
+          "goal": "G29",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G30",
+      "group": "작업",
+      "title": "작업 템플릿 작성",
+      "flows": [
+        130,
+        131
+      ],
+      "old_id": "G22",
+      "old_number": 22,
+      "dependencies": [
+        "G01",
+        "G25"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 130,
+          "goal": "G30",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 131,
+          "goal": "G30",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "id": "G31",
+      "group": "작업",
+      "title": "작업 템플릿 적용",
+      "flows": [
+        128
+      ],
+      "old_id": "G23",
+      "old_number": 23,
+      "dependencies": [
+        "G01",
+        "G21",
+        "G30"
+      ],
+      "research": [
+        "R06"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 128,
+          "goal": "G31",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "id": "G32",
+      "group": "시간",
+      "title": "전역·작업 타이머",
+      "flows": [
+        97,
+        125
+      ],
+      "old_id": "G24",
+      "old_number": 24,
+      "dependencies": [
+        "G01",
+        "G25"
+      ],
+      "research": [
+        "R07"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 97,
+          "goal": "G32",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 125,
+          "goal": "G32",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G33",
+      "group": "시간",
+      "title": "수동 시간 입력",
+      "flows": [
+        93
+      ],
+      "old_id": "G25",
+      "old_number": 25,
+      "dependencies": [
+        "G01",
+        "G32"
+      ],
+      "research": [
+        "R07"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 93,
+          "goal": "G33",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G34",
+      "group": "시간",
+      "title": "시간 목록·인사이트",
+      "flows": [
+        133
+      ],
+      "old_id": "G26",
+      "old_number": 26,
+      "dependencies": [
+        "G01",
+        "G33"
+      ],
+      "research": [
+        "R07"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 133,
+          "goal": "G34",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G35",
+      "group": "서비스",
+      "title": "서비스 라이브러리·템플릿 복사",
+      "flows": [
+        114,
+        115
+      ],
+      "old_id": "G27",
+      "old_number": 27,
+      "dependencies": [
+        "G01",
+        "G19"
+      ],
+      "research": [
+        "R08"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 114,
+          "goal": "G35",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 115,
+          "goal": "G35",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G36",
+      "group": "제안서",
+      "title": "템플릿 선택·초안 생성",
+      "flows": [
+        30
+      ],
+      "old_id": "G28",
+      "old_number": 28,
+      "dependencies": [
+        "G01",
+        "G16",
+        "G21",
+        "G35"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 30,
+          "goal": "G36",
+          "first": 1,
+          "last": 12
+        }
+      ]
+    },
+    {
+      "id": "G37",
+      "group": "제안서",
+      "title": "테마·헤더 스타일",
+      "flows": [
+        32,
+        34
+      ],
+      "old_id": "G29",
+      "old_number": 29,
+      "dependencies": [
+        "G01",
+        "G36"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 32,
+          "goal": "G37",
+          "first": 1,
+          "last": 6
+        },
+        {
+          "flow_number": 34,
+          "goal": "G37",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "id": "G38",
+      "group": "제안서",
+      "title": "만료 설정·발송",
+      "flows": [
+        36,
+        37
+      ],
+      "old_id": "G30",
+      "old_number": 30,
+      "dependencies": [
+        "G01",
+        "G37"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 36,
+          "goal": "G38",
+          "first": 1,
+          "last": 8
+        },
+        {
+          "flow_number": 37,
+          "goal": "G38",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G39",
+      "group": "제안서",
+      "title": "내부 수락 처리·보관",
+      "flows": [
+        31,
+        35
+      ],
+      "old_id": "G31",
+      "old_number": 31,
+      "dependencies": [
+        "G01",
+        "G38"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 31,
+          "goal": "G39",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 35,
+          "goal": "G39",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G40",
+      "group": "계약",
+      "title": "기본 정보·업무 범위",
+      "flows": [
+        26
+      ],
+      "old_id": "G32",
+      "old_number": 32,
+      "dependencies": [
+        "G01",
+        "G16",
+        "G21"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 26,
+          "goal": "G40",
+          "first": 1,
+          "last": 12
+        }
+      ]
+    },
+    {
+      "id": "G41",
+      "group": "계약",
+      "title": "지급 조건·청구 설정·초안",
+      "flows": [
+        26
+      ],
+      "old_id": "G33",
+      "old_number": 33,
+      "dependencies": [
+        "G01",
+        "G40"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 26,
+          "goal": "G41",
+          "first": 13,
+          "last": 19
+        }
+      ]
+    },
+    {
+      "id": "G42",
+      "group": "계약",
+      "title": "초안 투어·편집 방식 전환",
+      "flows": [
+        27,
+        28
+      ],
+      "old_id": "G34",
+      "old_number": 34,
+      "dependencies": [
+        "G01",
+        "G41"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 27,
+          "goal": "G42",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 28,
+          "goal": "G42",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G43",
+      "group": "계약",
+      "title": "작성자 서명",
+      "flows": [
+        29
+      ],
+      "old_id": "G35",
+      "old_number": 35,
+      "dependencies": [
+        "G01",
+        "G42"
+      ],
+      "research": [
+        "R09"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 29,
+          "goal": "G43",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G44",
+      "group": "폼",
+      "title": "템플릿 탐색·검색·적용",
+      "flows": [
+        49,
+        50,
+        51,
+        52
+      ],
+      "old_id": "G36",
+      "old_number": 36,
+      "dependencies": [
+        "G01",
+        "G19"
+      ],
+      "research": [
+        "R10"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 49,
+          "goal": "G44",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 50,
+          "goal": "G44",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 51,
+          "goal": "G44",
+          "first": 1,
+          "last": 3
+        },
+        {
+          "flow_number": 52,
+          "goal": "G44",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G45",
+      "group": "폼",
+      "title": "폼 목록·질문 편집·순서",
+      "flows": [
+        57,
+        58,
+        62
+      ],
+      "old_id": "G37",
+      "old_number": 37,
+      "dependencies": [
+        "G01",
+        "G44"
+      ],
+      "research": [
+        "R10"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 57,
+          "goal": "G45",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 58,
+          "goal": "G45",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 62,
+          "goal": "G45",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G46",
+      "group": "폼",
+      "title": "폼 설정·게시·응답 목록",
+      "flows": [
+        59
+      ],
+      "old_id": "G38",
+      "old_number": 38,
+      "dependencies": [
+        "G01",
+        "G45"
+      ],
+      "research": [
+        "R10"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 59,
+          "goal": "G46",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G47",
+      "group": "폼",
+      "title": "링크·임베드·이메일 공유",
+      "flows": [
+        63
+      ],
+      "old_id": "G39",
+      "old_number": 39,
+      "dependencies": [
+        "G01",
+        "G21",
+        "G46"
+      ],
+      "research": [
+        "R10"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 63,
+          "goal": "G47",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "id": "G48",
+      "group": "폼",
+      "title": "공개 응답 제출·상세",
+      "flows": [
+        60,
+        61
+      ],
+      "old_id": "G40",
+      "old_number": 40,
+      "dependencies": [
+        "G01",
+        "G47"
+      ],
+      "research": [
+        "R10"
+      ],
+      "surface": "외부 응답자",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 60,
+          "goal": "G48",
+          "first": 1,
+          "last": 9
+        },
+        {
+          "flow_number": 61,
+          "goal": "G48",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G49",
+      "group": "예약",
+      "title": "캘린더 연결 상태",
+      "flows": [
+        43
+      ],
+      "old_id": "G41",
+      "old_number": 41,
+      "dependencies": [
+        "G01",
+        "G15"
+      ],
+      "research": [
+        "R11"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 43,
+          "goal": "G49",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "id": "G50",
+      "group": "예약",
+      "title": "예약 기본 정보·가용 시간",
+      "flows": [
+        42,
+        47
+      ],
+      "old_id": "G42",
+      "old_number": 42,
+      "dependencies": [
+        "G01",
+        "G49"
+      ],
+      "research": [
+        "R11"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 42,
+          "goal": "G50",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 47,
+          "goal": "G50",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "id": "G51",
+      "group": "예약",
+      "title": "고급 설정·브랜딩·유형 생성",
+      "flows": [
+        44,
+        46
+      ],
+      "old_id": "G43",
+      "old_number": 43,
+      "dependencies": [
+        "G01",
+        "G50"
+      ],
+      "research": [
+        "R11"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 44,
+          "goal": "G51",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 46,
+          "goal": "G51",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G52",
+      "group": "예약",
+      "title": "유형 목록·편집·링크 복사",
+      "flows": [
+        45,
+        111,
+        112
+      ],
+      "old_id": "G44",
+      "old_number": 44,
+      "dependencies": [
+        "G01",
+        "G51"
+      ],
+      "research": [
+        "R11"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 45,
+          "goal": "G52",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 111,
+          "goal": "G52",
+          "first": 1,
+          "last": 2
+        },
+        {
+          "flow_number": 112,
+          "goal": "G52",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G53",
+      "group": "예약",
+      "title": "공개 날짜·슬롯 조회",
+      "flows": [
+        48
+      ],
+      "old_id": "G45",
+      "old_number": 45,
+      "dependencies": [
+        "G01",
+        "G52"
+      ],
+      "research": [
+        "R11"
+      ],
+      "surface": "공개 예약",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 48,
+          "goal": "G53",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G54",
+      "group": "자동화",
+      "title": "제안서 수락 후 예약 안내 규칙",
+      "flows": [
+        33
+      ],
+      "old_id": "G46",
+      "old_number": 46,
+      "dependencies": [
+        "G01",
+        "G39",
+        "G52"
+      ],
+      "research": [
+        "R11",
+        "R12"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 33,
+          "goal": "G54",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G55",
+      "group": "청구서",
+      "title": "목록·기본값·표시 설정",
+      "flows": [
+        77,
+        80,
+        81
+      ],
+      "old_id": "G47",
+      "old_number": 47,
+      "dependencies": [
+        "G01",
+        "G34",
+        "G35"
+      ],
+      "research": [
+        "R13"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 77,
+          "goal": "G55",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 80,
+          "goal": "G55",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 81,
+          "goal": "G55",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G56",
+      "group": "청구서",
+      "title": "Stripe 연결·카드 수납 토글",
+      "flows": [
+        78,
+        79
+      ],
+      "old_id": "G48",
+      "old_number": 48,
+      "dependencies": [
+        "G01",
+        "G55"
+      ],
+      "research": [
+        "R13"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 78,
+          "goal": "G56",
+          "first": 1,
+          "last": 10
+        },
+        {
+          "flow_number": 79,
+          "goal": "G56",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "id": "G57",
+      "group": "청구서",
+      "title": "단일·반복·구독 초안",
+      "flows": [
+        71
+      ],
+      "old_id": "G49",
+      "old_number": 49,
+      "dependencies": [
+        "G01",
+        "G55",
+        "G56"
+      ],
+      "research": [
+        "R14"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 71,
+          "goal": "G57",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "id": "G58",
+      "group": "청구서",
+      "title": "항목·서비스·헤더 편집",
+      "flows": [
+        72,
+        73
+      ],
+      "old_id": "G50",
+      "old_number": 50,
+      "dependencies": [
+        "G01",
+        "G35",
+        "G57"
+      ],
+      "research": [
+        "R08",
+        "R13"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 72,
+          "goal": "G58",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 73,
+          "goal": "G58",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "id": "G59",
+      "group": "청구서",
+      "title": "미청구 시간 편입",
+      "flows": [
+        70
+      ],
+      "old_id": "G51",
+      "old_number": 51,
+      "dependencies": [
+        "G01",
+        "G34",
+        "G58"
+      ],
+      "research": [
+        "R07",
+        "R13"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 70,
+          "goal": "G59",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G60",
+      "group": "청구서",
+      "title": "고객 미리보기",
+      "flows": [
+        75
+      ],
+      "old_id": "G52",
+      "old_number": 52,
+      "dependencies": [
+        "G01",
+        "G59"
+      ],
+      "research": [
+        "R13"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 75,
+          "goal": "G60",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G61",
+      "group": "청구서",
+      "title": "자동 발송 오류·보완 경로",
+      "flows": [
+        74
+      ],
+      "old_id": "G53",
+      "old_number": 53,
+      "dependencies": [
+        "G01",
+        "G60"
+      ],
+      "research": [
+        "R13",
+        "R14"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 74,
+          "goal": "G61",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G62",
+      "group": "청구서",
+      "title": "입금 차단·정상 경로 보완",
+      "flows": [
+        76
+      ],
+      "old_id": "G54",
+      "old_number": 54,
+      "dependencies": [
+        "G01",
+        "G61"
+      ],
+      "research": [
+        "R13",
+        "R14"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 76,
+          "goal": "G62",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G63",
+      "group": "장부",
+      "title": "장부 진입·비용 분류",
+      "flows": [
+        8,
+        11
+      ],
+      "old_id": "G55",
+      "old_number": 55,
+      "dependencies": [
+        "G01",
+        "G19"
+      ],
+      "research": [
+        "R15"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 8,
+          "goal": "G63",
+          "first": 1,
+          "last": 6
+        },
+        {
+          "flow_number": 11,
+          "goal": "G63",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "id": "G64",
+      "group": "장부",
+      "title": "비용 생성·반복·첨부·메모",
+      "flows": [
+        9,
+        10
+      ],
+      "old_id": "G56",
+      "old_number": 56,
+      "dependencies": [
+        "G01",
+        "G21",
+        "G63"
+      ],
+      "research": [
+        "R15"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 9,
+          "goal": "G64",
+          "first": 1,
+          "last": 5
+        },
+        {
+          "flow_number": 10,
+          "goal": "G64",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "id": "G65",
+      "group": "장부",
+      "title": "비용 일괄 편집",
+      "flows": [
+        13
+      ],
+      "old_id": "G57",
+      "old_number": 57,
+      "dependencies": [
+        "G01",
+        "G64"
+      ],
+      "research": [
+        "R15"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 13,
+          "goal": "G65",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "id": "G66",
+      "group": "장부",
+      "title": "비용 필터",
+      "flows": [
+        17
+      ],
+      "old_id": "G58",
+      "old_number": 58,
+      "dependencies": [
+        "G01",
+        "G65"
+      ],
+      "research": [
+        "R15",
+        "R20"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 17,
+          "goal": "G66",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G67",
+      "group": "장부",
+      "title": "수기 수입 생성·삭제",
+      "flows": [
+        15,
+        40
+      ],
+      "old_id": "G59",
+      "old_number": 59,
+      "dependencies": [
+        "G01",
+        "G63"
+      ],
+      "research": [
+        "R15"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 15,
+          "goal": "G67",
+          "first": 1,
+          "last": 4
+        },
+        {
+          "flow_number": 40,
+          "goal": "G67",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "id": "G68",
+      "group": "장부",
+      "title": "비용 내보내기",
+      "flows": [
+        16
+      ],
+      "old_id": "G60",
+      "old_number": 60,
+      "dependencies": [
+        "G01",
+        "G66",
+        "G67"
+      ],
+      "research": [
+        "R16"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 16,
+          "goal": "G68",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G69",
+      "group": "장부",
+      "title": "장부 손익·기간 집계",
+      "flows": [
+        12
+      ],
+      "old_id": "G61",
+      "old_number": 61,
+      "dependencies": [
+        "G01",
+        "G66",
+        "G67"
+      ],
+      "research": [
+        "R05",
+        "R15"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 12,
+          "goal": "G69",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "id": "G70",
+      "group": "외부 연결",
+      "title": "은행 연결 소개·취소·미연결 상태",
+      "flows": [
+        14
+      ],
+      "old_id": "G62",
+      "old_number": 62,
+      "dependencies": [
+        "G01",
+        "G69"
+      ],
+      "research": [
+        "R16"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 14,
+          "goal": "G70",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "id": "G71",
+      "group": "연결 조회",
+      "title": "전역 검색·최근 조회",
+      "flows": [
+        113
+      ],
+      "old_id": "G63",
+      "old_number": 63,
+      "dependencies": [
+        "G01",
+        "G24",
+        "G39",
+        "G43",
+        "G60"
+      ],
+      "research": [
+        "R20"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 113,
+          "goal": "G71",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G72",
+      "group": "연결 조회",
+      "title": "대시보드 요약·활동",
+      "flows": [
+        41
+      ],
+      "old_id": "G64",
+      "old_number": 64,
+      "dependencies": [
+        "G01",
+        "G34",
+        "G48",
+        "G53",
+        "G69",
+        "G71"
+      ],
+      "research": [
+        "R05",
+        "R21"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 41,
+          "goal": "G72",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "id": "G73",
+      "group": "포털",
+      "title": "관리자 포털 설정",
+      "flows": [
+        22
+      ],
+      "old_id": "G65",
+      "old_number": 65,
+      "dependencies": [
+        "G01",
+        "G43",
+        "G47",
+        "G60",
+        "G72"
+      ],
+      "research": [
+        "R17"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 22,
+          "goal": "G73",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "id": "G74",
+      "group": "계정 설정",
+      "title": "설정 탐색·프로필·사진",
+      "flows": [
+        116,
+        124
+      ],
+      "old_id": "G66",
+      "old_number": 66,
+      "dependencies": [
+        "G01",
+        "G15",
+        "G17"
+      ],
+      "research": [
+        "R18"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 116,
+          "goal": "G74",
+          "first": 1,
+          "last": 12
+        },
+        {
+          "flow_number": 124,
+          "goal": "G74",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G75",
+      "group": "계정 설정",
+      "title": "알림 선호",
+      "flows": [
+        120
+      ],
+      "old_id": "G67",
+      "old_number": 67,
+      "dependencies": [
+        "G01",
+        "G74"
+      ],
+      "research": [
+        "R18",
+        "R21"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 120,
+          "goal": "G75",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G76",
+      "group": "계정 설정",
+      "title": "계정 삭제 확인·로그인 복귀",
+      "flows": [
+        117
+      ],
+      "old_id": "G68",
+      "old_number": 68,
+      "dependencies": [
+        "G01",
+        "G74"
+      ],
+      "research": [
+        "R18"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 117,
+          "goal": "G76",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "id": "G77",
+      "group": "계정 설정",
+      "title": "Client Mode 전환 게이트",
+      "flows": [
+        121
+      ],
+      "old_id": "G69",
+      "old_number": 69,
+      "dependencies": [
+        "G01",
+        "G74"
+      ],
+      "research": [
+        "R18"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 121,
+          "goal": "G77",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "id": "G78",
+      "group": "계정 설정",
+      "title": "CSV 가져오기·매핑·오류",
+      "flows": [
+        122
+      ],
+      "old_id": "G70",
+      "old_number": 70,
+      "dependencies": [
+        "G01",
+        "G64",
+        "G68"
+      ],
+      "research": [
+        "R16"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 122,
+          "goal": "G78",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "id": "G79",
+      "group": "구독·혜택",
+      "title": "플랜 가입·청구 표시",
+      "flows": [
+        126
+      ],
+      "old_id": "G71",
+      "old_number": 71,
+      "dependencies": [
+        "G01",
+        "G74",
+        "G04"
+      ],
+      "research": [
+        "R18"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 126,
+          "goal": "G79",
+          "first": 1,
+          "last": 12
+        }
+      ]
+    },
+    {
+      "id": "G80",
+      "group": "구독·혜택",
+      "title": "구독 해지 예약",
+      "flows": [
+        127
+      ],
+      "old_id": "G72",
+      "old_number": 72,
+      "dependencies": [
+        "G01",
+        "G79"
+      ],
+      "research": [
+        "R18"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 127,
+          "goal": "G80",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "id": "G81",
+      "group": "구독·혜택",
+      "title": "추천 링크",
+      "flows": [
+        25
+      ],
+      "old_id": "G73",
+      "old_number": 73,
+      "dependencies": [
+        "G01",
+        "G17"
+      ],
+      "research": [],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 25,
+          "goal": "G81",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G82",
+      "group": "구독·혜택",
+      "title": "제휴 혜택",
+      "flows": [
+        88
+      ],
+      "old_id": "G74",
+      "old_number": 74,
+      "dependencies": [
+        "G01",
+        "G02"
+      ],
+      "research": [
+        "R01"
+      ],
+      "surface": "내부 업무",
+      "status": "미착수",
+      "flow_scope": [
+        {
+          "flow_number": 88,
+          "goal": "G82",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "id": "G83",
+      "group": "종합 검증",
+      "title": "업무 연결 시나리오",
+      "flows": [],
+      "old_id": "G83",
+      "old_number": 83,
+      "dependencies": [
+        "G00",
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G14",
+        "G15",
+        "G16",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G21",
+        "G22",
+        "G23",
+        "G24",
+        "G25",
+        "G26",
+        "G27",
+        "G28",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G35",
+        "G36",
+        "G37",
+        "G38",
+        "G39",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G44",
+        "G45",
+        "G46",
+        "G47",
+        "G48",
+        "G49",
+        "G50",
+        "G51",
+        "G52",
+        "G53",
+        "G54",
+        "G55",
+        "G56",
+        "G57",
+        "G58",
+        "G59",
+        "G60",
+        "G61",
+        "G62",
+        "G63",
+        "G64",
+        "G65",
+        "G66",
+        "G67",
+        "G68",
+        "G69",
+        "G70",
+        "G71",
+        "G72",
+        "G73",
+        "G74",
+        "G75",
+        "G76",
+        "G77",
+        "G78",
+        "G79",
+        "G80",
+        "G81",
+        "G82"
+      ],
+      "research": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R07",
+        "R08",
+        "R09",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R14",
+        "R15",
+        "R16",
+        "R17",
+        "R18",
+        "R19",
+        "R20",
+        "R21",
+        "R22"
+      ],
+      "surface": "전체 영역 통합 검증",
+      "status": "미착수",
+      "flow_scope": []
+    },
+    {
+      "id": "G84",
+      "group": "종합 검증",
+      "title": "역할·웹 접근성·회귀·범위 감사",
+      "flows": [],
+      "old_id": "G84",
+      "old_number": 84,
+      "dependencies": [
+        "G01",
+        "G83"
+      ],
+      "research": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R07",
+        "R08",
+        "R09",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R14",
+        "R15",
+        "R16",
+        "R17",
+        "R18",
+        "R19",
+        "R20",
+        "R21",
+        "R22"
+      ],
+      "surface": "전체 영역 통합 검증",
+      "status": "미착수",
+      "flow_scope": []
+    }
+  ],
+  "research": [
+    {
+      "id": "R01",
+      "title": "로그인 전 공개 웹·CTA·콘텐츠",
+      "consumers": [
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G82"
+      ],
+      "questions": [
+        "메가 메뉴의 모든 목적지와 캡처에 없는 공개 페이지를 열거한다.",
+        "가격·체험·환불·혜택·약관·정책 본문의 버전과 미수록 영역을 구분한다.",
+        "Start free / Log in / Book a demo / Get template / Download의 도착지와 가입 후 복귀·입력 보존을 대조한다.",
+        "반응형 메뉴·영상·후기·검색·FAQ의 키보드와 실패 상태를 명세화한다."
+      ],
+      "flows": [
+        82,
+        64,
+        67,
+        91,
+        89,
+        110,
+        5,
+        6,
+        7,
+        55,
+        56,
+        69,
+        134,
+        65,
+        66,
+        24,
+        4,
+        18,
+        90,
+        132
+      ],
+      "expansion": "공개 유입과 인증 연결·미수록 공개 페이지",
+      "old_consumers": [
+        "G75",
+        "G76",
+        "G77",
+        "G78",
+        "G79",
+        "G80",
+        "G81",
+        "G82",
+        "G74"
+      ],
+      "status": "미착수",
+      "first_gate": "G02"
+    },
+    {
+      "id": "R02",
+      "title": "인증·온보딩·워크스페이스·역할",
+      "consumers": [
+        "G11",
+        "G12",
+        "G10",
+        "G13",
+        "G17",
+        "G18"
+      ],
+      "questions": [
+        "소셜 가입/연결·메일 검증·2FA·만료·재설정 토큰 재사용을 조사한다.",
+        "누락된 세 번째 설문·국가/통화 차이·중단 복구·건너뛰기를 확인한다.",
+        "초대 수락·잘못된 계정·만료·재발송·가입 완료 멤버 제거를 대조한다.",
+        "워크스페이스 전환과 Owner/Partner/Project Manager/Collaborator의 직접 URL·재무 접근 표를 작성한다."
+      ],
+      "flows": [
+        2,
+        68,
+        83,
+        84,
+        85,
+        86,
+        87,
+        123
+      ],
+      "expansion": "조직 전환·추가 인증·초대 예외 구현",
+      "old_consumers": [
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G09",
+        "G10"
+      ],
+      "status": "미착수",
+      "first_gate": "G10"
+    },
+    {
+      "id": "R03",
+      "title": "고객 회사·연락처·필드",
+      "consumers": [
+        "G19",
+        "G20",
+        "G21"
+      ],
+      "questions": [
+        "과거 Clients와 문서에 기록된 Companies 변경을 버전별 대조한다.",
+        "다중 연락처·기본 연락처 변경·고객 메모·보관·삭제와 연결 문서 영향을 조사한다.",
+        "필드 정의와 고객별 값의 생성·편집·삭제·필수값 범위를 분리한다."
+      ],
+      "flows": [
+        3,
+        19,
+        20,
+        21,
+        23
+      ],
+      "expansion": "연락처·메모·고객 lifecycle 구현",
+      "old_consumers": [
+        "G11",
+        "G12",
+        "G13"
+      ],
+      "status": "미착수",
+      "first_gate": "G19"
+    },
+    {
+      "id": "R04",
+      "title": "Deals·견적·매출 예측",
+      "consumers": [],
+      "questions": [
+        "Deals 전용 생성·상세·단계·담당·확률·Won/Lost·거래 후속 업무를 확보한다.",
+        "Estimate의 항목·단가·수량·할인·버전·수락·문서/프로젝트 연결을 대조한다.",
+        "프로젝트 보드를 거래 파이프라인으로 대체하지 않고 직접 프로젝트 생성 경로도 유지한다."
+      ],
+      "flows": [],
+      "expansion": "거래 관리 / 견적 작성·수락 / 매출 예측의 개별 구현 Goal",
+      "old_consumers": [],
+      "status": "미착수",
+      "first_gate": "G83"
+    },
+    {
+      "id": "R05",
+      "title": "프로젝트 lifecycle·예산·원가·수익성",
+      "consumers": [
+        "G23",
+        "G24",
+        "G69",
+        "G72"
+      ],
+      "questions": [
+        "완료·보관·삭제·복원과 문서/시간/포털 접근 영향을 확인한다.",
+        "예산 설정·원가 요율·실적·비용 재청구·수익성 계산의 입력과 기간·통화를 대조한다.",
+        "문서/파일/팀 추가·고객 및 협업자 미리보기에서 보이는 필드를 비교한다."
+      ],
+      "flows": [
+        101,
+        102,
+        103,
+        104,
+        108,
+        109
+      ],
+      "expansion": "프로젝트 lifecycle / 예산·원가 / 수익성 상세 구현",
+      "old_consumers": [
+        "G15",
+        "G16",
+        "G61",
+        "G64"
+      ],
+      "status": "미착수",
+      "first_gate": "G23"
+    },
+    {
+      "id": "R06",
+      "title": "작업 반복·상태·파일·의존성",
+      "consumers": [
+        "G25",
+        "G26",
+        "G27",
+        "G28",
+        "G29",
+        "G30",
+        "G31"
+      ],
+      "questions": [
+        "작업 초안 생성과 필드별 저장·담당자 수·상태 정의 범위를 확인한다.",
+        "반복 일정·기한 변경·Gantt·의존성·순환/이동 제한을 확보한다.",
+        "첨부·댓글 공개·삭제/보관/복원·부모와 하위 완료 관계를 대조한다."
+      ],
+      "flows": [
+        92,
+        94,
+        95,
+        96,
+        98,
+        99,
+        100,
+        128,
+        129,
+        130,
+        131
+      ],
+      "expansion": "반복 작업 / 첨부 / Gantt·의존성 구현",
+      "old_consumers": [
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G21",
+        "G22",
+        "G23"
+      ],
+      "status": "미착수",
+      "first_gate": "G25"
+    },
+    {
+      "id": "R07",
+      "title": "시간 수정·승인·정밀도·중복 청구",
+      "consumers": [
+        "G32",
+        "G33",
+        "G34",
+        "G59"
+      ],
+      "questions": [
+        "동시 타이머·정지/Done 경계·새로고침·타임존을 확인한다.",
+        "시간 수정·삭제·멤버 대리 입력·승인/반려·고객 시간표를 확보한다.",
+        "원시 초·단가·표시 반올림·초안 편입·Billed·Paid·중복 청구 규칙을 분리한다."
+      ],
+      "flows": [
+        93,
+        97,
+        125,
+        133,
+        70
+      ],
+      "expansion": "시간 편집·삭제 / 타임시트 승인 / 고객 시간표 구현",
+      "old_consumers": [
+        "G24",
+        "G25",
+        "G26",
+        "G51"
+      ],
+      "status": "미착수",
+      "first_gate": "G32"
+    },
+    {
+      "id": "R08",
+      "title": "서비스 직접 CRUD·분류·가격",
+      "consumers": [
+        "G35",
+        "G58"
+      ],
+      "questions": [
+        "직접 생성·수정·삭제·검색·정렬 및 단가/단위/통화 검증을 확보한다.",
+        "템플릿 중복 추가·카테고리 생성·공용 원본과 계정 복제본의 전파를 확인한다.",
+        "문서에 복사된 가격과 라이브러리 변경의 관계를 대조한다."
+      ],
+      "flows": [
+        114,
+        115,
+        72
+      ],
+      "expansion": "서비스 직접 CRUD와 분류 관리 구현",
+      "old_consumers": [
+        "G27",
+        "G50"
+      ],
+      "status": "미착수",
+      "first_gate": "G35"
+    },
+    {
+      "id": "R09",
+      "title": "문서 편집기 버전·수신자 수락·서명",
+      "consumers": [
+        "G36",
+        "G37",
+        "G38",
+        "G39",
+        "G40",
+        "G41",
+        "G42",
+        "G43"
+      ],
+      "questions": [
+        "구형 Proposal/Contract와 새 Document Builder의 적용 대상을 먼저 정한다.",
+        "빈 문서·템플릿·PDF·블록·가격표·수신자별 필드/서명을 확보한다.",
+        "작성자 서명·내부 수락·고객 수락/서명·거절·철회·수정 후 재발송을 구분한다.",
+        "수락 가능 만료일과 공유 링크 수명, 서명 후 문서 snapshot을 대조한다."
+      ],
+      "flows": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        34,
+        35,
+        36,
+        37
+      ],
+      "expansion": "새 편집기 / 고객 수락·서명 / 수신자 링크 lifecycle 구현",
+      "old_consumers": [
+        "G28",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G35"
+      ],
+      "status": "미착수",
+      "first_gate": "G36"
+    },
+    {
+      "id": "R10",
+      "title": "폼 전체 요소·저장·버전·고객 연결",
+      "consumers": [
+        "G44",
+        "G45",
+        "G46",
+        "G47",
+        "G48"
+      ],
+      "questions": [
+        "질문 전체 타입·설명 요소·필수 조건·검증·파일 제한을 확인한다.",
+        "자동 저장/명시 저장·게시·미리보기 Submit·CAPTCHA 경계를 대조한다.",
+        "제출 당시 질문과 현재 질문·삭제/정렬·응답 이름/고객 매칭을 구분한다."
+      ],
+      "flows": [
+        49,
+        50,
+        51,
+        52,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "expansion": "질문 전 타입 / 폼 설정·버전 / 응답 관리 구현",
+      "old_consumers": [
+        "G36",
+        "G37",
+        "G38",
+        "G39",
+        "G40"
+      ],
+      "status": "미착수",
+      "first_gate": "G44"
+    },
+    {
+      "id": "R11",
+      "title": "예약 확정·충돌·변경·취소",
+      "consumers": [
+        "G49",
+        "G50",
+        "G51",
+        "G52",
+        "G53",
+        "G54"
+      ],
+      "questions": [
+        "슬롯 선택 후 예약자·추가 질문·확정·확인메일·예정 예약 목록을 확보한다.",
+        "주간 가용성·리드타임·버퍼·외부 busy·시간대/DST·동시 예약 충돌을 대조한다.",
+        "변경·취소·슬롯 복구·외부 일정 반영·연결 해제 영향을 명세화한다."
+      ],
+      "flows": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        111,
+        112
+      ],
+      "expansion": "예약 확정 / 예약 변경·취소 / 충돌 복구 구현",
+      "old_consumers": [
+        "G41",
+        "G42",
+        "G43",
+        "G44",
+        "G45",
+        "G46"
+      ],
+      "status": "미착수",
+      "first_gate": "G49"
+    },
+    {
+      "id": "R12",
+      "title": "자동화 범위·실행 이력·중복·재시도",
+      "consumers": [
+        "G54"
+      ],
+      "questions": [
+        "저장된 Event Type과 트리거/행동·규칙 범위를 재조회한다.",
+        "전역/문서별 규칙 생성·편집·끄기·삭제·버전을 확인한다.",
+        "이벤트 발생·실행·성공/실패·재시도·중복 억제를 별도 상태로 명세화한다."
+      ],
+      "flows": [
+        33
+      ],
+      "expansion": "전역 자동화 관리 / 실행 이력·재시도 구현",
+      "old_consumers": [
+        "G46"
+      ],
+      "status": "미착수",
+      "first_gate": "G54"
+    },
+    {
+      "id": "R13",
+      "title": "청구서 발송·예약·수금 정상 경로",
+      "consumers": [
+        "G55",
+        "G56",
+        "G58",
+        "G59",
+        "G60",
+        "G61",
+        "G62"
+      ],
+      "questions": [
+        "발송 성공·예약 확인·Scheduled·취소·실패 후 복구를 확보한다.",
+        "고객 결제와 관리자의 수동 입금, 완납/부분납·방법·날짜·통지·잔액을 구분한다.",
+        "구독형 입금 차단 조건을 일반 청구서에 확대하지 않는다.",
+        "PDF·시간표·공유 권한·환불/취소·원장 연결을 검증 가능한 사례로 정한다."
+      ],
+      "flows": [
+        70,
+        72,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81
+      ],
+      "expansion": "청구 발송 / 고객 결제 / 부분납·환불·취소 구현",
+      "old_consumers": [
+        "G47",
+        "G48",
+        "G50",
+        "G51",
+        "G52",
+        "G53",
+        "G54"
+      ],
+      "status": "미착수",
+      "first_gate": "G55"
+    },
+    {
+      "id": "R14",
+      "title": "반복 청구·자동 결제·리테이너",
+      "consumers": [
+        "G57",
+        "G61",
+        "G62"
+      ],
+      "questions": [
+        "반복 회차 생성·중단·월말/종료일·시리즈 변경과 기존 회차 영향을 확인한다.",
+        "고객 자동 결제 동의·저장 결제수단·실패 재시도·해지를 구분한다.",
+        "리테이너 계약·잔액·차감·정산을 별도 흐름으로 확보한다."
+      ],
+      "flows": [
+        71,
+        74,
+        75,
+        76
+      ],
+      "expansion": "반복 회차 / 자동 결제 동의 / 리테이너 구현",
+      "old_consumers": [
+        "G49",
+        "G53",
+        "G54"
+      ],
+      "status": "미착수",
+      "first_gate": "G57"
+    },
+    {
+      "id": "R15",
+      "title": "장부·수입·비용의 계산과 lifecycle",
+      "consumers": [
+        "G63",
+        "G64",
+        "G65",
+        "G66",
+        "G67",
+        "G69"
+      ],
+      "questions": [
+        "비용 수정·삭제·반복 발생·청구 가능·재청구·분류 제거를 확인한다.",
+        "수기 수입 Pre/After Tax와 인보이스 입금의 중복 집계 방지를 대조한다.",
+        "기간·통화별 집계·0/음수·소수·세금 범위를 원본과 구분해 명세화한다."
+      ],
+      "flows": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        17,
+        40
+      ],
+      "expansion": "비용·수입 추가 lifecycle / 반복 비용 / 재청구 구현",
+      "old_consumers": [
+        "G55",
+        "G56",
+        "G57",
+        "G58",
+        "G59",
+        "G61"
+      ],
+      "status": "미착수",
+      "first_gate": "G63"
+    },
+    {
+      "id": "R16",
+      "title": "은행·CSV 가져오기·파일 내보내기",
+      "consumers": [
+        "G68",
+        "G70",
+        "G78"
+      ],
+      "questions": [
+        "은행 선택·동의 취소·인증 결과·동기화·해제와 가져온 거래를 분리한다.",
+        "CSV 수정 재시도·정상 완료·전체 실패/부분 저장·중복 처리·Currency 검증을 확인한다.",
+        "내보내기 열·정렬·범위·인코딩·파일 수신·실패를 실제 산출물과 대조한다."
+      ],
+      "flows": [
+        14,
+        16,
+        122
+      ],
+      "expansion": "은행 동기화 상태 / 가져오기 성공·부분 오류 / 파일 내보내기 구현",
+      "old_consumers": [
+        "G60",
+        "G62",
+        "G70"
+      ],
+      "status": "미착수",
+      "first_gate": "G68"
+    },
+    {
+      "id": "R17",
+      "title": "고객 포털의 실제 사용과 접근",
+      "consumers": [
+        "G73"
+      ],
+      "questions": [
+        "고객 보안 링크·로그인·만료·재요청·접근 거절을 확보한다.",
+        "전역/고객/연락처별 접근·문서·프로젝트·시간·파일 가시성을 비교한다.",
+        "포털 목록·상세·파일·댓글과 문서 수락/서명·지급 연결을 명세화한다."
+      ],
+      "flows": [
+        22,
+        66
+      ],
+      "expansion": "고객 포털 로그인 / 목록·상세 / 권한·공유 구현",
+      "old_consumers": [
+        "G65"
+      ],
+      "status": "미착수",
+      "first_gate": "G73"
+    },
+    {
+      "id": "R18",
+      "title": "계정 설정·제품 구독·지역 정책",
+      "consumers": [
+        "G74",
+        "G75",
+        "G76",
+        "G77",
+        "G79",
+        "G80"
+      ],
+      "questions": [
+        "현행 플랜과 과거 요금·좌석·월/연·변경·실패·추가 인증을 대조한다.",
+        "해지 예약·철회·기간 만료·일시정지·유지 제안·계정 삭제를 분리한다.",
+        "공개 프로필·Client Mode·브랜딩·알림·지역/통화·Tax/금융 기능 조건을 확인한다."
+      ],
+      "flows": [
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        124,
+        126,
+        127
+      ],
+      "expansion": "구독 변경·실패·철회 / 계정 모드·보안 설정 구현",
+      "old_consumers": [
+        "G66",
+        "G67",
+        "G68",
+        "G69",
+        "G71",
+        "G72"
+      ],
+      "status": "미착수",
+      "first_gate": "G74"
+    },
+    {
+      "id": "R19",
+      "title": "인력 배정·업무량·휴가",
+      "consumers": [],
+      "questions": [
+        "Workload·Staffing·Schedule·Time Off의 화면과 행위자를 확보한다.",
+        "할당·용량·초과 배정·휴가 생성/수정/삭제·보고서를 명세화한다.",
+        "고객 예약 가용 시간과 직원 근무/휴가를 같은 상태로 처리하지 않는다."
+      ],
+      "flows": [],
+      "expansion": "인력 배정 / 업무량 / 휴가 관리의 개별 구현 Goal",
+      "old_consumers": [],
+      "status": "미착수",
+      "first_gate": "G83"
+    },
+    {
+      "id": "R20",
+      "title": "사용자 필드·저장 뷰·목록 상태",
+      "consumers": [
+        "G20",
+        "G22",
+        "G23",
+        "G66",
+        "G71"
+      ],
+      "questions": [
+        "필드 타입·정의와 값·삭제 영향·권한을 대상별로 대조한다.",
+        "필터·정렬·열·페이지·개인/공유 저장 뷰·선택 집합의 수명을 정한다.",
+        "동일 검색어·동명 ID·삭제/보관·권한 변경과 최근 조회를 확인한다."
+      ],
+      "flows": [
+        19,
+        105,
+        106,
+        108,
+        109,
+        113,
+        17
+      ],
+      "expansion": "필드 값 관리 / 저장 뷰·공유 / 검색 확장 구현",
+      "old_consumers": [
+        "G12",
+        "G14",
+        "G15",
+        "G58",
+        "G63"
+      ],
+      "status": "미착수",
+      "first_gate": "G20"
+    },
+    {
+      "id": "R21",
+      "title": "알림함·직접 메일·활동·보고서",
+      "consumers": [
+        "G72",
+        "G75"
+      ],
+      "questions": [
+        "알림 목록·읽음·직접 메일·재인증·실패·권한별 활동을 확보한다.",
+        "활동 정렬·추가 로딩·중복·삭제 대상 표시와 알림 선호를 구분한다.",
+        "전용 보고서·매출 예측·리소스 활용률·내보내기의 산식과 범위를 확인한다."
+      ],
+      "flows": [
+        41,
+        113,
+        120
+      ],
+      "expansion": "알림함·메일 / 활동 관리 / 전용 보고서 구현",
+      "old_consumers": [
+        "G64",
+        "G67"
+      ],
+      "status": "미착수",
+      "first_gate": "G72"
+    },
+    {
+      "id": "R22",
+      "title": "추가 외부 연동·API·MCP·AI",
+      "consumers": [],
+      "questions": [
+        "연동 카드별 실제 설정·권한·동기화·오류·해제 화면을 확보한다.",
+        "공개 API 키·MCP의 제품 설정과 내부 업무 API를 구분한다.",
+        "AI 입력·생성·미리보기·검토·적용·취소·실패를 조사하고 자동 저장/전송을 가정하지 않는다."
+      ],
+      "flows": [
+        116,
+        122
+      ],
+      "expansion": "연동별 설정 / 키 관리 / AI 검토·적용의 개별 구현 Goal",
+      "old_consumers": [],
+      "status": "미착수",
+      "first_gate": "G83"
+    }
+  ],
+  "flows": [
+    {
+      "number": 1,
+      "flow_id": "b340c3e3-ad5f-401c-839d-60e02a8c7ce2",
+      "path": "bonsai_analysis/flows/404/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b625cb20b5c242978c1f398163b870d1",
+        "sc_4cd87d1434ce4f66b7f8e77bafe39d29"
+      ],
+      "assignments": [
+        {
+          "goal": "G14",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "flow_id": "08d7796f-33e4-4742-9a98-04c919916456",
+      "path": "bonsai_analysis/flows/Accepting an invitation/ANALYSIS.md",
+      "screen_ids": [
+        "sc_56e0d2abfaec42c8b612894f5bcc192a",
+        "sc_57e384cf31904da7939aed3a43f24171",
+        "sc_f0e383ef04984fa9b1005bb85bd16407",
+        "sc_8eec8db38d2449deb4a4202aef115aff",
+        "sc_f9eb6c73bcca4042becaf9f5fb77483d",
+        "sc_f9f38c9c720c40f68cd780f27e65738d",
+        "sc_acf1d78ada874bba9803cc879db1fcea",
+        "sc_cb73e29da15944959eed59fff7f8c9ee",
+        "sc_c32beee8ce2e4eaa9ea56bca107a57c6",
+        "sc_5e1337bcde974a128e69d87166b0e6be",
+        "sc_79190c957f234a9d89fd130d5e009e07",
+        "sc_b774b3dcb1294d73ac858ab9e970ebd0",
+        "sc_a31f80b8bb624168ba0f6252a113bbfb"
+      ],
+      "assignments": [
+        {
+          "goal": "G18",
+          "first": 1,
+          "last": 13
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "path": "bonsai_analysis/flows/Adding a new client/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a0fa68609b634defb4a2ccd18b63a4a2",
+        "sc_40ff225f161846249b5cf8c2c55423b6",
+        "sc_3e2640e1d9ca4b59a7f1c79cb628a502",
+        "sc_7435a1d441654b5fa2a8428533fd5d87",
+        "sc_225e25a9ba6745be98341cf77524fa23",
+        "sc_b1619b6b9fc3405e8ad67fd26f405b62",
+        "sc_9e5c9989e48d45459e62cc2fe0b886fb"
+      ],
+      "assignments": [
+        {
+          "goal": "G19",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "flow_id": "fcb41661-2520-40ac-842c-b463a7891093",
+      "path": "bonsai_analysis/flows/Affiliate Program/ANALYSIS.md",
+      "screen_ids": [
+        "sc_277957a51da546839a56826df24b84f9",
+        "sc_29f3c01990d545efb7c6b3f03fdb3022",
+        "sc_55853ebfc2fa4f928d98bfb0653248a3",
+        "sc_6a6de983773e41c1a0256eede9bab7d3"
+      ],
+      "assignments": [
+        {
+          "goal": "G09",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "flow_id": "be5bc5f4-c2fa-4ea2-a923-0250d6302fcb",
+      "path": "bonsai_analysis/flows/Blog/ANALYSIS.md",
+      "screen_ids": [
+        "sc_549a6fa823b74e3e8d826750df6f1f99",
+        "sc_f784e647d4c44c448969e5641b1f3fd0",
+        "sc_ed1d234775a74b4bad3ca7f497d20970",
+        "sc_2c58d306a0c54343967cbe26160fc0cb"
+      ],
+      "assignments": [
+        {
+          "goal": "G05",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "flow_id": "7b469aed-f69f-4f73-af50-9b1adb7aa052",
+      "path": "bonsai_analysis/flows/Blog/Blog detail/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b52cd2aea5074f8d930af3171a2bd612",
+        "sc_ea03e557975943e098cc09b234f20976",
+        "sc_ece27efe36654187a391ca036a676353",
+        "sc_419cd6d4273041e4b60091cffb1f05e2"
+      ],
+      "assignments": [
+        {
+          "goal": "G05",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "flow_id": "d9c648a4-1d8f-47a7-b53e-ea08055e1e7e",
+      "path": "bonsai_analysis/flows/Blog/Searching blog/ANALYSIS.md",
+      "screen_ids": [
+        "sc_6523185471cd431aae909650125ca79c",
+        "sc_d9ab19c1590d43e99432b10f85607cd0",
+        "sc_94b98a51d45a4cc0b25c5553ce66bb60"
+      ],
+      "assignments": [
+        {
+          "goal": "G05",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "path": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/ANALYSIS.md",
+      "screen_ids": [
+        "sc_f0127ee4970e49ffbd910ddfac504812",
+        "sc_f2a7c3be441a4a95ab91fba511865483",
+        "sc_086fba724bae4db892400f6143884a6b",
+        "sc_ca9be0cbcb06461b8ac05fc9b4ac4c82",
+        "sc_5cc7db97cb1e4603bf9a8bb575dc2771",
+        "sc_c4fdb168bca742cda9c29d382eb86995"
+      ],
+      "assignments": [
+        {
+          "goal": "G63",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "flow_id": "9fcdb469-f302-4610-b0b9-a5af091b5b26",
+      "path": "bonsai_analysis/flows/Bookkeeping/Adding a recurring expense/Adding an image and note/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b043c6159c5c471cbe94f4348870bdf7",
+        "sc_ea6533acea52451c8f19c819584eab7b",
+        "sc_a3a06c2d5128407cadeefd3bd41b200c",
+        "sc_68ada77e821c4aaaaa5f86ea891e9b3f",
+        "sc_6a379149894d4eaca9a9de59332165c3"
+      ],
+      "assignments": [
+        {
+          "goal": "G64",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "flow_id": "f01f87a5-8396-4774-8387-e11c5e0afe03",
+      "path": "bonsai_analysis/flows/Bookkeeping/Adding a recurring expense/ANALYSIS.md",
+      "screen_ids": [
+        "sc_caa5fecb95834209b2da82d078b11ebb",
+        "sc_ff5a563f088a494a8b00075bfd397612",
+        "sc_d7991018ae0044c98087ba65d7a7d81a",
+        "sc_9855446134c0466b89baaf231f9bae69",
+        "sc_eb120c6950b941a6a6ecd5b0e769ede9",
+        "sc_919b87e481c04c1f977cac28e450c648",
+        "sc_6fe8d6e6d695499482e54e7450a78426",
+        "sc_cc59343d151a4826a70cf6f0e5fcabc9",
+        "sc_b043c6159c5c471cbe94f4348870bdf7",
+        "sc_6a379149894d4eaca9a9de59332165c3",
+        "sc_77399bad710b4a3c8027c4ec6af773dc"
+      ],
+      "assignments": [
+        {
+          "goal": "G64",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "flow_id": "05c04967-f1be-4b73-b6e5-af6199228187",
+      "path": "bonsai_analysis/flows/Bookkeeping/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_e5796a038be54dbea1a32dd215a1cbb6",
+        "sc_4eb809c84e384bc98dd5ee91561a1483",
+        "sc_caa5fecb95834209b2da82d078b11ebb",
+        "sc_762c1f934fdf40c0a61898b036cf4616",
+        "sc_b0236381fd3c41b5b432fea9dcc43093",
+        "sc_f0127ee4970e49ffbd910ddfac504812"
+      ],
+      "assignments": [
+        {
+          "goal": "G63",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "flow_id": "2c50f586-bb35-480c-a7bc-fdd3857a6f81",
+      "path": "bonsai_analysis/flows/Bookkeeping/Bookkeeping overview/ANALYSIS.md",
+      "screen_ids": [
+        "sc_e5796a038be54dbea1a32dd215a1cbb6",
+        "sc_c3e6af1089b74d0685b00570a1df539c",
+        "sc_8880610ec03543c9834f9fcedaccc4ba",
+        "sc_1998e9e1c7434ddf80607ea6fb9eb958",
+        "sc_864ff7ecccc448e5a5a093cb0e963692",
+        "sc_5774f61a886044dca88ef77e30184bf2"
+      ],
+      "assignments": [
+        {
+          "goal": "G69",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "flow_id": "91d17dc8-8701-405e-9133-a41f0f55c37c",
+      "path": "bonsai_analysis/flows/Bookkeeping/Bulk editing expenses/ANALYSIS.md",
+      "screen_ids": [
+        "sc_762c1f934fdf40c0a61898b036cf4616",
+        "sc_dfc7cc24d5e44970aef83904461fb9b3",
+        "sc_f7e30f0ed4d948ceb5b3974adaad12dd",
+        "sc_60bd6b02cf7b4dfaa405d4420f1b0122",
+        "sc_8f3583b359d745948b724f5308184f7f",
+        "sc_c29c33560d4f4e15bdf1c7771979b0a5",
+        "sc_30a856c3cb1b43bbb51a56cffe5fd65e"
+      ],
+      "assignments": [
+        {
+          "goal": "G65",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "flow_id": "c2673683-a5fc-4ed3-8c5c-be153e99765a",
+      "path": "bonsai_analysis/flows/Bookkeeping/Connect bank account/ANALYSIS.md",
+      "screen_ids": [
+        "sc_caa5fecb95834209b2da82d078b11ebb",
+        "sc_42d7dd8938094f64bfdb32eb7a349600",
+        "sc_1da97ced18dd435d9eda4cf8d50cb639"
+      ],
+      "assignments": [
+        {
+          "goal": "G70",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "flow_id": "187433ca-53fc-4a69-9f8b-82cd0b59a428",
+      "path": "bonsai_analysis/flows/Bookkeeping/Deleting an income/ANALYSIS.md",
+      "screen_ids": [
+        "sc_4eb809c84e384bc98dd5ee91561a1483",
+        "sc_30e830810596499f98136e6607920311",
+        "sc_52755fd7d42341d1b8b4fdfe7e926c65",
+        "sc_8d9a29366d814870ae7ca3ec15e79e25"
+      ],
+      "assignments": [
+        {
+          "goal": "G67",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "flow_id": "a8f62075-1597-47e6-855d-c5fd51194c1c",
+      "path": "bonsai_analysis/flows/Bookkeeping/Downloading expenses/ANALYSIS.md",
+      "screen_ids": [
+        "sc_762c1f934fdf40c0a61898b036cf4616",
+        "sc_0aea5419beca4597bc2631434e77dbc4",
+        "sc_231320e1054d4ea694ca0ff0c0d0014a",
+        "sc_72d3718c1c2147a18580bc6a1a33d659"
+      ],
+      "assignments": [
+        {
+          "goal": "G68",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "flow_id": "bd0a6592-522b-4dcd-94ff-68324e44e3b0",
+      "path": "bonsai_analysis/flows/Bookkeeping/Filtering expenses/ANALYSIS.md",
+      "screen_ids": [
+        "sc_762c1f934fdf40c0a61898b036cf4616",
+        "sc_d933051f131742878fd3b7992b784b58",
+        "sc_d6923fc2dd1843ef85ea11d192c1cfba",
+        "sc_8d52b4731477483e967166b109d3e130",
+        "sc_c0df8e7cb43645fab75e48a751e11e1f",
+        "sc_9472a2a6376e41d8987c712e8b0e4c2a",
+        "sc_b42355233a9d48a0b7e6cb1f59b1188c",
+        "sc_175c603fb16f4914871354d11799a18c",
+        "sc_0132ede06b5a43d4b7e5de16c014c8de",
+        "sc_338529d95e114b51834d62e3666c2559"
+      ],
+      "assignments": [
+        {
+          "goal": "G66",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "flow_id": "35234808-9af8-4240-9025-e24a5951eaa9",
+      "path": "bonsai_analysis/flows/Careers/ANALYSIS.md",
+      "screen_ids": [
+        "sc_940e5dee011842659690d4e44065c887",
+        "sc_81bf76ea44ca456a8a007cb664731e63",
+        "sc_185aaa7cf41444079dac8bd5a7e2abec",
+        "sc_fe38c840e2314d3abc53eec53932096c"
+      ],
+      "assignments": [
+        {
+          "goal": "G09",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "flow_id": "87c1f8ab-d786-4b2c-9861-d75e5813e639",
+      "path": "bonsai_analysis/flows/Clients/Adding a client field/ANALYSIS.md",
+      "screen_ids": [
+        "sc_cc68ecaccb72426b8573fca9ece52fc9",
+        "sc_175d01279ca24ead910995ea1cc957d3",
+        "sc_c231351f09ab4afe865acaf6e68add0f",
+        "sc_3d631d315dcb40969d26412f158df64c"
+      ],
+      "assignments": [
+        {
+          "goal": "G20",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "flow_id": "dd29b56e-cc30-4875-8f7b-302ca3909d05",
+      "path": "bonsai_analysis/flows/Clients/Adding a new project (Clients)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_7a2bb697a852495e8fd9be9fe6563b0a",
+        "sc_d0f7b82f653d46e993ad3108aba21bae",
+        "sc_c659df491c354cd8bd910fec7f59f9c8",
+        "sc_adeac0011d87480980cfd58e53e4d751",
+        "sc_6baf0c1661f749d39694f6350b4b6413"
+      ],
+      "assignments": [
+        {
+          "goal": "G21",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "flow_id": "f8191fa7-f2d9-4060-bd47-891b2d627aaa",
+      "path": "bonsai_analysis/flows/Clients/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_7f0b669f27f248c9bc800df624d5a8ac",
+        "sc_531ce252700c43088b29703be32726d6",
+        "sc_102bdc6203b741afb96bd13d81b43cd8",
+        "sc_cc68ecaccb72426b8573fca9ece52fc9"
+      ],
+      "assignments": [
+        {
+          "goal": "G19",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "flow_id": "0cf1b411-06f2-4fc9-8af4-30148a3e88e2",
+      "path": "bonsai_analysis/flows/Clients/Enabling portal access/ANALYSIS.md",
+      "screen_ids": [
+        "sc_531ce252700c43088b29703be32726d6",
+        "sc_4930cb54d79940748e12ac3f586d48bc"
+      ],
+      "assignments": [
+        {
+          "goal": "G73",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "flow_id": "44e00e8a-aa9f-41f1-b9bc-682789c80985",
+      "path": "bonsai_analysis/flows/Clients/Uploading a client image/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b1619b6b9fc3405e8ad67fd26f405b62",
+        "sc_1a5d9cd5fb3c48fd97c2c8a8d3d7019e",
+        "sc_7a2bb697a852495e8fd9be9fe6563b0a"
+      ],
+      "assignments": [
+        {
+          "goal": "G20",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "flow_id": "5ea077df-b21b-4455-8b53-bbd8901d54ae",
+      "path": "bonsai_analysis/flows/Contact Us/ANALYSIS.md",
+      "screen_ids": [
+        "sc_1250ed72609c423c8539fbde3958ed39",
+        "sc_e60b45e987414533b5fbfd7538eb68a7"
+      ],
+      "assignments": [
+        {
+          "goal": "G08",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "flow_id": "0744777e-0613-4157-b1e2-a1ac0854db27",
+      "path": "bonsai_analysis/flows/Copying referral link/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_859f6888e4b94f37a2aae444c3112490",
+        "sc_048932cf6a2a422ebe3c4aad916d20fd",
+        "sc_d6335d9364f0470bb3b2a2c08323fd66"
+      ],
+      "assignments": [
+        {
+          "goal": "G81",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "flow_id": "6a26536d-43db-4d46-b0a3-22be61b34b36",
+      "path": "bonsai_analysis/flows/Creating a new contract/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_c44cbade856b4f0499c7795aebe35771",
+        "sc_3ae2d8786a3d4998a443af310a11edea",
+        "sc_2ed24329323f4ff4bcd227d995c336f4",
+        "sc_9eef8504b5ee48d88fdd9a33c2867e40",
+        "sc_fcd6375dc2d341d4b160fbc95102b984",
+        "sc_09496090e1c44b36b32ebc8e0ab9d993",
+        "sc_1bec2709ba694e14875549ea663ae662",
+        "sc_e61df6e65a7f4417b55477ac836daa54",
+        "sc_d8d10b313ca74dedb105f931e07b92aa",
+        "sc_8012cfa08e5b49189443ef818b0f519e",
+        "sc_cb354300d8d04bc2abe73b49e48d3413",
+        "sc_a9f1fe69ae4345eeba2974a44921c360",
+        "sc_bac0e56b60a24329abbd17bd32d368f9",
+        "sc_8d9ebf6498e64f08a6961c884e16c64d",
+        "sc_d4f7d697039845c0a3ea05e9f074886b",
+        "sc_074055751609428cbbc750193d9bfb45",
+        "sc_8e868b8f4bf24c25ba59cbdb3a6094dd",
+        "sc_2beb47468dbb496fa54f279f20fb07c1"
+      ],
+      "assignments": [
+        {
+          "goal": "G40",
+          "first": 1,
+          "last": 12
+        },
+        {
+          "goal": "G41",
+          "first": 13,
+          "last": 19
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "flow_id": "03c89447-e059-4f05-b9f3-7b1430640cb1",
+      "path": "bonsai_analysis/flows/Creating a new contract/Contract guide tour/ANALYSIS.md",
+      "screen_ids": [
+        "sc_8e868b8f4bf24c25ba59cbdb3a6094dd",
+        "sc_679cd2ad4dc543da8376c9f9a3937eb5",
+        "sc_0d294250f432400a84649b47f29fd387",
+        "sc_44b33b264e7f43c68480de85e6cc82f8"
+      ],
+      "assignments": [
+        {
+          "goal": "G42",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "flow_id": "3903d09f-3610-46dd-808a-2e1017a411d5",
+      "path": "bonsai_analysis/flows/Creating a new contract/Converting contract type/ANALYSIS.md",
+      "screen_ids": [
+        "sc_8e868b8f4bf24c25ba59cbdb3a6094dd",
+        "sc_849fda8a22f045908d632e7a577d6c12",
+        "sc_eddad5fbd6db473080c167790ff3bd1c"
+      ],
+      "assignments": [
+        {
+          "goal": "G42",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "flow_id": "9c947be2-ae51-481b-953f-f7d65a3a366e",
+      "path": "bonsai_analysis/flows/Creating a new contract/Signing a contract/ANALYSIS.md",
+      "screen_ids": [
+        "sc_eddad5fbd6db473080c167790ff3bd1c",
+        "sc_20c95105456a422b92ed14f16a395998",
+        "sc_a677902c130b4fef91420fa5123b3875",
+        "sc_1798ad71955049e3a338278b01b05a37",
+        "sc_4bd74dbfe61f48ce9ae4b33e4e7b7d60"
+      ],
+      "assignments": [
+        {
+          "goal": "G43",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "flow_id": "60d9a6ef-22e9-463e-bcbb-ebd993a06e02",
+      "path": "bonsai_analysis/flows/Creating a proposal/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_955e76d0a2994de9995f97ebc5b07d2f",
+        "sc_ae2295adabb2431194bd0b9d85801df1",
+        "sc_11a3721184c941fc93b0a8301b4bc42f",
+        "sc_3e50a7eb10764ee09c56f622933cc67b",
+        "sc_e06e394dc2834d088abe045ce60d72aa",
+        "sc_819e42ff35984ce691d92c014503a99c",
+        "sc_520c53447c1e40938fc30c2c32ef125a",
+        "sc_22da5c665d8543e391ea16451efc26d8",
+        "sc_a15475bec427432fb0123cb80d832bb0",
+        "sc_004461870bef44df89cc6329c1249841",
+        "sc_455f71d704fd4c01b41254a6f93a21fa"
+      ],
+      "assignments": [
+        {
+          "goal": "G36",
+          "first": 1,
+          "last": 12
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "flow_id": "2ea53e4d-6f67-4621-bb41-c56eeb054811",
+      "path": "bonsai_analysis/flows/Creating a proposal/Archiving a proposal/ANALYSIS.md",
+      "screen_ids": [
+        "sc_8afa6c0d651c411eb077be375ebba010",
+        "sc_d059484fefee4e13852c74367787201d",
+        "sc_7e84530d09a34d2fb6e42242498e7216",
+        "sc_b50015926d1245a89e5e7b1baf9dcda7",
+        "sc_5ca3afbf1e4d4f78a6e462789220bc75"
+      ],
+      "assignments": [
+        {
+          "goal": "G39",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "flow_id": "5e7c61e1-cd88-4e72-a2c1-bab5ef9bddf0",
+      "path": "bonsai_analysis/flows/Creating a proposal/Changing theme/ANALYSIS.md",
+      "screen_ids": [
+        "sc_adaec91541ec4d51b64abcf3e5ef2d72",
+        "sc_7ab5cf0d2cc94fa39517b953ea1d423d",
+        "sc_4eae05d2299e4302a422bdd73f89ee2f",
+        "sc_65df6f8df3c64660bb0ed9f0712d0292",
+        "sc_bb64d1812ba64baca74a6791334b5540",
+        "sc_c226d7f45ba246fb99a4debc2dd2d1d1"
+      ],
+      "assignments": [
+        {
+          "goal": "G37",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "flow_id": "b4fff91d-639e-4818-9ec8-4dc1bfc3a18a",
+      "path": "bonsai_analysis/flows/Creating a proposal/Creating a new automation/ANALYSIS.md",
+      "screen_ids": [
+        "sc_8afa6c0d651c411eb077be375ebba010",
+        "sc_ba9262847181416986d989abb44ac1af",
+        "sc_ba7608445bdf4240bdc5e6731e4b0c44",
+        "sc_69b9617e5c6944ca870544bb46619f41",
+        "sc_76a9705b6f424ec08f36a60aec013a44",
+        "sc_8c39e91fa88341819108c92e13aac67a"
+      ],
+      "assignments": [
+        {
+          "goal": "G54",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "flow_id": "b8c9b3db-6f13-454c-8abf-52859fd329e5",
+      "path": "bonsai_analysis/flows/Creating a proposal/Editing header style/ANALYSIS.md",
+      "screen_ids": [
+        "sc_c226d7f45ba246fb99a4debc2dd2d1d1",
+        "sc_c6d245c9b0dd4060835263a1d1e36001",
+        "sc_2c4f193d8c7641c1987e909554c4d7db",
+        "sc_0e431a7583df4f8e925fefae38f06a86",
+        "sc_005d231ace2e47cf98bed206c13d2102",
+        "sc_751bd587aefe4b10951650c413b22e1f",
+        "sc_cbb5f16996764c49a4df94659a235efa"
+      ],
+      "assignments": [
+        {
+          "goal": "G37",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "flow_id": "7f481864-a5f0-4786-a800-334c1637b819",
+      "path": "bonsai_analysis/flows/Creating a proposal/Marking as accepted/ANALYSIS.md",
+      "screen_ids": [
+        "sc_6f751d09df314d7f94be053f43818f5f",
+        "sc_e1c9c65adce440a3a5ae0d88b7f4fea0",
+        "sc_e297b51f3cef4926b034dbd054fad183",
+        "sc_25b9c545e77a4d33b7ebe8e8e466c5cd",
+        "sc_9eea152027524c2fa988187d65d83326",
+        "sc_8afa6c0d651c411eb077be375ebba010"
+      ],
+      "assignments": [
+        {
+          "goal": "G39",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "flow_id": "21548d39-a3a9-4f72-883d-250c6a60c774",
+      "path": "bonsai_analysis/flows/Creating a proposal/Sending a proposal/ANALYSIS.md",
+      "screen_ids": [
+        "sc_cbb5f16996764c49a4df94659a235efa",
+        "sc_25be5f0267d34951a96f4cc4ea57539c",
+        "sc_c3e9aa3ec98d48189179b818f948fadb",
+        "sc_c4435e5491e54179984f717b2df15785",
+        "sc_45229441b2da4fb6aea5cfa3acfed055",
+        "sc_5d1663cc08974ff7869dc4a16dfa457f",
+        "sc_8069e7c78dfb4875b30b27da72d96f3b",
+        "sc_6f751d09df314d7f94be053f43818f5f"
+      ],
+      "assignments": [
+        {
+          "goal": "G38",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 37,
+      "flow_id": "b597e800-c771-4e17-8ddb-1167f2a61deb",
+      "path": "bonsai_analysis/flows/Creating a proposal/Setting proposal expiration date/ANALYSIS.md",
+      "screen_ids": [
+        "sc_455f71d704fd4c01b41254a6f93a21fa",
+        "sc_60580a9c725e41a9a9b11241ef607289",
+        "sc_4b11756b23cf4a98aa8b24a33549a7fe",
+        "sc_51b9ec1746a8402da2a2536d28352e76",
+        "sc_adaec91541ec4d51b64abcf3e5ef2d72",
+        "sc_6c568f5b54674f34912644358146f592"
+      ],
+      "assignments": [
+        {
+          "goal": "G38",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "flow_id": "a346e78b-8075-4537-ae03-d377056d237a",
+      "path": "bonsai_analysis/flows/Dashboard/Adding company details/ANALYSIS.md",
+      "screen_ids": [
+        "sc_7c8264e8239e464abd4219d7b9828199",
+        "sc_1f34f6436d754f598f9c0893c847470c",
+        "sc_3359f1c009534062b0d7633a05512d37",
+        "sc_d39ae19f83f54237aaba13bc601c1221",
+        "sc_eded37284763437b9f04ff234ccabc1c",
+        "sc_dbe1912daeaa417aa5c274542ae16219",
+        "sc_d7d2128b74c74ca88e2515942e5cdc36",
+        "sc_855aa87503994667b3fd5b8d6be847e2"
+      ],
+      "assignments": [
+        {
+          "goal": "G15",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "flow_id": "29e9a0b7-4ba1-4970-9790-08e7d46bc38e",
+      "path": "bonsai_analysis/flows/Dashboard/Adding company details/Uploading company logo/ANALYSIS.md",
+      "screen_ids": [
+        "sc_dbe1912daeaa417aa5c274542ae16219",
+        "sc_2768731826794293b5681dc736fe753c",
+        "sc_43122dbdd4c8474593249d1491600541",
+        "sc_d7d2128b74c74ca88e2515942e5cdc36"
+      ],
+      "assignments": [
+        {
+          "goal": "G15",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 40,
+      "flow_id": "5b74c74e-20d1-4811-8d96-864144e38a65",
+      "path": "bonsai_analysis/flows/Dashboard/Adding income manually/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b4a7de1ea55c4debb7bd86e0263b7563",
+        "sc_9679797f8dea4460ae60a82c9025245d",
+        "sc_cb48bd5681ed473c9f825c679c7fd94a",
+        "sc_39f99df8b20a4630aa10354888de6496",
+        "sc_201401c0f84c45bbb4a43d2a52511e48",
+        "sc_82fc6d97532c459ca4c1802554ea4af7",
+        "sc_a0f36c6973444bc985597697a3db6245",
+        "sc_5ce57ef5110b4f91bbe41131d32c3c46",
+        "sc_0cbe7eb3ade1423d803954ac3013ec7b",
+        "sc_0155de50054a4706aac26286fbf5e600",
+        "sc_a0fa68609b634defb4a2ccd18b63a4a2"
+      ],
+      "assignments": [
+        {
+          "goal": "G67",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "number": 41,
+      "flow_id": "a15f8066-29c2-457a-beea-e0e83b8d4dde",
+      "path": "bonsai_analysis/flows/Dashboard/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_765d1f52dfb64d28a78f4feb85550e91",
+        "sc_77e5823b93c24c3ba6d4fb9bc8b78dab",
+        "sc_fca9b7afe3224fbcbaedba0db6219071",
+        "sc_d5c00a24d1b04614ad759f86faa34aba",
+        "sc_8e3268d7e1e548c2b527f59038328164",
+        "sc_fe40b30743b344a0b5ebfe7d1d7f6da1",
+        "sc_c5734f174d484ffe9bb7e6738a4da73a"
+      ],
+      "assignments": [
+        {
+          "goal": "G72",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 42,
+      "flow_id": "4e44dbea-bf16-4dbf-a350-472b1b419248",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/Adding event details/ANALYSIS.md",
+      "screen_ids": [
+        "sc_547a933e0b3d47789feee75514074502",
+        "sc_499ea4a0453c4c84be8c8e7c3ef32f08",
+        "sc_07f7dc3ffc1a46c4be58eafcf5545731",
+        "sc_40e41f0dacb244fe96fbce2139fcff5e",
+        "sc_174665c466f44d928735d8877e13f637"
+      ],
+      "assignments": [
+        {
+          "goal": "G50",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "flow_id": "eb3647ee-e2ea-4435-bdf6-291ebd62f550",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/ANALYSIS.md",
+      "screen_ids": [
+        "sc_855aa87503994667b3fd5b8d6be847e2",
+        "sc_9c52561849c24f1e8b4fd6daf2016b27",
+        "sc_23559b201a994c998c2050414bb56f5c",
+        "sc_e44ce588650b48e6ac157539ad004f32",
+        "sc_1818bada85ad44d7ba17af8b4901d1f9",
+        "sc_a3278727c2d44cc586c1a571c64bcacd",
+        "sc_a7ce80d93ce043648e5b13e30e8368cc",
+        "sc_547a933e0b3d47789feee75514074502"
+      ],
+      "assignments": [
+        {
+          "goal": "G49",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 44,
+      "flow_id": "dc6c28b1-c2c2-4118-9358-3578b336031e",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/Editing advanced settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_10567e85a1db45959f5fee59dfe269aa",
+        "sc_8bb3e910accd4338b79775e2ee848439",
+        "sc_33d8ffeb19eb4c4da265017825df8811",
+        "sc_bd8bd2e13f7d401d82394d17da326e87",
+        "sc_4a74288006d54ecd949b1c814b0abc38"
+      ],
+      "assignments": [
+        {
+          "goal": "G51",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 45,
+      "flow_id": "b126bdbf-4f4f-455e-b62a-b9413b8fb7e7",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/Editing an event type/ANALYSIS.md",
+      "screen_ids": [
+        "sc_529048e78b304f66937c84b12cbc8a07",
+        "sc_9003a9b8ddee4c889190b4fb9e8550f5",
+        "sc_e5a9ea1a0e4549dc927b0f9664b1c364",
+        "sc_ff29911c0069452ca90e8b5400798b4d",
+        "sc_0f2e7d66e08240f994eca182a98c2171"
+      ],
+      "assignments": [
+        {
+          "goal": "G52",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 46,
+      "flow_id": "d9ed6982-0264-44ed-bb1a-82ad16b0e89f",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/Editing branding & design/ANALYSIS.md",
+      "screen_ids": [
+        "sc_4a74288006d54ecd949b1c814b0abc38",
+        "sc_2610a8a87df6426aa534536c6eacbe4d",
+        "sc_5219247100dc4cae868c35418dc0f1d5",
+        "sc_c4a9ad050271457a99e7f27a5c97ac63",
+        "sc_4f10bb8170af46e4a15d99547ce30256",
+        "sc_50bd5e961133492089170f6ce8722f14",
+        "sc_686dd66afa034c4aa2d4873c645d8a3a",
+        "sc_3e3731a8434b4afaa36517cfb8b669db",
+        "sc_0ee8dbe38fe54aa381a2c4384015c6c4",
+        "sc_529048e78b304f66937c84b12cbc8a07"
+      ],
+      "assignments": [
+        {
+          "goal": "G51",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 47,
+      "flow_id": "5da62684-3be7-48ac-923f-4fdf585d7db1",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/Setting up availability/ANALYSIS.md",
+      "screen_ids": [
+        "sc_174665c466f44d928735d8877e13f637",
+        "sc_0a0c22f3f5c84160a837cd8dc1dd332f",
+        "sc_e6ce470c765c4036904e044c4e952b17",
+        "sc_e2294476a58f4fceadab897d09f410e9",
+        "sc_205aef8eff024bccb5ba966030d3c094",
+        "sc_75576dc3b7c540e4a8ccaa129473aea3",
+        "sc_83c6716c0d594f588f30ffd786c9250b",
+        "sc_10567e85a1db45959f5fee59dfe269aa"
+      ],
+      "assignments": [
+        {
+          "goal": "G50",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 48,
+      "flow_id": "dfb2447e-8490-4b16-aeff-edd8101fb0ac",
+      "path": "bonsai_analysis/flows/Dashboard/Connecting to Google Calendar/View booking page/ANALYSIS.md",
+      "screen_ids": [
+        "sc_9003a9b8ddee4c889190b4fb9e8550f5",
+        "sc_56852a6357674c13835e0851076edef5",
+        "sc_76efb0987fb44725a69dce7900558d7b",
+        "sc_1a5077ff7c1040eea4eb0bfae669675f"
+      ],
+      "assignments": [
+        {
+          "goal": "G53",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 49,
+      "flow_id": "be21a04b-0006-4c0c-86bd-4a536d9e7c71",
+      "path": "bonsai_analysis/flows/Dashboard/Create a contact form (template)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_529048e78b304f66937c84b12cbc8a07",
+        "sc_b4a7de1ea55c4debb7bd86e0263b7563",
+        "sc_64a38330f26b456cafe9cc1926b44a21",
+        "sc_bdc01d3e33d34f5ba2ca525085dcec98",
+        "sc_06356cc9ef5248f49522f1a427901e56"
+      ],
+      "assignments": [
+        {
+          "goal": "G44",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 50,
+      "flow_id": "71620f3c-7759-4c18-8fa3-164e3d3e2256",
+      "path": "bonsai_analysis/flows/Dashboard/Create a contact form (template)/Filtering contact templates/ANALYSIS.md",
+      "screen_ids": [
+        "sc_06356cc9ef5248f49522f1a427901e56",
+        "sc_f06a992826234fddae83f7b121e5d0f9",
+        "sc_dbfeaa676dde4d26882ba97ee5c939b7",
+        "sc_5c0dd427af8c4322a5b020f642a73774"
+      ],
+      "assignments": [
+        {
+          "goal": "G44",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 51,
+      "flow_id": "b3dc7ca0-f03d-4a87-b0e2-84c08aa27400",
+      "path": "bonsai_analysis/flows/Dashboard/Create a contact form (template)/Searching templates/ANALYSIS.md",
+      "screen_ids": [
+        "sc_5c0dd427af8c4322a5b020f642a73774",
+        "sc_466e5e8430564c069f3186232841c1e5",
+        "sc_533e22603d0a48f48865973f027d58c6"
+      ],
+      "assignments": [
+        {
+          "goal": "G44",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 52,
+      "flow_id": "0888ad18-25b5-43aa-be17-ae21f1859ea0",
+      "path": "bonsai_analysis/flows/Dashboard/Create a contact form (template)/Using a template/ANALYSIS.md",
+      "screen_ids": [
+        "sc_5c0dd427af8c4322a5b020f642a73774",
+        "sc_559f0944133b4c8fb66738d23390e845",
+        "sc_6a141ad793ab4918935cec01018afe3b",
+        "sc_f5e4119741464cbc8bbac0dd3b4f0d55",
+        "sc_56bf12a78bd64f6b972ecb048efd8d14"
+      ],
+      "assignments": [
+        {
+          "goal": "G44",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 53,
+      "flow_id": "ff646f32-f010-478e-a3bd-572ccc501292",
+      "path": "bonsai_analysis/flows/Dashboard/Hiding sidebar/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_d177f0ef742b46daa0c1a96e7df49192",
+        "sc_afe21c01937c42ff92a872cf1a0b07c2"
+      ],
+      "assignments": [
+        {
+          "goal": "G14",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 54,
+      "flow_id": "4b420645-a17a-4219-9699-5f8081649f02",
+      "path": "bonsai_analysis/flows/Dashboard/Marking a task as complete/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a70d94958b66445688536ef9e7765bad",
+        "sc_843518d096bf492db76fa8528864a694"
+      ],
+      "assignments": [
+        {
+          "goal": "G28",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 55,
+      "flow_id": "89d6f212-12fc-4ad4-b11c-0bbd29708101",
+      "path": "bonsai_analysis/flows/Filtering all templates/ANALYSIS.md",
+      "screen_ids": [
+        "sc_f15443150bce43e5a44a761e74b0d42a",
+        "sc_826656b002c84fcc984a990ae447215b",
+        "sc_f8d0d8d84e874ab481ebdbbabb9e74d2",
+        "sc_9aaceaacba1b49429aa15c0b6c593574",
+        "sc_fc7ec8014b3e45d18c406ff267152a0a"
+      ],
+      "assignments": [
+        {
+          "goal": "G06",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 56,
+      "flow_id": "4fe6aa73-a216-43cb-87ff-be898ffc869c",
+      "path": "bonsai_analysis/flows/Filtering all templates/Template detail/ANALYSIS.md",
+      "screen_ids": [
+        "sc_6fe2078a11e04511ade794821209d7b9",
+        "sc_f0b529d5983e420e9347fbc1fd4f1117",
+        "sc_7257089466d443e2b0fc855262f2ba7b",
+        "sc_dc17b07446c945b281c1f295bba5f569",
+        "sc_0195208c431944b1bb900b5c48355e90"
+      ],
+      "assignments": [
+        {
+          "goal": "G06",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 57,
+      "flow_id": "0452bfda-8ddd-4d2f-8314-7370006c6c68",
+      "path": "bonsai_analysis/flows/Forms/Adding questions to a form/ANALYSIS.md",
+      "screen_ids": [
+        "sc_56bf12a78bd64f6b972ecb048efd8d14",
+        "sc_3e69691bb66b49979eaa625062680a36",
+        "sc_2b9e21e119da49c9b9d9a6b749ad096a",
+        "sc_7c915922ebe245faa672ea99c24272d6",
+        "sc_d1b24e0b191f46eaa9c392aeca812d49"
+      ],
+      "assignments": [
+        {
+          "goal": "G45",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 58,
+      "flow_id": "d265eece-4da9-4fd4-91f3-517dc07cd8d5",
+      "path": "bonsai_analysis/flows/Forms/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_e8689439c84b422fa72242c56784a19a"
+      ],
+      "assignments": [
+        {
+          "goal": "G45",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 59,
+      "flow_id": "ecd1821a-aa3a-40f6-beff-71e924dfb56f",
+      "path": "bonsai_analysis/flows/Forms/Form responses/ANALYSIS.md",
+      "screen_ids": [
+        "sc_e8689439c84b422fa72242c56784a19a",
+        "sc_80538dd26ffd48f7bbaa444a7ce66805",
+        "sc_89eb7d6a8ce640c4a33e5449a13e9772",
+        "sc_b86c61ba3e0247a2805d392dce12f454",
+        "sc_54a522cdaf524c81b83ad5dbccf32762"
+      ],
+      "assignments": [
+        {
+          "goal": "G46",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 60,
+      "flow_id": "b3f0ee03-c692-4960-8ed0-a8e15c1b4def",
+      "path": "bonsai_analysis/flows/Forms/Form responses/Giving a response/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a45b5166d1c6437ba2e1fd1d4d87b10f",
+        "sc_f523de3696234de3a12d4cf76ac0a196",
+        "sc_398e7acbbe0a4cf4894e1a1ab20de108",
+        "sc_e4f7f6e9b4a4415a981a8e1e0087faa6",
+        "sc_cf8f4af472bd48ab96758fd5eaaaac13",
+        "sc_b00e6cb760fc40cca163b65d7e7e7131",
+        "sc_6bdb747ea183452fa342c126c23bd853",
+        "sc_71befab91e544228af7388e7ab2f8fa0",
+        "sc_6b71b0df7a1f4054b911d5b6b1328229"
+      ],
+      "assignments": [
+        {
+          "goal": "G48",
+          "first": 1,
+          "last": 9
+        }
+      ]
+    },
+    {
+      "number": 61,
+      "flow_id": "31b9d879-ab36-4255-a0e5-34cc4266ce9c",
+      "path": "bonsai_analysis/flows/Forms/Form responses/Response detail/ANALYSIS.md",
+      "screen_ids": [
+        "sc_54a522cdaf524c81b83ad5dbccf32762",
+        "sc_de5a2b4b4e9d4e70b1e8be3edfeb7c0f",
+        "sc_bb49e1f780284ceb93f8148d856d4e21",
+        "sc_e92790c2b38f48f6bb97936a07ad05c9"
+      ],
+      "assignments": [
+        {
+          "goal": "G48",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 62,
+      "flow_id": "68ec72c2-b771-428b-98b7-256018628743",
+      "path": "bonsai_analysis/flows/Forms/Reordering questions/ANALYSIS.md",
+      "screen_ids": [
+        "sc_d1b24e0b191f46eaa9c392aeca812d49",
+        "sc_af5dbdf023694612a80512cb0ecbbe4c",
+        "sc_3ebb421578544410aa1a06eea0f95a0c"
+      ],
+      "assignments": [
+        {
+          "goal": "G45",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 63,
+      "flow_id": "93ea3af8-3cce-49ec-aaa0-b7d4e9676924",
+      "path": "bonsai_analysis/flows/Forms/Sharing a form/ANALYSIS.md",
+      "screen_ids": [
+        "sc_56bf12a78bd64f6b972ecb048efd8d14",
+        "sc_43b93e37ca07400f94130a072aff0537",
+        "sc_7cf32d86d1ca4f53a410a2a2b8e58f65",
+        "sc_56352588947d481d99cf169e30714abf",
+        "sc_d2ad07d286ed411a86e9d163d7f0fc5b",
+        "sc_afc35cce33e44ef591b2bd4bce18c3f2",
+        "sc_75e4b74d37184da0a5b3e6b6db0360ae",
+        "sc_a008e54e512349bfab1962125ca145e0"
+      ],
+      "assignments": [
+        {
+          "goal": "G47",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 64,
+      "flow_id": "2eeced8d-a39f-4cf1-8f38-0a5b8f989c54",
+      "path": "bonsai_analysis/flows/Freelancers/ANALYSIS.md",
+      "screen_ids": [
+        "sc_bfa0b33d9265420d8ee7dc4403432d86",
+        "sc_d84e927c4d784ac4aa7758d247026c9a",
+        "sc_1ee835c6516e4e7eb88872fb06dbc3b3",
+        "sc_3487023dac064b8c8d2ad37168c4de69"
+      ],
+      "assignments": [
+        {
+          "goal": "G03",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 65,
+      "flow_id": "4f8c359f-2e1f-46bd-953b-bd601767a0f1",
+      "path": "bonsai_analysis/flows/Help Center/ANALYSIS.md",
+      "screen_ids": [
+        "sc_5d4f0991488547c6bd0735f4e074318c",
+        "sc_979e0c1be7934cd6a079e9914cec68dd"
+      ],
+      "assignments": [
+        {
+          "goal": "G08",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 66,
+      "flow_id": "ec15eccf-bebd-4e1f-87d4-dbc1529a8bbf",
+      "path": "bonsai_analysis/flows/Help Center/Help article detail/ANALYSIS.md",
+      "screen_ids": [
+        "sc_2230bb5f099d482fb1f0ba9741d4b7e8",
+        "sc_e20cb01482774429b6136ac17d2039d7",
+        "sc_2c564244ef024e9cb6b56810d545b154",
+        "sc_e244e36695a94b13b56282b9633d1d00"
+      ],
+      "assignments": [
+        {
+          "goal": "G08",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 67,
+      "flow_id": "7fcadde8-35c9-4b36-9c76-ec2d4432f20e",
+      "path": "bonsai_analysis/flows/Industries (Consulting)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b71347cc8821454593507a2b9cb4a512",
+        "sc_18d96f6f4370489881038eb5fd0ce939",
+        "sc_17109313d7c7495696383774136ec3d5",
+        "sc_52e04cf0980e4d4fa09fd9ebf5030aad",
+        "sc_e334305ace2d4dd7af619fbd99c79394",
+        "sc_aefad7c41b8744a4a130c333ea3281ef",
+        "sc_7fd1d40a6eba4e6ab8f3f7935b66a130",
+        "sc_3df44f1b73064a85abb348c9b25eb6f2"
+      ],
+      "assignments": [
+        {
+          "goal": "G03",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 68,
+      "flow_id": "646bd9c2-add0-414c-8b98-89489f2c43b5",
+      "path": "bonsai_analysis/flows/Inviting a member/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_634224945f334a7489b79db3e68b0a19",
+        "sc_d59bf1a0438b462ba7d6bfc6d641103c",
+        "sc_865e3b1009c34b9999af73de640724a1",
+        "sc_4633bf9cebcf4ee2a1dd5c613aa33d56"
+      ],
+      "assignments": [
+        {
+          "goal": "G17",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 69,
+      "flow_id": "a0181c28-2521-46d3-a0e6-3ead4851b2f9",
+      "path": "bonsai_analysis/flows/Invoice templates/ANALYSIS.md",
+      "screen_ids": [
+        "sc_d68dbb7304bb45ac9755138b12ce3141",
+        "sc_eac8d5a2e97d47c496455da557912622",
+        "sc_ef526e3912f44ce29bac28e00edbae28",
+        "sc_9cb41f708d1841bc9bb627e9adb69f59",
+        "sc_fb22ca5fac734f0bb6636d302b61fd2c",
+        "sc_c1cf0b18c5da456ba7c29ddc416eab45",
+        "sc_0d63bd46b3304072b6f75589361c99b0",
+        "sc_89b5c3a2a2be40109d8018d906853f1a",
+        "sc_5902fc89beb849b4acb6be05de2f9f4c",
+        "sc_a094d29b4d2b453c8c46ee9ccb255d9f",
+        "sc_14cfb12034534421b6d0654f86236e3d"
+      ],
+      "assignments": [
+        {
+          "goal": "G06",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "number": 70,
+      "flow_id": "9a40f1e9-2362-4d00-a603-3f48febb5438",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/Adding unbilled time/ANALYSIS.md",
+      "screen_ids": [
+        "sc_3588b6b5ac2447fdbc7ecb2454855fcf",
+        "sc_efbb1d52a1324265b421c8ad7ae50e7e",
+        "sc_390428a45a5343a5b6aa5ad7cac920c5",
+        "sc_1111f74eeb134598ba67aa4fb5da3e37",
+        "sc_fae51741ec5b4f258991ebd929cd3b65"
+      ],
+      "assignments": [
+        {
+          "goal": "G59",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 71,
+      "flow_id": "18f62aba-c34e-486a-b2b8-099fcf9ba779",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/ANALYSIS.md",
+      "screen_ids": [
+        "sc_40ff225f161846249b5cf8c2c55423b6",
+        "sc_189567faf57a4b47ae03222be1dd2ae6",
+        "sc_225db5e23d1c4dee96ec5e48999ea0f5",
+        "sc_d7d27c29f8424e8db943e94d1b1c636f",
+        "sc_6dd7b5296fed46079b5dc202afe5a64a",
+        "sc_aa221ac7066a427db6aae5b18f0acab4",
+        "sc_9bb31a1abe7f42209f1ba327ab976a0c",
+        "sc_21f42247e22948b3b35d5313e9e315a5"
+      ],
+      "assignments": [
+        {
+          "goal": "G57",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 72,
+      "flow_id": "be9884fd-760f-4d30-b3e0-92b55ad8274c",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/Editing an item/ANALYSIS.md",
+      "screen_ids": [
+        "sc_da340557d84c4add8ac139af9a629557",
+        "sc_17b08f7253554c8e9691e71faebf58de",
+        "sc_352b14335c44407885e9d014228f98ec",
+        "sc_c4c151b48433485587c49123d3cc56f6",
+        "sc_3588b6b5ac2447fdbc7ecb2454855fcf"
+      ],
+      "assignments": [
+        {
+          "goal": "G58",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 73,
+      "flow_id": "8eb71ff6-6686-4e7f-8092-5036ebff452f",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/Editing invoice header/ANALYSIS.md",
+      "screen_ids": [
+        "sc_aa221ac7066a427db6aae5b18f0acab4",
+        "sc_da340557d84c4add8ac139af9a629557"
+      ],
+      "assignments": [
+        {
+          "goal": "G58",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 74,
+      "flow_id": "20115575-4590-4c0c-a009-7062c5f936ab",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/Enable auto-sending/ANALYSIS.md",
+      "screen_ids": [
+        "sc_da340557d84c4add8ac139af9a629557",
+        "sc_edd0e1fe0ae94729b1f89df4d408d4d5",
+        "sc_5a622720f93446aba70e58c7e88a468d"
+      ],
+      "assignments": [
+        {
+          "goal": "G61",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 75,
+      "flow_id": "3170e524-0da8-4acd-aaaa-33c3d0217288",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/Preview invoice/ANALYSIS.md",
+      "screen_ids": [
+        "sc_1111f74eeb134598ba67aa4fb5da3e37",
+        "sc_542047183c0446baa1b440c03a12018e",
+        "sc_6959caea78a643fd84fd7723b5f6fbd2"
+      ],
+      "assignments": [
+        {
+          "goal": "G60",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 76,
+      "flow_id": "085fa1f3-f846-4dac-9bbd-0b65f000a427",
+      "path": "bonsai_analysis/flows/Invoices/Adding a new invoice/Record payment/ANALYSIS.md",
+      "screen_ids": [
+        "sc_1111f74eeb134598ba67aa4fb5da3e37",
+        "sc_bdce9a3c2622478dafde0a8fa71686a7",
+        "sc_345d0cb29e704618862dfa24727d000e"
+      ],
+      "assignments": [
+        {
+          "goal": "G62",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 77,
+      "flow_id": "0ede7d7b-1ed5-487a-9dbd-b63ef818a29e",
+      "path": "bonsai_analysis/flows/Invoices/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_21f42247e22948b3b35d5313e9e315a5",
+        "sc_22fa89558d47416c89104f9b96182708",
+        "sc_b96b8024d9e94f8aa91b24da19fc2935"
+      ],
+      "assignments": [
+        {
+          "goal": "G55",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 78,
+      "flow_id": "f4f79868-6066-440d-9432-cec83923c392",
+      "path": "bonsai_analysis/flows/Invoices/Connecting to Stripe/ANALYSIS.md",
+      "screen_ids": [
+        "sc_21f42247e22948b3b35d5313e9e315a5",
+        "sc_1dc0c1e56d2549dab86354f2d4d8185e",
+        "sc_aaf4eb9dbbf5455f9a5e45c89dacbba8",
+        "sc_8fc8e97d33d14f84a4c093109d5d5b8e",
+        "sc_51e959da528e4eae935c3516a4993408",
+        "sc_558eb0c9495240fa912210e280b28e29",
+        "sc_4adbf874021e43bd88827a022ad24dde",
+        "sc_fd88c0741acd4bb69320dae4adb1f012",
+        "sc_768646543beb434a8c8f132a6de4dd39",
+        "sc_c012403e6cdc45fd97c6f08848af4952"
+      ],
+      "assignments": [
+        {
+          "goal": "G56",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 79,
+      "flow_id": "565b66ad-85f3-48ce-a384-fb856c5dd782",
+      "path": "bonsai_analysis/flows/Invoices/Connecting to Stripe/Turning off card payments/ANALYSIS.md",
+      "screen_ids": [
+        "sc_c012403e6cdc45fd97c6f08848af4952",
+        "sc_7e7ebb3090b54bc9a5249f647865130e"
+      ],
+      "assignments": [
+        {
+          "goal": "G56",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 80,
+      "flow_id": "a0f52cca-9fee-46e5-af2b-369e1db5e602",
+      "path": "bonsai_analysis/flows/Invoices/Editing default values (Invoices)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_22fa89558d47416c89104f9b96182708",
+        "sc_1429ac3005b545e89627fc165c1bf87c",
+        "sc_f0f1e695ecd84ecfa14c3110a6d1e97e",
+        "sc_faca016141424494ac9de7e2e0e9c66e"
+      ],
+      "assignments": [
+        {
+          "goal": "G55",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 81,
+      "flow_id": "4a05877b-fd77-4532-a407-7c93a2168895",
+      "path": "bonsai_analysis/flows/Invoices/Updating invoice settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b96b8024d9e94f8aa91b24da19fc2935",
+        "sc_a4aa5cf8e2204935970ed13659b6fc3e",
+        "sc_752e75d6e41f4272954812c0b29612aa",
+        "sc_f84d19bb7f274b65afda1546a7d69bce",
+        "sc_4b3ef98e88cb4f6da6cf29b82b72fca1"
+      ],
+      "assignments": [
+        {
+          "goal": "G55",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 82,
+      "flow_id": "f1a89cc0-4dc8-4576-b912-78231a2a7b1a",
+      "path": "bonsai_analysis/flows/Landing page/ANALYSIS.md",
+      "screen_ids": [
+        "sc_f832f286d2d74611a3f6486b79cb36ec",
+        "sc_337ce046f7184e07b2f841009066cf95",
+        "sc_2acfdf88f60f4638b4f3f97b6023c9cc",
+        "sc_fe9ef5d8bdf049cbabad33e42a6529c1",
+        "sc_b36874f940ae40f085f0df38ee4a95cd",
+        "sc_b410b2592edd40b99c423c2af0f73f6f",
+        "sc_c817e4443d78499394491227920ac96b",
+        "sc_81b8d00c272c4f709e9a04919113069b",
+        "sc_33704472c1d54fda8c9605958d1af9d9",
+        "sc_a1fa28afd409416f88fe3625082ddfac",
+        "sc_f5d10f7c06c44873bf3b7048ad5e4566"
+      ],
+      "assignments": [
+        {
+          "goal": "G02",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "number": 83,
+      "flow_id": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "path": "bonsai_analysis/flows/Logging in/ANALYSIS.md",
+      "screen_ids": [
+        "sc_07904520440b4dc7ad7d6d31bf3a03e9",
+        "sc_9d353458318e43e7b25ebbf88fefeaa9",
+        "sc_5c0fde91fbb34480b756c6eb10e63816",
+        "sc_4b4cf6491d4c4dd8993f4fe0b7caa7f9",
+        "sc_3982bd8e06b44860bdb8c4bac2592599"
+      ],
+      "assignments": [
+        {
+          "goal": "G11",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 84,
+      "flow_id": "8f9cc02b-1748-4b71-97d8-5c80bb299013",
+      "path": "bonsai_analysis/flows/Logging in/Resetting password/ANALYSIS.md",
+      "screen_ids": [
+        "sc_9d353458318e43e7b25ebbf88fefeaa9",
+        "sc_682da57b2dd148c6b455af1a8aa229fc",
+        "sc_7ac8efa85ddf46ffb99647670f126feb",
+        "sc_85c7828ac6694af5abfedb3f9fd93a6a",
+        "sc_f633b6435614448fb79dc464ccae4c43",
+        "sc_d23a8b46d69c4fe590dfd6013a244521",
+        "sc_938a3faee974462c9a77a24ab1996464",
+        "sc_aab3fabd62024fc584f9c87adb63ba16",
+        "sc_c81516b8daf84d66bb0657f853d44d2e",
+        "sc_46468ed1fd3f4a0992bef64f1c651449"
+      ],
+      "assignments": [
+        {
+          "goal": "G12",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 85,
+      "flow_id": "39713c9a-6f82-4d7c-be32-ab38510406bc",
+      "path": "bonsai_analysis/flows/Logging out/ANALYSIS.md",
+      "screen_ids": [
+        "sc_25261ff6e5d44d70885c07b053f29685",
+        "sc_b8e249247d5942d8a2d91a38aa7b9d19"
+      ],
+      "assignments": [
+        {
+          "goal": "G11",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 86,
+      "flow_id": "f714101f-db6b-4bfe-9ed1-74d6b0d6243c",
+      "path": "bonsai_analysis/flows/Onboarding/ANALYSIS.md",
+      "screen_ids": [
+        "sc_07904520440b4dc7ad7d6d31bf3a03e9",
+        "sc_e0a408a1e1dd4ea39f54dcef37d2bbf7",
+        "sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838",
+        "sc_75b60a729ef7491186049534632edfe4",
+        "sc_3381bd3528ea401e94549c86a8f80af8",
+        "sc_2adb02c3443f4da292d72c200694c1c9",
+        "sc_ca23a435daac40318703fcf7360a09d2",
+        "sc_de06dffb50094b20bee94b68be710837",
+        "sc_817952152d2a4b62b44bf1a21bf44509",
+        "sc_33b333fba9d34edbbd66ddfadf29dcb4"
+      ],
+      "assignments": [
+        {
+          "goal": "G10",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 87,
+      "flow_id": "f004afc2-a8c5-4262-b2e4-941331047a84",
+      "path": "bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md",
+      "screen_ids": [
+        "sc_33b333fba9d34edbbd66ddfadf29dcb4",
+        "sc_f1b9643dfd4b420e865bbd7f26b6f2b1",
+        "sc_f53d0cb8a35c4c598710fef5aa7e4b1b",
+        "sc_aee7229a31504349bca366b57683d09d",
+        "sc_ca3a704790554cda93aaed9d21fa8780",
+        "sc_78103903d92d4ab796d6412ba804cc90",
+        "sc_cff7a978591444b9974c2d54fd50762e",
+        "sc_91aafda2760f434084cdfd0ce6e9c365",
+        "sc_b2c655c6a1c54534b43a1112ef93fb2d",
+        "sc_732c37475b694d9e8e068e9330b1974b",
+        "sc_7f05cc123c5f4b0bab3f31a6e9141492",
+        "sc_e3d22238252b433d99746f13a11b29db",
+        "sc_64d7275eaa3a48cab57c9f3584c18b7a",
+        "sc_7c8264e8239e464abd4219d7b9828199",
+        "sc_009f5dc2c0194960ada61dac094422c3",
+        "sc_4a22967ce5a64ba59d6fa95b98316852"
+      ],
+      "assignments": [
+        {
+          "goal": "G13",
+          "first": 1,
+          "last": 16
+        }
+      ]
+    },
+    {
+      "number": 88,
+      "flow_id": "dee9aba7-13a6-462f-87f5-0a942a971ab0",
+      "path": "bonsai_analysis/flows/Perks/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_25261ff6e5d44d70885c07b053f29685",
+        "sc_4ad80af162bd442d86a72672c1c4a187",
+        "sc_01047b019e8a40e3b675cb770f66700a"
+      ],
+      "assignments": [
+        {
+          "goal": "G82",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 89,
+      "flow_id": "981ffcc3-d6c0-4038-8db3-4ac8753aace4",
+      "path": "bonsai_analysis/flows/Pricing/ANALYSIS.md",
+      "screen_ids": [
+        "sc_6b53199f35cb4bc69306b8e615e55dd7",
+        "sc_c435c9f093d34fddabe4fa83dd022786",
+        "sc_963ddd0939f7412cb81390d58c8cb401"
+      ],
+      "assignments": [
+        {
+          "goal": "G04",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 90,
+      "flow_id": "776f20e2-7498-433f-af8b-f585988e2429",
+      "path": "bonsai_analysis/flows/Privacy/ANALYSIS.md",
+      "screen_ids": [
+        "sc_6a35837e86c94e809eab079f134064bb",
+        "sc_5430fa1bd57a4c1a860e4c1481ccf3ac"
+      ],
+      "assignments": [
+        {
+          "goal": "G09",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 91,
+      "flow_id": "12ca870d-d929-4cc8-ab4c-60436c2eac13",
+      "path": "bonsai_analysis/flows/Products (CRM)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_2ce9fd14ccb74e05977de48b5517e78c",
+        "sc_e887bc9463cc451fa88f9aef731b6eb3",
+        "sc_4d7838a172d243b78e7c5e6f4fc9ffc9",
+        "sc_bad21b14523b490288c7037d79ba03cd",
+        "sc_d8a62347ff844766bc5b8997d289ba3c",
+        "sc_f2fd8490cf4d40d1b0c1ff5a104ce501",
+        "sc_e2fae02b9bf14ab6be504f53c3e490fb",
+        "sc_ac8d0e2583ea436ca9ce2ec0c94b4857",
+        "sc_69e9686880f0449d86954e385ec98c11",
+        "sc_a3545f7a7e324b7299d14f07150f6978"
+      ],
+      "assignments": [
+        {
+          "goal": "G03",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 92,
+      "flow_id": "1a0794d4-deb5-4eb3-b391-c7371c60e684",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Adding a comment/ANALYSIS.md",
+      "screen_ids": [
+        "sc_dfaae9980c7c49f5b05aa2d3f0f3a1bf",
+        "sc_afa221beae71493fa547575acdcfbcee",
+        "sc_f9353ec9e656421a9adf022fa0fd02ed"
+      ],
+      "assignments": [
+        {
+          "goal": "G27",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 93,
+      "flow_id": "38dcad7d-b2da-4d91-8eb3-2f3b39899b66",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Adding a time entry/ANALYSIS.md",
+      "screen_ids": [
+        "sc_12595f0282da469b919de850906c592c",
+        "sc_52d2f2ef9de6464684b936c685dcbc0a",
+        "sc_fcb60cfa8c604997858702d9f4b91809",
+        "sc_f823706741894a19881040ebe1fc20e5",
+        "sc_92611ceaf06340ae99ed8df9b666d850",
+        "sc_2586b49246f44022bf45b22d67ba23a8"
+      ],
+      "assignments": [
+        {
+          "goal": "G33",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 94,
+      "flow_id": "b8bd1036-63f8-4e27-b2b7-a76abf4d8f10",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Adding subtasks/ANALYSIS.md",
+      "screen_ids": [
+        "sc_92611ceaf06340ae99ed8df9b666d850",
+        "sc_046bdc5a1543433f933ca84d92579603",
+        "sc_92544e24c71a4c93b830a3d47c959b72",
+        "sc_f8457681a6804fe39e695dfe885f882a",
+        "sc_eeefe46c51154a1a90c08876ef418fc5",
+        "sc_04fedc8d0016439eb35c5d23bda93a37",
+        "sc_ab5a7afb054844be96854877997e8065",
+        "sc_cc86bdd7d2b14979983e89b4b1658a11",
+        "sc_589deed929294b86bd4e88e18604b436",
+        "sc_dfaae9980c7c49f5b05aa2d3f0f3a1bf"
+      ],
+      "assignments": [
+        {
+          "goal": "G26",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 95,
+      "flow_id": "ee93ca39-d45a-4937-8ee6-7193c985b590",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/ANALYSIS.md",
+      "screen_ids": [
+        "sc_adeac0011d87480980cfd58e53e4d751",
+        "sc_6400e9620c7b4e29856292f30cce1c60",
+        "sc_e0d23728f830469c8e36b7ce26cb4102",
+        "sc_7a647748d2d2495db3926d2b7b13188d",
+        "sc_f36eea1be7f14442b9aa8e9ca89532e3",
+        "sc_12595f0282da469b919de850906c592c"
+      ],
+      "assignments": [
+        {
+          "goal": "G25",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 96,
+      "flow_id": "cb1a0f7a-140a-42c9-a1a1-cae4c5d2fc9e",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Archiving a task/ANALYSIS.md",
+      "screen_ids": [
+        "sc_ea042f68264945369fcad12326916b22",
+        "sc_687782a0c44149d1963c1ff835f730fd",
+        "sc_4146f54be90443f8b6b7e1a98b3f74d9"
+      ],
+      "assignments": [
+        {
+          "goal": "G29",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 97,
+      "flow_id": "bbcfb9da-b056-42d0-bb2d-113093d50a8e",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Continue tracking time/ANALYSIS.md",
+      "screen_ids": [
+        "sc_2586b49246f44022bf45b22d67ba23a8",
+        "sc_6c33448532244ed885c3509879759e92",
+        "sc_73980bd484d2487cb3f30b699d277e7b",
+        "sc_b8fda9a16ca7454e928986dbd12bf46a",
+        "sc_ea042f68264945369fcad12326916b22"
+      ],
+      "assignments": [
+        {
+          "goal": "G32",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 98,
+      "flow_id": "7ca1185e-e3a0-460c-825e-68035a603593",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Deleting a task/ANALYSIS.md",
+      "screen_ids": [
+        "sc_8557a3e41edc402a8ebdf39022ee8d44",
+        "sc_633af570057e4f50bdad39ba5cd111b0",
+        "sc_33f6ac508d6e4c7794180abee8fcf138",
+        "sc_0886d3bb0d904283bae05691331a1627"
+      ],
+      "assignments": [
+        {
+          "goal": "G29",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 99,
+      "flow_id": "eb7720d8-fb1d-405b-8058-3f1c21adf475",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Editing a subtask/ANALYSIS.md",
+      "screen_ids": [
+        "sc_cc86bdd7d2b14979983e89b4b1658a11",
+        "sc_7b58c2e6afe84ff084746d9b26e8a2c7",
+        "sc_7d38c07db33f49d9b4f4160588f26d70",
+        "sc_f6fd9820dad74a1e8c7e75641dc547e4",
+        "sc_9487f272ece1435da2a8d001d43f9685"
+      ],
+      "assignments": [
+        {
+          "goal": "G26",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 100,
+      "flow_id": "9dcc612c-ab47-4cc3-a2bb-1c434c7da582",
+      "path": "bonsai_analysis/flows/Project detail/Adding a task/Editing status settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_92611ceaf06340ae99ed8df9b666d850",
+        "sc_893799aa095540a68b4d739c0eebeb7d",
+        "sc_9fa72c1143e148d08f1013b91bb7248f",
+        "sc_8b0fe4d121a94ab596c14f3a58477a40",
+        "sc_7812844d48494c668fcbd1c2448f8ba4",
+        "sc_cd0b582b70d34ff5ab146bbd401e4b77"
+      ],
+      "assignments": [
+        {
+          "goal": "G28",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 101,
+      "flow_id": "669a7507-38b3-41aa-89a2-146530c42240",
+      "path": "bonsai_analysis/flows/Project detail/ANALYSIS.md",
+      "screen_ids": [
+        "sc_3ade80505ba3458cb239c839815b3750",
+        "sc_adeac0011d87480980cfd58e53e4d751",
+        "sc_8557a3e41edc402a8ebdf39022ee8d44",
+        "sc_995163a7f1db42968cbc2e3906ddcbe5",
+        "sc_468c2bc67b614813b0ac89ab5b72b018",
+        "sc_b07eafa421cb44f3aa1081d935d5d1a3"
+      ],
+      "assignments": [
+        {
+          "goal": "G24",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 102,
+      "flow_id": "436bff56-c6be-434a-97e4-1fa7b2526a91",
+      "path": "bonsai_analysis/flows/Project detail/Editing project name/ANALYSIS.md",
+      "screen_ids": [
+        "sc_adeac0011d87480980cfd58e53e4d751",
+        "sc_d747ce9796af4df4ad638f846101a787",
+        "sc_1b1289ac3d2e4d0bb282944177f0a21f",
+        "sc_c05fe23fb7df4c13a42b5571729f0b25"
+      ],
+      "assignments": [
+        {
+          "goal": "G24",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 103,
+      "flow_id": "bca79d2d-7b8e-4f84-b35d-18adaec2cd06",
+      "path": "bonsai_analysis/flows/Project detail/Editing project settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b07eafa421cb44f3aa1081d935d5d1a3",
+        "sc_7db8a8c40f884b6190e313b59982d139",
+        "sc_1c16855a408d4a3b882a3437563ec0cd",
+        "sc_64dc2598400849a39fef6452cbd49a62"
+      ],
+      "assignments": [
+        {
+          "goal": "G24",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 104,
+      "flow_id": "ac1750e4-906b-47f6-ad41-18c1861d4f71",
+      "path": "bonsai_analysis/flows/Project detail/Updating project status/ANALYSIS.md",
+      "screen_ids": [
+        "sc_adeac0011d87480980cfd58e53e4d751",
+        "sc_ca52e796b2db4941927f959822ce3ff6",
+        "sc_7b0550836abf4b1fbb2ef374011e6538",
+        "sc_84ce1c2cec9c4e9d9fd6b9bcda62e9ef"
+      ],
+      "assignments": [
+        {
+          "goal": "G23",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 105,
+      "flow_id": "3aa597f9-f613-46dd-bd8c-45686e423865",
+      "path": "bonsai_analysis/flows/Projects/Adding a tag/ANALYSIS.md",
+      "screen_ids": [
+        "sc_21c57bdee8d94269af945440ba1c1c84",
+        "sc_ce68515567e24d2993b3728912380683",
+        "sc_8252c0a8db354aafa8406aba00fb74bc",
+        "sc_4b81e45531a346209fcc2feecc874ae2",
+        "sc_a9c50a58018942258a29b0015cea48b9",
+        "sc_8cf03c06713d48c98a2971716209c36b",
+        "sc_81a1fcc323794cba8bcb2b5e4bb7eeb8",
+        "sc_aac14308ef5b42d39dacf9db53326aea",
+        "sc_3ade80505ba3458cb239c839815b3750"
+      ],
+      "assignments": [
+        {
+          "goal": "G23",
+          "first": 1,
+          "last": 9
+        }
+      ]
+    },
+    {
+      "number": 106,
+      "flow_id": "d1b4cb1f-9280-49ad-b60d-b10fc8bf713d",
+      "path": "bonsai_analysis/flows/Projects/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_da6135eadeff44e49c083b563487ddf5",
+        "sc_6b648373d5194687be9bd43d9852a4ed",
+        "sc_b9f4747781a74fe98ded34416d1287f3"
+      ],
+      "assignments": [
+        {
+          "goal": "G22",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "flow_id": "ddea1540-3c0b-4e00-8805-12b4adc290c1",
+      "path": "bonsai_analysis/flows/Projects/Creating a project (Projects)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_da6135eadeff44e49c083b563487ddf5",
+        "sc_2d71503ee10849e088000dc2e54b6ccf",
+        "sc_1a98cb92e1634dd99d8c17c363bb99e8",
+        "sc_2f907e9803904b87b72a16e8ad14ef3b",
+        "sc_a49b5154a1e944b290d48ba802aad137",
+        "sc_21c57bdee8d94269af945440ba1c1c84"
+      ],
+      "assignments": [
+        {
+          "goal": "G21",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 108,
+      "flow_id": "c5e982aa-007d-4e20-8c8b-1fe3c276acc8",
+      "path": "bonsai_analysis/flows/Projects/Reordering projects/ANALYSIS.md",
+      "screen_ids": [
+        "sc_aac14308ef5b42d39dacf9db53326aea",
+        "sc_616919a626c34dc588a29b736eab8ef0",
+        "sc_e98507c9007c4f0cb127e058f7130ae4"
+      ],
+      "assignments": [
+        {
+          "goal": "G23",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 109,
+      "flow_id": "c9dfa93e-36ea-436f-bdef-bc876f4897c5",
+      "path": "bonsai_analysis/flows/Projects/Switching to list view/ANALYSIS.md",
+      "screen_ids": [
+        "sc_3ade80505ba3458cb239c839815b3750",
+        "sc_4ff59456df244ec089728cd491719a8e",
+        "sc_e4e08776c0b942a18b26dc14fd258318"
+      ],
+      "assignments": [
+        {
+          "goal": "G22",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 110,
+      "flow_id": "d501af32-ef6e-4ca1-8d3f-cf6e67874a08",
+      "path": "bonsai_analysis/flows/Reviews/ANALYSIS.md",
+      "screen_ids": [
+        "sc_21f0e007e04d45edbd410a1dffdff04c",
+        "sc_a605cb0e7e164a64b2707c0a110eafa6",
+        "sc_7d668b0699a945e98ca3ccbe29066b7a",
+        "sc_a6b1e7be914645e293f35918c57e4ee9"
+      ],
+      "assignments": [
+        {
+          "goal": "G04",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 111,
+      "flow_id": "283afa82-3835-4672-9d26-a607351efa6b",
+      "path": "bonsai_analysis/flows/Scheduling/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_683aacdc20ab4097a545a8c52c208013"
+      ],
+      "assignments": [
+        {
+          "goal": "G52",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 112,
+      "flow_id": "e2d05800-15f1-4b39-969c-290d5feee7fc",
+      "path": "bonsai_analysis/flows/Scheduling/Copying a booking page/ANALYSIS.md",
+      "screen_ids": [
+        "sc_683aacdc20ab4097a545a8c52c208013",
+        "sc_a66a88d36fd047638ced967826c19f38",
+        "sc_b4dcb8eec22048f0871fa75d10de7100",
+        "sc_f52f34e641ab47a08bf205fb3e2a2d6f"
+      ],
+      "assignments": [
+        {
+          "goal": "G52",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 113,
+      "flow_id": "f6466df8-7932-40c1-a10e-f84bfe1070f5",
+      "path": "bonsai_analysis/flows/Searching Bonsai/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_10915014ab6949a0abc5fdf5c383c15a",
+        "sc_b11731f0f2514992a919c05aab16abdd",
+        "sc_fbef9bc67e504d678bab9f15ce693e33",
+        "sc_0772af4321ef49babd9c81dd8b573721"
+      ],
+      "assignments": [
+        {
+          "goal": "G71",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 114,
+      "flow_id": "023d6e51-ce87-40a9-a628-cf7b39cd3b14",
+      "path": "bonsai_analysis/flows/Services/Adding a service to library/ANALYSIS.md",
+      "screen_ids": [
+        "sc_059762fd20fc473f9ef5b1f15f270ed6",
+        "sc_6a26ba7d25ab489087736b3ce8e1de20",
+        "sc_11e7b415167549558366c614315fc76d",
+        "sc_096b52c9f4f24987abfca9c5f3132f6c",
+        "sc_46a7bbbe6f2f407cbb037c08e36e9e57"
+      ],
+      "assignments": [
+        {
+          "goal": "G35",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 115,
+      "flow_id": "16a15a7f-2535-457e-838b-877a27767618",
+      "path": "bonsai_analysis/flows/Services/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_059762fd20fc473f9ef5b1f15f270ed6",
+        "sc_02428801137b4cd3abb08e3ba16a05e6",
+        "sc_5111e1b401844345948bcbceee9ddb52"
+      ],
+      "assignments": [
+        {
+          "goal": "G35",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 116,
+      "flow_id": "fe127bb6-984a-4b25-927f-4186b6650743",
+      "path": "bonsai_analysis/flows/Settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_25261ff6e5d44d70885c07b053f29685",
+        "sc_f81cdd742f9d4d09b96c9de95c4d0390",
+        "sc_33fdc633ac3c432eb0934dddfe05a1f7",
+        "sc_e9ce751aa491433ebc421be43501cc07",
+        "sc_5ed82da31d4542d1971fce527dc0584d",
+        "sc_35ec0f745e63437994f49c24aa5aa8bb",
+        "sc_fbb3e484b00c48e4963ee43bbe214b80",
+        "sc_a2d30da474bc43909f17e726b0559b83",
+        "sc_c3ed26151c6f4f72b154852639f26757",
+        "sc_b8ed116f56354559846a960779fa7c5d",
+        "sc_e7be88f9e1fa42c28bf8dc0b9f1368a9",
+        "sc_837573dab00e42459af5990de3b28044"
+      ],
+      "assignments": [
+        {
+          "goal": "G74",
+          "first": 1,
+          "last": 12
+        }
+      ]
+    },
+    {
+      "number": 117,
+      "flow_id": "3d51760e-2893-42a1-ada6-a2c44849a54d",
+      "path": "bonsai_analysis/flows/Settings/Deleting account/ANALYSIS.md",
+      "screen_ids": [
+        "sc_f81cdd742f9d4d09b96c9de95c4d0390",
+        "sc_333de9739d2740deba8e20dda49a7443",
+        "sc_7e6f8362d63b405a88ccff1cd6bf8b1b",
+        "sc_5b20d97add43411d9b934127f294db18",
+        "sc_9d353458318e43e7b25ebbf88fefeaa9"
+      ],
+      "assignments": [
+        {
+          "goal": "G76",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 118,
+      "flow_id": "eb5394cb-70d0-4286-be72-3a6a0c240fd2",
+      "path": "bonsai_analysis/flows/Settings/Disabling public profile/ANALYSIS.md",
+      "screen_ids": [
+        "sc_33fdc633ac3c432eb0934dddfe05a1f7",
+        "sc_7e58d6db65a84809a0233590eded6c40",
+        "sc_bef52adfe91d4df8b41775a538088b3a"
+      ],
+      "assignments": [
+        {
+          "goal": "G15",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 119,
+      "flow_id": "79468a76-f7fd-456e-843e-66c2763976a5",
+      "path": "bonsai_analysis/flows/Settings/Editing branding settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a2d30da474bc43909f17e726b0559b83",
+        "sc_d380789677a74dfb98c181aa6f8ea9c0",
+        "sc_159f4c9fd4464638b012a2db5441565c",
+        "sc_42454ea4d1c44374b940aa52d155a53b",
+        "sc_936ae7a98b0c4cb5a0ac7c85438225be",
+        "sc_56fc9c3ddb2b4075b4e6d69efe450718"
+      ],
+      "assignments": [
+        {
+          "goal": "G16",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 120,
+      "flow_id": "ac111df9-05db-467b-be5a-f58bc35913c0",
+      "path": "bonsai_analysis/flows/Settings/Editing notification settings/ANALYSIS.md",
+      "screen_ids": [
+        "sc_5ed82da31d4542d1971fce527dc0584d",
+        "sc_476c4b83209b496ea4ce93a698feb187",
+        "sc_4abe9d9b1af149e6aaef817ddfc25171",
+        "sc_c74927faab1c467ea4f4614abf9de9ae"
+      ],
+      "assignments": [
+        {
+          "goal": "G75",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 121,
+      "flow_id": "3dce7a57-e3a1-4fd6-944a-3f547b30def6",
+      "path": "bonsai_analysis/flows/Settings/Enable client mode/ANALYSIS.md",
+      "screen_ids": [
+        "sc_35ec0f745e63437994f49c24aa5aa8bb",
+        "sc_41a882a9a9a04d89ad41ea4c428eaf2d"
+      ],
+      "assignments": [
+        {
+          "goal": "G77",
+          "first": 1,
+          "last": 2
+        }
+      ]
+    },
+    {
+      "number": 122,
+      "flow_id": "ad6f634b-9fff-44de-acdf-4cd1eaf69123",
+      "path": "bonsai_analysis/flows/Settings/Importing a CSV/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b8ed116f56354559846a960779fa7c5d",
+        "sc_accd4fe1e6974ff59056e24b0649aca9",
+        "sc_63958ac7978f4f1c976ca14ad3b1c23b",
+        "sc_16a0e32e940b4e469bddd73b2f20183c",
+        "sc_0079601b907a405192b5310a1664e1bc",
+        "sc_23b97421307c43e6ad64126e7a9ea0d4",
+        "sc_1d22b8916ef6427081db6777102d21fd",
+        "sc_02b45084653a46b0b78476cdf2aa0e4f",
+        "sc_702a474b387e4f54b6144e1d9b8749c2",
+        "sc_b68a35108dc4488ebf99c45e2fabf879",
+        "sc_7676681e981547a882d4b59fae1ac84f"
+      ],
+      "assignments": [
+        {
+          "goal": "G78",
+          "first": 1,
+          "last": 11
+        }
+      ]
+    },
+    {
+      "number": 123,
+      "flow_id": "c615a678-2203-45d5-bcc0-235f6b325516",
+      "path": "bonsai_analysis/flows/Settings/Removing a user/ANALYSIS.md",
+      "screen_ids": [
+        "sc_c3ed26151c6f4f72b154852639f26757",
+        "sc_9e9153cd2e184bca95ad8221af225481",
+        "sc_cabb20c7541043ae92fb93dbfc992266",
+        "sc_205004e1f31044eeb1a1e4693a3e85e5"
+      ],
+      "assignments": [
+        {
+          "goal": "G17",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 124,
+      "flow_id": "7f83211c-f4cf-4bc7-a715-c64a2a27626b",
+      "path": "bonsai_analysis/flows/Settings/Uploading profile picture/ANALYSIS.md",
+      "screen_ids": [
+        "sc_f81cdd742f9d4d09b96c9de95c4d0390",
+        "sc_0430edfa781949a18635bcbcac8ba7ac",
+        "sc_d81700e8fdfa4441a7be8978018ba9c2",
+        "sc_e320193a5ad34c869d44bf5d41a5e13c",
+        "sc_78a1c292069f4a35a77afd642a459e7c"
+      ],
+      "assignments": [
+        {
+          "goal": "G74",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    },
+    {
+      "number": 125,
+      "flow_id": "06d57391-c7a4-4f63-ba8d-078ea3af046f",
+      "path": "bonsai_analysis/flows/Starting time tracking/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_d14a6a9529f74ffb8a33a354bdeb4dcd",
+        "sc_07f63320ecef4bc58675ab0c98a8f5bc",
+        "sc_68c1a17be48b48d6a0077b358ac93dc1",
+        "sc_be37de9dc1fd45b1ba7b3694ef5ff525",
+        "sc_b4e674c5933f49e79cf84897c07b9c85",
+        "sc_b7e81d357767425a98ea8965ce65b3fe",
+        "sc_f542370cb63848f5bb8326b2872dc8d8",
+        "sc_6078e139a0cc42bcac29cfb3a4921052",
+        "sc_cfa8d3d6c80049a58bef6c5eeaf05197"
+      ],
+      "assignments": [
+        {
+          "goal": "G32",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 126,
+      "flow_id": "89302289-1851-4066-91e4-d61a28f79e15",
+      "path": "bonsai_analysis/flows/Subscribing to Starter plan/ANALYSIS.md",
+      "screen_ids": [
+        "sc_0e5183c5b04a48fbae129f15214129e5",
+        "sc_9b0bf15ae874428f9c9a92caa68f9501",
+        "sc_a75300a685384445aac2bcb97f46624e",
+        "sc_0f6d11cb2f5d477f86549b09840defbb",
+        "sc_ed8724c7367546edb1cd738b75fd06fa",
+        "sc_023f9ca0b8c64c6ca4e1745506a474e3",
+        "sc_21d779863c8d4785b6cf1b9c6c9bdc14",
+        "sc_331a3c29307343699a0a8d92ed3b8eb7",
+        "sc_4b1c791673224de7b980935a853862ff",
+        "sc_9164a60dde6c4aa9a52899d31fd2b949",
+        "sc_0f2d6d7e9a0a491e9c959d696dc6983e",
+        "sc_d38390a6e560420c99ae3bc4387e7fc0"
+      ],
+      "assignments": [
+        {
+          "goal": "G79",
+          "first": 1,
+          "last": 12
+        }
+      ]
+    },
+    {
+      "number": 127,
+      "flow_id": "89fb5b3c-c982-48a3-a713-b70f07d8c544",
+      "path": "bonsai_analysis/flows/Subscribing to Starter plan/Canceling subscription/ANALYSIS.md",
+      "screen_ids": [
+        "sc_9164a60dde6c4aa9a52899d31fd2b949",
+        "sc_eedb724bece1495b8768996b36d6a5d5",
+        "sc_762730d159f44a10ac21b27d3d9b651c",
+        "sc_5b3499781e104b2ab5f28a7431af72b4",
+        "sc_f5f4626ab6584b5794e35938aaa046af",
+        "sc_88e0ceea03fc443e9bf417d13e8858cd",
+        "sc_d1b0f02ee20040448b5ed2f7a9ab8a64",
+        "sc_ed2581fa87bb46ec8c8eaec0a23b3afc",
+        "sc_14b0ff48b6544f7fafec087127efc520",
+        "sc_331ea36b85774eef9739e4e8f0f5fcb4"
+      ],
+      "assignments": [
+        {
+          "goal": "G80",
+          "first": 1,
+          "last": 10
+        }
+      ]
+    },
+    {
+      "number": 128,
+      "flow_id": "d348e200-5e48-4825-a646-69a6741e85d8",
+      "path": "bonsai_analysis/flows/Tasks/Adding a task (template)/ANALYSIS.md",
+      "screen_ids": [
+        "sc_fd79ede42b9843aca369d4e929c4272c",
+        "sc_118bf693c6174ae4b7e209fb1221a5ad",
+        "sc_0b8ddeccb45b4c09aac0680c15f68ca9",
+        "sc_8f8c685485c6437184cf778ab3ac510b",
+        "sc_de382cd5fbb94d6ca3ebcf1647b1919a",
+        "sc_dcb91b20475d4ba791eedac5320b320b",
+        "sc_3eef549a1670486daf06221156e198bc"
+      ],
+      "assignments": [
+        {
+          "goal": "G31",
+          "first": 1,
+          "last": 7
+        }
+      ]
+    },
+    {
+      "number": 129,
+      "flow_id": "59d5186e-98e3-495f-b8c0-96eb9c943631",
+      "path": "bonsai_analysis/flows/Tasks/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_fd79ede42b9843aca369d4e929c4272c",
+        "sc_6ec51256385940f2bd7d36a76874d691"
+      ],
+      "assignments": [
+        {
+          "goal": "G25",
+          "first": 1,
+          "last": 3
+        }
+      ]
+    },
+    {
+      "number": 130,
+      "flow_id": "4c98a858-6ef7-4a6a-8e83-e626772a4df0",
+      "path": "bonsai_analysis/flows/Tasks/Creating a task template/ANALYSIS.md",
+      "screen_ids": [
+        "sc_6ec51256385940f2bd7d36a76874d691",
+        "sc_f38d24ed977448da8e9f4a82a4403686",
+        "sc_ca533f6c3a4e43759ed9b62cfad3a964",
+        "sc_e6ee191223c2486caf3d9d87a12154e8"
+      ],
+      "assignments": [
+        {
+          "goal": "G30",
+          "first": 1,
+          "last": 4
+        }
+      ]
+    },
+    {
+      "number": 131,
+      "flow_id": "91a75fcf-9857-41ff-85c2-c2de0bae87d9",
+      "path": "bonsai_analysis/flows/Tasks/Editing a template task/ANALYSIS.md",
+      "screen_ids": [
+        "sc_e6ee191223c2486caf3d9d87a12154e8",
+        "sc_3088f428e5f84ace8f8cc9d9826275f6",
+        "sc_5d0895da618a47a4a2f0a2da3bfe2f7f",
+        "sc_1d39460fb10d405593f5c080ed7d6df1",
+        "sc_821e823e6105444082ad4c65794640fc",
+        "sc_330426d10b684bcd95b8f55415c0957c",
+        "sc_ce3533bae1e9437a9649f05418b21537",
+        "sc_cd414dd8295f418b979e3494a1cfd1eb"
+      ],
+      "assignments": [
+        {
+          "goal": "G30",
+          "first": 1,
+          "last": 8
+        }
+      ]
+    },
+    {
+      "number": 132,
+      "flow_id": "912b4b75-77bb-43fa-b86f-d85c6117841a",
+      "path": "bonsai_analysis/flows/Terms & Conditions/ANALYSIS.md",
+      "screen_ids": [
+        "sc_8e3f3ec3993e4051a54ef9fd80ff3e50"
+      ],
+      "assignments": [
+        {
+          "goal": "G09",
+          "first": 1,
+          "last": 1
+        }
+      ]
+    },
+    {
+      "number": 133,
+      "flow_id": "525f8723-dca6-4932-ac6e-d159249090be",
+      "path": "bonsai_analysis/flows/Time Tracking/ANALYSIS.md",
+      "screen_ids": [
+        "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+        "sc_85b6b26a6c274e51a7f3989d128a3d7f",
+        "sc_162b7ea331ba46edb617186815199744",
+        "sc_d3f3489589a94070882db77f5ed59bb0",
+        "sc_bdde553aba274d099836b4ff4dc93196",
+        "sc_c4505575b3574c75830f11e5c5ec11e3"
+      ],
+      "assignments": [
+        {
+          "goal": "G34",
+          "first": 1,
+          "last": 6
+        }
+      ]
+    },
+    {
+      "number": 134,
+      "flow_id": "1a82151c-9539-4a12-8a4d-706c8557370b",
+      "path": "bonsai_analysis/flows/Using invoice generator/ANALYSIS.md",
+      "screen_ids": [
+        "sc_b1b6a664a9bd4989b0250ed10b1bc18e",
+        "sc_52707e230d0b4795928f1d906838bf74",
+        "sc_8215ecb188434108956b1e25f408c5ce",
+        "sc_14f6d99be9f242d086fa899d0b1c04a6",
+        "sc_fb989694d5964b2aa7081a4902cbbd29"
+      ],
+      "assignments": [
+        {
+          "goal": "G07",
+          "first": 1,
+          "last": 5
+        }
+      ]
+    }
+  ],
+  "execution_order": [
+    "G00",
+    "G01",
+    "R01",
+    "G02",
+    "G03",
+    "G04",
+    "G05",
+    "G06",
+    "G07",
+    "G08",
+    "G09",
+    "R02",
+    "G10",
+    "G11",
+    "G12",
+    "G13",
+    "G14",
+    "G15",
+    "G16",
+    "G17",
+    "G18",
+    "R03",
+    "G19",
+    "R20",
+    "G20",
+    "G21",
+    "G22",
+    "R05",
+    "G23",
+    "G24",
+    "R06",
+    "G25",
+    "G26",
+    "G27",
+    "G28",
+    "G29",
+    "G30",
+    "G31",
+    "R07",
+    "G32",
+    "G33",
+    "G34",
+    "R08",
+    "G35",
+    "R09",
+    "G36",
+    "G37",
+    "G38",
+    "G39",
+    "G40",
+    "G41",
+    "G42",
+    "G43",
+    "R10",
+    "G44",
+    "G45",
+    "G46",
+    "G47",
+    "G48",
+    "R11",
+    "G49",
+    "G50",
+    "G51",
+    "G52",
+    "G53",
+    "R12",
+    "G54",
+    "R13",
+    "G55",
+    "G56",
+    "R14",
+    "G57",
+    "G58",
+    "G59",
+    "G60",
+    "G61",
+    "G62",
+    "R15",
+    "G63",
+    "G64",
+    "G65",
+    "G66",
+    "G67",
+    "R16",
+    "G68",
+    "G69",
+    "G70",
+    "G71",
+    "R21",
+    "G72",
+    "R17",
+    "G73",
+    "R18",
+    "G74",
+    "G75",
+    "G76",
+    "G77",
+    "G78",
+    "G79",
+    "G80",
+    "G81",
+    "G82",
+    "R04",
+    "R19",
+    "R22",
+    "G83",
+    "G84"
+  ],
+  "phase": "frontend_uxui_only",
+  "real_api_connections": "none_including_authentication",
+  "backend_work": "out_of_scope",
+  "research_scope": "missing screens, visual measurements, UI states and transitions only",
+  "visual_reference": "Gummble Bonsai; fonts, dimensions, colors, layout and flows"
+}
