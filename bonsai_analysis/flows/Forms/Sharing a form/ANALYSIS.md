@@ -1,8 +1,8 @@
 # Sharing a form 플로우 분석
 
-검토 상태: **R1 이미지 검토 및 문서 대조**. 실제 이미지 확인 **8/8단계**. 계정 재현은 수행하지 않았다.
+검토 상태: **R2 누락·내용 재검토 완료(정적 캡처 범위)**. 실제 이미지 재확인 **8/8단계**. 계정 재현은 수행하지 않았다.
 
-관찰은 Gummble 정적 이미지, 문서 확인은 공식 도움말·API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재와 실행 결과를 구분한다.
+관찰은 Gummble 캡처에서 직접 본 내용, 문서 확인은 현재 공식 도움말·공개 API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재·성공 안내·실제 서버 결과를 구분한다.
 
 ## 1. 출처와 검토 상태
 
@@ -11,13 +11,16 @@
 | 앱 | Bonsai Web · `bonsai-web` · `c1026782-09a7-45fb-b2d0-7cc1909bf1f4` |
 | Flow ID | `93ea3af8-3cce-49ec-aaa0-b7d4e9676924` |
 | 원본 | [Gummble flow](https://gummble.com/apps/bonsai-web?tab=flows&flow=93ea3af8-3cce-49ec-aaa0-b7d4e9676924) |
-| 버전 | 앱 조회 결과 `Latest`, version ID `2146`. 개별 flow의 제품 빌드·캡처 시점은 응답에 없어 미확인 |
-| 조회일 / 이미지 검토일 | 2026-11-17 이후 세션 조회 / 2026-11-17~2026-11-18 KST (개별 이미지 시각 미기록) |
-| 캡처일 | 미확인. 화면 속 업무 날짜나 샘플 값은 캡처일이 아니다 |
-| 화면 수 / 이미지 검토 | 8단계 / 8단계 |
-| 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
-| 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
-| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 8개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
+| 카탈로그 버전 | MCP 재조회 `Latest`, version ID `2146` |
+| 제품 빌드 | 개별 화면의 제품 빌드 미확인. 카탈로그 버전을 제품 버전으로 사용하지 않음 |
+| 조회일 / 이미지 재검토일 | 2026-11-20 KST. R1 확인일은 4절·9절의 기존 기록 유지; 개별 이미지 분·초 미기록 |
+| 캡처일 | 미확인. 화면의 업무·청구·기사·약관 날짜는 캡처일이 아님 |
+| 화면 수 / 이미지 확인 | 8단계 / 8단계. 공통 이미지는 고유 Screen ID 기준 재검토 후 각 흐름의 문맥과 대조 |
+| 이미지 검토 방식 | R1: 기존 단계별 확인 기록. R2: 원본 PNG를 장당 1280×800으로 축소한 번호 포함 2×2 비교 시트에서 시각 재검토. 전체 642개 고유 이미지·754단계 |
+| 크기·환경 | MCP 1440×900 / 원본 PNG 2880×1800 px. 기기·OS·브라우저·DPR·배율·국가·계정 권한은 별도 증거 없으면 미확인 |
+| 계정 재현 | 미수행. 로그인·생성·발송·서명·구매·삭제·외부 연결을 직접 실행하지 않음 |
+| 공식 문서 | 2026-11-20 KST 조회. 6절에서 기능별 직접 대조 범위·미확인 범위 및 [공통 출처](<../../../SOURCES.md>) 연결 |
+| 원본·문서 무결성 | MCP 단계 ID·순서·원본 URL 대조, 로컬 PNG 디코딩·크기·CDN 원본과 SHA-256 대조. [전체 검토 기록](<../../../review/2026-11-20/REPORT.md>) |
 
 ## 2. 플로우 목적과 연결
 
@@ -26,25 +29,33 @@
 - 편집기에서 Share Form 모달을 열고 공개 URL을 복사한 뒤 이메일 발송 성공까지 확인한다.
 - 우리가 실제 링크 복사/이메일 발송을 수행한 것이 아니라 Gummble 캡처를 관찰한 기록이다.
 
-- 상위 분석: [Forms](../ANALYSIS.md)
+- 상위 흐름: [Forms](../ANALYSIS.md)
 
 - 폴더 위치: `bonsai_analysis/flows/Forms/Sharing a form`
 - 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+- 하위 흐름: 없음.
+
+### 진입 조건과 확인된 종료 범위
+
+- 진입: 첫 캡처는 **폼 편집기 상단**이다. Create와 Content 선택. 이름/이메일은 기본 연락처 영역으로 보이나 시스템 필수 여부는 미확인. 이 화면 이전의 인증·권한·클릭 경로는 캡처에 보이는 범위만 인정한다.
+- 종료: 마지막 캡처는 **폼 이메일 발송 성공**이다. You've successfully sent your form. 로고 추가 과정은 중간 기록에 없다. 기록 종료를 전체 업무의 성공·서버 저장 완료로 확대하지 않는다.
+- 관련 흐름: [Forms](<../ANALYSIS.md>)
+- 관련 흐름은 기능 연결점이다. 서로 다른 캡처를 같은 계정·같은 시각의 연속 실행으로 합치지 않는다.
 
 ## 3. 전체 단계표
 
-아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
+MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단계이며 캡처 사이의 클릭·저장·네트워크가 모두 기록되었다는 뜻은 아니다.
 
-| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
+| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 캡처와의 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_56bf12a78bd64f6b972ecb048efd8d14`](https://gummble.com/screens/sc_56bf12a78bd64f6b972ecb048efd8d14?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [폼 편집기 상단](<screens/01_sc_56bf12a78bd64f6b972ecb048efd8d14.png>) | Share Form으로 모달을 연다. |
-| 02 | [`sc_43b93e37ca07400f94130a072aff0537`](https://gummble.com/screens/sc_43b93e37ca07400f94130a072aff0537?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [공개 링크 공유](<screens/02_sc_43b93e37ca07400f94130a072aff0537.png>) | Copy This Link를 선택한다. |
-| 03 | [`sc_7cf32d86d1ca4f53a410a2a2b8e58f65`](https://gummble.com/screens/sc_7cf32d86d1ca4f53a410a2a2b8e58f65?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [공개 링크 복사 성공](<screens/03_sc_7cf32d86d1ca4f53a410a2a2b8e58f65.png>) | 복사 성공 후 Embed Code 탭으로 전환한다. |
-| 04 | [`sc_56352588947d481d99cf169e30714abf`](https://gummble.com/screens/sc_56352588947d481d99cf169e30714abf?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [임베드 코드](<screens/04_sc_56352588947d481d99cf169e30714abf.png>) | Send Email 탭으로 전환한다. |
-| 05 | [`sc_d2ad07d286ed411a86e9d163d7f0fc5b`](https://gummble.com/screens/sc_d2ad07d286ed411a86e9d163d7f0fc5b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 공유 초기 상태](<screens/05_sc_d2ad07d286ed411a86e9d163d7f0fc5b.png>) | 고객과 선택 프로젝트를 지정한다. |
-| 06 | [`sc_afc35cce33e44ef591b2bd4bce18c3f2`](https://gummble.com/screens/sc_afc35cce33e44ef591b2bd4bce18c3f2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객·프로젝트 지정](<screens/06_sc_afc35cce33e44ef591b2bd4bce18c3f2.png>) | 선택 메시지를 입력한다. |
-| 07 | [`sc_75e4b74d37184da0a5b3e6b6db0360ae`](https://gummble.com/screens/sc_75e4b74d37184da0a5b3e6b6db0360ae?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 메시지 작성](<screens/07_sc_75e4b74d37184da0a5b3e6b6db0360ae.png>) | Send form 후 성공 알림이 나타난다. |
-| 08 | [`sc_a008e54e512349bfab1962125ca145e0`](https://gummble.com/screens/sc_a008e54e512349bfab1962125ca145e0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [폼 이메일 발송 성공](<screens/08_sc_a008e54e512349bfab1962125ca145e0.png>) | 편집기로 복귀한다. |
+| 01 | [`sc_56bf12a78bd64f6b972ecb048efd8d14`](https://gummble.com/screens/sc_56bf12a78bd64f6b972ecb048efd8d14?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [폼 편집기 상단](<screens/01_sc_56bf12a78bd64f6b972ecb048efd8d14.png>) | 공개 링크 공유 — 응답을 받기 위한 공개 링크 안내. |
+| 02 | [`sc_43b93e37ca07400f94130a072aff0537`](https://gummble.com/screens/sc_43b93e37ca07400f94130a072aff0537?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [공개 링크 공유](<screens/02_sc_43b93e37ca07400f94130a072aff0537.png>) | 공개 링크 복사 성공 — Your link has been copied. |
+| 03 | [`sc_7cf32d86d1ca4f53a410a2a2b8e58f65`](https://gummble.com/screens/sc_7cf32d86d1ca4f53a410a2a2b8e58f65?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [공개 링크 복사 성공](<screens/03_sc_7cf32d86d1ca4f53a410a2a2b8e58f65.png>) | 임베드 코드 — 이전 링크 복사 토스트가 남아 있다. 이를 임베드 복사 성공으로 보지 않는다. |
+| 04 | [`sc_56352588947d481d99cf169e30714abf`](https://gummble.com/screens/sc_56352588947d481d99cf169e30714abf?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [임베드 코드](<screens/04_sc_56352588947d481d99cf169e30714abf.png>) | 이메일 공유 초기 상태 — 수신 고객이 미선택 상태. |
+| 05 | [`sc_d2ad07d286ed411a86e9d163d7f0fc5b`](https://gummble.com/screens/sc_d2ad07d286ed411a86e9d163d7f0fc5b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 공유 초기 상태](<screens/05_sc_d2ad07d286ed411a86e9d163d7f0fc5b.png>) | 고객·프로젝트 지정 — 고객 선택 후 연결 프로젝트가 표시된다. |
+| 06 | [`sc_afc35cce33e44ef591b2bd4bce18c3f2`](https://gummble.com/screens/sc_afc35cce33e44ef591b2bd4bce18c3f2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [고객·프로젝트 지정](<screens/06_sc_afc35cce33e44ef591b2bd4bce18c3f2.png>) | 이메일 메시지 작성 — 회색 안내가 실제 사용자 메시지로 바뀌었다. |
+| 07 | [`sc_75e4b74d37184da0a5b3e6b6db0360ae`](https://gummble.com/screens/sc_75e4b74d37184da0a5b3e6b6db0360ae?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 메시지 작성](<screens/07_sc_75e4b74d37184da0a5b3e6b6db0360ae.png>) | 폼 이메일 발송 성공 — You've successfully sent your form. 로고 추가 과정은 중간 기록에 없다. |
+| 08 | [`sc_a008e54e512349bfab1962125ca145e0`](https://gummble.com/screens/sc_a008e54e512349bfab1962125ca145e0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [폼 이메일 발송 성공](<screens/08_sc_a008e54e512349bfab1962125ca145e0.png>) | 이 흐름의 기록 종료; 2절의 종료 범위 참조 |
 
 ## 4. 화면별 상세 분석
 
@@ -54,6 +65,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_56bf12a78bd64f6b972ecb048efd8d14?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/cffd3242-bc9f-4d5b-89c4-617f504f36b3.png)
 - 로컬 이미지: [01_sc_56bf12a78bd64f6b972ecb048efd8d14.png](<screens/01_sc_56bf12a78bd64f6b972ecb048efd8d14.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 067, 고유 이미지 S265, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_43b93e37ca07400f94130a072aff0537`
 
@@ -63,19 +75,19 @@
 - 입력 항목·필수 표시·기본값: Graphic Design Brief 제목/설명, Add An Image; First Name/Last Name(회색 Jane/Smith), Email(예시 이메일), 사업 웹사이트 URL 질문.
 - 버튼·메뉴·안내 문구: Preview, Automation, Share Form, …; Content 타입: Short/Long Text, Number, Single/Multiple Choice, Date Select, Custom Content, Files Download/Upload, Dropdown, Star Rating, Website.
 - 확인된 상태: Create와 Content 선택. 이름/이메일은 기본 연락처 영역으로 보이나 시스템 필수 여부는 미확인.
-- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다.
+- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 폼 정의 편집 화면이며 응답은 아직 입력되지 않았다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 폼 정의 편집 화면이며 응답은 아직 입력되지 않았다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 화면 아래 타입·Settings 내용·제목 편집 방식은 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 연락처 영역·일반 질문·콘텐츠 요소·브랜드 설정 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 연락처 영역·일반 질문·콘텐츠 요소·브랜드 설정 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 화면 아래 타입·Settings 내용·제목 편집 방식은 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 02 — 공개 링크 공유
 
@@ -83,6 +95,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_43b93e37ca07400f94130a072aff0537?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/d644a570-77fb-4f23-89ff-1ec26b4e2b71.png)
 - 로컬 이미지: [02_sc_43b93e37ca07400f94130a072aff0537.png](<screens/02_sc_43b93e37ca07400f94130a072aff0537.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 076, 고유 이미지 S303, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_56bf12a78bd64f6b972ecb048efd8d14` → 현재 → `sc_7cf32d86d1ca4f53a410a2a2b8e58f65`
 
@@ -92,19 +105,19 @@
 - 입력 항목·필수 표시·기본값: Public Link 선택. app.hellobonsai.com/f/… URL이 가로로 잘려 보인다.
 - 버튼·메뉴·안내 문구: Copy This Link, Embed Code, Send Email, X.
 - 확인된 상태: 응답을 받기 위한 공개 링크 안내.
-- 단계 간 변화: Share Form으로 모달을 연다.
+- 단계 간 변화: Share Form으로 모달을 연다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 공개 공유 주소가 존재한다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 공개 공유 주소가 존재한다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 잘린 전체 주소와 링크 권한·만료는 미확인. 토큰을 임의 복원하지 않는다.
 
 #### 모델링 영향
 
-- 후보와 근거: 공유 토큰·채널 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 공유 토큰·채널 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 잘린 전체 주소와 링크 권한·만료는 미확인. 토큰을 임의 복원하지 않는다. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 03 — 공개 링크 복사 성공
 
@@ -112,6 +125,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_7cf32d86d1ca4f53a410a2a2b8e58f65?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/9d9c3f19-2ba7-4f26-bf31-e4cd818e3b2f.png)
 - 로컬 이미지: [03_sc_7cf32d86d1ca4f53a410a2a2b8e58f65.png](<screens/03_sc_7cf32d86d1ca4f53a410a2a2b8e58f65.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 076, 고유 이미지 S304, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_43b93e37ca07400f94130a072aff0537` → 현재 → `sc_56352588947d481d99cf169e30714abf`
 
@@ -121,19 +135,19 @@
 - 입력 항목·필수 표시·기본값: URL 유지.
 - 버튼·메뉴·안내 문구: Copy This Link와 탭들, 토스트 X.
 - 확인된 상태: Your link has been copied.
-- 단계 간 변화: Copy This Link를 선택한다.
+- 단계 간 변화: Copy This Link를 선택한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 캡처상 클립보드 복사 성공 안내를 확인한다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 캡처상 클립보드 복사 성공 안내를 확인한다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 실제 클립보드 내용은 조회하지 않았다.
 
 #### 모델링 영향
 
-- 후보와 근거: 복사는 문서/응답 생성 이벤트와 다르다.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 복사는 문서/응답 생성 이벤트와 다르다. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 실제 클립보드 내용은 조회하지 않았다. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 04 — 임베드 코드
 
@@ -141,6 +155,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_56352588947d481d99cf169e30714abf?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/95f82ce9-8df1-49b8-b52d-f5ec9f25bdcf.png)
 - 로컬 이미지: [04_sc_56352588947d481d99cf169e30714abf.png](<screens/04_sc_56352588947d481d99cf169e30714abf.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 077, 고유 이미지 S305, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_7cf32d86d1ca4f53a410a2a2b8e58f65` → 현재 → `sc_d2ad07d286ed411a86e9d163d7f0fc5b`
 
@@ -150,19 +165,19 @@
 - 입력 항목·필수 표시·기본값: Hide header off. iframe의 embed=true, width/height 100%, min-height600px, border none이 보인다.
 - 버튼·메뉴·안내 문구: Hide header 토글, Copy to clipboard, 다른 탭, X.
 - 확인된 상태: 이전 링크 복사 토스트가 남아 있다. 이를 임베드 복사 성공으로 보지 않는다.
-- 단계 간 변화: 복사 성공 후 Embed Code 탭으로 전환한다.
+- 단계 간 변화: 복사 성공 후 Embed Code 탭으로 전환한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 임베드용 출력 코드 및 표시 옵션이 있다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 임베드용 출력 코드 및 표시 옵션이 있다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: Hide header 변경 후 코드/공개 페이지 영향은 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 공유 표시 옵션과 URL 파라미터 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 공유 표시 옵션과 URL 파라미터 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: Hide header 변경 후 코드/공개 페이지 영향은 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 05 — 이메일 공유 초기 상태
 
@@ -170,6 +185,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_d2ad07d286ed411a86e9d163d7f0fc5b?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/5091d7a6-62f8-4062-a850-b8f50eede9fb.png)
 - 로컬 이미지: [05_sc_d2ad07d286ed411a86e9d163d7f0fc5b.png](<screens/05_sc_d2ad07d286ed411a86e9d163d7f0fc5b.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 077, 고유 이미지 S306, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_56352588947d481d99cf169e30714abf` → 현재 → `sc_afc35cce33e44ef591b2bd4bce18c3f2`
 
@@ -179,19 +195,19 @@
 - 입력 항목·필수 표시·기본값: Client Select…; Email Message(Optional) 회색 기본 안내. Project는 아직 없다.
 - 버튼·메뉴·안내 문구: Send form, Client 선택, X, Contact Support.
 - 확인된 상태: 수신 고객이 미선택 상태.
-- 단계 간 변화: Send Email 탭으로 전환한다.
+- 단계 간 변화: Send Email 탭으로 전환한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 이메일 전송 준비만 확인된다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 이메일 전송 준비만 확인된다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 미선택 발송 시 검증·회색 안내의 기본 메시지 전송 여부는 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 발송 대상과 선택 메시지 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 발송 대상과 선택 메시지 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 미선택 발송 시 검증·회색 안내의 기본 메시지 전송 여부는 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 06 — 고객·프로젝트 지정
 
@@ -199,6 +215,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_afc35cce33e44ef591b2bd4bce18c3f2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/561a28d9-33c2-4260-8173-3cae8c3c9942.png)
 - 로컬 이미지: [06_sc_afc35cce33e44ef591b2bd4bce18c3f2.png](<screens/06_sc_afc35cce33e44ef591b2bd4bce18c3f2.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 077, 고유 이미지 S307, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_d2ad07d286ed411a86e9d163d7f0fc5b` → 현재 → `sc_75e4b74d37184da0a5b3e6b6db0360ae`
 
@@ -208,19 +225,19 @@
 - 입력 항목·필수 표시·기본값: Client Doe Company, Project(Optional) Rebranding Project, Email Message(Optional) 회색 안내.
 - 버튼·메뉴·안내 문구: 프로젝트 선택 해제 X, 드롭다운, Send form.
 - 확인된 상태: 고객 선택 후 연결 프로젝트가 표시된다.
-- 단계 간 변화: 고객과 선택 프로젝트를 지정한다.
+- 단계 간 변화: 고객과 선택 프로젝트를 지정한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 고객과 프로젝트를 별도로 지정할 수 있다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 고객과 프로젝트를 별도로 지정할 수 있다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 고객 변경 시 프로젝트 초기화·수신 연락처 선정은 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 고객 참조와 선택 프로젝트 참조 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 고객 참조와 선택 프로젝트 참조 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 고객 변경 시 프로젝트 초기화·수신 연락처 선정은 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 07 — 이메일 메시지 작성
 
@@ -228,6 +245,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_75e4b74d37184da0a5b3e6b6db0360ae?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/bc9703d8-3cbb-4bdb-b38c-755fe1427b3d.png)
 - 로컬 이미지: [07_sc_75e4b74d37184da0a5b3e6b6db0360ae.png](<screens/07_sc_75e4b74d37184da0a5b3e6b6db0360ae.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 077, 고유 이미지 S308, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_afc35cce33e44ef591b2bd4bce18c3f2` → 현재 → `sc_a008e54e512349bfab1962125ca145e0`
 
@@ -237,19 +255,19 @@
 - 입력 항목·필수 표시·기본값: Doe Company/Rebranding Project 유지; Hi Jane, can we talk more about this project? 입력.
 - 버튼·메뉴·안내 문구: Send form, X.
 - 확인된 상태: 회색 안내가 실제 사용자 메시지로 바뀌었다.
-- 단계 간 변화: 선택 메시지를 입력한다.
+- 단계 간 변화: 선택 메시지를 입력한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 발송 메시지 입력 상태.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 발송 메시지 입력 상태. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 템플릿·서식·길이 제한은 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 발송 당시 메시지 스냅샷 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 발송 당시 메시지 스냅샷 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 템플릿·서식·길이 제한은 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 08 — 폼 이메일 발송 성공
 
@@ -257,6 +275,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a008e54e512349bfab1962125ca145e0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/21aa221b-207a-48c2-98bb-e97594b73257.png)
 - 로컬 이미지: [08_sc_a008e54e512349bfab1962125ca145e0.png](<screens/08_sc_a008e54e512349bfab1962125ca145e0.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 078, 고유 이미지 S309, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_75e4b74d37184da0a5b3e6b6db0360ae` → 현재 → `플로우 기록 종료`
 
@@ -266,21 +285,40 @@
 - 입력 항목·필수 표시·기본값: 폼 제목·기본 필드 유지. 로고 이미지가 이제 표시된다.
 - 버튼·메뉴·안내 문구: Share Form, Preview, Automation, …, 로고 제거 X.
 - 확인된 상태: You've successfully sent your form. 로고 추가 과정은 중간 기록에 없다.
-- 단계 간 변화: Send form 후 성공 알림이 나타난다.
+- 단계 간 변화: Send form 후 성공 알림이 나타난다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 발송 요청 성공 안내만 확인한다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 발송 요청 성공 안내만 확인한다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 수신·열람·제출 여부, 로고 변경 원인은 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 발송 상태와 응답 제출 상태를 분리할 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 발송 상태와 응답 제출 상태를 분리할 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 수신·열람·제출 여부, 로고 변경 원인은 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ## 5. 업무 규칙과 데이터 변화
+
+| 단계 | 관찰된 상태·값 | 근거의 한계 |
+| --- | --- | --- |
+| 01 | Create와 Content 선택. 이름/이메일은 기본 연락처 영역으로 보이나 시스템 필수 여부는 미확인. — Graphic Design Brief 제목/설명, Add An Image; First Name/Last Name(회색 Jane/Smith), Email(예시 이메일), 사업 웹사이트 URL 질문. | 화면 아래 타입·Settings 내용·제목 편집 방식은 미확인. |
+| 02 | 응답을 받기 위한 공개 링크 안내. — Public Link 선택. app.hellobonsai.com/f/… URL이 가로로 잘려 보인다. | 잘린 전체 주소와 링크 권한·만료는 미확인. 토큰을 임의 복원하지 않는다. |
+| 03 | Your link has been copied. — URL 유지. | 실제 클립보드 내용은 조회하지 않았다. |
+| 04 | 이전 링크 복사 토스트가 남아 있다. 이를 임베드 복사 성공으로 보지 않는다. — Hide header off. iframe의 embed=true, width/height 100%, min-height600px, border none이 보인다. | Hide header 변경 후 코드/공개 페이지 영향은 미확인. |
+| 05 | 수신 고객이 미선택 상태. — Client Select…; Email Message(Optional) 회색 기본 안내. Project는 아직 없다. | 미선택 발송 시 검증·회색 안내의 기본 메시지 전송 여부는 미확인. |
+| 06 | 고객 선택 후 연결 프로젝트가 표시된다. — Client Doe Company, Project(Optional) Rebranding Project, Email Message(Optional) 회색 안내. | 고객 변경 시 프로젝트 초기화·수신 연락처 선정은 미확인. |
+| 07 | 회색 안내가 실제 사용자 메시지로 바뀌었다. — Doe Company/Rebranding Project 유지; Hi Jane, can we talk more about this project? 입력. | 템플릿·서식·길이 제한은 미확인. |
+| 08 | You've successfully sent your form. 로고 추가 과정은 중간 기록에 없다. — 폼 제목·기본 필드 유지. 로고 이미지가 이제 표시된다. | 수신·열람·제출 여부, 로고 변경 원인은 미확인. |
+
+위 표는 화면에서 보이는 상태·값이다. 성공 토스트가 있어도 수신자 접근·영수증·서버 저장을 독립 검증한 것은 아니다.
+
+### R2 재검토에서 보완한 해석
+
+Public Link·Embed Code·Send Email을 구분한다. 링크 복사 성공 토스트가 탭 전환 후에도 남아 있어 임베드 코드 복사나 이메일 발송 성공으로 오독하지 않는다. 고객·선택 프로젝트·메시지 입력 후 별도 발송 성공 안내가 나타나며 수신함 도착은 확인되지 않았다.
+
+### 업무 규칙과 연결 시 주의점
 
 - [관찰] 링크 복사는 성공 토스트가 있다. 임베드 코드 복사 실행은 별도 증거가 없다.
 - [관찰] 이메일 방식은 Client와 선택 Project/Message를 받는다. 고객을 고르기 전에는 Project가 보이지 않는다.
@@ -290,19 +328,53 @@
 
 ## 6. 공식 도움말과 API 대조
 
-- [폼·질문·공유·응답 도움말](https://help.hellobonsai.com/en/articles/3831621-create-custom-forms-and-questionnaires): 공개 링크, 임베드, 고객 이메일 및 선택 메시지 공유를 설명한다.
-- [공개 API 문서](https://docs.hellobonsai.com/api): 검토한 공개 리소스 목록에서 Forms/Questions/Responses 전용 endpoint와 필드 계약을 확인하지 못했다. Documents API를 폼 API로 대체하지 않는다.
+공식 자료는 **2026-11-20 KST** 조회한 현재 문서이며 과거 캡처와 시점이 다를 수 있다. 아래 출처의 제한된 범위를 대조했고, 실제 계정이나 내부 API를 실행하지 않았다.
+
+- [공개 API](https://docs.hellobonsai.com/api): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S003 공통 대조](<../../../SOURCES.md#s003>)에 기록했다.
+- [폼·질문·공유·응답 도움말](https://help.hellobonsai.com/en/articles/3831621-create-custom-forms-and-questionnaires): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S045 공통 대조](<../../../SOURCES.md#s045>)에 기록했다.
+
+화면과 대조할 때는 5절의 R2 해석 및 8절의 미확인 항목을 함께 적용한다. 현재 문서에만 있는 필수값·요금제·역할·새 UI를 과거 화면의 동작으로 확정하지 않는다.
+
+- [API 검토 범위](<../../../SOURCES.md#api>): 이 흐름의 내부 endpoint·실제 요청/응답·DB 스키마는 확인하지 않았다. 공개 API 목록에 없는 기능의 미지원 여부도 확정하지 않는다.
 
 ## 7. 데이터 모델링 시사점
+
+다음은 관찰에 기반한 OneHandSales 구현 후보다. 기능 채택·스키마·업무 정책으로 확정하지 않는다.
 
 - 폼 정의와 공유 채널·대상 고객/프로젝트·메시지·발송 결과·공개 링크를 구분할 후보.
 - 임베드 표시 옵션과 폼 자체 브랜드 설정의 범위를 구분할 후보.
 
+### 단계별 모델링 근거
+
+- 단계 01: 연락처 영역·일반 질문·콘텐츠 요소·브랜드 설정 후보.
+- 단계 02: 공유 토큰·채널 후보.
+- 단계 03: 복사는 문서/응답 생성 이벤트와 다르다.
+- 단계 04: 공유 표시 옵션과 URL 파라미터 후보.
+- 단계 05: 발송 대상과 선택 메시지 후보.
+- 단계 06: 고객 참조와 선택 프로젝트 참조 후보.
+- 단계 07: 발송 당시 메시지 스냅샷 후보.
+- 단계 08: 발송 상태와 응답 제출 상태를 분리할 후보.
+
 ## 8. 미확인 사항과 검토 질문
+
+**원본에 없는 분기·남은 범위:** 한 고객의 여러 연락처 중 실제 수신자 선택 규칙, 이메일 재발송/실패/중복을 확인한다. 공개 링크 만료·비활성화·토큰 재발급·로그인 요구 여부를 확인한다.
 
 - 한 고객의 여러 연락처 중 실제 수신자 선택 규칙, 이메일 재발송/실패/중복을 확인한다.
 - 공개 링크 만료·비활성화·토큰 재발급·로그인 요구 여부를 확인한다.
 - 프로젝트 선택이 응답 연결에 적용되는 방식과 public/embed의 고객 식별 규칙을 확인한다.
+
+### 단계별 미확인 사항
+
+- 단계 01: 화면 아래 타입·Settings 내용·제목 편집 방식은 미확인.
+- 단계 02: 잘린 전체 주소와 링크 권한·만료는 미확인. 토큰을 임의 복원하지 않는다.
+- 단계 03: 실제 클립보드 내용은 조회하지 않았다.
+- 단계 04: Hide header 변경 후 코드/공개 페이지 영향은 미확인.
+- 단계 05: 미선택 발송 시 검증·회색 안내의 기본 메시지 전송 여부는 미확인.
+- 단계 06: 고객 변경 시 프로젝트 초기화·수신 연락처 선정은 미확인.
+- 단계 07: 템플릿·서식·길이 제한은 미확인.
+- 단계 08: 수신·열람·제출 여부, 로고 변경 원인은 미확인.
+
+- 같은 계정·제품 빌드에서 시작 상태를 맞춘 뒤 해당 업무의 정상·취소·실패·재진입 결과를 검증해야 한다. 화면 목록과 이미지 검토 완료는 제품 전체 기능의 의미적 완전성이나 구현 검증 완료를 뜻하지 않는다.
 
 ## 9. 검토 이력
 
@@ -310,3 +382,5 @@
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 8개와 실제 이미지 8개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
 | 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 8단계 재조회 및 원본 8개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |
+| R2 전수 재검토 | 2026-11-20 KST | Gummble MCP 8단계 ID·순서·원본 URL 재조회 및 이미지 8/8단계 재검토. 진입·종료·단계별 상태표·미확인 사항과 5절 해석 보완. 현재 공식 자료 재대조 | 실제 계정·원본에 없는 분기·8절 항목 |
+| 문서·원본 무결성 점검 | 2026-11-20 KST | 전체 134문서·754단계의 9개 절, 단계 순서·화면 ID·로컬 링크·PNG 크기·SHA-256 및 고유 642개 CDN 원본 대조. [검토 기록](<../../../review/2026-11-20/REPORT.md>) | 기계 점검이며 추가 시각 검토나 계정 재현으로 계산하지 않음 |

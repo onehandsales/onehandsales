@@ -1,8 +1,8 @@
 # Connecting to Stripe 플로우 분석
 
-검토 상태: **R1 이미지 검토 및 문서 대조**. 실제 이미지 확인 **10/10단계**. 계정 재현은 수행하지 않았다.
+검토 상태: **R2 누락·내용 재검토 완료(정적 캡처 범위)**. 실제 이미지 재확인 **10/10단계**. 계정 재현은 수행하지 않았다.
 
-관찰은 Gummble 정적 이미지, 문서 확인은 공식 도움말·API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재와 실행 결과를 구분한다.
+관찰은 Gummble 캡처에서 직접 본 내용, 문서 확인은 현재 공식 도움말·공개 API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재·성공 안내·실제 서버 결과를 구분한다.
 
 ## 1. 출처와 검토 상태
 
@@ -11,13 +11,16 @@
 | 앱 | Bonsai Web · `bonsai-web` · `c1026782-09a7-45fb-b2d0-7cc1909bf1f4` |
 | Flow ID | `f4f79868-6066-440d-9432-cec83923c392` |
 | 원본 | [Gummble flow](https://gummble.com/apps/bonsai-web?tab=flows&flow=f4f79868-6066-440d-9432-cec83923c392) |
-| 버전 | 앱 조회 결과 `Latest`, version ID `2146`. 개별 flow의 제품 빌드·캡처 시점은 응답에 없어 미확인 |
-| 조회일 / 이미지 검토일 | 2026-11-17 이후 세션 조회 / 2026-11-17~2026-11-18 KST (개별 이미지 시각 미기록) |
-| 캡처일 | 미확인. 화면 속 업무 날짜나 샘플 값은 캡처일이 아니다 |
-| 화면 수 / 이미지 검토 | 10단계 / 10단계 |
-| 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
-| 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
-| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 10개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
+| 카탈로그 버전 | MCP 재조회 `Latest`, version ID `2146` |
+| 제품 빌드 | 개별 화면의 제품 빌드 미확인. 카탈로그 버전을 제품 버전으로 사용하지 않음 |
+| 조회일 / 이미지 재검토일 | 2026-11-20 KST. R1 확인일은 4절·9절의 기존 기록 유지; 개별 이미지 분·초 미기록 |
+| 캡처일 | 미확인. 화면의 업무·청구·기사·약관 날짜는 캡처일이 아님 |
+| 화면 수 / 이미지 확인 | 10단계 / 10단계. 공통 이미지는 고유 Screen ID 기준 재검토 후 각 흐름의 문맥과 대조 |
+| 이미지 검토 방식 | R1: 기존 단계별 확인 기록. R2: 원본 PNG를 장당 1280×800으로 축소한 번호 포함 2×2 비교 시트에서 시각 재검토. 전체 642개 고유 이미지·754단계 |
+| 크기·환경 | MCP 1440×900 / 원본 PNG 2880×1800 px. 기기·OS·브라우저·DPR·배율·국가·계정 권한은 별도 증거 없으면 미확인 |
+| 계정 재현 | 미수행. 로그인·생성·발송·서명·구매·삭제·외부 연결을 직접 실행하지 않음 |
+| 공식 문서 | 2026-11-20 KST 조회. 6절에서 기능별 직접 대조 범위·미확인 범위 및 [공통 출처](<../../../SOURCES.md>) 연결 |
+| 원본·문서 무결성 | MCP 단계 ID·순서·원본 URL 대조, 로컬 PNG 디코딩·크기·CDN 원본과 SHA-256 대조. [전체 검토 기록](<../../../review/2026-11-20/REPORT.md>) |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,28 +30,35 @@
 - Bonsai 이메일 확인과 Stripe 인증앱 확인은 서로 다른 인증 단계다. 계정 조작은 수행하지 않고 Gummble 캡처만 분석했다.
 - 마지막은 연결된 Stripe 카드와 카드 결제 on 상태. 실제 고객 결제·지급은 수록되지 않는다.
 
-- 상위 분석: [Invoices](../ANALYSIS.md)
-- 하위 플로우: [Turning off card payments](Turning%20off%20card%20payments/ANALYSIS.md)
+- 상위 흐름: [Invoices](../ANALYSIS.md)
+- 하위 흐름: [Turning off card payments](Turning%20off%20card%20payments/ANALYSIS.md)
 
 - 폴더 위치: `bonsai_analysis/flows/Invoices/Connecting to Stripe`
 - 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
 
+### 진입 조건과 확인된 종료 범위
+
+- 진입: 첫 캡처는 **인보이스 목록과 결제 연결 안내**이다. 한 개 문서가 있는 목록. 행 왼쪽 반복 아이콘과 회색 점. 이 화면 이전의 인증·권한·클릭 경로는 캡처에 보이는 범위만 인정한다.
+- 종료: 마지막 캡처는 **연결된 결제수단 유지**이다. 연결 후 안정상태. 기록 종료를 전체 업무의 성공·서버 저장 완료로 확대하지 않는다.
+- 관련 흐름: [Invoices](<../ANALYSIS.md>), [Turning off card payments](<Turning off card payments/ANALYSIS.md>)
+- 관련 흐름은 기능 연결점이다. 서로 다른 캡처를 같은 계정·같은 시각의 연속 실행으로 합치지 않는다.
+
 ## 3. 전체 단계표
 
-아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
+MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단계이며 캡처 사이의 클릭·저장·네트워크가 모두 기록되었다는 뜻은 아니다.
 
-| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
+| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 캡처와의 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_21f42247e22948b3b35d5313e9e315a5`](https://gummble.com/screens/sc_21f42247e22948b3b35d5313e9e315a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인보이스 목록과 결제 연결 안내](<screens/01_sc_21f42247e22948b3b35d5313e9e315a5.png>) | Payment Methods에서 Stripe/PayPal 연결 옵션을 표시한다. |
-| 02 | [`sc_1dc0c1e56d2549dab86354f2d4d8185e`](https://gummble.com/screens/sc_1dc0c1e56d2549dab86354f2d4d8185e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [결제 공급자 연결 선택](<screens/02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png>) | Stripe 연결 시 Bonsai 이메일 코드 인증으로 전환한다. |
-| 03 | [`sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`](https://gummble.com/screens/sc_aaf4eb9dbbf5455f9a5e45c89dacbba8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bonsai 이메일 인증 빈 코드](<screens/03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png>) | 6자리 입력 후 로딩 상태로 진행한다. |
-| 04 | [`sc_8fc8e97d33d14f84a4c093109d5d5b8e`](https://gummble.com/screens/sc_8fc8e97d33d14f84a4c093109d5d5b8e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 코드 검증 진행](<screens/04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png>) | Payment Methods로 돌아와 Connecting to Stripe 표시. |
-| 05 | [`sc_51e959da528e4eae935c3516a4993408`](https://gummble.com/screens/sc_51e959da528e4eae935c3516a4993408?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 연결 요청 진행](<screens/05_sc_51e959da528e4eae935c3516a4993408.png>) | Stripe의 인증앱 코드 입력 페이지로 이동. |
-| 06 | [`sc_558eb0c9495240fa912210e280b28e29`](https://gummble.com/screens/sc_558eb0c9495240fa912210e280b28e29?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 인증앱 코드 요청](<screens/06_sc_558eb0c9495240fa912210e280b28e29.png>) | 6자리 입력 후 검증 스피너가 보인다. |
-| 07 | [`sc_4adbf874021e43bd88827a022ad24dde`](https://gummble.com/screens/sc_4adbf874021e43bd88827a022ad24dde?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 코드 검증](<screens/07_sc_4adbf874021e43bd88827a022ad24dde.png>) | Bonsai로 돌아간다는 리디렉션 화면. |
-| 08 | [`sc_fd88c0741acd4bb69320dae4adb1f012`](https://gummble.com/screens/sc_fd88c0741acd4bb69320dae4adb1f012?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bonsai 복귀 리디렉션](<screens/08_sc_fd88c0741acd4bb69320dae4adb1f012.png>) | 연결 성공 토스트와 카드 결제 on 표시. |
-| 09 | [`sc_768646543beb434a8c8f132a6de4dd39`](https://gummble.com/screens/sc_768646543beb434a8c8f132a6de4dd39?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 연결 성공](<screens/09_sc_768646543beb434a8c8f132a6de4dd39.png>) | 토스트가 사라지고 연결 상태 유지. |
-| 10 | [`sc_c012403e6cdc45fd97c6f08848af4952`](https://gummble.com/screens/sc_c012403e6cdc45fd97c6f08848af4952?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [연결된 결제수단 유지](<screens/10_sc_c012403e6cdc45fd97c6f08848af4952.png>) | 연결 완료 표시로 종료. 지급/결제 실행 없음. |
+| 01 | [`sc_21f42247e22948b3b35d5313e9e315a5`](https://gummble.com/screens/sc_21f42247e22948b3b35d5313e9e315a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [인보이스 목록과 결제 연결 안내](<screens/01_sc_21f42247e22948b3b35d5313e9e315a5.png>) | 결제 공급자 연결 선택 — 연결 전 상태. |
+| 02 | [`sc_1dc0c1e56d2549dab86354f2d4d8185e`](https://gummble.com/screens/sc_1dc0c1e56d2549dab86354f2d4d8185e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [결제 공급자 연결 선택](<screens/02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png>) | Bonsai 이메일 인증 빈 코드 — 본인확인 대기. |
+| 03 | [`sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`](https://gummble.com/screens/sc_aaf4eb9dbbf5455f9a5e45c89dacbba8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bonsai 이메일 인증 빈 코드](<screens/03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png>) | 이메일 코드 검증 진행 — 처리중 상태. |
+| 04 | [`sc_8fc8e97d33d14f84a4c093109d5d5b8e`](https://gummble.com/screens/sc_8fc8e97d33d14f84a4c093109d5d5b8e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [이메일 코드 검증 진행](<screens/04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png>) | Stripe 연결 요청 진행 — 외부 연결 준비/진행 중. |
+| 05 | [`sc_51e959da528e4eae935c3516a4993408`](https://gummble.com/screens/sc_51e959da528e4eae935c3516a4993408?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 연결 요청 진행](<screens/05_sc_51e959da528e4eae935c3516a4993408.png>) | Stripe 인증앱 코드 요청 — 외부 공급자 인증 대기. |
+| 06 | [`sc_558eb0c9495240fa912210e280b28e29`](https://gummble.com/screens/sc_558eb0c9495240fa912210e280b28e29?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 인증앱 코드 요청](<screens/06_sc_558eb0c9495240fa912210e280b28e29.png>) | Stripe 코드 검증 — 검증중. |
+| 07 | [`sc_4adbf874021e43bd88827a022ad24dde`](https://gummble.com/screens/sc_4adbf874021e43bd88827a022ad24dde?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 코드 검증](<screens/07_sc_4adbf874021e43bd88827a022ad24dde.png>) | Bonsai 복귀 리디렉션 — 외부에서 앱으로 복귀 중. |
+| 08 | [`sc_fd88c0741acd4bb69320dae4adb1f012`](https://gummble.com/screens/sc_fd88c0741acd4bb69320dae4adb1f012?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Bonsai 복귀 리디렉션](<screens/08_sc_fd88c0741acd4bb69320dae4adb1f012.png>) | Stripe 연결 성공 — 연결 성공 표시. |
+| 09 | [`sc_768646543beb434a8c8f132a6de4dd39`](https://gummble.com/screens/sc_768646543beb434a8c8f132a6de4dd39?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [Stripe 연결 성공](<screens/09_sc_768646543beb434a8c8f132a6de4dd39.png>) | 연결된 결제수단 유지 — 연결 후 안정상태. |
+| 10 | [`sc_c012403e6cdc45fd97c6f08848af4952`](https://gummble.com/screens/sc_c012403e6cdc45fd97c6f08848af4952?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [연결된 결제수단 유지](<screens/10_sc_c012403e6cdc45fd97c6f08848af4952.png>) | 이 흐름의 기록 종료; 2절의 종료 범위 참조 |
 
 ## 4. 화면별 상세 분석
 
@@ -58,6 +68,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_21f42247e22948b3b35d5313e9e315a5?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/350ed68e-021e-4ff8-9e83-3c90f3405098.png)
 - 로컬 이미지: [01_sc_21f42247e22948b3b35d5313e9e315a5.png](<screens/01_sc_21f42247e22948b3b35d5313e9e315a5.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 089, 고유 이미지 S354, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_1dc0c1e56d2549dab86354f2d4d8185e`
 
@@ -67,19 +78,19 @@
 - 입력 항목·필수 표시·기본값: 한 행 #1001, 발행 Feb07 2024·만기 Mar08 2024, Doe Company/Design Project with Doe Studio, Total/Paid $0.00. 검색 비어 있음.
 - 버튼·메뉴·안내 문구: Cards/Bank Transfer/PayPal 꺼진 토글, 안내 닫기, Filters, Edit Payment Methods, New Invoice, 행 … 및 정렬 아이콘.
 - 확인된 상태: 한 개 문서가 있는 목록. 행 왼쪽 반복 아이콘과 회색 점.
-- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다.
+- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 문서 금액과 수납액이 별도이며 발행일과 만기일도 분리된다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 문서 금액과 수납액이 별도이며 발행일과 만기일도 분리된다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 점 색상 의미·필터조건·결제연결 요구사항 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 인보이스 요약 목록·반복 시리즈·결제수단 구성 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 인보이스 요약 목록·반복 시리즈·결제수단 구성 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 점 색상 의미·필터조건·결제연결 요구사항 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 02 — 결제 공급자 연결 선택
 
@@ -87,6 +98,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_1dc0c1e56d2549dab86354f2d4d8185e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/fc113090-efb7-483a-9658-b3948512cc03.png)
 - 로컬 이미지: [02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png](<screens/02_sc_1dc0c1e56d2549dab86354f2d4d8185e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 092, 고유 이미지 S367, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_21f42247e22948b3b35d5313e9e315a5` → 현재 → `sc_aaf4eb9dbbf5455f9a5e45c89dacbba8`
 
@@ -96,19 +108,19 @@
 - 입력 항목·필수 표시·기본값: 입력 없음. 두 공급자 모두 미연결 안내.
 - 버튼·메뉴·안내 문구: Connect to Stripe, Connect to PayPal, Contact Support.
 - 확인된 상태: 연결 전 상태.
-- 단계 간 변화: Payment Methods에서 Stripe/PayPal 연결 옵션을 표시한다.
+- 단계 간 변화: Payment Methods에서 Stripe/PayPal 연결 옵션을 표시한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 공급자별 독립 연결 시작점 확인.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 공급자별 독립 연결 시작점 확인. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 연결 권한·국가에 따른 표시 차이 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 계정-결제공급자 연결 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 계정-결제공급자 연결 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 연결 권한·국가에 따른 표시 차이 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 03 — Bonsai 이메일 인증 빈 코드
 
@@ -116,6 +128,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_aaf4eb9dbbf5455f9a5e45c89dacbba8?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/6afd575e-d0e7-4d3c-bc6e-c99669a4c715.png)
 - 로컬 이미지: [03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png](<screens/03_sc_aaf4eb9dbbf5455f9a5e45c89dacbba8.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 092, 고유 이미지 S368, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_1dc0c1e56d2549dab86354f2d4d8185e` → 현재 → `sc_8fc8e97d33d14f84a4c093109d5d5b8e`
 
@@ -125,19 +138,19 @@
 - 입력 항목·필수 표시·기본값: 6자리 코드 빈 값, 첫칸포커스. 계정메일로 전송, 유효10분 안내, Resend code in01:00.
 - 버튼·메뉴·안내 문구: 닫기 X, 재전송 대기 표시. 제출 버튼은 보이지 않음.
 - 확인된 상태: 본인확인 대기.
-- 단계 간 변화: Stripe 연결 시 Bonsai 이메일 코드 인증으로 전환한다.
+- 단계 간 변화: Stripe 연결 시 Bonsai 이메일 코드 인증으로 전환한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 외부 연결 전에 Bonsai 측 추가 인증이 존재한다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 외부 연결 전에 Bonsai 측 추가 인증이 존재한다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 실제메일수신·오입력·만료·자동제출 방식 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 인증challenge와 연결 요청 상태 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 인증challenge와 연결 요청 상태 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 실제메일수신·오입력·만료·자동제출 방식 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 04 — 이메일 코드 검증 진행
 
@@ -145,6 +158,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_8fc8e97d33d14f84a4c093109d5d5b8e?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/c475a1d5-1f9e-4198-b819-76309b1077c6.png)
 - 로컬 이미지: [04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png](<screens/04_sc_8fc8e97d33d14f84a4c093109d5d5b8e.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 093, 고유 이미지 S369, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_aaf4eb9dbbf5455f9a5e45c89dacbba8` → 현재 → `sc_51e959da528e4eae935c3516a4993408`
 
@@ -154,19 +168,19 @@
 - 입력 항목·필수 표시·기본값: 6자리 값 입력됨(인증값은 문서에 옮기지 않음). 재전송00:43.
 - 버튼·메뉴·안내 문구: X·재전송대기. 별도확인버튼 없음.
 - 확인된 상태: 처리중 상태.
-- 단계 간 변화: 6자리 입력 후 로딩 상태로 진행한다.
+- 단계 간 변화: 6자리 입력 후 로딩 상태로 진행한다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 입력 완료 후 로딩을 관찰. 성공 자체는 다음화면으로 판단.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 입력 완료 후 로딩을 관찰. 성공 자체는 다음화면으로 판단. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 재시도제한·검증에러·붙여넣기동작 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 코드입력/검증중/성공실패 UI상태 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 코드입력/검증중/성공실패 UI상태 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 재시도제한·검증에러·붙여넣기동작 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 05 — Stripe 연결 요청 진행
 
@@ -174,6 +188,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_51e959da528e4eae935c3516a4993408?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/81e98dd2-e8d7-444d-a018-d5ef77a7fa61.png)
 - 로컬 이미지: [05_sc_51e959da528e4eae935c3516a4993408.png](<screens/05_sc_51e959da528e4eae935c3516a4993408.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 093, 고유 이미지 S370, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_8fc8e97d33d14f84a4c093109d5d5b8e` → 현재 → `sc_558eb0c9495240fa912210e280b28e29`
 
@@ -183,19 +198,19 @@
 - 입력 항목·필수 표시·기본값: Stripe 버튼 Connecting to Stripe… 회색파랑. PayPal 연결 버튼 유지.
 - 버튼·메뉴·안내 문구: Connecting to Stripe…·Connect to PayPal·X.
 - 확인된 상태: 외부 연결 준비/진행 중.
-- 단계 간 변화: Payment Methods로 돌아와 Connecting to Stripe 표시.
+- 단계 간 변화: Payment Methods로 돌아와 Connecting to Stripe 표시. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: Bonsai 본인확인 이후 provider 이동 전 중간상태.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: Bonsai 본인확인 이후 provider 이동 전 중간상태. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 타임아웃·중복클릭·외부창차단 대응 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 연결 진행 상태와 버튼 중복요청방지 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 연결 진행 상태와 버튼 중복요청방지 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 타임아웃·중복클릭·외부창차단 대응 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 06 — Stripe 인증앱 코드 요청
 
@@ -203,6 +218,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_558eb0c9495240fa912210e280b28e29?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2e78438e-f93e-46ce-85e7-326aa22f16a6.png)
 - 로컬 이미지: [06_sc_558eb0c9495240fa912210e280b28e29.png](<screens/06_sc_558eb0c9495240fa912210e280b28e29.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 093, 고유 이미지 S371, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_51e959da528e4eae935c3516a4993408` → 현재 → `sc_4adbf874021e43bd88827a022ad24dde`
 
@@ -212,19 +228,19 @@
 - 입력 항목·필수 표시·기본값: 6자리 verification code 빈 칸. 인증앱에서 가져오라는 안내.
 - 버튼·메뉴·안내 문구: Return to Bonsai Inc, 언어선택·약관·정책 링크.
 - 확인된 상태: 외부 공급자 인증 대기.
-- 단계 간 변화: Stripe의 인증앱 코드 입력 페이지로 이동.
+- 단계 간 변화: Stripe의 인증앱 코드 입력 페이지로 이동. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: Bonsai 이메일 인증과 별개인 Stripe 인증이다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: Bonsai 이메일 인증과 별개인 Stripe 인증이다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 기존로그인 세션·다른2FA수단·동의화면 미수록.
 
 #### 모델링 영향
 
-- 후보와 근거: 외부인증 위임 경계. 공급자 인증정보를 우리 업무DB필드로 복제하지 않음.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 외부인증 위임 경계. 공급자 인증정보를 우리 업무DB필드로 복제하지 않음. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 기존로그인 세션·다른2FA수단·동의화면 미수록. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 07 — Stripe 코드 검증
 
@@ -232,6 +248,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_4adbf874021e43bd88827a022ad24dde?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/2f2cf4e4-120a-49f2-a87d-40c993a1da03.png)
 - 로컬 이미지: [07_sc_4adbf874021e43bd88827a022ad24dde.png](<screens/07_sc_4adbf874021e43bd88827a022ad24dde.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 093, 고유 이미지 S372, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_558eb0c9495240fa912210e280b28e29` → 현재 → `sc_fd88c0741acd4bb69320dae4adb1f012`
 
@@ -241,19 +258,19 @@
 - 입력 항목·필수 표시·기본값: 인증값 채움(값재기재안함).
 - 버튼·메뉴·안내 문구: Return to Bonsai Inc 유지.
 - 확인된 상태: 검증중.
-- 단계 간 변화: 6자리 입력 후 검증 스피너가 보인다.
+- 단계 간 변화: 6자리 입력 후 검증 스피너가 보인다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 코드 제출 후 처리중 상태 관찰.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 코드 제출 후 처리중 상태 관찰. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 오류·만료·백업코드 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 외부 인증 결과를 기다리는 연결 상태 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 외부 인증 결과를 기다리는 연결 상태 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 오류·만료·백업코드 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 08 — Bonsai 복귀 리디렉션
 
@@ -261,6 +278,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_fd88c0741acd4bb69320dae4adb1f012?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/a9e91951-3695-4d6c-a306-4498103c5184.png)
 - 로컬 이미지: [08_sc_fd88c0741acd4bb69320dae4adb1f012.png](<screens/08_sc_fd88c0741acd4bb69320dae4adb1f012.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 094, 고유 이미지 S373, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_4adbf874021e43bd88827a022ad24dde` → 현재 → `sc_768646543beb434a8c8f132a6de4dd39`
 
@@ -270,19 +288,19 @@
 - 입력 항목·필수 표시·기본값: 입력없음.
 - 버튼·메뉴·안내 문구: Returning to Bonsai Inc와 곧리디렉션 안내,Return링크.
 - 확인된 상태: 외부에서 앱으로 복귀 중.
-- 단계 간 변화: Bonsai로 돌아간다는 리디렉션 화면.
+- 단계 간 변화: Bonsai로 돌아간다는 리디렉션 화면. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: provider단계가 앱복귀로 이어짐.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: provider단계가 앱복귀로 이어짐. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: callback파라미터·서명검증·실패복구 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 연결 callback 처리와 중간상태 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 연결 callback 처리와 중간상태 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: callback파라미터·서명검증·실패복구 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 09 — Stripe 연결 성공
 
@@ -290,6 +308,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_768646543beb434a8c8f132a6de4dd39?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/95515115-d653-4543-ad40-f660e8e8f105.png)
 - 로컬 이미지: [09_sc_768646543beb434a8c8f132a6de4dd39.png](<screens/09_sc_768646543beb434a8c8f132a6de4dd39.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 094, 고유 이미지 S374, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_fd88c0741acd4bb69320dae4adb1f012` → 현재 → `sc_c012403e6cdc45fd97c6f08848af4952`
 
@@ -299,19 +318,19 @@
 - 입력 항목·필수 표시·기본값: Card Payments on. PayPal 미연결.
 - 버튼·메뉴·안내 문구: 성공토스트, Fees정보, Stripe Dashboard, Stripe… , Connect to PayPal, X.
 - 확인된 상태: 연결 성공 표시.
-- 단계 간 변화: 연결 성공 토스트와 카드 결제 on 표시.
+- 단계 간 변화: 연결 성공 토스트와 카드 결제 on 표시. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: Stripe연결과 카드활성화가UI상확인됨.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: Stripe연결과 카드활성화가UI상확인됨. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 실제승인/출금/정산가능여부 및 계정검증상태는 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: provider연결·카드허용·대시보드연결 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: provider연결·카드허용·대시보드연결 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 실제승인/출금/정산가능여부 및 계정검증상태는 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 10 — 연결된 결제수단 유지
 
@@ -319,6 +338,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_c012403e6cdc45fd97c6f08848af4952?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/963610f4-7d6f-4b8a-bb84-af69a2e364c1.png)
 - 로컬 이미지: [10_sc_c012403e6cdc45fd97c6f08848af4952.png](<screens/10_sc_c012403e6cdc45fd97c6f08848af4952.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 094, 고유 이미지 S375, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_768646543beb434a8c8f132a6de4dd39` → 현재 → `플로우 기록 종료`
 
@@ -328,21 +348,42 @@
 - 입력 항목·필수 표시·기본값: Stripe Card Payments on, PayPal 연결 전.
 - 버튼·메뉴·안내 문구: Fees·Stripe Dashboard·…·Connect to PayPal·X.
 - 확인된 상태: 연결 후 안정상태.
-- 단계 간 변화: 토스트가 사라지고 연결 상태 유지.
+- 단계 간 변화: 토스트가 사라지고 연결 상태 유지. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 연결 토스트가 사라진 이후 설정 유지.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 연결 토스트가 사라진 이후 설정 유지. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 새로고침영속성·해제메뉴 내용 미확인.
 
 #### 모델링 영향
 
-- 후보와 근거: 연결 상태와 기본 결제 허용 설정 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 연결 상태와 기본 결제 허용 설정 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 새로고침영속성·해제메뉴 내용 미확인. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ## 5. 업무 규칙과 데이터 변화
+
+| 단계 | 관찰된 상태·값 | 근거의 한계 |
+| --- | --- | --- |
+| 01 | 한 개 문서가 있는 목록. 행 왼쪽 반복 아이콘과 회색 점. — 한 행 #1001, 발행 Feb07 2024·만기 Mar08 2024, Doe Company/Design Project with Doe Studio, Total/Paid $0.00. 검색 비어 있음. | 점 색상 의미·필터조건·결제연결 요구사항 미확인. |
+| 02 | 연결 전 상태. — 입력 없음. 두 공급자 모두 미연결 안내. | 연결 권한·국가에 따른 표시 차이 미확인. |
+| 03 | 본인확인 대기. — 6자리 코드 빈 값, 첫칸포커스. 계정메일로 전송, 유효10분 안내, Resend code in01:00. | 실제메일수신·오입력·만료·자동제출 방식 미확인. |
+| 04 | 처리중 상태. — 6자리 값 입력됨(인증값은 문서에 옮기지 않음). 재전송00:43. | 재시도제한·검증에러·붙여넣기동작 미확인. |
+| 05 | 외부 연결 준비/진행 중. — Stripe 버튼 Connecting to Stripe… 회색파랑. PayPal 연결 버튼 유지. | 타임아웃·중복클릭·외부창차단 대응 미확인. |
+| 06 | 외부 공급자 인증 대기. — 6자리 verification code 빈 칸. 인증앱에서 가져오라는 안내. | 기존로그인 세션·다른2FA수단·동의화면 미수록. |
+| 07 | 검증중. — 인증값 채움(값재기재안함). | 오류·만료·백업코드 미확인. |
+| 08 | 외부에서 앱으로 복귀 중. — 입력없음. | callback파라미터·서명검증·실패복구 미확인. |
+| 09 | 연결 성공 표시. — Card Payments on. PayPal 미연결. | 실제승인/출금/정산가능여부 및 계정검증상태는 미확인. |
+| 10 | 연결 후 안정상태. — Stripe Card Payments on, PayPal 연결 전. | 새로고침영속성·해제메뉴 내용 미확인. |
+
+위 표는 화면에서 보이는 상태·값이다. 성공 토스트가 있어도 수신자 접근·영수증·서버 저장을 독립 검증한 것은 아니다.
+
+### R2 재검토에서 보완한 해석
+
+Bonsai 이메일 인증, Connecting 화면, Stripe 인증 앱 코드, 처리 중 상태, Bonsai 복귀와 연결 성공 안내 순서다. 인증 코드 자체는 분석에 옮기지 않는다. 최종 Card Payments는 켜지고 PayPal은 미연결이며 실제 청구·지급은 확인하지 않았다.
+
+### 업무 규칙과 연결 시 주의점
 
 - [관찰] 이메일 코드 유효10분, 재전송 대기60초 안내. 실제 제한/실패/잠금은 재현하지 않았다.
 - [관찰] Stripe 외부 페이지는 인증앱 코드를 요구한다. 모든 계정이 동일 인증수단을 쓰는지는 미확인.
@@ -351,21 +392,59 @@
 
 ## 6. 공식 도움말과 API 대조
 
-- [Stripe 연결 도움말](https://help.hellobonsai.com/en/articles/13521627-how-to-connect-stripe-payments-in-bonsai): 2026-07-15 기준 Invoices > Edit Payment Methods에서 연결하며 지급 관리는 Stripe 대시보드를 사용한다. Bonsai Payments 사용 시 해제가 먼저 필요할 수 있다고 설명한다.
-- [지원 결제수단](https://help.hellobonsai.com/en/articles/1867512-the-integrated-payment-methods-supported-by-bonsai): Bonsai Payments·Stripe·PayPal을 구분하며 국가/수단별 조건을 설명한다. 수수료를 이 스크린샷으로 고정하지 않는다.
-- [Invoices API](https://docs.hellobonsai.com/api/tag/invoices): GET/POST `/public-api/v1/invoices`, PATCH/DELETE `/public-api/v1/invoices/{id}`, POST `/public-api/v1/invoices/{invoice_id}/invoice_items`, PATCH/DELETE 해당 항목 `/{id}`, DELETE `/public-api/v1/invoices/{invoice_id}/recurrence`를 확인했다. 요청 필드·계정 설정·수동 입금 전용 endpoint는 이 그룹 페이지에서 확인되지 않는다. 외부 연결 OAuth·인증·결제 provider 계약은 공개 인보이스 API와 별도 검토 대상이다.
+공식 자료는 **2026-11-20 KST** 조회한 현재 문서이며 과거 캡처와 시점이 다를 수 있다. 아래 출처의 제한된 범위를 대조했고, 실제 계정이나 내부 API를 실행하지 않았다.
+
+- [Invoices API](https://docs.hellobonsai.com/api/tag/invoices): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S054 공통 대조](<../../../SOURCES.md#s054>)에 기록했다.
+- [Stripe 연결 도움말](https://help.hellobonsai.com/en/articles/13521627-how-to-connect-stripe-payments-in-bonsai): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S062 공통 대조](<../../../SOURCES.md#s062>)에 기록했다.
+- [지원 결제수단](https://help.hellobonsai.com/en/articles/1867512-the-integrated-payment-methods-supported-by-bonsai): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S063 공통 대조](<../../../SOURCES.md#s063>)에 기록했다.
+
+화면과 대조할 때는 5절의 R2 해석 및 8절의 미확인 항목을 함께 적용한다. 현재 문서에만 있는 필수값·요금제·역할·새 UI를 과거 화면의 동작으로 확정하지 않는다.
+
+- [API 검토 범위](<../../../SOURCES.md#api>): 이 흐름의 내부 endpoint·실제 요청/응답·DB 스키마는 확인하지 않았다. 공개 API 목록에 없는 기능의 미지원 여부도 확정하지 않는다.
 
 ## 7. 데이터 모델링 시사점
+
+다음은 관찰에 기반한 OneHandSales 구현 후보다. 기능 채택·스키마·업무 정책으로 확정하지 않는다.
 
 - 결제 공급자 연결 레코드·외부계정 참조·연결 상태·허용 결제수단을 분리하는 후보.
 - 일회용 인증 challenge의 만료·재전송·검증 상태 후보. 이미지 속 실제 인증 숫자는 설계 기록에 재기재하지 않는다.
 - 연결 성공·결제 가능·실제 정산 완료는 서로 다른 상태 후보.
 
+### 단계별 모델링 근거
+
+- 단계 01: 인보이스 요약 목록·반복 시리즈·결제수단 구성 후보.
+- 단계 02: 계정-결제공급자 연결 후보.
+- 단계 03: 인증challenge와 연결 요청 상태 후보.
+- 단계 04: 코드입력/검증중/성공실패 UI상태 후보.
+- 단계 05: 연결 진행 상태와 버튼 중복요청방지 후보.
+- 단계 06: 외부인증 위임 경계. 공급자 인증정보를 우리 업무DB필드로 복제하지 않음.
+- 단계 07: 외부 인증 결과를 기다리는 연결 상태 후보.
+- 단계 08: 연결 callback 처리와 중간상태 후보.
+- 단계 09: provider연결·카드허용·대시보드연결 후보.
+- 단계 10: 연결 상태와 기본 결제 허용 설정 후보.
+
 ## 8. 미확인 사항과 검토 질문
+
+**원본에 없는 분기·남은 범위:** 연결 취소/외부 실패/중복콜백/재연결 때 상태를 어떻게 복원하는지 확인한다. Stripe 권한 동의와 신규계정/KYC 화면은 이 경로에 없으므로 별도 계정 유형에서 확인한다.
 
 - 연결 취소/외부 실패/중복콜백/재연결 때 상태를 어떻게 복원하는지 확인한다.
 - Stripe 권한 동의와 신규계정/KYC 화면은 이 경로에 없으므로 별도 계정 유형에서 확인한다.
 - 계정 기본 결제수단 변경이 기존 구독·발송 문서에 적용되는 범위를 확인한다.
+
+### 단계별 미확인 사항
+
+- 단계 01: 점 색상 의미·필터조건·결제연결 요구사항 미확인.
+- 단계 02: 연결 권한·국가에 따른 표시 차이 미확인.
+- 단계 03: 실제메일수신·오입력·만료·자동제출 방식 미확인.
+- 단계 04: 재시도제한·검증에러·붙여넣기동작 미확인.
+- 단계 05: 타임아웃·중복클릭·외부창차단 대응 미확인.
+- 단계 06: 기존로그인 세션·다른2FA수단·동의화면 미수록.
+- 단계 07: 오류·만료·백업코드 미확인.
+- 단계 08: callback파라미터·서명검증·실패복구 미확인.
+- 단계 09: 실제승인/출금/정산가능여부 및 계정검증상태는 미확인.
+- 단계 10: 새로고침영속성·해제메뉴 내용 미확인.
+
+- 같은 계정·제품 빌드에서 시작 상태를 맞춘 뒤 해당 업무의 정상·취소·실패·재진입 결과를 검증해야 한다. 화면 목록과 이미지 검토 완료는 제품 전체 기능의 의미적 완전성이나 구현 검증 완료를 뜻하지 않는다.
 
 ## 9. 검토 이력
 
@@ -373,3 +452,5 @@
 | --- | --- | --- | --- |
 | R1 | 2026-11-18 KST | MCP 단계 목록 10개와 실제 이미지 10개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
 | 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 10단계 재조회 및 원본 10개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |
+| R2 전수 재검토 | 2026-11-20 KST | Gummble MCP 10단계 ID·순서·원본 URL 재조회 및 이미지 10/10단계 재검토. 진입·종료·단계별 상태표·미확인 사항과 5절 해석 보완. 현재 공식 자료 재대조 | 실제 계정·원본에 없는 분기·8절 항목 |
+| 문서·원본 무결성 점검 | 2026-11-20 KST | 전체 134문서·754단계의 9개 절, 단계 순서·화면 ID·로컬 링크·PNG 크기·SHA-256 및 고유 642개 CDN 원본 대조. [검토 기록](<../../../review/2026-11-20/REPORT.md>) | 기계 점검이며 추가 시각 검토나 계정 재현으로 계산하지 않음 |

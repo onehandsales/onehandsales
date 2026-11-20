@@ -1,8 +1,8 @@
 # Tasks 플로우 분석
 
-검토 상태: **R1 이미지 검토·문서 대조 완료 / R2 교차 검토 반영**. 실제 이미지 확인 **3/3단계**. 계정 재현은 수행하지 않았다.
+검토 상태: **R2 누락·내용 재검토 완료(정적 캡처 범위)**. 실제 이미지 재확인 **3/3단계**. 계정 재현은 수행하지 않았다.
 
-관찰은 Gummble 정적 이미지, 문서 확인은 공식 도움말·API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재와 실행 결과를 구분한다.
+관찰은 Gummble 캡처에서 직접 본 내용, 문서 확인은 현재 공식 도움말·공개 API, 설계 가정은 우리 구현 후보를 뜻한다. 버튼의 존재·성공 안내·실제 서버 결과를 구분한다.
 
 ## 1. 출처와 검토 상태
 
@@ -11,13 +11,16 @@
 | 앱 | Bonsai Web · `bonsai-web` · `c1026782-09a7-45fb-b2d0-7cc1909bf1f4` |
 | Flow ID | `59d5186e-98e3-495f-b8c0-96eb9c943631` |
 | 원본 | [Gummble flow](https://gummble.com/apps/bonsai-web?tab=flows&flow=59d5186e-98e3-495f-b8c0-96eb9c943631) |
-| 버전 | 앱 조회 결과 `Latest`, version ID `2146`. 개별 flow의 제품 빌드·캡처 시점은 응답에 없어 미확인 |
-| 조회일 / 이미지 검토일 | 2026-11-17 이후 세션 조회 / 2026-11-17~2026-11-18 KST (개별 이미지 시각 미기록) |
-| 캡처일 | 미확인. 화면 속 업무 날짜나 샘플 값은 캡처일이 아니다 |
-| 화면 수 / 이미지 검토 | 3단계 / 3단계 |
-| 캡처 조건 | MCP 이미지 메타데이터의 크기는 단계별로 기록. 브라우저 배율·DPR·권한·요금제·국가는 별도 확인 없으면 미확인 |
-| 실제 계정 재현 | 미수행. 발송·삭제·서명·결제·외부 연결을 실행하지 않음 |
-| 로컬 원본·단계 재검증 | 2026-11-18 KST · MCP 단계 순서 재조회, 원본 3개 배치, PNG 디코딩·픽셀 크기·SHA-256 대조 완료 |
+| 카탈로그 버전 | MCP 재조회 `Latest`, version ID `2146` |
+| 제품 빌드 | 개별 화면의 제품 빌드 미확인. 카탈로그 버전을 제품 버전으로 사용하지 않음 |
+| 조회일 / 이미지 재검토일 | 2026-11-20 KST. R1 확인일은 4절·9절의 기존 기록 유지; 개별 이미지 분·초 미기록 |
+| 캡처일 | 미확인. 화면의 업무·청구·기사·약관 날짜는 캡처일이 아님 |
+| 화면 수 / 이미지 확인 | 3단계 / 3단계. 공통 이미지는 고유 Screen ID 기준 재검토 후 각 흐름의 문맥과 대조 |
+| 이미지 검토 방식 | R1: 기존 단계별 확인 기록. R2: 원본 PNG를 장당 1280×800으로 축소한 번호 포함 2×2 비교 시트에서 시각 재검토. 전체 642개 고유 이미지·754단계 |
+| 크기·환경 | MCP 1440×900 / 원본 PNG 2880×1800 px. 기기·OS·브라우저·DPR·배율·국가·계정 권한은 별도 증거 없으면 미확인 |
+| 계정 재현 | 미수행. 로그인·생성·발송·서명·구매·삭제·외부 연결을 직접 실행하지 않음 |
+| 공식 문서 | 2026-11-20 KST 조회. 6절에서 기능별 직접 대조 범위·미확인 범위 및 [공통 출처](<../../SOURCES.md>) 연결 |
+| 원본·문서 무결성 | MCP 단계 ID·순서·원본 URL 대조, 로컬 PNG 디코딩·크기·CDN 원본과 SHA-256 대조. [전체 검토 기록](<../../review/2026-11-20/REPORT.md>) |
 
 ## 2. 플로우 목적과 연결
 
@@ -27,20 +30,28 @@
 - Templates 탭에서는 빈 상태 안내 후 New Template 진입점을 제공한다.
 - 하위 세 흐름은 템플릿 정의 생성, 내용 편집, 프로젝트 적용으로 역할이 나뉜다.
 
-- 하위 플로우: [Creating a task template](Creating%20a%20task%20template/ANALYSIS.md), [Editing a template task](Editing%20a%20template%20task/ANALYSIS.md), [Adding a task (template)](Adding%20a%20task%20%28template%29/ANALYSIS.md)
+- 하위 흐름: [Creating a task template](Creating%20a%20task%20template/ANALYSIS.md), [Editing a template task](Editing%20a%20template%20task/ANALYSIS.md), [Adding a task (template)](Adding%20a%20task%20%28template%29/ANALYSIS.md)
 
 - 폴더 위치: `bonsai_analysis/flows/Tasks`
 - 부모·자식은 Gummble 탐색 분류이며, 모든 하위 플로우가 순차 실행된다는 뜻은 아니다.
+- 상위 흐름: 없음. Gummble 최상위 분류.
+
+### 진입 조건과 확인된 종료 범위
+
+- 진입: 첫 캡처는 **대시보드 — 프로젝트 타임라인과 손익 요약**이다. Dashboard가 선택되어 있으며 모달·오류·성공 토스트는 없다. 여러 플로우가 공유하는 동일한 시작 이미지다. 이 화면 이전의 인증·권한·클릭 경로는 캡처에 보이는 범위만 인정한다.
+- 종료: 마지막 캡처는 **작업 템플릿 빈 상태**이다. 관리할 템플릿 목록 대신 초기 안내를 보여준다. 기록 종료를 전체 업무의 성공·서버 저장 완료로 확대하지 않는다.
+- 관련 흐름: [Adding a task (template)](<Adding a task (template)/ANALYSIS.md>), [Creating a task template](<Creating a task template/ANALYSIS.md>), [Editing a template task](<Editing a template task/ANALYSIS.md>), [Projects](<../Projects/ANALYSIS.md>)
+- 관련 흐름은 기능 연결점이다. 서로 다른 캡처를 같은 계정·같은 시각의 연속 실행으로 합치지 않는다.
 
 ## 3. 전체 단계표
 
-아래 순서는 MCP가 반환한 캡처 순서다. 동일 페이지의 스크롤·메뉴 상태도 별도 단계이며, 이미지 사이의 클릭·저장 과정이 모두 기록됐다는 뜻은 아니다.
+MCP가 반환한 순서다. 스크롤·메뉴·입력·로딩도 각각 한 단계이며 캡처 사이의 클릭·저장·네트워크가 모두 기록되었다는 뜻은 아니다.
 
-| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 단계와 관계 |
+| 단계 | Screen ID와 원본 | 확인된 화면 | 다음 캡처와의 관계 |
 | --- | --- | --- | --- |
-| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [대시보드 — 프로젝트 타임라인과 손익 요약](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>) | Tasks 메뉴의 보드로 진입. |
-| 02 | [`sc_fd79ede42b9843aca369d4e929c4272c`](https://gummble.com/screens/sc_fd79ede42b9843aca369d4e929c4272c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [전체 작업 보드](<screens/02_sc_fd79ede42b9843aca369d4e929c4272c.png>) | Templates 탭의 빈 상태로 전환. |
-| 03 | [`sc_6ec51256385940f2bd7d36a76874d691`](https://gummble.com/screens/sc_6ec51256385940f2bd7d36a76874d691?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [작업 템플릿 빈 상태](<screens/03_sc_6ec51256385940f2bd7d36a76874d691.png>) | New Template 이후 흐름은 Creating a task template에서 이어진다. |
+| 01 | [`sc_a333622d5e8c45e0b19ff4c249dc0aca`](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [대시보드 — 프로젝트 타임라인과 손익 요약](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>) | 전체 작업 보드 — To Do와 Done은 비어 있고 진행 열만 데이터가 있다. |
+| 02 | [`sc_fd79ede42b9843aca369d4e929c4272c`](https://gummble.com/screens/sc_fd79ede42b9843aca369d4e929c4272c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [전체 작업 보드](<screens/02_sc_fd79ede42b9843aca369d4e929c4272c.png>) | 작업 템플릿 빈 상태 — 관리할 템플릿 목록 대신 초기 안내를 보여준다. |
+| 03 | [`sc_6ec51256385940f2bd7d36a76874d691`](https://gummble.com/screens/sc_6ec51256385940f2bd7d36a76874d691?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) | [작업 템플릿 빈 상태](<screens/03_sc_6ec51256385940f2bd7d36a76874d691.png>) | 이 흐름의 기록 종료; 2절의 종료 범위 참조 |
 
 ## 4. 화면별 상세 분석
 
@@ -50,6 +61,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_a333622d5e8c45e0b19ff4c249dc0aca?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3532c829-b612-4d64-8d26-7e96473aa0a8.png)
 - 로컬 이미지: [01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png](<screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 015, 고유 이미지 S058, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `플로우 시작` → 현재 → `sc_fd79ede42b9843aca369d4e929c4272c`
 
@@ -59,19 +71,19 @@
 - 입력 항목·필수 표시·기본값: Wednesday, February 14th / Good evening, Joe. 타임라인에 Consulting Project, Design Project with …, Rebranding Project가 있고 JAN 31·TODAY·FEB 28 축이 보인다. 손익 필터는 USD·Last 6 Months. 이 화면에 입력 폼이나 필수 표시는 없다.
 - 버튼·메뉴·안내 문구: 사이드바 Dashboard·Clients·Projects·Tasks, Tools 아래 Invoices·Proposals·Contracts·Time Tracking·Services·Forms·Scheduling, Finances 아래 Bookkeeping. 하단 Invite Team·Get 1 Month Free. 빠른 실행은 Send an invoice·Draft a proposal·Create a contract·Add a form. 홍보 카드에는 X·캐러셀 점·START 14-DAY FREE TRIAL, 우하단 도움말 버튼이 있다.
 - 확인된 상태: Dashboard가 선택되어 있으며 모달·오류·성공 토스트는 없다. 여러 플로우가 공유하는 동일한 시작 이미지다.
-- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다.
+- 단계 간 변화: 진입 화면. 이 단계 이전의 사용자 행동은 별도 자료가 필요하다. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 프로젝트별 문서 아이콘과 손익 그래프를 한 화면에서 표시한다. 특정 메뉴를 실행했다는 근거는 다음 단계와 함께 판단한다. 홍보의 14일 문구를 계정 전체의 체험 기간으로 일반화하지 않는다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 프로젝트별 문서 아이콘과 손익 그래프를 한 화면에서 표시한다. 특정 메뉴를 실행했다는 근거는 다음 단계와 함께 판단한다. 홍보의 14일 문구를 계정 전체의 체험 기간으로 일반화하지 않는다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 날짜와 집계의 기준 시간대, 그래프 산식, 타임라인 아이콘의 정확한 날짜 의미, 역할별 접근 권한, 홍보 노출 조건은 이 이미지로 확인할 수 없다.
 
 #### 모델링 영향
 
-- 후보와 근거: 프로젝트·문서 참조, 기간·통화별 재무 집계, 빠른 생성 진입점 및 공통 내비게이션 후보. 메뉴 노출은 서버 권한의 증거와 구분한다.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 프로젝트·문서 참조, 기간·통화별 재무 집계, 빠른 생성 진입점 및 공통 내비게이션 후보. 메뉴 노출은 서버 권한의 증거와 구분한다. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 날짜와 집계의 기준 시간대, 그래프 산식, 타임라인 아이콘의 정확한 날짜 의미, 역할별 접근 권한, 홍보 노출 조건은 이 이미지로 확인할 수 없다. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 02 — 전체 작업 보드
 
@@ -79,6 +91,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_fd79ede42b9843aca369d4e929c4272c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/3a706ecc-e895-40a1-bbde-da73a675c4cf.png)
 - 로컬 이미지: [02_sc_fd79ede42b9843aca369d4e929c4272c.png](<screens/02_sc_fd79ede42b9843aca369d4e929c4272c.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 154, 고유 이미지 S614, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_a333622d5e8c45e0b19ff4c249dc0aca` → 현재 → `sc_6ec51256385940f2bd7d36a76874d691`
 
@@ -88,19 +101,19 @@
 - 입력 항목·필수 표시·기본값: 검색 placeholder Find a task. In Progress에 Initial Chat / Design Project with Doe Studio / Yesterday / JD 카드 한 개.
 - 버튼·메뉴·안내 문구: 각 열 +New Task, 상단 New Task 옆 목록+ 아이콘.
 - 확인된 상태: To Do와 Done은 비어 있고 진행 열만 데이터가 있다.
-- 단계 간 변화: Tasks 메뉴의 보드로 진입.
+- 단계 간 변화: Tasks 메뉴의 보드로 진입. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 상태별 카드 배치와 담당자·기한 표시. 빈 열에도 생성 진입점이 남는다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 상태별 카드 배치와 담당자·기한 표시. 빈 열에도 생성 진입점이 남는다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 보드 드래그·새 작업 기본 상태·필터/뷰 선택지.
 
 #### 모델링 영향
 
-- 후보와 근거: 작업 상태·제목·프로젝트·담당자·기한과 상태별 정렬 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 작업 상태·제목·프로젝트·담당자·기한과 상태별 정렬 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 보드 드래그·새 작업 기본 상태·필터/뷰 선택지. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ### 단계 03 — 작업 템플릿 빈 상태
 
@@ -108,6 +121,7 @@
 - 원본: [화면 페이지](https://gummble.com/screens/sc_6ec51256385940f2bd7d36a76874d691?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result) · [이미지](https://storage.gummble.com/prod/content/app_screens/42fe693c-2c8d-48b2-a0b5-5eeb79e1115c.png)
 - 로컬 이미지: [03_sc_6ec51256385940f2bd7d36a76874d691.png](<screens/03_sc_6ec51256385940f2bd7d36a76874d691.png>)
 - 실제 이미지 확인일: 2026-11-17~2026-11-18 KST (세션 내 확인; 개별 이미지 시각 미기록)
+- R2 이미지 재검토: 2026-11-20 KST · 원본 PNG의 번호 포함 2×2 비교 시트에서 시각 확인 (시트 156, 고유 이미지 S621, 장당 1280×800). 공통 이미지는 동일 관찰을 각 흐름의 앞뒤 단계와 대조
 - 이미지 크기: MCP 메타데이터 **1440 × 900** / 원본 PNG **2880 × 1800 px**. 브라우저 배율·DPR은 미확인
 - 이전·다음 단계: `sc_fd79ede42b9843aca369d4e929c4272c` → 현재 → `플로우 기록 종료`
 
@@ -117,21 +131,35 @@
 - 입력 항목·필수 표시·기본값: 실제 입력 폼은 없다. 그림의 Research/Wireframes 등은 소개용 콘텐츠.
 - 버튼·메뉴·안내 문구: Prefill Tasks With Templates, New Template, Contact Support.
 - 확인된 상태: 관리할 템플릿 목록 대신 초기 안내를 보여준다.
-- 단계 간 변화: Templates 탭의 빈 상태로 전환.
+- 단계 간 변화: Templates 탭의 빈 상태로 전환. 캡처 사이의 정확한 클릭·요청·저장 순서는 별도 관찰하지 않았다.
 
 #### 동작과 데이터
 
-- 화면 관찰: 템플릿 기능의 재사용 목적을 설명한다. 그림을 실제 저장 데이터로 읽지 않는다.
-- 공식 문서 확인: 아래 6절에서 출처와 적용 범위를 대조한다. 현재 화면의 내부 API 호출은 확인하지 않았다.
+- 화면 관찰: 템플릿 기능의 재사용 목적을 설명한다. 그림을 실제 저장 데이터로 읽지 않는다. 정적 캡처의 UI 상태이며 실제 요청 성공·서버 영속성은 독립 검증하지 않았다.
+- 공식 문서 확인: 6절에서 기능별 출처·현재 규칙·과거 화면과의 차이를 대조한다. 이 화면의 내부 API 호출은 관찰하지 않았다.
 - 설계 가정: 표시된 업무 개념은 구현 후보이며 저장 방식·권한·트랜잭션을 확정하지 않는다.
 - 미확인: 템플릿 보유 여부·사용 권한·빈 목록의 정확한 조건.
 
 #### 모델링 영향
 
-- 후보와 근거: 템플릿 정의와 빈 상태 플래그/조회 결과, 도움말 링크 후보.
-- 확정 전 확인: 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
+- 후보와 근거: 템플릿 정의와 빈 상태 플래그/조회 결과, 도움말 링크 후보. 위 표시 데이터와 상태를 근거로 검토할 후보이며 확정 스키마가 아니다.
+- 확정 전 확인: 템플릿 보유 여부·사용 권한·빈 목록의 정확한 조건. 소유 범위·필수값·연결 수·삭제 영향은 화면과 공식 계약을 추가 대조한다.
 
 ## 5. 업무 규칙과 데이터 변화
+
+| 단계 | 관찰된 상태·값 | 근거의 한계 |
+| --- | --- | --- |
+| 01 | Dashboard가 선택되어 있으며 모달·오류·성공 토스트는 없다. 여러 플로우가 공유하는 동일한 시작 이미지다. — Wednesday, February 14th / Good evening, Joe. 타임라인에 Consulting Project, Design Project with …, Rebranding Project가 있고 JAN 31·TODAY·FEB 28 축이 보인다. 손익 필터는 USD·Last 6 Months. 이 화면에 입력 폼이나 필수 표시는 없다. | 날짜와 집계의 기준 시간대, 그래프 산식, 타임라인 아이콘의 정확한 날짜 의미, 역할별 접근 권한, 홍보 노출 조건은 이 이미지로 확인할 수 없다. |
+| 02 | To Do와 Done은 비어 있고 진행 열만 데이터가 있다. — 검색 placeholder Find a task. In Progress에 Initial Chat / Design Project with Doe Studio / Yesterday / JD 카드 한 개. | 보드 드래그·새 작업 기본 상태·필터/뷰 선택지. |
+| 03 | 관리할 템플릿 목록 대신 초기 안내를 보여준다. — 실제 입력 폼은 없다. 그림의 Research/Wireframes 등은 소개용 콘텐츠. | 템플릿 보유 여부·사용 권한·빈 목록의 정확한 조건. |
+
+위 표는 화면에서 보이는 상태·값이다. 성공 토스트가 있어도 수신자 접근·영수증·서버 저장을 독립 검증한 것은 아니다.
+
+### R2 재검토에서 보완한 해석
+
+전역 작업 보드의 Initial Chat와 Templates의 소개용 그림을 구분했다. 빈 템플릿 안내 속 Research·Wireframes 등의 텍스트는 실제 프로젝트 작업 데이터가 아니다. Tasks와 Templates는 실행 작업과 재사용 구성을 분리하는 탐색 구조를 보여준다.
+
+### 업무 규칙과 연결 시 주의점
 
 - 관찰: To Do/In Progress/Done 세 열을 표시하지만 이 세 값을 고정 enum으로 확정하지 않는다.
 - 관찰: 진행 중 카드의 Yesterday는 빨간색 날짜 표현이다. 완료/지연 판정 규칙은 별도다.
@@ -139,21 +167,45 @@
 
 ## 6. 공식 도움말과 API 대조
 
-- [Task templates 도움말](https://help.hellobonsai.com/en/articles/11488590-leveraging-task-templates): 템플릿은 여러 작업·하위 작업을 담는 재사용 목록이다. 현행 진입은 New Task의 Manage Templates이며 캡처의 Templates 탭과 다르다.
-- [Tasks API](https://docs.hellobonsai.com/api/tag/tasks): GET/POST `/public-api/v1/tasks`, GET/PATCH/DELETE `/public-api/v1/tasks/{uuid}`, GET `/public-api/v1/tasks/{task_id}/subtasks`가 공개되어 있다. 설명상 프로젝트·상위 작업 연결은 선택적이다. 이 페이지에서 개별 요청 필드는 확인되지 않는다.
-- [Templates API](https://docs.hellobonsai.com/api/tag/templates): 공개 Templates는 현재 문서 템플릿을 대상으로 명시한다. Task Template 생성·편집 API로 오인하지 않는다.
+공식 자료는 **2026-11-20 KST** 조회한 현재 문서이며 과거 캡처와 시점이 다를 수 있다. 아래 출처의 제한된 범위를 대조했고, 실제 계정이나 내부 API를 실행하지 않았다.
+
+- [Templates API](https://docs.hellobonsai.com/api/tag/templates): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S032 공통 대조](<../../SOURCES.md#s032>)에 기록했다.
+- [Tasks API](https://docs.hellobonsai.com/api/tag/tasks): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S046 공통 대조](<../../SOURCES.md#s046>)에 기록했다.
+- [Task templates 도움말](https://help.hellobonsai.com/en/articles/11488590-leveraging-task-templates): 반환된 본문 범위 대조. 직접 확인한 규칙과 적용 한계는 [S091 공통 대조](<../../SOURCES.md#s091>)에 기록했다.
+
+화면과 대조할 때는 5절의 R2 해석 및 8절의 미확인 항목을 함께 적용한다. 현재 문서에만 있는 필수값·요금제·역할·새 UI를 과거 화면의 동작으로 확정하지 않는다.
+
+- [API 검토 범위](<../../SOURCES.md#api>): 이 흐름의 내부 endpoint·실제 요청/응답·DB 스키마는 확인하지 않았다. 공개 API 목록에 없는 기능의 미지원 여부도 확정하지 않는다.
 
 ## 7. 데이터 모델링 시사점
+
+다음은 관찰에 기반한 OneHandSales 구현 후보다. 기능 채택·스키마·업무 정책으로 확정하지 않는다.
 
 - 상태 정의·작업·프로젝트·담당자·기한과 상태별 보드 투영 후보.
 - 실제 작업과 템플릿 정의를 구분하고 적용 때 생성되는 관계를 후속 흐름에서 검증한다.
 - 카드 상태·검색/필터/뷰 선택과 템플릿 빈 상태를 FE 구성요소로 분리한다.
 
+### 단계별 모델링 근거
+
+- 단계 01: 프로젝트·문서 참조, 기간·통화별 재무 집계, 빠른 생성 진입점 및 공통 내비게이션 후보. 메뉴 노출은 서버 권한의 증거와 구분한다.
+- 단계 02: 작업 상태·제목·프로젝트·담당자·기한과 상태별 정렬 후보.
+- 단계 03: 템플릿 정의와 빈 상태 플래그/조회 결과, 도움말 링크 후보.
+
 ## 8. 미확인 사항과 검토 질문
+
+**원본에 없는 분기·남은 범위:** 보드 드래그·키보드 이동·순서 저장은 어떻게 동작하는가? 상태 이동의 실제 계정 재현이 필요하다. 과거 기한의 완료 작업도 빨간 날짜를 표시하는가? 상태·날짜 조합을 확인한다.
 
 - 보드 드래그·키보드 이동·순서 저장은 어떻게 동작하는가? 상태 이동의 실제 계정 재현이 필요하다.
 - 과거 기한의 완료 작업도 빨간 날짜를 표시하는가? 상태·날짜 조합을 확인한다.
 - 권한에 따라 전체 작업과 개인 작업의 범위가 어떻게 다른가? 역할별 계정으로 대조한다.
+
+### 단계별 미확인 사항
+
+- 단계 01: 날짜와 집계의 기준 시간대, 그래프 산식, 타임라인 아이콘의 정확한 날짜 의미, 역할별 접근 권한, 홍보 노출 조건은 이 이미지로 확인할 수 없다.
+- 단계 02: 보드 드래그·새 작업 기본 상태·필터/뷰 선택지.
+- 단계 03: 템플릿 보유 여부·사용 권한·빈 목록의 정확한 조건.
+
+- 같은 계정·제품 빌드에서 시작 상태를 맞춘 뒤 해당 업무의 정상·취소·실패·재진입 결과를 검증해야 한다. 화면 목록과 이미지 검토 완료는 제품 전체 기능의 의미적 완전성이나 구현 검증 완료를 뜻하지 않는다.
 
 ## 9. 검토 이력
 
@@ -162,3 +214,5 @@
 | R1 | 2026-11-17 KST | MCP 단계 목록 3개와 실제 이미지 3개 대조. 출처·관찰·문서·가정 분리 | 실제 계정·미수록 상태와 8절 질문 |
 | R2 | 2026-11-18 KST | 공유 화면의 설명을 진입 맥락과 분리하고 원본 이미지를 다시 대조 | 실제 계정 검증·8절 질문은 유지 |
 | 이미지 배치·무결성 검토 | 2026-11-18 KST | MCP 3단계 재조회 및 원본 3개 로컬 배치. 단계표·상세 분석의 로컬 링크, ID·순서·PNG 디코딩·크기·SHA-256 대조 | 파일·문서 연결 검증이며 기존 R1/R2 시각 검토와 구분. 실제 계정·미수록 분기는 미검증 |
+| R2 전수 재검토 | 2026-11-20 KST | Gummble MCP 3단계 ID·순서·원본 URL 재조회 및 이미지 3/3단계 재검토. 진입·종료·단계별 상태표·미확인 사항과 5절 해석 보완. 현재 공식 자료 재대조 | 실제 계정·원본에 없는 분기·8절 항목 |
+| 문서·원본 무결성 점검 | 2026-11-20 KST | 전체 134문서·754단계의 9개 절, 단계 순서·화면 ID·로컬 링크·PNG 크기·SHA-256 및 고유 642개 CDN 원본 대조. [검토 기록](<../../review/2026-11-20/REPORT.md>) | 기계 점검이며 추가 시각 검토나 계정 재현으로 계산하지 않음 |
