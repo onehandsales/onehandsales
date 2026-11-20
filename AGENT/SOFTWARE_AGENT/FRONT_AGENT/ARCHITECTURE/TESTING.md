@@ -25,12 +25,11 @@
 | unit | `pnpm.cmd -C FE/user-web run test` | 현재 unit test script 없음 |
 | build | `pnpm.cmd -C FE/user-web run build` | `pnpm.cmd -C FE/admin-web run build` |
 | E2E | `pnpm.cmd -C FE/user-web run test:e2e` | `pnpm.cmd -C FE/admin-web run test:e2e` |
-| 모바일 QA | `pnpm.cmd -C FE/user-web run test:e2e:mobile` | 별도 script 없음 |
-| 브라우저 QA | `pnpm.cmd -C FE/user-web run test:e2e:browsers` | 별도 script 없음 |
+| build E2E | `pnpm.cmd -C FE/user-web run test:e2e:preview` | 별도 script 없음 |
 
 단일 unit 파일은 `pnpm.cmd -C FE/user-web exec vitest run <실제-test-파일>`, 단일 E2E는 해당 앱의 `exec playwright test <실제-spec-파일>`로 좁힌다. 꺾쇠 부분은 placeholder이며 실제 존재하는 파일로 바꾼다.
 
-User Web build에는 정적 SEO 페이지 생성이 포함된다. Admin에는 User Web의 Vitest·form·query 라이브러리 설치를 가정하지 않는다. 실제 script의 정본은 각 앱 package.json이다.
+User Web build는 새 SPA의 tsc·Vite build이며 종전 정적 SEO 생성기는 제거했다. Admin에는 User Web의 Vitest·form·query 라이브러리 설치를 가정하지 않는다. 실제 script의 정본은 각 앱 package.json이다.
 
 ## 3. 의미 있는 테스트
 
@@ -47,7 +46,7 @@ User Web build에는 정적 SEO 페이지 생성이 포함된다. Admin에는 Us
 2. 목록 → 생성 → 상세 → 편집 → 목록 재진입에서 같은 ID와 변경 값을 확인한다.
 3. 검색·필터·정렬 후 URL·reload·뒤로가기가 명시한 상태를 복원하는지 확인한다.
 4. 빈 결과·지연·오류·재시도·취소를 각각 재현한다.
-5. 허용한 인증·정적 리소스 외의 업무 네트워크 요청이 없는지 확인한다.
+5. 현재 단계는 인증까지 전부 목이다. 같은 호스트 정적 리소스·개발 HMR 외 실제 API/외부 요청이 0건인지 가로채기 없이 확인한다.
 6. 기록된 저장 수명에 맞게 reload/reset 후 결과가 유지되거나 초기화되는지 확인한다.
 
 모든 기능에 생성·삭제가 있어야 한다는 뜻은 아니다. 실제 구현한 행동과 수용 기준에 맞게 선택한다.
@@ -56,8 +55,9 @@ User Web build에는 정적 SEO 페이지 생성이 포함된다. Admin에는 Us
 
 2026-11-20 설정 확인 범위:
 
-- User Web 기본 Playwright는 Chromium, viewport 1440×1000이다.
-- release QA는 Chrome과 조건부 Edge, 데스크톱 1440×1000 및 모바일 360×740·390×844 구성을 포함한다.
+- User Web 기본/production Playwright는 Chromium, viewport 1440×900이다.
+- G01은 폭 320/360/390/768/1024/1440·긴 한글·CSS zoom200%·합성 composition을 확인했다. 종전 release QA 설정은 제거했다.
+- 개발5175·build preview4175를 별도로 실행하며 기존 서버를 재사용하지 않는다. [현재 증거](../../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)를 확인한다.
 - 이 설정만으로 Firefox·WebKit·실제 Safari·실기기 검증을 완료했다고 쓰지 않는다. 모바일 viewport는 실제 모바일 브라우저 실행과 다르다.
 - 지원 브라우저 확대나 해당 엔진의 회귀 위험이 있으면 별도 실행 환경·프로젝트와 검증 범위를 정한다.
 
@@ -70,7 +70,7 @@ User Web build에는 정적 SEO 페이지 생성이 포함된다. Admin에는 Us
 - 배치용 CSS class나 DOM index보다 `getByRole`, label 등을 우선한다. 의미 있는 대상을 찾기 어려울 때 안정적인 test ID를 사용한다.
 - 시각 비교는 viewport·데이터·locale·기준 시각·폰트 로딩을 맞춘다. 원본 캡처와 실제 브라우저 크기를 기록한다.
 - screenshot baseline을 변경 결과 확인 없이 일괄 갱신하지 않는다. 차이가 의도한 것인지 먼저 판단한다.
-- 외부 서비스는 경계에서 mock하고 테스트 중 실제 발송·결제를 일으키지 않는다.
+- 외부 효과는 로컬 상태로만 재현한다. 현재 User Web의 API 미호출 검증은 네트워크 route intercept 없이 관찰한다.
 - 기존 실행 중인 서버를 재사용한다면 코드 버전·모드·포트를 확인한다. 설정 파일 존재를 테스트 성공 증거로 사용하지 않는다.
 
 ## 7. CI·배포·결과 기록

@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "계획 문서 작성; 구현·추가 분석 미착수",
+  "status": "G00 조사 완료; G01 기반 구현·검토 완료, 원본 자산 동일성 확인 대기; 나머지 미착수",
   "goals": [
     {
       "id": "G00",
@@ -12,8 +12,14 @@
       "dependencies": [],
       "research": [],
       "surface": "공통 기반",
-      "status": "미착수",
-      "flow_scope": []
+      "status": "조사 완료",
+      "flow_scope": [],
+      "result": "../RESULTS/G00_RESULT.md",
+      "verification": {
+        "flow_index": "134 flows / 754 steps / 642 unique screens; matched",
+        "mcp": "3 flows / 18 steps",
+        "images_viewed": 4
+      }
     },
     {
       "id": "G01",
@@ -27,8 +33,25 @@
       ],
       "research": [],
       "surface": "공통 기반",
-      "status": "미착수",
-      "flow_scope": []
+      "status": "기반 구현·검토 완료; 원본 자산 동일성 확인 대기",
+      "flow_scope": [],
+      "result": "../RESULTS/G01_RESULT.md",
+      "verification": {
+        "implementation": "complete_within_foundation_scope",
+        "engineering_review": "complete",
+        "source_comparison": "common_primitives_only",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "9/9",
+        "development_e2e": "7/7",
+        "production_e2e": "7/7",
+        "real_api_requests": 0,
+        "pending": [
+          "source font/icon identity",
+          "native IME and assistive technology",
+          "additional browser engines and real devices"
+        ]
+      }
     },
     {
       "id": "G02",

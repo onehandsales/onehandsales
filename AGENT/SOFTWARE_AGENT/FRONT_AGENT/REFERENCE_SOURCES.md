@@ -27,9 +27,10 @@ React Router와 Vite는 현재 저장소의 major에 맞춘 문서를 사용했�
 - [Admin Web package.json](../../../FE/admin-web/package.json): React·Router·Vite·Tailwind와 독립 검증 script. User Web의 query/form/unit-test 의존성이 그대로 설치된 것은 아니다.
 - [TypeScript 설정](../../../FE/user-web/tsconfig.app.json): strict·미사용 검사·인덱스 접근 검사.
 - [Vitest 설정](../../../FE/user-web/vitest.config.ts): jsdom과 테스트 파일 범위.
-- [Playwright 기본 설정](../../../FE/user-web/playwright.config.ts), [브라우저 QA 설정](../../../FE/user-web/playwright.release-qa.config.ts): 실제 프로젝트와 viewport 구성.
-- [앱 provider](../../../FE/user-web/src/app/providers/app-providers.tsx): 실제 인증 provider가 포함된 현재 조립 구조.
-- [API client](../../../FE/user-web/src/lib/api-client.ts): 기존 실제 요청 경로. 신규 mock 경계 구현 증거로 사용하지 않는다.
+- [Playwright 기본 설정](../../../FE/user-web/playwright.config.ts), [build 검증 설정](../../../FE/user-web/playwright.preview.config.ts): 실제 프로젝트와 viewport 구성.
+- [앱 provider](../../../FE/user-web/src/app/providers/app-providers.tsx): G01 가상 세션·메모리 runtime 조립 구조.
+- [목 runtime](../../../FE/user-web/src/mocks/create-preview-runtime.ts): 로컬 단일 저장소·취소·scope 검사. 종전 API client는 제거했다.
+- [G01 결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md): 현재 코드 검토·실행·공통 요소 비교. 위 기술 출처 전체를 이번 구현에서 다시 조회했다는 뜻은 아니다.
 
 ## 3. 제품 근거와 기술 규칙의 구분
 

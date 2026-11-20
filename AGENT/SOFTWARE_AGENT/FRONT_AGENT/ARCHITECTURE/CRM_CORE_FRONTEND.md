@@ -4,9 +4,9 @@
 
 ## 1. 기존 구현의 위치
 
-기존 `workspace`, `crm-object`, `crm-list`, `crm-view`, `sidebar-order`, `view-favorite`와 Object/List/View ID route는 현재 범용 CRM 구현의 구조다. 상세 이력은 [구현 현황](../../../PM_AGENT/PLANNING/IMPLEMENTATION_STATUS.md), 현재 경로는 [router](../../../../FE/user-web/src/app/router/router.tsx)에서 확인한다.
+기존 workspace·crm-object·crm-list·crm-view·sidebar-order·view-favorite와 Object/List/View ID route는 G01 전면 교체에서 제거했다. 이전 구현은 Git 이력으로 확인한다. 현재 [router](../../../../FE/user-web/src/app/router/router.tsx)는 최소 목 경계이며 [교체 결과](../../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)를 따른다.
 
-TABLE/KANBAN/LIST와 설정의 preview/save/undo·충돌 복구는 기존 기능의 계약이다. 이를 Bonsai 전체 기능의 저장 방식이나 목표 도메인으로 확대하지 않는다. 이번 문서 개정은 기존 기능의 실행 재검증이 아니다.
+TABLE/KANBAN/LIST와 설정의 preview/save/undo·충돌 복구는 기존 기능의 계약이다. 이를 Bonsai 전체 기능의 저장 방식이나 목표 도메인으로 확대하지 않는다. 해당 기능은 현재 User Web에 없으며 호환 유지는 G01의 목표가 아니다.
 
 ## 2. 신규 Bonsai 기능의 기준
 
@@ -27,7 +27,7 @@ TABLE/KANBAN/LIST와 설정의 preview/save/undo·충돌 복구는 기존 기능
 | 캐시·API client·오류 처리 도구 | 실제 연동 단계에서 계약과 보안 경계를 확인 |
 | 기존 route·redirect | 영향 경로와 회귀 범위를 확인한 뒤 단계적으로 전환 |
 
-기존 화면을 옮기거나 제거할 때 import·navigation·테스트·딥링크 의존을 함께 검토한다. 새 화면 작업을 기존 코드 전체 삭제나 DB 초기화로 확대하지 않는다.
+위 표는 일반적인 변경 판단이다. G01은 사용자가 명시한 User Web 전면 교체이므로 기존 인증·업무·route·UI 호환을 유지하지 않았다. import·navigation·테스트·빌드 의존을 함께 제거했다. 이후 작은 화면 작업을 추가 전체 삭제나 DB 초기화로 확대하지 않는다.
 
 ## 4. 완료 상태
 

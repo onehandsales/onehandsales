@@ -6,7 +6,7 @@
 
 [package.json](../../../../FE/user-web/package.json)의 선언은 React 19·TypeScript·Vite 7·React Router 7·TanStack Query 5·React Hook Form 7·Zod 4·Tailwind 3이다. 정확한 설치 버전은 lockfile 기준이며 문서의 major 표기는 업그레이드 지시가 아니다.
 
-현재 [router](../../../../FE/user-web/src/app/router/router.tsx)에는 공개·인증 화면과 Workspace/Object/List/View 기반 경로가 있다. 현재 [provider](../../../../FE/user-web/src/app/providers/app-providers.tsx)는 실제 인증 provider를 포함한다. 아래 신규 mock 구조는 이를 이미 교체했다는 뜻이 아니다.
+G01에서 [router](../../../../FE/user-web/src/app/router/router.tsx)를 공개·가상 인증·내부·공유 최소 경계로 교체했다. [provider](../../../../FE/user-web/src/app/providers/app-providers.tsx)는 메모리 runtime만 조립하며 실제 인증을 호출하지 않는다. [현재 구조](../../../../FE/user-web/ARCHITECTURE.md)와 [검토 결과](../../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)를 따른다.
 
 ## 2. 신규 기능의 권장 배치
 
@@ -26,7 +26,7 @@ src/
       http-<feature>-data-source.ts   실제 연동 단계에서 추가
     index.ts                   외부에서 사용할 공개 export
   components/ui/               업무 중립 UI
-  lib/                         공통 기술 도구·기존 API client
+  lib/                         공통 기술 도구(필요할 때만)
   mocks/                       기능 사이 fixture 저장소·seed·시나리오 조립
 ```
 
@@ -49,7 +49,7 @@ User Web과 Admin Web은 별도 앱이다. 경로 alias로 다른 앱 소스를 
 ## 4. Route와 오류 경계
 
 - 로그인 이후 내부 업무 route는 기존 `/app` 영역을 기본으로 한다. Bonsai 대상 경로는 원본 흐름과 링크 복원 요구로 정한다.
-- 기존 redirect는 실제 마이그레이션에서 호환·새 목적지를 정한 뒤 변경한다. 신규 Bonsai 화면을 기존 범용 ID 구조에 강제로 맞추지 않는다.
+- G01은 명시적인 전면 교체로 종전 redirect 호환을 제거했다. 이후 route 변경은 영향과 복귀 정책을 기록한다. 신규 Bonsai 화면을 종전 범용 ID 구조에 맞추지 않는다.
 - 신규 route는 직접 URL 진입·reload·뒤로가기·잘못된 ID·권한 제한을 처리한다.
 - page/feature 경계에서 로딩·오류·재시도를 제공한다. 일부 패널 실패로 전체 앱 shell이 사라지지 않도록 한다.
 - 렌더링 오류 경계와 요청 오류 처리를 구분한다. Error Boundary가 모든 비동기 이벤트 오류를 처리한다고 가정하지 않는다.
@@ -57,6 +57,6 @@ User Web과 Admin Web은 별도 앱이다. 경로 alias로 다른 앱 소스를 
 
 ## 5. 기능 추가 절차
 
-출처·상태표 → route와 컴포넌트 책임 → 데이터 계약과 mock → 기능 hook·UI → 웹 상호작용 검증 순서로 진행한다. 복잡한 framework나 service locator를 새로 도입하지 않고 typed provider/factory처럼 필요한 범위의 조립 방식을 선택한다.
+출처·상태표 → route와 컴포넌트 책임 → FE 내부 표시 타입과 mock → 기능 hook·UI → 웹 상호작용 검증 순서로 진행한다. 복잡한 framework나 service locator를 새로 도입하지 않고 typed provider/factory처럼 필요한 범위의 조립 방식을 선택한다.
 
 상세는 [컴포넌트](../CONVENTION/COMPONENT_DESIGN.md), [상태](STATE_AND_DATA.md), [mock](MOCK_FIRST_DEVELOPMENT.md), [검증](TESTING.md)을 따른다.

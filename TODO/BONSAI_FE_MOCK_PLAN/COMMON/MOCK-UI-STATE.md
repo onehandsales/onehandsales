@@ -11,3 +11,9 @@
 - 현재 구현을 위해 미래 HTTP endpoint·범용 서버 repository·DB 제약을 미리 만들지 않는다.
 
 화면 제작 중 떠오른 서버 질문은 간단한 후속 메모로 남긴다. API/DB 계약의 완료를 프론트 Goal 체크 조건에 넣지 않는다.
+
+## G01 구현한 현재 정책
+
+[G01 결과](../RESULTS/G01_RESULT.md) 기준으로 기본 앱 전체가 메모리 목이다. 새로고침·새 탭은 세션/데이터 초기화, 같은 탭 재로그인은 저장값 유지·초안/캐시 폐기다. Reset은 세션·seed·clock·장애를 초기화한다. 가상 actor/workspace/revision으로 늦은 조회·저장을 격리한다.
+
+정상180ms·slow1500ms·다음 읽기/저장 1회 실패·빈 상태·제한을 개발 도구에서 선택한다. source는 FE 내부 함수이며 HTTP 경로가 없다. ScrollRestoration의 sessionStorage는 스크롤 전용이다. 후속 업무의 저장 수명은 이 정책을 출발점으로 사용하되 원본과 다른 경우 근거·영향을 명시한다.

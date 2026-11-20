@@ -1,23 +1,11 @@
-import { QueryClientProvider } from "@tanstack/react-query";
+import { useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
-import { AppI18nProvider } from "@/features/app-i18n";
-import { AuthProvider } from "@/features/auth";
-import { PublicSiteLanguageProvider } from "@/features/public-site/i18n/public-site-language";
-import { queryClient } from "@/lib/query-client";
+import { PreviewContext } from "@/features/preview/data/preview-context";
+import { createPreviewRuntime } from "@/mocks/create-preview-runtime";
 
-type AppProvidersProps = {
-  children: ReactNode;
-};
-
-// 기능 : 앱 전역 provider를 public-site, auth, app i18n, query 순서로 구성합니다.
-export function AppProviders({ children }: AppProvidersProps) {
-  return (
-    <PublicSiteLanguageProvider>
-      <AuthProvider>
-        <AppI18nProvider>
-          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-        </AppI18nProvider>
-      </AuthProvider>
-    </PublicSiteLanguageProvider>
-  );
+// 기능 : 새 앱 전체에 로컬 목 공급자만 조립하고 브라우저 새로고침마다 seed를 새로 만든다.
+export function AppProviders({ children }: { children: ReactNode }) {
+  const [runtime] = useState(createPreviewRuntime);
+  const state = useSyncExternalStore(runtime.subscribe, runtime.getSnapshot);
+  return <PreviewContext.Provider value={{ runtime, state }}>{children}</PreviewContext.Provider>;
 }

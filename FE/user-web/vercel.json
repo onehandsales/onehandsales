@@ -1,17 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    {
-      "source": "/:locale(ko|en-us|en-ca)",
-      "destination": "/:locale/index.html"
-    },
-    {
-      "source": "/:locale(ko|en-us|en-ca)/:page(pricing|contact|about|security|terms|privacy|login|signup)",
-      "destination": "/:locale/:page/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

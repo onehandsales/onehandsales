@@ -10,7 +10,7 @@
 - 현재는 **Bonsai UX/UI만 전체 재현하는 단계**다. Gummble 시안을 기준으로 폰트·크기·색상·배치·플로우를 따르며, 인증을 포함한 모든 실제 API 연결과 Backend·DB 설계는 진행하지 않는다. [결정 006](DECISIONS/006_bonsai_uxui_only_phase.md)을 우선 적용한다.
 - 컴포넌트 책임, 상태 소유권, 데이터 접근 경계를 분리한다. 목록·상세·편집의 mock 데이터도 일관되게 동작해야 한다.
 - 새로 작성하거나 동작을 수정하는 컴포넌트·함수·hook은 **한글 책임 주석**을 작성한다.
-- 현재 구현과 목표를 구분한다. 문서 개정은 기존 FE의 실제 API 연결 해제나 DB 변경을 의미하지 않는다.
+- 현재 구현과 목표를 구분한다. G01에서 User Web 기본 진입을 독립 목으로 교체했다. Backend·DB·Admin 변경은 없으며 전체 화면 구현과는 구분한다.
 
 웹 구조·목·한글 주석의 기본 규칙은 [결정 005](DECISIONS/005_web_mock_first_standard.md), 현재 UX/UI 전용 범위와 API 미연결 기준은 [결정 006](DECISIONS/006_bonsai_uxui_only_phase.md)을 따른다.
 
@@ -40,7 +40,7 @@
 
 ## 4. 현재 구현과 적용 방식
 
-기존 User Web에는 Auth/Workspace와 범용 Object/List/View 기반 기능이 남아 있다. Admin Web은 별도 인증·관리자 권한 확인 앱이다. [현재 코드와 Bonsai 전환](ARCHITECTURE/CRM_CORE_FRONTEND.md)을 구분하여 작업한다.
+User Web은 사용자 요청으로 전면 교체했다. 공개·가상 인증·내부·공유 경계, 메모리 저장소와 공통 UI만 구현했다. 실제 AuthProvider·Supabase·Object/List/View·API client·정적 SEO 생성기는 제거했다. [G01 결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)에 코드 검토와 브라우저 증거를 기록했다. 원본 폰트/아이콘 동일성은 대기이며 전체 Bonsai 구현 완료가 아니다. Admin은 이번 변경 대상이 아니다.
 
 새 규칙은 신규·수정 범위부터 적용한다. 기존 파일의 주석이나 폴더를 일괄 변경하려면 별도 작업 범위를 정한다. 파일 이동만으로 기능 완료를 보고하지 않는다.
 

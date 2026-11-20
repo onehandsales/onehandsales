@@ -1,0 +1,47 @@
+/* G01 비교 근거: RESULTS/G00_RESULT.md. 숫자는 1440×900 비교용 추정 CSS 값이다. */
+@font-face {
+  font-family: "Outfit Preview";
+  src: url("/fonts/outfit-latin-variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  /* 원본 family 미확인: Outfit은 단층 a·기하형 글리프를 비교하기 위한 임시 대체다. */
+  --font-ui: "Outfit Preview", "Malgun Gothic", Arial, sans-serif;
+  --font-body: 14px;
+  --font-control: 16px;
+  --font-dialog-title: 22px;
+  --font-page-title: 32px;
+  --line-body: 1.5;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-dialog-title: 500;
+  --color-surface: #fcfcfc;
+  --color-canvas: #f9f9f9;
+  --color-ink: #091713;
+  --color-muted: #626962;
+  --color-placeholder: #afb3b0;
+  --color-border: #c7ccca;
+  --color-divider: #e6eae7;
+  --color-primary: #1b9f00;
+  --color-primary-bottom: #1b9801;
+  --color-danger: #a31e23;
+  --color-focus: #30651f;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 20px;
+  --space-5: 40px;
+  --space-6: 60px;
+  --control-height: 40px;
+  --button-height: 46px;
+  --radius-control: 6px;
+  --radius-panel: 10px;
+  --dialog-width: 460px;
+  --dialog-top: 60px;
+  --shadow-panel: 0 5px 18px rgb(9 23 19 / 6%);
+  --shadow-dialog: 0 8px 24px rgb(0 0 0 / 12%);
+  --overlay-color: rgb(0 0 0 / 84%);
+}

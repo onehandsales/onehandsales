@@ -23,4 +23,4 @@ Gummble MCP의 Bonsai 화면·플로우와 로컬 분석을 PM·UXUI 시안으�
 
 프론트 UX/UI가 완성된 뒤 사용자가 후속 작업을 요청하면, 완성한 화면과 Bonsai 공식 도움말·공식 API 문서를 바탕으로 DB 스키마와 Backend를 별도로 설계한다. 현재 FE Goal 완료가 Backend 작업의 자동 착수 신호는 아니다.
 
-이 결정은 작업 기준을 명시한 문서다. 기존 실행 코드·환경·API 연결을 이번 문서 수정으로 변경한 것은 아니다.
+이 결정 자체는 작업 기준 문서다. 이후 사용자의 명시적 전면 교체 요청에 따라 G01에서 User Web 기본 실행을 목으로 바꿨다. [G01 결과](../../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)에 실제 변경과 검증을 기록했다. 환경·Backend·DB·Admin은 변경하지 않았다.

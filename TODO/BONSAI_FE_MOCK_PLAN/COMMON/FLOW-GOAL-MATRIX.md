@@ -140,3 +140,7 @@
 | 132 | [Terms & Conditions](<../../../bonsai_analysis/flows/Terms & Conditions/ANALYSIS.md>) | `912b4b75-77bb-43fa-b86f-d85c6117841a` | 1 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~01) |
 | 133 | [Time Tracking](<../../../bonsai_analysis/flows/Time Tracking/ANALYSIS.md>) | `525f8723-dca6-4932-ac6e-d159249090be` | 6 | [G34 시간 목록·인사이트](<GOAL-SPECS/G34.md>) (01~06) |
 | 134 | [Using invoice generator](<../../../bonsai_analysis/flows/Using invoice generator/ANALYSIS.md>) | `1a82151c-9539-4a12-8a4d-706c8557370b` | 5 | [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>) (01~05) |
+
+## G01 공통 요소 재사용 기록
+
+G01은 개별 업무 단계를 소유하거나 완료하지 않는다. Logging in 02(G11), Adding a new client 03(G19), Adding a bookkeeping category 02(G63)의 공통 요소를 참고했다. 업무 단계 배정은 그대로다. [G01 비교 결과](../RESULTS/G01_RESULT.md)와 원본 전체 폼 구현을 구분한다.
