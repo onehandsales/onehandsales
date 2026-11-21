@@ -1,0 +1,20 @@
+[
+  {
+    "id": "catalog",
+    "requested": "https://web.archive.org/web/20240203000000id_/https://www.hellobonsai.com/templates",
+    "resolved": "https://web.archive.org/web/20240118082813id_/https://www.hellobonsai.com/templates",
+    "bytes": 970520
+  },
+  {
+    "id": "quote",
+    "requested": "https://web.archive.org/web/20240203000000id_/https://www.hellobonsai.com/quote-template/ecommerce-website",
+    "resolved": "https://web.archive.org/web/20240224233444id_/https://www.hellobonsai.com/quote-template/ecommerce-website",
+    "bytes": 98031
+  },
+  {
+    "id": "invoice",
+    "requested": "https://web.archive.org/web/20240203000000id_/https://www.hellobonsai.com/invoice-template",
+    "resolved": "https://web.archive.org/web/20240131201901id_/https://www.hellobonsai.com/invoice-template",
+    "bytes": 156961
+  }
+]

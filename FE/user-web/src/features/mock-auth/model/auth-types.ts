@@ -1,0 +1,38 @@
+import type { ActorId, PreviewSession } from "@/features/preview/model/preview-types";
+import type { PublicIntent } from "@/features/public-web";
+
+export type AuthScenario = "normal" | "slow" | "fail-once" | "verify-email" | "two-factor";
+export type AuthAccount = Readonly<{ id: ActorId; email: string; name: string; method: "password" | "google" | "apple"; verified: boolean; setupComplete: boolean; session: PreviewSession }>;
+export type AuthHandoff = Readonly<{ actorId: ActorId; workspaceId: string; revision: number; intent: PublicIntent }>;
+export type EmailChallenge = Readonly<{ id: string; actorId: ActorId; revision: number; status: "valid" | "expired" | "used"; intent?: PublicIntent }>;
+export type TwoFactorChallenge = Readonly<{ id: string; actorId: ActorId; revision: number; status: "valid" | "expired"; attempts: number; returnTo: string; intent?: PublicIntent }>;
+export type ResetChallenge = Readonly<{ id: string; email: string; actorId: ActorId | null; revision: number; status: "valid" | "expired" | "used" }>;
+export type LoginInput = { email: string; password: string; method: AuthAccount["method"]; captcha: boolean; returnTo: string; intent?: PublicIntent };
+export type LoginResult = { kind: "session" | "two-factor"; account: AuthAccount; committedRevision: number; returnTo: string };
+export type AuthSnapshot = Readonly<{ version: number; scenario: AuthScenario; handoff: AuthHandoff | null; emailChallenge: EmailChallenge | null; twoFactor: TwoFactorChallenge | null; resetChallenge: ResetChallenge | null; loginVariant: "default" | "reset"; notice: "signed-out" | "expired" | "password-reset" | null }>;
+export type SignupInput = { email: string; name: string; password: string; method: AuthAccount["method"]; intent?: PublicIntent };
+export type SignupResult = { kind: "session" | "verify-email"; committedRevision: number; account: AuthAccount };
+export type AuthStore = {
+  getSnapshot(): AuthSnapshot;
+  subscribe(listener: () => void): () => void;
+  connect(): () => void;
+  setScenario(value: AuthScenario): void;
+  register(input: SignupInput, revision: number, signal: AbortSignal): Promise<SignupResult>;
+  verifyEmail(challengeId: string, revision: number, signal: AbortSignal): Promise<AuthAccount>;
+  expireEmailChallenge(): void;
+  cancelEmailChallenge(): void;
+  login(input: LoginInput, revision: number, signal: AbortSignal): Promise<LoginResult>;
+  verifyFactor(code: string, revision: number, signal: AbortSignal): Promise<LoginResult>;
+  expireFactor(): void;
+  renewFactor(): void;
+  cancelFactor(): void;
+  logout(revision: number, signal: AbortSignal): Promise<void>;
+  expireSession(): void;
+  clearNotice(): void;
+  requestReset(email: string, captcha: boolean, revision: number, signal: AbortSignal): Promise<ResetChallenge>;
+  resetPassword(challengeId: string, password: string, revision: number, signal: AbortSignal): Promise<number>;
+  expireReset(): void;
+  cancelReset(): void;
+  completeSetup(id: ActorId): void;
+  getAccount(id: ActorId): AuthAccount | undefined;
+};

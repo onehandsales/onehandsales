@@ -1,0 +1,658 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T02:38:07.090Z",
+    "duration": 120412.104,
+    "expected": 38,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "pricing toggle uses historical prices, actual history and direct URL refresh",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8971,
+          "errors": [],
+          "network": {
+            "requests": 5031,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "different plan handoffs keep older history snapshots and cancellation preserves the cycle",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6709,
+          "errors": [],
+          "network": {
+            "requests": 3333,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "rapid cycle changes and repeated plan clicks create only the first handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5615,
+          "errors": [],
+          "network": {
+            "requests": 3330,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "explicit mock session routes plan choice to G79 handoff without changing workspace access",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3826,
+          "errors": [],
+          "network": {
+            "requests": 1697,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "reviews poster explicitly lacks media, traps focus, closes and resets on browser return",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5545,
+          "errors": [],
+          "network": {
+            "requests": 3370,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "review badges and author links use local destinations and real back restores card scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3617,
+          "errors": [],
+          "network": {
+            "requests": 1670,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "pricing and review contents remain inside narrow and enlarged layouts including long Korean",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4445,
+          "errors": [],
+          "network": {
+            "requests": 3347,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "resources \u2192 filtered search \u2192 article \u2192 real back/forward preserves URL and scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5089,
+          "errors": [],
+          "network": {
+            "requests": 3380,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "empty, no-match, page bounds and history remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7370,
+          "errors": [],
+          "network": {
+            "requests": 5028,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "mock failure retries without losing query and slow old searches never replace the latest intent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10303,
+          "errors": [],
+          "network": {
+            "requests": 5058,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "narrow article, keyboard TOC and signup preserve the email draft without external calls",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2288,
+          "errors": [],
+          "network": {
+            "requests": 1668,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10312,
+          "errors": [],
+          "network": {
+            "requests": 11620,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5106,
+          "errors": [],
+          "network": {
+            "requests": 3308,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "query failure retries, empty and restricted states remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3654,
+          "errors": [],
+          "network": {
+            "requests": 1654,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3277,
+          "errors": [],
+          "network": {
+            "requests": 1654,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6665,
+          "errors": [],
+          "network": {
+            "requests": 1654,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1569,
+          "errors": [],
+          "network": {
+            "requests": 1654,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8119,
+          "errors": [],
+          "network": {
+            "requests": 11582,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "landing menus enter the three original introductions and all artwork stays local and static",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 15234,
+          "errors": [],
+          "network": {
+            "requests": 11928,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "introduction email drafts are scoped, repeated submits deduplicate, and cancellation returns to the source",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4203,
+          "errors": [],
+          "network": {
+            "requests": 3391,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "FAQ keyboard controls reveal dated answers, close prior answers and hand off locally",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3133,
+          "errors": [],
+          "network": {
+            "requests": 1702,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "related articles retain stable destinations, real history and an explicit unknown page two",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5120,
+          "errors": [],
+          "network": {
+            "requests": 3420,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "narrow introductions and demo handoff preserve focus, Escape, scroll and visible content",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8231,
+          "errors": [],
+          "network": {
+            "requests": 6795,
+            "sockets": 4,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "scroll never changes a session and the dashboard header requires an explicitly chosen mock session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5877,
+          "errors": [],
+          "network": {
+            "requests": 5155,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4296,
+          "errors": [],
+          "network": {
+            "requests": 3392,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4644,
+          "errors": [],
+          "network": {
+            "requests": 3375,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6509,
+          "errors": [],
+          "network": {
+            "requests": 5022,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4103,
+          "errors": [],
+          "network": {
+            "requests": 1699,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 14525,
+          "errors": [],
+          "network": {
+            "requests": 13589,
+            "sockets": 8,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "G01 reset clears public draft while session and component previews remain separate",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2570,
+          "errors": [],
+          "network": {
+            "requests": 1698,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2635,
+          "errors": [],
+          "network": {
+            "requests": 1700,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 15780,
+          "errors": [],
+          "network": {
+            "requests": 16630,
+            "sockets": 10,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2779,
+          "errors": [],
+          "network": {
+            "requests": 1724,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "template types, industry, search and detail retain real history and public identity",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8297,
+          "errors": [],
+          "network": {
+            "requests": 8397,
+            "sockets": 5,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "all fifteen real files download unchanged and Google links remain a local dialog",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6205,
+          "errors": [],
+          "network": {
+            "requests": 1674,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "template signup snapshots remain isolated and explicit cancellation clears only the source draft",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3127,
+          "errors": [],
+          "network": {
+            "requests": 3346,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "template failure retry and the latest slow filter win without an external request",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8893,
+          "errors": [],
+          "network": {
+            "requests": 5063,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    },
+    {
+      "title": "narrow template layouts, keyboard, invalid input and synthetic composition remain usable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4904,
+          "errors": [],
+          "network": {
+            "requests": 5003,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          }
+        }
+      ]
+    }
+  ]
+}

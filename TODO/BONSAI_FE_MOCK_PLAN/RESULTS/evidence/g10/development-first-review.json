@@ -1,0 +1,130 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T08:03:09.467Z",
+    "duration": 19933.57,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "signup validates, retries without losing input and carries the selected plan through authentication",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 9207,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/signup.spec.ts",
+                "column": 22,
+                "line": 21
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"http://127.0.0.1:5175/\u001b[7monboarding\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"http://127.0.0.1:5175/\u001b[7msignup\u001b[27m\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    14 × unexpected value \"http://127.0.0.1:5175/signup\"\u001b[22m\n\n\n  19 |   await expect(page.getByRole(\"alert\")).toContainText(\"failed\"); await expect(page.getByLabel(\"Password\", { exact: true })).toHaveValue(\"SampleOnly123!\");\n  20 |   await page.locator(\".auth-signup form\").evaluate((form: HTMLFormElement) => { form.requestSubmit(); form.requestSubmit(); });\n> 21 |   await expect(page).toHaveURL(\"/onboarding\"); await expect(page.locator(\"h1\")).toContainText(\"Sample Owner\"); await expect(page.locator(\".auth-intent\")).toContainText(\"pricing-monthly-business\"); await expect(page.locator(\".auth-intent\")).toContainText(\"$79 USD\");\n     |                      ^\n  22 |   expect(await page.evaluate(() => location.href + JSON.stringify({ ...localStorage, ...sessionStorage }))).not.toContain(\"SampleOnly123!\");\n  23 |   await page.getByRole(\"button\", { name: \"End local session\" }).click(); await expect(page).toHaveURL(\"/signup\"); await expect(page.locator(\".auth-intent\")).toHaveCount(0); await expect(page.getByLabel(\"Password\", { exact: true })).toHaveValue(\"\");\n  24 | });\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/signup.spec.ts:21:22"
+            }
+          ],
+          "network": {
+            "requests": 1725,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow signup cancellation, route departure and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 11727,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/signup.spec.ts",
+                "column": 146,
+                "line": 33
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('h1')\nExpected substring: \u001b[32m\"Sample Owner\"\u001b[39m\nReceived string:    \u001b[31m\"Create your free account\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1')\u001b[22m\n\u001b[2m    14 × locator resolved to <h1 id=\"signup-title\">Create your free account</h1>\u001b[22m\n\u001b[2m       - unexpected value \"Create your free account\"\u001b[22m\n\n\n  31 |   await page.locator(\"header\").getByRole(\"link\", { name: \"Start free\", exact: true }).click(); await expect(password).toHaveValue(\"\");\n  32 |   await page.getByText(\"Local authentication scenarios\", { exact: true }).click(); await page.getByRole(\"combobox\", { name: \"Authentication scenario\" }).selectOption(\"normal\");\n> 33 |   await fillSignup(page); await page.getByRole(\"button\", { name: \"Create Free Account\", exact: true }).click(); await expect(page.locator(\"h1\")).toContainText(\"Sample Owner\");\n     |                                                                                                                                                  ^\n  34 | });\n  35 |\n  36 | test(\"social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable\", async ({ page }) => {\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/signup.spec.ts:33:146"
+            }
+          ],
+          "network": {
+            "requests": 1754,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 6494,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/signup.spec.ts",
+                "column": 148,
+                "line": 38
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('h1')\nExpected substring: \u001b[32m\"Google Preview\"\u001b[39m\nReceived string:    \u001b[31m\"Create your free account\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1')\u001b[22m\n\u001b[2m    14 × locator resolved to <h1 id=\"signup-title\">Create your free account</h1>\u001b[22m\n\u001b[2m       - unexpected value \"Create your free account\"\u001b[22m\n\n\n  36 | test(\"social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable\", async ({ page }) => {\n  37 |   await page.goto(\"/signup\"); const google = page.getByRole(\"button\", { name: \"Sign up with Google\", exact: true }); await google.click(); await expect(page.getByRole(\"dialog\")).toContainText(\"No Google account\"); await page.keyboard.press(\"Escape\"); await expect(google).toBeFocused();\n> 38 |   await google.click(); await page.getByRole(\"button\", { name: \"Continue with sample Google identity\" }).click(); await expect(page.locator(\"h1\")).toContainText(\"Google Preview\"); await page.getByRole(\"button\", { name: \"End local session\" }).click();\n     |                                                                                                                                                    ^\n  39 |   await fillSignup(page, \"google-preview@example.test\"); await page.getByRole(\"button\", { name: \"Create Free Account\", exact: true }).click(); await expect(page.getByRole(\"alert\")).toContainText(\"already has a local preview account\"); await expect(page.getByRole(\"textbox\", { name: \"Full Name\" })).toHaveValue(\"Sample Owner\");\n  40 | });\n  41 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/signup.spec.ts:38:148"
+            }
+          ],
+          "network": {
+            "requests": 1712,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "local email verification survives StrictMode, supports expiry/cancel/retry and confirms no real email",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3987,
+          "errors": [],
+          "network": {
+            "requests": 1712,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow signup exposes complete fields and buttons with long Korean input and text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1895,
+          "errors": [],
+          "network": {
+            "requests": 1739,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

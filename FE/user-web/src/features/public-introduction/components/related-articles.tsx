@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { PublicLink } from "@/features/public-web";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import articles from "../data/related-articles.json";
 
 // 기능 : 관찰한 관련 글 열두 개와 미수록 둘째 페이지 경계를 실제 URL 이력으로 탐색한다.
 export function RelatedArticles() {
+  const location = useLocation();
   const [params] = useSearchParams();
   const secondPage = params.get("contentPage") === "2";
   const heading = useRef<HTMLHeadingElement>(null);
@@ -16,7 +16,7 @@ export function RelatedArticles() {
     <h2 ref={heading} tabIndex={-1}>More Small businesses content</h2>
     {secondPage ? <div className="intro-content-unavailable"><p>2페이지의 원본 콘텐츠는 아직 확인되지 않았습니다.</p><p>확인된 관련 글은 1페이지에서 볼 수 있습니다.</p></div>
       : <div className="intro-article-grid">{articles.map(article => <article key={article.id}>
-        <PublicLink href={article.path}><img className="intro-article-image" src={article.image} alt="" /><p className="intro-article-category">{article.category}</p><h3>{article.title}</h3></PublicLink>
+        <Link to={article.path} state={{ articleReturnTo: location.pathname + location.search, articleFromKey: location.key }}><img className="intro-article-image" src={article.image} alt="" /><p className="intro-article-category">{article.category}</p><h3>{article.title}</h3></Link>
         {article.author && <p className="intro-article-author">{article.portrait && <img src={article.portrait} alt="" />}{article.author}</p>}
       </article>)}</div>}
     <nav className="intro-pagination" aria-label="Related content pages">

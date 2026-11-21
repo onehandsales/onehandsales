@@ -1,0 +1,949 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T07:20:05.813Z",
+    "duration": 176281.8,
+    "expected": 49,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "pricing toggle uses historical prices, actual history and direct URL refresh",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10325,
+          "errors": [],
+          "network": {
+            "requests": 5154,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "different plan handoffs keep older history snapshots and cancellation preserves the cycle",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7258,
+          "errors": [],
+          "network": {
+            "requests": 3415,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "rapid cycle changes and repeated plan clicks create only the first handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7970,
+          "errors": [],
+          "network": {
+            "requests": 3412,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "explicit mock session routes plan choice to G79 handoff without changing workspace access",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6439,
+          "errors": [],
+          "network": {
+            "requests": 1738,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "reviews poster explicitly lacks media, traps focus, closes and resets on browser return",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6259,
+          "errors": [],
+          "network": {
+            "requests": 3452,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "review badges and author links use local destinations and real back restores card scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4001,
+          "errors": [],
+          "network": {
+            "requests": 1717,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing and review contents remain inside narrow and enlarged layouts including long Korean",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5867,
+          "errors": [],
+          "network": {
+            "requests": 3429,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "affiliate actions use distinct local destinations and browser history restores the original section",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6069,
+          "errors": [],
+          "network": {
+            "requests": 3496,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "careers and social destinations preserve route-specific return and do not claim application success",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6630,
+          "errors": [],
+          "network": {
+            "requests": 3458,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "historical policies distinguish excerpts, versions and local cookie or privacy contacts",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5203,
+          "errors": [],
+          "network": {
+            "requests": 3408,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "company screens keep content and CTA bounds usable at 320px and CSS text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 10839,
+          "errors": [],
+          "network": {
+            "requests": 8555,
+            "sockets": 5,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "resources → filtered search → article → real back/forward preserves URL and scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6157,
+          "errors": [],
+          "network": {
+            "requests": 3458,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "empty, no-match, page bounds and history remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8222,
+          "errors": [],
+          "network": {
+            "requests": 5151,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "mock failure retries without losing query and slow old searches never replace the latest intent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 11080,
+          "errors": [],
+          "network": {
+            "requests": 5181,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow article, keyboard TOC and signup preserve the email draft without external calls",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2783,
+          "errors": [],
+          "network": {
+            "requests": 1709,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 11671,
+          "errors": [],
+          "network": {
+            "requests": 11907,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4992,
+          "errors": [],
+          "network": {
+            "requests": 3390,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "query failure retries, empty and restricted states remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3728,
+          "errors": [],
+          "network": {
+            "requests": 1695,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4060,
+          "errors": [],
+          "network": {
+            "requests": 1695,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6864,
+          "errors": [],
+          "network": {
+            "requests": 1695,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1507,
+          "errors": [],
+          "network": {
+            "requests": 1695,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 9327,
+          "errors": [],
+          "network": {
+            "requests": 11869,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "help collections, search, language and actual article history preserve their separate states",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5227,
+          "errors": [],
+          "network": {
+            "requests": 5127,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "article TOC, unavailable video, static settings and feedback keep real focus and navigation",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5552,
+          "errors": [],
+          "network": {
+            "requests": 5118,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "help read failure, empty data and slow searches do not replace the latest URL intent",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 13737,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/help.spec.ts",
+                "column": 53,
+                "line": 37
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.help-result-list a')\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m6\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.help-result-list a')\u001b[22m\n\u001b[2m    7 × locator resolved to 0 elements\u001b[22m\n\u001b[2m      - unexpected value \"0\"\u001b[22m\n\u001b[2m    7 × locator resolved to 6 elements\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n\n\n  35 |   await enterHelpScenario(page, \"empty\"); await expect(page.getByRole(\"heading\", { name: \"No help articles available\" })).toBeVisible();\n  36 |   await enterHelpScenario(page, \"slow\"); const search = page.getByRole(\"searchbox\"); await search.fill(\"payment\"); await search.press(\"Enter\"); await search.fill(\"portal\"); await search.press(\"Enter\");\n> 37 |   await expect(page.locator(\".help-result-list a\")).toHaveCount(1); await expect(page.locator(\".help-result-list a\")).toContainText(\"Client Portal\"); await page.waitForTimeout(1600); await expect(page.locator(\".help-result-list a\")).toHaveCount(1);\n     |                                                     ^\n  38 |   await page.goto(\"/help\"); await expect(page.locator(\".help-collection\")).toHaveCount(14);\n  39 | });\n  40 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/help.spec.ts:37:53"
+            }
+          ],
+          "network": {
+            "requests": 5234,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "feedback retains failed choice, allows retry and cancels obsolete writes on selection or departure",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 12500,
+          "errors": [],
+          "network": {
+            "requests": 5230,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "contact links, narrow help, keyboard and synthetic IME remain local and visible",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3319,
+          "errors": [],
+          "network": {
+            "requests": 3434,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "landing menus enter the three original introductions and all artwork stays local and static",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 12572,
+          "errors": [],
+          "network": {
+            "requests": 12218,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "introduction email drafts are scoped, repeated submits deduplicate, and cancellation returns to the source",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2854,
+          "errors": [],
+          "network": {
+            "requests": 3473,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "FAQ keyboard controls reveal dated answers, close prior answers and hand off locally",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2628,
+          "errors": [],
+          "network": {
+            "requests": 1743,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "related articles retain stable destinations, real history and an explicit unknown page two",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4884,
+          "errors": [],
+          "network": {
+            "requests": 3502,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow introductions and demo handoff preserve focus, Escape, scroll and visible content",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8705,
+          "errors": [],
+          "network": {
+            "requests": 6959,
+            "sockets": 4,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "scroll never changes a session and the dashboard header requires an explicitly chosen mock session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6413,
+          "errors": [],
+          "network": {
+            "requests": 5278,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "invoice template → generator calculates the observed amounts, blank rows and removal with actual history",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5056,
+          "errors": [],
+          "network": {
+            "requests": 3419,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "validation preserves drafts and the signup handoff is a snapshot rather than a PDF",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3584,
+          "errors": [],
+          "network": {
+            "requests": 1704,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "failed and cancelled local handoffs retain inputs and cannot navigate after editing or leaving",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 13975,
+          "errors": [],
+          "network": {
+            "requests": 5171,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow generator supports long Korean, keyboard and synthetic composition without clipped fields",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4358,
+          "errors": [],
+          "network": {
+            "requests": 1704,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3846,
+          "errors": [],
+          "network": {
+            "requests": 3474,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3299,
+          "errors": [],
+          "network": {
+            "requests": 3456,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6807,
+          "errors": [],
+          "network": {
+            "requests": 5145,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 8971,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/landing.spec.ts",
+                "column": 61,
+                "line": 106
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('main')\nExpected substring: \u001b[32m\"G09\"\u001b[39m\nReceived string:    \u001b[31m\"Small businessesAgenciesFreelancersPrivacyHistorical Bonsai reference · captured excerpts, not the policy of this previewAt Bonsai, we collect and manage user data according to the following Privacy Policy. This document is part of Bonsai's Terms of Service, and by using HelloBonsai.com (the “Website”), you agree to the terms of this Privacy Policy and the Terms of Service. Please read the Terms of Service in their entirety, and refer to those for definitions and contacts.Data CollectedWe collect data from every visitor of the Website to monitor traffic and fix bugs. For example, we collect information like web requests, the data sent in response to such requests, the Internet Protocol address, the browser type, the browser language, and a timestamp for the request.We ask you to log in and provide certain personal information (such as your name and email address) in order to be able to save your profile and the contracts associated with it. In order to enable these or any other login based features, we use cookies to store session information for your convenience. You can block or delete cookies and still be able to use Bonsai, although if you do you will then be asked for your username and password every time you log in to the Website. In order to take advantage of certain features of the Website, you may also choose to provide us with other personal information, such as your picture or personal website, but your decision to utilize these features and provide such data will always be voluntary.You are able to view, change and remove your data associated with your profile. Should you choose to delete your account, please contact us at team@hellobonsai.com and we will follow up with such request as soon as possible.Minors and children should not use Bonsai. By using the Website, you represent that you have the legal capacity to enter into a binding contract.Middle sections outside the supplied capturesThis page shows the supplied screenshot excerpts. It is not the complete legal document. No effective or revision date is visible in the reference.A January 18, 2024 archived page was used to cross-check the reference. The version linked during the original signup has not been confirmed.We employ and contract with people and other entities that perform certain tasks on our behalf and who are under our control (our “Agents”). We may need to share personal information with our Agents in order to provide products or services to you. Unless we tell you differently, our Agents do not have any right to use Personal Information or other information we share with them beyond what is necessary to assist us. You hereby consent to our sharing of Personal Information with our Agents.We may choose to buy or sell assets. In these types of transactions, user information is typically one of the transferred business assets. Moreover, if we, or substantially all of our assets, were acquired, or if we go out of business or enter bankruptcy, user information would be one of the assets that is transferred or acquired by a third party. You acknowledge that such transfers may occur, and that any acquirer of us or our assets may continue to use your personal information as set forth in this policy.Cookie PolicyYou can find our complete cookie policy on this address: https://www.iubenda.com/privacy-policy/35324406/cookie-policyUser Access RequestUsers have the right to understand what data is being used and how it is being used. You can receive this information by submitting a request to team at hellobonsai dot com. The information you will receive will include:- What personal information pertaining to the user is being processed- Why this information is being processed- Who has access to this personal information about the user- How this personal information is being used in automated decisions- What processes are using this informationChanges to the Privacy PolicyWe may amend this Privacy Policy from time to time. Use of information we collect now is subject to the Privacy Policy in effect at the time such information is used. If we make major changes in the way we collect or use information, we will notify you by posting an announcement on the Website or sending you an email. A user is bound by any changes to the Privacy Policy when he or she uses the Services after such changes have been first posted.Should you have any question or concern, please write to team at hellobonsai dot com.Terms & ConditionsView historical privacy contact\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('main')\u001b[22m\n\u001b[2m    - locator resolved to <main tabindex=\"-1\" id=\"main-content\">…</main>\u001b[22m\n\u001b[2m    - unexpected value \"Small businessesAgenciesFreelancersRun your entirebusiness inone placeThe only business management tool that combines CRM, time tracking, project management, invoicing and payments.Email addressStart freebased on 1,000+ reviews from$4,500Invoice paidNew leadIntake form completed$300Expense deductedManage clientsContractsFormsSchedulingClient CRMManage projectsCollaborationInvoicingTime TrackingProject ManagementManage financesPaymentsExpense TrackingTax HelperBanking“Contracting, invoicing, and even banking are all things Bonsai fixes in a simple, beautiful way. They're constantly adding new features and their support is super helpful.”Alexandre, Business Consultant010203Manage your financesfrom payments, to banking, to taxesInvoicingCustomize and send great looking invoices in seconds. Get paid faster with simple payment options for your clients and automatic reminders.Learn moreBankingOpen your dedicated account and card for all business expenses. FDIC-insured up to $250,000.Learn moreAccountingAutomatically track expenses and income. Estimate and set aside for taxes.Learn moreDeliver great client experiences and win more workClient CRMManage your client journey from just one place. From lead to payment.Doc templatesSend professional-looking proposals, contracts, forms and invoices in seconds.White labelledStand out and impress with a fully custom and branded experience.Trusted by thousandsof business ownersbased on 1,000+ reviews from“My best friend in scaling my business”“Like putting my finances on auto-pilot”“Bonsai does the hard work”“Everything is streamlined”“Huge timesaver”“It’s been the most stress-free year of my life!”“I feel more confident”“Backbone of my business”“So simple”“Clients love how easy my systems are”“A must-have!”“I do less admin and do more of what I love”“Worry-free contracts and invoices”“It pays for itself”“Great customer service!”“A life-saver!”“Clients take me more seriously”“I upped my rates and won more clients”Need help? We’llbe right with youOur friendly, speedy, Customer Support has all the answers and is here to help you.Contact usQuick to set upEven easier to useYou get 7 days to try it for free. And if it’s not what you expected, we guarantee your money back within the first two weeks.Get startedGet started in 30 secondsFree for 7 daysStart free trial now\"\u001b[22m\n\u001b[2m    13 × locator resolved to <main tabindex=\"-1\" id=\"main-content\">…</main>\u001b[22m\n\u001b[2m       - unexpected value \"Small businessesAgenciesFreelancersPrivacyHistorical Bonsai reference · captured excerpts, not the policy of this previewAt Bonsai, we collect and manage user data according to the following Privacy Policy. This document is part of Bonsai's Terms of Service, and by using HelloBonsai.com (the “Website”), you agree to the terms of this Privacy Policy and the Terms of Service. Please read the Terms of Service in their entirety, and refer to those for definitions and contacts.Data CollectedWe collect data from every visitor of the Website to monitor traffic and fix bugs. For example, we collect information like web requests, the data sent in response to such requests, the Internet Protocol address, the browser type, the browser language, and a timestamp for the request.We ask you to log in and provide certain personal information (such as your name and email address) in order to be able to save your profile and the contracts associated with it. In order to enable these or any other login based features, we use cookies to store session information for your convenience. You can block or delete cookies and still be able to use Bonsai, although if you do you will then be asked for your username and password every time you log in to the Website. In order to take advantage of certain features of the Website, you may also choose to provide us with other personal information, such as your picture or personal website, but your decision to utilize these features and provide such data will always be voluntary.You are able to view, change and remove your data associated with your profile. Should you choose to delete your account, please contact us at team@hellobonsai.com and we will follow up with such request as soon as possible.Minors and children should not use Bonsai. By using the Website, you represent that you have the legal capacity to enter into a binding contract.Middle sections outside the supplied capturesThis page shows the supplied screenshot excerpts. It is not the complete legal document. No effective or revision date is visible in the reference.A January 18, 2024 archived page was used to cross-check the reference. The version linked during the original signup has not been confirmed.We employ and contract with people and other entities that perform certain tasks on our behalf and who are under our control (our “Agents”). We may need to share personal information with our Agents in order to provide products or services to you. Unless we tell you differently, our Agents do not have any right to use Personal Information or other information we share with them beyond what is necessary to assist us. You hereby consent to our sharing of Personal Information with our Agents.We may choose to buy or sell assets. In these types of transactions, user information is typically one of the transferred business assets. Moreover, if we, or substantially all of our assets, were acquired, or if we go out of business or enter bankruptcy, user information would be one of the assets that is transferred or acquired by a third party. You acknowledge that such transfers may occur, and that any acquirer of us or our assets may continue to use your personal information as set forth in this policy.Cookie PolicyYou can find our complete cookie policy on this address: https://www.iubenda.com/privacy-policy/35324406/cookie-policyUser Access RequestUsers have the right to understand what data is being used and how it is being used. You can receive this information by submitting a request to team at hellobonsai dot com. The information you will receive will include:- What personal information pertaining to the user is being processed- Why this information is being processed- Who has access to this personal information about the user- How this personal information is being used in automated decisions- What processes are using this informationChanges to the Privacy PolicyWe may amend this Privacy Policy from time to time. Use of information we collect now is subject to the Privacy Policy in effect at the time such information is used. If we make major changes in the way we collect or use information, we will notify you by posting an announcement on the Website or sending you an email. A user is bound by any changes to the Privacy Policy when he or she uses the Services after such changes have been first posted.Should you have any question or concern, please write to team at hellobonsai dot com.Terms & ConditionsView historical privacy contact\"\u001b[22m\n\n\n  104 |   await privacy.scrollIntoViewIfNeeded();\n  105 |   const scroll = await page.evaluate(() => scrollY);\n> 106 |   await privacy.click(); await expect(page.locator(\"main\")).toContainText(\"G09\");\n      |                                                             ^\n  107 |   await page.goBack();\n  108 |   await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - scroll)).toBeLessThan(4);\n  109 |   await page.locator(\".public-trial-banner\").getByRole(\"link\", { name: \"Start free trial now\" }).click();\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/landing.spec.ts:106:61"
+            }
+          ],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 13005,
+          "errors": [],
+          "network": {
+            "requests": 13917,
+            "sockets": 8,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "G01 reset clears public draft while session and component previews remain separate",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3095,
+          "errors": [],
+          "network": {
+            "requests": 1737,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3332,
+          "errors": [],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 9890,
+          "errors": [],
+          "network": {
+            "requests": 8520,
+            "sockets": 5,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3417,
+          "errors": [],
+          "network": {
+            "requests": 1743,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "template types, industry, search and detail retain real history and public identity",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8520,
+          "errors": [],
+          "network": {
+            "requests": 8602,
+            "sockets": 5,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "all fifteen real files download unchanged and Google links remain a local dialog",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6202,
+          "errors": [],
+          "network": {
+            "requests": 1715,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "template signup snapshots remain isolated and explicit cancellation clears only the source draft",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4079,
+          "errors": [],
+          "network": {
+            "requests": 3428,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "template failure retry and the latest slow filter win without an external request",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 9862,
+          "errors": [],
+          "network": {
+            "requests": 5186,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow template layouts, keyboard, invalid input and synthetic composition remain usable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5755,
+          "errors": [],
+          "network": {
+            "requests": 5126,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

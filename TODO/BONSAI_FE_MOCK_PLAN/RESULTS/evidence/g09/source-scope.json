@@ -1,0 +1,31 @@
+{
+  "checkedDate": "2026-11-21 KST",
+  "archiveDate": "2024-01-18 (individual UTC timestamps in archive-fetch.json)",
+  "displayedPolicyVersion": {
+    "privacy": "no update/effective date visible",
+    "terms": "Last Updated June 30, 2020; not capture date or effective date"
+  },
+  "scope": "Full archived HTML retrieved for metadata/version checks. UI includes provided PNG excerpts, not complete legal document. Supplied excerpts matched to archived paragraphs; missing middle/end explicitly omitted. No OneHandSales policy adopted.",
+  "outbound": [
+    {
+      "id": "affiliate-application",
+      "url": "https://hellobonsai.firstpromoter.com/",
+      "target": null
+    },
+    {
+      "id": "affiliate-contact",
+      "url": "mailto:affiliates@hellobonsai.com",
+      "target": null
+    },
+    {
+      "id": "careers",
+      "url": "https://bonsai.crew.work/jobs",
+      "target": null
+    },
+    {
+      "id": "cookie-policy",
+      "url": "https://www.iubenda.com/privacy-policy/35324406/cookie-policy",
+      "target": "_blank"
+    }
+  ]
+}

@@ -1,0 +1,540 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T00:59:37.379Z",
+    "duration": 107047.908,
+    "expected": 33,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "pricing toggle uses historical prices, actual history and direct URL refresh",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 9167,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 4980,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "different plan handoffs keep older history snapshots and cancellation preserves the cycle",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 6179,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3296,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "rapid cycle changes and repeated plan clicks create only the first handoff",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 6602,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3296,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "explicit mock session routes plan choice to G79 handoff without changing workspace access",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 5198,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1680,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "reviews poster explicitly lacks media, traps focus, closes and resets on browser return",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 5606,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3365,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "review badges and author links use local destinations and real back restores card scroll",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 3745,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1659,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "pricing and review contents remain inside narrow and enlarged layouts including long Korean",
+      "file": "commercial.spec.ts",
+      "status": "passed",
+      "duration": 4725,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3313,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "resources → filtered search → article → real back/forward preserves URL and scroll",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 5353,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3346,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "empty, no-match, page bounds and history remain distinct",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 7007,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 4988,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "mock failure retries without losing query and slow old searches never replace the latest intent",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 9801,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 5011,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow article, keyboard TOC and signup preserve the email draft without external calls",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 2028,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1651,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 9286,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 11501,
+          "socketCount": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 4588,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3274,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "query failure retries, empty and restricted states remain distinct",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 3444,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1637,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 3891,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1637,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 7060,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1637,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 1255,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1637,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+      "file": "foundation.spec.ts",
+      "status": "passed",
+      "duration": 8651,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 11463,
+          "socketCount": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "landing menus enter the three original introductions and all artwork stays local and static",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 15018,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 11812,
+          "socketCount": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "introduction email drafts are scoped, repeated submits deduplicate, and cancellation returns to the source",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 4080,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3357,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "FAQ keyboard controls reveal dated answers, close prior answers and hand off locally",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 3539,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1685,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "related articles retain stable destinations, real history and an explicit unknown page two",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 5172,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3430,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow introductions and demo handoff preserve focus, Escape, scroll and visible content",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 8651,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 6727,
+          "socketCount": 4,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "scroll never changes a session and the dashboard header requires an explicitly chosen mock session",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 5942,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 5104,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 3835,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3358,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 4831,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3332,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 6561,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 4971,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 4114,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1683,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 13753,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 13453,
+          "socketCount": 8,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "G01 reset clears public draft while session and component previews remain separate",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 3169,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1679,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 3096,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1683,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 15869,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 18106,
+          "socketCount": 11,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+      "file": "public-handoff.spec.ts",
+      "status": "passed",
+      "duration": 3515,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1699,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    }
+  ]
+}

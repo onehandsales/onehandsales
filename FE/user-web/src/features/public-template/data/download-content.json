@@ -1,0 +1,162 @@
+[
+  {
+    "id": "invoice-template",
+    "title": "Invoice Template",
+    "image": "/bonsai-template/652d258be2cdc35ce40cd512.webp",
+    "formats": [
+      {
+        "label": "Excel",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/651d6d45788a7b11c09dfa73_Invoice%20Template%204.xlsx",
+        "file": "/bonsai-template/651d6d45788a7b11c09dfa73.xlsx"
+      },
+      {
+        "label": "Word",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/6528290bb7f15bde537f7b72_Bonsai%20Invoice%201.docx",
+        "file": "/bonsai-template/6528290bb7f15bde537f7b72.docx"
+      },
+      {
+        "label": "PDF",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/6528290bbea3a3a034d8a84c_Bonsai%20Invoice%201.pdf",
+        "file": "/bonsai-template/6528290bbea3a3a034d8a84c.pdf"
+      },
+      {
+        "label": "Google Sheets",
+        "source": "https://docs.google.com/spreadsheets/d/1ePcfUTO8s-FvNA2pmqzNtXauQk_MP5hDLpMCeYfdlHw/copy?usp=drive_link",
+        "file": ""
+      },
+      {
+        "label": "Google Docs",
+        "source": "https://docs.google.com/document/d/1lUPvSYXribuKmtNfXSVjiXjRO1B4tnDXvBl2b6rTFi4/copy?usp=sharing",
+        "file": ""
+      }
+    ]
+  },
+  {
+    "id": "billing-template",
+    "title": "Billing Template",
+    "image": "/bonsai-template/652d258be212bf1bb1a09c9b.webp",
+    "formats": [
+      {
+        "label": "Excel",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/651d6d8099c76311916a8d21_Invoice%20Template%203.xlsx",
+        "file": "/bonsai-template/651d6d8099c76311916a8d21.xlsx"
+      },
+      {
+        "label": "Word",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/65282962eed2dd8a283d5c9d_Bonsai%20Invoice%202.docx",
+        "file": "/bonsai-template/65282962eed2dd8a283d5c9d.docx"
+      },
+      {
+        "label": "PDF",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652829626cc8a59123d327fd_Bonsai%20Invoice%202.pdf",
+        "file": "/bonsai-template/652829626cc8a59123d327fd.pdf"
+      },
+      {
+        "label": "Google Sheets",
+        "source": "https://docs.google.com/spreadsheets/d/1nuwRHCKJexYirAWJrIF4MBKWZQjUA75NQluGLf3isJI/copy?usp=drive_link",
+        "file": ""
+      },
+      {
+        "label": "Google Docs",
+        "source": "https://docs.google.com/document/d/1sjbQ9G_RqE8FRuwumzYQ2frJ174dr_2AynkcHDvd85A/copy?usp=sharing",
+        "file": ""
+      }
+    ]
+  },
+  {
+    "id": "basic-invoice-template",
+    "title": "Basic Invoice Template",
+    "image": "/bonsai-template/652d258b9595c7d0a5ceb3d2.webp",
+    "formats": [
+      {
+        "label": "Word",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/65282999ccf5501b3cfe6e0f_Bonsai%20Invoice%203.docx",
+        "file": "/bonsai-template/65282999ccf5501b3cfe6e0f.docx"
+      },
+      {
+        "label": "PDF",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/65282999f023295d09318123_Bonsai%20Invoice%203.pdf",
+        "file": "/bonsai-template/65282999f023295d09318123.pdf"
+      },
+      {
+        "label": "Excel",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652825d0c715885d0f27245c_Bonsai%20-%20Invoice%20Template%203.xlsx",
+        "file": "/bonsai-template/652825d0c715885d0f27245c.xlsx"
+      },
+      {
+        "label": "Google Sheets",
+        "source": "https://docs.google.com/spreadsheets/d/1dgVboehQjXkk9ReNL7Z9nuQR1gn8nrrALxuZYkgo91k/copy?usp=drive_link",
+        "file": ""
+      },
+      {
+        "label": "Google Docs",
+        "source": "https://docs.google.com/document/d/17dmIfPVw1eQUef1vsLUD5338sxli6raPT3oyqs0z3Us/copy?usp=sharing",
+        "file": ""
+      }
+    ]
+  },
+  {
+    "id": "sample-invoice-template",
+    "title": "Sample Invoice Template",
+    "image": "/bonsai-template/652d258b29f6f7d9d2783842.webp",
+    "formats": [
+      {
+        "label": "Excel",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652825d040091a6302817926_Bonsai%20-%20Invoice%20Template%204.xlsx",
+        "file": "/bonsai-template/652825d040091a6302817926.xlsx"
+      },
+      {
+        "label": "Word",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652829dfddde45501055c077_Bonsai%20Invoice%204.docx",
+        "file": "/bonsai-template/652829dfddde45501055c077.docx"
+      },
+      {
+        "label": "PDF",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652829dfb87556319a5f1373_Bonsai%20Invoice%204.pdf",
+        "file": "/bonsai-template/652829dfb87556319a5f1373.pdf"
+      },
+      {
+        "label": "Google Sheets",
+        "source": "https://docs.google.com/spreadsheets/d/1StkRF1CHk1QvyzJmzUrmlHfwxWx1iByzaEsPsnBdpM4/copy?usp=drive_link",
+        "file": ""
+      },
+      {
+        "label": "Google Docs",
+        "source": "https://docs.google.com/document/d/1i6IuoUUE-LrvoFOAeiwR64MOv0i_n2BieC2Hq2jO1SU/copy?usp=drive_linke&sd=true",
+        "file": ""
+      }
+    ]
+  },
+  {
+    "id": "example-invoice-template",
+    "title": "Example Invoice Template",
+    "image": "/bonsai-template/652d258be212bf1bb1a09cc7.webp",
+    "formats": [
+      {
+        "label": "Excel",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652d2f2033fdac778d76ba2f_Invoice%20Template%205.xlsx",
+        "file": "/bonsai-template/652d2f2033fdac778d76ba2f.xlsx"
+      },
+      {
+        "label": "Word",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652d2f2011d2571508f24344_Bonsai%20Invoice%205.docx",
+        "file": "/bonsai-template/652d2f2011d2571508f24344.docx"
+      },
+      {
+        "label": "PDF",
+        "source": "https://assets.website-files.com/635ac9564cc3682ce1536786/652d2f20c51effd744de841a_Bonsai%20Invoice%205.pdf",
+        "file": "/bonsai-template/652d2f20c51effd744de841a.pdf"
+      },
+      {
+        "label": "Google Sheets",
+        "source": "https://docs.google.com/spreadsheets/d/1qK6TQNl35fVgPxzkTTLUCM10OYS3AWYbp5qh_P8EzMI/copy?usp=drive_link",
+        "file": ""
+      },
+      {
+        "label": "Google Docs",
+        "source": "https://docs.google.com/document/d/1DoWlumZVK4S7gdsTWMyrZ692mEQAi7CxMxYcrauuEng/copy?usp=sharing",
+        "file": ""
+      }
+    ]
+  }
+]

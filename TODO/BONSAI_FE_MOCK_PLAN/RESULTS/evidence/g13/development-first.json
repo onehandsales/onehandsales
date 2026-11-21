@@ -1,0 +1,193 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T08:49:32.916Z",
+    "duration": 62956.602,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "setup preserves per-step answers, rejects invalid invitations and saves the same company with its original intent",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30208,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts",
+                "column": 293,
+                "line": 19
+              },
+              "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /Account menu/ })\u001b[22m\n\n\n  17 |   await page.getByRole(\"checkbox\", { name: \"Time tracking and reporting\" }).check(); await scenario(page, \"fail-once\"); await page.getByRole(\"button\", { name: \"Next\", exact: true }).click(); await expect(page.getByRole(\"alert\")).toContainText(\"answers are still here\"); await expect(page.getByRole(\"checkbox\", { name: \"Time tracking and reporting\" })).toBeChecked(); await page.locator(\".setup-form\").evaluate((form: HTMLFormElement) => { form.requestSubmit(); form.requestSubmit(); });\n  18 |   await expect(page).toHaveURL(\"/app\"); await expect(page.getByRole(\"heading\", { name: \"Add company details\", exact: true })).toBeVisible(); await page.getByText(\"Local setup summary\", { exact: true }).click(); await expect(page.locator(\"[data-company-id]\")).toHaveAttribute(\"data-company-id\", \"company-studio-user-1\"); await expect(page.locator(\".setup-dashboard-note\")).toContainText(\"Sample Studio\"); await expect(page.locator(\".setup-dashboard-note\")).toContainText(\"MYR\"); await expect(page.locator(\".auth-intent\")).toContainText(\"pricing-yearly-business\"); await expect(page.locator(\".setup-dashboard-note\")).toContainText(\"1 draft teammate\");\n> 19 |   await page.getByRole(\"button\", { name: \"Hide\", exact: true }).click(); await expect(page.getByRole(\"navigation\", { name: \"Setup checklist\" })).toHaveCount(0); await page.getByRole(\"button\", { name: \"Show getting started\" }).click(); await page.getByRole(\"button\", { name: /Account menu/ }).click(); await page.getByRole(\"button\", { name: \"Logout\", exact: true }).click(); await expect(page).toHaveURL(\"/login\");\n     |                                                                                                                                                                                                                                                                                                     ^\n  20 |   await page.getByRole(\"textbox\", { name: \"Email\", exact: true }).fill(\"setup@example.test\"); await page.getByLabel(\"Password\", { exact: true }).fill(\"SampleOnly123!\"); await page.getByRole(\"checkbox\", { name: /I'm not a robot/ }).check(); await page.getByRole(\"button\", { name: \"Log In\", exact: true }).click(); await expect(page).toHaveURL(\"/app\"); await page.getByText(\"Local setup summary\", { exact: true }).click(); await expect(page.locator(\"[data-company-id]\")).toContainText(\"Sample Studio\"); await expect(page.locator(\".auth-intent\")).toHaveCount(0);\n  21 | });\n  22 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts:19:293"
+            }
+          ],
+          "network": {
+            "requests": 1747,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup pauses and re-enters with its draft, handles keyboard and composition, and cannot commit after cancel or departure",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30268,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts",
+                "column": 231,
+                "line": 6
+              },
+              "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('option', { name: 'Design', exact: true })\u001b[22m\n\n\n  4 | async function signup(page: Page) { await page.getByRole(\"textbox\", { name: \"Email\", exact: true }).fill(\"setup@example.test\"); await page.getByRole(\"textbox\", { name: \"Full Name\" }).fill(\"Sample Owner\"); await page.getByLabel(\"Password\", { exact: true }).fill(\"SampleOnly123!\"); await page.getByRole(\"checkbox\", { name: /I'm not a robot/ }).check(); await page.getByRole(\"button\", { name: \"Create Free Account\", exact: true }).click(); await expect(page.locator(\"h1\")).toContainText(\"Sample Owner\"); }\n  5 | // 기능 : 기록된 업종과 회사 정보·사업 조건만 채운다.\n> 6 | async function basics(page: Page) { const industry = page.getByRole(\"combobox\", { name: \"What kind of work does your business do?\" }); await industry.fill(\"Design\"); await page.getByRole(\"option\", { name: \"Design\", exact: true }).click(); await page.getByRole(\"textbox\", { name: \"What is your business called?\" }).fill(\"Sample Studio\"); await page.getByRole(\"button\", { name: \"Next\", exact: true }).click(); await page.getByRole(\"combobox\", { name: \"What type of business do you have?\" }).selectOption(\"Unregistered Business\"); await page.getByRole(\"combobox\", { name: \"What is your estimated yearly revenue?\" }).selectOption(\"RM0 - RM50,000\"); }\n    |                                                                                                                                                                                                                                       ^\n  7 | // 기능 : 미수록 단계와 빈 팀 초대의 명시적 목 건너뛰기를 거쳐 목적 단계로 이동한다.\n  8 | async function purposes(page: Page) { await page.getByRole(\"button\", { name: \"Next\", exact: true }).click(); await expect(page.locator(\"h1\")).toHaveText(\"One setup step is not recorded\"); await page.getByRole(\"button\", { name: \"Continue to team\" }).click(); await page.getByRole(\"button\", { name: \"Next\", exact: true }).click(); await expect(page.locator(\"h1\")).toContainText(\"How can Bonsai\"); }\n  9 | // 기능 : 저장 장애를 실제 목 도구로 선택한다.\n    at basics (/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts:6:231)\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts:26:3"
+            }
+          ],
+          "network": {
+            "requests": 1736,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "uncommitted setup clears on logout and refresh, while narrow layouts expose long Korean labels and all actions",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30132,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts",
+                "column": 780,
+                "line": 31
+              },
+              "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Log In', exact: true })\u001b[22m\n\n\n  29 | test(\"uncommitted setup clears on logout and refresh, while narrow layouts expose long Korean labels and all actions\", async ({ page }) => {\n  30 |   await page.setViewportSize({ width: 320, height: 600 }); await page.goto(\"/onboarding?step=4\"); await expect(page).toHaveURL(\"/signup\"); await signup(page); await basics(page); await page.getByRole(\"button\", { name: \"Back\", exact: true }).click(); await page.getByRole(\"textbox\", { name: \"What is your business called?\" }).fill(\"긴 한국어 사업체 이름\".repeat(8)); await page.addStyleTag({ content: '.setup-layout label,.setup-layout button,.setup-layout input {font-size:24px!important}' });\n> 31 |   expect(await page.locator(\".setup-main h1,.setup-main label,.setup-main input,.setup-main button\").evaluateAll(nodes => nodes.filter(node => { const r = node.getBoundingClientRect(); return r.width > 0 && (r.left < -1 || r.right > innerWidth + 1); }).map(node => node.tagName))).toEqual([]); await page.getByRole(\"button\", { name: \"End local session\" }).click(); await expect(page).toHaveURL(\"/signup\"); await page.getByRole(\"link\", { name: \"Log in\", exact: true }).click(); await page.getByRole(\"textbox\", { name: \"Email\", exact: true }).fill(\"setup@example.test\"); await page.getByLabel(\"Password\", { exact: true }).fill(\"SampleOnly123!\"); await page.getByRole(\"checkbox\", { name: /I'm not a robot/ }).check(); await page.getByRole(\"button\", { name: \"Log In\", exact: true }).click(); await expect(page).toHaveURL(\"/onboarding\"); await expect(page.getByRole(\"combobox\", { name: \"What kind of work does your business do?\" })).toHaveValue(\"\"); await page.reload(); await expect(page).toHaveURL(\"/signup\");\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ^\n  32 | });\n  33 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/onboarding.spec.ts:31:780"
+            }
+          ],
+          "network": {
+            "requests": 1737,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "signup validates, retries without losing input and carries the selected plan through authentication",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4106,
+          "errors": [],
+          "network": {
+            "requests": 1747,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow signup cancellation, route departure and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5882,
+          "errors": [],
+          "network": {
+            "requests": 1776,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3164,
+          "errors": [],
+          "network": {
+            "requests": 1737,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "local email verification survives StrictMode, supports expiry/cancel/retry and confirms no real email",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4191,
+          "errors": [],
+          "network": {
+            "requests": 1747,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow signup exposes complete fields and buttons with long Korean input and text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1822,
+          "errors": [],
+          "network": {
+            "requests": 1761,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

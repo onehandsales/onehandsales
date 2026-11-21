@@ -144,3 +144,27 @@
 ## G01 공통 요소 재사용 기록
 
 G01은 개별 업무 단계를 소유하거나 완료하지 않는다. Logging in 02(G11), Adding a new client 03(G19), Adding a bookkeeping category 02(G63)의 공통 요소를 참고했다. 업무 단계 배정은 그대로다. [G01 비교 결과](../RESULTS/G01_RESULT.md)와 원본 전체 폼 구현을 구분한다.
+
+## G05~G09 소비 결과와 연결 대기 (2026-11-21)
+
+원본 소유 단계 배정은 유지한다. [G05 블로그](../RESULTS/G05_RESULT.md)·[G06 공개 템플릿](../RESULTS/G06_RESULT.md)·[G07 생성기](../RESULTS/G07_RESULT.md)·[G08 도움말](../RESULTS/G08_RESULT.md)·[G09 회사/정책](../RESULTS/G09_RESULT.md)의 목 UI/검토/현재 검증과 미수록·시각·환경 대기를 분리한다. G06 선택/파일 형식과 G07 초안, G02~G05 이메일/가격 인계는 G10~G13 후 G14에서 왕복 검증한다. 도움말 앱 진입도 G11/G14에서 연결한다. R01 전체와 G10 이후 화면 완료를 뜻하지 않는다.
+
+R02 G10~G13: [43단계 소비 분석](../RESULTS/R02_RESULT.md). 가입10단계/로그인5/로그아웃2/복구10/사업설정16의 기존 소유권 유지. 가입→온보딩 G13·공개 인계 왕복 G14·회사 정보 G15 연결을 추적한다. 미수록 설문3단계는 새 원본 단계로 등록하지 않는다.
+
+### G10 연결 상태 (2026-11-21)
+
+Onboarding01~09 가입/이메일·선택 인계→새 가상 session까지 검증. 10단계 실제 사업 설정은 G13, 선택한 플랜/template/format/invoice의 최종 복귀·로그아웃은 G14에서 확인한다. [G10 결과](../RESULTS/G10_RESULT.md).
+
+G11: Logging in02~04/Logging out01~02 목 인증과 보호 복귀 검증. 로그인05 내부 셸/선택 복귀는 G14, 미완료 계정은 G13 연결 대기. [결과](../RESULTS/G11_RESULT.md).
+
+G12: Resetting password01~10 목 요청/복구/빈 로그인·같은 계정 검증. [결과](../RESULTS/G12_RESULT.md). G14 종합 복귀 대기.
+
+G13: Completing account setup01~16 관찰 설문·미수록 안내·초안·동일 회사 저장 검증. [결과](../RESULTS/G13_RESULT.md). G14 셸/공개 복귀, G15 회사 편집 연결 대기.
+
+### G14 연결 갱신 (2026-11-21)
+
+G14 40401~02/Hiding sidebar01~03의 목 셸/복구·공개 인증 왕복 검증. 본문의 업무 대시보드는 G72 등 후속 소유이며 G13 빈 상태를 재사용한다. [결과](../RESULTS/G14_RESULT.md).
+
+### G15 이후 최종 갱신 (2026-11-21)
+
+G15 Adding company details01~08·Uploading logo01~04·Disabling public profile01~03을 같은 회사 목 상태로 구현·원본15쌍 비교했다. G14 공개 인증 왕복과 G13→G15 동일 ID 연결을 검증했다. 미수록·시각·환경 및 후속 Goal 소유는 유지한다. [연속 작업 결과](../RESULTS/G05_G15_RESULT.md).

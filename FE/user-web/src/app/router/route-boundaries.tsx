@@ -1,14 +1,20 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
 import { QueryScope } from "../providers/query-scope";
+import { useMockAuth } from "@/features/mock-auth";
 
 // 기능 : 내부 경계에만 가상 세션을 요구하고 새 실행 차수마다 업무 캐시와 초안을 폐기한다.
 export function WorkspaceBoundary() {
   const { state } = usePreviewEnvironment();
+  const { store } = useMockAuth();
   const location = useLocation();
-  if (!state.session) return <Navigate replace to={"/login?returnTo=" + encodeURIComponent(location.pathname)} />;
-  return <QueryScope key={state.revision}><Outlet key={location.pathname} /></QueryScope>;
+  if (!state.session) return <Navigate replace to={"/login?returnTo=" + encodeURIComponent(location.pathname + location.search + location.hash)} />;
+  if (!store.getAccount(state.session.id)?.setupComplete) return <Navigate replace to={"/onboarding?returnTo=" + encodeURIComponent(location.pathname + location.search + location.hash)} />;
+  return <Outlet />;
 }
+
+// 기능 : 앱 메뉴의 수명과 분리해 인증 차수가 바뀔 때 내부 조회·편집만 폐기한다.
+export function WorkspaceContentScope() { const { state } = usePreviewEnvironment(); return <QueryScope key={state.revision}><Outlet /></QueryScope>; }
 
 // 기능 : 공유 조회 캐시를 내부 세션 전환과 분리해 공개 링크 수명을 유지한다.
 export function SharedBoundary() { return <QueryScope><Outlet /></QueryScope>; }

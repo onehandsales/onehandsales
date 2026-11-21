@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { InvoiceDraft } from "@/features/public-invoice";
 
 // 의미 : 공개 가격 시안의 선택 snapshot이며 실제 구독·청구·권한 계약이 아니다.
 export type PublicPlanSelection = Readonly<{
@@ -11,13 +12,16 @@ export type PublicPlanSelection = Readonly<{
   amountMeaning: "monthly-price" | "annual-monthly-equivalent";
   derivedAnnualSubtotal: number | null;
 }>;
-export type PublicIntentOptions = { returnTo?: string; selection?: PublicPlanSelection };
-export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; selection?: PublicPlanSelection };
+// 의미 : 공개 카탈로그 선택이며 계정 문서의 복제본이나 서버 template ID가 아니다.
+export type PublicTemplateSelection = Readonly<{ id: string; title: string; path: string; type: string; format: string; reference: string }>;
+export type PublicIntentOptions = { returnTo?: string; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
+export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
 export type PublicExperience = {
   emails: Readonly<Record<string, string>>;
   intents: Readonly<Record<string, PublicIntent>>;
   setEmail: (path: string, email: string) => void;
   start: (source: string, path: string, includeEmail?: boolean, options?: PublicIntentOptions) => string;
+  restore: (intent: PublicIntent) => string;
   clear: (intentId: string | undefined) => void;
 };
 export const PublicContext = createContext<PublicExperience | null>(null);

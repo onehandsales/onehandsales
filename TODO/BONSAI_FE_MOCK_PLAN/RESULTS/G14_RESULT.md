@@ -1,0 +1,74 @@
+# G14 앱 셸·사이드바·404 및 공개 인증 왕복
+
+> 최종 상태 갱신 (2026-11-21): 아래는 각 단계 당시 기록이다. G14 인증/온보딩/선택 복귀와 G15 동일 회사 연결을 검증했고 최종 전체 개발·빌드82개씩/단위42개를 통과했다. 원본·시각·환경 대기는 유지한다. [최종 결과](G05_G15_RESULT.md).
+
+2026-11-21 KST. **목 구현·두 차례 검토·수정·현재 가능한 관련 회귀를 완료했다.** 개발/빌드 각41개, 단위38개 통과. 미수록 원본·잔여 시각·추가 환경은 대기이며 G15로 순서대로 이어간다.
+
+## 근거와 범위
+
+- 이번 MCP 조회: Bonsai Web `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`. 404 `b340c3e3-ad5f-401c-839d-60e02a8c7ce2` 2단계, Hiding sidebar `ff646f32-f010-478e-a3bd-572ccc501292` 3단계. [Screen ID/URL](evidence/g14/mcp-sources.json), [직접 본 PNG·해시](evidence/g14/source-manifest.json). 두 ANALYSIS의 관찰·질문을 대조했다.
+- 카탈로그 Latest/2146은 이번 연속 작업 G05 조회의 재사용이다. 촬영 시각·서비스 빌드·원본 URL/HTTP 상태는 미확인이다. 404 두 화면을 같은 서비스의 전후 상태로 단정하지 않는다.
+- 관찰: 진녹색 404/홈·신고 버튼, 흰색 문서 경고/Go Home, 200px 상당 펼침/60px 상당 축소 메뉴, 텍스트 숨김·본문 확장, 메뉴 순서/구분선, 검색·Track Time·New·계정 진입. 크기는 PNG 2880×1800을 MCP 명목 1440×900으로 정규화한 CSS 추정이다. 원본 DPR 확정이 아니다.
+- 사이드바01의 Feb14/3개 프로젝트와02~03의 Feb6/1개 프로젝트는 다른 관찰 상태다. G14는 메뉴만 소비하며 본문은 G13 빈 대시보드를 재사용한다. G72 등 후속 업무 대시보드·집계·실제 팀/청구/프로젝트 CRUD를 구현하지 않았다.
+- 추가 R 없음. 원본 미수록 확장 복귀·키보드·모바일·hover·영속화는 아래 목 정책으로 처리했다. 실제 계정/HTTP/서버 정책 확정을 기다리지 않았다.
+
+## 구현·상태 수명
+
+| 영역 | 경로·변경·경계 |
+| --- | --- |
+| 앱 셸 | `AppShell`/`AppSidebar`/메뉴 데이터 분리, 실제 NavLink/aria-current, 아이콘 접근 이름·title, 200↔60px 제어, 좁은 화면 공통 Dialog, 키보드/Escape·닫기/폭 변경 포커스 |
+| 앱 본문 | `/app`은 기존·신규 목 계정의 초기 빈 대시보드. G01 목록 `/app/preview`, 상세 `/app/items/:id` 유지. 기존 데이터·읽기/쓰기 장애·경합·공유 경계 재검증 |
+| 경계 | 보호 진입은 로그인→필요시 온보딩. 공개/인증/공유에는 앱 메뉴 없음. 잘못된 공개 URL은 녹색 404, `/app/*`는 세션 확인 후 흰색 404. 삭제된 표본 ID/권한 제한은 G01 기존 별도 상태 |
+| 복구 | 공개 404 홈→`/`, 신고→`/support`의 기존 로컬 안내. 내부 Go Home→`/app`. 매핑은 원본 목적지 미확인의 목 정책이며 실제 신고 전송 없음 |
+| 안전한 복귀 | `authReturnQuery`로 내부 상대경로·query/hash를 로그인↔가입→이메일 확인→온보딩, 로그인→복구→로그인에 전달. 단계 이동 시 안전한 `returnTo` 유지 |
+| 공개 인계 | `/auth/continue`의 actor/workspace/revision과 이력 state를 대조. 현재 범위에 귀속된 선택만 PublicProvider의 새 ID로 복원. 일반 인증 reset 정책 유지 |
+| 가격 | 선택 플랜/주기/가격 버전/금액 의미→가입·온보딩 또는 로그인→선택 화면→`/preview/subscription` G79 로컬 경계. 구독/역할 변경 없음 |
+| 템플릿 | ID/title/type/path/format/reference 및 이메일→로그인→같은 공개 상세. 파일 다운로드는 기존 G06 실파일 흐름, 계정 문서 복제 없음 |
+| 생성기 | 선택한 invoice/row ID와 고객·기한·항목 snapshot→인증→명시적 복원 버튼→기존 편집기. 10+15%=11.50 유지. 재진입만으로 수정 중인 20/23.00 초안을 예전 snapshot으로 덮지 않음. PDF 생성 없음 |
+| 기타 공개 CTA | 랜딩/소개/블로그 이메일 출처→로그인→원래 페이지 및 해당 이메일 복원. Support의 앱 안내→보호 앱, 회사·정책은 기존 독립 공개 흐름 |
+
+사이드바 접힘은 현재 AppShell 내부 경로 이동 동안 유지한다. 공개 영역 이탈/새로고침/인증 revision 변경에서 펼침으로 복귀한다. 원본의 사용자 선호 영속화로 표현하지 않는다. 모바일은 760px 이하 모달 가정이며 원본 모바일 화면은 없다. 검증 도구의 펼침은 앱 내부 scope 변경에서 유지하고 `/components`처럼 레이아웃을 벗어나면 새 도구로 바뀐다.
+
+인계는 메모리 전용이다. 로그인 commit 때 선택한 snapshot만 새 scope로 옮기며 다른 페이지 초안·이전 계정 선택은 폐기한다. 브라우저 이력에 비밀번호/전체 snapshot 대신 선택 ID·auth revision·actor ID만 둔다. 새 탭/새로고침/로그아웃/계정·workspace 변경 후 오래된 인증 선택은 unavailable이다. 복귀 버튼은 새 공개 이력 ID를 만들어 같은 계정 내 다른 선택을 덮지 않는다. 기존 미인증 이력은 인증 reset 이후 unavailable일 수 있으며 다른 사람의 데이터로 채우지 않는다.
+
+## 두 차례 검토와 수정
+
+1차: 코드/원본/기존 G01~G13 결과 대조. 보호 returnTo가 가입·온보딩·복구에서 유실되고 인증 선택 화면이 안내에서 끝나던 연결을 수정했다. 모든 계정에 셸을 적용하며 G01 표본 경로를 보존했다. 첫 실행 14개 중8개 통과/6개 실패: 새 테스트의 표본 이름·목적지 준비/템플릿 폼 노출 전제, 시나리오 변경에 셸 전체가 재생성되어 도구가 닫히는 회귀를 구분했다. `WorkspaceContentScope`로 업무 캐시 수명만 분리하고, 축소 DOM 교체 뒤 포커스 복원을 보완했다.
+
+2차: 직접 캡처 비교, 입력/상태 수명·실제 이력·scope reset 재검토. 404 줄바꿈·문서 아이콘 정렬·간격, 메뉴 그룹 간격을 보정했다. 두 번째15개 중11개 통과/4개 실패는 미완료 자산 로드 중 다음 문서로 이동한 정적 이미지 abort, 템플릿의 전용 헤더/정확한 selector, 별도 레이아웃 Reset 후 도구 재열기 전제였다. 실패한 요청도 발생 요청으로 기록했다. 테스트는 실제 목적지 DOM/자산과 원본 헤더 구조를 기다리도록 고쳤으며 network 관찰·검증을 제거하지 않았다.
+
+## 실행·캡처
+
+기존 `http://127.0.0.1:5173/` PID59363 보존. FE/user-web에서 Node24.18.0/pnpm8.14.1, Chromium148.0.7778.96. Backend/외부 API/커밋/push/배포 없음.
+
+현재 실행: `pnpm typecheck`, `pnpm lint`, `pnpm test`(38/38), `pnpm build`; `pnpm exec playwright test tests/e2e/app-shell.spec.ts tests/e2e/foundation.spec.ts --workers=2 --reporter=line,json`; signup/login/reset/onboarding/public-handoff/commercial 포함 관련 검사는 최종 개발·빌드 각41/41 통과했다. 실제 명령의 환경 초기화는 `eval "$(fnm env --shell zsh)" && fnm use 24.18.0 && corepack pnpm …`이다. `PLAYWRIGHT_JSON_OUTPUT_FILE`로 [실행 증거](evidence/g14/)에 저장한다.
+
+`node scripts/capture-app-shell.mjs`와 `/tmp/onehand-visual-venv/bin/python scripts/compare-app-shell.py`: 12장, 원본5쌍/차이 이미지. [원본 비교](evidence/g14/comparisons/), [캡처 조건/네트워크](evidence/g14/browser-captures.json), [정규화/지표](evidence/g14/visual-metrics.json). 1440×900 DPR1/스크롤0, 320·390·768 및320×380 모달 상하단. 그림자/포커스·샘플 이름·원본 없는 동작·G13 본문 차이를 함께 기록했다. 픽셀 오차는 합격률이 아니다.
+
+## 미확인·잔여·서버 후속
+
+G14 이번 범위에서 확인한 수정 가능한 기능 결함은 수정하고 재검증했다. 원본 404의 폰트 family·정확한 CSS·발생 도메인·신고 링크·HTTP status, 사이드바 hover 조건/tooltip/영속화/모바일은 미확인이다. 기존 공개 Gellix와 로컬 심볼, Lucide 대체 아이콘을 사용해 원본 획·글리프·간격이 일부 다르다. 계정 이미지는 샘플 이니셜이다. 본문의 프로젝트/재무/홍보 카드는 G72 등 후속 Goal 소유이며 G13 빈 데이터와 같다고 주장하지 않는다.
+
+WebKit/Firefox/실기기·OS IME·실제 OS 글자 확대/스크린리더는 실행하지 않았다. Chromium 키보드/실제 navigation/합성 조합/CSS 확대와 구분한다. 원본 다른 화면·과거 정책·미수록 G03/G05~G09/R01/R02 대기는 자동 완료하지 않는다. 서버 세션/권한/초대/청구/실제 링크/HTTP·보고 방식은 후속 메모이며 이번 화면 완료의 서버 작업으로 확대하지 않는다.
+
+## 미리보기 확인 순서
+
+1. `/pricing`에서 Business/Yearly→가입→샘플 이메일/이름/비밀번호→관찰된 사업 설정→초기 대시보드→Local setup summary→Review your original selection→Continue with selected details. G79 선택 경계만 표시되고 구독은 변경되지 않는다.
+2. `/invoice-generator`에서 항목1개 1×10→Download Invoice→가입 화면 Log in→Continue as Alex→선택 복원→합계11.50/같은 항목 확인. 편집 후 뒤로/앞으로에서도 초안을 확인한다.
+3. 앱 왼쪽 메뉴 축소·확장→Clients→뒤로. 320px에서 메뉴→Escape·닫기·하단 메뉴 및 데스크톱 폭 변경. 계정 메뉴 Logout→로그인 복귀.
+4. `/missing-public-page` 홈/신고, `/app/missing-record` 로그인 후 흰색404/Go Home. `/app/preview`에서 기존 G01 오류/권한/저장·취소를 확인한다.
+
+## 최종 현재 검증 (2026-11-21)
+
+- 1차14개8통과/6실패→2차15개11통과/4실패→확대41개34통과/7실패→최종 개발41/41·빌드41/41. 확대 실패는 이미 수정한 selector/새 레이아웃 전제와 이름 대신 이니셜을 표시하는 계정 버튼의 접근 이름 검사, 목적지 DOM 준비를 기다리는 테스트 보정이었다. 해당 실패도 [실행 증거](evidence/g14/)에 보존했다. 제품의 scope/포커스/인계 수정과 테스트 전제 보정을 구분한다.
+- typecheck/lint/unit38/build 통과. 최종 JS814.65kB/gzip223.70kB. 기존500kB chunk·오래된 Browserslist 경고는 남고 기능 검증 통과와 구분한다. `git diff --check` 통과.
+- 개발: {'requests': 124213, 'violations': 0, 'failures': 0, 'consoleErrors': 0}; 빌드: {'requests': 1551, 'violations': 0, 'failures': 0, 'consoleErrors': 0}. 차단/interception 없이 실제 요청을 관찰했다. 모든 요청이 실제 서비스 호출0건이라는 뜻은 아니며 정적 파일 요청은 위 수에 포함된다. 인증·업무·외부 API/실패 요청/console 오류는 최종 검사0건이다.
+- 최종 12캡처의 실제 정적 요청3479, API/외부·실패·console0. 원본5쌍과 좁은 화면/짧은 메뉴 상하단을 직접 비교했다. 녹색404 배경은 원본 픽셀(22,58,48)을 확인해 #163a30으로 보정; 메뉴02/03의 측면 #fcfcfc/상단white를 채택했다. 글꼴·일부 간격/아이콘·계정 이니셜·본문 데이터 차이는 남는다.
+- G02 모바일 메뉴/폼·G03 소개 이력/폼·G04 가격/후기·G05 블로그 CTA·G06 템플릿·G07 생성기·G08 문의 앱 진입·G09 정책 경계·G10~G13 인증/복구/온보딩을 이번 연결 범위에서 확인했다. G02/G03 전체 시각 대기나 G05/G06 미수록 본문, R01/R02 전체를 완료로 올리지 않는다.
+- G15 동일 회사 편집/로고/공개 프로필과 G15 종료 시 전체 현행 suite가 다음 순서다. G16 이후 개발은 이번 요청에 포함하지 않는다.
+
+### G15 이후 최종 회귀·연결 갱신 (2026-11-21)
+
+[G15 검증](evidence/g15/final-verification.json): 최종 코드 타입/lint/build·unit42/42, 전체 개발/빌드82/82씩. 실제 navigation/요청 관찰에서 API/외부·실패·console 오류0. 각 단계의 과거 검증 수치는 위 기록대로 보존한다. G14 공개 인증·온보딩·플랜/템플릿/생성기 선택 복귀와 G15 동일 회사 편집/주소/로고/공개 여부 연결은 해소했다. 미수록 본문·원본 정책/동작·시각/환경 및 G16 이후 인계는 해소된 것으로 처리하지 않는다.
+
+G15 최종 코드로 셸/40412화면·원본5쌍을 [별도 경로](evidence/g15/g14-regression/)에 다시 촬영했다. 체험 띠를 실제 버튼으로 닫아 원본 조건을 맞췄다. 3500요청·외부/API/오류0. G14 당시 증거는 보존한다.

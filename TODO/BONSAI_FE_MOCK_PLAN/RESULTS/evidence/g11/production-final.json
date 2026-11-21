@@ -1,0 +1,481 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T08:30:57.868Z",
+    "duration": 35238.762,
+    "expected": 26,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2846,
+          "errors": [],
+          "network": {
+            "requests": 97,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3114,
+          "errors": [],
+          "network": {
+            "requests": 20,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "query failure retries, empty and restricted states remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2110,
+          "errors": [],
+          "network": {
+            "requests": 10,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2243,
+          "errors": [],
+          "network": {
+            "requests": 10,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5608,
+          "errors": [],
+          "network": {
+            "requests": 10,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 539,
+          "errors": [],
+          "network": {
+            "requests": 4,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2260,
+          "errors": [],
+          "network": {
+            "requests": 34,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 949,
+          "errors": [],
+          "network": {
+            "requests": 92,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 866,
+          "errors": [],
+          "network": {
+            "requests": 74,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1481,
+          "errors": [],
+          "network": {
+            "requests": 70,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1472,
+          "errors": [],
+          "network": {
+            "requests": 52,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5615,
+          "errors": [],
+          "network": {
+            "requests": 387,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "G01 reset clears public draft while session and component previews remain separate",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 714,
+          "errors": [],
+          "network": {
+            "requests": 49,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1261,
+          "errors": [],
+          "network": {
+            "requests": 47,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2958,
+          "errors": [],
+          "network": {
+            "requests": 65,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "login preserves failed input, supports retry, logout and protected-history recovery",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3931,
+          "errors": [],
+          "network": {
+            "requests": 20,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow login cancellation and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3946,
+          "errors": [],
+          "network": {
+            "requests": 49,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "two-factor code is required, expiry and renewal work, and cancellation restores an empty login",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4877,
+          "errors": [],
+          "network": {
+            "requests": 20,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "logout failure, cancellation and local expiry use real protected navigation",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3976,
+          "errors": [],
+          "network": {
+            "requests": 23,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social mock cancellation restores focus, Apple uses Blair, and narrow login keeps controls visible",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1195,
+          "errors": [],
+          "network": {
+            "requests": 11,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 951,
+          "errors": [],
+          "network": {
+            "requests": 79,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "signup validates, retries without losing input and carries the selected plan through authentication",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2448,
+          "errors": [],
+          "network": {
+            "requests": 22,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow signup cancellation, route departure and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4781,
+          "errors": [],
+          "network": {
+            "requests": 51,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2204,
+          "errors": [],
+          "network": {
+            "requests": 12,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "local email verification survives StrictMode, supports expiry/cancel/retry and confirms no real email",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3089,
+          "errors": [],
+          "network": {
+            "requests": 22,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow signup exposes complete fields and buttons with long Korean input and text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 499,
+          "errors": [],
+          "network": {
+            "requests": 48,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

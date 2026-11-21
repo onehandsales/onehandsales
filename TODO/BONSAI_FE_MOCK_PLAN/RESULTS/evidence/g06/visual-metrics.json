@@ -1,0 +1,167 @@
+{
+  "method": "1440x900 normalization; original CSS viewport/DPR unknown. Catalog controls have documented mock assumptions. Template detail 01 duplicates the catalog. Invoice menu 01/02 use the existing header; no new comparison claims for those states. Pixel error is not a fidelity acceptance threshold.",
+  "frames": [
+    {
+      "name": "filter-initial",
+      "source": "bonsai_analysis/flows/Filtering all templates/screens/01_sc_f15443150bce43e5a44a761e74b0d42a.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 6.05
+    },
+    {
+      "name": "filter-all",
+      "source": "bonsai_analysis/flows/Filtering all templates/screens/02_sc_826656b002c84fcc984a990ae447215b.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 9.3642
+    },
+    {
+      "name": "filter-agreements",
+      "source": "bonsai_analysis/flows/Filtering all templates/screens/03_sc_f8d0d8d84e874ab481ebdbbabb9e74d2.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 13.7716
+    },
+    {
+      "name": "filter-quotes",
+      "source": "bonsai_analysis/flows/Filtering all templates/screens/04_sc_9aaceaacba1b49429aa15c0b6c593574.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 9.2324
+    },
+    {
+      "name": "filter-later-quotes",
+      "source": "bonsai_analysis/flows/Filtering all templates/screens/05_sc_fc7ec8014b3e45d18c406ff267152a0a.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 10.3372
+    },
+    {
+      "name": "quote-hero",
+      "source": "bonsai_analysis/flows/Filtering all templates/Template detail/screens/02_sc_f0b529d5983e420e9347fbc1fd4f1117.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 3.3207
+    },
+    {
+      "name": "quote-trust",
+      "source": "bonsai_analysis/flows/Filtering all templates/Template detail/screens/03_sc_7257089466d443e2b0fc855262f2ba7b.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 12.1974
+    },
+    {
+      "name": "quote-pricing",
+      "source": "bonsai_analysis/flows/Filtering all templates/Template detail/screens/04_sc_dc17b07446c945b281c1f295bba5f569.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 12.4863
+    },
+    {
+      "name": "quote-faq",
+      "source": "bonsai_analysis/flows/Filtering all templates/Template detail/screens/05_sc_0195208c431944b1bb900b5c48355e90.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 15.2245
+    },
+    {
+      "name": "invoice-hero",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/03_sc_ef526e3912f44ce29bac28e00edbae28.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 8.4747
+    },
+    {
+      "name": "invoice-concept",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/04_sc_9cb41f708d1841bc9bb627e9adb69f59.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 23.7498
+    },
+    {
+      "name": "invoice-download-description",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/05_sc_fb22ca5fac734f0bb6636d302b61fd2c.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 15.1442
+    },
+    {
+      "name": "invoice-downloads",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/06_sc_c1cf0b18c5da456ba7c29ddc416eab45.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 10.9633
+    },
+    {
+      "name": "invoice-formats",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/07_sc_0d63bd46b3304072b6f75589361c99b0.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 13.8256
+    },
+    {
+      "name": "invoice-industries",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/08_sc_89b5c3a2a2be40109d8018d906853f1a.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 15.4226
+    },
+    {
+      "name": "invoice-related",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/09_sc_5902fc89beb849b4acb6be05de2f9f4c.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 11.6094
+    },
+    {
+      "name": "invoice-benefits",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/10_sc_a094d29b4d2b453c8c46ee9ccb255d9f.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 8.4702
+    },
+    {
+      "name": "invoice-word",
+      "source": "bonsai_analysis/flows/Invoice templates/screens/11_sc_14cfb12034534421b6d0654f86236e3d.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 12.5045
+    }
+  ]
+}

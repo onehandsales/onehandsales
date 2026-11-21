@@ -19,7 +19,7 @@ export function WorkspacePage() {
     <p className="eyebrow">{workspace?.name} · {state.session?.name}</p>
     <h1>{itemId ? "Preview item" : "Workspace preview"}</h1>
     <p className="intro">A sample item for checking shared state.</p>
-    {itemId && <Link to="/app" className="back-link">← Back to items</Link>}
+    {itemId && <Link to="/app/preview" className="back-link">← Back to items</Link>}
     {query.isPending ? <StatusPanel title="Loading…" /> :
       query.isError ? <StatusPanel
         title={query.error instanceof PreviewError && query.error.kind === "denied" ? "Access restricted" : "Preview unavailable"}

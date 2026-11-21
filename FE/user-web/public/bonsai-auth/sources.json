@@ -1,0 +1,80 @@
+[
+  {
+    "asset": "logo.png",
+    "source": "bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png",
+    "crop": [
+      38,
+      42,
+      244,
+      86
+    ],
+    "sha256": "1d1803c312e3b152bc9f47c28d6de0b3196bbd72b4faa6d6d915845b9d1cdcc8"
+  },
+  {
+    "asset": "google.png",
+    "source": "bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png",
+    "crop": [
+      1264,
+      296,
+      1312,
+      344
+    ],
+    "sha256": "f0f4c6783536346b827c87a39468854c6014eabcafe32b89187511ebd0c98747"
+  },
+  {
+    "asset": "leaves-left.png",
+    "source": "bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png",
+    "crop": [
+      0,
+      1380,
+      344,
+      1730
+    ],
+    "sha256": "82c3b0e01d357d3b671224436e219e9790cc436116c48f83aa7c6486bb2af97d"
+  },
+  {
+    "asset": "leaves-right.png",
+    "source": "bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png",
+    "crop": [
+      2230,
+      1380,
+      2880,
+      1730
+    ],
+    "sha256": "4cc957aa94c6e3a44b86724b9ef9432e743d2003a4ff40bdd4129b3d579713c3"
+  },
+  {
+    "asset": "plant.png",
+    "source": "bonsai_analysis/flows/Onboarding/screens/09_sc_817952152d2a4b62b44bf1a21bf44509.png",
+    "crop": [
+      1310,
+      524,
+      1574,
+      966
+    ],
+    "extraction": "green illustration pixels; faint underlying form excluded",
+    "sha256": "7f9353ae1300b60b4706f1d16e9059a951296fed3f6a4e69cc38b9a3ccf44ba6"
+  },
+  {
+    "asset": "symbol.png",
+    "source": "bonsai_analysis/flows/Logging in/screens/02_sc_9d353458318e43e7b25ebbf88fefeaa9.png",
+    "crop": [
+      36,
+      36,
+      105,
+      105
+    ],
+    "sha256": "c16687e7ba883562c8e812b587637a1ed95ee63452a3aa72d13bb266f3906533"
+  },
+  {
+    "asset": "apple.png",
+    "source": "bonsai_analysis/flows/Logging in/screens/02_sc_9d353458318e43e7b25ebbf88fefeaa9.png",
+    "crop": [
+      1720,
+      568,
+      1762,
+      616
+    ],
+    "sha256": "a84f8adf1e98b712ec0165723e28bc029a29c8accdd5f30182dd1d89f1af1ff7"
+  }
+]

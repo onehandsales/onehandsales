@@ -1,0 +1,436 @@
+{
+  "date": "2026-11-21 KST",
+  "normalization": "2880x1800 PNG -> 960x600 reading sheet; not a verified source viewport/DPR",
+  "files": [
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/01_sc_07904520440b4dc7ad7d6d31bf3a03e9.png",
+      "sha256": "6a7e8c383319c51719aa2633c21009fbd8049886cd16970f24b2a9aeee62de78",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-1.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/02_sc_e0a408a1e1dd4ea39f54dcef37d2bbf7.png",
+      "sha256": "33c4fb0861cce043141f2d381e4dc371f233b12cd7a3bfe500e376e5ce5eb771",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-1.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png",
+      "sha256": "0933706880869fccb4ace96242c760e36e7eb47be0f8e8118d52adf79f94c7e5",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-1.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/04_sc_75b60a729ef7491186049534632edfe4.png",
+      "sha256": "6da2a0a9571595de98dc7772f90e3cf6c1261a63bcc881c9294371e7ba11ca53",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-1.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/05_sc_3381bd3528ea401e94549c86a8f80af8.png",
+      "sha256": "629d30d66483c86c24eec3f7e43e40fad88cdf740656b3dfdbc0f78833f68218",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-2.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/06_sc_2adb02c3443f4da292d72c200694c1c9.png",
+      "sha256": "5fd950dccd59e9076949ffbf0c1b84e23b046df0a2383a3ebb4ff43f50e1ac53",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-2.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/07_sc_ca23a435daac40318703fcf7360a09d2.png",
+      "sha256": "996217a0ae3092288688fb4133607f2cdc1665a19b5a37a55b968138edf745cf",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-2.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/08_sc_de06dffb50094b20bee94b68be710837.png",
+      "sha256": "2d922170cb0a5a5b5e2397eacc0242d5826b830b3ec22ff8842a51a365fec36e",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-2.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/09_sc_817952152d2a4b62b44bf1a21bf44509.png",
+      "sha256": "c892c3c3dda78f095c333f69d635317260bab53190d8a07a5642ef734337b757",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-3.jpg"
+    },
+    {
+      "flow": "Onboarding",
+      "original": "bonsai_analysis/flows/Onboarding/screens/10_sc_33b333fba9d34edbbd66ddfadf29dcb4.png",
+      "sha256": "a3f39fe0e3cbdd6aa6f121a4afec65cf1bd08b72b34544ba1446d490d3bed94a",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "signup-3.jpg"
+    },
+    {
+      "flow": "Logging in",
+      "original": "bonsai_analysis/flows/Logging in/screens/01_sc_07904520440b4dc7ad7d6d31bf3a03e9.png",
+      "sha256": "6a7e8c383319c51719aa2633c21009fbd8049886cd16970f24b2a9aeee62de78",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "login-1.jpg"
+    },
+    {
+      "flow": "Logging in",
+      "original": "bonsai_analysis/flows/Logging in/screens/02_sc_9d353458318e43e7b25ebbf88fefeaa9.png",
+      "sha256": "7e2b5926fea29c3463b78522af85898da28a61e8bd71816116f582392b68c4fd",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "login-1.jpg"
+    },
+    {
+      "flow": "Logging in",
+      "original": "bonsai_analysis/flows/Logging in/screens/03_sc_5c0fde91fbb34480b756c6eb10e63816.png",
+      "sha256": "023dac7752e15972ebc09d7030244d016c109216b921e82c22c04001bb23c015",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "login-1.jpg"
+    },
+    {
+      "flow": "Logging in",
+      "original": "bonsai_analysis/flows/Logging in/screens/04_sc_4b4cf6491d4c4dd8993f4fe0b7caa7f9.png",
+      "sha256": "0a58b5792a47977f8b588243c58484d0446c800816cc29175cb0ee07de7f9b2f",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "login-1.jpg"
+    },
+    {
+      "flow": "Logging in",
+      "original": "bonsai_analysis/flows/Logging in/screens/05_sc_3982bd8e06b44860bdb8c4bac2592599.png",
+      "sha256": "b8124865d106a0212f09e28bec9a972bd4f31c5a41b22f0c44af0e3e451eecc7",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "login-2.jpg"
+    },
+    {
+      "flow": "Logging out",
+      "original": "bonsai_analysis/flows/Logging out/screens/01_sc_25261ff6e5d44d70885c07b053f29685.png",
+      "sha256": "eb4864921bf4832f01476afa8b0a1f014cbef1f28b60be3d3490f78b994f81cc",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "logout-1.jpg"
+    },
+    {
+      "flow": "Logging out",
+      "original": "bonsai_analysis/flows/Logging out/screens/02_sc_b8e249247d5942d8a2d91a38aa7b9d19.png",
+      "sha256": "9d495bdd4a5848689f7762c834e932f1ada52ae9a1c315a7a5a301a19cbdcd3f",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "logout-1.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/01_sc_9d353458318e43e7b25ebbf88fefeaa9.png",
+      "sha256": "7e2b5926fea29c3463b78522af85898da28a61e8bd71816116f582392b68c4fd",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-1.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/02_sc_682da57b2dd148c6b455af1a8aa229fc.png",
+      "sha256": "61297f563d89b40e12039c8e29d7e580a76bba30ea6c45e4bd2b7c997a8bb208",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-1.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/03_sc_7ac8efa85ddf46ffb99647670f126feb.png",
+      "sha256": "65621910682ba41f7f9e996a06de22f06a5eef876fd2de70afe17e533e314e79",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-1.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/04_sc_85c7828ac6694af5abfedb3f9fd93a6a.png",
+      "sha256": "9e3df4741127d9438d64c5670161e1d1e3618cb673d3447cc15df7db80fa3a8d",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-1.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/05_sc_f633b6435614448fb79dc464ccae4c43.png",
+      "sha256": "c8883822540fad035e94e5299779a2f5c4452aaeb283be8d31f22bc4f17f3e1a",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-2.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/06_sc_d23a8b46d69c4fe590dfd6013a244521.png",
+      "sha256": "fbcfc393cdb56640c754add32fdee163d645c835b4793dcb8863c9761d332046",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-2.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/07_sc_938a3faee974462c9a77a24ab1996464.png",
+      "sha256": "482edd3bdbec0eac784ef13b0cc8d40bc95d0b5df15a396b0dc5a838fcb3d49d",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-2.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/08_sc_aab3fabd62024fc584f9c87adb63ba16.png",
+      "sha256": "86728953a4a0333e2b6471e352be94fffb23dc8576a9d85db9ff6d9b6cc3909c",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-2.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/09_sc_c81516b8daf84d66bb0657f853d44d2e.png",
+      "sha256": "d31f2424c567690692d2a606595462ff25784fbfe1311fc388084cce15e589a1",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-3.jpg"
+    },
+    {
+      "flow": "Logging in/Resetting password",
+      "original": "bonsai_analysis/flows/Logging in/Resetting password/screens/10_sc_46468ed1fd3f4a0992bef64f1c651449.png",
+      "sha256": "1847f2660abdb3e7110cc285b065496da68af9d48322f927e31662a0e95413a8",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "reset-3.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/01_sc_33b333fba9d34edbbd66ddfadf29dcb4.png",
+      "sha256": "a3f39fe0e3cbdd6aa6f121a4afec65cf1bd08b72b34544ba1446d490d3bed94a",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-1.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/02_sc_f1b9643dfd4b420e865bbd7f26b6f2b1.png",
+      "sha256": "7f6cb0c98804ec289d7bd508e5df643c2bab2e52772bdec5037cb1a3f18856a1",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-1.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/03_sc_f53d0cb8a35c4c598710fef5aa7e4b1b.png",
+      "sha256": "1f201e30a045afd92b8399f695e0956d7c99269453104bc2992c385703af0800",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-1.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/04_sc_aee7229a31504349bca366b57683d09d.png",
+      "sha256": "47e0deed4a2fc59605d4ba907e7b548c4bc8c0a9f3d722eb043bd400fd994fe8",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-1.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/05_sc_ca3a704790554cda93aaed9d21fa8780.png",
+      "sha256": "b5fb6fd67ee6fad21b357c5c2ad6c5a8938cb641aded1d128b7aee2c27601efa",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-2.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/06_sc_78103903d92d4ab796d6412ba804cc90.png",
+      "sha256": "7b79252675503f5e37bb993befd24ed282401eba280ce74edd22344c5ea64ec4",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-2.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/07_sc_cff7a978591444b9974c2d54fd50762e.png",
+      "sha256": "ab1c785ae9cb9f06e81a6522256ad9ea2b021e3e41f031e7b4cbb3b330d25fa0",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-2.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/08_sc_91aafda2760f434084cdfd0ce6e9c365.png",
+      "sha256": "ca2a5c9d7d291c740ed83308b9f660e8b1058198178f9aad1570e52627ecc597",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-2.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/09_sc_b2c655c6a1c54534b43a1112ef93fb2d.png",
+      "sha256": "70ed720cd64910da2403d0f17580a1c08869476b108bf2bb9efc2b52c8dd584c",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-3.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/10_sc_732c37475b694d9e8e068e9330b1974b.png",
+      "sha256": "de7d57b4bef2ff5d8f954cf67bb191816df53ad5d17f71797f3acfeac3cb2c71",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-3.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/11_sc_7f05cc123c5f4b0bab3f31a6e9141492.png",
+      "sha256": "b01e5e3c9c14b3955fa10a593605bddf29064b7fe99ee9ec56a7b38dbd69aac9",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-3.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/12_sc_e3d22238252b433d99746f13a11b29db.png",
+      "sha256": "3fd76be232226b181730e2abb8a2c71bb041b0dae7d5f0bb1088e6c265fe9941",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-3.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/13_sc_64d7275eaa3a48cab57c9f3584c18b7a.png",
+      "sha256": "9c7f5cde4f0b9a30987056d6abb275ba1e57e914fad882a4599e1bf230593429",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-4.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/14_sc_7c8264e8239e464abd4219d7b9828199.png",
+      "sha256": "36bf1977f4d43173b870459eca4449b7a26ba20931f264efe2861d564f3add6f",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-4.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/15_sc_009f5dc2c0194960ada61dac094422c3.png",
+      "sha256": "5267c23ad53cf751e2dba98c753714c76f802d9f5c15eff6e6ca7bbd794b3e72",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-4.jpg"
+    },
+    {
+      "flow": "Onboarding/Completing account setup",
+      "original": "bonsai_analysis/flows/Onboarding/Completing account setup/screens/16_sc_4a22967ce5a64ba59d6fa95b98316852.png",
+      "sha256": "b25c1e79925f1bed88765d9dfa060d9b8068397e7f5ad5e23583da300898d2a7",
+      "size": [
+        2880,
+        1800
+      ],
+      "sheet": "setup-4.jpg"
+    }
+  ]
+}

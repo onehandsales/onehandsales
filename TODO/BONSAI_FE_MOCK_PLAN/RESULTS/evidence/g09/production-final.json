@@ -1,0 +1,85 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T07:30:44.531Z",
+    "duration": 9158.853,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "affiliate actions use distinct local destinations and browser history restores the original section",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3204,
+          "errors": [],
+          "network": {
+            "requests": 146,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "careers and social destinations preserve route-specific return and do not claim application success",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2711,
+          "errors": [],
+          "network": {
+            "requests": 76,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "historical policies distinguish excerpts, versions and local cookie or privacy contacts",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1103,
+          "errors": [],
+          "network": {
+            "requests": 26,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "company screens keep content and CTA bounds usable at 320px and CSS text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4603,
+          "errors": [],
+          "network": {
+            "requests": 149,
+            "sockets": 0,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

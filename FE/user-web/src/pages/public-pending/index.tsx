@@ -2,6 +2,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { publicDestinations, usePublicExperience } from "@/features/public-web";
 import { introductionPendingDestinations } from "@/features/public-introduction";
 import { commercialPendingDestinations, subscriptionHandoffPath, PlanHandoffSummary } from "@/features/public-commercial";
+import { TemplateHandoffSummary } from "@/features/public-template";
+import { InvoiceHandoffSummary } from "@/features/public-invoice";
 
 // 기능 : 아직 만들지 않은 목적지의 담당 Goal과 입력 인계를 명시하고 취소·복귀를 제공한다.
 export function PublicPendingPage() {
@@ -26,7 +28,9 @@ export function PublicPendingPage() {
       {intent ? <dl><dt>CTA source</dt><dd>{intent.source}</dd><dt>Email draft</dt><dd>{intent.email || "이메일 없이 진입"}</dd></dl>
         : <p>직접 URL·새 탭·새로고침에서는 인계가 초기화됩니다.</p>}
       {intent?.selection && <PlanHandoffSummary selection={intent.selection} />}
-      <button type="button" className="public-button" onClick={handleCancel}>{review ? "Back to reviews" : "Cancel and clear draft"}</button></>}
+      {intent?.template && <TemplateHandoffSummary template={intent.template} />}
+      {intent?.invoice && <InvoiceHandoffSummary invoice={intent.invoice} />}
+      <button type="button" className="public-button" onClick={handleCancel}>{review ? "Back to reviews" : intent?.invoice ? "Back to invoice" : "Cancel and clear draft"}</button></>}
     <Link to="/" className="public-text-link">Back to landing</Link>
   </section>;
 }

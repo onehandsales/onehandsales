@@ -1,0 +1,50 @@
+{
+  "method": "1440x900 normalization; original CSS viewport/DPR unknown. 5 source states; sidebar body is G13 empty data, not the later dashboard business implementation. Sample identity, icons and mock tools differ. Pixel error is not a fidelity acceptance threshold.",
+  "frames": [
+    {
+      "name": "404-public",
+      "source": "bonsai_analysis/flows/404/screens/01_sc_b625cb20b5c242978c1f398163b870d1.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 2.7366
+    },
+    {
+      "name": "404-app",
+      "source": "bonsai_analysis/flows/404/screens/02_sc_4cd87d1434ce4f66b7f8e77bafe39d29.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 1.0331
+    },
+    {
+      "name": "sidebar-expanded",
+      "source": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 7.0592
+    },
+    {
+      "name": "sidebar-control",
+      "source": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/02_sc_d177f0ef742b46daa0c1a96e7df49192.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 7.863
+    },
+    {
+      "name": "sidebar-collapsed",
+      "source": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/03_sc_afe21c01937c42ff92a872cf1a0b07c2.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 7.5461
+    }
+  ]
+}

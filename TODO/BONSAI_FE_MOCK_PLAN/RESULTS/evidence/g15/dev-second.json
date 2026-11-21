@@ -1,0 +1,334 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T09:31:35.419Z",
+    "duration": 88111.034,
+    "expected": 13,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7612,
+          "errors": [],
+          "network": {
+            "requests": 1791,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5965,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7168,
+          "errors": [],
+          "network": {
+            "requests": 5285,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8763,
+          "errors": [],
+          "network": {
+            "requests": 1765,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "template login returns to the same public template and restores only its email draft",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5821,
+          "errors": [],
+          "network": {
+            "requests": 1793,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5118,
+          "errors": [],
+          "network": {
+            "requests": 1757,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "protected destination survives signup, optional verification and every onboarding step",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4720,
+          "errors": [],
+          "network": {
+            "requests": 1755,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 14504,
+          "errors": [],
+          "network": {
+            "requests": 8847,
+            "sockets": 5,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30255,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts",
+                "column": 652,
+                "line": 9
+              },
+              "message": "Error: locator.selectOption: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.company-address-fields').getByLabel('Country', { exact: true })\u001b[22m\n\n\n   7 | async function scenario(page: Page, value: string) { const tools = page.locator(\".company-tools\"); if (!(await tools.getAttribute(\"open\"))) await tools.locator(\"summary\").click(); await page.getByLabel(\"Company scenario\").selectOption(value); }\n   8 | // 기능 : 원본에서 확인한 구조화 주소를 실제 하위 폼에 채운다.\n>  9 | async function address(page: Page) { await page.getByRole(\"button\", { name: \"Add Address\", exact: true }).click(); await page.getByRole(\"textbox\", { name: \"Address 1\", exact: true }).fill(\"75 Ayer Rajah Crescent, #02-02, Singapore, 139953\"); await page.getByRole(\"textbox\", { name: \"City\", exact: true }).fill(\"Singapore\"); await page.getByRole(\"textbox\", { name: \"Postal Code\" }).fill(\"139953\"); await page.getByRole(\"textbox\", { name: \"Region / State\" }).fill(\"Singapore\"); await page.locator(\".company-address-fields\").getByLabel(\"Currency\").selectOption(\"USD\"); await page.locator(\".company-address-fields\").getByLabel(\"Country\", { exact: true }).selectOption(\"Singapore\"); await expect(page.getByLabel(\"Currency\", { exact: true })).toHaveValue(\"USD\"); await page.getByRole(\"button\", { name: \"Save Address\", exact: true }).click(); }\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ^\n  10 |\n  11 | test(\"company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company\", async ({ page }) => {\n  12 |   await settings(page); await page.getByRole(\"link\", { name: \"Back to dashboard\" }).click(); await page.getByRole(\"button\", { name: \"Add Details\", exact: true }).click(); const modal = page.getByRole(\"dialog\"); await expect(modal.getByRole(\"textbox\")).toHaveValue(\"Studio A\"); await address(page); await page.keyboard.press(\"Escape\"); await expect(modal).toHaveCount(0); await expect(page.getByRole(\"button\", { name: \"Add Details\", exact: true })).toBeFocused();\n    at address (/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts:9:652)\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts:12:278"
+            }
+          ],
+          "network": {
+            "requests": 1750,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "saved public profile off persists after logout, leaves the slug and shared preview intact, and restores on re-enable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8951,
+          "errors": [],
+          "network": {
+            "requests": 3495,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 8844,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts",
+                "column": 696,
+                "line": 25
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByAltText('Company logo preview')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByAltText('Company logo preview')\u001b[22m\n\n\n  23 | test(\"real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close\", async ({ page }) => {\n  24 |   await page.addInitScript(() => { const originalCreate = URL.createObjectURL.bind(URL); const originalRevoke = URL.revokeObjectURL.bind(URL); const live = new Set<string>(); Object.assign(window, { companyBlobUrls: live }); URL.createObjectURL = function create(blob) { const url = originalCreate(blob); live.add(url); return url; }; URL.revokeObjectURL = function revoke(url) { live.delete(url); originalRevoke(url); }; });\n> 25 |   await settings(page); const input = page.getByLabel(\"Choose company logo\"); await input.setInputFiles({ name: \"bad.svg\", mimeType: \"image/svg+xml\", buffer: Buffer.from(\"<svg/>\") }); await expect(page.getByRole(\"alert\")).toContainText(\"2 MB\"); await input.setInputFiles({ name: \"broken.png\", mimeType: \"image/png\", buffer: Buffer.from(\"bad image bytes\") }); await expect(page.getByRole(\"alert\")).toContainText(\"Unable to read\"); await scenario(page, \"logo-error\"); await input.setInputFiles(logoFile); await expect(page.getByRole(\"alert\")).toContainText(\"Unable to read\"); await page.getByRole(\"button\", { name: \"Retry image\" }).click(); await expect(page.getByAltText(\"Company logo preview\")).toBeVisible(); await expect.poll(() => page.evaluate(() => (window as unknown as { companyBlobUrls: Set<string> }).companyBlobUrls.size)).toBe(1);\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ^\n  26 |   await page.getByRole(\"button\", { name: \"Remove company logo\" }).click(); await expect.poll(() => page.evaluate(() => (window as unknown as { companyBlobUrls: Set<string> }).companyBlobUrls.size)).toBe(0); await scenario(page, \"slow\"); await input.setInputFiles(logoFile); await page.getByRole(\"button\", { name: \"Remove company logo\" }).click(); await page.waitForTimeout(1600); await expect(page.getByAltText(\"Company logo preview\")).toHaveCount(0); await scenario(page, \"normal\"); await input.setInputFiles(logoFile); await expect(page.getByAltText(\"Company logo preview\")).toBeVisible(); await page.getByRole(\"link\", { name: \"Back to dashboard\" }).click(); await expect.poll(() => page.evaluate(() => (window as unknown as { companyBlobUrls: Set<string> }).companyBlobUrls.size)).toBe(0); await page.getByRole(\"button\", { name: \"Add Details\", exact: true }).click(); await expect(page.getByAltText(\"Company logo preview\")).toHaveCount(0); await page.keyboard.press(\"Escape\");\n  27 | });\n  28 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts:25:696"
+            }
+          ],
+          "network": {
+            "requests": 1750,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "settings read states, permission, cancellation and scope switches cannot publish stale or foreign drafts",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30138,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts",
+                "column": 223,
+                "line": 7
+              },
+              "message": "Error: locator.selectOption: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Company scenario')\u001b[22m\n\u001b[2m    - locator resolved to <select>…</select>\u001b[22m\n\u001b[2m  - attempting select option action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    53 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying select option action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n   5 | async function settings(page: Page, actor = \"Alex\") { await page.goto(\"/login?returnTo=%2Fapp%2Fsettings%2Fcompany\"); await page.waitForLoadState(\"networkidle\"); await page.getByRole(\"button\", { name: \"Continue as \" + actor }).click(); await expect(page.getByRole(\"textbox\", { name: \"Company Name\", exact: true })).toBeVisible(); }\n   6 | // 기능 : 제품 밖 회사 목 도구의 시나리오만 바꾼다.\n>  7 | async function scenario(page: Page, value: string) { const tools = page.locator(\".company-tools\"); if (!(await tools.getAttribute(\"open\"))) await tools.locator(\"summary\").click(); await page.getByLabel(\"Company scenario\").selectOption(value); }\n     |                                                                                                                                                                                                                               ^\n   8 | // 기능 : 원본에서 확인한 구조화 주소를 실제 하위 폼에 채운다.\n   9 | async function address(page: Page) { await page.getByRole(\"button\", { name: \"Add Address\", exact: true }).click(); await page.getByRole(\"textbox\", { name: \"Address 1\", exact: true }).fill(\"75 Ayer Rajah Crescent, #02-02, Singapore, 139953\"); await page.getByRole(\"textbox\", { name: \"City\", exact: true }).fill(\"Singapore\"); await page.getByRole(\"textbox\", { name: \"Postal Code\" }).fill(\"139953\"); await page.getByRole(\"textbox\", { name: \"Region / State\" }).fill(\"Singapore\"); await page.locator(\".company-address-fields\").getByLabel(\"Currency\").selectOption(\"USD\"); await page.locator(\".company-address-fields\").getByLabel(\"Country\", { exact: true }).selectOption(\"Singapore\"); await expect(page.getByLabel(\"Currency\", { exact: true })).toHaveValue(\"USD\"); await page.getByRole(\"button\", { name: \"Save Address\", exact: true }).click(); }\n  10 |\n    at scenario (/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts:7:223)\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/company-settings.spec.ts:30:328"
+            }
+          ],
+          "network": {
+            "requests": 1750,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow company forms preserve full actions, address Escape, IME guard and native browser history",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4414,
+          "errors": [],
+          "network": {
+            "requests": 3498,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup preserves per-step answers, rejects invalid invitations and saves the same company with its original intent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7607,
+          "errors": [],
+          "network": {
+            "requests": 1764,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup pauses and re-enters with its draft, handles keyboard and composition, and cannot commit after cancel or departure",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6950,
+          "errors": [],
+          "network": {
+            "requests": 1791,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "uncommitted setup clears on logout and refresh, while narrow layouts expose long Korean labels and all actions",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4059,
+          "errors": [],
+          "network": {
+            "requests": 3501,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

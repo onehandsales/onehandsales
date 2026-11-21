@@ -2,10 +2,10 @@ import { useEffect, useId, useRef } from "react";
 import type { ReactNode, MouseEvent, SyntheticEvent, KeyboardEvent } from "react";
 import { X } from "lucide-react";
 
-type DialogProps = { title: string; description?: string; children: ReactNode; footer?: ReactNode; onClose: () => void };
+type DialogProps = { className?: string; title: string; description?: string; children: ReactNode; footer?: ReactNode; onClose: () => void };
 
 // 기능 : 네이티브 모달의 초점·배경 비활성·닫기와 스크롤 수명을 공통으로 관리한다.
-export function Dialog({ title, description, children, footer, onClose }: DialogProps) {
+export function Dialog({ title, description, children, footer, onClose, className = "" }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -55,7 +55,7 @@ export function Dialog({ title, description, children, footer, onClose }: Dialog
       event.preventDefault(); first.focus();
     }
   }
-  return <dialog ref={ref} className="dialog" aria-labelledby={titleId}
+  return <dialog ref={ref} className={"dialog " + className} aria-labelledby={titleId}
     aria-describedby={description ? descriptionId : undefined}
     onCancel={handleCancel} onClick={handleBackdrop} onKeyDown={handleKeyDown}>
     <div className="dialog__surface">

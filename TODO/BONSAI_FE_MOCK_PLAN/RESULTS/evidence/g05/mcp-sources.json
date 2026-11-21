@@ -1,0 +1,150 @@
+{
+  "checkedDate": "2026-11-21 KST",
+  "count": 3,
+  "requested_count": 3,
+  "failed_count": 0,
+  "screen_count": 11,
+  "total_screen_count": 11,
+  "flows": [
+    {
+      "flowId": "be5bc5f4-c2fa-4ea2-a923-0250d6302fcb",
+      "flowName": "Blog",
+      "app": {
+        "id": "c1026782-09a7-45fb-b2d0-7cc1909bf1f4",
+        "name": "Bonsai",
+        "platform": "WEB",
+        "slug": "bonsai-web"
+      },
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=be5bc5f4-c2fa-4ea2-a923-0250d6302fcb",
+      "screens": [
+        {
+          "id": "sc_549a6fa823b74e3e8d826750df6f1f99",
+          "publicId": "sc_549a6fa823b74e3e8d826750df6f1f99",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/cd020105-7f11-4e27-bef0-5183f569d6bc.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_549a6fa823b74e3e8d826750df6f1f99?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy9jZDAyMDEwNS03ZjExLTRlMjctYmVmMC01MTgzZjU2OWQ2YmMucG5n"
+        },
+        {
+          "id": "sc_f784e647d4c44c448969e5641b1f3fd0",
+          "publicId": "sc_f784e647d4c44c448969e5641b1f3fd0",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/764b8fbf-501c-4046-96d6-143bccf0f20a.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_f784e647d4c44c448969e5641b1f3fd0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy83NjRiOGZiZi01MDFjLTQwNDYtOTZkNi0xNDNiY2NmMGYyMGEucG5n"
+        },
+        {
+          "id": "sc_ed1d234775a74b4bad3ca7f497d20970",
+          "publicId": "sc_ed1d234775a74b4bad3ca7f497d20970",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/0098d8b2-48bd-4735-8909-85223ab00fd4.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_ed1d234775a74b4bad3ca7f497d20970?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy8wMDk4ZDhiMi00OGJkLTQ3MzUtODkwOS04NTIyM2FiMDBmZDQucG5n"
+        },
+        {
+          "id": "sc_2c58d306a0c54343967cbe26160fc0cb",
+          "publicId": "sc_2c58d306a0c54343967cbe26160fc0cb",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/fc1e606c-8a4b-4cab-8cb4-f38df04fe624.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_2c58d306a0c54343967cbe26160fc0cb?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy9mYzFlNjA2Yy04YTRiLTRjYWItOGNiNC1mMzhkZjA0ZmU2MjQucG5n"
+        }
+      ]
+    },
+    {
+      "flowId": "7b469aed-f69f-4f73-af50-9b1adb7aa052",
+      "flowName": "Blog detail",
+      "app": {
+        "id": "c1026782-09a7-45fb-b2d0-7cc1909bf1f4",
+        "name": "Bonsai",
+        "platform": "WEB",
+        "slug": "bonsai-web"
+      },
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=7b469aed-f69f-4f73-af50-9b1adb7aa052",
+      "screens": [
+        {
+          "id": "sc_b52cd2aea5074f8d930af3171a2bd612",
+          "publicId": "sc_b52cd2aea5074f8d930af3171a2bd612",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/ef6401db-c516-4b35-adb2-453b6184458a.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_b52cd2aea5074f8d930af3171a2bd612?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy9lZjY0MDFkYi1jNTE2LTRiMzUtYWRiMi00NTNiNjE4NDQ1OGEucG5n"
+        },
+        {
+          "id": "sc_ea03e557975943e098cc09b234f20976",
+          "publicId": "sc_ea03e557975943e098cc09b234f20976",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/efc6c751-96f4-42a3-96e2-32cce094e3a2.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_ea03e557975943e098cc09b234f20976?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy9lZmM2Yzc1MS05NmY0LTQyYTMtOTZlMi0zMmNjZTA5NGUzYTIucG5n"
+        },
+        {
+          "id": "sc_ece27efe36654187a391ca036a676353",
+          "publicId": "sc_ece27efe36654187a391ca036a676353",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/e2e9cffa-e59e-4159-8623-f4db063bcc6f.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_ece27efe36654187a391ca036a676353?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy9lMmU5Y2ZmYS1lNTllLTQxNTktODYyMy1mNGRiMDYzYmNjNmYucG5n"
+        },
+        {
+          "id": "sc_419cd6d4273041e4b60091cffb1f05e2",
+          "publicId": "sc_419cd6d4273041e4b60091cffb1f05e2",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/5b3ca3ad-4173-4764-80aa-412023161777.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_419cd6d4273041e4b60091cffb1f05e2?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy81YjNjYTNhZC00MTczLTQ3NjQtODBhYS00MTIwMjMxNjE3NzcucG5n"
+        }
+      ]
+    },
+    {
+      "flowId": "d9c648a4-1d8f-47a7-b53e-ea08055e1e7e",
+      "flowName": "Searching blog",
+      "app": {
+        "id": "c1026782-09a7-45fb-b2d0-7cc1909bf1f4",
+        "name": "Bonsai",
+        "platform": "WEB",
+        "slug": "bonsai-web"
+      },
+      "gummbleUrl": "https://gummble.com/apps/bonsai-web?tab=flows&flow=d9c648a4-1d8f-47a7-b53e-ea08055e1e7e",
+      "screens": [
+        {
+          "id": "sc_6523185471cd431aae909650125ca79c",
+          "publicId": "sc_6523185471cd431aae909650125ca79c",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/1776cf47-d23c-49bf-b25f-957e9b566016.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_6523185471cd431aae909650125ca79c?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy8xNzc2Y2Y0Ny1kMjNjLTQ5YmYtYjI1Zi05NTdlOWI1NjYwMTYucG5n"
+        },
+        {
+          "id": "sc_d9ab19c1590d43e99432b10f85607cd0",
+          "publicId": "sc_d9ab19c1590d43e99432b10f85607cd0",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/3faf64fd-637a-4f91-a2f3-acc6ee605cb5.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_d9ab19c1590d43e99432b10f85607cd0?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy8zZmFmNjRmZC02MzdhLTRmOTEtYTJmMy1hY2M2ZWU2MDVjYjUucG5n"
+        },
+        {
+          "id": "sc_94b98a51d45a4cc0b25c5553ce66bb60",
+          "publicId": "sc_94b98a51d45a4cc0b25c5553ce66bb60",
+          "screenUrl": "https://storage.gummble.com/prod/content/app_screens/d7fd590d-2fc2-4c34-95af-04432b3f1db9.png",
+          "width": 1440,
+          "height": 900,
+          "webUrl": "https://gummble.com/screens/sc_94b98a51d45a4cc0b25c5553ce66bb60?source=mcp_result&utm_source=mcp&utm_medium=mcp_tool&utm_campaign=screen_result",
+          "imageUrl": "https://gummble.com/mcp-preview/aHR0cHM6Ly9zdG9yYWdlLmd1bW1ibGUuY29tL3Byb2QvY29udGVudC9hcHBfc2NyZWVucy9kN2ZkNTkwZC0yZmMyLTRjMzQtOTVhZi0wNDQzMmIzZjFkYjkucG5n"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "subscriptionNote": "💡 Your Gummble subscription auto-renew is paused. Keep uninterrupted MCP access in 1 click: https://gummble.com/settings/account"
+}

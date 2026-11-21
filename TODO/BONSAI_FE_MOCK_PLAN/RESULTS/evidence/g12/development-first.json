@@ -1,0 +1,193 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T08:36:19.611Z",
+    "duration": 30476.739,
+    "expected": 10,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "login preserves failed input, supports retry, logout and protected-history recovery",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8487,
+          "errors": [],
+          "network": {
+            "requests": 3449,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow login cancellation and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7537,
+          "errors": [],
+          "network": {
+            "requests": 1762,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "two-factor code is required, expiry and renewal work, and cancellation restores an empty login",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6708,
+          "errors": [],
+          "network": {
+            "requests": 3444,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "logout failure, cancellation and local expiry use real protected navigation",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5679,
+          "errors": [],
+          "network": {
+            "requests": 3446,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social mock cancellation restores focus, Apple uses Blair, and narrow login keeps controls visible",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2703,
+          "errors": [],
+          "network": {
+            "requests": 1724,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "password reset separates receipt, weak input clearing, retry and blank login without automatic authentication",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6444,
+          "errors": [],
+          "network": {
+            "requests": 1723,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "unknown address, invalid direct URL, expiry, fresh link and refresh remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5229,
+          "errors": [],
+          "network": {
+            "requests": 3442,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow reset cancellation and departure preserve input without changing the password; IME remains guarded",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8455,
+          "errors": [],
+          "network": {
+            "requests": 1723,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing intent survives recovery while the completed login fields remain empty",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4184,
+          "errors": [],
+          "network": {
+            "requests": 1736,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow recovery keeps input, errors and complete actions within bounds",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1197,
+          "errors": [],
+          "network": {
+            "requests": 1721,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

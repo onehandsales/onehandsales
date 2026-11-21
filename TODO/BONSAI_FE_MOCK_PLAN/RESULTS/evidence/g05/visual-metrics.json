@@ -1,0 +1,95 @@
+{
+  "method": "1440x900 normalization; original CSS viewport/DPR unknown. Search transition 01 is observed but not equated to mock loading. Pixel error is not a fidelity acceptance threshold.",
+  "frames": [
+    {
+      "name": "blog-menu",
+      "source": "bonsai_analysis/flows/Blog/screens/01_sc_549a6fa823b74e3e8d826750df6f1f99.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 4.3824
+    },
+    {
+      "name": "blog-initial",
+      "source": "bonsai_analysis/flows/Blog/screens/02_sc_f784e647d4c44c448969e5641b1f3fd0.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 4.324
+    },
+    {
+      "name": "blog-general",
+      "source": "bonsai_analysis/flows/Blog/screens/03_sc_ed1d234775a74b4bad3ca7f497d20970.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 4.491
+    },
+    {
+      "name": "blog-scrolled",
+      "source": "bonsai_analysis/flows/Blog/screens/04_sc_2c58d306a0c54343967cbe26160fc0cb.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 17.618
+    },
+    {
+      "name": "blog-start-business",
+      "source": "bonsai_analysis/flows/Blog/Searching blog/screens/02_sc_d9ab19c1590d43e99432b10f85607cd0.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 18.3244
+    },
+    {
+      "name": "blog-marketing",
+      "source": "bonsai_analysis/flows/Blog/Searching blog/screens/03_sc_94b98a51d45a4cc0b25c5553ce66bb60.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 2.3966
+    },
+    {
+      "name": "article-top",
+      "source": "bonsai_analysis/flows/Blog/Blog detail/screens/01_sc_b52cd2aea5074f8d930af3171a2bd612.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 5.0516
+    },
+    {
+      "name": "article-body",
+      "source": "bonsai_analysis/flows/Blog/Blog detail/screens/02_sc_ea03e557975943e098cc09b234f20976.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 13.9949
+    },
+    {
+      "name": "article-niche",
+      "source": "bonsai_analysis/flows/Blog/Blog detail/screens/03_sc_ece27efe36654187a391ca036a676353.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 19.1837
+    },
+    {
+      "name": "article-ending",
+      "source": "bonsai_analysis/flows/Blog/Blog detail/screens/04_sc_419cd6d4273041e4b60091cffb1f05e2.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 30.4271
+    }
+  ]
+}

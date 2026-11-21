@@ -1,0 +1,104 @@
+{
+  "method": "1440x900 normalization; original CSS viewport/DPR unknown. 11 source states; unknown original CSS viewport/DPR and exact scroll. Policy excerpts are not complete documents; omission notes differ from source. Pixel error is not a fidelity acceptance threshold.",
+  "frames": [
+    {
+      "name": "affiliate-01",
+      "source": "bonsai_analysis/flows/Affiliate Program/screens/01_sc_277957a51da546839a56826df24b84f9.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 3.2725
+    },
+    {
+      "name": "affiliate-02",
+      "source": "bonsai_analysis/flows/Affiliate Program/screens/02_sc_29f3c01990d545efb7c6b3f03fdb3022.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 4.9184
+    },
+    {
+      "name": "affiliate-03",
+      "source": "bonsai_analysis/flows/Affiliate Program/screens/03_sc_55853ebfc2fa4f928d98bfb0653248a3.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 2.9641
+    },
+    {
+      "name": "affiliate-04",
+      "source": "bonsai_analysis/flows/Affiliate Program/screens/04_sc_6a6de983773e41c1a0256eede9bab7d3.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 4.6676
+    },
+    {
+      "name": "careers-01",
+      "source": "bonsai_analysis/flows/Careers/screens/01_sc_940e5dee011842659690d4e44065c887.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 4.653
+    },
+    {
+      "name": "careers-02",
+      "source": "bonsai_analysis/flows/Careers/screens/02_sc_81bf76ea44ca456a8a007cb664731e63.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 3.0646
+    },
+    {
+      "name": "careers-03",
+      "source": "bonsai_analysis/flows/Careers/screens/03_sc_185aaa7cf41444079dac8bd5a7e2abec.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 5.187
+    },
+    {
+      "name": "careers-04",
+      "source": "bonsai_analysis/flows/Careers/screens/04_sc_fe38c840e2314d3abc53eec53932096c.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 8.1515
+    },
+    {
+      "name": "privacy-01",
+      "source": "bonsai_analysis/flows/Privacy/screens/01_sc_6a35837e86c94e809eab079f134064bb.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 9.9675
+    },
+    {
+      "name": "privacy-02",
+      "source": "bonsai_analysis/flows/Privacy/screens/02_sc_5430fa1bd57a4c1a860e4c1481ccf3ac.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 12.1524
+    },
+    {
+      "name": "terms-01",
+      "source": "bonsai_analysis/flows/Terms & Conditions/screens/01_sc_8e3f3ec3993e4051a54ef9fd80ff3e50.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 10.9024
+    }
+  ]
+}

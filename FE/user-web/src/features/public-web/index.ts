@@ -9,4 +9,4 @@ export { SignupForm } from "./components/signup-form";
 export { ReviewRating } from "./components/landing-hero";
 export { PublicLink, SignupLink } from "./components/public-link";
 export { publicAssets } from "./data/public-assets";
-export type { PublicPlanSelection } from "./data/public-context";
+export type { PublicIntent, PublicPlanSelection, PublicTemplateSelection, PublicIntentOptions } from "./data/public-context";

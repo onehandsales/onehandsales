@@ -26,7 +26,10 @@ test("menus support hover, keyboard, Escape, outside click, template selection a
   await expect(product).toHaveAttribute("aria-expanded", "false");
   await page.keyboard.press("Enter");
   await expect(product).toHaveAttribute("aria-expanded", "true");
-  await page.getByRole("heading", { name: "Run your entire business in one place" }).click();
+  // 이유 : 원본 메뉴가 hero 제목을 덮으므로 실제로 노출된 메뉴 아래 영역에서 외부 클릭을 검증한다.
+  const openMenu = await page.locator("#public-mega-menu").boundingBox();
+  expect(openMenu).not.toBeNull();
+  if (openMenu) await page.mouse.click(1400, openMenu.y + openMenu.height + 20);
   await expect(product).toHaveAttribute("aria-expanded", "false");
   const templates = page.getByRole("button", { name: "Templates", exact: true });
   await templates.click();
@@ -38,8 +41,7 @@ test("menus support hover, keyboard, Escape, outside click, template selection a
   await expect(page.getByRole("tabpanel")).toContainText("Basic Invoice Template");
   await page.getByRole("tabpanel").getByRole("link", { name: "See all templates" }).click();
   await expect(page).toHaveURL("/invoice-template");
-  await expect(page.getByText("Local UI preview · Not implemented", { exact: true })).toBeVisible();
-  await expect(page.locator("main")).toContainText("G06");
+  await expect(page.getByRole("heading", { name: "Invoice Template", exact: true, level: 1 })).toBeVisible();
   await page.goBack();
   await expect(templates).toHaveAttribute("aria-expanded", "false");
   await page.getByRole("link", { name: "Pricing", exact: true }).first().click();
@@ -101,7 +103,7 @@ test("testimonial, finance, branding, footer disclosure and history restore real
   const privacy = page.locator("footer").getByRole("link", { name: "Privacy", exact: true });
   await privacy.scrollIntoViewIfNeeded();
   const scroll = await page.evaluate(() => scrollY);
-  await privacy.click(); await expect(page.locator("main")).toContainText("G09");
+  await privacy.click(); await expect(page.locator("main h1")).toHaveText("Privacy"); await expect(page.locator(".policy-copy")).toContainText("Data Collected");
   await page.goBack();
   await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - scroll)).toBeLessThan(4);
   await page.locator(".public-trial-banner").getByRole("link", { name: "Start free trial now" }).click();
@@ -141,8 +143,9 @@ test("G01 reset clears public draft while session and component previews remain 
   await page.goto("/");
   await page.getByRole("textbox", { name: "Email address" }).fill("discard@example.test");
   await page.getByRole("link", { name: "Log in", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Choose a preview session" })).toBeVisible();
-  await page.getByRole("link", { name: "Components", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Log in to Bonsai" })).toBeVisible();
+  await page.getByText("Local authentication scenarios", { exact: true }).click();
+  await page.getByRole("link", { name: "Open preview controls", exact: true }).click();
   await page.getByText("Preview controls", { exact: true }).click();
   await page.getByRole("button", { name: "Reset preview" }).click();
   await expect(page).toHaveURL("/components");
@@ -191,8 +194,7 @@ test("mobile close and breakpoint changes clear submenus and keep keyboard targe
 test("each public destination family has an explicit local Goal boundary", async ({ page }) => {
   for (const [path, goal] of [["/scheduling", "G03"], ["/resources", "G05"],
     ["/resources/online-signature-maker", "G05"], ["/alternatives/freshbooks", "G05"],
-    ["/a/online-contract-maker", "G05"], ["/templates/contracts", "G06"], ["/invoice-generator", "G07"],
-    ["/help", "G08"], ["/support", "G08"], ["/affiliates", "G09"], ["/outbound/linkedin", "G09"]]) {
+    ["/a/online-contract-maker", "G05"]]) {
     await page.goto(path!);
     await expect(page.locator("main")).toContainText("Local UI preview · Not implemented");
     await expect(page.locator("main")).toContainText(goal!);

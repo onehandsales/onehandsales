@@ -26,6 +26,7 @@ export function PreviewTools() {
   }
   // 기능 : 개발 도구의 선택값으로 가상 세션을 전환한다.
   function handleSession(value: string) {
+    if (value === state.session?.id) return;
     runtime.setSession(value === "preview-a" || value === "preview-b" ? value : null);
   }
   return <details className="preview-tools">
@@ -35,6 +36,7 @@ export function PreviewTools() {
       <label>Session
         <select value={state.session?.id ?? "guest"} onChange={(event) => handleSession(event.currentTarget.value)}>
           <option value="guest">Guest</option><option value="preview-a">Alex · Owner</option><option value="preview-b">Blair · Member</option>
+          {state.session?.id.startsWith("preview-user-") && <option value={state.session.id}>{state.session.name} · Local owner</option>}
         </select>
       </label>
       {state.session && <label>Workspace

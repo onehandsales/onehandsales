@@ -1,0 +1,103 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T08:03:57.753Z",
+    "duration": 12606.49,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "signup validates, retries without losing input and carries the selected plan through authentication",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4814,
+          "errors": [],
+          "network": {
+            "requests": 1725,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow signup cancellation, route departure and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7189,
+          "errors": [],
+          "network": {
+            "requests": 1754,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3093,
+          "errors": [],
+          "network": {
+            "requests": 1712,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "local email verification survives StrictMode, supports expiry/cancel/retry and confirms no real email",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4337,
+          "errors": [],
+          "network": {
+            "requests": 1712,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow signup exposes complete fields and buttons with long Korean input and text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1762,
+          "errors": [],
+          "network": {
+            "requests": 1728,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

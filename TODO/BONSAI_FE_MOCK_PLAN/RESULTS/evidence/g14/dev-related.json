@@ -1,0 +1,820 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T09:11:31.508Z",
+    "duration": 155573.15000000002,
+    "expected": 34,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7465,
+          "errors": [],
+          "network": {
+            "requests": 1779,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5574,
+          "errors": [],
+          "network": {
+            "requests": 1742,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6090,
+          "errors": [],
+          "network": {
+            "requests": 5261,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7775,
+          "errors": [],
+          "network": {
+            "requests": 1755,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "template login returns to the same public template and restores only its email draft",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 3703,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/app-shell.spec.ts",
+                "column": 954,
+                "line": 39
+              },
+              "message": "Error: locator.click: Error: strict mode violation: getByRole('link', { name: 'Bonsai home', exact: true }) resolved to 2 elements:\n    1) <a href=\"/\" class=\"public-logo\" data-discover=\"true\" aria-label=\"Bonsai home\">…</a> aka getByRole('banner').getByRole('link', { name: 'Bonsai home' })\n    2) <a href=\"/\" data-discover=\"true\" aria-label=\"Bonsai home\" class=\"public-footer-logo\">…</a> aka getByRole('contentinfo').getByRole('link', { name: 'Bonsai home' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('link', { name: 'Bonsai home', exact: true })\u001b[22m\n\n\n  37 |\n  38 | test(\"template login returns to the same public template and restores only its email draft\", async ({ page }) => {\n> 39 |   await page.goto(\"/quote-template/ecommerce-website\"); await page.getByRole(\"link\", { name: \"Factors to consider in determining your pricing\", exact: true }).click(); await page.getByRole(\"textbox\", { name: \"Email address\" }).fill(\"template@example.test\"); await page.locator(\".template-customize form\").evaluate((form: HTMLFormElement) => form.requestSubmit()); await loginSelection(page); await expect(page.locator(\".template-handoff-summary\")).toContainText(\"quote-template--ecommerce-website\"); await page.getByRole(\"button\", { name: \"Continue with selected details\" }).click(); await expect(page.locator(\"h1\")).toHaveText(\"eCommerce Website Quotation Template\"); await page.getByRole(\"link\", { name: \"Factors to consider in determining your pricing\", exact: true }).click(); await expect(page.getByRole(\"textbox\", { name: \"Email address\" })).toHaveValue(\"template@example.test\"); await page.getByRole(\"link\", { name: \"Bonsai home\", exact: true }).click(); await page.getByRole(\"link\", { name: \"Go to dashboard\", exact: true }).click(); await logout(page);\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^\n  40 | });\n  41 |\n  42 | test(\"invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return\", async ({ page }) => {\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/app-shell.spec.ts:39:954"
+            }
+          ],
+          "network": {
+            "requests": 1749,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4713,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "protected destination survives signup, optional verification and every onboarding step",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4603,
+          "errors": [],
+          "network": {
+            "requests": 1745,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 17904,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/app-shell.spec.ts",
+                "column": 385,
+                "line": 59
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.article-signup form').first().getByRole('textbox')\nExpected: \u001b[32m\"roundtrip@example.test\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.article-signup form').first().getByRole('textbox')\u001b[22m\n\n\n  57 |     if (path.startsWith(\"/blog\")) await page.getByRole(\"link\", { name: \"2. Find your niche\", exact: true }).click();\n  58 |     const form = page.locator(path.startsWith(\"/blog\") ? \".article-signup form\" : path === \"/\" ? \".public-hero form\" : \".intro-hero form\").first();\n> 59 |     await form.getByRole(\"textbox\").fill(\"roundtrip@example.test\"); await form.evaluate((node: HTMLFormElement) => node.requestSubmit()); await loginSelection(page); await page.getByRole(\"button\", { name: \"Return to original page\" }).click(); await expect(page).toHaveURL(new RegExp(path.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\") + \"(?:#.*)?$\")); if (path.startsWith(\"/blog\")) await page.getByRole(\"link\", { name: \"2. Find your niche\", exact: true }).click(); await expect(form.getByRole(\"textbox\")).toHaveValue(\"roundtrip@example.test\"); await page.getByRole(\"link\", { name: \"Go to dashboard\", exact: true }).click(); await logout(page);\n     |                                                                                                                                                                                                                                                                                                                                                                                                 ^\n  60 |   }\n  61 |   await page.goto(\"/support\"); await page.getByRole(\"button\", { name: \"Go to the app\", exact: true }).click(); await page.getByRole(\"link\", { name: \"Continue to preview app\" }).click(); await page.getByRole(\"button\", { name: \"Continue as Alex\" }).click(); await expect(page.getByRole(\"heading\", { name: \"Good evening, Alex (preview).\" })).toBeVisible(); await logout(page);\n  62 |   await page.goto(\"/legal/terms\"); await expect(page.locator(\"h1\")).toHaveText(\"Terms & Conditions\"); await expect(page.locator(\".app-shell\")).toHaveCount(0); await expect(page.locator(\".policy-omission\")).toContainText(\"original signup has not been confirmed\");\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/app-shell.spec.ts:59:385"
+            }
+          ],
+          "network": {
+            "requests": 5331,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing toggle uses historical prices, actual history and direct URL refresh",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7513,
+          "errors": [],
+          "network": {
+            "requests": 5265,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "different plan handoffs keep older history snapshots and cancellation preserves the cycle",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4368,
+          "errors": [],
+          "network": {
+            "requests": 3518,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "rapid cycle changes and repeated plan clicks create only the first handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4687,
+          "errors": [],
+          "network": {
+            "requests": 3487,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "explicit mock session routes plan choice to G79 handoff without changing workspace access",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30537,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/commercial.spec.ts",
+                "column": 65,
+                "line": 88
+              },
+              "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('link', { name: 'Public', exact: true })\u001b[22m\n\n\n  86 | test(\"explicit mock session routes plan choice to G79 handoff without changing workspace access\", async ({ page }) => {\n  87 |   await enterWorkspace(page);\n> 88 |   await page.getByRole(\"link\", { name: \"Public\", exact: true }).click(); await ready(page);\n     |                                                                 ^\n  89 |   await page.locator(\"header\").getByRole(\"link\", { name: \"Pricing\", exact: true }).click();\n  90 |   await page.getByRole(\"article\", { name: \"Business\", exact: true }).getByRole(\"link\", { name: \"Start for free\" }).first().click();\n  91 |   await expect(page).toHaveURL(\"/preview/subscription\");\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/commercial.spec.ts:88:65"
+            }
+          ],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "reviews poster explicitly lacks media, traps focus, closes and resets on browser return",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6692,
+          "errors": [],
+          "network": {
+            "requests": 3526,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "review badges and author links use local destinations and real back restores card scroll",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2907,
+          "errors": [],
+          "network": {
+            "requests": 1748,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing and review contents remain inside narrow and enlarged layouts including long Korean",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3862,
+          "errors": [],
+          "network": {
+            "requests": 3505,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8994,
+          "errors": [],
+          "network": {
+            "requests": 12189,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5193,
+          "errors": [],
+          "network": {
+            "requests": 3480,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "query failure retries, empty and restricted states remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3786,
+          "errors": [],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4740,
+          "errors": [],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 13439,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/foundation.spec.ts",
+                "column": 79,
+                "line": 108
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('combobox', { name: 'Scenario', exact: true })\nExpected: \u001b[32m\"normal\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Scenario', exact: true })\u001b[22m\n\n\n  106 |   await page.getByRole(\"button\", { name: \"Reset preview\" }).click();\n  107 |   await expect(page).toHaveURL(\"/components\");\n> 108 |   const controls = page.locator(\".preview-tools\"); if (!await controls.evaluate(node => node.hasAttribute(\"open\"))) await controls.locator(\"summary\").click();\n      |                                                                               ^\n  109 |   await expect(page.getByRole(\"combobox\", { name: \"Scenario\", exact: true })).toHaveValue(\"normal\");\n  110 |   await expect(page.getByRole(\"combobox\", { name: \"Session\", exact: true })).toHaveValue(\"guest\");\n  111 | });\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/foundation.spec.ts:108:79"
+            }
+          ],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2325,
+          "errors": [],
+          "network": {
+            "requests": 1732,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 9015,
+          "errors": [],
+          "network": {
+            "requests": 12136,
+            "sockets": 7,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "login preserves failed input, supports retry, logout and protected-history recovery",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6712,
+          "errors": [],
+          "network": {
+            "requests": 3478,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow login cancellation and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6111,
+          "errors": [],
+          "network": {
+            "requests": 1777,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "two-factor code is required, expiry and renewal work, and cancellation restores an empty login",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8122,
+          "errors": [],
+          "network": {
+            "requests": 3478,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "logout failure, cancellation and local expiry use real protected navigation",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7398,
+          "errors": [],
+          "network": {
+            "requests": 3481,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social mock cancellation restores focus, Apple uses Blair, and narrow login keeps controls visible",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 8220,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/login.spec.ts",
+                "column": 160,
+                "line": 45
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.auth-account > button')\nExpected substring: \u001b[32m\"B\u001b[7mlair\u001b[27m\"\u001b[39m\nReceived string:    \u001b[31m\"B\u001b[7mL\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.auth-account > button')\u001b[22m\n\u001b[2m    9 × locator resolved to <button type=\"button\" aria-expanded=\"false\" title=\"Blair (preview)\" aria-label=\"Blair (preview)\" aria-controls=\"account-popover\">…</button>\u001b[22m\n\u001b[2m      - unexpected value \"BL\"\u001b[22m\n\n\n  43 |   await page.addStyleTag({ content: '.auth-login input, .auth-login button {font-size:24px!important;}' });\n  44 |   const clipped = await page.locator(\".auth-login h1, .auth-login input, .auth-login button\").evaluateAll(elements => elements.filter(element => { const r = element.getBoundingClientRect(); return r.left < -1 || r.right > innerWidth + 1; }).map(element => element.tagName)); expect(clipped).toEqual([]);\n> 45 |   await apple.click(); await page.getByRole(\"button\", { name: \"Continue with sample identity\" }).click(); await expect(page.locator(\".auth-account > button\")).toContainText(\"Blair\");\n     |                                                                                                                                                                ^\n  46 | });\n  47 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/login.spec.ts:45:160"
+            }
+          ],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup preserves per-step answers, rejects invalid invitations and saves the same company with its original intent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 9060,
+          "errors": [],
+          "network": {
+            "requests": 1754,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup pauses and re-enters with its draft, handles keyboard and composition, and cannot commit after cancel or departure",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7300,
+          "errors": [],
+          "network": {
+            "requests": 1781,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "uncommitted setup clears on logout and refresh, while narrow layouts expose long Korean labels and all actions",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4247,
+          "errors": [],
+          "network": {
+            "requests": 3480,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "password reset separates receipt, weak input clearing, retry and blank login without automatic authentication",
+      "results": [
+        {
+          "status": "failed",
+          "duration": 10183,
+          "errors": [
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/password-reset.spec.ts",
+                "column": 294,
+                "line": 16
+              },
+              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.auth-account > button')\nExpected substring: \u001b[32m\"A\u001b[7mlex\u001b[27m\"\u001b[39m\nReceived string:    \u001b[31m\"A\u001b[7mL\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.auth-account > button')\u001b[22m\n\u001b[2m    9 × locator resolved to <button type=\"button\" aria-expanded=\"false\" title=\"Alex (preview)\" aria-label=\"Alex (preview)\" aria-controls=\"account-popover\">…</button>\u001b[22m\n\u001b[2m      - unexpected value \"AL\"\u001b[22m\n\n\n  14 |   await password.fill(\"Replacement123!\"); await expect(page.getByRole(\"alert\")).toContainText(\"Password is too weak\"); await scenario(page, \"fail-once\"); await page.getByRole(\"button\", { name: \"Save New Password\", exact: true }).click(); await expect(page.getByRole(\"alert\")).toContainText(\"failed\"); await expect(password).toHaveValue(\"Replacement123!\");\n  15 |   await page.locator(\".auth-reset-new form\").evaluate((form: HTMLFormElement) => { form.requestSubmit(); form.requestSubmit(); }); await expect(page).toHaveURL(\"/login\"); await expect(page.getByRole(\"status\")).toContainText(\"new password has been set\"); await expect(page.getByRole(\"textbox\", { name: \"Email\", exact: true })).toHaveValue(\"\"); await expect(page.getByLabel(\"Password\", { exact: true })).toHaveValue(\"\"); await expect(page.getByRole(\"checkbox\")).not.toBeChecked();\n> 16 |   await expect(page.locator(\".login-changelog\")).toContainText(\"New Collaborators project view\"); await login(page, \"PreviewOnly123!\"); await expect(page.getByRole(\"alert\")).toContainText(\"incorrect\"); await login(page, \"Replacement123!\"); await expect(page.locator(\".auth-account > button\")).toContainText(\"Alex\");\n     |                                                                                                                                                                                                                                                                                                      ^\n  17 |   expect(await page.evaluate(() => location.href + JSON.stringify({ ...localStorage, ...sessionStorage }))).not.toContain(\"Replacement123!\");\n  18 | });\n  19 |\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/password-reset.spec.ts:16:294"
+            }
+          ],
+          "network": {
+            "requests": 1740,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "unknown address, invalid direct URL, expiry, fresh link and refresh remain distinct",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5329,
+          "errors": [],
+          "network": {
+            "requests": 3472,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow reset cancellation and departure preserve input without changing the password; IME remains guarded",
+      "results": [
+        {
+          "status": "timedOut",
+          "duration": 30109,
+          "errors": [
+            {
+              "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+            },
+            {
+              "location": {
+                "file": "/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/password-reset.spec.ts",
+                "column": 281,
+                "line": 7
+              },
+              "message": "Error: locator.selectOption: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('combobox', { name: 'Authentication scenario' })\u001b[22m\n\n\n   5 | async function requestLink(page: Page, email = \"alex@example.test\") { await page.getByRole(\"textbox\", { name: \"Reset email\" }).fill(email); await page.getByRole(\"checkbox\", { name: /I'm not a robot/ }).check(); await page.getByRole(\"button\", { name: \"Send password reset email\", exact: true }).click(); await expect(page.locator(\".auth-reset-message\")).toContainText(\"no email was sent\"); }\n   6 | // 기능 : 원본 밖의 장애 분기를 명시적 목 도구로 선택한다.\n>  7 | async function scenario(page: Page, value: string) { const details = page.locator(\".auth-tools\"); if (!await details.evaluate(element => element.hasAttribute(\"open\"))) await details.locator(\"summary\").click(); await page.getByRole(\"combobox\", { name: \"Authentication scenario\" }).selectOption(value); }\n     |                                                                                                                                                                                                                                                                                         ^\n   8 | // 기능 : 변경 전후 암호로 같은 계정의 실제 로그인 폼을 확인한다.\n   9 | async function login(page: Page, password: string) { await page.getByRole(\"textbox\", { name: \"Email\", exact: true }).fill(\"alex@example.test\"); await page.getByLabel(\"Password\", { exact: true }).fill(password); await page.getByRole(\"checkbox\", { name: /I'm not a robot/ }).check(); await page.getByRole(\"button\", { name: \"Log in\", exact: true }).click(); }\n  10 |\n    at scenario (/Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/password-reset.spec.ts:7:281)\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/password-reset.spec.ts:29:133"
+            }
+          ],
+          "network": {
+            "requests": 1736,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing intent survives recovery while the completed login fields remain empty",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4453,
+          "errors": [],
+          "network": {
+            "requests": 1751,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow recovery keeps input, errors and complete actions within bounds",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1279,
+          "errors": [],
+          "network": {
+            "requests": 1736,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 2165,
+          "errors": [],
+          "network": {
+            "requests": 1807,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "signup validates, retries without losing input and carries the selected plan through authentication",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3750,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "slow signup cancellation, route departure and synthetic IME cannot create a late session",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5754,
+          "errors": [],
+          "network": {
+            "requests": 1781,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3165,
+          "errors": [],
+          "network": {
+            "requests": 1742,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "local email verification survives StrictMode, supports expiry/cancel/retry and confirms no real email",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4268,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow signup exposes complete fields and buttons with long Korean input and text enlargement",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 1523,
+          "errors": [],
+          "network": {
+            "requests": 1766,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

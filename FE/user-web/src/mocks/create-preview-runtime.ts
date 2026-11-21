@@ -1,6 +1,6 @@
 import type { PreviewRuntime } from "@/features/preview/data/preview-data-source";
 import { PreviewError } from "@/features/preview/model/preview-types";
-import type { ActorId, PreviewScope, PreviewState, Scenario } from "@/features/preview/model/preview-types";
+import type { ActorId, PreviewScope, PreviewSession, PreviewState, Scenario } from "@/features/preview/model/preview-types";
 import { createPreviewSeed, PREVIEW_SESSIONS, SEED_TIME } from "./preview-seed";
 
 // 기능 : 취소 신호를 받으면 타이머와 리스너를 정리하는 로컬 지연을 제공한다.
@@ -28,15 +28,16 @@ function waitForPreview(milliseconds: number, signal: AbortSignal): Promise<void
 
 // 기능 : 네트워크와 브라우저 저장소 없이 세션·시나리오·공유 항목의 메모리 수명을 관리한다.
 export function createPreviewRuntime(): PreviewRuntime {
-  let state: PreviewState = { session: null, workspaceId: null, revision: 0, scenario: "normal" };
+  let state: PreviewState = { session: null, workspaceId: null, revision: 0, resetGeneration: 0, scenario: "normal" };
+  let resetGeneration = 0;
   let records = createPreviewSeed();
   let writeNumber = 0;
   let failureArmed = false;
   const listeners = new Set<() => void>();
 
   // 기능 : 실행 경계를 교체하고 구독자에게 새 스냅샷을 한 번 전달한다.
-  function publish(next: Omit<PreviewState, "revision">) {
-    state = Object.freeze({ ...next, revision: state.revision + 1 });
+  function publish(next: Omit<PreviewState, "revision" | "resetGeneration">) {
+    state = Object.freeze({ ...next, revision: state.revision + 1, resetGeneration });
     listeners.forEach((listener) => listener());
   }
   // 기능 : 제출 당시 문맥이 아직 현재 세션·작업공간과 같은지 검증한다.
@@ -66,6 +67,11 @@ export function createPreviewRuntime(): PreviewRuntime {
     const session = PREVIEW_SESSIONS.find((entry) => entry.id === actor) ?? null;
     publish({ session, workspaceId: session?.workspaces[0]?.id ?? null, scenario: "normal" });
   }
+  // 기능 : 가입으로 만든 독립 가상 계정을 기존 검증 계정과 합치지 않고 새 실행 범위로 연다.
+  function openSession(session: PreviewSession) {
+    failureArmed = false;
+    publish({ session: structuredClone(session), workspaceId: session.workspaces[0]?.id ?? null, scenario: "normal" });
+  }
   // 기능 : 현재 가상 사용자가 가진 작업공간으로만 이동한다.
   function setWorkspace(id: string) {
     if (!state.session?.workspaces.some((workspace) => workspace.id === id)) {
@@ -80,6 +86,7 @@ export function createPreviewRuntime(): PreviewRuntime {
   }
   // 기능 : 항목·세션·시각 카운터·장애 설정을 최초 seed로 되돌린다.
   function reset() {
+    resetGeneration += 1;
     records = createPreviewSeed();
     writeNumber = 0;
     failureArmed = false;
@@ -123,5 +130,5 @@ export function createPreviewRuntime(): PreviewRuntime {
     if (id !== "sample") throw new PreviewError("missing", "This shared preview could not be found.");
     return { id: "shared-sample", name: "Shared preview", updatedAt: SEED_TIME };
   }
-  return { source: { list, detail, rename, shared }, getSnapshot, subscribe, setSession, setWorkspace, setScenario, reset };
+  return { source: { list, detail, rename, shared }, getSnapshot, subscribe, setSession, openSession, setWorkspace, setScenario, reset };
 }

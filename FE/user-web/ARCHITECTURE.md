@@ -1,6 +1,6 @@
 # User Web 구조
 
-2026-11-21 G04 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
+2026-11-21 G05 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
 
 ## 책임과 의존
 
@@ -60,3 +60,36 @@ FAQ 열린 항목과 demo Dialog는 컴포넌트 수명이다. 관련 글 페이
 기존 PublicProvider의 인계 snapshot에 선택 복사본을 추가했다. sourcePath는 이메일 초안/취소 소유권, returnTo는 query 포함 복귀 주소다. history에는 선택이나 이메일 대신 opaque ID만 남긴다. 새 CTA가 과거 이력의 선택을 덮지 않으며 G03 초기화 정책을 유지한다. 가상 세션 여부로 G10/G79 경계에 인계하지만 구독/역할은 변경하지 않는다.
 
 후기 영상은 로컬 원본 파일이 없어 기존 공통 Dialog로 미제공을 표시한다. 재생 상태/진행률/외부 플레이어는 없다. 리뷰·작성자 외부 주소도 로컬 경계에 문자열로만 전달한다. G04 스타일은 `.public-commercial`에 한정한다. [G04 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md)에 두 차례 검토·새 검증·시각/환경 대기를 기록했다.
+
+
+## G05 공개 콘텐츠
+
+`pages/blog`은 목록/slug 상세를 조립하고 `features/public-content`의 공개 API를 사용한다. 정적 카탈로그는 기존 G03 메타데이터의 공개 export를 사용하며 중복 ID를 만들지 않는다. 조회 공급자는 `data/article-reader`, URL/조합/취소 조정은 hook, 읽는 위치는 별도 hook이다. 공개 라우트에만 QueryScope를 추가하여 내부·공유 캐시와 분리했다. URL에는 공개 검색/분류/페이지를, 이메일/가입 인계에는 기존 메모리 저장을 사용한다. 관찰된 기사와 미수록 본문 경계를 구분한다. G06 및 G10 이후 인계는 해당 소비 단계에서 검증한다.
+
+## G06 공개 템플릿 추가 (2026-11-21)
+
+`pages/templates`는 `features/public-template`의 카탈로그/상세/청구서 파일 안내를 조립한다. 공개 ID와 계정 복제본을 구분하고, 로컬 파일15개는 실제 다운로드·해시 검증을 수행했다. Google 문서는 로컬 Dialog만 사용한다. PublicProvider의 이력별 template snapshot은 기존 이메일·가격을 보존한다. ScrollRestoration 키는 경로+검색+history key이며 다른 직접 URL의 스크롤을 섞지 않는다. [G06 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G06_RESULT.md)에 검토·검증·남은 차이를 기록했다. unit15, 전체 dev/build38개 및 최종 G06 대상5개씩 통과했다. 가입 후 복귀는 G10~G14에서 종합 검증한다.
+
+G07 `public-invoice`: model의 정수 금액 계산, Provider의 공개 초안 수명, hook의 취소 가능한 로컬 인계, components의 폼/테이블/인계 요약을 분리한다. PublicIntent.invoice는 독립 snapshot이며 실제 계정 Invoice/Client와 무관하다. G10~G14 인증 복귀는 현재 인계만 명시적으로 복원하고 scope reset을 해제하지 않는다.
+
+G08 `public-help`는 별도 HelpLayout/QueryScope와 도움말 방문 수명의 HelpProvider를 사용한다. 검색 URL/로컬 reader, 피드백 취소 가능한 hook, 기사 표시, 외부 목적지 Dialog를 분리한다. `/support`만 공개 레이아웃을 사용하며 실제 문의 API/폼은 없다.
+
+G09 `public-company`: 정적 회사 소개/정책 발췌/외부 안내를 분리한다. 외부 URL은 고정 목적지 메타데이터로만 표시하고 실제 이동하지 않는다. 공개 소셜 링크의 이력 state는 출발 경로/키만 포함한다. HelpHeader 검색 제출 revision은 늦은 URL 반영이 최신 입력을 덮지 못하게 한다.
+
+### G10 가상 인증 경계
+
+`features/mock-auth`: AuthStore의 메모리 계정·digest, 취소 가능한 로컬 지연, 가입 hook/입력 UI. `AppProviders`가 runtime/auth 수명을 조립한다. store.connect는 React 효과 수명에서 구독을 해제한다. 일반 session/workspace/revision 변경은 진행 인계/도전을 폐기하고 resetGeneration 변경은 계정 seed도 복원한다. 선택 intent만 새 actor/workspace/revision으로 복사하며 PublicProvider/InvoiceProvider의 reset 정책을 해제하지 않는다. RouteFrame은 실제 verify-email 이탈을 감지하고 StrictMode 효과 재연결을 이탈로 취급하지 않는다. G13 실제 온보딩과 G14 최종 목적지는 후속 연결 대기다.
+
+G11은 mock-auth 저장소의 같은 account/digest로 로그인한다. prepare의 generation/revision/AbortSignal을 commit 전에 검사한다. 2FA는 성공 전 세션을 열지 않고 도전 ID 교체/취소로 오래된 확인을 차단한다. 로그아웃 성공만 revision을 바꾸며 보호 경계는 안전한 pathname+search+hash를 로그인에 전달한다. 계정 메뉴의 후속 업무는 명시적 목 경계다.
+
+G12 resetChallenge는 탭 메모리 ID/revision/status로 구분한다. request sequence가 최신 요청을 보존하고 reset commit은 같은 account digest만 바꾼다. resetCompleted는 빈 로그인 필드를 유지하며 공개 intent와 분리한다. route 이탈/Reset/scope 변경은 미사용 도전을 폐기한다.
+
+G13 company-setup은 actor/workspace별 설문 초안과 workspace별 저장 회사의 수명을 분리한다. 마지막 제출에서만 같은 company ID를 저장하고 AuthStore.completeSetup은 인증 revision 없이 완료 상태만 갱신한다. ordinary logout은 저장 결과 유지/초안 폐기, Reset은 seed 복원이다. 제출 snapshot/generation/revision/AbortSignal로 중복/늦은 저장을 차단한다.
+
+### G14 연결 갱신 (2026-11-21)
+
+G14 WorkspaceBoundary는 가상 세션/설정 완료 진입, AppShell은 메뉴 수명, WorkspaceContentScope는 revision별 조회/초안 수명을 맡는다. PublicProvider.restore는 현재 범위로 승인된 선택만 새 이력 ID로 옮기고 InvoiceProvider.restore는 명시적 복원에서만 호출한다. authReturnQuery는 단계 사이 안전한 내부 복귀 경로를 유지한다. [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md).
+
+### G15 이후 최종 갱신 (2026-11-21)
+
+G15 CompanyStore는 G13 같은 workspace/company와 settingsRevision을 유지한다. useCompanyEditor는 화면 초안·하위 주소 저장·전체 저장/취소, useCompanyLogo는 실제 로컬 파일 읽기/경합, useLogoUrl은 표시 URL 수명을 담당한다. publicCompany는 공개 필드만 반환하며 off는 이름/국가/로고를 내보내지 않는다. AppShell scope 변경은 편집 컴포넌트를 다시 만들고 계정 간 미저장 초안을 폐기한다. 메모리는 로그아웃과 전체 새로고침을 구분한다. [연속 작업 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_G15_RESULT.md).

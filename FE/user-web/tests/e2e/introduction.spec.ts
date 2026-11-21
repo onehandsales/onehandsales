@@ -21,7 +21,8 @@ test("landing menus enter the three original introductions and all artwork stays
   await expect(page.getByRole("button", { name: "Add new client", exact: true })).toHaveCount(0);
   await page.locator(".intro-template-card").first().click();
   await expect(page).toHaveURL("/form-template/tax-intake-form");
-  await expect(page.locator("main")).toContainText("G06");
+  await expect(page.locator("h1")).toContainText("Tax intake form");
+  await expect(page.locator(".template-metadata")).toContainText("상세 본문과 계정 편집 화면은 아직 확인되지 않았습니다");
   await page.goBack();
   await page.locator(".public-audiences").getByRole("link", { name: "Small businesses", exact: true }).click();
   await expect(page.locator("h1")).toHaveText("Small business management software");
@@ -95,8 +96,9 @@ test("related articles retain stable destinations, real history and an explicit 
   await article.scrollIntoViewIfNeeded();
   const scroll = await page.evaluate(() => scrollY);
   await article.click(); await expect(page).toHaveURL("/blog/agency-project-management");
-  await expect(page.locator("main")).toContainText("G05");
-  await page.goBack();
+  await expect(page.locator("h1")).toHaveText("The 2024 Complete Guide for Agency Project Management");
+  await expect(page.locator("main")).toContainText("상세 본문은 이번 시안에 수록되지 않았습니다");
+  await page.getByRole("link", { name: "← Back to Blog" }).click();
   await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - scroll)).toBeLessThan(4);
   await page.getByRole("link", { name: "Next ›", exact: true }).click();
   await expect(page).toHaveURL(/contentPage=2#related-content$/);
@@ -152,7 +154,7 @@ test("scroll never changes a session and the dashboard header requires an explic
   await expect(page.locator(".public-auth-links").getByRole("link", { name: "Log in", exact: true })).toBeVisible();
   await page.waitForLoadState("networkidle");
   await enterWorkspace(page);
-  await page.getByRole("link", { name: "Public", exact: true }).click();
+  await page.getByRole("link", { name: "Public site", exact: true }).click();
   await page.locator(".public-audiences").getByRole("link", { name: "Small businesses", exact: true }).click();
   await page.locator(".intro-articles").scrollIntoViewIfNeeded();
   await expect(page.getByRole("link", { name: "Go to dashboard", exact: true })).toBeVisible();

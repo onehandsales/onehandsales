@@ -2,9 +2,10 @@ import { useId, useRef, useState } from "react";
 import type { FormEvent, ChangeEvent, KeyboardEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePublicExperience } from "../data/public-context";
+import type { PublicIntentOptions } from "../data/public-context";
 
 // 기능 : hero 이메일을 검증하고 URL에 노출하지 않은 채 로컬 가입 경계에 인계한다.
-export function SignupForm({ source = "hero-email", placeholder = "Enter your email" }: { source?: string; placeholder?: string }) {
+export function SignupForm({ source = "hero-email", placeholder = "Enter your email", buttonLabel = "Start free", intentOptions }: { source?: string; placeholder?: string; buttonLabel?: string; intentOptions?: PublicIntentOptions }) {
   const { emails, setEmail, start } = usePublicExperience();
   const { pathname } = useLocation();
   const email = emails[pathname] ?? "";
@@ -26,7 +27,7 @@ export function SignupForm({ source = "hero-email", placeholder = "Enter your em
     // 이유 : 같은 이벤트 주기의 연속 제출도 history에 가입 화면을 두 번 쌓지 않는다.
     submitted.current = true;
     setError("");
-    const publicIntentId = start(source, pathname, true);
+    const publicIntentId = start(source, pathname, true, intentOptions);
     void navigate("/signup", { state: { publicIntentId } });
   }
   // 기능 : 수정한 초안을 보존하고 이전 검증 오류를 해제한다.
@@ -44,7 +45,7 @@ export function SignupForm({ source = "hero-email", placeholder = "Enter your em
     <div className="public-email-pill"><input ref={input} id={id} type="email" required maxLength={256} autoComplete="email"
       value={email} placeholder={placeholder} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : undefined}
       onChange={handleChange} onCompositionStart={beginComposition} onCompositionEnd={endComposition} onKeyDown={handleKeyDown} />
-      <button className="public-button" type="submit">Start free</button></div>
+      <button className="public-button" type="submit">{buttonLabel}</button></div>
     {error && <p id={`${id}-error`} className="public-input-error" role="alert">{error}</p>}
   </form>;
 }

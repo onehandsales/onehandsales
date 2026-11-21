@@ -1,0 +1,339 @@
+{
+  "reference": "Home 2024-02-25; support 2024-01-18; article link metadata 2024-04-19; supplied PNG text",
+  "collections": [
+    {
+      "id": "96965",
+      "name": "General Questions & Overview",
+      "description": "Get all your general questions about using Bonsai answered.",
+      "articleCount": 55,
+      "url": "https://help.hellobonsai.com/en/collections/96965-general-questions-overview",
+      "icon": "/bonsai-help/asset-01.png"
+    },
+    {
+      "id": "96952",
+      "name": "Invoicing & Getting Paid",
+      "description": "Learn how to create professional looking invoices and start getting paid faster! ",
+      "articleCount": 64,
+      "url": "https://help.hellobonsai.com/en/collections/96952-invoicing-getting-paid",
+      "icon": "/bonsai-help/asset-02.png"
+    },
+    {
+      "id": "96978",
+      "name": "Proposals",
+      "description": "Learn to send professional Proposals to get you working faster.",
+      "articleCount": 12,
+      "url": "https://help.hellobonsai.com/en/collections/96978-proposals",
+      "icon": "/bonsai-help/asset-03.png"
+    },
+    {
+      "id": "96947",
+      "name": "Contracts",
+      "description": "Start building professional contracts with Bonsai to protect you and your business!",
+      "articleCount": 23,
+      "url": "https://help.hellobonsai.com/en/collections/96947-contracts",
+      "icon": "/bonsai-help/asset-04.png"
+    },
+    {
+      "id": "96971",
+      "name": "Expenses & Bookkeeping",
+      "description": "Track your expenses and keep your books in order.",
+      "articleCount": 12,
+      "url": "https://help.hellobonsai.com/en/collections/96971-expenses-bookkeeping",
+      "icon": "/bonsai-help/asset-05.png"
+    },
+    {
+      "id": "3631785",
+      "name": "Forms",
+      "description": "Learn how to use forms with your clients or new prospects.",
+      "articleCount": 5,
+      "url": "https://help.hellobonsai.com/en/collections/3631785-forms",
+      "icon": "/bonsai-help/asset-06.png"
+    },
+    {
+      "id": "2565441",
+      "name": "Time Tracking & Task Management",
+      "description": "Learn more about tracking time in Bonsai and managing tasks!",
+      "articleCount": 6,
+      "url": "https://help.hellobonsai.com/en/collections/2565441-time-tracking-task-management",
+      "icon": "/bonsai-help/asset-07.png"
+    },
+    {
+      "id": "2565436",
+      "name": "Client & Project Management",
+      "description": "More information on how to manage your Clients and Projects in Bonsai!",
+      "articleCount": 17,
+      "url": "https://help.hellobonsai.com/en/collections/2565436-client-project-management",
+      "icon": "/bonsai-help/asset-08.png"
+    },
+    {
+      "id": "96986",
+      "name": "Subcontracting In Bonsai",
+      "description": "Let Bonsai support you while you grow by making it easy to hire and collaborate with Subcontractors!",
+      "articleCount": 5,
+      "url": "https://help.hellobonsai.com/en/collections/96986-subcontracting-in-bonsai",
+      "icon": "/bonsai-help/asset-09.png"
+    },
+    {
+      "id": "2114230",
+      "name": "Tax Center",
+      "description": "Details on freelance taxes and how to manage them in Bonsai.",
+      "articleCount": 9,
+      "url": "https://help.hellobonsai.com/en/collections/2114230-tax-center",
+      "icon": "/bonsai-help/asset-10.png"
+    },
+    {
+      "id": "96956",
+      "name": "3rd-Party Integrations",
+      "description": "Explore integrations with 3rd-party apps.",
+      "articleCount": 4,
+      "url": "https://help.hellobonsai.com/en/collections/96956-3rd-party-integrations",
+      "icon": "/bonsai-help/asset-11.png"
+    },
+    {
+      "id": "3032808",
+      "name": "Business banking",
+      "description": "Business banking is a great way to save, spend, and manage your business funds! ",
+      "articleCount": 9,
+      "url": "https://help.hellobonsai.com/en/collections/3032808-business-banking",
+      "icon": "/bonsai-help/asset-12.png"
+    },
+    {
+      "id": "4599446",
+      "name": "Scheduling",
+      "description": "Lean more about scheduling and accepting new bookings",
+      "articleCount": 4,
+      "url": "https://help.hellobonsai.com/en/collections/4599446-scheduling",
+      "icon": "/bonsai-help/asset-13.png"
+    },
+    {
+      "id": "3397210",
+      "name": "KYC & Verification",
+      "description": "Learn more about ID verification on Bonsai.",
+      "articleCount": 2,
+      "url": "https://help.hellobonsai.com/en/collections/3397210-kyc-verification",
+      "icon": "/bonsai-help/asset-14.png"
+    }
+  ],
+  "articles": [
+    {
+      "id": "4409019",
+      "title": "What is the Client Portal and how can I use it?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/4409019-what-is-the-client-portal-and-how-can-i-use-it",
+      "aliases": [
+        "What is the Client Portal and how can I use it?",
+        "How can I use my Client Portal?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": true
+    },
+    {
+      "id": "452273",
+      "title": "Understanding online payment methods and fees at Bonsai",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/452273-understanding-online-payment-methods-and-fees-at-bonsai",
+      "aliases": [
+        "Understanding online payment methods and fees at Bonsai",
+        "What payment methods does Bonsai support, and what are the fees involved?"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "4296530",
+      "title": "Payout schedules for invoice payments with Bonsai Payments",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/4296530-payout-schedules-for-invoice-payments-with-bonsai-payments",
+      "aliases": [
+        "Payout schedules for invoice payments with Bonsai Payments",
+        "Understanding Payout Schedules in Bonsai Payments"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "1202116",
+      "title": "What do the Outstanding, Overdue, Pending, and Paid categories mean for payments in Bonsai?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1202116-what-do-the-outstanding-overdue-pending-and-paid-categories-mean-for-payments-in-bonsai",
+      "aliases": [
+        "What do the Outstanding, Overdue, Pending, and Paid categories mean for payments in Bonsai?"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "5550020",
+      "title": "What Is Bonsai Cash and How Do I Use It?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/5550020-what-is-bonsai-cash-and-how-do-i-use-it-onboarding-overview",
+      "aliases": [
+        "What Is Bonsai Cash and How Do I Use It?"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "1944884",
+      "title": "Why Is My PayPal Payment “Pending” In Bonsai?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1944884-why-is-my-paypal-payment-pending-in-bonsai",
+      "aliases": [
+        "Why Is My PayPal Payment “Pending” In Bonsai?"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "1867512",
+      "title": "What integrated payment methods does Bonsai support?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1867512-what-integrated-payment-methods-does-bonsai-support",
+      "aliases": [
+        "What integrated payment methods does Bonsai support?"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "2683127",
+      "title": "What features are available for the “Limited” plan?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/2683127-what-features-are-available-for-the-limited-plan",
+      "aliases": [
+        "What features are available for the “Limited” plan?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": false
+    },
+    {
+      "id": "1065297",
+      "title": "What is Auto Invoicing or “Subscription Invoices?”",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1065297-what-is-auto-invoicing-or-subscription-invoices",
+      "aliases": [
+        "What is Auto Invoicing or “Subscription Invoices?”"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "1195676",
+      "title": "How can I add Integrated payment methods, like pay by credit card, or “other” payment methods to my invoices?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1195676-how-can-i-add-integrated-payment-metho[…]pay-by-credit-card-or-other-payment-methods-to-my-invoices",
+      "aliases": [
+        "How can I add Integrated payment methods, like pay by credit card, or “other” payment methods to my invoices?"
+      ],
+      "collectionId": "96952",
+      "bodyAvailable": false
+    },
+    {
+      "id": "452120",
+      "title": "How can I edit a client's info?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/452120-how-can-i-edit-a-client-s-info",
+      "aliases": [
+        "How can I edit a client's info?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": false
+    },
+    {
+      "id": "606827",
+      "title": "Can I send files to my client?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/606827-can-i-send-files-to-my-client",
+      "aliases": [
+        "Can I send files to my client?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": false
+    },
+    {
+      "id": "1894997",
+      "title": "Do I need to create an account to use Bonsai as a client?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1894997-do-i-need-to-create-an-account-to-use-bonsai-as-a-client",
+      "aliases": [
+        "Do I need to create an account to use Bonsai as a client?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": false
+    },
+    {
+      "id": "7962442",
+      "title": "Can my clients upload files to a project?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/7962442-can-my-clients-upload-files-to-a-project",
+      "aliases": [
+        "Can my clients upload files to a project?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": false
+    },
+    {
+      "id": "8032353",
+      "title": "Can I add links to my projects like Google Drive, Dropbox, Notion, etc?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/8032353-can-i-add-links-to-my-projects-like-google-drive-dropbox-notion-etc",
+      "aliases": [
+        "Can I add links to my projects like Google Drive, Dropbox, Notion, etc?"
+      ],
+      "collectionId": "96965",
+      "bodyAvailable": false
+    }
+  ],
+  "popular": [
+    "4409019",
+    "452273",
+    "4296530"
+  ],
+  "faq": [
+    {
+      "id": "452273",
+      "label": "What payment methods does Bonsai support, and what are the fees involved?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/452273-what-payment-methods-does-bonsai-support-and-what-are-the-fees-involved"
+    },
+    {
+      "id": "1202116",
+      "label": "What do the Outstanding, Overdue, Pending, and Paid categories mean for payments in Bonsai?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1202116-what-do-the-outstanding-overdue-pending-and-paid-categories-mean-for-payments-in-bonsai"
+    },
+    {
+      "id": "4296530",
+      "label": "Understanding Payout Schedules in Bonsai Payments",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/4296530-understanding-payout-schedules-in-bonsai-payments"
+    },
+    {
+      "id": "4409019",
+      "label": "How can I use my Client Portal?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/4409019-how-can-i-use-my-client-portal"
+    },
+    {
+      "id": "5550020",
+      "label": "What Is Bonsai Cash and How Do I Use It?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/5550020-what-is-bonsai-cash-and-how-do-i-use-it-onboarding-overview"
+    },
+    {
+      "id": "1944884",
+      "label": "Why Is My PayPal Payment “Pending” In Bonsai?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1944884-why-is-my-paypal-payment-pending-in-bonsai"
+    },
+    {
+      "id": "1867512",
+      "label": "What integrated payment methods does Bonsai support?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1867512-what-integrated-payment-methods-does-bonsai-support"
+    },
+    {
+      "id": "2683127",
+      "label": "What features are available for the “Limited” plan?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/2683127-what-features-are-available-for-the-limited-plan"
+    },
+    {
+      "id": "1065297",
+      "label": "What is Auto Invoicing or “Subscription Invoices?”",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1065297-what-is-auto-invoicing-or-subscription-invoices"
+    },
+    {
+      "id": "1195676",
+      "label": "How can I add Integrated payment methods, like pay by credit card, or “other” payment methods to my invoices?",
+      "sourceHref": "https://help.hellobonsai.com/en/articles/1195676-how-can-i-add-integrated-payment-metho[…]pay-by-credit-card-or-other-payment-methods-to-my-invoices"
+    }
+  ],
+  "related": [
+    "452120",
+    "606827",
+    "1894997",
+    "7962442",
+    "8032353"
+  ],
+  "locales": [
+    "en"
+  ]
+}

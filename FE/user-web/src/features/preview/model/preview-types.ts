@@ -1,5 +1,5 @@
 export type Scenario = "normal" | "slow" | "read-error" | "write-error" | "empty" | "denied";
-export type ActorId = "preview-a" | "preview-b";
+export type ActorId = "preview-a" | "preview-b" | `preview-user-${number}`;
 export type PreviewSession = {
   readonly id: ActorId;
   readonly name: string;
@@ -10,6 +10,7 @@ export type PreviewState = {
   readonly session: PreviewSession | null;
   readonly workspaceId: string | null;
   readonly revision: number;
+  readonly resetGeneration: number;
   readonly scenario: Scenario;
 };
 export type PreviewScope = {

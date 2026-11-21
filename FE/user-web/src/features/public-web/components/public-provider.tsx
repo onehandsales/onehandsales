@@ -14,12 +14,13 @@ export function PublicProvider({ children, resetRevision }: { children: ReactNod
   useEffect(function clearPreviousScope() { setEmails({}); setIntents({}); }, [resetRevision]);
   // 기능 : 공개 페이지별 초안을 분리해 다른 소개의 입력과 섞이지 않게 한다.
   function setEmail(path: string, email: string) { setEmails(previous => ({ ...previous, [path]: email })); }
-  // 기능 : 출처·이메일·가격 선택을 이력별로 고정하며 실제 가입이나 구독 변경을 실행하지 않는다.
+  // 기능 : 출처·이메일·가격·템플릿·공개 청구 초안을 이력별로 고정하며 실제 가입이나 문서 복제를 실행하지 않는다.
   function start(source: string, path: string, includeEmail = false, options: PublicIntentOptions = {}) {
     // 이유 : 브라우저 이력에는 ID만 두고 서로 다른 소개의 이전 인계를 덮어쓰지 않는다.
     const id = `${memoryId}:${++sequence.current}`;
     const snapshot: PublicIntent = { source, sourcePath: path, email: includeEmail ? (emails[path] ?? "").trim() : "",
-      returnTo: options.returnTo ?? path, selection: options.selection ? { ...options.selection } : undefined };
+      returnTo: options.returnTo ?? path, selection: options.selection ? { ...options.selection } : undefined,
+      template: options.template ? { ...options.template } : undefined, invoice: options.invoice ? structuredClone(options.invoice) : undefined };
     setIntents(previous => ({ ...previous, [id]: snapshot }));
     return id;
   }
@@ -30,5 +31,12 @@ export function PublicProvider({ children, resetRevision }: { children: ReactNod
     setEmail(intent.sourcePath, "");
     setIntents(previous => Object.fromEntries(Object.entries(previous).filter(([, item]) => item.sourcePath !== intent.sourcePath)));
   }
-  return <PublicContext.Provider value={{ emails, intents, setEmail, start, clear }}>{children}</PublicContext.Provider>;
+  // 기능 : 현재 인증 범위에서 명시적으로 복귀한 선택만 새 이력 ID로 복원한다.
+  function restore(intent: PublicIntent) {
+    const id = `${memoryId}:${++sequence.current}`; const snapshot = structuredClone(intent);
+    setIntents(previous => ({ ...previous, [id]: snapshot }));
+    if (snapshot.email) setEmail(snapshot.sourcePath, snapshot.email);
+    return id;
+  }
+  return <PublicContext.Provider value={{ emails, intents, setEmail, start, restore, clear }}>{children}</PublicContext.Provider>;
 }

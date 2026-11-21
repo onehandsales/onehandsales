@@ -1,0 +1,52 @@
+[
+  {
+    "flow": "404",
+    "path": "bonsai_analysis/flows/404/screens/01_sc_b625cb20b5c242978c1f398163b870d1.png",
+    "pixels": [
+      2880,
+      1800
+    ],
+    "sha256": "871544b77e06528dfd66e247a3bf5c9bf7c37e8a5371882bfe4924c0e6c833ba",
+    "viewed": "2026-11-21 KST: direct full PNG"
+  },
+  {
+    "flow": "404",
+    "path": "bonsai_analysis/flows/404/screens/02_sc_4cd87d1434ce4f66b7f8e77bafe39d29.png",
+    "pixels": [
+      2880,
+      1800
+    ],
+    "sha256": "d4cdaa437d4b336ca8badf9ea99bd4a9121402140db3e82ca93b982f826c6f58",
+    "viewed": "2026-11-21 KST: direct full PNG"
+  },
+  {
+    "flow": "Dashboard/Hiding sidebar",
+    "path": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png",
+    "pixels": [
+      2880,
+      1800
+    ],
+    "sha256": "a988fa6482ab2e8b823172b8d1799de38455075714149a3d16378c6a41c8eeda",
+    "viewed": "2026-11-21 KST: direct full PNG"
+  },
+  {
+    "flow": "Dashboard/Hiding sidebar",
+    "path": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/02_sc_d177f0ef742b46daa0c1a96e7df49192.png",
+    "pixels": [
+      2880,
+      1800
+    ],
+    "sha256": "a9460f40e594ac6ec67a239aa254cfc9462a28db6c0a00a1123c3139944734e5",
+    "viewed": "2026-11-21 KST: direct full PNG"
+  },
+  {
+    "flow": "Dashboard/Hiding sidebar",
+    "path": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/03_sc_afe21c01937c42ff92a872cf1a0b07c2.png",
+    "pixels": [
+      2880,
+      1800
+    ],
+    "sha256": "d0af553b444cd3c7219edbefbfa0157865d45c84111cc6870cb02608db561ead",
+    "viewed": "2026-11-21 KST: direct full PNG"
+  }
+]

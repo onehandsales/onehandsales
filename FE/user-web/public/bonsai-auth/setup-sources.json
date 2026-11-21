@@ -1,0 +1,39 @@
+[
+  {
+    "file": "public/bonsai-auth/setup-person.png",
+    "source": "../../bonsai_analysis/flows/Onboarding/Completing account setup/screens/01_sc_33b333fba9d34edbbd66ddfadf29dcb4.png",
+    "screen": "sc_33b333fba9d34edbbd66ddfadf29dcb4",
+    "rawCrop": [
+      1934,
+      160,
+      2676,
+      1046
+    ],
+    "sha256": "b9d55faa0f8326c91fcbbcd1bfe744aadddb0a2c75fabedc7f176f2b61ccd97f"
+  },
+  {
+    "file": "public/bonsai-auth/setup-ratings.png",
+    "source": "../../bonsai_analysis/flows/Onboarding/Completing account setup/screens/01_sc_33b333fba9d34edbbd66ddfadf29dcb4.png",
+    "screen": "sc_33b333fba9d34edbbd66ddfadf29dcb4",
+    "rawCrop": [
+      1934,
+      1380,
+      2676,
+      1464
+    ],
+    "sha256": "1cccc75ebac440e31d9d6d3ada238798eb52f2af4752d5caa01c80b86ccb455a"
+  },
+  {
+    "file": "public/bonsai-auth/company-leaves.png",
+    "source": "../../bonsai_analysis/flows/Dashboard/Adding company details/screens/01_sc_7c8264e8239e464abd4219d7b9828199.png",
+    "screen": "sc_7c8264e8239e464abd4219d7b9828199",
+    "rawCrop": [
+      2506,
+      1000,
+      2758,
+      1308
+    ],
+    "sha256": "aaafec490a8041a8c63b9cf31f0b0a887d773f4181e1e7323a4baf4b23e6de29",
+    "scope": "G15 observed decoration only; booking CTA stays a local future-goal handoff"
+  }
+]

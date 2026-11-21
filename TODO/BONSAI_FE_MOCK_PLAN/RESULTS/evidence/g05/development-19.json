@@ -1,0 +1,316 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T00:56:54.911Z",
+    "duration": 93402.05799999999,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "title": "resources → filtered search → article → real back/forward preserves URL and scroll",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 4189,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3340,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "empty, no-match, page bounds and history remain distinct",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 6075,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 4974,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "mock failure retries without losing query and slow old searches never replace the latest intent",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 8245,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 5004,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow article, keyboard TOC and signup preserve the email draft without external calls",
+      "file": "content.spec.ts",
+      "status": "passed",
+      "duration": 2249,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1650,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "landing menus enter the three original introductions and all artwork stays local and static",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 19129,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 11805,
+          "socketCount": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "introduction email drafts are scoped, repeated submits deduplicate, and cancellation returns to the source",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 5826,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3355,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "FAQ keyboard controls reveal dated answers, close prior answers and hand off locally",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 5832,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1684,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "related articles retain stable destinations, real history and an explicit unknown page two",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 7067,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3384,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow introductions and demo handoff preserve focus, Escape, scroll and visible content",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 12955,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 6744,
+          "socketCount": 4,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "scroll never changes a session and the dashboard header requires an explicitly chosen mock session",
+      "file": "introduction.spec.ts",
+      "status": "passed",
+      "duration": 8748,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 5101,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 6822,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3356,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 7040,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 3329,
+          "socketCount": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 14781,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 4968,
+          "socketCount": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 7990,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1682,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 26033,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 13445,
+          "socketCount": 8,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "G01 reset clears public draft while session and component previews remain separate",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 5204,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1678,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 5615,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1681,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "file": "landing.spec.ts",
+      "status": "passed",
+      "duration": 19239,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 18095,
+          "socketCount": 11,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    {
+      "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+      "file": "public-handoff.spec.ts",
+      "status": "passed",
+      "duration": 4105,
+      "errors": [],
+      "network": [
+        {
+          "requestCount": 1705,
+          "socketCount": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ]
+    }
+  ]
+}

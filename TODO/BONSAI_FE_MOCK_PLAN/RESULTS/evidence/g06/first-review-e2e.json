@@ -1,0 +1,190 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T02:33:02.802Z",
+    "duration": 91339.318,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "landing menus enter the three original introductions and all artwork stays local and static",
+      "results": [
+        {
+          "status": "failed",
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('h1')\nExpected substring: \u001b[32m\"Tax \u001b[7mI\u001b[27mntake \u001b[7mF\u001b[27morm\"\u001b[39m\nReceived string:    \u001b[31m\"Tax \u001b[7mi\u001b[27mntake \u001b[7mf\u001b[27morm\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1')\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to <h1>Tax intake form</h1>\u001b[22m\n\u001b[2m       - unexpected value \"Tax intake form\"\u001b[22m\n\n\n  22 |   await page.locator(\".intro-template-card\").first().click();\n  23 |   await expect(page).toHaveURL(\"/form-template/tax-intake-form\");\n> 24 |   await expect(page.locator(\"h1\")).toContainText(\"Tax Intake Form\");\n     |                                    ^\n  25 |   await expect(page.locator(\".template-metadata\")).toContainText(\"\uc0c1\uc138 \ubcf8\ubb38\uacfc \uacc4\uc815 \ud3b8\uc9d1 \ud654\uba74\uc740 \uc544\uc9c1 \ud655\uc778\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4\");\n  26 |   await page.goBack();\n  27 |   await page.locator(\".public-audiences\").getByRole(\"link\", { name: \"Small businesses\", exact: true }).click();\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/introduction.spec.ts:24:36"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "introduction email drafts are scoped, repeated submits deduplicate, and cancellation returns to the source",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "FAQ keyboard controls reveal dated answers, close prior answers and hand off locally",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "related articles retain stable destinations, real history and an explicit unknown page two",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow introductions and demo handoff preserve focus, Escape, scroll and visible content",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "scroll never changes a session and the dashboard header requires an explicitly chosen mock session",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+      "results": [
+        {
+          "status": "failed",
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Local UI preview \u00b7 Not implemented', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Local UI preview \u00b7 Not implemented', { exact: true })\u001b[22m\n\n\n  42 |   await page.getByRole(\"tabpanel\").getByRole(\"link\", { name: \"See all templates\" }).click();\n  43 |   await expect(page).toHaveURL(\"/invoice-template\");\n> 44 |   await expect(page.getByText(\"Local UI preview \u00b7 Not implemented\", { exact: true })).toBeVisible();\n     |                                                                                       ^\n  45 |   await expect(page.getByRole(\"heading\", { name: \"Invoice Template\", exact: true })).toBeVisible();\n  46 |   await page.goBack();\n  47 |   await expect(templates).toHaveAttribute(\"aria-expanded\", \"false\");\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/landing.spec.ts:44:87"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "G01 reset clears public draft while session and component previews remain separate",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "each public destination family has an explicit local Goal boundary",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "template types, industry, search and detail retain real history and public identity",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "all fifteen real files download unchanged and Google links remain a local dialog",
+      "results": [
+        {
+          "status": "timedOut",
+          "errors": [
+            "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+            "Error: page.waitForEvent: Test timeout of 30000ms exceeded.\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================\n\n  36 |     const card = page.getByRole(\"article\", { name: item.title, exact: true });\n  37 |     for (const format of item.formats.filter(format => format.file)) {\n> 38 |       const wait = page.waitForEvent(\"download\");\n     |                         ^\n  39 |       await card.getByRole(\"link\", { name: format.label, exact: true }).click();\n  40 |       const download = await wait; expect(await download.failure()).toBeNull();\n  41 |       const received = await readFile((await download.path())!);\n    at /Users/jaegeunsong/Desktop/workplace/onehandsales/FE/user-web/tests/e2e/template.spec.ts:38:25"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "template signup snapshots remain isolated and explicit cancellation clears only the source draft",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "template failure retry and the latest slow filter win without an external request",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    },
+    {
+      "title": "narrow template layouts, keyboard, invalid input and synthetic composition remain usable",
+      "results": [
+        {
+          "status": "passed",
+          "errors": []
+        }
+      ]
+    }
+  ]
+}

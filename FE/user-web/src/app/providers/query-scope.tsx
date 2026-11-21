@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// 기능 : 내부·공유 화면의 독립된 조회 캐시를 만들고 범위 종료 시 진행 조회를 정리한다.
+// 기능 : 공개·내부·공유 경계의 독립된 조회 캐시를 만들고 범위 종료 시 진행 조회를 정리한다.
 export function QueryScope({ children }: { children: ReactNode }) {
   // 기능 : 해당 경계에만 속하는 캐시를 한 번 생성한다.
   const [client] = useState(function createQueryClient() { return new QueryClient({

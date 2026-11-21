@@ -15,7 +15,7 @@ test("public, protected deep link, history, refresh and shared boundaries use no
   await page.goForward();
   await expect(page.getByRole("heading", { name: "Workspace preview" })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Choose a preview session" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Log in to Bonsai" })).toBeVisible();
   await page.goto("/share/sample");
   await expect(page.getByRole("heading", { name: "Shared preview", exact: true })).toBeVisible();
   await page.goto("/share/missing");
@@ -24,7 +24,7 @@ test("public, protected deep link, history, refresh and shared boundaries use no
   await page.getByRole("button", { name: "Continue as Blair" }).click();
   await expect(page.getByText("This preview item could not be found.")).toBeVisible();
   await page.goto("/no-such-preview");
-  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Oops, the page you're looking for does not exist." })).toBeVisible();
 });
 
 test("same-ID edit propagates, cancel discards drafts, and refresh resets data", async ({ page }) => {
@@ -105,6 +105,7 @@ test("cancelled slow save, actor/workspace changes and reset isolate all state",
   await expect(page.getByRole("heading", { name: "Second studio sample" })).toBeVisible();
   await page.getByRole("button", { name: "Reset preview" }).click();
   await expect(page).toHaveURL("/components");
+  const controls = page.locator(".preview-tools"); if (!await controls.evaluate(node => node.hasAttribute("open"))) await controls.locator("summary").click();
   await expect(page.getByRole("combobox", { name: "Scenario", exact: true })).toHaveValue("normal");
   await expect(page.getByRole("combobox", { name: "Session", exact: true })).toHaveValue("guest");
 });

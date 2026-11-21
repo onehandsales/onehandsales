@@ -1,0 +1,301 @@
+{
+  "stats": {
+    "startTime": "2026-11-21T09:37:32.546Z",
+    "duration": 66912.196,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "tests": [
+    {
+      "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7749,
+          "errors": [],
+          "network": {
+            "requests": 1791,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6055,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7236,
+          "errors": [],
+          "network": {
+            "requests": 5291,
+            "sockets": 3,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8405,
+          "errors": [],
+          "network": {
+            "requests": 1765,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "template login returns to the same public template and restores only its email draft",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 5359,
+          "errors": [],
+          "network": {
+            "requests": 1793,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4941,
+          "errors": [],
+          "network": {
+            "requests": 1762,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "protected destination survives signup, optional verification and every onboarding step",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6075,
+          "errors": [],
+          "network": {
+            "requests": 1755,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 18622,
+          "errors": [],
+          "network": {
+            "requests": 8871,
+            "sockets": 5,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 6962,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "saved public profile off persists after logout, leaves the slug and shared preview intact, and restores on re-enable",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 9681,
+          "errors": [],
+          "network": {
+            "requests": 3494,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 8124,
+          "errors": [],
+          "network": {
+            "requests": 1752,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "settings read states, permission, cancellation and scope switches cannot publish stale or foreign drafts",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 13209,
+          "errors": [],
+          "network": {
+            "requests": 1753,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "narrow company forms preserve full actions, address Escape, IME guard and native browser history",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 4644,
+          "errors": [],
+          "network": {
+            "requests": 3498,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup preserves per-step answers, rejects invalid invitations and saves the same company with its original intent",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7523,
+          "errors": [],
+          "network": {
+            "requests": 1764,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "setup pauses and re-enters with its draft, handles keyboard and composition, and cannot commit after cancel or departure",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 7031,
+          "errors": [],
+          "network": {
+            "requests": 1791,
+            "sockets": 1,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    },
+    {
+      "title": "uncommitted setup clears on logout and refresh, while narrow layouts expose long Korean labels and all actions",
+      "results": [
+        {
+          "status": "passed",
+          "duration": 3971,
+          "errors": [],
+          "network": {
+            "requests": 3501,
+            "sockets": 2,
+            "violations": 0,
+            "failures": 0,
+            "consoleErrors": 0
+          },
+          "networkIssues": {}
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

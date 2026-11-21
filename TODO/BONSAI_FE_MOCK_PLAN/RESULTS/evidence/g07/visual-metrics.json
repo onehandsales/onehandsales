@@ -1,0 +1,41 @@
+{
+  "method": "1440x900 normalization; original CSS viewport/DPR unknown. Step 05 signup belongs to G10; current handoff boundary is not a source-matched signup. Browser locale en-GB; source locale is not proven. Pixel error is not a fidelity acceptance threshold.",
+  "frames": [
+    {
+      "name": "generator-empty",
+      "source": "bonsai_analysis/flows/Using invoice generator/screens/01_sc_b1b6a664a9bd4989b0250ed10b1bc18e.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 1.2673
+    },
+    {
+      "name": "generator-client",
+      "source": "bonsai_analysis/flows/Using invoice generator/screens/02_sc_52707e230d0b4795928f1d906838bf74.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 1.575
+    },
+    {
+      "name": "generator-item",
+      "source": "bonsai_analysis/flows/Using invoice generator/screens/03_sc_8215ecb188434108956b1e25f408c5ce.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 2.3499
+    },
+    {
+      "name": "generator-blank-row",
+      "source": "bonsai_analysis/flows/Using invoice generator/screens/04_sc_14f6d99be9f242d086fa899d0b1c04a6.png",
+      "sourcePixels": [
+        2880,
+        1800
+      ],
+      "rgbMeanAbsoluteError": 2.0046
+    }
+  ]
+}

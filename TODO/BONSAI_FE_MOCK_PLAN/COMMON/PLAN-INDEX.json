@@ -1,6 +1,6 @@
 {
   "date": "2026-11-21",
-  "status": "G00 조사 완료; G01 기반 검토·내부 자산 동일성 대기; R01 정적 분석·배정/미수록 대기; G02 재보완·2차 검토·Chromium 검증 완료; 17상태 비교 수행, 잔여 시각·원본 동작·추가 환경 검증 대기; G03 세 소개 구현·2차 검토·Chromium 검증 수행; 미수록·잔여 시각·추가 환경 대기; R01 G04 소비 보완; G04 가격·후기 목 구현·2차 검토·Chromium 검증 수행, 영상·잔여 시각·추가 환경 대기; G05 이후 미착수",
+  "status": "G05~G15 순차 관찰 범위 목 구현·두 차례 검토·수정·현재 검증/문서화 수행. R01 G05~G09/R02 G10~G13 소비 분석, G14/G15 후속 연결 확인. 최종 unit42·dev/build82씩. 원본/시각/환경 및 R 전체 대기, G16 이후 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -228,7 +228,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "미착수",
+      "status": "목 검색·기사 흐름 구현·2차 검토·dev/build 검증 수행; 미수록 본문/목록·잔여 시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 5,
@@ -248,7 +248,33 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "result": "../RESULTS/G05_RESULT.md",
+      "verification": {
+        "implementation": "observed_content_and_mock_interactions; missing_body_and_catalog_pending",
+        "engineering_review": "two_passes",
+        "source_comparison": "10 normalized source states + 2 narrow supplements; differences remain",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "14/14",
+        "development_e2e": "33/33",
+        "production_e2e": "33/33",
+        "real_api_requests": 0,
+        "pending": [
+          "missing article paragraphs and full category catalogs",
+          "source search/mobile behavior and visual differences",
+          "native IME, assistive technology, other browsers"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G06",
@@ -269,7 +295,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "미착수",
+      "status": "공개 템플릿·상세·실파일 다운로드·목 인계 구현; 두 차례 검토·현재 검증 수행; 미수록·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 55,
@@ -289,7 +315,32 @@
           "first": 1,
           "last": 11
         }
-      ]
+      ],
+      "result": "../RESULTS/G06_RESULT.md",
+      "verification": {
+        "implementation": "observed UI, public catalog and local files; missing bodies pending",
+        "engineering_review": "two_passes",
+        "source_comparison": "18 normalized source comparisons + 3 narrow supplements; differences remain",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "15/15",
+        "development_e2e": "38/38 full + 5/5 after final G06 visual changes",
+        "production_e2e": "38/38 full + 5/5 after final G06 visual changes",
+        "real_api_requests": 0,
+        "pending": [
+          "missing detailed body, source filter and mobile behavior",
+          "Office editing, native IME, other browsers, visual differences"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G07",
@@ -308,7 +359,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "미착수",
+      "status": "목 생성기 구현·두 차례 검토·현재 검증 수행; 잔여 시각·원본 미확인·환경 대기",
       "flow_scope": [
         {
           "flow_number": 134,
@@ -316,7 +367,33 @@
           "first": 1,
           "last": 5
         }
-      ]
+      ],
+      "result": "../RESULTS/G07_RESULT.md",
+      "verification": {
+        "implementation": "public_generator_and_handoff",
+        "engineering_review": "two_passes_completed",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "18/18",
+        "build": "passed",
+        "development_e2e": "42/42",
+        "production_e2e": "42/42",
+        "real_api_requests": 0,
+        "source_comparison": "4 normalized source states; 6 captures + 320px boundary capture",
+        "pending": [
+          "residual visual differences and original behavior gaps",
+          "native IME, additional engines/devices"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G08",
@@ -337,7 +414,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "미착수",
+      "status": "목 도움말·문의 구현·두 차례 검토·현재 검증 수행; 미수록·영상·원본 동작·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 24,
@@ -357,7 +434,34 @@
           "first": 1,
           "last": 4
         }
-      ]
+      ],
+      "result": "../RESULTS/G08_RESULT.md",
+      "verification": {
+        "implementation": "help_contact_local_only",
+        "engineering_review": "two_passes_completed",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "18/18",
+        "build": "passed",
+        "development_e2e": "related20/20 + final target5/5",
+        "production_e2e": "related20/20 + final target5/5",
+        "real_api_requests": 0,
+        "source_comparison": "8 source states; 11 captures",
+        "pending": [
+          "missing articles/video/original states",
+          "residual visual differences",
+          "native IME, additional engines/devices"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G09",
@@ -379,7 +483,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "미착수",
+      "status": "목 UI·두 차례 검토·현재 검증 수행; 정책 버전·시각·원본 동작·환경 대기",
       "flow_scope": [
         {
           "flow_number": 4,
@@ -405,7 +509,34 @@
           "first": 1,
           "last": 1
         }
-      ]
+      ],
+      "result": "../RESULTS/G09_RESULT.md",
+      "verification": {
+        "engineering_review": "two_passes_and_fixes_completed",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "18/18",
+        "build": "passed",
+        "development_e2e": "51/51 + final target4/4",
+        "production_e2e": "51/51 + final target4/4",
+        "real_api_requests": 0,
+        "source_comparison": "11 source states;17 captures",
+        "pending": [
+          "original signup policy version/effective date",
+          "residual visual differences",
+          "original mobile/outbound behaviors",
+          "additional browsers/devices/native IME"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G10",
@@ -424,7 +555,7 @@
         "R02"
       ],
       "surface": "인증·초대",
-      "status": "미착수",
+      "status": "가입 목 구현·두 차례 검토·현재 검증 수행; 시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 86,
@@ -432,7 +563,30 @@
           "first": 1,
           "last": 10
         }
-      ]
+      ],
+      "result": "../RESULTS/G10_RESULT.md",
+      "verification": {
+        "implementation": "signup_mock",
+        "engineering_review": "two_passes_plus_fixes",
+        "unit": "24/24",
+        "development_e2e": "56/56 + final signup 5/5",
+        "production_e2e": "56/56 + final signup 5/5",
+        "real_api_requests": 0,
+        "visual_comparisons": 7,
+        "pending": [
+          "source font/social/email/mobile",
+          "OS IME/AT/other engines"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G11",
@@ -452,7 +606,7 @@
         "R02"
       ],
       "surface": "인증·초대",
-      "status": "미착수",
+      "status": "목 구현·두 차례 검토·현재 검증 수행; 시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 83,
@@ -466,7 +620,28 @@
           "first": 1,
           "last": 2
         }
-      ]
+      ],
+      "result": "../RESULTS/G11_RESULT.md",
+      "verification": {
+        "unit": "30/30",
+        "development_e2e": "26/26 related",
+        "production_e2e": "26/26 related",
+        "visual_comparisons": 5,
+        "real_api_requests": 0,
+        "pending": [
+          "source social/2FA/font/mobile",
+          "OS IME/AT/other engines"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G12",
@@ -485,7 +660,7 @@
         "R02"
       ],
       "surface": "인증·초대",
-      "status": "미착수",
+      "status": "목 구현·두 차례 검토·현재 검증 수행; 시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 84,
@@ -493,7 +668,28 @@
           "first": 1,
           "last": 10
         }
-      ]
+      ],
+      "result": "../RESULTS/G12_RESULT.md",
+      "verification": {
+        "unit": "34/34",
+        "development_e2e": "23/23 related",
+        "production_e2e": "23/23 related",
+        "visual_comparisons": 10,
+        "real_api_requests": 0,
+        "pending": [
+          "source email/token/password policy/font/mobile",
+          "OS IME/AT/other engines"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G13",
@@ -512,7 +708,7 @@
         "R02"
       ],
       "surface": "인증·초대",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증 수행; 미수록/시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 87,
@@ -520,7 +716,29 @@
           "first": 1,
           "last": 16
         }
-      ]
+      ],
+      "result": "../RESULTS/G13_RESULT.md",
+      "verification": {
+        "unit": "38/38",
+        "development_e2e": "26/26 related + 3/3 final target",
+        "production_e2e": "26/26 related + 3/3 final target",
+        "visual_comparisons": 16,
+        "real_api_requests": 0,
+        "pending": [
+          "third survey/options/currency policy/font/mobile",
+          "OS IME/AT/other engines"
+        ],
+        "g14_connection": "41/41 development and production; selected intent/auth/onboarding return verified within observed mock scope",
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        },
+        "g15_connection": "same onboarding company/workspace ID → settings save → dashboard; dev/build full82 passed"
+      }
     },
     {
       "id": "G14",
@@ -549,7 +767,7 @@
       ],
       "research": [],
       "surface": "공통 기반",
-      "status": "미착수",
+      "status": "목 구현·두 차례 검토·현재 검증 수행; 원본/시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 1,
@@ -563,7 +781,28 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "result": "../RESULTS/G14_RESULT.md",
+      "verification": {
+        "unit": "38/38",
+        "development_e2e": "41/41 related",
+        "production_e2e": "41/41 related",
+        "visual_comparisons": 5,
+        "real_api_requests": 0,
+        "pending": [
+          "original sidebar/404 domain/font/mobile/persistence",
+          "residual icons/spacing and G72 business dashboard",
+          "OS IME/AT/other engines"
+        ],
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        }
+      }
     },
     {
       "id": "G15",
@@ -582,7 +821,7 @@
       ],
       "research": [],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증 수행; 원본/시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 38,
@@ -602,7 +841,25 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "verification": {
+        "final_regression": {
+          "result": "../RESULTS/evidence/g15/final-verification.json",
+          "unit": "42/42",
+          "development_e2e": "82/82 full",
+          "production_e2e": "82/82 full",
+          "external_api_requests": 0,
+          "scope": "G01~G15 currently implemented mock flows"
+        },
+        "visual_comparisons": 15,
+        "real_api_requests": 0,
+        "pending": [
+          "source logo chooser/file/limits/loading and anonymous public profile behavior",
+          "font/icons/spacing/address wrapping and original mobile behavior",
+          "OS IME/AT/physical devices/Firefox/WebKit"
+        ]
+      },
+      "result": "../RESULTS/G15_RESULT.md"
     },
     {
       "id": "G16",
@@ -2930,7 +3187,7 @@
         "G82",
         "G74"
       ],
-      "status": "정적 분석·후속 배정 수행; G02 근거 재확인; G03 3흐름22화면·보관본 보완; G04 2흐름7화면·월간 가격/후기30개 보관본 보완; 미수록 동작·자산 조건·후속 소비 범위 대기",
+      "status": "G02~G09 소비 범위 분석/보완 수행; G05~G09 신규14흐름56단계와 보관 근거, G14 공개 인증 연결 검증. 미수록 본문/자산/버전·G82 등 R 전체 대기",
       "first_gate": "G02",
       "result": "../RESULTS/R01_RESULT.md"
     },
@@ -2970,8 +3227,9 @@
         "G09",
         "G10"
       ],
-      "status": "미착수",
-      "first_gate": "G10"
+      "status": "G10~G13 소비5흐름43단계 분석·목 정책/후속 배정 수행; G14/G15 연결 검증. 원본 미수록·G17/G18·R 전체 대기",
+      "first_gate": "G10",
+      "result": "../RESULTS/R02_RESULT.md"
     },
     {
       "id": "R03",

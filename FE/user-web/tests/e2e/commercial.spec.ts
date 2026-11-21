@@ -36,6 +36,7 @@ test("different plan handoffs keep older history snapshots and cancellation pres
   await page.getByRole("article", { name: "Starter", exact: true }).getByRole("link", { name: "Start for free" }).first().click();
   await expect(page.locator("main")).toContainText("pricing-yearly-starter");
   await expect(page.locator("main")).toContainText("$252 USD");
+  await page.getByRole("link", { name: "Back to landing", exact: true }).click();
   await page.locator("header").getByRole("link", { name: "Pricing", exact: true }).click();
   await page.getByRole("radio", { name: "Monthly", exact: true }).click();
   await expect(page.getByRole("radio", { name: "Monthly", exact: true })).toBeChecked();
@@ -43,10 +44,10 @@ test("different plan handoffs keep older history snapshots and cancellation pres
   await expect(page.locator("main")).toContainText("pricing-monthly-business");
   await expect(page.locator("main")).toContainText("$79 USD");
   await expect(page.locator("main")).not.toContainText("Calculated annual subtotal");
-  await page.goBack(); await page.goBack(); await page.goBack();
+  await page.goBack(); await page.goBack(); await page.goBack(); await page.goBack();
   await expect(page.locator("main")).toContainText("pricing-yearly-starter");
   await expect(page.locator("main")).not.toContainText("pricing-monthly-business");
-  await page.goForward(); await page.goForward(); await page.goForward();
+  await page.goForward(); await page.goForward(); await page.goForward(); await page.goForward();
   await expect(page.locator("main")).toContainText("pricing-monthly-business");
   await page.getByRole("button", { name: "Cancel and clear draft" }).click();
   await expect(page).toHaveURL("/pricing?billing=monthly");
@@ -84,7 +85,7 @@ test("rapid cycle changes and repeated plan clicks create only the first handoff
 
 test("explicit mock session routes plan choice to G79 handoff without changing workspace access", async ({ page }) => {
   await enterWorkspace(page);
-  await page.getByRole("link", { name: "Public", exact: true }).click(); await ready(page);
+  await page.getByRole("link", { name: "Public site", exact: true }).click(); await ready(page);
   await page.locator("header").getByRole("link", { name: "Pricing", exact: true }).click();
   await page.getByRole("article", { name: "Business", exact: true }).getByRole("link", { name: "Start for free" }).first().click();
   await expect(page).toHaveURL("/preview/subscription");
@@ -93,7 +94,7 @@ test("explicit mock session routes plan choice to G79 handoff without changing w
   await expect(page.locator("main")).toContainText("구독·역할·권한은 변경되지 않습니다.");
   await page.getByRole("button", { name: "Cancel and clear draft" }).click();
   await page.getByRole("link", { name: "Go to dashboard" }).click();
-  await expect(page.getByRole("link", { name: "Design Resources View item" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Good evening, Alex (preview)." })).toBeVisible();
 });
 
 test("reviews poster explicitly lacks media, traps focus, closes and resets on browser return", async ({ page }) => {

@@ -1,0 +1,30 @@
+/* 근거 : G07 1440×900 정규화 PNG와 2024-01-18 보관 CSS. 저대비 날짜·좁은 화면은 접근성 목 보완. */
+.public-web:has(.invoice-generator) { font-weight: 400; }
+.public-web:has(.invoice-generator) .public-header.is-scrolled { top: 0; }
+.invoice-generator-page { padding: 30px 18px 100px; }
+.invoice-generator { max-width: 700px; margin: 0 auto; padding: 40px 20px 20px; background: #f0f0f0; border-radius: 20px; }
+.invoice-generator h1 { text-align: center; margin-bottom: 42px; font-size: 60px; line-height: 1; }
+.invoice-client-fields { display: grid; grid-template-columns: 118px minmax(0,462px); gap: 10px 0; margin-bottom: 102px; }
+.invoice-client-fields label { padding-top: 0; line-height: 24px; }
+.invoice-client-fields input, .invoice-client-fields textarea { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #c5c5c5; background: #fcfcfc; color: #003026; font: inherit; font-size: 16px; line-height: 19px; }
+.invoice-client-fields input { height: 41px; }.invoice-client-fields textarea { height: 94px; resize: vertical; }
+.invoice-generator-table { width: 100%; border-collapse: collapse; border: 1px solid #d8d8d8; }
+.invoice-generator-table th, .invoice-generator-table td { padding: 8px; text-align: left; border-bottom: 1px solid #d8d8d8; }
+.invoice-generator-table thead th { height: 41px; font-weight: 700; white-space: nowrap; }
+.invoice-generator-table tbody tr { height: 71px; }.invoice-generator-table tbody tr:nth-child(even), .invoice-generator-table tfoot tr:nth-child(even) { background: #edf4ee; }
+.invoice-generator-table th:first-child { width: 41%; }.invoice-generator-table thead th:nth-child(2) { width: 14%; }.invoice-generator-table thead th:nth-child(3) { width: 15%; }
+.invoice-generator-table input[type="text"] { width: 70%; min-width: 0; padding: 10px; margin-bottom: 10px; height: 41px; border-radius: 6px; border: 1px solid #c5c5c5; background: #fcfcfc; font: inherit; line-height: 19px; }
+.invoice-generator-table input[type="number"] { width: 50px; min-width: 0; padding: 0; height: 24px; border: 1px solid #c5c5c5; border-radius: 3px; font: inherit; background: #fcfcfc; }
+.invoice-generator-table .invoice-remove-item { border-radius: 999px; border: 0; background: #b5b5b5; color: #a6004e; padding: 10px; margin-top: 10px; min-height: 44px; }
+.invoice-generator-table tfoot tr { height: 41px; }.invoice-generator-table tfoot th { text-align: right; font-weight: 400; }.invoice-generator-table tfoot td { text-align: left; }
+.invoice-generator-table .invoice-due { text-align: right; height: 46px; }.invoice-due label { margin-right: 30px; }.invoice-due input { max-width: 142px; border: 0; background: #fff; color: #136d58; font: inherit; font-weight: 600; padding: 2px; }
+.invoice-add-row { display: flex; justify-content: flex-end; margin-top: 20px; }.invoice-add-row button { border: 1px solid #16a000; background: #b5b5b5; color: #075c00; border-radius: 99px; padding: 10px; min-height: 46px; }
+.invoice-generator .invoice-download { display: flex; width: 200px; padding: 10px; margin: 20px auto; min-height: 44px; }
+.invoice-generator input[aria-invalid="true"] { border-color: #b12a18; }.invoice-errors { color: #a82014; font-size: 15px; margin: 20px 0 !important; }.invoice-pending { text-align: center; margin-top: 20px !important; }.invoice-pending button { border: 0; text-decoration: underline; background: transparent; }
+.invoice-handoff-summary { margin: 25px 0; max-width: 720px; overflow-wrap: anywhere; }.invoice-handoff-summary h2 { font-size: 26px; }.invoice-handoff-summary li { white-space: pre-wrap; }
+@media (max-width: 700px) {
+ .invoice-generator-page { padding-top: 35px; }.invoice-generator { padding: 30px 15px 20px; }.invoice-generator h1 { font-size: 40px; overflow-wrap: anywhere; margin-bottom: 30px; }.invoice-client-fields { grid-template-columns: 1fr; gap: 5px; margin-bottom: 40px; }.invoice-client-fields label:not(:first-child) { margin-top: 10px; }
+ .invoice-generator-table, .invoice-generator-table tbody { display: block; }.invoice-generator-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }.invoice-generator-table tbody tr { display: grid; grid-template-columns: 1fr 1fr; height: auto; padding: 12px 0; }.invoice-generator-table tbody td { display: flex; flex-direction: column; min-width: 0; gap: 6px; border: 0; }.invoice-generator-table tbody td::before { content: attr(data-label); text-transform: capitalize; font-weight: 600; }.invoice-generator-table tbody td:first-child { grid-column: 1 / -1; }.invoice-generator-table input[type="text"], .invoice-generator-table input[type="number"] { width: 100%; height: 40px; padding: 8px; }.invoice-generator-table tbody td:last-child { align-items: flex-end; }.invoice-remove-item { margin-top: 0 !important; }
+ .invoice-generator-table tfoot { display: block; }.invoice-generator-table tfoot tr { display: flex; justify-content: space-between; }.invoice-generator-table tfoot th { width: auto; text-align: left; }.invoice-generator-table tfoot td { flex: 1; text-align: right; }.invoice-generator-table .invoice-due { width: 100%; padding-inline: 5px; display: flex; align-items: center; justify-content: space-between; }.invoice-due label { margin-right: 4px; }.invoice-due input { max-width: 140px; }
+ .invoice-generator-table tbody td, .invoice-generator-table tfoot td { min-width: 0; overflow-wrap: anywhere; }.invoice-generator-table tfoot tr { min-height: 41px; height: auto; }
+}

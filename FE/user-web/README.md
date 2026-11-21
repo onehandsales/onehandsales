@@ -2,11 +2,15 @@
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 
-기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·시각/환경 및 G05 이후 화면은 대기이며 실제 인증·업무 API·Backend·DB 연결은 없다.
+기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·시각/환경 및 G05의 미수록 본문/목록과 G16 이후 화면은 미착수이며 실제 인증·업무 API·Backend·DB 연결은 없다.
 
 G03에서 공개 이메일을 경로별로 분리하고 가입 인계를 이력별 메모리 snapshot으로 보완했다. G03 당시 typecheck/lint/build, unit9, dev/build Chromium E2E각22가 통과했다. G01/G02 회귀를 포함하며 관찰한 흐름의 실제 API·외부 요청·실패·console 오류는0건이다. G03 원본22상태 비교를 수행했고 잔여 시각·page2/다른30소개본문·원본 모바일/상호작용·실제 OS IME/AT 등은 대기다. G02 기존17상태의 남은 차이도 유지한다.
 
 G04 최종 typecheck/lint/build·unit 11/11·dev/build Chromium E2E 각 29/29가 통과했다. G01~G03 회귀를 포함하며 관찰한 실제 API/외부 요청·요청 실패·console 오류는 0건이다. 원본 7상태와 보완 월간·미제공 모달·좁은 두 페이지를 캡처했다. 영상 파일/자막·원본 모바일/CTA 동작·잔여 시각·실제 OS IME/보조기술/추가 브라우저는 대기다.
+
+## 최종 현재 상태 (2026-11-21)
+
+G05~G15를 순차 구현·두 차례 검토·수정했다. 현재 코드 타입/lint/build·unit42/42·전체 개발/빌드 Chromium82/82씩 통과, 관찰 API/외부·실패·console 오류0. G14 공개 인증/선택 복귀와 G15 동일 회사 설정 연결을 확인했다. 아래 과거 단계별 기록은 당시 결과이며 원본·시각·환경 대기는 [최종 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_G15_RESULT.md)에 구분한다. 커밋/Backend/실API/G16 이후 착수 없음.
 
 ## 실행
 
@@ -25,7 +29,8 @@ corepack pnpm dev --host 127.0.0.1 --strictPort
 | 경로 | 용도 |
 | --- | --- |
 | / | Bonsai hero·11단계 랜딩·메가메뉴·이메일·후기·푸터 |
-| /signup | G10 미구현 인계, CTA source/이메일/선택 플랜·취소·복귀 |
+| /signup, /verify-email | G10 가입·로컬 소셜/메일·검증/취소·선택 snapshot |
+| /onboarding | G10 가입 결과/선택 인계, G13 사업 설정 연결 대기 |
 | /crm | CRM 소개·이메일·12양식 인계·3 FAQ |
 | /software/consulting | Consulting 소개·이메일·기능/후기·CTA |
 | /software/small-businesses | Small business 소개·demo Dialog·관련 글12개·페이지 이동 |
@@ -81,3 +86,34 @@ G04는 `node scripts/capture-commercial.mjs`, `python3 scripts/compare-commercia
 [현재 구조](ARCHITECTURE.md), [FRONT_AGENT](../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/README.md), [결정 006](../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/DECISIONS/006_bonsai_uxui_only_phase.md)을 따른다. 컴포넌트·hook·함수에 한 줄 한글 책임 주석을 작성한다.
 
 G02의 시각 차이·원본 모바일/자동 전환·자산 사용 조건은 결과 문서의 대기 항목이다. G03은 공개 메뉴·폰트·로컬 인계 기반을 소비했으며 세 소개 구현·검증과 전체 완료 대기를 구분한다. 누락 본문·잔여 시각·추가 환경은 G03 결과에 남겼다. 내부 앱 Outfit의 원본 동일성은 미확인이다. 후속 Goal 자동 착수·커밋·배포는 하지 않는다.
+
+
+### G05 연속 작업의 현재 결과
+
+2026-11-21: `/blog` 검색·분류·페이지, 관찰된 기사 목차·스크롤·가입 인계와 원래 목록 복귀를 추가했다. 공개 QueryScope는 업무/공유와 분리한다. typecheck/lint/build·unit14/14·dev/build Chromium각33/33 통과, 실제 API/외부 요청0. 전체 기사/목록·시각/환경은 대기다. [G05 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_RESULT.md), [G05~G15 진행](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_G15_PROGRESS.md). `node scripts/capture-content.mjs`와 Pillow 환경의 `python scripts/compare-content.py`로 캡처·비교를 재현한다.
+
+## G06 공개 템플릿 추가 (2026-11-21)
+
+`pages/templates`는 `features/public-template`의 카탈로그/상세/청구서 파일 안내를 조립한다. 공개 ID와 계정 복제본을 구분하고, 로컬 파일15개는 실제 다운로드·해시 검증을 수행했다. Google 문서는 로컬 Dialog만 사용한다. PublicProvider의 이력별 template snapshot은 기존 이메일·가격을 보존한다. ScrollRestoration 키는 경로+검색+history key이며 다른 직접 URL의 스크롤을 섞지 않는다. [G06 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G06_RESULT.md)에 검토·검증·남은 차이를 기록했다. unit15, 전체 dev/build38개 및 최종 G06 대상5개씩 통과했다. 가입 후 복귀는 G10~G14에서 종합 검증한다.
+
+G07 `/invoice-generator`: 메모리 초안·고정15% 표본·행 계산/검증·로컬 가입 snapshot. PDF/계정 문서 생성은 없으며 초안은 refresh/scope 변경에서 초기화한다. 최종 G07 unit18/dev42/build42. 상세 `TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G07_RESULT.md`.
+
+G08 `/help`, `/help/collections/:id`, `/help/articles/:id`, `/support`: 제공된 기사/검색/분류·로컬 피드백·문의 링크 안내. 영상/미수록 본문은 명시하고 실제 외부 채널은 호출하지 않는다. unit18·관련 dev/build20+최종 대상5씩. 상세 `TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G08_RESULT.md`.
+
+G09 `/affiliates`, `/careers`, `/legal/privacy`, `/legal/terms`, `/outbound/*`: 과거 시안·정책 발췌·로컬 목적지 안내. unit18/전체 dev/build51+마지막 대상4씩 통과, 정책 버전/시각/환경 대기. 결과 `TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G09_RESULT.md`.
+
+G10의 `features/mock-auth`는 메모리 계정/digest·도전·선택 인계를 관리한다. AuthLayout은 공개/내부 레이아웃과 분리되며 실제 인증/메일/CAPTCHA를 호출하지 않는다. Preview resetGeneration은 Reset의 계정 seed 초기화를 구분하고 일반 revision 초안 초기화를 유지한다. [G10 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G10_RESULT.md)에 두 차례 검토/검증과 후속 연결 대기를 기록했다.
+
+G11: `/login`, `/two-factor`와 계정 메뉴 Logout은 같은 메모리 계정을 사용한다. 실제 OAuth/메일/CAPTCHA 없음. unit30/관련 dev·build26씩, [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G11_RESULT.md). G13/G14 연결 대기.
+
+G12: `/password/reset` → 로컬 가상 링크 → `/password/new` → 빈 `/login`. 실제 메일 없음. 같은 계정 비밀번호 변경/취소·만료 검증, unit34/관련 dev·build23씩. [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G12_RESULT.md).
+
+G13: `/onboarding`은 확인된 질문·미수록 안내·초안·실패/취소를 거쳐 같은 workspace/company를 저장한다. 신규 계정 `/app`의 초기 빈 대시보드, unit38/관련 dev·build26씩+최종3씩. [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G13_RESULT.md). G14/G15 연결 대기.
+
+### G14 연결 갱신 (2026-11-21)
+
+G14 `/app` 셸/초기 대시보드·`/app/preview` G01 검증·`/auth/continue` 현재 범위 선택 복귀·공개/내부404. unit38/관련 dev/build41씩. G15 회사 편집은 다음 순서다. [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md).
+
+### G15 회사 설정 구조
+
+`/app` Add Details와 `/app/settings/company`는 G13 같은 CompanyStore를 편집한다. 주소 하위 저장은 전체 회사 저장과 분리한다. 로고는 로컬 File·표시 object URL만 사용하며 교체/이탈에서 해제한다. `/u/:slug`는 명시적 목 공개 화면으로 저장된 on/off를 소비하며 `/share/sample`과 독립이다. 새로고침/새 탭은 메모리를 초기화한다. [G15 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G15_RESULT.md).

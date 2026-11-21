@@ -1,0 +1,9 @@
+{
+  "checkedDate": "2026-11-21 KST",
+  "chromium": true,
+  "firefox": false,
+  "webkit": false,
+  "actualOsIme": "not exercised",
+  "voiceOver": "not exercised",
+  "physicalDevices": "not exercised"
+}

@@ -52,7 +52,7 @@ export { expect };
 
 // 기능 : 실제 브라우저 링크와 세션 선택을 통해 내부 목록으로 이동한다.
 export async function enterWorkspace(page: Page) {
-  await page.goto("/login");
+  await page.goto("/login?returnTo=%2Fapp%2Fpreview");
   await page.getByRole("button", { name: "Continue as Alex" }).click();
   await expect(page.getByRole("link", { name: "Design Resources View item" })).toBeVisible();
 }
