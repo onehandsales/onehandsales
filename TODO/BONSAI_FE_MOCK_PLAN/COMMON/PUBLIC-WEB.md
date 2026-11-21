@@ -1,5 +1,7 @@
 # 로그인 전 공개 웹과 인증 연결
 
+현재 동작·검증 갱신: [G01~G15 감사 후 재점검](../RESULTS/G01_G15_RECHECK_RESULT.md). 기존 원본/시각/환경 대기는 유지한다.
+
 공개 웹도 Bonsai 재현 범위다. 기존 분석에 랜딩·가격·템플릿·블로그 등이 이미 있으므로 로그인 후 앱만 계획하지 않는다. 아래는 기존 분석과 연결한 구현 범위이며, 미수록 목적지·현재 가격/정책·반응형 동작은 [R01](RESEARCH-GOALS/R01.md)에서 확인한다.
 
 ## 화면 목록
@@ -57,4 +59,4 @@
 
 ## G04 현재 연결과 미확인
 
-`/pricing`의 플랜/주기·가격 근거 버전은 이력별 로컬 snapshot으로 `/signup` 또는 `/preview/subscription`에 인계한다. G10/G79 본문·구독 변경은 구현하지 않았다. `/reviews`의 30카드·배지는 과거 콘텐츠이며 외부 주소는 `/outbound/reviews/{id}`의 로컬 경계로만 연결한다. 영상은 미제공 Dialog다. [G04 결과](../RESULTS/G04_RESULT.md)에서 상태 수명·원본/보완·시각/환경 대기를 구분한다. Professional services의 원본 주소는 미확인이며 `/software/professional-services`는 G03 본문 대기용 로컬 후보다. 기존 290개 메뉴 색인과 G03의 33개 배정 판정을 소급 수정하지 않는다.
+`/pricing`의 플랜/주기·가격 근거 버전은 이력별 로컬 snapshot으로 `/signup` 또는 `/preview/subscription`에 인계한다. G04 당시 G10/G79 인계만 있었다. 현재 G10~G14 가상 가입/온보딩과 선택 복귀는 연결했으며 G79 본문·구독 변경은 미구현이다. `/reviews`의 30카드·배지는 과거 콘텐츠이며 외부 주소는 `/outbound/reviews/{id}`의 로컬 경계로만 연결한다. 영상은 미제공 Dialog다. [G04 결과](../RESULTS/G04_RESULT.md)에서 상태 수명·원본/보완·시각/환경 대기를 구분한다. Professional services의 원본 주소는 미확인이며 `/software/professional-services`는 G03 본문 대기용 로컬 후보다. 기존 290개 메뉴 색인과 G03의 33개 배정 판정을 소급 수정하지 않는다.

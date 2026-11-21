@@ -1,5 +1,7 @@
 # User Web — Bonsai UX/UI 목 기반
 
+> 최신 FE 검증: 2026-11-21 KST · G01~G15 감사 후 동작 결함 5건 수정, G13 중단/새 이동 정책 명시, 문서 상태 정정·두 차례 검토. 타입/lint/build·unit42/42·전체 개발/빌드 Chromium90/90씩 첫 실행 통과. 실제 API/외부·실패·console 오류0. 기존 원본/시각/환경·R 전체 대기 유지, G16 이후 미착수. 커밋/push/배포 없음. [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_G15_RECHECK_RESULT.md). 아래 단계별 실행 수치는 당시 기록이다.
+
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 
 기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·시각/환경 및 G05의 미수록 본문/목록과 G16 이후 화면은 미착수이며 실제 인증·업무 API·Backend·DB 연결은 없다.
@@ -8,9 +10,9 @@ G03에서 공개 이메일을 경로별로 분리하고 가입 인계를 이력�
 
 G04 최종 typecheck/lint/build·unit 11/11·dev/build Chromium E2E 각 29/29가 통과했다. G01~G03 회귀를 포함하며 관찰한 실제 API/외부 요청·요청 실패·console 오류는 0건이다. 원본 7상태와 보완 월간·미제공 모달·좁은 두 페이지를 캡처했다. 영상 파일/자막·원본 모바일/CTA 동작·잔여 시각·실제 OS IME/보조기술/추가 브라우저는 대기다.
 
-## 최종 현재 상태 (2026-11-21)
+## G05~G15 연속 구현 당시 결과 (2026-11-21)
 
-G05~G15를 순차 구현·두 차례 검토·수정했다. 현재 코드 타입/lint/build·unit42/42·전체 개발/빌드 Chromium82/82씩 통과, 관찰 API/외부·실패·console 오류0. G14 공개 인증/선택 복귀와 G15 동일 회사 설정 연결을 확인했다. 아래 과거 단계별 기록은 당시 결과이며 원본·시각·환경 대기는 [최종 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_G15_RESULT.md)에 구분한다. 커밋/Backend/실API/G16 이후 착수 없음.
+G05~G15를 순차 구현·두 차례 검토·수정했다. 당시 코드 타입/lint/build·unit42/42·전체 개발/빌드 Chromium82/82씩 통과, 관찰 API/외부·실패·console 오류0. G14 공개 인증/선택 복귀와 G15 동일 회사 설정 연결을 확인했다. 아래 과거 단계별 기록은 당시 결과이며 원본·시각·환경 대기는 [최종 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_G15_RESULT.md)에 구분한다. 커밋/Backend/실API/G16 이후 착수 없음.
 
 ## 실행
 
@@ -30,7 +32,7 @@ corepack pnpm dev --host 127.0.0.1 --strictPort
 | --- | --- |
 | / | Bonsai hero·11단계 랜딩·메가메뉴·이메일·후기·푸터 |
 | /signup, /verify-email | G10 가입·로컬 소셜/메일·검증/취소·선택 snapshot |
-| /onboarding | G10 가입 결과/선택 인계, G13 사업 설정 연결 대기 |
+| /onboarding | G13 사업 초안·미수록 설문 안내·최종 회사 저장·보호 목적지 복귀 |
 | /crm | CRM 소개·이메일·12양식 인계·3 FAQ |
 | /software/consulting | Consulting 소개·이메일·기능/후기·CTA |
 | /software/small-businesses | Small business 소개·demo Dialog·관련 글12개·페이지 이동 |
@@ -38,15 +40,23 @@ corepack pnpm dev --host 127.0.0.1 --strictPort
 | /reviews | 과거 후기30개·평점·포스터·영상 미제공 Dialog |
 | /preview/subscription | G79 미구현 인계, 플랜·주기·표시액 의미·취소 |
 | /outbound/reviews/:id | 확인한 외부 리뷰/작성자 주소의 로컬 인계 |
-| /templates, /scheduling, /blog/:slug, /form-template/:slug 등 | 담당 Goal을 표시하는 미구현 공개 목적지 |
-| /login | G01 가상 Alex/Blair 선택. Bonsai 로그인 전체는 G11 대기 |
-| /app | 같은 목 ID의 목록 |
+| /blog, /blog/:slug | G05 검색·분류·관찰된 기사와 미수록 본문 안내 |
+| /templates, /invoice-template, /form-template/:slug 등 | G06 공개 카탈로그·관찰된 상세·실파일 수신·미수록 안내 |
+| /invoice-generator | G07 계산·로컬 가입 인계, PDF 생성 없음 |
+| /help, /help/collections/:id, /help/articles/:id, /support | G08 도움말 검색·기사·목차·문의 인계 |
+| /affiliates, /careers, /legal/privacy, /legal/terms | G09 소개·정책 발췌·미수록 안내 |
+| /scheduling 및 기타 후속 목적지 | 담당 Goal의 미구현 공개 목적지 안내 |
+| /login, /two-factor | G11 가상 로그인·소셜/2FA, Alex/Blair 샘플 진입 |
+| /password/reset, /password/new | G12 로컬 복구·검증·가상 비밀번호 변경 |
+| /app | G13 초기 대시보드·G14 앱 셸 |
+| /app/preview | G01 같은 목 ID 목록 |
+| /app/settings/company, /u/:slug | G15 회사 편집·저장된 공개 프로필 |
 | /app/items/sample-001 | 상세·이름 편집·실패/재시도 |
 | /share/sample | 내부 데이터와 분리된 읽기 샘플 |
 | /components | Bonsai Button·Field·Dialog 공통 요소 비교 |
 | 기타 | 미지원 주소·공개 복귀 |
 
-`/components`·`/app` 등 기반 경로의 Preview controls에서 workspace·지연·다음 조회/저장 1회 실패·빈 상태·제한·초기화를 선택한다. 공개 랜딩에는 개발 도구를 표시하지 않는다.
+`/components`·`/app/preview` 등 기반 경로의 Preview controls에서 workspace·지연·다음 조회/저장 1회 실패·빈 상태·제한·초기화를 선택한다. 공개 랜딩에는 개발 도구를 표시하지 않는다.
 
 ## 목 데이터 수명
 

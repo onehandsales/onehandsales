@@ -1,5 +1,7 @@
 # Front Agent — 웹 프론트엔드 개발 기준
 
+> 최신 FE 검증: 2026-11-21 KST · G01~G15 감사 후 동작 결함 5건 수정, G13 중단/새 이동 정책 명시, 문서 상태 정정·두 차례 검토. 타입/lint/build·unit42/42·전체 개발/빌드 Chromium90/90씩 첫 실행 통과. 실제 API/외부·실패·console 오류0. 기존 원본/시각/환경·R 전체 대기 유지, G16 이후 미착수. 커밋/push/배포 없음. [결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_G15_RECHECK_RESULT.md). 아래 단계별 실행 수치는 당시 기록이다.
+
 기준 갱신: 2026-11-20 KST.
 
 이 폴더는 User Web과 Admin Web의 React·TypeScript 웹 개발 규칙을 관리한다. 데스크톱의 업무 화면, 브라우저 내비게이션, 키보드·접근성, 모바일 브라우저 대응을 함께 다룬다.

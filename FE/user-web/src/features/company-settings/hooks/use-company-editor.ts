@@ -7,6 +7,7 @@ import type { CompanySettings } from "../model/settings-types";
 export function useCompanyEditor(onSaved?: () => void) {
   const { state: preview } = usePreviewEnvironment(); const { store, state } = useCompanySetup();
   const [draft, setDraft] = useState<CompanySettings | null>(null); const draftRef = useRef<CompanySettings | null>(null); const savedRevision = useRef(0);
+  const [savedSlug, setSavedSlug] = useState("");
   const [loading, setLoading] = useState(true); const [pending, setPending] = useState(false); const [error, setError] = useState(""); const [readKind, setReadKind] = useState(""); const [saved, setSaved] = useState(false); const [retry, setRetry] = useState(0);
   const request = useRef<AbortController | null>(null); const composing = useRef(false); const canEdit = preview.session?.role === "owner";
   const scope = preview.session && preview.workspaceId ? { actorId: preview.session.id, workspaceId: preview.workspaceId, revision: preview.revision } : null;
@@ -23,7 +24,7 @@ export function useCompanyEditor(onSaved?: () => void) {
     if (draftRef.current && !["read-error", "empty", "denied"].includes(state.settingsScenario)) return function cancelSave() { request.current?.abort(); };
     const controller = new AbortController(); request.current = controller; draftRef.current = null; setDraft(null); setLoading(true);
     void store.readSettings({ actorId: preview.session.id, workspaceId: preview.workspaceId, revision: preview.revision }, controller.signal).then(value => {
-      if (controller.signal.aborted) return; savedRevision.current = value.settingsRevision; draftRef.current = value; setDraft(value);
+      if (controller.signal.aborted) return; savedRevision.current = value.settingsRevision; draftRef.current = value; setDraft(value); setSavedSlug(value.slug);
     }).catch((failure: unknown) => { if (!controller.signal.aborted && !(failure instanceof DOMException && failure.name === "AbortError")) { setError(failure instanceof Error ? failure.message : "Unable to read company."); setReadKind(failure instanceof CompanyReadError ? failure.kind : "read"); } }).finally(() => { if (request.current === controller) { request.current = null; setLoading(false); } });
     return function cancelOnLeave() { controller.abort(); request.current?.abort(); };
   }, [preview.revision, preview.session, preview.workspaceId, retry, state.settingsScenario, store]);
@@ -32,9 +33,9 @@ export function useCompanyEditor(onSaved?: () => void) {
     if (!scope || !draftRef.current || !canEdit || request.current || composing.current) return;
     const message = settingsError(draftRef.current); if (message) { setError(message); return; }
     const controller = new AbortController(); request.current = controller; setPending(true); setSaved(false);
-    try { const value = await store.saveSettings(scope, draftRef.current, savedRevision.current, controller.signal); if (!controller.signal.aborted) { savedRevision.current = value.settingsRevision; draftRef.current = value; setDraft(value); setError(""); setSaved(true); onSaved?.(); } }
+    try { const value = await store.saveSettings(scope, draftRef.current, savedRevision.current, controller.signal); if (!controller.signal.aborted) { savedRevision.current = value.settingsRevision; draftRef.current = value; setDraft(value); setSavedSlug(value.slug); setError(""); setSaved(true); onSaved?.(); } }
     catch (failure) { if (!controller.signal.aborted && !(failure instanceof DOMException && failure.name === "AbortError")) setError(failure instanceof Error ? failure.message : "Unable to save company."); }
     finally { if (request.current === controller) { request.current = null; setPending(false); } }
   }
-  return { draft, loading, pending, error, readKind, saved, setSaved, composing, canEdit, edit, save, cancel, reload, companyId: scope ? "company-" + scope.workspaceId : "" };
+  return { draft, savedSlug, loading, pending, error, readKind, saved, setSaved, composing, canEdit, edit, save, cancel, reload, companyId: scope ? "company-" + scope.workspaceId : "" };
 }

@@ -96,3 +96,7 @@ G15 이후 전체 회귀와 문서 정리를 끝냈다. G16 이후는 시작하�
 ### 공통 셸 최종 캡처 회귀
 
 최종 코드에서 `CAPTURE_OUTPUT=.../evidence/g15/g14-regression node scripts/capture-app-shell.mjs` 및 같은 경로의 `compare-app-shell.py`를 실행했다. 12화면/원본5쌍, 3500요청·API/외부·오류0. 원본 사이드바 조건은 체험 띠를 UI에서 닫고 비교했으며 G14 과거 캡처는 보존했다. [최종 셸 캡처](evidence/g15/g14-regression/).
+
+### G01~G15 감사 후 재점검 (2026-11-21)
+
+전체 Discard 뒤 주소 잠금 해제, 최신 부모 국가 동기화, 저장된 공개 slug 이동의 세 결함을 수정했다. [이번 수정·검증·잔여 판정](G01_G15_RECHECK_RESULT.md)을 최신 기록으로 참조한다. 위 실행 수치는 과거 단계의 기록이며 이번 통과 수와 합산하지 않는다. 전체 Goal 완료로 승격하지 않는다.

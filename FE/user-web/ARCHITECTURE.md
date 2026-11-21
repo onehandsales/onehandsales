@@ -78,7 +78,7 @@ G09 `public-company`: 정적 회사 소개/정책 발췌/외부 안내를 분리
 
 ### G10 가상 인증 경계
 
-`features/mock-auth`: AuthStore의 메모리 계정·digest, 취소 가능한 로컬 지연, 가입 hook/입력 UI. `AppProviders`가 runtime/auth 수명을 조립한다. store.connect는 React 효과 수명에서 구독을 해제한다. 일반 session/workspace/revision 변경은 진행 인계/도전을 폐기하고 resetGeneration 변경은 계정 seed도 복원한다. 선택 intent만 새 actor/workspace/revision으로 복사하며 PublicProvider/InvoiceProvider의 reset 정책을 해제하지 않는다. RouteFrame은 실제 verify-email 이탈을 감지하고 StrictMode 효과 재연결을 이탈로 취급하지 않는다. G13 실제 온보딩과 G14 최종 목적지는 후속 연결 대기다.
+`features/mock-auth`: AuthStore의 메모리 계정·digest, 취소 가능한 로컬 지연, 가입 hook/입력 UI. `AppProviders`가 runtime/auth 수명을 조립한다. store.connect는 React 효과 수명에서 구독을 해제한다. 일반 session/workspace/revision 변경은 진행 인계/도전을 폐기하고 resetGeneration 변경은 계정 seed도 복원한다. 선택 intent만 새 actor/workspace/revision으로 복사하며 PublicProvider/InvoiceProvider의 reset 정책을 해제하지 않는다. RouteFrame은 실제 verify-email 이탈을 감지하고 StrictMode 효과 재연결을 이탈로 취급하지 않는다. G10 당시 후속이던 G13 목 온보딩과 G14 최종 목적지는 연결했다. 현재 Pause/재진입·새 이동 의도는 [목 상태 정책](../../TODO/BONSAI_FE_MOCK_PLAN/COMMON/MOCK-UI-STATE.md)을 따른다.
 
 G11은 mock-auth 저장소의 같은 account/digest로 로그인한다. prepare의 generation/revision/AbortSignal을 commit 전에 검사한다. 2FA는 성공 전 세션을 열지 않고 도전 ID 교체/취소로 오래된 확인을 차단한다. 로그아웃 성공만 revision을 바꾸며 보호 경계는 안전한 pathname+search+hash를 로그인에 전달한다. 계정 메뉴의 후속 업무는 명시적 목 경계다.
 

@@ -32,6 +32,8 @@ ViewType은 11종이지만 본문은 TABLE/KANBAN/LIST에 구현이 집중되어
 
 ## User Web
 
+최신 FE 상태(2026-11-21): G01~G15 관찰 범위 목 구현 후 감사 결함 5건·G13 복귀 정책·문서를 보완했다. 타입/lint/build·unit42/42·개발/빌드 Chromium90/90씩 통과, 실제 API/외부 요청0. [재점검 결과](../../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_G15_RECHECK_RESULT.md). 원본/시각/환경·R 전체 대기를 유지한다. 아래 표는 2026-11-15의 이전 실행 구조이며 현재 목 화면 목록은 [User Web README](../../../FE/user-web/README.md)를 따른다. Backend/DB/Admin 상태는 이번에 재검증하지 않았다.
+
 | route | 현재 역할 |
 | --- | --- |
 | `/app` | 기본 Workspace로 이동 |

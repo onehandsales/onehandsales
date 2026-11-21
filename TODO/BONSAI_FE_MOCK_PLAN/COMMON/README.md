@@ -1,5 +1,7 @@
 # 공통 문서
 
+현재 동작·검증 갱신: [G01~G15 감사 후 재점검](../RESULTS/G01_G15_RECHECK_RESULT.md). 기존 원본/시각/환경 대기는 유지한다.
+
 현재 범위는 [UX/UI 재현 기준](UXUI-REPLICATION.md)을 따른다. 화면과 로컬 목만 구현하며 API/Backend/DB 작업은 포함하지 않는다.
 
 - [사용자 흐름](USER-FLOW.md): 행위자·시작·정상 종료·복귀와 객체 연결.
