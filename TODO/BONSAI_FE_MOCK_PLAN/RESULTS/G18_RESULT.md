@@ -119,3 +119,7 @@ Bonsai Web / `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, Flow `08d7796f-33e4-4742-9a
 5. 주소를 회사/팀/재무 경로로 바꾸면 제한. 허용되지 않은 프로젝트 ID도 unavailable. 직접 새 문서 탐색은 메모리 초기화로 로그인 요구.
 6. Logout→Alex 재로그인→Team에서 jon@example.test가 같은 ID의 Joined이고 jon2는 유지되는지 확인.
 7. 다른 시나리오는 Invitation preview controls에서 실패/지연/만료를 명시적으로 선택. 마지막에는 Normal 또는 Reset preview로 복원.
+
+### G19 공통 요소 회귀
+
+전역 New→Client 실제 폼, 고객 Query/store provider, 상세의 Clients 메뉴 선택, 공통 abortable delay 추출을 [G19 결과](G19_RESULT.md)에 기록했다. 현재 셸8+초대5+고객3의 개발/빌드16개씩 통과. 기존 자료/시각/환경 대기는 자동 완료하지 않는다.

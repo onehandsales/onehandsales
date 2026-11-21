@@ -1,6 +1,6 @@
 # User Web 구조
 
-2026-11-21 G17 추가 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
+G19 추가 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
 
 ## 책임과 의존
 
@@ -105,3 +105,7 @@ G15 CompanyStore는 G13 같은 workspace/company와 settingsRevision을 유지�
 ## G17 팀 초대·대기 제거
 
 `app/providers`가 PreviewRuntime을 공유하는 TeamStore/Context를 조립한다. `features/team`의 model/data/hooks/components가 표시 타입·workspace 원본·query/변경 수명·표/메뉴/모달을 각각 소유한다. `pages/team-settings`는 route query와 화면 조합만 맡는다. G15/G16 회사 저장소 및 G13 초대 제안과 팀 멤버십을 합치지 않는다. 저장 전 scope/generation/Abort와 이메일 중복을 재검사하고 삭제는 안정 ID/이메일/revision으로 한정한다. [세부 수명](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G17_RESULT.md).
+
+## G18/G19 목 경계
+
+G18 초대는 기존 Team row ID와 workspace membership을 연결한다. G19 `features/clients`는 고객/연락처/태그의 단일 메모리 원본, Query 조회, 폼 초안·취소 hook과 UI를 분리한다. 운영 회사(G15)와 고객은 별도 ID다. `ClientCreateHost`는 URL query 수명의 Dialog이며 성공에만 같은 ID 상세로 실제 이동한다. G21 프로젝트는 이 공개 소비 경계를 사용해야 한다. G18 제한 접근·새로고침 초기화/로그아웃 후 저장 보존은 유지한다. 현재 결과/미검증은 [G19 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G19_RESULT.md)를 따른다.

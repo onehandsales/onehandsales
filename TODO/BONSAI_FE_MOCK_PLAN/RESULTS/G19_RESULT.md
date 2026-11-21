@@ -1,0 +1,73 @@
+# G19 — 고객 목록·신규 고객·상세 실행 결과
+
+상태: 관찰 범위 목 구현·두 차례 검토·현재 검증 수행. 프로젝트 고객 선택은 G21 연결 대기, 미수록/시각/환경 대기는 별도 유지. 시작 HEAD `553e28be`(G18), 기존 사용자 변경 없음. 실행일은 연속 작업의 2026-11-21~22 KST 기록이다. 사용자 지시로 G19 단독 로컬 커밋하며 push/배포/API/Backend는 제외한다.
+
+## 근거와 범위
+
+[R03 소비 분석](R03_RESULT.md)을 먼저 수행했다. App `c1026782-09a7-45fb-b2d0-7cc1909bf1f4` / bonsai-web, 채택 카탈로그 Latest/2146은 G18 앱 조회를 재사용. 이번 두 flow MCP batch 조회와 ANALYSIS 4·5·8절, 원본 PNG12개를 직접 확인했다. 카탈로그와 제품 빌드/촬영일은 같은 버전이 아니다. 후자는 미확인이다.
+
+| Flow | ID | 단계 및 Screen ID |
+| --- | --- | --- |
+| Adding a new client | a5f7a722-8a0c-4528-966a-903e7e0873fb | 01 `sc_a0fa68609b634defb4a2ccd18b63a4a2`, 02 `sc_40ff225f161846249b5cf8c2c55423b6`, 03 `sc_3e2640e1d9ca4b59a7f1c79cb628a502`, 04 `sc_7435a1d441654b5fa2a8428533fd5d87`, 05 `sc_225e25a9ba6745be98341cf77524fa23`, 06 `sc_b1619b6b9fc3405e8ad67fd26f405b62`, 07 `sc_9e5c9989e48d45459e62cc2fe0b886fb` |
+| Clients | f8191fa7-f2d9-4060-bd47-891b2d627aaa | 01 `sc_a333622d5e8c45e0b19ff4c249dc0aca`, 02 `sc_7f0b669f27f248c9bc800df624d5a8ac`, 03 `sc_531ce252700c43088b29703be32726d6`, 04 `sc_102bdc6203b741afb96bd13d81b43cd8`, 05 `sc_cc68ecaccb72426b8573fca9ece52fc9` |
+
+원본 경로는 `bonsai_analysis/flows/{위 flow}/screens/NN_ScreenID.png`. MCP 메타데이터는 `/tmp/onehandsales-g18-g27/G19/mcp-sources.json`. 새 고객 직후 프로젝트/청구/메모는 비어 있다. 목록은 다른 시점의 두 고객/사진이며 생성 직후 상태와 섞지 않았다. 과거 Clients와 현행 Companies 언급은 구분했으며 현재 사이트/API를 조회하거나 디자인을 혼합하지 않았다.
+
+## 구현과 상태 소유
+
+- `/app/clients`: 검색·이름/연락처 정렬·목록·조회 실패/재시도·빈 상태·검색 무결과·권한 제한. `/app/clients/:clientId`: 같은 고객/기본 연락처/태그와 빈 업무 패널, 이메일 클립보드 복사·실패 안내.
+- 전역 New → Client 및 목록 New Client는 `?create=client` Dialog. 입력/필수 검증·Client/Lead 선택·취소·Escape·포커스·저장 실패 재시도·중복 방지. 성공은 실제 상세로 replace하고 목록에서 같은 ID를 확인한다.
+- `?tab=portal/automations/settings`: 관찰된 소개/Disabled/Branding 상태, 닫는 배너, 브랜드 설정·Support 연결, 태그 사용 건수와 기본 필드3개의 조회. 실제 포털 변경은 G73, 필드/이미지는 G20, 프로젝트는 G21. 연락처 CRUD/보관/삭제/메모/CSV/filter/자동화 편집은 미수록 경계 Dialog와 복귀만 제공한다. 이 안내를 해당 업무 구현 완료로 쓰지 않는다.
+- `features/clients`의 model/seed/store/Query hook/생성 hook/UI와 `pages/clients` 조합을 분리했다. scope별 Query는 같은 저장소를 조회한다. `lib/abortable-delay.ts`로 기존 인증 지연 함수를 이동하고 기존 import는 re-export해 동작을 유지했다. HTTP adapter/새 의존성 없음.
+- 고객 회사는 G15의 운영 회사와 별도다. 고객/연락처/태그는 workspace ID로 격리한다. 제출 UUID 한 개는 고객과 기본 연락처를 한 번만 함께 저장한다. 실패·취소는 부분 저장하지 않는다. 다른 고객의 같은 이메일을 자동 병합하지 않는다.
+- 회사명은 선택이며 공란이면 연락처 이름을 표시명으로만 사용한다. 이름200/이메일254자·이메일 형식/태그 소속 검증은 목 가정. 새 고객은 Active이고 생성 연락처가 Default이다. 역할은 owner/일반 member 허용, G18 초대 협업자는 저장소에서도 거부한다. 실제 서버 정책으로 확정하지 않는다.
+- 저장 데이터는 같은 탭 재로그인에서 유지, workspace 전환 격리, 새 문서/새 탭/Reset에 seed 초기화. 입력 초안은 모달 종료·경로·scope 변경에 폐기, 실패 때 유지. 검색/정렬/탭은 URL이 소유하며 back/forward로 복원한다. empty는 저장 원본을 지우지 않는 읽기 전용 시나리오로, 생성하려면 Normal 복귀를 안내한다.
+- 지연 작업은 abort와 actor/workspace/revision/generation을 저장 직전 다시 확인한다. 중복 버튼 ref와 저장소 제출 ID 양쪽에서 한 번만 반영한다. 이미 생성한 데이터는 새 시나리오 선택으로 삭제하지 않는다.
+
+## 1차 검토 → 수정
+
+코드의 저장 경계·접근·navigation·포커스, 원본과 실제 캡처를 검토했다. 검토와 다음 테스트 실행은 별도 근거다.
+
+1. 최초 lint7오류(조건식 부수 효과/전각 공백)를 명시적 분기·공백 정리로 수정.
+2. 단위 검사 첫60통과/1실패는 Alex에게 없는 `studio-b`를 선택한 fixture 오류였다. 저장소는 올바르게 거부했다. 실제 두 번째 workspace `studio-a-two`로 변경 후61/61 통과.
+3. 생성 저장 때 Query 변경이 폼을 unmount하지 않도록 같은 scope의 이전 조회를 유지했다. scope 자체 변경은 보호 셸의 key로 완전히 교체한다. 생성 성공·빠른 중복·취소/늦은 저장 없음 회귀를 추가했다.
+4. 비교 캡처에서 폼 간격/글자·CTA 크기·목록 열·상세 카드·Settings 행 높이·포털 배너 높이를 조정했다. 상세에서 Clients 사이드바 선택이 유지되게 Dashboard에만 exact 매칭을 적용했다.
+5. 이메일 복사와 포털 배너 닫기를 실제 로컬 동작으로 연결했다. 미수록 외부 URL은 확인된 전체 주소처럼 만들어 내지 않고 미제공 안내로 남겼다.
+6. 첫 캡처 스크립트는 Email의 필수 별표를 exact locator에 누락해 timeout. 수정 후 실행했다. 중간 탭 캡처는 이전 `.clients-body`가 남아 잘못된 탭을 담았으므로 비교 근거에서 제외하고, 목적지 제목과 선택 탭을 기다리도록 수정했다. 최종 탭 캡처는 새로고침/로그인으로 seed2개 상태를 맞췄다. 기능 검증과 캡처 준비 오류를 구분한다.
+
+## 현재 실행한 검증
+
+macOS `FE/user-web`, `eval "$(fnm env --shell zsh)" && fnm use 24.18.0`, Node24.18.0/pnpm8.14.1. 기존5173 PID59363 유지, 검사용 개발5175/빌드4175. Backend 미실행.
+
+- `corepack pnpm typecheck`, `corepack pnpm lint`, `corepack pnpm test`: `typecheck-verified.log`, `lint-verified.log`, `unit-final.log` 통과, **61/61**. 최초 단위/lint 실패는 위와 `*-first.log`에 보존. CSS 마지막 보정 뒤 `corepack pnpm build`도 `build-verified.log` 통과. 기존 chunk>500kB 경고 유지.
+- 첫 영향 개발 검사 `dev-first.log/json`:16/16 통과. 이후 시각/사이드바/복사/배너와 목적지 확인 검사를 보강한 최종 결과는 별도로 기록한다.
+- 최종 영향 개발/빌드 `dev-verified`/`build-browser-verified`: **16/16씩 통과**. 이후 Settings 단수 표기만 `1 Client`로 고친 마지막 대상3개씩도 `dev-label`/`build-label`에 각각3/3 통과. 두 실행을 합쳐 최초19개 통과로 쓰지 않는다. 마지막 타입/lint/build는 `*-verified.log` 통과.
+- 명령: `PLAYWRIGHT_JSON_OUTPUT_FILE=/tmp/onehandsales-g18-g27/G19/dev-verified.json corepack pnpm exec playwright test tests/e2e/clients.spec.ts tests/e2e/app-shell.spec.ts tests/e2e/invitations.spec.ts --workers=2 --reporter=list,json --output=/tmp/onehandsales-g18-g27/G19/dev-verified`. 빌드는 같은 명령에 `-c playwright.preview.config.ts`, 경로를 `build-browser-verified`로 변경했다.
+- G19 신규3개: 실제 New 메뉴/키보드/닫기, 생성·동일ID·검색/무결과·history·reload, 실패 입력 보존/재시도/이중 클릭/지연 취소, read-error/empty/denied/normal·미존재 직접 URL, 탭별 실제 내용, 320×500 긴 한글 폼/필드 경계·합성 composition. G14 셸8개와 G18 초대5개를 회귀 대상으로 포함했다.
+- Unit4개 추가: 고객·연락처 원자적 생성/중복, 실패·abort, scope/reset/협업자 제한과 workspace 격리. 개수만 늘리는 동일 검사는 추가하지 않았다.
+- 실제5173 `node /tmp/onehandsales-g18-g27/G19/capture.mjs`: 최종12 PNG(보고 배열은 별도 scroll 촬영을 제외한11), API/외부0·요청실패0·console오류0. 요청 가로채기/차단/navigation mock 없음. 캡처 마지막 Reset으로 정상 기본값 복원.
+
+## 시각 비교·2차 재검토
+
+- 로컬 원본2880×1800을 MCP 이미지 크기1440×900에 정규화했다. 원본 CSS viewport/DPR은 미확인이며 DPR2라고 확정하지 않는다. 구현 Chromium viewport1440×900/DPR1, 모달/탭/입력/태그·scroll을 명시해 비교했다. 상세 하단은 원본 상단 패널 위치로 추정한 scroll432에 정규화했다.
+- `/tmp/onehandsales-g18-g27/G19/captures/`: `02-list`, `03-empty`, `04-filled`, `05-tagged`, `06-detail`, `07-detail-scroll`, `03-portal`, `04-automations`, `05-settings`, `detail-narrow-320/390/768` PNG.
+- `comparisons/`의 위9개 `*-source.png`, `*-side-by-side.png`, `*-difference.png` 생성 후 병치9개를 직접 봤다. 치수/font/color/URL은 `capture-report.json`에 기록했다. 원본 생성 배경은 Feb6이고 구현은 기존 G14 Feb14 목 대시보드라 배경 차이는 남는다.
+- 추정 CSS: sidebar200/header70, 본문 padding60, 모달460/입력380×40/CTA420×46, 상세 left:right1.74:1/gap90. 기존 Gellix 자산의 원본 파일 동일성은 미확인. 원본과 완전 일치를 주장하지 않는다.
+- 2차 코드 검토: feature/public API 방향, 고객과 운영 회사의 분리, Query 수명, 제출/abort/generation·scope 검증, 실제 링크/메뉴·읽기 전용 empty와 후속 행동 경계를 재확인했다. 테스트 실행 결과는 위 로그와 구분한다. 새 named function/hook/component 한글 책임 주석은18개 파일 검사에서 누락0(`comment-review.json`). 현재 대상에서 중복·취소·ID·접근 결함은 재현되지 않았다. 아래 자료/환경 대기를 유지한 목 범위 커밋 판정이다.
+
+## 남은 차이와 인계
+
+- G21 프로젝트 선택지와 연결 ID 검증, G20 필드/이미지 소비는 해당 Goal에서 이어간다. R03 연락처 CRUD·기본 연락처 변경·메모·보관/삭제는 추가 근거/배정 대기, R03 전체 완료 아님.
+- 폰트 weight/아이콘/브랜드 avatar 원본 파일, 원본 JS 아바타 의미/사진, 태그 선택 과정/05의 pale CTA 의미, 포털 전체 URL/요금제/권한, 모바일/키보드 원본은 미확인이다. DC 이니셜·native tag 체크·empty 상태 문구는 목 가정.
+- 자동화 소개의 잎/장식 자산은 없어서 카드/텍스트 근사만 구현했다. 배지·필드 줄폭·태그 이후 모달 높이·우측 폼 간격·아이콘/Help floating button 등 시각 차이는 남는다. 포털 URL 미제공 안내는 원본 URL을 대체한 명시적 목 경계다.
+- 실제 OS IME·보조기술·Firefox/WebKit·실기기는 미실행. 합성 composition/Chromium 좁은폭 검사를 실제 OS 검증으로 쓰지 않는다. 실제 메일/고객/청구·서버 권한/중복정책·DB·출시는 제외하고 후속 설계 메모로 유지한다.
+
+## 5173 확인 순서
+
+1. `/app/clients` → Continue as Alex → 두 고객 목록. 전역 New → Client 또는 New Client.
+2. 회사명 선택 입력, 이름/Email 입력, Client/Lead 선택 → Add Client를 빠르게 두 번 → 상세 한 개. Clients에서 검색하고 같은 이름/연락처/태그 확인.
+3. Client preview controls → Write error once → 신규 폼 제출 → 오류 후 입력 유지 → 재시도. Slow → 제출/Escape → 늦은 고객이 목록에 생기지 않는지 확인.
+4. Client Portal → 배너 닫기/브랜드 설정 왕복, Automations → 안내/닫기, Settings → 태그 사용 건수와 기본 필드.
+5. 주소 직접 진입·뒤로/앞으로·좁은 화면 확인. 마지막 Normal 또는 Reset preview. 새로고침은 저장 데이터와 인증이 메모리 초기화되는 정책이다.
+
+최종 관찰 요청: 영향 개발45454/빌드645건, 마지막 표기 보정 대상 개발7221/빌드48건(정적 자산). 각 실행 API/외부0·실패0·console오류0이며 `verification-summary.json`에 별도 보존했다. 과거 최초 단위/lint 실패는 삭제하지 않았다.

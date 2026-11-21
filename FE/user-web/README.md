@@ -1,6 +1,6 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: 2026-11-22 KST · R02 G18 소비1흐름13원본 신규 확인, 초대 전용 가입·동일 팀 ID 수락·workspace별 협업자 제한과 최소 Projects/Tasks 목 구현. 두 차례 검토·원본6상태 비교, 타입/lint/unit57/build 및 개발/빌드 영향 회귀 수행. 최초 실패·시간초과·수정 후 대상9개씩 재실행을 결과에서 구분한다. 원본 역할/Settings·시각·OS IME/추가 브라우저 대기와 기존 G01~G17/R 대기 유지. G19 이후는 다음 순차 작업이며 실제 API/Backend/push/배포 없음. [G18 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G18_RESULT.md). 아래 이전 실행 수치는 당시 기록이다.
+최신 상태: R03 G19 소비2흐름12원본 확인, 고객 목록·생성·동일 ID 상세·관찰 탭 목 구현/두 차례 검토·9상태 비교. 타입/lint/unit61/build와 개발/빌드 영향16개씩 검증. 최초 단위 fixture 실패/재실행은 별도 기록. G21 연결·원본/시각/환경 및 기존 G01~G18/R 대기는 유지. G20부터 순차 진행하며 실제 API/Backend/push/배포 없음. [G19 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G19_RESULT.md). 아래 이전 실행 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 

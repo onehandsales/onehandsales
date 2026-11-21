@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "2026-11-22 KST · R02 G18 소비1흐름13원본 신규 확인, 초대 전용 가입·동일 팀 ID 수락·workspace별 협업자 제한과 최소 Projects/Tasks 목 구현. 두 차례 검토·원본6상태 비교, 타입/lint/unit57/build 및 개발/빌드 영향 회귀 수행. 최초 실패·시간초과·수정 후 대상9개씩 재실행을 결과에서 구분한다. 원본 역할/Settings·시각·OS IME/추가 브라우저 대기와 기존 G01~G17/R 대기 유지. G19 이후는 다음 순차 작업이며 실제 API/Backend/push/배포 없음.",
+  "status": "R03 G19 소비2흐름12원본 확인, 고객 목록·생성·동일 ID 상세·관찰 탭 목 구현/두 차례 검토·9상태 비교. 타입/lint/unit61/build와 개발/빌드 영향16개씩 검증. 최초 단위 fixture 실패/재실행은 별도 기록. G21 연결·원본/시각/환경 및 기존 G01~G18/R 대기는 유지. G20부터 순차 진행하며 실제 API/Backend/push/배포 없음.",
   "goals": [
     {
       "id": "G00",
@@ -1111,7 +1111,7 @@
         "R03"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·검토·현재 검증; G21 연결/자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 3,
@@ -1125,7 +1125,26 @@
           "first": 1,
           "last": 5
         }
-      ]
+      ],
+      "result": "../RESULTS/G19_RESULT.md",
+      "verification": {
+        "mcp": "2 flows / 12 screens; Latest/2146 reused from G18",
+        "images_viewed": 12,
+        "visual_comparison": "9 normalized states; remaining differences documented",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "61/61; initial 60/61 fixture failure preserved",
+        "build": "passed",
+        "development_e2e": "16/16; final label-only follow-up recorded in result",
+        "production_e2e": "16/16; final label-only follow-up recorded in result",
+        "real_api_requests": 0,
+        "pending": [
+          "G21 project client selector",
+          "source missing interactions/assets and visual differences",
+          "native IME/assistive technology/additional browsers"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G19/"
+      }
     },
     {
       "id": "G20",
@@ -3416,8 +3435,9 @@
         "G12",
         "G13"
       ],
-      "status": "미착수",
-      "first_gate": "G19"
+      "status": "G19 소비 분석 수행; G20/G21·확장 대기",
+      "first_gate": "G19",
+      "result": "../RESULTS/R03_RESULT.md"
     },
     {
       "id": "R04",
