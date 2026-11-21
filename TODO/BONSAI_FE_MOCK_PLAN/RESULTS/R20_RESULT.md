@@ -19,3 +19,16 @@ MCP 신규조회2흐름/7단계, 두 ANALYSIS 4·5·8절과 실제 PNG7/7 확인
 같은 고객 ID의 목록·상세가 저장된 File/Blob를 표시하며 G15 운영 회사 로고·G73 포털 헤더와 분리한다. Object URL은 표시 컴포넌트 수명에서 해제한다. 저장은 메모리이며 새로고침/새 탭/Reset 초기화, 같은 탭 재로그인 보존, workspace 격리. G19 초대 협업자 제한 유지. 원본 인물 파일 자체는 확보하지 못했으므로 검증용 로컬 이미지를 원본 파일처럼 기록하지 않는다.
 
 R03 연락처/lifecycle, R20 저장 뷰/공유/검색·다른 객체의 필드 타입은 미수행 대기. 기존 공식 문서 기록은 과거 보완 자료이며 이번에 공식 사이트/API/계정을 조회하지 않았다. 서버 영속/미디어 압축/권한/문서 영향은 후속 메모이며 이번 FE 착수 조건이 아니다.
+
+## G22 소비 보완 — 보드·표 조회 상태
+
+신규 MCP2flow7screen과 두 ANALYSIS4/5/8절·PNG7개 직접 확인(21~22일 실행). App/Latest2146은 위 G18 기록 재사용, 제품 빌드/촬영일/viewport·DPR 미확인. `/tmp/onehandsales-g18-g27/G22/mcp-sources.json`.
+
+- Projects `d1b4cb1f-9280-49ad-b60d-b10fc8bf713d`: sc_a333622d5e8c45e0b19ff4c249dc0aca → sc_da6135eadeff44e49c083b563487ddf5 → sc_6b648373d5194687be9bd43d9852a4ed → sc_b9f4747781a74fe98ded34416d1287f3. Dashboard는 진입 문맥이며 G72 전체 재구현 제외. 보드5개 관찰 열, 빈 열 유지/개수/가로 스크롤, 열 +·말줄임 관찰.
+- List `c9dfa93e-36ea-436f-bdef-bc876f4897c5`: sc_3ade80505ba3458cb239c839815b3750 → sc_4ff59456df244ec089728cd491719a8e → sc_e4e08776c0b942a18b26dc14fd258318. Title/Client/Tags/Start Date/Due/Paid. Due/Paid `$0.00`, 날짜와 별도. Title/Start Date 정렬 아이콘. 행 메뉴 View Project/Mark Completed/Archive Project/Delete Project. 실행 결과·확인 폼 미수록.
+
+목 결정: 두 뷰는 같은 ProjectStore ID/고객/태그/단계를 투영한다. G17의3개seed는 보존(원본2개와 차이 명시). 날짜는 ISO day/날짜 없음, 금액은 USD minor-unit 표시0(청구 산식 아님). Sample 태그는 프로젝트 tag ID로 분리하며 일반 고객이나 새 샘플 고객 프로젝트에 자동 부여하지 않는다. 제목·시작일 정렬은 오름/내림+ID동률 안정정렬, 날짜없음 마지막. 검색은 이름/고객/태그 부분 일치; 필터는 단계/고객 한 개씩의 명시한 목 UI, Apply/Cancel/Escape와 초기화. 검색/필터 결과의 열별 개수이며 빈 열은 남는다.
+
+view/q/stage/client/sort/dir을 URL로 보존, 검색만replace·뷰/정렬/필터apply는push. 뒤로/앞으로 같은 조건 복원. 페이지 재진입/직접 URL은 그 URL대로, 새로고침 인증/데이터는 기존 메모리 초기화하되 URL조회조건 유지. 가로스크롤은 현재 가상 actor/workspace/revision 및 검색/필터별 탭메모리,뷰전환/상세복귀 유지,세션전환/reset초기화. 개인/공유 저장뷰·열너비영속은 만들지 않는다.
+
+View Project는 실제상세 연결. 완료/보관/삭제/열관리의 실행 근거는 미수록이므로 현재목데이터를 바꾸지 않는 명시적 미제공 안내와 복귀를 제공하고 R05/G24 소비 검토·확장 배정으로 인계한다. 숨겨진 정책이나 실제삭제를 추정해 만들지 않는다. G23태그편집/단계변경은 이번에 시작하지 않는다. 권한은 G18배정범위 유지, 초대자는 조회만. 원본 모바일/IME/권한/필터폼/정렬수명/금액계산은 관찰확정이 아니다. R20 전체 완료 아님.

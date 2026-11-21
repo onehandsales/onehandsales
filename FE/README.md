@@ -1,6 +1,6 @@
 # FE
 
-현재 User Web은 [G21 프로젝트 생성](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G21_RESULT.md)까지 관찰 범위 목 구현·검증했다. G17/G18/G19 동일 프로젝트 연결, 원본·시각·환경 및 G22~27 업무 연결은 구분해 기록한다. 실제 API/Backend는 없다.
+현재 User Web은 [G22 보드·표 전환](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G22_RESULT.md)까지 목 구현·검증했다. 같은ID/조회조건/초대범위 유지. 원본·시각·환경 및 G23~27 업무 연결은 대기다. 실제API/Backend없음.
 
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 

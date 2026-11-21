@@ -2,10 +2,11 @@ import type { PreviewScope, Scenario } from "@/features/preview";
 import type { TeamProject } from "@/features/team";
 export const projectStages = ["New Lead", "Proposal Sent", "Contract Signed", "In Progress", "In Review"] as const;
 export type ProjectStage = typeof projectStages[number];
-export type Project = { id: string; workspaceId: string; name: string; clientId: string; memberIds: string[]; stage: ProjectStage; revision: number; origin: "client" | "global" | "column" | "seed"; created: { name: string; actor: string; at: string } };
+export type Project = { id: string; workspaceId: string; name: string; clientId: string; memberIds: string[]; stage: ProjectStage; revision: number; startDate: string | null; money: { currency: "USD"; dueMinor: number; paidMinor: number }; tagIds: string[]; origin: "client" | "global" | "column" | "seed"; created: { name: string; actor: string; at: string } };
 export type ProjectDraft = { name: string; clientId: string; origin: "client" | "global" | "column"; stage: ProjectStage };
 export type ProjectState = { version: number; scenario: Scenario };
-export type ProjectView = Project & { clientName: string };
+export type ProjectTag = { id: string; name: string; color: string };
+export type ProjectView = Project & { clientName: string; tags: ProjectTag[] };
 export type ProjectStore = {
   getSnapshot(): ProjectState; subscribe(listener: () => void): () => void; connect(): () => void;
   setScenario(value: Scenario): void; projects(workspaceId: string): TeamProject[];

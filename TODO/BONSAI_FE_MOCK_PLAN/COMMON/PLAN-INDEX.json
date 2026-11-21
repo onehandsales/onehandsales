@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G21 고객/전체/열 프로젝트 생성과 고객·G17 초대 선택·G18 수락 목록을 같은 프로젝트 ID로 연결했다. R03 2흐름11원본 확인·11상태 비교, 타입/lint/unit67/build·개발/빌드 영향30개씩 검증. 초기 실패/수정은 별도 보존하며 원본·시각·환경 대기는 유지한다. G22부터 순차 진행한다.",
+  "status": "G22 보드/표 동일ID·검색/필터/정렬·날짜/금액 분리·행 메뉴/실제 상세·가로스크롤 복원 목 구현. R20 2flow7PNG 확인/6대상상태 비교. 초기 시간초과/접근성/메뉴경계/검사대기 수정은 별도 기록. G23부터 순차 진행하며 원본·시각·환경 대기는 유지한다.",
   "goals": [
     {
       "id": "G00",
@@ -1273,7 +1273,7 @@
         "R20"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 원본/시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 106,
@@ -1287,7 +1287,26 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "result": "../RESULTS/G22_RESULT.md",
+      "verification": {
+        "mcp": "2 flows / 7 screens; catalogue Latest/2146 reused from G18",
+        "images_viewed": 7,
+        "visual_comparison": "6 target states; Dashboard entry excluded; differences recorded",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "69/69",
+        "build": "passed",
+        "development_e2e": "7/7; first 3/7 and second 6/7 retained",
+        "production_e2e": "7/7; first 6/7 retained",
+        "real_api_requests": 0,
+        "pending": [
+          "source filters/lifecycle/column settings",
+          "typography/icons/seed/scroll differences",
+          "native IME/assistive technology/additional browsers"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G22/"
+      }
     },
     {
       "id": "G23",
@@ -4014,7 +4033,7 @@
         "G58",
         "G63"
       ],
-      "status": "G20 소비 분석/값 관리 배정 수행; 다른 소비/저장 뷰·검색 대기",
+      "status": "G20/G22 소비 분석 수행; G23/저장뷰·검색확장 대기",
       "first_gate": "G20",
       "result": "../RESULTS/R20_RESULT.md"
     },

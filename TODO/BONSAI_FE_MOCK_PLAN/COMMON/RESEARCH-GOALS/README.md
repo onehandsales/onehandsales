@@ -1,6 +1,6 @@
 # 추가 분석 R Goal
 
-22개 중 [R01](../../RESULTS/R01_RESULT.md)은 G02~G09, [R02](../../RESULTS/R02_RESULT.md)는 G10~G13·G17~G18 소비 범위 분석을 수행했다. G14/G15 연결 확인과 [G01~G15 재점검](../../RESULTS/G01_G15_RECHECK_RESULT.md)의 목 정책 보완은 R 전체 완료와 구분한다. 미수록 자료·후속 소비 범위가 남아 R01/R02 전체 완료는 대기다. [R03](../../RESULTS/R03_RESULT.md)는 G19/G20/G21 소비 분석을 수행했고 연락처/lifecycle 등 확장 배정은 대기다. [R20](../../RESULTS/R20_RESULT.md)은 G20 소비 분석을 수행했고 저장 뷰/검색 등 나머지는 대기다. R04~R19·R21~R22의 18개는 미착수다. 관련 기능 구현 직전에 이 목록과 해당 G의 R 체크를 확인한다.
+22개 중 [R01](../../RESULTS/R01_RESULT.md)은 G02~G09, [R02](../../RESULTS/R02_RESULT.md)는 G10~G13·G17~G18 소비 범위 분석을 수행했다. G14/G15 연결 확인과 [G01~G15 재점검](../../RESULTS/G01_G15_RECHECK_RESULT.md)의 목 정책 보완은 R 전체 완료와 구분한다. 미수록 자료·후속 소비 범위가 남아 R01/R02 전체 완료는 대기다. [R03](../../RESULTS/R03_RESULT.md)는 G19/G20/G21 소비 분석을 수행했고 연락처/lifecycle 등 확장 배정은 대기다. [R20](../../RESULTS/R20_RESULT.md)은 G20/G22 소비 분석을 수행했고 저장 뷰/검색 등 나머지는 대기다. R04~R19·R21~R22의 18개는 미착수다. 관련 기능 구현 직전에 이 목록과 해당 G의 R 체크를 확인한다.
 
 [UX/UI 재현 기준](../UXUI-REPLICATION.md)을 적용한다.
 

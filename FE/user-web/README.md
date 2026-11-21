@@ -1,6 +1,6 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: G21 고객/전체/열 프로젝트 생성과 고객·G17 초대 선택·G18 수락 목록을 같은 프로젝트 ID로 연결했다. R03 2흐름11원본 확인·11상태 비교, 타입/lint/unit67/build·개발/빌드 영향30개씩 검증. 초기 실패/수정은 별도 보존하며 원본·시각·환경 대기는 유지한다. G22부터 순차 진행한다. [G21 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G21_RESULT.md). 이전 수치는 당시 기록이다.
+최신 상태: G22 보드/표 동일ID·검색/필터/정렬·날짜/금액 분리·행 메뉴/실제 상세·가로스크롤 복원 목 구현. R20 2flow7PNG 확인/6대상상태 비교. 초기 시간초과/접근성/메뉴경계/검사대기 수정은 별도 기록. G23부터 순차 진행하며 원본·시각·환경 대기는 유지한다. [G22 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G22_RESULT.md). 이전수치는당시기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 

@@ -1,0 +1,9 @@
+import { useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { projectStages } from "../model/project-types";
+import type { ProjectStage, ProjectView } from "../model/project-types";
+// 기능 : 필터 초안은 취소 시 폐기하고 적용한 단계·고객 조건만 두 뷰에 전달한다.
+export function ProjectFilters({ stage, clientId, projects, onClose, onApply }: { stage: ProjectStage | ""; clientId: string; projects: ProjectView[]; onClose: () => void; onApply: (stage: string, clientId: string) => void }) {
+  const [draftStage, setStage] = useState<string>(stage); const [draftClient, setClient] = useState(clientId); const clients = [...new Map(projects.map(project => [project.clientId, project.clientName])).entries()];
+  return <Dialog title="Project filters" onClose={onClose} footer={<><button className="client-secondary" onClick={onClose}>Cancel</button><button className="client-primary" type="submit" form="project-filter-form">Apply filters</button></>}><form id="project-filter-form" className="project-filter-form" onSubmit={event => { event.preventDefault(); onApply(draftStage, draftClient); }}><label>Stage<select aria-label="Stage" value={draftStage} onChange={event => setStage(event.currentTarget.value)}><option value="">All stages</option>{projectStages.map(value => <option key={value}>{value}</option>)}</select></label><label>Client<select aria-label="Client" value={draftClient} onChange={event => setClient(event.currentTarget.value)}><option value="">All clients</option>{draftClient && !clients.some(([id]) => id === draftClient) && <option value={draftClient}>Unavailable client</option>}{clients.map(([id, name]) => <option value={id} key={id}>{name}</option>)}</select></label><button type="button" className="client-text-action" onClick={() => { setStage(""); setClient(""); }}>Clear filters</button></form></Dialog>;
+}
