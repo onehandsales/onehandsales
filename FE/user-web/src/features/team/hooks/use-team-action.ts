@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 // 기능 : 모달 한 번의 제출을 잠그고 취소·이탈 이후 성공이나 실패의 화면 반영을 막는다.
 export function useTeamAction() {
   const request = useRef<AbortController | null>(null); const [pending, setPending] = useState(false); const [error, setError] = useState("");
@@ -12,5 +12,7 @@ export function useTeamAction() {
     catch (reason) { if (request.current === current && !current.signal.aborted && !(reason instanceof DOMException && reason.name === "AbortError")) setError(reason instanceof Error ? reason.message : "Unable to update the local team."); }
     finally { if (request.current === current) { request.current = null; setPending(false); } }
   }
-  return { pending, error, setError, run };
+  // 기능 : 명시적 취소는 현재 저장과 오류 표시를 즉시 폐기한다.
+  const cancel = useCallback(function cancel() { request.current?.abort(); request.current = null; setPending(false); setError(""); }, []);
+  return { pending, error, setError, run, cancel };
 }

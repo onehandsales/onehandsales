@@ -1,5 +1,6 @@
 import type { ActorId, PreviewSession } from "@/features/preview/model/preview-types";
 import type { PublicIntent } from "@/features/public-web";
+import type { TeamRow } from "@/features/team";
 
 export type AuthScenario = "normal" | "slow" | "fail-once" | "verify-email" | "two-factor";
 export type AuthAccount = Readonly<{ id: ActorId; email: string; name: string; method: "password" | "google" | "apple"; verified: boolean; setupComplete: boolean; session: PreviewSession }>;
@@ -35,4 +36,5 @@ export type AuthStore = {
   cancelReset(): void;
   completeSetup(id: ActorId): void;
   getAccount(id: ActorId): AuthAccount | undefined;
+  acceptInvitation(input: { target: TeamRow; name: string; password: string }, revision: number, signal: AbortSignal, claim: (name: string) => TeamRow): Promise<AuthAccount>;
 };

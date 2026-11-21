@@ -1,6 +1,6 @@
 # FE
 
-현재 User Web 목 구현·검증은 [G17 팀 초대·대기 제거 결과](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G17_RESULT.md)를 따른다. 원본/시각/환경·기존 G01~G16/R 대기와 G18 이후 미착수를 구분한다. 실제 인증/API/메일/Backend 연결은 없다.
+현재 User Web은 [G18 초대 수락·협업자 접근 결과](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G18_RESULT.md)까지 관찰 범위 목 구현·검증을 수행했다. G18 최소 프로젝트/작업의 후속 연결·원본/시각/환경과 기존 G01~G17/R 대기는 유지한다. G19부터 순차 진행하며 실제 인증/API/메일/Backend 연결은 없다.
 
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 

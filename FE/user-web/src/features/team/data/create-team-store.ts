@@ -33,7 +33,7 @@ export function createTeamStore(preview: PreviewRuntime): TeamStore {
   // 기능 : 원본 조회에 로딩·빈 상태·권한·일회 실패를 제공한다.
   async function read(scope: PreviewScope, signal: AbortSignal) {
     await wait(scope, signal, 120);
-    if (state.scenario === "denied") throw new TeamReadError("denied", "This team is unavailable in the local permission scenario.");
+    if (state.scenario === "denied" || preview.getSnapshot().session?.memberships?.[scope.workspaceId]?.invitation) throw new TeamReadError("denied", "This team is unavailable in the local permission scenario.");
     if (state.scenario === "read-error" && fail) { fail = false; throw new TeamReadError("read", "Unable to load the local team. Please try again."); }
     if (state.scenario === "empty") return [];
     const value = structuredClone(rows(scope.workspaceId));
@@ -67,5 +67,18 @@ export function createTeamStore(preview: PreviewRuntime): TeamStore {
   function subscribe(listener: () => void) { listeners.add(listener); return function unsubscribe() { listeners.delete(listener); }; }
   // 기능 : React가 참조 안정성이 있는 현재 스냅샷을 읽게 한다.
   function getSnapshot() { return state; }
-  return { subscribe, getSnapshot, connect, setScenario, setFixture, fixture, projects: teamProjects, read, invite, remove };
+  // 기능 : 초대 링크가 가리키는 같은 팀 행만 복사하고 철회·미존재를 구분한다.
+  function invitation(workspaceId: string, id: string) {
+    const row = rows(workspaceId).find(item => item.id === id);
+    if (!row) return null;
+    return structuredClone(state.scenario === "expired" && row.status === "pending" ? { ...row, status: "expired" as const } : row);
+  }
+  // 기능 : 인증 검증 뒤 동기 저장 구간에서 미변경 Pending만 같은 ID의 가입 멤버로 바꾼다.
+  function accept(target: TeamRow, name: string) {
+    const current = invitation(target.workspaceId, target.id);
+    if (!current || current.status !== "pending" || current.revision !== target.revision || current.email !== target.email || current.role === "Owner") throw new Error("This invitation is unavailable, expired, removed or already accepted.");
+    const joined: TeamRow = { ...current, name, status: "joined", joinedOn: "Feb 8, 2024", revision: current.revision + 1 };
+    teams.set(target.workspaceId, rows(target.workspaceId).map(row => row.id === joined.id ? joined : row)); publish(); return structuredClone(joined);
+  }
+  return { subscribe, getSnapshot, connect, setScenario, setFixture, fixture, projects: teamProjects, read, invite, remove, invitation, accept };
 }

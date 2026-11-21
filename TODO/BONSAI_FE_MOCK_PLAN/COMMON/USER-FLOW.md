@@ -57,3 +57,7 @@ Desk·Custom Header·폰트/색·미관찰 크기·다른 White Label은 상태�
 ## G17 팀 관리의 현재 경로
 
 Settings/계정 메뉴 Team → `/app/settings/team`, Invite Team → `?invite=1`. 기존 `/app/pending/team`은 목록으로 replace한다. 실제 보호 인증/온보딩 returnTo를 재사용하고 query는 모달 열림만 소유한다. 취소/성공은 query를 replace로 제거하며 뒤로/앞으로 재진입은 빈 초안이다. 저장 목록은 같은 workspace에 유지한다. Pending 행 메뉴→확인→정확한 ID 제거, 실패/재시도/취소와 동명이인 보존을 [G17 결과](../RESULTS/G17_RESULT.md)에 기록한다. G13 이메일 제안은 자동 편입하지 않으며 G18 수락/협업자 접근은 미착수다.
+
+## G18 연결 갱신 (2026-11-22)
+
+G17 Team preview controls → `/invite/:workspaceId/:invitationId` → 다른 이메일은 로그아웃, 새 계정은 초대 전용 입력, 기존 계정은 로그인 returnTo `/app/invitations/...` → 같은 Pending ID 수락 → 허용 프로젝트/작업. 과거 일반 가입의 다른 이메일을 하나의 성공 이력으로 합치지 않는다. [G18 결과](../RESULTS/G18_RESULT.md)·[R02 분석](../RESULTS/R02_RESULT.md). 미관찰 동작은 명시한 목 정책이며 서버/API/DB 확정이 아니다.

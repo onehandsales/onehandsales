@@ -1,9 +1,11 @@
 export type Scenario = "normal" | "slow" | "read-error" | "write-error" | "empty" | "denied";
 export type ActorId = "preview-a" | "preview-b" | `preview-user-${number}`;
+export type InvitationAccess = { teamRowId: string; role: "Collaborator" | "Partner"; projectIds: string[]; allProjects: boolean };
 export type PreviewSession = {
   readonly id: ActorId;
   readonly name: string;
   readonly role: "owner" | "member";
+  readonly memberships?: Readonly<Record<string, { role: "owner" | "member"; invitation?: InvitationAccess }>>;
   readonly workspaces: readonly { readonly id: string; readonly name: string }[];
 };
 export type PreviewState = {

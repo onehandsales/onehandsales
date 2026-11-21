@@ -1,3 +1,5 @@
+import { InvitationPage } from "@/pages/invitation";
+import { CollaborationPage } from "@/pages/collaboration";
 import { TeamSettingsPage } from "@/pages/team-settings";
 import { BrandingSettingsPage } from "@/pages/branding-settings";
 import { CompanySettingsPage } from "@/pages/company-settings";
@@ -42,6 +44,8 @@ import { WorkspaceBoundary, WorkspaceContentScope, SharedBoundary, RouteFailure 
 
 export const router = createBrowserRouter([{
   element: <RouteFrame />, errorElement: <RouteFailure />, children: [
+    { path: "/invite/:workspaceId/:invitationId", element: <InvitationPage /> },
+    { path: "/app/invitations/:workspaceId/:invitationId", element: <InvitationPage /> },
     { path: "/u/:slug", element: <PublicProfilePage /> },
     { path: "/onboarding", element: <OnboardingPage /> },
     { element: <AuthLayout />, children: [{ path: "/auth/continue", element: <AuthContinuePage /> }, { path: "/password/reset", element: <ResetRequestPage /> }, { path: "/password/new", element: <NewPasswordPage /> }, { path: "/verify-email/request", element: <AuthFuturePage /> }, { path: "/signup", element: <SignupPage /> }, { path: "/login", element: <LoginPage /> }, { path: "/two-factor", element: <TwoFactorPage /> }, { path: "/verify-email", element: <EmailVerificationPage /> }] },
@@ -65,6 +69,7 @@ export const router = createBrowserRouter([{
     { element: <WorkspaceBoundary />, children: [
       { element: <AppShell />, children: [
       { element: <WorkspaceContentScope />, children: [
+      { path: "/app/projects", element: <CollaborationPage /> }, { path: "/app/projects/:projectId", element: <CollaborationPage /> }, { path: "/app/tasks", element: <CollaborationPage /> }, { path: "/app/settings/profile", element: <CollaborationPage /> },
       { path: "/app/pending/team", element: <Navigate replace to="/app/settings/team" /> }, { path: "/app/pending/:destination", element: <AppFuturePage /> }, { path: "/app/settings/company", element: <CompanySettingsPage /> }, { path: "/app/settings/branding", element: <BrandingSettingsPage /> }, { path: "/app/settings/team", element: <TeamSettingsPage /> },
       { path: "/app", element: <WorkspaceEntryPage /> },
       { path: "/app/preview", element: <WorkspacePage /> },

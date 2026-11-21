@@ -168,9 +168,30 @@ export function createAuthStore(preview: PreviewRuntime): AuthStore {
   function completeSetup(id: ActorId) { const record = [...records.values()].find(entry => entry.account.id === id); if (record) { record.account = { ...record.account, setupComplete: true }; publish({}); } }
   // 기능 : 공개 소비자가 credential 저장소를 직접 수정하지 못하도록 계정 복사본만 제공한다.
   function getAccount(id: ActorId) { const account = [...records.values()].find(record => record.account.id === id)?.account; return account ? structuredClone(account) : undefined; }
+  // 기능 : 초대 대상과 현재 계정을 대조한 뒤 팀 수락·계정·작업공간 세션을 한 동기 구간에서 반영한다.
+  const acceptInvitation: AuthStore["acceptInvitation"] = async function acceptInvitation(input, revision, signal, claim) {
+    const submittedGeneration = generation; const target = structuredClone(input.target); const email = target.email.toLowerCase();
+    const current = preview.getSnapshot().session; const record = records.get(email);
+    if (current && (!record || record.account.id !== current.id)) throw new Error("This invitation belongs to another email. Sign out before continuing.");
+    if (!current && record) throw new Error("This email already has a local account. Log in to accept this invitation.");
+    if (record?.account.session.workspaces.some(workspace => workspace.id === target.workspaceId)) throw new Error("This account already belongs to this workspace.");
+    const name = record?.account.name ?? input.name.trim();
+    if (!record) { const errors = validateSignup(email, name, input.password, true); if (Object.keys(errors).length) throw new Error(Object.values(errors)[0]); }
+    const passwordDigest = record?.passwordDigest ?? await digestSample(input.password);
+    await prepare(revision, signal, submittedGeneration);
+    if (!record && records.has(email)) throw new Error("This email already has a local account. Log in to continue.");
+    // 1. 실패 가능한 초대 검사를 먼저 마친다. 이후에는 await 없이 두 저장소와 세션을 연결한다.
+    const joined = claim(name);
+    if (joined.role === "Owner") throw new Error("An owner invitation is unavailable.");
+    const id: ActorId = record?.account.id ?? `preview-user-${++sequence}`;
+    const oldSession = record?.account.session;
+    const memberships = { ...Object.fromEntries((oldSession?.workspaces ?? []).map(workspace => [workspace.id, { role: oldSession!.role }])), ...oldSession?.memberships, [joined.workspaceId]: { role: "member" as const, invitation: { teamRowId: joined.id, role: joined.role, projectIds: [...joined.projectIds], allProjects: joined.allProjects } } };
+    const account: AuthAccount = { id, email, name, method: record?.account.method ?? "password", verified: true, setupComplete: record?.account.setupComplete ?? true, session: { id, name, role: "member", memberships, workspaces: [{ id: joined.workspaceId, name: "Joe Studio" }, ...(oldSession?.workspaces ?? [])] } };
+    records.set(email, { account, passwordDigest }); openAccount(account); return structuredClone(account);
+  };
   // 기능 : React 구독에는 안정된 스냅샷 참조를 제공한다.
   function getSnapshot() { return state; }
   // 기능 : 계정 상태 구독을 등록하고 종료 시 제거한다.
   function subscribe(listener: () => void) { listeners.add(listener); return function unsubscribe() { listeners.delete(listener); }; }
-  return { getSnapshot, subscribe, connect, setScenario, register, verifyEmail, expireEmailChallenge, cancelEmailChallenge, getAccount, completeSetup, login, verifyFactor, expireFactor, renewFactor, cancelFactor, logout, expireSession, clearNotice, requestReset, resetPassword, expireReset, cancelReset };
+  return { getSnapshot, subscribe, connect, setScenario, acceptInvitation, register, verifyEmail, expireEmailChallenge, cancelEmailChallenge, getAccount, completeSetup, login, verifyFactor, expireFactor, renewFactor, cancelFactor, logout, expireSession, clearNotice, requestReset, resetPassword, expireReset, cancelReset };
 }

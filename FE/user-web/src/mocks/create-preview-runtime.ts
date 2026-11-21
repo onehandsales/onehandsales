@@ -77,7 +77,7 @@ export function createPreviewRuntime(): PreviewRuntime {
     if (!state.session?.workspaces.some((workspace) => workspace.id === id)) {
       throw new PreviewError("denied", "Workspace unavailable in this preview.");
     }
-    publish({ ...state, workspaceId: id });
+    publish({ ...state, session: { ...state.session, role: state.session.memberships?.[id]?.role ?? state.session.role }, workspaceId: id });
   }
   // 기능 : 시나리오 변경으로 기존 비동기 결과와 초안을 무효화한다.
   function setScenario(scenario: Scenario) {

@@ -172,3 +172,7 @@ python3 /tmp/onehandsales-g17/summarize.py
 5. Next removal fails에서 실패·재시도, Slow에서 처리 중 Escape/뒤로 이탈을 확인한다. 메뉴 화살표/Home/End/Escape·프로젝트 chip 해제·모달 Tab을 확인한다.
 6. Preview controls의 workspace/Session 변경·로그아웃·같은 계정 복귀로 목록 격리를 확인한다. 새로고침/새 탭은 다시 가상 로그인이 필요하다.
 7. 검증 종료 시 Team scenario Normal, 별도 검증 탭에서 Reset preview로 초기화한다. 사용자 기존 탭/입력을 강제로 초기화하지 않는다.
+
+## G18 연결 회귀 (2026-11-22)
+
+[G18 결과](G18_RESULT.md)에서 workspace별 초대 membership, 제한 셸/직접 URL과 기존 세션·설정·팀 동작을 함께 검증했다. 기존 관찰/시각/환경 대기는 유지한다. G17 폼은 빠른 필드 선택의 이전 초안 덮임을 피하도록 함수형 갱신을 적용했다. G14 404 검증은 URL뿐 아니라 실제 목적지 본문·자산 준비를 확인하도록 보완했다. 개발 최초 실패/timeout와 최종 대상9개 재실행을 과거 검증 통과 수치에 합치지 않는다.

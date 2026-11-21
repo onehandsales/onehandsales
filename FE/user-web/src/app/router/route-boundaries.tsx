@@ -1,4 +1,5 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { invitationAccess } from "@/features/preview";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
 import { QueryScope } from "../providers/query-scope";
 import { useMockAuth } from "@/features/mock-auth";
@@ -9,7 +10,11 @@ export function WorkspaceBoundary() {
   const { store } = useMockAuth();
   const location = useLocation();
   if (!state.session) return <Navigate replace to={"/login?returnTo=" + encodeURIComponent(location.pathname + location.search + location.hash)} />;
-  if (!store.getAccount(state.session.id)?.setupComplete) return <Navigate replace to={"/onboarding?returnTo=" + encodeURIComponent(location.pathname + location.search + location.hash)} />;
+  if (!invitationAccess(state) && !store.getAccount(state.session.id)?.setupComplete) return <Navigate replace to={"/onboarding?returnTo=" + encodeURIComponent(location.pathname + location.search + location.hash)} />;
+  if (invitationAccess(state)) {
+    if (location.pathname === "/app") return <Navigate replace to="/app/projects" />;
+    if (!/^\/app\/(projects(?:\/[^/]+)?|tasks|settings\/profile|pending\/time-tracking)$/.test(location.pathname)) return <main className="page-content"><h1>Workspace access restricted</h1><p>This local invitation allows assigned projects and tasks. Company, financial and team management pages are unavailable.</p><Link to="/app/projects">Return to assigned projects</Link></main>;
+  }
   return <Outlet />;
 }
 

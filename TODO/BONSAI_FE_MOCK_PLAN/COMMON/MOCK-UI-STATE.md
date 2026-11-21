@@ -69,3 +69,7 @@ FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목
 ## G17 멤버 초대·대기 제거 (2026-11-21)
 
 [G17 결과](../RESULTS/G17_RESULT.md): 팀 목록은 workspace별 메모리, 초안은 모달 수명, 목록 조회는 hook, 변경 잠금/Abort는 action hook, 정확한 ID·이메일·revision과 scope/generation 검사는 store가 소유한다. 같은 탭 재로그인은 저장 목록만 유지하고 reload/new tab/Reset은 seed 초기화한다. G13의 Company.invites는 제안 그대로이며 G17 Pending으로 자동 변환하지 않는다. 초대 성공은 Pending만 생성하고 실제 메일/Joined/역할·구독을 바꾸지 않는다. owner 변경 허용/member 조회 전용·프로젝트 선택/중복/만료·실패 UI는 명시적 목 정책이다. 실패 재시도 중 오류 영역을 유지해 버튼 이동에 따른 의도하지 않은 모달 취소를 막는다.
+
+## G18 연결 갱신 (2026-11-22)
+
+수락 성공 직전에 Pending ID/revision/대상/만료를 재검사하고 AuthStore/TeamStore를 동기 반영한다. 초대 membership은 workspace별로 분리하며 기존 소유 작업공간의 역할·사업 설정 상태를 보존한다. 새로고침/새 탭/Reset은 seed, 같은 탭 로그아웃 후 저장은 유지하고 입력은 폐기한다. 필터/row menu·Settings의 미수록 본문은 후속 근거 대기다. [G18 결과](../RESULTS/G18_RESULT.md)·[R02 분석](../RESULTS/R02_RESULT.md). 미관찰 동작은 명시한 목 정책이며 서버/API/DB 확정이 아니다.
