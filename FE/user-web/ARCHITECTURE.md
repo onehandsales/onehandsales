@@ -113,3 +113,7 @@ G18 초대는 기존 Team row ID와 workspace membership을 연결한다. G19 `f
 ## G20 필드·이미지 경계
 
 고객 저장소의 workspace별 필드 정의와 고객별 값은 서로 다른 ID/revision을 갖는다. `ClientEdit`는 속성별 원자적 변경이며 이름/값/이미지를 통째 초안으로 덮지 않는다. 필드 삭제 tombstone은 늦은 추가/값 저장을 거부한다. 이미지 Blob은 메모리에만 저장하고 `useObjectUrl`은 표시 수명에 URL을 생성/해제한다. 업로드/HTTP adapter는 없다. [G20 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G20_RESULT.md)에 관찰/목 가정과 검증을 구분한다.
+
+## G21 프로젝트 원본
+
+`features/projects`가 workspace별 프로젝트/생성활동/제출 ID를 소유한다. 고객 원본은 Clients public `client()`로 조회하고 Team은 ProjectStore의 최소 프로젝트 투영을 구독한다. 기존 팀 seed ID를 보존하며 초대 접근 범위는 저장된 프로젝트 ID로 필터한다. 고객 상세는 페이지에서 ClientProjects를 주입해 feature 순환 의존을 피한다. 생성 hook이 abort·초안, query가 조회 수명, 저장소가 재검증/원자 저장을 담당한다. [G21 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G21_RESULT.md).

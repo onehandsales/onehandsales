@@ -56,5 +56,7 @@ export function createClientStore(preview: PreviewRuntime): ClientStore {
   function getSnapshot() { return state; }
   // 기능 : 고객 변경 구독과 해제를 짝지어 제공한다.
   function subscribe(listener: () => void) { listeners.add(listener); return function unsubscribe() { listeners.delete(listener); }; }
-  return { getSnapshot, subscribe, connect, setScenario, read, create, edit };
+  // 기능 : 같은 목 저장소의 고객 참조를 프로젝트 저장 직전에 확인한다.
+  function client(workspaceId: string, id: string) { return structuredClone(data(workspaceId).clients.find(value => value.id === id) ?? null); }
+  return { getSnapshot, subscribe, connect, setScenario, read, create, edit, client };
 }

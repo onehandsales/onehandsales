@@ -1,3 +1,5 @@
+import { ProjectCreateHost } from "@/features/projects";
+import "@/styles/projects.css";
 import { CreateMenu } from "@/features/app-shell/create-menu";
 import { ClientCreateHost } from "@/features/clients";
 import { QueryScope } from "../providers/query-scope";
@@ -36,6 +38,7 @@ export function AppShell() {
     <main id="main-content" className="app-main" tabIndex={-1}><Outlet /></main>
     <footer className="app-local-tools"><Link to="/app/preview">Foundation verification</Link><Link to="/">Public site</Link><Link to="/share/sample">Shared preview</Link><PreviewTools /></footer>
     {!invited && params.get("create") === "client" && <QueryScope key={preview.revision + ":" + location.key}><ClientCreateHost /></QueryScope>}
+    {!invited && params.get("create") === "project" && <QueryScope key={preview.revision + ":" + location.key}><ProjectCreateHost /></QueryScope>}
     {mobileOpen && <Dialog title="Workspace menu" onClose={() => setMobileOpen(false)}><AppSidebar mobile /></Dialog>}
   </div>;
 }

@@ -9,3 +9,5 @@ export type { TeamRow } from "./model/team-types";
 export { invitationPath } from "./model/team-invitation-path";
 export { useTeamStore } from "./data/team-context";
 export { useTeamAction } from "./hooks/use-team-action";
+export { teamProjects } from "./data/team-seed";
+export type { TeamStore, TeamProject } from "./model/team-types";

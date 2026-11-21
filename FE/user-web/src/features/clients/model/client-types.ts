@@ -14,6 +14,7 @@ export interface ClientStore {
   read(scope: PreviewScope, signal: AbortSignal): Promise<ClientData>;
   create(scope: PreviewScope, draft: ClientDraft, submissionId: string, signal: AbortSignal): Promise<ClientCompany>;
   edit(scope: PreviewScope, edit: ClientEdit, signal: AbortSignal): Promise<void>;
+  client(workspaceId: string, id: string): ClientCompany | null;
 }
 // 기능 : 고객 폼의 관찰된 필수 입력과 명시한 목 길이·이메일 형식을 검증한다.
 export function clientDraftError(draft: ClientDraft) {

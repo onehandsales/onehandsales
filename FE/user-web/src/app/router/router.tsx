@@ -1,3 +1,4 @@
+import { ProjectsPage } from "@/pages/projects";
 import { ClientsPage } from "@/pages/clients";
 import { InvitationPage } from "@/pages/invitation";
 import { CollaborationPage } from "@/pages/collaboration";
@@ -71,7 +72,7 @@ export const router = createBrowserRouter([{
       { element: <AppShell />, children: [
       { element: <WorkspaceContentScope />, children: [
       { path: "/app/clients", element: <ClientsPage /> }, { path: "/app/clients/:clientId", element: <ClientsPage /> }, { path: "/app/pending/clients", element: <Navigate replace to="/app/clients" /> },
-      { path: "/app/projects", element: <CollaborationPage /> }, { path: "/app/projects/:projectId", element: <CollaborationPage /> }, { path: "/app/tasks", element: <CollaborationPage /> }, { path: "/app/settings/profile", element: <CollaborationPage /> },
+      { path: "/app/pending/projects", element: <Navigate replace to="/app/projects" /> }, { path: "/app/projects", element: <ProjectsPage /> }, { path: "/app/projects/:projectId", element: <ProjectsPage /> }, { path: "/app/tasks", element: <CollaborationPage /> }, { path: "/app/settings/profile", element: <CollaborationPage /> },
       { path: "/app/pending/team", element: <Navigate replace to="/app/settings/team" /> }, { path: "/app/pending/:destination", element: <AppFuturePage /> }, { path: "/app/settings/company", element: <CompanySettingsPage /> }, { path: "/app/settings/branding", element: <BrandingSettingsPage /> }, { path: "/app/settings/team", element: <TeamSettingsPage /> },
       { path: "/app", element: <WorkspaceEntryPage /> },
       { path: "/app/preview", element: <WorkspacePage /> },

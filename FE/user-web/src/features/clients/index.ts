@@ -7,3 +7,5 @@ export { ClientDetail } from "./components/client-detail";
 export { ClientTabs } from "./components/client-tabs";
 export { ClientTools } from "./components/client-tools";
 export type { ClientCompany, ClientContact, ClientData } from "./model/client-types";
+export type { ClientStore } from "./model/client-types";
+export { NewClientDialog } from "./components/new-client-dialog";

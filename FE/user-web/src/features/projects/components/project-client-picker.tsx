@@ -1,0 +1,13 @@
+import { useEffect, useRef, useState } from "react";
+import type { ClientData } from "@/features/clients";
+// 기능 : 고객 이름과 기본 연락처를 같은 ID로 선택하고 신규 고객 폼 진입을 분리한다.
+export function ProjectClientPicker({ data, value, disabled, onChange, onNew }: { data: ClientData; value: string; disabled: boolean; onChange: (id: string) => void; onNew: () => void }) {
+  const [open, setOpen] = useState(false); const root = useRef<HTMLDivElement>(null); const trigger = useRef<HTMLButtonElement>(null); const menu = useRef<HTMLDivElement>(null); const client = data.clients.find(item => item.id === value);
+  // 기능 : 목록이 열렸을 때 초점을 주고 외부 클릭으로 안전하게 닫는다.
+  useEffect(function followOpen() { if (!open) return; menu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    // 기능 : 고객 선택 영역 밖 클릭에서는 선택값을 바꾸지 않고 닫는다.
+    function outside(event: PointerEvent) { if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false); }
+    document.addEventListener("pointerdown", outside); return function dispose() { document.removeEventListener("pointerdown", outside); };
+  }, [open]);
+  return <div className="project-client-picker" ref={root} onKeyDown={event => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); trigger.current?.focus(); } if (open && ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) { event.preventDefault(); const items = Array.from(menu.current?.querySelectorAll<HTMLButtonElement>("button") ?? []); const index = items.findIndex(item => item === document.activeElement); items[event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : (index + (event.key === "ArrowUp" ? -1 : 1) + items.length) % items.length]?.focus(); } }}><span id="project-client-label">Client</span><button ref={trigger} type="button" className="project-client-trigger" aria-label="Select project client" aria-expanded={open} aria-haspopup="listbox" disabled={disabled} onClick={() => setOpen(value => !value)}>{client?.displayName ?? "Select..."}<span aria-hidden="true">⌄</span></button>{open && <div className="project-client-menu" ref={menu}><button type="button" className="project-new-client" onClick={() => { setOpen(false); onNew(); }}>+ New Client</button><div role="listbox" aria-labelledby="project-client-label">{data.clients.map(item => <button role="option" aria-selected={item.id === value} type="button" key={item.id} onClick={() => { onChange(item.id); setOpen(false); trigger.current?.focus(); }}><span>{item.displayName}</span><small>↪ {data.contacts.find(contact => contact.id === item.defaultContactId)?.email}</small></button>)}</div></div>}</div>;
+}

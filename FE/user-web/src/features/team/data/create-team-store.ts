@@ -6,6 +6,7 @@ import type { InviteDraft, TeamFixture, TeamRow, TeamScenario, TeamState, TeamSt
 import { teamProjects, teamSeed } from "./team-seed";
 // 기능 : 작업공간별 초대 원본을 메모리에 보관하고 취소·중복·세션 경합을 저장 직전에 검사한다.
 export function createTeamStore(preview: PreviewRuntime): TeamStore {
+  let projectSource: Parameters<TeamStore["connectProjects"]>[0] | null = null;
   const teams = new Map<string, TeamRow[]>(); const fixtures = new Map<string, TeamFixture>(); const listeners = new Set<() => void>();
   let state: TeamState = { version: 0, scenario: "normal" }; let previous = preview.getSnapshot(); let generation = 0; let counter = 0; let fail = false;
   // 기능 : 구독 화면에 새 불변 스냅샷을 전달한다.
@@ -43,9 +44,10 @@ export function createTeamStore(preview: PreviewRuntime): TeamStore {
   // 기능 : 제출 snapshot을 검증하고 같은 이메일 동시 요청도 한 개의 Pending 초대만 생성한다.
   async function invite(scope: PreviewScope, input: InviteDraft, signal: AbortSignal) {
     assertWrite(scope); const value = structuredClone(input); const error = inviteError(value); if (error) throw new Error(error);
-    const email = value.email.trim().toLowerCase(); const available = teamProjects(scope.workspaceId);
+    const email = value.email.trim().toLowerCase(); const available = projects(scope.workspaceId);
     if (value.projectIds.some(id => !available.some(project => project.id === id))) throw new Error("Select projects from the current workspace.");
     await wait(scope, signal, 300); assertWrite(scope);
+    if (value.projectIds.some(id => !projects(scope.workspaceId).some(project => project.id === id))) throw new Error("A selected project is no longer available.");
     const existing = rows(scope.workspaceId); const duplicate = existing.find(row => row.email.toLowerCase() === email);
     if (duplicate) throw new Error(duplicate.status === "joined" ? "This person is already a member of this local team." : state.scenario === "expired" ? "An expired invitation exists. Remove it before creating a new invitation." : "An invitation already exists for this email.");
     failOnce("invite-error", "Unable to create the local invitation. Your selections are still here. Please try again.");
@@ -80,5 +82,11 @@ export function createTeamStore(preview: PreviewRuntime): TeamStore {
     const joined: TeamRow = { ...current, name, status: "joined", joinedOn: "Feb 8, 2024", revision: current.revision + 1 };
     teams.set(target.workspaceId, rows(target.workspaceId).map(row => row.id === joined.id ? joined : row)); publish(); return structuredClone(joined);
   }
-  return { subscribe, getSnapshot, connect, setScenario, setFixture, fixture, projects: teamProjects, read, invite, remove, invitation, accept };
+  // 기능 : 초대 선택지에 실제 프로젝트 저장소의 같은 ID·이름을 제공한다.
+  function projects(workspaceId: string) { return projectSource ? projectSource.projects(workspaceId) : teamProjects(workspaceId); }
+  // 기능 : 프로젝트 업무가 아직 없는 독립 팀 검사에서는 seed를 유지하고 앱에서는 실제 원본을 구독한다.
+  function connectProjects(source: Parameters<TeamStore["connectProjects"]>[0]) { projectSource = source; const dispose = source.subscribe(publish); publish(); return function disconnectProjects() { dispose(); projectSource = null; }; }
+  // 기능 : 프로젝트 초기 팀에 대기 초대 대신 같은 workspace의 가입 멤버만 제공한다.
+  function joinedMembers(workspaceId: string) { return structuredClone(rows(workspaceId).filter(row => row.status === "joined")); }
+  return { subscribe, getSnapshot, connect, setScenario, setFixture, fixture, projects, read, invite, remove, invitation, accept, joinedMembers, connectProjects };
 }

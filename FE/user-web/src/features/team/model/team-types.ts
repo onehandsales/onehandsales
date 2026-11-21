@@ -14,6 +14,8 @@ export type TeamStore = {
   remove: (scope: PreviewScope, target: TeamRow, signal: AbortSignal) => Promise<void>;
   invitation: (workspaceId: string, id: string) => TeamRow | null;
   accept: (target: TeamRow, name: string) => TeamRow;
+  joinedMembers: (workspaceId: string) => TeamRow[];
+  connectProjects: (source: { projects: (workspaceId: string) => TeamProject[]; subscribe: (listener: () => void) => () => void }) => () => void;
 };
 // 기능 : 목 초대의 이메일과 역할을 검증하되 실제 서비스 필수조건으로 확정하지 않는다.
 export function inviteError(value: InviteDraft): string | null {

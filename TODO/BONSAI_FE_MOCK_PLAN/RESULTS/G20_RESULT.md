@@ -68,3 +68,7 @@ macOS `FE/user-web`, `eval "$(fnm env --shell zsh)" && fnm use 24.18.0`, Node24.
 3. 상세 이미지 → Choose image → 로컬 PNG → Cancel/재진입 → 다시 선택·Save. Clients 목록/상세 왕복에서 같은 저장 이미지 확인. X→취소/제거.
 4. Client preview controls Write error once → 저장 실패 입력 보존 → 재시도 더블클릭. Slow → 저장 중 Escape → 늦은 값/이미지가 반영되지 않는지 확인한다.
 5. 좁은 화면·키보드·뒤로/앞으로 확인 후 Normal/Reset preview. 새로고침은 인증/저장 seed 초기화 정책이다.
+
+### G21 원본 연결·현재 회귀
+
+[G21 결과](G21_RESULT.md): 기존 프로젝트 ID를 유지하며 새 생성 프로젝트를 고객별 목록/전체 보드/팀 초대/초대 수락자 목록에 같은 ID로 연결했다. 영향 대상 개발/빌드30개씩 현재 검증했다. G18의 새 프로젝트 접근 연결은 수행, Tasks는 G25~27 후속 연결. 기존 원본/시각/환경 대기 및 위 과거 기록은 유지한다.
