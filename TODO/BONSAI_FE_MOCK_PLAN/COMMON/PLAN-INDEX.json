@@ -1,6 +1,6 @@
 {
   "date": "2026-11-21",
-  "status": "2026-11-21 KST · G16 문서 브랜드 관찰 범위 목 구현·두 차례 검토·원본6상태 비교 수행. 타입/lint/unit47/build 통과, 전체 개발/빌드 Chromium96/96씩 통과 후 G16 시각 보정 대상6/6씩 추가 통과. 실제 API/외부·요청 실패·console 오류0. 미수록 옵션/자산·잔여 시각·환경 및 기존 G01~G15/R 대기 유지. G17 이후 미착수, 커밋/push/배포 없음.",
+  "status": "2026-11-21 KST · R02 G17 소비2흐름9원본 보완, G17 초대/Pending/정확한 대기 제거 목 구현·두 차례 검토·본체8상태 비교 수행. 타입/lint/unit52/build 통과, 전체 개발/빌드 Chromium103/103씩과 마지막 시각 보정 후 G17 대상7/7씩 통과. 실제 API/외부·요청 실패·console 오류0. 미수록 역할/초대 예외·잔여 시각/환경과 기존 G01~G16/R 대기 유지. G18 이후 미착수; 이번 커밋/push/배포 없음.",
   "goals": [
     {
       "id": "G00",
@@ -996,7 +996,7 @@
         "R02"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·본체8상태 비교·현재 검증 수행; 미수록 역할/초대 예외·잔여 시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 68,
@@ -1010,7 +1010,42 @@
           "first": 1,
           "last": 4
         }
-      ]
+      ],
+      "result": "../RESULTS/G17_RESULT.md",
+      "verification": {
+        "base_commit": "f12f0b97",
+        "route": "/app/settings/team",
+        "source": {
+          "app_id": "c1026782-09a7-45fb-b2d0-7cc1909bf1f4",
+          "flow_ids": [
+            "646bd9c2-add0-414c-8b98-89489f2c43b5",
+            "c615a678-2203-45d5-bcc0-235f6b325516"
+          ],
+          "catalogue": "Latest/2146 newly queried 2026-11-21 KST; capture date/product build unknown",
+          "screens_directly_viewed": 9
+        },
+        "review": "two passes completed",
+        "typecheck": "passed; first invocation from root had no script",
+        "lint": "passed including final visual changes",
+        "unit": "52/52 (13 files)",
+        "build": "passed including final visual changes",
+        "first_target": "3 failed, 1 interrupted, 3 not run; locator errors; retained",
+        "target_run2": "6 passed/1 failed; retry double-click layout shift cancelled modal",
+        "target_run3": "7/7 after fix",
+        "development_e2e": "103/103 full, then 7/7 after scoped visual changes and scroll assertion",
+        "production_e2e": "103/103 full, then 7/7 after scoped visual changes and scroll assertion",
+        "real_api_external_requests": 0,
+        "request_failures": 0,
+        "console_errors": 0,
+        "visual_comparisons": "8 G17 states + 1 dashboard context; 3 narrow captures",
+        "artifact_location": "/tmp/onehandsales-g17 (temporary); no _evidence or restored historical evidence",
+        "pending": [
+          "unrecorded role/options/permission table and invitation exceptions",
+          "resend and joined/owner removal outcomes; G18 acceptance/collaborator access",
+          "exact font/icons/source mobile, fixture email/name differences and inherited shell differences",
+          "native OS IME/assistive technology/Firefox/WebKit/physical devices"
+        ]
+      }
     },
     {
       "id": "G18",
@@ -3323,12 +3358,17 @@
         "G09",
         "G10"
       ],
-      "status": "G10~G13 소비5흐름43단계 분석·목 정책/후속 배정 수행; G14/G15 연결 검증. 원본 미수록·G17/G18·R 전체 대기",
+      "status": "G10~G13 소비43단계와 G17 신규2흐름9단계 분석·목 정책/후속 배정 수행; G14/G15 연결. 미수록·G18/초대 예외·R 전체 대기",
       "first_gate": "G10",
       "result": "../RESULTS/R02_RESULT.md",
       "audit_recheck": {
         "result": "../RESULTS/G01_G15_RECHECK_RESULT.md",
         "scope": "consumer mock behavior and documentation only; no new MCP/source analysis; overall research remains pending"
+      },
+      "g17_consumer": {
+        "result": "../RESULTS/G17_RESULT.md",
+        "analysis": "../RESULTS/R02_RESULT.md",
+        "scope": "inviting and pending removal only; no real mail/auth/API/billing; G18 not started"
       }
     },
     {

@@ -1,0 +1,61 @@
+.team-settings { color:#242a27; }
+.team-settings .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.team-content { padding:40px 60px; min-height:calc(100dvh - 195px); }
+.team-heading { display:flex; justify-content:flex-end; margin-bottom:22px; }
+.team-primary,.team-danger { display:inline-flex; align-items:center; justify-content:center; min-height:40px; border:0; border-radius:5px; padding:9px 16px; font:600 14px/22px "Bonsai Public Gellix",Arial,sans-serif; text-decoration:none; background:#1b9c00; color:#fff; cursor:pointer; }
+.team-dialog .team-primary:disabled, .team-primary:disabled { background:#94d97e; opacity:1; cursor:not-allowed; }
+.team-table-scroll { width:calc(100% + 14px); padding-right:14px; overflow:auto; padding-bottom:150px; margin-bottom:-150px; position:relative; }
+.team-table { width:100%; min-width:1000px; border-collapse:collapse; table-layout:fixed; font-size:14px; line-height:20px; }
+.team-table th { color:#919c95; font-size:12px; line-height:18px; font-weight:600; text-align:left; padding:18px 12px 4px 0; border-bottom:1px solid #e1e6e1; }
+.team-table th:nth-child(1) { width:27%; }.team-table th:nth-child(2) { width:23%; }.team-table th:nth-child(3) { width:15%; }.team-table th:nth-child(4) { width:15%; }.team-table th:nth-child(5) { width:17%; }.team-table th:last-child { width:3%; }
+.team-table td { padding:10px 12px 10px 0; height:55px; border-bottom:1px solid #e6eae6; vertical-align:middle; overflow-wrap:anywhere; }
+.team-table td:last-child { padding:0; }
+.team-name { display:flex; align-items:center; gap:16px; font-weight:600; }.team-name>span:last-child { min-width:0; overflow-wrap:anywhere; }
+.team-avatar { width:32px; height:32px; flex:none; display:grid; place-items:center; border-radius:2px; background:#40464c; color:#fff; font-size:12px; }
+.team-badge { display:inline-block; border-radius:18px; padding:4px 14px; font-size:14px; line-height:20px; font-weight:600; white-space:nowrap; }.team-badge-owner { background:#dff5de; color:#209600; }.team-badge-partner { background:#e5eafa; color:#7394d0; }.team-badge-collaborator { background:#e5eafa; color:#6866c5; }
+.team-row-actions { position:relative; }.team-menu-trigger { display:flex; justify-content:center; align-items:center; width:32px; height:36px; padding:0; background:none; border:0; color:#313833; cursor:pointer; }
+.team-row-menu { position:absolute; right:-14px; top:36px; width:160px; z-index:3; padding:10px 0; border:4px solid #f4f5f3; border-radius:16px; background:#fff; box-shadow:0 6px 10px #13201910; }
+.team-row-menu button { display:block; width:100%; text-align:left; padding:8px 16px; border:0; background:#fff; color:#15241b; font-size:14px; line-height:20px; font-weight:500; }
+.team-row-menu button:hover,.team-row-menu button:focus-visible { background:#f2f5ef; }
+.team-dialog { --dialog-width:460px; top:60px; font:400 14px/20px "Bonsai Public Gellix",Arial,sans-serif; color:#242a27; }
+.team-dialog::backdrop { background:#000c; backdrop-filter:blur(3px); }
+.team-dialog .dialog__surface { border-radius:6px; background:#fcfcfc; max-height:calc(100dvh - 100px); }
+.team-dialog .dialog__content { padding:0; }.team-dialog .dialog__content>h2 { margin:0; padding:31px 40px; border-bottom:1px solid #e4e8e4; text-align:center; font-size:24px; line-height:34px; font-weight:500; }
+.team-dialog .dialog__close { top:0; right:-62px; width:36px; height:36px; color:#adb6ae; border-color:#adb6ae; }
+.team-invite-fields { padding:38px 40px 38px; display:flex; flex-direction:column; gap:30px; }
+.team-invite-fields label,.team-field-label { display:block; font-size:14px; line-height:20px; font-weight:600; }
+.team-invite-fields input,.team-invite-fields select { display:block; width:100%; min-width:0; margin-top:10px; padding:9px 12px; height:40px; border:1px solid #bfc9c1; border-radius:4px; background:#fcfcfc; color:#313833; font:400 16px/20px "Bonsai Public Gellix",Arial,sans-serif; }
+.team-invite-fields input:focus,.team-invite-fields select:focus { border-color:#169a00; outline:1px solid #169a00; }
+.team-invite-fields input::placeholder { color:#9aa19c; }
+.team-dialog .dialog__footer { padding:20px; border-top:1px solid #e4e8e4; }.team-dialog .dialog__footer>.team-primary { width:100%; min-height:46px; font-size:16px; }
+.team-project-picker { position:relative; }.team-project-control { min-height:40px; margin-top:10px; padding:5px 8px; border:1px solid #bfc9c1; border-radius:4px; display:flex; align-items:center; flex-wrap:wrap; gap:5px; }
+.team-project-chip { display:flex; align-items:center; gap:6px; padding:2px 5px; background:#dedede; font-size:14px; line-height:20px; min-width:0; overflow-wrap:anywhere; }
+.team-project-chip button { flex:none; display:grid; place-items:center; width:20px; height:20px; background:none; border:0; padding:0; }
+.team-project-clear { margin-left:auto; display:grid; place-items:center; width:20px; height:28px; border:0; background:none; color:#9da49e; padding:0; }
+.team-project-trigger { min-height:28px; border:0; background:none; color:#939b94; padding:0 3px; display:flex; justify-content:space-between; align-items:center; flex:1; min-width:22px; font:inherit; }
+.team-project-clear + .team-project-trigger { flex:0 0 20px; }
+.team-project-options { padding:8px; margin:4px 0 0; border:1px solid #d4dcd3; border-radius:4px; max-height:150px; overflow:auto; background:#fff; }
+.team-project-options legend { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.team-project-options label { display:flex; align-items:flex-start; gap:8px; font-weight:400; padding:8px 0; }.team-project-options input { width:16px; height:16px; margin:2px 0 0; flex:none; }
+.team-error { color:#b72f30; font-size:14px; line-height:20px; margin:0; overflow-wrap:anywhere; }.team-invite-fields>.team-error { margin-top:-20px; }
+.team-remove-dialog { --dialog-width:400px; }.team-remove-body { padding:30px 40px 40px; }.team-remove-body>p:first-child { margin:0 0 32px; text-align:center; font-size:18px; line-height:24px; overflow-wrap:anywhere; }.team-remove-body strong { font-weight:600; }.team-danger { width:100%; background:linear-gradient(#e2605a,#e15b56); }.team-danger:disabled { opacity:.6; cursor:not-allowed; }.team-remove-body .team-error { margin-bottom:16px; }
+.team-read-state { padding:30px 0; }.team-readonly { font-size:14px; color:#5d6c60; }.team-notice { z-index:5; }.team-tools { margin:30px 60px; font:14px/22px Arial,sans-serif; position:relative; }.team-tools p { max-width:650px; }.team-tools label { max-width:380px; margin-bottom:15px; }
+@media(max-width:760px) {
+ .team-content { padding:24px 20px; }.team-tools { margin:65px 20px 24px; }.team-dialog { top:20px; max-width:calc(100% - 32px); }.team-dialog .dialog__close { top:8px; right:8px; width:30px; height:30px; color:#6a756b; }.team-dialog .dialog__surface { max-height:calc(100dvh - 40px); }.team-dialog .dialog__content>h2 { padding:40px 24px 22px; }.team-invite-fields { padding:30px 24px; gap:28px; }.team-remove-body { padding:28px 24px; }.team-project-chip { font-size:13px; }.team-dialog .dialog__footer { padding:16px; }.team-notice { max-width:calc(100vw - 32px); }
+}
+
+.team-heading>.team-primary { min-width:133px; }.team-project-control>.team-project-chip { max-width:calc(100% - 50px); }.team-invite-fields select { appearance:none; padding-right:32px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23b3bab4' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
+
+/* 이유 : 두 원본의 팀 구성이 다른 비교 시나리오이며 실제 사용자 역할 변경으로 색을 전환하지 않는다. */
+.team-settings[data-team-fixture="inviting"] { background:#fbfbfb; }
+.team-settings[data-team-fixture="removing"] .team-heading>.team-primary { background:linear-gradient(#53a931,#4fa22e); }
+.team-settings[data-team-fixture="removing"] .team-avatar { background:#4d5259; }
+.team-settings[data-team-fixture="removing"] .team-badge-owner { background:#e8f7e6; }
+.team-settings[data-team-fixture="removing"] .team-badge-collaborator { background:#eaeafa; }
+.team-table td:nth-child(2),.team-table td:nth-child(5) { color:#7c847f; font-weight:500; }
+.team-table td:nth-child(4) { font-weight:600; }
+.team-dialog .dialog__close { border-width:1.5px; }.team-dialog .dialog__close svg { stroke-width:2; }
+.team-dialog .team-select-empty { color:#b9c1ba; }.team-dialog select option { color:#313833; }
+.team-project-trigger { color:#b9c1ba; }
+.team-remove-dialog .dialog__surface { background:#fff; }
+.team-remove-dialog.team-remove-dialog::backdrop { background:rgb(0 0 0 / 81%); }

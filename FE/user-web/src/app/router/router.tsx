@@ -1,7 +1,8 @@
+import { TeamSettingsPage } from "@/pages/team-settings";
 import { BrandingSettingsPage } from "@/pages/branding-settings";
 import { CompanySettingsPage } from "@/pages/company-settings";
 import { PublicProfilePage } from "@/pages/public-profile";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { ResetRequestPage, NewPasswordPage } from "@/pages/password-reset";
 import { AuthContinuePage, AuthFuturePage, AppFuturePage } from "@/pages/auth-boundary";
 import { TwoFactorPage } from "@/pages/two-factor";
@@ -64,7 +65,7 @@ export const router = createBrowserRouter([{
     { element: <WorkspaceBoundary />, children: [
       { element: <AppShell />, children: [
       { element: <WorkspaceContentScope />, children: [
-      { path: "/app/pending/:destination", element: <AppFuturePage /> }, { path: "/app/settings/company", element: <CompanySettingsPage /> }, { path: "/app/settings/branding", element: <BrandingSettingsPage /> },
+      { path: "/app/pending/team", element: <Navigate replace to="/app/settings/team" /> }, { path: "/app/pending/:destination", element: <AppFuturePage /> }, { path: "/app/settings/company", element: <CompanySettingsPage /> }, { path: "/app/settings/branding", element: <BrandingSettingsPage /> }, { path: "/app/settings/team", element: <TeamSettingsPage /> },
       { path: "/app", element: <WorkspaceEntryPage /> },
       { path: "/app/preview", element: <WorkspacePage /> },
       { path: "/app/items/:itemId", element: <WorkspacePage /> },

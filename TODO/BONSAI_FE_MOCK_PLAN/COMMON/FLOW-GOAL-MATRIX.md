@@ -168,3 +168,5 @@ G14 40401~02/Hiding sidebar01~03의 목 셸/복구·공개 인증 왕복 검증.
 ### G15 이후 최종 갱신 (2026-11-21)
 
 G15 Adding company details01~08·Uploading logo01~04·Disabling public profile01~03을 같은 회사 목 상태로 구현·원본15쌍 비교했다. G14 공개 인증 왕복과 G13→G15 동일 ID 연결을 검증했다. 미수록·시각·환경 및 후속 Goal 소유는 유지한다. [연속 작업 결과](../RESULTS/G05_G15_RESULT.md).
+
+G17 신규 소비: Inviting a member 5단계 / Settings Removing a user 4단계는 기존 G17 소유권 그대로다. [R02 보완](../RESULTS/R02_RESULT.md)·[G17 결과](../RESULTS/G17_RESULT.md)의 관찰/목/미확인 분리를 따른다. Dashboard 단계는 진입 맥락이며 G72 본문을 G17 구현으로 계산하지 않는다.

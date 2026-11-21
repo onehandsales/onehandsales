@@ -1,6 +1,6 @@
 # User Web 구조
 
-2026-11-21 G16 추가 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
+2026-11-21 G17 추가 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
 
 ## 책임과 의존
 
@@ -101,3 +101,7 @@ G15 CompanyStore는 G13 같은 workspace/company와 settingsRevision을 유지�
 브랜드 저장은 브랜드 필드와 명시적 로고 변경만 최신 회사에 합친다. 로고 편집에만 회사 revision 충돌을 추가 검사한다. G15 회사 저장은 허용 회사 필드만 반영해 branding을 덮지 않는다. 입력/파일은 취소 가능한 화면 초안이고 Save 성공만 기준값을 바꾼다.
 
 `snapshotDocumentBranding`은 저장값의 독립 복사이며 아직 실제 문서 생성 화면이 소비하지 않는다. 단위 fixture의 기존 문서 불변 검사와 후속 G36/G40/G55 이후 연결 대기를 구분한다. 자세한 수명/미확인 옵션/검증은 [G16 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G16_RESULT.md)를 따른다. 실제 API/HTTP adapter/DB 변경은 없다.
+
+## G17 팀 초대·대기 제거
+
+`app/providers`가 PreviewRuntime을 공유하는 TeamStore/Context를 조립한다. `features/team`의 model/data/hooks/components가 표시 타입·workspace 원본·query/변경 수명·표/메뉴/모달을 각각 소유한다. `pages/team-settings`는 route query와 화면 조합만 맡는다. G15/G16 회사 저장소 및 G13 초대 제안과 팀 멤버십을 합치지 않는다. 저장 전 scope/generation/Abort와 이메일 중복을 재검사하고 삭제는 안정 ID/이메일/revision으로 한정한다. [세부 수명](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G17_RESULT.md).

@@ -6,4 +6,4 @@ export const appNavigation = [
   { label: "Tools", items: [{ name: "Invoices", path: "/app/pending/invoices", Icon: MailOpen }, { name: "Proposals", path: "/app/pending/proposals", Icon: Send }, { name: "Contracts", path: "/app/pending/contracts", Icon: FileText }, { name: "Time Tracking", path: "/app/pending/time-tracking", Icon: Clock3 }, { name: "Services", path: "/app/pending/services", Icon: BriefcaseBusiness }, { name: "Forms", path: "/app/pending/forms", Icon: FilePenLine }, { name: "Scheduling", path: "/app/pending/scheduling", Icon: CalendarDays }] },
   { label: "Finances", items: [{ name: "Bookkeeping", path: "/app/pending/bookkeeping", Icon: ChartNoAxesCombined }] },
 ];
-export const appSidebarActions = [{ name: "Invite Team", path: "/app/pending/team", Icon: UserPlus }, { name: "Get 1 Month Free", path: "/app/pending/referral", Icon: Gift }];
+export const appSidebarActions = [{ name: "Invite Team", path: "/app/settings/team?invite=1", Icon: UserPlus }, { name: "Get 1 Month Free", path: "/app/pending/referral", Icon: Gift }];

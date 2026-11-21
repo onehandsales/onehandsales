@@ -1,4 +1,6 @@
-# R02 — G10~G13 소비 분석
+# R02 — G10~G13·G17 소비 분석
+
+최신 소비: [G17 보완 분석](#g17-소비-보완-분석--2026-11-21-kst). 다음 G10~G13 본문은 당시 범위 기록이며, G17의 이번 확인은 별도 절이다. R02 전체 완료는 아니다.
 
 2026-11-21 KST. 가입·로그인/로그아웃·재설정·사업 설정의 시안 분석과 목 정책을 정리했다. 실제 계정 재현 없음. G17/G18 초대 관리·수락·제거는 이번 범위 밖이며 R02 전체 완료가 아니다. 구현/실행 검증은 각 G 결과에서 따로 기록한다.
 
@@ -97,3 +99,37 @@ G10~G13의5흐름43단계 분석을 소비하고 G14 보호 returnTo/가상 인�
 ## G01~G15 감사 후 소비 범위 보완 (2026-11-21)
 
 G13 Pause→이력 복귀는 원래 returnTo(query/hash) 유지, Pause→Go to dashboard는 새 목적지 /app 선택이라는 목 정책을 명시했다. 기존 R02/G13/G14 동작과 일치하며 원본의 실제 복구 정책은 여전히 미확인이다. G15 부모/하위 주소·저장된 프로필 경계 보완은 로컬 폼 정책이다. [재점검 근거와 결과](G01_G15_RECHECK_RESULT.md). 기존 조사·미수록·환경·후속 소비 대기를 유지하고 R02 전체 완료로 처리하지 않는다.
+
+## G17 소비 보완 분석 — 2026-11-21 KST
+
+이번 실행은 HEAD `f12f0b97`에서 시작했다. 기존 G10~G16 기록과 R02 전체 대기는 유지한다. Gummble 앱과 두 플로우를 새로 조회하고 아래 원본 PNG **9/9개를 개별로 직접 열어** 확인했다. 앱 신규 조회는 Bonsai Web `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, 카탈로그 Latest/2146이다. 촬영일·제품 빌드·원본 CSS viewport/DPR은 미확인이다. 현재 공식 도움말·실계정은 이번에 재조회/실행하지 않았다.
+
+| Flow | 신규 확인 Screen ID (순서) | 로컬 원본 |
+| --- | --- | --- |
+| Inviting a member `646bd9c2-add0-414c-8b98-89489f2c43b5` | `sc_a333622d5e8c45e0b19ff4c249dc0aca`, `sc_634224945f334a7489b79db3e68b0a19`, `sc_d59bf1a0438b462ba7d6bfc6d641103c`, `sc_865e3b1009c34b9999af73de640724a1`, `sc_4633bf9cebcf4ee2a1dd5c613aa33d56` | `bonsai_analysis/flows/Inviting a member/screens/` 01~05 |
+| Settings/Removing a user `c615a678-2203-45d5-bcc0-235f6b325516` | `sc_c3ed26151c6f4f72b154852639f26757`, `sc_9e9153cd2e184bca95ad8221af225481`, `sc_cabb20c7541043ae92fb93dbfc992266`, `sc_205004e1f31044eeb1a1e4693a3e85e5` | `bonsai_analysis/flows/Settings/Removing a user/screens/` 01~04 |
+
+MCP 원문 메타데이터: `/tmp/onehandsales-g17/mcp-sources.json` (임시 보관). 두 ANALYSIS의 단계·규칙·미확인과 대조했다. MCP 1440×900 / PNG 2880×1800은 1440×900 비교로 정규화하되 원본 DPR=2로 단정하지 않는다.
+
+### 관찰과 적용 경계
+
+- Invite Team → Settings/Team 배경의 Invite Member. Email, Role, Projects; 이메일만 있을 때 연한 CTA, Collaborator/Design Project with Doe Studio 선택 시 Invite Collaborator. 성공 뒤 이메일을 이름으로 쓰는 1 Project / Invite Pending 행, `Invite sent.` 표시. 수락·실제 발송의 증거가 아니다.
+- 초대 시안 Jane은 Partner/All Projects, 제거 시안 Jane은 Collaborator/프로젝트 없음이다. 두 장면 사이에 역할 변경이 있었다고 창작하지 않는다. 별도 개발용 초기 구성으로 비교한다.
+- 제거 시안은 5행이며 Jon Smith 두 명의 이메일과 가입 상태가 다르다. 메뉴 `Resend Invite` / `Remove`, Confirm Removal의 대상 이메일·접근 철회 안내, Remove Member 후 대상 대기 행만 없어지고 4행과 `Team member removed.`가 보인다.
+- Role 전체 옵션/프로젝트 필수 개수·복수 선택·실패·취소·만료·재발송 결과·모바일·권한표는 미수록이다. Owner/왕관을 실제 권한·과금 증거로 쓰지 않는다. 대시보드의 재무/프로젝트 본문은 G17 대상이 아니며 기존 G13/G14 배경을 유지한다.
+
+### 명시적 로컬 목 정책과 흐름
+
+| 시작·행동 | G17 적용 | 취소·실패·복귀 |
+| --- | --- | --- |
+| 가상 Owner → Invite Team/Team | `/app/settings/team?invite=1` / `/app/settings/team`, 기존 보호 경계 사용 | query는 모달 열림만 보관, 이메일/초안은 URL에 없음. 닫기/성공은 query 제거; 이력 재진입은 빈 초안 |
+| 이메일·역할·프로젝트 → 초대 | Collaborator/Partner만, Collaborator 0개 이상 명시 선택·Partner All Projects라는 제한된 목 가정. 최소 프로젝트 3개는 원본 대시보드 이름을 사용한 고정 ID | 실패는 입력 보존, 닫기/이탈/scope 변경은 요청 취소·초안 폐기. 저장 직전 이메일 중복 재검사 |
+| Pending 행 → Remove | workspace+안정 ID+이메일+행 revision 대조 후 그 행만 제거 | 실패/재시도·X/Escape/배경 취소. 이미 제거/변경된 대상은 오류이며 부활/다른 행 삭제 없음 |
+| Member → Team | 목록 조회만, 변경 제한은 목 정책 | 원본 역할별 권한을 확인한 것으로 쓰지 않음 |
+| 중복·기존 멤버·만료 | 대소문자/공백 정규화 후 같은 workspace 내 중복 거부. 만료 fixture는 별도 표시·제거 후 새 초대 | 자동 Joined/권한 변경·자동 재발송 없음 |
+
+저장 목록은 workspace별 메모리, 초안은 모달 수명이다. 같은 탭 logout/relogin은 저장 목록 유지, 진행 요청·초안·장애는 폐기. reload/new tab/Reset은 seed 초기화. 목 이메일은 `example.test`, 실제 원본 계정 데이터를 fixture로 가져오지 않는다. 초대만으로 actor role/회사/구독/프로젝트 실데이터를 바꾸지 않는다. G13 회사 `invites`는 제안으로 유지하며 G17 목록으로 자동 이동하지 않는다.
+
+재발송·가입 완료 멤버/Owner 제거는 결과 미수록 안내만 제공하며 R02 후속 조사 대상으로 남긴다. 초대 수락·잘못된 계정·철회/만료 링크 접근은 G18에서 소비한다. 실제 토큰 무효화/메일/세션 차단/좌석 과금/서버 권한은 UX/UI 이후 별도 메모다. 이번 분석은 관찰된 G17 구현에 충분하며 R02 전체 완료는 아니다.
+
+G17 소비 결과: 관찰 범위 목 구현·두 차례 검토·시각 비교를 수행했다. 타입/lint/unit52/build, 전체 개발/빌드103개씩, 마지막 시각 보정 후 G17 대상7개씩 통과했다. 최초 선택자 실패·재시도 더블클릭 결함·캡처 준비 대기 수정과 잔여 시각/환경 항목을 [G17 결과](G17_RESULT.md)에 구분해 기록했다. R02 전체와 G18은 완료 처리하지 않았다.

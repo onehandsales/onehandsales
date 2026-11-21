@@ -53,3 +53,7 @@ G14 완료 전에 `랜딩 → 가입 → 온보딩 → 앱`, `공개 페이지 �
 가상 로그인 → `/app/settings/company` → Branding → `/app/settings/branding` → No image/Abstract/Plant·로컬 로고 미리보기 → Save → Account/Branding 재진입. 직접 보호 URL·뒤로/앞으로도 같은 저장값을 읽는다. Cancel save는 입력 유지, Discard/페이지 이탈은 입력 폐기다. 새로고침/새 탭은 기존 메모리 초기화 정책이다.
 
 Desk·Custom Header·폰트/색·미관찰 크기·다른 White Label은 상태를 바꾸지 않는 로컬 안내까지만 제공한다. 새 문서 기본값 복사는 최소 목 시나리오이며 실제 문서 작성/발송/결제 연결은 후속 Goal 대기다. [결과와 수명](../RESULTS/G16_RESULT.md).
+
+## G17 팀 관리의 현재 경로
+
+Settings/계정 메뉴 Team → `/app/settings/team`, Invite Team → `?invite=1`. 기존 `/app/pending/team`은 목록으로 replace한다. 실제 보호 인증/온보딩 returnTo를 재사용하고 query는 모달 열림만 소유한다. 취소/성공은 query를 replace로 제거하며 뒤로/앞으로 재진입은 빈 초안이다. 저장 목록은 같은 workspace에 유지한다. Pending 행 메뉴→확인→정확한 ID 제거, 실패/재시도/취소와 동명이인 보존을 [G17 결과](../RESULTS/G17_RESULT.md)에 기록한다. G13 이메일 제안은 자동 편입하지 않으며 G18 수락/협업자 접근은 미착수다.

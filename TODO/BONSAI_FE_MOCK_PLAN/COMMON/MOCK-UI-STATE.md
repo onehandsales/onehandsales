@@ -65,3 +65,7 @@ FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목
 - 미관찰 Desk/Custom Header·폰트/색·다른 크기/White Label 선택은 안내 Dialog 후 값을 유지한다. 실제 플랜·권한 정책이 아니다.
 - 로고는 로컬 PNG/JPEG/WebP 2MB 이하 목 제한. 읽기/검증/취소/제거/재시도·object URL 해제를 재사용하며 실제 업로드는 없다.
 - 새 문서 기본값은 저장된 회사값을 독립 복사하는 최소 fixture로만 검증했다. 미저장 초안·기존 문서 자동 수정·G07 자동 연결은 없다. 후속 문서 소비 화면은 대기다.
+
+## G17 멤버 초대·대기 제거 (2026-11-21)
+
+[G17 결과](../RESULTS/G17_RESULT.md): 팀 목록은 workspace별 메모리, 초안은 모달 수명, 목록 조회는 hook, 변경 잠금/Abort는 action hook, 정확한 ID·이메일·revision과 scope/generation 검사는 store가 소유한다. 같은 탭 재로그인은 저장 목록만 유지하고 reload/new tab/Reset은 seed 초기화한다. G13의 Company.invites는 제안 그대로이며 G17 Pending으로 자동 변환하지 않는다. 초대 성공은 Pending만 생성하고 실제 메일/Joined/역할·구독을 바꾸지 않는다. owner 변경 허용/member 조회 전용·프로젝트 선택/중복/만료·실패 UI는 명시적 목 정책이다. 실패 재시도 중 오류 영역을 유지해 버튼 이동에 따른 의도하지 않은 모달 취소를 막는다.
