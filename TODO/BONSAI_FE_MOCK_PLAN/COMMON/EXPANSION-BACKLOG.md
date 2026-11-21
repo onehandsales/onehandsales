@@ -27,7 +27,7 @@
 | [R17](<RESEARCH-GOALS/R17.md>) | 고객 포털 로그인 / 목록·상세 / 권한·공유 구현 | [G73 관리자 포털 설정](<GOAL-SPECS/G73.md>) | 분석·후속 구현 배정 대기 |
 | [R18](<RESEARCH-GOALS/R18.md>) | 구독 변경·실패·철회 / 계정 모드·보안 설정 구현 | [G74 설정 탐색·프로필·사진](<GOAL-SPECS/G74.md>), [G75 알림 선호](<GOAL-SPECS/G75.md>), [G76 계정 삭제 확인·로그인 복귀](<GOAL-SPECS/G76.md>), [G77 Client Mode 전환 게이트](<GOAL-SPECS/G77.md>), [G79 플랜 가입·청구 표시](<GOAL-SPECS/G79.md>), [G80 구독 해지 예약](<GOAL-SPECS/G80.md>) | 분석·후속 구현 배정 대기 |
 | [R19](<RESEARCH-GOALS/R19.md>) | 인력 배정 / 업무량 / 휴가 관리의 개별 구현 Goal | 새 구현 Goal 필수; G83 이전 | 분석·후속 구현 배정 대기 |
-| [R20](<RESEARCH-GOALS/R20.md>) | 필드 값 관리 / 저장 뷰·공유 / 검색 확장 구현 | [G20 고객 필드·이미지](<GOAL-SPECS/G20.md>), [G22 보드·표 전환](<GOAL-SPECS/G22.md>), [G23 단계 이동·태그](<GOAL-SPECS/G23.md>), [G66 비용 필터](<GOAL-SPECS/G66.md>), [G71 전역 검색·최근 조회](<GOAL-SPECS/G71.md>) | 분석·후속 구현 배정 대기 |
+| [R20](<RESEARCH-GOALS/R20.md>) | 필드 값 관리 / 저장 뷰·공유 / 검색 확장 구현 | [G20 고객 필드·이미지](<GOAL-SPECS/G20.md>), [G22 보드·표 전환](<GOAL-SPECS/G22.md>), [G23 단계 이동·태그](<GOAL-SPECS/G23.md>), [G66 비용 필터](<GOAL-SPECS/G66.md>), [G71 전역 검색·최근 조회](<GOAL-SPECS/G71.md>) | 고객 필드 값 관리는 G20 구현/검증; 저장 뷰·공유·검색 및 타 객체는 배정 대기(R20_RESULT) |
 | [R21](<RESEARCH-GOALS/R21.md>) | 알림함·메일 / 활동 관리 / 전용 보고서 구현 | [G72 대시보드 요약·활동](<GOAL-SPECS/G72.md>), [G75 알림 선호](<GOAL-SPECS/G75.md>) | 분석·후속 구현 배정 대기 |
 | [R22](<RESEARCH-GOALS/R22.md>) | 연동별 설정 / 키 관리 / AI 검토·적용의 개별 구현 Goal | 새 구현 Goal 필수; G83 이전 | 분석·후속 구현 배정 대기 |
 

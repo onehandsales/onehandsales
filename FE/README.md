@@ -1,6 +1,6 @@
 # FE
 
-현재 User Web은 [G19 고객 결과](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G19_RESULT.md)까지 관찰 범위 목 구현·검증했다. G18 업무 연결/G19 프로젝트 선택·원본/시각/환경 및 기존 대기는 유지한다. G20부터 순차 진행하며 실제 API/Backend는 없다.
+현재 User Web은 [G20 고객 필드·이미지 결과](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G20_RESULT.md)까지 관찰 범위 목 구현·검증했다. G18 업무 연결/G19 프로젝트 연결과 원본·시각·환경 대기는 유지한다. G21부터 순차 진행한다. 실제 API/Backend는 없다.
 
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 

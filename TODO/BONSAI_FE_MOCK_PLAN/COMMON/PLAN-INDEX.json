@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "R03 G19 소비2흐름12원본 확인, 고객 목록·생성·동일 ID 상세·관찰 탭 목 구현/두 차례 검토·9상태 비교. 타입/lint/unit61/build와 개발/빌드 영향16개씩 검증. 최초 단위 fixture 실패/재실행은 별도 기록. G21 연결·원본/시각/환경 및 기존 G01~G18/R 대기는 유지. G20부터 순차 진행하며 실제 API/Backend/push/배포 없음.",
+  "status": "G20 고객 필드 정의·고객별 값·로컬 이미지 저장/취소/실패를 같은 고객 ID로 연결했다. R03/R20 소비2흐름7원본 확인·7상태 비교, 타입/lint/unit64/build·개발/빌드 대상6개씩 검증. 최초 브라우저2실패와 수정 후 재실행을 구분한다. 기존 G01~G19/R 대기와 원본/시각/환경 대기는 유지하며 G21부터 순차 진행한다.",
   "goals": [
     {
       "id": "G00",
@@ -1165,7 +1165,7 @@
         "R20"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 원본/시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 19,
@@ -1179,7 +1179,26 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "result": "../RESULTS/G20_RESULT.md",
+      "verification": {
+        "mcp": "2 flows / 7 screens; Latest/2146 reused from G18",
+        "images_viewed": 7,
+        "visual_comparison": "7 normalized states; corrections and remaining differences documented",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "64/64",
+        "build": "passed",
+        "development_e2e": "6/6; first 4/6 retained separately",
+        "production_e2e": "6/6",
+        "real_api_requests": 0,
+        "pending": [
+          "source missing intermediate states/image asset",
+          "remaining typography/icons/detail alignment",
+          "native IME/assistive technology/additional browsers"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G20/"
+      }
     },
     {
       "id": "G21",
@@ -3435,7 +3454,7 @@
         "G12",
         "G13"
       ],
-      "status": "G19 소비 분석 수행; G20/G21·확장 대기",
+      "status": "G19/G20 소비 분석 수행; G21·연락처/lifecycle 대기",
       "first_gate": "G19",
       "result": "../RESULTS/R03_RESULT.md"
     },
@@ -3975,8 +3994,9 @@
         "G58",
         "G63"
       ],
-      "status": "미착수",
-      "first_gate": "G20"
+      "status": "G20 소비 분석/값 관리 배정 수행; 다른 소비/저장 뷰·검색 대기",
+      "first_gate": "G20",
+      "result": "../RESULTS/R20_RESULT.md"
     },
     {
       "id": "R21",

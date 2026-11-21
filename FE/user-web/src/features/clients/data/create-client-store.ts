@@ -1,3 +1,5 @@
+import { applyClientEdit } from "../model/client-edits";
+import type { ClientEdit } from "../model/client-edits";
 import { invitationAccess, PreviewError } from "@/features/preview";
 import type { PreviewRuntime, PreviewScope, Scenario } from "@/features/preview";
 import { abortableDelay } from "@/lib/abortable-delay";
@@ -6,6 +8,7 @@ import type { ClientCompany, ClientData, ClientDraft, ClientState, ClientStore }
 import { clientSeed } from "./client-seed";
 // 기능 : 고객과 연락처의 단일 원본을 보존하고 저장 전 문맥·권한·중복 제출을 다시 확인한다.
 export function createClientStore(preview: PreviewRuntime): ClientStore {
+  const retiredFields = new Set<string>();
   const workspaces = new Map<string, ClientData>(); const submissions = new Map<string, ClientCompany>(); const listeners = new Set<() => void>();
   let state: ClientState = { version: 0, scenario: "normal" }; let generation = 0; let sequence = 0; let failed = false; let previous = preview.getSnapshot();
   // 기능 : 저장소 변경을 안정된 새 스냅샷으로 구독자에게 알린다.
@@ -21,7 +24,7 @@ export function createClientStore(preview: PreviewRuntime): ClientStore {
   // 기능 : 취소·시나리오·workspace 변경 이후 지연 결과를 폐기한다.
   async function wait(scope: PreviewScope, signal: AbortSignal) { assertScope(scope); const expected = generation; await abortableDelay(state.scenario === "slow" ? 1500 : 150, signal); signal.throwIfAborted(); assertScope(scope); if (expected !== generation) throw new DOMException("Client request replaced", "AbortError"); }
   // 기능 : 같은 탭 저장값은 유지하고 Reset에만 고객·제출 이력을 초기화한다.
-  function onScope() { const next = preview.getSnapshot(); generation++; if (next.resetGeneration !== previous.resetGeneration) { workspaces.clear(); submissions.clear(); sequence = 0; } previous = next; state = { ...state, scenario: "normal" }; failed = false; publish(); }
+  function onScope() { const next = preview.getSnapshot(); generation++; if (next.resetGeneration !== previous.resetGeneration) { workspaces.clear(); submissions.clear(); retiredFields.clear(); sequence = 0; } previous = next; state = { ...state, scenario: "normal" }; failed = false; publish(); }
   // 기능 : 앱 수명에 고객 저장소의 문맥 구독을 연결한다.
   function connect() { previous = preview.getSnapshot(); return preview.subscribe(onScope); }
   // 기능 : 명시적 장애 시나리오 변경은 이전 응답을 폐기한다.
@@ -35,12 +38,23 @@ export function createClientStore(preview: PreviewRuntime): ClientStore {
     if (state.scenario === "write-error" && !failed) { failed = true; throw new PreviewError("write", "Unable to add client. Your inputs are preserved. Please try again."); }
     const current = data(scope.workspaceId); if (draft.tagIds.some(id => !current.tags.some(tag => tag.id === id))) throw new PreviewError("invalid", "Choose tags from this workspace.");
     const number = ++sequence; const contact = { id: `${scope.workspaceId}:contact-new-${number}`, workspaceId: scope.workspaceId, name: draft.contactName.trim(), email: draft.email.trim() };
-    const client: ClientCompany = { id: `${scope.workspaceId}:client-new-${number}`, workspaceId: scope.workspaceId, companyName: draft.companyName.trim(), displayName: draft.companyName.trim() || contact.name, contactIds: [contact.id], defaultContactId: contact.id, tagIds: [...new Set(draft.tagIds)], status: "active", revision: 0 };
+    const client: ClientCompany = { id: `${scope.workspaceId}:client-new-${number}`, workspaceId: scope.workspaceId, companyName: draft.companyName.trim(), displayName: draft.companyName.trim() || contact.name, contactIds: [contact.id], defaultContactId: contact.id, tagIds: [...new Set(draft.tagIds)], status: "active", revision: 0, image: null, imageRevision: 0 };
     workspaces.set(scope.workspaceId, { ...current, clients: [...current.clients, client], contacts: [...current.contacts, contact] }); submissions.set(key, client); publish(); return structuredClone(client);
+  }
+  // 기능 : 고객 정의·값·이미지만 원자적으로 바꾸고 생성/다른 업무 원본은 보존한다.
+  async function edit(scope: PreviewScope, input: ClientEdit, signal: AbortSignal) {
+    const command = structuredClone(input); await wait(scope, signal);
+    if (state.scenario === "empty") throw new PreviewError("invalid", "Choose normal to edit outside the empty preview.");
+    if (state.scenario === "write-error" && !failed) { failed = true; throw new PreviewError("write", "Unable to save. Your inputs are preserved. Please try again."); }
+    if (command.kind === "add-field" && !command.id.startsWith(scope.workspaceId + ":client-field-")) throw new PreviewError("invalid", "Choose a field ID from this workspace.");
+    if (command.kind === "add-field" && retiredFields.has(command.id)) throw new Error("This field was removed. Start a new field instead.");
+    const next = applyClientEdit(data(scope.workspaceId), command);
+    if (command.kind === "delete-field") retiredFields.add(command.id);
+    workspaces.set(scope.workspaceId, next); publish();
   }
   // 기능 : React 구독용 스냅샷 참조를 안정적으로 반환한다.
   function getSnapshot() { return state; }
   // 기능 : 고객 변경 구독과 해제를 짝지어 제공한다.
   function subscribe(listener: () => void) { listeners.add(listener); return function unsubscribe() { listeners.delete(listener); }; }
-  return { getSnapshot, subscribe, connect, setScenario, read, create };
+  return { getSnapshot, subscribe, connect, setScenario, read, create, edit };
 }

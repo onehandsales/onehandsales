@@ -109,3 +109,7 @@ G15 CompanyStore는 G13 같은 workspace/company와 settingsRevision을 유지�
 ## G18/G19 목 경계
 
 G18 초대는 기존 Team row ID와 workspace membership을 연결한다. G19 `features/clients`는 고객/연락처/태그의 단일 메모리 원본, Query 조회, 폼 초안·취소 hook과 UI를 분리한다. 운영 회사(G15)와 고객은 별도 ID다. `ClientCreateHost`는 URL query 수명의 Dialog이며 성공에만 같은 ID 상세로 실제 이동한다. G21 프로젝트는 이 공개 소비 경계를 사용해야 한다. G18 제한 접근·새로고침 초기화/로그아웃 후 저장 보존은 유지한다. 현재 결과/미검증은 [G19 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G19_RESULT.md)를 따른다.
+
+## G20 필드·이미지 경계
+
+고객 저장소의 workspace별 필드 정의와 고객별 값은 서로 다른 ID/revision을 갖는다. `ClientEdit`는 속성별 원자적 변경이며 이름/값/이미지를 통째 초안으로 덮지 않는다. 필드 삭제 tombstone은 늦은 추가/값 저장을 거부한다. 이미지 Blob은 메모리에만 저장하고 `useObjectUrl`은 표시 수명에 URL을 생성/해제한다. 업로드/HTTP adapter는 없다. [G20 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G20_RESULT.md)에 관찰/목 가정과 검증을 구분한다.
