@@ -1,10 +1,10 @@
 # User Web — Bonsai UX/UI 목 기반
 
-> 최신 FE 검증: 2026-11-21 KST · G01~G15 감사 후 동작 결함 5건 수정, G13 중단/새 이동 정책 명시, 문서 상태 정정·두 차례 검토. 타입/lint/build·unit42/42·전체 개발/빌드 Chromium90/90씩 첫 실행 통과. 실제 API/외부·실패·console 오류0. 기존 원본/시각/환경·R 전체 대기 유지, G16 이후 미착수. 커밋/push/배포 없음. [결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_G15_RECHECK_RESULT.md). 아래 단계별 실행 수치는 당시 기록이다.
+> 최신 FE 검증: 2026-11-21 KST · G16 문서 브랜드 관찰 범위 목 구현·두 차례 검토·원본6상태 비교 수행. 타입/lint/unit47/build 통과, 전체 개발/빌드 Chromium96/96씩 통과 후 G16 시각 보정 대상6/6씩 추가 통과. 실제 API/외부·요청 실패·console 오류0. 미수록 옵션/자산·잔여 시각·환경 및 기존 G01~G15/R 대기 유지. G17 이후 미착수, 커밋/push/배포 없음. [G16 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G16_RESULT.md). 아래 이전 실행 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 
-기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·시각/환경 및 G05의 미수록 본문/목록과 G16 이후 화면은 미착수이며 실제 인증·업무 API·Backend·DB 연결은 없다.
+기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·시각/환경 및 G05의 미수록 본문/목록과 G17 이후 화면은 미착수이며 실제 인증·업무 API·Backend·DB 연결은 없다.
 
 G03에서 공개 이메일을 경로별로 분리하고 가입 인계를 이력별 메모리 snapshot으로 보완했다. G03 당시 typecheck/lint/build, unit9, dev/build Chromium E2E각22가 통과했다. G01/G02 회귀를 포함하며 관찰한 흐름의 실제 API·외부 요청·실패·console 오류는0건이다. G03 원본22상태 비교를 수행했고 잔여 시각·page2/다른30소개본문·원본 모바일/상호작용·실제 OS IME/AT 등은 대기다. G02 기존17상태의 남은 차이도 유지한다.
 
@@ -51,6 +51,7 @@ corepack pnpm dev --host 127.0.0.1 --strictPort
 | /app | G13 초기 대시보드·G14 앱 셸 |
 | /app/preview | G01 같은 목 ID 목록 |
 | /app/settings/company, /u/:slug | G15 회사 편집·저장된 공개 프로필 |
+| /app/settings/branding | G16 회사 로고·관찰 헤더·Sample Invoice·저장/취소·미수록 안내 |
 | /app/items/sample-001 | 상세·이름 편집·실패/재시도 |
 | /share/sample | 내부 데이터와 분리된 읽기 샘플 |
 | /components | Bonsai Button·Field·Dialog 공통 요소 비교 |
@@ -127,3 +128,9 @@ G14 `/app` 셸/초기 대시보드·`/app/preview` G01 검증·`/auth/continue` 
 ### G15 회사 설정 구조
 
 `/app` Add Details와 `/app/settings/company`는 G13 같은 CompanyStore를 편집한다. 주소 하위 저장은 전체 회사 저장과 분리한다. 로고는 로컬 File·표시 object URL만 사용하며 교체/이탈에서 해제한다. `/u/:slug`는 명시적 목 공개 화면으로 저장된 on/off를 소비하며 `/share/sample`과 독립이다. 새로고침/새 탭은 메모리를 초기화한다. [G15 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G15_RESULT.md).
+
+## G16 문서 브랜드 (2026-11-21)
+
+기존 회사 설정에서 Branding으로 이동한다. No image/Abstract/Plant와 로컬 로고는 초안 미리보기만 바꾸고 Save 성공으로 같은 회사의 기본값을 저장한다. Cancel save는 입력 유지, Discard/이탈은 입력 폐기다. 미수록 옵션은 값을 유지하는 안내로 구분한다. 새 문서 복사는 최소 단위 fixture만 있고 실제 문서 작성 화면·G07 연결은 없다.
+
+타입/lint/unit47/build, 전체 개발/빌드96개씩 및 시각 보정 후 G16 대상6개씩 통과. 실패한 최초 대상 검사와 재실행은 [G16 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G16_RESULT.md)에 따로 기록한다. 기존 원본/시각/환경 대기는 유지한다. 이번 캡처/로그는 사용자 지시에 따라 `/tmp/onehandsales-g16`에 두며 삭제된 과거 자료를 복원하지 않았다.

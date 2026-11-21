@@ -1,8 +1,9 @@
 import type { CompanySettings, SettingsScenario } from "@/features/company-settings/model/settings-types";
 import type { PreviewScope } from "@/features/preview/model/preview-types";
+import type { BrandDefaults, BrandSave, DocumentBrandSnapshot } from "@/features/document-branding/model/branding-types";
 export type SetupStep = 0 | 1 | 2 | 3 | 4;
 export type SetupDraft = { step: SetupStep; furthest: SetupStep; industry: string; name: string; country: string; businessType: string; currency: string; revenue: string; invites: string[]; purposes: string[] };
-export type Company = Omit<SetupDraft, "step" | "furthest"> & { id: string; workspaceId: string; setupComplete: boolean; detailsComplete: boolean; settingsRevision: number } & CompanySettings;
+export type Company = Omit<SetupDraft, "step" | "furthest"> & { id: string; workspaceId: string; setupComplete: boolean; detailsComplete: boolean; settingsRevision: number; branding: BrandDefaults; brandingRevision: number } & CompanySettings;
 export type CompanyScenario = "normal" | "slow" | "fail-once";
 export type CompanyStore = {
   getSnapshot(): { version: number; scenario: CompanyScenario; settingsScenario: SettingsScenario };
@@ -12,6 +13,8 @@ export type CompanyStore = {
   company(workspaceId: string): Company | undefined;
   readSettings(scope: PreviewScope, signal: AbortSignal): Promise<Company>;
   saveSettings(scope: PreviewScope, value: CompanySettings, expectedRevision: number, signal: AbortSignal): Promise<Company>;
+  saveBranding(scope: PreviewScope, value: BrandSave, signal: AbortSignal): Promise<Company>;
+  snapshotDocumentBranding(scope: PreviewScope): DocumentBrandSnapshot;
   publicCompany(slug: string): { name: string; country: string; logo: File | null; enabled: boolean } | undefined;
   setSettingsScenario(scenario: SettingsScenario): void;
   consumeLogoFailure(): boolean;

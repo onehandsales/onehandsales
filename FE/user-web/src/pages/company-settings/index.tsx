@@ -1,3 +1,4 @@
+import { SettingsNavigation } from "@/features/company-settings/components/settings-navigation";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
@@ -11,7 +12,7 @@ const settingsLinks = [["Profile Settings", "profile-settings"], ["Company Setti
 // 기능 : 같은 회사의 이름·주소·공개 프로필 초안과 저장 결과를 관찰된 설정 화면에 연결한다.
 export function CompanySettingsPage() {
   const editor = useCompanyEditor(); const { state: preview } = usePreviewEnvironment(); const [addressOpen, setAddressOpen] = useState(false); const [readingLogo, setReadingLogo] = useState(false); const draft = editor.draft;
-  return <section className="company-settings"><header className="company-settings-header"><h1>Settings</h1><nav aria-label="Settings sections">{["Account", "Branding", "Team", "Integrations & Data", "Subscription"].map((name, index) => <Link aria-current={index === 0 ? "page" : undefined} key={name} to={index === 0 ? "/app/settings/company" : "/app/pending/" + ["", "branding", "team", "integrations", "subscription"][index]}>{name}</Link>)}</nav></header>
+  return <section className="company-settings"><SettingsNavigation />
     <div className="company-settings-layout"><nav className="company-account-nav" aria-label="Account settings">{settingsLinks.map(([name, slug]) => <Link key={slug} aria-current={slug === "company" ? "page" : undefined} to={slug === "company" ? "/app/settings/company" : "/app/pending/" + slug}>{name}</Link>)}</nav>
       <div className="company-settings-panel"><header><h2>Company Settings</h2><button form="company-settings-form" type="submit" className="company-save" disabled={!draft || !editor.canEdit || editor.pending || readingLogo || addressOpen}>{editor.pending ? "Saving…" : "Save Changes"}</button></header>
         {editor.loading ? <p className="company-read-state" role="status">Loading company…</p> : !draft ? <div className="company-read-state" role="alert"><h3>{editor.readKind === "missing" ? "No company details" : editor.readKind === "denied" ? "Company access unavailable" : "Company could not be loaded"}</h3><p>{editor.error}</p><button type="button" onClick={editor.reload}>Retry company</button></div> : <form id="company-settings-form" noValidate onSubmit={event => { event.preventDefault(); if (!addressOpen && !readingLogo) void editor.save(); }} onCompositionStart={() => { editor.composing.current = true; }} onCompositionEnd={() => { editor.composing.current = false; }} onKeyDown={event => { if (event.key === "Enter" && (event.nativeEvent.isComposing || editor.composing.current)) event.preventDefault(); }}>

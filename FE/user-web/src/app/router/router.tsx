@@ -1,3 +1,4 @@
+import { BrandingSettingsPage } from "@/pages/branding-settings";
 import { CompanySettingsPage } from "@/pages/company-settings";
 import { PublicProfilePage } from "@/pages/public-profile";
 import { createBrowserRouter } from "react-router-dom";
@@ -63,7 +64,7 @@ export const router = createBrowserRouter([{
     { element: <WorkspaceBoundary />, children: [
       { element: <AppShell />, children: [
       { element: <WorkspaceContentScope />, children: [
-      { path: "/app/pending/:destination", element: <AppFuturePage /> }, { path: "/app/settings/company", element: <CompanySettingsPage /> },
+      { path: "/app/pending/:destination", element: <AppFuturePage /> }, { path: "/app/settings/company", element: <CompanySettingsPage /> }, { path: "/app/settings/branding", element: <BrandingSettingsPage /> },
       { path: "/app", element: <WorkspaceEntryPage /> },
       { path: "/app/preview", element: <WorkspacePage /> },
       { path: "/app/items/:itemId", element: <WorkspacePage /> },

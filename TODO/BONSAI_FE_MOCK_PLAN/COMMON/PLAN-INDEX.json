@@ -1,6 +1,6 @@
 {
   "date": "2026-11-21",
-  "status": "2026-11-21 KST · G01~G15 감사 후 동작 결함 5건 수정, G13 중단/새 이동 정책 명시, 문서 상태 정정·두 차례 검토. 타입/lint/build·unit42/42·전체 개발/빌드 Chromium90/90씩 첫 실행 통과. 실제 API/외부·실패·console 오류0. 기존 원본/시각/환경·R 전체 대기 유지, G16 이후 미착수. 커밋/push/배포 없음.",
+  "status": "2026-11-21 KST · G16 문서 브랜드 관찰 범위 목 구현·두 차례 검토·원본6상태 비교 수행. 타입/lint/unit47/build 통과, 전체 개발/빌드 Chromium96/96씩 통과 후 G16 시각 보정 대상6/6씩 추가 통과. 실제 API/외부·요청 실패·console 오류0. 미수록 옵션/자산·잔여 시각·환경 및 기존 G01~G15/R 대기 유지. G17 이후 미착수, 커밋/push/배포 없음.",
   "goals": [
     {
       "id": "G00",
@@ -937,7 +937,7 @@
       ],
       "research": [],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·원본6상태 비교·현재 검증 수행; 미수록 옵션/자산·시각/환경·후속 문서 연결 대기",
       "flow_scope": [
         {
           "flow_number": 119,
@@ -945,7 +945,38 @@
           "first": 1,
           "last": 6
         }
-      ]
+      ],
+      "result": "../RESULTS/G16_RESULT.md",
+      "verification": {
+        "base_commit": "b05f9fff",
+        "route": "/app/settings/branding",
+        "source": {
+          "app_id": "c1026782-09a7-45fb-b2d0-7cc1909bf1f4",
+          "flow_id": "79468a76-f7fd-456e-843e-66c2763976a5",
+          "catalogue": "Latest/2146 queried 2026-11-21 KST; capture date/product build unknown",
+          "screens_directly_viewed": 6
+        },
+        "review": "two_passes_completed",
+        "typecheck": "passed after test PreviewScope annotation fix",
+        "lint": "passed",
+        "unit": "47/47",
+        "build": "passed; final CSS rebuild passed",
+        "initial_target_e2e": "5 passed / 1 timeout from incorrect Workspace label locator",
+        "target_rerun": "6/6",
+        "development_e2e": "96/96 full, then 6/6 after scoped visual changes",
+        "production_e2e": "96/96 full, then 6/6 after scoped visual changes",
+        "real_api_external_requests": 0,
+        "request_failures": 0,
+        "console_errors": 0,
+        "visual_comparisons": 6,
+        "artifact_location": "/tmp/onehandsales-g16 (temporary); no _evidence created, deleted historical evidence preserved",
+        "pending": [
+          "Desk/Custom Header/font/color/other sizes/white-label option outcomes and original assets",
+          "exact font/icons/header framing; original mobile behavior",
+          "native OS IME/assistive technology/Firefox/WebKit/physical devices",
+          "real invoice/proposal/contract creation consumers; only minimum immutable snapshot fixtures tested"
+        ]
+      }
     },
     {
       "id": "G17",

@@ -1,5 +1,7 @@
 # FE
 
+현재 User Web 목 구현·검증은 [G16 문서 브랜드 결과](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G16_RESULT.md)를 따른다. 원본/시각/환경·후속 문서 연결 대기와 G17 이후 미착수를 구분한다. 실제 인증/API/Backend 연결은 없다.
+
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 
 ## 앱

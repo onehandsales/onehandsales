@@ -1,6 +1,6 @@
 # User Web 구조
 
-2026-11-21 G05 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
+2026-11-21 G16 추가 기준. 기존 실제 인증·범용 CRM·SEO 생성 소스는 제거했고 Git 이력으로 확인한다. [G01 기반](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md)과 [G02 공개 웹](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md)와 [G03 소개](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md)의 실행 결과·검토·대기 항목을 구분한다.
 
 ## 책임과 의존
 
@@ -93,3 +93,11 @@ G14 WorkspaceBoundary는 가상 세션/설정 완료 진입, AppShell은 메뉴 
 ### G15 이후 최종 갱신 (2026-11-21)
 
 G15 CompanyStore는 G13 같은 workspace/company와 settingsRevision을 유지한다. useCompanyEditor는 화면 초안·하위 주소 저장·전체 저장/취소, useCompanyLogo는 실제 로컬 파일 읽기/경합, useLogoUrl은 표시 URL 수명을 담당한다. publicCompany는 공개 필드만 반환하며 off는 이름/국가/로고를 내보내지 않는다. AppShell scope 변경은 편집 컴포넌트를 다시 만들고 계정 간 미저장 초안을 폐기한다. 메모리는 로그아웃과 전체 새로고침을 구분한다. [연속 작업 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_G15_RESULT.md).
+
+## G16 문서 브랜드 기본값
+
+`pages/branding-settings`는 설정 탐색/폼/미리보기를 조합한다. `features/document-branding`은 화면·초안 hook·지원 옵션 타입을 소유하고 기존 `company-setup` 메모리 저장소가 회사별 branding/brandingRevision을 소유한다. `SettingsNavigation`을 G15와 공유하고 로고 파일 decode/URL 수명도 기존 hook을 사용한다.
+
+브랜드 저장은 브랜드 필드와 명시적 로고 변경만 최신 회사에 합친다. 로고 편집에만 회사 revision 충돌을 추가 검사한다. G15 회사 저장은 허용 회사 필드만 반영해 branding을 덮지 않는다. 입력/파일은 취소 가능한 화면 초안이고 Save 성공만 기준값을 바꾼다.
+
+`snapshotDocumentBranding`은 저장값의 독립 복사이며 아직 실제 문서 생성 화면이 소비하지 않는다. 단위 fixture의 기존 문서 불변 검사와 후속 G36/G40/G55 이후 연결 대기를 구분한다. 자세한 수명/미확인 옵션/검증은 [G16 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G16_RESULT.md)를 따른다. 실제 API/HTTP adapter/DB 변경은 없다.

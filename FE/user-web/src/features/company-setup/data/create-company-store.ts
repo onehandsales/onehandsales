@@ -5,6 +5,8 @@ import type { PreviewScope } from "@/features/preview/model/preview-types";
 import type { AuthStore } from "@/features/mock-auth";
 import { authDelay } from "@/features/mock-auth/data/auth-delay";
 import { PREVIEW_SESSIONS } from "@/mocks/preview-seed";
+import { initialBrandDefaults, brandingError } from "@/features/document-branding/model/branding-types";
+import type { BrandSave } from "@/features/document-branding/model/branding-types";
 import { initialSetup, setupError } from "../model/company-types";
 import type { Company, CompanyScenario, CompanyStore, SetupDraft, SetupStep } from "../model/company-types";
 
@@ -15,7 +17,7 @@ export function createCompanyStore(preview: PreviewRuntime, auth: AuthStore): Co
   // 기능 : 독립 G01 작업공간의 회사 fixture를 고정 ID로 준비한다.
   function seed() { companies.clear(); for (const session of PREVIEW_SESSIONS) for (const workspace of session.workspaces) companies.set(workspace.id, { ...structuredClone(initialSetup), id: "company-" + workspace.id, workspaceId: workspace.id, name: workspace.name, industry: "Design", invites: [], setupComplete: true, ...settingsSeed(workspace.id, session.id) }); }
   // 기능 : 원본 계정과 구분한 목 공개 주소·회사 편집 초기 상태를 만든다.
-  function settingsSeed(workspaceId: string, actorId: string) { return { detailsComplete: false, settingsRevision: 0, address: null, logo: null, publicProfile: true, slug: workspaceId, contactId: actorId }; }
+  function settingsSeed(workspaceId: string, actorId: string) { return { detailsComplete: false, settingsRevision: 0, branding: initialBrandDefaults(), brandingRevision: 0, address: null, logo: null, publicProfile: true, slug: workspaceId, contactId: actorId }; }
   seed();
   // 기능 : 안정된 외부 스냅샷을 갱신해 같은 회사 소비 화면을 다시 그린다.
   function publish() { state = { ...state, version: state.version + 1 }; listeners.forEach(listener => listener()); }
@@ -65,8 +67,31 @@ export function createCompanyStore(preview: PreviewRuntime, auth: AuthStore): Co
     const existing = companies.get(scope.workspaceId); if (!existing || existing.settingsRevision !== expectedRevision) throw new Error("Company details changed. Reload the saved company before trying again.");
     if ([...companies.values()].some(item => item.workspaceId !== scope.workspaceId && item.slug === value.slug)) throw new Error("This local profile URL is already used. Choose another URL.");
     if (state.settingsScenario === "save-error" && settingsFailure) { settingsFailure = false; throw new Error("Unable to save the local company. Your changes are still here. Please try again."); }
-    const saved: Company = { ...existing, ...value, name: value.name.trim() || owner.name, contactId: existing.contactId, detailsComplete: true, settingsRevision: existing.settingsRevision + 1 };
+    // 이유 : 조회 결과에 포함된 다른 기능의 오래된 브랜드 필드를 회사 전체 저장으로 덮지 않는다.
+    const saved: Company = { ...existing, name: value.name.trim() || owner.name, country: value.country, currency: value.currency, address: value.address, logo: value.logo, publicProfile: value.publicProfile, slug: value.slug, contactId: existing.contactId, detailsComplete: true, settingsRevision: existing.settingsRevision + 1 };
     companies.set(scope.workspaceId, saved); publish(); return structuredClone(saved);
+  }
+  // 기능 : 문서 기본값과 명시적으로 편집한 회사 로고만 원자적으로 저장하고 다른 회사 필드는 보존한다.
+  async function saveBranding(scope: PreviewScope, input: BrandSave, signal: AbortSignal) {
+    // 1. 제출 값과 실행 문맥을 고정하고 목 권한·지원 옵션을 확인한다.
+    assertScope(scope);
+    if (preview.getSnapshot().session?.role !== "owner" || state.settingsScenario === "denied") throw new Error("Only the local owner can edit branding.");
+    const value = structuredClone(input); const error = brandingError(value.defaults); if (error) throw new Error(error);
+    const expected = generation;
+    await authDelay(state.settingsScenario === "slow" ? 1500 : 300, signal); signal.throwIfAborted(); assertScope(scope);
+    if (expected !== generation) throw new DOMException("Branding save changed", "AbortError");
+    // 2. 최신 회사에 브랜드 필드만 합치고 로고를 편집했을 때에만 회사 revision 충돌을 검사한다.
+    const existing = companies.get(scope.workspaceId);
+    if (!existing || existing.brandingRevision !== value.brandRevision || (value.logoChanged && existing.settingsRevision !== value.companyRevision)) throw new Error("Saved settings changed. Discard changes to reload before trying again.");
+    if (state.settingsScenario === "save-error" && settingsFailure) { settingsFailure = false; throw new Error("Unable to save branding. Your changes are still here. Please try again."); }
+    const saved: Company = { ...existing, branding: value.defaults, brandingRevision: existing.brandingRevision + 1, ...(value.logoChanged ? { logo: value.logo, settingsRevision: existing.settingsRevision + 1 } : {}) };
+    companies.set(scope.workspaceId, saved); publish(); return structuredClone(saved);
+  }
+  // 기능 : 후속 문서 생성 시점에 저장된 기본값·로고를 복사해 기존 문서와 편집 초안을 격리한다.
+  function snapshotDocumentBranding(scope: PreviewScope) {
+    assertScope(scope); const value = companies.get(scope.workspaceId);
+    if (!value || state.settingsScenario === "denied") throw new Error("Document branding is unavailable.");
+    return structuredClone({ companyId: value.id, defaultsRevision: value.brandingRevision, defaults: value.branding, logo: value.logo });
   }
   // 기능 : 익명 화면에는 허용된 공개 필드만 전달하고 비활성 회사의 내용을 노출하지 않는다.
   function publicCompany(slug: string) { const value = [...companies.values()].find(item => item.slug === slug); if (!value) return undefined; return value.publicProfile ? { name: value.name, country: value.country, logo: value.logo, enabled: true } : { name: "", country: "", logo: null, enabled: false }; }
@@ -74,5 +99,5 @@ export function createCompanyStore(preview: PreviewRuntime, auth: AuthStore): Co
   function subscribe(listener: () => void) { listeners.add(listener); return function unsubscribe() { listeners.delete(listener); }; }
   // 기능 : React 외부 저장소에 안정된 현재 참조를 전달한다.
   function getSnapshot() { return state; }
-  return { getSnapshot, subscribe, connect, draft, company, edit, setScenario, finish, readSettings, saveSettings, publicCompany, setSettingsScenario, consumeLogoFailure };
+  return { getSnapshot, subscribe, connect, draft, company, edit, setScenario, finish, readSettings, saveSettings, saveBranding, snapshotDocumentBranding, publicCompany, setSettingsScenario, consumeLogoFailure };
 }
