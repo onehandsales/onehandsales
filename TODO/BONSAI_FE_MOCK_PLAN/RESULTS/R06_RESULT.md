@@ -89,3 +89,22 @@ G28 `dc631acf` 커밋 뒤 [G29 결과](G29_RESULT.md)에 보관/삭제를 연결
 원본에서 보관 확인은 미수록이므로 즉시 목 요청, 삭제는 원본 Confirm Deletion·영구 삭제 안내를 제공한다. X/outside/Escape/pending 취소·owner-only 파괴 작업은 명시한 목 정책이다. 협업자의 기존 배정 작업·하위/댓글 접근은 유지한다. 미수록 Unfollow는 안내만, Copy Link는 로컬 URL만 제공한다. 실제 원본의2개 시간 기록을 현재 서로 다른 canonical taskId에서 가져와 한 작업으로 합치지 않았다. 실제시간행/타이머·복원/청구/실계정 권한은 후속 확인이다.
 
 G28/G29 소비 분석과 관찰 화면 목 구현을 수행했으나 R06 전체 완료는 아니다. 반복/파일/Gantt·의존성·G30/G31 등 나머지 소비 범위는 대기로 유지한다. 이번 작업은 G30을 시작하지 않는다.
+
+
+## 2026-11-22 — G30·G31 소비 분석 (구현 전)
+
+시작 HEAD `f14542e0`, clean, 기존5173/PID59363 보존. Decision006과 이번 사용자 요청 우선; 과거 TODO 접근 금지/API·DB 선행 조건은 이번 범위에 적용하지 않는다. AGENT_USAGE_RULES.md는 현재 없으며 현행 FRONT_AGENT 및 하위 규칙을 적용한다.
+
+MCP batch로 Creating a task template `4c98a858-6ef7-4a6a-8e83-e626772a4df0`4단계, Editing a template task `91a75fcf-9857-41ff-85c2-c2de0bae87d9`8단계, Adding a task (template) `d348e200-5e48-4825-a646-69a6741e85d8`7단계를 신규 조회했다. 각 ANALYSIS 및 PNG19단계를 직접 비교 시트5장으로 확인했다(공통1장 중복). App Bonsai Web `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`/bonsai-web. get_app의 최초 인자 오류 후 재조회에서 Latest/2146·642screens 확인. 이는 카탈로그이며 촬영일/서비스빌드/실제viewport·DPR은 미확인. MCP1440×900을 비교 좌표로 삼아2880×1800 PNG를 정규화했다. `/tmp/onehandsales-g30-g31/mcp-sources.json`, `source/`, `source-create/edit/apply-*.png`. 최초 시스템python의PIL 부재 뒤 기존 `/tmp/onehand-visual-venv/bin/python` 사용; 앱 의존성 변경 없음.
+
+관찰: Templates 소개 그림은 실제 작업이 아니다. New Task Template의 이름 입력→Default Task와0개 작업. Edit Template Task의 제목placeholder→Update company guideline, 설명은 빈값, 로컬참고 파일카드→이미지, 하위Save→Send invite for initial chat·Prepare proposal 미완료2행, 상위Save Task→목록1행. 실제 업로드·하위Save의 영속성·모달닫기취소는 미수록. 적용은 템플릿·프로젝트 두 선택→To Do/No due date 새작업. 후속Feb09와 기존Initial Chat의Done은 별도 조작 미수록이며 적용 효과로 구현하지 않는다. 추가template 검색 상위10결과는 기존3흐름과 다른영역플로우이며 이름수정·복제/권한을 새로 확인한 근거는 아니다.
+
+G30 목 선택: workspace별 빈 템플릿 저장소, 이름1~120자/중복허용·ID분리, owner편집·멤버조회. 템플릿명저장과 구성작업Save Task 분리. 하위Save·첨부선택/제거·체크는 상위편집초안이며 상위취소는모두폐기, 성공저장만재진입유지. 제목1~200/설명4000/하위1~200, 로컬이미지PNG/JPEG/WebP 2MB(명시한목제한), 디코딩실패/재시도·오브젝트URL정리. 기존작업폼/저장소를템플릿으로대체하지 않는다. 이름변경/다중선택·구성작업삭제확인/미완료체크의상호작용은목가정;템플릿전체삭제·일반첨부시스템확장없음.
+
+G31 계획: 저장된 템플릿snapshot·대상프로젝트를 검증한뒤한의도전체를원자적용하여새작업/하위ID를만든다. 제목/설명/로컬첨부/하위제목복사,실제작업To Do·미배정·기한없음·하위미완료,댓글/활동/시간복사없음은목정책. 템플릿초안/이후변경과적용결과를분리. 동일제출재시도는중복방지,새명시적적용은새세트. 템플릿/프로젝트/세션·권한변경·취소는늦은생성거부. G30커밋후에만구현하고독립성연결검증을수행한다.
+
+공통수명: 같은탭재로그인저장유지·초안폐기,새로고침/새탭/Reset초기화. 자료대기: 실제권한/보관·복원/반복/일반파일/Gantt·의존성/영속성·업로드/목제한의실서비스값. 서버/API/DB는후속메모다. R06전체완료아님.
+
+### G30 작성 검토·검증 연결
+
+[G30 결과](G30_RESULT.md)에 빈 이름 컨테이너·상위/하위 저장·로컬 파일 수명·revision/취소/이력/실패 및 원본12상태 비교를 기록했다. 작성 관찰 범위 구현·회귀를 수행했고 실제 적용/독립성은 G31에서 검증한다. R06 전체와 서버/일반 파일/반복/Gantt·의존성 대기는 유지한다.

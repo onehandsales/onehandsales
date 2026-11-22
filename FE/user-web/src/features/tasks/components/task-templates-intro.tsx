@@ -1,5 +1,0 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Dialog } from "@/components/ui/dialog";
-// 기능 : 원본 템플릿 빈 안내를 실제 작업 목록과 분리하고 미구현 작성 흐름은 안내로 인계한다.
-export function TaskTemplatesIntro() { const [open, setOpen] = useState(false); return <div className="task-templates-intro"><img src="/images/bonsai/tasks-template-guide.png" alt="Illustration of reusable task templates" /><div><h2>Prefill Tasks With Templates</h2><p>Make the process of managing a new project easier by adding preset task lists. You can add or edit the tasks anytime as your process evolves.</p><button className="task-primary" onClick={() => setOpen(true)}>New Template</button></div><p className="task-template-support">Have questions? <Link to="/support">Contact Support</Link></p>{open && <Dialog title="Task templates" onClose={() => setOpen(false)}><p>Creating task templates is not available in this preview. The illustration is not saved task data.</p><button onClick={() => setOpen(false)}>Return to templates</button></Dialog>}</div>; }

@@ -1,6 +1,6 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: G29 보관·삭제의 관찰 범위 목 구현·두 차례 검토·연결 회귀를 수행했다. 단위93/93·개발 영향 범위58/58·빌드 전체152/152 통과. G28 dc631acf 이후 별도 진행했으며 초기 실패·재실행과 자료·시각·환경 대기를 구분한다. [G29 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G29_RESULT.md). 이전 수치는 당시 기록이다.
+최신 상태: G30 작업 템플릿 작성의 목 구현·누락 보완·두 차례 검토·12상태 비교를 수행했다. 단위97/97, 개발 영향48/49 후 수정 대상5/5, 빌드 전체156/157 후 최신 빌드 영향10/10 통과. 최초 실패와 수정 후 재실행을 구분한다. G31 적용·독립성 연결은 G30 커밋 이후 진행하며 자료·시각·환경 대기를 유지한다. [G30 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G30_RESULT.md). 이전 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 

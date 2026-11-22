@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G18~G27의 관찰 범위 목 구현과 개별 검토를 수행했다. G27 현재 단위87개·전체 개발/빌드 E2E143개씩 통과; 원본 미수록·시각 차이·환경 대기는 유지한다.",
+  "status": "G30 작업 템플릿 작성의 목 구현·누락 보완·두 차례 검토·12상태 비교를 수행했다. 단위97/97, 개발 영향48/49 후 수정 대상5/5, 빌드 전체156/157 후 최신 빌드 영향10/10 통과. 최초 실패와 수정 후 재실행을 구분한다. G31 적용·독립성 연결은 G30 커밋 이후 진행하며 자료·시각·환경 대기를 유지한다.",
   "goals": [
     {
       "id": "G00",
@@ -1770,7 +1770,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·누락 보완·두 차례 검토·시각 비교·현재 회귀 검증; 자료·시각·환경 및 G31 연결 대기",
       "flow_scope": [
         {
           "flow_number": 130,
@@ -1784,7 +1784,20 @@
           "first": 1,
           "last": 8
         }
-      ]
+      ],
+      "result": "../RESULTS/G30_RESULT.md",
+      "verification": {
+        "typecheck": "pass",
+        "lint": "pass",
+        "unit": "97/97",
+        "build": "pass",
+        "dev": "affected48/49 then corrected/new target5/5; initial failures retained",
+        "preview": "full156/157 then rebuilt target10/10; not first-run full pass",
+        "real_api_requests": 0,
+        "visual": "12 source comparisons + narrow capture; differences retained",
+        "connection_pending": "G31 apply independence after G30 commit",
+        "environment_pending": "OS IME/assistive technology/other browsers/devices"
+      }
     },
     {
       "id": "G31",
@@ -3781,7 +3794,7 @@
         "G22",
         "G23"
       ],
-      "status": "G25~G29 소비 분석 수행; 반복/파일/Gantt·의존성 등 전체 완료 대기",
+      "status": "G25~G31 소비 분석 수행; 일반 파일·반복·Gantt/의존성 등 전체 완료 대기",
       "first_gate": "G25",
       "result": "../RESULTS/R06_RESULT.md"
     },
