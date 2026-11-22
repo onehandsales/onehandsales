@@ -7,7 +7,7 @@
 ## 근거·버전·관찰 범위
 
 - App Bonsai Web `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`. Latest/2146은 같은 연속 작업 G05 앱 조회 재사용. 촬영일·제품 빌드는 미확인.
-- 새 MCP5흐름43단계: [ID/순서/URL](evidence/r02/mcp-sources.json). 로컬 ANALYSIS의 화면·규칙·질문과 직접 대조했다. [원본 PNG 경로/해시/크기](evidence/r02/source-manifest.json), [직접 본 960×600 정규화 시트](evidence/r02/source-sheets/). 원본2880×1800에서 축소했으며 실제 viewport/DPR 확정이 아니다.
+- 새 MCP5흐름43단계: ID/순서/URL (과거 경로 `evidence/r02/mcp-sources.json`, 현재 파일 없음). 로컬 ANALYSIS의 화면·규칙·질문과 직접 대조했다. 원본 PNG 경로/해시/크기 (과거 경로 `evidence/r02/source-manifest.json`, 현재 파일 없음), 직접 본 960×600 정규화 시트 (과거 경로 `evidence/r02/source-sheets/`, 현재 파일 없음). 원본2880×1800에서 축소했으며 실제 viewport/DPR 확정이 아니다.
 
 | 소비 | Flow ID | 관찰 |
 | --- | --- | --- |
@@ -28,7 +28,7 @@
 - [계정 설정 안내](https://help.hellobonsai.com/en/articles/5588945-how-to-set-up-your-account-in-bonsai): 현재 설정·팀·기능 안내. 빠진 과거 세 번째 설문이나 MYR/USD 관계를 확인할 자료는 없었다. 화면 구조는 시안 유지.
 - [권한 안내](https://help.hellobonsai.com/en/articles/1894805-all-about-user-permissions-in-bonsai): Owner/Partner/Project Manager/Collaborator 구분을 확인했다. Owner/Partner는 폭넓은 관리 접근, PM/Collaborator는 재무/회사 설정 제한이 설명된다. 현재 사용자 정의 권한은 과거 캡처의 고정 역할표가 아니다.
 - [2FA 안내](https://help.hellobonsai.com/en/articles/7935122-managing-two-factor-authentication-2fa-on-your-account): 검색 결과의2026-06-17 문서가6자리 코드와 이메일/SMS를 설명한다. 과거 로그인 플로우에는2FA 화면이 없으므로 기본 캡처 경로에 현재 필수 정책을 강제하지 않는다. 별도 명시적 목 분기로 다룬다. 이 문서의 이미지/실계정은 이번에 확인하지 않았다.
-- 가입/로그인/재설정 정적 보관본 조회 시도는 [별도 기록](evidence/r02/archive-fetch.json). 보관본 날짜·일치 여부를 확인한 자산만 보완하고, scripts·계정 동작은 실행하지 않는다.
+- 가입/로그인/재설정 정적 보관본 조회 시도는 별도 기록 (과거 경로 `evidence/r02/archive-fetch.json`, 현재 파일 없음). 보관본 날짜·일치 여부를 확인한 자산만 보완하고, scripts·계정 동작은 실행하지 않는다.
 
 ## 목 정책과 소비별 인계
 
@@ -159,3 +159,9 @@ G17 소비 결과: 관찰 범위 목 구현·두 차례 검토·시각 비교를
 
 ### 검토 판정과 남은 근거
 관찰된 초대 폼·제한 화면의 FE 구현을 진행할 근거는 확보했다. 실제 이메일·토큰 수명·2FA·프로젝트 개인 배정 기준·전체 역할표·서버 권한은 미확인 후속 메모다. 계정 사용/발송/외부 API 조회는 수행하지 않았다. 원본 PNG2880×1800을1440×900으로 정규화하여 비교하되 원본 viewport/DPR을 확정하지 않는다. 과거 G10~G17·R02 전체의 자료/시각/환경 대기는 유지한다.
+
+### G27 소비 연결 재검증
+
+[G27 결과](G27_RESULT.md)의 실제 G18~G27 연결 시나리오와 전체 개발/빌드143개씩에서 이 R의 기존 소비 구현을 다시 확인했다. 신규 원본 조회나 R 전체 완료로 계산하지 않는다. 원본 미수록·확장 배정·서버 정책·시각·환경 대기는 유지한다.
+
+G27 문서 정합성 확인: 위 evidence/r02의 과거4개 링크는 삭제된 자료로 확인되어 경로와 당시 설명을 유지하되 현재 부재를 표시했다. 해당 폴더를 복원하지 않았으며 이번 실행의 임시 자료는 /tmp/onehandsales-g18-g27/GNN/이다.

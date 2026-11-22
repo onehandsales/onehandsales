@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G26 하위 작업의 생성·제목·완료·담당자를 독립 목 상태로 구현·검증했다. G27 댓글/활동 및 자료·시각·환경 대기는 유지한다.",
+  "status": "G18~G27의 관찰 범위 목 구현과 개별 검토를 수행했다. G27 현재 단위87개·전체 개발/빌드 E2E143개씩 통과; 원본 미수록·시각 차이·환경 대기는 유지한다.",
   "goals": [
     {
       "id": "G00",
@@ -1064,7 +1064,7 @@
         "R02"
       ],
       "surface": "인증·초대",
-      "status": "관찰 범위 목 구현·검토·현재 검증; 자료/시각/환경·후속 업무 연결 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 2,
@@ -1087,10 +1087,17 @@
         "real_api_requests": 0,
         "pending": [
           "source font/icon identity, full roles, Settings and invitation exception UI",
-          "G21-G27 business store integration",
           "native IME/assistive technology/additional browsers/devices"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G18/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1111,7 +1118,7 @@
         "R03"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·검토·현재 검증; G21 연결/자료·시각·환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 3,
@@ -1139,11 +1146,18 @@
         "production_e2e": "16/16; final label-only follow-up recorded in result",
         "real_api_requests": 0,
         "pending": [
-          "G21 project client selector",
           "source missing interactions/assets and visual differences",
           "native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G19/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1165,7 +1179,7 @@
         "R20"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 원본/시각/환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 19,
@@ -1198,6 +1212,14 @@
           "native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G20/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1219,7 +1241,7 @@
         "R03"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 원본/시각/환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 20,
@@ -1253,6 +1275,14 @@
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G21/",
         "final_visual_regression": "build passed; dev 4/4, build 4/4; 12 captures, keyboard contrast reviewed"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1273,7 +1303,7 @@
         "R20"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 원본/시각/환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 106,
@@ -1306,6 +1336,14 @@
           "native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G22/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1328,7 +1366,7 @@
         "R20"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; lifecycle 원본/시각/환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 104,
@@ -1367,6 +1405,14 @@
           "native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G23/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1389,7 +1435,7 @@
         "R05"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 작업 연결/자료·시각·환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 101,
@@ -1423,12 +1469,19 @@
         "production_e2e": "16/16; first build 15/16 late resize close failure retained",
         "real_api_requests": 0,
         "pending": [
-          "G27 activity connection; G25 task/collaborator connection verified in G25",
           "lifecycle/other billing options source",
           "visual differences",
           "native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G24/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1449,7 +1502,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 자료·시각·환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 95,
@@ -1477,11 +1530,18 @@
         "production_e2e": "26/26",
         "real_api_requests": 0,
         "pending": [
-          "G27 comments/activity; G26 subtasks verified",
           "source/visual differences",
           "native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G25/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1502,7 +1562,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 자료·시각·환경 대기",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 94,
@@ -1521,7 +1581,7 @@
       "verification": {
         "mcp": "2 flows / 15 screens; Latest2146 reused",
         "images_viewed": 15,
-        "visual_comparison": "15 pairs +2narrow; source full-scroll alignment waits for G27 activity/comment height",
+        "visual_comparison": "15 original pairs rechecked with G27 activity/comments; residual differences retained",
         "typecheck": "passed",
         "lint": "passed",
         "unit": "84/84; first83/84 parent overwrite defect fixed",
@@ -1530,11 +1590,18 @@
         "production_e2e": "37/37",
         "real_api_requests": 0,
         "pending": [
-          "G27 activity/comment and full-scroll comparison",
           "subtask deletion/source policy",
           "visual/native IME/assistive technology/additional browsers"
         ],
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G26/"
+      },
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -1554,7 +1621,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 92,
@@ -1562,7 +1629,34 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "current_regression": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
+      },
+      "result": "../RESULTS/G27_RESULT.md",
+      "verification": {
+        "mcp": "1 flow/3 screens; Latest2146 reused",
+        "images_viewed": 3,
+        "visual_comparison": "3 original pairs +15 G26 regression pairs; 4 narrow/enlarged captures",
+        "typecheck": "passed; first two type errors corrected",
+        "lint": "passed",
+        "unit": "87/87",
+        "build": "passed; rebuilt after visual CSS correction",
+        "development_e2e": "143/143 full; earlier targeted11/12 then4/4 separate",
+        "production_e2e": "143/143 full",
+        "real_api_requests": 0,
+        "pending": [
+          "comment menu/source permissions and actual notifications",
+          "source font/icon/spacing differences",
+          "native IME/assistive technology/additional browsers/devices"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G27/"
+      }
     },
     {
       "id": "G28",
@@ -3662,7 +3756,7 @@
         "G22",
         "G23"
       ],
-      "status": "G25/G26 소비 분석 수행; 반복/파일/Gantt·의존성 대기",
+      "status": "G25/G26/G27 소비 분석 수행; 반복/파일/Gantt·의존성 대기",
       "first_gate": "G25",
       "result": "../RESULTS/R06_RESULT.md"
     },

@@ -4,10 +4,10 @@ import type { ProjectStore } from "@/features/projects";
 import type { TeamStore } from "@/features/team";
 import { abortableDelay } from "@/lib/abortable-delay";
 import { newTaskDraft, validateTaskDraft } from "../model/task-values";
-import type { Task, TaskDraft, TaskState, TaskStore, Subtask, SubtaskPatch } from "../model/task-types";
+import type { Task, TaskDraft, TaskState, TaskStore, TaskComment, Subtask, SubtaskPatch } from "../model/task-types";
 // 기능 : 전체·프로젝트·초대 작업을 단일 메모리 원본에 저장하고 배정 범위와 저장 revision을 검증한다.
 export function createTaskStore(preview: PreviewRuntime, projects: ProjectStore, team: TeamStore): TaskStore {
-  const workspaces = new Map<string, Task[]>(); const submissions = new Map<string, string>(); const subtaskSubmissions = new Map<string, string>(); const listeners = new Set<() => void>(); let state: TaskState = { version: 0, scenario: "normal" }; let generation = 0; let sequence = 0; let failed = false; let previous = preview.getSnapshot();
+  const workspaces = new Map<string, Task[]>(); const submissions = new Map<string, string>(); const subtaskSubmissions = new Map<string, string>(); const commentSubmissions = new Map<string, string>(); const listeners = new Set<() => void>(); let state: TaskState = { version: 0, scenario: "normal" }; let generation = 0; let sequence = 0; let failed = false; let previous = preview.getSnapshot();
   // 기능 : 같은 제목의 서로 다른 원본 작업과 시간 참조 ID를 분리한 seed를 제공한다.
   function rows(workspaceId: string) { let data = workspaces.get(workspaceId); if (!data) { const projectId = `${workspaceId}:team-project-2`; data = [{ ...newTaskDraft(projectId), title: "Untitled", id: `${workspaceId}:task-untitled`, workspaceId, revision: 0, activities: [], subtasks: [] }, ...[1, 2].map(index => ({ ...newTaskDraft(projectId, "In Progress"), title: "Initial Chat", assigneeId: `${workspaceId}:member-owner`, dueDate: "2024-02-06", id: `${workspaceId}:task-initial-chat-${index}`, workspaceId, revision: 0, activities: [], subtasks: [] }))]; workspaces.set(workspaceId, data); } return data; }
   // 기능 : 불변 버전을 갱신해 모든 작업 소비 화면을 다시 조회한다.
@@ -29,7 +29,7 @@ export function createTaskStore(preview: PreviewRuntime, projects: ProjectStore,
   // 기능 : 첫 유효 필드 확정만 ID를 생성하고 동일 제출의 중복 저장을 방지한다.
   async function create(scope: PreviewScope, input: TaskDraft, submissionId: string, signal: AbortSignal) { const draft = validateTaskDraft(structuredClone(input)); await wait(scope, signal); validateRelations(scope, draft); const key = `${scope.workspaceId}:${scope.actorId}:${submissionId}`; const priorId = submissions.get(key); const prior = rows(scope.workspaceId).find(task => task.id === priorId); if (prior) return structuredClone(prior); failWrite(); const task: Task = { ...draft, id: `${scope.workspaceId}:task-new-${++sequence}`, workspaceId: scope.workspaceId, revision: 0, activities: [], subtasks: [] }; rows(scope.workspaceId).push(task); submissions.set(key, task.id); publish(); return structuredClone(task); }
   // 기능 : 필드 확정 snapshot을 원자 저장하고 오래된 초안은 현재 작업을 덮지 않는다.
-  async function edit(scope: PreviewScope, id: string, revision: number, input: TaskDraft, signal: AbortSignal) { const draft = validateTaskDraft(structuredClone(input)); await wait(scope, signal); const task = current(scope, id); if (!task) throw new Error("This task is unavailable or outside your assigned scope."); if (task.revision !== revision) throw new Error("The task changed. Reload its saved values before retrying."); if (draft.projectId !== task.projectId) throw new Error("Moving an existing task to another project is not available."); validateRelations(scope, draft); failWrite(); const next: Task = { ...task, ...draft, revision: revision + 1 }; if (task.status !== next.status) next.activities.push({ id: `${scope.workspaceId}:task-status-${++sequence}`, kind: "status", actorId: scope.actorId, actorName: preview.getSnapshot().session!.name, status: next.status, at: "2024-02-07T12:00:00Z", taskTitle: next.title }); workspaces.set(scope.workspaceId, rows(scope.workspaceId).map(row => row.id === id ? next : row)); publish(); return structuredClone(next); }
+  async function edit(scope: PreviewScope, id: string, revision: number, input: TaskDraft, signal: AbortSignal) { const draft = validateTaskDraft(structuredClone(input)); await wait(scope, signal); const task = current(scope, id); if (!task) throw new Error("This task is unavailable or outside your assigned scope."); if (task.revision !== revision) throw new Error("The task changed. Reload its saved values before retrying."); if (draft.projectId !== task.projectId) throw new Error("Moving an existing task to another project is not available."); validateRelations(scope, draft); failWrite(); const next: Task = { ...task, ...draft, revision: revision + 1 }; if (task.status !== next.status) next.activities.push({ id: `${scope.workspaceId}:task-status-${++sequence}`, kind: "status", actorId: scope.actorId, actorName: preview.getSnapshot().session!.name, status: next.status, at: "2024-02-07T12:00:00Z", taskTitle: next.title }); if (task.assigneeId !== next.assigneeId) next.activities.push({ id: `${scope.workspaceId}:task-assignment-${++sequence}`, kind: "assignment", actorId: scope.actorId, actorName: preview.getSnapshot().session!.name, assigneeId: next.assigneeId, assigneeName: members(scope, task.projectId).find(member => member.id === next.assigneeId)?.name ?? null, at: "2024-02-07T12:00:00Z", taskTitle: next.title }); workspaces.set(scope.workspaceId, rows(scope.workspaceId).map(row => row.id === id ? next : row)); publish(); return structuredClone(next); }
   // 기능 : 하위 제목의 빈값과 길이를 검증하고 부모 제목과 독립적으로 저장한다.
   function subtaskTitle(value: string) { const title = value.trim(); if (!title || title.length > 200) throw new Error("Enter a subtask title of 1–200 characters."); return title; }
   // 기능 : 부모가 살아 있고 접근 가능한 경우에만 한 제출의 하위 항목을 한 번 생성한다.
@@ -47,15 +47,23 @@ export function createTaskStore(preview: PreviewRuntime, projects: ProjectStore,
     if (patch.assigneeId && !members(scope, task.projectId).some(member => member.id === patch.assigneeId)) throw new Error("Choose a joined member of this project."); failWrite();
     const next = { ...child, ...patch, revision: child.revision + 1 }; task.subtasks = task.subtasks.map(row => row.id === id ? next : row); workspaces.set(scope.workspaceId, rows(scope.workspaceId).map(row => row.id === taskId ? task : row)); publish(); return structuredClone(next);
   }
+  // 기능 : 같은 작업의 댓글을 한 번만 추가하며 늦은 부모 초안과 독립적으로 보존한다.
+  async function addComment(scope: PreviewScope, taskId: string, input: string, submissionId: string, signal: AbortSignal): Promise<TaskComment> {
+    const body = input.trim(); if (!body || body.length > 4000) throw new Error("Enter a comment of 1–4000 characters.");
+    await wait(scope, signal); const task = current(scope, taskId); if (!task) throw new Error("This task is unavailable or outside your assigned scope.");
+    const key = `${scope.workspaceId}:${scope.actorId}:${taskId}:${submissionId}`; const prior = task.activities.find(event => event.id === commentSubmissions.get(key)); if (prior?.kind === "comment") return structuredClone(prior); failWrite();
+    const comment: TaskComment = { id: `${scope.workspaceId}:task-comment-${++sequence}`, kind: "comment", actorId: scope.actorId, actorName: preview.getSnapshot().session!.name, at: "2024-02-07T12:00:00Z", taskTitle: task.title, body };
+    task.activities.push(comment); workspaces.set(scope.workspaceId, rows(scope.workspaceId).map(row => row.id === taskId ? task : row)); commentSubmissions.set(key, comment.id); publish(); return structuredClone(comment);
+  }
   // 기능 : 목 오류 변경은 저장 원본을 보존하고 이전 요청만 무효화한다.
   function setScenario(scenario: Scenario) { generation++; failed = false; state = { ...state, scenario }; publish(); }
   // 기능 : 가상 문맥 이탈을 무효화하고 Reset에서만 저장 원본을 초기화한다.
-  function onScope() { const next = preview.getSnapshot(); generation++; failed = false; state = { ...state, scenario: "normal" }; if (next.resetGeneration !== previous.resetGeneration) { workspaces.clear(); submissions.clear(); subtaskSubmissions.clear(); sequence = 0; } previous = next; publish(); }
+  function onScope() { const next = preview.getSnapshot(); generation++; failed = false; state = { ...state, scenario: "normal" }; if (next.resetGeneration !== previous.resetGeneration) { workspaces.clear(); submissions.clear(); subtaskSubmissions.clear(); commentSubmissions.clear(); sequence = 0; } previous = next; publish(); }
   // 기능 : 앱 수명의 계정·프로젝트·팀 구독을 연결하고 모두 정리한다.
   function connect() { previous = preview.getSnapshot(); const stopPreview = preview.subscribe(onScope); const stopProjects = projects.subscribe(publish); const stopTeam = team.subscribe(publish); return function cleanup() { stopTeam(); stopProjects(); stopPreview(); }; }
   // 기능 : 안정된 버전 snapshot을 구독자에게 반환한다.
   function getSnapshot() { return state; }
   // 기능 : 작업 변경 구독과 해제를 짝지어 제공한다.
   function subscribe(listener: () => void) { listeners.add(listener); return function unsubscribe() { listeners.delete(listener); }; }
-  return { getSnapshot, subscribe, connect, setScenario, read, current, members, create, edit, addSubtask, editSubtask };
+  return { getSnapshot, subscribe, connect, setScenario, read, current, members, create, edit, addSubtask, editSubtask, addComment };
 }

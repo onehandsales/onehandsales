@@ -3,7 +3,9 @@ import type { TeamRow } from "@/features/team";
 export const taskStatuses = ["To Do", "In Progress", "Done"] as const;
 export type TaskStatus = typeof taskStatuses[number];
 export type TaskDraft = { title: string; projectId: string; status: TaskStatus; assigneeId: string | null; dueDate: string; description: string };
-export type TaskActivity = { id: string; kind: "status"; actorId: string; actorName: string; status: TaskStatus; at: string; taskTitle: string };
+type TaskActivityBase = { id: string; actorId: string; actorName: string; at: string; taskTitle: string };
+export type TaskComment = TaskActivityBase & { kind: "comment"; body: string };
+export type TaskActivity = TaskActivityBase & ({ kind: "status"; status: TaskStatus } | { kind: "assignment"; assigneeId: string | null; assigneeName: string | null }) | TaskComment;
 export type Subtask = { id: string; parentTaskId: string; revision: number; title: string; completed: boolean; assigneeId: string | null };
 export type SubtaskPatch = Partial<Pick<Subtask, "title" | "completed" | "assigneeId">>;
 export type Task = TaskDraft & { id: string; workspaceId: string; revision: number; activities: TaskActivity[]; subtasks: Subtask[] };
@@ -18,4 +20,5 @@ export type TaskStore = {
   edit: (scope: PreviewScope, id: string, revision: number, draft: TaskDraft, signal: AbortSignal) => Promise<Task>;
   addSubtask: (scope: PreviewScope, taskId: string, title: string, submissionId: string, signal: AbortSignal) => Promise<Subtask>;
   editSubtask: (scope: PreviewScope, taskId: string, id: string, revision: number, patch: SubtaskPatch, signal: AbortSignal) => Promise<Subtask>;
+  addComment: (scope: PreviewScope, taskId: string, body: string, submissionId: string, signal: AbortSignal) => Promise<TaskComment>;
 };

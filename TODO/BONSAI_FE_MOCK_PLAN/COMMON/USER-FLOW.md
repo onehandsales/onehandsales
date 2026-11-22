@@ -61,3 +61,7 @@ Settings/계정 메뉴 Team → `/app/settings/team`, Invite Team → `?invite=1
 ## G18 연결 갱신 (2026-11-22)
 
 G17 Team preview controls → `/invite/:workspaceId/:invitationId` → 다른 이메일은 로그아웃, 새 계정은 초대 전용 입력, 기존 계정은 로그인 returnTo `/app/invitations/...` → 같은 Pending ID 수락 → 허용 프로젝트/작업. 과거 일반 가입의 다른 이메일을 하나의 성공 이력으로 합치지 않는다. [G18 결과](../RESULTS/G18_RESULT.md)·[R02 분석](../RESULTS/R02_RESULT.md). 미관찰 동작은 명시한 목 정책이며 서버/API/DB 확정이 아니다.
+
+## G27 최종 연결 갱신
+
+[G18~G27 결과](../RESULTS/G18_G27_RESULT.md): G18의 최소 프로젝트/작업은 G21~G27의 실제 로컬 공유 원본에 연결했다. 고객→프로젝트→전체/프로젝트 작업→하위/댓글→초대 협업자→소유자 재로그인을 같은 ID로 검증했다. 기존 표의 소유 범위는 유지하며 미수록 업무/실서비스 완료로 확대하지 않는다.

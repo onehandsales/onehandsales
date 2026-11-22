@@ -137,3 +137,7 @@ TaskStore는 ProjectStore/TeamStore를 주입받아 배정·joined 멤버를 검
 ## G26 독립 하위 작업
 
 하위항목은 TaskStore에서 parentTaskId/독립ID/revision을 갖는다. 부모필드저장은6개허용필드만추출해최신하위값/활동을덮지않는다. useTaskMutation이취소/문맥/중복을관리하고하위필드는patch만저장한다. 중첩Dialog의cancel/Tab은안쪽에서처리한다. [G26 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G26_RESULT.md).
+
+## G27 댓글과 활동
+
+TaskActivity는 status/assignment/comment로 구분한다. 부모 필드 revision과 독립인 댓글 append는 최신 작업 원본/접근을 재검사하고 UUID로 중복을 막는다. TaskPanel은 Host의 현재 snapshot을 소비해 저장 성공과 표시·입력 초기화를 함께 반영한다. 입력과 취소는 TaskCommentForm/useTaskMutation, 표현은 TaskActivitySection에 둔다. 기존 메모리·역할 경계를 유지한다. [G27 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G27_RESULT.md).

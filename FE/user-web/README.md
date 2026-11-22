@@ -1,10 +1,10 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: G26 하위 작업의 생성·제목·완료·담당자를 독립 목 상태로 구현·검증했다. G27 댓글/활동 및 자료·시각·환경 대기는 유지한다. [G26 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G26_RESULT.md). 이전 수치는 당시 기록이다.
+최신 상태: G18~G27의 관찰 범위 목 구현과 개별 검토를 수행했다. G27 현재 단위87개·전체 개발/빌드 E2E143개씩 통과; 원본 미수록·시각 차이·환경 대기는 유지한다. [연속 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G18_G27_RESULT.md). 이전 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 
-기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·시각/환경 및 G05의 미수록 본문/목록과 G19 이후 화면은 미착수이며 실제 인증·업무 API·Backend·DB 연결은 없다.
+기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·G05 미수록 본문/목록·시각/환경은 대기다. G18~G27의 관찰 범위 목 구현은 현재 결과에 연결했으며 G28 이후는 미착수다. 실제 인증·업무 API·Backend·DB 연결은 없다.
 
 G03에서 공개 이메일을 경로별로 분리하고 가입 인계를 이력별 메모리 snapshot으로 보완했다. G03 당시 typecheck/lint/build, unit9, dev/build Chromium E2E각22가 통과했다. G01/G02 회귀를 포함하며 관찰한 흐름의 실제 API·외부 요청·실패·console 오류는0건이다. G03 원본22상태 비교를 수행했고 잔여 시각·page2/다른30소개본문·원본 모바일/상호작용·실제 OS IME/AT 등은 대기다. G02 기존17상태의 남은 차이도 유지한다.
 
@@ -142,4 +142,4 @@ TeamStore는 workspace별 메모리 원본, 모달 입력은 화면 수명이다
 
 ## G18 초대 수락·협업자 접근 (2026-11-21~22)
 
-`/invite/:workspaceId/:invitationId`는 G17 Team preview controls의 로컬 초대 링크로 진입한다. 같은 Pending ID를 성공 때만 Joined로 바꾸며 새/기존 계정·불일치·실패·만료·취소를 목으로 처리한다. `/app/projects`, `/app/projects/:projectId`, `/app/tasks`는 G18의 최소 협업 화면이며 G21~G27에서 업무 저장소와 연결한다. 초대 membership은 workspace별이고 회사/재무/팀 직접 URL을 차단한다. [현재 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G18_RESULT.md)의 최초 실패/재실행·시각/환경 대기를 유지한다. 커밋은 이번 연속 요청 범위에서만 승인됐고 push/배포는 하지 않는다.
+`/invite/:workspaceId/:invitationId`는 G17 Team preview controls의 로컬 초대 링크로 진입한다. 같은 Pending ID를 성공 때만 Joined로 바꾸며 새/기존 계정·불일치·실패·만료·취소를 목으로 처리한다. `/app/projects`, `/app/projects/:projectId`, `/app/tasks`는 G18 당시 최소 협업 화면으로 시작했고 G21~G27에서 공통 프로젝트/작업/하위/댓글 저장소에 연결·검증했다. 초대 membership은 workspace별이고 회사/재무/팀 직접 URL을 차단한다. [현재 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G18_RESULT.md)의 최초 실패/재실행·시각/환경 대기를 유지한다. 커밋은 이번 연속 요청 범위에서만 승인됐고 push/배포는 하지 않는다.
