@@ -11,11 +11,14 @@ export type TaskComment = TaskActivityBase & { kind: "comment"; body: string };
 export type TaskActivity = TaskActivityBase & ({ kind: "status"; status: TaskStatus; statusName: string } | { kind: "assignment"; assigneeId: string | null; assigneeName: string | null }) | TaskComment;
 export type Subtask = { id: string; parentTaskId: string; revision: number; title: string; completed: boolean; assigneeId: string | null };
 export type SubtaskPatch = Partial<Pick<Subtask, "title" | "completed" | "assigneeId">>;
-export type Task = TaskDraft & { id: string; workspaceId: string; revision: number; archived: boolean; activities: TaskActivity[]; subtasks: Subtask[] };
+export type TaskFile = { id: string; name: string; file: Blob };
+export type TemplateTaskCopy = { title: string; description: string; files: TaskFile[]; subtasks: { title: string }[] };
+export type TaskBatch = { projectId: string; sourceId: string; sourceRevision: number; submissionId: string; items: TemplateTaskCopy[] };
+export type Task = TaskDraft & { id: string; workspaceId: string; revision: number; archived: boolean; activities: TaskActivity[]; subtasks: Subtask[]; files?: TaskFile[] };
 export type TaskView = Task & { projectName: string; assigneeName: string | null };
 export type TaskLifecycleAction = "archive" | "delete";
 export type TaskLifecycleResult = { sequence: number; id: string; action: TaskLifecycleAction };
-export type TaskState = { version: number; scenario: Scenario; lifecycle?: TaskLifecycleResult };
+export type TaskState = { version: number; scenario: Scenario; lifecycle?: TaskLifecycleResult; application?: { sequence: number; projectId: string; ids: string[] } };
 export type TaskStore = {
   getSnapshot: () => TaskState; subscribe: (listener: () => void) => () => void; connect: () => () => void; setScenario: (scenario: Scenario) => void;
   read: (scope: PreviewScope, signal: AbortSignal) => Promise<TaskView[]>;
@@ -26,6 +29,7 @@ export type TaskStore = {
   remove: (scope: PreviewScope, id: string, revision: number, action: TaskLifecycleAction, signal: AbortSignal) => Promise<void>;
   complete: (scope: PreviewScope, id: string, revision: number, completed: boolean, signal: AbortSignal) => Promise<Task>;
   create: (scope: PreviewScope, draft: TaskDraft, submissionId: string, signal: AbortSignal) => Promise<Task>;
+  createBatch: (scope: PreviewScope, input: TaskBatch, validateSource: () => void, signal: AbortSignal) => Promise<Task[]>;
   edit: (scope: PreviewScope, id: string, revision: number, draft: TaskDraft, signal: AbortSignal) => Promise<Task>;
   addSubtask: (scope: PreviewScope, taskId: string, title: string, submissionId: string, signal: AbortSignal) => Promise<Subtask>;
   editSubtask: (scope: PreviewScope, taskId: string, id: string, revision: number, patch: SubtaskPatch, signal: AbortSignal) => Promise<Subtask>;

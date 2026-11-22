@@ -75,3 +75,30 @@
 .template-cancel-save { justify-self:center; border:0; background:none; color:#48732d; font-size:12px; padding:4px; }
 .template-editor-footer>.task-primary { width:120px; }
 @media(max-width:400px) { .template-editor-footer { padding:16px 10px; gap:4px; }.template-editor-footer>.task-primary { width:104px; } }
+/* G31: 적용 모달과 실제 생성 파일은 같은 로컬 이미지 UI를 사용한다. */
+.dialog.template-apply-dialog { width:460px; }
+.template-apply-fields { padding:40px; }
+.template-apply-fields>p:first-child { margin:0 0 40px; font-size:18px; line-height:24px; font-weight:600; color:#748777; text-align:center; }
+.template-apply-fields a { color:#55a72b; text-decoration:none; }
+.template-apply-fields>label+label { margin-top:40px; }
+.template-apply-fields select { width:100%; min-width:0; height:40px; border:1px solid #cfd4ce; border-radius:5px; background:white; color:#14291c; padding:8px 10px; font:400 16px/22px "Bonsai Public Gellix",Arial; }
+.template-apply-footer { position:relative; padding:20px; border-top:1px solid #edf0e9; }
+.template-apply-footer>.task-primary { width:100%; height:46px; }
+.template-apply-cancel { position:absolute; right:20px; top:-30px; background:none; border:0; font-size:12px; color:#3e7025; }
+.template-apply-state { padding:40px; }.template-apply-state button { margin:8px; }
+.template-apply-note { font-size:14px; line-height:20px; margin:12px 0 24px; }
+.template-apply-note+label { margin-top:24px; }
+.task-new-group>a[aria-label="Create tasks from template"] { background:#55a92b; color:white; display:flex; align-items:center; justify-content:center; width:56px; border-left:1px solid #78be54; border-radius:0 5px 5px 0; }
+.task-batch-feedback a { color:#357c1e; text-decoration:underline; }
+@media(max-width:760px) { .template-apply-fields { padding:28px 22px 40px; }.template-apply-fields>p:first-child { font-size:17px; overflow-wrap:anywhere; }.template-apply-footer { padding:16px; } }
+.template-apply-fields>label { position:relative; }
+.template-apply-fields select { appearance:none; padding-right:34px; }
+.template-apply-fields>label::after { content:""; position:absolute; right:14px; bottom:17px; width:7px; height:7px; border-right:1.5px solid #b6c3b7; border-bottom:1.5px solid #b6c3b7; transform:rotate(45deg); pointer-events:none; }
+.template-apply-fields select.is-empty { color:#b1b9b2; }
+.template-apply-fields option { color:#14291c; }
+.template-apply-footer.is-incomplete>.task-primary:disabled { background:#b2e39a; }
+.task-template-link { position:relative; }
+.task-new-group:has(>.task-template-link) { overflow:visible; }
+.task-new-group:has(>.task-template-link)>.task-primary { border-radius:6px 0 0 6px; }
+.task-template-hint { position:absolute; top:calc(100% + 8px); right:0; white-space:nowrap; padding:10px 14px; color:white; background:#14241b; border-radius:3px; font:600 14px/20px "Bonsai Public Gellix",Arial; z-index:5; }
+@media(max-width:760px) { .task-new-group:has(>.task-template-link) { position:relative; }.task-template-link { position:static; }.task-template-hint { left:0; right:auto; max-width:calc(100vw - 48px); white-space:normal; width:max-content; } }

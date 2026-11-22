@@ -1,22 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { CloudUpload, X } from "lucide-react";
-import { Dialog } from "@/components/ui/dialog";
-import { useObjectUrl } from "@/lib/use-object-url";
+import { LocalImageCard as TemplateFileCard } from "@/components/ui/local-image-card";
+export { LocalImageCard as TemplateFileCard } from "@/components/ui/local-image-card";
 import { templateFileError } from "../model/template-values";
 import type { TemplateFile } from "../model/template-types";
 
-// 기능 : 로컬 Blob의 미리보기 수명을 표시 컴포넌트에 연결하고 원본 파일 이름을 보존한다.
-export function TemplateFileCard({ entry, onRemove }: { entry: TemplateFile; onRemove?: () => void }) {
-  const url = useObjectUrl(entry.file); const [expanded, setExpanded] = useState(false); const [ready, setReady] = useState(false);
-  return <div className="template-file-card">
-    <button type="button" className="template-file-preview" aria-label={`Preview ${entry.name}`} onClick={() => setExpanded(true)}>
-      {url && <img src={url} alt={entry.name} onLoad={() => setReady(true)} />}{!ready && <span>{entry.name}</span>}
-      <CloudUpload size={17} aria-hidden="true" />
-    </button>
-    {onRemove && <button type="button" className="template-file-remove" aria-label={`Remove ${entry.name}`} onClick={onRemove}><X size={14} /></button>}
-    {expanded && <Dialog title={entry.name} className="template-image-dialog" onClose={() => setExpanded(false)}><img src={url} alt={entry.name} /><button type="button" onClick={() => setExpanded(false)}>Return to task</button></Dialog>}
-  </div>;
-}
 // 기능 : 파일 선택·실제 로컬 디코딩·재시도·취소를 상위 편집 초안에만 반영한다.
 export function TemplateFiles({ files, disabled, onChange, onReading }: { files: TemplateFile[]; disabled: boolean; onChange: (files: TemplateFile[]) => void; onReading: (reading: boolean) => void }) {
   const input = useRef<HTMLInputElement>(null); const request = useRef<AbortController | null>(null); const last = useRef<File | null>(null);

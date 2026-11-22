@@ -11,3 +11,5 @@ export type { Task, TaskView, TaskStore } from "./model/task-types";
 export { DashboardTasks } from "./components/dashboard-tasks";
 
 export { TaskFeedback } from "./components/task-feedback";
+
+export { TaskBatchFeedback } from "./components/task-batch-feedback";

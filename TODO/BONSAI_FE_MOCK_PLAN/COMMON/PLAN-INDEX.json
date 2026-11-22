@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G30 작업 템플릿 작성의 목 구현·누락 보완·두 차례 검토·12상태 비교를 수행했다. 단위97/97, 개발 영향48/49 후 수정 대상5/5, 빌드 전체156/157 후 최신 빌드 영향10/10 통과. 최초 실패와 수정 후 재실행을 구분한다. G31 적용·독립성 연결은 G30 커밋 이후 진행하며 자료·시각·환경 대기를 유지한다.",
+  "status": "G30 커밋 12b20736 이후 G31 템플릿 적용·독립 복사·실패/취소·이력 누락을 보완하고 두 차례 검토와 G30 연결 회귀를 수행했다. 단위100/100, 개발 영향57/58 후 수정 대상9/9, 빌드 전체160/161 후 최신 빌드 대상9/9 통과. 최초 hash 복귀 실패와 수정 후 통과를 구분한다. 원본7상태 비교·자료/시각/환경 대기는 유지하며 G32 이후는 미착수다.",
   "goals": [
     {
       "id": "G00",
@@ -1770,7 +1770,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·누락 보완·두 차례 검토·시각 비교·현재 회귀 검증; 자료·시각·환경 및 G31 연결 대기",
+      "status": "관찰 범위 작성·검토·시각 비교 수행; G31에서 적용 독립성 연결 검증 수행; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 130,
@@ -1795,8 +1795,9 @@
         "preview": "full156/157 then rebuilt target10/10; not first-run full pass",
         "real_api_requests": 0,
         "visual": "12 source comparisons + narrow capture; differences retained",
-        "connection_pending": "G31 apply independence after G30 commit",
-        "environment_pending": "OS IME/assistive technology/other browsers/devices"
+        "environment_pending": "OS IME/assistive technology/other browsers/devices",
+        "connection_at_g30_commit": "G31 apply independence after G30 commit",
+        "connection_verification": "G31: unit100/100; dev/build writing5+application4 each9/9; historical failures in G31_RESULT.md"
       }
     },
     {
@@ -1817,7 +1818,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·누락 보완·두 차례 검토·G30 연결 회귀·시각 비교 수행; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 128,
@@ -1825,7 +1826,22 @@
           "first": 1,
           "last": 7
         }
-      ]
+      ],
+      "result": "../RESULTS/G31_RESULT.md",
+      "verification": {
+        "typecheck": "pass",
+        "lint": "pass",
+        "unit": "100/100 (23 files); first99/100 test assertion corrected",
+        "build": "pass; chunk-size warning retained",
+        "dev": "affected57/58; hash fix then target9/9; clipped-tooltip fix target1/1",
+        "preview": "full160/161; hash fix target9/9; clipped-tooltip/style fix rebuilt target9/9; not first-run full pass",
+        "real_api_requests": 0,
+        "failed_requests": 0,
+        "console_errors": 0,
+        "visual": "7 source comparisons + copied detail/narrow capture; differences retained",
+        "connection": "G30 -> apply -> independent edit/complete/archive/delete verified",
+        "environment_pending": "OS IME/assistive technology/other browsers/devices"
+      }
     },
     {
       "id": "G32",

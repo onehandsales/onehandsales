@@ -1,10 +1,10 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: G30 작업 템플릿 작성의 목 구현·누락 보완·두 차례 검토·12상태 비교를 수행했다. 단위97/97, 개발 영향48/49 후 수정 대상5/5, 빌드 전체156/157 후 최신 빌드 영향10/10 통과. 최초 실패와 수정 후 재실행을 구분한다. G31 적용·독립성 연결은 G30 커밋 이후 진행하며 자료·시각·환경 대기를 유지한다. [G30 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G30_RESULT.md). 이전 수치는 당시 기록이다.
+최신 상태: G30 커밋 12b20736 이후 G31 템플릿 적용·독립 복사·실패/취소·이력 누락을 보완하고 두 차례 검토와 G30 연결 회귀를 수행했다. 단위100/100, 개발 영향57/58 후 수정 대상9/9, 빌드 전체160/161 후 최신 빌드 대상9/9 통과. 최초 hash 복귀 실패와 수정 후 통과를 구분한다. 원본7상태 비교·자료/시각/환경 대기는 유지하며 G32 이후는 미착수다. [G31 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G31_RESULT.md). 이전 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 
-기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·G05 미수록 본문/목록·시각/환경은 대기다. G18~G27의 관찰 범위 목 구현은 현재 결과에 연결했으며 G28 상태 정의·완료와 G29 보관·삭제를 보완했고 G30 이후는 미착수다. 실제 인증·업무 API·Backend·DB 연결은 없다.
+기본 `/`는 Bonsai 랜딩·공통 메뉴다. 공개 웹은 확인한 Gellix WOFF와 로컬 원본 자산을 사용한다. G01 검증 경로는 별도로 유지한다. 원본 비교 후 일부 이미지·색·문자 배치 차이가 남아 **G02 시각 동일성은 대기**다. G03의 Small business·Consulting·CRM 소개를 추가했다. G04 가격·후기 목 화면을 추가했다. 다른 미수록 소개·영상 재생·G05 미수록 본문/목록·시각/환경은 대기다. G18~G27의 관찰 범위 목 구현은 현재 결과에 연결했으며 G28 상태 정의·완료와 G29 보관·삭제를 보완했고 G30 작성·G31 적용과 독립성 연결을 보완했으며 G32 이후는 미착수다. 실제 인증·업무 API·Backend·DB 연결은 없다.
 
 G03에서 공개 이메일을 경로별로 분리하고 가입 인계를 이력별 메모리 snapshot으로 보완했다. G03 당시 typecheck/lint/build, unit9, dev/build Chromium E2E각22가 통과했다. G01/G02 회귀를 포함하며 관찰한 흐름의 실제 API·외부 요청·실패·console 오류는0건이다. G03 원본22상태 비교를 수행했고 잔여 시각·page2/다른30소개본문·원본 모바일/상호작용·실제 OS IME/AT 등은 대기다. G02 기존17상태의 남은 차이도 유지한다.
 

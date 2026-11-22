@@ -1,4 +1,6 @@
-import { TaskHost, TaskFeedback } from "@/features/tasks";
+import { TemplateApplyHost } from "@/features/task-template";
+import "@/styles/task-templates.css";
+import { TaskHost, TaskFeedback, TaskBatchFeedback } from "@/features/tasks";
 import "@/styles/tasks.css";
 import { ProjectCreateHost } from "@/features/projects";
 import "@/styles/projects.css";
@@ -41,8 +43,9 @@ export function AppShell() {
     <footer className="app-local-tools"><Link to="/app/preview">Foundation verification</Link><Link to="/">Public site</Link><Link to="/share/sample">Shared preview</Link><PreviewTools /></footer>
     {!invited && params.get("create") === "client" && <QueryScope key={preview.revision + ":" + location.key}><ClientCreateHost /></QueryScope>}
     {!invited && params.get("create") === "project" && <QueryScope key={preview.revision + ":" + location.key}><ProjectCreateHost /></QueryScope>}
-    {params.has("task") && !params.has("create") && <QueryScope key={preview.revision + ":task:" + location.pathname}><TaskHost /></QueryScope>}
-    <TaskFeedback />
+    {params.has("task") && !params.has("applyTemplate") && !params.has("create") && <QueryScope key={preview.revision + ":task:" + location.pathname}><TaskHost /></QueryScope>}
+    {params.has("applyTemplate") && !params.has("task") && !params.has("create") && <QueryScope key={preview.revision + ":template-apply:" + location.key}><TemplateApplyHost /></QueryScope>}
+    <TaskFeedback /><TaskBatchFeedback />
     {mobileOpen && <Dialog title="Workspace menu" onClose={() => setMobileOpen(false)}><AppSidebar mobile /></Dialog>}
   </div>;
 }
