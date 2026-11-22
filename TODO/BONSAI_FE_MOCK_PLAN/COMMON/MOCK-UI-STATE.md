@@ -73,3 +73,7 @@ FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목
 ## G18 연결 갱신 (2026-11-22)
 
 수락 성공 직전에 Pending ID/revision/대상/만료를 재검사하고 AuthStore/TeamStore를 동기 반영한다. 초대 membership은 workspace별로 분리하며 기존 소유 작업공간의 역할·사업 설정 상태를 보존한다. 새로고침/새 탭/Reset은 seed, 같은 탭 로그아웃 후 저장은 유지하고 입력은 폐기한다. 필터/row menu·Settings의 미수록 본문은 후속 근거 대기다. [G18 결과](../RESULTS/G18_RESULT.md)·[R02 분석](../RESULTS/R02_RESULT.md). 미관찰 동작은 명시한 목 정책이며 서버/API/DB 확정이 아니다.
+
+## 2026-11-22 G28 상태 정의·완료 연결
+
+`/app/tasks` 및 프로젝트 Tasks의 같은 작업 ID → 상태 선택 → Settings → workspace 표시명/색/순서 변경. Done ID는 완료 의미를 유지하고 과거 활동명은 저장 당시 snapshot이다. Dashboard 작업 체크는 같은 TaskStore를 변경하며 완료 행/하위/댓글/기록 시간은 유지한다. 취소→To Do, owner 정의 편집, Enter/blur/색 즉시 저장·Done 마지막 고정은 목 정책이다. 추가/삭제와 실제 공유·권한은 미확인이다. 실패는 입력 유지, 닫기/이탈은 미저장·pending 폐기, 성공은 같은 탭에 유지, reload/Reset은 seed 초기화. [G28 결과](../RESULTS/G28_RESULT.md).

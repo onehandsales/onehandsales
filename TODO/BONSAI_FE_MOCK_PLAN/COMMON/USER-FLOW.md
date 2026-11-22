@@ -65,3 +65,7 @@ G17 Team preview controls → `/invite/:workspaceId/:invitationId` → 다른 �
 ## G27 최종 연결 갱신
 
 [G18~G27 결과](../RESULTS/G18_G27_RESULT.md): G18의 최소 프로젝트/작업은 G21~G27의 실제 로컬 공유 원본에 연결했다. 고객→프로젝트→전체/프로젝트 작업→하위/댓글→초대 협업자→소유자 재로그인을 같은 ID로 검증했다. 기존 표의 소유 범위는 유지하며 미수록 업무/실서비스 완료로 확대하지 않는다.
+
+## 2026-11-22 G28 상태 정의·완료 연결
+
+`/app/tasks` 및 프로젝트 Tasks의 같은 작업 ID → 상태 선택 → Settings → workspace 표시명/색/순서 변경. Done ID는 완료 의미를 유지하고 과거 활동명은 저장 당시 snapshot이다. Dashboard 작업 체크는 같은 TaskStore를 변경하며 완료 행/하위/댓글/기록 시간은 유지한다. 취소→To Do, owner 정의 편집, Enter/blur/색 즉시 저장·Done 마지막 고정은 목 정책이다. 추가/삭제와 실제 공유·권한은 미확인이다. 실패는 입력 유지, 닫기/이탈은 미저장·pending 폐기, 성공은 같은 탭에 유지, reload/Reset은 seed 초기화. [G28 결과](../RESULTS/G28_RESULT.md).

@@ -7,8 +7,8 @@ export function useTaskMutation() {
   const [pending, setPending] = useState(false); const [error, setError] = useState("");
   // 기능 : 한 의도를 실행하고 살아 있는 요청의 결과만 호출자에게 전달한다.
   async function run<T>(operation: (signal: AbortSignal) => Promise<T>): Promise<T | undefined> {
-    if (request.current) return; const controller = new AbortController(); request.current = controller; setPending(true); setError("");
-    try { const result = await operation(controller.signal); if (!controller.signal.aborted && request.current === controller) return result; }
+    if (request.current) return; const controller = new AbortController(); request.current = controller; setPending(true);
+    try { const result = await operation(controller.signal); if (!controller.signal.aborted && request.current === controller) { setError(""); return result; } }
     catch (reason) { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Unable to save. Please try again."); }
     finally { if (request.current === controller) { request.current = null; setPending(false); } }
   }

@@ -80,3 +80,33 @@ it("G27 scopes collaborator read/write to the assigned project without changing 
   const joined = scope(runtime); expect(tasks.current(joined, id)?.activities).toEqual([owner]); const comment = await tasks.addComment(joined, id, "Collaborator comment", "member", signal()); expect(comment.actorId).toBe("preview-b"); expect(comment.actorName).toBe("Comment member");
   expect(tasks.current(joined, outside.id)).toBeNull(); await expect(tasks.addComment(joined, outside.id, "Denied", "denied", signal())).rejects.toThrow("outside"); expect(tasks.current(joined, id)?.activities[0]?.actorName).toBe(owner.actorName);
 });
+
+// 기능 : 상태 정의 변경이 안정된 ID·완료 의미·과거 활동과 연결 시간을 바꾸지 않는지 검증한다.
+it("G28 renames/reorders definitions without rewriting task IDs, historical names, children or recorded time", async () => {
+  const { runtime, tasks, projects } = setup(); const s = scope(runtime); const id = "studio-a:task-initial-chat-1"; const before = projects.current(s, projectId)!.timeEntries;
+  await tasks.addSubtask(s, id, "Independent child", "child", signal()); const original = tasks.current(s, id)!;
+  const done = await tasks.complete(s, id, original.revision, true, signal()); expect(done.activities.at(-1)).toMatchObject({ kind: "status", statusName: "Done" });
+  const definitions = tasks.statuses(s); const items = [definitions.items[1]!, { ...definitions.items[0]!, name: "Ready", color: "#e68850" }, { ...definitions.items[2]!, name: "Finished" }];
+  await tasks.saveStatuses(s, definitions.revision, items, signal()); expect(tasks.current(s, id)?.status).toBe("Done"); expect(tasks.current(s, id)?.activities.at(-1)).toMatchObject({ statusName: "Done" }); expect(tasks.current(s, id)?.subtasks[0]?.completed).toBe(false);
+  const reopened = await tasks.complete(s, id, done.revision, false, signal()); expect(reopened.status).toBe("To Do"); expect(reopened.activities.at(-1)).toMatchObject({ statusName: "Ready" });
+  expect(taskSummary(await tasks.read(s, signal())).Completed).toBe(0); expect(projects.current(s, projectId)!.timeEntries).toEqual(before);
+  runtime.setSession(null); runtime.setSession("preview-a"); expect(tasks.statuses(scope(runtime)).items[1]?.name).toBe("Ready"); runtime.reset(); runtime.setSession("preview-a"); expect(tasks.statuses(scope(runtime)).items[0]?.name).toBe("To Do");
+});
+// 기능 : 정의 검증·실패·동시 저장과 완료 충돌에서 최신 원본과 사용자 입력을 보존한다.
+it("G28 rejects invalid/stale settings and stale completion while allowing retry after write failure", async () => {
+  const { runtime, tasks } = setup(); const s = scope(runtime); const initial = tasks.statuses(s);
+  await expect(tasks.saveStatuses(s, 0, initial.items.slice(1), signal())).rejects.toThrow("three");
+  await expect(tasks.saveStatuses(s, 0, initial.items.map(item => ({ ...item, name: " " })), signal())).rejects.toThrow("1–40");
+  await expect(tasks.saveStatuses(s, 0, initial.items.map(item => ({ ...item, name: "same" })), signal())).rejects.toThrow("distinct");
+  await expect(tasks.saveStatuses(s, 0, initial.items.map(item => ({ ...item, color: "url(bad)" })), signal())).rejects.toThrow("color");
+  const next = initial.items.map(item => ({ ...item, name: item.name + " changed" })); tasks.setScenario("write-error"); await expect(tasks.saveStatuses(s, 0, next, signal())).rejects.toThrow("preserved"); expect(tasks.statuses(s)).toEqual(initial);
+  await tasks.saveStatuses(s, 0, next, signal()); await expect(tasks.saveStatuses(s, 0, initial.items, signal())).rejects.toThrow("changed");
+  const task = tasks.current(s, "studio-a:task-untitled")!; await tasks.complete(s, task.id, 0, true, signal()); await expect(tasks.complete(s, task.id, 0, false, signal())).rejects.toThrow("changed"); expect(tasks.current(s, task.id)?.status).toBe("Done");
+});
+// 기능 : 설정 저장 취소·계정 이탈·멤버 권한을 작업 완료 권한과 독립적으로 검증한다.
+it("G28 cancels stale settings and limits definition edits to the owner without granting workspace access", async () => {
+  const { runtime, tasks } = setup(); const s = scope(runtime); const original = tasks.statuses(s); const changed = original.items.map(item => ({ ...item, name: item.name + " saved" }));
+  tasks.setScenario("slow"); const controller = new AbortController(); const write = tasks.saveStatuses(s, 0, changed, controller.signal); controller.abort(); await expect(write).rejects.toMatchObject({ name: "AbortError" }); expect(tasks.statuses(s)).toEqual(original);
+  const crossing = tasks.saveStatuses(s, 0, changed, signal()); runtime.setWorkspace("studio-a-two"); await expect(crossing).rejects.toMatchObject({ name: "AbortError" }); expect(tasks.statuses(scope(runtime))).toEqual(original);
+  runtime.setSession("preview-b"); const member = scope(runtime); await expect(tasks.saveStatuses(member, 0, changed, signal())).rejects.toThrow("owner");
+});

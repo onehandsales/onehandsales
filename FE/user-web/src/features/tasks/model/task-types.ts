@@ -2,10 +2,13 @@ import type { PreviewScope, Scenario } from "@/features/preview";
 import type { TeamRow } from "@/features/team";
 export const taskStatuses = ["To Do", "In Progress", "Done"] as const;
 export type TaskStatus = typeof taskStatuses[number];
+// 의미 : 기존 상태 문자열은 변경하지 않는 내부 ID이며 표시 이름은 별도 정의가 소유한다.
+export type TaskStatusDefinition = { id: TaskStatus; name: string; color: string };
+export type TaskStatusSettings = { revision: number; items: TaskStatusDefinition[] };
 export type TaskDraft = { title: string; projectId: string; status: TaskStatus; assigneeId: string | null; dueDate: string; description: string };
 type TaskActivityBase = { id: string; actorId: string; actorName: string; at: string; taskTitle: string };
 export type TaskComment = TaskActivityBase & { kind: "comment"; body: string };
-export type TaskActivity = TaskActivityBase & ({ kind: "status"; status: TaskStatus } | { kind: "assignment"; assigneeId: string | null; assigneeName: string | null }) | TaskComment;
+export type TaskActivity = TaskActivityBase & ({ kind: "status"; status: TaskStatus; statusName: string } | { kind: "assignment"; assigneeId: string | null; assigneeName: string | null }) | TaskComment;
 export type Subtask = { id: string; parentTaskId: string; revision: number; title: string; completed: boolean; assigneeId: string | null };
 export type SubtaskPatch = Partial<Pick<Subtask, "title" | "completed" | "assigneeId">>;
 export type Task = TaskDraft & { id: string; workspaceId: string; revision: number; activities: TaskActivity[]; subtasks: Subtask[] };
@@ -16,6 +19,9 @@ export type TaskStore = {
   read: (scope: PreviewScope, signal: AbortSignal) => Promise<TaskView[]>;
   current: (scope: PreviewScope, id: string) => Task | null;
   members: (scope: PreviewScope, projectId: string) => TeamRow[];
+  statuses: (scope: PreviewScope) => TaskStatusSettings;
+  saveStatuses: (scope: PreviewScope, revision: number, items: TaskStatusDefinition[], signal: AbortSignal) => Promise<TaskStatusSettings>;
+  complete: (scope: PreviewScope, id: string, revision: number, completed: boolean, signal: AbortSignal) => Promise<Task>;
   create: (scope: PreviewScope, draft: TaskDraft, submissionId: string, signal: AbortSignal) => Promise<Task>;
   edit: (scope: PreviewScope, id: string, revision: number, draft: TaskDraft, signal: AbortSignal) => Promise<Task>;
   addSubtask: (scope: PreviewScope, taskId: string, title: string, submissionId: string, signal: AbortSignal) => Promise<Subtask>;

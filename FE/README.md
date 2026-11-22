@@ -1,6 +1,6 @@
 # FE
 
-현재 User Web은 [G27 댓글·활동](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G27_RESULT.md)까지 관찰 범위 목 구현·검증했다. 단위87/전체 개발·빌드143개씩, 자료·시각·환경 대기 유지. 실제 API/Backend 없음.
+현재 User Web은 [G28 상태 정의·완료 표시](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G28_RESULT.md)까지 관찰 범위 목 구현·검증했다. G28 상태 정의·완료 표시의 관찰 범위 목 구현·두 차례 검토·비교를 수행했다. 단위90/90·빌드 E2E147/147, 개발 전체140/147 뒤 시간 초과/시험 준비 문제 보완 대상11/11 통과. 최초 실패와 재실행을 구분하며 자료·시각·환경 대기는 유지한다. 실제 API/Backend 연결 없음.
 
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 

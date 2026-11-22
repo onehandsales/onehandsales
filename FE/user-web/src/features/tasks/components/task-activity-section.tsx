@@ -5,7 +5,7 @@ import { TaskCommentForm } from "./task-comment-form";
 
 // 기능 : 사용자 댓글과 담당자·상태 자동 활동의 내용과 표현을 분리한다.
 function ActivityRow({ event, onUnavailable }: { event: TaskActivity; onUnavailable: () => void }) {
-  const text = event.kind === "comment" ? event.body : event.kind === "status" ? `Marked task as ${event.status.toLowerCase()}` : event.assigneeName ? `Assigned ${event.assigneeName}` : "Removed assignee";
+  const text = event.kind === "comment" ? event.body : event.kind === "status" ? `Marked task as ${event.statusName.toLowerCase()}` : event.assigneeName ? `Assigned ${event.assigneeName}` : "Removed assignee";
   return <div className={`task-event${event.kind === "comment" ? " is-comment" : ""}`} data-activity-id={event.id} data-activity-kind={event.kind}>
     <span className="task-avatar" aria-hidden="true">{event.actorName.slice(0, 2).toUpperCase()}</span>
     <div><strong>{event.actorName}</strong><time dateTime={event.at} title={event.at}>{new Date(event.at).toLocaleTimeString("en-US", { timeZone: "UTC", hour: "numeric", minute: "2-digit" })} UTC</time><p>{text}</p></div>
