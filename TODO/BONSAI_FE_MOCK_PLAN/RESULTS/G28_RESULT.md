@@ -89,3 +89,7 @@ G28 커밋 후 승인된 G29만 이어간다. G30/push/배포는 하지 않는�
 | 개발 대상 재실행 | 11/0 | 81171 | 0 | 0 | 0 |
 
 재실행 명령: 위 공통 Playwright 명령에 `tests/e2e/audit-recheck.spec.ts:57 tests/e2e/company.spec.ts:32 tests/e2e/foundation.spec.ts:3 tests/e2e/foundation.spec.ts:139 tests/e2e/invoice-generator.spec.ts:42 tests/e2e/landing.spec.ts:113 tests/e2e/task-status.spec.ts --workers=1 --timeout=60000`. 로그/JSON/trace는 최초·재실행별로 보존했다. 요청 수에 개발 모듈/정적 GET과 HMR이 포함되며 HTTP를 가로채거나 navigation을 mock하지 않았다. 테스트 컨텍스트 종료 또는 normal 복원으로 장애 목 설정을 남기지 않았다.
+
+## 2026-11-22 G29 연결 회귀
+
+[G29 결과](G29_RESULT.md)에서 같은 Task ID의 완료→보관/삭제, 전체·프로젝트·개요·Dashboard 제외와 기록 시간 보존을 대조했다. 하위/댓글/늦은 변경·협업자 접근과 기존 상태 정의를 함께 검증한다. 이번 명령/실패·재실행은 G29 결과에 기록하며 위 과거 검사 수치·미수록/시각/환경 대기를 덮지 않는다.

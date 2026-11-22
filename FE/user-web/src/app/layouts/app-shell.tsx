@@ -1,4 +1,4 @@
-import { TaskHost } from "@/features/tasks";
+import { TaskHost, TaskFeedback } from "@/features/tasks";
 import "@/styles/tasks.css";
 import { ProjectCreateHost } from "@/features/projects";
 import "@/styles/projects.css";
@@ -42,6 +42,7 @@ export function AppShell() {
     {!invited && params.get("create") === "client" && <QueryScope key={preview.revision + ":" + location.key}><ClientCreateHost /></QueryScope>}
     {!invited && params.get("create") === "project" && <QueryScope key={preview.revision + ":" + location.key}><ProjectCreateHost /></QueryScope>}
     {params.has("task") && !params.has("create") && <QueryScope key={preview.revision + ":task:" + location.pathname}><TaskHost /></QueryScope>}
+    <TaskFeedback />
     {mobileOpen && <Dialog title="Workspace menu" onClose={() => setMobileOpen(false)}><AppSidebar mobile /></Dialog>}
   </div>;
 }

@@ -10,3 +10,5 @@ export { ProjectTaskSummary } from "./components/project-task-summary";
 export type { Task, TaskView, TaskStore } from "./model/task-types";
 
 export { DashboardTasks } from "./components/dashboard-tasks";
+
+export { TaskFeedback } from "./components/task-feedback";

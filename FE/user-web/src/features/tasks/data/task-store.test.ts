@@ -110,3 +110,29 @@ it("G28 cancels stale settings and limits definition edits to the owner without 
   const crossing = tasks.saveStatuses(s, 0, changed, signal()); runtime.setWorkspace("studio-a-two"); await expect(crossing).rejects.toMatchObject({ name: "AbortError" }); expect(tasks.statuses(scope(runtime))).toEqual(original);
   runtime.setSession("preview-b"); const member = scope(runtime); await expect(tasks.saveStatuses(member, 0, changed, signal())).rejects.toThrow("owner");
 });
+
+// 기능 : 완료와 보관·삭제를 분리하고 동명 대상·시간·상태 정의·동일 제출 재생성을 검증한다.
+it("G29 archives/deletes only the selected ID without changing time or status definitions and never replays removed creations", async () => {
+  const { runtime, tasks, projects } = setup(); const s = scope(runtime); const id = "studio-a:task-initial-chat-1"; const other = tasks.current(s, "studio-a:task-initial-chat-2")!; const time = projects.current(s, projectId)!.timeEntries; const definitions = tasks.statuses(s);
+  await tasks.addSubtask(s, id, "Retained inside archive", "child", signal()); await tasks.addComment(s, id, "Archive comment", "comment", signal()); const done = await tasks.complete(s, id, 0, true, signal());
+  await tasks.remove(s, id, done.revision, "archive", signal()); expect(tasks.current(s, id)).toBeNull(); expect(tasks.current(s, other.id)).toEqual(other); expect(taskSummary(await tasks.read(s, signal())).Completed).toBe(0); expect(tasks.statuses(s)).toEqual(definitions); expect(projects.current(s, projectId)!.timeEntries).toEqual(time);
+  await tasks.remove(s, other.id, other.revision, "delete", signal()); expect(tasks.current(s, other.id)).toBeNull(); expect(await tasks.read(s, signal())).toHaveLength(1); expect(projects.current(s, projectId)!.timeEntries).toEqual(time);
+  for (const action of ["archive", "delete"] as const) { const created = await tasks.create(s, draft, action, signal()); await tasks.remove(s, created.id, 0, action, signal()); await expect(tasks.create(s, draft, action, signal())).rejects.toThrow("unavailable"); }
+  runtime.setSession(null); runtime.setSession("preview-a"); expect(await tasks.read(scope(runtime), signal())).toHaveLength(1); runtime.reset(); runtime.setSession("preview-a"); expect(await tasks.read(scope(runtime), signal())).toHaveLength(3);
+});
+// 기능 : 보관·삭제 뒤 늦은 부모·하위·댓글·완료 요청이 대상을 부활시키지 못하게 검증한다.
+it("G29 rejects queued parent/child/comment/completion writes and duplicate removal after the same parent is removed", async () => {
+  for (const action of ["archive", "delete"] as const) {
+    const { runtime, tasks } = setup(); const s = scope(runtime); const task = tasks.current(s, "studio-a:task-initial-chat-1")!; const child = await tasks.addSubtask(s, task.id, "Child", "child", signal());
+    const results = await Promise.allSettled([tasks.remove(s, task.id, task.revision, action, signal()), tasks.edit(s, task.id, task.revision, { ...task, title: "Late parent" }, signal()), tasks.addComment(s, task.id, "Late comment", "late", signal()), tasks.editSubtask(s, task.id, child.id, child.revision, { completed: true }, signal()), tasks.addSubtask(s, task.id, "Late child", "late-child", signal()), tasks.complete(s, task.id, task.revision, true, signal()), tasks.remove(s, task.id, task.revision, action, signal())]);
+    expect(results.map(result => result.status)).toEqual(["fulfilled", "rejected", "rejected", "rejected", "rejected", "rejected", "rejected"]); expect(tasks.current(s, task.id)).toBeNull(); expect(await tasks.read(s, signal())).toHaveLength(2);
+  }
+});
+// 기능 : 실패·취소·오래된 revision·계정 이탈·권한 제한은 원본 작업을 보존한다.
+it("G29 preserves tasks on failed, cancelled, stale, cross-scope or member lifecycle requests", async () => {
+  const { runtime, tasks } = setup(); const s = scope(runtime); const id = "studio-a:task-initial-chat-1"; tasks.setScenario("write-error"); await expect(tasks.remove(s, id, 0, "delete", signal())).rejects.toThrow("preserved"); expect(tasks.current(s, id)).not.toBeNull();
+  const done = await tasks.complete(s, id, 0, true, signal()); await expect(tasks.remove(s, id, 0, "archive", signal())).rejects.toThrow("changed");
+  tasks.setScenario("slow"); const controller = new AbortController(); const pending = tasks.remove(s, id, done.revision, "delete", controller.signal); controller.abort(); await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+  const crossing = tasks.remove(s, id, done.revision, "archive", signal()); runtime.setWorkspace("studio-a-two"); await expect(crossing).rejects.toMatchObject({ name: "AbortError" }); runtime.setSession("preview-a"); expect(tasks.current(scope(runtime), id)?.status).toBe("Done");
+  runtime.setSession("preview-b"); await expect(tasks.remove(scope(runtime), "studio-b:task-untitled", 0, "delete", signal())).rejects.toThrow("owner");
+});

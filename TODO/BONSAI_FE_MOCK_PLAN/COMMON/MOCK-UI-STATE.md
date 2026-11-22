@@ -77,3 +77,7 @@ FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목
 ## 2026-11-22 G28 상태 정의·완료 연결
 
 `/app/tasks` 및 프로젝트 Tasks의 같은 작업 ID → 상태 선택 → Settings → workspace 표시명/색/순서 변경. Done ID는 완료 의미를 유지하고 과거 활동명은 저장 당시 snapshot이다. Dashboard 작업 체크는 같은 TaskStore를 변경하며 완료 행/하위/댓글/기록 시간은 유지한다. 취소→To Do, owner 정의 편집, Enter/blur/색 즉시 저장·Done 마지막 고정은 목 정책이다. 추가/삭제와 실제 공유·권한은 미확인이다. 실패는 입력 유지, 닫기/이탈은 미저장·pending 폐기, 성공은 같은 탭에 유지, reload/Reset은 seed 초기화. [G28 결과](../RESULTS/G28_RESULT.md).
+
+## 2026-11-22 G29 보관·삭제 연결
+
+전체/프로젝트 카드 또는 같은 ID 패널 → Archive(목 즉시 요청) / Delete→Confirm Deletion→확정. 실패는 동일 대상 재시도, X/outside/Escape/pending 취소·이탈은 원본 유지, 성공 후 활성 소비/요약에서 제외하고 패널은 원래 이력으로 닫는다. 이후 앞으로/기록 링크는 unavailable, hard reload/Reset은 seed 초기화다. 보관은 내부원본 유지/완료와 별개, 삭제는 부모 원본만 제거하며 시간·금액은 보존한다. owner-only와 연관자료/수명은 목 정책이고 실제 cascade/복원/청구는 미확인이다. [G29 결과](../RESULTS/G29_RESULT.md).

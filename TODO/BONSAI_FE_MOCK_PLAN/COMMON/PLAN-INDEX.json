@@ -1702,7 +1702,8 @@
         "real_api_requests": 0,
         "visual": "8 source comparisons; differences retained",
         "environment_pending": "OS IME/assistive technology/other browsers/devices"
-      }
+      },
+      "current_regression": "G29: unit93, affected development58, full build152; original G28 results retained"
     },
     {
       "id": "G29",
@@ -1723,7 +1724,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·연결 회귀 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 96,
@@ -1737,7 +1738,19 @@
           "first": 1,
           "last": 4
         }
-      ]
+      ],
+      "result": "../RESULTS/G29_RESULT.md",
+      "verification": {
+        "unit": "93/93",
+        "typecheck": "pass",
+        "lint": "pass",
+        "build": "pass",
+        "dev": "58/58 affected-scope; initial3/4 and20/21 retained",
+        "preview": "152/152 full suite",
+        "real_api_requests": 0,
+        "visual": "7 source comparisons; differences retained",
+        "environment_pending": "OS IME/assistive technology/other browsers/devices"
+      }
     },
     {
       "id": "G30",
@@ -3768,7 +3781,7 @@
         "G22",
         "G23"
       ],
-      "status": "G25~G28 소비 분석 및 G29 근거 보완 수행; 반복/파일/Gantt·의존성 등 전체 완료 대기",
+      "status": "G25~G29 소비 분석 수행; 반복/파일/Gantt·의존성 등 전체 완료 대기",
       "first_gate": "G25",
       "result": "../RESULTS/R06_RESULT.md"
     },
