@@ -133,3 +133,7 @@ ProjectHeader/NameEditor·SettingsForm·TimePanel·TeamPanel·Detail을 분리�
 ## G25 공통 작업 원본
 
 TaskStore는 ProjectStore/TeamStore를 주입받아 배정·joined 멤버를 검증한다. AppShell TaskHost는 query ID를 실제 패널로 연결하고 새 초안은 첫 유효 저장 때만 ID를 생성한다. 전체/프로젝트/개요/제한협업자/시간 행은 같은 taskId를 사용한다. projects에는 작업 ReactNode/callback을 주입해 순환 import를 피했다. [G25 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G25_RESULT.md).
+
+## G26 독립 하위 작업
+
+하위항목은 TaskStore에서 parentTaskId/독립ID/revision을 갖는다. 부모필드저장은6개허용필드만추출해최신하위값/활동을덮지않는다. useTaskMutation이취소/문맥/중복을관리하고하위필드는patch만저장한다. 중첩Dialog의cancel/Tab은안쪽에서처리한다. [G26 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G26_RESULT.md).

@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G25 전체/프로젝트 작업 보드·생성·필드 저장을 공통 ID로 연결하고 검증했다. G26 하위 작업/G27 댓글·활동과 자료·시각·환경 대기는 유지한다.",
+  "status": "G26 하위 작업의 생성·제목·완료·담당자를 독립 목 상태로 구현·검증했다. G27 댓글/활동 및 자료·시각·환경 대기는 유지한다.",
   "goals": [
     {
       "id": "G00",
@@ -1477,7 +1477,7 @@
         "production_e2e": "26/26",
         "real_api_requests": 0,
         "pending": [
-          "G26/G27 subsequent consumers",
+          "G27 comments/activity; G26 subtasks verified",
           "source/visual differences",
           "native IME/assistive technology/additional browsers"
         ],
@@ -1502,7 +1502,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 94,
@@ -1516,7 +1516,26 @@
           "first": 1,
           "last": 5
         }
-      ]
+      ],
+      "result": "../RESULTS/G26_RESULT.md",
+      "verification": {
+        "mcp": "2 flows / 15 screens; Latest2146 reused",
+        "images_viewed": 15,
+        "visual_comparison": "15 pairs +2narrow; source full-scroll alignment waits for G27 activity/comment height",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "84/84; first83/84 parent overwrite defect fixed",
+        "build": "passed",
+        "development_e2e": "37/37; first8/9 nested Escape defect fixed",
+        "production_e2e": "37/37",
+        "real_api_requests": 0,
+        "pending": [
+          "G27 activity/comment and full-scroll comparison",
+          "subtask deletion/source policy",
+          "visual/native IME/assistive technology/additional browsers"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G26/"
+      }
     },
     {
       "id": "G27",
@@ -3643,7 +3662,7 @@
         "G22",
         "G23"
       ],
-      "status": "G25 소비 분석 수행; 반복/파일/Gantt·의존성 대기",
+      "status": "G25/G26 소비 분석 수행; 반복/파일/Gantt·의존성 대기",
       "first_gate": "G25",
       "result": "../RESULTS/R06_RESULT.md"
     },

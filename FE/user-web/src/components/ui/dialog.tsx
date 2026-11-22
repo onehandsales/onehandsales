@@ -37,11 +37,13 @@ export function Dialog({ title, description, children, footer, onClose, classNam
   // 기능 : 브라우저의 기본 닫기와 React 열림 상태가 어긋나지 않게 취소를 부모에 위임한다.
   function handleCancel(event: SyntheticEvent<HTMLDialogElement>) {
     event.preventDefault();
+    event.stopPropagation();
     closeRef.current();
   }
   // 기능 : 첫 요소와 마지막 요소 사이의 Tab 이동을 순환시켜 모달 안에 초점을 유지한다.
   function handleKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
     if (event.key !== "Tab") return;
+    event.stopPropagation();
     const focusable = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
       'button:enabled, input:enabled, select:enabled, textarea:enabled, a[href], [tabindex="0"]',
     )).filter((element) => element.getClientRects().length > 0);

@@ -1,6 +1,6 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: G25 전체/프로젝트 작업 보드·생성·필드 저장을 공통 ID로 연결하고 검증했다. G26 하위 작업/G27 댓글·활동과 자료·시각·환경 대기는 유지한다. [G25 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G25_RESULT.md). 이전 수치는 당시 기록이다.
+최신 상태: G26 하위 작업의 생성·제목·완료·담당자를 독립 목 상태로 구현·검증했다. G27 댓글/활동 및 자료·시각·환경 대기는 유지한다. [G26 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G26_RESULT.md). 이전 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 
