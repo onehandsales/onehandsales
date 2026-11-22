@@ -129,3 +129,7 @@ ProjectEdit 순수 모델은 프로젝트 revision과 태그 정의 revision을 
 ## G24 상세·설정
 
 ProjectHeader/NameEditor·SettingsForm·TimePanel·TeamPanel·Detail을 분리했다. 새 편집은 접근 검증된 현재 원본으로 시작하고 초안은 revision을 고정한다. 설정 전체는 원자 저장, 생성 활동/과거 시간은 불변이다. 시간은 초·당시 요율·금액을 분리한다. [G24 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G24_RESULT.md).
+
+## G25 공통 작업 원본
+
+TaskStore는 ProjectStore/TeamStore를 주입받아 배정·joined 멤버를 검증한다. AppShell TaskHost는 query ID를 실제 패널로 연결하고 새 초안은 첫 유효 저장 때만 ID를 생성한다. 전체/프로젝트/개요/제한협업자/시간 행은 같은 taskId를 사용한다. projects에는 작업 ReactNode/callback을 주입해 순환 import를 피했다. [G25 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G25_RESULT.md).

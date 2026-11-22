@@ -7,7 +7,7 @@ export { ClientProjects } from "./components/client-projects";
 export { ProjectBoard } from "./components/project-board";
 export { ProjectOverview } from "./components/project-overview";
 export { ProjectTools } from "./components/project-tools";
-export type { Project, ProjectView } from "./model/project-types";
+export type { Project, ProjectView, ProjectStore } from "./model/project-types";
 
 export { ProjectTable } from "./components/project-table";
 export { ProjectFilters } from "./components/project-filters";
@@ -16,3 +16,5 @@ export { ProjectDirectory } from "./components/project-directory";
 
 export { ProjectDetail } from "./components/project-detail";
 export { projectDuration, projectTimeSummary } from "./model/project-settings";
+
+export { ProjectTimePanel } from "./components/project-time-panel";

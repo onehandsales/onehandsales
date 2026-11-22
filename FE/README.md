@@ -1,6 +1,6 @@
 # FE
 
-현재 User Web은 [G24 상세·이름·설정](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G24_RESULT.md)까지 관찰 범위 목 구현·검증했다. 작업/활동 통합·lifecycle·자료/시각/환경 대기는 유지한다. 실제 API/Backend 없음.
+현재 User Web은 [G25 작업 보드·생성](../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G25_RESULT.md)까지 관찰 범위 목 구현·검증했다. 하위작업/댓글·자료·시각·환경 대기, 실제API/Backend 없음.
 
 Frontend 앱은 제품 사용 면에 따라 분리한다.
 

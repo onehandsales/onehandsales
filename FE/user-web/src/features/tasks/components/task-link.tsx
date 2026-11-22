@@ -1,0 +1,6 @@
+import { useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import type { ReactNode } from "react";
+import type { TaskStatus } from "../model/task-types";
+// 기능 : 작업 패널 진입을 실제 URL 이력으로 남기고 수정키 링크와 단일 이동을 보존한다.
+export function TaskLink({ id = "new", projectId, status, children, className, label }: { id?: string; projectId?: string; status?: TaskStatus; children: ReactNode; className?: string; label?: string }) { const location = useLocation(); const entered = useRef(false); const params = new URLSearchParams(location.search); for (const key of ["create", "projectOrigin", "projectClient", "projectStage", "taskProject", "taskStatus"]) params.delete(key); params.set("task", id); if (projectId) params.set("taskProject", projectId); if (status) params.set("taskStatus", status); return <Link className={className} aria-label={label} to={{ pathname: location.pathname, search: params.toString(), hash: location.hash }} state={{ taskPanelEntry: true }} preventScrollReset onClick={event => { if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; if (event.detail > 1 || entered.current) { event.preventDefault(); return; } entered.current = true; requestAnimationFrame(() => { entered.current = false; }); }}>{children}</Link>; }

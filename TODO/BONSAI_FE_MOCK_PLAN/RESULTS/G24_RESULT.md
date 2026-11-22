@@ -83,3 +83,7 @@ FE/user-web, Node24.18.0 / pnpm8.14.1. `eval "$(fnm env --shell zsh)" && fnm use
 5.320폭/키보드/Escape/뒤로·앞으로 확인. 새로고침은 seed와 가상 로그인을 초기화한다.
 
 개별 로컬 커밋 후 G25로 이어간다. push/배포/G28 없음. [연속 결과](G18_G27_RESULT.md).
+
+### G25 연결·회귀
+
+[G25 결과](G25_RESULT.md)에서 Tasks sidebar/이전pending경로·대시보드Add task를 실제보드/패널로 연결하고 프로젝트Overview/Tasks/TimeTracking과 제한협업자도 같은taskId를 사용한다. G18 과거최소작업/시간snapshot은 현재공통원본으로 대체됐으며 원본시점차이는 기록했다. 개발/빌드26개씩 현재검증, 금액/설정권한은 확장하지 않았다. G26하위작업/G27활동·자료/시각/환경 대기는 유지한다.

@@ -1,0 +1,11 @@
+import { taskStatuses } from "./task-types";
+import type { Task, TaskDraft, TaskStatus } from "./task-types";
+export const taskReferenceDay = "2024-02-07";
+// 기능 : 새 패널의 미저장 초안을 만들며 빈 패널 자체는 작업 레코드로 계산하지 않는다.
+export function newTaskDraft(projectId = "", status: TaskStatus = "To Do"): TaskDraft { return { title: "", projectId, status, assigneeId: null, dueDate: "", description: "" }; }
+// 기능 : 작업 입력의 목 경계와 실제 달력 날짜를 검증한다.
+export function validateTaskDraft(input: TaskDraft): TaskDraft { const draft = { ...input, title: input.title.trim() }; if (!draft.title || draft.title.length > 200) throw new Error("Enter a task title of 1–200 characters."); if (!draft.projectId) throw new Error("Select a project before saving this task."); if (!taskStatuses.includes(draft.status)) throw new Error("Select an available task status."); if (draft.description.length > 4000) throw new Error("Keep the description within 4,000 characters."); const day = draft.dueDate; if (day && (!/^\d{4}-\d{2}-\d{2}$/.test(day) || day < "1900-01-01" || day > "9999-12-31" || !Number.isFinite(Date.parse(day + "T00:00:00Z")) || new Date(day + "T00:00:00Z").toISOString().slice(0, 10) !== day)) throw new Error("Choose a valid due date from 1900 onward."); return draft; }
+// 기능 : 고정 업무일 기준 날짜 표시를 실제 오늘이나 현재 서비스 일정과 구분한다.
+export function taskDueLabel(value: string) { if (!value) return "No due date"; if (value === taskReferenceDay) return "Today"; if (value === "2024-02-06") return "Yesterday"; return new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", timeZone: "UTC" }).format(new Date(value + "T00:00:00Z")); }
+// 기능 : 개요의 작업 집계를 동일 원본과 고정 기준일에서 서로 겹치지 않게 계산한다.
+export function taskSummary(tasks: Task[]) { return { Upcoming: tasks.filter(task => task.status !== "Done" && (!task.dueDate || task.dueDate > taskReferenceDay)).length, "Due Today": tasks.filter(task => task.status !== "Done" && task.dueDate === taskReferenceDay).length, Overdue: tasks.filter(task => task.status !== "Done" && !!task.dueDate && task.dueDate < taskReferenceDay).length, Completed: tasks.filter(task => task.status === "Done").length }; }

@@ -92,3 +92,7 @@ G13 이력 복귀/query/hash와 새 대시보드 이동의 경계 및 기존 공
 ### G19 공통 요소 회귀
 
 전역 New→Client 실제 폼, 고객 Query/store provider, 상세의 Clients 메뉴 선택, 공통 abortable delay 추출을 [G19 결과](G19_RESULT.md)에 기록했다. 현재 셸8+초대5+고객3의 개발/빌드16개씩 통과. 기존 자료/시각/환경 대기는 자동 완료하지 않는다.
+
+### G25 연결·회귀
+
+[G25 결과](G25_RESULT.md)에서 Tasks sidebar/이전pending경로·대시보드Add task를 실제보드/패널로 연결하고 프로젝트Overview/Tasks/TimeTracking과 제한협업자도 같은taskId를 사용한다. G18 과거최소작업/시간snapshot은 현재공통원본으로 대체됐으며 원본시점차이는 기록했다. 개발/빌드26개씩 현재검증, 금액/설정권한은 확장하지 않았다. G26하위작업/G27활동·자료/시각/환경 대기는 유지한다.
