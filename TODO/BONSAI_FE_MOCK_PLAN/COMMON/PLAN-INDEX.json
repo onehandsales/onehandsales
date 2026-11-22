@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G22 보드/표 동일ID·검색/필터/정렬·날짜/금액 분리·행 메뉴/실제 상세·가로스크롤 복원 목 구현. R20 2flow7PNG 확인/6대상상태 비교. 초기 시간초과/접근성/메뉴경계/검사대기 수정은 별도 기록. G23부터 순차 진행하며 원본·시각·환경 대기는 유지한다.",
+  "status": "G23 단계 선택·드래그/키보드 정렬·태그 정의/연결을 같은 프로젝트 원본에 구현하고 검증했다. lifecycle 실행·원본/시각/환경 대기는 유지하며 G24부터 순차 진행한다.",
   "goals": [
     {
       "id": "G00",
@@ -1328,7 +1328,7 @@
         "R20"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; lifecycle 원본/시각/환경 대기",
       "flow_scope": [
         {
           "flow_number": 104,
@@ -1348,7 +1348,26 @@
           "first": 1,
           "last": 3
         }
-      ]
+      ],
+      "result": "../RESULTS/G23_RESULT.md",
+      "verification": {
+        "mcp": "3 flows / 16 screens; catalogue Latest/2146 reused from G18",
+        "images_viewed": 16,
+        "visual_comparison": "16 source states + 2 narrow captures; fixture/drag ghost and visual differences recorded",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "74/74; initial 66/73 timeout and 73/73 rerun retained",
+        "build": "passed",
+        "development_e2e": "11/11; initial 9/11 and target rerun 4/4 retained",
+        "production_e2e": "11/11; initial 10/11 scroll-close failure retained",
+        "real_api_requests": 0,
+        "pending": [
+          "lifecycle execution/source policy",
+          "typography/icons/seed/drag ghost differences",
+          "native IME/assistive technology/additional browsers"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G23/"
+      }
     },
     {
       "id": "G24",
@@ -3541,8 +3560,9 @@
         "G61",
         "G64"
       ],
-      "status": "미착수",
-      "first_gate": "G23"
+      "status": "G23 소비 분석 수행; lifecycle 결과·예산/수익성 대기",
+      "first_gate": "G23",
+      "result": "../RESULTS/R05_RESULT.md"
     },
     {
       "id": "R06",
@@ -4033,7 +4053,7 @@
         "G58",
         "G63"
       ],
-      "status": "G20/G22 소비 분석 수행; G23/저장뷰·검색확장 대기",
+      "status": "G20/G22/G23 소비 분석 수행; 저장 뷰·검색 확장 대기",
       "first_gate": "G20",
       "result": "../RESULTS/R20_RESULT.md"
     },

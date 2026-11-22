@@ -32,3 +32,15 @@ describe("G21 shared project creation", () => {
     runtime.reset(); runtime.setSession("preview-a"); expect(projects.projects("studio-a")).toHaveLength(3);
   });
 });
+
+it("G23 mutation failure, cancellation and latest intent cannot leak stage/tag changes across scope or resurrect an earlier response", async () => {
+  const { runtime, projects } = setup(); const s = scope(runtime); const id = "studio-a:team-project-2"; projects.setScenario("write-error"); await expect(projects.edit(s, { type: "attach-tag", projectId: id, revision: 0, name: "Priority" }, signal())).rejects.toThrow("preserved"); expect(projects.tags(s.workspaceId).map(t => t.name)).toEqual(["Sample"]);
+  const saved = await projects.edit(s, { type: "attach-tag", projectId: id, revision: 0, name: "Priority" }, signal()); expect(saved.tagIds).toHaveLength(1); projects.setScenario("slow"); const first = new AbortController(); const late = projects.edit(s, { type: "move", projectId: id, revision: 1, stage: "Proposal Sent", beforeId: null }, first.signal); first.abort(); const latest = projects.edit(s, { type: "move", projectId: id, revision: 1, stage: "Contract Signed", beforeId: null }, signal()); await expect(late).rejects.toMatchObject({ name: "AbortError" }); expect((await latest).stage).toBe("Contract Signed");
+  const old = projects.edit(s, { type: "move", projectId: id, revision: 2, stage: "New Lead", beforeId: null }, signal()); runtime.setWorkspace("studio-a-two"); await expect(old).rejects.toMatchObject({ name: "AbortError" }); runtime.setWorkspace("studio-a"); expect((await projects.read(scope(runtime), signal())).find(p => p.id === id)?.stage).toBe("Contract Signed");
+});
+
+// 기능 : 저장 직후 조회 지연 중에도 다음 명시적 이동은 최신 revision을 쓰며 오래된 scope는 읽지 못한다.
+it("G23 current revision is synchronous, cloned and scope guarded between delayed reads", async () => {
+  const { runtime, projects } = setup(); const s = scope(runtime); const id = "studio-a:team-project-2"; const before = projects.current(s, id)!; await projects.edit(s, { type: "move", projectId: id, revision: before.revision, stage: "Proposal Sent", beforeId: null }, signal());
+  const current = projects.current(s, id)!; expect(current.revision).toBe(before.revision + 1); current.stage = "New Lead"; expect(projects.current(s, id)?.stage).toBe("Proposal Sent"); await projects.edit(s, { type: "move", projectId: id, revision: current.revision, stage: "Contract Signed", beforeId: null }, signal()); expect(projects.current(s, id)?.stage).toBe("Contract Signed"); runtime.setWorkspace("studio-a-two"); expect(() => projects.current(s, id)).toThrow("scope changed");
+});

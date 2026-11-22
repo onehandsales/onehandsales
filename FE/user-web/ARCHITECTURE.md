@@ -121,3 +121,7 @@ G18 초대는 기존 Team row ID와 workspace membership을 연결한다. G19 `f
 ## G22 조회 상태
 
 ProjectDirectory는 URL의뷰/검색/필터/정렬을조합하고 ProjectView모델은저장원본을변경하지않고동일ID집합을투영한다. 날짜와money minor-unit분리. 필터Dialog초안은Apply전URL에반영하지않는다. 가로스크롤메모리는actor/workspace/revision/검색/필터별상한100개,생성노출은이력당한번. 행메뉴는portal/실제크기계산으로표overflow밖에배치한다. [G22 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G22_RESULT.md).
+
+## G23 단계·태그 변경
+
+ProjectEdit 순수 모델은 프로젝트 revision과 태그 정의 revision을 구분한다. 저장소는 취소/scope 검증 뒤 복사본을 원자 적용한다. 새 단계/드롭 의도만 최신 원본 revision으로 시작하고 편집 초안의 충돌 검증은 유지한다. 태그 정의 이름은 공유, tagIds 연결은 프로젝트별이다. [G23 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G23_RESULT.md).
