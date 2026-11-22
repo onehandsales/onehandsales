@@ -5,7 +5,7 @@ async function enter(page: Page) { await page.goto("/app/projects"); await page.
 // 기능 : 현재 작업의 오류/지연만 바꾸며 정상값으로 돌아갈 수 있게 한다.
 async function scenario(page: Page, value: string) { const summary = page.getByText("Project preview controls", { exact: true }); if (await page.locator("details").filter({ has: summary }).getAttribute("open") === null) await summary.click(); await page.getByLabel("Project scenario", { exact: true }).selectOption(value); }
 // 기능 : 실제 카드 메뉴에서 지정 프로젝트의 Tags 모달을 연다.
-async function openTags(page: Page, name: string) { const button = page.getByRole("button", { name: `Actions for ${name}`, exact: true }); await button.focus(); await page.keyboard.press("Enter"); await page.getByRole("menuitem", { name: "Tags", exact: true }).click(); await expect(page.getByRole("dialog", { name: "Tags", exact: true })).toBeVisible(); }
+async function openTags(page: Page, name: string) { const button = page.getByRole("button", { name: `Actions for ${name}`, exact: true }); await button.focus(); await page.keyboard.press("Enter"); await expect(page.getByRole("menuitem", { name: "Tags", exact: true })).toBeVisible(); await page.evaluate(() => window.dispatchEvent(new Event("resize"))); await page.getByRole("menuitem", { name: "Tags", exact: true }).click(); await expect(page.getByRole("dialog", { name: "Tags", exact: true })).toBeVisible(); }
 // 기능 : 키보드 이동 대안을 실제 초점과 Enter로 연다.
 async function openMove(page: Page, name: string) { await page.getByRole("button", { name: `Move project ${name}`, exact: true }).focus(); await page.keyboard.press("Enter"); await expect(page.getByRole("dialog")).toBeVisible(); }
 

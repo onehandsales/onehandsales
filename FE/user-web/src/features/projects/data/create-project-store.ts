@@ -4,6 +4,7 @@ import { teamProjects } from "@/features/team";
 import type { TeamStore } from "@/features/team";
 import type { ClientStore } from "@/features/clients";
 import { abortableDelay } from "@/lib/abortable-delay";
+import { defaultProjectSettings } from "../model/project-settings";
 import { applyProjectEdit } from "../model/project-edits";
 import type { ProjectEdit } from "../model/project-edits";
 import { initialProjectStage, projectStages } from "../model/project-types";
@@ -13,7 +14,7 @@ export function createProjectStore(preview: PreviewRuntime, clients: ClientStore
   const workspaces = new Map<string, Project[]>(); const tagDefinitions = new Map<string, ProjectTag[]>(); const submissions = new Map<string, string>(); const listeners = new Set<() => void>();
   let state: ProjectState = { version: 0, scenario: "normal" }; let generation = 0; let sequence = 0; let failed = false; let previous = preview.getSnapshot();
   // 기능 : G17의 기존 선택 ID를 보존해 생성 업무의 실제 프로젝트 seed로 승계한다.
-  function rows(workspaceId: string) { let data = workspaces.get(workspaceId); if (!data) { data = teamProjects(workspaceId).map((project, index) => ({ ...project, workspaceId, clientId: `${workspaceId}:client-${index === 0 ? "sample" : "doe"}`, memberIds: [`${workspaceId}:member-owner`], stage: index === 0 ? "In Progress" : "New Lead", revision: 0, startDate: index === 0 ? "2024-02-07" : "2024-02-06", money: { currency: "USD", dueMinor: 0, paidMinor: 0 }, tagIds: index === 0 ? [`${workspaceId}:project-tag-sample`] : [], origin: "seed", created: { name: project.name, actor: "Alex (preview)", at: "Feb 6, 2024, 3:15:44 AM" } })); workspaces.set(workspaceId, data); } return data; }
+  function rows(workspaceId: string) { let data = workspaces.get(workspaceId); if (!data) { data = teamProjects(workspaceId).map((project, index) => ({ ...project, workspaceId, clientId: `${workspaceId}:client-${index === 0 ? "sample" : "doe"}`, memberIds: [`${workspaceId}:member-owner`], stage: index === 0 ? "In Progress" : "New Lead", revision: 0, settings: defaultProjectSettings(), timeEntries: index === 1 ? [7, 3600].map((seconds, timeIndex) => ({ id: `${workspaceId}:project-time-${timeIndex + 1}`, taskId: `${workspaceId}:task-initial-chat-${timeIndex + 1}`, taskName: "Initial Chat", memberId: `${workspaceId}:member-owner`, day: "2024-02-06", seconds, rateMinor: 2000, amountMinor: timeIndex === 0 ? 4 : 2000 })) : [], startDate: index === 0 ? "2024-02-07" : "2024-02-06", money: { currency: "USD", dueMinor: 0, paidMinor: 0 }, tagIds: index === 0 ? [`${workspaceId}:project-tag-sample`] : [], origin: "seed", created: { name: index === 1 ? "Design Project with Doe" : project.name, actor: "Alex (preview)", at: "Feb 6, 2024, 3:15:44 AM" } })); workspaces.set(workspaceId, data); } return data; }
   // 기능 : 새 불변 버전으로 프로젝트와 초대 선택지 구독자를 함께 갱신한다.
   function publish() { state = { ...state, version: state.version + 1 }; listeners.forEach(listener => listener()); }
   // 기능 : 다른 계정/workspace/revision의 직접 저장과 초대 협업자의 생성을 거부한다.
@@ -36,7 +37,7 @@ export function createProjectStore(preview: PreviewRuntime, clients: ClientStore
     if (!clients.client(scope.workspaceId, draft.clientId)) throw new Error("Select an existing client from this workspace.");
     const owner = team.joinedMembers(scope.workspaceId).find(member => member.role === "Owner"); if (!owner) throw new Error("The initial project team is unavailable. Check the workspace team.");
     if (state.scenario === "write-error" && !failed) { failed = true; throw new Error("Unable to create project. Your inputs are preserved. Please try again."); }
-    const name = draft.name.trim(); const project: Project = { id: `${scope.workspaceId}:project-new-${++sequence}`, workspaceId: scope.workspaceId, name, clientId: draft.clientId, memberIds: [owner.id], stage: initialProjectStage(draft.origin, draft.stage), revision: 0, startDate: null, money: { currency: "USD", dueMinor: 0, paidMinor: 0 }, tagIds: [], origin: draft.origin, created: { name, actor: preview.getSnapshot().session!.name, at: "Feb 8, 2024, 3:15:44 AM" } };
+    const name = draft.name.trim(); const project: Project = { id: `${scope.workspaceId}:project-new-${++sequence}`, workspaceId: scope.workspaceId, name, clientId: draft.clientId, memberIds: [owner.id], stage: initialProjectStage(draft.origin, draft.stage), revision: 0, settings: defaultProjectSettings(), timeEntries: [], startDate: null, money: { currency: "USD", dueMinor: 0, paidMinor: 0 }, tagIds: [], origin: draft.origin, created: { name, actor: preview.getSnapshot().session!.name, at: "Feb 8, 2024, 3:15:44 AM" } };
     workspaces.set(scope.workspaceId, [...rows(scope.workspaceId), project]); submissions.set(key, project.id); publish(); return structuredClone(project);
   }
   // 기능 : 프로젝트 태그 정의는 고객 태그와 분리하며 같은 작업공간의 이름/ID만 공유한다.

@@ -1,6 +1,6 @@
 {
   "date": "2026-11-22",
-  "status": "G23 단계 선택·드래그/키보드 정렬·태그 정의/연결을 같은 프로젝트 원본에 구현하고 검증했다. lifecycle 실행·원본/시각/환경 대기는 유지하며 G24부터 순차 진행한다.",
+  "status": "G24 프로젝트 상세·이름·설정을 목 구현·검증했다. 작업/활동 통합은 G25~G27에서 연결하며 lifecycle·자료·시각·환경 대기는 유지한다.",
   "goals": [
     {
       "id": "G00",
@@ -1389,7 +1389,7 @@
         "R05"
       ],
       "surface": "내부 업무",
-      "status": "미착수",
+      "status": "관찰 범위 목 구현·두 차례 검토·현재 검증; 작업 연결/자료·시각·환경 대기",
       "flow_scope": [
         {
           "flow_number": 101,
@@ -1409,7 +1409,27 @@
           "first": 1,
           "last": 4
         }
-      ]
+      ],
+      "result": "../RESULTS/G24_RESULT.md",
+      "verification": {
+        "mcp": "3 flows / 14 screens; catalogue Latest/2146 reused from G18",
+        "images_viewed": 14,
+        "visual_comparison": "14 source states; Tasks frame only + 3 narrow captures; residuals recorded",
+        "typecheck": "passed",
+        "lint": "passed",
+        "unit": "77/77",
+        "build": "passed",
+        "development_e2e": "16/16; initial 5/9, 4/5 twice, 15/16 and isolated rerun retained",
+        "production_e2e": "16/16; first build 15/16 late resize close failure retained",
+        "real_api_requests": 0,
+        "pending": [
+          "G25 task / G27 activity and collaborator snapshot connection",
+          "lifecycle/other billing options source",
+          "visual differences",
+          "native IME/assistive technology/additional browsers"
+        ],
+        "temporary_artifacts": "/tmp/onehandsales-g18-g27/G24/"
+      }
     },
     {
       "id": "G25",
@@ -3560,7 +3580,7 @@
         "G61",
         "G64"
       ],
-      "status": "G23 소비 분석 수행; lifecycle 결과·예산/수익성 대기",
+      "status": "G23/G24 소비 분석 수행; lifecycle 결과·예산/수익성 대기",
       "first_gate": "G23",
       "result": "../RESULTS/R05_RESULT.md"
     },

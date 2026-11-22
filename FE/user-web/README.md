@@ -1,6 +1,6 @@
 # User Web — Bonsai UX/UI 목 기반
 
-최신 상태: G23 단계 선택·드래그/키보드 정렬·태그 정의/연결을 같은 프로젝트 원본에 구현하고 검증했다. lifecycle 실행·원본/시각/환경 대기는 유지하며 G24부터 순차 진행한다. [G23 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G23_RESULT.md). 이전 수치는 당시 기록이다.
+최신 상태: G24 프로젝트 상세·이름·설정을 목 구현·검증했다. 작업/활동 통합은 G25~G27에서 연결하며 lifecycle·자료·시각·환경 대기는 유지한다. [G24 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G24_RESULT.md). 이전 수치는 당시 기록이다.
 
 2026-11-21 KST. 기본 진입점부터 로컬 목 프론트다. [G00 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G00_RESULT.md) · [G01 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md) · [R01 분석](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md) · [G02 최초 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RESULT.md) · [G02 최신 재점검](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G02_RECHECK_RESULT.md) · [G03 소개 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G03_RESULT.md) · [G04 가격·후기 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G04_RESULT.md).
 

@@ -13,3 +13,6 @@ export { ProjectTable } from "./components/project-table";
 export { ProjectFilters } from "./components/project-filters";
 export { readProjectView, selectProjectViews } from "./model/project-view";
 export { ProjectDirectory } from "./components/project-directory";
+
+export { ProjectDetail } from "./components/project-detail";
+export { projectDuration, projectTimeSummary } from "./model/project-settings";

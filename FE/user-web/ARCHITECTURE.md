@@ -125,3 +125,7 @@ ProjectDirectory는 URL의뷰/검색/필터/정렬을조합하고 ProjectView모
 ## G23 단계·태그 변경
 
 ProjectEdit 순수 모델은 프로젝트 revision과 태그 정의 revision을 구분한다. 저장소는 취소/scope 검증 뒤 복사본을 원자 적용한다. 새 단계/드롭 의도만 최신 원본 revision으로 시작하고 편집 초안의 충돌 검증은 유지한다. 태그 정의 이름은 공유, tagIds 연결은 프로젝트별이다. [G23 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G23_RESULT.md).
+
+## G24 상세·설정
+
+ProjectHeader/NameEditor·SettingsForm·TimePanel·TeamPanel·Detail을 분리했다. 새 편집은 접근 검증된 현재 원본으로 시작하고 초안은 revision을 고정한다. 설정 전체는 원자 저장, 생성 활동/과거 시간은 불변이다. 시간은 초·당시 요율·금액을 분리한다. [G24 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G24_RESULT.md).
