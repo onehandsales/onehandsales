@@ -1,14 +1,15 @@
 # Bonsai 학습 안내와 플로우 색인
 
-Updated: 2026-11-20 KST
+Updated: 2026-11-22 KST
 
 Bonsai Web의 Gummble 캡처를 플로우별로 탐색하고, 같은 폴더의 분석 문서와 원본 화면을 함께 읽는다.
 
 ## 읽는 순서
 
-1. [FE 준비도 재검토](FE_REVIEW.md): 이번 검토 범위, 수정한 오류, 미수록 업무, 현행 공식 문서와의 차이를 확인한다.
-2. [134개 플로우별 보완표](FLOW_REVIEW_MATRIX.md)에서 해당 기능의 캡처 종료와 남은 수용 기준을 확인하고, 아래 `ANALYSIS.md`와 원본 이미지를 함께 읽는다.
-3. [목 우선 개발 규칙](../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/MOCK_FIRST_DEVELOPMENT.md)에 따라 역할·초기 상태·화면 연결·정상/실패/취소 결과를 정한다. [전체 기능 범위의 부족한 부분](FE_REVIEW.md#product-gaps)과 [이번 공식 자료 대조](FE_REVIEW.md#official-sources)를 함께 확인한다.
+1. [원본 → ANALYSIS 기준](SOURCE_ANALYSIS_STANDARD.md): Bonsai 캡처를 동일하게 재현하기 위한 12개 검토 항목과 관찰·측정·추정·미확인을 구분한다.
+2. [R4 원본 분석 감사](SOURCE_ANALYSIS_REVIEW.md): 134개 플로우·754단계의 구성/상태 대조, 보완 내용과 미완 명세를 확인한다. [원본·검토 색인](SOURCE_ANALYSIS_INDEX.json)에는 단계별 원본 해시와 검토 방법이 있다.
+3. [R3 FE 준비도 검토](FE_REVIEW.md)와 [134개 플로우별 보완표](FLOW_REVIEW_MATRIX.md)에서 기존 업무·목 수용 기준을 읽고 각 `ANALYSIS.md`와 원본 이미지를 함께 확인한다.
+4. [목 우선 개발 규칙](../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ARCHITECTURE/MOCK_FIRST_DEVELOPMENT.md)에 따라 역할·초기 상태·화면 연결·정상/실패/취소 결과를 정한다. R3의 [제품 범위](FE_REVIEW.md#product-gaps)와 [공식 자료 대조](FE_REVIEW.md#official-sources)는 캡처 기준과 버전을 구분해서 참고한다.
 
 현재 방향은 **FE 화면과 상태를 목으로 먼저 구현·검증하고, 이후 UX와 공식 자료를 근거로 API·DB를 설계**하는 것이다. 화면 관찰·공식 문서 확인·실계정 검증·우리 설계 판단을 구분한다. 이번 문서 검토는 FE 구현 완료나 API·DB 확정을 뜻하지 않는다.
 
@@ -25,7 +26,9 @@ Bonsai Web의 Gummble 캡처를 플로우별로 탐색하고, 같은 폴더의 �
 
 2026-11-20 R3에서는 **134개 ANALYSIS.md의 내용과 MCP의 754단계 순서·이미지 URL**을 대조했다. 앱 화면 카탈로그 642개의 ID 집합도 로컬 고유 ID와 일치했다. 각 분석의 9개 절 구조를 유지하면서 FE 보완 기준과 이번 검토 범위를 추가했다.
 
-[검토 방법과 선택 이미지 목록](FE_REVIEW.md#verification), [이번 MCP 조회·로컬 무결성 기록](review/2026-11-20-r3/evidence.json)을 함께 확인한다. 이번에 직접 다시 연 이미지는 고유 15개이며 공식 자료는 핵심 9개 페이지다. 전체 이미지 시각 검토와 공식 URL 93개에 관한 기존 R2 기록은 과거 수행 이력으로 보존했다. 삭제된 R2 공통 근거 파일을 복원하거나 해당 검증을 이번에 모두 다시 수행했다고 표시하지 않는다.
+R3의 [검토 방법과 선택 이미지 목록](FE_REVIEW.md#verification)을 참고한다. 당시 직접 다시 연 이미지는 고유 15개이며 공식 자료는 핵심 9개 페이지다. 당시 연결했던 `review/2026-11-20-r3/evidence.json`은 현재 체크아웃에 없다. R2·R3 수행 이력은 보존하되 삭제된 상세 기록을 현재 열 수 있는 근거로 표시하지 않는다.
+
+2026-11-22 R4에서는 **754단계 전체의 구성·상태를 비교 시트로 직접 대조**하고 선택한 10개 화면의 12개 영역을 원본 크기로 확인했다. 134개 ANALYSIS에 개별 관찰·남은 명세를 기록했다. **요소별 누락 0, 동일 재현 명세 완결, TODO 대응 완료, FE 구현 완료를 뜻하지 않는다.** [검토 범위와 후속 순서](SOURCE_ANALYSIS_REVIEW.md)를 따른다.
 
 현재 확보한 캡처의 단계 누락은 발견하지 않았지만, 예약 확정·고객 포털·수금 정상 경로 등 미수록 동작과 현행 Deals·리소스 관리·새 문서 편집기의 분석은 남아 있다. 실제 계정 재현·내부 API·서버 저장은 검증하지 않았다.
 
