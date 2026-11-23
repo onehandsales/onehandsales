@@ -11,9 +11,12 @@ function TemplateMenu() {
   const [selected, setSelected] = useState(0);
   const group = navigation.templates[selected] ?? navigation.templates[0];
   const allTemplates = group?.links.find(link => link.label === "See all templates")?.sourceHref ?? "/templates";
-  // 기능 : 터치 합성 진입을 제외하고 마우스가 가리킨 템플릿을 선택한다.
+  // 기능 : 터치 합성 진입과 키보드 탐색 중인 선택 변경을 제외하고 템플릿을 선택한다.
   function handlePointer(index: number, event: PointerEvent<HTMLButtonElement>) {
-    if (event.pointerType === "mouse") setSelected(index);
+    if (event.pointerType !== "mouse") return;
+    // 이유 : hover로 탭 선택이나 추천 링크를 바꿔 현재 키보드 초점을 유실하지 않는다.
+    if (event.currentTarget.closest(".public-template-menu")?.contains(document.activeElement)) return;
+    setSelected(index);
   }
   // 기능 : 세로 탭의 방향키·Home·End 입력으로 선택과 초점을 함께 옮긴다.
   function handleKeyDown(index: number, event: KeyboardEvent<HTMLButtonElement>) {

@@ -1,6 +1,6 @@
 {
   "date": "2026-11-23",
-  "status": "G00 R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기; G01 공통 동작 보완 이력·시각/환경 대기 유지, G02 이후 자동 착수 없음, G32 이후 미착수.",
+  "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기; G00 감사·G01 보완 이력 유지, G03 이후 자동 시작 없음, G32 이후 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -218,6 +218,14 @@
           "reused_as_current_verification": false,
           "note": "../RESULTS/G00_RESULT.md#g00-recheck"
         }
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "G01 provider/runtime dependency review",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -236,7 +244,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "G02 재보완·2차 검토·Chromium 검증 완료; 17상태 비교 수행, 잔여 시각·원본 동작·추가 환경 검증 대기; 감사 동작 결함 수정·90개 전체 회귀 확인",
+      "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기",
       "flow_scope": [
         {
           "flow_number": 82,
@@ -246,7 +254,7 @@
         }
       ],
       "result": "../RESULTS/G02_RESULT.md",
-      "latest_result": "../RESULTS/G02_RECHECK_RESULT.md",
+      "latest_result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
       "verification": {
         "implementation": "reproduced_defects_fixed",
         "engineering_review": "two_passes_completed",
@@ -270,7 +278,7 @@
         }
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기",
         "item_ids": [
           "R4-F082-O01",
           "R4-F082-O02",
@@ -292,8 +300,99 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g02",
-        "implementation_review_performed": false,
-        "shared_screen_ids": []
+        "implementation_review_performed": true,
+        "shared_screen_ids": [],
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "full_element_census_complete": false,
+        "visual_identity": "not_verified"
+      },
+      "status_history": [
+        {
+          "date": "before G02 R4 recheck",
+          "status": "G02 재보완·2차 검토·Chromium 검증 완료; 17상태 비교 수행, 잔여 시각·원본 동작·추가 환경 검증 대기; 감사 동작 결함 수정·90개 전체 회귀 확인"
+        }
+      ],
+      "r4_recheck": {
+        "date": "2026-11-23 KST",
+        "baseline_commit": "3fbe241d90265fe1acbb7b7a3c279a8efb014dfd",
+        "scope": "G02 landing/menu/footer and actual public consumers; G10/G11 handoff only",
+        "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "direct_png_review": {
+          "flows": 7,
+          "images": 20,
+          "all_project_images_reviewed": false,
+          "element_census_complete": false
+        },
+        "source_catalog": "stored bonsai-web Latest / 2146; not requeried; not product build/capture date",
+        "source_hashes_and_assignments": "20 references matched",
+        "implementation": "three focus/selection-loss paths fixed; one review emphasis corrected; same-path menu close/content focus corrected in follow-up",
+        "typecheck": "passed; noEmit/incremental false for app and node",
+        "lint": "passed; no cache",
+        "unit": "114/114 across 25 files",
+        "final_targeted_dom": "14/14 across 2 files, including 17 public consumer paths and same-path desktop/mobile reselection",
+        "build": "passed; Vite write:false, in-memory bundle only",
+        "browser_smoke": "existing Chrome tab URL and app-updated title checked",
+        "browser_e2e": "not_run",
+        "real_api_requests": null,
+        "network_failures": null,
+        "console_errors": null,
+        "network_observation": "not_performed; do not infer zero from static review or jsdom",
+        "visual_identity": "not_verified",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "preview": "http://127.0.0.1:5173/",
+        "preview_mode": "in-memory production bundle; no HMR",
+        "g01_new_code_change_needed": false,
+        "overall_complete": false,
+        "pending_owners": {
+          "source_assets_capture_visual": [
+            "G02",
+            "R01",
+            "G01 shared variants"
+          ],
+          "browser_regression": [
+            "G02",
+            "G03-G11 consumers"
+          ],
+          "native_ime_at_devices": [
+            "G02",
+            "G01",
+            "G84"
+          ],
+          "original_auth_policies": [
+            "G10",
+            "G11",
+            "R02"
+          ]
+        },
+        "next_goal_started": false,
+        "initial_verification": {
+          "unit": "112/112 across 25 files",
+          "final_targeted_dom": "12/12 across 2 files, including 17 public consumer paths",
+          "build": "passed; Vite write:false, in-memory bundle only",
+          "implementation": "three focus/selection-loss paths fixed; one review emphasis corrected"
+        },
+        "followup_review": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-followup-review",
+          "finding": "same-path menu navigation left desktop/mobile menus open and focus in the menu",
+          "failed_before_fix": 2,
+          "fix": "close menus on actual location key change and transfer remaining header focus to main content",
+          "targeted_dom": "14/14 across 2 files, 4.46s",
+          "unit": "114/114 across 25 files, 53.49s",
+          "typecheck": "passed; app/node noEmit/incremental false",
+          "lint": "passed; no cache",
+          "build": "passed; 1966 modules/3.99s; write:false",
+          "preview": "http://127.0.0.1:5173/",
+          "preview_updated": true,
+          "browser_e2e": "not_run",
+          "visual_identity": "not_verified",
+          "evidence_files_created": false,
+          "temporary_scripts_created": false,
+          "overall_complete": false
+        }
       }
     },
     {
@@ -389,6 +488,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g03",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -473,6 +580,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g04",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -575,6 +690,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g05",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -677,6 +800,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g06",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -760,6 +891,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g07",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -864,6 +1003,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g08",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -978,6 +1125,14 @@
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g09",
         "implementation_review_performed": false,
         "shared_screen_ids": []
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1061,6 +1216,14 @@
           "sc_07904520440b4dc7ad7d6d31bf3a03e9",
           "sc_33b333fba9d34edbbd66ddfadf29dcb4"
         ]
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "G10/G11 handoff DOM regression",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1158,6 +1321,14 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "g02_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "G10/G11 handoff DOM regression",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -6436,6 +6607,15 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "기존 분석/목 가정·미확인 대조 및 소비 문서 보완; R 전체 대기 유지",
         "overall_complete": false
+      },
+      "g02_r4_consumer_recheck": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "source_flows": 7,
+        "source_images": 20,
+        "scope": "G02 public landing/menu/footer and auth handoff only",
+        "status": "partial consumer review; original interactions/assets/visual and overall R01 pending",
+        "overall_complete": false
       }
     },
     {
@@ -6528,6 +6708,13 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "기존 분석/목 가정·미확인 대조 및 소비 문서 보완; R 전체 대기 유지",
         "overall_complete": false
+      },
+      "g02_entry_reference": {
+        "date": "2026-11-23 KST",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "Logging in01-02 and Onboarding02-03 entry/handoff only; ownership unchanged",
+        "overall_complete": false,
+        "browser_regression": "pending"
       }
     },
     {
@@ -11848,8 +12035,8 @@
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/SOURCE_ANALYSIS_PLAN_REVIEW.md",
-    "status": "R4 계획 시점 개별 메모 보존; G00 근거·색인·배정 재검토 완료; G01 동작 보완 이력과 시각/환경 대기 유지",
+    "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+    "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기; 전체 R4 메모/원문·정밀 명세 미완 유지",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -11859,7 +12046,7 @@
       "items": 455,
       "common_requirements": 12
     },
-    "implementation_work_authorized": false,
+    "implementation_work_authorized": true,
     "new_source_review_performed": true,
     "requires_common_spec_before_implementation": false,
     "requires_feature_element_mapping_before_implementation": false,
@@ -13516,6 +13703,12 @@
             "G01"
           ],
           "remaining_owner_scope": "G01 and consuming feature G/R verify capture conditions; G00 updates the index if source identity changes"
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "20개 식별/해시/소유 확인; 촬영 조건 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13534,6 +13727,12 @@
           "date": "2026-11-23 KST",
           "status": "선택 구성 대조; 전체 명세 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
+          "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "주요 셸/영역 구성 대조; 정밀 겹침 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13554,6 +13753,12 @@
           "status": "선택 요소군 대응; 전수 계수 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
           "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "주요 요소군 대응; 전수 요소 계수 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13572,6 +13777,12 @@
           "date": "2026-11-23 KST",
           "status": "문구/필수/상태 대조; 세부 시각 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
+          "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "주요 문구/후기 강조 보완; 정밀 전사/줄바꿈 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13592,6 +13803,12 @@
           "status": "선택 치수 측정/비교; 동일성 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
           "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "PNG 치수/CSS 구분; 렌더링 배치/스크롤 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13610,6 +13827,12 @@
           "date": "2026-11-23 KST",
           "status": "정확한 내부 폰트 분석 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
+          "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "기존 Gellix 선언/출처 확인; 원본 변형/raster 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13630,6 +13853,12 @@
           "status": "표본 색/픽셀 비교; 동일성 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
           "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "후기 강조 범위 보완; 색값/장식 정밀 동일성 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13648,6 +13877,12 @@
           "date": "2026-11-23 KST",
           "status": "정확한 아이콘/자산 분석 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
+          "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "기존 자산 사용 위치 확인; 정확 변형/crop/사용 조건 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13668,6 +13903,12 @@
           "status": "선택 목 상태 검증; 원본 미수록 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
           "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "DOM 상태/초점 회귀; 원본 hover/mobile 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13686,6 +13927,12 @@
           "date": "2026-11-23 KST",
           "status": "실제 navigation/모달 검증; 원본 미관찰 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
+          "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "실제 router/history DOM 회귀; 실브라우저/원본 시간 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13706,6 +13953,12 @@
           "status": "초안/저장/취소 결함 보완·검증; 실정책 미확인",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
           "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "pathname 초안/이력 intent/취소 격리 DOM 회귀; 실정책 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13724,6 +13977,12 @@
           "date": "2026-11-23 KST",
           "status": "소비 화면 회귀; 다른 Goal 전체 검토 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
+          "global_requirement_complete": false
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "status": "17개 공개 소비 경로 및 G10/G11 DOM 인계; 실제 브라우저 대기",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
         }
       }
@@ -18679,9 +18938,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "정적 목업 유지·hero 별도 흐름 연결; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "scope": "major element groups and current code; not pixel/full-element certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F082-O02",
@@ -18697,9 +18966,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "인물/본문/사진/진행 선택 연동 유지; 자동 전환 방식 미확인",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "scope": "major element groups and current code; not pixel/full-element certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F082-O03",
@@ -18715,9 +18994,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "분석 대기",
+        "implementation_assessment": "5열/가입 배너/펼침/SNS/고지 구성 유지; 고정 헤더/작은 고지 정밀 시각 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "scope": "major element groups and current code; not pixel/full-element certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F082-A01",
@@ -18734,8 +19023,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "hero/푸터 연결 일부 보완; 정확 자산·자동 전환·원본 펼침 미확인",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g02_recheck": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "scope": "major element groups and current code; not pixel/full-element certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F083-O01",
@@ -21932,8 +22231,8 @@
       "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
       "criteria_note": "과거 정밀 시각 명세의 일괄 선행 조건은 최신 사용자 기준으로 대체. 기능 제어·입력·상태·저장·전환 대응은 필요하며 아래 R4 원문·인증 상태는 보존."
     },
-    "authorized_scope": "G00 research and existing plan documentation only; FE read only; no implementation or runtime testing",
-    "new_source_review_scope": "134 flows metadata/hash/ownership checked; 4 flows / 6 PNGs directly viewed; no new full image census or MCP query",
+    "authorized_scope": "G02 FE corrections/tests and existing planning documents only",
+    "new_source_review_scope": "20 existing PNGs directly viewed; major element groups/code compared, no full element census or pixel certification",
     "scoped_reviews": [
       {
         "date": "2026-11-23 KST",
@@ -22049,32 +22348,113 @@
             "runtime_tests_performed": false
           }
         }
+      },
+      {
+        "date": "2026-11-23 KST",
+        "baseline_commit": "3fbe241d90265fe1acbb7b7a3c279a8efb014dfd",
+        "scope": "G02 landing/menu/footer and actual public consumers; G10/G11 handoff only",
+        "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기",
+        "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "direct_png_review": {
+          "flows": 7,
+          "images": 20,
+          "all_project_images_reviewed": false,
+          "element_census_complete": false
+        },
+        "source_catalog": "stored bonsai-web Latest / 2146; not requeried; not product build/capture date",
+        "source_hashes_and_assignments": "20 references matched",
+        "implementation": "three focus/selection-loss paths fixed; one review emphasis corrected; same-path menu close/content focus corrected in follow-up",
+        "typecheck": "passed; noEmit/incremental false for app and node",
+        "lint": "passed; no cache",
+        "unit": "114/114 across 25 files",
+        "final_targeted_dom": "14/14 across 2 files, including 17 public consumer paths and same-path desktop/mobile reselection",
+        "build": "passed; Vite write:false, in-memory bundle only",
+        "browser_smoke": "existing Chrome tab URL and app-updated title checked",
+        "browser_e2e": "not_run",
+        "real_api_requests": null,
+        "network_failures": null,
+        "console_errors": null,
+        "network_observation": "not_performed; do not infer zero from static review or jsdom",
+        "visual_identity": "not_verified",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "preview": "http://127.0.0.1:5173/",
+        "preview_mode": "in-memory production bundle; no HMR",
+        "g01_new_code_change_needed": false,
+        "overall_complete": false,
+        "pending_owners": {
+          "source_assets_capture_visual": [
+            "G02",
+            "R01",
+            "G01 shared variants"
+          ],
+          "browser_regression": [
+            "G02",
+            "G03-G11 consumers"
+          ],
+          "native_ime_at_devices": [
+            "G02",
+            "G01",
+            "G84"
+          ],
+          "original_auth_policies": [
+            "G10",
+            "G11",
+            "R02"
+          ]
+        },
+        "next_goal_started": false,
+        "initial_verification": {
+          "unit": "112/112 across 25 files",
+          "final_targeted_dom": "12/12 across 2 files, including 17 public consumer paths",
+          "build": "passed; Vite write:false, in-memory bundle only",
+          "implementation": "three focus/selection-loss paths fixed; one review emphasis corrected"
+        },
+        "followup_review": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-followup-review",
+          "finding": "same-path menu navigation left desktop/mobile menus open and focus in the menu",
+          "failed_before_fix": 2,
+          "fix": "close menus on actual location key change and transfer remaining header focus to main content",
+          "targeted_dom": "14/14 across 2 files, 4.46s",
+          "unit": "114/114 across 25 files, 53.49s",
+          "typecheck": "passed; app/node noEmit/incremental false",
+          "lint": "passed; no cache",
+          "build": "passed; 1966 modules/3.99s; write:false",
+          "preview": "http://127.0.0.1:5173/",
+          "preview_updated": true,
+          "browser_e2e": "not_run",
+          "visual_identity": "not_verified",
+          "evidence_files_created": false,
+          "temporary_scripts_created": false,
+          "overall_complete": false
+        }
       }
     ]
   },
   "workflow_review": {
     "date": "2026-11-23 KST",
-    "scope": "G00 source/version/ownership audit; no implementation or behavior execution",
+    "scope": "G02 major source elements/code and DOM behavior; not full R01/connected goals",
     "mapping": "FLOW-BEHAVIOR-REVIEW.md",
     "policy": "UXUI-REPLICATION.md#current-identity",
-    "result": "../RESULTS/G00_RESULT.md#g00-recheck",
-    "counts": {
-      "flows": 134,
-      "steps": 754,
-      "unique_screens": 642,
-      "adjacent_capture_pairs": 620
+    "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+    "reference_counts": {
+      "flows": 7,
+      "steps": 20,
+      "unique_screens": 20
     },
     "minor_visual_differences_allowed": false,
     "requires_functional_flow_mapping": true,
     "capture_adjacency_proves_action": false,
     "new_mcp_query_performed": false,
     "new_full_png_review_performed": false,
-    "selected_pngs_directly_reviewed": 6,
-    "implementation_review_performed": false,
-    "read_only_entry_architecture_review_performed": true,
-    "implementation_work_authorized": false,
-    "authorized_goal": "G00",
+    "selected_pngs_directly_reviewed": 20,
+    "implementation_review_performed": true,
+    "implementation_work_authorized": true,
+    "authorized_goal": "G02",
     "visual_identity": "not_verified",
+    "browser_e2e": "not_run",
     "other_goals_full_review": "not_performed"
   },
   "workflow_review_history": [
@@ -22152,6 +22532,31 @@
       "implementation_work_authorized": true,
       "authorized_goal": "G01",
       "visual_identity": "pending",
+      "other_goals_full_review": "not_performed"
+    },
+    {
+      "date": "2026-11-23 KST",
+      "scope": "G00 source/version/ownership audit; no implementation or behavior execution",
+      "mapping": "FLOW-BEHAVIOR-REVIEW.md",
+      "policy": "UXUI-REPLICATION.md#current-identity",
+      "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+      "counts": {
+        "flows": 134,
+        "steps": 754,
+        "unique_screens": 642,
+        "adjacent_capture_pairs": 620
+      },
+      "minor_visual_differences_allowed": false,
+      "requires_functional_flow_mapping": true,
+      "capture_adjacency_proves_action": false,
+      "new_mcp_query_performed": false,
+      "new_full_png_review_performed": false,
+      "selected_pngs_directly_reviewed": 6,
+      "implementation_review_performed": false,
+      "read_only_entry_architecture_review_performed": true,
+      "implementation_work_authorized": false,
+      "authorized_goal": "G00",
+      "visual_identity": "not_verified",
       "other_goals_full_review": "not_performed"
     }
   ],

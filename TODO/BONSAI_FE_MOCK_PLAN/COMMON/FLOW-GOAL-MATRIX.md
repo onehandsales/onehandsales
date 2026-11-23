@@ -1,6 +1,8 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 상태 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
+> 현재 G02 — 2026-11-23 KST: **G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기**. [이번 범위·검증·잔여](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck). 기존 결과/체크는 이력으로 보존한다. G01/R01 전체 완료 아님. evidence·임시 산출물·새 결과 문서 없이 수행했으며 다음 Goal은 자동 시작하지 않는다.
+
+> 이전 G00 재검토 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
 
 > 이전 G01 재검토 기록 — 2026-11-23 KST G01 재검토: **G01 공통 모달 2종 결함 보완·목 동작 검증 수행 / 엄격한 시각 동일성 대기**. 이번 G01·직접 연결 검증에서는 작은 폰트·크기·픽셀 차이를 허용하지 않는다. 과거 구현/체크는 당시 이력이며 다른 G/R의 전체 완료로 승격하지 않는다. [결과·체크·미완·직접 확인](../RESULTS/G01_RECHECK_RESULT.md). G32 이후 미착수, 실제 API/BE/DB 작업·push·배포 없음.
 
@@ -190,3 +192,7 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 ## G01 선택 원본 재대조 — 2026-11-23 KST
 
 [x] Logging in 01~05, Adding a new client 01~07, Adding a bookkeeping category 01~06, Hiding sidebar 01~03, 404 01~02의 23 PNG와 MCP ID/순서를 확인했다. 공통 UI 및 연결 문맥만 소비했고 원래 단계 소유 G11/G19/G63/G14는 유지한다. [원본 목록·요소 대응](../RESULTS/G01_RECHECK_RESULT.md#g01-sources). [ ] 모든 업무 구현/요소 전수/시각 동일성은 별도 검토 대기다.
+
+## G02 소비 범위 재검토 — 2026-11-23 KST
+
+[현재 G02 결과](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck)는 Landing01~11, Logging in01~02, Products(CRM)01, Industries(Consulting)01, Blog01, Invoice templates01~02, Onboarding02~03의 20개 PNG와 주요 구성/코드를 대조했다. 추가 참조의 G03/G05/G06/G10/G11 단계 소유는 유지한다. 원본 정밀 요소/픽셀·실제 브라우저 검증은 대기이며 R 전체/연결 Goal 전체 완료로 올리지 않는다.

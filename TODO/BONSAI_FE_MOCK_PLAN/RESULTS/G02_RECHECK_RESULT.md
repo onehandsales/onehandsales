@@ -1,5 +1,7 @@
 # G02 재점검·보완 결과
 
+> 현재 결과 — 2026-11-23 KST: [G02 R4 재검토](#g02-r4-recheck), [추가 검토·같은 목적지 재선택 보완](#g02-followup-review). 메뉴 초점·후기 강조 보완 및 단위/DOM 검증 수행. 시각 동일성·실제 브라우저 상세/네트워크 검증은 대기다. 아래 과거 실행과 구분한다.
+
 > 후속 감사 수정: [G01~G15 재점검 결과](G01_G15_RECHECK_RESULT.md). 아래는 해당 단계 당시의 실행 기록이며 최신 결함 수정/검증과 구분한다.
 
 2026-11-20 KST. **이번에 재현한 동작 결함 수정·2차 코드 검토·Chromium 검증 완료. 17상태 시각 비교 수행. 원본과의 잔여 시각 차이·미수록 원본 동작·추가 환경 검증 대기. G02 전체 완료 판정은 보류한다.** 이전 실행은 [G02 최초 결과](G02_RESULT.md)의 1~7절이며 아래 명령·캡처와 구분한다.
@@ -157,3 +159,182 @@ G09 연속 작업 회귀: 공개 소셜 링크에 출발 이력을 추가해 회
 ### G15 최종 공통 회귀 (2026-11-21)
 
 [최종 코드 검증](evidence/g15/final-verification.json)의 전체 개발/빌드82개씩에 기존 기반·공개 메뉴/폼·소개·가격/후기 흐름을 포함했다. G03의 이전 Public 테스트 명칭을 실제 Public site로 바꿨으며 검증을 제거하지 않았다. 기존 원본·시각·환경 대기를 완료 처리하지 않는다.
+
+
+<a id="g02-r4-recheck"></a>
+## 10. G02 R4 재검토·보완 — 2026-11-23 KST
+
+**판정: 원본 주요 구성·코드 대조, 메뉴 초점 보완·DOM 회귀 수행 / 엄격한 시각 동일성·실제 브라우저 상세 검증·원본 미수록 분석 대기. G02 전체 완료 아님.** 아래는 시작 HEAD `3fbe241d90265fe1acbb7b7a3c279a8efb014dfd` 이후 이번 실행만 기록한다. 위의 과거 Chromium/픽셀 수치를 이번 결과로 재사용하지 않았다. 커밋·push·배포·다음 Goal 착수 없음.
+
+### 10.1 범위·선행 확인·분류
+
+- 시작 작업 트리 clean, main은 origin보다 2커밋 앞섬. G00의 근거·배정 감사와 G01 모달 동작 보완을 이어받았다. G01 전체 완료를 전제로 삼지 않았다.
+- 주대상: 랜딩 01~11·hero·공개 메뉴·이메일·CTA·본문 선택·푸터. 연결: 실제 PublicLayout 소비 화면, G10/G11 입력 인계와 취소/이력 복귀. G03 이후 본문, R01 전체 조사, G01 재구현, G32 이후는 제외했다.
+- 적용 규칙 전체 확인: AGENT README, FRONT_AGENT README·결정006/005, User Web 구조·상태/데이터·mock 개발·테스트, 컴포넌트·접근성/레이아웃·주석·User Web 컨벤션, ENGINEERING_REVIEW_CHECKLIST, PM036·UX025. 적용되는 상위/대상 AGENTS는 없고 BE/AGENTS는 범위 밖이다. 없는 AGENT_USAGE_RULES는 읽은 것으로 처리하지 않는다.
+- 계획 README·START-CHECKLIST·UXUI-REPLICATION·PUBLIC-WEB·G02 명세와 기존 G02 결과를 확인했다. 큰 COMMON 문서와 PLAN-INDEX는 G02/R01/연결 G의 관련 절·필드를 확인했다. G00 현재 감사/추가 점검/인계, G01 최초 결과의 구조와 재검토의 변경/검증/잔여, R01 결과의 목적지·목 가정·후속 보완, G01_G15의 CTA 중복 수정, G10/G11/G14 명세·결과의 인계/취소/복귀를 확인했다. 모든 G/R/RESULTS 문서를 전수 읽은 것은 아니다.
+- SOURCE_ANALYSIS_STANDARD의 12개 기준, SOURCE_ANALYSIS_REVIEW의 범위·한계·후속 기준을 적용했다. Landing ANALYSIS는 전체 단계·규칙·질문을, 추가 6흐름은 아래 소비 단계와 관련 규칙/질문을 확인했다. 원본 분석 정본은 수정하지 않았다.
+
+| 판정 | 이번 대상·이유 |
+| --- | --- |
+| 유지 | 정적 홍보 목업, 수동 후기/금융/브랜딩 선택, 5열 푸터·9개 disclosure·SNS·법적 고지, pathname별 이메일과 history ID별 intent, CTA 중복 방지 |
+| 구현 보완 | hover 이탈/다른 메뉴 진입/템플릿 유형 진입에 의한 키보드 초점·선택 유실 3경로; Landing07 후기 칩 강조 범위 1곳 |
+| 문서 보완 | 현재 R4 대조 상태·원본/목 가정·이번 실행/미실행을 분리하고 G00 읽기 전용 조건과 과거 시각 허용을 이번에 적용하지 않도록 연결 |
+| 분석·환경 대기 | 원본 자동 전환/hover/focus/모바일, 정확한 자산·촬영 환경·전수 요소/픽셀 대응, 실제 브라우저 조작·네트워크·OS IME/AT/실기기 |
+
+### 10.2 직접 본 원본과 무결성
+
+기존 로컬 PNG **7흐름 20장**을 view_image로 직접 열었다. 기본 범위 17장에 G10 인계 Onboarding02~03과 G11 진입 Logging in02를 추가했다. 단순 파일 검사와 직접 열람을 구분하며, 전 세계/전체 프로젝트 이미지나 모든 작은 요소를 전수 판독한 것은 아니다. MCP·보관본·운영 서비스 신규 조회 없음.
+
+채택 범위는 저장된 `bonsai-web / Latest / 2146`이다. 카탈로그를 촬영일·제품 빌드로 확정하지 않는다. 기존 Gellix/자산·Laura 후기 보완의 2024-02-03 보관본 이력은 유지하지만 이번 새 조회로 계산하지 않았다. 추가 참조의 단계 소유는 기존 G03/G05/G06/G10/G11 그대로다.
+
+Flow ID: Landing `f1a89cc0-4dc8-4576-b912-78231a2a7b1a`; Logging in `a02409b3-6eb0-4bc0-b702-22a42e0990c8`; Products(CRM) `12ca870d-d929-4cc8-ab4c-60436c2eac13`; Industries `7fcadde8-35c9-4b36-9c76-ec2d4432f20e`; Blog `be5bc5f4-c2fa-4ea2-a923-0250d6302fcb`; Invoice templates `a0181c28-2521-46d3-a0e6-3ead4851b2f9`; Onboarding `f714101f-db6b-4bfe-9ed1-74d6b0d6243c`.
+
+아래 해시는 표시용 앞 12자리이며 실제 검사는 [기존 원본 색인](../../../bonsai_analysis/SOURCE_ANALYSIS_INDEX.json)의 전체 SHA-256과 대조했다. 20개 파일 존재·PNG 2880×1800·전체 해시·단계/ID·단일 담당, 관련 ANALYSIS 해시/ID 연결이 일치했다.
+
+| 흐름·단계 | Screen ID·원본 경로 | SHA-256 앞 12자리 | 기존 담당 |
+| --- | --- | --- | --- |
+| Landing page 01 | [sc_f832f286d2d74611a3f6486b79cb36ec](<../../../bonsai_analysis/flows/Landing page/screens/01_sc_f832f286d2d74611a3f6486b79cb36ec.png>) | 42a934db17b7 | G02 |
+| Landing page 02 | [sc_337ce046f7184e07b2f841009066cf95](<../../../bonsai_analysis/flows/Landing page/screens/02_sc_337ce046f7184e07b2f841009066cf95.png>) | d262173cddfb | G02 |
+| Landing page 03 | [sc_2acfdf88f60f4638b4f3f97b6023c9cc](<../../../bonsai_analysis/flows/Landing page/screens/03_sc_2acfdf88f60f4638b4f3f97b6023c9cc.png>) | 11c496bf55f0 | G02 |
+| Landing page 04 | [sc_fe9ef5d8bdf049cbabad33e42a6529c1](<../../../bonsai_analysis/flows/Landing page/screens/04_sc_fe9ef5d8bdf049cbabad33e42a6529c1.png>) | 01a5e774dfa0 | G02 |
+| Landing page 05 | [sc_b36874f940ae40f085f0df38ee4a95cd](<../../../bonsai_analysis/flows/Landing page/screens/05_sc_b36874f940ae40f085f0df38ee4a95cd.png>) | e99c97bca4fa | G02 |
+| Landing page 06 | [sc_b410b2592edd40b99c423c2af0f73f6f](<../../../bonsai_analysis/flows/Landing page/screens/06_sc_b410b2592edd40b99c423c2af0f73f6f.png>) | 12f0dfd16a63 | G02 |
+| Landing page 07 | [sc_c817e4443d78499394491227920ac96b](<../../../bonsai_analysis/flows/Landing page/screens/07_sc_c817e4443d78499394491227920ac96b.png>) | 42b543d73c8b | G02 |
+| Landing page 08 | [sc_81b8d00c272c4f709e9a04919113069b](<../../../bonsai_analysis/flows/Landing page/screens/08_sc_81b8d00c272c4f709e9a04919113069b.png>) | e000611449c3 | G02 |
+| Landing page 09 | [sc_33704472c1d54fda8c9605958d1af9d9](<../../../bonsai_analysis/flows/Landing page/screens/09_sc_33704472c1d54fda8c9605958d1af9d9.png>) | 8494575afaa8 | G02 |
+| Landing page 10 | [sc_a1fa28afd409416f88fe3625082ddfac](<../../../bonsai_analysis/flows/Landing page/screens/10_sc_a1fa28afd409416f88fe3625082ddfac.png>) | 69ab19c38c06 | G02 |
+| Landing page 11 | [sc_f5d10f7c06c44873bf3b7048ad5e4566](<../../../bonsai_analysis/flows/Landing page/screens/11_sc_f5d10f7c06c44873bf3b7048ad5e4566.png>) | 06335e816e60 | G02 |
+| Logging in 01 | [sc_07904520440b4dc7ad7d6d31bf3a03e9](<../../../bonsai_analysis/flows/Logging in/screens/01_sc_07904520440b4dc7ad7d6d31bf3a03e9.png>) | 6a7e8c383319 | G11 |
+| Logging in 02 | [sc_9d353458318e43e7b25ebbf88fefeaa9](<../../../bonsai_analysis/flows/Logging in/screens/02_sc_9d353458318e43e7b25ebbf88fefeaa9.png>) | 7e2b5926fea2 | G11 |
+| Products (CRM) 01 | [sc_2ce9fd14ccb74e05977de48b5517e78c](<../../../bonsai_analysis/flows/Products (CRM)/screens/01_sc_2ce9fd14ccb74e05977de48b5517e78c.png>) | 779b464d282d | G03 |
+| Industries (Consulting) 01 | [sc_b71347cc8821454593507a2b9cb4a512](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/01_sc_b71347cc8821454593507a2b9cb4a512.png>) | 82f14d2befb7 | G03 |
+| Blog 01 | [sc_549a6fa823b74e3e8d826750df6f1f99](<../../../bonsai_analysis/flows/Blog/screens/01_sc_549a6fa823b74e3e8d826750df6f1f99.png>) | 090fe727a473 | G05 |
+| Invoice templates 01 | [sc_d68dbb7304bb45ac9755138b12ce3141](<../../../bonsai_analysis/flows/Invoice templates/screens/01_sc_d68dbb7304bb45ac9755138b12ce3141.png>) | 77f35d19a712 | G06 |
+| Invoice templates 02 | [sc_eac8d5a2e97d47c496455da557912622](<../../../bonsai_analysis/flows/Invoice templates/screens/02_sc_eac8d5a2e97d47c496455da557912622.png>) | e83003d42462 | G06 |
+| Onboarding 02 | [sc_e0a408a1e1dd4ea39f54dcef37d2bbf7](<../../../bonsai_analysis/flows/Onboarding/screens/02_sc_e0a408a1e1dd4ea39f54dcef37d2bbf7.png>) | 33c4fb0861cc | G10 |
+| Onboarding 03 | [sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838](<../../../bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png>) | 093370688086 | G10 |
+
+원본 표시는 도구의 이미지 열람 축척이며 명시적인 CSS 비교 축척/배율을 설정하지 않았다. 원본 CSS viewport·DPR·scrollY·촬영 조건은 미확인이다. 새 캡처·리사이즈·비교 이미지·픽셀 계산은 하지 않았다. jsdom은 배치 엔진이 아니므로 viewport/DPR/scroll 동일성 측정에 사용하지 않았다. 실제 Chrome의 viewport·DPR·배율도 이번에 측정하지 않았다.
+
+### 10.3 원본·R4·코드 대응과 수용 판정
+
+코드 경로는 `FE/user-web/src` 기준이다. 관찰은 PNG에 보이는 내용, 측정은 파일 치수/해시·검사 횟수, 목 가정은 FE의 조작/수명 정책이다. 정확한 CSS값 추정은 원본 확정값으로 승격하지 않았다.
+
+| 요소군·원본 | 현재 코드·판정 | 남은 범위 |
+| --- | --- | --- |
+| hero: Logging01, Onboarding02→03 | `landing-hero.tsx`·`signup-form.tsx`, `pages/signup`: 입력 전/후와 다음 가입 폼의 같은 이메일 관찰. 로컬 메모리 전달은 목 가정으로 유지 | 전송/보존 방식·실패 정책은 원본 미관찰, G02/R01·G10/R02 |
+| G02-L01 / R4-F082-O01 | `landing-sections.tsx` ProductOverview의 dashboard/phone는 img. 목업 내부 입력/저장 제어 없음. hero는 별도 흐름으로 연결 | 미세 자산/표시 차이 G02/R01 |
+| G02-L02 | productGroups 3그룹·12개 링크와 정적 아이콘 유지. 업무 데이터를 생성하지 않음 | 후속 소개 본문 G03 |
+| G02-L03~04 / O02 | Testimonials의 인물/본문/사진/aria-pressed/01·03 표시가 같은 선택 상태를 사용. 초기 Alexandre03→수동 Alison01 검증 | 자동 재생·시간·애니메이션은 미확인. Laura02는 기존 보관본 보완, G02/R01 |
+| G02-L05~06 | FinanceOverview/ClientExperience의 이미지·선택 버튼·강조 상태 유지. 초기 Invoicing/White labelled 및 추가 진행선의 캡처 상태와 이후 수동 선택 구분 | 자동 전환·금융/브랜딩 실제 정책 미확인 |
+| G02-L07 | ReviewHighlights·landing-content: 18개 칩 중 `Clients take me more seriously`에서 `Clients `는 흐린 부분, `take me more seriously`만 강조하도록 수정 | 글꼴 raster·칩 폭·따옴표 색/행 배치 등 픽셀 동일성 대기 |
+| G02-L08 | SupportAndTrial의 채팅 이미지, Contact us→/support, Get started→/signup 유지 | 실제 문의·환불 조건은 후속 G08/R01 |
+| G02-L09~11 / O03 | 가입 배너·5열 footer·8종 Templates+Comparisons 펼침·SNS2개·FDIC/2023 고지 유지. 원본은 닫힌 화살표, details 열림은 기존 보완/목 접근성 정책. scrolled 헤더의 desktop top52 CSS 유지 | 고정 헤더 위 노출/스크롤 실제 배치, 작은 고지의 줄바꿈·합성 italic 등 시각 대기 |
+| G02-M01~04 | PublicHeader: Product 5+5+5+홍보, Industries 4열, Resources Learn/Tools, Templates 7종+All Templates 및 Contract/Invoice 목록 유지. 마우스·키보드 혼합 입력 3결함 보완 | hover/click·닫힘 원본 동작 미관찰. 이번 보완은 접근성 목 정책 |
+| R4-F082-A01 | hero 출처·후기 진행 표시·푸터 문구/메뉴 구조를 연결. 위 구현 보완과 남은 분석을 분리 | 정확한 자산·캐러셀 시간·원본 펼침은 분석 대기 유지; 부모 항목 완료 처리 안 함 |
+
+`navigation-content.json`의 메뉴·템플릿·푸터 **290개 링크 사용 위치**는 유지했다. `localPublicPath`가 외부 원본 href를 로컬 목적지로 바꾸고, 등록된 publicDestinations 모두가 전역404에 빠지지 않는지 실제 router 정의로 검사했다. 이 검사는 모든 목적지를 브라우저에서 클릭하거나 본문 전체를 검증한 결과가 아니다. 미수록 소개/도구 본문은 기존 담당 G03~G09의 대기다.
+
+| 공통 기준 | 이번 결과·잔여 |
+| --- | --- |
+| R4-C01 식별 | [x] 위 20개 파일/ID/전체 해시/버전·소유 확인. [ ] 촬영 조건 G02/R01 |
+| C02 구성 | [x] 주요 셸/목업/섹션/메뉴/푸터와 인증 인계 연결. [ ] 배경 겹침·전체 정밀 명세 |
+| C03 요소 | [x] 위 요소군과 제어 연결. [ ] 작은 요소 전수 계수·독립 요소 ID 대응 G02/R01 |
+| C04 표시 | [x] hero/메뉴/후기·푸터 주요 문구와 강조 보완. [ ] 모든 줄바꿈·작은 글자 정밀 전사 인증 |
+| C05 배치 | [x] 원본 PNG 치수와 CSS/viewport 구분. [ ] 렌더링 위치/간격/스크롤·픽셀 동일성 |
+| C06 글자 | [x] 로컬 Gellix400/500/600/700 선언과 기존 출처 확인. [ ] 촬영 당시 폰트 변형·raster·정확 크기 동일성 |
+| C07 색·장식 | [x] Clients 칩 강조 범위 수정. [ ] 색값·radius·shadow·따옴표·전체 상태 정밀 동일성 |
+| C08 자산 | [x] 정적 목업·사진·로고·장식/폰트 사용 위치 확인. [ ] 원본 정확한 변형/crop·사용 조건 G02/R01, 내부 공통 G01 대기 유지 |
+| C09 상태 | [x] DOM 메뉴·선택·입력 오류/재시도·합성 composition 확인. [ ] 원본 미수록 hover/focus/모바일 |
+| C10 전환 | [x] jsdom 실제 router/history의 링크·뒤/앞·가입/로그인/취소. [ ] 실제 브라우저 조작/스크롤·원본 전환시간 |
+| C11 입력/저장 | [x] pathname별 초안·이력별 intent·선택한 이메일·취소 범위·중복 방지 보존. [ ] 원본 저장/복구 정책 |
+| C12 연결 | [x] 공개 소비 경로 17종의 동일 메뉴와 G10/G11 인계 DOM 회귀. [ ] 실제 브라우저 소비 회귀·다른 G 전체 검토 |
+
+공통 기준의 [x]는 명시한 부분 확인에만 해당한다. 전체 R4 요소 명세/시각 인증이나 R01 전체 완료를 뜻하지 않는다.
+
+### 10.4 수정·재검토와 현재 실행
+
+- `hooks/use-public-menu.ts`: 키보드 초점이 헤더에 있으면 hover 이탈로 닫지 않으며, 패널 안 링크에 초점이 있으면 다른 트리거의 우발적인 hover로 패널을 교체하지 않는다. 명시 클릭·Escape·외부 포인터·헤더 밖 blur·폭 전환은 유지한다.
+- `components/public-header.tsx`: 템플릿 패널/탭에 초점이 있는 동안 우발적인 유형 hover로 선택/링크를 교체하지 않는다. 명시 클릭/방향키와 포인터만 사용할 때의 선택은 유지한다.
+- `data/landing-content.ts`: 위 후기 강조 문구 1곳 수정. CSS·자산·provider·SignupForm·SignupLink·인증 구현은 변경하지 않았다.
+- 정식 회귀 `components/public-header.test.tsx` 6개, `app/router/public-entry.test.tsx` 6개 추가. 앱 조립/라우터를 실제로 소비하며 navigation을 mock하지 않았다. jsdom의 matchMedia·scrollTo 환경만 대체했다.
+- 수정 전 메뉴 테스트 6개 중3실패로 결함 재현→수정 후6/6. 첫 통합 실행은 전체11개 중1실패: 테스트의 잘못된 `/invoice-templates`를 현재 `/invoice-template`로 바로잡았다. 제품 결함 수정과 구분한다. 이후 전체25파일112/112 통과. 소비 경로를 8종→17종으로 확대한 마지막 대상 재검증 수치는 아래와 연결한다.
+
+| 검사·실제 실행 방식 | 이번 판정 |
+| --- | --- |
+| Node `/opt/homebrew/opt/node@24/bin/node` | v24.10.0, package의 >=24<25 충족. 기본 Node22/pnpm10 대신 로컬 설치 CLI/API 직접 실행; pnpm8.14.1 요구·lock은 변경하지 않음 |
+| `node node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit --incremental false --pretty false` 및 node config | 통과. `tsc -b`의 .tsbuildinfo 쓰기를 사용하지 않음 |
+| `node node_modules/eslint/bin/eslint.js . --no-cache` | 통과 |
+| `NODE_DISABLE_COMPILE_CACHE=1 node --input-type=module`의 `startVitest('test', [], options, viteOverrides)` | 전체25파일112/112 통과, 54.32초. 기존100개+신규12개. 출력만 사용 |
+| Vitest 옵션 | config/configFile:false, run:true, cache:false, pool:threads, execArgv:[], maxWorkers:2, jsdom, 기존 setup/include, default reporter, coverage:false, experimental.fsModuleCache:false, client/ssr optimizer disabled, Vite noDiscovery/include[], watch:null, 기존 React/alias. forks의 임시 모듈 파일과 config bundle 사용 안 함 |
+| 최종 대상 2파일 재실행 | 17개 공개 소비 경로를 포함한 메뉴/인계12/12 통과,4.44초. 전체112개 통과 후 테스트 경로 확대만 반영한 재실행 |
+| `NODE_DISABLE_COMPILE_CACHE=1 JITI_CACHE=false JITI_FS_CACHE=false node --input-type=module`의 Vite `build` | 통과,1966모듈/4.80초. configFile:false, 기존 React/alias·Tailwind/PostCSS, write:false/copyPublicDir:false/sourcemap:false. HTML/JS/CSS 3개를 메모리에 보관. 디스크 dist/build와 구분 |
+| 메모리 FE 미리보기 | Node HTTP로 메모리 번들과 기존 public 파일만 127.0.0.1:5173에 제공. 시작 시 기존 FE 없음; 다른 프로젝트8081 보존. /·/crm·/signup·/login HTML 및 JS/CSS HTTP200. HMR 없는 고정 빌드이며 소스 수정 시 자동 갱신되지 않음 |
+| 실제 Chrome 열기 | 기존 Chrome 새 탭으로 / 진입, 앱 효과가 갱신한 `OneHand CRM · Bonsai UI preview` 제목과 URL 확인. 상세 조작/화면 배치 검증은 아님 |
+| Playwright·실제 브라우저 상세 검증 | 미실행. 기존 설정의 JSON/실패 screenshot/trace와 fixture의 자동 network-evidence attach, landing 테스트의 명시 screenshot을 확인했다. 라이브러리 브라우저 실행의 임시 profile/artifact 경로를 사용하지 않았고 연결 가능한 기존 CDP 브라우저 없음. Chrome AppleEvents JS도 비활성(error12). 설정을 바꾸거나 금지 산출물로 우회하지 않음 |
+| console·네트워크 | 실제 브라우저 요청/실패/console 관찰 미수행. 실제 API·외부 요청0건이라고 판정하지 않음. 코드의 로컬 경계 확인과 서버 정적 응답 검사를 런타임 요청 전수 관찰로 대체하지 않음 |
+| 시각 | 픽셀 검증 미실행. 새 캡처 금지와 원본 촬영 조건 미확인. DOM 테스트/원본 열람만으로 시각 동일성 통과 처리 안 함 |
+
+Browserslist 데이터 노후화 경고가 있었으며 의존성/환경을 갱신하지 않았다. 단위 테스트의 실패·취소·늦은 응답 시나리오는 독립 runtime을 사용하고 종료 시 폐기한다. 미리보기는 기본 guest/normal seed이며 장애 설정을 적용하지 않았다. evidence·임시 스크립트·로그·검증 JSON·캡처·trace·보고서를 생성하지 않았다. 자동 캐시/결과 후보 디렉터리의 최근 파일도 별도 읽기 검사에서 발견되지 않았다.
+
+### 10.5 공통 체크리스트·엔지니어링 검토
+
+[START-CHECKLIST](../COMMON/START-CHECKLIST.md)와 [ENGINEERING_REVIEW_CHECKLIST](../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md)의 적용 항목을 아래에 남긴다. 공통 템플릿을 프로젝트 전체 완료로 체크하지 않는다.
+
+| 적용 항목 | 결과·코드/근거 |
+| --- | --- |
+| 범위·Git·선행·출처 | [x] 10.1~10.3. G00 코드 읽기 전용 조건 종료, FE 보완 허용. G01/R01 전체 완료 가정 없음 |
+| 책임·props·import·공통 사용 | [x] hover/초점 수명은 기존 hook·TemplateMenu, 표시는 기존 데이터에 유지. app 계층 통합 테스트는 실제 라우터를 소비. 새 패키지·앱 간 import·과도한 공통화 N/A |
+| mock·조립·동일 ID·수명 | [x] app-providers/runtime/public-provider·QueryScope·auth 인계 확인; 실제 HTTP/인증/DB 추가 없음. 이메일 메모리/history opaque ID·선택 복사 유지. 새 업무 ID/금액/날짜/CRUD 변경 N/A |
+| 상태·scope·비동기·저장 | [x] 이메일 검증/재시도·취소/다른 초안·중복 가드 DOM 회귀; 기존 auth/runtime 단위의 실패/취소/늦은 응답/차수 격리 통과. 정적 메뉴에 업무 로딩/실패를 새로 만들지 않음 |
+| 접근성·키보드·의미 | [x] 초점 유실3경로 수정, Escape/외부닫기/합성 폭 변경·터치 hover 무시, 버튼/탭 aria-selected·제출 label/error 연결 확인. [ ] 실제 Tab 순서·키보드/포인터 혼합·AT·터치·레이아웃은 G02/G84 |
+| 시각·넓이·스크롤·IME | [ ] 원본 동일성, 좁은 실화면/확대/sticky, 실제 OS IME·기기 미검증. 합성 composition·긴 한국어 값 보존·matchMedia 시험만 통과 |
+| 한글 주석·strict·cleanup·성능 | [x] 수정 함수의 기능/이유 주석, 새 전역 리스너/타이머 없음, 기존 effect 정리 유지. strict/lint·빌드·DOM 회귀 통과. 별도 성능 벤치마크 N/A |
+| 검증·연결·인계 | [x] 명령·실패/수정/통과와 한계 기록. [ ] 실제 E2E/요청/console 미검증. Admin/BE/배포/실인증 N/A. 문서/JSON/링크/소유 최종 검사는 아래 마지막 점검 |
+
+### 10.6 남은 작업·담당·직접 확인
+
+- [ ] **G02/R01:** 정확한 폰트/자산 변형·그림자/패턴·후기 칩/작은 푸터·합성 italic 등 기존 시각 차이와 전수 요소 대응. 새 캡처가 필요한 픽셀 검증은 현재 사용자 금지로 대기. 작은 차이도 허용 완료로 처리하지 않는다.
+- [ ] **G02/R01:** 원본 메뉴 트리거·hover/focus·닫힘, 자동 전환/시간·marquee·아코디언 열림·모바일 시안 미확인. 현재 수동 선택/초점 보호는 목 접근성 가정이다.
+- [ ] **G02 및 소비 G03~G11:** 실제 브라우저의 직접 URL·reload·새 탭·back/forward·입력/취소·전체 메뉴 목적지·스크롤·좁은 화면·폭 전환·중복/오류 재시도와 실패 요청 포함 네트워크/console 관찰. 현재 DOM 통과와 별도다.
+- [ ] **G01/G02/G84:** OS 한글 IME·스크린리더·실기기·확대·추가 브라우저. G01 기존 시각/환경 대기 유지. 이번 결함은 G02 메뉴 소유로 해결했고 G01 공통 컴포넌트를 추가 수정할 필요는 발견하지 못했다.
+- [ ] **G10/G11/R02 및 G13/G14:** 원본 인증/가입 후 복귀·취소/보존 정책 상세. 기존 가상 가입/로그인·온보딩 구현과 회귀 이력은 유지한다. 이번에는 랜딩 인계/인증 왕복만 검사했으며 온보딩 전체를 새 검증하지 않았다.
+- 후속 서버 메모: 체험/환불/금융 제휴·국가/보험·법적 효력·인증·메일·서버 영속성은 원본 홍보 문구로 확정하지 않는다. 실제 외부 동작·API 설계는 현재 범위 밖이다.
+
+미리보기 `http://127.0.0.1:5173/`는 메모리 빌드 프로세스가 살아 있는 동안 유지된다. 아래는 사용자가 직접 따라 할 확인 순서이며 이번 실제 브라우저 통과 기록이 아니다.
+
+1. Product에 마우스를 올린 뒤 Tab으로 CRM 링크에 초점을 둔다. 포인터를 밖/Industries로 옮겨도 링크 초점이 유지되는지, Escape로 Product에 돌아오는지 확인한다.
+2. Templates에서 방향키로 Proposal 선택→포인터를 Invoice에 올려도 키보드 선택 유지→Invoice 명시 클릭→See all templates→실제 `/invoice-template`→뒤로/앞으로 확인.
+3. hero에 invalid 입력→오류→`preview@example.test`→Start free 연속 조작. 가입 Email→Log in→Sign Up→뒤로/앞으로의 같은 입력과 Cancel and clear draft의 출발 초안 삭제 확인.
+4. Consulting에서 다른 이메일 초안도 만든 뒤 이전 가입 이력을 취소한다. 다른 pathname의 초안이 남는지 확인한다. 후기03/01·Banking·Client CRM 선택과 푸터 Contracts/Privacy/SNS의 로컬 이동 확인.
+5. 좁은 폭 메뉴 닫기·폭 전환·포커스/스크롤과 새로고침/새 탭 메모리 초기화를 확인한다. DevTools에서 요청을 차단하지 않고 실패·console·외부/API 여부를 관찰한다. 새 캡처/trace/보고서는 저장하지 않는다.
+
+### 10.7 종료 전 누락·정합성 재점검
+
+- [x] 위20개 원본의 단계·ID·PNG 치수/전체 해시·담당과 주요 요소/코드를 다시 대조했다. 신규 원본/자산 혼합 없음. 공개 자산/폰트47개 참조의 파일 존재를 확인했다. 정확한 자산 변형/시각 일치 인증은 아니다.
+- [x] 메뉴 목적지 등록·실제 앱 router의 이동, 입력 인계/취소/이력, 본문 선택/푸터 및 공통 헤더 소비17경로를 정식 DOM 테스트로 확인했다. 마지막12/12, 최종 타입(app/node)·lint 통과. G01 공통 추가 변경은 없고 기존 목 정책은 유지한다.
+- [x] PLAN-INDEX 중복 키·85G/22R/134흐름/754단계/642고유Screen/107순서, 원본 단계 소유/선행 관계 불변,455메모의 원문 해시/담당·표/JSON 판정을 검사했다. G02 외 상태/과거 verification·원본 미인증 플래그를 보존했다.
+- [x] 변경 문서 링크/anchor와 JSON 경로를 검사했다. 새 누락0건. JSON 경로414회 중 과거 없는 증거13회는 기존 기록이며 복원/신규 검증에 사용하지 않았다. Markdown 최종 검사 수량은 아래에 기록한다.
+- [x] 변경은 FE 소스3개·정식 회귀 테스트2개·기존 계획 문서31개다. 원본 PNG/분석 정본·BE·환경·DB·기존 evidence 변경과 별도 증거/임시/새 결과 문서가 없다. HEAD 유지, git diff --check 통과.
+- [ ] 실제 브라우저 상세/네트워크, 시각 동일성·원본 미수록/정밀 요소·추가 환경은 10.6 담당대로 유지한다. 이번 제한을 통과로 바꾸지 않았고 G03/G32를 시작하지 않았다.
+
+문서 갱신 위치: 계획 README, GOAL-WORK-ORDER/START/UXUI/PUBLIC-WEB/MOCK-UI-STATE/USER-FLOW/FLOW-GOAL-MATRIX/FLOW-BEHAVIOR-REVIEW/SOURCE-ANALYSIS-IMPACT/EXPANSION-BACKLOG/PLAN-INDEX, G01~G11 명세, R01·R02의 해당 소비 항목, 기존 G01/G02/G10/G11/R01 결과 및 이 문서. 다른 Goal의 전체 체크를 일괄 완료하지 않았다.
+
+최종 문서 검사: 변경 Markdown30개 로컬 링크3,195회(파일/anchor 포함), 과거 없는 링크67회는 기존 이력으로 분리; 새 오류0. JSON 경로414회·새 누락0, 과거 없는13회 유지. 검사 과정은 메모리/표준출력만 사용했다.
+
+
+<a id="g02-followup-review"></a>
+### 10.8 추가 검토 — 2026-11-23 KST
+
+사용자의 후속 검토 요청으로 현재 변경분·정식 테스트·문서 판정을 다시 검토했다. 10.1~10.7의 1차 실행 수치와 별도이며 원본 PNG를 새로 전수 열람한 기록이 아니다.
+
+- [x] **추가 결함 1건:** `/crm`에서 Product→CRM처럼 현재 pathname을 다시 선택하면 실제 탐색이 일어나도 헤더가 재생성되지 않아 메뉴와 링크 초점이 남았다. 데스크톱·모바일 조건의 정식 회귀 2개가 수정 전 모두 실패했다. 기존 목적지 검사는 다른 경로로의 이동만 확인하여 이 조건을 놓쳤다.
+- [x] `features/public-web/hooks/use-public-menu.ts`에서 실제 location key 변경을 관찰해 같은 경로 탐색 뒤에도 하위 메뉴와 모바일 탐색을 닫고, 헤더 안에 남은 초점만 `#main-content`로 인계한다. pathname별 이메일·인계 ID·본문 상태나 전역 RouteFrame은 변경하지 않았다. 같은 경로 선택 시 종료/초점 인계는 목 접근성 정책이며 원본 관찰로 확정하지 않는다.
+- [x] `app/router/public-entry.test.tsx`에 데스크톱·모바일 재선택 2조건 추가. 실제 router의 location key 변경·메뉴 닫힘·모바일 닫힘·본문 초점을 함께 검사한다. navigation을 mock하지 않았고 matchMedia만 합성했다.
+- [x] 10.4와 같은 저장 없는 옵션으로 대상 2파일 **14/14, 4.46초**, 이후 전체 **25파일 114/114, 53.49초** 통과. 이전 112/112 및 12/12는 1차 기록으로 보존한다. 타입 app/node(`--noEmit --incremental false`)·lint(`--no-cache`) 통과. 후속 소스 변경은 한글 테스트 책임 주석뿐이다.
+- [x] Vite `write:false` 메모리 빌드 **1966모듈, 3.99초** 통과. 새 JS `/assets/index-CW2HaOVv.js`, CSS `/assets/index-B8BPKIah.css` 및 HTML을 메모리에만 보관했다. 이번 작업에서 만든 기존 메모리 서버를 새 번들로 갱신했으며 주소/포트 `http://127.0.0.1:5173/`를 유지한다. 환경·설정 파일 변경 없음. 새로고침하면 추가 수정이 반영된다.
+- [x] PLAN-INDEX의 기존 85G/22R/134흐름/107순서, 단계 담당·선행 관계·과거 verification·다른 Goal/R 상태 및 455개 R4 원문 해시/담당을 재확인했다. G02 외 451메모는 기존과 동일하다. G02 현재 검증 수치·추가 검토 연결만 갱신하며 추가 결과 파일을 만들지 않는다.
+- [x] 변경 Markdown30개의 로컬 파일/anchor 링크3,208회 검사: 새 오류0, 과거 없는67회는 기존 이력으로 분리했다. JSON 중복 키·현재/과거 검증 정합성 및 `git diff --check` 통과. 새 미리보기의 `/`, `/crm`, `/signup`, `/login`, JS/CSS는 HTTP200이며 실제 브라우저 조작 검증은 아니다. 자동 캐시/보고서 후보 경로의 최근 생성 파일0; untracked는 허용된 정식 테스트2개뿐이다.
+- [ ] 실제 브라우저 상세/네트워크·console, 픽셀 동일성·원본 동작·OS IME/AT/실기기는 10.6 담당대로 유지한다. 이번 결과도 jsdom이며 외부/API 0건이나 시각 통과를 뜻하지 않는다.
+
+추가 수동 확인: `/crm` 진입→Product→CRM 재선택→메뉴 닫힘/본문 초점 확인. 좁은 폭에서도 탐색 열기→Product→CRM→전체 탐색 닫힘을 확인한다. 이 절의 수동 순서는 실제 브라우저 통과 기록이 아니다. 새 evidence·임시 산출물·커밋·push·배포·다음 Goal 착수 없음.

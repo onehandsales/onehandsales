@@ -35,6 +35,6 @@ export const shortReviews = [
   { before: "", emphasis: "It pays for itself", after: "" },
   { before: "Great ", emphasis: "customer service!", after: "" },
   { before: "A ", emphasis: "life-saver!", after: "" },
-  { before: "", emphasis: "Clients take me more seriously", after: "" },
+  { before: "Clients ", emphasis: "take me more seriously", after: "" },
   { before: "", emphasis: "I upped my rates", after: " and won more clients" },
 ];

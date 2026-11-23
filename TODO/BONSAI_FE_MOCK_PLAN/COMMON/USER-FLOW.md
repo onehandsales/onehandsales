@@ -89,3 +89,7 @@ G17 Team preview controls → `/invite/:workspaceId/:invitationId` → 다른 �
 ## G01 공통 모달 연결 재검토 — 2026-11-23 KST
 
 [x] 표본 편집 및 기존 소비 화면의 진입·저장·취소·실제 뒤로/앞으로·재진입·scope 이탈을 확인했다. [x] 자식 Escape는 부모 잠금을 유지하고, 전체 이력 이탈은 마지막 모달 잠금을 해제한다. [x] 입력↔배경 드래그는 미저장 초안을 닫지 않는다. 원본에 미수록된 웹 동작의 목 기준이며 자동 저장/삭제/발송을 추가하지 않았다. [검증 범위와 대기](../RESULTS/G01_RECHECK_RESULT.md).
+
+## G02 인계·복귀 현재 대조 — 2026-11-23 KST
+
+[현재 G02 결과](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck)에서 랜딩→G10 가입→G11 로그인→가입 왕복, 이력별 이메일·뒤/앞·취소·다른 pathname 초안 보존을 실제 앱 router/history의 DOM 테스트로 확인했다. navigation 대체 없음, 실제 브라우저 검증과는 구분한다. G10/G11·G13/G14 기존 구현/인계 이력은 유지하며 해당 Goal 전체를 새로 검토한 것은 아니다. 실제 새 탭/reload/스크롤/네트워크·시각 동일성은 G02 연결 검증 대기로 남긴다.
