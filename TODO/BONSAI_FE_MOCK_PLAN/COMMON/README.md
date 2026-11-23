@@ -1,6 +1,8 @@
 # 공통 문서
 
-현재 동작·검증 갱신: [G01~G15 감사 후 재점검](../RESULTS/G01_G15_RECHECK_RESULT.md). 기존 원본/시각/환경 대기는 유지한다.
+> 현재 작업 — 2026-11-23 KST: **R4 분석의 계획 반영**. [보완 대응표](SOURCE-ANALYSIS-IMPACT.md)를 먼저 읽는다. G01~G31의 기존 구현·검증 이력은 유지하며 R4 현재 구현 대조는 미실행이다. [현재 흐름 기준](FLOW-BEHAVIOR-REVIEW.md#policy)에 따라 행동·상태·저장·전환을 우선 대조한다. 폰트·크기·픽셀의 작은 차이는 허용한다. G32 이후 구현은 미착수이며 이 문서 변경만으로 재개하지 않는다. [이번 문서 검토](../RESULTS/SOURCE_ANALYSIS_PLAN_REVIEW.md).
+
+이전 동작·검증 기록: [G01~G15 감사 후 재점검](../RESULTS/G01_G15_RECHECK_RESULT.md). 기존 원본/시각/환경 대기는 유지한다.
 
 현재 범위는 [UX/UI 재현 기준](UXUI-REPLICATION.md)을 따른다. 화면과 로컬 목만 구현하며 API/Backend/DB 작업은 포함하지 않는다.
 
