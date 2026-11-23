@@ -99,3 +99,9 @@ FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목
 ## G02 혼합 입력 초점 정책 — 2026-11-23 KST
 
 [현재 보완](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck): hover로 연 공개 메뉴에 키보드 초점이 들어오면 포인터 이탈/다른 트리거 hover가 그 초점을 제거하지 않는다. Templates 내부 초점도 우발적 hover에서 선택/추천 링크를 유지한다. 명시 클릭·방향키·Escape·외부닫기·폭 전환은 유지한다. 원본 미관찰의 목 접근성 정책이다. pathname별 이메일·이력별 intent·선택한 값 인계·출발 경로 취소·다른 초안 보존·revision/새 문서 초기화는 변경하지 않았다. DOM 검증과 실제 브라우저 미검증을 구분한다.
+
+## G03 현재 적용 — 2026-11-23~24 KST
+
+[이번 범위·규칙·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck).
+
+G03 URL(contentPage/query/hash), FAQ 로컬 상태, PublicProvider의 pathname 초안/history intent, G06 template snapshot의 소유를 유지했다. 이전 intent 취소는 해당 출발 경로만 정리하며 다른 소개 초안을 보존한다. query/hash·취소 왕복은 실제 router/history를 쓰는 jsdom 회귀다. demo/FAQ/pagination 비동기 저장·늦은 응답은 N/A(동기 로컬 UI); 실제 네트워크 관찰은 대기다.

@@ -97,7 +97,7 @@
 .intro-templates { padding-top: 110px; text-align: center; }
 .intro-templates > h2 { margin-bottom: 65px; }
 .intro-template-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; text-align: left; }
-.intro-template-card { display: flex; flex-direction: column; min-height: 210px; padding: 30px; border: 1px solid #d0d4d1; border-radius: 0 30px 30px; }
+.intro-template-card { display: flex; flex-direction: column; min-height: 210px; padding: 30px; border: 1px solid #d0d4d1; border-radius: 0 30px; }
 .intro-template-card:hover { background: #f1f7ef; }
 .intro-template-card > span:first-child { display: flex; gap: 12px; align-items: center; font-weight: 700; margin-bottom: 24px; }
 .intro-template-card img { width: 30px; height: 30px; }

@@ -93,3 +93,9 @@ G17 Team preview controls → `/invite/:workspaceId/:invitationId` → 다른 �
 ## G02 인계·복귀 현재 대조 — 2026-11-23 KST
 
 [현재 G02 결과](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck)에서 랜딩→G10 가입→G11 로그인→가입 왕복, 이력별 이메일·뒤/앞·취소·다른 pathname 초안 보존을 실제 앱 router/history의 DOM 테스트로 확인했다. navigation 대체 없음, 실제 브라우저 검증과는 구분한다. G10/G11·G13/G14 기존 구현/인계 이력은 유지하며 해당 Goal 전체를 새로 검토한 것은 아니다. 실제 새 탭/reload/스크롤/네트워크·시각 동일성은 G02 연결 검증 대기로 남긴다.
+
+## G03 현재 적용 — 2026-11-23~24 KST
+
+[이번 범위·규칙·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck).
+
+G03 Small business→G05 기사→원래 query/hash/이력 복귀, CRM→G06 Tax intake form→G10 선택 인계→취소/이력 복귀, CRM/Consulting→G10/G11 이메일·이전 취소 격리를 DOM 검증했다. G13/G14는 현재 코드·기존 기록의 인계 확인으로 제한한다. 직접URL/reload/새탭·실제 스크롤·키보드/IME/네트워크는 브라우저 검증 대기다. 원본 캡처 간 자동 로그인/저장/성공을 추가하지 않았다.

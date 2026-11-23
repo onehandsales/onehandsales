@@ -1,5 +1,7 @@
 # G03 — 고객군·업종·CRM 소개 실행 결과
 
+> 현재 재검토 — 2026-11-23~24 KST: **G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. [이번 범위·검증·잔여](#g03-r4-recheck). 아래 1~9절과 후속 이력의 수치·증거 링크는 당시 기록이며 이번 검증으로 재사용하지 않는다.
+
 작업: 2026-11-20~21 KST · 기준 HEAD: `da60df02` · 미리보기: **http://127.0.0.1:5173/**
 
 **확인된 세 소개 화면·목 상호작용 구현, 두 차례 검토와 Chromium 검증을 수행했다. G03 전체 완료는 대기다.** 22상태의 시각 비교를 수행했지만 자산/crop·배경·문자 간격 차이, 원본 관련 글 2페이지·다른 소개 본문·모바일 동작과 추가 환경 검증이 남아 있다. R01 전체 분석 완료, G02 시각 완료, 실제 인증·서비스·출시 완료를 뜻하지 않는다. 커밋·push·배포와 G04 착수는 하지 않았다.
@@ -210,3 +212,169 @@ Pricing의 Professional services 라벨에 `/software/professional-services` 로
 ### G01~G15 감사 후 재점검 (2026-11-21)
 
 이번 공통 수정의 영향을 기존 흐름 회귀로 확인했으며 원본·시각·환경 대기는 유지한다. [이번 수정·검증·잔여 판정](G01_G15_RECHECK_RESULT.md)을 최신 기록으로 참조한다. 위 실행 수치는 과거 단계의 기록이며 이번 통과 수와 합산하지 않는다. 전체 Goal 완료로 승격하지 않는다.
+
+
+<a id="g03-r4-recheck"></a>
+## 10. G03 R4 재검토·보완 — 2026-11-23~24 KST
+
+### 10.1 범위·현재 상태·읽은 자료
+
+기준 HEAD `287c426b0a3ae03b09ac7c58fd2279b60184a909`, 착수 작업 트리 clean. G02의 메뉴 초점/같은 경로 재탐색·중복 가입 방지와 기존 사용자 코드를 보존했다. 코드 변경은 G03 관련 글 컴포넌트·소개 CSS·정식 회귀 테스트뿐이다. 별도 evidence/결과/임시 파일·새 캡처는 생성하지 않았다. 원본 PNG·분석 정본·기존 evidence·BE·환경·DB는 변경하지 않았다. 커밋/push/배포·G04/G32 착수 없음.
+
+| 판정 | 적용 범위와 이유 |
+| --- | --- |
+| 유지 | 세 소개의 hero/본문/후기/정적 목업, 명시적 가상 세션, G01 공급자/Dialog, G02 공개 셸·이메일/가입 CTA. 현재 구현된 G05/G06/G10/G11/G13/G14 인계 유지 |
+| 구현 보완 | Small business 페이지 이동의 다른 query 보존, 기사 복귀 URL의 hash 보존, CRM 카드의 대각선 두 모서리 |
+| 문서 보완 | 과거 미구현 연결과 현재 구현 구분, 22단계·R4 11항목·공통12기준 대응, 엄격 시각 기준 및 이번 단위/DOM 결과·미검증 구분 |
+| 분석/환경 대기 | 원본 공백·정확한 자산/폰트/촬영 조건·전체 요소 계수·시각 동일성, 실제 브라우저 상세/네트워크·OS/기기. 관련 없는 대기를 독립 작업의 차단 조건으로 확대하지 않음 |
+
+연결은 G01 공통 UI/목 상태, G02 셸/CTA, G05 기사 ID/복귀, G06 템플릿 선택/복귀, G10/G11 이메일/취소/이력에 한정했다. G13/G14는 현재 인계 코드·기존 결과의 관련 부분을 읽었고 새 온보딩 전 과정 검증으로 올리지 않았다. 연결 Goal의 본문 전체·R01 전체·새 업무 기능은 제외했다.
+
+**전체 읽기:** AGENT README, PM036·UX025, FRONT README/ENGINEERING_REVIEW_CHECKLIST와 적용 아키텍처·상태/목·컴포넌트·접근성·한글 주석·테스트 문서, 결정006/005, SOURCE_ANALYSIS_STANDARD, 세 ANALYSIS, G03 명세/기존 결과, START/UXUI/PUBLIC-WEB, R01 명세. **관련 부분 읽기:** SOURCE_ANALYSIS_REVIEW의 방법·한계, 계획 README/순서/목 상태/USER-FLOW/대응표/행동표/IMPACT/확장 대기표/PLAN-INDEX, G00 재검토·추가 점검·인계, G01/G02 현재 재검토와 과거 결과, R01 결과의 G03·후속 연결, G01_G15 재점검, G01/G02/G05/G06/G10/G11/G13/G14 명세·결과의 소비·수용 기준. 계획 전체·R 상세 전체를 읽었다고 주장하지 않는다. 적용 경로의 AGENTS는 발견하지 못했고 README가 가리키는 AGENT_USAGE_RULES.md는 없었다.
+
+### 10.2 원본 22단계와 코드 대응
+
+저장된 `bonsai-web / Latest / 2146` 카탈로그와 현재 색인/세 ANALYSIS를 사용했다. 이번 MCP·공식 웹·보관본 신규 조회는 없음. 아래 **22 PNG를 모두 직접 열람**했고 파일 해시/ID/단계 소유 검사는 별도로 수행했다. 134흐름/754단계 전수 이미지 검토나 정밀 요소 전수 계수는 아니다.
+
+- F064 Freelancers: Flow ID `2eeced8d-a39f-4cf1-8f38-0a5b8f989c54`, 01~04, 실제 제목 Small business.
+- F067 Industries (Consulting): `7fcadde8-35c9-4b36-9c76-ec2d4432f20e`, 01~08.
+- F091 Products (CRM): `12ca870d-d929-4cc8-ab4c-60436c2eac13`, 01~10.
+- 원본 크기 전부 2880×1800. 저장된 MCP 1440×900 메타데이터는 CSS viewport/DPR을 확정하지 않는다. 직접 열람 도구의 표시 축척은 미계측, 이번 구현 브라우저 viewport/DPR/배율·스크롤 비교는 미실행. 신규 캡처/픽셀 비교 축척은 N/A. 원본의 각 스크롤 상태는 아래 관찰대로 구분했다.
+
+코드 기준은 [소개 페이지](../../../FE/user-web/src/pages/introduction/index.tsx), [hero](../../../FE/user-web/src/features/public-introduction/components/introduction-hero.tsx), [본문](../../../FE/user-web/src/features/public-introduction/components/introduction-sections.tsx), [CRM/FAQ](../../../FE/user-web/src/features/public-introduction/components/crm-resources.tsx), [관련 글](../../../FE/user-web/src/features/public-introduction/components/related-articles.tsx), [소개 스타일](../../../FE/user-web/src/styles/public-introduction.css)이다. 아래 이름은 요소군 대응이며 작은 제어까지 ID를 부여한 전수 명세가 아니다. 해시는 SHA-256 앞12자리 표시이고 검사는 전체64자리로 수행했다.
+
+| 단계 | Screen ID·원본 경로 | SHA-256 | 직접 열람한 주요 요소·코드 대응 |
+| --- | --- | --- | --- |
+| F064 01 | [sc_bfa0b33d9265420d8ee7dc4403432d86](<../../../bonsai_analysis/flows/Freelancers/screens/01_sc_bfa0b33d9265420d8ee7dc4403432d86.png>) | `35a9c5eb4a3b` | Small business hero·인물·잎·수금/폼 배지·평점 → IntroductionHero |
+| F064 02 | [sc_d84e927c4d784ac4aa7758d247026c9a](<../../../bonsai_analysis/flows/Freelancers/screens/02_sc_d84e927c4d784ac4aa7758d247026c9a.png>) | `4f7dc285ec8f` | Kimberly 후기·계약 목업 → IntroductionTestimonial/IntroductionBanners |
+| F064 03 | [sc_1ee835c6516e4e7eb88872fb06dbc3b3](<../../../bonsai_analysis/flows/Freelancers/screens/03_sc_1ee835c6516e4e7eb88872fb06dbc3b3.png>) | `7e92039b0351` | 관련 글 앞부분·3열·헤더 가상 세션 구분 → RelatedArticles/PublicHeader |
+| F064 04 | [sc_3487023dac064b8c8d2ad37168c4de69](<../../../bonsai_analysis/flows/Freelancers/screens/04_sc_3487023dac064b8c8d2ad37168c4de69.png>) | `d12dee2545f6` | 관련 글 나머지·저자 누락·넓은 Next·1/2 → RelatedArticles |
+| F067 01 | [sc_b71347cc8821454593507a2b9cb4a512](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/01_sc_b71347cc8821454593507a2b9cb4a512.png>) | `82f14d2befb7` | 4열 Industries 메뉴·배경 랜딩 hero → PublicHeader |
+| F067 02 | [sc_18d96f6f4370489881038eb5fd0ce939](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/02_sc_18d96f6f4370489881038eb5fd0ce939.png>) | `e49fd352823b` | Consulting hero·둥근 이메일/CTA·인물/배지 → IntroductionHero |
+| F067 03 | [sc_17109313d7c7495696383774136ec3d5](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/03_sc_17109313d7c7495696383774136ec3d5.png>) | `d33fc8981a9e` | 브라우저 틀·정적 dashboard → IntroductionOverview |
+| F067 04 | [sc_52e04cf0980e4d4fa09fd9ebf5030aad](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/04_sc_52e04cf0980e4d4fa09fd9ebf5030aad.png>) | `0c890693c5d9` | 6기능·Task management 문구/Time tracking 반복 유지 → IntroductionOverview |
+| F067 05 | [sc_e334305ace2d4dd7af619fbd99c79394](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/05_sc_e334305ace2d4dd7af619fbd99c79394.png>) | `bad09b237911` | Alison 인물·후기 → IntroductionTestimonial |
+| F067 06 | [sc_aefad7c41b8744a4a130c333ea3281ef](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/06_sc_aefad7c41b8744a4a130c333ea3281ef.png>) | `f1d448b7cbab` | 청구 목업·외부 Get started → IntroductionBanners |
+| F067 07 | [sc_7fd1d40a6eba4e6ab8f3f7935b66a130](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/07_sc_7fd1d40a6eba4e6ab8f3f7935b66a130.png>) | `705287684601` | 포털 목업·외부 Get started → IntroductionBanners |
+| F067 08 | [sc_3df44f1b73064a85abb348c9b25eb6f2](<../../../bonsai_analysis/flows/Industries (Consulting)/screens/08_sc_3df44f1b73064a85abb348c9b25eb6f2.png>) | `4541c8d67607` | 재무/시간 홍보 카드 → IntroductionTiles |
+| F091 01 | [sc_2ce9fd14ccb74e05977de48b5517e78c](<../../../bonsai_analysis/flows/Products (CRM)/screens/01_sc_2ce9fd14ccb74e05977de48b5517e78c.png>) | `779b464d282d` | 3기능 열+What’s new·배경 랜딩 hero → PublicHeader |
+| F091 02 | [sc_e887bc9463cc451fa88f9aef731b6eb3](<../../../bonsai_analysis/flows/Products (CRM)/screens/02_sc_e887bc9463cc451fa88f9aef731b6eb3.png>) | `3889ce4d3b2c` | CRM hero·이메일·프로젝트 목업 → IntroductionHero |
+| F091 03 | [sc_4d7838a172d243b78e7c5e6f4fc9ffc9](<../../../bonsai_analysis/flows/Products (CRM)/screens/03_sc_4d7838a172d243b78e7c5e6f4fc9ffc9.png>) | `b4b363505923` | 3기능 카드 → IntroductionOverview |
+| F091 04 | [sc_bad21b14523b490288c7037d79ba03cd](<../../../bonsai_analysis/flows/Products (CRM)/screens/04_sc_bad21b14523b490288c7037d79ba03cd.png>) | `2c77800b334e` | 고객·프로젝트 정적 목업 → IntroductionBanners |
+| F091 05 | [sc_d8a62347ff844766bc5b8997d289ba3c](<../../../bonsai_analysis/flows/Products (CRM)/screens/05_sc_d8a62347ff844766bc5b8997d289ba3c.png>) | `3286d336c2e0` | Mary 후기·양식 첫 행 → IntroductionTestimonial/CrmTemplates |
+| F091 06 | [sc_f2fd8490cf4d40d1b0c1ff5a104ce501](<../../../bonsai_analysis/flows/Products (CRM)/screens/06_sc_f2fd8490cf4d40d1b0c1ff5a104ce501.png>) | `b7e6d1d565cd` | 12양식·4×3·Forms 아이콘·원형 화살표·대각선 radius → CrmTemplates |
+| F091 07 | [sc_e2fae02b9bf14ab6be504f53c3e490fb](<../../../bonsai_analysis/flows/Products (CRM)/screens/07_sc_e2fae02b9bf14ab6be504f53c3e490fb.png>) | `0787fc437df7` | View all과 가입 안내 분리 → CrmTemplates |
+| F091 08 | [sc_ac8d0e2583ea436ca9ce2ec0c94b4857](<../../../bonsai_analysis/flows/Products (CRM)/screens/08_sc_ac8d0e2583ea436ca9ce2ec0c94b4857.png>) | `909150de9b65` | Time/Task 소개 카드·View more → IntroductionTiles |
+| F091 09 | [sc_69e9686880f0449d86954e385ec98c11](<../../../bonsai_analysis/flows/Products (CRM)/screens/09_sc_69e9686880f0449d86954e385ec98c11.png>) | `9d3e9f60c1ab` | FAQ 닫힘·잎/공통 footer → CrmFaq/PublicFooter |
+| F091 10 | [sc_a3545f7a7e324b7299d14f07150f6978](<../../../bonsai_analysis/flows/Products (CRM)/screens/10_sc_a3545f7a7e324b7299d14f07150f6978.png>) | `c62e9abf9bd8` | FAQ 첫 행 열림·위 화살표·뒤 질문 위치 → CrmFaq |
+
+**버전/보완:** 기존 G03 2절의 CRM 2024-01-18 08:28:30(FAQ2/3·자산), Consulting 08:28:17(계약 등 생략 본문), Small business 2024-02-03 20:57:45(생략 본문), 2024-04-06 19:15:23 및 2~3월 개별 기사(이미지·저자·slug) 채택 이력과 현재 정적 데이터를 대조했다. 해당 외부 보관본 자체를 이번에 다시 조회하지 않았다. 원본에 보이는 12기사 순서·저자 없는 항목을 유지하며 보관본17개 목록을 page2에 이식하지 않았다. 소개 자산의 기존 출처 기록과 사용 위치를 확인했지만 모든 파일의 원본 변형/crop·사용 조건이 재확정된 것은 아니다.
+
+**관찰:** 메뉴 열림 장면, 원본 제목·문구 불일치, 정적 목업, FAQ09닫힘→10첫 행 열림. **측정:** 파일 크기/해시·코드 구조/목록 수. **추정:** PNG만으로 실제 CSS 크기·DPR·폰트 raster를 추정해 확정하지 않음. **목 가정:** FAQ 초기 닫힘/단일 열림/재진입 초기화, 키보드·demo 로컬 안내, pathname 초안·history intent·취소, query/hash 보존과 스크롤 복귀. **미확인:** 캡처 간 실제 조작·시간·로그인 원인·모바일·업무 정책. FAQ2/3 답변은 보관본 보완이며 원본 관찰이 아니다.
+
+### 10.3 R4 11항목·공통 12기준 판정
+
+| R4 항목 | 판정·근거·수용 기준 |
+| --- | --- |
+| F064-O01 | 비교 완료·유지: Small business 제목·인물/잎/배지/평점 요소군. Freelancers로 제목을 바꾸지 않음. 정확 자산/시각은 대기 |
+| F064-O02 | 비교 완료·구현 보완: 후기/정적 계약/12기사/3열/넓은 Next 유지. query/hash 손실 보완. 스크롤이 로그인 상태를 바꾸지 않는 DOM 회귀 |
+| F064-A01 | 분석 대기: 생략 본문·page2·세션 변화 원인·자산 변형은 G03/R01. 보관본은 부분 보완일 뿐 전체 원본 증명 아님 |
+| F067-O01 | 비교 완료·유지: 4열 Industries와 배경 랜딩 hero, Consulting 이메일+Start free 둥근 영역. 메뉴 소비는 G02 회귀 포함 |
+| F067-O02 | 비교 완료·유지: 목업 내부 버튼/차트/입력은 이미지, 외부 CTA만 실제 제어. 잎/등고선/브라우저 틀은 정밀 시각 대기 |
+| F067-O03 | 비교 완료·유지: Task management 아래 recurring invoicing·Time tracking 두 번을 그대로 유지, DOM 확인 |
+| F067-A01 | 분석 대기: 원본 메뉴 진입/닫힘·CTA 후속·생략 구간·정확 자산은 G03/R01 및 G02 공통 의존 |
+| F091-O01 | 비교 완료·유지: Product 3기능 열+What's new, 소개 목업과 실제 CTA 분리. 실제 Clients/Deals 근거로 확대하지 않음 |
+| F091-O02 | 비교 완료·구현 보완: 12양식 4×3·Forms/원형 화살표·별도 View all/가입 안내 유지. 대각선 모서리로 수정. 기존 30px는 이번 원본 측정값이 아님 |
+| F091-O03 | 비교 완료·유지: FAQ 닫힘/첫 열림과 접근성 연결, 다른 페이지 FAQ와 통일하지 않음. 실제 화살표/밀림의 시각 동일성은 대기 |
+| F091-A01 | 분석 대기: 정확 자산/텍스트 정밀 전사·FAQ 원본2/3·단일/복수 펼침 정책은 G03/R01. 기존 보완 자료/목 가정 구분 |
+
+| 공통 기준 | 이번 적용 결과·남은 담당 |
+| --- | --- |
+| C01 원본 식별 | 3분석/22PNG 전체 해시·ID·경로·소유 일치; 촬영 조건 G03/R01·공통 G01 대기 |
+| C02 전체 구성 | 세 페이지 셸/메뉴/본문/FAQ/demo 요소군 대조; 정밀 겹침·좁은 화면 G03/G02 대기 |
+| C03 요소 목록 | 22단계 주요 요소군 연결; 전체 요소 ID/계수 G03/R01 대기, census=false 유지 |
+| C04 정확한 표시 | 제목·원문 불일치·12기사/양식·FAQ 출처 확인; 모든 줄바꿈/잘림/미세 전사 G03/R01 대기 |
+| C05 배치 | PNG와 CSS 조건 분리·3열/4×3/넓은 Next 코드 확인; 렌더 좌표·스크롤·viewport/DPR G03 대기 |
+| C06 글자 | 기존 Gellix/보관본 이력 유지; 원본의 정확 family 변형·weight·행간/자간/raster G03/R01·공통 G01 대기 |
+| C07 색·장식 | 대각선 radius 보완; 색값·shadow·정밀 모서리 수치/시각 동일성 G03 대기 |
+| C08 자산 | 기존 사진/목업/잎/썸네일 로컬 사용 확인; 원본과의 정확 crop/변형/사용 조건 G03/R01 대기 |
+| C09 상태 | FAQ·초안/오류·page2 빈 안내·demo cancel DOM 검증; 실제 hover/키보드/모바일 원본 G03/G02/R01 대기 |
+| C10 전환 | 실제 router/history DOM의 query/hash·기사/양식/인증 왕복; 브라우저 스크롤/새탭·원본 전환 G03 및 소비 G 대기 |
+| C11 입력·저장 | pathname별 초안/이력별 intent·오류 수정/이전 취소 격리 검증. 새로고침은 메모리 초기화 정책, 실제 reload 미검증. 서버 정책 R02 후속 |
+| C12 다른 화면 | G05 slug·G06 선택·G10/G11 인계 회귀, G13/G14 코드 인계 확인; 연결 G 전체 완료 아님 |
+
+어떤 공통 기준도 프로젝트 전체 완료로 올리지 않는다. 작은 폰트·크기·픽셀 차이 허용은 이번 기준에서 폐기하고 과거 결과만 보존한다. 새 캡처 금지로 픽셀 비교를 수행하지 않았으며 DOM/육안 대조를 시각 동일성 통과로 표시하지 않는다.
+
+### 10.4 결함 수정·상태·연결 검토
+
+1. `RelatedArticles`: `?contentPage=...` 재생성으로 다른 query가 사라졌다. 현재 URLSearchParams를 복사하여 페이지 키만 바꾼다. `entry=menu` + 뒤로/앞으로/Previous 회귀로 확인.
+2. 같은 컴포넌트의 `articleReturnTo`에 hash가 없었다. pathname+search+hash를 보존해 G05 Back 링크와 실제 history 왕복이 같은 URL로 돌아오게 했다. articleFromKey와 기존 스크롤 저장 책임은 유지한다.
+3. `.intro-template-card`: 세 모서리 radius `0 30px 30px`를 대각선 두 모서리 `0 30px`로 보완했다. 원본 형태 관찰에 따른 수정이며 현재 30px의 픽셀 정확성 인증은 아니다.
+4. [정식 회귀 테스트](../../../FE/user-web/src/app/router/introduction-entry.test.tsx) 7개 추가. 실제 App/provider/router/history를 사용한다. jsdom에 없는 scroll/IntersectionObserver/matchMedia/native dialog 메서드만 대체하고 원래 descriptor·DOM·공급자 상태를 정리한다. navigation mock은 없다.
+
+기존 G05 기사 상세/목록, G06 양식 상세/카탈로그, G10 가입·G11 로그인, G13 사업 설정·G14 앱/공개 복귀는 구현되어 있다. 3절의 ‘미구현’은 당시 이력이다. 새 테스트는 G05 첫 기사 URL/복귀, CRM 첫 Tax intake form의 G06 상세→Get template→G10 선택 표시→취소/뒤로, 별도 `/templates/forms`와 직접 `/signup`, CRM/Consulting 이메일의 G10→G11 왕복·이전 intent 취소·다른 초안 유지까지 수행했다. G13/G14 전체 실행을 이번 검사로 주장하지 않는다.
+
+메뉴의 G03 소유 `publicDestinations`를 현재 코드를 메모리에서 실행해 재집계: **33개=구현3+미수록본문30**. G04에서 별도 도입한 `/software/professional-services`는 메뉴33에 포함되지 않는 로컬 후보1개다. 이를 합친 알려진 G03 후보는34/본문대기31이며 과거33/30을 소급 변경하지 않는다. 이 미수록 본문과 page2를 임의 구현하지 않았다.
+
+동기적인 FAQ·pagination·demo는 저장 요청/pending/늦은 응답 N/A(로컬 UI, 요청 없음). 이메일 검증 실패 후 수정·중복 CTA는 기존 공통 테스트와 신규 테스트로 확인했다. 실제 가입 저장 실패/늦은 응답은 G10 목 저장소 기존 단위 검사를 전체 suite에서 회귀했으나 G03 브라우저 경로로 새로 검증한 것은 아니다. 소개 광고의 금액·차트·권한·자동화 문구를 업무 계산/정책으로 사용하지 않는다.
+
+### 10.5 실제 명령·검증 결과·제약
+
+작업 디렉터리 `FE/user-web`, Node24.10.0(`/opt/homebrew/opt/node@24/bin/node`). package 요구 Node>=24<25/pnpm8.14.1; 기본 Node22/pnpm10을 요구 버전으로 간주하지 않고 기존 Node24의 로컬 도구를 직접 실행했다. 설치·환경 파일 변경 없음. 실행 전 Vite/Vitest/Playwright 설정과 cache/report 동작을 읽었다.
+
+| 검사 | 이번 결과 |
+| --- | --- |
+| 새 회귀 수정 전 | 7중5통과/2실패: query 손실과 기사 Back href hash 손실 실제 재현 |
+| 수정 후 대상 3파일 첫 실행 | 20/21. 기사 history URL 변경 후 React commit 대기를 빠뜨린 테스트 타이밍1건을 popstate+act 대기로 보완. 제품 navigation을 대체하지 않음 |
+| 최종 전체 unit/DOM | **26파일121/121 통과**, 73.17초. 신규 G03 7개·G02 공개 진입8/헤더6 포함. jsdom이며 실제 브라우저 아님 |
+| 타입 | Node24 `node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit --incremental false --pretty false` 및 node 설정 각각 exit0 |
+| lint | Node24 `node_modules/eslint/bin/eslint.js . --no-cache` exit0 |
+| build | Vite API `configFile:false`, React plugin/동일 alias, PostCSS에 기존 tailwind config+autoprefixer를 메모리 전달, `build:{write:false,copyPublicDir:false,sourcemap:false,reportCompressedSize:false}`. 1966모듈, 최종3.59초 통과; 파일 출력 없음 |
+| 미리보기 | 기존5173 G02 메모리 서버(PID64811)를 수정 번들 메모리 서버(PID94330)로 갱신, 같은주소/포트·HMR없음 유지. 중간 HTTP 검사에서 `/` fallback404를 발견해 메모리 handler를 바로 수정/재검증(제품 파일/설정 변경 없음) |
+| HTTP 확인 | `/`, 세소개, page2 직접 URL, JS/CSS 모두200. JS `index-BE8q_uPE.js`, CSS `index-CEY-mXq2.css`; 수정 CSS 및 `X-Preview-Revision:G03-287c426b-working-tree-20261124` 확인. 정적 응답 검사는 브라우저 렌더/동작 검증이 아님 |
+| 원본 무결성 | 3 ANALYSIS의 저장 해시, 22 PNG의 전체 SHA-256/크기·ID·경로·G03 단계 배정 일치 |
+| 실제 브라우저 | 기존 Chrome9333 메타데이터 조회 이후 연결이 종료되어 첫 제어 전 localhost ECONNREFUSED. 새 탭/조작 미수행. 새 프로필/자동 산출물을 만들지 않도록 재실행/환경 변경하지 않음 |
+| console/네트워크 | 브라우저 요청 관찰 미수행. 실제 API 요청·실패·console 오류는 **미측정(null)**. 코드/DOM/HTTP200으로0건을 단정하지 않음 |
+| 픽셀/기기/IME | 새 캡처·비교 금지로 픽셀 검사 미실행. 실제 OS IME·기기·브라우저 확대/AT/Safari/Firefox도 미실행. 긴 한국어 DOM 입력과 기존 합성 composition 회귀를 구분 |
+
+Vitest 실행은 stdin ESM의 `startVitest('test', [], options, viteOptions)`로 수행: `config:false/run:true/cache:false/pool:'threads'/execArgv:[]/maxWorkers:2/environment:'jsdom'/include:['src/**/*.test.{ts,tsx}']/setupFiles:['./vitest.setup.ts']/reporters:['default']/coverage.enabled:false/experimental.fsModuleCache:false/deps.optimizer.client.enabled:false/ssr.enabled:false`. Vite측 `configFile:false`, React/alias, `optimizeDeps:{noDiscovery:true,include:[]}`, `server.watch:null`. 종료시 `ctx.close()`. Node compile cache와 Jiti cache는 `NODE_DISABLE_COMPILE_CACHE=1 JITI_CACHE=false JITI_FS_CACHE=false`로 끈다. 기본 tsc -b/Vite CLI/Playwright 명령은 임시 bundle/tsbuildinfo/증거/프로필 산출 위험 때문에 그대로 실행하지 않았다. Browserslist 오래된 데이터 경고만 있었고 업데이트하지 않았다.
+
+### 10.6 적용 규칙·공통 체크리스트와 미완료
+
+[ENGINEERING_REVIEW_CHECKLIST](../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md)를 수정 범위에 적용했다. 아래 체크는 해당 범위에 한정한다.
+
+- [x] 범위/출처: 결정006 우선, 22PNG 관찰·기존 보관본 이력·목 가정/미확인 분리(10.1~10.3). 기존 결과를 이번 E2E로 재사용하지 않음.
+- [x] 구조/컴포넌트: `RelatedArticles`가 query/기사 인계, G05가 상세 복귀, 공통 provider가 이메일/intent 책임. 새 의존성·adapter·공통 재구성 없음. 다른 앱 import/새 순환 의존 없음.
+- [x] 데이터/목: ID/slug·template snapshot·경로별 초안/취소 범위 유지. 메모리 수명/가상 표시와 실제 API 분리. 생성/삭제·회계 합계·새 권한 모델은 N/A(정적 소개).
+- [x] 상태: 단일 URL 페이지 상태·FAQ 로컬 상태·native Dialog 재사용. 의도치 않은 query/hash 소실 보완. 비동기 요청/캐시 무효화·저장 경쟁은 수정 컴포넌트에 N/A. 연결 인증은 기존 목 회귀만 수행.
+- [x] 주석/품질: 수정 컴포넌트·테스트 helper에 한글 책임 주석, descriptor/DOM 정리, 타입/lint 통과. query/hash에 새 개인정보를 추가하지 않음. 성능용 새 캐시/최적화는 N/A(결함 근거 없음).
+- [x] DOM 접근성: 페이지 제목 초점·FAQ aria-controls/labelledby·단일 열림·demo cancel/close 후 초점 및 overflow 복귀 확인.
+- [ ] 실제 접근성/사용성: demo Tab/Shift+Tab/Escape·배경 inert/스크롤, FAQ Enter/Space·초점·밀림, 새 탭/새로고침/실제 스크롤·좁은폭/짧은높이/폭전환/확대/IME/기기/AT는 G03(공통 G01/G02), G84 환경 회귀 담당.
+- [x] 검증/인계: 현재121개·타입/lint/메모리build와 미실행 이유 기록. Admin·운영권한·실연동·배포 gate는 N/A. 문서 링크/JSON/단계/체크 상태 최종 검사는 아래에 기록.
+- [ ] 엄격한 시각 동일성/원본 누락 해소: G03/R01, 공통 자산/촬영 조건은 G01/G02 실제 의존 부분. 전체 요소 census/폰트·색·crop·기하/모바일 원본·관련 글 page2·본문대기31은 미완료.
+- [ ] 실제 브라우저 연결 시나리오/네트워크: G03 중심으로 G05/G06/G10/G11 인계, 필요한 G13/G14 왕복 재검증. 관찰되지 않은 원본 인증/demo/FAQ 정책은 R01/R02. 서버 예약/발송/CRM 계산·권한은 후속 담당 G/R 메모이며 이번 구현 대상 아님.
+
+G01/G02 공통 코드의 추가 수정 필요 결함은 이번 범위에서 찾지 못했다. 공통 소비의 실제 브라우저·시각/환경 대기는 그대로다. 전체 G03/R01 완료나 연결 Goal 전체 완료로 표시하지 않는다.
+
+### 10.7 직접 확인 순서
+
+미리보기 **http://127.0.0.1:5173/**, 메모리 production 번들/HMR 없음. 이후 소스 변경 시 자동 반영되지 않는다.
+
+1. `/software/small-businesses?entry=menu&contentPage=1#related-content` → 기사 → Back to content → Next → Previous → 브라우저 뒤로/앞으로. query/hash와 목록 상태 확인. page2는 미수록 안내가 정상이다.
+2. `/crm` 이메일 입력 → Start free → Log in → 뒤로 → 취소. `/software/consulting`에 입력해 둔 별도 초안과 섞이지 않는지 확인.
+3. CRM 양식 첫 카드 → Tax intake form → Get template → 가입 선택 표시 → 취소/뒤로로 CRM 복귀. View all과 하단 가입 CTA의 서로 다른 목적지도 확인.
+4. CRM FAQ 첫 질문 열기/닫기·다른 질문 선택. Small business의 Book a demo 열기 → Tab/Shift+Tab/Escape/닫기와 초점 복귀 확인. 실제 예약/메일은 발생하지 않아야 한다.
+5. 공개 메뉴에서 현재 소개를 재선택해 닫힘/본문 초점을 확인하고, 좁은 폭/짧은 높이/확대와 새로고침/새탭도 확인. DevTools console/network에서 실패 요청까지 관찰한다. 이 수동 순서는 이번에 수행 완료한 검증 목록이 아니다.
+
+
+### 10.8 종료 전 정합성·누락 재점검
+
+- 170개 계획 Markdown의 로컬 링크6280회·앵커1586회와 새로 바뀐 JSON 문서 참조41회를 검사했다. **새 링크/앵커/JSON 참조 오류0**. 기존부터 없던 링크222회는 Git HEAD의 같은 참조임을 구분했고 복원하거나 이번 근거로 사용하지 않았다.
+- JSON 중복 키 없음. 85G/22R/134흐름·754단계/642고유Screen·455R4메모/공통12기준 및 선행 DAG를 검증했다. 기존 execution_order·Flow ID/단계 소유·선행·R 소비·원본 메모 해시·과거 verification 수치는 HEAD와 동일하다. 다른 R4 항목444개는 변경하지 않았다.
+- 관련 글12개의 ID/slug 유일성과 G05가 같은 객체를 소비함을 확인했다. CRM12카드는 G06 카탈로그의 정확히 한 경로/제목에 연결된다. 카드 표시 키 `tax-intake-form`과 G06 선택 객체 ID `form-template--tax-intake-form`은 역할이 다르며 인계에는 기존 G06 snapshot ID를 유지한다. 12카드를 모두 브라우저에서 열어 본 것은 아니다.
+- 소개/기사 데이터에서 사용하는 로컬 자산64개가 모두 존재한다. 이는 사용 경로의 파일 존재 검사이며 기존 저장 자산61개 집계나 자산 정밀 동일성 검사와 다르다.
+- 메뉴 목적지33과 별도 후보1, 기사/템플릿/가입의 서로 다른 목적지, FAQ/demo 목 정책, query/hash·초안/취소, 공통 소비와 남은 브라우저/시각·원본 질문을 다시 대조했다. 단계별 주요 구성 외 정밀 요소 전수 누락0을 선언하지 않는다.
+- `git diff --check` 통과. tracked 수정30개(제품 코드2+기존 계획문서28), 신규 정식 테스트1개만 있다. 원본/FE외 코드/설정/기존 evidence 변경 없음. G03 기존 결과 본문과 과거 완료 체크를 보존했다.
+- 알려진 자동 산출 경로 `.vite`/`.vite-temp`/`dist`/`test-results`/`playwright-report`의 최신 수정은 모두 이번 작업 전(11월22일 이전)이다. `.cache`와 계획 `RESULTS/evidence`는 현재 없다. 이번 생성/수정 파일에는 금지된 산출물이 없으며 기존 파일을 정리/삭제하지 않았다.
+
+갱신 문서: 계획/COMMON README, G03 및 연결 G01/G02/G05/G06/G10/G11 명세, R01 명세/결과, 기존 G03 결과와 G02 재검토/G05/G06/G10/G11 결과의 해당 연결 메모, GOAL-WORK-ORDER·START·UXUI·PUBLIC-WEB·MOCK-UI-STATE·USER-FLOW·FLOW-GOAL-MATRIX·FLOW-BEHAVIOR-REVIEW·SOURCE-ANALYSIS-IMPACT·EXPANSION-BACKLOG·PLAN-INDEX. 수행 항목만 체크했고 원본/픽셀/실브라우저·환경·미수록은 미완료로 남겼다.

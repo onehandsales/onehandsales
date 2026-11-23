@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-23",
-  "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기; G00 감사·G01 보완 이력 유지, G03 이후 자동 시작 없음, G32 이후 미착수.",
+  "date": "2026-11-24",
+  "status": "G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00 감사·G01/G02 보완 이력 유지, G04 이후 자동 시작 없음, G32 이후 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -226,6 +226,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g03_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "actual G03 shared or connected handoff DOM/code only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -393,6 +401,14 @@
           "temporary_scripts_created": false,
           "overall_complete": false
         }
+      },
+      "g03_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "actual G03 shared or connected handoff DOM/code only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -414,7 +430,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "세 소개 구현·2차 검토·Chromium 검증 수행 / 미수록·잔여 시각·추가 환경 대기",
+      "status": "G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기",
       "flow_scope": [
         {
           "flow_number": 64,
@@ -457,7 +473,7 @@
         }
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "주요 구성 대조·보완/DOM 검증 수행; 전수 요소·시각·실브라우저·미수록 대기",
         "item_ids": [
           "R4-F064-O01",
           "R4-F064-O02",
@@ -486,8 +502,9 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g03",
-        "implementation_review_performed": false,
-        "shared_screen_ids": []
+        "implementation_review_performed": true,
+        "shared_screen_ids": [],
+        "latest_result": "../RESULTS/G03_RESULT.md#g03-r4-recheck"
       },
       "g02_consumer_recheck": {
         "date": "2026-11-23 KST",
@@ -496,6 +513,125 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "status_history": [
+        {
+          "date": "before G03 R4 recheck",
+          "status": "세 소개 구현·2차 검토·Chromium 검증 수행 / 미수록·잔여 시각·추가 환경 대기",
+          "source_analysis_review_status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행"
+        }
+      ],
+      "latest_result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+      "r4_recheck": {
+        "date": "2026-11-23~24 KST",
+        "baseline_commit": "287c426b0a3ae03b09ac7c58fd2279b60184a909",
+        "scope": "G03 three introductions and actual common/article/template/auth handoffs only",
+        "status": "G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "direct_png_review": {
+          "flows": 3,
+          "images": 22,
+          "all_assigned_g03_images_reviewed": true,
+          "all_project_images_reviewed": false,
+          "element_census_complete": false
+        },
+        "source_catalog": "stored bonsai-web Latest / 2146; not requeried; not product build or capture date",
+        "new_mcp_query_performed": false,
+        "source_hashes_and_assignments": "3 analyses and 22 PNG hashes/IDs/paths/G03 step ownership matched",
+        "implementation": "preserve pagination query and article return hash; diagonal two-corner template cards",
+        "regression_tests_added": 7,
+        "initial_regression": "5 passed / 2 failed before fixes; query and hash loss reproduced",
+        "unit": "121/121 across 26 files; 73.17s",
+        "g03_dom": "7/7 with real App/provider/router/history; native layout/dialog methods absent in jsdom substituted",
+        "g02_dom": "existing public-entry 8 and public-header 6 included in final full run",
+        "initial_targeted_after_fix": "20/21; test React commit timing corrected with popstate+act, then full run passed",
+        "qualifications": [
+          "jsdom does not verify actual scrolling or native dialog Tab/Escape",
+          "long Korean input and existing synthetic composition regression are not OS IME"
+        ],
+        "lint": "passed; no cache",
+        "build": "passed; Vite write:false, 1966 modules, final 3.59s; no artifacts",
+        "browser_e2e": "not_run",
+        "browser_control": "existing Chrome9333 metadata initially reachable; connection ended before first browser action; no new profile/launch",
+        "real_api_requests": null,
+        "network_failures": null,
+        "console_errors": null,
+        "network_observation": "not_performed; do not infer zero from code/jsdom/static HTTP",
+        "visual_identity": "not_verified",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "preview": "http://127.0.0.1:5173/",
+        "preview_mode": "in-memory production bundle; no HMR",
+        "preview_updated": true,
+        "preview_bundle": {
+          "js": "/assets/index-BE8q_uPE.js",
+          "css": "/assets/index-CEY-mXq2.css",
+          "revision": "G03-287c426b-working-tree-20261124"
+        },
+        "preview_http": "root, three introductions, page2 URL, JS/CSS 200; not browser rendering verification",
+        "destination_scope": {
+          "navigation_g03": 33,
+          "implemented": 3,
+          "navigation_missing_body": 30,
+          "additional_g04_local_candidate": 1,
+          "known_candidates": 34,
+          "known_missing_body": 31
+        },
+        "g01_g02_new_shared_code_change_needed": false,
+        "overall_complete": false,
+        "pending_owners": {
+          "source_assets_capture_visual": [
+            "G03",
+            "R01",
+            "G01/G02 actual shared dependencies"
+          ],
+          "browser_handoffs": [
+            "G03",
+            "G05",
+            "G06",
+            "G10",
+            "G11",
+            "G13/G14 as needed"
+          ],
+          "native_ime_at_devices": [
+            "G03",
+            "G01",
+            "G84"
+          ],
+          "original_auth_demo_policies": [
+            "R01",
+            "R02"
+          ]
+        },
+        "next_goal_started": false,
+        "typecheck": "passed; app/node noEmit and incremental false",
+        "final_consistency_review": {
+          "date": "2026-11-24 KST",
+          "markdown_files": 170,
+          "local_link_occurrences": 6280,
+          "anchor_occurrences": 1586,
+          "new_json_document_references": 41,
+          "new_link_anchor_json_errors": 0,
+          "historical_missing_markdown_references": 222,
+          "goals": 85,
+          "research": 22,
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "source_items": 455,
+          "common_criteria": 12,
+          "assignment_dependency_and_historical_verification_preserved": true,
+          "unchanged_other_r4_items": 444,
+          "article_ids_and_slugs": 12,
+          "crm_template_paths_and_titles": 12,
+          "referenced_assets_present": 64,
+          "tracked_files_modified": 30,
+          "new_formal_test_files": 1,
+          "new_artifacts": 0,
+          "diff_check": "passed",
+          "old_generated_paths_modified_in_this_task": false
+        }
       }
     },
     {
@@ -698,6 +834,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g03_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "actual G03 shared or connected handoff DOM/code only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -805,6 +949,14 @@
         "date": "2026-11-23 KST",
         "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
         "scope": "shared public header DOM regression on representative consumer paths",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g03_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "actual G03 shared or connected handoff DOM/code only",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -1224,6 +1376,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g03_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "actual G03 shared or connected handoff DOM/code only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1326,6 +1486,14 @@
         "date": "2026-11-23 KST",
         "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
         "scope": "G10/G11 handoff DOM regression",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g03_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "actual G03 shared or connected handoff DOM/code only",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -6616,6 +6784,15 @@
         "scope": "G02 public landing/menu/footer and auth handoff only",
         "status": "partial consumer review; original interactions/assets/visual and overall R01 pending",
         "overall_complete": false
+      },
+      "g03_r4_consumer_recheck": {
+        "date": "2026-11-23~24 KST",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "scope": "G03 three flows/22 steps and actual handoffs only",
+        "full_research_review_performed": false,
+        "source_pending": true,
+        "visual_identity": "pending",
+        "browser_e2e": "not_run"
       }
     },
     {
@@ -9780,7 +9957,14 @@
           "R4-F064-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "major_element_code_review_performed": true,
+          "source_element_census_complete": false,
+          "visual_identity": "pending"
+        }
       }
     },
     {
@@ -9868,7 +10052,14 @@
           "R4-F067-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "major_element_code_review_performed": true,
+          "source_element_census_complete": false,
+          "visual_identity": "pending"
+        }
       }
     },
     {
@@ -10599,7 +10790,14 @@
           "R4-F091-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "major_element_code_review_performed": true,
+          "source_element_census_complete": false,
+          "visual_identity": "pending"
+        }
       }
     },
     {
@@ -12036,7 +12234,7 @@
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
     "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
-    "status": "G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기; 전체 R4 메모/원문·정밀 명세 미완 유지",
+    "status": "G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; 전체 R4/원문·정밀 명세 미완 유지",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -12057,7 +12255,8 @@
       "비교 완료·유지",
       "문서 보완 필요",
       "구현 보완 필요",
-      "수정·검증 완료"
+      "수정·검증 완료",
+      "비교 완료·구현 보완"
     ],
     "element_trace_template": "SOURCE-ANALYSIS-IMPACT.md#element-trace",
     "completion_criteria": "SOURCE-ANALYSIS-IMPACT.md#completion",
@@ -13709,6 +13908,12 @@
           "status": "20개 식별/해시/소유 확인; 촬영 조건 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "22개 식별/해시/소유 확인; 촬영 조건 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13733,6 +13938,12 @@
           "date": "2026-11-23 KST",
           "status": "주요 셸/영역 구성 대조; 정밀 겹침 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "주요 셸/메뉴/본문/FAQ/demo 구성 대조; 정밀 겹침 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13759,6 +13970,12 @@
           "status": "주요 요소군 대응; 전수 요소 계수 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "주요 요소군 대응; 전수 요소 ID/계수 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13783,6 +14000,12 @@
           "date": "2026-11-23 KST",
           "status": "주요 문구/후기 강조 보완; 정밀 전사/줄바꿈 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "제목/카피 불일치/기사·양식·FAQ 출처 확인; 정밀 전사/줄바꿈 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13809,6 +14032,12 @@
           "status": "PNG 치수/CSS 구분; 렌더링 배치/스크롤 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "PNG/CSS 구분·3열/4×3 확인; 렌더 좌표/스크롤/viewport/DPR 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13833,6 +14062,12 @@
           "date": "2026-11-23 KST",
           "status": "기존 Gellix 선언/출처 확인; 원본 변형/raster 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "기존 Gellix/보관본 이력 유지; 정확 변형·행간/자간/raster 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13859,6 +14094,12 @@
           "status": "후기 강조 범위 보완; 색값/장식 정밀 동일성 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "대각선 두 모서리 보완; 정밀 수치/색/shadow 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13883,6 +14124,12 @@
           "date": "2026-11-23 KST",
           "status": "기존 자산 사용 위치 확인; 정확 변형/crop/사용 조건 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "기존 자산 사용 위치 확인; 정확 crop/변형/사용 조건 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13909,6 +14156,12 @@
           "status": "DOM 상태/초점 회귀; 원본 hover/mobile 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "FAQ/초안/오류/page2/demo cancel DOM 회귀; 실제 키보드/mobile 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13933,6 +14186,12 @@
           "date": "2026-11-23 KST",
           "status": "실제 router/history DOM 회귀; 실브라우저/원본 시간 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "실제 router/history DOM query/hash/기사·양식·인증 왕복; 실브라우저 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -13959,6 +14218,12 @@
           "status": "pathname 초안/이력 intent/취소 격리 DOM 회귀; 실정책 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "pathname 초안/history intent/이전 취소 격리 회귀; reload·실정책 대기",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -13983,6 +14248,12 @@
           "date": "2026-11-23 KST",
           "status": "17개 공개 소비 경로 및 G10/G11 DOM 인계; 실제 브라우저 대기",
           "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "status": "G05 slug/G06 선택/G10·G11 인계 DOM 회귀; G13/G14 코드 인계 한정",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
           "global_requirement_complete": false
         }
       }
@@ -17787,9 +18058,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "Small business 제목/인물·잎·배지·평점 주요 구성 유지; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F064-O02",
@@ -17805,9 +18086,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "후기/정적 계약/기사/넓은 Next 유지; query/hash 손실 보완; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F064-A01",
@@ -17824,8 +18115,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "기존 보완 자료/목 가정과 미수록 원본 분리; G03/R01 분석 대기; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F065-O01",
@@ -17967,9 +18268,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "Industries 네 열/배경 랜딩과 Consulting 둥근 이메일 영역 유지; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F067-O02",
@@ -17985,9 +18296,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "정적 목업과 실제 CTA 구분; 장식/브라우저 틀 정밀 시각 대기; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F067-O03",
@@ -18003,9 +18324,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "반복 청구 설명과 Time tracking 제목 반복 유지·DOM 확인; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F067-A01",
@@ -18022,8 +18353,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "기존 보완 자료/목 가정과 미수록 원본 분리; G03/R01 분석 대기; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F068-O01",
@@ -19536,9 +19877,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "Product 세 분류+What’s new/정적 목업 구분 유지; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F091-O02",
@@ -19554,9 +19905,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "12카드/4×3/별도 목적지 유지; 대각선 두 모서리 보완; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F091-O03",
@@ -19572,9 +19933,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "FAQ 닫힘→첫 열림 관찰/보완답변/단일열림 목 정책 분리·DOM 확인; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F091-A01",
@@ -19591,8 +19962,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "기존 보완 자료/목 가정과 미수록 원본 분리; G03/R01 분석 대기; 주요 구성 한정, 시각 동일성 별도 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g03_recheck": {
+          "date": "2026-11-23~24 KST",
+          "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+          "scope": "major element groups/current code; not full-element or pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F092-O01",
@@ -22231,8 +22612,8 @@
       "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
       "criteria_note": "과거 정밀 시각 명세의 일괄 선행 조건은 최신 사용자 기준으로 대체. 기능 제어·입력·상태·저장·전환 대응은 필요하며 아래 R4 원문·인증 상태는 보존."
     },
-    "authorized_scope": "G02 FE corrections/tests and existing planning documents only",
-    "new_source_review_scope": "20 existing PNGs directly viewed; major element groups/code compared, no full element census or pixel certification",
+    "authorized_scope": "G03 FE corrections/formal tests and existing planning documents only",
+    "new_source_review_scope": "22 existing assigned G03 PNGs directly viewed; major element groups/code compared, no full element census or pixel certification",
     "scoped_reviews": [
       {
         "date": "2026-11-23 KST",
@@ -22430,32 +22811,145 @@
           "temporary_scripts_created": false,
           "overall_complete": false
         }
+      },
+      {
+        "date": "2026-11-23~24 KST",
+        "baseline_commit": "287c426b0a3ae03b09ac7c58fd2279b60184a909",
+        "scope": "G03 three introductions and actual common/article/template/auth handoffs only",
+        "status": "G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기",
+        "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
+        "direct_png_review": {
+          "flows": 3,
+          "images": 22,
+          "all_assigned_g03_images_reviewed": true,
+          "all_project_images_reviewed": false,
+          "element_census_complete": false
+        },
+        "source_catalog": "stored bonsai-web Latest / 2146; not requeried; not product build or capture date",
+        "new_mcp_query_performed": false,
+        "source_hashes_and_assignments": "3 analyses and 22 PNG hashes/IDs/paths/G03 step ownership matched",
+        "implementation": "preserve pagination query and article return hash; diagonal two-corner template cards",
+        "regression_tests_added": 7,
+        "initial_regression": "5 passed / 2 failed before fixes; query and hash loss reproduced",
+        "unit": "121/121 across 26 files; 73.17s",
+        "g03_dom": "7/7 with real App/provider/router/history; native layout/dialog methods absent in jsdom substituted",
+        "g02_dom": "existing public-entry 8 and public-header 6 included in final full run",
+        "initial_targeted_after_fix": "20/21; test React commit timing corrected with popstate+act, then full run passed",
+        "qualifications": [
+          "jsdom does not verify actual scrolling or native dialog Tab/Escape",
+          "long Korean input and existing synthetic composition regression are not OS IME"
+        ],
+        "lint": "passed; no cache",
+        "build": "passed; Vite write:false, 1966 modules, final 3.59s; no artifacts",
+        "browser_e2e": "not_run",
+        "browser_control": "existing Chrome9333 metadata initially reachable; connection ended before first browser action; no new profile/launch",
+        "real_api_requests": null,
+        "network_failures": null,
+        "console_errors": null,
+        "network_observation": "not_performed; do not infer zero from code/jsdom/static HTTP",
+        "visual_identity": "not_verified",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "preview": "http://127.0.0.1:5173/",
+        "preview_mode": "in-memory production bundle; no HMR",
+        "preview_updated": true,
+        "preview_bundle": {
+          "js": "/assets/index-BE8q_uPE.js",
+          "css": "/assets/index-CEY-mXq2.css",
+          "revision": "G03-287c426b-working-tree-20261124"
+        },
+        "preview_http": "root, three introductions, page2 URL, JS/CSS 200; not browser rendering verification",
+        "destination_scope": {
+          "navigation_g03": 33,
+          "implemented": 3,
+          "navigation_missing_body": 30,
+          "additional_g04_local_candidate": 1,
+          "known_candidates": 34,
+          "known_missing_body": 31
+        },
+        "g01_g02_new_shared_code_change_needed": false,
+        "overall_complete": false,
+        "pending_owners": {
+          "source_assets_capture_visual": [
+            "G03",
+            "R01",
+            "G01/G02 actual shared dependencies"
+          ],
+          "browser_handoffs": [
+            "G03",
+            "G05",
+            "G06",
+            "G10",
+            "G11",
+            "G13/G14 as needed"
+          ],
+          "native_ime_at_devices": [
+            "G03",
+            "G01",
+            "G84"
+          ],
+          "original_auth_demo_policies": [
+            "R01",
+            "R02"
+          ]
+        },
+        "next_goal_started": false,
+        "typecheck": "passed; app/node noEmit and incremental false",
+        "final_consistency_review": {
+          "date": "2026-11-24 KST",
+          "markdown_files": 170,
+          "local_link_occurrences": 6280,
+          "anchor_occurrences": 1586,
+          "new_json_document_references": 41,
+          "new_link_anchor_json_errors": 0,
+          "historical_missing_markdown_references": 222,
+          "goals": 85,
+          "research": 22,
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "source_items": 455,
+          "common_criteria": 12,
+          "assignment_dependency_and_historical_verification_preserved": true,
+          "unchanged_other_r4_items": 444,
+          "article_ids_and_slugs": 12,
+          "crm_template_paths_and_titles": 12,
+          "referenced_assets_present": 64,
+          "tracked_files_modified": 30,
+          "new_formal_test_files": 1,
+          "new_artifacts": 0,
+          "diff_check": "passed",
+          "old_generated_paths_modified_in_this_task": false
+        }
       }
     ]
   },
   "workflow_review": {
-    "date": "2026-11-23 KST",
-    "scope": "G02 major source elements/code and DOM behavior; not full R01/connected goals",
+    "date": "2026-11-23~24 KST",
+    "scope": "G03 major source elements/code and DOM handoffs; not full R01/connected goals",
     "mapping": "FLOW-BEHAVIOR-REVIEW.md",
     "policy": "UXUI-REPLICATION.md#current-identity",
-    "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+    "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
     "reference_counts": {
-      "flows": 7,
-      "steps": 20,
-      "unique_screens": 20
+      "flows": 3,
+      "steps": 22,
+      "unique_screens": 22
     },
     "minor_visual_differences_allowed": false,
     "requires_functional_flow_mapping": true,
     "capture_adjacency_proves_action": false,
     "new_mcp_query_performed": false,
     "new_full_png_review_performed": false,
-    "selected_pngs_directly_reviewed": 20,
+    "selected_pngs_directly_reviewed": 22,
+    "all_assigned_g03_pngs_reviewed": true,
     "implementation_review_performed": true,
     "implementation_work_authorized": true,
-    "authorized_goal": "G02",
+    "authorized_goal": "G03",
     "visual_identity": "not_verified",
     "browser_e2e": "not_run",
-    "other_goals_full_review": "not_performed"
+    "other_goals_full_review": "not_performed",
+    "new_full_png_review_scope": "entire source library; assigned G03 22/22 PNGs directly reviewed separately"
   },
   "workflow_review_history": [
     {
@@ -22557,6 +23051,30 @@
       "implementation_work_authorized": false,
       "authorized_goal": "G00",
       "visual_identity": "not_verified",
+      "other_goals_full_review": "not_performed"
+    },
+    {
+      "date": "2026-11-23 KST",
+      "scope": "G02 major source elements/code and DOM behavior; not full R01/connected goals",
+      "mapping": "FLOW-BEHAVIOR-REVIEW.md",
+      "policy": "UXUI-REPLICATION.md#current-identity",
+      "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+      "reference_counts": {
+        "flows": 7,
+        "steps": 20,
+        "unique_screens": 20
+      },
+      "minor_visual_differences_allowed": false,
+      "requires_functional_flow_mapping": true,
+      "capture_adjacency_proves_action": false,
+      "new_mcp_query_performed": false,
+      "new_full_png_review_performed": false,
+      "selected_pngs_directly_reviewed": 20,
+      "implementation_review_performed": true,
+      "implementation_work_authorized": true,
+      "authorized_goal": "G02",
+      "visual_identity": "not_verified",
+      "browser_e2e": "not_run",
       "other_goals_full_review": "not_performed"
     }
   ],
