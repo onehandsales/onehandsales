@@ -1,6 +1,6 @@
 {
   "date": "2026-11-23",
-  "status": "G01 공통 동작 보완·검증 수행 / 엄격한 시각 동일성 대기; G01~G31 과거 이력 보존, G32 이후 미착수.",
+  "status": "G00 R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기; G01 공통 동작 보완 이력·시각/환경 대기 유지, G02 이후 자동 착수 없음, G32 이후 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -12,7 +12,7 @@
       "dependencies": [],
       "research": [],
       "surface": "공통 기반",
-      "status": "조사 완료",
+      "status": "최초 조사 이력 보존 / R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기",
       "flow_scope": [],
       "result": "../RESULTS/G00_RESULT.md",
       "verification": {
@@ -21,7 +21,7 @@
         "images_viewed": 4
       },
       "source_analysis_review": {
-        "status": "기존 조사 이력 유지 / R4 근거·색인 재검토 대기",
+        "status": "R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기",
         "item_ids": [],
         "common_requirement_ids": [
           "R4-C01",
@@ -39,7 +39,93 @@
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g00",
         "implementation_review_performed": false,
-        "shared_screen_ids": []
+        "shared_screen_ids": [],
+        "source_index_review_performed": true,
+        "result": "../RESULTS/G00_RESULT.md#g00-recheck"
+      },
+      "initial_investigation_status": "2026-11-20 조사 완료; verification은 당시 MCP 3흐름/18단계·PNG 4개 기록",
+      "recheck_2026_11_23": {
+        "date": "2026-11-23 KST",
+        "baseline_commit": "7a9e05ed1de48daf632c4eb55da3e844f974e4c0",
+        "scope": "G00 source/index/ownership documentation audit; FE read only",
+        "status": "R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기",
+        "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+        "counts": {
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "observations": 318,
+          "remaining_analysis": 137,
+          "common_requirements": 12,
+          "shared_screens": 57,
+          "shared_occurrences": 148,
+          "shared_goals": 72,
+          "goals": 85,
+          "research": 22,
+          "execution_units": 107
+        },
+        "source_hashes_and_assignments": "matched",
+        "source_catalog": "stored Latest / 2146; not requeried; not a product build identifier",
+        "direct_png_review": {
+          "flows": 4,
+          "images": 6,
+          "all_images_reviewed": false
+        },
+        "source_element_census_complete": false,
+        "visual_identity": "not_verified",
+        "implementation_changes": false,
+        "runtime_tests_performed": false,
+        "new_mcp_query_performed": false,
+        "artifacts_created": false,
+        "pending_owners": {
+          "capture_font_asset_conditions": [
+            "G01",
+            "relevant feature G/R"
+          ],
+          "unassigned_expansion": [
+            "R04",
+            "R19",
+            "R22"
+          ],
+          "final_audit": [
+            "G83",
+            "G84"
+          ]
+        },
+        "g01_new_code_defect_identified": false,
+        "g01_visual_environment_pending": true,
+        "next_goal_started": false,
+        "historical_missing_markdown_evidence_link_occurrences": 221,
+        "historical_missing_json_evidence_references": 13,
+        "followup_audit": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G00_RESULT.md#g00-followup",
+          "behavior_stages_checked": 754,
+          "r4_rows_checked": 455,
+          "research_reference_sections_checked": 22,
+          "research_reference_consumer_scope_differences": 13,
+          "new_direct_png_reviews": 0,
+          "implementation_review_performed": false,
+          "artifacts_created": false,
+          "fixes": [
+            "PUBLIC-WEB current visual policy",
+            "G02/R01 handoff and G83/G84 current acceptance",
+            "research initial-reference scope semantics"
+          ],
+          "validation": {
+            "integrity_errors": 0,
+            "markdown_files": 170,
+            "local_link_occurrences": 6151,
+            "anchor_occurrences": 1507,
+            "json_path_references": 380,
+            "historical_missing_markdown_references": 221,
+            "historical_missing_json_references": 13,
+            "new_link_errors": 0,
+            "modified_existing_plan_files": 31,
+            "new_files": 0,
+            "runtime_tests_performed": false
+          }
+        }
       }
     },
     {
@@ -124,7 +210,14 @@
           "full element census and consumer-specific visual corrections",
           "real OS IME, touch device, screen reader, browser zoom, Safari/Firefox"
         ],
-        "verification": "../RESULTS/evidence/g01-recheck/verification.json"
+        "verification": "../RESULTS/evidence/g01-recheck/verification.json",
+        "historical_artifact_availability": {
+          "checked_at_commit": "7a9e05ed",
+          "status": "unavailable; 10 historical files deleted by baseline commit",
+          "recreated": false,
+          "reused_as_current_verification": false,
+          "note": "../RESULTS/G00_RESULT.md#g00-recheck"
+        }
       }
     },
     {
@@ -6519,6 +6612,13 @@
         "status": "기존 R 상태 유지; R4 연결 항목과 미수록 조사 별도 관리",
         "item_ids": [],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#research-r04"
+      },
+      "implementation_assignment_review": {
+        "status": "unassigned; detailed research pending",
+        "responsible_research": "R04",
+        "required_before": "G83",
+        "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+        "final_audit_is_not_implementation_owner": true
       }
     },
     {
@@ -7421,6 +7521,13 @@
         "status": "기존 R 상태 유지; R4 연결 항목과 미수록 조사 별도 관리",
         "item_ids": [],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#research-r19"
+      },
+      "implementation_assignment_review": {
+        "status": "unassigned; detailed research pending",
+        "responsible_research": "R19",
+        "required_before": "G83",
+        "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+        "final_audit_is_not_implementation_owner": true
       }
     },
     {
@@ -7551,6 +7658,13 @@
         "status": "기존 R 상태 유지; R4 연결 항목과 미수록 조사 별도 관리",
         "item_ids": [],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#research-r22"
+      },
+      "implementation_assignment_review": {
+        "status": "unassigned; detailed research pending",
+        "responsible_research": "R22",
+        "required_before": "G83",
+        "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+        "final_audit_is_not_implementation_owner": true
       }
     }
   ],
@@ -11735,7 +11849,7 @@
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
     "result": "../RESULTS/SOURCE_ANALYSIS_PLAN_REVIEW.md",
-    "status": "R4 계획 시점 고정 메모 보존; G01 공통 기준 선택 대조·동작 보완·검증, 엄격 시각 동일성 대기",
+    "status": "R4 계획 시점 개별 메모 보존; G00 근거·색인·배정 재검토 완료; G01 동작 보완 이력과 시각/환경 대기 유지",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -11745,7 +11859,7 @@
       "items": 455,
       "common_requirements": 12
     },
-    "implementation_work_authorized": true,
+    "implementation_work_authorized": false,
     "new_source_review_performed": true,
     "requires_common_spec_before_implementation": false,
     "requires_feature_element_mapping_before_implementation": false,
@@ -13385,12 +13499,23 @@
           "G83",
           "G84"
         ],
-        "status": "분석 대기",
+        "status": "저장된 전체 식별·무결성 대조 완료 / 촬영 조건 및 필요한 버전 재조회 대기",
         "g01_recheck": {
           "date": "2026-11-23 KST",
           "status": "선택 원본 식별 완료; 촬영 환경 대기",
           "result": "../RESULTS/G01_RECHECK_RESULT.md",
           "global_requirement_complete": false
+        },
+        "g00_recheck": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+          "stored_identity_hashes_verified": true,
+          "capture_conditions_verified": false,
+          "global_requirement_complete": false,
+          "remaining_owner_goals": [
+            "G01"
+          ],
+          "remaining_owner_scope": "G01 and consuming feature G/R verify capture conditions; G00 updates the index if source identity changes"
         }
       },
       {
@@ -21798,7 +21923,7 @@
       }
     ],
     "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
-    "criteria_note": "이번 G01은 작은 시각 차이를 허용하지 않는다. 기존 455개 원문/해시/소유/인증 상태와 과거 결과 보존; 공통 12기준의 선택 범위 결과는 scoped_reviews로 분리.",
+    "criteria_note": "현재 원본 동일 재현 기준은 작은 시각 차이를 완료로 허용하지 않는다. G00은 문서 조사만 수행. 455개 개별 메모·원문/해시/소유/인증 상태와 과거 결과 보존; 선택 검토는 scoped_reviews로 구분.",
     "plan_snapshot_history": {
       "date": "2026-11-23 KST",
       "status": "기존 R4 기록의 계획 반영; 원본 정밀 분석·현재 구현 대조 미실행",
@@ -21807,8 +21932,8 @@
       "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
       "criteria_note": "과거 정밀 시각 명세의 일괄 선행 조건은 최신 사용자 기준으로 대체. 기능 제어·입력·상태·저장·전환 대응은 필요하며 아래 R4 원문·인증 상태는 보존."
     },
-    "authorized_scope": "G01 shared mock/UI and directly connected consumers; no G32+",
-    "new_source_review_scope": "5 selected flows / 23 PNGs; not a new census of 134 flows",
+    "authorized_scope": "G00 research and existing plan documentation only; FE read only; no implementation or runtime testing",
+    "new_source_review_scope": "134 flows metadata/hash/ownership checked; 4 flows / 6 PNGs directly viewed; no new full image census or MCP query",
     "scoped_reviews": [
       {
         "date": "2026-11-23 KST",
@@ -21833,16 +21958,106 @@
           "full element census and consumer-specific visual corrections",
           "real OS IME, touch device, screen reader, browser zoom, Safari/Firefox"
         ],
-        "verification": "../RESULTS/evidence/g01-recheck/verification.json"
+        "verification": "../RESULTS/evidence/g01-recheck/verification.json",
+        "historical_artifact_availability": {
+          "checked_at_commit": "7a9e05ed",
+          "status": "unavailable; 10 historical files deleted by baseline commit",
+          "recreated": false,
+          "reused_as_current_verification": false,
+          "note": "../RESULTS/G00_RESULT.md#g00-recheck"
+        }
+      },
+      {
+        "date": "2026-11-23 KST",
+        "baseline_commit": "7a9e05ed1de48daf632c4eb55da3e844f974e4c0",
+        "scope": "G00 source/index/ownership documentation audit; FE read only",
+        "status": "R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기",
+        "result": "../RESULTS/G00_RESULT.md#g00-recheck",
+        "counts": {
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "observations": 318,
+          "remaining_analysis": 137,
+          "common_requirements": 12,
+          "shared_screens": 57,
+          "shared_occurrences": 148,
+          "shared_goals": 72,
+          "goals": 85,
+          "research": 22,
+          "execution_units": 107
+        },
+        "source_hashes_and_assignments": "matched",
+        "source_catalog": "stored Latest / 2146; not requeried; not a product build identifier",
+        "direct_png_review": {
+          "flows": 4,
+          "images": 6,
+          "all_images_reviewed": false
+        },
+        "source_element_census_complete": false,
+        "visual_identity": "not_verified",
+        "implementation_changes": false,
+        "runtime_tests_performed": false,
+        "new_mcp_query_performed": false,
+        "artifacts_created": false,
+        "pending_owners": {
+          "capture_font_asset_conditions": [
+            "G01",
+            "relevant feature G/R"
+          ],
+          "unassigned_expansion": [
+            "R04",
+            "R19",
+            "R22"
+          ],
+          "final_audit": [
+            "G83",
+            "G84"
+          ]
+        },
+        "g01_new_code_defect_identified": false,
+        "g01_visual_environment_pending": true,
+        "next_goal_started": false,
+        "historical_missing_markdown_evidence_link_occurrences": 221,
+        "historical_missing_json_evidence_references": 13,
+        "followup_audit": {
+          "date": "2026-11-23 KST",
+          "result": "../RESULTS/G00_RESULT.md#g00-followup",
+          "behavior_stages_checked": 754,
+          "r4_rows_checked": 455,
+          "research_reference_sections_checked": 22,
+          "research_reference_consumer_scope_differences": 13,
+          "new_direct_png_reviews": 0,
+          "implementation_review_performed": false,
+          "artifacts_created": false,
+          "fixes": [
+            "PUBLIC-WEB current visual policy",
+            "G02/R01 handoff and G83/G84 current acceptance",
+            "research initial-reference scope semantics"
+          ],
+          "validation": {
+            "integrity_errors": 0,
+            "markdown_files": 170,
+            "local_link_occurrences": 6151,
+            "anchor_occurrences": 1507,
+            "json_path_references": 380,
+            "historical_missing_markdown_references": 221,
+            "historical_missing_json_references": 13,
+            "new_link_errors": 0,
+            "modified_existing_plan_files": 31,
+            "new_files": 0,
+            "runtime_tests_performed": false
+          }
+        }
       }
     ]
   },
   "workflow_review": {
     "date": "2026-11-23 KST",
-    "scope": "G01 shared mock/UI and directly connected consumers only",
+    "scope": "G00 source/version/ownership audit; no implementation or behavior execution",
     "mapping": "FLOW-BEHAVIOR-REVIEW.md",
-    "policy": "FLOW-BEHAVIOR-REVIEW.md#policy",
-    "result": "../RESULTS/G01_RECHECK_RESULT.md",
+    "policy": "UXUI-REPLICATION.md#current-identity",
+    "result": "../RESULTS/G00_RESULT.md#g00-recheck",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -21852,13 +22067,14 @@
     "minor_visual_differences_allowed": false,
     "requires_functional_flow_mapping": true,
     "capture_adjacency_proves_action": false,
-    "new_mcp_query_performed": true,
+    "new_mcp_query_performed": false,
     "new_full_png_review_performed": false,
-    "selected_pngs_directly_reviewed": 23,
-    "implementation_review_performed": true,
-    "implementation_work_authorized": true,
-    "authorized_goal": "G01",
-    "visual_identity": "pending",
+    "selected_pngs_directly_reviewed": 6,
+    "implementation_review_performed": false,
+    "read_only_entry_architecture_review_performed": true,
+    "implementation_work_authorized": false,
+    "authorized_goal": "G00",
+    "visual_identity": "not_verified",
     "other_goals_full_review": "not_performed"
   },
   "workflow_review_history": [
@@ -21913,6 +22129,38 @@
         "G83",
         "G84"
       ]
+    },
+    {
+      "date": "2026-11-23 KST",
+      "scope": "G01 shared mock/UI and directly connected consumers only",
+      "mapping": "FLOW-BEHAVIOR-REVIEW.md",
+      "policy": "FLOW-BEHAVIOR-REVIEW.md#policy",
+      "result": "../RESULTS/G01_RECHECK_RESULT.md",
+      "counts": {
+        "flows": 134,
+        "steps": 754,
+        "unique_screens": 642,
+        "adjacent_capture_pairs": 620
+      },
+      "minor_visual_differences_allowed": false,
+      "requires_functional_flow_mapping": true,
+      "capture_adjacency_proves_action": false,
+      "new_mcp_query_performed": true,
+      "new_full_png_review_performed": false,
+      "selected_pngs_directly_reviewed": 23,
+      "implementation_review_performed": true,
+      "implementation_work_authorized": true,
+      "authorized_goal": "G01",
+      "visual_identity": "pending",
+      "other_goals_full_review": "not_performed"
     }
-  ]
+  ],
+  "index_semantics": {
+    "flow_number": "flows[].number is the plan display number; source review Fnnn is joined by flow_id, not by number",
+    "research_flows": "initial reference flow numbers from each R specification section 3; not the full implementation scope",
+    "research_consumers": "implementation consumers only; G83/G84 review all research results as final audit goals",
+    "consumer_flow_scope": "research[].consumers -> goals[].flow_scope; review together with source_analysis_review.item_ids",
+    "additional_references": "a flow outside implementation consumers is a research reference, not reassigned stage ownership",
+    "reference_scope_review_result": "../RESULTS/G00_RESULT.md#g00-followup"
+  }
 }
