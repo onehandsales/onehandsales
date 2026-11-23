@@ -9,9 +9,9 @@ import { commercialAssets, subscriptionHandoffPath } from "../data/commercial-da
 
 // 기능 : URL의 월·연 선택과 플랜 카드를 일치시키고 제출 시점의 선택만 로컬 인계한다.
 export function PricingPlans() {
-  const [search, setSearch] = useSearchParams();
+  const [search] = useSearchParams();
   const billing = readBillingCycle(search.get("billing"));
-  const { pathname, search: query } = useLocation();
+  const { pathname, search: query, hash } = useLocation();
   const { state } = usePreviewEnvironment();
   const { start } = usePublicExperience();
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export function PricingPlans() {
     if (next === billing) return;
     const params = new URLSearchParams(search); params.set("billing", next);
     // 이유 : 같은 프레임의 다음 라디오/CTA가 이전 주기를 읽지 않도록 URL 반영을 즉시 완료한다.
-    void setSearch(params, { preventScrollReset: true, flushSync: true });
+    void navigate({ pathname, search: `?${params.toString()}`, hash }, { preventScrollReset: true, flushSync: true });
   }
   // 기능 : 중복 CTA를 막고 플랜·주기·표시 의미의 snapshot을 가입 또는 구독 인계에 전달한다.
   function handlePlan(event: MouseEvent<HTMLAnchorElement>, plan: PricingPlan) {
@@ -31,7 +31,7 @@ export function PricingPlans() {
     if (submitted.current) return;
     submitted.current = true;
     const publicIntentId = start(`pricing-${billing}-${plan.id}`, pathname, false,
-      { returnTo: pathname + query, selection: createPlanSelection(plan, billing) });
+      { returnTo: pathname + query + hash, selection: createPlanSelection(plan, billing) });
     void navigate(destination, { state: { publicIntentId } });
   }
   return <>
@@ -50,7 +50,7 @@ export function PricingPlans() {
           <Link to={destination} onClick={event => handlePlan(event, plan)} className="public-button">Start for free</Link>
           <p className="pricing-description">{plan.description}{billing === "yearly" && <><br />Billed annually.</>}</p>
         </div>
-        <ul className="pricing-features">{plan.features.map((feature, index) => <li key={feature}><img src={commercialAssets.check} alt="" width="13" height="9" /><span className={index === 0 && plan.id !== "starter" ? "pricing-included" : ""}>{feature}</span></li>)}</ul>
+        <ul className="pricing-features">{plan.features.map((feature, index) => <li key={feature}><img src={commercialAssets.check} alt="" width="13" height="9" /><span className={index === 0 && plan.id !== "starter" ? "pricing-included" : ""}>{feature}{plan.featureNotes?.[feature] && <> <span className="pricing-feature-note">{plan.featureNotes[feature]}</span></>}</span></li>)}</ul>
         <Link to={destination} onClick={event => handlePlan(event, plan)} className="public-button pricing-bottom-cta">Start for free</Link>
       </article>)}
     </div>

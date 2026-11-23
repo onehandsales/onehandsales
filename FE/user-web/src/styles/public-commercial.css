@@ -100,3 +100,5 @@
   .review-play { width: 48px; height: 48px; left: calc(50% - 24px); top: calc(50% - 24px); }
 }
 @media (prefers-reduced-motion: reduce) { .review-video-poster * { transition: none; } }
+
+.pricing-feature-note { display: block; color: #52795f; }

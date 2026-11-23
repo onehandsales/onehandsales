@@ -1,6 +1,8 @@
 # 로컬 목 화면 상태
 
-> 현재 상태 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
+> 현재 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
+
+> 이전 상태 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
 
 > 이전 G01 재검토 기록 — 2026-11-23 KST G01 재검토: **G01 공통 모달 2종 결함 보완·목 동작 검증 수행 / 엄격한 시각 동일성 대기**. 이번 G01·직접 연결 검증에서는 작은 폰트·크기·픽셀 차이를 허용하지 않는다. 과거 구현/체크는 당시 이력이며 다른 G/R의 전체 완료로 승격하지 않는다. [결과·체크·미완·직접 확인](../RESULTS/G01_RECHECK_RESULT.md). G32 이후 미착수, 실제 API/BE/DB 작업·push·배포 없음.
 
@@ -105,3 +107,7 @@ FAQ는 초기 모두 닫힘·단일 열림·재진입 초기화의 명시적 목
 [이번 범위·규칙·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck).
 
 G03 URL(contentPage/query/hash), FAQ 로컬 상태, PublicProvider의 pathname 초안/history intent, G06 template snapshot의 소유를 유지했다. 이전 intent 취소는 해당 출발 경로만 정리하며 다른 소개 초안을 보존한다. query/hash·취소 왕복은 실제 router/history를 쓰는 jsdom 회귀다. demo/FAQ/pagination 비동기 저장·늦은 응답은 N/A(동기 로컬 UI); 실제 네트워크 관찰은 대기다.
+
+## G04 적용 결과 — 2026-11-24 KST
+
+[이번 범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). billing은 URL, 선택은 이력별 메모리 snapshot, 영상 열림은 컴포넌트 local이다. returnTo에는 pathname+search+hash를 보관하고 sourcePath는 pathname을 유지한다. 새로고침/새 탭은 인계 초기화·URL주기 유지. 사용자 전환/Reset 폐기는 DOM·Chrome에서 회귀했다. 정적 가격/후기에 가짜 저장 오류/로딩은 N/A다.

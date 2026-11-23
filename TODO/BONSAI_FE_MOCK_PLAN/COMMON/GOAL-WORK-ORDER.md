@@ -1,6 +1,8 @@
 # Goal 실행 순서
 
-> 현재 G03 — 2026-11-23~24 KST: **G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. [범위·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck). 원본22단계·R4 11항목의 주요 구성 대조와 단위/DOM121개·타입/lint·메모리 build를 수행했다. 실제 브라우저/네트워크·픽셀 동일성은 미검증이며 G01/G02/R01 대기를 유지한다. 다음 Goal 자동 착수·커밋 없음.
+> 현재 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
+
+> 이전 G03 — 2026-11-23~24 KST: **G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. [범위·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck). 원본22단계·R4 11항목의 주요 구성 대조와 단위/DOM121개·타입/lint·메모리 build를 수행했다. 실제 브라우저/네트워크·픽셀 동일성은 미검증이며 G01/G02/R01 대기를 유지한다. 다음 Goal 자동 착수·커밋 없음.
 
 > 이전 G02 기록 — 2026-11-23 KST: **G02 R4 주요 구성 대조·메뉴 초점/후기 강조 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저 상세/네트워크·원본 미수록 대기**. [이번 범위·검증·잔여](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck). 기존 결과/체크는 이력으로 보존한다. G01/R01 전체 완료 아님. evidence·임시 산출물·새 결과 문서 없이 수행했으며 다음 Goal은 자동 시작하지 않는다.
 
@@ -35,7 +37,7 @@ G는 기반·FE 구현·검증, R은 추가 분석이다. 번호는 이번 계�
 | 3 | [R01](<RESEARCH-GOALS/R01.md>) 로그인 전 공개 웹·CTA·콘텐츠 | 추가 분석 | — | G00; 첫 소비 G02 | [G02~G09 소비 보완·후속 배정, R 전체/미수록 대기](../RESULTS/R01_RESULT.md) |
 | 4 | [G02 랜딩·공통 메뉴](<GOAL-SPECS/G02.md>) | 공개 웹 | G75 | G01; R01 | [G02 R4 대조·보완/DOM 검증, 시각·실브라우저 대기](../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |
 | 5 | [G03 고객군·업종·CRM 소개](<GOAL-SPECS/G03.md>) | 공개 웹 | G76 | G01, G02; R01 | [R4 주요 구성 대조·보완/DOM 검증, 시각·실브라우저·미수록 대기](../RESULTS/G03_RESULT.md#g03-r4-recheck); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |
-| 6 | [G04 가격·후기](<GOAL-SPECS/G04.md>) | 공개 웹 | G77 | G01, G02; R01 | [가격·후기 목 구현·검증, 영상/시각/환경 대기](../RESULTS/G04_RESULT.md); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |
+| 6 | [G04 가격·후기](<GOAL-SPECS/G04.md>) | 공개 웹 | G77 | G01, G02; R01 | [R4 보완·DOM/Chrome 검증, 원본/시각/추가 환경 대기](../RESULTS/G04_RESULT.md#g04-r4-recheck); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |
 | 7 | [G05 블로그·검색·상세](<GOAL-SPECS/G05.md>) | 공개 웹 | G78 | G01, G02; R01 | [목 구현·2차 검토/최종 회귀, 원본·시각·환경 대기](../RESULTS/G05_RESULT.md); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |
 | 8 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) | 공개 웹 | G79 | G01, G02; R01 | [목 구현·2차 검토/최종 회귀, 원본·시각·환경 대기](../RESULTS/G06_RESULT.md); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |
 | 9 | [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>) | 공개 웹 | G80 | G01, G06; R01 | [목 구현·2차 검토/최종 회귀, 원본·시각·환경 대기](../RESULTS/G07_RESULT.md); [감사 후 회귀](../RESULTS/G01_G15_RECHECK_RESULT.md) |

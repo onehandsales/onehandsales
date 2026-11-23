@@ -2,7 +2,7 @@ import type { PublicPlanSelection } from "@/features/public-web";
 
 export type BillingCycle = PublicPlanSelection["billing"];
 export type PlanId = PublicPlanSelection["planId"];
-export type PricingPlan = { id: PlanId; name: string; monthly: number; yearlyEquivalent: number; description: string; features: string[] };
+export type PricingPlan = { id: PlanId; name: string; monthly: number; yearlyEquivalent: number; description: string; features: string[]; featureNotes?: Record<string, string> };
 // 근거 : Gummble Pricing 01~03 + 공식 pricing 2024-01-18 08:27:27 보관본. 현재 요금 정책이 아니다.
 export const priceVersion = "bonsai-public-legacy-20240118-catalog2146";
 export const pricingPlans: PricingPlan[] = [
@@ -14,7 +14,8 @@ export const pricingPlans: PricingPlan[] = [
     features: ["Everything in Starter, plus:", "Remove Bonsai Branding", "Workflow Automations", "Branded Client Portal", "Unlimited Scheduling Events", "QuickBooks Integration", "Calendly Integration", "Zapier Integration"] },
   { id: "business", name: "Business", monthly: 79, yearlyEquivalent: 66,
     description: "The perfect package for small businesses and agencies.",
-    features: ["Everything in Professional, plus:", "Subcontractor Management", "Hiring Agreement Templates (1099 contractors)", "Subcontractor Onboarding", "Talent Pool", "Unlimited Subcontractors"] },
+    features: ["Everything in Professional, plus:", "Subcontractor Management", "Hiring Agreement Templates", "Subcontractor Onboarding", "Talent Pool", "Unlimited Subcontractors"],
+    featureNotes: { "Hiring Agreement Templates": "(1099 contractors)" } },
 ];
 
 // 기능 : URL의 미확인 주기 값을 원본 첫 화면의 Yearly로 정규화한다.

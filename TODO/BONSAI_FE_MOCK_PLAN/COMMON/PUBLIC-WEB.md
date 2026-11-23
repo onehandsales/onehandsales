@@ -1,5 +1,7 @@
 # 로그인 전 공개 웹과 인증 연결
 
+> 현재 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
+
 > 현재 기준 — G00 추가 점검: [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 공개 웹에도 적용한다. 작은 폰트·크기·픽셀 차이는 시각 완료로 허용하지 않는다. G00은 근거·배정 조사이며 G02/R01 구현·상세 분석을 새로 수행하지 않았다. G01의 시각/환경 대기는 유지하고 G02 착수 시 실제 공통 소비와 인증 인계/복귀를 확인한다. [G00 추가 점검](../RESULTS/G00_RESULT.md#g00-followup).
 
 > 과거 계획 반영 기록(현재 수용 기준 아님) — 2026-11-23 KST: **R4 분석의 계획 반영**. [보완 대응표](SOURCE-ANALYSIS-IMPACT.md)를 먼저 읽는다. G01~G31의 기존 구현·검증 이력은 유지하며 R4 현재 구현 대조는 미실행이다. [현재 흐름 기준](FLOW-BEHAVIOR-REVIEW.md#policy)에 따라 행동·상태·저장·전환을 우선 대조한다. 폰트·크기·픽셀의 작은 차이는 허용한다. G32 이후 구현은 미착수이며 이 문서 변경만으로 재개하지 않는다. [이번 문서 검토](../RESULTS/SOURCE_ANALYSIS_PLAN_REVIEW.md).
@@ -76,3 +78,7 @@
 [이번 범위·규칙·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck).
 
 G03 관련 글은 현재 query를 보존한 contentPage 변경과 pathname+search+hash/이력키의 기사 복귀를 사용한다. CRM 카드→G06 상세/선택→G10, View all→/templates/forms, 별도가입→/signup을 구분했다. G05/G06/G10/G11은 현재 구현 상태이며 과거 미구현 표기는 이력이다. FAQ/로컬 demo·메모리 초안 정책을 원본 관찰과 구분한다. G02 메뉴 초점/재탐색·중복 CTA 회귀는 유지했다.
+
+## G04 적용 결과 — 2026-11-24 KST
+
+[이번 범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 가격 주기 변경·플랜 취소가 hash까지 보존하고 후기 외부 안내/hero 가입도 query/hash로 돌아온다. sourcePath별 초안 정리·다른 소개 초안 보존은 유지한다. 영상은 미제공 Dialog, G79는 선택 표시 경계이며 업무 미착수다.

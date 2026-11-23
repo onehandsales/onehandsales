@@ -8,7 +8,7 @@ import { commercialAssets, reviewCards, reviewDestinations } from "../data/comme
 // 기능 : 확인된 후기 외부 주소를 실제 외부 호출 없이 로컬 안내 화면에 인계한다.
 function ReviewLink({ id, children, label, className }: { id: string; children: ReactNode; label?: string; className?: string }) {
   const { start } = usePublicExperience();
-  const { pathname } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const navigate = useNavigate();
   const submitted = useRef(false);
   const destination = reviewDestinations.find(item => item.id === id);
@@ -20,7 +20,7 @@ function ReviewLink({ id, children, label, className }: { id: string; children: 
     event.preventDefault();
     if (submitted.current) return;
     submitted.current = true;
-    const publicIntentId = start(`reviews-${id}`, pathname);
+    const publicIntentId = start(`reviews-${id}`, pathname, false, { returnTo: pathname + search + hash });
     void navigate(path, { state: { publicIntentId } });
   }
   return <Link to={path} onClick={handleClick} aria-label={label} className={className}>{children}</Link>;
@@ -28,6 +28,7 @@ function ReviewLink({ id, children, label, className }: { id: string; children: 
 
 // 기능 : 과거 후기 제목·홍보 수치·평점 자산과 가입·후기 출처의 로컬 진입을 제공한다.
 export function ReviewsHero() {
+  const { pathname, search, hash } = useLocation();
   return <section className="reviews-heading public-container">
     <h1>What Bonsai customers say</h1>
     <p>500,000+ business owners and professionals <br />choose Bonsai to grow their business. Here’s why.</p>
@@ -35,7 +36,7 @@ export function ReviewsHero() {
       <ReviewLink id="g2" label="Bonsai reviews on G2"><img src={commercialAssets.g2} alt="G2: five stars, Top performer" /></ReviewLink>
       <ReviewLink id="capterra" label="Bonsai reviews on Capterra"><img src={commercialAssets.capterra} alt="Capterra: Best app for entrepreneurs, 4.7" /></ReviewLink>
     </div>
-    <SignupLink source="reviews-hero">Start free</SignupLink>
+    <SignupLink source="reviews-hero" intentOptions={{ returnTo: pathname + search + hash }}>Start free</SignupLink>
   </section>;
 }
 

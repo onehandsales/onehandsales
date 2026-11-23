@@ -1,6 +1,8 @@
 # 전체 사용자 흐름
 
-> 현재 상태 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
+> 현재 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
+
+> 이전 상태 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
 
 > 이전 G01 재검토 기록 — 2026-11-23 KST G01 재검토: **G01 공통 모달 2종 결함 보완·목 동작 검증 수행 / 엄격한 시각 동일성 대기**. 이번 G01·직접 연결 검증에서는 작은 폰트·크기·픽셀 차이를 허용하지 않는다. 과거 구현/체크는 당시 이력이며 다른 G/R의 전체 완료로 승격하지 않는다. [결과·체크·미완·직접 확인](../RESULTS/G01_RECHECK_RESULT.md). G32 이후 미착수, 실제 API/BE/DB 작업·push·배포 없음.
 
@@ -99,3 +101,7 @@ G17 Team preview controls → `/invite/:workspaceId/:invitationId` → 다른 �
 [이번 범위·규칙·검증·잔여](../RESULTS/G03_RESULT.md#g03-r4-recheck).
 
 G03 Small business→G05 기사→원래 query/hash/이력 복귀, CRM→G06 Tax intake form→G10 선택 인계→취소/이력 복귀, CRM/Consulting→G10/G11 이메일·이전 취소 격리를 DOM 검증했다. G13/G14는 현재 코드·기존 기록의 인계 확인으로 제한한다. 직접URL/reload/새탭·실제 스크롤·키보드/IME/네트워크는 브라우저 검증 대기다. 원본 캡처 간 자동 로그인/저장/성공을 추가하지 않았다.
+
+## G04 적용 결과 — 2026-11-24 KST
+
+[이번 범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). /pricing → 가입 또는 명시적 가상 세션의 /preview/subscription → 취소의 query/hash 복귀와 /reviews → 외부 로컬 안내 또는 hero 가입 → 취소를 보완했다. 기존 가입/로그인·초안·Dialog·메뉴/푸터 연결을 해당 범위에서 검증했고 G13/G14 전체 온보딩은 이번 범위 밖이다.

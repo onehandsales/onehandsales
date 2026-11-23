@@ -378,3 +378,7 @@ G01/G02 공통 코드의 추가 수정 필요 결함은 이번 범위에서 찾�
 - 알려진 자동 산출 경로 `.vite`/`.vite-temp`/`dist`/`test-results`/`playwright-report`의 최신 수정은 모두 이번 작업 전(11월22일 이전)이다. `.cache`와 계획 `RESULTS/evidence`는 현재 없다. 이번 생성/수정 파일에는 금지된 산출물이 없으며 기존 파일을 정리/삭제하지 않았다.
 
 갱신 문서: 계획/COMMON README, G03 및 연결 G01/G02/G05/G06/G10/G11 명세, R01 명세/결과, 기존 G03 결과와 G02 재검토/G05/G06/G10/G11 결과의 해당 연결 메모, GOAL-WORK-ORDER·START·UXUI·PUBLIC-WEB·MOCK-UI-STATE·USER-FLOW·FLOW-GOAL-MATRIX·FLOW-BEHAVIOR-REVIEW·SOURCE-ANALYSIS-IMPACT·EXPANSION-BACKLOG·PLAN-INDEX. 수행 항목만 체크했고 원본/픽셀/실브라우저·환경·미수록은 미완료로 남겼다.
+
+## G04 소비 연결 확인 — 2026-11-24 KST
+
+[G04 현재 결과](G04_RESULT.md#g04-r4-recheck). 가격 고객군/Tax/Professional services의 구현/미수록 경계와 CRM 공통 입력·초안 보존을 확인했다. 기존 query/hash·CRM 카드 모서리 회귀7개는 전체 테스트에 포함되며 세 소개 전체 R4 재검토는 이번 범위가 아니다. 기존 결과·체크와 이 Goal 전체의 잔여는 보존한다.

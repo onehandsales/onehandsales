@@ -1,5 +1,7 @@
 # G04 실행 결과 — 가격·후기와 로컬 선택 인계
 
+> 현재 재검토는 [2026-11-24 G04 R4 결과](#g04-r4-recheck)를 따른다. 아래 최초 체크와 수치는 과거 이력이다.
+
 작성: 2026-11-21 KST. **가격 두 주기·후기 30카드·영상 미제공 상태·로컬 인계 구현. 2차 검토·개발/빌드 Chromium 검증 수행.** 영상 재생·원본 동일성·추가 환경 대기는 별도이며 실제 서비스·구독·결제 완료가 아니다.
 
 ## 1. 착수·선행 결과·보존
@@ -168,3 +170,141 @@ G04 결과 보고 후 종료한다. 커밋·push·배포 및 G05 착수 없음.
 ### G01~G15 감사 후 재점검 (2026-11-21)
 
 이번 공통 수정의 영향을 기존 흐름 회귀로 확인했으며 원본·시각·환경 대기는 유지한다. [이번 수정·검증·잔여 판정](G01_G15_RECHECK_RESULT.md)을 최신 기록으로 참조한다. 위 실행 수치는 과거 단계의 기록이며 이번 통과 수와 합산하지 않는다. 전체 Goal 완료로 승격하지 않는다.
+
+<a id="g04-r4-recheck"></a>
+## G04 R4 재검토·보완 — 2026-11-24 KST
+
+**현재 판정: 주요 구성·R4 대조, 구현 보완, 단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기.** 위 최초 조사·체크·테스트·후속 기록은 당시 이력으로 보존한다. 과거 미구현 G10 설명은 현재 상태가 아니다. 기존 G10/G11·G13/G14 연결을 보존했으며 이번에 온보딩 전체를 재검증하지 않았다.
+
+### 10.1 범위·적용·자료 확인
+
+- 시작 HEAD `b4c10bd9`와 깨끗한 작업 트리를 확인했다. G03 커밋 이후 변경을 되돌리지 않았다. G04 가격·후기와 실제 G01 UI/공급자, G02 메뉴/푸터/가입, G03 초안, G10/G11, G79 선택 표시·취소 경계만 포함했다. G79/R18 업무 구현·가격 계약 확정·G05/G32 신규 작업은 제외했다.
+- 전체 확인: G04 명세·이 결과의 기존 기록, Pricing/Reviews ANALYSIS, 원본 7PNG, commercial feature·두 page·CSS·후기30개 데이터. 파일 검사와 직접 이미지 열람을 각각 수행했다. 다른 흐름 PNG는 이번에 추가 열람하지 않았다.
+- 관련 부분 확인: 계획 README·COMMON 실행 순서/착수/UXUI/PUBLIC-WEB/목 상태/사용자 흐름/대응표/행동 검토/영향/확장/색인, G00 인계·G01/G02/G03 결과·공통 G01~G15 보완, R01 10절과 후속 기록, G10/G11/G13/G14 명세·기존 인계 결과, G79/R18 선택 경계. 전체 G/R·RESULTS 전수 정독이나 R01/R18 전체 분석을 주장하지 않는다.
+- 적용: AGENT README, PM036/UX025, FRONT README 지도, 결정006 우선, User Web 구조·컴포넌트·상태·목·접근성·한글 주석·User Web 컨벤션·테스트·ENGINEERING_REVIEW_CHECKLIST. 적용 경로의 추가 AGENTS 없음, BE 지침은 범위 밖이다. 원본 분석 STANDARD와 REVIEW의 식별/관찰/추정/목/미확인 구분을 적용했다.
+- 현재 기준은 원본 동일 재현이다. 작은 폰트·크기·픽셀 차이 허용 문구는 이번 완료 기준으로 사용하지 않는다. 새 캡처가 필요한 픽셀 검증은 사용자 산출물 금지에 따라 수행하지 않았다. 기존 evidence·원본·분석 정본·환경·BE·DB는 변경하지 않았다.
+
+### 10.2 원본 식별·채택 버전
+
+Pricing Flow ID `981ffcc3-d6c0-4038-8db3-4ac8753aace4`, Reviews Flow ID `d501af32-ef6e-4ca1-8d3f-cf6e67874a08`. 저장된 Bonsai WEB Latest/2146을 기준으로 하며 이번 MCP/공식 웹/보관본 신규 조회는 없다. 2146은 촬영일·제품 빌드가 아니다.
+
+| 흐름·단계 | Screen ID | 원본 경로·직접 열람 | 현재 SHA-256 |
+| --- | --- | --- | --- |
+| F089 · 01 | `sc_6b53199f35cb4bc69306b8e615e55dd7` | [원본](<../../../bonsai_analysis/flows/Pricing/screens/01_sc_6b53199f35cb4bc69306b8e615e55dd7.png>) | `71fdc9275e5a6bbfdcb78a6720b70cb88eb876d32a23d115cbc6d4eec4aaaa89` |
+| F089 · 02 | `sc_c435c9f093d34fddabe4fa83dd022786` | [원본](<../../../bonsai_analysis/flows/Pricing/screens/02_sc_c435c9f093d34fddabe4fa83dd022786.png>) | `fe6a838b8401643ac1f34f8db87a37c972b4556b9fb9440d97f822554f086a2c` |
+| F089 · 03 | `sc_963ddd0939f7412cb81390d58c8cb401` | [원본](<../../../bonsai_analysis/flows/Pricing/screens/03_sc_963ddd0939f7412cb81390d58c8cb401.png>) | `823e590fa611d18dc34ce7a64d018d7edea14e334acc4a4f0d16e1078f9e633e` |
+| F110 · 01 | `sc_21f0e007e04d45edbd410a1dffdff04c` | [원본](<../../../bonsai_analysis/flows/Reviews/screens/01_sc_21f0e007e04d45edbd410a1dffdff04c.png>) | `2f8936829ae56671ba06c49b2d3cc546c3fdd136ce2a84c714d9f88e1a9e7b93` |
+| F110 · 02 | `sc_a605cb0e7e164a64b2707c0a110eafa6` | [원본](<../../../bonsai_analysis/flows/Reviews/screens/02_sc_a605cb0e7e164a64b2707c0a110eafa6.png>) | `4118c06527f126a23a507908f841783a9417d2a9f5248ccea7033ee4c7f4622a` |
+| F110 · 03 | `sc_7d668b0699a945e98ca3ccbe29066b7a` | [원본](<../../../bonsai_analysis/flows/Reviews/screens/03_sc_7d668b0699a945e98ca3ccbe29066b7a.png>) | `f175c17e11ed5a0029f51a6f13309572a9e2a23925f699bdcfc5300de93ad186` |
+| F110 · 04 | `sc_a6b1e7be914645e293f35918c57e4ee9` | [원본](<../../../bonsai_analysis/flows/Reviews/screens/04_sc_a6b1e7be914645e293f35918c57e4ee9.png>) | `483575ad9742488d71839e0f638a903cf496186c4983ee4e0c1cbf5a190c47c3` |
+
+두 ANALYSIS의 SHA-256은 Pricing `cdc8a6a70c0633dc09495a613d06906fdeaeda9a59f8ad816d1ba119ea60957f`, Reviews `97d2d1ebe57581635f6004408b9baa7fb19c2e29db37d806538853a11aca4f2d`. `SOURCE_ANALYSIS_INDEX.json`의 해시/순서/ID/경로, PLAN-INDEX의 G04 01~03/01~04 배정과 일치했다. PNG7개는 모두 2880×1800이다. 기존 MCP1440×900 메타데이터나 PNG 크기로 원본 CSS viewport/DPR을 확정하지 않는다. 이번 직접 열람은 도구 표시 축척이며 정합화된 픽셀 비교가 아니다.
+
+| 구분 | 채택·확인 범위 | 잔여 |
+| --- | --- | --- |
+| 가격 관찰 | Yearly $21/$32/$66 월 환산·Billed annually·추천·기능9/8/6·추가 상품 각$10 | 실제 월간 렌더링/원본 전환/가입 결과 미수록 |
+| 가격 보완 | 기존 2024-01-18 08:27:27 보관본 기록과 코드의 Monthly $25/$39/$79, `bonsai-public-legacy-20240118-catalog2146` 유지 | 이번 보관본 재조회 아님; 현재 서비스 정책 아님 |
+| 금액 의미·목 가정 | 원본 `$`; 인계 USD는 목 표시. 252/384/792는 월 환산액×12 계산 소계 | 실제 연 청구액·세금·국가·좌석·할인·반올림 미확정, R01/R18/G79 후속 |
+| 후기 관찰 | 01 제목/과거500,000+/G2/Capterra4.7/CTA, 02 포스터·중앙play, 03/04 이름·직무·본문·3열·잘린 행 대조 | 원본7PNG가 후기30개 전체의 증거는 아님 |
+| 후기 보완 | 기존 2024-01-18 08:27:51 보관본 기록과 현재 30카드 순서·본문, 플랫폼2+카드11 로컬 목적지 유지 | 원본 미수록 행은 보관본 보완; 현재 평점/사용자/CRM 데이터 아님 |
+| 영상·자산 | 현재 로컬 check/poster/play/G2/Capterra 5자산 존재. 기존 Mary Mitchell 포스터·YouTube 링크 기록만 유지 | 포스터 크롭/프레임 차이, 로컬 영상·자막 없음. 외부embed/재생/진행률 없음 |
+
+### 10.3 R4·요소·코드 판정
+
+코드 기준 경로는 [commercial 기능](../../../FE/user-web/src/features/public-commercial/components/pricing-plans.tsx), [후기](../../../FE/user-web/src/features/public-commercial/components/reviews.tsx), [가격 데이터](../../../FE/user-web/src/features/public-commercial/data/pricing-data.ts), [스타일](../../../FE/user-web/src/styles/public-commercial.css)이다.
+
+| 항목·원본 영역 | 현재 코드·수용 기준 | 판정 |
+| --- | --- | --- |
+| R4-F089-O01 · Pricing01/02 | PricingPlans: native radio/Yearly 짙은 초록·내부 배지, Professional만 주황 배너/외곽선, 이름·가격·설명 | 주요 구성 유지. 월간 Most popular는 보완 버전; 시각 동일성 대기 |
+| R4-F089-O02 · Pricing02/03 | pricing-features/bottom-cta/PricingAddons: 9/8/6 기능, 아래 CTA 정렬, Team Seat/Tax 별도 월$10 | Business의 `(1099 contractors)`를 다음 줄·보조색으로 구현 보완. 나머지 구성 유지 |
+| R4-F089-A01 | readBillingCycle/createPlanSelection/PlanHandoffSummary: 월간 출처·연 환산/소계·snapshot/취소 | 문서 보완·관찰/목 구분. 원본 월간/정확 치수·촬영·정책 분석 대기 |
+| R4-F110-O01 · Reviews01/02 | ReviewsHero/ReviewVideo: 제목→평점→CTA→포스터, 실제 미디어 없음 | 주요 구성 유지. 로컬 Dialog는 접근성 목 가정, 영상/자막/크롭 대기 |
+| R4-F110-O02 · Reviews03/04 | ReviewGrid/review-content: 3열·짙은 이름/초록 직무·순서·본문 줄/공백 | 원본 표시 부분과 기존 보완 범위 유지; 잘린 카드 전체를 관찰로 승격하지 않음 |
+| R4-F110-A01 | commercialAssets/reviewDestinations: 기존 보관 자산·30카드·로컬13목적지 | 문서 보완, 정확 포스터/전체 원본/플레이어·모바일 분석 대기 |
+
+| 공통 기준 | 이번 결과·잔여 |
+| --- | --- |
+| R4-C01 식별 | 2분석/7PNG 해시·ID·순서·담당 확인; 촬영 조건 대기 |
+| R4-C02 전체 구성 | 7PNG 주요 영역·가격/후기 순서 대조; 캡처 밖 완전한 섹션 목록 아님 |
+| R4-C03 요소 목록 | 위 주요 요소와 코드 대응 수행; 전체 요소 census/정밀 명세 인증은 미완 |
+| R4-C04 정확 표시 | 플랜명/금액/기능·후기 표시와 보완 출처 대조, 보조 문구 분리; 줄바꿈 전체 동일성 대기 |
+| R4-C05 배치 | 구현1440×900/DPR1에서 하단CTA top 각각1251px, 후기344px×3열, 포스터1064×500 측정; 원본 확정 치수 아님 |
+| R4-C06 글자 | 구현 h1 Gellix700 60/60, 기존400/500/600/700 파일 유지; 원본 정확 파일/렌더링 동일성 대기 |
+| R4-C07 색·장식 | Yearly/추천/후기 역할색 유지; 보조색은 기존 muted `#52795f` 재사용·추정, 원본 측정값 아님 |
+| R4-C08 자산 | 로컬5자산·브라우저 이미지/폰트 로드 확인; 포스터 프레임/크롭·영상/자막·사용 조건 대기 |
+| R4-C09 상태 | 주기·추천·금액·Dialog·가상세션 분리, DOM 및 아래 Chrome 범위 검증 |
+| R4-C10 전환 | URL/history/CTA/취소·메뉴·Dialog 검증; 원본 미수록 전환/재생 규칙 확정 안 함 |
+| R4-C11 입력·저장 | 이력별snapshot·pathname초안·중복·사용자/Reset·메모리 수명 검증, 아래 방법별 구분 |
+| R4-C12 연결 | G01/G02/G03/G10/G11·G79 현재 경계 검증; 온보딩·G79 업무 전체는 범위 밖 |
+
+### 10.4 발견 문제·수정·보존
+
+1. 주기 전환이 현재 hash를 버림: `navigate({pathname, search, hash}, {preventScrollReset:true, flushSync:true})`로 URL 선택과 hash를 함께 보존했다. 마지막 연속 선택과 직후 CTA의 동기 반영은 유지했다.
+2. 플랜 취소 복귀가 hash를 버림: 선택 순간 `returnTo=pathname+search+hash`. 플랜ID/주기/가격 버전·금액 의미의 snapshot은 그대로 유지한다.
+3. 후기 외부 안내 취소가 query/hash를 버림: ReviewLink에 완전한 returnTo를 전달했다. sourcePath는 pathname으로 유지해 초안 정리 범위를 바꾸지 않았다.
+4. 후기 hero 가입→로그인→뒤로→취소도 query/hash를 버림: 이 ReviewsHero 소비자에만 SignupLink intentOptions를 전달했다. 공통 SignupLink/다른 소비자의 기존 정책은 수정하지 않았다.
+5. Business의 Hiring Agreement Templates 보조 문구가 동일 색/한 덩어리였음: 데이터에 featureNotes를 분리하고 다음 줄 보조색으로 표시했다. 원본 문구·의미·기능 개수는 보존했다. 정확한 색/타이포/픽셀 동일성은 대기다.
+
+[정식 회귀 9개](../../../FE/user-web/src/app/router/commercial-entry.test.tsx)를 추가했다. 최초8개 중3개 URL 손실 실패→수정 후8개 통과; 추가 후기 가입 복귀1개 실패→수정 후 최종9개 모두 통과. navigation mock 없이 실제 App/provider/라우터/history를 사용한다. jsdom에 없는 scrollIntoView/showModal/close만 대체했다.
+
+가격 URL 기본/잘못된 값, 과거 이력별 선택·다른 CRM 초안 보존, 가입/로그인 왕복, G79 표시와 취소, 사용자 변경·Reset의 오래된 인계 폐기, 공급자 remount의 메모리 초기화를 검사했다. remount는 실제 브라우저 새로고침과 구분한다. 정적 가격·후기에 가짜 로딩/저장 오류를 추가하지 않았다. 해당 비동기 늦은 응답·업무 저장 재시도는 N/A. 인증 저장소 기존 회귀는 전체 단위 실행에 포함했다.
+
+### 10.5 이번 실행·실제 브라우저·한계
+
+package 요구 Node>=24<25 / pnpm8.14.1을 확인했다. 기본 환경의 다른 버전을 설치/변경하지 않고 `/opt/homebrew/opt/node@24/bin/node`(24.10.0)로 기존 도구를 직접 실행했다. `NODE_DISABLE_COMPILE_CACHE=1`, `JITI_CACHE=false`, `JITI_FS_CACHE=false`를 명령 범위에만 적용했다.
+
+| 검사·실행 방식 | 이번 결과 |
+| --- | --- |
+| `node node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit --incremental false --pretty false` 및 node 설정 | 모두 통과, tsbuildinfo 생성 없음 |
+| `node node_modules/eslint/bin/eslint.js . --no-cache` | 통과 |
+| Node stdin `startVitest('test', [], options, viteOptions)` | **27파일130/130, 57.27초**. G04신규9, G03기존7, public-entry8/header6, 가격계산2 포함 |
+| Vitest 산출물 설정 | config:false/run:true/cache:false/pool:threads/execArgv:[]/maxWorkers:2, jsdom/setupFiles, reporter:default, coverage:false, fsModuleCache:false, optimizer client/ssr:false. Vite configFile:false/React/alias, optimizeDeps.noDiscovery:true/include:[], watch:null. 설정 번들·보고서/캐시 저장 안 함 |
+| Vite stdin API build | **1966 modules, 3.87초 통과**. configFile:false/React/alias/직접 PostCSS plugins, write:false/copyPublicDir:false/sourcemap:false. 디스크 build를 생성하지 않음 |
+| 원본·문서 검사 | Python `-B` stdin의 hashlib/struct/json/경로·배정 검증. 별도 스크립트/검증 JSON/로그 없음 |
+
+초기9333 포트가 없었지만 후속 확인에서 기존 Headless Chrome157.0.8103.80이 응답했다. 브라우저를 새로 실행하거나 프로필·시스템 설정을 변경하지 않았다. 기존 CDP에 Node WebSocket으로 연결하고 별도 메모리 browser context/tab에서 검사했다. 다운로드 거부·캐시 비활성, screenshot/trace/recording/보고서 API를 사용하지 않았다. 브라우저 테스트는 stdin 자동화이며 사람이 수동 조작한 결과가 아니다.
+
+- 실제 pointer/keyboard: /pricing·/reviews 직접 진입, 가격 reload·back/forward, native radio ArrowLeft, 3플랜×2주기×상하단 CTA **12조합**의 선택·취소, 연속 전환/중복 클릭, 가입→로그인→뒤로/취소, 후기 가입·외부 안내의 query/hash 복귀, 후기 카드 history 스크롤 복귀 통과.
+- 연결: 가상 Alex의 G79 선택 $792 표시·취소→가격→기존 Alex workspace, reload로 guest 복원. Product→CRM, 모바일 같은 Reviews 재선택의 메뉴 닫힘/본문 초점, 모바일 Pricing 이동, footer의 가격/후기, 고객군·Tax·Professional services의 소개/미수록 경계 통과. G79 업무·결제 기능은 여전히 미착수다.
+- 입력: CRM 공통 입력의 긴 한국어 오류→수정 인계, 합성 composition 중 제출 방지, 가격 취소 후 다른 CRM 초안 보존 통과. Input.insertText/합성 composition이며 실제 OS IME가 아니다.
+- 영상 안내: native Tab/Shift+Tab 순환·Escape·초점 복귀, media요소0, 작은 폭 Dialog닫기, DOM 검사에서 route 이탈/재진입과 overflow 복원 통과. 실제 영상 재생은 미구현/미검증이다.
+- 별도 새 탭의 /signup은 인계가 없고 /pricing?billing=monthly는 URL 주기를 표시했다. 브라우저 reload에서도 인계 폐기/가격 URL 유지 확인. 사용자 전환/Reset 후 과거 history 선택 폐기도 실제 Chrome에서 확인했다. 과거 두 snapshot의 상세 교차는 정식 DOM 테스트로 확인했으며 실제 브라우저 모든 조합으로 확대하지 않는다.
+- viewport: 1440×900, 320×600, 390×844, 768×600, 1024×600, 1440×360, DPR1·scale1에서 두 화면의 수평 overflow 없음. 1440×360에서 CSS zoom200%도 수평 overflow 없음. 모두 에뮬레이션/DOM 치수 검사이고 실제 기기·브라우저 UI 확대·전 요소 시각 가림 검토와 다르다.
+- 네트워크/console: 완주7구간 **491개 요청**을 CDP Network/Runtime/Log에서 차단 없이 관찰했다. 관찰 구간의 인증·업무·결제·외부/XHR/Fetch 요청0, loadingFailed0, console/error/uncaught0. 초기 검사 코드의 숨은 모바일 메뉴 대상·불충분한 Enter 이벤트·evaluate 변수 재선언 때문에 중단한 구간은 성공 수에 넣지 않았다. viewport/대기/실제 버튼 클릭·지역 변수 범위를 고쳐 해당 시나리오를 재실행했다. 이것은 제품 오류 수정이 아니다.
+- 시각 동일성은 **미검증**. 원본 PNG와 새 캡처의 픽셀 비교 금지, 정확 폰트/촬영 조건·포스터 차이도 남는다. 브라우저 행동 통과·DOM 측정을 동일성으로 올리지 않는다. OS IME·보조기술·실기기·Safari/Firefox/WebKit은 G01/G04/G84 환경 잔여다.
+
+기존5173 PID94330의 G03 메모리 번들은 정상 build 후 같은 주소의 G04 PID20135로 교체했다. 새 JS `/assets/index-CzyUxy_H.js`, CSS `/assets/index-BKD1SALm.css`, revision `G04-b4c10bd9-working-tree-20261124`. **HMR 없음**. 이전 사용자 탭/다른 서버는 변경하지 않았다. 도구 실행 중 오래된 Browserslist 경고는 있었지만 의존성 갱신은 하지 않았다.
+
+### 10.6 공통 체크리스트·엔지니어링 검토
+
+| 적용 규칙·코드 위치 | 결과 |
+| --- | --- |
+| START 착수/범위·근거/순서, PM/UX/006 | [x] G04만, 기존 HEAD/목 범위/영상·가격 경계 보존. G05/G32 자동 착수 없음 |
+| 구조/컴포넌트·MOCK: pricing-data, PricingPlans, ReviewsHero/ReviewLink | [x] 정적 표시 데이터와 선택 행동 분리, 공통 UI/provider/BE 변경 없음, 새 의존성 없음 |
+| STATE/USER-FLOW: billing URL, PublicProvider의 sourcePath/returnTo/snapshot | [x] 실제 router·취소/이력·사용자 격리 회귀. 실제 구독·권한 변경 없음 |
+| COMMENT/TypeScript·ENGINEERING 6 | [x] 변경 컴포넌트/handler·신규 test/helper 책임 한글 주석, strict 타입/lint 통과 |
+| WEB/ENGINEERING 5 | [x] 위 Chrome native radio/Dialog·모바일 메뉴·URL/폭 검증. [ ] 실제 OS IME/AT/다른 엔진·전 화면 시각 가림 검증 |
+| MOCK/ENGINEERING 3·4 | [x] 현재 목 공급자·실제 API 없는 변경 범위 검토 및 관찰 범위 네트워크 확인. N/A 정적 가격/후기 저장 실패·pending·서버 영속성 |
+| UXUI/ENGINEERING 1·7 | [x] 원본7장/R4·관찰/보완/목/미확인 구분. [ ] 전체 요소 census·정밀 치수/픽셀 동일성 |
+| TESTING/종료 문서 | [x] 현재 명령·실패→수정→통과·브라우저 자동화/DOM/미실행 구분. 관련 체크/색인/링크 검토는 이 절의 후속 최종 기록 참조 |
+
+### 10.7 남은 항목·담당·직접 확인
+
+- [ ] G04/R01: 원본 Monthly 렌더링/가입 전환·후기 미수록 전체·영상/자막/플레이어·정확 자산/폰트/촬영/모바일·픽셀 동일성. 기존 포스터 크롭과 후기 높이/줄바꿈·가격 그림자/간격 차이는 해소로 판정하지 않는다.
+- [ ] G01/G02/G04/G84: 다른 브라우저/실기기·OS IME·보조기술·전체 확대/겹침. 이번 G04 소비 검증만으로 G01~G03 전체 환경 대기를 닫지 않는다.
+- [ ] G03/R01: Tax·Agencies·Professional services 등의 미수록 소개 본문/원본 URL. 후자는 로컬 후보일 뿐이다.
+- [ ] G10/G11/G13/G14: 원본 실제 인증·온보딩·전체 왕복 정책. 이번 선택 인계/취소와 기존 저장소 회귀가 온보딩 전체 재검증은 아니다.
+- [ ] R18/G79: 실제 연 총액·세금·국가·통화·좌석/할인·반올림·구독/체험/환불/권한. 서버 후속 메모이며 이번 API계약/DB 설계 없음. G79 업무 미착수 유지.
+
+미리보기 `http://127.0.0.1:5173/`에서 `/pricing?billing=monthly&entry=footer#plans` → 두 주기/플랜 상하단 CTA → 가입/로그인 → 취소 후 원래 query/hash를 확인한다. `/reviews?entry=footer#review-11-brianna` → 평점/직무 링크와 가입 → 취소, 포스터 → Tab/Shift+Tab/Escape를 확인한다. `/components` → Preview controls에서 Alex → Public → Pricing → 선택 → G79 취소로 인계를 확인하고 Reset preview로 기본값을 복원한다. 영상은 미제공 안내가 정상이다.
+
+커밋·push·배포 없음. 이번 G04 이후 Goal은 자동 시작하지 않는다.
+
+### 10.8 최종 누락·정합성 점검
+
+- [x] 7원본 단계·6 R4 항목·12공통기준, 기능9/8/6·가격/금액 의미·추가 상품·12 CTA조합·후기 표시/보완 순서·5자산·13로컬 후기 목적지·영상 경계, 메뉴/초안/가입/취소·G79 인계를 결과10.2~10.6과 재대조했다.
+- [x] 전체 계획85G/22R/134흐름/754단계/642고유Screen, R4 455메모/공통12를 검사했다. 기존 단계 배정·선행 관계/실행 순서·과거 verification 값과 다른449개 R4 메모는 변경하지 않았다. 선행 참조는 존재하고 순환 없음.
+- [x] 계획170개 Markdown의 로컬 링크6336회·앵커1631회와 새 JSON 문서 참조1종을 기준 HEAD와 비교했다. 새 경로/앵커/JSON 오류0. 기존 누락 링크·앵커218건은 과거 산출물 등을 포함한 이력으로 구분하며 이번에 복원하지 않았다. 파일 전체 정독과 자동 링크 검사는 다르다.
+- [x] 제품 소스4개·정식 테스트1개·기존 계획28개만 변경했다. 원본/분석 정본/기존 evidence/FE환경/BE/DB 변경 없음. 생성물 경로의 최신 수정 시각은 기존 `.vite`/dist 11-22, test-results11-21, playwright-report11-12로 이번 실행 전이다. `.vite-temp` 비어 있음, `.cache`/계획 evidence 없음. 새 임시 스크립트·증거 파일 없음, `git diff --check` 통과.
+- [x] 5173의 `/`·가격·후기·새 JS/CSS HTTP200과 revision을 확인했다. 이는 별도의 실제 Chrome 검증과 구분한다. 마지막 Reset은 guest/normal로 확인했고 작업용 메모리 browser context/두 탭만 종료했다. 사용자의 기존 브라우저/다른 탭과 5173 미리보기는 보존했다.
+- [ ] 원본/시각·환경/정책 잔여는 10.7의 담당 G/R에 남아 있다. G04 전체 완료나 G79 업무 구현 완료로 표시하지 않았다.
