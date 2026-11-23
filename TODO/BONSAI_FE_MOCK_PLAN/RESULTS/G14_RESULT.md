@@ -6,7 +6,7 @@
 
 ## 근거와 범위
 
-- 이번 MCP 조회: Bonsai Web `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`. 404 `b340c3e3-ad5f-401c-839d-60e02a8c7ce2` 2단계, Hiding sidebar `ff646f32-f010-478e-a3bd-572ccc501292` 3단계. [Screen ID/URL](evidence/g14/mcp-sources.json), [직접 본 PNG·해시](evidence/g14/source-manifest.json). 두 ANALYSIS의 관찰·질문을 대조했다.
+- 이번 MCP 조회: Bonsai Web `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`. 404 `b340c3e3-ad5f-401c-839d-60e02a8c7ce2` 2단계, Hiding sidebar `ff646f32-f010-478e-a3bd-572ccc501292` 3단계. Screen ID/URL (과거 산출물: `evidence/g14/mcp-sources.json`, 현재 체크아웃에 없음), 직접 본 PNG·해시 (과거 산출물: `evidence/g14/source-manifest.json`, 현재 체크아웃에 없음). 두 ANALYSIS의 관찰·질문을 대조했다.
 - 카탈로그 Latest/2146은 이번 연속 작업 G05 조회의 재사용이다. 촬영 시각·서비스 빌드·원본 URL/HTTP 상태는 미확인이다. 404 두 화면을 같은 서비스의 전후 상태로 단정하지 않는다.
 - 관찰: 진녹색 404/홈·신고 버튼, 흰색 문서 경고/Go Home, 200px 상당 펼침/60px 상당 축소 메뉴, 텍스트 숨김·본문 확장, 메뉴 순서/구분선, 검색·Track Time·New·계정 진입. 크기는 PNG 2880×1800을 MCP 명목 1440×900으로 정규화한 CSS 추정이다. 원본 DPR 확정이 아니다.
 - 사이드바01의 Feb14/3개 프로젝트와02~03의 Feb6/1개 프로젝트는 다른 관찰 상태다. G14는 메뉴만 소비하며 본문은 G13 빈 대시보드를 재사용한다. G72 등 후속 업무 대시보드·집계·실제 팀/청구/프로젝트 CRUD를 구현하지 않았다.
@@ -41,9 +41,9 @@
 
 기존 `http://127.0.0.1:5173/` PID59363 보존. FE/user-web에서 Node24.18.0/pnpm8.14.1, Chromium148.0.7778.96. Backend/외부 API/커밋/push/배포 없음.
 
-현재 실행: `pnpm typecheck`, `pnpm lint`, `pnpm test`(38/38), `pnpm build`; `pnpm exec playwright test tests/e2e/app-shell.spec.ts tests/e2e/foundation.spec.ts --workers=2 --reporter=line,json`; signup/login/reset/onboarding/public-handoff/commercial 포함 관련 검사는 최종 개발·빌드 각41/41 통과했다. 실제 명령의 환경 초기화는 `eval "$(fnm env --shell zsh)" && fnm use 24.18.0 && corepack pnpm …`이다. `PLAYWRIGHT_JSON_OUTPUT_FILE`로 [실행 증거](evidence/g14/)에 저장한다.
+현재 실행: `pnpm typecheck`, `pnpm lint`, `pnpm test`(38/38), `pnpm build`; `pnpm exec playwright test tests/e2e/app-shell.spec.ts tests/e2e/foundation.spec.ts --workers=2 --reporter=line,json`; signup/login/reset/onboarding/public-handoff/commercial 포함 관련 검사는 최종 개발·빌드 각41/41 통과했다. 실제 명령의 환경 초기화는 `eval "$(fnm env --shell zsh)" && fnm use 24.18.0 && corepack pnpm …`이다. `PLAYWRIGHT_JSON_OUTPUT_FILE`로 실행 증거 (과거 산출물: `evidence/g14/`, 현재 체크아웃에 없음)에 저장한다.
 
-`node scripts/capture-app-shell.mjs`와 `/tmp/onehand-visual-venv/bin/python scripts/compare-app-shell.py`: 12장, 원본5쌍/차이 이미지. [원본 비교](evidence/g14/comparisons/), [캡처 조건/네트워크](evidence/g14/browser-captures.json), [정규화/지표](evidence/g14/visual-metrics.json). 1440×900 DPR1/스크롤0, 320·390·768 및320×380 모달 상하단. 그림자/포커스·샘플 이름·원본 없는 동작·G13 본문 차이를 함께 기록했다. 픽셀 오차는 합격률이 아니다.
+`node scripts/capture-app-shell.mjs`와 `/tmp/onehand-visual-venv/bin/python scripts/compare-app-shell.py`: 12장, 원본5쌍/차이 이미지. 원본 비교 (과거 산출물: `evidence/g14/comparisons/`, 현재 체크아웃에 없음), 캡처 조건/네트워크 (과거 산출물: `evidence/g14/browser-captures.json`, 현재 체크아웃에 없음), 정규화/지표 (과거 산출물: `evidence/g14/visual-metrics.json`, 현재 체크아웃에 없음). 1440×900 DPR1/스크롤0, 320·390·768 및320×380 모달 상하단. 그림자/포커스·샘플 이름·원본 없는 동작·G13 본문 차이를 함께 기록했다. 픽셀 오차는 합격률이 아니다.
 
 ## 미확인·잔여·서버 후속
 
@@ -60,7 +60,7 @@ WebKit/Firefox/실기기·OS IME·실제 OS 글자 확대/스크린리더는 실
 
 ## 최종 현재 검증 (2026-11-21)
 
-- 1차14개8통과/6실패→2차15개11통과/4실패→확대41개34통과/7실패→최종 개발41/41·빌드41/41. 확대 실패는 이미 수정한 selector/새 레이아웃 전제와 이름 대신 이니셜을 표시하는 계정 버튼의 접근 이름 검사, 목적지 DOM 준비를 기다리는 테스트 보정이었다. 해당 실패도 [실행 증거](evidence/g14/)에 보존했다. 제품의 scope/포커스/인계 수정과 테스트 전제 보정을 구분한다.
+- 1차14개8통과/6실패→2차15개11통과/4실패→확대41개34통과/7실패→최종 개발41/41·빌드41/41. 확대 실패는 이미 수정한 selector/새 레이아웃 전제와 이름 대신 이니셜을 표시하는 계정 버튼의 접근 이름 검사, 목적지 DOM 준비를 기다리는 테스트 보정이었다. 해당 실패도 실행 증거 (과거 산출물: `evidence/g14/`, 현재 체크아웃에 없음)에 보존했다. 제품의 scope/포커스/인계 수정과 테스트 전제 보정을 구분한다.
 - typecheck/lint/unit38/build 통과. 최종 JS814.65kB/gzip223.70kB. 기존500kB chunk·오래된 Browserslist 경고는 남고 기능 검증 통과와 구분한다. `git diff --check` 통과.
 - 개발: {'requests': 124213, 'violations': 0, 'failures': 0, 'consoleErrors': 0}; 빌드: {'requests': 1551, 'violations': 0, 'failures': 0, 'consoleErrors': 0}. 차단/interception 없이 실제 요청을 관찰했다. 모든 요청이 실제 서비스 호출0건이라는 뜻은 아니며 정적 파일 요청은 위 수에 포함된다. 인증·업무·외부 API/실패 요청/console 오류는 최종 검사0건이다.
 - 최종 12캡처의 실제 정적 요청3479, API/외부·실패·console0. 원본5쌍과 좁은 화면/짧은 메뉴 상하단을 직접 비교했다. 녹색404 배경은 원본 픽셀(22,58,48)을 확인해 #163a30으로 보정; 메뉴02/03의 측면 #fcfcfc/상단white를 채택했다. 글꼴·일부 간격/아이콘·계정 이니셜·본문 데이터 차이는 남는다.
@@ -69,9 +69,9 @@ WebKit/Firefox/실기기·OS IME·실제 OS 글자 확대/스크린리더는 실
 
 ### G15 이후 최종 회귀·연결 갱신 (2026-11-21)
 
-[G15 검증](evidence/g15/final-verification.json): 최종 코드 타입/lint/build·unit42/42, 전체 개발/빌드82/82씩. 실제 navigation/요청 관찰에서 API/외부·실패·console 오류0. 각 단계의 과거 검증 수치는 위 기록대로 보존한다. G14 공개 인증·온보딩·플랜/템플릿/생성기 선택 복귀와 G15 동일 회사 편집/주소/로고/공개 여부 연결은 해소했다. 미수록 본문·원본 정책/동작·시각/환경 및 G16 이후 인계는 해소된 것으로 처리하지 않는다.
+G15 검증 (과거 산출물: `evidence/g15/final-verification.json`, 현재 체크아웃에 없음): 최종 코드 타입/lint/build·unit42/42, 전체 개발/빌드82/82씩. 실제 navigation/요청 관찰에서 API/외부·실패·console 오류0. 각 단계의 과거 검증 수치는 위 기록대로 보존한다. G14 공개 인증·온보딩·플랜/템플릿/생성기 선택 복귀와 G15 동일 회사 편집/주소/로고/공개 여부 연결은 해소했다. 미수록 본문·원본 정책/동작·시각/환경 및 G16 이후 인계는 해소된 것으로 처리하지 않는다.
 
-G15 최종 코드로 셸/40412화면·원본5쌍을 [별도 경로](evidence/g15/g14-regression/)에 다시 촬영했다. 체험 띠를 실제 버튼으로 닫아 원본 조건을 맞췄다. 3500요청·외부/API/오류0. G14 당시 증거는 보존한다.
+G15 최종 코드로 셸/40412화면·원본5쌍을 별도 경로 (과거 산출물: `evidence/g15/g14-regression/`, 현재 체크아웃에 없음)에 다시 촬영했다. 체험 띠를 실제 버튼으로 닫아 원본 조건을 맞췄다. 3500요청·외부/API/오류0. G14 당시 증거는 보존한다.
 
 ### G01~G15 감사 후 재점검 (2026-11-21)
 
@@ -96,3 +96,7 @@ G13 이력 복귀/query/hash와 새 대시보드 이동의 경계 및 기존 공
 ### G25 연결·회귀
 
 [G25 결과](G25_RESULT.md)에서 Tasks sidebar/이전pending경로·대시보드Add task를 실제보드/패널로 연결하고 프로젝트Overview/Tasks/TimeTracking과 제한협업자도 같은taskId를 사용한다. G18 과거최소작업/시간snapshot은 현재공통원본으로 대체됐으며 원본시점차이는 기록했다. 개발/빌드26개씩 현재검증, 금액/설정권한은 확장하지 않았다. G26하위작업/G27활동·자료/시각/환경 대기는 유지한다.
+
+## G01 공통 모달 소비 회귀 — 2026-11-23 KST
+
+[G01 재검토](G01_RECHECK_RESULT.md)에서 셸·모바일 메뉴·실제 routing/복귀의 공통 변경 영향을 확인했다. 이 결과는 G14 전체 원본 요소/시각 재검토 완료가 아니며 위 과거 수치를 보존한다.

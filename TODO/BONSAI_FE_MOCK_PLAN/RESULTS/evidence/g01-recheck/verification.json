@@ -1,0 +1,3272 @@
+{
+  "date": "2026-11-23 KST",
+  "browser": "Playwright Chromium",
+  "mode": "memory-only mock, no request interception",
+  "regressionReproduction": {
+    "beforeFix": "2 failed / 2",
+    "afterFixFoundation": "9 passed / 9",
+    "reverseDragBeforePointerUpFix": "1 failed / 1",
+    "finalFoundation": "9 / 9 within each final 38-test run"
+  },
+  "typecheck": "passed",
+  "lint": "passed",
+  "unit": {
+    "passed": 100,
+    "files": 23
+  },
+  "build": "passed with existing Browserslist/chunk-size warnings",
+  "reports": [
+    {
+      "report": "e2e-results.json",
+      "sha256": "439d2d9b362df2db46f6334b86a05627791155b763713d148b10df749e017fc5",
+      "stats": {
+        "startTime": "2026-11-23T07:45:42.793Z",
+        "duration": 389903.92699999997,
+        "expected": 163,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "tests": [
+        {
+          "file": "app-shell.spec.ts",
+          "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+          "status": "passed",
+          "requests": 399,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+          "status": "passed",
+          "requests": 1116,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+          "status": "passed",
+          "requests": 375,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "template login returns to the same public template and restores only its email draft",
+          "status": "passed",
+          "requests": 404,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+          "status": "passed",
+          "requests": 368,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "protected destination survives signup, optional verification and every onboarding step",
+          "status": "passed",
+          "requests": 366,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+          "status": "passed",
+          "requests": 1897,
+          "sockets": 5,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G02: shared signup links deduplicate double clicks and preserve keyboard and new-tab navigation",
+          "status": "passed",
+          "requests": 774,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G08: TOC and related article return preserve /help/collections/96965?q=portal",
+          "status": "passed",
+          "requests": 1080,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G08: TOC and related article return preserve /support",
+          "status": "passed",
+          "requests": 1093,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G15: discarding an open address editor releases the company save and preserves normal cancellation",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G15: latest parent country survives address save without discarding address or currency edits",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G15: profile links use committed slugs through failures, discard, successful save and disabled profiles",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G13: pause and history resume distinguish restored history from a new destination",
+          "status": "passed",
+          "requests": 403,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "audit-recheck.spec.ts",
+          "title": "audit G13: pause and dashboard resume distinguish restored history from a new destination",
+          "status": "passed",
+          "requests": 404,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "branding-settings.spec.ts",
+          "title": "branding previews separately, commits shared logo only on Save, and reloads saved defaults through real history",
+          "status": "passed",
+          "requests": 729,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "branding-settings.spec.ts",
+          "title": "failed saves keep edits, cancel preserves draft, new selections and navigation cancel late commits",
+          "status": "passed",
+          "requests": 362,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "branding-settings.spec.ts",
+          "title": "branding read failure, empty and denied states recover; workspace and logout discard pending drafts",
+          "status": "passed",
+          "requests": 365,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "branding-settings.spec.ts",
+          "title": "local logo retries, cancellation and Discard cannot change company data or leak blob URLs",
+          "status": "passed",
+          "requests": 367,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "branding-settings.spec.ts",
+          "title": "header keyboard, outside click and unknown options preserve focus, saved choices and permissions",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "branding-settings.spec.ts",
+          "title": "narrow and enlarged branding retains full controls, long Korean file names and composition guards",
+          "status": "passed",
+          "requests": 366,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "client-fields-images.spec.ts",
+          "title": "G20 field definitions and per-client values retain IDs, primary email and delete boundaries",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "client-fields-images.spec.ts",
+          "title": "G20 local image selection, invalid decode, failure retry, cancellation, list/detail and removal release object URLs",
+          "status": "passed",
+          "requests": 366,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "client-fields-images.spec.ts",
+          "title": "G20 narrow field edits, synthetic IME and delayed cancellation preserve saved definitions and images",
+          "status": "passed",
+          "requests": 723,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 global New creates one customer, preserves contact/tag identity in list/detail and real history",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 failure retry preserves input; cancel and history departure abort late creation",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 read states, tabs, direct invalid URL, narrow dialog and synthetic IME retain accessible boundaries",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "pricing toggle uses historical prices, actual history and direct URL refresh",
+          "status": "passed",
+          "requests": 1125,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "different plan handoffs keep older history snapshots and cancellation preserves the cycle",
+          "status": "passed",
+          "requests": 757,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "rapid cycle changes and repeated plan clicks create only the first handoff",
+          "status": "passed",
+          "requests": 727,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "explicit mock session routes plan choice to G79 handoff without changing workspace access",
+          "status": "passed",
+          "requests": 400,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "reviews poster explicitly lacks media, traps focus, closes and resets on browser return",
+          "status": "passed",
+          "requests": 766,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "review badges and author links use local destinations and real back restores card scroll",
+          "status": "passed",
+          "requests": 368,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "commercial.spec.ts",
+          "title": "pricing and review contents remain inside narrow and enlarged layouts including long Korean",
+          "status": "passed",
+          "requests": 745,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "saved public profile off persists after logout, leaves the slug and shared preview intact, and restores on re-enable",
+          "status": "passed",
+          "requests": 717,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "settings read states, permission, cancellation and scope switches cannot publish stale or foreign drafts",
+          "status": "passed",
+          "requests": 364,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "narrow company forms preserve full actions, address Escape, IME guard and native browser history",
+          "status": "passed",
+          "requests": 719,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company.spec.ts",
+          "title": "affiliate actions use distinct local destinations and browser history restores the original section",
+          "status": "passed",
+          "requests": 810,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company.spec.ts",
+          "title": "careers and social destinations preserve route-specific return and do not claim application success",
+          "status": "passed",
+          "requests": 772,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company.spec.ts",
+          "title": "historical policies distinguish excerpts, versions and local cookie or privacy contacts",
+          "status": "passed",
+          "requests": 722,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company.spec.ts",
+          "title": "company screens keep content and CTA bounds usable at 320px and CSS text enlargement",
+          "status": "passed",
+          "requests": 2586,
+          "sockets": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "content.spec.ts",
+          "title": "resources → filtered search → article → real back/forward preserves URL and scroll",
+          "status": "passed",
+          "requests": 776,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "content.spec.ts",
+          "title": "empty, no-match, page bounds and history remain distinct",
+          "status": "passed",
+          "requests": 1122,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "content.spec.ts",
+          "title": "mock failure retries without losing query and slow old searches never replace the latest intent",
+          "status": "passed",
+          "requests": 1152,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "content.spec.ts",
+          "title": "narrow article, keyboard TOC and signup preserve the email draft without external calls",
+          "status": "passed",
+          "requests": 368,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+          "status": "passed",
+          "requests": 2529,
+          "sockets": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "query failure retries, empty and restricted states remain distinct",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+          "status": "passed",
+          "requests": 352,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+          "status": "passed",
+          "requests": 2476,
+          "sockets": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "dialog text selection ending on the backdrop preserves the draft",
+          "status": "passed",
+          "requests": 352,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "nested dialogs release scrolling on actual history navigation and retain the parent lock on Escape",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "g18-g27-journey.spec.ts",
+          "title": "G18–G27 owner to invited collaborator and back preserves the same customer, project, task, subtask and comments",
+          "status": "passed",
+          "requests": 368,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "help.spec.ts",
+          "title": "help collections, search, language and actual article history preserve their separate states",
+          "status": "passed",
+          "requests": 1098,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "help.spec.ts",
+          "title": "article TOC, unavailable video, static settings and feedback keep real focus and navigation",
+          "status": "passed",
+          "requests": 1094,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "help.spec.ts",
+          "title": "help read failure, empty data and slow searches do not replace the latest URL intent",
+          "status": "passed",
+          "requests": 1574,
+          "sockets": 4,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "help.spec.ts",
+          "title": "feedback retains failed choice, allows retry and cancels obsolete writes on selection or departure",
+          "status": "passed",
+          "requests": 1201,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "help.spec.ts",
+          "title": "contact links, narrow help, keyboard and synthetic IME remain local and visible",
+          "status": "passed",
+          "requests": 751,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "introduction.spec.ts",
+          "title": "landing menus enter the three original introductions and all artwork stays local and static",
+          "status": "passed",
+          "requests": 2814,
+          "sockets": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "introduction.spec.ts",
+          "title": "introduction email drafts are scoped, repeated submits deduplicate, and cancellation returns to the source",
+          "status": "passed",
+          "requests": 791,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "introduction.spec.ts",
+          "title": "FAQ keyboard controls reveal dated answers, close prior answers and hand off locally",
+          "status": "passed",
+          "requests": 400,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "introduction.spec.ts",
+          "title": "related articles retain stable destinations, real history and an explicit unknown page two",
+          "status": "passed",
+          "requests": 816,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "introduction.spec.ts",
+          "title": "narrow introductions and demo handoff preserve focus, Escape, scroll and visible content",
+          "status": "passed",
+          "requests": 1591,
+          "sockets": 4,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "introduction.spec.ts",
+          "title": "scroll never changes a session and the dashboard header requires an explicitly chosen mock session",
+          "status": "passed",
+          "requests": 1254,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invitations.spec.ts",
+          "title": "G18 invitation failure retry accepts one G17 ID, limits navigation and preserves membership after logout",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invitations.spec.ts",
+          "title": "G18 cancel, expired, removed and reused invitation states never silently accept; refresh resets memory",
+          "status": "passed",
+          "requests": 1108,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invitations.spec.ts",
+          "title": "G18 narrow form, long Korean input, synthetic composition and mobile menu preserve keyboard access",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invitations.spec.ts",
+          "title": "G18 existing account returns from real login, joins the same invitation and retains its original workspace",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invitations.spec.ts",
+          "title": "G18 slow acceptance cancels on explicit cancel and expiry changes without creating a late member",
+          "status": "passed",
+          "requests": 398,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invoice-generator.spec.ts",
+          "title": "invoice template → generator calculates the observed amounts, blank rows and removal with actual history",
+          "status": "passed",
+          "requests": 733,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invoice-generator.spec.ts",
+          "title": "validation preserves drafts and the signup handoff is a snapshot rather than a PDF",
+          "status": "passed",
+          "requests": 365,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invoice-generator.spec.ts",
+          "title": "failed and cancelled local handoffs retain inputs and cannot navigate after editing or leaving",
+          "status": "passed",
+          "requests": 1144,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "invoice-generator.spec.ts",
+          "title": "narrow generator supports long Korean, keyboard and synthetic composition without clipped fields",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "landing loads local Gellix and all original sections, with no preview tools or APIs",
+          "status": "passed",
+          "requests": 788,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "menus support hover, keyboard, Escape, outside click, template selection and local handoffs",
+          "status": "passed",
+          "requests": 770,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "email validation, IME, retry, back retention, cancel and refresh stay in memory",
+          "status": "passed",
+          "requests": 1114,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "testimonial, finance, branding, footer disclosure and history restore real scroll",
+          "status": "passed",
+          "requests": 400,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "narrow widths, mobile menu, long Korean input, zoom and reduced motion keep controls usable",
+          "status": "passed",
+          "requests": 3176,
+          "sockets": 8,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "G01 reset clears public draft while session and component previews remain separate",
+          "status": "passed",
+          "requests": 397,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "mobile close and breakpoint changes clear submenus and keep keyboard targets reachable",
+          "status": "passed",
+          "requests": 397,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "landing.spec.ts",
+          "title": "each public destination family has an explicit local Goal boundary",
+          "status": "passed",
+          "requests": 1805,
+          "sockets": 5,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "login.spec.ts",
+          "title": "login preserves failed input, supports retry, logout and protected-history recovery",
+          "status": "passed",
+          "requests": 719,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "login.spec.ts",
+          "title": "slow login cancellation and synthetic IME cannot create a late session",
+          "status": "passed",
+          "requests": 397,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "login.spec.ts",
+          "title": "two-factor code is required, expiry and renewal work, and cancellation restores an empty login",
+          "status": "passed",
+          "requests": 719,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "login.spec.ts",
+          "title": "logout failure, cancellation and local expiry use real protected navigation",
+          "status": "passed",
+          "requests": 719,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "login.spec.ts",
+          "title": "social mock cancellation restores focus, Apple uses Blair, and narrow login keeps controls visible",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "onboarding.spec.ts",
+          "title": "setup preserves per-step answers, rejects invalid invitations and saves the same company with its original intent",
+          "status": "passed",
+          "requests": 375,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "onboarding.spec.ts",
+          "title": "setup pauses and re-enters with its draft, handles keyboard and composition, and cannot commit after cancel or departure",
+          "status": "passed",
+          "requests": 401,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "onboarding.spec.ts",
+          "title": "uncommitted setup clears on logout and refresh, while narrow layouts expose long Korean labels and all actions",
+          "status": "passed",
+          "requests": 717,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "password-reset.spec.ts",
+          "title": "password reset separates receipt, weak input clearing, retry and blank login without automatic authentication",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "password-reset.spec.ts",
+          "title": "unknown address, invalid direct URL, expiry, fresh link and refresh remain distinct",
+          "status": "passed",
+          "requests": 712,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "password-reset.spec.ts",
+          "title": "slow reset cancellation and departure preserve input without changing the password; IME remains guarded",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "password-reset.spec.ts",
+          "title": "pricing intent survives recovery while the completed login fields remain empty",
+          "status": "passed",
+          "requests": 371,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "password-reset.spec.ts",
+          "title": "narrow recovery keeps input, errors and complete actions within bounds",
+          "status": "passed",
+          "requests": 356,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-creation.spec.ts",
+          "title": "G21 client and global/column entry share IDs, initial stages, actual history and G17 project choices",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-creation.spec.ts",
+          "title": "G21 nested new client preserves project draft and failure retry produces one project; slow close prevents late creation",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-creation.spec.ts",
+          "title": "G21 read states, narrow fields, keyboard picker, synthetic IME, direct URL and refresh retain boundaries",
+          "status": "passed",
+          "requests": 1079,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-creation.spec.ts",
+          "title": "G21 newly created project is the exact G17 invitation selection and G18 accepted collaboration destination",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-settings.spec.ts",
+          "title": "G24 explicit name save preserves history and shared list names through cancel, failure, duplicate submit and real back",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-settings.spec.ts",
+          "title": "G24 settings validates dates/rate, saves all fields, retains end date on reentry and clears without rewriting time/history",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-settings.spec.ts",
+          "title": "G24 stale settings cannot overwrite a newer header name and cancel/tab departure abort slow writes",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-settings.spec.ts",
+          "title": "G24 project tabs use real URL/history and same member/time IDs without granting unfinished business actions",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-settings.spec.ts",
+          "title": "G24 narrow long Korean settings and synthetic IME preserve keyboard focus and unclipped fields",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-stage-tags.spec.ts",
+          "title": "G23 actual pointer drag changes both stage counts, preserves tag/client and retries failures without false signature",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-stage-tags.spec.ts",
+          "title": "G23 keyboard same-column order and stage latest intent/failure/cancel persist through actual list/detail history",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-stage-tags.spec.ts",
+          "title": "G23 tag creation retry, shared rename and unlink keep definitions and project IDs distinct across board/list",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-stage-tags.spec.ts",
+          "title": "G23 narrow tags/IME and keyboard stage menus preserve focus, cancel late writes and survive reentry",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-views.spec.ts",
+          "title": "G22 board/list preserve IDs, monetary Due, sort/filter query and real back/forward detail navigation",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-views.spec.ts",
+          "title": "G22 row actions support keyboard, outside/Escape focus and actual View Project without pretending lifecycle changes",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "project-views.spec.ts",
+          "title": "G22 direct URL, refresh, read errors, narrow horizontal regions and synthetic IME preserve view boundaries",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "public-handoff.spec.ts",
+          "title": "older signup history resolves its own draft and return page after a second introduction handoff",
+          "status": "passed",
+          "requests": 427,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "signup.spec.ts",
+          "title": "signup validates, retries without losing input and carries the selected plan through authentication",
+          "status": "passed",
+          "requests": 372,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "signup.spec.ts",
+          "title": "slow signup cancellation, route departure and synthetic IME cannot create a late session",
+          "status": "passed",
+          "requests": 401,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "signup.spec.ts",
+          "title": "social cancellation restores focus; a sample identity succeeds and duplicate signup remains editable",
+          "status": "passed",
+          "requests": 362,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "signup.spec.ts",
+          "title": "local email verification survives StrictMode, supports expiry/cancel/retry and confirms no real email",
+          "status": "passed",
+          "requests": 372,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "signup.spec.ts",
+          "title": "narrow signup exposes complete fields and buttons with long Korean input and text enlargement",
+          "status": "passed",
+          "requests": 380,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 explicit creation, complete/reopen, inline title and completed assignment persist across actual global/project history",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 empty validation, write failure retry and pending cancellation preserve existing children without duplicate or late rows",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 title failure retains input and retry; delete affordance is explicitly unavailable without removing the row",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 narrow rows, long Korean, synthetic IME and keyboard picker preserve boundaries, cancellation and refresh reset",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-comments.spec.ts",
+          "title": "G27 automatic activities differ from comments; double submission clears once and same ID survives actual global/project history",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-comments.spec.ts",
+          "title": "G27 failure retains body, retry adds once and cancelling a slow submission or leaving never adds a late comment",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-comments.spec.ts",
+          "title": "G27 narrow long text, synthetic composition and nested comment actions retain input, focus and explicit unavailable boundary",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-lifecycle.spec.ts",
+          "title": "G29 status/completion to archive keeps namesake/time and removes the same ID from board/dashboard/history",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-lifecycle.spec.ts",
+          "title": "G29 deletion cancels by Escape/outside/X, retries one target and keeps other same-title tasks",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-lifecycle.spec.ts",
+          "title": "G29 failed archive, slow deletion cancel and real history departure preserve saved children/comments",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-lifecycle.spec.ts",
+          "title": "G29 narrow keyboard menus, local link and confirmation retain visible boundaries and focus",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-lifecycle.spec.ts",
+          "title": "G29 removal of every active task yields empty consumers and project access errors never expose stale task cards",
+          "status": "passed",
+          "requests": 722,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-status.spec.ts",
+          "title": "G28 definitions share labels/colors/order while completion retains the row, historical activity and time",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-status.spec.ts",
+          "title": "G28 failed settings preserve input, duplicate retry saves once and Escape/cancel discards slow or unsaved edits",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-status.spec.ts",
+          "title": "G28 keyboard, narrow palette, long Korean, synthetic IME and history keep the settings boundary",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-status.spec.ts",
+          "title": "G28 completion failure retries without duplicate activity and keyboard cancellation keeps the saved row",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 multiple task copies keep new IDs/files/children and survive independent template edits, completion, archive and delete",
+          "status": "passed",
+          "requests": 370,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 failure retry keeps selections, duplicate creation is single, and slow cancel/history departure cannot create late tasks",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 empty templates, direct unavailable projects, reload and narrow keyboard keep real selection and close boundaries",
+          "status": "passed",
+          "requests": 722,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 project entry preselects its source, keeps hash/filter history and isolates a new browser tab",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 empty template naming, same-name identities, rename and browser history preserve actual data",
+          "status": "passed",
+          "requests": 722,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 child Save and files stay draft until Save Task, survive retry and remain editable after reentry",
+          "status": "passed",
+          "requests": 364,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 pending cancel, deleted direct IDs, denied/read failures and empty recovery do not resurrect tasks",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 narrow keyboard, IME composition, image validation and nested close keep visible controls and drafts",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 scope changes and logout preserve saved templates without leaking them into other workspaces",
+          "status": "passed",
+          "requests": 364,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "tasks.spec.ts",
+          "title": "G25 blank drafts close without records and project creation shares one ID across summary, board, global and real history",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "tasks.spec.ts",
+          "title": "G25 field commits preserve title, due date and assigned member across consumers and time links without editing recorded amounts",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "tasks.spec.ts",
+          "title": "G25 failure retains draft, duplicate retry creates once and cancelling slow creation prevents late rows",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "tasks.spec.ts",
+          "title": "G25 read states, URL filters/templates and refresh distinguish actual tasks from illustration and unavailable direct IDs",
+          "status": "passed",
+          "requests": 1081,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "tasks.spec.ts",
+          "title": "G25 narrow panel, long Korean, synthetic IME and keyboard assignee keep controls visible and return focus",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "team invitation uses real history, creates one Pending row, preserves selections on failure and rejects duplicate/member",
+          "status": "passed",
+          "requests": 718,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "team removal cancels, retries and deletes exactly the selected namesake; unobserved actions do not mutate members",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "read failure, empty, restricted and expired states are distinct and recover without implying acceptance",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "cancel and route departure abort pending invite/removal, while back and forward open fresh drafts",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "workspace and logout isolate committed teams and clear dialogs/drafts; member cannot invite through a direct query",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "menu keyboard/outside click and project chip controls return focus without submitting on composition",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "team-settings.spec.ts",
+          "title": "narrow mobile entry, long text and enlarged controls remain reachable with modal and table scrolling",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "template.spec.ts",
+          "title": "template types, industry, search and detail retain real history and public identity",
+          "status": "passed",
+          "requests": 1887,
+          "sockets": 5,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "template.spec.ts",
+          "title": "all fifteen real files download unchanged and Google links remain a local dialog",
+          "status": "passed",
+          "requests": 372,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "template.spec.ts",
+          "title": "template signup snapshots remain isolated and explicit cancellation clears only the source draft",
+          "status": "passed",
+          "requests": 775,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "template.spec.ts",
+          "title": "template failure retry and the latest slow filter win without an external request",
+          "status": "passed",
+          "requests": 1157,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "template.spec.ts",
+          "title": "narrow template layouts, keyboard, invalid input and synthetic composition remain usable",
+          "status": "passed",
+          "requests": 1098,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ],
+      "networkTotals": {
+        "requests": 106361,
+        "sockets": 286,
+        "violations": 0,
+        "failures": 0,
+        "consoleErrors": 0
+      }
+    },
+    {
+      "report": "e2e-preview-results.json",
+      "sha256": "3524e19c1e9548ee1708066fa2b2dc523adc5e27e56949c6e89fd50abf841971",
+      "stats": {
+        "startTime": "2026-11-23T07:45:18.289Z",
+        "duration": 47774.001,
+        "expected": 38,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "tests": [
+        {
+          "file": "app-shell.spec.ts",
+          "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+          "status": "passed",
+          "requests": 54,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+          "status": "passed",
+          "requests": 13,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+          "status": "passed",
+          "requests": 73,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+          "status": "passed",
+          "requests": 27,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "template login returns to the same public template and restores only its email draft",
+          "status": "passed",
+          "requests": 56,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+          "status": "passed",
+          "requests": 20,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "protected destination survives signup, optional verification and every onboarding step",
+          "status": "passed",
+          "requests": 18,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+          "status": "passed",
+          "requests": 157,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 global New creates one customer, preserves contact/tag identity in list/detail and real history",
+          "status": "passed",
+          "requests": 24,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 failure retry preserves input; cancel and history departure abort late creation",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 read states, tabs, direct invalid URL, narrow dialog and synthetic IME retain accessible boundaries",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company",
+          "status": "passed",
+          "requests": 15,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "saved public profile off persists after logout, leaves the slug and shared preview intact, and restores on re-enable",
+          "status": "passed",
+          "requests": 21,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close",
+          "status": "passed",
+          "requests": 15,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "settings read states, permission, cancellation and scope switches cannot publish stale or foreign drafts",
+          "status": "passed",
+          "requests": 16,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "narrow company forms preserve full actions, address Escape, IME guard and native browser history",
+          "status": "passed",
+          "requests": 23,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+          "status": "passed",
+          "requests": 96,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+          "status": "passed",
+          "requests": 24,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "query failure retries, empty and restricted states remain distinct",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+          "status": "passed",
+          "requests": 4,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+          "status": "passed",
+          "requests": 36,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "dialog text selection ending on the backdrop preserves the draft",
+          "status": "passed",
+          "requests": 4,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "nested dialogs release scrolling on actual history navigation and retain the parent lock on Escape",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 explicit creation, complete/reopen, inline title and completed assignment persist across actual global/project history",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 empty validation, write failure retry and pending cancellation preserve existing children without duplicate or late rows",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 title failure retains input and retry; delete affordance is explicitly unavailable without removing the row",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 narrow rows, long Korean, synthetic IME and keyboard picker preserve boundaries, cancellation and refresh reset",
+          "status": "passed",
+          "requests": 24,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 multiple task copies keep new IDs/files/children and survive independent template edits, completion, archive and delete",
+          "status": "passed",
+          "requests": 23,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 failure retry keeps selections, duplicate creation is single, and slow cancel/history departure cannot create late tasks",
+          "status": "passed",
+          "requests": 13,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 empty templates, direct unavailable projects, reload and narrow keyboard keep real selection and close boundaries",
+          "status": "passed",
+          "requests": 25,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 project entry preselects its source, keeps hash/filter history and isolates a new browser tab",
+          "status": "passed",
+          "requests": 25,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 empty template naming, same-name identities, rename and browser history preserve actual data",
+          "status": "passed",
+          "requests": 26,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 child Save and files stay draft until Save Task, survive retry and remain editable after reentry",
+          "status": "passed",
+          "requests": 16,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 pending cancel, deleted direct IDs, denied/read failures and empty recovery do not resurrect tasks",
+          "status": "passed",
+          "requests": 13,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 narrow keyboard, IME composition, image validation and nested close keep visible controls and drafts",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 scope changes and logout preserve saved templates without leaking them into other workspaces",
+          "status": "passed",
+          "requests": 16,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ],
+      "networkTotals": {
+        "requests": 997,
+        "sockets": 0,
+        "violations": 0,
+        "failures": 0,
+        "consoleErrors": 0
+      }
+    }
+  ],
+  "finalReports": [
+    {
+      "report": "e2e-results.json",
+      "sha256": "41075e28b0242eb7a031177a00f2f7bfc4e8b6946ddeed208716f3829a490610",
+      "stats": {
+        "startTime": "2026-11-23T07:54:20.142Z",
+        "duration": 128419.92899999999,
+        "expected": 38,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "tests": [
+        {
+          "file": "app-shell.spec.ts",
+          "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+          "status": "passed",
+          "requests": 399,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+          "status": "passed",
+          "requests": 1116,
+          "sockets": 3,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+          "status": "passed",
+          "requests": 375,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "template login returns to the same public template and restores only its email draft",
+          "status": "passed",
+          "requests": 404,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+          "status": "passed",
+          "requests": 368,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "protected destination survives signup, optional verification and every onboarding step",
+          "status": "passed",
+          "requests": 366,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+          "status": "passed",
+          "requests": 1924,
+          "sockets": 5,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 global New creates one customer, preserves contact/tag identity in list/detail and real history",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 failure retry preserves input; cancel and history departure abort late creation",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 read states, tabs, direct invalid URL, narrow dialog and synthetic IME retain accessible boundaries",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "saved public profile off persists after logout, leaves the slug and shared preview intact, and restores on re-enable",
+          "status": "passed",
+          "requests": 717,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close",
+          "status": "passed",
+          "requests": 363,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "settings read states, permission, cancellation and scope switches cannot publish stale or foreign drafts",
+          "status": "passed",
+          "requests": 364,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "narrow company forms preserve full actions, address Escape, IME guard and native browser history",
+          "status": "passed",
+          "requests": 719,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+          "status": "passed",
+          "requests": 2529,
+          "sockets": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+          "status": "passed",
+          "requests": 720,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "query failure retries, empty and restricted states remain distinct",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+          "status": "passed",
+          "requests": 352,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+          "status": "passed",
+          "requests": 2476,
+          "sockets": 7,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "dialog text selection ending on the backdrop preserves the draft",
+          "status": "passed",
+          "requests": 352,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "nested dialogs release scrolling on actual history navigation and retain the parent lock on Escape",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 explicit creation, complete/reopen, inline title and completed assignment persist across actual global/project history",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 empty validation, write failure retry and pending cancellation preserve existing children without duplicate or late rows",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 title failure retains input and retry; delete affordance is explicitly unavailable without removing the row",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 narrow rows, long Korean, synthetic IME and keyboard picker preserve boundaries, cancellation and refresh reset",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 multiple task copies keep new IDs/files/children and survive independent template edits, completion, archive and delete",
+          "status": "passed",
+          "requests": 371,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 failure retry keeps selections, duplicate creation is single, and slow cancel/history departure cannot create late tasks",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 empty templates, direct unavailable projects, reload and narrow keyboard keep real selection and close boundaries",
+          "status": "passed",
+          "requests": 722,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 project entry preselects its source, keeps hash/filter history and isolates a new browser tab",
+          "status": "passed",
+          "requests": 721,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 empty template naming, same-name identities, rename and browser history preserve actual data",
+          "status": "passed",
+          "requests": 722,
+          "sockets": 2,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 child Save and files stay draft until Save Task, survive retry and remain editable after reentry",
+          "status": "passed",
+          "requests": 364,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 pending cancel, deleted direct IDs, denied/read failures and empty recovery do not resurrect tasks",
+          "status": "passed",
+          "requests": 361,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 narrow keyboard, IME composition, image validation and nested close keep visible controls and drafts",
+          "status": "passed",
+          "requests": 360,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 scope changes and logout preserve saved templates without leaking them into other workspaces",
+          "status": "passed",
+          "requests": 364,
+          "sockets": 1,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ],
+      "networkTotals": {
+        "requests": 23298,
+        "sockets": 64,
+        "violations": 0,
+        "failures": 0,
+        "consoleErrors": 0
+      }
+    },
+    {
+      "report": "e2e-preview-results.json",
+      "sha256": "61cc1c46fbee820fa33d9839865fe8f97f6e72ab8ef39eeb22c999ff6e5144da",
+      "stats": {
+        "startTime": "2026-11-23T07:59:01.220Z",
+        "duration": 75746.67199999999,
+        "expected": 38,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "tests": [
+        {
+          "file": "app-shell.spec.ts",
+          "title": "sidebar collapse keeps labels and child history, resets per session, and public pages have no app menu",
+          "status": "passed",
+          "requests": 54,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "mobile menu supports Escape, focus, short-screen scroll and resize without hidden controls",
+          "status": "passed",
+          "requests": 13,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "public and internal 404 recover differently, and unauthenticated app URLs first require login",
+          "status": "passed",
+          "requests": 73,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "pricing signup and onboarding restore the original plan and keep later plan histories independent",
+          "status": "passed",
+          "requests": 29,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "template login returns to the same public template and restores only its email draft",
+          "status": "passed",
+          "requests": 56,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "invoice login restores stable rows and exact amount, allows editing, and does not replay on browser return",
+          "status": "passed",
+          "requests": 20,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "protected destination survives signup, optional verification and every onboarding step",
+          "status": "passed",
+          "requests": 18,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "app-shell.spec.ts",
+          "title": "landing, introduction and blog email CTAs return through login; support and legal stay in their own boundaries",
+          "status": "passed",
+          "requests": 157,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 global New creates one customer, preserves contact/tag identity in list/detail and real history",
+          "status": "passed",
+          "requests": 24,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 failure retry preserves input; cancel and history departure abort late creation",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "clients.spec.ts",
+          "title": "G19 read states, tabs, direct invalid URL, narrow dialog and synthetic IME retain accessible boundaries",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "company modal separates address draft, logo and overall save, supports failure retry, and updates the same dashboard company",
+          "status": "passed",
+          "requests": 15,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "saved public profile off persists after logout, leaves the slug and shared preview intact, and restores on re-enable",
+          "status": "passed",
+          "requests": 21,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "real local logo decoding rejects invalid input, retries, removes in-flight files and releases object URLs on close",
+          "status": "passed",
+          "requests": 15,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "settings read states, permission, cancellation and scope switches cannot publish stale or foreign drafts",
+          "status": "passed",
+          "requests": 16,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "company-settings.spec.ts",
+          "title": "narrow company forms preserve full actions, address Escape, IME guard and native browser history",
+          "status": "passed",
+          "requests": 23,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "public, protected deep link, history, refresh and shared boundaries use no APIs",
+          "status": "passed",
+          "requests": 105,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "same-ID edit propagates, cancel discards drafts, and refresh resets data",
+          "status": "passed",
+          "requests": 24,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "query failure retries, empty and restricted states remain distinct",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "failed save keeps input, IME Enter does not submit, retry saves once",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "cancelled slow save, actor/workspace changes and reset isolate all state",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "reference dialog traps focus, closes by keyboard and restores trigger",
+          "status": "passed",
+          "requests": 4,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "narrow widths, long Korean, zoom and dialog scrolling keep controls reachable",
+          "status": "passed",
+          "requests": 36,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "dialog text selection ending on the backdrop preserves the draft",
+          "status": "passed",
+          "requests": 4,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "foundation.spec.ts",
+          "title": "nested dialogs release scrolling on actual history navigation and retain the parent lock on Escape",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 explicit creation, complete/reopen, inline title and completed assignment persist across actual global/project history",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 empty validation, write failure retry and pending cancellation preserve existing children without duplicate or late rows",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 title failure retains input and retry; delete affordance is explicitly unavailable without removing the row",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "subtasks.spec.ts",
+          "title": "G26 narrow rows, long Korean, synthetic IME and keyboard picker preserve boundaries, cancellation and refresh reset",
+          "status": "passed",
+          "requests": 24,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 multiple task copies keep new IDs/files/children and survive independent template edits, completion, archive and delete",
+          "status": "passed",
+          "requests": 22,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 failure retry keeps selections, duplicate creation is single, and slow cancel/history departure cannot create late tasks",
+          "status": "passed",
+          "requests": 13,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 empty templates, direct unavailable projects, reload and narrow keyboard keep real selection and close boundaries",
+          "status": "passed",
+          "requests": 25,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-application.spec.ts",
+          "title": "G31 project entry preselects its source, keeps hash/filter history and isolates a new browser tab",
+          "status": "passed",
+          "requests": 25,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 empty template naming, same-name identities, rename and browser history preserve actual data",
+          "status": "passed",
+          "requests": 26,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 child Save and files stay draft until Save Task, survive retry and remain editable after reentry",
+          "status": "passed",
+          "requests": 16,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 pending cancel, deleted direct IDs, denied/read failures and empty recovery do not resurrect tasks",
+          "status": "passed",
+          "requests": 13,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 narrow keyboard, IME composition, image validation and nested close keep visible controls and drafts",
+          "status": "passed",
+          "requests": 12,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        },
+        {
+          "file": "task-template-writing.spec.ts",
+          "title": "G30 scope changes and logout preserve saved templates without leaking them into other workspaces",
+          "status": "passed",
+          "requests": 16,
+          "sockets": 0,
+          "violations": [],
+          "failures": [],
+          "consoleErrors": []
+        }
+      ],
+      "networkTotals": {
+        "requests": 1007,
+        "sockets": 0,
+        "violations": 0,
+        "failures": 0,
+        "consoleErrors": 0
+      }
+    }
+  ],
+  "finalTypecheck": "passed",
+  "finalLint": "passed",
+  "finalBuild": "passed",
+  "codeSha256": {
+    "src/components/ui/dialog.tsx": "8f3cd157670e0da46237ef5acd25f5976d254c94c8fc41f5f63ff8f7cabe527b",
+    "src/lib/lock-page-scroll.ts": "2f5146343855e780d833775f8c81a57ba12cbfb71d63bb0dec97f511f5024668",
+    "tests/e2e/foundation.spec.ts": "2188ae37be1a434ad008d49617b36c54525c7bf971ec6b8f683199aa02815dba"
+  },
+  "documentValidation": {
+    "assertions": {
+      "goals85": true,
+      "research22": true,
+      "order107": true,
+      "orderUnchanged": true,
+      "flowAssignmentsUnchanged": true,
+      "sourceItems455Unchanged": true,
+      "sourceCompletionCountsUnchanged": true,
+      "historicalG01VerificationPreserved": true,
+      "strictCurrentPolicy": true,
+      "g01VisualPending": true,
+      "noSourceChanges": true,
+      "sourcePngHashesUnchanged": true,
+      "finalCodeMatchesVerification": true,
+      "diffCheck": true
+    },
+    "changedMarkdown": [
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/DOCUMENTATION-WORK-LOG.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/EXPANSION-BACKLOG.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/FLOW-BEHAVIOR-REVIEW.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/FLOW-GOAL-MATRIX.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G01.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G11.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G14.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G15.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G19.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G21.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G25.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G26.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G30.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G31.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/README.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-WORK-ORDER.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/MOCK-UI-STATE.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/PLANNING-REVIEW.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/README.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/R01.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/R02.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/R03.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/README.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/SOURCE-ANALYSIS-IMPACT.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/START-CHECKLIST.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/USER-FLOW.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/COMMON/UXUI-REPLICATION.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/FE-TODO/README.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/FE-TODO/USER-WEB-TODO.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/README.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R02_RESULT.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R03_RESULT.md",
+      "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RECHECK_RESULT.md"
+    ],
+    "checkedLocalLinks": 3204,
+    "checkedNewResultAnchors": 3,
+    "brokenLinks": [],
+    "historicalMissingReferencesExplicitlyMarked": 46
+  },
+  "historicalMissingArtifacts": [
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G11.md",
+      "label": "검증 증거",
+      "originalLink": "../../RESULTS/evidence/g15/final-verification.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/COMMON/GOAL-SPECS/G14.md",
+      "label": "검증 증거",
+      "originalLink": "../../RESULTS/evidence/g15/final-verification.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/R01.md",
+      "label": "이번 조회 기록",
+      "originalLink": "../../RESULTS/evidence/g02-recheck/mcp-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/R01.md",
+      "label": "목적지 색인",
+      "originalLink": "../../RESULTS/evidence/r01-destination-map.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/COMMON/RESEARCH-GOALS/R01.md",
+      "label": "33개 목적지 대응표",
+      "originalLink": "../../RESULTS/evidence/g03/destination-scope.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "최종 점검",
+      "originalLink": "evidence/g01-final-audit.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "원본 정규화 화면",
+      "originalLink": "evidence/g01-source-client-1440.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "구현 전체",
+      "originalLink": "evidence/g01-dialog.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "공통 요소 비교",
+      "originalLink": "evidence/g01-primitive-comparison.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "공개 시작",
+      "originalLink": "evidence/g01-public.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "표본 화면",
+      "originalLink": "evidence/g01-components.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "390px 모달",
+      "originalLink": "evidence/g01-dialog-narrow.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "긴 한글",
+      "originalLink": "evidence/g01-narrow-long-text.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "실측 JSON",
+      "originalLink": "evidence/g01-visual-metrics.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "최종 시각 회귀",
+      "originalLink": "evidence/g01-final-visual-validation.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "초기 모달 캡처",
+      "originalLink": "evidence/g01-dialog-initial.png",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "개발 검증",
+      "originalLink": "evidence/g01-dev-validation.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "production 검증",
+      "originalLink": "evidence/g01-production-validation.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G01_RESULT.md",
+      "label": "최종 코드 검증",
+      "originalLink": "evidence/g15/final-verification.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "Screen ID/URL",
+      "originalLink": "evidence/g14/mcp-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "직접 본 PNG·해시",
+      "originalLink": "evidence/g14/source-manifest.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "실행 증거",
+      "originalLink": "evidence/g14/",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "원본 비교",
+      "originalLink": "evidence/g14/comparisons/",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "캡처 조건/네트워크",
+      "originalLink": "evidence/g14/browser-captures.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "정규화/지표",
+      "originalLink": "evidence/g14/visual-metrics.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "실행 증거",
+      "originalLink": "evidence/g14/",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "G15 검증",
+      "originalLink": "evidence/g15/final-verification.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G14_RESULT.md",
+      "label": "별도 경로",
+      "originalLink": "evidence/g15/g14-regression/",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "조회 기록",
+      "originalLink": "evidence/r01-public-flows.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "자산 목록",
+      "originalLink": "evidence/g02-asset-manifest.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "목적지 색인",
+      "originalLink": "evidence/r01-destination-map.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "목적지 대응표",
+      "originalLink": "evidence/g03/destination-scope.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "Screen ID·URL·메타데이터",
+      "originalLink": "evidence/g04/mcp-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "조회·해시·URL",
+      "originalLink": "evidence/g04/supplement-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "카드별 근거",
+      "originalLink": "evidence/g04/review-content.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "G04 목적지 보완표",
+      "originalLink": "evidence/g04/destination-scope.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "자산 5개 목록",
+      "originalLink": "evidence/g04/asset-manifest.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "Screen ID·조회 원문",
+      "originalLink": "evidence/g05/mcp-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "카탈로그",
+      "originalLink": "evidence/g05/catalog.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "정규화 좌표",
+      "originalLink": "evidence/g05/image-crops.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "조회 증거",
+      "originalLink": "evidence/g08/mcp-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "보관본 조회",
+      "originalLink": "evidence/g08/archive-fetch.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "이번 MCP 4흐름11단계",
+      "originalLink": "evidence/g09/mcp-sources.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "2024-01-18 보관본4개",
+      "originalLink": "evidence/g09/archive-fetch.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "목적지/정책 범위",
+      "originalLink": "evidence/g09/source-scope.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    },
+    {
+      "file": "TODO/BONSAI_FE_MOCK_PLAN/RESULTS/R01_RESULT.md",
+      "label": "자산35개",
+      "originalLink": "evidence/g09/asset-manifest.json",
+      "status": "historical artifact missing in current checkout; not reconstructed or used as current evidence"
+    }
+  ],
+  "finalUnit": {
+    "passed": 100,
+    "files": 23
+  },
+  "preCommitReview": {
+    "date": "2026-11-23 KST",
+    "authorization": "User requested review and local git commit if no blocking issue",
+    "additionalCodeChanges": false,
+    "currentCodeMatchesFinalVerification": {
+      "src/components/ui/dialog.tsx": true,
+      "src/lib/lock-page-scroll.ts": true,
+      "tests/e2e/foundation.spec.ts": true
+    },
+    "rawReportsMatchFinalVerification": {
+      "e2e-results.json": true,
+      "e2e-preview-results.json": true
+    },
+    "previousSuiteResultsReusedAfterHashVerification": true,
+    "additionalBrowserCheck": {
+      "url": "http://127.0.0.1:5173/components",
+      "browser": "Chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "hasTouch": true,
+      "method": "Inline Node/Playwright via PowerShell stdin; CDP Input.dispatchTouchEvent and touchscreen.tap; no saved script",
+      "results": {
+        "touchDragBackdropToInputPreservesDraft": true,
+        "backdropTapCloses": true,
+        "inlineOverflowClipImportantRestored": true,
+        "observedRealApiOrExternalRequests": 0,
+        "consoleOrPageErrors": 0
+      },
+      "requestInterception": false,
+      "physicalTouchDevice": false,
+      "contextClosed": true
+    },
+    "documentCheck": {
+      "markdown": 36,
+      "localLinks": 3204,
+      "brokenLinks": 0,
+      "sourcePngHashes": 23,
+      "preservedHistoricalG01Verification": true,
+      "preserved455SourceMemos": true,
+      "preservedGoalAndResearchOrder": true,
+      "visualIdentity": "pending"
+    },
+    "notes": "No additional code defect found. This review does not rerun the previous full suites or complete visual/real-device requirements."
+  }
+}

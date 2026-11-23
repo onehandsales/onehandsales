@@ -1,0 +1,423 @@
+{
+  "date": "2026-11-23 KST",
+  "version": "bonsai-web / Latest / 2146",
+  "source_css_viewport": null,
+  "source_dpr": null,
+  "source_zoom": null,
+  "screens": [
+    {
+      "flow_id": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "flow": "Logging in",
+      "step": 1,
+      "screen_id": "sc_07904520440b4dc7ad7d6d31bf3a03e9",
+      "file": "bonsai_analysis/flows/Logging in/screens/01_sc_07904520440b4dc7ad7d6d31bf3a03e9.png",
+      "sha256": "6a7e8c383319c51719aa2633c21009fbd8049886cd16970f24b2a9aeee62de78",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "flow": "Logging in",
+      "step": 2,
+      "screen_id": "sc_9d353458318e43e7b25ebbf88fefeaa9",
+      "file": "bonsai_analysis/flows/Logging in/screens/02_sc_9d353458318e43e7b25ebbf88fefeaa9.png",
+      "sha256": "7e2b5926fea29c3463b78522af85898da28a61e8bd71816116f582392b68c4fd",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "flow": "Logging in",
+      "step": 3,
+      "screen_id": "sc_5c0fde91fbb34480b756c6eb10e63816",
+      "file": "bonsai_analysis/flows/Logging in/screens/03_sc_5c0fde91fbb34480b756c6eb10e63816.png",
+      "sha256": "023dac7752e15972ebc09d7030244d016c109216b921e82c22c04001bb23c015",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "flow": "Logging in",
+      "step": 4,
+      "screen_id": "sc_4b4cf6491d4c4dd8993f4fe0b7caa7f9",
+      "file": "bonsai_analysis/flows/Logging in/screens/04_sc_4b4cf6491d4c4dd8993f4fe0b7caa7f9.png",
+      "sha256": "0a58b5792a47977f8b588243c58484d0446c800816cc29175cb0ee07de7f9b2f",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a02409b3-6eb0-4bc0-b702-22a42e0990c8",
+      "flow": "Logging in",
+      "step": 5,
+      "screen_id": "sc_3982bd8e06b44860bdb8c4bac2592599",
+      "file": "bonsai_analysis/flows/Logging in/screens/05_sc_3982bd8e06b44860bdb8c4bac2592599.png",
+      "sha256": "b8124865d106a0212f09e28bec9a972bd4f31c5a41b22f0c44af0e3e451eecc7",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 1,
+      "screen_id": "sc_a0fa68609b634defb4a2ccd18b63a4a2",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/01_sc_a0fa68609b634defb4a2ccd18b63a4a2.png",
+      "sha256": "d17cde270f497136f1dd8bb835cc4a4f14476d2249172e2b2371cd8f55edc02f",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 2,
+      "screen_id": "sc_40ff225f161846249b5cf8c2c55423b6",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/02_sc_40ff225f161846249b5cf8c2c55423b6.png",
+      "sha256": "c8051ea010034162517a13034b23d1496bec5d17494114867763d67cae522b81",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 3,
+      "screen_id": "sc_3e2640e1d9ca4b59a7f1c79cb628a502",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/03_sc_3e2640e1d9ca4b59a7f1c79cb628a502.png",
+      "sha256": "56179cf7b93c54b4e2b9242c5cf097548e6f3d10f1b673ab4702b30e4babd983",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 4,
+      "screen_id": "sc_7435a1d441654b5fa2a8428533fd5d87",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/04_sc_7435a1d441654b5fa2a8428533fd5d87.png",
+      "sha256": "0f0ef5eb57f1f1437bf3cd05101b1c4ae80c665400d41d414381daab4bc81b79",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 5,
+      "screen_id": "sc_225e25a9ba6745be98341cf77524fa23",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/05_sc_225e25a9ba6745be98341cf77524fa23.png",
+      "sha256": "dde34b08bd503cfe33c8bf10be77400e701fd36b6cdccad61580ced2aebc1a20",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 6,
+      "screen_id": "sc_b1619b6b9fc3405e8ad67fd26f405b62",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/06_sc_b1619b6b9fc3405e8ad67fd26f405b62.png",
+      "sha256": "d0a73b7e6e7d37cb8847e42df3fa3477c6bc55b45c8e99196c8b6bc5ca96f4c5",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "a5f7a722-8a0c-4528-966a-903e7e0873fb",
+      "flow": "Adding a new client",
+      "step": 7,
+      "screen_id": "sc_9e5c9989e48d45459e62cc2fe0b886fb",
+      "file": "bonsai_analysis/flows/Adding a new client/screens/07_sc_9e5c9989e48d45459e62cc2fe0b886fb.png",
+      "sha256": "ce577ee8a1746f747f318f5ad7866005aa3f2a457112e15fd0d5e1a12edbeff2",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "flow": "Bookkeeping/Adding a bookkeeping category",
+      "step": 1,
+      "screen_id": "sc_f0127ee4970e49ffbd910ddfac504812",
+      "file": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/screens/01_sc_f0127ee4970e49ffbd910ddfac504812.png",
+      "sha256": "ce82f9130d0f56b5bcef8358260eeb4608001081b02001ac3f69f98e6f8e3e69",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "flow": "Bookkeeping/Adding a bookkeeping category",
+      "step": 2,
+      "screen_id": "sc_f2a7c3be441a4a95ab91fba511865483",
+      "file": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/screens/02_sc_f2a7c3be441a4a95ab91fba511865483.png",
+      "sha256": "1d029ef4c170ea5657a8d2657900dd4dbe0bd99a9e1fe45c975b4451465e7ff5",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "flow": "Bookkeeping/Adding a bookkeeping category",
+      "step": 3,
+      "screen_id": "sc_086fba724bae4db892400f6143884a6b",
+      "file": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/screens/03_sc_086fba724bae4db892400f6143884a6b.png",
+      "sha256": "f8a19bf6bf2da0db1045bfc0dc120b6f9ea44f89b1dd4df169f358120e562612",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "flow": "Bookkeeping/Adding a bookkeeping category",
+      "step": 4,
+      "screen_id": "sc_ca9be0cbcb06461b8ac05fc9b4ac4c82",
+      "file": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/screens/04_sc_ca9be0cbcb06461b8ac05fc9b4ac4c82.png",
+      "sha256": "5046a845b616e9e1cf427466064e80448062db418916015b36bb8603eaab16f1",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "flow": "Bookkeeping/Adding a bookkeeping category",
+      "step": 5,
+      "screen_id": "sc_5cc7db97cb1e4603bf9a8bb575dc2771",
+      "file": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/screens/05_sc_5cc7db97cb1e4603bf9a8bb575dc2771.png",
+      "sha256": "0d53eee6356c1caa8c2af8eef2f1bf81ee99a19e8d2e8bb77ea37c9f00ff3cd0",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "3a74090f-e360-4fb9-9b79-c1ca197708ba",
+      "flow": "Bookkeeping/Adding a bookkeeping category",
+      "step": 6,
+      "screen_id": "sc_c4fdb168bca742cda9c29d382eb86995",
+      "file": "bonsai_analysis/flows/Bookkeeping/Adding a bookkeeping category/screens/06_sc_c4fdb168bca742cda9c29d382eb86995.png",
+      "sha256": "3ba098faf2245e202326827a44540518185cc7ebce602b161fb18e67208665d9",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "ff646f32-f010-478e-a3bd-572ccc501292",
+      "flow": "Dashboard/Hiding sidebar",
+      "step": 1,
+      "screen_id": "sc_a333622d5e8c45e0b19ff4c249dc0aca",
+      "file": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/01_sc_a333622d5e8c45e0b19ff4c249dc0aca.png",
+      "sha256": "a988fa6482ab2e8b823172b8d1799de38455075714149a3d16378c6a41c8eeda",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "ff646f32-f010-478e-a3bd-572ccc501292",
+      "flow": "Dashboard/Hiding sidebar",
+      "step": 2,
+      "screen_id": "sc_d177f0ef742b46daa0c1a96e7df49192",
+      "file": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/02_sc_d177f0ef742b46daa0c1a96e7df49192.png",
+      "sha256": "a9460f40e594ac6ec67a239aa254cfc9462a28db6c0a00a1123c3139944734e5",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "ff646f32-f010-478e-a3bd-572ccc501292",
+      "flow": "Dashboard/Hiding sidebar",
+      "step": 3,
+      "screen_id": "sc_afe21c01937c42ff92a872cf1a0b07c2",
+      "file": "bonsai_analysis/flows/Dashboard/Hiding sidebar/screens/03_sc_afe21c01937c42ff92a872cf1a0b07c2.png",
+      "sha256": "d0af553b444cd3c7219edbefbfa0157865d45c84111cc6870cb02608db561ead",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "b340c3e3-ad5f-401c-839d-60e02a8c7ce2",
+      "flow": "404",
+      "step": 1,
+      "screen_id": "sc_b625cb20b5c242978c1f398163b870d1",
+      "file": "bonsai_analysis/flows/404/screens/01_sc_b625cb20b5c242978c1f398163b870d1.png",
+      "sha256": "871544b77e06528dfd66e247a3bf5c9bf7c37e8a5371882bfe4924c0e6c833ba",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    },
+    {
+      "flow_id": "b340c3e3-ad5f-401c-839d-60e02a8c7ce2",
+      "flow": "404",
+      "step": 2,
+      "screen_id": "sc_4cd87d1434ce4f66b7f8e77bafe39d29",
+      "file": "bonsai_analysis/flows/404/screens/02_sc_4cd87d1434ce4f66b7f8e77bafe39d29.png",
+      "sha256": "d4cdaa437d4b336ca8badf9ea99bd4a9121402140db3e82ca93b982f826c6f58",
+      "image_size": [
+        2880,
+        1800
+      ],
+      "mcp_nominal_size": [
+        1440,
+        900
+      ],
+      "directly_viewed": true,
+      "scope": "shared UI/state/transition context, not full business implementation or element census"
+    }
+  ]
+}

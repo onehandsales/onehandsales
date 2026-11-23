@@ -7,13 +7,13 @@
 ## 1. 근거와 버전 선택
 
 - Gummble MCP `bonsai-web`, 앱 `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, Latest 카탈로그 `2146`. 제품 빌드·캡처일·DPR은 미확인이다.
-- R01 공개 20흐름과 Logging in/Onboarding 2흐름의 **22흐름 111단계 ID·순서**를 재조회하여 계획 색인과 대조했다. batch 구조 응답에서 누락된 3흐름은 다시 조회했다. [조회 기록](evidence/r01-public-flows.json).
+- R01 공개 20흐름과 Logging in/Onboarding 2흐름의 **22흐름 111단계 ID·순서**를 재조회하여 계획 색인과 대조했다. batch 구조 응답에서 누락된 3흐름은 다시 조회했다. 조회 기록 (과거 산출물: `evidence/r01-public-flows.json`, 현재 체크아웃에 없음).
 - 시각 상세 확인: Landing page 01~11, Logging in/Onboarding 공통 hero 01, Product/Industries/Resources/Templates 메뉴 각 01, Invoice templates02의 유형 선택. 다른 공개 흐름은 분석 문서·MCP 순서 중심의 검토다. 111개 이미지 전체 정밀 검토로 계산하지 않는다.
 - Landing page `f1a89cc0-4dc8-4576-b912-78231a2a7b1a`는 hero 없이 중간 스크롤에서 시작한다. `sc_07904520440b4dc7ad7d6d31bf3a03e9`로 최상단을 보완했다. G02의 소유 단계는 원래 11단계이며 인증 흐름 전체를 구현하는 것은 아니다.
 - 현재 [공식 홈페이지](https://www.hellobonsai.com/)는 “The unified platform for service businesses”, Geist 400/500을 사용한다. 과거 Gummble 시안과 다르므로 채택하지 않는다.
 - [공식 홈페이지 2024-02-03 보관본](https://web.archive.org/web/20240203174218id_/https://www.hellobonsai.com/)의 hero 문구·이미지·메뉴·후기·푸터가 Gummble 시안과 대응한다. 이 날짜는 **웹 보관 시각이지 Gummble 캡처일이 아니다**. Gummble 화면을 우선하고 이 보관본의 HTML/CSS는 자산·누락 영역의 보조 근거로 쓴다.
 - [해당 공식 CSS](https://assets-global.website-files.com/635ac9564cc3682ce1536786/css/hellobonsai.3bf73fbeb.min.css)에서 Gellix Normal 400, Medium 500, SemiBold 600, Bold 700의 실제 WOFF 주소를 확인했다. G01 Outfit은 내부 앱의 임시 근사값으로 유지하며 공개 웹과 분리한다. 공개 웹 폰트 확인이 내부 앱 폰트 확인을 뜻하지 않는다.
-- 자산47개를 로컬에 확보하고 URL·크기·SHA-256을 [자산 목록](evidence/g02-asset-manifest.json)에 남겼다. [Gellix 제작사](https://displaay.net/typeface/gellix/)·[라이선스 안내](https://displaay.net/help/licenses)를 확인했다. 공개 CDN 접근 가능과 재배포·상업 사용 허락은 별개다. 사용자에게 적용되는 권한은 확인되지 않았다. 현재 로컬 비교 범위이며 배포하지 않는다.
+- 자산47개를 로컬에 확보하고 URL·크기·SHA-256을 자산 목록 (과거 산출물: `evidence/g02-asset-manifest.json`, 현재 체크아웃에 없음)에 남겼다. [Gellix 제작사](https://displaay.net/typeface/gellix/)·[라이선스 안내](https://displaay.net/help/licenses)를 확인했다. 공개 CDN 접근 가능과 재배포·상업 사용 허락은 별개다. 사용자에게 적용되는 권한은 확인되지 않았다. 현재 로컬 비교 범위이며 배포하지 않는다.
 - MCP 1440×900, 원본 PNG 2880×1800. 원본을 1440×900으로 정규화하여 비교하며 CSS px/DPR을 역산해 확정하지 않는다.
 
 ## 2. 질문별 판정과 소비 Goal
@@ -51,7 +51,7 @@ G02의 기본 `/`에 원본 랜딩11단계·hero·공통 메뉴를 구현하고 
 
 ## 6. 누락 영역·목적지 목록과 인계 수용 기준
 
-[목적지 색인](evidence/r01-destination-map.json)은 보관본의 label·sourceHref·우리 경로·담당 Goal·사용 위치를 열거한다. 원본 href를 구현 결과에 맞춰 바꾸지 않는다. 예를 들어 보관본 Comparisons의 첫 `Stripe alternatives`가 다른 제품 비교 주소를 가리키는 불일치도 그대로 기록하고 G05에서 콘텐츠 근거를 추가 확인한다.
+목적지 색인 (과거 산출물: `evidence/r01-destination-map.json`, 현재 체크아웃에 없음)은 보관본의 label·sourceHref·우리 경로·담당 Goal·사용 위치를 열거한다. 원본 href를 구현 결과에 맞춰 바꾸지 않는다. 예를 들어 보관본 Comparisons의 첫 `Stripe alternatives`가 다른 제품 비교 주소를 가리키는 불일치도 그대로 기록하고 G05에서 콘텐츠 근거를 추가 확인한다.
 
 | 시작·입력 | 정상 종료·목 인계 | 취소·실패·재진입·권한 | 소비 Goal |
 | --- | --- | --- | --- |
@@ -88,7 +88,7 @@ G02의 기본 `/`에 원본 랜딩11단계·hero·공통 메뉴를 구현하고 
 
 [G03 결과](G03_RESULT.md)가 현재 소비 범위의 확인 결과다. MCP 앱·3흐름22 Screen 목록을 새로 조회하고 해당 로컬 PNG를 직접 열었다. Latest/2146 카탈로그와 2024-01-18 CRM/Consulting·2024-02-03 Small business 보관본 날짜, 기사 자산 보완 날짜를 구분했다. FAQ 2·3과 누락 본문은 보완 자료이며 원본 촬영 시점·서비스 빌드는 미확인이다.
 
-- [목적지 대응표](evidence/g03/destination-scope.json): R01 배정33개 중3소개 구현,30본문 미수록. 기존 목적지 색인의 href/소유권은 유지했다.
+- 목적지 대응표 (과거 산출물: `evidence/g03/destination-scope.json`, 현재 체크아웃에 없음): R01 배정33개 중3소개 구현,30본문 미수록. 기존 목적지 색인의 href/소유권은 유지했다.
 - Freelancers 분류는 실제 Small business 화면과 다르다. 원인 미확인, freelancing 페이지를 임의로 만들지 않았다. Go to dashboard는 가상 세션을 사용자가 선택한 경우만 표시하며 원본 인증 원인은 미확인이다.
 - Small business 관련 글12개·페이지1/2·Next를 재현했다. page2 원본은 확보하지 못해 미확인 안내·Previous로 연결했다. G05 기사/검색, G06 양식, G10/G11 실제 가입/로그인 화면은 구현하지 않았다.
 - 공개 입력은 pathname별 초안과 history ID별 메모리 인계다. 뒤로/앞으로는 해당 snapshot, 취소는 출발 경로 초안/인계 폐기, scope/reset/reload는 전체 메모리 폐기. 이메일은 URL/storage/log에 저장하지 않는다.
@@ -102,10 +102,10 @@ G02의 기본 `/`에 원본 랜딩11단계·hero·공통 메뉴를 구현하고 
 
 이번 사용자 지시에 따라 R01 중 가격·후기만 보완한 뒤 G04 구현으로 이어간다. 기존 1~9절의 G02/G03 이력과 미확인은 유지한다. R01 전체 완료가 아니다.
 
-- **신규 직접 확인:** Bonsai WEB `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, 카탈로그 Latest/2146. Pricing `981ffcc3-d6c0-4038-8db3-4ac8753aace4` 01~03, Reviews `d501af32-ef6e-4ca1-8d3f-cf6e67874a08` 01~04 MCP 목록을 재조회하고 원본 PNG 7장을 직접 보았다. [Screen ID·URL·메타데이터](evidence/g04/mcp-sources.json). MCP1440×900, PNG2880×1800을 비교용1440×900으로 정규화한다. 촬영일·제품 빌드·DPR·원본 스크롤 좌표는 미확인이다.
+- **신규 직접 확인:** Bonsai WEB `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, 카탈로그 Latest/2146. Pricing `981ffcc3-d6c0-4038-8db3-4ac8753aace4` 01~03, Reviews `d501af32-ef6e-4ca1-8d3f-cf6e67874a08` 01~04 MCP 목록을 재조회하고 원본 PNG 7장을 직접 보았다. Screen ID·URL·메타데이터 (과거 산출물: `evidence/g04/mcp-sources.json`, 현재 체크아웃에 없음). MCP1440×900, PNG2880×1800을 비교용1440×900으로 정규화한다. 촬영일·제품 빌드·DPR·원본 스크롤 좌표는 미확인이다.
 - **가격 관찰:** Yearly 선택, 월 환산 $21/$32/$66, Billed annually, 2 months for free, Professional 주황 추천, 기능·상하단 CTA, Team Seat/Bonsai Tax 각각 $10/month. Go to dashboard 표시가 실제 로그인 성공 증거는 아니다.
-- **날짜가 확인된 보완:** 공식 pricing의 2024-01-18 08:27:27 보관본에서 Monthly $25/$39/$79, 동일 연간 월 환산 가격·기능과 `int_source=pricing&int_content=monthly_{plan}/annual_{plan}` 가입 링크를 확인했다. 월간 가격은 할인 역산이 아니다. $252/$384/$792는 12배 계산 결과일 뿐 원본에 표시된 청구 총액이 아니다. 세금·국가·좌석·할인·체험·환불 정책을 확정하지 않는다. [조회·해시·URL](evidence/g04/supplement-sources.json). 현재 서비스 가격은 채택하지 않는다.
-- **후기 관찰/보완:** 500,000+·G2 Top performer·Capterra4.7은 과거 홍보 표시다. 공식 reviews의 2024-01-18 08:27:51 보관본에서 30개 이름·직무·본문·순서와 G2/Capterra 및 카드의 외부 목적지를 확인했다. 미수록 중간 Brandon/Camila/Michael과 마지막 행은 보관본 보완이며 Gummble에서 전부 관찰한 것이 아니다. [카드별 근거](evidence/g04/review-content.json). 원본에 등장하는 Mary Mitchell의 보관 포스터·play SVG·평점 SVG를 확보했다. 포스터의 프레임/크롭 차이는 G04 시각 비교에서 별도로 기록한다.
+- **날짜가 확인된 보완:** 공식 pricing의 2024-01-18 08:27:27 보관본에서 Monthly $25/$39/$79, 동일 연간 월 환산 가격·기능과 `int_source=pricing&int_content=monthly_{plan}/annual_{plan}` 가입 링크를 확인했다. 월간 가격은 할인 역산이 아니다. $252/$384/$792는 12배 계산 결과일 뿐 원본에 표시된 청구 총액이 아니다. 세금·국가·좌석·할인·체험·환불 정책을 확정하지 않는다. 조회·해시·URL (과거 산출물: `evidence/g04/supplement-sources.json`, 현재 체크아웃에 없음). 현재 서비스 가격은 채택하지 않는다.
+- **후기 관찰/보완:** 500,000+·G2 Top performer·Capterra4.7은 과거 홍보 표시다. 공식 reviews의 2024-01-18 08:27:51 보관본에서 30개 이름·직무·본문·순서와 G2/Capterra 및 카드의 외부 목적지를 확인했다. 미수록 중간 Brandon/Camila/Michael과 마지막 행은 보관본 보완이며 Gummble에서 전부 관찰한 것이 아니다. 카드별 근거 (과거 산출물: `evidence/g04/review-content.json`, 현재 체크아웃에 없음). 원본에 등장하는 Mary Mitchell의 보관 포스터·play SVG·평점 SVG를 확보했다. 포스터의 프레임/크롭 차이는 G04 시각 비교에서 별도로 기록한다.
 - **영상 한계:** 보관 HTML의 첫 영상은 YouTube `XWvK85AyeOA`로 새 탭 이동하는 링크다. 해당 페이지/플레이어·영상 내용·자막은 실행하지 않았다. 확인 자료에 로컬 영상 파일·자막이 없으므로 재생 성공·진행률을 만들지 않는다. 포스터→미제공 Dialog→닫기/초점 복귀를 목 접근성 가정으로 구현한다. 보관본의 두 번째 영상은 관찰 범위 밖으로 추가하지 않는다.
 
 | 행동 | 구현 가능한 범위·목 가정 | 미확인·후속 |
@@ -121,19 +121,19 @@ G02의 기본 `/`에 원본 랜딩11단계·hero·공통 메뉴를 구현하고 
 
 **검토 판정:** G04 가격2주기·후기30카드·명시적 영상 미제공·로컬 인계 구현 근거 확보. 시각·상호작용·네트워크 검증은 [G04 실행 결과](G04_RESULT.md)에 별도로 기록한다.
 
-G04 구현 인계의 추가 구분: 원본 화폐 표시는 `$`이며 로컬 인계의 `USD`는 목 표시 가정이다. Professional services의 라벨은 Pricing01에서 관찰했지만 원본 주소는 미확인이다. `/software/professional-services`는 G03 본문 대기용 로컬 후보만 등록했다. [G04 목적지 보완표](evidence/g04/destination-scope.json)는 기존290개 색인을 바꾸지 않는다. G03의 기존33개 목적지 판정을 소급 변경하지 않는다.
+G04 구현 인계의 추가 구분: 원본 화폐 표시는 `$`이며 로컬 인계의 `USD`는 목 표시 가정이다. Professional services의 라벨은 Pricing01에서 관찰했지만 원본 주소는 미확인이다. `/software/professional-services`는 G03 본문 대기용 로컬 후보만 등록했다. G04 목적지 보완표 (과거 산출물: `evidence/g04/destination-scope.json`, 현재 체크아웃에 없음)는 기존290개 색인을 바꾸지 않는다. G03의 기존33개 목적지 판정을 소급 변경하지 않는다.
 
-G04 2차 시각 검토에서 Pricing 보관본의 체크 SVG도 확보해 문자 근사 기호를 교체했다. [자산 5개 목록](evidence/g04/asset-manifest.json)에 URL·SHA-256을 남겼다. 포스터는 같은 Mary Mitchell 자료지만 원본 PNG와 프레임/크롭/화질 차이가 남으며 시각 동일성을 확정하지 않는다. 상세 검증·남은 차이는 [G04 결과](G04_RESULT.md)를 따른다.
+G04 2차 시각 검토에서 Pricing 보관본의 체크 SVG도 확보해 문자 근사 기호를 교체했다. 자산 5개 목록 (과거 산출물: `evidence/g04/asset-manifest.json`, 현재 체크아웃에 없음)에 URL·SHA-256을 남겼다. 포스터는 같은 Mary Mitchell 자료지만 원본 PNG와 프레임/크롭/화질 차이가 남으며 시각 동일성을 확정하지 않는다. 상세 검증·남은 차이는 [G04 결과](G04_RESULT.md)를 따른다.
 
 
 ## 11. G05 소비 범위 보완 — 2026-11-21 KST
 
-- 신규 MCP 조회: Blog `be5bc5f4-c2fa-4ea2-a923-0250d6302fcb` 4단계, Blog detail `7b469aed-f69f-4f73-af50-9b1adb7aa052` 4단계, Searching blog `d9c648a4-1d8f-47a7-b53e-ea08055e1e7e` 3단계. 앱 `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, 카탈로그 Latest 2146. [Screen ID·조회 원문](evidence/g05/mcp-sources.json), [카탈로그](evidence/g05/catalog.json). 촬영일·제품 빌드·원본 viewport/DPR은 확인하지 못했다.
+- 신규 MCP 조회: Blog `be5bc5f4-c2fa-4ea2-a923-0250d6302fcb` 4단계, Blog detail `7b469aed-f69f-4f73-af50-9b1adb7aa052` 4단계, Searching blog `d9c648a4-1d8f-47a7-b53e-ea08055e1e7e` 3단계. 앱 `c1026782-09a7-45fb-b2d0-7cc1909bf1f4`, 카탈로그 Latest 2146. Screen ID·조회 원문 (과거 산출물: `evidence/g05/mcp-sources.json`, 현재 체크아웃에 없음), 카탈로그 (과거 산출물: `evidence/g05/catalog.json`, 현재 체크아웃에 없음). 촬영일·제품 빌드·원본 viewport/DPR은 확인하지 못했다.
 - 세 ANALYSIS의 단계·규칙·질문과 **11개 원본 PNG 모두 직접 확인**했다. 2880×1800을 1440×900으로 정규화해 비교한다. 정규화는 원본 CSS viewport 확인이 아니다.
 - 관찰: 초기/General의 첫 세 카드가 동일하다. General은 전체 목록으로 취급하는 목 선택이며 강조만으로 결과 변경을 주장하지 않는다. Start a business 선택 후 marketing 검색에도 분류가 유지되고 CJ Haughey의 기사 한 개, 1/1 표시가 나온다. 해당 기사 제목·저자·2022-12-11 갱신 표시·8분·목차 8개·본문 일부·추천 2개·하단 이메일바를 확인했다.
 - 추가 조사: 공식 블로그 2024-01-18 08:27:44 및 2024-02-29 10:34:14 보관본은 목록 순서가 캡처와 달라 목록 데이터로 채택하지 않는다. 공식 기사 `how-to-start-a-digital-marketing-agency`의 2024-03-02 16:48:06 보관본은 경로·목차·본문 구조를 보조 확인하는 데 사용한다. 추천 목록은 달라 채택하지 않는다. 현재 사이트는 저자/갱신일이 달라 시안으로 사용하지 않는다. 보관 날짜는 캡처 날짜가 아니다.
 - 목 결정: 분류+제목/관찰된 요약의 대소문자 무시 부분 검색, 입력 200ms 후 URL 반영(조합 중 제외), 페이지당 6개, URL 기반 뒤로/앞으로 복원. 검색 debounce·필드·페이지 크기·모바일 배치는 원본 확정값이 아니다. 목 데이터 부족과 검색 무결과를 구별한다. 공개 검색은 업무 검색과 분리한다.
-- 시각 자산: 제공 PNG의 카드 사진·저자·배지 일부를 이미지 영역만 잘라 로컬 사용한다. [정규화 좌표](evidence/g05/image-crops.json). 누락된 이미지나 문구를 새로 그리거나 원본으로 꾸미지 않는다.
+- 시각 자산: 제공 PNG의 카드 사진·저자·배지 일부를 이미지 영역만 잘라 로컬 사용한다. 정규화 좌표 (과거 산출물: `evidence/g05/image-crops.json`, 현재 체크아웃에 없음). 누락된 이미지나 문구를 새로 그리거나 원본으로 꾸미지 않는다.
 - 범위: 확인된 7개 블로그 카드와 G03의 기존 12개 관련 글 ID/메타데이터를 공유한다. 캡처 밖 일반 분류의 전체 목록·페이지 2·추천 기사 본문은 근거 대기다. 미수록 본문 전체를 채웠다고 보고하지 않는다. 가입은 G10 인계, 템플릿 링크는 G06 인계이며 뒤 Goal에서 연결을 검증한다.
 - 미확인: 전체 목록/정렬/게시일·검색 원래 트리거·페이지 크기·모바일·원본 실패 상태·하단바 표시 조건. 목차 클릭과 읽는 위치 표시는 별개 상태로 구현한다. 서버 검색·공개 정책·실계정 확인은 후속 메모이며 구현 선행 조건이 아니다. R01 전체 완료 아님.
 
@@ -163,9 +163,9 @@ G07 구현 후: 보관본 Download Invoice href의 `int_source=invoicegenerator`
 
 ## 14. 2026-11-21 G08 소비 범위 보완 (구현 전)
 
-- Help Center `4f8c359f-2e1f-46bd-953b-bd601767a0f1` 2단계, Help article detail `ec15eccf-bebd-4e1f-87d4-dbc1529a8bbf` 4단계, Contact Us `5ea077df-b21b-4455-8b53-bbd8901d54ae` 2단계의 ANALYSIS와 원본 PNG8장을 직접 확인했다. 신규 MCP8 Screen은 [조회 증거](evidence/g08/mcp-sources.json), 같은 실행의 App/catalog2146은 G05 근거를 재사용한다. PNG2880×1800→1440×900 정규화이며 실제 원본 viewport/DPR/촬영일은 미확인.
+- Help Center `4f8c359f-2e1f-46bd-953b-bd601767a0f1` 2단계, Help article detail `ec15eccf-bebd-4e1f-87d4-dbc1529a8bbf` 4단계, Contact Us `5ea077df-b21b-4455-8b53-bbd8901d54ae` 2단계의 ANALYSIS와 원본 PNG8장을 직접 확인했다. 신규 MCP8 Screen은 조회 증거 (과거 산출물: `evidence/g08/mcp-sources.json`, 현재 체크아웃에 없음), 같은 실행의 App/catalog2146은 G05 근거를 재사용한다. PNG2880×1800→1440×900 정규화이며 실제 원본 viewport/DPR/촬영일은 미확인.
 - 관찰: 도움말 전용 잎 배경·Inter 계열 글꼴·검색·English·인기기사3·2열 분류. 포털 기사8개 목차·영상 자리·브랜딩 지침/읽기 전용 설정 이미지·마지막 질문2·관련기사5·피드백3. 문의는 카드3(이메일/앱/도움말)와 FAQ 링크10이며 접수 폼/답변 펼침/상담 결과는 없다.
-- [보관본 조회](evidence/g08/archive-fetch.json): 도움말홈2024-02-25 09:05:43에서 분류14개·과거건수·인기기사ID·목적지·English 한 언어만 확인했다. 이 자료의 Inter CSS와 로고/아이콘 자산을 확보해 로컬로 사용한다. 현재 서비스 분류/건수로 확정하지 않는다. header image CDN410과 첫 support 연결실패는 보존하고 보관본/로컬 근거로 보완한다.
+- 보관본 조회 (과거 산출물: `evidence/g08/archive-fetch.json`, 현재 체크아웃에 없음): 도움말홈2024-02-25 09:05:43에서 분류14개·과거건수·인기기사ID·목적지·English 한 언어만 확인했다. 이 자료의 Inter CSS와 로고/아이콘 자산을 확보해 로컬로 사용한다. 현재 서비스 분류/건수로 확정하지 않는다. header image CDN410과 첫 support 연결실패는 보존하고 보관본/로컬 근거로 보완한다.
 - 지원2024-01-18 08:28:09: Email us=`mailto:support@hellobonsai.com`, Go to the app=`https://app.hellobonsai.com/vendor/dashboard`, 도움말홈과 FAQ10의 article ID를 확인했다. 같은 ID의 제목/slug 차이는 기사 alias로 취급하며 별개 문서를 만들지 않는다. FAQ 마지막 URL의 일부 `[…]`는 보관 자료에서도 불완전하므로 ID1195676까지만 확정한다. 앱 도착이 채팅 자동 열림의 증거는 아니다.
 - 기사: 현재 이름의 URL은2025-01-22로 리디렉션되어 본문·Wistia 영상·새 UI를 채택하지 않는다. 과거 제목 URL의2024-04-19 18:54:27 자료는8개 목차/옛 분류/관련ID/YouTube `m1cRQ1aIIrs`를 확인하는 보조 근거다. 영상 파일/내용·자막은 확보하지 않았고 플레이어를 실행하지 않는다. 제공 PNG의 영상 포스터·설정 이미지 영역만 로컬 정적 자산으로 사용한다. 미수록 본문을 원본 캡처 관찰로 기록하지 않는다.
 - 목 결정: 외부 지원 서비스 대신 로컬 `/help`, `/help/collections/:id`, `/help/articles/:id`, `/support`. 검색은 제목·제공 요약의 부분 일치+명시적 제출, 분류는 별도 상태/URL이며 loading/empty/no-match/error/retry를 구분한다. English만 제공하고 다른 locale 요청은 미제공 상태로 구분한다. 임의 번역/언어 목록은 만들지 않는다.
@@ -177,10 +177,10 @@ G08 후속 실행: [G08_RESULT](G08_RESULT.md). 원본8상태/실제11캡처·�
 
 ## 15. 2026-11-21 G09 소비 범위 보완 (구현 전)
 
-- Affiliate Program4·Careers4·Privacy2·Terms1의 ANALYSIS(4·5·8절 포함)와 원본11PNG를 직접 확인했다. [이번 MCP 4흐름11단계](evidence/g09/mcp-sources.json), App Bonsai Web/c1026782-09a7-45fb-b2d0-7cc1909bf1f4. Latest/2146은 같은 연속 작업 G05 앱 조회를 재사용하며 촬영일/제품 빌드는 미확인이다.
-- [2024-01-18 보관본4개](evidence/g09/archive-fetch.json)와 원본을 대조했다. 요청 날짜2024-02-03과 실제 각 반환 timestamp를 분리했다. [목적지/정책 범위](evidence/g09/source-scope.json): Apply/Get started→hellobonsai.firstpromoter.com, 제휴Contact→affiliates@hellobonsai.com, View open positions→bonsai.crew.work/jobs. 세 링크의 target은 없음, Cookie Policy는 iubenda/35324406/cookie-policy의 _blank. 외부 신청/채용/메일은 실행하지 않았다.
+- Affiliate Program4·Careers4·Privacy2·Terms1의 ANALYSIS(4·5·8절 포함)와 원본11PNG를 직접 확인했다. 이번 MCP 4흐름11단계 (과거 산출물: `evidence/g09/mcp-sources.json`, 현재 체크아웃에 없음), App Bonsai Web/c1026782-09a7-45fb-b2d0-7cc1909bf1f4. Latest/2146은 같은 연속 작업 G05 앱 조회를 재사용하며 촬영일/제품 빌드는 미확인이다.
+- 2024-01-18 보관본4개 (과거 산출물: `evidence/g09/archive-fetch.json`, 현재 체크아웃에 없음)와 원본을 대조했다. 요청 날짜2024-02-03과 실제 각 반환 timestamp를 분리했다. 목적지/정책 범위 (과거 산출물: `evidence/g09/source-scope.json`, 현재 체크아웃에 없음): Apply/Get started→hellobonsai.firstpromoter.com, 제휴Contact→affiliates@hellobonsai.com, View open positions→bonsai.crew.work/jobs. 세 링크의 target은 없음, Cookie Policy는 iubenda/35324406/cookie-policy의 _blank. 외부 신청/채용/메일은 실행하지 않았다.
 - 관찰: 200% 첫 월납부/30% 연납 홍보와 고정 $50/$65/$75/$115/$150/$200 표를 둘 다 보존한다. 관계·조건·현재유효성은 미확인이며 지급 계산/승인/대시보드를 만들지 않는다. 소개 이미지의 입력/성공 문구는 정적 설명 자산이다.
-- Careers는 당시6혜택/3가치와 팀 사진이며 앱 HR 정책이 아니다. 보관 HTML의 추가 사진5개는 원본 PNG 바깥 보완 자료로 구분한다. 개인 신원/조직/현재채용을 추정하지 않는다. [자산35개](evidence/g09/asset-manifest.json)는 보관 HTML이 가리키는 해시 URL/기존 로컬 파일이며 앱에는 로컬 파일만 사용한다.
+- Careers는 당시6혜택/3가치와 팀 사진이며 앱 HR 정책이 아니다. 보관 HTML의 추가 사진5개는 원본 PNG 바깥 보완 자료로 구분한다. 개인 신원/조직/현재채용을 추정하지 않는다. 자산35개 (과거 산출물: `evidence/g09/asset-manifest.json`, 현재 체크아웃에 없음)는 보관 HTML이 가리키는 해시 URL/기존 로컬 파일이며 앱에는 로컬 파일만 사용한다.
 - 정책 보관 HTML 전체를 확보해 상단/하단과 대조했다. Privacy 효력/개정일은 없고 Terms의 Last Updated June30,2020은 촬영일이 아니다. UI는 제공 PNG의 본문 발췌를 표시하고 미수록 중간/후반과 전체 문서가 아님을 표시한다. 전체 보관본의 존재를 원본 촬영 시점/가입 연결 버전이 확정된 것으로 확대하지 않는다. 새 제품 약관/동의/삭제/열람 처리로 채택하지 않는다.
 - 목 정책: `/affiliates`, `/careers`, `/legal/privacy`, `/legal/terms` 정적 표시, 외부 신청/이메일/채용/쿠키/소셜은 `/outbound/...`의 로컬 안내와 실제 뒤로/복귀. 외부 주소는 텍스트로만 표시, 제출·메일·추적·동의 기록 없음. 읽기 화면에는 불필요한 async/실패 상태를 만들지 않는다. 별도 가입 약관 연결은 G10/G14에서 실제 연결 검증한다.
 - 미확인/후속: 신청/승인/귀속/환불/정산·채용지원·쿠키문서·정책 효력/언어/가입 당시 버전·원본모바일/키보드·자산 사용조건. 서버 정책은 후속 메모이며 FE 진행 선행조건이 아니다. R01 전체 완료가 아니다.
@@ -198,3 +198,7 @@ G05~G09 소비 분석/구현·G14 공개 CTA→가상 인증→선택 복귀를 
 ## G01~G15 감사 후 소비 범위 보완 (2026-11-21)
 
 G02 가입 링크의 이력 중복과 G08 기사 목차·관련 기사 복귀를 보완했다. G05~G09 문서의 수행 체크와 원본 미확보를 분리했다. 신규 원본 분석을 수행한 것으로 기록하지 않는다. [재점검 근거와 결과](G01_G15_RECHECK_RESULT.md). 기존 조사·미수록·환경·후속 소비 대기를 유지하고 R01 전체 완료로 처리하지 않는다.
+
+## G01 재검토 소비 기록 — 2026-11-23 KST
+
+공개 웹 Gellix 근거와 내부 앱 Outfit/아이콘 미확인을 구분했다. 내부 폰트·촬영 조건과 정확한 자산은 여전히 대기다. [이번 선택 원본·실행·차이](G01_RECHECK_RESULT.md)는 과거 조회/검증과 구분한다. R 전체 완료로 승격하지 않는다.

@@ -155,3 +155,55 @@ test("narrow widths, long Korean, zoom and dialog scrolling keep controls reacha
   await page.evaluate(() => { document.documentElement.style.zoom = ""; });
   await page.screenshot({ path: testInfo.outputPath("narrow-long-text.png"), fullPage: true });
 });
+
+// 기능 : 입력에서 시작한 드래그가 배경에서 끝나도 미저장 모달 초안을 폐기하지 않는지 확인한다.
+test("dialog text selection ending on the backdrop preserves the draft", async ({ page }) => {
+  await page.goto("/components");
+  await page.getByRole("button", { name: "Add Client", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  const input = dialog.getByLabel("Company Name");
+  await input.fill("Keep this unsaved selection");
+  const bounds = await input.boundingBox();
+  if (!bounds) throw new Error("Expected a visible dialog input");
+  await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(10, bounds.y + bounds.height / 2, { steps: 8 });
+  await page.mouse.up();
+  await expect(dialog).toBeVisible();
+  await expect(input).toHaveValue("Keep this unsaved selection");
+  await page.mouse.move(10, bounds.y + bounds.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2, { steps: 8 });
+  await page.mouse.up();
+  await expect(dialog).toBeVisible();
+  await expect(input).toHaveValue("Keep this unsaved selection");
+  await page.mouse.click(10, 100);
+  await expect(dialog).toHaveCount(0);
+});
+
+// 기능 : 중첩 모달 전체가 실제 뒤로가기로 해제될 때 스크롤 잠금과 초점이 현재 화면으로 복원되는지 검증한다.
+test("nested dialogs release scrolling on actual history navigation and retain the parent lock on Escape", async ({ page }) => {
+  await page.goto("/app/tasks");
+  await page.getByRole("button", { name: "Continue as Alex" }).click();
+  const task = page.locator('[data-task-id="studio-a:task-initial-chat-1"]').getByRole("link");
+  await task.click();
+  await page.getByRole("button", { name: "＋ Add Subtask", exact: true }).click();
+  await page.getByLabel("New subtask title", { exact: true }).fill("Nested dialog regression");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  const trigger = page.getByRole("button", { name: "Delete subtask Nested dialog regression", exact: true });
+  await trigger.click();
+  await expect(page.locator("dialog[open]")).toHaveCount(2);
+  await page.keyboard.press("Escape");
+  await expect(page.locator("dialog[open]")).toHaveCount(1);
+  await expect(trigger).toBeFocused();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+  await trigger.click();
+  await page.goBack();
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+  await page.goForward();
+  await expect(page.getByLabel("Subtask title Nested dialog regression", { exact: true })).toBeVisible();
+  await page.getByLabel("Task title", { exact: true }).focus();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+});

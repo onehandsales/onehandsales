@@ -11,7 +11,7 @@
 - 이후 빈 디렉터리 정리 명령도 자동 승인 검토에서 blocked by policy로 거절되어 남겨 두었다. Git이 추적하는 이전 소스·테스트 제거와 새 앱 실행에는 영향이 없다.
 - Node24·pnpm8·React19·Router7·Query5·Vite7·TypeScript strict·Tailwind3를 유지했다. lockfile의 새 패키지 버전 0개, 사용하지 않는 버전 항목 21개 제거. 불필요한 업그레이드 없음.
 - .env 내용 출력·수정 없음. BE·Admin·DB·외부 서비스·TODO_LOG 작업 없음. 커밋·push·배포 없음.
-- 최종 환경 파일 SHA-256 보존, 허용 경로 밖 변경0, 수정 문서의 로컬 링크 오류0을 확인했다. [최종 점검](evidence/g01-final-audit.json).
+- 최종 환경 파일 SHA-256 보존, 허용 경로 밖 변경0, 수정 문서의 로컬 링크 오류0을 확인했다. 최종 점검 (과거 산출물: `evidence/g01-final-audit.json`, 현재 체크아웃에 없음).
 - OneHand CRM 제품명과 기존 브랜드 식별 자산을 보존했다. 신규 공개 웹 전체 시안은 G02 이후다.
 
 ## 2. 구조와 실행 경계
@@ -84,9 +84,9 @@ PreviewItem은 상태 일관성 확인용 이름 한 개를 가진 샘플이다.
 | Logging in · a02409b3-6eb0-4bc0-b702-22a42e0990c8 · 02 · sc_9d353458318e43e7b25ebbf88fefeaa9 | 공통 token 교차 참고 | 입력·버튼·패널만. 현재 /login은 기반용 선택기이며 원본 로그인 완료 아님 |
 | Adding a bookkeeping category · 3a74090f-e360-4fb9-9b79-c1ca197708ba · 02 · sc_f2a7c3be441a4a95ab91fba511865483 | 모달 변형 관찰 | 중앙 제목·palette 참고. 미래 옵션·palette를 미리 추가하지 않음. G63 미착수 |
 
-- [원본 정규화 화면](evidence/g01-source-client-1440.png) · [구현 전체](evidence/g01-dialog.png) · [공통 요소 비교](evidence/g01-primitive-comparison.png).
-- [공개 시작](evidence/g01-public.png) · [표본 화면](evidence/g01-components.png) · [390px 모달](evidence/g01-dialog-narrow.png) · [긴 한글](evidence/g01-narrow-long-text.png).
-- [실측 JSON](evidence/g01-visual-metrics.json): Dialog x490/y60/w460, input x530/y229/w380/h40, 버튼 w420/h46, radius6/border1. 초기 input y234를 원본 y229로 보정했다.
+- 원본 정규화 화면 (과거 산출물: `evidence/g01-source-client-1440.png`, 현재 체크아웃에 없음) · 구현 전체 (과거 산출물: `evidence/g01-dialog.png`, 현재 체크아웃에 없음) · 공통 요소 비교 (과거 산출물: `evidence/g01-primitive-comparison.png`, 현재 체크아웃에 없음).
+- 공개 시작 (과거 산출물: `evidence/g01-public.png`, 현재 체크아웃에 없음) · 표본 화면 (과거 산출물: `evidence/g01-components.png`, 현재 체크아웃에 없음) · 390px 모달 (과거 산출물: `evidence/g01-dialog-narrow.png`, 현재 체크아웃에 없음) · 긴 한글 (과거 산출물: `evidence/g01-narrow-long-text.png`, 현재 체크아웃에 없음).
+- 실측 JSON (과거 산출물: `evidence/g01-visual-metrics.json`, 현재 체크아웃에 없음): Dialog x490/y60/w460, input x530/y229/w380/h40, 버튼 w420/h46, radius6/border1. 초기 input y234를 원본 y229로 보정했다.
 - 표본 모달 높이336·버튼 y330은 한 필드짜리 검증 구성이다. 원본 전체 폼 높이와 동일 판정하지 않는다. 원본 버튼은 y657에서 같은 크기로 잘라 비교했다.
 - 열기→입력→닫기→초점 복귀, Esc·바깥 클릭·재진입을 브라우저로 확인했다. 여기서 Add Client는 **표본 열기/닫기 trigger**이며 원본 고객 저장·상세 전환이 아니다. G19 완료로 계산하지 않는다. 초점·Esc·바깥 클릭은 원본 정적 캡처로 확정한 동작이 아니라 웹 접근성을 위한 목 가정이다.
 - 정확한 family/자산은 미확인이다. 기하형·단층 a의 임시 Outfit을 로컬 로드했다([제작자·OFL](https://github.com/Outfitio/Outfit-Fonts)). 제목 굵기를 600→500으로 보정했다. 설명문 폭·글리프·안티앨리어싱은 아직 다르다. Outfit을 Bonsai 폰트라고 확정하지 않는다.
@@ -107,7 +107,7 @@ ANALYSIS 원문은 변경하지 않았다. 미수록 서버 정책·태그·중�
 
 첫 전체 E2E 1/7, 다음 6/7에서 원인을 수정한 뒤 개발7/7·production7/7로 재검증했다. 실패했던 초점·reset과 중복 제출을 회귀 사례로 유지했다.
 
-마지막 제목 굵기 수정 후 lint·build를 다시 통과했고 production 모달/좁은 화면 2/2를 재검증했다. [최종 시각 회귀](evidence/g01-final-visual-validation.json). [초기 모달 캡처](evidence/g01-dialog-initial.png)와 최종본을 구분하며 최종 비교는 g01-dialog.png를 사용한다.
+마지막 제목 굵기 수정 후 lint·build를 다시 통과했고 production 모달/좁은 화면 2/2를 재검증했다. 최종 시각 회귀 (과거 산출물: `evidence/g01-final-visual-validation.json`, 현재 체크아웃에 없음). 초기 모달 캡처 (과거 산출물: `evidence/g01-dialog-initial.png`, 현재 체크아웃에 없음)와 최종본을 구분하며 최종 비교는 g01-dialog.png를 사용한다.
 
 ## 7. 실행 검증
 
@@ -126,7 +126,7 @@ Windows, Node24.18.0, pnpm8.14.1, Playwright1.60.0, Chromium148.0.7778.96. **실
 | 네트워크·콘솔 | 두 모드 모두 인증/업무/외부 API0·실패 요청0·console/page 오류0 |
 | 폭·키보드·입력 | 320/360/390/768/1024/1440, 긴 한글, CSS zoom200%, Tab·Esc·복귀·합성 composition |
 
-[개발 검증](evidence/g01-dev-validation.json) · [production 검증](evidence/g01-production-validation.json). 요청 차단/intercept/fulfill 없음. 개발 HMR과 같은 호스트 문서·JS·CSS·로컬 font·아이콘을 API와 구분했다. production HMR0.
+개발 검증 (과거 산출물: `evidence/g01-dev-validation.json`, 현재 체크아웃에 없음) · production 검증 (과거 산출물: `evidence/g01-production-validation.json`, 현재 체크아웃에 없음). 요청 차단/intercept/fulfill 없음. 개발 HMR과 같은 호스트 문서·JS·CSS·로컬 font·아이콘을 API와 구분했다. production HMR0.
 
 NO_COLOR/FORCE_COLOR·오래된 Browserslist 데이터 경고는 console 오류와 구분하며 경고 때문에 의존성을 업그레이드하지 않았다.
 
@@ -192,7 +192,7 @@ G00·G01의 이번 작업은 여기서 종료한다. G02/R01 자동 착수 없�
 
 ### G15 최종 공통 회귀 (2026-11-21)
 
-[최종 코드 검증](evidence/g15/final-verification.json)의 전체 개발/빌드82개씩에 기존 기반·공개 메뉴/폼·소개·가격/후기 흐름을 포함했다. G03의 이전 Public 테스트 명칭을 실제 Public site로 바꿨으며 검증을 제거하지 않았다. 기존 원본·시각·환경 대기를 완료 처리하지 않는다.
+최종 코드 검증 (과거 산출물: `evidence/g15/final-verification.json`, 현재 체크아웃에 없음)의 전체 개발/빌드82개씩에 기존 기반·공개 메뉴/폼·소개·가격/후기 흐름을 포함했다. G03의 이전 Public 테스트 명칭을 실제 Public site로 바꿨으며 검증을 제거하지 않았다. 기존 원본·시각·환경 대기를 완료 처리하지 않는다.
 
 ### G01~G15 감사 후 재점검 (2026-11-21)
 
@@ -217,3 +217,7 @@ G00·G01의 이번 작업은 여기서 종료한다. G02/R01 자동 착수 없�
 ### G26 공통 회귀
 
 [G26 결과](G26_RESULT.md)에서 부모필드저장6개명시추출로하위목록덮임을방지하고공통Dialog의중첩cancel/Tab전파를분리했다. 최초단위83/84·dev8/9와수정후단위84·개발/빌드37개씩구분. 기존기반/초대/프로젝트/작업흐름회귀검증,자료/시각/환경대기유지.
+
+## 후속 재검토 연결 — 2026-11-23 KST
+
+이 문서는 최초 구현 이력이다. [엄격 시각 기준의 G01 재검토](G01_RECHECK_RESULT.md)에서 공통 모달 결함을 보완하고 현재 회귀를 실행했다. 폰트/자산 및 남은 픽셀 차이는 미완이다.
