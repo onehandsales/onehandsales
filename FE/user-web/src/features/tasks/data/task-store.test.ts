@@ -13,6 +13,19 @@ function scope(runtime: ReturnType<typeof createPreviewRuntime>) { const state =
 function signal() { return new AbortController().signal; }
 const projectId = "studio-a:team-project-2";
 const draft = { ...newTaskDraft(projectId), title: "Send invite" };
+// 기능 : 새 가입 작업공간에는 표본 작업을 주입하지 않고 직접 만든 작업만 같은 탭 재로그인에 보존한다.
+it("G13 starts new workspaces empty without changing existing fixture tasks", async () => {
+  const { runtime, tasks } = setup();
+  const account = { id: "preview-user-99" as const, name: "New owner", role: "owner" as const, workspaces: [{ id: "studio-user-99", name: "New business" }] };
+  runtime.openSession(account); const fresh = scope(runtime);
+  expect(await tasks.read(fresh, signal())).toEqual([]);
+  const created = await tasks.create(fresh, { ...draft, projectId: "studio-user-99:team-project-2", title: "Explicitly created task" }, "new-owner", signal());
+  expect((await tasks.read(fresh, signal())).map(task => task.id)).toEqual([created.id]);
+  runtime.setSession(null); runtime.openSession(account);
+  expect((await tasks.read(scope(runtime), signal())).map(task => task.id)).toEqual([created.id]);
+  runtime.setSession("preview-a"); expect(await tasks.read(scope(runtime), signal())).toHaveLength(3);
+  runtime.reset(); runtime.openSession(account); expect(await tasks.read(scope(runtime), signal())).toEqual([]);
+});
 // 기능 : 빈 초안·제목·날짜 경계를 검증하고 집계와 상대 날짜를 동일 기준으로 계산한다.
 it("G25 validates drafts and keeps duplicate-title tasks, reference-day buckets and missing due dates distinct", async () => { const { runtime, tasks } = setup(); const data = await tasks.read(scope(runtime), signal()); expect(data).toHaveLength(3); expect(data.filter(task => task.title === "Initial Chat").map(task => task.id)).toEqual(["studio-a:task-initial-chat-1", "studio-a:task-initial-chat-2"]); expect(taskSummary(data)).toEqual({ Upcoming: 1, "Due Today": 0, Overdue: 2, Completed: 0 }); expect(taskDueLabel("2024-02-06")).toBe("Yesterday"); expect(taskDueLabel("")).toBe("No due date"); expect(() => validateTaskDraft(newTaskDraft())).toThrow("title"); expect(() => validateTaskDraft({ ...draft, projectId: "" })).toThrow("project"); expect(() => validateTaskDraft({ ...draft, dueDate: "2023-02-29" })).toThrow("valid due"); expect(validateTaskDraft({ ...draft, dueDate: "2024-02-29" }).dueDate).toBe("2024-02-29"); });
 // 기능 : 생성 중복·실패·필드 저장·상태 활동과 프로젝트/시간 소비의 ID를 검증한다.

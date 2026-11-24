@@ -1,6 +1,10 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 G12 — 2026-11-24 KST: **부분 완료**. G12 커밋 전 추가 검토: 같은 경로에서 복귀 주소·이력/선택 문맥이 바뀌어도 이전 요청 안내·비밀번호 저장이 완료되는 두 결함을 재현하고 수정했다. G12 DOM11+store7=18/18, 전체225/225·타입/lint·메모리build 통과. 이전223 기록과 다른 Goal 대기는 보존하며 사용자 후속 요청으로 로컬 커밋만 승인되었다. 원본 동일성·실제 브라우저/network·미수록 정책 대기. [최신 검토·체크·잔여](../RESULTS/G12_RESULT.md#g12-precommit-review).
+> G13 커밋 전 추가 검토 — 2026-11-24 KST: 초기 대시보드에서 같은 경로로 이동할 때 로딩이 남는 결함을 재현·수정했다. G13 DOM10/company store4=14/14, 최종 전체36파일236/236·타입/lint·메모리build 통과. 원본 동일성·실제 브라우저·원본 미수록 대기와 과거 이력을 보존하며 사용자 후속 요청으로 커밋·origin/main push를 승인받았다. 배포·다음 Goal 착수 없음. [추가 검토 결과](../RESULTS/G13_RESULT.md#g13-precommit-review).
+
+> 최초 G13 재검토 이력 — 2026-11-24 KST: **부분 완료**. 원본16PNG·MCP/코드 대조, 이력/저장 경합·입력/초점·신규 작업공간 빈 상태 보완. 전체234/234 후 최신 G13 DOM9/store4=13/13·타입/lint·메모리build 통과. 원본 동일성·실제 브라우저/network·미수록 정책 대기. 커밋·push·배포 없음. [최신 결과·체크·잔여](../RESULTS/G13_RESULT.md#g13-r4-recheck).
+
+> 이전 G12 — 2026-11-24 KST: **부분 완료**. G12 커밋 전 추가 검토: 같은 경로에서 복귀 주소·이력/선택 문맥이 바뀌어도 이전 요청 안내·비밀번호 저장이 완료되는 두 결함을 재현하고 수정했다. G12 DOM11+store7=18/18, 전체225/225·타입/lint·메모리build 통과. 이전223 기록과 다른 Goal 대기는 보존하며 사용자 후속 요청으로 로컬 커밋만 승인되었다. 원본 동일성·실제 브라우저/network·미수록 정책 대기. [최신 검토·체크·잔여](../RESULTS/G12_RESULT.md#g12-precommit-review).
 
 
 > 이전 G11 — 2026-11-24 KST: **부분 완료**. 최초 원본7단계 대조/보완 뒤 커밋 전 공통·공유 로그아웃 복귀와 회사명 일관성2문제를 추가 수정했다. 전체211/211·타입/lint·메모리build 통과. 시각/실제 브라우저·원본 대기는 유지하며 사용자 후속 요청으로 로컬 커밋이 승인되었다. [최신 검토·검증](../RESULTS/G11_RESULT.md#g11-precommit-review).
@@ -127,7 +131,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 84 | [Logging in / Resetting password](<../../../bonsai_analysis/flows/Logging in/Resetting password/ANALYSIS.md>) | `8f9cc02b-1748-4b71-97d8-5c80bb299013` | 10 | [G12 비밀번호 재설정](<GOAL-SPECS/G12.md>) (01~10) | [F084](SOURCE-ANALYSIS-IMPACT.md#r4-f084) · [G12 부분 대조/보완](../RESULTS/G12_RESULT.md#g12-r4-recheck) |
 | 85 | [Logging out](<../../../bonsai_analysis/flows/Logging out/ANALYSIS.md>) | `39713c9a-6f82-4d7c-be32-ab38510406bc` | 2 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~02) | [F085](SOURCE-ANALYSIS-IMPACT.md#r4-f085) · [G11 부분 대조/보완](../RESULTS/G11_RESULT.md#g11-r4-recheck) |
 | 86 | [Onboarding](<../../../bonsai_analysis/flows/Onboarding/ANALYSIS.md>) | `f714101f-db6b-4bfe-9ed1-74d6b0d6243c` | 10 | [G10 회원가입](<GOAL-SPECS/G10.md>) (01~10) | [F086](SOURCE-ANALYSIS-IMPACT.md#r4-f086) · [G10 부분 대조/보완](../RESULTS/G10_RESULT.md#g10-r4-recheck) |
-| 87 | [Onboarding / Completing account setup](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md>) | `f004afc2-a8c5-4262-b2e4-941331047a84` | 16 | [G13 사업 설정 온보딩](<GOAL-SPECS/G13.md>) (01~16) | [F087](SOURCE-ANALYSIS-IMPACT.md#r4-f087) |
+| 87 | [Onboarding / Completing account setup](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md>) | `f004afc2-a8c5-4262-b2e4-941331047a84` | 16 | [G13 사업 설정 온보딩](<GOAL-SPECS/G13.md>) (01~16) | [F087](SOURCE-ANALYSIS-IMPACT.md#r4-f087) · [G13 부분 대조/보완](../RESULTS/G13_RESULT.md#g13-r4-recheck) |
 | 88 | [Perks](<../../../bonsai_analysis/flows/Perks/ANALYSIS.md>) | `dee9aba7-13a6-462f-87f5-0a942a971ab0` | 4 | [G82 제휴 혜택](<GOAL-SPECS/G82.md>) (01~04) | [F088](SOURCE-ANALYSIS-IMPACT.md#r4-f088) |
 | 89 | [Pricing](<../../../bonsai_analysis/flows/Pricing/ANALYSIS.md>) | `981ffcc3-d6c0-4038-8db3-4ac8753aace4` | 3 | [G04 가격·후기](<GOAL-SPECS/G04.md>) (01~03) | [F089](SOURCE-ANALYSIS-IMPACT.md#r4-f089) |
 | 90 | [Privacy](<../../../bonsai_analysis/flows/Privacy/ANALYSIS.md>) | `776f20e2-7498-433f-af8b-f585988e2429` | 2 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~02) | [F090](SOURCE-ANALYSIS-IMPACT.md#r4-f090) · [G09 부분 대조/보완](../RESULTS/G09_RESULT.md#g09-r4-recheck) |
@@ -283,3 +287,11 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 - [ ] 원본 동일성·실제 브라우저/네트워크·미수록 정책은 대기다. 관련 G/R 전체 완료가 아니며 후속 담당은 G12 결과8절을 따른다.
 
 > G12 커밋 전 추가 검토: 같은 경로에서 복귀 주소·이력/선택 문맥이 바뀌어도 이전 요청 안내·비밀번호 저장이 완료되는 두 결함을 재현하고 수정했다. G12 DOM11+store7=18/18, 전체225/225·타입/lint·메모리build 통과. 이전223 기록과 다른 Goal 대기는 보존하며 사용자 후속 요청으로 로컬 커밋만 승인되었다. [최신 결과](../RESULTS/G12_RESULT.md#g12-precommit-review).
+
+
+<a id="g13-update"></a>
+## G13 적용·연결 검토 — 2026-11-24 KST
+
+- [x] F087 01~16의 G13 소유를 유지하며 16PNG/분석/MCP 식별과 코드 대응을 확인했다. 총134흐름/754단계/642고유ID와 기존 배정은 유지한다.
+
+- [ ] 원본 동일성·실제 브라우저/console/network·OS IME와 원본 미수록 정책은 대기다. 관련 G/R 전체 완료가 아니다. [범위·검증·잔여](../RESULTS/G13_RESULT.md#g13-r4-recheck).

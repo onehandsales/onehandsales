@@ -25,14 +25,21 @@ export type CompanyStore = {
 export const initialSetup: SetupDraft = { step: 0, furthest: 0, industry: "", name: "", country: "Malaysia", businessType: "", currency: "MYR", revenue: "", invites: ["", "", ""], purposes: ["Client billing"] };
 export const industries = ["Accounting / Auditing", "Acting", "Analytics", "Animation", "Architecture", "Art Direction", "Dentist", "Design", "Digital Marketing", "E-Commerce", "Engineering", "Esports"];
 export const purposes = ["Client billing", "Client and lead management", "Time tracking and reporting", "Bookkeeping and banking", "Project and task management", "Contractor management", "Other"];
+// 기능 : 입력 오류와 중복 제안을 원래 이메일 칸에 대응시키며 빈 칸은 허용한다.
+export function invalidInviteIndexes(invites: string[]) {
+  const emails = invites.map(email => email.trim().toLowerCase());
+  const malformed = emails.flatMap((email, index) => email && (email.length > 256 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ? [index] : []);
+  const duplicate = emails.flatMap((email, index) => email && emails.indexOf(email) !== index ? [index] : []);
+  return { malformed, duplicate };
+}
 // 기능 : 확인된 설문의 필수값과 명시적 목 초대 검증을 단계별로 확인한다.
 export function setupError(draft: SetupDraft, step: SetupStep) {
   if (step === 0 && (!industries.includes(draft.industry) || !draft.name.trim() || draft.name.length > 120 || !draft.country)) return "Choose a listed industry and enter a business name (up to 120 characters).";
   if (step === 1 && (!draft.businessType || !draft.currency || !draft.revenue)) return "Select a business type, currency and revenue range.";
   if (step === 3) {
-    const emails = draft.invites.map(email => email.trim().toLowerCase()).filter(Boolean);
-    if (emails.some(email => email.length > 256 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) return "Enter a valid sample email or leave the field empty.";
-    if (new Set(emails).size !== emails.length) return "Each sample teammate email must be different.";
+    const invalid = invalidInviteIndexes(draft.invites);
+    if (invalid.malformed.length) return "Enter a valid sample email or leave the field empty.";
+    if (invalid.duplicate.length) return "Each sample teammate email must be different.";
   }
   if (step === 4 && !draft.purposes.length) return "Choose at least one purpose.";
   return "";

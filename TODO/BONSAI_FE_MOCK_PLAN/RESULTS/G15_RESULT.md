@@ -114,3 +114,13 @@ SettingsNavigation을 G16과 공유하고 같은 회사의 명시적 로고 저�
 
 - [x] 기존 회사 이름 편집은 초안일 때 메뉴를 바꾸지 않고 Save Changes 후 앱/공통/공유 메뉴에 같은 회사 이름을 표시하는지 검증했다. PreviewFrame의 회사 저장소 연결을 보완했다. G15 저장 로직과 다른 업무는 변경하지 않았다. [G11 추가 검토](G11_RESULT.md#g11-precommit-review).
 - [ ] G15 전체 R4/원본/시각/브라우저 대기는 그대로다.
+
+
+<a id="g13-update"></a>
+## G13 적용·연결 검토 — 2026-11-24 KST
+
+- [x] G13 저장 후 같은 company-workspace ID/이름 Joe Studio를 Add Details에서 읽고 취소한 뒤 재로그인에도 같은 ID를 유지함을 DOM 확인했다. G15 저장소4/branding5 기존 회귀 통과.
+
+- [ ] 원본 동일성·실제 브라우저/console/network·OS IME와 원본 미수록 정책은 대기다. 관련 G/R 전체 완료가 아니다. [범위·검증·잔여](G13_RESULT.md#g13-r4-recheck).
+
+> G13 커밋 전 추가 검토 — 2026-11-24 KST: 초기 대시보드에서 같은 경로로 이동할 때 로딩이 남는 결함을 재현·수정했다. G13 DOM10/company store4=14/14, 최종 전체36파일236/236·타입/lint·메모리build 통과. 원본 동일성·실제 브라우저·원본 미수록 대기와 과거 이력을 보존하며 사용자 후속 요청으로 커밋·origin/main push를 승인받았다. 배포·다음 Goal 착수 없음. [추가 검토 결과](G13_RESULT.md#g13-precommit-review).

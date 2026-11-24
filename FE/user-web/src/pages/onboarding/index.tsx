@@ -1,23 +1,19 @@
 import { Link, Navigate } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
-import { useMockAuth } from "@/features/mock-auth";
-import { AuthIntentSummary } from "@/features/mock-auth/components/auth-intent-summary";
-import { useCompanySetup } from "@/features/company-setup/data/company-context";
-import type { CompanyScenario, SetupStep } from "@/features/company-setup/model/company-types";
-import { setupError } from "@/features/company-setup/model/company-types";
-import { useOnboarding } from "@/features/company-setup/hooks/use-onboarding";
-import { SetupFields } from "@/features/company-setup/components/setup-fields";
+import { useMockAuth, AuthIntentSummary } from "@/features/mock-auth";
+import { useCompanySetup, setupError, useOnboarding, SetupFields } from "@/features/company-setup";
+import type { CompanyScenario, SetupStep } from "@/features/company-setup";
 import "@/styles/company-setup.css";
 
 // 기능 : 관찰된 사업 설정과 미수록 단계를 구분하고 동일 회사의 최종 저장으로 연결한다.
 export function OnboardingPage() {
   const { state: preview, runtime } = usePreviewEnvironment(); const { state: auth, store: authStore } = useMockAuth(); const { store, state } = useCompanySetup(); const form = useOnboarding();
-  if (!preview.session || !form.draft) return <Navigate replace to="/signup" />;
+  if (!preview.session || !form.draft) return <Navigate replace to={"/signup" + (form.returnTo === "/app" ? "" : "?returnTo=" + encodeURIComponent(form.returnTo))} />;
   if (!form.pending && authStore.getAccount(preview.session.id)?.setupComplete) return <Navigate replace to={form.returnTo} />;
   return <div className="setup-layout"><a className="skip-link" href="#main-content">Skip to content</a><main id="main-content" className="setup-main" tabIndex={-1}><div className="setup-inner"><header className="setup-header"><Link to="/" aria-label="Bonsai home"><img src="/bonsai-auth/logo.png" alt="bonsai" width="152" height="30" /></Link><ol aria-label="Setup progress">{[0, 1, 2, 3, 4].map(step => <li key={step} aria-current={form.step === step ? "step" : undefined}><span className="sr-only">Step {step + 1}{step === 2 ? " · not recorded" : ""}</span></li>)}</ol></header>
     <form className={"setup-form setup-step-" + form.step} noValidate aria-busy={form.pending} onSubmit={event => { event.preventDefault(); void form.next(); }} onCompositionStart={() => { form.composing.current = true; }} onCompositionEnd={() => { form.composing.current = false; }} onKeyDown={event => { if (event.key === "Enter" && (event.nativeEvent.isComposing || form.composing.current || event.keyCode === 229)) event.preventDefault(); }}>
-      <fieldset disabled={form.pending}><SetupFields draft={form.draft} step={form.step} name={preview.session.name} edit={form.edit} />{form.error && <p role="alert" id="setup-error" tabIndex={-1}>{form.error}</p>}<button className="setup-next" type="submit" disabled={form.pending || (form.step !== 3 && !!setupError(form.draft, form.step))}>{form.pending ? "Saving locally…" : form.step === 2 ? "Continue to team" : "Next"}</button></fieldset>
-      {form.step > 0 && <button className="setup-back" type="button" disabled={form.pending} onClick={() => form.go((form.step - 1) as SetupStep)}>Back</button>}{form.pending && <button className="setup-back" type="button" onClick={form.cancel}>Cancel saving</button>}
+      <fieldset disabled={form.pending}><SetupFields draft={form.draft} step={form.step} name={preview.session.name} error={form.error} edit={form.edit} />{form.error && <p role="alert" id="setup-error" tabIndex={-1}>{form.error}</p>}<button className="setup-next" type="submit" disabled={form.pending || (form.step !== 3 && !!setupError(form.draft, form.step))}>{form.step === 2 ? "Continue to team" : "Next"}</button></fieldset>
+      {form.step > 0 && <button className="setup-back" type="button" disabled={form.pending} onClick={() => form.go((form.step - 1) as SetupStep)}>Back</button>}{form.pending && <><span className="sr-only" role="status">Saving locally…</span><button className="setup-back setup-cancel" type="button" onClick={() => form.cancel(true)}>Cancel saving</button></>}
     </form>
     <div className="setup-local"><p>Local preview · sample details only. {form.step === 3 ? "Emails are saved as draft suggestions. No invitation is sent; empty fields may be skipped in this mock." : "Only recorded options are available. Missing questions and choices remain unconfirmed."}</p><AuthIntentSummary intent={auth.handoff?.intent} /><Link to="/">Pause setup and return to landing</Link><button type="button" onClick={() => { form.cancel(); runtime.setSession(null); }}>End local session</button><details><summary>Local setup scenarios</summary><label>Setup scenario<select value={state.scenario} onChange={event => store.setScenario(event.target.value as CompanyScenario)}><option value="normal">Normal</option><option value="slow">Slow local response</option><option value="fail-once">Fail once, then retry</option></select></label></details></div>
   </div></main><aside className="setup-aside"><div><img className="setup-person" src="/bonsai-auth/setup-person.png" alt="Business owner working beside plants" width="371" height="443" /><h2>Trusted by 500,000+<br /><span>Business Owners</span></h2><img className="setup-ratings" src="/bonsai-auth/setup-ratings.png" alt="Historical source badges: G2 top software and app rating 4.7" width="371" height="36" /></div></aside></div>;
