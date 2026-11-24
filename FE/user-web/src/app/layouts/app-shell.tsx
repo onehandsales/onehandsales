@@ -15,7 +15,8 @@ import { Menu, Search, CirclePlay } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { PreviewTools } from "@/features/preview";
 import { usePreviewEnvironment } from "@/features/preview";
-import { AccountMenu } from "@/features/mock-auth/components/account-menu";
+import { AccountMenu } from "@/features/mock-auth";
+import { useCompanySetup } from "@/features/company-setup";
 import { AppSidebar } from "@/features/app-shell/sidebar";
 import "@/styles/app-shell.css";
 
@@ -23,6 +24,7 @@ import "@/styles/app-shell.css";
 export function AppShell() {
   const location = useLocation(); const [params] = useSearchParams(); const [collapsed, setCollapsed] = useState(false); const [mobileOpen, setMobileOpen] = useState(false); const mobileTrigger = useRef<HTMLButtonElement>(null);
   const { state: preview } = usePreviewEnvironment(); const invited = !!invitationAccess(preview);
+  const { store: companies } = useCompanySetup();
   // 기능 : 다른 인증 문맥에 이전 메뉴 선택을 노출하지 않되 검증 도구의 펼침은 유지한다.
   useEffect(function clearScope() { setCollapsed(false); setMobileOpen(false); }, [preview.revision]);
   // 기능 : DOM이 교체되는 축소·확장 이후에도 같은 제어에 키보드 초점을 유지한다.
@@ -38,7 +40,7 @@ export function AppShell() {
   }, [mobileOpen]);
   return <div className={`app-shell${collapsed ? " has-collapsed-sidebar" : ""}${invited ? " is-invited" : ""}`}>
     <aside className="app-sidebar-desktop"><AppSidebar collapsed={collapsed} onToggle={toggleSidebar} /></aside>
-    <header className="app-toolbar"><button type="button" className="app-mobile-toggle" ref={mobileTrigger} aria-label="Open workspace menu" aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><Menu size={22} aria-hidden="true" /></button>{!invited && <Link className="app-search" to="/app/pending/search"><Search size={20} aria-hidden="true" /><span>Search</span></Link>}<div className="app-toolbar-actions">{!invited && <Link className="app-upgrade" to="/app/pending/subscription">Upgrade Now</Link>}<Link className="app-track" to="/app/pending/time-tracking"><CirclePlay size={27} aria-hidden="true" /><span>Track Time</span></Link>{!invited && <CreateMenu />}<AccountMenu compact /></div></header>
+    <header className="app-toolbar"><button type="button" className="app-mobile-toggle" ref={mobileTrigger} aria-label="Open workspace menu" aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><Menu size={22} aria-hidden="true" /></button>{!invited && <Link className="app-search" to="/app/pending/search"><Search size={20} aria-hidden="true" /><span>Search</span></Link>}<div className="app-toolbar-actions">{!invited && <Link className="app-upgrade" to="/app/pending/subscription">Upgrade Now</Link>}<Link className="app-track" to="/app/pending/time-tracking"><CirclePlay size={27} aria-hidden="true" /><span>Track Time</span></Link>{!invited && <CreateMenu />}<AccountMenu compact workspaceName={companies.company(preview.workspaceId ?? "")?.name} /></div></header>
     <main id="main-content" className="app-main" tabIndex={-1}><Outlet /></main>
     <footer className="app-local-tools"><Link to="/app/preview">Foundation verification</Link><Link to="/">Public site</Link><Link to="/share/sample">Shared preview</Link><PreviewTools /></footer>
     {!invited && params.get("create") === "client" && <QueryScope key={preview.revision + ":" + location.key}><ClientCreateHost /></QueryScope>}

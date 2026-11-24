@@ -45,3 +45,4 @@
 
 .auth-reset-new { padding-bottom:60px; }.auth-reset-error { margin-bottom:44px; }
 @media(max-width:540px) { .auth-reset-new { padding-bottom:36px; } }
+.auth-account-title { margin:0 0 4px; padding:9px 12px; border-bottom:1px solid #eee; font-size:14px; font-weight:600; overflow-wrap:anywhere; }

@@ -1,6 +1,9 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 G10 — 2026-11-24 KST: **부분 완료**. 원본10단계·연결3PNG를 대조하고 가입 오류/처리/복귀·첫 화면 표시를 보완했다. 단위/DOM197/197·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·원본 정책은 대기다. [범위·체크·잔여](../RESULTS/G10_RESULT.md#g10-r4-recheck).
+> 현재 G11 — 2026-11-24 KST: **부분 완료**. 최초 원본7단계 대조/보완 뒤 커밋 전 공통·공유 로그아웃 복귀와 회사명 일관성2문제를 추가 수정했다. 전체211/211·타입/lint·메모리build 통과. 시각/실제 브라우저·원본 대기는 유지하며 사용자 후속 요청으로 로컬 커밋이 승인되었다. [최신 검토·검증](../RESULTS/G11_RESULT.md#g11-precommit-review).
+
+
+> 이전 G10 — 2026-11-24 KST: **부분 완료**. 원본10단계·연결3PNG를 대조하고 가입 오류/처리/복귀·첫 화면 표시를 보완했다. 단위/DOM197/197·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·원본 정책은 대기다. [범위·체크·잔여](../RESULTS/G10_RESULT.md#g10-r4-recheck).
 
 
 > 이전 G09 — 2026-11-24 KST: **부분 완료**. 원본11단계·연결5PNG를 확인하고 정책 발췌/출발 이력/가입 취소를 보완했다. 단위/DOM188/188·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·전체 정책 근거는 대기다. 과거 이력과 다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G09_RESULT.md#g09-r4-recheck).
@@ -117,9 +120,9 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 80 | [Invoices / Editing default values (Invoices)](<../../../bonsai_analysis/flows/Invoices/Editing default values (Invoices)/ANALYSIS.md>) | `a0f52cca-9fee-46e5-af2b-369e1db5e602` | 4 | [G55 목록·기본값·표시 설정](<GOAL-SPECS/G55.md>) (01~04) | [F080](SOURCE-ANALYSIS-IMPACT.md#r4-f080) |
 | 81 | [Invoices / Updating invoice settings](<../../../bonsai_analysis/flows/Invoices/Updating invoice settings/ANALYSIS.md>) | `4a05877b-fd77-4532-a407-7c93a2168895` | 5 | [G55 목록·기본값·표시 설정](<GOAL-SPECS/G55.md>) (01~05) | [F081](SOURCE-ANALYSIS-IMPACT.md#r4-f081) |
 | 82 | [Landing page](<../../../bonsai_analysis/flows/Landing page/ANALYSIS.md>) | `f1a89cc0-4dc8-4576-b912-78231a2a7b1a` | 11 | [G02 랜딩·공통 메뉴](<GOAL-SPECS/G02.md>) (01~11) | [F082](SOURCE-ANALYSIS-IMPACT.md#r4-f082) |
-| 83 | [Logging in](<../../../bonsai_analysis/flows/Logging in/ANALYSIS.md>) | `a02409b3-6eb0-4bc0-b702-22a42e0990c8` | 5 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~05) | [F083](SOURCE-ANALYSIS-IMPACT.md#r4-f083) |
+| 83 | [Logging in](<../../../bonsai_analysis/flows/Logging in/ANALYSIS.md>) | `a02409b3-6eb0-4bc0-b702-22a42e0990c8` | 5 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~05) | [F083](SOURCE-ANALYSIS-IMPACT.md#r4-f083) · [G11 부분 대조/보완](../RESULTS/G11_RESULT.md#g11-r4-recheck) |
 | 84 | [Logging in / Resetting password](<../../../bonsai_analysis/flows/Logging in/Resetting password/ANALYSIS.md>) | `8f9cc02b-1748-4b71-97d8-5c80bb299013` | 10 | [G12 비밀번호 재설정](<GOAL-SPECS/G12.md>) (01~10) | [F084](SOURCE-ANALYSIS-IMPACT.md#r4-f084) |
-| 85 | [Logging out](<../../../bonsai_analysis/flows/Logging out/ANALYSIS.md>) | `39713c9a-6f82-4d7c-be32-ab38510406bc` | 2 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~02) | [F085](SOURCE-ANALYSIS-IMPACT.md#r4-f085) |
+| 85 | [Logging out](<../../../bonsai_analysis/flows/Logging out/ANALYSIS.md>) | `39713c9a-6f82-4d7c-be32-ab38510406bc` | 2 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~02) | [F085](SOURCE-ANALYSIS-IMPACT.md#r4-f085) · [G11 부분 대조/보완](../RESULTS/G11_RESULT.md#g11-r4-recheck) |
 | 86 | [Onboarding](<../../../bonsai_analysis/flows/Onboarding/ANALYSIS.md>) | `f714101f-db6b-4bfe-9ed1-74d6b0d6243c` | 10 | [G10 회원가입](<GOAL-SPECS/G10.md>) (01~10) | [F086](SOURCE-ANALYSIS-IMPACT.md#r4-f086) · [G10 부분 대조/보완](../RESULTS/G10_RESULT.md#g10-r4-recheck) |
 | 87 | [Onboarding / Completing account setup](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md>) | `f004afc2-a8c5-4262-b2e4-941331047a84` | 16 | [G13 사업 설정 온보딩](<GOAL-SPECS/G13.md>) (01~16) | [F087](SOURCE-ANALYSIS-IMPACT.md#r4-f087) |
 | 88 | [Perks](<../../../bonsai_analysis/flows/Perks/ANALYSIS.md>) | `dee9aba7-13a6-462f-87f5-0a942a971ab0` | 4 | [G82 제휴 혜택](<GOAL-SPECS/G82.md>) (01~04) | [F088](SOURCE-ANALYSIS-IMPACT.md#r4-f088) |
@@ -259,3 +262,12 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 - [x] F086 01~10을 G10 코드·수용 기준과 대조했다. F083/02·F087/01·F132/01은 연결 확인만 하며 소유/배정은 유지한다.134흐름/754단계/642고유ID는 변함없다. [상세 판정·근거](../RESULTS/G10_RESULT.md#g10-r4-recheck).
 
 - [ ] 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G10 결과8절에 기록했다.
+
+<a id="g11-update"></a>
+## G11 적용·연결 검토 — 2026-11-24 KST
+
+- [x] F083 01~05/F085 01~02를 G11에 대응했다. 134흐름/754단계/642고유ID와 원래 Goal 배정은 유지한다. 공유 화면의 다른 소비 G 전체 검토는 대기다. [상세 판정·근거](../RESULTS/G11_RESULT.md#g11-r4-recheck).
+
+- [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·원본 미수록 정책은 대기다. 연결 G/R 전체 완료가 아니며 후속 담당은 G11 결과8절을 따른다.
+
+> G11 커밋 전 추가 검토: 공통/공유 로그아웃→빈 로그인·저장 회사명 일관성 보완, G11 14/전체211 통과. 과거208 기록과 다른 Goal 대기는 보존하며 로컬 커밋만 승인되었다. [최신 결과](../RESULTS/G11_RESULT.md#g11-precommit-review).

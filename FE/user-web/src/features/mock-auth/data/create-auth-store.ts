@@ -128,9 +128,10 @@ export function createAuthStore(preview: PreviewRuntime): AuthStore {
   function renewFactor() { if (state.twoFactor) publish({ twoFactor: { ...state.twoFactor, id: `factor-preview-${++challengeSequence}`, status: "valid", attempts: 0 } }); }
   // 기능 : 2FA 취소와 페이지 이탈에서 도전을 폐기한다.
   function cancelFactor() { if (state.twoFactor) publish({ twoFactor: null }); }
-  // 기능 : 취소·실패 가능한 로컬 로그아웃을 완료한 뒤 모든 기존 실행 차수를 무효화한다.
+  // 기능 : 취소·실패 가능한 로컬 로그아웃 후 완료 차수를 반환해 최신 성공만 화면에 반영하게 한다.
   async function logout(revision: number, signal: AbortSignal) {
     await prepare(revision, signal, generation); preview.setSession(null); publish({ notice: "signed-out" });
+    return preview.getSnapshot().revision;
   }
   // 기능 : 실제 장치 세션과 무관한 현재 탭의 만료 복구를 재현한다.
   function expireSession() { preview.setSession(null); publish({ notice: "expired" }); }

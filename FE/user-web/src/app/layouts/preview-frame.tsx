@@ -1,10 +1,13 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { AccountMenu } from "@/features/mock-auth/components/account-menu";
+import { AccountMenu } from "@/features/mock-auth";
+import { useCompanySetup } from "@/features/company-setup";
 import "@/styles/auth.css";
-import { PreviewTools } from "@/features/preview";
+import { PreviewTools, usePreviewEnvironment } from "@/features/preview";
 
 // 기능 : 공개 원본 화면과 구분된 G01 내부 검증 메뉴와 도구를 조립한다.
 export function PreviewFrame() {
+  const { state: preview } = usePreviewEnvironment();
+  const { store: companies } = useCompanySetup();
   return <>
     <header className="preview-header">
       <Link className="wordmark" to="/">OneHand CRM</Link>
@@ -13,7 +16,7 @@ export function PreviewFrame() {
         <NavLink to="/" end>Public</NavLink><NavLink to="/login">Log in</NavLink>
         <NavLink to="/app">Workspace</NavLink><NavLink to="/share/sample">Shared</NavLink>
         <NavLink to="/components">Components</NavLink>
-      </nav><AccountMenu />
+      </nav><AccountMenu workspaceName={companies.company(preview.workspaceId ?? "")?.name} />
     </header>
     <main id="main-content" tabIndex={-1}><Outlet /></main>
     <aside aria-label="Development tools"><PreviewTools /></aside>

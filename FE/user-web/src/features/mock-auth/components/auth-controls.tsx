@@ -10,7 +10,7 @@ import type { AuthScenario } from "../model/auth-types";
 export function LocalCaptcha({ checked, onChange, error }: { checked: boolean; onChange: (value: boolean) => void; error?: string }) {
   const id = useId();
   return <div className="auth-captcha-wrap"><label className="auth-captcha"><input type="checkbox" aria-invalid={!!error} checked={checked} onChange={event => onChange(event.target.checked)} aria-describedby={error ? id : undefined} />
-    <span>I'm not a robot</span><small>Local<br />preview check</small></label>{error && <p id={id} className="auth-error">{error}</p>}</div>;
+    <span>I'm not a robot</span><small>Local<br />preview check</small></label>{error && <p id={id} className="auth-error" role="alert">{error}</p>}</div>;
 }
 // 기능 : 비밀번호 원문을 컴포넌트 밖에 저장하지 않고 보기 전환·강도·오류를 표시한다.
 export function PasswordField({ value, onChange, error, strength = true, autoComplete = "new-password" }: { value: string; onChange: (value: string) => void; error?: string; strength?: boolean; autoComplete?: string }) {
@@ -30,6 +30,18 @@ export function AuthTools() {
   return <details className="auth-tools"><summary>Local authentication scenarios</summary><label>Authentication scenario<select value={state.scenario} onChange={event => store.setScenario(event.target.value as AuthScenario)}>
     <option value="normal">Normal</option><option value="slow">Slow local response</option><option value="fail-once">Fail once, then retry</option><option value="verify-email">Local email verification</option><option value="two-factor">Local two-factor login</option></select></label>
     <p>These branches are mock assumptions. No CAPTCHA, OAuth or email service is contacted.</p><Link to="/components">Open preview controls</Link></details>;
+}
+// 기능 : 진행 중 인증의 취소에 초점을 두고 취소·실패 후 제출 버튼으로 돌려준다.
+export function AuthPendingCancel({ onCancel, returnFocusRef, className, children }: { onCancel: () => void; returnFocusRef: RefObject<HTMLButtonElement | null>; className: string; children: string }) {
+  const cancelButton = useRef<HTMLButtonElement>(null);
+  // 기능 : 취소 버튼의 수명에만 초점 이동·복원을 연결한다.
+  useEffect(function focusCancellation() {
+    const target = returnFocusRef.current;
+    cancelButton.current?.focus({ preventScroll: true });
+    // 기능 : 이동으로 사라진 제출이나 아직 비활성인 제출에는 초점을 돌리지 않는다.
+    return function restoreFocus() { if (target?.isConnected && !target.matches(":disabled") && !target.closest("[inert]")) target.focus({ preventScroll: true }); };
+  }, [returnFocusRef]);
+  return <button ref={cancelButton} type="button" className={className} onClick={onCancel}>{children}</button>;
 }
 // 기능 : 원본의 처리 중 표현을 정적 로컬 자산으로 보여 주고 중복 조작을 차단한다.
 export function SignupProgress({ onCancel, returnFocusRef }: { onCancel: () => void; returnFocusRef: RefObject<HTMLButtonElement | null> }) {

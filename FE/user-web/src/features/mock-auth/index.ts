@@ -4,3 +4,8 @@ export type { AuthStore, AuthAccount, AuthScenario } from "./model/auth-types";
 export { AuthTools, LocalCaptcha, PasswordField, SignupProgress } from "./components/auth-controls";
 export { AuthIntentSummary } from "./components/auth-intent-summary";
 export { useSignup } from "./hooks/use-signup";
+export { useLogin } from "./hooks/use-login";
+export { AuthNotice } from "./components/auth-notice";
+export { LoginChangelog } from "./components/login-changelog";
+export { AuthPendingCancel } from "./components/auth-controls";
+export { AccountMenu } from "./components/account-menu";

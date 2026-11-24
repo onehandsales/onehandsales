@@ -27,7 +27,7 @@ export type AuthStore = {
   expireFactor(): void;
   renewFactor(): void;
   cancelFactor(): void;
-  logout(revision: number, signal: AbortSignal): Promise<void>;
+  logout(revision: number, signal: AbortSignal): Promise<number>;
   expireSession(): void;
   clearNotice(): void;
   requestReset(email: string, captcha: boolean, revision: number, signal: AbortSignal): Promise<ResetChallenge>;

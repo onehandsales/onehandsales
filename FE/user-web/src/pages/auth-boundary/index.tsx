@@ -1,7 +1,6 @@
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useMockAuth } from "@/features/mock-auth";
-import { usePreviewEnvironment } from "@/features/preview";
-import { AuthIntentSummary } from "@/features/mock-auth/components/auth-intent-summary";
+import { useMockAuth, AuthIntentSummary } from "@/features/mock-auth";
+import { authReturnQuery, usePreviewEnvironment } from "@/features/preview";
 import { usePublicExperience } from "@/features/public-web";
 import { useInvoiceDraftStore } from "@/features/public-invoice";
 import { subscriptionHandoffPath } from "@/features/public-commercial";
@@ -28,7 +27,7 @@ export function AuthContinuePage() {
 // 기능 : 아직 구현하지 않은 후속 화면을 실제 처리 성공과 구분해 로컬 복귀 경계를 제공한다.
 export function AuthFuturePage() {
   const location = useLocation(); const verification = location.pathname === "/verify-email/request";
-  return <section className="auth-card auth-boundary"><h1>{verification ? "Resend Verification Email" : "Password reset"}</h1><p>{verification ? "Email verification is separate from password recovery. No real email is sent. Use the local verification scenario when creating a sample account." : "The password recovery flow is the next G12 task. No reset request has been sent."}</p><Link to="/login" state={location.state}>Return to login</Link>{verification && <Link to="/signup" state={location.state}>Create a sample account</Link>}</section>;
+  return <section className="auth-card auth-boundary"><h1>{verification ? "Resend Verification Email" : "Password reset"}</h1><p>{verification ? "Email verification is separate from password recovery. No real email is sent. Use the local verification scenario when creating a sample account." : "The password recovery flow is the next G12 task. No reset request has been sent."}</p><Link to={"/login" + authReturnQuery(location.search)} state={location.state}>Return to login</Link>{verification && <Link to={"/signup" + authReturnQuery(location.search)} state={location.state}>Create a sample account</Link>}</section>;
 }
 // 기능 : 계정 메뉴의 후속 업무 목적지를 가상 인계로 표시한다.
 export function AppFuturePage() {

@@ -1,6 +1,9 @@
 # G Goal 상세 명세
 
-> 현재 G10 — 2026-11-24 KST: **부분 완료**. 원본10단계·연결3PNG를 대조하고 가입 오류/처리/복귀·첫 화면 표시를 보완했다. 단위/DOM197/197·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·원본 정책은 대기다. [범위·체크·잔여](../../RESULTS/G10_RESULT.md#g10-r4-recheck).
+> 현재 G11 — 2026-11-24 KST: **부분 완료**. 최초 원본7단계 대조/보완 뒤 커밋 전 공통·공유 로그아웃 복귀와 회사명 일관성2문제를 추가 수정했다. 전체211/211·타입/lint·메모리build 통과. 시각/실제 브라우저·원본 대기는 유지하며 사용자 후속 요청으로 로컬 커밋이 승인되었다. [최신 검토·검증](../../RESULTS/G11_RESULT.md#g11-precommit-review).
+
+
+> 이전 G10 — 2026-11-24 KST: **부분 완료**. 원본10단계·연결3PNG를 대조하고 가입 오류/처리/복귀·첫 화면 표시를 보완했다. 단위/DOM197/197·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·원본 정책은 대기다. [범위·체크·잔여](../../RESULTS/G10_RESULT.md#g10-r4-recheck).
 
 
 > 이전 G09 — 2026-11-24 KST: **부분 완료**. 원본11단계·연결5PNG를 확인하고 정책 발췌/출발 이력/가입 취소를 보완했다. 단위/DOM188/188·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·전체 정책 근거는 대기다. 과거 이력과 다른 G/R 상태를 보존한다. [범위·체크·잔여](../../RESULTS/G09_RESULT.md#g09-r4-recheck).
@@ -110,3 +113,5 @@
 | [G82 제휴 혜택](<G82.md>) | 내부 업무 | 1개 플로우 범위 | [R01](<../RESEARCH-GOALS/R01.md>) |
 | [G83 업무 연결 시나리오](<G83.md>) | 전체 영역 통합 검증 | 공통/통합 | [R01](<../RESEARCH-GOALS/R01.md>), [R02](<../RESEARCH-GOALS/R02.md>), [R03](<../RESEARCH-GOALS/R03.md>), [R04](<../RESEARCH-GOALS/R04.md>), [R05](<../RESEARCH-GOALS/R05.md>), [R06](<../RESEARCH-GOALS/R06.md>), [R07](<../RESEARCH-GOALS/R07.md>), [R08](<../RESEARCH-GOALS/R08.md>), [R09](<../RESEARCH-GOALS/R09.md>), [R10](<../RESEARCH-GOALS/R10.md>), [R11](<../RESEARCH-GOALS/R11.md>), [R12](<../RESEARCH-GOALS/R12.md>), [R13](<../RESEARCH-GOALS/R13.md>), [R14](<../RESEARCH-GOALS/R14.md>), [R15](<../RESEARCH-GOALS/R15.md>), [R16](<../RESEARCH-GOALS/R16.md>), [R17](<../RESEARCH-GOALS/R17.md>), [R18](<../RESEARCH-GOALS/R18.md>), [R19](<../RESEARCH-GOALS/R19.md>), [R20](<../RESEARCH-GOALS/R20.md>), [R21](<../RESEARCH-GOALS/R21.md>), [R22](<../RESEARCH-GOALS/R22.md>) |
 | [G84 역할·웹 접근성·회귀·범위 감사](<G84.md>) | 전체 영역 통합 검증 | 공통/통합 | [R01](<../RESEARCH-GOALS/R01.md>), [R02](<../RESEARCH-GOALS/R02.md>), [R03](<../RESEARCH-GOALS/R03.md>), [R04](<../RESEARCH-GOALS/R04.md>), [R05](<../RESEARCH-GOALS/R05.md>), [R06](<../RESEARCH-GOALS/R06.md>), [R07](<../RESEARCH-GOALS/R07.md>), [R08](<../RESEARCH-GOALS/R08.md>), [R09](<../RESEARCH-GOALS/R09.md>), [R10](<../RESEARCH-GOALS/R10.md>), [R11](<../RESEARCH-GOALS/R11.md>), [R12](<../RESEARCH-GOALS/R12.md>), [R13](<../RESEARCH-GOALS/R13.md>), [R14](<../RESEARCH-GOALS/R14.md>), [R15](<../RESEARCH-GOALS/R15.md>), [R16](<../RESEARCH-GOALS/R16.md>), [R17](<../RESEARCH-GOALS/R17.md>), [R18](<../RESEARCH-GOALS/R18.md>), [R19](<../RESEARCH-GOALS/R19.md>), [R20](<../RESEARCH-GOALS/R20.md>), [R21](<../RESEARCH-GOALS/R21.md>), [R22](<../RESEARCH-GOALS/R22.md>) |
+
+> G11 커밋 전 추가 검토: 공통/공유 로그아웃→빈 로그인·저장 회사명 일관성 보완, G11 14/전체211 통과. 과거208 기록과 다른 Goal 대기는 보존하며 로컬 커밋만 승인되었다. [최신 결과](../../RESULTS/G11_RESULT.md#g11-precommit-review).
