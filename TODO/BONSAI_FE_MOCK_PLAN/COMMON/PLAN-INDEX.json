@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G07 주요 원본 대조·초안/가입 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00~G06/연결 Goal 과거 이력·대기 보존; 다음 Goal 자동 착수 없음, G32 이후 미착수.",
+  "status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00~G07/연결 Goal 과거 이력·대기 보존; 다음 Goal 자동 착수 없음, G32 이후 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -266,6 +266,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g08_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "공통 Dialog의 네이티브 취소/초점 복귀·이력 종료, 목 Reset/수명 소비만 검증했다. 공통 실행 코드는 유지했다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -470,6 +478,14 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
         "scope": "공개 메뉴/일반 Start free 가입 취소가 청구서 인계를 지우지 않는 경계와 기존 메뉴 DOM 회귀",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g08_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "Resources/공개 푸터/문의 카드의 도움말 진입과 이력 복귀를 검증했다. 메뉴 실행 코드는 유지했다.",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -1668,7 +1684,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "목 도움말·문의 구현·두 차례 검토·현재 검증 수행; 미수록·영상·원본 동작·시각·환경 대기; 감사 동작 결함 수정·90개 전체 회귀 확인",
+      "status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기",
       "flow_scope": [
         {
           "flow_number": 24,
@@ -1721,7 +1737,7 @@
         }
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기",
         "item_ids": [
           "R4-F024-O01",
           "R4-F024-O02",
@@ -1749,7 +1765,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g08",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": []
       },
       "g02_consumer_recheck": {
@@ -1759,6 +1775,111 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g08_recheck": {
+        "date": "2026-11-24 KST",
+        "goal": "G08",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "base_commit": "88f320af",
+        "scope": "G08 help/search/article/feedback/support and direct G01/G02/G11/G14 consumers; G16 guidance only",
+        "source_flows": 4,
+        "source_steps": 10,
+        "assigned_g08_steps": 8,
+        "connected_steps": 2,
+        "source_images_directly_viewed": 10,
+        "r4_items": 10,
+        "new_mcp_query_performed": true,
+        "mcp_scope": "metadata only: F024/F065/F066, 3 flow IDs and 8 ordered screens; no new MCP images/version 2146 reconfirmation",
+        "original_analysis_and_png_unchanged": true,
+        "source_hashes_verified": {
+          "analyses": 4,
+          "pngs": 10
+        },
+        "implementation_review_performed": true,
+        "implementation_supplement": "English return query/hash/state, list/FAQ origin and nested return, TOC query retention, article/support dialog history lifetime, IME229",
+        "typecheck": "app/node passed --noEmit --incremental false",
+        "lint": "passed --no-cache",
+        "unit_dom": "31 files 179/179; G08 13/13; final 119.29s",
+        "build": "passed in memory; 1971 modules; 3 outputs; write:false; 10.23s",
+        "browser_e2e": "not_run: no connected document session/existing CDP; new profiles/artifacts forbidden",
+        "browser_network": "not_observed",
+        "browser_console": "not_observed",
+        "real_api_requests": null,
+        "visual_identity": "not_verified",
+        "source_font_capture_assets": "pending",
+        "element_census_complete": false,
+        "reproduction_spec_certified": false,
+        "preview": "http://127.0.0.1:5173/help",
+        "preview_mode": "existing Vite dev/HMR PID30272; HTTP root200; preserved",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "overall_complete": false,
+        "next_goal_started": false,
+        "commit_push_deploy": false,
+        "pending_owners": {
+          "source_visual": [
+            "G08",
+            "G01",
+            "R01"
+          ],
+          "browser_environment": [
+            "G08",
+            "G01",
+            "G02",
+            "G11",
+            "G14",
+            "G84"
+          ],
+          "full_auth_onboarding": [
+            "G10",
+            "G11",
+            "G13",
+            "G14",
+            "R02"
+          ],
+          "branding_portal": [
+            "G16"
+          ]
+        },
+        "final_consistency": {
+          "markdown_files": 170,
+          "json_files": 1,
+          "modified_existing_plan_documents": 40,
+          "existing_link_error_occurrences": 221,
+          "current_link_error_occurrences": 221,
+          "new_link_errors": 0,
+          "assertion_failures": 0,
+          "goals": 85,
+          "research": 22,
+          "execution_order": 107,
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "r4_items": 455,
+          "unchanged_other_r4_items": 445,
+          "common_criteria": 12,
+          "historical_verification_preserved": true,
+          "execution_order_preserved": true,
+          "existing_completed_checks_preserved": true,
+          "new_files": [
+            "FE/user-web/src/app/router/help-entry.test.tsx"
+          ]
+        },
+        "precommit_review": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-precommit-review",
+          "scope": "G08 local commit review; G09 prerequisite check only",
+          "runtime_code_changed_since_final_verification": false,
+          "application_tests_rerun": false,
+          "previous_unit_dom": "31 files 179/179; G08 13/13",
+          "user_requested_local_commit": true,
+          "commit_status": "reviewed and prepared for local commit",
+          "overall_complete": false,
+          "push": false,
+          "deploy": false,
+          "next_goal_started": false
+        }
       }
     },
     {
@@ -2157,6 +2278,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g08_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "My Account/문의 앱→미인증 로그인·브라우저 복귀→샘플 로그인→앱을 DOM 검증했다. 로그인/역할 전체 재검토는 아니다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -2472,6 +2601,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g08_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "기존 보호 경계 returnTo와 앱 셸·도움말/문의 복귀를 DOM 검증했다. 실제 브라우저/전체 셸 재검토는 아니다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -2659,6 +2796,14 @@
         "shared_screen_ids": [
           "sc_a2d30da474bc43909f17e726b0559b83"
         ]
+      },
+      "g08_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "기사 안 설정 이미지는 읽기 전용, Branding settings는 기존 로컬 안내임을 확인했다. 실제 브랜드/포털 편집은 N/A이며 시작하지 않았다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -7543,6 +7688,15 @@
         "overall_complete": false,
         "visual_identity": "pending",
         "browser_e2e": "not_run"
+      },
+      "g08_r4_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "G08 help/contact source and local behavior only",
+        "full_research_review_performed": false,
+        "overall_complete": false,
+        "visual_identity": "pending",
+        "browser_e2e": "not_run"
       }
     },
     {
@@ -7647,6 +7801,15 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
         "scope": "required auth/onboarding/explicit invoice return only",
+        "full_research_review_performed": false,
+        "overall_complete": false,
+        "visual_identity": "pending",
+        "browser_e2e": "not_run"
+      },
+      "g08_r4_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "scope": "required local login/app return only",
         "full_research_review_performed": false,
         "overall_complete": false,
         "visual_identity": "pending",
@@ -9526,7 +9689,15 @@
           "R4-F024-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "assigned_steps_directly_viewed": 2,
+          "major_elements_compared": true,
+          "source_element_census_complete": false,
+          "source_reproduction_spec_certified": false
+        }
       }
     },
     {
@@ -10793,7 +10964,15 @@
           "R4-F065-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "assigned_steps_directly_viewed": 2,
+          "major_elements_compared": true,
+          "source_element_census_complete": false,
+          "source_reproduction_spec_certified": false
+        }
       }
     },
     {
@@ -10822,7 +11001,15 @@
           "R4-F066-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "assigned_steps_directly_viewed": 4,
+          "major_elements_compared": true,
+          "source_element_census_complete": false,
+          "source_reproduction_spec_certified": false
+        }
       }
     },
     {
@@ -13052,8 +13239,8 @@
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
-    "status": "G07 주요 원본 대조·초안/가입 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
+    "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+    "status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -14757,6 +14944,12 @@
           "status": "G07 5/5와 연결11PNG·ANALYSIS5개 해시/크기 확인, MCP4흐름31ID/순서 일치; 촬영/빌드/버전 재확정 대기",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "담당8PNG·연결 로그인2PNG/ANALYSIS4개 해시·크기 확인, MCP3흐름8ID/순서 일치; 촬영/빌드·카탈로그 재확정 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14811,6 +15004,12 @@
           "date": "2026-11-24 KST",
           "status": "공개 패널·가입/로그인·설문/대시보드 구성 구분; 실제 배치/겹침/모달 시각 대기",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "잎 검색 헤더·인기3열/분류2열·기사/목차·지원3카드/FAQ 구분; 실제 배치/overlay 시각 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14867,6 +15066,12 @@
           "status": "5단계 주요 입력/표/CTA 및 연결11화면 대응; 전체 요소 계수·정밀 명세 인증 미완료",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "8단계 주요 요소군과 코드 대응; 전체 요소 전수 계수·정밀 명세 인증 미완",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14921,6 +15126,12 @@
           "date": "2026-11-24 KST",
           "status": "원본05 Work Email·you@company.com 복원; placeholder와 빈 값 구분, 필수/제한은 목 정책. 줄바꿈/정밀 표시 대기",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "제목·부제·업데이트 문구·목차8·관련5·FAQ10 확인; 원문 전체/줄바꿈 동일성 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14977,6 +15188,12 @@
           "status": "PNG2880×1800/MCP1440×900 구분; 현재 구현 viewport/DPR/배율/스크롤·픽셀 비교 미실행",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "PNG2880×1800/MCP1440×900 구분; 실제 구현 viewport/DPR/배율·스크롤·픽셀 비교 미실행",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15031,6 +15248,12 @@
           "date": "2026-11-24 KST",
           "status": "기존 폰트 선언 유지; 원본 폰트 파일·굵기·행간·자간 동일성 미검증",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기존 도움말 Inter·공개 Gellix 유지; 과거 보관본 이력과 원본 확정을 구분, 정확 폰트/수치·raster 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15087,6 +15310,12 @@
           "status": "회색 패널/녹색 합계/버튼 구성 대조; 기존 대비 보완 색과 날짜 native 표시 차이 유지, 동일성 미확인",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기존 접근성 보완 녹색 #397d24와 원본 색 차이 유지; 모든 상태 색/테두리/radius/shadow 동일성 미검증",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15141,6 +15370,12 @@
           "date": "2026-11-24 KST",
           "status": "기존 로고·가입 잎·인증 아이콘·설문 이미지 사용 유지; 원본 자산/crop 정밀 대조 대기",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기존 헤더/로고/아이콘/잎·영상포스터·설정이미지·평가3 사용 유지; 원본 자산/crop/촬영조건 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15197,6 +15432,12 @@
           "status": "빈 행/불완전 행·기한 오류 연결·실패 재시도·중복·slow/취소·합성 IME·Reset DOM 검증; 원본 오류/모바일 미수록",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "읽기 오류/재시도·empty/무결과·미제공언어/본문·피드백 실패·취소·중복·경합·합성IME DOM 검증; 원본 정책 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15251,6 +15492,12 @@
           "date": "2026-11-24 KST",
           "status": "실제 앱 router/history DOM으로 진입·뒤로/앞으로·query/hash·가입/로그인·온보딩 복귀 검증; 실제 브라우저 대기",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "실제 router/history DOM에서 검색·영어 복귀·목차replace·관련 기사·FAQ·로그인 왕복 검증; 실제 브라우저/스크롤 대기",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15307,6 +15554,12 @@
           "status": "편집값/제출 snapshot 분리, 선택 인계만 취소, 일반 가입 취소와 격리, 사용자/workspace/reset·늦은 제출 무효화 검증",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "URL 검색과 입력 초안 분리·기사ID별 방문 메모리 평가·실패 보존/재시도·마지막 선택·이탈/Reset 격리 검증",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15361,6 +15614,12 @@
           "date": "2026-11-24 KST",
           "status": "G06/G01/G02/G10/G11/G13/G14 직접 연결 소비 회귀; R01/R02와 연결 Goal 전체 완료 아님",
           "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "G01/G02/G11/G14 직접 연결 DOM 검증, G16 안내 경계만 유지; G10/G13 신규 가입/온보딩 전체는 이번 범위 N/A",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
           "global_requirement_complete": false
         }
       }
@@ -16859,9 +17118,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "지원 카드3·서로 다른 선 아이콘·FAQ10 유지. FAQ 전체 URL 복귀·지원 안내 이력 종료 보완; 정확 줄바꿈/시각 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F024-O02",
@@ -16877,9 +17143,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "왼쪽 질문 목록·오른쪽 잎 crop 구조 유지. 아코디언/답변/문의 폼 없음; 정밀 위치·crop 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F024-A01",
@@ -16896,8 +17169,15 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "FAQ10 표시 문구/기존 ID 연결 대조. 정확 행간·줄바꿈/잎 자산 동일성·캡처 당시 링크 실행 결과 미확인",
+        "evidence": [],
+        "plan_snapshot_status": "분석 대기",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F025-O01",
@@ -19399,9 +19679,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "잎 헤더·검색·인기3열·분류2열 유지. 언어 복귀 query/hash/state·기사 출발 hash·IME229 보완; 배치 시각 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F065-O02",
@@ -19417,9 +19704,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "마지막 컬렉션·로고/Bonsai2024·푸터3링크 유지. 문서 수는 역사적 값; 푸터 여백 동일성 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F065-A01",
@@ -19436,8 +19730,15 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "보관본 기반14컬렉션과 PNG 수록분 구분. 검색/언어/hover의 원본 동작과 정확 배경·아이콘/중간 목록 미확인",
+        "evidence": [],
+        "plan_snapshot_status": "분석 대기",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F066-O01",
@@ -19453,9 +19754,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "인기 첫 기사 강조 스타일 유지. 원본 입력 원인 불명; 접근성 보완 색과 픽셀 차이 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F066-O02",
@@ -19471,9 +19779,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "8목차·세로선/활성·영상 포스터·읽기 전용 설정 이미지 유지. 목차 query/state 보존·안내 이력 종료 보완; 실제 스크롤/고정 위치 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F066-O03",
@@ -19489,9 +19804,16 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "관련기사5·초록 화살표·회색 피드백3 유지. 기사 canonical ID·실패/재시도/취소/마지막 선택 DOM 검증; 원본 저장 정책/시각 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F066-A01",
@@ -19508,8 +19830,15 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "본문 전체·영상/자막·정확 목차 폭/고정·실제 평가 저장 결과 미확인. 기존 영상 미제공/설정 안내 경계 유지",
+        "evidence": [],
+        "plan_snapshot_status": "분석 대기",
+        "g08_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F067-O01",
@@ -23997,8 +24326,8 @@
       "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
       "criteria_note": "과거 정밀 시각 명세의 일괄 선행 조건은 최신 사용자 기준으로 대체. 기능 제어·입력·상태·저장·전환 대응은 필요하며 아래 R4 원문·인증 상태는 보존."
     },
-    "authorized_scope": "G07 FE corrections/formal regression and existing related planning docs only",
-    "new_source_review_scope": "G07 5 assigned PNGs and 11 directly connected PNGs; major elements/code only; no full element census/pixel certification",
+    "authorized_scope": "G08 FE corrections/formal regression and existing related planning docs only",
+    "new_source_review_scope": "G08 8 assigned PNGs and 2 directly connected PNGs; major elements/code only; no full element census/pixel certification",
     "scoped_reviews": [
       {
         "date": "2026-11-23 KST",
@@ -24753,6 +25082,111 @@
           "deploy": false,
           "next_goal_started": false
         }
+      },
+      {
+        "date": "2026-11-24 KST",
+        "goal": "G08",
+        "result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
+        "base_commit": "88f320af",
+        "scope": "G08 help/search/article/feedback/support and direct G01/G02/G11/G14 consumers; G16 guidance only",
+        "source_flows": 4,
+        "source_steps": 10,
+        "assigned_g08_steps": 8,
+        "connected_steps": 2,
+        "source_images_directly_viewed": 10,
+        "r4_items": 10,
+        "new_mcp_query_performed": true,
+        "mcp_scope": "metadata only: F024/F065/F066, 3 flow IDs and 8 ordered screens; no new MCP images/version 2146 reconfirmation",
+        "original_analysis_and_png_unchanged": true,
+        "source_hashes_verified": {
+          "analyses": 4,
+          "pngs": 10
+        },
+        "implementation_review_performed": true,
+        "implementation_supplement": "English return query/hash/state, list/FAQ origin and nested return, TOC query retention, article/support dialog history lifetime, IME229",
+        "typecheck": "app/node passed --noEmit --incremental false",
+        "lint": "passed --no-cache",
+        "unit_dom": "31 files 179/179; G08 13/13; final 119.29s",
+        "build": "passed in memory; 1971 modules; 3 outputs; write:false; 10.23s",
+        "browser_e2e": "not_run: no connected document session/existing CDP; new profiles/artifacts forbidden",
+        "browser_network": "not_observed",
+        "browser_console": "not_observed",
+        "real_api_requests": null,
+        "visual_identity": "not_verified",
+        "source_font_capture_assets": "pending",
+        "element_census_complete": false,
+        "reproduction_spec_certified": false,
+        "preview": "http://127.0.0.1:5173/help",
+        "preview_mode": "existing Vite dev/HMR PID30272; HTTP root200; preserved",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "overall_complete": false,
+        "next_goal_started": false,
+        "commit_push_deploy": false,
+        "pending_owners": {
+          "source_visual": [
+            "G08",
+            "G01",
+            "R01"
+          ],
+          "browser_environment": [
+            "G08",
+            "G01",
+            "G02",
+            "G11",
+            "G14",
+            "G84"
+          ],
+          "full_auth_onboarding": [
+            "G10",
+            "G11",
+            "G13",
+            "G14",
+            "R02"
+          ],
+          "branding_portal": [
+            "G16"
+          ]
+        },
+        "final_consistency": {
+          "markdown_files": 170,
+          "json_files": 1,
+          "modified_existing_plan_documents": 40,
+          "existing_link_error_occurrences": 221,
+          "current_link_error_occurrences": 221,
+          "new_link_errors": 0,
+          "assertion_failures": 0,
+          "goals": 85,
+          "research": 22,
+          "execution_order": 107,
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "r4_items": 455,
+          "unchanged_other_r4_items": 445,
+          "common_criteria": 12,
+          "historical_verification_preserved": true,
+          "execution_order_preserved": true,
+          "existing_completed_checks_preserved": true,
+          "new_files": [
+            "FE/user-web/src/app/router/help-entry.test.tsx"
+          ]
+        },
+        "precommit_review": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G08_RESULT.md#g08-precommit-review",
+          "scope": "G08 local commit review; G09 prerequisite check only",
+          "runtime_code_changed_since_final_verification": false,
+          "application_tests_rerun": false,
+          "previous_unit_dom": "31 files 179/179; G08 13/13",
+          "user_requested_local_commit": true,
+          "commit_status": "reviewed and prepared for local commit",
+          "overall_complete": false,
+          "push": false,
+          "deploy": false,
+          "next_goal_started": false
+        }
       }
     ],
     "scope_status_history": [
@@ -24779,6 +25213,12 @@
         "prior_status": "G06 R4 주요 구성 대조·검색/상세 복귀/파일·가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
         "prior_result": "../RESULTS/G06_RESULT.md#g06-r4-recheck",
         "scope": "G07 review update; previous status preserved"
+      },
+      {
+        "date": "2026-11-24 KST",
+        "prior_status": "G07 주요 원본 대조·초안/가입 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
+        "prior_result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+        "scope": "G08 review update; previous status preserved"
       }
     ]
   },
