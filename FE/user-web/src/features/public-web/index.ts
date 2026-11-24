@@ -6,7 +6,7 @@ export { ProductOverview, Testimonials, FinanceOverview, ClientExperience, Revie
 export { publicDestinations } from "./model/public-destinations";
 export { usePublicExperience } from "./data/public-context";
 export { usePublicOrigin } from "./hooks/use-public-origin";
-export { publicHistoryIndex, readPublicOrigin } from "./model/public-origin";
+export { publicHistoryIndex, readPublicOrigin, publicOriginState } from "./model/public-origin";
 export { SignupForm } from "./components/signup-form";
 export { ReviewRating } from "./components/landing-hero";
 export { PublicLink, SignupLink } from "./components/public-link";

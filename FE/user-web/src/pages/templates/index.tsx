@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { TemplateCatalog, TemplateDetail, InvoiceTemplate, templates, quotePath } from "@/features/public-template";
+import { TemplateCatalog, TemplateDetail, InvoiceTemplate, templates, templateTypes, quotePath } from "@/features/public-template";
 import { CommercialAudiences } from "@/features/public-commercial";
 import { publicDestinations } from "@/features/public-web";
 import "@/styles/public-template.css";
@@ -9,7 +9,9 @@ export function TemplatesPage() {
   const { pathname } = useLocation();
   const item = templates.find(item => item.path === pathname);
   const destination = publicDestinations.find(item => item.path === pathname);
+  const category = pathname.split("/")[2];
+  const missingCategory = pathname.startsWith("/templates/") && Boolean(category) && !templateTypes.some(type => type.toLowerCase() === category);
   const missingDetail = !item && !pathname.startsWith("/templates") && pathname !== "/invoice-template";
   const fallback = { id: pathname.slice(1).replaceAll("/", "--"), title: destination?.label ?? "Template", path: pathname, type: "Unconfirmed", industry: "", image: "", sourceImage: "", observedLabel: "" };
-  return <>{pathname !== quotePath && <CommercialAudiences />}{pathname === "/invoice-template" ? <InvoiceTemplate /> : item || missingDetail ? <TemplateDetail key={pathname} item={item ?? fallback} /> : pathname === "/templates/scopes-of-work" ? <section className="public-container template-unavailable"><h1>Scope of Work Templates</h1><p>이 분류의 목록 화면과 항목 대응은 아직 확인되지 않았습니다.</p><a className="public-text-link" href="/templates">Browse all templates</a></section> : <TemplateCatalog />}</>;
+  return <>{pathname !== quotePath && <CommercialAudiences />}{pathname === "/invoice-template" ? <InvoiceTemplate /> : item || missingDetail ? <TemplateDetail key={pathname} item={item ?? fallback} /> : missingCategory ? <section className="public-container template-unavailable"><h1>{pathname === "/templates/scopes-of-work" ? "Scope of Work Templates" : "Template category unavailable"}</h1><p>이 분류의 목록 화면과 항목 대응은 아직 확인되지 않았습니다.</p><a className="public-text-link" href="/templates">Browse all templates</a></section> : <TemplateCatalog />}</>;
 }

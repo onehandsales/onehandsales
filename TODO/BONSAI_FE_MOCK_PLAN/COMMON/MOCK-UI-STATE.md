@@ -1,6 +1,8 @@
 # 로컬 목 화면 상태
 
-> 현재 G05 — 2026-11-24 KST: **G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름11PNG·R4 9항목·공통12기준을 대조했다. 신규 DOM13/전체143·타입/lint·메모리build 통과. 브라우저 요청/console·픽셀 동일성은 미검증이며 G00~G04/R01의 기존 대기를 유지한다. G06/G32 신규 착수·새 evidence/tmp/결과 문서·커밋 없음. [상세 결과](../RESULTS/G05_RESULT.md#g05-r4-recheck).
+> 현재 G06 — 2026-11-24 KST: **G06 R4 주요 구성 대조·검색/상세 복귀/파일·가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름21PNG·R4 10항목·공통12기준을 대조했다. 보완 후 DOM12/전체155(이전11/154 이력 보존)·타입/lint·메모리build와 로컬15파일 HTTP/구조 검증 통과. 실제 브라우저 요청/console·파일 수신·픽셀 동일성은 미검증이다. 과거 이력/대기 보존; 다음 Goal 자동 착수 없음. 후속 사용자 요청에 따라 추가 검토 후 로컬 커밋 대상으로 준비했다. [상세 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
+
+> 이전 G05 — 2026-11-24 KST: **G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름11PNG·R4 9항목·공통12기준을 대조했다. 신규 DOM13/전체143·타입/lint·메모리build 통과. 브라우저 요청/console·픽셀 동일성은 미검증이며 G00~G04/R01의 기존 대기를 유지한다. G06/G32 신규 착수·새 evidence/tmp/결과 문서·커밋 없음. [상세 결과](../RESULTS/G05_RESULT.md#g05-r4-recheck).
 
 > 이전 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
 
@@ -119,3 +121,8 @@ G03 URL(contentPage/query/hash), FAQ 로컬 상태, PublicProvider의 pathname �
 검색은 URL category/q/page와 location.key+revision 초안을 분리한다. 이력 이동 시 미확정 초안/조합을 폐기한다. 조합 중 분류는 확정 q, 일반 초안 중 페이지 클릭은 새 검색 첫 페이지, clear는 q/page/조합 폐기다. 잘못된 분류/page·범위 밖 page는 표시값으로 replace 정규화한다. 이 정책과 기존200ms/6개/제목·요약 검색은 목 가정이다.
 
 공개 기사 출발은 URL/key/Router history index/메모리 UUID+revision을 담은 PublicOrigin이다. 가입 snapshot이 returnTo/returnOrigin을 복사하고 Cancel은 출발 기사 상태를 복원한다. Back은 중간 가입 이력을 건너뛰어 출발 위치로 POP한다. 새 공급자/Reset/범위 변경의 이전 origin은 /blog 기본 복귀다. 실제 새 탭/reload/스크롤은 대기. [수명·회귀](../RESULTS/G05_RESULT.md#g05-r4-recheck).
+
+## G06 적용 결과 — 2026-11-24 KST
+
+- [x] URL은 확정 필터, 초안은 location.key/목 revision, 선택/이메일은 공개 메모리 snapshot으로 분리했다. 검색/조합/오류/재시도/empty/무결과/slow/Reset·A/B 선택·취소 격리를 DOM 검증했다. 페이지24·200ms·80/1500ms·단일업종은 목 가정이다. [이번 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
+- [ ] 실제 브라우저/네트워크·원본 시각 동일성·미수록 원본은 해당 G06/R01/연결 G 대기다. 공통 양식과 다른 Goal 전체를 일괄 완료 처리하지 않는다.

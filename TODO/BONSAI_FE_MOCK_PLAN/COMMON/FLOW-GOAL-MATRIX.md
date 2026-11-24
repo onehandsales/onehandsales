@@ -1,6 +1,8 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 G05 — 2026-11-24 KST: **G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름11PNG·R4 9항목·공통12기준을 대조했다. 신규 DOM13/전체143·타입/lint·메모리build 통과. 브라우저 요청/console·픽셀 동일성은 미검증이며 G00~G04/R01의 기존 대기를 유지한다. G06/G32 신규 착수·새 evidence/tmp/결과 문서·커밋 없음. [상세 결과](../RESULTS/G05_RESULT.md#g05-r4-recheck).
+> 현재 G06 — 2026-11-24 KST: **G06 R4 주요 구성 대조·검색/상세 복귀/파일·가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름21PNG·R4 10항목·공통12기준을 대조했다. 보완 후 DOM12/전체155(이전11/154 이력 보존)·타입/lint·메모리build와 로컬15파일 HTTP/구조 검증 통과. 실제 브라우저 요청/console·파일 수신·픽셀 동일성은 미검증이다. 과거 이력/대기 보존; 다음 Goal 자동 착수 없음. 후속 사용자 요청에 따라 추가 검토 후 로컬 커밋 대상으로 준비했다. [상세 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
+
+> 이전 G05 — 2026-11-24 KST: **G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름11PNG·R4 9항목·공통12기준을 대조했다. 신규 DOM13/전체143·타입/lint·메모리build 통과. 브라우저 요청/console·픽셀 동일성은 미검증이며 G00~G04/R01의 기존 대기를 유지한다. G06/G32 신규 착수·새 evidence/tmp/결과 문서·커밋 없음. [상세 결과](../RESULTS/G05_RESULT.md#g05-r4-recheck).
 
 > 이전 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
 
@@ -76,8 +78,8 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 52 | [Dashboard / Create a contact form (template) / Using a template](<../../../bonsai_analysis/flows/Dashboard/Create a contact form (template)/Using a template/ANALYSIS.md>) | `0888ad18-25b5-43aa-be17-ae21f1859ea0` | 5 | [G44 템플릿 탐색·검색·적용](<GOAL-SPECS/G44.md>) (01~05) | [F052](SOURCE-ANALYSIS-IMPACT.md#r4-f052) |
 | 53 | [Dashboard / Hiding sidebar](<../../../bonsai_analysis/flows/Dashboard/Hiding sidebar/ANALYSIS.md>) | `ff646f32-f010-478e-a3bd-572ccc501292` | 3 | [G14 앱 셸·사이드바·404](<GOAL-SPECS/G14.md>) (01~03) | [F053](SOURCE-ANALYSIS-IMPACT.md#r4-f053) |
 | 54 | [Dashboard / Marking a task as complete](<../../../bonsai_analysis/flows/Dashboard/Marking a task as complete/ANALYSIS.md>) | `4b420645-a17a-4219-9699-5f8081649f02` | 2 | [G28 상태 정의·완료 표시](<GOAL-SPECS/G28.md>) (01~02) | [F054](SOURCE-ANALYSIS-IMPACT.md#r4-f054) |
-| 55 | [Filtering all templates](<../../../bonsai_analysis/flows/Filtering all templates/ANALYSIS.md>) | `89d6f212-12fc-4ad4-b11c-0bbd29708101` | 5 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) (01~05) | [F055](SOURCE-ANALYSIS-IMPACT.md#r4-f055) |
-| 56 | [Filtering all templates / Template detail](<../../../bonsai_analysis/flows/Filtering all templates/Template detail/ANALYSIS.md>) | `4fe6aa73-a216-43cb-87ff-be898ffc869c` | 5 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) (01~05) | [F056](SOURCE-ANALYSIS-IMPACT.md#r4-f056) |
+| 55 | [Filtering all templates](<../../../bonsai_analysis/flows/Filtering all templates/ANALYSIS.md>) | `89d6f212-12fc-4ad4-b11c-0bbd29708101` | 5 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) (01~05) | [F055](SOURCE-ANALYSIS-IMPACT.md#r4-f055)  · [G06 현재 대조/잔여](../RESULTS/G06_RESULT.md#g06-r4-recheck) |
+| 56 | [Filtering all templates / Template detail](<../../../bonsai_analysis/flows/Filtering all templates/Template detail/ANALYSIS.md>) | `4fe6aa73-a216-43cb-87ff-be898ffc869c` | 5 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) (01~05) | [F056](SOURCE-ANALYSIS-IMPACT.md#r4-f056)  · [G06 현재 대조/잔여](../RESULTS/G06_RESULT.md#g06-r4-recheck) |
 | 57 | [Forms / Adding questions to a form](<../../../bonsai_analysis/flows/Forms/Adding questions to a form/ANALYSIS.md>) | `0452bfda-8ddd-4d2f-8314-7370006c6c68` | 5 | [G45 폼 목록·질문 편집·순서](<GOAL-SPECS/G45.md>) (01~05) | [F058](SOURCE-ANALYSIS-IMPACT.md#r4-f058) |
 | 58 | [Forms](<../../../bonsai_analysis/flows/Forms/ANALYSIS.md>) | `d265eece-4da9-4fd4-91f3-517dc07cd8d5` | 2 | [G45 폼 목록·질문 편집·순서](<GOAL-SPECS/G45.md>) (01~02) | [F057](SOURCE-ANALYSIS-IMPACT.md#r4-f057) |
 | 59 | [Forms / Form responses](<../../../bonsai_analysis/flows/Forms/Form responses/ANALYSIS.md>) | `ecd1821a-aa3a-40f6-beff-71e924dfb56f` | 5 | [G46 폼 설정·게시·응답 목록](<GOAL-SPECS/G46.md>) (01~05) | [F059](SOURCE-ANALYSIS-IMPACT.md#r4-f059) |
@@ -90,7 +92,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 66 | [Help Center / Help article detail](<../../../bonsai_analysis/flows/Help Center/Help article detail/ANALYSIS.md>) | `ec15eccf-bebd-4e1f-87d4-dbc1529a8bbf` | 4 | [G08 도움말·기사·문의](<GOAL-SPECS/G08.md>) (01~04) | [F066](SOURCE-ANALYSIS-IMPACT.md#r4-f066) |
 | 67 | [Industries (Consulting)](<../../../bonsai_analysis/flows/Industries (Consulting)/ANALYSIS.md>) | `7fcadde8-35c9-4b36-9c76-ec2d4432f20e` | 8 | [G03 고객군·업종·CRM 소개](<GOAL-SPECS/G03.md>) (01~08) | [F067](SOURCE-ANALYSIS-IMPACT.md#r4-f067) |
 | 68 | [Inviting a member](<../../../bonsai_analysis/flows/Inviting a member/ANALYSIS.md>) | `646bd9c2-add0-414c-8b98-89489f2c43b5` | 5 | [G17 멤버 초대·대기 초대 제거](<GOAL-SPECS/G17.md>) (01~05) | [F068](SOURCE-ANALYSIS-IMPACT.md#r4-f068) |
-| 69 | [Invoice templates](<../../../bonsai_analysis/flows/Invoice templates/ANALYSIS.md>) | `a0181c28-2521-46d3-a0e6-3ead4851b2f9` | 11 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) (01~11) | [F069](SOURCE-ANALYSIS-IMPACT.md#r4-f069) |
+| 69 | [Invoice templates](<../../../bonsai_analysis/flows/Invoice templates/ANALYSIS.md>) | `a0181c28-2521-46d3-a0e6-3ead4851b2f9` | 11 | [G06 공개 템플릿·상세·파일 형식](<GOAL-SPECS/G06.md>) (01~11) | [F069](SOURCE-ANALYSIS-IMPACT.md#r4-f069)  · [G06 현재 대조/잔여](../RESULTS/G06_RESULT.md#g06-r4-recheck) |
 | 70 | [Invoices / Adding a new invoice / Adding unbilled time](<../../../bonsai_analysis/flows/Invoices/Adding a new invoice/Adding unbilled time/ANALYSIS.md>) | `9a40f1e9-2362-4d00-a603-3f48febb5438` | 5 | [G59 미청구 시간 편입](<GOAL-SPECS/G59.md>) (01~05) | [F072](SOURCE-ANALYSIS-IMPACT.md#r4-f072) |
 | 71 | [Invoices / Adding a new invoice](<../../../bonsai_analysis/flows/Invoices/Adding a new invoice/ANALYSIS.md>) | `18f62aba-c34e-486a-b2b8-099fcf9ba779` | 8 | [G57 단일·반복·구독 초안](<GOAL-SPECS/G57.md>) (01~08) | [F071](SOURCE-ANALYSIS-IMPACT.md#r4-f071) |
 | 72 | [Invoices / Adding a new invoice / Editing an item](<../../../bonsai_analysis/flows/Invoices/Adding a new invoice/Editing an item/ANALYSIS.md>) | `be9884fd-760f-4d30-b3e0-92b55ad8274c` | 5 | [G58 항목·서비스·헤더 편집](<GOAL-SPECS/G58.md>) (01~05) | [F073](SOURCE-ANALYSIS-IMPACT.md#r4-f073) |
@@ -214,3 +216,8 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 ## G05 소비·재검토 기록 — 2026-11-24 KST
 
 [x] G05의 Blog4·Detail4·Searching3단계 직접 열람·해시/소유/코드 연결을 확인했다. 단계 소유·다른 Goal 배정은 유지한다. [ ] 전수 요소/정밀 재현·실브라우저는 대기. [11개 Screen ID·확인 범위](../RESULTS/G05_RESULT.md#g05-r4-recheck).
+
+## G06 적용 결과 — 2026-11-24 KST
+
+- [x] G06의3흐름21단계 배정은 그대로다. 다른 Goal 소유권/실행 순서는 변경하지 않았으며 직접 소비 회귀와 전체 Goal 재검토를 구분했다. [이번 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
+- [ ] 실제 브라우저/네트워크·원본 시각 동일성·미수록 원본은 해당 G06/R01/연결 G 대기다. 공통 양식과 다른 Goal 전체를 일괄 완료 처리하지 않는다.

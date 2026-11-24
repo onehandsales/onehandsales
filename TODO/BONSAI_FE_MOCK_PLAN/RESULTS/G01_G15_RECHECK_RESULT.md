@@ -121,3 +121,7 @@ R01/R02는 소비 분석과 목 정책 보완만 수행한 상태다. 서버 후
 5. Profile URL 초안 변경→View Profile은 기존 저장 프로필. 돌아와 새 slug 저장 후 새 주소 확인. Company scenario `save-error`에서 실패 시 초안과 기존 링크 유지, 재시도 성공. `normal` 복원. Disabled 저장→공개 비활성 안내.
 6. 새로고침 후 `/app/settings/company?from=recheck#details`→Sign Up→샘플 가입→업종/회사명→Pause. 브라우저 뒤로 복귀 후 완료하면 처음 회사 URL(query/hash 포함). 별도 새 실행에서 Pause→Go to dashboard→완료하면 `/app`. 초안은 유지된다.
 7. 사용한 Company/Setup/Preview 도구를 Normal로 복원하거나 새로고침으로 초기화한다. 목 흐름 확인은 실제 서비스·계정·메일·API·출시 완료가 아니다.
+
+## G06 현재 재검토 연결 — 2026-11-24 KST
+
+[현재 범위·수정·검증·잔여](G06_RESULT.md#g06-r4-recheck). G06의3흐름21단계 주요 구성 대조, 동작 보완, 단위/DOM154·15파일 HTTP/구조 검증을 수행했다. 위 연속 작업/감사 기록은 당시 이력이다. 이번 실제 브라우저/픽셀 동일성은 대기이며 다음 Goal을 연속 실행하지 않는다.

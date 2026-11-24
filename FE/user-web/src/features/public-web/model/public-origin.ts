@@ -1,5 +1,10 @@
 export type PublicOrigin = Readonly<{ path: string; key: string; index: number; scope: string }>;
 
+// 기능 : 가입 취소에서 기사와 템플릿의 서로 다른 출발 이력 필드를 복원한다.
+export function publicOriginState(origin: PublicOrigin | undefined, kind: "article" | "template" = "article") {
+  return origin ? kind === "template" ? { templateOrigin: origin } : { articleOrigin: origin } : undefined;
+}
+
 // 기능 : 복귀 주소에 제어 문자가 포함되었는지 판별한다.
 function isControlCharacter(character: string) { return character.charCodeAt(0) < 32; }
 
