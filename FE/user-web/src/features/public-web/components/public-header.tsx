@@ -5,6 +5,7 @@ import navigation from "../data/navigation-content.json";
 import { publicAssets } from "../data/public-assets";
 import { usePublicMenu } from "../hooks/use-public-menu";
 import { PublicLink, SignupLink } from "./public-link";
+import type { PublicIntentOptions } from "../data/public-context";
 
 // 기능 : 원본 유형별 추천 템플릿을 선택하고 후속 G06 목적지로 연결한다.
 function TemplateMenu() {
@@ -54,8 +55,8 @@ function MegaMenu({ name }: { name: string }) {
   </div>)}</div>;
 }
 
-// 기능 : 공개 원본 헤더에서 메뉴 열기·닫기와 익명 CTA를 제공한다.
-export function PublicHeader({ scrolled, signedIn = false }: { scrolled: boolean; signedIn?: boolean }) {
+// 기능 : 공개 헤더 메뉴와 인증 CTA를 표시하고 페이지가 지정한 가입 복귀 정보를 전달한다.
+export function PublicHeader({ scrolled, signedIn = false, signupIntentOptions }: { scrolled: boolean; signedIn?: boolean; signupIntentOptions?: PublicIntentOptions }) {
   const menu = usePublicMenu();
   return <header ref={menu.root} className={`public-header ${scrolled ? "is-scrolled" : ""}`}
     onBlur={menu.handleBlur} onFocus={menu.handleFocus} onPointerLeave={menu.leave}>
@@ -70,7 +71,7 @@ export function PublicHeader({ scrolled, signedIn = false }: { scrolled: boolean
             onPointerEnter={event => menu.hover(name, event)} onClick={event => menu.toggle(name, event.currentTarget)}>{name}</button>)}
       </nav>
       <div className="public-auth-links">{signedIn ? <Link className="public-button" to="/app">Go to dashboard</Link>
-        : <><Link to="/login">Log in</Link><SignupLink source="header">Start free</SignupLink></>}</div>
+        : <><Link to="/login">Log in</Link><SignupLink source="header" intentOptions={signupIntentOptions}>Start free</SignupLink></>}</div>
     </div>
     {menu.open && <div id="public-mega-menu" className="public-mega-menu"><div className="public-wide"><MegaMenu key={menu.open} name={menu.open} /></div></div>}
   </header>;

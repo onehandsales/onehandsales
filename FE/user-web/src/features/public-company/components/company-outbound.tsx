@@ -2,18 +2,22 @@ import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { findCompanyDestination } from "../data/company-destinations";
 import type { CompanyDestinationId } from "../data/company-destinations";
-// 기능 : 외부 CTA의 출발 이력을 로컬 경로에 붙여 브라우저 뒤로 복귀를 지원한다.
+import { publicHistoryIndex, usePublicExperience, usePublicOrigin } from "@/features/public-web";
+import { readCompanyOrigin } from "../model/company-history";
+// 기능 : 외부 CTA에 전체 출발 URL·이력·메모리 수명을 연결해 정확한 로컬 복귀를 지원한다.
 export function CompanyOutboundLink({ id, children, className }: { id: CompanyDestinationId; children: ReactNode; className?: string }) {
-  const location = useLocation();
-  return <Link className={className} to={`/outbound/${id}`} state={{ companyOrigin: location.pathname + location.search, companyOriginKey: location.key }}>{children}</Link>;
+  const origin = usePublicOrigin();
+  return <Link className={className} to={`/outbound/${id}`} state={{ companyOrigin: origin?.path, companyOriginKey: origin?.key, companyOriginEntry: origin }}>{children}</Link>;
 }
 // 기능 : 확인된 외부 목적지를 안내하고 실제 전송 없이 이전 로컬 화면으로 돌아간다.
 export function CompanyOutbound({ id }: { id: string }) {
   const destination = findCompanyDestination(id); const location = useLocation(); const navigate = useNavigate();
-  const origin: unknown = location.state?.companyOrigin; const originKey: unknown = location.state?.companyOriginKey;
-  // 기능 : 이 앱에서 만든 출발 이력이 있을 때만 뒤로 이동하고 직접 진입은 고정 출발지로 복귀한다.
+  const { scope } = usePublicExperience();
+  // 기능 : 유효한 출발 이력까지 중간 이동을 건너뛰고 새로고침·교체·직접 진입은 고정 경로로 복귀한다.
   function returnToSource() {
-    if (typeof origin === "string" && origin.startsWith("/") && !origin.startsWith("//") && typeof originKey === "string" && window.history.state?.idx > 0) void navigate(-1);
+    const origin = readCompanyOrigin(location.state?.companyOriginEntry, scope);
+    const index = publicHistoryIndex();
+    if (origin && index !== undefined && index > origin.index) void navigate(origin.index - index);
     else void navigate(destination?.origin ?? "/", { replace: true });
   }
   return <section className="company-outbound public-container"><p className="company-reference">Local destination preview</p><h1>{destination?.title ?? "Destination not found"}</h1>

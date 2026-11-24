@@ -1,7 +1,8 @@
 export type PublicOrigin = Readonly<{ path: string; key: string; index: number; scope: string }>;
 
-// 기능 : 가입 취소에서 기사와 템플릿의 서로 다른 출발 이력 필드를 복원한다.
-export function publicOriginState(origin: PublicOrigin | undefined, kind: "article" | "template" = "article") {
+// 기능 : 가입 취소에서 기사·템플릿·외부 안내의 출발 이력을 각 소비 화면의 필드로 복원한다.
+export function publicOriginState(origin: PublicOrigin | undefined, kind: "article" | "template" | "company" = "article") {
+  if (kind === "company") return origin ? { companyOrigin: origin.path, companyOriginKey: origin.key, companyOriginEntry: origin } : undefined;
   return origin ? kind === "template" ? { templateOrigin: origin } : { articleOrigin: origin } : undefined;
 }
 

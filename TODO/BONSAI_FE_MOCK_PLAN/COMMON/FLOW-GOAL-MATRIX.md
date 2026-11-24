@@ -1,6 +1,9 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 G08 — 2026-11-24 KST: **부분 완료**. 원본8단계·연결2PNG를 확인하고 검색/기사/문의 복귀를 보완했다. 단위/DOM179/179·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크는 대기다. 과거 이력·다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G08_RESULT.md#g08-r4-recheck).
+> 현재 G09 — 2026-11-24 KST: **부분 완료**. 원본11단계·연결5PNG를 확인하고 정책 발췌/출발 이력/가입 취소를 보완했다. 단위/DOM188/188·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·전체 정책 근거는 대기다. 과거 이력과 다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G09_RESULT.md#g09-r4-recheck).
+
+
+> 이전 G08 — 2026-11-24 KST: **부분 완료**. 원본8단계·연결2PNG를 확인하고 검색/기사/문의 복귀를 보완했다. 단위/DOM179/179·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크는 대기다. 과거 이력·다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G08_RESULT.md#g08-r4-recheck).
 
 
 > 이전 G07 — 2026-11-24 KST: **부분 완료**. 생성기5단계·연결11PNG를 확인하고 초안/가입 복귀를 보완했다. 단위/DOM166/166·타입/lint·메모리 build 통과. 시각 동일성·실제 브라우저/네트워크는 대기다. 과거 이력·다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G07_RESULT.md#g07-r4-recheck).
@@ -32,7 +35,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 1 | [404](<../../../bonsai_analysis/flows/404/ANALYSIS.md>) | `b340c3e3-ad5f-401c-839d-60e02a8c7ce2` | 2 | [G14 앱 셸·사이드바·404](<GOAL-SPECS/G14.md>) (01~02) | [F001](SOURCE-ANALYSIS-IMPACT.md#r4-f001) |
 | 2 | [Accepting an invitation](<../../../bonsai_analysis/flows/Accepting an invitation/ANALYSIS.md>) | `08d7796f-33e4-4742-9a98-04c919916456` | 13 | [G18 초대 수락·협업자 접근](<GOAL-SPECS/G18.md>) (01~13) | [F002](SOURCE-ANALYSIS-IMPACT.md#r4-f002) |
 | 3 | [Adding a new client](<../../../bonsai_analysis/flows/Adding a new client/ANALYSIS.md>) | `a5f7a722-8a0c-4528-966a-903e7e0873fb` | 7 | [G19 목록·신규 고객·상세](<GOAL-SPECS/G19.md>) (01~07) | [F003](SOURCE-ANALYSIS-IMPACT.md#r4-f003) |
-| 4 | [Affiliate Program](<../../../bonsai_analysis/flows/Affiliate Program/ANALYSIS.md>) | `fcb41661-2520-40ac-842c-b463a7891093` | 4 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~04) | [F004](SOURCE-ANALYSIS-IMPACT.md#r4-f004) |
+| 4 | [Affiliate Program](<../../../bonsai_analysis/flows/Affiliate Program/ANALYSIS.md>) | `fcb41661-2520-40ac-842c-b463a7891093` | 4 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~04) | [F004](SOURCE-ANALYSIS-IMPACT.md#r4-f004) · [G09 부분 대조/보완](../RESULTS/G09_RESULT.md#g09-r4-recheck) |
 | 5 | [Blog](<../../../bonsai_analysis/flows/Blog/ANALYSIS.md>) | `be5bc5f4-c2fa-4ea2-a923-0250d6302fcb` | 4 | [G05 블로그·검색·상세](<GOAL-SPECS/G05.md>) (01~04) | [F005](SOURCE-ANALYSIS-IMPACT.md#r4-f005) |
 | 6 | [Blog / Blog detail](<../../../bonsai_analysis/flows/Blog/Blog detail/ANALYSIS.md>) | `7b469aed-f69f-4f73-af50-9b1adb7aa052` | 4 | [G05 블로그·검색·상세](<GOAL-SPECS/G05.md>) (01~04) | [F006](SOURCE-ANALYSIS-IMPACT.md#r4-f006) |
 | 7 | [Blog / Searching blog](<../../../bonsai_analysis/flows/Blog/Searching blog/ANALYSIS.md>) | `d9c648a4-1d8f-47a7-b53e-ea08055e1e7e` | 3 | [G05 블로그·검색·상세](<GOAL-SPECS/G05.md>) (01~03) | [F007](SOURCE-ANALYSIS-IMPACT.md#r4-f007) |
@@ -46,7 +49,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 15 | [Bookkeeping / Deleting an income](<../../../bonsai_analysis/flows/Bookkeeping/Deleting an income/ANALYSIS.md>) | `187433ca-53fc-4a69-9f8b-82cd0b59a428` | 4 | [G67 수기 수입 생성·삭제](<GOAL-SPECS/G67.md>) (01~04) | [F015](SOURCE-ANALYSIS-IMPACT.md#r4-f015) |
 | 16 | [Bookkeeping / Downloading expenses](<../../../bonsai_analysis/flows/Bookkeeping/Downloading expenses/ANALYSIS.md>) | `a8f62075-1597-47e6-855d-c5fd51194c1c` | 4 | [G68 비용 내보내기](<GOAL-SPECS/G68.md>) (01~04) | [F016](SOURCE-ANALYSIS-IMPACT.md#r4-f016) |
 | 17 | [Bookkeeping / Filtering expenses](<../../../bonsai_analysis/flows/Bookkeeping/Filtering expenses/ANALYSIS.md>) | `bd0a6592-522b-4dcd-94ff-68324e44e3b0` | 10 | [G66 비용 필터](<GOAL-SPECS/G66.md>) (01~10) | [F017](SOURCE-ANALYSIS-IMPACT.md#r4-f017) |
-| 18 | [Careers](<../../../bonsai_analysis/flows/Careers/ANALYSIS.md>) | `35234808-9af8-4240-9025-e24a5951eaa9` | 4 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~04) | [F018](SOURCE-ANALYSIS-IMPACT.md#r4-f018) |
+| 18 | [Careers](<../../../bonsai_analysis/flows/Careers/ANALYSIS.md>) | `35234808-9af8-4240-9025-e24a5951eaa9` | 4 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~04) | [F018](SOURCE-ANALYSIS-IMPACT.md#r4-f018) · [G09 부분 대조/보완](../RESULTS/G09_RESULT.md#g09-r4-recheck) |
 | 19 | [Clients / Adding a client field](<../../../bonsai_analysis/flows/Clients/Adding a client field/ANALYSIS.md>) | `87c1f8ab-d786-4b2c-9861-d75e5813e639` | 4 | [G20 고객 필드·이미지](<GOAL-SPECS/G20.md>) (01~04) | [F020](SOURCE-ANALYSIS-IMPACT.md#r4-f020) |
 | 20 | [Clients / Adding a new project (Clients)](<../../../bonsai_analysis/flows/Clients/Adding a new project (Clients)/ANALYSIS.md>) | `dd29b56e-cc30-4875-8f7b-302ca3909d05` | 5 | [G21 두 진입점의 프로젝트 생성](<GOAL-SPECS/G21.md>) (01~05) | [F021](SOURCE-ANALYSIS-IMPACT.md#r4-f021) |
 | 21 | [Clients](<../../../bonsai_analysis/flows/Clients/ANALYSIS.md>) | `f8191fa7-f2d9-4060-bd47-891b2d627aaa` | 5 | [G19 목록·신규 고객·상세](<GOAL-SPECS/G19.md>) (01~05) | [F019](SOURCE-ANALYSIS-IMPACT.md#r4-f019) |
@@ -118,7 +121,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 87 | [Onboarding / Completing account setup](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md>) | `f004afc2-a8c5-4262-b2e4-941331047a84` | 16 | [G13 사업 설정 온보딩](<GOAL-SPECS/G13.md>) (01~16) | [F087](SOURCE-ANALYSIS-IMPACT.md#r4-f087) |
 | 88 | [Perks](<../../../bonsai_analysis/flows/Perks/ANALYSIS.md>) | `dee9aba7-13a6-462f-87f5-0a942a971ab0` | 4 | [G82 제휴 혜택](<GOAL-SPECS/G82.md>) (01~04) | [F088](SOURCE-ANALYSIS-IMPACT.md#r4-f088) |
 | 89 | [Pricing](<../../../bonsai_analysis/flows/Pricing/ANALYSIS.md>) | `981ffcc3-d6c0-4038-8db3-4ac8753aace4` | 3 | [G04 가격·후기](<GOAL-SPECS/G04.md>) (01~03) | [F089](SOURCE-ANALYSIS-IMPACT.md#r4-f089) |
-| 90 | [Privacy](<../../../bonsai_analysis/flows/Privacy/ANALYSIS.md>) | `776f20e2-7498-433f-af8b-f585988e2429` | 2 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~02) | [F090](SOURCE-ANALYSIS-IMPACT.md#r4-f090) |
+| 90 | [Privacy](<../../../bonsai_analysis/flows/Privacy/ANALYSIS.md>) | `776f20e2-7498-433f-af8b-f585988e2429` | 2 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~02) | [F090](SOURCE-ANALYSIS-IMPACT.md#r4-f090) · [G09 부분 대조/보완](../RESULTS/G09_RESULT.md#g09-r4-recheck) |
 | 91 | [Products (CRM)](<../../../bonsai_analysis/flows/Products (CRM)/ANALYSIS.md>) | `12ca870d-d929-4cc8-ab4c-60436c2eac13` | 10 | [G03 고객군·업종·CRM 소개](<GOAL-SPECS/G03.md>) (01~10) | [F091](SOURCE-ANALYSIS-IMPACT.md#r4-f091) |
 | 92 | [Project detail / Adding a task / Adding a comment](<../../../bonsai_analysis/flows/Project detail/Adding a task/Adding a comment/ANALYSIS.md>) | `1a0794d4-deb5-4eb3-b391-c7371c60e684` | 3 | [G27 댓글·활동](<GOAL-SPECS/G27.md>) (01~03) | [F094](SOURCE-ANALYSIS-IMPACT.md#r4-f094) |
 | 93 | [Project detail / Adding a task / Adding a time entry](<../../../bonsai_analysis/flows/Project detail/Adding a task/Adding a time entry/ANALYSIS.md>) | `38dcad7d-b2da-4d91-8eb3-2f3b39899b66` | 6 | [G33 수동 시간 입력](<GOAL-SPECS/G33.md>) (01~06) | [F095](SOURCE-ANALYSIS-IMPACT.md#r4-f095) |
@@ -160,7 +163,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 129 | [Tasks](<../../../bonsai_analysis/flows/Tasks/ANALYSIS.md>) | `59d5186e-98e3-495f-b8c0-96eb9c943631` | 3 | [G25 전체·프로젝트 작업 보드와 생성](<GOAL-SPECS/G25.md>) (01~03) | [F128](SOURCE-ANALYSIS-IMPACT.md#r4-f128) |
 | 130 | [Tasks / Creating a task template](<../../../bonsai_analysis/flows/Tasks/Creating a task template/ANALYSIS.md>) | `4c98a858-6ef7-4a6a-8e83-e626772a4df0` | 4 | [G30 작업 템플릿 작성](<GOAL-SPECS/G30.md>) (01~04) | [F130](SOURCE-ANALYSIS-IMPACT.md#r4-f130) |
 | 131 | [Tasks / Editing a template task](<../../../bonsai_analysis/flows/Tasks/Editing a template task/ANALYSIS.md>) | `91a75fcf-9857-41ff-85c2-c2de0bae87d9` | 8 | [G30 작업 템플릿 작성](<GOAL-SPECS/G30.md>) (01~08) | [F131](SOURCE-ANALYSIS-IMPACT.md#r4-f131) |
-| 132 | [Terms & Conditions](<../../../bonsai_analysis/flows/Terms & Conditions/ANALYSIS.md>) | `912b4b75-77bb-43fa-b86f-d85c6117841a` | 1 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~01) | [F132](SOURCE-ANALYSIS-IMPACT.md#r4-f132) |
+| 132 | [Terms & Conditions](<../../../bonsai_analysis/flows/Terms & Conditions/ANALYSIS.md>) | `912b4b75-77bb-43fa-b86f-d85c6117841a` | 1 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~01) | [F132](SOURCE-ANALYSIS-IMPACT.md#r4-f132) · [G09 부분 대조/보완](../RESULTS/G09_RESULT.md#g09-r4-recheck) |
 | 133 | [Time Tracking](<../../../bonsai_analysis/flows/Time Tracking/ANALYSIS.md>) | `525f8723-dca6-4932-ac6e-d159249090be` | 6 | [G34 시간 목록·인사이트](<GOAL-SPECS/G34.md>) (01~06) | [F133](SOURCE-ANALYSIS-IMPACT.md#r4-f133) |
 | 134 | [Using invoice generator](<../../../bonsai_analysis/flows/Using invoice generator/ANALYSIS.md>) | `1a82151c-9539-4a12-8a4d-706c8557370b` | 5 | [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>) (01~05) | [F134](SOURCE-ANALYSIS-IMPACT.md#r4-f134) · [G07 이번 검토](../RESULTS/G07_RESULT.md#g07-r4-recheck) |
 
@@ -239,3 +242,10 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 - [x] F024 01~02·F065 01~02·F066 01~04 전8단계를 G08 코드/수용 기준에 대조했다. F083 02/05는 로그인·앱 연결 소비 확인이며 원래 소유를 바꾸지 않는다. 전체134흐름/754단계/642고유ID 배정은 유지한다. [상세 판정·근거](../RESULTS/G08_RESULT.md#g08-r4-recheck).
 
 - [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 관련 G/R 전체 완료가 아니며 잔여 담당은 G08 결과7절에 기록했다.
+
+<a id="g09-update"></a>
+## G09 적용·연결 검토 — 2026-11-24 KST
+
+- [x] F004 01~04/F018 01~04/F090 01~02/F132 01의11단계를 G09 코드·수용 기준과 대조했다. 연결 F082 09~11/F083 02/F086 03은 소유를 변경하지 않는다.134흐름/754단계/642고유ID 배정 유지. [상세 판정·근거](../RESULTS/G09_RESULT.md#g09-r4-recheck).
+
+- [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G09 결과8절에 기록했다.

@@ -15,8 +15,8 @@ export type PublicPlanSelection = Readonly<{
 }>;
 // 의미 : 공개 카탈로그 선택이며 계정 문서의 복제본이나 서버 template ID가 아니다.
 export type PublicTemplateSelection = Readonly<{ id: string; title: string; path: string; type: string; format: string; reference: string }>;
-export type PublicIntentOptions = { returnTo?: string; returnOrigin?: PublicOrigin; returnOriginKind?: "article" | "template"; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
-export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; returnOrigin?: PublicOrigin; returnOriginKind?: "article" | "template"; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
+export type PublicIntentOptions = { returnTo?: string; returnOrigin?: PublicOrigin; returnOriginKind?: "article" | "template" | "company"; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
+export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; returnOrigin?: PublicOrigin; returnOriginKind?: "article" | "template" | "company"; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
 export type PublicExperience = {
   scope: string;
   emails: Readonly<Record<string, string>>;

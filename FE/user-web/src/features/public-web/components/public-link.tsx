@@ -3,13 +3,14 @@ import { useRef, type ReactNode } from "react";
 import { localPublicPath } from "../model/public-destinations";
 import { usePublicExperience } from "../data/public-context";
 import type { PublicIntentOptions } from "../data/public-context";
+import { usePublicOrigin } from "../hooks/use-public-origin";
 
-// 기능 : 공개 원본 링크를 등록한 로컬 목적지로 이동시킨다.
+// 기능 : 공개 링크를 로컬 목적지로 연결하고 소셜 안내에는 전체 출발 이력과 메모리 수명을 전달한다.
 export function PublicLink({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
-  const location = useLocation();
+  const origin = usePublicOrigin();
   const path = localPublicPath(href);
   const social = path === "/outbound/linkedin" || path === "/outbound/twitter";
-  return <Link to={path} state={social ? { companyOrigin: location.pathname + location.search, companyOriginKey: location.key } : undefined} className={className}>{children}</Link>;
+  return <Link to={path} state={social ? { companyOrigin: origin?.path, companyOriginKey: origin?.key, companyOriginEntry: origin } : undefined} className={className}>{children}</Link>;
 }
 
 // 기능 : 가입 CTA의 출처를 한 번만 메모리에 인계하고 가상 가입 화면으로 이동한다.
