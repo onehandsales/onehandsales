@@ -1,8 +1,7 @@
-import { authReturnQuery } from "@/features/preview/model/preview-return-path";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMockAuth } from "../data/auth-context";
-import { usePreviewEnvironment } from "@/features/preview";
+import { authReturnQuery, usePreviewEnvironment } from "@/features/preview";
 
 // 기능 : 일회용 가상 링크와 새 비밀번호 초안을 분리해 오류·재시도·빈 로그인 복귀를 처리한다.
 export function useNewPassword() {
@@ -11,8 +10,12 @@ export function useNewPassword() {
   const challenge = state.resetChallenge; const valid = challenge?.id === location.state?.resetChallengeId && challenge?.status === "valid" && !!challenge.actorId && challenge.revision === preview.revision;
   // 기능 : 취소 뒤 지연 저장을 무효화하고 재시도 입력은 보존한다.
   function cancel() { request.current?.abort(); request.current = null; setPending(false); }
-  // 기능 : 실행 문맥·시나리오·경로 이탈에서 요청을 취소한다.
-  useEffect(function cancelScope() { request.current?.abort(); request.current = null; setPending(false); return function abortOnLeave() { request.current?.abort(); }; }, [state.scenario, preview.revision]);
+  // 기능 : 실행 문맥·시나리오·같은 경로의 이력 변경과 이탈에서 이전 저장을 취소한다.
+  useEffect(function cancelScope() { request.current?.abort(); request.current = null; setPending(false); return function abortOnLeave() { request.current?.abort(); }; }, [state.scenario, preview.revision, location.key]);
+  // 기능 : 링크·사용자·유효 상태가 바뀌면 다른 대상에게 이전 비밀 초안이나 오류를 넘기지 않는다.
+  useEffect(function clearLinkDraft() {
+    request.current?.abort(); request.current = null; setPending(false); setPassword(""); setError(""); composing.current = false;
+  }, [challenge?.id, challenge?.status, preview.revision, location.state?.resetChallengeId]);
   // 기능 : 제출 종료 후 활성화된 입력으로 오류 초점을 돌리며 재입력 중에는 초점을 재설정하지 않는다.
   useEffect(function focusValidationFailure() { if (error === "Password is too weak" && !pending) document.getElementById("new-password")?.focus(); }, [error, pending]);
   // 기능 : 원본처럼 강도 오류를 다음 제출까지 유지하면서 새 입력을 받는다.

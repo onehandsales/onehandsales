@@ -9,3 +9,5 @@ export { AuthNotice } from "./components/auth-notice";
 export { LoginChangelog } from "./components/login-changelog";
 export { AuthPendingCancel } from "./components/auth-controls";
 export { AccountMenu } from "./components/account-menu";
+export { useResetRequest } from "./hooks/use-reset-request";
+export { useNewPassword } from "./hooks/use-new-password";

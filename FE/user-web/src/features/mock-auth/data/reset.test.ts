@@ -10,6 +10,37 @@ const signal = () => new AbortController().signal;
 const login = (password: string) => ({ email: "alex@example.test", password, method: "password" as const, captcha: true, returnTo: "/app" });
 
 describe("local password reset lifecycle", () => {
+  // 기능 : 새 요청을 시작하면 완료 전에도 이전 링크와 진행 중 저장이 같은 계정을 변경하지 못한다.
+  it("invalidates the previous link as soon as a replacement request starts", async () => {
+    const { auth, preview } = setup();
+    const old = await auth.requestReset("alex@example.test", true, 0, signal());
+    const replacement = auth.requestReset("blair@example.test", true, 0, signal());
+    expect(auth.getSnapshot().resetChallenge).toBeNull();
+    const stale = auth.resetPassword(old.id, "Replacement123!", 0, signal()).then(() => "saved", () => "rejected");
+    expect(await stale).toBe("rejected"); expect((await replacement).actorId).toBe("preview-b");
+    expect(preview.getSnapshot().session).toBeNull();
+    expect((await auth.login(login("PreviewOnly123!"), 0, signal())).account.id).toBe("preview-a");
+  });
+  // 기능 : 실패·취소·만료는 기존 사용자 세션과 다른 계정의 비밀번호를 유지한다.
+  it("retains the active session and other credentials after failed or cancelled recovery", async () => {
+    const { auth, preview } = setup(); await auth.login(login("PreviewOnly123!"), 0, signal());
+    const revision = preview.getSnapshot().revision; const link = await auth.requestReset("blair@example.test", true, revision, signal());
+    auth.setScenario("fail-once"); await expect(auth.resetPassword(link.id, "Replacement123!", revision, signal())).rejects.toThrow("failed");
+    const controller = new AbortController(); const saving = auth.resetPassword(link.id, "Replacement123!", revision, controller.signal); controller.abort();
+    await expect(saving).rejects.toMatchObject({ name: "AbortError" }); auth.expireReset();
+    await expect(auth.resetPassword(link.id, "Replacement123!", revision, signal())).rejects.toThrow("expired");
+    expect(preview.getSnapshot().session?.id).toBe("preview-a"); expect(preview.getSnapshot().revision).toBe(revision);
+    expect((await auth.login({ ...login("PreviewOnly123!"), email: "blair@example.test" }, revision, signal())).account.id).toBe("preview-b");
+  });
+  // 기능 : 늦은 새 요청보다 먼저 끝나는 이전 저장도 새 요청 의도 이후에는 반영하지 않는다.
+  it("rejects an in-flight save after a newer request starts", async () => {
+    const { auth } = setup(); const old = await auth.requestReset("alex@example.test", true, 0, signal());
+    const stale = auth.resetPassword(old.id, "Replacement123!", 0, signal()).then(() => "saved", () => "rejected");
+    await new Promise(resolve => setTimeout(resolve, 60));
+    const replacement = auth.requestReset("blair@example.test", true, 0, signal()).then(result => result.actorId, () => "rejected");
+    expect(await stale).toBe("rejected"); expect(await replacement).toBe("preview-b");
+    expect((await auth.login(login("PreviewOnly123!"), 0, signal())).account.id).toBe("preview-a");
+  });
   it("validates requests, gives a generic receipt for unknown email and never changes another account", async () => {
     const { auth } = setup(); await expect(auth.requestReset("invalid", true, 0, signal())).rejects.toThrow("valid email"); await expect(auth.requestReset("alex@example.test", false, 0, signal())).rejects.toThrow("local preview check");
     const unknown = await auth.requestReset("unknown@example.test", true, 0, signal()); expect(unknown.actorId).toBeNull(); await expect(auth.resetPassword(unknown.id, "Replacement123!", 0, signal())).rejects.toThrow("unavailable");

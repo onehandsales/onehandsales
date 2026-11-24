@@ -139,9 +139,13 @@ export function createAuthStore(preview: PreviewRuntime): AuthStore {
   function clearNotice() { if (state.notice) publish({ notice: null }); }
   // 기능 : 존재 여부를 일반 안내와 분리한 메모리 재설정 도전을 준비하며 최신 요청만 남긴다.
   async function requestReset(emailInput: string, captcha: boolean, revision: number, signal: AbortSignal): Promise<ResetChallenge> {
-    const email = emailInput.trim().toLowerCase(); const submittedGeneration = generation; const attempt = ++resetSequence;
+    const email = emailInput.trim().toLowerCase(); const submittedGeneration = generation;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 256) throw new Error("Enter a valid email address.");
     if (!captcha) throw new Error("Complete the local preview check.");
+    // 1. 유효한 새 요청 의도를 받은 즉시 이전 링크와 저장을 폐기하며 실패·취소해도 옛 링크는 되살리지 않는다.
+    assertCurrent(revision, signal); const attempt = ++resetSequence;
+    if (state.resetChallenge) publish({ resetChallenge: null });
+    // 2. 가장 최근 요청만 안내와 새 링크를 만들며 비밀번호는 별도 저장 성공 전까지 유지한다.
     await prepare(revision, signal, submittedGeneration);
     if (attempt !== resetSequence) throw new DOMException("A newer reset request replaced this one", "AbortError");
     const account = records.get(email)?.account;
