@@ -1,6 +1,8 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 G06 — 2026-11-24 KST: **G06 R4 주요 구성 대조·검색/상세 복귀/파일·가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름21PNG·R4 10항목·공통12기준을 대조했다. 보완 후 DOM12/전체155(이전11/154 이력 보존)·타입/lint·메모리build와 로컬15파일 HTTP/구조 검증 통과. 실제 브라우저 요청/console·파일 수신·픽셀 동일성은 미검증이다. 과거 이력/대기 보존; 다음 Goal 자동 착수 없음. 후속 사용자 요청에 따라 추가 검토 후 로컬 커밋 대상으로 준비했다. [상세 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
+> 현재 G07 — 2026-11-24 KST: **부분 완료**. 생성기5단계·연결11PNG를 확인하고 초안/가입 복귀를 보완했다. 단위/DOM166/166·타입/lint·메모리 build 통과. 시각 동일성·실제 브라우저/네트워크는 대기다. 과거 이력·다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G07_RESULT.md#g07-r4-recheck).
+
+> 이전 G06 — 2026-11-24 KST: **G06 R4 주요 구성 대조·검색/상세 복귀/파일·가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름21PNG·R4 10항목·공통12기준을 대조했다. 보완 후 DOM12/전체155(이전11/154 이력 보존)·타입/lint·메모리build와 로컬15파일 HTTP/구조 검증 통과. 실제 브라우저 요청/console·파일 수신·픽셀 동일성은 미검증이다. 과거 이력/대기 보존; 다음 Goal 자동 착수 없음. 후속 사용자 요청에 따라 추가 검토 후 로컬 커밋 대상으로 준비했다. [상세 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
 
 > 이전 G05 — 2026-11-24 KST: **G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름11PNG·R4 9항목·공통12기준을 대조했다. 신규 DOM13/전체143·타입/lint·메모리build 통과. 브라우저 요청/console·픽셀 동일성은 미검증이며 G00~G04/R01의 기존 대기를 유지한다. G06/G32 신규 착수·새 evidence/tmp/결과 문서·커밋 없음. [상세 결과](../RESULTS/G05_RESULT.md#g05-r4-recheck).
 
@@ -157,7 +159,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 131 | [Tasks / Editing a template task](<../../../bonsai_analysis/flows/Tasks/Editing a template task/ANALYSIS.md>) | `91a75fcf-9857-41ff-85c2-c2de0bae87d9` | 8 | [G30 작업 템플릿 작성](<GOAL-SPECS/G30.md>) (01~08) | [F131](SOURCE-ANALYSIS-IMPACT.md#r4-f131) |
 | 132 | [Terms & Conditions](<../../../bonsai_analysis/flows/Terms & Conditions/ANALYSIS.md>) | `912b4b75-77bb-43fa-b86f-d85c6117841a` | 1 | [G09 제휴·채용·정책 안내](<GOAL-SPECS/G09.md>) (01~01) | [F132](SOURCE-ANALYSIS-IMPACT.md#r4-f132) |
 | 133 | [Time Tracking](<../../../bonsai_analysis/flows/Time Tracking/ANALYSIS.md>) | `525f8723-dca6-4932-ac6e-d159249090be` | 6 | [G34 시간 목록·인사이트](<GOAL-SPECS/G34.md>) (01~06) | [F133](SOURCE-ANALYSIS-IMPACT.md#r4-f133) |
-| 134 | [Using invoice generator](<../../../bonsai_analysis/flows/Using invoice generator/ANALYSIS.md>) | `1a82151c-9539-4a12-8a4d-706c8557370b` | 5 | [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>) (01~05) | [F134](SOURCE-ANALYSIS-IMPACT.md#r4-f134) |
+| 134 | [Using invoice generator](<../../../bonsai_analysis/flows/Using invoice generator/ANALYSIS.md>) | `1a82151c-9539-4a12-8a4d-706c8557370b` | 5 | [G07 공개 청구서 생성기](<GOAL-SPECS/G07.md>) (01~05) | [F134](SOURCE-ANALYSIS-IMPACT.md#r4-f134) · [G07 이번 검토](../RESULTS/G07_RESULT.md#g07-r4-recheck) |
 
 ## G01 공통 요소 재사용 기록
 
@@ -221,3 +223,9 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 
 - [x] G06의3흐름21단계 배정은 그대로다. 다른 Goal 소유권/실행 순서는 변경하지 않았으며 직접 소비 회귀와 전체 Goal 재검토를 구분했다. [이번 결과](../RESULTS/G06_RESULT.md#g06-r4-recheck).
 - [ ] 실제 브라우저/네트워크·원본 시각 동일성·미수록 원본은 해당 G06/R01/연결 G 대기다. 공통 양식과 다른 Goal 전체를 일괄 완료 처리하지 않는다.
+
+<a id="g07-update"></a>
+## G07 적용·연결 검토 — 2026-11-24 KST
+
+- [x] F13401~05의 G07 소유는 유지한다. F06902/04,F08302,F08605/06/10,F08705/08/09/11/14는 직접 연결 근거만 확인했으며 소유나 연결 Goal 전체 상태를 변경하지 않는다. [상세 판정·근거](../RESULTS/G07_RESULT.md#g07-r4-recheck).
+- [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 관련 G/R 전체 완료가 아니며 잔여 담당은 G07 결과8절에 기록했다.

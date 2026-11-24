@@ -24,12 +24,16 @@ export function PublicProvider({ children, resetRevision }: { children: ReactNod
     setIntents(previous => ({ ...previous, [id]: snapshot }));
     return id;
   }
-  // 기능 : 명시적인 취소에서 공개 초안과 인계를 함께 폐기한다.
+  // 기능 : 청구서 취소는 선택한 인계만 지우고 다른 공개 이메일 초안은 기존 출처별 취소 정책을 적용한다.
   function clear(intentId: string | undefined) {
     const intent = intentId === undefined ? undefined : intents[intentId];
     if (!intent) return;
+    if (intent.invoice) {
+      setIntents(previous => Object.fromEntries(Object.entries(previous).filter(([id]) => id !== intentId)));
+      return;
+    }
     setEmail(intent.sourcePath, "");
-    setIntents(previous => Object.fromEntries(Object.entries(previous).filter(([, item]) => item.sourcePath !== intent.sourcePath)));
+    setIntents(previous => Object.fromEntries(Object.entries(previous).filter(([, item]) => item.invoice || item.sourcePath !== intent.sourcePath)));
   }
   // 기능 : 현재 인증 범위에서 명시적으로 복귀한 선택만 새 이력 ID로 복원한다.
   function restore(intent: PublicIntent) {

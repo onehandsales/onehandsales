@@ -19,7 +19,8 @@ export function AuthContinuePage() {
     if (!intent) return;
     const publicIntentId = restore(intent); if (intent.invoice) restoreInvoice(intent.invoice);
     const templateReturn = intent.template && intent.returnTo.split(/[?#]/)[0] === intent.template.path ? intent.returnTo : intent.template?.path;
-    const to = original ? intent.returnTo : intent.selection ? subscriptionHandoffPath : templateReturn ?? (intent.invoice ? "/invoice-generator" : intent.returnTo);
+    const invoiceReturn = intent.returnTo.split(/[?#]/)[0] === "/invoice-generator" ? intent.returnTo : "/invoice-generator";
+    const to = original ? intent.returnTo : intent.selection ? subscriptionHandoffPath : templateReturn ?? (intent.invoice ? invoiceReturn : intent.returnTo);
     void navigate(to, { state: { publicIntentId } });
   }
   return <section className="auth-card auth-boundary"><h1>Your local selection</h1>{intent ? <><AuthIntentSummary intent={intent} /><p>Your selected details are ready in this local preview. Plans do not change a subscription; templates are not copied to an account; invoice drafts remain editable without generating a PDF.</p><button className="auth-primary" type="button" onClick={() => resume()}>Continue with selected details</button><button className="auth-secondary" type="button" onClick={() => resume(true)}>Return to original page</button></> : <p>This selection is unavailable in the current account or browser history. Return to the public site to make a new selection.</p>}<Link to="/app">Continue to workspace preview</Link><Link to="/">Return to public site</Link></section>;

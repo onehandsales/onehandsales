@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
 import { usePublicExperience } from "@/features/public-web";
 import { useInvoiceDraftStore } from "../data/invoice-context";
@@ -13,6 +13,7 @@ export function useInvoiceGenerator() {
   const { state } = usePreviewEnvironment();
   const { start } = usePublicExperience();
   const navigate = useNavigate();
+  const location = useLocation();
   const [issues, setIssues] = useState<InvoiceIssue[]>([]);
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState("");
@@ -24,9 +25,9 @@ export function useInvoiceGenerator() {
   const focusFrame = useRef<number | null>(null);
   // 기능 : 문맥·라우트 이탈 뒤 늦은 완료가 다른 화면을 가입으로 바꾸지 못하게 한다.
   useEffect(function registerHandoffLifetime() {
-    setPending(false); setIssues([]); setFailure("");
+    setPending(false); setIssues([]); setFailure(""); composing.current = false;
     return () => { operation.current += 1; if (timer.current) clearTimeout(timer.current); if (focusFrame.current) cancelAnimationFrame(focusFrame.current); submitted.current = false; };
-  }, [state.revision]);
+  }, [state.revision, location.key]);
   // 기능 : 마지막 행 조작의 초점만 예약하고 화면 이탈 시 정리할 핸들을 보관한다.
   function focusAfterRender(id: string) { if (focusFrame.current) cancelAnimationFrame(focusFrame.current); focusFrame.current = requestAnimationFrame(() => document.getElementById(id)?.focus()); }
   // 기능 : 편집 또는 취소가 시작되면 이전 제출을 무효화하고 입력을 보존한다.
@@ -65,7 +66,7 @@ export function useInvoiceGenerator() {
     function completeHandoff() {
       if (token !== operation.current) return;
       if (state.scenario === "write-error" && failedRevision.current !== state.revision) { failedRevision.current = state.revision; submitted.current = false; setPending(false); setFailure("The preview could not continue. Your invoice is still here. Please try again."); return; }
-      const publicIntentId = start("invoicegenerator", "/invoice-generator", false, { invoice: snapshot });
+      const publicIntentId = start("invoicegenerator", "/invoice-generator", false, { invoice: snapshot, returnTo: location.pathname + location.search + location.hash });
       void navigate("/signup", { state: { publicIntentId } });
     }
     timer.current = setTimeout(completeHandoff, state.scenario === "slow" ? 1500 : 80);
