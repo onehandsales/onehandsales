@@ -17,7 +17,7 @@ export function SignupPage() {
 function SignupScreen({ intentId, intent }: { intentId?: string; intent?: PublicIntent }) {
   const form = useSignup(intent); const { clear } = usePublicExperience(); const navigate = useNavigate(); const [social, setSocial] = useState(false);
   // 기능 : 명시적 취소에서 출발 초안 정책을 적용하고 이전 공개 페이지로 돌아간다.
-  function cancelSignup() { form.cancel(); clear(intentId); void navigate(intent?.returnTo ?? "/", { replace: true }); }
+  function cancelSignup() { form.cancel(); clear(intentId); void navigate(intent?.returnTo ?? "/", { replace: true, state: intent?.returnOrigin ? { articleOrigin: intent.returnOrigin } : undefined }); }
   return <><section className="auth-card auth-signup" aria-labelledby="signup-title"><h1 id="signup-title">Create your free account</h1>
     <button className="auth-social" type="button" onClick={() => setSocial(true)} disabled={form.pending}><img src="/bonsai-auth/google.png" alt="" width="24" height="24" />Sign up with Google</button>
     <div className="auth-divider"><span>or</span></div>

@@ -66,6 +66,8 @@ FAQ 열린 항목과 demo Dialog는 컴포넌트 수명이다. 관련 글 페이
 
 `pages/blog`은 목록/slug 상세를 조립하고 `features/public-content`의 공개 API를 사용한다. 정적 카탈로그는 기존 G03 메타데이터의 공개 export를 사용하며 중복 ID를 만들지 않는다. 조회 공급자는 `data/article-reader`, URL/조합/취소 조정은 hook, 읽는 위치는 별도 hook이다. 공개 라우트에만 QueryScope를 추가하여 내부·공유 캐시와 분리했다. URL에는 공개 검색/분류/페이지를, 이메일/가입 인계에는 기존 메모리 저장을 사용한다. 관찰된 기사와 미수록 본문 경계를 구분한다. G06 및 G10 이후 인계는 해당 소비 단계에서 검증한다.
 
+앞 절 G05의 G06/G10 이후 대기는 초기 기록이다. 2026-11-24 G05 재검토에서는 현재 카탈로그/가입·로그인 왕복을 DOM 검증했다. `useBlogSearch`는 URL 확정값과 방문 key/revision별 초안을 분리하고 이탈 시 debounce·조합을 폐기한다. `public-web`의 PublicOrigin은 전체 URL/key/Router history index/메모리 scope만 전달하며 기사 카드·소개가 같은 형식으로 소비한다. 가입 snapshot의 returnOrigin은 취소 시 기사 state로 복원하고, 기사 복귀는 같은 scope의 원래 이력 위치로 이동한다. 새 공급자/Reset/범위 변경은 이전 출발을 재사용하지 않는다. `ArticleParagraph`의 미확인 링크 안내는 원본 목적지를 대신 확정하지 않는다. [현재 범위·검증·잔여](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G05_RESULT.md#g05-r4-recheck).
+
 ## G06 공개 템플릿 추가 (2026-11-21)
 
 `pages/templates`는 `features/public-template`의 카탈로그/상세/청구서 파일 안내를 조립한다. 공개 ID와 계정 복제본을 구분하고, 로컬 파일15개는 실제 다운로드·해시 검증을 수행했다. Google 문서는 로컬 Dialog만 사용한다. PublicProvider의 이력별 template snapshot은 기존 이메일·가격을 보존한다. ScrollRestoration 키는 경로+검색+history key이며 다른 직접 URL의 스크롤을 섞지 않는다. [G06 결과](../../TODO/BONSAI_FE_MOCK_PLAN/RESULTS/G06_RESULT.md)에 검토·검증·남은 차이를 기록했다. unit15, 전체 dev/build38개 및 최종 G06 대상5개씩 통과했다. 가입 후 복귀는 G10~G14에서 종합 검증한다.

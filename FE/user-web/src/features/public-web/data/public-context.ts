@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import type { InvoiceDraft } from "@/features/public-invoice";
+import type { PublicOrigin } from "../model/public-origin";
 
 // 의미 : 공개 가격 시안의 선택 snapshot이며 실제 구독·청구·권한 계약이 아니다.
 export type PublicPlanSelection = Readonly<{
@@ -14,9 +15,10 @@ export type PublicPlanSelection = Readonly<{
 }>;
 // 의미 : 공개 카탈로그 선택이며 계정 문서의 복제본이나 서버 template ID가 아니다.
 export type PublicTemplateSelection = Readonly<{ id: string; title: string; path: string; type: string; format: string; reference: string }>;
-export type PublicIntentOptions = { returnTo?: string; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
-export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
+export type PublicIntentOptions = { returnTo?: string; returnOrigin?: PublicOrigin; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
+export type PublicIntent = { source: string; email: string; sourcePath: string; returnTo: string; returnOrigin?: PublicOrigin; selection?: PublicPlanSelection; template?: PublicTemplateSelection; invoice?: InvoiceDraft };
 export type PublicExperience = {
+  scope: string;
   emails: Readonly<Record<string, string>>;
   intents: Readonly<Record<string, PublicIntent>>;
   setEmail: (path: string, email: string) => void;

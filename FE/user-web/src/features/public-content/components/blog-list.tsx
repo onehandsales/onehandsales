@@ -1,13 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
+import { ArticleLink } from "./article-links";
 import { blogCategories } from "../data/article-catalog";
 import type { BlogArticle } from "../data/article-catalog";
 import { useBlogSearch } from "../hooks/use-blog-search";
 
 // 기능 : 목록·추천에서 같은 기사 ID와 출발 이력으로 상세를 연다.
 export function ArticleCard({ article }: { article: BlogArticle }) {
-  const location = useLocation();
-  return <article className="blog-card"><Link to={article.path} state={{ articleReturnTo: location.pathname + location.search, articleFromKey: location.key }}>
-    <img className="blog-card-image" src={article.image} alt="" width="310" height="180" /><p className="blog-card-category">{article.category}</p><h2>{article.title}</h2></Link>
+  return <article className="blog-card"><ArticleLink to={article.path}>
+    <img className="blog-card-image" src={article.image} alt="" width="310" height="180" /><p className="blog-card-category">{article.category}</p><h2>{article.title}</h2></ArticleLink>
     {article.summary && <p className="blog-card-summary">{article.summary}</p>}
     {article.author && <p className="blog-card-author">{article.portrait && <img src={article.portrait} alt="" width="30" height="30" />}{article.author}</p>}</article>;
 }
@@ -23,7 +22,7 @@ export function BlogList() {
       <nav className="blog-categories" aria-label="Article categories">{blogCategories.map(category => <button key={category} type="button" aria-pressed={search.category === category} onClick={() => search.selectCategory(category)}>{category}</button>)}</nav>
       <div className="blog-results" aria-busy={search.result.isFetching}>
         {search.result.isPending ? <p className="blog-status" role="status">Loading articles…</p> : search.result.isError ? <div className="blog-status" role="alert"><p>{search.result.error.message}</p><button className="public-button" type="button" onClick={() => void search.result.refetch()}>Try again</button></div>
-          : data && <>{data.items.length ? <div className="blog-grid">{data.items.map(article => <ArticleCard key={article.id} article={article} />)}</div> : <div className="blog-status" role="status"><h2>{data.categoryEmpty ? "No articles available" : "No matching articles"}</h2><p>{data.categoryEmpty ? "This preview has no confirmed articles for this category." : "Try a different search or clear your search."}</p>{search.draft && <button className="public-button" type="button" onClick={() => search.setDraft("")}>Clear search</button>}</div>}
+          : data && <>{data.items.length ? <div className="blog-grid">{data.items.map(article => <ArticleCard key={article.id} article={article} />)}</div> : <div className="blog-status" role="status"><h2>{data.categoryEmpty ? "No articles available" : "No matching articles"}</h2><p>{data.categoryEmpty ? "This preview has no confirmed articles for this category." : "Try a different search or clear your search."}</p>{search.draft && <button className="public-button" type="button" onClick={search.clearSearch}>Clear search</button>}</div>}
           <nav className="blog-pagination" aria-label="Article pages">{data.page > 1 && <button type="button" onClick={() => search.selectPage(data.page - 1)}>‹ Previous</button>}<span aria-live="polite">{data.page} / {data.pages}</span>{data.page < data.pages && <button type="button" onClick={() => search.selectPage(data.page + 1)}>Next ›</button>}</nav></>}
       </div>
     </section></>;

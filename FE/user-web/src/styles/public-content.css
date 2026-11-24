@@ -47,6 +47,7 @@
 .article-body { font-size: 20px; line-height: 34px; color: #000; padding-top: 24px; }
 .public-web .article-body p { margin-bottom: 15px; }
 .article-body a { color: var(--public-green); }
+.article-source-link { display: inline; padding: 0; border: 0; background: transparent; color: var(--public-green); font: inherit; text-align: inherit; cursor: pointer; }
 .article-body section { margin-top: 56px; }
 .public-web .article-body h2 { color: var(--public-ink); font-size: 32px; line-height: 39px; margin-bottom: 28px; scroll-margin-top: 90px; }
 .article-body ul { padding-left: 40px; list-style: disc; }

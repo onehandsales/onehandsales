@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기; G00~G03 이력·대기 유지, G05 이후 자동 착수 없음, G32 이후 미착수.",
+  "status": "G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00~G04 이력/대기 보존, G06 이후 자동 착수 없음, G32 이후 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -242,6 +242,14 @@
         "full_goal_review_performed": false,
         "visual_identity": "pending",
         "business_implementation_changed": false
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -425,6 +433,14 @@
         "full_goal_review_performed": false,
         "visual_identity": "pending",
         "business_implementation_changed": false
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -656,6 +672,14 @@
         "full_goal_review_performed": false,
         "visual_identity": "pending",
         "business_implementation_changed": false
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -870,6 +894,14 @@
           "diff_check": "passed",
           "old_generated_paths_modified_in_this_task": false
         }
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -891,7 +923,7 @@
         "R01"
       ],
       "surface": "공개 웹",
-      "status": "목 검색·기사 흐름 구현·2차 검토·dev/build 검증 수행; 미수록 본문/목록·잔여 시각·환경 대기",
+      "status": "G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기",
       "flow_scope": [
         {
           "flow_number": 5,
@@ -943,7 +975,7 @@
         }
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "주요 구성·코드 대조/보완·DOM 수행; 전수 요소/시각·미수록·실브라우저 대기",
         "item_ids": [
           "R4-F005-O01",
           "R4-F005-O02",
@@ -970,8 +1002,9 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g05",
-        "implementation_review_performed": false,
-        "shared_screen_ids": []
+        "implementation_review_performed": true,
+        "shared_screen_ids": [],
+        "latest_result": "../RESULTS/G05_RESULT.md#g05-r4-recheck"
       },
       "g02_consumer_recheck": {
         "date": "2026-11-23 KST",
@@ -988,6 +1021,94 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g05_recheck": {
+        "date": "2026-11-24 KST",
+        "goal": "G05",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "base_commit": "8f09ad4ab7f7f4c7230e9ff318ceb2b36fd6ca53",
+        "scope": "G05 major source groups/current code and directly connected DOM handoffs only",
+        "source_flows": 3,
+        "source_steps": 11,
+        "source_images_directly_viewed": 11,
+        "r4_items": 9,
+        "new_mcp_query_performed": false,
+        "original_analysis_and_png_unchanged": true,
+        "implementation_review_performed": true,
+        "implementation_supplement": "search draft/history/IME/query/hash, article origin and signup cancellation, unconfirmed inline link boundary",
+        "typecheck": "passed --noEmit --incremental false",
+        "lint": "passed --no-cache",
+        "unit_dom": "28 files 143/143; G05 new 13/13; historical counts not combined",
+        "build": "passed in memory; 1970 modules; write:false",
+        "browser_e2e": "not_run: no connected document session or existing CDP",
+        "browser_network": "not_observed",
+        "browser_console": "not_observed",
+        "visual_identity": "not_verified",
+        "source_font_capture_assets": "pending",
+        "element_census_complete": false,
+        "reproduction_spec_certified": false,
+        "preview": "http://127.0.0.1:5173/",
+        "preview_mode": "existing Windows Vite dev/HMR PID30272; preserved",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "overall_complete": false,
+        "next_goal_started": false,
+        "commit_push_deploy": false,
+        "pending_owners": {
+          "source_visual": [
+            "G05",
+            "R01",
+            "G01"
+          ],
+          "browser_environment": [
+            "G05",
+            "G01",
+            "G02",
+            "G03",
+            "G04",
+            "G06",
+            "G10",
+            "G11",
+            "G84"
+          ],
+          "full_auth_onboarding": [
+            "G10",
+            "G11",
+            "G13",
+            "G14",
+            "R02"
+          ]
+        },
+        "final_verification": {
+          "unit_dom": "28 files 143/143 after final same-batch composition fix; 99.48s",
+          "g05_regression": "13/13; synthetic composition only",
+          "intermediate_consumer_regression": "5 files 43/43 before final composition fix; also covered by final full suite",
+          "typecheck": "app and node: --noEmit --incremental false passed",
+          "lint": "--no-cache passed",
+          "build": "1970 modules, 3 in-memory outputs, write:false, 9.11s",
+          "preview_http": "5 GET checks 200 with current source markers; dependency cache metadata unchanged; not browser verification"
+        },
+        "final_consistency": {
+          "markdown_files": 170,
+          "json_files": 1,
+          "modified_existing_plan_documents": 40,
+          "existing_link_error_occurrences": 221,
+          "new_link_errors": 0,
+          "assertion_failures": 0,
+          "goals": 85,
+          "research": 22,
+          "execution_order": 107,
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "r4_items": 455,
+          "unchanged_other_r4_items": 446,
+          "common_criteria": 12,
+          "analysis_hashes_rechecked": 3,
+          "png_hashes_rechecked": 11,
+          "historical_verification_preserved": true
+        }
       }
     },
     {
@@ -1103,6 +1224,14 @@
         "date": "2026-11-23~24 KST",
         "result": "../RESULTS/G03_RESULT.md#g03-r4-recheck",
         "scope": "actual G03 shared or connected handoff DOM/code only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -1538,6 +1667,14 @@
         "full_goal_review_performed": false,
         "visual_identity": "pending",
         "business_implementation_changed": false
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1659,6 +1796,14 @@
         "full_goal_review_performed": false,
         "visual_identity": "pending",
         "business_implementation_changed": false
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "G05 directly connected handoff/common behavior DOM regression only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1821,6 +1966,14 @@
           "sc_33b333fba9d34edbbd66ddfadf29dcb4",
           "sc_7c8264e8239e464abd4219d7b9828199"
         ]
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "current intent/return code and historical result only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1926,6 +2079,14 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "g05_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "scope": "current intent/return code and historical result only",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -6970,6 +7131,15 @@
         "scope": "G04 source/version questions",
         "full_research_review_performed": false,
         "overall_complete": false
+      },
+      "g05_r4_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "source_flows": 3,
+        "source_steps": 11,
+        "full_research_review_performed": false,
+        "overall_complete": false,
+        "status": "G05 consumer review/supplement performed; original policies/assets/visual and overall R01 pending"
       }
     },
     {
@@ -8372,7 +8542,14 @@
           "R4-F005-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "implementation_review_performed": true,
+          "visual_identity": "not_verified",
+          "full_element_census_complete": false
+        }
       }
     },
     {
@@ -8400,7 +8577,14 @@
           "R4-F006-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "implementation_review_performed": true,
+          "visual_identity": "not_verified",
+          "full_element_census_complete": false
+        }
       }
     },
     {
@@ -8427,7 +8611,14 @@
           "R4-F007-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "implementation_review_performed": true,
+          "visual_identity": "not_verified",
+          "full_element_census_complete": false
+        }
       }
     },
     {
@@ -12410,15 +12601,15 @@
     "preview": "http://127.0.0.1:5173/ preserved"
   },
   "source_analysis_review": {
-    "date": "2026-11-23 KST",
+    "date": "2026-11-24 KST",
     "source_commit": "6fdc6d003bcd073a6d73bd53111c593f15a89b94",
     "source_index": "../../../bonsai_analysis/SOURCE_ANALYSIS_INDEX.json",
     "source_index_sha256_lf": "827ba007ab3a8ef243e3f95140abdc2bec77897e2727aa9daf501a9d024aa12e",
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
-    "status": "G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기; G00~G03 이력·다른 항목 대기 보존",
+    "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+    "status": "G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00~G04 이력/대기 보존, G06 이후 자동 착수 없음, G32 이후 미착수.",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -14104,6 +14295,12 @@
           "status": "7PNG 식별/해시/순서/G04 배정 확인; 촬영 조건 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "11PNG 식별/해시/순서/담당 확인; 촬영 조건 미확인",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14140,6 +14337,12 @@
           "date": "2026-11-24 KST",
           "status": "7PNG 주요 영역 대조; 캡처 밖 구성 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "목록/메뉴/상세/추천/가입바 주요 구성 대조; 실제 가림 미검증",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14178,6 +14381,12 @@
           "status": "주요 요소 대응; 전체 census 미완",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "주요 B/A/S 요소 그룹 대응; 전수 요소 계수/정밀 명세 미완",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14214,6 +14423,12 @@
           "date": "2026-11-24 KST",
           "status": "가격/기능/후기 표시·버전 대조; 전체 줄바꿈 동일성 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기사/카드/메타·목차/CTA 보존·인라인 링크 표시 보완; 전체 본문/줄바꿈 대기",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14252,6 +14467,12 @@
           "status": "구현 CTA 정렬/3열/폭 측정; 원본 정밀 치수 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "원본2880×1800과 기존 코드 추정값 구분; viewport/DPR/픽셀 미검증",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14288,6 +14509,12 @@
           "date": "2026-11-24 KST",
           "status": "구현 Gellix 유지; 원본 정확 폰트/렌더링 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기존 Gellix·크기/행간 근거 구분; 원본 폰트/렌더링 동일성 대기",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14326,6 +14553,12 @@
           "status": "추천/주기/역할색 유지·보조색 보완; 정확 색 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "선택/입력 배경·무테두리/사진모서리/그림자 대조; 정밀 수치 대기",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14362,6 +14595,12 @@
           "date": "2026-11-24 KST",
           "status": "기존5자산/브라우저 로드 확인; 포스터/영상/자막 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "7+12목록/2추천 자산 역할·ID 유지; 원본 자산/crop/사용조건 대기",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14400,6 +14639,12 @@
           "status": "주기/세션/모달 DOM·Chrome 회귀",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "초기/General·로딩/자료부재/무결과/error/retry DOM; 희미한 전환 원인 미확인",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14436,6 +14681,12 @@
           "date": "2026-11-24 KST",
           "status": "URL/취소/복귀 DOM·Chrome 확인; 원본 전환 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "검색/목차/복귀 경합 DOM 수행; 원본 동작·실제 스크롤 대기",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -14474,6 +14725,12 @@
           "status": "snapshot/초안/중복/Reset·사용자 격리 검증; OS IME 대기",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "초안/확정·합성IME·snapshot/중복/취소/scope DOM; 실제 서버 N/A",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -14510,6 +14767,12 @@
           "date": "2026-11-24 KST",
           "status": "G01/G02/G03/G10/G11/G79 해당 경계 확인; 전체 Goal 완료 아님",
           "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "소개·추천/관련·계약카탈로그·가입/로그인취소 DOM; 연결 G 전체 미검증",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
           "global_requirement_complete": false
         }
       }
@@ -14881,9 +15144,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "메뉴/hero/검색/8분류/3열 주요 구성 유지; 정밀 시각·실브라우저 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F005-O02",
@@ -14899,9 +15172,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "문서 보완 필요",
+        "implementation_assessment": "원문 저자 행 위치 설명과 PNG04의 같은 행 정렬 충돌; 현재 CSS 유지, R01 원본 문구 정정 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F005-A01",
@@ -14918,8 +15201,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "7+12 목록/2추천·자산 구분; 전체 목록/정렬/정확 crop·폰트/시각 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F006-O01",
@@ -14935,9 +15228,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "상단/메타/목차 유지·query와 CTA 복귀 인계 보완, DOM 통과; 시각 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F006-O02",
@@ -14953,9 +15256,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "관련/추천·가입바 복귀 보완 및 누락 인라인 링크 표시/미확인 목적지 안내; 본문/시각 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F006-A01",
@@ -14972,8 +15285,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "전체 본문·높이/겹침·sticky/모바일·정확 자산/촬영 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F007-O01",
@@ -14989,9 +15312,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·유지",
+        "implementation_assessment": "Searching01 희미한 전환 원인 미확인·02 선택/03 입력 배경 유지; 목 loading/empty/no-result 구분",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F007-O02",
@@ -15007,9 +15340,19 @@
         "research_ids": [
           "R01"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "분류+marketing/왼쪽1결과/중앙1/1 유지, query/hash·debounce/IME·이력 경합 보완/DOM 통과",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "미대조",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F007-A01",
@@ -15026,8 +15369,18 @@
           "R01"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "200ms/6개/제목·요약/정규화는 목 정책, 원본 검색/페이지/정렬/모바일 대기",
+        "evidence": [],
+        "plan_snapshot": {
+          "status": "분석 대기",
+          "implementation_assessment": "미검토"
+        },
+        "g05_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+          "scope": "major groups/source and code; not pixel certification",
+          "visual_identity": "pending"
+        }
       },
       {
         "id": "R4-F008-O01",
@@ -22928,8 +23281,8 @@
       "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
       "criteria_note": "과거 정밀 시각 명세의 일괄 선행 조건은 최신 사용자 기준으로 대체. 기능 제어·입력·상태·저장·전환 대응은 필요하며 아래 R4 원문·인증 상태는 보존."
     },
-    "authorized_scope": "G04 and actual connected boundaries only",
-    "new_source_review_scope": "G04 2 analyses/7 existing PNGs and 6 R4 notes;no whole-source certification",
+    "authorized_scope": "G05 and directly connected common/return handoffs only",
+    "new_source_review_scope": "G05 3flows/11PNGs major groups; not full library element census",
     "scoped_reviews": [
       {
         "date": "2026-11-23 KST",
@@ -23351,6 +23704,94 @@
           "diff_check": "passed",
           "old_generated_paths_modified_in_this_task": false
         }
+      },
+      {
+        "date": "2026-11-24 KST",
+        "goal": "G05",
+        "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
+        "base_commit": "8f09ad4ab7f7f4c7230e9ff318ceb2b36fd6ca53",
+        "scope": "G05 major source groups/current code and directly connected DOM handoffs only",
+        "source_flows": 3,
+        "source_steps": 11,
+        "source_images_directly_viewed": 11,
+        "r4_items": 9,
+        "new_mcp_query_performed": false,
+        "original_analysis_and_png_unchanged": true,
+        "implementation_review_performed": true,
+        "implementation_supplement": "search draft/history/IME/query/hash, article origin and signup cancellation, unconfirmed inline link boundary",
+        "typecheck": "passed --noEmit --incremental false",
+        "lint": "passed --no-cache",
+        "unit_dom": "28 files 143/143; G05 new 13/13; historical counts not combined",
+        "build": "passed in memory; 1970 modules; write:false",
+        "browser_e2e": "not_run: no connected document session or existing CDP",
+        "browser_network": "not_observed",
+        "browser_console": "not_observed",
+        "visual_identity": "not_verified",
+        "source_font_capture_assets": "pending",
+        "element_census_complete": false,
+        "reproduction_spec_certified": false,
+        "preview": "http://127.0.0.1:5173/",
+        "preview_mode": "existing Windows Vite dev/HMR PID30272; preserved",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "overall_complete": false,
+        "next_goal_started": false,
+        "commit_push_deploy": false,
+        "pending_owners": {
+          "source_visual": [
+            "G05",
+            "R01",
+            "G01"
+          ],
+          "browser_environment": [
+            "G05",
+            "G01",
+            "G02",
+            "G03",
+            "G04",
+            "G06",
+            "G10",
+            "G11",
+            "G84"
+          ],
+          "full_auth_onboarding": [
+            "G10",
+            "G11",
+            "G13",
+            "G14",
+            "R02"
+          ]
+        },
+        "final_verification": {
+          "unit_dom": "28 files 143/143 after final same-batch composition fix; 99.48s",
+          "g05_regression": "13/13; synthetic composition only",
+          "intermediate_consumer_regression": "5 files 43/43 before final composition fix; also covered by final full suite",
+          "typecheck": "app and node: --noEmit --incremental false passed",
+          "lint": "--no-cache passed",
+          "build": "1970 modules, 3 in-memory outputs, write:false, 9.11s",
+          "preview_http": "5 GET checks 200 with current source markers; dependency cache metadata unchanged; not browser verification"
+        },
+        "final_consistency": {
+          "markdown_files": 170,
+          "json_files": 1,
+          "modified_existing_plan_documents": 40,
+          "existing_link_error_occurrences": 221,
+          "new_link_errors": 0,
+          "assertion_failures": 0,
+          "goals": 85,
+          "research": 22,
+          "execution_order": 107,
+          "flows": 134,
+          "steps": 754,
+          "unique_screens": 642,
+          "r4_items": 455,
+          "unchanged_other_r4_items": 446,
+          "common_criteria": 12,
+          "analysis_hashes_rechecked": 3,
+          "png_hashes_rechecked": 11,
+          "historical_verification_preserved": true
+        }
       }
     ],
     "scope_status_history": [
@@ -23359,30 +23800,36 @@
         "status": "G03 R4 주요 구성 대조·query/hash·템플릿 모서리 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; 전체 R4/원문·정밀 명세 미완 유지",
         "authorized_scope": "G03 FE corrections/formal tests and existing planning documents only",
         "new_source_review_scope": "22 existing assigned G03 PNGs directly viewed; major element groups/code compared, no full element census or pixel certification"
+      },
+      {
+        "date": "2026-11-24 KST",
+        "prior_status": "G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기; G00~G03 이력·다른 항목 대기 보존",
+        "prior_result": "../RESULTS/G02_RECHECK_RESULT.md#g02-r4-recheck",
+        "scope": "G05 review update; previous status preserved"
       }
     ]
   },
   "workflow_review": {
     "date": "2026-11-24 KST",
-    "scope": "G04 source/code and actual handoff review",
+    "scope": "G05 major source groups/current code and directly connected DOM handoffs only",
     "mapping": "FLOW-BEHAVIOR-REVIEW.md",
     "policy": "UXUI-REPLICATION.md#current-identity",
-    "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+    "result": "../RESULTS/G05_RESULT.md#g05-r4-recheck",
     "reference_counts": {
-      "flows": 2,
-      "steps": 7,
-      "unique_screens": 7
+      "flows": 3,
+      "steps": 11,
+      "unique_screens": 11
     },
     "minor_visual_differences_allowed": false,
     "capture_adjacency_proves_action": false,
     "new_mcp_query_performed": false,
-    "selected_pngs_directly_reviewed": 7,
-    "all_assigned_g04_pngs_reviewed": true,
+    "selected_pngs_directly_reviewed": 11,
+    "all_assigned_g05_pngs_reviewed": true,
     "new_full_png_review_performed": false,
     "implementation_review_performed": true,
-    "authorized_goal": "G04",
+    "authorized_goal": "G05",
     "visual_identity": "not_verified",
-    "browser_e2e": "scoped CDP passed",
+    "browser_e2e": "not_run",
     "other_goals_full_review": "not_performed"
   },
   "workflow_review_history": [
@@ -23536,6 +23983,29 @@
       "browser_e2e": "not_run",
       "other_goals_full_review": "not_performed",
       "new_full_png_review_scope": "entire source library; assigned G03 22/22 PNGs directly reviewed separately"
+    },
+    {
+      "date": "2026-11-24 KST",
+      "scope": "G04 source/code and actual handoff review",
+      "mapping": "FLOW-BEHAVIOR-REVIEW.md",
+      "policy": "UXUI-REPLICATION.md#current-identity",
+      "result": "../RESULTS/G04_RESULT.md#g04-r4-recheck",
+      "reference_counts": {
+        "flows": 2,
+        "steps": 7,
+        "unique_screens": 7
+      },
+      "minor_visual_differences_allowed": false,
+      "capture_adjacency_proves_action": false,
+      "new_mcp_query_performed": false,
+      "selected_pngs_directly_reviewed": 7,
+      "all_assigned_g04_pngs_reviewed": true,
+      "new_full_png_review_performed": false,
+      "implementation_review_performed": true,
+      "authorized_goal": "G04",
+      "visual_identity": "not_verified",
+      "browser_e2e": "scoped CDP passed",
+      "other_goals_full_review": "not_performed"
     }
   ],
   "index_semantics": {

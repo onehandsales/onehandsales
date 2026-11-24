@@ -19,7 +19,7 @@ export function PublicProvider({ children, resetRevision }: { children: ReactNod
     // 이유 : 브라우저 이력에는 ID만 두고 서로 다른 소개의 이전 인계를 덮어쓰지 않는다.
     const id = `${memoryId}:${++sequence.current}`;
     const snapshot: PublicIntent = { source, sourcePath: path, email: includeEmail ? (emails[path] ?? "").trim() : "",
-      returnTo: options.returnTo ?? path, selection: options.selection ? { ...options.selection } : undefined,
+      returnTo: options.returnTo ?? path, returnOrigin: options.returnOrigin ? { ...options.returnOrigin } : undefined, selection: options.selection ? { ...options.selection } : undefined,
       template: options.template ? { ...options.template } : undefined, invoice: options.invoice ? structuredClone(options.invoice) : undefined };
     setIntents(previous => ({ ...previous, [id]: snapshot }));
     return id;
@@ -38,5 +38,5 @@ export function PublicProvider({ children, resetRevision }: { children: ReactNod
     if (snapshot.email) setEmail(snapshot.sourcePath, snapshot.email);
     return id;
   }
-  return <PublicContext.Provider value={{ emails, intents, setEmail, start, restore, clear }}>{children}</PublicContext.Provider>;
+  return <PublicContext.Provider value={{ scope: `${memoryId}:${resetRevision}`, emails, intents, setEmail, start, restore, clear }}>{children}</PublicContext.Provider>;
 }

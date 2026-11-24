@@ -5,6 +5,8 @@ export { LandingHero } from "./components/landing-hero";
 export { ProductOverview, Testimonials, FinanceOverview, ClientExperience, ReviewHighlights, SupportAndTrial } from "./components/landing-sections";
 export { publicDestinations } from "./model/public-destinations";
 export { usePublicExperience } from "./data/public-context";
+export { usePublicOrigin } from "./hooks/use-public-origin";
+export { publicHistoryIndex, readPublicOrigin } from "./model/public-origin";
 export { SignupForm } from "./components/signup-form";
 export { ReviewRating } from "./components/landing-hero";
 export { PublicLink, SignupLink } from "./components/public-link";

@@ -1,6 +1,8 @@
 # 로컬 목 화면 상태
 
-> 현재 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
+> 현재 G05 — 2026-11-24 KST: **G05 R4 주요 구성 대조·검색/기사 복귀/가입 인계 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기**. 원본3흐름11PNG·R4 9항목·공통12기준을 대조했다. 신규 DOM13/전체143·타입/lint·메모리build 통과. 브라우저 요청/console·픽셀 동일성은 미검증이며 G00~G04/R01의 기존 대기를 유지한다. G06/G32 신규 착수·새 evidence/tmp/결과 문서·커밋 없음. [상세 결과](../RESULTS/G05_RESULT.md#g05-r4-recheck).
+
+> 이전 G04 — 2026-11-24 KST: **G04 R4 주요 구성 대조·URL 복귀/보조 문구 보완·단위/DOM·Chrome 연결 검증 수행 / 엄격한 시각 동일성·미수록 원본·추가 환경 대기**. [범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). 원본7단계·R4 6항목, 단위/DOM130개·타입/lint·메모리build와 실제 Chrome 해당 연결을 검증했다. 원본 동일성·R01 전체·G01~G03 전체 대기는 유지한다. G79는 인계만 확인했고 업무 미착수다. evidence/임시 파일·새 결과 문서·커밋·다음 Goal 착수 없음.
 
 > 이전 상태 — 2026-11-23 KST G00: **R4 근거·색인·배정 재검토 완료 / 촬영 조건·요소 분석·시각 동일성 후속 대기**. [확인 범위·정합성·잔여 담당](../RESULTS/G00_RESULT.md#g00-recheck). 현재 [원본 동일 재현 기준](UXUI-REPLICATION.md#current-identity)을 적용하며 아래의 작은 시각 차이 허용은 과거 정책이다. G01의 동작 보완 이력과 시각/환경 대기를 유지한다. 이번 G00은 문서만 보완했으며 evidence·임시 산출물·새 결과 문서를 만들지 않았다. 다음 Goal은 자동 시작하지 않는다.
 
@@ -111,3 +113,9 @@ G03 URL(contentPage/query/hash), FAQ 로컬 상태, PublicProvider의 pathname �
 ## G04 적용 결과 — 2026-11-24 KST
 
 [이번 범위·검증·잔여](../RESULTS/G04_RESULT.md#g04-r4-recheck). billing은 URL, 선택은 이력별 메모리 snapshot, 영상 열림은 컴포넌트 local이다. returnTo에는 pathname+search+hash를 보관하고 sourcePath는 pathname을 유지한다. 새로고침/새 탭은 인계 초기화·URL주기 유지. 사용자 전환/Reset 폐기는 DOM·Chrome에서 회귀했다. 정적 가격/후기에 가짜 저장 오류/로딩은 N/A다.
+
+## G05 소비·재검토 기록 — 2026-11-24 KST
+
+검색은 URL category/q/page와 location.key+revision 초안을 분리한다. 이력 이동 시 미확정 초안/조합을 폐기한다. 조합 중 분류는 확정 q, 일반 초안 중 페이지 클릭은 새 검색 첫 페이지, clear는 q/page/조합 폐기다. 잘못된 분류/page·범위 밖 page는 표시값으로 replace 정규화한다. 이 정책과 기존200ms/6개/제목·요약 검색은 목 가정이다.
+
+공개 기사 출발은 URL/key/Router history index/메모리 UUID+revision을 담은 PublicOrigin이다. 가입 snapshot이 returnTo/returnOrigin을 복사하고 Cancel은 출발 기사 상태를 복원한다. Back은 중간 가입 이력을 건너뛰어 출발 위치로 POP한다. 새 공급자/Reset/범위 변경의 이전 origin은 /blog 기본 복귀다. 실제 새 탭/reload/스크롤은 대기. [수명·회귀](../RESULTS/G05_RESULT.md#g05-r4-recheck).
