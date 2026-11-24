@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00~G07/연결 Goal 과거 이력·대기 보존; 다음 Goal 자동 착수 없음, G32 이후 미착수.",
+  "status": "G10 주요 원본 대조·가입 오류/처리/복귀·첫 화면 표시 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·원본 미수록 대기; G00~G09/연결 Goal 과거 이력·대기 보존; 사용자 후속 요청으로 커밋 전 재검토·초점 보완; 다음 Goal 미착수.",
   "goals": [
     {
       "id": "G00",
@@ -282,6 +282,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "기존 공통 Dialog/메모리·Reset 수명을 소비했다. 가입 진행 초점/폼 잠금과 오류 해제를 G10 안에서 보완했고 G01 전체 재구현은 없다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -502,6 +510,14 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
         "scope": "공통 PublicLink 소셜 출발 hash/이력 정보를 보완하고5공개 소비·회사/정책 푸터 진입을 DOM 검증했다. PublicHeader는 회사용 가입 복귀 옵션만 전달한다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "랜딩 SignupForm의 기본 returnTo에 query/hash를 보존했다. 공개 이메일 인계·약관/로그인 back/forward·취소 및 기존 헤더/공통 소비 회귀 통과.",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -752,6 +768,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "공통 SignupForm 기본 복귀 보완의 직접 소비다. 기존 소개/CRM 인계·초안 격리 회귀를 현재 전체 검사에서 재실행했다. 소개 업무 전체를 재작업하지 않았다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -982,6 +1006,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "기존 가격 주기/선택 snapshot·가입 취소/로그인 이력 소비 회귀를 현재 재실행했다. 플랜/구독 업무를 변경하지 않았다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1202,6 +1234,14 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
         "scope": "블로그 query/hash에서 푸터 소셜→가입/Terms/취소→원래 목록 이력 복귀를 확인했다. 기사/검색 업무 전체 재검토는 아니다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "공통 SignupForm의 명시 intentOptions 우선순위를 유지했다. 기사 sticky 이메일/전체 URL·중첩 복귀와 초안 격리를 현재 DOM 회귀했다.",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -1481,6 +1521,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "Customize SignupForm의 명시 선택 snapshot/복귀 옵션을 유지했고 현재 템플릿 가입 인계/취소 회귀를 재실행했다. 파일/양식 업무 변경 없음.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -1695,6 +1743,14 @@
           "deploy": false,
           "next_goal_started": false
         }
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "공개 청구서의 Work Email 변형·가입 취소/선택 snapshot·목 가입/온보딩 인계 회귀를 재실행했다. 새 PDF/CRM/계정 청구서 생성 없음.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -2156,7 +2212,15 @@
           "next_goal_started": false
         }
       },
-      "g09_prior_status": "목 UI·두 차례 검토·현재 검증 수행; 정책 버전·시각·원본 동작·환경 대기"
+      "g09_prior_status": "목 UI·두 차례 검토·현재 검증 수행; 정책 버전·시각·원본 동작·환경 대기",
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "Terms 링크→과거 약관 발췌→뒤로→가입 취소와 회사 중첩 출발 회귀를 재실행했다. 가입 적용 버전/전체 정책은 미확정이다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      }
     },
     {
       "id": "G10",
@@ -2175,7 +2239,7 @@
         "R02"
       ],
       "surface": "인증·초대",
-      "status": "가입 목 구현·두 차례 검토·현재 검증 수행; 시각·환경 대기",
+      "status": "G10 주요 원본 대조·가입 오류/처리/복귀·첫 화면 표시 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·원본 미수록 대기",
       "flow_scope": [
         {
           "flow_number": 86,
@@ -2212,7 +2276,7 @@
         }
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "G10 주요 원본 대조·가입 오류/처리/복귀·첫 화면 표시 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·원본 미수록 대기",
         "item_ids": [
           "R4-F086-O01",
           "R4-F086-O02",
@@ -2234,7 +2298,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g10",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_07904520440b4dc7ad7d6d31bf3a03e9",
           "sc_33b333fba9d34edbbd66ddfadf29dcb4"
@@ -2295,7 +2359,96 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
-      }
+      },
+      "g10_recheck": {
+        "date": "2026-11-24 KST",
+        "goal": "G10",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "base_commit": "d5f345e84970d5cf7c9839fe2adb1ef1943c8938",
+        "scope": "G10 signup and direct public intent/login/terms/first onboarding/route boundaries only",
+        "source_flows": 4,
+        "source_steps": 13,
+        "assigned_g10_steps": 10,
+        "connected_steps": 3,
+        "source_images_directly_viewed": 13,
+        "unique_source_screens": 12,
+        "r4_items": 4,
+        "new_mcp_query_performed": true,
+        "mcp_scope": "F086 Onboarding: 10 ordered screen IDs, URLs and 1440x900 metadata; catalog version not returned; local PNGs viewed directly",
+        "original_analysis_and_png_unchanged": true,
+        "source_hashes_verified": {
+          "analyses": 4,
+          "pngs": 13,
+          "existing_assets": 9
+        },
+        "implementation_review_performed": true,
+        "implementation_supplement": "CAPTCHA correction; pending form/terms and focus; signup return query/hash; reinput versus Strong; first onboarding greeting; feature public exports",
+        "typecheck": "app/node passed --noEmit --incremental false",
+        "lint": "passed --no-cache",
+        "unit_dom": "33 files 197/197; G10 9/9; final 143.60s",
+        "build": "passed in memory; 1972 modules; 3 outputs; write:false; 9.79s",
+        "browser_e2e": "not_run: no connected browser/CDP; new profiles/artifacts forbidden",
+        "browser_network": "not_observed",
+        "browser_console": "not_observed",
+        "real_api_requests": null,
+        "visual_identity": "not_verified",
+        "source_font_capture_assets": "pending",
+        "element_census_complete": false,
+        "reproduction_spec_certified": false,
+        "preview": "http://127.0.0.1:5173/signup",
+        "preview_mode": "existing Vite dev/HMR PID30272 HTTP200; separate 5174 preserved",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "overall_complete": false,
+        "next_goal_started": false,
+        "commit_push_deploy": false,
+        "pending_owners": {
+          "source_visual": [
+            "G10",
+            "G01",
+            "G13",
+            "R02"
+          ],
+          "policy_version": [
+            "G09",
+            "G10",
+            "R01",
+            "R02"
+          ],
+          "browser_environment": [
+            "G10",
+            "G01",
+            "G02",
+            "G11",
+            "G13",
+            "G14",
+            "G84"
+          ]
+        },
+        "precommit_review": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-precommit-review",
+          "scope": "G10 source/doc diff review and cancellation focus correction",
+          "defects_fixed": 1,
+          "baseline_target": "8 passed / 1 failed without pre-focused submit",
+          "target": "9/9; final 19.34s",
+          "unit_dom": "33 files 197/197; 152.49s",
+          "typecheck": "app/node passed --noEmit --incremental false",
+          "lint": "passed --no-cache; final zero warnings",
+          "build": "passed in memory; write:false; 1972 modules; 3 outputs; 15.78s",
+          "index_summary_corrected": true,
+          "browser_connection_rechecked": true,
+          "browser_e2e": "not_run: no connected session/CDP; artifacts forbidden",
+          "real_api_requests": null,
+          "visual_identity": "not_verified",
+          "overall_complete": false,
+          "local_commit_authorized": true,
+          "push_deploy_authorized": false,
+          "next_goal_started": false
+        }
+      },
+      "g10_prior_status": "가입 목 구현·두 차례 검토·현재 검증 수행; 시각·환경 대기"
     },
     {
       "id": "G11",
@@ -2453,6 +2606,14 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
         "scope": "회사 공개 헤더 로그인 진입/뒤로와 가상 세션 유지 범위만 DOM 확인했다. 로그인/역할/소셜 전체 재검토가 아니다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "가입 헤더의 로그인 이동과 같은 publicIntentId·뒤로/앞으로, AuthStore 동일계정/중복·종료 경계를 회귀했다. 로그인/로그아웃 전체 원본 재검토는 아니다.",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -2642,6 +2803,14 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "첫 화면 인사만 저장 Full Name의 첫 공백 토큰으로 표시한다. Joe Doe→Joe는 관찰, 일반 이름 분리는 목 가정이며 계정 원문/ID는 보존한다. 진행1/5·빈 업종·Next·가입 인계 확인; 나머지 설문 재작업 없음.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
       }
     },
     {
@@ -2784,6 +2953,14 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
         "scope": "RouteFrame에서 현재 메모리의 방문·교체·분기 이력을 기록하고 외부 안내의 원래 key/state 복귀·잘못된ID404를 확인했다. 전체 셸/라우팅 완료가 아니다.",
+        "full_goal_review_performed": false,
+        "browser_regression": "pending",
+        "visual_identity": "pending"
+      },
+      "g10_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "실제 Router/history의 가입/약관/로그인 왕복·취소 전체 URL·보호URL→미완료 사업설정 경계를 확인했다. 라우터/전체 앱 셸 구조는 유지한다.",
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
@@ -7884,6 +8061,15 @@
         "overall_complete": false,
         "visual_identity": "pending",
         "browser_e2e": "not_run"
+      },
+      "g10_r4_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "G10 public signup intent/return and historical policy only",
+        "full_research_review_performed": false,
+        "overall_complete": false,
+        "visual_identity": "pending",
+        "browser_e2e": "not_run"
       }
     },
     {
@@ -8006,6 +8192,15 @@
         "date": "2026-11-24 KST",
         "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
         "scope": "G09 signup policy/cancel and login return only",
+        "full_research_review_performed": false,
+        "overall_complete": false,
+        "visual_identity": "pending",
+        "browser_e2e": "not_run"
+      },
+      "g10_r4_consumer_recheck": {
+        "date": "2026-11-24 KST",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "scope": "G10 signup plus first onboarding boundary only; mock assumptions distinguished",
         "full_research_review_performed": false,
         "overall_complete": false,
         "visual_identity": "pending",
@@ -11839,7 +12034,13 @@
           "R4-F086-A01"
         ],
         "source_element_census_complete": false,
-        "source_reproduction_spec_certified": false
+        "source_reproduction_spec_certified": false,
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "status": "major elements compared; signup corrections DOM verified; visual/browser/source policies pending",
+          "element_census_complete": false
+        }
       }
     },
     {
@@ -13459,8 +13660,8 @@
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
-    "status": "G09 주요 원본 대조·정책 발췌/출발 이력/가입 취소 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
+    "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+    "status": "G10 주요 원본 대조·가입 오류/처리/복귀·첫 화면 표시 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·원본 미수록 대기; other goal and source completion status preserved",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -13514,7 +13715,14 @@
           }
         ],
         "review_status": "미대조",
-        "implementation_review_performed": false
+        "implementation_review_performed": false,
+        "g10_consumer_review": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "scope": "G10 source stage and direct landing/first-onboarding consumer only",
+          "full_shared_goals_review_performed": false,
+          "visual_identity": "not_verified"
+        }
       },
       {
         "screen_id": "sc_10567e85a1db45959f5fee59dfe269aa",
@@ -13727,7 +13935,14 @@
           }
         ],
         "review_status": "미대조",
-        "implementation_review_performed": false
+        "implementation_review_performed": false,
+        "g10_consumer_review": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "scope": "G10 source stage and direct landing/first-onboarding consumer only",
+          "full_shared_goals_review_performed": false,
+          "visual_identity": "not_verified"
+        }
       },
       {
         "screen_id": "sc_33fdc633ac3c432eb0934dddfe05a1f7",
@@ -15176,6 +15391,12 @@
           "status": "담당11PNG·연결5PNG/ANALYSIS7개 해시·크기 일치, MCP4흐름11ID/순서 확인. 촬영 조건·제품 빌드·카탈로그2146 현재성 미확인",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "F086 10단계 MCP ID/순서/1440×900 확인, 원본13PNG/분석4개 해시 일치. 저장된 Latest/2146과 촬영일·CSS viewport/DPR는 구분",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15242,6 +15463,12 @@
           "date": "2026-11-24 KST",
           "status": "공개 헤더/고객군·제휴 hero/설명/카드/CTA·채용 사진/카드·정책 발췌 구성 대조. 실제 겹침/정밀 배치 대기",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "랜딩→별도 인증 카드→폼을 남기는 처리 오버레이→설문/우측 인물 패널 구성 대조. 실브라우저 겹침/배치 대기",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15310,6 +15537,12 @@
           "status": "11단계 주요 요소군과 코드 대응을 기록. 전체 요소 전수 계수·재현 명세 인증은 미완",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "아래 단계/주요 요소군을 코드에 대응. 배경·작은 요소의 전수 계수 및 동일 재현 명세 인증은 미완",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15376,6 +15609,12 @@
           "date": "2026-11-24 KST",
           "status": "200%/30%와 고정 보상표 분리·혜택6/가치3·정책5항목/날짜 확인, Privacy 잘린 문단 보완. 전체 정책/정확 줄바꿈 대기",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "Email/Full Name/Password·최소10자·Too Weak/Strong·약관 문구·Hold tight! 유지, Joe Doe→Joe 표시 보완. 정확 줄바꿈 대기",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15444,6 +15683,12 @@
           "status": "PNG2880×1800과 MCP1440×900 구분. 실제 구현 viewport/DPR/배율/스크롤을 맞춘 픽셀 비교 미실행",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "원본2880×1800·MCP1440×900·현재 CSS치수 분리. 실제 구현 viewport/DPR/배율/scrollY 및 픽셀 비교 미수행",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15510,6 +15755,12 @@
           "date": "2026-11-24 KST",
           "status": "기존 공개 Gellix/스타일 유지, 정책16/19.2·제목/카드 수치는 구현 CSS값. 원본 폰트파일/렌더링/정확 수치 확정 대기",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "Bonsai Public Gellix/Arial은 현재 구현 선택이며 인증 원본 폰트 확정 아님. 굵기/행간/자간/raster 동일성 대기",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15578,6 +15829,12 @@
           "status": "접근성 녹색 #397d24·링크 밑줄/역사적 안내와 원본 차이 유지. 색/테두리/radius/shadow 동일성 미검증",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기존 카드/입력/오버레이 색·radius/shadow 유지. 접근성 focus/disabled 및 로컬 표시 차이는 미완으로 기록",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15644,6 +15901,12 @@
           "date": "2026-11-24 KST",
           "status": "기존 bonsai-company39파일·JSON30고유자산 참조 존재 확인. 사진14중 PNG9/보관본 보완5, 단체2·정적 삽화 역할 구분. 정확 crop/출처 정밀 검증 대기",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "기존 인증/첫 설문 관련9PNG의 자산 해시 일치. Lucide 눈·로컬 CAPTCHA·정적 화분은 원본 동일성 미확인, 새 자산 생성 없음",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15712,6 +15975,12 @@
           "status": "직접/잘못된 목적지·반복/중간방문/교체·가상 세션/Reset/새 공급자 DOM 검증. 정적 페이지의 가짜 로딩/저장/오류는 N/A",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "입력오류 해제·약함/길이/재입력/Strong·처리/취소·실패재시도·중복·Google/메일 목 분기 DOM 검증. 실제 서비스 성공 아님",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15778,6 +16047,12 @@
           "date": "2026-11-24 KST",
           "status": "실제 Router/history DOM에서 7목적지·query/hash/key/state·back/forward·가입 취소·정책 왕복 검증. 실제 브라우저 스크롤/새 탭/reload 대기",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "실제 Router/history의 직접URL·약관/로그인 back/forward·취소 전체 URL·첫 설문/보호 경계 검증. 브라우저 reload/새탭·스크롤 대기",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
           "global_requirement_complete": false
         }
       },
@@ -15846,6 +16121,12 @@
           "status": "공개 이메일 초안/세션을 단순 왕복에서 보존, Reset/공급자 재생성은 출발 수명 폐기. 신청/채용/정책 저장·동의/보상 계산은 N/A",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
           "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "폼 초안/제출 snapshot/새 계정·workspace 분리. 비밀번호 비영속·실패/시도취소 보존·이탈/reset 폐기·늦은 결과 무효화 검증",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "global_requirement_complete": false
         }
       },
       {
@@ -15912,6 +16193,12 @@
           "date": "2026-11-24 KST",
           "status": "G01/G02/G10/G11/G14 직접 연결과 랜딩/블로그/템플릿/도움말 푸터 소비 DOM 검증. 연결 Goal 전체·현재 G82 업무는 포함하지 않음",
           "result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+          "global_requirement_complete": false
+        },
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "status": "G01/G02/G03/G04/G05/G06/G07/G09/G11/G13첫화면/G14 직접 소비 회귀. 선택 intent만 인계, 연결 Goal 전체 완료 아님",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
           "global_requirement_complete": false
         }
       }
@@ -21531,9 +21818,16 @@
         "research_ids": [
           "R02"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "이메일/이름/비밀번호·눈/길이 안내·Google·약관 링크 구조 유지. CAPTCHA 수정 오류 해제·feature 공개 경계 보완. 로그인/초대 폼으로 통합하지 않음",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F086-O02",
@@ -21549,9 +21843,16 @@
         "research_ids": [
           "R02"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "Too Weak와 길이 tooltip, 긴 값 재입력과 Strong을 분리. Strong은 blur 후 표시하는 목 가정으로 보완; 실제 확정 시점/산식 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F086-O03",
@@ -21567,9 +21868,16 @@
         "research_ids": [
           "R02"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "비교 완료·구현 보완",
+        "implementation_assessment": "폼을 남기는 로딩 유지, 가려진 약관 비활성·취소 초점/복원 보완. 첫 설문 인사 이름 표시 보완; 그림/애니메이션·레이아웃 동일성 대기",
+        "evidence": [],
+        "plan_snapshot_status": "미대조",
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F086-A01",
@@ -21586,8 +21894,15 @@
           "R02"
         ],
         "status": "분석 대기",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "implementation_assessment": "정확한 강도/검증 시점·이름 분리·소셜/CAPTCHA/메일·약관 적용 버전·화분 애니메이션·정확 폰트/치수/촬영 조건 미확인",
+        "evidence": [],
+        "plan_snapshot_status": "분석 대기",
+        "g10_recheck": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+          "visual_identity": "pending",
+          "browser_e2e": "not_run"
+        }
       },
       {
         "id": "R4-F087-O01",
@@ -24702,8 +25017,8 @@
       "current_criteria": "FLOW-BEHAVIOR-REVIEW.md#policy",
       "criteria_note": "과거 정밀 시각 명세의 일괄 선행 조건은 최신 사용자 기준으로 대체. 기능 제어·입력·상태·저장·전환 대응은 필요하며 아래 R4 원문·인증 상태는 보존."
     },
-    "authorized_scope": "G09 FE corrections/formal regression and existing related planning docs only",
-    "new_source_review_scope": "G09 11 assigned PNGs and 5 connected PNGs; major elements/code only; no full element census/pixel certification",
+    "authorized_scope": "G10 FE corrections/formal regression and existing related planning docs only",
+    "new_source_review_scope": "G10 10 assigned PNGs and 3 connected PNGs; major elements/code only; no pixel or element census certification",
     "scoped_reviews": [
       {
         "date": "2026-11-23 KST",
@@ -25676,6 +25991,94 @@
           "deploy": false,
           "next_goal_started": false
         }
+      },
+      {
+        "date": "2026-11-24 KST",
+        "goal": "G10",
+        "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+        "base_commit": "d5f345e84970d5cf7c9839fe2adb1ef1943c8938",
+        "scope": "G10 signup and direct public intent/login/terms/first onboarding/route boundaries only",
+        "source_flows": 4,
+        "source_steps": 13,
+        "assigned_g10_steps": 10,
+        "connected_steps": 3,
+        "source_images_directly_viewed": 13,
+        "unique_source_screens": 12,
+        "r4_items": 4,
+        "new_mcp_query_performed": true,
+        "mcp_scope": "F086 Onboarding: 10 ordered screen IDs, URLs and 1440x900 metadata; catalog version not returned; local PNGs viewed directly",
+        "original_analysis_and_png_unchanged": true,
+        "source_hashes_verified": {
+          "analyses": 4,
+          "pngs": 13,
+          "existing_assets": 9
+        },
+        "implementation_review_performed": true,
+        "implementation_supplement": "CAPTCHA correction; pending form/terms and focus; signup return query/hash; reinput versus Strong; first onboarding greeting; feature public exports",
+        "typecheck": "app/node passed --noEmit --incremental false",
+        "lint": "passed --no-cache",
+        "unit_dom": "33 files 197/197; G10 9/9; final 143.60s",
+        "build": "passed in memory; 1972 modules; 3 outputs; write:false; 9.79s",
+        "browser_e2e": "not_run: no connected browser/CDP; new profiles/artifacts forbidden",
+        "browser_network": "not_observed",
+        "browser_console": "not_observed",
+        "real_api_requests": null,
+        "visual_identity": "not_verified",
+        "source_font_capture_assets": "pending",
+        "element_census_complete": false,
+        "reproduction_spec_certified": false,
+        "preview": "http://127.0.0.1:5173/signup",
+        "preview_mode": "existing Vite dev/HMR PID30272 HTTP200; separate 5174 preserved",
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "overall_complete": false,
+        "next_goal_started": false,
+        "commit_push_deploy": false,
+        "pending_owners": {
+          "source_visual": [
+            "G10",
+            "G01",
+            "G13",
+            "R02"
+          ],
+          "policy_version": [
+            "G09",
+            "G10",
+            "R01",
+            "R02"
+          ],
+          "browser_environment": [
+            "G10",
+            "G01",
+            "G02",
+            "G11",
+            "G13",
+            "G14",
+            "G84"
+          ]
+        },
+        "precommit_review": {
+          "date": "2026-11-24 KST",
+          "result": "../RESULTS/G10_RESULT.md#g10-precommit-review",
+          "scope": "G10 source/doc diff review and cancellation focus correction",
+          "defects_fixed": 1,
+          "baseline_target": "8 passed / 1 failed without pre-focused submit",
+          "target": "9/9; final 19.34s",
+          "unit_dom": "33 files 197/197; 152.49s",
+          "typecheck": "app/node passed --noEmit --incremental false",
+          "lint": "passed --no-cache; final zero warnings",
+          "build": "passed in memory; write:false; 1972 modules; 3 outputs; 15.78s",
+          "index_summary_corrected": true,
+          "browser_connection_rechecked": true,
+          "browser_e2e": "not_run: no connected session/CDP; artifacts forbidden",
+          "real_api_requests": null,
+          "visual_identity": "not_verified",
+          "overall_complete": false,
+          "local_commit_authorized": true,
+          "push_deploy_authorized": false,
+          "next_goal_started": false
+        }
       }
     ],
     "scope_status_history": [
@@ -25714,31 +26117,39 @@
         "prior_status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
         "prior_result": "../RESULTS/G08_RESULT.md#g08-r4-recheck",
         "scope": "G09 review update; previous status preserved"
+      },
+      {
+        "date": "2026-11-24 KST",
+        "prior_status": "G09 주요 원본 대조·정책 발췌/출발 이력/가입 취소 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; other goal and source completion status preserved",
+        "prior_result": "../RESULTS/G09_RESULT.md#g09-r4-recheck",
+        "scope": "G10 review update; previous status preserved"
       }
     ]
   },
   "workflow_review": {
     "date": "2026-11-24 KST",
-    "scope": "G07 generator draft/calculation/signup-login-cancel-return and directly connected consumers only",
+    "scope": "G10 signup and direct public intent/login/terms/first onboarding/route boundaries only",
     "mapping": "FLOW-BEHAVIOR-REVIEW.md",
     "policy": "UXUI-REPLICATION.md#current-identity",
-    "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+    "result": "../RESULTS/G10_RESULT.md#g10-r4-recheck",
+    "precommit_result": "../RESULTS/G10_RESULT.md#g10-precommit-review",
     "reference_counts": {
-      "flows": 5,
-      "steps": 16,
-      "unique_screens": 16,
-      "assigned_g07": 5,
-      "connected": 11
+      "flows": 4,
+      "steps": 13,
+      "unique_screens": 12,
+      "assigned_g10": 10,
+      "connected": 3
     },
     "minor_visual_differences_allowed": false,
     "capture_adjacency_proves_action": false,
     "new_mcp_query_performed": true,
     "mcp_images_viewed": false,
-    "selected_pngs_directly_reviewed": 16,
-    "all_assigned_g07_pngs_reviewed": true,
+    "mcp_scope": "F086 Onboarding: 10 ordered screen IDs, URLs and 1440x900 metadata; catalog version not returned; local PNGs viewed directly",
+    "selected_pngs_directly_reviewed": 13,
+    "all_assigned_g10_pngs_reviewed": true,
     "new_full_png_review_performed": false,
     "implementation_review_performed": true,
-    "authorized_goal": "G07",
+    "authorized_goal": "G10",
     "visual_identity": "not_verified",
     "browser_e2e": "not_run",
     "other_goals_full_review": "not_performed"
@@ -25964,6 +26375,32 @@
       "visual_identity": "not_verified",
       "browser_e2e": "not_run",
       "other_goals_full_review": "not_performed"
+    },
+    {
+      "date": "2026-11-24 KST",
+      "scope": "G07 generator draft/calculation/signup-login-cancel-return and directly connected consumers only",
+      "mapping": "FLOW-BEHAVIOR-REVIEW.md",
+      "policy": "UXUI-REPLICATION.md#current-identity",
+      "result": "../RESULTS/G07_RESULT.md#g07-r4-recheck",
+      "reference_counts": {
+        "flows": 5,
+        "steps": 16,
+        "unique_screens": 16,
+        "assigned_g07": 5,
+        "connected": 11
+      },
+      "minor_visual_differences_allowed": false,
+      "capture_adjacency_proves_action": false,
+      "new_mcp_query_performed": true,
+      "mcp_images_viewed": false,
+      "selected_pngs_directly_reviewed": 16,
+      "all_assigned_g07_pngs_reviewed": true,
+      "new_full_png_review_performed": false,
+      "implementation_review_performed": true,
+      "authorized_goal": "G07",
+      "visual_identity": "not_verified",
+      "browser_e2e": "not_run",
+      "other_goals_full_review": "not_performed"
     }
   ],
   "index_semantics": {
@@ -25973,5 +26410,12 @@
     "consumer_flow_scope": "research[].consumers -> goals[].flow_scope; review together with source_analysis_review.item_ids",
     "additional_references": "a flow outside implementation consumers is a research reference, not reassigned stage ownership",
     "reference_scope_review_result": "../RESULTS/G00_RESULT.md#g00-followup"
-  }
+  },
+  "status_history": [
+    {
+      "date": "2026-11-24 KST",
+      "prior_status": "G08 주요 원본 대조·검색/기사/문의 복귀 보완·단위/DOM 검증 수행 / 엄격한 시각 동일성·실제 브라우저·미수록 원본 대기; G00~G07/연결 Goal 과거 이력·대기 보존; 다음 Goal 자동 착수 없음, G32 이후 미착수.",
+      "reason": "Preserve stale root G08 summary before synchronizing current G10 review"
+    }
+  ]
 }

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useMockAuth } from "../data/auth-context";
 import { passwordStrength } from "../model/auth-validation";
@@ -16,7 +17,9 @@ export function PasswordField({ value, onChange, error, strength = true, autoCom
   const id = useId(); const [visible, setVisible] = useState(false); const rating = passwordStrength(value); const [blurred, setBlurred] = useState(false);
   const shortError = strength && value.length > 0 && value.length < 10 && (blurred || !!error);
   const message = shortError ? "The password must be no less than 10 characters long." : error;
-  return <div className="auth-field"><div className="auth-label-row"><label htmlFor={id}>Password</label>{strength && !shortError && <span className={rating === "Strong" ? "auth-strength" : "auth-error"}>{rating}</span>}</div>
+  // 이유 : 원본 07의 재입력과 08의 Strong을 분리하며 확정 시점은 blur라는 명시적 목 가정이다.
+  const showRating = strength && !shortError && (rating !== "Strong" || blurred);
+  return <div className="auth-field"><div className="auth-label-row"><label htmlFor={id}>Password</label>{showRating && <span className={rating === "Strong" ? "auth-strength" : "auth-error"}>{rating}</span>}</div>
     <div className="auth-password">{shortError && <span id={id + "-tooltip"} className="auth-password-tooltip" role="alert">{message}</span>}<input id={id} type={visible ? "text" : "password"} value={value} maxLength={128} autoComplete={autoComplete} placeholder="••••••••••••" onChange={event => { setBlurred(false); onChange(event.target.value); }} onBlur={() => setBlurred(true)} aria-invalid={!!message} aria-describedby={shortError ? id + "-tooltip " + id + "-hint" : id + "-hint"} />
       <button type="button" aria-label={visible ? "Hide password" : "Show password"} aria-pressed={visible} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={20} /> : <Eye size={20} />}</button></div>
     <p id={id + "-hint"} className={error && !shortError ? "auth-error" : "auth-hint"}>{(shortError ? undefined : error) || (strength ? "Your password must be at least 10 characters" : "Use sample credentials only.")}</p></div>;
@@ -29,6 +32,16 @@ export function AuthTools() {
     <p>These branches are mock assumptions. No CAPTCHA, OAuth or email service is contacted.</p><Link to="/components">Open preview controls</Link></details>;
 }
 // 기능 : 원본의 처리 중 표현을 정적 로컬 자산으로 보여 주고 중복 조작을 차단한다.
-export function SignupProgress({ onCancel }: { onCancel: () => void }) {
-  return <div className="auth-progress" role="status"><img src="/bonsai-auth/plant.png" alt="" width="128" height="220" /><p>Hold tight!<br />Your bonsai is being planted...</p><button type="button" onClick={onCancel}>Cancel this attempt</button></div>;
+export function SignupProgress({ onCancel, returnFocusRef }: { onCancel: () => void; returnFocusRef: RefObject<HTMLButtonElement | null> }) {
+  const cancelButton = useRef<HTMLButtonElement>(null);
+  // 기능 : 가려진 제출 폼 대신 취소에 초점을 두고 종료 후 살아 있는 가입 제출로 돌려준다.
+  useEffect(function focusProgress() {
+    const target = returnFocusRef.current;
+    cancelButton.current?.focus({ preventScroll: true });
+    // 기능 : 취소나 실패 후 폼이 살아 있을 때만 비활성이 해제된 가입 제출에 초점을 복원한다.
+    return function restoreFocus() {
+      if (target?.isConnected && !target.matches(":disabled") && !target.closest("[inert]")) target.focus({ preventScroll: true });
+    };
+  }, [returnFocusRef]);
+  return <div className="auth-progress"><img src="/bonsai-auth/plant.png" alt="" width="128" height="220" /><p role="status">Hold tight!<br />Your bonsai is being planted...</p><button ref={cancelButton} type="button" onClick={onCancel}>Cancel this attempt</button></div>;
 }

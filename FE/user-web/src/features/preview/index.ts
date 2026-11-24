@@ -9,3 +9,4 @@ export { SessionPicker } from "./components/session-picker";
 export { invitationAccess } from "./model/preview-membership";
 export type { PreviewScope, PreviewState } from "./model/preview-types";
 export type { PreviewRuntime } from "./data/preview-data-source";
+export { authReturnQuery } from "./model/preview-return-path";

@@ -284,3 +284,10 @@ DOM 검증의 navigation은 실제 App/createBrowserRouter/history다. jsdom에 
 - [x] 블로그 query/hash에서 푸터 소셜→가입/Terms/취소→원래 목록 이력 복귀를 확인했다. 기사/검색 업무 전체 재검토는 아니다. [상세 판정·근거](G09_RESULT.md#g09-r4-recheck).
 
 - [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G09 결과8절에 기록했다.
+
+<a id="g10-update"></a>
+## G10 적용·연결 검토 — 2026-11-24 KST
+
+- [x] 공통 SignupForm의 명시 intentOptions 우선순위를 유지했다. 기사 sticky 이메일/전체 URL·중첩 복귀와 초안 격리를 현재 DOM 회귀했다. [상세 판정·근거](G10_RESULT.md#g10-r4-recheck).
+
+- [ ] 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G10 결과8절에 기록했다.

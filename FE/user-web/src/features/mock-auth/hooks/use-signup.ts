@@ -1,7 +1,6 @@
-import { authReturnQuery } from "@/features/preview/model/preview-return-path";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { usePreviewEnvironment } from "@/features/preview";
+import { authReturnQuery, usePreviewEnvironment } from "@/features/preview";
 import type { PublicIntent } from "@/features/public-web";
 import { useMockAuth } from "../data/auth-context";
 import { validateSignup } from "../model/auth-validation";
@@ -25,6 +24,8 @@ export function useSignup(intent?: PublicIntent) {
   useEffect(function cancelChangedScenario() { request.current?.abort(); request.current = null; setPending(false); return function abortOnLeave() { request.current?.abort(); }; }, [auth.scenario]);
   // 기능 : 입력 수정은 실패 안내를 지우고 이전 요청을 취소하되 다른 필드를 보존한다.
   function edit(field: "email" | "name" | "password", value: string) { cancel(); setFailure(""); if (field === "email") setEmail(value); else if (field === "name") setName(value); else setPassword(value); setErrors(previous => ({ ...previous, [field]: undefined })); }
+  // 기능 : 로컬 봇 확인을 바꾸면 이전 제출과 해당 오류를 해제하고 다른 입력은 보존한다.
+  function editCaptcha(value: boolean) { cancel(); setFailure(""); setCaptcha(value); setErrors(previous => ({ ...previous, captcha: undefined })); }
   // 기능 : 검증을 통과한 가상 계정만 생성하고 미수록 소셜 분기는 명시적인 샘플 선택을 사용한다.
   async function submit(method: AuthAccount["method"] = "password") {
     if (request.current || composing.current) return;
@@ -42,5 +43,5 @@ export function useSignup(intent?: PublicIntent) {
     } catch (error) { if (!controller.signal.aborted && !(error instanceof DOMException && error.name === "AbortError")) setFailure(error instanceof Error ? error.message : "Unable to create this local account."); }
     finally { if (request.current === controller) { request.current = null; setPending(false); } }
   }
-  return { email, name, password, captcha, setCaptcha, errors, failure, pending, composing, edit, submit, cancel };
+  return { email, name, password, captcha, editCaptcha, errors, failure, pending, composing, edit, submit, cancel };
 }

@@ -7,7 +7,7 @@ import type { PublicIntentOptions } from "../data/public-context";
 // 기능 : hero 이메일을 검증하고 URL에 노출하지 않은 채 로컬 가입 경계에 인계한다.
 export function SignupForm({ source = "hero-email", placeholder = "Enter your email", buttonLabel = "Start free", intentOptions }: { source?: string; placeholder?: string; buttonLabel?: string; intentOptions?: PublicIntentOptions }) {
   const { emails, setEmail, start } = usePublicExperience();
-  const { pathname } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const email = emails[pathname] ?? "";
   const id = useId();
   const [error, setError] = useState("");
@@ -27,7 +27,7 @@ export function SignupForm({ source = "hero-email", placeholder = "Enter your em
     // 이유 : 같은 이벤트 주기의 연속 제출도 history에 가입 화면을 두 번 쌓지 않는다.
     submitted.current = true;
     setError("");
-    const publicIntentId = start(source, pathname, true, intentOptions);
+    const publicIntentId = start(source, pathname, true, { returnTo: pathname + search + hash, ...intentOptions });
     void navigate("/signup", { state: { publicIntentId } });
   }
   // 기능 : 수정한 초안을 보존하고 이전 검증 오류를 해제한다.

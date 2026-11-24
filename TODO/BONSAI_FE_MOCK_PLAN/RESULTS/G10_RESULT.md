@@ -1,5 +1,8 @@
 # G10 회원가입 실행 결과
 
+> 현재 G10 — 2026-11-24 KST: **부분 완료**. 가입 동작/표시 보완·단위/DOM197/197·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·원본 미수록 대기. [현재 범위·체크·잔여](#g10-r4-recheck).
+
+
 > 최종 상태 갱신 (2026-11-21): 아래는 각 단계 당시 기록이다. G14 인증/온보딩/선택 복귀와 G15 동일 회사 연결을 검증했고 최종 전체 개발·빌드82개씩/단위42개를 통과했다. 원본·시각·환경 대기는 유지한다. [최종 결과](G05_G15_RESULT.md).
 
 2026-11-21 KST. 가입 목 구현·1차 검토·수정·2차 재검토를 수행했다. 현재 가능한 검증과 결과 기록을 마쳤다. G13 사업 설정 전체와 G14 공개 인증 왕복 연결은 순서상 대기다. 실제 계정·인증·메일·CAPTCHA·구독·문서는 생성하지 않는다.
@@ -121,3 +124,183 @@ G13: 가입 계정/회사 ID·선택 intent로 실제 사업 설정 단계 연�
 - [x] 회사 전체 URL·외부 안내의 출발 정보를 가입 취소에 인계하고 Terms 링크/뒤로/취소 연결을 DOM 검증했다. 가입 입력/생성 전체와 약관 적용 버전 확정은 아니다. [상세 판정·근거](G09_RESULT.md#g09-r4-recheck).
 
 - [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G09 결과8절에 기록했다.
+
+
+<a id="g10-r4-recheck"></a>
+## G10 기존 구현 재검토 — 2026-11-24 KST
+
+**부분 완료: 주요 원본 대조·가입 동작 보완·현재 단위/DOM 검증 수행. 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본 정책은 대기.** 과거 체크와 수치는 당시 이력이며 이번 검증과 합산하지 않는다. 작은 폰트/픽셀 차이를 완료로 허용하지 않는다.
+
+### 1. 범위·기준·선행 상태
+
+- 시작 Git: clean, HEAD d5f345e84970d5cf7c9839fe2adb1ef1943c8938(G09). 기존 사용자 변경 없음. G01 전면 교체는 하지 않았다.
+- 주대상 /signup: 공개 이메일/선택 인계→입력·길이/강도·로컬 CAPTCHA→오류 수정→제출/로딩·취소·실패/재시도→새 가상 계정/workspace→G13 첫 화면.
+- 직접 연결: G01 메모리/Reset, G02 랜딩, G03/G05/G06 공통 SignupForm 소비, G04 플랜/G07 청구서 인계, G09 약관/회사 복귀, G11 로그인 이동, G13 첫 화면, G14 실제 라우터/보호 경계. G11 전체·G13 이후 설문·G32는 새로 착수하지 않았다.
+- FRONT_AGENT/README와 지도에 따른 ARCHITECTURE의 FRONTEND_USER_WEB·STATE_AND_DATA·MOCK_FIRST_DEVELOPMENT·TESTING, CONVENTION의 COMPONENT_DESIGN·WEB_ACCESSIBILITY_AND_LAYOUT·COMMENT_AND_LOGGING·FRONTEND_USER_WEB, DECISIONS006/005 및 ENGINEERING_REVIEW_CHECKLIST를 적용했다. AGENT/README·PM036·UX025, PM 문서/계획 검토 규칙, SOURCE_ANALYSIS_STANDARD/REVIEW 및 이번 계획/관련 G/R을 확인했다. README가 참조하는 AGENT/AGENT_USAGE_RULES.md는 현재 없고 검색에서도 찾지 못했다. 읽었다고 기록하지 않는다.
+- 선행 G01/G02와 R02의 메모리 수명·명시적 소셜/메일 목 분기를 현재 코드에 대조했다. 과거 G00 조사/검증을 새 실행으로 대신하지 않았다. G09의 정책 버전/시각/브라우저 대기는 유지한다.
+- 기존 본문의 evidence/r02 두 JSON, evidence/g10 폴더/캡처JSON/시각수치JSON/comparisons 및 evidence/g15/final-verification.json의7링크는 현재 파일이 없다. 과거 기록은 보존하고 재생성하지 않았다.
+
+### 2. 확인한 원본·단계·버전
+
+Gummble Onboarding Flow ID f714101f-db6b-4bfe-9ed1-74d6b0d6243c를 이번에 조회해10개 Screen ID/순서/URL·1440×900 메타데이터를 확인했다. 응답에 카탈로그 버전은 없어 저장된 bonsai-web/Latest/2146을 현재 카탈로그로 재확정하지 않았다. 제품 빌드·캡처일·CSS viewport/DPR은 미확인이다.
+
+[Onboarding ANALYSIS](<../../../bonsai_analysis/flows/Onboarding/ANALYSIS.md>) §4 각 단계/§5 상태·§8 미확인, G10 §3/5와 R4-F086을 대응한다. 아래 원본10PNG를 각각 직접 열람했다.
+
+| 확인 | 단계·Screen ID | 직접 본 내용·원본 |
+| --- | --- | --- |
+| [x] | 01 · sc_07904520440b4dc7ad7d6d31bf3a03e9 | 공개 랜딩/빈 이메일·CTA · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/01_sc_07904520440b4dc7ad7d6d31bf3a03e9.png>) |
+| [x] | 02 · sc_e0a408a1e1dd4ea39f54dcef37d2bbf7 | 랜딩 이메일 입력 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/02_sc_e0a408a1e1dd4ea39f54dcef37d2bbf7.png>) |
+| [x] | 03 · sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838 | 가입 카드·Email/Full Name/Password·Google·약관 문구·미체크 CAPTCHA · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/03_sc_fd0ce8c1c52e47f3a5bc0dd15d3a3838.png>) |
+| [x] | 04 · sc_75b60a729ef7491186049534632edfe4 | Full Name Joe Doe·이메일 유지 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/04_sc_75b60a729ef7491186049534632edfe4.png>) |
+| [x] | 05 · sc_3381bd3528ea401e94549c86a8f80af8 | Too Weak·짧은 마스킹 입력 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/05_sc_3381bd3528ea401e94549c86a8f80af8.png>) |
+| [x] | 06 · sc_2adb02c3443f4da292d72c200694c1c9 | 별도 빨간 최소10자 tooltip·입력 보존 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/06_sc_2adb02c3443f4da292d72c200694c1c9.png>) |
+| [x] | 07 · sc_ca23a435daac40318703fcf7360a09d2 | 긴 비밀번호 재입력·강도 라벨 없음·CAPTCHA 미체크 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/07_sc_ca23a435daac40318703fcf7360a09d2.png>) |
+| [x] | 08 · sc_de06dffb50094b20bee94b68be710837 | Strong·CAPTCHA 체크·제출 준비 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/08_sc_de06dffb50094b20bee94b68be710837.png>) |
+| [x] | 09 · sc_817952152d2a4b62b44bf1a21bf44509 | 배경 폼이 남는 흰 오버레이·화분·Hold tight! · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/09_sc_817952152d2a4b62b44bf1a21bf44509.png>) |
+| [x] | 10 · sc_33b333fba9d34edbbd66ddfadf29dcb4 | 첫 사업 설정·Welcome, Joe·진행5중 첫째·빈 업종·인물/평점 · [PNG](<../../../bonsai_analysis/flows/Onboarding/screens/10_sc_33b333fba9d34edbbd66ddfadf29dcb4.png>) |
+
+연결3PNG와 각 ANALYSIS의 해당 단계도 직접 확인했다. 연결 플로우 MCP 전체를 이번에 조회한 것은 아니다.
+
+- [x] F083 Logging in, a02409b3-6eb0-4bc0-b702-22a42e0990c8,02 sc_9d353458318e43e7b25ebbf88fefeaa9: [분석](<../../../bonsai_analysis/flows/Logging in/ANALYSIS.md>) · [PNG](<../../../bonsai_analysis/flows/Logging in/screens/02_sc_9d353458318e43e7b25ebbf88fefeaa9.png>). 가입과 다른 Google/Apple·Changelog·로그인 카드.
+- [x] F087 Completing account setup, f004afc2-a8c5-4262-b2e4-941331047a84,01 sc_33b333fba9d34edbbd66ddfadf29dcb4: [분석](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md>) · [PNG](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/screens/01_sc_33b333fba9d34edbbd66ddfadf29dcb4.png>). F086/10과 같은 바이트/화면, 문맥상 설문 시작까지만 이번 범위.
+- [x] F132 Terms & Conditions,912b4b75-77bb-43fa-b86f-d85c6117841a,01 sc_8e3f3ec3993e4051a54ef9fd80ff3e50: [분석](<../../../bonsai_analysis/flows/Terms & Conditions/ANALYSIS.md>) · [PNG](<../../../bonsai_analysis/flows/Terms & Conditions/screens/01_sc_8e3f3ec3993e4051a54ef9fd80ff3e50.png>). 공개 약관 상단 발췌. 표시 June30,2020은 갱신일이며 가입에 적용된 버전/효력일/촬영일이 아니다.
+
+총13파일(고유12화면), 분석4개의 LF정규화 SHA-256/PNG바이트 해시·2880×1800 크기가 SOURCE_ANALYSIS_INDEX와 일치했다. 뷰어의 자동 표시 축척을 브라우저 CSS px로 보지 않는다. 원본 PNG/ANALYSIS는 수정하지 않았다.
+
+### 3. 원본→분석→계획→코드의 판정
+
+| R4 | 판정 | 대응·한계 |
+| --- | --- | --- |
+| R4-F086-O01 | 비교 완료·구현 보완 | 이메일/이름/비밀번호·눈/길이 안내·Google·약관 링크 구조 유지. CAPTCHA 수정 오류 해제·feature 공개 경계 보완. 로그인/초대 폼으로 통합하지 않음 |
+| R4-F086-O02 | 비교 완료·구현 보완 | Too Weak와 길이 tooltip, 긴 값 재입력과 Strong을 분리. Strong은 blur 후 표시하는 목 가정으로 보완; 실제 확정 시점/산식 대기 |
+| R4-F086-O03 | 비교 완료·구현 보완 | 폼을 남기는 로딩 유지, 가려진 약관 비활성·취소 초점/복원 보완. 첫 설문 인사 이름 표시 보완; 그림/애니메이션·레이아웃 동일성 대기 |
+| R4-F086-A01 | 분석 대기 | 정확한 강도/검증 시점·이름 분리·소셜/CAPTCHA/메일·약관 적용 버전·화분 애니메이션·정확 폰트/치수/촬영 조건 미확인 |
+
+주요 요소군 대응(원본 전체 요소 수를 계수한 인증 아님):
+
+| 요소군·근거 | 코드(FE/user-web/src) | 수용 기준·현재 결과 |
+| --- | --- | --- |
+| F086/01~02 공개 hero/이메일 | features/public-web/components/signup-form.tsx, public-provider | pathname별 초안·이력 snapshot 유지, 취소 시 전체 URL 복귀 보완 |
+| F086/03~04 카드/Google/입력/약관 | pages/signup, app/layouts/auth-layout, mock-auth/hooks/use-signup | 로그인과 별도 구성·필수 동의 체크박스 추가 없음, 공개 인계/오류/취소 DOM 확인 |
+| F086/05~08 눈/강도/길이/CAPTCHA | mock-auth/components/auth-controls, model/auth-validation | 각 표시 상태 분리·입력 보존·수정 오류 해제. 강도/blur/로컬 체크는 목 선택 |
+| F086/09 오버레이/화분/안내 | SignupProgress, styles/auth.css | 배경 폼 유지·잠금·취소 초점/복원·늦은 응답 무효화 확인. 정적 화분/취소 제어는 원본 애니메이션 인증 아님 |
+| F086/10=F087/01 설문·진행·우측 패널 | pages/onboarding, company-setup/components/setup-fields, styles/company-setup.css | 새 계정 첫 화면·진행1/5·빈 업종/Next 비활성·인사 표시 확인. 이후 설문 전체 범위 제외 |
+| F132/01 정책·F083/02 로그인 | pages/company, pages/login, router/route-boundaries | Terms/로그인 이동·실제 history 왕복/가입 취소, 보호URL→첫 설문. 정책 버전/로그인 전체 검증 아님 |
+
+### 4. 발견한 문제·수정·유지
+
+| 문제/원인 | 수정 | 검증 |
+| --- | --- | --- |
+| CAPTCHA 수정이 raw setter만 호출해 오류/aria-invalid가 남음 | use-signup.editCaptcha가 해당 오류·실패/이전 요청을 해제, 다른 입력 보존 | 정식 DOM에서 수정 전 재현→수정 후 통과 |
+| disabled fieldset이 약관 anchor를 비활성화하지 않음, 로딩 후 초점 대상 불명확 | 가입 form inert·약관 tabIndex/aria-disabled/클릭 가드, SignupProgress 취소 초점과 살아 있는 제어 복원 | 가려진 링크 이동 차단·취소 후 제출 초점/초안·재시도 검증; 실제 Tab 순서는 대기 |
+| 랜딩 SignupForm 기본 인계가 pathname만 전달해 취소 시 query/hash 소실 | 기본 returnTo=pathname+search+hash, 명시 intentOptions는 우선 유지 | 랜딩→가입→약관/로그인 이력→취소 전체 URL 회귀; 다른 소비 전체 테스트 통과 |
+| 긴 재입력과 Strong 표시가 즉시 합쳐짐 | Strong은 blur 후 표시, 약함/길이 오류와 별도 상태 | 재입력 때 tooltip/Strong 없음→blur 후 Strong. blur가 원본 트리거라는 증거는 없음 |
+| Joe Doe 전체 이름이 첫 인사에 그대로 표시됨 | setup-fields의 표시만 첫 공백 토큰 사용, 계정 Full Name 저장은 유지 | Welcome, Joe 확인. 다국어 이름 분리 정책 확정이 아닌 목 규칙 |
+| 가입 page가 feature 내부 파일 직접 import | mock-auth/preview 공개 export 소비, 변경 handler 한글 책임 주석 | 타입/lint·메모리build·전체 회귀 |
+
+기존 단일 AuthStore/계정·workspace ID·입력 snapshot, 중복 동시 가입 차단, 종료/Reset 무효화, 동일 탭 계정 수명, 실제 URL/이력, 공통 Dialog, 보호 returnTo를 유지했다. auth-layout·CSS/원본 자산·G13 이후 질문·Backend는 바꾸지 않았다.
+
+정식 signup-entry.test.tsx를 추가했다. 첫 실행은 jsdom 미지원 showModal 대체 준비 문제로 실패했고 테스트 환경을 수정했다. 코드 수정 전 유효 실행7개 중3실패(CAPTCHA/약관 tabIndex/복귀 URL)·4통과, 수정 후7통과. 추가 선택 이메일/중복·표시/초점 검증을 포함한 최종 대상9/9 통과(20.54s). navigation을 mock하지 않았다.
+
+### 5. 시각 대조·목 가정·미확인
+
+| 구분 | 확인 내용/현재 구현 | 남은 차이 |
+| --- | --- | --- |
+| 가입 카드/글자 | 현재 CSS: 폭500/padding36·60·60, 제목20/28, 본문16/24, label12, input최소40, 버튼최소46, radius10/6 | 원본 CSS px·정확 font/weight/line-height/letter-spacing·줄바꿈/간격/정렬 동일성 미검증 |
+| 색/배경 | 구현 #fbfcfb/#091613/#168b00, border#cbd1ce, overlay#fbfcfbf2·inset80px, 잎172×175/325×175 | 원본 실제 색/opacity/shadow·배경선 위치/가림·overlay 위치 정밀 비교 필요 |
+| 첫 사업 설정 | 구현60%/40%,570px설문,371px인물,진행5개,첫50px/나머지26px,제목24/30 | 원본 viewport/폰트·사진/평점 crop·Next의 원본 흰 글자와 접근성 어두운 글자 등 차이 미완 |
+| 자산 | 기존 sources/setup-sources의 관련9PNG 해시 일치. 로고/Google/잎/화분/인물/평점·로그인 symbol/Apple 출처 기록 확인 | Lucide 눈/로컬 CAPTCHA 문구·그림·정적 화분과 원본 차이, animation 불명. 원본 수정/새 자산 생성 없음 |
+| 비교 조건 | 원본2880×1800, MCP1440×900, 원본 단독 열람 | 구현 viewport/DPR/배율/scrollY·같은 상태 픽셀 비교 미수행. 비교 캡처 경로 N/A: 파일 생성 금지 |
+
+목 정책: 최소10자 문구는 관찰이고 3종류 문자 강도 규칙·Strong blur 시점·이름 첫 공백 분리·CAPTCHA 오류 해제·Google 표본/메일 도전·실패/취소/계정 수명·직접 URL 복귀는 명시적인 로컬 선택이다. 원본 07→08의 정확한 지연/이벤트는 미확정이다. 가입 정상 경로에 실제 메일 확인·OAuth를 강제하지 않으며 가상 성공을 실서비스 계정/결제/PDF 생성으로 보지 않는다.
+
+### 6. 실제 검증·명령·환경
+
+Node24.18.0/pnpm8.14.1, package 요구 Node>=24<25/pnpm8.14.1을 확인했다. FE/user-web에서 실행:
+
+- [x] pnpm.cmd exec tsc --project tsconfig.app.json --noEmit --incremental false --pretty false 및 tsconfig.node.json 각각 통과.
+- [x] pnpm.cmd exec eslint . --no-cache 통과.
+- [x] Vitest 대상9/9, 전체33파일197/197(143.60s) 통과. 기존 다른 Goal 과거 통과 수를 이번 수에 더하지 않는다.
+- [x] Vite7.3.5 메모리build:1972모듈/3output,9.79s,write:false. configFile:false/React·alias/PostCSS tailwindcss+autoprefixer/emptyOutDir:false/copyPublicDir:false/sourcemap:false.
+- [x] 원본4분석/13PNG 해시·크기, MCP10ID/순서, 기존 관련9자산 SHA 검사. Git diff --check 통과.
+- [x] 기존 http://127.0.0.1:5173/ HTTP200·OneHand CRM UI preview·Vite/HMR·PID30272 확인.5174는 시험장 모니터링/PID22864로 별도이며 보존했다. 서버/ENV/Backend를 변경하거나 시작하지 않았다.
+- [ ] 실제 브라우저 조작/E2E·주소창/새로고침/새탭·키보드/실제 모달/스크롤·좁은 화면·OS IME·console/network는 미실행. 현재 브라우저 도구/연결 문서 세션·CDP9222/9223이 없고 사용자 금지에 따라 새 브라우저 프로필/캐시를 생성하지 않았다.
+- [ ] 인증/업무/외부 요청0건은 실제 network를 관찰하지 않아 null/미판정이다. 해당 코드의 실제 호출 미연결 및 로컬 HTTP 확인을 런타임0건 인증으로 바꾸지 않았다. 요청 차단은 하지 않았다.
+
+검증 방식: PowerShell here-string→Node stdin/stdout. Vitest startVitest('test', FILTERS, 옵션, Vite설정); 대상=['src/app/router/signup-entry.test.tsx'], 전체=[]. config:false/run:true/cache:false/pool:threads/execArgv:[]/maxWorkers:2/environment:jsdom/setupFiles:vitest.setup.ts/include:src/**/*.test.{ts,tsx}/coverage:false/experimental.fsModuleCache:false/deps.optimizer.client·ssr.enabled:false. Vite configFile:false/react/alias/optimizeDeps.noDiscovery:true·include:[]/server.watch:null. 검증 프로세스의 NODE_DISABLE_COMPILE_CACHE=1/JITI_CACHE=false/JITI_FS_CACHE=false. build도 stdin import build와 write:false로 수행했다.
+
+DOM 검증은 실제 Router/history 및 로컬 공급자를 사용한다. matchMedia/scrollTo/IntersectionObserver와 jsdom 미지원 dialog.showModal/close만 대체했다. 실제 네이티브 모달 초점 잠금·OS IME 인증이 아니다. 합성 composition/Enter229와 긴 한국어는 DOM 범위다. 새 provider는 메모리 초기화 검증이며 실제 새탭/reload 조작이라고 쓰지 않는다. 인증 스토어의 동시 가입/선택 intent/actor·workspace/reset/중복/소셜/메일 단위 회귀와 직접 공개 소비 회귀를 함께 실행했다.
+
+새 검증 파일/임시 스크립트/이미지·캡처/trace/HTML/JSON보고서/로그/브라우저 프로필/다운로드를 만들지 않았다. 새 파일은 정식 회귀 테스트1개뿐이며 결과는 이 기존 문서에 추가한다. 기본 시나리오는 normal이고 테스트 공급자/대체를 정리했다. 미리보기 가상 상태는 조작하지 않았다. Browserslist 데이터 경고는 남겼고 의존성을 갱신하지 않았다.
+
+### 7. FRONT_AGENT 및 공통 체크리스트 적용
+
+[ENGINEERING_REVIEW_CHECKLIST](../../../AGENT/SOFTWARE_AGENT/FRONT_AGENT/ENGINEERING_REVIEW_CHECKLIST.md)의 이번 범위 판정이다.
+
+| 항목 | 근거·판정 |
+| --- | --- |
+| §1 범위/출처 | [x] Git/실코드/원본13PNG·분석/목 가정·미확인 분리. UXUI전용·G10 및 직접 연결 한정 |
+| §2 구조 | [x] 페이지 조립/feature 공개 export·hook입력/스토어commit·표시컴포넌트 책임 분리. N/A 새 의존성/전면 구조 변경 |
+| §3 데이터 | [x] 단일 메모리 계정/ID·선택 인계·공급자/Reset 수명·비밀번호 영속 금지. [ ] 실제 network. N/A 서버계약/HTTP/DB/BE |
+| §4 상태 | [x] 유효성/수정/실패/취소/경합/늦은 응답·중복/직접 URL·새scope 회귀. N/A 가입 폼의 목록검색/빈 결과·업무 계산/낙관적 CRUD |
+| §5 웹 UX | [x] DOM 오류초점·eye/CAPTCHA·pending잠금/취소복원·실제Router/history·보호 경계. [ ] 실제키보드/스크롤/모달/폭·줌·OS IME·화면낭독기 |
+| §6 주석/품질 | [x] 신규/변경handler 한글 기능 주석·effect cleanup·strict/lint, 원본관찰과 mock이유 주석. 관련 없는 코드 일괄 변경 없음 |
+| §7 검증/인계 | [x] 현 타입/lint/단위DOM/메모리build·연결 회귀·결과/계획 상태. [ ] E2E/픽셀. N/A Admin/실서비스 배포 |
+
+START-CHECKLIST: [x] 시작Git/선행/규칙/원본/범위, [x] 자료부족과 목 가정·수정/회귀·제한 산출물, [x] 결과/관련 문서/잔여 담당. [ ] 실제 브라우저·시각 동일성. 공통 체크리스트 전체를 완료로 체크하지 않는다.
+
+| 공통 기준 | 이번 적용 결과(전역 완료 아님) |
+| --- | --- |
+| R4-C01 | F086 10단계 MCP ID/순서/1440×900 확인, 원본13PNG/분석4개 해시 일치. 저장된 Latest/2146과 촬영일·CSS viewport/DPR는 구분 |
+| R4-C02 | 랜딩→별도 인증 카드→폼을 남기는 처리 오버레이→설문/우측 인물 패널 구성 대조. 실브라우저 겹침/배치 대기 |
+| R4-C03 | 아래 단계/주요 요소군을 코드에 대응. 배경·작은 요소의 전수 계수 및 동일 재현 명세 인증은 미완 |
+| R4-C04 | Email/Full Name/Password·최소10자·Too Weak/Strong·약관 문구·Hold tight! 유지, Joe Doe→Joe 표시 보완. 정확 줄바꿈 대기 |
+| R4-C05 | 원본2880×1800·MCP1440×900·현재 CSS치수 분리. 실제 구현 viewport/DPR/배율/scrollY 및 픽셀 비교 미수행 |
+| R4-C06 | Bonsai Public Gellix/Arial은 현재 구현 선택이며 인증 원본 폰트 확정 아님. 굵기/행간/자간/raster 동일성 대기 |
+| R4-C07 | 기존 카드/입력/오버레이 색·radius/shadow 유지. 접근성 focus/disabled 및 로컬 표시 차이는 미완으로 기록 |
+| R4-C08 | 기존 인증/첫 설문 관련9PNG의 자산 해시 일치. Lucide 눈·로컬 CAPTCHA·정적 화분은 원본 동일성 미확인, 새 자산 생성 없음 |
+| R4-C09 | 입력오류 해제·약함/길이/재입력/Strong·처리/취소·실패재시도·중복·Google/메일 목 분기 DOM 검증. 실제 서비스 성공 아님 |
+| R4-C10 | 실제 Router/history의 직접URL·약관/로그인 back/forward·취소 전체 URL·첫 설문/보호 경계 검증. 브라우저 reload/새탭·스크롤 대기 |
+| R4-C11 | 폼 초안/제출 snapshot/새 계정·workspace 분리. 비밀번호 비영속·실패/시도취소 보존·이탈/reset 폐기·늦은 결과 무효화 검증 |
+| R4-C12 | G01/G02/G03/G04/G05/G06/G07/G09/G11/G13첫화면/G14 직접 소비 회귀. 선택 intent만 인계, 연결 Goal 전체 완료 아님 |
+
+### 8. 남은 작업·직접 확인 순서
+
+- [ ] G10/R02·G01: 정확 폰트/아이콘/CAPTCHA/화분·상태색/간격/radius/shadow·촬영 조건/픽셀 동일성.
+- [ ] G10/R02·G13: 강도 판정과 표시/오류 트리거, 이름 분리, 소셜/CAPTCHA/메일의 원본 흐름, 첫 설문 레이아웃/사진·국가 기본값. 목 가정 채택으로 원본 질문을 닫지 않는다.
+- [ ] G09/G10·R01/R02: 가입 당시 Terms 링크 버전·전체 정책/개정/동의 관계. 기존 발췌는 가입 버전 확정 증거가 아니다.
+- [ ] G10/직접 연결 G/G84: 실제 브라우저/네트워크/console·주소창/reload/새탭·포커스/scroll/좁은폭/확대·OS IME/다른 엔진.
+- N/A: 실제계정/OAuth/CAPTCHA/메일·업로드·결제·Backend/API/DB·G13 나머지설문/G32. 서버후속 메모: 강도/중복계정/소셜병합·메일만료·약관버전/동의·세션영속/권한. 현재 계약을 만들지 않는다.
+
+미리보기: http://127.0.0.1:5173/signup (기존 dev/HMR).
+1. /?entry=g10#trial에서 sample@example.test로 Start free → Email 인계, Joe Doe, 짧은 비밀번호 입력. Too Weak→다른 필드 클릭 시 빨간 길이 안내→SampleOnly123!로 수정 후 blur→Strong/로컬 CAPTCHA를 확인한다.
+2. Slow local response 선택→Create Free Account→폼 잠금·취소 초점→Cancel this attempt. 입력 유지/지연 이동 없음 확인. Normal로 돌아가 다시 제출→Welcome, Joe·진행1/5·빈 업종을 확인한다.
+3. /components Reset 후 /signup에서 Fail once, then retry로 입력 보존/재시도를 확인한다. Google Dialog 취소·명시적 샘플 선택, Local email verification의 만료/취소/확인은 별도 목 분기다.
+4. 랜딩/가격/템플릿/청구서에서 가입→Terms/로그인→뒤로/앞으로→명시적 취소. 출발 query/hash·선택 인계/원래 초안 정책을 확인한다.
+5. 직접 /signup, 새로고침/새탭의 초기화, 보호URL의 첫 설문 경계, 좁은폭/키보드/IME·개발자도구 console/network는 별도 실제 브라우저 확인 대상이다. 끝나면 /components Reset/Normal로 복원한다.
+
+위 순서는 수동 확인 절차이며 이번 실제 브라우저 통과 기록이 아니다. 커밋/push/배포 및 다음 Goal 착수는 하지 않았다.
+
+### 9. 최종 문서·변경 검토
+
+- [x] 계획 전체170 Markdown/1 JSON의 링크·앵커 및 구조를 HEAD와 대조했다. 기존 오류221건/현재221건, 신규0건이다. 기존 오류 대부분의 과거 evidence 부재를 이번 성공 근거로 사용하거나 복원하지 않았다.
+- [x] 이번 관련 기존 문서52개: G10 명세/결과, 직접 소비 G01/G02/G03/G04/G05/G06/G07/G09/G11/G13/G14 명세·결과, G01/G02 재검토 결과, R01/R02 명세·결과, 공통 대응/흐름/기준/순서·README/FE-TODO/진행기록/PLAN-INDEX를 동기화했다. 수행한 항목은 [x], 시각·브라우저·원본 필수 미확정은 [ ]/대기, 범위 밖은 N/A 사유로 구분했다.
+- [x] 과거 [x] 행·verification 수치, 다른 Goal/R의 전체 상태, 다른451개 R4 원문/해시/판정,85G/22R/134flows/754steps/642screens/107실행순서를 보존했다. G10은 overall_complete=false, 시각 미검증, 실제 API 요청 수 null이다.
+- [x] 변경 소스7개와 정식 회귀 테스트1개를 재검토했다. 새 파일은 signup-entry.test.tsx 하나이며 원본/자산/Backend·환경·서버 설정 변경 없음. Git diff --check 및 링크/상태 최종 점검을 수행했다.
+- [ ] 정확한 원본 정책/시각·실제 브라우저/네트워크 대기는8절 담당에 남긴다. 커밋/push/배포·다음 기능 착수 없음.
+
+<a id="g10-precommit-review"></a>
+## G10 커밋 전 재검토 — 2026-11-24 KST
+
+후속 사용자 요청 “검토해주고 이상이 없으면 깃 커밋해”에 따른 검토다. 위의 커밋 미실행 기록은 앞선 G10 작업 종료 시점이며, 이번에는 검증 후 로컬 커밋이 승인되었다. push·배포·G11 구현은 범위 밖이다.
+
+- [x] 추가 결함: SignupProgress가 폼을 inert/disabled로 바꾼 뒤 activeElement를 기억해, 제출 버튼에 초점이 없는 경우 취소 후 body에 초점이 남았다. 정식 회귀의 제출 전 강제 focus를 없애자 8통과/1실패로 재현했다. 실제 브라우저 재현으로 보고하지 않는다.
+- [x] signup/index.tsx의 제출 ref를 SignupProgress에 전달하고, effect 시작 시 해당 요소를 기억해 취소/실패 뒤 연결되고 활성인 경우에만 복원한다. 성공 이동/이탈로 폼이 제거되면 초점을 가져오지 않는다. capture 이후 ref를 읽는 lint 경고도 정리했다. 추가 가상 성공·실제 호출·디자인 변경은 없다.
+- [x] 수정 후 G10 9/9(19.70s), 최종 effect 정리 후 대상 9/9(19.34s). 전체33파일197/197(152.49s). 앞선143.60s 이력과 구분한다. 기존 한 시나리오를 강화했으며 테스트 수를 늘리지 않았다.
+- [x] app/node 타입검사(noEmit/incremental false), lint(--no-cache, 최종 경고0), 메모리 Vite build(write:false,1972모듈/3output,15.78s) 통과. 실행 방식은6절과 같으며 파일형 검증 산출물을 생성하지 않았다.
+- [x] PLAN-INDEX 최상위 status가 G08, workflow_review가 G07을 가리키던 누락을 수정했다. 이전 요약/검토 객체는 이력으로 보존하고 현재 G10 결과와 부분 완료 상태를 연결했다. G10 공통 화면2개의 검토도 G10 소비 범위로만 연결하며 다른 Goal 전체 상태는 유지한다.
+- [x] 최종 계획170 Markdown/1 JSON을 다시 검사했다. 기존 링크 오류221건/현재221건/신규0건, 과거 완료 체크·검증 값·다른451개 R4 판정·107실행순서 보존을 확인했다. 수정된 기존 문서는52개, 신규 파일은 정식 회귀 테스트1개이며 Git diff --check도 통과했다.
+- [x] 현재 연결 문서 세션 없음, CDP9222/9223 리스너 없음, 기존5173/PID30272·5174/PID22864 보존을 다시 확인했다. /signup은 HTTP200/Vite dev이며 브라우저 실행 증거가 아니다.
+- [ ] 실제 브라우저/console/network·키보드/OS IME·정확 폰트/픽셀 동일성·미수록 원본 정책은8절 대기를 유지한다. 실제 요청 수는 null이며 Goal 전체 완료가 아니다.
+
+직접 확인: http://127.0.0.1:5173/signup 에서 가상 입력과 로컬 CAPTCHA → Slow local response → Create Free Account → Cancel this attempt → 가입 제출 버튼 초점과 입력 보존 확인 → Normal로 복원한다. 이 절차는 이번 실제 브라우저 통과 기록이 아니다.

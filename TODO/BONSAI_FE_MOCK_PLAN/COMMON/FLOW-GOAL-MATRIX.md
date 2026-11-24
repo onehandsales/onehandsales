@@ -1,6 +1,9 @@
 # 원본 플로우와 구현 Goal 대응
 
-> 현재 G09 — 2026-11-24 KST: **부분 완료**. 원본11단계·연결5PNG를 확인하고 정책 발췌/출발 이력/가입 취소를 보완했다. 단위/DOM188/188·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·전체 정책 근거는 대기다. 과거 이력과 다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G09_RESULT.md#g09-r4-recheck).
+> 현재 G10 — 2026-11-24 KST: **부분 완료**. 원본10단계·연결3PNG를 대조하고 가입 오류/처리/복귀·첫 화면 표시를 보완했다. 단위/DOM197/197·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·원본 정책은 대기다. [범위·체크·잔여](../RESULTS/G10_RESULT.md#g10-r4-recheck).
+
+
+> 이전 G09 — 2026-11-24 KST: **부분 완료**. 원본11단계·연결5PNG를 확인하고 정책 발췌/출발 이력/가입 취소를 보완했다. 단위/DOM188/188·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크·전체 정책 근거는 대기다. 과거 이력과 다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G09_RESULT.md#g09-r4-recheck).
 
 
 > 이전 G08 — 2026-11-24 KST: **부분 완료**. 원본8단계·연결2PNG를 확인하고 검색/기사/문의 복귀를 보완했다. 단위/DOM179/179·타입/lint·메모리build 통과. 시각 동일성·실제 브라우저/네트워크는 대기다. 과거 이력·다른 G/R 상태를 보존한다. [범위·체크·잔여](../RESULTS/G08_RESULT.md#g08-r4-recheck).
@@ -117,7 +120,7 @@ G00 재검토에서 각 단계의 소유는 정확히 1개이며 표·색인·G 
 | 83 | [Logging in](<../../../bonsai_analysis/flows/Logging in/ANALYSIS.md>) | `a02409b3-6eb0-4bc0-b702-22a42e0990c8` | 5 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~05) | [F083](SOURCE-ANALYSIS-IMPACT.md#r4-f083) |
 | 84 | [Logging in / Resetting password](<../../../bonsai_analysis/flows/Logging in/Resetting password/ANALYSIS.md>) | `8f9cc02b-1748-4b71-97d8-5c80bb299013` | 10 | [G12 비밀번호 재설정](<GOAL-SPECS/G12.md>) (01~10) | [F084](SOURCE-ANALYSIS-IMPACT.md#r4-f084) |
 | 85 | [Logging out](<../../../bonsai_analysis/flows/Logging out/ANALYSIS.md>) | `39713c9a-6f82-4d7c-be32-ab38510406bc` | 2 | [G11 로그인·로그아웃](<GOAL-SPECS/G11.md>) (01~02) | [F085](SOURCE-ANALYSIS-IMPACT.md#r4-f085) |
-| 86 | [Onboarding](<../../../bonsai_analysis/flows/Onboarding/ANALYSIS.md>) | `f714101f-db6b-4bfe-9ed1-74d6b0d6243c` | 10 | [G10 회원가입](<GOAL-SPECS/G10.md>) (01~10) | [F086](SOURCE-ANALYSIS-IMPACT.md#r4-f086) |
+| 86 | [Onboarding](<../../../bonsai_analysis/flows/Onboarding/ANALYSIS.md>) | `f714101f-db6b-4bfe-9ed1-74d6b0d6243c` | 10 | [G10 회원가입](<GOAL-SPECS/G10.md>) (01~10) | [F086](SOURCE-ANALYSIS-IMPACT.md#r4-f086) · [G10 부분 대조/보완](../RESULTS/G10_RESULT.md#g10-r4-recheck) |
 | 87 | [Onboarding / Completing account setup](<../../../bonsai_analysis/flows/Onboarding/Completing account setup/ANALYSIS.md>) | `f004afc2-a8c5-4262-b2e4-941331047a84` | 16 | [G13 사업 설정 온보딩](<GOAL-SPECS/G13.md>) (01~16) | [F087](SOURCE-ANALYSIS-IMPACT.md#r4-f087) |
 | 88 | [Perks](<../../../bonsai_analysis/flows/Perks/ANALYSIS.md>) | `dee9aba7-13a6-462f-87f5-0a942a971ab0` | 4 | [G82 제휴 혜택](<GOAL-SPECS/G82.md>) (01~04) | [F088](SOURCE-ANALYSIS-IMPACT.md#r4-f088) |
 | 89 | [Pricing](<../../../bonsai_analysis/flows/Pricing/ANALYSIS.md>) | `981ffcc3-d6c0-4038-8db3-4ac8753aace4` | 3 | [G04 가격·후기](<GOAL-SPECS/G04.md>) (01~03) | [F089](SOURCE-ANALYSIS-IMPACT.md#r4-f089) |
@@ -249,3 +252,10 @@ Accepting an invitation13단계는 기존 G18 소유권을 유지한다. 01~07�
 - [x] F004 01~04/F018 01~04/F090 01~02/F132 01의11단계를 G09 코드·수용 기준과 대조했다. 연결 F082 09~11/F083 02/F086 03은 소유를 변경하지 않는다.134흐름/754단계/642고유ID 배정 유지. [상세 판정·근거](../RESULTS/G09_RESULT.md#g09-r4-recheck).
 
 - [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G09 결과8절에 기록했다.
+
+<a id="g10-update"></a>
+## G10 적용·연결 검토 — 2026-11-24 KST
+
+- [x] F086 01~10을 G10 코드·수용 기준과 대조했다. F083/02·F087/01·F132/01은 연결 확인만 하며 소유/배정은 유지한다.134흐름/754단계/642고유ID는 변함없다. [상세 판정·근거](../RESULTS/G10_RESULT.md#g10-r4-recheck).
+
+- [ ] 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 연결 G/R 전체 완료가 아니며 잔여 담당은 G10 결과8절에 기록했다.
