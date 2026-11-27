@@ -25,21 +25,42 @@ export function AppShell() {
   const location = useLocation(); const [params] = useSearchParams(); const [collapsed, setCollapsed] = useState(false); const [mobileOpen, setMobileOpen] = useState(false); const mobileTrigger = useRef<HTMLButtonElement>(null);
   const { state: preview } = usePreviewEnvironment(); const invited = !!invitationAccess(preview);
   const { store: companies } = useCompanySetup();
+  const desktopSidebar = useRef<HTMLElement>(null);
+  const pendingFocus = useRef<"sidebar" | "main" | null>(null);
+  const previousRoute = useRef(location.key);
   // 기능 : 다른 인증 문맥에 이전 메뉴 선택을 노출하지 않되 검증 도구의 펼침은 유지한다.
   useEffect(function clearScope() { setCollapsed(false); setMobileOpen(false); }, [preview.revision]);
   // 기능 : DOM이 교체되는 축소·확장 이후에도 같은 제어에 키보드 초점을 유지한다.
-  function toggleSidebar() { setCollapsed(value => !value); window.requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(".app-sidebar-brand button")?.focus()); }
+  function toggleSidebar() { pendingFocus.current = "sidebar"; setCollapsed(value => !value); }
   // 기능 : 실제 경로 이동 시 열린 모바일 탐색을 닫는다.
-  useEffect(function closeOnRoute() { setMobileOpen(false); }, [location.key]);
+  useEffect(function closeOnRoute() {
+    if (previousRoute.current === location.key) return;
+    previousRoute.current = location.key;
+    if (mobileOpen) { pendingFocus.current = "main"; setMobileOpen(false); }
+  }, [location.key, mobileOpen]);
+  // 기능 : 모달 정리와 메뉴 교체가 끝난 뒤 현재 화면의 보이는 목적지에 초점을 둔다.
+  useEffect(function focusAfterTransition() {
+    if (pendingFocus.current === "main" && mobileOpen) return;
+    const target = pendingFocus.current === "sidebar"
+      ? desktopSidebar.current?.querySelector<HTMLButtonElement>(".app-sidebar-brand button")
+      : pendingFocus.current === "main" ? document.getElementById("main-content") : null;
+    pendingFocus.current = null;
+    target?.focus({ preventScroll: true });
+  }, [collapsed, mobileOpen]);
   // 기능 : 데스크톱으로 폭이 바뀌면 모달을 닫고 보이는 사이드바 제어로 초점을 옮긴다.
   useEffect(function followWidth() {
     const media = window.matchMedia("(min-width: 761px)");
     // 기능 : 숨겨지는 모바일 버튼 대신 데스크톱 메뉴에 키보드 초점을 둔다.
-    function change() { if (media.matches && mobileOpen) { setMobileOpen(false); window.requestAnimationFrame(() => document.querySelector<HTMLButtonElement>(".app-sidebar-brand button")?.focus()); } }
+    function change() {
+      if (!media.matches && desktopSidebar.current?.contains(document.activeElement)) mobileTrigger.current?.focus();
+      if (!media.matches) return;
+      if (mobileOpen) { pendingFocus.current = "sidebar"; setMobileOpen(false); }
+      else if (document.activeElement === mobileTrigger.current) desktopSidebar.current?.querySelector<HTMLButtonElement>(".app-sidebar-brand button")?.focus();
+    }
     media.addEventListener("change", change); return function removeListener() { media.removeEventListener("change", change); };
   }, [mobileOpen]);
   return <div className={`app-shell${collapsed ? " has-collapsed-sidebar" : ""}${invited ? " is-invited" : ""}`}>
-    <aside className="app-sidebar-desktop"><AppSidebar collapsed={collapsed} onToggle={toggleSidebar} /></aside>
+    <aside ref={desktopSidebar} className="app-sidebar-desktop"><AppSidebar collapsed={collapsed} onToggle={toggleSidebar} /></aside>
     <header className="app-toolbar"><button type="button" className="app-mobile-toggle" ref={mobileTrigger} aria-label="Open workspace menu" aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><Menu size={22} aria-hidden="true" /></button>{!invited && <Link className="app-search" to="/app/pending/search"><Search size={20} aria-hidden="true" /><span>Search</span></Link>}<div className="app-toolbar-actions">{!invited && <Link className="app-upgrade" to="/app/pending/subscription">Upgrade Now</Link>}<Link className="app-track" to="/app/pending/time-tracking"><CirclePlay size={27} aria-hidden="true" /><span>Track Time</span></Link>{!invited && <CreateMenu />}<AccountMenu compact workspaceName={companies.company(preview.workspaceId ?? "")?.name} /></div></header>
     <main id="main-content" className="app-main" tabIndex={-1}><Outlet /></main>
     <footer className="app-local-tools"><Link to="/app/preview">Foundation verification</Link><Link to="/">Public site</Link><Link to="/share/sample">Shared preview</Link><PreviewTools /></footer>

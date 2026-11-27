@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G13 R4 대조·동작/표시 보완·커밋 전 추가 검토 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; 같은 경로 초기 로딩 경합 보완·최종 전체236/236 통과; 사용자 후속 요청으로 커밋·origin/main push 승인; 배포·다음 Goal 착수 없음.",
+  "status": "G14 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
   "goals": [
     {
       "id": "G00",
@@ -3270,7 +3270,7 @@
       ],
       "research": [],
       "surface": "공통 기반",
-      "status": "목 구현·두 차례 검토·현재 검증 수행; 원본/시각/환경 대기",
+      "status": "G14 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
       "flow_scope": [
         {
           "flow_number": 1,
@@ -3311,7 +3311,7 @@
         }
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "G14 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
         "item_ids": [
           "R4-F001-O01",
           "R4-F001-O02",
@@ -3336,7 +3336,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g14",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_a333622d5e8c45e0b19ff4c249dc0aca"
         ]
@@ -3427,6 +3427,28 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "prior_status_before_20261127": "목 구현·두 차례 검토·현재 검증 수행; 원본/시각/환경 대기",
+      "r4_recheck_20261127": {
+        "goal": "G14",
+        "source_flows": 2,
+        "source_steps": 5,
+        "source_images_directly_viewed": 5,
+        "new_mcp_query_performed": true,
+        "changes": "사이드바 폭 변경·접힘/펼침·모바일 이동의 초점과 비동기 콜백 수명을 보완했다.",
+        "checks": "신규 DOM4 및 전체37파일240/240, app/node 타입·전체 lint·메모리 build 통과.",
+        "date": "2026-11-27 KST",
+        "result": "../RESULTS/G14_RESULT.md#g14-r4-recheck",
+        "implementation_review_performed": true,
+        "visual_identity": "not_verified",
+        "browser_e2e": "not_run: no connected browser/document session or existing preview server",
+        "browser_network": "not_observed",
+        "real_api_requests": null,
+        "overall_complete": false,
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "original_analysis_and_png_unchanged": true
       }
     },
     {
@@ -14207,15 +14229,15 @@
     "preview": "http://127.0.0.1:5173/ preserved"
   },
   "source_analysis_review": {
-    "date": "2026-11-24 KST",
+    "date": "2026-11-27 KST",
     "source_commit": "6fdc6d003bcd073a6d73bd53111c593f15a89b94",
     "source_index": "../../../bonsai_analysis/SOURCE_ANALYSIS_INDEX.json",
     "source_index_sha256_lf": "827ba007ab3a8ef243e3f95140abdc2bec77897e2727aa9daf501a9d024aa12e",
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/G13_RESULT.md#g13-r4-recheck",
-    "status": "G13 R4 대조·동작/표시 보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; other goal/source completion statuses preserved",
+    "result": "../RESULTS/G14_RESULT.md#g14-r4-recheck",
+    "status": "G14 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -27378,39 +27400,31 @@
     ]
   },
   "workflow_review": {
-    "date": "2026-11-24 KST",
-    "scope": "G13 business setup and direct G01/G10/G11/G12/G14/G15/G17 boundaries; shared task seed impact only",
-    "mapping": "FLOW-BEHAVIOR-REVIEW.md",
-    "policy": "UXUI-REPLICATION.md#current-identity",
-    "result": "../RESULTS/G13_RESULT.md#g13-r4-recheck",
-    "reference_counts": {
-      "flows": 1,
-      "steps": 16,
-      "unique_screens": 16,
-      "assigned_g13": 16
-    },
-    "minor_visual_differences_allowed": false,
-    "capture_adjacency_proves_action": false,
+    "goal": "G14",
+    "source_flows": 2,
+    "source_steps": 5,
+    "source_images_directly_viewed": 5,
     "new_mcp_query_performed": true,
-    "mcp_images_viewed": false,
-    "mcp_scope": "F087: 16 ordered screen IDs/URLs and 1440x900 metadata; no catalog version returned; 16 local PNGs directly viewed",
-    "selected_pngs_directly_reviewed": 16,
-    "all_assigned_g13_pngs_reviewed": true,
-    "new_full_png_review_performed": false,
+    "date": "2026-11-27 KST",
+    "result": "../RESULTS/G14_RESULT.md#g14-r4-recheck",
     "implementation_review_performed": true,
-    "authorized_goal": "G13",
     "visual_identity": "not_verified",
-    "browser_e2e": "not_run",
-    "other_goals_full_review": "not_performed",
-    "precommit_review_result": "../RESULTS/G13_RESULT.md#g13-precommit-review",
-    "precommit_review": {
-      "date": "2026-11-24 KST",
-      "regression": "same-route dashboard loading fixed; G13 DOM10/store4 14/14; final full236/236",
-      "commit_authorized": true,
-      "push_authorized": "origin main",
-      "deploy": false,
-      "overall_complete": false
-    }
+    "browser_e2e": "not_run: no connected browser/document session or existing preview server",
+    "browser_network": "not_observed",
+    "real_api_requests": null,
+    "overall_complete": false,
+    "evidence_files_created": false,
+    "temporary_scripts_created": false,
+    "new_result_document_created": false,
+    "original_analysis_and_png_unchanged": true,
+    "authorized_goals": [
+      "G14",
+      "G15",
+      "G16",
+      "G17",
+      "G18"
+    ],
+    "minor_visual_differences_allowed": false
   },
   "workflow_review_history": [
     {
@@ -27795,6 +27809,41 @@
         "existing_evidence_unchanged": true,
         "full_goal_statuses_unchanged_except_g12": true
       }
+    },
+    {
+      "date": "2026-11-24 KST",
+      "scope": "G13 business setup and direct G01/G10/G11/G12/G14/G15/G17 boundaries; shared task seed impact only",
+      "mapping": "FLOW-BEHAVIOR-REVIEW.md",
+      "policy": "UXUI-REPLICATION.md#current-identity",
+      "result": "../RESULTS/G13_RESULT.md#g13-r4-recheck",
+      "reference_counts": {
+        "flows": 1,
+        "steps": 16,
+        "unique_screens": 16,
+        "assigned_g13": 16
+      },
+      "minor_visual_differences_allowed": false,
+      "capture_adjacency_proves_action": false,
+      "new_mcp_query_performed": true,
+      "mcp_images_viewed": false,
+      "mcp_scope": "F087: 16 ordered screen IDs/URLs and 1440x900 metadata; no catalog version returned; 16 local PNGs directly viewed",
+      "selected_pngs_directly_reviewed": 16,
+      "all_assigned_g13_pngs_reviewed": true,
+      "new_full_png_review_performed": false,
+      "implementation_review_performed": true,
+      "authorized_goal": "G13",
+      "visual_identity": "not_verified",
+      "browser_e2e": "not_run",
+      "other_goals_full_review": "not_performed",
+      "precommit_review_result": "../RESULTS/G13_RESULT.md#g13-precommit-review",
+      "precommit_review": {
+        "date": "2026-11-24 KST",
+        "regression": "same-route dashboard loading fixed; G13 DOM10/store4 14/14; final full236/236",
+        "commit_authorized": true,
+        "push_authorized": "origin main",
+        "deploy": false,
+        "overall_complete": false
+      }
     }
   ],
   "index_semantics": {
@@ -27835,6 +27884,11 @@
       "date": "2026-11-24 KST",
       "status": "G12 R4 보완·커밋 전 이력 변경 경합 수정 및 단위/DOM 검증 / 원본 동일성·실제 브라우저·미수록 정책 대기; 사용자 후속 요청으로 검토 후 로컬 커밋 승인; 다른 Goal 이력·대기 보존; push·배포·다음 Goal 착수 없음.",
       "reason": "G13 scoped review; previous G12 status retained"
+    },
+    {
+      "date": "2026-11-27 KST",
+      "status": "G13 R4 대조·동작/표시 보완·커밋 전 추가 검토 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; 같은 경로 초기 로딩 경합 보완·최종 전체236/236 통과; 사용자 후속 요청으로 커밋·origin/main push 승인; 배포·다음 Goal 착수 없음.",
+      "superseded_by": "G14"
     }
   ]
 }
