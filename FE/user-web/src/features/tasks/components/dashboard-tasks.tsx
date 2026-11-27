@@ -2,9 +2,10 @@ import "@/styles/tasks.css";
 import { ArrowRight } from "lucide-react";
 import { useTasks } from "../hooks/use-tasks";
 import { useTaskMutation } from "../hooks/use-task-mutation";
-import { taskDueLabel } from "../model/task-values";
+import { taskDueLabel, taskInitials } from "../model/task-values";
 import type { TaskView } from "../model/task-types";
 import { TaskLink } from "./task-link";
+import { TaskActions } from "./task-actions";
 
 // 기능 : 같은 작업 ID의 완료만 변경하고 완료된 행과 관련 시간·하위 작업을 유지한다.
 function DashboardTaskRow({ task }: { task: TaskView }) {
@@ -14,7 +15,8 @@ function DashboardTaskRow({ task }: { task: TaskView }) {
   return <div className={`dashboard-task-row${completed ? " is-complete" : ""}`} data-dashboard-task-id={task.id}>
     <input type="checkbox" aria-label={`Complete ${task.title}`} checked={completed} disabled={mutation.pending} onChange={toggle} />
     <div><strong>{task.title}</strong><small>{taskDueLabel(task.dueDate)}</small>{mutation.error && <div role="alert">{mutation.error}<button type="button" onClick={toggle}>Retry completion</button></div>}</div>
-    <TaskLink id={task.id} label={`Open task ${task.title}`}><ArrowRight size={16} /></TaskLink>
+    <span className="dashboard-task-open">{task.assigneeName && <span className="task-avatar" title={task.assigneeName}>{taskInitials(task.assigneeName)}</span>}<TaskLink id={task.id} label={`Open task ${task.title}`}><ArrowRight size={16} /></TaskLink></span>
+    <TaskActions task={task} label={`Actions for ${task.title}`} />
   </div>;
 }
 // 기능 : 대시보드 작업 영역만 공유 원본에 연결하고 기존 재무·시간·활동 프레임은 확장하지 않는다.

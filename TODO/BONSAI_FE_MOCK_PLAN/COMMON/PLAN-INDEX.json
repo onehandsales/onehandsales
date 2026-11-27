@@ -5081,7 +5081,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 회귀 검증; 자료·시각·환경 대기",
+      "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
       "flow_scope": [
         {
           "flow_number": 54,
@@ -5108,9 +5108,16 @@
         "visual": "8 source comparisons; differences retained",
         "environment_pending": "OS IME/assistive technology/other browsers/devices"
       },
-      "current_regression": "G29: unit93, affected development58, full build152; original G28 results retained",
+      "current_regression": {
+        "goal": "G28",
+        "unit_dom": "5 files 31/31 unit+DOM; 38.72s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "result": "../RESULTS/G28_RESULT.md#g28-r4-recheck"
+      },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
         "item_ids": [
           "R4-F054-O01",
           "R4-F054-O02",
@@ -5135,10 +5142,26 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g28",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_92611ceaf06340ae99ed8df9b666d850"
         ]
+      },
+      "historical_regression_before_g25_g29_review_20261127": "G29: unit93, affected development58, full build152; original G28 results retained",
+      "r4_recheck_20261127": {
+        "result": "../RESULTS/G28_RESULT.md#g28-r4-recheck",
+        "source_flows": 2,
+        "source_steps": 8,
+        "source_images_directly_viewed": 8,
+        "new_mcp_query_performed": true,
+        "unit_dom": "5 files 31/31 unit+DOM; 38.72s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 6.75s",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {
