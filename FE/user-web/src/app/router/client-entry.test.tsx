@@ -18,6 +18,34 @@ async function key(selector: string, value: string, composing = false) {
 }
 // 기능 : 고객 생성·조회·취소와 이미 연결된 프로젝트 선택의 동일 객체 경계를 검증한다.
 describe("G19 client journeys", () => {
+  // 기능 : 고객 검색·정렬과 생성 취소가 기존 query·hash 및 복귀 위치를 보존한다.
+  it("preserves unrelated query and hash across search, sorting and creation cancellation", async () => {
+    await navigate("/app/clients?keep=1#client-results"); await settle();
+    await input(".client-search input", "Sample"); expect(window.location.hash).toBe("#client-results");
+    await click(".client-table th:first-child button"); expect(window.location.hash).toBe("#client-results");
+    const origin = window.location.pathname + window.location.search + window.location.hash;
+    await click(".client-list-tools a"); await settle(); expect(window.location.hash).toBe("#client-results");
+    await click(".client-dialog .dialog__close"); expect(window.location.pathname + window.location.search + window.location.hash).toBe(origin);
+    expect(new URLSearchParams(window.location.search).get("keep")).toBe("1");
+    await navigate("/app/settings/company?visit=menu#company"); await settle();
+    await click(".app-new"); await click('.app-create-menu [role="menuitem"]'); await settle(); await click(".client-dialog .dialog__close");
+    expect(window.location.pathname + window.location.search + window.location.hash).toBe("/app/settings/company?visit=menu#company");
+  });
+  // 기능 : 한글 검색 조합은 확정 전 URL과 목록에 반영하지 않고 새 이력에서 폐기한다.
+  it("keeps an unfinished search composition separate from committed navigation", async () => {
+    await act(async () => element(".client-search input").dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true })));
+    await input(".client-search input", "고");
+    expect(new URLSearchParams(window.location.search).has("q")).toBe(false);
+    expect(document.querySelectorAll(".client-table tbody tr")).toHaveLength(2);
+    await act(async () => element(".client-search input").dispatchEvent(new CompositionEvent("compositionend", { bubbles: true })));
+    expect(new URLSearchParams(window.location.search).get("q")).toBe("고");
+    await act(async () => element(".client-search input").dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true })));
+    await input(".client-search input", "고객"); await navigate("/app/clients?q=고&visit=2");
+    expect(element<HTMLInputElement>(".client-search input").value).toBe("고");
+    await act(async () => router.navigate(-1));
+    expect(element<HTMLInputElement>(".client-search input").value).toBe("고");
+    await input(".client-search input", "Sample"); expect(new URLSearchParams(window.location.search).get("q")).toBe("Sample");
+  });
   // 기능 : 한 번 생성한 고객과 태그가 목록·상세·프로젝트 선택에 같은 ID로 전달된다.
   it("creates once after retry and keeps the saved customer across list and project selection", async () => {
     await choose(".client-tools select", "write-error"); await click(".client-list-tools a"); await settle(); await fillClient();

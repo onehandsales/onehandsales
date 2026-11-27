@@ -28339,5 +28339,29 @@
     "real_api_requests": null,
     "g21_implementation_started": false,
     "push_deploy": false
+  },
+  "g19_g20_additional_review_20261127": {
+    "result": "../RESULTS/G19_RESULT.md#g19-g20-additional-review",
+    "baseline_commits": ["90b36f5d", "31cf8033", "f4ec375e"],
+    "four_criteria_reviewed": true,
+    "findings_fixed": [
+      "Search, sorting and customer creation cancellation lost URL hash",
+      "Unfinished search composition was published before confirmation; draft is now discarded on navigation and history return"
+    ],
+    "unit_dom": "5 affected files 33/33; 49.11s; includes G19/G20 connected journeys and existing project store",
+    "typecheck": "app/node passed noEmit incremental false",
+    "lint": "passed full ESLint",
+    "build": "memory only; 1976 modules; 3 outputs; 9.04s",
+    "full_suite_after_correction": "not_run; previous 44 files 278/278 belongs to pre-correction state",
+    "browser_e2e": "not_run; no connected document session; ports not rechecked",
+    "new_mcp_query_performed": false,
+    "source_images_reopened": 0,
+    "visual_identity": "not_verified",
+    "real_api_requests": null,
+    "overall_complete": false,
+    "artifacts_created": false,
+    "next_recommended_batch": ["G21", "G22", "G23", "G24"],
+    "g21_implementation_started": false,
+    "push_deploy": false
   }
 }
