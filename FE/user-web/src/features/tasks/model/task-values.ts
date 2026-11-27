@@ -1,5 +1,7 @@
 import { taskStatuses } from "./task-types";
 import type { Task, TaskDraft, TaskStatus } from "./task-types";
+// 기능 : 작업과 하위 담당자 아바타에 이름별 첫 글자를 일관되게 표시한다.
+export function taskInitials(name: string) { return name.replace(/\(preview\)/g, "").trim().split(/\s+/).slice(0, 2).map(word => word[0]).join("").toUpperCase(); }
 export const taskReferenceDay = "2024-02-07";
 // 기능 : 새 패널의 미저장 초안을 만들며 빈 패널 자체는 작업 레코드로 계산하지 않는다.
 export function newTaskDraft(projectId = "", status: TaskStatus = "To Do"): TaskDraft { return { title: "", projectId, status, assigneeId: null, dueDate: "", description: "" }; }

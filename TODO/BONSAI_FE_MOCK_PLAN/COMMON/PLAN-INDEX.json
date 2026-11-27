@@ -4856,7 +4856,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
+      "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
       "flow_scope": [
         {
           "flow_number": 94,
@@ -4890,15 +4890,15 @@
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G26/"
       },
       "current_regression": {
-        "goal": "G27",
-        "unit": "87/87",
-        "development_e2e": "143/143 full suite",
-        "production_e2e": "143/143 full suite",
-        "connected_journey": "G18-G27 same IDs and role handoff passed",
-        "result": "../RESULTS/G27_RESULT.md"
+        "goal": "G26",
+        "unit_dom": "3 files 26/26; 30.30s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "result": "../RESULTS/G26_RESULT.md#g26-r4-recheck"
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
         "item_ids": [
           "R4-F096-O01",
           "R4-F096-O02",
@@ -4923,7 +4923,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g26",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_92611ceaf06340ae99ed8df9b666d850",
           "sc_dfaae9980c7c49f5b05aa2d3f0f3a1bf"
@@ -4934,6 +4934,29 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "historical_regression_before_g25_g29_review_20261127": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
+      },
+      "r4_recheck_20261127": {
+        "result": "../RESULTS/G26_RESULT.md#g26-r4-recheck",
+        "source_flows": 2,
+        "source_steps": 15,
+        "source_images_directly_viewed": 15,
+        "new_mcp_query_performed": true,
+        "unit_dom": "3 files 26/26; 30.30s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {
