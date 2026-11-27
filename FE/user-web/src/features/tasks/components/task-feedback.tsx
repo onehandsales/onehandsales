@@ -12,5 +12,5 @@ export function TaskFeedback() {
     return function cleanup() { cancelAnimationFrame(frame); };
   }, [result]);
   if (!result || dismissed === result.sequence) return null;
-  return <div className="task-feedback" role="status"><CheckCircle2 size={17} color="#55aa2d" /><span>Your task has been {result.action === "archive" ? "archived" : "deleted"}</span><button type="button" aria-label="Dismiss task message" onClick={() => setDismissed(result.sequence)}>×</button></div>;
+  return <div className="task-feedback" role="status"><CheckCircle2 size={17} color="#55aa2d" /><span>Your task has been {result.action === "archive" ? "archived" : "deleted"}.</span><button type="button" aria-label="Dismiss task message" onClick={() => setDismissed(result.sequence)}>×</button></div>;
 }

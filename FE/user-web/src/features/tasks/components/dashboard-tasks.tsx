@@ -1,5 +1,6 @@
 import "@/styles/tasks.css";
 import { ArrowRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useTasks } from "../hooks/use-tasks";
 import { useTaskMutation } from "../hooks/use-task-mutation";
 import { taskDueLabel, taskInitials } from "../model/task-values";
@@ -21,9 +22,9 @@ function DashboardTaskRow({ task }: { task: TaskView }) {
 }
 // 기능 : 대시보드 작업 영역만 공유 원본에 연결하고 기존 재무·시간·활동 프레임은 확장하지 않는다.
 export function DashboardTasks() {
-  const query = useTasks();
+  const query = useTasks(); const location = useLocation();
   if (query.isPending) return <p role="status">Loading tasks…</p>;
   if (query.isError) return <div role="alert"><p>{query.error.message}</p><button type="button" onClick={() => void query.refetch()}>Retry dashboard tasks</button></div>;
   if (!query.data?.length) return <div className="setup-empty tasks"><p>No tasks yet.</p></div>;
-  return <div className="dashboard-task-list">{query.data.map(task => <DashboardTaskRow key={task.id} task={task} />)}</div>;
+  return <div className="dashboard-task-list">{query.data.map(task => <DashboardTaskRow key={`${location.key}:${task.id}`} task={task} />)}</div>;
 }

@@ -5183,7 +5183,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·연결 회귀 검증; 자료·시각·환경 대기",
+      "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
       "flow_scope": [
         {
           "flow_number": 96,
@@ -5211,7 +5211,7 @@
         "environment_pending": "OS IME/assistive technology/other browsers/devices"
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
         "item_ids": [
           "R4-F097-O01",
           "R4-F097-O02",
@@ -5235,11 +5235,34 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g29",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_8557a3e41edc402a8ebdf39022ee8d44",
           "sc_ea042f68264945369fcad12326916b22"
         ]
+      },
+      "current_regression": {
+        "goal": "G29",
+        "unit_dom": "4 files 26/26 unit+DOM; 33.60s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "result": "../RESULTS/G29_RESULT.md#g29-r4-recheck"
+      },
+      "r4_recheck_20261127": {
+        "result": "../RESULTS/G29_RESULT.md#g29-r4-recheck",
+        "source_flows": 2,
+        "source_steps": 7,
+        "source_images_directly_viewed": 7,
+        "new_mcp_query_performed": true,
+        "unit_dom": "4 files 26/26 unit+DOM; 33.60s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 6.76s",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {
