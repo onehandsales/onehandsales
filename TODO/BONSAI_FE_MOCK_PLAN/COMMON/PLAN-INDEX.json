@@ -28821,5 +28821,33 @@
     "strict_visual": "not verified; source DOM/font/assets/capture conditions and current browser comparison unavailable",
     "evidence_files": "untouched; no new verification artifacts",
     "scope": "G30-G31 only; G32/R07/API/BE/DB/push/deploy not started"
+  },
+  "g30_g31_followup_review_20261127": {
+    "result": "../RESULTS/G31_RESULT.md#g30-g31-followup-review",
+    "baseline_commit": "25bf7c30",
+    "status": "partial; reproduced defects fixed; browser/strict visual/source policies pending",
+    "findings_fixed": [
+      "Discard template options on history entry changes without resurrection on return",
+      "Preserve foreign URL and history state when recovering from an invalid template",
+      "Restore attachment control focus on cancel, retry and removal without stealing moved focus",
+      "Match the observed downward cloud arrow in shared attachment cards"
+    ],
+    "pre_fix": "writing DOM 3 failed / 6 passed; 22.40s",
+    "unit_dom_runs": [
+      "5 files 22/22; 48.55s",
+      "6 files 36/36; 63.74s",
+      "Connected journey with image preview return: 1/1; 20.79s"
+    ],
+    "unique_tests_passed": "9 files / 48 tests; not a fresh whole-suite run",
+    "typecheck": "app/node noEmit incremental false pass",
+    "lint": "full ESLint pass",
+    "build": "memory only; 1976 modules / 3 outputs; 8.30s",
+    "original_reopened": "4 PNGs: Creating 04, Editing 04-05, Adding(template) 05; no new MCP screens fetched",
+    "browser": "not performed; current document session lookup empty; automatic profile/cache artifacts restricted",
+    "strict_visual": "not verified; original font/assets/capture conditions and current browser comparison unavailable",
+    "source_analysis_items_pending": 3,
+    "overall_complete": false,
+    "evidence_files": "untouched; no new verification artifacts",
+    "scope": "G30-G31 followup only; G32/R07/API/BE/DB/push/deploy not started"
   }
 }

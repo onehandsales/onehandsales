@@ -57,6 +57,12 @@ describe("G30-G31 final connected review", () => {
     expect(new URLSearchParams(location.search).get("task")).toBe(first[0]);
     expect(element<HTMLTextAreaElement>('[aria-label="Task description"]').value).toBe("Prepare the customer visit");
     expect(element('[aria-label="Preview visit.png"]')).toBeDefined();
+    await act(async () => element('[aria-label="Preview visit.png"]').focus());
+    await click('[aria-label="Preview visit.png"]');
+    expect(element(".template-image-dialog img").getAttribute("alt")).toBe("visit.png");
+    await click(".template-image-dialog .dialog__close");
+    expect(document.activeElement === document.querySelector('[aria-label="Preview visit.png"]')).toBe(true);
+    expect(new URLSearchParams(location.search).get("task")).toBe(first[0]);
     expect(element('[aria-label="Recorded task time"]').textContent).toContain("No hours added");
     expect(element('[aria-label="Task status"]').textContent).toContain("To Do");
     expect(element<HTMLInputElement>('.subtask-row input[type="checkbox"]').checked).toBe(false);

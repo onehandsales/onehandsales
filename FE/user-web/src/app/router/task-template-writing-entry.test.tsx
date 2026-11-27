@@ -18,6 +18,66 @@ async function key(selector: string, key: string, composing = false) {
 }
 // 기능 : 템플릿 편집 진입·저장 경계·초점·첨부의 로컬 수명을 실제 앱에서 검증한다.
 describe("G30 template writing entries", () => {
+  // 기능 : 선택 창의 열림 의도가 이력 이동과 복귀 뒤에 남지 않는지 확인한다.
+  it("closes template options on history changes without reopening them on return", async () => {
+    await openEditor(); await click(".template-editor-dialog .dialog__close");
+    await waitFor(() => expect(document.querySelector(".template-editor-dialog")).toBeNull());
+    await click('[aria-label="Template options"]');
+    expect(document.querySelector('[aria-label="Choose task template"]')).not.toBeNull();
+    await navigate(location.pathname + location.search + "&entry=next");
+    expect.soft(document.querySelector('[aria-label="Choose task template"]')).toBeNull();
+    await act(async () => router.navigate(-1)); await settle();
+    expect.soft(document.querySelector('[aria-label="Choose task template"]')).toBeNull();
+    await click('[aria-label="Template options"]');
+    expect(document.querySelector('[aria-label="Choose task template"]')).not.toBeNull();
+  });
+  // 기능 : 잘못된 템플릿 복귀가 해당 기능의 주소만 정리하고 외부 문맥을 보존하는지 확인한다.
+  it("recovers from an invalid template without losing foreign URL and history context", async () => {
+    await act(async () => router.navigate("/app/tasks?tab=Templates&template=missing&templateTask=missing&templateDialog=rename&source=client#templates", { state: { retained: true, templateDialogEntry: true } }));
+    await settle(); await click(".template-read-state a");
+    expect.soft(location.hash).toBe("#templates");
+    expect.soft(new URLSearchParams(location.search).get("source")).toBe("client");
+    expect.soft(router.state.location.state).toEqual({ retained: true });
+    expect.soft(new URLSearchParams(location.search).has("template")).toBe(false);
+    expect.soft(new URLSearchParams(location.search).has("templateTask")).toBe(false);
+    expect.soft(new URLSearchParams(location.search).has("templateDialog")).toBe(false);
+    expect(document.querySelector(".task-templates-intro")).not.toBeNull();
+  });
+  // 기능 : 첨부 취소·실패·재시도·삭제의 초점 복귀와 사용자가 옮긴 초점 보존을 확인한다.
+  it("restores attachment focus after cancelling, retrying and removing an image", async () => {
+    let finish: ((value: { close: () => void }) => void) | undefined;
+    const decode = vi.fn().mockImplementationOnce(() => new Promise(resolve => { finish = resolve; })).mockRejectedValueOnce(new Error("decode")).mockRejectedValueOnce(new Error("retry decode")).mockResolvedValue({ close: vi.fn() });
+    vi.stubGlobal("createImageBitmap", decode);
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:template-focus");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    await openEditor();
+    // 기능 : 동일한 로컬 파일을 다시 선택해 읽기 취소와 재시도의 독립성을 확인한다.
+    async function attach() {
+      await act(async () => { const field = element<HTMLInputElement>('[aria-label="Template task file"]'); Object.defineProperty(field, "files", { configurable: true, value: [new File(["local"], "focus.png", { type: "image/png" })] }); field.dispatchEvent(new Event("change", { bubbles: true })); });
+    }
+    await attach();
+    await act(async () => element(".template-files [role=status] button").focus());
+    await click(".template-files [role=status] button");
+    expect.soft(document.activeElement === document.querySelector(".template-files > .template-text-button")).toBe(true);
+    await act(async () => finish?.({ close() {} }));
+    expect(document.querySelectorAll(".template-file-card")).toHaveLength(0);
+    await attach();
+    await act(async () => element(".template-files [role=alert] button").focus());
+    await click(".template-files [role=alert] button");
+    expect.soft(document.activeElement === document.querySelector(".template-files [role=alert] button")).toBe(true);
+    await click(".template-files [role=alert] button");
+    expect.soft(document.activeElement === document.querySelector(".template-files > .template-text-button")).toBe(true);
+    expect(document.querySelectorAll(".template-file-card")).toHaveLength(1);
+    await act(async () => element('[aria-label="Remove focus.png"]').focus());
+    await click('[aria-label="Remove focus.png"]');
+    expect.soft(document.activeElement === document.querySelector(".template-files > .template-text-button")).toBe(true);
+    expect(document.querySelectorAll(".template-file-card")).toHaveLength(0);
+    decode.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    await attach(); await act(async () => element('input[name="title"]').focus());
+    await act(async () => finish?.({ close() {} }));
+    expect.soft(document.activeElement === document.querySelector('input[name="title"]')).toBe(true);
+    expect(document.querySelectorAll(".template-file-card")).toHaveLength(1);
+  });
   it("preserves foreign URL and state through creation, direct close and rename", async () => {
     const base = "/app/tasks?tab=Templates&source=client#templates";
     await act(async () => router.navigate(base, { state: { retained: true } })); await settle();
