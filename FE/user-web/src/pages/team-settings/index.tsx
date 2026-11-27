@@ -8,12 +8,10 @@ import "@/styles/company-settings.css";
 import "@/styles/team-settings.css";
 // 기능 : 설정 Team 목록과 query 기반 초대·행별 제거 확인을 기존 앱 셸 안에 조합한다.
 export function TeamSettingsPage() {
-  const team = useTeam(); const [search, setSearch] = useSearchParams(); const location = useLocation(); const [target, setTarget] = useState<TeamRow | null>(null); const [notice, setNotice] = useState(""); const [unavailable, setUnavailable] = useState(""); const inviteLink = useRef<HTMLAnchorElement>(null); const restoreInviteFocus = useRef(false);
+  const team = useTeam(); const [search, setSearch] = useSearchParams(); const location = useLocation(); const [target, setTarget] = useState<TeamRow | null>(null); const [notice, setNotice] = useState(""); const [unavailable, setUnavailable] = useState(""); const inviteLink = useRef<HTMLAnchorElement>(null); const restoreInviteFocus = useRef(false); const noticeAfterNavigation = useRef("");
   const inviteOpen = search.get("invite") === "1"; const contextKey = `${team.scope?.revision}:${team.state.scenario}:${team.scope ? team.store.fixture(team.scope.workspaceId) : ""}`;
-  // 기능 : 탐색이나 검증 문맥 변경 시 이전 행·안내 상태를 폐기한다.
-  useEffect(function clearContext() { setTarget(null); setUnavailable(""); }, [contextKey, location.key]);
-  // 기능 : 팀 문맥 변경 시 이전 작업의 성공 안내를 폐기한다.
-  useEffect(function clearNotice() { setNotice(""); }, [contextKey]);
+  // 기능 : 탐색·문맥 변경은 이전 행·안내를 폐기하고 방금 성공한 초대의 닫기 이동에만 새 안내를 전달한다.
+  useEffect(function clearContext() { setTarget(null); setUnavailable(""); setNotice(noticeAfterNavigation.current); noticeAfterNavigation.current = ""; }, [contextKey, location.key]);
   // 기능 : 모달 정리가 끝난 현재 화면에서만 살아 있는 초대 제어로 초점을 복원한다.
   useEffect(function focusAfterClose() { if (!restoreInviteFocus.current || inviteOpen || target) return; restoreInviteFocus.current = false; inviteLink.current?.focus(); }, [inviteOpen, target]);
   // 기능 : 초대 모달 닫기는 현재 이력의 query만 제거하고 원래 뒤로 복귀 경로를 보존한다.
@@ -25,7 +23,7 @@ export function TeamSettingsPage() {
     {!team.canEdit && !team.denied && <p className="team-readonly" role="status">{team.state.scenario === "empty" ? "Empty preview. Choose Normal to restore the local team." : "This local member can view the team. Only the owner can change invitations."}</p>}
     {team.loading ? <p role="status" className="team-read-state">Loading team…</p> : team.error ? <div role="alert" className="team-read-state"><h3>{team.denied ? "Team access unavailable" : "Team could not be loaded"}</h3><p>{team.error}</p><button type="button" onClick={team.reload}>Retry team</button></div> : team.rows.length === 0 ? <p role="status" className="team-read-state">No team members to display.</p> : <TeamTable rows={team.rows} canEdit={team.canEdit} onRemove={setTarget} onUnavailable={setUnavailable} />}
     </div>{team.scope && <TeamTools rows={team.rows} store={team.store} state={team.state} scope={team.scope} owner={team.owner} />}
-    {inviteOpen && team.scope && team.canEdit && <InviteDialog key={contextKey + location.key} store={team.store} scope={team.scope} onClose={closeInvite} onSuccess={() => { closeInvite(); setNotice("Invite sent."); }} />}
+    {inviteOpen && team.scope && team.canEdit && <InviteDialog key={contextKey + location.key} store={team.store} scope={team.scope} onClose={closeInvite} onSuccess={() => { noticeAfterNavigation.current = "Invite sent."; closeInvite(); }} />}
     {inviteOpen && !team.canEdit && <Dialog title="Invitation unavailable" onClose={closeInvite}><p>Inviting is unavailable in this local role or preview state.</p><button type="button" onClick={closeInvite}>Return to team</button></Dialog>}
     {target && team.scope && team.canEdit && <RemoveDialog key={contextKey + target.id} store={team.store} scope={team.scope} target={target} onClose={() => setTarget(null)} onSuccess={removed} />}
     {unavailable && <Dialog title={unavailable} onClose={() => setUnavailable("")}><p>This action’s result is not available in the recorded preview. The team is unchanged and no email has been sent.</p><button type="button" onClick={() => setUnavailable("")}>Return to team</button></Dialog>}

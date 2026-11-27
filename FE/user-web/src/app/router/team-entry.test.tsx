@@ -29,6 +29,8 @@ describe("G17 team journeys", () => {
     await click('[form="team-invite-form"]'); await click('[form="team-invite-form"]'); await settle(); await settle();
     const row = element('[data-team-id="studio-a:invite-new-1"]'); expect(row.textContent).toContain("Invite Pending"); expect(row.textContent).toContain("1 Project");
     expect(document.querySelectorAll(".team-table tbody tr")).toHaveLength(3); expect(document.activeElement).toBe(element(".team-heading a"));
+    expect(element(".team-notice").textContent).toContain("Invite sent.");
+    await navigate("/app/settings/team"); expect(document.querySelector(".team-notice")).toBeNull();
     await click(".team-heading a"); await fillInvite(); await click('[form="team-invite-form"]'); await settle();
     expect(element(".team-invite-fields [role=alert]").textContent).toContain("already exists");
   });
@@ -53,6 +55,8 @@ describe("G17 team journeys", () => {
     expect(document.querySelector('[data-team-id="studio-a:invite-jon"]')).toBeNull();
     expect(element('[data-team-id="studio-a:member-jon"]').textContent).toContain("Feb 8, 2024");
     expect(document.querySelectorAll(".team-table tbody tr")).toHaveLength(4); expect(document.activeElement).toBe(element(".team-heading a"));
+    expect(element(".team-notice").textContent).toContain("Team member removed.");
+    await navigate("/app/settings/team?visit=after-removal"); expect(document.querySelector(".team-notice")).toBeNull();
     await remove("jon2@example.test"); expect(element("dialog h2").textContent).toBe("Remove joined member");
     await click("dialog .dialog__close"); expect(document.querySelectorAll(".team-table tbody tr")).toHaveLength(4);
     await choose(scenario, "slow"); await settle(1600); await remove("smith@example.test"); await click(".team-danger");
