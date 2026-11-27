@@ -8,11 +8,17 @@ import type { Task, TaskDraft, TaskState, TaskStore, TaskComment, Subtask, Subta
 import { copyTask } from "../model/task-copy";
 import { initialTaskStatuses, validateTaskStatuses } from "../model/task-status-values";
 import { PREVIEW_SESSIONS } from "@/mocks/preview-seed";
+import { INVITATION_WORKSPACE_ID } from "@/mocks/invitation-seed";
 // 기능 : 전체·프로젝트·초대 작업을 단일 메모리 원본에 저장하고 배정 범위와 저장 revision을 검증한다.
 export function createTaskStore(preview: PreviewRuntime, projects: ProjectStore, team: TeamStore): TaskStore {
   const workspaces = new Map<string, Task[]>(); const definitions = new Map<string, TaskStatusSettings>(); const submissions = new Map<string, string>(); const batches = new Map<string, { signature: string; ids: string[] }>(); const subtaskSubmissions = new Map<string, string>(); const commentSubmissions = new Map<string, string>(); const listeners = new Set<() => void>(); let state: TaskState = { version: 0, scenario: "normal" }; let generation = 0; let sequence = 0; let failed = false; let previous = preview.getSnapshot();
   // 기능 : 기존 비교용 작업공간만 표본 작업을 제공하고 새 가입 작업공간은 빈 목록으로 시작한다.
-  function rows(workspaceId: string) { let data = workspaces.get(workspaceId); if (!data && !PREVIEW_SESSIONS.some(session => session.workspaces.some(workspace => workspace.id === workspaceId))) { data = []; workspaces.set(workspaceId, data); } if (!data) { const projectId = `${workspaceId}:team-project-2`; data = [{ ...newTaskDraft(projectId), title: "Untitled", id: `${workspaceId}:task-untitled`, workspaceId, revision: 0, archived: false, activities: [], subtasks: [] }, ...[1, 2].map(index => ({ ...newTaskDraft(projectId, "In Progress"), title: "Initial Chat", assigneeId: `${workspaceId}:member-owner`, dueDate: "2024-02-06", id: `${workspaceId}:task-initial-chat-${index}`, workspaceId, revision: 0, archived: false, activities: [], subtasks: [] }))]; workspaces.set(workspaceId, data); } return data; }
+  function rows(workspaceId: string) { let data = workspaces.get(workspaceId);
+    if (!data && workspaceId === INVITATION_WORKSPACE_ID) {
+      data = [{ ...newTaskDraft(`${workspaceId}:team-project-2`, "Done"), title: "Initial Chat", assigneeId: `${workspaceId}:member-owner`, dueDate: "2024-02-06", id: `${workspaceId}:task-initial-chat-1`, workspaceId, revision: 0, archived: false, activities: [], subtasks: [] }];
+      workspaces.set(workspaceId, data);
+    }
+    if (!data && !PREVIEW_SESSIONS.some(session => session.workspaces.some(workspace => workspace.id === workspaceId))) { data = []; workspaces.set(workspaceId, data); } if (!data) { const projectId = `${workspaceId}:team-project-2`; data = [{ ...newTaskDraft(projectId), title: "Untitled", id: `${workspaceId}:task-untitled`, workspaceId, revision: 0, archived: false, activities: [], subtasks: [] }, ...[1, 2].map(index => ({ ...newTaskDraft(projectId, "In Progress"), title: "Initial Chat", assigneeId: `${workspaceId}:member-owner`, dueDate: "2024-02-06", id: `${workspaceId}:task-initial-chat-${index}`, workspaceId, revision: 0, archived: false, activities: [], subtasks: [] }))]; workspaces.set(workspaceId, data); } return data; }
   // 기능 : 불변 버전을 갱신해 모든 작업 소비 화면을 다시 조회한다.
   function publish() { state = { ...state, version: state.version + 1 }; listeners.forEach(listener => listener()); }
   // 기능 : 현재 가상 계정·workspace·revision과 접근 제한 시나리오를 검사한다.

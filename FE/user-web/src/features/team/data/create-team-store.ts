@@ -4,6 +4,7 @@ import { authDelay } from "@/features/mock-auth/data/auth-delay";
 import { inviteError, TeamReadError } from "../model/team-types";
 import type { InviteDraft, TeamFixture, TeamRow, TeamScenario, TeamState, TeamStore } from "../model/team-types";
 import { teamProjects, teamSeed } from "./team-seed";
+import { INVITATION_WORKSPACE_ID } from "@/mocks/invitation-seed";
 // 기능 : 작업공간별 초대 원본을 메모리에 보관하고 취소·중복·세션 경합을 저장 직전에 검사한다.
 export function createTeamStore(preview: PreviewRuntime): TeamStore {
   let projectSource: Parameters<TeamStore["connectProjects"]>[0] | null = null;
@@ -14,7 +15,7 @@ export function createTeamStore(preview: PreviewRuntime): TeamStore {
   // 기능 : 현재 세션과 작업공간 밖에서 시작한 지연 작업을 거부한다.
   function assertScope(scope: PreviewScope) { const now = preview.getSnapshot(); if (now.revision !== scope.revision || now.session?.id !== scope.actorId || now.workspaceId !== scope.workspaceId) throw new DOMException("Team scope changed", "AbortError"); }
   // 기능 : 원본 구성이 다른 두 시나리오를 작업공간별로 구분한다.
-  function fixture(id: string) { return fixtures.get(id) ?? "inviting"; }
+  function fixture(id: string) { return fixtures.get(id) ?? (id === INVITATION_WORKSPACE_ID ? "removing" : "inviting"); }
   // 기능 : 새 작업공간에는 독립 seed를 한 번만 생성한다.
   function rows(id: string) { let value = teams.get(id); if (!value) { value = teamSeed(id, fixture(id)); teams.set(id, value); } return value; }
   // 기능 : 저장 권한을 UI와 별개로 목 저장 경계에서도 확인한다.

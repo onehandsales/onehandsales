@@ -1,6 +1,7 @@
 # 원본 분석 R4의 계획 반영과 보완 대응표
 
-> 2026-11-27 순차 재검토: G17 초기 대시보드의 팀 완료 표시·초대 진입을 실제 팀 저장소에 연결하고 모달 초점 복귀를 현재 화면 수명에 연결했다. 관련6파일32/32와 G16 DOM4/4, 타입·변경 lint·메모리 build 통과. **전체 완료 아님**: 원본 동일성·실제 브라우저·미수록 정책 대기. 로컬 커밋 후 지정된 다음 Goal로 진행한다. [이번 결과](../RESULTS/G17_RESULT.md#g17-r4-recheck).
+> 2026-11-27 순차 재검토: G18 초대 수락의 이력/시나리오 취소·IME 제출 방어, 독립 원본 표본의 활동/시간/완료 작업, 협업자 목록·아바타·접근 경계를 보완했다. 관련6파일51/51와 G14~G18 DOM20/20, 최종 G18 DOM4/4 및 타입/lint·메모리build를 검증했다. **전체 완료 아님**: 원본 동일성·실제 브라우저·미수록 정책 대기. G18 로컬 커밋 후 전체 연결 흐름·4항목의 최종 검토를 진행한다. [이번 결과](../RESULTS/G18_RESULT.md#g18-r4-recheck).
+
 
 
 
@@ -139,7 +140,7 @@ G00은 근거·색인을, G01은 공통 UI 명세와 적용 범위를, 각 기�
 | <a id="goal-g15"></a>[G15](<GOAL-SPECS/G15.md>) 회사 정보·로고·공개 프로필 | 10 | G15 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기 | [3개](#shared-screens) |
 | <a id="goal-g16"></a>[G16](<GOAL-SPECS/G16.md>) 문서 브랜드 기본값 | 4 | G16 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기 | [1개](#shared-screens) |
 | <a id="goal-g17"></a>[G17](<GOAL-SPECS/G17.md>) 멤버 초대·대기 초대 제거 | 6 | G17 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기 | [2개](#shared-screens) |
-| <a id="goal-g18"></a>[G18](<GOAL-SPECS/G18.md>) 초대 수락·협업자 접근 | 7 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | 0개 |
+| <a id="goal-g18"></a>[G18](<GOAL-SPECS/G18.md>) 초대 수락·협업자 접근 | 7 | G18 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기 | 0개 |
 | <a id="goal-g19"></a>[G19](<GOAL-SPECS/G19.md>) 목록·신규 고객·상세 | 10 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [6개](#shared-screens) |
 | <a id="goal-g20"></a>[G20](<GOAL-SPECS/G20.md>) 고객 필드·이미지 | 5 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [3개](#shared-screens) |
 | <a id="goal-g21"></a>[G21](<GOAL-SPECS/G21.md>) 두 진입점의 프로젝트 생성 | 7 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [4개](#shared-screens) |
@@ -260,11 +261,11 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f002-o01"></a>R4-F002-O01 · 관찰 | 01~03 로그인에는 좌측 The Changelog 스크롤 카드·New 배지·하단 Bonsai updates 링크, 우측 로그인 카드, 상단 로고/Log In/Sign Up, 우하단 녹색 도움말 위젯이 있다. 실패는 CTA 바로 아래 붉은 가로 안내이며 01의 미인증 안내는 우하단 토스트다. | [G18](<GOAL-SPECS/G18.md>) | 미대조 |
-| <a id="r4-f002-o02"></a>R4-F002-O02 · 관찰 | 04~07 일반 가입은 양쪽 하단 잎 삽화·좌상단 Bonsai 워드마크·우상단 로그인 링크가 있다. 05 이메일 오류는 입력 위 꼬리 있는 붉은 툴팁이며 입력 외곽선은 녹색이다. 07 Strong은 비밀번호 레이블 우측, CAPTCHA 체크는 별도 상태다. | [G18](<GOAL-SPECS/G18.md>) | 미대조 |
-| <a id="r4-f002-o03"></a>R4-F002-O03 · 관찰 | 08~09 초대 전용 폼에는 가운데 로고·Welcome to Bonsai.·Joe Studio 설명·JS 사각 아바타와 X·고정 이메일·구분선·입력 두 개·Accept Invitation·하단 약관이 있다. 일반 가입의 소셜/CAPTCHA/잎 삽화가 보이지 않는다. | [G18](<GOAL-SPECS/G18.md>) | 미대조 |
-| <a id="r4-f002-o04"></a>R4-F002-O04 · 관찰 | 10 내부 셸은 Projects/Tasks 두 메뉴, 상단 Track Time/아바타이며 Overview/Tasks/Time Tracking/Team 네 탭을 표시한다. Recent Activity에 완료 두 행과 archive 한 행이 이미 있다. 이 기존 활동을 초대 수락으로 생성된 활동이라고 해석하지 않는다. | [G18](<GOAL-SPECS/G18.md>) | 미대조 |
-| <a id="r4-f002-o05"></a>R4-F002-O05 · 관찰 | 11 보드의 Done 카드에도 Feb 06이 붉게 표시된다. 12 표에는 Title/Client/Tags/Start Date, 정렬 표시·행 말줄임이 있고 New Project CTA는 없다. 13 계정 메뉴는 Joe Studio 머리글과 Help Center/Settings/Logout 세 항목이다. | [G18](<GOAL-SPECS/G18.md>) | 미대조 |
+| <a id="r4-f002-o01"></a>R4-F002-O01 · 관찰 | 01~03 로그인에는 좌측 The Changelog 스크롤 카드·New 배지·하단 Bonsai updates 링크, 우측 로그인 카드, 상단 로고/Log In/Sign Up, 우하단 녹색 도움말 위젯이 있다. 실패는 CTA 바로 아래 붉은 가로 안내이며 01의 미인증 안내는 우하단 토스트다. | [G18](<GOAL-SPECS/G18.md>) | 구성 대조·시각 대기 |
+| <a id="r4-f002-o02"></a>R4-F002-O02 · 관찰 | 04~07 일반 가입은 양쪽 하단 잎 삽화·좌상단 Bonsai 워드마크·우상단 로그인 링크가 있다. 05 이메일 오류는 입력 위 꼬리 있는 붉은 툴팁이며 입력 외곽선은 녹색이다. 07 Strong은 비밀번호 레이블 우측, CAPTCHA 체크는 별도 상태다. | [G18](<GOAL-SPECS/G18.md>) | 구성 대조·시각 대기 |
+| <a id="r4-f002-o03"></a>R4-F002-O03 · 관찰 | 08~09 초대 전용 폼에는 가운데 로고·Welcome to Bonsai.·Joe Studio 설명·JS 사각 아바타와 X·고정 이메일·구분선·입력 두 개·Accept Invitation·하단 약관이 있다. 일반 가입의 소셜/CAPTCHA/잎 삽화가 보이지 않는다. | [G18](<GOAL-SPECS/G18.md>) | 구성 대조·시각 대기 |
+| <a id="r4-f002-o04"></a>R4-F002-O04 · 관찰 | 10 내부 셸은 Projects/Tasks 두 메뉴, 상단 Track Time/아바타이며 Overview/Tasks/Time Tracking/Team 네 탭을 표시한다. Recent Activity에 완료 두 행과 archive 한 행이 이미 있다. 이 기존 활동을 초대 수락으로 생성된 활동이라고 해석하지 않는다. | [G18](<GOAL-SPECS/G18.md>) | 구성 대조·시각 대기 |
+| <a id="r4-f002-o05"></a>R4-F002-O05 · 관찰 | 11 보드의 Done 카드에도 Feb 06이 붉게 표시된다. 12 표에는 Title/Client/Tags/Start Date, 정렬 표시·행 말줄임이 있고 New Project CTA는 없다. 13 계정 메뉴는 Joe Studio 머리글과 Help Center/Settings/Logout 세 항목이다. | [G18](<GOAL-SPECS/G18.md>) | 구성 대조·시각 대기 |
 | <a id="r4-f002-a01"></a>R4-F002-A01 · 남은 분석 | 각 인증 폼의 폭·입력/CTA 높이·오류툴팁·강도·CAPTCHA·토스트와 소유자/협업자 셸 차이를 개별 상태로 명세한다. | [G18](<GOAL-SPECS/G18.md>) | 분석 대기 |
 | <a id="r4-f002-a02"></a>R4-F002-A02 · 남은 분석 | 기록 사이의 이메일 변화와 일반 가입→초대 전용 가입 사이 생략된 조작을 자동 연결하지 않는다. CAPTCHA/소셜/아바타 X/메뉴 후속 동작은 미수록이다. | [G18](<GOAL-SPECS/G18.md>) | 분석 대기 |
 

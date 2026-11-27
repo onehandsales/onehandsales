@@ -13,7 +13,7 @@ export function WorkspaceBoundary() {
   if (!invitationAccess(state) && !store.getAccount(state.session.id)?.setupComplete) return <Navigate replace to={"/onboarding?returnTo=" + encodeURIComponent(location.pathname + location.search + location.hash)} />;
   if (invitationAccess(state)) {
     if (location.pathname === "/app") return <Navigate replace to="/app/projects" />;
-    if (!/^\/app\/(projects(?:\/[^/]+)?|tasks|settings\/profile|pending\/time-tracking)$/.test(location.pathname)) return <main className="page-content"><h1>Workspace access restricted</h1><p>This local invitation allows assigned projects and tasks. Company, financial and team management pages are unavailable.</p><Link to="/app/projects">Return to assigned projects</Link></main>;
+    if (!/^\/app\/(projects(?:\/[^/]+)?|tasks|settings\/profile|pending\/time-tracking)$/.test(location.pathname)) return <main className="page-content" id="main-content" tabIndex={-1}><h1>Workspace access restricted</h1><p>This local invitation allows assigned projects and tasks. Company, financial and team management pages are unavailable.</p><Link to="/app/projects">Return to assigned projects</Link></main>;
   }
   return <Outlet />;
 }

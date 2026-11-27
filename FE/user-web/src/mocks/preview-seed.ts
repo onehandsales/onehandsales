@@ -1,9 +1,11 @@
 import type { PreviewItem, PreviewSession } from "@/features/preview/model/preview-types";
+import { INVITATION_WORKSPACE_ID } from "./invitation-seed";
 
 export const SEED_TIME = "2024-02-06T09:00:00.000Z";
 export const PREVIEW_SESSIONS: readonly PreviewSession[] = [
   { id: "preview-a", name: "Alex (preview)", role: "owner", workspaces: [
     { id: "studio-a", name: "Studio A" }, { id: "studio-a-two", name: "Studio A · Second" },
+    { id: INVITATION_WORKSPACE_ID, name: "Joe Studio" },
   ] },
   { id: "preview-b", name: "Blair (preview)", role: "member", workspaces: [
     { id: "studio-b", name: "Studio B" },

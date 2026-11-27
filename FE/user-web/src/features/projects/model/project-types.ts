@@ -5,7 +5,9 @@ export const projectStages = ["New Lead", "Proposal Sent", "Contract Signed", "I
 export type ProjectStage = typeof projectStages[number];
 export type ProjectSettings = { paymentType: "hourly"; currency: "USD"; rateMinor: number; description: string; endDate: string | null; reminders: boolean };
 export type ProjectTimeEntry = { id: string; taskId: string; taskName: string; memberId: string; day: string; seconds: number; rateMinor: number; amountMinor: number };
-export type Project = { id: string; workspaceId: string; name: string; clientId: string; memberIds: string[]; stage: ProjectStage; revision: number; settings: ProjectSettings; timeEntries: ProjectTimeEntry[]; startDate: string | null; money: { currency: "USD"; dueMinor: number; paidMinor: number }; tagIds: string[]; origin: "client" | "global" | "column" | "seed"; created: { name: string; actor: string; at: string } };
+// 의미 : 개별 시간·청구 행이 미수록인 원본의 과거 합계와 활동을 저장하며 실제 수락이나 청구로 생성하지 않는다.
+export type ProjectRecordedOverview = { unbilledSeconds: number; billedSeconds: number; activities: { id: string; actor: string; action: "completed" | "archived"; title: string; at: string }[] };
+export type Project = { id: string; workspaceId: string; name: string; clientId: string; memberIds: string[]; stage: ProjectStage; revision: number; settings: ProjectSettings; timeEntries: ProjectTimeEntry[]; recordedOverview?: ProjectRecordedOverview; startDate: string | null; money: { currency: "USD"; dueMinor: number; paidMinor: number }; tagIds: string[]; origin: "client" | "global" | "column" | "seed"; created: { name: string; actor: string; at: string } };
 export type ProjectDraft = { name: string; clientId: string; origin: "client" | "global" | "column"; stage: ProjectStage };
 export type ProjectState = { version: number; scenario: Scenario };
 export type ProjectTag = { id: string; name: string; color: string; revision: number };

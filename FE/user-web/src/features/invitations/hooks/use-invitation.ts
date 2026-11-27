@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMockAuth } from "@/features/mock-auth";
 import { usePreviewEnvironment } from "@/features/preview";
 import { useTeamStore } from "@/features/team";
@@ -8,11 +8,11 @@ import type { TeamRow } from "@/features/team";
 // 기능 : 초대 입력과 중복 제출·실패 후 보존·취소 수명을 페이지에서 분리한다.
 export function useInvitation(target: TeamRow | null) {
   const { store: auth, state: authState } = useMockAuth(); const { store: team, state: teamState } = useTeamStore(); const { state } = usePreviewEnvironment(); const navigate = useNavigate();
-  const [name, setName] = useState(""); const [password, setPassword] = useState(""); const action = useTeamAction();
+  const [name, setName] = useState(""); const [password, setPassword] = useState(""); const action = useTeamAction(); const location = useLocation();
   // 기능 : 계정·초대·시나리오 전환은 입력을 비우되 자신의 수락 성공에 뒤따르는 이동 콜백은 유지한다.
-  useEffect(function clearDraft() { setName(""); setPassword(""); }, [state.revision, target?.id, teamState.scenario, authState.scenario]);
+  useEffect(function clearDraft() { setName(""); setPassword(""); }, [state.revision, target?.id, teamState.scenario, authState.scenario, location.key]);
   // 기능 : 초대 자체의 시나리오·대상이 바뀌면 진행 수락을 취소해 만료 전 요청이 되살아나지 않게 한다.
-  useEffect(function cancelInvitationScenario() { return action.cancel; }, [teamState.scenario, target?.id, action.cancel]);
+  useEffect(function cancelInvitationScenario() { return action.cancel; }, [teamState.scenario, authState.scenario, target?.id, action.cancel, location.key]);
   const account = state.session ? auth.getAccount(state.session.id) : undefined;
   const matches = account?.email.toLowerCase() === target?.email.toLowerCase();
   // 기능 : 저장 직전 같은 초대 revision을 재확인하고 성공한 경우에만 허용 프로젝트로 이동한다.
