@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
 import { useCompanySetup } from "@/features/company-setup/data/company-context";
 import { CompanyReadError, settingsError } from "../model/settings-types";
 import type { CompanySettings } from "../model/settings-types";
 // 기능 : 회사 전체 초안을 페이지·모달 수명에 묶고 취소·실패·중복 저장을 처리한다.
 export function useCompanyEditor(onSaved?: () => void) {
+  const location = useLocation();
   const { state: preview } = usePreviewEnvironment(); const { store, state } = useCompanySetup();
   const [draft, setDraft] = useState<CompanySettings | null>(null); const draftRef = useRef<CompanySettings | null>(null); const savedRevision = useRef(0);
   const [savedSlug, setSavedSlug] = useState("");
@@ -17,9 +19,9 @@ export function useCompanyEditor(onSaved?: () => void) {
   function edit(patch: Partial<CompanySettings>) { cancel(); setError(""); setSaved(false); if (draftRef.current) { draftRef.current = { ...draftRef.current, ...patch }; setDraft(draftRef.current); } }
   // 기능 : 명시적 재조회는 초안을 버리고 저장된 회사부터 다시 읽는다.
   function reload() { cancel(); draftRef.current = null; setDraft(null); setRetry(value => value + 1); }
-  // 기능 : 실행 범위·시나리오·이탈에서 늦은 결과를 취소하고 필요한 조회만 시작한다.
+  // 기능 : 실행 범위·이력·시나리오 변경에서 이전 저장 안내와 늦은 결과를 지우고 필요한 조회만 시작한다.
   useEffect(function loadCompany() {
-    request.current?.abort(); request.current = null; setPending(false); setError(""); setReadKind("");
+    request.current?.abort(); request.current = null; setPending(false); setSaved(false); setError(""); setReadKind("");
     if (!preview.session || !preview.workspaceId) return;
     if (draftRef.current && !["read-error", "empty", "denied"].includes(state.settingsScenario)) return function cancelSave() { request.current?.abort(); };
     const controller = new AbortController(); request.current = controller; draftRef.current = null; setDraft(null); setLoading(true);
@@ -27,7 +29,7 @@ export function useCompanyEditor(onSaved?: () => void) {
       if (controller.signal.aborted) return; savedRevision.current = value.settingsRevision; draftRef.current = value; setDraft(value); setSavedSlug(value.slug);
     }).catch((failure: unknown) => { if (!controller.signal.aborted && !(failure instanceof DOMException && failure.name === "AbortError")) { setError(failure instanceof Error ? failure.message : "Unable to read company."); setReadKind(failure instanceof CompanyReadError ? failure.kind : "read"); } }).finally(() => { if (request.current === controller) { request.current = null; setLoading(false); } });
     return function cancelOnLeave() { controller.abort(); request.current?.abort(); };
-  }, [preview.revision, preview.session, preview.workspaceId, retry, state.settingsScenario, store]);
+  }, [location.key, preview.revision, preview.session, preview.workspaceId, retry, state.settingsScenario, store]);
   // 기능 : 사용 가능한 전체 초안만 저장하며 성공 전 회사 소비 화면을 바꾸지 않는다.
   async function save() {
     if (!scope || !draftRef.current || !canEdit || request.current || composing.current) return;
