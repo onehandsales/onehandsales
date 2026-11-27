@@ -21,11 +21,13 @@ describe("G30 template writing entries", () => {
   it("preserves foreign URL and state through creation, direct close and rename", async () => {
     const base = "/app/tasks?tab=Templates&source=client#templates";
     await act(async () => router.navigate(base, { state: { retained: true } })); await settle();
+    await act(async () => element(".task-templates-intro .task-primary").focus());
     await click(".task-templates-intro .task-primary");
     expect.soft(location.hash).toBe("#templates");
     expect.soft(router.state.location.state).toMatchObject({ retained: true, templateDialogEntry: true });
     await input(".template-name-dialog input", "Context"); await click(".template-name-dialog [type=submit]");
     await waitFor(() => expect(element(".template-heading h2").textContent).toBe("Context"));
+    expect.soft(document.activeElement === document.querySelector(".template-heading>.task-primary")).toBe(true);
     expect.soft(location.hash).toBe("#templates"); expect.soft(router.state.location.state).toEqual({ retained: true });
     const template = new URLSearchParams(location.search).get("template");
     await act(async () => router.navigate(base.replace("#templates", `&template=${template}&templateDialog=rename#templates`), { state: { retained: true } })); await settle();

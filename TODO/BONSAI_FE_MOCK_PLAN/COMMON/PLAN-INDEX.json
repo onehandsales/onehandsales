@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27 KST",
-  "status": "G30·G31 R4 재검토·별도 커밋 / 전체 연결 검토 예정; 원본 동일성·실제 브라우저·미수록 정책 대기; G32·R07 미착수",
+  "status": "G30·G31 별도 로컬 커밋·전체 연결 재검토·2건 추가 보완·전체343/343; 부분 완료 / 원본 동일성·실제 브라우저·미수록 정책 대기; G32·R07 미착수",
   "goals": [
     {
       "id": "G00",
@@ -5456,6 +5456,19 @@
         "visual": "not complete; original PNG compared with code only",
         "source_unknowns": "2 analysis items retained",
         "artifacts": "none generated; existing evidence untouched"
+      },
+      "current_regression": {
+        "unit_dom": "59 files 343/343; 345.82s",
+        "typecheck": "pass",
+        "lint": "pass",
+        "build": "memory only; pass",
+        "result": "../RESULTS/G31_RESULT.md#g30-g31-final-review",
+        "browser": "not performed",
+        "strict_visual": "not complete"
+      },
+      "final_connected_review_20261127": {
+        "result": "../RESULTS/G31_RESULT.md#g30-g31-final-review",
+        "status": "partial; available local checks passed; browser/strict visual/source policies pending"
       }
     },
     {
@@ -5547,6 +5560,19 @@
         "visual": "not complete; original PNG compared with code only",
         "source_unknowns": "1 analysis item retained",
         "artifacts": "none generated; existing evidence untouched"
+      },
+      "current_regression": {
+        "unit_dom": "59 files 343/343; 345.82s",
+        "typecheck": "pass",
+        "lint": "pass",
+        "build": "memory only; pass",
+        "result": "../RESULTS/G31_RESULT.md#g30-g31-final-review",
+        "browser": "not performed",
+        "strict_visual": "not complete"
+      },
+      "final_connected_review_20261127": {
+        "result": "../RESULTS/G31_RESULT.md#g30-g31-final-review",
+        "status": "partial; available local checks passed; browser/strict visual/source policies pending"
       }
     },
     {
@@ -28772,5 +28798,28 @@
     "push_deploy": false,
     "final_unit_dom": "50 files 309/309; 276.64s",
     "build": "memory only; 1976 modules / 3 outputs; 11.27s"
+  },
+  "g30_g31_final_review_20261127": {
+    "result": "../RESULTS/G31_RESULT.md#g30-g31-final-review",
+    "status": "partial; available local checks passed; browser/strict visual/source policies pending",
+    "goal_commits": {
+      "G30": "3a4b82b4",
+      "G31": "3d5916c0"
+    },
+    "unit_dom": "59 files 343/343; 345.82s",
+    "target_after_final_fixes": "3 files 12/12; 49.00s",
+    "typecheck": "app/node noEmit pass",
+    "lint": "pass",
+    "build": "memory only; 1976 modules; 3 outputs",
+    "original": "3 flows / 19 steps viewed; ids/order/url/PNG SHA-256/size match index; 3 analysis hashes match after LF normalization",
+    "extra_fixes": [
+      "G30 creation focus",
+      "G31 read retry focus"
+    ],
+    "analysis_items_pending": 3,
+    "browser": "not performed; no existing document/CDP connection; automatic profile/cache artifacts restricted",
+    "strict_visual": "not verified; source DOM/font/assets/capture conditions and current browser comparison unavailable",
+    "evidence_files": "untouched; no new verification artifacts",
+    "scope": "G30-G31 only; G32/R07/API/BE/DB/push/deploy not started"
   }
 }

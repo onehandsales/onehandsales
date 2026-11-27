@@ -13,12 +13,15 @@ export function TemplateApplyHost() {
   const [params] = useSearchParams(); const location = useLocation(); const navigate = useNavigate();
   const [templateId, setTemplateId] = useState(""); const [projectId, setProjectId] = useState(params.get("templateProject") ?? ""); const [submission, setSubmission] = useState(() => crypto.randomUUID());
   const templateField = useRef<HTMLSelectElement>(null); const errorRef = useRef<HTMLParagraphElement>(null); const errorId = useId();
+  const retriedChoices = useRef(false);
   // 기능 : 적용 실패가 끝나면 보존된 선택과 연결된 오류 안내로 초점을 옮긴다.
   useEffect(function focusError() { if (mutation.error && !mutation.pending) errorRef.current?.focus(); }, [mutation.error, mutation.pending]);
   const selected = templates.data?.find(row => row.id === templateId); const target = projects.data?.find(row => row.id === projectId);
   const error = templates.error || projects.error || tasks.error;
   const loading = templates.isPending || projects.isPending || tasks.isPending;
   const unavailable = templates.state.scenario === "denied" || projects.state.scenario === "denied" || tasks.state.scenario === "denied" || tasks.state.scenario === "empty";
+  // 기능 : 선택지 재조회가 성공하면 사라진 재시도 버튼 대신 첫 선택으로 초점을 돌린다.
+  useEffect(function focusRetriedChoices() { if (retriedChoices.current && !loading && !error && !unavailable) { retriedChoices.current = false; templateField.current?.focus(); } }, [loading, error, unavailable]);
   // 기능 : 닫기·취소는 미완료 적용을 중단하고 원래 보드의 조건과 이력으로 복귀한다.
   function close() { mutation.cancel(); if ((location.state as { templateApplyEntry?: boolean } | null)?.templateApplyEntry) { void navigate(-1); return; } const next = new URLSearchParams(params); next.delete("applyTemplate"); next.delete("templateProject"); const state = { ...location.state }; delete state.templateApplyEntry; void navigate({ pathname: location.pathname, search: next.toString(), hash: location.hash }, { replace: true, state: Object.keys(state).length ? state : null, preventScrollReset: true }); }
   // 기능 : 적용 요청만 취소한 뒤 그대로 남은 템플릿 선택으로 초점을 복귀한다.
@@ -28,7 +31,7 @@ export function TemplateApplyHost() {
   // 기능 : 원본 snapshot을 작업 저장소에 전달하고 실제 생성 성공 때만 보드로 돌아간다.
   async function submit(event: FormEvent) { event.preventDefault(); if (mutation.pending || loading || error || unavailable) return; const result = await mutation.run(signal => applyTaskTemplate(templates.store, projects.store, tasks.store, templates.scope, templateId, projectId, submission, signal)); if (result?.length) close(); }
   // 기능 : 실패한 선택지 조회만 다시 요청하며 이미 고른 ID는 유지한다.
-  function retry() { void templates.refetch(); void projects.refetch(); void tasks.refetch(); }
+  function retry() { retriedChoices.current = true; void templates.refetch(); void projects.refetch(); void tasks.refetch(); }
   return <Dialog className="template-apply-dialog template-dialog" title="Select Task Template" onClose={close}>
     {loading ? <p className="template-apply-state" role="status">Loading templates and projects…</p> : error || unavailable ? <div className="template-apply-state" role="alert"><p>{error?.message ?? "Task templates cannot be applied in this access scenario."}</p><button type="button" onClick={retry}>Retry template choices</button><button type="button" onClick={close}>Return to task board</button></div> : <form onSubmit={submit}>
       <div className="template-apply-fields"><p>Use one of your <Link to="/app/tasks?tab=Templates">Task Templates</Link> to add a preset list of Tasks to one of your projects.</p>

@@ -102,7 +102,9 @@ describe("G31 template application entries", () => {
     expect(document.querySelector('[role="tooltip"]')).toBeNull();
     await click(trigger); await settle();
     expect(element('.template-apply-state [role="alert"], .template-apply-state[role="alert"]').textContent).toContain("Unable to load");
+    await act(async () => element(".template-apply-state button").focus());
     await click(".template-apply-state button"); await waitFor(() => expect(document.querySelector(projectSelect)).not.toBeNull());
+    expect.soft(document.activeElement === document.querySelector(templateSelect)).toBe(true);
     expect(element<HTMLSelectElement>(projectSelect).value).toBe(projectId); await choose(templateSelect, id);
     await click(applyButton); await waitFor(() => expect(document.querySelectorAll(generated)).toHaveLength(1));
     expect(new URLSearchParams(location.search).get("tab")).toBe("Tasks");
