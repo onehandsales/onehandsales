@@ -22,6 +22,8 @@ export function setupPreviewApp(startPath: string) {
   async function input(selector: string, value: string) { await act(async () => { const node = element<HTMLInputElement>(selector); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(node, value); node.dispatchEvent(new Event("input", { bubbles: true })); }); }
   // 기능 : 실제 목 지연과 React 완료 렌더를 기다린다.
   async function settle(ms = 400) { await act(async () => { await new Promise(resolve => setTimeout(resolve, ms)); }); }
+  // 기능 : 비동기 검증 재시도 사이에도 React 변경을 act 안에서 처리한다.
+  async function waitFor(assertion: () => void, timeout = 3000) { const deadline = Date.now() + timeout; while (true) { await settle(100); try { assertion(); return; } catch (error) { if (Date.now() >= deadline) throw error; } } }
   // 기능 : 각 테스트에 새 공급자를 만들고 명시적인 로컬 소유자 문맥으로 진입한다.
   beforeEach(async () => {
     vi.stubGlobal("matchMedia", (query: string) => ({ matches: true, media: query, addEventListener() {}, removeEventListener() {} }));
@@ -43,5 +45,5 @@ export function setupPreviewApp(startPath: string) {
     if (originalClose) Object.defineProperty(HTMLDialogElement.prototype, "close", originalClose); else Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
     if (originalScroll) Object.defineProperty(HTMLElement.prototype, "scrollIntoView", originalScroll); else Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
   });
-  return { element, navigate, click, choose, input, settle };
+  return { element, navigate, click, choose, input, settle, waitFor };
 }

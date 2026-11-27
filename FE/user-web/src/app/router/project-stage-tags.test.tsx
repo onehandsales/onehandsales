@@ -1,8 +1,8 @@
 import { act } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { setupPreviewApp } from "@/test/preview-app";
 
-const { element, navigate, click, choose, input, settle } = setupPreviewApp("/app/projects");
+const { element, navigate, click, choose, input, settle, waitFor } = setupPreviewApp("/app/projects");
 const doe = '[data-project-id="studio-a:team-project-2"]';
 // 기능 : 보드 카드의 실제 메뉴로 태그 편집을 연다.
 async function openTags(card = doe) { await click(`${card} .project-actions-trigger`); await act(async () => document.querySelector<HTMLButtonElement>('[role="menuitem"]')!.click()); }
@@ -32,7 +32,7 @@ describe("G23 stages and tags", () => {
   }, 12000);
   // 기능 : 실패한 키보드 이동은 배치를 유지하고 재시도 후 양쪽 열과 같은 열 순서를 갱신한다.
   it("retries a keyboard move and reorders within the destination stage", async () => {
-    await choose('[aria-label="Project scenario"]', "write-error"); await settle(); await click(`${doe} .project-keyboard-move`); await choose('[aria-label="Stage"]', "In Progress"); await choose('[aria-label="Position"]', "studio-a:team-project-1"); await click('[form="project-move-form"]'); await vi.waitFor(async () => { await settle(100); expect(element('#project-move-form [role="alert"]').textContent).toBeTruthy(); }, { timeout: 3000 });
+    await choose('[aria-label="Project scenario"]', "write-error"); await settle(); await click(`${doe} .project-keyboard-move`); await choose('[aria-label="Stage"]', "In Progress"); await choose('[aria-label="Position"]', "studio-a:team-project-1"); await click('[form="project-move-form"]'); await waitFor(() => { expect(element('#project-move-form [role="alert"]').textContent).toBeTruthy(); });
     expect(element(doe).closest("section")?.getAttribute("aria-label")).toBe("New Lead");
     await click('[form="project-move-form"]'); await settle(); await settle();
     expect(Array.from(document.querySelectorAll<HTMLElement>('.project-column[aria-label="In Progress"] [data-project-id]'), node => node.dataset.projectId)).toEqual(["studio-a:team-project-2", "studio-a:team-project-1"]);

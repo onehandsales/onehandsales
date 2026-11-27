@@ -1,5 +1,13 @@
 import type { Project, ProjectSettings } from "./project-types";
 export type ProjectSettingsDraft = { name: string; rate: string; description: string; startDate: string; endDate: string; reminders: boolean };
+// 기능 : 설정 검증 오류의 메시지와 해당 입력을 같은 검증 원본에서 전달한다.
+export class ProjectSettingsError extends Error {
+  readonly field: keyof ProjectSettingsDraft;
+  // 기능 : 검증을 실패한 필드를 저장한다.
+  constructor(field: keyof ProjectSettingsDraft, message: string) { super(message); this.field = field; }
+}
+// 기능 : 공용 값 검증 오류에 설정 입력 위치를 덧붙인다.
+function validateField<T>(field: keyof ProjectSettingsDraft, validate: () => T): T { try { return validate(); } catch (reason) { throw new ProjectSettingsError(field, (reason as Error).message); } }
 // 기능 : 관찰된 청구 기본값만 새 목 프로젝트에 제공하고 회사 설정 상속으로 단정하지 않는다.
 export function defaultProjectSettings(): ProjectSettings { return { paymentType: "hourly", currency: "USD", rateMinor: 2000, description: "", endDate: null, reminders: true }; }
 // 기능 : 저장된 설정을 독립적인 명시적 저장 초안으로 복사한다.
@@ -11,7 +19,7 @@ export function projectDay(value: string): string | null { if (!value) return nu
 // 기능 : 제목의 목 한도를 적용하면서 같은 이름의 다른 프로젝트는 허용한다.
 export function projectTitle(value: string) { const name = value.trim(); if (!name || name.length > 200) throw new Error("Enter a project title of 1–200 characters."); return name; }
 // 기능 : 제목·요율·설명·기간·알림을 함께 검증해 부분 저장을 방지한다.
-export function validateProjectSettings(draft: ProjectSettingsDraft) { const name = projectTitle(draft.name); const rateMinor = projectRate(draft.rate); const startDate = projectDay(draft.startDate); const endDate = projectDay(draft.endDate); if (startDate && endDate && endDate < startDate) throw new Error("End date must be on or after the start date."); if (draft.description.length > 4000) throw new Error("Keep the description within 4,000 characters."); return { name, startDate, settings: { paymentType: "hourly" as const, currency: "USD" as const, rateMinor, description: draft.description, endDate, reminders: draft.reminders } }; }
+export function validateProjectSettings(draft: ProjectSettingsDraft) { const name = validateField("name", () => projectTitle(draft.name)); const rateMinor = validateField("rate", () => projectRate(draft.rate)); const startDate = validateField("startDate", () => projectDay(draft.startDate)); const endDate = validateField("endDate", () => projectDay(draft.endDate)); if (startDate && endDate && endDate < startDate) throw new ProjectSettingsError("endDate", "End date must be on or after the start date."); if (draft.description.length > 4000) throw new ProjectSettingsError("description", "Keep the description within 4,000 characters."); return { name, startDate, settings: { paymentType: "hourly" as const, currency: "USD" as const, rateMinor, description: draft.description, endDate, reminders: draft.reminders } }; }
 // 기능 : 원본 초를 보존하고 표시된 소수 시간과 청구 금액을 별도로 집계한다.
 export function projectTimeSummary(project: Pick<Project, "timeEntries">) { const seconds = project.timeEntries.reduce((sum, entry) => sum + entry.seconds, 0); const amountMinor = project.timeEntries.reduce((sum, entry) => sum + entry.amountMinor, 0); return { seconds, hours: (seconds / 3600).toFixed(2), amountMinor }; }
 // 기능 : 초 단위 원본을 누락 없이 시·분·초 문자열로 표시한다.

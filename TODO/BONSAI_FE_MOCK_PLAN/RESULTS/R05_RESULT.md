@@ -48,3 +48,8 @@ Overview/Tasks/Time Tracking/Team/Settings는 같은 projectId와 URL tab으로 
 ### G23 R4 소비 재대조 — 2026-11-27 KST
 
 [현재 G23 결과](G23_RESULT.md#g23-r4-recheck): MCP3Flow16단계·PNG16개·R4 6관찰 재대조, 태그 정확 선택/조합/이탈 취소 보완, 관련21/21·타입/lint·메모리build 통과. 원본 동일성·실제 브라우저·미수록 정책과 R 전체 완료는 대기다.
+
+
+### G24 R4 소비 재대조 — 2026-11-27 KST
+
+[현재 G24 결과](G24_RESULT.md#g24-r4-recheck): MCP3Flow14단계·PNG14개·R4 7관찰 재대조, 탭 문맥/알림·IME/오류 초점·헤더/저장 배치 보완, 관련28/28·타입/lint·메모리build 통과. 원본 동일성·실제 브라우저·미수록 정책과 R 전체 완료는 대기다.

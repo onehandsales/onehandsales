@@ -1,9 +1,9 @@
 import { act } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { router } from "@/app/router/router";
 import { setupPreviewApp } from "@/test/preview-app";
 
-const { element, navigate, click, choose, input, settle } = setupPreviewApp("/app/projects");
+const { element, navigate, click, choose, input, settle, waitFor } = setupPreviewApp("/app/projects");
 const submit = '[form="new-project-form"]';
 // 기능 : 프로젝트 고객 선택에서 실제 기본 연락처 행을 선택한다.
 async function selectClient(index = 0) { await click(".project-client-trigger"); await click(`.project-client-menu [role="option"]:nth-child(${index + 1})`); }
@@ -47,7 +47,7 @@ describe("G21 project creation", () => {
     await input(".project-title-field input", "Client project"); await click(submit); await click(submit); await settle(); await settle();
     expect(element("h1").textContent).toBe("Client project"); expect(element(".project-context-row").textContent).toContain("Doe Company");
     expect(element(".client-notice").textContent).toContain("Project created successfully");
-    await navigate("/app/clients/studio-a%3Aclient-doe"); await vi.waitFor(async () => { await settle(100); expect(element(".client-project-list").textContent).toContain("Client project"); }, { timeout: 3000 });
+    await navigate("/app/clients/studio-a%3Aclient-doe"); await waitFor(() => { expect(element(".client-project-list").textContent).toContain("Client project"); });
     await act(async () => router.navigate(-1)); await settle(); expect(document.querySelector(".client-notice")).toBeNull();
   });
   // 기능 : 열 생성의 단계·샘플 안내와 저장 실패 재시도는 한 프로젝트만 남긴다.
