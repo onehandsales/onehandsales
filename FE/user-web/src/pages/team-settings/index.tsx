@@ -8,16 +8,18 @@ import "@/styles/company-settings.css";
 import "@/styles/team-settings.css";
 // 기능 : 설정 Team 목록과 query 기반 초대·행별 제거 확인을 기존 앱 셸 안에 조합한다.
 export function TeamSettingsPage() {
-  const team = useTeam(); const [search, setSearch] = useSearchParams(); const location = useLocation(); const [target, setTarget] = useState<TeamRow | null>(null); const [notice, setNotice] = useState(""); const [unavailable, setUnavailable] = useState(""); const inviteLink = useRef<HTMLAnchorElement>(null);
+  const team = useTeam(); const [search, setSearch] = useSearchParams(); const location = useLocation(); const [target, setTarget] = useState<TeamRow | null>(null); const [notice, setNotice] = useState(""); const [unavailable, setUnavailable] = useState(""); const inviteLink = useRef<HTMLAnchorElement>(null); const restoreInviteFocus = useRef(false);
   const inviteOpen = search.get("invite") === "1"; const contextKey = `${team.scope?.revision}:${team.state.scenario}:${team.scope ? team.store.fixture(team.scope.workspaceId) : ""}`;
   // 기능 : 탐색이나 검증 문맥 변경 시 이전 행·안내 상태를 폐기한다.
   useEffect(function clearContext() { setTarget(null); setUnavailable(""); }, [contextKey, location.key]);
   // 기능 : 팀 문맥 변경 시 이전 작업의 성공 안내를 폐기한다.
   useEffect(function clearNotice() { setNotice(""); }, [contextKey]);
+  // 기능 : 모달 정리가 끝난 현재 화면에서만 살아 있는 초대 제어로 초점을 복원한다.
+  useEffect(function focusAfterClose() { if (!restoreInviteFocus.current || inviteOpen || target) return; restoreInviteFocus.current = false; inviteLink.current?.focus(); }, [inviteOpen, target]);
   // 기능 : 초대 모달 닫기는 현재 이력의 query만 제거하고 원래 뒤로 복귀 경로를 보존한다.
-  function closeInvite() { const next = new URLSearchParams(search); next.delete("invite"); void setSearch(next, { replace: true, preventScrollReset: true }); window.requestAnimationFrame(() => inviteLink.current?.focus()); }
+  function closeInvite() { restoreInviteFocus.current = true; const next = new URLSearchParams(search); next.delete("invite"); void setSearch(next, { replace: true, preventScrollReset: true }); }
   // 기능 : 목록 갱신과 성공 표시를 함께 제공하고 제거된 행 대신 살아 있는 초대 제어로 복귀한다.
-  function removed() { setTarget(null); setNotice("Team member removed."); window.requestAnimationFrame(() => inviteLink.current?.focus()); }
+  function removed() { restoreInviteFocus.current = true; setTarget(null); setNotice("Team member removed."); }
   const inviteQuery = new URLSearchParams(search); inviteQuery.set("invite", "1");
   return <section className="company-settings team-settings" data-team-fixture={team.scope ? team.store.fixture(team.scope.workspaceId) : "inviting"}><SettingsNavigation /><div className="team-content"><div className="team-heading"><h2 className="sr-only">Team</h2>{team.canEdit ? <Link ref={inviteLink} className="team-primary" to={{ pathname: location.pathname, search: inviteQuery.toString() }} preventScrollReset>Invite Member</Link> : <button type="button" className="team-primary" disabled>Invite Member</button>}</div>
     {!team.canEdit && !team.denied && <p className="team-readonly" role="status">{team.state.scenario === "empty" ? "Empty preview. Choose Normal to restore the local team." : "This local member can view the team. Only the owner can change invitations."}</p>}

@@ -190,3 +190,50 @@ python3 /tmp/onehandsales-g17/summarize.py
 - [ ] 원본 동일성·실제 브라우저/console/network·OS IME와 원본 미수록 정책은 대기다. 관련 G/R 전체 완료가 아니다. [범위·검증·잔여](G13_RESULT.md#g13-r4-recheck).
 
 > G13 커밋 전 추가 검토 — 2026-11-24 KST: 초기 대시보드에서 같은 경로로 이동할 때 로딩이 남는 결함을 재현·수정했다. G13 DOM10/company store4=14/14, 최종 전체36파일236/236·타입/lint·메모리build 통과. 원본 동일성·실제 브라우저·원본 미수록 대기와 과거 이력을 보존하며 사용자 후속 요청으로 커밋·origin/main push를 승인받았다. 배포·다음 Goal 착수 없음. [추가 검토 결과](G13_RESULT.md#g13-precommit-review).
+
+<a id="g17-r4-recheck"></a>
+## R4 재대조·순차 작업 — 2026-11-27 KST
+
+판정: **관찰된 구성·로컬 목 동작 재검토 수행 / 전체 완료 아님**. 과거 브라우저 검증 수치는 당시 이력이며 이번 실제 브라우저 검증을 대신하지 않는다.
+
+### 작업 전 범위와 작업 후 4항목 대조
+
+| 기준 | 이번 범위·결과 |
+| --- | --- |
+| FRONT_AGENT | 상태/ID/요청 취소·폼 초안·접근성·한글 책임 주석 재대조. 페이지는 진입/표시, hook은 조회·요청, team store는 ID·workspace·revision 저장을 유지한다. 새 의존성 없음 |
+| 갱신 Goal·R02 | Pending과 Joined 구분, 역할/프로젝트 선택, 실패/재시도, 정확한 대기 ID 제거, 직접 URL/이력/취소와 연결 회귀를 검토했다. 미수록 역할·실제 발송·과금은 확정하지 않음 |
+| FE 구현·영향 | TeamSettingsPage/InviteDialog/RemoveDialog/ProjectPicker/TeamRowMenu/useTeam/useTeamAction/createTeamStore와 G13 초기 대시보드, G14 사이드바, G15 회사정보, G18 수락 저장소를 대조 |
+| 원본 Flow·단계·화면 | F068 Inviting a member 01–05 / `646bd9c2-add0-414c-8b98-89489f2c43b5`; F123 Settings/Removing a user 01–04 / `c615a678-2203-45d5-bcc0-235f6b325516`. ANALYSIS 4·5·8절/R4 관찰과 원본 PNG9개를 직접 확인하고 MCP9단계 ID·순서·URL을 신규 조회 |
+
+- [x] 위 네 항목을 착수 전 확인하고 구현 후 다시 대조했다.
+- [x] 발견한 연결 결함을 이번 Goal에서 보완하고 관련 검증을 재실행했다.
+- [ ] 원본과 같은 브라우저 viewport에서의 시각 동일성·원본 미수록 정책은 확인하지 못했다.
+
+### 원본 대응과 수정
+
+- F068 02–04: 이메일·Role·Projects, 역할별 CTA, chip 개별 제거/전체 지우기/드롭다운을 대조했다. 연한 버튼의 실제 disabled 조건·역할 전체 목록·프로젝트 필수 조건은 원본에서 확정되지 않으며 기존 목 검증 규칙을 유지했다.
+- F068 05: Owner/Partner/Collaborator 배지, All Projects/1 Project, Pending과 성공 안내를 구분했다. 등록 자체를 Joined로 바꾸지 않는다.
+- F123 01–04: 메뉴·확인 이메일·빨간 제거 버튼·5→4행과 동명 다른 이메일 보존을 확인했다. Joined 제거/재발송은 미수록 안내로 남고 실제 상태를 바꾸지 않는다.
+- 결함 수정: 초기 대시보드가 발송하지 않은 company.invites 제안 수로 초대 완료를 표시하고 `/app/pending/team`으로 이동했다. 현재 팀 저장소의 정상 조회 결과(Pending/Joined, Owner·Expired 제외)를 표시 기준으로 사용하고 `/app/settings/team?invite=1`로 연결했다. fixture 행도 로컬 표본이며 실제 발송 증거가 아니다.
+- 결함 수정: 초대 닫기·제거 성공의 추적되지 않은 requestAnimationFrame 초점 예약을 제거하고 모달 종료 후 현재 화면 effect에서 살아 있는 Invite Member로 복귀한다. 제거 취소는 원래 행 메뉴로 복귀한다.
+- 동일 경로 새 이력에서 InviteDialog 재생성/진행 취소, RemoveDialog 폐기/저장 취소를 DOM에서 확인했다. query의 다른 값은 보존한다.
+
+### 검증·반복 검토
+
+검증은 기존 의존성의 메모리/stdout 실행이며 evidence·임시 스크립트·보고서 파일을 만들지 않았다.
+
+- 신규 `team-entry.test.tsx` 4개: 입력·project chip·Escape·실패/중복/재시도/Pending; 같은 경로 이력 및 닫기 중 초대 취소; 제거 취소/실패/재시도/동명이인·Joined 보존/진행 중 이력 취소; 대시보드 완료 상태와 Sidebar 진입.
+- 최초 관련9/9 통과 후 제거 중 이력 시나리오를 추가했다. 실제 1.5초 지연을 여러 번 확인하는 테스트가 기본5초 제한을 넘어 연쇄 정리 오류를 냈다. 해당 테스트만10초로 조정하고 다시 실행했다. 제품 결함으로 숨기지 않는다.
+- 최종 관련6파일32/32(41.19초): G17 DOM4·team store5, G18 invitation store5, G13 DOM10, G14 DOM4, G15 DOM4. G16 DOM4/4 추가 통과(15.62초). 총 관련36개 모두 통과했으며 전체 suite는 G18 이후 최종 재검토에서 수행한다.
+- 타입 `tsc --project tsconfig.app.json --noEmit --incremental false`, 변경 파일/디렉터리 eslint `--no-cache`, Vite `build.write=false` 1,973모듈·3개 메모리 출력 통과. Browserslist 데이터 오래됨 경고만 있으며 의존성 갱신하지 않음.
+
+### 남은 항목·영향
+
+| 상태 | 이유 | 영향 |
+| --- | --- | --- |
+| 원본 시각 동일성 대기 | 실제 비교 브라우저가 없고 폰트/치수/자산의 완결 명세 미확보. 원본02 외부 X 미노출 원인은 불명 | 현재 접근 가능한 닫기 X는 유지하며02 차이는 남음. 전체 픽셀/간격/색상 인증 아님 |
+| 브라우저 검증 미실행 | 연결된 문서/브라우저 세션·실행 중 preview 서버 없음. 서버/프로필을 새로 만들지 않음 | jsdom은 native dialog, 실제 키보드/IME/터치/좁은 화면/새 탭/console/network 증거가 아님. 실제 API 요청 수 미관측 |
+| 원본 정책 미확인 | 역할/요금제/중복/만료/재발송/가입 완료 제거/Owner 제거는 정적 화면에 없음 | 오류·취소·만료 등은 로컬 목 정책. 실제 이메일·초대 토큰·세션 회수·좌석 과금 완료 아님 |
+| 연결 업무 범위 | G18 수락과 기존 store만 회귀 검증. G19 이후 전체 업무 재검토는 이번 범위 밖 | 후속 Goal 전체 완료로 승격하지 않음 |
+
+원본 ANALYSIS·PNG, BE/API/DB·ENV·서버·의존성은 수정하지 않았다. 로컬 커밋 후 G18 순차 작업을 계속한다.
