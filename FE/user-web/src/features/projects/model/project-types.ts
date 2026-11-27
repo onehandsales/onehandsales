@@ -9,6 +9,12 @@ export type ProjectTimeEntry = { id: string; taskId: string; taskName: string; m
 export type ProjectRecordedOverview = { unbilledSeconds: number; billedSeconds: number; activities: { id: string; actor: string; action: "completed" | "archived"; title: string; at: string }[] };
 export type Project = { id: string; workspaceId: string; name: string; clientId: string; memberIds: string[]; stage: ProjectStage; revision: number; settings: ProjectSettings; timeEntries: ProjectTimeEntry[]; recordedOverview?: ProjectRecordedOverview; startDate: string | null; money: { currency: "USD"; dueMinor: number; paidMinor: number }; tagIds: string[]; origin: "client" | "global" | "column" | "seed"; created: { name: string; actor: string; at: string } };
 export type ProjectDraft = { name: string; clientId: string; origin: "client" | "global" | "column"; stage: ProjectStage };
+// 기능 : 생성 폼과 제출 hook이 같은 필수 입력 오류와 수정 대상을 사용한다.
+export function projectDraftIssue(draft: ProjectDraft): { field: "name" | "clientId"; message: string } | null {
+  if (!draft.name.trim() || draft.name.trim().length > 200) return { field: "name", message: "Enter a project title of 1–200 characters." };
+  if (!draft.clientId) return { field: "clientId", message: "Select an existing client from this workspace." };
+  return null;
+}
 export type ProjectState = { version: number; scenario: Scenario };
 export type ProjectTag = { id: string; name: string; color: string; revision: number };
 export type ProjectView = Project & { clientName: string; tags: ProjectTag[] };

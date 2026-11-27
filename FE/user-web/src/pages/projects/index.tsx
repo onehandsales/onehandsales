@@ -1,7 +1,7 @@
 import { TaskBoard, TaskTools, ProjectTaskSummary, useTasks } from "@/features/tasks";
 import "@/styles/tasks.css";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigationType, useParams, useSearchParams } from "react-router-dom";
 import { Dialog } from "@/components/ui/dialog";
 import { invitationAccess, usePreviewEnvironment } from "@/features/preview";
 import { CollaborationProject, CollaborationProjects } from "@/features/invitations";
@@ -19,11 +19,12 @@ export function ProjectsPage() {
   const taskNames = Object.fromEntries((tasks.data ?? []).map(task => [task.id, task.title]));
   const taskBoard = project ? <TaskBoard projectId={project.id} /> : null;
   const taskSummary = project ? <ProjectTaskSummary projectId={project.id} onTemplates={() => setNotice("Task templates")} /> : null;
+  const navigationType = useNavigationType();
   const created = (location.state as { createdProjectId?: string } | null)?.createdProjectId;
   const accepted = (location.state as { invitationAccepted?: string } | null)?.invitationAccepted;
   return <section className="projects-page">{query.isPending ? <p role="status" className="clients-read-state">Loading projects…</p> : query.isError ? <div className="clients-read-state" role="alert"><h1>Projects unavailable</h1><p>{query.error.message}</p><button onClick={() => void query.refetch()}>Retry projects</button></div> : projectId ? project ? access ? <CollaborationProject project={project} taskBoard={taskBoard} taskSummary={taskSummary} unbilled={projectDuration(project.recordedOverview?.unbilledSeconds ?? projectTimeSummary(project).seconds)} billed={projectDuration(project.recordedOverview?.billedSeconds ?? 0)} activity={<ProjectActivity project={project} />} timePanel={<ProjectTimePanel project={project} onUnavailable={setNotice} taskNames={taskNames} onTask={openTask} restricted />} /> : <ProjectDetail key={`${query.scope.actorId}:${query.scope.workspaceId}:${query.scope.revision}:${project.id}`} project={project} onUnavailable={setNotice} taskBoard={taskBoard} taskSummary={taskSummary} taskNames={taskNames} onTask={openTask} /> : <div className="clients-read-state"><h1>Project unavailable</h1><p>This project is missing or outside your assigned workspace scope.</p><Link to="/app/projects">Return to projects</Link></div> : access ? <CollaborationProjects key={location.key} projects={query.data} /> : <ProjectDirectory key={`${query.scope.actorId}:${query.scope.workspaceId}:${query.scope.revision}`} projects={query.data} onUnavailable={setNotice} />}
     {!access && <ProjectTools />}{project && <TaskTools />}{notice && <Dialog title={notice} onClose={() => setNotice("")}><p>This action is not available in this preview. Your project remains unchanged.</p><button onClick={() => setNotice("")}>Return to project</button></Dialog>}
-    {created && created !== dismissed && <div className="client-notice" role="status">✓ Project created successfully<button aria-label="Dismiss project message" onClick={() => setDismissed(created)}>×</button></div>}
+    {created && query.data?.some(item => item.id === created) && (!projectId || projectId === created) && created !== dismissed && navigationType !== "POP" && <div className="client-notice" role="status">✓ Project created successfully<button aria-label="Dismiss project message" onClick={() => setDismissed(created)}>×</button></div>}
     {access && accepted === access.teamRowId && accepted !== dismissed && <div className="collaboration-notice" role="status">✓ Your password was set successfully. You are now signed in.<button aria-label="Dismiss invitation message" onClick={() => setDismissed(accepted)}>×</button></div>}
   </section>;
 }

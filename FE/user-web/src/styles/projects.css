@@ -4,6 +4,8 @@
 /* 생성 모달 비교: 제목 중앙 정렬·입력 시작선과 바깥 도움말의 잘림을 보정한다. */
 .project-dialog .dialog__content h2{text-align:center;margin-bottom:68px}.project-dialog .dialog__content{padding-bottom:48px}.project-dialog .dialog__footer{position:static}
 @media(max-width:600px){.project-dialog .dialog__content h2{margin-bottom:36px}.project-dialog .dialog__content{padding-bottom:36px}}
+/* 고객 선택의 빈 값·펼침 아이콘·연락처 봉투를 원본의 표시 상태로 구분한다. */
+.project-client-trigger[data-empty=true]{color:#b4bdb8}.project-client-trigger svg{align-self:center;flex-shrink:0;color:#c8cecb}.project-client-trigger[aria-expanded=true] svg{transform:rotate(180deg);color:#51585b}.project-client-menu button small svg{display:inline-block;vertical-align:middle;margin-right:3px}
 /* 키보드 초기 초점에서도 신규 고객의 흰 글자와 녹색 배경 대비를 유지한다. */
 .project-client-menu .project-new-client:hover,.project-client-menu .project-new-client:focus{background:#55ab2d;color:white;outline:2px solid #245e12;outline-offset:-2px}
 /* 보드·표 조회는 같은 원본을 서로 다른 배치에 표시한다. */

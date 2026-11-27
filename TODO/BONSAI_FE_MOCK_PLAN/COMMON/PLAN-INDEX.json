@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G20 R4 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G21 not started",
+  "status": "G21 R4 재대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G21~G24 approved; G25 not started",
   "goals": [
     {
       "id": "G00",
@@ -4213,7 +4213,7 @@
         "R03"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
+      "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
       "flow_scope": [
         {
           "flow_number": 20,
@@ -4257,7 +4257,7 @@
         "result": "../RESULTS/G27_RESULT.md"
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
         "item_ids": [
           "R4-F021-O01",
           "R4-F021-O02",
@@ -4282,7 +4282,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g21",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_21c57bdee8d94269af945440ba1c1c84",
           "sc_7a2bb697a852495e8fd9be9fe6563b0a",
@@ -4295,6 +4295,24 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "r4_recheck_20261127": {
+        "result": "../RESULTS/G21_RESULT.md#g21-r4-recheck",
+        "source_flows": 2,
+        "source_steps": 11,
+        "source_images_directly_viewed": 11,
+        "new_mcp_query_performed": true,
+        "r4_observations": 5,
+        "r4_remaining_analysis": 2,
+        "unit_dom": "4 files 32/32; 59.85s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 8.07s",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "real_api_requests": null,
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {
