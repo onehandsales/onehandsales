@@ -1,3 +1,4 @@
+import { taskInitials } from "../model/task-values";
 import { MoreHorizontal } from "lucide-react";
 import { usePreviewEnvironment } from "@/features/preview";
 import type { Task, TaskActivity } from "../model/task-types";
@@ -7,7 +8,7 @@ import { TaskCommentForm } from "./task-comment-form";
 function ActivityRow({ event, onUnavailable }: { event: TaskActivity; onUnavailable: () => void }) {
   const text = event.kind === "comment" ? event.body : event.kind === "status" ? `Marked task as ${event.statusName.toLowerCase()}` : event.assigneeName ? `Assigned ${event.assigneeName}` : "Removed assignee";
   return <div className={`task-event${event.kind === "comment" ? " is-comment" : ""}`} data-activity-id={event.id} data-activity-kind={event.kind}>
-    <span className="task-avatar" aria-hidden="true">{event.actorName.slice(0, 2).toUpperCase()}</span>
+    <span className="task-avatar" aria-hidden="true">{taskInitials(event.actorName)}</span>
     <div><strong>{event.actorName}</strong><time dateTime={event.at} title={event.at}>{new Date(event.at).toLocaleTimeString("en-US", { timeZone: "UTC", hour: "numeric", minute: "2-digit" })} UTC</time><p>{text}</p></div>
     {event.kind === "comment" && <button type="button" className="task-comment-actions" aria-label={`Comment actions by ${event.actorName}`} onClick={onUnavailable}><MoreHorizontal size={20} /></button>}
   </div>;
