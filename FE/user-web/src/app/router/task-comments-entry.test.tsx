@@ -21,6 +21,8 @@ describe("G27 comment entries", () => {
     await act(async () => { const submit = element('.task-comment-form button[type="submit"]'); submit.click(); submit.click(); });
     await waitFor(() => { expect(document.querySelectorAll('[data-activity-kind="comment"]')).toHaveLength(1); expect(element<HTMLTextAreaElement>(body).value).toBe(""); });
     expect(element('[data-activity-kind="comment"] p').textContent).toBe(message);
+    expect(element('[data-activity-kind="comment"] time').textContent).toBe('a few seconds ago');
+    expect(element('[data-activity-kind="comment"] time').getAttribute('datetime')).toBe('2024-02-07T12:00:00Z');
     expect(document.querySelector('[data-activity-kind="comment"] b')).toBeNull();
     expect.soft(element('[data-activity-kind="comment"] .task-avatar').textContent).toBe("A");
     expect(document.activeElement === element(body)).toBe(true);

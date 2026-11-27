@@ -4836,6 +4836,18 @@
         "visual_identity": "not_verified",
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "final_connected_review_20261127": {
+        "goal_commit": "5cd3178d",
+        "unit_dom": "56 files 330/330 unit+DOM; 317.73s",
+        "targeted_before_full": "6 files 21/21; 44.85s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 9.09s",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-final-recheck",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false
       }
     },
     {
@@ -4957,6 +4969,18 @@
         "visual_identity": "not_verified",
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "final_connected_review_20261127": {
+        "goal_commit": "063c2f75",
+        "unit_dom": "56 files 330/330 unit+DOM; 317.73s",
+        "targeted_before_full": "6 files 21/21; 44.85s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 9.09s",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-final-recheck",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false
       }
     },
     {
@@ -5061,6 +5085,18 @@
         "visual_identity": "not_verified",
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "final_connected_review_20261127": {
+        "goal_commit": "b8d24d31",
+        "unit_dom": "56 files 330/330 unit+DOM; 317.73s",
+        "targeted_before_full": "6 files 21/21; 44.85s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 9.09s",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-final-recheck",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false
       }
     },
     {
@@ -5162,6 +5198,18 @@
         "visual_identity": "not_verified",
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "final_connected_review_20261127": {
+        "goal_commit": "37d1aa8f",
+        "unit_dom": "56 files 330/330 unit+DOM; 317.73s",
+        "targeted_before_full": "6 files 21/21; 44.85s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 9.09s",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-final-recheck",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false
       }
     },
     {
@@ -5263,6 +5311,18 @@
         "visual_identity": "not_verified",
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "final_connected_review_20261127": {
+        "goal_commit": "d5aad0cc",
+        "unit_dom": "56 files 330/330 unit+DOM; 317.73s",
+        "targeted_before_full": "6 files 21/21; 44.85s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 9.09s",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-final-recheck",
+        "browser_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "overall_complete": false
       }
     },
     {

@@ -138,3 +138,51 @@ G29 결과·staged diff를 확인한 후 별도 로컬 커밋으로 종료한다
 - PNG의 문구·구성은 직접 대조했지만 정확한 폰트/아이콘/색/그림자/간격·viewport/DPR 및 픽셀 동일성은 미확인이다. 모달 CSS의 400px 기준은 기존 목 값이며 원본 확정 치수가 아니다.
 - 원본 동명 카드의 실제 ID, 두 시간행 소유 ID, 복원/삭제 cascade/진행 타이머/청구 합계·역할별 권한은 자료 부족이다. 목은 두 canonical task ID와 시간 기록을 합치거나 삭제하지 않는다.
 - G21–G24의 미확인을 완료로 변경하지 않았다. G30/G31 구현과 실제 API/BE/DB/push/배포는 수행하지 않았다.
+
+
+<a id="g25-g29-final-recheck"></a>
+## G25–G29 전체 연결 최종 재검토 — 2026-11-27 KST
+
+### 네 기준과 범위 확인
+- FRONT_AGENT 및 관련 하위 규칙·ENGINEERING_REVIEW_CHECKLIST, 최신 G25–G29 명세와 R06 각 소비 범위, FE/user-web의 실제 연결 코드, bonsai_analysis의 원본/분석/단계를 마지막으로 대조했다.
+- 시작 HEAD 2905260e의 기존 변경은 없었다. Goal별 변경을 5cd3178d(G25), 063c2f75(G26), b8d24d31(G27), 37d1aa8f(G28), d5aad0cc(G29)로 각각 로컬 커밋했고 다음 Goal로 순차 진행했다.
+- G19–G24 및 G30/G31 PLAN-INDEX 객체는 시작 HEAD와 동일하다. 기존 미확인을 완료로 바꾸지 않았고 G30/G31 구현을 시작하지 않았다.
+- 변경은 작업 feature/직접 연결 페이지·CSS·검사 소스와 기존 계획/RESULT 문서에 한정했다. AGENT/bonsai_analysis/Backend/DB/Admin/ENV 변경, 실제 업무 API, push/배포 없음. evidence·스크린샷·비교 이미지·trace·HTML·검증 JSON·임시 스크립트 등 파일 산출물 없음.
+
+### 최종 연결과 추가 수정
+- 새 고객 Cleaning Company → 새 프로젝트 Weekly cleaning → 새 작업 Cleaning visit을 생성했다. 고객/프로젝트/task ID를 공유한 전체 목록·상세·프로젝트 시간 화면을 왕복했다.
+- 부모/하위 담당자, 서로 다른 하위 ID 2개, 하위 하나 완료, 댓글 ID와 본문, 부모 Done 후 두 번째 하위 미완료 유지를 확인했다. 하위 완료는 부모를 자동 완료하지 않는다.
+- 보관 후 해당 ID 활성 제외, 같은 제목 새 작업은 다른 ID 생성, 별도 삭제 확인 후 해당 ID만 제외, 고객 프로젝트 목록 유지 및 기존 동명 Initial Chat 2개 보존을 검사했다.
+- 새 프로젝트의 완료/보관/삭제는 기존 프로젝트의 7초+1시간과 $20.04에 영향을 주지 않았다. 저장소 검사와 G29 DOM에서 제거된 부모의 하위/댓글/완료/생성 재실행이 작업을 부활시키지 않음도 확인했다.
+- 마지막 경계 검토에서 부모 제목, 새 하위 입력, 기존 하위 제목이 compositionend 없이 blur 후 재편집될 때 저장이 막히는 결함을 추가 재현했다. 각 입력의 조합 상태를 blur에서 정리했다. 해당 입력에 머무르는 조합 Enter/Escape 보호는 유지한다.
+- G27의 남은 문구 차이 중 새 목 활동의 UTC 표시는 원본에서 확인한 a few seconds ago로 수정했다. 내부 datetime/title은 유지하며 고정 목 시각 이외 구간은 기존 UTC다. 실시간 경과/상대 시간 변환 규칙을 Bonsai의 확정 동작으로 만들지 않았다.
+
+### 실제 검증
+- 새 task-connected-journey 3개: 전체 연결 1개와 IME 이탈 2개. 추가 IME 2개는 수정 전 실패했고 수정 후 통과했다.
+- 중간 전체 실행은 56 files 중 1 failed, 330 tests 중 2 failed/328 passed(322.15s)였다. 이 실행은 수정 전 입력 코드가 적재된 검토 중 실행이며 최종 통과 증거로 사용하지 않는다.
+- 수정 후 관련 DOM 6 files 21/21(44.85s), 이후 활동 시간 표시 assertion을 추가하고 코드가 고정된 상태에서 전체 검사를 다시 실행했다.
+- 최종 전체: 56 files 330/330 unit+DOM; 317.73s. G19/G20 고객 필드·이미지, G21–G24 프로젝트 생성/보드·표/단계·태그/상세·시간, 이전 인증·초대·설정·공개 화면 및 기존 소비 코드 회귀를 포함한다. 기존 템플릿 검사는 회귀 실행이며 G30/G31 작업 착수가 아니다.
+- 최종 app/node tsc --noEmit --incremental false·전체 ESLint 통과. Vite write:false/emptyOutDir:false/copyPublicDir:false 메모리 빌드 1976 modules/3 outputs, 9.09s. tests의 cache/fsModuleCache/optimizer/coverage/파일 reporter는 비활성화했다.
+- PLAN-INDEX JSON 파싱, 추가/변경 문서 링크와 앵커, git diff --check를 확인했다. 최종 commit 이후 clean 상태를 확인한다.
+
+### 직접 본 원본과 남은 확인
+| Goal | 직접 확인한 Flow·단계 |
+| --- | --- |
+| G25 | Tasks 01–03, Adding a task 01–06 (9) |
+| G26 | Adding subtasks 01–10, Editing a subtask 01–05 (15) |
+| G27 | Adding a comment 01–03 (3) |
+| G28 | Editing status settings 01–06, Marking a task as complete 01–02 (8) |
+| G29 | Archiving a task 01–03, Deleting a task 01–04 (7) |
+
+Gummble MCP 9 Flow 재조회와 로컬 원본 PNG 42단계를 직접 확인했다. ID·순서 일치와 시각 확인은 원본 관찰 근거이며 FE 렌더 동일성 증명이 아니다. R4 관찰 20개는 구성·동작 재검토, 분석 9개는 대기를 유지한다.
+
+| 남은 항목 | 이유 | 영향 |
+| --- | --- | --- |
+| 실제 브라우저 E2E/네트워크/네이티브 IME·키보드·초점/drag·calendar/좁은 화면·확대·scroll | 연결 document browser session 없음. 산출물 제한을 우회한 별도 브라우저/임시 캡처를 생성하지 않음 | jsdom 및 코드 검사로 실제 렌더·브라우저 고유 동작 통과를 주장할 수 없음 |
+| 정확한 폰트·아이콘·색상 토큰·치수·간격·그림자·viewport/DPR | 원본 PNG는 있으나 실제 DOM/CSS·촬영 조건과 같은 조건의 FE 렌더 미확인 | 작은 차이도 엄격 동일성 미완. Gellix/Lucide 및 CSS 추정값은 확정 원본값이 아님 |
+| 원본의 카드 수/이름/날짜/담당자와 canonical seed 차이 | 기존 연결 검증용 가상 seed와 여러 시점의 원본 캡처가 다름 | 데이터·촬영 상태를 맞춘 화면 동일성 확인이 남음. 동명 작업을 임의로 합치지 않음 |
+| 필터/달력·저장/빈값, 하위 삭제/부모 완료 관계, 댓글 메뉴/공개·알림, 상태 정의 범위/추가·삭제·순서/권한 | 해당 결과·미수록 분기 부족 | 현재 저장/취소/실패/권한 경계는 명시한 목 정책이며 Bonsai 확정 동작이 아님 |
+| 보관 복원, 실제 동명 작업 ID와 시간행 연결, 삭제 cascade/파일/청구/진행 타이머 | 원본에서 전후·실제 ID·연관 결과 확인 불가 | 목은 기존 시간·금액을 보존하지만 실서비스 정책·실제 청구를 검증한 것은 아님 |
+| G21–G24의 원본·시각·브라우저 잔여 | 이번에 해당 미확인 근거를 새로 확보하지 않음 | 기존 미완 판정을 유지하고 테스트 회귀 통과로 승격하지 않음 |
+
+판정: **G25–G29 재검토·보완·로컬 회귀와 별도 커밋 수행 / 엄격 원본 동일성·실제 브라우저·미수록 정책은 부분 완료**. 확인 가능한 결함은 최종 연결 보완까지 처리했으며 남은 항목을 완료로 표시하지 않는다.

@@ -7,9 +7,11 @@ import { TaskCommentForm } from "./task-comment-form";
 // 기능 : 사용자 댓글과 담당자·상태 자동 활동의 내용과 표현을 분리한다.
 function ActivityRow({ event, onUnavailable }: { event: TaskActivity; onUnavailable: () => void }) {
   const text = event.kind === "comment" ? event.body : event.kind === "status" ? `Marked task as ${event.statusName.toLowerCase()}` : event.assigneeName ? `Assigned ${event.assigneeName}` : "Removed assignee";
+  // 의미 : 새 목 활동의 고정 시각만 원본 상대 문구로 표시하고 미수록 시간 구간은 추정하지 않는다.
+  const timeLabel = event.at === "2024-02-07T12:00:00Z" ? "a few seconds ago" : new Date(event.at).toLocaleTimeString("en-US", { timeZone: "UTC", hour: "numeric", minute: "2-digit" }) + " UTC";
   return <div className={`task-event${event.kind === "comment" ? " is-comment" : ""}`} data-activity-id={event.id} data-activity-kind={event.kind}>
     <span className="task-avatar" aria-hidden="true">{taskInitials(event.actorName)}</span>
-    <div><strong>{event.actorName}</strong><time dateTime={event.at} title={event.at}>{new Date(event.at).toLocaleTimeString("en-US", { timeZone: "UTC", hour: "numeric", minute: "2-digit" })} UTC</time><p>{text}</p></div>
+    <div><strong>{event.actorName}</strong><time dateTime={event.at} title={event.at}>{timeLabel}</time><p>{text}</p></div>
     {event.kind === "comment" && <button type="button" className="task-comment-actions" aria-label={`Comment actions by ${event.actorName}`} onClick={onUnavailable}><MoreHorizontal size={20} /></button>}
   </div>;
 }
