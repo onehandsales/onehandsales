@@ -28317,5 +28317,27 @@
       ],
       "implementation_started_in_this_request": false
     }
+  },
+  "g19_g20_final_review_20261127": {
+    "result": "../RESULTS/G20_RESULT.md#g19-g20-final-review",
+    "commits": {
+      "G19": "90b36f5d",
+      "G20": "31cf8033"
+    },
+    "four_criteria_reviewed": true,
+    "source_flows": 4,
+    "source_steps": 19,
+    "unique_screens": 17,
+    "shared_screen_hashes": "matched",
+    "r4_observations": 10,
+    "r4_remaining_analysis": 5,
+    "final_unit_dom": "44 files 278/278; 246.74s; unchanged code after this run",
+    "additional_findings": "Goal specifications and source impact Markdown rows retained stale unreviewed statuses; corrected without changing historical results or pending analysis",
+    "additional_code_changes": false,
+    "visual_identity": "not_verified",
+    "browser_e2e": "not_run",
+    "real_api_requests": null,
+    "g21_implementation_started": false,
+    "push_deploy": false
   }
 }
