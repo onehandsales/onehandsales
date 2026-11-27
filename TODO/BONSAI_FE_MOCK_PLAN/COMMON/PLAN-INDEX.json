@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G24 R4 재대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G21~G24 approved; G25 not started",
+  "status": "G21~G24 순차 보완·최종 연결/전체 로컬 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; G25 not started",
   "goals": [
     {
       "id": "G00",
@@ -28434,6 +28434,35 @@
     "artifacts_created": false,
     "next_recommended_batch": ["G21", "G22", "G23", "G24"],
     "g21_implementation_started": false,
+    "push_deploy": false
+  },
+  "g21_g24_final_review_20261127": {
+    "result": "../RESULTS/G24_RESULT.md#g21-g24-final-review",
+    "goal_commits": {
+      "G21": "381c0568",
+      "G22": "84500fac",
+      "G23": "70ca7233",
+      "G24": "8d30a390"
+    },
+    "four_criteria_reviewed": true,
+    "source_flows": 10,
+    "source_steps": 48,
+    "r4_observations": 22,
+    "r4_remaining_analysis": 10,
+    "source_screen_ids": "all matched local and MCP",
+    "final_unit_dom": "49 files 306/306; 274.33s",
+    "pre_fix_full_suite": "305/306 passed; 1 reproduced notice-overlap failure; 275.90s",
+    "targeted_after_fix": "2 files 8/8; 20.04s",
+    "finding_fixed": "Fresh project rename displayed overlapping creation and update notices; consume creation notice on detail update; no replay after dismissal",
+    "typecheck": "app/node noEmit incremental false passed",
+    "lint": "full ESLint passed",
+    "build": "memory only; 1976 modules / 3 outputs; 7.23s",
+    "browser_e2e": "not_run; no connected document session in final lookup",
+    "visual_identity": "not_verified",
+    "real_api_requests": null,
+    "overall_complete": false,
+    "artifacts_created": false,
+    "g25_implementation_started": false,
     "push_deploy": false
   }
 }
