@@ -148,7 +148,7 @@ G00은 근거·색인을, G01은 공통 UI 명세와 적용 범위를, 각 기�
 | <a id="goal-g19"></a>[G19](<GOAL-SPECS/G19.md>) 목록·신규 고객·상세 | 10 | [구성 대조·보완 / 원본 동일성·브라우저·정책 대기](../RESULTS/G19_RESULT.md#g19-r4-recheck) | [6개](#shared-screens) |
 | <a id="goal-g20"></a>[G20](<GOAL-SPECS/G20.md>) 고객 필드·이미지 | 5 | [구성 대조·보완 / 원본 동일성·브라우저·정책 대기](../RESULTS/G20_RESULT.md#g20-r4-recheck) | [3개](#shared-screens) |
 | <a id="goal-g21"></a>[G21](<GOAL-SPECS/G21.md>) 두 진입점의 프로젝트 생성 | 7 | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G21_RESULT.md#g21-r4-recheck) | [4개](#shared-screens) |
-| <a id="goal-g22"></a>[G22](<GOAL-SPECS/G22.md>) 보드·표 전환 | 6 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [3개](#shared-screens) |
+| <a id="goal-g22"></a>[G22](<GOAL-SPECS/G22.md>) 보드·표 전환 | 6 | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G22_RESULT.md#g22-r4-recheck) | [3개](#shared-screens) |
 | <a id="goal-g23"></a>[G23](<GOAL-SPECS/G23.md>) 단계 이동·태그 | 9 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [3개](#shared-screens) |
 | <a id="goal-g24"></a>[G24](<GOAL-SPECS/G24.md>) 프로젝트 상세·이름·설정 | 10 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [3개](#shared-screens) |
 | <a id="goal-g25"></a>[G25](<GOAL-SPECS/G25.md>) 전체·프로젝트 작업 보드와 생성 | 6 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [5개](#shared-screens) |
@@ -1436,8 +1436,8 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f105-o01"></a>R4-F105-O01 · 관찰 | 02–04: 상태 열은 가로 스크롤하며 상단 검색·필터·New Project와 사이드바는 같은 위치에 남는다. 오른쪽으로 이동하면 In Review가 나타난다. | [G22](<GOAL-SPECS/G22.md>) | 미대조 |
-| <a id="r4-f105-o02"></a>R4-F105-O02 · 관찰 | 03: 열 제목 옆 +/더보기와 열 아래 +New Project는 별도 제어다. 카드가 보이지 않는 04를 전체 프로젝트가 없는 상태로 오해하지 않는다. | [G22](<GOAL-SPECS/G22.md>) | 미대조 |
+| <a id="r4-f105-o01"></a>R4-F105-O01 · 관찰 | 02–04: 상태 열은 가로 스크롤하며 상단 검색·필터·New Project와 사이드바는 같은 위치에 남는다. 오른쪽으로 이동하면 In Review가 나타난다. | [G22](<GOAL-SPECS/G22.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G22_RESULT.md#g22-r4-recheck) |
+| <a id="r4-f105-o02"></a>R4-F105-O02 · 관찰 | 03: 열 제목 옆 +/더보기와 열 아래 +New Project는 별도 제어다. 카드가 보이지 않는 04를 전체 프로젝트가 없는 상태로 오해하지 않는다. | [G22](<GOAL-SPECS/G22.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G22_RESULT.md#g22-r4-recheck) |
 | <a id="r4-f105-a01"></a>R4-F105-A01 · 남은 분석 | 가로 스크롤 영역 높이·열 폭·헤더 보조 제어의 표시 조건이 필요하다. 열 메뉴·필터·검색·전체 빈 상태는 이 플로우에 없다. | [G22](<GOAL-SPECS/G22.md>) | 분석 대기 |
 
 <a id="r4-f106"></a>
@@ -1481,8 +1481,8 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f109-o01"></a>R4-F109-O01 · 관찰 | 02: List View는 제목 앞 상태 점, 고객, 태그, 시작일의 달력 아이콘, Due/Paid 금액 열을 사용한다. Due를 기한 날짜 열로 해석하면 안 된다. | [G22](<GOAL-SPECS/G22.md>) | 미대조 |
-| <a id="r4-f109-o02"></a>R4-F109-O02 · 관찰 | 03: 목록 행 메뉴는 View Project로 시작하며 보드 카드의 Tags 메뉴와 구성이 다르다. 삭제도 이 메뉴에서는 검정 텍스트다. | [G22](<GOAL-SPECS/G22.md>) | 미대조 |
+| <a id="r4-f109-o01"></a>R4-F109-O01 · 관찰 | 02: List View는 제목 앞 상태 점, 고객, 태그, 시작일의 달력 아이콘, Due/Paid 금액 열을 사용한다. Due를 기한 날짜 열로 해석하면 안 된다. | [G22](<GOAL-SPECS/G22.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G22_RESULT.md#g22-r4-recheck) |
+| <a id="r4-f109-o02"></a>R4-F109-O02 · 관찰 | 03: 목록 행 메뉴는 View Project로 시작하며 보드 카드의 Tags 메뉴와 구성이 다르다. 삭제도 이 메뉴에서는 검정 텍스트다. | [G22](<GOAL-SPECS/G22.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G22_RESULT.md#g22-r4-recheck) |
 | <a id="r4-f109-a01"></a>R4-F109-A01 · 남은 분석 | 표 열 너비·정렬 아이콘·금액 소수점·행 메뉴 위치와 보기 전환 시 검색/필터/스크롤 보존은 미확인이다. | [G22](<GOAL-SPECS/G22.md>) | 분석 대기 |
 
 <a id="r4-f110"></a>

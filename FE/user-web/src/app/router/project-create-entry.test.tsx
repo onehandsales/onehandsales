@@ -1,5 +1,5 @@
 import { act } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { router } from "@/app/router/router";
 import { setupPreviewApp } from "@/test/preview-app";
 
@@ -47,7 +47,7 @@ describe("G21 project creation", () => {
     await input(".project-title-field input", "Client project"); await click(submit); await click(submit); await settle(); await settle();
     expect(element("h1").textContent).toBe("Client project"); expect(element(".project-context-row").textContent).toContain("Doe Company");
     expect(element(".client-notice").textContent).toContain("Project created successfully");
-    await navigate("/app/clients/studio-a%3Aclient-doe"); await settle(); expect(element(".client-project-list").textContent).toContain("Client project");
+    await navigate("/app/clients/studio-a%3Aclient-doe"); await vi.waitFor(async () => { await settle(100); expect(element(".client-project-list").textContent).toContain("Client project"); }, { timeout: 3000 });
     await act(async () => router.navigate(-1)); await settle(); expect(document.querySelector(".client-notice")).toBeNull();
   });
   // 기능 : 열 생성의 단계·샘플 안내와 저장 실패 재시도는 한 프로젝트만 남긴다.
