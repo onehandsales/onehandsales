@@ -173,7 +173,7 @@ G00은 근거·색인을, G01은 공통 UI 명세와 적용 범위를, 각 기�
 | <a id="goal-g28"></a>[G28](<GOAL-SPECS/G28.md>) 상태 정의·완료 표시 | 7 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [1개](#shared-screens) |
 | <a id="goal-g29"></a>[G29](<GOAL-SPECS/G29.md>) 보관·삭제 | 6 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [2개](#shared-screens) |
 | <a id="goal-g30"></a>[G30](<GOAL-SPECS/G30.md>) 작업 템플릿 작성 | 7 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [1개](#shared-screens) |
-| <a id="goal-g31"></a>[G31](<GOAL-SPECS/G31.md>) 작업 템플릿 적용 | 4 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [1개](#shared-screens) |
+| <a id="goal-g31"></a>[G31](<GOAL-SPECS/G31.md>) 작업 템플릿 적용 | 4 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [1개](#shared-screens) |
 | <a id="goal-g32"></a>[G32](<GOAL-SPECS/G32.md>) 전역·작업 타이머 | 7 | 기능 구현 미착수 / R4 명세 보완·분석 대기 | [3개](#shared-screens) |
 | <a id="goal-g33"></a>[G33](<GOAL-SPECS/G33.md>) 수동 시간 입력 | 3 | 기능 구현 미착수 / R4 명세 보완·분석 대기 | [3개](#shared-screens) |
 | <a id="goal-g34"></a>[G34](<GOAL-SPECS/G34.md>) 시간 목록·인사이트 | 4 | 기능 구현 미착수 / R4 명세 보완·분석 대기 | [1개](#shared-screens) |
@@ -1726,9 +1726,9 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f129-o01"></a>R4-F129-O01 · 관찰 | 01→02에서 기존 Initial Chat 카드가 In Progress에서 Done으로 이동하지만 중간 조작은 포착되지 않았다. 02의 검은 툴팁은 New Task 오른쪽 아이콘에 연결된다. | [G31](<GOAL-SPECS/G31.md>) | 미대조 |
-| <a id="r4-f129-o02"></a>R4-F129-O02 · 관찰 | 03의 두 Select가 비어 있을 때 버튼은 진한 녹색, 04에서 템플릿만 선택했을 때 연녹색, 05에서 두 값이 선택되면 진한 녹색이다. 색상만으로 일관된 활성화 규칙을 확정할 수 없다. | [G31](<GOAL-SPECS/G31.md>) | 미대조 |
-| <a id="r4-f129-o03"></a>R4-F129-O03 · 관찰 | 06의 신규 Update company guideline 카드는 Consulting Project / No due date로 To Do에 나타난다. 07에서는 Feb 09로 바뀌지만 날짜를 지정하는 조작은 없으므로 템플릿이 기한을 자동 복사했다고 단정하지 않는다. | [G31](<GOAL-SPECS/G31.md>) | 미대조 |
+| <a id="r4-f129-o01"></a>R4-F129-O01 · 관찰 | 01→02에서 기존 Initial Chat 카드가 In Progress에서 Done으로 이동하지만 중간 조작은 포착되지 않았다. 02의 검은 툴팁은 New Task 오른쪽 아이콘에 연결된다. | [G31](<GOAL-SPECS/G31.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G31_RESULT.md#g31-r4-recheck)) |
+| <a id="r4-f129-o02"></a>R4-F129-O02 · 관찰 | 03의 두 Select가 비어 있을 때 버튼은 진한 녹색, 04에서 템플릿만 선택했을 때 연녹색, 05에서 두 값이 선택되면 진한 녹색이다. 색상만으로 일관된 활성화 규칙을 확정할 수 없다. | [G31](<GOAL-SPECS/G31.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G31_RESULT.md#g31-r4-recheck)) |
+| <a id="r4-f129-o03"></a>R4-F129-O03 · 관찰 | 06의 신규 Update company guideline 카드는 Consulting Project / No due date로 To Do에 나타난다. 07에서는 Feb 09로 바뀌지만 날짜를 지정하는 조작은 없으므로 템플릿이 기한을 자동 복사했다고 단정하지 않는다. | [G31](<GOAL-SPECS/G31.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G31_RESULT.md#g31-r4-recheck)) |
 | <a id="r4-f129-a01"></a>R4-F129-A01 · 남은 분석 | 선택 목록의 전체 옵션, 템플릿 파일·하위 작업 복사 결과, 기한 변경 원인, 버튼 활성 조건은 원본에 없는 상태로 남긴다. | [G31](<GOAL-SPECS/G31.md>) | 분석 대기 |
 
 <a id="r4-f130"></a>

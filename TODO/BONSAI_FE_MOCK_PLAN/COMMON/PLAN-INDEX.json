@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27 KST",
-  "status": "G30 R4 구성·동작 재검토·19개 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; 승인 G31 계속 / G32·R07 미착수",
+  "status": "G30·G31 R4 재검토·별도 커밋 / 전체 연결 검토 예정; 원본 동일성·실제 브라우저·미수록 정책 대기; G32·R07 미착수",
   "goals": [
     {
       "id": "G00",
@@ -5476,7 +5476,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·누락 보완·두 차례 검토·G30 연결 회귀·시각 비교 수행; 자료·시각·환경 대기",
+      "status": "R4 구성·동작 재대조·발견 결함 보완 / 부분 완료 / 시각·브라우저·미수록 정책 대기",
       "flow_scope": [
         {
           "flow_number": 128,
@@ -5501,7 +5501,7 @@
         "environment_pending": "OS IME/assistive technology/other browsers/devices"
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "R4 구성·동작 재대조·발견 결함 보완 / 부분 완료 / 시각·브라우저·미수록 정책 대기",
         "item_ids": [
           "R4-F129-O01",
           "R4-F129-O02",
@@ -5523,16 +5523,30 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g31",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_fd79ede42b9843aca369d4e929c4272c"
-        ]
+        ],
+        "observations_reviewed": 3,
+        "analysis_pending": 1
       },
       "connected_g01_recheck": {
         "date": "2026-11-23 KST",
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "r4_recheck_20261127": {
+        "result": "../RESULTS/G31_RESULT.md#g31-r4-recheck",
+        "unit_dom": "4 files 17/17; 39.35s",
+        "typecheck": "pass",
+        "lint": "pass",
+        "build": "memory only; 1976 modules; 3 outputs",
+        "original": "1 flow / 7 steps directly viewed; MCP metadata rechecked",
+        "browser": "not performed; no existing connection; automatic profile/cache artifacts restricted",
+        "visual": "not complete; original PNG compared with code only",
+        "source_unknowns": "1 analysis item retained",
+        "artifacts": "none generated; existing evidence untouched"
       }
     },
     {

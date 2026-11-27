@@ -90,7 +90,10 @@
 .template-apply-note { font-size:14px; line-height:20px; margin:12px 0 24px; }
 .template-apply-note+label { margin-top:24px; }
 .task-new-group>a[aria-label="Create tasks from template"] { background:#55a92b; color:white; display:flex; align-items:center; justify-content:center; width:56px; border-left:1px solid #78be54; border-radius:0 5px 5px 0; }
-.task-batch-feedback a { color:#357c1e; text-decoration:underline; }
+.app-shell>.task-batch-feedback { bottom:90px; font-size:16px; line-height:22px; gap:12px; }
+.task-batch-feedback a { color:inherit; text-decoration:none; }
+.task-batch-feedback a:focus-visible { outline:2px solid #55aa2d; outline-offset:3px; }
+@media(max-width:760px) { .app-shell>.task-batch-feedback { bottom:16px; } }
 @media(max-width:760px) { .template-apply-fields { padding:28px 22px 40px; }.template-apply-fields>p:first-child { font-size:17px; overflow-wrap:anywhere; }.template-apply-footer { padding:16px; } }
 .template-apply-fields>label { position:relative; }
 .template-apply-fields select { appearance:none; padding-right:34px; }
