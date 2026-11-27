@@ -172,7 +172,7 @@ G00은 근거·색인을, G01은 공통 UI 명세와 적용 범위를, 각 기�
 | <a id="goal-g27"></a>[G27](<GOAL-SPECS/G27.md>) 댓글·활동 | 3 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [1개](#shared-screens) |
 | <a id="goal-g28"></a>[G28](<GOAL-SPECS/G28.md>) 상태 정의·완료 표시 | 7 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [1개](#shared-screens) |
 | <a id="goal-g29"></a>[G29](<GOAL-SPECS/G29.md>) 보관·삭제 | 6 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [2개](#shared-screens) |
-| <a id="goal-g30"></a>[G30](<GOAL-SPECS/G30.md>) 작업 템플릿 작성 | 7 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [1개](#shared-screens) |
+| <a id="goal-g30"></a>[G30](<GOAL-SPECS/G30.md>) 작업 템플릿 작성 | 7 | R4 구성·동작 재대조 / 원본 동일성·브라우저 미완 | [1개](#shared-screens) |
 | <a id="goal-g31"></a>[G31](<GOAL-SPECS/G31.md>) 작업 템플릿 적용 | 4 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [1개](#shared-screens) |
 | <a id="goal-g32"></a>[G32](<GOAL-SPECS/G32.md>) 전역·작업 타이머 | 7 | 기능 구현 미착수 / R4 명세 보완·분석 대기 | [3개](#shared-screens) |
 | <a id="goal-g33"></a>[G33](<GOAL-SPECS/G33.md>) 수동 시간 입력 | 3 | 기능 구현 미착수 / R4 명세 보완·분석 대기 | [3개](#shared-screens) |
@@ -1738,8 +1738,8 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f130-o01"></a>R4-F130-O01 · 관찰 | New Task Template 모달은 좁은 중앙 패널이며 Template Name, 회색 Default Project Tasks, 바깥 닫기 X와 아래 지원 링크가 있다. 입력 전에도 진한 녹색 버튼이 보인다. | [G30](<GOAL-SPECS/G30.md>) | 미대조 |
-| <a id="r4-f130-o02"></a>R4-F130-O02 · 관찰 | 입력된 Default Task와 저장 후 제목·연필 아이콘·New Task·테두리 빈 상태·성공 토스트를 각각 재현한다. | [G30](<GOAL-SPECS/G30.md>) | 미대조 |
+| <a id="r4-f130-o01"></a>R4-F130-O01 · 관찰 | New Task Template 모달은 좁은 중앙 패널이며 Template Name, 회색 Default Project Tasks, 바깥 닫기 X와 아래 지원 링크가 있다. 입력 전에도 진한 녹색 버튼이 보인다. | [G30](<GOAL-SPECS/G30.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G30_RESULT.md#g30-r4-recheck)) |
+| <a id="r4-f130-o02"></a>R4-F130-O02 · 관찰 | 입력된 Default Task와 저장 후 제목·연필 아이콘·New Task·테두리 빈 상태·성공 토스트를 각각 재현한다. | [G30](<GOAL-SPECS/G30.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G30_RESULT.md#g30-r4-recheck)) |
 | <a id="r4-f130-a01"></a>R4-F130-A01 · 남은 분석 | 회색 예시 문자열의 placeholder 여부, 빈 이름 검증, 이름 수정 및 여러 템플릿 목록은 추가 근거가 필요하다. 모달 치수·빈 상태 에셋을 명세해야 한다. | [G30](<GOAL-SPECS/G30.md>) | 분석 대기 |
 
 <a id="r4-f131"></a>
@@ -1749,9 +1749,9 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f131-o01"></a>R4-F131-O01 · 관찰 | 새 작업을 추가하는 문맥에서도 모달 제목은 Edit Template Task이며 왼쪽 아래에 빨간 Delete Task가 있다. 템플릿 생성 모달보다 크다. | [G30](<GOAL-SPECS/G30.md>) | 미대조 |
-| <a id="r4-f131-o02"></a>R4-F131-O02 · 관찰 | 04는 첨부 파일명과 구름 아이콘, 05는 같은 파일의 그라데이션 썸네일이다. 첨부 중간 상태와 최종 미리보기를 분리한다. | [G30](<GOAL-SPECS/G30.md>) | 미대조 |
-| <a id="r4-f131-o03"></a>R4-F131-O03 · 관찰 | 하위 작업의 Save와 전체 Save Task는 서로 다른 버튼이다. 06에서는 + Add Subtask가 돌아오고 07에는 미완료 하위 작업 두 개가 보인다. 긴 모달의 스크롤로 제목이 화면 위로 사라지는 상태와 08의 접힌 목록 행을 보존한다. | [G30](<GOAL-SPECS/G30.md>) | 미대조 |
+| <a id="r4-f131-o01"></a>R4-F131-O01 · 관찰 | 새 작업을 추가하는 문맥에서도 모달 제목은 Edit Template Task이며 왼쪽 아래에 빨간 Delete Task가 있다. 템플릿 생성 모달보다 크다. | [G30](<GOAL-SPECS/G30.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G30_RESULT.md#g30-r4-recheck)) |
+| <a id="r4-f131-o02"></a>R4-F131-O02 · 관찰 | 04는 첨부 파일명과 구름 아이콘, 05는 같은 파일의 그라데이션 썸네일이다. 첨부 중간 상태와 최종 미리보기를 분리한다. | [G30](<GOAL-SPECS/G30.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G30_RESULT.md#g30-r4-recheck)) |
+| <a id="r4-f131-o03"></a>R4-F131-O03 · 관찰 | 하위 작업의 Save와 전체 Save Task는 서로 다른 버튼이다. 06에서는 + Add Subtask가 돌아오고 07에는 미완료 하위 작업 두 개가 보인다. 긴 모달의 스크롤로 제목이 화면 위로 사라지는 상태와 08의 접힌 목록 행을 보존한다. | [G30](<GOAL-SPECS/G30.md>) | 구성·동작 대조; 엄격 시각·브라우저 미완 ([결과](../RESULTS/G30_RESULT.md#g30-r4-recheck)) |
 | <a id="r4-f131-a01"></a>R4-F131-A01 · 남은 분석 | 첨부 미리보기 에셋·로딩 상태, 모달 스크롤 영역·높이, 두 저장 동작의 지속성, 템플릿 적용 시 파일·하위 작업 복사 결과를 추가 명세해야 한다. 두 번째 하위 작업 입력 장면은 없다. | [G30](<GOAL-SPECS/G30.md>) | 분석 대기 |
 
 <a id="r4-f132"></a>

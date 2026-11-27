@@ -6,9 +6,10 @@
 .template-heading>div>button { border:0; background:none; color:#8da883; padding:4px; display:flex; flex-shrink:0; }
 .template-heading>.task-primary { flex-shrink:0; }
 .task-template-empty { text-align:center; border:1px solid #e9ede7; border-radius:8px; padding:36px 20px; color:#6a876e; line-height:28px; }
-.task-template-empty>button,.template-text-button { background:none; border:0; color:#55a72b; cursor:pointer; font:600 16px/20px "Bonsai Public Gellix",Arial; }
+.template-text-button { background:none; border:0; color:#55a72b; cursor:pointer; font:600 16px/20px "Bonsai Public Gellix",Arial; }
+.task-template-empty>button { background:none; border:0; padding:0; color:#55a72b; cursor:pointer; font:inherit; }
 .template-task-list>details { border-top:1px solid #e8ede5; border-bottom:1px solid #e8ede5; }
-.template-task-list summary { cursor:pointer; padding:12px 0; font-size:14px; font-weight:600; list-style:none; display:flex; justify-content:space-between; gap:16px; overflow-wrap:anywhere; }
+.template-task-list summary { cursor:pointer; padding:12px 0; font-size:16px; line-height:22px; font-weight:600; list-style:none; display:flex; justify-content:space-between; gap:16px; overflow-wrap:anywhere; }
 .template-task-list summary::after { content:"⌄"; color:#9cad9f; }
 .template-task-list details[open] summary::after { content:"⌃"; }
 .template-task-detail { padding:20px; background:#fbfcfa; overflow-wrap:anywhere; }
@@ -42,16 +43,16 @@
 .template-file-remove { position:absolute; right:4px; top:4px; padding:2px; background:#fffc; color:#c99999; border:0; border-radius:3px; display:flex; cursor:pointer; }
 .template-files>.template-text-button { min-height:32px; padding:6px 12px; }
 .template-subtasks { border-top:1px solid #edf0e9; margin-top:40px; padding-top:34px; }
-.template-subtask { display:flex!important; align-items:center; gap:14px!important; font-size:12px!important; line-height:18px!important; font-weight:600; margin:12px 0; }
+.template-subtask { display:flex!important; align-items:center; gap:14px!important; font-size:14px!important; line-height:20px!important; font-weight:600; margin:12px 0; }
 .template-subtask span { min-width:0; overflow-wrap:anywhere; }
 .template-subtask input,.template-empty-check { appearance:none; flex-shrink:0; width:16px; height:16px; border:1px solid #bac8b3; border-radius:4px; background:white; margin:0; }
 .template-subtask input:checked { appearance:auto; accent-color:#55a72b; }
 .template-subtask-form { display:flex; align-items:center; gap:12px; padding:8px 12px; margin:0 -16px; border:1px solid #edf0e9; border-radius:5px; }
-.template-subtask-form input { flex:1; border:0!important; padding:2px!important; font-size:12px!important; }
+.template-subtask-form input { flex:1; border:0!important; padding:2px!important; font-size:14px!important; }
 .template-subtask-form button { border:0; background:#55a72b; color:white; border-radius:4px; padding:6px 16px; font-size:12px; font-weight:600; }
 .template-editor-footer { padding:20px; border-top:1px solid #edf0e9; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.template-danger { border:0; background:none; color:#ed5d5c; font:400 12px/20px "Bonsai Public Gellix",Arial; cursor:pointer; }
-.template-feedback { position:fixed; z-index:30; right:28px; bottom:40px; display:flex; gap:12px; align-items:center; width:400px; max-width:calc(100vw - 32px); min-height:56px; padding:14px; border-top:3px solid #55a72b; background:white; color:#14291c; border-radius:4px; box-shadow:0 2px 12px #0001; font:600 16px/22px "Bonsai Public Gellix",Arial; }
+.template-danger { border:0; background:none; color:#ed5d5c; font:400 14px/20px "Bonsai Public Gellix",Arial; cursor:pointer; }
+.template-feedback { position:fixed; z-index:30; right:28px; bottom:90px; display:flex; gap:12px; align-items:center; width:400px; max-width:calc(100vw - 32px); min-height:56px; padding:14px; border-top:3px solid #55a72b; background:white; color:#14291c; border-radius:4px; box-shadow:0 2px 12px #0001; font:600 16px/22px "Bonsai Public Gellix",Arial; }
 .template-feedback>svg { color:#55a72b; flex-shrink:0; }.template-feedback>span { flex:1; overflow-wrap:anywhere; }.template-feedback>button { border:0; background:none; color:#a1b09f; font-size:20px; }
 .template-dialog [role=alert] { color:#a33630; overflow-wrap:anywhere; font-size:14px; line-height:20px; }
 .template-image-dialog img { max-width:100%; max-height:60dvh; object-fit:contain; }

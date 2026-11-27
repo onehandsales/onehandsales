@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27 KST",
-  "status": "G25~G29 추가 검토·2결함 수정·관련 43개 로컬 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; 이번 승인 범위 G29까지",
+  "status": "G30 R4 구성·동작 재검토·19개 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; 승인 G31 계속 / G32·R07 미착수",
   "goals": [
     {
       "id": "G00",
@@ -5377,7 +5377,7 @@
         "R06"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 작성·검토·시각 비교 수행; G31에서 적용 독립성 연결 검증 수행; 자료·시각·환경 대기",
+      "status": "R4 구성·동작 재대조·발견 결함 보완 / 부분 완료 / 시각·브라우저·미수록 정책 대기",
       "flow_scope": [
         {
           "flow_number": 130,
@@ -5407,7 +5407,7 @@
         "connection_verification": "G31: unit100/100; dev/build writing5+application4 each9/9; historical failures in G31_RESULT.md"
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "R4 구성·동작 재대조·발견 결함 보완 / 부분 완료 / 시각·브라우저·미수록 정책 대기",
         "item_ids": [
           "R4-F130-O01",
           "R4-F130-O02",
@@ -5432,16 +5432,30 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g30",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_6ec51256385940f2bd7d36a76874d691"
-        ]
+        ],
+        "observations_reviewed": 5,
+        "analysis_pending": 2
       },
       "connected_g01_recheck": {
         "date": "2026-11-23 KST",
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "r4_recheck_20261127": {
+        "result": "../RESULTS/G30_RESULT.md#g30-r4-recheck",
+        "unit_dom": "4 files 19/19; 31.77s",
+        "typecheck": "pass",
+        "lint": "pass",
+        "build": "memory only; 1976 modules; 3 outputs",
+        "original": "2 flows / 12 steps directly viewed; MCP metadata rechecked",
+        "browser": "not performed; no connected session",
+        "visual": "not complete; original PNG compared with code only",
+        "source_unknowns": "2 analysis items retained",
+        "artifacts": "none generated; existing evidence untouched"
       }
     },
     {
