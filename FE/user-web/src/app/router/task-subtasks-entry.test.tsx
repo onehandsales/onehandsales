@@ -6,6 +6,26 @@ const task = "studio-a:task-initial-chat-1";
 const { element, navigate, click, choose, input, settle, waitFor } = setupPreviewApp(`/app/tasks?task=${task}`);
 // 기능 : 실제 패널에서 같은 부모와 하위 ID의 저장·완료·배정 경계를 검증한다.
 describe("G26 subtask entries", () => {
+  // 기능 : 담당자 검색에서 위 방향키를 처음 누르면 마지막 선택지부터 탐색한다.
+  it("starts upward assignee navigation at the last option and restores its trigger", async () => {
+    await add('Keyboard child');
+    for (const label of ['Task assignee', 'Assignee for Keyboard child']) {
+      const trigger = `[aria-label="${label}"]`;
+      await click(trigger);
+      const options = [...document.querySelectorAll<HTMLButtonElement>('.task-assignee-menu [role="option"]')];
+      expect(options.length).toBeGreaterThan(label === 'Task assignee' ? 1 : 0);
+      await act(async () => element(`input[aria-label="Search ${label.toLowerCase()}"]`).dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true })));
+      expect(document.activeElement === options.at(-1)).toBe(true);
+      await act(async () => document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true, cancelable: true })));
+      expect(document.activeElement === options[0]).toBe(true);
+      await act(async () => document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true })));
+      expect(document.activeElement === options.at(-1)).toBe(true);
+      await act(async () => document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true })));
+      expect(document.activeElement === options[0]).toBe(true);
+      await act(async () => document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })));
+      await settle(50); expect(document.activeElement === element(trigger)).toBe(true);
+    }
+  });
   // 기능 : 새 하위 입력을 저장하고 조회 갱신으로 추가된 행을 기다린다.
   async function add(name: string) {
     await click(".task-subtasks > .task-add"); await input('[aria-label="New subtask title"]', name);

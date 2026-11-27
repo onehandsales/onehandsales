@@ -33,6 +33,9 @@ describe("G21-G24 additional review", () => {
     expect(new URLSearchParams(window.location.search).get("source")).toBe("client");
     expect(new URLSearchParams(window.location.search).get("tab")).toBe("Time Tracking");
     expect(new URLSearchParams(window.location.search).get("task")).toBe("studio-a:task-initial-chat-1");
+    await click('[aria-label="Recorded task time"]');
+    expect(element('.task-time-records .task-avatar').textContent).toBe('A');
+    expect(element('.task-time-records').textContent).toContain('00:00:07');
     await click(".task-dialog .dialog__close"); await settle();
     expect(window.location.pathname + window.location.search + window.location.hash).toBe(path);
     expect(router.state.location.state).toEqual({ retained: true });

@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-24 KST",
-  "status": "G21~G24 추가 검토·3결함 수정·전체 로컬 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; G25 not started",
+  "date": "2026-11-27 KST",
+  "status": "G25~G29 추가 검토·2결함 수정·관련 43개 로컬 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; 이번 승인 범위 G29까지",
   "goals": [
     {
       "id": "G00",
@@ -4903,11 +4903,11 @@
       },
       "current_regression": {
         "goal": "G26",
-        "unit_dom": "3 files 26/26; 30.30s",
+        "unit_dom": "9 files 43/43 unit+DOM; 62.95s; targeted G25-G29 connected regression",
         "development_e2e": "not_run; no connected browser session",
         "production_e2e": "not_run",
         "visual_identity": "not_verified",
-        "result": "../RESULTS/G26_RESULT.md#g26-r4-recheck"
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-followup-review"
       },
       "source_analysis_review": {
         "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
@@ -4981,6 +4981,23 @@
         "browser_e2e": "not_run",
         "visual_identity": "not_verified",
         "overall_complete": false
+      },
+      "followup_review_20261127": {
+        "base_commit": "da6bcd2f",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-followup-review",
+        "unit_dom": "9 files 43/43 unit+DOM; 62.95s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 8.24s",
+        "source_steps_directly_viewed": [
+          "sc_f6fd9820dad74a1e8c7e75641dc547e4",
+          "sc_ea042f68264945369fcad12326916b22"
+        ],
+        "new_mcp_query_performed": false,
+        "browser_e2e": "not_run; no connected browser session",
+        "visual_identity": "not_verified",
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {
@@ -5291,11 +5308,11 @@
       },
       "current_regression": {
         "goal": "G29",
-        "unit_dom": "4 files 26/26 unit+DOM; 33.60s",
+        "unit_dom": "9 files 43/43 unit+DOM; 62.95s; targeted G25-G29 connected regression",
         "development_e2e": "not_run; no connected browser session",
         "production_e2e": "not_run",
         "visual_identity": "not_verified",
-        "result": "../RESULTS/G29_RESULT.md#g29-r4-recheck"
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-followup-review"
       },
       "r4_recheck_20261127": {
         "result": "../RESULTS/G29_RESULT.md#g29-r4-recheck",
@@ -5323,6 +5340,23 @@
         "browser_e2e": "not_run",
         "visual_identity": "not_verified",
         "overall_complete": false
+      },
+      "followup_review_20261127": {
+        "base_commit": "da6bcd2f",
+        "result": "../RESULTS/G29_RESULT.md#g25-g29-followup-review",
+        "unit_dom": "9 files 43/43 unit+DOM; 62.95s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "1976 modules / 3 memory outputs; 8.24s",
+        "source_steps_directly_viewed": [
+          "sc_f6fd9820dad74a1e8c7e75641dc547e4",
+          "sc_ea042f68264945369fcad12326916b22"
+        ],
+        "new_mcp_query_performed": false,
+        "browser_e2e": "not_run; no connected browser session",
+        "visual_identity": "not_verified",
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {

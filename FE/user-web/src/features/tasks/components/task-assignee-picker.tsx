@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import { ChevronDown, UserRoundPlus } from "lucide-react";
 import { taskInitials } from "../model/task-values";
 import type { TeamRow } from "@/features/team";
@@ -13,5 +14,25 @@ export function TaskAssigneePicker({ members, value, disabled, onChange, label =
     return function cleanup() { document.removeEventListener("pointerdown", outside); }; }, [open]);
   // 기능 : 선택 후 메뉴를 닫고 저장 중에도 원래 제어에 초점을 복귀한다.
   function choose(id: string | null) { if (disabled) return; setOpen(false); onChange(id); requestAnimationFrame(() => trigger.current?.focus()); }
-  return <div ref={root} className={`task-assignee-picker${compact ? " is-compact" : ""}`} onKeyDown={event => { if (composing.current || event.nativeEvent.isComposing || event.keyCode === 229) { if (["Enter", "Escape"].includes(event.key)) { event.preventDefault(); event.stopPropagation(); } return; } if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); requestAnimationFrame(() => trigger.current?.focus()); } if (open && ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) { event.preventDefault(); const items = [...root.current!.querySelectorAll<HTMLButtonElement>('[role="option"]')]; const index = items.findIndex(item => item === document.activeElement); items[event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : (index + (event.key === "ArrowUp" ? -1 : 1) + items.length) % items.length]?.focus(); } }}><button type="button" ref={trigger} aria-label={label} aria-haspopup="listbox" aria-expanded={open} aria-disabled={disabled} onClick={() => { if (!disabled) { composing.current = false; setSearch(""); setOpen(value => !value); } }}>{selected ? <><span className="task-avatar">{taskInitials(selected.name)}</span>{!compact && selected.name}</> : compact ? <UserRoundPlus size={19} aria-hidden="true" /> : <span className="task-muted">Unassigned</span>}</button>{open && <div className="task-assignee-menu"><div><input ref={input} onCompositionStart={event => { event.stopPropagation(); composing.current = true; }} onCompositionEnd={event => { event.stopPropagation(); composing.current = false; }} onBlur={() => { composing.current = false; }} aria-label={`Search ${label.toLowerCase()}`} placeholder="Select…" value={search} onChange={event => setSearch(event.currentTarget.value)} /><ChevronDown size={14} /></div><p>PROJECT TEAM</p><div role="listbox" aria-label={label}>{matches.map(member => <button key={member.id} type="button" role="option" aria-selected={member.id === value} onClick={() => choose(member.id)}><span className="task-avatar">{taskInitials(member.name)}</span>{member.name}</button>)}{!matches.length && <p>No matching project members.</p>}{value && <button type="button" role="option" aria-selected={false} onClick={() => choose(null)}>Unassigned</button>}</div></div>}</div>;
+  // 기능 : 조합 입력을 보호하고 검색에서의 첫 방향 이동과 선택지 순환 및 닫기 초점을 관리한다.
+  function handleMenuKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (composing.current || event.nativeEvent.isComposing || event.keyCode === 229) {
+      if (["Enter", "Escape"].includes(event.key)) { event.preventDefault(); event.stopPropagation(); }
+      return;
+    }
+    if (open && event.key === "Escape") {
+      event.preventDefault(); event.stopPropagation(); setOpen(false);
+      requestAnimationFrame(() => trigger.current?.focus());
+      return;
+    }
+    if (!open || !["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const items = [...root.current!.querySelectorAll<HTMLButtonElement>('[role="option"]')];
+    const index = items.findIndex(item => item === document.activeElement);
+    const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1
+      : index < 0 ? event.key === "ArrowUp" ? items.length - 1 : 0
+      : (index + (event.key === "ArrowUp" ? -1 : 1) + items.length) % items.length;
+    items[next]?.focus();
+  }
+  return <div ref={root} className={`task-assignee-picker${compact ? " is-compact" : ""}`} onKeyDown={handleMenuKeyDown}><button type="button" ref={trigger} aria-label={label} aria-haspopup="listbox" aria-expanded={open} aria-disabled={disabled} onClick={() => { if (!disabled) { composing.current = false; setSearch(""); setOpen(value => !value); } }}>{selected ? <><span className="task-avatar">{taskInitials(selected.name)}</span>{!compact && selected.name}</> : compact ? <UserRoundPlus size={19} aria-hidden="true" /> : <span className="task-muted">Unassigned</span>}</button>{open && <div className="task-assignee-menu"><div><input ref={input} onCompositionStart={event => { event.stopPropagation(); composing.current = true; }} onCompositionEnd={event => { event.stopPropagation(); composing.current = false; }} onBlur={() => { composing.current = false; }} aria-label={`Search ${label.toLowerCase()}`} placeholder="Select…" value={search} onChange={event => setSearch(event.currentTarget.value)} /><ChevronDown size={14} /></div><p>PROJECT TEAM</p><div role="listbox" aria-label={label}>{matches.map(member => <button key={member.id} type="button" role="option" aria-selected={member.id === value} onClick={() => choose(member.id)}><span className="task-avatar">{taskInitials(member.name)}</span>{member.name}</button>)}{!matches.length && <p>No matching project members.</p>}{value && <button type="button" role="option" aria-selected={false} onClick={() => choose(null)}>Unassigned</button>}</div></div>}</div>;
 }
