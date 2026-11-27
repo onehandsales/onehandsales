@@ -149,7 +149,7 @@ G00은 근거·색인을, G01은 공통 UI 명세와 적용 범위를, 각 기�
 | <a id="goal-g20"></a>[G20](<GOAL-SPECS/G20.md>) 고객 필드·이미지 | 5 | [구성 대조·보완 / 원본 동일성·브라우저·정책 대기](../RESULTS/G20_RESULT.md#g20-r4-recheck) | [3개](#shared-screens) |
 | <a id="goal-g21"></a>[G21](<GOAL-SPECS/G21.md>) 두 진입점의 프로젝트 생성 | 7 | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G21_RESULT.md#g21-r4-recheck) | [4개](#shared-screens) |
 | <a id="goal-g22"></a>[G22](<GOAL-SPECS/G22.md>) 보드·표 전환 | 6 | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G22_RESULT.md#g22-r4-recheck) | [3개](#shared-screens) |
-| <a id="goal-g23"></a>[G23](<GOAL-SPECS/G23.md>) 단계 이동·태그 | 9 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [3개](#shared-screens) |
+| <a id="goal-g23"></a>[G23](<GOAL-SPECS/G23.md>) 단계 이동·태그 | 9 | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) | [3개](#shared-screens) |
 | <a id="goal-g24"></a>[G24](<GOAL-SPECS/G24.md>) 프로젝트 상세·이름·설정 | 10 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [3개](#shared-screens) |
 | <a id="goal-g25"></a>[G25](<GOAL-SPECS/G25.md>) 전체·프로젝트 작업 보드와 생성 | 6 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [5개](#shared-screens) |
 | <a id="goal-g26"></a>[G26](<GOAL-SPECS/G26.md>) 하위 작업·담당자 | 7 | 기존 목 구현 이력 유지 / R4 구현 대조 미실행 | [2개](#shared-screens) |
@@ -1425,8 +1425,8 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f104-o01"></a>R4-F104-O01 · 관찰 | 02→03: 프로젝트 상태는 New Lead/Proposal Sent/Contract Signed/In Progress/In Review 다섯 배지 선택에서 Proposal Sent로 바뀐다. 작업 상태 세 가지와 별도 체계다. | [G23](<GOAL-SPECS/G23.md>) | 미대조 |
-| <a id="r4-f104-o02"></a>R4-F104-O02 · 관찰 | 04: 더보기에는 고객/협업자 미리보기·완료·보관·삭제가 있으며 상태는 다시 New Lead다. 더보기를 열면 상태가 초기화된다는 인과관계는 확인되지 않는다. | [G23](<GOAL-SPECS/G23.md>) | 미대조 |
+| <a id="r4-f104-o01"></a>R4-F104-O01 · 관찰 | 02→03: 프로젝트 상태는 New Lead/Proposal Sent/Contract Signed/In Progress/In Review 다섯 배지 선택에서 Proposal Sent로 바뀐다. 작업 상태 세 가지와 별도 체계다. | [G23](<GOAL-SPECS/G23.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) |
+| <a id="r4-f104-o02"></a>R4-F104-O02 · 관찰 | 04: 더보기에는 고객/협업자 미리보기·완료·보관·삭제가 있으며 상태는 다시 New Lead다. 더보기를 열면 상태가 초기화된다는 인과관계는 확인되지 않는다. | [G23](<GOAL-SPECS/G23.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) |
 | <a id="r4-f104-a01"></a>R4-F104-A01 · 남은 분석 | 프로젝트 상태 변경 저장 피드백과 완료/보관/삭제 결과는 미확인이다. 상태별 점·배경색과 메뉴 너비, 고객/협업자 미리보기의 차이를 추가 근거로 연결해야 한다. | [G23](<GOAL-SPECS/G23.md>) | 분석 대기 |
 
 <a id="r4-f105"></a>
@@ -1447,8 +1447,8 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f106-o01"></a>R4-F106-O01 · 관찰 | 02–03: 열 더보기와 카드 더보기의 위치/메뉴를 구분한다. 카드 메뉴에는 Tags/Mark Completed/Archive Project/Delete Project가 있다. | [G23](<GOAL-SPECS/G23.md>) | 미대조 |
-| <a id="r4-f106-o02"></a>R4-F106-O02 · 관찰 | 04–07: 빈 Tags→검색/생성 입력→Create Sample→Sample chip와 Edit로 바뀌고 성공 토스트가 표시된다. 08 카드에는 태그가 고객명 아래 추가되어 높이가 늘어난다. | [G23](<GOAL-SPECS/G23.md>) | 미대조 |
+| <a id="r4-f106-o01"></a>R4-F106-O01 · 관찰 | 02–03: 열 더보기와 카드 더보기의 위치/메뉴를 구분한다. 카드 메뉴에는 Tags/Mark Completed/Archive Project/Delete Project가 있다. | [G23](<GOAL-SPECS/G23.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) |
+| <a id="r4-f106-o02"></a>R4-F106-O02 · 관찰 | 04–07: 빈 Tags→검색/생성 입력→Create Sample→Sample chip와 Edit로 바뀌고 성공 토스트가 표시된다. 08 카드에는 태그가 고객명 아래 추가되어 높이가 늘어난다. | [G23](<GOAL-SPECS/G23.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) |
 | <a id="r4-f106-a01"></a>R4-F106-A01 · 남은 분석 | 복수 태그·기존 태그 선택·태그 해제·색상 편집은 미확인이다. Tags 모달의 상태별 높이, chip의 색상/반경/여백과 보드 카드 높이를 명세해야 한다. | [G23](<GOAL-SPECS/G23.md>) | 분석 대기 |
 
 <a id="r4-f107"></a>
@@ -1470,8 +1470,8 @@ R4에서 재확인된 메모를 연결해도 각 R의 전체 조사·추가 구�
 
 | ID·구분 | R4 원문 | 검토 담당 | 현재 상태 |
 | --- | --- | --- | --- |
-| <a id="r4-f108-o01"></a>R4-F108-O01 · 관찰 | 02: Consulting Project 카드가 열 정렬 위치에서 벗어나 떠 있는 중간 상태를 보여 준다. 카드 제목·고객·Sample chip은 유지된다. | [G23](<GOAL-SPECS/G23.md>) | 미대조 |
-| <a id="r4-f108-o02"></a>R4-F108-O02 · 관찰 | 03: Contract Signed 개수는 1, In Progress는 0으로 바뀌고 카드가 새 열에 정렬된다. 같은 열 안 단순 순서 변경만을 다룬 플로우가 아니다. | [G23](<GOAL-SPECS/G23.md>) | 미대조 |
+| <a id="r4-f108-o01"></a>R4-F108-O01 · 관찰 | 02: Consulting Project 카드가 열 정렬 위치에서 벗어나 떠 있는 중간 상태를 보여 준다. 카드 제목·고객·Sample chip은 유지된다. | [G23](<GOAL-SPECS/G23.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) |
+| <a id="r4-f108-o02"></a>R4-F108-O02 · 관찰 | 03: Contract Signed 개수는 1, In Progress는 0으로 바뀌고 카드가 새 열에 정렬된다. 같은 열 안 단순 순서 변경만을 다룬 플로우가 아니다. | [G23](<GOAL-SPECS/G23.md>) | [구성 대조·보완 / 시각·브라우저 대기](../RESULTS/G23_RESULT.md#g23-r4-recheck) |
 | <a id="r4-f108-a01"></a>R4-F108-A01 · 남은 분석 | 포인터 경로·드롭 영역·자동 가로 스크롤·실패 복원·동일 열 정렬은 미확인이다. 드래그 중 카드 그림자와 자리 표시자의 존재는 원본 확대 확인이 필요하다. | [G23](<GOAL-SPECS/G23.md>) | 분석 대기 |
 
 <a id="r4-f109"></a>

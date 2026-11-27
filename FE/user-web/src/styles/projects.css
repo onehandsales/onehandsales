@@ -23,7 +23,8 @@
 .project-stage-menu .stage-1>span,.project-stage-control>.stage-1>span{color:#ea8b50}
 
 .project-action-menu{border-radius:8px;box-shadow:0 4px 8px #20301014}.project-linked-tags .project-tag{background:#efedf0;color:#777184}.project-tag-success{padding-top:16px;padding-bottom:16px}
-.project-tag-picker{position:relative;width:100%}.project-tag-picker::before{content:"⌃";position:absolute;top:10px;right:10px;color:#78907f;pointer-events:none}
+.project-tag-picker{position:relative;width:100%}.project-tag-picker>.project-tag-chevron{position:absolute;top:12px;right:10px;color:#78907f;pointer-events:none}
+.project-stage-control>.project-stage[aria-expanded=true]>svg{transform:rotate(180deg)}
 /* 원본 보드 오른쪽 60px 여백을 남겨 마지막 열의 가로 이동 한계를 맞춘다. */
 .project-board{margin-right:60px}
 @media(max-width:1000px){.project-board{margin-right:24px}}

@@ -86,3 +86,42 @@ FE/user-web, Node 24.18.0 / pnpm 8.14.1. `eval "$(fnm env --shell zsh)" && fnm u
 ### G27 최종 연결·회귀
 
 [G27 결과](G27_RESULT.md)의 전체 회귀와 단일 연결 시나리오에서 같은 고객/필드/이미지/프로젝트/초대/작업/하위/댓글 ID를 확인했다. G26 활동 높이·스크롤은 G27에서15원본 상태를 재캡처/비교했다. 최초 실패와 당시 수치는 위에 보존한다. 현재 전체 검사143개씩 통과가 미수록 원본/서버 정책·시각 동일성·실제 OS 환경 완료를 뜻하지 않는다.
+
+
+<a id="g23-r4-recheck"></a>
+## G23 R4 재대조 — 2026-11-27 KST
+
+판정: **부분 완료**. 원본 동일성·실제 브라우저·미수록 정책은 미완이다.
+
+### 네 기준과 영향 범위
+
+FRONT_AGENT ENGINEERING_REVIEW_CHECKLIST·STATE_AND_DATA·TESTING, G23 완료 기준, R05/R20 소비 분석을 적용했다. Board/StagePicker/MoveDialog/TagsDialog→useProjectAction→ProjectStore/applyProjectEdit→목록·상세·고객·초대 선택지 연결을 추적했다. 수정은 보드의 이력별 수명, 태그 정확 선택/IME/오류 연결, 단계·태그 화살표 SVG다. 공통 저장소·동일 ID·G19/G20 데이터/공통 Dialog는 변경하지 않았다.
+
+### 원본 대응
+
+신규 MCP3Flow16단계, ANALYSIS 단계표·4/5/8절, 로컬 PNG16개 직접 확인. 단계 ID 일치, 원본 PNG2880×1800. CSS viewport/DPR은 미확정이다.
+
+- F104 Updating project status 01~04/O01·O02: 5개 프로젝트 단계, New Lead→Proposal Sent, 문서/금액 유지. 마지막 New Lead는 별도 snapshot이며 메뉴 열기로 초기화하지 않는다. 상세 메뉴의 미리보기·완료·보관·삭제 실행은 미수록이다.
+- F106 Adding a tag 01~09/O01·O02: 열과 카드 메뉴 구분, Tags/Mark Completed/Archive Project/Delete Project, 빈 Tags→Add Tag→Select/입력→Create→chip/Edit/성공→카드 높이 증가. 저장 성공은 모달 닫기 전이며 별도 Save 없음. 정의·연결 분리와 기존 Edit 목 정책을 유지한다.
+- F108 Reordering projects 01~03/O01·O02: 떠 있는 카드 중간 상태와 In Progress1→0/Contract Signed0→1, 제목/고객/태그 보존. 실제 계약 생성/서명은 하지 않는다.
+- 원본1/2 참고 좌표: 태그 모달 x520/y60/w400, 헤더96, 입력 x553/y196/w320/h40, linked chip y196/h30. 단계 메뉴 약190폭/10padding/5행 간격5. 현재 CSS 구조와 대조하고 글자 화살표를 SVG로 보완했다. 실제 렌더 픽셀·정확한 font weight/색·blur·네이티브 drag ghost는 검증하지 않았다. 원본의 색 차이를 확정 디자인 토큰으로 일반화하지 않았다.
+
+### 결함·수정·재검토
+
+- 부분 일치 첫 후보 Sample과 완전 일치 Sam이 함께 있을 때 Enter가 Sample을 연결했다. 정규화한 완전 일치 객체 ID를 선택하도록 수정했다.
+- 조합 Escape가 태그 입력을 닫았다. capture 단계에서 조합 Enter/Escape/방향키를 보호하고 편집 전환 때 조합 상태를 초기화했다.
+- 같은 보드 경로의 새 이력에 태그 모달·저장 요청이 남았다. 보드의 이력 수명을 분리해 드래그/이동/태그 초안과 pending 요청을 폐기한다.
+- 이름/태그 오류를 입력 aria-invalid/aria-describedby로 연결했다.
+- 생성 store·고객 태그·계약/청구/과거 생성 활동을 변경하지 않는다. 기존 latest-intent/취소/권한/revision 방어를 재검증했다.
+
+### 실행 검증
+
+첫 실행은 테스트의 seed ID 추정 오류5개였다. 실제 G17 team-project ID로 고친 뒤 제품 결함3개와 이동 검사 대기 문제1개를 재현했다(4실패/1통과,19.91s). 이동 장애 시나리오 초기 조회와 오류 표시를 조건 대기로 확인하도록 보완했다.
+
+최종 DOM G23 7 + G22 5 + edit model3 + store6 = **21/21,29.02s**. 내용: IME, 완전 일치 태그, 늦은 저장 취소, 이동 실패/재시도/순서/건수, 합성 drag 취소/다른 열 드롭, 잘못된 이름/수정/연결해제/정의 유지, 연속 단계의 마지막 의도와 이탈 취소. store의 scope/reset/권한·과거 활동/시간 스냅샷 보호도 통과했다. G22 보드 스크롤/표/상세 왕복 회귀 통과.
+
+app/node noEmit 타입·전체 ESLint 통과, 메모리build1976modules/3outputs7.54s 통과. 새7개 검사 중 마지막2개는 제품 변경 후 추가했고 최종 전체 품질 검사에서도 포함한다. 원본/명세/규칙/연결 코드를 다시 대조했다. evidence·이미지·trace·report·임시 파일은 만들지 않았다.
+
+### 남은 미확인
+
+연결된 브라우저가 없어 실제 포인터 드래그/터치/네이티브 초점·IME/반응형·네트워크는 미실행이다. 합성 이벤트 통과는 실제 브라우저 검증이 아니다. R4-F104-A01/F106-A01/F108-A01 및 미수록 lifecycle·태그 Edit/중복/동시 편집/저장뷰 정책은 분석 대기다. 기존 목 한도/키보드 대안을 원본 사실로 쓰지 않는다. 작은 시각 차이도 동일 재현 완료로 표시하지 않는다.
