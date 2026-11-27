@@ -1,11 +1,21 @@
+import { Tag } from "lucide-react";
 import { ClientFieldDefinitions } from "./client-field-definitions";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { ClientAutomationsTab, ClientPortalTab } from "./client-overview-tabs";
 import type { ClientData } from "../model/client-types";
-// 기능 : 관찰된 포털·자동화·태그/필드 조회를 표시하고 후속 변경 기능의 인계를 구분한다.
+
+// 기능 : 관찰된 고객 탭과 태그 정의 조회를 조합하고 필드 편집의 소유권을 별도 유지한다.
 export function ClientTabs({ tab, data, onUnavailable }: { tab: string; data: ClientData; onUnavailable: (name: string) => void }) {
-  const [bannerVisible, setBannerVisible] = useState(true);
-  if (tab === "portal") return <div className="clients-body client-portal">{bannerVisible && <div className="client-portal-banner"><button className="client-banner-close" aria-label="Dismiss portal introduction" onClick={() => setBannerVisible(false)}>×</button><h2>ⓘ Connect with Clients</h2><p>Let your clients securely log into a custom-branded portal where they can access the projects, documents and links you’ve shared with them. <button className="client-text-action" onClick={() => onUnavailable("Client Portal — G73/R17")}>Find out more.</button></p></div>}<div className="client-portal-columns"><div><h3>Client Portal <button className="client-text-action" onClick={() => onUnavailable("Client Portal preview — G73")}>↗ View</button></h3><p>Use this link to share with your clients.</p><button className="client-portal-url" onClick={() => onUnavailable("Portal link not available")}>Local portal link not available</button><h3>Portal Access</h3><p>Enable or disable client access to your portal.</p><div className="client-portal-switch"><button onClick={() => onUnavailable("Enable portal access — G73")}>Enable</button><button aria-pressed="true" onClick={() => onUnavailable("Portal access is disabled")}>Disabled</button></div><h3>Client Portal Header Image</h3><p>Personalize your client portal with your own header image.</p><button className="client-portal-select" onClick={() => onUnavailable("Portal header — G73")}>Custom Header ⌄</button><button className="client-portal-upload" onClick={() => onUnavailable("Portal header upload — G73")}>▧ Upload Image</button><div className="client-portal-brand"><h3>Bonsai Branding ⓘ</h3><button aria-label="Bonsai Branding" aria-pressed="true" onClick={() => onUnavailable("Bonsai Branding — G73")}>●</button></div></div><div><div className="client-portal-preview" aria-label="Recorded portal preview illustration"><div className="client-portal-cover" /><span>JD</span><i /><i /><b /></div><p className="client-portal-caption">Update your color scheme and font in your <Link to="/app/settings/branding">brand settings</Link></p></div></div></div>;
-  if (tab === "automations") return <div className="clients-body"><section className="client-automation"><div className="client-automation-art" aria-label="Illustration of an example automation"><div><h3>New Automation</h3><p>Triggered</p><span>When a contract is signed ⌄</span></div><div><h3>Action</h3><span>Schedule a meeting ⌄</span></div></div><div><h2>Workflow Automation</h2><p>Set up custom actions to be performed automatically on your behalf -- from sending welcome emails to requesting client intake forms.</p><button className="client-primary" onClick={() => onUnavailable("New Automation")}>New Automation</button></div><p className="client-automation-support">Have questions? <Link to="/support">Contact Support</Link></p></section></div>;
-  return <div className="clients-body client-settings"><section><div className="client-panel-title"><h2>Client Tags</h2><button className="client-primary" onClick={() => onUnavailable("New Client Tag")}>New Client Tag</button></div><div className="client-definition-table"><header><span>Tag Name</span><span>{data.tags.length} Tags</span></header>{data.tags.map(tag => <div key={tag.id}><span className="client-tag">⌁ {tag.name}</span><span className="client-definition-count">{data.clients.filter(client => client.tagIds.includes(tag.id)).length} {data.clients.filter(client => client.tagIds.includes(tag.id)).length === 1 ? "Client" : "Clients"}</span><button onClick={() => onUnavailable("Edit client tag")}>Edit</button><button className="client-delete" onClick={() => onUnavailable("Delete client tag")}>Delete</button></div>)}</div></section><ClientFieldDefinitions fields={data.fields} /></div>;
+  if (tab === "portal") return <ClientPortalTab onUnavailable={onUnavailable} />;
+  if (tab === "automations") return <ClientAutomationsTab onUnavailable={onUnavailable} />;
+  return <div className="clients-body client-settings"><section>
+    <div className="client-panel-title"><h2>Client Tags</h2><button className="client-primary" onClick={() => onUnavailable("New Client Tag")}>New Client Tag</button></div>
+    <div className="client-definition-table client-tag-table"><header><span>Tag Name</span><span>{data.tags.length} Tags</span></header>
+      {data.tags.map(tag => {
+        const count = data.clients.filter(client => client.tagIds.includes(tag.id)).length;
+        return <div key={tag.id} className="client-tag-row"><span className="client-tag"><Tag size={12} aria-hidden="true" />{tag.name}</span><span className="client-definition-count">{count} {count === 1 ? "Client" : "Clients"}</span>
+          <span className="client-tag-row-actions"><button aria-label={`Edit tag ${tag.name}`} onClick={() => onUnavailable("Edit client tag")}>Edit</button><button className="client-delete" aria-label={`Delete tag ${tag.name}`} onClick={() => onUnavailable("Delete client tag")}>Delete</button></span>
+        </div>;
+      })}
+    </div>
+  </section><ClientFieldDefinitions fields={data.fields} /></div>;
 }

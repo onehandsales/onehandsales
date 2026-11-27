@@ -15,3 +15,41 @@
 @media(max-width:600px){.client-definition-edit form{flex-wrap:wrap}.client-definition-edit input{width:100%}.client-definition-edit form>div{margin-left:auto}.client-definition-table>div>span:first-child{max-width:100%}.client-fields-section .client-definition-table>div{gap:12px}}
 /* G20 비교 보정: 원본의 필드 행·36px 버튼과 이미지 유무에 무관한 헤더 높이. */
 .client-settings section.client-fields-section{margin-top:54px}.client-fields-section .client-panel-title>.client-primary{min-height:36px;padding-block:6px;line-height:22px;font-size:14px}.client-fields-section .client-field-name{font-size:16px;line-height:22px}.client-fields-section .client-definition-table>div{min-height:52px}.client-image-control .client-large-avatar{display:grid}.client-avatar img{display:block}
+
+/* G19 원본 2880×1800의 1/2 비교 좌표를 반영하며 실제 CSS viewport와 폰트 동일성은 별도 확인한다. */
+.client-dialog form[data-has-input="false"] label>span{color:#929592}
+.client-dialog input[aria-invalid="true"]{border-color:#c94e4e}
+.client-dialog .dialog__footer>.client-primary{background:linear-gradient(#1b9f00,#1b9801);border-color:#1b9801}
+.client-notice>span[aria-hidden]{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#1b9f00;color:#fff;font:11px/1 Arial;margin-right:6px}
+.client-portal-banner h2{padding-left:40px}
+.client-portal-info{position:absolute;left:22px;top:25px;color:#99a99e}
+.client-banner-close{display:grid;place-items:center;width:20px;height:20px;padding:0;top:20px}
+.client-portal h3 .client-text-action{display:inline-flex;align-items:center;gap:5px;margin-left:6px}
+.client-portal-url{display:flex;align-items:center;gap:12px;border-color:#56a932;font-size:16px}
+.client-portal-url>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.client-portal-url>svg{flex-shrink:0}
+.client-portal-select,.client-portal-upload,.client-portal-brand h3{display:flex;align-items:center;gap:8px}
+.client-portal-select{justify-content:space-between;font-size:16px}
+.client-portal-select svg{color:#c6d0c8}
+.client-portal-upload{font-size:16px}
+.client-portal-brand button{height:26px;padding:4px;display:flex;justify-content:flex-end;align-items:center}
+.client-portal-brand button>span{display:block;width:18px;height:18px;border-radius:50%;background:#fff}
+.client-automation::before{content:"";position:absolute;right:-75px;bottom:-130px;width:310px;height:340px;border-radius:90px 0 0;background:#fcf4e6;transform:rotate(-24deg);pointer-events:none}
+.client-automation-art,.client-automation-description,.client-automation-support{position:relative;z-index:1}
+.client-automation-art{width:100%;justify-self:center}
+.client-automation-art>div:first-child{width:calc(100% - 30px);height:210px;padding:0}
+.client-automation-art>div:first-child h3{padding:22px 30px 18px;margin:0;border-bottom:1px solid #f1f3ee}
+.client-automation-art>div:first-child p{margin:22px 42px 14px}
+.client-automation-art>div:first-child>span{margin:0 42px}
+.client-automation-art>div+div{padding:15px 20px;margin-top:-33px}
+.client-automation-art>div+div h3{font-size:14px;line-height:20px;margin:0 -20px 10px;padding:0 20px 12px;border-bottom:1px solid #f1f3ee}
+.client-automation-art span{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;white-space:nowrap}
+.client-automation-art span svg{flex-shrink:0}
+.client-automation-art>div+div span{padding:0 0 6px;border:0;border-bottom:1px solid #dd9b6e;border-radius:0}
+.client-automation-leaf{position:absolute;right:-24px;top:-20px;width:200px;height:100px;pointer-events:none}
+.client-automation-support{position:absolute}
+.client-tag-table .client-tag{gap:5px}
+.client-tag-table .client-tag-row-actions{display:flex;gap:22px;width:88px;justify-content:flex-end;opacity:0}
+/* 이유 : 행별 표시 조건은 미수록이므로 첫 행 표시와 나머지 hover·키보드 접근은 목 가정이다. */
+.client-tag-row:first-of-type .client-tag-row-actions,.client-tag-row:hover .client-tag-row-actions,.client-tag-row:focus-within .client-tag-row-actions{opacity:1}
+@media(max-width:600px){.client-portal-banner h2{padding-left:28px}.client-portal-info{left:15px}.client-portal-url{font-size:13px}.client-automation-art>div:first-child p{margin-inline:20px}.client-automation-art>div:first-child>span{margin-inline:20px}.client-automation-art span{white-space:normal}.client-automation-leaf{right:-10px;max-width:55%}.client-automation-support{position:static}.client-tag-table .client-tag-row-actions{opacity:1}}

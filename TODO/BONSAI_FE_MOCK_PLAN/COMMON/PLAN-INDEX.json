@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G14~G18 사용자 요청 추가 재검토·G15 주소 조합 수명 보완·최종 전체260/260 통과 / 원본 동일성·실제 브라우저·미수록 정책 대기",
+  "status": "G19 R4 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; continue G20 only",
   "goals": [
     {
       "id": "G00",
@@ -3973,7 +3973,7 @@
         "R03"
       ],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
+      "status": "G19 R4 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
       "flow_scope": [
         {
           "flow_number": 3,
@@ -4015,7 +4015,7 @@
         "result": "../RESULTS/G27_RESULT.md"
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "G19 R4 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
         "item_ids": [
           "R4-F003-O01",
           "R4-F003-O02",
@@ -4043,7 +4043,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g19",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_40ff225f161846249b5cf8c2c55423b6",
           "sc_531ce252700c43088b29703be32726d6",
@@ -4058,6 +4058,26 @@
         "result": "../RESULTS/G01_RECHECK_RESULT.md",
         "status": "공통 변경 영향 회귀 수행; 이 Goal 전체 R4·시각 재검토 대기",
         "full_goal_review_performed": false
+      },
+      "prior_status_before_20261127": "관찰 범위 목 구현·두 차례 검토·현재 전체 회귀 검증; 자료·시각·환경 대기",
+      "r4_recheck_20261127": {
+        "date": "2026-11-27 KST",
+        "result": "../RESULTS/G19_RESULT.md#g19-r4-recheck",
+        "source_flows": 2,
+        "source_steps": 12,
+        "source_images_directly_viewed": 12,
+        "r4_observations": 7,
+        "r4_remaining_analysis": 3,
+        "new_mcp_query_performed": true,
+        "unit_dom": "43 files 268/268; 262.05s",
+        "typecheck": "app/node passed noEmit incremental false",
+        "lint": "passed",
+        "build": "memory only; 1976 modules; 3 outputs; 9.88s",
+        "browser_e2e": "not_run; no connected session or running preview",
+        "real_api_requests": null,
+        "visual_identity": "not_verified",
+        "overall_complete": false,
+        "artifacts_created": false
       }
     },
     {
@@ -17365,9 +17385,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F003-O02",
@@ -17383,9 +17406,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F003-O03",
@@ -17401,9 +17427,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F003-O04",
@@ -17419,9 +17448,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F003-A01",
@@ -17439,7 +17471,8 @@
         ],
         "status": "분석 대기",
         "implementation_assessment": "미검토",
-        "evidence": []
+        "evidence": [],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F003-A02",
@@ -17457,7 +17490,8 @@
         ],
         "status": "분석 대기",
         "implementation_assessment": "미검토",
-        "evidence": []
+        "evidence": [],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F004-O01",
@@ -18421,9 +18455,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F019-O02",
@@ -18439,9 +18476,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F019-O03",
@@ -18457,9 +18497,12 @@
         "research_ids": [
           "R03"
         ],
-        "status": "미대조",
-        "implementation_assessment": "미검토",
-        "evidence": []
+        "status": "구성 대조·보완 / 엄격한 시각 동일성·브라우저 대기",
+        "implementation_assessment": "G19 현재 코드/DOM 대조; 원본 정책·픽셀 완료 아님",
+        "evidence": [
+          "../RESULTS/G19_RESULT.md#g19-r4-recheck"
+        ],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F019-A01",
@@ -18477,7 +18520,8 @@
         ],
         "status": "분석 대기",
         "implementation_assessment": "미검토",
-        "evidence": []
+        "evidence": [],
+        "g19_recheck_20261127": "../RESULTS/G19_RESULT.md#g19-r4-recheck"
       },
       {
         "id": "R4-F020-O01",
@@ -28130,7 +28174,8 @@
       "date": "2026-11-27 KST",
       "status": "G14~G18 순차 구현·Goal별 로컬 커밋·최종 4항목 재검토와 발견 결함 보완 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
       "superseded_by": "G14-G18 additional review"
-    }
+    },
+    "G14~G18 사용자 요청 추가 재검토·G15 주소 조합 수명 보완·최종 전체260/260 통과 / 원본 동일성·실제 브라우저·미수록 정책 대기"
   ],
   "final_sequence_review_20261127": {
     "date": "2026-11-27 KST",
