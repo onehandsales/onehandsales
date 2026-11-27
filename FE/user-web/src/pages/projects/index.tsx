@@ -1,7 +1,7 @@
 import { TaskBoard, TaskTools, ProjectTaskSummary, useTasks } from "@/features/tasks";
 import "@/styles/tasks.css";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigationType, useParams, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useNavigationType, useParams, useSearchParams } from "react-router-dom";
 import { Dialog } from "@/components/ui/dialog";
 import { invitationAccess, usePreviewEnvironment } from "@/features/preview";
 import { CollaborationProject, CollaborationProjects } from "@/features/invitations";
@@ -10,12 +10,12 @@ import "@/styles/projects.css";
 import "@/styles/collaboration.css";
 // 기능 : 고객·전체·초대 접근의 같은 프로젝트 원본을 실제 경로에 조합한다.
 export function ProjectsPage() {
-  const query = useProjects(); const tasks = useTasks(); const [params, setParams] = useSearchParams(); const { projectId } = useParams(); const { state } = usePreviewEnvironment(); const access = invitationAccess(state); const location = useLocation(); const [notice, setNotice] = useState(""); const [dismissed, setDismissed] = useState("");
+  const query = useProjects(); const tasks = useTasks(); const [params] = useSearchParams(); const { projectId } = useParams(); const { state } = usePreviewEnvironment(); const access = invitationAccess(state); const location = useLocation(); const navigate = useNavigate(); const [notice, setNotice] = useState(""); const [dismissed, setDismissed] = useState("");
   // 기능 : 경로를 떠나면 이전 화면의 인계 안내를 닫는다.
   useEffect(function closeNotice() { setNotice(""); }, [location.key]);
   const project = query.data?.find(item => item.id === projectId);
-  // 기능 : 시간 행도 동일 작업 ID의 패널을 열고 원래 탭 이력으로 복귀한다.
-  function openTask(id: string) { const next = new URLSearchParams(params); next.set("task", id); void setParams(next, { state: { taskPanelEntry: true }, preventScrollReset: true }); }
+  // 기능 : 시간 행은 원래 탭·외부 query·hash·이력 상태를 유지하며 동일 작업 ID의 패널을 연다.
+  function openTask(id: string) { const next = new URLSearchParams(params); next.set("task", id); void navigate({ pathname: location.pathname, search: next.toString(), hash: location.hash }, { state: { ...location.state, taskPanelEntry: true }, preventScrollReset: true }); }
   const taskNames = Object.fromEntries((tasks.data ?? []).map(task => [task.id, task.title]));
   const taskBoard = project ? <TaskBoard projectId={project.id} /> : null;
   const taskSummary = project ? <ProjectTaskSummary projectId={project.id} onTemplates={() => setNotice("Task templates")} /> : null;

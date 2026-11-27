@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G21~G24 순차 보완·최종 연결/전체 로컬 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; G25 not started",
+  "status": "G21~G24 추가 검토·3결함 수정·전체 로컬 검증; 원본 동일성·실제 브라우저·미수록 정책 대기; G25 not started",
   "goals": [
     {
       "id": "G00",
@@ -4249,12 +4249,13 @@
         "final_visual_regression": "build passed; dev 4/4, build 4/4; 12 captures, keyboard contrast reviewed"
       },
       "current_regression": {
-        "goal": "G27",
-        "unit": "87/87",
-        "development_e2e": "143/143 full suite",
-        "production_e2e": "143/143 full suite",
-        "connected_journey": "G18-G27 same IDs and role handoff passed",
-        "result": "../RESULTS/G27_RESULT.md"
+        "goal": "G21-G24 additional review",
+        "unit_dom": "50 files 309/309; 276.64s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "connected_journey": "local mock App/router DOM passed; not browser E2E",
+        "result": "../RESULTS/G24_RESULT.md#g21-g24-additional-review"
       },
       "source_analysis_review": {
         "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
@@ -4313,6 +4314,14 @@
         "real_api_requests": null,
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "historical_regression_before_g21_g24_review_20261127": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -4368,12 +4377,13 @@
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G22/"
       },
       "current_regression": {
-        "goal": "G27",
-        "unit": "87/87",
-        "development_e2e": "143/143 full suite",
-        "production_e2e": "143/143 full suite",
-        "connected_journey": "G18-G27 same IDs and role handoff passed",
-        "result": "../RESULTS/G27_RESULT.md"
+        "goal": "G21-G24 additional review",
+        "unit_dom": "50 files 309/309; 276.64s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "connected_journey": "local mock App/router DOM passed; not browser E2E",
+        "result": "../RESULTS/G24_RESULT.md#g21-g24-additional-review"
       },
       "source_analysis_review": {
         "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
@@ -4424,6 +4434,14 @@
         "real_api_requests": null,
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "historical_regression_before_g21_g24_review_20261127": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -4487,12 +4505,13 @@
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G23/"
       },
       "current_regression": {
-        "goal": "G27",
-        "unit": "87/87",
-        "development_e2e": "143/143 full suite",
-        "production_e2e": "143/143 full suite",
-        "connected_journey": "G18-G27 same IDs and role handoff passed",
-        "result": "../RESULTS/G27_RESULT.md"
+        "goal": "G21-G24 additional review",
+        "unit_dom": "50 files 309/309; 276.64s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "connected_journey": "local mock App/router DOM passed; not browser E2E",
+        "result": "../RESULTS/G24_RESULT.md#g21-g24-additional-review"
       },
       "source_analysis_review": {
         "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
@@ -4546,6 +4565,14 @@
         "real_api_requests": null,
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "historical_regression_before_g21_g24_review_20261127": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -4609,12 +4636,13 @@
         "temporary_artifacts": "/tmp/onehandsales-g18-g27/G24/"
       },
       "current_regression": {
-        "goal": "G27",
-        "unit": "87/87",
-        "development_e2e": "143/143 full suite",
-        "production_e2e": "143/143 full suite",
-        "connected_journey": "G18-G27 same IDs and role handoff passed",
-        "result": "../RESULTS/G27_RESULT.md"
+        "goal": "G21-G24 additional review",
+        "unit_dom": "50 files 309/309; 276.64s",
+        "development_e2e": "not_run; no connected browser session",
+        "production_e2e": "not_run",
+        "visual_identity": "not_verified",
+        "connected_journey": "local mock App/router DOM passed; not browser E2E",
+        "result": "../RESULTS/G24_RESULT.md#g21-g24-additional-review"
       },
       "source_analysis_review": {
         "status": "R4 구성 대조·보완·로컬 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 미완",
@@ -4669,6 +4697,14 @@
         "real_api_requests": null,
         "overall_complete": false,
         "artifacts_created": false
+      },
+      "historical_regression_before_g21_g24_review_20261127": {
+        "goal": "G27",
+        "unit": "87/87",
+        "development_e2e": "143/143 full suite",
+        "production_e2e": "143/143 full suite",
+        "connected_journey": "G18-G27 same IDs and role handoff passed",
+        "result": "../RESULTS/G27_RESULT.md"
       }
     },
     {
@@ -28464,5 +28500,31 @@
     "artifacts_created": false,
     "g25_implementation_started": false,
     "push_deploy": false
+  },
+  "g21_g24_additional_review_20261127": {
+    "result": "../RESULTS/G24_RESULT.md#g21-g24-additional-review",
+    "baseline_commit": "ad11ca16",
+    "four_criteria_reviewed": true,
+    "findings_fixed": [
+      "G21-G22: consume one-shot creation state on directory changes to preserve user scroll and avoid replaying success",
+      "G24: preserve hash and external history state when opening an existing task from a time entry",
+      "G23: restore a usable tag control after inner-editor cancel/save and placeholder query replacement"
+    ],
+    "pre_fix_regression": "3/3 failed; 9.71s",
+    "targeted_after_fix": "3/3 passed; 12.64s",
+    "source_metadata": "previous in-session MCP 10 flows / 48 steps reused; no fresh all-flow lookup in this additional review",
+    "source_pngs_reopened": 3,
+    "r4_remaining_analysis": 10,
+    "typecheck": "app/node noEmit incremental false passed",
+    "lint": "full ESLint passed",
+    "browser_e2e": "not_run; no connected document session in current lookup",
+    "visual_identity": "not_verified",
+    "real_api_requests": null,
+    "overall_complete": false,
+    "artifacts_created": false,
+    "g25_implementation_started": false,
+    "push_deploy": false,
+    "final_unit_dom": "50 files 309/309; 276.64s",
+    "build": "memory only; 1976 modules / 3 outputs; 11.27s"
   }
 }

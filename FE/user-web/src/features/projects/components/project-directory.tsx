@@ -13,8 +13,8 @@ export function ProjectDirectory({ projects, onUnavailable }: { projects: Projec
   const [draft, setDraft] = useState<{ entry: string; value: string } | null>(null); const compositionEntry = useRef<string | null>(null); const inputValue = draft?.entry === location.key ? draft.value : options.search;
   // 기능 : 이력을 떠난 검색 조합과 적용하지 않은 필터 초안을 함께 폐기한다.
   useEffect(function discardMovedDrafts() { setDraft(null); compositionEntry.current = null; setFilters(false); }, [location.key]);
-  // 기능 : 변경한 조회 키만 갱신하고 외부 query·hash·상태를 보존하며 동일 값은 이력을 만들지 않는다.
-  function update(values: Record<string, string>, replace = false) { const next = new URLSearchParams(params); for (const [key, value] of Object.entries(values)) { if (value) next.set(key, value); else next.delete(key); } if (next.toString() === params.toString()) return; void navigate({ pathname: location.pathname, search: next.toString(), hash: location.hash }, { replace, preventScrollReset: true, state: location.state }); }
+  // 기능 : 조회 변경은 일회성 생성 안내만 소비하고 외부 query·hash·상태를 보존하며 동일 값은 이력을 만들지 않는다.
+  function update(values: Record<string, string>, replace = false) { const next = new URLSearchParams(params); for (const [key, value] of Object.entries(values)) { if (value) next.set(key, value); else next.delete(key); } if (next.toString() === params.toString()) return; const state = { ...location.state }; delete state.createdProjectId; delete state.createdStage; void navigate({ pathname: location.pathname, search: next.toString(), hash: location.hash }, { replace, preventScrollReset: true, state }); }
   // 기능 : 조합 중 검색은 현재 이력의 초안에만 두고 일반 입력만 URL에 반영한다.
   function changeSearch(event: ChangeEvent<HTMLInputElement>) { const value = event.currentTarget.value; setDraft({ entry: location.key, value }); if (compositionEntry.current !== location.key) update({ q: value }, true); }
   // 기능 : 현재 이력에서 확정한 조합만 검색하고 이동 전의 늦은 조합 완료는 버린다.
