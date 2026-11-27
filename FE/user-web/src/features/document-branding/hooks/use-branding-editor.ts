@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { usePreviewEnvironment } from "@/features/preview";
 import { useCompanySetup } from "@/features/company-setup/data/company-context";
 import { CompanyReadError } from "@/features/company-settings/model/settings-types";
@@ -7,6 +8,7 @@ import type { BrandDraft, HeaderPreset } from "../model/branding-types";
 
 // 기능 : 브랜드 초안·즉시 미리보기·저장값을 나누고 회사와 동일한 실행 문맥에서 취소·경합을 처리한다.
 export function useBrandingEditor() {
+  const location = useLocation();
   const { state: preview } = usePreviewEnvironment(); const { store, state } = useCompanySetup();
   const [draft, setDraft] = useState<BrandDraft | null>(null); const draftRef = useRef<BrandDraft | null>(null); const baseline = useRef<Company | null>(null);
   const request = useRef<AbortController | null>(null); const composing = useRef(false);
@@ -22,7 +24,7 @@ export function useBrandingEditor() {
   function selectHeader(header: HeaderPreset) { if (draftRef.current) edit({ defaults: { ...draftRef.current.defaults, header } }); }
   // 기능 : 전체 취소는 파일 편집기를 포함해 초안을 폐기하고 저장된 같은 회사를 다시 읽는다.
   function reload() { cancel(); draftRef.current = null; setDraft(null); setSaved(false); setRetry(value => value + 1); }
-  // 기능 : 진입·조회 시나리오·인증 수명에 따라 조회하고 이탈한 요청은 폐기한다.
+  // 기능 : 진입·이력·조회 시나리오·인증 수명에 따라 조회하고 이전 요청은 폐기한다.
   useEffect(function loadBranding() {
     request.current?.abort(); request.current = null; setPending(false); setError(""); setReadKind(""); setSaved(false);
     if (!preview.session || !preview.workspaceId) return;
@@ -36,7 +38,7 @@ export function useBrandingEditor() {
     function onFinish() { if (request.current === controller) { request.current = null; setLoading(false); } }
     void store.readSettings({ actorId: preview.session.id, workspaceId: preview.workspaceId, revision: preview.revision }, controller.signal).then(onRead).catch(onError).finally(onFinish);
     return function cancelOnLeave() { controller.abort(); request.current?.abort(); };
-  }, [preview.revision, preview.session, preview.workspaceId, retry, state.settingsScenario, store]);
+  }, [location.key, preview.revision, preview.session, preview.workspaceId, retry, state.settingsScenario, store]);
   // 기능 : 중복 제출을 막고 성공 시에만 브랜드 기본값과 명시적 로고 변경을 확정한다.
   async function save() {
     if (!preview.session || !preview.workspaceId || !draftRef.current || !baseline.current || !canEdit || request.current || composing.current) return;

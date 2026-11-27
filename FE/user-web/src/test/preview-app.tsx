@@ -9,6 +9,7 @@ export function setupPreviewApp(startPath: string) {
   let container: HTMLDivElement; let root: Root;
   const originalShow = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "showModal");
   const originalClose = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, "close");
+  const originalScroll = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollIntoView");
   // 기능 : 지정한 필수 요소가 없으면 시나리오를 실패시킨다.
   function element<T extends HTMLElement = HTMLElement>(selector: string): T { const node = container.querySelector<T>(selector); if (!node) throw new Error(`Missing: ${selector}`); return node; }
   // 기능 : 실제 라우터에서 경로·query·hash와 새 이력 항목을 적용한다.
@@ -26,6 +27,7 @@ export function setupPreviewApp(startPath: string) {
     vi.stubGlobal("matchMedia", (query: string) => ({ matches: true, media: query, addEventListener() {}, removeEventListener() {} }));
     vi.stubGlobal("scrollTo", () => {});
     vi.stubGlobal("IntersectionObserver", class { observe() {} disconnect() {} unobserve() {} });
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: vi.fn() });
     // 기능 : 모달의 open 속성만 대체하며 네이티브 초점 잠금 검증으로 간주하지 않는다.
     Object.defineProperty(HTMLDialogElement.prototype, "showModal", { configurable: true, value: function showModal(this: HTMLDialogElement) { this.open = true; } });
     // 기능 : 모달 닫기 속성을 동기화한다.
@@ -39,6 +41,7 @@ export function setupPreviewApp(startPath: string) {
     await act(async () => root.unmount()); container.remove(); vi.restoreAllMocks(); vi.unstubAllGlobals();
     if (originalShow) Object.defineProperty(HTMLDialogElement.prototype, "showModal", originalShow); else Reflect.deleteProperty(HTMLDialogElement.prototype, "showModal");
     if (originalClose) Object.defineProperty(HTMLDialogElement.prototype, "close", originalClose); else Reflect.deleteProperty(HTMLDialogElement.prototype, "close");
+    if (originalScroll) Object.defineProperty(HTMLElement.prototype, "scrollIntoView", originalScroll); else Reflect.deleteProperty(HTMLElement.prototype, "scrollIntoView");
   });
   return { element, navigate, click, choose, input, settle };
 }

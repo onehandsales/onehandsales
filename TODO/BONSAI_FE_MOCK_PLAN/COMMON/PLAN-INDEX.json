@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G15 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
+  "status": "G16 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
   "goals": [
     {
       "id": "G00",
@@ -3607,7 +3607,7 @@
       ],
       "research": [],
       "surface": "내부 업무",
-      "status": "관찰 범위 목 구현·두 차례 검토·원본6상태 비교·현재 검증 수행; 미수록 옵션/자산·시각/환경·후속 문서 연결 대기",
+      "status": "G16 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
       "flow_scope": [
         {
           "flow_number": 119,
@@ -3648,7 +3648,7 @@
         ]
       },
       "source_analysis_review": {
-        "status": "기존 목 구현 이력 유지 / R4 구현 대조 미실행",
+        "status": "G16 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
         "item_ids": [
           "R4-F119-O01",
           "R4-F119-O02",
@@ -3670,7 +3670,7 @@
           "R4-C12"
         ],
         "mapping": "SOURCE-ANALYSIS-IMPACT.md#goal-g16",
-        "implementation_review_performed": false,
+        "implementation_review_performed": true,
         "shared_screen_ids": [
           "sc_a2d30da474bc43909f17e726b0559b83"
         ]
@@ -3682,6 +3682,28 @@
         "full_goal_review_performed": false,
         "browser_regression": "pending",
         "visual_identity": "pending"
+      },
+      "prior_status_before_20261127": "관찰 범위 목 구현·두 차례 검토·원본6상태 비교·현재 검증 수행; 미수록 옵션/자산·시각/환경·후속 문서 연결 대기",
+      "r4_recheck_20261127": {
+        "goal": "G16",
+        "source_flows": 1,
+        "source_steps": 6,
+        "source_images_directly_viewed": 6,
+        "new_mcp_query_performed": true,
+        "changes": "브랜드 저장·헤더 목록·미수록 옵션 안내를 현재 이력 수명에 연결하고 회사 설정/문서 스냅샷 회귀를 확인했다.",
+        "checks": "신규 DOM4 포함 관련5파일21/21, app 타입·변경 lint·메모리 build 통과.",
+        "date": "2026-11-27 KST",
+        "result": "../RESULTS/G16_RESULT.md#g16-r4-recheck",
+        "implementation_review_performed": true,
+        "visual_identity": "not_verified",
+        "browser_e2e": "not_run: no connected browser/document session or existing preview server",
+        "browser_network": "not_observed",
+        "real_api_requests": null,
+        "overall_complete": false,
+        "evidence_files_created": false,
+        "temporary_scripts_created": false,
+        "new_result_document_created": false,
+        "original_analysis_and_png_unchanged": true
       }
     },
     {
@@ -14258,8 +14280,8 @@
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/G15_RESULT.md#g15-r4-recheck",
-    "status": "G15 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
+    "result": "../RESULTS/G16_RESULT.md#g16-r4-recheck",
+    "status": "G16 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -27422,13 +27444,13 @@
     ]
   },
   "workflow_review": {
-    "goal": "G15",
-    "source_flows": 3,
-    "source_steps": 15,
-    "source_images_directly_viewed": 13,
+    "goal": "G16",
+    "source_flows": 1,
+    "source_steps": 6,
+    "source_images_directly_viewed": 6,
     "new_mcp_query_performed": true,
     "date": "2026-11-27 KST",
-    "result": "../RESULTS/G15_RESULT.md#g15-r4-recheck",
+    "result": "../RESULTS/G16_RESULT.md#g16-r4-recheck",
     "implementation_review_performed": true,
     "visual_identity": "not_verified",
     "browser_e2e": "not_run: no connected browser/document session or existing preview server",
@@ -27893,6 +27915,33 @@
         "G18"
       ],
       "minor_visual_differences_allowed": false
+    },
+    {
+      "goal": "G15",
+      "source_flows": 3,
+      "source_steps": 15,
+      "source_images_directly_viewed": 13,
+      "new_mcp_query_performed": true,
+      "date": "2026-11-27 KST",
+      "result": "../RESULTS/G15_RESULT.md#g15-r4-recheck",
+      "implementation_review_performed": true,
+      "visual_identity": "not_verified",
+      "browser_e2e": "not_run: no connected browser/document session or existing preview server",
+      "browser_network": "not_observed",
+      "real_api_requests": null,
+      "overall_complete": false,
+      "evidence_files_created": false,
+      "temporary_scripts_created": false,
+      "new_result_document_created": false,
+      "original_analysis_and_png_unchanged": true,
+      "authorized_goals": [
+        "G14",
+        "G15",
+        "G16",
+        "G17",
+        "G18"
+      ],
+      "minor_visual_differences_allowed": false
     }
   ],
   "index_semantics": {
@@ -27943,6 +27992,11 @@
       "date": "2026-11-27 KST",
       "status": "G14 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
       "superseded_by": "G15"
+    },
+    {
+      "date": "2026-11-27 KST",
+      "status": "G15 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
+      "superseded_by": "G16"
     }
   ]
 }

@@ -211,3 +211,39 @@ G16 명세·실행 순서표·PLAN-INDEX·계획 README/Goal 색인/FE TODO·Use
 - [x] 기사 안 설정 이미지는 읽기 전용, Branding settings는 기존 로컬 안내임을 확인했다. 실제 브랜드/포털 편집은 N/A이며 시작하지 않았다. [상세 판정·근거](G08_RESULT.md#g08-r4-recheck).
 
 - [ ] 엄격한 시각 동일성·실제 브라우저/네트워크·미수록 원본은 대기다. 관련 G/R 전체 완료가 아니며 잔여 담당은 G08 결과7절에 기록했다.
+
+<a id="g16-r4-recheck"></a>
+## R4 재대조·순차 작업 — 2026-11-27 KST
+
+판정: **관찰 구성·목 동작 보완 및 재검토 수행 / 원본 동일성·실제 브라우저·문서 작성 소비 대기**.
+
+### 작업 전 범위와 작업 후 4항목 재대조
+
+| 항목 | 확인 범위와 결과 |
+| --- | --- |
+| FRONT_AGENT | 현재 목 우선 결정, 상태/데이터의 입력 snapshot·취소·실패 보존, 페이지 조합/feature 제어, 접근성 및 한글 책임 주석을 적용했다. 실제 API/BE/DB 작업 없음. |
+| 갱신 Goal | G16의 미리보기/저장 기본값 분리·새 문서 복사/기존 문서 불변·R4-F119 O01~O03/A01 및 공통12기준을 대조했다. |
+| 현재 코드/영향 | BrandingSettingsPage, useBrandingEditor, BrandFields/HeaderSelect/BrandLogoPicker/SampleInvoice, branding-types/CSS, G15 로고 hook와 회사 저장소 saveBranding/saveSettings/snapshotDocumentBranding을 확인했다. 실제 문서 작성 소비자는 아직 없다. |
+| Flow/단계/원본 | Settings/Editing branding settings F119 01~06. 새 MCP 목록6개와 로컬 원본6PNG를 대조·직접 확인했다. 기존 Abstract/Plant crop 자산2개도 직접 봤다. 원본 분석/이미지와 제품 자산은 변경하지 않았다. |
+
+### 원본·구현 대응
+
+- O01: 왼쪽 로고 파일명/제거·Small Square 84×84·5개 헤더 선택·Font/Color 왕관·화이트라벨3개 라디오와 오른쪽 Sample Invoice #1001·당사자·Pay Invoice 표시를 구분했다.
+- O02: No image→Abstract→Plant는 서로 다른 사진 미리보기이며 기존 crop PNG를 사용한다. 로고84×84 표시와 헤더 경계의 겹침은 CSS로 유지한다. 원본 사진 전체/crop·폰트·정밀 치수는 아직 동일성 인증을 하지 않았다.
+- O03: 저장 전 preview는 초안이며 Save 성공 후 Plant/성공 토스트가 유지된다. “Changes only affect newly created documents.” 안내에 따라 저장 기본값은 생성 시 복사한다. 기존 invoice/proposal/contract fixture의 복사본 불변은 저장소 테스트이며 실제 문서 작성 화면 검증이 아니다.
+- Desk/Custom Header·Font/Color·추가 White Label/크기 선택은 결과가 원본에 없다. 현재 값과 권한을 바꾸지 않는 목 안내를 유지하며 실제 플랜 제한으로 단정하지 않는다.
+
+### 발견한 문제·보완·재검토
+
+- 같은 branding URL의 새 이력에서 이전 저장이 완료될 수 있었다. location.key 변경 시 이전 저장/조회·성공 안내를 정리하고 현재 초안을 유지한다.
+- 같은 이력 변경에서 헤더 목록과 미수록 옵션 모달이 남을 수 있었다. BrandFields의 제어 수명과 안내 닫기를 현재 이력에 연결했다. 파일 읽기 취소는 G15에서 보완한 공통 hook을 함께 사용한다.
+- 변경 후 다시 4항목을 대조했다. 새 선택이 pending 저장을 취소하는 기존 규칙, 실패 후 입력 유지/재시도, 미저장 Discard, 회사 Save 후 헤더 유지, 옵션 취소/재진입을 실제 Router에서 확인했다. 알려진 실행 가능한 결함을 G17로 넘기지 않았다.
+
+### 검증과 미완 경계
+
+- 신규 G16 DOM4 + G15 DOM4 + G14 DOM4 + branding store5 + company settings store4 = 5파일21/21 통과, 23.92초.
+- app TypeScript --noEmit --incremental false·변경 ESLint --no-cache 통과. Vite 메모리 build 1973 modules/출력3개, write:false, 9.98초 통과. 구형 Browserslist 데이터 경고는 비차단이며 패키지는 변경하지 않았다.
+- 실제 브라우저 연결/미리보기 서버가 없어 실제 렌더·네트워크/콘솔·키보드 스크롤·좁은 화면/IME/보조기술은 미검증이다. DOM의 scrollIntoView/modal 대체를 실제 브라우저 성공으로 표시하지 않는다.
+- A01 원본 미확인: 사진 전체·crop·폰트·정밀 겹침/간격, Desk/Custom 결과·크기 목록·Font/Color/White Label 결과 및 플랜 정책. 작은 시각 차이를 허용 완료로 바꾸지 않는다.
+- 별도 구현 대기: 실제 새 청구서/제안서/계약 작성 소비 화면 G36/G37, G40~G42, G55 이후 연결. 현재 G16 완료 체크를 올리지 않는다.
+- 새 evidence/임시 파일/결과 문서 없이 기존 결과와 명세/색인을 갱신했다. 로컬 커밋 후 G17로 진행한다. push·배포 없음.
