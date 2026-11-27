@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24 KST",
-  "status": "G14~G18 순차 구현·Goal별 로컬 커밋·최종 4항목 재검토와 발견 결함 보완 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
+  "status": "G14~G18 사용자 요청 추가 재검토·G15 주소 조합 수명 보완·최종 전체260/260 통과 / 원본 동일성·실제 브라우저·미수록 정책 대기",
   "goals": [
     {
       "id": "G00",
@@ -3450,7 +3450,8 @@
         "new_result_document_created": false,
         "original_analysis_and_png_unchanged": true,
         "local_git_commit": "dc4f14cf",
-        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review"
+        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review",
+        "additional_review_result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review"
       }
     },
     {
@@ -3593,7 +3594,8 @@
         "new_result_document_created": false,
         "original_analysis_and_png_unchanged": true,
         "local_git_commit": "9ffef518",
-        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review"
+        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review",
+        "additional_review_result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review"
       }
     },
     {
@@ -3709,7 +3711,8 @@
         "new_result_document_created": false,
         "original_analysis_and_png_unchanged": true,
         "local_git_commit": "20b97fc9",
-        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review"
+        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review",
+        "additional_review_result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review"
       }
     },
     {
@@ -3841,7 +3844,8 @@
         "new_result_document_created": false,
         "original_analysis_and_png_unchanged": true,
         "local_git_commit": "1e0873a8",
-        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review"
+        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review",
+        "additional_review_result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review"
       }
     },
     {
@@ -3947,7 +3951,8 @@
         "new_result_document_created": false,
         "original_analysis_and_png_unchanged": true,
         "local_git_commit": "de438455",
-        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review"
+        "final_sequence_review_result": "../RESULTS/G18_RESULT.md#g14-g18-final-review",
+        "additional_review_result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review"
       }
     },
     {
@@ -14339,8 +14344,8 @@
     "source_standard": "../../../bonsai_analysis/SOURCE_ANALYSIS_STANDARD.md",
     "source_review": "../../../bonsai_analysis/SOURCE_ANALYSIS_REVIEW.md",
     "mapping": "SOURCE-ANALYSIS-IMPACT.md",
-    "result": "../RESULTS/G18_RESULT.md#g14-g18-final-review",
-    "status": "G14~G18 순차 구현·Goal별 로컬 커밋·최종 4항목 재검토와 발견 결함 보완 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
+    "result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review",
+    "status": "G14~G18 사용자 요청 추가 재검토·G15 주소 조합 수명 보완·최종 전체260/260 통과 / 원본 동일성·실제 브라우저·미수록 정책 대기",
     "counts": {
       "flows": 134,
       "steps": 754,
@@ -28120,6 +28125,11 @@
       "date": "2026-11-27 KST",
       "status": "G17 R4 구성 대조·보완·단위/DOM 검증 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기; G14~G18 순차 구현·검토·로컬 커밋 승인; push·배포 없음",
       "superseded_by": "G18"
+    },
+    {
+      "date": "2026-11-27 KST",
+      "status": "G14~G18 순차 구현·Goal별 로컬 커밋·최종 4항목 재검토와 발견 결함 보완 수행 / 원본 동일성·실제 브라우저·미수록 정책 대기",
+      "superseded_by": "G14-G18 additional review"
     }
   ],
   "final_sequence_review_20261127": {
@@ -28171,5 +28181,63 @@
     "visual_identity": "not_verified",
     "overall_complete": false,
     "result": "../RESULTS/G18_RESULT.md#g14-g18-final-review"
+  },
+  "additional_review_20261127": {
+    "date": "2026-11-27 KST",
+    "base_commit": "1de3ad34",
+    "goals": [
+      "G14",
+      "G15",
+      "G16",
+      "G17",
+      "G18"
+    ],
+    "four_area_review_performed": true,
+    "findings_resolved": [
+      "G15 address Escape during composition closes editor",
+      "G15 cancelled composition prevents later address/company save"
+    ],
+    "new_regression_tests": 4,
+    "pre_fix_reproduction": "4 failed / 4",
+    "targeted": {
+      "files": 4,
+      "passed": 22,
+      "seconds": 36.05
+    },
+    "final_suite": {
+      "files": 42,
+      "passed": 260,
+      "seconds": 229.2
+    },
+    "typecheck": "app/node passed",
+    "lint": "full passed; final test file rechecked",
+    "memory_build": {
+      "modules": 1975,
+      "outputs": 3,
+      "seconds": 10.68,
+      "write": false
+    },
+    "source_flows": 9,
+    "source_steps": 48,
+    "unique_source_screen_ids": 45,
+    "source_mapping": "existing conversation MCP identification rechecked against current local analysis and PNG",
+    "new_mcp_query_performed": false,
+    "source_files_unchanged": true,
+    "browser_e2e": "not_run; no connected document session or existing preview/debug listener",
+    "browser_network": "not_observed",
+    "real_api_requests": null,
+    "visual_identity": "not_verified",
+    "overall_complete": false,
+    "result": "../RESULTS/G18_RESULT.md#g14-g18-additional-review",
+    "next_goal": {
+      "id": "G19",
+      "scope": "Existing customer list/create/detail R4 review and completion; two flows/twelve stages",
+      "dependencies": [
+        "G01",
+        "G15",
+        "R03"
+      ],
+      "implementation_started_in_this_request": false
+    }
   }
 }
