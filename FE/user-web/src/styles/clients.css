@@ -53,3 +53,6 @@
 /* 이유 : 행별 표시 조건은 미수록이므로 첫 행 표시와 나머지 hover·키보드 접근은 목 가정이다. */
 .client-tag-row:first-of-type .client-tag-row-actions,.client-tag-row:hover .client-tag-row-actions,.client-tag-row:focus-within .client-tag-row-actions{opacity:1}
 @media(max-width:600px){.client-portal-banner h2{padding-left:28px}.client-portal-info{left:15px}.client-portal-url{font-size:13px}.client-automation-art>div:first-child p{margin-inline:20px}.client-automation-art>div:first-child>span{margin-inline:20px}.client-automation-art span{white-space:normal}.client-automation-leaf{right:-10px;max-width:55%}.client-automation-support{position:static}.client-tag-table .client-tag-row-actions{opacity:1}}
+/* G20 원본의 이니셜 상태에도 표시되는 외곽 X와 오버레이 색을 반영한다. */
+.client-image-remove{display:grid;place-items:center;padding:0;color:#91a58f;box-shadow:0 1px 2px #07181012}
+.client-image-remove:hover,.client-image-remove:focus-visible{color:#e56a61}
